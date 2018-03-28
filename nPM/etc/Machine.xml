@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Machine>
+    <MachineName>nPM</MachineName>
+    <!--屏幕分辨率-->
+    <ScreenWidth>1280</ScreenWidth>
+    <ScreenHeight>800</ScreenHeight>
+    <ScreenPixelWPitch>0.264</ScreenPixelWPitch>
+    <ScreenPixelHPitch>0.264</ScreenPixelHPitch>
+    <!--功能机型的使能配置-->
+    <ConfiguredFunctions>ECG12LEADS,SPO2,NIBP,CO2,IBP,AG,CO,TEMP,WIFI</ConfiguredFunctions>
+    <ECG12LEADEnable>1</ECG12LEADEnable>
+    <SPO2Enable>1</SPO2Enable>
+    <NIBPEnable>1</NIBPEnable>
+    <RESPEnable>1</RESPEnable>
+    <CO2Enable>1</CO2Enable>
+    <AGEnable>1</AGEnable>
+    <COEnable>1</COEnable>
+    <IBPEnable>1</IBPEnable>
+    <TEMPEnable>1</TEMPEnable>
+    <WIFIEnable>1</WIFIEnable>
+    <!--系统信息-->
+    <SerialNumber>00000000000</SerialNumber>
+    <SoftwareVersion>0.0.0.1</SoftwareVersion>
+    <!--参数信息-->
+    <AllParams>ECG,SPO2,RESP,NIBP,CO2,IBP,AG,CO,TEMP,PD</AllParams>
+    <!--参数与Provider的关系-->
+    <ECG SptProvider="DemoProvider,BLM_E5">BLM_E5</ECG>
+    <RESP SptProvider="DemoProvider,BLM_E5">DemoProvider</RESP>
+    <SPO2 SptProvider="DemoProvider,BLM_SPO2,BLM_TS3,MASIMO_SPO2">BLM_TS3</SPO2>
+    <NIBP SptProvider="DemoProvider,BLM_NIBP,BLM_TN3,SUNTECH_NIBP">BLM_TN3</NIBP>
+    <CO2 SptProvider="DemoProvider,BLM_CO2">DemoProvider</CO2>
+    <IBP SptProvider="DemoProvider,WITLEAF_IBP">WITLEAF_IBP</IBP>
+    <AG SptProvider="DemoProvider,PHASEIN_AG">DemoProvider</AG>
+    <CO SptProvider="DemoProvider,WITLEAF_IBP">WITLEAF_IBP</CO>
+    <TEMP SptProvider="DemoProvider,BLM_TT3">BLM_TT3</TEMP>
+    <PD SptProvider="PDProvider">PDProvider</PD>
+    <!--Provider端口信息-->
+    <PRT72Port>/dev/ttyS0</PRT72Port>
+    <BLM_E5Port>/dev/ttyS1</BLM_E5Port>
+    <BLM_TN3Port>/dev/ttyS2</BLM_TN3Port>
+<!--    <SUNTECH_NIBPPort>/dev/ttyS2</SUNTECH_NIBPPort>-->
+    <BLM_TS3Port>/dev/ttyS3</BLM_TS3Port>
+<!--    <MASIMO_SPO2Port>/dev/ttyS3</MASIMO_SPO2Port>-->
+    <SystemBoardPort>/dev/ttyS4</SystemBoardPort>
+    <BLM_TT3Port>/dev/ttyS5</BLM_TT3Port>
+    <WITLEAF_IBPPort>/dev/ttyWK2</WITLEAF_IBPPort>
+    <BLM_CO2Port>/dev/ttyWK3</BLM_CO2Port>
+<!--    <PHASEIN_AGPort>/dev/ttyWK3</PHASEIN_AGPort>-->
+</Machine>

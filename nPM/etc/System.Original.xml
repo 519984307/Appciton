@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 系统运行时的相关配置，这些配置不会被自动恢复。 -->
+<System>
+    <!--日期格式，0:y/m/d, 1:m/d/y, 2:d/m/y-->
+    <DateFormat>0</DateFormat>
+    <DataStorage>
+    <FolderSequenceNum>1</FolderSequenceNum>
+    <FolderName></FolderName>
+    <FDFileSequenceNum>1</FDFileSequenceNum>
+    <FDFileName></FDFileName>
+    <DataSize>0</DataSize>
+    <SignalRescueSize>0</SignalRescueSize>
+    </DataStorage>
+
+    <ConfigManager>
+        <Default>
+            <Adult type="Factory" name="" >AdultConfig.origin.xml</Adult>
+            <PED type="Factory" name="" >PedConfig.origin.xml</PED>
+            <NEO type="Factory" name="" >NeoConfig.origin.xml</NEO>
+        </Default>
+        <UserDefine count="0">
+        </UserDefine>
+    </ConfigManager>
+
+
+    <!--30s后恢复默认选项-->
+    <PrimaryCfg>
+        <PatientInfo>
+            <Sex>0</Sex>
+            <Age>-1</Age>
+            <Blood>0</Blood>
+            <Name></Name>
+            <ID></ID>
+            <Weight></Weight>
+            <Height></Height>
+        </PatientInfo>
+        <ECG>
+            <PresentRhythm>0</PresentRhythm>
+        </ECG>
+        <ECG12Lead>
+            <EmailOffset>0</EmailOffset>
+        </ECG12Lead>
+        <NIBP>
+            <NIBPsys>-5000</NIBPsys>
+            <NIBPdia>-5000</NIBPdia>
+            <NIBPmap>-5000</NIBPmap>
+            <MeasureTime>0</MeasureTime>
+        </NIBP>
+        <UILayout>
+        <!-- 控件的顺序与上面的布局节点对应 -->
+            <WidgetsOrder>
+                <FontSize>
+                    <!--800*600-->
+                    <PARAM_FONT_NUM_0>12</PARAM_FONT_NUM_0>
+                    <PARAM_FONT_NUM_1>18</PARAM_FONT_NUM_1>
+                    <PARAM_FONT_NUM_2>28</PARAM_FONT_NUM_2>
+                    <PARAM_FONT_NUM_3>35</PARAM_FONT_NUM_3>
+                    <PARAM_FONT_NUM_4>45</PARAM_FONT_NUM_4>
+                    <PARAM_FONT_NUM_5>55</PARAM_FONT_NUM_5>
+                    <!--1280*800-->
+                    <!--<PARAM_FONT_NUM_0>19</PARAM_FONT_NUM_0>
+                    <PARAM_FONT_NUM_1>28</PARAM_FONT_NUM_1>
+                    <PARAM_FONT_NUM_2>44</PARAM_FONT_NUM_2>
+                    <PARAM_FONT_NUM_3>54</PARAM_FONT_NUM_3>
+                    <PARAM_FONT_NUM_4>72</PARAM_FONT_NUM_4>
+                    <PARAM_FONT_NUM_5>88</PARAM_FONT_NUM_5>-->
+                </FontSize>
+                <!--聚焦顺序-->
+                <FocusOrder>PatientBarWidget,AlarmPhyInfoBarWidget,AlarmTechInfoBarWidget,TrendGroup,SystemStatusBarWidget,BatteryBarWidget,SoftKeyManager,PromptInfoBarWidget,WaveGroup</FocusOrder>
+                <!-- 界面顶层布局器 -->
+                <ScreenVLayoutStretch>
+                    <topBarRow>40</topBarRow>
+                    <alarmRow>40</alarmRow>
+                    <paramLayout>600</paramLayout>
+                    <bottomBarRow>40</bottomBarRow>
+                    <softkeyRow>80</softkeyRow>
+                </ScreenVLayoutStretch>
+                <!-- 波形区与趋势区的比列 -->
+                <ScreenHLayoutStretch>
+                    <volatileLayout>5</volatileLayout>
+                    <trendRowLayout>2</trendRowLayout>
+                </ScreenHLayoutStretch>
+                <!-- 顶部信息栏比列 -->
+                <topBarRowOrder>
+                    <PatientInfoWidget>300</PatientInfoWidget>
+                    <PatientBarWidget>100</PatientBarWidget>
+                    <PatientStatusBarWidget>40</PatientStatusBarWidget>
+                    <AlarmMuteBarWidget>40</AlarmMuteBarWidget>
+                    <SystemModeBarWidget>320</SystemModeBarWidget>
+                </topBarRowOrder>
+                <!-- 报警栏比列 -->
+                <alarmRowOrder>
+                    <AlarmPhyInfoBarWidget>1</AlarmPhyInfoBarWidget>
+                    <AlarmTechInfoBarWidget>1</AlarmTechInfoBarWidget>
+                </alarmRowOrder>
+                <!-- 底部信息栏比列 -->
+                <bottomBarRowOrder>
+                    <PromptInfoBarWidget>300</PromptInfoBarWidget>
+                    <SystemStatusBarWidget>250</SystemStatusBarWidget>
+                    <BatteryBarWidget>50</BatteryBarWidget>
+                    <DateTimeWidget>200</DateTimeWidget>
+                </bottomBarRowOrder>
+                <WaveTrendOrder>NIBPTrendWidget,NIBPDataTrendWidget</WaveTrendOrder>
+                <OxyCRGWidget>OxyCRGHRWidget,OxyCRGSPO2Widget,OxyCRGRESPWidget</OxyCRGWidget>
+                <!-- 监护模式下的三个界面 -->
+                <MonitorStandard>
+                    <TrendOrder>ECGTrendWidget,ECGPVCSTrendWidget,SPO2TrendWidget,SPO2TrendWidget,N2OTrendWidget,N2OTrendWidget,IBP1TrendWidget,IBP1TrendWidget,CO2TrendWidget,CO2TrendWidget,TEMPTrendWidget,RESPTrendWidget</TrendOrder>
+                    <WaveOrder>ECGIIWaveWidget,ECGIWaveWidget,SPO2WaveWidget,IBP1WaveWidget,CO2WaveWidget,WaveTrendWidget</WaveOrder>
+                </MonitorStandard>
+                <Monitor12Lead>
+                    <TrendOrder>ECGTrendWidget,ECGPVCSTrendWidget,ECGSTTrendWidget,ECGSTTrendWidget,SPO2TrendWidget,SPO2TrendWidget,CO2TrendWidget,CO2TrendWidget,TEMPTrendWidget,RESPTrendWidget</TrendOrder>
+                    <WaveOrder>
+                        <Standard>ECGIWaveWidget,ECGV1WaveWidget,ECGIIWaveWidget,ECGV2WaveWidget,ECGIIIWaveWidget,ECGV3WaveWidget,ECGaVRWaveWidget,ECGV4WaveWidget,ECGaVLWaveWidget,ECGV5WaveWidget,ECGaVFWaveWidget,ECGV6WaveWidget</Standard>
+                        <Cabrera>ECGaVLWaveWidget,ECGV1WaveWidget,ECGIWaveWidget,ECGV2WaveWidget,ECGaVRWaveWidget,ECGV3WaveWidget,ECGIIWaveWidget,ECGV4WaveWidget,ECGaVFWaveWidget,ECGV5WaveWidget,ECGIIIWaveWidget,ECGV6WaveWidget</Cabrera>
+                    </WaveOrder>
+                </Monitor12Lead>
+                <MonitorOxyCRG>
+                    <TrendOrder>ECGTrendWidget,ECGPVCSTrendWidget,ECGSTTrendWidget,ECGSTTrendWidget,SPO2TrendWidget,SPO2TrendWidget,NIBPTrendWidget,NIBPTrendWidget,CO2TrendWidget,CO2TrendWidget,TEMPTrendWidget,RESPTrendWidget</TrendOrder>
+                    <WaveOrder>ECGIIWaveWidget,ECGIWaveWidget,SPO2WaveWidget,OxyCRGWidget</WaveOrder>
+                </MonitorOxyCRG>
+                <MonitorTrend>
+                    <TrendOrder>ECGTrendWidget,ECGPVCSTrendWidget,ECGSTTrendWidget,ECGSTTrendWidget,SPO2TrendWidget,SPO2TrendWidget,CO2TrendWidget,CO2TrendWidget,TEMPTrendWidget,RESPTrendWidget</TrendOrder>
+                    <WaveOrder>ECGIIWaveWidget,ECGIWaveWidget,ShortTrendManager,WaveTrendWidget</WaveOrder>
+                    <ShortTrendOrder0>HR,SPO2,PR</ShortTrendOrder0>
+                    <ShortTrendOrder1>NIBP_SYS,NIBP_DIA,NIBP_MAP</ShortTrendOrder1>
+                </MonitorTrend>
+                <MonitorBigFont>
+                    <TrendOrder>ECGTrendWidget,NIBPTrendWidget,SPO2TrendWidget,RESPTrendWidget</TrendOrder>
+                    <WaveOrder>ECGIIWaveWidget,NULL,SPO2WaveWidget,RESPWaveWidget</WaveOrder>
+                </MonitorBigFont>
+                <MonitorCustom>
+                    <TrendOrder>ECGTrendWidget,ECGPVCSTrendWidget,ECGSTTrendWidget,ECGSTTrendWidget,SPO2TrendWidget,SPO2TrendWidget,CO2TrendWidget,CO2TrendWidget,TEMPTrendWidget,RESPTrendWidget</TrendOrder>
+                    <WaveOrder>ECGIIWaveWidget,ECGIWaveWidget,SPO2WaveWidget,RESPWaveWidget,WaveTrendWidget</WaveOrder>
+                </MonitorCustom>
+            </WidgetsOrder>
+        </UILayout>
+        <FullDisclosure>
+            <UniqueCaseId></UniqueCaseId>
+            <TrendRecordCount>0</TrendRecordCount>
+            <FirstTrendTimeStamp>0</FirstTrendTimeStamp>
+        </FullDisclosure>
+    </PrimaryCfg>
+</System>

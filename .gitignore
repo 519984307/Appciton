@@ -1,0 +1,3 @@
+*.pro.user*
+nPM/bin/nPM
+Main/Version.h

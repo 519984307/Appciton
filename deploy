@@ -1,0 +1,25 @@
+#!/bin/bash
+
+INSTALL_PATH=/usr/local/nPM
+
+if [ $# -gt 0 ]; then
+	INSTALL_PATH=$1
+fi
+
+echo "Deploy to $INSTALL_PATH"
+
+#清理。
+rm -rf $INSTALL_PATH/*
+
+#生成语言文件。
+cd nPM/locale
+./locale.py
+cd ../..
+
+cp -r nPM/* $INSTALL_PATH/
+rm $INSTALL_PATH/icons/PS -rf
+rm $INSTALL_PATH/locale/locale.*
+cp $INSTALL_PATH/etc/System.Original.xml $INSTALL_PATH/etc/System.xml
+cp $INSTALL_PATH/etc/Supervision.Original.Original.xml $INSTALL_PATH/etc/Supervision.Original.xml
+cp $INSTALL_PATH/etc/Supervision.Original.Original.xml $INSTALL_PATH/etc/Supervision.xml
+
