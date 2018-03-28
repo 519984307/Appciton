@@ -59,6 +59,16 @@ void TrendGraphWidget::_trendGraphSetReleased()
     trendGraphSetWidget.autoShow();
 }
 
+void TrendGraphWidget::_upReleased()
+{
+    _waveWidget->pageUpParam();
+}
+
+void TrendGraphWidget::_downReleased()
+{
+    _waveWidget->pageDownParam();
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -98,6 +108,16 @@ TrendGraphWidget::TrendGraphWidget()
     _set->setFont(fontManager.textFont(fontSize));
     connect(_set, SIGNAL(realReleased()), this, SLOT(_trendGraphSetReleased()));
 
+    _up = new IButton();
+    _up->setFixedSize(ITEM_HEIGHT, ITEM_HEIGHT);
+    _up->setPicture(QImage("/usr/local/nPM/icons/ArrowUp.png"));
+    connect(_up, SIGNAL(realReleased()), this, SLOT(_upReleased()));
+
+    _down = new IButton();
+    _down->setFixedSize(ITEM_HEIGHT, ITEM_HEIGHT);
+    _down->setPicture(QImage("/usr/local/nPM/icons/ArrowDown.png"));
+    connect(_down, SIGNAL(realReleased()), this, SLOT(_downReleased()));
+
     QHBoxLayout *lineLayout = new QHBoxLayout();
     lineLayout->setMargin(0);
     lineLayout->setSpacing(2);
@@ -106,6 +126,8 @@ TrendGraphWidget::TrendGraphWidget()
     lineLayout->addWidget(_moveEvent);
     lineLayout->addWidget(_print);
     lineLayout->addWidget(_set);
+    lineLayout->addWidget(_up);
+    lineLayout->addWidget(_down);
 
     contentLayout->addWidget(_waveWidget);
     contentLayout->addStretch();

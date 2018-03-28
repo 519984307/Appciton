@@ -19,6 +19,9 @@ public:
     void leftMoveCursor();
     void rightMoveCursor();
 
+    void pageUpParam();
+    void pageDownParam();
+
 protected:
     void paintEvent(QPaintEvent *event);
 
@@ -41,5 +44,9 @@ private:
 
     IWidget *_subWidget;
     QScrollArea *_subWidgetScrollArea;
+
+    int _displayGraphNum;                           // 一屏显示的波形数
+    int _totalGraphNum;                             // 趋势组显示的总波形数
+    int _curVScroller;
 
 };

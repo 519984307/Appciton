@@ -6,7 +6,7 @@ class TrendSubWaveWidget : public IWidget
 {
     Q_OBJECT
 public:
-    TrendSubWaveWidget(SubParamID id, int xHead, int xTail, int downRuler = 0, int upRuler = 100);
+    TrendSubWaveWidget(SubParamID id, int xHead, int xTail, int yTop, int yBottom, int downRuler = 0, int upRuler = 100);
     ~TrendSubWaveWidget();
 
     void demoData(void);

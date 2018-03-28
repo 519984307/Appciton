@@ -8,9 +8,10 @@
 /***************************************************************************************************
  * 构造
  **************************************************************************************************/
-TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, int xHead, int xTail, int downRuler, int upRuler) :
-    _yTop(30), _yBottom(120), _xHead(xHead), _xTail(xTail), _xSize(xHead - xTail),
-    _ySize(90), _trendDataHead(xHead + xTail), _size(600),
+TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, int xHead, int xTail,
+                                       int yTop, int yBottom, int downRuler, int upRuler) :
+    _yTop(yTop), _yBottom(yBottom), _xHead(xHead), _xTail(xTail), _xSize(xHead - xTail),
+    _ySize(yBottom - yTop), _trendDataHead(xHead + xTail), _size(600),
     _color(Qt::green), _upRulerValue(upRuler), _downRulerValue(downRuler),
     _rulerSize(upRuler - downRuler), _cursorPosition(600)
 {
@@ -45,7 +46,7 @@ void TrendSubWaveWidget:: demoData()
  **************************************************************************************************/
 int TrendSubWaveWidget::yToValue(int y)
 {
-    return ((_yBottom - y) * (_rulerSize / _ySize));
+    return ((_yBottom - y) * _rulerSize / _ySize);
 }
 
 /***************************************************************************************************
@@ -53,7 +54,7 @@ int TrendSubWaveWidget::yToValue(int y)
  **************************************************************************************************/
 int TrendSubWaveWidget::valueToY(int value)
 {
-    return (_yBottom - (value / (_rulerSize / _ySize)));
+    return (_yBottom - value * _ySize / _rulerSize);
 }
 
 /***************************************************************************************************
@@ -130,11 +131,6 @@ void TrendSubWaveWidget::loadParamData()
  **************************************************************************************************/
 void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
 {
-
-    _yTop = height() / 5;
-    _yBottom = height() / 5 * 4;
-    _ySize = _yBottom - _yTop;
-
     IWidget::paintEvent(e);
 
     QPainter barPainter(this);
@@ -143,14 +139,6 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     barPainter.drawLine(_xHead/3, _yTop, _xHead/3 + 5, _yTop);
     barPainter.drawLine(_xHead/3, _yTop, _xHead/3, _yBottom);
     barPainter.drawLine(_xHead/3, _yBottom, _xHead/3 + 5, _yBottom);
-
-    // 趋势参数名称
-    QRect nameRect(_trendDataHead + 5, _yTop, width() - _trendDataHead -10, 30);
-    barPainter.drawText(nameRect, Qt::AlignLeft | Qt::AlignTop, _paramName);
-
-    // 趋势参数单位
-    QRect unitRect(_trendDataHead + 5, _yTop, width() - _trendDataHead - 10, 30);
-    barPainter.drawText(unitRect, Qt::AlignRight | Qt::AlignTop, _paramUnit);
 
     // 趋势标尺上限
     QRect upRulerRect(_xHead/3 + 7, _yTop - 10, _xHead, 30);
@@ -166,8 +154,20 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     }
 
     QFont font;
-    font.setPixelSize(60);
+    font.setPixelSize(15);
+
     barPainter.setFont(font);
-    barPainter.drawText(_trendDataHead + 60, _yTop + 80, QString::number(_dataBuf[(600 - _cursorPosition)]));
+    // 趋势参数名称
+    QRect nameRect(_trendDataHead + 5, 5, width() - _trendDataHead -10, 30);
+    barPainter.drawText(nameRect, Qt::AlignLeft | Qt::AlignTop, _paramName);
+
+    // 趋势参数单位
+    QRect unitRect(_trendDataHead + 5, 5, width() - _trendDataHead - 10, 30);
+    barPainter.drawText(unitRect, Qt::AlignRight | Qt::AlignTop, _paramUnit);
+
+    font.setPixelSize(60);
+
+    barPainter.setFont(font);
+    barPainter.drawText(_trendDataHead + 60, height()/2, QString::number(_dataBuf[(600 - _cursorPosition)]));
 
 }

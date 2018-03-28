@@ -12,7 +12,8 @@
 TrendWaveWidget::TrendWaveWidget() :
     _timeInterval(RESOLUTION_RATIO_30_SECOND),
     _initTime(0),
-    _cursorPosition(GRAPH_POINT_NUMBER), _currentCursorTime(0)
+    _cursorPosition(GRAPH_POINT_NUMBER), _currentCursorTime(0),
+    _displayGraphNum(2), _totalGraphNum(3)
 {
     _initTime = timeDate.time();
 
@@ -131,6 +132,30 @@ void TrendWaveWidget::rightMoveCursor()
     update();
 }
 
+void TrendWaveWidget::pageUpParam()
+{
+    int maxValue = _subWidgetScrollArea->verticalScrollBar()->maximum();
+    _curVScroller = _subWidgetScrollArea->verticalScrollBar()->value();
+    if (_curVScroller > 0)
+    {
+        // 当前位置　－　最大位置乘以总行数除以看不见的行数
+        _subWidgetScrollArea->verticalScrollBar()->setSliderPosition(
+                    _curVScroller - (maxValue * _displayGraphNum) / (_totalGraphNum - _displayGraphNum));
+    }
+
+}
+
+void TrendWaveWidget::pageDownParam()
+{
+    int maxValue = _subWidgetScrollArea->verticalScrollBar()->maximum();
+    _curVScroller = _subWidgetScrollArea->verticalScrollBar()->value();
+    if (_curVScroller < maxValue && _totalGraphNum != _displayGraphNum)
+    {
+        _subWidgetScrollArea->verticalScrollBar()->setSliderPosition(
+                    _curVScroller + (maxValue * _displayGraphNum) / (_totalGraphNum - _displayGraphNum));
+    }
+}
+
 /**************************************************************************************************
  * 主窗口绘图事件
  *************************************************************************************************/
@@ -214,22 +239,30 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
  *************************************************************************************************/
 void TrendWaveWidget::_trendLayout()
 {
-    TrendSubWaveWidget *subWidget1 = new TrendSubWaveWidget(SUB_PARAM_ART_SYS, (_waveRegionWidth -GRAPH_POINT_NUMBER)/2, (_waveRegionWidth + GRAPH_POINT_NUMBER)/2);
-    subWidget1->setFixedHeight(200);
+    int subWidgetHeight = (height() - 30)/_displayGraphNum;
+
+    TrendSubWaveWidget *subWidget1 = new TrendSubWaveWidget(SUB_PARAM_ART_SYS,
+                                                            (_waveRegionWidth -GRAPH_POINT_NUMBER)/2, (_waveRegionWidth + GRAPH_POINT_NUMBER)/2,
+                                                            subWidgetHeight/5, subWidgetHeight/5*4);
+    subWidget1->setFixedHeight(subWidgetHeight);
     subWidget1->setVisible(true);
     subWidget1->setParent(this);
     subWidget1->setThemeColor(Qt::red);
     _hLayoutTrend->addWidget(subWidget1);
 
-    TrendSubWaveWidget *subWidget2 = new TrendSubWaveWidget(SUB_PARAM_HR_PR, (_waveRegionWidth -GRAPH_POINT_NUMBER)/2, (_waveRegionWidth + GRAPH_POINT_NUMBER)/2);
-    subWidget2->setFixedHeight(200);
+    TrendSubWaveWidget *subWidget2 = new TrendSubWaveWidget(SUB_PARAM_HR_PR,
+                                                            (_waveRegionWidth -GRAPH_POINT_NUMBER)/2, (_waveRegionWidth + GRAPH_POINT_NUMBER)/2,
+                                                            subWidgetHeight/5, subWidgetHeight/5*4);
+    subWidget2->setFixedHeight(subWidgetHeight);
     subWidget2->setVisible(true);
     subWidget2->setParent(this);
     subWidget2->setThemeColor(Qt::blue);
     _hLayoutTrend->addWidget(subWidget2);
 
-    TrendSubWaveWidget *subWidget3 = new TrendSubWaveWidget(SUB_PARAM_RR_BR, (_waveRegionWidth -GRAPH_POINT_NUMBER)/2, (_waveRegionWidth + GRAPH_POINT_NUMBER)/2);
-    subWidget3->setFixedHeight(200);
+    TrendSubWaveWidget *subWidget3 = new TrendSubWaveWidget(SUB_PARAM_RR_BR,
+                                                            (_waveRegionWidth -GRAPH_POINT_NUMBER)/2, (_waveRegionWidth + GRAPH_POINT_NUMBER)/2,
+                                                            subWidgetHeight/5, subWidgetHeight/5*4);
+    subWidget3->setFixedHeight(subWidgetHeight);
     subWidget3->setVisible(true);
     subWidget3->setParent(this);
     subWidget3->setThemeColor(Qt::yellow);

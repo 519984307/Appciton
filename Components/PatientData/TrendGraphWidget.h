@@ -30,6 +30,8 @@ private slots:
     void _leftMoveEvent();
     void _rightMoveEvent();
     void _trendGraphSetReleased();
+    void _upReleased(void);
+    void _downReleased(void);
 
 private:
     TrendGraphWidget();
@@ -40,6 +42,8 @@ private:
     IMoveButton *_moveEvent;
     IButton *_print;
     IButton *_set;
+    IButton *_up;
+    IButton *_down;
 
     int _maxWidth;
     int _maxHeight;
