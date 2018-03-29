@@ -35,7 +35,7 @@
     <TEMP SptProvider="DemoProvider,BLM_TT3">BLM_TT3</TEMP>
     <PD SptProvider="PDProvider">PDProvider</PD>
     <!--Provider端口信息-->
-    <PRT72Port>/dev/ttyS0</PRT72Port>
+    <PRT72Port>/dev/null</PRT72Port>
     <BLM_E5Port>/dev/ttyS1</BLM_E5Port>
     <BLM_TN3Port>/dev/ttyS2</BLM_TN3Port>
 <!--    <SUNTECH_NIBPPort>/dev/ttyS2</SUNTECH_NIBPPort>-->
