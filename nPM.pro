@@ -25,6 +25,10 @@ TEMPLATE = app
 QMAKE_LFLAGS = -rdynamic
 #QMAKE_CXXFLAGS = -DUSE_NEW_STORAGE
 
+debug {
+QMAKE_CXXFLAGS -= -Os
+}
+
 # Auto-generated files subdirectories
 UI_DIR = ui
 MOC_DIR = moc

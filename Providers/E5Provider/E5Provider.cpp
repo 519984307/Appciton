@@ -10,6 +10,8 @@
 #include "RESPAlarm.h"
 #include "SystemManager.h"
 #include <Debug.h>
+#include <QTextStream>
+#include <QFile>
 
 enum E5RecvPacketType
 {
@@ -134,6 +136,27 @@ void E5ProviderPrivate::handleEcgRawData(unsigned char *data, int len)
     leadData[ECG_LEAD_V4] = algleadData[E5ECGALG::V4];
     leadData[ECG_LEAD_V5] = algleadData[E5ECGALG::V5];
     leadData[ECG_LEAD_V6] = algleadData[E5ECGALG::V6];
+
+    //static bool initFlag =false;
+    //static QFile * f[ECG_LEAD_NR];
+    //static QTextStream *stream[ECG_LEAD_NR];
+    //if(!initFlag)
+    //{
+    //    initFlag = true;
+    //    for(int i = 0; i < ECG_LEAD_NR; i++)
+    //    {
+    //        QString name = "/tmp/WAVE_";
+    //        name += ECGSymbol::convert((ECGLead)i, ECG_CONVENTION_AAMI);
+    //        f[i] = new QFile(name);
+    //        f[i]->open(QIODevice::WriteOnly);
+    //        stream[i] = new QTextStream(f[i]);
+    //    }
+    //}
+
+    //for(int i= 0 ; i< ECG_LEAD_NR; i++)
+    //{
+    //    *stream[i] << leadData[i]<<endl;
+    //}
 
 
     leadOFFStatus[ECG_LEAD_I] = leadoff & (1 << E5ECGALG::I);
