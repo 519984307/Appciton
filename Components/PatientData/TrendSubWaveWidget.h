@@ -6,7 +6,7 @@ class TrendSubWaveWidget : public IWidget
 {
     Q_OBJECT
 public:
-    TrendSubWaveWidget(SubParamID id, int xHead, int xTail, int yTop, int yBottom, int downRuler = 0, int upRuler = 100);
+    TrendSubWaveWidget(SubParamID id, TrendGraphType type, int xHead, int xTail, int yTop, int yBottom, int downRuler = 0, int upRuler = 100);
     ~TrendSubWaveWidget();
 
     void demoData(void);
@@ -48,6 +48,7 @@ private:
     int *_dataBuf;                  // 原始趋势数据缓存
     QPoint *_trendWaveBuf;          // 趋势坐标序列缓存
     SubParamID _paramID;
-    int _cursorPosition;     // 游标位置
+    int _cursorPosition;            // 游标位置
+    TrendGraphType _type;           // 趋势图类型
 
 };

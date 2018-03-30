@@ -42,8 +42,10 @@
     <BLM_TS3Port>/dev/ttyS3</BLM_TS3Port>
 <!--    <MASIMO_SPO2Port>/dev/ttyS3</MASIMO_SPO2Port>-->
     <SystemBoardPort>/dev/ttyS4</SystemBoardPort>
+t
     <BLM_TT3Port>/dev/ttyS5</BLM_TT3Port>
-    <WITLEAF_IBPPort>/dev/ttyWK2</WITLEAF_IBPPort>
+<!--    <WITLEAF_IBPPort>/dev/ttyWK2</WITLEAF_IBPPort>-->
+    <WITLEAF_IBPPort>/dev/ttyUSB0</WITLEAF_IBPPort>
     <BLM_CO2Port>/dev/ttyWK3</BLM_CO2Port>
 <!--    <PHASEIN_AGPort>/dev/ttyWK3</PHASEIN_AGPort>-->
 </Machine>

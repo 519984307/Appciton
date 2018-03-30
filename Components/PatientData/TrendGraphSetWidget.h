@@ -4,6 +4,9 @@
 #include "ISpinBox.h"
 #include "IComboList.h"
 #include "IWidget.h"
+#include "IDropList.h"
+#include "IButton.h"
+#include "TrendDataDefine.h"
 #include <QHBoxLayout>
 #include <QScrollArea>
 
@@ -65,10 +68,24 @@ public:
     static TrendGraphSetWidget *_selfObj;
     ~TrendGraphSetWidget();
 
+public:
+    TrendGroup getTrendGroup();
+    void setTrendGroup(TrendGroup g);
+
     void layoutExec(void);
 
 protected:
+    void paintEvent(QPaintEvent *event);
     void showEvent(QShowEvent *e);
+
+private slots:
+    void _trendGroupReleased(int);
+    void _timeIntervalReleased(int);
+    void _waveNumberReleased(int);
+
+private:
+    void _trendRulerLayout(void);
+    void _clearRulerLayout(void);
 
 private:
     TrendGraphSetWidget();
@@ -77,6 +94,14 @@ private:
 
     QScrollArea *_mScrollArea;
     IWidget *_rulerSetWidget;
+
+    IButton *_allAuto;
+    IDropList *_trendGroupList;
+    IDropList *_timeIntervalList;
+    IDropList *_waveNumberList;
+    TrendGroup _trendGroup;                 // 当前趋势组
+
+    QVBoxLayout *_rulerLayout;
 };
 #define trendGraphSetWidget (TrendGraphSetWidget::construction())
 #define deleteTrendGraphSetWidget() (delete TrendGraphSetWidget::_selfObj)

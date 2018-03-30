@@ -21,6 +21,16 @@ TrendGraphWidget::~TrendGraphWidget()
     delete _waveWidget;
 }
 
+void TrendGraphWidget::waveNumberChange(int num)
+{
+    _waveWidget->setWaveNumber(num);
+}
+
+void TrendGraphWidget::timeIntervalChange(int timeInterval)
+{
+    _waveWidget->setTimeInterval((ResolutionRatio)timeInterval);
+}
+
 void TrendGraphWidget::_leftMoveCoordinate()
 {
 
@@ -83,7 +93,7 @@ TrendGraphWidget::TrendGraphWidget()
 
     _waveWidget = new TrendWaveWidget();
     _waveWidget->setWidgetSize(_maxWidth - 10, _maxHeight - ITEM_HEIGHT * 3);
-    _waveWidget->changeTrendDisplay();
+    _waveWidget-> changeTrendDisplay();
 
     _moveCoordinate = new IMoveButton(trs("MoveCoordinate"));
     _moveCoordinate->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);

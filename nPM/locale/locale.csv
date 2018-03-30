@@ -792,6 +792,12 @@ TrendGroup,趋势组,Trend Group
 MoveCoordinate,移坐标,Move Coordinate
 MoveCursor,移游标,Move Cursor
 MoveEvent,事件移动,Move Event
+AllAuto,全部自动,All Auto
+TimeInterval,时间间隔,Time Interval
+WaveNumber,波形数量,Wave Number
+AutoRuler,自动标尺,Auto Ruler
+DownRuler,下标尺,Down Ruler
+UpRuler,上标尺,Up Ruler
 NewPatientConnected,新病人接入,New Patiend Connected
 TrendDataNotAvailableForPriorPatients,新病人连接上，历史数据不可用,Trend data no avaliable for prior patients - New Patient Connected.
 Column,显示列,Column

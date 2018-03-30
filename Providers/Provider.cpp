@@ -142,11 +142,11 @@ Provider::Provider(const QString &name) : QObject(), ringBuff(ringBuffLen), _nam
     _disconnectThreshold = 5;
     isConnected = false;
     _firstCheck = true;
-#ifdef Q_WS_X11
-    uart = new UartSocket();
-#else
+//#ifdef Q_WS_X11
+//    uart = new UartSocket();
+//#else
   uart = new Uart();
-#endif
+//#endif
     connect(uart, SIGNAL(activated(int)), this, SLOT(dataArrived()));
     uart->setParent(this);
 }

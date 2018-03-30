@@ -40,6 +40,7 @@ struct TrendDataDescription
     char serialNum[MAX_SERIAL_NUM_LEN]; /* machine serial num */
 };
 
+/* 分辨率 */
 enum ResolutionRatio
 {
     RESOLUTION_RATIO_5_SECOND,
@@ -53,4 +54,21 @@ enum ResolutionRatio
     RESOLUTION_RATIO_2_HOUR,
     RESOLUTION_RATIO_3_HOUR,
     RESOLUTION_RATIO_NR
+};
+
+/* 趋势组 */
+enum TrendGroup
+{
+    TREND_GROUP_RESP,
+    TREND_GROUP_IBP,
+    TREND_GROUP_AG
+};
+
+/* 趋势图类型 */
+enum TrendGraphType
+{
+    TREND_GRAPH_TYPE_NORMAL,
+    TREND_GRAPH_TYPE_NIBP,
+    TREND_GRAPH_TYPE_ART_IBP,           // IBP动脉类型
+    TREND_GRAPH_TYPE_AG_TEMP,
 };

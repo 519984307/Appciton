@@ -22,6 +22,10 @@ public:
     void pageUpParam();
     void pageDownParam();
 
+    void setTrendGroup();
+    void setTimeInterval(ResolutionRatio timeInterval);
+    void setWaveNumber(int num);
+
 protected:
     void paintEvent(QPaintEvent *event);
 

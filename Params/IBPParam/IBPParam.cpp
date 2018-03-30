@@ -824,6 +824,7 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
     {
         return;
     }
+    ibpMenu.displayZeroRev(info);
     _infoBarWidget->display(info);
 }
 

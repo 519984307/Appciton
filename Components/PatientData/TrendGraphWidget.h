@@ -22,6 +22,10 @@ public:
     static TrendGraphWidget *_selfObj;
     ~TrendGraphWidget();
 
+public:
+    void waveNumberChange(int num);
+    void timeIntervalChange(int timeInterval);
+
 private slots:
     void _leftMoveCoordinate();
     void _rightMoveCoordinate();

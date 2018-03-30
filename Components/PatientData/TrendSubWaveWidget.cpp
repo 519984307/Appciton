@@ -8,12 +8,12 @@
 /***************************************************************************************************
  * 构造
  **************************************************************************************************/
-TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, int xHead, int xTail,
+TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type, int xHead, int xTail,
                                        int yTop, int yBottom, int downRuler, int upRuler) :
     _yTop(yTop), _yBottom(yBottom), _xHead(xHead), _xTail(xTail), _xSize(xHead - xTail),
     _ySize(yBottom - yTop), _trendDataHead(xHead + xTail), _size(600),
-    _color(Qt::green), _upRulerValue(upRuler), _downRulerValue(downRuler),
-    _rulerSize(upRuler - downRuler), _cursorPosition(600)
+    _color(Qt::red), _upRulerValue(upRuler), _downRulerValue(downRuler),
+    _rulerSize(upRuler - downRuler), _cursorPosition(600), _type(type)
 {
     _paramName = paramInfo.getSubParamName(id);
     _paramUnit = Unit::getSymbol(paramInfo.getUnitOfSubParam(id));
@@ -90,7 +90,10 @@ void TrendSubWaveWidget::beginTrendData(int xHead, int xTail, int trendHead)
  **************************************************************************************************/
 void TrendSubWaveWidget::setThemeColor(QColor color)
 {
-    _color = color;
+    if (color != QColor(0, 0, 0))
+    {
+        _color = color;
+    }
 }
 
 /***************************************************************************************************
@@ -155,7 +158,6 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
 
     QFont font;
     font.setPixelSize(15);
-
     barPainter.setFont(font);
     // 趋势参数名称
     QRect nameRect(_trendDataHead + 5, 5, width() - _trendDataHead -10, 30);
@@ -164,10 +166,34 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     // 趋势参数单位
     QRect unitRect(_trendDataHead + 5, 5, width() - _trendDataHead - 10, 30);
     barPainter.drawText(unitRect, Qt::AlignRight | Qt::AlignTop, _paramUnit);
-
     font.setPixelSize(60);
-
     barPainter.setFont(font);
-    barPainter.drawText(_trendDataHead + 60, height()/2, QString::number(_dataBuf[(600 - _cursorPosition)]));
 
+    if (_type == TREND_GRAPH_TYPE_NORMAL)
+    {
+        barPainter.drawText(_trendDataHead + 60, height()/3*2, QString::number(_dataBuf[(600 - _cursorPosition)]));
+    }
+    else if (_type == TREND_GRAPH_TYPE_NIBP)
+    {
+        font.setPixelSize(30);
+        barPainter.setFont(font);
+        QString trendStr = QString::number(_dataBuf[(600 - _cursorPosition)]) + "/" + "78";
+        barPainter.drawText(_trendDataHead + 60, height()/2, trendStr);
+        barPainter.drawText(_trendDataHead + 70, height()/3*2, "(80)");
+    }
+    else if (_type == TREND_GRAPH_TYPE_ART_IBP)
+    {
+        font.setPixelSize(30);
+        barPainter.setFont(font);
+        QString trendStr = QString::number(_dataBuf[(600 - _cursorPosition)]) + "/" + "78";
+        barPainter.drawText(_trendDataHead + 60, height()/2, trendStr);
+        barPainter.drawText(_trendDataHead + 70, height()/3*2, "(80)");
+    }
+    else if (_type == TREND_GRAPH_TYPE_AG_TEMP)
+    {
+        font.setPixelSize(30);
+        barPainter.setFont(font);
+        QString trendStr = QString::number(_dataBuf[(600 - _cursorPosition)]) + "/" + "78";
+        barPainter.drawText(_trendDataHead + 60, height()/3*2, trendStr);
+    }
 }
