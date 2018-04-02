@@ -31,6 +31,16 @@ void TrendGraphWidget::timeIntervalChange(int timeInterval)
     _waveWidget->setTimeInterval((ResolutionRatio)timeInterval);
 }
 
+void TrendGraphWidget::upDateTrendGraph()
+{
+    _waveWidget->changeTrendDisplay();
+}
+
+void TrendGraphWidget::setSubWidgetRulerLimit(SubParamID id, int down, int up)
+{
+    _waveWidget->setRulerLimit(id, down, up);
+}
+
 void TrendGraphWidget::_leftMoveCoordinate()
 {
 

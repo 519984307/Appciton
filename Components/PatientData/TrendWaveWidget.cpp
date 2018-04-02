@@ -4,6 +4,7 @@
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "TrendGraphSetWidget.h"
+#include "IBPParam.h"
 #include <QPainter>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -188,6 +189,24 @@ void TrendWaveWidget::setWaveNumber(int num)
 }
 
 /**************************************************************************************************
+ * 设置标尺限
+ *************************************************************************************************/
+void TrendWaveWidget::setRulerLimit(SubParamID id, int down, int up)
+{
+    int count = _hLayoutTrend->count();
+    for (int i = 0; i < count; i ++)
+    {
+        QLayoutItem *item = _hLayoutTrend->itemAt(i);
+        TrendSubWaveWidget *widget = dynamic_cast<TrendSubWaveWidget *>(item->widget());
+        if (widget->getSubParamID() == id)
+        {
+            widget->setRulerRange(down, up);
+            return;
+        }
+    }
+}
+
+/**************************************************************************************************
  * 主窗口绘图事件
  *************************************************************************************************/
 void TrendWaveWidget::paintEvent(QPaintEvent *event)
@@ -304,10 +323,27 @@ void TrendWaveWidget::_trendLayout()
         }
         else if(trendGraphSetWidget.getTrendGroup() == TREND_GROUP_IBP)
         {
+            SubParamID ibp1;
+            SubParamID ibp2;
+            ibpParam.getSubParamID(ibp1, ibp2);
+            if (i != ibp1 && i != ibp2 &&
+                    i != SUB_PARAM_HR_PR && i != SUB_PARAM_SPO2 &&
+                    i != SUB_PARAM_NIBP_SYS && i != SUB_PARAM_T1)
+            {
+                continue;
+            }
             switch (i)
             {
             case SUB_PARAM_HR_PR:
             case SUB_PARAM_SPO2:
+            case SUB_PARAM_CVP_MEAN:
+            case SUB_PARAM_LAP_MEAN:
+            case SUB_PARAM_RAP_MEAN:
+            case SUB_PARAM_ICP_MEAN:
+                subWidget = new TrendSubWaveWidget((SubParamID)i, TREND_GRAPH_TYPE_NORMAL,
+                                                   (_waveRegionWidth -GRAPH_POINT_NUMBER)/2, (_waveRegionWidth + GRAPH_POINT_NUMBER)/2,
+                                                                       subWidgetHeight/5, subWidgetHeight/5*4);
+                break;
             case SUB_PARAM_NIBP_SYS:
                 subWidget = new TrendSubWaveWidget((SubParamID)i, TREND_GRAPH_TYPE_NIBP,
                                                    (_waveRegionWidth -GRAPH_POINT_NUMBER)/2, (_waveRegionWidth + GRAPH_POINT_NUMBER)/2,
@@ -315,6 +351,14 @@ void TrendWaveWidget::_trendLayout()
                 break;
             case SUB_PARAM_T1:
                 subWidget = new TrendSubWaveWidget((SubParamID)i, TREND_GRAPH_TYPE_AG_TEMP,
+                                                   (_waveRegionWidth -GRAPH_POINT_NUMBER)/2, (_waveRegionWidth + GRAPH_POINT_NUMBER)/2,
+                                                                       subWidgetHeight/5, subWidgetHeight/5*4);
+                break;
+            case SUB_PARAM_ART_MEAN:
+            case SUB_PARAM_PA_MEAN:
+            case SUB_PARAM_AUXP1_MEAN:
+            case SUB_PARAM_AUXP2_MEAN:
+                subWidget = new TrendSubWaveWidget((SubParamID)i, TREND_GRAPH_TYPE_ART_IBP,
                                                    (_waveRegionWidth -GRAPH_POINT_NUMBER)/2, (_waveRegionWidth + GRAPH_POINT_NUMBER)/2,
                                                                        subWidgetHeight/5, subWidgetHeight/5*4);
                 break;
@@ -328,6 +372,10 @@ void TrendWaveWidget::_trendLayout()
             {
             case SUB_PARAM_HR_PR:
             case SUB_PARAM_SPO2:
+                subWidget = new TrendSubWaveWidget((SubParamID)i, TREND_GRAPH_TYPE_NORMAL,
+                                                   (_waveRegionWidth -GRAPH_POINT_NUMBER)/2, (_waveRegionWidth + GRAPH_POINT_NUMBER)/2,
+                                                                       subWidgetHeight/5, subWidgetHeight/5*4);
+                break;
             case SUB_PARAM_NIBP_SYS:
                 subWidget = new TrendSubWaveWidget((SubParamID)i, TREND_GRAPH_TYPE_NIBP,
                                                    (_waveRegionWidth -GRAPH_POINT_NUMBER)/2, (_waveRegionWidth + GRAPH_POINT_NUMBER)/2,

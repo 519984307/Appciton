@@ -83,6 +83,9 @@ public:
     void setParamData(IBPSignalInput IBP, unsigned short sys, unsigned short dia,
                       unsigned short mean, unsigned short pr);
 
+    // 获取ibp两通道标名对应的参数ID
+    void getSubParamID(SubParamID &ibp1, SubParamID &ibp2);
+
 public:
 
 
@@ -90,6 +93,8 @@ private:
     IBPParam();
     static IBPParam *_selfObj;
     void _setWaveformSpeed(IBPSweepSpeed speed);
+
+    QMap<IBPPressureName, SubParamID> _ibpSubParamMap;      // 找到压力标名对应的字参数ID
 
     IBPProviderIFace *_provider;
 

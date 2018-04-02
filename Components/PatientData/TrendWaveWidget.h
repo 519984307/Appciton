@@ -25,6 +25,7 @@ public:
     void setTrendGroup();
     void setTimeInterval(ResolutionRatio timeInterval);
     void setWaveNumber(int num);
+    void setRulerLimit(SubParamID, int down, int up);
 
 protected:
     void paintEvent(QPaintEvent *event);

@@ -24,6 +24,8 @@ public:
 
     void loadParamData();
 
+    SubParamID getSubParamID();
+
 protected:
     void paintEvent(QPaintEvent *e);
 

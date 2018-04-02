@@ -6,6 +6,8 @@
 #include "TimeDate.h"
 #include "AlarmLimitMenu.h"
 #include "TrendDataWidget.h"
+#include "TrendGraphWidget.h"
+#include "TrendGraphSetWidget.h"
 
 IBPParam *IBPParam::_selfObj = NULL;
 
@@ -21,6 +23,16 @@ IBPParam::IBPParam() : Param(PARAM_IBP), _staIBP1(true), _staIBP2(true)
 
     _trendWidgetIBP1 = NULL;
     _trendWidgetIBP2 = NULL;
+
+    _ibpSubParamMap.clear();
+    _ibpSubParamMap.insert(IBP_PRESSURE_ART, SUB_PARAM_ART_MEAN);
+    _ibpSubParamMap.insert(IBP_PRESSURE_PA, SUB_PARAM_PA_MEAN);
+    _ibpSubParamMap.insert(IBP_PRESSURE_CVP, SUB_PARAM_CVP_MEAN);
+    _ibpSubParamMap.insert(IBP_PRESSURE_LAP, SUB_PARAM_LAP_MEAN);
+    _ibpSubParamMap.insert(IBP_PRESSURE_RAP, SUB_PARAM_RAP_MEAN);
+    _ibpSubParamMap.insert(IBP_PRESSURE_ICP, SUB_PARAM_ICP_MEAN);
+    _ibpSubParamMap.insert(IBP_PRESSURE_AUXP1, SUB_PARAM_AUXP1_MEAN);
+    _ibpSubParamMap.insert(IBP_PRESSURE_AUXP2, SUB_PARAM_AUXP2_MEAN);
 
 }
 
@@ -895,6 +907,8 @@ void IBPParam::setEntitle(IBPPressureName entitle, IBPSignalInput IBP)
     alarmLimitMenu.setIBPAlarmItem(_ibp1.pressureName, _ibp2.pressureName);
     trendDataWidget.isIBPSubParamVisible(_ibp1.pressureName, true);
     trendDataWidget.isIBPSubParamVisible(_ibp2.pressureName, true);
+    trendGraphSetWidget.upDateTrendGroup();
+    trendGraphWidget.upDateTrendGraph();
 
     if (((_ibp1.pressureName >= IBP_PRESSURE_CVP) && (_ibp1.pressureName <= IBP_PRESSURE_ICP))
             && ((_ibp2.pressureName >= IBP_PRESSURE_CVP) && (_ibp2.pressureName <= IBP_PRESSURE_ICP)))
@@ -970,4 +984,13 @@ void IBPParam::setParamData(IBPSignalInput IBP, unsigned short sys, unsigned sho
         _ibp2.mean = mean;
         _ibp2.pr = pr;
     }
+}
+
+/**************************************************************************************************
+ * 获取ibp两通道标名对应的参数ID。
+ *************************************************************************************************/
+void IBPParam::getSubParamID(SubParamID &ibp1, SubParamID &ibp2)
+{
+    ibp1 = _ibpSubParamMap.find(_ibp1.pressureName).value();
+    ibp2 = _ibpSubParamMap.find(_ibp2.pressureName).value();
 }

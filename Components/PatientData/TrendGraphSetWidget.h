@@ -10,10 +10,10 @@
 #include <QHBoxLayout>
 #include <QScrollArea>
 
-class SetItem : public QWidget
+class SetRulerItem : public QWidget
 {
 public:
-    SetItem(ParamID ppid, SubParamID ssid) : QWidget()
+    SetRulerItem(ParamID ppid, SubParamID ssid) : QWidget()
     {
         pid = ppid;
         sid = ssid;
@@ -38,7 +38,7 @@ public:
         setFocusPolicy(Qt::StrongFocus);
         setFocusProxy(combo);
     }
-    ~SetItem()
+    ~SetRulerItem()
     {
 
     }
@@ -73,24 +73,30 @@ public:
     void setTrendGroup(TrendGroup g);
 
     void layoutExec(void);
+    void upDateTrendGroup(void);
 
 protected:
     void paintEvent(QPaintEvent *event);
     void showEvent(QShowEvent *e);
 
 private slots:
+    void _allAutoReleased();
     void _trendGroupReleased(int);
     void _timeIntervalReleased(int);
     void _waveNumberReleased(int);
+    void _comboListIndexChanged(int id, int index);
+    void _upDownRulerChange(QString, int);
 
 private:
     void _trendRulerLayout(void);
     void _clearRulerLayout(void);
+    // 载入可选项的值。
+    void _loadOptions(void);
 
 private:
     TrendGraphSetWidget();
 
-    QList<SetItem *> _itemList;
+    QList<SetRulerItem *> _itemList;
 
     QScrollArea *_mScrollArea;
     IWidget *_rulerSetWidget;

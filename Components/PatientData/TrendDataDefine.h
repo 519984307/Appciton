@@ -59,7 +59,7 @@ enum ResolutionRatio
 /* 趋势组 */
 enum TrendGroup
 {
-    TREND_GROUP_RESP,
+    TREND_GROUP_RESP = 0,
     TREND_GROUP_IBP,
     TREND_GROUP_AG
 };

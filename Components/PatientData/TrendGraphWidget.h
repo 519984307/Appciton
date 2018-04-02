@@ -1,6 +1,7 @@
 #pragma once
 #include "PopupWidget.h"
 #include "IMoveButton.h"
+#include "ParamDefine.h"
 
 class TrendWaveWidget;
 class IButton;
@@ -25,6 +26,8 @@ public:
 public:
     void waveNumberChange(int num);
     void timeIntervalChange(int timeInterval);
+    void upDateTrendGraph();
+    void setSubWidgetRulerLimit(SubParamID, int, int);
 
 private slots:
     void _leftMoveCoordinate();

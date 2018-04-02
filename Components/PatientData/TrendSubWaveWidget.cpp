@@ -13,7 +13,7 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type, int x
     _yTop(yTop), _yBottom(yBottom), _xHead(xHead), _xTail(xTail), _xSize(xHead - xTail),
     _ySize(yBottom - yTop), _trendDataHead(xHead + xTail), _size(600),
     _color(Qt::red), _upRulerValue(upRuler), _downRulerValue(downRuler),
-    _rulerSize(upRuler - downRuler), _cursorPosition(600), _type(type)
+    _rulerSize(upRuler - downRuler),_paramID(id), _cursorPosition(600), _type(type)
 {
     _paramName = paramInfo.getSubParamName(id);
     _paramUnit = Unit::getSymbol(paramInfo.getUnitOfSubParam(id));
@@ -46,7 +46,7 @@ void TrendSubWaveWidget:: demoData()
  **************************************************************************************************/
 int TrendSubWaveWidget::yToValue(int y)
 {
-    return ((_yBottom - y) * _rulerSize / _ySize);
+    return ((_yBottom - y) * _rulerSize / _ySize) + _downRulerValue;
 }
 
 /***************************************************************************************************
@@ -54,7 +54,7 @@ int TrendSubWaveWidget::yToValue(int y)
  **************************************************************************************************/
 int TrendSubWaveWidget::valueToY(int value)
 {
-    return (_yBottom - value * _ySize / _rulerSize);
+    return (_yBottom - (value - _downRulerValue) * _ySize / _rulerSize);
 }
 
 /***************************************************************************************************
@@ -104,6 +104,8 @@ void TrendSubWaveWidget::setRulerRange(int down, int up)
     _upRulerValue = up;
     _downRulerValue = down;
     _rulerSize = up - down;
+    loadParamData();
+    update();
 }
 
 /***************************************************************************************************
@@ -127,6 +129,14 @@ void TrendSubWaveWidget::loadParamData()
         _trendWaveBuf[i].setX(indexToX(i));
         _trendWaveBuf[i].setY(valueToY(_dataBuf[i]));
     }
+}
+
+/***************************************************************************************************
+ * 获取param id
+ **************************************************************************************************/
+SubParamID TrendSubWaveWidget::getSubParamID()
+{
+    return _paramID;
 }
 
 /***************************************************************************************************
@@ -169,6 +179,7 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     font.setPixelSize(60);
     barPainter.setFont(font);
 
+    // 趋势参数数据
     if (_type == TREND_GRAPH_TYPE_NORMAL)
     {
         barPainter.drawText(_trendDataHead + 60, height()/3*2, QString::number(_dataBuf[(600 - _cursorPosition)]));
