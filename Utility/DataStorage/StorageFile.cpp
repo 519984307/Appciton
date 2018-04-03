@@ -1,4 +1,4 @@
-#include "StorageFile.h"
+ #include "StorageFile.h"
 #include "Debug.h"
 #include <QVector>
 #include <QFile>

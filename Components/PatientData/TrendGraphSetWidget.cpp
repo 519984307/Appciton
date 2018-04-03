@@ -295,14 +295,16 @@ void TrendGraphSetWidget::_comboListIndexChanged(int id, int index)
         {
             item->downRuler->setValue(config.lowLimit);
             item->upRuler->setValue(config.highLimit);
+            trendGraphWidget.setSubWidgetRulerLimit(subID, item->downRuler->getText().toInt(),
+                                                    item->upRuler->getText().toInt());
         }
         else
         {
             item->downRuler->setValue((double)config.lowLimit / config.scale);
             item->upRuler->setValue((double)config.highLimit / config.scale);
+            trendGraphWidget.setSubWidgetRulerLimit(subID, (int)item->downRuler->getText().toDouble(),
+                                                    (int)item->upRuler->getText().toDouble());
         }
-        trendGraphWidget.setSubWidgetRulerLimit(subID, item->downRuler->getText().toInt(),
-                                                item->upRuler->getText().toInt());
     }
 }
 

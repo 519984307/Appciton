@@ -9,11 +9,12 @@ struct TrendDataPackage
     {
         for (int i = 0; i < SUB_PARAM_NR; i ++)
         {
-            paramData.insert(static_cast<SubParamID>(i), 90);
+            paramData.insert(static_cast<SubParamID>(i), InvData());
         }
     }
-    QString time;
+    unsigned time;
     QMap<SubParamID, short> paramData;
+    unsigned char alarmFlag;
 };
 
 class ITableWidget;
@@ -45,6 +46,10 @@ public:
     void isIBPSubParamVisible(IBPPressureName, bool);
 
     void loadDemoData(void);
+    void loadTrendData(void);
+
+protected:
+    void showEvent(QShowEvent *event);
 
 private slots:
     void _trendDataSetReleased();
@@ -83,6 +88,8 @@ private:
     typedef QList<SubParamID> TrendParamList;
     QList<SubParamID> _curList;              // 当前列表
     QList<SubParamID> _displayList;             // 显示列表
+
+    QList<TrendDataPackage *> _trendDataPack;
 
     QString _curDate;
     int _curDisplayParamRow;

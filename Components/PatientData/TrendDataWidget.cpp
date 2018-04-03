@@ -9,6 +9,7 @@
 #include "TimeDate.h"
 #include "TrendDataSetWidget.h"
 #include "TimeManager.h"
+#include "TrendDataStorageManager.h"
 #include <QHeaderView>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -40,7 +41,6 @@ TrendDataWidget::~TrendDataWidget()
 void TrendDataWidget::isIBPSubParamVisible(IBPPressureName name, bool flag)
 {
     _ibpNameMap.find(name).value() = flag;
-    _loadTableTitle();
 }
 
 /**********************************************************************************************************************
@@ -83,6 +83,74 @@ void TrendDataWidget::loadDemoData()
         }
     }
 
+}
+
+/**********************************************************************************************************************
+ * 加载趋势数据
+ **********************************************************************************************************************/
+void TrendDataWidget::loadTrendData()
+{
+    IStorageBackend *backend;
+    backend = trendDataStorageManager.backend();
+    int blockNum = backend->getBlockNR();
+    QByteArray data;
+    TrendDataSegment *dataSeg;
+    QString time;
+    QStringList timeTitle;
+//    QBrush *middleAlarmColor = new QBrush(Qt::yellow);
+//    QBrush *highAlarmColor = new QBrush(Qt::red);
+    QTableWidgetItem *item;
+    TrendDataPackage *pack;
+    _trendDataPack.clear();
+    for (int i = 0; i < blockNum; i ++)
+    {
+        pack = new TrendDataPackage;
+        data = backend->getBlockData((quint32)i);
+        dataSeg = (TrendDataSegment*)data.data();
+        pack->time = dataSeg->timestamp;
+        unsigned t= dataSeg->timestamp;
+        for (int j = 0; j < dataSeg->trendValueNum; j ++)
+        {
+            pack->paramData.find((SubParamID)dataSeg->values[j].subParamId).value() =
+                    dataSeg->values[j].value;
+            if (!pack->alarmFlag && dataSeg->values[j].alarmFlag)
+            {
+                pack->alarmFlag = dataSeg->values[j].alarmFlag;
+            }
+        }
+        _trendDataPack.append(pack);
+    }
+
+    for (int i = _trendDataPack.length() - 1; i >= 0; i --)
+    {
+        timeDate.getTime(_trendDataPack.at(i)->time, time, true);
+        timeTitle << time;
+        for (int j = 0; j < _curDisplayParamRow; j ++)
+        {
+            item = new QTableWidgetItem();
+            item->setTextAlignment(Qt::AlignCenter);
+            if (_displayList.at(j) == SUB_PARAM_NIBP_SYS || _displayList.at(j) == SUB_PARAM_ART_MEAN ||
+                    _displayList.at(j) == SUB_PARAM_PA_MEAN ||
+                    _displayList.at(j) == SUB_PARAM_AUXP1_MEAN || _displayList.at(j) == SUB_PARAM_AUXP2_MEAN)
+            {
+                item->setText("120/80/90");
+            }
+            else
+            {
+                short data = _trendDataPack.at(i)->paramData.find(_displayList.at(j)).value();
+                item->setText(QString::number(data));
+            }
+            table->setItem(j, i, item);
+        }
+
+    }
+    table->setHorizontalHeaderLabels(timeTitle);
+}
+
+void TrendDataWidget::showEvent(QShowEvent *event)
+{
+    PopupWidget::showEvent(event);
+    _loadTableTitle();
 }
 
 /**********************************************************************************************************************
@@ -239,7 +307,7 @@ TrendDataWidget::TrendDataWidget()
     _curDate.clear();
     _loadCurParam(0);
     _updateHeaderDate();
-    _loadTableTitle();
+//    _loadTableTitle();
 
 }
 
@@ -303,7 +371,8 @@ void TrendDataWidget::_loadTableTitle()
     table->setVerticalHeaderLabels(hheader);
 
     // 加载demo数据
-    loadDemoData();
+//    loadDemoData();
+    loadTrendData();
 }
 
 /**************************************************************************************************

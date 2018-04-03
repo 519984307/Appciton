@@ -4,6 +4,8 @@
 #include <QLabel>
 #include "TimeDate.h"
 #include "ParamInfo.h"
+#include "ParamManager.h"
+#include "AlarmConfig.h"
 
 /***************************************************************************************************
  * 构造
@@ -15,6 +17,23 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type, int x
     _color(Qt::red), _upRulerValue(upRuler), _downRulerValue(downRuler),
     _rulerSize(upRuler - downRuler),_paramID(id), _cursorPosition(600), _type(type)
 {
+    SubParamID subID = _paramID;
+    ParamID paramId = paramInfo.getParamID(subID);
+    UnitType unitType = paramManager.getSubParamUnit(paramId, subID);
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subID, unitType);
+    if (config.scale == 1)
+    {
+        _downRulerValue = config.lowLimit;
+        _upRulerValue = config.highLimit;
+    }
+    else
+    {
+        _downRulerValue = (double)config.lowLimit / config.scale;
+        _upRulerValue = (double)config.highLimit / config.scale;
+    }
+
+    _rulerSize = _upRulerValue - _downRulerValue;
+
     _paramName = paramInfo.getSubParamName(id);
     _paramUnit = Unit::getSymbol(paramInfo.getUnitOfSubParam(id));
 
@@ -123,11 +142,19 @@ void TrendSubWaveWidget::cursorMove(int position)
 void TrendSubWaveWidget::loadParamData()
 {
     demoData();
-
+    int yValue;
     for (int i =  0; i < _size; i ++)
     {
+        yValue = valueToY(_dataBuf[i]);
+        if (yValue < _yTop || yValue > _yBottom)
+        {
+            continue;
+        }
+        else
+        {
+            _trendWaveBuf[i].setY(yValue);
+        }
         _trendWaveBuf[i].setX(indexToX(i));
-        _trendWaveBuf[i].setY(valueToY(_dataBuf[i]));
     }
 }
 
