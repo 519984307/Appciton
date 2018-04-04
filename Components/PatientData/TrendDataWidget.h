@@ -2,6 +2,8 @@
 #include "PopupWidget.h"
 #include "ParamInfo.h"
 #include "IBPDefine.h"
+#include "TrendDataSymbol.h"
+#include "TrendDataDefine.h"
 
 struct TrendDataPackage
 {
@@ -48,6 +50,10 @@ public:
     void loadDemoData(void);
     void loadTrendData(void);
 
+    void loadCurParam(int index = 0);
+
+    void setTimeInterval(ResolutionRatio);
+
 protected:
     void showEvent(QShowEvent *event);
 
@@ -61,9 +67,9 @@ private slots:
 private:
     TrendDataWidget();
     void _loadTableTitle(void);
-    void _loadCurParam(int index);
     void _trendParamInit();
     void _updateHeaderDate(unsigned t = 0);
+    void _getTrendData();
 
 private:
     int _curVScroller;
@@ -96,6 +102,10 @@ private:
 
     int _maxWidth;
     int _maxHeight;
+
+    ResolutionRatio _timeInterval;          // 时间间隔
+    int _currentMoveCount;                  // 当前数据移动数目；
+    int _hideColumn;
 };
 #define trendDataWidget (TrendDataWidget::construction())
 #define deleteTrendDataWidget() (delete TrendDataWidget::_selfObj)

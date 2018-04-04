@@ -1,5 +1,6 @@
 #pragma once
 #include "PopupWidget.h"
+#include "TrendDataDefine.h"
 
 class IComboList;
 class IButton;
@@ -25,13 +26,16 @@ protected:
     void showEvent(QShowEvent *e);
 
 private slots:
+    void _yesReleased(void);
     void _cancelReleased(void);
+    void _timeIntervalReleased(int);
+    void _trendGroupReleased(int);
 
 private:
     TrendDataSetWidget();
 
     IComboList *_resolutionRatio;
-    IComboList *_trendGroup;
+    IComboList *_trendGroupList;
     IButton *_yes;
     IButton *_cancel;
 };

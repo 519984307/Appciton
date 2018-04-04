@@ -13,4 +13,13 @@ public:
         };
         return symbol[index];
     }
+
+    static const int &covertValue(ResolutionRatio index)
+    {
+        static const int symbol[RESOLUTION_RATIO_NR] =
+        {
+            5, 30, 60, 300, 600, 900, 1800, 3600, 7200, 10800
+        };
+        return symbol[index];
+    }
 };

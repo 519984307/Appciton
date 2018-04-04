@@ -20,10 +20,10 @@
 
 #define ITEM_HEIGHT             30
 #define ITEM_WIDTH              100
-#define TABLE_ROW_NR            7
+#define TABLE_ROW_NR            6
 #define TABLE_COL_NR            7
 #define TABLE_ITEM_WIDTH        65
-#define TABLE_ITEM_HEIGHT       31
+#define TABLE_ITEM_HEIGHT       35
 
 TrendDataWidget *TrendDataWidget::_selfObj = NULL;
 
@@ -90,38 +90,14 @@ void TrendDataWidget::loadDemoData()
  **********************************************************************************************************************/
 void TrendDataWidget::loadTrendData()
 {
-    IStorageBackend *backend;
-    backend = trendDataStorageManager.backend();
-    int blockNum = backend->getBlockNR();
-    QByteArray data;
-    TrendDataSegment *dataSeg;
     QString time;
     QStringList timeTitle;
 //    QBrush *middleAlarmColor = new QBrush(Qt::yellow);
 //    QBrush *highAlarmColor = new QBrush(Qt::red);
     QTableWidgetItem *item;
-    TrendDataPackage *pack;
-    _trendDataPack.clear();
-    for (int i = 0; i < blockNum; i ++)
-    {
-        pack = new TrendDataPackage;
-        data = backend->getBlockData((quint32)i);
-        dataSeg = (TrendDataSegment*)data.data();
-        pack->time = dataSeg->timestamp;
-        unsigned t= dataSeg->timestamp;
-        for (int j = 0; j < dataSeg->trendValueNum; j ++)
-        {
-            pack->paramData.find((SubParamID)dataSeg->values[j].subParamId).value() =
-                    dataSeg->values[j].value;
-            if (!pack->alarmFlag && dataSeg->values[j].alarmFlag)
-            {
-                pack->alarmFlag = dataSeg->values[j].alarmFlag;
-            }
-        }
-        _trendDataPack.append(pack);
-    }
-
-    for (int i = _trendDataPack.length() - 1; i >= 0; i --)
+    int intervalNum = TrendDataSymbol::covertValue(_timeInterval)/TrendDataSymbol::covertValue(RESOLUTION_RATIO_5_SECOND);
+    for (int i = _trendDataPack.length() - 1 - intervalNum * _currentMoveCount; i >= 0;
+         i = i - intervalNum)
     {
         timeDate.getTime(_trendDataPack.at(i)->time, time, true);
         timeTitle << time;
@@ -129,20 +105,65 @@ void TrendDataWidget::loadTrendData()
         {
             item = new QTableWidgetItem();
             item->setTextAlignment(Qt::AlignCenter);
-            if (_displayList.at(j) == SUB_PARAM_NIBP_SYS || _displayList.at(j) == SUB_PARAM_ART_MEAN ||
-                    _displayList.at(j) == SUB_PARAM_PA_MEAN ||
-                    _displayList.at(j) == SUB_PARAM_AUXP1_MEAN || _displayList.at(j) == SUB_PARAM_AUXP2_MEAN)
+            if (_displayList.at(j) == SUB_PARAM_NIBP_SYS)
             {
-                item->setText("120/80/90");
+                short nibpSys = _trendDataPack.at(i)->paramData.find(_displayList.at(j)).value();
+                short nibpDia = _trendDataPack.at(i)->paramData.find((SubParamID)(_displayList.at(j) + 1)).value();
+                short nibpMap = _trendDataPack.at(i)->paramData.find((SubParamID)(_displayList.at(j) + 2)).value();
+                QString sysStr = nibpSys == InvData() ?"---":QString::number(nibpSys);
+                QString diaStr = nibpDia == InvData() ?"---":QString::number(nibpDia);
+                QString mapStr = nibpMap == InvData() ?"---":QString::number(nibpMap);
+                QString nibpStr = sysStr + "/" + diaStr + "(" + mapStr + ")";
+                item->setText(nibpStr);
+            }
+            else if (_displayList.at(j) == SUB_PARAM_ART_MEAN || _displayList.at(j) == SUB_PARAM_PA_MEAN ||
+                     _displayList.at(j) == SUB_PARAM_AUXP1_MEAN || _displayList.at(j) == SUB_PARAM_AUXP2_MEAN)
+            {
+                short ibpSys = _trendDataPack.at(i)->paramData.find((SubParamID)(_displayList.at(j) - 2)).value();
+                short ibpDia = _trendDataPack.at(i)->paramData.find((SubParamID)(_displayList.at(j) - 1)).value();
+                short ibpMap = _trendDataPack.at(i)->paramData.find(_displayList.at(j)).value();
+                QString sysStr = ibpSys == InvData() ?"---":QString::number(ibpSys);
+                QString diaStr = ibpDia == InvData() ?"---":QString::number(ibpDia);
+                QString mapStr = ibpMap == InvData() ?"---":QString::number(ibpMap);
+                QString ibpStr = sysStr + "/" + diaStr + "(" + mapStr + ")";
+                item->setText(ibpStr);
+            }
+            else if (_displayList.at(j) == SUB_PARAM_ETCO2 || _displayList.at(j) == SUB_PARAM_ETN2O ||
+                     _displayList.at(j) == SUB_PARAM_ETAA1 || _displayList.at(j) == SUB_PARAM_ETAA2 ||
+                     _displayList.at(j) == SUB_PARAM_ETO2 || _displayList.at(j) == SUB_PARAM_T1)
+            {
+                short data1 = _trendDataPack.at(i)->paramData.find(_displayList.at(j)).value();
+                short data2 = _trendDataPack.at(i)->paramData.find((SubParamID)(_displayList.at(j) + 1)).value();
+                QString dataStr1 = data1 == InvData() ?"---":QString::number(data1);
+                QString dataStr2 = data2 == InvData() ?"---":QString::number(data2);
+                QString dataStr = dataStr1 + "/" + dataStr2;
+                item->setText(dataStr);
             }
             else
             {
                 short data = _trendDataPack.at(i)->paramData.find(_displayList.at(j)).value();
-                item->setText(QString::number(data));
+                QString dataStr = data == InvData() ?"---":QString::number(data);
+                item->setText(dataStr);
             }
-            table->setItem(j, i, item);
+            table->setItem(j, i/intervalNum, item);
         }
 
+    }
+
+    if (timeTitle.length() < TABLE_COL_NR)
+    {
+        for (timeTitle.length(); timeTitle.length() < TABLE_COL_NR;)
+        {
+            timeTitle << "";
+        }
+    }
+    if ((_trendDataPack.length() - TABLE_COL_NR) < 0)
+    {
+        _hideColumn = 0;
+    }
+    else
+    {
+        _hideColumn = _trendDataPack.length() - TABLE_COL_NR;
     }
     table->setHorizontalHeaderLabels(timeTitle);
 }
@@ -159,6 +180,7 @@ void TrendDataWidget::showEvent(QShowEvent *event)
 void TrendDataWidget::_trendDataSetReleased()
 {
     trendDataSetWidget.autoShow();
+    hide();
 }
 
 /**********************************************************************************************************************
@@ -194,7 +216,11 @@ void TrendDataWidget::_downReleased()
  **********************************************************************************************************************/
 void TrendDataWidget::_leftReleased()
 {
-
+    if (_currentMoveCount > 0)
+    {
+        _currentMoveCount --;
+    }
+    loadTrendData();
 }
 
 /**********************************************************************************************************************
@@ -202,13 +228,17 @@ void TrendDataWidget::_leftReleased()
  **********************************************************************************************************************/
 void TrendDataWidget::_rightReleased()
 {
-
+    if (_currentMoveCount < _hideColumn)
+    {
+        _currentMoveCount ++;
+    }
+    loadTrendData();
 }
 
 /**********************************************************************************************************************
  * 构造。
  **********************************************************************************************************************/
-TrendDataWidget::TrendDataWidget()
+TrendDataWidget::TrendDataWidget() : _timeInterval(RESOLUTION_RATIO_5_SECOND), _currentMoveCount(0), _hideColumn(0)
 {
     _trendParamInit();
 
@@ -231,10 +261,12 @@ TrendDataWidget::TrendDataWidget()
     table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     table->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     table->setSelectionBehavior(QAbstractItemView::SelectColumns);
+    table->setSelectionMode(QAbstractItemView::NoSelection);
     table->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 
     // 左上角的按钮（表头交叉处）
     label = new QLabel(table);
+    label->setFixedWidth(ITEM_WIDTH);
 
     _up = new IButton();
     _up->setFixedSize(ITEM_HEIGHT, ITEM_HEIGHT);
@@ -305,7 +337,7 @@ TrendDataWidget::TrendDataWidget()
     setFixedSize(_maxWidth, _maxHeight);
 
     _curDate.clear();
-    _loadCurParam(0);
+    loadCurParam();
     _updateHeaderDate();
 //    _loadTableTitle();
 
@@ -372,20 +404,22 @@ void TrendDataWidget::_loadTableTitle()
 
     // 加载demo数据
 //    loadDemoData();
+    _getTrendData();
     loadTrendData();
 }
 
 /**************************************************************************************************
  * 载入当前显示参数。
  *************************************************************************************************/
-void TrendDataWidget::_loadCurParam(int index)
+void TrendDataWidget::loadCurParam(int index)
 {
     _curList.clear();
 
     TrendParamList list;
-    if (_orderMap.end() != _orderMap.find(PARAM_ECG))
+
+    if (_orderMap.end() != _orderMap.find(PARAM_DUP_ECG))
     {
-        list = _orderMap.values(PARAM_ECG);
+        list = _orderMap.values(PARAM_DUP_ECG);
         qSort(list);
         _curList.append(list);
     }
@@ -404,7 +438,14 @@ void TrendDataWidget::_loadCurParam(int index)
         _curList.append(list);
     }
 
-    if (index == 0)
+    if (_orderMap.end() != _orderMap.find(PARAM_TEMP))
+    {
+        list = _orderMap.values(PARAM_TEMP);
+        qSort(list);
+        _curList.append(list);
+    }
+
+    if ((TrendGroup)index == TREND_GROUP_RESP)
     {
         if (_orderMap.end() != _orderMap.find(PARAM_DUP_RESP))
         {
@@ -419,17 +460,12 @@ void TrendDataWidget::_loadCurParam(int index)
             qSort(list);
             _curList.append(list);
         }
-
+    }
+    else if ((TrendGroup)index == TREND_GROUP_IBP)
+    {
         if (_orderMap.end() != _orderMap.find(PARAM_IBP))
         {
             list = _orderMap.values(PARAM_IBP);
-            qSort(list);
-            _curList.append(list);
-        }
-
-        if (_orderMap.end() != _orderMap.find(PARAM_AG))
-        {
-            list = _orderMap.values(PARAM_AG);
             qSort(list);
             _curList.append(list);
         }
@@ -441,11 +477,11 @@ void TrendDataWidget::_loadCurParam(int index)
             _curList.append(list);
         }
     }
-    else
+    else if ((TrendGroup)index == TREND_GROUP_AG)
     {
-        if (_orderMap.end() != _orderMap.find(PARAM_TEMP))
+        if (_orderMap.end() != _orderMap.find(PARAM_AG))
         {
-            list = _orderMap.values(PARAM_TEMP);
+            list = _orderMap.values(PARAM_AG);
             qSort(list);
             _curList.append(list);
         }
@@ -455,6 +491,14 @@ void TrendDataWidget::_loadCurParam(int index)
     {
         return;
     }
+}
+
+/**********************************************************************************************************************
+ * 设置时间间隔
+ **********************************************************************************************************************/
+void TrendDataWidget::setTimeInterval(ResolutionRatio flag)
+{
+    _timeInterval = flag;
 }
 
 /**********************************************************************************************************************
@@ -497,6 +541,19 @@ void TrendDataWidget::_trendParamInit()
 
         switch (i)
         {
+        case SUB_PARAM_ECG_PVCS:
+        case SUB_PARAM_ST_I:
+        case SUB_PARAM_ST_II:
+        case SUB_PARAM_ST_III:
+        case SUB_PARAM_ST_aVR:
+        case SUB_PARAM_ST_aVL:
+        case SUB_PARAM_ST_aVF:
+        case SUB_PARAM_ST_V1:
+        case SUB_PARAM_ST_V2:
+        case SUB_PARAM_ST_V3:
+        case SUB_PARAM_ST_V4:
+        case SUB_PARAM_ST_V5:
+        case SUB_PARAM_ST_V6:
         case SUB_PARAM_NIBP_MAP:
         case SUB_PARAM_NIBP_DIA:
         case SUB_PARAM_ART_DIA:
@@ -515,6 +572,13 @@ void TrendDataWidget::_trendParamInit()
         case SUB_PARAM_AUXP2_DIA:
         case SUB_PARAM_AUXP2_SYS:
         case SUB_PARAM_AUXP2_PR:
+        case SUB_PARAM_FICO2:
+        case SUB_PARAM_FIN2O:
+        case SUB_PARAM_FIAA1:
+        case SUB_PARAM_FIAA2:
+        case SUB_PARAM_FIO2:
+        case SUB_PARAM_T2:
+        case SUB_PARAM_TD:
             break;
         default:
         {
@@ -567,5 +631,36 @@ void TrendDataWidget::_updateHeaderDate(unsigned t)
         }
 
         _curDate = updateDate;
+    }
+}
+
+/**********************************************************************************************************************
+ * 获取趋势数据
+ **********************************************************************************************************************/
+void TrendDataWidget::_getTrendData()
+{
+    IStorageBackend *backend;
+    backend = trendDataStorageManager.backend();
+    int blockNum = backend->getBlockNR();
+    QByteArray data;
+    TrendDataSegment *dataSeg;
+    TrendDataPackage *pack;
+    _trendDataPack.clear();
+    for (int i = 0; i < blockNum; i ++)
+    {
+        pack = new TrendDataPackage;
+        data = backend->getBlockData((quint32)i);
+        dataSeg = (TrendDataSegment*)data.data();
+        pack->time = dataSeg->timestamp;
+        for (int j = 0; j < dataSeg->trendValueNum; j ++)
+        {
+            pack->paramData.find((SubParamID)dataSeg->values[j].subParamId).value() =
+                    dataSeg->values[j].value;
+            if (!pack->alarmFlag && dataSeg->values[j].alarmFlag)
+            {
+                pack->alarmFlag = dataSeg->values[j].alarmFlag;
+            }
+        }
+        _trendDataPack.append(pack);
     }
 }

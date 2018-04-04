@@ -5,6 +5,7 @@
 #include "IComboList.h"
 #include "IButton.h"
 #include "TrendDataSymbol.h"
+#include "TrendDataWidget.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
@@ -44,17 +45,23 @@ void TrendDataSetWidget::layoutExec()
     _resolutionRatio->label->setAlignment(Qt::AlignHCenter);
     _resolutionRatio->label->setFixedSize(labelWidth, ITEM_HEIGHT);
     _resolutionRatio->combolist->setFixedSize(btnWidth, ITEM_HEIGHT);
+    connect(_resolutionRatio->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_timeIntervalReleased(int)));
 
-    _trendGroup = new IComboList(trs("TrendGroup"));
-    _trendGroup->setFont(fontManager.textFont(fontSize));
-    _trendGroup->label->setAlignment(Qt::AlignHCenter);
-    _trendGroup->label->setFixedSize(labelWidth, ITEM_HEIGHT);
-    _trendGroup->combolist->setFixedSize(btnWidth, ITEM_HEIGHT);
+    _trendGroupList = new IComboList(trs("TrendGroup"));
+    _trendGroupList->setFont(fontManager.textFont(fontSize));
+    _trendGroupList->label->setAlignment(Qt::AlignHCenter);
+    _trendGroupList->label->setFixedSize(labelWidth, ITEM_HEIGHT);
+    _trendGroupList->combolist->setFixedSize(btnWidth, ITEM_HEIGHT);
+    _trendGroupList->combolist->addItem("Resp");
+    _trendGroupList->combolist->addItem("IBP");
+    _trendGroupList->combolist->addItem("AG");
+    connect(_trendGroupList->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_trendGroupReleased(int)));
 
     _yes = new IButton(trs("EnglishYESChineseSURE"));
     _yes->setFixedSize(btnWidth/2, ITEM_HEIGHT);
     _yes->setFont(fontManager.textFont(fontSize));
     _yes->setBorderEnabled(true);
+    connect(_yes, SIGNAL(realReleased()), this, SLOT(_yesReleased()));
 
     _cancel = new IButton(trs("Cancel"));
     _cancel->setFixedSize(btnWidth/2, ITEM_HEIGHT);
@@ -67,7 +74,7 @@ void TrendDataSetWidget::layoutExec()
     hlayout->addWidget(_cancel);
 
     contentLayout->addWidget(_resolutionRatio);
-    contentLayout->addWidget(_trendGroup);
+    contentLayout->addWidget(_trendGroupList);
     contentLayout->addLayout(hlayout);
     contentLayout->setSpacing(3);
 
@@ -88,11 +95,36 @@ void TrendDataSetWidget::showEvent(QShowEvent *e)
 }
 
 /***************************************************************************************************
+ * 确定槽函数
+ **************************************************************************************************/
+void TrendDataSetWidget::_yesReleased()
+{
+    hide();
+    trendDataWidget.autoShow();
+}
+
+/***************************************************************************************************
  * 取消槽函数
  **************************************************************************************************/
 void TrendDataSetWidget::_cancelReleased()
 {
     this->hide();
+}
+
+/***************************************************************************************************
+ * 选择分辨率槽函数
+ **************************************************************************************************/
+void TrendDataSetWidget::_timeIntervalReleased(int t)
+{
+    trendDataWidget.setTimeInterval((ResolutionRatio)t);
+}
+
+/***************************************************************************************************
+ * 选择趋势组槽函数
+ **************************************************************************************************/
+void TrendDataSetWidget::_trendGroupReleased(int g)
+{
+    trendDataWidget.loadCurParam(g);
 }
 
 /**************************************************************************************************
