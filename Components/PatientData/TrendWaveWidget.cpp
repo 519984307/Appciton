@@ -5,6 +5,8 @@
 #include "ParamInfo.h"
 #include "TrendGraphSetWidget.h"
 #include "IBPParam.h"
+#include "TrendDataStorageManager.h"
+#include "TrendDataSymbol.h"
 #include <QPainter>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -14,12 +16,13 @@
 #define GRAPH_POINT_NUMBER                  600
 
 TrendWaveWidget::TrendWaveWidget() :
-    _timeInterval(RESOLUTION_RATIO_30_SECOND),
+    _timeInterval(RESOLUTION_RATIO_5_SECOND),
     _initTime(0),
     _cursorPosition(GRAPH_POINT_NUMBER), _currentCursorTime(0),
-    _displayGraphNum(3), _totalGraphNum(3)
+    _displayGraphNum(3), _totalGraphNum(3), _dataSize(0)
 {
     _initTime = timeDate.time();
+    _initTime = _initTime - _initTime % 5;
     QPalette palette;
     palette.setColor(QPalette::Background, Qt::black);
     setPalette(palette);
@@ -61,6 +64,8 @@ TrendWaveWidget::TrendWaveWidget() :
 
     setLayout(_mainLayout);
 
+    _getTrendData();
+
 }
 
 TrendWaveWidget::~TrendWaveWidget()
@@ -73,6 +78,7 @@ TrendWaveWidget::~TrendWaveWidget()
  *************************************************************************************************/
 void TrendWaveWidget::changeTrendDisplay()
 {
+    _getTrendData();
     _clearLayout();
     _trendLayout();
 }
@@ -182,6 +188,9 @@ void TrendWaveWidget::setTimeInterval(ResolutionRatio timeInterval)
     update();
 }
 
+/**************************************************************************************************
+ * 设置波形数目
+ *************************************************************************************************/
 void TrendWaveWidget::setWaveNumber(int num)
 {
     _displayGraphNum = num;    
@@ -207,6 +216,28 @@ void TrendWaveWidget::setRulerLimit(SubParamID id, int down, int up)
 }
 
 /**************************************************************************************************
+ * 载入趋势数据到数组
+ *************************************************************************************************/
+void TrendWaveWidget::loadTrendData(SubParamID subID,  unsigned)
+{
+    int intervalNum = TrendDataSymbol::covertValue(_timeInterval)/TrendDataSymbol::covertValue(RESOLUTION_RATIO_5_SECOND);
+    if (_trendDataPack.length() < 600)
+    {
+        _dataSize = _trendDataPack.length();
+    }
+    else
+    {
+        _dataSize = 600;
+    }
+    _dataBuf = new int[_dataSize];
+    for (int i = _trendDataPack.length() - 1; i  >= 0;
+         i = i - intervalNum)
+    {
+        _dataBuf[i] = _trendDataPack.at(i)->paramData.find(subID).value();
+    }
+}
+
+/**************************************************************************************************
  * 主窗口绘图事件
  *************************************************************************************************/
 void TrendWaveWidget::paintEvent(QPaintEvent *event)
@@ -219,7 +250,16 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     QRect rectAdjust =rect().adjusted(0,30,0,0);
     barPainter.drawLine(rectAdjust.topLeft(), rectAdjust.topRight());
 
-    unsigned t = _initTime;
+    unsigned t;
+    if (_trendDataPack.length() == 0)
+    {
+        t = _initTime;
+    }
+    else
+    {
+        t = _trendDataPack.at(_trendDataPack.length() - 1)->time;
+    }
+    unsigned startT = t;
     QString tStr;
     unsigned onePixelTime;
     // 坐标刻度
@@ -274,14 +314,22 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
                         (_waveRegionWidth - GRAPH_POINT_NUMBER)/2 + _cursorPosition, rectAdjust.bottomLeft().y());
 
     // 当前趋势记录的时间
-    timeDate.getDate(_initTime - onePixelTime * (GRAPH_POINT_NUMBER - _cursorPosition), tStr);
+    timeDate.getDate(startT - onePixelTime * (GRAPH_POINT_NUMBER - _cursorPosition), tStr);
     barPainter.drawText(_waveRegionWidth + 5, rectAdjust.topLeft().y() - 5, tStr);
-    timeDate.getTime(_initTime - onePixelTime * (GRAPH_POINT_NUMBER - _cursorPosition), tStr, true);
+    timeDate.getTime(startT - onePixelTime * (GRAPH_POINT_NUMBER - _cursorPosition), tStr, true);
     barPainter.drawText(_waveRegionWidth + 120, rectAdjust.topLeft().y() - 5, tStr);
 
 
     barPainter.setPen(QPen(Qt::white, 1, Qt::DotLine));
     barPainter.drawLine(_waveRegionWidth, 0, _waveRegionWidth, height());
+}
+
+void TrendWaveWidget::showEvent(QShowEvent *e)
+{
+    IWidget::showEvent(e);
+    _cursorPosition = GRAPH_POINT_NUMBER;
+    changeTrendDisplay();
+    update();
 }
 
 /**************************************************************************************************
@@ -305,6 +353,9 @@ void TrendWaveWidget::_trendLayout()
                 subWidget = new TrendSubWaveWidget((SubParamID)i, TREND_GRAPH_TYPE_NORMAL,
                                                    (_waveRegionWidth -GRAPH_POINT_NUMBER)/2, (_waveRegionWidth + GRAPH_POINT_NUMBER)/2,
                                                                        subWidgetHeight/5, subWidgetHeight/5*4);
+                loadTrendData((SubParamID)i);
+                subWidget->trendData(_dataBuf, _dataSize);
+                subWidget->updateTrendGraph();
                 break;
             case SUB_PARAM_NIBP_SYS:
                 subWidget = new TrendSubWaveWidget((SubParamID)i, TREND_GRAPH_TYPE_NIBP,
@@ -395,7 +446,6 @@ void TrendWaveWidget::_trendLayout()
                 continue;
             }
         }
-
         subWidget->setFixedHeight(subWidgetHeight);
         subWidget->setVisible(true);
         subWidget->setParent(this);
@@ -420,5 +470,36 @@ void TrendWaveWidget::_clearLayout()
             widget->setVisible(false);
             widget->setParent(NULL);
         }
+    }
+}
+
+/**********************************************************************************************************************
+ * 获取趋势数据
+ **********************************************************************************************************************/
+void TrendWaveWidget::_getTrendData()
+{
+    IStorageBackend *backend;
+    backend = trendDataStorageManager.backend();
+    int blockNum = backend->getBlockNR();
+    QByteArray data;
+    TrendDataSegment *dataSeg;
+    TrendDataPackage *pack;
+    _trendDataPack.clear();
+    for (int i = 0; i < blockNum; i ++)
+    {
+        pack = new TrendDataPackage;
+        data = backend->getBlockData((quint32)i);
+        dataSeg = (TrendDataSegment*)data.data();
+        pack->time = dataSeg->timestamp;
+        for (int j = 0; j < dataSeg->trendValueNum; j ++)
+        {
+            pack->paramData.find((SubParamID)dataSeg->values[j].subParamId).value() =
+                    dataSeg->values[j].value;
+            if (!pack->alarmFlag && dataSeg->values[j].alarmFlag)
+            {
+                pack->alarmFlag = dataSeg->values[j].alarmFlag;
+            }
+        }
+        _trendDataPack.append(pack);
     }
 }

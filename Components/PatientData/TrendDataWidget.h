@@ -5,20 +5,6 @@
 #include "TrendDataSymbol.h"
 #include "TrendDataDefine.h"
 
-struct TrendDataPackage
-{
-    TrendDataPackage()
-    {
-        for (int i = 0; i < SUB_PARAM_NR; i ++)
-        {
-            paramData.insert(static_cast<SubParamID>(i), InvData());
-        }
-    }
-    unsigned time;
-    QMap<SubParamID, short> paramData;
-    unsigned char alarmFlag;
-};
-
 class ITableWidget;
 class IButton;
 class IDropList;

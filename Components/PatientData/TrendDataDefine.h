@@ -40,6 +40,21 @@ struct TrendDataDescription
     char serialNum[MAX_SERIAL_NUM_LEN]; /* machine serial num */
 };
 
+/* trend data package */
+struct TrendDataPackage
+{
+    TrendDataPackage()
+    {
+        for (int i = 0; i < SUB_PARAM_NR; i ++)
+        {
+            paramData.insert(static_cast<SubParamID>(i), InvData());
+        }
+    }
+    unsigned time;
+    QMap<SubParamID, short> paramData;
+    unsigned char alarmFlag;
+};
+
 /* 分辨率 */
 enum ResolutionRatio
 {

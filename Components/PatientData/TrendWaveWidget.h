@@ -27,13 +27,15 @@ public:
     void setWaveNumber(int num);
     void setRulerLimit(SubParamID, int down, int up);
 
+    void loadTrendData(SubParamID, unsigned t = 0);
 protected:
     void paintEvent(QPaintEvent *event);
-
+    void showEvent(QShowEvent *e);
 
 private:
     void _trendLayout(void);
     void _clearLayout(void);
+    void _getTrendData(void);
 
 private:
     QVBoxLayout *_mainLayout;
@@ -54,4 +56,7 @@ private:
     int _totalGraphNum;                             // 趋势组显示的总波形数
     int _curVScroller;
 
+    QList<TrendDataPackage *> _trendDataPack;       // 趋势数据包
+    int *_dataBuf;
+    int _dataSize;
 };

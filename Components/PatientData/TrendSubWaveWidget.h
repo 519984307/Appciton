@@ -10,6 +10,9 @@ public:
     ~TrendSubWaveWidget();
 
     void demoData(void);
+    void trendData(int *buf, int size);
+
+    void updateTrendGraph(void);
 
 public:
     int yToValue(int y);
