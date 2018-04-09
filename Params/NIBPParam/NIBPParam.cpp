@@ -84,8 +84,8 @@ void NIBPParam::errorDisable(void)
  *************************************************************************************************/
 void NIBPParam::handDemoTrendData(void)
 {
-    static int cnt = 5;
-    if (cnt++ < 5)
+    static int cnt = 50;
+    if (cnt++ < 50)
     {
         return;
     }

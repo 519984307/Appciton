@@ -17,21 +17,41 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type, int x
     _yTop(yTop), _yBottom(yBottom), _xHead(xHead), _xTail(xTail), _xSize(xHead - xTail),
     _ySize(yBottom - yTop), _trendDataHead(xHead + xTail), _size(GRAPH_POINT_NUMBER + 1),
     _color(Qt::red), _upRulerValue(upRuler), _downRulerValue(downRuler),
-    _rulerSize(upRuler - downRuler),_paramID(id), _cursorPosition(GRAPH_POINT_NUMBER), _type(type)
+    _rulerSize(upRuler - downRuler), _dataBuf(NULL), _dataBufSecond(NULL), _dataBufThird(NULL),
+    _paramID(id), _cursorPosition(GRAPH_POINT_NUMBER), _type(type)
 {
     SubParamID subID = _paramID;
     ParamID paramId = paramInfo.getParamID(subID);
     UnitType unitType = paramManager.getSubParamUnit(paramId, subID);
-    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subID, unitType);
-    if (config.scale == 1)
+
+    if (_type == TREND_GRAPH_TYPE_NORMAL || _type == TREND_GRAPH_TYPE_AG_TEMP)
     {
-        _downRulerValue = config.lowLimit;
-        _upRulerValue = config.highLimit;
+        LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subID, unitType);
+        if (config.scale == 1)
+        {
+            _downRulerValue = config.lowLimit;
+            _upRulerValue = config.highLimit;
+        }
+        else
+        {
+            _downRulerValue = (double)config.lowLimit / config.scale;
+            _upRulerValue = (double)config.highLimit / config.scale;
+        }
     }
-    else
+    else if (_type == TREND_GRAPH_TYPE_ART_IBP || _type == TREND_GRAPH_TYPE_NIBP)
     {
-        _downRulerValue = (double)config.lowLimit / config.scale;
-        _upRulerValue = (double)config.highLimit / config.scale;
+        LimitAlarmConfig configUp = alarmConfig.getLimitAlarmConfig(subID, unitType);
+        LimitAlarmConfig configDown = alarmConfig.getLimitAlarmConfig(SubParamID(subID + 1), unitType);
+        if (configUp.scale == 1)
+        {
+            _downRulerValue = configDown.lowLimit;
+            _upRulerValue = configUp.highLimit;
+        }
+        else
+        {
+            _downRulerValue = (double)configDown.lowLimit / configDown.scale;
+            _upRulerValue = (double)configUp.highLimit / configUp.scale;
+        }
     }
 
     _rulerSize = _upRulerValue - _downRulerValue;
@@ -40,9 +60,23 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type, int x
     _paramUnit = Unit::getSymbol(paramInfo.getUnitOfSubParam(id));
 
     setFocusPolicy(Qt::NoFocus);
+
     _trendWaveBuf = new QPoint[_size];
     _dataBuf = new int[_size];
     memset(_dataBuf, 0, _size * sizeof(int));
+    if (_type != TREND_GRAPH_TYPE_NORMAL)
+    {
+        _trendWaveBufSecond = new QPoint[_size];
+        _dataBufSecond = new int[_size];
+        memset(_dataBufSecond, 0, _size * sizeof(int));
+    }
+
+    if (_type == TREND_GRAPH_TYPE_NIBP || _type == TREND_GRAPH_TYPE_ART_IBP)
+    {
+        _trendWaveBufThird = new QPoint[_size];
+        _dataBufThird = new int[_size];
+        memset(_dataBufThird, 0, _size * sizeof(int));
+    }
 
     loadParamData();
 }
@@ -67,16 +101,44 @@ void TrendSubWaveWidget:: demoData()
 }
 
 /***************************************************************************************************
- * 存储的趋势数据
+ * 存储一组趋势数据
  **************************************************************************************************/
 void TrendSubWaveWidget::trendData(int *buf, int size)
 {
     for (int i =  0; i < size; i ++)
     {
-        _dataBuf[_size - i] = buf[i];
+        _dataBuf[_size - i - 1] = buf[i];
     }
 }
 
+/***************************************************************************************************
+ * 存储两组趋势数据
+ **************************************************************************************************/
+void TrendSubWaveWidget::trendData(int *oneBuf, int *secondBuf, int size)
+{
+    for (int i =  0; i < size; i ++)
+    {
+        _dataBuf[_size - i - 1] = oneBuf[i];
+        _dataBufSecond[_size - i - 1] = secondBuf[i];
+    }
+}
+
+/***************************************************************************************************
+ * 存储三组趋势数据
+ **************************************************************************************************/
+void TrendSubWaveWidget::trendData(int *oneBuf, int *secondBuf, int *thirdBuf, int size)
+{
+    for (int i =  0; i < size; i ++)
+    {
+        _dataBuf[_size - i - 1] = oneBuf[i];
+        _dataBufSecond[_size - i - 1] = secondBuf[i];
+        _dataBufThird[_size - i - 1] = thirdBuf[i];
+    }
+}
+
+/***************************************************************************************************
+ * 更新趋势图
+ **************************************************************************************************/
 void TrendSubWaveWidget::updateTrendGraph()
 {
     _cursorPosition = GRAPH_POINT_NUMBER;
@@ -179,6 +241,34 @@ void TrendSubWaveWidget::loadParamData()
             _trendWaveBuf[i].setY(yValue);
         }
         _trendWaveBuf[i].setX(indexToX(i));
+
+        if (_type != TREND_GRAPH_TYPE_NORMAL)
+        {
+            yValue = valueToY(_dataBufSecond[i]);
+            if (yValue < _yTop || yValue > _yBottom)
+            {
+                _trendWaveBufSecond[i].setY(InvData());
+            }
+            else
+            {
+                _trendWaveBufSecond[i].setY(yValue);
+            }
+            _trendWaveBufSecond[i].setX(indexToX(i));
+        }
+
+        if (_type == TREND_GRAPH_TYPE_NIBP || _type == TREND_GRAPH_TYPE_ART_IBP)
+        {
+            yValue = valueToY(_dataBufThird[i]);
+            if (yValue < _yTop || yValue > _yBottom)
+            {
+                _trendWaveBufThird[i].setY(InvData());
+            }
+            else
+            {
+                _trendWaveBufThird[i].setY(yValue);
+            }
+            _trendWaveBufThird[i].setX(indexToX(i));
+        }
     }
 }
 
@@ -212,15 +302,51 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     QRect downRulerRect(_xHead/3 + 7, _yBottom - 10, _xHead, 30);
     barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_downRulerValue));
 
-    if (_trendWaveBuf)
+    // 趋势波形图
+    if (_type == TREND_GRAPH_TYPE_NORMAL)
     {
-//        barPainter.drawPolyline(_trendWaveBuf, _size);
         for (int i = 0; i < _size - 1; i ++)
         {
             if (_trendWaveBuf[i].y() != InvData() && _trendWaveBuf[i + 1].y() != InvData())
             {
                 barPainter.drawLine(_trendWaveBuf[i].x(), _trendWaveBuf[i].y(),
                                     _trendWaveBuf[i + 1].x(), _trendWaveBuf[i + 1].y());
+            }
+        }
+    }
+    else if (_type == TREND_GRAPH_TYPE_NIBP)
+    {
+        for (int i = 0; i < _size; i ++)
+        {
+            if (_trendWaveBuf[i].y() != InvData() && _trendWaveBufSecond[i].y() != InvData() &&
+                    _trendWaveBufThird[i].y() != InvData())
+            {
+                barPainter.setPen(QPen(_color, 1, Qt::DotLine));
+                barPainter.drawLine(_trendWaveBuf[i].x() - 3, _trendWaveBuf[i].y(),
+                                    _trendWaveBuf[i].x() + 3, _trendWaveBuf[i].y());
+                barPainter.drawLine(_trendWaveBufSecond[i].x() - 3, _trendWaveBufSecond[i].y(),
+                                    _trendWaveBufSecond[i].x() + 3, _trendWaveBufSecond[i].y());
+                barPainter.drawLine(_trendWaveBufThird[i].x() - 3, _trendWaveBufThird[i].y(),
+                                    _trendWaveBufThird[i].x() + 3, _trendWaveBufThird[i].y());
+                barPainter.setPen(QPen(_color, 1, Qt::SolidLine));
+                barPainter.drawLine(_trendWaveBuf[i].x(), _trendWaveBuf[i].y(),
+                                    _trendWaveBufSecond[i].x(), _trendWaveBufSecond[i].y());
+            }
+        }
+    }
+    else if (_type == TREND_GRAPH_TYPE_AG_TEMP)
+    {
+        for (int i = 0; i < _size - 1; i ++)
+        {
+            if (_trendWaveBuf[i].y() != InvData() && _trendWaveBuf[i + 1].y() != InvData())
+            {
+                barPainter.drawLine(_trendWaveBuf[i].x(), _trendWaveBuf[i].y(),
+                                    _trendWaveBuf[i + 1].x(), _trendWaveBuf[i + 1].y());
+            }
+            if (_trendWaveBufSecond[i].y() != InvData() && _trendWaveBufSecond[i + 1].y() != InvData())
+            {
+                barPainter.drawLine(_trendWaveBufSecond[i].x(), _trendWaveBufSecond[i].y(),
+                                    _trendWaveBufSecond[i + 1].x(), _trendWaveBufSecond[i + 1].y());
             }
         }
     }
@@ -250,27 +376,35 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
             barPainter.drawText(_trendDataHead + 60, height()/3*2, "---");
         }
     }
-    else if (_type == TREND_GRAPH_TYPE_NIBP)
+    else if (_type == TREND_GRAPH_TYPE_NIBP || _type == TREND_GRAPH_TYPE_ART_IBP)
     {
         font.setPixelSize(30);
         barPainter.setFont(font);
-        QString trendStr = QString::number(_dataBuf[_cursorPosition]) + "/" + "78";
-        barPainter.drawText(_trendDataHead + 60, height()/2, trendStr);
-        barPainter.drawText(_trendDataHead + 70, height()/3*2, "(80)");
-    }
-    else if (_type == TREND_GRAPH_TYPE_ART_IBP)
-    {
-        font.setPixelSize(30);
-        barPainter.setFont(font);
-        QString trendStr = QString::number(_dataBuf[_cursorPosition]) + "/" + "78";
-        barPainter.drawText(_trendDataHead + 60, height()/2, trendStr);
-        barPainter.drawText(_trendDataHead + 70, height()/3*2, "(80)");
+
+        if (_dataBuf[_cursorPosition] != InvData() && _dataBufSecond[_cursorPosition] != InvData() && _dataBufThird[_cursorPosition] != InvData())
+        {
+            QString trendStr = QString::number(_dataBuf[_cursorPosition]) + "/" + QString::number(_dataBufSecond[_cursorPosition]);
+            barPainter.drawText(_trendDataHead + 60, height()/2, trendStr);
+            barPainter.drawText(_trendDataHead + 70, height()/3*2, QString::number(_dataBufThird[_cursorPosition]));
+        }
+        else
+        {
+            barPainter.drawText(_trendDataHead + 60, height()/2, "---/---");
+            barPainter.drawText(_trendDataHead + 70, height()/3*2, "(---)");
+        }
     }
     else if (_type == TREND_GRAPH_TYPE_AG_TEMP)
     {
         font.setPixelSize(30);
         barPainter.setFont(font);
-        QString trendStr = QString::number(_dataBuf[_cursorPosition]) + "/" + "78";
-        barPainter.drawText(_trendDataHead + 60, height()/3*2, trendStr);
+        if (_dataBuf[_cursorPosition] != InvData() && _dataBufSecond[_cursorPosition] != InvData())
+        {
+            QString trendStr = QString::number(_dataBuf[_cursorPosition]) + "/" + QString::number(_dataBufSecond[_cursorPosition]);
+            barPainter.drawText(_trendDataHead + 60, height()/2, trendStr);
+        }
+        else
+        {
+            barPainter.drawText(_trendDataHead + 60, height()/2, "---/---");
+        }
     }
 }

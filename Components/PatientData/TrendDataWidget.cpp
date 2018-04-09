@@ -96,6 +96,7 @@ void TrendDataWidget::loadTrendData()
 //    QBrush *highAlarmColor = new QBrush(Qt::red);
     QTableWidgetItem *item;
     int intervalNum = TrendDataSymbol::covertValue(_timeInterval)/TrendDataSymbol::covertValue(RESOLUTION_RATIO_5_SECOND);
+    int col = 0;
     for (int i = _trendDataPack.length() - 1 - intervalNum * _currentMoveCount; i >= 0;
          i = i - intervalNum)
     {
@@ -145,9 +146,9 @@ void TrendDataWidget::loadTrendData()
                 QString dataStr = data == InvData() ?"---":QString::number(data);
                 item->setText(dataStr);
             }
-            table->setItem(j, i/intervalNum, item);
+            table->setItem(j, col, item);
         }
-
+        col ++;
     }
 
     if (timeTitle.length() < TABLE_COL_NR)

@@ -102,6 +102,10 @@ void TrendWaveWidget::leftMoveCursor()
     {
         _cursorPosition = 0;
     }
+    else if((GRAPH_POINT_NUMBER - _cursorPosition) == (_trendDataPack.length() - 1) || (_trendDataPack.length() == 0))
+    {
+        _cursorPosition = _cursorPosition;
+    }
     else{
         _cursorPosition --;
     }
@@ -230,10 +234,12 @@ void TrendWaveWidget::loadTrendData(SubParamID subID,  unsigned)
         _dataSize = 600;
     }
     _dataBuf = new int[_dataSize];
+    int j = 0;
     for (int i = _trendDataPack.length() - 1; i  >= 0;
          i = i - intervalNum)
     {
-        _dataBuf[i] = _trendDataPack.at(i)->paramData.find(subID).value();
+        _dataBuf[j] = _trendDataPack.at(i)->paramData.find(subID).value();
+        j ++;
     }
 }
 
@@ -340,7 +346,9 @@ void TrendWaveWidget::_trendLayout()
     int subWidgetHeight = (height() - 30)/_displayGraphNum;
 
     TrendSubWaveWidget *subWidget;
-    _totalGraphNum = 0;
+    _totalGraphNum = 0;    
+    int *_dataBufSecond = NULL;
+    int *_dataBufThird = NULL;
     for (int i = 0; i < SUB_PARAM_NR; i ++)
     {
         if (trendGraphSetWidget.getTrendGroup() == TREND_GROUP_RESP)
@@ -355,18 +363,27 @@ void TrendWaveWidget::_trendLayout()
                                                                        subWidgetHeight/5, subWidgetHeight/5*4);
                 loadTrendData((SubParamID)i);
                 subWidget->trendData(_dataBuf, _dataSize);
-                subWidget->updateTrendGraph();
                 break;
             case SUB_PARAM_NIBP_SYS:
                 subWidget = new TrendSubWaveWidget((SubParamID)i, TREND_GRAPH_TYPE_NIBP,
                                                    (_waveRegionWidth -GRAPH_POINT_NUMBER)/2, (_waveRegionWidth + GRAPH_POINT_NUMBER)/2,
                                                                        subWidgetHeight/5, subWidgetHeight/5*4);
+                loadTrendData((SubParamID)(i + 1));
+                _dataBufSecond = _dataBuf;
+                loadTrendData((SubParamID)(i + 2));
+                _dataBufThird = _dataBuf;
+                loadTrendData((SubParamID)i);
+                subWidget->trendData(_dataBuf, _dataBufSecond, _dataBufThird, _dataSize);
                 break;
             case SUB_PARAM_ETCO2:
             case SUB_PARAM_T1:
                 subWidget = new TrendSubWaveWidget((SubParamID)i, TREND_GRAPH_TYPE_AG_TEMP,
                                                    (_waveRegionWidth -GRAPH_POINT_NUMBER)/2, (_waveRegionWidth + GRAPH_POINT_NUMBER)/2,
                                                                        subWidgetHeight/5, subWidgetHeight/5*4);
+                loadTrendData((SubParamID)(i + 1));
+                _dataBufSecond = _dataBuf;
+                loadTrendData((SubParamID)i);
+                subWidget->trendData(_dataBuf, _dataBufSecond,  _dataSize);
                 break;
             default:
                 continue;
@@ -445,7 +462,8 @@ void TrendWaveWidget::_trendLayout()
             default:
                 continue;
             }
-        }
+        }        
+        subWidget->updateTrendGraph();
         subWidget->setFixedHeight(subWidgetHeight);
         subWidget->setVisible(true);
         subWidget->setParent(this);

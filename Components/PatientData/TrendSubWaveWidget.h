@@ -11,6 +11,8 @@ public:
 
     void demoData(void);
     void trendData(int *buf, int size);
+    void trendData(int *oneBuf, int *secondBuf, int size);
+    void trendData(int *oneBuf, int *secondBuf, int *thirdBuf, int size);
 
     void updateTrendGraph(void);
 
@@ -51,7 +53,11 @@ private:
     ResolutionRatio _timeInterval;  // 时间间隔
 
     int *_dataBuf;                  // 原始趋势数据缓存
+    int *_dataBufSecond;
+    int *_dataBufThird;
     QPoint *_trendWaveBuf;          // 趋势坐标序列缓存
+    QPoint *_trendWaveBufSecond;
+    QPoint *_trendWaveBufThird;
     SubParamID _paramID;
     int _cursorPosition;            // 游标位置
     TrendGraphType _type;           // 趋势图类型

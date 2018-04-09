@@ -24,15 +24,15 @@
     <!--参数信息-->
     <AllParams>ECG,SPO2,RESP,NIBP,CO2,IBP,AG,CO,TEMP,PD</AllParams>
     <!--参数与Provider的关系-->
-    <ECG SptProvider="DemoProvider,BLM_E5">BLM_E5</ECG>
+    <ECG SptProvider="DemoProvider,BLM_E5">DemoProvider</ECG>
     <RESP SptProvider="DemoProvider,BLM_E5">DemoProvider</RESP>
-    <SPO2 SptProvider="DemoProvider,BLM_SPO2,BLM_TS3,MASIMO_SPO2">BLM_TS3</SPO2>
-    <NIBP SptProvider="DemoProvider,BLM_NIBP,BLM_TN3,SUNTECH_NIBP">BLM_TN3</NIBP>
+    <SPO2 SptProvider="DemoProvider,BLM_SPO2,BLM_TS3,MASIMO_SPO2">DemoProvider</SPO2>
+    <NIBP SptProvider="DemoProvider,BLM_NIBP,BLM_TN3,SUNTECH_NIBP">DemoProvider</NIBP>
     <CO2 SptProvider="DemoProvider,BLM_CO2">DemoProvider</CO2>
-    <IBP SptProvider="DemoProvider,WITLEAF_IBP">WITLEAF_IBP</IBP>
+    <IBP SptProvider="DemoProvider,WITLEAF_IBP">DemoProvider</IBP>
     <AG SptProvider="DemoProvider,PHASEIN_AG">DemoProvider</AG>
-    <CO SptProvider="DemoProvider,WITLEAF_IBP">WITLEAF_IBP</CO>
-    <TEMP SptProvider="DemoProvider,BLM_TT3">BLM_TT3</TEMP>
+    <CO SptProvider="DemoProvider,WITLEAF_IBP">DemoProvider</CO>
+    <TEMP SptProvider="DemoProvider,BLM_TT3">DemoProvider</TEMP>
     <PD SptProvider="PDProvider">PDProvider</PD>
     <!--Provider端口信息-->
     <PRT72Port>/dev/null</PRT72Port>
