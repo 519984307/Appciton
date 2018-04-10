@@ -1398,6 +1398,7 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
         while (NULL != QApplication::activeModalWidget())
         {
             QApplication::activeModalWidget()->hide();
+            menuManager.close();
         }
     }
 

@@ -72,28 +72,6 @@ void ServiceUpgrade::setDebugText(QString str)
 }
 
 /**************************************************************************************************
- * 功能:飞梭控制
- *************************************************************************************************/
-void ServiceUpgrade::keyPressEvent(QKeyEvent *e)
-{
-    switch (e->key())
-    {
-        case Qt::Key_Up:
-        case Qt::Key_Left:
-            focusNextPrevChild(false);
-            return;
-        case Qt::Key_Down:
-        case Qt::Key_Right:
-            focusNextChild();
-            return;
-        default:
-            break;
-    }
-
-    QWidget::keyPressEvent(e);
-}
-
-/**************************************************************************************************
  * 开始升级。
  *************************************************************************************************/
 void ServiceUpgrade::_startBtnReleased()
@@ -194,7 +172,7 @@ void ServiceUpgrade::exit(void)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ServiceUpgrade::ServiceUpgrade() : QWidget()
+ServiceUpgrade::ServiceUpgrade() : MenuWidget(trs("Upgrade"))
 {
     int fontSize = fontManager.getFontSize(1);
     int btnWidth = 150;
@@ -205,16 +183,6 @@ ServiceUpgrade::ServiceUpgrade() : QWidget()
     labelLayout->setContentsMargins(50, 0, 50, 0);
     labelLayout->setSpacing(5);
     labelLayout->setAlignment(Qt::AlignTop);
-
-    // 标题栏。
-    _title = new QLabel("Upgrade");
-    _title->setAlignment(Qt::AlignCenter);
-    _title->setFixedHeight(30 + 10);
-    _title->setFont(fontManager.textFont(fontManager.getFontSize(4)));
-    QPalette p;
-    p.setColor(QPalette::Foreground, Qt::black);
-    _title->setPalette(p);
-    labelLayout->addWidget(_title);
 
     _upgradeType = new IComboList(trs("UpgradeModule") + " :");
     _upgradeType->label->setFixedSize(btnWidth+20, ITEM_H);
@@ -284,10 +252,7 @@ ServiceUpgrade::ServiceUpgrade() : QWidget()
     gridlayout->addWidget(_btnReturn, 5, 2, 1, 1, Qt::AlignRight);
     labelLayout->addLayout(gridlayout);
 
-    setLayout(labelLayout);
-
-    p.setColor(QPalette::Window, QColor(209, 203, 183));
-    setPalette(p);
+    mainLayout->addLayout(labelLayout);
 }
 
 /**************************************************************************************************

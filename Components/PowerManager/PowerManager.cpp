@@ -866,6 +866,7 @@ void PowerManager::_shutdownWarn(void)
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
+        menuManager.close();
     }
     _shutdownMsgBox->show();
 }

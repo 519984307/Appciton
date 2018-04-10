@@ -6,9 +6,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QStackedWidget>
-#include "SupervisorPasswordMenu.h"
 #include "ServiceMenuManager.h"
-#include "ServiceMenu.h"
 
 ServiceEntrance *ServiceEntrance::_selfObj = NULL;
 
@@ -22,8 +20,8 @@ void ServiceEntrance::layoutExec(void)
     setMenuSize(submenuW, submenuH);
 
     _passwordMenuManage = new PasswordMenuManage("ServicePassword");
-    _passwordMenuManage->setPassword(SERVER_PASSWORD);
-    connect(_passwordMenuManage, SIGNAL(enterSignal()), this, SLOT(_showSolt()));
+//    _passwordMenuManage->setPassword(SERVER_PASSWORD);
+//    connect(_passwordMenuManage, SIGNAL(enterSignal()), this, SLOT(_showSolt()));
 
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addWidget(_passwordMenuManage);
@@ -39,11 +37,11 @@ void ServiceEntrance::readyShow(void)
     _passwordMenuManage->clearPassword();
 }
 
-void ServiceEntrance::_showSolt(void)
-{
-//    menuManager.openMenuGroup(&serviceMenuManager);
-    menuManager.openWidget(&serviceMenu);
-}
+//void ServiceEntrance::_showSolt(void)
+//{
+////    menuManager.openMenuGroup(&serviceMenuManager);
+//    menuManager.openWidget(&serviceMenu);
+//}
 
 /**************************************************************************************************
  * 构造。

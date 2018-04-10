@@ -1,12 +1,12 @@
 #pragma once
-#include <QWidget>
+#include "MenuWidget.h"
 #include <QIcon>
 
 class QLabel;
 class IButton;
 class ITableWidget;
 class TableItemDelegate;
-class ServiceErrorLogMenu  : public QWidget
+class ServiceErrorLogMenu  : public MenuWidget
 {
     Q_OBJECT
 

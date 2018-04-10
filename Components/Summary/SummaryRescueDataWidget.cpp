@@ -610,8 +610,8 @@ void SummaryRescueDataWidget::print(int type)
         default:
         {
             QRect r = windowManager.getMenuArea();
-            int x = r.x() + (r.width() - menuManager.width()) / 2;
-            int y = r.y() + (r.height() - menuManager.height());
+            int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
+            int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
             summaryRescueRangePrint.autoShow(x, y);
             break;
         }

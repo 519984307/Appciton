@@ -1,5 +1,5 @@
 #pragma once
-#include "PopupWidget.h"
+#include "MenuWidget.h"
 #include "LabelButton.h"
 #include "ISpinBox.h"
 
@@ -24,7 +24,7 @@ enum FactoryTestType
 
 class QLabel;
 class LButtonEn;
-class FactoryTestMenu : public PopupWidget
+class FactoryTestMenu : public MenuWidget
 {
     Q_OBJECT
 
@@ -42,10 +42,6 @@ public:
 
     ~FactoryTestMenu();
     void readyShow();
-
-protected:
-    virtual void layoutExec(void);
-    void keyPressEvent(QKeyEvent *e);
 
 private slots:
     void _btnReleased(int);

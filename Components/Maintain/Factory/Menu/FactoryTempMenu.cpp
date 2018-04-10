@@ -45,36 +45,21 @@ QString FactoryTempMenu::_labelStr[10] =
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-FactoryTempMenu::FactoryTempMenu() : PopupWidget()
-{
-    setCloseBtnTxt("");
-    setCloseBtnPic(QImage("/usr/local/iDM/icons/main.png"));
-    setCloseBtnColor(Qt::transparent);
-
-    layoutExec();
-
-    _timer = new QTimer();
-    _timer->setInterval(2000);
-    connect(_timer, SIGNAL(timeout()), this, SLOT(_timeOut()));
-}
-
-/**************************************************************************************************
- * 布局。
- *************************************************************************************************/
-void FactoryTempMenu::layoutExec()
+FactoryTempMenu::FactoryTempMenu() : MenuWidget(trs("TEMPCalibrate"))
 {
     int submenuW = factoryWindowManager.getSubmenuWidth();
     int submenuH = factoryWindowManager.getSubmenuHeight();
     setFixedSize(submenuW, submenuH);
-
-    setTitleBarText(trs("TEMPCalibrate"));
 
     int itemW = submenuW - 200;
     int fontsize = 15;
     int labelWidth = itemW / 2;
     int labelHeight = ITEM_H - 5;
 
-
+    QVBoxLayout *labelLayout = new QVBoxLayout();
+    labelLayout->setContentsMargins(50, 0, 50, 0);
+    labelLayout->setSpacing(10);
+    labelLayout->setAlignment(Qt::AlignTop);
 
     _tempChannel = new QLabel();
     _tempChannel->setFont(fontManager.textFont(fontsize + 5));
@@ -102,7 +87,7 @@ void FactoryTempMenu::layoutExec()
     _stackedwidget->setFixedHeight(ITEM_H + 10);
     _stackedwidget->addWidget(_groupBox);
     _stackedwidget->addWidget(_tempError);
-    contentLayout->addWidget(_stackedwidget);
+    labelLayout->addWidget(_stackedwidget);
 
     hLayout = new QHBoxLayout();
     hLayout->setAlignment(Qt::AlignCenter);
@@ -117,7 +102,7 @@ void FactoryTempMenu::layoutExec()
     hLayout->addWidget(_channel,0,Qt::AlignCenter);
 //    hLayout->addSpacing(10);
     hLayout->setContentsMargins(0, 0, labelHeight+5, 0);
-    contentLayout->addLayout(hLayout);
+    labelLayout->addLayout(hLayout);
 
     _success = QImage("/usr/local/iDM/icons/select.png");
     _success = _success.scaled(20, 20);
@@ -144,39 +129,23 @@ void FactoryTempMenu::layoutExec()
         _calibrateResult[i]->setFixedSize(labelHeight, labelHeight);
         hLayout->addWidget(_calibrateResult[i]);
 
-        contentLayout->addLayout(hLayout);
+        labelLayout->addLayout(hLayout);
     }
 
-    contentLayout->addStretch();
+    labelLayout->addStretch();
 
-    contentLayout->setSpacing(8);
-}
+    labelLayout->setSpacing(8);
 
-/**************************************************************************************************
- * 功能:按钮
- *************************************************************************************************/
-void FactoryTempMenu::keyPressEvent(QKeyEvent *e)
-{
-    switch (e->key())
-    {
-        case Qt::Key_Up:
-        case Qt::Key_Left:
-            focusNextPrevChild(false);
-            return;
-        case Qt::Key_Down:
-        case Qt::Key_Right:
-            focusNextChild();
-            return;
-        default:
-            break;
-    }
+    mainLayout->addLayout(labelLayout);
 
-    PopupWidget::keyPressEvent(e);
+    _timer = new QTimer();
+    _timer->setInterval(2000);
+    connect(_timer, SIGNAL(timeout()), this, SLOT(_timeOut()));
 }
 
 void FactoryTempMenu::hideEvent(QHideEvent *e)
 {
-    PopupWidget::hideEvent(e);
+    QWidget::hideEvent(e);
 
     if (NULL != _timer)
     {

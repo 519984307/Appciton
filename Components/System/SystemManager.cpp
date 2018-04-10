@@ -446,6 +446,7 @@ void SystemManager::_publishTestResult(void)
                     while (NULL != QApplication::activeModalWidget())
                     {
                         QApplication::activeModalWidget()->hide();
+                        menuManager.close();
                     }
 
                     _selfTestResult->show();
@@ -545,6 +546,7 @@ void SystemManager::_publishTestResult(void)
                 while (NULL != QApplication::activeModalWidget())
                 {
                     QApplication::activeModalWidget()->hide();
+                    menuManager.close();
                 }
 
                 _selfTestResult->show();
@@ -587,6 +589,7 @@ void SystemManager::_publishTestResult(void)
                 while (NULL != QApplication::activeModalWidget())
                 {
                     QApplication::activeModalWidget()->hide();
+                    menuManager.close();
                 }
 
                 _selfTestResult->show();
@@ -607,6 +610,7 @@ void SystemManager::_publishTestResult(void)
             while (NULL != QApplication::activeModalWidget())
             {
                 QApplication::activeModalWidget()->hide();
+                menuManager.close();
             }
 
             _selfTestResult->show();
@@ -703,6 +707,7 @@ void SystemManager::_handleBMode(void)
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
+        menuManager.close();
     }
 }
 

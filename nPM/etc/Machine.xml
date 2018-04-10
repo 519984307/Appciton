@@ -25,12 +25,12 @@
     <AllParams>ECG,SPO2,RESP,NIBP,CO2,IBP,AG,CO,TEMP,PD</AllParams>
     <!--参数与Provider的关系-->
     <ECG SptProvider="DemoProvider,BLM_E5">DemoProvider</ECG>
-    <RESP SptProvider="DemoProvider,BLM_E5">DemoProvider</RESP>
+    <RESP SptProvider="DemoProvider,BLM_E5">BLM_E5</RESP>
     <SPO2 SptProvider="DemoProvider,BLM_SPO2,BLM_TS3,MASIMO_SPO2">DemoProvider</SPO2>
     <NIBP SptProvider="DemoProvider,BLM_NIBP,BLM_TN3,SUNTECH_NIBP">DemoProvider</NIBP>
-    <CO2 SptProvider="DemoProvider,BLM_CO2">DemoProvider</CO2>
+    <CO2 SptProvider="DemoProvider,BLM_CO2">BLM_CO2</CO2>
     <IBP SptProvider="DemoProvider,WITLEAF_IBP">DemoProvider</IBP>
-    <AG SptProvider="DemoProvider,PHASEIN_AG">DemoProvider</AG>
+    <AG SptProvider="DemoProvider,PHASEIN_AG">PHASEIN_AG</AG>
     <CO SptProvider="DemoProvider,WITLEAF_IBP">DemoProvider</CO>
     <TEMP SptProvider="DemoProvider,BLM_TT3">DemoProvider</TEMP>
     <PD SptProvider="PDProvider">PDProvider</PD>
@@ -42,10 +42,8 @@
     <BLM_TS3Port>/dev/ttyS3</BLM_TS3Port>
 <!--    <MASIMO_SPO2Port>/dev/ttyS3</MASIMO_SPO2Port>-->
     <SystemBoardPort>/dev/ttyS4</SystemBoardPort>
-t
     <BLM_TT3Port>/dev/ttyS5</BLM_TT3Port>
-<!--    <WITLEAF_IBPPort>/dev/ttyWK2</WITLEAF_IBPPort>-->
-    <WITLEAF_IBPPort>/dev/ttyUSB0</WITLEAF_IBPPort>
+    <WITLEAF_IBPPort>/dev/ttyWK2</WITLEAF_IBPPort>
     <BLM_CO2Port>/dev/ttyWK3</BLM_CO2Port>
 <!--    <PHASEIN_AGPort>/dev/ttyWK3</PHASEIN_AGPort>-->
 </Machine>

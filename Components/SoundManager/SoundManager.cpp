@@ -681,7 +681,7 @@ bool SoundManager::playSound(SoundType type, int id, bool preempt)
     int soundID = _getSoundId(type, tmpChannel, id);
     if (soundID < 0)
     {
-        debug("\033[31m get sound id error:type = %d, id = %d\033[m", type, id);
+//        debug("\033[31m get sound id error:type = %d, id = %d\033[m", type, id);
         return false;
     }
 

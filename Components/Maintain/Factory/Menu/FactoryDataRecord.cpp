@@ -15,30 +15,20 @@ FactoryDataRecord *FactoryDataRecord::_selfObj = NULL;
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-FactoryDataRecord::FactoryDataRecord() : PopupWidget()
-{
-    layoutExec();
-}
-
-/**************************************************************************************************
- * 布局。
- *************************************************************************************************/
-void FactoryDataRecord::layoutExec()
+FactoryDataRecord::FactoryDataRecord() : MenuWidget(trs("DataRecord"))
 {
     int submenuW = factoryWindowManager.getSubmenuWidth();
     int submenuH = factoryWindowManager.getSubmenuHeight();
     setFixedSize(submenuW, submenuH);
 
-    setTitleBarText(trs("DataRecord"));
-
     int itemW = submenuW - 200;
     int fontsize = 15;
     int btnWidth = itemW / 2;
 
-//    QVBoxLayout *labelLayout = new QVBoxLayout();
-//    labelLayout->setContentsMargins(50, 0, 50, 0);
-//    labelLayout->setSpacing(10);
-//    labelLayout->setAlignment(Qt::AlignTop);
+    QVBoxLayout *labelLayout = new QVBoxLayout();
+    labelLayout->setContentsMargins(50, 0, 50, 0);
+    labelLayout->setSpacing(10);
+    labelLayout->setAlignment(Qt::AlignTop);
 
     _ECG = new IComboList(trs("ECG"));
     _ECG->setFont(fontManager.textFont(fontsize));
@@ -48,7 +38,7 @@ void FactoryDataRecord::layoutExec()
     _ECG->addItem(trs("Off"));
     _ECG->addItem(trs("On"));
     connect(_ECG->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_ECGReleased(int)));
-    contentLayout->addWidget(_ECG);
+    labelLayout->addWidget(_ECG);
 
     _SPO2 = new IComboList(trs("SPO2"));
     _SPO2->setFont(fontManager.textFont(fontsize));
@@ -58,7 +48,7 @@ void FactoryDataRecord::layoutExec()
     _SPO2->addItem(trs("Off"));
     _SPO2->addItem(trs("On"));
     connect(_SPO2->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_SPO2Released(int)));
-    contentLayout->addWidget(_SPO2);
+    labelLayout->addWidget(_SPO2);
 
     _NIBP = new IComboList(trs("NIBP"));
     _NIBP->setFont(fontManager.textFont(fontsize));
@@ -68,7 +58,7 @@ void FactoryDataRecord::layoutExec()
     _NIBP->addItem(trs("Off"));
     _NIBP->addItem(trs("On"));
     connect(_NIBP->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_NIBPReleased(int)));
-    contentLayout->addWidget(_NIBP);
+    labelLayout->addWidget(_NIBP);
 
     _TEMP = new IComboList(trs("TEMP"));
     _TEMP->setFont(fontManager.textFont(fontsize));
@@ -78,7 +68,7 @@ void FactoryDataRecord::layoutExec()
     _TEMP->addItem(trs("Off"));
     _TEMP->addItem(trs("On"));
     connect(_TEMP->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_TEMPReleased(int)));
-    contentLayout->addWidget(_TEMP);
+    labelLayout->addWidget(_TEMP);
 
     _battery = new IComboList(trs("BatteryInfo"));
     _battery->setFont(fontManager.textFont(fontsize));
@@ -88,7 +78,7 @@ void FactoryDataRecord::layoutExec()
     _battery->addItem(trs("Off"));
     _battery->addItem(trs("On"));
     connect(_battery->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_batteryReleased(int)));
-    contentLayout->addWidget(_battery);
+    labelLayout->addWidget(_battery);
 
     _PDCommLog = new IComboList(trs("PDCommData"));
     _PDCommLog->setFont(fontManager.textFont(fontsize));
@@ -98,40 +88,19 @@ void FactoryDataRecord::layoutExec()
     _PDCommLog->addItem(trs("Off"));
     _PDCommLog->addItem(trs("On"));
     connect(_PDCommLog->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_pdCommLog(int)));
-    contentLayout->addWidget(_PDCommLog);
+    labelLayout->addWidget(_PDCommLog);
 
     QLabel *_note = new QLabel(trs("RecordedDataUsesCPU"));
     _note->setAlignment(Qt::AlignCenter);
     _note->setFixedHeight(TITLE_H);
     _note->setFont(fontManager.textFont(fontsize));
-    contentLayout->addWidget(_note);
+    labelLayout->addWidget(_note);
 
-    contentLayout->addStretch();
+    labelLayout->addStretch();
 
-    contentLayout->setSpacing(10);
+    labelLayout->setSpacing(10);
 
-    setCloseBtnTxt("");
-    setCloseBtnPic(QImage("/usr/local/iDM/icons/main.png"));
-    setCloseBtnColor(Qt::transparent);
-}
-
-void FactoryDataRecord::keyPressEvent(QKeyEvent *e)
-{
-    switch (e->key())
-    {
-        case Qt::Key_Up:
-        case Qt::Key_Left:
-            focusNextPrevChild(false);
-            return;
-        case Qt::Key_Down:
-        case Qt::Key_Right:
-            focusNextChild();
-            return;
-        default:
-            break;
-    }
-
-    PopupWidget::keyPressEvent(e);
+    mainLayout->addLayout(labelLayout);
 }
 
 /**************************************************************************************************

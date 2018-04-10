@@ -17,6 +17,7 @@
 #include "SystemManager.h"
 #include "SoundManager.h"
 #include "SystemAlarm.h"
+#include "MenuManager.h"
 
 /**************************************************************************************************
  * 构造。
@@ -62,11 +63,8 @@ void NormalModeKeyAction::keyF3Pressed(bool multiBtnPress)
         return;
     }
 
-    //nibp
-    if (systemManager.isSupport(CONFIG_NIBP))
-    {
-        nibpParam.keyPressed();
-    }
+    //print
+    printManager.requestPrint(PRINT_TYPE_CONTINUOUS, PRINT_LAYOUT_ID_CONTINUOUS);
 }
 
 void NormalModeKeyAction::keyF4Pressed(bool multiBtnPress)
@@ -75,9 +73,11 @@ void NormalModeKeyAction::keyF4Pressed(bool multiBtnPress)
     {
         return;
     }
-
-    //print
-    printManager.requestPrint(PRINT_TYPE_CONTINUOUS, PRINT_LAYOUT_ID_CONTINUOUS);
+    //nibp
+    if (systemManager.isSupport(CONFIG_NIBP))
+    {
+        nibpParam.keyPressed();
+    }
 }
 
 void NormalModeKeyAction::keyF5Pressed(bool multiBtnPress)
@@ -101,6 +101,7 @@ void NormalModeKeyAction::keyF1Released(bool multiBtnPress)
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
+        menuManager.close();
         return;
     }
 
@@ -127,11 +128,7 @@ void NormalModeKeyAction::keyF3Released(bool multiBtnPress)
     {
         return;
     }
-
-    if (systemManager.isSupport(CONFIG_NIBP))
-    {
-        nibpParam.keyReleased();
-    }
+    //print button release
 }
 
 void NormalModeKeyAction::keyF4Released(bool multiBtnPress)
@@ -140,7 +137,11 @@ void NormalModeKeyAction::keyF4Released(bool multiBtnPress)
     {
         return;
     }
-    //print button release
+
+    if (systemManager.isSupport(CONFIG_NIBP))
+    {
+        nibpParam.keyReleased();
+    }
 }
 
 void NormalModeKeyAction::keyF5Released(bool multiBtnPress)

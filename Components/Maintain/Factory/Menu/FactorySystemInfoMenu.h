@@ -1,10 +1,10 @@
 #pragma once
-#include "PopupWidget.h"
+#include "MenuWidget.h"
 
 class LabelButton;
 class LButtonEn;
 class QLabel;
-class FactorySystemInfoMenu : public PopupWidget
+class FactorySystemInfoMenu : public MenuWidget
 {
     Q_OBJECT
 
@@ -22,10 +22,6 @@ public:
 
     ~FactorySystemInfoMenu();
     void readyShow();
-
-protected:
-    virtual void layoutExec(void);
-    void keyPressEvent(QKeyEvent *e);
 
 private slots:
     void _serialNumReleased();

@@ -28,7 +28,7 @@ void NIBPDataTrendWidget::_releaseHandle(IWidget *)
 
 void NIBPDataTrendWidget::_releaseHandle()
 {
-    dbg;
+
 }
 
 /**************************************************************************************************

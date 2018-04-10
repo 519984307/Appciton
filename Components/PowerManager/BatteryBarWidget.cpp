@@ -91,7 +91,7 @@ void BatteryBarWidget::setIconLow()
 void BatteryBarWidget::_batRealsed(IWidget *)
 {
     QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - menuManager.width()) / 2;
+    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
     int y = r.y() + 35;
     _batteryIndicatorWidget.autoShow(x, y);
 

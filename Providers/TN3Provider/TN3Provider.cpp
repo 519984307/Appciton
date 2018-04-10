@@ -59,6 +59,7 @@ void TN3Provider::_selfTest(unsigned char *packet, int len)
 {
     int error = 0;
     int num = packet[1];
+    outHex(packet,len);
     if (num > 0)
     {
         QString errorStr("");
@@ -125,8 +126,9 @@ void TN3Provider::_selfTest(unsigned char *packet, int len)
     }
 }
 
-void TN3Provider::_errorWarm(unsigned char *packet, int /*len*/)
+void TN3Provider::_errorWarm(unsigned char *packet, int len)
 {
+    outHex(packet,len);
     nibpParam.errorDisable();
     QString errorStr("");
     errorStr = "error code = ";

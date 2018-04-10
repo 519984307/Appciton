@@ -2,7 +2,6 @@
 #include "ECG12LeadSoftkeyAction.h"
 #include "WindowManager.h"
 #include "ECGParam.h"
-#include "MenuManager.h"
 #include "ECG12LDataAcquire.h"
 #include "ECG12LSnapShotReview.h"
 #include "ECG12LeadManager.h"

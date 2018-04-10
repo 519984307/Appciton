@@ -1,6 +1,6 @@
 #pragma once
 #include <QPushButton>
-#include <QWidget>
+#include "MenuWidget.h"
 #include "MenuGroup.h"
 #include "LabelButton.h"
 
@@ -10,32 +10,35 @@ class QStackedWidget;
 class SubMenu;
 class QScrollArea;
 class PButton;
-class ServiceMenu : public QWidget
+class ServiceWindowManager : public MenuWidget
 {
     Q_OBJECT
 
 public:
-    static ServiceMenu &Construation()
+    static ServiceWindowManager &Construation()
     {
         if (NULL == _selfObj)
         {
-            _selfObj = new ServiceMenu();
+            _selfObj = new ServiceWindowManager();
         }
 
         return *_selfObj;
     }
-    static ServiceMenu *_selfObj;
+    static ServiceWindowManager *_selfObj;
 
-    ~ServiceMenu();
+    ~ServiceWindowManager();
 
     //初始化
     void init();
 
+    //获取子菜单宽度
+    int getSubmenuWidth() const {return _submenuWidth;}
+
+    //获取子菜单高度
+    int getSubmenuHeight() const {return _submenuHeight;}
+
 signals:
     void foucsChange();
-
-protected:
-    void paintEvent(QPaintEvent *e);
 
 private slots:
     void _nibpButtonSlot();
@@ -56,7 +59,7 @@ private slots:
     void _changeScrollValue(int value);
 
 private:
-    ServiceMenu();
+    ServiceWindowManager();
 
     static const int _borderWidth = 8;
 
@@ -71,5 +74,8 @@ private:
     IButton *_tempButton;
     IButton *_errorLogButton;
     IButton *_returnButton;
+
+    int _submenuWidth;                  //子菜单宽度
+    int _submenuHeight;                 //子菜单高度
 };
-#define serviceMenu (ServiceMenu::Construation())
+#define serviceWindowManager (ServiceWindowManager::Construation())

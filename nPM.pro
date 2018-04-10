@@ -165,6 +165,7 @@ SOURCES +=                                                                      
     Utility/Widgets/ITableWidget.cpp                                            \
     Utility/Widgets/LabelButton.cpp                                             \
     Utility/Widgets/MenuGroup.cpp                                               \
+    Utility/Widgets/MenuWidget.cpp                                              \
     Utility/Widgets/PMessageBox.cpp                                             \
     Utility/Widgets/PopupWidget.cpp                                             \
     Utility/Widgets/SubMenu.cpp                                                 \
@@ -317,7 +318,6 @@ SOURCES +=                                                                      
     Components/ECG12LeadManager/ECG12LDataStorage.cpp                           \
     Components/ECG12LeadManager/ECG12LeadManager.cpp                            \
     Components/ECG12LeadManager/ECG12LeadPdfBuilder.cpp                         \
-    Components/Maintain/Supervisor/Menu/SupervisorPasswordMenu.cpp              \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.cpp            \
     Components/Maintain/Supervisor/Menu/SupervisorPortMenu.cpp                  \
     Components/Maintain/Supervisor/Menu/SupervisorDisplayMenu.cpp               \
@@ -335,7 +335,7 @@ SOURCES +=                                                                      
     Components/Maintain/Supervisor/SupervisorEntrance.cpp                       \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.cpp                \
     Components/Maintain/Service/Menu/ServiceEntrance.cpp                        \
-    Components/Maintain/Service/Menu/ServiceMenu.cpp                            \
+    Components/Maintain/Service/Menu/ServiceWindowManager.cpp                   \
     Components/Maintain/Service/NIBP/NIBPPressureControl.cpp                    \
     Components/Maintain/Service/NIBP/NIBPCalibrate.cpp                          \
     Components/Maintain/Service/NIBP/NIBPManometer.cpp                          \
@@ -463,7 +463,7 @@ SOURCES +=                                                                      
     Main/IApplication.cpp                                                       \
     Main/IThread.cpp                                                            \
     Main/MergeConfig.cpp                                                        \
-    Main/Starter.cpp                                                            \
+    Main/Starter.cpp \
 
 HEADERS +=                                                                      \
     SOUP/SmtpClientForQt/src/smtpexports.h                                      \
@@ -583,6 +583,7 @@ HEADERS +=                                                                      
     Utility/Widgets/ITableWidget.h                                              \
     Utility/Widgets/LabelButton.h                                               \
     Utility/Widgets/MenuGroup.h                                                 \
+    Utility/Widgets/MenuWidget.h                                                \
     Utility/Widgets/PMessageBox.h                                               \
     Utility/Widgets/PopupWidget.h                                               \
     Utility/Widgets/SubMenu.h                                                   \
@@ -756,7 +757,6 @@ HEADERS +=                                                                      
     Components/ECG12LeadManager/ECG12LDataPrint.h                               \
     Components/ECG12LeadManager/ECG12LeadFileBuilderBase.h                      \
     Components/ECG12LeadManager/ECG12LeadPdfBuilder.h                           \
-    Components/Maintain/Supervisor/Menu/SupervisorPasswordMenu.h                \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.h              \
     Components/Maintain/Supervisor/Menu/SupervisorPortMenu.h                    \
     Components/Maintain/Supervisor/Menu/SupervisorDisplayMenu.h                 \
@@ -774,7 +774,7 @@ HEADERS +=                                                                      
     Components/Maintain/Supervisor/SupervisorEntrance.h                         \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.h                  \
     Components/Maintain/Service/Menu/ServiceEntrance.h                          \
-    Components/Maintain/Service/Menu/ServiceMenu.h                              \
+    Components/Maintain/Service/Menu/ServiceWindowManager.h                     \
     Components/Maintain/Service/NIBP/NIBPPressureControl.h                      \
     Components/Maintain/Service/NIBP/NIBPCalibrate.h                            \
     Components/Maintain/Service/NIBP/NIBPManometer.h                            \
@@ -932,7 +932,7 @@ HEADERS +=                                                                      
     Main/IThread.h                                                              \
     Main/MergeConfig.h                                                          \
     Main/Starter.h                                                              \
-    Main/Version.h                                                              \
+    Main/Version.h \
 
 #头文件修改后，重新编译依赖的源文件
 DEPENDPATH +=                                                                   \

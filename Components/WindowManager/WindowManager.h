@@ -4,6 +4,7 @@
 #include <QList>
 #include "WaveWidget.h"
 #include "SystemDefine.h"
+#include "MenuManager.h"
 
 /***************************************************************************************************
  * 窗体管理器: 负责管理所有窗体布局

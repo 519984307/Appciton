@@ -28,7 +28,7 @@ protected:
     virtual void readyShow(void);
 
 private slots:
-    void _showSolt(void);
+//    void _showSolt(void);
 
 private:
     SupervisorEntrance();

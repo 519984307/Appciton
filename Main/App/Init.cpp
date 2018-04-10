@@ -325,7 +325,7 @@ static void _initProviderParam(void)
     // NIBP部分。
     if (systemManager.isSupport(CONFIG_NIBP))
     {
-        QString str;
+        QString str = "SUNTECH_NIBP";
         machineConfig.getStrValue("NIBP", str);
         if (str == "SUNTECH_NIBP")
         {

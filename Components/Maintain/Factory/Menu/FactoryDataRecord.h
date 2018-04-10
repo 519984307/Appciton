@@ -1,5 +1,5 @@
 #pragma once
-#include "PopupWidget.h"
+#include "MenuWidget.h"
 
 
 class QLabel;
@@ -7,7 +7,7 @@ class IComboList;
 class LButtonEn;
 class LabelButton;
 class QTimer;
-class FactoryDataRecord : public PopupWidget
+class FactoryDataRecord : public MenuWidget
 {
     Q_OBJECT
 
@@ -26,10 +26,6 @@ public:
     ~FactoryDataRecord();
 
     void readyShow();
-
-protected:
-    virtual void layoutExec(void);
-    void keyPressEvent(QKeyEvent *e);
 
 private slots:
     void _ECGReleased(int);

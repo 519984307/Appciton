@@ -73,7 +73,6 @@ void NIBPEventTrigger::_safeWaitTimeSTATStop()
  *************************************************************************************************/
 void NIBPEventTrigger::triggerbutton()
 {
-    int i = nibpParam.currentState();
     switch(nibpParam.currentState())
     {
     case NIBP_STATE_STANDBY:

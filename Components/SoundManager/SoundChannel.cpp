@@ -133,7 +133,7 @@ int SoundChannel::addSound(const char *fileName)
     if (!wav->load(fileName))
     {
         delete wav;
-        debug("load wav file error:%s", fileName);
+//        debug("load wav file error:%s", fileName);
         return -1;
     }
 

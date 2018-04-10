@@ -16,28 +16,11 @@ FactorySystemInfoMenu *FactorySystemInfoMenu::_selfObj = NULL;
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-FactorySystemInfoMenu::FactorySystemInfoMenu() : PopupWidget()
-{
-    setCloseBtnTxt("");
-    setCloseBtnPic(QImage("/usr/local/nPM/icons/main.png"));
-    setCloseBtnColor(Qt::transparent);
-
-//    setDesc(trs("SystemInfoSetting"));
-
-//    startLayout();
-    layoutExec();
-}
-
-/**************************************************************************************************
- * 布局。
- *************************************************************************************************/
-void FactorySystemInfoMenu::layoutExec()
+FactorySystemInfoMenu::FactorySystemInfoMenu() : MenuWidget(trs("SystemInfoSetting"))
 {
     int submenuW = factoryWindowManager.getSubmenuWidth();
     int submenuH = factoryWindowManager.getSubmenuHeight();
     setFixedSize(submenuW, submenuH);
-
-    setTitleBarText(trs("SystemInfoSetting"));
 
     int itemW = submenuW - 200;
     int fontSize = fontManager.getFontSize(1);
@@ -49,30 +32,18 @@ void FactorySystemInfoMenu::layoutExec()
     _serialNum->label->setAlignment(Qt::AlignCenter);
     _serialNum->button->setFixedSize(btnWidth, ITEM_H);
     connect(_serialNum->button, SIGNAL(realReleased()), this, SLOT(_serialNumReleased()));
-    contentLayout->addWidget(_serialNum);
 
-    contentLayout->addStretch();
+    QVBoxLayout *labelLayout = new QVBoxLayout();
+    labelLayout->setContentsMargins(50, 0, 50, 0);
+    labelLayout->setSpacing(10);
+    labelLayout->setAlignment(Qt::AlignTop);
+    labelLayout->addWidget(_serialNum);
 
-    contentLayout->setSpacing(10);
-}
+    labelLayout->addStretch();
 
-void FactorySystemInfoMenu::keyPressEvent(QKeyEvent *e)
-{
-    switch (e->key())
-    {
-        case Qt::Key_Up:
-        case Qt::Key_Left:
-            focusNextPrevChild(false);
-            return;
-        case Qt::Key_Down:
-        case Qt::Key_Right:
-            focusNextChild();
-            return;
-        default:
-            break;
-    }
+    labelLayout->setSpacing(10);
 
-    PopupWidget::keyPressEvent(e);
+    mainLayout->addLayout(labelLayout);
 }
 
 /**************************************************************************************************

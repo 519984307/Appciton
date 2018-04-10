@@ -1,6 +1,6 @@
 #pragma once
-#include <QWidget>
-#include <QPushButton>
+#include "MenuWidget.h"
+#include "IButton.h"
 #include <QList>
 
 #define TITLE_H (30)           //标题高度
@@ -10,9 +10,8 @@
 class QLabel;
 class QVBoxLayout;
 class IWidget;
-class PButton;
 class QStackedWidget;
-class FactoryWindowManager : public QWidget
+class FactoryWindowManager : public MenuWidget
 {
     Q_OBJECT
 
@@ -43,34 +42,16 @@ public:
     //获取子菜单高度
     int getSubmenuHeight() const {return _submenuHeight;}
 
-    //添加子菜单
-    void addSubMenu(QWidget *win);
-
-    //获取菜单区域的Rect
-    QRect getMenuArea(void);
-
 private slots:
-    //图标链接
-    void _numBtnSlot(int index);
+    void _testButtonSlot();
+    void _dataRecordButtonlot();
+    void _systemInfoButtonSlot();
+    void _tempCalibateButtonSlot();
+    void _returnButtonSlot();
 
 private:
     //构造函数
     FactoryWindowManager();
-
-    //启动布局
-    void _doLayoutStyle();
-
-    //计算子菜单大小
-    void _caclSubmenuSize();
-
-    void _enterFactoryTestMenu();
-    void _enterFactoryDataRecord();
-    void _enterFactorySystemInfoMenu();
-    void _enterFactoryTempMenu();
-
-    QVBoxLayout *_mainLayout;           //主布局器
-    QStackedWidget *_subMenu;           //子菜单
-    QLabel *_windowTitleLabel;          //窗体名称
 
     static const int _borderWidth = 8;
 
@@ -83,7 +64,11 @@ private:
         FACTORY_NR
     };
 
-    PButton *pushbutton[FACTORY_NR];
+    IButton *_testButton;
+    IButton *_dataRecordButton;
+    IButton *_systemInfoButton;
+    IButton *_tempCalibateButton;
+    IButton *_returnButton;
 
 private:
     int _submenuWidth;                  //子菜单宽度

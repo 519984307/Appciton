@@ -1,12 +1,12 @@
 #pragma once
-#include <QWidget>
+#include "MenuWidget.h"
 #include <QPushButton>
 #include "LabelButton.h"
 #include <QTextEdit>
 #include "LabeledLabel.h"
 #include "QTimer"
 
-class ServiceCPUTemp : public QWidget
+class ServiceCPUTemp : public MenuWidget
 {
     Q_OBJECT
 
@@ -26,17 +26,12 @@ public:
     //初始化
     void init();
 
-protected:
-    void paintEvent(QPaintEvent *e);
-
 private slots:
     void _returnBtnReleased(void);
     void _TimeOut();
 
 private:
     ServiceCPUTemp();
-
-    QLabel *_title;                      //标题
 
     QTimer *_Timer;
 

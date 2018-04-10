@@ -1,8 +1,6 @@
 #pragma once
-#include <QWidget>
-#include <QListWidget>
+#include "MenuWidget.h"
 #include <QKeyEvent>
-#include <QEvent>
 #include "IListWidget.h"
 #include "Debug.h"
 
@@ -12,9 +10,8 @@ class QStackedWidget;
 class QListWidgetItem;
 class SubMenu;
 class QScrollArea;
-class IButton;
 
-class MenuGroup : public QWidget
+class MenuGroup : public MenuWidget
 {
     Q_OBJECT
 
@@ -60,7 +57,7 @@ public:
     int getListWidth() {return _listWidth;}
 
     //获取子菜单高度
-    int getSubmenuHeight() {return _submenuHeight;}
+    int getSubmenuHeight() {return _submenuWidth;}
 
     //获取子菜单宽度
     int getSubmenuWidth() {return _submenuWidth;}

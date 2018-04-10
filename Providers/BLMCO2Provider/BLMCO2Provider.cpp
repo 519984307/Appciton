@@ -83,6 +83,20 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, false);
     }
 
+    // 波形数据，每秒更新20次。
+    int waveValue = packet[4];
+    waveValue <<= 8;
+    waveValue |= packet[5];
+    bool invalid = false;
+    if (waveValue == 0xFFFF)
+    {
+        invalid = true;
+        waveValue = 0;
+    }
+
+    waveValue = (waveValue > 2500) ? 2500 : waveValue;
+    co2Param.addWaveformData(waveValue, invalid);
+
     // 数据，每秒更新2次。
     short value;
     unsigned char val;
@@ -358,7 +372,7 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
 
         default:
             break;
-    }  
+    }
 }
 
 /**************************************************************************************************

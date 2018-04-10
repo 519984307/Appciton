@@ -25,7 +25,7 @@ void SupervisorEntrance::layoutExec(void)
 
     _passwordMenuManage = new PasswordMenuManage("SupervisorPassword");
     _passwordMenuManage->setPassword(_normalPassword);
-    connect(_passwordMenuManage, SIGNAL(enterSignal()), this, SLOT(_showSolt()));
+//    connect(_passwordMenuManage, SIGNAL(enterSignal()), this, SLOT(_showSolt()));
 
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addWidget(_passwordMenuManage);
@@ -44,10 +44,10 @@ void SupervisorEntrance::readyShow(void)
     _passwordMenuManage->clearPassword();
 }
 
-void SupervisorEntrance::_showSolt()
-{
-    menuManager.openMenuGroup(&supervisorMenuManager);
-}
+//void SupervisorEntrance::_showSolt()
+//{
+//    menuManager.openMenuGroup(&supervisorMenuManager);
+//}
 
 /**************************************************************************************************
  * 构造。

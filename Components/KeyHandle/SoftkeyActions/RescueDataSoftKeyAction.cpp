@@ -51,6 +51,7 @@ void RescueDataSoftKeyAction::trendReview(bool isPressed)
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
+        menuManager.close();
     }
 
     if (isVisible)
@@ -59,8 +60,8 @@ void RescueDataSoftKeyAction::trendReview(bool isPressed)
     }
 
     QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - menuManager.width()) / 2;
-    int y = r.y() + (r.height() - menuManager.height());
+    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
+    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
     trendDataWidget.autoShow(x, y);
 }
 
@@ -79,6 +80,7 @@ void RescueDataSoftKeyAction::summaryReview(bool isPressed)
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
+        menuManager.close();
     }
 
     if (isVisible)
@@ -87,8 +89,8 @@ void RescueDataSoftKeyAction::summaryReview(bool isPressed)
     }
 
     QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - menuManager.width()) / 2;
-    int y = r.y() + (r.height() - menuManager.height());
+    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
+    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
     //summaryRescueDataWidget.autoShow(x, y);
     trendGraphWidget.autoShow(x, y);
 }
@@ -107,6 +109,7 @@ void RescueDataSoftKeyAction::exportData(bool isPressed)
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
+        menuManager.close();
     }
 
     if (isVisible)
@@ -115,8 +118,8 @@ void RescueDataSoftKeyAction::exportData(bool isPressed)
     }
 
     QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - menuManager.width()) / 2;
-    int y = r.y() + (r.height() - menuManager.height());
+    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
+    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
     rescueDataExportWidget.autoShow(x, y);
 }
 

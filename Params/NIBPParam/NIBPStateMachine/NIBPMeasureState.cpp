@@ -29,7 +29,6 @@ void NIBPMeasureState::enter(void)
  *************************************************************************************************/
 void NIBPMeasureState::unPacket(unsigned char *packet, int /*len*/)
 {
-    dbg;
     setTimeOut(10000);//需要下移
 
     if (provider->isStopACK(packet))

@@ -21,18 +21,6 @@ void ServiceCPUTemp::init()
 }
 
 /**************************************************************************************************
- * 功能:绘画
- *************************************************************************************************/
-void ServiceCPUTemp::paintEvent(QPaintEvent *e)
-{
-    QPainter painter(this);
-    painter.setBrush(palette().background());
-    painter.drawRoundedRect(rect(), 5, 5);
-
-    QWidget::paintEvent(e);
-}
-
-/**************************************************************************************************
  * 返回。
  *************************************************************************************************/
 void ServiceCPUTemp::_returnBtnReleased()
@@ -50,46 +38,31 @@ void ServiceCPUTemp::_TimeOut()
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ServiceCPUTemp::ServiceCPUTemp() : QWidget()
+ServiceCPUTemp::ServiceCPUTemp() : MenuWidget(trs("ServiceCPUTemp"))
 {
     int fontSize = fontManager.getFontSize(1);
     int btnWidth = 500;
 
-    QVBoxLayout *labelLayout = new QVBoxLayout();
-    labelLayout->setContentsMargins(50, 0, 50, 20);
-    labelLayout->setSpacing(2);
-    labelLayout->setAlignment(Qt::AlignTop);
-
-    // 标题栏。
-    _title = new QLabel(trs("ServiceCPUTemp"));
-    _title->setAlignment(Qt::AlignCenter);
-    _title->setFixedHeight(TITLE_H + 10);
-    _title->setFont(fontManager.textFont(fontManager.getFontSize(4)));
-    QPalette p;
-    p.setColor(QPalette::Foreground, Qt::black);
-    _title->setPalette(p);
-    labelLayout->addWidget(_title);
-
     _CORE = new LabeledLabel(trs("TEMP") + ":  ", "");
     _CORE->setFont(fontManager.textFont(fontSize));
     _CORE->setFixedSize(btnWidth, ITEM_H);
-    labelLayout->addWidget(_CORE, 0, Qt::AlignCenter);
 
     _btnReturn = new LButtonEn();
     _btnReturn->setText(trs("VersionReturn"));
     _btnReturn->setFont(fontManager.textFont(fontSize));
     _btnReturn->setFixedSize(150, ITEM_H);
     connect(_btnReturn, SIGNAL(realReleased()), this, SLOT(_returnBtnReleased()));
+
+    QVBoxLayout *labelLayout = new QVBoxLayout();
+    labelLayout->setContentsMargins(50, 0, 50, 20);
+    labelLayout->setSpacing(2);
+    labelLayout->setAlignment(Qt::AlignTop);
+    labelLayout->addWidget(_CORE, 0, Qt::AlignCenter);
     labelLayout->addStretch();
     labelLayout->addWidget(_btnReturn, 0, Qt::AlignRight);
 //    labelLayout->addStretch();
 
-    setLayout(labelLayout);
-
-    p.setColor(QPalette::Window, QColor(209, 203, 183));
-    setPalette(p);
-
-//    setFixedSize(serviceWindowManager.getSubmenuWidth(), serviceWindowManager.getSubmenuHeight());
+    mainLayout->addLayout(labelLayout);
 
     _Timer = new QTimer(this);
     connect(_Timer, SIGNAL(timeout()), this, SLOT(_TimeOut()));

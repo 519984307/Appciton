@@ -312,7 +312,7 @@ void UserConfigEditMenu::onBtnClick()
             configEditMenuGrp.setCurrentEditConfigName(d_ptr->generateDefaultConfigName());
             configEditMenuGrp.setCurrentEditConfig(d_ptr->curConfig);
             configEditMenuGrp.initializeSubMenu();
-            menuManager.addMenuGroup(&configEditMenuGrp);
+            configEditMenuGrp.popup();
         }
 
     }
@@ -333,7 +333,7 @@ void UserConfigEditMenu::onBtnClick()
             configEditMenuGrp.setCurrentEditConfigName(d_ptr->configs.at(index).name);
             configEditMenuGrp.setCurrentEditConfig(d_ptr->curConfig);
             configEditMenuGrp.initializeSubMenu();
-            menuManager.addMenuGroup(&configEditMenuGrp);
+            configEditMenuGrp.popup();
         }
     }
     else if (btn == d_ptr->delBtn)

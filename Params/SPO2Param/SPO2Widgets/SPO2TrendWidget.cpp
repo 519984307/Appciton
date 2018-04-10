@@ -31,7 +31,7 @@ void SPO2TrendWidget::setSPO2Value(short spo2)
         _spo2String = QString::number(spo2);
     }
     else if (spo2 == UnknownData())
-    {dbg;
+    {
         _spo2String = UnknownStr();
     }
     else

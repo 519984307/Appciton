@@ -1,5 +1,6 @@
 #include "ServiceVersion.h"
 #include <QVBoxLayout>
+#include "ServiceWindowManager.h"
 #include "SystemBoardProvider.h"
 #include "SystemManager.h"
 #include <QTextTable>
@@ -63,7 +64,6 @@ void ServiceVersion::getECGVersion(unsigned char *data, int len)
 void ServiceVersion::getNIBPVersion(unsigned char *data, int len)
 {
     _NIBPVersion.clear();
-    _NIBPDaemonVersion.clear();
 
     if(len < (minLen + minLen - 1))
     {
@@ -79,14 +79,6 @@ void ServiceVersion::getNIBPVersion(unsigned char *data, int len)
             .arg(QString(P + 64));
 
     _NIBP->setText(_NIBPVersion);
-
-    _NIBPDaemonVersion = QString("SW(%1.%2,    %3  %4)")
-            .arg(QString(P + 72))
-            .arg(QString(P + 88))
-            .arg(QString(P + 104))
-            .arg(QString(P + 120));
-
-    _NIBPDaemon->setText(_NIBPDaemonVersion);
 }
 
 /**************************************************************************************************
@@ -140,6 +132,7 @@ void ServiceVersion::getTEMPVersion(unsigned char *data, int len)
 
     _TEMP->setText(_TEMPVersion);
 }
+
 
 /**************************************************************************************************
  * 功能：nPMBoard版本。
@@ -233,17 +226,18 @@ void ServiceVersion::_coreVersion(void)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ServiceVersion::ServiceVersion() : QWidget()
+ServiceVersion::ServiceVersion() : MenuWidget(trs("ServiceVersion"))
 {
-    int fontSize = fontManager.getFontSize(1);
-    int btnWidth = 500;
+    int submenuW = serviceWindowManager.getSubmenuWidth();
+    int submenuH = serviceWindowManager.getSubmenuHeight();
+    setFixedSize(submenuW, submenuH);
 
-    QPalette p;
-    p.setColor(QPalette::Foreground, Qt::black);
+    int fontSize = fontManager.getFontSize(1);
+    int btnWidth = submenuW - 100;
 
     QVBoxLayout *labelLayout = new QVBoxLayout();
-    labelLayout->setContentsMargins(50, 0, 50, 20);
-    labelLayout->setSpacing(2);
+    labelLayout->setContentsMargins(50, 0, 50, 0);
+    labelLayout->setSpacing(5);
     labelLayout->setAlignment(Qt::AlignTop);
 
     _nPM = new LabeledLabel(trs("nPMVersion") + ":   ", "");
@@ -262,14 +256,6 @@ ServiceVersion::ServiceVersion() : QWidget()
     if (systemManager.isSupport(CONFIG_NIBP))
     {
         labelLayout->addWidget(_NIBP, 0, Qt::AlignCenter);
-    }
-
-    _NIBPDaemon = new LabeledLabel(trs("NIBPDaemonVersion") + ":   ", "");
-    _NIBPDaemon->setFont(fontManager.textFont(fontSize));
-    _NIBPDaemon->setFixedSize(btnWidth, ITEM_H);
-    if (systemManager.isSupport(CONFIG_NIBP))
-    {
-        labelLayout->addWidget(_NIBPDaemon, 0, Qt::AlignCenter);
     }
 
     _SPO2 = new LabeledLabel(trs("SPO2Version") + ":   ", "");
@@ -294,7 +280,7 @@ ServiceVersion::ServiceVersion() : QWidget()
         labelLayout->addWidget(_TEMP, 0, Qt::AlignCenter);
     }
 
-    _nPMBoard = new LabeledLabel(trs("nPMBoardVersion") + ":   ", "");
+    _nPMBoard = new LabeledLabel(trs("iDMBoardVersion") + ":   ", "");
     _nPMBoard->setFont(fontManager.textFont(fontSize));
     _nPMBoard->setFixedSize(btnWidth, ITEM_H);
     labelLayout->addWidget(_nPMBoard, 0, Qt::AlignCenter);
@@ -313,10 +299,7 @@ ServiceVersion::ServiceVersion() : QWidget()
 
     labelLayout->setSpacing(5);
 
-    setLayout(labelLayout);
-
-    p.setColor(QPalette::Window, QColor(209, 203, 183));
-    setPalette(p);
+    mainLayout->addLayout(labelLayout);
 }
 
 /**************************************************************************************************

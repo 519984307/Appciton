@@ -1,12 +1,12 @@
 #pragma once
-#include "PopupWidget.h"
+#include "MenuWidget.h"
 #include <QStackedWidget>
 #include <QGroupBox>
 
 class IComboList;
 class QLabel;
 class LabelButton;
-class FactoryTempMenu : public PopupWidget
+class FactoryTempMenu : public MenuWidget
 {
     Q_OBJECT
 
@@ -33,8 +33,6 @@ public:
     void showError(QString str);
 
 protected:
-    virtual void layoutExec(void);
-    void keyPressEvent(QKeyEvent *e);
     void hideEvent(QHideEvent *e);
 
 private slots:

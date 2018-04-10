@@ -31,7 +31,7 @@ public:
 
 signals:
     // 返回到菜单列表。
-    void enterSignal(void);
+//    void enterSignal(void);
 
 private slots:
     void _numBtnSlot(int index);

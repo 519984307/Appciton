@@ -43,12 +43,6 @@ public:
     //进入模式的应答
     void unPacket(bool flag);
 
-    //获取子菜单高度
-    int getSubmenuHeight() {return _submenuHeight;}
-
-    //获取子菜单宽度
-    int getSubmenuWidth() {return _submenuWidth;}
-
     // 返回到菜单列表项。
     void returnMenu(void);
 
@@ -88,10 +82,6 @@ private slots:
 
 private:
     NIBPRepair();
-
-    int _listWidth;                      //列表宽度
-    int _submenuWidth;                   //子菜单宽度
-    int _submenuHeight;                  //高度
 
     static const int _titleBarHeight = 29;
     static const int _listItemHeight = 26;

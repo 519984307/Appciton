@@ -70,7 +70,7 @@ void SystemMenu::_printCfgSlot(void)
 void SystemMenu::_configManagerSlot()
 {
     configMaintainMenuGrp.initializeSubMenu();
-    menuManager.openMenuGroup(&configMaintainMenuGrp);
+    menuManager.popup(&configMaintainMenuGrp);
 }
 
 /**************************************************************************************************

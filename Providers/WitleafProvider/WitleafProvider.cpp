@@ -96,7 +96,6 @@ void WitleafProvider::dataArrived()
  *************************************************************************************************/
 void WitleafProvider::handlePacket(unsigned char *data, int len)
 {
-//    outHex(data,len);
     if (data[0] == PARAM_TYPE_IBP)
     {
         switch (data[2])
@@ -219,7 +218,6 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
         }
         case IBP_RSP_ZERO_RESULT:
         {
-            outHex(data, len);
             IBPCalibration calib = (IBPCalibration)((data[3] >> 7) & 0x01);
             IBPSignalInput IBP = (IBPSignalInput)((data[3] >> 6) & 0x01);
             if (IBP == IBP_INPUT_1)
@@ -260,7 +258,6 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
         }
         case CO_RSP_MEASURE_RESULT:
         {
-            outHex(data, len);
             unsigned short coData = data[3];
             coData <<= 8;
             coData |= data[4];

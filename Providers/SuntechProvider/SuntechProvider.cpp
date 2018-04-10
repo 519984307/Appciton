@@ -80,8 +80,6 @@ void SuntechProvider::dataArrived(void)
             ringBuff.pop(1);
         }
 
-        outHex(buff, len);
-
         if (buff[len-1] == _calcCheckSum(buff,len-1))
         {
             nibpParam.unPacket(&buff[1], len - 2);
@@ -209,7 +207,6 @@ bool SuntechProvider::isStopACK(unsigned char *packet)
  *************************************************************************************************/
 short SuntechProvider::cuffPressure(unsigned char *packet)
 {
-    outHex(packet,3);
     if (packet[0] != 0x05)
     {
         return -1;
@@ -258,7 +255,6 @@ NIBPOneShotType SuntechProvider::isMeasureError(unsigned char *)
  *************************************************************************************************/
 void SuntechProvider::getResult(void)
 {
-    dbg;
     unsigned char cmd[3] = {0};
 
     cmd[0] = 0x79;

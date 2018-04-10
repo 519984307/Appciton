@@ -92,6 +92,7 @@ void ECG12LeadManager::startCapture()
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
+        menuManager.close();
     }
 
     if(isacquireVisible)
@@ -194,6 +195,7 @@ void ECG12LeadManager::startReview()
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
+        menuManager.close();
     }
 
     if (!isReviewVisible)
@@ -201,8 +203,8 @@ void ECG12LeadManager::startReview()
         ecg12LSnapShotReview.dataInit();
 
         QRect r = windowManager.getMenuArea();
-        int x = r.x() + (r.width() - menuManager.width()) / 2;
-        int y = r.y() + (r.height() - menuManager.height());
+        int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
+        int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
         ecg12LSnapShotReview.autoShow(x, y);
     }
 
@@ -426,8 +428,8 @@ void ECG12LeadManager::snapShotprint(int type)
 void ECG12LeadManager::showEmailList()
 {
     QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - menuManager.width()) ;
-    int y = r.y() + (r.height() - menuManager.height());
+    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) ;
+    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
     mailAddressWidget.autoShow(x+70, y+35);
 
     return;

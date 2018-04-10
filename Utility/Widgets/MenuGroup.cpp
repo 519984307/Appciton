@@ -19,6 +19,7 @@
 #include "IButton.h"
 #include "PublicMenuManager.h"
 #include "Debug.h"
+#include "MenuWidget.h"
 #include "MenuManager.h"
 
 /**************************************************************************************************
@@ -49,7 +50,6 @@ void MenuGroup::_itemClicked()
 
     if (m->name() == "Return")
     {
-//        menuManager.openMenuGroup(&generalMenuManager);
         menuManager.returnPrevious();
         emit menuGroupReturn();
     }
@@ -65,7 +65,7 @@ void MenuGroup::_itemClicked()
  *************************************************************************************************/
 void MenuGroup::_closeBtnSetFoucs()
 {
-    menuManager.closeBtnSetFoucs();
+    closeBtnSetFoucs();
 }
 
 /**************************************************************************************************
@@ -86,7 +86,7 @@ void MenuGroup::_changeScrollValue(int value)
 
 void MenuGroup::_closeSlot()
 {
-    menuManager.close();
+    close();
 }
 
 /**************************************************************************************************
@@ -106,7 +106,7 @@ void MenuGroup::keyPressEvent(QKeyEvent *event)
     {
         case Qt::Key_Up:
         case Qt::Key_Left:
-            if (Qt::StrongFocus == listTable->focusPolicy() && menuManager.closeBtnHasFocus())
+            if (Qt::StrongFocus == listTable->focusPolicy() && closeBtnHasFocus())
             {
                 listTable->setCurrentRow(listTable->count() - 1);
                 listTable->setFocus();
@@ -123,14 +123,14 @@ void MenuGroup::keyPressEvent(QKeyEvent *event)
             return;
         case Qt::Key_Down:
         case Qt::Key_Right:
-            if (Qt::StrongFocus == listTable->focusPolicy() && menuManager.closeBtnHasFocus())
+            if (Qt::StrongFocus == listTable->focusPolicy() && closeBtnHasFocus())
             {
                 listTable->setCurrentRow(0);
                 listTable->setFocus();
             }
             else
             {
-                if (menuManager.closeBtnHasFocus())
+                if (closeBtnHasFocus())
                 {
                     _changeScrollValue(0);
                 }
@@ -194,11 +194,11 @@ void MenuGroup::popup(int x, int y)
     if (x == 0 && y == 0)
     {
         QRect r = windowManager.getMenuArea();
-        x = r.x() + (r.width() - menuManager.width()) / 2;
-        y = r.y() + (r.height() - menuManager.height());
+        x = r.x() + (r.width() - width()) / 2;
+        y = r.y() + (r.height() - height());
     }
-    menuManager.move(x, y);
-    menuManager.show();
+    move(x, y);
+    show();
 }
 
 /**************************************************************************************************
@@ -242,12 +242,14 @@ void MenuGroup::popup(SubMenu *menu, int x, int y)
     if (x == 0 && y == 0)
     {
         QRect r = windowManager.getMenuArea();
-        x = r.x() + (r.width() - menuManager.width()) / 2;
-        y = r.y() + (r.height() - menuManager.height());
+        x = r.x() + (r.width() - width()) / 2;
+        y = r.y() + (r.height() - height());
     }
 
-    menuManager.move(x, y);
-    menuManager.show();
+//    menuManager.openWidget(this);
+//    menuManager.move(x, y);
+//    menuManager.show();
+    menuManager.popup(this, x, y);
 }
 
 /**************************************************************************************************
@@ -321,14 +323,14 @@ void MenuGroup::setFocusOrder(bool flag)
     {
         listTable->setFocusPolicy(Qt::StrongFocus);
         allWidget.append(listTable);
-        allWidget.append(menuManager.closeBtn);
+        allWidget.append(closeBtn);
     }
     else
     {
         listTable->setFocusPolicy(Qt::NoFocus);
         allWidget.append(_scorllArea);
         allWidget.append(_return);
-        allWidget.append(menuManager.closeBtn);
+        allWidget.append(closeBtn);
     }
 
     int count = allWidget.count();
@@ -357,11 +359,8 @@ void MenuGroup::listTableOrder(bool flag)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-MenuGroup::MenuGroup(const QString &name) : QWidget()
+MenuGroup::MenuGroup(const QString &name) : MenuWidget(name)
 {
-    // 设定为模态窗口。
-//    setModal(true);
-
     _menuName = name;
     _menuDesc = name + "Desc";
 
@@ -439,7 +438,7 @@ MenuGroup::MenuGroup(const QString &name) : QWidget()
     vLayout->addWidget(warn);
     vLayout->addLayout(hLayout);
 
-    setLayout(vLayout);
+    mainLayout->addLayout(vLayout);
 }
 
 /**************************************************************************************************

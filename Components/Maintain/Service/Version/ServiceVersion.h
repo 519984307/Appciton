@@ -1,11 +1,11 @@
 #pragma once
-#include <QWidget>
+#include "MenuWidget.h"
 #include <QPushButton>
 #include "LabelButton.h"
 #include <QTextEdit>
 #include "LabeledLabel.h"
 
-class ServiceVersion : public QWidget
+class ServiceVersion : public MenuWidget
 {
     Q_OBJECT
 
@@ -42,18 +42,14 @@ private:
     LabeledLabel *_nPM;
     LabeledLabel *_ECG;
     LabeledLabel *_NIBP;
-    LabeledLabel *_NIBPDaemon;
     LabeledLabel *_SPO2;
     LabeledLabel *_TEMP;
     LabeledLabel *_nPMBoard;
     LabeledLabel *_PRT72;
     LabeledLabel *_CORE;
 
-    LButtonEn *_btnReturn;               //返回按钮
-
     QString _ECGVersion;
     QString _NIBPVersion;
-    QString _NIBPDaemonVersion;
     QString _SPO2Version;
     QString _TEMPVersion;
     QString _nPMBoardVersion;

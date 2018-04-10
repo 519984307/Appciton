@@ -92,32 +92,20 @@ QString FactoryTestMenu::_btnStr[FACTORY_TEST_NR] =
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-FactoryTestMenu::FactoryTestMenu() : PopupWidget()
-{
-    setCloseBtnTxt("");
-    setCloseBtnPic(QImage("/usr/local/nPM/icons/main.png"));
-    setCloseBtnColor(Qt::transparent);
-
-//    setDesc(trs("FactoryTest"));
-
-//    startLayout();
-    layoutExec();
-}
-
-/**************************************************************************************************
- * 布局。
- *************************************************************************************************/
-void FactoryTestMenu::layoutExec()
+FactoryTestMenu::FactoryTestMenu() : MenuWidget(trs("FactoryTest"))
 {
     int submenuW = factoryWindowManager.getSubmenuWidth();
     int submenuH = factoryWindowManager.getSubmenuHeight();
     setFixedSize(submenuW, submenuH);
 
-    setTitleBarText(trs("FactoryTest"));
-
     int itemW = submenuW - 200;
     int fontSize = fontManager.getFontSize(1);
     int btnWidth = itemW / 2;
+
+    QVBoxLayout *labelLayout = new QVBoxLayout();
+    labelLayout->setContentsMargins(50, 0, 50, 0);
+    labelLayout->setSpacing(10);
+    labelLayout->setAlignment(Qt::AlignTop);
 
     for (int i = 0; i < FACTORY_TEST_NR; ++i)
     {
@@ -129,7 +117,7 @@ void FactoryTestMenu::layoutExec()
         lbtn[i]->button->setFixedSize(btnWidth, ITEM_H);
         lbtn[i]->button->setID(i);
         connect(lbtn[i]->button, SIGNAL(released(int)), this, SLOT(_btnReleased(int)));
-        contentLayout->addWidget(lbtn[i]);
+        labelLayout->addWidget(lbtn[i]);
     }
 
 #ifdef TEST_REFRESH_RATE
@@ -146,7 +134,7 @@ void FactoryTestMenu::layoutExec()
     _freshRateSpinBox->enableArrow(false);
     _freshRateSpinBox->setFont(fontManager.textFont(fontSize));
     connect(_freshRateSpinBox, SIGNAL(valueChange(QString,int)), this, SLOT(_onFreshRateChanged(QString)));
-    contentLayout->addWidget(_freshRateSpinBox);
+    labelLayout->addWidget(_freshRateSpinBox);
 
     int curRate = 60;
     QProcess process;
@@ -173,28 +161,11 @@ void FactoryTestMenu::layoutExec()
     _freshRateSpinBox->setValue(curRate);
 #endif
 
-    contentLayout->addStretch();
+    labelLayout->addStretch();
 
-    contentLayout->setSpacing(10);
-}
+    labelLayout->setSpacing(10);
 
-void FactoryTestMenu::keyPressEvent(QKeyEvent *e)
-{
-    switch (e->key())
-    {
-        case Qt::Key_Up:
-        case Qt::Key_Left:
-            focusNextPrevChild(false);
-            return;
-        case Qt::Key_Down:
-        case Qt::Key_Right:
-            focusNextChild();
-            return;
-        default:
-            break;
-    }
-
-    PopupWidget::keyPressEvent(e);
+    mainLayout->addLayout(labelLayout);
 }
 
 /**************************************************************************************************

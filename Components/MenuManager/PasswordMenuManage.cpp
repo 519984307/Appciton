@@ -9,6 +9,10 @@
 #include "LabelButton.h"
 #include "SystemManager.h"
 #include "IConfig.h"
+#include "MenuManager.h"
+#include "SupervisorMenuManager.h"
+#include "ServiceWindowManager.h"
+#include "FactoryWindowManager.h"
 
 /**************************************************************************************************
  * 功能: 构造函数
@@ -208,21 +212,35 @@ void PasswordMenuManage::_okBtnSlot(int /*index*/)
     //超级密码
     if (_passwordStr == _superPassword)
     {
-        emit enterSignal();
+//        emit enterSignal();
+        menuManager.popup(&supervisorMenuManager);
         return;
     }
 
     //普通密码
-    if (_passwordStr != _normalPassword)
+    if (_passwordStr == _normalPassword)
     {
-        clearPassword();
-        _infoLabel->setText(trs("ErrorPassWordERROR"));
-        _timer->start(2*1000);
+        menuManager.popup(&supervisorMenuManager);
+        return;
+    }
+
+    //服务密码
+    if (_passwordStr == SERVER_PASSWORD)
+    {
+        menuManager.popup(&serviceWindowManager);
+        return;
+    }
+
+    //工厂密码
+    if (_passwordStr == FACTORY_PASSWORD)
+    {
+        menuManager.popup(&factoryWindowManager);
         return;
     }
 
     clearPassword();
-    emit enterSignal();
+    _infoLabel->setText(trs("ErrorPassWordERROR"));
+    _timer->start(2*1000);
 }
 
 /**************************************************************************************************

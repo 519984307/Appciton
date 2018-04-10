@@ -1,6 +1,8 @@
 #include "NIBPErrorState.h"
 #include "NIBPParam.h"
 #include "NIBPAlarm.h"
+#include "ErrorLog.h"
+#include "ErrorLogItem.h"
 
 /**************************************************************************************************
  * 主运行。
@@ -44,6 +46,13 @@ void NIBPErrorState::enter(void)
     nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
     nibpParam.setModelText("");
     nibpParam.clearResult();
+
+    ErrorLogItem *item = new CriticalFaultLogItem();
+    item->setName("TN3 Error State");
+    item->setSubSystem(ErrorLogItem::SUB_SYS_TN3);
+    item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
+    item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
+    errorLog.append(item);
 
     //
     nibpCountdownTime.STATMeasureStop();

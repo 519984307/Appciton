@@ -31,12 +31,12 @@ ServiceErrorLogMenu *ServiceErrorLogMenu::_selfObj = NULL;
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ServiceErrorLogMenu::ServiceErrorLogMenu() : QWidget()
+ServiceErrorLogMenu::ServiceErrorLogMenu() : MenuWidget(trs("ErrorLogInfo"))
 {
     currentPage = 0;
     totalPage = 0;
 
-    int itemW = 300;
+    int itemW = getSubmenuWidth();
     int fontSize = fontManager.getFontSize(1);
 
     QVBoxLayout *labelLayout = new QVBoxLayout();
@@ -128,7 +128,7 @@ ServiceErrorLogMenu::ServiceErrorLogMenu() : QWidget()
     labelLayout->setSpacing(10);
     labelLayout->addLayout(hLayout);
 
-    setLayout(labelLayout);
+    mainLayout->addLayout(labelLayout);
 
     _USBCheckTimer = new QTimer();
     _USBCheckTimer->setInterval(500);
@@ -172,6 +172,7 @@ void ServiceErrorLogMenu::keyPressEvent(QKeyEvent *e)
 
 void ServiceErrorLogMenu::showEvent(QShowEvent *e)
 {
+    init();
     QWidget::showEvent(e);
 }
 

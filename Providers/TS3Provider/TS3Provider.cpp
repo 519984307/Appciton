@@ -39,8 +39,6 @@ void TS3Provider::handlePacket(unsigned char *data, int len)
         _sendACK(data[0]);
     }
 
-    outHex(data,len);
-
     spo2Param.receivePackage();
     int enable = 0;
     switch(data[0])

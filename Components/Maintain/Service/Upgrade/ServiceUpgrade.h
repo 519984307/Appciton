@@ -1,5 +1,5 @@
 #pragma once
-#include "PopupWidget.h"
+#include "MenuWidget.h"
 #include "MenuGroup.h"
 #include <QPushButton>
 #include "NIBPProviderIFace.h"
@@ -30,7 +30,7 @@ class QLabel;
 class IListWidget;
 class QStackedWidget;
 class LButtonEx;
-class ServiceUpgrade : public QWidget
+class ServiceUpgrade : public MenuWidget
 {
     Q_OBJECT
 
@@ -83,7 +83,6 @@ public:
 
 protected:
     virtual void exit(void);
-    void keyPressEvent(QKeyEvent *e);
 
 private slots:
     void _startBtnReleased(void);
@@ -92,7 +91,6 @@ private slots:
 private:
     ServiceUpgrade();
 
-    QLabel *_title;                      //标题
     QTextEdit *_testEdit;                //文本框
     QTextCursor cur;                     //光标
     QProgressBar *_progressBar;          //进步条

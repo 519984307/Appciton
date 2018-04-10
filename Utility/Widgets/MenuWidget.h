@@ -1,8 +1,6 @@
 #pragma once
 #include <QWidget>
 #include "IButton.h"
-#include "MenuGroup.h"
-#include "PopupWidget.h"
 
 #define TITLE_H (30)           //标题高度
 #define HELP_BUTTON_H (30)     //帮助按钮高度
@@ -12,30 +10,18 @@
 class QVBoxLayout;
 class QStackedWidget;
 class QLabel;
-class MenuManager : public QObject
+class MenuWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    static MenuManager &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new MenuManager();
-        }
-        return *_selfObj;
-    }
-    static MenuManager *_selfObj;
+    //设置文本及图片
+    void setCloseBtnTxt(const QString &txt);
+    void setCloseBtnPic(const QImage &pic);
+    void setCloseBtnColor(QColor color);
 
-    MenuManager();
-    ~MenuManager();
-
-public:
-    void popup(QWidget *menuGroup,int x = 0, int y = 0);
-
-    void returnPrevious(void);
-
-    void close(void);
+    // 关闭按钮获得焦点
+    void closeBtnSetFoucs();
 
     //获取子菜单高度
     int getListWidth() {return _listWidth;}
@@ -46,21 +32,33 @@ public:
     //获取子菜单宽度
     int getSubmenuWidth() {return _submenuWidth;}
 
+    IButton *closeBtn;
+
+    bool closeBtnHasFocus() { return closeBtn->hasFocus(); }
+
+    MenuWidget(const QString &name);
+    ~MenuWidget();
+
+protected:
+    // 重绘。
+    virtual void paintEvent(QPaintEvent *event);
+
+    //按键事件
+    void keyPressEvent(QKeyEvent *event);
+
+protected:
+    QVBoxLayout *mainLayout;           //主布局器
+
 private slots:
-    void _currentMenuGroup(int index);
+    void _closeSlot(void);
 
 private:
     //初始化子菜单
     void _addSubMenu();
 
-    QStackedWidget *_subMenus;           //子菜单
-    MenuGroup *_menuGroup;
-    QList<QWidget *> widgetList;
-
+    QLabel *_titleLabel;
     int _listWidth;                      //列表宽度
     int _submenuWidth;                   //子菜单宽度
     int _submenuHeight;                  //高度
 
 };
-#define menuManager (MenuManager::construction())
-#define deleteMenuManager() (delete MenuManager::_selfObj)

@@ -54,6 +54,7 @@ void CalculateSoftkeyAction::doseCalculation(bool isPressed)
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
+        menuManager.close();
     }
 
     if (isVisible)
@@ -87,6 +88,7 @@ void CalculateSoftkeyAction::Hemodynamic(bool isPressed)
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
+        menuManager.close();
     }
 
     if (isVisible)

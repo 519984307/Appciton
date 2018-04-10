@@ -1,4 +1,4 @@
-#include "ServiceMenu.h"
+#include "ServiceWindowManager.h"
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -25,52 +25,52 @@
 #include "ServiceCPUTemp.h"
 #include "ServiceErrorLogMenu.h"
 
-ServiceMenu *ServiceMenu::_selfObj = NULL;
+ServiceWindowManager *ServiceWindowManager::_selfObj = NULL;
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ServiceMenu::ServiceMenu() : QWidget()
+ServiceWindowManager::ServiceWindowManager() : MenuWidget("")
 {
-    int submenuW = menuManager.getSubmenuWidth();
-//    int submenuH = menuManager.getSubmenuHeight();
-//    setFixedSize(submenuW, submenuH);
+    _submenuWidth = menuManager.getSubmenuWidth();
+    _submenuHeight = menuManager.getSubmenuHeight();
+    setFixedSize(_submenuWidth, _submenuHeight);
 
     int fontSize = fontManager.getFontSize(3);
     //定义按钮，并以序号命名，方便后面使用
     _nibpButton = new IButton("_nibpButton");
     _nibpButton->setFont(fontManager.textFont(fontSize));
-    _nibpButton->setFixedSize(submenuW / 2, 30);
+    _nibpButton->setFixedSize(_submenuWidth / 2, 30);
     connect(_nibpButton, SIGNAL(realReleased()), this,
             SLOT(_nibpButtonSlot()));
 
     _upgradeButton = new IButton("_upgradeButton");
     _upgradeButton->setFont(fontManager.textFont(fontSize));
-    _upgradeButton->setFixedSize(submenuW / 2, 30);
+    _upgradeButton->setFixedSize(_submenuWidth / 2, 30);
     connect(_upgradeButton, SIGNAL(realReleased()), this,
             SLOT(_upgradeButtonSlot()));
 
     _versionButton = new IButton("_versionButton");
     _versionButton->setFont(fontManager.textFont(fontSize));
-    _versionButton->setFixedSize(submenuW / 2, 30);
+    _versionButton->setFixedSize(_submenuWidth / 2, 30);
     connect(_versionButton, SIGNAL(realReleased()), this,
             SLOT(_versionButtonSlot()));
 
     _tempButton = new IButton("_tempButton");
     _tempButton->setFont(fontManager.textFont(fontSize));
-    _tempButton->setFixedSize(submenuW / 2, 30);
+    _tempButton->setFixedSize(_submenuWidth / 2, 30);
     connect(_tempButton, SIGNAL(realReleased()), this,
             SLOT(_tempButtonSlot()));
 
     _errorLogButton = new IButton("_errorLogButton");
     _errorLogButton->setFont(fontManager.textFont(fontSize));
-    _errorLogButton->setFixedSize(submenuW / 2, 30);
+    _errorLogButton->setFixedSize(_submenuWidth / 2, 30);
     connect(_errorLogButton, SIGNAL(realReleased()), this,
             SLOT(_errorLogButtonSlot()));
 
     _returnButton = new IButton("_returnButton");
     _returnButton->setFont(fontManager.textFont(fontSize));
-    _returnButton->setFixedSize(submenuW / 2, 30);
+    _returnButton->setFixedSize(_submenuWidth / 2, 30);
     connect(_returnButton, SIGNAL(realReleased()), this,
             SLOT(_returnButtonSlot()));
 
@@ -88,7 +88,7 @@ ServiceMenu::ServiceMenu() : QWidget()
     vLayout->addWidget(_returnButton, 0, Qt::AlignCenter);
     vLayout->addStretch();
 
-    setLayout(vLayout);
+    mainLayout->addLayout(vLayout);
 
     nibprepair.Construation();
     nibpcalibrate.construction();
@@ -102,7 +102,7 @@ ServiceMenu::ServiceMenu() : QWidget()
     nibprepair.addReturnMenu();
 
     serviceUpgrade.Construation();
-    serviceVersion.Construation();
+//    serviceVersion.Construation();
     serviceCPUTemp.Construation();
     serviceErrorLogMenu.construction();
 }
@@ -110,50 +110,38 @@ ServiceMenu::ServiceMenu() : QWidget()
 /**************************************************************************************************
  * 功能：初始化。
  *************************************************************************************************/
-void ServiceMenu::init()
+void ServiceWindowManager::init()
 {
     // 增加一个列表项。
     _nibpButton->setFocus();
 }
 
-/**************************************************************************************************
- * 功能:绘画
- *************************************************************************************************/
-void ServiceMenu::paintEvent(QPaintEvent *e)
+void ServiceWindowManager::_nibpButtonSlot()
 {
-    QPainter painter(this);
-    painter.setBrush(palette().background());
-    painter.drawRoundedRect(rect(), 5, 5);
-
-    QWidget::paintEvent(e);
+    menuManager.popup(&nibprepair);
 }
 
-void ServiceMenu::_nibpButtonSlot()
+void ServiceWindowManager::_upgradeButtonSlot()
 {
-    menuManager.openMenuGroup(&nibprepair);
+    menuManager.popup(&serviceUpgrade);
 }
 
-void ServiceMenu::_upgradeButtonSlot()
+void ServiceWindowManager::_versionButtonSlot()
 {
-    menuManager.openWidget(&serviceUpgrade);
+    menuManager.popup(&serviceVersion);
 }
 
-void ServiceMenu::_versionButtonSlot()
+void ServiceWindowManager::_tempButtonSlot()
 {
-    menuManager.openWidget(&serviceVersion);
+    menuManager.popup(&serviceCPUTemp);
 }
 
-void ServiceMenu::_tempButtonSlot()
+void ServiceWindowManager::_errorLogButtonSlot()
 {
-    menuManager.openWidget(&serviceCPUTemp);
+    menuManager.popup(&serviceErrorLogMenu);
 }
 
-void ServiceMenu::_errorLogButtonSlot()
-{
-    menuManager.openWidget(&serviceErrorLogMenu);
-}
-
-void ServiceMenu::_returnButtonSlot()
+void ServiceWindowManager::_returnButtonSlot()
 {
     menuManager.returnPrevious();
 }
@@ -161,21 +149,21 @@ void ServiceMenu::_returnButtonSlot()
 /**************************************************************************************************
  * 重新聚焦菜单列表。
  *************************************************************************************************/
-void ServiceMenu::_returnMenuList(SubMenu */*m*/)
+void ServiceWindowManager::_returnMenuList(SubMenu */*m*/)
 {
 }
 
 /**************************************************************************************************
  * 需要更新标题。
  *************************************************************************************************/
-void ServiceMenu::_titleChanged(void)
+void ServiceWindowManager::_titleChanged(void)
 {
 }
 
 /**************************************************************************************************
  * 子菜单页聚焦
  *************************************************************************************************/
-void ServiceMenu::_itemClicked()
+void ServiceWindowManager::_itemClicked()
 {
     SubMenu *m = (SubMenu*)_scorllArea->widget();
     m->focusFirstItem();
@@ -184,7 +172,7 @@ void ServiceMenu::_itemClicked()
 /**************************************************************************************************
  * 改变滚动区域滚动条的值
  *************************************************************************************************/
-void ServiceMenu::_changeScrollValue(int value)
+void ServiceWindowManager::_changeScrollValue(int value)
 {
     QScrollBar *bar = _scorllArea->verticalScrollBar();
     if (NULL != bar)
@@ -203,7 +191,7 @@ void ServiceMenu::_changeScrollValue(int value)
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
-ServiceMenu::~ServiceMenu()
+ServiceWindowManager::~ServiceWindowManager()
 {
 
 }

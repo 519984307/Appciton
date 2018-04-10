@@ -56,6 +56,7 @@ void DelRescueDataSoftkeyAction::delAll(bool isPressed)
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
+        menuManager.close();
     }
 
     if (isVisible)
@@ -83,6 +84,7 @@ void DelRescueDataSoftkeyAction::delCase(bool isPressed)
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
+        menuManager.close();
     }
 
     if (isVisible)
@@ -91,8 +93,8 @@ void DelRescueDataSoftkeyAction::delCase(bool isPressed)
     }
 
     QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - menuManager.width()) / 2;
-    int y = r.y() + (r.height() - menuManager.height());
+    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
+    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
     rescueDataDeleteWidget.autoShow(x, y);
 }
 
