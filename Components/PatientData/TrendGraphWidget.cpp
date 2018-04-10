@@ -33,7 +33,7 @@ void TrendGraphWidget::timeIntervalChange(int timeInterval)
 
 void TrendGraphWidget::upDateTrendGraph()
 {
-    _waveWidget->changeTrendDisplay();
+    _waveWidget->setTrendGroup();
 }
 
 void TrendGraphWidget::setSubWidgetRulerLimit(SubParamID id, int down, int up)
@@ -43,12 +43,12 @@ void TrendGraphWidget::setSubWidgetRulerLimit(SubParamID id, int down, int up)
 
 void TrendGraphWidget::_leftMoveCoordinate()
 {
-
+    _waveWidget->leftMoveCoordinate();
 }
 
 void TrendGraphWidget::_rightMoveCoordinate()
 {
-
+    _waveWidget->rightMoveCoordinate();
 }
 
 void TrendGraphWidget::_leftMoveCursor()
@@ -108,6 +108,8 @@ TrendGraphWidget::TrendGraphWidget()
     _moveCoordinate = new IMoveButton(trs("MoveCoordinate"));
     _moveCoordinate->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     _moveCoordinate->setFont(fontManager.textFont(fontSize));
+    connect(_moveCoordinate, SIGNAL(leftMove()), this, SLOT(_leftMoveCoordinate()));
+    connect(_moveCoordinate, SIGNAL(rightMove()), this, SLOT(_rightMoveCoordinate()));
 
     _moveCursor = new IMoveButton(trs("MoveCursor"));
     _moveCursor->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);

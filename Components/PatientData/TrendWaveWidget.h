@@ -16,6 +16,8 @@ public:
 public:
     void changeTrendDisplay();
     void setWidgetSize(int w, int h);
+    void leftMoveCoordinate();
+    void rightMoveCoordinate();
     void leftMoveCursor();
     void rightMoveCursor();
 
@@ -59,4 +61,5 @@ private:
     QList<TrendDataPackage *> _trendDataPack;       // 趋势数据包
     int *_dataBuf;
     int _dataSize;
+    int _currentDisplayNum;
 };

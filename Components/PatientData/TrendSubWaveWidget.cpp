@@ -228,10 +228,17 @@ void TrendSubWaveWidget::cursorMove(int position)
 void TrendSubWaveWidget::loadParamData()
 {
 //    demoData();
-    int yValue;
+    int yValue = 0;
     for (int i =  0; i < _size; i ++)
     {
-        yValue = valueToY(_dataBuf[i]);
+        if (_type == TREND_GRAPH_TYPE_AG_TEMP)
+        {
+            yValue = valueToY(_dataBuf[i]/10);
+        }
+        else
+        {
+            yValue = valueToY(_dataBuf[i]);
+        }
         if (yValue < _yTop || yValue > _yBottom)
         {
             _trendWaveBuf[i].setY(InvData());
@@ -244,7 +251,14 @@ void TrendSubWaveWidget::loadParamData()
 
         if (_type != TREND_GRAPH_TYPE_NORMAL)
         {
-            yValue = valueToY(_dataBufSecond[i]);
+            if (_type == TREND_GRAPH_TYPE_AG_TEMP)
+            {
+                yValue = valueToY(_dataBufSecond[i]/10);
+            }
+            else
+            {
+                yValue = valueToY(_dataBufSecond[i]);
+            }
             if (yValue < _yTop || yValue > _yBottom)
             {
                 _trendWaveBufSecond[i].setY(InvData());
@@ -321,16 +335,18 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
             if (_trendWaveBuf[i].y() != InvData() && _trendWaveBufSecond[i].y() != InvData() &&
                     _trendWaveBufThird[i].y() != InvData())
             {
-                barPainter.setPen(QPen(_color, 1, Qt::DotLine));
-                barPainter.drawLine(_trendWaveBuf[i].x() - 3, _trendWaveBuf[i].y(),
-                                    _trendWaveBuf[i].x() + 3, _trendWaveBuf[i].y());
-                barPainter.drawLine(_trendWaveBufSecond[i].x() - 3, _trendWaveBufSecond[i].y(),
-                                    _trendWaveBufSecond[i].x() + 3, _trendWaveBufSecond[i].y());
-                barPainter.drawLine(_trendWaveBufThird[i].x() - 3, _trendWaveBufThird[i].y(),
-                                    _trendWaveBufThird[i].x() + 3, _trendWaveBufThird[i].y());
-                barPainter.setPen(QPen(_color, 1, Qt::SolidLine));
+                barPainter.drawLine(_trendWaveBuf[i].x() - 3, _trendWaveBuf[i].y() - 3,
+                                    _trendWaveBuf[i].x(), _trendWaveBuf[i].y());
+                barPainter.drawLine(_trendWaveBuf[i].x(), _trendWaveBuf[i].y(),
+                                    _trendWaveBuf[i].x() + 3, _trendWaveBuf[i].y() - 3);
+                barPainter.drawLine(_trendWaveBufSecond[i].x() - 3, _trendWaveBufSecond[i].y() + 3,
+                                    _trendWaveBufSecond[i].x(), _trendWaveBufSecond[i].y());
+                barPainter.drawLine(_trendWaveBufSecond[i].x(), _trendWaveBufSecond[i].y(),
+                                    _trendWaveBufSecond[i].x() + 3, _trendWaveBufSecond[i].y() + 3);
                 barPainter.drawLine(_trendWaveBuf[i].x(), _trendWaveBuf[i].y(),
                                     _trendWaveBufSecond[i].x(), _trendWaveBufSecond[i].y());
+                barPainter.drawLine(_trendWaveBufThird[i].x() - 3, _trendWaveBufThird[i].y(),
+                                    _trendWaveBufThird[i].x() + 3, _trendWaveBufThird[i].y());
             }
         }
     }
@@ -399,7 +415,9 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         barPainter.setFont(font);
         if (_dataBuf[_cursorPosition] != InvData() && _dataBufSecond[_cursorPosition] != InvData())
         {
-            QString trendStr = QString::number(_dataBuf[_cursorPosition]) + "/" + QString::number(_dataBufSecond[_cursorPosition]);
+            double value1 = (double)_dataBuf[_cursorPosition] / 10;
+            double value2 = (double)_dataBufSecond[_cursorPosition] / 10;
+            QString trendStr = QString::number(value1, 'g', 2) + "/" + QString::number(value2, 'g', 2);
             barPainter.drawText(_trendDataHead + 60, height()/2, trendStr);
         }
         else

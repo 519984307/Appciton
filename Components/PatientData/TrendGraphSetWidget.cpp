@@ -97,7 +97,7 @@ void TrendGraphSetWidget::layoutExec()
     {
         _timeIntervalList->addItem(TrendDataSymbol::convert((ResolutionRatio)i));
     }
-    _timeIntervalList->setCurrentIndex(1);
+    _timeIntervalList->setCurrentIndex(0);
     hBottomLayout->addWidget(_timeIntervalList);
     connect(_timeIntervalList, SIGNAL(currentIndexChange(int)), this,
             SLOT(_timeIntervalReleased(int)));
@@ -107,7 +107,7 @@ void TrendGraphSetWidget::layoutExec()
     _waveNumberList->setFont(fontManager.textFont(fontSize));
     _waveNumberList->addItem("1");
     _waveNumberList->addItem("2");
-    _waveNumberList->addItem("3 ");
+    _waveNumberList->addItem("3");
     _waveNumberList->setCurrentIndex(2);
     hBottomLayout->addWidget(_waveNumberList);
     connect(_waveNumberList, SIGNAL(currentIndexChange(int)), this,
@@ -452,21 +452,21 @@ void TrendGraphSetWidget::_loadOptions()
         }
         else
         {
-            double fStepValue, fLowMinValue, fLowMaxValue, fHighMinValue, fHighMaxValue;
-            fStepValue = (double)config.step / config.scale;
-            fLowMinValue = (double)config.minLowLimit / config.scale;
-            fLowMaxValue = (double)(config.highLimit - config.step) / config.scale;
-            fHighMinValue = (double)(config.lowLimit + config.step) / config.scale;
-            fHighMaxValue = (double)config.maxHighLimit / config.scale;
+            int fStepValue, fLowMinValue, fLowMaxValue, fHighMinValue, fHighMaxValue;
+            fStepValue = config.step;
+            fLowMinValue = config.minLowLimit / config.scale;
+            fLowMaxValue = (config.highLimit - config.step) / config.scale;
+            fHighMinValue = (config.lowLimit + config.step) / config.scale;
+            fHighMaxValue = config.maxHighLimit / config.scale;
 
-            item->downRuler->setMode(ISPIN_MODE_FLOAT);
+            item->downRuler->setMode(ISPIN_MODE_INT);
             item->downRuler->setRange(fLowMinValue, fLowMaxValue);
-            item->downRuler->setValue((double)config.lowLimit / config.scale);
+            item->downRuler->setValue(config.lowLimit / config.scale);
             item->downRuler->setStep(fStepValue);
 
-            item->upRuler->setMode(ISPIN_MODE_FLOAT);
+            item->upRuler->setMode(ISPIN_MODE_INT);
             item->upRuler->setRange(fHighMinValue, fHighMaxValue);
-            item->upRuler->setValue((double)config.highLimit / config.scale);
+            item->upRuler->setValue(config.highLimit / config.scale);
             item->upRuler->setStep(fStepValue);
         }
     }

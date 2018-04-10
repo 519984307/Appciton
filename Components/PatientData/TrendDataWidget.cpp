@@ -100,12 +100,18 @@ void TrendDataWidget::loadTrendData()
     for (int i = _trendDataPack.length() - 1 - intervalNum * _currentMoveCount; i >= 0;
          i = i - intervalNum)
     {
+        if (col == TABLE_COL_NR)
+        {
+            break;
+        }
         timeDate.getTime(_trendDataPack.at(i)->time, time, true);
         timeTitle << time;
         for (int j = 0; j < _curDisplayParamRow; j ++)
         {
+
             item = new QTableWidgetItem();
             item->setTextAlignment(Qt::AlignCenter);
+
             if (_displayList.at(j) == SUB_PARAM_NIBP_SYS)
             {
                 short nibpSys = _trendDataPack.at(i)->paramData.find(_displayList.at(j)).value();
