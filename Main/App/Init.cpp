@@ -302,9 +302,13 @@ static void _initProviderParam(void)
         {
             paramManager.addProvider(*new MasimoSetProvider());
         }
-        else
+        else if (str == "BLM_TS3")
         {
             paramManager.addProvider(*new TS3Provider());
+        }
+        else if (str == "BLM_S5")
+        {
+            paramManager.addProvider(*new S5Provider());
         }
         paramManager.addParam(spo2Param.construction());
         alertor.addLimtSource(spo2LimitAlarm.construction());
@@ -529,7 +533,6 @@ static void _initMenu(void)
 
     publicMenuManager.addSubMenu(&systemMenu);
     publicMenuManager.addSubMenu(&supervisorEntrance);
-    publicMenuManager.addSubMenu(&serviceEntrance);
 
 
     //supervisorMenuManager
@@ -583,13 +586,6 @@ static void _initMenu(void)
     supervisorPortMenu.construction();
     supervisorMenuManager.addSubMenu(&supervisorPortMenu);
 
-    supervisorMenuManager.addReturnMenu();
-
-    //serviceMenuManager
-    serviceMenuManager.construction();
-    serviceMenuManager.addReturnMenu();
-
-
     //其它弹出菜单初始化
     patientManager.construction();
     ecg12LDataAcquire.construction();
@@ -624,7 +620,6 @@ void deleteObjects(void)
     deleteWaveWidgetSelectMenu();
     deletePublicMenuManager();
     deleteSupervisorMenuManager();
-    deleteServiceMenuManager();
     deleteMenuManager();
     //deletePatientMenu();
     deleteParamManager();

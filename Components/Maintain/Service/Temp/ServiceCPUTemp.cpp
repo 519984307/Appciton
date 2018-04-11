@@ -40,6 +40,10 @@ void ServiceCPUTemp::_TimeOut()
  *************************************************************************************************/
 ServiceCPUTemp::ServiceCPUTemp() : MenuWidget(trs("ServiceCPUTemp"))
 {
+    int submenuW = menuManager.getSubmenuWidth();
+    int submenuH = menuManager.getSubmenuHeight();
+    setFixedSize(submenuW, submenuH);
+
     int fontSize = fontManager.getFontSize(1);
     int btnWidth = 500;
 

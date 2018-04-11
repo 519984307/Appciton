@@ -48,9 +48,9 @@ public:
     void setFocusOrder(bool flag);
 
     // 初始化菜单列表项。
-    void _initMenuList();
+    void initMenuList();
 
-    bool listTableFocus() { return Qt::StrongFocus == listTable->focusPolicy();}
+    bool listTableFocus() { return Qt::StrongFocus == _listTable->focusPolicy();}
     void listTableOrder(bool flag);
 
     //获取子菜单高度
@@ -62,15 +62,16 @@ public:
     //获取子菜单宽度
     int getSubmenuWidth() {return _submenuWidth;}
 
-    QLabel *warn;                        //警告
-    IListWidget *listTable;              //列表
-
     // 构造与析构。
     MenuGroup(const QString &name);
     ~MenuGroup();
 
 signals:
     void menuGroupReturn();
+
+protected slots:
+    // 返回到菜单列表项。
+    void returnMenuList();
 
 protected:
     // 隐藏事件。
@@ -79,11 +80,11 @@ protected:
     //按键事件
     void keyPressEvent(QKeyEvent *event);
 
-    QScrollArea *_scorllArea;             //滚动区域
+    QLabel *warn;                        //警告
 
 private slots:
-    // 返回到菜单列表项。
-    void _returnMenuList();
+    // 更新标题
+    void _titleChanged(void);
 
     // 子菜单页聚焦
     virtual void _itemClicked(void);
@@ -97,16 +98,15 @@ private slots:
     // 改变滚动区域滚动条的值
     void _changeScrollValue(int value);
 
-    void _closeSlot(void);
-
 private:
     static const int _titleBarHeight = 29;
     static const int _listItemHeight = 26;
     static const int _borderWidth = 4;
 
-    QLabel *_warn;                        //警告
+    IListWidget *_listTable;              //列表
 
     QStackedWidget *_subMenus;            //子界面
+    QScrollArea *_scorllArea;             //滚动区域
     IButton *_return;
 
     int _listWidth;                      //列表宽度

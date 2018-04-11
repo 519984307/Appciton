@@ -32,9 +32,9 @@ public:
     //获取子菜单宽度
     int getSubmenuWidth() {return _submenuWidth;}
 
-    IButton *closeBtn;
-
     bool closeBtnHasFocus() { return closeBtn->hasFocus(); }
+
+    void popup(int x = 0, int y = 0);
 
     MenuWidget(const QString &name);
     ~MenuWidget();
@@ -47,7 +47,11 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
 protected:
+    QLabel *titleLabel;
+
     QVBoxLayout *mainLayout;           //主布局器
+
+    IButton *closeBtn;
 
 private slots:
     void _closeSlot(void);
@@ -56,7 +60,6 @@ private:
     //初始化子菜单
     void _addSubMenu();
 
-    QLabel *_titleLabel;
     int _listWidth;                      //列表宽度
     int _submenuWidth;                   //子菜单宽度
     int _submenuHeight;                  //高度

@@ -148,6 +148,7 @@ bool DemoProvider::attachParam(Param &param)
     else if (name == paramInfo.getParamName(PARAM_NIBP))
     {
         nibpParam.setProvider(this);
+        nibpParamService.setServiceProvider(this);
     }
     else if (name == paramInfo.getParamName(PARAM_CO2))
     {

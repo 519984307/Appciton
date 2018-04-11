@@ -1,5 +1,6 @@
 #include "SuntechProvider.h"
 #include "NIBPParam.h"
+#include "NIBPParamService.h"
 #include "NIBPAlarm.h"
 #include "Debug.h"
 #include <QString>
@@ -25,8 +26,8 @@ bool SuntechProvider::attachParam(Param &param)
 {
     if (param.getParamID() == PARAM_NIBP)
     {
-
         nibpParam.setProvider(this);
+        nibpParamService.setServiceProvider(this);
         return true;
     }
 

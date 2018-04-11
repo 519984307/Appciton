@@ -37,6 +37,11 @@ void MenuWidget::closeBtnSetFoucs()
     closeBtn->setFocus();
 }
 
+void MenuWidget::popup(int x, int y)
+{
+    menuManager.popupWidegt(this, x, y);
+}
+
 /**************************************************************************************************
  * 重绘制。
  *************************************************************************************************/
@@ -112,11 +117,11 @@ MenuWidget::MenuWidget(const QString &name) : QWidget(0, Qt::FramelessWindowHint
 
     int fontSize = fontManager.getFontSize(1);
     // 标题栏。
-    _titleLabel = new QLabel(name);
-    _titleLabel->setAlignment(Qt::AlignCenter);
-    _titleLabel->setFixedHeight(TITLE_H);
-    _titleLabel->setFont(fontManager.textFont(fontManager.getFontSize(3)));
-    _titleLabel->setPalette(p);
+    titleLabel = new QLabel(name);
+    titleLabel->setAlignment(Qt::AlignCenter);
+    titleLabel->setFixedHeight(TITLE_H);
+    titleLabel->setFont(fontManager.textFont(fontManager.getFontSize(3)));
+    titleLabel->setPalette(p);
 
     //关闭按钮
     closeBtn = new IButton("X");
@@ -127,7 +132,7 @@ MenuWidget::MenuWidget(const QString &name) : QWidget(0, Qt::FramelessWindowHint
 
     QHBoxLayout *titleLayout = new QHBoxLayout();
     titleLayout->setContentsMargins(0, 1, 0, 0);
-    titleLayout->addWidget(_titleLabel, 1);
+    titleLayout->addWidget(titleLabel, 1);
     titleLayout->addWidget(closeBtn, 1, Qt::AlignVCenter);
 
     mainLayout = new QVBoxLayout();

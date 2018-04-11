@@ -49,7 +49,7 @@ PasswordMenuManage::PasswordMenuManage(const QString &title) :
     _passwordEdit->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     _passwordEdit->setFocusPolicy(Qt::NoFocus);
     _passwordEdit->setStyleSheet("border: 1px solid gray;border-radius:3px;");
-    _passwordEdit->setPlaceholderText("password");
+    _passwordEdit->setPlaceholderText(trs("PassWord"));
 
     //第一行
     QHBoxLayout *firstRowLayout = new QHBoxLayout();
@@ -213,28 +213,28 @@ void PasswordMenuManage::_okBtnSlot(int /*index*/)
     if (_passwordStr == _superPassword)
     {
 //        emit enterSignal();
-        menuManager.popup(&supervisorMenuManager);
+        supervisorMenuManager.popup();
         return;
     }
 
     //普通密码
     if (_passwordStr == _normalPassword)
     {
-        menuManager.popup(&supervisorMenuManager);
+        supervisorMenuManager.popup();
         return;
     }
 
     //服务密码
     if (_passwordStr == SERVER_PASSWORD)
     {
-        menuManager.popup(&serviceWindowManager);
+        serviceWindowManager.popup();
         return;
     }
 
     //工厂密码
     if (_passwordStr == FACTORY_PASSWORD)
     {
-        menuManager.popup(&factoryWindowManager);
+        factoryWindowManager.popup();
         return;
     }
 

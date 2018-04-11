@@ -12,7 +12,6 @@
 #include "MenuManager.h"
 #include "PublicMenuManager.h"
 #include "SupervisorMenuManager.h"
-#include "ServiceMenuManager.h"
 #include "KeyBoardPanel.h"
 #include "NumberPanel.h"
 #include "SetWidget.h"
@@ -35,8 +34,6 @@
 #include "BatteryAlarm.h"
 #include "PowerManager.h"
 #include "PromptInfoBarWidget.h"
-
-#include "ServiceEntrance.h"
 
 #include "PatientManager.h"
 #include "PatientInfoWidget.h"
@@ -87,6 +84,7 @@
 #include "SuntechProvider.h"
 #include "BLMNIBPProvider.h"
 #include "TS3Provider.h"
+#include "S5Provider.h"
 #include "BLMSPO2Provider.h"
 #include "MasimoProvider.h"
 #include "TT3Provider.h"

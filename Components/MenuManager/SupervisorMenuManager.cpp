@@ -1,4 +1,5 @@
 #include "SupervisorMenuManager.h"
+#include "LanguageManager.h"
 #include "WindowManager.h"
 
 SupervisorMenuManager *SupervisorMenuManager::_selfObj = NULL;
@@ -6,7 +7,7 @@ SupervisorMenuManager *SupervisorMenuManager::_selfObj = NULL;
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-SupervisorMenuManager::SupervisorMenuManager() : MenuGroup("SupervisorMenuManager")
+SupervisorMenuManager::SupervisorMenuManager() : MenuGroup(trs("SupervisorModifyConfig"))
 {
 
 }

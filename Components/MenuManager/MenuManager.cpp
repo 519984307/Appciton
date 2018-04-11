@@ -17,23 +17,23 @@ MenuManager *MenuManager::_selfObj = NULL;
 /**************************************************************************************************
  * 弹出新菜单。
  *************************************************************************************************/
-void MenuManager::popup(QWidget *menuGroup, int x, int y)
+void MenuManager::popupWidegt(QWidget *widget, int x, int y)
 {
-    if (!widgetList.isEmpty())
+    if (!_widgetList.isEmpty())
     {
-        widgetList.last()->hide();
+        _widgetList.last()->hide();
     }
-    widgetList.append(menuGroup);
+    _widgetList.append(widget);
 
     if (x == 0 && y == 0)
     {
         QRect r = windowManager.getMenuArea();
-        x = r.x() + (r.width() - menuGroup->width()) / 2;
-        y = r.y() + (r.height() - menuGroup->height());
+        x = r.x() + (r.width() - widget->width()) / 2;
+        y = r.y() + (r.height() - widget->height());
     }
 
-    menuGroup->move(x, y);
-    menuGroup->show();
+    widget->move(x, y);
+    widget->show();
 }
 
 void MenuManager::returnPrevious()
@@ -50,20 +50,20 @@ void MenuManager::returnPrevious()
 //    {
 //        close();
 //    }
-    if (!widgetList.isEmpty())
+    if (!_widgetList.isEmpty())
     {
-        widgetList.last()->hide();
-        widgetList.removeLast();
+        _widgetList.last()->hide();
+        _widgetList.removeLast();
     }
-    if (!widgetList.isEmpty())
+    if (!_widgetList.isEmpty())
     {
-        widgetList.last()->show();
+        _widgetList.last()->show();
     }
 }
 
 void MenuManager::close()
 {
-    widgetList.clear();
+    _widgetList.clear();
 }
 
 void MenuManager::_currentMenuGroup(int /*index*/)
@@ -82,7 +82,7 @@ MenuManager::MenuManager()
     _submenuWidth = windowManager.getPopMenuWidth() - _listWidth - 20;
     _submenuHeight = windowManager.getPopMenuHeight() - 30 - 30 - 20;
 
-    widgetList.clear();
+    _widgetList.clear();
 
     _subMenus = new QStackedWidget();
 }
@@ -102,4 +102,3 @@ MenuManager::~MenuManager()
 {
 
 }
-

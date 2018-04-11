@@ -28,22 +28,22 @@ enum SPO2PacketType
 };
 
 //算法状态
-enum SPO2LogicStatus
+enum TS3LogicStatus
 {
-    SPO2_LOGIC_INIT,                 // 初始化状态。
-    SPO2_LOGIC_SEARCHING,            // 脉搏波搜索状态。
-    SPO2_LOGIC_SEARCH_TOO_LONG,      // 脉搏波搜索时间过长。
-    SPO2_LOGIC_NORMAL,               // 算法正常计算状态
-    SPO2_LOGIC_NC,                   //
+    TS3_LOGIC_INIT,                 // 初始化状态。
+    TS3_LOGIC_SEARCHING,            // 脉搏波搜索状态。
+    TS3_LOGIC_SEARCH_TOO_LONG,      // 脉搏波搜索时间过长。
+    TS3_LOGIC_NORMAL,               // 算法正常计算状态
+    TS3_LOGIC_NC,                   //
 };
 
 //调光调增益错误
-enum SPO2GainError
+enum TS3GainError
 {
-    SPO2_GAIN_NORMAL,                 // 无错误。
-    SPO2_GAIN_SATURATION,             // 信号饱和。
-    SPO2_GAIN_WEAK,                   // 信号太弱。
-    SPO2_GAIN_NC,                     //
+    TS3_GAIN_NORMAL,                 // 无错误。
+    TS3_GAIN_SATURATION,             // 信号饱和。
+    TS3_GAIN_WEAK,                   // 信号太弱。
+    TS3_GAIN_NC,                     //
 };
 
 class TS3Provider: public BLMProvider, public SPO2ProviderIFace
@@ -94,9 +94,9 @@ private:
 
     bool _isCableOff;
     bool _isFingerOff;
-    SPO2GainError _gainError;
+    TS3GainError _gainError;
     bool _ledFault;
-    SPO2LogicStatus _logicStatus;
+    TS3LogicStatus _logicStatus;
 
     static const int _packetLen = 9;      // 数据包长度。
     struct timeval _lastTime;

@@ -30,6 +30,11 @@ void NIBPServiceRepair::connectError()
  *************************************************************************************************/
 void NIBPServiceRepair::triggerEnter()
 {
+    if (provider_service == NULL)
+    {
+        return;
+    }
+
     provider_service->service_Enter(true);
     setTimeOut();
 }

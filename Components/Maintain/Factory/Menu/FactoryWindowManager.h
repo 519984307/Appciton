@@ -47,7 +47,6 @@ private slots:
     void _dataRecordButtonlot();
     void _systemInfoButtonSlot();
     void _tempCalibateButtonSlot();
-    void _returnButtonSlot();
 
 private:
     //构造函数
@@ -68,7 +67,6 @@ private:
     IButton *_dataRecordButton;
     IButton *_systemInfoButton;
     IButton *_tempCalibateButton;
-    IButton *_returnButton;
 
 private:
     int _submenuWidth;                  //子菜单宽度

@@ -1,6 +1,5 @@
 #include "ServiceVersion.h"
 #include <QVBoxLayout>
-#include "ServiceWindowManager.h"
 #include "SystemBoardProvider.h"
 #include "SystemManager.h"
 #include <QTextTable>
@@ -228,8 +227,8 @@ void ServiceVersion::_coreVersion(void)
  *************************************************************************************************/
 ServiceVersion::ServiceVersion() : MenuWidget(trs("ServiceVersion"))
 {
-    int submenuW = serviceWindowManager.getSubmenuWidth();
-    int submenuH = serviceWindowManager.getSubmenuHeight();
+    int submenuW = menuManager.getSubmenuWidth();
+    int submenuH = menuManager.getSubmenuHeight();
     setFixedSize(submenuW, submenuH);
 
     int fontSize = fontManager.getFontSize(1);

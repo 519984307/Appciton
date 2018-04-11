@@ -519,16 +519,35 @@ void SPO2Param::checkSelftest()
         return;
     }
 
-    if (_recPackageInPowerOn2sec == 5)
+    QString str;
+    machineConfig.getStrValue("SPO2", str);
+    if (str == "BLM_TS3")
     {
-        systemManager.setPoweronTestResult(TS3_MODULE_SELFTEST_RESULT, SELFTEST_SUCCESS);
+        if (_recPackageInPowerOn2sec == 5)
+        {
+            systemManager.setPoweronTestResult(TS3_MODULE_SELFTEST_RESULT, SELFTEST_SUCCESS);
+        }
+        else
+        {
+            systemManager.setPoweronTestResult(TS3_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
+            ErrorLogItem *item = new CriticalFaultLogItem();
+            item->setName("SPO2 Module SelfTest Failed");
+            errorLog.append(item);
+        }
     }
-    else
+    else if (str == "BLM_S5")
     {
-        systemManager.setPoweronTestResult(TS3_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
-        ErrorLogItem *item = new CriticalFaultLogItem();
-        item->setName("SPO2 Module SelfTest Failed");
-        errorLog.append(item);
+        if (_recPackageInPowerOn2sec == 5)
+        {
+            systemManager.setPoweronTestResult(S5_MODULE_SELFTEST_RESULT, SELFTEST_SUCCESS);
+        }
+        else
+        {
+            systemManager.setPoweronTestResult(S5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
+            ErrorLogItem *item = new CriticalFaultLogItem();
+            item->setName("SPO2 Module SelfTest Failed");
+            errorLog.append(item);
+        }
     }
 }
 

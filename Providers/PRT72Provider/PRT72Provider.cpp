@@ -244,7 +244,7 @@ void PRT72Provider::_parseSelfTestResult(const unsigned char *data, unsigned int
 
     if (0 == _selfTestResult)
     {
-        systemManager.setPoweronTestResult(PRINTER_SELFTEST_RESULT, SELFTEST_SUCCESS);
+        systemManager.setPoweronTestResult(PRINTER72_SELFTEST_RESULT, SELFTEST_SUCCESS);
     }
     else
     {
@@ -286,7 +286,7 @@ void PRT72Provider::_parseSelfTestResult(const unsigned char *data, unsigned int
         }
         errorLog.append(item);
 
-        systemManager.setPoweronTestResult(PRINTER_SELFTEST_RESULT, SELFTEST_FAILED);
+        systemManager.setPoweronTestResult(PRINTER72_SELFTEST_RESULT, SELFTEST_FAILED);
     }
 }
 
@@ -371,7 +371,7 @@ void PRT72Provider::_parseBitmapDataAck(const unsigned char *data, unsigned int 
 void PRT72Provider::disconnected()
 {
     printManager.providerDisconnected();
-    systemManager.setPoweronTestResult(PRINTER_SELFTEST_RESULT, SELFTEST_FAILED);
+    systemManager.setPoweronTestResult(PRINTER72_SELFTEST_RESULT, SELFTEST_FAILED);
 }
 
 /***************************************************************************************************
@@ -414,7 +414,7 @@ void PRT72Provider::handlePacket(unsigned char *data, int len)
             _ack(type);
             printManager.providerRestarted(); // 通知打印管理部件。
 
-            systemManager.setPoweronTestResult(PRINTER_SELFTEST_RESULT, SELFTEST_MODULE_RESET);
+            systemManager.setPoweronTestResult(PRINTER72_SELFTEST_RESULT, SELFTEST_MODULE_RESET);
             ErrorLogItem *item = new CriticalFaultLogItem();
             item->setName(QString("Printer Start"));
             errorLog.append(item);

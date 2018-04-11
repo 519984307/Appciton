@@ -30,49 +30,43 @@ ServiceWindowManager *ServiceWindowManager::_selfObj = NULL;
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ServiceWindowManager::ServiceWindowManager() : MenuWidget("")
+ServiceWindowManager::ServiceWindowManager() : MenuWidget(trs("ServiceSystem"))
 {
-    _submenuWidth = menuManager.getSubmenuWidth();
-    _submenuHeight = menuManager.getSubmenuHeight();
+    int _submenuWidth = menuManager.getSubmenuWidth();
+    int _submenuHeight = menuManager.getSubmenuHeight();
     setFixedSize(_submenuWidth, _submenuHeight);
 
     int fontSize = fontManager.getFontSize(3);
     //定义按钮，并以序号命名，方便后面使用
-    _nibpButton = new IButton("_nibpButton");
+    _nibpButton = new IButton(trs("NIBP"));
     _nibpButton->setFont(fontManager.textFont(fontSize));
     _nibpButton->setFixedSize(_submenuWidth / 2, 30);
     connect(_nibpButton, SIGNAL(realReleased()), this,
             SLOT(_nibpButtonSlot()));
 
-    _upgradeButton = new IButton("_upgradeButton");
+    _upgradeButton = new IButton(trs("ServiceUpgrade"));
     _upgradeButton->setFont(fontManager.textFont(fontSize));
     _upgradeButton->setFixedSize(_submenuWidth / 2, 30);
     connect(_upgradeButton, SIGNAL(realReleased()), this,
             SLOT(_upgradeButtonSlot()));
 
-    _versionButton = new IButton("_versionButton");
+    _versionButton = new IButton(trs("ServiceVersion"));
     _versionButton->setFont(fontManager.textFont(fontSize));
     _versionButton->setFixedSize(_submenuWidth / 2, 30);
     connect(_versionButton, SIGNAL(realReleased()), this,
             SLOT(_versionButtonSlot()));
 
-    _tempButton = new IButton("_tempButton");
+    _tempButton = new IButton(trs("CPUTemp"));
     _tempButton->setFont(fontManager.textFont(fontSize));
     _tempButton->setFixedSize(_submenuWidth / 2, 30);
     connect(_tempButton, SIGNAL(realReleased()), this,
             SLOT(_tempButtonSlot()));
 
-    _errorLogButton = new IButton("_errorLogButton");
+    _errorLogButton = new IButton(trs("ErrorLog"));
     _errorLogButton->setFont(fontManager.textFont(fontSize));
     _errorLogButton->setFixedSize(_submenuWidth / 2, 30);
     connect(_errorLogButton, SIGNAL(realReleased()), this,
             SLOT(_errorLogButtonSlot()));
-
-    _returnButton = new IButton("_returnButton");
-    _returnButton->setFont(fontManager.textFont(fontSize));
-    _returnButton->setFixedSize(_submenuWidth / 2, 30);
-    connect(_returnButton, SIGNAL(realReleased()), this,
-            SLOT(_returnButtonSlot()));
 
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout = new QVBoxLayout();
@@ -85,7 +79,6 @@ ServiceWindowManager::ServiceWindowManager() : MenuWidget("")
     vLayout->addWidget(_versionButton, 0, Qt::AlignCenter);
     vLayout->addWidget(_tempButton, 0, Qt::AlignCenter);
     vLayout->addWidget(_errorLogButton, 0, Qt::AlignCenter);
-    vLayout->addWidget(_returnButton, 0, Qt::AlignCenter);
     vLayout->addStretch();
 
     mainLayout->addLayout(vLayout);
@@ -99,12 +92,11 @@ ServiceWindowManager::ServiceWindowManager() : MenuWidget("")
     nibprepair.addSubMenu(&nibpzeropoint);
     nibppressurecontrol.construction();
     nibprepair.addSubMenu(&nibppressurecontrol);
-    nibprepair.addReturnMenu();
 
-    serviceUpgrade.Construation();
+//    serviceUpgrade.Construation();
 //    serviceVersion.Construation();
-    serviceCPUTemp.Construation();
-    serviceErrorLogMenu.construction();
+//    serviceCPUTemp.Construation();
+//    serviceErrorLogMenu.construction();
 }
 
 /**************************************************************************************************
@@ -116,34 +108,40 @@ void ServiceWindowManager::init()
     _nibpButton->setFocus();
 }
 
+void ServiceWindowManager::showEvent(QShowEvent *e)
+{
+    _nibpButton->setFocus();
+    QWidget::showEvent(e);
+}
+
 void ServiceWindowManager::_nibpButtonSlot()
 {
-    menuManager.popup(&nibprepair);
+    nibprepair.popup();
+    nibprepair.init();
 }
 
 void ServiceWindowManager::_upgradeButtonSlot()
 {
-    menuManager.popup(&serviceUpgrade);
+    serviceUpgrade.popup();
+    serviceUpgrade.init();
 }
 
 void ServiceWindowManager::_versionButtonSlot()
 {
-    menuManager.popup(&serviceVersion);
+    serviceVersion.popup();
+    serviceVersion.init();
 }
 
 void ServiceWindowManager::_tempButtonSlot()
 {
-    menuManager.popup(&serviceCPUTemp);
+    serviceCPUTemp.popup();
+    serviceCPUTemp.init();
 }
 
 void ServiceWindowManager::_errorLogButtonSlot()
 {
-    menuManager.popup(&serviceErrorLogMenu);
-}
-
-void ServiceWindowManager::_returnButtonSlot()
-{
-    menuManager.returnPrevious();
+    serviceErrorLogMenu.popup();
+    serviceErrorLogMenu.init();
 }
 
 /**************************************************************************************************

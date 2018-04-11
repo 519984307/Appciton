@@ -174,6 +174,10 @@ void ServiceUpgrade::exit(void)
  *************************************************************************************************/
 ServiceUpgrade::ServiceUpgrade() : MenuWidget(trs("Upgrade"))
 {
+    int submenuW = menuManager.getSubmenuWidth();
+    int submenuH = menuManager.getSubmenuHeight();
+    setFixedSize(submenuW, submenuH);
+
     int fontSize = fontManager.getFontSize(1);
     int btnWidth = 150;
     int labWidth = 500;
@@ -243,14 +247,26 @@ ServiceUpgrade::ServiceUpgrade() : MenuWidget(trs("Upgrade"))
     _btnReturn->setFixedSize(btnWidth, ITEM_H);
     connect(_btnReturn, SIGNAL(realReleased()), this, SLOT(_returnBtnReleased()));
 
+    _info = new QLabel(trs("WarningNoUSB"), this);
+    _info->setFont(fontManager.textFont(_fontsize));
+
     QGridLayout *gridlayout = new QGridLayout();
-    gridlayout->setContentsMargins(20, 0, 20, 0);
-    gridlayout->addWidget(_upgradeType, 0, 0, 1, 2, Qt::AlignLeft);
-    gridlayout->addWidget(_btnStart, 0, 2, 1, 1, Qt::AlignRight);
+    gridlayout->setContentsMargins(10, 0, 10, 0);
+    gridlayout->addWidget(_upgradeType, 0, 0, 1, 2, Qt::AlignLeft | Qt::AlignVCenter);
+    gridlayout->addWidget(_btnStart, 0, 2, 1, 1, Qt::AlignRight | Qt::AlignVCenter);
     gridlayout->addWidget(_testEdit, 1, 0, 2, 3, Qt::AlignCenter);
     gridlayout->addWidget(_progressBar, 4, 0, 1, 3, Qt::AlignCenter);
-    gridlayout->addWidget(_btnReturn, 5, 2, 1, 1, Qt::AlignRight);
+    gridlayout->addWidget(_btnReturn, 5, 2, 1, 1, Qt::AlignRight | Qt::AlignVCenter);
+
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    hLayout->setContentsMargins(0, 0, 20, 5);
+    hLayout->addWidget(_info, 0, Qt::AlignRight);
+
+    labelLayout->setSpacing(10);
+//    labelLayout->setMargin(10);
     labelLayout->addLayout(gridlayout);
+    labelLayout->addStretch();
+    labelLayout->addLayout(hLayout);
 
     mainLayout->addLayout(labelLayout);
 }

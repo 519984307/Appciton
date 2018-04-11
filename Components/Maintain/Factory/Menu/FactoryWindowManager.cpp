@@ -22,45 +22,40 @@ FactoryWindowManager *FactoryWindowManager::_selfObj = NULL;
 * 功能: 构造函数
 *************************************************************************************************/
 #if defined(Q_WS_QWS)
-FactoryWindowManager::FactoryWindowManager() : MenuWidget("FactorySystem")
+FactoryWindowManager::FactoryWindowManager() : MenuWidget(trs("FactorySystem"))
 #else
-FactoryWindowManager::FactoryWindowManager() : MenuWidget("FactorySystem")
+FactoryWindowManager::FactoryWindowManager() : MenuWidget(trs("FactorySystem"))
 #endif
 {
     _submenuWidth = menuManager.getSubmenuWidth();
     _submenuHeight = menuManager.getSubmenuHeight();
+    setFixedSize(_submenuWidth, _submenuHeight);
 
     int fontSize = fontManager.getFontSize(3);
 
-    _testButton = new IButton("_testButton");
+    _testButton = new IButton(trs("FactoryTest"));
     _testButton->setFont(fontManager.textFont(fontSize));
     _testButton->setFixedSize(_submenuWidth / 2, 30);
     connect(_testButton, SIGNAL(realReleased()), this,
             SLOT(_testButtonSlot()));
 
-    _dataRecordButton = new IButton("_dataRecordButton");
+    _dataRecordButton = new IButton(trs("DataRecord"));
     _dataRecordButton->setFont(fontManager.textFont(fontSize));
     _dataRecordButton->setFixedSize(_submenuWidth / 2, 30);
     connect(_dataRecordButton, SIGNAL(realReleased()), this,
             SLOT(_dataRecordButtonlot()));
 
-    _systemInfoButton = new IButton("_systemInfoButton");
+    _systemInfoButton = new IButton(trs("SystemInfo"));
     _systemInfoButton->setFont(fontManager.textFont(fontSize));
     _systemInfoButton->setFixedSize(_submenuWidth / 2, 30);
     connect(_systemInfoButton, SIGNAL(realReleased()), this,
             SLOT(_systemInfoButtonSlot()));
 
-    _tempCalibateButton = new IButton("_tempCalibateButton");
+    _tempCalibateButton = new IButton(trs("Temp"));
     _tempCalibateButton->setFont(fontManager.textFont(fontSize));
     _tempCalibateButton->setFixedSize(_submenuWidth / 2, 30);
     connect(_tempCalibateButton, SIGNAL(realReleased()), this,
             SLOT(_tempCalibateButtonSlot()));
-
-    _returnButton = new IButton("_returnButton");
-    _returnButton->setFont(fontManager.textFont(fontSize));
-    _returnButton->setFixedSize(_submenuWidth / 2, 30);
-    connect(_returnButton, SIGNAL(realReleased()), this,
-            SLOT(_returnButtonSlot()));
 
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout = new QVBoxLayout();
@@ -72,7 +67,6 @@ FactoryWindowManager::FactoryWindowManager() : MenuWidget("FactorySystem")
     vLayout->addWidget(_dataRecordButton, 0, Qt::AlignCenter);
     vLayout->addWidget(_systemInfoButton, 0, Qt::AlignCenter);
     vLayout->addWidget(_tempCalibateButton, 0, Qt::AlignCenter);
-    vLayout->addWidget(_returnButton, 0, Qt::AlignCenter);
     vLayout->addStretch();
 
     mainLayout->addLayout(vLayout);
@@ -110,27 +104,22 @@ void FactoryWindowManager::upgradeMenu(void)
 
 void FactoryWindowManager::_testButtonSlot()
 {
-    menuManager.popup(&factoryTestMenu);
+    factoryTestMenu.popup();
 }
 
 void FactoryWindowManager::_dataRecordButtonlot()
 {
-    menuManager.popup(&factoryDataRecord);
+    factoryTestMenu.popup();
 }
 
 void FactoryWindowManager::_systemInfoButtonSlot()
 {
-    menuManager.popup(&factorySystemInfoMenu);
+    factorySystemInfoMenu.popup();
 }
 
 void FactoryWindowManager::_tempCalibateButtonSlot()
 {
-    menuManager.popup(&factoryTempMenu);
-}
-
-void FactoryWindowManager::_returnButtonSlot()
-{
-    menuManager.returnPrevious();
+    factoryTempMenu.popup();
 }
 
 /**************************************************************************************************

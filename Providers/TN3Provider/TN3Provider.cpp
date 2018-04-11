@@ -249,6 +249,7 @@ bool TN3Provider::attachParam(Param &param)
 {
     if (param.getParamID() == PARAM_NIBP)
     {
+        nibpParamService.setServiceProvider(this);
         nibpParam.setProvider(this);
         return true;
     }

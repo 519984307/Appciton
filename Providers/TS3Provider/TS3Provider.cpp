@@ -348,17 +348,17 @@ bool TS3Provider::isStatus(unsigned char *packet)
     case 0x02:
         if (packet[2] == 0x00)
         {
-            _gainError = SPO2_GAIN_NORMAL;
+            _gainError = TS3_GAIN_NORMAL;
         }
         else
         {
             if (packet[2] == 0x01)
             {
-                _gainError = SPO2_GAIN_SATURATION;
+                _gainError = TS3_GAIN_SATURATION;
             }
             else if (packet[2] == 0x02)
             {
-                _gainError = SPO2_GAIN_WEAK;
+                _gainError = TS3_GAIN_WEAK;
             }
         }
         break;
@@ -378,19 +378,19 @@ bool TS3Provider::isStatus(unsigned char *packet)
         isError = true;
         if (packet[2] == 0x00)
         {
-            _logicStatus = SPO2_LOGIC_INIT;
+            _logicStatus = TS3_LOGIC_INIT;
         }
         else if (packet[2] == 0x01)
         {
-            _logicStatus = SPO2_LOGIC_SEARCHING;
+            _logicStatus = TS3_LOGIC_SEARCHING;
         }
         else if (packet[2] == 0x02)
         {
-            _logicStatus = SPO2_LOGIC_SEARCH_TOO_LONG;
+            _logicStatus = TS3_LOGIC_SEARCH_TOO_LONG;
         }
         else if (packet[2] == 0x03)
         {
-            _logicStatus = SPO2_LOGIC_NORMAL;
+            _logicStatus = TS3_LOGIC_NORMAL;
         }
         break;
 
@@ -402,23 +402,23 @@ bool TS3Provider::isStatus(unsigned char *packet)
     {
         _isCableOff = false;
         _isFingerOff = false;
-        _gainError = SPO2_GAIN_NORMAL;
+        _gainError = TS3_GAIN_NORMAL;
         _ledFault = false;
 
         spo2Param.setSensorOff(false);
 
         // 初始化
-        if (_logicStatus == SPO2_LOGIC_INIT)
+        if (_logicStatus == TS3_LOGIC_INIT)
         {
             spo2Param.setNotify(true,trs("SPO2Initializing"));
         }
         // 脉搏搜索
-        else if (_logicStatus == SPO2_LOGIC_SEARCHING)
+        else if (_logicStatus == TS3_LOGIC_SEARCHING)
         {
             spo2Param.setSearchForPulse(true);
         }
         //搜索时间过长
-        else if (_logicStatus == SPO2_LOGIC_SEARCH_TOO_LONG)
+        else if (_logicStatus == TS3_LOGIC_SEARCH_TOO_LONG)
         {
             spo2Param.setNotify(true,trs("SPO2PulseSearch"));
         }
@@ -455,13 +455,13 @@ bool TS3Provider::isStatus(unsigned char *packet)
             spo2Param.setNotify(false);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LED_FAULT, false);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
-            if (_gainError == SPO2_GAIN_SATURATION)
+            if (_gainError == TS3_GAIN_SATURATION)
             {
                 isValid |= true;
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, true);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, false);
             }
-            else if (_gainError == SPO2_GAIN_WEAK)
+            else if (_gainError == TS3_GAIN_WEAK)
             {
                 isValid |= true;
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, true);
@@ -514,9 +514,9 @@ TS3Provider::TS3Provider() : BLMProvider("BLM_TS3"), SPO2ProviderIFace()
 
     _isCableOff = false;
     _isFingerOff = false;
-    _gainError = SPO2_GAIN_NC;
+    _gainError = TS3_GAIN_NC;
     _ledFault = false;
-    _logicStatus = SPO2_LOGIC_NC;
+    _logicStatus = TS3_LOGIC_NC;
 }
 
 /**************************************************************************************************

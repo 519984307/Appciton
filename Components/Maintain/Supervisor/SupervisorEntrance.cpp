@@ -23,7 +23,7 @@ void SupervisorEntrance::layoutExec(void)
     QString _normalPassword;
     superConfig.getStrValue("General|Password", _normalPassword);
 
-    _passwordMenuManage = new PasswordMenuManage("SupervisorPassword");
+    _passwordMenuManage = new PasswordMenuManage(trs("PassWord"));
     _passwordMenuManage->setPassword(_normalPassword);
 //    connect(_passwordMenuManage, SIGNAL(enterSignal()), this, SLOT(_showSolt()));
 
@@ -52,9 +52,9 @@ void SupervisorEntrance::readyShow(void)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-SupervisorEntrance::SupervisorEntrance() : SubMenu(trs("SupervisorMenu"))
+SupervisorEntrance::SupervisorEntrance() : SubMenu(trs("ServiceSystem"))
 {
-    setDesc(trs("SupervisorMenuDesc"));
+    setDesc(trs("ServiceSystem"));
     startLayout();
 }
 

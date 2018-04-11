@@ -31,7 +31,7 @@ public:
     ~MenuManager();
 
 public:
-    void popup(QWidget *menuGroup,int x = 0, int y = 0);
+    void popupWidegt(QWidget *widget, int x = 0, int y = 0);
 
     void returnPrevious(void);
 
@@ -55,7 +55,7 @@ private:
 
     QStackedWidget *_subMenus;           //子菜单
     MenuGroup *_menuGroup;
-    QList<QWidget *> widgetList;
+    QList<QWidget *> _widgetList;
 
     int _listWidth;                      //列表宽度
     int _submenuWidth;                   //子菜单宽度

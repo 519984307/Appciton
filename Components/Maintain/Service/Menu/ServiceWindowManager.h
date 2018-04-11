@@ -31,14 +31,11 @@ public:
     //初始化
     void init();
 
-    //获取子菜单宽度
-    int getSubmenuWidth() const {return _submenuWidth;}
-
-    //获取子菜单高度
-    int getSubmenuHeight() const {return _submenuHeight;}
-
 signals:
     void foucsChange();
+
+protected:
+    void showEvent(QShowEvent *e);
 
 private slots:
     void _nibpButtonSlot();
@@ -46,7 +43,6 @@ private slots:
     void _versionButtonSlot();
     void _tempButtonSlot();
     void _errorLogButtonSlot();
-    void _returnButtonSlot();
 
 private slots:
     // 返回到菜单列表项。
@@ -73,9 +69,5 @@ private:
     IButton *_versionButton;
     IButton *_tempButton;
     IButton *_errorLogButton;
-    IButton *_returnButton;
-
-    int _submenuWidth;                  //子菜单宽度
-    int _submenuHeight;                 //子菜单高度
 };
 #define serviceWindowManager (ServiceWindowManager::Construation())

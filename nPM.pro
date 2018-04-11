@@ -295,7 +295,6 @@ SOURCES +=                                                                      
     Components/MenuManager/MenuManager.cpp                                      \
     Components/MenuManager/PasswordMenuManage.cpp                               \
     Components/MenuManager/PublicMenuManager.cpp                                \
-    Components/MenuManager/ServiceMenuManager.cpp                               \
     Components/MenuManager/SetWidget.cpp                                        \
     Components/MenuManager/SupervisorMenuManager.cpp                            \
     Components/NetworkManager/NetworkManager.cpp                                \
@@ -334,7 +333,6 @@ SOURCES +=                                                                      
     Components/Maintain/Supervisor/SupervisorConfigManager.cpp                  \
     Components/Maintain/Supervisor/SupervisorEntrance.cpp                       \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.cpp                \
-    Components/Maintain/Service/Menu/ServiceEntrance.cpp                        \
     Components/Maintain/Service/Menu/ServiceWindowManager.cpp                   \
     Components/Maintain/Service/NIBP/NIBPPressureControl.cpp                    \
     Components/Maintain/Service/NIBP/NIBPCalibrate.cpp                          \
@@ -448,15 +446,18 @@ SOURCES +=                                                                      
     Providers/MasimoProvider/MasimoProvider.cpp                                 \
     Providers/TE3Provider/TE3Provider.cpp                                       \
     Providers/E5Provider/E5Provider.cpp                                         \
+    Providers/T5Provider/T5Provider.cpp                                         \
     Providers/TN3Provider/TN3Provider.cpp                                       \
     Providers/TS3Provider/TS3Provider.cpp                                       \
     Providers/TT3Provider/TT3Provider.cpp                                       \
     Providers/DemoProvider/DemoProvider.cpp                                     \
+    Providers/PRT48Provider/PRT48Provider.cpp                                   \
     Providers/PRT72Provider/PRT72Provider.cpp                                   \
     Providers/SuntechProvider/SuntechProvider.cpp                               \
     Providers/SystemBoardProvider/SystemBoardProvider.cpp                       \
     Providers/RawData/RawDataCollection.cpp                                     \
     Providers/RawData/RawDataCollectionTxt.cpp                                  \
+    Providers/S5Provider/S5Provider.cpp                                         \
 #################################################################################
     Main/App/AppMain.cpp                                                        \
     Main/App/Init.cpp                                                           \
@@ -733,7 +734,6 @@ HEADERS +=                                                                      
     Components/MenuManager/MenuManager.h                                        \
     Components/MenuManager/PasswordMenuManage.h                                 \
     Components/MenuManager/PublicMenuManager.h                                  \
-    Components/MenuManager/ServiceMenuManager.h                                 \
     Components/MenuManager/SetWidget.h                                          \
     Components/MenuManager/SupervisorMenuManager.h                              \
     Components/NetworkManager/NetworkDefine.h                                   \
@@ -773,7 +773,6 @@ HEADERS +=                                                                      
     Components/Maintain/Supervisor/SupervisorConfigManager.h                    \
     Components/Maintain/Supervisor/SupervisorEntrance.h                         \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.h                  \
-    Components/Maintain/Service/Menu/ServiceEntrance.h                          \
     Components/Maintain/Service/Menu/ServiceWindowManager.h                     \
     Components/Maintain/Service/NIBP/NIBPPressureControl.h                      \
     Components/Maintain/Service/NIBP/NIBPCalibrate.h                            \
@@ -916,16 +915,19 @@ HEADERS +=                                                                      
     Providers/MasimoProvider/MasimoProvider.h                                   \
     Providers/TE3Provider/TE3Provider.h                                         \
     Providers/E5Provider/E5Provider.h                                           \
+    Providers/T5Provider/T5Provider.h                                           \
     Providers/TN3Provider/TN3Provider.h                                         \
     Providers/TS3Provider/TS3Provider.h                                         \
     Providers/TT3Provider/TT3Provider.h                                         \
     Providers/DemoProvider/DemoProvider.h                                       \
+    Providers/PRT48Provider/PRT48Provider.h                                     \
     Providers/PRT72Provider/PRT72Provider.h                                     \
     Providers/SuntechProvider/SuntechProvider.h                                 \
     Providers/SystemBoardProvider/SystemBoardProvider.h                         \
     Providers/SystemBoardProvider/SystemBoardProviderDefine.h                   \
     Providers/RawData/RawDataCollection.h                                       \
     Providers/RawData/RawDataCollectionTxt.h                                    \
+    Providers/S5Provider/S5Provider.h                                           \
 #################################################################################
     Main/App/Init.h                                                             \
     Main/IApplication.h                                                         \
@@ -1027,6 +1029,7 @@ DEPENDPATH +=                                                                   
     Providers/MasimoProvider                                                    \
     Providers/SuntechProvider                                                   \
     Providers/BLMTEMPProvider                                                   \
+    Providers/T5Provider                                                        \
     Providers/TN3Provider                                                       \
     Providers/TS3Provider                                                       \
     Providers/TT3Provider                                                       \
@@ -1034,9 +1037,11 @@ DEPENDPATH +=                                                                   
     Providers/TE3Provider/ECGAlgo                                               \
     Providers/E5Provider                                                        \
     Providers/DemoProvider                                                      \
+    Providers/PRT48Provider                                                     \
     Providers/PRT72Provider                                                     \
     Providers/SystemBoardProvider                                               \
     Providers/RawData                                                           \
+    Providers/S5Provider                                                        \
     Params                                                                      \
     Params/AGParam                                                              \
     Params/AGParam/AGWidgets                                                    \
@@ -1158,6 +1163,7 @@ INCLUDEPATH +=                                                                  
     Providers/MasimoProvider                                                    \
     Providers/SuntechProvider                                                   \
     Providers/BLMTEMPProvider                                                   \
+    Providers/T5Provider                                                        \
     Providers/TN3Provider                                                       \
     Providers/TS3Provider                                                       \
     Providers/TT3Provider                                                       \
@@ -1165,9 +1171,11 @@ INCLUDEPATH +=                                                                  
     Providers/TE3Provider/ECGAlgo                                               \
     Providers/E5Provider                                                        \
     Providers/DemoProvider                                                      \
+    Providers/PRT48Provider                                                     \
     Providers/PRT72Provider                                                     \
     Providers/SystemBoardProvider                                               \
     Providers/RawData                                                           \
+    Providers/S5Provider                                                        \
     Params                                                                      \
     Params/AGParam                                                              \
     Params/AGParam/AGWidgets                                                    \

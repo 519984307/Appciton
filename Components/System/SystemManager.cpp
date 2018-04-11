@@ -461,6 +461,11 @@ void SystemManager::_publishTestResult(void)
                     str += trs("ECG");
                 }
 
+                if (SELFTEST_SUCCESS != _modulePostResult[E5_MODULE_SELFTEST_RESULT])
+                {
+                    str += trs("ECG");
+                }
+
                 if (SELFTEST_SUCCESS != _modulePostResult[TN3_MODULE_SELFTEST_RESULT] &&
                         SELFTEST_NOT_SUPPORT != _modulePostResult[TN3_MODULE_SELFTEST_RESULT])
                 {
@@ -483,8 +488,30 @@ void SystemManager::_publishTestResult(void)
                     str += trs("SPO2");
                 }
 
+                if (SELFTEST_SUCCESS != _modulePostResult[S5_MODULE_SELFTEST_RESULT] &&
+                        SELFTEST_NOT_SUPPORT != _modulePostResult[S5_MODULE_SELFTEST_RESULT])
+                {
+                    if (!str.isEmpty())
+                    {
+                        str += ",";
+                    }
+
+                    str += trs("SPO2");
+                }
+
                 if (SELFTEST_SUCCESS != _modulePostResult[TT3_MODULE_SELFTEST_RESULT] &&
                         SELFTEST_NOT_SUPPORT != _modulePostResult[TT3_MODULE_SELFTEST_RESULT])
+                {
+                    if (!str.isEmpty())
+                    {
+                        str += ",";
+                    }
+
+                    str += trs("TEMP");
+                }
+
+                if (SELFTEST_SUCCESS != _modulePostResult[T5_MODULE_SELFTEST_RESULT] &&
+                        SELFTEST_NOT_SUPPORT != _modulePostResult[T5_MODULE_SELFTEST_RESULT])
                 {
                     if (!str.isEmpty())
                     {
@@ -505,7 +532,17 @@ void SystemManager::_publishTestResult(void)
                     str += trs("CO2");
                 }
 
-                if (SELFTEST_SUCCESS != _modulePostResult[PRINTER_SELFTEST_RESULT])
+                if (SELFTEST_SUCCESS != _modulePostResult[PRINTER72_SELFTEST_RESULT])
+                {
+                    if (!str.isEmpty())
+                    {
+                        str += ",";
+                    }
+
+                    str += trs("Printer");
+                }
+
+                if (SELFTEST_SUCCESS != _modulePostResult[PRINTER48_SELFTEST_RESULT])
                 {
                     if (!str.isEmpty())
                     {
@@ -637,6 +674,7 @@ SystemManager::SystemManager() :
     if (!isSupport(CONFIG_SPO2))
     {
         _modulePostResult[TS3_MODULE_SELFTEST_RESULT] = SELFTEST_NOT_SUPPORT;
+        _modulePostResult[S5_MODULE_SELFTEST_RESULT] = SELFTEST_NOT_SUPPORT;
     }
     if (!isSupport(CONFIG_NIBP))
     {
@@ -646,6 +684,7 @@ SystemManager::SystemManager() :
     if (!isSupport(CONFIG_TEMP))
     {
         _modulePostResult[TT3_MODULE_SELFTEST_RESULT] = SELFTEST_NOT_SUPPORT;
+        _modulePostResult[T5_MODULE_SELFTEST_RESULT] = SELFTEST_NOT_SUPPORT;
     }
 
     // 暂时没有自检

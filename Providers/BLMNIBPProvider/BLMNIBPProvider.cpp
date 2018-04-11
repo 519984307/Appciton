@@ -1,5 +1,6 @@
 #include "BLMNIBPProvider.h"
 #include "NIBPParam.h"
+#include "NIBPParamService.h"
 #include "Debug.h"
 #include <QString>
 
@@ -44,8 +45,8 @@ bool BLMNIBPProvider::attachParam(Param &param)
 {
     if (param.getParamID() == PARAM_NIBP)
     {
-
         nibpParam.setProvider(this);
+        nibpParamService.setServiceProvider(this);
         return true;
     }
 
