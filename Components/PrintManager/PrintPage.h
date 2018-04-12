@@ -7,7 +7,7 @@
 #include "PrintDefine.h"
 
 #define PIXELS_PER_MM       (8)     // pixel
-#define PRINT_PAGE_HEIGHT  (72)    // mm
+#define PRINT_PAGE_HEIGHT  (48)    // mm
 #define PRINT_PAGE_WIDTH   (90)    // mm
 
 #define IMAGE_WIDTH  (PIXELS_PER_MM * PRINT_PAGE_WIDTH)

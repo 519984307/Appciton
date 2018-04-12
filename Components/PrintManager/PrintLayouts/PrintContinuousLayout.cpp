@@ -372,7 +372,6 @@ PrintPage *PrintContinuousLayout::_produceFirstPage(void)
 void PrintContinuousLayout::_getWaveForm(WaveGainList &waveList)
 {
     QList<int> waveID;
-    waveID.clear();
     _numOfWaveTrace = printManager.getPrintWaveNum();
 
     // get cur display waveform

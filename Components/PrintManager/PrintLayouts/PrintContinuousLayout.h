@@ -6,7 +6,7 @@
 #include "SystemDefine.h"
 
 #define REALTIME_WAVECACHE_CHANNEL_NAME ("PrintContinuousLayout")
-#define MAX_WAVE_TRACE (4)//打印最大波形道数
+#define MAX_WAVE_TRACE (3)//打印最大波形道数
 
 //current print wave and gain
 struct WaveGain

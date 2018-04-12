@@ -255,22 +255,16 @@ bool PrintManager::requestPrint(PrintType type, PrintLayoutID id, void *data, in
     if (_status)
     {
         qdebug("Print abnormal condition (status = %d)!\n", _status);
-        if (PRINT_TYPE_CONTINUOUS == type)
-        {
-            addPrinterActiveSnapshot();
-        }
         return false;
     }
 
+#if 1
     if (!_isConected)
     {
         qdebug("Printer Not Connected!\n");
-        if (PRINT_TYPE_CONTINUOUS == type)
-        {
-            addPrinterActiveSnapshot();
-        }
         return false;
     }
+#endif
 
     if (type == PRINT_TYPE_NONE)
     {
@@ -776,7 +770,7 @@ void PrintManager::setPrintWaveNum(int num)
         return;
     }
 
-    systemConfig.setNumValue("PrimaryCfg|System|PrintWaveformsNum", num);
+    systemConfig.setNumValue("Print|PrintWaveformsNum", num);
 }
 
 /**************************************************************************************************
@@ -785,7 +779,7 @@ void PrintManager::setPrintWaveNum(int num)
 int PrintManager::getPrintWaveNum(void)
 {
     int num = 0;
-    systemConfig.getNumValue("PrimaryCfg|System|PrintWaveformsNum", num);
+    systemConfig.getNumValue("Print|PrintWaveformsNum", num);
 
     return num;
 }
