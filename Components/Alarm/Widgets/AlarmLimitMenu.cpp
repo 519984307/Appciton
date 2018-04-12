@@ -164,41 +164,41 @@ void AlarmLimitMenu::setIBPAlarmItem(IBPPressureName ibp1, IBPPressureName ibp2)
     case IBP_PRESSURE_ART:
         id.append(SUB_PARAM_ART_SYS);
         id.append(SUB_PARAM_ART_DIA);
-        id.append(SUB_PARAM_ART_MEAN);
+        id.append(SUB_PARAM_ART_MAP);
         id.append(SUB_PARAM_ART_PR);
         break;
     case IBP_PRESSURE_PA:
         id.append(SUB_PARAM_PA_SYS);
         id.append(SUB_PARAM_PA_DIA);
-        id.append(SUB_PARAM_PA_MEAN);
+        id.append(SUB_PARAM_PA_MAP);
         id.append(SUB_PARAM_PA_PR);
         break;
     case IBP_PRESSURE_CVP:
-        id.append(SUB_PARAM_CVP_MEAN);
+        id.append(SUB_PARAM_CVP_MAP);
         id.append(SUB_PARAM_CVP_PR);
         break;
     case IBP_PRESSURE_LAP:
-        id.append(SUB_PARAM_LAP_MEAN);
+        id.append(SUB_PARAM_LAP_MAP);
         id.append(SUB_PARAM_LAP_PR);
         break;
     case IBP_PRESSURE_RAP:
-        id.append(SUB_PARAM_RAP_MEAN);
+        id.append(SUB_PARAM_RAP_MAP);
         id.append(SUB_PARAM_RAP_PR);
         break;
     case IBP_PRESSURE_ICP:
-        id.append(SUB_PARAM_ICP_MEAN);
+        id.append(SUB_PARAM_ICP_MAP);
         id.append(SUB_PARAM_ICP_PR);
         break;
     case IBP_PRESSURE_AUXP1:
         id.append(SUB_PARAM_AUXP1_SYS);
         id.append(SUB_PARAM_AUXP1_DIA);
-        id.append(SUB_PARAM_AUXP1_MEAN);
+        id.append(SUB_PARAM_AUXP1_MAP);
         id.append(SUB_PARAM_AUXP1_PR);
         break;
     case IBP_PRESSURE_AUXP2:
         id.append(SUB_PARAM_AUXP2_SYS);
         id.append(SUB_PARAM_AUXP2_DIA);
-        id.append(SUB_PARAM_AUXP2_MEAN);
+        id.append(SUB_PARAM_AUXP2_MAP);
         id.append(SUB_PARAM_AUXP2_PR);
         break;
     default:
@@ -210,41 +210,41 @@ void AlarmLimitMenu::setIBPAlarmItem(IBPPressureName ibp1, IBPPressureName ibp2)
     case IBP_PRESSURE_ART:
         id.append(SUB_PARAM_ART_SYS);
         id.append(SUB_PARAM_ART_DIA);
-        id.append(SUB_PARAM_ART_MEAN);
+        id.append(SUB_PARAM_ART_MAP);
         id.append(SUB_PARAM_ART_PR);
         break;
     case IBP_PRESSURE_PA:
         id.append(SUB_PARAM_PA_SYS);
         id.append(SUB_PARAM_PA_DIA);
-        id.append(SUB_PARAM_PA_MEAN);
+        id.append(SUB_PARAM_PA_MAP);
         id.append(SUB_PARAM_PA_PR);
         break;
     case IBP_PRESSURE_CVP:
-        id.append(SUB_PARAM_CVP_MEAN);
+        id.append(SUB_PARAM_CVP_MAP);
         id.append(SUB_PARAM_CVP_PR);
         break;
     case IBP_PRESSURE_LAP:
-        id.append(SUB_PARAM_LAP_MEAN);
+        id.append(SUB_PARAM_LAP_MAP);
         id.append(SUB_PARAM_LAP_PR);
         break;
     case IBP_PRESSURE_RAP:
-        id.append(SUB_PARAM_RAP_MEAN);
+        id.append(SUB_PARAM_RAP_MAP);
         id.append(SUB_PARAM_RAP_PR);
         break;
     case IBP_PRESSURE_ICP:
-        id.append(SUB_PARAM_ICP_MEAN);
+        id.append(SUB_PARAM_ICP_MAP);
         id.append(SUB_PARAM_ICP_PR);
         break;
     case IBP_PRESSURE_AUXP1:
         id.append(SUB_PARAM_AUXP1_SYS);
         id.append(SUB_PARAM_AUXP1_DIA);
-        id.append(SUB_PARAM_AUXP1_MEAN);
+        id.append(SUB_PARAM_AUXP1_MAP);
         id.append(SUB_PARAM_AUXP1_PR);
         break;
     case IBP_PRESSURE_AUXP2:
         id.append(SUB_PARAM_AUXP2_SYS);
         id.append(SUB_PARAM_AUXP2_DIA);
-        id.append(SUB_PARAM_AUXP2_MEAN);
+        id.append(SUB_PARAM_AUXP2_MAP);
         id.append(SUB_PARAM_AUXP2_PR);
         break;
     default:

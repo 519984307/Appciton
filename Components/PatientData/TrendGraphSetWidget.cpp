@@ -350,7 +350,7 @@ void TrendGraphSetWidget::_trendRulerLayout()
             case SUB_PARAM_HR_PR:
             case SUB_PARAM_SPO2:
             case SUB_PARAM_RR_BR:
-            case SUB_PARAM_NIBP_SYS:
+            case SUB_PARAM_NIBP_MAP:
             case SUB_PARAM_ETCO2:
             case SUB_PARAM_T1:
                 break;
@@ -365,7 +365,7 @@ void TrendGraphSetWidget::_trendRulerLayout()
             ibpParam.getSubParamID(ibp1, ibp2);
             if (item->sid != ibp1 && item->sid != ibp2 &&
                     item->sid != SUB_PARAM_HR_PR && item->sid != SUB_PARAM_SPO2 &&
-                    item->sid != SUB_PARAM_NIBP_SYS && item->sid != SUB_PARAM_T1)
+                    item->sid != SUB_PARAM_NIBP_MAP && item->sid != SUB_PARAM_T1)
             {
                 continue;
             }
@@ -376,7 +376,7 @@ void TrendGraphSetWidget::_trendRulerLayout()
             {
             case SUB_PARAM_HR_PR:
             case SUB_PARAM_SPO2:
-            case SUB_PARAM_NIBP_SYS:
+            case SUB_PARAM_NIBP_MAP:
             case SUB_PARAM_T1:
             case SUB_PARAM_ETCO2:
             case SUB_PARAM_ETN2O:
@@ -488,15 +488,15 @@ TrendGraphSetWidget::TrendGraphSetWidget() :  _trendGroup(TREND_GROUP_RESP)
         case SUB_PARAM_HR_PR:
         case SUB_PARAM_SPO2:
         case SUB_PARAM_RR_BR:
-        case SUB_PARAM_NIBP_SYS:
-        case SUB_PARAM_ART_MEAN:
-        case SUB_PARAM_PA_MEAN:
-        case SUB_PARAM_CVP_MEAN:
-        case SUB_PARAM_LAP_MEAN:
-        case SUB_PARAM_RAP_MEAN:
-        case SUB_PARAM_ICP_MEAN:
-        case SUB_PARAM_AUXP1_MEAN:
-        case SUB_PARAM_AUXP2_MEAN:
+        case SUB_PARAM_NIBP_MAP:
+        case SUB_PARAM_ART_MAP:
+        case SUB_PARAM_PA_MAP:
+        case SUB_PARAM_CVP_MAP:
+        case SUB_PARAM_LAP_MAP:
+        case SUB_PARAM_RAP_MAP:
+        case SUB_PARAM_ICP_MAP:
+        case SUB_PARAM_AUXP1_MAP:
+        case SUB_PARAM_AUXP2_MAP:
         case SUB_PARAM_CO_CO:
         case SUB_PARAM_CO_CI:
         case SUB_PARAM_CO_TB:

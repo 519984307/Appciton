@@ -182,7 +182,7 @@
                     <Scale>10</Scale>
                 </kPa>
             </ART_DIA>
-            <ART_MEAN Enable="1" Prio="2">
+            <ART_MAP Enable="1" Prio="2">
                 <mmHg>
                     <Low Min="20" Max="224">50</Low>
                     <High Min="21" Max="225">120</High>
@@ -195,7 +195,7 @@
                     <Step>1</Step>
                     <Scale>10</Scale>
                 </kPa>
-            </ART_MEAN>
+            </ART_MAP>
             <ART_PR Enable="1" Prio="2">
                 <bpm>
                     <Low Min="20" Max="299">50</Low>
@@ -232,7 +232,7 @@
                     <Scale>10</Scale>
                 </kPa>
             </PA_DIA>
-            <PA_MEAN Enable="1" Prio="2">
+            <PA_MAP Enable="1" Prio="2">
                 <mmHg>
                     <Low Min="20" Max="224">50</Low>
                     <High Min="21" Max="225">120</High>
@@ -245,7 +245,7 @@
                     <Step>1</Step>
                     <Scale>10</Scale>
                 </kPa>
-            </PA_MEAN>
+            </PA_MAP>
             <PA_PR Enable="1" Prio="2">
                 <bpm>
                     <Low Min="20" Max="299">50</Low>
@@ -254,7 +254,7 @@
                     <Scale>1</Scale>
                 </bpm>
             </PA_PR>
-            <CVP_MEAN Enable="1" Prio="2">
+            <CVP_MAP Enable="1" Prio="2">
                 <mmHg>
                     <Low Min="20" Max="224">50</Low>
                     <High Min="21" Max="225">120</High>
@@ -267,7 +267,7 @@
                     <Step>1</Step>
                     <Scale>10</Scale>
                 </kPa>
-            </CVP_MEAN>
+            </CVP_MAP>
             <CVP_PR Enable="1" Prio="2">
                 <bpm>
                     <Low Min="20" Max="299">50</Low>
@@ -276,7 +276,7 @@
                     <Scale>1</Scale>
                 </bpm>
             </CVP_PR>
-            <LAP_MEAN Enable="1" Prio="2">
+            <LAP_MAP Enable="1" Prio="2">
                 <mmHg>
                     <Low Min="20" Max="224">50</Low>
                     <High Min="21" Max="225">120</High>
@@ -289,7 +289,7 @@
                     <Step>1</Step>
                     <Scale>10</Scale>
                 </kPa>
-            </LAP_MEAN>
+            </LAP_MAP>
             <LAP_PR Enable="1" Prio="2">
                 <bpm>
                     <Low Min="20" Max="299">50</Low>
@@ -298,7 +298,7 @@
                     <Scale>1</Scale>
                 </bpm>
             </LAP_PR>
-            <RAP_MEAN Enable="1" Prio="2">
+            <RAP_MAP Enable="1" Prio="2">
                 <mmHg>
                     <Low Min="20" Max="224">50</Low>
                     <High Min="21" Max="225">120</High>
@@ -311,7 +311,7 @@
                     <Step>1</Step>
                     <Scale>10</Scale>
                 </kPa>
-            </RAP_MEAN>
+            </RAP_MAP>
             <RAP_PR Enable="1" Prio="2">
                 <bpm>
                     <Low Min="20" Max="299">50</Low>
@@ -320,7 +320,7 @@
                     <Scale>1</Scale>
                 </bpm>
             </RAP_PR>
-            <ICP_MEAN Enable="1" Prio="2">
+            <ICP_MAP Enable="1" Prio="2">
                 <mmHg>
                     <Low Min="20" Max="224">50</Low>
                     <High Min="21" Max="225">120</High>
@@ -333,7 +333,7 @@
                     <Step>1</Step>
                     <Scale>10</Scale>
                 </kPa>
-            </ICP_MEAN>
+            </ICP_MAP>
             <ICP_PR Enable="1" Prio="2">
                 <bpm>
                     <Low Min="20" Max="299">50</Low>
@@ -370,7 +370,7 @@
                     <Scale>10</Scale>
                 </kPa>
             </AUXP1_DIA>
-            <AUXP1_MEAN Enable="1" Prio="2">
+            <AUXP1_MAP Enable="1" Prio="2">
                 <mmHg>
                     <Low Min="20" Max="224">50</Low>
                     <High Min="21" Max="225">120</High>
@@ -383,7 +383,7 @@
                     <Step>1</Step>
                     <Scale>10</Scale>
                 </kPa>
-            </AUXP1_MEAN>
+            </AUXP1_MAP>
             <AUXP1_PR Enable="1" Prio="2">
                 <bpm>
                     <Low Min="20" Max="299">50</Low>
@@ -420,7 +420,7 @@
                     <Scale>10</Scale>
                 </kPa>
             </AUXP2_DIA>
-            <AUXP2_MEAN Enable="1" Prio="2">
+            <AUXP2_MAP Enable="1" Prio="2">
                 <mmHg>
                     <Low Min="20" Max="224">50</Low>
                     <High Min="21" Max="225">120</High>
@@ -433,7 +433,7 @@
                     <Step>1</Step>
                     <Scale>10</Scale>
                 </kPa>
-            </AUXP2_MEAN>
+            </AUXP2_MAP>
             <AUXP2_PR Enable="1" Prio="2">
                 <bpm>
                     <Low Min="20" Max="299">50</Low>
@@ -810,7 +810,7 @@
                     <Scale>10</Scale>
                 </kPa>
             </IBP_DIA>
-            <IBP_MEAN Enable="1" Prio="2">
+            <IBP_MAP Enable="1" Prio="2">
                 <mmHg>
                     <Low Min="20" Max="224">50</Low>
                     <High Min="21" Max="225">120</High>
@@ -823,7 +823,7 @@
                     <Step>1</Step>
                     <Scale>10</Scale>
                 </kPa>
-            </IBP_MEAN>
+            </IBP_MAP>
             <IBP_PR Enable="1" Prio="2">
                 <mmHg>
                     <Low Min="20" Max="224">50</Low>

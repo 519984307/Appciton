@@ -25,14 +25,14 @@ IBPParam::IBPParam() : Param(PARAM_IBP), _staIBP1(true), _staIBP2(true)
     _trendWidgetIBP2 = NULL;
 
     _ibpSubParamMap.clear();
-    _ibpSubParamMap.insert(IBP_PRESSURE_ART, SUB_PARAM_ART_MEAN);
-    _ibpSubParamMap.insert(IBP_PRESSURE_PA, SUB_PARAM_PA_MEAN);
-    _ibpSubParamMap.insert(IBP_PRESSURE_CVP, SUB_PARAM_CVP_MEAN);
-    _ibpSubParamMap.insert(IBP_PRESSURE_LAP, SUB_PARAM_LAP_MEAN);
-    _ibpSubParamMap.insert(IBP_PRESSURE_RAP, SUB_PARAM_RAP_MEAN);
-    _ibpSubParamMap.insert(IBP_PRESSURE_ICP, SUB_PARAM_ICP_MEAN);
-    _ibpSubParamMap.insert(IBP_PRESSURE_AUXP1, SUB_PARAM_AUXP1_MEAN);
-    _ibpSubParamMap.insert(IBP_PRESSURE_AUXP2, SUB_PARAM_AUXP2_MEAN);
+    _ibpSubParamMap.insert(IBP_PRESSURE_ART, SUB_PARAM_ART_MAP);
+    _ibpSubParamMap.insert(IBP_PRESSURE_PA, SUB_PARAM_PA_MAP);
+    _ibpSubParamMap.insert(IBP_PRESSURE_CVP, SUB_PARAM_CVP_MAP);
+    _ibpSubParamMap.insert(IBP_PRESSURE_LAP, SUB_PARAM_LAP_MAP);
+    _ibpSubParamMap.insert(IBP_PRESSURE_RAP, SUB_PARAM_RAP_MAP);
+    _ibpSubParamMap.insert(IBP_PRESSURE_ICP, SUB_PARAM_ICP_MAP);
+    _ibpSubParamMap.insert(IBP_PRESSURE_AUXP1, SUB_PARAM_AUXP1_MAP);
+    _ibpSubParamMap.insert(IBP_PRESSURE_AUXP2, SUB_PARAM_AUXP2_MAP);
 
 }
 
@@ -182,7 +182,7 @@ short IBPParam::getSubParamValue(SubParamID id)
         {
             return InvData();
         }
-    case SUB_PARAM_ART_MEAN:
+    case SUB_PARAM_ART_MAP:
         if (_ibp1.pressureName == IBP_PRESSURE_ART)
         {
             return getParamData(IBP_INPUT_1).mean;
@@ -234,7 +234,7 @@ short IBPParam::getSubParamValue(SubParamID id)
         {
             return InvData();
         }
-    case SUB_PARAM_PA_MEAN:
+    case SUB_PARAM_PA_MAP:
         if (_ibp1.pressureName == IBP_PRESSURE_PA)
         {
             return getParamData(IBP_INPUT_1).mean;
@@ -260,7 +260,7 @@ short IBPParam::getSubParamValue(SubParamID id)
         {
             return InvData();
         }
-    case SUB_PARAM_CVP_MEAN:
+    case SUB_PARAM_CVP_MAP:
         if (_ibp1.pressureName == IBP_PRESSURE_CVP)
         {
             return getParamData(IBP_INPUT_1).mean;
@@ -286,7 +286,7 @@ short IBPParam::getSubParamValue(SubParamID id)
         {
             return InvData();
         }
-    case SUB_PARAM_LAP_MEAN:
+    case SUB_PARAM_LAP_MAP:
         if (_ibp1.pressureName == IBP_PRESSURE_LAP)
         {
             return getParamData(IBP_INPUT_1).mean;
@@ -312,7 +312,7 @@ short IBPParam::getSubParamValue(SubParamID id)
         {
             return InvData();
         }
-    case SUB_PARAM_RAP_MEAN:
+    case SUB_PARAM_RAP_MAP:
         if (_ibp1.pressureName == IBP_PRESSURE_RAP)
         {
             return getParamData(IBP_INPUT_1).mean;
@@ -338,7 +338,7 @@ short IBPParam::getSubParamValue(SubParamID id)
         {
             return InvData();
         }
-    case SUB_PARAM_ICP_MEAN:
+    case SUB_PARAM_ICP_MAP:
         if (_ibp1.pressureName == IBP_PRESSURE_ICP)
         {
             return getParamData(IBP_INPUT_1).mean;
@@ -390,7 +390,7 @@ short IBPParam::getSubParamValue(SubParamID id)
         {
             return InvData();
         }
-    case SUB_PARAM_AUXP1_MEAN:
+    case SUB_PARAM_AUXP1_MAP:
         if (_ibp1.pressureName == IBP_PRESSURE_AUXP1)
         {
             return getParamData(IBP_INPUT_1).mean;
@@ -442,7 +442,7 @@ short IBPParam::getSubParamValue(SubParamID id)
         {
             return InvData();
         }
-    case SUB_PARAM_AUXP2_MEAN:
+    case SUB_PARAM_AUXP2_MAP:
         if (_ibp1.pressureName == IBP_PRESSURE_AUXP2)
         {
             return getParamData(IBP_INPUT_1).mean;

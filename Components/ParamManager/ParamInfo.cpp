@@ -62,48 +62,48 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
             return "ART_SYS";
         case SUB_PARAM_ART_DIA:
             return "ART_DIA";
-        case SUB_PARAM_ART_MEAN:
-            return "ART_MEAN";
+        case SUB_PARAM_ART_MAP:
+            return "ART_MAP";
         case SUB_PARAM_ART_PR:
             return "ART_PR";
         case SUB_PARAM_PA_SYS:
             return "PA_SYS";
         case SUB_PARAM_PA_DIA:
             return "PA_DIA";
-        case SUB_PARAM_PA_MEAN:
-            return "PA_MEAN";
+        case SUB_PARAM_PA_MAP:
+            return "PA_MAP";
         case SUB_PARAM_PA_PR:
             return "PA_PR";
-        case SUB_PARAM_CVP_MEAN:
-            return "CVP_MEAN";
+        case SUB_PARAM_CVP_MAP:
+            return "CVP_MAP";
         case SUB_PARAM_CVP_PR:
             return "CVP_PR";
-        case SUB_PARAM_LAP_MEAN:
-            return "LAP_MEAN";
+        case SUB_PARAM_LAP_MAP:
+            return "LAP_MAP";
         case SUB_PARAM_LAP_PR:
             return "LAP_PR";
-        case SUB_PARAM_RAP_MEAN:
-            return "RAP_MEAN";
+        case SUB_PARAM_RAP_MAP:
+            return "RAP_MAP";
         case SUB_PARAM_RAP_PR:
             return "RAP_PR";
-        case SUB_PARAM_ICP_MEAN:
-            return "ICP_MEAN";
+        case SUB_PARAM_ICP_MAP:
+            return "ICP_MAP";
         case SUB_PARAM_ICP_PR:
             return "ICP_PR";
         case SUB_PARAM_AUXP1_SYS:
             return "AUXP1_SYS";
         case SUB_PARAM_AUXP1_DIA:
             return "AUXP1_DIA";
-        case SUB_PARAM_AUXP1_MEAN:
-            return "AUXP1_MEAN";
+        case SUB_PARAM_AUXP1_MAP:
+            return "AUXP1_MAP";
         case SUB_PARAM_AUXP1_PR:
             return "AUXP1_PR";
         case SUB_PARAM_AUXP2_SYS:
             return "AUXP2_SYS";
         case SUB_PARAM_AUXP2_DIA:
             return "AUXP2_DIA";
-        case SUB_PARAM_AUXP2_MEAN:
-            return "AUXP2_MEAN";
+        case SUB_PARAM_AUXP2_MAP:
+            return "AUXP2_MAP";
         case SUB_PARAM_AUXP2_PR:
             return "AUXP2_PR";
         case SUB_PARAM_CO_CO:
@@ -260,27 +260,27 @@ ParamID ParamInfo::getParamID(SubParamID id)
             break;
         case SUB_PARAM_ART_SYS:
         case SUB_PARAM_ART_DIA:
-        case SUB_PARAM_ART_MEAN:
+        case SUB_PARAM_ART_MAP:
         case SUB_PARAM_ART_PR:
         case SUB_PARAM_PA_SYS:
         case SUB_PARAM_PA_DIA:
-        case SUB_PARAM_PA_MEAN:
+        case SUB_PARAM_PA_MAP:
         case SUB_PARAM_PA_PR:
-        case SUB_PARAM_CVP_MEAN:
+        case SUB_PARAM_CVP_MAP:
         case SUB_PARAM_CVP_PR:
-        case SUB_PARAM_LAP_MEAN:
+        case SUB_PARAM_LAP_MAP:
         case SUB_PARAM_LAP_PR:
-        case SUB_PARAM_RAP_MEAN:
+        case SUB_PARAM_RAP_MAP:
         case SUB_PARAM_RAP_PR:
-        case SUB_PARAM_ICP_MEAN:
+        case SUB_PARAM_ICP_MAP:
         case SUB_PARAM_ICP_PR:
         case SUB_PARAM_AUXP1_SYS:
         case SUB_PARAM_AUXP1_DIA:
-        case SUB_PARAM_AUXP1_MEAN:
+        case SUB_PARAM_AUXP1_MAP:
         case SUB_PARAM_AUXP1_PR:
         case SUB_PARAM_AUXP2_SYS:
         case SUB_PARAM_AUXP2_DIA:
-        case SUB_PARAM_AUXP2_MEAN:
+        case SUB_PARAM_AUXP2_MAP:
         case SUB_PARAM_AUXP2_PR:
             paramID = PARAM_IBP;
             break;
@@ -487,20 +487,20 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id)
     case SUB_PARAM_NIBP_MAP:
     case SUB_PARAM_ART_SYS:
     case SUB_PARAM_ART_DIA:
-    case SUB_PARAM_ART_MEAN:
+    case SUB_PARAM_ART_MAP:
     case SUB_PARAM_PA_SYS:
     case SUB_PARAM_PA_DIA:
-    case SUB_PARAM_PA_MEAN:
-    case SUB_PARAM_CVP_MEAN:
-    case SUB_PARAM_LAP_MEAN:
-    case SUB_PARAM_RAP_MEAN:
-    case SUB_PARAM_ICP_MEAN:
+    case SUB_PARAM_PA_MAP:
+    case SUB_PARAM_CVP_MAP:
+    case SUB_PARAM_LAP_MAP:
+    case SUB_PARAM_RAP_MAP:
+    case SUB_PARAM_ICP_MAP:
     case SUB_PARAM_AUXP1_SYS:
     case SUB_PARAM_AUXP1_DIA:
-    case SUB_PARAM_AUXP1_MEAN:
+    case SUB_PARAM_AUXP1_MAP:
     case SUB_PARAM_AUXP2_SYS:
     case SUB_PARAM_AUXP2_DIA:
-    case SUB_PARAM_AUXP2_MEAN:
+    case SUB_PARAM_AUXP2_MAP:
         return UNIT_MMHG;
 
     case SUB_PARAM_ETCO2:

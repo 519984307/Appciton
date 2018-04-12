@@ -7,7 +7,8 @@
 #include "ParamManager.h"
 #include "AlarmConfig.h"
 
-#define GRAPH_POINT_NUMBER         600
+#define GRAPH_POINT_NUMBER          120
+#define DATA_INTERVAL_PIXEL         5
 
 /***************************************************************************************************
  * 构造
@@ -37,11 +38,12 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type, int x
             _downRulerValue = (double)config.lowLimit / config.scale;
             _upRulerValue = (double)config.highLimit / config.scale;
         }
+        _paramName = paramInfo.getSubParamName(id);
     }
     else if (_type == TREND_GRAPH_TYPE_ART_IBP || _type == TREND_GRAPH_TYPE_NIBP)
     {
-        LimitAlarmConfig configUp = alarmConfig.getLimitAlarmConfig(subID, unitType);
-        LimitAlarmConfig configDown = alarmConfig.getLimitAlarmConfig(SubParamID(subID + 1), unitType);
+        LimitAlarmConfig configUp = alarmConfig.getLimitAlarmConfig(SubParamID(subID - 2), unitType);
+        LimitAlarmConfig configDown = alarmConfig.getLimitAlarmConfig(SubParamID(subID - 1), unitType);
         if (configUp.scale == 1)
         {
             _downRulerValue = configDown.lowLimit;
@@ -52,11 +54,12 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type, int x
             _downRulerValue = (double)configDown.lowLimit / configDown.scale;
             _upRulerValue = (double)configUp.highLimit / configUp.scale;
         }
+        QString str = paramInfo.getSubParamName(id);
+        _paramName = str.left(str.length() - 4);
     }
 
     _rulerSize = _upRulerValue - _downRulerValue;
 
-    _paramName = paramInfo.getSubParamName(id);
     _paramUnit = Unit::getSymbol(paramInfo.getUnitOfSubParam(id));
 
     setFocusPolicy(Qt::NoFocus);
@@ -64,11 +67,13 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type, int x
     _trendWaveBuf = new QPoint[_size];
     _dataBuf = new int[_size];
     memset(_dataBuf, 0, _size * sizeof(int));
+    _dataBuf[_size - 1] = InvData();
     if (_type != TREND_GRAPH_TYPE_NORMAL)
     {
         _trendWaveBufSecond = new QPoint[_size];
         _dataBufSecond = new int[_size];
         memset(_dataBufSecond, 0, _size * sizeof(int));
+        _dataBufSecond[_size - 1] = InvData();
     }
 
     if (_type == TREND_GRAPH_TYPE_NIBP || _type == TREND_GRAPH_TYPE_ART_IBP)
@@ -76,6 +81,7 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type, int x
         _trendWaveBufThird = new QPoint[_size];
         _dataBufThird = new int[_size];
         memset(_dataBufThird, 0, _size * sizeof(int));
+        _dataBufThird[_size - 1] = InvData();
     }
 
     loadParamData();
@@ -175,7 +181,7 @@ int TrendSubWaveWidget::xToIndex(int x)
  **************************************************************************************************/
 int TrendSubWaveWidget::indexToX(int index)
 {
-    return (index + _xHead);
+    return (index * 5 + _xHead);
 }
 
 /***************************************************************************************************
@@ -317,6 +323,7 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_downRulerValue));
 
     // 趋势波形图
+    barPainter.setPen(QPen(_color, 2, Qt::SolidLine));
     if (_type == TREND_GRAPH_TYPE_NORMAL)
     {
         for (int i = 0; i < _size - 1; i ++)
@@ -325,6 +332,10 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
             {
                 barPainter.drawLine(_trendWaveBuf[i].x(), _trendWaveBuf[i].y(),
                                     _trendWaveBuf[i + 1].x(), _trendWaveBuf[i + 1].y());
+            }
+            else if (_trendWaveBuf[i + 1].y() != InvData())
+            {
+                barPainter.drawPoint(_trendWaveBuf[i + 1].x(), _trendWaveBuf[i + 1].y());
             }
         }
     }
@@ -366,6 +377,7 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
             }
         }
     }
+    barPainter.setPen(QPen(_color, 1, Qt::SolidLine));
 
     QFont font;
     font.setPixelSize(15);
@@ -425,4 +437,7 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
             barPainter.drawText(_trendDataHead + 60, height()/2, "---/---");
         }
     }
+
+    barPainter.setPen(QPen(Qt::gray, 1, Qt::DotLine));
+    barPainter.drawLine(rect().bottomLeft(), rect().bottomRight());
 }

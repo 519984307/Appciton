@@ -143,8 +143,10 @@ void CO2Param::handDemoWaveform(WaveformID id, short data)
  *************************************************************************************************/
 void CO2Param::handDemoTrendData(void)
 {
-    _etco2Value = qrand() % 80 + 1;
-    _fico2Value = qrand() % 80;
+//    _etco2Value = qrand() % 80 + 1;
+//    _fico2Value = qrand() % 80;
+    _etco2Value = 60;
+    _fico2Value = 20;
     _brVaule = qrand() % 15 + 15;
 
     if (NULL != _trendWidget)

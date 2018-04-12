@@ -14,7 +14,7 @@ public:
         return symbol[index];
     }
 
-    static const int &covertValue(ResolutionRatio index)
+    static const int &convertValue(ResolutionRatio index)
     {
         static const int symbol[RESOLUTION_RATIO_NR] =
         {

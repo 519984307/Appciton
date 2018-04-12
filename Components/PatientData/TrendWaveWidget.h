@@ -29,7 +29,7 @@ public:
     void setWaveNumber(int num);
     void setRulerLimit(SubParamID, int down, int up);
 
-    void loadTrendData(SubParamID, unsigned t = 0);
+    void loadTrendData(SubParamID);
 protected:
     void paintEvent(QPaintEvent *event);
     void showEvent(QShowEvent *e);
@@ -61,5 +61,7 @@ private:
     QList<TrendDataPackage *> _trendDataPack;       // 趋势数据包
     int *_dataBuf;
     int _dataSize;
-    int _currentDisplayNum;
+    int _currentDisplayNum;                         // 当前显示数据量
+    int _totalPage;                                 // 总数据页数
+    int _currentPage;                               // 当前页数
 };

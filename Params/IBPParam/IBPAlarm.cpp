@@ -100,21 +100,21 @@ SubParamID IBPLimitAlarm::getSubParamID(int id)
         switch (ibp1)
         {
         case IBP_PRESSURE_ART:
-            return SUB_PARAM_ART_MEAN;
+            return SUB_PARAM_ART_MAP;
         case IBP_PRESSURE_PA:
-            return SUB_PARAM_PA_MEAN;
+            return SUB_PARAM_PA_MAP;
         case IBP_PRESSURE_CVP:
-            return SUB_PARAM_CVP_MEAN;
+            return SUB_PARAM_CVP_MAP;
         case IBP_PRESSURE_LAP:
-            return SUB_PARAM_LAP_MEAN;
+            return SUB_PARAM_LAP_MAP;
         case IBP_PRESSURE_RAP:
-            return SUB_PARAM_RAP_MEAN;
+            return SUB_PARAM_RAP_MAP;
         case IBP_PRESSURE_ICP:
-            return SUB_PARAM_ICP_MEAN;
+            return SUB_PARAM_ICP_MAP;
         case IBP_PRESSURE_AUXP1:
-            return SUB_PARAM_AUXP1_MEAN;
+            return SUB_PARAM_AUXP1_MAP;
         case IBP_PRESSURE_AUXP2:
-            return SUB_PARAM_AUXP2_MEAN;
+            return SUB_PARAM_AUXP2_MAP;
         default:
             return SUB_PARAM_NONE;
         }
@@ -184,21 +184,21 @@ SubParamID IBPLimitAlarm::getSubParamID(int id)
         switch (ibp2)
         {
         case IBP_PRESSURE_ART:
-            return SUB_PARAM_ART_MEAN;
+            return SUB_PARAM_ART_MAP;
         case IBP_PRESSURE_PA:
-            return SUB_PARAM_PA_MEAN;
+            return SUB_PARAM_PA_MAP;
         case IBP_PRESSURE_CVP:
-            return SUB_PARAM_CVP_MEAN;
+            return SUB_PARAM_CVP_MAP;
         case IBP_PRESSURE_LAP:
-            return SUB_PARAM_LAP_MEAN;
+            return SUB_PARAM_LAP_MAP;
         case IBP_PRESSURE_RAP:
-            return SUB_PARAM_RAP_MEAN;
+            return SUB_PARAM_RAP_MAP;
         case IBP_PRESSURE_ICP:
-            return SUB_PARAM_ICP_MEAN;
+            return SUB_PARAM_ICP_MAP;
         case IBP_PRESSURE_AUXP1:
-            return SUB_PARAM_AUXP1_MEAN;
+            return SUB_PARAM_AUXP1_MAP;
         case IBP_PRESSURE_AUXP2:
-            return SUB_PARAM_AUXP2_MEAN;
+            return SUB_PARAM_AUXP2_MAP;
         default:
             return SUB_PARAM_NONE;
         }
