@@ -173,7 +173,7 @@ void ConfigEditEcgMenuPrivate::loadOptions()
     if(combos[HeartBeatVol]->count() == 0)
     {
         config->getNumValue("ECG|QRSVolume", index);
-        for(int i = 0; i < SOUND_VOL_NR; i++)
+        for(int i = 0; i < SoundManager::VOLUME_LEV_NR; i++)
         {
             combos[HeartBeatVol]->addItem(QString::number(i));
         }

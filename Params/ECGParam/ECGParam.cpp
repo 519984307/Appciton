@@ -90,7 +90,8 @@ void ECGParam::_getDisabledWaveforms(QStringList &waveforms)
  *************************************************************************************************/
 void ECGParam::initParam(void)
 {
-    soundManager.setSoundVolume(SOUND_VOLUME_CHANNEL_HEART_BEAT, (SoundVolume)getQRSToneVolume());
+    soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT,
+                           (SoundManager::VolumeLevel)getQRSToneVolume());
 
     if (_provider == NULL)
     {
@@ -382,9 +383,9 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
     _waveDataInvalid = !_waveDataInvalid;
 
     // 心跳音
-    if (rMark)
+    if (rMark && _hrValue != InvData())
     {
-        soundManager.heartBeat();
+        soundManager.heartBeatTone();
         ecgDupParam.updateHRBeatIcon();
     }
 
@@ -2148,7 +2149,7 @@ int ECGParam::getMaxGain(void)
 void ECGParam::setQRSToneVolume(int vol)
 {
     superRunConfig.setNumValue("ECG|QRSVolume", (int)vol);
-    soundManager.setSoundVolume(SOUND_VOLUME_CHANNEL_HEART_BEAT, (SoundVolume)vol);
+    soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, (SoundManager::VolumeLevel) vol);
 }
 
 /**************************************************************************************************
@@ -2156,7 +2157,7 @@ void ECGParam::setQRSToneVolume(int vol)
  *************************************************************************************************/
 int ECGParam::getQRSToneVolume(void)
 {
-    int vol = SOUND_VOL_3;
+    int vol = SoundManager::VOLUME_LEV_2;
     superRunConfig.getNumValue("ECG|QRSVolume", vol);
     return vol;
 }

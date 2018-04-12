@@ -10,7 +10,6 @@
 static IThread *_storageThread = NULL;
 static IThread *_printThread = NULL;
 static IThread *_printExecThread = NULL;
-static IThread *_audioThread = NULL;
 static QThread *_networkThread = NULL;
 
 /**************************************************************************************************
@@ -205,16 +204,6 @@ static void _printExecThreadEntry(void)
 }
 
 /**************************************************************************************************
- * 语音播放线程。
- *************************************************************************************************/
-static void _audioThreadEntry(void)
-{
-    soundManager.run();
-//    IThread::usleep(200);
-    IThread::msleep(1);
-}
-
-/**************************************************************************************************
  * 功能： 初始化任务。
  *************************************************************************************************/
 static void _initTasks(void)
@@ -234,7 +223,6 @@ static void _initTasks(void)
     _storageThread = new IThread("storage", _storageThreadEntry);
     _printThread = new IThread("print", _printThreadEntry);
     _printExecThread = new IThread("printExec", _printExecThreadEntry);
-    _audioThread = new IThread("audio", _audioThreadEntry);
 
     _networkThread = new QThread();
     _networkThread->setObjectName("Network");
@@ -254,7 +242,6 @@ static void _start(void)
     _storageThread->start();
     _printThread->start();
     _printExecThread->start();
-    _audioThread->start();
     _networkThread->start();
     _networkThread->setPriority(QThread::IdlePriority);
 
@@ -272,14 +259,12 @@ static void _stop(void)
     _storageThread->stop();
     _printExecThread->stop();
     _printThread->stop();
-    _audioThread->stop();
     _networkThread->quit();
 
     // 删除线程对象。
     delete _storageThread;
     delete _printExecThread;
     delete _printThread;
-    delete _audioThread;
     //network thread might be still running, need to delete later
     _networkThread->deleteLater();
 }

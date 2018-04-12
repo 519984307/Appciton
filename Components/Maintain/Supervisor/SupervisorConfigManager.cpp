@@ -533,7 +533,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
 
 /*************************Alarm****************************/
     bret = config.getNumValue("Alarm|MinimumAlarmVolume", value);
-    if (value > SOUND_VOL_4 || !bret)
+    if (value > SoundManager::VOLUME_LEV_4 || !bret)
     {
         debug("Alarm MinimumAlarmVolume error:%d", value);
         error = "Alarm|MinimumAlarmVolume";
@@ -541,7 +541,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
     }
 
     bret = config.getNumValue("Alarm|DefaultAlarmVolume", tmpValue);
-    if (tmpValue > SOUND_VOL_5 || tmpValue < (value + 1) || !bret)
+    if (tmpValue > SoundManager::VOLUME_LEV_5 || tmpValue < (value + 1) || !bret)
     {
         debug("Alarm DefaultAlarmVolume error:%d", value);
         error = "Alarm|DefaultAlarmVolume";

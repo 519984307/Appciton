@@ -104,7 +104,6 @@ void ECGDupParam::setTrendWidget(ECGTrendWidget *trendWidget)
 void ECGDupParam::updatePR(short pr)
 {
     _prValue = pr;
-    soundManager.setPr(_prValue);
 
     if (_trendWidget == NULL)
     {
@@ -172,7 +171,6 @@ void ECGDupParam::updatePRBeatIcon()
 void ECGDupParam::updateHR(short hr)
 {
     _hrValue = hr;
-    soundManager.setHr(_hrValue);
 
     if (_trendWidget == NULL)
     {

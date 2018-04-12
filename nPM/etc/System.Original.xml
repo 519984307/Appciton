@@ -12,6 +12,10 @@
     <SignalRescueSize>0</SignalRescueSize>
     </DataStorage>
 
+    <Print>
+        <PrintWaveformsNum>1</PrintWaveformsNum>
+    </Print>
+
     <ConfigManager>
         <Default>
             <Adult type="Factory" name="" >AdultConfig.origin.xml</Adult>

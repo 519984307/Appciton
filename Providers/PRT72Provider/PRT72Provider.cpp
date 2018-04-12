@@ -609,7 +609,8 @@ PRT72Provider::PRT72Provider()
         , _prePacketNum(0)
         , _selfTestResult(PRINTER_SELF_TEST_NOT_PERFORMED)
 {
-    UartAttrDesc portAttr(460800, 8, 'N', 1, 0, FlOW_CTRL_HARD, false);  //new mainboard support flow control, use block io
+    //UartAttrDesc portAttr(460800, 8, 'N', 1, 0, FlOW_CTRL_HARD, false);  //new mainboard support flow control, use block io
+    UartAttrDesc portAttr(460800, 8, 'N', 1, 0);
     initPort(portAttr);
 }
 

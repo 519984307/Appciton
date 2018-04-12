@@ -67,8 +67,7 @@ public:
     void setOxyCRGWaveWidget(OxyCRGSPO2Widget *waveWidget);
 
     //PR音量
-    void setPluseToneVolume(SoundVolume vol);
-    SoundVolume getPluseToneVolume(void);
+    SoundManager::VolumeLevel getPluseToneVolume(void);
 
     // 设置/获取SPO2的值。
     void setSPO2(short spo2Value);

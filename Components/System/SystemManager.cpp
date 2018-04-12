@@ -26,6 +26,7 @@
 #include <QDir>
 #include <QKeyEvent>
 #include "WindowManager.h"
+#include <QTimer>
 #ifdef Q_WS_QWS
 #include <QWSServer>
 #endif

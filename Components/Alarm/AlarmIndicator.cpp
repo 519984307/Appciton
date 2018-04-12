@@ -34,7 +34,7 @@ void AlarmIndicator::publishAlarm(AlarmAudioStatus status)
     {
         _displayPhyClear();
         _displayTechClear();
-        soundManager.updateAlarm(SOUND_TYPE_PHY_ALARM, false, ALARM_PRIO_LOW);
+        soundManager.updateAlarm(false, ALARM_PRIO_LOW);
         lightManager.updateAlarm(false, ALARM_PRIO_LOW);
         return;
     }
@@ -180,21 +180,21 @@ void AlarmIndicator::publishAlarm(AlarmAudioStatus status)
     // 更新声音
     if (phySoundPriority != ALARM_PRIO_PROMPT)
     {
-        soundManager.updateAlarm(SOUND_TYPE_PHY_ALARM, true, phySoundPriority);
+        soundManager.updateAlarm(true, phySoundPriority);
     }
     else if (techSoundPriority != ALARM_PRIO_PROMPT)
     {
-        soundManager.updateAlarm(SOUND_TYPE_TECH_ALARM, true, techSoundPriority);
+        soundManager.updateAlarm(true, techSoundPriority);
     }
     else
     {
-        soundManager.updateAlarm(SOUND_TYPE_PHY_ALARM, false, phySoundPriority);
+        soundManager.updateAlarm(false, phySoundPriority);
     }
 
     //nor-alert beeps in non-aed modes
     if (hasNewPromptTechAlarm && _enableNonAlarmBeepsInNonAED)
     {
-        soundManager.errorTone(1);
+        soundManager.errorTone();
     }
 
     // 更新灯光

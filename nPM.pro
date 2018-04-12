@@ -184,9 +184,9 @@ SOURCES +=                                                                      
     Components/System/Widgets/SystemModeBarWidget.cpp                           \
     Components/System/Widgets/SystemSelftestMenu.cpp                            \
     Components/System/Widgets/SystemStatusBarWidget.cpp                         \
-    Components/SoundManager/SoundChannel.cpp                                    \
     Components/SoundManager/SoundManager.cpp                                    \
     Components/SoundManager/WavFile.cpp                                         \
+    Components/SoundManager/WavPlayer.cpp                                       \
     Components/LightManager/LightManager.cpp                                    \
     Components/ParamManager/Param.cpp                                           \
     Components/ParamManager/ParamManager.cpp                                    \
@@ -601,9 +601,9 @@ HEADERS +=                                                                      
     Components/System/Widgets/SystemModeSelectWidget.h                          \
     Components/System/Widgets/SystemSelftestMenu.h                              \
     Components/System/Widgets/SystemModeBarWidget.h                             \
-    Components/SoundManager/SoundChannel.h                                      \
     Components/SoundManager/SoundManager.h                                      \
     Components/SoundManager/WavFile.h                                           \
+    Components/SoundManager/WavPlayer.h                                         \
     Components/LightManager/LightManager.h                                      \
     Components/LightManager/LightProviderIFace.h                                \
     Components/ParamManager/Param.h                                             \

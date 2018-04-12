@@ -9,6 +9,7 @@
 #include "IButton.h"
 #include "SystemManager.h"
 #include "Debug.h"
+#include <QTimer>
 
 WaveWidgetSelectMenu *WaveWidgetSelectMenu::_selfObj = NULL;
 

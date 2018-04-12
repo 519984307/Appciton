@@ -43,7 +43,6 @@ static void _initSystem(void)
     systemTick.construction();
 
     // 初始化声音。
-    soundManager.construction();
     soundManager.selfTest();
 
     // 网络初始化。
@@ -652,7 +651,6 @@ void deleteObjects(void)
     deletepMessageBox();
 
     deleteLightManager();
-    deleteSoundManager();
 
     deleteAlarm();
     deleteAlarmIndicator();

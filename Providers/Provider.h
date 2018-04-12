@@ -21,7 +21,7 @@ public:
     virtual void detachParam(Param &param);
 
     // 检查连接状态。
-    void checkConnection(void);
+    virtual void checkConnection(void);
 
     //获取版本号
     virtual void sendVersion(void) = 0;

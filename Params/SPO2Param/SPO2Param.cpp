@@ -14,6 +14,7 @@
 #include "ComboListPopup.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
+#include <QTimer>
 
 SPO2Param *SPO2Param::_selfObj = NULL;
 
@@ -184,8 +185,6 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider)
     //查询状态
     _provider->sendStatus();
 
-    soundManager.SmartPulse(getSmartPulseTone());
-
     QString tile = _waveWidget->getTitle();
     // 请求波形缓冲区。
     waveformCache.registerSource(WAVE_SPO2, _provider->getSPO2WaveformSample(), 0, _provider->getSPO2MaxValue(),
@@ -300,11 +299,11 @@ void SPO2Param::setOxyCRGWaveWidget(OxyCRGSPO2Widget *waveWidget)
 /**************************************************************************************************
  * 获取QRS/PR音量。
  *************************************************************************************************/
-SoundVolume SPO2Param::getPluseToneVolume(void)
+SoundManager::VolumeLevel SPO2Param::getPluseToneVolume(void)
 {
-    int vol = SOUND_VOL_3;
+    int vol = SoundManager::VOLUME_LEV_3;
     superRunConfig.getNumValue("ECG|QRSToneVolume", vol);
-    return (SoundVolume)vol;
+    return (SoundManager::VolumeLevel)vol;
 }
 
 /**************************************************************************************************
@@ -384,9 +383,11 @@ void SPO2Param::addBarData(short data)
  *************************************************************************************************/
 void SPO2Param::setPulseAudio(bool pulse)
 {
-    if (pulse)
+    if (pulse && ecgParam.getHR() == InvData())
     {
-        soundManager.pluse(getSPO2());
+        soundManager.pulseTone(getSmartPulseTone() == SPO2_SMART_PLUSE_TONE_ON
+                           ? getSPO2()
+                           : -1);
         ecgDupParam.updatePRBeatIcon();
     }
 }
@@ -579,7 +580,6 @@ SPO2Sensitive SPO2Param::getSensitivity(void)
 void SPO2Param::setSmartPulseTone(SPO2SMARTPLUSETONE sens)
 {
     systemConfig.setNumValue("PrimaryCfg|SPO2|SmartPulseTone", (int)sens);
-    soundManager.SmartPulse(sens);
 }
 
 /**************************************************************************************************

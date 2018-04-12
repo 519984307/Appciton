@@ -4,6 +4,7 @@
 #include "ECGSymbol.h"
 #include "ECGDefine.h"
 #include "SoundManager.h"
+#include <QBasicTimer>
 #include "SystemDefine.h"
 
 enum

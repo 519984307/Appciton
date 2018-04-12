@@ -33,7 +33,7 @@ void SupervisorAlarmMenu::readyShow()
     _minAlarmVolume->setCurrentIndex(index);
 
     _defaultAlarmVolume->clear();
-    for (int i = index + 1; i <= SOUND_VOL_5; ++i)
+    for (int i = index + 1; i <= SoundManager::VOLUME_LEV_5; ++i)
     {
         _defaultAlarmVolume->addItem(trs(QString::number(i)));
     }
@@ -99,7 +99,7 @@ void SupervisorAlarmMenu::layoutExec()
     _minAlarmVolume->label->setFixedSize(labelWidth, ITEM_H);
     _minAlarmVolume->combolist->setFixedSize(btnWidth, ITEM_H);
 
-    for(unsigned i = SOUND_VOL_1; i <= SOUND_VOL_5; ++i)
+    for(unsigned i = SoundManager::VOLUME_LEV_1; i <= SoundManager::VOLUME_LEV_5; ++i)
     {
         _minAlarmVolume->addItem(QString::number(i));
     }
@@ -211,7 +211,7 @@ void SupervisorAlarmMenu::_minAlarmVolumeChangeSlot(int index)
 {
     superConfig.setNumValue("Alarm|MinimumAlarmVolume", index);
     _defaultAlarmVolume->clear();
-    for (int i = index + 1; i <= SOUND_VOL_5; ++i)
+    for (int i = index + 1; i <= SoundManager::VOLUME_LEV_5; ++i)
     {
         _defaultAlarmVolume->addItem(trs(QString::number(i)));
     }

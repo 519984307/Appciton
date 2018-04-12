@@ -23,7 +23,7 @@ SystemMenu *SystemMenu::_selfObj = NULL;
 void SystemMenu::_audioVolumeSlot(int index)
 {
     int volume = _audioVolume->itemText(index).toInt();
-    soundManager.setAlarmVolume((SoundVolume)(volume));
+    soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, (SoundManager::VolumeLevel) volume);
 }
 
 /**************************************************************************************************
@@ -31,7 +31,7 @@ void SystemMenu::_audioVolumeSlot(int index)
  *************************************************************************************************/
 void SystemMenu::_errorToneVolumeSlot(int index)
 {
-    soundManager.setSoundVolume(SOUND_VOLUME_CHANNEL_ERROR_WARNING, (SoundVolume)(index + 1));
+    soundManager.setVolume(SoundManager::SOUND_TYPE_ERROR, (SoundManager::VolumeLevel)(index + 1));
 }
 
 /**************************************************************************************************
@@ -79,7 +79,7 @@ void SystemMenu::_configManagerSlot()
 void SystemMenu::_loadOptions(void)
 {
     _audioVolume->setCurrentItem(QString::number((int)soundManager.
-            getVolume(SOUND_VOLUME_CHANNEL_ALARM)));
+                                                 getVolume(SoundManager::SOUND_TYPE_ALARM)));
     _screenBrightness->setCurrentIndex(systemManager.getBrightness());
     _printSpeed->setCurrentIndex(printManager.getPrintSpeed());
     _printWaveformNum->setCurrentIndex(printManager.getPrintWaveNum() - 1);
@@ -112,7 +112,7 @@ void SystemMenu::layoutExec(void)
     _audioVolume->setFont(font);
     int index = 0;
     superConfig.getNumValue("Alarm|MinimumAlarmVolume", index);
-    for (int i = index + 1; i <= SOUND_VOL_MAX; i++)
+    for (int i = index + 1; i <= SoundManager::VOLUME_LEV_MAX; i++)
     {
         _audioVolume->addItem(QString::number(i));
     }

@@ -240,6 +240,8 @@ DemoProvider::DemoProvider() : Provider("DemoProvider")
         _demoFile[i].setFileName(path + _demoWaveData[i].waveformName);
         _demoFile[i].open(QFile::ReadOnly);
     }
+
+    isConnected = true;
 }
 
 /**************************************************************************************************

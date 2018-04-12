@@ -56,7 +56,7 @@ void AlarmAudioOffState::timerEvent(QTimerEvent *e)
 {
     if (e->timerId() == getTimerID())
     {
-        soundManager.playSound(SOUND_TYPE_TECH_ALARM, ALARM_PRIO_LOW);
+        //soundManager.playSound(SOUND_TYPE_TECH_ALARM, ALARM_PRIO_LOW);
     }
 }
 

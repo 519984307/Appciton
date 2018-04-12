@@ -9,6 +9,7 @@
 #include "MenuManager.h"
 #include "WindowManager.h"
 #include "IConfig.h"
+#include <QTimer>
 
 ECGMenu *ECGMenu::_selfObj = NULL;
 
@@ -110,7 +111,7 @@ void ECGMenu::_addFixedOptions(void)
 
     //心跳音
     _qrsTone->addItem(trs("Off"));
-    for (int i = SOUND_VOL_1; i <= SOUND_VOL_MAX; i++)
+    for (int i = SoundManager::VOLUME_LEV_1; i <= SoundManager::VOLUME_LEV_MAX; i++)
     {
         _qrsTone->addItem(QString::number(i));
     }
