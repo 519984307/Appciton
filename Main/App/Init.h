@@ -88,6 +88,7 @@
 #include "BLMSPO2Provider.h"
 #include "MasimoProvider.h"
 #include "TT3Provider.h"
+#include "T5Provider.h"
 #include "BLMCO2Provider.h"
 #include "TE3Provider.h"
 

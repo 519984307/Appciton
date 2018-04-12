@@ -4,7 +4,7 @@
 #include "TEMPProviderIFace.h"
 
 // 收到的数据帧类型。
-enum TEMPPacketType
+enum TT3PacketType
 {
     TT3_RESPONSE_NACK                            = 0x00,       //NACK应答
     TT3_RESPONSE_ACK                             = 0x01,       //ACK应答

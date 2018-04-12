@@ -454,7 +454,17 @@ static void _initProviderParam(void)
     // TEMP部分。
     if (systemManager.isSupport(CONFIG_TEMP))
     {
-        paramManager.addProvider(*new TT3Provider());
+        QString str;
+        machineConfig.getStrValue("TEMP", str);
+        if (str == "BLM_TT3")
+        {
+            paramManager.addProvider(*new TT3Provider());
+        }
+        else if (str == "BLM_T5")
+        {
+            paramManager.addProvider(*new T5Provider());
+        }
+
         paramManager.addParam(tempParam.construction());
         alertor.addLimtSource(tempLimitAlarm.construction());
         alertor.addOneShotSource(tempOneShotAlarm.construction());
