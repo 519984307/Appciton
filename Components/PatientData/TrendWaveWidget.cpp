@@ -271,11 +271,8 @@ void TrendWaveWidget::setRulerLimit(SubParamID id, int down, int up)
 void TrendWaveWidget::loadTrendData(SubParamID subID)
 {
     int intervalNum = TrendDataSymbol::convertValue(_timeInterval)/TrendDataSymbol::convertValue(RESOLUTION_RATIO_5_SECOND);
-    if (_trendDataPack.length() < GRAPH_POINT_NUMBER + 1)
-    {
-        _dataSize = _trendDataPack.length();
-    }
-    else
+    _dataSize = _trendDataPack.length() / intervalNum - GRAPH_POINT_NUMBER * (_currentPage - 1);
+    if (_dataSize > GRAPH_POINT_NUMBER + 1)
     {
         _dataSize = GRAPH_POINT_NUMBER + 1;
     }
@@ -535,6 +532,7 @@ void TrendWaveWidget::_clearLayout()
         {
             widget->setVisible(false);
             widget->setParent(NULL);
+            delete widget;
         }
     }
 }

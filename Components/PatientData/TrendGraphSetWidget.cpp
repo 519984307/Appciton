@@ -218,22 +218,28 @@ void TrendGraphSetWidget::_allAutoReleased()
         item->downRuler->disable(true);
         item->upRuler->setEnabled(false);
         item->upRuler->disable(true);
-//        SubParamID subID = item->sid;
-//        ParamID id = item->pid;
-//        UnitType type = paramManager.getSubParamUnit(id, subID);
-//        LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subID, type);
-//        if (config.scale == 1)
-//        {
-//            item->downRuler->setValue(config.lowLimit);
-//            item->upRuler->setValue(config.highLimit);
-//        }
-//        else
-//        {
-//            item->downRuler->setValue((double)config.lowLimit / config.scale);
-//            item->upRuler->setValue((double)config.highLimit / config.scale);
-//        }
-//        trendGraphWidget.setSubWidgetRulerLimit(subID, item->downRuler->getText().toInt(),
-//                                                item->upRuler->getText().toInt());
+        SubParamID subID = item->sid;
+        ParamID id = item->pid;
+        UnitType type = paramManager.getSubParamUnit(id, subID);
+        LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subID, type);
+        item->downRuler->setEnabled(false);
+        item->downRuler->disable(true);
+        item->upRuler->setEnabled(false);
+        item->upRuler->disable(true);
+        if (config.scale == 1)
+        {
+            item->downRuler->setValue(config.lowLimit);
+            item->upRuler->setValue(config.highLimit);
+            trendGraphWidget.setSubWidgetRulerLimit(subID, item->downRuler->getText().toInt(),
+                                                    item->upRuler->getText().toInt());
+        }
+        else
+        {
+            item->downRuler->setValue((double)config.lowLimit / config.scale);
+            item->upRuler->setValue((double)config.highLimit / config.scale);
+            trendGraphWidget.setSubWidgetRulerLimit(subID, (int)item->downRuler->getText().toDouble(),
+                                                    (int)item->upRuler->getText().toDouble());
+        }
     }
 }
 

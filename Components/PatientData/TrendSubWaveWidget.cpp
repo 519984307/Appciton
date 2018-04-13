@@ -66,22 +66,29 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type, int x
 
     _trendWaveBuf = new QPoint[_size];
     _dataBuf = new int[_size];
-    memset(_dataBuf, 0, _size * sizeof(int));
-    _dataBuf[_size - 1] = InvData();
+    for (int i = 0; i < _size; i ++)
+    {
+        _dataBuf[i] = InvData();
+    }
+
     if (_type != TREND_GRAPH_TYPE_NORMAL)
     {
         _trendWaveBufSecond = new QPoint[_size];
         _dataBufSecond = new int[_size];
-        memset(_dataBufSecond, 0, _size * sizeof(int));
-        _dataBufSecond[_size - 1] = InvData();
+        for (int i = 0; i < _size; i ++)
+        {
+            _dataBufSecond[i] = InvData();
+        }
     }
 
     if (_type == TREND_GRAPH_TYPE_NIBP || _type == TREND_GRAPH_TYPE_ART_IBP)
     {
         _trendWaveBufThird = new QPoint[_size];
         _dataBufThird = new int[_size];
-        memset(_dataBufThird, 0, _size * sizeof(int));
-        _dataBufThird[_size - 1] = InvData();
+        for (int i = 0; i < _size; i ++)
+        {
+            _dataBufThird[i] = InvData();
+        }
     }
 
     loadParamData();
@@ -237,17 +244,28 @@ void TrendSubWaveWidget::loadParamData()
     int yValue = 0;
     for (int i =  0; i < _size; i ++)
     {
-        if (_type == TREND_GRAPH_TYPE_AG_TEMP)
+        if (_dataBuf[i] != InvData())
         {
-            yValue = valueToY(_dataBuf[i]/10);
+            if (_type == TREND_GRAPH_TYPE_AG_TEMP)
+            {
+                yValue = valueToY(_dataBuf[i]/10);
+            }
+            else
+            {
+                yValue = valueToY(_dataBuf[i]);
+            }
         }
         else
         {
-            yValue = valueToY(_dataBuf[i]);
+            yValue = InvData();
         }
-        if (yValue < _yTop || yValue > _yBottom)
+        if (yValue < _yTop && yValue != InvData())
         {
-            _trendWaveBuf[i].setY(InvData());
+            _trendWaveBuf[i].setY(_yTop);
+        }
+        else if (yValue > _yBottom && yValue != InvData())
+        {
+            _trendWaveBuf[i].setY(_yBottom);
         }
         else
         {
@@ -257,17 +275,28 @@ void TrendSubWaveWidget::loadParamData()
 
         if (_type != TREND_GRAPH_TYPE_NORMAL)
         {
-            if (_type == TREND_GRAPH_TYPE_AG_TEMP)
+            if (_dataBufSecond[i] != InvData())
             {
-                yValue = valueToY(_dataBufSecond[i]/10);
+                if (_type == TREND_GRAPH_TYPE_AG_TEMP)
+                {
+                    yValue = valueToY(_dataBufSecond[i]/10);
+                }
+                else
+                {
+                    yValue = valueToY(_dataBufSecond[i]);
+                }
             }
             else
             {
-                yValue = valueToY(_dataBufSecond[i]);
+                yValue = InvData();
             }
-            if (yValue < _yTop || yValue > _yBottom)
+            if (yValue < _yTop && yValue != InvData())
             {
-                _trendWaveBufSecond[i].setY(InvData());
+                _trendWaveBufSecond[i].setY(_yTop);
+            }
+            else if (yValue > _yBottom && yValue != InvData())
+            {
+                _trendWaveBufSecond[i].setY(_yBottom);
             }
             else
             {
@@ -278,10 +307,21 @@ void TrendSubWaveWidget::loadParamData()
 
         if (_type == TREND_GRAPH_TYPE_NIBP || _type == TREND_GRAPH_TYPE_ART_IBP)
         {
-            yValue = valueToY(_dataBufThird[i]);
-            if (yValue < _yTop || yValue > _yBottom)
+            if (_dataBufThird[i] != InvData())
             {
-                _trendWaveBufThird[i].setY(InvData());
+                yValue = valueToY(_dataBufThird[i]);
+            }
+            else
+            {
+                yValue = InvData();
+            }
+            if (yValue < _yTop && yValue != InvData())
+            {
+                _trendWaveBufThird[i].setY(_yTop);
+            }
+            else if (yValue > _yBottom && yValue != InvData())
+            {
+                _trendWaveBufThird[i].setY(_yBottom);
             }
             else
             {
