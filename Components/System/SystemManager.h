@@ -173,6 +173,7 @@ private:
 private:
     QVector<int> _modulePostResult; //模块开机测试结果
     QTimer *_publishTestTimer;
+    QThread *_workerThread;
     SystemSelftestMenu *_selfTestResult;
     bool _selfTestFinish;
     bool _isTurnOff;

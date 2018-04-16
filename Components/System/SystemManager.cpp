@@ -8,6 +8,8 @@
 #include <QDesktopWidget>
 #include <QApplication>
 #include <QVector>
+#include <QThread>
+#include <TDA19988Ctrl.h>
 
 #include "Debug.h"
 #include "Version.h"
@@ -695,6 +697,13 @@ SystemManager::SystemManager() :
     _selfTestFinish = false;
     _isTurnOff = false;
 
+    _workerThread = new QThread();
+    TDA19988Ctrl *hdmiCtrl = new TDA19988Ctrl();
+    hdmiCtrl->moveToThread(_workerThread);
+    hdmiCtrl->connect(_workerThread, SIGNAL(finished()), hdmiCtrl, SLOT(deleteLater()));
+    _workerThread->start();
+
+
 #ifdef Q_WS_X11
     _ctrlSocket = new QTcpSocket(this);
     _ctrlSocket->connectToHost("192.168.10.2", 8088);
@@ -778,4 +787,11 @@ SystemManager::~SystemManager()
         delete _selfTestResult;
         _selfTestResult = NULL;
     }
+
+    if( NULL != _workerThread)
+    {
+        _workerThread->quit();
+        _workerThread->wait();
+    }
+
 }
