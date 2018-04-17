@@ -39,6 +39,7 @@ private slots:
     void _trendGraphSetReleased();
     void _upReleased(void);
     void _downReleased(void);
+    void _printReleased(void);
 
 private:
     TrendGraphWidget();

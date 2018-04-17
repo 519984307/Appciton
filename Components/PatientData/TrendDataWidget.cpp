@@ -263,7 +263,6 @@ TrendDataWidget::TrendDataWidget() : _timeInterval(RESOLUTION_RATIO_5_SECOND), _
     table->horizontalHeader()->setVisible(true);
     table->verticalHeader()->setVisible(true);
     table->verticalHeader()->setStyleSheet("QHeaderView::section {border:0px;height:46px;}");
-//    table->horizontalHeader()->setStyleSheet("QHeaderView::section{border:0px;}");
     table->verticalHeader()->setFixedWidth(ITEM_WIDTH);
     table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     table->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

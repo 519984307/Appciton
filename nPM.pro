@@ -173,6 +173,7 @@ SOURCES +=                                                                      
     Utility/Widgets/EventWidget/EventWaveWidget.cpp                             \
     Utility/Widgets/EventWidget/EventReviewWindow.cpp                           \
     Utility/Widgets/EventWidget/EventTrendItemDelegate.cpp                      \
+    Utility/Widgets/EventWidget/EventInfoWidget.cpp                             \
     Utility/ScreenCapture.cpp                                                   \
     Utility/RunLengthEncode.cpp                                                 \
 #################################################################################
@@ -593,6 +594,7 @@ HEADERS +=                                                                      
     Utility/Widgets/EventWidget/EventWaveWidget.h                               \
     Utility/Widgets/EventWidget/EventReviewWindow.h                             \
     Utility/Widgets/EventWidget/EventTrendItemDelegate.h                        \
+    Utility/Widgets/EventWidget/EventInfoWidget.h                               \
 #################################################################################
     Components/System/SystemTick.h                                              \
     Components/System/SystemManager.h                                           \

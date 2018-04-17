@@ -8,6 +8,8 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
+#include "EventReviewWindow.h"
+
 #define ITEM_HEIGHT             30
 #define ITEM_WIDTH              100
 
@@ -89,6 +91,13 @@ void TrendGraphWidget::_downReleased()
     _waveWidget->pageDownParam();
 }
 
+void TrendGraphWidget::_printReleased()
+{
+    EventReviewWindow *event = new EventReviewWindow();
+    event->autoShow();
+    this->hide();
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -124,6 +133,7 @@ TrendGraphWidget::TrendGraphWidget()
     _print = new IButton(trs("Print"));
     _print->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     _print->setFont(fontManager.textFont(fontSize));
+    connect(_print, SIGNAL(realReleased()), this, SLOT(_printReleased()));
 
     _set = new IButton(trs("Set"));
     _set->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
