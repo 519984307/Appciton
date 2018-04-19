@@ -19,7 +19,7 @@ public:
 public:
     virtual QString getAlarmSourceName(void);
 
-    virtual ParamID getParamID(void) { return PARAM_IBP; }
+    virtual ParamID getParamID(void) { return PARAM_CO; }
 
     // alarm source number.
     virtual int getAlarmSourceNR(void);
@@ -78,7 +78,7 @@ public:
 public:
     virtual QString getAlarmSourceName(void);
 
-    virtual ParamID getParamID(void) { return PARAM_IBP; }
+    virtual ParamID getParamID(void) { return PARAM_CO; }
 
     virtual int getAlarmSourceNR(void);
 

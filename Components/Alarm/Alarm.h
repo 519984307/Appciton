@@ -54,6 +54,9 @@ public:
     //check specific oneshot alarm is active
     bool getOneShotAlarmStatus(AlarmOneShotIFace *iface, int alarmId);
 
+    //according to SubParamID get alarmLimitIFace
+    AlarmLimitIFace* getAlarmLimitIFace(SubParamID id);
+
     // 析构。
     virtual ~Alarm();
 

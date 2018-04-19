@@ -196,6 +196,7 @@ bool EventStorageItem::checkCompleted()
 
 bool EventStorageItem::startCollectTrendAndWaveformData()
 {
+    return false;
     if(d_ptr->startCollect)
     {
         qdebug("Already start collect data");
@@ -241,6 +242,7 @@ bool EventStorageItem::startCollectTrendAndWaveformData()
         recorder.buf = waveSegment->waveData + d_ptr->eventInfo.duration_before;
         recorder.curRecWaveNum = d_ptr->eventInfo.duration_before * sampleRate;
         recorder.totalRecWaveNum = waveSegment->waveNum;
+        recorder.recObj = d_ptr.data();
         recorder.recordCompleteCallback = EventStorageItemPrivate::waveCacheCompleteCallback;
         waveformCache.registerWaveformRecorder(waveid, recorder);
     }

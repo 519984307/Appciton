@@ -11,8 +11,11 @@
 #include "EventStorageManager.h"
 #include "LanguageManager.h"
 #include "IDropList.h"
+#include "TimeDate.h"
+#include "ParamInfo.h"
 #include <QBoxLayout>
 #include "Debug.h"
+#include "Alarm.h"
 #include <QFile>
 #include <QHeaderView>
 
@@ -112,7 +115,7 @@ public:
                 parseBuffer += sizeof(EventSegmentType);
                 ctx.infoSegment = (EventInfoSegment *) parseBuffer;
                 //find the location of the next event type
-                parseBuffer += sizeof(EVENT_INFO_SEGMENT);
+                parseBuffer += sizeof(EventInfoSegment);
                 break;
             case EVENT_TRENDDATA_SEGMENT:
                 //skip the offset of the segment type field
@@ -408,8 +411,62 @@ void EventReviewWindow::_loadEventData()
     int eventNum = d_ptr->backend->getBlockNR();
     d_ptr->eventTable->setRowCount(eventNum);
 
+    unsigned t = 0;
+    QString timeStr;
+    QString dateStr;
+    QString infoStr;
+    QTableWidgetItem *item;
+    SubParamID subId;
+    ParamID paramId;
+    int alarmId;
+    AlarmPriority priority;
+    int row = 0;
     for (int i = eventNum - 1; i >= 0; i --)
     {
+        priority = ALARM_PRIO_PROMPT;
+        if (d_ptr->parseEventData(i))
+        {
+            // 事件时间
+            t = d_ptr->ctx.infoSegment->timestamp;
+            timeDate.getDate(t, dateStr, true);
+            timeDate.getTime(t, timeStr, true);
+            item = new QTableWidgetItem();
+            item->setTextAlignment(Qt::AlignCenter);
+            item->setText(dateStr + " " + timeStr);
+            d_ptr->eventTable->setItem(row, 0, item);
 
+            // 事件内容
+            subId = (SubParamID)(d_ptr->ctx.almSegment->subParamID);
+            paramId = paramInfo.getParamID(subId);
+            alarmId = d_ptr->ctx.almSegment->alarmType;
+            AlarmLimitIFace *alarmLimit = alertor.getAlarmLimitIFace(subId);
+            if (alarmLimit)
+            {
+                priority = alarmLimit->getAlarmPriority(alarmId);
+            }
+
+            if (priority == ALARM_PRIO_LOW)
+            {
+                infoStr = "*";
+            }
+            else if (priority == ALARM_PRIO_MED)
+            {
+                infoStr = "**";
+            }
+            else if (priority == ALARM_PRIO_HIGH)
+            {
+                infoStr = "***";
+            }
+            else
+            {
+                infoStr = "";
+            }
+            infoStr += paramInfo.getSubParamName(subId);
+            item = new QTableWidgetItem();
+            item->setTextAlignment(Qt::AlignCenter);
+            item->setText(infoStr);
+            d_ptr->eventTable->setItem(row, 1, item);
+            row ++;
+        }
     }
 }

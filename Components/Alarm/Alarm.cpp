@@ -10,6 +10,8 @@
 #include "SystemManager.h"
 #include "ECGParam.h"
 #include "ParamManager.h"
+#include "EventDataDefine.h"
+#include "EventStorageManager.h"
 
 #define ALARM_LIMIT_TIMES (3)   //超限3次后，发生报警
 static int curSecondAlarmNum = 0; //record the number of alarms happend in the save seconds
@@ -106,6 +108,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
     int n = alarmSource->getAlarmSourceNR();
     AlarmTraceCtrl *traceCtrl = NULL;
     QString traceID;
+    AlarmInfoSegment infoSegment;
 
     for (int i = 0; i < n; i++)
     {
@@ -119,7 +122,6 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
 
         isEnable = alarmSource->isAlarmEnable(i);
         completeResult = alarmSource->getCompare(curValue, i);
-
         // 报警关闭不处理超限报警
         if (_curAlarmStatus == ALARM_OFF)
         {
@@ -198,6 +200,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 alarmParam.append(alarmSource->getParamID());
                 summaryStorageManager.addPhyAlarm(_timestamp, alarmSource->getParamID(), i,
                         false, alarmSource->getWaveformID(i));
+                infoSegment.alarmLimit = alarmSource->getLower(i);
             }
             else if (completeResult > 0) // 超高限。
             {
@@ -214,7 +217,13 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 alarmParam.append(alarmSource->getParamID());
                 summaryStorageManager.addPhyAlarm(_timestamp, alarmSource->getParamID(), i,
                         false, alarmSource->getWaveformID(i));
+                infoSegment.alarmLimit = alarmSource->getUpper(i);
             }
+
+            infoSegment.subParamID = alarmSource->getSubParamID(i);
+            infoSegment.isOneShot = 0;
+            infoSegment.alarmType = i;
+            eventStorageManager.triggerAlarmEvent(infoSegment, alarmSource->getWaveformID(i));
         }//栓锁的报警重新发生报警
         else
         {
@@ -716,6 +725,19 @@ bool Alarm::getOneShotAlarmStatus(AlarmOneShotIFace *iface, int alarmId)
     {
         return false;
     }
+}
+
+/**************************************************************************************************
+ * according to SubParamID get alarmLimitIFace
+ *************************************************************************************************/
+AlarmLimitIFace *Alarm::getAlarmLimitIFace(SubParamID id)
+{
+    ParamID paramId = paramInfo.getParamID(id);
+    if (_limitSources.end() != _limitSources.find(paramId))
+    {
+        return _limitSources.find(paramId).value();
+    }
+    return NULL;
 }
 
 /**************************************************************************************************

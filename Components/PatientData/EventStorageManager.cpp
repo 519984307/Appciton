@@ -117,6 +117,8 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
     EventStorageItem *item = new EventStorageItem(EventPhysiologicalAlarm,
                                                   d->getStoreWaveList(paramWave),
                                                   almInfo);
+    item->startCollectTrendAndWaveformData();
+    item->checkCompleted();
     if(item)
     {
         d->mutex.lock();
