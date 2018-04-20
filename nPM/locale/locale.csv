@@ -761,6 +761,16 @@ LeftRightPage,左右翻页,Left Right Page
 IncidentMove,事件移动,Incident Move
 Set,设置,Set
 Incident,事件,Incident
+WaveInfo,详细信息,Wave Info
+Type,类型,Type
+Level,级别,Level
+Upper,过高,Upper
+Lower,过低,Lower
+EventList,事件列表,Event List
+RealTimePrint,实时打印,RealTIme Print
+WaveFreeze,波形冻结,Wave Freeze
+All ,全部,All
+Hint ,提示,Hint
 Interval,间隔,Interval
 Rescue,单个营救,Currect Rescue
 AllRescue,所有营救,All Rescue

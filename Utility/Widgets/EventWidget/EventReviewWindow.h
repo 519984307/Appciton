@@ -18,6 +18,8 @@ protected:
 private slots:
     void _waveInfoReleased(void);
     void _eventListReleased(void);
+    void _upMoveEventReleased(void);
+    void _downMoveEventReleased(void);
 
 private:
     void _loadEventData(void);

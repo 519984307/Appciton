@@ -668,6 +668,7 @@ HEADERS +=                                                                      
     Components/PatientData/TrendSubWaveWidget.h                                 \
     Components/PatientData/IMoveButton.h                                        \
     Components/PatientData/TrendGraphSetWidget.h                                \
+    Components/PatientData/EventDataSymbol.h                                    \
     Components/PatientManager/PatientManager.h                                  \
     Components/PatientManager/PatientBarWidget.h                                \
     Components/PatientManager/PatientDefine.h                                   \

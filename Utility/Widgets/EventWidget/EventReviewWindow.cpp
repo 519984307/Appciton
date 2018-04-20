@@ -13,6 +13,7 @@
 #include "IDropList.h"
 #include "TimeDate.h"
 #include "ParamInfo.h"
+#include "EventDataSymbol.h"
 #include <QBoxLayout>
 #include "Debug.h"
 #include "Alarm.h"
@@ -20,7 +21,7 @@
 #include <QHeaderView>
 
 #define ITEM_HEIGHT     30
-#define ITEM_WIDTH      80
+#define ITEM_WIDTH      100
 
 struct EventDataPraseContex
 {
@@ -190,6 +191,10 @@ public:
     EventDataPraseContex ctx;
     IStorageBackend *backend;
     int curParseIndex;
+    int eventNum;
+    int curSecEvent;
+    EventType curEventType;
+    EventLevel curEventLevel;
 };
 
 EventReviewWindow::EventReviewWindow()
@@ -215,7 +220,7 @@ EventReviewWindow::EventReviewWindow()
     d_ptr->eventTable->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     d_ptr->eventTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     d_ptr->eventTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    d_ptr->eventTable->setSelectionMode(QAbstractItemView::NoSelection);
+    d_ptr->eventTable->setSelectionMode(QAbstractItemView::SingleSelection);
     d_ptr->eventTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
     QStringList tableTitle;
     tableTitle << trs("Time") << trs("Event");
@@ -229,18 +234,28 @@ EventReviewWindow::EventReviewWindow()
     d_ptr->type = new IDropList(trs("Type"));
     d_ptr->type->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     d_ptr->type->setFont(font);
+    for (int i = 0; i < EventTypeMax; i ++)
+    {
+        d_ptr->type->addItem(trs(EventDataSymbol::convert((EventType)i)));
+    }
 
     d_ptr->level = new IDropList(trs("Level"));
     d_ptr->level->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     d_ptr->level->setFont(font);
+    for (int i = 0; i < EVENT_LEVEL_NR; i ++)
+    {
+        d_ptr->level->addItem(trs(EventDataSymbol::convert((EventLevel)i)));
+    }
 
     d_ptr->upTable = new IButton();
     d_ptr->upTable->setFixedSize(ITEM_HEIGHT, ITEM_HEIGHT);
     d_ptr->upTable->setPicture(QImage("/usr/local/nPM/icons/ArrowUp.png"));
+    connect(d_ptr->upTable, SIGNAL(realReleased()), this, SLOT(_upMoveEventReleased()));
 
     d_ptr->downTable = new IButton();
     d_ptr->downTable->setFixedSize(ITEM_HEIGHT, ITEM_HEIGHT);
     d_ptr->downTable->setPicture(QImage("/usr/local/nPM/icons/ArrowDown.png"));
+    connect(d_ptr->downTable, SIGNAL(realReleased()), this,  SLOT(_downMoveEventReleased()));
 
     QHBoxLayout *hTableLayout = new QHBoxLayout();
     hTableLayout->setMargin(0);
@@ -393,14 +408,44 @@ void EventReviewWindow::showEvent(QShowEvent *e)
     _loadEventData();
 }
 
+/**************************************************************************************************
+ * 切换至波形事件布局
+ *************************************************************************************************/
 void EventReviewWindow::_waveInfoReleased()
 {
     d_ptr->stackLayout->setCurrentIndex(1);
 }
 
+/**************************************************************************************************
+ * 切换至表格事件布局
+ *************************************************************************************************/
 void EventReviewWindow::_eventListReleased()
 {
     d_ptr->stackLayout->setCurrentIndex(0);
+}
+
+/**************************************************************************************************
+ * 向上移动事件
+ *************************************************************************************************/
+void EventReviewWindow::_upMoveEventReleased()
+{
+    if (d_ptr->curSecEvent != 0 && d_ptr->curSecEvent != InvData())
+    {
+        d_ptr->curSecEvent --;
+        d_ptr->eventTable->selectRow(d_ptr->curSecEvent);
+    }
+}
+
+/**************************************************************************************************
+ * 向下移动事件
+ *************************************************************************************************/
+void EventReviewWindow::_downMoveEventReleased()
+{
+    if (d_ptr->curSecEvent != d_ptr->eventNum - 1 && d_ptr->curSecEvent != InvData())
+    {
+        d_ptr->curSecEvent ++;
+        d_ptr->eventTable->selectRow(d_ptr->curSecEvent);
+    }
 }
 
 /**************************************************************************************************
@@ -408,8 +453,17 @@ void EventReviewWindow::_eventListReleased()
  *************************************************************************************************/
 void EventReviewWindow::_loadEventData()
 {
-    int eventNum = d_ptr->backend->getBlockNR();
-    d_ptr->eventTable->setRowCount(eventNum);
+    d_ptr->eventNum = d_ptr->backend->getBlockNR();
+    d_ptr->eventTable->setRowCount(d_ptr->eventNum);
+    if (d_ptr->eventNum)
+    {
+        d_ptr->curSecEvent = 0;
+        d_ptr->eventTable->selectRow(d_ptr->curSecEvent);
+    }
+    else
+    {
+        d_ptr->curSecEvent = InvData();
+    }
 
     unsigned t = 0;
     QString timeStr;
@@ -422,13 +476,18 @@ void EventReviewWindow::_loadEventData()
     unsigned char alarmId;
     AlarmPriority priority;
     int row = 0;
-    for (int i = eventNum - 1; i >= 0; i --)
+    for (int i = d_ptr->eventNum - 1; i >= 0; i --)
     {
         priority = ALARM_PRIO_PROMPT;
         if (d_ptr->parseEventData(i))
         {
-            // 事件时间
             t = d_ptr->ctx.infoSegment->timestamp;
+            subId = (SubParamID)(d_ptr->ctx.almSegment->subParamID);
+            paramId = paramInfo.getParamID(subId);
+            alarmId = d_ptr->ctx.almSegment->alarmType;
+            alarmInfo = d_ptr->ctx.almSegment->alarmInfo;
+
+            // 事件时间
             timeDate.getDate(t, dateStr, true);
             timeDate.getTime(t, timeStr, true);
             item = new QTableWidgetItem();
@@ -437,10 +496,6 @@ void EventReviewWindow::_loadEventData()
             d_ptr->eventTable->setItem(row, 0, item);
 
             // 事件内容
-            subId = (SubParamID)(d_ptr->ctx.almSegment->subParamID);
-            paramId = paramInfo.getParamID(subId);
-            alarmId = d_ptr->ctx.almSegment->alarmType;
-            alarmInfo = d_ptr->ctx.almSegment->alarmInfo;
             AlarmLimitIFace *alarmLimit = alertor.getAlarmLimitIFace(subId);
             if (alarmLimit)
             {
@@ -468,10 +523,12 @@ void EventReviewWindow::_loadEventData()
             if ((alarmInfo >> 1) & 0x1)
             {
                 infoStr += trs("Upper");
+                infoStr += " > ";
             }
             else
             {
                 infoStr += trs("Lower");
+                infoStr += " < ";
             }
 
             infoStr += QString::number(d_ptr->ctx.almSegment->alarmLimit);

@@ -4,6 +4,7 @@
 #include <QVector>
 
 enum EventType{
+    EventAll,
     EventPhysiologicalAlarm,
     EventCodeMarker,
     EventRealtimePrint,
@@ -18,6 +19,16 @@ enum EventSegmentType {
     EVENT_WAVEFORM_SEGMENT = 0x33333333,
     EVENT_ALARM_INFO_SEGMENT = 0x44444444,
     EVENT_CODEMARKER_SEGMENT = 0x55555555,
+};
+
+enum EventLevel
+{
+    EVENT_LEVEL_ALL,    
+    EVENT_LEVEL_HINT,
+    EVENT_LEVEL_LOW,
+    EVENT_LEVEL_MED,
+    EVENT_LEVEL_High,
+    EVENT_LEVEL_NR
 };
 
 /* segment record the alarm info */

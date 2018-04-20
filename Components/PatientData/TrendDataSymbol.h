@@ -1,5 +1,6 @@
 #pragma once
 #include "TrendDataDefine.h"
+#include "EventDataDefine.h"
 
 class TrendDataSymbol
 {
