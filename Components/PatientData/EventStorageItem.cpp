@@ -43,13 +43,13 @@ public:
             qFree(trendSegment);
         }
 
-        foreach (WaveformDataSegment *waveSeg, waveSegment)
+        foreach (WaveformDataSegment *waveSeg, waveSegments)
         {
             if(!waveComplete[waveSeg->waveID])
             {
                 waveformCache.unRegisterWaveformRecorder(waveSeg->waveID, this);
             }
-            delete waveSeg;
+            qFree(waveSeg);
         }
 
 
@@ -69,7 +69,7 @@ public:
     static void waveCacheCompleteCallback(WaveformID id, void *obj);
 
     TrendDataSegment* trendSegment;
-    QList<WaveformDataSegment *> waveSegment;
+    QList<WaveformDataSegment *> waveSegments;
     EventInfoSegment eventInfo;
     QList<WaveformID> waveforms;
     QMap<WaveformID, bool> waveComplete;
@@ -180,7 +180,7 @@ bool EventStorageItem::checkCompleted()
         qdebug("cache time expired");
 
         //unregister recorder
-        foreach (WaveformDataSegment *seg, d_ptr->waveSegment)
+        foreach (WaveformDataSegment *seg, d_ptr->waveSegments)
         {
             waveformCache.unRegisterWaveformRecorder(seg->waveID, d_ptr.data());
             d_ptr->waveComplete[seg->waveID] = true;
@@ -230,17 +230,20 @@ bool EventStorageItem::startCollectTrendAndWaveformData()
         WaveformDataSegment *waveSegment = (WaveformDataSegment *) qMalloc(sizeof(WaveformDataSegment) +
                                                                            sizeof(WaveDataType) * waveNum);
 
+        if(waveSegment == NULL)
+        {
+            qdebug("Out of memory!");
+            break;
+        }
+
+        d_ptr->waveSegments.append(waveSegment);
+
         waveSegment->waveID = waveid;
         waveSegment->sampleRate = sampleRate;
         waveSegment->waveNum = waveNum;
 
         d_ptr->waveComplete[waveid] = false;
 
-        if(waveSegment == NULL)
-        {
-            qdebug("Out of memory!");
-            break;
-        }
 
         waveformCache.readStorageChannel(waveid, waveSegment->waveData, d_ptr->eventInfo.duration_before, false);
 
@@ -293,10 +296,10 @@ QByteArray EventStorageItem::getStorageData() const
     }
 
     //write wave segments
-    if(d_ptr->waveSegment.count())
+    if(d_ptr->waveSegments.count())
     {
         type = EVENT_WAVEFORM_SEGMENT;
-        foreach (WaveformDataSegment *waveSeg, d_ptr->waveSegment) {
+        foreach (WaveformDataSegment *waveSeg, d_ptr->waveSegments) {
             buffer.write((char *)&type, sizeof(type));
             buffer.write((char *)waveSeg, sizeof(WaveformDataSegment) + sizeof(WaveDataType) * waveSeg->waveNum);
         }
