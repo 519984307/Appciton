@@ -1736,7 +1736,7 @@ void ECGParam::setDiagBandwidth()
         }
 
         unsigned ts = timeManager.getCurTime();
-        summaryStorageManager.addDiagnosticECG(ts, ECG_BANDWIDTH_0525_40HZ);
+        //summaryStorageManager.addDiagnosticECG(ts, ECG_BANDWIDTH_0525_40HZ);
         _lastDiagModeTimestamp = ts;
     }
 
@@ -2350,7 +2350,7 @@ void ECGParam::presentRhythm()
     {
         rhythm = 1;
         systemConfig.setNumValue("PrimaryCfg|ECG|PresentRhythm", rhythm);
-        summaryStorageManager.addPrensentingRhythm(timeManager.getCurTime());
+        //summaryStorageManager.addPrensentingRhythm(timeManager.getCurTime());
     }
 }
 

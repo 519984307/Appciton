@@ -235,8 +235,8 @@ void CodeMarkerWidget::_timerOut()
 {
     _closeTimer->stop();
     // 存储code marker数据到summary。
-    summaryStorageManager.addCodeMarker(timeManager.getCurTime(),
-            _localeCodeMarker[_codeMarkerNum].toLocal8Bit().constData());
+    //summaryStorageManager.addCodeMarker(timeManager.getCurTime(),
+    //        _localeCodeMarker[_codeMarkerNum].toLocal8Bit().constData());
     hide();
 }
 
@@ -261,8 +261,8 @@ void CodeMarkerWidget::hideEvent(QHideEvent *event)
     if (!getPress())
     {
         QString defCodeMarker("CodeMarkerDefault");
-        summaryStorageManager.addCodeMarker(timeManager.getCurTime(),
-                defCodeMarker.toLocal8Bit().constData());
+        //summaryStorageManager.addCodeMarker(timeManager.getCurTime(),
+        //        defCodeMarker.toLocal8Bit().constData());
     }
     _timer->stop();
 

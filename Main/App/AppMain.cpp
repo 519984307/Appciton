@@ -27,7 +27,7 @@ static void _taskOneSec1(void)
 static void _taskOneSec2(void)
 {
     //summaryStorageManager.checkCompletedItem();
-    //eventStorageManager.checkCompletedEvent();
+    eventStorageManager.checkCompletedEvent();
     powerManager.run();
 
     if (!usbManager.isUSBExist())

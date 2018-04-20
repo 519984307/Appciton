@@ -118,7 +118,6 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
                                                   d->getStoreWaveList(paramWave),
                                                   almInfo);
     item->startCollectTrendAndWaveformData();
-//    item->checkCompleted();
     if(item)
     {
         d->mutex.lock();
@@ -134,6 +133,7 @@ void EventStorageManager::triggerCodeMarkerEvent(const char *codeName)
     EventStorageItem *item = new EventStorageItem(EventCodeMarker,
                                                   d->getStoreWaveList(WAVE_NONE),
                                                   codeName);
+    item->startCollectTrendAndWaveformData();
     if(item)
     {
         d->mutex.lock();
@@ -148,6 +148,7 @@ void EventStorageManager::triggerRealtimePrintEvent()
 
     EventStorageItem *item = new EventStorageItem(EventRealtimePrint,
                                                   d->getStoreWaveList(WAVE_NONE));
+    item->startCollectTrendAndWaveformData();
     if(item)
     {
         d->mutex.lock();
@@ -162,6 +163,7 @@ void EventStorageManager::triggerNIBPMeasurementEvent()
 
     EventStorageItem *item = new EventStorageItem(EventNIBPMeasurement,
                                                   d->getStoreWaveList(WAVE_NONE));
+    item->startCollectTrendAndWaveformData();
     if(item)
     {
         d->mutex.lock();
@@ -176,6 +178,7 @@ void EventStorageManager::triggerWaveFreezeEvent()
 
     EventStorageItem *item = new EventStorageItem(EventWaveFreeze,
                                                   d->getStoreWaveList(WAVE_NONE));
+    item->startCollectTrendAndWaveformData();
     if(item)
     {
         d->mutex.lock();

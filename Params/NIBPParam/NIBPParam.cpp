@@ -727,7 +727,7 @@ void NIBPParam::createSnapshot(NIBPOneShotType err)
             nibpParam.setMeasureResult(NIBP_MEASURE_FAIL);
         }
         setSnapshotFlag(false);
-        summaryStorageManager.addNIBP(_lastTime, err);
+        //summaryStorageManager.addNIBP(_lastTime, err);
     }
 }
 

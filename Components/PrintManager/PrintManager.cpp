@@ -709,7 +709,7 @@ void PrintManager::providerErrorReport(unsigned char error)
  *************************************************************************************************/
 void PrintManager::addPrinterActiveSnapshot()
 {
-    summaryStorageManager.addPrinterAction(timeManager.getCurTime());
+    //summaryStorageManager.addPrinterAction(timeManager.getCurTime());
 }
 
 /**************************************************************************************************

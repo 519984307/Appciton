@@ -130,12 +130,17 @@ void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCache
 void EventStorageItemPrivate::waveCacheCompleteCallback(WaveformID id, void *obj)
 {
     EventStorageItemPrivate *p = reinterpret_cast<EventStorageItemPrivate *>(obj);
-    p->waveComplete[id] = true;
+    Q_ASSERT(p != NULL);
+    if(p)
+    {
+        p->waveComplete[id] = true;
+    }
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms)
     :d_ptr(new EventStorageItemPrivate(type, storeWaveforms))
 {
+    qDebug()<<"Create Event Stroage Item:"<<this<<" type: "<<type;
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, const AlarmInfoSegment &almInfo)
@@ -146,6 +151,7 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
     d_ptr->almInfo->alarmType = almInfo.alarmType;
     d_ptr->almInfo->alarmInfo = almInfo.alarmInfo;
     d_ptr->almInfo->subParamID = almInfo.subParamID;
+    qDebug()<<"Create Event Stroage Item:"<<this<<" type: "<<type;
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, const char *codeName)
@@ -153,11 +159,12 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
 {
     d_ptr->codeMarkerInfo = new CodeMarkerSegment;
     Util::strlcpy(d_ptr->codeMarkerInfo->codeName, codeName, sizeof(d_ptr->codeMarkerInfo->codeName));
+    qDebug()<<"Create Event Stroage Item:"<<this<<" type: "<<type;
 }
 
 EventStorageItem::~EventStorageItem()
 {
-
+    qDebug()<<"Destroy Event Stroage Item:"<<this;
 }
 
 EventType EventStorageItem::getType() const
@@ -196,7 +203,6 @@ bool EventStorageItem::checkCompleted()
 
 bool EventStorageItem::startCollectTrendAndWaveformData()
 {
-    return false;
     if(d_ptr->startCollect)
     {
         qdebug("Already start collect data");
@@ -239,7 +245,7 @@ bool EventStorageItem::startCollectTrendAndWaveformData()
         waveformCache.readStorageChannel(waveid, waveSegment->waveData, d_ptr->eventInfo.duration_before, false);
 
         WaveformRecorder recorder;
-        recorder.buf = waveSegment->waveData + d_ptr->eventInfo.duration_before;
+        recorder.buf = waveSegment->waveData;
         recorder.curRecWaveNum = d_ptr->eventInfo.duration_before * sampleRate;
         recorder.totalRecWaveNum = waveSegment->waveNum;
         recorder.recObj = d_ptr.data();

@@ -198,8 +198,8 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                         traceCtrl->priority, traceCtrl->alarmMessage);
 
                 alarmParam.append(alarmSource->getParamID());
-                summaryStorageManager.addPhyAlarm(_timestamp, alarmSource->getParamID(), i,
-                        false, alarmSource->getWaveformID(i));
+                //summaryStorageManager.addPhyAlarm(_timestamp, alarmSource->getParamID(), i,
+                //        false, alarmSource->getWaveformID(i));
                 infoSegment.alarmLimit = alarmSource->getLower(i);
                 infoSegment.alarmInfo = 0;
             }
@@ -216,8 +216,8 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                         traceCtrl->priority, traceCtrl->alarmMessage);
 
                 alarmParam.append(alarmSource->getParamID());
-                summaryStorageManager.addPhyAlarm(_timestamp, alarmSource->getParamID(), i,
-                        false, alarmSource->getWaveformID(i));
+                //summaryStorageManager.addPhyAlarm(_timestamp, alarmSource->getParamID(), i,
+                //        false, alarmSource->getWaveformID(i));
                 infoSegment.alarmLimit = alarmSource->getUpper(i);
                 infoSegment.alarmInfo = 0 | 1 << 1;
             }
@@ -406,12 +406,12 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
         if (traceCtrl->type == ALARM_TYPE_LIFE)
         {
             alarmSource->notifyAlarm(i, true);
-            summaryStorageManager.addOneshotAlarm(_timestamp);
+            //summaryStorageManager.addOneshotAlarm(_timestamp);
         }
         else if (traceCtrl->type == ALARM_TYPE_PHY)
         {
             alarmSource->notifyAlarm(i, true);
-            summaryStorageManager.addPhyAlarm(_timestamp, alarmSource->getParamID(), i, true, alarmSource->getWaveformID(i));
+            //summaryStorageManager.addPhyAlarm(_timestamp, alarmSource->getParamID(), i, true, alarmSource->getWaveformID(i));
         }
     }
 }
