@@ -118,7 +118,7 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
                                                   d->getStoreWaveList(paramWave),
                                                   almInfo);
     item->startCollectTrendAndWaveformData();
-    item->checkCompleted();
+//    item->checkCompleted();
     if(item)
     {
         d->mutex.lock();

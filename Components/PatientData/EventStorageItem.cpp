@@ -144,7 +144,7 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
     d_ptr->almInfo = new AlarmInfoSegment();
     d_ptr->almInfo->alarmLimit = almInfo.alarmLimit;
     d_ptr->almInfo->alarmType = almInfo.alarmType;
-    d_ptr->almInfo->isOneShot = almInfo.isOneShot;
+    d_ptr->almInfo->alarmInfo = almInfo.alarmInfo;
     d_ptr->almInfo->subParamID = almInfo.subParamID;
 }
 

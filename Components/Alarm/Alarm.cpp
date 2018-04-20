@@ -201,6 +201,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 summaryStorageManager.addPhyAlarm(_timestamp, alarmSource->getParamID(), i,
                         false, alarmSource->getWaveformID(i));
                 infoSegment.alarmLimit = alarmSource->getLower(i);
+                infoSegment.alarmInfo = 0;
             }
             else if (completeResult > 0) // 超高限。
             {
@@ -218,10 +219,10 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 summaryStorageManager.addPhyAlarm(_timestamp, alarmSource->getParamID(), i,
                         false, alarmSource->getWaveformID(i));
                 infoSegment.alarmLimit = alarmSource->getUpper(i);
+                infoSegment.alarmInfo = 0 | 1 << 1;
             }
 
             infoSegment.subParamID = alarmSource->getSubParamID(i);
-            infoSegment.isOneShot = 0;
             infoSegment.alarmType = i;
             eventStorageManager.triggerAlarmEvent(infoSegment, alarmSource->getWaveformID(i));
         }//栓锁的报警重新发生报警

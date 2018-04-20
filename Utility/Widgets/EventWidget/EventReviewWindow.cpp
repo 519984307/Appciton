@@ -416,9 +416,10 @@ void EventReviewWindow::_loadEventData()
     QString dateStr;
     QString infoStr;
     QTableWidgetItem *item;
+    unsigned char alarmInfo;
     SubParamID subId;
     ParamID paramId;
-    int alarmId;
+    unsigned char alarmId;
     AlarmPriority priority;
     int row = 0;
     for (int i = eventNum - 1; i >= 0; i --)
@@ -439,6 +440,7 @@ void EventReviewWindow::_loadEventData()
             subId = (SubParamID)(d_ptr->ctx.almSegment->subParamID);
             paramId = paramInfo.getParamID(subId);
             alarmId = d_ptr->ctx.almSegment->alarmType;
+            alarmInfo = d_ptr->ctx.almSegment->alarmInfo;
             AlarmLimitIFace *alarmLimit = alertor.getAlarmLimitIFace(subId);
             if (alarmLimit)
             {
@@ -462,6 +464,17 @@ void EventReviewWindow::_loadEventData()
                 infoStr = "";
             }
             infoStr += paramInfo.getSubParamName(subId);
+
+            if ((alarmInfo >> 1) & 0x1)
+            {
+                infoStr += trs("Upper");
+            }
+            else
+            {
+                infoStr += trs("Lower");
+            }
+
+            infoStr += QString::number(d_ptr->ctx.almSegment->alarmLimit);
             item = new QTableWidgetItem();
             item->setTextAlignment(Qt::AlignCenter);
             item->setText(infoStr);

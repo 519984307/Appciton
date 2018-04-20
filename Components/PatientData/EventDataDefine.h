@@ -23,7 +23,8 @@ enum EventSegmentType {
 /* segment record the alarm info */
 struct AlarmInfoSegment {
     int subParamID;             /* sub param ID */
-    unsigned char isOneShot;    /* alarm type: 1:oneshot, 0: limit alarm*/
+    unsigned char alarmInfo;    /* alarm info: 1bit  1:oneshot, 0: limit alarm
+                                               2bit  1:upper,   0: lowers*/
     unsigned char alarmType;    /* alarm id of the param */
     short  alarmLimit;          /* alarm limit if it's a limit alarm */
 };
