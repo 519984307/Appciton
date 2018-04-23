@@ -1190,8 +1190,8 @@ INCLUDEPATH +=                                                                  
     Params/CO2Param/CO2Widgets                                                  \
     Params/IBPParam                                                             \
     Params/IBPParam/IBPWidgets                                                  \
-    Params/COParam                                                             \
-    Params/COParam/COWidgets                                                  \
+    Params/COParam                                                              \
+    Params/COParam/COWidgets                                                    \
     Params/NIBPParam                                                            \
     Params/NIBPParam/NIBPStateMachine                                           \
     Params/NIBPParam/NIBPServiceMachine                                         \
@@ -1204,3 +1204,9 @@ INCLUDEPATH +=                                                                  
     Params/UpgradeParam                                                         \
     Params/RESPParam                                                            \
     Params/RESPParam/RESPWidgets                                                \
+
+linux-arm-g++ {
+    SOURCES +=  Utility/Widgets/TSCalibrationWindow.cpp
+
+    HEADERS +=  Utility/Widgets/TSCalibrationWindow.h
+}

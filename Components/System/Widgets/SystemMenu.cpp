@@ -14,6 +14,10 @@
 #include "PrintManager.h"
 #include "MenuManager.h"
 #include "ConfigMaintainMenuGrp.h"
+#ifdef Q_WS_QWS
+#include "TSCalibrationWindow.h"
+#include <QWSServer>
+#endif
 
 SystemMenu *SystemMenu::_selfObj = NULL;
 
@@ -72,6 +76,19 @@ void SystemMenu::_configManagerSlot()
     configMaintainMenuGrp.initializeSubMenu();
     configMaintainMenuGrp.popup();
 }
+
+#ifdef Q_WS_QWS
+/**
+ * @brief SystemMenu::_touchScreenCalSlot touch screen calibration slot
+ */
+void SystemMenu::_touchScreenCalSlot()
+{
+    QWSServer::instance()->closeMouse();
+    TSCalibrationWindow calWin;
+    calWin.exec();
+    QWSServer::instance()->openMouse();
+}
+#endif
 
 /**************************************************************************************************
  * 载入当前配置。
@@ -201,6 +218,17 @@ void SystemMenu::layoutExec(void)
     _configManager->label->setFixedSize(labelWidth, ITEM_H);
     _configManager->button->setFixedSize(btnWidth, ITEM_H);
     mainLayout->addWidget(_configManager);
+
+#ifdef Q_WS_QWS
+    // touch screen calibration
+    _touchScreenCal= new LabelButton("");
+    _touchScreenCal->setFont(font);
+    _touchScreenCal->setValue(trs("TouchScreenCalibration"));
+    connect(_touchScreenCal->button, SIGNAL(realReleased()), this, SLOT(_touchScreenCalSlot()));
+    _touchScreenCal->label->setFixedSize(labelWidth, ITEM_H);
+    _touchScreenCal->button->setFixedSize(btnWidth, ITEM_H);
+    mainLayout->addWidget(_touchScreenCal);
+#endif
 }
 
 /**************************************************************************************************

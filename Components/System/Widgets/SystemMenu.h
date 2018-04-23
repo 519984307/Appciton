@@ -31,6 +31,9 @@ private slots:
     void _printWaveformNumSlot(int index);
     void _printCfgSlot(void);
     void _configManagerSlot(void);
+#ifdef Q_WS_QWS
+    void _touchScreenCalSlot(void);
+#endif
 
 private:
     SystemMenu();
@@ -44,5 +47,8 @@ private:
     IComboList *_printWaveformNum;                // 打印波形数量。
     LabelButton *_printCfg;                       // 打印配置
     LabelButton *_configManager;                  // config Manager
+#ifdef Q_WS_QWS
+    LabelButton *_touchScreenCal;                 // touch screen calibraiton
+#endif
 };
 #define systemMenu (SystemMenu::construction())
