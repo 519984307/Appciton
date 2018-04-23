@@ -7,4 +7,14 @@ class EventInfoWidget : public QWidget
 public:
     EventInfoWidget(QWidget *parent = NULL);
     ~EventInfoWidget();
+
+    void loadDataInfo(QString info, QString time, QString index);
+
+protected:
+    void paintEvent(QPaintEvent *e);
+
+private:
+    QString eventInfo;
+    QString eventTime;
+    QString eventIndex;
 };

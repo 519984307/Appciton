@@ -16,7 +16,6 @@
 #include "EventDataSymbol.h"
 #include <QBoxLayout>
 #include "Debug.h"
-#include "Alarm.h"
 #include <QFile>
 #include <QHeaderView>
 
@@ -191,15 +190,21 @@ public:
     EventDataPraseContex ctx;
     IStorageBackend *backend;
     int curParseIndex;
-    int eventNum;
-    int curSecEvent;
+    int eventNum;                           // 总事件数
+    int curSecEvent;                        // 当前选中事件项在表格中的索引位置
     EventType curEventType;
     EventLevel curEventLevel;
+    QList<int> dataIndex;                   // 当前选中事件项对应的数据所在索引
 };
 
+/**************************************************************************************************
+ * 构造。
+ *************************************************************************************************/
 EventReviewWindow::EventReviewWindow()
     :PopupWidget(), d_ptr(new EventReviewWindowPrivate())
 {
+    d_ptr->curEventType = EventAll;
+    d_ptr->curEventLevel = EVENT_LEVEL_ALL;
     setAttribute(Qt::WA_DeleteOnClose, true);
     setWindowTitle("Event Review");
 
@@ -210,7 +215,6 @@ EventReviewWindow::EventReviewWindow()
 
     int itemW = windowManager.getPopMenuWidth() - 20;
     int btnWidth = itemW / 4;
-    int labelWidth = btnWidth/2;
 
     // 事件表格窗口
     d_ptr->eventTable = new ITableWidget();
@@ -223,7 +227,7 @@ EventReviewWindow::EventReviewWindow()
     d_ptr->eventTable->setSelectionMode(QAbstractItemView::SingleSelection);
     d_ptr->eventTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
     QStringList tableTitle;
-    tableTitle << trs("Time") << trs("Event");
+    tableTitle << trs("Time") << trs("Incident");
     d_ptr->eventTable->setHorizontalHeaderLabels(tableTitle);
 
     d_ptr->waveInfo = new IButton(trs("WaveInfo"));
@@ -238,6 +242,7 @@ EventReviewWindow::EventReviewWindow()
     {
         d_ptr->type->addItem(trs(EventDataSymbol::convert((EventType)i)));
     }
+    connect(d_ptr->type, SIGNAL(currentIndexChange(int)), this, SLOT(_eventTypeSelect(int)));
 
     d_ptr->level = new IDropList(trs("Level"));
     d_ptr->level->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
@@ -246,6 +251,7 @@ EventReviewWindow::EventReviewWindow()
     {
         d_ptr->level->addItem(trs(EventDataSymbol::convert((EventLevel)i)));
     }
+    connect(d_ptr->level, SIGNAL(currentIndexChange(int)), this, SLOT(_eventLevelSelect(int)));
 
     d_ptr->upTable = new IButton();
     d_ptr->upTable->setFixedSize(ITEM_HEIGHT, ITEM_HEIGHT);
@@ -291,46 +297,46 @@ EventReviewWindow::EventReviewWindow()
     d_ptr->trendListWidget->setItemDelegate(new EventTrendItemDelegate(d_ptr->trendListWidget));
     d_ptr->trendListWidget->setResizeMode(QListWidget::Adjust);
 
-    QListWidgetItem *item;
-    QStringList valueList;
-    QStringList titleList;
-    QStringList unitList;
-    valueList << "60" <<"98" << "120/90/(100)" << "4.6" << "14" << "120/90(100)" << "20" <<"36.5" << "36.4" <<"0.1";
-    titleList <<"HR" <<"SPO2" <<"NIBP" <<"CO2" <<"RR" <<"ART" <<"CVP" <<"T1" <<"T2" <<QString::fromUtf8("ΔT");
-    unitList <<"bpm" <<"%" <<"mmHg" <<"%" <<"rpm"<<"mmHg"<<"mmHg" << QString::fromUtf8("°C")
-               << QString::fromUtf8("°C")<< QString::fromUtf8("°C");
+//    QListWidgetItem *item;
+//    QStringList valueList;
+//    QStringList titleList;
+//    QStringList unitList;
+//    valueList << "60" <<"98" << "120/90/(100)" << "4.6" << "14" << "120/90(100)" << "20" <<"36.5" << "36.4" <<"0.1";
+//    titleList <<"HR" <<"SPO2" <<"NIBP" <<"CO2" <<"RR" <<"ART" <<"CVP" <<"T1" <<"T2" <<QString::fromUtf8("ΔT");
+//    unitList <<"bpm" <<"%" <<"mmHg" <<"%" <<"rpm"<<"mmHg"<<"mmHg" << QString::fromUtf8("°C")
+//               << QString::fromUtf8("°C")<< QString::fromUtf8("°C");
 
-    QStringList paramNames;
-    paramNames << "ECG" <<"SPO2" <<"NIBP" << "CO2" <<"RESP" <<"IBP" <<"IBP"<<"TEMP"<<"TEMP"<<"TEMP";
+//    QStringList paramNames;
+//    paramNames << "ECG" <<"SPO2" <<"NIBP" << "CO2" <<"RESP" <<"IBP" <<"IBP"<<"TEMP"<<"TEMP"<<"TEMP";
 
-    QFont valueFont = fontManager.numFont(32);
-    QFont titleFont = fontManager.textFont(16);
-    QFont unitFont = fontManager.textFont(12);
+//    QFont valueFont = fontManager.numFont(32);
+//    QFont titleFont = fontManager.textFont(16);
+//    QFont unitFont = fontManager.textFont(12);
 
-    for(int i = 0; i< valueList.length(); i++)
-    {
-        item = new QListWidgetItem(d_ptr->trendListWidget);
+//    for(int i = 0; i< valueList.length(); i++)
+//    {
+//        item = new QListWidgetItem(d_ptr->trendListWidget);
 
-        if(valueList.at(i).length() >= 10)
-        {
-            item->setData(EventTrendItemDelegate::ValueFontRole, qVariantFromValue(fontManager.numFont(28)));
-        }
-        else
-        {
-            item->setData(EventTrendItemDelegate::ValueFontRole, qVariantFromValue(valueFont));
-        }
-        item->setData(EventTrendItemDelegate::TitleFontRole, qVariantFromValue(titleFont));
-        item->setData(EventTrendItemDelegate::UnitFontRole, qVariantFromValue(unitFont));
+//        if(valueList.at(i).length() >= 10)
+//        {
+//            item->setData(EventTrendItemDelegate::ValueFontRole, qVariantFromValue(fontManager.numFont(28)));
+//        }
+//        else
+//        {
+//            item->setData(EventTrendItemDelegate::ValueFontRole, qVariantFromValue(valueFont));
+//        }
+//        item->setData(EventTrendItemDelegate::TitleFontRole, qVariantFromValue(titleFont));
+//        item->setData(EventTrendItemDelegate::UnitFontRole, qVariantFromValue(unitFont));
 
-        item->setData(EventTrendItemDelegate::ValueTextRole, valueList.at(i));
-        item->setData(EventTrendItemDelegate::TitleTextRole, titleList.at(i));
-        item->setData(EventTrendItemDelegate::UnitTextRole, unitList.at(i));
+//        item->setData(EventTrendItemDelegate::ValueTextRole, valueList.at(i));
+//        item->setData(EventTrendItemDelegate::TitleTextRole, titleList.at(i));
+//        item->setData(EventTrendItemDelegate::UnitTextRole, unitList.at(i));
 
-        item->setData(EventTrendItemDelegate::TrendAlarmRole, false);
+//        item->setData(EventTrendItemDelegate::TrendAlarmRole, false);
 
-        item->setTextColor(colorManager.getColor(paramNames.at(i)));
-        item->setFlags(Qt::NoItemFlags);
-    }
+//        item->setTextColor(colorManager.getColor(paramNames.at(i)));
+//        item->setFlags(Qt::NoItemFlags);
+//    }
     hlayout->addWidget(d_ptr->trendListWidget, 1);
 
     d_ptr->eventList = new IButton(trs("EventList"));
@@ -392,11 +398,113 @@ EventReviewWindow::EventReviewWindow()
     setFixedSize(windowWidth, windowHeight);
 }
 
+/**************************************************************************************************
+ * 析构。
+ *************************************************************************************************/
 EventReviewWindow::~EventReviewWindow()
 {
 
 }
 
+/**************************************************************************************************
+ * 事件信息布局刷新。
+ *************************************************************************************************/
+void EventReviewWindow::eventInfoUpdate()
+{
+    QString infoStr;
+    QString timeInfoStr;
+    QString indexStr;
+
+    unsigned t = 0;
+    QString timeStr;
+    QString dateStr;
+    SubParamID subId = (SubParamID)(d_ptr->ctx.almSegment->subParamID);
+    AlarmLimitIFace *alarmLimit = alertor.getAlarmLimitIFace(subId);
+    unsigned char alarmId = d_ptr->ctx.almSegment->alarmType;
+    unsigned char alarmInfo = d_ptr->ctx.almSegment->alarmInfo;
+    AlarmPriority priority;
+    if (alarmLimit)
+    {
+        priority = alarmLimit->getAlarmPriority(alarmId);
+    }
+    else
+    {
+        return;
+    }
+
+    if (priority == ALARM_PRIO_LOW)
+    {
+        infoStr = "*";
+    }
+    else if (priority == ALARM_PRIO_MED)
+    {
+        infoStr = "**";
+    }
+    else if (priority == ALARM_PRIO_HIGH)
+    {
+        infoStr = "***";
+    }
+    else
+    {
+        infoStr = "";
+    }
+    infoStr += paramInfo.getSubParamName(subId);
+
+    if ((alarmInfo >> 1) & 0x1)
+    {
+        infoStr += trs("Upper");
+        infoStr += " > ";
+    }
+    else
+    {
+        infoStr += trs("Lower");
+        infoStr += " < ";
+    }
+    infoStr += QString::number(d_ptr->ctx.almSegment->alarmLimit);
+    t = d_ptr->ctx.infoSegment->timestamp;
+    timeDate.getDate(t, dateStr, true);
+    timeDate.getTime(t, timeStr, true);
+    timeInfoStr = dateStr + " " + timeStr;
+
+    indexStr = QString::number(d_ptr->curSecEvent + 1) + "/" + QString::number(d_ptr->eventTable->rowCount());
+
+    d_ptr->infoWidget->loadDataInfo(infoStr, timeInfoStr, indexStr);
+}
+
+/**************************************************************************************************
+ * 事件趋势布局刷新。
+ *************************************************************************************************/
+void EventReviewWindow::eventTrendUpdate()
+{
+    QListWidgetItem *item;
+    SubParamID subId;
+    QFont valueFont = fontManager.numFont(32);
+    QFont titleFont = fontManager.textFont(16);
+    QFont unitFont = fontManager.textFont(12);
+
+    int paramNum = d_ptr->ctx.trendSegment->trendValueNum;
+    for (int i = 0; i < paramNum; i ++)
+    {
+        item = new QListWidgetItem(d_ptr->trendListWidget);
+        subId = (SubParamID)d_ptr->ctx.trendSegment->values[i].subParamId;
+        item->setData(EventTrendItemDelegate::ValueFontRole, qVariantFromValue(valueFont));
+        item->setData(EventTrendItemDelegate::TitleFontRole, qVariantFromValue(titleFont));
+        item->setData(EventTrendItemDelegate::UnitFontRole, qVariantFromValue(unitFont));
+
+        item->setData(EventTrendItemDelegate::ValueTextRole, QString::number(d_ptr->ctx.trendSegment->values[i].value));
+        item->setData(EventTrendItemDelegate::TitleTextRole, paramInfo.getParamName(paramInfo.getParamID(subId)));
+        item->setData(EventTrendItemDelegate::UnitTextRole, Unit::getSymbol(paramInfo.getUnitOfSubParam(subId)));
+
+        item->setData(EventTrendItemDelegate::TrendAlarmRole, false);
+
+        item->setTextColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId))));
+        item->setFlags(Qt::NoItemFlags);
+    }
+}
+
+/**************************************************************************************************
+ * 显示事件。
+ *************************************************************************************************/
 void EventReviewWindow::showEvent(QShowEvent *e)
 {
     PopupWidget::showEvent(e);
@@ -414,6 +522,14 @@ void EventReviewWindow::showEvent(QShowEvent *e)
 void EventReviewWindow::_waveInfoReleased()
 {
     d_ptr->stackLayout->setCurrentIndex(1);
+    if (!d_ptr->backend->getBlockNR())
+    {
+        return;
+    }
+
+    d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->curSecEvent));
+    eventInfoUpdate();
+    eventTrendUpdate();
 }
 
 /**************************************************************************************************
@@ -449,21 +565,31 @@ void EventReviewWindow::_downMoveEventReleased()
 }
 
 /**************************************************************************************************
+ * 事件类型选择。
+ *************************************************************************************************/
+void EventReviewWindow::_eventTypeSelect(int index)
+{
+    d_ptr->curEventType = (EventType)index;
+    _loadEventData();
+}
+
+/**************************************************************************************************
+ * 事件级别选择。
+ *************************************************************************************************/
+void EventReviewWindow::_eventLevelSelect(int index)
+{
+    d_ptr->curEventLevel = (EventLevel)index;
+    _loadEventData();
+}
+
+/**************************************************************************************************
  * 载入事件数据。
  *************************************************************************************************/
 void EventReviewWindow::_loadEventData()
 {
+    d_ptr->dataIndex.clear();
+    d_ptr->eventTable->setRowCount(0);
     d_ptr->eventNum = d_ptr->backend->getBlockNR();
-    d_ptr->eventTable->setRowCount(d_ptr->eventNum);
-    if (d_ptr->eventNum)
-    {
-        d_ptr->curSecEvent = 0;
-        d_ptr->eventTable->selectRow(d_ptr->curSecEvent);
-    }
-    else
-    {
-        d_ptr->curSecEvent = InvData();
-    }
 
     unsigned t = 0;
     QString timeStr;
@@ -472,9 +598,11 @@ void EventReviewWindow::_loadEventData()
     QTableWidgetItem *item;
     unsigned char alarmInfo;
     SubParamID subId;
-    ParamID paramId;
     unsigned char alarmId;
+    ParamID paramId;
     AlarmPriority priority;
+    AlarmPriority curPriority;
+    AlarmLimitIFace *alarmLimit;
     int row = 0;
     for (int i = d_ptr->eventNum - 1; i >= 0; i --)
     {
@@ -486,6 +614,30 @@ void EventReviewWindow::_loadEventData()
             paramId = paramInfo.getParamID(subId);
             alarmId = d_ptr->ctx.almSegment->alarmType;
             alarmInfo = d_ptr->ctx.almSegment->alarmInfo;
+            alarmLimit = alertor.getAlarmLimitIFace(subId);
+            if (alarmLimit)
+            {
+                priority = alarmLimit->getAlarmPriority(alarmId);
+            }
+
+            if (d_ptr->curEventType != EventAll)
+            {
+                if (d_ptr->curEventType != d_ptr->ctx.infoSegment->type)
+                {
+                    continue;
+                }
+            }
+
+            if (d_ptr->curEventLevel != EVENT_LEVEL_ALL)
+            {
+                curPriority = _levelToPriority(d_ptr->curEventLevel);
+                if (curPriority != priority)
+                {
+                    continue;
+                }
+            }
+
+            d_ptr->dataIndex.append(i);
 
             // 事件时间
             timeDate.getDate(t, dateStr, true);
@@ -493,15 +645,10 @@ void EventReviewWindow::_loadEventData()
             item = new QTableWidgetItem();
             item->setTextAlignment(Qt::AlignCenter);
             item->setText(dateStr + " " + timeStr);
+            d_ptr->eventTable->setRowCount(row + 1);
             d_ptr->eventTable->setItem(row, 0, item);
 
             // 事件内容
-            AlarmLimitIFace *alarmLimit = alertor.getAlarmLimitIFace(subId);
-            if (alarmLimit)
-            {
-                priority = alarmLimit->getAlarmPriority(alarmId);
-            }
-
             if (priority == ALARM_PRIO_LOW)
             {
                 infoStr = "*";
@@ -538,5 +685,41 @@ void EventReviewWindow::_loadEventData()
             d_ptr->eventTable->setItem(row, 1, item);
             row ++;
         }
+    }
+    if (row)
+    {
+        d_ptr->curSecEvent = 0;
+        d_ptr->eventTable->selectRow(d_ptr->curSecEvent);
+    }
+    else
+    {
+        d_ptr->curSecEvent = InvData();
+    }
+}
+
+/**************************************************************************************************
+ * 报警级别转换到优先级。
+ *************************************************************************************************/
+AlarmPriority EventReviewWindow::_levelToPriority(EventLevel level)
+{
+    if (level == EVENT_LEVEL_LOW)
+    {
+        return ALARM_PRIO_LOW;
+    }
+    else if (level == EVENT_LEVEL_MED)
+    {
+        return ALARM_PRIO_MED;
+    }
+    else if (level == EVENT_LEVEL_High)
+    {
+        return ALARM_PRIO_HIGH;
+    }
+    else if (level == EVENT_LEVEL_HINT)
+    {
+        return ALARM_PRIO_PROMPT;
+    }
+    else
+    {
+        return ALARM_PRIO_PROMPT;
     }
 }

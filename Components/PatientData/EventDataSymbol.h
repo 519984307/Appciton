@@ -18,7 +18,7 @@ public:
     {
         static const char *symbol[EVENT_LEVEL_NR] =
         {
-            "All", "High", "Medium", "Low", "Hint"
+            "All", "Hint", "Low", "Medium", "High"
         };
         return symbol[index];
     }
