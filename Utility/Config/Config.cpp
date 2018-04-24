@@ -258,6 +258,7 @@ bool Config::saveToFile(const QString &filepath)
  * 返回：
  *      true，成功；false，失败。
  *************************************************************************************************/
+//将指定的路径的值提取出来
 bool Config::getStrValue(const QString &indexStr, QString &value)
 {
     _cacheLock.lock();
@@ -473,6 +474,7 @@ Config::Config(const QString &configPath)
     _requestToSave = false;
 
     _checkBKFile(configPath);
+    //如果打开错误则加载出厂配置
     if (!_xmlParser.open(configPath))
     {
         _restoreOrigFile(configPath);

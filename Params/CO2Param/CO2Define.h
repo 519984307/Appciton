@@ -33,10 +33,85 @@ enum CO2ApneaTime
  *************************************************************************************************/
 enum CO2SweepSpeed
 {
+    CO2_SWEEP_SPEED_30,
     CO2_SWEEP_SPEED_62_5,
     CO2_SWEEP_SPEED_125,
     CO2_SWEEP_SPEED_250,
+    CO2_SWEEP_SPEED_500,
     CO2_SWEEP_SPEED_NR
+};
+
+/**************************************************************************************************
+ * CO2平衡气体。
+ *************************************************************************************************/
+enum BalanceGas
+{
+    CO2_BALANCE_GAS_ATMOSPHERE,
+    CO2_BALANCE_GAS_Nitrous_oxide,
+    CO2_BALANCE_GAS_HELIUM,
+    CO2_BALANCE_GAS_NR
+};
+
+/**************************************************************************************************
+ * O2浓度。
+ *************************************************************************************************/
+enum Oxygendensity
+{
+    OXYGEN_DENSITY_0,
+    OXYGEN_DENSITY_30,
+    OXYGEN_DENSITY_40,
+    OXYGEN_DENSITY_50,
+    OXYGEN_DENSITY_60,
+    OXYGEN_DENSITY_70,
+    OXYGEN_DENSITY_80,
+    OXYGEN_DENSITY_90,
+    OXYGEN_DENSITY_100,
+    OXYGEN_DENSITY_NR
+};
+
+
+/**************************************************************************************************
+ * 麻醉气体浓度。
+ *************************************************************************************************/
+enum GasStrength
+{
+    GAS_STRENGTH_0,
+    GAS_STRENGTH_2,
+    GAS_STRENGTH_4,
+    GAS_STRENGTH_6,
+    GAS_STRENGTH_8,
+    GAS_STRENGTH_10,
+    GAS_STRENGTH_12,
+    GAS_STRENGTH_14,
+    GAS_STRENGTH_16,
+    GAS_STRENGTH_18,
+    GAS_STRENGTH_20,
+    GAS_STRENGTH_22,
+    GAS_STRENGTH_24,
+    GAS_STRENGTH_26,
+    GAS_STRENGTH_28,
+    GAS_STRENGTH_30,
+    GAS_STRENGTH_NR
+};
+
+/**************************************************************************************************
+ * 最大保持。
+ *************************************************************************************************/
+enum MaxHold
+{
+    MAX_HOLD_EVERY_BREATHE,
+    MAX_HOLD_10S,
+    MAX_HOLD_20S,
+    MAX_HOLD_NR
+};
+
+/**************************************************************************************************
+ * 操作模式
+ *************************************************************************************************/
+enum CO2OperationMode
+{
+    OPERATION_MODE_MEASURE,
+    OPERATION_MODE_NR
 };
 
 /**************************************************************************************************

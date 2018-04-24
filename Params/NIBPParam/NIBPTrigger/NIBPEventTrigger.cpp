@@ -30,7 +30,7 @@ void NIBPEventTrigger::_switchToAuto(void)
         if (nibpParam.getMeasurMode() != NIBP_MODE_STAT)
         {
             nibpParam.setModelText(trs("NIBPAUTO") + ":" +
-                                   trs(NIBPSymbol::convert((NIBPAutoInterval)nibpParam.getAutoInterval())));
+                                   trs(NIBPSymbol::convert((NIBPIntervalTime)nibpParam.getAutoInterval())));
         }
     }
 }

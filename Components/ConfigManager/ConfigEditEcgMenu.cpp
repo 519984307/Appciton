@@ -3,7 +3,7 @@
 #include "IComboList.h"
 #include "ECGSymbol.h"
 #include "SoundManager.h"
-
+//配置编辑ECG菜单私有类
 class ConfigEditEcgMenuPrivate {
 public:
 

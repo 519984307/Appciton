@@ -10,7 +10,7 @@ enum FlowControl
     FlOW_CTRL_HARD,
     FlOW_CTRL_SOFT
 };
-
+//串口属性定义
 struct UartAttrDesc
 {
     UartAttrDesc(int b = 9600, char d = 8, char p = 'N', char s = 1,
@@ -65,7 +65,7 @@ signals:
 
 protected:
     QString _port;
-    int _fd;
+    int _fd;//串口的文件描述符
     QSocketNotifier *_notifier;
 
 private:

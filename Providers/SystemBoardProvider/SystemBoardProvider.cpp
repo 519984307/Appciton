@@ -617,21 +617,27 @@ void SystemBoardProvider::enableDefibReadyLED(bool enable)
 /***************************************************************************************************
  * 构造函数
  **************************************************************************************************/
+//如果一个子类继承的父类中具有参数构造函数，那么子类在构造对象时有责任将相关参数传递到父类
 SystemBoardProvider::SystemBoardProvider() : BLMProvider("SystemBoard"),
         PowerManagerProviderIFace(), LightProviderIFace()
 {
     _gotInitSwitchKeyStatus = false;
 
     UartAttrDesc portAttr(115200, 8, 'N', 1);
+    //初始化串口
     initPort(portAttr);
     setDisconnectThreshold(5);
 
     // 主动给系统板一个应答，让其尽快发送其他数据。
+    //相当于模拟底板上行一个启动帧到系统版
     unsigned char start = MSG_NOTIFY_START;
+    //系统版立即给底板一个回应帧
     _notifyAck(&start, 1);
 
     _recordBatInfo = false;
+    //从XML文件读取指定节点的配置值
     machineConfig.getNumValue("Record|Battery", _recordBatInfo);
+    //清0 _adcValue
     ::memset(_adcValue, 0, sizeof(_adcValue));
 }
 

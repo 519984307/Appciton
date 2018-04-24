@@ -214,7 +214,7 @@ void NIBPMenu::layoutExec(void)
 
     for (int i = 0; i < NIBP_AUTO_INTERVAL_NR; i++)
     {
-        _autoInterval->addItem(trs(NIBPSymbol::convert((NIBPAutoInterval)i)));
+        _autoInterval->addItem(trs(NIBPSymbol::convert((NIBPIntervalTime)i)));
     }
     connect(_autoInterval, SIGNAL(currentIndexChanged(int)), this, SLOT(_autoIntervalSlot(int)));
 

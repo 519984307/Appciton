@@ -14,7 +14,7 @@ void NIBPStandbyState::enter()
     {
         nibpParam.setAutoMeasure(false);
         nibpParam.setModelText(trs("NIBPAUTO") + ":" +
-                               trs(NIBPSymbol::convert((NIBPAutoInterval)nibpParam.getAutoInterval())));
+                               trs(NIBPSymbol::convert((NIBPIntervalTime)nibpParam.getAutoInterval())));
     }
     else if (nibpParam.getMeasurMode() == NIBP_MODE_MANUAL)
     {

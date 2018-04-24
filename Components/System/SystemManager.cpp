@@ -186,6 +186,7 @@ void SystemManager::setPoweronTestResult(ModulePoweronTestResult module,
  **************************************************************************************************/
 void SystemManager::parseKeyValue(const unsigned char *data, unsigned int len)
 {
+
 #ifdef Q_WS_QWS
     if ((NULL == data) || (len != 2))
     {
@@ -661,19 +662,22 @@ void SystemManager::_publishTestResult(void)
 /***************************************************************************************************
  * 析构。
  **************************************************************************************************/
-SystemManager::SystemManager() :
+SystemManager::SystemManager() ://申请一个动态的模块加载结果数组
     _modulePostResult(MODULE_POWERON_TEST_RESULT_NR, SELFTEST_UNKNOWN)
 {
+    //打开背光灯文件描述符
     _backlightFd = open(BACKLIGHT_DEV, O_WRONLY|O_NONBLOCK);
     if(_backlightFd < 0)
     {
         debug("Open %s failed: %s\n", BACKLIGHT_DEV, strerror(errno));
     }
 
+    //构建一个500ms的轮询函数接口_publishTestResult()--发布测试结果
     _publishTestTimer = new QTimer();
     _publishTestTimer->setInterval(500);
     connect(_publishTestTimer, SIGNAL(timeout()), this, SLOT(_publishTestResult()));
 
+    //查询配置文件中是否支持下列项目
     if (!isSupport(CONFIG_SPO2))
     {
         _modulePostResult[TS3_MODULE_SELFTEST_RESULT] = SELFTEST_NOT_SUPPORT;

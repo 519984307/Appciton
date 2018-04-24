@@ -13,6 +13,7 @@ class SystemBoardProvider : public BLMProvider,
     Q_OBJECT
 
 public:
+    //构造本类对象函数
     static SystemBoardProvider &construction(void)
     {
         if (_selfObj == NULL)

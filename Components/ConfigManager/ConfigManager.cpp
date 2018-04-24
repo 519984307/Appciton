@@ -31,11 +31,12 @@ ConfigManagerPrivate::~ConfigManagerPrivate()
 {
 
 }
-
+//获得默认的配置文件路径
 QString ConfigManagerPrivate::getDefaultConfigFilepath(PatientType patType)
 {
     QString configFileName;
     QString index = QString("ConfigManager|Default|%1").arg(PatientSymbol::convert(patType));
+
     systemConfig.getStrValue(index, configFileName);
     if(configFileName.isEmpty())
     {
@@ -215,6 +216,6 @@ void ConfigManager::_onPatientTypeChange(PatientType type)
 ConfigManager::ConfigManager()
     :d_ptr(new ConfigManagerPrivate())
 {
-
+    //在这里添加配置管理的初始化代码，该对象还要在其他处调用
 }
 

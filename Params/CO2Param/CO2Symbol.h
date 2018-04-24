@@ -16,11 +16,57 @@ public:
         return symbol[index];
     }
 
+    static const char *convert(BalanceGas index)
+    {
+        static const char *symbol[CO2_BALANCE_GAS_NR] =
+        {
+            "Atmosphere", "Nitrous Oxide", "Helium"
+        };
+        return symbol[index];
+    }
+
+    static const char *convert(Oxygendensity index)
+    {
+        static const char *symbol[OXYGEN_DENSITY_NR] =
+        {
+            "0", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%",
+        };
+        return symbol[index];
+    }
+
+    static const char *convert(GasStrength index)
+    {
+        static const char *symbol[GAS_STRENGTH_NR] =
+        {
+            "0", "2%", "4%", "6%", "8%", "10%", "12%", "14%",
+            "16%", "18%","20%","22%","24%","26%","28%","30%",
+        };
+        return symbol[index];
+    }
+
+    static const char *convert(MaxHold index)
+    {
+        static const char *symbol[MAX_HOLD_NR] =
+        {
+            "Every Breathe", "10s", "20s",
+        };
+        return symbol[index];
+    }
+
+    static const char *convert(CO2OperationMode index)
+    {
+        static const char *symbol[OPERATION_MODE_NR] =
+        {
+            "Measure Mode",
+        };
+        return symbol[index];
+    }
+
     static const char *convert(CO2SweepSpeed index)
     {
         static const char *symbol[CO2_SWEEP_SPEED_NR] =
         {
-            "6.25 mm/s", "12.5 mm/s", "25.0 mm/s"
+            "3.0 mm/s", "6.25 mm/s", "12.5 mm/s", "25.0 mm/s", "50.0 mm/s",
         };
         return symbol[index];
     }

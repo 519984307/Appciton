@@ -23,7 +23,10 @@ public:
         upper = new ISpinBox();
         lower->enableArrow(false);
         upper->enableArrow(false);
-
+        priority = new IComboList("");
+#if 0
+        record = new IComboList("");
+#endif
         QHBoxLayout *manlayout = new QHBoxLayout();
         manlayout->setSpacing(2);
         manlayout->setMargin(0);
@@ -32,11 +35,18 @@ public:
         combo->setSpacing(2);
         manlayout->addWidget(lower);
         manlayout->addWidget(upper);
-
+        manlayout->addWidget(priority);
+        priority->setSpacing(3);
+#if 0
+        manlayout->addWidget(record);
+        priority->setSpacing(2);
+#endif
         setLayout(manlayout);
 
         setFocusPolicy(Qt::StrongFocus);
         setFocusProxy(combo);
+        setFocusProxy(priority);
+       // setFocusProxy(record);
     }
     ~SetItem()
     {
@@ -50,6 +60,8 @@ public:
     IComboList *combo;
     ISpinBox *lower;
     ISpinBox *upper;
+    IComboList *priority;
+    //IComboList *record;
 };
 
 class AlarmLimitMenu : public SubMenu

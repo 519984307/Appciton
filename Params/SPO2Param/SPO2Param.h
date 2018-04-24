@@ -135,7 +135,7 @@ private slots:
 
 private:
     SPO2Param();
-    void _setWaveformSpeed(SPO2SweepSpeed speed);
+    void _setWaveformSpeed(SPO2WaveVelocity speed);
 
     SPO2ProviderIFace *_provider;
     SPO2TrendWidget *_trendWidget;

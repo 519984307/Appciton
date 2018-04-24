@@ -198,16 +198,21 @@ void SPO2WaveWidget::focusInEvent(QFocusEvent */*e*/)
  *************************************************************************************************/
 void SPO2WaveWidget::_loadConfig(void)
 {
-    SPO2SweepSpeed speed = (SPO2SweepSpeed)spo2Param.getSweepSpeed();
-    if (speed == SPO2_SWEEP_SPEED_125)
+    SPO2WaveVelocity speed = (SPO2WaveVelocity)spo2Param.getSweepSpeed();
+
+    if (speed == SPO2_WAVE_VELOCITY_62D5)
     {
         setWaveSpeed(12.5);
     }
-    else if (speed == SPO2_SWEEP_SPEED_250)
+    else if (speed == SPO2_WAVE_VELOCITY_125)
+    {
+        setWaveSpeed(12.5);
+    }
+    else if (speed == SPO2_WAVE_VELOCITY_250)
     {
         setWaveSpeed(25.0);
     }
-    else if (speed == SPO2_SWEEP_SPEED_500)
+    else if (speed == SPO2_WAVE_VELOCITY_500)
     {
         setWaveSpeed(50);
     }

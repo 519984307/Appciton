@@ -32,7 +32,7 @@ void SPO2Param::sendCmdData(unsigned char cmdId, const unsigned char *data, unsi
 /**************************************************************************************************
  * 设置波形速度。
  *************************************************************************************************/
-void SPO2Param::_setWaveformSpeed(SPO2SweepSpeed speed)
+void SPO2Param::_setWaveformSpeed(SPO2WaveVelocity speed)
 {
     if (_waveWidget == NULL)
     {
@@ -41,15 +41,19 @@ void SPO2Param::_setWaveformSpeed(SPO2SweepSpeed speed)
 
     switch (speed)
     {
-    case SPO2_SWEEP_SPEED_125:
+    case SPO2_WAVE_VELOCITY_62D5:
+        _waveWidget->setWaveSpeed(6.25);
+        break;
+
+    case SPO2_WAVE_VELOCITY_125:
         _waveWidget->setWaveSpeed(12.5);
         break;
 
-    case SPO2_SWEEP_SPEED_250:
+    case SPO2_WAVE_VELOCITY_250:
         _waveWidget->setWaveSpeed(25.0);
         break;
 
-    case SPO2_SWEEP_SPEED_500:
+    case SPO2_WAVE_VELOCITY_500:
         _waveWidget->setWaveSpeed(50.0);
         break;
 
@@ -281,7 +285,7 @@ void SPO2Param::setWaveWidget(SPO2WaveWidget *waveWidget)
         return;
     }
     _waveWidget = waveWidget;
-    _setWaveformSpeed((SPO2SweepSpeed)getSweepSpeed());
+    _setWaveformSpeed((SPO2WaveVelocity)getSweepSpeed());
 }
 
 /**************************************************************************************************
@@ -597,7 +601,7 @@ SPO2SMARTPLUSETONE SPO2Param::getSmartPulseTone(void)
  *************************************************************************************************/
 void SPO2Param::setSweepSpeed(int speed)
 {
-    _setWaveformSpeed((SPO2SweepSpeed)speed);
+    _setWaveformSpeed((SPO2WaveVelocity)speed);
 }
 
 /**************************************************************************************************
@@ -605,7 +609,7 @@ void SPO2Param::setSweepSpeed(int speed)
  *************************************************************************************************/
 int SPO2Param::getSweepSpeed(void)
 {
-    int speed = SPO2_SWEEP_SPEED_250;
+    int speed = SPO2_WAVE_VELOCITY_250;
     systemConfig.getNumValue("PrimaryCfg|ECG|SweepSpeed", speed);
     return speed;
 }

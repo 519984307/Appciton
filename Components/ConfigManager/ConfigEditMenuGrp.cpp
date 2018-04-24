@@ -3,6 +3,11 @@
 #include "ConfigEditGeneralMenu.h"
 #include "ConfigEditEcgMenu.h"
 #include "ConfigEditRespMenu.h"
+#include "ConfigEditNIBPMenu.h"
+#include "ConfigEditSpO2Menu.h"
+#include "ConfigEditCO2Menu.h"
+#include "ConfigEditCOMenu.h"
+#include "ConfigEditPAMenu.h"
 
 class ConfigEditMenuGrpPrivate
 {
@@ -50,6 +55,12 @@ void ConfigEditMenuGrp::initializeSubMenu()
     addSubMenu(new ConfigEditAlarmLimitMenu());
     addSubMenu(new ConfigEditEcgMenu());
     addSubMenu(new ConfigEditRespMenu());
+    addSubMenu(new ConfigEditNIBPMenu());
+    addSubMenu(new ConfigEditSpO2Menu());
+    addSubMenu(new ConfigEditCO2Menu());
+    addSubMenu(new ConfigEditCOMenu());
+    addSubMenu(new ConfigEditPAMenu());
+    //addSubMenu(new ConfigEditTEMPMenu());
     addReturnMenu();
 
     d_ptr->isSubmenuInitial = true;

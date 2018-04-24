@@ -80,8 +80,9 @@ static int _getDataLen(int len)
 static bool _settingFD(int fd, const UartAttrDesc &attr)
 {
     int ret;
+    //定义终端端口属性变量
     struct termios term;
-
+    //读取fd的属性状态到term
     ret = tcgetattr(fd, &term);
     if (ret != 0)
     {
@@ -91,9 +92,11 @@ static bool _settingFD(int fd, const UartAttrDesc &attr)
     }
 
     // Raw mode
+    //将终端设置为原始状态
     cfmakeraw(&term);
 
     // Ignore modem control lines and Enable receiver
+    //设置终端控制模式
     term.c_cflag |= (CLOCAL | CREAD);
 
     // Vmin
@@ -307,6 +310,7 @@ bool Uart::initPort(const QString &port, const UartAttrDesc &desc, bool needNoti
         return false;
     }
 
+    //设置终端串口的属性，例如波特率、停止位、优先级等
     if (!_settingFD(_fd, desc))
     {
         debug("%s set attribute failed", qPrintable(port));

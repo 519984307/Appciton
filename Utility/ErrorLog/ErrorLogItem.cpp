@@ -213,7 +213,7 @@ void CrashLogItem::outputInfo(QTextStream &stream) const
 
     stream<<content["log"].toByteArray();
 }
-
+//将原始日志内容读取到ErrorLogItemBase基类生成的全局对象中
 void CrashLogItem::collect(const QString &filename)
 {
     QFile logfile(filename);

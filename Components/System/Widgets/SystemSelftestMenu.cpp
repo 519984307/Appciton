@@ -12,14 +12,19 @@
  *************************************************************************************************/
 SystemSelftestMenu::SystemSelftestMenu() : PopupWidget()
 {
+    //将系统自检窗口定义为最顶端显示、无边框
     setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+   //设置窗口栏标题文本
     setTitleBarText(trs("SystemSelftestResult"));
+    //隐藏存在的按钮
     hideExitButton();
 
+    //窗口调色
     QPalette p = this->palette();
     p.setColor(QPalette::Window, Qt::white);
     setPalette(p);
 
+    //文本框编辑
     _info = new QTextEdit();
     _info->setFrameStyle(Qt::FramelessWindowHint);
     _info->setFocusPolicy(Qt::NoFocus);
@@ -27,6 +32,7 @@ SystemSelftestMenu::SystemSelftestMenu() : PopupWidget()
     _info->setFont(fontManager.textFont(15));
     _info->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+    //按钮编辑 添加按钮槽函数_yesReleased
     _ok = new IButton(trs("SupervisorOK"));
     _ok->setFixedHeight(30);
     _ok->setVisible(false);

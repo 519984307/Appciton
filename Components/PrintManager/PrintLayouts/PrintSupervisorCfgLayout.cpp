@@ -617,7 +617,7 @@ void PrintSupervisorCfgLayout::_buildNIBPPage()
         tmpStr = trs("SupervisorNIBPAutoInterval");
         tmpStr += ": ";
         superConfig.getNumValue("NIBP|AutoInterval", value);
-        tmpStr += trs(NIBPSymbol::convert((NIBPAutoInterval)value));
+        tmpStr += trs(NIBPSymbol::convert((NIBPIntervalTime)value));
         _content << tmpStr;
 
         tmpStr = trs("SupervisorSTATFunction");

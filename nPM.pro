@@ -362,6 +362,12 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditEcgMenu.cpp                              \
     Components/ConfigManager/ConfigEditRespMenu.cpp                             \
     Components/ConfigManager/ConfigEditAlarmLimitMenu.cpp                       \
+    Components/ConfigManager/ConfigEditNIBPMenu.cpp                             \
+    Components/ConfigManager/ConfigEditSpO2Menu.cpp                             \
+    Components/ConfigManager/ConfigEditSeqMeaMenu.cpp                           \
+    Components/ConfigManager/ConfigEditCO2Menu.cpp                              \
+    Components/ConfigManager/ConfigEditCOMenu.cpp                               \
+    Components/ConfigManager/ConfigEditPAMenu.cpp                               \
 #################################################################################
     Params/AGParam/AGWidgets/AGMenu.cpp                                         \
     Params/AGParam/AGWidgets/AGTrendWidget.cpp                                  \
@@ -713,7 +719,7 @@ HEADERS +=                                                                      
     Components/PrintManager/PrintProviderIFace.h                                \
     Components/PrintManager/PrintLayoutIFace.h                                  \
     Components/PrintManager/Alarm/PrintAlarm.h                                  \
-    Components/PrintManager/Summary/PrinterActionSummary.h                      \
+    Components/PrintManager/Summary/PrintComponents/ConfigManager/ConfigEditNBIPMenu.cpp                             \erActionSummary.h                      \
     Components/PrintManager/PrintLayouts/PrintContinuousLayout.h                \
     Components/PrintManager/PrintLayouts/PrintECG12LeadLayout.h                 \
     Components/PrintManager/PrintLayouts/PrintOtherTriggerLayout.h              \
@@ -806,6 +812,12 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditEcgMenu.h                                \
     Components/ConfigManager/ConfigEditRespMenu.h                               \
     Components/ConfigManager/ConfigEditAlarmLimitMenu.h                         \
+    Components/ConfigManager/ConfigEditNIBPMenu.h                               \
+    Components/ConfigManager/ConfigEditSpO2Menu.h                               \
+    Components/ConfigManager/ConfigEditSeqMeaMenu.h                             \
+    Components/ConfigManager/ConfigEditCO2Menu.h                                \
+    Components/ConfigManager/ConfigEditCOMenu.h                                 \
+    Components/ConfigManager/ConfigEditPAMenu.h                                 \
 #################################################################################
     Params/AGParam/AGWidgets/AGMenu.h                                           \
     Params/AGParam/AGWidgets/AGTrendWidget.h                                    \
@@ -859,6 +871,8 @@ HEADERS +=                                                                      
     Params/NIBPParam/NIBPAlarm.h                                                \
     Params/NIBPParam/NIBPDefine.h                                               \
     Params/NIBPParam/NIBPSymbol.h                                               \
+    Params/NIBPParam/NIBPSeqMeaSet/SeqMeaDefine.h                               \
+    Params/NIBPParam/NIBPSeqMeaSet/SeqMeaSymbol.h                               \
     Params/NIBPParam/NIBPProviderIFace.h                                        \
     Params/NIBPParam/NIBPWidgets/NIBPTrendWidget.h                              \
     Params/NIBPParam/NIBPWidgets/NIBPDataTrendWidget.h                          \
@@ -909,6 +923,8 @@ HEADERS +=                                                                      
     Params/RESPParam/RESPWidgets/RESPMenu.h                                     \
     Params/UpgradeParam/BLMEDUpgradeParam.h                                     \
     Params/UpgradeParam/BLMEDUpgradeTime.h                                      \
+    Params/PAParam/PADefine.h                                                   \
+    Params/PAParam/PASymbol.h                                                   \
 #################################################################################
     Providers/Provider.h                                                        \
     Providers/BLMProvider.h                                                     \

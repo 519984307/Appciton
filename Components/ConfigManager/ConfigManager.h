@@ -93,6 +93,7 @@ private slots:
 
 private:
     ConfigManager();
+    //智能指针
     QScopedPointer<ConfigManagerPrivate> d_ptr;
 };
 

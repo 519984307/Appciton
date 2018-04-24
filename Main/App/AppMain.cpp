@@ -237,15 +237,17 @@ static void _initTasks(void)
  *************************************************************************************************/
 static void _start(void)
 {
+    //开启系统定时器运行（50ms）
     systemTick.startTick();
 
     _storageThread->start();
+
     _printThread->start();
     _printExecThread->start();
     _networkThread->start();
     _networkThread->setPriority(QThread::IdlePriority);
-
     systemManager.loadInitBMode();
+
 }
 
 /**************************************************************************************************
@@ -279,6 +281,7 @@ void appMain(IApplication &app)
     _initTasks();
 
     _start();            // 启动子系统。
+
     app.exec();          // 执行主循环。
     _stop();             // 停止子系统。
 

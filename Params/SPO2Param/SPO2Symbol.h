@@ -14,11 +14,11 @@ public:
         return symbol[index];
     }
 
-    static const char *convert(SPO2SweepSpeed index)
+    static const char *convert(SPO2WaveVelocity index)
     {
-        static const char *symbol[SPO2_SWEEP_SPEED_NR] =
+        static const char *symbol[SPO2_WAVE_VELOCITY_NR] =
         {
-            "12.5 mm/s", "25.0 mm/s", "50.0 mm/s"
+            "6.25 mm/s", "12.5 mm/s", "25.0 mm/s", "50.0 mm/s"
         };
         return symbol[index];
     }
@@ -28,6 +28,16 @@ public:
         static const char *symbol[SPO2_PR_DISPLAY_NR] =
         {
             "Off", "On"
+        };
+        return symbol[index];
+    }
+
+    static const char *convert(SPO2PRSource index)
+    {
+        static const char *symbol[PRSource_NR] =
+        {
+            "SpO2", "IBP", "Art","Ao","FAP","BAP","PA",
+            "UAP","P1","P2","P3","P4","LV","AUTO"
         };
         return symbol[index];
     }

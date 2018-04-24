@@ -31,6 +31,11 @@ private slots:
     void _printWaveformNumSlot(int index);
     void _printCfgSlot(void);
     void _configManagerSlot(void);
+
+
+    void _supervisorManagerSlot(void);
+
+
 #ifdef Q_WS_QWS
     void _touchScreenCalSlot(void);
 #endif

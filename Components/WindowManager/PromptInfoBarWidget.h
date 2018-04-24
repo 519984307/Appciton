@@ -4,6 +4,7 @@
 #include <QList>
 #include <QTimer>
 
+//提示信息栏
 class PromptInfoBarWidget : public IWidget
 {
     Q_OBJECT

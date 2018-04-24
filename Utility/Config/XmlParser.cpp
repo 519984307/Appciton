@@ -25,12 +25,15 @@ bool XmlParser::saveToFile()
         return false;
     }
 
+    //Constructs a QTextStream（writer） that operates on device（file）
     QTextStream writer(&file);
+    //编码方式
     writer.setCodec("UTF-8");
-
+    //加锁
     QMutexLocker locker(&_lock);
+    //把_filename字符串保存为XML文件
     _xml.save(writer, 4, QDomNode::EncodingFromTextStream);
-
+    //关闭文件
     file.close();
     return true;
 }
@@ -70,15 +73,18 @@ bool XmlParser::saveToFile(const QString &filename)
 bool XmlParser::open(const QString &fileName)
 {
     QMutexLocker locker(&_lock);
+    //将filename包装成一个File格式的文件
     QFile file(fileName);
+    //以文本方式打开只读
     if (!file.open(QFile::ReadOnly | QFile::Text))
     {
         return false;
     }
-
+    //初始化_xml对象
     _xml.clear();
+    //判断是否读取XML文件成功
     if (!_xml.setContent(&file))
-    {
+    {//读取失败则进入...记录错误日志
         ErrorLogItem *item = new CriticalFaultLogItem();
         item->setName("Prase config file fail");
         int lastindex = fileName.indexOf('/', -1);
@@ -96,7 +102,7 @@ bool XmlParser::open(const QString &fileName)
         file.close();
         return false;
     }
-
+    //更新XML文件路径
     _fileName = fileName;
     return true;
 }
@@ -110,12 +116,14 @@ bool XmlParser::reload(void)
 {
     QMutexLocker locker(&_lock);
     QFile file(_fileName);
+
     if (!file.open(QFile::ReadOnly | QFile::Text))
     {
         return false;
     }
 
     _xml.clear();
+    //再次读取文件内容
     if (!_xml.setContent(&file))
     {
         file.close();
@@ -138,7 +146,9 @@ bool XmlParser::reload(void)
 bool XmlParser::addNode(const QString &indexStr, const QString &tagName, const QString &value, const QMap<QString, QString> &attrs)
 {
     QMutexLocker rlocker(&_lock);
+
     QDomElement tag = _findElement(indexStr);
+
     if (tag.isNull())
     {
         return false;
@@ -228,6 +238,7 @@ QStringList XmlParser::childElementNameList(const QString &indexStr)
  * 返回：
  *      true，成功；false，标签元素不存在。
  ******************************************************************************/
+//获取XML文件中的指定路径的值
 bool XmlParser::getValue(const QString &indexStr, QString &value)
 {
     QMutexLocker locker(&_lock);
@@ -438,6 +449,7 @@ QDomElement XmlParser::_findElement(const QString &indexStr)
     }
 
     tag = _xml.firstChildElement();
+
     for (int i = 0; i < list.size(); i++)
     {
         if (tag.isNull())
@@ -447,7 +459,6 @@ QDomElement XmlParser::_findElement(const QString &indexStr)
 
         tag = tag.firstChildElement(list.at(i));
     }
-
     return tag;
 }
 

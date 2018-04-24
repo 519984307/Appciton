@@ -365,8 +365,8 @@ void AlarmLimitMenu::layoutExec(void)
     setMenuSize(submenuW - SCROLL_BAR_WIDTH, submenuH);
     setTitleEnable(true);
     int totalW = submenuW - 6 - SCROLL_BAR_WIDTH;
-    int itemW = (totalW - 12) / 4;
-    int itemW0 = totalW - itemW * 3;
+    int itemW = (totalW - 12) / 5;
+    int itemW0 = totalW - itemW * 4;
 
     // 第一行，标签。
     QHBoxLayout *labelLayout = new QHBoxLayout();
@@ -389,6 +389,12 @@ void AlarmLimitMenu::layoutExec(void)
     labelLayout->addWidget(l);
 
     l = new QLabel(trs("UpperLimit"));
+    l->setFixedSize(itemW, ITEM_H);
+    l->setAlignment(Qt::AlignCenter);
+    l->setFont(defaultFont());
+    labelLayout->addWidget(l);
+
+    l = new QLabel(trs("AlarmPriority"));
     l->setFixedSize(itemW, ITEM_H);
     l->setAlignment(Qt::AlignCenter);
     l->setFont(defaultFont());
@@ -440,6 +446,15 @@ void AlarmLimitMenu::layoutExec(void)
         item->combo->label->setFont(fontManager.textFont(fontManager.getFontSize(1)));
         connect(item->combo, SIGNAL(currentIndexChanged(int, int)),
                 this, SLOT(_comboListIndexChanged(int, int)));
+
+        item->priority->label->setFixedSize(0, 0);
+        item->priority->label->setAlignment(Qt::AlignCenter);
+        item->priority->combolist->setFixedSize(itemW, ITEM_H);
+        item->priority->addItem(trs("HIGH"));
+        item->priority->addItem(trs("NORMAL"));
+        item->priority->addItem(trs("LOW"));
+        item->priority->SetID(i);
+        item->priority->setFont(defaultFont());
 
         item->lower->setFixedSize(itemW, ITEM_H);
         item->lower->setFont(defaultFont());

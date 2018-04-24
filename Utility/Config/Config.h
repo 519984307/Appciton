@@ -25,9 +25,13 @@ public:
     template<typename T>
     bool getNumValue(const QString &indexStr, T &value)
     {
+        //访问共享缓冲区时进行加锁操作
         _cacheLock.lock();
+        //访问共享缓冲区
         QString strText = _configCache.value(indexStr);
+        //访问结束时进行解锁操作
         _cacheLock.unlock();
+        //当访问的缓冲区为空时，开始读取.xml文件
         if(strText.isNull())
         {
             //no found in cache
@@ -35,6 +39,7 @@ public:
             {
                 //add to cache
                 _cacheLock.lock();
+                //缓冲区数据倒入操作
                 _configCache.insert(indexStr,strText);
                 _cacheLock.unlock();
             }
@@ -44,6 +49,7 @@ public:
             }
         }
 
+        //访问共享缓冲区或.xml文件成功找到指定元素时，开始进行下列逻辑操作
         bool ok = false;
         if (typeid(value) == typeid(int))
         {
@@ -86,6 +92,7 @@ public:
     bool setNumValue(const QString &indexStr, T value)
     {
         T curValue = 0;
+        //如果.xml文件指定位置读取值时失败，则退出该函数接口
         if (!getNumValue(indexStr, curValue))
         {
             return false;

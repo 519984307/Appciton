@@ -57,28 +57,35 @@ enum NIBPInitialInflatingPressure
     NIBP_INIT_PRE_NR
 };
 /**************************************************************************************************
- * 间隔时间
+ * 序列测量时间
  *************************************************************************************************/
-enum NIBPIntervalTime
+enum SeqMeaTime
 {
-    NIBP_INT_TIM_MANUAL,
-    NIBP_INT_TIM_AUTO,
-    NIBP_INT_TIM_1_M,
-    NIBP_INT_TIM_2_M,
-    NIBP_INT_TIM_2D5_M,
-    NIBP_INT_TIM_3_M,
-    NIBP_INT_TIM_5_M,
-    NIBP_INT_TIM_10_M,
-    NIBP_INT_TIM_15_M,
-    NIBP_INT_TIM_20_M,
-    NIBP_INT_TIM_30_M,
-    NIBP_INT_TIM_1_H,
-    NIBP_INT_TIM_1D5_H,
-    NIBP_INT_TIM_2_H,
-    NIBP_INT_TIM_3_H,
-    NIBP_INT_TIM_4_H,
-    NIBP_INT_TIM_8_H,
-    NIBP_INT_TIM_NR
+    SEQMEA_15_M,
+    SEQMEA_30_M,
+    SEQMEA_1_H,
+    SEQMEA_2_H,
+    SEQMEA_3_H,
+    SEQMEA_4_H,
+    SEQMEA_8_H,
+    SEQMEA_12_H,
+    SEQMEA_24_H,
+    SEQMEA_SERIES,
+    SEQMEA_NR
+};
+/**************************************************************************************************
+ * 序列测量间隔时间
+ *************************************************************************************************/
+enum SeqMeaIntervalTime
+{
+    SEQMEAINT_1_M,
+    SEQMEAINT_2_M,
+    SEQMEAINT_2D5_M,
+    SEQMEAINT_3_M,
+    SEQMEAINT_5_M,
+    SEQMEAINT_10_M,
+    SEQMEAINT_15_M,
+    SEQMEAINT_NR
 };
 /**************************************************************************************************
  * 血压PR显示控制。

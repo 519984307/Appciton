@@ -8,6 +8,11 @@
 #include "MenuManager.h"
 #include "ConfigEditMenuGrp.h"
 #include "PatientManager.h"
+#include "PublicMenuManager.h"
+#include "Debug.h"
+#include "MenuManager.h"
+#include "SystemMenu.h"
+#include "SystemManager.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -124,6 +129,8 @@ UserConfigEditMenu::UserConfigEditMenu()
     startLayout();
 
     connect(&configEditMenuGrp, SIGNAL(menuGroupReturn()), this, SLOT(onEditFinished()));
+
+    connect(&configEditMenuGrp, SIGNAL(menuexitsignal()), this, SLOT(onEditFinished()));
 }
 
 UserConfigEditMenu::~UserConfigEditMenu()
@@ -169,6 +176,7 @@ bool UserConfigEditMenu::eventFilter(QObject *obj, QEvent *ev)
     return false;
 }
 
+//对应界面的ConfigManagerment选项
 void UserConfigEditMenu::layoutExec()
 {
     int submenuW = configMaintainMenuGrp.getSubmenuWidth();
@@ -185,7 +193,7 @@ void UserConfigEditMenu::layoutExec()
     margin.setLeft(15);
     margin.setBottom(10);
     label->setContentsMargins(margin);
-    label->setText(trs("ConfigManagement"));
+    label->setText(trs("ConfigManagement55"));
     mainLayout->addWidget(label);
 
     //config list
@@ -200,7 +208,7 @@ void UserConfigEditMenu::layoutExec()
 
     QString configListStyleSheet = QString("QListWidget { margin-left: 15px; border:1px solid #808080; border-radius: 2px; background-color: transparent; outline: none; }\n "
     "QListWidget::item {padding: 5px; border-radius: 2px; border: none; background-color: %1;}\n"
-    "QListWidget::item:focus {background-color: %2;}").arg("white").arg(colorManager.getHighlight().name());
+    "QListWidget::item:focus {background-color: %2;}").arg("blue").arg(colorManager.getHighlight().name());
 
     d_ptr->configList->setStyleSheet(configListStyleSheet);
     connect(d_ptr->configList, SIGNAL(exitList(bool)), this, SLOT(onExitList(bool)));
@@ -305,6 +313,7 @@ void UserConfigEditMenu::onBtnClick()
                 delete d_ptr->curConfig;
             }
 
+            //将当前配置改为工厂配置
             d_ptr->curConfig = new Config(QString("%1/%2")
                                           .arg(CONFIG_DIR)
                                           .arg(configManager.factoryConfigFilename(patientManager.getType())));

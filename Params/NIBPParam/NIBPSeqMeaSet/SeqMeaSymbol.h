@@ -1,8 +1,8 @@
 #pragma once
-#include "NIBPDefine.h"
+#include "SeqMeaDefine.h"
 
 // 将定义的枚举转换成符号。
-class NIBPSymbol
+class SeqMeaSymbol
 {
 public:
     static const char *convert(NIBPMode index)
@@ -23,21 +23,20 @@ public:
         return symbol[index];
     }
 
-    static const char *convert(NIBPIntervalTime index)
+    static const char *convert(SeqMeaTime index)
     {
-        static const char *symbol[NIBP_INT_TIM_NR] =
+        static const char *symbol[SEQMEA_NR] =
         {
-            "manual","auto", "1min","2min","2.5min","3min", "5min", "10min",
-            "15min","20min", "30min", "1h", "1.5h", "2h", "3h", "4h","8h"
+            "series", "15min", "30min", "1h", "1.5h", "2h", "3h", "4h","8h"
         };
         return symbol[index];
     }
 
-    static const char *convert(NIBPPRDisplay index)
+    static const char *convert(SeqMeaIntervalTime index)
     {
-        static const char *symbol[NIBP_PR_DISPLAY_NR] =
+        static const char *symbol[SEQMEAINT_NR] =
         {
-            "Off", "On"
+            "1min","2min","2.5min","3min", "5min", "10min", "15min"
         };
         return symbol[index];
     }

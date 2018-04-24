@@ -108,7 +108,7 @@ static void _initComponents(void)
 
     // 提示信息烂
     PromptInfoBarWidget *promptInfo = new PromptInfoBarWidget("PromptInfoBarWidget");
-    windowManager.addWidget(promptInfo);
+    windowManager.addWidget(promptInfo); //添加窗体到_winMap变量链表中
     ibpParam.setInfobarWidget(promptInfo);
 
     // 系统状态栏

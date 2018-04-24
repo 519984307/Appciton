@@ -38,6 +38,7 @@ void ConfigEditGeneralMenu::layoutExec()
 
     d_ptr->configName = new LabelButton(trs("ConfigName"));
     d_ptr->configName->setFont(fontManager.textFont(fontSize));
+    //d_ptr->configName->setValue(trs("confignametest"));
     d_ptr->configName->label->setFixedSize(labelWidth, ITEM_H);
     d_ptr->configName->button->setFixedSize(btnWidth, ITEM_H);
     connect(d_ptr->configName->button, SIGNAL(released()), this, SLOT(editConfigName()));
@@ -68,8 +69,7 @@ void ConfigEditGeneralMenu::editConfigName()
         {
             configEditMenuGrp.setCurrentEditConfigName(text);
             d_ptr->configName->button->setText(text);
+
         }
     }
-
-
 }

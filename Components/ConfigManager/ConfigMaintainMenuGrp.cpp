@@ -2,6 +2,7 @@
 #include "SelectDefaultConfigMenu.h"
 #include "UserConfigEditMenu.h"
 #include "ConfigExportImportMenu.h"
+#include "MenuGroup.h"
 
 ConfigMaintainMenuGrp::ConfigMaintainMenuGrp()
     :MenuGroup("ConfigMaintance"),
@@ -28,6 +29,5 @@ void ConfigMaintainMenuGrp::initializeSubMenu()
     addSubMenu(new SelectDefaultConfigMenu());
     addSubMenu(new UserConfigEditMenu());
     addSubMenu(new ConfigExportImportMenu());
-
     _isSubmenuInitial = true;
 }
