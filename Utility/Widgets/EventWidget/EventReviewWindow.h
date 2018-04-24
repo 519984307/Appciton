@@ -15,6 +15,7 @@ public:
 
     void eventInfoUpdate(void);
     void eventTrendUpdate(void);
+    void eventWaveUpdate(void);
 
 protected:
     void showEvent(QShowEvent *e);

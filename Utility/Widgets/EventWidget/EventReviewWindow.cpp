@@ -281,11 +281,13 @@ EventReviewWindow::EventReviewWindow()
 
     // 事件波形窗口
     d_ptr->infoWidget = new EventInfoWidget;
+    d_ptr->infoWidget->setFocusPolicy(Qt::NoFocus);
 
     QHBoxLayout *hlayout =new QHBoxLayout();
 
     d_ptr->waveWidget = new EventWaveWidget;
     d_ptr->waveWidget->setWaveSegments(d_ptr->ctx.waveSegments);
+    d_ptr->waveWidget->setFocusPolicy(Qt::NoFocus);
     hlayout->addWidget(d_ptr->waveWidget, 3);
     hlayout->addSpacing(1);
 
@@ -296,47 +298,7 @@ EventReviewWindow::EventReviewWindow()
     d_ptr->trendListWidget->setFrameShape(QFrame::NoFrame);
     d_ptr->trendListWidget->setItemDelegate(new EventTrendItemDelegate(d_ptr->trendListWidget));
     d_ptr->trendListWidget->setResizeMode(QListWidget::Adjust);
-
-//    QListWidgetItem *item;
-//    QStringList valueList;
-//    QStringList titleList;
-//    QStringList unitList;
-//    valueList << "60" <<"98" << "120/90/(100)" << "4.6" << "14" << "120/90(100)" << "20" <<"36.5" << "36.4" <<"0.1";
-//    titleList <<"HR" <<"SPO2" <<"NIBP" <<"CO2" <<"RR" <<"ART" <<"CVP" <<"T1" <<"T2" <<QString::fromUtf8("ΔT");
-//    unitList <<"bpm" <<"%" <<"mmHg" <<"%" <<"rpm"<<"mmHg"<<"mmHg" << QString::fromUtf8("°C")
-//               << QString::fromUtf8("°C")<< QString::fromUtf8("°C");
-
-//    QStringList paramNames;
-//    paramNames << "ECG" <<"SPO2" <<"NIBP" << "CO2" <<"RESP" <<"IBP" <<"IBP"<<"TEMP"<<"TEMP"<<"TEMP";
-
-//    QFont valueFont = fontManager.numFont(32);
-//    QFont titleFont = fontManager.textFont(16);
-//    QFont unitFont = fontManager.textFont(12);
-
-//    for(int i = 0; i< valueList.length(); i++)
-//    {
-//        item = new QListWidgetItem(d_ptr->trendListWidget);
-
-//        if(valueList.at(i).length() >= 10)
-//        {
-//            item->setData(EventTrendItemDelegate::ValueFontRole, qVariantFromValue(fontManager.numFont(28)));
-//        }
-//        else
-//        {
-//            item->setData(EventTrendItemDelegate::ValueFontRole, qVariantFromValue(valueFont));
-//        }
-//        item->setData(EventTrendItemDelegate::TitleFontRole, qVariantFromValue(titleFont));
-//        item->setData(EventTrendItemDelegate::UnitFontRole, qVariantFromValue(unitFont));
-
-//        item->setData(EventTrendItemDelegate::ValueTextRole, valueList.at(i));
-//        item->setData(EventTrendItemDelegate::TitleTextRole, titleList.at(i));
-//        item->setData(EventTrendItemDelegate::UnitTextRole, unitList.at(i));
-
-//        item->setData(EventTrendItemDelegate::TrendAlarmRole, false);
-
-//        item->setTextColor(colorManager.getColor(paramNames.at(i)));
-//        item->setFlags(Qt::NoItemFlags);
-//    }
+    d_ptr->trendListWidget->setFocusPolicy(Qt::NoFocus);
     hlayout->addWidget(d_ptr->trendListWidget, 1);
 
     d_ptr->eventList = new IButton(trs("EventList"));
@@ -476,30 +438,116 @@ void EventReviewWindow::eventInfoUpdate()
  *************************************************************************************************/
 void EventReviewWindow::eventTrendUpdate()
 {
+    d_ptr->trendListWidget->clear();
     QListWidgetItem *item;
     SubParamID subId;
-    QFont valueFont = fontManager.numFont(32);
+    QColor color;
+    QFont valueFont;
     QFont titleFont = fontManager.textFont(16);
     QFont unitFont = fontManager.textFont(12);
 
+    QString sys;
+    QString dia;
+    QString map;
+    QString et;
+    QString fi;
+    QString valueStr;
+    QString titleStr;
     int paramNum = d_ptr->ctx.trendSegment->trendValueNum;
     for (int i = 0; i < paramNum; i ++)
     {
-        item = new QListWidgetItem(d_ptr->trendListWidget);
         subId = (SubParamID)d_ptr->ctx.trendSegment->values[i].subParamId;
+        switch (subId)
+        {
+        case SUB_PARAM_NIBP_SYS:
+        case SUB_PARAM_ART_SYS:
+        case SUB_PARAM_PA_SYS:
+        case SUB_PARAM_AUXP1_SYS:
+        case SUB_PARAM_AUXP2_SYS:
+            sys = QString::number(d_ptr->ctx.trendSegment->values[i].value);
+            continue;
+        case SUB_PARAM_NIBP_DIA:
+        case SUB_PARAM_ART_DIA:
+        case SUB_PARAM_PA_DIA:
+        case SUB_PARAM_AUXP1_DIA:
+        case SUB_PARAM_AUXP2_DIA:
+            dia = QString::number(d_ptr->ctx.trendSegment->values[i].value);
+            continue;
+        case SUB_PARAM_NIBP_MAP:
+        case SUB_PARAM_ART_MAP:
+        case SUB_PARAM_PA_MAP:
+        case SUB_PARAM_AUXP1_MAP:
+        case SUB_PARAM_AUXP2_MAP:
+            map = QString::number(d_ptr->ctx.trendSegment->values[i].value);
+            valueStr = sys + "/" + dia + "(" + map + ")";
+            titleStr = paramInfo.getSubParamName(subId);
+            titleStr = titleStr.left(titleStr.length() - 4);
+            valueFont = fontManager.numFont(20);
+            break;
+        case SUB_PARAM_ART_PR:
+        case SUB_PARAM_PA_PR:
+        case SUB_PARAM_CVP_PR:
+        case SUB_PARAM_LAP_PR:
+        case SUB_PARAM_RAP_PR:
+        case SUB_PARAM_ICP_PR:
+        case SUB_PARAM_AUXP1_PR:
+        case SUB_PARAM_AUXP2_PR:
+            continue;
+        case SUB_PARAM_ETCO2:
+        case SUB_PARAM_ETN2O:
+        case SUB_PARAM_ETAA1:
+        case SUB_PARAM_ETAA2:
+        case SUB_PARAM_ETO2:
+            et = QString::number(d_ptr->ctx.trendSegment->values[i].value);
+            continue;
+        case SUB_PARAM_FICO2:
+        case SUB_PARAM_FIN2O:
+        case SUB_PARAM_FIAA1:
+        case SUB_PARAM_FIAA2:
+        case SUB_PARAM_FIO2:
+            fi = QString::number(d_ptr->ctx.trendSegment->values[i].value);
+            valueStr = et + "/" + fi;
+            titleStr = paramInfo.getSubParamName(subId);
+            titleStr = titleStr.right(titleStr.length() - 2);
+            valueFont = fontManager.numFont(26);
+            break;
+        default:
+            valueStr = QString::number(d_ptr->ctx.trendSegment->values[i].value);
+            titleStr = paramInfo.getSubParamName(subId);
+            valueFont = fontManager.numFont(32);
+            break;
+        }
+
+        item = new QListWidgetItem(d_ptr->trendListWidget);
         item->setData(EventTrendItemDelegate::ValueFontRole, qVariantFromValue(valueFont));
         item->setData(EventTrendItemDelegate::TitleFontRole, qVariantFromValue(titleFont));
         item->setData(EventTrendItemDelegate::UnitFontRole, qVariantFromValue(unitFont));
 
-        item->setData(EventTrendItemDelegate::ValueTextRole, QString::number(d_ptr->ctx.trendSegment->values[i].value));
-        item->setData(EventTrendItemDelegate::TitleTextRole, paramInfo.getParamName(paramInfo.getParamID(subId)));
+        item->setData(EventTrendItemDelegate::ValueTextRole, valueStr);
+        item->setData(EventTrendItemDelegate::TitleTextRole, titleStr);
         item->setData(EventTrendItemDelegate::UnitTextRole, Unit::getSymbol(paramInfo.getUnitOfSubParam(subId)));
 
-        item->setData(EventTrendItemDelegate::TrendAlarmRole, false);
 
-        item->setTextColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId))));
+        item->setData(EventTrendItemDelegate::TrendAlarmRole, d_ptr->ctx.trendSegment->values[i].alarmFlag);
+        color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId)));
+        if (color != QColor(0, 0, 0))
+        {
+            item->setTextColor(color);
+        }
+        else
+        {
+            item->setTextColor(Qt::red);
+        }
         item->setFlags(Qt::NoItemFlags);
     }
+}
+
+/**************************************************************************************************
+ * 事件波形布局刷新。
+ *************************************************************************************************/
+void EventReviewWindow::eventWaveUpdate()
+{
+    d_ptr->waveWidget->setWaveSegments(d_ptr->ctx.waveSegments);
 }
 
 /**************************************************************************************************
@@ -530,6 +578,8 @@ void EventReviewWindow::_waveInfoReleased()
     d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->curSecEvent));
     eventInfoUpdate();
     eventTrendUpdate();
+    eventWaveUpdate();
+    d_ptr->eventList->setFocus();
 }
 
 /**************************************************************************************************

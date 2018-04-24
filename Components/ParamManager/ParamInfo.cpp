@@ -75,19 +75,19 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
         case SUB_PARAM_PA_PR:
             return "PA_PR";
         case SUB_PARAM_CVP_MAP:
-            return "CVP_MAP";
+            return "CVP";
         case SUB_PARAM_CVP_PR:
             return "CVP_PR";
         case SUB_PARAM_LAP_MAP:
-            return "LAP_MAP";
+            return "LAP";
         case SUB_PARAM_LAP_PR:
             return "LAP_PR";
         case SUB_PARAM_RAP_MAP:
-            return "RAP_MAP";
+            return "RAP";
         case SUB_PARAM_RAP_PR:
             return "RAP_PR";
         case SUB_PARAM_ICP_MAP:
-            return "ICP_MAP";
+            return "ICP";
         case SUB_PARAM_ICP_PR:
             return "ICP_PR";
         case SUB_PARAM_AUXP1_SYS:

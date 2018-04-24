@@ -3,6 +3,8 @@
 #include <QVector>
 #include "SystemManager.h"
 #include <QResizeEvent>
+#include "FontManager.h"
+#include <QPainter>
 
 #define INVALID_AXIS_VALUE ((1<<30) - 1)
 
@@ -324,6 +326,35 @@ void EventWaveWidget::setWaveSegments(const QVector<WaveformDataSegment *> waveS
 
 void EventWaveWidget::paintEvent(QPaintEvent *ev)
 {
+    int count = d_ptr->waveSegments.count();
+    if (!count)
+    {
+        return;
+    }
+
+    QWidget::paintEvent(ev);
+    QPainter painter(this);
+    painter.setPen(QPen(Qt::white));
+    int fontSize = fontManager.getFontSize(4);
+    QFont font = fontManager.textFont(fontSize);
+    painter.setFont(font);
+//    qreal x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+
+//    for (int j = 0; j < count; ++j)
+//    {
+//        WaveformDataSegment *waveformData = d_ptr->waveSegments.at(j);
+
+//        double max = 0;
+//        double min = 0;
+//        short wave = 0;
+//        double waveData = 0.0;
+
+//        for (int i = 0; i < waveformData->waveNum; i ++)
+//        {
+
+//        }
+
+//    }
 
 }
 
