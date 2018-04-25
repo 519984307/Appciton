@@ -190,6 +190,12 @@ static const char *_paramWaveformNames[WAVE_NR] =
     "RESP_WAVEFORM",
     "SPO2_WAVEFORM",
     "CO2_WAVEFORM",
+    "N2O_WAVEFORM",
+    "AA1_WAVEFORM",
+    "AA2_WAVEFORM",
+    "O2_WAVEFORM",
+    "IBP1_WAVEFORM",
+    "IBP2_WAVEFORM",
 };
 
 /**************************************************************************************************

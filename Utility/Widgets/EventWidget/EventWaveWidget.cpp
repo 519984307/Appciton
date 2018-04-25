@@ -8,6 +8,11 @@
 
 #define INVALID_AXIS_VALUE ((1<<30) - 1)
 
+#define WAVE_REG_WIDTH              480                                     // 波形域宽度
+#define WAVE_REG_HIGH               360                                     // 波形域高度
+#define WAVE_NUM                    3                                       // 波形数目
+#define WAVE_DATA_REG_HIGH          WAVE_REG_HIGH / WAVE_NUM -20            // 单参数波形数据域高度
+
 struct WaveRegionBuffer
 {
     WaveRegionBuffer(int pointNum)
@@ -71,7 +76,7 @@ public:
           displayWaveSeconds(0),
           bufferEmpty(false),
           totalWaveDuration(0),
-          currentWaveStartSecond(0)
+          currentWaveStartSecond(-1)
     {
         pixelWPicth = systemManager.getScreenPixelWPitch();
         pixelHPitch = systemManager.getScreenPixelHPitch();
@@ -254,6 +259,9 @@ public:
     bool bufferEmpty;        // buffer is empty, need to fill data
     int totalWaveDuration;    // the duration of the wave segments
     int currentWaveStartSecond;
+
+    int startX;
+    int endX;
 };
 
 EventWaveWidget::EventWaveWidget(QWidget *parent)
@@ -264,6 +272,9 @@ EventWaveWidget::EventWaveWidget(QWidget *parent)
     pal.setBrush(QPalette::Window, Qt::black);
     this->setPalette(pal);
     setAutoFillBackground(true);
+
+    d_ptr->startX = (width() - WAVE_REG_WIDTH) / 2;
+    d_ptr->endX = (width() + WAVE_REG_WIDTH) / 2;
 }
 
 EventWaveWidget::~EventWaveWidget()
@@ -338,23 +349,39 @@ void EventWaveWidget::paintEvent(QPaintEvent *ev)
     int fontSize = fontManager.getFontSize(4);
     QFont font = fontManager.textFont(fontSize);
     painter.setFont(font);
-//    qreal x1 = 0, y1 = 0, x2 = 0, y2 = 0;
 
-//    for (int j = 0; j < count; ++j)
-//    {
-//        WaveformDataSegment *waveformData = d_ptr->waveSegments.at(j);
+    // 标尺刻度
+    int coordinateY = (height() + WAVE_REG_HIGH) / 2;
+    painter.drawLine(d_ptr->startX, coordinateY, d_ptr->endX, coordinateY);
+    painter.drawLine(d_ptr->startX, coordinateY, d_ptr->startX, coordinateY - 5);
+    painter.drawLine(d_ptr->startX + WAVE_REG_WIDTH/2, coordinateY, d_ptr->startX + WAVE_REG_WIDTH/2, coordinateY - 5);
+    painter.drawLine(d_ptr->endX, coordinateY, d_ptr->endX, coordinateY - 5);
+    QString scaleStr = QString::number(d_ptr->currentWaveStartSecond) + "s";
+    painter.drawText(d_ptr->startX -10, coordinateY + 20, scaleStr);
+    int medSecond;
+    int endSecond;
+    if (d_ptr->speed == SWEEP_SPEED_125)
+    {
+        painter.drawLine(d_ptr->startX + WAVE_REG_WIDTH/4, coordinateY, d_ptr->startX + WAVE_REG_WIDTH/4, coordinateY - 5);
+        painter.drawLine(d_ptr->startX + WAVE_REG_WIDTH/4 * 3, coordinateY, d_ptr->startX + WAVE_REG_WIDTH/4*3, coordinateY - 5);
+        medSecond = d_ptr->currentWaveStartSecond + 2;
+        endSecond = d_ptr->currentWaveStartSecond + 4;
+    }
+    else
+    {
+        medSecond = d_ptr->currentWaveStartSecond + 1;
+        endSecond = d_ptr->currentWaveStartSecond + 2;
+    }
+    scaleStr = QString::number(medSecond) + "s";
+    painter.drawText(d_ptr->startX + WAVE_REG_WIDTH/2 - 10, coordinateY + 20, scaleStr);
+    scaleStr = QString::number(endSecond) + "s";
+    painter.drawText(d_ptr->startX + WAVE_REG_WIDTH - 10, coordinateY + 20, scaleStr);
 
-//        double max = 0;
-//        double min = 0;
-//        short wave = 0;
-//        double waveData = 0.0;
+    for (int i = 0; i < count; i ++)
+    {
+        _drawWave(i, painter);
+    }
 
-//        for (int i = 0; i < waveformData->waveNum; i ++)
-//        {
-
-//        }
-
-//    }
 
 }
 
@@ -370,4 +397,35 @@ void EventWaveWidget::resizeEvent(QResizeEvent *ev)
         displayWaveSeconds -= 1;
     }
     d_ptr->updateDisplayWaveformDuration(displayWaveSeconds);
+}
+
+void EventWaveWidget::_drawWave(int index, QPainter &painter)
+{
+    WaveformDataSegment *waveData = d_ptr->waveSegments.at(index);
+    WaveformDesc waveDesc;
+    waveDesc.startY = index * WAVE_REG_HIGH / WAVE_NUM;
+    waveDesc.mediumY = waveDesc.startY + WAVE_DATA_REG_HIGH / 2;
+    waveDesc.endY = waveDesc.startY + WAVE_DATA_REG_HIGH;
+    waveDesc.waveID = waveData->waveID;
+    waveDesc.waveBuf.resize(waveData->waveNum);
+    for (int i = 0; i < waveData->waveNum; i ++)
+    {
+        waveDesc.waveBuf.append(waveData->waveData[i]);
+    }
+
+    _drawWaveLabel(painter, waveDesc);
+
+
+}
+
+void EventWaveWidget::_drawWaveLabel(QPainter &painter, const WaveformDesc &waveDesc)
+{
+    if (waveDesc.waveID == WAVE_NONE)
+    {
+        return;
+    }
+
+    QString title = (QString)paramInfo.getParamWaveformName(waveDesc.waveID);
+    title = title.left(title.length() - 9);
+    painter.drawText(d_ptr->startX, waveDesc.mediumY, title);
 }
