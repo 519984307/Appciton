@@ -191,7 +191,8 @@ void PRT72Provider::_parseStatusInfo(const unsigned char *data, unsigned int len
     PrinterStatus status = PrinterStatus(data[1] & PRINTER_STAT_MASK);
 
     // 通知打印管理部件。
-    printManager.providerStatusChanged(status);
+    //printManager.providerStatusChanged(status);
+    QMetaObject::invokeMethod(_sigSender, "statusChanged", Q_ARG(PrinterStatus, status));
 }
 
 /***************************************************************************************************
@@ -310,7 +311,8 @@ void PRT72Provider::_parseErrorReport(const unsigned char *data, unsigned int le
     _ack(PRINTER_CMD_ERROR_INFO);
 
     // 通知打印管理部件。
-    printManager.providerErrorReport(data[1]);
+    //printManager.providerErrorReport(data[1]);
+    QMetaObject::invokeMethod(_sigSender, "error", Q_ARG(unsigned char, data[1]));
 }
 
 /***************************************************************************************************
@@ -333,7 +335,8 @@ void PRT72Provider::_parseBufStat(const unsigned char *data, unsigned int len)
     _ack(PRINTER_CMD_BUF_STAT);
 
     // 通知打印管理部件。
-    printManager.providerBuffStatChanged(data[1]);
+    //printManager.providerBuffStatChanged(data[1]);
+    QMetaObject::invokeMethod(_sigSender, "bufferFull", Q_ARG(bool, (bool)data[1]));
 }
 
 /***************************************************************************************************
@@ -370,7 +373,8 @@ void PRT72Provider::_parseBitmapDataAck(const unsigned char *data, unsigned int 
  **************************************************************************************************/
 void PRT72Provider::disconnected()
 {
-    printManager.providerDisconnected();
+    //printManager.providerDisconnected();
+    QMetaObject::invokeMethod(_sigSender, "connectionChanged", Q_ARG(bool, false));
     systemManager.setPoweronTestResult(PRINTER72_SELFTEST_RESULT, SELFTEST_FAILED);
 }
 
@@ -379,7 +383,8 @@ void PRT72Provider::disconnected()
  **************************************************************************************************/
 void PRT72Provider::reconnected()
 {
-    printManager.providerConnected();
+    //printManager.providerConnected();
+    QMetaObject::invokeMethod(_sigSender, "connectionChanged", Q_ARG(bool, true));
 }
 
 /***************************************************************************************************
@@ -412,7 +417,8 @@ void PRT72Provider::handlePacket(unsigned char *data, int len)
         case PRINTER_NOTIFY_START:
         {
             _ack(type);
-            printManager.providerRestarted(); // 通知打印管理部件。
+            //printManager.providerRestarted(); // 通知打印管理部件。
+            QMetaObject::invokeMethod(_sigSender, "restart");
 
             systemManager.setPoweronTestResult(PRINTER72_SELFTEST_RESULT, SELFTEST_MODULE_RESET);
             ErrorLogItem *item = new CriticalFaultLogItem();
@@ -600,6 +606,16 @@ void PRT72Provider::flush(void)
     uart->sync();
 }
 
+
+/**
+ * @brief PRT72Provider::signalSender get the signal sender
+ * @return
+ */
+PrinterProviderSignalSender* PRT72Provider::signalSender() const
+{
+    return _sigSender;
+}
+
 /***************************************************************************************************
  * 构造函数
  **************************************************************************************************/
@@ -608,9 +624,10 @@ PRT72Provider::PRT72Provider()
         , _errorCount(0)
         , _prePacketNum(0)
         , _selfTestResult(PRINTER_SELF_TEST_NOT_PERFORMED)
+        , _sigSender(new PrinterProviderSignalSender(this))
 {
     //UartAttrDesc portAttr(460800, 8, 'N', 1, 0, FlOW_CTRL_HARD, false);  //new mainboard support flow control, use block io
-    UartAttrDesc portAttr(460800, 8, 'N', 1, 0);
+    UartAttrDesc portAttr(115200, 8, 'N', 1, 0);
     initPort(portAttr);
 }
 

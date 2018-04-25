@@ -38,6 +38,51 @@ enum PrinterSelfTestResult
     PRINTER_SELF_TEST_RESULT_MASK = 0x1f             // 自检状态掩码
 };
 
+/**
+ * @brief The PrinterProviderSignalSender class
+ *        use to emit the print provider signal
+ */
+class PrinterProviderSignalSender: public QObject
+{
+    Q_OBJECT
+public:
+    PrinterProviderSignalSender(QObject *parent = 0)
+        :QObject(parent)
+    {
+    }
+
+signals:
+    /**
+     * @brief restart emit when the provider restart
+     */
+    void restart();
+
+    /**
+     * @brief connectionChanged emit when the connection changed
+     * @param isConnected connected or not
+     */
+    void connectionChanged(bool isConnected);
+
+    /**
+     * @brief statusChanged emit when the status changed
+     * @param status new status
+     */
+    void statusChanged(PrinterStatus status);
+
+    /**
+     * @brief bufferFull emit when buffer status changed
+     * @param isFull is full or not
+     */
+    void bufferFull(bool isFull);
+
+    /**
+     * @brief error emit when in error
+     * @param err error code
+     */
+    void error(unsigned char err);
+
+};
+
 /***************************************************************************************************
  * 定义打印机需要实现的接口方法
  **************************************************************************************************/
@@ -87,4 +132,6 @@ public:
     virtual void sendUART(unsigned int /*rate*/) { }
 
     virtual void flush(void) {}
+
+    virtual PrinterProviderSignalSender* signalSender() const {return NULL;}
 };

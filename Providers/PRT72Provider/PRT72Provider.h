@@ -60,6 +60,8 @@ public:
 
     virtual void flush(void);
 
+    virtual PrinterProviderSignalSender* signalSender() const;
+
     PRT72Provider();
     ~PRT72Provider();
 
@@ -107,5 +109,6 @@ private:
     unsigned int _errorCount;
     unsigned char _prePacketNum;
     PrinterSelfTestResult _selfTestResult;
+    PrinterProviderSignalSender *_sigSender;
 #endif
 };

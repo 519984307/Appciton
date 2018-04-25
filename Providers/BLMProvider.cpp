@@ -102,7 +102,7 @@ void BLMProvider::dataArrived()
     {
         if (ringBuff.at(0) != SOH)
         {
-            debug("discard (%s:%x)\n", qPrintable(getName()), ringBuff.at(0));
+            //debug("discard (%s:%x)\n", qPrintable(getName()), ringBuff.at(0));
             ringBuff.pop(1);
             continue;
         }
@@ -138,7 +138,7 @@ void BLMProvider::dataArrived()
         }
         else
         {
-            outHex(packet, len);
+            //outHex(packet, len);
             debug("FCS error (%s)\n", qPrintable(getName()));
             ringBuff.pop(1);
         }

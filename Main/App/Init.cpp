@@ -484,21 +484,24 @@ static void _initProviderParam(void)
 static void _initPrint(void)
 {
     // 初始化打印。
-    printExec.construction();
-    printManager.construction();
-    alertor.addOneShotSource(printOneShotAlarm.construction());
-    PRT72Provider *prtProvider = new PRT72Provider();
-    printManager.setPrintProviderIFace(prtProvider);
-    printManager.addPrintLayout(new PrintContinuousLayout());
-    printManager.addPrintLayout(new PrintTrendDataLayout());
-    printManager.addPrintLayout(new PrintTriggerSummaryLayout());
-    printManager.addPrintLayout(new PrintViewSummaryLayout());
-    printManager.addPrintLayout(new PrintECG12LeadLayout());
-    printManager.addPrintLayout(new PrintOtherTriggerLayout());
-    printManager.addPrintLayout(new PrintSupervisorCfgLayout());
-    printManager.selftest();
-    paramManager.addProvider(*prtProvider);
+    //printExec.construction();
+    //printManager.construction();
+    //alertor.addOneShotSource(printOneShotAlarm.construction());
+    //PRT72Provider *prtProvider = new PRT72Provider();
+    //printManager.setPrintProviderIFace(prtProvider);
+    //printManager.addPrintLayout(new PrintContinuousLayout());
+    //printManager.addPrintLayout(new PrintTrendDataLayout());
+    //printManager.addPrintLayout(new PrintTriggerSummaryLayout());
+    //printManager.addPrintLayout(new PrintViewSummaryLayout());
+    //printManager.addPrintLayout(new PrintECG12LeadLayout());
+    //printManager.addPrintLayout(new PrintOtherTriggerLayout());
+    //printManager.addPrintLayout(new PrintSupervisorCfgLayout());
+    //printManager.selftest();
+    //paramManager.addProvider(*prtProvider);
 
+    PRT72Provider *prtProvider = new PRT72Provider();
+    recorderManager.setPrintPrividerIFace(prtProvider);
+    recorderManager.selfTest();
 }
 
 /**************************************************************************************************

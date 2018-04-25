@@ -71,6 +71,8 @@
 #include "PrintSupervisorCfgLayout.h"
 #include "PrintAlarm.h"
 
+#include "RecorderManager.h"
+
 #include "Alarm.h"
 #include "AlarmPhyInfoBarWidget.h"
 #include "AlarmTechInfoBarWidget.h"

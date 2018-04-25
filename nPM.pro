@@ -281,6 +281,9 @@ SOURCES +=                                                                      
     Components/PrintManager/PrintLayouts/PrintTrendDataLayout.cpp               \
     Components/PrintManager/PrintLayouts/PrintTriggerSummaryLayout.cpp          \
     Components/PrintManager/PrintLayouts/PrintViewSummaryLayout.cpp             \
+    Components/Recorder/RecorderManager.cpp                                     \
+    Components/Recorder/RecordPageGenerator.cpp                                 \
+    Components/Recorder/RecordPageProcessor.cpp                                 \
     Components/PdfWriter/HaruPdfWriter.cpp                                      \
     Components/PdfWriter/QPrinterPdfWriter.cpp                                  \
     Components/KeyHandle/SoftKeyManager.cpp                                     \
@@ -728,6 +731,10 @@ HEADERS +=                                                                      
     Components/PrintManager/PrintLayouts/PrintTrendDataLayout.h                 \
     Components/PrintManager/PrintLayouts/PrintTriggerSummaryLayout.h            \
     Components/PrintManager/PrintLayouts/PrintViewSummaryLayout.h               \
+    Components/Recorder/RecorderManager.h                                       \
+    Components/Recorder/RecordPage.h                                            \
+    Components/Recorder/RecordPageGenerator.h                                   \
+    Components/Recorder/RecordPageProcessor.h                                   \
     Components/PdfWriter/HaruPdfWriter.h                                        \
     Components/PdfWriter/QPrinterPdfWriter.h                                    \
     Components/KeyHandle/SoftKeyManager.h                                       \
@@ -1012,6 +1019,7 @@ DEPENDPATH +=                                                                   
     Components/PrintManager/PrintPages                                          \
     Components/PrintManager/Summary                                             \
     Components/PrintManager/Alarm                                               \
+    Components/Recorder                                                         \
     Components/PdfWriter                                                        \
     Components/PowerManager                                                     \
     Components/PowerManager/Battery                                             \
@@ -1146,6 +1154,7 @@ INCLUDEPATH +=                                                                  
     Components/PrintManager/PrintPages                                          \
     Components/PrintManager/Summary                                             \
     Components/PrintManager/Alarm                                               \
+    Components/Recorder                                                         \
     Components/PdfWriter                                                        \
     Components/PowerManager                                                     \
     Components/PowerManager/Battery                                             \
