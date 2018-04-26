@@ -413,6 +413,53 @@ const char *ParamInfo::getParamWaveformName(WaveformID id)
 }
 
 /**************************************************************************************************
+ * 功能： 根据波形ID获取参数的ID。
+ *************************************************************************************************/
+ParamID ParamInfo::getParamID(WaveformID id)
+{
+    ParamID paramID = PARAM_NONE;
+    switch (id)
+    {
+    case WAVE_ECG_I:
+    case WAVE_ECG_II:
+    case WAVE_ECG_III:
+    case WAVE_ECG_aVR:
+    case WAVE_ECG_aVL:
+    case WAVE_ECG_aVF:
+    case WAVE_ECG_V1:
+    case WAVE_ECG_V2:
+    case WAVE_ECG_V3:
+    case WAVE_ECG_V4:
+    case WAVE_ECG_V5:
+    case WAVE_ECG_V6:
+        paramID = PARAM_ECG;
+        break;
+    case WAVE_RESP:
+        paramID = PARAM_RESP;
+        break;
+    case WAVE_SPO2:
+        paramID = PARAM_SPO2;
+        break;
+    case WAVE_CO2:
+        paramID = PARAM_CO2;
+        break;
+    case WAVE_N2O:
+    case WAVE_AA1:
+    case WAVE_AA2:
+    case WAVE_O2:
+        paramID = PARAM_AG;
+        break;
+    case WAVE_IBP1:
+    case WAVE_IBP2:
+        paramID = PARAM_IBP;
+        break;
+    default:
+        break;
+    }
+    return paramID;
+}
+
+/**************************************************************************************************
  * 功能： 获取参数存放趋势数据时的放大倍数。
  * 参数：
  *      id： 子参数ID。

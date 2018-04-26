@@ -2,23 +2,32 @@
 #include <QWidget>
 #include <QScopedPointer>
 #include <EventDataDefine.h>
+#include "ECGDefine.h"
 
 struct WaveformDesc
 {
     void reset(void)
     {
+        waveRangeMax = 0;
+        waveRangeMin = 0;
         startY = 0;
         mediumY = 0;
         endY = 0;
+        offsetX = 0;
+        gain = ECG_GAIN_X10;
         waveID = WAVE_NONE;
-        waveBuf.clear();
+//        waveBuf.clear();
     }
 
+    int waveRangeMax;                   // 波形数据最大值。
+    int waveRangeMin;                   // 波形数据最小值。
     int startY;                         // 不同波形的y坐标起始偏移像素点。
     int mediumY;                        // 不同波形的y坐标中间位置。
     int endY;                           // 不同波形的y坐标的结束偏移像素点。
+    double offsetX;                     // 数据的x轴偏移。
+    ECGGain gain;
     WaveformID waveID;                  // 波形ID
-    QVector<WaveDataType> waveBuf;      //波形数据
+//    QVector<WaveDataType> waveBuf;      //波形数据
 };
 
 
@@ -55,6 +64,7 @@ protected:
 private:
     void _drawWave(int index, QPainter &painter);
     void _drawWaveLabel(QPainter &painter, const WaveformDesc &waveDesc);
+    double _mapWaveValue(const WaveformDesc &waveDesc, int wave);
 
 private:
     QScopedPointer<EventWaveWidgetPrivate> d_ptr;

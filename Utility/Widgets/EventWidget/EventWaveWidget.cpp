@@ -4,6 +4,8 @@
 #include "SystemManager.h"
 #include <QResizeEvent>
 #include "FontManager.h"
+#include "ColorManager.h"
+#include "WaveformCache.h"
 #include <QPainter>
 
 #define INVALID_AXIS_VALUE ((1<<30) - 1)
@@ -12,6 +14,8 @@
 #define WAVE_REG_HIGH               360                                     // 波形域高度
 #define WAVE_NUM                    3                                       // 波形数目
 #define WAVE_DATA_REG_HIGH          WAVE_REG_HIGH / WAVE_NUM -20            // 单参数波形数据域高度
+#define WAVE_FRONT_TIME             -8
+#define WAVE_AFTER_TIME             8
 
 struct WaveRegionBuffer
 {
@@ -72,7 +76,7 @@ class EventWaveWidgetPrivate
 {
 public:
     EventWaveWidgetPrivate()
-        :speed(EventWaveWidget::SWEEP_SPEED_250),
+        :speed(EventWaveWidget::SWEEP_SPEED_125),
           displayWaveSeconds(0),
           bufferEmpty(false),
           totalWaveDuration(0),
@@ -403,19 +407,65 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
 {
     WaveformDataSegment *waveData = d_ptr->waveSegments.at(index);
     WaveformDesc waveDesc;
+    QColor color;
+    qreal x1 = 0,y1 = 0,x2 = 0,y2 = 0;  // 需要连接的两点。
     waveDesc.startY = index * WAVE_REG_HIGH / WAVE_NUM;
     waveDesc.mediumY = waveDesc.startY + WAVE_DATA_REG_HIGH / 2;
     waveDesc.endY = waveDesc.startY + WAVE_DATA_REG_HIGH;
     waveDesc.waveID = waveData->waveID;
-    waveDesc.waveBuf.resize(waveData->waveNum);
-    for (int i = 0; i < waveData->waveNum; i ++)
+    waveDesc.gain = ECG_GAIN_X10;
+//    waveDesc.waveBuf.resize(waveData->waveNum);
+    waveformCache.getRange(waveDesc.waveID, waveDesc.waveRangeMin, waveDesc.waveRangeMax);
+    if (waveData->sampleRate)
     {
-        waveDesc.waveBuf.append(waveData->waveData[i]);
+        if (d_ptr->speed == SWEEP_SPEED_125)
+        {
+            waveDesc.offsetX = (double)WAVE_REG_WIDTH / 4 / waveData->sampleRate;
+
+        }
+        else
+        {
+            waveDesc.offsetX = (double)WAVE_REG_WIDTH / 2 / waveData->sampleRate;
+        }
+    }
+    else
+    {
+        return;
+    }
+    color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(waveDesc.waveID)));
+    if (color != QColor(0,0,0))
+    {
+        painter.setPen(color);
+    }
+    else
+    {
+        painter.setPen(Qt::red);
     }
 
     _drawWaveLabel(painter, waveDesc);
 
+    bool start = true;
+    int startIndex = (d_ptr->currentWaveStartSecond - WAVE_FRONT_TIME) * waveData->sampleRate;
+    for (int i = 0 + startIndex; (x2 - d_ptr->startX) < WAVE_REG_WIDTH; i ++)
+    {
+//        waveDesc.waveBuf.append(waveData->waveData[i]);
+        short wave = waveData->waveData[i];
+        double waveValue = _mapWaveValue(waveDesc, wave);
+        if (start)
+        {
+            y1 = waveValue;
+            x1 = d_ptr->startX;
+            x2 = x1 + waveDesc.offsetX;
+            start = false;
+        }
+        y2 = waveValue;
+        QLineF line(x1,y1,x2,y2);
+        painter.drawLine(line);
 
+        x1 = x2;
+        x2 += waveDesc.offsetX;
+        y1 = y2;
+    }
 }
 
 void EventWaveWidget::_drawWaveLabel(QPainter &painter, const WaveformDesc &waveDesc)
@@ -427,5 +477,84 @@ void EventWaveWidget::_drawWaveLabel(QPainter &painter, const WaveformDesc &wave
 
     QString title = (QString)paramInfo.getParamWaveformName(waveDesc.waveID);
     title = title.left(title.length() - 9);
-    painter.drawText(d_ptr->startX, waveDesc.mediumY, title);
+    QRect rectLabel(0, waveDesc.startY, 100, 100);
+    painter.drawText(rectLabel, Qt::AlignCenter, title);
+}
+
+double EventWaveWidget::_mapWaveValue(const WaveformDesc &waveDesc, int wave)
+{
+    if (waveDesc.waveID == WAVE_NONE)
+    {
+        return 0;
+    }
+
+    int max = waveDesc.waveRangeMax;
+    int min = waveDesc.waveRangeMin;
+    double startY = waveDesc.startY;
+    double endY = waveDesc.endY;
+    double dpos = 0;
+
+    switch (waveDesc.waveID)
+    {
+    case WAVE_ECG_I:
+    case WAVE_ECG_II:
+    case WAVE_ECG_III:
+    case WAVE_ECG_aVR:
+    case WAVE_ECG_aVL:
+    case WAVE_ECG_aVF:
+    case WAVE_ECG_V1:
+    case WAVE_ECG_V2:
+    case WAVE_ECG_V3:
+    case WAVE_ECG_V4:
+    case WAVE_ECG_V5:
+    case WAVE_ECG_V6:
+    {
+        double scaleData = 0;
+        switch (waveDesc.gain)
+        {
+        case ECG_GAIN_X0125:
+            scaleData = 0.125 * 50;
+            break;
+        case ECG_GAIN_X025:
+            scaleData = 0.25 * 50;
+            break;
+        case ECG_GAIN_X05:
+            scaleData = 0.5 * 50;
+            break;
+        case ECG_GAIN_X10:
+            scaleData = 1 * 50;
+            break;
+        case ECG_GAIN_X15:
+            scaleData = 1.5 * 50;
+            break;
+        case ECG_GAIN_X20:
+            scaleData = 2 * 50;
+            break;
+        case ECG_GAIN_X30:
+            scaleData = 3 * 50;
+            break;
+        default:
+            break;
+        }
+        endY = waveDesc.mediumY + scaleData;
+        startY = waveDesc.mediumY - scaleData;
+        dpos = (max - wave) * ((endY - startY) / (max - min)) + startY;
+        break;
+    }
+    case WAVE_SPO2:
+        dpos = (max - wave) * ((endY - startY) / (max - min)) + startY;
+        break;
+    default:
+        return 0;
+    }
+
+    if (dpos < waveDesc.startY)
+    {
+        dpos = waveDesc.startY;
+    }
+    else if (dpos > waveDesc.endY)
+    {
+        dpos = waveDesc.endY;
+    }
+    return dpos;
 }

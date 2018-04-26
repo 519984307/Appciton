@@ -30,6 +30,7 @@ public:
 
     // 获取波形ID与字串名之间的转换。
     const char *getParamWaveformName(WaveformID id);
+    ParamID getParamID(WaveformID id);
 
     // 获取参数存放趋势数据时的放大倍数。
     int getMultiOfSubParam(SubParamID id);
