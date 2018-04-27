@@ -14,9 +14,7 @@ struct WaveformDesc
         mediumY = 0;
         endY = 0;
         offsetX = 0;
-        gain = ECG_GAIN_X10;
         waveID = WAVE_NONE;
-//        waveBuf.clear();
     }
 
     int waveRangeMax;                   // 波形数据最大值。
@@ -25,9 +23,7 @@ struct WaveformDesc
     int mediumY;                        // 不同波形的y坐标中间位置。
     int endY;                           // 不同波形的y坐标的结束偏移像素点。
     double offsetX;                     // 数据的x轴偏移。
-    ECGGain gain;
     WaveformID waveID;                  // 波形ID
-//    QVector<WaveDataType> waveBuf;      //波形数据
 };
 
 
@@ -53,9 +49,12 @@ public:
 
     /* set the wave draw speed */
     void setSweepSpeed(SweepSpeed speed);
+    SweepSpeed getSweepSpeed(void);
 
     /* set the wave segments to display */
     void setWaveSegments(const QVector<WaveformDataSegment *> waveSegemnts);
+
+    void setGain(ECGGain);
 
 protected:
     void paintEvent(QPaintEvent *ev);

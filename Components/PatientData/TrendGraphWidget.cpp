@@ -93,8 +93,7 @@ void TrendGraphWidget::_downReleased()
 
 void TrendGraphWidget::_printReleased()
 {
-    EventReviewWindow *event = new EventReviewWindow();
-    event->autoShow();
+    eventReviewWindow.autoShow();
     this->hide();
 }
 

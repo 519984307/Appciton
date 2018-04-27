@@ -77,6 +77,7 @@ class EventWaveWidgetPrivate
 public:
     EventWaveWidgetPrivate()
         :speed(EventWaveWidget::SWEEP_SPEED_125),
+          gain(ECG_GAIN_X10),
           displayWaveSeconds(0),
           bufferEmpty(false),
           totalWaveDuration(0),
@@ -257,6 +258,7 @@ public:
     QVector<WaveRegionBuffer *> waveBuffers;
     QVector<WaveformDataSegment *> waveSegments;
     EventWaveWidget::SweepSpeed speed;
+    ECGGain gain;
     float pixelWPicth;      //horizontal gap between two pixel, in unit of mm
     float pixelHPitch;      //veritical gap between two pixel, in unit of mm
     int displayWaveSeconds; // seconds of waveform to display
@@ -324,6 +326,11 @@ void EventWaveWidget::setSweepSpeed(EventWaveWidget::SweepSpeed speed)
     update();
 }
 
+EventWaveWidget::SweepSpeed EventWaveWidget::getSweepSpeed()
+{
+    return d_ptr->speed;
+}
+
 void EventWaveWidget::setWaveSegments(const QVector<WaveformDataSegment *> waveSegemnts)
 {
     d_ptr->waveSegments = waveSegemnts;
@@ -336,6 +343,12 @@ void EventWaveWidget::setWaveSegments(const QVector<WaveformDataSegment *> waveS
         d_ptr->totalWaveDuration = 0;
     }
     d_ptr->reallocateWaveRegionBuffer();
+    update();
+}
+
+void EventWaveWidget::setGain(ECGGain gain)
+{
+    d_ptr->gain = gain;
     update();
 }
 
@@ -413,7 +426,6 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
     waveDesc.mediumY = waveDesc.startY + WAVE_DATA_REG_HIGH / 2;
     waveDesc.endY = waveDesc.startY + WAVE_DATA_REG_HIGH;
     waveDesc.waveID = waveData->waveID;
-    waveDesc.gain = ECG_GAIN_X10;
 //    waveDesc.waveBuf.resize(waveData->waveNum);
     waveformCache.getRange(waveDesc.waveID, waveDesc.waveRangeMin, waveDesc.waveRangeMax);
     if (waveData->sampleRate)
@@ -510,7 +522,7 @@ double EventWaveWidget::_mapWaveValue(const WaveformDesc &waveDesc, int wave)
     case WAVE_ECG_V6:
     {
         double scaleData = 0;
-        switch (waveDesc.gain)
+        switch (d_ptr->gain)
         {
         case ECG_GAIN_X0125:
             scaleData = 0.125 * 50;

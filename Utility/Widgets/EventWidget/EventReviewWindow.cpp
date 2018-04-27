@@ -14,13 +14,17 @@
 #include "TimeDate.h"
 #include "ParamInfo.h"
 #include "EventDataSymbol.h"
+#include "EventWaveSetWidget.h"
 #include <QBoxLayout>
 #include "Debug.h"
 #include <QFile>
 #include <QHeaderView>
+#include <QScrollBar>
 
 #define ITEM_HEIGHT     30
 #define ITEM_WIDTH      100
+
+EventReviewWindow *EventReviewWindow::_selfObj = NULL;
 
 struct EventDataPraseContex
 {
@@ -152,6 +156,7 @@ public:
         {
             parseEnd = true;
         }
+        return true;
     }
 
 
@@ -162,7 +167,7 @@ public:
         QByteArray d = f.readAll();
         f.close();
         
-        WaveformDataSegment *seg = new WaveformDataSegment;
+//        WaveformDataSegment *seg = new WaveformDataSegment;
     }
 
     EventInfoWidget *infoWidget;
@@ -213,8 +218,8 @@ EventReviewWindow::EventReviewWindow()
     int fontSize = fontManager.getFontSize(1);
     QFont font = fontManager.textFont(fontSize);
 
-    int itemW = windowManager.getPopMenuWidth() - 20;
-    int btnWidth = itemW / 4;
+//    int itemW = windowManager.getPopMenuWidth() - 20;
+//    int btnWidth = itemW / 4;
 
     // 事件表格窗口
     d_ptr->eventTable = new ITableWidget();
@@ -309,10 +314,14 @@ EventReviewWindow::EventReviewWindow()
     d_ptr->moveCoordinate = new IMoveButton(trs("MoveCoordinate"));
     d_ptr->moveCoordinate->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     d_ptr->moveCoordinate->setFont(font);
+    connect(d_ptr->moveCoordinate, SIGNAL(leftMove()), this, SLOT(_leftMoveCoordinate()));
+    connect(d_ptr->moveCoordinate, SIGNAL(rightMove()), this, SLOT(_rightMoveCoordinate()));
 
     d_ptr->moveEvent = new IMoveButton(trs("MoveEvent"));
     d_ptr->moveEvent->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     d_ptr->moveEvent->setFont(font);
+    connect(d_ptr->moveEvent, SIGNAL(leftMove()), this, SLOT(_leftMoveEvent()));
+    connect(d_ptr->moveEvent, SIGNAL(rightMove()), this, SLOT(_rightMoveEvent()));
 
     d_ptr->print = new IButton(trs("Print"));
     d_ptr->print->setFixedSize(ITEM_WIDTH, ITEM_H);
@@ -321,14 +330,17 @@ EventReviewWindow::EventReviewWindow()
     d_ptr->set = new IButton(trs("Set"));
     d_ptr->set->setFixedSize(ITEM_WIDTH, ITEM_H);
     d_ptr->set->setFont(font);
+    connect(d_ptr->set, SIGNAL(realReleased()), this, SLOT(_setReleased()));
 
     d_ptr->upParam = new IButton();
     d_ptr->upParam->setFixedSize(ITEM_HEIGHT, ITEM_HEIGHT);
     d_ptr->upParam->setPicture(QImage("/usr/local/nPM/icons/ArrowUp.png"));
+    connect(d_ptr->upParam, SIGNAL(realReleased()), this, SLOT(_upReleased()));
 
     d_ptr->downParam = new IButton();
     d_ptr->downParam->setFixedSize(ITEM_HEIGHT, ITEM_HEIGHT);
     d_ptr->downParam->setPicture(QImage("/usr/local/nPM/icons/ArrowDown.png"));
+    connect(d_ptr->downParam, SIGNAL(realReleased()), this, SLOT(_downReleased()));
 
     QHBoxLayout *lWaveLayout = new QHBoxLayout();
     lWaveLayout->setMargin(0);
@@ -550,6 +562,16 @@ void EventReviewWindow::eventWaveUpdate()
     d_ptr->waveWidget->setWaveSegments(d_ptr->ctx.waveSegments);
 }
 
+void EventReviewWindow::setWaveSpeed(int speed)
+{
+    d_ptr->waveWidget->setSweepSpeed((EventWaveWidget::SweepSpeed)speed);
+}
+
+void EventReviewWindow::setWaveGain(int gain)
+{
+    d_ptr->waveWidget->setGain((ECGGain)gain);
+}
+
 /**************************************************************************************************
  * 显示事件。
  *************************************************************************************************/
@@ -561,7 +583,16 @@ void EventReviewWindow::showEvent(QShowEvent *e)
     QRect r = windowManager.getMenuArea();
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 
+    d_ptr->stackLayout->setCurrentIndex(0);
     _loadEventData();
+    if (d_ptr->eventTable->rowCount() == 0)
+    {
+        d_ptr->waveInfo->setEnabled(false);
+    }
+    else
+    {
+        d_ptr->waveInfo->setEnabled(true);
+    }
 }
 
 /**************************************************************************************************
@@ -633,6 +664,128 @@ void EventReviewWindow::_eventLevelSelect(int index)
 }
 
 /**************************************************************************************************
+ * 左移坐标。
+ *************************************************************************************************/
+void EventReviewWindow::_leftMoveCoordinate()
+{
+    int startSecond = d_ptr->waveWidget->getCurrentWaveStartSecond();
+    if (startSecond == -8)
+    {
+        return;
+    }
+    startSecond --;
+    d_ptr->waveWidget->setWaveStartSecond(startSecond);
+}
+
+/**************************************************************************************************
+ * 右移坐标。
+ *************************************************************************************************/
+void EventReviewWindow::_rightMoveCoordinate()
+{
+    EventWaveWidget::SweepSpeed speed;
+    speed = d_ptr->waveWidget->getSweepSpeed();
+    int startSecond = d_ptr->waveWidget->getCurrentWaveStartSecond();
+    if (speed == EventWaveWidget::SWEEP_SPEED_125)
+    {
+        if (startSecond == 4)
+        {
+            return;
+        }
+        startSecond ++;
+        d_ptr->waveWidget->setWaveStartSecond(startSecond);
+    }
+    else
+    {
+        if (startSecond == 6)
+        {
+            return;
+        }
+        startSecond ++;
+        d_ptr->waveWidget->setWaveStartSecond(startSecond);
+    }
+
+
+}
+
+/**************************************************************************************************
+ * 左移事件。
+ *************************************************************************************************/
+void EventReviewWindow::_leftMoveEvent()
+{
+    if (d_ptr->curSecEvent != 0 && d_ptr->curSecEvent != InvData())
+    {
+        d_ptr->curSecEvent --;
+        d_ptr->eventTable->selectRow(d_ptr->curSecEvent);
+    }
+    if (!d_ptr->backend->getBlockNR())
+    {
+        return;
+    }
+
+    d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->curSecEvent));
+    eventInfoUpdate();
+    eventTrendUpdate();
+    eventWaveUpdate();
+}
+
+/**************************************************************************************************
+ * 右移事件。
+ *************************************************************************************************/
+void EventReviewWindow::_rightMoveEvent()
+{
+    if (d_ptr->curSecEvent != d_ptr->eventNum - 1 && d_ptr->curSecEvent != InvData())
+    {
+        d_ptr->curSecEvent ++;
+        d_ptr->eventTable->selectRow(d_ptr->curSecEvent);
+    }
+    if (!d_ptr->backend->getBlockNR())
+    {
+        return;
+    }
+
+    d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->curSecEvent));
+    eventInfoUpdate();
+    eventTrendUpdate();
+    eventWaveUpdate();
+}
+
+/**************************************************************************************************
+ * 设置槽函数。
+ *************************************************************************************************/
+void EventReviewWindow::_setReleased()
+{
+    eventWaveSetWidget.autoShow();
+}
+
+/**************************************************************************************************
+ * 向上翻阅参数。
+ *************************************************************************************************/
+void EventReviewWindow::_upReleased()
+{
+    int maxValue = d_ptr->trendListWidget->verticalScrollBar()->maximum();
+    int curScroller = d_ptr->trendListWidget->verticalScrollBar()->value();
+    if (curScroller > 0)
+    {
+        d_ptr->trendListWidget->verticalScrollBar()->setSliderPosition(
+                    curScroller - (maxValue * 5) / (d_ptr->trendListWidget->count() - 5));
+    }
+}
+
+/**************************************************************************************************
+ * 向下翻阅参数
+ *************************************************************************************************/
+void EventReviewWindow::_downReleased()
+{
+    int maxValue = d_ptr->trendListWidget->verticalScrollBar()->maximum();
+    int curScroller = d_ptr->trendListWidget->verticalScrollBar()->value();
+    if (curScroller < maxValue && d_ptr->trendListWidget->count() != 5)
+    {
+        d_ptr->trendListWidget->verticalScrollBar()->setSliderPosition(
+                    curScroller + (maxValue * 5) / (d_ptr->trendListWidget->count() - 5));
+    }
+}
+
+/**************************************************************************************************
  * 载入事件数据。
  *************************************************************************************************/
 void EventReviewWindow::_loadEventData()
@@ -649,7 +802,6 @@ void EventReviewWindow::_loadEventData()
     unsigned char alarmInfo;
     SubParamID subId;
     unsigned char alarmId;
-    ParamID paramId;
     AlarmPriority priority;
     AlarmPriority curPriority;
     AlarmLimitIFace *alarmLimit;
@@ -661,7 +813,6 @@ void EventReviewWindow::_loadEventData()
         {
             t = d_ptr->ctx.infoSegment->timestamp;
             subId = (SubParamID)(d_ptr->ctx.almSegment->subParamID);
-            paramId = paramInfo.getParamID(subId);
             alarmId = d_ptr->ctx.almSegment->alarmType;
             alarmInfo = d_ptr->ctx.almSegment->alarmInfo;
             alarmLimit = alertor.getAlarmLimitIFace(subId);

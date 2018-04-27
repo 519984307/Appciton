@@ -27,6 +27,7 @@ void EventInfoWidget::loadDataInfo(QString info, QString time, QString index)
     eventInfo = info;
     eventTime = time;
     eventIndex = index;
+    update();
 }
 
 /**************************************************************************************************

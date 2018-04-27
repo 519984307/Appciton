@@ -651,6 +651,7 @@ void TrendDataWidget::_getTrendData()
     QByteArray data;
     TrendDataSegment *dataSeg;
     TrendDataPackage *pack;
+    qDeleteAll(_trendDataPack);
     _trendDataPack.clear();
     for (int i = 0; i < blockNum; i ++)
     {
