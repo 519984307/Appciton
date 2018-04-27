@@ -283,6 +283,7 @@ SOURCES +=                                                                      
     Components/PrintManager/PrintLayouts/PrintViewSummaryLayout.cpp             \
     Components/Recorder/RecorderManager.cpp                                     \
     Components/Recorder/RecordPageGenerator.cpp                                 \
+    Components/Recorder/GeneralPageGenerator.cpp                                 \
     Components/Recorder/RecordPageProcessor.cpp                                 \
     Components/PdfWriter/HaruPdfWriter.cpp                                      \
     Components/PdfWriter/QPrinterPdfWriter.cpp                                  \
@@ -722,7 +723,7 @@ HEADERS +=                                                                      
     Components/PrintManager/PrintProviderIFace.h                                \
     Components/PrintManager/PrintLayoutIFace.h                                  \
     Components/PrintManager/Alarm/PrintAlarm.h                                  \
-    Components/PrintManager/Summary/PrintComponents/ConfigManager/ConfigEditNBIPMenu.cpp                             \erActionSummary.h                      \
+    Components/PrintManager/Summary/PrinterActionSummary.h                      \
     Components/PrintManager/PrintLayouts/PrintContinuousLayout.h                \
     Components/PrintManager/PrintLayouts/PrintECG12LeadLayout.h                 \
     Components/PrintManager/PrintLayouts/PrintOtherTriggerLayout.h              \
@@ -734,6 +735,7 @@ HEADERS +=                                                                      
     Components/Recorder/RecorderManager.h                                       \
     Components/Recorder/RecordPage.h                                            \
     Components/Recorder/RecordPageGenerator.h                                   \
+    Components/Recorder/GeneralPageGenerator.h                                  \
     Components/Recorder/RecordPageProcessor.h                                   \
     Components/PdfWriter/HaruPdfWriter.h                                        \
     Components/PdfWriter/QPrinterPdfWriter.h                                    \
@@ -930,7 +932,6 @@ HEADERS +=                                                                      
     Params/RESPParam/RESPWidgets/RESPMenu.h                                     \
     Params/UpgradeParam/BLMEDUpgradeParam.h                                     \
     Params/UpgradeParam/BLMEDUpgradeTime.h                                      \
-    Params/PAParam/PADefine.h                                                   \
     Params/PAParam/PASymbol.h                                                   \
 #################################################################################
     Providers/Provider.h                                                        \

@@ -15,7 +15,7 @@ public:
     RecordPage(int width)
         :QImage(width, RECORDER_PAGE_HEIGHT, QImage::Format_MonoLSB)
     {
-        id = QString::number(QDateTime::currentDateTime().toTime_t());
+        id = QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz");
         fill(Qt::color0);
     }
 

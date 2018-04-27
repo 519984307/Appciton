@@ -5,12 +5,14 @@
 #include "Utility.h"
 #include "Debug.h"
 
+#define PAGE_QUEUE_SIZE 32
+
 class RecordPageProcessorPrivate
 {
 public:
     RecordPageProcessorPrivate(PrintProviderIFace *iface)
         :iface(iface), flush(false), processing(false), pause(false),
-          updateSpeed(false), curSpeed(PRINT_SPEED_250)
+          updateSpeed(false), queueIsFull(false), curSpeed(PRINT_SPEED_250)
     {}
 
 
@@ -20,6 +22,7 @@ public:
     bool processing;
     bool pause;
     bool updateSpeed;
+    bool queueIsFull;
     PrintSpeed curSpeed;
 };
 
@@ -67,6 +70,12 @@ void RecordPageProcessor::addPage(RecordPage *page)
 
     d_ptr->pages.append(page);
 
+    if(d_ptr->pages.size() >= PAGE_QUEUE_SIZE)
+    {
+        d_ptr->queueIsFull = true;
+        emit pageQueueFull(d_ptr->queueIsFull);
+    }
+
     if(!d_ptr->processing)
     {
         //process the page in the next event loop
@@ -79,6 +88,12 @@ void RecordPageProcessor::flushPages()
 {
     foreach (RecordPage *page, d_ptr->pages) {
         delete page;
+    }
+
+    if(d_ptr->queueIsFull)
+    {
+        d_ptr->queueIsFull = false;
+        emit pageQueueFull(d_ptr->queueIsFull);
     }
 
     if(d_ptr->processing)
@@ -114,6 +129,13 @@ void RecordPageProcessor::processPages()
          * Note: If the pages are flushed, current page will be the last page
          */
         page = d_ptr->pages.takeFirst();
+
+        // update page queue status
+        if (d_ptr->queueIsFull && d_ptr->pages.size() < PAGE_QUEUE_SIZE)
+        {
+            d_ptr->queueIsFull = false;
+            emit pageQueueFull(d_ptr->queueIsFull);
+        }
 
         int dataLen = page->height() / 8;
         unsigned char data[dataLen];

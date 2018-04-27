@@ -4,6 +4,7 @@
 #include "PrintProviderIFace.h"
 #include "PrintDefine.h"
 #include "PrintTypeDefine.h"
+#include "RecordPageGenerator.h"
 
 class RecorderManagerPrivate;
 class RecorderManager : public QObject
@@ -71,6 +72,14 @@ public:
      */
     bool requestPrint(PrintType type);
 
+    /**
+     * @brief addPageGeneratory add a page generator to generator the print page
+     * @param generator the generator
+     * @return true when adding sucessfully, otherwise, false.
+     *         It happens when existing a higher priority generator
+     */
+    bool addPageGenerator(RecordPageGenerator *generator);
+
 
 private slots:
     /**
@@ -100,6 +109,11 @@ private slots:
      * @param err error id
      */
     void providerReportError(unsigned char err);
+
+    /**
+     * @brief onGeneratorStopped handle the generator stop signal
+     */
+    void onGeneratorStopped();
 
 signals:
     /**

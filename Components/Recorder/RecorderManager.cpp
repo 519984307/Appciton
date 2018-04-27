@@ -7,6 +7,7 @@
 #include "RecordPageGenerator.h"
 #include <QPainter>
 #include "FontManager.h"
+#include <QPointer>
 
 
 class RecorderManagerPrivate
@@ -29,7 +30,8 @@ public:
     RecordPageProcessor *processor;
     QThread *procThread;
     PrintProviderIFace *iface;
-    RecordPageGenerator *generator;
+    QPointer<RecordPageGenerator> generator;
+
 };
 
 RecorderManager &RecorderManager::getInstance()
@@ -129,7 +131,7 @@ void RecorderManager::selfTest()
         return;
     }
 
-    RecordPage *testPage = new RecordPage(140 * RECORDER_PIXEL_PER_MM);
+    RecordPage *testPage = new RecordPage(10 * RECORDER_PIXEL_PER_MM);
     testPage->setID("test");
     QPainter painter(testPage);
     int penWidth = 5;
@@ -155,10 +157,32 @@ void RecorderManager::selfTest()
     //painter.drawText(10, 340, "Hello World!!!");
     //painter.drawText(10, 370, "Hello World!!!");
 
-    painter.fillRect(QRect(245, 0, 5, testPage->height()), Qt::white);
+    painter.fillRect(QRect(20, 0, 5, testPage->height()), Qt::white);
 
 
     QMetaObject::invokeMethod(d_ptr->processor, "addPage", Q_ARG(RecordPage*, testPage));
+}
+
+bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
+{
+    if(d_ptr->generator)
+    {
+        //not generatory currently
+        d_ptr->generator = generator;
+        generator->moveToThread(d_ptr->procThread);
+    }
+    else
+    {
+        //TODO: check prority
+        QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
+        d_ptr->generator = generator;
+        generator->moveToThread(d_ptr->procThread);
+    }
+    connect(generator, SIGNAL(stopped()), this, SLOT(onGeneratorStopped()), Qt::QueuedConnection);
+    connect(generator, SIGNAL(generatePage(RecordPage*)), d_ptr->processor, SLOT(addPage(RecordPage*)));
+    connect(d_ptr->processor, SIGNAL(pageQueueFull(bool)), generator, SLOT(pageControl(bool)));
+    QMetaObject::invokeMethod(generator, "start");
+    return true;
 }
 
 void RecorderManager::providerRestarted()
@@ -324,6 +348,11 @@ void RecorderManager::providerBufferStatusChanged(bool full)
 void RecorderManager::providerReportError(unsigned char err)
 {
     qDebug()<<"Provider error: 0x"<<hex<<err;
+}
+
+void RecorderManager::onGeneratorStopped()
+{
+    sender()->deleteLater();
 }
 
 RecorderManager::RecorderManager()

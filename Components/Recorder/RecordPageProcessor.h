@@ -24,6 +24,12 @@ signals:
      */
     void processFinished();
 
+    /**
+     * @brief pageQueueFull emit when the page queue status changed
+     * @param isFull page queue full or not
+     */
+    void pageQueueFull(bool isFull);
+
 public slots:
     /**
      * @brief updatePrintSpeed update the print speed

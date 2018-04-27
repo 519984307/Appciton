@@ -27,12 +27,18 @@ public slots:
      * @brief start create pages with specific time interval
      * @param interval in unit of ms,
      */
-    void start(int interval = 100);
+    void start(int interval = 200);
 
     /**
      * @brief stop stop page generate
      */
     void stop();
+
+    /**
+     * @brief generateControl control page generating
+     * @param pause pause generating page or not
+     */
+    void pageControl(bool pause);
 
 
 signals:
@@ -41,11 +47,6 @@ signals:
      * @param page
      */
     void generatePage(RecordPage *page);
-
-    /**
-     * @brief completed emit complete generate pages
-     */
-    void completed();
 
     /**
      * @brief stopped emit when stop
@@ -68,5 +69,6 @@ protected:
 
 private:
     bool _requestStop; // request stop flag
+    bool _generate;    // generate page or not
     int _timerID;      //timer id
 };
