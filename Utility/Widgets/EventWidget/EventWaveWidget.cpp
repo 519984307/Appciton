@@ -13,7 +13,7 @@
 #define WAVE_REG_WIDTH              480                                     // 波形域宽度
 #define WAVE_REG_HIGH               360                                     // 波形域高度
 #define WAVE_NUM                    3                                       // 波形数目
-#define WAVE_DATA_REG_HIGH          WAVE_REG_HIGH / WAVE_NUM -20            // 单参数波形数据域高度
+#define WAVE_DATA_REG_HIGH          (WAVE_REG_HIGH / WAVE_NUM -20)            // 单参数波形数据域高度
 #define WAVE_FRONT_TIME             -8
 #define WAVE_AFTER_TIME             8
 
@@ -420,13 +420,13 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
 {
     WaveformDataSegment *waveData = d_ptr->waveSegments.at(index);
     WaveformDesc waveDesc;
+    waveDesc.reset();
     QColor color;
     qreal x1 = 0,y1 = 0,x2 = 0,y2 = 0;  // 需要连接的两点。
     waveDesc.startY = index * WAVE_REG_HIGH / WAVE_NUM;
     waveDesc.mediumY = waveDesc.startY + WAVE_DATA_REG_HIGH / 2;
     waveDesc.endY = waveDesc.startY + WAVE_DATA_REG_HIGH;
     waveDesc.waveID = waveData->waveID;
-//    waveDesc.waveBuf.resize(waveData->waveNum);
     waveformCache.getRange(waveDesc.waveID, waveDesc.waveRangeMin, waveDesc.waveRangeMax);
     if (waveData->sampleRate)
     {
@@ -460,7 +460,6 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
     int startIndex = (d_ptr->currentWaveStartSecond - WAVE_FRONT_TIME) * waveData->sampleRate;
     for (int i = 0 + startIndex; (x2 - d_ptr->startX) < WAVE_REG_WIDTH; i ++)
     {
-//        waveDesc.waveBuf.append(waveData->waveData[i]);
         short wave = waveData->waveData[i];
         double waveValue = _mapWaveValue(waveDesc, wave);
         if (start)
@@ -478,6 +477,45 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
         x2 += waveDesc.offsetX;
         y1 = y2;
     }
+
+    if (waveDesc.isECG)
+    {
+        painter.setPen(QPen(Qt::white, 3, Qt::SolidLine));
+        QRect rulerRect(d_ptr->startX + 25, waveDesc.mediumY, 100, 50);
+        switch (d_ptr->gain)
+        {
+        case ECG_GAIN_X0125:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - WAVE_DATA_REG_HIGH / 16, d_ptr->startX + 20, waveDesc.mediumY + WAVE_DATA_REG_HIGH / 16);
+            painter.drawText(rulerRect, "1mV");
+            break;
+        case ECG_GAIN_X025:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - WAVE_DATA_REG_HIGH / 8, d_ptr->startX + 20, waveDesc.mediumY + WAVE_DATA_REG_HIGH / 8);
+            painter.drawText(rulerRect, "1mV");
+            break;
+        case ECG_GAIN_X05:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - WAVE_DATA_REG_HIGH / 4, d_ptr->startX + 20, waveDesc.mediumY + WAVE_DATA_REG_HIGH / 4);
+            painter.drawText(rulerRect, "1mV");
+            break;
+        case ECG_GAIN_X10:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - WAVE_DATA_REG_HIGH / 2, d_ptr->startX + 20, waveDesc.mediumY + WAVE_DATA_REG_HIGH / 2);
+            painter.drawText(rulerRect, "1mV");
+            break;
+        case ECG_GAIN_X15:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - WAVE_DATA_REG_HIGH / 2, d_ptr->startX + 20, waveDesc.mediumY + WAVE_DATA_REG_HIGH / 2);
+            painter.drawText(rulerRect, "0.67mV");
+            break;
+        case ECG_GAIN_X20:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - WAVE_DATA_REG_HIGH / 2, d_ptr->startX + 20, waveDesc.mediumY + WAVE_DATA_REG_HIGH / 2);
+            painter.drawText(rulerRect, "0.5mV");
+            break;
+        case ECG_GAIN_X30:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - WAVE_DATA_REG_HIGH / 2, d_ptr->startX + 20, waveDesc.mediumY + WAVE_DATA_REG_HIGH / 2);
+            painter.drawText(rulerRect, "0.33mV");
+            break;
+        default:
+            break;
+        }
+    }
 }
 
 void EventWaveWidget::_drawWaveLabel(QPainter &painter, const WaveformDesc &waveDesc)
@@ -493,7 +531,7 @@ void EventWaveWidget::_drawWaveLabel(QPainter &painter, const WaveformDesc &wave
     painter.drawText(rectLabel, Qt::AlignCenter, title);
 }
 
-double EventWaveWidget::_mapWaveValue(const WaveformDesc &waveDesc, int wave)
+double EventWaveWidget::_mapWaveValue(WaveformDesc &waveDesc, int wave)
 {
     if (waveDesc.waveID == WAVE_NONE)
     {
@@ -551,6 +589,7 @@ double EventWaveWidget::_mapWaveValue(const WaveformDesc &waveDesc, int wave)
         endY = waveDesc.mediumY + scaleData;
         startY = waveDesc.mediumY - scaleData;
         dpos = (max - wave) * ((endY - startY) / (max - min)) + startY;
+        waveDesc.isECG = true;
         break;
     }
     case WAVE_SPO2:

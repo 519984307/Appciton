@@ -447,7 +447,7 @@
                     <Low Min="20" Max="1999">400</Low>
                     <High Min="21" Max="2000">700</High>
                     <Step>1</Step>
-                    <Scale>1</Scale>
+                    <Scale>100</Scale>
                 </lpm>
             </C.O.>
             <C.I. Enable="1" Prio="2">
@@ -455,7 +455,7 @@
                     <Low Min="22" Max="39">30</Low>
                     <High Min="23" Max="40">35</High>
                     <Step>1</Step>
-                    <Scale>1</Scale>
+                    <Scale>10</Scale>
                 </lpmpsqm>
             </C.I.>
             <TB Enable="0" Prio="2">

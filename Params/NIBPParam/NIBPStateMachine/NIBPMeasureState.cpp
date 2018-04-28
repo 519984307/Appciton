@@ -1,6 +1,7 @@
 #include "NIBPMeasureState.h"
 #include "NIBPParam.h"
 #include "NIBPAlarm.h"
+#include "EventStorageManager.h"
 
 /**************************************************************************************************
  * 主运行。
@@ -58,6 +59,7 @@ void NIBPMeasureState::unPacket(unsigned char *packet, int /*len*/)
     {
         //provider->stopMeasure();//不隐去会导致连续测量无法继续
         nibpParam.switchState(NIBP_STATE_GET_RESULT);
+        eventStorageManager.triggerNIBPMeasurementEvent();
     }
 }
 

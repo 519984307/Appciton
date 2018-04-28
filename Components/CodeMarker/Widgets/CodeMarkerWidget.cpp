@@ -12,6 +12,7 @@
 #include "CodeMarkerList.h"
 #include "SystemManager.h"
 #include "IConfig.h"
+#include "EventStorageManager.h"
 
 CodeMarkerWidget *CodeMarkerWidget::_selfObj = NULL;
 
@@ -106,6 +107,7 @@ void CodeMarkerButton::keyPressEvent(QKeyEvent *e)
                 codeMarkerWidget.setPress(true);
                 update();
             }
+            eventStorageManager.triggerCodeMarkerEvent(text().toLatin1().data());
             break;
         case Qt::Key_Left:
         case Qt::Key_Right:

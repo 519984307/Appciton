@@ -13,6 +13,8 @@
 #include "IDropList.h"
 #include "TimeDate.h"
 #include "ParamInfo.h"
+#include "ParamManager.h"
+#include "AlarmConfig.h"
 #include "EventDataSymbol.h"
 #include "EventWaveSetWidget.h"
 #include <QBoxLayout>
@@ -389,52 +391,85 @@ void EventReviewWindow::eventInfoUpdate()
     QString timeInfoStr;
     QString indexStr;
 
+    switch (d_ptr->ctx.infoSegment->type)
+    {
+    case EventPhysiologicalAlarm:
+    {
+        SubParamID subId = (SubParamID)(d_ptr->ctx.almSegment->subParamID);
+        AlarmLimitIFace *alarmLimit = alertor.getAlarmLimitIFace(subId);
+        unsigned char alarmId = d_ptr->ctx.almSegment->alarmType;
+        unsigned char alarmInfo = d_ptr->ctx.almSegment->alarmInfo;
+        AlarmPriority priority;
+        if (alarmLimit)
+        {
+            priority = alarmLimit->getAlarmPriority(alarmId);
+        }
+        else
+        {
+            return;
+        }
+
+        if (priority == ALARM_PRIO_LOW)
+        {
+            infoStr = "*";
+        }
+        else if (priority == ALARM_PRIO_MED)
+        {
+            infoStr = "**";
+        }
+        else if (priority == ALARM_PRIO_HIGH)
+        {
+            infoStr = "***";
+        }
+        else
+        {
+            infoStr = "";
+        }
+        infoStr += paramInfo.getSubParamName(subId);
+
+        if ((alarmInfo >> 1) & 0x1)
+        {
+            infoStr += trs("Upper");
+            infoStr += " > ";
+        }
+        else
+        {
+            infoStr += trs("Lower");
+            infoStr += " < ";
+        }
+        SubParamID subID = (SubParamID)d_ptr->ctx.almSegment->subParamID;
+        ParamID id = paramInfo.getParamID(subID);
+        UnitType type = paramManager.getSubParamUnit(id, subID);
+        LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subID, type);
+        double limitValue = (double)d_ptr->ctx.almSegment->alarmLimit / config.scale;
+        infoStr += QString::number(limitValue);
+        break;
+    }
+    case EventCodeMarker:
+    {
+        infoStr = (QString)d_ptr->ctx.codeMarkerSegment->codeName;
+        break;
+    }
+    case EventRealtimePrint:
+    {
+        break;
+    }
+    case EventNIBPMeasurement:
+    {
+        break;
+    }
+    case EventWaveFreeze:
+    {
+        break;
+    }
+    default:
+        break;
+    }
+
+
     unsigned t = 0;
     QString timeStr;
     QString dateStr;
-    SubParamID subId = (SubParamID)(d_ptr->ctx.almSegment->subParamID);
-    AlarmLimitIFace *alarmLimit = alertor.getAlarmLimitIFace(subId);
-    unsigned char alarmId = d_ptr->ctx.almSegment->alarmType;
-    unsigned char alarmInfo = d_ptr->ctx.almSegment->alarmInfo;
-    AlarmPriority priority;
-    if (alarmLimit)
-    {
-        priority = alarmLimit->getAlarmPriority(alarmId);
-    }
-    else
-    {
-        return;
-    }
-
-    if (priority == ALARM_PRIO_LOW)
-    {
-        infoStr = "*";
-    }
-    else if (priority == ALARM_PRIO_MED)
-    {
-        infoStr = "**";
-    }
-    else if (priority == ALARM_PRIO_HIGH)
-    {
-        infoStr = "***";
-    }
-    else
-    {
-        infoStr = "";
-    }
-    infoStr += paramInfo.getSubParamName(subId);
-
-    if ((alarmInfo >> 1) & 0x1)
-    {
-        infoStr += trs("Upper");
-        infoStr += " > ";
-    }
-    else
-    {
-        infoStr += trs("Lower");
-        infoStr += " < ";
-    }
-    infoStr += QString::number(d_ptr->ctx.almSegment->alarmLimit);
     t = d_ptr->ctx.infoSegment->timestamp;
     timeDate.getDate(t, dateStr, true);
     timeDate.getTime(t, timeStr, true);
@@ -812,34 +847,6 @@ void EventReviewWindow::_loadEventData()
         if (d_ptr->parseEventData(i))
         {
             t = d_ptr->ctx.infoSegment->timestamp;
-            subId = (SubParamID)(d_ptr->ctx.almSegment->subParamID);
-            alarmId = d_ptr->ctx.almSegment->alarmType;
-            alarmInfo = d_ptr->ctx.almSegment->alarmInfo;
-            alarmLimit = alertor.getAlarmLimitIFace(subId);
-            if (alarmLimit)
-            {
-                priority = alarmLimit->getAlarmPriority(alarmId);
-            }
-
-            if (d_ptr->curEventType != EventAll)
-            {
-                if (d_ptr->curEventType != d_ptr->ctx.infoSegment->type)
-                {
-                    continue;
-                }
-            }
-
-            if (d_ptr->curEventLevel != EVENT_LEVEL_ALL)
-            {
-                curPriority = _levelToPriority(d_ptr->curEventLevel);
-                if (curPriority != priority)
-                {
-                    continue;
-                }
-            }
-
-            d_ptr->dataIndex.append(i);
-
             // 事件时间
             timeDate.getDate(t, dateStr, true);
             timeDate.getTime(t, timeStr, true);
@@ -849,41 +856,103 @@ void EventReviewWindow::_loadEventData()
             d_ptr->eventTable->setRowCount(row + 1);
             d_ptr->eventTable->setItem(row, 0, item);
 
-            // 事件内容
-            if (priority == ALARM_PRIO_LOW)
+            switch (d_ptr->ctx.infoSegment->type)
             {
-                infoStr = "*";
-            }
-            else if (priority == ALARM_PRIO_MED)
+            case EventPhysiologicalAlarm:
             {
-                infoStr = "**";
-            }
-            else if (priority == ALARM_PRIO_HIGH)
-            {
-                infoStr = "***";
-            }
-            else
-            {
-                infoStr = "";
-            }
-            infoStr += paramInfo.getSubParamName(subId);
+                subId = (SubParamID)(d_ptr->ctx.almSegment->subParamID);
+                alarmId = d_ptr->ctx.almSegment->alarmType;
+                alarmInfo = d_ptr->ctx.almSegment->alarmInfo;
+                alarmLimit = alertor.getAlarmLimitIFace(subId);
+                if (alarmLimit)
+                {
+                    priority = alarmLimit->getAlarmPriority(alarmId);
+                }
 
-            if ((alarmInfo >> 1) & 0x1)
-            {
-                infoStr += trs("Upper");
-                infoStr += " > ";
-            }
-            else
-            {
-                infoStr += trs("Lower");
-                infoStr += " < ";
-            }
+                if (d_ptr->curEventType != EventAll)
+                {
+                    if (d_ptr->curEventType != d_ptr->ctx.infoSegment->type)
+                    {
+                        continue;
+                    }
+                }
 
-            infoStr += QString::number(d_ptr->ctx.almSegment->alarmLimit);
-            item = new QTableWidgetItem();
-            item->setTextAlignment(Qt::AlignCenter);
-            item->setText(infoStr);
-            d_ptr->eventTable->setItem(row, 1, item);
+                if (d_ptr->curEventLevel != EVENT_LEVEL_ALL)
+                {
+                    curPriority = _levelToPriority(d_ptr->curEventLevel);
+                    if (curPriority != priority)
+                    {
+                        continue;
+                    }
+                }
+
+                // 事件内容
+                if (priority == ALARM_PRIO_LOW)
+                {
+                    infoStr = "*";
+                }
+                else if (priority == ALARM_PRIO_MED)
+                {
+                    infoStr = "**";
+                }
+                else if (priority == ALARM_PRIO_HIGH)
+                {
+                    infoStr = "***";
+                }
+                else
+                {
+                    infoStr = "";
+                }
+                infoStr += paramInfo.getSubParamName(subId);
+
+                if ((alarmInfo >> 1) & 0x1)
+                {
+                    infoStr += trs("Upper");
+                    infoStr += " > ";
+                }
+                else
+                {
+                    infoStr += trs("Lower");
+                    infoStr += " < ";
+                }
+
+                SubParamID subID = (SubParamID)d_ptr->ctx.almSegment->subParamID;
+                ParamID id = paramInfo.getParamID(subID);
+                UnitType type = paramManager.getSubParamUnit(id, subID);
+                LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subID, type);
+                double alarmLimit = (double)d_ptr->ctx.almSegment->alarmLimit / config.scale;
+                infoStr += QString::number(alarmLimit);
+                item = new QTableWidgetItem();
+                item->setTextAlignment(Qt::AlignCenter);
+                item->setText(infoStr);
+                d_ptr->eventTable->setItem(row, 1, item);
+                break;
+            }
+            case EventCodeMarker:
+            {
+                infoStr = (QString)d_ptr->ctx.codeMarkerSegment->codeName;
+                item = new QTableWidgetItem();
+                item->setTextAlignment(Qt::AlignCenter);
+                item->setText(infoStr);
+                d_ptr->eventTable->setItem(row, 1, item);
+                break;
+            }
+            case EventRealtimePrint:
+            {
+                break;
+            }
+            case EventNIBPMeasurement:
+            {
+                break;
+            }
+            case EventWaveFreeze:
+            {
+                break;
+            }
+            default:
+                break;
+            }
+            d_ptr->dataIndex.append(i);
             row ++;
         }
     }

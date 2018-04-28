@@ -15,6 +15,7 @@ struct WaveformDesc
         endY = 0;
         offsetX = 0;
         waveID = WAVE_NONE;
+        isECG = false;
     }
 
     int waveRangeMax;                   // 波形数据最大值。
@@ -24,6 +25,7 @@ struct WaveformDesc
     int endY;                           // 不同波形的y坐标的结束偏移像素点。
     double offsetX;                     // 数据的x轴偏移。
     WaveformID waveID;                  // 波形ID
+    bool isECG;
 };
 
 
@@ -63,7 +65,7 @@ protected:
 private:
     void _drawWave(int index, QPainter &painter);
     void _drawWaveLabel(QPainter &painter, const WaveformDesc &waveDesc);
-    double _mapWaveValue(const WaveformDesc &waveDesc, int wave);
+    double _mapWaveValue(WaveformDesc &waveDesc, int wave);
 
 private:
     QScopedPointer<EventWaveWidgetPrivate> d_ptr;
