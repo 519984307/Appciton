@@ -22,4 +22,13 @@ public:
         };
         return symbol[index];
     }
+
+    static const char *convert(ECGEventGain index)
+    {
+        static const char *symbol[ECG_EVENT_GAIN_NR] =
+        {
+            "0.125 cm/mV", "0.25 cm/mV", "0.5 cm/mV", "1.0 cm/mV", "2.0 cm/mV", "4.0 cm/mV"
+        };
+        return symbol[index];
+    }
 };

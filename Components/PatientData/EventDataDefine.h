@@ -13,6 +13,18 @@ enum EventType{
     EventTypeMax
 };
 
+/* ECG gain */
+enum ECGEventGain
+{
+    ECG_EVENT_GAIN_X0125,       // x0.125
+    ECG_EVENT_GAIN_X025,        // x0.25
+    ECG_EVENT_GAIN_X05,         // x0.5
+    ECG_EVENT_GAIN_X10,         // x1
+    ECG_EVENT_GAIN_X20,         // x2
+    ECG_EVENT_GAIN_X40,         // x4
+    ECG_EVENT_GAIN_NR
+};
+
 enum EventSegmentType {
     EVENT_INFO_SEGMENT = 0x11111111,
     EVENT_TRENDDATA_SEGMENT = 0x22222222,

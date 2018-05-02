@@ -6,8 +6,7 @@
 #include "LanguageManager.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include "ECGDefine.h"
-#include "ECGSymbol.h"
+#include "EventDataSymbol.h"
 #include "EventReviewWindow.h"
 
 #define ITEM_HEIGHT         30
@@ -61,9 +60,9 @@ EventWaveSetWidget::EventWaveSetWidget()
     _gain->label->setAlignment(Qt::AlignHCenter);
     _gain->label->setFixedSize(labelWidth, ITEM_HEIGHT);
     _gain->combolist->setFixedSize(btnWidth, ITEM_HEIGHT);
-    for (int i = 0; i < ECG_GAIN_NR; i ++)
+    for (int i = 0; i < ECG_EVENT_GAIN_NR; i ++)
     {
-        _gain->combolist->addItem(ECGSymbol::convert((ECGGain)i));
+        _gain->combolist->addItem(EventDataSymbol::convert((ECGEventGain)i));
     }
     _gain->combolist->setCurrentIndex(3);
     connect(_gain->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_waveGainReleased(int)));
@@ -73,8 +72,11 @@ EventWaveSetWidget::EventWaveSetWidget()
     _speed->label->setAlignment(Qt::AlignHCenter);
     _speed->label->setFixedSize(labelWidth, ITEM_HEIGHT);
     _speed->combolist->setFixedSize(btnWidth, ITEM_HEIGHT);
+    _speed->combolist->addItem("6.25mm/s");
     _speed->combolist->addItem("12.5mm/s");
     _speed->combolist->addItem("25mm/s");
+    _speed->combolist->addItem("50mm/s");
+    _speed->combolist->setCurrentIndex(1);
     connect(_speed->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_waveSpeedReleased(int)));
 
     contentLayout->addWidget(_gain);

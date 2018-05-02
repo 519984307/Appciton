@@ -77,11 +77,12 @@ class EventWaveWidgetPrivate
 public:
     EventWaveWidgetPrivate()
         :speed(EventWaveWidget::SWEEP_SPEED_125),
-          gain(ECG_GAIN_X10),
+          gain(ECG_EVENT_GAIN_X10),
           displayWaveSeconds(0),
           bufferEmpty(false),
           totalWaveDuration(0),
-          currentWaveStartSecond(-1)
+          currentWaveStartSecond(-1),
+          currentWaveMedSecond(0)
     {
         pixelWPicth = systemManager.getScreenPixelWPitch();
         pixelHPitch = systemManager.getScreenPixelHPitch();
@@ -98,13 +99,22 @@ public:
         float lengthMM;
         switch(speed)
         {
+        case EventWaveWidget::SWEEP_SPEED_62_5:
+            lengthMM = 6.25;
+            displayWaveSeconds = 16;
+            break;
         case EventWaveWidget::SWEEP_SPEED_125:
             lengthMM = 12.5;
+            displayWaveSeconds = 8;
             break;
-
         case EventWaveWidget::SWEEP_SPEED_250:
+            lengthMM = 25;
+            displayWaveSeconds = 4;
+            break;
+        case EventWaveWidget::SWEEP_SPEED_500:
+            lengthMM = 50.0;
+            displayWaveSeconds = 2;
         default:
-            lengthMM = 25.0;
             break;
         }
 
@@ -258,16 +268,18 @@ public:
     QVector<WaveRegionBuffer *> waveBuffers;
     QVector<WaveformDataSegment *> waveSegments;
     EventWaveWidget::SweepSpeed speed;
-    ECGGain gain;
+    ECGEventGain gain;
     float pixelWPicth;      //horizontal gap between two pixel, in unit of mm
     float pixelHPitch;      //veritical gap between two pixel, in unit of mm
     int displayWaveSeconds; // seconds of waveform to display
     bool bufferEmpty;        // buffer is empty, need to fill data
     int totalWaveDuration;    // the duration of the wave segments
     int currentWaveStartSecond;
+    int currentWaveMedSecond;
 
-    int startX;
-    int endX;
+    float startX;
+    float endX;
+    float waveRagWidth;
 };
 
 EventWaveWidget::EventWaveWidget(QWidget *parent)
@@ -279,13 +291,35 @@ EventWaveWidget::EventWaveWidget(QWidget *parent)
     this->setPalette(pal);
     setAutoFillBackground(true);
 
-    d_ptr->startX = (width() - WAVE_REG_WIDTH) / 2;
-    d_ptr->endX = (width() + WAVE_REG_WIDTH) / 2;
+    initXCoordinate();
 }
 
 EventWaveWidget::~EventWaveWidget()
 {
 
+}
+
+void EventWaveWidget::initXCoordinate()
+{
+    float oneSecondLength = d_ptr->pixLengthOfOneSecondWaveform();
+    d_ptr->waveRagWidth = oneSecondLength * d_ptr->displayWaveSeconds;
+    d_ptr->startX = (width() - d_ptr->waveRagWidth) / 2;
+    d_ptr->endX = (width() + d_ptr->waveRagWidth) / 2;
+}
+
+int EventWaveWidget::getCurrentWaveMedSecond() const
+{
+    return d_ptr->currentWaveMedSecond;
+}
+
+void EventWaveWidget::setWaveMedSecond(int second)
+{
+    if (d_ptr->currentWaveMedSecond == second)
+    {
+        return;
+    }
+    d_ptr->currentWaveMedSecond = second;
+    update();
 }
 
 int EventWaveWidget::getCurrentWaveStartSecond() const
@@ -315,14 +349,16 @@ void EventWaveWidget::setSweepSpeed(EventWaveWidget::SweepSpeed speed)
     }
 
     d_ptr->speed = speed;
-    int displayWaveSeconds = width() / d_ptr->pixLengthOfOneSecondWaveform();
+//    int displayWaveSeconds = width() / d_ptr->pixLengthOfOneSecondWaveform();
 
-    if(displayWaveSeconds % 2)
-    {
-        //must be a event number
-        displayWaveSeconds -= 1;
-    }
-    d_ptr->updateDisplayWaveformDuration(displayWaveSeconds);
+//    if(displayWaveSeconds % 2)
+//    {
+//        //must be a event number
+//        displayWaveSeconds -= 1;
+//    }
+//    d_ptr->updateDisplayWaveformDuration(displayWaveSeconds);
+    d_ptr->currentWaveMedSecond = 0;
+    initXCoordinate();
     update();
 }
 
@@ -346,7 +382,7 @@ void EventWaveWidget::setWaveSegments(const QVector<WaveformDataSegment *> waveS
     update();
 }
 
-void EventWaveWidget::setGain(ECGGain gain)
+void EventWaveWidget::setGain(ECGEventGain gain)
 {
     d_ptr->gain = gain;
     update();
@@ -370,29 +406,41 @@ void EventWaveWidget::paintEvent(QPaintEvent *ev)
     // 标尺刻度
     int coordinateY = (height() + WAVE_REG_HIGH) / 2;
     painter.drawLine(d_ptr->startX, coordinateY, d_ptr->endX, coordinateY);
-    painter.drawLine(d_ptr->startX, coordinateY, d_ptr->startX, coordinateY - 5);
-    painter.drawLine(d_ptr->startX + WAVE_REG_WIDTH/2, coordinateY, d_ptr->startX + WAVE_REG_WIDTH/2, coordinateY - 5);
+//    painter.drawLine(d_ptr->startX, coordinateY, d_ptr->startX, coordinateY - 5);
+//    painter.drawLine(d_ptr->startX + d_ptr->waveRagWidth/2, coordinateY, d_ptr->startX + d_ptr->waveRagWidth/2, coordinateY - 5);
     painter.drawLine(d_ptr->endX, coordinateY, d_ptr->endX, coordinateY - 5);
+    int endSecond;
+    int totalSecond;
+    switch(d_ptr->speed)
+    {
+    case SWEEP_SPEED_62_5:
+        totalSecond = 16;
+        break;
+    case SWEEP_SPEED_125:
+        totalSecond = 8;
+        break;
+    case SWEEP_SPEED_250:
+        totalSecond = 4;
+        break;
+    case SWEEP_SPEED_500:
+        totalSecond = 2;
+        break;
+    default:
+        break;
+    }
+    for (int i =0; i <= totalSecond; i ++)
+    {
+        painter.drawLine(d_ptr->startX + d_ptr->waveRagWidth/totalSecond * i, coordinateY, d_ptr->startX + d_ptr->waveRagWidth/totalSecond * i, coordinateY - 5);
+    }
+    d_ptr->currentWaveStartSecond = d_ptr->currentWaveMedSecond - totalSecond/2;
+    endSecond = d_ptr->currentWaveMedSecond + totalSecond/2;
+
     QString scaleStr = QString::number(d_ptr->currentWaveStartSecond) + "s";
     painter.drawText(d_ptr->startX -10, coordinateY + 20, scaleStr);
-    int medSecond;
-    int endSecond;
-    if (d_ptr->speed == SWEEP_SPEED_125)
-    {
-        painter.drawLine(d_ptr->startX + WAVE_REG_WIDTH/4, coordinateY, d_ptr->startX + WAVE_REG_WIDTH/4, coordinateY - 5);
-        painter.drawLine(d_ptr->startX + WAVE_REG_WIDTH/4 * 3, coordinateY, d_ptr->startX + WAVE_REG_WIDTH/4*3, coordinateY - 5);
-        medSecond = d_ptr->currentWaveStartSecond + 2;
-        endSecond = d_ptr->currentWaveStartSecond + 4;
-    }
-    else
-    {
-        medSecond = d_ptr->currentWaveStartSecond + 1;
-        endSecond = d_ptr->currentWaveStartSecond + 2;
-    }
-    scaleStr = QString::number(medSecond) + "s";
-    painter.drawText(d_ptr->startX + WAVE_REG_WIDTH/2 - 10, coordinateY + 20, scaleStr);
+    scaleStr = QString::number(d_ptr->currentWaveMedSecond) + "s";
+    painter.drawText(d_ptr->startX + d_ptr->waveRagWidth/2 - 10, coordinateY + 20, scaleStr);
     scaleStr = QString::number(endSecond) + "s";
-    painter.drawText(d_ptr->startX + WAVE_REG_WIDTH - 10, coordinateY + 20, scaleStr);
+    painter.drawText(d_ptr->startX + d_ptr->waveRagWidth - 10, coordinateY + 20, scaleStr);
 
     for (int i = 0; i < count; i ++)
     {
@@ -430,14 +478,22 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
     waveformCache.getRange(waveDesc.waveID, waveDesc.waveRangeMin, waveDesc.waveRangeMax);
     if (waveData->sampleRate)
     {
-        if (d_ptr->speed == SWEEP_SPEED_125)
+        switch (d_ptr->speed)
         {
-            waveDesc.offsetX = (double)WAVE_REG_WIDTH / 4 / waveData->sampleRate;
-
-        }
-        else
-        {
-            waveDesc.offsetX = (double)WAVE_REG_WIDTH / 2 / waveData->sampleRate;
+        case SWEEP_SPEED_62_5:
+            waveDesc.offsetX = (double)d_ptr->waveRagWidth / 16 / waveData->sampleRate;
+            break;
+        case SWEEP_SPEED_125:
+            waveDesc.offsetX = (double)d_ptr->waveRagWidth / 8 / waveData->sampleRate;
+            break;
+        case SWEEP_SPEED_250:
+            waveDesc.offsetX = (double)d_ptr->waveRagWidth / 4 / waveData->sampleRate;
+            break;
+        case SWEEP_SPEED_500:
+            waveDesc.offsetX = (double)d_ptr->waveRagWidth / 2 / waveData->sampleRate;
+            break;
+        default:
+            break;
         }
     }
     else
@@ -458,7 +514,7 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
 
     bool start = true;
     int startIndex = (d_ptr->currentWaveStartSecond - WAVE_FRONT_TIME) * waveData->sampleRate;
-    for (int i = 0 + startIndex; (x2 - d_ptr->startX) < WAVE_REG_WIDTH; i ++)
+    for (int i = 0 + startIndex; (x2 - d_ptr->startX) < d_ptr->waveRagWidth; i ++)
     {
         short wave = waveData->waveData[i];
         double waveValue = _mapWaveValue(waveDesc, wave);
@@ -484,33 +540,29 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
         QRect rulerRect(d_ptr->startX + 25, waveDesc.mediumY, 100, 50);
         switch (d_ptr->gain)
         {
-        case ECG_GAIN_X0125:
-            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - WAVE_DATA_REG_HIGH / 16, d_ptr->startX + 20, waveDesc.mediumY + WAVE_DATA_REG_HIGH / 16);
+        case ECG_EVENT_GAIN_X0125:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 16, d_ptr->startX + 20, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 16);
             painter.drawText(rulerRect, "1mV");
             break;
-        case ECG_GAIN_X025:
-            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - WAVE_DATA_REG_HIGH / 8, d_ptr->startX + 20, waveDesc.mediumY + WAVE_DATA_REG_HIGH / 8);
+        case ECG_EVENT_GAIN_X025:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 8, d_ptr->startX + 20, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 8);
             painter.drawText(rulerRect, "1mV");
             break;
-        case ECG_GAIN_X05:
-            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - WAVE_DATA_REG_HIGH / 4, d_ptr->startX + 20, waveDesc.mediumY + WAVE_DATA_REG_HIGH / 4);
+        case ECG_EVENT_GAIN_X05:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 4, d_ptr->startX + 20, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 4);
             painter.drawText(rulerRect, "1mV");
             break;
-        case ECG_GAIN_X10:
-            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - WAVE_DATA_REG_HIGH / 2, d_ptr->startX + 20, waveDesc.mediumY + WAVE_DATA_REG_HIGH / 2);
+        case ECG_EVENT_GAIN_X10:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 2, d_ptr->startX + 20, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 2);
             painter.drawText(rulerRect, "1mV");
             break;
-        case ECG_GAIN_X15:
-            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - WAVE_DATA_REG_HIGH / 2, d_ptr->startX + 20, waveDesc.mediumY + WAVE_DATA_REG_HIGH / 2);
-            painter.drawText(rulerRect, "0.67mV");
-            break;
-        case ECG_GAIN_X20:
-            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - WAVE_DATA_REG_HIGH / 2, d_ptr->startX + 20, waveDesc.mediumY + WAVE_DATA_REG_HIGH / 2);
+        case ECG_EVENT_GAIN_X20:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 2, d_ptr->startX + 20, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 2);
             painter.drawText(rulerRect, "0.5mV");
             break;
-        case ECG_GAIN_X30:
-            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - WAVE_DATA_REG_HIGH / 2, d_ptr->startX + 20, waveDesc.mediumY + WAVE_DATA_REG_HIGH / 2);
-            painter.drawText(rulerRect, "0.33mV");
+        case ECG_EVENT_GAIN_X40:
+            painter.drawLine(d_ptr->startX + 20, waveDesc.mediumY - 10 / d_ptr->pixelHPitch / 2, d_ptr->startX + 20, waveDesc.mediumY + 10 / d_ptr->pixelHPitch / 2);
+            painter.drawText(rulerRect, "0.25mV");
             break;
         default:
             break;
@@ -562,26 +614,23 @@ double EventWaveWidget::_mapWaveValue(WaveformDesc &waveDesc, int wave)
         double scaleData = 0;
         switch (d_ptr->gain)
         {
-        case ECG_GAIN_X0125:
-            scaleData = 0.125 * 50;
+        case ECG_EVENT_GAIN_X0125:
+            scaleData = 0.125 * 10 * (1 / d_ptr->pixelHPitch) / 2.0;
             break;
-        case ECG_GAIN_X025:
-            scaleData = 0.25 * 50;
+        case ECG_EVENT_GAIN_X025:
+            scaleData = 0.25 * 10 * (1 / d_ptr->pixelHPitch) / 2.0;
             break;
-        case ECG_GAIN_X05:
-            scaleData = 0.5 * 50;
+        case ECG_EVENT_GAIN_X05:
+            scaleData = 0.5 * 10 * (1 / d_ptr->pixelHPitch) / 2.0;
             break;
-        case ECG_GAIN_X10:
-            scaleData = 1 * 50;
+        case ECG_EVENT_GAIN_X10:
+            scaleData = 1 * 10 * (1 / d_ptr->pixelHPitch) / 2.0;
             break;
-        case ECG_GAIN_X15:
-            scaleData = 1.5 * 50;
+        case ECG_EVENT_GAIN_X20:
+            scaleData = 2 * 10 * (1 / d_ptr->pixelHPitch) / 2.0;
             break;
-        case ECG_GAIN_X20:
-            scaleData = 2 * 50;
-            break;
-        case ECG_GAIN_X30:
-            scaleData = 3 * 50;
+        case ECG_EVENT_GAIN_X40:
+            scaleData = 4 * 10 * (1 / d_ptr->pixelHPitch) / 2.0;
             break;
         default:
             break;

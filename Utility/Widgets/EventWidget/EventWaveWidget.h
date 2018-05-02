@@ -2,7 +2,6 @@
 #include <QWidget>
 #include <QScopedPointer>
 #include <EventDataDefine.h>
-#include "ECGDefine.h"
 
 struct WaveformDesc
 {
@@ -20,9 +19,9 @@ struct WaveformDesc
 
     int waveRangeMax;                   // 波形数据最大值。
     int waveRangeMin;                   // 波形数据最小值。
-    int startY;                         // 不同波形的y坐标起始偏移像素点。
-    int mediumY;                        // 不同波形的y坐标中间位置。
-    int endY;                           // 不同波形的y坐标的结束偏移像素点。
+    double startY;                         // 不同波形的y坐标起始偏移像素点。
+    double mediumY;                        // 不同波形的y坐标中间位置。
+    double endY;                           // 不同波形的y坐标的结束偏移像素点。
     double offsetX;                     // 数据的x轴偏移。
     WaveformID waveID;                  // 波形ID
     bool isECG;
@@ -36,12 +35,18 @@ class EventWaveWidget : public QWidget
 public:
     enum SweepSpeed
     {
+        SWEEP_SPEED_62_5,
         SWEEP_SPEED_125,
         SWEEP_SPEED_250,
+        SWEEP_SPEED_500
     };
 
     EventWaveWidget(QWidget *parent = NULL);
     ~EventWaveWidget();
+
+    void initXCoordinate(void);
+    int getCurrentWaveMedSecond() const;
+    void setWaveMedSecond(int second);
 
     /* get current wave display start seconds */
     int getCurrentWaveStartSecond() const;
@@ -56,7 +61,7 @@ public:
     /* set the wave segments to display */
     void setWaveSegments(const QVector<WaveformDataSegment *> waveSegemnts);
 
-    void setGain(ECGGain);
+    void setGain(ECGEventGain);
 
 protected:
     void paintEvent(QPaintEvent *ev);

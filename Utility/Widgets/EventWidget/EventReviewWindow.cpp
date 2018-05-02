@@ -198,7 +198,7 @@ public:
     IStorageBackend *backend;
     int curParseIndex;
     int eventNum;                           // 总事件数
-    int curSecEvent;                        // 当前选中事件项在表格中的索引位置
+//    int eventTable->currentRow();                        // 当前选中事件项在表格中的索引位置
     EventType curEventType;
     EventLevel curEventLevel;
     QList<int> dataIndex;                   // 当前选中事件项对应的数据所在索引
@@ -475,7 +475,7 @@ void EventReviewWindow::eventInfoUpdate()
     timeDate.getTime(t, timeStr, true);
     timeInfoStr = dateStr + " " + timeStr;
 
-    indexStr = QString::number(d_ptr->curSecEvent + 1) + "/" + QString::number(d_ptr->eventTable->rowCount());
+    indexStr = QString::number(d_ptr->eventTable->currentRow() + 1) + "/" + QString::number(d_ptr->eventTable->rowCount());
 
     d_ptr->infoWidget->loadDataInfo(infoStr, timeInfoStr, indexStr);
 }
@@ -604,7 +604,7 @@ void EventReviewWindow::setWaveSpeed(int speed)
 
 void EventReviewWindow::setWaveGain(int gain)
 {
-    d_ptr->waveWidget->setGain((ECGGain)gain);
+    d_ptr->waveWidget->setGain((ECGEventGain)gain);
 }
 
 /**************************************************************************************************
@@ -641,7 +641,7 @@ void EventReviewWindow::_waveInfoReleased()
         return;
     }
 
-    d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->curSecEvent));
+    d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->eventTable->currentRow()));
     eventInfoUpdate();
     eventTrendUpdate();
     eventWaveUpdate();
@@ -661,10 +661,9 @@ void EventReviewWindow::_eventListReleased()
  *************************************************************************************************/
 void EventReviewWindow::_upMoveEventReleased()
 {
-    if (d_ptr->curSecEvent != 0 && d_ptr->curSecEvent != InvData())
+    if (d_ptr->eventTable->currentRow() != 0)
     {
-        d_ptr->curSecEvent --;
-        d_ptr->eventTable->selectRow(d_ptr->curSecEvent);
+        d_ptr->eventTable->selectRow(d_ptr->eventTable->currentRow() - 1);
     }
 }
 
@@ -673,10 +672,9 @@ void EventReviewWindow::_upMoveEventReleased()
  *************************************************************************************************/
 void EventReviewWindow::_downMoveEventReleased()
 {
-    if (d_ptr->curSecEvent != d_ptr->eventNum - 1 && d_ptr->curSecEvent != InvData())
+    if (d_ptr->eventTable->currentRow() != d_ptr->eventTable->rowCount() - 1)
     {
-        d_ptr->curSecEvent ++;
-        d_ptr->eventTable->selectRow(d_ptr->curSecEvent);
+        d_ptr->eventTable->selectRow(d_ptr->eventTable->currentRow() + 1);
     }
 }
 
@@ -703,13 +701,38 @@ void EventReviewWindow::_eventLevelSelect(int index)
  *************************************************************************************************/
 void EventReviewWindow::_leftMoveCoordinate()
 {
-    int startSecond = d_ptr->waveWidget->getCurrentWaveStartSecond();
-    if (startSecond == -8)
+    EventWaveWidget::SweepSpeed speed;
+    speed = d_ptr->waveWidget->getSweepSpeed();
+    int medSecond = d_ptr->waveWidget->getCurrentWaveMedSecond();
+    switch (speed)
     {
+    case EventWaveWidget::SWEEP_SPEED_62_5:
         return;
+    case EventWaveWidget::SWEEP_SPEED_125:
+        if (medSecond == -4)
+        {
+            return;
+        }
+        medSecond --;
+        break;
+    case EventWaveWidget::SWEEP_SPEED_250:
+        if (medSecond == -6)
+        {
+            return;
+        }
+        medSecond --;
+        break;
+    case EventWaveWidget::SWEEP_SPEED_500:
+        if (medSecond == -7)
+        {
+            return;
+        }
+        medSecond --;
+        break;
+    default:
+        break;
     }
-    startSecond --;
-    d_ptr->waveWidget->setWaveStartSecond(startSecond);
+    d_ptr->waveWidget->setWaveMedSecond(medSecond);
 }
 
 /**************************************************************************************************
@@ -719,27 +742,36 @@ void EventReviewWindow::_rightMoveCoordinate()
 {
     EventWaveWidget::SweepSpeed speed;
     speed = d_ptr->waveWidget->getSweepSpeed();
-    int startSecond = d_ptr->waveWidget->getCurrentWaveStartSecond();
-    if (speed == EventWaveWidget::SWEEP_SPEED_125)
+    int medSecond = d_ptr->waveWidget->getCurrentWaveMedSecond();
+    switch (speed)
     {
-        if (startSecond == 4)
+    case EventWaveWidget::SWEEP_SPEED_62_5:
+        return;
+    case EventWaveWidget::SWEEP_SPEED_125:
+        if (medSecond == 4)
         {
             return;
         }
-        startSecond ++;
-        d_ptr->waveWidget->setWaveStartSecond(startSecond);
-    }
-    else
-    {
-        if (startSecond == 6)
+        medSecond ++;
+        break;
+    case EventWaveWidget::SWEEP_SPEED_250:
+        if (medSecond == 6)
         {
             return;
         }
-        startSecond ++;
-        d_ptr->waveWidget->setWaveStartSecond(startSecond);
+        medSecond ++;
+        break;
+    case EventWaveWidget::SWEEP_SPEED_500:
+        if (medSecond == 7)
+        {
+            return;
+        }
+        medSecond ++;
+        break;
+    default:
+        break;
     }
-
-
+    d_ptr->waveWidget->setWaveMedSecond(medSecond);
 }
 
 /**************************************************************************************************
@@ -747,17 +779,16 @@ void EventReviewWindow::_rightMoveCoordinate()
  *************************************************************************************************/
 void EventReviewWindow::_leftMoveEvent()
 {
-    if (d_ptr->curSecEvent != 0 && d_ptr->curSecEvent != InvData())
+    if (d_ptr->eventTable->currentRow() != 0 && d_ptr->eventTable->currentRow() != InvData())
     {
-        d_ptr->curSecEvent --;
-        d_ptr->eventTable->selectRow(d_ptr->curSecEvent);
+        d_ptr->eventTable->selectRow(d_ptr->eventTable->currentRow() - 1);
     }
     if (!d_ptr->backend->getBlockNR())
     {
         return;
     }
 
-    d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->curSecEvent));
+    d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->eventTable->currentRow()));
     eventInfoUpdate();
     eventTrendUpdate();
     eventWaveUpdate();
@@ -768,17 +799,16 @@ void EventReviewWindow::_leftMoveEvent()
  *************************************************************************************************/
 void EventReviewWindow::_rightMoveEvent()
 {
-    if (d_ptr->curSecEvent != d_ptr->eventNum - 1 && d_ptr->curSecEvent != InvData())
+    if (d_ptr->eventTable->currentRow() != d_ptr->eventNum - 1 && d_ptr->eventTable->currentRow() != InvData())
     {
-        d_ptr->curSecEvent ++;
-        d_ptr->eventTable->selectRow(d_ptr->curSecEvent);
+        d_ptr->eventTable->selectRow(d_ptr->eventTable->currentRow() + 1);
     }
     if (!d_ptr->backend->getBlockNR())
     {
         return;
     }
 
-    d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->curSecEvent));
+    d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->eventTable->currentRow()));
     eventInfoUpdate();
     eventTrendUpdate();
     eventWaveUpdate();
@@ -958,12 +988,7 @@ void EventReviewWindow::_loadEventData()
     }
     if (row)
     {
-        d_ptr->curSecEvent = 0;
-        d_ptr->eventTable->selectRow(d_ptr->curSecEvent);
-    }
-    else
-    {
-        d_ptr->curSecEvent = InvData();
+        d_ptr->eventTable->selectRow(0);
     }
 }
 
