@@ -13,6 +13,7 @@
 
 enum ConfiguredFuncs
 {
+    CONFIG_ST = 0x01,
     CONFIG_RESP = 0x02,
     CONFIG_ECG12LEADS = 0x04,
     CONFIG_SPO2 = 0x08,
@@ -105,6 +106,9 @@ public:
 
     //  查询是否支持该功能。
     bool isSupport(ConfiguredFuncs funcs) const;
+
+    // check whether param is support
+    bool isSupport(ParamID paramID) const;
 
     // get the module config status
     unsigned int getModuleConfig() const;

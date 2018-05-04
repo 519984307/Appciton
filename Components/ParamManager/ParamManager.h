@@ -35,6 +35,9 @@ public:
     short getSubParamValue(const QString &paramName, SubParamID id);
     short getSubParamValue(ParamID paramID, SubParamID id);
 
+    // check whether a param is avaliable
+    bool isSubParamAvaliable(ParamID paramID, SubParamID id);
+
     // 显示子参数值
     void showSubParamValue();
 

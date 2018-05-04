@@ -188,6 +188,17 @@ short ParamManager::getSubParamValue(ParamID paramID, SubParamID id)
     return it.value()->getSubParamValue(id);
 }
 
+bool ParamManager::isSubParamAvaliable(ParamID paramID, SubParamID id)
+{
+    ParamWithIDMap::Iterator it = _paramWithID.find(paramID);
+    if (it == _paramWithID.end())
+    {
+        return 0;
+    }
+
+    return it.value()->isSubParamAvaliable(id);
+}
+
 /**************************************************************************************************
  * 功能： 显示子参数值。
  *************************************************************************************************/

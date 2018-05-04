@@ -162,6 +162,8 @@ void RecorderManager::selfTest()
 
 
     QMetaObject::invokeMethod(d_ptr->processor, "addPage", Q_ARG(RecordPage*, testPage));
+
+    addPageGenerator(new ContinuousPageGenerator());
 }
 
 bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)

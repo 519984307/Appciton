@@ -34,6 +34,9 @@ public:
     // 获取子参数值
     virtual short getSubParamValue(SubParamID id);
 
+    // check whether a subparam is avaliable, always true in default implement
+    virtual bool isSubParamAvaliable(SubParamID id);
+
     // 显示子参数值
     virtual void showSubParamValue();
 

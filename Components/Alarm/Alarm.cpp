@@ -118,7 +118,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
 
         TrendCacheData data;
         trendCache.getTendData(_timestamp, data);
-        curValue = data.value[alarmSource->getSubParamID(i)];
+        curValue = data.values[alarmSource->getSubParamID(i)];
 
         isEnable = alarmSource->isAlarmEnable(i);
         completeResult = alarmSource->getCompare(curValue, i);

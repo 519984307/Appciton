@@ -111,6 +111,34 @@ bool SystemManager::isSupport(ConfiguredFuncs funcs) const
     return enable;
 }
 
+/**************************************************************************************************
+ * 功能： 查询是否支持该功能。
+ *************************************************************************************************/
+bool SystemManager::isSupport(ParamID paramID) const
+{
+    QString path;
+    switch (paramID)
+    {
+    case PARAM_DUP_ECG:
+    case PARAM_ECG:
+        return true;
+    case PARAM_DUP_RESP:
+    case PARAM_RESP: path = "RESPEnable"; break;
+    case PARAM_SPO2: path = "SPO2Enable"; break;
+    case PARAM_NIBP: path = "NIBPEnable"; break;
+    case PARAM_CO2: path = "CO2Enable"; break;
+    case PARAM_AG: path = "AGEnable"; break;
+    case PARAM_CO: path = "COEnable"; break;
+    case PARAM_IBP: path = "IBPEnable"; break;
+    case PARAM_TEMP: path = "TEMPEnable"; break;
+    default:break;
+    }
+
+    bool enable = false;
+    machineConfig.getNumValue(path, enable);
+    return enable;
+}
+
 /***************************************************************************************************
  * get the module config status
  **************************************************************************************************/

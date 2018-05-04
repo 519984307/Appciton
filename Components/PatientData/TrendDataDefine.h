@@ -55,7 +55,7 @@ struct TrendDataPackage
         co2Baro  = 0;
     }
     unsigned time;
-    QMap<SubParamID, short> subparamValue;
+    QMap<SubParamID, TrendDataType> subparamValue;
     QMap<SubParamID, bool> subparamAlarm;
     short co2Baro;
     unsigned char alarmFlag;

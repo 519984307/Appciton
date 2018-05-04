@@ -4,6 +4,7 @@
 #include <QGraphicsItem>
 #include <PatientDefine.h>
 #include <TrendDataDefine.h>
+#include <QStringList>
 
 class RecordPageGenerator : public QObject
 {
@@ -87,6 +88,14 @@ protected:
      * @return a record page
      */
     static RecordPage *createTrendPage(const TrendDataPackage& trendData, bool showEventTime = false);
+
+    /**
+     * @brief getTrendStringList get a trend string list from the trend data,
+     *                           each string contain the subparam name, value and unit
+     * @param trendData the trend data struct
+     * @return  string list
+     */
+    static QStringList getTrendStringList(const TrendDataPackage& trendData);
 
     /**
      * @brief timerEvent handle timer event

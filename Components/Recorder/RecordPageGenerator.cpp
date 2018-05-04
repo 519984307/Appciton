@@ -169,6 +169,12 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
 
 }
 
+QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &trendData)
+{
+    QStringList strList;
+    return strList;
+}
+
 void RecordPageGenerator::timerEvent(QTimerEvent *ev)
 {
     if(_timerID == ev->timerId())

@@ -621,7 +621,7 @@ void PrintContinuousLayout::_getDrawText(void)
             continue;
         }
 
-        data = trendData.value[i];
+        data = trendData.values.value((SubParamID)i, InvData());
         if (data == InvData() || data == UnknownData())
         {
             isAllParamValid &= false;
@@ -721,8 +721,8 @@ void PrintContinuousLayout::_getDrawText(void)
                         }
                         break;
                     case SUB_PARAM_TD:
-                        t1 = Unit::convert(unit, defUnitType, trendData.value[SUB_PARAM_T1] * 1.0 / mul);
-                        t2 = Unit::convert(unit, defUnitType, trendData.value[SUB_PARAM_T2] * 1.0 / mul);
+                        t1 = Unit::convert(unit, defUnitType, trendData.values[SUB_PARAM_T1] * 1.0 / mul);
+                        t2 = Unit::convert(unit, defUnitType, trendData.values[SUB_PARAM_T2] * 1.0 / mul);
                         dataStr.sprintf("%.1f", fabs(t1.toDouble() - t2.toDouble()));
                         break;
                     default:
@@ -733,7 +733,7 @@ void PrintContinuousLayout::_getDrawText(void)
 
             text += dataStr;
 
-            if (alarmStatus.isAlarm[i])
+            if (alarmStatus.alarms.value((SubParamID)i, false))
             {
                 text += "*";
             }
@@ -749,21 +749,21 @@ void PrintContinuousLayout::_getDrawText(void)
             if (unit == defUnitType)
             {
                 dataStr = QString::number(data);
-                if (alarmStatus.isAlarm[SUB_PARAM_NIBP_SYS])
+                if (alarmStatus.alarms[SUB_PARAM_NIBP_SYS])
                 {
                     dataStr += "*";
                 }
                 dataStr += "/";
 
-                dataStr += QString::number(trendData.value[SUB_PARAM_NIBP_DIA]);
-                if (alarmStatus.isAlarm[SUB_PARAM_NIBP_DIA])
+                dataStr += QString::number(trendData.values[SUB_PARAM_NIBP_DIA]);
+                if (alarmStatus.alarms[SUB_PARAM_NIBP_DIA])
                 {
                     dataStr += "*";
                 }
 
                 dataStr += " (";
-                dataStr += QString::number(trendData.value[SUB_PARAM_NIBP_MAP]);
-                if (alarmStatus.isAlarm[SUB_PARAM_NIBP_MAP])
+                dataStr += QString::number(trendData.values[SUB_PARAM_NIBP_MAP]);
+                if (alarmStatus.alarms[SUB_PARAM_NIBP_MAP])
                 {
                     dataStr += "*";
                 }
@@ -771,22 +771,22 @@ void PrintContinuousLayout::_getDrawText(void)
             }
             else
             {
-                dataStr = Unit::convert(unit, defUnitType, trendData.value[SUB_PARAM_NIBP_SYS]);
-                if (alarmStatus.isAlarm[SUB_PARAM_NIBP_SYS])
+                dataStr = Unit::convert(unit, defUnitType, trendData.values[SUB_PARAM_NIBP_SYS]);
+                if (alarmStatus.alarms[SUB_PARAM_NIBP_SYS])
                 {
                     dataStr += "*";
                 }
                 dataStr += "/";
 
-                dataStr += Unit::convert(unit, defUnitType, trendData.value[SUB_PARAM_NIBP_DIA]);
-                if (alarmStatus.isAlarm[SUB_PARAM_NIBP_DIA])
+                dataStr += Unit::convert(unit, defUnitType, trendData.values[SUB_PARAM_NIBP_DIA]);
+                if (alarmStatus.alarms[SUB_PARAM_NIBP_DIA])
                 {
                     dataStr += "*";
                 }
                 dataStr += " (";
 
-                dataStr += Unit::convert(unit, defUnitType, trendData.value[SUB_PARAM_NIBP_MAP]);
-                if (alarmStatus.isAlarm[SUB_PARAM_NIBP_MAP])
+                dataStr += Unit::convert(unit, defUnitType, trendData.values[SUB_PARAM_NIBP_MAP]);
+                if (alarmStatus.alarms[SUB_PARAM_NIBP_MAP])
                 {
                     dataStr += "*";
                 }

@@ -148,14 +148,14 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
             continue;
         }
 
-        if(data.value[i] == InvData())
+        if(data.values.value((SubParamID)i) == InvData())
         {
             continue;
         }
 
         TrendValueSegment valueSegment;
         valueSegment.subParamId = i;
-        valueSegment.value = data.value[i];
+        valueSegment.value = data.values.value((SubParamID)i);
         valueSegment.alarmFlag = alertor.getAlarmSourceStatus(paramInfo.getParamName(paramId), (SubParamID) i);
         if(!hasAlarm)
         {

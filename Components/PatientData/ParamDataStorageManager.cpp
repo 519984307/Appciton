@@ -264,7 +264,7 @@ void ParamDataStorageManager::mainRun(unsigned t)
         }
 
         paramBuf->paramItem[i].paramID = i;
-        paramBuf->paramItem[i].value = data.value[i];
+        paramBuf->paramItem[i].value = data.values.value((SubParamID)i, InvData());
         paramBuf->paramItem[i].alarmFlag =
                 alertor.getAlarmSourceStatus(paramInfo.getParamName(paramID), (SubParamID)i);
         paramBuf->item.checkSum += paramBuf->paramItem[i].calcSum();
@@ -339,7 +339,7 @@ void ParamDataStorageManager::addNIBPData(unsigned t)
         }
 
         paramBuf->paramItem[i].paramID = i;
-        paramBuf->paramItem[i].value = data.value[i];
+        paramBuf->paramItem[i].value = data.values.value((SubParamID) i, InvData());
         paramBuf->paramItem[i].alarmFlag =
                 alertor.getAlarmSourceStatus(paramInfo.getParamName(paramID), (SubParamID)i);
         paramBuf->item.checkSum += paramBuf->paramItem[i].calcSum();
@@ -458,7 +458,7 @@ void ParamDataStorageManager::addAlarmData(unsigned t, ParamID id)
         }
 
         paramBuf->paramItem[i].paramID = i;
-        paramBuf->paramItem[i].value = data.value[i];
+        paramBuf->paramItem[i].value = data.values.value((SubParamID)i, InvData());
         paramBuf->paramItem[i].alarmFlag =
                 alertor.getAlarmSourceStatus(paramInfo.getParamName(paramID), (SubParamID)i);
         paramBuf->item.checkSum += paramBuf->paramItem[i].calcSum();

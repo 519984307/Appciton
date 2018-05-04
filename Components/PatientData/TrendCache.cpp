@@ -57,9 +57,12 @@ void TrendCache::collectTrendData(unsigned t, bool overwrite)
             continue;
         }
 
-        data.value[i] = paramManager.getSubParamValue(paramID, (SubParamID)i);
-        int b = data.value[i];
-        data.valueIsDisplay[i] = paramManager.isParamEnable(paramID);
+        if( !paramManager.isSubParamAvaliable(paramID, (SubParamID)i))
+        {
+            continue;
+        }
+
+        data.values[(SubParamID)i] = paramManager.getSubParamValue(paramID, (SubParamID)i);
     }
 
     if (MAX_TREND_CACHE_NUM == _trendCacheMap.count())
@@ -96,7 +99,12 @@ void TrendCache::collectTrendAlarmStatus(unsigned t)
             continue;
         }
 
-        alarmStatus.isAlarm[i] = alertor.getAlarmSourceStatus(paramInfo.getParamName(paramID),
+        if( !paramManager.isSubParamAvaliable(paramID, (SubParamID)i))
+        {
+            continue;
+        }
+
+        alarmStatus.alarms[(SubParamID)i] = alertor.getAlarmSourceStatus(paramInfo.getParamName(paramID),
             (SubParamID)i);
     }
 

@@ -16,12 +16,6 @@ struct TrendCacheData
         lastNibpMeasureTime = 0;
         lastNibpMeasureSuccessTime = 0;
         co2baro = 0;
-        // 默认为无效值
-        for (int i = 0; i < SUB_PARAM_NR; ++i)
-        {
-            value[i] = InvData();
-            valueIsDisplay[i] = false;
-        }
     }
 
     const TrendCacheData &operator=(const TrendCacheData &data)
@@ -29,25 +23,18 @@ struct TrendCacheData
         lastNibpMeasureTime = data.lastNibpMeasureTime;
         lastNibpMeasureSuccessTime = data.lastNibpMeasureSuccessTime;
         co2baro = data.co2baro;
-        ::memcpy(value, data.value, sizeof(value));
-        ::memcpy(valueIsDisplay, data.valueIsDisplay, sizeof(valueIsDisplay));
+        values = data.values;
         return *this;
     }
     unsigned lastNibpMeasureTime;
     unsigned lastNibpMeasureSuccessTime;
     TrendDataType co2baro;
-    TrendDataType value[SUB_PARAM_NR];
-    bool valueIsDisplay[SUB_PARAM_NR];
+    QMap<SubParamID, TrendDataType> values;
 };
 
 struct TrendAlarmStatus
 {
-    TrendAlarmStatus()
-    {
-        ::memset(isAlarm, 0, SUB_PARAM_NR);
-    }
-
-    bool isAlarm[SUB_PARAM_NR];
+    QMap<SubParamID, bool> alarms;
 };
 
 struct TrendRecorder

@@ -97,15 +97,15 @@ void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCache
             continue;
         }
 
-        if(data.value[i] == InvData())
+        if(data.values.value((SubParamID)i, InvData()) == InvData())
         {
             continue;
         }
 
         TrendValueSegment valueSegment;
         valueSegment.subParamId = i;
-        valueSegment.value = data.value[i];
-        valueSegment.alarmFlag = almStatus.isAlarm[i];
+        valueSegment.value = data.values.value((SubParamID)i);
+        valueSegment.alarmFlag = almStatus.alarms.value((SubParamID)i);
         if(!hasAlarm)
         {
             hasAlarm = valueSegment.alarmFlag;

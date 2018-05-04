@@ -38,6 +38,9 @@ public:
     // 获取子参数值。
     virtual short getSubParamValue(SubParamID id);
 
+    // check whether the sub param is avaliabe
+    virtual bool isSubParamAvaliable(SubParamID id);
+
     // 设置数据提供对象。
     void setProvider(IBPProviderIFace *provider);
 

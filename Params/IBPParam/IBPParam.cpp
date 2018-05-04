@@ -473,6 +473,49 @@ short IBPParam::getSubParamValue(SubParamID id)
     }
 }
 
+bool IBPParam::isSubParamAvaliable(SubParamID id)
+{
+    switch(id)
+    {
+    case SUB_PARAM_ART_SYS:
+    case SUB_PARAM_ART_DIA:
+    case SUB_PARAM_ART_MAP:
+    case SUB_PARAM_ART_PR:
+        return _ibp1.pressureName == IBP_PRESSURE_ART || _ibp2.pressureName == IBP_PRESSURE_ART;
+    case SUB_PARAM_PA_SYS:
+    case SUB_PARAM_PA_DIA:
+    case SUB_PARAM_PA_MAP:
+    case SUB_PARAM_PA_PR:
+        return _ibp1.pressureName == IBP_PRESSURE_PA || _ibp2.pressureName == IBP_PRESSURE_PA;
+    case SUB_PARAM_CVP_MAP:
+    case SUB_PARAM_CVP_PR:
+        return _ibp1.pressureName == IBP_PRESSURE_CVP || _ibp2.pressureName == IBP_PRESSURE_CVP;
+    case SUB_PARAM_LAP_MAP:
+    case SUB_PARAM_LAP_PR:
+        return _ibp1.pressureName == IBP_PRESSURE_LAP || _ibp2.pressureName == IBP_PRESSURE_LAP;
+    case SUB_PARAM_RAP_MAP:
+    case SUB_PARAM_RAP_PR:
+        return _ibp1.pressureName == IBP_PRESSURE_RAP || _ibp2.pressureName == IBP_PRESSURE_RAP;
+    case SUB_PARAM_ICP_MAP:
+    case SUB_PARAM_ICP_PR:
+        return _ibp1.pressureName == IBP_PRESSURE_ICP || _ibp2.pressureName == IBP_PRESSURE_ICP;
+    case SUB_PARAM_AUXP1_SYS:
+    case SUB_PARAM_AUXP1_DIA:
+    case SUB_PARAM_AUXP1_MAP:
+    case SUB_PARAM_AUXP1_PR:
+        return _ibp1.pressureName == IBP_PRESSURE_AUXP1 || _ibp2.pressureName == IBP_PRESSURE_AUXP1;
+    case SUB_PARAM_AUXP2_SYS:
+    case SUB_PARAM_AUXP2_DIA:
+    case SUB_PARAM_AUXP2_MAP:
+    case SUB_PARAM_AUXP2_PR:
+        return _ibp1.pressureName == IBP_PRESSURE_AUXP2 || _ibp2.pressureName == IBP_PRESSURE_AUXP2;
+    default:
+        break;
+    }
+    return false;
+
+}
+
 /**************************************************************************************************
  * 功能： 标名对应的波形上下限。
  *************************************************************************************************/
