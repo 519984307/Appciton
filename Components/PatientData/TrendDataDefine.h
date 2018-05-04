@@ -47,11 +47,17 @@ struct TrendDataPackage
     {
         for (int i = 0; i < SUB_PARAM_NR; i ++)
         {
-            paramData.insert(static_cast<SubParamID>(i), InvData());
+            subparamValue.insert(static_cast<SubParamID>(i), InvData());
+            subparamAlarm.insert(static_cast<SubParamID>(i), false);
         }
+        time = 0;
+        alarmFlag = false;
+        co2Baro  = 0;
     }
     unsigned time;
-    QMap<SubParamID, short> paramData;
+    QMap<SubParamID, short> subparamValue;
+    QMap<SubParamID, bool> subparamAlarm;
+    short co2Baro;
     unsigned char alarmFlag;
 };
 

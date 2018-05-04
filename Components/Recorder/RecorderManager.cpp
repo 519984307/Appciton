@@ -8,6 +8,7 @@
 #include <QPainter>
 #include "FontManager.h"
 #include <QPointer>
+#include "ContinuousPageGenerator.h"
 
 
 class RecorderManagerPrivate

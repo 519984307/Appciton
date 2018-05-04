@@ -284,7 +284,7 @@ SOURCES +=                                                                      
     Components/PrintManager/PrintLayouts/PrintViewSummaryLayout.cpp             \
     Components/Recorder/RecorderManager.cpp                                     \
     Components/Recorder/RecordPageGenerator.cpp                                 \
-    Components/Recorder/GeneralPageGenerator.cpp                                 \
+    Components/Recorder/ContinuousPageGenerator.cpp                             \
     Components/Recorder/RecordPageProcessor.cpp                                 \
     Components/PdfWriter/HaruPdfWriter.cpp                                      \
     Components/PdfWriter/QPrinterPdfWriter.cpp                                  \
@@ -737,7 +737,7 @@ HEADERS +=                                                                      
     Components/Recorder/RecorderManager.h                                       \
     Components/Recorder/RecordPage.h                                            \
     Components/Recorder/RecordPageGenerator.h                                   \
-    Components/Recorder/GeneralPageGenerator.h                                  \
+    Components/Recorder/ContinuousPageGenerator.h                               \
     Components/Recorder/RecordPageProcessor.h                                   \
     Components/PdfWriter/HaruPdfWriter.h                                        \
     Components/PdfWriter/QPrinterPdfWriter.h                                    \

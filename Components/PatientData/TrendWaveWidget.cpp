@@ -281,7 +281,7 @@ void TrendWaveWidget::loadTrendData(SubParamID subID)
     for (int i = _trendDataPack.length() - 1 - intervalNum * GRAPH_POINT_NUMBER * (_currentPage - 1); i  >= 0;
          i = i - intervalNum)
     {
-        _dataBuf[j] = _trendDataPack.at(i)->paramData.find(subID).value();
+        _dataBuf[j] = _trendDataPack.at(i)->subparamValue.find(subID).value();
         j ++;
         if (j == _dataSize)
         {
@@ -557,7 +557,7 @@ void TrendWaveWidget::_getTrendData()
         pack->time = dataSeg->timestamp;
         for (int j = 0; j < dataSeg->trendValueNum; j ++)
         {
-            pack->paramData.find((SubParamID)dataSeg->values[j].subParamId).value() =
+            pack->subparamValue.find((SubParamID)dataSeg->values[j].subParamId).value() =
                     dataSeg->values[j].value;
             if (!pack->alarmFlag && dataSeg->values[j].alarmFlag)
             {

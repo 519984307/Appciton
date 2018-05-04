@@ -56,6 +56,7 @@ struct PatientInfo
         blood = PATIENT_BLOOD_TYPE_NULL;
         weight = 0;
         height  = 0;
+        weightUnit = PATIENT_WEIGHT_UNIT_KG;
         memset(name, 0, sizeof(name));
         memset(id, 0, sizeof(id));
     }
@@ -92,6 +93,7 @@ struct PatientInfo
     PatientSex sex;
     int age;
     PatientBloodType blood;
+    PatientWeightUnit weightUnit;
     int weight;
     int height;
     char id[MAX_PATIENT_ID_LEN];

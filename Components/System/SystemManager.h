@@ -18,11 +18,11 @@ enum ConfiguredFuncs
     CONFIG_SPO2 = 0x08,
     CONFIG_NIBP = 0x10,
     CONFIG_CO2 = 0x20,
-    CONFIG_AG,
-    CONFIG_CO,
-    CONFIG_IBP,
     CONFIG_TEMP = 0x40,
     CONFIG_WIFI = 0x80,
+    CONFIG_AG = 0x100,
+    CONFIG_CO = 0x200,
+    CONFIG_IBP = 0x400,
 };
 
 // 前面板按键状态,与系统板获取按键状态命令回复一致

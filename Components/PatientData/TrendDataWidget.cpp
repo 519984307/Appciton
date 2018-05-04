@@ -114,9 +114,9 @@ void TrendDataWidget::loadTrendData()
 
             if (_displayList.at(j) == SUB_PARAM_NIBP_MAP)
             {
-                short nibpSys = _trendDataPack.at(i)->paramData.find((SubParamID)(_displayList.at(j) - 2)).value();
-                short nibpDia = _trendDataPack.at(i)->paramData.find((SubParamID)(_displayList.at(j) - 1)).value();
-                short nibpMap = _trendDataPack.at(i)->paramData.find(_displayList.at(j)).value();
+                short nibpSys = _trendDataPack.at(i)->subparamValue.find((SubParamID)(_displayList.at(j) - 2)).value();
+                short nibpDia = _trendDataPack.at(i)->subparamValue.find((SubParamID)(_displayList.at(j) - 1)).value();
+                short nibpMap = _trendDataPack.at(i)->subparamValue.find(_displayList.at(j)).value();
                 QString sysStr = nibpSys == InvData() ?"---":QString::number(nibpSys);
                 QString diaStr = nibpDia == InvData() ?"---":QString::number(nibpDia);
                 QString mapStr = nibpMap == InvData() ?"---":QString::number(nibpMap);
@@ -126,9 +126,9 @@ void TrendDataWidget::loadTrendData()
             else if (_displayList.at(j) == SUB_PARAM_ART_MAP || _displayList.at(j) == SUB_PARAM_PA_MAP ||
                      _displayList.at(j) == SUB_PARAM_AUXP1_MAP || _displayList.at(j) == SUB_PARAM_AUXP2_MAP)
             {
-                short ibpSys = _trendDataPack.at(i)->paramData.find((SubParamID)(_displayList.at(j) - 2)).value();
-                short ibpDia = _trendDataPack.at(i)->paramData.find((SubParamID)(_displayList.at(j) - 1)).value();
-                short ibpMap = _trendDataPack.at(i)->paramData.find(_displayList.at(j)).value();
+                short ibpSys = _trendDataPack.at(i)->subparamValue.find((SubParamID)(_displayList.at(j) - 2)).value();
+                short ibpDia = _trendDataPack.at(i)->subparamValue.find((SubParamID)(_displayList.at(j) - 1)).value();
+                short ibpMap = _trendDataPack.at(i)->subparamValue.find(_displayList.at(j)).value();
                 QString sysStr = ibpSys == InvData() ?"---":QString::number(ibpSys);
                 QString diaStr = ibpDia == InvData() ?"---":QString::number(ibpDia);
                 QString mapStr = ibpMap == InvData() ?"---":QString::number(ibpMap);
@@ -139,8 +139,8 @@ void TrendDataWidget::loadTrendData()
                      _displayList.at(j) == SUB_PARAM_ETAA1 || _displayList.at(j) == SUB_PARAM_ETAA2 ||
                      _displayList.at(j) == SUB_PARAM_ETO2 || _displayList.at(j) == SUB_PARAM_T1)
             {
-                short data1 = _trendDataPack.at(i)->paramData.find(_displayList.at(j)).value();
-                short data2 = _trendDataPack.at(i)->paramData.find((SubParamID)(_displayList.at(j) + 1)).value();
+                short data1 = _trendDataPack.at(i)->subparamValue.find(_displayList.at(j)).value();
+                short data2 = _trendDataPack.at(i)->subparamValue.find((SubParamID)(_displayList.at(j) + 1)).value();
                 QString dataStr1 = data1 == InvData() ?"---":QString::number(data1);
                 QString dataStr2 = data2 == InvData() ?"---":QString::number(data2);
                 QString dataStr = dataStr1 + "/" + dataStr2;
@@ -148,7 +148,7 @@ void TrendDataWidget::loadTrendData()
             }
             else
             {
-                short data = _trendDataPack.at(i)->paramData.find(_displayList.at(j)).value();
+                short data = _trendDataPack.at(i)->subparamValue.find(_displayList.at(j)).value();
                 QString dataStr = data == InvData() ?"---":QString::number(data);
                 item->setText(dataStr);
             }
@@ -659,10 +659,11 @@ void TrendDataWidget::_getTrendData()
         data = backend->getBlockData((quint32)i);
         dataSeg = (TrendDataSegment*)data.data();
         pack->time = dataSeg->timestamp;
+        pack->co2Baro = dataSeg->co2Baro;
         for (int j = 0; j < dataSeg->trendValueNum; j ++)
         {
-            pack->paramData.find((SubParamID)dataSeg->values[j].subParamId).value() =
-                    dataSeg->values[j].value;
+            pack->subparamValue[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].value;
+            pack->subparamAlarm[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].alarmFlag;
             if (!pack->alarmFlag && dataSeg->values[j].alarmFlag)
             {
                 pack->alarmFlag = dataSeg->values[j].alarmFlag;

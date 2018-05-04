@@ -4,12 +4,14 @@
 #include <qmath.h>
 #include <QPainterPath>
 #include <QPainter>
+#include <QStringList>
+#include "FontManager.h"
+#include "LanguageManager.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 RecordPageGenerator::RecordPageGenerator(QObject *parent)
     :QObject(parent), _requestStop(false), _generate(true), _timerID(-1)
 {
-
 }
 
 RecordPageGenerator::~RecordPageGenerator()
@@ -34,6 +36,11 @@ void RecordPageGenerator::stop()
 void RecordPageGenerator::pageControl(bool pause)
 {
     _generate = !pause;
+}
+
+QFont RecordPageGenerator::font() const
+{
+    return fontManager.recordFont(24);
 }
 
 RecordPage *RecordPageGenerator::createPage()
@@ -62,6 +69,104 @@ RecordPage *RecordPageGenerator::createPage()
 
 #endif
     return p;
+}
+
+RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const PatientInfo &patInfo, unsigned timestamp)
+{
+    QStringList infos;
+    infos.append(QString("%1: %2").arg(trs("Name")).arg(patInfo.name));
+    infos.append(QString("%1: %2").arg(trs("Gender")).arg(PatientSymbol::convert(patInfo.sex)));
+    infos.append(QString("%1: %2").arg(trs("PatientType")).arg(PatientSymbol::convert(patInfo.type)));
+    infos.append(QString("%1: %2").arg(trs("Blood")).arg(PatientSymbol::convert(patInfo.blood)));
+    QString str;
+    str = QString("%1: ").arg(trs("Age"));
+    if(patInfo.age > 0)
+    {
+        str += QString::number(patInfo.age);
+    }
+    infos.append(str);
+
+    str = QString("%1: ").arg(trs("Weight"));
+    if(patInfo.weight)
+    {
+        str += QString("%1 %2").arg(QString::number(patInfo.weight)).arg(PatientSymbol::convert(patInfo.weightUnit));
+    }
+    infos.append(str);
+
+    str = QString("%1: ").arg(trs("Height"));
+    if(patInfo.height)
+    {
+        str += QString::number(patInfo.height);
+    }
+    infos.append(str);
+
+    infos.append(QString("%1: ").arg(trs("ID")).arg(patInfo.id));
+
+    //calculate the info text width
+    int textWidth = 0;
+    int w = 0;
+    QFont font = fontManager.recordFont(24);
+    foreach (QString infoStr, infos) {
+        w = fontManager.textWidthInPixels(infoStr, font);
+        if(w > textWidth)
+        {
+            textWidth = w;
+        }
+    }
+
+    //title width
+    w = fontManager.textWidthInPixels(title, font);
+    if(w > textWidth)
+    {
+        textWidth =  w;
+    }
+
+    QDateTime dt = QDateTime::currentDateTime();
+    if(timestamp)
+    {
+        dt = QDateTime::fromTime_t(timestamp);
+    }
+
+    QString timeStr = QString("%1: %2").arg(trs("RecordTime")).arg(dt.toString("yyyy-MM-dd HH:mm:ss"));
+
+    //record time width
+    w = fontManager.textWidthInPixels(timeStr, font);
+    if(w > textWidth)
+    {
+        textWidth =  w;
+    }
+
+    int pageWidth = textWidth + font.pixelSize() * 3;
+    int fontH = fontManager.textHeightInPixels(font);
+
+    RecordPage *page = new RecordPage(pageWidth);
+    QPainter painter(page);
+    painter.setPen(Qt::white);
+    painter.setFont(font);
+
+    //we assume the page can hold all the rows
+    QRect textRect(font.pixelSize(), fontH, textWidth, fontH);
+    painter.drawText(textRect, Qt::AlignLeft|Qt::AlignVCenter, title);
+
+    //left one empty row
+    textRect.translate(0, fontH/2);
+
+    foreach (QString infoStr, infos) {
+        textRect.translate(0, fontH);
+        painter.drawText(textRect, Qt::AlignLeft|Qt::AlignVCenter, infoStr);
+    }
+
+    //recording time in the bottom
+    textRect.setTop(page->height() - fontH - fontH/2);
+    textRect.setBottom(page->height() - fontH / 2);
+    painter.drawText(textRect, Qt::AlignLeft|Qt::AlignVCenter, timeStr);
+
+    return page;
+}
+
+RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendData, bool showEventTime)
+{
+
 }
 
 void RecordPageGenerator::timerEvent(QTimerEvent *ev)
