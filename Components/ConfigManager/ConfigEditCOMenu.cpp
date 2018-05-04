@@ -1,299 +1,258 @@
+//////////////////////////////////////////////
 #include "ConfigEditCOMenu.h"
-#include "ConfigEditMenuGrp.h"
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QLabel>
 #include "IComboList.h"
-#include "COSymbol.h"
 #include "LabelButton.h"
+#include "ISpinBox.h"
+#include "LanguageManager.h"
+#include "SetWidget.h"
+#include "PublicMenuManager.h"
 #include "NumberInput.h"
+#include "IMessageBox.h"
+#include "NumberInput.h"
+#include "COParam.h"
+#include "ConfigManager.h"
+#include "Config.h"
+#include "ConfigEditMenuGrp.h"
 
-class ConfigEditCOMenuPrivate
+ConfigCOMenu *ConfigCOMenu::_selfObj = NULL;
+
+/**************************************************************************************************
+ * 构造。
+ *************************************************************************************************/
+ConfigCOMenu::ConfigCOMenu() : SubMenu(trs("C.O.")), _measureSta(CO_INST_START)
 {
-public:
-
-    ConfigEditCOMenuPrivate()
-    {
-        ;
-    }
-
-    void loadOptions();
-
-    LabelButton *labelbutton_height;//身高
-    LabelButton *labelbutton_weight;//体重
-    LabelButton *labelbutton_ratdio;//co系数
-    IComboList  *icombolist_ITS;//注射液温度来源
-    LabelButton *labelbutton_IT;//注射液温度
-    IComboList  *icombolist_CO_SM;//开始co测量
-};
-
-void ConfigEditCOMenuPrivate::loadOptions()
-{
-    Config *config = configEditMenuGrp.getCurrentEditConfig();
-    float index  = 0;
-
-    //装载身高数据
-    config->getNumValue("CO|height", index);
-
-    if(index!=0)
-        labelbutton_height->button->setText(QString::number(index));
-    else
-        labelbutton_height->button->setText("170.0");
-
-    //装载体重数据
-    config->getNumValue("CO|weight", index);
-
-    if(index!=0)
-        labelbutton_weight->button->setText(QString::number(index));
-    else
-        labelbutton_weight->button->setText("64.0");
-
-    //装载CO系数
-    config->getNumValue("CO|ratdio", index);
-
-    if(index!=0)
-        labelbutton_ratdio->button->setText(QString::number(index));
-    else
-        labelbutton_ratdio->button->setText("0.542");
-
-    //装载注射液温度来源参数
-    config->getNumValue("CO|InjectionTempSource", index);
-    if(icombolist_ITS->count()==0)
-    {
-        icombolist_ITS[0].addItem("AUTO");
-        icombolist_ITS[0].addItem("MANUAL");
-    }
-
-    if(index!=0)
-        icombolist_ITS[0].setCurrentItem("MANUAL");
-    else
-        icombolist_ITS[0].setCurrentItem("AUTO");
-
-    //装载注射液温度
-    config->getNumValue("CO|InjectionTemp", index);
-
-    if(index!=0)
-        labelbutton_IT->button->setText(QString::number(index));
-    else
-        labelbutton_IT->button->setText("20.0");
-
-    //装载co是否开始测量参数
-    config->getNumValue("CO|StartMeasure", index);
-    if(icombolist_CO_SM->count()==0)
-    {
-        icombolist_CO_SM[0].addItem("OFF");
-        icombolist_CO_SM[0].addItem("ON");
-    }
-
-    if(index!=0)
-        icombolist_CO_SM->setCurrentItem("ON");
-    else
-        icombolist_CO_SM->setCurrentItem("OFF");
-}
-
-ConfigEditCOMenu::ConfigEditCOMenu()
-    :SubMenu(trs("COMenu")),
-    d_ptr(new ConfigEditCOMenuPrivate())
-{
-    setDesc(trs("COMenuDesc"));
+    setDesc(trs("C.O.Desc"));
     startLayout();
 }
 
-ConfigEditCOMenu::~ConfigEditCOMenu()
+/**************************************************************************************************
+ * 析构。
+ *************************************************************************************************/
+ConfigCOMenu::~ConfigCOMenu()
 {
 
 }
 
-void ConfigEditCOMenu::layoutExec()
+/**************************************************************************************************
+ * 执行布局。
+ *************************************************************************************************/
+void ConfigCOMenu::layoutExec()
 {
-    int submenuW = configEditMenuGrp.getSubmenuWidth();
-    int submenuH = configEditMenuGrp.getSubmenuHeight();
+    int submenuW = publicMenuManager.getSubmenuWidth();
+    int submenuH = publicMenuManager.getSubmenuHeight();
     setMenuSize(submenuW, submenuH);
 
     int itemW = submenuW - ICOMBOLIST_SPACE;
     int btnWidth = itemW / 2;
     int labelWidth = itemW - btnWidth;
 
-    d_ptr->labelbutton_height = new LabelButton(trs("height"));
-    d_ptr->labelbutton_height->setFont(defaultFont());
-    d_ptr->labelbutton_height->label->setFixedSize(labelWidth,ITEM_H);
-    d_ptr->labelbutton_height->button->setFixedSize(btnWidth,ITEM_H);
-    connect(d_ptr->labelbutton_height->button, SIGNAL(realReleased()), this, SLOT(onButtonClicked()));
-    mainLayout->addWidget(d_ptr->labelbutton_height);
+    Config *config = configEditMenuGrp.getCurrentEditConfig();
+    float index  = 0;
 
-    d_ptr->labelbutton_weight = new LabelButton(trs("weight"));
-    d_ptr->labelbutton_weight->setFont(defaultFont());
-    d_ptr->labelbutton_weight->label->setFixedSize(labelWidth,ITEM_H);
-    d_ptr->labelbutton_weight->button->setFixedSize(btnWidth,ITEM_H);
-    connect(d_ptr->labelbutton_weight->button, SIGNAL(realReleased()), this, SLOT(onButtonClicked()));
-    mainLayout->addWidget(d_ptr->labelbutton_weight);
+    config->getNumValue("CO|ratdio", index);
 
-    d_ptr->labelbutton_ratdio = new LabelButton(trs("COratdio"));
-    d_ptr->labelbutton_ratdio->setFont(defaultFont());
-    d_ptr->labelbutton_ratdio->label->setFixedSize(labelWidth,ITEM_H);
-    d_ptr->labelbutton_ratdio->button->setFixedSize(btnWidth,ITEM_H);
-    connect(d_ptr->labelbutton_ratdio->button, SIGNAL(realReleased()), this, SLOT(onButtonClicked()));
-    mainLayout->addWidget(d_ptr->labelbutton_ratdio);
+    _ductRatio = new LabelButton(trs("CORatio"));
+    _ductRatio->setFont(defaultFont());
+    _ductRatio->button->setText(QString::number(index));
+    _ductRatio->label->setFixedSize(labelWidth, ITEM_H);
+    _ductRatio->button->setFixedSize(btnWidth, ITEM_H);
+    connect(_ductRatio->button, SIGNAL(realReleased()), this, SLOT(_ductRatioReleased()));
+    mainLayout->addWidget(_ductRatio);
 
-    d_ptr->icombolist_ITS = new IComboList(trs("InjectionTempSource"));
-    d_ptr->icombolist_ITS->setFont(defaultFont());
-    d_ptr->icombolist_ITS->label->setFixedSize(labelWidth,ITEM_H);
-    d_ptr->icombolist_ITS->combolist->setFixedSize(btnWidth,ITEM_H);
-    connect(d_ptr->icombolist_ITS, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboListConfigChanged(int)));
-    mainLayout->addWidget(d_ptr->icombolist_ITS);
+    config->getNumValue("CO|InjectionTempSource", index);
+    _inputMode = new IComboList(trs("InjectionTempSource"));
+    _inputMode->setFont(defaultFont());
+    _inputMode->addItem(trs("Auto"));
+    _inputMode->addItem(trs("Manual"));
+    _inputMode->label->setFixedSize(labelWidth, ITEM_H);
+    _inputMode->combolist->setFixedSize(btnWidth, ITEM_H);
+    _inputMode->combolist->setCurrentIndex(index);
+    connect(_inputMode, SIGNAL(currentIndexChanged(int)), this, SLOT(_inputModeSlot(int)));
+    mainLayout->addWidget(_inputMode);
 
-    d_ptr->labelbutton_IT = new LabelButton(trs("InjectionTemp"));
-    d_ptr->labelbutton_IT->setFont(defaultFont());
-    d_ptr->labelbutton_IT->label->setFixedSize(labelWidth,ITEM_H);
-    d_ptr->labelbutton_IT->button->setFixedSize(btnWidth,ITEM_H);
-    connect(d_ptr->labelbutton_IT->button, SIGNAL(realReleased()), this, SLOT(onButtonClicked()));
-    mainLayout->addWidget(d_ptr->labelbutton_IT);
+    config->getNumValue("CO|InjectionTemp", index);
+    _injectionTemp = new LabelButton(trs("InjectionTemp"));
+    _injectionTemp->setFont(defaultFont());
+    _injectionTemp->button->setText(QString::number(index));
+    _injectionTemp->label->setFixedSize(labelWidth, ITEM_H);
+    _injectionTemp->button->setFixedSize(btnWidth, ITEM_H);
+    _injectionTemp->button->setEnabled(false);
+    _injectionTemp->button->setFocusPolicy(Qt::NoFocus);
+    connect(_injectionTemp->button, SIGNAL(realReleased()), this, SLOT(_injectionTempReleased()));
+    mainLayout->addWidget(_injectionTemp);
 
-    d_ptr->icombolist_CO_SM = new IComboList(trs("StartMeasure"));
-    d_ptr->icombolist_CO_SM->setFont(defaultFont());
-    d_ptr->icombolist_CO_SM->label->setFixedSize(labelWidth,ITEM_H);
-    d_ptr->icombolist_CO_SM->combolist->setFixedSize(btnWidth,ITEM_H);
-    connect(d_ptr->icombolist_CO_SM, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboListConfigChanged(int)));
-    mainLayout->addWidget(d_ptr->icombolist_CO_SM);
+    config->getNumValue("CO|InjectionVolumn", index);
+    _injectionVolumn = new LabelButton(trs("InjectionVolumn"));
+    _injectionVolumn->setFont(defaultFont());
+    _injectionVolumn->button->setText(QString::number(index));
+    _injectionVolumn->label->setFixedSize(labelWidth, ITEM_H);
+    _injectionVolumn->button->setFixedSize(btnWidth, ITEM_H);
+    connect(_injectionVolumn->button, SIGNAL(realReleased()), this, SLOT(_injectionVolumnReleased()));
+    mainLayout->addWidget(_injectionVolumn);
 
-    mainLayout->addStretch(1);
+     config->getNumValue("CO|MeasureMode", index);
+    _measureMode = new IComboList(trs("MeasureMode"));
+    _measureMode->setFont(defaultFont());
+    _measureMode->addItem(trs("Manual"));
+    _measureMode->addItem(trs("Auto"));
+    _measureMode->label->setFixedSize(labelWidth, ITEM_H);
+    _measureMode->combolist->setFixedSize(btnWidth, ITEM_H);
+    _measureMode->combolist->setCurrentIndex(index);
+    connect(_measureMode, SIGNAL(currentIndexChanged(int)), this, SLOT(_inputModeSlot(int)));
+    mainLayout->addWidget(_measureMode);
 
-}
-
-void ConfigEditCOMenu::readyShow()
-{
-    d_ptr->loadOptions();
-}
-
-
-void ConfigEditCOMenu::onComboListConfigChanged(int /*index*/)
-{
-    IComboList *combo = qobject_cast<IComboList *>(sender());
-    if(!combo)
-    {
-        qdebug("Invalid signal sender.");
-        return;
-    }
-    //根据索引设置对应列表的参数值
-    //ConfigEditCOMenuPrivate::ComboListId comboId = (ConfigEditCOMenuPrivate::ComboListId) combo->property("comboId").toInt();
-
-//    Config *config = configEditMenuGrp.getCurrentEditConfig();
+    _start = new IButton(trs("COStart"));
+    _start->setFont(defaultFont());
+    _start->setFixedSize(btnWidth, ITEM_H);
+    _start->setBorderEnabled(true);
+    connect(_start, SIGNAL(realReleased()), this, SLOT(_startReleased()));
+    mainLayout->addWidget(_start, 0, Qt::AlignRight);
 
 }
-void ConfigEditCOMenu::onButtonClicked()
-{
 
-    LButton *btn = qobject_cast<LButton *>(sender());
+/**************************************************************************************************
+ * CO系数设置槽函数。
+ *************************************************************************************************/
+void ConfigCOMenu::_ductRatioReleased()
+{
     NumberInput numberPad;
+    numberPad.setTitleBarText(trs("CORatio"));
+    numberPad.setMaxInputLength(5);
+    numberPad.setInitString(_ductRatio->button->text());
+    Config *config = configEditMenuGrp.getCurrentEditConfig();
 
-    if(btn==d_ptr->labelbutton_height->button)
+
+    if (numberPad.exec())
     {
-
-        numberPad.setTitleBarText(trs("height"));
-        numberPad.setMaxInputLength(5);
-        numberPad.setInitString(btn->text());
-        if (numberPad.exec())
+        QString text = numberPad.getStrValue();
+        bool ok = false;
+        float value = text.toFloat(&ok);
+        unsigned short actualValue = value * 1000;
+        if (ok)
         {
-            QString text = numberPad.getStrValue();
-            bool ok = false;
-            float value = text.toFloat(&ok);
-            unsigned short actualValue = value;
-            if (ok)
+            if (actualValue >= 1 && actualValue <= 999)
             {
-                if (actualValue >= 1 && actualValue <= 999)
-                {
-                   btn->setText(text);
-                    //coParam.setCORatio(actualValue);
-                   //添加xml文件写入功能
-                }
-                else
-                {
-                    //IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.001-0.999", QStringList(trs("EnglishYESChineseSURE")));
-                    //messageBox.exec();
-                }
-
+                _ductRatio->button->setText(text);
+                config->setNumValue("CO|ratdio",value);/*保存数据*/
             }
-        }
-    }
-    else if(btn==d_ptr->labelbutton_weight->button)
-    {
-
-        numberPad.setTitleBarText(trs("weight"));
-        numberPad.setMaxInputLength(5);
-        numberPad.setInitString(btn->text());
-        if (numberPad.exec())
-        {
-            QString text = numberPad.getStrValue();
-            bool ok = false;
-            float value = text.toFloat(&ok);
-            unsigned short actualValue = value;
-            if (ok)
+            else
             {
-                if (actualValue >= 1 && actualValue <= 999)
-                {
-                   btn->setText(text);
-                    //coParam.setCORatio(actualValue);
-                }
-                else
-                {
-                    //IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.001-0.999", QStringList(trs("EnglishYESChineseSURE")));
-                    //messageBox.exec();
-                }
-
+                IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.001-0.999", QStringList(trs("EnglishYESChineseSURE")));
+                messageBox.exec();
             }
-        }
-    }
-    else if(btn==d_ptr->labelbutton_ratdio->button)
-    {
 
-        numberPad.setTitleBarText(trs("CORatio"));
-        numberPad.setMaxInputLength(5);
-        numberPad.setInitString(btn->text());
-        if (numberPad.exec())
-        {
-            QString text = numberPad.getStrValue();
-            bool ok = false;
-            float value = text.toFloat(&ok);
-            unsigned short actualValue = value * 1000;
-            if (ok)
-            {
-                if (actualValue >= 1 && actualValue <= 999)
-                {
-                   btn->setText(text);
-                    //coParam.setCORatio(actualValue);
-                }
-                else
-                {
-                    //IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.001-0.999", QStringList(trs("EnglishYESChineseSURE")));
-                    //messageBox.exec();
-                }
-
-            }
-        }
-    }
-    else if(btn==d_ptr->labelbutton_IT->button)
-    {
-
-        numberPad.setTitleBarText(trs("InjectionTemp"));
-        numberPad.setMaxInputLength(5);
-        numberPad.setInitString(btn->text());
-        if (numberPad.exec())
-        {
-            QString text = numberPad.getStrValue();
-            bool ok = false;
-            float value = text.toFloat(&ok);
-            unsigned short actualValue = value;
-            if (ok)
-            {
-                if (actualValue >= 1 && actualValue <= 999)
-                {
-                   btn->setText(text);
-                    //coParam.setCORatio(actualValue);
-                }
-                else
-                {
-                    //IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.001-0.999", QStringList(trs("EnglishYESChineseSURE")));
-                    //messageBox.exec();
-                }
-
-            }
         }
     }
 }
+
+/**************************************************************************************************
+ * 注射液温度来源设置槽函数。
+ *************************************************************************************************/
+void ConfigCOMenu::_inputModeSlot(int index)
+{
+    Config *config = configEditMenuGrp.getCurrentEditConfig();
+
+    if (index == CO_TI_MODE_MANUAL)
+    {
+        _injectionTemp->button->setEnabled(true);
+        _injectionTemp->button->setFocusPolicy(Qt::StrongFocus);
+
+    }
+    else if (index == CO_TI_MODE_AUTO)
+    {
+        _injectionTemp->button->setEnabled(false);
+        _injectionTemp->button->setFocusPolicy(Qt::NoFocus);
+        config->setNumValue("CO|InjectionTempSource",index);/*保存数据*/
+        //coParam.setTempSource((COTiMode)index);
+    }
+}
+
+/**************************************************************************************************
+ * 手动设置注射液温度槽函数。
+ *************************************************************************************************/
+void ConfigCOMenu::_injectionTempReleased()
+{
+    NumberInput numberPad;
+    numberPad.setTitleBarText(trs("InjectionTemp"));
+    numberPad.setMaxInputLength(4);
+    numberPad.setInitString(_injectionTemp->button->text());
+    Config *config = configEditMenuGrp.getCurrentEditConfig();
+
+    if (numberPad.exec())
+    {
+        QString text = numberPad.getStrValue();
+        bool ok = false;
+        float value = text.toFloat(&ok);
+        unsigned short actualValue = value * 10;
+        if (ok)
+        {
+            if (actualValue <= 270)
+            {
+                _injectionTemp->button->setText(text);
+                //coParam.setTempSource(CO_TI_MODE_MANUAL, actualValue);
+                config->setNumValue("CO|InjectionTempSource",value);/*保存数据*/
+            }
+            else
+            {
+                IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.0-27.0", QStringList(trs("EnglishYESChineseSURE")));
+                messageBox.exec();
+            }
+
+        }
+    }
+}
+
+/**************************************************************************************************
+ * Manually set injection volumn slot funtion.
+ *************************************************************************************************/
+void ConfigCOMenu::_injectionVolumnReleased()
+{
+    NumberInput numberPad;
+    numberPad.setTitleBarText(trs("InjectionVolumn"));
+    numberPad.setMaxInputLength(3);
+    numberPad.setInitString(_injectionVolumn->button->text());
+     Config *config = configEditMenuGrp.getCurrentEditConfig();
+    if (numberPad.exec())
+    {
+        QString text = numberPad.getStrValue();
+        bool ok = false;
+        unsigned int value = text.toInt(&ok);
+        if (ok)
+        {
+            if (value >= 1 && value <= 200)
+            {
+                _injectionVolumn->button->setText(text);
+               // coParam.setInjectionVolumn((unsigned char)value);
+                config->setNumValue("CO|InjectionTempSource",value);/*保存数据*/
+            }
+            else
+            {
+                IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.0-27.0", QStringList(trs("EnglishYESChineseSURE")));
+                messageBox.exec();
+            }
+
+        }
+    }
+}
+
+/**************************************************************************************************
+ * 开始测量槽函数。
+ *************************************************************************************************/
+void ConfigCOMenu::_startReleased(void)
+{
+    coParam.measureCtrl(_measureSta);
+    if (_measureSta == CO_INST_START)
+    {
+        _start->setText(trs("Cancel"));
+        _measureSta = CO_INST_END;
+    }
+    else if (_measureSta == CO_INST_END)
+    {
+        _start->setText(trs("COStart"));
+        _measureSta = CO_INST_START;
+    }
+}
+

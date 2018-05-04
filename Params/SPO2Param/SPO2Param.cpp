@@ -53,10 +53,6 @@ void SPO2Param::_setWaveformSpeed(SPO2WaveVelocity speed)
         _waveWidget->setWaveSpeed(25.0);
         break;
 
-    case SPO2_WAVE_VELOCITY_500:
-        _waveWidget->setWaveSpeed(50.0);
-        break;
-
     default:
         break;
     }

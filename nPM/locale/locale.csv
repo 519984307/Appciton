@@ -980,3 +980,15 @@ LessThan,小于,Less Than
 GreaterThan,大于,Greater Than
 ZeroRequired,需要校零,Zero Required
 Channel,通道,Channel
+SmartPluseTone,智能脉搏音,SmartPluseTone
+WaveVelocity,波形速度,WaveVelocity
+Gain,波形增益,Gain
+ModuleControl,模块控制,ModuleControl
+HIGH,高,HIGH
+NORMAL,中,NORMAL
+LOW,低,LOW
+OFF,关闭,OFF
+ON,打开,ON
+NBIPInitialCuff,初始袖口气压,NBIPInitialCuff
+IntervalTime,自动间隔时间,IntervalTime
+NIBPMeasureMode,测量模式,NIBPMeasureMode

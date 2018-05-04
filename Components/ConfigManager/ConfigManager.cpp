@@ -40,7 +40,7 @@ QString ConfigManagerPrivate::getDefaultConfigFilepath(PatientType patType)
     systemConfig.getStrValue(index, configFileName);
     if(configFileName.isEmpty())
     {
-        qdebug("Fail to get default config file for patient type %d", patType);
+        qdebug("Fail to get default config file for patient type");
         return configFileName;
     }
 

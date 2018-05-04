@@ -3,17 +3,16 @@
 #include "IComboList.h"
 #include "SPO2Symbol.h"
 
+
 class ConfigEditSpO2MenuPrivate
 {
 public:
     enum ComboListId {
-        Sensitivity,
-        NIBPSameSide,
-        WaveVelocity,
-        PRSource,
-        AlarmSource,
-        PulseVolume,
-        PIMagnifyingDisplay,
+        Sensitivity,  /*灵敏度*/
+        SmartPluseTone,/*智能脉搏音*/
+        WaveVelocity,/*血氧波形*/
+        Gain,/*波形增益系数*/
+        ModuleControl,/*模块功能控制 使能或关闭*/
         ComboListMax,
     };
 
@@ -23,18 +22,24 @@ public:
 
         //常量存放在静态变量区
         comboLabels[Sensitivity] = "Sensitivity";
-        comboLabels[NIBPSameSide] = "NIBPSameSide";
+        comboLabels[SmartPluseTone] = "SmartPluseTone";
         comboLabels[WaveVelocity] = "WaveVelocity";
-        comboLabels[PRSource] = "PRSource";
-        comboLabels[AlarmSource] = "AlarmSource";
-        comboLabels[PulseVolume] = "PulseVolume";
-        comboLabels[PIMagnifyingDisplay] = "PIMagnifyingDisplay";
+        comboLabels[Gain] = "Gain";
+        comboLabels[ModuleControl] = "ModuleControl";
+
+        //增加翻译
+        pushbutton.setText(trs("Sensitivity"));
+        pushbutton.setText(trs("SmartPluseTone"));
+        pushbutton.setText(trs("WaveVelocity"));
+        pushbutton.setText(trs("Gain"));
+        pushbutton.setText(trs("ModuleControl"));
     }
 
     void loadOptions();
 
     IComboList *combos[ComboListMax];
     const char *comboLabels[ComboListMax];
+    QPushButton pushbutton;
 };
 
 void ConfigEditSpO2MenuPrivate::loadOptions()
@@ -48,16 +53,16 @@ void ConfigEditSpO2MenuPrivate::loadOptions()
         combos[Sensitivity]->addItem(trs("NORMAL"));
         combos[Sensitivity]->addItem(trs("LOW"));
 
-        config->getNumValue("AlarmSource|SPO2|Sensitivity", index);
+        config->getNumValue("SPO2|Sensitivity", index);
         combos[Sensitivity]->setCurrentIndex(index);
     }
 
-    if (combos[NIBPSameSide]->count() == 0)
+    if (combos[SmartPluseTone]->count() == 0)
     {
-        combos[NIBPSameSide]->addItem(trs("OFF"));
-        combos[NIBPSameSide]->addItem(trs("ON"));
-        config->getNumValue("AlarmSource|SPO2|NIBPSameSide", index);
-        combos[NIBPSameSide]->setCurrentIndex(index);
+        combos[SmartPluseTone]->addItem(trs("OFF"));
+        combos[SmartPluseTone]->addItem(trs("ON"));
+        config->getNumValue("SPO2|SmartPluseTone", index);
+        combos[SmartPluseTone]->setCurrentIndex(index);
     }
     index  = 0;
     if (combos[WaveVelocity]->count() == 0)
@@ -66,48 +71,28 @@ void ConfigEditSpO2MenuPrivate::loadOptions()
         {
             combos[WaveVelocity]->addItem(SPO2Symbol::convert((SPO2WaveVelocity)i));
         }
-        config->getNumValue("AlarmSource|SPO2|WaveVelocity", index);
+        config->getNumValue("SPO2|WaveVelocity", index);
         combos[WaveVelocity]->setCurrentIndex(index);
     }
     index  = 0;
-    if (combos[PRSource]->count() == 0)
+    if (combos[Gain]->count() == 0)
     {
-        for(int i = 0; i < PRSource_NR; i++)
+        for(int i = 0; i < SPO2_GAIN_NR; i++)
         {
-            combos[PRSource]->addItem(SPO2Symbol::convert((SPO2PRSource)i));
+            combos[Gain]->addItem(SPO2Symbol::convert((SPO2Gain)i));
         }
-        config->getNumValue("AlarmSource|SPO2|PRSource", index);
-        combos[PRSource]->setCurrentIndex(index);
+        config->getNumValue("SPO2|Gain", index);
+        combos[Gain]->setCurrentIndex(index);
     }
     index  = 0;
-    if (combos[AlarmSource]->count() == 0)
+    if (combos[ModuleControl]->count() == 0)
     {
-        combos[AlarmSource]->addItem(trs("HR"));
-        combos[AlarmSource]->addItem(trs("PR"));
-        combos[AlarmSource]->addItem(trs("AUTO"));
-        config->getNumValue("AlarmSource|SPO2|AlarmSource", index);
-        combos[AlarmSource]->setCurrentIndex(index);
+        combos[ModuleControl]->addItem(trs("Disable"));
+        combos[ModuleControl]->addItem(trs("Enable"));
+        config->getNumValue("SPO2|ModuleControl", index);
+        combos[ModuleControl]->setCurrentIndex(index);
     }
 
-    index  = 0;
-    if (combos[PulseVolume]->count() == 0)
-    {
-        for(int i = 0; i < 10; i++)
-        {
-            combos[PulseVolume]->addItem(QString::number(i));
-        }
-        config->getNumValue("AlarmSource|SPO2|PulseVolume", index);
-        combos[PulseVolume]->setCurrentIndex(index);
-    }
-
-    index  = 0;
-    if (combos[PIMagnifyingDisplay]->count() == 0)
-    {
-        combos[PIMagnifyingDisplay]->addItem(trs("YES"));
-        combos[PIMagnifyingDisplay]->addItem(trs("NO"));
-        config->getNumValue("AlarmSource|SPO2|PIMagnifyingDisplay", index);
-        combos[PIMagnifyingDisplay]->setCurrentIndex(index);
-    }
 }
 
 ConfigEditSpO2Menu::ConfigEditSpO2Menu()
@@ -177,27 +162,20 @@ void ConfigEditSpO2Menu::onComboListConfigChanged(int index)
 
     switch (comboId)
     {
-
     case ConfigEditSpO2MenuPrivate::Sensitivity:
-        config->setNumValue("AlarmSource|Adult|SPO2|Sensitivity", index);
+        config->setNumValue("SPO2|Sensitivity", index);
         break;
-    case ConfigEditSpO2MenuPrivate::NIBPSameSide:
-        config->setNumValue("AlarmSource|Adult|SPO2|NIBPSameSide", index);
+    case ConfigEditSpO2MenuPrivate::SmartPluseTone:
+        config->setNumValue("SPO2|SmartPluseTone", index);
         break;
     case ConfigEditSpO2MenuPrivate::WaveVelocity:
-        config->setNumValue("AlarmSource|Adult|SPO2|WaveVelocity", index);
+        config->setNumValue("SPO2|WaveVelocity", index);
         break;
-    case ConfigEditSpO2MenuPrivate::PRSource:
-        config->setNumValue("AlarmSource|Adult|SPO2|PRSource", index);
+    case ConfigEditSpO2MenuPrivate::Gain:
+        config->setNumValue("SPO2|Gain", index);
         break;
-    case ConfigEditSpO2MenuPrivate::AlarmSource:
-        config->setNumValue("AlarmSource|Adult|SPO2|AlarmSource", index);
-        break;
-    case ConfigEditSpO2MenuPrivate::PulseVolume:
-        config->setNumValue("AlarmSource|Adult|SPO2|PulseVolume", index);
-        break;
-    case ConfigEditSpO2MenuPrivate::PIMagnifyingDisplay:
-        config->setNumValue("AlarmSource|Adult|SPO2|PIMagnifyingDisplay", index);
+    case ConfigEditSpO2MenuPrivate::ModuleControl:
+        config->setNumValue("SPO2|ModuleControl", index);
         break;
     default:
         qdebug("Invalid combo id.");

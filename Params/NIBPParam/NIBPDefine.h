@@ -44,16 +44,14 @@ enum NIBPAutoInterval
  *************************************************************************************************/
 enum NIBPInitialInflatingPressure
 {
-    NIBP_INIT_PRE_80,
-    NIBP_INIT_PRE_90,
-    NIBP_INIT_PRE_100,
-    NIBP_INIT_PRE_110,
     NIBP_INIT_PRE_120,
-    NIBP_INIT_PRE_130,
     NIBP_INIT_PRE_140,
-    NIBP_INIT_PRE_150,
     NIBP_INIT_PRE_160,
-    NIBP_INIT_PRE_170,
+    NIBP_INIT_PRE_180,
+    NIBP_INIT_PRE_200,
+    NIBP_INIT_PRE_220,
+    NIBP_INIT_PRE_240,
+    NIBP_INIT_PRE_260,
     NIBP_INIT_PRE_NR
 };
 /**************************************************************************************************
@@ -71,13 +69,6 @@ enum NIBPIntervalTime
     NIBP_INT_TIM_10_M,
     NIBP_INT_TIM_15_M,
     NIBP_INT_TIM_20_M,
-    NIBP_INT_TIM_30_M,
-    NIBP_INT_TIM_1_H,
-    NIBP_INT_TIM_1D5_H,
-    NIBP_INT_TIM_2_H,
-    NIBP_INT_TIM_3_H,
-    NIBP_INT_TIM_4_H,
-    NIBP_INT_TIM_8_H,
     NIBP_INT_TIM_NR
 };
 /**************************************************************************************************

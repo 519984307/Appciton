@@ -28,7 +28,7 @@ public:
         static const char *symbol[NIBP_INT_TIM_NR] =
         {
             "manual","auto", "1min","2min","2.5min","3min", "5min", "10min",
-            "15min","20min", "30min", "1h", "1.5h", "2h", "3h", "4h","8h"
+            "15min","20min"
         };
         return symbol[index];
     }

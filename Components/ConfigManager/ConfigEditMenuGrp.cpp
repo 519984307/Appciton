@@ -7,8 +7,13 @@
 #include "ConfigEditSpO2Menu.h"
 #include "ConfigEditCO2Menu.h"
 #include "ConfigEditCOMenu.h"
-#include "ConfigEditPAMenu.h"
-
+#include "AGMenu.h"
+#include "IBPMenu.h"
+#include "CO2Menu.h"
+#include "ECGMenu.h"
+#include "COMenu.h"
+#include "NIBPMenu.h"
+#include "SPO2Menu.h"
 class ConfigEditMenuGrpPrivate
 {
 public:
@@ -55,11 +60,18 @@ void ConfigEditMenuGrp::initializeSubMenu()
     addSubMenu(new ConfigEditAlarmLimitMenu());
     addSubMenu(new ConfigEditEcgMenu());
     addSubMenu(new ConfigEditRespMenu());
-    addSubMenu(new ConfigEditNIBPMenu());
     addSubMenu(new ConfigEditSpO2Menu());
-    addSubMenu(new ConfigEditCO2Menu());
-    addSubMenu(new ConfigEditCOMenu());
-    addSubMenu(new ConfigEditPAMenu());
+    addSubMenu(new ConfigEditNIBPMenu());
+    addSubMenu(new ConfigCOMenu());
+    addSubMenu(new ConfigCO2Menu());
+    //addSubMenu(new ConfigIBPMenu());
+//    addSubMenu(new COMenu());
+//    addSubMenu(new SPO2Menu());
+//    addSubMenu(new ECGMenu());
+//    addSubMenu(new AGMenu());
+//    addSubMenu(new IBPMenu);
+//    addSubMenu(new CO2Menu());
+
     //addSubMenu(new ConfigEditTEMPMenu());
     addReturnMenu();
 

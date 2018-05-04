@@ -1,6 +1,6 @@
 #pragma once
 #include "SPO2Define.h"
-
+#include "LanguageManager.h"
 // 将定义的枚举转换成符号。
 class SPO2Symbol
 {
@@ -18,26 +18,16 @@ public:
     {
         static const char *symbol[SPO2_WAVE_VELOCITY_NR] =
         {
-            "6.25 mm/s", "12.5 mm/s", "25.0 mm/s", "50.0 mm/s"
+            "6.25 mm/s", "12.5 mm/s", "25.0 mm/s"
         };
         return symbol[index];
     }
 
-    static const char *convert(SPO2PRDisplay index)
+    static const char *convert(SPO2ModuleControl index)
     {
-        static const char *symbol[SPO2_PR_DISPLAY_NR] =
+        static const char *symbol[SPO2_MODULE_NR] =
         {
-            "Off", "On"
-        };
-        return symbol[index];
-    }
-
-    static const char *convert(SPO2PRSource index)
-    {
-        static const char *symbol[PRSource_NR] =
-        {
-            "SpO2", "IBP", "Art","Ao","FAP","BAP","PA",
-            "UAP","P1","P2","P3","P4","LV","AUTO"
+            "Disable", "Enable"
         };
         return symbol[index];
     }

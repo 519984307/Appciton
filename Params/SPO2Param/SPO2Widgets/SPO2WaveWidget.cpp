@@ -202,7 +202,7 @@ void SPO2WaveWidget::_loadConfig(void)
 
     if (speed == SPO2_WAVE_VELOCITY_62D5)
     {
-        setWaveSpeed(12.5);
+        setWaveSpeed(6.25);
     }
     else if (speed == SPO2_WAVE_VELOCITY_125)
     {
@@ -211,10 +211,6 @@ void SPO2WaveWidget::_loadConfig(void)
     else if (speed == SPO2_WAVE_VELOCITY_250)
     {
         setWaveSpeed(25.0);
-    }
-    else if (speed == SPO2_WAVE_VELOCITY_500)
-    {
-        setWaveSpeed(50);
     }
 
     setGain(spo2Param.getGain());

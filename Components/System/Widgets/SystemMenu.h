@@ -33,7 +33,6 @@ private slots:
     void _configManagerSlot(void);
 
 
-    void _supervisorManagerSlot(void);
 
 
 #ifdef Q_WS_QWS

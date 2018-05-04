@@ -369,10 +369,8 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditAlarmLimitMenu.cpp                       \
     Components/ConfigManager/ConfigEditNIBPMenu.cpp                             \
     Components/ConfigManager/ConfigEditSpO2Menu.cpp                             \
-    Components/ConfigManager/ConfigEditSeqMeaMenu.cpp                           \
     Components/ConfigManager/ConfigEditCO2Menu.cpp                              \
     Components/ConfigManager/ConfigEditCOMenu.cpp                               \
-    Components/ConfigManager/ConfigEditPAMenu.cpp                               \
 #################################################################################
     Params/AGParam/AGWidgets/AGMenu.cpp                                         \
     Params/AGParam/AGWidgets/AGTrendWidget.cpp                                  \
@@ -825,10 +823,8 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditAlarmLimitMenu.h                         \
     Components/ConfigManager/ConfigEditNIBPMenu.h                               \
     Components/ConfigManager/ConfigEditSpO2Menu.h                               \
-    Components/ConfigManager/ConfigEditSeqMeaMenu.h                             \
     Components/ConfigManager/ConfigEditCO2Menu.h                                \
     Components/ConfigManager/ConfigEditCOMenu.h                                 \
-    Components/ConfigManager/ConfigEditPAMenu.h                                 \
 #################################################################################
     Params/AGParam/AGWidgets/AGMenu.h                                           \
     Params/AGParam/AGWidgets/AGTrendWidget.h                                    \

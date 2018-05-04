@@ -77,11 +77,6 @@ void SystemMenu::_configManagerSlot()
     configMaintainMenuGrp.popup();
 }
 
-void SystemMenu::_supervisorManagerSlot()
-{
-    configMaintainMenuGrp.initializeSubMenu();
-    configMaintainMenuGrp.popup();
-}
 
 #ifdef Q_WS_QWS
 /**
@@ -225,14 +220,7 @@ void SystemMenu::layoutExec(void)
     _configManager->button->setFixedSize(btnWidth, ITEM_H);
     mainLayout->addWidget(_configManager);
 
-    // Supervisor Manager
-    _configManager = new LabelButton("");
-    _configManager->setFont(fontManager.textFont(25));
-    _configManager->setValue(trs("SupervisorManager"));
-    connect(_configManager->button, SIGNAL(realReleased()), this, SLOT(_supervisorManagerSlot()));
-    _configManager->label->setFixedSize(labelWidth, ITEM_H);
-    _configManager->button->setFixedSize(btnWidth, ITEM_H);
-    mainLayout->addWidget(_configManager);
+
 
 #ifdef Q_WS_QWS
     // touch screen calibration

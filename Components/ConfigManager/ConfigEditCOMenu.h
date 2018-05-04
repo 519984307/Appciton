@@ -1,22 +1,50 @@
 #pragma once
 #include "SubMenu.h"
-#include <QScopedPointer>
+#include "CODefine.h"
 
-class ConfigEditCOMenuPrivate;
-class ConfigEditCOMenu : public SubMenu
+class IComboList;
+class LabelButton;
+class IButton;
+class ConfigCOMenu : public SubMenu
 {
     Q_OBJECT
+
 public:
-    ConfigEditCOMenu();
-    ~ConfigEditCOMenu();
+    static ConfigCOMenu &construction(void)
+    {
+        if (_selfObj == NULL)
+        {
+            _selfObj = new ConfigCOMenu();
+        }
+        return *_selfObj;
+    }
+    static ConfigCOMenu *_selfObj;
+
+    ConfigCOMenu();
+    ~ConfigCOMenu();
 
 protected:
-    virtual void layoutExec();
-    virtual void readyShow();
+    //布局
+    virtual void layoutExec(void);
 
 private slots:
-    void onComboListConfigChanged(int index);
-    void onButtonClicked();
+    void _ductRatioReleased(void);
+    void _inputModeSlot(int index);
+    void _injectionTempReleased(void);
+    void _injectionVolumnReleased(void);
+    void _startReleased();
+
 private:
-    QScopedPointer<ConfigEditCOMenuPrivate> d_ptr;
+
+    LabelButton *_ductRatio;            // CO系数(漂浮导管系数)
+    IComboList *_inputMode;             // 注射液温度来源(Ti输入模式设置)
+    LabelButton *_injectionTemp;        // 注射液温度
+    LabelButton *_injectionVolumn;      // 注射液体积
+    IComboList *_measureMode;           // 测量模式
+    IButton *_start;                    // 开始测量
+
+    COInstCtl _measureSta;              // 测量状态
+
 };
+
+#define configCoMenu (ConfigCOMenu::construction())
