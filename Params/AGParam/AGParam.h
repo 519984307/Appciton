@@ -4,7 +4,7 @@
 #include "AGDefine.h"
 #include "AGProviderIFace.h"
 #include "AlarmDefine.h"
-
+#include "PhaseinProvider.h"
 
 class AGWaveWidget;
 class AGTrendWidget;
@@ -33,6 +33,9 @@ public:
 
     // 获取子参数值。
     virtual short getSubParamValue(SubParamID id);
+
+    // check whether the sub param is avaliabe
+    virtual bool isSubParamAvaliable(SubParamID id);
 
     // 设置数据提供对象。
     void setProvider(AGProviderIFace *provider);
@@ -73,6 +76,9 @@ public:
 
     // 设置波形速度
     void setSweepSpeed(AGSweepSpeed speed);
+
+    // 获取AG模块状态信息
+    void AGModuleStatus(AGProviderStatus status);
 private:
     AGParam();
     static AGParam *_selfObj;
@@ -100,5 +106,6 @@ private:
     AGParamInfo _eto2;
     AGParamInfo _fio2;
 
+    AGProviderStatus _config;
 };
 #define agParam (AGParam::construction())

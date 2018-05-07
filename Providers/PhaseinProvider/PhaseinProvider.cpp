@@ -431,4 +431,6 @@ void PhaseinProvider::_unpacket(const unsigned char packet[])
     default:
         break;
     }
+
+    agParam.AGModuleStatus(_status);
 }

@@ -73,6 +73,34 @@ short AGParam::getSubParamValue(SubParamID id)
 }
 
 /**************************************************************************************************
+ * 功能： 判断自参数是否有效。
+ *************************************************************************************************/
+bool AGParam::isSubParamAvaliable(SubParamID id)
+{
+    switch (id)
+    {
+    case SUB_PARAM_ETCO2:
+    case SUB_PARAM_FICO2:
+        return _config.co2Config;
+    case SUB_PARAM_ETN2O:
+    case SUB_PARAM_FIN2O:
+        return _config.n2oConfig;
+    case SUB_PARAM_ETAA1:
+    case SUB_PARAM_FIAA1:
+    case SUB_PARAM_ETAA2:
+    case SUB_PARAM_FIAA2:
+        return _config.halConfig || _config.enfConfig || _config.isoConfig ||
+                _config.sevConfig || _config.desConfig;
+    case SUB_PARAM_ETO2:
+    case SUB_PARAM_FIO2:
+        return _config.o2Config;
+    default:
+        break;
+    }
+    return false;
+}
+
+/**************************************************************************************************
  * 设置数据提供对象。
  *************************************************************************************************/
 void AGParam::setProvider(AGProviderIFace *provider)
@@ -507,6 +535,14 @@ void AGParam::setAnestheticType(AGAnaestheticType primary, AGAnaestheticType sec
 void AGParam::setSweepSpeed(AGSweepSpeed speed)
 {
     _setWaveformSpeed(speed);
+}
+
+/**************************************************************************************************
+ * 获取AG模块的配置信息。
+ *************************************************************************************************/
+void AGParam::AGModuleStatus(AGProviderStatus status)
+{
+    _config = status;
 }
 
 /**************************************************************************************************

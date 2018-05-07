@@ -175,6 +175,7 @@ SOURCES +=                                                                      
     Utility/Widgets/EventWidget/EventTrendItemDelegate.cpp                      \
     Utility/Widgets/EventWidget/EventInfoWidget.cpp                             \
     Utility/Widgets/EventWidget/EventWaveSetWidget.cpp                          \
+    Utility/Widgets/EventWidget/OxyCRGEventWidget.cpp                           \
     Utility/ScreenCapture.cpp                                                   \
     Utility/RunLengthEncode.cpp                                                 \
 #################################################################################
@@ -236,6 +237,8 @@ SOURCES +=                                                                      
     Components/PatientData/TrendSubWaveWidget.cpp                               \
     Components/PatientData/IMoveButton.cpp                                      \
     Components/PatientData/TrendGraphSetWidget.cpp                              \
+    Components/PatientData/OxyCRGStorageManager.cpp                             \
+    Components/PatientData/OxyCRGStorageItem.cpp                                \
     Components/Summary/SummaryItem.cpp                                          \
     Components/Summary/SummaryRescueDataWidget.cpp                              \
     Components/Summary/SummaryRescueRangePrint.cpp                              \
@@ -605,6 +608,7 @@ HEADERS +=                                                                      
     Utility/Widgets/EventWidget/EventTrendItemDelegate.h                        \
     Utility/Widgets/EventWidget/EventInfoWidget.h                               \
     Utility/Widgets/EventWidget/EventWaveSetWidget.h                            \
+    Utility/Widgets/EventWidget/OxyCRGEventWidget.h                             \
 #################################################################################
     Components/System/SystemTick.h                                              \
     Components/System/SystemManager.h                                           \
@@ -679,6 +683,8 @@ HEADERS +=                                                                      
     Components/PatientData/IMoveButton.h                                        \
     Components/PatientData/TrendGraphSetWidget.h                                \
     Components/PatientData/EventDataSymbol.h                                    \
+    Components/PatientData/OxyCRGStorageManager.h                               \
+    Components/PatientData/OxyCRGStorageItem.h                                  \
     Components/PatientManager/PatientManager.h                                  \
     Components/PatientManager/PatientBarWidget.h                                \
     Components/PatientManager/PatientDefine.h                                   \

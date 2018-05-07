@@ -9,6 +9,7 @@
 #include <QVBoxLayout>
 
 #include "EventReviewWindow.h"
+#include "OxyCRGEventWidget.h"
 
 #define ITEM_HEIGHT             30
 #define ITEM_WIDTH              100
@@ -65,7 +66,8 @@ void TrendGraphWidget::_rightMoveCursor()
 
 void TrendGraphWidget::_leftMoveEvent()
 {
-
+    oxyCRGEventWidget.autoShow();
+    hide();
 }
 
 void TrendGraphWidget::_rightMoveEvent()
@@ -128,6 +130,8 @@ TrendGraphWidget::TrendGraphWidget()
     _moveEvent = new IMoveButton(trs("MoveEvent"));
     _moveEvent->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     _moveEvent->setFont(fontManager.textFont(fontSize));
+    connect(_moveEvent, SIGNAL(leftMove()), this, SLOT(_leftMoveEvent()));
+    connect(_moveEvent, SIGNAL(rightMove()), this, SLOT(_rightMoveEvent()));
 
     _print = new IButton(trs("Print"));
     _print->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);

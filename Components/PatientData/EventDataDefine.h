@@ -78,3 +78,28 @@ struct Event {
     QVector<TrendDataSegment*> trendSegments; //trend segments of every seconds
     QVector<WaveformDataSegment *> waveSegments; //wave segments of every seconds
 };
+
+enum OxyCRGEventType{
+    OxyCRGEventAll,
+    OxyCRGEventManual,
+    OxyCRGEventApnea,
+    OxyCRGEventECG,
+    OxyCRGEventSpO2,
+    OxyCRGEventResp,
+    OxyCRGEventTypeMax
+};
+
+struct OxyCRGEventInfoSegment
+{
+    OxyCRGEventType type;
+    unsigned timestamp;
+    unsigned short duration_before;
+    unsigned short duration_after;
+};
+
+struct OxyCRGEvent
+{
+    OxyCRGEventInfoSegment storageInfo;
+    QVector<TrendDataSegment*> trendSegments; //trend segments of every seconds
+    QVector<WaveformDataSegment *> waveSegments; //wave segments of every waveform
+};

@@ -8,6 +8,7 @@
 #define ECG12L_FILE_NAME ("/12lead")
 #define TREND_DATA_FILE_NAME ("/TrendData")
 #define EVENT_DATA_FILE_NAME ("/EventData")
+#define OXYCRG_DATA_FILE_NAME ("/OxyCRGData")
 
 
 #define ECG12L_PDFDIR_PATH ("/tmp/pdf")

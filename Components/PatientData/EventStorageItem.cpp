@@ -244,7 +244,6 @@ bool EventStorageItem::startCollectTrendAndWaveformData()
 
         d_ptr->waveComplete[waveid] = false;
 
-
         waveformCache.readStorageChannel(waveid, waveSegment->waveData, d_ptr->eventInfo.duration_before, false);
 
         WaveformRecorder recorder;
