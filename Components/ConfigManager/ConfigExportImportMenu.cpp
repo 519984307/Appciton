@@ -410,7 +410,7 @@ void ConfigExportImportMenu::InsertFileFromUSB()
             importTagList.clear();
             checkbool = checkXMLContent(importTagList,importTag);
         }
-        checkbool = true;
+        //checkbool = true;
         //导入文件内容不合数据处理
         if(checkbool==false)
         {
@@ -521,16 +521,23 @@ bool ConfigExportImportMenu::compareTagAttribute(QDomElement importtag,QDomEleme
     #define PARAMETER_PREFIX_NUM1   (2)  /*参数前缀的长度*/
     #define PARAMETER_PREFIX0       ("Enable")  /*参数前缀*/
     #define PARAMETER_PREFIX1       ("Min")  /*参数前缀*/
-    float numArrary[2]={1.0,2.0};
+    float numArrary[]={1.0,2.0};
+    QString attrString[]={"Enable","Prio"};
     QDomNamedNodeMap localDomNameNodeMap = localtag.attributes();
 
     if(localDomNameNodeMap.count()==PARAMETER_PREFIX_NUM0)/*导入标签无属性值*/
     {
-        if(localDomNameNodeMap.item(0).nodeValue().toInt()==0)/*数字属性 需要比较上下限*/
+        if(localDomNameNodeMap.namedItem("cAttr0").nodeValue().toFloat()==0)/*数字属性 需要比较上下限*/
         {
-            if(importtag.nodeValue().toFloat()<localDomNameNodeMap.item(1).nodeValue().toFloat()||\
-               importtag.nodeValue().toFloat()>localDomNameNodeMap.item(2).nodeValue().toFloat())
+            if(importtag.text().toFloat()<localDomNameNodeMap.namedItem("cMin").nodeValue().toFloat()||\
+               importtag.text().toFloat()>localDomNameNodeMap.namedItem("cMax").nodeValue().toFloat())
             {
+                //信息加入日志
+                 add_Time_Logg();
+                _TextStream << QString("Inserted xml files NodeName(%1)`s number value parser failed !!!\r\n").arg(localtag.nodeName());
+                float fl = localDomNameNodeMap.namedItem("cMin").nodeValue().toFloat();
+                float floa = localDomNameNodeMap.namedItem("cMax").nodeValue().toFloat();
+                _TextStream << QString("(%1 %2 %3)\r\n").arg(importtag.text().toFloat()).arg(fl).arg(floa);
                 return false;
             }
         }
@@ -538,6 +545,9 @@ bool ConfigExportImportMenu::compareTagAttribute(QDomElement importtag,QDomEleme
         {
             if(importtag.nodeValue()!=localtag.nodeValue())
             {
+                //信息加入日志
+                 add_Time_Logg();
+                _TextStream << QString("Inserted xml files NodeName(%1)`s string value parser failed !!!\r\n").arg(localtag.nodeName());
                 return false;
             }
         }
@@ -549,17 +559,26 @@ bool ConfigExportImportMenu::compareTagAttribute(QDomElement importtag,QDomEleme
         {
             if(localDomNameNodeMap.item(i).nodeName()==PARAMETER_PREFIX0)/*Enable、Prio属性*/
             {
-                if(importtag.attributes().item(i).nodeValue().toFloat()<0||\
-                   importtag.attributes().item(i).nodeValue().toFloat()>numArrary[i])
+                if(importtag.attributes().namedItem(attrString[i]).nodeValue().toFloat()<0||\
+                   importtag.attributes().namedItem(attrString[i]).nodeValue().toFloat()>numArrary[i])
                 {
+                    //信息加入日志
+                     add_Time_Logg();
+                    _TextStream << QString("Inserted xml files NodeName(%1)`s attribute1 parser failed !!!\r\n").arg(localtag.nodeName());
                     return false;
                 }
             }
             else if(localDomNameNodeMap.item(i).nodeName()==PARAMETER_PREFIX1)/*Min、Max属性*/
             {
-                if(importtag.nodeValue().toFloat()<localDomNameNodeMap.item(0).nodeValue().toFloat()||\
-                   importtag.nodeValue().toFloat()>localDomNameNodeMap.item(1).nodeValue().toFloat())
+                if(importtag.text().toFloat()<localDomNameNodeMap.namedItem("Min").nodeValue().toFloat()||\
+                   importtag.text().toFloat()>localDomNameNodeMap.namedItem("Max").nodeValue().toFloat())
                 {
+                    //信息加入日志
+                     add_Time_Logg();
+                    _TextStream << QString("Inserted xml files NodeName(%1)`s attribute2 parser failed !!!\r\n").arg(localtag.nodeName());
+                    float fl = localDomNameNodeMap.namedItem("Min").nodeValue().toFloat();
+                    float floa = localDomNameNodeMap.namedItem("Max").nodeValue().toFloat();
+                    _TextStream << QString("(%1 %2 %3)\r\n").arg(importtag.text().toFloat()).arg(fl).arg(floa);
                     return false;
                 }
             }
@@ -569,9 +588,9 @@ bool ConfigExportImportMenu::compareTagAttribute(QDomElement importtag,QDomEleme
 }
 //检查内容是否有效。 有效返回true；无效返回false；
 //递归方式查询，注意递归结束条件的有效性
+static bool attrCheckFlag = true;
 bool ConfigExportImportMenu::checkXMLContent(QList<QDomElement> &importTagList, QDomElement &importTag)
 {
-
      if(importTag.isNull())
      {
          QStringList nameList;
@@ -587,15 +606,22 @@ bool ConfigExportImportMenu::checkXMLContent(QList<QDomElement> &importTagList, 
             bool attrFlag = compareTagAttribute(importTagList.at(importTagList.count()-1),localTag);
             if(attrFlag==false)
             {
-                //return false;
+                attrCheckFlag = false;
+                return attrCheckFlag;
             }
          }
 
+         if(importTagList.empty())
+         {
+             attrCheckFlag = true;
+             return attrCheckFlag;
+         }
          importTag = importTagList.last().nextSiblingElement();//下一个同类子节点
          importTagList.removeLast();//移除最后一个子节点
          if(importTagList.empty())
          {
-             return true;
+             attrCheckFlag = true;
+             return attrCheckFlag;
          }
 
          if(importTag.isNull())
@@ -614,7 +640,7 @@ bool ConfigExportImportMenu::checkXMLContent(QList<QDomElement> &importTagList, 
         checkXMLContent(importTagList,importTag);
      }
 
-     return true;
+     return attrCheckFlag;
 
 }
 
