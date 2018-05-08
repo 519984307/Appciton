@@ -51,6 +51,7 @@ const QString &LanguageManager::translate(const char *id)
     static QString retNull("null");
     if (NULL == id)
     {
+        retNull = "null";
         return retNull;
     }
 

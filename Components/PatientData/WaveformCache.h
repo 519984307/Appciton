@@ -47,11 +47,6 @@ public:
     // 获取波形的数据采样率。
     int getSampleRate(WaveformID id);
 
-    //acerrro
-    //设置波形(通道)数据采样率
-    //void getSampleRate(WaveformID id, int rate);
-    //end
-
     // 获取值的范围。
     void getRange(WaveformID id, int &minValue, int &maxValue);
 
@@ -62,40 +57,15 @@ public:
     void getTitle(WaveformID id, QString &waveTitle);
 
 public: // 通道相关。
-#if 0 //TODO: remove
-    // 在所有波形源上申请一个波形通道数据缓存。
-    void channelRequest(const QString &name, int timeLen = MAX_TIME_LEN);
 
-    // 获取波形(通道)数据的个数。
-    int channelSize(WaveformID id, const QString &channelName);
+    // start the realtime channel
+    void startRealtimeChannel();
 
-    // 清空指定波形通道数据。
-    void channelClear(WaveformID id, const QString &channelName);
-
-    // 清空所有波形通道的数据。
-    void channelClear(WaveformID id);
-
-    // 丢弃通道中的部分数据，保存最新的len个/second的数据，也即这之前的数据被丢弃。
-    void channelDicard(WaveformID id, const QString &channelName, int len);
-
-    // 丢弃通道中的部分旧数据。
-    void channelDicardOld(WaveformID id, const QString &channelName, int len);
-
-    // 读取通道的数据，原始数据不保留，如果当前数据个数比申请个数少，则将数据放到缓冲区后部分带回。。
-    //int channelRead(WaveformID id, const QString &channelName, WaveDataType *buff,
-    //                int len, bool del = true);
-    int channelRead(WaveformID id, WaveDataType *buff, int time, const QString &channelName, bool alignToSecond = true);
-
-    int channelReadRealTimeData(WaveformID id, WaveDataType *buff, int time,
-        const QString &channelName, bool isInit, bool readFromHead);
-#endif
-
-    // enable or disable the realtime channel
+    // stop the realtime channel
     void stopRealtimeChannel();
 
     //read data from the storage channel
     int readStorageChannel(WaveformID id, WaveDataType *buff, int time, bool alignToSecond = true, bool startRealtimeChannel = false);
-
 
     //read the oldest data from the realtime channel, the channel will remove the read data
     int readRealtimeChannel(WaveformID id, WaveDataType *buff, int time);
@@ -154,25 +124,16 @@ private:
         {
             name = n;
             buff.resize(buffLen);
-            buffBk.clear();
         }
 
         ~ChannelDesc()
         {
-            buffBk.clear();
         }
 
         QString name;
         RingBuff<WaveDataType> buff;
-        QList<WaveDataType> buffBk;
         QMutex _mutex;
     };
-
-#if 0  //TODO: remove
-    // 波形数据缓存映射。
-    typedef QMultiMap<WaveformID, ChannelDesc*> ChannelMap;
-    ChannelMap _channel;
-#endif
 
     ChannelDesc *_storageChannel[WAVE_NR];
     ChannelDesc *_realtimeChannel[WAVE_NR];

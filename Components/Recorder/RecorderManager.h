@@ -31,6 +31,18 @@ public:
     void setPrintSpeed(PrintSpeed speed);
 
     /**
+     * @brief getPrintWaveNum get realtime print wave num
+     * @return the realtime print wave num
+     */
+    int getPrintWaveNum();
+
+    /**
+     * @brief setPrintWaveNum set the realtime print wave num
+     * @param num
+     */
+    void setPrintWaveNum(int num);
+
+    /**
      * @brief setPrintPrividerIFace set the print provider
      * @param iface
      */
@@ -82,6 +94,9 @@ public:
 
 
 private slots:
+
+    void testSlot();
+
     /**
      * @brief providerRestarted provider restart
      */

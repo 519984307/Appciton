@@ -9,6 +9,7 @@
 #include "FontManager.h"
 #include <QPointer>
 #include "ContinuousPageGenerator.h"
+#include <QTimer>
 
 
 class RecorderManagerPrivate
@@ -71,6 +72,25 @@ void RecorderManager::setPrintSpeed(PrintSpeed speed)
     systemConfig.setNumValue("PrimaryCfg|System|PrintSpeed", (int)speed);
 
     emit speedChanged(speed);
+}
+
+int RecorderManager::getPrintWaveNum()
+{
+    int num = 0;
+    systemConfig.getNumValue("Print|PrintWaveformsNum", num);
+
+    return num;
+}
+
+void RecorderManager::setPrintWaveNum(int num)
+{
+    // 3 wave at most
+    if (num  > 3)
+    {
+        return;
+    }
+
+    systemConfig.setNumValue("Print|PrintWaveformsNum", num);
 }
 
 void RecorderManager::setPrintPrividerIFace(PrintProviderIFace *iface)
@@ -163,7 +183,7 @@ void RecorderManager::selfTest()
 
     QMetaObject::invokeMethod(d_ptr->processor, "addPage", Q_ARG(RecordPage*, testPage));
 
-    addPageGenerator(new ContinuousPageGenerator());
+    QTimer::singleShot(5000, this, SLOT(testSlot()));
 }
 
 bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
@@ -186,6 +206,12 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
     connect(d_ptr->processor, SIGNAL(pageQueueFull(bool)), generator, SLOT(pageControl(bool)));
     QMetaObject::invokeMethod(generator, "start");
     return true;
+}
+
+void RecorderManager::testSlot()
+{
+
+    addPageGenerator(new ContinuousPageGenerator());
 }
 
 void RecorderManager::providerRestarted()

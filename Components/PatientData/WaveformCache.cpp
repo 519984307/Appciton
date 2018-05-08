@@ -73,32 +73,21 @@ void WaveformCache::addData(WaveformID id, WaveDataType data)
             if(iter->curRecWaveNum < iter->totalRecWaveNum)
             {
                 iter->buf[iter->curRecWaveNum++] = data;
-                if(iter->recordCompleteCallback)
+                if(iter->curRecWaveNum == iter->totalRecWaveNum && iter->recordCompleteCallback)
                 {
                     iter->recordCompleteCallback(id, iter->recObj);
+                    iter = recorderListIter->erase(iter);
                 }
             }
         }
     }
     _recorderMutex.unlock();
 
-    int count = 0;
     ChannelDesc  *chn = _storageChannel[id];
     if(chn)
     {
-        if (!chn->_mutex.tryLock())
-        {
-            qdebug("get lock fail\n");
-            chn->buffBk.append(data);
-        }
-        count = chn->buffBk.count();
-        for (int j = 0; j < count; ++j)
-        {
-            chn->buff.push(chn->buffBk.at(j));
-        }
-
+        chn->_mutex.lock();
         chn->buff.push(data);
-        chn->buffBk.clear();
         chn->_mutex.unlock();
     }
 
@@ -107,52 +96,11 @@ void WaveformCache::addData(WaveformID id, WaveDataType data)
         chn = _realtimeChannel[id];
         if(chn)
         {
-            if (!chn->_mutex.tryLock())
-            {
-                qdebug("get lock fail\n");
-                chn->buffBk.append(data);
-            }
-            count = chn->buffBk.count();
-            for (int j = 0; j < count; ++j)
-            {
-                chn->buff.push(chn->buffBk.at(j));
-            }
-
+            chn->_mutex.lock();
             chn->buff.push(data);
-            chn->buffBk.clear();
             chn->_mutex.unlock();
         }
     }
-
-#if 0 //TODO: remove
-    QList<ChannelDesc*> channel = _channel.values(id);
-    if (channel.isEmpty())
-    {
-        return;
-    }
-
-
-    int size = channel.size();
-    int count = 0;
-    for (int i = 0; i < size; i++)
-    {
-        if (!channel[i]->_mutex.tryLock())
-        {
-            qdebug("get lock fail\n");
-            channel[i]->buffBk.append(data);
-            continue;
-        }
-        count = channel[i]->buffBk.count();
-        for (int j = 0; j < count; ++j)
-        {
-            channel[i]->buff.push(channel[i]->buffBk.at(j));
-        }
-
-        channel[i]->buff.push(data);
-        channel[i]->buffBk.clear();
-        channel[i]->_mutex.unlock();
-    }
-#endif
 }
 
 /**************************************************************************************************
@@ -225,411 +173,16 @@ void WaveformCache::getTitle(WaveformID id, QString &waveTitle)
     waveTitle = it.value().waveTitle;
 }
 
-#if 0 //TODO: remove
-/**************************************************************************************************
- * 查找通道是否已经存在。
- * 参数：
- *      id: 数据源。
- *      name: 通道名。
- *************************************************************************************************/
-inline bool WaveformCache::_channelExisted(WaveformID id, const QString &name)
+/**
+ * @brief WaveformCache::startRealtimeChannel enable the realtime channel
+ */
+void WaveformCache::startRealtimeChannel()
 {
-    // 查找是否已经存在同名的通道。
-    QList<ChannelDesc*> descs = _channel.values(id);
-    int n = descs.size();
-    for (int i = 0; i < n; i++)
+    if(!_enableRealtimeChannel)
     {
-        if (name == descs[i]->name)
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-/**************************************************************************************************
- * 申请一个通道。
- * 参数：
- *      name: 通道名称。
- *      outRate: 需要的速率。
- *      timeLen: 时间长度。
- *************************************************************************************************/
-void WaveformCache::channelRequest(const QString &name, int timeLen)
-{
-    SourceMap::iterator it = _source.begin();
-    for (; it != _source.end(); ++it)
-    {
-        if (_channelExisted(it.key(), name))
-        {
-            continue;
-        }
-
-        _channel.insert(it.key(), new ChannelDesc(name, getSampleRate(it.key()) * timeLen));
+        _enableRealtimeChannel = true;
     }
 }
-
-/**************************************************************************************************
- * 获取波形（通道)数据的个数。
- * 参数:
- *      id: 波形参数ID。
- *      channelName: 波形缓存通道名称。
- * 返回:
- *      相应波形(通道)缓存数据大小。
- *************************************************************************************************/
-int WaveformCache::channelSize(WaveformID id, const QString &channelName)
-{
-    QList<ChannelDesc*> channel = _channel.values(id);
-    if (channel.isEmpty())
-    {
-        return 0;
-    }
-
-    int size = channel.size();
-    int len = 0;
-    for (int i = 0; i < size; i++)
-    {
-        if (channel[i]->name == channelName)
-        {
-            channel[i]->_mutex.lock();
-            len =  channel[i]->buff.dataSize();
-            channel[i]->_mutex.unlock();
-        }
-    }
-
-    return len;
-}
-
-/**************************************************************************************************
- * 清空波形通道数据。
- * 参数:
- *      id: 波形参数ID。
- *      channelName: 波形缓存通道名称。
- *************************************************************************************************/
-void WaveformCache::channelClear(WaveformID id, const QString &channelName)
-{
-    QList<ChannelDesc*> channel = _channel.values(id);
-    if (channel.isEmpty())
-    {
-        return;
-    }
-
-    int size = channel.size();
-    for (int i = 0; i < size; i++)
-    {
-        if (channel[i]->name == channelName)
-        {
-            channel[i]->_mutex.lock();
-            channel[i]->buff.clear();
-            channel[i]->_mutex.unlock();
-            break;
-        }
-    }
-}
-
-/**************************************************************************************************
- * 清空所有波形通道的数据。
- * 参数:
- *      id: 波形参数ID。
- *************************************************************************************************/
-void WaveformCache::channelClear(WaveformID id)
-{
-    QList<ChannelDesc*> channel = _channel.values(id);
-    if (channel.isEmpty())
-    {
-        return;
-    }
-
-    int size = channel.size();
-    for (int i = 0; i < size; i++)
-    {
-        channel[i]->_mutex.lock();
-        channel[i]->buff.clear();
-        channel[i]->_mutex.unlock();
-    }
-}
-
-/**************************************************************************************************
- * 功能：丢弃通道中的部分数据，保存最新的len个数据。
- * 参数：
- *      id: 波形参数ID。
- *      channelName: 通道名称。
- *      len: 欲保留的个数。
- *************************************************************************************************/
-void WaveformCache::channelDicard(WaveformID id, const QString &channelName, int len)
-{
-    QList<ChannelDesc*> channel = _channel.values(id);
-    if (channel.isEmpty())
-    {
-        return;
-    }
-
-    int size = channel.size();
-    for (int i = 0; i < size; i++)
-    {
-        if (channel[i]->name == channelName)
-        {
-            int size = channelSize(id, channelName) - len;
-            if (size > 0)
-            {
-                channel[i]->_mutex.lock();
-                channel[i]->buff.pop(size);
-                channel[i]->_mutex.unlock();
-            }
-            break;
-        }
-    }
-}
-
-/**************************************************************************************************
- * 功能：丢弃通道中的部分旧数据。
- * 参数:
- *      id: 波形参数ID。
- *      channelName: 通道名称。
- *      led: 欲丢弃旧数据的长度。
- *************************************************************************************************/
-void WaveformCache::channelDicardOld(WaveformID id, const QString &channelName, int len)
-{
-    QList<ChannelDesc*> channel = _channel.values(id);
-    if (channel.isEmpty())
-    {
-        return;
-    }
-
-    if (len <= 0)
-    {
-        return;
-    }
-
-    int size = channel.size();
-    for (int i = 0; i < size; i++)
-    {
-        if (channel[i]->name == channelName)
-        {
-            channel[i]->_mutex.lock();
-            channel[i]->buff.pop(len);
-            channel[i]->_mutex.unlock();
-            break;
-        }
-    }
-}
-
-
-///**************************************************************************************************
-// * 读取波形通道的数据，如果当前数据个数比申请个数少，则将数据放到缓冲区后部分带回。
-// * 参数:
-// *      id: 波形参数ID。
-// *      channelName: 通道名称。
-// *      buff: 存放读取数据的缓冲区。
-// *      len: 欲读取数据的个数。
-// *      del: 是否保留原始数据，默认不保留
-// * 返回：
-// *      读到的数据个数。
-// *************************************************************************************************/
-//int WaveformCache::channelRead(WaveformID id, const QString &channelName,
-//        WaveDataType *buff, int len, bool del)
-//{
-//    if ((buff == NULL) || (len <= 0))
-//    {
-//        return 0;
-//    }
-//
-//    QList<ChannelDesc*> channel = _channel.values(id);
-//    if (channel.isEmpty())
-//    {
-//        return 0;
-//    }
-//
-//    int size = 0;
-//    int channelNR = channel.size();
-//    for (int i = 0; i < channelNR; i++)
-//    {
-//        if (channel[i]->name != channelName)
-//        {
-//            continue;
-//        }
-//
-//        channel[i]->_mutex.lock();
-//        RingBuff<WaveDataType> &pool = channel[i]->buff;
-//        size = pool.dataSize();
-//
-//        if (len <= size)
-//        {
-//            pool.copy(0, buff, len);
-//            size = len;
-//        }
-//        else
-//        {
-//            pool.copy(0, &buff[len - size], size);
-//        }
-//
-//        // 清除。
-//        if (del)
-//        {
-//            pool.pop(size);
-//        }
-//        channel[i]->_mutex.unlock();
-//
-//        break;
-//    }
-//
-//    return size;
-//}
-
-/**************************************************************************************************
- * 从当前时间点向前去读time秒的数据。
- * 参数:
- *      id: 波形参数ID。
- *      channelName: 通道名称。
- *      buff: 存放读取数据的缓冲区。
- *      time: 欲读取数据的秒数。
- *      alignToSecond: data align to second edge
- * 返回：
- *      读到的数据个数。
- *************************************************************************************************/
-int WaveformCache::channelRead(WaveformID id, WaveDataType *buff, int time,
-        const QString &channelName, bool alignToSecond)
-{
-    if ((buff == NULL) || (time <= 0))
-    {
-        return 0;
-    }
-
-    QList<ChannelDesc*> channel = _channel.values(id);
-    if (channel.isEmpty())
-    {
-        qdebug("channel is empty.\n");
-        return 0;
-    }
-
-    int size = 0;
-    int rate = getSampleRate(id);
-    int len = rate * time;
-    int channelNR = channel.size();
-    for (int i = 0; i < channelNR; i++)
-    {
-        if (channel[i]->name != channelName)
-        {
-            continue;
-        }
-
-        channel[i]->_mutex.lock();
-        RingBuff<WaveDataType> &pool = channel[i]->buff;
-        size = pool.dataSize();
-
-        if (len <= size)
-        {
-            int index = size % rate;
-            if (len <= (size - index) && alignToSecond)
-            {
-                index = size - len - index;
-            }
-            else
-            {
-                index = size - len;
-            }
-
-            pool.copy(index, buff, len);
-            size = len;
-        }
-        else
-        {
-            //no enough data, fill the head of the the buff with invalid data
-            int baseLine = 0;
-            getBaseline(id, baseLine);
-            qFill(buff, buff + len - size, 0x40000000 | baseLine);
-            pool.copy(0, &buff[len - size], size);
-        }
-        channel[i]->_mutex.unlock();
-        break;
-    }
-
-    return size;
-}
-
-
-/**************************************************************************************************
- * 读取实时波形数据。
- * 参数:
- *      id: 波形参数ID。
- *      channelName: 通道名称。
- *      buff: 存放读取数据的缓冲区。
- *      time: 欲读取数据的秒数。
- *      isInit: 是否初始化读位置
- *      readFromHead:从波形头开始读取
- * 返回：
- *      读到的数据个数。
- *************************************************************************************************/
-int WaveformCache::channelReadRealTimeData(WaveformID id, WaveDataType *buff, int time,
-            const QString &channelName, bool isInit, bool readFromHead)
-{
-    if ((buff == NULL) || (time <= 0))
-    {
-        return 0;
-    }
-
-    QList<ChannelDesc*> channel = _channel.values(id);
-    if (channel.isEmpty())
-    {
-        qdebug("channel is empty.\n");
-        return 0;
-    }
-
-    int size = 0;
-    int rate = getSampleRate(id);
-    int len = rate * time;
-    int channelNR = channel.size();
-    for (int i = 0; i < channelNR; i++)
-    {
-        if (channel[i]->name != channelName)
-        {
-            continue;
-        }
-
-        channel[i]->_mutex.lock();
-        RingBuff<WaveDataType> &pool = channel[i]->buff;
-
-        if (isInit)
-        {
-            pool.resetToTail();
-        }
-        size = pool.dataSize();
-
-        if (len <= size)
-        {
-            int index = size - len;
-            if (readFromHead)
-            {
-                index = 0;
-            }
-
-            pool.copy(index, buff, len);
-            size = len;
-        }
-        else
-        {
-            //no enough data, fill the head of the the buff with invalid data
-            int baseLine = 0;
-            getBaseline(id, baseLine);
-            qFill(buff, buff + len - size, 0x40000000 | baseLine);
-            pool.copy(0, &buff[len - size], size);
-        }
-
-        if (isInit)
-        {
-            pool.pop(pool.dataSize());
-        }
-        else
-        {
-            pool.pop(size);
-        }
-        channel[i]->_mutex.unlock();
-        break;
-    }
-
-    return size;
-}
-#endif
 
 /**************************************************************************************************
  * 从当前时间点向前去读time秒的数据。

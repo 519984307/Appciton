@@ -157,6 +157,31 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
         case SUB_PARAM_TD:
             return "TD";
 
+        case SUB_PARAM_ST_I:
+            return "ST I";
+        case SUB_PARAM_ST_II:
+            return "ST II";
+        case SUB_PARAM_ST_III:
+            return "ST III";
+        case SUB_PARAM_ST_aVR:
+            return "ST aVR";
+        case SUB_PARAM_ST_aVL:
+            return "ST aVL";
+        case SUB_PARAM_ST_aVF:
+            return "ST aVF";
+        case SUB_PARAM_ST_V1:
+            return "ST V1";
+        case SUB_PARAM_ST_V2:
+            return "ST V2";
+        case SUB_PARAM_ST_V3:
+            return "ST V3";
+        case SUB_PARAM_ST_V4:
+            return "ST V4";
+        case SUB_PARAM_ST_V5:
+            return "ST V5";
+        case SUB_PARAM_ST_V6:
+            return "ST V6";
+
         default:
             return NULL;
     }
@@ -400,6 +425,53 @@ const char *ParamInfo::getSubParamName(SubParamID id, bool ignoreModuleConfig)
 const char *ParamInfo::getSubParamName(SubDupParamID id)
 {
     return _subDupParamNames[id];
+}
+
+
+/**
+ * @brief ParamInfo::getIBPPressName get a press name according the sub param id
+ * @param id
+ * @return
+ */
+const char *ParamInfo::getIBPPressName(SubParamID id)
+{
+    switch(id)
+    {
+    case SUB_PARAM_ART_SYS:
+    case SUB_PARAM_ART_DIA:
+    case SUB_PARAM_ART_MAP:
+    case SUB_PARAM_ART_PR:
+        return "ART";
+    case SUB_PARAM_PA_SYS:
+    case SUB_PARAM_PA_DIA:
+    case SUB_PARAM_PA_MAP:
+    case SUB_PARAM_PA_PR:
+        return "PA";
+    case SUB_PARAM_CVP_MAP:
+    case SUB_PARAM_CVP_PR:
+        return "CVP";
+    case SUB_PARAM_LAP_MAP:
+    case SUB_PARAM_LAP_PR:
+        return "LAP";
+    case SUB_PARAM_RAP_MAP:
+    case SUB_PARAM_RAP_PR:
+        return "RAP";
+    case SUB_PARAM_ICP_MAP:
+    case SUB_PARAM_ICP_PR:
+        return "ICP";
+    case SUB_PARAM_AUXP1_SYS:
+    case SUB_PARAM_AUXP1_DIA:
+    case SUB_PARAM_AUXP1_MAP:
+    case SUB_PARAM_AUXP1_PR:
+        return "AUXP1";
+    case SUB_PARAM_AUXP2_SYS:
+    case SUB_PARAM_AUXP2_DIA:
+    case SUB_PARAM_AUXP2_MAP:
+    case SUB_PARAM_AUXP2_PR:
+        return "AUXP2";
+    default:
+        return "";
+    }
 }
 
 /**************************************************************************************************

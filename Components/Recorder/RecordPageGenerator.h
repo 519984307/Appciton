@@ -1,10 +1,21 @@
 #pragma once
 #include <QObject>
-#include <RecordPage.h>
-#include <QGraphicsItem>
-#include <PatientDefine.h>
-#include <TrendDataDefine.h>
+#include "RecordPage.h"
+#include "PatientDefine.h"
+#include "TrendDataDefine.h"
 #include <QStringList>
+#include <QVector>
+#include "PrintDefine.h"
+
+struct RecordWaveSegmentInfo
+{
+    WaveformID id;                  // wave id
+    int pageNum;                    // page number
+    int pageWidth;                  // page width;
+    int startYOffset;               // start Y Offset of wave;
+    int endYOffset;                 // end y offset of the wave
+    QVector<WaveDataType> waveBuff; // wave buffer
+};
 
 class RecordPageGenerator : public QObject
 {
@@ -13,6 +24,16 @@ public:
     enum
     {
         Type = 1
+    };
+
+    enum PageType
+    {
+        TitlePage,
+        TrendPage,
+        WaveScalePage,
+        WaveSegmentPage,
+        EndPage,
+        NullPage,
     };
 
     RecordPageGenerator(QObject *parent = 0 );
@@ -96,6 +117,8 @@ protected:
      * @return  string list
      */
     static QStringList getTrendStringList(const TrendDataPackage& trendData);
+
+    static RecordPage *createWaveScalePage(PrintSpeed printSpeed = PRINT_SPEED_250);
 
     /**
      * @brief timerEvent handle timer event

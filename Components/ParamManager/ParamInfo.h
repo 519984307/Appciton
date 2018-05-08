@@ -27,6 +27,7 @@ public:
     void getSubParams(ParamID id, QList<SubParamID> &ids);
     const char *getSubParamName(SubParamID id, bool ignoreModuleConfig = false);
     const char *getSubParamName(SubDupParamID id);
+    const char *getIBPPressName(SubParamID id);
 
     // 获取波形ID与字串名之间的转换。
     const char *getParamWaveformName(WaveformID id);

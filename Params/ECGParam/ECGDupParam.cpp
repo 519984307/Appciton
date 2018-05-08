@@ -81,8 +81,27 @@ void ECGDupParam::setProvider(ECGProviderIFace *provider)
 /**************************************************************************************************
  * 获取当前的单位。
  *************************************************************************************************/
-UnitType ECGDupParam::getCurrentUnit(SubParamID /*id*/)
+UnitType ECGDupParam::getCurrentUnit(SubParamID id)
 {
+    switch(id)
+    {
+    case SUB_PARAM_ST_I:
+    case SUB_PARAM_ST_II:
+    case SUB_PARAM_ST_III:
+    case SUB_PARAM_ST_aVR:
+    case SUB_PARAM_ST_aVL:
+    case SUB_PARAM_ST_aVF:
+    case SUB_PARAM_ST_V1:
+    case SUB_PARAM_ST_V2:
+    case SUB_PARAM_ST_V3:
+    case SUB_PARAM_ST_V4:
+    case SUB_PARAM_ST_V5:
+    case SUB_PARAM_ST_V6:
+        return UNIT_MV;
+    default:
+        break;
+    }
+
     return UNIT_BPM;
 }
 
