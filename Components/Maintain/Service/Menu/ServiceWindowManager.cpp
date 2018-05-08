@@ -15,7 +15,7 @@
 #include "Debug.h"
 #include "LabelButton.h"
 #include "MenuManager.h"
-#include "NIBPRepair.h"
+#include "NIBPRepairMenuManager.h"
 #include "NIBPCalibrate.h"
 #include "NIBPManometer.h"
 #include "NIBPZeroPoint.h"
@@ -83,15 +83,15 @@ ServiceWindowManager::ServiceWindowManager() : MenuWidget(trs("ServiceSystem"))
 
     mainLayout->addLayout(vLayout);
 
-    nibprepair.Construation();
+    nibpRepairMenuManager.Construation();
     nibpcalibrate.construction();
-    nibprepair.addSubMenu(&nibpcalibrate);
+    nibpRepairMenuManager.addSubMenu(&nibpcalibrate);
     nibpmanometer.construction();
-    nibprepair.addSubMenu(&nibpmanometer);
+    nibpRepairMenuManager.addSubMenu(&nibpmanometer);
     nibpzeropoint.construction();
-    nibprepair.addSubMenu(&nibpzeropoint);
+    nibpRepairMenuManager.addSubMenu(&nibpzeropoint);
     nibppressurecontrol.construction();
-    nibprepair.addSubMenu(&nibppressurecontrol);
+    nibpRepairMenuManager.addSubMenu(&nibppressurecontrol);
 
 //    serviceUpgrade.Construation();
 //    serviceVersion.Construation();
@@ -116,8 +116,8 @@ void ServiceWindowManager::showEvent(QShowEvent *e)
 
 void ServiceWindowManager::_nibpButtonSlot()
 {
-    nibprepair.popup();
-    nibprepair.init();
+    nibpRepairMenuManager.popup();
+    nibpRepairMenuManager.init();
 }
 
 void ServiceWindowManager::_upgradeButtonSlot()

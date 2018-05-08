@@ -2,8 +2,8 @@
 #include <QLabel>
 #include "NIBPCalibrate.h"
 #include "Debug.h"
-#include "NIBPParamService.h"
-#include "NIBPRepair.h"
+#include "NIBPParam.h"
+#include "NIBPRepairMenuManager.h"
 
 NIBPCalibrate *NIBPCalibrate::_selfObj = NULL;
 
@@ -27,8 +27,8 @@ NIBPCalibrate::NIBPCalibrate() : SubMenu(trs("ServiceCalibrate"))
  *************************************************************************************************/
 void NIBPCalibrate::layoutExec()
 {
-    int submenuW = nibprepair.getSubmenuWidth();
-    int submenuH = nibprepair.getSubmenuHeight();
+    int submenuW = nibpRepairMenuManager.getSubmenuWidth();
+    int submenuH = nibpRepairMenuManager.getSubmenuHeight();
     setMenuSize(submenuW, submenuH);
 
     int itemW = submenuW - ICOMBOLIST_SPACE;
@@ -128,8 +128,8 @@ void NIBPCalibrate::init()
 void NIBPCalibrate::focusFirstItem()
 {
     init();
-    // 转换到状态。
-    nibpParamService.switchState(NIBP_Service_CALIBRATE);
+
+    nibpParam.switchState(NIBP_SERVICE_CALIBRATE_STATE);
 
     SubMenu::focusFirstItem();
 }
@@ -145,7 +145,12 @@ void NIBPCalibrate::_calibratedBtn1()
         if (!_btnFlag1)
         {
             _btnFlag1 = true;
-            nibpParamService.servicePressurepoint(0,0);
+            unsigned char cmd[3];
+            cmd[0] = 0x00;
+            cmd[1] = 0x00;
+            cmd[2] = 0x00;
+
+            nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_CMD_PRESSURE_POINT,cmd,3);
 
             _item = _itemList.at(0);
             _item->btn->setText(trs("ServiceCalibrating"));
@@ -158,7 +163,7 @@ void NIBPCalibrate::_calibratedBtn1()
     }
     else
     {
-        nibprepair.messageBox();
+        nibpRepairMenuManager.messageBox();
     }
 }
 
@@ -177,7 +182,11 @@ void NIBPCalibrate::_calibratedBtn2()
             QString value = _item->range->getText();
             _pressurevalue = value.toInt();
 
-            nibpParamService.servicePressurepoint(1,_pressurevalue);
+            unsigned char cmd[3];
+            cmd[0] = 0x01;
+            cmd[1] = _pressurevalue & 0xFF;
+            cmd[2] = (_pressurevalue & 0xFF00) >> 8;
+            nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_CMD_PRESSURE_POINT,cmd,3);
 
             _item = _itemList.at(1);
             _item->btn->setText(trs("ServiceCalibrating"));
@@ -188,7 +197,7 @@ void NIBPCalibrate::_calibratedBtn2()
     }
     else
     {
-        nibprepair.messageBox();
+        nibpRepairMenuManager.messageBox();
     }
 }
 

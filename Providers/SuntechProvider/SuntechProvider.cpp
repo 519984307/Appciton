@@ -1,13 +1,51 @@
 #include "SuntechProvider.h"
 #include "NIBPParam.h"
-#include "NIBPParamService.h"
 #include "NIBPAlarm.h"
 #include "Debug.h"
 #include <QString>
 #include <QTimer>
 
-#define ROH             (0x3E)  // receive packet header
-#define SOH             (0x3A)  // send packet header
+#define		HOST_START_BYTE           0x3A     //receive packet header :
+#define		MODULE_START_BYTE         0x3E     //send packet header >
+
+//RESPONSES
+
+#define		MODULE_ACK     		      0x04      // 模块应答
+
+#define		MODULE_RECEIVED		      0x4F      // “O”
+#define		MODULE_EXECUTED		      0x4B      // "K"
+#define		MODULE_ABORT		      0x41      // "A"
+#define		MODULE_BUSY		          0x42      // "B"
+#define		MODULE_ERROR		      0x45      // "E"
+#define		MODULE_UNDIFINE	          0x4E      // "N"
+#define		MODULE_UNRECOGNIZABLE     0x44      // "D"
+#define		MODULE_SLEEP              0x53      // "S"
+#define		MODULE_TIMEOUT            0x54      // "T"
+
+#define     SUNTECH_RSP_CUFF_PRESSURE         0x05	    // 当前压力
+#define     SUNTECH_RSP_GET_MEASUREMENT       0x18      // 测量结果
+
+
+//COMMANDS
+
+#define     SUNTECH_CMD_SEND_START              0x79
+#define     SUNTECH_CMD_SET_INITIAL_INFIAL      0X17      // DATA=I0
+#define     SUNTECH_CMD_START_ADU_BP            0X20      // 成人
+#define     SUNTECH_CMD_START_PED_BP            0X87      // 小儿
+#define     SUNTECH_CMD_START_NEO_BP            0X28      // 新生儿
+#define     SUNTECH_CMD_ABORT_BP                0x01      // 停止测量
+#define     SUNTECH_CMD_GET_CUFF_PRESSURE       0x05      // 获取当前压力
+#define     SUNTECH_CMD_GET_BP_DATA             0x03      // 获取测量结果
+#define     SUNTECH_CMD_GET_MODULE_DATA         0x00
+#define     SUNTECH_CMD_GET_RETURN_STRING       0x02      // DATA=0x02 0x40
+#define     SUNTECH_CMD_SET_SLEEP_MODE          0x81      // DATA=B0 B1 B2 B3
+#define     SUNTECH_CMD_CONTROL_PNEUMATICS      0x0C      // DATA=B0 B1 B2
+#define     SUNTECH_CMD_CALIBRATE_TRANSDUCER    0X04      // DATA=B0
+#define     SUNTECH_CMD_GET_RETURN_CODE         0x79      // DATA=0x02 0x03
+#define     SUNTECH_CMD_STATUS                  0x79      // DATA=0x10 0x03
+#define     SUNTECH_CMD_RESET                   0x8A
+#define     SUNTECH_CMD_START_NEONATE_BP        0x28      // 新生儿
+#define     SUNTECH_CMD_VENOUS_STASIS           0x86      // DATA=B0 B1 B2
 
 /**************************************************************************************************
  * 发送复位命令。
@@ -27,7 +65,6 @@ bool SuntechProvider::attachParam(Param &param)
     if (param.getParamID() == PARAM_NIBP)
     {
         nibpParam.setProvider(this);
-        nibpParamService.setServiceProvider(this);
         return true;
     }
 
@@ -48,7 +85,7 @@ void SuntechProvider::dataArrived(void)
     unsigned char buff[64];
     while (ringBuff.dataSize() >= _minPacketLen)
     {
-        if (ringBuff.at(0) != ROH)
+        if (ringBuff.at(0) != MODULE_START_BYTE)
         {
             //debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));
             ringBuff.pop(1);
@@ -83,7 +120,7 @@ void SuntechProvider::dataArrived(void)
 
         if (buff[len-1] == _calcCheckSum(buff,len-1))
         {
-            nibpParam.unPacket(&buff[1], len - 2);
+            _handlePacket(&buff[1], len - 2);
         }
         else
         {
@@ -102,21 +139,23 @@ void SuntechProvider::startMeasure(PatientType type)
     unsigned char cmd;
     if (type == PATIENT_TYPE_ADULT)	 //如果是成人模式
     {
-      cmd = 0x20;
+      cmd = SUNTECH_CMD_START_ADU_BP;
     }
     else if(type == PATIENT_TYPE_PED) //如果是少儿模式
     {
-      cmd = 0x87;
+      cmd = SUNTECH_CMD_START_PED_BP;
     }
     else if(type == PATIENT_TYPE_NEO) //如果是新生儿模式
     {
-      cmd = 0x28;
+      cmd = SUNTECH_CMD_START_NEO_BP;
     }
 
     _sendCmd(&cmd, 1);
 
 //    _timer->start();
     _getCuffPressure();
+    _NIBPStart = true;
+    _flagStartCmdSend = 1;
 }
 
 /**************************************************************************************************
@@ -128,11 +167,13 @@ void SuntechProvider::stopMeasure(void)
 
     unsigned char cmd[3] = {0};
 
-    cmd[0] = 0x79;
-    cmd[1] = 0x01;
+    cmd[0] = SUNTECH_CMD_SEND_START;
+    cmd[1] = SUNTECH_CMD_ABORT_BP;
     cmd[2] = 0x00;
 
     _sendCmd(cmd,3);
+
+    _flagStartCmdSend = 1;
 }
 
 /**************************************************************************************************
@@ -158,89 +199,11 @@ bool SuntechProvider::needStartACK(void)
 }
 
 /**************************************************************************************************
- * 是否为启动指令的应答。
- *************************************************************************************************/
-bool SuntechProvider::isStartACK(unsigned char *packet)
-{
-    if (packet[0] != 0x04)
-    {
-        return false;
-    }
-
-    if (packet[1] != 0x4F)
-    {
-        return false;
-    }
-
-    _NIBPStart = true;
-
-    return true;
-}
-
-/**************************************************************************************************
  * 发送停止指令是否有该指令的应答。
  *************************************************************************************************/
 bool SuntechProvider::needStopACK(void)
 {
     return true;
-}
-
-/**************************************************************************************************
- * 是否为停止指令的应答。
- *************************************************************************************************/
-bool SuntechProvider::isStopACK(unsigned char *packet)
-{
-    if (packet[0] != 0x04)
-    {
-        return false;
-    }
-
-    if (packet[1] != 0x41)
-    {
-        return false;
-    }
-
-    return true;
-}
-
-/**************************************************************************************************
- * 压力数据，不是压力数据返回-1。
- *************************************************************************************************/
-short SuntechProvider::cuffPressure(unsigned char *packet)
-{
-    if (packet[0] != 0x05)
-    {
-        return -1;
-    }
-
-    short pressure = (packet[2]<<8)+packet[1];
-
-    return pressure;
-}
-
-/**************************************************************************************************
- * 测量是否结束。
- *************************************************************************************************/
-bool SuntechProvider::isMeasureDone(unsigned char *packet)
-{
-    if (packet[0] != 0x04)
-    {
-        return false;
-    }
-
-    if (packet[1] != 0x4B)
-    {
-        return false;
-    }
-
-    // received first data packet acknowledges the START_BP command
-    if (_NIBPStart)
-    {
-        _NIBPStart = false;
-        return true;
-    }
-
-    return false;
 }
 
 /**************************************************************************************************
@@ -258,8 +221,8 @@ void SuntechProvider::getResult(void)
 {
     unsigned char cmd[3] = {0};
 
-    cmd[0] = 0x79;
-    cmd[1] = 0x03;
+    cmd[0] = SUNTECH_CMD_SEND_START;
+    cmd[1] = SUNTECH_CMD_GET_BP_DATA;
     cmd[2] = 0x00;
 
     _sendCmd(cmd, 3);
@@ -314,6 +277,8 @@ bool SuntechProvider::isResult(unsigned char *packet,
  *************************************************************************************************/
 SuntechProvider::SuntechProvider() : Provider("SUNTECH_NIBP"), NIBPProviderIFace()
 {
+    _flagStartCmdSend = -1;
+
     _NIBPStart = false;
 
     UartAttrDesc portAttr(9600, 8, 'N', 1);
@@ -345,11 +310,81 @@ void SuntechProvider::_getCuffPressure()
 {
     unsigned char cmd[3] = {0};
 
-    cmd[0] = 0x79;
-    cmd[1] = 0x05;
+    cmd[0] = SUNTECH_CMD_SEND_START;
+    cmd[1] = SUNTECH_CMD_GET_CUFF_PRESSURE;
     cmd[2] = 0x00;
 
     _sendCmd(cmd, 3);
+}
+
+/**************************************************************************************************
+ * 数据处理。
+ *************************************************************************************************/
+void SuntechProvider::_handlePacket(unsigned char *data, int len)
+{
+    switch (data[0])
+    {
+    case MODULE_ACK:
+        // "O"
+        if (data[1] == MODULE_RECEIVED)
+        {
+            if (_flagStartCmdSend == 1)
+            {
+                // 启动测量
+                if (_NIBPStart)
+                {
+                    nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_START_MEASURE,NULL,0);
+                }
+                _flagStartCmdSend = 2;
+            }
+        }
+
+        // "A"
+        else if (data[1] == MODULE_ABORT)
+        {
+            if (_flagStartCmdSend == 1)
+            {
+                if (_NIBPStart)
+                {
+                    _NIBPStart = false;
+                }
+                _flagStartCmdSend = 2;
+            }
+        }
+
+        // "AK"  "OK"
+        else if (data[1] == MODULE_EXECUTED)
+        {
+            if (_flagStartCmdSend == 2)
+            {
+                _flagStartCmdSend = 0;
+                // 测量完成
+                if (_NIBPStart)
+                {
+                    nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_MEASURE_DONE,NULL,0);
+                    _NIBPStart = false;
+                }
+                // 测量停止
+                else
+                {
+                    nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_STOP,NULL,0);
+                }
+            }
+        }
+        break;
+
+    // 当前压力
+    case SUNTECH_RSP_CUFF_PRESSURE:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE,&data[1],2);
+
+    // 测量结果
+    case SUNTECH_RSP_GET_MEASUREMENT:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_GET_RESULT,data,len);
+        break;
+
+    default:
+        break;
+    }
 }
 
 void SuntechProvider::_sendCmd(const unsigned char *data, unsigned int len)
@@ -357,7 +392,7 @@ void SuntechProvider::_sendCmd(const unsigned char *data, unsigned int len)
     int index = 0;
     unsigned char sendBuf[10] = {0};
 
-    sendBuf[index++] = SOH;
+    sendBuf[index++] = HOST_START_BYTE;
     for (unsigned int i = 0; i < len; i++)
     {
         sendBuf[index++] = data[i];

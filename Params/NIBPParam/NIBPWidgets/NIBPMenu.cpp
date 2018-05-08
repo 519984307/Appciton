@@ -1,10 +1,10 @@
 #include "NIBPMenu.h"
 #include "NIBPParam.h"
+#include "NIBPMonitorStateDefine.h"
 #include "IComboList.h"
 #include "LanguageManager.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include "NIBPParam.h"
 #include "MenuManager.h"
 #include "IConfig.h"
 
@@ -39,7 +39,7 @@ void NIBPMenu::_initialCuffChangeSlot(int index)
  *************************************************************************************************/
 void NIBPMenu::_statBtnSlot()
 {
-    if (nibpParam.currentState() == NIBP_STATE_ERROR)
+    if (nibpParam.curStatusType() == NIBP_MONITOR_ERROR_STATE)
     {
         return;
     }
@@ -214,7 +214,7 @@ void NIBPMenu::layoutExec(void)
 
     for (int i = 0; i < NIBP_AUTO_INTERVAL_NR; i++)
     {
-        _autoInterval->addItem(trs(NIBPSymbol::convert((NIBPIntervalTime)i)));
+        _autoInterval->addItem(trs(NIBPSymbol::convert((NIBPAutoInterval)i)));
     }
     connect(_autoInterval, SIGNAL(currentIndexChanged(int)), this, SLOT(_autoIntervalSlot(int)));
 

@@ -1,8 +1,8 @@
 #include "NIBPZeroPoint.h"
 #include <QHBoxLayout>
 #include "Debug.h"
-#include "NIBPParamService.h"
-#include "NIBPRepair.h"
+#include "NIBPParam.h"
+#include "NIBPRepairMenuManager.h"
 
 NIBPZeroPoint *NIBPZeroPoint::_selfObj = NULL;
 
@@ -22,8 +22,8 @@ NIBPZeroPoint::NIBPZeroPoint() : SubMenu(trs("ServiceCalibrateZero"))
  *************************************************************************************************/
 void NIBPZeroPoint::layoutExec()
 {
-    int submenuW = nibprepair.getSubmenuWidth();
-    int submenuH = nibprepair.getSubmenuHeight();
+    int submenuW = nibpRepairMenuManager.getSubmenuWidth();
+    int submenuH = nibpRepairMenuManager.getSubmenuHeight();
     setMenuSize(submenuW, submenuH);
     setTitleEnable(true);
 
@@ -48,7 +48,7 @@ void NIBPZeroPoint::layoutExec()
     labelLayout_pressure->addWidget(_value);
 
     l = new QLabel();
-    l->setText(Unit::getSymbol(nibpParamService.getUnit()));
+    l->setText(Unit::getSymbol(nibpParam.getUnit()));
     l->setFixedSize(50, Service_H);
     l->setAlignment(Qt::AlignCenter);
     l->setFont(fontManager.textFont(fontSize));
@@ -80,7 +80,8 @@ void NIBPZeroPoint::init(void)
 void NIBPZeroPoint::focusFirstItem()
 {
     init();
-    nibpParamService.switchState(NIBP_Service_CALIBRATE_ZERO);
+
+    nibpParam.switchState(NIBP_SERVICE_CALIBRATE_ZERO_STATE);
 
     SubMenu::focusFirstItem();
 }
@@ -90,7 +91,7 @@ void NIBPZeroPoint::focusFirstItem()
  *************************************************************************************************/
 void NIBPZeroPoint::_startReleased()
 {
-    nibpParamService.serviceCloseValve(true);
+    nibpParam.provider().serviceValve(true);
 }
 
 /**************************************************************************************************
@@ -98,7 +99,7 @@ void NIBPZeroPoint::_startReleased()
  *************************************************************************************************/
 void NIBPZeroPoint::_zeroReleased()
 {
-    nibpParamService.servicePressureZero();
+    nibpParam.provider().servicePressureZero();
 }
 
 /**************************************************************************************************
@@ -119,7 +120,7 @@ void NIBPZeroPoint::_btnReleased()
     }
     else
     {
-        nibprepair.messageBox();
+        nibpRepairMenuManager.messageBox();
     }
 }
 
@@ -134,7 +135,7 @@ void NIBPZeroPoint::setCuffPressure(int pressure)
     }
     else
     {
-        UnitType unit = nibpParamService.getUnit();
+        UnitType unit = nibpParam.getUnit();
         if (unit == UNIT_MMHG)
         {
             _value->setNum(pressure);

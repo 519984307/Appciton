@@ -2,7 +2,6 @@
 #include "SystemManager.h"
 #include "Param.h"
 #include "NIBPParam.h"
-#include "NIBPParamService.h"
 #include "SPO2Param.h"
 #include "RESPParam.h"
 #include "ECGParam.h"
@@ -148,7 +147,6 @@ bool DemoProvider::attachParam(Param &param)
     else if (name == paramInfo.getParamName(PARAM_NIBP))
     {
         nibpParam.setProvider(this);
-        nibpParamService.setServiceProvider(this);
     }
     else if (name == paramInfo.getParamName(PARAM_CO2))
     {

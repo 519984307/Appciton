@@ -23,12 +23,12 @@ public:
         return symbol[index];
     }
 
-    static const char *convert(NIBPIntervalTime index)
+    static const char *convert(NIBPAutoInterval index)
     {
-        static const char *symbol[NIBP_INT_TIM_NR] =
+        static const char *symbol[NIBP_AUTO_INTERVAL_NR] =
         {
-            "manual","auto", "1min","2min","2.5min","3min", "5min", "10min",
-            "15min","20min"
+            "_2.5min", "_5min", "_10min", "_15min", "_20min",
+            "_30min", "_45min", "_60min", "_90min", "_120min"
         };
         return symbol[index];
     }

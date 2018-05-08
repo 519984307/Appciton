@@ -2,7 +2,7 @@
 #include "BLMEDUpgradeTime.h"
 #include "USBManager.h"
 #include "ECGParam.h"
-#include "NIBPParamService.h"
+#include "NIBPParam.h"
 #include "SPO2Param.h"
 #include "TEMPParam.h"
 #include "PrintManager.h"
@@ -102,7 +102,7 @@ void BLMEDUpgradeParam::_btnShow(bool flag)
  *************************************************************************************************/
 void BLMEDUpgradeParam::_serviceUpgradeTN3Daemon(bool flag)
 {
-    nibpParamService.setPassthroughMode(flag);
+    nibpParam.provider().setPassthroughMode(flag);
 }
 
 /**************************************************************************************************
@@ -901,7 +901,7 @@ void BLMEDUpgradeParam::_sendCmdData(unsigned char cmdId, const unsigned char *d
         break;
     case UPGRADE_TYPE_TN3:
     case UPGRADE_TYPE_TN3Daemon:
-        nibpParamService.sendCmdData(cmdId,data,len);
+        nibpParam.provider().sendCmdData(cmdId,data,len);
         break;
     case UPGRADE_TYPE_TS3:
         spo2Param.sendCmdData(cmdId,data,len);

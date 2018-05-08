@@ -4,11 +4,11 @@
 #include "IComboList.h"
 #include "NIBPPressureControl.h"
 #include "Debug.h"
-#include "NIBPParamService.h"
+#include "NIBPParam.h"
 #include "NIBPSymbol.h"
 #include "PatientManager.h"
 #include "ISpinBox.h"
-#include "NIBPRepair.h"
+#include "NIBPRepairMenuManager.h"
 
 
 NIBPPressureControl *NIBPPressureControl::_selfObj = NULL;
@@ -20,8 +20,8 @@ NIBPPressureControl *NIBPPressureControl::_selfObj = NULL;
  *************************************************************************************************/
 void NIBPPressureControl::layoutExec()
 {
-    int submenuW = nibprepair.getSubmenuWidth();
-    int submenuH = nibprepair.getSubmenuHeight();
+    int submenuW = nibpRepairMenuManager.getSubmenuWidth();
+    int submenuH = nibpRepairMenuManager.getSubmenuHeight();
     setMenuSize(submenuW, submenuH);
 
     int itemW = submenuW - ICOMBOLIST_SPACE;
@@ -45,7 +45,7 @@ void NIBPPressureControl::layoutExec()
     labelLayout->addWidget(_value);
 
     l = new QLabel();
-    l->setText(Unit::getSymbol(nibpParamService.getUnit()));
+    l->setText(Unit::getSymbol(nibpParam.getUnit()));
     l->setFixedSize(50, Service_H);
     l->setAlignment(Qt::AlignCenter);
     l->setFont(fontManager.textFont(fontSize));
@@ -104,7 +104,7 @@ void NIBPPressureControl::init(void)
     _patientVaulue = 0;
     _patientType->setCurrentIndex(_patientVaulue);
 
-    nibpParamService.servicePressureProtect(true);
+    nibpParam.provider().servicePressureProtect(true);
 
     _patientType->setDisabled(false);
     _InflateBtn->setEnabled(true);
@@ -118,7 +118,8 @@ void NIBPPressureControl::init(void)
 void NIBPPressureControl::focusFirstItem()
 {
     init();
-    nibpParamService.switchState(NIBP_Service_PRESSURECONTROL);
+
+    nibpParam.switchState(NIBP_SERVICE_PRESSURECONTROL_STATE);
 
     SubMenu::focusFirstItem();
 }
@@ -153,7 +154,7 @@ void NIBPPressureControl::_InflateBtnReleased()
     }
     else
     {
-        nibprepair.messageBox();
+        nibpRepairMenuManager.messageBox();
     }
 }
 
@@ -167,19 +168,19 @@ void NIBPPressureControl::_inflateReleased()
     int index = _patientType->currentIndex();
     if (_patientType->itemText(index) == trs(PatientSymbol::convert(PATIENT_TYPE_NULL)))
     {
-        nibpParamService.servicePressureProtect(false);
+        nibpParam.provider().servicePressureProtect(false);
     }
     else
     {
-        nibpParamService.servicePressureProtect(true);
+        nibpParam.provider().servicePressureProtect(true);
     }
 
-    nibpParamService.servicePatientType((unsigned char)((PatientType)_patientVaulue));
+    nibpParam.provider().setPatientType((unsigned char)((PatientType)_patientVaulue));
 
     QString value = _chargePressure->getText();
     _inflatePressure = value.toInt();
 
-    nibpParamService.servicePressureinflate(_inflatePressure);
+    nibpParam.provider().servicePressureinflate(_inflatePressure);
 }
 
 /**************************************************************************************************
@@ -187,7 +188,7 @@ void NIBPPressureControl::_inflateReleased()
  *************************************************************************************************/
 void NIBPPressureControl::_deflateReleased(void)
 {
-    nibpParamService.servicePressuredeflate();
+    nibpParam.provider().servicePressuredeflate();
 }
 
 /**************************************************************************************************
@@ -195,7 +196,7 @@ void NIBPPressureControl::_deflateReleased(void)
  *************************************************************************************************/
 void NIBPPressureControl::_pressureChange(QString value)
 {
-//    UnitType unit = nibpParamService.getUnit();
+//    UnitType unit = nibpParam.getUnit();
 //    if (unit == UNIT_KPA)
 //    {
 //        int i = 0;
@@ -210,7 +211,7 @@ void NIBPPressureControl::_pressureChange(QString value)
     }
     else
     {
-        nibprepair.messageBox();
+        nibpRepairMenuManager.messageBox();
     }
 }
 
@@ -226,17 +227,17 @@ void NIBPPressureControl::_patientInflate(int index)
 //        if( type == PATIENT_TYPE_NULL )
         if (_patientType->itemText(index) == trs(PatientSymbol::convert(PATIENT_TYPE_NULL)))
         {
-            nibpParamService.servicePressureProtect(false);
+            nibpParam.provider().servicePressureProtect(false);
         }
         else
         {
-            nibpParamService.servicePressureProtect(true);
+            nibpParam.provider().servicePressureProtect(true);
             _patientVaulue = index;
         }
     }
     else
     {
-        nibprepair.messageBox();
+        nibpRepairMenuManager.messageBox();
     }
 }
 
@@ -251,7 +252,7 @@ void NIBPPressureControl::setCuffPressure(int pressure)
     }
     else
     {
-        UnitType unit = nibpParamService.getUnit();
+        UnitType unit = nibpParam.getUnit();
         if (unit == UNIT_MMHG)
         {
             _value->setNum(pressure);

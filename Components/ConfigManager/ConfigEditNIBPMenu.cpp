@@ -53,9 +53,9 @@ void ConfigEditNIBPMenuPrivate::loadOptions()
     index  = 0;
     if (combos[IntervalTime]->count() == 0)
     {
-        for (int i = 0; i < NIBP_INT_TIM_NR; i++)
+        for (int i = 0; i < NIBP_AUTO_INTERVAL_NR; i++)
         {
-            combos[IntervalTime]->addItem(NIBPSymbol::convert((NIBPIntervalTime)i));
+            combos[IntervalTime]->addItem(NIBPSymbol::convert((NIBPAutoInterval)i));
         }
         config->getNumValue("NIBP|IntervalTime", index);
         combos[IntervalTime]->setCurrentIndex(index);

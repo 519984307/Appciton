@@ -255,7 +255,7 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
         temp = (data[1]<<8) + data[2];
         float v = temp;
         v = (v / 1000 + 0.05);
-        short piValue = (int)(v * 10);
+//        short piValue = (int)(v * 10);
 
 //        spo2Param.updatePIValue(piValue);     // 更新PI值。
         break;
@@ -275,7 +275,7 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
         _isLowPerfusionFlag = (temp & 0x04) ? true : false;
 
         // Low Signal IQ。
-        bool isLowSignalIQFlag = (temp & 0x400) ? true : false;
+//        bool isLowSignalIQFlag = (temp & 0x400) ? true : false;
 
         if (isCableOff)  // 存在报警则不显示searching for pulse。
         {
@@ -351,7 +351,7 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
     }
 
     // 接收SIQ波形。
-    unsigned char siqWaveformValue = 0;
-    siqWaveformValue = data[5];
+//    unsigned char siqWaveformValue = 0;
+//    siqWaveformValue = data[5];
 //    spo2Param.updataSiqWaveformValue((unsigned char)siqWaveformValue);
 }

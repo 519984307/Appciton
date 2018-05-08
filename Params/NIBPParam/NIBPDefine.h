@@ -44,33 +44,19 @@ enum NIBPAutoInterval
  *************************************************************************************************/
 enum NIBPInitialInflatingPressure
 {
+    NIBP_INIT_PRE_80,
+    NIBP_INIT_PRE_90,
+    NIBP_INIT_PRE_100,
+    NIBP_INIT_PRE_110,
     NIBP_INIT_PRE_120,
+    NIBP_INIT_PRE_130,
     NIBP_INIT_PRE_140,
+    NIBP_INIT_PRE_150,
     NIBP_INIT_PRE_160,
-    NIBP_INIT_PRE_180,
-    NIBP_INIT_PRE_200,
-    NIBP_INIT_PRE_220,
-    NIBP_INIT_PRE_240,
-    NIBP_INIT_PRE_260,
+    NIBP_INIT_PRE_170,
     NIBP_INIT_PRE_NR
 };
-/**************************************************************************************************
- * 间隔时间
- *************************************************************************************************/
-enum NIBPIntervalTime
-{
-    NIBP_INT_TIM_MANUAL,
-    NIBP_INT_TIM_AUTO,
-    NIBP_INT_TIM_1_M,
-    NIBP_INT_TIM_2_M,
-    NIBP_INT_TIM_2D5_M,
-    NIBP_INT_TIM_3_M,
-    NIBP_INT_TIM_5_M,
-    NIBP_INT_TIM_10_M,
-    NIBP_INT_TIM_15_M,
-    NIBP_INT_TIM_20_M,
-    NIBP_INT_TIM_NR
-};
+
 /**************************************************************************************************
  * 血压PR显示控制。
  *************************************************************************************************/

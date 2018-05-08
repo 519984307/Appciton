@@ -10,7 +10,7 @@
 #include "PublicMenuManager.h"
 #include "SupervisorMenuManager.h"
 #include "MenuGroup.h"
-#include "NIBPRepair.h"
+#include "NIBPRepairMenuManager.h"
 
 MenuManager *MenuManager::_selfObj = NULL;
 

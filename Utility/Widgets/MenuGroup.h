@@ -37,15 +37,15 @@ public:
     // 添加一个子菜单。
     void addSubMenu(SubMenu *subMenu);
 
-    // 添加一个返回子按钮。
-    void addReturnMenu(void);
-
     // 设置列表区和菜单区的宽度。
     void setListWidth(int w);
     void setScrollAreaSize(int w, int h);
 
     // 设置焦点顺序
     void setFocusOrder(bool flag);
+
+    // 关闭按钮强制聚焦
+    void closeStrongFoucs();
 
     // 初始化菜单列表项。
     void initMenuList();
@@ -71,7 +71,10 @@ signals:
 
 protected slots:
     // 返回到菜单列表项。
-    void returnMenuList();
+    virtual void returnMenuList();
+
+    // 子菜单页聚焦
+    virtual void itemClicked(void);
 
 protected:
     // 隐藏事件。
@@ -85,9 +88,6 @@ protected:
 private slots:
     // 更新标题
     void _titleChanged(void);
-
-    // 子菜单页聚焦
-    virtual void _itemClicked(void);
 
     // 页面更改。
     void _changePage(QListWidgetItem *current, QListWidgetItem *previous);
@@ -112,6 +112,8 @@ private:
     int _listWidth;                      //列表宽度
     int _submenuWidth;                   //子菜单宽度
     int _submenuHeight;                  //高度
+
+    bool _closeStrongFocus;              //关闭按钮强制聚焦，只聚焦在关闭按钮上
 
 private:
     QString _menuName;

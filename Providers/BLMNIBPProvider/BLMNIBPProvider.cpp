@@ -1,6 +1,5 @@
 #include "BLMNIBPProvider.h"
 #include "NIBPParam.h"
-#include "NIBPParamService.h"
 #include "Debug.h"
 #include <QString>
 
@@ -39,6 +38,14 @@ bool BLMNIBPProvider::_isInvalid(unsigned char *buff, int len)
 }
 
 /**************************************************************************************************
+ * 数据处理。
+ *************************************************************************************************/
+void BLMNIBPProvider::_handlePacket(unsigned char */*data*/, int /*len*/)
+{
+
+}
+
+/**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
 bool BLMNIBPProvider::attachParam(Param &param)
@@ -46,7 +53,6 @@ bool BLMNIBPProvider::attachParam(Param &param)
     if (param.getParamID() == PARAM_NIBP)
     {
         nibpParam.setProvider(this);
-        nibpParamService.setServiceProvider(this);
         return true;
     }
 
@@ -101,7 +107,7 @@ void BLMNIBPProvider::dataArrived(void)
                 break;
             }
 
-            nibpParam.unPacket(buff, len);
+            _handlePacket(buff, len);
         }
         else
         {
@@ -187,14 +193,6 @@ bool BLMNIBPProvider::isStartACK(unsigned char */*packet*/, int /*len*/)
  * 发送停止指令是否有该指令的应答。
  *************************************************************************************************/
 bool BLMNIBPProvider::needStopACK(void)
-{
-    return false;
-}
-
-/**************************************************************************************************
- * 是否为停止指令的应答。
- *************************************************************************************************/
-bool BLMNIBPProvider::isStopACK(unsigned char *, int)
 {
     return false;
 }

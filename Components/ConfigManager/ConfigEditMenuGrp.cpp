@@ -73,7 +73,6 @@ void ConfigEditMenuGrp::initializeSubMenu()
 //    addSubMenu(new CO2Menu());
 
     //addSubMenu(new ConfigEditTEMPMenu());
-    addReturnMenu();
 
     d_ptr->isSubmenuInitial = true;
 }

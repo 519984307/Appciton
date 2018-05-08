@@ -187,7 +187,7 @@ void E5ProviderPrivate::handleEcgRawData(unsigned char *data, int len)
 
 }
 
-void E5ProviderPrivate::handleRESPRawData(unsigned char *data, int len)
+void E5ProviderPrivate::handleRESPRawData(unsigned char *data, int /*len*/)
 {
     bool leadOff = data[0] & 0x80;
     int resp;
@@ -258,7 +258,7 @@ bool E5Provider::attachParam(Param &param)
 
 }
 
-void E5Provider::detachParam(Param &param)
+void E5Provider::detachParam(Param &/*param*/)
 {
     //TODO
 }
@@ -380,7 +380,7 @@ int E5Provider::getWaveformSample()
     return 250;
 }
 
-void E5Provider::setWaveformSample(int rate)
+void E5Provider::setWaveformSample(int /*rate*/)
 {
     //TODO
 }
@@ -549,13 +549,13 @@ void E5Provider::setNotchFilter(ECGNotchFilter notch)
     }
 }
 
-void E5Provider::enableSTAnalysis(bool onoff)
+void E5Provider::enableSTAnalysis(bool /*onoff*/)
 {
 
     //TODO
 }
 
-void E5Provider::setSTPoints(int iso, int st)
+void E5Provider::setSTPoints(int /*iso*/, int /*st*/)
 {
 
     //TODO
@@ -580,7 +580,7 @@ void E5Provider::setApneaTime(ApneaAlarmTime t)
     sendCmd(E5_CMD_SET_RESP_APNEA_TIME, &apneaTime, 1);
 }
 
-void E5Provider::setWaveformZoom(RESPZoom zoom)
+void E5Provider::setWaveformZoom(RESPZoom /*zoom*/)
 {
     //TODO
 }

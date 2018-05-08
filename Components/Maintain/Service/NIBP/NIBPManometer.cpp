@@ -4,8 +4,8 @@
 #include "IComboList.h"
 #include "NIBPManometer.h"
 #include "Debug.h"
-#include "NIBPParamService.h"
-#include "NIBPRepair.h"
+#include "NIBPParam.h"
+#include "NIBPRepairMenuManager.h"
 
 NIBPManometer *NIBPManometer::_selfObj = NULL;
 
@@ -25,8 +25,8 @@ NIBPManometer::NIBPManometer() : SubMenu(trs("ServiceManometer"))
  *************************************************************************************************/
 void NIBPManometer::layoutExec()
 {
-    int submenuW = nibprepair.getSubmenuWidth();
-    int submenuH = nibprepair.getSubmenuHeight();
+    int submenuW = nibpRepairMenuManager.getSubmenuWidth();
+    int submenuH = nibpRepairMenuManager.getSubmenuHeight();
     setMenuSize(submenuW, submenuH);
 
     int itemW = submenuW - ICOMBOLIST_SPACE;
@@ -50,7 +50,7 @@ void NIBPManometer::layoutExec()
     labelLayout->addWidget(_value);
 
     l = new QLabel();
-    l->setText(Unit::getSymbol(nibpParamService.getUnit()));
+    l->setText(Unit::getSymbol(nibpParam.getUnit()));
     l->setFixedSize(50, Service_H);
     l->setAlignment(Qt::AlignCenter);
     l->setFont(fontManager.textFont(fontSize));
@@ -72,8 +72,9 @@ void NIBPManometer::init(void)
 void NIBPManometer::focusFirstItem()
 {
     init();
-    // 转换到测量状态。
-    nibpParamService.switchState(NIBP_Service_MANOMETER);
+
+    nibpParam.switchState(NIBP_SERVICE_MANOMETER_STATE);
+
 
     SubMenu::focusFirstItem();
 }
@@ -89,7 +90,7 @@ void NIBPManometer::setCuffPressure(int pressure)
     }
     else
     {
-        UnitType unit = nibpParamService.getUnit();
+        UnitType unit = nibpParam.getUnit();
         if (unit == UNIT_MMHG)
         {
             _value->setNum(pressure);

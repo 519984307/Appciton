@@ -1,5 +1,4 @@
 #include "TN3Provider.h"
-#include "NIBPParamService.h"
 #include "NIBPParam.h"
 #include "Debug.h"
 #include <QString>
@@ -186,26 +185,71 @@ void TN3Provider::handlePacket(unsigned char *data, int len)
     }
     BLMProvider::handlePacket(data, len);
 
-    if ((data[0] == TN3_NOTIFY_START_UP) || (data[0] == TN3_NOTIFY_END))
-    {
-        _sendACK(data[0]);
-
-        if (data[0] == TN3_NOTIFY_START_UP)
-        {
-            ErrorLogItem *item = new CriticalFaultLogItem();
-            item->setName("TN3 Start");
-            errorLog.append(item);
-
-            nibpParam.reset();
-        }
-    }
-
     int enable = 0;
     switch(data[0])
     {
+    // 启动测量
+    case TN3_RSP_START_MEASURE:
+        if (data[1] == 0x00)
+        {
+            nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_START_MEASURE,NULL,0);
+        }
+        break;
+
+    // 停止测量。
+    case TN3_RSP_STOP_MEASURE:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_STOP,NULL,0);
+        break;
+
+    // 获取测量结果
+    case TN3_RSP_GET_MEASUREMENT:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_GET_RESULT,data,len);
+        break;
+
+    // 开机自检
+    case TN3_RSP_SELFTEST:
+        _selfTest(data, len);
+        break;
+
+    // <15mmHg压力值周期性数据帧
+    case TN3_NOTIFY_LOW_PRESSURE:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE,&data[1],2);
+        break;
+
+    // 测试压力帧
+    case TN3_NOTIFY_PRESSURE:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE,&data[1],2);
+        break;
+
+    // 错误警告帧
+    case TN3_DATA_ERROR:
+        _sendACK(data[0]);
+        _errorWarm(data, len);
+        break;
+
+    // 测量结束帧
+    case TN3_NOTIFY_END:
+        _sendACK(data[0]);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_MEASURE_DONE,NULL,0);
+        break;
+
+    // 启动帧
+    case TN3_NOTIFY_START_UP:
+    {
+        _sendACK(data[0]);
+        ErrorLogItem *item = new CriticalFaultLogItem();
+        item->setName("TN3 Start");
+        errorLog.append(item);
+        nibpParam.reset();
+    }
+        break;
+
+    // 保活帧
     case TN3_NOTIFY_ALIVE:
         feed();
         break;
+
+    // 原始数据
     case TN3_NOTIFY_DATA:
         machineConfig.getNumValue("Record|NIBP", enable);
         if (enable)
@@ -213,15 +257,70 @@ void TN3Provider::handlePacket(unsigned char *data, int len)
             rawDataCollection.pushData("BLM_TN3", data,len);
         }
         break;
-    case TN3_RSP_SELFTEST:
-        _selfTest(data, len);
+
+    // 进入维护模式
+    case TN3_RSP_ENTER_SERVICE:
+        if (data[1] != 0x00)
+        {
+            nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_REPAIR_ENTER_FAIL,NULL,0);
+        }
+        else
+        {
+            nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_REPAIR_ENTER_SUCCESS,NULL,0);
+        }
         break;
-    case TN3_DATA_ERROR:
-        _sendACK(data[0]);
-        _errorWarm(data, len);
+
+    // 校准模式控制
+    case TN3_RSP_CALIBRATE:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_ENTER,&data[1],1);
         break;
+
+    // 校准点压力值反馈
+    case TN3_RSP_PRESSURE_POINT:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_RSP_PRESSURE_POINT,&data[1],1);
+        break;
+
+    // 压力计模式控制
+    case TN3_RSP_MANOMETER:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_MANOMETER_ENTER,&data[1],1);
+        break;
+
+    // 压力操控模式控制
+    case TN3_RSP_PRESSURE_CONTROL:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_ENTER,&data[1],1);
+        break;
+
+    // 压力控制（充气）
+    case TN3_RSP_PRESSURE_INFLATE:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_INFLATE,NULL,0);
+        break;
+
+    // 放气控制
+    case TN3_RSP_PRESSURE_DEFLATE:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_DEFLATE,NULL,0);
+        break;
+
+    // 气阀控制
+    case TN3_RSP_VALVE:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_VALVE,NULL,0);
+        break;
+
+    // 进入校零模式
+    case TN3_RSP_CALIBRATE_ZERO:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_ZERO_ENTER,&data[1],1);
+        break;
+
+    // 状态改变
+    case TN3_STATE_CHANGE:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_STATE_CHANGE,&data[1],1);
+        break;
+
+    // 服务模式压力帧
+    case TN3_SERVICE_PRESSURE:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE,&data[1],2);
+        break;
+
     default:
-        nibpParam.unPacket(data, len);
         break;
     }
 }
@@ -231,7 +330,7 @@ void TN3Provider::handlePacket(unsigned char *data, int len)
  *************************************************************************************************/
 void TN3Provider::disconnected(void)
 {
-    nibpParam.connectedTimeout();
+    nibpParam.connectedFlag(false);
 }
 
 /**************************************************************************************************
@@ -239,7 +338,7 @@ void TN3Provider::disconnected(void)
  *************************************************************************************************/
 void TN3Provider::reconnected(void)
 {
-    nibpOneShotAlarm.setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    nibpParam.connectedFlag(true);
 }
 
 /**************************************************************************************************
@@ -249,7 +348,6 @@ bool TN3Provider::attachParam(Param &param)
 {
     if (param.getParamID() == PARAM_NIBP)
     {
-        nibpParamService.setServiceProvider(this);
         nibpParam.setProvider(this);
         return true;
     }
@@ -300,21 +398,6 @@ void TN3Provider::startMeasure(PatientType /*type*/)
 void TN3Provider::stopMeasure(void)
 {
     sendCmd(TN3_CMD_STOP_MEASURE, NULL, 0);
-}
-
-/**************************************************************************************************
- * <15mmHg压力值周期性数据帧
- *************************************************************************************************/
-short TN3Provider::lowPressure(unsigned char *packet)
-{
-    if (packet[0] != TN3_NOTIFY_LOW_PRESSURE)
-    {
-        return -1;
-    }
-
-    short pressure = (packet[2]<<8)+packet[1];
-
-    return pressure;
 }
 
 void TN3Provider::setPassthroughMode(bool flag)
@@ -378,69 +461,10 @@ bool TN3Provider::needStartACK(void)
 }
 
 /**************************************************************************************************
- * 是否为启动测量的应答。
- *************************************************************************************************/
-bool TN3Provider::isStartACK(unsigned char *packet)
-{
-    if (packet[0] != TN3_RSP_START_MEASURE)
-    {
-        return false;
-    }
-
-    if (packet[1] != 0x00)
-    {
-        return false;
-    }
-
-    return true;
-}
-
-/**************************************************************************************************
  * 发送停止指令是否有该指令的应答。
  *************************************************************************************************/
 bool TN3Provider::needStopACK(void)
 {
-    return true;
-}
-
-/**************************************************************************************************
- * 是否为停止测量的应答。
- *************************************************************************************************/
-bool TN3Provider::isStopACK(unsigned char *packet)
-{
-    if (packet[0] != TN3_RSP_STOP_MEASURE)
-    {
-        return false;
-    }
-
-    return true;
-}
-
-/**************************************************************************************************
- * 压力数据，不是压力数据返回-1。
- *************************************************************************************************/
-short TN3Provider::cuffPressure(unsigned char *packet)
-{
-    if (packet[0] != TN3_NOTIFY_PRESSURE)
-    {
-        return -1;
-    }
-
-    short pressure = (packet[2]<<8)+packet[1];
-
-    return pressure;
-}
-
-/**************************************************************************************************
- * 测量是否结束。
- *************************************************************************************************/
-bool TN3Provider::isMeasureDone(unsigned char *packet)
-{
-    if (packet[0] != TN3_NOTIFY_END)
-    {
-        return false;
-    }
-
     return true;
 }
 
@@ -461,88 +485,9 @@ void TN3Provider::getResult(void)
 }
 
 /**************************************************************************************************
- * 是否为结果包。
- *************************************************************************************************/
-bool TN3Provider::isResult(unsigned char *packet,short &sys,
-                           short &dia, short &map, short &pr, NIBPOneShotType &err)
-{
-    if (packet[0] != TN3_RSP_GET_MEASUREMENT)
-    {
-        return false;
-    }
-
-    err = NIBP_ONESHOT_NONE;
-
-    // 测量有错误，获取错误码。
-    if (packet[1] != 0x00)
-    {
-        switch (packet[1])
-        {
-        case 0x02: err = NIBP_ONESHOT_ALARM_CUFF_ERROR; break;
-        case 0x05: err = NIBP_ONESHOT_ALARM_SIGNAL_WEAK; break;
-        case 0x06: err = NIBP_ONESHOT_ALARM_MEASURE_OVER_RANGE; break;
-        case 0x08: err = NIBP_ONESHOT_ALARM_CUFF_OVER_PRESSURE; break;
-        case 0x09: err = NIBP_ONESHOT_ALARM_SIGNAL_SATURATION; break;
-        case 0x0A: err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT; break;
-        default: break;
-        }
-
-        return true;
-    }
-    // 测量无错，获取测量结果。
-    int t = (int)((packet[3]<<8)+packet[2]);
-    if (t == 65535)
-    {
-        sys = InvData();
-    }
-    else
-    {
-        sys = t;
-    }
-
-    t = (int)((packet[5]<<8)+packet[4]);
-    if (t == 65535)
-    {
-        dia = InvData();
-    }
-    else
-    {
-        dia = t;
-    }
-
-    t = (int)((packet[7]<<8)+packet[6]);
-    if (t == 65535)
-    {
-        map = InvData();
-    }
-    else
-    {
-        map = t;
-    }
-
-    t = (int)((packet[9]<<8)+packet[8]);
-    if (t == 65535)
-    {
-        pr = InvData();
-    }
-    else
-    {
-        pr = t;
-    }
-
-    if (sys == InvData() || dia == InvData() || map == InvData())
-    {
-        sys = InvData();
-        dia = InvData();
-        map = InvData();
-    }
-    return true;
-}
-
-/**************************************************************************************************
  * 进入维护模式。
  *************************************************************************************************/
-void TN3Provider::service_Enter(bool enter)
+void TN3Provider::serviceEnter(bool enter)
 {
     unsigned char cmd;
     if (enter)
@@ -557,27 +502,9 @@ void TN3Provider::service_Enter(bool enter)
 }
 
 /**************************************************************************************************
- * 维护模式应答。
- *************************************************************************************************/
-bool TN3Provider::isService_Enter(unsigned char *packet)
-{
-    if (packet[0] != TN3_RSP_ENTER_SERVICE)
-    {
-        return false;
-    }
-
-    if (packet[1] != 0x00)
-    {
-        return false;
-    }
-
-    return true;
-}
-
-/**************************************************************************************************
  *进入校准模式。
  *************************************************************************************************/
-void TN3Provider::service_Calibrate(bool enter)
+void TN3Provider::serviceCalibrate(bool enter)
 {
     unsigned char cmd;
     if (enter)
@@ -592,57 +519,17 @@ void TN3Provider::service_Calibrate(bool enter)
 }
 
 /**************************************************************************************************
- *校准模式应答。
- *************************************************************************************************/
-bool TN3Provider::isService_Calibrate(unsigned char *packet)
-{
-    if (packet[0] != TN3_RSP_CALIBRATE)
-    {
-        return false;
-    }
-
-    if (packet[1] != 0x00)
-    {
-        return false;
-    }
-
-    return true;
-}
-
-/**************************************************************************************************
  *校准点压力值输入。
  *************************************************************************************************/
-void TN3Provider::service_Pressurepoint(int num, short pressure)
+void TN3Provider::servicePressurepoint(const unsigned char *data, unsigned int len)
 {
-    unsigned char cmd[3];
-    cmd[0] = (char)(num & 0xFF);
-    cmd[1] = pressure & 0xFF;
-    cmd[2] = (pressure & 0xFF00) >> 8;
-    sendCmd(TN3_CMD_PRESSURE_POINT, cmd, 3);
-}
-
-/**************************************************************************************************
- *校准点压力值输入应答。
- *************************************************************************************************/
-bool TN3Provider::isService_Pressurepoint(unsigned char *packet)
-{
-    if (packet[0] != TN3_RSP_PRESSURE_POINT)
-    {
-        return false;
-    }
-
-    if (packet[1] != 0x01)
-    {
-        return false;
-    }
-
-    return true;
+    sendCmd(TN3_CMD_PRESSURE_POINT, data, len);
 }
 
 /**************************************************************************************************
  *进入压力计模式控制。
  *************************************************************************************************/
-void TN3Provider::service_Manometer(bool enter)
+void TN3Provider::serviceManometer(bool enter)
 {
     unsigned char cmd;
     if (enter)
@@ -657,27 +544,9 @@ void TN3Provider::service_Manometer(bool enter)
 }
 
 /**************************************************************************************************
- *进入压力计模式控制。
- *************************************************************************************************/
-bool TN3Provider::isService_Manometer(unsigned char *packet)
-{
-    if (packet[0] != TN3_RSP_MANOMETER)
-    {
-        return false;
-    }
-
-    if (packet[1] != 0x00)
-    {
-        return false;
-    }
-
-    return true;
-}
-
-/**************************************************************************************************
  *进入压力操控模式。
  *************************************************************************************************/
-void TN3Provider::service_Pressurecontrol(bool enter)
+void TN3Provider::servicePressurecontrol(bool enter)
 {
     unsigned char cmd;
     if (enter)
@@ -692,27 +561,9 @@ void TN3Provider::service_Pressurecontrol(bool enter)
 }
 
 /**************************************************************************************************
- *压力操控模式应答。
- *************************************************************************************************/
-bool TN3Provider::isService_Pressurecontrol(unsigned char *packet)
-{
-    if (packet[0] != TN3_RSP_PRESSURE_CONTROL)
-    {
-        return false;
-    }
-
-    if (packet[1] != 0x00)
-    {
-        return false;
-    }
-
-    return true;
-}
-
-/**************************************************************************************************
  *压力控制（充气）。
  *************************************************************************************************/
-void TN3Provider::service_Pressureinflate(short pressure)
+void TN3Provider::servicePressureinflate(short pressure)
 {
     unsigned char cmd[2];
     cmd[0] = pressure & 0x00FF;
@@ -723,7 +574,7 @@ void TN3Provider::service_Pressureinflate(short pressure)
 /**************************************************************************************************
  *压力控制（充气）应答。
  *************************************************************************************************/
-bool TN3Provider::isService_Pressureinflate(unsigned char *packet)
+bool TN3Provider::isServicePressureinflate(unsigned char *packet)
 {
     if (packet[0] != TN3_RSP_PRESSURE_INFLATE)
     {
@@ -741,28 +592,15 @@ bool TN3Provider::isService_Pressureinflate(unsigned char *packet)
 /**************************************************************************************************
  *放气控制。
  *************************************************************************************************/
-void TN3Provider::service_Pressuredeflate()
+void TN3Provider::servicePressuredeflate()
 {
     sendCmd(TN3_CMD_PRESSURE_DEFLATE, NULL, 0);
 }
 
 /**************************************************************************************************
- *放气控制应答。
- *************************************************************************************************/
-bool TN3Provider::isService_Pressuredeflate(unsigned char *packet)
-{
-    if (packet[0] != TN3_RSP_PRESSURE_DEFLATE)
-    {
-        return false;
-    }
-
-    return true;
-}
-
-/**************************************************************************************************
  *服务模式的压力值。
  *************************************************************************************************/
-int TN3Provider::service_cuffPressure(unsigned char *packet)
+int TN3Provider::serviceCuffPressure(unsigned char *packet)
 {
     if (packet[0] != TN3_SERVICE_PRESSURE)
     {
@@ -775,7 +613,7 @@ int TN3Provider::service_cuffPressure(unsigned char *packet)
 /**************************************************************************************************
  *进入校零模式。
  *************************************************************************************************/
-void TN3Provider::service_CalibrateZero(bool enter)
+void TN3Provider::serviceCalibrateZero(bool enter)
 {
     unsigned char cmd;
     if (enter)
@@ -786,15 +624,15 @@ void TN3Provider::service_CalibrateZero(bool enter)
     {
         cmd = 0x00;
     }
-    sendCmd(TN3_CMD_CALIBRATE_Zero, &cmd, 1);
+    sendCmd(TN3_CMD_CALIBRATE_ZERO, &cmd, 1);
 }
 
 /**************************************************************************************************
  *进入校零模式返回值。
  *************************************************************************************************/
-bool TN3Provider::isService_CalibrateZero(unsigned char *packet)
+bool TN3Provider::isServiceCalibrateZero(unsigned char *packet)
 {
-    if (packet[0] != TN3_RSP_CALIBRATE_Zero)
+    if (packet[0] != TN3_RSP_CALIBRATE_ZERO)
     {
         return false;
     }
@@ -810,17 +648,17 @@ bool TN3Provider::isService_CalibrateZero(unsigned char *packet)
 /**************************************************************************************************
  *校零。
  *************************************************************************************************/
-void TN3Provider::service_PressureZero(void)
+void TN3Provider::servicePressureZero(void)
 {
-    sendCmd(TN3_CMD_PRESSURE_Zero, NULL, 0);
+    sendCmd(TN3_CMD_PRESSURE_ZERO, NULL, 0);
 }
 
 /**************************************************************************************************
  *校零。
  *************************************************************************************************/
-bool TN3Provider::isService_PressureZero(unsigned char *packet)
+bool TN3Provider::isServicePressureZero(unsigned char *packet)
 {
-    if (packet[0] != TN3_RSP_PRESSURE_Zero)
+    if (packet[0] != TN3_RSP_PRESSURE_ZERO)
     {
         return false;
     }
@@ -831,7 +669,7 @@ bool TN3Provider::isService_PressureZero(unsigned char *packet)
 /**************************************************************************************************
  *气阀控制。
  *************************************************************************************************/
-void TN3Provider::service_Valve(bool enter)
+void TN3Provider::serviceValve(bool enter)
 {
     unsigned char cmd[2];
     cmd[0] = 0x01;
@@ -843,7 +681,7 @@ void TN3Provider::service_Valve(bool enter)
     {
         cmd[1] = 0x00;
     }
-    sendCmd(TN3_CMD_Valve, cmd, 2);
+    sendCmd(TN3_CMD_VALVE, cmd, 2);
 
     cmd[0] = 0x00;
     if (enter)
@@ -854,15 +692,15 @@ void TN3Provider::service_Valve(bool enter)
     {
         cmd[1] = 0x00;
     }
-    sendCmd(TN3_CMD_Valve, cmd, 2);
+    sendCmd(TN3_CMD_VALVE, cmd, 2);
 }
 
 /**************************************************************************************************
  *气阀控制应答。
  *************************************************************************************************/
-bool TN3Provider::isService_Valve(unsigned char *packet)
+bool TN3Provider::isServiceValve(unsigned char *packet)
 {
-    if (packet[0] != TN3_RSP_Valve)
+    if (packet[0] != TN3_RSP_VALVE)
     {
         return false;
     }
@@ -873,7 +711,7 @@ bool TN3Provider::isService_Valve(unsigned char *packet)
 /**************************************************************************************************
  *过压保护是否有效。
  *************************************************************************************************/
-void TN3Provider::service_PressureProtect(bool enter)
+void TN3Provider::servicePressureProtect(bool enter)
 {
     unsigned char cmd;
     if (enter)
@@ -884,15 +722,15 @@ void TN3Provider::service_PressureProtect(bool enter)
     {
         cmd = 0x01;
     }
-    sendCmd(TN3_CMD_PRESSURE_Protect, &cmd, 1);
+    sendCmd(TN3_CMD_PRESSURE_PROTECT, &cmd, 1);
 }
 
 /**************************************************************************************************
  *过压保护是否有效应答。
  *************************************************************************************************/
-bool TN3Provider::isService_PressureProtect(unsigned char *packet)
+bool TN3Provider::isServicePressureProtect(unsigned char *packet)
 {
-    if (packet[0] != TN3_RSP_PRESSURE_Protect)
+    if (packet[0] != TN3_RSP_PRESSURE_PROTECT)
     {
         return false;
     }

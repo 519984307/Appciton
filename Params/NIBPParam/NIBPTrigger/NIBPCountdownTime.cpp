@@ -1,5 +1,6 @@
 #include "NIBPCountdownTime.h"
 #include "NIBPParam.h"
+#include "NIBPMonitorStateDefine.h"
 #include "Debug.h"
 #include <QTimer>
 
@@ -13,10 +14,10 @@ void NIBPCountdownTime::run()
         // 更新倒计时。
         nibpParam.setCountdown((_autoTime - autoMeasureElapseTime()) / 1000);
         // 倒计时是否完成(在STANDBY状态才能启动)
-        if ((nibpParam.currentState()== NIBP_STATE_STANDBY) && isAutoMeasureTimeout())
+        if ((nibpParam.curStatusType()== NIBP_MONITOR_STANDBY_STATE) && isAutoMeasureTimeout())
         {
             // 转换到测量状态。
-            nibpParam.switchState(NIBP_STATE_STARTING);
+            nibpParam.switchState(NIBP_MONITOR_STARTING_STATE);
             setAutoMeasureTimeout(false);
         }
     }
@@ -27,7 +28,7 @@ void NIBPCountdownTime::run()
             int t = STATMeasureElapseTime();
             if (t == 0)
             {
-                if (nibpParam.currentState() == NIBP_STATE_SAFEWAITTIME)
+                if (nibpParam.curStatusType() == NIBP_MONITOR_SAFEWAITTIME_STATE)
                 {
                     nibpParam.setModelText(trs("STATDONE"));
                 }

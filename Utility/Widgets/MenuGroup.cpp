@@ -53,20 +53,12 @@ void MenuGroup::_titleChanged(void)
 /**************************************************************************************************
  * 子菜单页聚焦
  *************************************************************************************************/
-void MenuGroup::_itemClicked()
+void MenuGroup::itemClicked()
 {
     SubMenu *m = (SubMenu*)_scorllArea->widget();
 
-    if (m->name() == "Return")
-    {
-        menuManager.returnPrevious();
-        emit menuGroupReturn();
-    }
-    else
-    {
-        setFocusOrder(false);
-        m->focusFirstItem();
-    }
+    setFocusOrder(false);
+    m->focusFirstItem();
 }
 
 /**************************************************************************************************
@@ -106,8 +98,10 @@ void MenuGroup::hideEvent(QHideEvent *event)
  *************************************************************************************************/
 void MenuGroup::keyPressEvent(QKeyEvent *event)
 {
-    switch (event->key())
+    if (!_closeStrongFocus)
     {
+        switch (event->key())
+        {
         case Qt::Key_Up:
         case Qt::Key_Left:
             if (Qt::StrongFocus == _listTable->focusPolicy() && closeBtnHasFocus())
@@ -144,6 +138,7 @@ void MenuGroup::keyPressEvent(QKeyEvent *event)
             return;
         default:
             break;
+        }
     }
 
     QWidget::keyPressEvent(event);
@@ -172,15 +167,6 @@ void MenuGroup::_changePage(QListWidgetItem *current, QListWidgetItem *previous)
 
     _subMenus->setCurrentIndex(_listTable->row(current));
     SubMenu *m = (SubMenu*)_subMenus->currentWidget();
-
-    if (m->name() == "Return")
-    {
-        _return->hide();
-    }
-    else
-    {
-        _return->show();
-    }
 
     _scorllArea->setWidget(m);
     titleLabel->setText(m->desc());
@@ -279,25 +265,7 @@ void MenuGroup::addSubMenu(SubMenu *subMenu)
     connect(subMenu, SIGNAL(closeMenu()), this, SLOT(close()));
     connect(subMenu, SIGNAL(titleChanged()), this, SLOT(_titleChanged()));
     connect(subMenu, SIGNAL(scrollAreaChange(int)), this, SLOT(_changeScrollValue(int)));
-    connect(subMenu, SIGNAL(returnItemList()), this, SLOT(_returnMenuList()));
-}
-
-/**************************************************************************************************
- * 功能：添加一个返回子按钮。
- *************************************************************************************************/
-void MenuGroup::addReturnMenu()
-{
-    QListWidgetItem *listItem = new QListWidgetItem(_listTable);
-//    listItem->setIcon(QIcon("/usr/local/nPM/icons/leftArrow.png"));
-    listItem->setText(trs("Return"));
-    listItem->setTextAlignment(Qt::AlignCenter);
-    listItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-    listItem->setFont(fontManager.textFont(fontManager.getFontSize(2)));
-    listItem->setSizeHint(QSize(0, _listItemHeight));
-
-    // 添加子菜单。
-    SubMenu *subMenu = new SubMenu("Return");
-    _subMenus->addWidget(subMenu);
+    connect(subMenu, SIGNAL(returnItemList()), this, SLOT(returnMenuList()));
 }
 
 /**************************************************************************************************
@@ -321,6 +289,8 @@ void MenuGroup::setScrollAreaSize(int w, int h)
  *************************************************************************************************/
 void MenuGroup::setFocusOrder(bool flag)
 {
+    _closeStrongFocus = false;
+
     QList<QWidget *> allWidget;
     allWidget.clear();
 
@@ -347,6 +317,15 @@ void MenuGroup::setFocusOrder(bool flag)
     allWidget.clear();
 }
 
+/**************************************************************************************************
+ * 关闭按钮强制聚焦
+ *************************************************************************************************/
+void MenuGroup::closeStrongFoucs()
+{
+    _closeBtnSetFoucs();
+    _closeStrongFocus = true;
+}
+
 void MenuGroup::listTableOrder(bool flag)
 {
     if (flag)
@@ -366,6 +345,8 @@ void MenuGroup::listTableOrder(bool flag)
  *************************************************************************************************/
 MenuGroup::MenuGroup(const QString &name) : MenuWidget(name)
 {
+    _closeStrongFocus = false;
+
     _menuName = name;
     _menuDesc = name + "Desc";
 
@@ -400,7 +381,7 @@ MenuGroup::MenuGroup(const QString &name) : MenuWidget(name)
     _listTable->setFrameStyle(0);
     connect(_listTable, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
             this, SLOT(_changePage(QListWidgetItem*, QListWidgetItem*)));
-    connect(_listTable, SIGNAL(realRelease()), this, SLOT(_itemClicked()));
+    connect(_listTable, SIGNAL(realRelease()), this, SLOT(itemClicked()));
     connect(_listTable, SIGNAL(exitList()), this, SLOT(_closeBtnSetFoucs()));
     _listTable->setCurrentRow(0);
     _listTable->setFocus();
@@ -422,7 +403,7 @@ MenuGroup::MenuGroup(const QString &name) : MenuWidget(name)
     _return->setFixedHeight(_titleBarHeight);
     _return->setFont(fontManager.textFont(fontSize, false));
     _return->setBorderEnabled(true);
-    connect(_return, SIGNAL(realReleased()), this, SLOT(_returnMenuList()));
+    connect(_return, SIGNAL(realReleased()), this, SLOT(returnMenuList()));
 
     QVBoxLayout *vlayout = new QVBoxLayout();
     vlayout->setContentsMargins(0, 0, 12, 5);

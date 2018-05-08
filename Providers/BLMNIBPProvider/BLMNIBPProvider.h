@@ -19,7 +19,6 @@ public: // NIBPProviderIFace的接口。
 
     // 发送停止指令是否有该指令的应答。
     virtual bool needStopACK(void);
-    virtual bool isStopACK(unsigned char *packet, int len);
 
     // 压力数据，不是压力数据返回-1。
     virtual int cuffPressure(unsigned char *packet, int len);
@@ -47,6 +46,7 @@ protected:
 private:
     void _sendReset(void);
     bool _isInvalid(unsigned char *buff, int len);
+    void _handlePacket(unsigned char *data, int len);
 
     static const int _minPacketLen = 6;      // 最小数据包长度。
 

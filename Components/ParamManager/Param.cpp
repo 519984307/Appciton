@@ -106,7 +106,7 @@ short Param::getSubParamValue(SubParamID /*id*/)
 /**************************************************************************************************
  * check whether a sub param is avaliable, always avaliable in default implement
  *************************************************************************************************/
-bool Param::isSubParamAvaliable(SubParamID id)
+bool Param::isSubParamAvaliable(SubParamID /*id*/)
 {
     return true;
 }

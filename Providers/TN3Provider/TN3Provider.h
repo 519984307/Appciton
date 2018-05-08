@@ -52,30 +52,30 @@ enum NIBPPacketType
 
     TN3_DATA_ERROR                               = 0x76,       // 错误警告帧
 
-    TN3_CMD_ENTER_SERVICE                        = 0x80,       //进入维护模式
+    TN3_CMD_ENTER_SERVICE                        = 0x80,       // 进入维护模式
     TN3_RSP_ENTER_SERVICE                        = 0x81,       //
-    TN3_CMD_CALIBRATE                            = 0x82,       //校准模式控制
+    TN3_CMD_CALIBRATE                            = 0x82,       // 校准模式控制
     TN3_RSP_CALIBRATE                            = 0x83,       //
-    TN3_CMD_PRESSURE_POINT                       = 0x84,       //校准点压力值输入
+    TN3_CMD_PRESSURE_POINT                       = 0x84,       // 校准点压力值输入
     TN3_RSP_PRESSURE_POINT                       = 0x85,       //
-    TN3_CMD_MANOMETER                            = 0x86,       //压力计模式控制
+    TN3_CMD_MANOMETER                            = 0x86,       // 压力计模式控制
     TN3_RSP_MANOMETER                            = 0x87,       //
-    TN3_CMD_PRESSURE_CONTROL                     = 0x88,       //压力操控模式控制
+    TN3_CMD_PRESSURE_CONTROL                     = 0x88,       // 压力操控模式控制
     TN3_RSP_PRESSURE_CONTROL                     = 0x89,       //
-    TN3_CMD_PRESSURE_INFLATE                     = 0x8A,       //压力控制（充气）
+    TN3_CMD_PRESSURE_INFLATE                     = 0x8A,       // 压力控制（充气）
     TN3_RSP_PRESSURE_INFLATE                     = 0x8B,       //
-    TN3_CMD_PRESSURE_DEFLATE                     = 0x8C,       //放气控制
+    TN3_CMD_PRESSURE_DEFLATE                     = 0x8C,       // 放气控制
     TN3_RSP_PRESSURE_DEFLATE                     = 0x8D,       //
-    TN3_CMD_Valve                                = 0x90,       //气阀控制
-    TN3_RSP_Valve                                = 0x91,       //
-    TN3_CMD_CALIBRATE_Zero                       = 0x92,       //进入校零模式
-    TN3_RSP_CALIBRATE_Zero                       = 0x93,       //
-    TN3_CMD_PRESSURE_Zero                        = 0x94,       //校准零点值
-    TN3_RSP_PRESSURE_Zero                        = 0x95,       //
-    TN3_CMD_PRESSURE_Protect                     = 0x96,       //过压保护
-    TN3_RSP_PRESSURE_Protect                     = 0x97,       //
+    TN3_CMD_VALVE                                = 0x90,       // 气阀控制
+    TN3_RSP_VALVE                                = 0x91,       //
+    TN3_CMD_CALIBRATE_ZERO                       = 0x92,       // 进入校零模式
+    TN3_RSP_CALIBRATE_ZERO                       = 0x93,       //
+    TN3_CMD_PRESSURE_ZERO                        = 0x94,       // 校准零点值
+    TN3_RSP_PRESSURE_ZERO                        = 0x95,       //
+    TN3_CMD_PRESSURE_PROTECT                     = 0x96,       // 过压保护
+    TN3_RSP_PRESSURE_PROTECT                     = 0x97,       //
 
-    TN3_STATE_CHANGE                             = 0xA0,       //状态改变
+    TN3_STATE_CHANGE                             = 0xA0,       // 状态改变
     TN3_SERVICE_PRESSURE                         = 0xDB,       // 压力帧。
 
     TN3_UPGRADE_ALIVE                            = 0xFE,       //升级保活帧
@@ -97,9 +97,6 @@ public: // NIBPProviderIFace的接口。
     virtual void startMeasure(PatientType type);
     virtual void stopMeasure(void);
 
-    // <15mmHg压力值周期性数据帧
-    virtual short lowPressure(unsigned char *packet);
-
     // 透传模式。
     virtual void setPassthroughMode(bool flag);
 
@@ -117,17 +114,9 @@ public: // NIBPProviderIFace的接口。
 
     // 发送启动指令是否有该指令的应答。
     virtual bool needStartACK(void);
-    virtual bool isStartACK(unsigned char *packet);
 
     // 发送停止指令是否有该指令的应答。
     virtual bool needStopACK(void);
-    virtual bool isStopACK(unsigned char *packet);
-
-    // 压力数据，不是压力数据返回-1。
-    virtual short cuffPressure(unsigned char *packet);
-
-    // 测量是否结束。
-    virtual bool isMeasureDone(unsigned char *packet);
 
     // 是否为错误数据包。
     virtual NIBPOneShotType isMeasureError(unsigned char *packet);
@@ -135,56 +124,46 @@ public: // NIBPProviderIFace的接口。
     // 发送获取结果请求。
     virtual void getResult(void);
 
-    // 是否为结果包。
-    virtual bool isResult(unsigned char *packet,short &sys,
-                          short &dia, short &map, short &pr, NIBPOneShotType &err);
-
     // 进入维护模式。
-    virtual void service_Enter(bool enter);
-    virtual bool isService_Enter(unsigned char *packet);
+    virtual void serviceEnter(bool enter);
 
     // 进入校准模式。
-    virtual void service_Calibrate(bool enter);
-    virtual bool isService_Calibrate(unsigned char *packet);
+    virtual void serviceCalibrate(bool enter);
 
     //校准点压力值输入
-    virtual void service_Pressurepoint(int num, short pressure);
-    virtual bool isService_Pressurepoint(unsigned char *packet);
+    virtual void servicePressurepoint(const unsigned char *data, unsigned int len);
 
     // 进入压力计模式控制。
-    virtual void service_Manometer(bool enter);
-    virtual bool isService_Manometer(unsigned char *packet);
+    virtual void serviceManometer(bool enter);
 
     // 进入压力操控模式。
-    virtual void service_Pressurecontrol(bool enter);
-    virtual bool isService_Pressurecontrol(unsigned char *packet);
+    virtual void servicePressurecontrol(bool enter);
 
     //压力控制（充气）
-    virtual void service_Pressureinflate(short pressure);
-    virtual bool isService_Pressureinflate(unsigned char *packet);
+    virtual void servicePressureinflate(short pressure);
+    virtual bool isServicePressureinflate(unsigned char *packet);
 
     //放气控制
-    virtual void service_Pressuredeflate(void);
-    virtual bool isService_Pressuredeflate(unsigned char *packet);
+    virtual void servicePressuredeflate(void);
 
     // 压力数据，不是压力数据返回-1。
-    virtual int service_cuffPressure(unsigned char *packet);
+    virtual int serviceCuffPressure(unsigned char *packet);
 
     //进入校零模式
-    virtual void service_CalibrateZero(bool enter);
-    virtual bool isService_CalibrateZero(unsigned char *packet);
+    virtual void serviceCalibrateZero(bool enter);
+    virtual bool isServiceCalibrateZero(unsigned char *packet);
 
     //校零
-    virtual void service_PressureZero(void);
-    virtual bool isService_PressureZero(unsigned char *packet);
+    virtual void servicePressureZero(void);
+    virtual bool isServicePressureZero(unsigned char *packet);
 
     //气阀控制
-    virtual void service_Valve(bool enter);
-    virtual bool isService_Valve(unsigned char *packet);
+    virtual void serviceValve(bool enter);
+    virtual bool isServiceValve(unsigned char *packet);
 
     //过压保护
-    virtual void service_PressureProtect(bool enter);
-    virtual bool isService_PressureProtect(unsigned char *packet);
+    virtual void servicePressureProtect(bool enter);
+    virtual bool isServicePressureProtect(unsigned char *packet);
 
     // 发送协议命令
     virtual void sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len);

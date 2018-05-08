@@ -125,7 +125,7 @@ void SupervisorNIBPMenu::layoutExec()
     _autoInterval->combolist->setFixedSize(btnWidth, ITEM_H);
     for (int i = 0; i < NIBP_AUTO_INTERVAL_NR; i++)
     {
-        _autoInterval->addItem(trs(NIBPSymbol::convert((NIBPIntervalTime)i)));
+        _autoInterval->addItem(trs(NIBPSymbol::convert((NIBPAutoInterval)i)));
     }
     connect(_autoInterval, SIGNAL(currentIndexChanged(int)), this, SLOT(_autoIntervalSlot(int)));
     mainLayout->addWidget(_autoInterval);

@@ -347,7 +347,7 @@ SOURCES +=                                                                      
     Components/Maintain/Service/NIBP/NIBPPressureControl.cpp                    \
     Components/Maintain/Service/NIBP/NIBPCalibrate.cpp                          \
     Components/Maintain/Service/NIBP/NIBPManometer.cpp                          \
-    Components/Maintain/Service/NIBP/NIBPRepair.cpp                             \
+    Components/Maintain/Service/NIBP/NIBPRepairMenuManager.cpp                  \
     Components/Maintain/Service/NIBP/NIBPZeroPoint.cpp                          \
     Components/Maintain/Service/Temp/ServiceCPUTemp.cpp                         \
     Components/Maintain/Service/Upgrade/ServiceUpgrade.cpp                      \
@@ -408,27 +408,28 @@ SOURCES +=                                                                      
     Params/COParam/COParam.cpp                                                  \
     Params/COParam/COWidgets/COMenu.cpp                                         \
     Params/COParam/COWidgets/COTrendWidget.cpp                                  \
+    Params/NIBPParam/NIBPStateMachine/NIBPState.cpp                             \
+    Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.cpp                      \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorErrorState.cpp \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorGetResultState.cpp \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorMeasureState.cpp \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorSafeWaitTimeState.cpp \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorStandbyState.cpp \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorStartingState.cpp \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorStopState.cpp \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorStateMachine.cpp \
+    Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceCalibrateState.cpp \
+    Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceManometerState.cpp \
+    Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServicePressureControlState.cpp \
+    Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceStandbyState.cpp \
+    Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceStateMachine.cpp \
+    Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceZeroPointState.cpp \
+    Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceErrorState.cpp \
     Params/NIBPParam/NIBPParam.cpp                                              \
     Params/NIBPParam/NIBPAlarm.cpp                                              \
     Params/NIBPParam/NIBPWidgets/NIBPTrendWidget.cpp                            \
     Params/NIBPParam/NIBPWidgets/NIBPDataTrendWidget.cpp                        \
     Params/NIBPParam/NIBPWidgets/NIBPMenu.cpp                                   \
-    Params/NIBPParam/NIBPParamService.cpp                                       \
-    Params/NIBPParam/NIBPStateMachine/NIBPErrorState.cpp                        \
-    Params/NIBPParam/NIBPStateMachine/NIBPGetResultState.cpp                    \
-    Params/NIBPParam/NIBPStateMachine/NIBPMeasureState.cpp                      \
-    Params/NIBPParam/NIBPStateMachine/NIBPSafeWaitTimeState.cpp                 \
-    Params/NIBPParam/NIBPStateMachine/NIBPStandbyState.cpp                      \
-    Params/NIBPParam/NIBPStateMachine/NIBPStartingState.cpp                     \
-    Params/NIBPParam/NIBPStateMachine/NIBPState.cpp                             \
-    Params/NIBPParam/NIBPStateMachine/NIBPStopState.cpp                         \
-    Params/NIBPParam/NIBPServiceMachine/NIBPServiceCalibrate.cpp                \
-    Params/NIBPParam/NIBPServiceMachine/NIBPServiceManometer.cpp                \
-    Params/NIBPParam/NIBPServiceMachine/NIBPServicePressureControl.cpp          \
-    Params/NIBPParam/NIBPServiceMachine/NIBPServiceRepair.cpp                   \
-    Params/NIBPParam/NIBPServiceMachine/NIBPServiceState.cpp                    \
-    Params/NIBPParam/NIBPServiceMachine/NIBPServiceZeroPoint.cpp                \
-    Params/NIBPParam/NIBPTrigger/NIBPEventTrigger.cpp                           \
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTime.cpp                          \
     Params/NIBPParam/NIBPSummary.cpp                                            \
     Params/SPO2Param/SPO2Param.cpp                                              \
@@ -803,7 +804,7 @@ HEADERS +=                                                                      
     Components/Maintain/Service/NIBP/NIBPPressureControl.h                      \
     Components/Maintain/Service/NIBP/NIBPCalibrate.h                            \
     Components/Maintain/Service/NIBP/NIBPManometer.h                            \
-    Components/Maintain/Service/NIBP/NIBPRepair.h                               \
+    Components/Maintain/Service/NIBP/NIBPRepairMenuManager.h                    \
     Components/Maintain/Service/NIBP/NIBPZeroPoint.h                            \
     Components/Maintain/Service/Temp/ServiceCPUTemp.h                           \
     Components/Maintain/Service/Upgrade/ServiceUpgrade.h                        \
@@ -880,33 +881,35 @@ HEADERS +=                                                                      
     Params/COParam/COParam.h                                                    \
     Params/COParam/COWidgets/COMenu.h                                           \
     Params/COParam/COWidgets/COTrendWidget.h                                    \
+    Params/NIBPParam/NIBPStateMachine/NIBPState.h                               \
+    Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.h                        \
+    Params/NIBPParam/NIBPStateMachine/NIBPStateMachineDefine.h                  \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorErrorState.h \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorGetResultState.h \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorMeasureState.h \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorSafeWaitTimeState.h \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorStandbyState.h \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorStartingState.h \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorStopState.h \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorStateDefine.h \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorStateMachine.h \
+    Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceCalibrateState.h \
+    Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceManometerState.h \
+    Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServicePressureControlState.h \
+    Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceStandbyState.h \
+    Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceStateDefine.h \
+    Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceStateMachine.h \
+    Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceZeroPointState.h \
+    Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine/NIBPServiceErrorState.h \
     Params/NIBPParam/NIBPParam.h                                                \
     Params/NIBPParam/NIBPAlarm.h                                                \
     Params/NIBPParam/NIBPDefine.h                                               \
+    Params/NIBPParam/NIBPEventDefine.h                                          \
     Params/NIBPParam/NIBPSymbol.h                                               \
-    Params/NIBPParam/NIBPSeqMeaSet/SeqMeaDefine.h                               \
-    Params/NIBPParam/NIBPSeqMeaSet/SeqMeaSymbol.h                               \
     Params/NIBPParam/NIBPProviderIFace.h                                        \
     Params/NIBPParam/NIBPWidgets/NIBPTrendWidget.h                              \
     Params/NIBPParam/NIBPWidgets/NIBPDataTrendWidget.h                          \
     Params/NIBPParam/NIBPWidgets/NIBPMenu.h                                     \
-    Params/NIBPParam/NIBPParamService.h                                         \
-    Params/NIBPParam/NIBPStateMachine/NIBPErrorState.h                          \
-    Params/NIBPParam/NIBPStateMachine/NIBPState.h                               \
-    Params/NIBPParam/NIBPStateMachine/NIBPStandbyState.h                        \
-    Params/NIBPParam/NIBPStateMachine/NIBPGetResultState.h                      \
-    Params/NIBPParam/NIBPStateMachine/NIBPStopState.h                           \
-    Params/NIBPParam/NIBPStateMachine/NIBPMeasureState.h                        \
-    Params/NIBPParam/NIBPStateMachine/NIBPStartingState.h                       \
-    Params/NIBPParam/NIBPStateMachine/NIBPSafeWaitTimeState.h                   \
-    Params/NIBPParam/NIBPStateMachine/NIBPStateMachineDefine.h                  \
-    Params/NIBPParam/NIBPServiceMachine/NIBPServiceCalibrate.h                  \
-    Params/NIBPParam/NIBPServiceMachine/NIBPServiceManometer.h                  \
-    Params/NIBPParam/NIBPServiceMachine/NIBPServicePressureControl.h            \
-    Params/NIBPParam/NIBPServiceMachine/NIBPServiceRepair.h                     \
-    Params/NIBPParam/NIBPServiceMachine/NIBPServiceState.h                      \
-    Params/NIBPParam/NIBPServiceMachine/NIBPServiceZeroPoint.h                  \
-    Params/NIBPParam/NIBPTrigger/NIBPEventTrigger.h                             \
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTime.h                            \
     Params/NIBPParam/NIBPSummary.h                                              \
     Params/SPO2Param/SPO2Param.h                                                \
@@ -1088,9 +1091,9 @@ DEPENDPATH +=                                                                   
     Params/COParam                                                              \
     Params/COParam/COWidgets                                                    \
     Params/NIBPParam                                                            \
-    Params/NIBPParam/NIBPStateMachine                                           \
     Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine                   \
-    Params/NIBPParam/NIBPStateMachine/NIBPServiceMachine                        \
+    Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine                   \
+    Params/NIBPParam/NIBPStateMachine                                           \
     Params/NIBPParam/NIBPWidgets                                                \
     Params/NIBPParam/NIBPTrigger                                                \
     Params/SPO2Param                                                            \
@@ -1223,8 +1226,9 @@ INCLUDEPATH +=                                                                  
     Params/COParam                                                              \
     Params/COParam/COWidgets                                                    \
     Params/NIBPParam                                                            \
+    Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine                   \
+    Params/NIBPParam/NIBPStateMachine/NIBPServiceStateMachine                   \
     Params/NIBPParam/NIBPStateMachine                                           \
-    Params/NIBPParam/NIBPServiceMachine                                         \
     Params/NIBPParam/NIBPWidgets                                                \
     Params/NIBPParam/NIBPTrigger                                                \
     Params/SPO2Param                                                            \

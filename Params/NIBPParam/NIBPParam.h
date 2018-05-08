@@ -5,7 +5,6 @@
 #include "UnitManager.h"
 #include "PatientManager.h"
 #include "TimeManager.h"
-#include "NIBPEventTrigger.h"
 #include "NIBPCountdownTime.h"
 #include <QMap>
 
@@ -34,12 +33,17 @@ public:
     // 解析数据包。
     void unPacket(unsigned char *packet, int len);
 
+    // 处理NIBP模块的事件。
+    void handleNIBPEvent(NIBPEvent event, unsigned char args[], int argLen, unsigned nibpTimestamp = 0);
+
     // 状态机运行。
     void machineRun(void);
 
-    // 切换虚拟机状态。
-    void switchState(NIBPStateType state);
-    NIBPStateType currentState();
+    // 当前的状态机类型及对应的状态类型
+    NIBPStateMachineType curMachineType() const;
+    int curStatusType() const;
+
+    void switchState(unsigned char newStateID);
 
 public:
     // 初始化参数。
@@ -60,8 +64,14 @@ public:
     // 设置数据提供对象。
     void setProvider(NIBPProviderIFace *provider);
 
+    // 导出Provider给状态机和状态对象使用。
+    NIBPProviderIFace &provider(void);
+
     // 模块复位
     void reset();
+
+    // 切换模式
+    void changeMode(NIBPStateMachineType type);
 
     // NIBP错误,模块禁用
     void errorDisable(void);
@@ -69,6 +79,12 @@ public:
 
     // 是否连接
     bool isConnected();
+
+    // 通信中断。
+    void connectedFlag(bool flag);
+
+    //通信错误标志
+    bool getConnectedState() { return _connectedFlag;}
 
     // check whether current is in measure state
     bool isMeasuring() const;
@@ -79,6 +95,10 @@ public:
     // 设置界面对象。
     void setNIBPTrendWidget(NIBPTrendWidget *trendWidget);
     void setNIBPDataTrendWidget(NIBPDataTrendWidget *trendWidget);
+
+    // 解析测量结果。
+    bool analysisResult(const unsigned char *packet, int len, short &sys,
+                        short &dia, short &map, short &pr, NIBPOneShotType &err);
 
     // 设置测量结果。
     void setResult(short sys, short dia, short map, short pr, NIBPOneShotType err);
@@ -193,6 +213,15 @@ public:
     //长按NIBP触发
     void toggleMeasureLong(void);
 
+    //STAT在安全间隔内被关闭
+    void safeWaitTimeSTATStop(void);
+
+    //状态转为AUTO
+    void switchToAuto(void);
+
+    //状态转为MANUAL
+    void switchToManual(void);
+
 private slots:
     void _patientTypeChangeSlot(PatientType type);
     void _btnTimeOut();
@@ -225,13 +254,14 @@ private:
     bool _isCreateSnapshotFlag;             // 创建快拍标记；
     bool _isNIBPDisable;                    // 模块禁用；
     bool _isManualMeasure;                  // 手动测量标志
+    bool _connectedFlag;                    // NIBP通信是否正常标志
     QString _text;
 
 private:
-    // 状态机相关。
-    typedef QMap<NIBPStateType, NIBPState*> StateMap;
-    StateMap _states;
-    NIBPState *_currentState ;
+    typedef QMap<NIBPStateMachineType, NIBPStateMachine*> MachineStateMap;
+    MachineStateMap _machines;
+
+    NIBPStateMachine *_activityMachine;       // 当前活跃状态机。
 
     QTimer *_btnTimer;
 
