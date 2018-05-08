@@ -148,7 +148,7 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
             continue;
         }
 
-        if(data.values.value((SubParamID)i) == InvData())
+        if(!data.values.contains((SubParamID)i))
         {
             continue;
         }
