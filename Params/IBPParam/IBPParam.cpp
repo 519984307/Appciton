@@ -11,6 +11,8 @@
 
 IBPParam *IBPParam::_selfObj = NULL;
 
+#define IBP_SCALE_NUM       13
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -34,6 +36,22 @@ IBPParam::IBPParam() : Param(PARAM_IBP), _staIBP1(true), _staIBP2(true)
     _ibpSubParamMap.insert(IBP_PRESSURE_AUXP1, SUB_PARAM_AUXP1_MAP);
     _ibpSubParamMap.insert(IBP_PRESSURE_AUXP2, SUB_PARAM_AUXP2_MAP);
 
+    ibpScaleList.clear();
+    IBPScaleInfo manualScale;
+    ibpScaleList.append(manualScale);
+    int lowLimit[IBP_SCALE_NUM] = {-10, 0, 0, 0, 0, 0, 60, 30, 0, 0, 0, 0, 0};
+    int highLimit[IBP_SCALE_NUM] = {10, 20, 30, 40, 60, 80, 140, 140, 140, 160, 200, 240, 300};
+    for (int i = 0; i < IBP_SCALE_NUM; i ++)
+    {
+        IBPScaleInfo subScale;
+        subScale.low = lowLimit[i];
+        subScale.high = highLimit[i];
+        subScale.isAuto = false;
+        ibpScaleList.append(subScale);
+    }
+    IBPScaleInfo autoScale;
+    autoScale.isAuto = true;
+    ibpScaleList.append(autoScale);
 }
 
 /**************************************************************************************************
@@ -516,42 +534,42 @@ bool IBPParam::isSubParamAvaliable(SubParamID id)
 
 }
 
-/**************************************************************************************************
- * 功能： 标名对应的波形上下限。
- *************************************************************************************************/
-IBPEntitleLimitInfo IBPParam::limit[IBP_PRESSURE_NR] =
-{
-    {0, 160, IBP_RULER_RANGE_TENTH},
-    {0, 30, IBP_RULER_RANGE_THIRD},
-    {0, 30, IBP_RULER_RANGE_THIRD},
-    {0, 20, IBP_RULER_RANGE_SECOND},
-    {0, 20, IBP_RULER_RANGE_SECOND},
-    {0, 20, IBP_RULER_RANGE_SECOND},
-    {0, 160, IBP_RULER_RANGE_TENTH},
-    {0, 160, IBP_RULER_RANGE_TENTH}
-};
+///**************************************************************************************************
+// * 功能： 标名对应的波形上下限。
+// *************************************************************************************************/
+//IBPEntitleLimitInfo IBPParam::limit[IBP_PRESSURE_NR] =
+//{
+//    {0, 160, IBP_RULER_RANGE_TENTH},
+//    {0, 30, IBP_RULER_RANGE_THIRD},
+//    {0, 30, IBP_RULER_RANGE_THIRD},
+//    {0, 20, IBP_RULER_RANGE_SECOND},
+//    {0, 20, IBP_RULER_RANGE_SECOND},
+//    {0, 20, IBP_RULER_RANGE_SECOND},
+//    {0, 160, IBP_RULER_RANGE_TENTH},
+//    {0, 160, IBP_RULER_RANGE_TENTH}
+//};
 
-/**************************************************************************************************
- * 功能： 标尺对应的波形上下限。
- *************************************************************************************************/
-IBPEntitleLimitInfo IBPParam::rulerLimit[IBP_RULER_RANGE_NR] =
-{
-    {},
-    {-10, 10, IBP_RULER_RANGE_FIRST},
-    {0, 20, IBP_RULER_RANGE_SECOND},
-    {0, 30, IBP_RULER_RANGE_THIRD},
-    {0, 40, IBP_RULER_RANGE_FOURTH},
-    {0, 60, IBP_RULER_RANGE_FIFTH},
-    {0, 80, IBP_RULER_RANGE_SIXTH},
-    {60, 140, IBP_RULER_RANGE_SEVENTH},
-    {30, 140, IBP_RULER_RANGE_EIGHTH},
-    {0, 140, IBP_RULER_RANGE_NINTH},
-    {0, 160, IBP_RULER_RANGE_TENTH},
-    {0, 200, IBP_RULER_RANGE_ELEVENTH},
-    {0, 240, IBP_RULER_RANGE_TWELFTH},
-    {0, 300, IBP_RULER_RANGE_THIRTEENTH},
-    {}
-};
+///**************************************************************************************************
+// * 功能： 标尺对应的波形上下限。
+// *************************************************************************************************/
+//IBPEntitleLimitInfo IBPParam::rulerLimit[IBP_RULER_RANGE_NR] =
+//{
+//    {},
+//    {-10, 10, IBP_RULER_RANGE_FIRST},
+//    {0, 20, IBP_RULER_RANGE_SECOND},
+//    {0, 30, IBP_RULER_RANGE_THIRD},
+//    {0, 40, IBP_RULER_RANGE_FOURTH},
+//    {0, 60, IBP_RULER_RANGE_FIFTH},
+//    {0, 80, IBP_RULER_RANGE_SIXTH},
+//    {60, 140, IBP_RULER_RANGE_SEVENTH},
+//    {30, 140, IBP_RULER_RANGE_EIGHTH},
+//    {0, 140, IBP_RULER_RANGE_NINTH},
+//    {0, 160, IBP_RULER_RANGE_TENTH},
+//    {0, 200, IBP_RULER_RANGE_ELEVENTH},
+//    {0, 240, IBP_RULER_RANGE_TWELFTH},
+//    {0, 300, IBP_RULER_RANGE_THIRTEENTH},
+//    {}
+//};
 
 /**************************************************************************************************
  * 设置数据提供对象。
@@ -665,7 +683,8 @@ void IBPParam::setWaveWidget(IBPWaveWidget *waveWidget, IBPSignalInput IBP)
         _waveWidgetIBP2 = waveWidget;
     }
 
-    waveWidget->setLimit(limit[waveWidget->getEntitle()].low, limit[waveWidget->getEntitle()].high);
+//    waveWidget->setLimit(limit[waveWidget->getEntitle()].low, limit[waveWidget->getEntitle()].high);
+    waveWidget->setLimit(getIBPScale(waveWidget->getEntitle()).low, getIBPScale(waveWidget->getEntitle()).high);
 }
 
 /**************************************************************************************************
@@ -681,6 +700,35 @@ IBPScaleInfo IBPParam::getIBPScale(IBPPressureName name)
 {
     //TODO implement this function
     IBPScaleInfo info;
+    int highLimit = 0;
+    switch (name)
+    {
+    case IBP_PRESSURE_ART:
+    case IBP_PRESSURE_AUXP1:
+    case IBP_PRESSURE_AUXP2:
+        highLimit = 160;
+        break;
+    case IBP_PRESSURE_PA:
+    case IBP_PRESSURE_CVP:
+        highLimit = 30;
+        break;
+    case IBP_PRESSURE_LAP:
+    case IBP_PRESSURE_RAP:
+    case IBP_PRESSURE_ICP:
+        highLimit = 20;
+        break;
+    default:
+        break;
+    }
+
+    for (QList<IBPScaleInfo>::iterator it = ibpScaleList.begin(); it != ibpScaleList.end(); ++it)
+    {
+        if ((*it).high == highLimit)
+        {
+            info = (*it);
+            break;
+        }
+    }
     return info;
 }
 

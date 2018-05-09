@@ -164,6 +164,6 @@ void IBPManualRuler::_lowRulerReleased()
 void IBPManualRuler::_yesReleased()
 {
     _waveWidget->setLimit(_low, _high);
-    _waveWidget->setRuler(IBP_RULER_RANGE_MANUAL);
+    _waveWidget->setRuler(IBP_MANUAL_SCALE_INDEX);
     done(1);
 }

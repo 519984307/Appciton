@@ -34,16 +34,6 @@ public:
         return symbol[index];
     }
 
-    static const char *convert(IBPRulerRange index)
-    {
-        static const char *symbol[IBP_RULER_RANGE_NR] =
-        {
-            "auto", "-10~10", "0-20", "0-30", "0-40", "0-60", "0-80",
-            "60-140", "30-140", "0-140", "0-160", "0-200", "0-240", "0-300","m"
-        };
-        return symbol[index];
-    }
-
     static const char *convert(IBPSensitivity index)
     {
         static const char *symbol[IBP_SENSITIVITY_NR] =

@@ -2,6 +2,7 @@
 #include "IBPWaveWidget.h"
 #include "IBPParam.h"
 #include "IBPWaveRuler.h"
+#include "IBPDefine.h"
 #include "FontManager.h"
 #include "WaveWidgetLabel.h"
 #include "LanguageManager.h"
@@ -31,21 +32,22 @@ void IBPWaveWidget::addWaveformData(short wave, int flag)
 /**************************************************************************************************
  * 设置标尺的标签值。
  *************************************************************************************************/
-void IBPWaveWidget::setRuler(IBPRulerRange zoom)
+void IBPWaveWidget::setRuler(int index)
 {
-    if (zoom != IBP_RULER_RANGE_AUTO && zoom != IBP_RULER_RANGE_MANUAL)
+    if (index == IBP_MANUAL_SCALE_INDEX)
     {
-        _zoom->setText((QString)IBPSymbol::convert(zoom) + "mmHg");
+        _zoom->setText((QString)"m" + "(" + QString::number(_lowLimit) +
+                       "~" + QString::number(_highLimit) + ")");
     }
-    else if (zoom == IBP_RULER_RANGE_MANUAL)
+    else if (index == IBP_AUTO_SCALE_INDEX)
     {
-        _zoom->setText((QString)IBPSymbol::convert(zoom) + "(" + QString::number(_lowLimit) +
-                       "-" + QString::number(_highLimit) + ")");
+        _zoom->setText((QString)"auto" + "(" + QString::number(_lowLimit) +
+                       "~" + QString::number(_highLimit) + ")");
     }
-    else if (zoom == IBP_RULER_RANGE_AUTO)
+    else
     {
-        _zoom->setText((QString)IBPSymbol::convert(zoom) + "(" + QString::number(_lowLimit) +
-                       "-" + QString::number(_highLimit) + ")");
+        _zoom->setText(QString::number(ibpParam.ibpScaleList.at(index).low) + "~"
+                       + QString::number(ibpParam.ibpScaleList.at(index).high) + "mmHg");
     }
 }
 
@@ -92,11 +94,11 @@ void IBPWaveWidget::setLimit(int low, int high)
 void IBPWaveWidget::setEntitle(IBPPressureName entitle)
 {
     _name->setText(IBPSymbol::convert(entitle));
-    QString zoomStr = QString::number(ibpParam.limit[entitle].low) + "-" +
-            QString::number(ibpParam.limit[entitle].high) + "mmHg";
+    QString zoomStr = QString::number(ibpParam.getIBPScale(entitle).low) + "-" +
+            QString::number(ibpParam.getIBPScale(entitle).high) + "mmHg";
     _zoom->setText(zoomStr);
     _entitle = entitle;
-    setLimit(ibpParam.limit[getEntitle()].low, ibpParam.limit[getEntitle()].high);
+    setLimit(ibpParam.getIBPScale(getEntitle()).low, ibpParam.getIBPScale(getEntitle()).high);
 }
 
 /**************************************************************************************************
@@ -138,7 +140,8 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPr
     _zoom = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
     _zoom->setFont(fontManager.textFont(fontSize));
     _zoom->setFixedSize(120, 30);
-    _zoom->setText((QString)IBPSymbol::convert(ibpParam.limit[entitle].index) + "mmHg");
+    _zoom->setText(QString::number(ibpParam.getIBPScale(entitle).low) + "~" +
+                   QString::number(ibpParam.getIBPScale(entitle).high) + "mmHg");
     addItem(_zoom);
     connect(_zoom, SIGNAL(released(IWidget*)), this, SLOT(_IBPZoom(IWidget*)));
 
@@ -195,10 +198,22 @@ void IBPWaveWidget::_IBPZoom(IWidget *widget)
 {
     if (NULL == _zoomList)
     {
-        _zoomList = new ComboListPopup(widget, POPUP_TYPE_USER, IBP_RULER_RANGE_NR, 0);
-        for (int i = 0; i < IBP_RULER_RANGE_NR; i++)
+        _zoomList = new ComboListPopup(widget, POPUP_TYPE_USER, ibpParam.ibpScaleList.count());
+        for (int i = 0; i < ibpParam.ibpScaleList.count(); i++)
         {
-            _zoomList->addItemText(IBPSymbol::convert(IBPRulerRange(i)));
+            if (i == 0)
+            {
+                _zoomList->addItemText("auto");
+            }
+            else if (i == ibpParam.ibpScaleList.count() - 1)
+            {
+                _zoomList->addItemText("m");
+            }
+            else
+            {
+                _zoomList->addItemText(QString::number(ibpParam.ibpScaleList.at(i).low) + "~" +
+                                       QString::number(ibpParam.ibpScaleList.at(i).high));
+            }
         }
         _zoomList->setItemDrawMark(false);
         _zoomList->setFont(fontManager.textFont(fontManager.getFontSize(1)));
@@ -220,12 +235,12 @@ void IBPWaveWidget::_popupDestroyed()
         return;
     }
 
-    setRuler((IBPRulerRange)index);
-    if (index == IBP_RULER_RANGE_AUTO)
+    setRuler(index);
+    if (index == IBP_AUTO_SCALE_INDEX)
     {
         _isAutoRuler = true;
     }
-    else if (index == IBP_RULER_RANGE_MANUAL)
+    else if (index == IBP_MANUAL_SCALE_INDEX)
     {
         _isAutoRuler = false;
         displayManualRuler();
@@ -233,7 +248,7 @@ void IBPWaveWidget::_popupDestroyed()
     else
     {
         _isAutoRuler = false;
-        setLimit(ibpParam.rulerLimit[index].low, ibpParam.rulerLimit[index].high);
+        setLimit(ibpParam.ibpScaleList.at(index).low, ibpParam.ibpScaleList.at(index).high);
     }
 
     _zoomList = NULL;
@@ -264,20 +279,20 @@ void IBPWaveWidget::_autoRulerHandle(short data)
     _autoRulerTime = t;
 
     // 开始寻找最合适的标尺。
-    int ruler = IBP_RULER_RANGE_FIRST;
-    for (; ruler <= IBP_RULER_RANGE_THIRTEENTH; ruler ++)
+    int ruler;
+    for (ruler = 1; ruler < ibpParam.ibpScaleList.count() - 1; ruler ++)
     {
-        if ((_autoRulerTracePeek <= ibpParam.rulerLimit[(IBPRulerRange)ruler].high * 10 + 1000))
+        if ((_autoRulerTracePeek <= ibpParam.ibpScaleList.at(ruler).high * 10 + 1000))
         {
-            if ((ruler == IBP_RULER_RANGE_SEVENTH) || (ruler == IBP_RULER_RANGE_EIGHTH))
+            if ((ruler == 7) || (ruler == 8))
             {
-                if (_autoRulerTraveVally >= ibpParam.rulerLimit[(IBPRulerRange)ruler].low * 10 + 1000)
+                if (_autoRulerTraveVally >= ibpParam.ibpScaleList.at(ruler).low * 10 + 1000)
                 {
                     break;
                 }
-                else if (ruler == IBP_RULER_RANGE_EIGHTH)
+                else if (ruler == 8)
                 {
-                    ruler = IBP_RULER_RANGE_NINTH;
+                    ruler = 9;
                     break;
                 }
             }
@@ -290,14 +305,14 @@ void IBPWaveWidget::_autoRulerHandle(short data)
     }
 
     // ruler为新的增益。
-    if (ruler > IBP_RULER_RANGE_THIRTEENTH)
+    if (ruler > 13)
     {
-        ruler = IBP_RULER_RANGE_THIRTEENTH;
+        ruler = 13;
     }
 
     _autoRulerTracePeek = -10000;
     _autoRulerTraveVally = 10000;
 
-    setLimit(ibpParam.rulerLimit[(IBPRulerRange)ruler].low, ibpParam.rulerLimit[(IBPRulerRange)ruler].high);
-    setRuler(IBP_RULER_RANGE_AUTO);
+    setLimit(ibpParam.ibpScaleList.at(ruler).low, ibpParam.ibpScaleList.at(ruler).high);
+    setRuler(IBP_AUTO_SCALE_INDEX);
 }

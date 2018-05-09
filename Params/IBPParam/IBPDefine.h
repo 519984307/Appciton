@@ -1,4 +1,6 @@
 #pragma once
+#define  IBP_AUTO_SCALE_INDEX               0
+#define  IBP_MANUAL_SCALE_INDEX             14
 
 /**************************************************************************************************
  * IBP压力标名
@@ -14,41 +16,6 @@ enum IBPPressureName
     IBP_PRESSURE_AUXP1,                         // 扩充压力P1
     IBP_PRESSURE_AUXP2,                         // 扩充压力P2
     IBP_PRESSURE_NR
-};
-
-/**************************************************************************************************
- * IBP标尺范围。
- *************************************************************************************************/
-enum IBPRulerRange
-{
-    IBP_RULER_RANGE_AUTO,
-    IBP_RULER_RANGE_FIRST,
-    IBP_RULER_RANGE_SECOND,
-    IBP_RULER_RANGE_THIRD,
-    IBP_RULER_RANGE_FOURTH,
-    IBP_RULER_RANGE_FIFTH,
-    IBP_RULER_RANGE_SIXTH,
-    IBP_RULER_RANGE_SEVENTH,
-    IBP_RULER_RANGE_EIGHTH,
-    IBP_RULER_RANGE_NINTH,
-    IBP_RULER_RANGE_TENTH,
-    IBP_RULER_RANGE_ELEVENTH,
-    IBP_RULER_RANGE_TWELFTH,
-    IBP_RULER_RANGE_THIRTEENTH,
-    IBP_RULER_RANGE_MANUAL,
-    IBP_RULER_RANGE_NR,
-};
-
-
-
-/**************************************************************************************************
- * IBP标尺上下限信息。
- *************************************************************************************************/
-struct IBPEntitleLimitInfo
-{
-    int low;
-    int high;
-    IBPRulerRange index;                                  // 对应标尺选项中的位置
 };
 
 /**

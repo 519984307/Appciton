@@ -15,7 +15,7 @@ public:
     void addWaveformData(short data, int flag = 0);
 
     // 设置标尺。
-    void setRuler(IBPRulerRange zoom);
+    void setRuler(int index);
 
     // 设置导联状态
     void setLeadSta(int info);
