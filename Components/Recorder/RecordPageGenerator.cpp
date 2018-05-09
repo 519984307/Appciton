@@ -620,6 +620,76 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
     return strList;
 }
 
+static void drawECGGain(RecordPage *page, QPainter *painter, const RecordWaveSegmentInfo &waveInfo)
+{
+    int rulerHeight = 10 * RECORDER_PIXEL_PER_MM; // height for 1.0 ECG gain
+    QString str = "1 mV";
+    switch(waveInfo.waveInfo.ecg.gain)
+    {
+    case ECG_GAIN_X0125:
+        rulerHeight /= 8;
+        break;
+    case ECG_GAIN_X025:
+        rulerHeight /= 4;
+        break;
+    case ECG_GAIN_X05:
+        rulerHeight /= 2;
+        break;
+    case ECG_GAIN_X20:
+        str = "0.5 mV";
+        break;
+    case ECG_GAIN_X40:
+        str = "0.25 mV";
+        break;
+    case ECG_GAIN_X10:
+    case ECG_GAIN_AUTO:
+        break;
+    default:
+        break;
+    }
+
+}
+
+RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegmentInfo> &waveInfos, PrintSpeed speed)
+{
+    Q_ASSERT(waveInfos.size() > 0);
+    int pageWidth = waveInfos.at(0).pageWidth;
+
+
+    RecordPage *page = new RecordPage(pageWidth);
+    QPainter painter(page);
+    painter.setPen(Qt::white);
+    QFont font = fontManager.recordFont(24);
+    painter.setFont(font);
+
+    int fontH = fontManager.textHeightInPixels(font);
+
+    //draw the print speed
+    QRect rect(0, fontH, page->width(), fontH);
+    painter.drawText(rect, Qt::AlignLeft|Qt::AlignVCenter, PrintSymbol::convert(speed));
+
+    QList<RecordWaveSegmentInfo>::ConstIterator iter;
+    for(iter = waveInfos.constBegin(); iter != waveInfos.constEnd(); iter++)
+    {
+        switch(iter->id)
+        {
+        case WAVE_ECG_I:
+        case WAVE_ECG_II:
+        case WAVE_ECG_III:
+        case WAVE_ECG_aVR:
+        case WAVE_ECG_aVL:
+        case WAVE_ECG_aVF:
+        case WAVE_ECG_V1:
+        case WAVE_ECG_V2:
+        case WAVE_ECG_V3:
+        case WAVE_ECG_V4:
+        case WAVE_ECG_V5:
+        case WAVE_ECG_V6:
+            break;
+        }
+    }
+}
+
 void RecordPageGenerator::timerEvent(QTimerEvent *ev)
 {
     if(_timerID == ev->timerId())

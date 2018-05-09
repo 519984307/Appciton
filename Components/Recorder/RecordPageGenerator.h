@@ -6,6 +6,12 @@
 #include <QStringList>
 #include <QVector>
 #include "PrintDefine.h"
+#include "ECGDefine.h"
+#include "RESPDefine.h"
+#include "SPO2Define.h"
+#include "CO2Define.h"
+#include "IBPDefine.h"
+#include "AGDefine.h"
 
 struct RecordWaveSegmentInfo
 {
@@ -14,7 +20,37 @@ struct RecordWaveSegmentInfo
     int pageWidth;                  // page width;
     int startYOffset;               // start Y Offset of wave;
     int endYOffset;                 // end y offset of the wave
+    int waveNum;                    // wave point num
     QVector<WaveDataType> waveBuff; // wave buffer
+    union {
+        struct {
+            ECGGain gain;
+        } ecg;
+
+        struct {
+            RESPZoom zoom;
+        } resp;
+
+        struct {
+            SPO2Gain gain;
+        } spo2;
+
+        struct {
+            CO2DisplayZoom zoom;
+        } co2;
+
+        struct {
+            int low;
+            int high;
+            bool isAuto;
+            IBPPressureName pressureName;
+        } ibp;
+
+        struct {
+            AGDisplayZoom zoom;
+        } ag;
+
+    } waveInfo;
 };
 
 class RecordPageGenerator : public QObject
@@ -118,7 +154,13 @@ protected:
      */
     static QStringList getTrendStringList(const TrendDataPackage& trendData);
 
-    static RecordPage *createWaveScalePage(PrintSpeed printSpeed = PRINT_SPEED_250);
+    /**
+     * @brief createWaveScalePage create the wave scale page
+     * @param waveInfos wave infos
+     * @param speed print speed
+     * @return
+     */
+    static RecordPage *createWaveScalePage(const QList<RecordWaveSegmentInfo> & waveInfos, PrintSpeed speed);
 
     /**
      * @brief timerEvent handle timer event
