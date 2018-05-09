@@ -676,6 +676,14 @@ void IBPParam::setInfobarWidget(PromptInfoBarWidget *infoBarWidget)
     _infoBarWidget = infoBarWidget;
 }
 
+
+IBPScaleInfo IBPParam::getIBPScale(IBPPressureName name)
+{
+    //TODO implement this function
+    IBPScaleInfo info;
+    return info;
+}
+
 /**************************************************************************************************
  * 设置校零。
  *************************************************************************************************/

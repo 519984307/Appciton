@@ -40,6 +40,7 @@ enum IBPRulerRange
 };
 
 
+
 /**************************************************************************************************
  * IBP标尺上下限信息。
  *************************************************************************************************/
@@ -48,6 +49,18 @@ struct IBPEntitleLimitInfo
     int low;
     int high;
     IBPRulerRange index;                                  // 对应标尺选项中的位置
+};
+
+/**
+ * @brief The IBPScaleInfo struct
+ *        use to store the IBP scale info
+ */
+struct IBPScaleInfo
+{
+    IBPScaleInfo(): low(0), high(300), isAuto(false){}
+    int low;            // low value
+    int high;           // high value
+    bool isAuto;        // is automatically adjust or not
 };
 
 /**************************************************************************************************

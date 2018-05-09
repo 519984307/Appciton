@@ -56,6 +56,13 @@ public:
     void setWaveWidget(IBPWaveWidget *waveWidget, IBPSignalInput IBP = IBP_INPUT_1);
     void setInfobarWidget(PromptInfoBarWidget *infoBarWidget);
 
+    /**
+     * @brief getIBPScale get the IBP scale info
+     * @param name
+     * @return
+     */
+    IBPScaleInfo getIBPScale(IBPPressureName name);
+
 public:
     // 校零。
     void zeroCalibration(IBPSignalInput IBP);
