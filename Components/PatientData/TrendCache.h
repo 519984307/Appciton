@@ -6,7 +6,7 @@
 #include <QMutex>
 #include <QList>
 
-#define MAX_TREND_CACHE_NUM (120)//缓存的趋势数据条数
+#define MAX_TREND_CACHE_NUM (180)//缓存的趋势数据条数
 
 // 趋势缓存数据
 struct TrendCacheData
@@ -43,7 +43,7 @@ struct TrendRecorder
     void *obj;              /* object that the trend data record to */
 
     /* call when trend data ready*/
-    void (*record) (unsigned timestamp, const TrendCacheData &trendData, const TrendAlarmStatus &alarmStatus, void *obj);
+    void (*completeCallback) (void *obj);
 };
 
 // 子参数ID、数值映射。
@@ -73,6 +73,23 @@ public:
     // 收集趋势数据
     void collectTrendData(unsigned t, bool overwrite = false);
     void collectTrendAlarmStatus(unsigned t);
+
+
+    /**
+     * @brief getTrendData get a list of trend cache data
+     * @param start start timestamp
+     * @param stop stop timestamp
+     * @return trend cache data list
+     */
+    QList<TrendCacheData> getTrendData(unsigned start, unsigned stop);
+
+    /**
+     * @brief getTrendAlarmStatus get a list of trend alarm status
+     * @param start start timestamp
+     * @param stop stop timestamp
+     * @return trend alarm status data list
+     */
+    QList<TrendAlarmStatus> getTrendAlarmStatus(unsigned start, unsigned stop);
 
     // 获取趋势数据
     bool getTendData(unsigned t, TrendCacheData &data);

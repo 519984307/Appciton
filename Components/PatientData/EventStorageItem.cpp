@@ -18,11 +18,12 @@ class EventStorageItemPrivate
 {
 public:
     EventStorageItemPrivate(EventType type, const QList<WaveformID> &waveforms) :
-        trendSegment(NULL),
         waveforms(waveforms),
         startCollect(false),
+        trendCacheComplete(false),
         almInfo(NULL),
-        codeMarkerInfo(NULL)
+        codeMarkerInfo(NULL),
+        oxyCRGInfo(NULL)
     {
         int duration_after_event = 8;
         int duration_before_event = 8;
@@ -38,9 +39,9 @@ public:
     {
         trendCache.unregisterTrendRecorder(this);
 
-        if(trendSegment)
+        foreach (TrendDataSegment *trendSeg, trendSegments)
         {
-            qFree(trendSegment);
+            qFree(trendSeg);
         }
 
         foreach (WaveformDataSegment *waveSeg, waveSegments)
@@ -68,15 +69,19 @@ public:
 
     static void waveCacheCompleteCallback(WaveformID id, void *obj);
 
-    TrendDataSegment* trendSegment;
+    static void trendCacheCompleteCallback(void *obj);
+
+    QList<TrendDataSegment*> trendSegments;
     QList<WaveformDataSegment *> waveSegments;
     EventInfoSegment eventInfo;
     QList<WaveformID> waveforms;
     QMap<WaveformID, bool> waveComplete;
     bool startCollect;
+    bool trendCacheComplete;
 
     AlarmInfoSegment *almInfo;
     CodeMarkerSegment *codeMarkerInfo;
+    OxyCRGSegment *oxyCRGInfo;
 };
 
 void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCacheData &data, const TrendAlarmStatus &almStatus)
@@ -114,17 +119,19 @@ void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCache
         valueSegments.append(valueSegment);
     }
 
-    trendSegment = (TrendDataSegment *) qMalloc(sizeof(TrendDataSegment) + valueSegments.size() * sizeof(TrendValueSegment));
+    TrendDataSegment *trendSeg = (TrendDataSegment *) qMalloc(sizeof(TrendDataSegment) + valueSegments.size() * sizeof(TrendValueSegment));
 
-    qMemSet(trendSegment, 0, sizeof(TrendDataSegment));
+    qMemSet(trendSeg, 0, sizeof(TrendDataSegment));
 
-    trendSegment->timestamp = timestamp;
-    trendSegment->co2Baro = data.co2baro;
+    trendSeg->timestamp = timestamp;
+    trendSeg->co2Baro = data.co2baro;
 
-    trendSegment->trendValueNum = valueSegments.size();
+    trendSeg->trendValueNum = valueSegments.size();
 
     //copy the trend values
-    qMemCopy((char *)trendSegment + sizeof(TrendDataSegment), valueSegments.constData(), sizeof(TrendValueSegment) * valueSegments.size());
+    qMemCopy((char *)trendSeg+ sizeof(TrendDataSegment), valueSegments.constData(), sizeof(TrendValueSegment) * valueSegments.size());
+
+    trendSegments.append(trendSeg);
 }
 
 void EventStorageItemPrivate::waveCacheCompleteCallback(WaveformID id, void *obj)
@@ -137,9 +144,25 @@ void EventStorageItemPrivate::waveCacheCompleteCallback(WaveformID id, void *obj
     }
 }
 
+void EventStorageItemPrivate::trendCacheCompleteCallback(void *obj)
+{
+    EventStorageItemPrivate *p = reinterpret_cast<EventStorageItemPrivate *>(obj);
+    Q_ASSERT(p != NULL);
+    if(p)
+    {
+        p->trendCacheComplete = true;
+    }
+}
+
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms)
     :d_ptr(new EventStorageItemPrivate(type, storeWaveforms))
 {
+    if(type == EventOxyCRG)
+    {
+    //TODO: set cache time
+        d_ptr->eventInfo.duration_after = 120;
+        d_ptr->eventInfo.duration_before = 120;
+    }
     qDebug()<<"Create Event Stroage Item:"<<this<<" type: "<<type;
 }
 
@@ -197,6 +220,11 @@ bool EventStorageItem::checkCompleted()
         }
     }
 
+    if(d_ptr->eventInfo.type == EventOxyCRG && !d_ptr->trendCacheComplete)
+    {
+        return false;
+    }
+
     return true;
 }
 
@@ -218,9 +246,36 @@ bool EventStorageItem::startCollectTrendAndWaveformData()
     TrendAlarmStatus trendAlarmStatus;
     trendCache.collectTrendData(currentTime);
     trendCache.collectTrendAlarmStatus(currentTime);
-    trendCache.getTendData(currentTime, trendData);
-    trendCache.getTrendAlarmStatus(currentTime, trendAlarmStatus);
-    d_ptr->saveTrendData(currentTime, trendData, trendAlarmStatus);
+
+    if(d_ptr->eventInfo.type != EventOxyCRG)
+    {
+        QList<TrendCacheData> trendDataList = trendCache.getTrendData(currentTime - d_ptr->eventInfo.duration_before,
+                                                                      currentTime);
+        QList<TrendAlarmStatus> alarmStatusList = trendCache.getTrendAlarmStatus(currentTime - d_ptr->eventInfo.duration_before,
+                                                                                 currentTime);
+
+        unsigned t = currentTime - d_ptr->eventInfo.duration_before;
+        int i = 0;
+        while(t <= currentTime)
+        {
+            d_ptr->saveTrendData(t, trendDataList.at(i), alarmStatusList.at(i));
+            t++;
+            i++;
+        };
+
+
+        TrendRecorder trendRecorder;
+        trendRecorder.toTimestamp =  currentTime + d_ptr->eventInfo.duration_after;
+        trendRecorder.obj = d_ptr.data();
+        trendRecorder.completeCallback = EventStorageItemPrivate::trendCacheCompleteCallback;
+        trendCache.registerTrendRecorder(trendRecorder);
+    }
+    else
+    {
+        trendCache.getTendData(currentTime, trendData);
+        trendCache.getTrendAlarmStatus(currentTime, trendAlarmStatus);
+        d_ptr->saveTrendData(currentTime, trendData, trendAlarmStatus);
+    }
 
     foreach (WaveformID waveid, d_ptr->waveforms)
     {
@@ -286,12 +341,23 @@ QByteArray EventStorageItem::getStorageData() const
         buffer.write((char *)d_ptr->codeMarkerInfo, sizeof(CodeMarkerSegment));
     }
 
+    if(d_ptr->oxyCRGInfo)
+    {
+        //store the oxyCRG info
+        type = EVENT_OXYCRG_SEGMENT;
+        buffer.write((char *)&type, sizeof(type));
+        buffer.write((char *)d_ptr->oxyCRGInfo, sizeof(OxyCRGSegment));
+    }
+
     //write trend segments
-    if(d_ptr->trendSegment)
+    if(d_ptr->trendSegments.count())
     {
         type = EVENT_TRENDDATA_SEGMENT;
-        buffer.write((char *)&type, sizeof(type));
-        buffer.write((char *)d_ptr->trendSegment, sizeof(TrendDataSegment) + sizeof(TrendValueSegment) * d_ptr->trendSegment->trendValueNum);
+        foreach(TrendDataSegment *trendSeg, d_ptr->trendSegments)
+        {
+         buffer.write((char *)&type, sizeof(type));
+         buffer.write((char *)trendSeg, sizeof(TrendDataSegment) + sizeof(TrendValueSegment) * trendSeg->trendValueNum);
+        }
     }
 
     //write wave segments

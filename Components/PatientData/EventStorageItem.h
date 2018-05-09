@@ -31,19 +31,20 @@ public:
      */
     EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, const char *codeName);
 
-    ~EventStorageItem();
+
+    virtual ~EventStorageItem();
 
     //get the event type
-    EventType getType() const;
+    virtual EventType getType() const;
 
     //start collect trend and waveform data, return false if already start
-    bool startCollectTrendAndWaveformData();
+    virtual bool startCollectTrendAndWaveformData();
 
     //check whether collect data complete
-    bool checkCompleted();
+    virtual bool checkCompleted();
 
     //get the storage data of the event storage item
-    QByteArray getStorageData() const;
+    virtual QByteArray getStorageData() const;
 
 private:
     QScopedPointer<EventStorageItemPrivate> d_ptr;

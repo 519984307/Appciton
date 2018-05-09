@@ -30,6 +30,9 @@ public:
     //trigger a wave freeze event
     void triggerWaveFreezeEvent();
 
+    //trigger oxyCRG event
+    void triggerOxyCRGEvent();
+
     //call periodically to clear completed event
     void checkCompletedEvent(void);
 

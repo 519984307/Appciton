@@ -10,6 +10,7 @@ enum EventType{
     EventRealtimePrint,
     EventNIBPMeasurement,
     EventWaveFreeze,
+    EventOxyCRG,
     EventTypeMax
 };
 
@@ -31,6 +32,7 @@ enum EventSegmentType {
     EVENT_WAVEFORM_SEGMENT = 0x33333333,
     EVENT_ALARM_INFO_SEGMENT = 0x44444444,
     EVENT_CODEMARKER_SEGMENT = 0x55555555,
+    EVENT_OXYCRG_SEGMENT = 0x66666666,
 };
 
 enum EventLevel
@@ -57,6 +59,21 @@ struct CodeMarkerSegment {
     char codeName[32];          /* code name */
 };
 
+enum OxyCRGEventType{
+    OxyCRGEventAll,
+    OxyCRGEventManual,
+    OxyCRGEventApnea,
+    OxyCRGEventECG,
+    OxyCRGEventSpO2,
+    OxyCRGEventResp,
+    OxyCRGEventTypeMax
+};
+
+/* segment record the oxyCRG info */
+struct OxyCRGSegment {
+    OxyCRGEventType type;
+};
+
 /* waveform data segment, store the wave data in one second */
 struct WaveformDataSegment {
     WaveformID waveID;      /* waveform id */
@@ -77,29 +94,4 @@ struct Event {
     EventInfoSegment storageInfo;
     QVector<TrendDataSegment*> trendSegments; //trend segments of every seconds
     QVector<WaveformDataSegment *> waveSegments; //wave segments of every seconds
-};
-
-enum OxyCRGEventType{
-    OxyCRGEventAll,
-    OxyCRGEventManual,
-    OxyCRGEventApnea,
-    OxyCRGEventECG,
-    OxyCRGEventSpO2,
-    OxyCRGEventResp,
-    OxyCRGEventTypeMax
-};
-
-struct OxyCRGEventInfoSegment
-{
-    OxyCRGEventType type;
-    unsigned timestamp;
-    unsigned short duration_before;
-    unsigned short duration_after;
-};
-
-struct OxyCRGEvent
-{
-    OxyCRGEventInfoSegment storageInfo;
-    QVector<TrendDataSegment*> trendSegments; //trend segments of every seconds
-    QVector<WaveformDataSegment *> waveSegments; //wave segments of every waveform
 };

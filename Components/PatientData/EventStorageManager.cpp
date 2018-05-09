@@ -187,6 +187,22 @@ void EventStorageManager::triggerWaveFreezeEvent()
     }
 }
 
+void EventStorageManager::triggerOxyCRGEvent()
+{
+    Q_D(EventStorageManager);
+    QList<WaveformID> waveList;
+    waveList.append(WAVE_RESP);
+    waveList.append(WAVE_CO2);
+    EventStorageItem *item = new EventStorageItem(EventOxyCRG, waveList);
+    item->startCollectTrendAndWaveformData();
+    if (item)
+    {
+        d->mutex.lock();
+        d->eventItemList.append(item);
+        d->mutex.unlock();
+    }
+}
+
 void EventStorageManager::checkCompletedEvent()
 {
     Q_D(EventStorageManager);

@@ -119,8 +119,8 @@ void TrendCache::collectTrendAlarmStatus(unsigned t)
     QList<TrendRecorder>::Iterator iter = _recorders.begin();
     for(; iter != _recorders.end(); iter++)
     {
-        iter->record(t, _trendCacheMap.value(t), alarmStatus, iter->obj);
-        if(iter->toTimestamp <= t)
+        iter->completeCallback(iter->obj);
+        if(iter->toTimestamp <= (int)t)
         {
             iter = _recorders.erase(iter);
             if(iter == _recorders.end())
@@ -129,6 +129,32 @@ void TrendCache::collectTrendAlarmStatus(unsigned t)
             }
         }
     }
+}
+
+QList<TrendCacheData> TrendCache::getTrendData(unsigned start, unsigned stop)
+{
+    QList<TrendCacheData> trendDataList;
+    for (unsigned t = start; t <= stop; t ++)
+    {
+        TrendCacheData trendData;
+        collectTrendData(t);
+        getTendData(t, trendData);
+        trendDataList.append(trendData);
+    }
+    return trendDataList;
+}
+
+QList<TrendAlarmStatus> TrendCache::getTrendAlarmStatus(unsigned start, unsigned stop)
+{
+    QList<TrendAlarmStatus> alarmStatusList;
+    for (unsigned t = start; t <= stop; t ++)
+    {
+        TrendAlarmStatus trendAlarmStatus;
+        collectTrendAlarmStatus(t);
+        getTrendAlarmStatus(t, trendAlarmStatus);
+        alarmStatusList.append(trendAlarmStatus);
+    }
+    return alarmStatusList;
 }
 
 /**************************************************************************************************

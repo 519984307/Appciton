@@ -237,8 +237,6 @@ SOURCES +=                                                                      
     Components/PatientData/TrendSubWaveWidget.cpp                               \
     Components/PatientData/IMoveButton.cpp                                      \
     Components/PatientData/TrendGraphSetWidget.cpp                              \
-    Components/PatientData/OxyCRGStorageManager.cpp                             \
-    Components/PatientData/OxyCRGStorageItem.cpp                                \
     Components/Summary/SummaryItem.cpp                                          \
     Components/Summary/SummaryRescueDataWidget.cpp                              \
     Components/Summary/SummaryRescueRangePrint.cpp                              \
@@ -684,8 +682,6 @@ HEADERS +=                                                                      
     Components/PatientData/IMoveButton.h                                        \
     Components/PatientData/TrendGraphSetWidget.h                                \
     Components/PatientData/EventDataSymbol.h                                    \
-    Components/PatientData/OxyCRGStorageManager.h                               \
-    Components/PatientData/OxyCRGStorageItem.h                                  \
     Components/PatientManager/PatientManager.h                                  \
     Components/PatientManager/PatientBarWidget.h                                \
     Components/PatientManager/PatientDefine.h                                   \
