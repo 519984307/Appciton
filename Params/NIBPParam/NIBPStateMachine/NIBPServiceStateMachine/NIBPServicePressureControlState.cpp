@@ -5,30 +5,6 @@
 #include "NIBPRepairMenuManager.h"
 
 /**************************************************************************************************
- * 主运行。
- *************************************************************************************************/
-void NIBPServicePressureControlState::run(void)
-{
-}
-
-/**************************************************************************************************
- * 退出模式指令。
- *************************************************************************************************/
-void NIBPServicePressureControlState::triggerReturn()
-{
-    if(_isEnterSuccess && !nibpRepairMenuManager.getRepairError())
-    {
-        nibpParam.provider().servicePressurecontrol(false);
-        _isReturn = true;
-    }
-    else
-    {
-        nibpRepairMenuManager.returnMenu();
-        switchState(NIBP_SERVICE_STANDBY_STATE);
-    }
-}
-
-/**************************************************************************************************
  * 充气压力指令。
  *************************************************************************************************/
 void NIBPServicePressureControlState::servicePressureInflate(int Value)
@@ -96,11 +72,11 @@ void NIBPServicePressureControlState::handleNIBPEvent(NIBPEvent event, const uns
         break;
 
     case NIBP_EVENT_SERVICE_REPAIR_RETURN:
-        timeStop();
         if (_isEnterSuccess && !nibpRepairMenuManager.getRepairError())
         {
             nibpParam.provider().serviceCalibrate(false);
             _isReturn = true;
+            setTimeOut();
         }
         else
         {
@@ -109,7 +85,7 @@ void NIBPServicePressureControlState::handleNIBPEvent(NIBPEvent event, const uns
         break;
 
     case NIBP_EVENT_SERVICE_PRESSURECONTROL_ENTER:
-    {
+        timeStop();
         if (_isReturn)
         {
             _isReturn = false;
@@ -141,7 +117,6 @@ void NIBPServicePressureControlState::handleNIBPEvent(NIBPEvent event, const uns
                 _isEnterSuccess = true;
             }
         }
-    }
         break;
 
     case NIBP_EVENT_SERVICE_STATE_CHANGE:

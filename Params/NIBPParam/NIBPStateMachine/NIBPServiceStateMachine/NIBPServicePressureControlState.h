@@ -9,14 +9,11 @@ class NIBPServicePressureControlState : public NIBPState
         friend class TestNIBPParam;
     #endif
 public:
-    virtual void triggerReturn(void);
-
     virtual void servicePressureInflate(int Value);
     virtual void servicePressureDeflate(void);
     virtual void servicePatientType(unsigned char type);
     virtual void servicePressureProtect(bool enter);
 
-    virtual void run(void);
     virtual void enter(void);
     virtual void handleNIBPEvent(NIBPEvent event, const unsigned char *args, int argLen);
 

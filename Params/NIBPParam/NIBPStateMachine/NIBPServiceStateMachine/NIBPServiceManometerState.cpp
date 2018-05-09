@@ -5,31 +5,6 @@
 #include "NIBPRepairMenuManager.h"
 
 /**************************************************************************************************
- * 主运行。
- *************************************************************************************************/
-void NIBPServiceManometerState::run(void)
-{
-}
-
-/**************************************************************************************************
- * 退出模式指令。
- *************************************************************************************************/
-void NIBPServiceManometerState::triggerReturn()
-{
-    if(_isEnterSuccess && !nibpRepairMenuManager.getRepairError())
-    {
-        nibpParam.provider().serviceManometer(false);
-        nibpParam.provider().servicePressureProtect(true);
-        _isReturn = true;
-    }
-    else
-    {
-        nibpRepairMenuManager.returnMenu();
-        switchState(NIBP_SERVICE_STANDBY_STATE);
-    }
-}
-
-/**************************************************************************************************
  * 进入该状态。
  *************************************************************************************************/
 void NIBPServiceManometerState::enter(void)
@@ -66,11 +41,11 @@ void NIBPServiceManometerState::handleNIBPEvent(NIBPEvent event, const unsigned 
         break;
 
     case NIBP_EVENT_SERVICE_REPAIR_RETURN:
-        timeStop();
         if (_isEnterSuccess && !nibpRepairMenuManager.getRepairError())
         {
             nibpParam.provider().serviceCalibrate(false);
             _isReturn = true;
+            setTimeOut();
         }
         else
         {
@@ -79,10 +54,11 @@ void NIBPServiceManometerState::handleNIBPEvent(NIBPEvent event, const unsigned 
         break;
 
     case NIBP_EVENT_SERVICE_MANOMETER_ENTER:
+        timeStop();
         if(_isReturn)
         {
             _isReturn = false;
-            if (args[1] != 0x00)
+            if (args[0] != 0x00)
             {
                 return;
             }
@@ -95,7 +71,7 @@ void NIBPServiceManometerState::handleNIBPEvent(NIBPEvent event, const unsigned 
         }
         else
         {
-            if (args[1] != 0x00)
+            if (args[0] != 0x00)
             {
                 nibpmanometer.unPacket(false);
                 _isEnterSuccess = false;

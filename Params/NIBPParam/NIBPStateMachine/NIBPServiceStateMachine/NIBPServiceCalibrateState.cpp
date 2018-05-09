@@ -5,13 +5,6 @@
 #include "NIBPRepairMenuManager.h"
 
 /**************************************************************************************************
- * 主运行。
- *************************************************************************************************/
-void NIBPServiceCalibrateState::run(void)
-{
-}
-
-/**************************************************************************************************
  * 进入该状态。
  *************************************************************************************************/
 void NIBPServiceCalibrateState::enter(void)
@@ -48,11 +41,11 @@ void NIBPServiceCalibrateState::handleNIBPEvent(NIBPEvent event, const unsigned 
         break;
 
     case NIBP_EVENT_SERVICE_REPAIR_RETURN:
-        timeStop();
         if (_isEnterSuccess && !nibpRepairMenuManager.getRepairError())
         {
             nibpParam.provider().serviceCalibrate(false);
             _isReturn = true;
+            setTimeOut();
         }
         else
         {
