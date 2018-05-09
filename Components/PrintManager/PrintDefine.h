@@ -4,8 +4,9 @@
 // 打印速度设置
 enum PrintSpeed
 {
-    PRINT_SPEED_250 = 0,  // 25 mm/s
-    PRINT_SPEED_500 = 1,  // 50 mm/s
+    PRINT_SPEED_125 = 0,  // 12.5 mm/s
+    PRINT_SPEED_250 = 1,  // 25 mm/s
+    PRINT_SPEED_500 = 2,  // 50 mm/s
     PRINT_SPEED_NR
 };
 
@@ -65,7 +66,7 @@ public:
     {
         static const QString symbol[PRINT_SPEED_NR] =
         {
-            "25 mm/s", "50 mm/s"
+            "12.5 mm/s", "25 mm/s", "50 mm/s"
         };
 
         return symbol[index];
@@ -75,7 +76,7 @@ public:
     {
         static int symbol[PRINT_SPEED_NR] =
         {
-            200, 400
+            100, 200, 400
         };
 
         return symbol[index];

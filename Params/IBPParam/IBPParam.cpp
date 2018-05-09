@@ -1030,6 +1030,19 @@ void IBPParam::setEntitle(IBPPressureName entitle, IBPSignalInput IBP)
     }
 }
 
+IBPPressureName IBPParam::getEntitle(IBPSignalInput signal) const
+{
+    if(signal == IBP_INPUT_1)
+    {
+        return _ibp1.pressureName;
+    }
+    else
+    {
+        return _ibp2.pressureName;
+    }
+
+}
+
 /**************************************************************************************************
  * 设置滤波。
  *************************************************************************************************/

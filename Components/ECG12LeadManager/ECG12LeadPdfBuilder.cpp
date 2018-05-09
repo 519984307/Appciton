@@ -867,16 +867,12 @@ double ECG12LeadPdfBuilder::_mapWaveValue(const QPair<WaveformID, int> &waveGain
                     scaleData = 1.0 * 10 * _pixelsPerMM / 2.0;
                     break;
 
-                case ECG_GAIN_X15:
-                    scaleData = 1.5 * 10 * _pixelsPerMM / 2.0;
-                    break;
-
                 case ECG_GAIN_X20:
                     scaleData = 2.0 * 10 * _pixelsPerMM / 2.0;
                     break;
 
-                case ECG_GAIN_X30:
-                    scaleData = 3.0 * 10 * _pixelsPerMM / 2.0;
+                case ECG_GAIN_X40:
+                    scaleData = 4.0 * 10 * _pixelsPerMM / 2.0;
                     break;
 
                 default:

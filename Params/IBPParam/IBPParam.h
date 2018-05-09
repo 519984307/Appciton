@@ -83,6 +83,9 @@ public:
     // 设置标名。
     void setEntitle(IBPPressureName entitle, IBPSignalInput IBP);
 
+    // get pressure name
+    IBPPressureName getEntitle(IBPSignalInput signal) const;
+
     // 设置滤波
     void setFilter(IBPFilterMode filter);
 

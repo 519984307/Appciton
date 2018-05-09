@@ -1098,16 +1098,12 @@ double PrintContinuousLayout::_mapWaveValue(const WaveGain &waveGain, const Wave
                     scaleData = 1.0 * 10 * PIXELS_PER_MM / 2.0;
                     break;
 
-                case ECG_GAIN_X15:
-                    scaleData = 1.5 * 10 * PIXELS_PER_MM / 2.0;
-                    break;
-
                 case ECG_GAIN_X20:
                     scaleData = 2.0 * 10 * PIXELS_PER_MM / 2.0;
                     break;
 
-                case ECG_GAIN_X30:
-                    scaleData = 3.0 * 10 * PIXELS_PER_MM / 2.0;
+                case ECG_GAIN_X40:
+                    scaleData = 4.0 * 10 * PIXELS_PER_MM / 2.0;
                     break;
 
                 default:

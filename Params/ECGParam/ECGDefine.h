@@ -89,9 +89,8 @@ enum ECGGain
     ECG_GAIN_X025,      // x0.25
     ECG_GAIN_X05,      // x0.5
     ECG_GAIN_X10,      // x1
-    ECG_GAIN_X15,      // x1.5
     ECG_GAIN_X20,      // x2
-    ECG_GAIN_X30,      // x3
+    ECG_GAIN_X40,      // x4
     ECG_GAIN_AUTO,     // AUTO
     ECG_GAIN_NR
 };

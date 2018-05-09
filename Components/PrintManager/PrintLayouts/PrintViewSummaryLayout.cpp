@@ -739,9 +739,8 @@ PrintPage *PrintViewSummaryLayout::_drawOneSnapShock(unsigned char *data, int le
                     case ECG_GAIN_X025:
                     case ECG_GAIN_X05:
                     case ECG_GAIN_X10:
-                    case ECG_GAIN_X15:
                     case ECG_GAIN_X20:
-                    case ECG_GAIN_X30:
+                    case ECG_GAIN_X40:
                     //    waveInfo.startY = y;
                     //    waveInfo.endY = y + SUMMARY_WAVE_HEIGHT / 2;
                     //    waveInfo.medialY = y + SUMMARY_WAVE_HEIGHT / 4;
@@ -790,9 +789,8 @@ PrintPage *PrintViewSummaryLayout::_drawOneSnapShock(unsigned char *data, int le
                     case ECG_GAIN_X025:
                     case ECG_GAIN_X05:
                     case ECG_GAIN_X10:
-                    case ECG_GAIN_X15:
                     case ECG_GAIN_X20:
-                    case ECG_GAIN_X30:
+                    case ECG_GAIN_X40:
                     default:
                     if (summary->waveID != (char)WAVE_NONE)
                     {

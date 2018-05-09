@@ -41,7 +41,7 @@ void ECGWaveWidget::_autoGainHandle(int data)
     _autoGainTime = t;
 
     // 开始寻找最合适的增益。
-    int gain = ECG_GAIN_X30;
+    int gain = ECG_GAIN_X40;
 //    for (; gain >= ECG_GAIN_X05; gain--)
     for (; gain >= ECG_GAIN_X0125; gain--)
     {
@@ -75,7 +75,7 @@ void ECGWaveWidget::_autoGainHandle(int data)
 void ECGWaveWidget::_calcGainRange(void)
 {
 //    for (int i = ECG_GAIN_X05; i <= ECG_GAIN_X30; i++)
-    for (int i = ECG_GAIN_X0125; i <= ECG_GAIN_X30; i++)
+    for (int i = ECG_GAIN_X0125; i <= ECG_GAIN_X40; i++)
     {
         int rulerHeight = _calcRulerHeight((ECGGain)i);
 
@@ -120,16 +120,12 @@ double ECGWaveWidget::_calcRulerHeight(ECGGain gain)
             rulerHeight = 10 / pixelHPitch();
             break;
 
-        case ECG_GAIN_X15:
-            rulerHeight = 15 / pixelHPitch();
-            break;
-
         case ECG_GAIN_X20:
             rulerHeight = 20 / pixelHPitch();
             break;
 
-        case ECG_GAIN_X30:
-            rulerHeight = 30 / pixelHPitch();
+        case ECG_GAIN_X40:
+            rulerHeight = 40 / pixelHPitch();
             break;
 
         default:
@@ -485,16 +481,12 @@ void ECGWaveWidget::setGain(ECGGain gain)
             text += "1.0 cm/mV";
             break;
 
-        case ECG_GAIN_X15:
-            text += "1.5 cm/mV";
-            break;
-
         case ECG_GAIN_X20:
             text += "2.0 cm/mV";
             break;
 
-        case ECG_GAIN_X30:
-            text += "3.0 cm/mV";
+        case ECG_GAIN_X40:
+            text += "4.0 cm/mV";
             break;
 
         default:
