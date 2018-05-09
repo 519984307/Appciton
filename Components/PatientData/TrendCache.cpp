@@ -123,6 +123,10 @@ void TrendCache::collectTrendAlarmStatus(unsigned t)
         if(iter->toTimestamp <= t)
         {
             iter = _recorders.erase(iter);
+            if(iter == _recorders.end())
+            {
+                break;
+            }
         }
     }
 }

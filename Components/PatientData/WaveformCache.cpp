@@ -77,6 +77,10 @@ void WaveformCache::addData(WaveformID id, WaveDataType data)
                 {
                     iter->recordCompleteCallback(id, iter->recObj);
                     iter = recorderListIter->erase(iter);
+                    if(iter == recorderListIter->end())
+                    {
+                        break;
+                    }
                 }
             }
         }
