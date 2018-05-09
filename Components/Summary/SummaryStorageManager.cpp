@@ -85,22 +85,22 @@ bool SummaryStorageManagerPrivate::isAutoPrint(SummaryType type)
     switch (type)
     {
         case SUMMARY_ECG_RHYTHM:
-            superConfig.getNumValue("Print|PresentingECG", onoff);
+            currentConfig.getNumValue("Print|PresentingECG", onoff);
             break;
         case SUMMARY_SHOCK_DELIVERY:
-            superConfig.getNumValue("Print|ShockDelivery", onoff);
+            currentConfig.getNumValue("Print|ShockDelivery", onoff);
             break;
         case SUMMARY_CHECK_PATIENT_ALARM:
-            superConfig.getNumValue("Print|CheckPatient", onoff);
+            currentConfig.getNumValue("Print|CheckPatient", onoff);
             break;
         case SUMMARY_ECG_FOREGROUND_ANALYSIS:
-            superConfig.getNumValue("Print|ECGAnalysis", onoff);
+            currentConfig.getNumValue("Print|ECGAnalysis", onoff);
             break;
         case SUMMARY_PHY_ALARM:
-            superConfig.getNumValue("Print|PhysiologicalAlarm", onoff);
+            currentConfig.getNumValue("Print|PhysiologicalAlarm", onoff);
             break;
         case SUMMARY_PACER_STARTUP:
-            superConfig.getNumValue("Print|PacerStartUp", onoff);
+            currentConfig.getNumValue("Print|PacerStartUp", onoff);
             break;
         case SUMMARY_PRINTER_ACTION:
         case SUMMARY_PRINTER_ACTION_2_TRACE:
@@ -108,13 +108,13 @@ bool SummaryStorageManagerPrivate::isAutoPrint(SummaryType type)
         case SUMMARY_PRINTER_ACTION_4_TRACE:
             return false;
         case SUMMARY_CODE_MAKER:
-            superConfig.getNumValue("Print|CoderMarker", onoff);
+            currentConfig.getNumValue("Print|CoderMarker", onoff);
             break;
         case SUMMARY_NIBP:
-            superConfig.getNumValue("Print|NIBPReading", onoff);
+            currentConfig.getNumValue("Print|NIBPReading", onoff);
             break;
         case SUMMARY_DIAG_ECG:
-            superConfig.getNumValue("Print|DiagnosticECG", onoff);
+            currentConfig.getNumValue("Print|DiagnosticECG", onoff);
             break;
         default:
             return false;
@@ -181,7 +181,7 @@ void SummaryStorageManager::createDir()
     d->summaryHead.moduleConfig = systemManager.getModuleConfig();
 
     QString tmpStr;
-    superConfig.getStrValue("General|DeviceID", tmpStr);
+    currentConfig.getStrValue("General|DeviceID", tmpStr);
     if(tmpStr.isNull())
     {
         tmpStr = QString();

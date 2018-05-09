@@ -285,7 +285,7 @@ void ConfigExportImportMenu::ExportFileToUSB()
             if(xml.setContent(&file)==false)
             {
                 file.close();
-                qdebug("Read ExportFile_%d failed!\n");
+                qdebug("Read ExportFile failed!\n");
                 break;
 
             }

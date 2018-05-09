@@ -246,7 +246,7 @@ void TEMPParam::getCalibrateData(unsigned char *packet)
  *************************************************************************************************/
 void TEMPParam::setUnit(UnitType u)
 {
-    superConfig.setNumValue("Display|TEMPUnit", (int)u);
+    currentConfig.setNumValue("Display|TEMPUnit", (int)u);
 
     if (NULL != _trendWidget)
     {
@@ -261,7 +261,7 @@ void TEMPParam::setUnit(UnitType u)
 UnitType TEMPParam::getUnit(void)
 {
     int u = UNIT_TDC;
-    superConfig.getNumValue("Local|TEMPUnit", u);
+    currentConfig.getNumValue("Local|TEMPUnit", u);
 
     return (UnitType)u;
 }

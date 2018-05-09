@@ -27,36 +27,36 @@ void Supervisor12LMenu::readyShow()
 {
     int index = 0;
 
-    superConfig.getNumValue("ECG12L|NotchFilter", index);
+    currentConfig.getNumValue("ECG12L|NotchFilter", index);
     _notchFilter->setCurrentIndex(index);
 
-    superConfig.getNumValue("ECG12L|ECG12LeadBandwidth", index);
+    currentConfig.getNumValue("ECG12L|ECG12LeadBandwidth", index);
     _12LFrequency->setCurrentIndex(index);
 
-    superConfig.getNumValue("ECG12L|PrintSnapshotFormat", index);
+    currentConfig.getNumValue("ECG12L|PrintSnapshotFormat", index);
     _printSnapshotFormat->setCurrentIndex(index);
 
-    superConfig.getNumValue("ECG12L|PDFReportFormat", index);
+    currentConfig.getNumValue("ECG12L|PDFReportFormat", index);
     _pdfReportFormat->setCurrentIndex(index);
 
-    superConfig.getNumValue("ECG12L|DisplayFormat", index);
+    currentConfig.getNumValue("ECG12L|DisplayFormat", index);
     _displayFormat->setCurrentIndex(index);
 
-    superConfig.getNumValue("ECG12L|TimeIntervalFor2x6Report", index);
+    currentConfig.getNumValue("ECG12L|TimeIntervalFor2x6Report", index);
     _timeWindowFor2x6PDF->setCurrentIndex(index);
 
-    superConfig.getNumValue("ECG12L|AutoPrinting12LReport", index);
+    currentConfig.getNumValue("ECG12L|AutoPrinting12LReport", index);
     _autoPrint12Lead->setCurrentIndex(index);
 
-    superConfig.getNumValue("ECG12L|AutoTransmission", index);
+    currentConfig.getNumValue("ECG12L|AutoTransmission", index);
     _autoTransforViaWifi->setCurrentIndex(index);
 
-    superConfig.getNumValue("ECG12L|TransmissionFormat", index);
+    currentConfig.getNumValue("ECG12L|TransmissionFormat", index);
     _transforFileFormat->setCurrentIndex(index);
 
     int leadNameConvention = 0, displayMode = 0;
-    superConfig.getNumValue("ECG|ECGLeadConvention", leadNameConvention);
-    superConfig.getNumValue("ECG12L|DisplayFormat", displayMode);
+    currentConfig.getNumValue("ECG|ECGLeadConvention", leadNameConvention);
+    currentConfig.getNumValue("ECG12L|DisplayFormat", displayMode);
     _realTimePrintTopLead->clear();
     _realTimePrintMidLead->clear();
     _realTimePrintBotLead->clear();
@@ -72,13 +72,13 @@ void Supervisor12LMenu::readyShow()
             (ECGLeadNameConvention)leadNameConvention, true, displayMode));
     }
 
-    superConfig.getNumValue("ECG12L|RealtimePrintTopLead", index);
+    currentConfig.getNumValue("ECG12L|RealtimePrintTopLead", index);
     _realTimePrintTopLead->setCurrentIndex(index);
 
-    superConfig.getNumValue("ECG12L|RealtimePrintMiddleLead", index);
+    currentConfig.getNumValue("ECG12L|RealtimePrintMiddleLead", index);
     _realTimePrintMidLead->setCurrentIndex(index);
 
-    superConfig.getNumValue("ECG12L|RealtimePrintBottomLead", index);
+    currentConfig.getNumValue("ECG12L|RealtimePrintBottomLead", index);
     _realTimePrintBotLead->setCurrentIndex(index);
 }
 
@@ -242,7 +242,7 @@ void Supervisor12LMenu::layoutExec()
  *************************************************************************************************/
 void Supervisor12LMenu::_notchFilterChangeSlot(int index)
 {
-    superConfig.setNumValue("ECG12L|NotchFilter", index);
+    currentConfig.setNumValue("ECG12L|NotchFilter", index);
 }
 
 /**************************************************************************************************
@@ -250,7 +250,7 @@ void Supervisor12LMenu::_notchFilterChangeSlot(int index)
  *************************************************************************************************/
 void Supervisor12LMenu::_12lFrequenceChangeSlot(int index)
 {
-    superConfig.setNumValue("ECG12L|ECG12LeadBandwidth", index);
+    currentConfig.setNumValue("ECG12L|ECG12LeadBandwidth", index);
 }
 
 /**************************************************************************************************
@@ -258,7 +258,7 @@ void Supervisor12LMenu::_12lFrequenceChangeSlot(int index)
  *************************************************************************************************/
 void Supervisor12LMenu::_printFormatSlot(int index)
 {
-    superConfig.setNumValue("ECG12L|PrintSnapshotFormat", index);
+    currentConfig.setNumValue("ECG12L|PrintSnapshotFormat", index);
 }
 
 /**************************************************************************************************
@@ -266,7 +266,7 @@ void Supervisor12LMenu::_printFormatSlot(int index)
  *************************************************************************************************/
 void Supervisor12LMenu::_pdfReportSlot(int index)
 {
-    superConfig.setNumValue("ECG12L|PDFReportFormat", index);
+    currentConfig.setNumValue("ECG12L|PDFReportFormat", index);
 }
 
 /**************************************************************************************************
@@ -274,10 +274,10 @@ void Supervisor12LMenu::_pdfReportSlot(int index)
  *************************************************************************************************/
 void Supervisor12LMenu::_displayFormatSlot(int index)
 {
-    superConfig.setNumValue("ECG12L|DisplayFormat", index);
+    currentConfig.setNumValue("ECG12L|DisplayFormat", index);
 
     int leadNameConvention = 0;
-    superConfig.getNumValue("ECG|ECGLeadConvention", leadNameConvention);
+    currentConfig.getNumValue("ECG|ECGLeadConvention", leadNameConvention);
     int topLead = _realTimePrintTopLead->currentIndex();
     int midLead = _realTimePrintMidLead->currentIndex();
     int botLead = _realTimePrintBotLead->currentIndex();
@@ -306,7 +306,7 @@ void Supervisor12LMenu::_displayFormatSlot(int index)
  *************************************************************************************************/
 void Supervisor12LMenu::_timeWindowFor2x6PDFSlot(int index)
 {
-    superConfig.setNumValue("ECG12L|TimeIntervalFor2x6Report", index);
+    currentConfig.setNumValue("ECG12L|TimeIntervalFor2x6Report", index);
 }
 
 /**************************************************************************************************
@@ -314,7 +314,7 @@ void Supervisor12LMenu::_timeWindowFor2x6PDFSlot(int index)
  *************************************************************************************************/
 void Supervisor12LMenu::_autoPrint12LeadSlot(int index)
 {
-    superConfig.setNumValue("ECG12L|AutoPrinting12LReport", index);
+    currentConfig.setNumValue("ECG12L|AutoPrinting12LReport", index);
 }
 
 /**************************************************************************************************
@@ -322,7 +322,7 @@ void Supervisor12LMenu::_autoPrint12LeadSlot(int index)
  *************************************************************************************************/
 void Supervisor12LMenu::_autoTransforViaWifiSlot(int index)
 {
-    superConfig.setNumValue("ECG12L|AutoTransmission", index);
+    currentConfig.setNumValue("ECG12L|AutoTransmission", index);
 }
 
 /**************************************************************************************************
@@ -330,7 +330,7 @@ void Supervisor12LMenu::_autoTransforViaWifiSlot(int index)
  *************************************************************************************************/
 void Supervisor12LMenu::_transforFileFormatSlot(int index)
 {
-    superConfig.setNumValue("ECG12L|TransmissionFormat", index);
+    currentConfig.setNumValue("ECG12L|TransmissionFormat", index);
 }
 
 /**************************************************************************************************
@@ -338,7 +338,7 @@ void Supervisor12LMenu::_transforFileFormatSlot(int index)
  *************************************************************************************************/
 void Supervisor12LMenu::_realTimePrintTopLeadSlot(int index)
 {
-    superConfig.setNumValue("ECG12L|RealtimePrintTopLead", index);
+    currentConfig.setNumValue("ECG12L|RealtimePrintTopLead", index);
 }
 
 /**************************************************************************************************
@@ -346,7 +346,7 @@ void Supervisor12LMenu::_realTimePrintTopLeadSlot(int index)
  *************************************************************************************************/
 void Supervisor12LMenu::_realTimePrintMidLeadSlot(int index)
 {
-    superConfig.setNumValue("ECG12L|RealtimePrintMiddleLead", index);
+    currentConfig.setNumValue("ECG12L|RealtimePrintMiddleLead", index);
 }
 
 /**************************************************************************************************
@@ -354,7 +354,7 @@ void Supervisor12LMenu::_realTimePrintMidLeadSlot(int index)
  *************************************************************************************************/
 void Supervisor12LMenu::_realTimePrintBotLeadSlot(int index)
 {
-    superConfig.setNumValue("ECG12L|RealtimePrintBottomLead", index);
+    currentConfig.setNumValue("ECG12L|RealtimePrintBottomLead", index);
 }
 
 /**************************************************************************************************

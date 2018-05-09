@@ -18,7 +18,7 @@ SupervisorDisplayMenu::SupervisorDisplayMenu() : SubMenu(trs("SupervisorDisplayM
     setDesc(trs("SupervisorDisplayMenuDesc"));
 
     QString color;
-    superConfig.getStrValue("Display|AllColors", color);
+    currentConfig.getStrValue("Display|AllColors", color);
     _colorList = color.split(',', QString::KeepEmptyParts);
 
     startLayout();
@@ -30,22 +30,22 @@ SupervisorDisplayMenu::SupervisorDisplayMenu() : SubMenu(trs("SupervisorDisplayM
 void SupervisorDisplayMenu::readyShow()
 {
     QString color;
-    superConfig.getStrValue("Display|ECGColor", color);
+    currentConfig.getStrValue("Display|ECGColor", color);
     _ecgColor->setCurrentIndex(_colorList.indexOf(color));
 
-    superConfig.getStrValue("Display|SPO2Color", color);
+    currentConfig.getStrValue("Display|SPO2Color", color);
     _spo2Color->setCurrentIndex(_colorList.indexOf(color));
 
-    superConfig.getStrValue("Display|NIBPColor", color);
+    currentConfig.getStrValue("Display|NIBPColor", color);
     _nibpColor->setCurrentIndex(_colorList.indexOf(color));
 
-    superConfig.getStrValue("Display|CO2Color", color);
+    currentConfig.getStrValue("Display|CO2Color", color);
     _co2Color->setCurrentIndex(_colorList.indexOf(color));
 
-    superConfig.getStrValue("Display|RESPColor", color);
+    currentConfig.getStrValue("Display|RESPColor", color);
     _respColor->setCurrentIndex(_colorList.indexOf(color));
 
-    superConfig.getStrValue("Display|TEMPColor", color);
+    currentConfig.getStrValue("Display|TEMPColor", color);
     _tempColor->setCurrentIndex(_colorList.indexOf(color));
 }
 
@@ -169,7 +169,7 @@ void SupervisorDisplayMenu::layoutExec()
  *************************************************************************************************/
 void SupervisorDisplayMenu::_ecgColorChangeSlot(int index)
 {
-    superConfig.setStrValue("Display|ECGColor", _colorList.at(index));
+    currentConfig.setStrValue("Display|ECGColor", _colorList.at(index));
 }
 
 /**************************************************************************************************
@@ -177,7 +177,7 @@ void SupervisorDisplayMenu::_ecgColorChangeSlot(int index)
  *************************************************************************************************/
 void SupervisorDisplayMenu::_spo2ColorChangeSlot(int index)
 {
-    superConfig.setStrValue("Display|SPO2Color", _colorList.at(index));
+    currentConfig.setStrValue("Display|SPO2Color", _colorList.at(index));
 }
 
 /**************************************************************************************************
@@ -185,7 +185,7 @@ void SupervisorDisplayMenu::_spo2ColorChangeSlot(int index)
  *************************************************************************************************/
 void SupervisorDisplayMenu::_nibpColorChangeSlot(int index)
 {
-    superConfig.setStrValue("Display|NIBPColor", _colorList.at(index));
+    currentConfig.setStrValue("Display|NIBPColor", _colorList.at(index));
 }
 
 /**************************************************************************************************
@@ -193,7 +193,7 @@ void SupervisorDisplayMenu::_nibpColorChangeSlot(int index)
  *************************************************************************************************/
 void SupervisorDisplayMenu::_co2ColorChangeSlot(int index)
 {
-    superConfig.setStrValue("Display|CO2Color", _colorList.at(index));
+    currentConfig.setStrValue("Display|CO2Color", _colorList.at(index));
 }
 
 /**************************************************************************************************
@@ -201,7 +201,7 @@ void SupervisorDisplayMenu::_co2ColorChangeSlot(int index)
  *************************************************************************************************/
 void SupervisorDisplayMenu::_respColorChangeSlot(int index)
 {
-    superConfig.setStrValue("Display|RESPColor", _colorList.at(index));
+    currentConfig.setStrValue("Display|RESPColor", _colorList.at(index));
 }
 
 /**************************************************************************************************
@@ -209,7 +209,7 @@ void SupervisorDisplayMenu::_respColorChangeSlot(int index)
  *************************************************************************************************/
 void SupervisorDisplayMenu::_tempColorChangeSlot(int index)
 {
-    superConfig.setStrValue("Display|TEMPColor", _colorList.at(index));
+    currentConfig.setStrValue("Display|TEMPColor", _colorList.at(index));
 }
 
 /**************************************************************************************************

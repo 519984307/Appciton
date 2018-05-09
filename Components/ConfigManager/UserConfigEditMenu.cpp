@@ -13,6 +13,7 @@
 #include "MenuManager.h"
 #include "SystemMenu.h"
 #include "SystemManager.h"
+#include "MenuWidget.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -128,9 +129,10 @@ UserConfigEditMenu::UserConfigEditMenu()
     setDesc(trs("ConfigManagement"));
     startLayout();
 
-    connect(&configEditMenuGrp, SIGNAL(menuGroupReturn()), this, SLOT(onEditFinished()));
+    //保存配置管理的数据
+    connect(configEditMenuGrp.getCloseBtn(), SIGNAL(realReleased()), this, SLOT(onEditFinished()));
 
-    connect(&configEditMenuGrp, SIGNAL(menuexitsignal()), this, SLOT(onEditFinished()));
+    //connect(&configEditMenuGrp, SIGNAL(menuexitsignal()), this, SLOT(onEditFinished()));
 }
 
 UserConfigEditMenu::~UserConfigEditMenu()

@@ -409,7 +409,7 @@ void DataStorageDirManager::createDir(bool createNew)
         // 新病人，删除上次删掉备份文件，设置时间，恢复主配置文件
         cleanUpLastIncidentDir();
         timeManager.setElapsedTime();
-        Config systemDefCfg(ORGINAL_SYSTEM_CFG_FILE);
+        Config systemDefCfg(curConfigName);
         systemConfig.setNodeValue("PrimaryCfg", systemDefCfg);
     }
 }

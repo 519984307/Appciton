@@ -25,7 +25,7 @@ SupervisorConfigManager *SupervisorConfigManager::_selfobj = NULL;
  ******************************************************************************/
 void SupervisorConfigManager::loadDefaultConfig()
 {
-    bool ret = superConfig.load(ORGINAL_SUPERVISOR_CFG_FILE);
+    bool ret = currentConfig.load(curConfigName);
 
     IMessageBox messageBox(ret ? trs("Prompt") : trs("Warn"),
                            ret ? trs("PromptLoadDefaultCfgOK") : trs("WarningLoadDefaultCfgFail"),
@@ -41,18 +41,18 @@ void SupervisorConfigManager::loadDefaultConfig()
 bool SupervisorConfigManager::exportConfig()
 {
     //当前配置是否需要保存
-    if (superConfig.getSaveStatus())
+    if (currentConfig.getSaveStatus())
     {
         //提示是否保存
         IMessageBox messageBox(trs("Prompt"), trs("PromptCfgNotSave"));
         if (1 == messageBox.exec())
         {
-            superConfig.saveToDisk();
+            currentConfig.saveToDisk();
         }
     }
 
     //配置文件大小
-    QString srcFile(SUPERVISOR_CFG_FILE);
+    QString srcFile(curConfigName);
     QFile file(srcFile);
     if (!file.isOpen())
     {
@@ -140,7 +140,7 @@ bool SupervisorConfigManager::importConfig()
         return false;
     }
 
-    return superConfig.load(importFile);
+    return currentConfig.load(importFile);
 }
 
 /*******************************************************************************
@@ -235,7 +235,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
         return false;
     }
 
-    superConfig.getStrValue("General|SuperPassword", SuperCfgStr);
+    currentConfig.getStrValue("General|SuperPassword", SuperCfgStr);
     if (str != SuperCfgStr)
     {
         config.setStrValue("General|SuperPassword", SuperCfgStr);
@@ -670,7 +670,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
 
                 int stepImport = 0, stepOld = 0;
                 bret = config.getNumValue(prefix + subParamName + "|" + unitStr + "|Step", stepImport);
-                superConfig.getNumValue(prefix + subParamName + "|" + unitStr + "|Step", stepOld);
+                currentConfig.getNumValue(prefix + subParamName + "|" + unitStr + "|Step", stepOld);
                 if (stepImport != stepOld || !bret)
                 {
                     debug("AlarmSource %s step error:%d", qPrintable(subParamName), stepImport);
@@ -680,7 +680,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
 
                 int scaleImport = 0, scaleOld = 0;
                 bret = config.getNumValue(prefix + subParamName + "|" + unitStr + "|Scale", scaleImport);
-                superConfig.getNumValue(prefix + subParamName + "|" + unitStr + "|Scale", scaleOld);
+                currentConfig.getNumValue(prefix + subParamName + "|" + unitStr + "|Scale", scaleOld);
                 if (stepImport != stepOld || !bret)
                 {
                     debug("AlarmSource %s Scale error:%d", qPrintable(subParamName), scaleImport);
@@ -833,7 +833,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
     }
 
     bret = config.getStrValue("Display|CPRBarGraphColor", str);
-    superConfig.getStrValue("Display|CPRBarGraphColor", SuperCfgStr);
+    currentConfig.getStrValue("Display|CPRBarGraphColor", SuperCfgStr);
     if (str != SuperCfgStr || !bret)
     {
         debug("Display CPRBarGraphColor error:%s", qPrintable(str));

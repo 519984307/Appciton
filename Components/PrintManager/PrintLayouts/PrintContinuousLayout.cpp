@@ -322,7 +322,7 @@ PrintPage *PrintContinuousLayout::_produceFirstPage(void)
 
     QString str;
     QString text = trs("DeviceID") + ":";
-    superConfig.getStrValue("General|DeviceIdentifier", str);
+    currentConfig.getStrValue("General|DeviceIdentifier", str);
     text += str;
     painter.drawText(x, y, text);
     y += fontHeight() + ySpace;
@@ -382,11 +382,11 @@ void PrintContinuousLayout::_getWaveForm(WaveGainList &waveList)
     else
     {
         int lead = ECG_LEAD_I;
-        superConfig.getNumValue("ECG12L|RealtimePrintTopLead", lead);
+        currentConfig.getNumValue("ECG12L|RealtimePrintTopLead", lead);
         waveID.append((WaveformID)ecgParam.leadToWaveID((ECGLead)lead));
-        superConfig.getNumValue("ECG12L|RealtimePrintMiddleLead", lead);
+        currentConfig.getNumValue("ECG12L|RealtimePrintMiddleLead", lead);
         waveID.append((WaveformID)ecgParam.leadToWaveID((ECGLead)lead));
-        superConfig.getNumValue("ECG12L|RealtimePrintBottomLead", lead);
+        currentConfig.getNumValue("ECG12L|RealtimePrintBottomLead", lead);
         waveID.append((WaveformID)ecgParam.leadToWaveID((ECGLead)lead));
         _numOfWaveTrace = 3;
     }
@@ -2180,7 +2180,7 @@ PrintContinuousLayout::PrintContinuousLayout() : PrintLayoutIFace(PRINT_LAYOUT_I
     }
 
     int band = 0;
-    superConfig.getNumValue("ECG|ChestLeadsECGBandwidth", band);
+    currentConfig.getNumValue("ECG|ChestLeadsECGBandwidth", band);
     drawLen = fontManager.textWidthInPixels(ECGSymbol::convert((ECGBandwidth)band), font);
     _bandwidthImage[band] = new QImage(drawLen + 2, fontH, QImage::Format_MonoLSB);
     painter.begin(_bandwidthImage[band]);
@@ -2200,7 +2200,7 @@ PrintContinuousLayout::PrintContinuousLayout() : PrintLayoutIFace(PRINT_LAYOUT_I
     painter.drawText(_bandwidthImage[band]->rect(), ECGSymbol::convert((ECGBandwidth)band));
     painter.end();
 
-    superConfig.getNumValue("ECG12L|ECG12LeadBandwidth", band);
+    currentConfig.getNumValue("ECG12L|ECG12LeadBandwidth", band);
     band += ECG_BANDWIDTH_0525_40HZ;
     if (band != (int)ecgParam.getDiagBandwidth())
     {

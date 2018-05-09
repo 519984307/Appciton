@@ -34,6 +34,9 @@ public:
 
     bool closeBtnHasFocus() { return closeBtn->hasFocus(); }
 
+    //获取关闭按钮
+    IButton *getCloseBtn() {return closeBtn;}
+
     void popup(int x = 0, int y = 0);
 
     MenuWidget(const QString &name);

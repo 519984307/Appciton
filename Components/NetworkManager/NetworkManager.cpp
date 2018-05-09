@@ -277,7 +277,7 @@ void NetworkManager::close(NetworkType type)
 bool NetworkManager::isWifiTurnOn()
 {
     int st = 0;
-    superConfig.getNumValue("WiFi|EnableWifi", st);
+    currentConfig.getNumValue("WiFi|EnableWifi", st);
     return st;
 }
 
@@ -312,7 +312,7 @@ bool NetworkManager::isWiFiConnected() const
 void NetworkManager::setWifiState(bool onOrOFF)
 {
     int st = onOrOFF;
-    superConfig.setNumValue("WiFi|EnableWifi", st);
+    currentConfig.setNumValue("WiFi|EnableWifi", st);
 }
 
 
@@ -443,7 +443,7 @@ void NetworkManager::_onWifiApConnected(const QString &ssid)
         int count;
         int tmpValue = 0;
         QString tmpStr;
-        if(!superRunConfig.getStrAttr("WiFi|Profiles", "CurrentSelect", tmpStr))
+        if(!currentConfig.getStrAttr("WiFi|Profiles", "CurrentSelect", tmpStr))
         {
             //failed to find current select AP attribute
             connectWiFiProfile(WiFiProfileInfo());
@@ -459,7 +459,7 @@ void NetworkManager::_onWifiApConnected(const QString &ssid)
             return;
         }
 
-        if(!superRunConfig.getStrAttr("WiFi|Profiles", "Count", tmpStr))
+        if(!currentConfig.getStrAttr("WiFi|Profiles", "Count", tmpStr))
         {
             //failed to find current select AP attribute
             connectWiFiProfile(WiFiProfileInfo());
@@ -477,20 +477,20 @@ void NetworkManager::_onWifiApConnected(const QString &ssid)
 
         QString prefix = QString("WiFi|Profiles|Profile%1|").arg(index);
         WiFiProfileInfo profile;
-        superRunConfig.getStrValue(prefix + "ProfileName", profile.profileName);
-        superRunConfig.getStrValue(prefix + "SSID", profile.ssid);
-        superRunConfig.getNumValue(prefix + "AuthType", tmpValue);
+        currentConfig.getStrValue(prefix + "ProfileName", profile.profileName);
+        currentConfig.getStrValue(prefix + "SSID", profile.ssid);
+        currentConfig.getNumValue(prefix + "AuthType", tmpValue);
         profile.authType = (WiFiProfileInfo::AuthenticationType) tmpValue;
-        superRunConfig.getStrValue(prefix + "SecurityKey", profile.securityKey);
-        superRunConfig.getNumValue(prefix + "IsStatic", tmpValue);
+        currentConfig.getStrValue(prefix + "SecurityKey", profile.securityKey);
+        currentConfig.getNumValue(prefix + "IsStatic", tmpValue);
         profile.isStatic = tmpValue;
         if(profile.isStatic)
         {
-            superRunConfig.getStrValue(prefix + "StaticIP", profile.staticIp);
-            superRunConfig.getStrValue(prefix + "DefaultGateway", profile.defaultGateway);
-            superRunConfig.getStrValue(prefix + "SubnetMask", profile.subnetMask);
-            superRunConfig.getStrValue(prefix + "PreferedDNS", profile.preferedDNS);
-            superRunConfig.getStrValue(prefix + "AlternateDNS", profile.alternateDNS);
+            currentConfig.getStrValue(prefix + "StaticIP", profile.staticIp);
+            currentConfig.getStrValue(prefix + "DefaultGateway", profile.defaultGateway);
+            currentConfig.getStrValue(prefix + "SubnetMask", profile.subnetMask);
+            currentConfig.getStrValue(prefix + "PreferedDNS", profile.preferedDNS);
+            currentConfig.getStrValue(prefix + "AlternateDNS", profile.alternateDNS);
         }
 
         _curProfile = profile;

@@ -67,7 +67,7 @@ void ECG12LDataStorage::getCommonInfo(ECG12LDataStorage::ECG12LCommonInfo &commo
     commonInfo.ms = timeDate.getTimeMsec();
 
     QString tmpStr;
-    superConfig.getStrValue("General|DeviceIdentifier", tmpStr);
+    currentConfig.getStrValue("General|DeviceIdentifier", tmpStr);
     if(tmpStr.isNull())
     {
         tmpStr = QString();

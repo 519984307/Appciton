@@ -112,7 +112,7 @@ TimeManager::TimeManager()
     systemConfig.getNumValue("ElapseStartTime", _elapseStartTime);
 
     // 读配置是否显示秒
-    superConfig.getNumValue("DateTime|DisplaySecond", _showSecond);
+    currentConfig.getNumValue("DateTime|DisplaySecond", _showSecond);
 
     // 判断上次开机与本次开机的时间间隔。
     unsigned timestamp = 0;

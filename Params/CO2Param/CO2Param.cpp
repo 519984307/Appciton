@@ -118,7 +118,7 @@ void CO2Param::_getCO2RESPWins(QString &co2Trend, QString &co2Wave,
 void CO2Param::initParam(void)
 {
     int onoff = 1;
-    superRunConfig.getNumValue("CO2|CO2ModeDefault", onoff);
+    currentConfig.getNumValue("CO2|CO2ModeDefault", onoff);
     _co2Switch = (1 == onoff) ? true : false;
 }
 
@@ -617,7 +617,7 @@ bool CO2Param::getAwRRSwitch(void)
     int enable = 0;
     QString path = "AlarmSource|" + patientManager.getTypeStr() + "|";
     path += paramInfo.getSubParamName(SUB_PARAM_RR_BR);
-    superRunConfig.getNumAttr(path, "Enable", enable);
+    currentConfig.getNumAttr(path, "Enable", enable);
 
     return enable;
 }
@@ -647,7 +647,7 @@ CO2SweepSpeed CO2Param::getSweepSpeed(void)
 CO2SweepMode CO2Param::getSweepMode(void)
 {
     int mode = CO2_SWEEP_MODE_CURVE;
-    superConfig.getNumValue("CO2|CO2SweepMode", mode);
+    currentConfig.getNumValue("CO2|CO2SweepMode", mode);
     return (CO2SweepMode)mode;
 }
 
@@ -759,7 +759,7 @@ void CO2Param::setCO2Switch(int onoff)
         co2OneShotAlarm.clear();
     }
 
-    superRunConfig.setNumValue("CO2|CO2ModeDefault", onoff);
+    currentConfig.setNumValue("CO2|CO2ModeDefault", onoff);
     QStringList curWaveList;
     windowManager.getDisplayedWaveform(curWaveList);
     QString co2Trend, co2Wave, respTrend, respWave;
@@ -884,7 +884,7 @@ CO2Param::CO2Param() : Param(PARAM_CO2)
     _co2Switch = false;
 
     int t = UNIT_PERCENT;
-    superConfig.getNumValue("Local|CO2Unit", t);
+    currentConfig.getNumValue("Local|CO2Unit", t);
     _curUnit = (UnitType)t;
 
     QString path = "AlarmSource|" + patientManager.getTypeStr() + "|";
@@ -906,8 +906,8 @@ CO2Param::CO2Param() : Param(PARAM_CO2)
     path += "|";
     QString lowPath = path + "Low";
     QString highPath = path + "High";
-    superRunConfig.getNumAttr(lowPath, "Min", _etco2MinVal);
-    superRunConfig.getNumAttr(highPath, "Max", _etco2MaxVal);
+    currentConfig.getNumAttr(lowPath, "Min", _etco2MinVal);
+    currentConfig.getNumAttr(highPath, "Max", _etco2MaxVal);
 
 }
 

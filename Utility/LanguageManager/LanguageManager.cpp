@@ -13,7 +13,7 @@ LanguageManager::LanguageManager()
 {
     // 获得当前使用的语言。
     int langNo = 0;
-    superConfig.getNumAttr("Local|Language", "CurrentOption", langNo);
+    currentConfig.getNumAttr("Local|Language", "CurrentOption", langNo);
 
     _curLanguage = (LanguageName) langNo;
 
@@ -21,7 +21,7 @@ LanguageManager::LanguageManager()
     QString language;
     language.sprintf("Local|Language|Opt%d", langNo);
 
-    superConfig.getStrAttr(language, "XmlFileName", language);
+    currentConfig.getStrAttr(language, "XmlFileName", language);
     QString path =  LOCALE_FILE_PATH + language + ".xml";
 
     _xmlParser.open(path);
@@ -159,7 +159,7 @@ void LanguageManager::reload(int index)
     QString language;
     language.sprintf("Local|Language|Opt%d", index);
 
-    bool ret = superConfig.getStrAttr(language, "XmlFileName", language);
+    bool ret = currentConfig.getStrAttr(language, "XmlFileName", language);
     if (!ret)
     {
         return;

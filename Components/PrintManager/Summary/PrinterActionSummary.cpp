@@ -18,11 +18,11 @@ PrinterActionSummaryItem *PrinterActionSummaryItem::create(unsigned time)
     {
         //print 3 trace in 12 lead mode
         int lead = ECG_LEAD_I;
-        superConfig.getNumValue("ECG12L|RealtimePrintTopLead", lead);
+        currentConfig.getNumValue("ECG12L|RealtimePrintTopLead", lead);
         waveID.append((WaveformID)ecgParam.leadToWaveID((ECGLead)lead));
-        superConfig.getNumValue("ECG12L|RealtimePrintMiddleLead", lead);
+        currentConfig.getNumValue("ECG12L|RealtimePrintMiddleLead", lead);
         waveID.append((WaveformID)ecgParam.leadToWaveID((ECGLead)lead));
-        superConfig.getNumValue("ECG12L|RealtimePrintBottomLead", lead);
+        currentConfig.getNumValue("ECG12L|RealtimePrintBottomLead", lead);
         waveID.append((WaveformID)ecgParam.leadToWaveID((ECGLead)lead));
     }
     else

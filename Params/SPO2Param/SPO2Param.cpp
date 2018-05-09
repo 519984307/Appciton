@@ -302,7 +302,7 @@ void SPO2Param::setOxyCRGWaveWidget(OxyCRGSPO2Widget *waveWidget)
 SoundManager::VolumeLevel SPO2Param::getPluseToneVolume(void)
 {
     int vol = SoundManager::VOLUME_LEV_3;
-    superRunConfig.getNumValue("ECG|QRSToneVolume", vol);
+    currentConfig.getNumValue("ECG|QRSToneVolume", vol);
     return (SoundManager::VolumeLevel)vol;
 }
 

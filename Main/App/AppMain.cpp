@@ -118,7 +118,7 @@ static void _storageThreadEntry(void)
 {
     // 保存配置。
     systemConfig.saveToDisk();
-    superRunConfig.saveToDisk();
+    currentConfig.saveToDisk();
 
     static int loopCounter = 0;
     loopCounter ++;

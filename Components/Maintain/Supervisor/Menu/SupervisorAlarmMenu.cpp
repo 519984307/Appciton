@@ -26,10 +26,10 @@ SupervisorAlarmMenu::SupervisorAlarmMenu() : SubMenu(trs("AlarmSettingMenu"))
 void SupervisorAlarmMenu::readyShow()
 {
     int index = 0;
-//    superConfig.getNumValue("Alarm|LTAAlarm", index);
+//    currentConfig.getNumValue("Alarm|LTAAlarm", index);
 //    _ltaAlarm->setCurrentIndex(index);
 
-    superConfig.getNumValue("Alarm|MinimumAlarmVolume", index);
+    currentConfig.getNumValue("Alarm|MinimumAlarmVolume", index);
     _minAlarmVolume->setCurrentIndex(index);
 
     _defaultAlarmVolume->clear();
@@ -38,19 +38,19 @@ void SupervisorAlarmMenu::readyShow()
         _defaultAlarmVolume->addItem(trs(QString::number(i)));
     }
     QString str;
-    superConfig.getStrValue("Alarm|DefaultAlarmVolume", str);
+    currentConfig.getStrValue("Alarm|DefaultAlarmVolume", str);
     _defaultAlarmVolume->setCurrentItem(str);
 
-    superConfig.getNumValue("Alarm|AlarmPauseTime", index);
+    currentConfig.getNumValue("Alarm|AlarmPauseTime", index);
     _alarmPauseTime->setCurrentIndex(index);
 
-    superConfig.getNumValue("Alarm|AlarmOffPrompting", index);
+    currentConfig.getNumValue("Alarm|AlarmOffPrompting", index);
     _alarmClosePromptTime->setCurrentIndex(index);
 
-    superConfig.getNumValue("Alarm|EnableAlarmAudioOff", index);
+    currentConfig.getNumValue("Alarm|EnableAlarmAudioOff", index);
     _enableAlarmAudioOff->setCurrentIndex(index);
 
-    superConfig.getNumValue("Alarm|EnableAlarmOff", index);
+    currentConfig.getNumValue("Alarm|EnableAlarmOff", index);
     _enableAlarmOff->setCurrentIndex(index);
 
     if (0 == index)
@@ -61,10 +61,10 @@ void SupervisorAlarmMenu::readyShow()
     {
         _alarmOffAtPowerOn->setDisabled(false);
     }
-    superConfig.getNumValue("Alarm|AlarmOffAtPowerOn", index);
+    currentConfig.getNumValue("Alarm|AlarmOffAtPowerOn", index);
     _alarmOffAtPowerOn->setCurrentIndex(index);
 
-    superConfig.getNumValue("Alarm|NonAlertsBeepsInNonAED", index);
+    currentConfig.getNumValue("Alarm|NonAlertsBeepsInNonAED", index);
     _nonAlertsBeepsInNonAED->setCurrentIndex(index);
 }
 
@@ -201,7 +201,7 @@ void SupervisorAlarmMenu::layoutExec()
  *************************************************************************************************/
 //void SupervisorAlarmMenu::_ltaAlarmChangeSlot(int index)
 //{
-//    superConfig.setNumValue("Alarm|LTAAlarm", index);
+//    currentConfig.setNumValue("Alarm|LTAAlarm", index);
 //}
 
 /**************************************************************************************************
@@ -209,17 +209,17 @@ void SupervisorAlarmMenu::layoutExec()
  *************************************************************************************************/
 void SupervisorAlarmMenu::_minAlarmVolumeChangeSlot(int index)
 {
-    superConfig.setNumValue("Alarm|MinimumAlarmVolume", index);
+    currentConfig.setNumValue("Alarm|MinimumAlarmVolume", index);
     _defaultAlarmVolume->clear();
     for (int i = index + 1; i <= SoundManager::VOLUME_LEV_5; ++i)
     {
         _defaultAlarmVolume->addItem(trs(QString::number(i)));
     }
     QString str;
-    superConfig.getStrValue("Alarm|DefaultAlarmVolume", str);
+    currentConfig.getStrValue("Alarm|DefaultAlarmVolume", str);
     if (str.toInt() < (index + 1))
     {
-        superConfig.setNumValue("Alarm|DefaultAlarmVolume", index + 1);
+        currentConfig.setNumValue("Alarm|DefaultAlarmVolume", index + 1);
         _defaultAlarmVolume->setCurrentIndex(0);
     }
     else
@@ -234,7 +234,7 @@ void SupervisorAlarmMenu::_minAlarmVolumeChangeSlot(int index)
 void SupervisorAlarmMenu::_defaultAlarmVolumeChangeSlot(int index)
 {
     QString str = _defaultAlarmVolume->itemText(index);
-    superConfig.setStrValue("Alarm|DefaultAlarmVolume", str);
+    currentConfig.setStrValue("Alarm|DefaultAlarmVolume", str);
 }
 
 /**************************************************************************************************
@@ -242,7 +242,7 @@ void SupervisorAlarmMenu::_defaultAlarmVolumeChangeSlot(int index)
  *************************************************************************************************/
 void SupervisorAlarmMenu::_alarmPauseTimeChangeSlot(int index)
 {
-    superConfig.setNumValue("Alarm|AlarmPauseTime", index);
+    currentConfig.setNumValue("Alarm|AlarmPauseTime", index);
 }
 
 /**************************************************************************************************
@@ -250,7 +250,7 @@ void SupervisorAlarmMenu::_alarmPauseTimeChangeSlot(int index)
  *************************************************************************************************/
 void SupervisorAlarmMenu::_alarmClosePromptTimeChangeSlot(int index)
 {
-    superConfig.setNumValue("Alarm|AlarmOffPrompting", index);
+    currentConfig.setNumValue("Alarm|AlarmOffPrompting", index);
 }
 
 /**************************************************************************************************
@@ -258,7 +258,7 @@ void SupervisorAlarmMenu::_alarmClosePromptTimeChangeSlot(int index)
  *************************************************************************************************/
 void SupervisorAlarmMenu::_enableAlarmAudioOffChangeSlot(int index)
 {
-    superConfig.setNumValue("Alarm|EnableAlarmAudioOff", index);
+    currentConfig.setNumValue("Alarm|EnableAlarmAudioOff", index);
 }
 
 /**************************************************************************************************
@@ -266,7 +266,7 @@ void SupervisorAlarmMenu::_enableAlarmAudioOffChangeSlot(int index)
  *************************************************************************************************/
 void SupervisorAlarmMenu::_enableAlarmOffChangeSlot(int index)
 {
-    superConfig.setNumValue("Alarm|EnableAlarmOff", index);
+    currentConfig.setNumValue("Alarm|EnableAlarmOff", index);
 
     if (0 == index)
     {
@@ -283,7 +283,7 @@ void SupervisorAlarmMenu::_enableAlarmOffChangeSlot(int index)
  *************************************************************************************************/
 void SupervisorAlarmMenu::_alarmOffAtPowerOnChangeSlot(int index)
 {
-    superConfig.setNumValue("Alarm|AlarmOffAtPowerOn", index);
+    currentConfig.setNumValue("Alarm|AlarmOffAtPowerOn", index);
 }
 
 /**************************************************************************************************
@@ -291,7 +291,7 @@ void SupervisorAlarmMenu::_alarmOffAtPowerOnChangeSlot(int index)
  *************************************************************************************************/
 void SupervisorAlarmMenu::_nonAlertsBeepsInNonAEDSlot(int index)
 {
-    superConfig.setNumValue("Alarm|NonAlertsBeepsInNonAED", index);
+    currentConfig.setNumValue("Alarm|NonAlertsBeepsInNonAED", index);
 }
 
 /**************************************************************************************************

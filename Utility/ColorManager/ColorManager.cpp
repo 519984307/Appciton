@@ -9,14 +9,14 @@ ColorManager *ColorManager::_selfObj = NULL;
 static QColor _loadColor(const QString &param)
 {
     QString colorName;
-    superConfig.getStrValue("Display|" + param + "Color", colorName);
+    currentConfig.getStrValue("Display|" + param + "Color", colorName);
 
     int r = 0;
     int g = 0;
     int b = 0;
-    superConfig.getNumValue("Display|" + colorName + "|r", r);
-    superConfig.getNumValue("Display|" + colorName + "|g", g);
-    superConfig.getNumValue("Display|" + colorName + "|b", b);
+    currentConfig.getNumValue("Display|" + colorName + "|r", r);
+    currentConfig.getNumValue("Display|" + colorName + "|g", g);
+    currentConfig.getNumValue("Display|" + colorName + "|b", b);
 
     return QColor(r, g, b);
 }

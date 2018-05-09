@@ -257,7 +257,7 @@ void PrintECG12LeadLayout::_getWaveForm(WaveGainList &waveList)
 {
     QList<int> waveID;
     waveID.clear();  
-    superConfig.getNumValue("ECG12L|PrintSnapshotFormat", _isCabrera);
+    currentConfig.getNumValue("ECG12L|PrintSnapshotFormat", _isCabrera);
     if(_isCabrera)//Cabrera格式下的波形顺序
     {
         waveID.append((WaveformID)ecgParam.leadToWaveID((ECGLead)ECG_LEAD_AVL));

@@ -52,8 +52,8 @@ public:
 
 void SupervisorMailMenuPrivate::onConnectionSecuritySwitch(int type)
 {
-    superConfig.setNumValue("Mail|ConnectionSecurity", type);
-    superConfig.save();
+    currentConfig.setNumValue("Mail|ConnectionSecurity", type);
+    currentConfig.save();
 }
 
 /***************************************************************************************************
@@ -283,8 +283,8 @@ void SupervisorMailMenuPrivate::onEditText()
         }
         sender->setText(text);
 
-        superConfig.setStrValue(QString("Mail|%1").arg(sender->property("xmlNode").toString()), text);
-        superConfig.save();
+        currentConfig.setStrValue(QString("Mail|%1").arg(sender->property("xmlNode").toString()), text);
+        currentConfig.save();
     }
 }
 
@@ -298,7 +298,7 @@ void SupervisorMailMenuPrivate::loadRecipients()
     int count;
     bool ok;
 
-    if(!superConfig.getStrAttr("Mail|Recipients", "Count", tmpStr))
+    if(!currentConfig.getStrAttr("Mail|Recipients", "Count", tmpStr))
     {
         return;
     }
@@ -315,8 +315,8 @@ void SupervisorMailMenuPrivate::loadRecipients()
     {
         RecipientInfo recipientInfo;
         QString prefix = QString("Mail|Recipients|Recipient%1|").arg(i);
-        superConfig.getStrValue(prefix+"Address", recipientInfo.address);
-        superConfig.getStrValue(prefix+"Name", recipientInfo.name);
+        currentConfig.getStrValue(prefix+"Address", recipientInfo.address);
+        currentConfig.getStrValue(prefix+"Name", recipientInfo.name);
         recipients.append(recipientInfo);
     }
 }
@@ -328,7 +328,7 @@ void SupervisorMailMenuPrivate::saveRecipients()
 {
     bool ok;
     QString tmpStr;
-    if(!superConfig.getStrAttr("Mail|Recipients", "Count", tmpStr))
+    if(!currentConfig.getStrAttr("Mail|Recipients", "Count", tmpStr))
     {
         return;
     }
@@ -343,7 +343,7 @@ void SupervisorMailMenuPrivate::saveRecipients()
     for(int i = 0; i <count; i++)
     {
         QString prefix = QString("Mail|Recipients|Recipient%1").arg(i);
-        superConfig.removeNode(prefix);
+        currentConfig.removeNode(prefix);
     }
 
     //add net profile
@@ -351,15 +351,15 @@ void SupervisorMailMenuPrivate::saveRecipients()
     {
         QString prefix("Mail|Recipients");
         QString nodeName = QString("Recipient%1").arg(j);
-        superConfig.addNode(prefix, nodeName);
+        currentConfig.addNode(prefix, nodeName);
         prefix = prefix + "|" + nodeName;
-        superConfig.addNode(prefix, "Address", recipients.at(j).address);
-        superConfig.addNode(prefix, "Name", recipients.at(j).name);
+        currentConfig.addNode(prefix, "Address", recipients.at(j).address);
+        currentConfig.addNode(prefix, "Name", recipients.at(j).name);
     }
 
-    superConfig.setStrAttr("Mail|Recipients", "Count", QString::number(recipients.count()));
+    currentConfig.setStrAttr("Mail|Recipients", "Count", QString::number(recipients.count()));
 
-    superConfig.save();
+    currentConfig.save();
 }
 
 /***************************************************************************************************
@@ -594,23 +594,23 @@ void SupervisorMailMenu::readyShow()
     Q_D(SupervisorMailMenu);
     int securityType = 0;
     QString tmpStr;
-    superConfig.getNumValue("Mail|ConnectionSecurity", securityType);
+    currentConfig.getNumValue("Mail|ConnectionSecurity", securityType);
     d->connectionSecurityCombo->setCurrentIndex(securityType);
 
 
-    superConfig.getStrValue("Mail|SmtpServer", tmpStr);
+    currentConfig.getStrValue("Mail|SmtpServer", tmpStr);
     d->smtpServerBtn->button->setText(tmpStr);
     tmpStr.clear();
 
-    superConfig.getStrValue("Mail|SmtpServerPort", tmpStr);
+    currentConfig.getStrValue("Mail|SmtpServerPort", tmpStr);
     d->smtpServerPortBtn->button->setText(tmpStr);
     tmpStr.clear();
 
-    superConfig.getStrValue("Mail|SmtpUsername", tmpStr);
+    currentConfig.getStrValue("Mail|SmtpUsername", tmpStr);
     d->smtpUserBtn->button->setText(tmpStr);
     tmpStr.clear();
 
-    superConfig.getStrValue("Mail|Password", tmpStr);
+    currentConfig.getStrValue("Mail|Password", tmpStr);
     d->smtpPasswordBtn->button->setText(tmpStr);
 
     d->loadRecipients();

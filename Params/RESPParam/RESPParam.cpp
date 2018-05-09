@@ -337,7 +337,7 @@ void RESPParam::setRespMonitoring(int enable)
     co2Param.getWaveWindow(co2WaveName);
     co2Param.getTrendWindow(co2TrendName);
 
-    superRunConfig.setNumValue("RESP|AutoActivation", enable);
+    currentConfig.setNumValue("RESP|AutoActivation", enable);
     _respMonitoring = enable;
     if (co2Param.isConnected())
     {
@@ -440,7 +440,7 @@ RESPParam::RESPParam() : Param(PARAM_RESP)
     _provider = NULL;
     _waveWidget = NULL;
     int enable = 1;
-    superRunConfig.getNumValue("RESP|AutoActivation", enable);
+    currentConfig.getNumValue("RESP|AutoActivation", enable);
     _respMonitoring = enable;
 }
 

@@ -21,7 +21,7 @@ SupervisorLocalMenu::SupervisorLocalMenu() : SubMenu(trs("SupervisorLocalMenu"))
     startLayout();
 }
 
-/**************************************************************************************************superConfig.getNumValue("Local|CO2Unit", index);
+/**************************************************************************************************currentConfig.getNumValue("Local|CO2Unit", index);
     if (index == UNIT_PERCENT)
     {
         _co2Unit->setCurrentIndex(0);
@@ -39,15 +39,15 @@ SupervisorLocalMenu::SupervisorLocalMenu() : SubMenu(trs("SupervisorLocalMenu"))
 void SupervisorLocalMenu::readyShow()
 {
     int index = 0;
-    superConfig.getNumAttr("Local|Language", "CurrentOption", index);
+    currentConfig.getNumAttr("Local|Language", "CurrentOption", index);
     _language->setCurrentIndex(index);
 
     // NIBP.
-    superConfig.getNumValue("Local|NIBPUnit", index);
+    currentConfig.getNumValue("Local|NIBPUnit", index);
     _nibpUnit->setCurrentIndex((index == UNIT_MMHG) ? 0 : 1);
 
     // CO2单位。
-    superConfig.getNumValue("Local|CO2Unit", index);
+    currentConfig.getNumValue("Local|CO2Unit", index);
     if (index == UNIT_PERCENT)
     {
         _co2Unit->setCurrentIndex(0);
@@ -62,15 +62,15 @@ void SupervisorLocalMenu::readyShow()
     }
 
     // TEMP单位。
-    superConfig.getNumValue("Local|TEMPUnit", index);
+    currentConfig.getNumValue("Local|TEMPUnit", index);
     _tempUnit->setCurrentIndex((index == UNIT_TC) ? 0 : 1);
 
     // weight单位。
-    superConfig.getNumValue("Local|WEIGHTUnit", index);
+    currentConfig.getNumValue("Local|WEIGHTUnit", index);
     _weightUnit->setCurrentIndex((index == UNIT_KG) ? 0 : 1);
 
     // height单位。
-    superConfig.getNumValue("Local|HEIGHTUnit", index);
+    currentConfig.getNumValue("Local|HEIGHTUnit", index);
     if (index == UNIT_CM)
     {
         _heightUnit->setCurrentIndex(0);
@@ -105,7 +105,7 @@ void SupervisorLocalMenu::layoutExec()
     _language->label->setFixedSize(labelWidth, ITEM_H);
     _language->combolist->setFixedSize(btnWidth, ITEM_H);
     QVector <QString> options;
-    superConfig.getOptionList("Local|Language", options);
+    currentConfig.getOptionList("Local|Language", options);
     for (int i = 0; i < options.size(); i++)
     {
         _language->addItem(options[i]);
@@ -181,7 +181,7 @@ void SupervisorLocalMenu::layoutExec()
  *************************************************************************************************/
 void SupervisorLocalMenu::_languageChangeSlot(int index)
 {
-    superConfig.setNumAttr("Local|Language", "CurrentOption", index);
+    currentConfig.setNumAttr("Local|Language", "CurrentOption", index);
 
 //    QStringList codeMarkerTypeList;
 
@@ -189,7 +189,7 @@ void SupervisorLocalMenu::_languageChangeSlot(int index)
 //    QString indexStr = "CodeMarker|Marker";
 //    indexStr += QString::number(index, 10);
 
-//    superConfig.getStrValue(indexStr, codemarkerStr);
+//    currentConfig.getStrValue(indexStr, codemarkerStr);
 //    codeMarkerTypeList = codemarkerStr.split(',', QString::KeepEmptyParts);
 //    codeMarkerTypeList.append("");
 
@@ -208,7 +208,7 @@ void SupervisorLocalMenu::_languageChangeSlot(int index)
 
 //    QString markerStr = "CodeMarker|SelectMarker|Language";
 //    markerStr += QString::number(index, 10);
-//    superConfig.setStrValue(markerStr, strValue);
+//    currentConfig.setStrValue(markerStr, strValue);
 }
 
 /**************************************************************************************************
@@ -216,7 +216,7 @@ void SupervisorLocalMenu::_languageChangeSlot(int index)
  *************************************************************************************************/
 void SupervisorLocalMenu::_nibpUnitChangeSlot(int index)
 {
-    superConfig.setNumValue("Local|NIBPUnit", (int)((index == 0) ? UNIT_MMHG : UNIT_KPA));
+    currentConfig.setNumValue("Local|NIBPUnit", (int)((index == 0) ? UNIT_MMHG : UNIT_KPA));
 }
 
 /**************************************************************************************************
@@ -226,15 +226,15 @@ void SupervisorLocalMenu::_co2UnitSlot(int index)
 {
     if (index == 0)
     {
-        superConfig.setNumValue("Local|CO2Unit", (int)UNIT_PERCENT);
+        currentConfig.setNumValue("Local|CO2Unit", (int)UNIT_PERCENT);
     }
     else if (index == 1)
     {
-        superConfig.setNumValue("Local|CO2Unit", (int)UNIT_MMHG);
+        currentConfig.setNumValue("Local|CO2Unit", (int)UNIT_MMHG);
     }
     else if (index == 2)
     {
-        superConfig.setNumValue("Local|CO2Unit", (int)UNIT_KPA);
+        currentConfig.setNumValue("Local|CO2Unit", (int)UNIT_KPA);
     }
 }
 
@@ -243,7 +243,7 @@ void SupervisorLocalMenu::_co2UnitSlot(int index)
  *************************************************************************************************/
 void SupervisorLocalMenu::_tempUnitChangeSlot(int index)
 {
-    superConfig.setNumValue("Local|TEMPUnit", (int)((index == 0) ? UNIT_TC : UNIT_TF));
+    currentConfig.setNumValue("Local|TEMPUnit", (int)((index == 0) ? UNIT_TC : UNIT_TF));
 }
 
 /**************************************************************************************************
@@ -252,7 +252,7 @@ void SupervisorLocalMenu::_tempUnitChangeSlot(int index)
 void SupervisorLocalMenu::_weightUnitChangeSlot(int index)
 {
     patientManager.setWeight(0);
-    superConfig.setNumValue("Local|WEIGHTUnit", (int)((index == 0) ? UNIT_KG : UNIT_LB));
+    currentConfig.setNumValue("Local|WEIGHTUnit", (int)((index == 0) ? UNIT_KG : UNIT_LB));
 }
 
 /**************************************************************************************************
@@ -263,15 +263,15 @@ void SupervisorLocalMenu::_heightUnitChangeSlot(int index)
     patientManager.setHeight(0);
     if (index == 0)
     {
-        superConfig.setNumValue("Local|HEIGHTUnit", (int)UNIT_CM);
+        currentConfig.setNumValue("Local|HEIGHTUnit", (int)UNIT_CM);
     }
     else if (index == 1)
     {
-        superConfig.setNumValue("Local|HEIGHTUnit", (int)UNIT_MM);
+        currentConfig.setNumValue("Local|HEIGHTUnit", (int)UNIT_MM);
     }
     else if (index == 2)
     {
-        superConfig.setNumValue("Local|HEIGHTUnit", (int)UNIT_INCH);
+        currentConfig.setNumValue("Local|HEIGHTUnit", (int)UNIT_INCH);
     }
 }
 

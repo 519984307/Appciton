@@ -31,7 +31,7 @@ void PatientManager::setType(PatientType type)
     PatientType oldType = _patientInfo.type;
 
     _patientInfo.type = type;
-    superRunConfig.setNumValue("General|PatientType", (int)type);
+    systemConfig.setNumValue("General|PatientType", (int)type);
 
     if (_patientInfo.type == oldType)
     {
@@ -44,7 +44,7 @@ void PatientManager::setType(PatientType type)
     //报警限修改
     QString str = "AlarmSource|";
     str += PatientSymbol::convert(_patientInfo.type);
-    superRunConfig.setNodeValue(str, superConfig);
+    currentConfig.setNodeValue(str, currentConfig);
 
     emit signalPatientType(_patientInfo.type);
 
@@ -75,7 +75,7 @@ QString PatientManager::getTypeStr(void)
 void PatientManager::setPacermaker(PatientPacer type)
 {
     _patientInfo.pacer = type;
-    superRunConfig.setNumValue("General|PatientPacer", (int)type);
+    currentConfig.setNumValue("General|PatientPacer", (int)type);
 //    ecgParam.setPacermaker(type);
 }
 
@@ -137,7 +137,7 @@ void PatientManager::setWeight(int weight)
     _patientInfo.weight = weight;
 //    QString prefix = "Patient|Weight|";
 //    prefix += Unit::localeSymbol(getWeightUnit());
-//    superRunConfig.setStrValue(prefix + "|Value", weight);
+//    currentConfig.setStrValue(prefix + "|Value", weight);
 
     systemConfig.setNumValue("PrimaryCfg|PatientInfo|Weight", weight);
 }
@@ -152,7 +152,7 @@ void PatientManager::setHeight(short height)
     _patientInfo.height = height;
 //    QString prefix = "Patient|Height|";
 //    prefix += Unit::localeSymbol(getHeightUnit());
-//    superRunConfig.setStrValue(prefix + "|Value", height);
+//    currentConfig.setStrValue(prefix + "|Value", height);
 
     systemConfig.setNumValue("PrimaryCfg|PatientInfo|Height", height);
 }
@@ -225,14 +225,14 @@ const PatientInfo &PatientManager::getPatientInfo(void)
 UnitType PatientManager::getWeightUnit()
 {
     int unit = UNIT_KG;
-    superRunConfig.getNumValue("Local|WEIGHTUnit", unit);
+    currentConfig.getNumValue("Local|WEIGHTUnit", unit);
     return (UnitType)unit;
 }
 
 UnitType PatientManager::getHeightUnit()
 {
     int unit = UNIT_CM;
-    superRunConfig.getNumValue("Local|HEIGHTUnit", unit);
+    currentConfig.getNumValue("Local|HEIGHTUnit", unit);
     return (UnitType)unit;
 }
 
@@ -244,10 +244,10 @@ void PatientManager::_loadPatientInfo(PatientInfo &info)
     int numValue = 0;
     QString strValue;
 
-    superRunConfig.getNumValue("General|PatientType", numValue);
+    systemConfig.getNumValue("General|PatientType", numValue);
     info.type = (PatientType)numValue;
 
-    superRunConfig.getNumValue("General|PatientPacer", numValue);
+    systemConfig.getNumValue("General|PatientPacer", numValue);
     info.pacer = (PatientPacer)numValue;
 
     systemConfig.getNumValue("PrimaryCfg|PatientInfo|Sex", numValue);
@@ -261,13 +261,13 @@ void PatientManager::_loadPatientInfo(PatientInfo &info)
 
 //    QString prefix = "Patient|Weight|";
 //    prefix += Unit::localeSymbol(getWeightUnit());
-//    superRunConfig.getStrValue(prefix + "|Value", strValue);
+//    currentConfig.getStrValue(prefix + "|Value", strValue);
     systemConfig.getNumValue("PrimaryCfg|PatientInfo|Weight", numValue);
     info.weight = numValue;
 
 //    prefix = "Patient|Height|";
 //    prefix += Unit::localeSymbol(getHeightUnit());
-//    superRunConfig.getStrValue(prefix + "|Value", strValue);
+//    currentConfig.getStrValue(prefix + "|Value", strValue);
     systemConfig.getNumValue("PrimaryCfg|PatientInfo|Height", numValue);
     info.height = numValue;
 

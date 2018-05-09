@@ -136,7 +136,7 @@ void OxyCRGWidget::_clearLayout()
  *************************************************************************************************/
 void OxyCRGWidget::_setInterval(OxyCRGInterval index)
 {
-    superRunConfig.setNumValue("RESP|Interval", (int)index);
+    currentConfig.setNumValue("RESP|Interval", (int)index);
 
     _interval->setText(OxyCRGSymbol::convert(OxyCRGInterval(index)));
 }
@@ -147,7 +147,7 @@ void OxyCRGWidget::_setInterval(OxyCRGInterval index)
 OxyCRGInterval OxyCRGWidget::_getInterval()
 {
     int index = OxyCRG_Interval_1;
-    superRunConfig.getNumValue("RESP|Interval", index);
+    currentConfig.getNumValue("RESP|Interval", index);
 
     return (OxyCRGInterval)index;
 }
@@ -157,7 +157,7 @@ OxyCRGInterval OxyCRGWidget::_getInterval()
  *************************************************************************************************/
 void OxyCRGWidget::_setTrend(OxyCRGTrend index)
 {
-    superRunConfig.setNumValue("RESP|Trend", (int)index);
+    currentConfig.setNumValue("RESP|Trend", (int)index);
 
     _changeTrend->setText(OxyCRGSymbol::convert(OxyCRGTrend(index)));
 
@@ -204,7 +204,7 @@ void OxyCRGWidget::_setTrend(OxyCRGTrend index)
 OxyCRGTrend OxyCRGWidget::_getTrend()
 {
     int index = OxyCRG_Trend_RESP;
-    superRunConfig.getNumValue("RESP|Trend", index);
+    currentConfig.getNumValue("RESP|Trend", index);
 
     return (OxyCRGTrend)index;
 }

@@ -11,23 +11,23 @@ static void _initSystem(void)
 
     systemConfig.construction();
 
-    superConfig.construction();
+    //superConfig.construction();
 
-    superRunConfig.construction();
+   // superRunConfig.construction();
 
     // 新会话，需要恢复主配置文件
     if (timeManager.getPowerOnSession() == POWER_ON_SESSION_NEW)
     {
-        superRunConfig.load(SUPERVISOR_CFG_FILE);
+        currentConfig.load(curConfigName);
 
-        Config systemDefCfg(ORGINAL_SYSTEM_CFG_FILE);
+        Config systemDefCfg(curConfigName);
         systemConfig.setNodeValue("PrimaryCfg", systemDefCfg);
 
         ErrorLogItem *item = new ErrorLogItem();
         item->setName("Load default config");
-        QString str = SUPERVISOR_CFG_FILE;
+        QString str = curConfigName;
         str += "\r\n";
-        str += ORGINAL_SYSTEM_CFG_FILE;
+        str += curConfigName;
         str += "\r\n";
         item->setLog(str);
         item->setSubSystem(ErrorLogItem::SUB_SYS_MAIN_PROCESSOR);
@@ -641,7 +641,7 @@ void deleteObjects(void)
     deleteTimeDate();
     deleteMachineConfig();
     deleteSystemConfig();
-    deleteSuperConfig();
+    //deleteSuperConfig();
     deleteSuperRunConfig();
     deleteSystemTick();
     deleteSystemManager();

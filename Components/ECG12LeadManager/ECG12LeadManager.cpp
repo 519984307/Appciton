@@ -148,7 +148,7 @@ void ECG12LeadManager::acquireDataTransfer(int type)
         }
 
         int fileFormat = ECG_TRANSFER_FILE_FORMAT_PDF;
-        superConfig.getNumValue("ECG12L|TransmissionFormat", fileFormat);
+        currentConfig.getNumValue("ECG12L|TransmissionFormat", fileFormat);
         ECG12LeadFileBuilderBase *builder = NULL;
         if(fileFormat == ECG_TRANSFER_FILE_FORMAT_PDF)
         {
@@ -312,7 +312,7 @@ void ECG12LeadManager::snapShotTransfer(int type)
 #endif
         QString incidentDir = dataStorageDirManager.getRescueDataDir(index);
         int fileFormat = ECG_TRANSFER_FILE_FORMAT_PDF;
-        superConfig.getNumValue("ECG12L|TransmissionFormat", fileFormat);
+        currentConfig.getNumValue("ECG12L|TransmissionFormat", fileFormat);
 
         ECG12LeadFileBuilderBase *builder = NULL;
         if(fileFormat == ECG_TRANSFER_FILE_FORMAT_PDF)
@@ -498,7 +498,7 @@ void ECG12LeadManager::acquire12LDataProcess()
 
     //读取配置文件，是否自动打印exportDataWidget
     bool tempValue = FALSE;
-    superConfig.getNumValue("ECG12L|AutoPrinting12LReport", tempValue);
+    currentConfig.getNumValue("ECG12L|AutoPrinting12LReport", tempValue);
     if(tempValue)
     {
         ecg12LDataPrint.setPrintRealTime(true);
@@ -508,7 +508,7 @@ void ECG12LeadManager::acquire12LDataProcess()
     if (systemManager.isSupport(CONFIG_WIFI))
     {
         //读取配置文件，是否自动传送
-        superConfig.getNumValue("ECG12L|AutoTransmission", tempValue);
+        currentConfig.getNumValue("ECG12L|AutoTransmission", tempValue);
         if(tempValue)
         {
             setIsTriggerTransfer(true);
@@ -547,7 +547,7 @@ void ECG12LeadManager::startToSendEmail()
     }
 
     int fileFormat = ECG_TRANSFER_FILE_FORMAT_PDF;
-    superConfig.getNumValue("ECG12L|TransmissionFormat", fileFormat);
+    currentConfig.getNumValue("ECG12L|TransmissionFormat", fileFormat);
 
     ECG12LeadFileBuilderBase *builder = NULL;
 

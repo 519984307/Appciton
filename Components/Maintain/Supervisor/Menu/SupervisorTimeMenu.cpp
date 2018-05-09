@@ -55,13 +55,13 @@ void SupervisorTimeMenu::readyShow()
         _second->setValue(sec);
     }
 
-    superConfig.getNumValue("DateTime|DateFormat", value);
+    currentConfig.getNumValue("DateTime|DateFormat", value);
     _dateFormat->setCurrentIndex(value);
 
-    superConfig.getNumValue("DateTime|TimeFormat", value);
+    currentConfig.getNumValue("DateTime|TimeFormat", value);
     _timeFormat->setCurrentIndex(value);
 
-    superConfig.getNumValue("DateTime|DisplaySecond", value);
+    currentConfig.getNumValue("DateTime|DisplaySecond", value);
     _displaySec->setCurrentIndex(value);
 }
 
@@ -257,7 +257,7 @@ void SupervisorTimeMenu::_timeChangeSlot(QString /*valueStr*/)
  *************************************************************************************************/
 void SupervisorTimeMenu::_dateFormatSlot(int index)
 {
-    superConfig.setNumValue("DateTime|DateFormat", index);
+    currentConfig.setNumValue("DateTime|DateFormat", index);
 }
 
 /**************************************************************************************************
@@ -265,7 +265,7 @@ void SupervisorTimeMenu::_dateFormatSlot(int index)
  *************************************************************************************************/
 void SupervisorTimeMenu::_timeFormatSlot(int index)
 {
-    superConfig.setNumValue("DateTime|TimeFormat", index);
+    currentConfig.setNumValue("DateTime|TimeFormat", index);
 }
 
 /**************************************************************************************************
@@ -273,7 +273,7 @@ void SupervisorTimeMenu::_timeFormatSlot(int index)
  *************************************************************************************************/
 void SupervisorTimeMenu::_displaySecSlot(int index)
 {
-    superConfig.setNumValue("DateTime|DisplaySecond", index);
+    currentConfig.setNumValue("DateTime|DisplaySecond", index);
 }
 
 /**************************************************************************************************

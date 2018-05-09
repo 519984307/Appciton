@@ -24,10 +24,10 @@ bool AlarmConfig::isLimitAlarmEnable(SubParamID subParamId)
         QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
         prefix += paramInfo.getSubParamName(subParamId, true);
         int v = 0;
-        superRunConfig.getNumAttr(prefix, "Enable", v);
+        currentConfig.getNumAttr(prefix, "Enable", v);
         ctrl.enable = v;
         v = 0;
-        superRunConfig.getNumAttr(prefix, "Prio", v);
+        currentConfig.getNumAttr(prefix, "Prio", v);
         ctrl.priority = (AlarmPriority)v;
         iter = _controlCache.insert(subParamId, ctrl);
     }
@@ -50,7 +50,7 @@ void AlarmConfig::setLimitAlarmEnable(SubParamID subParamId, bool enable)
 
     //save to config file
     int val = enable;
-    superRunConfig.setNumAttr(prefix, "Enable", val);
+    currentConfig.setNumAttr(prefix, "Enable", val);
 }
 
 AlarmPriority AlarmConfig::getLimitAlarmPriority(SubParamID subParamId)
@@ -64,10 +64,10 @@ AlarmPriority AlarmConfig::getLimitAlarmPriority(SubParamID subParamId)
         QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
         prefix += paramInfo.getSubParamName(subParamId, true);
         int v = 0;
-        superRunConfig.getNumAttr(prefix, "Enable", v);
+        currentConfig.getNumAttr(prefix, "Enable", v);
         ctrl.enable = v;
         v = 0;
-        superRunConfig.getNumAttr(prefix, "Prio", v);
+        currentConfig.getNumAttr(prefix, "Prio", v);
         ctrl.priority = (AlarmPriority)v;
         iter = _controlCache.insert(subParamId, ctrl);
     }
@@ -90,7 +90,7 @@ void AlarmConfig::setLimitAlarmPriority(SubParamID subParamId, AlarmPriority pri
 
     //save to config file
     int val = prio;
-    superRunConfig.setNumAttr(prefix, "Prio", val);
+    currentConfig.setNumAttr(prefix, "Prio", val);
 }
 
 LimitAlarmConfig AlarmConfig::getLimitAlarmConfig(SubParamID subParamId, UnitType unit)
@@ -109,36 +109,36 @@ LimitAlarmConfig AlarmConfig::getLimitAlarmConfig(SubParamID subParamId, UnitTyp
         prefix += "|";
         int v = 0;
         QString highPrefix = prefix + "High";
-        superRunConfig.getNumValue(highPrefix, v);
+        currentConfig.getNumValue(highPrefix, v);
         config.highLimit = v;
 
         v = 0;
-        superRunConfig.getNumAttr(highPrefix, "Min", v);
+        currentConfig.getNumAttr(highPrefix, "Min", v);
         config.minHighLimit = v;
 
         v = 0;
-        superRunConfig.getNumAttr(highPrefix, "Max", v);
+        currentConfig.getNumAttr(highPrefix, "Max", v);
         config.maxHighLimit = v;
 
         v = 0;
         QString lowPrefix = prefix + "Low";
-        superRunConfig.getNumValue(lowPrefix, v);
+        currentConfig.getNumValue(lowPrefix, v);
         config.lowLimit = v;
 
         v = 0;
-        superRunConfig.getNumAttr(lowPrefix, "Min", v);
+        currentConfig.getNumAttr(lowPrefix, "Min", v);
         config.minLowLimit = v;
 
         v = 0;
-        superRunConfig.getNumAttr(lowPrefix, "Max", v);
+        currentConfig.getNumAttr(lowPrefix, "Max", v);
         config.maxLowLimit = v;
 
         v = 1;
-        superRunConfig.getNumValue(prefix + "Scale", v);
+        currentConfig.getNumValue(prefix + "Scale", v);
         config.scale = v;
 
         v = 0;
-        superRunConfig.getNumValue(prefix + "Step", v);
+        currentConfig.getNumValue(prefix + "Step", v);
         config.step = v;
 
         iter = _configCache.insert(key, config);
@@ -166,13 +166,13 @@ void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, cons
     if(curConfig.highLimit != config.highLimit)
     {
         val = config.highLimit;
-        superRunConfig.setNumValue(prefix + "|High", val);
+        currentConfig.setNumValue(prefix + "|High", val);
     }
 
     if(curConfig.lowLimit != config.lowLimit)
     {
         val = config.lowLimit;
-        superRunConfig.setNumValue(prefix + "|Low", val);
+        currentConfig.setNumValue(prefix + "|Low", val);
     }
 
     //TODO: update limit of other unit??

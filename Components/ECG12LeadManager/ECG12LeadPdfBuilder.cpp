@@ -36,11 +36,11 @@ ECG12LeadPdfBuilder::ECG12LeadPdfBuilder(const QString &incidentDir, const QVect
 
 {
     _pixelsPerMM = DPI / 25.4;
-    superConfig.getNumValue("ECG12L|PDFReportFormat", _pdfFormat);
+    currentConfig.getNumValue("ECG12L|PDFReportFormat", _pdfFormat);
 
     if(_pdfFormat == PRINT_12LEAD_PDF_2X6_CABRELA || _pdfFormat == PRINT_12LEAD_PDF_2X6_STAND)
     {
-        superConfig.getNumValue("ECG12L|TimeIntervalFor2x6Report", _2x6PdfTimeFormat);
+        currentConfig.getNumValue("ECG12L|TimeIntervalFor2x6Report", _2x6PdfTimeFormat);
     }
 
 }
@@ -54,10 +54,10 @@ ECG12LeadPdfBuilder::ECG12LeadPdfBuilder(ECG12LDataStorage::ECG12LeadData *data)
     ::memcpy(_data, data, sizeof(ECG12LDataStorage::ECG12LeadData));
 
     _pixelsPerMM =  DPI / 25.4;
-    superConfig.getNumValue("ECG12L|PDFReportFormat", _pdfFormat);
+    currentConfig.getNumValue("ECG12L|PDFReportFormat", _pdfFormat);
     if(_pdfFormat == PRINT_12LEAD_PDF_2X6_CABRELA || _pdfFormat == PRINT_12LEAD_PDF_2X6_STAND)
     {
-        superConfig.getNumValue("ECG12L|TimeIntervalFor2x6Report", _2x6PdfTimeFormat);
+        currentConfig.getNumValue("ECG12L|TimeIntervalFor2x6Report", _2x6PdfTimeFormat);
     }
 }
 
@@ -410,7 +410,7 @@ void ECG12LeadPdfBuilder::_drawWaveTimeLabel(PdfWriterBase *writer, qreal waveSe
     if(_pdfFormat == PRINT_12LEAD_PDF_2X6_CABRELA || _pdfFormat == PRINT_12LEAD_PDF_2X6_STAND)
     {
         QString time;
-        superConfig.getNumValue("ECG12L|TimeIntervalFor2x6Report", index);
+        currentConfig.getNumValue("ECG12L|TimeIntervalFor2x6Report", index);
         if(index == 0 )
         {
             time = "0 - 5s";

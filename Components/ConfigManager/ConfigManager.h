@@ -98,3 +98,7 @@ private:
 };
 
 #define configManager (ConfigManager::getInstance())
+#define currentConfig (configManager.getCurConfig())
+//.getFileName();
+
+

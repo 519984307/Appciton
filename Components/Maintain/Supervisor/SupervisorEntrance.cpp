@@ -21,7 +21,7 @@ void SupervisorEntrance::layoutExec(void)
     setMenuSize(submenuW, submenuH);
 
     QString _normalPassword;
-    superConfig.getStrValue("General|Password", _normalPassword);
+    currentConfig.getStrValue("General|Password", _normalPassword);
 
     _passwordMenuManage = new PasswordMenuManage(trs("PassWord"));
     _passwordMenuManage->setPassword(_normalPassword);
@@ -39,7 +39,7 @@ void SupervisorEntrance::layoutExec(void)
 void SupervisorEntrance::readyShow(void)
 {
     QString _normalPassword;
-    superConfig.getStrValue("General|Password", _normalPassword);
+    currentConfig.getStrValue("General|Password", _normalPassword);
     _passwordMenuManage->setPassword(_normalPassword);
     _passwordMenuManage->clearPassword();
 }

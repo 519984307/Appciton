@@ -168,7 +168,7 @@ void PasswordMenuManage::clearPassword(void)
 **************************************************************************************************/
 void PasswordMenuManage::_initData(void)
 {
-    superConfig.getStrValue("General|SuperPassword", _superPassword);
+    currentConfig.getStrValue("General|SuperPassword", _superPassword);
 }
 
 /**************************************************************************************************

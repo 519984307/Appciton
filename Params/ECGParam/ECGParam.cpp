@@ -1219,7 +1219,7 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
     }
 
     int defaultLead = ECG_LEAD_II;
-    superConfig.getNumValue("ECG|DefaultECGLeadInMonitorMode", defaultLead);
+    currentConfig.getNumValue("ECG|DefaultECGLeadInMonitorMode", defaultLead);
 
     // 切换到正确的计算导联。
     ECGLead calcLead = getCalcLead();
@@ -1332,7 +1332,7 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
         //进入12L模式前，如果是在诊断时间范围內则先关闭诊断功能
         band = _12LeadFreqBand;
 
-        superRunConfig.getNumValue("ECG12L|NotchFilter", filter);
+        currentConfig.getNumValue("ECG12L|NotchFilter", filter);
     }
 
     if (NULL != _provider)
@@ -1528,7 +1528,7 @@ void ECGParam::setCalcLead(ECGLead lead)
     }
 
     // 将新的计算导联保存道配置文件。
-    superRunConfig.setNumValue("ECG|DefaultECGLeadInMonitorMode", (int)lead);
+    currentConfig.setNumValue("ECG|DefaultECGLeadInMonitorMode", (int)lead);
     _calcLead = lead;
     if (NULL != _provider)
     {
@@ -1662,7 +1662,7 @@ void ECGParam::setPatientType(unsigned char type)
 unsigned char ECGParam::getPatientType(void)
 {
     int type = 3;
-    superRunConfig.getNumValue("General|DefaultPatientType", type);
+    currentConfig.getNumValue("General|DefaultPatientType", type);
     return (unsigned char)type;
 }
 /**************************************************************************************************
@@ -1672,20 +1672,20 @@ void ECGParam::setBandwidth(int band)
 {
     if (_curLeadMode != ECG_LEAD_MODE_12)
     {
-        superRunConfig.setNumValue("ECG|ChestLeadsECGBandwidth", (int)band);
+        currentConfig.setNumValue("ECG|ChestLeadsECGBandwidth", (int)band);
         _chestFreqBand = (ECGBandwidth) band;
     }
     else
     {
         if (ecgParam.getDisplayMode() == ECG_DISPLAY_12_LEAD_FULL)
         {
-            superRunConfig.setNumValue("ECG12L|ECG12LeadBandwidth", (int)band);
+            currentConfig.setNumValue("ECG12L|ECG12LeadBandwidth", (int)band);
             band += ECG_BANDWIDTH_0525_40HZ;
             _12LeadFreqBand = (ECGBandwidth) band;
         }
         else
         {
-            superRunConfig.setNumValue("ECG|ChestLeadsECGBandwidth", (int)band);
+            currentConfig.setNumValue("ECG|ChestLeadsECGBandwidth", (int)band);
             _chestFreqBand = (ECGBandwidth) band;
         }
     }
@@ -1721,7 +1721,7 @@ void ECGParam::setDiagBandwidth()
         _provider->setBandwidth(ECG_BANDWIDTH_0525_40HZ);
 
         int filter = 0;
-        superRunConfig.getNumValue("ECG12L|NotchFilter", filter);
+        currentConfig.getNumValue("ECG12L|NotchFilter", filter);
         _provider->setNotchFilter((ECGNotchFilter)filter);
 
         //重新设置波形速率
@@ -1827,7 +1827,7 @@ ECGBandwidth ECGParam::getBandwidth(void)
 ECGBandwidth ECGParam::getMFCBandwidth(void)
 {
     int band = 0;
-    superRunConfig.getNumValue("ECG|PadsECGBandwidth", band);
+    currentConfig.getNumValue("ECG|PadsECGBandwidth", band);
 
     return (ECGBandwidth)band;
 }
@@ -2148,7 +2148,7 @@ int ECGParam::getMaxGain(void)
  *************************************************************************************************/
 void ECGParam::setQRSToneVolume(int vol)
 {
-    superRunConfig.setNumValue("ECG|QRSVolume", (int)vol);
+    currentConfig.setNumValue("ECG|QRSVolume", (int)vol);
     soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, (SoundManager::VolumeLevel) vol);
 }
 
@@ -2158,7 +2158,7 @@ void ECGParam::setQRSToneVolume(int vol)
 int ECGParam::getQRSToneVolume(void)
 {
     int vol = SoundManager::VOLUME_LEV_2;
-    superRunConfig.getNumValue("ECG|QRSVolume", vol);
+    currentConfig.getNumValue("ECG|QRSVolume", vol);
     return vol;
 }
 
@@ -2175,7 +2175,7 @@ void ECGParam::setNotchFilter(int filter)
     {
         if (ecgParam.getDisplayMode() == ECG_DISPLAY_12_LEAD_FULL)
         {
-            superRunConfig.setNumValue("ECG12L|NotchFilter", filter);
+            currentConfig.setNumValue("ECG12L|NotchFilter", filter);
         }
         else
         {
@@ -2198,7 +2198,7 @@ ECGNotchFilter ECGParam::getNotchFilter()
 
     if (ecgParam.getDisplayMode() == ECG_DISPLAY_12_LEAD_FULL)
     {
-        superRunConfig.getNumValue("ECG12L|NotchFilter", filter);
+        currentConfig.getNumValue("ECG12L|NotchFilter", filter);
     }
 
     return (ECGNotchFilter)filter;
@@ -2218,7 +2218,7 @@ ECGNotchFilter ECGParam::getCalcLeadNotchFilter()
 ECGLeadNameConvention ECGParam::getLeadConvention(void) const
 {
     int leadConvention = 0;
-    superConfig.getNumValue("ECG|ECGLeadConvention", leadConvention);
+    currentConfig.getNumValue("ECG|ECGLeadConvention", leadConvention);
     if (leadConvention >= ECG_CONVENTION_NR)
     {
         leadConvention = 0;
@@ -2392,7 +2392,7 @@ ECGParam::ECGParam() : Param(PARAM_ECG)
     }
 
     int lead = ECG_LEAD_II;
-    superRunConfig.getNumValue("ECG|DefaultECGLeadInMonitorMode", lead);
+    currentConfig.getNumValue("ECG|DefaultECGLeadInMonitorMode", lead);
     _calcLead = (ECGLead)lead;
 
     int mode = ECG_LEAD_MODE_5;
@@ -2408,20 +2408,20 @@ ECGParam::ECGParam() : Param(PARAM_ECG)
     _12LeadPacerMarker = (ECGPaceMode) mode;
 
     mode = ECG_BANDWIDTH_067_20HZ;
-    superConfig.getNumValue("ECG|ChestLeadsECGBandwidth", mode);
+    currentConfig.getNumValue("ECG|ChestLeadsECGBandwidth", mode);
     _chestFreqBand = (ECGBandwidth) mode;
 
     mode = ECG_FILTERMODE_MONITOR;
-    superConfig.getNumValue("PrimaryCfg|ECG|FilterMode", mode);
+    currentConfig.getNumValue("PrimaryCfg|ECG|FilterMode", mode);
     _filterMode = (ECGFilterMode) mode;
 
     mode = 0;
-    superConfig.getNumValue("ECG12L|ECG12LeadBandwidth", mode);
+    currentConfig.getNumValue("ECG12L|ECG12LeadBandwidth", mode);
     mode += ECG_BANDWIDTH_0525_40HZ;
     _12LeadFreqBand = (ECGBandwidth) mode;
 
     mode = DISPLAY_12LEAD_STAND;
-    superConfig.getNumValue("ECG12L|DisplayFormat", mode);
+    currentConfig.getNumValue("ECG12L|DisplayFormat", mode);
     _12LeadDispFormat = (Display12LeadFormat)mode;
 
     for (int i = 0; i < ECG_LEAD_NR; ++i)

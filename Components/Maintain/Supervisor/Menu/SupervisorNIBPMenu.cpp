@@ -23,7 +23,7 @@ SupervisorNIBPMenu::SupervisorNIBPMenu() : SubMenu(trs("NIBPMenu"))
 void SupervisorNIBPMenu::_loadOptions()
 {
     int unit = UNIT_MMHG;
-    superConfig.getNumValue("Local|NIBPUnit", unit);
+    currentConfig.getNumValue("Local|NIBPUnit", unit);
 
     _adultInitialCuff->clear();
     for (unsigned i = 0; i < NIBP_ADULT_INITIAL_CUFF_NR; ++i)
@@ -71,25 +71,25 @@ void SupervisorNIBPMenu::readyShow()
 
     int index = 0;
 
-    superConfig.getNumValue("NIBP|MeasureMode", index);
+    currentConfig.getNumValue("NIBP|MeasureMode", index);
     _measureMode->setCurrentIndex(index);
 
-    superConfig.getNumValue("NIBP|AutoInterval", index);
+    currentConfig.getNumValue("NIBP|AutoInterval", index);
     _autoInterval->setCurrentIndex(index);
 
-    superConfig.getNumValue("NIBP|AutomaticRetry", index);
+    currentConfig.getNumValue("NIBP|AutomaticRetry", index);
     _startOnMeasureFail->setCurrentIndex(index);
 
-    superConfig.getNumValue("NIBP|StatFunction", index);
+    currentConfig.getNumValue("NIBP|StatFunction", index);
     _startOnSTATEnabled->setCurrentIndex(index);
 
-    superConfig.getNumValue("NIBP|AdultInitialCuffInflation", index);
+    currentConfig.getNumValue("NIBP|AdultInitialCuffInflation", index);
     _adultInitialCuff->setCurrentIndex(index);
 
-    superConfig.getNumValue("NIBP|PedInitialCuffInflation", index);
+    currentConfig.getNumValue("NIBP|PedInitialCuffInflation", index);
     _prediatricInitialCuff->setCurrentIndex(index);
 
-    superConfig.getNumValue("NIBP|NeoInitialCuffInflation", index);
+    currentConfig.getNumValue("NIBP|NeoInitialCuffInflation", index);
     _neonatalInitialCuff->setCurrentIndex(index);
 }
 
@@ -185,7 +185,7 @@ void SupervisorNIBPMenu::layoutExec()
  *************************************************************************************************/
 void SupervisorNIBPMenu::_measureModeChangeSlot(int index)
 {
-    superConfig.setNumValue("NIBP|MeasureMode", index);
+    currentConfig.setNumValue("NIBP|MeasureMode", index);
 }
 
 /**************************************************************************************************
@@ -193,7 +193,7 @@ void SupervisorNIBPMenu::_measureModeChangeSlot(int index)
  *************************************************************************************************/
 void SupervisorNIBPMenu::_autoIntervalSlot(int index)
 {
-    superConfig.setNumValue("NIBP|AutoInterval", index);
+    currentConfig.setNumValue("NIBP|AutoInterval", index);
 }
 
 /**************************************************************************************************
@@ -201,7 +201,7 @@ void SupervisorNIBPMenu::_autoIntervalSlot(int index)
  *************************************************************************************************/
 void SupervisorNIBPMenu::_startOnMeasureFailChangeSlot(int index)
 {
-    superConfig.setNumValue("NIBP|AutomaticRetry", index);
+    currentConfig.setNumValue("NIBP|AutomaticRetry", index);
 }
 
 /**************************************************************************************************
@@ -209,7 +209,7 @@ void SupervisorNIBPMenu::_startOnMeasureFailChangeSlot(int index)
  *************************************************************************************************/
 void SupervisorNIBPMenu::_startOnSTATEnabledChangeSlot(int index)
 {
-    superConfig.setNumValue("NIBP|StatFunction", index);
+    currentConfig.setNumValue("NIBP|StatFunction", index);
 }
 
 /**************************************************************************************************
@@ -217,7 +217,7 @@ void SupervisorNIBPMenu::_startOnSTATEnabledChangeSlot(int index)
  *************************************************************************************************/
 void SupervisorNIBPMenu::_adultInitialCuffChangeSlot(int index)
 {
-    superConfig.setNumValue("NIBP|AdultInitialCuffInflation", index);
+    currentConfig.setNumValue("NIBP|AdultInitialCuffInflation", index);
 }
 
 /**************************************************************************************************
@@ -225,7 +225,7 @@ void SupervisorNIBPMenu::_adultInitialCuffChangeSlot(int index)
  *************************************************************************************************/
 void SupervisorNIBPMenu::_neonatalInitialCuffChangeSlot(int index)
 {
-    superConfig.setNumValue("NIBP|NeoInitialCuffInflation", index);
+    currentConfig.setNumValue("NIBP|NeoInitialCuffInflation", index);
 }
 
 /**************************************************************************************************
@@ -233,7 +233,7 @@ void SupervisorNIBPMenu::_neonatalInitialCuffChangeSlot(int index)
  *************************************************************************************************/
 void SupervisorNIBPMenu::_prediatricInitialCuffChangeSlot(int index)
 {
-    superConfig.setNumValue("NIBP|PedInitialCuffInflation", index);
+    currentConfig.setNumValue("NIBP|PedInitialCuffInflation", index);
 }
 
 /**************************************************************************************************

@@ -30,24 +30,24 @@ SupervisorGeneralSetMenu::SupervisorGeneralSetMenu() : SubMenu(trs("SupervisorGe
 void SupervisorGeneralSetMenu::readyShow()
 {
     QString tmpStr;
-    superConfig.getStrValue("General|DeviceIdentifier", tmpStr);
+    currentConfig.getStrValue("General|DeviceIdentifier", tmpStr);
     _deviceID->setValue(tmpStr);
 
     tmpStr.clear();
-    superConfig.getStrValue("General|Password", tmpStr);
+    currentConfig.getStrValue("General|Password", tmpStr);
     _password->setValue(tmpStr);
 
     int value = 0;
-    superConfig.getNumValue("General|DefaultPatientType", value);
+    currentConfig.getNumValue("General|DefaultPatientType", value);
     if (value < PATIENT_TYPE_NR)
     {
         _patType->setCurrentIndex(value);
     }
 
-    superConfig.getNumValue("General|DefaultDisplayBrightness", value);
+    currentConfig.getNumValue("General|DefaultDisplayBrightness", value);
     _displayBrightness->setCurrentIndex(value);
 
-    superConfig.getNumValue("General|FullDisclosureRecording", value);
+    currentConfig.getNumValue("General|FullDisclosureRecording", value);
     _recordingFD->setCurrentIndex(value);
 }
 
@@ -137,7 +137,7 @@ void SupervisorGeneralSetMenu::_idReleased()
         if (oldStr != text)
         {
             _deviceID->setValue(text);
-            superConfig.setStrValue("General|DeviceIdentifier", text);
+            currentConfig.setStrValue("General|DeviceIdentifier", text);
         }
     }
 }
@@ -163,7 +163,7 @@ void SupervisorGeneralSetMenu::_passwordReleased()
         if (oldStr != text)
         {
             _password->setValue(text);
-            superConfig.setStrValue("General|Password", text);
+            currentConfig.setStrValue("General|Password", text);
         }
     }
 }
@@ -173,7 +173,7 @@ void SupervisorGeneralSetMenu::_passwordReleased()
  *************************************************************************************************/
 void SupervisorGeneralSetMenu::_patTypeChange(int index)
 {
-    superConfig.setNumValue("General|DefaultPatientType", index);
+    currentConfig.setNumValue("General|DefaultPatientType", index);
 }
 
 /**************************************************************************************************
@@ -181,7 +181,7 @@ void SupervisorGeneralSetMenu::_patTypeChange(int index)
  *************************************************************************************************/
 void SupervisorGeneralSetMenu::_displayBrightnessChange(int index)
 {
-    superConfig.setNumValue("General|DefaultDisplayBrightness", index);
+    currentConfig.setNumValue("General|DefaultDisplayBrightness", index);
 }
 
 /**************************************************************************************************
@@ -189,7 +189,7 @@ void SupervisorGeneralSetMenu::_displayBrightnessChange(int index)
  *************************************************************************************************/
 void SupervisorGeneralSetMenu::_recordingFDChange(int index)
 {
-    superConfig.setNumValue("General|FullDisclosureRecording", index);
+    currentConfig.setNumValue("General|FullDisclosureRecording", index);
 }
 
 /**************************************************************************************************

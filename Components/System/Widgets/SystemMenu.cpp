@@ -129,7 +129,7 @@ void SystemMenu::layoutExec(void)
     _audioVolume = new IComboList(trs("SystemAlarmVolume"));
     _audioVolume->setFont(font);
     int index = 0;
-    superConfig.getNumValue("Alarm|MinimumAlarmVolume", index);
+    currentConfig.getNumValue("Alarm|MinimumAlarmVolume", index);
     for (int i = index + 1; i <= SoundManager::VOLUME_LEV_MAX; i++)
     {
         _audioVolume->addItem(QString::number(i));

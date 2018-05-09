@@ -874,14 +874,14 @@ AlarmIndicator::AlarmIndicator()
     // 记录报警暂停时间
     int pauseTimeIndex = 0;
     _audioPauseTime = 90;
-    superConfig.getNumValue("Alarm|AlarmPauseTime", pauseTimeIndex);
+    currentConfig.getNumValue("Alarm|AlarmPauseTime", pauseTimeIndex);
     if (pauseTimeIndex > ALARM_PAUSE_TIME_NR)
     {
         pauseTimeIndex = ALARM_PAUSE_TIME_90S;
     }
     _audioPauseTime = 60 + 30 * pauseTimeIndex;
 
-    superConfig.getNumValue("Alarm|NonAlertsBeepsInNonAED", _enableNonAlarmBeepsInNonAED);
+    currentConfig.getNumValue("Alarm|NonAlertsBeepsInNonAED", _enableNonAlarmBeepsInNonAED);
 }
 
 /**************************************************************************************************

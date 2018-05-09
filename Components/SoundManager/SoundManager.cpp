@@ -444,7 +444,7 @@ void SoundManager::volumeInit()
 {
     int v = VOLUME_LEV_3;
 
-    superRunConfig.getNumValue("Alarm|DefaultAlarmVolume", v);
+    currentConfig.getNumValue("Alarm|DefaultAlarmVolume", v);
 
     d_ptr->soundVolumes[SOUND_TYPE_ALARM] = (VolumeLevel) v;
 }

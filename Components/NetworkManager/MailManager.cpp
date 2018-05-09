@@ -49,7 +49,7 @@ void MailManagerPrivate::loadRecipients()
     int count;
     bool ok;
 
-    if(!superRunConfig.getStrAttr("Mail|Recipients", "Count", tmpStr))
+    if(!currentConfig.getStrAttr("Mail|Recipients", "Count", tmpStr))
     {
         return;
     }
@@ -66,8 +66,8 @@ void MailManagerPrivate::loadRecipients()
     {
         RecipientInfo recipientInfo;
         QString prefix = QString("Mail|Recipients|Recipient%1|").arg(i);
-        superRunConfig.getStrValue(prefix+"Address", recipientInfo.address);
-        superRunConfig.getStrValue(prefix+"Name", recipientInfo.name);
+        currentConfig.getStrValue(prefix+"Address", recipientInfo.address);
+        currentConfig.getStrValue(prefix+"Name", recipientInfo.name);
         recipientInfos.append(recipientInfo);
     }
 }
@@ -189,15 +189,15 @@ MailManager::MailManager()
 {
     Q_D(MailManager);
     int connType = 0;
-   // superRunConfig.getStrValue("General|DeviceIdentifier", d->mail.mailSenderName);
-    superRunConfig.getStrValue("Mail|SmtpUsername", d->mailSenderAddress);
+   // currentConfig.getStrValue("General|DeviceIdentifier", d->mail.mailSenderName);
+    currentConfig.getStrValue("Mail|SmtpUsername", d->mailSenderAddress);
 
-    superRunConfig.getNumValue("Mail|ConnectionSecurity", connType);
+    currentConfig.getNumValue("Mail|ConnectionSecurity", connType);
     d->smtpConnType = (SmtpClient::ConnectionType) connType;
 
-    superRunConfig.getStrValue("Mail|SmtpServer", d->smtpServer);
-    superRunConfig.getNumValue("Mail|SmtpServerPort", d->smtpServerPort);
-    superRunConfig.getStrValue("Mail|Password", d->smtpPassword);
+    currentConfig.getStrValue("Mail|SmtpServer", d->smtpServer);
+    currentConfig.getNumValue("Mail|SmtpServerPort", d->smtpServerPort);
+    currentConfig.getStrValue("Mail|Password", d->smtpPassword);
 
     _fileBuilder = NULL;
     mail.mailmap.clear();

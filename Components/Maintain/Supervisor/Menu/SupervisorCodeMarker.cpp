@@ -25,7 +25,7 @@ SupervisorCodeMarker::SupervisorCodeMarker()
 void SupervisorCodeMarker::_loadOptions()
 {
     _LanguageIndex = 0;
-    superConfig.getNumAttr("Local|Language", "CurrentOption", _LanguageIndex);
+    currentConfig.getNumAttr("Local|Language", "CurrentOption", _LanguageIndex);
     if (_LanguageIndex != languageManager.getCurLanguage())
     {
         languageManager.reload(_LanguageIndex);
@@ -35,13 +35,13 @@ void SupervisorCodeMarker::_loadOptions()
     QString indexStr = "CodeMarker|Marker";
     indexStr += QString::number(_LanguageIndex, 10);
 
-    superConfig.getStrValue(indexStr, codemarkerStr);
+    currentConfig.getStrValue(indexStr, codemarkerStr);
     _allCodeMarkers = codemarkerStr.split(',');
 
     codemarkerStr.clear();
     QString markerStr = "CodeMarker|SelectMarker|Language";
     markerStr += QString::number(_LanguageIndex, 10);
-    superConfig.getStrValue(markerStr, codemarkerStr);
+    currentConfig.getStrValue(markerStr, codemarkerStr);
     _selectedCodeMarkers = codemarkerStr.split(',');
 }
 
@@ -180,10 +180,10 @@ void SupervisorCodeMarker::_codeMarkerChangeSlot(int id, int index)
     QStringList tmpList(_selectedCodeMarkers);
     QString strValue = tmpList.join(",");
     int num = 0;
-    superConfig.getNumAttr("Local|Language", "CurrentOption", num);
+    currentConfig.getNumAttr("Local|Language", "CurrentOption", num);
     QString markerStr = "CodeMarker|SelectMarker|Language";
     markerStr += QString::number(num, 10);
-    superConfig.setStrValue(markerStr, strValue);
+    currentConfig.setStrValue(markerStr, strValue);
 }
 
 /**************************************************************************************************

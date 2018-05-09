@@ -22,6 +22,25 @@ public:
 private:
     SystemConfig() : Config(SYSTEM_CFG_FILE)
     {
+        int numValue = 255;
+        getNumValue("General|PatientType", numValue);
+        switch(numValue)
+        {
+        case 0:
+            curConfigName = CFG_PATH"AdultConfig.xml";
+            break;
+        case 1:
+            curConfigName = CFG_PATH"PedConfig.xml";
+            break;
+        case 2:
+            curConfigName = CFG_PATH"NeoConfig.xml";
+            break;
+        }
+        if(numValue>2)
+        {
+            curConfigName = CFG_PATH"AdultConfig.xml";
+            numValue = 255;
+        }
     }
 };
 #define systemConfig (SystemConfig::construction())
@@ -73,7 +92,7 @@ public:
     }
 
 private:
-    SupervisorConfig() : Config(SUPERVISOR_CFG_FILE)
+    SupervisorConfig() : Config(curConfigName)
     {
     }
 };
@@ -99,9 +118,10 @@ public:
     }
 
 private:
-    SupervisorRunConfig() : Config(SUPERVISOR_RUN_CFG_FILE)
+    SupervisorRunConfig() : Config(curConfigName)
     {
     }
 };
 #define superRunConfig (SupervisorRunConfig::construction())
 #define deleteSuperRunConfig() (delete SupervisorRunConfig::_selfObj)
+

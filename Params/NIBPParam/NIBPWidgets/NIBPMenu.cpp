@@ -106,7 +106,7 @@ void NIBPMenu::_loadOptions(void)
     _autoInterval->setCurrentIndex(nibpParam.getAutoInterval());
 
     int unit = UNIT_MMHG;
-    superConfig.getNumValue("Local|NIBPUnit", unit);
+    currentConfig.getNumValue("Local|NIBPUnit", unit);
     _initialCuff->clear();
     PatientType type = patientManager.getType();
     if (type == PATIENT_TYPE_ADULT)
@@ -121,7 +121,7 @@ void NIBPMenu::_loadOptions(void)
             str = str + " " + Unit::getSymbol((UnitType)unit);
             _initialCuff->addItem(str);
         }
-        superRunConfig.getNumValue("NIBP|AdultInitialCuffInflation", index);
+        currentConfig.getNumValue("NIBP|AdultInitialCuffInflation", index);
         _initialCuff->setCurrentIndex(index);
     }
     else if (type == PATIENT_TYPE_PED)
@@ -136,7 +136,7 @@ void NIBPMenu::_loadOptions(void)
             str = str + " " + Unit::getSymbol((UnitType)unit);
             _initialCuff->addItem(str);
         }
-        superRunConfig.getNumValue("NIBP|PedInitialCuffInflation", index);
+        currentConfig.getNumValue("NIBP|PedInitialCuffInflation", index);
         _initialCuff->setCurrentIndex(index);
     }
     else if (type == PATIENT_TYPE_NEO)
@@ -151,7 +151,7 @@ void NIBPMenu::_loadOptions(void)
             str = str + " " + Unit::getSymbol((UnitType)unit);
             _initialCuff->addItem(str);
         }
-        superRunConfig.getNumValue("NIBP|NeoInitialCuffInflation", index);
+        currentConfig.getNumValue("NIBP|NeoInitialCuffInflation", index);
         _initialCuff->setCurrentIndex(index);
     }
 
@@ -225,7 +225,7 @@ void NIBPMenu::layoutExec(void)
     connect(_statBtn, SIGNAL(realReleased()), this, SLOT(_statBtnSlot()));
     mainLayout->addWidget(_statBtn, 0, Qt::AlignRight);
     int index = NIBP_PR_DISPLAY_NR;
-    superConfig.getNumValue("NIBP|StatFunction", index);
+    currentConfig.getNumValue("NIBP|StatFunction", index);
     if (index == NIBP_PR_DISPLAY_OFF)
     {
         _statBtn->hide();

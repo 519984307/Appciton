@@ -467,7 +467,7 @@ void PrintSupervisorCfgLayout::_buildStartPage()
 
         tmpStr = trs("SupervisorDeviceIdentifier");
         tmpStr += ": ";
-        superConfig.getStrValue("General|DeviceIdentifier", str);
+        currentConfig.getStrValue("General|DeviceIdentifier", str);
         tmpStr += str;
         _content << tmpStr;
 
@@ -489,31 +489,31 @@ void PrintSupervisorCfgLayout::_buildGeneralPage()
 
         tmpStr = trs("SupervisorDeviceIdentifier");
         tmpStr += ": ";
-        superConfig.getStrValue("General|DeviceIdentifier", str);
+        currentConfig.getStrValue("General|DeviceIdentifier", str);
         tmpStr += str;
         _content << tmpStr;
 
         tmpStr = trs("PassWord");
         tmpStr += ": ";
-        superConfig.getStrValue("General|Password", str);
+        currentConfig.getStrValue("General|Password", str);
         tmpStr += str;
         _content << tmpStr;
 
         tmpStr = trs("SupervisorDefaultPatType");
         tmpStr += ": ";
-        superConfig.getNumValue("General|DefaultPatientType", value);
+        currentConfig.getNumValue("General|DefaultPatientType", value);
         tmpStr += trs(PatientSymbol::convert((PatientType)value));
         _content << tmpStr;
 
         tmpStr = trs("DefaultSystemBrightness");
         tmpStr += ": ";
-        superConfig.getNumValue("General|DefaultDisplayBrightness", value);
+        currentConfig.getNumValue("General|DefaultDisplayBrightness", value);
         tmpStr += QString::number(value + 1);
         _content << tmpStr;
 
         tmpStr = trs("FullDisclosureRecording");
         tmpStr += ": ";
-        superConfig.getNumValue("General|FullDisclosureRecording", value);
+        currentConfig.getNumValue("General|FullDisclosureRecording", value);
         tmpStr += value ? trs("Enable") : trs("Disable");
         _content << tmpStr;
 
@@ -535,13 +535,13 @@ void PrintSupervisorCfgLayout::_buildECGPage()
 
         tmpStr = trs("SupervisorPadFrequency");
         tmpStr += ": ";
-        superConfig.getNumValue("ECG|PadsECGBandwidth", value);
+        currentConfig.getNumValue("ECG|PadsECGBandwidth", value);
         tmpStr += ECGSymbol::convert((ECGBandwidth)value);
         _content << tmpStr;
 
         tmpStr = trs("SupervisorLimbFrequency");
         tmpStr += ": ";
-        superConfig.getNumValue("ECG|ChestLeadsECGBandwidth", value);
+        currentConfig.getNumValue("ECG|ChestLeadsECGBandwidth", value);
         tmpStr += ECGSymbol::convert((ECGBandwidth)value);
         _content << tmpStr;
 
@@ -551,7 +551,7 @@ void PrintSupervisorCfgLayout::_buildECGPage()
             tmpStr = trs("ECGQRSToneVolume");
         }
         tmpStr += ": ";
-        superConfig.getNumValue("ECG|QRSVolume", value);
+        currentConfig.getNumValue("ECG|QRSVolume", value);
         if (0 == value)
         {
             tmpStr += trs("Off");
@@ -564,7 +564,7 @@ void PrintSupervisorCfgLayout::_buildECGPage()
 
         tmpStr = trs("SupervisorLeadNameConvention");
         tmpStr += ": ";
-        superConfig.getNumValue("ECG|ECGLeadConvention", value);
+        currentConfig.getNumValue("ECG|ECGLeadConvention", value);
         tmpStr += ECGSymbol::convert((ECGLeadNameConvention)value);
         _content << tmpStr;
 
@@ -586,7 +586,7 @@ void PrintSupervisorCfgLayout::_buildRESPPage()
 
         tmpStr = trs("RESPAutoActivation");
         tmpStr += ": ";
-        superConfig.getNumValue("RESP|AutoActivation", value);
+        currentConfig.getNumValue("RESP|AutoActivation", value);
         tmpStr += value ? trs("Enable") : trs("Disable");
         _content << tmpStr;
 
@@ -602,7 +602,7 @@ void PrintSupervisorCfgLayout::_buildNIBPPage()
     if (_content.isEmpty())
     {
         int unit = UNIT_MMHG;
-        superConfig.getNumValue("Local|NIBPUnit", unit);
+        currentConfig.getNumValue("Local|NIBPUnit", unit);
 
         QString tmpStr;
         int value = 0;
@@ -610,31 +610,31 @@ void PrintSupervisorCfgLayout::_buildNIBPPage()
 
         tmpStr = trs("SupervisorNIBPMeasureMode");
         tmpStr += ": ";
-        superConfig.getNumValue("NIBP|MeasureMode", value);
+        currentConfig.getNumValue("NIBP|MeasureMode", value);
         tmpStr += trs(NIBPSymbol::convert((NIBPMode)value));
         _content << tmpStr;
 
         tmpStr = trs("SupervisorNIBPAutoInterval");
         tmpStr += ": ";
-        superConfig.getNumValue("NIBP|AutoInterval", value);
+        currentConfig.getNumValue("NIBP|AutoInterval", value);
         tmpStr += trs(NIBPSymbol::convert((NIBPAutoInterval)value));
         _content << tmpStr;
 
         tmpStr = trs("SupervisorSTATFunction");
         tmpStr += ": ";
-        superConfig.getNumValue("NIBP|StatFunction", value);
+        currentConfig.getNumValue("NIBP|StatFunction", value);
         tmpStr += value ? trs("On") : trs("Off");
         _content << tmpStr;
 
         tmpStr = trs("SupervisorStartOnMeasureFail");
         tmpStr += ": ";
-        superConfig.getNumValue("NIBP|AutomaticRetry", value);
+        currentConfig.getNumValue("NIBP|AutomaticRetry", value);
         tmpStr += trs(NIBPSymbol::convert((NIBPPRDisplay)value));
         _content << tmpStr;
 
         tmpStr = trs("SupervisorAdultInitialCuff");
         tmpStr += ": ";
-        superConfig.getNumValue("NIBP|AdultInitialCuffInflation", value);
+        currentConfig.getNumValue("NIBP|AdultInitialCuffInflation", value);
         QString str = NIBPSymbol::convert((NIBPAdultInitialCuff)value);
         if (unit == UNIT_KPA)
         {
@@ -646,7 +646,7 @@ void PrintSupervisorCfgLayout::_buildNIBPPage()
 
         tmpStr = trs("SupervisorPrediatricInitialCuff");
         tmpStr += ": ";
-        superConfig.getNumValue("NIBP|PedInitialCuffInflation", value);
+        currentConfig.getNumValue("NIBP|PedInitialCuffInflation", value);
         str = NIBPSymbol::convert((NIBPPrediatrictInitialCuff)value);
         if (unit == UNIT_KPA)
         {
@@ -658,7 +658,7 @@ void PrintSupervisorCfgLayout::_buildNIBPPage()
 
         tmpStr = trs("SupervisorNeonatalInitialCuff");
         tmpStr += ": ";
-        superConfig.getNumValue("NIBP|NeoInitialCuffInflation", value);
+        currentConfig.getNumValue("NIBP|NeoInitialCuffInflation", value);
         str = NIBPSymbol::convert((NIBPNeonatalInitialCuff)value);
         if (unit == UNIT_KPA)
         {
@@ -687,14 +687,14 @@ void PrintSupervisorCfgLayout::_buildRESPAndCo2Page()
 
         tmpStr = trs("CO2Switch");
         tmpStr += ": ";
-        superConfig.getNumValue("CO2|CO2ModeDefault", value);
+        currentConfig.getNumValue("CO2|CO2ModeDefault", value);
         tmpStr += value ? trs("On") : trs("Off");
         tmpStr += str;
         _content << tmpStr;
 
         tmpStr = trs("CO2SweepMode");
         tmpStr += ": ";
-        superConfig.getNumValue("CO2|CO2SweepMode", value);
+        currentConfig.getNumValue("CO2|CO2SweepMode", value);
         tmpStr += trs(CO2Symbol::convert((CO2SweepMode)value));
         _content << tmpStr;
 
@@ -715,7 +715,7 @@ void PrintSupervisorCfgLayout::_buildAlarmLimitPage()
 
         QString patStr;
         int type = 0;
-        superConfig.getNumValue("General|DefaultPatientType", type);
+        currentConfig.getNumValue("General|DefaultPatientType", type);
         patStr = PatientSymbol::convert((PatientType)type);
 
         for (int i = 0; i < SUB_PARAM_NR; ++i)
@@ -750,17 +750,17 @@ void PrintSupervisorCfgLayout::_buildAlarmLimitPage()
             {
                 case SUB_PARAM_ETCO2:
                 case SUB_PARAM_FICO2:
-                    superConfig.getNumValue("Local|CO2Unit", type);
+                    currentConfig.getNumValue("Local|CO2Unit", type);
                     break;
                 case SUB_PARAM_NIBP_DIA:
                 case SUB_PARAM_NIBP_MAP:
                 case SUB_PARAM_NIBP_SYS:
-                    superConfig.getNumValue("Local|NIBPUnit", type);
+                    currentConfig.getNumValue("Local|NIBPUnit", type);
                     break;
                 case SUB_PARAM_T1:
                 case SUB_PARAM_T2:
                 case SUB_PARAM_TD:
-                    superConfig.getNumValue("Local|TEMPUnit", type);
+                    currentConfig.getNumValue("Local|TEMPUnit", type);
                     break;
                 default:
                     break;
@@ -776,7 +776,7 @@ void PrintSupervisorCfgLayout::_buildAlarmLimitPage()
             prefix += paramInfo.getSubParamName((SubParamID)i, true);
             tmpStr += trs("AlarmStatus");
             tmpStr += " = ";
-            superConfig.getNumAttr(prefix, "Enable", value);
+            currentConfig.getNumAttr(prefix, "Enable", value);
             tmpStr += value ? trs("On") : trs("Off");
             tmpStr += ", ";
 
@@ -785,9 +785,9 @@ void PrintSupervisorCfgLayout::_buildAlarmLimitPage()
 
             int scale = 1;
             int val;
-            superConfig.getNumValue(prefix + "|Scale", scale);
+            currentConfig.getNumValue(prefix + "|Scale", scale);
 
-            superConfig.getNumValue(prefix + "|High", val);
+            currentConfig.getNumValue(prefix + "|High", val);
             tmpStr += trs("High");
             tmpStr += " = ";
             if(scale == 1)
@@ -801,7 +801,7 @@ void PrintSupervisorCfgLayout::_buildAlarmLimitPage()
             }
             tmpStr += ", ";
 
-            superConfig.getNumValue(prefix + "|Low", val);
+            currentConfig.getNumValue(prefix + "|Low", val);
             tmpStr += trs("Low");
             tmpStr += " = ";
             if(scale == 1)
@@ -836,8 +836,8 @@ void PrintSupervisorCfgLayout::_buildLocalPage()
 
         tmpStr = trs("SupervisorLanguage");
         tmpStr += ": ";
-        superConfig.getNumAttr("Local|Language", "CurrentOption", value);
-        superConfig.getStrValue("Local|Language|Opt" + QString::number(value), str);
+        currentConfig.getNumAttr("Local|Language", "CurrentOption", value);
+        currentConfig.getStrValue("Local|Language|Opt" + QString::number(value), str);
         tmpStr += str;
         _content << tmpStr;
 
@@ -846,7 +846,7 @@ void PrintSupervisorCfgLayout::_buildLocalPage()
         {
             tmpStr = trs("SupervisorNIBPUnit");
             tmpStr += ": ";
-            superConfig.getNumValue("Local|NIBPUnit", value);
+            currentConfig.getNumValue("Local|NIBPUnit", value);
             tmpStr += Unit::localeSymbol((UnitType)value);
             _content << tmpStr;
         }
@@ -856,7 +856,7 @@ void PrintSupervisorCfgLayout::_buildLocalPage()
         {
             tmpStr = trs("SupervisorCO2Unit");
             tmpStr += ": ";
-            superConfig.getNumValue("Local|CO2Unit", value);
+            currentConfig.getNumValue("Local|CO2Unit", value);
             tmpStr += Unit::localeSymbol((UnitType)value);
             _content << tmpStr;
         }
@@ -866,7 +866,7 @@ void PrintSupervisorCfgLayout::_buildLocalPage()
         {
             tmpStr = trs("SupervisorTEMPUnit");
             tmpStr += ": ";
-            superConfig.getNumValue("Local|TEMPUnit", value);
+            currentConfig.getNumValue("Local|TEMPUnit", value);
             tmpStr += Unit::localeSymbol((UnitType)value);
             _content << tmpStr;
         }
@@ -890,7 +890,7 @@ void PrintSupervisorCfgLayout::_buildDisplayPage()
 
         tmpStr = trs("ECG");
         tmpStr += ": ";
-        superConfig.getStrValue("Display|ECGColor", str);
+        currentConfig.getStrValue("Display|ECGColor", str);
         tmpStr += trs(str);
         _content << tmpStr;
 
@@ -899,7 +899,7 @@ void PrintSupervisorCfgLayout::_buildDisplayPage()
         {
             tmpStr = trs("SPO2");
             tmpStr += ": ";
-            superConfig.getStrValue("Display|SPO2Color", str);
+            currentConfig.getStrValue("Display|SPO2Color", str);
             tmpStr += trs(str);
             _content << tmpStr;
         }
@@ -909,7 +909,7 @@ void PrintSupervisorCfgLayout::_buildDisplayPage()
         {
             tmpStr = trs("NIBP");
             tmpStr += ": ";
-            superConfig.getStrValue("Display|NIBPColor", str);
+            currentConfig.getStrValue("Display|NIBPColor", str);
             tmpStr += trs(str);
             _content << tmpStr;
         }
@@ -919,7 +919,7 @@ void PrintSupervisorCfgLayout::_buildDisplayPage()
         {
             tmpStr = trs("CO2");
             tmpStr += ": ";
-            superConfig.getStrValue("Display|CO2Color", str);
+            currentConfig.getStrValue("Display|CO2Color", str);
             tmpStr += trs(str);
             _content << tmpStr;
         }
@@ -928,7 +928,7 @@ void PrintSupervisorCfgLayout::_buildDisplayPage()
         {
             tmpStr = trs("RESP");
             tmpStr += ": ";
-            superConfig.getStrValue("Display|RESPColor", str);
+            currentConfig.getStrValue("Display|RESPColor", str);
             tmpStr += trs(str);
             _content << tmpStr;
         }
@@ -938,7 +938,7 @@ void PrintSupervisorCfgLayout::_buildDisplayPage()
         {
             tmpStr = trs("TEMP");
             tmpStr += ": ";
-            superConfig.getStrValue("Display|TEMPColor", str);
+            currentConfig.getStrValue("Display|TEMPColor", str);
             tmpStr += trs(str);
             _content << tmpStr;
         }
@@ -960,55 +960,55 @@ void PrintSupervisorCfgLayout::_buildAlarmPage()
 
 //        tmpStr = trs("LTAAlarm");
 //        tmpStr += ": ";
-//        superConfig.getNumValue("Alarm|LTAAlarm", value);
+//        currentConfig.getNumValue("Alarm|LTAAlarm", value);
 //        tmpStr += value ? trs("On") : trs("Off");
 //        _content << tmpStr;
 
         tmpStr = trs("MinimumALarmVolume");
         tmpStr += ": ";
-        superConfig.getNumValue("Alarm|MinimumAlarmVolume", value);
+        currentConfig.getNumValue("Alarm|MinimumAlarmVolume", value);
         tmpStr += QString::number(value + 1);
         _content << tmpStr;
 
         tmpStr = trs("DefaultAlarmVolume");
         tmpStr += ": ";
-        superConfig.getNumValue("Alarm|DefaultAlarmVolume", value);
+        currentConfig.getNumValue("Alarm|DefaultAlarmVolume", value);
         tmpStr += QString::number(value);
         _content << tmpStr;
 
         tmpStr = trs("AlarmPauseTime");
         tmpStr += ": ";
-        superConfig.getNumValue("Alarm|AlarmPauseTime", value);
+        currentConfig.getNumValue("Alarm|AlarmPauseTime", value);
         tmpStr += trs(AlarmSymbol::convert((AlarmPauseTime)value));
         _content << tmpStr;
 
         tmpStr = trs("AlarmOffPromptMechanism");
         tmpStr += ": ";
-        superConfig.getNumValue("Alarm|AlarmOffPrompting", value);
+        currentConfig.getNumValue("Alarm|AlarmOffPrompting", value);
         tmpStr += trs(AlarmSymbol::convert((AlarmClosePromptTime)value));
         _content << tmpStr;
 
         tmpStr = trs("EnableAlarmAudioOff");
         tmpStr += ": ";
-        superConfig.getNumValue("Alarm|EnableAlarmAudioOff", value);
+        currentConfig.getNumValue("Alarm|EnableAlarmAudioOff", value);
         tmpStr += value ? trs("Yes") : trs("No");
         _content << tmpStr;
 
         tmpStr = trs("EnableAlarmOff");
         tmpStr += ": ";
-        superConfig.getNumValue("Alarm|EnableAlarmOff", value);
+        currentConfig.getNumValue("Alarm|EnableAlarmOff", value);
         tmpStr += value ? trs("Yes") : trs("No");
         _content << tmpStr;
 
         tmpStr = trs("AlarmOffAtPowerOn");
         tmpStr += ": ";
-        superConfig.getNumValue("Alarm|AlarmOffAtPowerOn", value);
+        currentConfig.getNumValue("Alarm|AlarmOffAtPowerOn", value);
         tmpStr += value ? trs("Yes") : trs("No");
         _content << tmpStr;
 
         tmpStr = trs("NonAlertsBeepsInNonAED");
         tmpStr += ": ";
-        superConfig.getNumValue("Alarm|NonAlertsBeepsInNonAED", value);
+        currentConfig.getNumValue("Alarm|NonAlertsBeepsInNonAED", value);
         tmpStr += value ? trs("Enable") : trs("Disable");
         _content << tmpStr;
 
@@ -1031,25 +1031,25 @@ void PrintSupervisorCfgLayout::_buildTriggerPrintPage()
 
         tmpStr = trs("ECGRhythm");
         tmpStr += ": ";
-        superConfig.getNumValue("Print|PresentingECG", value);
+        currentConfig.getNumValue("Print|PresentingECG", value);
         tmpStr += value ? trs("Enable") : trs("Disable");
         _content << tmpStr;
 
         tmpStr = trs("ECGForeAnalysis");
         tmpStr += ": ";
-        superConfig.getNumValue("Print|ECGAnalysis", value);
+        currentConfig.getNumValue("Print|ECGAnalysis", value);
         tmpStr += value ? trs("Enable") : trs("Disable");
         _content << tmpStr;
 
         tmpStr = trs("ShockDelivery");
         tmpStr += ": ";
-        superConfig.getNumValue("Print|ShockDelivery", value);
+        currentConfig.getNumValue("Print|ShockDelivery", value);
         tmpStr += value ? trs("Enable") : trs("Disable");
         _content << tmpStr;
 
         tmpStr = trs("CheckPatient");
         tmpStr += ": ";
-        superConfig.getNumValue("Print|CheckPatient", value);
+        currentConfig.getNumValue("Print|CheckPatient", value);
         tmpStr += value ? trs("Enable") : trs("Disable");
         _content << tmpStr;
 
@@ -1058,20 +1058,20 @@ void PrintSupervisorCfgLayout::_buildTriggerPrintPage()
         {
             tmpStr = trs("PacerStartup");
             tmpStr += ": ";
-            superConfig.getNumValue("Print|PacerStartUp", value);
+            currentConfig.getNumValue("Print|PacerStartUp", value);
             tmpStr += value ? trs("Enable") : trs("Disable");
             _content << tmpStr;
         }
 
         tmpStr = trs("PhyAlarm");
         tmpStr += ": ";
-        superConfig.getNumValue("Print|PhysiologicalAlarm", value);
+        currentConfig.getNumValue("Print|PhysiologicalAlarm", value);
         tmpStr += value ? trs("Enable") : trs("Disable");
         _content << tmpStr;
 
         tmpStr = trs("CodeMarker");
         tmpStr += ": ";
-        superConfig.getNumValue("Print|CoderMarker", value);
+        currentConfig.getNumValue("Print|CoderMarker", value);
         tmpStr += value ? trs("Enable") : trs("Disable");
         _content << tmpStr;
 
@@ -1080,26 +1080,26 @@ void PrintSupervisorCfgLayout::_buildTriggerPrintPage()
         {
             tmpStr = trs("NIBPReading");
             tmpStr += ": ";
-            superConfig.getNumValue("Print|NIBPReading", value);
+            currentConfig.getNumValue("Print|NIBPReading", value);
             tmpStr += value ? trs("Enable") : trs("Disable");
             _content << tmpStr;
         }
 
         tmpStr = trs("DiagnosticECG");
         tmpStr += ": ";
-        superConfig.getNumValue("Print|DiagnosticECG", value);
+        currentConfig.getNumValue("Print|DiagnosticECG", value);
         tmpStr += value ? trs("Enable") : trs("Disable");
         _content << tmpStr;
 
         tmpStr = trs("SupervisorAutoPrintInAED");
         tmpStr += ": ";
-        superConfig.getNumValue("Print|SummaryReportSnapshotPrintingInAED", value);
+        currentConfig.getNumValue("Print|SummaryReportSnapshotPrintingInAED", value);
         tmpStr += value ? trs("Enable") : trs("Disable");
         _content << tmpStr;
 
         tmpStr = trs("SupervisorAutoPrint30Jtest");
         tmpStr += ": ";
-        superConfig.getNumValue("Print|Print30JSelfTestReport", value);
+        currentConfig.getNumValue("Print|Print30JSelfTestReport", value);
         tmpStr += value ? trs("Enable") : trs("Disable");
         _content << tmpStr;
 
@@ -1120,38 +1120,38 @@ void PrintSupervisorCfgLayout::_build12LPage()
 
         tmpStr = trs("SupervisorNotchFilter");
         tmpStr += ": ";
-        superConfig.getNumValue("ECG12L|NotchFilter", value);
+        currentConfig.getNumValue("ECG12L|NotchFilter", value);
         tmpStr += ECGSymbol::convert((ECGNotchFilter)value);
         _content << tmpStr;
 
         tmpStr = trs("Supervisor12lFrequency");
         tmpStr += ": ";
-        superConfig.getNumValue("ECG12L|ECG12LeadBandwidth", value);
+        currentConfig.getNumValue("ECG12L|ECG12LeadBandwidth", value);
         tmpStr += ECGSymbol::convert((ECGBandwidth)(value + ECG_BANDWIDTH_0525_40HZ));
         _content << tmpStr;
 
         tmpStr = trs("Print12LSnapshotFormat");
         tmpStr += ": ";
-        superConfig.getNumValue("ECG12L|PrintSnapshotFormat", value);
+        currentConfig.getNumValue("ECG12L|PrintSnapshotFormat", value);
         tmpStr += PrintSymbol::convert((Print12LeadSnapshotFormat)value);
         _content << tmpStr;
 
         tmpStr = trs("PDFReportFormat");
         tmpStr += ": ";
-        superConfig.getNumValue("ECG12L|PDFReportFormat", value);
+        currentConfig.getNumValue("ECG12L|PDFReportFormat", value);
         tmpStr += PrintSymbol::convert((Print12LeadPDFFormat)value);
         _content << tmpStr;
 
         int displayMode = 0;
         tmpStr = trs("ECG12LDisplayFormat");
         tmpStr += ": ";
-        superConfig.getNumValue("ECG12L|DisplayFormat", displayMode);
+        currentConfig.getNumValue("ECG12L|DisplayFormat", displayMode);
         tmpStr += trs(ECGSymbol::convert((Display12LeadFormat)displayMode));
         _content << tmpStr;
 
         tmpStr = trs("SupervisorTimeWindow2x6PDF");
         tmpStr += ": ";
-        superConfig.getNumValue("ECG12L|TimeIntervalFor2x6Report", value);
+        currentConfig.getNumValue("ECG12L|TimeIntervalFor2x6Report", value);
         switch (value)
         {
             case 0:
@@ -1171,40 +1171,40 @@ void PrintSupervisorCfgLayout::_build12LPage()
 
         tmpStr = trs("SupervisorAutoPrint12L");
         tmpStr += ": ";
-        superConfig.getNumValue("ECG12L|AutoPrinting12LReport", value);
+        currentConfig.getNumValue("ECG12L|AutoPrinting12LReport", value);
         tmpStr += value ? trs("Enable") : trs("Disable");
         _content << tmpStr;
 
         tmpStr = trs("SupervisorAutoTransforByWifi");
         tmpStr += ": ";
-        superConfig.getNumValue("ECG12L|AutoTransmission", value);
+        currentConfig.getNumValue("ECG12L|AutoTransmission", value);
         tmpStr += value ? trs("Enable") : trs("Disable");
         _content << tmpStr;
 
         tmpStr = trs("SupervisorTransforFileFormat");
         tmpStr += ": ";
-        superConfig.getNumValue("ECG12L|TransmissionFormat", value);
+        currentConfig.getNumValue("ECG12L|TransmissionFormat", value);
         tmpStr += value ? trs("JSON") : trs("PDF");
         _content << tmpStr;
 
         int leadNameConvention = 0;
-        superConfig.getNumValue("ECG|ECGLeadConvention", leadNameConvention);
+        currentConfig.getNumValue("ECG|ECGLeadConvention", leadNameConvention);
 
         tmpStr = trs("RealTimePrintTopLead");
         tmpStr += ": ";
-        superConfig.getNumValue("ECG12L|RealtimePrintTopLead", value);
+        currentConfig.getNumValue("ECG12L|RealtimePrintTopLead", value);
         tmpStr += ECGSymbol::convert((ECGLead)value,(ECGLeadNameConvention)leadNameConvention,true);
         _content << tmpStr;
 
         tmpStr = trs("RealTimePrintMidLead");
         tmpStr += ": ";
-        superConfig.getNumValue("ECG12L|RealtimePrintMiddleLead", value);
+        currentConfig.getNumValue("ECG12L|RealtimePrintMiddleLead", value);
         tmpStr += ECGSymbol::convert((ECGLead)value,(ECGLeadNameConvention)leadNameConvention,true);
         _content << tmpStr;
 
         tmpStr = trs("RealTimePrintBottomLead");
         tmpStr += ": ";
-        superConfig.getNumValue("ECG12L|RealtimePrintBottomLead", value);
+        currentConfig.getNumValue("ECG12L|RealtimePrintBottomLead", value);
         tmpStr += ECGSymbol::convert((ECGLead)value,(ECGLeadNameConvention)leadNameConvention,true);
         _content << tmpStr;
 
@@ -1226,12 +1226,12 @@ void PrintSupervisorCfgLayout::_buildNetworkPage()
 
         tmpStr = trs("Switch");
         tmpStr += ": ";
-        superConfig.getNumValue("WiFi|EnableWifi", value);
+        currentConfig.getNumValue("WiFi|EnableWifi", value);
         tmpStr += value ? trs("On") : trs("Off");
         _content << tmpStr;
 
         int count = 0;
-        superConfig.getNumAttr("WiFi|Profiles", "Count", count);
+        currentConfig.getNumAttr("WiFi|Profiles", "Count", count);
         for (int i = 0; i < count; ++i)
         {
             _content << ("Profile" + QString::number(i));
@@ -1240,23 +1240,23 @@ void PrintSupervisorCfgLayout::_buildNetworkPage()
 
             tmpStr = trs("ProfileName");
             tmpStr += ": ";
-            superConfig.getStrValue(strPath + "ProfileName", str);
+            currentConfig.getStrValue(strPath + "ProfileName", str);
             _content << (tmpStr + str);
 
             tmpStr = trs("WiFiAP");
             tmpStr += ": ";
-            superConfig.getStrValue(strPath + "SSID", str);
+            currentConfig.getStrValue(strPath + "SSID", str);
             _content << (tmpStr + str);
 
             tmpStr = trs("EncryptType");
             tmpStr += ": ";
-            superConfig.getNumValue(strPath + "AuthType", value);
+            currentConfig.getNumValue(strPath + "AuthType", value);
             tmpStr += NetworkSymble::convert((EncryptType)value);
             _content << tmpStr;
 
             tmpStr = trs("NetworkSetting");
             tmpStr += ": ";
-            superConfig.getNumValue(strPath + "IsStatic", value);
+            currentConfig.getNumValue(strPath + "IsStatic", value);
             tmpStr += trs(NetworkSymble::convert((IpMode)value));
             _content << tmpStr;
 
@@ -1264,27 +1264,27 @@ void PrintSupervisorCfgLayout::_buildNetworkPage()
             {
                 tmpStr = trs("StaticIp");
                 tmpStr += ": ";
-                superConfig.getStrValue(strPath + "StaticIP", str);
+                currentConfig.getStrValue(strPath + "StaticIP", str);
                 _content << (tmpStr + str);
 
                 tmpStr = trs("GateWay");
                 tmpStr += ": ";
-                superConfig.getStrValue(strPath + "DefaultGateway", str);
+                currentConfig.getStrValue(strPath + "DefaultGateway", str);
                 _content << (tmpStr + str);
 
                 tmpStr = trs("SubnetMask");
                 tmpStr += ": ";
-                superConfig.getStrValue(strPath + "SubnetMask", str);
+                currentConfig.getStrValue(strPath + "SubnetMask", str);
                 _content << (tmpStr + str);
 
                 tmpStr = trs("PreferrendDNS");
                 tmpStr += ": ";
-                superConfig.getStrValue(strPath + "PreferedDNS", str);
+                currentConfig.getStrValue(strPath + "PreferedDNS", str);
                 _content << (tmpStr + str);
 
                 tmpStr = trs("AlternateDNS");
                 tmpStr += ": ";
-                superConfig.getStrValue(strPath + "AlternateDNS", str);
+                currentConfig.getStrValue(strPath + "AlternateDNS", str);
                 _content << (tmpStr + str);
             }
         }
@@ -1303,21 +1303,21 @@ void PrintSupervisorCfgLayout::_buildSFTPPage()
 
         tmpStr = trs("SupervisorServerIP");
         tmpStr += ": ";
-        superConfig.getStrValue("Sftp|ServerIP",str);
+        currentConfig.getStrValue("Sftp|ServerIP",str);
         tmpStr += str;
         _content << tmpStr;
         str.clear();
 
         tmpStr = trs("SupervisorServerPort");
         tmpStr += ": ";
-        superConfig.getStrValue("Sftp|ServerPort", str);
+        currentConfig.getStrValue("Sftp|ServerPort", str);
         tmpStr += str;
         _content << tmpStr;
         str.clear();
 
         tmpStr = trs("Username");
         tmpStr += ": ";
-        superConfig.getStrValue("Sftp|Username", str);
+        currentConfig.getStrValue("Sftp|Username", str);
         tmpStr += str;
         _content << tmpStr;
         str.clear();
@@ -1371,19 +1371,19 @@ void PrintSupervisorCfgLayout::_buildDateTimePage()
 
         tmpStr = trs("SupervisorDateFormat");
         tmpStr += ": ";
-        superConfig.getNumValue("DateTime|DateFormat", value);
+        currentConfig.getNumValue("DateTime|DateFormat", value);
         tmpStr += trs(TimeSymbol::convert((DateFormat)value));
         _content << tmpStr;
 
         tmpStr = trs("SupervisorTimeFormat");
         tmpStr += ": ";
-        superConfig.getNumValue("DateTime|TimeFormat", value);
+        currentConfig.getNumValue("DateTime|TimeFormat", value);
         tmpStr += trs(TimeSymbol::convert((TimeFormat)value));
         _content << tmpStr;
 
         tmpStr = trs("SupervisorDisplaySec");
         tmpStr += ": ";
-        superConfig.getNumValue("DateTime|DisplaySecond", value);
+        currentConfig.getNumValue("DateTime|DisplaySecond", value);
         tmpStr += value ? trs("Yes") : trs("No");
         _content << tmpStr;
 
@@ -1403,10 +1403,10 @@ void PrintSupervisorCfgLayout::_buildCodeMarkerPage()
         _content << trs("SupervisorCodeMarker");
 
         int num = 0;
-        superConfig.getNumAttr("Local|Language", "CurrentOption", num);
+        currentConfig.getNumAttr("Local|Language", "CurrentOption", num);
         QString markerStr = "CodeMarker|SelectMarker|Language";
         markerStr += QString::number(num, 10);
-        superConfig.getStrValue(markerStr, tmpStr);
+        currentConfig.getStrValue(markerStr, tmpStr);
         codeMarkerList = tmpStr.split(",");
         tmpStr.clear();
 
@@ -1445,27 +1445,27 @@ void PrintSupervisorCfgLayout::_buildMailPage()
 
         tmpStr = trs("SmtpServer");
         tmpStr += ": ";
-        superConfig.getStrValue("Mail|SmtpServer", str);
+        currentConfig.getStrValue("Mail|SmtpServer", str);
         _content << (tmpStr + str);
 
         tmpStr = trs("SmtpServerPort");
         tmpStr += ": ";
-        superConfig.getStrValue("Mail|SmtpServerPort", str);
+        currentConfig.getStrValue("Mail|SmtpServerPort", str);
         _content << (tmpStr + str);
 
         tmpStr = trs("Username");
         tmpStr += ": ";
-        superConfig.getStrValue("Mail|SmtpUsername", str);
+        currentConfig.getStrValue("Mail|SmtpUsername", str);
         _content << (tmpStr + str);
 
         tmpStr = trs("ConnectionSecurity");
         tmpStr += ": ";
-        superConfig.getNumValue("Mail|ConnectionSecurity", value);
+        currentConfig.getNumValue("Mail|ConnectionSecurity", value);
         tmpStr += NetworkSymble::convert((MailConnectSecurity)value);
         _content << tmpStr;
 
         int count = 0;
-        superConfig.getNumAttr("Mail|Recipients", "Count", count);
+        currentConfig.getNumAttr("Mail|Recipients", "Count", count);
         if (count > 0)
         {
             tmpStr = trs("ConfiguredMailRecipients");
@@ -1486,9 +1486,9 @@ void PrintSupervisorCfgLayout::_buildMailPage()
             QString path = "Mail|Recipients|Recipient" + QString::number(i);
             path += "|";
 
-            superConfig.getStrValue(path + "Name", tmpStr);
+            currentConfig.getStrValue(path + "Name", tmpStr);
             tmpStr += "<";
-            superConfig.getStrValue(path + "Address", str);
+            currentConfig.getStrValue(path + "Address", str);
             tmpStr += str;
             tmpStr += ">";
             _content << tmpStr;

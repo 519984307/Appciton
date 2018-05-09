@@ -269,7 +269,7 @@ void SystemManager::setBrightness(BrightnessLevel br)
 {
     enableBrightness(br);
 
-    superRunConfig.setNumValue("General|DefaultDisplayBrightness", (int)br);
+    currentConfig.setNumValue("General|DefaultDisplayBrightness", (int)br);
 }
 
 /***************************************************************************************************
@@ -311,7 +311,7 @@ void SystemManager::enableBrightness(BrightnessLevel br)
 BrightnessLevel SystemManager::getBrightness(void)
 {
     int b = BRT_LEVEL_4;
-    superRunConfig.getNumValue("General|DefaultDisplayBrightness", b);
+    currentConfig.getNumValue("General|DefaultDisplayBrightness", b);
     return (BrightnessLevel)b;
 }
 

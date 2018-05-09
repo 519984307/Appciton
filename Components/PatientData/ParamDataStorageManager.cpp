@@ -161,7 +161,7 @@ void ParamDataStorageManager::createDir()
     d->dataDesc.startTime = timeManager.getStartTime();
 
     QString tmpStr;
-    superConfig.getStrValue("General|DeviceID", tmpStr);
+    currentConfig.getStrValue("General|DeviceID", tmpStr);
     if(tmpStr.isNull())
     {
         tmpStr = QString();

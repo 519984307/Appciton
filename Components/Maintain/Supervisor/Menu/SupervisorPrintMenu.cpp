@@ -23,28 +23,28 @@ SupervisorPrintMenu::SupervisorPrintMenu() : SubMenu(trs("SupervisorPrintMenu"))
 void SupervisorPrintMenu::readyShow()
 {
     int index = 0;
-    superConfig.getNumValue("Print|PresentingECG", index);
+    currentConfig.getNumValue("Print|PresentingECG", index);
     _ECGRhythmAutoPrint->setCurrentIndex(index);
 
-    superConfig.getNumValue("Print|CheckPatient", index);
+    currentConfig.getNumValue("Print|CheckPatient", index);
     _checkPatientAlarmAutoPrint->setCurrentIndex(index);
 
-    superConfig.getNumValue("Print|PhysiologicalAlarm", index);
+    currentConfig.getNumValue("Print|PhysiologicalAlarm", index);
     _phyAlarmAutoPrint->setCurrentIndex(index);
 
-    superConfig.getNumValue("Print|CoderMarker", index);
+    currentConfig.getNumValue("Print|CoderMarker", index);
     _codemarkerAutoPrint->setCurrentIndex(index);
 
-    superConfig.getNumValue("Print|NIBPReading", index);
+    currentConfig.getNumValue("Print|NIBPReading", index);
     _NIBPAutoPrint->setCurrentIndex(index);
 
-    superConfig.getNumValue("Print|DiagnosticECG", index);
+    currentConfig.getNumValue("Print|DiagnosticECG", index);
     _diagECGAutoPrint->setCurrentIndex(index);
 
-    superConfig.getNumValue("Print|SummaryReportSnapshotPrintingInAED", index);
+    currentConfig.getNumValue("Print|SummaryReportSnapshotPrintingInAED", index);
     _autoPrintInAED->setCurrentIndex(index);
 
-    superConfig.getNumValue("Print|Print30JSelfTestReport", index);
+    currentConfig.getNumValue("Print|Print30JSelfTestReport", index);
     _30jSelftest->setCurrentIndex(index);
 }
 
@@ -160,7 +160,7 @@ void SupervisorPrintMenu::layoutExec()
  *************************************************************************************************/
 void SupervisorPrintMenu::_ECGRhythmAutoPrintSlot(int index)
 {
-    superConfig.setNumValue("Print|PresentingECG", index);
+    currentConfig.setNumValue("Print|PresentingECG", index);
 }
 
 /**************************************************************************************************
@@ -168,7 +168,7 @@ void SupervisorPrintMenu::_ECGRhythmAutoPrintSlot(int index)
  *************************************************************************************************/
 void SupervisorPrintMenu::_ECGForeAnalysisAutoPrintSlot(int index)
 {
-    superConfig.setNumValue("Print|ECGAnalysis", index);
+    currentConfig.setNumValue("Print|ECGAnalysis", index);
 }
 
 /**************************************************************************************************
@@ -176,7 +176,7 @@ void SupervisorPrintMenu::_ECGForeAnalysisAutoPrintSlot(int index)
  *************************************************************************************************/
 void SupervisorPrintMenu::_shockDeliveryAutoPrintSlot(int index)
 {
-    superConfig.setNumValue("Print|ShockDelivery", index);
+    currentConfig.setNumValue("Print|ShockDelivery", index);
 }
 
 /**************************************************************************************************
@@ -184,7 +184,7 @@ void SupervisorPrintMenu::_shockDeliveryAutoPrintSlot(int index)
  *************************************************************************************************/
 void SupervisorPrintMenu::_checkPatientAlarmAutoPrintSlot(int index)
 {
-    superConfig.setNumValue("Print|CheckPatient", index);
+    currentConfig.setNumValue("Print|CheckPatient", index);
 }
 
 /**************************************************************************************************
@@ -192,7 +192,7 @@ void SupervisorPrintMenu::_checkPatientAlarmAutoPrintSlot(int index)
  *************************************************************************************************/
 void SupervisorPrintMenu::_pacerStartAutoPrintSlot(int index)
 {
-    superConfig.setNumValue("Print|PacerStartUp", index);
+    currentConfig.setNumValue("Print|PacerStartUp", index);
 }
 
 /**************************************************************************************************
@@ -200,7 +200,7 @@ void SupervisorPrintMenu::_pacerStartAutoPrintSlot(int index)
  *************************************************************************************************/
 void SupervisorPrintMenu::_phyAlarmAutoPrintSlot(int index)
 {
-    superConfig.setNumValue("Print|PhysiologicalAlarm", index);
+    currentConfig.setNumValue("Print|PhysiologicalAlarm", index);
 }
 
 /**************************************************************************************************
@@ -208,7 +208,7 @@ void SupervisorPrintMenu::_phyAlarmAutoPrintSlot(int index)
  *************************************************************************************************/
 void SupervisorPrintMenu::_codemarkerAutoPrintSlot(int index)
 {
-    superConfig.setNumValue("Print|CoderMarker", index);
+    currentConfig.setNumValue("Print|CoderMarker", index);
 }
 
 /***************************************************************************************************
@@ -216,7 +216,7 @@ void SupervisorPrintMenu::_codemarkerAutoPrintSlot(int index)
  **************************************************************************************************/
 void SupervisorPrintMenu::_NIBPAutoPrintSlot(int index)
 {
-    superConfig.setNumValue("Print|NIBPReading", index);
+    currentConfig.setNumValue("Print|NIBPReading", index);
 }
 
 /***************************************************************************************************
@@ -224,7 +224,7 @@ void SupervisorPrintMenu::_NIBPAutoPrintSlot(int index)
  **************************************************************************************************/
 void SupervisorPrintMenu::_diagECGAutoPrintSlot(int index)
 {
-    superConfig.setNumValue("Print|DiagnosticECG", index);
+    currentConfig.setNumValue("Print|DiagnosticECG", index);
 }
 
 /**************************************************************************************************
@@ -232,7 +232,7 @@ void SupervisorPrintMenu::_diagECGAutoPrintSlot(int index)
  *************************************************************************************************/
 void SupervisorPrintMenu::_autoPrintInAEDSlot(int index)
 {
-    superConfig.setNumValue("Print|SummaryReportSnapshotPrintingInAED", index);
+    currentConfig.setNumValue("Print|SummaryReportSnapshotPrintingInAED", index);
 }
 
 /**************************************************************************************************
@@ -240,7 +240,7 @@ void SupervisorPrintMenu::_autoPrintInAEDSlot(int index)
  *************************************************************************************************/
 void SupervisorPrintMenu::_autoPrint30JtestResultSlot(int index)
 {
-    superConfig.setNumValue("Print|Print30JSelfTestReport", index);
+    currentConfig.setNumValue("Print|Print30JSelfTestReport", index);
 }
 
 /**************************************************************************************************

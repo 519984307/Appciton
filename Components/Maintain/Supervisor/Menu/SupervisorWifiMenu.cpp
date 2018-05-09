@@ -50,8 +50,8 @@ public:
  **************************************************************************************************/
 void SupervisorWifiMenuPrivate::onSwitch(int val)
 {
-    superConfig.setNumValue("WiFi|EnableWifi", val);
-    superConfig.save();
+    currentConfig.setNumValue("WiFi|EnableWifi", val);
+    currentConfig.save();
 }
 
 /***************************************************************************************************
@@ -273,7 +273,7 @@ void SupervisorWifiMenuPrivate::loadProfiles()
     int tmpValue=0;
     int count;
     bool ok;
-    if(!superConfig.getStrAttr("WiFi|Profiles", "Count", tmpStr))
+    if(!currentConfig.getStrAttr("WiFi|Profiles", "Count", tmpStr))
     {
         return;
     }
@@ -290,20 +290,20 @@ void SupervisorWifiMenuPrivate::loadProfiles()
     {
         QString prefix = QString("WiFi|Profiles|Profile%1|").arg(i);
         WiFiProfileInfo profile;
-        superConfig.getStrValue(prefix + "ProfileName", profile.profileName);
-        superConfig.getStrValue(prefix + "SSID", profile.ssid);
-        superConfig.getNumValue(prefix + "AuthType", tmpValue);
+        currentConfig.getStrValue(prefix + "ProfileName", profile.profileName);
+        currentConfig.getStrValue(prefix + "SSID", profile.ssid);
+        currentConfig.getNumValue(prefix + "AuthType", tmpValue);
         profile.authType = (WiFiProfileInfo::AuthenticationType) tmpValue;
-        superConfig.getStrValue(prefix + "SecurityKey", profile.securityKey);
-        superConfig.getNumValue(prefix + "IsStatic", tmpValue);
+        currentConfig.getStrValue(prefix + "SecurityKey", profile.securityKey);
+        currentConfig.getNumValue(prefix + "IsStatic", tmpValue);
         profile.isStatic = tmpValue;
         if(profile.isStatic)
         {
-            superConfig.getStrValue(prefix + "StaticIP", profile.staticIp);
-            superConfig.getStrValue(prefix + "DefaultGateway", profile.defaultGateway);
-            superConfig.getStrValue(prefix + "SubnetMask", profile.subnetMask);
-            superConfig.getStrValue(prefix + "PreferedDNS", profile.preferedDNS);
-            superConfig.getStrValue(prefix + "AlternateDNS", profile.alternateDNS);
+            currentConfig.getStrValue(prefix + "StaticIP", profile.staticIp);
+            currentConfig.getStrValue(prefix + "DefaultGateway", profile.defaultGateway);
+            currentConfig.getStrValue(prefix + "SubnetMask", profile.subnetMask);
+            currentConfig.getStrValue(prefix + "PreferedDNS", profile.preferedDNS);
+            currentConfig.getStrValue(prefix + "AlternateDNS", profile.alternateDNS);
         }
 
         profiles.append(profile);
@@ -318,7 +318,7 @@ void SupervisorWifiMenuPrivate::saveProfiles()
 {
     bool ok;
     QString tmpStr;
-    if(!superConfig.getStrAttr("WiFi|Profiles", "Count", tmpStr))
+    if(!currentConfig.getStrAttr("WiFi|Profiles", "Count", tmpStr))
     {
         return;
     }
@@ -334,7 +334,7 @@ void SupervisorWifiMenuPrivate::saveProfiles()
     for(int i = 0; i < count; i++)
     {
         QString prefix = QString("WiFi|Profiles|Profile%1").arg(i);
-        superConfig.removeNode(prefix);
+        currentConfig.removeNode(prefix);
     }
 
     //add new profile
@@ -342,28 +342,28 @@ void SupervisorWifiMenuPrivate::saveProfiles()
     {
         QString prefix("WiFi|Profiles");
         QString nodeName = QString("Profile%1").arg(j);
-        superConfig.addNode(prefix, nodeName);
+        currentConfig.addNode(prefix, nodeName);
         prefix = prefix + "|" + nodeName;
-        superConfig.addNode(prefix, "ProfileName", profiles.at(j).profileName);
-        superConfig.addNode(prefix, "SSID", profiles.at(j).ssid);
-        superConfig.addNode(prefix, "AuthType", QString::number((int)profiles.at(j).authType));
-        superConfig.addNode(prefix, "SecurityKey", profiles.at(j).securityKey);
-        superConfig.addNode(prefix, "IsStatic", QString::number(profiles.at(j).isStatic));
+        currentConfig.addNode(prefix, "ProfileName", profiles.at(j).profileName);
+        currentConfig.addNode(prefix, "SSID", profiles.at(j).ssid);
+        currentConfig.addNode(prefix, "AuthType", QString::number((int)profiles.at(j).authType));
+        currentConfig.addNode(prefix, "SecurityKey", profiles.at(j).securityKey);
+        currentConfig.addNode(prefix, "IsStatic", QString::number(profiles.at(j).isStatic));
         if(profiles.at(j).isStatic)
         {
-            superConfig.addNode(prefix, "StaticIP", profiles.at(j).staticIp);
-            superConfig.addNode(prefix, "DefaultGateway", profiles.at(j).defaultGateway);
-            superConfig.addNode(prefix, "SubnetMask", profiles.at(j).subnetMask);
-            superConfig.addNode(prefix, "PreferedDNS", profiles.at(j).preferedDNS);
-            superConfig.addNode(prefix, "AlternateDNS", profiles.at(j).alternateDNS);
+            currentConfig.addNode(prefix, "StaticIP", profiles.at(j).staticIp);
+            currentConfig.addNode(prefix, "DefaultGateway", profiles.at(j).defaultGateway);
+            currentConfig.addNode(prefix, "SubnetMask", profiles.at(j).subnetMask);
+            currentConfig.addNode(prefix, "PreferedDNS", profiles.at(j).preferedDNS);
+            currentConfig.addNode(prefix, "AlternateDNS", profiles.at(j).alternateDNS);
         }
     }
 
-    superConfig.setStrAttr("WiFi|Profiles", "Count", QString::number(profiles.count()));
+    currentConfig.setStrAttr("WiFi|Profiles", "Count", QString::number(profiles.count()));
     int currentSelect = -1; //default select nothing if wifi profile changes
-    superConfig.setNumAttr("WiFi|Profiles", "CurrentSelect", currentSelect);
+    currentConfig.setNumAttr("WiFi|Profiles", "CurrentSelect", currentSelect);
 
-    superConfig.save();
+    currentConfig.save();
 }
 
 /***************************************************************************************************
@@ -522,7 +522,7 @@ void SupervisorWifiMenu::readyShow()
 {
     Q_D(SupervisorWifiMenu);
     bool enableWifi = false;
-    superConfig.getNumValue("WiFi|EnableWifi", enableWifi);
+    currentConfig.getNumValue("WiFi|EnableWifi", enableWifi);
     d->switchCombo->setCurrentIndex(enableWifi);
     d->loadProfiles();
     d->updateProfileList();

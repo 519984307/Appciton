@@ -16,7 +16,7 @@ TimeDate *TimeDate::_selfObj = NULL;
 static void getDateFormat(QString &format, bool year4Bits)
 {
     int dateFormat = 0;
-    superConfig.getNumValue("DateTime|DateFormat", dateFormat);
+    currentConfig.getNumValue("DateTime|DateFormat", dateFormat);
 
     if(year4Bits)
     {
@@ -60,7 +60,7 @@ static void getTimeFormat(QString &format, bool showSecond)
 {
     int timeFormat = 0;
 
-    superConfig.getNumValue("DateTime|TimeFormat", timeFormat);
+    currentConfig.getNumValue("DateTime|TimeFormat", timeFormat);
     if(showSecond)
     {
         if (TIME_FORMAT_24 == timeFormat)

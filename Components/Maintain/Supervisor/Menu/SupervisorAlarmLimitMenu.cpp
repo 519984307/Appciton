@@ -32,7 +32,7 @@ void SupervisorAlarmLimitMenu::_limitChange(QString valueStr, int id)
 
     QString patStr;
     int type = 0;
-    superConfig.getNumValue("General|DefaultPatientType", type);
+    currentConfig.getNumValue("General|DefaultPatientType", type);
     patStr = PatientSymbol::convert((PatientType)type);
 
 
@@ -42,17 +42,17 @@ void SupervisorAlarmLimitMenu::_limitChange(QString valueStr, int id)
     {
         case SUB_PARAM_ETCO2:
         case SUB_PARAM_FICO2:
-            superConfig.getNumValue("Local|CO2Unit", type);
+            currentConfig.getNumValue("Local|CO2Unit", type);
             break;
         case SUB_PARAM_NIBP_DIA:
         case SUB_PARAM_NIBP_MAP:
         case SUB_PARAM_NIBP_SYS:
-            superConfig.getNumValue("Local|NIBPUnit", type);
+            currentConfig.getNumValue("Local|NIBPUnit", type);
             break;
         case SUB_PARAM_T1:
         case SUB_PARAM_T2:
         case SUB_PARAM_TD:
-            superConfig.getNumValue("Local|TEMPUnit", type);
+            currentConfig.getNumValue("Local|TEMPUnit", type);
             break;
         default:
             break;
@@ -64,10 +64,10 @@ void SupervisorAlarmLimitMenu::_limitChange(QString valueStr, int id)
     prefix += Unit::getSymbol((UnitType)type);
 
     int scale = 1;
-    superConfig.getNumValue(prefix + "|Scale", scale);
+    currentConfig.getNumValue(prefix + "|Scale", scale);
 
     int step = 1;
-    superConfig.getNumValue(prefix + "|Step", step);
+    currentConfig.getNumValue(prefix + "|Step", step);
     int min, max;
     double dmin, dmax;
     if (0 == id % 2)
@@ -78,7 +78,7 @@ void SupervisorAlarmLimitMenu::_limitChange(QString valueStr, int id)
             item->upper->getRange(dmin, dmax);
             dmin = value + (double)step/scale;
             item->upper->setRange(dmin, dmax);
-            superConfig.setNumValue(prefix + "|Low", (int) (value * scale));
+            currentConfig.setNumValue(prefix + "|Low", (int) (value * scale));
         }
         else
         {
@@ -86,7 +86,7 @@ void SupervisorAlarmLimitMenu::_limitChange(QString valueStr, int id)
             item->upper->getRange(min, max);
             min = value + step;
             item->upper->setRange(min, max);
-            superConfig.setNumValue(prefix + "|Low", value);
+            currentConfig.setNumValue(prefix + "|Low", value);
         }
     }
     else
@@ -97,7 +97,7 @@ void SupervisorAlarmLimitMenu::_limitChange(QString valueStr, int id)
             item->lower->getRange(dmin, dmax);
             dmax = value - (double) step / scale;
             item->lower->setRange(dmin, dmax);
-            superConfig.setNumValue(prefix + "|High", (int) (value * scale));
+            currentConfig.setNumValue(prefix + "|High", (int) (value * scale));
         }
         else
         {
@@ -105,7 +105,7 @@ void SupervisorAlarmLimitMenu::_limitChange(QString valueStr, int id)
             item->lower->getRange(min, max);
             max = value - step;
             item->lower->setRange(min, max);
-            superConfig.setNumValue(prefix + "|High", value);
+            currentConfig.setNumValue(prefix + "|High", value);
         }
     }
 }
@@ -123,14 +123,14 @@ void SupervisorAlarmLimitMenu::_comboListIndexChanged(int id, int index)
 
     QString patStr;
     int type = 0;
-    superConfig.getNumValue("General|DefaultPatientType", type);
+    currentConfig.getNumValue("General|DefaultPatientType", type);
     patStr = PatientSymbol::convert((PatientType)type);
 
     SetItem *item = _itemList.at(id);
     SubParamID subID = item->sid;
     QString prefix = "AlarmSource|" + patStr + "|";
     prefix += paramInfo.getSubParamName(subID, true);
-    superConfig.setNumAttr(prefix, "Enable", index);
+    currentConfig.setNumAttr(prefix, "Enable", index);
 }
 
 /**************************************************************************************************
@@ -147,7 +147,7 @@ void SupervisorAlarmLimitMenu::_loadOptions(void)
 
     QString patStr;
     int type = 0;
-    superConfig.getNumValue("General|DefaultPatientType", type);
+    currentConfig.getNumValue("General|DefaultPatientType", type);
     patStr = PatientSymbol::convert((PatientType)type);
 
     int count = _itemList.count();
@@ -169,17 +169,17 @@ void SupervisorAlarmLimitMenu::_loadOptions(void)
         {
             case SUB_PARAM_ETCO2:
             case SUB_PARAM_FICO2:
-                superConfig.getNumValue("Local|CO2Unit", type);
+                currentConfig.getNumValue("Local|CO2Unit", type);
                 break;
             case SUB_PARAM_NIBP_DIA:
             case SUB_PARAM_NIBP_MAP:
             case SUB_PARAM_NIBP_SYS:
-                superConfig.getNumValue("Local|NIBPUnit", type);
+                currentConfig.getNumValue("Local|NIBPUnit", type);
                 break;
             case SUB_PARAM_T1:
             case SUB_PARAM_T2:
             case SUB_PARAM_TD:
-                superConfig.getNumValue("Local|TEMPUnit", type);
+                currentConfig.getNumValue("Local|TEMPUnit", type);
                 break;
             default:
                 break;
@@ -190,14 +190,14 @@ void SupervisorAlarmLimitMenu::_loadOptions(void)
 
         item->combo->label->setText(name);
 
-        superConfig.getNumAttr(prefix, "Enable", enable);
+        currentConfig.getNumAttr(prefix, "Enable", enable);
 
         prefix += "|";
         prefix += Unit::getSymbol((UnitType)type);
-        superConfig.getNumValue(prefix + "|Low", low);
-        superConfig.getNumValue(prefix + "|High", high);
-        superConfig.getNumValue(prefix + "|Step", step);
-        superConfig.getNumValue(prefix + "|Scale", scale);
+        currentConfig.getNumValue(prefix + "|Low", low);
+        currentConfig.getNumValue(prefix + "|High", high);
+        currentConfig.getNumValue(prefix + "|Step", step);
+        currentConfig.getNumValue(prefix + "|Scale", scale);
 
         item->combo->setCurrentIndex(enable);
 
@@ -214,10 +214,10 @@ void SupervisorAlarmLimitMenu::_loadOptions(void)
         if (ISPIN_MODE_INT == mode)
         {
             stepValue = step;
-            superConfig.getNumAttr(prefix + "|Low", "Min", lowMinValue);
+            currentConfig.getNumAttr(prefix + "|Low", "Min", lowMinValue);
             lowMaxValue = high - stepValue;
             highMinValue = low + stepValue;
-            superConfig.getNumAttr(prefix + "|High", "Max", highMaxValue);
+            currentConfig.getNumAttr(prefix + "|High", "Max", highMaxValue);
             item->lower->setRange(lowMinValue, lowMaxValue);
             item->lower->setValue(low);
             item->lower->setStep(stepValue);
@@ -228,11 +228,11 @@ void SupervisorAlarmLimitMenu::_loadOptions(void)
         else
         {
             fStepValue = (double)step / scale;
-            superConfig.getNumAttr(prefix + "|Low", "Min", tmp);
+            currentConfig.getNumAttr(prefix + "|Low", "Min", tmp);
             fLowMinValue = (double)tmp / scale;
             fLowMaxValue = (double)high / scale - fStepValue;
             fHighMinValue = (double)low / scale + fStepValue;
-            superConfig.getNumAttr(prefix + "|High", "Max", tmp);
+            currentConfig.getNumAttr(prefix + "|High", "Max", tmp);
             fHighMaxValue = (double)tmp / scale;
             item->lower->setRange(fLowMinValue, fLowMaxValue);
             item->lower->setValue((double)low / scale);

@@ -131,10 +131,10 @@ CodeMarkerWidget::CodeMarkerWidget() : PopupWidget()
     // 获取当前Code Marker Type值
     QString codemarkerStr;
     int num = 0;
-    superConfig.getNumAttr("Local|Language", "CurrentOption", num);
+    currentConfig.getNumAttr("Local|Language", "CurrentOption", num);
     QString markerStr = "CodeMarker|SelectMarker|Language";
     markerStr += QString::number(num, 10);
-    superConfig.getStrValue(markerStr, codemarkerStr);
+    currentConfig.getStrValue(markerStr, codemarkerStr);
     _origCodeMarker = codemarkerStr.split(',');
     for (int i = 0; i < _origCodeMarker.size(); i++)
     {
