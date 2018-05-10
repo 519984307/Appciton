@@ -10,6 +10,7 @@
 #include <QPointer>
 #include "ContinuousPageGenerator.h"
 #include <QTimer>
+#include "FontManager.h"
 
 
 class RecorderManagerPrivate
@@ -17,6 +18,7 @@ class RecorderManagerPrivate
 public:
     RecorderManagerPrivate()
         :connected(false),
+          isAborted(false),
           status(PRINTER_STAT_NORMAL),
           curSpeed(PRINT_SPEED_250),
           processor(NULL),
@@ -27,6 +29,7 @@ public:
     }
 
     bool connected;
+    bool isAborted;
     PrinterStatus status;
     PrintSpeed curSpeed;
     RecordPageProcessor *processor;
@@ -137,7 +140,13 @@ void RecorderManager::abort()
             QMetaObject::invokeMethod(d_ptr->generator, "stop");
         }
         QMetaObject::invokeMethod(d_ptr->processor, "flushPages");
+        d_ptr->isAborted = true;
     }
+}
+
+bool RecorderManager::isAbort() const
+{
+    return d_ptr->isAborted;
 }
 
 PrinterStatus RecorderManager::getPrintStatus() const
@@ -382,6 +391,7 @@ void RecorderManager::providerReportError(unsigned char err)
 void RecorderManager::onGeneratorStopped()
 {
     sender()->deleteLater();
+    d_ptr->isAborted = false;
 }
 
 RecorderManager::RecorderManager()

@@ -14,12 +14,17 @@
 #include "CO2Param.h"
 #include "AGParam.h"
 #include "IBPParam.h"
+#include "ParamManager.h"
+#include "Utility.h"
 
 class ContinuousPageGeneratorPrivate
 {
 public:
-    ContinuousPageGeneratorPrivate()
-        :curPageType(RecordPageGenerator::TitlePage)
+    ContinuousPageGeneratorPrivate(ContinuousPageGenerator * const q_ptr)
+        : q_ptr(q_ptr),
+          curPageType(RecordPageGenerator::TitlePage),
+          currentDrawWaveSegment(0),
+          totalDrawWaveSegment(-1)
     {
         TrendCacheData data;
         TrendAlarmStatus almStatus;
@@ -41,35 +46,30 @@ public:
         trendData.alarmFlag = alarm;
     }
 
-    QList<RecordWaveSegmentInfo> getPrintWaveInfo();
+    QList<RecordWaveSegmentInfo> getPrintWaveInfos();
 
+    void fetchWaveData();
+
+    bool isParamStop(WaveformID id);
+
+    ContinuousPageGenerator *q_ptr;
     RecordPageGenerator::PageType curPageType;
     TrendDataPackage trendData;
+    QList<RecordWaveSegmentInfo> waveInfos;
+    int currentDrawWaveSegment;
+    int totalDrawWaveSegment;   //total wave segments that need to draw, -1 means unlimit
 };
 
 /**
  * @brief ContinuousPageGeneratorPrivate::getPrintWaveInfo get the continuous print wave info
  * @return a list contain the wave segment info of the waves that need to print
  */
-QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfo()
+QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfos()
 {
     QList<int> waveID;
     QList<RecordWaveSegmentInfo> infos;
 
     int printWaveNum = recorderManager.getPrintWaveNum();
-    PrintSpeed speed = recorderManager.getPrintSpeed();
-    int lengthOfOneSecond = 250; //default for 25mm/s, muliply 10
-    switch(speed)
-    {
-    case PRINT_SPEED_125:
-        lengthOfOneSecond = 125;
-        break;
-    case PRINT_SPEED_500:
-        lengthOfOneSecond = 500;
-        break;
-    default:
-        break;
-    }
 
     windowManager.getDisplayedWaveform(waveID);
 
@@ -79,10 +79,11 @@ QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfo()
     for(int i = 0; i < waveID.length() && i < printWaveNum; i++)
     {
         WaveformID id = (WaveformID)waveID.at(i);
+        QString caption = paramInfo.getParamName(paramInfo.getParamID(id));
+        int captionLength = 0;
         RecordWaveSegmentInfo info;
         info.id = id;
-        info.pageNum = 0;
-        info.pageWidth = RECORDER_PIXEL_PER_MM * lengthOfOneSecond / 10;
+        info.waveNum = waveformCache.getSampleRate(id);
         switch(id)
         {
         case WAVE_ECG_I:
@@ -98,6 +99,10 @@ QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfo()
         case WAVE_ECG_V5:
         case WAVE_ECG_V6:
             info.waveInfo.ecg.gain = ecgParam.getGain(ecgParam.waveIDToLeadID(id));
+            caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
+                                                                ecgParam.getLeadConvention()))
+                    .arg(ECGSymbol::convert(ecgParam.getFilterMode()));
+            captionLength = fontManager.textWidthInPixels(caption, q_ptr->font());
             break;
         case WAVE_RESP:
             info.waveInfo.resp.zoom = respParam.getZoom();
@@ -121,6 +126,7 @@ QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfo()
             info.waveInfo.ibp.high = scaleInfo.high;
             info.waveInfo.ibp.low = scaleInfo.low;
             info.waveInfo.ibp.isAuto = scaleInfo.isAuto;
+            info.waveInfo.ibp.unit = paramManager.getSubParamUnit(PARAM_IBP, SUB_PARAM_ART_SYS);
         }
             break;
         case WAVE_IBP2:
@@ -130,12 +136,18 @@ QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfo()
             info.waveInfo.ibp.high = scaleInfo.high;
             info.waveInfo.ibp.low = scaleInfo.low;
             info.waveInfo.ibp.isAuto = scaleInfo.isAuto;
+            info.waveInfo.ibp.unit = paramManager.getSubParamUnit(PARAM_IBP, SUB_PARAM_ART_SYS);
             break;
         }
         default:
             break;
         }
 
+        captionLength = fontManager.textWidthInPixels(caption, q_ptr->font());
+        info.drawCtx.captionPixLength = captionLength;
+        Util::strlcpy(info.drawCtx.caption, qPrintable(caption), sizeof(info.drawCtx.caption));
+        info.drawCtx.curPageFirstXpos = 0.0;
+        info.drawCtx.prevSegmentLastYpos = 0.0;
         infos.append(info);
     }
 
@@ -154,10 +166,78 @@ QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfo()
     return infos;
 }
 
+/**
+ * @brief ContinuousPageGeneratorPrivate::fetchWaveData
+ *          get the wave data from the realtime channel in the wavecache.
+ *          we should fetch 1 second wave data form the realtimeChannel,
+ *          if wavecache don't have enough data, we fill invalid data.
+ */
+void ContinuousPageGeneratorPrivate::fetchWaveData()
+{
+    QList<RecordWaveSegmentInfo>::iterator iter;
+    for(iter = waveInfos.begin(); iter < waveInfos.end(); iter++)
+    {
+        if(iter->waveBuff.size() != iter->waveNum)
+        {
+            iter->waveBuff.resize(iter->waveNum);
+        }
+
+        int curSize = 0;
+        int retryCount = 0;
+        int lastReadSize = 0;
+        while(curSize < iter->waveNum)
+        {
+            if(recorderManager.isAbort())
+            {
+                //param stop
+                break;
+            }
+
+            if(isParamStop(iter->id))
+            {
+                //param stop
+                break;
+            }
+
+            curSize += waveformCache.readRealtimeChannel(iter->id,
+                                                         iter->waveNum - curSize,
+                                                         iter->waveBuff.data() + curSize);
+
+            if(++retryCount >= 100) //500 ms has passed and haven't finished reading
+            {
+                if(curSize == lastReadSize)
+                {
+                    break;
+                }
+            }
+
+            lastReadSize = curSize;
+            Util::waitInEventLoop(5);
+        }
+
+        if(curSize < iter->waveNum)
+        {
+            //no enough data, fill with invalid
+            qFill(iter->waveBuff.data() + curSize, iter->waveBuff.data()+iter->waveNum, (WaveDataType) INVALID_WAVE_FALG_BIT);
+        }
+    }
+}
+
+/**
+ * @brief ContinuousPageGeneratorPrivate::isParamStop check whether the param is stopped
+ * @param id waveform id
+ * @return true if stopped, otherwise, return false;
+ */
+bool ContinuousPageGeneratorPrivate::isParamStop(WaveformID id)
+{
+    return paramManager.isParamStopped(paramInfo.getParamID(id));
+}
+
 ContinuousPageGenerator::ContinuousPageGenerator(QObject *parent)
-    :RecordPageGenerator(parent), d_ptr(new ContinuousPageGeneratorPrivate())
+    :RecordPageGenerator(parent), d_ptr(new ContinuousPageGeneratorPrivate(this))
 {
     waveformCache.startRealtimeChannel();
+    d_ptr->waveInfos = d_ptr->getPrintWaveInfos();
 }
 
 ContinuousPageGenerator::~ContinuousPageGenerator()
@@ -182,10 +262,25 @@ RecordPage *ContinuousPageGenerator::createPage()
         return createTrendPage(d_ptr->trendData, true);
     case WaveScalePage:
         d_ptr->curPageType = WaveSegmentPage;
-        return NULL;
+        return createWaveScalePage(d_ptr->waveInfos, recorderManager.getPrintSpeed());
     case WaveSegmentPage:
-        d_ptr->curPageType = EndPage;
-        return NULL;
+    {
+        RecordPage *page;
+        if(d_ptr->currentDrawWaveSegment >= d_ptr->totalDrawWaveSegment)
+        {
+            d_ptr->curPageType = EndPage;
+        }
+
+        d_ptr->fetchWaveData();
+        if(recorderManager.isAbort())
+        {
+            // already stop
+            return NULL;
+        }
+
+        page = createWaveSegments(d_ptr->waveInfos, d_ptr->currentDrawWaveSegment++, recorderManager.getPrintSpeed());
+        return page;
+    }
     case EndPage:
         d_ptr->curPageType = NullPage;
         return NULL;

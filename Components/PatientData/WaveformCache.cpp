@@ -298,6 +298,42 @@ int WaveformCache::readRealtimeChannel(WaveformID id, WaveDataType *buff, int ti
 }
 
 /***************************************************************************************************
+ * read oldest data from the realtime channel, the channel remove the read data
+ **************************************************************************************************/
+int WaveformCache::readRealtimeChannel(WaveformID id, int num, WaveDataType *buff)
+{
+    if ((buff == NULL) || (num <= 0))
+    {
+        return 0;
+    }
+
+    ChannelDesc *channel = _realtimeChannel[id];
+    if(channel == NULL)
+    {
+        qdebug("channel is empty.\n");
+        return 0;
+    }
+
+    int size = 0;
+
+    channel->_mutex.lock();
+    RingBuff<WaveDataType> &pool = channel->buff;
+    size = pool.dataSize();
+
+    if(num <= size)
+    {
+        size = num;
+    }
+    pool.copy(0, &buff[0], size);
+
+    //remove the read data
+    pool.pop(size);
+    channel->_mutex.unlock();
+
+    return size;
+}
+
+/***************************************************************************************************
  * disable the realtime print channel
  **************************************************************************************************/
 void WaveformCache::stopRealtimeChannel()

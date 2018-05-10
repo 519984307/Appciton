@@ -18,6 +18,8 @@ public:
     virtual void disable(void);
     bool isEnabled(void);
 
+    virtual bool isConnected(void);
+
     // 初始化参数。
     virtual void initParam(void);
 

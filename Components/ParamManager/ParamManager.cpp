@@ -256,6 +256,20 @@ bool ParamManager::isParamEnable(ParamID id)
 }
 
 /**************************************************************************************************
+ * check whether the param is stopped
+ *************************************************************************************************/
+bool ParamManager::isParamStopped(ParamID id)
+{
+    ParamWithIDMap::iterator it = _paramWithID.find(id);
+    if (it == _paramWithID.end())
+    {
+        return true;
+    }
+
+    return it.value()->isConnected();
+}
+
+/**************************************************************************************************
  * 功能：检查Proider的连接状态。
  *************************************************************************************************/
 void ParamManager::checkProviderConnection(void)

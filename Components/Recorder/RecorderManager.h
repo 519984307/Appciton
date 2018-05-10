@@ -67,6 +67,12 @@ public:
     void abort();
 
     /**
+     * @brief isAbort check whether in abort state
+     * @return
+     */
+    bool isAbort() const;
+
+    /**
      * @brief getPrintStatus get the printer status
      * @return
      */
@@ -91,7 +97,6 @@ public:
      *         It happens when existing a higher priority generator
      */
     bool addPageGenerator(RecordPageGenerator *generator);
-
 
 private slots:
 

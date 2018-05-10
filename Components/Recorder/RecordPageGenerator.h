@@ -16,12 +16,18 @@
 struct RecordWaveSegmentInfo
 {
     WaveformID id;                  // wave id
-    int pageNum;                    // page number
-    int pageWidth;                  // page width;
     int startYOffset;               // start Y Offset of wave;
     int endYOffset;                 // end y offset of the wave
     int waveNum;                    // wave point num
     QVector<WaveDataType> waveBuff; // wave buffer
+
+    struct {
+        qreal prevSegmentLastYpos;  // the y value on the previous segment page edge
+        qreal curPageFirstXpos;     // the first wave point's x position
+        int captionPixLength;          // store the caption pixel length of the wave caption
+        char caption[64];            // wave caption string
+    } drawCtx;
+
     union {
         struct {
             ECGGain gain;
@@ -44,6 +50,7 @@ struct RecordWaveSegmentInfo
             int high;
             bool isAuto;
             IBPPressureName pressureName;
+            UnitType unit;
         } ibp;
 
         struct {
@@ -158,9 +165,18 @@ protected:
      * @brief createWaveScalePage create the wave scale page
      * @param waveInfos wave infos
      * @param speed print speed
-     * @return
+     * @return page
      */
     static RecordPage *createWaveScalePage(const QList<RecordWaveSegmentInfo> & waveInfos, PrintSpeed speed);
+
+    /**
+     * @brief createWaveSegments create the wave segments
+     * @param waveInfos wave infos
+     * @param segmentIndex the segment index,
+     * @param speed print speed
+     * @return page
+     */
+    static RecordPage *createWaveSegments(const QList<RecordWaveSegmentInfo> &waveInfos, int segmentIndex, PrintSpeed speed);
 
     /**
      * @brief timerEvent handle timer event

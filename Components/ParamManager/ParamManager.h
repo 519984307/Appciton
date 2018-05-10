@@ -47,6 +47,9 @@ public:
     // 参数是否有效。
     bool isParamEnable(ParamID id);
 
+    // check whether the param is stopped
+    bool isParamStopped(ParamID id);
+
     // 检查Proider的连接状态。
     void checkProviderConnection(void);
 

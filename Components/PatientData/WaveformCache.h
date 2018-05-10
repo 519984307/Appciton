@@ -70,6 +70,9 @@ public: // 通道相关。
     //read the oldest data from the realtime channel, the channel will remove the read data
     int readRealtimeChannel(WaveformID id, WaveDataType *buff, int time);
 
+    //read the oldest data from the realtime channel, the channel will remove the read data
+    int readRealtimeChannel(WaveformID id, int num, WaveDataType *buff);
+
     //TODO: deprecated, remove later
     //register a user buffer as sync cache
     bool registerSyncCache(WaveformID id, long cacheID, WaveDataType *buff, int buflen, SyncCacheCallback cb=NULL);

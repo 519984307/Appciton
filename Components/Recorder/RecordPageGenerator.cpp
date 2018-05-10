@@ -620,6 +620,12 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
     return strList;
 }
 
+/**
+ * @brief drawECGGain draw the ecg ruler on the page
+ * @param page print page
+ * @param painter painter of the page
+ * @param waveInfo wave info
+ */
 static void drawECGGain(RecordPage *page, QPainter *painter, const RecordWaveSegmentInfo &waveInfo)
 {
     int rulerHeight = 10 * RECORDER_PIXEL_PER_MM; // height for 1.0 ECG gain
@@ -648,13 +654,95 @@ static void drawECGGain(RecordPage *page, QPainter *painter, const RecordWaveSeg
         break;
     }
 
+    int pageWidth = page->width();
+    int yBottom = waveInfo.startYOffset + (waveInfo.endYOffset - waveInfo.startYOffset) / 2;
+    QPainterPath path;
+    path.moveTo(0, yBottom);
+    path.lineTo(pageWidth / 3, yBottom);
+    path.lineTo(pageWidth / 3, yBottom - rulerHeight);
+    path.lineTo(pageWidth * 2 / 3, yBottom - rulerHeight);
+    path.lineTo(pageWidth * 2 / 3, yBottom);
+    path.lineTo(pageWidth, yBottom);
+    painter->save();
+    QPen p(Qt::white, 1);
+    painter->setPen(p);
+    painter->setBrush(Qt::NoBrush);
+    painter->drawPath(path);
+    int fontH = fontManager.textHeightInPixels(painter->font());
+    QRect rect(0, yBottom - rulerHeight - fontH, pageWidth, fontH);
+    painter->setPen(Qt::white);
+    painter->drawText(rect, Qt::AlignCenter,  str);
+    painter->restore();
+}
+
+#define RULER_TICK_LEN 8
+//draw a percent style ruler
+static void drawPercentRuler(RecordPage *page, QPainter *painter, const RecordWaveSegmentInfo &waveInfo,
+                             const QString &high, const QString &low)
+{
+    QPainterPath path;
+    path.moveTo(RULER_TICK_LEN, waveInfo.startYOffset);
+    path.lineTo(0, waveInfo.startYOffset);
+    path.lineTo(0, waveInfo.endYOffset);
+    path.lineTo(RULER_TICK_LEN, waveInfo.endYOffset);
+
+    painter->save();
+
+    QPen p(Qt::white, 1);
+    painter->setPen(p);
+    painter->setBrush(Qt::NoBrush);
+    painter->drawPath(path);
+
+    painter->setPen(Qt::white);
+
+    int fontH = fontManager.textHeightInPixels(painter->font());
+    QRect rect(RULER_TICK_LEN, waveInfo.startYOffset, page->width() - RULER_TICK_LEN, fontH);
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, high);
+    rect.translate(0, waveInfo.endYOffset - waveInfo.startYOffset - fontH);
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, low);
+
+    rect.setY((waveInfo.endYOffset -  waveInfo.startYOffset - fontH) / 2 + waveInfo.startYOffset);
+    rect.setHeight(fontH);
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, "%");
+
+    painter->restore();
+}
+
+// draw the IBP ruler on the page
+static void drawIBPRuler(RecordPage *page, QPainter *painter, const RecordWaveSegmentInfo &waveInfo)
+{
+    QPainterPath path;
+    path.moveTo(RULER_TICK_LEN, waveInfo.startYOffset);
+    path.lineTo(0, waveInfo.startYOffset);
+    path.lineTo(0, waveInfo.endYOffset);
+    path.lineTo(RULER_TICK_LEN, waveInfo.endYOffset);
+
+    painter->save();
+
+    QPen p(Qt::white, 1);
+    painter->setPen(p);
+    painter->setBrush(Qt::NoBrush);
+    painter->drawPath(path);
+
+    painter->setPen(Qt::white);
+
+    int fontH = fontManager.textHeightInPixels(painter->font());
+    QRect rect(RULER_TICK_LEN, waveInfo.startYOffset, page->width() - RULER_TICK_LEN, fontH);
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, QString::number(waveInfo.waveInfo.ibp.high));
+    rect.translate(0, waveInfo.endYOffset - waveInfo.startYOffset - fontH);
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, QString::number(waveInfo.waveInfo.ibp.low));
+
+    rect.setY((waveInfo.endYOffset -  waveInfo.startYOffset - fontH) / 2 + waveInfo.startYOffset);
+    rect.setHeight(fontH);
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, Unit::localeSymbol(waveInfo.waveInfo.ibp.unit));
+
+    painter->restore();
 }
 
 RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegmentInfo> &waveInfos, PrintSpeed speed)
 {
     Q_ASSERT(waveInfos.size() > 0);
-    int pageWidth = waveInfos.at(0).pageWidth;
-
+    int pageWidth = 25 * RECORDER_PIXEL_PER_MM;
 
     RecordPage *page = new RecordPage(pageWidth);
     QPainter painter(page);
@@ -685,9 +773,165 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
         case WAVE_ECG_V4:
         case WAVE_ECG_V5:
         case WAVE_ECG_V6:
+            drawECGGain(page, &painter, *iter);
+            break;
+        case WAVE_RESP:
+            break;
+        case WAVE_SPO2:
+            break;
+        case WAVE_CO2:
+        {
+            int high;
+            CO2DisplayZoom zoom = iter->waveInfo.co2.zoom;
+            switch (zoom) {
+            case CO2_DISPLAY_ZOOM_4:
+                high = 4;
+                break;
+            case CO2_DISPLAY_ZOOM_8:
+                high = 8;
+                break;
+            case CO2_DISPLAY_ZOOM_12:
+                high = 12;
+                break;
+            case CO2_DISPLAY_ZOOM_20:
+            default:
+                high = 20;
+                break;
+            }
+
+            drawPercentRuler(page, &painter, *iter, QString().sprintf("%.01f", (double)high), "0");
+        }
+            break;
+        case WAVE_N2O:
+        case WAVE_AA1:
+        case WAVE_AA2:
+        case WAVE_O2:
+        {
+            int high;
+            AGDisplayZoom zoom = iter->waveInfo.ag.zoom;
+            switch (zoom) {
+            case AG_DISPLAY_ZOOM_4:
+                high = 4;
+                break;
+            case AG_DISPLAY_ZOOM_8:
+                high = 8;
+                break;
+            case AG_DISPLAY_ZOOM_15:
+            default:
+                high = 15;
+                break;
+            }
+            drawPercentRuler(page, &painter, *iter, QString().sprintf("%.01f", (double)high), "0");
+        }
+            break;
+
+        case WAVE_IBP1:
+        case WAVE_IBP2:
+            drawIBPRuler(page, &painter, *iter);
+        break;
+
+        default:
             break;
         }
     }
+
+    return page;
+}
+
+
+/**
+ * @brief drawCaption draw the wave's caption
+ * @param page the record page
+ * @param patiner painter
+ * @param waveInfo wave segment info;
+ * @param segIndex the wave segment index
+ */
+static void drawCaption(RecordPage *page, QPainter *painter, const RecordWaveSegmentInfo &waveInfo, int segIndex)
+{
+    if(page->width() * (segIndex) >= waveInfo.drawCtx.captionPixLength)
+    {
+        //the caption has heen completely drawn
+        return;
+    }
+
+    int fontH = fontManager.textHeightInPixels(painter->font());
+    QRect rect(0, waveInfo.startYOffset, waveInfo.drawCtx.captionPixLength, fontH);
+    painter->save();
+    painter->setPen(Qt::white);
+    painter->translate(segIndex * page->width(), 0);
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, waveInfo.drawCtx.caption);
+    painter->restore();
+}
+
+/**
+ * @brief mapWaveValue map the wave value
+ * @param waveInfo the wave segment info
+ * @param wave input wave value
+ * @return  output wave value
+ */
+static qreal mapWaveValue(const RecordWaveSegmentInfo & waveInfo, short wave)
+{
+    qreal waveData;
+    return waveData;
+}
+
+
+/**
+ * @brief drawWaveSegment draw wave segment
+ * @param page  the record page
+ * @param painter paitner
+ * @param waveInfo the wave segment info
+ */
+static void drawWaveSegment(RecordPage *page, QPainter *painter, const RecordWaveSegmentInfo &waveInfo)
+{
+    qreal x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+    for(int i = 0; i < waveInfo.waveNum; i++)
+    {
+        if(waveInfo.waveBuff[i] & INVALID_WAVE_FALG_BIT)
+        {
+            if(i == 0)
+            {
+                //start point
+                x1 = 0;
+                x2 = waveInfo.drawCtx.curPageFirstXpos;
+            }
+            short wave = waveInfo.waveBuff[i] & 0xFFFF;
+        }
+        else
+        {
+
+        }
+    }
+}
+
+RecordPage *RecordPageGenerator::createWaveSegments(const QList<RecordWaveSegmentInfo> &waveInfos, int segmentIndex, PrintSpeed speed)
+{
+    int pageWidth = 25 * RECORDER_PIXEL_PER_MM;
+    switch(speed)
+    {
+    case PRINT_SPEED_125:
+        pageWidth = 125 * RECORDER_PIXEL_PER_MM / 10;
+        break;
+    case PRINT_SPEED_500:
+        pageWidth = 50 * RECORDER_PIXEL_PER_MM;
+        break;
+    default:
+        break;
+    }
+
+    RecordPage *page = new RecordPage(pageWidth);
+    QPainter painter(page);
+    painter.setPen(Qt::white);
+    QFont font = fontManager.recordFont(24);
+    painter.setFont(font);
+
+    QList<RecordWaveSegmentInfo>::const_iterator iter = waveInfos.constBegin();
+    for(;iter != waveInfos.constEnd(); iter++)
+    {
+        drawCaption(page, &painter, *iter, segmentIndex);
+
+    }
+    return page;
 }
 
 void RecordPageGenerator::timerEvent(QTimerEvent *ev)
