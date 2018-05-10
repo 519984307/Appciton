@@ -21,9 +21,9 @@
 
     <ConfigManager>
         <Default>
-            <Adult type="Factory" name="" >AdultConfig.origin.xml</Adult>
-            <PED type="Factory" name="" >PedConfig.origin.xml</PED>
-            <NEO type="Factory" name="" >NeoConfig.origin.xml</NEO>
+            <Adult type="Factory" name="" >AdultConfig.Original.xml</Adult>
+            <PED type="Factory" name="" >PedConfig.Original.xml</PED>
+            <NEO type="Factory" name="" >NeoConfig.Original.xml</NEO>
         </Default>
         <UserDefine count="0">
         </UserDefine>
