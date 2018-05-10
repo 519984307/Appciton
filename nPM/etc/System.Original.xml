@@ -3,6 +3,9 @@
 <System>
     <!--日期格式，0:y/m/d, 1:m/d/y, 2:d/m/y-->
     <DateFormat>0</DateFormat>
+    <General>
+        <PatientType>0</PatientType><!--0:adult  1:ped  2:neo-->
+    </General>
     <DataStorage>
     <FolderSequenceNum>1</FolderSequenceNum>
     <FolderName></FolderName>

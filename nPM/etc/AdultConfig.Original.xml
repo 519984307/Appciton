@@ -78,10 +78,31 @@
         <AdultInitialCuffInflation>2</AdultInitialCuffInflation>
         <PedInitialCuffInflation>4</PedInitialCuffInflation>
     </NIBP>
+    <SPO2>
+        <Sensitivity>1</Sensitivity>
+        <SmartPluseTone>1</SmartPluseTone>
+        <WaveVelocity>2</WaveVelocity>
+        <Gain>3</Gain>
+        <ModuleControl>1</ModuleControl>
+    </SPO2>
     <CO2>
         <CO2ModeDefault>1</CO2ModeDefault>
         <CO2SweepMode>0</CO2SweepMode>
+        <SweepSpeed>1</SweepSpeed>
+        <FICO2Display>0</FICO2Display>
+        <Compensation>
+            <O2>1</O2>
+            <NO2>0</NO2>
+        </Compensation>
+        <CeroCalibration>0</CeroCalibration>
     </CO2>
+    <CO>
+        <ratdio>0.555</ratdio>
+        <InjectionTempSource>1</InjectionTempSource>
+        <InjectionTemp>23.2</InjectionTemp>
+        <InjectionVolumn>3</InjectionVolumn>
+        <MeasureMode>1</MeasureMode>
+    </CO>
     <RESP>
         <AutoActivation>0</AutoActivation>
 		<ApneaDelay>2</ApneaDelay>
