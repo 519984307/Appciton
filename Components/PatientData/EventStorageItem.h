@@ -31,6 +31,23 @@ public:
      */
     EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, const char *codeName);
 
+    /**
+     * @brief EventStorageItem user for OxyCRG event
+     * @param type event type
+     * @param storeWaveforms waveforms this event to store
+     * @param oxyCRGtype oxyCRG event type
+     * @param almInfo alarm info
+     */
+    EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, OxyCRGEventType oxyCRGtype, const AlarmInfoSegment &almInfo);
+
+    /**
+     * @brief EventStorageItem user for OxyCRG event
+     * @param type event type
+     * @param storeWaveforms waveforms this event to store
+     * @param oxyCRGtype oxyCRG event type
+     */
+    EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, OxyCRGEventType oxyCRGtype);
+
 
     virtual ~EventStorageItem();
 

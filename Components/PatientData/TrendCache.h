@@ -43,7 +43,7 @@ struct TrendRecorder
     void *obj;              /* object that the trend data record to */
 
     /* call when trend data ready*/
-    void (*completeCallback) (void *obj);
+    void (*completeCallback) (unsigned timestamp, const TrendCacheData &data, const TrendAlarmStatus &almStatus, void *obj);
 };
 
 // 子参数ID、数值映射。

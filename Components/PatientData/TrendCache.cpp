@@ -119,7 +119,7 @@ void TrendCache::collectTrendAlarmStatus(unsigned t)
     QList<TrendRecorder>::Iterator iter = _recorders.begin();
     for(; iter != _recorders.end(); iter++)
     {
-        iter->completeCallback(iter->obj);
+        iter->completeCallback(t, _trendCacheMap.find(t).value(), alarmStatus,iter->obj);
         if(iter->toTimestamp <= (int)t)
         {
             iter = _recorders.erase(iter);

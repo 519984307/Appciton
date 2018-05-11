@@ -437,10 +437,9 @@ void EventReviewWindow::eventInfoUpdate()
             infoStr += trs("Lower");
             infoStr += " < ";
         }
-        SubParamID subID = (SubParamID)d_ptr->ctx.almSegment->subParamID;
-        ParamID id = paramInfo.getParamID(subID);
-        UnitType type = paramManager.getSubParamUnit(id, subID);
-        LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subID, type);
+        ParamID id = paramInfo.getParamID(subId);
+        UnitType type = paramManager.getSubParamUnit(id, subId);
+        LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subId, type);
         double limitValue = (double)d_ptr->ctx.almSegment->alarmLimit / config.scale;
         infoStr += QString::number(limitValue);
         break;
@@ -876,6 +875,11 @@ void EventReviewWindow::_loadEventData()
         priority = ALARM_PRIO_PROMPT;
         if (d_ptr->parseEventData(i))
         {
+            if (d_ptr->ctx.infoSegment->type == EventOxyCRG)
+            {
+                continue;
+            }
+
             t = d_ptr->ctx.infoSegment->timestamp;
             // 事件时间
             timeDate.getDate(t, dateStr, true);

@@ -17,12 +17,20 @@ public:
     static OxyCRGEventWidget *_selfObj;
     ~OxyCRGEventWidget();
 
+    void eventInfoUpdate(void);
+    void eventWaveUpdate(void);
+
 protected:
     void showEvent(QShowEvent *e);
 
 private slots:
     void _upMoveEventReleased(void);
     void _downMoveEventReleased(void);
+    void _detailReleased(void);
+    void _eventListReleased(void);
+
+private:
+    void _loadOxyCRGEventData(void);
 
 private:
     OxyCRGEventWidget();

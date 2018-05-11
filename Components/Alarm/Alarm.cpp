@@ -225,6 +225,20 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
             infoSegment.subParamID = alarmSource->getSubParamID(i);
             infoSegment.alarmType = i;
             eventStorageManager.triggerAlarmEvent(infoSegment, alarmSource->getWaveformID(i));
+            switch (infoSegment.subParamID)
+            {
+            case SUB_PARAM_HR_PR:
+                eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventECG);
+                break;
+            case SUB_PARAM_SPO2:
+                eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventSpO2);
+                break;
+            case SUB_PARAM_RR_BR:
+                eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventResp);
+                break;
+            default:
+                break;
+            }
         }//栓锁的报警重新发生报警
         else
         {

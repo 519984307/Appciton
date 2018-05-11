@@ -30,8 +30,11 @@ public:
     //trigger a wave freeze event
     void triggerWaveFreezeEvent();
 
+    //trigger alarm oxyCRG event
+    void triggerAlarmOxyCRGEvent(const AlarmInfoSegment &almInfo, OxyCRGEventType type);
+
     //trigger oxyCRG event
-    void triggerOxyCRGEvent();
+    void triggerOxyCRGEvent(OxyCRGEventType type);
 
     //call periodically to clear completed event
     void checkCompletedEvent(void);

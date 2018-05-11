@@ -88,6 +88,16 @@ public:
     virtual int getCO2BaseLine(void) {return 0;}
     virtual void setWorkMode(CO2WorkMode /*mode*/) {}
 
+    // 实现AG的接口。
+    virtual int getN2OBaseLine(void) {return 0;}
+    virtual int getAA1BaseLine(void) {return 0;}
+    virtual int getAA2BaseLine(void) {return 0;}
+    virtual int getO2BaseLine(void) {return 0;}
+    virtual int getN2OMaxWaveform(void) {return 2000;}
+    virtual int getAA1MaxWaveform(void) {return 2000;}
+    virtual int getAA2MaxWaveform(void) {return 2000;}
+    virtual int getO2MaxWaveform(void) {return 2000;}
+
     DemoProvider();
     virtual ~DemoProvider();
 

@@ -6,6 +6,15 @@
 #include "IButton.h"
 #include "IDropList.h"
 #include "IMoveButton.h"
+#include "EventDataDefine.h"
+#include "EventStorageManager.h"
+#include "TimeDate.h"
+#include "ParamInfo.h"
+#include "OxyCRGEventWaveWidget.h"
+#include "EventInfoWidget.h"
+#include "AlarmParamIFace.h"
+#include "ParamManager.h"
+#include "AlarmConfig.h"
 #include <QHeaderView>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -16,10 +25,131 @@
 
 OxyCRGEventWidget *OxyCRGEventWidget::_selfObj = NULL;
 
+struct OxyCRGEventDataContex
+{
+    OxyCRGEventDataContex()
+        :eventDataBuf(NULL),
+          infoSegment(NULL),
+          alamSegment(NULL),
+          oxyCRGSegment(NULL)
+    {}
+
+    void reset()
+    {
+        if (eventDataBuf)
+        {
+            qFree(eventDataBuf);
+            eventDataBuf = NULL;
+        }
+        infoSegment = NULL;
+        trendSegments.clear();
+        waveSegments.clear();
+        alamSegment = NULL;
+        oxyCRGSegment = NULL;
+    }
+
+    ~OxyCRGEventDataContex()
+    {
+        if (eventDataBuf)
+        {
+            qFree(eventDataBuf);
+        }
+    }
+
+    char *eventDataBuf;
+    EventInfoSegment *infoSegment;
+    QVector<TrendDataSegment *> trendSegments;
+    QVector<WaveformDataSegment *> waveSegments;
+    AlarmInfoSegment *alamSegment;
+    OxyCRGSegment *oxyCRGSegment;
+};
+
 class OxyCRGEventWidgetPrivate
 {
 public:
+    OxyCRGEventWidgetPrivate()
+        :eventTable(NULL)
+    {
+        backend = eventStorageManager.backend();
+    }
 
+    bool parseEventData(int dataIndex)
+    {
+        if (!backend || dataIndex >= (int)backend->getBlockNR() || dataIndex < 0)
+        {
+            return false;
+        }
+
+        quint32 length = backend->getBlockDataLen(dataIndex);
+
+        char *buf = (char *)qMalloc(length);
+        if (!buf)
+        {
+            return false;
+        }
+
+        if (backend->readBlockData(dataIndex, buf, length) != length)
+        {
+            qFree(buf);
+            return false;
+        }
+
+        ctx.reset();
+
+        ctx.eventDataBuf = buf;
+
+        char *parseBuffer = buf;
+        bool parseEnd = false;
+        while (!parseEnd)
+        {
+            EventSegmentType *eventType = (EventSegmentType *)parseBuffer;
+            switch (*eventType)
+            {
+            case EVENT_INFO_SEGMENT:
+                //skip the offset of the segment type field
+                parseBuffer += sizeof(EventSegmentType);
+                ctx.infoSegment = (EventInfoSegment *) parseBuffer;
+                //find the location of the next event type
+                parseBuffer += sizeof(EventInfoSegment);
+                break;
+            case EVENT_TRENDDATA_SEGMENT:
+                //skip the offset of the segment type field
+                parseBuffer += sizeof(EventSegmentType);
+                ctx.trendSegments.append((TrendDataSegment *)parseBuffer);
+                //find the location of the next event type
+                parseBuffer += sizeof(TrendDataSegment) + ctx.trendSegments.last()->trendValueNum * sizeof(TrendValueSegment);
+                break;
+            case EVENT_WAVEFORM_SEGMENT:
+                //skip the offset of the segment type field
+                parseBuffer += sizeof(EventSegmentType);
+                ctx.waveSegments.append((WaveformDataSegment *) parseBuffer);
+                //find the location of the next event type
+                parseBuffer += sizeof(WaveformDataSegment) + ctx.waveSegments.last()->waveNum * sizeof(WaveDataType);
+                break;
+            case EVENT_ALARM_INFO_SEGMENT:
+                parseBuffer += sizeof(EventSegmentType);
+                ctx.alamSegment = (AlarmInfoSegment *) parseBuffer;
+                parseBuffer += sizeof(AlarmInfoSegment);
+                break;
+            case EVENT_OXYCRG_SEGMENT:
+                parseBuffer += sizeof(EventSegmentType);
+                ctx.oxyCRGSegment = (OxyCRGSegment *) parseBuffer;
+                parseBuffer += sizeof(OxyCRGSegment);
+                break;
+            default:
+                qdebug("unknown segment type %d, stop parsing.",  *eventType);
+                parseEnd = true;
+                break;
+            }
+        }
+
+        if (parseBuffer >= buf + length)
+        {
+            parseEnd = true;
+        }
+        return true;
+
+    }
 
     ITableWidget *eventTable;
     IButton *detail;
@@ -27,9 +157,23 @@ public:
     IButton *upTable;
     IButton *downTable;
 
+    EventInfoWidget *infoWidget;
+    OxyCRGEventWaveWidget *waveWidget;
+    IButton *eventList;
+    IMoveButton *moveCoordinate;
+    IMoveButton *moveCursor;
+    IMoveButton *moveEvent;
+    IButton *print;
+    IButton *set;
+
     QWidget *tableWidget;
     QWidget *chartWidget;
     QStackedLayout *stackLayout;
+
+    OxyCRGEventDataContex ctx;
+    IStorageBackend *backend;
+
+    QList<int> dataIndex;           // 当前选中事件项对应的数据所在索引
 };
 
 /**************************************************************************************************
@@ -38,6 +182,61 @@ public:
 OxyCRGEventWidget::~OxyCRGEventWidget()
 {
 
+}
+
+void OxyCRGEventWidget::eventInfoUpdate()
+{
+    QString infoStr;
+    QString timeInfoStr;
+    QString indexStr;
+
+    switch (d_ptr->ctx.oxyCRGSegment->type)
+    {
+    case OxyCRGEventECG:
+    case OxyCRGEventSpO2:
+    case OxyCRGEventResp:
+    {
+        SubParamID subId = (SubParamID)(d_ptr->ctx.alamSegment->subParamID);
+        unsigned char alarmInfo = d_ptr->ctx.alamSegment->alarmInfo;
+        infoStr = paramInfo.getSubParamName(subId);
+
+        if ((alarmInfo >> 1) & 0x1)
+        {
+            infoStr += trs("Upper");
+            infoStr += " > ";
+        }
+        else
+        {
+            infoStr += trs("Lower");
+            infoStr += " < ";
+        }
+        ParamID id = paramInfo.getParamID(subId);
+        UnitType type = paramManager.getSubParamUnit(id, subId);
+        LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subId, type);
+        double limitValue = (double)d_ptr->ctx.alamSegment->alarmLimit / config.scale;
+        infoStr += QString::number(limitValue);
+        break;
+    }
+    default:
+        break;
+    }
+
+    unsigned t = 0;
+    QString timeStr;
+    QString dateStr;
+    t = d_ptr->ctx.infoSegment->timestamp;
+    timeDate.getDate(t, dateStr, true);
+    timeDate.getTime(t, timeStr, true);
+    timeInfoStr = dateStr + " " + timeStr;
+
+    indexStr = QString::number(d_ptr->eventTable->currentRow() + 1) + "/" + QString::number(d_ptr->eventTable->rowCount());
+
+    d_ptr->infoWidget->loadDataInfo(infoStr, timeInfoStr, indexStr);
+}
+
+void OxyCRGEventWidget::eventWaveUpdate()
+{
+    d_ptr->waveWidget->setWaveTrendSegments(d_ptr->ctx.waveSegments, d_ptr->ctx.trendSegments);
 }
 
 /**************************************************************************************************
@@ -51,6 +250,7 @@ void OxyCRGEventWidget::showEvent(QShowEvent *e)
     QRect r = windowManager.getMenuArea();
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 
+    _loadOxyCRGEventData();
 }
 
 void OxyCRGEventWidget::_upMoveEventReleased()
@@ -60,6 +260,93 @@ void OxyCRGEventWidget::_upMoveEventReleased()
 
 void OxyCRGEventWidget::_downMoveEventReleased()
 {
+
+}
+
+void OxyCRGEventWidget::_detailReleased()
+{
+    d_ptr->stackLayout->setCurrentIndex(1);
+    if (d_ptr->dataIndex.count() == 0)
+    {
+        return;
+    }
+    d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->eventTable->currentRow()));
+    eventInfoUpdate();
+    eventWaveUpdate();
+    d_ptr->eventList->setFocus();
+}
+
+void OxyCRGEventWidget::_eventListReleased()
+{
+    d_ptr->stackLayout->setCurrentIndex(0);
+}
+
+void OxyCRGEventWidget::_loadOxyCRGEventData()
+{
+    d_ptr->dataIndex.clear();
+    int eventNum = d_ptr->backend->getBlockNR();
+
+    unsigned t = 0;
+    QString timeStr;
+    QString dataStr;
+    QString infoStr;
+    QTableWidgetItem *item;
+    SubParamID subId;
+    unsigned char alarmInfo;
+    int row = 0;
+    for (int i = eventNum - 1; i >= 0; i --)
+    {
+        if (d_ptr->parseEventData(i))
+        {
+            if (d_ptr->ctx.infoSegment->type != EventOxyCRG)
+            {
+                continue;
+            }
+
+            t = d_ptr->ctx.infoSegment->timestamp;
+
+            timeDate.getDate(t, dataStr, true);
+            timeDate.getTime(t, timeStr, true);
+            item = new QTableWidgetItem();
+            item->setTextAlignment(Qt::AlignCenter);
+            item->setText(dataStr + " " + timeStr);
+            d_ptr->eventTable->setRowCount(row + 1);
+            d_ptr->eventTable->setItem(row, 0, item);
+
+            switch (d_ptr->ctx.oxyCRGSegment->type)
+            {
+            case OxyCRGEventECG:
+            case OxyCRGEventSpO2:
+            case OxyCRGEventResp:
+                subId = (SubParamID)(d_ptr->ctx.alamSegment->subParamID);
+                alarmInfo = d_ptr->ctx.alamSegment->alarmInfo;
+                infoStr = paramInfo.getSubParamName(subId);
+                infoStr += " ";
+                if ((alarmInfo >> 1) & 0x1)
+                {
+                    infoStr += trs("Upper");
+                }
+                else
+                {
+                    infoStr += trs("Lower");
+                }
+                item = new QTableWidgetItem();
+                item->setTextAlignment(Qt::AlignCenter);
+                item->setText(infoStr);
+                d_ptr->eventTable->setItem(row, 1, item);
+                break;
+            default:
+                break;
+            }
+            d_ptr->dataIndex.append(i);
+            row ++;
+        }
+    }
+
+    if (row)
+    {
+        d_ptr->eventTable->selectRow(0);
+    }
 
 }
 
@@ -75,6 +362,7 @@ OxyCRGEventWidget::OxyCRGEventWidget() : d_ptr(new OxyCRGEventWidgetPrivate())
     int fontSize = fontManager.getFontSize(1);
     QFont font = fontManager.textFont(fontSize);
 
+    // OxyCRG event table widget
     d_ptr->eventTable = new ITableWidget();
     d_ptr->eventTable->setColumnCount(2);
     d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
@@ -91,6 +379,7 @@ OxyCRGEventWidget::OxyCRGEventWidget() : d_ptr(new OxyCRGEventWidgetPrivate())
     d_ptr->detail = new IButton(trs("WaveInfo"));
     d_ptr->detail->setFixedSize(ITEM_WIDTH, ITEM_H);
     d_ptr->detail->setFont(font);
+    connect(d_ptr->detail, SIGNAL(realReleased()), this, SLOT(_detailReleased()));
 
     d_ptr->type = new IDropList(trs("Type"));
     d_ptr->type->setFixedSize(ITEM_WIDTH, ITEM_H);
@@ -121,9 +410,56 @@ OxyCRGEventWidget::OxyCRGEventWidget() : d_ptr(new OxyCRGEventWidgetPrivate())
     d_ptr->tableWidget = new QWidget();
     d_ptr->tableWidget->setLayout(vTableLayout);
 
+    // OxyCRG event wave widget
+    d_ptr->infoWidget = new EventInfoWidget;
+    d_ptr->infoWidget->setFocusPolicy(Qt::NoFocus);
+
+    d_ptr->waveWidget = new OxyCRGEventWaveWidget;
+    d_ptr->waveWidget->setFocusPolicy(Qt::NoFocus);
+
+    d_ptr->eventList = new IButton(trs("EventList"));
+    d_ptr->eventList->setFixedSize(ITEM_WIDTH, ITEM_H);
+    d_ptr->eventList->setFont(font);
+    connect(d_ptr->eventList, SIGNAL(realReleased()), this, SLOT(_eventListReleased()));
+
+    d_ptr->moveCoordinate = new IMoveButton(trs("MoveCoordinate"));
+    d_ptr->moveCoordinate->setFixedSize(ITEM_WIDTH, ITEM_H);
+    d_ptr->moveCoordinate->setFont(font);
+
+    d_ptr->moveCursor = new IMoveButton(trs("MoveCursor"));
+    d_ptr->moveCursor->setFixedSize(ITEM_WIDTH, ITEM_H);
+    d_ptr->moveCursor->setFont(font);
+
+    d_ptr->moveEvent = new IMoveButton(trs("MoveEvent"));
+    d_ptr->moveEvent->setFixedSize(ITEM_WIDTH, ITEM_H);
+    d_ptr->moveEvent->setFont(font);
+
+    d_ptr->print = new IButton(trs("Print"));
+    d_ptr->print->setFixedSize(ITEM_WIDTH, ITEM_H);
+    d_ptr->print->setFont(font);
+
+    d_ptr->set = new IButton(trs("Set"));
+    d_ptr->set->setFixedSize(ITEM_WIDTH, ITEM_H);
+    d_ptr->set->setFont(font);
+
+    QHBoxLayout *hWaveLayout = new QHBoxLayout();
+    hWaveLayout->setMargin(0);
+    hWaveLayout->setSpacing(2);
+    hWaveLayout->addWidget(d_ptr->eventList);
+    hWaveLayout->addWidget(d_ptr->moveCoordinate);
+    hWaveLayout->addWidget(d_ptr->moveCursor);
+    hWaveLayout->addWidget(d_ptr->moveEvent);
+    hWaveLayout->addWidget(d_ptr->print);
+    hWaveLayout->addWidget(d_ptr->set);
+
+    QVBoxLayout *vWaveLayout = new QVBoxLayout();
+    vWaveLayout->addWidget(d_ptr->infoWidget, 1);
+    vWaveLayout->addSpacing(1);
+    vWaveLayout->addWidget(d_ptr->waveWidget, 15);
+    vWaveLayout->addLayout(hWaveLayout);
 
     d_ptr->chartWidget = new QWidget();
-
+    d_ptr->chartWidget->setLayout(vWaveLayout);
 
     d_ptr->stackLayout = new QStackedLayout();
     d_ptr->stackLayout->addWidget(d_ptr->tableWidget);

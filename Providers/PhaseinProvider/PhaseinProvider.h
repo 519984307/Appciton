@@ -176,6 +176,18 @@ public:    // AGProviderIFace interface
     // zero calibration.
     virtual void zeroCalibration(void);
 
+    // get base line.
+    virtual int getN2OBaseLine(void) {return 0;}
+    virtual int getAA1BaseLine(void) {return 0;}
+    virtual int getAA2BaseLine(void) {return 0;}
+    virtual int getO2BaseLine(void) {return 0;}
+
+    // get max waveform value.
+    virtual int getN2OMaxWaveform(void) {return 11500;}
+    virtual int getAA1MaxWaveform(void) {return 2500;}
+    virtual int getAA2MaxWaveform(void) {return 2500;}
+    virtual int getO2MaxWaveform(void) {return 11500;}
+
 public:
     PhaseinProvider();
     ~PhaseinProvider();

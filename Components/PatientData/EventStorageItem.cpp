@@ -69,7 +69,7 @@ public:
 
     static void waveCacheCompleteCallback(WaveformID id, void *obj);
 
-    static void trendCacheCompleteCallback(void *obj);
+    static void trendCacheCompleteCallback(unsigned timestamp, const TrendCacheData &data, const TrendAlarmStatus &almStatus, void *obj);
 
     QList<TrendDataSegment*> trendSegments;
     QList<WaveformDataSegment *> waveSegments;
@@ -144,9 +144,10 @@ void EventStorageItemPrivate::waveCacheCompleteCallback(WaveformID id, void *obj
     }
 }
 
-void EventStorageItemPrivate::trendCacheCompleteCallback(void *obj)
+void EventStorageItemPrivate::trendCacheCompleteCallback(unsigned timestamp, const TrendCacheData &data, const TrendAlarmStatus &almStatus, void *obj)
 {
     EventStorageItemPrivate *p = reinterpret_cast<EventStorageItemPrivate *>(obj);
+    p->saveTrendData(timestamp, data, almStatus);
     Q_ASSERT(p != NULL);
     if(p)
     {
@@ -157,12 +158,6 @@ void EventStorageItemPrivate::trendCacheCompleteCallback(void *obj)
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms)
     :d_ptr(new EventStorageItemPrivate(type, storeWaveforms))
 {
-    if(type == EventOxyCRG)
-    {
-    //TODO: set cache time
-        d_ptr->eventInfo.duration_after = 120;
-        d_ptr->eventInfo.duration_before = 120;
-    }
     qDebug()<<"Create Event Stroage Item:"<<this<<" type: "<<type;
 }
 
@@ -182,6 +177,31 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
 {
     d_ptr->codeMarkerInfo = new CodeMarkerSegment;
     Util::strlcpy(d_ptr->codeMarkerInfo->codeName, codeName, sizeof(d_ptr->codeMarkerInfo->codeName));
+    qDebug()<<"Create Event Stroage Item:"<<this<<" type: "<<type;
+}
+
+EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, OxyCRGEventType oxyCRGtype, const AlarmInfoSegment &almInfo)
+    :d_ptr(new EventStorageItemPrivate(type, storeWaveforms))
+{
+    d_ptr->almInfo = new AlarmInfoSegment();
+    d_ptr->almInfo->alarmLimit = almInfo.alarmLimit;
+    d_ptr->almInfo->alarmType = almInfo.alarmType;
+    d_ptr->almInfo->alarmInfo = almInfo.alarmInfo;
+    d_ptr->almInfo->subParamID = almInfo.subParamID;
+
+    d_ptr->oxyCRGInfo = new OxyCRGSegment;
+    d_ptr->oxyCRGInfo->type = oxyCRGtype;
+
+    d_ptr->eventInfo.duration_after = 120;
+    d_ptr->eventInfo.duration_before = 120;
+    qDebug()<<"Create Event Stroage Item:"<<this<<" type: "<<type;
+}
+
+EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, OxyCRGEventType oxyCRGtype)
+    :d_ptr(new EventStorageItemPrivate(type, storeWaveforms))
+{
+    d_ptr->oxyCRGInfo = new OxyCRGSegment;
+    d_ptr->oxyCRGInfo->type = oxyCRGtype;
     qDebug()<<"Create Event Stroage Item:"<<this<<" type: "<<type;
 }
 
@@ -247,7 +267,7 @@ bool EventStorageItem::startCollectTrendAndWaveformData()
     trendCache.collectTrendData(currentTime);
     trendCache.collectTrendAlarmStatus(currentTime);
 
-    if(d_ptr->eventInfo.type != EventOxyCRG)
+    if(d_ptr->eventInfo.type == EventOxyCRG)
     {
         QList<TrendCacheData> trendDataList = trendCache.getTrendData(currentTime - d_ptr->eventInfo.duration_before,
                                                                       currentTime);

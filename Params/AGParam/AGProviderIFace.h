@@ -25,6 +25,18 @@ public:
     // zero calibration.
     virtual void zeroCalibration(void)  {}
 
+    // get base line.
+    virtual int getN2OBaseLine(void) = 0;
+    virtual int getAA1BaseLine(void) = 0;
+    virtual int getAA2BaseLine(void) = 0;
+    virtual int getO2BaseLine(void) = 0;
+
+    // get max waveform value.
+    virtual int getN2OMaxWaveform(void) = 0;
+    virtual int getAA1MaxWaveform(void) = 0;
+    virtual int getAA2MaxWaveform(void) = 0;
+    virtual int getO2MaxWaveform(void) = 0;
+
 public:
     AGProviderIFace() {  }
     virtual ~AGProviderIFace() { }
