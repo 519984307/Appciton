@@ -25,7 +25,7 @@ SupervisorConfigManager *SupervisorConfigManager::_selfobj = NULL;
  ******************************************************************************/
 void SupervisorConfigManager::loadDefaultConfig()
 {
-    bool ret = currentConfig.load(curConfigName);
+    bool ret = currentConfig.load(systemConfig.getCurConfigName());
 
     IMessageBox messageBox(ret ? trs("Prompt") : trs("Warn"),
                            ret ? trs("PromptLoadDefaultCfgOK") : trs("WarningLoadDefaultCfgFail"),
@@ -52,7 +52,7 @@ bool SupervisorConfigManager::exportConfig()
     }
 
     //配置文件大小
-    QString srcFile(curConfigName);
+    QString srcFile(systemConfig.getCurConfigName());
     QFile file(srcFile);
     if (!file.isOpen())
     {

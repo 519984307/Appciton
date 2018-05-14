@@ -19,6 +19,8 @@ public:
     {
     }
 
+    QString getCurConfigName(){return curConfigName;}
+
 private:
     SystemConfig() : Config(SYSTEM_CFG_FILE)
     {
@@ -42,6 +44,7 @@ private:
             numValue = 255;
         }
     }
+    QString curConfigName;
 };
 #define systemConfig (SystemConfig::construction())
 #define deleteSystemConfig() (delete SystemConfig::_selfObj)
@@ -92,7 +95,7 @@ public:
     }
 
 private:
-    SupervisorConfig() : Config(curConfigName)
+    SupervisorConfig() : Config(systemConfig.getCurConfigName())
     {
     }
 };
@@ -118,7 +121,7 @@ public:
     }
 
 private:
-    SupervisorRunConfig() : Config(curConfigName)
+    SupervisorRunConfig() : Config(systemConfig.getCurConfigName())
     {
     }
 };

@@ -18,16 +18,16 @@ static void _initSystem(void)
     // 新会话，需要恢复主配置文件
     if (timeManager.getPowerOnSession() == POWER_ON_SESSION_NEW)
     {
-        currentConfig.load(curConfigName);
+       // currentConfig.load(curConfigName);
 
-        Config systemDefCfg(curConfigName);
+        Config systemDefCfg(systemConfig.getCurConfigName());
         systemConfig.setNodeValue("PrimaryCfg", systemDefCfg);
 
         ErrorLogItem *item = new ErrorLogItem();
         item->setName("Load default config");
-        QString str = curConfigName;
+        QString str = systemConfig.getCurConfigName();
         str += "\r\n";
-        str += curConfigName;
+        str += systemConfig.getCurConfigName();
         str += "\r\n";
         item->setLog(str);
         item->setSubSystem(ErrorLogItem::SUB_SYS_MAIN_PROCESSOR);

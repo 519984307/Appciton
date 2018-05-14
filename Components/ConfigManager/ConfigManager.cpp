@@ -3,6 +3,7 @@
 #include "IConfig.h"
 #include "Debug.h"
 #include "TimeDate.h"
+#include <QFile>
 
 #define CONFIG_DIR "/usr/local/nPM/etc/"
 #define USER_DEFINE_CONFIG_PREFIX "UserDefine"
@@ -35,6 +36,7 @@ ConfigManagerPrivate::~ConfigManagerPrivate()
 QString ConfigManagerPrivate::getDefaultConfigFilepath(PatientType patType)
 {
     QString configFileName;
+    QString configFileNameTemp;
     QString index = QString("ConfigManager|Default|%1").arg(PatientSymbol::convert(patType));
 
     systemConfig.getStrValue(index, configFileName);
@@ -44,7 +46,20 @@ QString ConfigManagerPrivate::getDefaultConfigFilepath(PatientType patType)
         return configFileName;
     }
 
-    return QString("%1%2").arg(CONFIG_DIR).arg(configFileName);
+    if(configFileName.indexOf(".Original"))
+    {
+        configFileNameTemp = configFileName;
+        configFileNameTemp.replace(".Original","");
+    }
+
+    QFile myFile(QString("%1/%2").arg(CONFIG_DIR).arg(configFileNameTemp));
+    if(!myFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        myFile.copy(QString("%1/%2").arg(CONFIG_DIR).arg(configFileName),
+                    QString("%1/%2").arg(CONFIG_DIR).arg(configFileNameTemp));
+    }
+
+    return QString("%1%2").arg(CONFIG_DIR).arg(configFileNameTemp);
 }
 
 

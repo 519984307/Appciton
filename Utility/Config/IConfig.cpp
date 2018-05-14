@@ -12,4 +12,4 @@ SupervisorRunConfig *SupervisorRunConfig::_selfObj = NULL;
 
 //QString ORGINAL_SUPERVISOR_CFG_FILE = CFG_PATH"AdultConfig.xml";
 
-QString curConfigName = CFG_PATH"AdultConfig.xml";
+

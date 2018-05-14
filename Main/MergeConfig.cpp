@@ -39,7 +39,7 @@ void MergeConfig::backupOldConfig()
     }
 
     QFile::copy(MACHINE_CFG_FILE, _bkMachinePath());
-    QFile::copy(curConfigName, _bkSuperPath());
+    QFile::copy(systemConfig.getCurConfigName(), _bkSuperPath());
     QFile::copy(SYSTEM_CFG_FILE, _bkSystemPath());
     sync();
 }

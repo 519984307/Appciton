@@ -126,8 +126,8 @@ QString UserConfigEditMenuPrivate::generateDefaultConfigName() const
 UserConfigEditMenu::UserConfigEditMenu()
     :SubMenu(trs("ConfigManagement")), d_ptr(new UserConfigEditMenuPrivate())
 {
-    setDesc(trs("ConfigManagement"));
-    startLayout();
+    setDesc(trs("ConfigManagement"));/*更改标题栏标题*/
+    startLayout();/*布局*/
 
     //保存配置管理的数据
     connect(configEditMenuGrp.getCloseBtn(), SIGNAL(realReleased()), this, SLOT(onEditFinished()));
@@ -195,7 +195,7 @@ void UserConfigEditMenu::layoutExec()
     margin.setLeft(15);
     margin.setBottom(10);
     label->setContentsMargins(margin);
-    label->setText(trs("ConfigManagement55"));
+    label->setText(trs("ConfigManagement"));
     mainLayout->addWidget(label);
 
     //config list
@@ -315,10 +315,23 @@ void UserConfigEditMenu::onBtnClick()
                 delete d_ptr->curConfig;
             }
 
-            //将当前配置改为工厂配置
-            d_ptr->curConfig = new Config(QString("%1/%2")
-                                          .arg(CONFIG_DIR)
-                                          .arg(configManager.factoryConfigFilename(patientManager.getType())));
+            QFile myFile(QString("%1/%2")
+                         .arg(CONFIG_DIR)
+                         .arg(configManager.runningConfigFilename(patientManager.getType())));
+            if(!myFile.open(QIODevice::ReadOnly | QIODevice::Text))
+            {
+                d_ptr->curConfig = new Config(QString("%1/%2")
+                                              .arg(CONFIG_DIR)
+                                              .arg(configManager.factoryConfigFilename(patientManager.getType())));
+            }
+            else
+            {
+
+                d_ptr->curConfig = new Config(QString("%1/%2")
+                                              .arg(CONFIG_DIR)
+                                              .arg(configManager.runningConfigFilename(patientManager.getType())));
+            }
+
 
             configEditMenuGrp.setCurrentEditConfigName(d_ptr->generateDefaultConfigName());
             configEditMenuGrp.setCurrentEditConfig(d_ptr->curConfig);

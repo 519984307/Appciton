@@ -18,9 +18,9 @@ void SubMenu::startLayout(void)
     mainLayout->setSpacing(2);
 
     //子类布局
-    layoutExec();
+    layoutExec();/*多态方式，重写此虚函数 在布局的过程中添加业务逻辑，与界面组合为gui线程，配合通信线程处理需求*/
 
-    setLayout(mainLayout);
+    setLayout(mainLayout);/*布局显示*/
 }
 
 /**************************************************************************************************

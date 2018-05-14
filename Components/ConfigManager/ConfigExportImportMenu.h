@@ -2,6 +2,7 @@
 #include "SubMenu.h"
 #include <QScopedPointer>
 #include <QList>
+#include "IListWidget.h"
 
 class ConfigExportImportMenuPrivate;
 class ConfigExportImportMenu : public SubMenu
@@ -21,13 +22,15 @@ public:
 
     bool eventFilter(QObject *obj, QEvent *ev);
 
+    void layoutExecImport();
 
+    int ExportFileToUSB();//导出文件到U盘接口
 
-    void ExportFileToUSB();//导出文件到U盘接口
-
-    void InsertFileFromUSB();//从U盘导入文件的接口
+    int InsertFileFromUSB();//从U盘导入文件的接口
 
     QDomElement tagFindElement(const QStringList &list);//寻找本地的标签
+
+    IListWidget *getConfigList();
 
 protected:
     virtual void layoutExec();

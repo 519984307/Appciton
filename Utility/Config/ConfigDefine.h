@@ -13,7 +13,5 @@
 // 默认系统配置文件。
 #define ORGINAL_SYSTEM_CFG_FILE      CFG_PATH"System.Original.xml"
 
-extern    QString      curConfigName;
-
 // 工厂配置
 #define FACTORY_SUPERVISOR_CFG_FILE       CFG_PATH"FactorySupervision.xml"

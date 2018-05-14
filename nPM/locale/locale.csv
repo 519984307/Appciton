@@ -992,3 +992,5 @@ ON,打开,ON
 NBIPInitialCuff,初始袖口气压,NBIPInitialCuff
 IntervalTime,自动间隔时间,IntervalTime
 NIBPMeasureMode,测量模式,NIBPMeasureMode
+Export File Completed,导出文件完成,Export File Completed
+Export File Failed,导出文件失败,Export File Failed
