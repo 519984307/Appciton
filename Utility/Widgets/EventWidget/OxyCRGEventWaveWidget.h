@@ -31,8 +31,17 @@ public:
 
     void setWaveTrendSegments(const QVector<WaveformDataSegment *> waveSegments, const QVector<TrendDataSegment *> trendSegments);
 
+public slots:
+    void leftMoveCursor(void);
+    void rightMoveCursor(void);
+
 protected:
     void paintEvent(QPaintEvent *e);
+
+private:
+    void _drawTrend(QPainter &painter);
+    void _drawWave(QPainter &painter);
+    double _mapWaveValue(WaveformDesc &waveDesc, int wave);
 
 private:
     QScopedPointer<OxyCRGEventWaveWidgetPrivate> d_ptr;
