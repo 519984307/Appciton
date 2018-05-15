@@ -28,6 +28,8 @@ private slots:
     void _downMoveEventReleased(void);
     void _detailReleased(void);
     void _eventListReleased(void);
+    void _leftMoveEvent(void);
+    void _rightMoveEvent(void);
 
 private:
     void _loadOxyCRGEventData(void);

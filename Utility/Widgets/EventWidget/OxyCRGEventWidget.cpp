@@ -281,6 +281,30 @@ void OxyCRGEventWidget::_eventListReleased()
     d_ptr->stackLayout->setCurrentIndex(0);
 }
 
+void OxyCRGEventWidget::_leftMoveEvent()
+{
+    if (d_ptr->eventTable->currentRow() != 0)
+    {
+        d_ptr->eventTable->selectRow(d_ptr->eventTable->currentRow() - 1);
+    }
+
+    d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->eventTable->currentRow()));
+    eventInfoUpdate();
+    eventWaveUpdate();
+}
+
+void OxyCRGEventWidget::_rightMoveEvent()
+{
+    if (d_ptr->eventTable->currentRow() != d_ptr->eventTable->rowCount() - 1)
+    {
+        d_ptr->eventTable->selectRow(d_ptr->eventTable->currentRow() + 1);
+    }
+
+    d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->eventTable->currentRow()));
+    eventInfoUpdate();
+    eventWaveUpdate();
+}
+
 void OxyCRGEventWidget::_loadOxyCRGEventData()
 {
     d_ptr->dataIndex.clear();
@@ -435,6 +459,8 @@ OxyCRGEventWidget::OxyCRGEventWidget() : d_ptr(new OxyCRGEventWidgetPrivate())
     d_ptr->moveEvent = new IMoveButton(trs("MoveEvent"));
     d_ptr->moveEvent->setFixedSize(ITEM_WIDTH, ITEM_H);
     d_ptr->moveEvent->setFont(font);
+    connect(d_ptr->moveEvent, SIGNAL(leftMove()), this, SLOT(_leftMoveEvent()));
+    connect(d_ptr->moveEvent, SIGNAL(rightMove()), this, SLOT(_rightMoveEvent()));
 
     d_ptr->print = new IButton(trs("Print"));
     d_ptr->print->setFixedSize(ITEM_WIDTH, ITEM_H);

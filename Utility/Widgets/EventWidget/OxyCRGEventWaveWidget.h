@@ -42,6 +42,7 @@ private:
     void _drawTrend(QPainter &painter);
     void _drawWave(QPainter &painter);
     double _mapWaveValue(WaveformDesc &waveDesc, int wave);
+    void _loadTrendData(void);
 
 private:
     QScopedPointer<OxyCRGEventWaveWidgetPrivate> d_ptr;
