@@ -53,11 +53,8 @@ public slots:
      */
     void pauseProcessing(bool pause);
 
-private slots:
-    /**
-     * @brief processPages process the pages
-     */
-    void processPages();
+protected:
+    void timerEvent(QTimerEvent *ev);
 
 private:
     QScopedPointer<RecordPageProcessorPrivate> d_ptr;

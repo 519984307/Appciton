@@ -40,6 +40,8 @@ void RecordPageGenerator::stop()
 void RecordPageGenerator::pageControl(bool pause)
 {
     _generate = !pause;
+
+    qDebug()<<"Page Generator "<< (pause ? "pause" : "restart");
 }
 
 QFont RecordPageGenerator::font() const
@@ -1321,5 +1323,6 @@ void RecordPageGenerator::timerEvent(QTimerEvent *ev)
         }
 
         emit generatePage(page);
+        qDebug()<<"generate page"<<page->getID();
     }
 }

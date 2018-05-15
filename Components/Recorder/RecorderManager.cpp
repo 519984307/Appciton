@@ -169,32 +169,20 @@ void RecorderManager::selfTest()
 
     RecordPage *testPage = new RecordPage(10 * RECORDER_PIXEL_PER_MM);
     testPage->setID("test");
-    QPainter painter(testPage);
-    int penWidth = 5;
 
+    QPainter painter(testPage);
+    int penWidth = 2;
+
+    QVector<qreal> darsh;
+    darsh << 5 << 5;
     QPen pen(Qt::white);
     pen.setWidth(penWidth);
+    pen.setDashPattern(darsh);
     painter.setPen(pen);
 
-
-    int y = testPage->height() /  2;
-    painter.drawLine(QPoint(0, y), QPoint(testPage->width(), y));
-    painter.setFont(fontManager.textFont(20));
-    //painter.drawText(10, 40, "Hello World!!!");
-    //painter.drawText(10, 70, "Hello World!!!");
-    //painter.drawText(10, 100, "Hello World!!!");
-    //painter.drawText(10, 130, "Hello World!!!");
-    //painter.drawText(10, 160, "Hello World!!!");
-    //painter.drawText(10, 190, "Hello World!!!");
-    //painter.drawText(10, 220, "Hello World!!!");
-    //painter.drawText(10, 250, "Hello World!!!");
-    //painter.drawText(10, 280, "Hello World!!!");
-    //painter.drawText(10, 310, "Hello World!!!");
-    //painter.drawText(10, 340, "Hello World!!!");
-    //painter.drawText(10, 370, "Hello World!!!");
-
-    painter.fillRect(QRect(20, 0, 5, testPage->height()), Qt::white);
-
+    int x = testPage->width() - penWidth;
+    painter.drawLine(QPoint(penWidth, 0), QPoint(penWidth, testPage->height() - 1));
+    painter.drawLine(QPoint(x, 0), QPoint(x, testPage->height() - 1));
 
     QMetaObject::invokeMethod(d_ptr->processor, "addPage", Q_ARG(RecordPage*, testPage));
 
@@ -217,16 +205,16 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
         generator->moveToThread(d_ptr->procThread);
     }
     connect(generator, SIGNAL(stopped()), this, SLOT(onGeneratorStopped()), Qt::QueuedConnection);
-    connect(generator, SIGNAL(generatePage(RecordPage*)), d_ptr->processor, SLOT(addPage(RecordPage*)));
-    connect(d_ptr->processor, SIGNAL(pageQueueFull(bool)), generator, SLOT(pageControl(bool)));
+    connect(generator, SIGNAL(generatePage(RecordPage*)), d_ptr->processor, SLOT(addPage(RecordPage*)), Qt::QueuedConnection);
+    connect(d_ptr->processor, SIGNAL(pageQueueFull(bool)), generator, SLOT(pageControl(bool)), Qt::QueuedConnection);
     QMetaObject::invokeMethod(generator, "start");
     return true;
 }
 
 void RecorderManager::testSlot()
 {
-
     addPageGenerator(new ContinuousPageGenerator());
+    //addPageGenerator(new RecordPageGenerator());
 }
 
 void RecorderManager::providerRestarted()

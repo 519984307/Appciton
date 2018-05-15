@@ -287,6 +287,7 @@ SOURCES +=                                                                      
     Components/Recorder/RecorderManager.cpp                                     \
     Components/Recorder/RecordPageGenerator.cpp                                 \
     Components/Recorder/ContinuousPageGenerator.cpp                             \
+    Components/Recorder/EventPageGenerator.cpp                                  \
     Components/Recorder/RecordPageProcessor.cpp                                 \
     Components/PdfWriter/HaruPdfWriter.cpp                                      \
     Components/PdfWriter/QPrinterPdfWriter.cpp                                  \
@@ -741,6 +742,7 @@ HEADERS +=                                                                      
     Components/Recorder/RecordPage.h                                            \
     Components/Recorder/RecordPageGenerator.h                                   \
     Components/Recorder/ContinuousPageGenerator.h                               \
+    Components/Recorder/EventPageGenerator.h                                    \
     Components/Recorder/RecordPageProcessor.h                                   \
     Components/PdfWriter/HaruPdfWriter.h                                        \
     Components/PdfWriter/QPrinterPdfWriter.h                                    \

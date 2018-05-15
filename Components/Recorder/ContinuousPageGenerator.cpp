@@ -23,7 +23,7 @@ public:
     ContinuousPageGeneratorPrivate(ContinuousPageGenerator * const q_ptr)
         : q_ptr(q_ptr),
           curPageType(RecordPageGenerator::TitlePage),
-          currentDrawWaveSegment(0),
+          curDrawWaveSegment(0),
           totalDrawWaveSegment(-1)
     {
         TrendCacheData data;
@@ -56,7 +56,7 @@ public:
     RecordPageGenerator::PageType curPageType;
     TrendDataPackage trendData;
     QList<RecordWaveSegmentInfo> waveInfos;
-    int currentDrawWaveSegment;
+    int curDrawWaveSegment;
     int totalDrawWaveSegment;   //total wave segments that need to draw, -1 means unlimit
 };
 
@@ -277,7 +277,7 @@ RecordPage *ContinuousPageGenerator::createPage()
         return createTitlePage(QString(trs("RealtimeSegmentWaveRecording")), patientManager.getPatientInfo(), 0);
     case TrendPage:
         d_ptr->curPageType = WaveScalePage;
-        return createTrendPage(d_ptr->trendData, true);
+        return createTrendPage(d_ptr->trendData, false);
     case WaveScalePage:
         d_ptr->curPageType = WaveSegmentPage;
         return createWaveScalePage(d_ptr->waveInfos, recorderManager.getPrintSpeed());
@@ -291,9 +291,9 @@ RecordPage *ContinuousPageGenerator::createPage()
             return NULL;
         }
 
-        page = createWaveSegments(d_ptr->waveInfos, d_ptr->currentDrawWaveSegment++, recorderManager.getPrintSpeed());
+        page = createWaveSegments(d_ptr->waveInfos, d_ptr->curDrawWaveSegment++, recorderManager.getPrintSpeed());
 
-        if(d_ptr->totalDrawWaveSegment > 0 && d_ptr->currentDrawWaveSegment >= d_ptr->totalDrawWaveSegment)
+        if(d_ptr->totalDrawWaveSegment > 0 && d_ptr->curDrawWaveSegment >= d_ptr->totalDrawWaveSegment)
         {
             d_ptr->curPageType = EndPage;
         }
