@@ -51,7 +51,13 @@ RecorderManager &RecorderManager::getInstance()
 
 RecorderManager::~RecorderManager()
 {
-
+    if(d_ptr->procThread)
+    {
+        d_ptr->procThread->quit();
+        qDebug()<<"recorder thread exit wait";
+        d_ptr->procThread->wait();
+        qDebug()<<"recorder thread exit";
+    }
 }
 
 PrintSpeed RecorderManager::getPrintSpeed() const

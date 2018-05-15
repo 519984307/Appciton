@@ -10,6 +10,7 @@
 #include "ParamInfo.h"
 #include "SystemManager.h"
 #include "ParamManager.h"
+#include "RESPSymbol.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 RecordPageGenerator::RecordPageGenerator(QObject *parent)
@@ -655,7 +656,10 @@ static void drawECGGain(RecordPage *page, QPainter *painter, const RecordWaveSeg
     }
 
     int pageWidth = page->width();
-    int yBottom = waveInfo.startYOffset + (waveInfo.endYOffset - waveInfo.startYOffset) / 2;
+    // draw at the baseline
+    //int yBottom = waveInfo.startYOffset + (waveInfo.endYOffset - waveInfo.startYOffset) / 2;
+    // draw at the bottom
+    int yBottom = waveInfo.endYOffset;
     QPainterPath path;
     path.moveTo(0, yBottom);
     path.lineTo(pageWidth / 3, yBottom);
@@ -739,6 +743,20 @@ static void drawIBPRuler(RecordPage *page, QPainter *painter, const RecordWaveSe
     painter->restore();
 }
 
+// draw the RESP Zoom on the page
+static void drawRespZoom(RecordPage *page, QPainter *painter, const RecordWaveSegmentInfo &waveInfo)
+{
+    QString zoom = RESPSymbol::convert(waveInfo.waveInfo.resp.zoom);
+
+    painter->save();
+
+    int fontH = fontManager.textHeightInPixels(painter->font());
+    QRect rect(0, waveInfo.startYOffset, page->width(), fontH);
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, zoom);
+
+    painter->restore();
+}
+
 RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegmentInfo> &waveInfos, PrintSpeed speed)
 {
     Q_ASSERT(waveInfos.size() > 0);
@@ -753,7 +771,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
     int fontH = fontManager.textHeightInPixels(font);
 
     //draw the print speed
-    QRect rect(0, fontH, page->width(), fontH);
+    QRect rect(0, fontH / 2, page->width(), fontH);
     painter.drawText(rect, Qt::AlignLeft|Qt::AlignVCenter, PrintSymbol::convert(speed));
 
     QList<RecordWaveSegmentInfo>::ConstIterator iter;
@@ -776,6 +794,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
             drawECGGain(page, &painter, *iter);
             break;
         case WAVE_RESP:
+            drawRespZoom(page, &painter, *iter);
             break;
         case WAVE_SPO2:
             break;
@@ -858,7 +877,7 @@ static void drawCaption(RecordPage *page, QPainter *painter, const RecordWaveSeg
     QRect rect(0, waveInfo.startYOffset, waveInfo.drawCtx.captionPixLength, fontH);
     painter->save();
     painter->setPen(Qt::white);
-    painter->translate(segIndex * page->width(), 0);
+    painter->translate(-segIndex * page->width(), 0);
     painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, waveInfo.drawCtx.caption);
     painter->restore();
 }
@@ -871,9 +890,213 @@ static void drawCaption(RecordPage *page, QPainter *painter, const RecordWaveSeg
  */
 static qreal mapWaveValue(const RecordWaveSegmentInfo & waveInfo, short wave)
 {
-    qreal waveData;
+    qreal waveData = 0.0;
+
+    qreal startY = waveInfo.startYOffset;
+    qreal endY = waveInfo.endYOffset;
+
+    switch(waveInfo.id)
+    {
+    case WAVE_ECG_I:
+    case WAVE_ECG_II:
+    case WAVE_ECG_III:
+    case WAVE_ECG_aVR:
+    case WAVE_ECG_aVL:
+    case WAVE_ECG_aVF:
+    case WAVE_ECG_V1:
+    case WAVE_ECG_V2:
+    case WAVE_ECG_V3:
+    case WAVE_ECG_V4:
+    case WAVE_ECG_V5:
+    case WAVE_ECG_V6:
+    {
+        double scale = 0;
+        switch(waveInfo.waveInfo.ecg.gain)
+        {
+        case ECG_GAIN_X0125:
+            scale = 0.125 * 10 * RECORDER_PIXEL_PER_MM / 2.0;
+            break;
+
+        case ECG_GAIN_X025:
+            scale = 0.25 * 10 * RECORDER_PIXEL_PER_MM / 2.0;
+            break;
+
+        case ECG_GAIN_X05:
+            scale = 0.5 * 10 * RECORDER_PIXEL_PER_MM / 2.0;
+            break;
+
+        case ECG_GAIN_X10:
+            scale = 1.0 * 10 * RECORDER_PIXEL_PER_MM / 2.0;
+            break;
+
+        case ECG_GAIN_X20:
+            scale = 2.0 * 10 * RECORDER_PIXEL_PER_MM / 2.0;
+            break;
+
+        case ECG_GAIN_X40:
+            scale = 4.0 * 10 * RECORDER_PIXEL_PER_MM / 2.0;
+            break;
+
+        default:
+            break;
+        }
+        endY = waveInfo.middleYOffset + scale;
+        startY = waveInfo.middleYOffset - scale;
+        waveData = (waveInfo.maxWaveValue - wave) *((endY - startY) / (waveInfo.maxWaveValue - waveInfo.minWaveValue)) + startY;
+        break;
+    }
+
+    case WAVE_RESP:
+    {
+        qreal respZoom = 1.0;
+        switch(waveInfo.waveInfo.resp.zoom)
+        {
+        case RESP_ZOOM_X025:
+            respZoom = 0.25;
+            break;
+        case RESP_ZOOM_X050:
+            respZoom = 0.5;
+            break;
+        case RESP_ZOOM_X100:
+            respZoom = 1.0;
+            break;
+        case RESP_ZOOM_X200:
+            respZoom = 2.0;
+            break;
+        case RESP_ZOOM_X300:
+            respZoom = 3.0;
+            break;
+        case RESP_ZOOM_X400:
+            respZoom = 4.0;
+            break;
+        case RESP_ZOOM_X500:
+            respZoom = 5.0;
+            break;
+        default:
+            break;
+        }
+
+        short zoomWave = (wave - waveInfo.waveBaseLine) * respZoom + waveInfo.waveBaseLine;
+        waveData = (waveInfo.maxWaveValue -  zoomWave) * ((endY -  startY) / (waveInfo.maxWaveValue -  waveInfo.minWaveValue)) + startY;
+        break;
+    }
+
+    case WAVE_SPO2:
+    {
+        qreal spo2Zoom = 1.0;
+        switch (waveInfo.waveInfo.spo2.gain) {
+        case SPO2_GAIN_X10:
+            spo2Zoom = 1.0;
+            break;
+        case SPO2_GAIN_X20:
+            spo2Zoom = 2.0;
+            break;
+        case SPO2_GAIN_X40:
+            spo2Zoom = 4.0;
+            break;
+        case SPO2_GAIN_X80:
+            spo2Zoom = 8.0;
+            break;
+        default:
+            break;
+        }
+
+        short zoomWave = (wave - waveInfo.waveBaseLine) * spo2Zoom + waveInfo.waveBaseLine;
+        waveData = (waveInfo.maxWaveValue -  zoomWave) * ((endY -  startY) / (waveInfo.maxWaveValue -  waveInfo.minWaveValue)) + startY;
+        break;
+    }
+
+    case WAVE_CO2:
+    {
+        int max = waveInfo.maxWaveValue;
+        switch(waveInfo.waveInfo.co2.zoom)
+        {
+        case CO2_DISPLAY_ZOOM_4:
+            max = max * 4 / 20;
+            break;
+        case CO2_DISPLAY_ZOOM_8:
+            max  = max * 8 / 20;
+            break;
+        case CO2_DISPLAY_ZOOM_12:
+            max = max * 12 / 20;
+            break;
+        default:
+            break;
+        }
+
+        waveData = (max - wave) * (endY -  startY) / (max -  waveInfo.minWaveValue) + startY;
+        break;
+    }
+
+    case WAVE_N2O:
+    case WAVE_AA1:
+    case WAVE_AA2:
+    case WAVE_O2:
+    {
+        int max = waveInfo.maxWaveValue;
+        switch(waveInfo.waveInfo.ag.zoom)
+        {
+        case AG_DISPLAY_ZOOM_4:
+            max = max * 4 / 15;
+            break;
+        case AG_DISPLAY_ZOOM_8:
+            max = max * 8 / 15;
+            break;
+        default:
+            break;
+        }
+        waveData = (max - wave) * (endY -  startY) / (max -  waveInfo.minWaveValue) + startY;
+        break;
+    }
+
+    case WAVE_IBP1:
+    case WAVE_IBP2:
+    {
+        int max = waveInfo.waveInfo.ibp.high * 10;
+        int min = waveInfo.waveInfo.ibp.low * 10;
+        waveData = (max - wave) * (endY -  startY) / (max -  min) + startY;
+        break;
+    }
+
+    default:
+        break;
+    }
+
+    //cut off
+    if(waveData < waveInfo.startYOffset)
+    {
+        waveData = waveInfo.startYOffset;
+    }
+    else if(waveData > waveInfo.endYOffset)
+    {
+        waveData = waveInfo.endYOffset;
+    }
+
     return waveData;
 }
+
+/**
+ * @brief drawDottedLine draw a dotted line
+ * @param painter paitner
+ * @param x1 xPos of point 1
+ * @param y1 yPos of point 1
+ * @param x2 xPos of point 2
+ * @param y2 yPos of point 2
+ */
+static void drawDottedLine(QPainter *painter, qreal x1, qreal y1,
+                           qreal x2, qreal y2)
+{
+    painter->save();
+    QVector<qreal> darsh;
+    darsh << 5 << 5;
+    QPen pen(Qt::white);
+    pen.setDashPattern(darsh);
+    painter->setPen(pen);
+    QLineF dotLine(x1, y1, x2, y2);
+    painter->drawLine(dotLine);
+    painter->restore();
+}
+
 
 
 /**
@@ -881,13 +1104,19 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo & waveInfo, short wave)
  * @param page  the record page
  * @param painter paitner
  * @param waveInfo the wave segment info
+ * @param segmentIndex segment index
  */
-static void drawWaveSegment(RecordPage *page, QPainter *painter, const RecordWaveSegmentInfo &waveInfo)
+static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegmentInfo &waveInfo, int segmentIndex)
 {
     qreal x1 = 0, y1 = 0, x2 = 0, y2 = 0;
-    for(int i = 0; i < waveInfo.waveNum; i++)
+    int pageWidth = page->width();
+    qreal offsetX = pageWidth * 1.0 / waveInfo.waveNum;
+    int i;
+    for(i = 0; i < waveInfo.waveNum; i++)
     {
-        if(waveInfo.waveBuff[i] & INVALID_WAVE_FALG_BIT)
+        unsigned short flag = waveInfo.waveBuff[i] >> 16;
+        //invalid data
+        if(flag & INVALID_WAVE_FALG_BIT)
         {
             if(i == 0)
             {
@@ -896,15 +1125,146 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, const RecordWav
                 x2 = waveInfo.drawCtx.curPageFirstXpos;
             }
             short wave = waveInfo.waveBuff[i] & 0xFFFF;
+            double waveData = mapWaveValue(waveInfo, wave);
+            y1 = y2 = waveData;
+
+            int j = i + 1;
+            while(j < waveInfo.waveNum)
+            {
+                flag = waveInfo.waveBuff[j] >> 16;
+                if(!(flag & INVALID_WAVE_FALG_BIT))
+                {
+                    break;
+                }
+
+                if(x2 + offsetX > pageWidth - 1)
+                {
+                    break;
+                }
+                x2 += offsetX;
+                j++;
+            }
+
+            i = j - 1;
+
+            drawDottedLine(painter, x1, waveData, x2, waveData);
+
+            x1 = x2;
+            x2 += offsetX;
+            y1 = y2;
+
+            waveInfo.drawCtx.lastWaveFlags = flag;
+
+            if (x2 > pageWidth - 1)
+            {
+                QLineF line(x1, y1, pageWidth, y1);
+                painter->drawLine(line);
+                waveInfo.drawCtx.prevSegmentLastYpos = y1;
+                waveInfo.drawCtx.curPageFirstXpos = x2 - pageWidth + 1;
+                break;
+            }
+        }
+        else //valid wave data
+        {
+            short wave = waveInfo.waveBuff[i] & 0xFFFF;
+            if(waveInfo.id == WAVE_ECG_aVR && waveInfo.waveInfo.ecg.in12LeadMode
+                    && waveInfo.waveInfo.ecg._12LeadDisplayFormat == DISPLAY_12LEAD_CABRELA)
+            {
+                wave = - wave;
+            }
+
+            double waveData = mapWaveValue(waveInfo, wave);
+
+            if(i==0)
+            {
+                if(segmentIndex == 0)
+                {
+                    y1 = waveData;
+                }
+                else
+                {
+                    y1 = waveInfo.drawCtx.prevSegmentLastYpos;
+                }
+                x1 = 0;
+                x2 = waveInfo.drawCtx.curPageFirstXpos;
+            }
+            else
+            {
+                if((waveInfo.waveBuff[i - 1] >> 16) & INVALID_WAVE_FALG_BIT)
+                {
+                    y1 = waveData;
+                }
+            }
+
+            y2 = waveData;
+            QLineF line(x1, y1, x2, y2);
+            painter->drawLine(line);
+
+            x1 = x2;
+            x2 += offsetX;
+            y1 = y2;
+
+            waveInfo.drawCtx.lastWaveFlags = flag;
+
+            if(x2 > pageWidth - 1)
+            {
+                break;
+            }
+        }
+
+    }
+
+    waveInfo.drawCtx.curPageFirstXpos=0;
+    if (x2 > pageWidth - 1)
+    {
+        bool drawLine = false;
+        QLineF line;
+        y2 = y1;
+        if(i + 1 < waveInfo.waveNum)
+        {
+            if(!(waveInfo.drawCtx.lastWaveFlags & INVALID_WAVE_FALG_BIT))
+            {
+                short wave = waveInfo.waveBuff[i + 1] & 0xFFFF;
+                if(waveInfo.id == WAVE_ECG_aVR && waveInfo.waveInfo.ecg.in12LeadMode
+                        && waveInfo.waveInfo.ecg._12LeadDisplayFormat == DISPLAY_12LEAD_CABRELA)
+                {
+                    wave = -wave;
+                }
+
+                //当x1在页宽范围内，x2不在页宽范围内时，通过计算两点连线的斜率来判断x坐标为页宽时点的y坐标，并进行连线
+                qreal tmpValue = mapWaveValue(waveInfo, wave);
+                qreal deltaY = (tmpValue * 1000 - y1 * 1000) / 1000.0 * (pageWidth * 1.0 - 1.0 - x1) / offsetX;
+                y2 = y1 + deltaY;
+                line.setLine(x1, y1, pageWidth - 1, y2);
+                drawLine = true;
+            }
         }
         else
         {
+            drawLine = true;
+            line.setLine(x1, y1, pageWidth - 1, y2);
+        }
 
+        if(drawLine)
+        {
+            painter->drawLine(line);
+            waveInfo.drawCtx.curPageFirstXpos = x2 - pageWidth + 1;
         }
     }
+    else
+    {
+        if(!(waveInfo.drawCtx.lastWaveFlags & INVALID_WAVE_FALG_BIT))
+        {
+            //draw to the edge
+            y2 = y1;
+            QLineF line(x1, y1, pageWidth -  1, y2);
+            painter->drawLine(line);
+        }
+    }
+    waveInfo.drawCtx.prevSegmentLastYpos = y2;
 }
 
-RecordPage *RecordPageGenerator::createWaveSegments(const QList<RecordWaveSegmentInfo> &waveInfos, int segmentIndex, PrintSpeed speed)
+RecordPage *RecordPageGenerator::createWaveSegments(QList<RecordWaveSegmentInfo> &waveInfos, int segmentIndex, PrintSpeed speed)
 {
     int pageWidth = 25 * RECORDER_PIXEL_PER_MM;
     switch(speed)
@@ -925,11 +1285,11 @@ RecordPage *RecordPageGenerator::createWaveSegments(const QList<RecordWaveSegmen
     QFont font = fontManager.recordFont(24);
     painter.setFont(font);
 
-    QList<RecordWaveSegmentInfo>::const_iterator iter = waveInfos.constBegin();
-    for(;iter != waveInfos.constEnd(); iter++)
+    QList<RecordWaveSegmentInfo>::iterator iter = waveInfos.begin();
+    for(;iter != waveInfos.end(); iter++)
     {
         drawCaption(page, &painter, *iter, segmentIndex);
-
+        drawWaveSegment(page, &painter, *iter, segmentIndex);
     }
     return page;
 }

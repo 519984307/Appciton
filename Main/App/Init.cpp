@@ -672,6 +672,8 @@ void deleteObjects(void)
     deletePrintManager();
     deletePrintExec();
 
+    deleteRecorderManager();
+
     deleteSummaryStorageManager();
     deleteSummaryRescueDataWidget();
     deleteSummaryRescueRangePrint();

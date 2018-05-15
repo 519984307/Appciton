@@ -86,9 +86,9 @@ void RecordPageProcessor::addPage(RecordPage *page)
 
 void RecordPageProcessor::flushPages()
 {
-    foreach (RecordPage *page, d_ptr->pages) {
-        delete page;
-    }
+    qDeleteAll(d_ptr->pages);
+    d_ptr->pages.clear();
+
 
     if(d_ptr->queueIsFull)
     {

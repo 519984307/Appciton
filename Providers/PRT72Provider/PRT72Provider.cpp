@@ -627,7 +627,7 @@ PRT72Provider::PRT72Provider()
         , _sigSender(new PrinterProviderSignalSender(this))
 {
     //UartAttrDesc portAttr(460800, 8, 'N', 1, 0, FlOW_CTRL_HARD, false);  //new mainboard support flow control, use block io
-    UartAttrDesc portAttr(115200, 8, 'N', 1, 0);
+    UartAttrDesc portAttr(460800, 8, 'N', 1, 0);
     initPort(portAttr);
 }
 

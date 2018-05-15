@@ -12,25 +12,33 @@
 #include "CO2Define.h"
 #include "IBPDefine.h"
 #include "AGDefine.h"
+#include "SystemDefine.h"
 
 struct RecordWaveSegmentInfo
 {
     WaveformID id;                  // wave id
     int startYOffset;               // start Y Offset of wave;
+    int middleYOffset;              // yoffset middle value
     int endYOffset;                 // end y offset of the wave
+    int minWaveValue;               // minimum wave value
+    int maxWaveValue;               // maximum wave value
+    int waveBaseLine;               // wave base line
     int waveNum;                    // wave point num
     QVector<WaveDataType> waveBuff; // wave buffer
 
     struct {
         qreal prevSegmentLastYpos;  // the y value on the previous segment page edge
         qreal curPageFirstXpos;     // the first wave point's x position
-        int captionPixLength;          // store the caption pixel length of the wave caption
-        char caption[64];            // wave caption string
-    } drawCtx;
+        unsigned short lastWaveFlags; // the wave flags of the last draw wave point
+        int captionPixLength;       // store the caption pixel length of the wave caption
+        char caption[64];           // wave caption string
+    } drawCtx;                      // wave draw context
 
     union {
         struct {
             ECGGain gain;
+            bool in12LeadMode;
+            Display12LeadFormat _12LeadDisplayFormat;
         } ecg;
 
         struct {
@@ -176,7 +184,7 @@ protected:
      * @param speed print speed
      * @return page
      */
-    static RecordPage *createWaveSegments(const QList<RecordWaveSegmentInfo> &waveInfos, int segmentIndex, PrintSpeed speed);
+    static RecordPage *createWaveSegments(QList<RecordWaveSegmentInfo> &waveInfos, int segmentIndex, PrintSpeed speed);
 
     /**
      * @brief timerEvent handle timer event

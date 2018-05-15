@@ -84,6 +84,8 @@ QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfos()
         RecordWaveSegmentInfo info;
         info.id = id;
         info.waveNum = waveformCache.getSampleRate(id);
+        waveformCache.getRange(id, info.minWaveValue, info.maxWaveValue);
+        waveformCache.getBaseline(id, info.waveBaseLine);
         switch(id)
         {
         case WAVE_ECG_I:
@@ -102,6 +104,8 @@ QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfos()
             caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
                                                                 ecgParam.getLeadConvention()))
                     .arg(ECGSymbol::convert(ecgParam.getFilterMode()));
+            info.waveInfo.ecg.in12LeadMode = windowManager.getUFaceType() == UFACE_MONITOR_12LEAD;
+            info.waveInfo.ecg._12LeadDisplayFormat = ecgParam.get12LDisplayFormat();
             captionLength = fontManager.textWidthInPixels(caption, q_ptr->font());
             break;
         case WAVE_RESP:
@@ -148,19 +152,33 @@ QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfos()
         Util::strlcpy(info.drawCtx.caption, qPrintable(caption), sizeof(info.drawCtx.caption));
         info.drawCtx.curPageFirstXpos = 0.0;
         info.drawCtx.prevSegmentLastYpos = 0.0;
+        info.drawCtx.lastWaveFlags = 0;
         infos.append(info);
     }
 
     //calculate the wave region in the print page
     int waveRegionHeight = (RECORDER_PAGE_HEIGHT - RECORDER_WAVE_UPPER_MARGIN - RECORDER_WAVE_LOWER_MARGIN)
                             / infos.size();
+
+    // wave heights when has 3 waves
+    int waveHeights[] = {120, 120, 80};
+
     QList<RecordWaveSegmentInfo>::iterator iter;
     int yOffset = RECORDER_WAVE_UPPER_MARGIN;
+    int j=0;
     for(iter = infos.begin(); iter != infos.end(); iter++)
     {
         iter->startYOffset = yOffset;
-        yOffset += waveRegionHeight;
+        if(infos.size() == 3)
+        {
+            yOffset += waveHeights[j++];
+        }
+        else
+        {
+            yOffset += waveRegionHeight;
+        }
         iter->endYOffset = yOffset;
+        iter->middleYOffset = (iter->startYOffset + iter->endYOffset) / 2;
     }
 
     return infos;
@@ -203,7 +221,7 @@ void ContinuousPageGeneratorPrivate::fetchWaveData()
                                                          iter->waveNum - curSize,
                                                          iter->waveBuff.data() + curSize);
 
-            if(++retryCount >= 100) //500 ms has passed and haven't finished reading
+            if(++retryCount >= 1000) //1000 ms has passed and haven't finished reading
             {
                 if(curSize == lastReadSize)
                 {
@@ -266,11 +284,6 @@ RecordPage *ContinuousPageGenerator::createPage()
     case WaveSegmentPage:
     {
         RecordPage *page;
-        if(d_ptr->currentDrawWaveSegment >= d_ptr->totalDrawWaveSegment)
-        {
-            d_ptr->curPageType = EndPage;
-        }
-
         d_ptr->fetchWaveData();
         if(recorderManager.isAbort())
         {
@@ -279,6 +292,11 @@ RecordPage *ContinuousPageGenerator::createPage()
         }
 
         page = createWaveSegments(d_ptr->waveInfos, d_ptr->currentDrawWaveSegment++, recorderManager.getPrintSpeed());
+
+        if(d_ptr->totalDrawWaveSegment > 0 && d_ptr->currentDrawWaveSegment >= d_ptr->totalDrawWaveSegment)
+        {
+            d_ptr->curPageType = EndPage;
+        }
         return page;
     }
     case EndPage:

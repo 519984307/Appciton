@@ -4,8 +4,8 @@
 
 #define RECORDER_PIXEL_PER_MM (8)       // pixel per mm in the record page
 #define RECORDER_PAGE_HEIGHT (48 * RECORDER_PIXEL_PER_MM)      // recorder page height in pixel
-#define RECORDER_WAVE_UPPER_MARGIN 10           // upper margin of the wave area
-#define RECORDER_WAVE_LOWER_MARGIN 10           // lower margin of the wave area
+#define RECORDER_WAVE_UPPER_MARGIN 30           // upper margin of the wave area
+#define RECORDER_WAVE_LOWER_MARGIN 30           // lower margin of the wave area
 
 class RecordPage : public QImage
 {

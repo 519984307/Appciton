@@ -257,6 +257,7 @@ static void _stop(void)
 {
     // 停止打印。
     printManager.abort();
+    recorderManager.abort();
 
     _storageThread->stop();
     _printExecThread->stop();

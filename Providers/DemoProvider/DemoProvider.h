@@ -36,6 +36,7 @@ public:
     virtual void detachParam(Param &param);
     virtual void dataArrived(void);
     virtual void checkConnection() {}
+    virtual bool connected() {return true;}
 
     // 实现ECG的接口。
     virtual int getWaveformSample(void) {return _waveSampleRate;}

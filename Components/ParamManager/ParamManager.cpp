@@ -266,7 +266,7 @@ bool ParamManager::isParamStopped(ParamID id)
         return true;
     }
 
-    return it.value()->isConnected();
+    return !it.value()->isConnected();
 }
 
 /**************************************************************************************************
@@ -319,10 +319,15 @@ ParamManager::~ParamManager()
     {
         delete pit.value();
     }
+    _providers.clear();
 
     ParamMap::iterator pmit = _params.begin();
     for (; pmit != _params.end(); ++pmit)
     {
         delete pmit.value();
     }
+    _params.clear();
+
+    _paramWithID.clear();
+    _blmProviders.clear();
 }

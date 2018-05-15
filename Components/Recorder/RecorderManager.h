@@ -148,3 +148,4 @@ private:
 };
 
 #define recorderManager (RecorderManager::getInstance())
+#define deleteRecorderManager() (delete &recorderManager)
