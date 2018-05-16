@@ -233,6 +233,7 @@ SOURCES +=                                                                      
     Components/PatientData/TrendDataSetWidget.cpp                               \
     Components/PatientData/RescueDataDeleteWidget.cpp                           \
     Components/PatientData/TrendDataStorageManager.cpp                          \
+    Components/PatientData/EventDataParseContext.cpp                            \
     Components/PatientData/EventStorageItem.cpp                                 \
     Components/PatientData/EventStorageManager.cpp                              \
     Components/PatientData/TrendWaveWidget.cpp                                  \
@@ -680,6 +681,7 @@ HEADERS +=                                                                      
     Components/PatientData/RescueDataDeleteWidget.h                             \
     Components/PatientData/TrendDataStorageManager.h                            \
     Components/PatientData/EventDataDefine.h                                    \
+    Components/PatientData/EventDataParseContext.h                              \
     Components/PatientData/EventStorageItem.h                                   \
     Components/PatientData/EventStorageManager.h                                \
     Components/PatientData/TrendWaveWidget.h                                    \

@@ -2,7 +2,7 @@
 #include "RescueDataDefine.h"
 #include "Debug.h"
 
-#define CONTINUOUS_PRINT_WAVE_CHANNEL_TIME 6
+#define CONTINUOUS_PRINT_WAVE_CHANNEL_TIME 8
 
 WaveformCache *WaveformCache::_selfObj = NULL;
 

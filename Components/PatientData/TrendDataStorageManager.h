@@ -29,6 +29,9 @@ public:
     /* store data, need to know what cause the data to storage */
     void storeData(unsigned t, TrendDataFlags dataStatus);
 
+    /* parse the trend data segment */
+    TrendDataPackage parseTrendSegment(const TrendDataSegment *dataSegment);
+
     /* storage function, move the data from memory to flash */
     void run();
 

@@ -13,6 +13,7 @@
 #include "RESPSymbol.h"
 
 #define DEFAULT_PAGE_WIDTH 200
+#define PEN_WIDTH 2
 RecordPageGenerator::RecordPageGenerator(QObject *parent)
     :QObject(parent), _requestStop(false), _generate(true), _timerID(-1)
 {
@@ -670,7 +671,7 @@ static void drawECGGain(RecordPage *page, QPainter *painter, const RecordWaveSeg
     path.lineTo(pageWidth * 2 / 3, yBottom);
     path.lineTo(pageWidth, yBottom);
     painter->save();
-    QPen p(Qt::white, 1);
+    QPen p(Qt::white, PEN_WIDTH);
     painter->setPen(p);
     painter->setBrush(Qt::NoBrush);
     painter->drawPath(path);
@@ -694,7 +695,7 @@ static void drawPercentRuler(RecordPage *page, QPainter *painter, const RecordWa
 
     painter->save();
 
-    QPen p(Qt::white, 1);
+    QPen p(Qt::white, PEN_WIDTH);
     painter->setPen(p);
     painter->setBrush(Qt::NoBrush);
     painter->drawPath(path);
@@ -725,7 +726,7 @@ static void drawIBPRuler(RecordPage *page, QPainter *painter, const RecordWaveSe
 
     painter->save();
 
-    QPen p(Qt::white, 1);
+    QPen p(Qt::white, PEN_WIDTH);
     painter->setPen(p);
     painter->setBrush(Qt::NoBrush);
     painter->drawPath(path);
@@ -766,7 +767,8 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
 
     RecordPage *page = new RecordPage(pageWidth);
     QPainter painter(page);
-    painter.setPen(Qt::white);
+    QPen pen(Qt::white, PEN_WIDTH);
+    painter.setPen(pen);
     QFont font = fontManager.recordFont(24);
     painter.setFont(font);
 
@@ -1091,7 +1093,7 @@ static void drawDottedLine(QPainter *painter, qreal x1, qreal y1,
     painter->save();
     QVector<qreal> darsh;
     darsh << 5 << 5;
-    QPen pen(Qt::white);
+    QPen pen(Qt::white, PEN_WIDTH);
     pen.setDashPattern(darsh);
     painter->setPen(pen);
     QLineF dotLine(x1, y1, x2, y2);
@@ -1112,11 +1114,11 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
 {
     qreal x1 = 0, y1 = 0, x2 = 0, y2 = 0;
     int pageWidth = page->width();
-    qreal offsetX = pageWidth * 1.0 / waveInfo.waveNum;
+    qreal offsetX = pageWidth * 1.0 / waveInfo.sampleRate;
     int i;
-    for(i = 0; i < waveInfo.waveNum; i++)
+    for(i = 0; i < waveInfo.sampleRate; i++)
     {
-        unsigned short flag = waveInfo.waveBuff[i] >> 16;
+        unsigned short flag = waveInfo.secondWaveBuff[i] >> 16;
         //invalid data
         if(flag & INVALID_WAVE_FALG_BIT)
         {
@@ -1126,14 +1128,14 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
                 x1 = 0;
                 x2 = waveInfo.drawCtx.curPageFirstXpos;
             }
-            short wave = waveInfo.waveBuff[i] & 0xFFFF;
+            short wave = waveInfo.secondWaveBuff[i] & 0xFFFF;
             double waveData = mapWaveValue(waveInfo, wave);
             y1 = y2 = waveData;
 
             int j = i + 1;
-            while(j < waveInfo.waveNum)
+            while(j < waveInfo.sampleRate)
             {
-                flag = waveInfo.waveBuff[j] >> 16;
+                flag = waveInfo.secondWaveBuff[j] >> 16;
                 if(!(flag & INVALID_WAVE_FALG_BIT))
                 {
                     break;
@@ -1168,7 +1170,7 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
         }
         else //valid wave data
         {
-            short wave = waveInfo.waveBuff[i] & 0xFFFF;
+            short wave = waveInfo.secondWaveBuff[i] & 0xFFFF;
             if(waveInfo.id == WAVE_ECG_aVR && waveInfo.waveInfo.ecg.in12LeadMode
                     && waveInfo.waveInfo.ecg._12LeadDisplayFormat == DISPLAY_12LEAD_CABRELA)
             {
@@ -1192,7 +1194,7 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
             }
             else
             {
-                if((waveInfo.waveBuff[i - 1] >> 16) & INVALID_WAVE_FALG_BIT)
+                if((waveInfo.secondWaveBuff[i - 1] >> 16) & INVALID_WAVE_FALG_BIT)
                 {
                     y1 = waveData;
                 }
@@ -1222,11 +1224,11 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
         bool drawLine = false;
         QLineF line;
         y2 = y1;
-        if(i + 1 < waveInfo.waveNum)
+        if(i + 1 < waveInfo.sampleRate)
         {
             if(!(waveInfo.drawCtx.lastWaveFlags & INVALID_WAVE_FALG_BIT))
             {
-                short wave = waveInfo.waveBuff[i + 1] & 0xFFFF;
+                short wave = waveInfo.secondWaveBuff[i + 1] & 0xFFFF;
                 if(waveInfo.id == WAVE_ECG_aVR && waveInfo.waveInfo.ecg.in12LeadMode
                         && waveInfo.waveInfo.ecg._12LeadDisplayFormat == DISPLAY_12LEAD_CABRELA)
                 {
@@ -1283,7 +1285,8 @@ RecordPage *RecordPageGenerator::createWaveSegments(QList<RecordWaveSegmentInfo>
 
     RecordPage *page = new RecordPage(pageWidth);
     QPainter painter(page);
-    painter.setPen(Qt::white);
+    QPen pen(Qt::white, PEN_WIDTH);
+    painter.setPen(pen);
     QFont font = fontManager.recordFont(24);
     painter.setFont(font);
 

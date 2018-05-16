@@ -1,5 +1,6 @@
 #include "RecorderManager.h"
 #include <QScopedPointer>
+#include <IStorageBackend.h>
 
 class EventPageGeneratorPrivate;
 class EventPageGenerator : public RecordPageGenerator
@@ -10,7 +11,8 @@ public:
         Type = 2
     };
 
-    EventPageGenerator(QObject *parent = 0);
+    EventPageGenerator(IStorageBackend *backend, int eventIndex, QObject *parent = 0);
+
     ~EventPageGenerator();
 
     /* override */

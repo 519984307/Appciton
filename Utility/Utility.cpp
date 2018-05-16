@@ -98,4 +98,24 @@ void setupSysLog()
     qInstallMsgHandler(syslogMessageHandler);
 }
 
+QString convertToString(int value, int scale)
+{
+    if(scale == 1)
+    {
+        return QString::number(value);
+    }
+    else
+    {
+        int prec = 0;
+        int tmp = scale;
+        while(tmp / 10 >= 1)
+        {
+            prec +=1;
+            tmp = tmp / 10;
+        }
+
+        return QString::number((double)value / scale, 'f', prec);
+    }
+}
+
 }

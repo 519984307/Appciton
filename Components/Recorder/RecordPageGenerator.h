@@ -23,8 +23,8 @@ struct RecordWaveSegmentInfo
     int minWaveValue;               // minimum wave value
     int maxWaveValue;               // maximum wave value
     int waveBaseLine;               // wave base line
-    int waveNum;                    // wave point num
-    QVector<WaveDataType> waveBuff; // wave buffer
+    int sampleRate;                 // wave sample rate
+    QVector<WaveDataType> secondWaveBuff; // wave buffer of one second
 
     struct {
         qreal prevSegmentLastYpos;  // the y value on the previous segment page edge

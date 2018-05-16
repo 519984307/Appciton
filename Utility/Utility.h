@@ -55,7 +55,13 @@ namespace Util {
     //run lenght decode
     bool RunLengthDecode(const char *src, int srclen, char *dest, int *destlen);
 
+    //strlcpy safe version, the dest[n-1] will always be '\0'
     char *strlcpy(char *dest, const char *src, size_t n);
+
+    //convert a value to a string base on the value and the scale
+    //if the scale == 1, return a integer string,
+    //otherwise, return a string contains the decimal part
+    QString convertToString(int value, int scale);
 
     //remove directory
     void deleteDir(const QString &path);

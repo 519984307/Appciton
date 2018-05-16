@@ -56,7 +56,16 @@ void RecordPageProcessor::updatePrintSpeed(PrintSpeed speed)
     }
 
     d_ptr->curSpeed = speed;
-    d_ptr->updateSpeed = true;
+    if(d_ptr->processing)
+    {
+        d_ptr->updateSpeed = true;
+    }
+    else
+    {
+        //set speed imediately
+        d_ptr->iface->setPrintSpeed(d_ptr->curSpeed);
+        qDebug()<<"Set Print Speed "<<speed;
+    }
 }
 
 void RecordPageProcessor::addPage(RecordPage *page)

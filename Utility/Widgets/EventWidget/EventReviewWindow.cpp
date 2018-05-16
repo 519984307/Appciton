@@ -22,52 +22,13 @@
 #include <QFile>
 #include <QHeaderView>
 #include <QScrollBar>
+#include "EventDataParseContext.h"
 
 #define ITEM_HEIGHT     30
 #define ITEM_WIDTH      100
 
 EventReviewWindow *EventReviewWindow::_selfObj = NULL;
 
-struct EventDataPraseContex
-{
-    EventDataPraseContex()
-        :eventDataBuf(NULL),
-          infoSegment(NULL),
-          trendSegment(NULL),
-          almSegment(NULL),
-          codeMarkerSegment(NULL)
-    {
-    }
-
-    void reset()
-    {
-        if(eventDataBuf)
-        {
-            qFree(eventDataBuf);
-            eventDataBuf = NULL;
-        }
-        infoSegment = NULL;
-        trendSegment = NULL;
-        waveSegments.clear();
-        almSegment = NULL;
-        codeMarkerSegment = NULL;
-    }
-
-    ~EventDataPraseContex()
-    {
-        if(eventDataBuf)
-        {
-            qFree(eventDataBuf);
-        }
-    }
-
-    char *eventDataBuf; //buffer for the event data
-    EventInfoSegment *infoSegment;  //pointor of the info segment
-    TrendDataSegment *trendSegment; //pointer of the trend segment
-    QVector<WaveformDataSegment *> waveSegments;    //pointers of the wave segments
-    AlarmInfoSegment *almSegment;   //pointer to the alarm segment
-    CodeMarkerSegment *codeMarkerSegment;   //pointer to the code marker segment
-};
 
 class EventReviewWindowPrivate
 {
@@ -84,81 +45,10 @@ public:
     //prase the event data from the backend
     bool parseEventData(int dataIndex)
     {
-        if(!backend || dataIndex >= (int) backend->getBlockNR() || dataIndex < 0)
-        {
-            return false;
-        }
-
-        quint32 length  = backend->getBlockDataLen(dataIndex);
-
-        char *buf = (char *)qMalloc(length);
-        if(!buf)
-        {
-            return false;
-        }
-
-        if (backend->readBlockData(dataIndex, buf, length) != length)
-        {
-            qFree(buf);
-            return false;
-        }
-
         ctx.reset();
-
         //clear the wave with empyt wave segments
         waveWidget->setWaveSegments(ctx.waveSegments);
-
-        ctx.eventDataBuf = buf;
-
-        char *parseBuffer = buf;
-        bool parseEnd = false;
-        while(!parseEnd)
-        {
-            EventSegmentType *eventType = (EventSegmentType *)parseBuffer;
-            switch (*eventType) {
-            case EVENT_INFO_SEGMENT:
-                //skip the offset of the segment type field
-                parseBuffer += sizeof(EventSegmentType);
-                ctx.infoSegment = (EventInfoSegment *) parseBuffer;
-                //find the location of the next event type
-                parseBuffer += sizeof(EventInfoSegment);
-                break;
-            case EVENT_TRENDDATA_SEGMENT:
-                //skip the offset of the segment type field
-                parseBuffer += sizeof(EventSegmentType);
-                ctx.trendSegment = (TrendDataSegment *)parseBuffer;
-                //find the location of the next event type
-                parseBuffer += sizeof(TrendDataSegment) + ctx.trendSegment->trendValueNum * sizeof(TrendValueSegment);
-                break;
-            case EVENT_WAVEFORM_SEGMENT:
-                //skip the offset of the segment type field
-                parseBuffer += sizeof(EventSegmentType);
-                ctx.waveSegments.append((WaveformDataSegment *) parseBuffer);
-                //find the location of the next event type
-                parseBuffer += sizeof(WaveformDataSegment) + ctx.waveSegments.last()->waveNum * sizeof(WaveDataType);
-                break;
-            case EVENT_ALARM_INFO_SEGMENT:
-                parseBuffer += sizeof(EventSegmentType);
-                ctx.almSegment = (AlarmInfoSegment *) parseBuffer;
-                parseBuffer += sizeof(AlarmInfoSegment);
-                break;
-            case EVENT_CODEMARKER_SEGMENT:
-                parseBuffer += sizeof(EventSegmentType);
-                ctx.codeMarkerSegment = (CodeMarkerSegment *) parseBuffer;
-                parseBuffer += sizeof(CodeMarkerSegment);
-                break;
-            default:
-                qdebug("unknown segment type %d, stop parsing.",  *eventType);
-                parseEnd = true;
-                break;
-            }
-        }
-
-        if(parseBuffer >= buf + length)
-        {
-            parseEnd = true;
-        }
-        return true;
+        return ctx.parse(backend, dataIndex);
     }
 
 
@@ -194,7 +84,7 @@ public:
     QWidget *chartWidget;
     QStackedLayout *stackLayout;
 
-    EventDataPraseContex ctx;
+    EventDataPraseContext ctx;
     IStorageBackend *backend;
     int curParseIndex;
     int eventNum;                           // 总事件数

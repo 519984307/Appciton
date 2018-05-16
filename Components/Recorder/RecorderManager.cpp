@@ -68,6 +68,7 @@ PrintSpeed RecorderManager::getPrintSpeed() const
     {
         speed = PRINT_SPEED_250;
     }
+    speed = PRINT_SPEED_500;
     return (PrintSpeed)speed;
 }
 
@@ -125,6 +126,9 @@ void RecorderManager::setPrintPrividerIFace(PrintProviderIFace *iface)
         connect(sigSender, SIGNAL(statusChanged(PrinterStatus)), this, SLOT(providerStatusChanged(PrinterStatus)));
         connect(sigSender, SIGNAL(error(unsigned char)), this, SLOT(providerReportError(unsigned char)));
     }
+
+    PrintSpeed speed = getPrintSpeed();
+    QMetaObject::invokeMethod(d_ptr->processor, "updatePrintSpeed", Q_ARG(PrintSpeed, speed));
 }
 
 bool RecorderManager::isConnected() const

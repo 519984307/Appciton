@@ -83,7 +83,7 @@ QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfos()
         int captionLength = 0;
         RecordWaveSegmentInfo info;
         info.id = id;
-        info.waveNum = waveformCache.getSampleRate(id);
+        info.sampleRate = waveformCache.getSampleRate(id);
         waveformCache.getRange(id, info.minWaveValue, info.maxWaveValue);
         waveformCache.getBaseline(id, info.waveBaseLine);
         switch(id)
@@ -195,15 +195,15 @@ void ContinuousPageGeneratorPrivate::fetchWaveData()
     QList<RecordWaveSegmentInfo>::iterator iter;
     for(iter = waveInfos.begin(); iter < waveInfos.end(); iter++)
     {
-        if(iter->waveBuff.size() != iter->waveNum)
+        if(iter->secondWaveBuff.size() != iter->sampleRate)
         {
-            iter->waveBuff.resize(iter->waveNum);
+            iter->secondWaveBuff.resize(iter->sampleRate);
         }
 
         int curSize = 0;
         int retryCount = 0;
         int lastReadSize = 0;
-        while(curSize < iter->waveNum)
+        while(curSize < iter->sampleRate)
         {
             if(recorderManager.isAbort())
             {
@@ -218,8 +218,8 @@ void ContinuousPageGeneratorPrivate::fetchWaveData()
             }
 
             curSize += waveformCache.readRealtimeChannel(iter->id,
-                                                         iter->waveNum - curSize,
-                                                         iter->waveBuff.data() + curSize);
+                                                         iter->sampleRate - curSize,
+                                                         iter->secondWaveBuff.data() + curSize);
 
             if(++retryCount >= 1000) //1000 ms has passed and haven't finished reading
             {
@@ -233,10 +233,10 @@ void ContinuousPageGeneratorPrivate::fetchWaveData()
             Util::waitInEventLoop(5);
         }
 
-        if(curSize < iter->waveNum)
+        if(curSize < iter->sampleRate)
         {
             //no enough data, fill with invalid
-            qFill(iter->waveBuff.data() + curSize, iter->waveBuff.data()+iter->waveNum, (WaveDataType) INVALID_WAVE_FALG_BIT);
+            qFill(iter->secondWaveBuff.data() + curSize, iter->secondWaveBuff.data()+iter->sampleRate, (WaveDataType) INVALID_WAVE_FALG_BIT);
         }
     }
 }

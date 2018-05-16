@@ -41,6 +41,15 @@ public:
 
     void run();
 
+    /**
+     * @brief getPhyAlarmMessage get the alarm message
+     * @param paramId param id
+     * @param alarmType alarm type
+     * @param isOneShot is oneshot alarm or not
+     * @return the alarm message
+     */
+    QString getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot);
+
 private:
     Q_DECLARE_PRIVATE(EventStorageManager)
     EventStorageManager();
