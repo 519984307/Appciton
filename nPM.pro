@@ -177,6 +177,7 @@ SOURCES +=                                                                      
     Utility/Widgets/EventWidget/EventWaveSetWidget.cpp                          \
     Utility/Widgets/EventWidget/OxyCRGEventWidget.cpp                           \
     Utility/Widgets/EventWidget/OxyCRGEventWaveWidget.cpp                       \
+    Utility/Widgets/EventWidget/OxyCRGEventSetWidget.cpp                        \
     Utility/ScreenCapture.cpp                                                   \
     Utility/RunLengthEncode.cpp                                                 \
 #################################################################################
@@ -611,6 +612,7 @@ HEADERS +=                                                                      
     Utility/Widgets/EventWidget/EventWaveSetWidget.h                            \
     Utility/Widgets/EventWidget/OxyCRGEventWidget.h                             \
     Utility/Widgets/EventWidget/OxyCRGEventWaveWidget.h                         \
+    Utility/Widgets/EventWidget/OxyCRGEventSetWidget.h                          \
 #################################################################################
     Components/System/SystemTick.h                                              \
     Components/System/SystemManager.h                                           \
@@ -971,7 +973,7 @@ HEADERS +=                                                                      
     Main/MergeConfig.h                                                          \
     Main/Starter.h                                                              \
     Main/Version.h \
-    Utility/Widgets/ImportFileSubWidget.h
+    Utility/Widgets/ImportFileSubWidget.h \
 
 #头文件修改后，重新编译依赖的源文件
 DEPENDPATH +=                                                                   \

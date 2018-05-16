@@ -20,6 +20,9 @@ public:
     void eventInfoUpdate(void);
     void eventWaveUpdate(void);
 
+    void waveWidgetTrend1(bool isRR);
+    void waveWidgetCompressed(bool isCO2);
+
 protected:
     void showEvent(QShowEvent *e);
 
@@ -30,6 +33,7 @@ private slots:
     void _eventListReleased(void);
     void _leftMoveEvent(void);
     void _rightMoveEvent(void);
+    void _setReleased(void);
 
 private:
     void _loadOxyCRGEventData(void);

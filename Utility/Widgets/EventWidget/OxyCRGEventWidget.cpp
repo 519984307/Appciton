@@ -15,6 +15,7 @@
 #include "AlarmParamIFace.h"
 #include "ParamManager.h"
 #include "AlarmConfig.h"
+#include "OxyCRGEventSetWidget.h"
 #include <QHeaderView>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -239,6 +240,16 @@ void OxyCRGEventWidget::eventWaveUpdate()
     d_ptr->waveWidget->setWaveTrendSegments(d_ptr->ctx.waveSegments, d_ptr->ctx.trendSegments);
 }
 
+void OxyCRGEventWidget::waveWidgetTrend1(bool isRR)
+{
+    d_ptr->waveWidget->setWaveWidgetTrend1(isRR);
+}
+
+void OxyCRGEventWidget::waveWidgetCompressed(bool isCO2)
+{
+    d_ptr->waveWidget->setWaveWidgetCompressed(isCO2);
+}
+
 /**************************************************************************************************
  * 显示事件。
  *************************************************************************************************/
@@ -250,17 +261,32 @@ void OxyCRGEventWidget::showEvent(QShowEvent *e)
     QRect r = windowManager.getMenuArea();
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 
-    _loadOxyCRGEventData();
+    d_ptr->stackLayout->setCurrentIndex(0);
+    _loadOxyCRGEventData();    
+    if (d_ptr->eventTable->rowCount() == 0)
+    {
+        d_ptr->detail->setEnabled(false);
+    }
+    else
+    {
+        d_ptr->detail->setEnabled(true);
+    }
 }
 
 void OxyCRGEventWidget::_upMoveEventReleased()
 {
-
+    if (d_ptr->eventTable->currentRow() != 0)
+    {
+        d_ptr->eventTable->selectRow(d_ptr->eventTable->currentRow() - 1);
+    }
 }
 
 void OxyCRGEventWidget::_downMoveEventReleased()
 {
-
+    if (d_ptr->eventTable->currentRow() != d_ptr->eventTable->rowCount() - 1)
+    {
+        d_ptr->eventTable->selectRow(d_ptr->eventTable->currentRow() + 1);
+    }
 }
 
 void OxyCRGEventWidget::_detailReleased()
@@ -303,6 +329,11 @@ void OxyCRGEventWidget::_rightMoveEvent()
     d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->eventTable->currentRow()));
     eventInfoUpdate();
     eventWaveUpdate();
+}
+
+void OxyCRGEventWidget::_setReleased()
+{
+    oxyCRGEventSetWidget.autoShow();
 }
 
 void OxyCRGEventWidget::_loadOxyCRGEventData()
@@ -469,6 +500,7 @@ OxyCRGEventWidget::OxyCRGEventWidget() : d_ptr(new OxyCRGEventWidgetPrivate())
     d_ptr->set = new IButton(trs("Set"));
     d_ptr->set->setFixedSize(ITEM_WIDTH, ITEM_H);
     d_ptr->set->setFont(font);
+    connect(d_ptr->set, SIGNAL(realReleased()), this, SLOT(_setReleased()));
 
     QHBoxLayout *hWaveLayout = new QHBoxLayout();
     hWaveLayout->setMargin(0);

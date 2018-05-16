@@ -30,6 +30,8 @@ public:
     ~OxyCRGEventWaveWidget();
 
     void setWaveTrendSegments(const QVector<WaveformDataSegment *> waveSegments, const QVector<TrendDataSegment *> trendSegments);
+    void setWaveWidgetCompressed(bool isCO2);
+    void setWaveWidgetTrend1(bool isRR);
 
 public slots:
     void leftMoveCursor(void);
