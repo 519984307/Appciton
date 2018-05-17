@@ -103,6 +103,9 @@
         <AlarmOffAtPowerOn>1</AlarmOffAtPowerOn>
         <NonAlertsBeepsInNonAED>1</NonAlertsBeepsInNonAED>
     </Alarm>
+    <OxyCRG>
+        <EventStorageSetup>1</EventStorageSetup>
+    </OxyCRG>
     <AlarmSource>
         <Adult>
             <HR_PR Enable="1" Prio="2">
@@ -470,6 +473,8 @@
         <NIBPColor>Blue</NIBPColor>
         <CO2Color>Red</CO2Color>
         <RESPColor>Red</RESPColor>
+        <AGColor>Orange</AGColor>
+        <IBPColor>Purple</IBPColor>
         <TEMPColor>Brown</TEMPColor>
         <CPRBarGraphColor>Purple</CPRBarGraphColor> <!--do not modify-->
     </Display>

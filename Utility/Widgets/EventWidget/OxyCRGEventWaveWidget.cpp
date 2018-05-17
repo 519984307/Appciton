@@ -3,6 +3,7 @@
 #include "WaveformCache.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
+#include "ConfigManager.h"
 #include <QPainter>
 
 #define WAVEFORM_SCALE_HIGH         30
@@ -15,6 +16,7 @@ public:
     OxyCRGEventWaveWidgetPrivate()
     {
         startTime = -60;
+        durationBefore = -120;
         currentWaveID = WAVE_RESP;
         cursorPos = 0;
         trendDataNum = 0;
@@ -25,6 +27,7 @@ public:
         hrDataBuf = NULL;
         spo2DataBuf = NULL;
         rrDataBuf = NULL;
+        reset();
     }
     ~OxyCRGEventWaveWidgetPrivate(){}
 
@@ -45,6 +48,20 @@ public:
             qFree(rrDataBuf);
             rrDataBuf = NULL;
         }
+        int durationType;
+        if (currentConfig.getNumValue("OxyCRG|EventStorageSetup", durationType))
+        {
+            if ((OxyCRGEventStorageDuration)durationType == OxyCRG_EVENT_DURATION_1_3MIN)
+            {
+                startTime = 0;
+                durationBefore = -60;
+            }
+            else if ((OxyCRGEventStorageDuration)durationType == OxyCRG_EVENT_DURATION_3_1MIN)
+            {
+                startTime = -120;
+                durationBefore = -180;
+            }
+        }
     }
 
     QVector<WaveformDataSegment *> waveSegments;
@@ -52,7 +69,8 @@ public:
     int trendDataNum;
     QMap<SubParamID, int> subParamMap;
 
-    float startTime;
+    int startTime;
+    int durationBefore;
     float startX;
     float endX;
     float waveRegWidth;             // 波形区域宽度
@@ -129,6 +147,26 @@ void OxyCRGEventWaveWidget::rightMoveCursor()
     update();
 }
 
+void OxyCRGEventWaveWidget::leftMoveCoordinate()
+{
+    if (d_ptr->startTime <= d_ptr->durationBefore)
+    {
+        return;
+    }
+    d_ptr->startTime -= 30;
+    update();
+}
+
+void OxyCRGEventWaveWidget::rightMoveCoordinate()
+{
+    if (d_ptr->startTime >= d_ptr->durationBefore + 120)
+    {
+        return;
+    }
+    d_ptr->startTime += 30;
+    update();
+}
+
 void OxyCRGEventWaveWidget::paintEvent(QPaintEvent *e)
 {
     IWidget::paintEvent(e);
@@ -181,9 +219,9 @@ void OxyCRGEventWaveWidget::paintEvent(QPaintEvent *e)
 
 void OxyCRGEventWaveWidget::_drawTrend(QPainter &painter)
 {
-    d_ptr->subParamMap[SUB_PARAM_HR_PR] = d_ptr->hrDataBuf[d_ptr->trendDataNum/2 - 1 + d_ptr->cursorPos];
-    d_ptr->subParamMap[SUB_PARAM_SPO2] = d_ptr->spo2DataBuf[d_ptr->trendDataNum/2 - 1 + d_ptr->cursorPos];
-    d_ptr->subParamMap[SUB_PARAM_RR_BR] = d_ptr->rrDataBuf[d_ptr->trendDataNum/2 - 1 + d_ptr->cursorPos];
+    d_ptr->subParamMap[SUB_PARAM_HR_PR] = d_ptr->hrDataBuf[d_ptr->startTime - d_ptr->durationBefore + 60 - 1 + d_ptr->cursorPos];
+    d_ptr->subParamMap[SUB_PARAM_SPO2] = d_ptr->spo2DataBuf[d_ptr->startTime - d_ptr->durationBefore + 60 - 1 + d_ptr->cursorPos];
+    d_ptr->subParamMap[SUB_PARAM_RR_BR] = d_ptr->rrDataBuf[d_ptr->startTime - d_ptr->durationBefore + 60 - 1 + d_ptr->cursorPos];
 
     float trendHigh = 0;
     QColor color;
@@ -213,7 +251,7 @@ void OxyCRGEventWaveWidget::_drawTrend(QPainter &painter)
         }
 
         bool start = true;
-        int startIndex = d_ptr->startTime + d_ptr->trendDataNum / 2;
+        int startIndex = d_ptr->startTime - d_ptr->durationBefore;
         waveDesc.offsetX = (double)(d_ptr->endX - d_ptr->startX) / 4 / 30;
         if (subId != SUB_PARAM_RR_BR)
         {
@@ -411,7 +449,7 @@ void OxyCRGEventWaveWidget::_drawWave(QPainter &painter)
     }
 
     bool start = true;
-    int startIndex = (d_ptr->startTime + 120) * waveData->sampleRate;
+    int startIndex = (d_ptr->startTime - d_ptr->durationBefore) * waveData->sampleRate;
     for (int i = startIndex; (x2 - d_ptr->startX) < (d_ptr->endX - d_ptr->startX); i ++)
     {
         short wave = waveData->waveData[i];
@@ -441,6 +479,7 @@ void OxyCRGEventWaveWidget::_drawWave(QPainter &painter)
         x1 = x2;
         x2 += waveDesc.offsetX;
         y1 = y2;
+
     }
     QFont font;
     font.setPixelSize(20);
@@ -524,4 +563,19 @@ void OxyCRGEventWaveWidget::_loadTrendData()
             }
         }
     }
+}
+
+void OxyCRGEventWaveWidget::_drawDottedLine(QPainter &painter, qreal x1, qreal y1, qreal x2, qreal y2)
+{
+    QPen oldPen = painter.pen();
+
+    QVector<qreal> darsh;
+    darsh << 5 << 5;
+    QPen pen(Qt::white);
+    pen.setDashPattern(darsh);
+    painter.setPen(pen);
+    QLineF dotLine(x1, y1, x2, y2);
+    painter.drawLine(dotLine);
+
+    painter.setPen(oldPen);
 }

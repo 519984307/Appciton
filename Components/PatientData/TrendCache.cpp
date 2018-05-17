@@ -156,7 +156,6 @@ QList<TrendAlarmStatus> TrendCache::getTrendAlarmStatus(unsigned start, unsigned
     for (unsigned t = start; t <= stop; t ++)
     {
         TrendAlarmStatus trendAlarmStatus;
-        collectTrendAlarmStatus(t);
         getTrendAlarmStatus(t, trendAlarmStatus);
         alarmStatusList.append(trendAlarmStatus);
     }

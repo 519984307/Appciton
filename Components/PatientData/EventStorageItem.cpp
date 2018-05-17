@@ -12,7 +12,8 @@
 #include <QMap>
 #include <QBuffer>
 #include "Debug.h"
-
+#include "ConfigManager.h"
+#include "OxyCRGEventWaveWidget.h"
 
 class EventStorageItemPrivate
 {
@@ -192,8 +193,31 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
     d_ptr->oxyCRGInfo = new OxyCRGSegment;
     d_ptr->oxyCRGInfo->type = oxyCRGtype;
 
-    d_ptr->eventInfo.duration_after = 120;
-    d_ptr->eventInfo.duration_before = 120;
+    int durationType;
+    if (currentConfig.getNumValue("OxyCRG|EventStorageSetup", durationType))
+    {
+        if ((OxyCRGEventStorageDuration)durationType == OxyCRG_EVENT_DURATION_1_3MIN)
+        {
+            d_ptr->eventInfo.duration_before = 60;
+            d_ptr->eventInfo.duration_after = 180;
+        }
+        else if ((OxyCRGEventStorageDuration)durationType == OxyCRG_EVENT_DURATION_2_2MIN)
+        {
+            d_ptr->eventInfo.duration_before = 120;
+            d_ptr->eventInfo.duration_after = 120;
+        }
+        else if ((OxyCRGEventStorageDuration)durationType == OxyCRG_EVENT_DURATION_3_1MIN)
+        {
+            d_ptr->eventInfo.duration_before = 180;
+            d_ptr->eventInfo.duration_after = 60;
+        }
+    }
+    else
+    {
+        d_ptr->eventInfo.duration_after = 120;
+        d_ptr->eventInfo.duration_before = 120;
+    }
+
     qDebug()<<"Create Event Stroage Item:"<<this<<" type: "<<type;
 }
 

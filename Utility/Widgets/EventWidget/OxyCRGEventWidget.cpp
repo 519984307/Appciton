@@ -481,6 +481,8 @@ OxyCRGEventWidget::OxyCRGEventWidget() : d_ptr(new OxyCRGEventWidgetPrivate())
     d_ptr->moveCoordinate = new IMoveButton(trs("MoveCoordinate"));
     d_ptr->moveCoordinate->setFixedSize(ITEM_WIDTH, ITEM_H);
     d_ptr->moveCoordinate->setFont(font);
+    connect(d_ptr->moveCoordinate, SIGNAL(leftMove()), d_ptr->waveWidget, SLOT(leftMoveCoordinate()));
+    connect(d_ptr->moveCoordinate, SIGNAL(rightMove()), d_ptr->waveWidget, SLOT(rightMoveCoordinate()));
 
     d_ptr->moveCursor = new IMoveButton(trs("MoveCursor"));
     d_ptr->moveCursor->setFixedSize(ITEM_WIDTH, ITEM_H);
