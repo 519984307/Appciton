@@ -94,7 +94,7 @@ void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCache
 
     bool hasAlarm = false;
     ParamID paramId = PARAM_NONE;
-    //collect sub param that have valid value
+
     for(int i = 0; i < SUB_PARAM_NR; i++)
     {
         paramId = paramInfo.getParamID((SubParamID) i);
@@ -103,7 +103,7 @@ void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCache
             continue;
         }
 
-        if(data.values.value((SubParamID)i, InvData()) == InvData())
+        if(!data.values.contains((SubParamID)i))
         {
             continue;
         }

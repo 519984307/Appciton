@@ -209,6 +209,7 @@ public:
             Util::strlcpy(info.drawCtx.caption, qPrintable(caption), sizeof(info.drawCtx.caption));
             info.drawCtx.curPageFirstXpos = 0.0;
             info.drawCtx.prevSegmentLastYpos = 0.0;
+            info.drawCtx.dashOffset = 0.0;
             info.drawCtx.lastWaveFlags = 0;
 
             info.secondWaveBuff.resize(info.sampleRate);
@@ -338,7 +339,7 @@ RecordPage *EventPageGenerator::createPage()
         //fall through
     case WaveScalePage:
         d_ptr->curPageType = WaveSegmentPage;
-        if(d_ptr->ctx.waveSegments.isEmpty())
+        if(!d_ptr->ctx.waveSegments.isEmpty())
         {
             d_ptr->waveInfos = d_ptr->getPrintWaveInfos(d_ptr->ctx.waveSegments);
             return createWaveScalePage(d_ptr->waveInfos, recorderManager.getPrintSpeed());
@@ -346,21 +347,21 @@ RecordPage *EventPageGenerator::createPage()
         //fall through
     case WaveSegmentPage:
     {
-        if(!d_ptr->ctx.waveSegments.isEmpty() && d_ptr->loadWaveData(d_ptr->curDrawWaveSegment))
+        if(!d_ptr->ctx.waveSegments.isEmpty()
+                && d_ptr->loadWaveData(d_ptr->curDrawWaveSegment)
+                && !recorderManager.isAbort())
         {
             RecordPage *page = NULL;
 
-            if(recorderManager.isAbort())
-            {
-                // already stop
-                return NULL;
-            }
             page = createWaveSegments(d_ptr->waveInfos, d_ptr->curDrawWaveSegment++, recorderManager.getPrintSpeed());
 
             return page;
         }
     }
         //fall through
+    case EndPage:
+        d_ptr->curPageType = NullPage;
+        return createEndPage();
     default:
         break;
     }

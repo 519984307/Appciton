@@ -29,6 +29,7 @@ struct RecordWaveSegmentInfo
     struct {
         qreal prevSegmentLastYpos;  // the y value on the previous segment page edge
         qreal curPageFirstXpos;     // the first wave point's x position
+        qreal dashOffset;           // dash offset when draw the dash line
         unsigned short lastWaveFlags; // the wave flags of the last draw wave point
         int captionPixLength;       // store the caption pixel length of the wave caption
         char caption[64];           // wave caption string
@@ -185,6 +186,12 @@ protected:
      * @return page
      */
     static RecordPage *createWaveSegments(QList<RecordWaveSegmentInfo> &waveInfos, int segmentIndex, PrintSpeed speed);
+
+    /**
+     * @brief createEndPage create a finished page
+     * @return  page
+     */
+    static RecordPage *createEndPage();
 
     /**
      * @brief timerEvent handle timer event

@@ -139,7 +139,7 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
 
     bool hasAlarm = false;
     ParamID paramId = PARAM_NONE;
-    //collect sub param that have valid value
+
     for(int i = 0; i < SUB_PARAM_NR; i++)
     {
         paramId = paramInfo.getParamID((SubParamID) i);

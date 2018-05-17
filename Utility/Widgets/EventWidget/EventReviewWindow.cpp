@@ -23,6 +23,8 @@
 #include <QHeaderView>
 #include <QScrollBar>
 #include "EventDataParseContext.h"
+#include "RecorderManager.h"
+#include "EventPageGenerator.h"
 
 #define ITEM_HEIGHT     30
 #define ITEM_WIDTH      100
@@ -218,6 +220,7 @@ EventReviewWindow::EventReviewWindow()
     d_ptr->print = new IButton(trs("Print"));
     d_ptr->print->setFixedSize(ITEM_WIDTH, ITEM_H);
     d_ptr->print->setFont(font);
+    connect(d_ptr->print, SIGNAL(realReleased()), this, SLOT(_printRelease()));
 
     d_ptr->set = new IButton(trs("Set"));
     d_ptr->set->setFixedSize(ITEM_WIDTH, ITEM_H);
@@ -736,6 +739,15 @@ void EventReviewWindow::_downReleased()
     {
         d_ptr->trendListWidget->verticalScrollBar()->setSliderPosition(
                     curScroller + (maxValue * 5) / (d_ptr->trendListWidget->count() - 5));
+    }
+}
+
+void EventReviewWindow::_printRelease()
+{
+    if(d_ptr->eventTable->currentRow() < d_ptr->dataIndex.size() &&
+            d_ptr->eventTable->currentRow() >= 0)
+    {
+        recorderManager.addPageGenerator(new EventPageGenerator(d_ptr->backend, d_ptr->dataIndex.at(d_ptr->eventTable->currentRow())));
     }
 }
 

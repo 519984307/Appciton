@@ -47,6 +47,7 @@ private slots:
     void _setReleased(void);
     void _upReleased(void);
     void _downReleased(void);
+    void _printRelease(void);
 
 private:
     void _loadEventData(void);

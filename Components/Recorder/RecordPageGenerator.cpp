@@ -14,6 +14,7 @@
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
+#define DASH_LENGTH 5
 RecordPageGenerator::RecordPageGenerator(QObject *parent)
     :QObject(parent), _requestStop(false), _generate(true), _timerID(-1)
 {
@@ -209,12 +210,13 @@ static QString getSubParamNameHelper(SubParamID subParamId, short moduleConfig)
  * @brief contructNormalTrendStringItem contruct the trend string for params other than IBP or NIBP
  * @param subParamId sub param id
  * @param data the trend value
+ * @param almFlag the alarm flag
  * @param unit current display unit
  * @param defaultUnit default unit
  * @param co2Baro
  * @return trend string
  */
-static QString contructNormalTrendStringItem(SubParamID subParamId, TrendDataType data,
+static QString contructNormalTrendStringItem(SubParamID subParamId, TrendDataType data, bool almFlag,
                                         UnitType unit, UnitType defaultUnit, short co2Bro)
 {
     //name
@@ -223,6 +225,10 @@ static QString contructNormalTrendStringItem(SubParamID subParamId, TrendDataTyp
 
     //value
     int mul = paramInfo.getMultiOfSubParam(subParamId);
+    if(almFlag)
+    {
+        trendString += "*";
+    }
     if(data == InvData())
     {
         trendString += InvStr();
@@ -249,12 +255,13 @@ static QString contructNormalTrendStringItem(SubParamID subParamId, TrendDataTyp
 /**
  * @brief contructPressTrendStringItem contruct the press trend string for the IBP or NIBP
  * @param subParamId
- * @param data
+ * @param data press value array, 1 or 3 value
+ * @param almFlag the alarm flag array, 1 or 3 value
  * @param unit
  * @param defaultUnit
  * @return
  */
-static QString contructPressTrendStringItem(SubParamID subParamId, TrendDataType *data,
+static QString contructPressTrendStringItem(SubParamID subParamId, TrendDataType *data, bool *almFlag,
                                             UnitType unit, UnitType defaultUnit)
 {
     QString trendString;
@@ -304,7 +311,14 @@ static QString contructPressTrendStringItem(SubParamID subParamId, TrendDataType
     QString valueStr;
     if(valueNum == 1)
     {
-        valueStr="(%1)";
+        if(almFlag[0])
+        {
+            valueStr="(*%1)";
+        }
+        else
+        {
+            valueStr="(%1)";
+        }
         if(map == InvData())
         {
             valueStr = valueStr.arg(InvData());
@@ -324,7 +338,33 @@ static QString contructPressTrendStringItem(SubParamID subParamId, TrendDataType
     }
     else
     {
-        valueStr= "%1/%2(%3)";
+        if(almFlag[0])
+        {
+            valueStr = "*%1";
+        }
+        else
+        {
+            valueStr = "%1";
+        }
+
+        if(almFlag[1])
+        {
+            valueStr += "/*%2";
+        }
+        else
+        {
+            valueStr += "/%2";
+        }
+
+        if(almFlag[2])
+        {
+            valueStr += "(*%3)";
+        }
+        else
+        {
+            valueStr += "(%3)";
+        }
+
         if(sys == InvData())
         {
             valueStr = valueStr.arg(InvStr()).arg(InvStr()).arg(InvStr());
@@ -560,6 +600,7 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
         {
             strList.append(contructNormalTrendStringItem(subparamID,
                                                          trendData.subparamValue[subparamID],
+                                                         trendData.subparamAlarm[subparamID],
                                                          paramManager.getSubParamUnit(paramid, subparamID),
                                                         paramInfo.getUnitOfSubParam(subparamID),
                                                         trendData.co2Baro));
@@ -567,44 +608,64 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
         else
         {
             TrendDataType data[3] = {InvData()};
+            bool alarms[3] = {false};
             bool handle = true;
             switch (subparamID) {
             case SUB_PARAM_NIBP_SYS:
                 data[0] = trendData.subparamValue.value(SUB_PARAM_NIBP_SYS, InvData());
                 data[1] = trendData.subparamValue.value(SUB_PARAM_NIBP_DIA, InvData());
                 data[2] = trendData.subparamValue.value(SUB_PARAM_NIBP_MAP, InvData());
+                alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_NIBP_SYS, false);
+                alarms[1] = trendData.subparamAlarm.value(SUB_PARAM_NIBP_DIA, false);
+                alarms[2] = trendData.subparamAlarm.value(SUB_PARAM_NIBP_MAP, false);
                 break;
             case SUB_PARAM_ART_SYS:
                 data[0] = trendData.subparamValue.value(SUB_PARAM_ART_SYS, InvData());
                 data[1] = trendData.subparamValue.value(SUB_PARAM_ART_DIA, InvData());
                 data[2] = trendData.subparamValue.value(SUB_PARAM_ART_MAP, InvData());
+                alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_ART_SYS, false);
+                alarms[1] = trendData.subparamAlarm.value(SUB_PARAM_ART_DIA, false);
+                alarms[2] = trendData.subparamAlarm.value(SUB_PARAM_ART_MAP, false);
                 break;
             case SUB_PARAM_PA_SYS:
                 data[0] = trendData.subparamValue.value(SUB_PARAM_PA_SYS, InvData());
                 data[1] = trendData.subparamValue.value(SUB_PARAM_PA_DIA, InvData());
                 data[2] = trendData.subparamValue.value(SUB_PARAM_PA_MAP, InvData());
+                alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_PA_SYS, false);
+                alarms[1] = trendData.subparamAlarm.value(SUB_PARAM_PA_DIA, false);
+                alarms[2] = trendData.subparamAlarm.value(SUB_PARAM_PA_MAP, false);
                 break;
             case SUB_PARAM_CVP_MAP:
                 data[0] = trendData.subparamValue.value(SUB_PARAM_CVP_MAP, InvData());
+                alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_CVP_MAP, false);
                 break;
             case SUB_PARAM_LAP_MAP:
                 data[0] = trendData.subparamValue.value(SUB_PARAM_LAP_MAP, InvData());
+                alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_LAP_MAP, false);
                 break;
             case SUB_PARAM_RAP_MAP:
                 data[0] = trendData.subparamValue.value(SUB_PARAM_RAP_MAP, InvData());
+                alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_RAP_MAP, false);
                 break;
             case SUB_PARAM_ICP_MAP:
                 data[0] = trendData.subparamValue.value(SUB_PARAM_ICP_MAP, InvData());
+                alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_ICP_MAP, false);
                 break;
             case SUB_PARAM_AUXP1_SYS:
                 data[0] = trendData.subparamValue.value(SUB_PARAM_AUXP1_SYS, InvData());
                 data[1] = trendData.subparamValue.value(SUB_PARAM_AUXP1_DIA, InvData());
                 data[2] = trendData.subparamValue.value(SUB_PARAM_AUXP1_MAP, InvData());
+                alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_AUXP1_SYS, false);
+                alarms[1] = trendData.subparamAlarm.value(SUB_PARAM_AUXP1_DIA, false);
+                alarms[2] = trendData.subparamAlarm.value(SUB_PARAM_AUXP1_MAP, false);
                 break;
             case SUB_PARAM_AUXP2_SYS:
                 data[0] = trendData.subparamValue.value(SUB_PARAM_AUXP2_SYS, InvData());
                 data[1] = trendData.subparamValue.value(SUB_PARAM_AUXP2_DIA, InvData());
                 data[2] = trendData.subparamValue.value(SUB_PARAM_AUXP2_MAP, InvData());
+                alarms[0] = trendData.subparamAlarm.value(SUB_PARAM_AUXP2_SYS, false);
+                alarms[1] = trendData.subparamAlarm.value(SUB_PARAM_AUXP2_DIA, false);
+                alarms[2] = trendData.subparamAlarm.value(SUB_PARAM_AUXP2_MAP, false);
                 break;
             default:
                 handle = false;
@@ -617,6 +678,7 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
             }
             strList.append(contructPressTrendStringItem(subparamID,
                                                         data,
+                                                        alarms,
                                                         paramManager.getSubParamUnit(paramid, subparamID),
                                                         paramInfo.getUnitOfSubParam(subparamID)));
         }
@@ -1086,15 +1148,18 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo & waveInfo, short wave)
  * @param y1 yPos of point 1
  * @param x2 xPos of point 2
  * @param y2 yPos of point 2
+ * @param dashOffset dash pattern offset
  */
 static void drawDottedLine(QPainter *painter, qreal x1, qreal y1,
-                           qreal x2, qreal y2)
+                           qreal x2, qreal y2, qreal dashOffset = 0.0)
 {
     painter->save();
     QVector<qreal> darsh;
-    darsh << 5 << 5;
+    darsh << DASH_LENGTH << DASH_LENGTH;
     QPen pen(Qt::white, PEN_WIDTH);
     pen.setDashPattern(darsh);
+    pen.setDashOffset(dashOffset);
+    pen.setCapStyle(Qt::FlatCap);
     painter->setPen(pen);
     QLineF dotLine(x1, y1, x2, y2);
     painter->drawLine(dotLine);
@@ -1151,7 +1216,18 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
 
             i = j - 1;
 
-            drawDottedLine(painter, x1, waveData, x2, waveData);
+            if(x2 > pageWidth - 1)
+            {
+                drawDottedLine(painter, x1, waveData, pageWidth, waveData);
+
+                qreal tmp = (pageWidth - x1) / DASH_LENGTH;
+                waveInfo.drawCtx.dashOffset = tmp - (int) tmp;
+            }
+            else
+            {
+                drawDottedLine(painter, x1, waveData, x2, waveData, waveInfo.drawCtx.dashOffset);
+                waveInfo.drawCtx.dashOffset = 0.0;
+            }
 
             x1 = x2;
             x2 += offsetX;
@@ -1161,11 +1237,9 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
 
             if (x2 > pageWidth - 1)
             {
-                QLineF line(x1, y1, pageWidth, y1);
-                painter->drawLine(line);
                 waveInfo.drawCtx.prevSegmentLastYpos = y1;
                 waveInfo.drawCtx.curPageFirstXpos = x2 - pageWidth + 1;
-                break;
+                return;
             }
         }
         else //valid wave data
@@ -1184,6 +1258,7 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
                 if(segmentIndex == 0)
                 {
                     y1 = waveData;
+                    waveInfo.drawCtx.dashOffset = 0.0;
                 }
                 else
                 {
@@ -1245,8 +1320,11 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
         }
         else
         {
-            drawLine = true;
-            line.setLine(x1, y1, pageWidth - 1, y2);
+            if(!(waveInfo.drawCtx.lastWaveFlags & INVALID_WAVE_FALG_BIT))
+            {
+                drawLine = true;
+                line.setLine(x1, y1, pageWidth - 1, y2);
+            }
         }
 
         if(drawLine)
@@ -1296,6 +1374,12 @@ RecordPage *RecordPageGenerator::createWaveSegments(QList<RecordWaveSegmentInfo>
         drawCaption(page, &painter, *iter, segmentIndex);
         drawWaveSegment(page, &painter, *iter, segmentIndex);
     }
+    return page;
+}
+
+RecordPage *RecordPageGenerator::createEndPage()
+{
+    RecordPage *page = new RecordPage(80);
     return page;
 }
 

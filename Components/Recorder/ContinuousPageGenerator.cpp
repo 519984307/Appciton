@@ -152,6 +152,7 @@ QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfos()
         Util::strlcpy(info.drawCtx.caption, qPrintable(caption), sizeof(info.drawCtx.caption));
         info.drawCtx.curPageFirstXpos = 0.0;
         info.drawCtx.prevSegmentLastYpos = 0.0;
+        info.drawCtx.dashOffset = 0.0;
         info.drawCtx.lastWaveFlags = 0;
         infos.append(info);
     }
@@ -282,14 +283,10 @@ RecordPage *ContinuousPageGenerator::createPage()
         d_ptr->curPageType = WaveSegmentPage;
         return createWaveScalePage(d_ptr->waveInfos, recorderManager.getPrintSpeed());
     case WaveSegmentPage:
+    if(!recorderManager.isAbort())
     {
         RecordPage *page;
         d_ptr->fetchWaveData();
-        if(recorderManager.isAbort())
-        {
-            // already stop
-            return NULL;
-        }
 
         page = createWaveSegments(d_ptr->waveInfos, d_ptr->curDrawWaveSegment++, recorderManager.getPrintSpeed());
 
@@ -299,9 +296,10 @@ RecordPage *ContinuousPageGenerator::createPage()
         }
         return page;
     }
+    //fall through
     case EndPage:
         d_ptr->curPageType = NullPage;
-        return NULL;
+        return createEndPage();
     default:
         break;
     }
