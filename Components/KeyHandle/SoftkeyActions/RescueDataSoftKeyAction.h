@@ -9,6 +9,8 @@ public:
     static void clearData(bool isPressed);
     static void exportData(bool isPressed);
     static void exit(bool isPressed);
+    static void eventReview(bool isPressed);
+    static void oxyCRGEventReview(bool isPressed);
 
     // 获取动作描述总个数。
     virtual int getActionDescNR(void);

@@ -103,7 +103,7 @@ EventReviewWindow::EventReviewWindow()
     d_ptr->curEventType = EventAll;
     d_ptr->curEventLevel = EVENT_LEVEL_ALL;
     setAttribute(Qt::WA_DeleteOnClose, true);
-    setWindowTitle("Event Review");
+    setTitleBarText(trs("EventReview"));
 
     int windowWidth = windowManager.getPopMenuWidth();
     int windowHeight = windowManager.getPopMenuHeight();

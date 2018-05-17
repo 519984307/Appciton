@@ -410,6 +410,7 @@ void OxyCRGEventWidget::_loadOxyCRGEventData()
  *************************************************************************************************/
 OxyCRGEventWidget::OxyCRGEventWidget() : d_ptr(new OxyCRGEventWidgetPrivate())
 {
+    setTitleBarText(trs("OxyCRGEventReview"));
     int windowWidth = windowManager.getPopMenuWidth();
     int windowHeight = windowManager.getPopMenuHeight();
     setFixedSize(windowWidth, windowHeight);

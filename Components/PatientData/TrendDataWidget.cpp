@@ -247,6 +247,7 @@ void TrendDataWidget::_rightReleased()
  **********************************************************************************************************************/
 TrendDataWidget::TrendDataWidget() : _timeInterval(RESOLUTION_RATIO_5_SECOND), _currentMoveCount(0), _hideColumn(0)
 {
+    setTitleBarText(trs("TrendTable"));
     _trendParamInit();
 
     _maxWidth = windowManager.getPopMenuWidth();

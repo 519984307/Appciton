@@ -11,6 +11,8 @@
 #include "SoftKeyManager.h"
 #include "MenuGroup.h"
 #include "MenuManager.h"
+#include "EventReviewWindow.h"
+#include "OxyCRGEventWidget.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -30,8 +32,8 @@ static KeyActionDesc _rescueDataKeys[] =
     KeyActionDesc("", "Summary.png", RescueDataSoftKeyAction::summaryReview),
     KeyActionDesc("", "Export.png",  RescueDataSoftKeyAction::exportData),
     KeyActionDesc("", "Delete.png",  RescueDataSoftKeyAction::clearData),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "Trend.png", RescueDataSoftKeyAction::eventReview),
+    KeyActionDesc("", "Trend.png", RescueDataSoftKeyAction::oxyCRGEventReview),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
     KeyActionDesc("", "SoftkeyArrow.png", RescueDataSoftKeyAction::exit),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_MAIN_SETUP),
@@ -148,6 +150,59 @@ void RescueDataSoftKeyAction::exit(bool isPressed)
 
     SoftKeyActionType type = softkeyManager.uFaceTypeToSoftKeyType(windowManager.getUFaceType());
     softkeyManager.setContent(type, true);
+}
+
+void RescueDataSoftKeyAction::eventReview(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+
+    bool isVisible = eventReviewWindow.isVisible();
+    while (NULL != QApplication::activeModalWidget())
+    {
+        QApplication::activeModalWidget()->hide();
+        menuManager.close();
+    }
+
+    if (isVisible)
+    {
+        return;
+    }
+
+    QRect r = windowManager.getMenuArea();
+    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
+    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
+    //summaryRescueDataWidget.autoShow(x, y);
+    eventReviewWindow.autoShow(x, y);
+
+}
+
+void RescueDataSoftKeyAction::oxyCRGEventReview(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+
+    bool isVisible = oxyCRGEventWidget.isVisible();
+    while (NULL != QApplication::activeModalWidget())
+    {
+        QApplication::activeModalWidget()->hide();
+        menuManager.close();
+    }
+
+    if (isVisible)
+    {
+        return;
+    }
+
+    QRect r = windowManager.getMenuArea();
+    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
+    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
+    //summaryRescueDataWidget.autoShow(x, y);
+    oxyCRGEventWidget.autoShow(x, y);
 }
 
 /***************************************************************************************************

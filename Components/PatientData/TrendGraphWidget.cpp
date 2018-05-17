@@ -66,8 +66,7 @@ void TrendGraphWidget::_rightMoveCursor()
 
 void TrendGraphWidget::_leftMoveEvent()
 {
-    oxyCRGEventWidget.autoShow();
-    hide();
+
 }
 
 void TrendGraphWidget::_rightMoveEvent()
@@ -95,8 +94,7 @@ void TrendGraphWidget::_downReleased()
 
 void TrendGraphWidget::_printReleased()
 {
-    eventReviewWindow.autoShow();
-    this->hide();
+
 }
 
 /**************************************************************************************************
@@ -104,6 +102,7 @@ void TrendGraphWidget::_printReleased()
  *************************************************************************************************/
 TrendGraphWidget::TrendGraphWidget()
 {
+    setTitleBarText(trs("TrendGraph"));
     _maxWidth = windowManager.getPopMenuWidth();
     _maxHeight = windowManager.getPopMenuHeight();
     setFixedSize(_maxWidth, _maxHeight);
