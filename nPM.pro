@@ -360,6 +360,7 @@ SOURCES +=                                                                      
     Components/Maintain/Factory/Menu/FactoryTempMenu.cpp                        \
     Components/Maintain/Factory/Menu/FactoryTestMenu.cpp                        \
     Components/Maintain/Factory/Menu/FactoryWindowManager.cpp                   \
+    Components/Maintain/UserMaintain/UserMaintainEntrance.cpp                   \
     Components/CodeMarker/Summary/CodeMarkerSummary.cpp                         \
     Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
@@ -482,7 +483,9 @@ SOURCES +=                                                                      
     Main/IThread.cpp                                                            \
     Main/MergeConfig.cpp                                                        \
     Main/Starter.cpp \
-    Utility/Widgets/ImportFileSubWidget.cpp
+    Utility/Widgets/ImportFileSubWidget.cpp \
+    Components/Maintain/UserMaintain/UserMaintainManager.cpp \
+    Components/Maintain/UserMaintain/UserMaintainGeneralSet.cpp
 
 HEADERS +=                                                                      \
     SOUP/SmtpClientForQt/src/smtpexports.h                                      \
@@ -820,6 +823,9 @@ HEADERS +=                                                                      
     Components/Maintain/Factory/Menu/FactoryTestMenu.h                          \
     Components/Maintain/Factory/Menu/FactorySystemInfoMenu.h                    \
     Components/Maintain/Factory/Menu/FactoryDataRecord.h                        \
+    Components/Maintain/UserMaintain/UserMaintainEntrance.h                     \
+    Components/Maintain/UserMaintain/UserMaintainManager.h                      \
+    Components/Maintain/UserMaintain/UserMaintainGeneralSet.h                   \
     Components/CodeMarker/Summary/CodeMarkerSummary.h                           \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWidget.h                            \

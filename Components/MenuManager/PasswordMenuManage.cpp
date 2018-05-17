@@ -13,7 +13,9 @@
 #include "SupervisorMenuManager.h"
 #include "ServiceWindowManager.h"
 #include "FactoryWindowManager.h"
-
+#include "/home/dzh/PMOS/trunk/src/Components/Maintain/UserMaintain/UserMaintainEntrance.h"
+#include "/home/dzh/PMOS/trunk/src/Components/Maintain/UserMaintain/UserMaintainManager.h"
+#include "/home/dzh/PMOS/trunk/src/Components/Maintain/UserMaintain/UserMaintainGeneralSet.h"
 /**************************************************************************************************
  * 功能: 构造函数
 **************************************************************************************************/
@@ -155,6 +157,14 @@ void PasswordMenuManage::setPassword(const QString &password)
 }
 
 /**************************************************************************************************
+ * 功能: 设置用户维护密码
+**************************************************************************************************/
+void PasswordMenuManage::setUserMaintainPassword(const QString &password)
+{
+    _userMaintainPassword = password;
+}
+
+/**************************************************************************************************
  * 功能: 清除密码和密码输显示
 **************************************************************************************************/
 void PasswordMenuManage::clearPassword(void)
@@ -228,6 +238,13 @@ void PasswordMenuManage::_okBtnSlot(int /*index*/)
     if (_passwordStr == SERVER_PASSWORD)
     {
         serviceWindowManager.popup();
+        return;
+    }
+
+    //用户维护密码
+    if (_passwordStr == _userMaintainPassword)
+    {
+        userMaintainManager.popup();
         return;
     }
 

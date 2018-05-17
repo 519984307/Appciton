@@ -28,6 +28,7 @@ public:
     void setWorkMode(int mode);
     void setPassword(const QString &password);
     void clearPassword(void);
+    void setUserMaintainPassword(const QString &password);
 
 signals:
     // 返回到菜单列表。
@@ -58,4 +59,5 @@ private:
     QString _passwordStr;                     //密码
     QString _superPassword;                   //超级密码
     QString _normalPassword;                  //普通密码
+    QString _userMaintainPassword;            //用户维护密码
 };

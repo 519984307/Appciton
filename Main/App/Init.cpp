@@ -546,6 +546,14 @@ static void _initMenu(void)
     publicMenuManager.addSubMenu(&systemMenu);
     publicMenuManager.addSubMenu(&supervisorEntrance);
 
+    userMaintainEntrance.contentsMargins();
+    publicMenuManager.addSubMenu(&userMaintainEntrance);
+
+
+    userMaintainGeneralSet.construction();
+    userMaintainManager.construction();
+    userMaintainManager.addSubMenu(&userMaintainGeneralSet);
+    //userMaintainEntrance
 
     //supervisorMenuManager
     supervisorMenuManager.construction();
