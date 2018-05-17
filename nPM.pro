@@ -482,6 +482,7 @@ SOURCES +=                                                                      
     Main/IThread.cpp                                                            \
     Main/MergeConfig.cpp                                                        \
     Main/Starter.cpp \
+    Utility/Widgets/ImportFileSubWidget.cpp
 
 HEADERS +=                                                                      \
     SOUP/SmtpClientForQt/src/smtpexports.h                                      \

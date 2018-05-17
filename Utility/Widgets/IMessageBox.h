@@ -20,18 +20,23 @@ class IMessageBox : public PopupWidget
 
 public:
 
-    explicit IMessageBox(const QString &title, const QString &text, const int &Flag): PopupWidget()
+    explicit IMessageBox(): PopupWidget()
     {
         timeoutHook = NULL;
         hideExitButton();
+
+        _enableTimer = false;
+        _interval = 1000;
+        _timer = new QTimer();
+        connect(_timer, SIGNAL(timeout()), this, SLOT(_timeOut()));
+    }
+
+    void iMessageBox(const QString &title, const QString &text)
+    {
         setTitleBarText(title);
 
         int fontSize = fontManager.getFontSize(1);
 
-        if(Flag>=0)
-        {
-
-        }
         QLabel *l = new QLabel(text);
         l->setFont(fontManager.textFont(fontSize));
         l->setAlignment(Qt::AlignHCenter);
@@ -59,17 +64,53 @@ public:
 
         contentLayout->addLayout(vlayout);
 
-        _enableTimer = false;
-        _interval = 1000;
-        _timer = new QTimer();
-       // _timer->start(_interval);
-        /*不确定该对象销毁后，其内部定时器所占内存是否有回收*/
-        connect(_timer, SIGNAL(timeout()), this, SLOT(_timeOut()));
+        QDesktopWidget *w = QApplication::desktop();
+        setFixedSize(w->width() / 6, w->height() / 9);
+    }
+    void iMessageBoxExport(const QString &title, const QString &text)
+    {
+        setTitleBarText(title);
+
+        int fontSize = fontManager.getFontSize(1);
+
+        QLabel *l = new QLabel(text);
+        l->setFont(fontManager.textFont(fontSize));
+        l->setAlignment(Qt::AlignHCenter);
+        l->setWordWrap(true);
+
+        QHBoxLayout *hlayout = new QHBoxLayout();
+        hlayout->setMargin(0);
+        hlayout->setSpacing(10);
+        hlayout->addStretch();
+
+        _YesKey = new IButton(trs("Yes"));
+        _YesKey->setBorderEnabled(true);
+        _YesKey->setBorderColor(QColor(120, 120, 120));
+        _YesKey->setFont(fontManager.textFont(fontSize));
+        connect(_YesKey, SIGNAL(realReleased()), this, SLOT(_yesReleased()));
+        hlayout->addWidget(_YesKey);
+        hlayout->addStretch();
+
+        _NoKey = new IButton(trs("No"));
+        _NoKey->setBorderEnabled(true);
+        _NoKey->setBorderColor(QColor(120, 120, 120));
+        _NoKey->setFont(fontManager.textFont(fontSize));
+        connect(_NoKey, SIGNAL(realReleased()), this, SLOT(_noReleased()));
+        hlayout->addWidget(_NoKey);
+
+        hlayout->addStretch();
+
+        QVBoxLayout *vlayout = new QVBoxLayout();
+        vlayout->setContentsMargins(10, 1, 10, 4);
+        vlayout->setSpacing(4);
+        vlayout->addWidget(l, 0, Qt::AlignVCenter);
+        vlayout->addLayout(hlayout);
+
+        contentLayout->addLayout(vlayout);
 
         QDesktopWidget *w = QApplication::desktop();
         setFixedSize(w->width() / 6, w->height() / 9);
     }
-
     explicit IMessageBox(const QString &title, const QString &text, bool btn = true): PopupWidget()
     {
         timeoutHook = NULL;
@@ -348,7 +389,7 @@ private:
     timeOutHook timeoutHook;
 
     IButton *_YesKey;
-
+    IButton *_NoKey;
 
 
 };

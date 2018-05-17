@@ -18,46 +18,52 @@
 #define CONFIG_LIST_ITME_W 200
 #define CONFIG_MAX_NUM 3
 
-#define USB0_DEVICE_NODE   ("/dev/sdb0")
+#define USB0_DEVICE_NODE   ("/dev/sda2")
 #define USB0_PATH_NAME     ("/mnt/usb0")
 #define CONFIG_DIR         ("/usr/local/nPM/etc/")
 #define USER_DEFINE_CONFIG_PREFIX "UserDefine"
+
 class ConfigExportImportMenuPrivate
 {
 public:
     ConfigExportImportMenuPrivate()
-        :configList(NULL), exportBtn(NULL), importBtn(NULL),
-        lastSelectItem(NULL)
-    {}
+        :configList(NULL), configListImport(),
+         exportBtn(NULL), importBtn(NULL)
+    {
+        selectItems.clear();
+        selectItemsImport.clear();
+        configs.clear();
+        remainderImportItems =0;
+    }
 
+    enum{
+        FAILED=-1,
+        SUCCEED,
+        NOT_FOUND_U,
+        NOT_FOUND_UU,
+        NOT_SELECT_FILES,
+        CLOSE,
+        IMPORTFILES_EMPTY,
+    };
     void loadConfigs();
     void updateConfigList();
-    void importConfigs();
 
-    IListWidget *configList;
-    IListWidget *configListImport;
-    LButtonEx *exportBtn;
-    LButtonEx *importBtn;
-    LButtonEx *importSubBtn;
 
-    QListWidgetItem *lastSelectItem;
-    QList<QListWidgetItem*> SelectItems;
-    QList<QListWidgetItem*> SelectItemsImport;
+    IListWidget   *configList;
+    IListWidget   *configListImport;
+    LButtonEx     *exportBtn;
+    LButtonEx     *importBtn;
+    int           remainderImportItems;
+    int           remainderExportItems;
+    QList<QListWidgetItem*> selectItems;
+    QList<QListWidgetItem*> selectItemsImport;
     QList<ConfigManager::UserDefineConfigInfo> configs;
-
 };
-IListWidget *ConfigExportImportMenu::getConfigList()
-{
-    return d_ptr->configList;
-}
+
+
 void ConfigExportImportMenuPrivate::loadConfigs()
 {
     configs = configManager.getUserDefineConfigInfos();
-}
-
-void ConfigExportImportMenuPrivate::importConfigs()
-{
-
 }
 
 void ConfigExportImportMenuPrivate::updateConfigList()
@@ -118,69 +124,17 @@ bool ConfigExportImportMenu::eventFilter(QObject *obj, QEvent *ev)
 
         if (ev->type() == QEvent::Hide)
         {
-            if(d_ptr->lastSelectItem)
+            if(!d_ptr->selectItems.isEmpty())
             {
-                d_ptr->lastSelectItem->setIcon(QIcon());
                 d_ptr->importBtn->setEnabled(true);
                 d_ptr->exportBtn->setEnabled(false);
-                d_ptr->lastSelectItem = NULL;
+                d_ptr->selectItems.clear();
             }
         }
     }
     return false;
 }
-void ConfigExportImportMenu::layoutExecImport()
-{
-    int submenuW = configMaintainMenuGrp.getSubmenuWidth();
-    int submenuH = configMaintainMenuGrp.getSubmenuHeight();
-    setMenuSize(submenuW, submenuH);
 
-    int fontSize = fontManager.getFontSize(1);
-
-    //configure label
-    QLabel *label = new QLabel();
-    label->setFont(fontManager.textFont(fontSize));
-    QMargins margin = label->contentsMargins();
-    margin.setTop(10);
-    margin.setLeft(15);
-    margin.setBottom(10);
-    label->setContentsMargins(margin);
-    label->setText(trs("Export/ExportConfig"));
-    mainLayout->addWidget(label);
-
-    //config list
-    d_ptr->configList = new IListWidget();
-    d_ptr->configList->setFont(fontManager.textFont(fontSize));
-    d_ptr->configList->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    d_ptr->configList->setSelectionMode(QAbstractItemView::SingleSelection);
-    d_ptr->configList->setFrameStyle(QFrame::Plain);
-    d_ptr->configList->setSpacing(2);
-    d_ptr->configList->setUniformItemSizes(true);
-    d_ptr->configList->setIconSize(QSize(16,16));
-
-    QString configListStyleSheet = QString("QListWidget { margin-left: 15px; border:1px solid #808080; border-radius: 2px; background-color: transparent; outline: none; }\n "
-    "QListWidget::item {padding: 5px; border-radius: 2px; border: none; background-color: %1;}\n"
-    "QListWidget::item:focus {background-color: %2;}").arg("white").arg(colorManager.getHighlight().name());
-
-    d_ptr->configList->setStyleSheet(configListStyleSheet);
-    connect(d_ptr->configList, SIGNAL(exitList(bool)), this, SLOT(onExitList(bool)));
-    connect(d_ptr->configList, SIGNAL(realRelease()), this, SLOT(onConfigClick()));
-    d_ptr->configList->installEventFilter(this);
-    d_ptr->configList->setFixedHeight(174); //size for 5 items
-    mainLayout->addWidget(d_ptr->configList);
-
-    //buttons
-    QHBoxLayout *hlayout = new QHBoxLayout();
-    hlayout->setContentsMargins(QMargins(15, 10, 0, 40));
-    hlayout->setSpacing(10);
-    d_ptr->importSubBtn = new LButtonEx();
-    d_ptr->importSubBtn->setText(trs("Ok"));
-    d_ptr->importSubBtn->setFont(fontManager.textFont(fontSize));
-    hlayout->addWidget(d_ptr->importSubBtn);
-    connect(d_ptr->importSubBtn, SIGNAL(realReleased()), this, SLOT(onBtnClick()));
-    mainLayout->addLayout(hlayout);
-    setLayout(mainLayout);
-}
 void ConfigExportImportMenu::layoutExec()
 {
     int submenuW = configMaintainMenuGrp.getSubmenuWidth();
@@ -228,8 +182,9 @@ void ConfigExportImportMenu::layoutExec()
     d_ptr->exportBtn = new LButtonEx();
     d_ptr->exportBtn->setText(trs("Export"));
     d_ptr->exportBtn->setFont(fontManager.textFont(fontSize));
+
     /*更新导出按钮使能状态*/
-    if(!d_ptr->SelectItems.isEmpty())
+    if(!d_ptr->selectItems.isEmpty())
     {
         d_ptr->exportBtn->setEnabled(true);
     }
@@ -237,6 +192,7 @@ void ConfigExportImportMenu::layoutExec()
     {
         d_ptr->exportBtn->setEnabled(false);
     }
+
     hlayout->addWidget(d_ptr->exportBtn);
     connect(d_ptr->exportBtn, SIGNAL(realReleased()), this, SLOT(onBtnClick()));
     d_ptr->importBtn = new LButtonEx();
@@ -251,6 +207,7 @@ void ConfigExportImportMenu::readyShow()
 {
     d_ptr->loadConfigs();
     d_ptr->updateConfigList();
+
     if(d_ptr->configList->count() >= CONFIG_MAX_NUM)
     {
         d_ptr->importBtn->setEnabled(false);
@@ -259,8 +216,9 @@ void ConfigExportImportMenu::readyShow()
     {
         d_ptr->importBtn->setEnabled(true);
     }
+
     /*更新导出按钮使能状态*/
-    if(!d_ptr->SelectItems.isEmpty())
+    if(!d_ptr->selectItems.isEmpty())
     {
         d_ptr->exportBtn->setEnabled(true);
     }
@@ -287,33 +245,33 @@ void ConfigExportImportMenu::onConfigClick()
     QListWidgetItem *item = d_ptr->configList->currentItem();
     /*加入链表*/
     int indexFlag = 0;
-    if(!d_ptr->SelectItems.isEmpty())/*链表不为空，进入比较*/
+    if(!d_ptr->selectItems.isEmpty())/*链表不为空，进入比较*/
     {
-        for(int index = 0; index < d_ptr->SelectItems.count(); index ++)/*轮询比较是否再次选中对应选择项*/
+        for(int index = 0; index < d_ptr->selectItems.count(); index ++)/*轮询比较是否再次选中对应选择项*/
         {
-            if(d_ptr->SelectItems.at(index)==item)/*只能进行指针比较，不能变量比较*/
+            if(d_ptr->selectItems.at(index)==item)/*只能进行指针比较，不能变量比较*/
             {
                 item->setIcon(QIcon());
-                d_ptr->SelectItems.removeAt(index);
+                d_ptr->selectItems.removeAt(index);
                 indexFlag = 1;
                 break;
             }
         }
         if(indexFlag == 0)
         {
-            d_ptr->SelectItems.append(item);/*将选择项指针压入链表中*/
+            d_ptr->selectItems.append(item);/*将选择项指针压入链表中*/
             item->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
         }
         indexFlag = 0;/*复位标志位*/
     }
     else
     {
-        d_ptr->SelectItems.append(item);/*将选择项指针压入链表中*/
+        d_ptr->selectItems.append(item);/*将选择项指针压入链表中*/
         item->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
     }
 
     /*更新导出按钮使能状态*/
-    if(!d_ptr->SelectItems.isEmpty())
+    if(!d_ptr->selectItems.isEmpty())
     {
         d_ptr->exportBtn->setEnabled(true);
     }
@@ -322,65 +280,60 @@ void ConfigExportImportMenu::onConfigClick()
         d_ptr->exportBtn->setEnabled(false);
     }
 }
-void ImportSubWidget::onConfigClickImport()
-{
-    QListWidgetItem *item = myIListWidget->currentItem();
-    /*加入链表*/
-    int indexFlag = 0;
-    if(!SelectItemsImport.isEmpty())/*链表不为空，进入比较*/
-    {
-        for(int index = 0; index < SelectItemsImport.count(); index ++)/*轮询比较是否再次选中对应选择项*/
-        {
-            if(SelectItemsImport.at(index)==item)/*只能进行指针比较，不能变量比较*/
-            {
-                item->setIcon(QIcon());
-                SelectItemsImport.removeAt(index);
-                indexFlag = 1;
-                break;
-            }
-        }
-        if(indexFlag == 0)
-        {
-            SelectItemsImport.append(item);/*将选择项指针压入链表中*/
-            item->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
-        }
-        indexFlag = 0;/*复位标志位*/
-    }
-    else
-    {
-        SelectItemsImport.append(item);/*将选择项指针压入链表中*/
-        item->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
-    }
-}
-int ConfigExportImportMenu::ExportFileToUSB()
-{
-    QProcess *procNew = 0;
-    QString appName;
-    QStringList argName;
 
-    //打开U盘节点
-    _usbFd = ::open(USB0_DEVICE_NODE, O_RDWR);
-    if(_usbFd < 0)
+/**************************************************************************************************
+ * 导出xml文件。
+ *************************************************************************************************/
+int ConfigExportImportMenu::exportFileToUSB()
+{
+    int checkFileFlag=0;
+
+    //检测设备节点
+    if(!QFile::exists(USB0_DEVICE_NODE))
     {
-        qdebug("USB disk not found !!!\n");
+        checkFileFlag = ConfigExportImportMenuPrivate::NOT_FOUND_U;//设备节点不存在
+        return checkFileFlag;
     }
+
+    //挂载u盘
+    int backFlag = QProcess::execute(QString("mount -t vfat %1 %2").arg(USB0_DEVICE_NODE).arg(USB0_PATH_NAME));
+    QProcess::execute("sync");
+    if(backFlag!=QProcess::NormalExit)//挂载失败
+    {
+        //checkFileFlag = ConfigExportImportMenuPrivate::NOT_FOUND_UU;//挂载U盘失败
+        //return checkFileFlag;
+    }
+    if(QFile::exists(USB0_PATH_NAME)==false)
+    {
+        checkFileFlag = ConfigExportImportMenuPrivate::NOT_FOUND_UU;//挂载U盘失败
+        return checkFileFlag;
+    }
+
+    //遍历U盘USB0目录下内所有xml格式文件
+    QDir dir(QString("%1%2").arg(USB0_PATH_NAME).arg("/"));
+    QStringList nameFilters;
+    nameFilters.append("*.xml");
+    QStringList files = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
+
+
     //获得即将导出字符串的文件路径名称
-    int count=0;
-
-    _ExportFileName.clear();
-    for(int i = 0; i < d_ptr->SelectItems.count(); i ++)
+    _exportFileName.clear();
+    QMap<QString,QString> myExportFileInfo;
+    for(int i = 0; i < d_ptr->selectItems.count(); i ++)
     {
         for(int j = 0; j<d_ptr->configs.count(); j ++)
         {
-            if(d_ptr->SelectItems.at(i)->text()==d_ptr->configs.at(j).name)
+            if(d_ptr->selectItems.at(i)->text()==d_ptr->configs.at(j).name)
             {
-                _ExportFileName.append(d_ptr->configs.at(j).fileName);
+                _exportFileName.append(d_ptr->configs.at(j).fileName);
+                myExportFileInfo[d_ptr->selectItems.at(i)->text()]=d_ptr->configs.at(j).fileName;
             }
         }
 
     }
-    count = _ExportFileName.count();
 
+     int count = _exportFileName.count();
+     d_ptr->remainderExportItems = count;
     //开始导出数据
     if(count==0)
     {
@@ -388,241 +341,294 @@ int ConfigExportImportMenu::ExportFileToUSB()
     }
     else
     {
-        //挂载u盘
-        procNew = new QProcess(this);
-        appName = "mount";
-
-        argName.append("-t");
-        argName.append("vfat");
-        argName.append(USB0_DEVICE_NODE);
-        argName.append(USB0_PATH_NAME);
-        procNew->start(appName,argName);
-        procNew->waitForStarted();
-
-        //需要添加挂载u盘失败情况处理代码
-
         //导出数据(.xml格式)
         QDomDocument xml;
         QString fileName;
-        QString fileName1;
+        QString fileNameTemp;
+
         for(int i=0;i<count;i++)
         {
-            fileName = QString("%1%2").arg(CONFIG_DIR).arg(_ExportFileName.at(i));
-            QFile file(fileName);
-            if(xml.setContent(&file)==false)
+            bool isexit = false;
+            for(int selectItem = 0; selectItem<files.count(); selectItem ++)
             {
-                file.close();
-                return i;
+                if(myExportFileInfo[d_ptr->selectItems.at(i)->text()]==files.at(selectItem))
+                {
+                    isexit = true;
+                    break;
+                }
+
+            }
+            bool isCopy = true;
+            if(isexit==true)//发现同名文件
+            {
+                IMessageBox messageBox;
+                messageBox.iMessageBoxExport(trs("Export"),
+                                       QString("%1%2").arg(d_ptr->selectItems.at(i)->text()).arg("\r\nif select the same name file?"));
+                isCopy = messageBox.exec();
             }
 
-            fileName1 = QString("%1/%2").arg(USB0_PATH_NAME).arg(_ExportFileName.at(i));
-            QFile file1(fileName1);
-            if(!file1.open(QIODevice::WriteOnly | QIODevice::Text))
+            if(isCopy==true)//yes
             {
-                return i;
+                fileName = QString("%1%2").arg(CONFIG_DIR).arg(_exportFileName.at(i));
+                QFile file(fileName);
+                if(xml.setContent(&file)==false)
+                {
+                    file.close();
+                    checkFileFlag = ConfigExportImportMenuPrivate::FAILED;//
+                    _failedExportXmlName = _exportFileName.at(i);
+                    return checkFileFlag;
+                }
+
+                fileNameTemp = QString("%1/%2").arg(USB0_PATH_NAME).arg(_exportFileName.at(i));
+                QFile fileTemp(fileNameTemp);
+                if(!fileTemp.open(QIODevice::WriteOnly | QIODevice::Text))
+                {
+                    checkFileFlag = ConfigExportImportMenuPrivate::FAILED;//
+                    _failedExportXmlName = _exportFileName.at(i);
+                    return checkFileFlag;
+                }
+
+                QTextStream writer(&fileTemp);
+                writer.setCodec("UTF-8");
+
+                QMutexLocker locker(&_lock);
+                xml.save(writer, 4, QDomNode::EncodingFromTextStream);
+
+                fileTemp.close();
+                locker.unlock();
+            }
+            else//no
+            {
+                d_ptr->remainderExportItems--;
+                if(d_ptr->remainderExportItems==0)
+                {
+                    checkFileFlag = ConfigExportImportMenuPrivate::NOT_SELECT_FILES;//未选择条目
+                    return checkFileFlag;
+                }
             }
 
-            QTextStream writer(&file1);
-            writer.setCodec("UTF-8");
-
-            QMutexLocker locker(&_lock);
-            xml.save(writer, 4, QDomNode::EncodingFromTextStream);
-
-            file1.close();
-            locker.unlock();
         }
     }
 
-    if(procNew!=0) //解挂u盘
+    //解挂载u盘
+    backFlag = QProcess::execute(QString("umount -t vfat %1 %2").arg(USB0_DEVICE_NODE).arg(USB0_PATH_NAME));
+    QProcess::execute("sync");
+    if(backFlag!=QProcess::NormalExit)//解挂载失败
     {
-        appName = "umount";
-        argName.append("-t");
-        argName.append("vfat");
-        argName.append(USB0_DEVICE_NODE);
-        argName.append(USB0_PATH_NAME);
-        procNew->start(appName,argName);
-        procNew->waitForStarted();
-        delete procNew;
+        //checkFileFlag = ConfigExportImportMenuPrivate::NOT_FOUND_UU;//挂载U盘失败
+        //return checkFileFlag;
     }
-    ::close(_usbFd);
-    _ExportFileName.clear();
-    return -1;
+    _exportFileName.clear();
+    return checkFileFlag;
 }
-//1.xml文件导入cpu缓存中，检查导入xml文件的合法性
-//2.一旦xml文件合法，将xml文件名称加入到系统配置文件中
-//3.一旦xml文件合法，将xml文件更新到配置窗口中
-int ConfigExportImportMenu::InsertFileFromUSB()
+
+/**************************************************************************************************
+ * 导入xml文件。
+ *************************************************************************************************/
+int ConfigExportImportMenu::insertFileFromUSB()
 {
-    QProcess *procNew = 0,*p1 = 0;
-    QString appName;
-    QStringList argName;
-    int i;
 
+    int checkFileFlag=0;
     //建立日志文件
-    QFile filepp(QString("%1%2").arg(CONFIG_DIR).arg("logg.txt"));
-    filepp.open(QIODevice::WriteOnly | QIODevice::Append);
-    _TextStream.setDevice(&filepp);/*打开日志IO文件*/
+    QFile filelogg(QString("%1%2").arg(CONFIG_DIR).arg("logg.txt"));
+    filelogg.open(QIODevice::WriteOnly | QIODevice::Append);
+    _textStream.setDevice(&filelogg);/*打开日志IO文件*/
 
-    //打开U盘节点
-    _usbFd = ::open(USB0_DEVICE_NODE, O_RDWR);
-    if(_usbFd < 0)
+    //检测设备节点
+    if(!QFile::exists(USB0_DEVICE_NODE))
     {
-        qdebug("USB disk not found !!!\n");
+        checkFileFlag = ConfigExportImportMenuPrivate::NOT_FOUND_U;//设备节点不存在
+        return checkFileFlag;
     }
 
     //挂载u盘
-    procNew = new QProcess(this);
-    appName = "mount";
-
-    argName.append("-t");
-    argName.append("vfat");
-    argName.append(USB0_DEVICE_NODE);
-    argName.append(USB0_PATH_NAME);
-    procNew->start(appName,argName);//异步触发方式
-    procNew->waitForStarted();
-    //需要添加挂载u盘失败情况处理代码
-
+    int backFlag = QProcess::execute(QString("mount -t vfat %1 %2").arg(USB0_DEVICE_NODE).arg(USB0_PATH_NAME));
+    QProcess::execute("sync");
+    if(backFlag!=QProcess::NormalExit)//挂载失败
+    {
+        //checkFileFlag = ConfigExportImportMenuPrivate::NOT_FOUND_UU;//挂载U盘失败
+        //return checkFileFlag;
+    }
+    if(QFile::exists(USB0_PATH_NAME)==false)
+    {
+        checkFileFlag = ConfigExportImportMenuPrivate::NOT_FOUND_UU;//挂载U盘失败
+        return checkFileFlag;
+    }
 
     //遍历U盘USB0目录下内所有xml格式文件
     QDir dir(QString("%1%2").arg(USB0_PATH_NAME).arg("/"));
     QStringList nameFilters;
-    nameFilters << "*.xml";
+    nameFilters.append("*.xml");
     QStringList files = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
-    /*重新编写算法*/
-    //加载本地xml数据
-    QFile file_local;
-    /*选择使用哪个文件*/
+    if(files.isEmpty())
+    {
+        checkFileFlag = ConfigExportImportMenuPrivate::IMPORTFILES_EMPTY;//文件为空
+        return checkFileFlag;
+    }
+
+    /*选择导入哪些文件*/
     d_ptr->configListImport = new IListWidget;
-    QStringList *listOfNameWidget = &files;
-    d_ptr->configListImport->addItems(*listOfNameWidget);
-    ImportSubWidget myImportSubWidget(listOfNameWidget,d_ptr->SelectItemsImport);
-    myImportSubWidget.exec();
-
-    file_local.setFileName(QString("%1usercheck.xml").arg(CONFIG_DIR));
-
-    //加载本地校验文件
-    if(!file_local.open(QFile::ReadOnly | QFile::Text))
+    d_ptr->configListImport->addItems(files);
+    ImportSubWidget myImportSubWidget(files);
+    bool status = myImportSubWidget.exec();
+    if(status==true)//OK
     {
-       add_Time_Logg();
-       _TextStream << QString("%1 open failed!!!\r\n").arg(file_local.fileName());
-    }
-    if(_localXml.setContent(&file_local)<0)
-    {
-        add_Time_Logg();
-        _TextStream << QString("%1 parser failed!!!\r\n").arg(file_local.fileName());
-    }
-    file_local.close();
-
-    QDomElement  importTag = _importXml.documentElement();
-    QList<QDomElement> importTagList;
-    importTagList.clear();
-    bool checkbool = false;
-    for(i=0;i<d_ptr->SelectItemsImport.count();i++)
-    {
-        if(d_ptr->SelectItemsImport.at(i)->text().indexOf("User")>=0)
+        d_ptr->selectItemsImport = myImportSubWidget.readSelectItemsImport();
+        d_ptr->remainderImportItems = d_ptr->selectItemsImport.count();
+        if(d_ptr->selectItemsImport.isEmpty())
         {
-            qDebug()<<d_ptr->SelectItemsImport.at(i)->text();
-            for(int j=0;j<files.count();j++)
-            {
-                if(files.at(j)==d_ptr->SelectItemsImport.at(i)->text())
-                {
-                    //加载导入xml文件数据
-                    QFile file_import(QString("%1/%2").arg(USB0_PATH_NAME).arg(files.at(j)));
-                    if(!file_import.open(QFile::ReadOnly | QFile::Text))
-                    {
-                        add_Time_Logg();
-                        _TextStream << QString("%1 open failed!!!\r\n").arg(file_import.fileName());
-                    }
-                    if(_importXml.setContent(&file_import)<0)
-                    {
-                        add_Time_Logg();
-                        _TextStream << QString("%1 parser failed!!!\r\n").arg(file_import.fileName());
-                    }
-                    file_import.close();
-                    break;
-                }
-            }
-            importTag = _importXml.documentElement();
-            importTagList.clear();
-            checkbool = checkXMLContent(importTagList,importTag);
+            checkFileFlag = ConfigExportImportMenuPrivate::NOT_SELECT_FILES;//未选择条目
+            return checkFileFlag;
         }
-        //checkbool = true;
-        //导入文件内容不合数据处理
-        if(checkbool==false)
+    }
+    else//close
+    {
+        d_ptr->selectItemsImport.clear();
+        checkFileFlag = ConfigExportImportMenuPrivate::CLOSE;//关闭选择项
+        return checkFileFlag;
+    }
+
+    //加载本地xml数据
+    QFile fileLocal(QString("%1usercheck.xml").arg(CONFIG_DIR));
+    if(!fileLocal.open(QFile::ReadOnly | QFile::Text))
+    {
+       addTimeLogg();
+       _textStream << QString("%1 open failed!!!\r\n").arg(fileLocal.fileName());
+    }
+    if(_localXml.setContent(&fileLocal)<0)
+    {
+        addTimeLogg();
+        _textStream << QString("%1 parser failed!!!\r\n").arg(fileLocal.fileName());
+    }
+    fileLocal.close();
+
+
+    d_ptr->loadConfigs();
+    bool checkXmlFlag = false;
+    QList<QDomElement> importTagList;
+    QDomElement  importTag = _importXml.documentElement();
+    for(int i=0;i<d_ptr->selectItemsImport.count();i++)
+    {
+
+        for(int j=0;j<files.count();j++)
         {
-            add_Time_Logg();
-            _TextStream << QString("Inserted xml files(%1) parser failed !!!\r\n").arg(d_ptr->SelectItemsImport.at(i)->text());
-            return checkbool;
+            if(files.at(j)==d_ptr->selectItemsImport.at(i)->text())
+            {
+                //加载导入xml文件数据
+                QFile file_import(QString("%1/%2").arg(USB0_PATH_NAME).arg(files.at(j)));
+                if(!file_import.open(QFile::ReadOnly | QFile::Text))
+                {
+                    addTimeLogg();
+                    _textStream << QString("%1 open failed!!!\r\n").arg(file_import.fileName());
+                }
+                if(_importXml.setContent(&file_import)<0)
+                {
+                    addTimeLogg();
+                    _textStream << QString("%1 parser failed!!!\r\n").arg(file_import.fileName());
+                }
+                file_import.close();
+                break;
+            }
+        }
+        importTagList.clear();
+        importTag = _importXml.documentElement();
+        checkXmlFlag = checkXMLContent(importTagList,importTag);
+
+
+        //导入文件内容不合数据处理
+        if(checkXmlFlag==false)
+        {
+            addTimeLogg();
+            _textStream << QString("Inserted xml files(%1) parser failed !!!\r\n").arg(d_ptr->selectItemsImport.at(i)->text());
+
+            if(checkXmlFlag==false)
+            {
+                checkFileFlag = ConfigExportImportMenuPrivate::FAILED;
+                _failedImportXmlName = d_ptr->selectItemsImport.at(i)->text();
+            }
+            return checkFileFlag;
         }
         else
         {
-            int nflag=0,k=0;
-            for(k=0; k < d_ptr->configs.count(); k++)/*同名的文件不再导入*/
+            bool isexit = false;
+            for(int selectItemLocal = 0; selectItemLocal<d_ptr->configs.count(); selectItemLocal ++)
             {
-                if(d_ptr->SelectItemsImport.at(i)->text()==d_ptr->configs.at(k).name)
+                if(d_ptr->selectItemsImport.at(i)->text()==d_ptr->configs.at(selectItemLocal).fileName)
                 {
-                    nflag = 1;
+                    isexit = true;
+                    break;
+                }
+
+            }
+
+            bool isCopy = true;
+            if(isexit==true)//发现同名文件
+            {
+                IMessageBox messageBox;
+                messageBox.iMessageBoxExport(trs("Import"),
+                                       QString("%1%2").arg(d_ptr->selectItemsImport.at(i)->text()).arg("\r\nif select the same name file?"));
+                isCopy = messageBox.exec();
+            }
+
+            if(isCopy==true)//yes
+            {
+                QFile::copy(QString("%1/%2").arg(USB0_PATH_NAME).arg(d_ptr->selectItemsImport.at(i)->text()),
+                            QString("%1%2").arg(CONFIG_DIR).arg(d_ptr->selectItemsImport.at(i)->text()));
+                //信息加入日志
+                 addTimeLogg();
+                _textStream << QString("Inserted xml files(%1) parser succeed ^O^\r\n").arg(d_ptr->selectItemsImport.at(i)->text());
+                //装载导入文件  导入配置未完成
+                ConfigManager::UserDefineConfigInfo  userDefine;
+                userDefine.fileName = d_ptr->selectItemsImport.at(i)->text();
+                userDefine.name     = d_ptr->selectItemsImport.at(i)->text().replace(".xml","");
+                bool configFlag=false;
+                for(int configIndex=0;configIndex<d_ptr->configList->count();configIndex++)
+                {
+                    if(d_ptr->configs.at(configIndex).fileName==userDefine.fileName)
+                    {
+                        configFlag = true;
+                        break;
+                    }
+                }
+                if(configFlag==false)
+                {
+                    d_ptr->configs.append(userDefine);
+                }
+                configFlag = false;
+                if(d_ptr->configs.count() >= CONFIG_MAX_NUM)
+                {
+                    d_ptr->importBtn->setEnabled(false);
                     break;
                 }
             }
-            k = 0;
-
-            if(nflag==0)
+            else//no
             {
-                //申请拷贝进程
-                p1 = new QProcess(this);
-                appName = "cp";
-                argName.clear();
-                argName.append( QString("%1/%2").arg(USB0_PATH_NAME).arg(d_ptr->SelectItemsImport.at(i)->text()));
-                argName.append(QString("%1").arg(CONFIG_DIR));
-                p1->start(appName,argName);//异步触发方式
-                p1->waitForStarted();
-                //信息加入日志
-                 add_Time_Logg();
-                _TextStream << QString("Inserted xml files(%1) parser succeed ^O^\r\n").arg(d_ptr->SelectItemsImport.at(i)->text());
-                //装载导入文件  导入配置未完成
-                d_ptr->loadConfigs();
-                ConfigManager::UserDefineConfigInfo  userDefine;
-                userDefine.fileName = d_ptr->SelectItemsImport.at(i)->text();
-                userDefine.name     = d_ptr->SelectItemsImport.at(i)->text().replace(".xml","");
-
-                d_ptr->configs.append(userDefine);
-                d_ptr->updateConfigList();
-                configManager.saveUserConfigInfo(d_ptr->configs);
+                d_ptr->remainderImportItems--;
+                if(d_ptr->remainderImportItems==0)
+                {
+                    checkFileFlag = ConfigExportImportMenuPrivate::NOT_SELECT_FILES;//未选择条目
+                    return checkFileFlag;
+                }
             }
 
-            nflag = 0;
         }
-        filepp.flush();
-        if(d_ptr->configList->count() >= CONFIG_MAX_NUM)
-        {
-            d_ptr->importBtn->setEnabled(false);
-            break;
-        }
+        filelogg.flush();
+    }
+    d_ptr->updateConfigList();
+    configManager.saveUserConfigInfo(d_ptr->configs);
+
+    //解挂U盘
+    backFlag = QProcess::execute(QString("umount -t vfat %1 %2").arg(USB0_DEVICE_NODE).arg(USB0_PATH_NAME));
+    QProcess::execute("sync");
+    if(backFlag!=QProcess::NormalExit)//挂载失败
+    {
+       // checkFileFlag = ConfigExportImportMenuPrivate::NOT_FOUND_UU;//解挂U盘失败
+       // return checkFileFlag;
     }
 
-    if(procNew!=0) //解挂u盘
-    {
-        delete procNew;
-        appName = "umount";
-        argName.clear();
-        argName.append("-t");
-        argName.append("vfat");
-        argName.append(USB0_DEVICE_NODE);
-        argName.append(USB0_PATH_NAME);
-        procNew = new QProcess(this);
-        procNew->start(appName,argName);//异步方式
-        procNew->waitForStarted();//异步触发方式
-        delete procNew;
-    }
-    if(p1!=0)//解除拷贝进程
-    {
-        delete p1;
-    }
-    ::close(_usbFd);
-    filepp.close();
-    d_ptr->SelectItemsImport.clear();
-    return checkbool;
+    filelogg.close();
+
+    return checkFileFlag;
 }
 
 QDomElement ConfigExportImportMenu::tagFindElement(const QStringList &list)
@@ -654,7 +660,7 @@ QDomElement ConfigExportImportMenu::tagFindElement(const QStringList &list)
 }
 
 
-bool ConfigExportImportMenu::compareTagAttribute(QDomElement importtag,QDomElement localtag)
+bool ConfigExportImportMenu::compareTagAttribute(QDomElement importTag,QDomElement localTag)
 {
     #define PARAMETER_PREFIX_NUM0   (4)  /*参数前缀的长度*/
     #define PARAMETER_PREFIX_NUM1   (2)  /*参数前缀的长度*/
@@ -662,31 +668,31 @@ bool ConfigExportImportMenu::compareTagAttribute(QDomElement importtag,QDomEleme
     #define PARAMETER_PREFIX1       ("Min")  /*参数前缀*/
     float numArrary[]={1.0,2.0};
     QString attrString[]={"Enable","Prio"};
-    QDomNamedNodeMap localDomNameNodeMap = localtag.attributes();
+    QDomNamedNodeMap localDomNameNodeMap = localTag.attributes();
 
     if(localDomNameNodeMap.count()==PARAMETER_PREFIX_NUM0)/*导入标签无属性值*/
     {
         if(localDomNameNodeMap.namedItem("cAttr0").nodeValue().toFloat()==0)/*数字属性 需要比较上下限*/
         {
-            if(importtag.text().toFloat()<localDomNameNodeMap.namedItem("cMin").nodeValue().toFloat()||\
-               importtag.text().toFloat()>localDomNameNodeMap.namedItem("cMax").nodeValue().toFloat())
+            if(importTag.text().toFloat()<localDomNameNodeMap.namedItem("cMin").nodeValue().toFloat()||\
+               importTag.text().toFloat()>localDomNameNodeMap.namedItem("cMax").nodeValue().toFloat())
             {
                 //信息加入日志
-                 add_Time_Logg();
-                _TextStream << QString("Inserted xml files NodeName(%1)`s number value parser failed !!!\r\n").arg(localtag.nodeName());
-                float fl = localDomNameNodeMap.namedItem("cMin").nodeValue().toFloat();
-                float floa = localDomNameNodeMap.namedItem("cMax").nodeValue().toFloat();
-                _TextStream << QString("(%1 %2 %3)\r\n").arg(importtag.text().toFloat()).arg(fl).arg(floa);
+                 addTimeLogg();
+                _textStream << QString("Inserted xml files NodeName(%1)`s number value parser failed !!!\r\n").arg(localTag.nodeName());
+                float floatMin = localDomNameNodeMap.namedItem("cMin").nodeValue().toFloat();
+                float floatMax = localDomNameNodeMap.namedItem("cMax").nodeValue().toFloat();
+                _textStream << QString("(%1 %2 %3)\r\n").arg(importTag.text().toFloat()).arg(floatMin).arg(floatMax);
                 return false;
             }
         }
         else/*字符串属性 直接比较是否相等*/
         {
-            if(importtag.nodeValue()!=localtag.nodeValue())
+            if(importTag.nodeValue()!=localTag.nodeValue())
             {
                 //信息加入日志
-                 add_Time_Logg();
-                _TextStream << QString("Inserted xml files NodeName(%1)`s string value parser failed !!!\r\n").arg(localtag.nodeName());
+                 addTimeLogg();
+                _textStream << QString("Inserted xml files NodeName(%1)`s string value parser failed !!!\r\n").arg(localTag.nodeName());
                 return false;
             }
         }
@@ -698,26 +704,26 @@ bool ConfigExportImportMenu::compareTagAttribute(QDomElement importtag,QDomEleme
         {
             if(localDomNameNodeMap.item(i).nodeName()==PARAMETER_PREFIX0)/*Enable、Prio属性*/
             {
-                if(importtag.attributes().namedItem(attrString[i]).nodeValue().toFloat()<0||\
-                   importtag.attributes().namedItem(attrString[i]).nodeValue().toFloat()>numArrary[i])
+                if(importTag.attributes().namedItem(attrString[i]).nodeValue().toFloat()<0||\
+                   importTag.attributes().namedItem(attrString[i]).nodeValue().toFloat()>numArrary[i])
                 {
                     //信息加入日志
-                     add_Time_Logg();
-                    _TextStream << QString("Inserted xml files NodeName(%1)`s attribute1 parser failed !!!\r\n").arg(localtag.nodeName());
+                     addTimeLogg();
+                    _textStream << QString("Inserted xml files NodeName(%1)`s attribute1 parser failed !!!\r\n").arg(localTag.nodeName());
                     return false;
                 }
             }
             else if(localDomNameNodeMap.item(i).nodeName()==PARAMETER_PREFIX1)/*Min、Max属性*/
             {
-                if(importtag.text().toFloat()<localDomNameNodeMap.namedItem("Min").nodeValue().toFloat()||\
-                   importtag.text().toFloat()>localDomNameNodeMap.namedItem("Max").nodeValue().toFloat())
+                if(importTag.text().toFloat()<localDomNameNodeMap.namedItem("Min").nodeValue().toFloat()||\
+                   importTag.text().toFloat()>localDomNameNodeMap.namedItem("Max").nodeValue().toFloat())
                 {
                     //信息加入日志
-                     add_Time_Logg();
-                    _TextStream << QString("Inserted xml files NodeName(%1)`s attribute2 parser failed !!!\r\n").arg(localtag.nodeName());
+                     addTimeLogg();
+                    _textStream << QString("Inserted xml files NodeName(%1)`s attribute2 parser failed !!!\r\n").arg(localTag.nodeName());
                     float fl = localDomNameNodeMap.namedItem("Min").nodeValue().toFloat();
                     float floa = localDomNameNodeMap.namedItem("Max").nodeValue().toFloat();
-                    _TextStream << QString("(%1 %2 %3)\r\n").arg(importtag.text().toFloat()).arg(fl).arg(floa);
+                    _textStream << QString("(%1 %2 %3)\r\n").arg(importTag.text().toFloat()).arg(fl).arg(floa);
                     return false;
                 }
             }
@@ -798,35 +804,88 @@ void ConfigExportImportMenu::onBtnClick()
     LButtonEx *btn = qobject_cast<LButtonEx *>(sender());
     if(btn == d_ptr->exportBtn)
     {
-        int flag = ExportFileToUSB();
-        if(flag>=0)/*failed*/
+        int exportFileflag = exportFileToUSB();
+        IMessageBox messageBox;
+        bool isClose = false;
+        switch (exportFileflag)
         {
-            IMessageBox messageBox(trs("Export/Import"), "Export File failed", flag);
+        case ConfigExportImportMenuPrivate::FAILED:
+            isClose = false;
+            messageBox.iMessageBox(trs("Export"), QString("ExportFilefailed:%1").arg(_failedExportXmlName));
+        break;
+        case ConfigExportImportMenuPrivate::SUCCEED:
+            isClose = false;
+            messageBox.iMessageBox(trs("Export"), "ExportFileCompleted");
+        break;
+        case ConfigExportImportMenuPrivate::NOT_FOUND_U:
+            isClose = false;
+            messageBox.iMessageBox(trs("Export"), "NotFoundDeviceNode");
+        break;
+        case ConfigExportImportMenuPrivate::NOT_FOUND_UU:
+            isClose = false;
+            messageBox.iMessageBox(trs("Export"), "NotFoundUDisk");
+        break;
+        case ConfigExportImportMenuPrivate::CLOSE:
+            isClose = true;
+        break;
+        case ConfigExportImportMenuPrivate::NOT_SELECT_FILES:
+            isClose = false;
+            messageBox.iMessageBox(trs("Export"), "PleaseSelectFiles");
+        break;
+        case ConfigExportImportMenuPrivate::IMPORTFILES_EMPTY:
+            isClose = false;
+            messageBox.iMessageBox(trs("Export"), "PleaseAddExportFiles");
+        break;
+        }
+        if(isClose==false)
+        {
             messageBox.exec();
         }
-        else
-        {
-            IMessageBox messageBox(trs("Export/Import"), "Export File Completed", flag);
-            messageBox.exec();
-        }
+        //d_ptr->selectItems.clear();
+
     }
     else if(btn == d_ptr->importBtn)
     {
-        int flag = InsertFileFromUSB();
-        if(flag==0)/*failed*/
+        int importFileflag = insertFileFromUSB();
+        IMessageBox messageBox;
+        bool isClose = false;
+        switch (importFileflag)
         {
-            IMessageBox messageBox(trs("Export/Import"), "Import File failed", flag);
+        case ConfigExportImportMenuPrivate::FAILED:
+            isClose = false;
+            messageBox.iMessageBox(trs("Import"), QString("ImportFilefailed:\n%1").arg(_failedImportXmlName));
+        break;
+        case ConfigExportImportMenuPrivate::SUCCEED:
+            isClose = false;
+            messageBox.iMessageBox(trs("Import"), "ImportFileCompleted");
+        break;
+        case ConfigExportImportMenuPrivate::NOT_FOUND_U:
+            isClose = false;
+            messageBox.iMessageBox(trs("Import"), "NotFoundDeviceNode");
+        break;
+        case ConfigExportImportMenuPrivate::NOT_FOUND_UU:
+            isClose = false;
+            messageBox.iMessageBox(trs("Import"), "NotFoundUDisk");
+        break;
+        case ConfigExportImportMenuPrivate::CLOSE:
+            isClose = true;
+        break;
+        case ConfigExportImportMenuPrivate::NOT_SELECT_FILES:
+            isClose = false;
+            messageBox.iMessageBox(trs("Import"), "PleaseSelectFiles");
+        break;
+        case ConfigExportImportMenuPrivate::IMPORTFILES_EMPTY:
+            isClose = false;
+            messageBox.iMessageBox(trs("Import"), "PleaseAddImportFiles");
+        break;
+        }
+        if(isClose==false)
+        {
             messageBox.exec();
         }
-        else
-        {
-            IMessageBox messageBox(trs("Export/Import"), "Import File Completed", flag);
-            messageBox.exec();
-        }
+        d_ptr->selectItemsImport.clear();
     }
-     else if(btn == d_ptr->importSubBtn)
-    {
-        //mainLayout
-    }
+
 }
+
 
