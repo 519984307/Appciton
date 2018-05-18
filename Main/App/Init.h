@@ -25,6 +25,7 @@
 #include "SystemMenu.h"
 #include "SupervisorEntrance.h"
 #include "UserMaintainEntrance.h"
+#include "ModuleMaintainMenu.h"
 #include "UserMaintainManager.h"
 #include "UserMaintainGeneralSet.h"
 #include "SystemStatusBarWidget.h"

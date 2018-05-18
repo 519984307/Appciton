@@ -361,6 +361,9 @@ SOURCES +=                                                                      
     Components/Maintain/Factory/Menu/FactoryTestMenu.cpp                        \
     Components/Maintain/Factory/Menu/FactoryWindowManager.cpp                   \
     Components/Maintain/UserMaintain/UserMaintainEntrance.cpp                   \
+    Components/Maintain/UserMaintain/UserMaintainManager.cpp                    \
+    Components/Maintain/UserMaintain/UserMaintainGeneralSet.cpp                 \
+    Components/Maintain/UserMaintain/ModuleMaintainMenu.cpp                     \
     Components/CodeMarker/Summary/CodeMarkerSummary.cpp                         \
     Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
@@ -377,6 +380,7 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditSpO2Menu.cpp                             \
     Components/ConfigManager/ConfigEditCO2Menu.cpp                              \
     Components/ConfigManager/ConfigEditCOMenu.cpp                               \
+    Components/ConfigManager/ConfigEditUnitSetupMenu.cpp                        \
 #################################################################################
     Params/AGParam/AGWidgets/AGMenu.cpp                                         \
     Params/AGParam/AGWidgets/AGTrendWidget.cpp                                  \
@@ -484,8 +488,8 @@ SOURCES +=                                                                      
     Main/MergeConfig.cpp                                                        \
     Main/Starter.cpp \
     Utility/Widgets/ImportFileSubWidget.cpp \
-    Components/Maintain/UserMaintain/UserMaintainManager.cpp \
-    Components/Maintain/UserMaintain/UserMaintainGeneralSet.cpp
+
+
 
 HEADERS +=                                                                      \
     SOUP/SmtpClientForQt/src/smtpexports.h                                      \
@@ -826,6 +830,7 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/UserMaintainEntrance.h                     \
     Components/Maintain/UserMaintain/UserMaintainManager.h                      \
     Components/Maintain/UserMaintain/UserMaintainGeneralSet.h                   \
+    Components/Maintain/UserMaintain/ModuleMaintainMenu.h                       \
     Components/CodeMarker/Summary/CodeMarkerSummary.h                           \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWidget.h                            \
@@ -843,6 +848,7 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditSpO2Menu.h                               \
     Components/ConfigManager/ConfigEditCO2Menu.h                                \
     Components/ConfigManager/ConfigEditCOMenu.h                                 \
+    Components/ConfigManager/ConfigEditUnitSetupMenu.h                          \
 #################################################################################
     Params/AGParam/AGWidgets/AGMenu.h                                           \
     Params/AGParam/AGWidgets/AGTrendWidget.h                                    \

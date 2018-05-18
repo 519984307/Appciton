@@ -71,7 +71,7 @@ void UserMaintainGeneralSet::layoutExec()
     int labelWidth = itemW - btnWidth;
 
     //monitor Name
-    _monitorName = new LabelButton(trs("Monitor Name"));
+    _monitorName = new LabelButton(trs("MonitorName"));
     _monitorName->setFont(fontManager.textFont(fontSize));
     _monitorName->label->setFixedSize(labelWidth, ITEM_H);
     _monitorName->button->setFixedSize(btnWidth, ITEM_H);
@@ -95,7 +95,7 @@ void UserMaintainGeneralSet::layoutExec()
     mainLayout->addWidget(_bedNumber);
 
     //Modify Password
-    _modifyPassword = new LabelButton(trs("Modify Password"));
+    _modifyPassword = new LabelButton(trs("ModifyPassword"));
     _modifyPassword->label->setFixedSize(labelWidth, ITEM_H);
     _modifyPassword->button->setFixedSize(btnWidth, ITEM_H);
     _modifyPassword->setFont(fontManager.textFont(fontSize));
@@ -103,7 +103,7 @@ void UserMaintainGeneralSet::layoutExec()
     mainLayout->addWidget(_modifyPassword);
 
     //Change Bed Number Right
-    _changeBedNumberRight = new IComboList(trs("Change Bed Number Right"));
+    _changeBedNumberRight = new IComboList(trs("ChangeBedNumberRight"));
     _changeBedNumberRight->label->setFixedSize(labelWidth, ITEM_H);
     _changeBedNumberRight->combolist->setFixedSize(btnWidth, ITEM_H);
     _changeBedNumberRight->setFont(fontManager.textFont(fontSize));
@@ -132,7 +132,7 @@ void UserMaintainGeneralSet::layoutExec()
 void UserMaintainGeneralSet::_editMonitorName()
 {
     KeyBoardPanel idPanel;
-    idPanel.setTitleBarText(trs("Edit Monitor Name"));
+    idPanel.setTitleBarText(trs("EditMonitorName"));
     idPanel.setInitString(_monitorName->button->text());
     idPanel.setMaxInputLength(MAX_DEVICE_ID_LEN - 1);
 
@@ -158,7 +158,7 @@ void UserMaintainGeneralSet::_editMonitorName()
 void UserMaintainGeneralSet::_passwordReleased()
 {
     KeyBoardPanel idPanel(KeyBoardPanel::KEY_TYPE_NUMBER);
-    idPanel.setTitleBarText(trs("Modify Password"));
+    idPanel.setTitleBarText(trs("ModifyPassword"));
     idPanel.setInitString(_modifyPassword->button->text());
     idPanel.setMaxInputLength(11);
     QString regKeyStr("[a-zA-Z]|[0-9]|_");
@@ -181,7 +181,7 @@ void UserMaintainGeneralSet::_passwordReleased()
  *************************************************************************************************/
 void UserMaintainGeneralSet::_editDepartment()
 {
-    KeyBoardPanel idPanel(KeyBoardPanel::KEY_TYPE_NUMBER);
+    KeyBoardPanel idPanel;
     idPanel.setTitleBarText(trs("Department"));
     idPanel.setInitString(_department->button->text());
     idPanel.setMaxInputLength(11);
@@ -206,8 +206,8 @@ void UserMaintainGeneralSet::_editDepartment()
  *************************************************************************************************/
 void UserMaintainGeneralSet::_editBedNumber()
 {
-    KeyBoardPanel idPanel(KeyBoardPanel::KEY_TYPE_NUMBER);
-    idPanel.setTitleBarText(trs("Bed Number"));
+    KeyBoardPanel idPanel;
+    idPanel.setTitleBarText(trs("BedNumber"));
     idPanel.setInitString(_bedNumber->button->text());
     idPanel.setMaxInputLength(11);
     QString regKeyStr("[a-zA-Z]|[0-9]|_");
