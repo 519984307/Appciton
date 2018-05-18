@@ -25,6 +25,12 @@ public:
     // zero calibration.
     virtual void zeroCalibration(void)  {}
 
+    // get waveform sample
+    virtual int getN2OWaveformSample(void) = 0;
+    virtual int getAA1WaveformSample(void) = 0;
+    virtual int getAA2WaveformSample(void) = 0;
+    virtual int getO2WaveformSample(void) = 0;
+
     // get base line.
     virtual int getN2OBaseLine(void) = 0;
     virtual int getAA1BaseLine(void) = 0;

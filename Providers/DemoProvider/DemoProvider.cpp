@@ -163,6 +163,10 @@ bool DemoProvider::attachParam(Param &param)
     }
     else if (name == paramInfo.getParamName(PARAM_AG))
     {
+        _demoWaveData[WAVE_N2O].param = &param;
+        _demoWaveData[WAVE_AA1].param = &param;
+        _demoWaveData[WAVE_AA2].param = &param;
+        _demoWaveData[WAVE_O2].param = &param;
         agParam.setProvider(this);
     }
 

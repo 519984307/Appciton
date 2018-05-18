@@ -39,6 +39,15 @@ public:
                              unsigned char /*month*/, unsigned char /*year*/){}
     virtual bool isSetTimeZero(unsigned char */*packet*/) {return false;}
 
+    // 获取波形的采样速度。
+    virtual int getIBPWaveformSample(void) = 0;
+
+    // 获取波形基线
+    virtual int getIBPBaseLine(void) = 0;
+
+    // 获取最大的波形值
+    virtual int getIBPMaxWaveform(void) = 0;
+
 public:
     IBPProviderIFace() {  }
     virtual ~IBPProviderIFace() { }

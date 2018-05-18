@@ -176,6 +176,12 @@ public:    // AGProviderIFace interface
     // zero calibration.
     virtual void zeroCalibration(void);
 
+    // get waveform sample
+    virtual int getN2OWaveformSample(void) {return 50;}
+    virtual int getAA1WaveformSample(void) {return 50;}
+    virtual int getAA2WaveformSample(void) {return 50;}
+    virtual int getO2WaveformSample(void) {return 50;}
+
     // get base line.
     virtual int getN2OBaseLine(void) {return 0;}
     virtual int getAA1BaseLine(void) {return 0;}

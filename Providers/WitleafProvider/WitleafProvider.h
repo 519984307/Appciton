@@ -191,6 +191,15 @@ public:// IBPProviderIFace的接口
     virtual void hemodymicCalc(void);
     virtual bool isHemodymicCalc(unsigned char */*packet*/) {return false;}
 
+    // 获取波形采样率
+    virtual int getIBPWaveformSample(void){return 128;}
+
+    // 获取波形基线
+    virtual int getIBPBaseLine(void){return 0;}
+
+    // 获取最大的波形值
+    virtual int getIBPMaxWaveform(void){return 2600;}
+
 public:
     WitleafProvider();
     ~WitleafProvider();

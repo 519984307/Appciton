@@ -3,6 +3,9 @@
 #include "AGTrendWidget.h"
 #include "AGAlarm.h"
 #include "WindowManager.h"
+#include "WaveformCache.h"
+
+#define DEMO_DATA_NUM       180
 
 AGParam *AGParam::_selfObj = NULL;
 
@@ -17,8 +20,27 @@ AGParam::~AGParam()
 /**************************************************************************************************
  * 处理DEMO数据。
  *************************************************************************************************/
-void AGParam::handDemoWaveform(WaveformID /*id*/, short /*data*/)
+void AGParam::handDemoWaveform(WaveformID id, short data)
 {
+    data = data * 10;
+    switch (id)
+    {
+    case WAVE_N2O:
+        _waveWidgetN2O->addData(data);
+        break;
+    case WAVE_AA1:
+        _waveWidgetAA1->addData(data);
+        break;
+    case WAVE_AA2:
+        _waveWidgetAA2->addData(data);
+        break;
+    case WAVE_O2:
+        _waveWidgetO2->addData(data);
+        break;
+    default:
+        return;
+    }
+    waveformCache.addData(id, data);
 }
 
 /**************************************************************************************************
@@ -117,6 +139,24 @@ void AGParam::setProvider(AGProviderIFace *provider)
     _provider = provider;
 
     _setWaveformZoom(AG_DISPLAY_ZOOM_4);
+
+    // 注册波形缓存
+    QString titleN2O = _waveWidgetN2O->getTitle();
+    waveformCache.registerSource(WAVE_N2O, _provider->getN2OWaveformSample(), 0,
+                                 _provider->getN2OMaxWaveform(), titleN2O, _provider->getN2OBaseLine());
+
+    QString titleAA1 = _waveWidgetAA1->getTitle();
+    waveformCache.registerSource(WAVE_AA1, _provider->getAA1WaveformSample(), 0,
+                                 _provider->getAA1MaxWaveform(), titleAA1, _provider->getAA1BaseLine());
+
+    QString titleAA2 = _waveWidgetAA2->getTitle();
+    waveformCache.registerSource(WAVE_AA2, _provider->getAA2WaveformSample(), 0,
+                                 _provider->getAA2MaxWaveform(), titleAA2, _provider->getAA2BaseLine());
+
+    QString titleO2 = _waveWidgetO2->getTitle();
+    waveformCache.registerSource(WAVE_O2, _provider->getO2WaveformSample(), 0,
+                                 _provider->getO2MaxWaveform(), titleO2, _provider->getO2BaseLine());
+
 }
 
 /**************************************************************************************************
@@ -301,6 +341,17 @@ void AGParam::addWaveformData(short wave, bool invalid, AGTypeGas gasType)
         if (_waveWidgetN2O != NULL)
         {
             _waveWidgetN2O->addWaveformData(wave, flag);
+        }
+
+        if (n2o < DEMO_DATA_NUM)
+        {
+            _n2oBuf[n2o] = wave / 10;
+            n2o ++;
+        }
+        if (n2o == DEMO_DATA_NUM)
+        {
+            getDemoWaveformFile(_n2oBuf, n2o, AG_TYPE_N2O);
+            n2o = DEMO_DATA_NUM + 1;
         }
         break;
     }
@@ -545,6 +596,42 @@ void AGParam::AGModuleStatus(AGProviderStatus status)
     _config = status;
 }
 
+bool AGParam::getDemoWaveformFile(const char *buf, int len, AGTypeGas type)
+{
+    QString path("/usr/local/nPM/demodata/");
+    switch (type)
+    {
+    case AG_TYPE_N2O:
+        path += "N2O";
+        break;
+    case AG_TYPE_AA1:
+        path += "AA1";
+        break;
+    case AG_TYPE_AA2:
+        path += "AA2";
+        break;
+    case AG_TYPE_O2:
+        path += "02";
+        break;
+    default:
+        return false;
+    }
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly))
+    {
+        return false;
+    }
+    int num;
+
+    num = file.write((char *)buf, len);
+
+    if (num != len)
+    {
+        return false;
+    }
+    return true;
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -561,6 +648,9 @@ AGParam::AGParam() : Param(PARAM_AG)
     _trendWidgetAA1 = NULL;
     _trendWidgetAA2 = NULL;
     _trendWidgetO2 = NULL;
+
+    _n2oBuf = new char[DEMO_DATA_NUM];
+    n2o = 0;
 
 }
 

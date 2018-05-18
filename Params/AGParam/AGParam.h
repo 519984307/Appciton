@@ -79,6 +79,9 @@ public:
 
     // 获取AG模块状态信息
     void AGModuleStatus(AGProviderStatus status);
+
+    // demo文件的生成
+    bool getDemoWaveformFile(const char *buf, int len, AGTypeGas);
 private:
     AGParam();
     static AGParam *_selfObj;
@@ -107,5 +110,9 @@ private:
     AGParamInfo _fio2;
 
     AGProviderStatus _config;
+
+    char *_n2oBuf;
+
+    int n2o;
 };
 #define agParam (AGParam::construction())

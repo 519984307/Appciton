@@ -90,14 +90,23 @@ public:
     virtual void setWorkMode(CO2WorkMode /*mode*/) {}
 
     // 实现AG的接口。
+    virtual int getN2OWaveformSample(void) {return 50;}
+    virtual int getAA1WaveformSample(void) {return 50;}
+    virtual int getAA2WaveformSample(void) {return 50;}
+    virtual int getO2WaveformSample(void) {return 50;}
     virtual int getN2OBaseLine(void) {return 0;}
     virtual int getAA1BaseLine(void) {return 0;}
     virtual int getAA2BaseLine(void) {return 0;}
     virtual int getO2BaseLine(void) {return 0;}
-    virtual int getN2OMaxWaveform(void) {return 2000;}
-    virtual int getAA1MaxWaveform(void) {return 2000;}
-    virtual int getAA2MaxWaveform(void) {return 2000;}
-    virtual int getO2MaxWaveform(void) {return 2000;}
+    virtual int getN2OMaxWaveform(void) {return 200;}
+    virtual int getAA1MaxWaveform(void) {return 200;}
+    virtual int getAA2MaxWaveform(void) {return 200;}
+    virtual int getO2MaxWaveform(void) {return 200;}
+
+    // 实现IBP的接口
+    virtual int getIBPWaveformSample(void) {return 128;}
+    virtual int getIBPMaxWaveform(void){return 2600;}
+    virtual int getIBPBaseLine(void){return 0;}
 
     DemoProvider();
     virtual ~DemoProvider();

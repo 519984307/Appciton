@@ -8,6 +8,7 @@
 #include "TrendDataWidget.h"
 #include "TrendGraphWidget.h"
 #include "TrendGraphSetWidget.h"
+#include "WaveformCache.h"
 
 IBPParam *IBPParam::_selfObj = NULL;
 
@@ -586,6 +587,14 @@ void IBPParam::setProvider(IBPProviderIFace *provider)
     }
 
     _provider = provider;
+
+    QString titleIBP1 = _waveWidgetIBP1->getTitle();
+    QString titleIBP2 = _waveWidgetIBP2->getTitle();
+    // 注册波形缓存
+    waveformCache.registerSource(WAVE_IBP1, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), titleIBP1, _provider->getIBPBaseLine());
+    waveformCache.registerSource(WAVE_IBP2, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), titleIBP2, _provider->getIBPBaseLine());
 }
 
 /**************************************************************************************************
