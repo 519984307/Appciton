@@ -1064,6 +1064,7 @@ DEPENDPATH +=                                                                   
     Components/Maintain/Service/Version                                         \
     Components/Maintain/Factory                                                 \
     Components/Maintain/Factory/Menu                                            \
+    Components/Maintain/UserMaintain                                            \
     Components/CodeMarker/Widgets                                               \
     Components/CodeMarker/Summary                                               \
     Components/Calculation/DoseCalculationManager                               \
@@ -1199,6 +1200,7 @@ INCLUDEPATH +=                                                                  
     Components/Maintain/Service/Version                                         \
     Components/Maintain/Factory                                                 \
     Components/Maintain/Factory/Menu                                            \
+    Components/Maintain/UserMaintain                                            \
     Components/CodeMarker/Widgets                                               \
     Components/CodeMarker/Summary                                               \
     Components/Calculation/DoseCalculationManager                               \

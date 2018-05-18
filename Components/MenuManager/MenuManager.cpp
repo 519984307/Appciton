@@ -7,7 +7,7 @@
 #include "ColorManager.h"
 #include "SystemMenu.h"
 #include "SupervisorEntrance.h"
-#include "/home/dzh/PMOS/trunk/src/Components/Maintain/UserMaintain/UserMaintainEntrance.h"
+#include "UserMaintainEntrance.h"
 #include "PublicMenuManager.h"
 #include "SupervisorMenuManager.h"
 #include "MenuGroup.h"

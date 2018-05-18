@@ -13,9 +13,9 @@
 #include "SupervisorMenuManager.h"
 #include "ServiceWindowManager.h"
 #include "FactoryWindowManager.h"
-#include "/home/dzh/PMOS/trunk/src/Components/Maintain/UserMaintain/UserMaintainEntrance.h"
-#include "/home/dzh/PMOS/trunk/src/Components/Maintain/UserMaintain/UserMaintainManager.h"
-#include "/home/dzh/PMOS/trunk/src/Components/Maintain/UserMaintain/UserMaintainGeneralSet.h"
+#include "UserMaintainEntrance.h"
+#include "UserMaintainManager.h"
+#include "UserMaintainGeneralSet.h"
 /**************************************************************************************************
  * 功能: 构造函数
 **************************************************************************************************/
