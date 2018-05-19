@@ -1,3 +1,4 @@
+#pragma once
 #include "RecorderManager.h"
 #include <QScopedPointer>
 #include <IStorageBackend.h>

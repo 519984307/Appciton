@@ -30,7 +30,7 @@ public:
     void storeData(unsigned t, TrendDataFlags dataStatus);
 
     /* parse the trend data segment */
-    TrendDataPackage parseTrendSegment(const TrendDataSegment *dataSegment);
+    static TrendDataPackage parseTrendSegment(const TrendDataSegment *dataSegment);
 
     /* storage function, move the data from memory to flash */
     void run();

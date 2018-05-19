@@ -82,6 +82,7 @@ public:
     {
         TitlePage,
         TrendPage,
+        TrendTablePage,
         WaveScalePage,
         WaveSegmentPage,
         EndPage,
@@ -102,6 +103,7 @@ public:
      * @return  the print font
      */
     QFont font() const;
+
 
 public slots:
 
@@ -186,6 +188,16 @@ protected:
      * @return page
      */
     static RecordPage *createWaveSegments(QList<RecordWaveSegmentInfo> &waveInfos, int segmentIndex, PrintSpeed speed);
+
+
+    /**
+     * @brief createStringListSegemnts create a page with the string list, each string will be draw a row
+     *                                all the string will be left align
+     * @note if contains too many string, some string will not be drawn on the page because the page height is limit
+     * @param strList the string list
+     * @return page
+     */
+    static RecordPage *createStringListSegemnt(const QStringList &strList);
 
     /**
      * @brief createEndPage create a finished page

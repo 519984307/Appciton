@@ -1,3 +1,4 @@
+#pragma once
 #include "RecordPageGenerator.h"
 #include <QScopedPointer>
 

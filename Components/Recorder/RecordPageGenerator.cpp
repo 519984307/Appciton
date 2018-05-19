@@ -174,39 +174,6 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
 
 
 /**
- * @brief getSubParamNameHelper get the proper sub param name base on the module config
- * @param subParamId    sub param id
- * @param moduleConfig  the module config
- * @return sub param name
- */
-static QString getSubParamNameHelper(SubParamID subParamId, short moduleConfig)
-{
-    if(subParamId == SUB_PARAM_HR_PR && !(moduleConfig & CONFIG_SPO2))
-    {
-        return trs(paramInfo.getSubParamName(SUB_DUP_PARAM_HR));
-    }
-    else if (subParamId == SUB_PARAM_RR_BR)
-    {
-        if ((moduleConfig & CONFIG_CO2) && (moduleConfig & CONFIG_RESP))
-        {
-            return trs(paramInfo.getSubParamName(SUB_PARAM_RR_BR, true));
-        }
-        else if ((moduleConfig & CONFIG_CO2))
-        {
-            return trs(paramInfo.getSubParamName(SUB_DUP_PARAM_BR));
-        }
-        else
-        {
-            return trs(paramInfo.getSubParamName(SUB_DUP_PARAM_RR));
-        }
-    }
-    else
-    {
-        return trs(paramInfo.getSubParamName(subParamId));
-    }
-}
-
-/**
  * @brief contructNormalTrendStringItem contruct the trend string for params other than IBP or NIBP
  * @param subParamId sub param id
  * @param data the trend value
@@ -220,7 +187,7 @@ static QString contructNormalTrendStringItem(SubParamID subParamId, TrendDataTyp
                                         UnitType unit, UnitType defaultUnit, short co2Bro)
 {
     //name
-    QString trendString =  getSubParamNameHelper(subParamId, systemManager.getModuleConfig());
+    QString trendString =  paramInfo.getSubParamName(subParamId);
     trendString += "\t";
 
     //value
@@ -1374,6 +1341,42 @@ RecordPage *RecordPageGenerator::createWaveSegments(QList<RecordWaveSegmentInfo>
         drawCaption(page, &painter, *iter, segmentIndex);
         drawWaveSegment(page, &painter, *iter, segmentIndex);
     }
+    return page;
+}
+
+RecordPage *RecordPageGenerator::createStringListSegemnt(const QStringList &strList)
+{
+    QFont font = fontManager.recordFont(24);
+
+    int fontH = fontManager.textHeightInPixels(font);
+
+    int avaliableTextHeight = RECORDER_PAGE_HEIGHT -  fontH - fontH / 2;
+
+    int avaliableLine = avaliableTextHeight / fontH;
+
+    int maxStrWidth = fontH;
+
+    for(int i = 0; i< avaliableLine && i < strList.size(); i++)
+    {
+        int w = fontManager.textWidthInPixels(strList.at(i), font);
+        if(w > maxStrWidth)
+        {
+            maxStrWidth = w;
+        }
+    }
+
+    RecordPage *page = new RecordPage(maxStrWidth + fontH);
+
+    QPainter painter(page);
+    painter.setPen(Qt::white);
+    painter.setFont(font);
+
+    QRect rect(fontH, fontH, maxStrWidth, fontH);
+    for(int i = 0; i< avaliableLine && i < strList.size(); i++)
+    {
+        painter.drawText(rect, Qt::AlignVCenter|Qt::AlignLeft, strList.at(i));
+    }
+
     return page;
 }
 

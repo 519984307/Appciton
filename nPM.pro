@@ -290,6 +290,7 @@ SOURCES +=                                                                      
     Components/Recorder/RecordPageGenerator.cpp                                 \
     Components/Recorder/ContinuousPageGenerator.cpp                             \
     Components/Recorder/EventPageGenerator.cpp                                  \
+    Components/Recorder/TrendTablePageGenerator.cpp                             \
     Components/Recorder/RecordPageProcessor.cpp                                 \
     Components/PdfWriter/HaruPdfWriter.cpp                                      \
     Components/PdfWriter/QPrinterPdfWriter.cpp                                  \
@@ -755,6 +756,7 @@ HEADERS +=                                                                      
     Components/Recorder/RecordPageGenerator.h                                   \
     Components/Recorder/ContinuousPageGenerator.h                               \
     Components/Recorder/EventPageGenerator.h                                    \
+    Components/Recorder/TrendTablePageGenerator.h                               \
     Components/Recorder/RecordPageProcessor.h                                   \
     Components/PdfWriter/HaruPdfWriter.h                                        \
     Components/PdfWriter/QPrinterPdfWriter.h                                    \
