@@ -74,7 +74,6 @@ private:
     QMultiMap<ParamID, SubParamID> _orderMap;            // 参数列表
 
     QMap<IBPPressureName, bool> _ibpNameMap;                // IBP压力标名对应是否开启
-    QMap<SubParamID, IBPPressureName> _ibpSubParamMap;      // 找到压力标名对应的字参数ID
 
     typedef QList<SubParamID> TrendParamList;
     QList<SubParamID> _curList;              // 当前列表

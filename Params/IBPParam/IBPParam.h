@@ -100,6 +100,10 @@ public:
     // 获取ibp两通道标名对应的参数ID
     void getSubParamID(SubParamID &ibp1, SubParamID &ibp2);
 
+    // 参数名获取标名
+    IBPPressureName getPressureName(SubParamID id);
+    SubParamID getSubParamID(IBPPressureName name);
+
 public:
 
 
@@ -107,8 +111,6 @@ private:
     IBPParam();
     static IBPParam *_selfObj;
     void _setWaveformSpeed(IBPSweepSpeed speed);
-
-    QMap<IBPPressureName, SubParamID> _ibpSubParamMap;      // 找到压力标名对应的字参数ID
 
     IBPProviderIFace *_provider;
 

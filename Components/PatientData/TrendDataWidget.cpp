@@ -10,6 +10,7 @@
 #include "TrendDataSetWidget.h"
 #include "TimeManager.h"
 #include "TrendDataStorageManager.h"
+#include "IBPParam.h"
 #include <QHeaderView>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -66,15 +67,18 @@ void TrendDataWidget::loadTrendData()
         timeTitle << time;
         for (int j = 0; j < _curDisplayParamRow; j ++)
         {
-
-            item = new QTableWidgetItem();
-            item->setTextAlignment(Qt::AlignCenter);
+            item = table->item(j, col);
+            if (!item)
+            {
+                item = new QTableWidgetItem();
+                item->setTextAlignment(Qt::AlignCenter);
+            }
 
             if (_displayList.at(j) == SUB_PARAM_NIBP_MAP)
             {
-                short nibpSys = _trendDataPack.at(i)->subparamValue.find((SubParamID)(_displayList.at(j) - 2)).value();
-                short nibpDia = _trendDataPack.at(i)->subparamValue.find((SubParamID)(_displayList.at(j) - 1)).value();
-                short nibpMap = _trendDataPack.at(i)->subparamValue.find(_displayList.at(j)).value();
+                short nibpSys = _trendDataPack.at(i)->subparamValue.value((SubParamID)(_displayList.at(j) - 2), InvData());
+                short nibpDia = _trendDataPack.at(i)->subparamValue.value((SubParamID)(_displayList.at(j) - 1), InvData());
+                short nibpMap = _trendDataPack.at(i)->subparamValue.value(_displayList.at(j), InvData());
                 QString sysStr = nibpSys == InvData() ?"---":QString::number(nibpSys);
                 QString diaStr = nibpDia == InvData() ?"---":QString::number(nibpDia);
                 QString mapStr = nibpMap == InvData() ?"---":QString::number(nibpMap);
@@ -84,9 +88,9 @@ void TrendDataWidget::loadTrendData()
             else if (_displayList.at(j) == SUB_PARAM_ART_MAP || _displayList.at(j) == SUB_PARAM_PA_MAP ||
                      _displayList.at(j) == SUB_PARAM_AUXP1_MAP || _displayList.at(j) == SUB_PARAM_AUXP2_MAP)
             {
-                short ibpSys = _trendDataPack.at(i)->subparamValue.find((SubParamID)(_displayList.at(j) - 2)).value();
-                short ibpDia = _trendDataPack.at(i)->subparamValue.find((SubParamID)(_displayList.at(j) - 1)).value();
-                short ibpMap = _trendDataPack.at(i)->subparamValue.find(_displayList.at(j)).value();
+                short ibpSys = _trendDataPack.at(i)->subparamValue.value((SubParamID)(_displayList.at(j) - 2), InvData());
+                short ibpDia = _trendDataPack.at(i)->subparamValue.value((SubParamID)(_displayList.at(j) - 1), InvData());
+                short ibpMap = _trendDataPack.at(i)->subparamValue.value(_displayList.at(j), InvData());
                 QString sysStr = ibpSys == InvData() ?"---":QString::number(ibpSys);
                 QString diaStr = ibpDia == InvData() ?"---":QString::number(ibpDia);
                 QString mapStr = ibpMap == InvData() ?"---":QString::number(ibpMap);
@@ -97,8 +101,8 @@ void TrendDataWidget::loadTrendData()
                      _displayList.at(j) == SUB_PARAM_ETAA1 || _displayList.at(j) == SUB_PARAM_ETAA2 ||
                      _displayList.at(j) == SUB_PARAM_ETO2 || _displayList.at(j) == SUB_PARAM_T1)
             {
-                short data1 = _trendDataPack.at(i)->subparamValue.find(_displayList.at(j)).value();
-                short data2 = _trendDataPack.at(i)->subparamValue.find((SubParamID)(_displayList.at(j) + 1)).value();
+                short data1 = _trendDataPack.at(i)->subparamValue.value(_displayList.at(j), InvData());
+                short data2 = _trendDataPack.at(i)->subparamValue.value((SubParamID)(_displayList.at(j) + 1), InvData());
                 QString dataStr1 = data1 == InvData() ?"---":QString::number(data1);
                 QString dataStr2 = data2 == InvData() ?"---":QString::number(data2);
                 QString dataStr = dataStr1 + "/" + dataStr2;
@@ -106,7 +110,7 @@ void TrendDataWidget::loadTrendData()
             }
             else
             {
-                short data = _trendDataPack.at(i)->subparamValue.find(_displayList.at(j)).value();
+                short data = _trendDataPack.at(i)->subparamValue.value(_displayList.at(j), InvData());
                 QString dataStr = data == InvData() ?"---":QString::number(data);
                 item->setText(dataStr);
             }
@@ -115,13 +119,11 @@ void TrendDataWidget::loadTrendData()
         col ++;
     }
 
-    if (timeTitle.length() < TABLE_COL_NR)
+    for (timeTitle.length(); timeTitle.length() < TABLE_COL_NR;)
     {
-        for (timeTitle.length(); timeTitle.length() < TABLE_COL_NR;)
-        {
-            timeTitle << "";
-        }
+        timeTitle << "";
     }
+
     if ((_trendDataPack.length() - TABLE_COL_NR) < 0)
     {
         _hideColumn = 0;
@@ -158,7 +160,8 @@ void TrendDataWidget::_upReleased()
 
     if(_curVScroller>0)
     {
-        table->verticalScrollBar()->setSliderPosition(_curVScroller-(maxValue * TABLE_ROW_NR)/(_curDisplayParamRow - TABLE_ROW_NR));
+        int position = _curVScroller-(maxValue * TABLE_ROW_NR)/(_curDisplayParamRow - TABLE_ROW_NR);
+        table->verticalScrollBar()->setSliderPosition(position);
     }
 }
 
@@ -172,7 +175,8 @@ void TrendDataWidget::_downReleased()
 
     if(_curVScroller<maxValue)
     {
-        table->verticalScrollBar()->setSliderPosition(_curVScroller + (maxValue * TABLE_ROW_NR)/(_curDisplayParamRow - TABLE_ROW_NR));
+        int position = _curVScroller + (maxValue * TABLE_ROW_NR)/(_curDisplayParamRow - TABLE_ROW_NR);
+        table->verticalScrollBar()->setSliderPosition(position);
     }
 }
 
@@ -288,24 +292,16 @@ TrendDataWidget::TrendDataWidget() : _timeInterval(RESOLUTION_RATIO_5_SECOND), _
     lineLayout->addWidget(_set);
     lineLayout->addStretch();
 
-//    QVBoxLayout *layout = new QVBoxLayout();
-//    layout->setMargin(1);
-//    layout->setSpacing(1);
-//    layout->addWidget(table);
-//    layout->addLayout(lineLayout);
     contentLayout->addStretch();
     contentLayout->addWidget(table);
     contentLayout->addStretch();
     contentLayout->addLayout(lineLayout);
-//    contentLayout->addLayout(layout);
 
     setFixedSize(_maxWidth, _maxHeight);
 
     _curDate.clear();
     loadCurParam();
     _updateHeaderDate();
-//    _loadTableTitle();
-
 }
 
 /**************************************************************************************************
@@ -336,7 +332,7 @@ void TrendDataWidget::_loadTableTitle()
                 id == SUB_PARAM_RAP_MAP || id == SUB_PARAM_ICP_MAP ||
                 id == SUB_PARAM_AUXP1_MAP || id == SUB_PARAM_AUXP2_MAP)
         {
-            if (_ibpNameMap.find(_ibpSubParamMap.find(id).value()).value())
+            if (_ibpNameMap.value(ibpParam.getPressureName(id), false))
             {
                 str = paramInfo.getSubParamName(id);
                 str = str.left(str.length() - 4);
@@ -367,8 +363,6 @@ void TrendDataWidget::_loadTableTitle()
     }
     table->setVerticalHeaderLabels(hheader);
 
-    // 加载demo数据
-//    loadDemoData();
     _getTrendData();
     loadTrendData();
 }
@@ -382,28 +376,28 @@ void TrendDataWidget::loadCurParam(int index)
 
     TrendParamList list;
 
-    if (_orderMap.end() != _orderMap.find(PARAM_DUP_ECG))
+    if (_orderMap.contains(PARAM_DUP_ECG))
     {
         list = _orderMap.values(PARAM_DUP_ECG);
         qSort(list);
         _curList.append(list);
     }
 
-    if (_orderMap.end() != _orderMap.find(PARAM_SPO2))
+    if (_orderMap.contains(PARAM_SPO2))
     {
         list = _orderMap.values(PARAM_SPO2);
         qSort(list);
         _curList.append(list);
     }
 
-    if (_orderMap.end() != _orderMap.find(PARAM_NIBP))
+    if (_orderMap.contains(PARAM_NIBP))
     {
         list = _orderMap.values(PARAM_NIBP);
         qSort(list);
         _curList.append(list);
     }
 
-    if (_orderMap.end() != _orderMap.find(PARAM_TEMP))
+    if (_orderMap.contains(PARAM_TEMP))
     {
         list = _orderMap.values(PARAM_TEMP);
         qSort(list);
@@ -412,14 +406,14 @@ void TrendDataWidget::loadCurParam(int index)
 
     if ((TrendGroup)index == TREND_GROUP_RESP)
     {
-        if (_orderMap.end() != _orderMap.find(PARAM_DUP_RESP))
+        if (_orderMap.contains(PARAM_DUP_RESP))
         {
             list = _orderMap.values(PARAM_DUP_RESP);
             qSort(list);
             _curList.append(list);
         }
 
-        if (_orderMap.end() != _orderMap.find(PARAM_CO2))
+        if (_orderMap.contains(PARAM_CO2))
         {
             list = _orderMap.values(PARAM_CO2);
             qSort(list);
@@ -428,14 +422,14 @@ void TrendDataWidget::loadCurParam(int index)
     }
     else if ((TrendGroup)index == TREND_GROUP_IBP)
     {
-        if (_orderMap.end() != _orderMap.find(PARAM_IBP))
+        if (_orderMap.contains(PARAM_IBP))
         {
             list = _orderMap.values(PARAM_IBP);
             qSort(list);
             _curList.append(list);
         }
 
-        if (_orderMap.end() != _orderMap.find(PARAM_CO))
+        if (_orderMap.contains(PARAM_CO))
         {
             list = _orderMap.values(PARAM_CO);
             qSort(list);
@@ -444,17 +438,12 @@ void TrendDataWidget::loadCurParam(int index)
     }
     else if ((TrendGroup)index == TREND_GROUP_AG)
     {
-        if (_orderMap.end() != _orderMap.find(PARAM_AG))
+        if (_orderMap.contains(PARAM_AG))
         {
             list = _orderMap.values(PARAM_AG);
             qSort(list);
             _curList.append(list);
         }
-    }
-
-    if (_curList.count() >= (TABLE_ROW_NR - 1))
-    {
-        return;
     }
 }
 
@@ -477,17 +466,6 @@ void TrendDataWidget::_trendParamInit()
     {
         _ibpNameMap.insert((IBPPressureName)i, false);
     }
-
-    _ibpSubParamMap.clear();
-
-    _ibpSubParamMap.insert(SUB_PARAM_ART_MAP, IBP_PRESSURE_ART);
-    _ibpSubParamMap.insert(SUB_PARAM_PA_MAP, IBP_PRESSURE_PA);
-    _ibpSubParamMap.insert(SUB_PARAM_CVP_MAP, IBP_PRESSURE_CVP);
-    _ibpSubParamMap.insert(SUB_PARAM_LAP_MAP, IBP_PRESSURE_LAP);
-    _ibpSubParamMap.insert(SUB_PARAM_RAP_MAP, IBP_PRESSURE_RAP);
-    _ibpSubParamMap.insert(SUB_PARAM_ICP_MAP, IBP_PRESSURE_ICP);
-    _ibpSubParamMap.insert(SUB_PARAM_AUXP1_MAP, IBP_PRESSURE_AUXP1);
-    _ibpSubParamMap.insert(SUB_PARAM_AUXP2_MAP, IBP_PRESSURE_AUXP2);
 
     _orderMap.clear();
 

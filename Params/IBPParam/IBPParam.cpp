@@ -27,16 +27,6 @@ IBPParam::IBPParam() : Param(PARAM_IBP), _staIBP1(true), _staIBP2(true)
     _trendWidgetIBP1 = NULL;
     _trendWidgetIBP2 = NULL;
 
-    _ibpSubParamMap.clear();
-    _ibpSubParamMap.insert(IBP_PRESSURE_ART, SUB_PARAM_ART_MAP);
-    _ibpSubParamMap.insert(IBP_PRESSURE_PA, SUB_PARAM_PA_MAP);
-    _ibpSubParamMap.insert(IBP_PRESSURE_CVP, SUB_PARAM_CVP_MAP);
-    _ibpSubParamMap.insert(IBP_PRESSURE_LAP, SUB_PARAM_LAP_MAP);
-    _ibpSubParamMap.insert(IBP_PRESSURE_RAP, SUB_PARAM_RAP_MAP);
-    _ibpSubParamMap.insert(IBP_PRESSURE_ICP, SUB_PARAM_ICP_MAP);
-    _ibpSubParamMap.insert(IBP_PRESSURE_AUXP1, SUB_PARAM_AUXP1_MAP);
-    _ibpSubParamMap.insert(IBP_PRESSURE_AUXP2, SUB_PARAM_AUXP2_MAP);
-
     ibpScaleList.clear();
     IBPScaleInfo manualScale;
     ibpScaleList.append(manualScale);
@@ -1125,6 +1115,96 @@ void IBPParam::setParamData(IBPSignalInput IBP, unsigned short sys, unsigned sho
  *************************************************************************************************/
 void IBPParam::getSubParamID(SubParamID &ibp1, SubParamID &ibp2)
 {
-    ibp1 = _ibpSubParamMap.find(_ibp1.pressureName).value();
-    ibp2 = _ibpSubParamMap.find(_ibp2.pressureName).value();
+    ibp1 = getSubParamID(_ibp1.pressureName);
+    ibp2 = getSubParamID(_ibp2.pressureName);
+}
+
+/**************************************************************************************************
+ * 根据参数ID获取压力标名
+ *************************************************************************************************/
+IBPPressureName IBPParam::getPressureName(SubParamID id)
+{
+    IBPPressureName name;
+    switch (id) {
+    case SUB_PARAM_ART_SYS:
+    case SUB_PARAM_ART_MAP:
+    case SUB_PARAM_ART_DIA:
+    case SUB_PARAM_ART_PR:
+        name = IBP_PRESSURE_ART;
+        break;
+    case SUB_PARAM_PA_SYS:
+    case SUB_PARAM_PA_DIA:
+    case SUB_PARAM_PA_MAP:
+    case SUB_PARAM_PA_PR:
+        name = IBP_PRESSURE_PA;
+        break;
+    case SUB_PARAM_CVP_MAP:
+    case SUB_PARAM_CVP_PR:
+        name = IBP_PRESSURE_CVP;
+        break;
+    case SUB_PARAM_LAP_MAP:
+    case SUB_PARAM_LAP_PR:
+        name = IBP_PRESSURE_LAP;
+        break;
+    case SUB_PARAM_RAP_MAP:
+    case SUB_PARAM_RAP_PR:
+        name = IBP_PRESSURE_RAP;
+        break;
+    case SUB_PARAM_ICP_MAP:
+    case SUB_PARAM_ICP_PR:
+        name = IBP_PRESSURE_ICP;
+        break;
+    case SUB_PARAM_AUXP1_SYS:
+    case SUB_PARAM_AUXP1_DIA:
+    case SUB_PARAM_AUXP1_MAP:
+    case SUB_PARAM_AUXP1_PR:
+        name = IBP_PRESSURE_AUXP1;
+        break;
+    case SUB_PARAM_AUXP2_SYS:
+    case SUB_PARAM_AUXP2_DIA:
+    case SUB_PARAM_AUXP2_MAP:
+    case SUB_PARAM_AUXP2_PR:
+        name = IBP_PRESSURE_AUXP2;
+        break;
+    default:
+        break;
+    }
+    return name;
+}
+
+/**************************************************************************************************
+ * 根据压力标名获取参数ID
+ *************************************************************************************************/
+SubParamID IBPParam::getSubParamID(IBPPressureName name)
+{
+    SubParamID id;
+    switch (name) {
+    case IBP_PRESSURE_ART:
+        id = SUB_PARAM_ART_MAP;
+        break;
+    case IBP_PRESSURE_PA:
+        id = SUB_PARAM_PA_MAP;
+        break;
+    case IBP_PRESSURE_CVP:
+        id = SUB_PARAM_CVP_MAP;
+        break;
+    case IBP_PRESSURE_LAP:
+        id = SUB_PARAM_LAP_MAP;
+        break;
+    case IBP_PRESSURE_RAP:
+        id = SUB_PARAM_RAP_MAP;
+        break;
+    case IBP_PRESSURE_ICP:
+        id = SUB_PARAM_ICP_MAP;
+        break;
+    case IBP_PRESSURE_AUXP1:
+        id = SUB_PARAM_AUXP1_MAP;
+        break;
+    case IBP_PRESSURE_AUXP2:
+        id = SUB_PARAM_AUXP2_MAP;
+        break;
+    default:
+        break;
+    }
+    return id;
 }
