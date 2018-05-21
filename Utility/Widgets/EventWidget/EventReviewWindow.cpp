@@ -19,6 +19,7 @@
 #include "EventWaveSetWidget.h"
 #include <QBoxLayout>
 #include "Debug.h"
+#include "Utility.h"
 #include <QFile>
 #include <QHeaderView>
 #include <QScrollBar>
@@ -671,7 +672,7 @@ void EventReviewWindow::_rightMoveCoordinate()
  *************************************************************************************************/
 void EventReviewWindow::_leftMoveEvent()
 {
-    if (d_ptr->eventTable->currentRow() != 0 && d_ptr->eventTable->currentRow() != InvData())
+    if (d_ptr->eventTable->currentRow() != 0)
     {
         d_ptr->eventTable->selectRow(d_ptr->eventTable->currentRow() - 1);
     }
@@ -691,7 +692,7 @@ void EventReviewWindow::_leftMoveEvent()
  *************************************************************************************************/
 void EventReviewWindow::_rightMoveEvent()
 {
-    if (d_ptr->eventTable->currentRow() != d_ptr->eventNum - 1 && d_ptr->eventTable->currentRow() != InvData())
+    if (d_ptr->eventTable->currentRow() != d_ptr->eventNum - 1)
     {
         d_ptr->eventTable->selectRow(d_ptr->eventTable->currentRow() + 1);
     }
@@ -723,8 +724,9 @@ void EventReviewWindow::_upReleased()
     int curScroller = d_ptr->trendListWidget->verticalScrollBar()->value();
     if (curScroller > 0)
     {
-        d_ptr->trendListWidget->verticalScrollBar()->setSliderPosition(
-                    curScroller - (maxValue * 5) / (d_ptr->trendListWidget->count() - 5));
+        QScrollBar *scrollBar = d_ptr->trendListWidget->verticalScrollBar();
+        int position = curScroller - (maxValue * 5) / (d_ptr->trendListWidget->count() - 5);
+        scrollBar->setSliderPosition(position);
     }
 }
 
@@ -737,8 +739,9 @@ void EventReviewWindow::_downReleased()
     int curScroller = d_ptr->trendListWidget->verticalScrollBar()->value();
     if (curScroller < maxValue && d_ptr->trendListWidget->count() != 5)
     {
-        d_ptr->trendListWidget->verticalScrollBar()->setSliderPosition(
-                    curScroller + (maxValue * 5) / (d_ptr->trendListWidget->count() - 5));
+        QScrollBar *scrollBar = d_ptr->trendListWidget->verticalScrollBar();
+        int position = curScroller + (maxValue * 5) / (d_ptr->trendListWidget->count() - 5);
+        scrollBar->setSliderPosition(position);
     }
 }
 
@@ -835,29 +838,29 @@ void EventReviewWindow::_loadEventData()
                 {
                     infoStr = "***";
                 }
-                else
-                {
-                    infoStr = "";
-                }
-                infoStr += paramInfo.getSubParamName(subId);
 
-                if ((alarmInfo >> 1) & 0x1)
+                ParamID paramId = paramInfo.getParamID(subId);
+                infoStr += " ";
+                infoStr += trs(eventStorageManager.getPhyAlarmMessage(paramId,
+                                                                      alarmInfo,
+                                                                      alarmInfo & 0x1));
+
+                if (!(alarmInfo & 0x1))
                 {
-                    infoStr += trs("Upper");
-                    infoStr += " > ";
-                }
-                else
-                {
-                    infoStr += trs("Lower");
-                    infoStr += " < ";
+                    if (alarmInfo & 0x2)
+                    {
+                        infoStr += " > ";
+                    }
+                    else
+                    {
+                        infoStr += " < ";
+                    }
+                    UnitType unit = paramManager.getSubParamUnit(paramId, subId);
+                    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subId, unit);
+
+                    infoStr += Util::convertToString(d_ptr->ctx.almSegment->alarmLimit, config.scale);
                 }
 
-                SubParamID subID = (SubParamID)d_ptr->ctx.almSegment->subParamID;
-                ParamID id = paramInfo.getParamID(subID);
-                UnitType type = paramManager.getSubParamUnit(id, subID);
-                LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subID, type);
-                double alarmLimit = (double)d_ptr->ctx.almSegment->alarmLimit / config.scale;
-                infoStr += QString::number(alarmLimit);
                 item = new QTableWidgetItem();
                 item->setTextAlignment(Qt::AlignCenter);
                 item->setText(infoStr);
@@ -875,14 +878,17 @@ void EventReviewWindow::_loadEventData()
             }
             case EventRealtimePrint:
             {
+                //TODO
                 break;
             }
             case EventNIBPMeasurement:
             {
+                //TODO
                 break;
             }
             case EventWaveFreeze:
             {
+                //TODO
                 break;
             }
             default:

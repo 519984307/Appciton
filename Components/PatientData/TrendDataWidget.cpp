@@ -72,6 +72,7 @@ void TrendDataWidget::loadTrendData()
             {
                 item = new QTableWidgetItem();
                 item->setTextAlignment(Qt::AlignCenter);
+                table->setItem(j, col, item);
             }
 
             if (_displayList.at(j) == SUB_PARAM_NIBP_MAP)
@@ -114,7 +115,6 @@ void TrendDataWidget::loadTrendData()
                 QString dataStr = data == InvData() ?"---":QString::number(data);
                 item->setText(dataStr);
             }
-            table->setItem(j, col, item);
         }
         col ++;
     }

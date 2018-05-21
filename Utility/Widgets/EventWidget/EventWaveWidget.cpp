@@ -406,8 +406,6 @@ void EventWaveWidget::paintEvent(QPaintEvent *ev)
     // 标尺刻度
     int coordinateY = (height() + WAVE_REG_HIGH) / 2;
     painter.drawLine(d_ptr->startX, coordinateY, d_ptr->endX, coordinateY);
-//    painter.drawLine(d_ptr->startX, coordinateY, d_ptr->startX, coordinateY - 5);
-//    painter.drawLine(d_ptr->startX + d_ptr->waveRagWidth/2, coordinateY, d_ptr->startX + d_ptr->waveRagWidth/2, coordinateY - 5);
     painter.drawLine(d_ptr->endX, coordinateY, d_ptr->endX, coordinateY - 5);
     int endSecond;
     int totalSecond;
