@@ -155,6 +155,8 @@ bool DemoProvider::attachParam(Param &param)
     }
     else if (name == paramInfo.getParamName(PARAM_IBP))
     {
+        _demoWaveData[WAVE_IBP1].param = &param;
+        _demoWaveData[WAVE_IBP2].param = &param;
         ibpParam.setProvider(this);
     }
     else if (name == paramInfo.getParamName(PARAM_CO))

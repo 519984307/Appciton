@@ -33,7 +33,6 @@ public:
 public:
     void isIBPSubParamVisible(IBPPressureName, bool);
 
-    void loadDemoData(void);
     void loadTrendData(void);
 
     void loadCurParam(int index = 0);

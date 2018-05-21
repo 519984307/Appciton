@@ -44,48 +44,6 @@ void TrendDataWidget::isIBPSubParamVisible(IBPPressureName name, bool flag)
 }
 
 /**********************************************************************************************************************
- * 加载demo数据
- **********************************************************************************************************************/
-void TrendDataWidget::loadDemoData()
-{
-    QString timePoint[7] = {"15:12:00", "15:11:30", "15:11:00", "15:10:30",
-                           "15:10:00", "15:09:30", "15:09:00"};
-    QStringList timeTitle;
-    QTableWidgetItem *item;
-    QBrush *middleAlarmColor = new QBrush(Qt::yellow);
-    QBrush *highAlarmColor = new QBrush(Qt::red);
-    for (int i = 0; i < 7; i ++)
-    {
-        timeTitle << timePoint[i];
-    }
-    table->setHorizontalHeaderLabels(timeTitle);
-//    table->horizontalHeader()->setStyleSheet("QHeaderView::section::hover{background-color:red;}");
-    table->horizontalHeaderItem(3)->setBackground(*middleAlarmColor);
-    table->horizontalHeaderItem(5)->setBackground(*highAlarmColor);
-
-    for (int i = 0; i < TABLE_COL_NR; i ++)
-    {
-        for (int j = 0; j < _curDisplayParamRow; j ++)
-        {
-            item = new QTableWidgetItem();
-            item->setTextAlignment(Qt::AlignCenter);
-            if (_displayList.at(j) == SUB_PARAM_NIBP_MAP || _displayList.at(j) == SUB_PARAM_ART_MAP ||
-                    _displayList.at(j) == SUB_PARAM_PA_MAP ||
-                    _displayList.at(j) == SUB_PARAM_AUXP1_MAP || _displayList.at(j) == SUB_PARAM_AUXP2_MAP)
-            {
-                item->setText("120/80/90");
-            }
-            else
-            {
-                item->setText("90");
-            }
-            table->setItem(j, i, item);
-        }
-    }
-
-}
-
-/**********************************************************************************************************************
  * 加载趋势数据
  **********************************************************************************************************************/
 void TrendDataWidget::loadTrendData()

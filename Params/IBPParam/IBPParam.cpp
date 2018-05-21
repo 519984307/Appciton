@@ -117,14 +117,27 @@ IBPParam::~IBPParam()
  *************************************************************************************************/
 void IBPParam::handDemoWaveform(WaveformID id, short data)
 {
+    data = data * 10 + 1000;
     if (id != WAVE_IBP1 && id != WAVE_IBP2)
     {
         return;
     }
-    if (NULL != _waveWidgetIBP1 && NULL != _waveWidgetIBP2)
+    switch (id)
     {
-        _waveWidgetIBP1->addData(data);
-        _waveWidgetIBP2->addData(data);
+    case WAVE_IBP1:
+        if(NULL != _waveWidgetIBP1)
+        {
+            _waveWidgetIBP1->addData(data);
+        }
+        break;
+    case WAVE_IBP2:
+        if(NULL != _waveWidgetIBP2)
+        {
+            _waveWidgetIBP2->addData(data);
+        }
+        break;
+    default:
+        break;
     }
 }
 
