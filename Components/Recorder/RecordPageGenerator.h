@@ -83,6 +83,7 @@ public:
         TitlePage,
         TrendPage,
         TrendTablePage,
+        TrendGraphPage,
         WaveScalePage,
         WaveSegmentPage,
         EndPage,

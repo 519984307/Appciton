@@ -522,7 +522,8 @@ int TrendTablePageGenerator::type() const
 
 RecordPage *TrendTablePageGenerator::createPage()
 {
-    switch (d_ptr->curPageType) {
+    switch (d_ptr->curPageType)
+    {
     case TitlePage:
         // BUG: patient info of the event might not be the current session patient
         d_ptr->curPageType = TrendTablePage;

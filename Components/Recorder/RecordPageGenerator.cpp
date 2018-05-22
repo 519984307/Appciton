@@ -173,7 +173,6 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     return page;
 }
 
-
 /**
  * @brief contructNormalTrendStringItem contruct the trend string for params other than IBP or NIBP
  * @param subParamId sub param id

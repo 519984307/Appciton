@@ -218,7 +218,7 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
 
 void RecorderManager::testSlot()
 {
-    //addPageGenerator(new ContinuousPageGenerator());
+    addPageGenerator(new ContinuousPageGenerator());
     //addPageGenerator(new RecordPageGenerator());
 }
 
