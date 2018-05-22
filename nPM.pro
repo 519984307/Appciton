@@ -169,6 +169,7 @@ SOURCES +=                                                                      
     Utility/Widgets/PMessageBox.cpp                                             \
     Utility/Widgets/PopupWidget.cpp                                             \
     Utility/Widgets/SubMenu.cpp                                                 \
+    Utility/Widgets/ImportFileSubWidget.cpp                                     \
     Utility/Widgets/TableItemDelegate.cpp                                       \
     Utility/Widgets/EventWidget/EventWaveWidget.cpp                             \
     Utility/Widgets/EventWidget/EventReviewWindow.cpp                           \
@@ -365,6 +366,10 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/UserMaintainManager.cpp                    \
     Components/Maintain/UserMaintain/UserMaintainGeneralSet.cpp                 \
     Components/Maintain/UserMaintain/ModuleMaintainMenu.cpp                     \
+    Components/Maintain/UserMaintain/AlarmMaintainMenu.cpp                      \
+    Components/Maintain/UserMaintain/WifiMaintainMenu.cpp                       \
+    Components/Maintain/UserMaintain/WiredWorkMaintainMenu.cpp                  \
+    Components/Maintain/UserMaintain/OthersMaintainMenu.cpp                     \
     Components/CodeMarker/Summary/CodeMarkerSummary.cpp                         \
     Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
@@ -487,8 +492,8 @@ SOURCES +=                                                                      
     Main/IApplication.cpp                                                       \
     Main/IThread.cpp                                                            \
     Main/MergeConfig.cpp                                                        \
-    Main/Starter.cpp \
-    Utility/Widgets/ImportFileSubWidget.cpp \
+    Main/Starter.cpp                                                            \
+
 
 
 
@@ -833,6 +838,12 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/UserMaintainManager.h                      \
     Components/Maintain/UserMaintain/UserMaintainGeneralSet.h                   \
     Components/Maintain/UserMaintain/ModuleMaintainMenu.h                       \
+    Components/Maintain/UserMaintain/AlarmMaintainMenu.h                        \
+    Components/Maintain/UserMaintain/AlarmMaintainSymbol.h                      \
+    Components/Maintain/UserMaintain/AlarmMaintainDefine.h                      \
+    Components/Maintain/UserMaintain/WifiMaintainMenu.h                         \
+    Components/Maintain/UserMaintain/WiredWorkMaintainMenu.h                    \
+    Components/Maintain/UserMaintain/OthersMaintainMenu.h                       \
     Components/CodeMarker/Summary/CodeMarkerSummary.h                           \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWidget.h                            \

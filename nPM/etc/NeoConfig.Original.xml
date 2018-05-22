@@ -4,25 +4,23 @@
     <General>
         <SuperPassword>97878161</SuperPassword>
         <Password>1234</Password>
+	<UserMaintainPassword>123456</UserMaintainPassword>
         <DeviceIdentifier>00000000000</DeviceIdentifier>
-        <DefaultPatientType>0</DefaultPatientType><!-- 0:adult；1:ped； -->
+        <DefaultPatientType>0</DefaultPatientType>
+        <!-- 0:adult；1:ped； -->
         <DefaultDisplayBrightness>7</DefaultDisplayBrightness>
         <FullDisclosureRecording>1</FullDisclosureRecording>
     </General>
-    <BasicDefib>
-        <DefaultVoicePromptTone>3</DefaultVoicePromptTone><!--actual Tone level(1-5)-->
-        <DefaultDefibMode>1</DefaultDefibMode>
-        <DefibDefaultToPads>1</DefibDefaultToPads>
-        <BasicAutoEnergyEscalation>1</BasicAutoEnergyEscalation>
-        <RetainSyncAfterShock>0</RetainSyncAfterShock>
-        <DefibReadyHoldTime>2</DefibReadyHoldTime>
-        <AdultShock1>17</AdultShock1>
-        <AdultShock2>18</AdultShock2>
-        <AdultShock3>19</AdultShock3>
-        <PediatricShock1>13</PediatricShock1>
-        <PediatricShock2>14</PediatricShock2>
-        <PediatricShock3>15</PediatricShock3>
-    </BasicDefib>
+    <Unit>
+        <HightUnit>14</HightUnit>
+        <WeightUnit>12</WeightUnit>
+        <STUnit>11</STUnit>
+        <PressureUnit>5</PressureUnit>
+        <TemperatureUnit>2</TemperatureUnit>
+        <CVPUnit>5</CVPUnit>
+        <ICPUnit>5</ICPUnit>
+        <CO2Unit>5</CO2Unit>
+    </Unit>
     <AED>
         <StartWithCPR>0</StartWithCPR>
         <PowerupToStartCPRDuration>1</PowerupToStartCPRDuration>
@@ -59,16 +57,16 @@
         <DefaultECGLeadInMonitorMode>1</DefaultECGLeadInMonitorMode>
         <QRSVolume>3</QRSVolume>
         <ECGLeadConvention>0</ECGLeadConvention>
-		<AlarmSource>0</AlarmSource>
-		<Ecg1Wave>0</Ecg1Wave>
-		<Ecg2Wave>1</Ecg2Wave>
-		<Ecg1Gain>0</Ecg1Gain>
-		<Ecg2Gain>0</Ecg2Gain>
-		<SweepSpeed>1</SweepSpeed>
-		<Filter>0</Filter>
-		<LeadMode>2</LeadMode>
-		<NotchFilter>0</NotchFilter>
-		<SmartLeadOff>0</SmartLeadOff>
+        <AlarmSource>0</AlarmSource>
+        <Ecg1Wave>0</Ecg1Wave>
+        <Ecg2Wave>1</Ecg2Wave>
+        <Ecg1Gain>0</Ecg1Gain>
+        <Ecg2Gain>0</Ecg2Gain>
+        <SweepSpeed>1</SweepSpeed>
+        <Filter>0</Filter>
+        <LeadMode>2</LeadMode>
+        <NotchFilter>0</NotchFilter>
+        <SmartLeadOff>0</SmartLeadOff>
     </ECG>
     <NIBP>
         <MeasureMode>0</MeasureMode>
@@ -84,28 +82,27 @@
     </CO2>
     <RESP>
         <AutoActivation>0</AutoActivation>
-		<ApneaDelay>2</ApneaDelay>
-		<BreathLead>0</BreathLead>
-		<Gain>0</Gain>
-		<SweepSpeed>1</SweepSpeed>
+        <ApneaDelay>2</ApneaDelay>
+        <BreathLead>0</BreathLead>
+        <Gain>0</Gain>
+        <SweepSpeed>1</SweepSpeed>
     </RESP>
-	<Event>
-		<WaveLengthBefore>8</WaveLengthBefore>
-		<WaveLengthAfter>8</WaveLengthAfter>
-	</Event>
+    <Event>
+        <WaveLengthBefore>8</WaveLengthBefore>
+        <WaveLengthAfter>8</WaveLengthAfter>
+    </Event>
     <Alarm>
-        <MinimumAlarmVolume>0</MinimumAlarmVolume><!--index(0~4)-->
-        <DefaultAlarmVolume>3</DefaultAlarmVolume><!--actual volume level(1~5)-->
+        <MinimumAlarmVolume>0</MinimumAlarmVolume>
+        <!--index(0~4)-->
+        <DefaultAlarmVolume>3</DefaultAlarmVolume>
+        <!--actual volume level(1~5)-->
         <AlarmPauseTime>1</AlarmPauseTime>
         <AlarmOffPrompting>0</AlarmOffPrompting>
         <EnableAlarmAudioOff>1</EnableAlarmAudioOff>
         <EnableAlarmOff>1</EnableAlarmOff>
-        <AlarmOffAtPowerOn>1</AlarmOffAtPowerOn>
+        <AlarmOffAtPowerOn>0</AlarmOffAtPowerOn>
         <NonAlertsBeepsInNonAED>1</NonAlertsBeepsInNonAED>
     </Alarm>
-    <OxyCRG>
-        <EventStorageSetup>1</EventStorageSetup>
-    </OxyCRG>
     <AlarmSource>
         <Adult>
             <HR_PR Enable="1" Prio="2">
@@ -220,13 +217,13 @@
                     <High Min="151" Max="500">378</High>
                     <Step>1</Step>
                     <Scale>10</Scale>
-                 </celsius>
-                 <fahrenheit>
+                </celsius>
+                <fahrenheit>
                     <Low Min="590" Max="1219">950</Low>
                     <High Min="591" Max="1220">1000</High>
                     <Step>1</Step>
                     <Scale>10</Scale>
-                 </fahrenheit>
+                </fahrenheit>
             </T1>
             <T2 Enable="0" Prio="2">
                 <celsius>
@@ -241,7 +238,7 @@
                     <Step>1</Step>
                     <Scale>10</Scale>
                 </fahrenheit>
-             </T2>
+            </T2>
             <TD Enable="0" Prio="2">
                 <celsius>
                     <Low Min="0" Max="49">0</Low>
@@ -295,8 +292,8 @@
                     <Step>1</Step>
                     <Scale>10</Scale>
                 </kPa>
-             </NIBP_SYS>
-             <NIBP_DIA Enable="1" Prio="2">
+            </NIBP_SYS>
+            <NIBP_DIA Enable="1" Prio="2">
                 <mmHg>
                     <Low Min="10" Max="179">35</Low>
                     <High Min="11" Max="180">100</High>
@@ -473,10 +470,9 @@
         <NIBPColor>Blue</NIBPColor>
         <CO2Color>Red</CO2Color>
         <RESPColor>Red</RESPColor>
-        <AGColor>Orange</AGColor>
-        <IBPColor>Purple</IBPColor>
         <TEMPColor>Brown</TEMPColor>
-        <CPRBarGraphColor>Purple</CPRBarGraphColor> <!--do not modify-->
+        <CPRBarGraphColor>Purple</CPRBarGraphColor>
+        <!--do not modify-->
     </Display>
     <Print>
         <PresentingECG>0</PresentingECG>
@@ -507,7 +503,7 @@
     </ECG12L>
     <WiFi>
         <EnableWifi>0</EnableWifi>
-        <Profiles Count="0" CurrentSelect="-1"></Profiles>
+        <Profiles CurrentSelect="-1" Count="0"/>
         <LocalPort>0</LocalPort>
         <ServerIP>0.0.0.0</ServerIP>
         <ServerPort>0</ServerPort>
@@ -515,8 +511,8 @@
     <Sftp>
         <ServerIP>0.0.0.0</ServerIP>
         <ServerPort>22</ServerPort>
-        <Username></Username>
-        <Password></Password>
+        <Username/>
+        <Password/>
     </Sftp>
     <Mail>
         <SmtpServer>smtp.163.com</SmtpServer>
@@ -524,7 +520,7 @@
         <SmtpUsername>idmtest@163.com</SmtpUsername>
         <Password>idmtest1</Password>
         <ConnectionSecurity>0</ConnectionSecurity>
-        <Recipients Count="0"></Recipients>
+        <Recipients Count="0"/>
     </Mail>
     <DateTime>
         <DateFormat>0</DateFormat>
@@ -538,8 +534,8 @@
         <Marker3>CodeMarker1,CodeMarker2,CodeMarker3,CodeMarker4,CodeMarker5,CodeMarker6,CodeMarker7,CodeMarker8,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker13,CodeMarker14,CodeMarker15,CodeMarker16,CodeMarker17,CodeMarker18,CodeMarker19,CodeMarker20,CodeMarker21,CodeMarker22,CodeMarker23,CodeMarker24,CodeMarker25,CodeMarker26,CodeMarker27,CodeMarker28</Marker3>
         <Marker4>CodeMarker1,CodeMarker2,CodeMarker3,CodeMarker4,CodeMarker5,CodeMarker6,CodeMarker7,CodeMarker8,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker13,CodeMarker14,CodeMarker15,CodeMarker16,CodeMarker17,CodeMarker18,CodeMarker19,CodeMarker20,CodeMarker21,CodeMarker22,CodeMarker23,CodeMarker24,CodeMarker25,CodeMarker26,CodeMarker27,CodeMarker28,CodeMarker29,CodeMarker30</Marker4>
         <SelectMarker>
-        <Language0>CodeMarker13,CodeMarker14,CodeMarker1,CodeMarker2,CodeMarker18,CodeMarker7,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker16,CodeMarker3,CodeMarker4,CodeMarker6,CodeMarker8,CodeMarker15,CodeMarker19,CodeMarker20,CodeMarker22,CodeMarker28,CodeMarker25,CodeMarker5,CodeMarker31,CodeMarker27,CodeMarker24,CodeMarker17,CodeMarker36,CodeMarker23</Language0>
-        <Language1>CodeMarker13,CodeMarker14,CodeMarker1,CodeMarker2,CodeMarker18,CodeMarker7,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker16,CodeMarker3,CodeMarker4,CodeMarker6,CodeMarker8,CodeMarker15,CodeMarker19,CodeMarker20,CodeMarker22,CodeMarker28,CodeMarker25,CodeMarker5,CodeMarker31,CodeMarker27,CodeMarker24,CodeMarker17,CodeMarker36,CodeMarker23</Language1>
+            <Language0>CodeMarker13,CodeMarker14,CodeMarker1,CodeMarker2,CodeMarker18,CodeMarker7,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker16,CodeMarker3,CodeMarker4,CodeMarker6,CodeMarker8,CodeMarker15,CodeMarker19,CodeMarker20,CodeMarker22,CodeMarker28,CodeMarker25,CodeMarker5,CodeMarker31,CodeMarker27,CodeMarker24,CodeMarker17,CodeMarker36,CodeMarker23</Language0>
+            <Language1>CodeMarker13,CodeMarker14,CodeMarker1,CodeMarker2,CodeMarker18,CodeMarker7,CodeMarker9,CodeMarker10,CodeMarker11,CodeMarker12,CodeMarker16,CodeMarker3,CodeMarker4,CodeMarker6,CodeMarker8,CodeMarker15,CodeMarker19,CodeMarker20,CodeMarker22,CodeMarker28,CodeMarker25,CodeMarker5,CodeMarker31,CodeMarker27,CodeMarker24,CodeMarker17,CodeMarker36,CodeMarker23</Language1>
         </SelectMarker>
     </CodeMarker>
 </Supervision>

@@ -42,13 +42,6 @@ private:
     //CO2Menu();
     void _loadOptions(void);
 
-//    IComboList *_apneaTime;              // 窒息时间。
-    IComboList *_speed;                  // 波形速度。
-    IComboList *_fico2Display;           // FiCO2显示开关。
-    ISpinBox *_o2Compen;              // 氧气补偿。
-    ISpinBox *_n2oCompen;             // 笑气补偿。
-    LabelButton *_zeroCalib;             // 校零。
-
     IComboList *_hightUnit;              // 身高单位。
     IComboList *_weightUnit;             // 体重单位。
     IComboList *_stUnit;                 // ST单位。

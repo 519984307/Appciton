@@ -18,7 +18,14 @@ ModuleMaintainMenu *ModuleMaintainMenu::_selfObj = NULL;
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ModuleMaintainMenu::ModuleMaintainMenu() : SubMenu(trs("ModuleMaintainMenu"))
+ModuleMaintainMenu::ModuleMaintainMenu() : SubMenu(trs("ModuleMaintainMenu")),
+                                           _anaesthesiaModuleCalibration(NULL),
+                                           _ibpPressureCalibration(NULL),
+                                           _co2ModuleMaintenance(NULL),
+                                           _nibpPressureTest(NULL),
+                                           _nibpLeakageDetection(NULL),
+                                           _ecgModuleCalibration(NULL),
+                                           _touchScreenCalibration(NULL)
 {
     setDesc(trs("ModuleMaintainMenuDesc"));
 

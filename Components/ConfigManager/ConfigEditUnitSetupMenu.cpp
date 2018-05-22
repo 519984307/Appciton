@@ -21,6 +21,14 @@ ConfigEditUnitSetupMenu *ConfigEditUnitSetupMenu::_selfObj = NULL;
 void ConfigEditUnitSetupMenu::_hightUnitSlot(int index)
 {
     Config *config = configEditMenuGrp.getCurrentEditConfig();
+    if(index==0)
+    {
+        index = UnitType(UNIT_CM);
+    }
+    else if(index==1)
+    {
+        index = UnitType(UNIT_INCH);
+    }
     config->setNumValue("Unit|HightUnit",index);
 }
 
@@ -30,6 +38,14 @@ void ConfigEditUnitSetupMenu::_hightUnitSlot(int index)
 void ConfigEditUnitSetupMenu::_weightUnitSlot(int index)
 {
     Config *config = configEditMenuGrp.getCurrentEditConfig();
+    if(index==0)
+    {
+        index = UnitType(UNIT_KG);
+    }
+    else if(index==1)
+    {
+        index = UnitType(UNIT_LB);
+    }
     config->setNumValue("Unit|WeightUnit",index);
 }
 
@@ -39,6 +55,14 @@ void ConfigEditUnitSetupMenu::_weightUnitSlot(int index)
 void ConfigEditUnitSetupMenu::_stUnitSlot(int index)
 {
     Config *config = configEditMenuGrp.getCurrentEditConfig();
+    if(index==0)
+    {
+        index = UnitType(UNIT_MV);
+    }
+    else if(index==1)
+    {
+        index = UnitType(UNIT_MM);
+    }
     config->setNumValue("Unit|STUnit",index);
 }
 
@@ -48,6 +72,18 @@ void ConfigEditUnitSetupMenu::_stUnitSlot(int index)
 void ConfigEditUnitSetupMenu::_pressureUnitSlot(int index)
 {
     Config *config = configEditMenuGrp.getCurrentEditConfig();
+    if(index==0)
+    {
+        index = UnitType(UNIT_MMHG);
+    }
+    else if(index==1)
+    {
+        index = UnitType(UNIT_KPA);
+    }
+    else
+    {
+        index = UnitType(UNIT_MMHG);
+    }
     config->setNumValue("Unit|PressureUnit",index);
 }
 
@@ -57,7 +93,19 @@ void ConfigEditUnitSetupMenu::_pressureUnitSlot(int index)
 void ConfigEditUnitSetupMenu::_temperatureUnitSlot(int index)
 {
     Config *config = configEditMenuGrp.getCurrentEditConfig();
-    config->setNumValue("Unit|PressureUnit",index);
+    if(index==0)
+    {
+        index = UnitType(UNIT_TF);
+    }
+    else if(index==1)
+    {
+        index = UnitType(UNIT_TC);
+    }
+    else
+    {
+        index = UnitType(UNIT_TF);
+    }
+    config->setNumValue("Unit|TemperatureUnit",index);
 }
 
 /**************************************************************************************************
@@ -66,6 +114,22 @@ void ConfigEditUnitSetupMenu::_temperatureUnitSlot(int index)
 void ConfigEditUnitSetupMenu::_cvpUnitSlot(int index)
 {
     Config *config = configEditMenuGrp.getCurrentEditConfig();
+    if(index==0)
+    {
+        index = UnitType(UNIT_MMHG);
+    }
+    else if(index==1)
+    {
+        index = UnitType(UNIT_KPA);
+    }
+    else if(index ==2)
+    {
+        index = UnitType(UNIT_CMH2O);
+    }
+    else
+    {
+        index = UnitType(UNIT_MMHG);
+    }
     config->setNumValue("Unit|CVPUnit",index);
 }
 
@@ -75,6 +139,22 @@ void ConfigEditUnitSetupMenu::_cvpUnitSlot(int index)
 void ConfigEditUnitSetupMenu::_icpUnitSlot(int index)
 {
     Config *config = configEditMenuGrp.getCurrentEditConfig();
+    if(index==0)
+    {
+        index = UnitType(UNIT_MMHG);
+    }
+    else if(index==1)
+    {
+        index = UnitType(UNIT_KPA);
+    }
+    else if(index ==2)
+    {
+        index = UnitType(UNIT_CMH2O);
+    }
+    else
+    {
+        index = UnitType(UNIT_MMHG);
+    }
     config->setNumValue("Unit|ICPUnit",index);
 }
 
@@ -84,6 +164,22 @@ void ConfigEditUnitSetupMenu::_icpUnitSlot(int index)
 void ConfigEditUnitSetupMenu::_co2UnitSlot(int index)
 {
     Config *config = configEditMenuGrp.getCurrentEditConfig();
+    if(index==0)
+    {
+        index = UnitType(UNIT_MMHG);
+    }
+    else if(index==1)
+    {
+        index = UnitType(UNIT_KPA);
+    }
+    else if(index ==2)
+    {
+        index = UnitType(UNIT_PERCENT);
+    }
+    else
+    {
+        index = UnitType(UNIT_MMHG);
+    }
     config->setNumValue("Unit|CO2Unit",index);
 }
 
@@ -96,35 +192,35 @@ void ConfigEditUnitSetupMenu::_loadOptions(void)
     Config *config = configEditMenuGrp.getCurrentEditConfig();
     int index  = 0;
     config->getNumValue("Unit|HightUnit",index);
-    _hightUnit->setCurrentIndex(index);
+
+    _hightUnit->setCurrentItem(trs(Unit::getSymbol(UnitType(index))));
 
     index=0;
     config->getNumValue("Unit|WeightUnit",index);
-    _weightUnit->setCurrentIndex(index);
+    _weightUnit->setCurrentItem(trs(Unit::getSymbol(UnitType(index))));
 
     index=0;
     config->getNumValue("Unit|STUnit",index);
-    _stUnit->setCurrentIndex(index);
+    _stUnit->setCurrentItem(trs(Unit::getSymbol(UnitType(index))));
 
     index=0;
     config->getNumValue("Unit|PressureUnit",index);
-    _pressureUnit->setCurrentIndex(index);
+    _pressureUnit->setCurrentItem(trs(Unit::getSymbol(UnitType(index))));
 
     index=0;
     config->getNumValue("Unit|TemperatureUnit",index);
-    _temperatureUnit->setCurrentIndex(index);
-
+    _temperatureUnit->setCurrentItem(trs(Unit::getSymbol(UnitType(index))));
     index=0;
     config->getNumValue("Unit|CVPUnit",index);
-    _cvpUnit->setCurrentIndex(index);
+    _cvpUnit->setCurrentItem(trs(Unit::getSymbol(UnitType(index))));
 
     index=0;
     config->getNumValue("Unit|ICPUnit",index);
-    _icpUnit->setCurrentIndex(index);
+    _icpUnit->setCurrentItem(trs(Unit::getSymbol(UnitType(index))));
 
     index=0;
     config->getNumValue("Unit|CO2Unit",index);
-    _co2Unit->setCurrentIndex(index);
+    _co2Unit->setCurrentItem(trs(Unit::getSymbol(UnitType(index))));
 }
 
 /**************************************************************************************************
@@ -231,7 +327,15 @@ void ConfigEditUnitSetupMenu::layoutExec(void)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ConfigEditUnitSetupMenu::ConfigEditUnitSetupMenu() : SubMenu(trs("UnitSetup"))
+ConfigEditUnitSetupMenu::ConfigEditUnitSetupMenu() : SubMenu(trs("UnitSetup")),
+                                                     _hightUnit(NULL),
+                                                     _weightUnit(NULL),
+                                                     _stUnit(NULL),
+                                                     _pressureUnit(NULL),
+                                                     _temperatureUnit(NULL),
+                                                     _cvpUnit(NULL),
+                                                     _icpUnit(NULL),
+                                                     _co2Unit(NULL)
 {
     setDesc(trs("UnitSetupDesc"));
     startLayout();

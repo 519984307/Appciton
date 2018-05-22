@@ -43,7 +43,7 @@ private:
     LabelButton  *_nibpPressureTest;                  //NIBP压力检验
     LabelButton  *_nibpLeakageDetection;              //NIBP漏气检测
     LabelButton  *_ecgModuleCalibration;              //ECG模块校准
-    LabelButton  *_touchScreenCalibration;              //触摸屏模块校准
+    LabelButton  *_touchScreenCalibration;            //触摸屏模块校准
 
 };
 #define moduleMaintainMenu (ModuleMaintainMenu::construction())

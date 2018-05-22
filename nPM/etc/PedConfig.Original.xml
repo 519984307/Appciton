@@ -4,25 +4,22 @@
     <General>
         <SuperPassword>97878161</SuperPassword>
         <Password>1234</Password>
+	<UserMaintainPassword>123456</UserMaintainPassword>
         <DeviceIdentifier>00000000000</DeviceIdentifier>
         <DefaultPatientType>0</DefaultPatientType><!-- 0:adult；1:ped； -->
         <DefaultDisplayBrightness>7</DefaultDisplayBrightness>
         <FullDisclosureRecording>1</FullDisclosureRecording>
     </General>
-    <BasicDefib>
-        <DefaultVoicePromptTone>3</DefaultVoicePromptTone><!--actual Tone level(1-5)-->
-        <DefaultDefibMode>1</DefaultDefibMode>
-        <DefibDefaultToPads>1</DefibDefaultToPads>
-        <BasicAutoEnergyEscalation>1</BasicAutoEnergyEscalation>
-        <RetainSyncAfterShock>0</RetainSyncAfterShock>
-        <DefibReadyHoldTime>2</DefibReadyHoldTime>
-        <AdultShock1>17</AdultShock1>
-        <AdultShock2>18</AdultShock2>
-        <AdultShock3>19</AdultShock3>
-        <PediatricShock1>13</PediatricShock1>
-        <PediatricShock2>14</PediatricShock2>
-        <PediatricShock3>15</PediatricShock3>
-    </BasicDefib>
+    <Unit>
+        <HightUnit>14</HightUnit>
+        <WeightUnit>12</WeightUnit>
+        <STUnit>11</STUnit>
+        <PressureUnit>5</PressureUnit>
+        <TemperatureUnit>2</TemperatureUnit>
+        <CVPUnit>5</CVPUnit>
+        <ICPUnit>5</ICPUnit>
+        <CO2Unit>5</CO2Unit>
+    </Unit>
     <AED>
         <StartWithCPR>0</StartWithCPR>
         <PowerupToStartCPRDuration>1</PowerupToStartCPRDuration>
@@ -124,9 +121,6 @@
         <AlarmOffAtPowerOn>1</AlarmOffAtPowerOn>
         <NonAlertsBeepsInNonAED>1</NonAlertsBeepsInNonAED>
     </Alarm>
-    <OxyCRG>
-        <EventStorageSetup>1</EventStorageSetup>
-    </OxyCRG>
     <AlarmSource>
         <Adult>
             <HR_PR Enable="1" Prio="2">
@@ -494,8 +488,6 @@
         <NIBPColor>Blue</NIBPColor>
         <CO2Color>Red</CO2Color>
         <RESPColor>Red</RESPColor>
-        <AGColor>Orange</AGColor>
-        <IBPColor>Purple</IBPColor>
         <TEMPColor>Brown</TEMPColor>
         <CPRBarGraphColor>Purple</CPRBarGraphColor> <!--do not modify-->
     </Display>

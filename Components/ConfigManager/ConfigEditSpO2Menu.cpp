@@ -27,19 +27,12 @@ public:
         comboLabels[Gain] = "Gain";
         comboLabels[ModuleControl] = "ModuleControl";
 
-        //增加翻译
-        pushbutton.setText(trs("Sensitivity"));
-        pushbutton.setText(trs("SmartPluseTone"));
-        pushbutton.setText(trs("WaveVelocity"));
-        pushbutton.setText(trs("Gain"));
-        pushbutton.setText(trs("ModuleControl"));
     }
 
     void loadOptions();
 
     IComboList *combos[ComboListMax];
     const char *comboLabels[ComboListMax];
-    QPushButton pushbutton;
 };
 
 void ConfigEditSpO2MenuPrivate::loadOptions()

@@ -184,7 +184,12 @@ void ConfigCO2Menu::layoutExec(void)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ConfigCO2Menu::ConfigCO2Menu() : SubMenu(trs("CO2"))
+ConfigCO2Menu::ConfigCO2Menu() : SubMenu(trs("CO2")),
+                                 _speed(NULL),
+                                 _fico2Display(NULL),
+                                 _o2Compen(NULL),
+                                 _n2oCompen(NULL),
+                                 _zeroCalib(NULL)
 {
     setDesc(trs("CO2Desc"));
     startLayout();

@@ -23,20 +23,12 @@ public:
         comboLabels[NBIPInitialCuff] = "NBIPInitialCuff";
         comboLabels[IntervalTime] = "IntervalTime";
         comboLabels[NIBPMeasureMode] = "NIBPMeasureMode";
-
-        //增加翻译
-        pushbutton.setText(trs("NBIPInitialCuff"));
-        pushbutton.setText(trs("IntervalTime"));
-        pushbutton.setText(trs("NIBPMeasureMode"));
-        pushbutton.setText(trs("manual"));
-        pushbutton.setText(trs("auto"));
     }
 
     void loadOptions();
 
     IComboList *combos[ComboListMax];
     const char *comboLabels[ComboListMax];
-    QPushButton pushbutton;
 };
 
 void ConfigEditNIBPMenuPrivate::loadOptions()

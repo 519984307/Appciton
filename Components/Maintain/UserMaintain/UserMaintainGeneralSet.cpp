@@ -18,7 +18,13 @@ UserMaintainGeneralSet *UserMaintainGeneralSet::_selfObj = NULL;
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-UserMaintainGeneralSet::UserMaintainGeneralSet() : SubMenu(trs("UserMaintainGeneralMenu"))
+UserMaintainGeneralSet::UserMaintainGeneralSet() : SubMenu(trs("UserMaintainGeneralMenu")),
+                                                   _monitorName(NULL),
+                                                   _department(NULL),
+                                                   _bedNumber(NULL),
+                                                   _modifyPassword(NULL),
+                                                   _changeBedNumberRight(NULL),
+                                                   _language(NULL)
 {
     setDesc(trs("UserMaintainGeneralMenuDesc"));
 

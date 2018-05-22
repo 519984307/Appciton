@@ -214,6 +214,13 @@ void SystemManager::setPoweronTestResult(ModulePoweronTestResult module,
  **************************************************************************************************/
 void SystemManager::parseKeyValue(const unsigned char *data, unsigned int len)
 {
+    int temp;
+    if(data)
+    {
+        temp = data[0];
+        temp = len;
+        temp ++;
+    }
 
 #ifdef Q_WS_QWS
     if ((NULL == data) || (len != 2))

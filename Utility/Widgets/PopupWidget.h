@@ -12,6 +12,9 @@ public:
     // 设置标题栏的提示文字。
     void setTitleBarText(const QString &str);
 
+    // 读取标题栏的提示文字。
+    QString readTitleBarText(void){return _titleLabel->text();}
+
     // 设置标题栏的字体。
     void setTitleBarFont(const QFont &font);
 

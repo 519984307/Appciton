@@ -5,7 +5,59 @@
     <DateFormat>0</DateFormat>
     <General>
         <PatientType>0</PatientType><!--0:adult  1:ped  2:neo-->
+	<MonitorName>dd-89</MonitorName>
+	<UserMaintainPassword>123456</UserMaintainPassword>
+	<Department>d12</Department>
+	<BedNumber>b44</BedNumber>
+	<ChangeBedNumberRight>0</ChangeBedNumberRight>
+	<Language>0</Language>
     </General>
+    <UserMaintain>
+        <AlarmMaintainMenu>
+	    <MinAlarmVol>1</MinAlarmVol>
+	    <AlarmPauseTime>1</AlarmPauseTime>
+	    <STAlarmDraly>1</STAlarmDraly>
+	    <PauseMaxAlarm15Min>1</PauseMaxAlarm15Min>
+	    <AlarmVol>1</AlarmVol>
+	    <ReminderToneIntervals>1</ReminderToneIntervals>
+	    <EcgLeadOffLev>1</EcgLeadOffLev>
+	    <SPO2LeadOffLev>1</SPO2LeadOffLev>
+	    <IBPLeadOffLev>1</IBPLeadOffLev>
+	    <LethalArrhOff>1</LethalArrhOff>
+	    <ExtendedArrh>1</ExtendedArrh>
+	    <AlarmLightOnAlarmReset>1</AlarmLightOnAlarmReset>
+	    <AlarmDelay>1</AlarmDelay>
+	    <HighAlarmIntervals>1</HighAlarmIntervals>
+	    <MedAlarmIntervals>1</MedAlarmIntervals>
+	    <LowAlarmIntervals>1</LowAlarmIntervals>
+	    <ReminderTone>1</ReminderTone>
+	</AlarmMaintainMenu>
+        <Others>
+	    <WaveLine>1</WaveLine>
+	    <ECGStandard>1</ECGStandard>
+	    <FrequencyNotch>1</FrequencyNotch>
+	    <ParaSwitchPrem>1</ParaSwitchPrem>
+	    <ConfImpactItemSettings>1</ConfImpactItemSettings>
+	    <NurseCallSetting>1</NurseCallSetting>
+	    <SignalType>1</SignalType>
+	    <TriggerMode>1</TriggerMode>
+	    <AlarmLevel>1</AlarmLevel>
+	    <AlarmType>1</AlarmType>
+	</Others>
+        <WiredWork>
+	    <AddressType>1</AddressType>
+	    <IpAddress>192.168.10.1</IpAddress>
+	    <SubnetMask>192.168.10.0</SubnetMask>
+	    <GateWay>255.255.255.0</GateWay>
+	</WiredWork>
+	<WiFi>
+	    <EnableWifi>1</EnableWifi>
+	    <Profiles CurrentSelect="-1" Count="0"/>
+	    <LocalPort>0</LocalPort>
+	    <ServerIP>0.0.0.0</ServerIP>
+	    <ServerPort>0</ServerPort>
+	</WiFi>
+    </UserMaintain>
     <DataStorage>
     <FolderSequenceNum>1</FolderSequenceNum>
     <FolderName></FolderName>

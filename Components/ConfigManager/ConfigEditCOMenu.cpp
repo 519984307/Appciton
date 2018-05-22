@@ -22,7 +22,14 @@ ConfigCOMenu *ConfigCOMenu::_selfObj = NULL;
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ConfigCOMenu::ConfigCOMenu() : SubMenu(trs("C.O.")), _measureSta(CO_INST_START)
+ConfigCOMenu::ConfigCOMenu() : SubMenu(trs("C.O.")),
+                               _ductRatio(NULL),
+                               _inputMode(NULL),
+                               _injectionTemp(NULL),
+                               _injectionVolumn(NULL),
+                               _measureMode(NULL),
+                               _start(NULL),
+                              _measureSta(CO_INST_START)
 {
     setDesc(trs("C.O.Desc"));
     startLayout();

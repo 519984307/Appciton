@@ -550,11 +550,20 @@ static void _initMenu(void)
     publicMenuManager.addSubMenu(&userMaintainEntrance);
 
     userMaintainManager.construction();
+
     userMaintainGeneralSet.construction();
     moduleMaintainMenu.construction();
+    alarmMaintainMenu.construction();
+    wifiMaintainMenu.construction();
+    wiredWorkMaintainMenu.construction();
+    othersMaintainMenu.construction();
 
     userMaintainManager.addSubMenu(&userMaintainGeneralSet);
     userMaintainManager.addSubMenu(&moduleMaintainMenu);
+    userMaintainManager.addSubMenu(&alarmMaintainMenu);
+    userMaintainManager.addSubMenu(&wifiMaintainMenu);
+    userMaintainManager.addSubMenu(&wiredWorkMaintainMenu);
+    userMaintainManager.addSubMenu(&othersMaintainMenu);
     //userMaintainEntrance
 
     //supervisorMenuManager
