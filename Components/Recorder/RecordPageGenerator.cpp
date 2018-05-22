@@ -59,14 +59,15 @@ RecordPage *RecordPageGenerator::createPage()
     qreal yOffset = p->height() / 2;
     qreal xOffset = 2 * 3.1415926 / DEFAULT_PAGE_WIDTH;
     QPainter painter(p);
-    painter.setPen(Qt::white);
+    QPen pen(Qt::white, 2);
+    painter.setPen(pen);
     static QPointF lastP(0, yOffset);
     QPointF p2;
 
     for(int i = 0; i< p->width(); i++)
     {
         p2.setX(i);
-        p2.setY(yOffset - qSin(i * xOffset) * (p->height() / 2 - 2));
+        p2.setY(yOffset - qSin(i * xOffset) * (p->height() / 2 - 20));
         painter.drawLine(lastP, p2);
         lastP = p2;
     }
@@ -187,7 +188,7 @@ static QString contructNormalTrendStringItem(SubParamID subParamId, TrendDataTyp
                                         UnitType unit, UnitType defaultUnit, short co2Bro)
 {
     //name
-    QString trendString =  paramInfo.getSubParamName(subParamId);
+    QString trendString =  trs(paramInfo.getSubParamName(subParamId));
     trendString += "\t";
 
     //value
@@ -1350,7 +1351,7 @@ RecordPage *RecordPageGenerator::createStringListSegemnt(const QStringList &strL
 
     int fontH = fontManager.textHeightInPixels(font);
 
-    int avaliableTextHeight = RECORDER_PAGE_HEIGHT -  fontH - fontH / 2;
+    int avaliableTextHeight = RECORDER_PAGE_HEIGHT -  fontH;
 
     int avaliableLine = avaliableTextHeight / fontH;
 
@@ -1375,6 +1376,7 @@ RecordPage *RecordPageGenerator::createStringListSegemnt(const QStringList &strL
     for(int i = 0; i< avaliableLine && i < strList.size(); i++)
     {
         painter.drawText(rect, Qt::AlignVCenter|Qt::AlignLeft, strList.at(i));
+        rect.translate(0, fontH);
     }
 
     return page;

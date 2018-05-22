@@ -48,6 +48,7 @@ private slots:
     void _downReleased(void);
     void _leftReleased(void);
     void _rightReleased(void);
+    void _printRelease();
 
 private:
     TrendDataWidget();

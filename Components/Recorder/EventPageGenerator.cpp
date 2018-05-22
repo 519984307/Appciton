@@ -136,7 +136,7 @@ public:
 
         foreach (WaveformDataSegment *waveSeg, waveSegments) {
             WaveformID id = waveSeg->waveID;
-            QString caption = paramInfo.getParamName(paramInfo.getParamID(id));
+            QString caption = trs(paramInfo.getParamName(paramInfo.getParamID(id)));
             int captionLength = 0;
             RecordWaveSegmentInfo info;
             info.id = id;

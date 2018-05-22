@@ -18,6 +18,8 @@
 #include <QStylePainter>
 #include <QApplication>
 #include <QScrollBar>
+#include "RecorderManager.h"
+#include "TrendTablePageGenerator.h"
 
 #define ITEM_HEIGHT             30
 #define ITEM_WIDTH              100
@@ -204,6 +206,18 @@ void TrendDataWidget::_rightReleased()
     loadTrendData();
 }
 
+void TrendDataWidget::_printRelease()
+{
+    //TEST
+    IStorageBackend *backend = trendDataStorageManager.backend();
+    if(backend->getBlockNR() <= 0)
+    {
+        return;
+    }
+    RecordPageGenerator *gen= new TrendTablePageGenerator(backend, 0, backend->getBlockNR() - 1);
+    recorderManager.addPageGenerator(gen);
+}
+
 /**********************************************************************************************************************
  * 构造。
  **********************************************************************************************************************/
@@ -272,6 +286,7 @@ TrendDataWidget::TrendDataWidget() : _timeInterval(RESOLUTION_RATIO_5_SECOND), _
     _printParam->setFixedHeight(ITEM_HEIGHT);
     _printParam->setMinimumWidth(ITEM_WIDTH);
     _printParam->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
+    connect(_printParam, SIGNAL(realReleased()), this, SLOT(_printRelease()));
 
     _set = new IButton(trs("Set"));
     _set->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
