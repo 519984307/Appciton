@@ -88,3 +88,21 @@ enum TrendGraphType
     TREND_GRAPH_TYPE_ART_IBP,           // IBP动脉类型
     TREND_GRAPH_TYPE_AG_TEMP,
 };
+
+/* 趋势图子窗口信息*/
+struct TrendSubWidgetInfo
+{
+    TrendSubWidgetInfo()
+    {
+        downRuler = 0;
+        upRuler = 100;
+    }
+    SubParamID id;
+    TrendGraphType type;
+    int xHead;
+    int xTail;
+    int yTop;
+    int yBottom;
+    int downRuler;
+    int upRuler;
+};

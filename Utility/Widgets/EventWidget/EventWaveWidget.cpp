@@ -6,6 +6,7 @@
 #include "FontManager.h"
 #include "ColorManager.h"
 #include "WaveformCache.h"
+#include "ConfigManager.h"
 #include <QPainter>
 
 #define INVALID_AXIS_VALUE ((1<<30) - 1)
@@ -14,8 +15,6 @@
 #define WAVE_REG_HIGH               360                                     // 波形域高度
 #define WAVE_NUM                    3                                       // 波形数目
 #define WAVE_DATA_REG_HIGH          (WAVE_REG_HIGH / WAVE_NUM -20)            // 单参数波形数据域高度
-#define WAVE_FRONT_TIME             -8
-#define WAVE_AFTER_TIME             8
 
 struct WaveRegionBuffer
 {
@@ -86,6 +85,9 @@ public:
     {
         pixelWPicth = systemManager.getScreenPixelWPitch();
         pixelHPitch = systemManager.getScreenPixelHPitch();
+        Config &conf =  configManager.getCurConfig();
+        conf.getNumValue("Event|WaveLengthBefore", durationBefore);
+        conf.getNumValue("Event|WaveLengthAfter", durationAfter);
     }
 
     ~EventWaveWidgetPrivate()
@@ -276,6 +278,8 @@ public:
     int totalWaveDuration;    // the duration of the wave segments
     int currentWaveStartSecond;
     int currentWaveMedSecond;
+    int durationBefore;
+    int durationAfter;
 
     float startX;
     float endX;
@@ -511,7 +515,7 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
     _drawWaveLabel(painter, waveDesc);
 
     bool start = true;
-    int startIndex = (d_ptr->currentWaveStartSecond - WAVE_FRONT_TIME) * waveData->sampleRate;
+    int startIndex = (d_ptr->currentWaveStartSecond + d_ptr->durationBefore) * waveData->sampleRate;
     for (int i = 0 + startIndex; (x2 - d_ptr->startX) < d_ptr->waveRagWidth; i ++)
     {
         short wave = waveData->waveData[i];

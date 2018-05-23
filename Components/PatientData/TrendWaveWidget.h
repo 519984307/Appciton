@@ -24,7 +24,7 @@ public:
     void pageUpParam();
     void pageDownParam();
 
-    void setTrendGroup();
+    void updateTrendGraph();
     void setTimeInterval(ResolutionRatio timeInterval);
     void setWaveNumber(int num);
     void setRulerLimit(SubParamID, int down, int up);

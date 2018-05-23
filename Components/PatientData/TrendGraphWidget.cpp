@@ -16,17 +16,16 @@
 
 TrendGraphWidget *TrendGraphWidget::_selfObj = NULL;
 
-/**************************************************************************************************
- * 析构。
- *************************************************************************************************/
 TrendGraphWidget::~TrendGraphWidget()
 {
-    delete _waveWidget;
 }
 
 void TrendGraphWidget::waveNumberChange(int num)
 {
-    _waveWidget->setWaveNumber(num);
+    if (num > 0 && num <= 3)
+    {
+        _waveWidget->setWaveNumber(num);
+    }
 }
 
 void TrendGraphWidget::timeIntervalChange(int timeInterval)
@@ -34,9 +33,9 @@ void TrendGraphWidget::timeIntervalChange(int timeInterval)
     _waveWidget->setTimeInterval((ResolutionRatio)timeInterval);
 }
 
-void TrendGraphWidget::upDateTrendGraph()
+void TrendGraphWidget::updateTrendGraph()
 {
-    _waveWidget->setTrendGroup();
+    _waveWidget->updateTrendGraph();
 }
 
 void TrendGraphWidget::setSubWidgetRulerLimit(SubParamID id, int down, int up)
@@ -66,17 +65,14 @@ void TrendGraphWidget::_rightMoveCursor()
 
 void TrendGraphWidget::_leftMoveEvent()
 {
-
+//TODO
 }
 
 void TrendGraphWidget::_rightMoveEvent()
 {
-
+//TODO
 }
 
-/**************************************************************************************************
- * 趋势图设置槽函数
- *************************************************************************************************/
 void TrendGraphWidget::_trendGraphSetReleased()
 {
     trendGraphSetWidget.autoShow();
@@ -97,10 +93,9 @@ void TrendGraphWidget::_printReleased()
 
 }
 
-/**************************************************************************************************
- * 构造。
- *************************************************************************************************/
-TrendGraphWidget::TrendGraphWidget()
+TrendGraphWidget::TrendGraphWidget() : _waveWidget(NULL), _moveCoordinate(NULL),
+    _moveCursor(NULL), _moveEvent(NULL), _print(NULL), _set(NULL), _up(NULL),
+    _down(NULL), _maxWidth(0), _maxHeight(0)
 {
     setTitleBarText(trs("TrendGraph"));
     _maxWidth = windowManager.getPopMenuWidth();

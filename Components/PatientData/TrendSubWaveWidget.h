@@ -6,7 +6,7 @@ class TrendSubWaveWidget : public IWidget
 {
     Q_OBJECT
 public:
-    TrendSubWaveWidget(SubParamID id, TrendGraphType type, int xHead, int xTail, int yTop, int yBottom, int downRuler = 0, int upRuler = 100);
+    TrendSubWaveWidget(TrendSubWidgetInfo info);
     ~TrendSubWaveWidget();
 
     void demoData(void);
@@ -35,10 +35,7 @@ protected:
     void paintEvent(QPaintEvent *e);
 
 private:
-    int _yTop;                      // 趋势顶坐标
-    int _yBottom;                   // 趋势低坐标
-    int _xHead;                     // 趋势开始坐标
-    int _xTail;                     // 趋势结束坐标
+    TrendSubWidgetInfo _info;
     int _xSize;                     // 趋势x坐标长度
     int _ySize;                     // 趋势y坐标长度
     int _trendDataHead;             // 趋势数据开始位置
@@ -46,8 +43,8 @@ private:
     QColor _color;                  // 窗体主题颜色
     QString _paramName;             // 参数名称
     QString _paramUnit;             // 参数单位
-    int _upRulerValue;              // 上标尺值
-    int _downRulerValue;            // 下标尺值
+    int _upRulerValue;              // 上标尺值*
+    int _downRulerValue;            // 下标尺值*
     int _rulerSize;                 // 标尺大小
     unsigned _startTime;            // 窗口开始时间
     ResolutionRatio _timeInterval;  // 时间间隔
@@ -58,8 +55,6 @@ private:
     QPoint *_trendWaveBuf;          // 趋势坐标序列缓存
     QPoint *_trendWaveBufSecond;
     QPoint *_trendWaveBufThird;
-    SubParamID _paramID;
     int _cursorPosition;            // 游标位置
-    TrendGraphType _type;           // 趋势图类型
 
 };

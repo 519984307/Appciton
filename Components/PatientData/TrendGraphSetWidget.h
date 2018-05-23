@@ -12,6 +12,8 @@
 
 class SetRulerItem : public QWidget
 {
+    Q_OBJECT
+
 public:
     SetRulerItem(ParamID ppid, SubParamID ssid) : QWidget()
     {
@@ -69,10 +71,20 @@ public:
     ~TrendGraphSetWidget();
 
 public:
+    /**
+     * @brief getTrendGroup get trend group type
+     * @return trend group type
+     */
     TrendGroup getTrendGroup();
-    void setTrendGroup(TrendGroup g);
 
+    /**
+     * @brief layoutExec widget layout
+     */
     void layoutExec(void);
+
+    /**
+     * @brief upDateTrendGroup update set widget trend group display
+     */
     void upDateTrendGroup(void);
 
 protected:
@@ -80,17 +92,53 @@ protected:
     void showEvent(QShowEvent *e);
 
 private slots:
+    /**
+     * @brief _allAutoReleased all ruler auto slot funtion
+     */
     void _allAutoReleased();
+
+    /**
+     * @brief _trendGroupReleased set trend group slot funtion
+     */
     void _trendGroupReleased(int);
+
+    /**
+     * @brief _timeIntervalReleased set time interval slot funtion
+     */
     void _timeIntervalReleased(int);
+
+    /**
+     * @brief _waveNumberReleased set waveform number slot funtion
+     */
     void _waveNumberReleased(int);
+
+    /**
+     * @brief _comboListIndexChanged auto reluer switch select slot funtion
+     * @param id item id
+     * @param index select index
+     */
     void _comboListIndexChanged(int id, int index);
-    void _upDownRulerChange(QString, int);
+
+    /**
+     * @brief _upDownRulerChange up down ruler set slot funtion
+     * @param id
+     */
+    void _upDownRulerChange(QString /*valueStr*/, int id);
 
 private:
+    /**
+     * @brief _trendRulerLayout add ruler widget
+     */
     void _trendRulerLayout(void);
+
+    /**
+     * @brief _clearRulerLayout hide ruler widget
+     */
     void _clearRulerLayout(void);
-    // 载入可选项的值。
+
+    /**
+     * @brief _loadOptions load init config data
+     */
     void _loadOptions(void);
 
 private:

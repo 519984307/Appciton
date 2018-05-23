@@ -15,9 +15,6 @@
 
 TrendGraphSetWidget *TrendGraphSetWidget::_selfObj = NULL;
 
-/**************************************************************************************************
- * 析构。
- *************************************************************************************************/
 TrendGraphSetWidget::~TrendGraphSetWidget()
 {
 
@@ -28,14 +25,6 @@ TrendGroup TrendGraphSetWidget::getTrendGroup()
     return _trendGroup;
 }
 
-void TrendGraphSetWidget::setTrendGroup(TrendGroup g)
-{
-    _trendGroup = g;
-}
-
-/**************************************************************************************************
- * 布局。
- *************************************************************************************************/
 void TrendGraphSetWidget::layoutExec()
 {
     int subW = 400;
@@ -43,32 +32,33 @@ void TrendGraphSetWidget::layoutExec()
     setFixedSize(subW, subH);
 
     int fontSize = fontManager.getFontSize(1);
-    setFont(fontManager.textFont(fontSize));
+    QFont font = fontManager.textFont(fontSize);
+    setFont(font);
 
     QHBoxLayout *hTitleLayout = new QHBoxLayout();
 
     QLabel *l = new QLabel(trs("Parameter"));
     l->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     l->setAlignment(Qt::AlignCenter);
-    l->setFont(fontManager.textFont(fontSize));
+    l->setFont(font);
     hTitleLayout->addWidget(l);
 
     l = new QLabel(trs("AutoRuler"));
     l->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     l->setAlignment(Qt::AlignCenter);
-    l->setFont(fontManager.textFont(fontSize));
+    l->setFont(font);
     hTitleLayout->addWidget(l);
 
     l = new QLabel(trs("DownRuler"));
     l->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     l->setAlignment(Qt::AlignCenter);
-    l->setFont(fontManager.textFont(fontSize));
+    l->setFont(font);
     hTitleLayout->addWidget(l);
 
     l = new QLabel(trs("UpRuler"));
     l->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     l->setAlignment(Qt::AlignCenter);
-    l->setFont(fontManager.textFont(fontSize));
+    l->setFont(font);
     hTitleLayout->addWidget(l);
     hTitleLayout->setSpacing(10);
 
@@ -76,13 +66,13 @@ void TrendGraphSetWidget::layoutExec()
 
     _allAuto = new IButton(trs("AllAuto"));
     _allAuto->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
-    _allAuto->setFont(fontManager.textFont(fontSize));
+    _allAuto->setFont(font);
     hBottomLayout->addWidget(_allAuto);
     connect(_allAuto, SIGNAL(realReleased()), this, SLOT(_allAutoReleased()));
 
     _trendGroupList = new IDropList(trs("TrendGroup"));
     _trendGroupList->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
-    _trendGroupList->setFont(fontManager.textFont(fontSize));
+    _trendGroupList->setFont(font);
     _trendGroupList->addItem("Resp");
     _trendGroupList->addItem("IBP");
     _trendGroupList->addItem("AG");
@@ -92,7 +82,7 @@ void TrendGraphSetWidget::layoutExec()
 
     _timeIntervalList = new IDropList(trs("TimeInterval"));
     _timeIntervalList->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
-    _timeIntervalList->setFont(fontManager.textFont(fontSize));
+    _timeIntervalList->setFont(font);
     for (int i = 0; i < RESOLUTION_RATIO_NR; i ++)
     {
         _timeIntervalList->addItem(TrendDataSymbol::convert((ResolutionRatio)i));
@@ -104,7 +94,7 @@ void TrendGraphSetWidget::layoutExec()
 
     _waveNumberList = new IDropList(trs("WaveNumber"));
     _waveNumberList->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
-    _waveNumberList->setFont(fontManager.textFont(fontSize));
+    _waveNumberList->setFont(font);
     _waveNumberList->addItem("1");
     _waveNumberList->addItem("2");
     _waveNumberList->addItem("3");
@@ -143,20 +133,20 @@ void TrendGraphSetWidget::layoutExec()
         item->combo->addItem(trs("Off"));
         item->combo->addItem(trs("On"));
         item->combo->SetID(i);
-        item->combo->setFont(fontManager.textFont(fontSize));
-        item->combo->label->setFont(fontManager.textFont(fontSize));
+        item->combo->setFont(font);
+        item->combo->label->setFont(font);
         connect(item->combo, SIGNAL(currentIndexChanged(int, int)),
                 this, SLOT(_comboListIndexChanged(int, int)));
 
         item->downRuler->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
-        item->downRuler->setFont(fontManager.textFont(fontSize));
+        item->downRuler->setFont(font);
         item->downRuler->enableCycle(false);
         item->downRuler->setID(i * 2);
         connect(item->downRuler, SIGNAL(valueChange(QString,int)),
                 this, SLOT(_upDownRulerChange(QString,int)));
 
         item->upRuler->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
-        item->upRuler->setFont(fontManager.textFont(fontSize));
+        item->upRuler->setFont(font);
         item->upRuler->enableCycle(false);
         item->upRuler->setID(i * 2 + 1);
         connect(item->upRuler, SIGNAL(valueChange(QString,int)),
@@ -175,9 +165,6 @@ void TrendGraphSetWidget::layoutExec()
 
 }
 
-/**************************************************************************************************
- * 主窗口绘图事件
- *************************************************************************************************/
 void TrendGraphSetWidget::paintEvent(QPaintEvent *event)
 {
     PopupWidget::paintEvent(event);
@@ -189,23 +176,16 @@ void TrendGraphSetWidget::paintEvent(QPaintEvent *event)
     barPainter.drawLine(rect().topLeft().x(), height() - (ITEM_HEIGHT + 10), rect().topRight().x(), height() - (ITEM_HEIGHT + 10));
 }
 
-/***************************************************************************************************
- * 显示事件
- **************************************************************************************************/
 void TrendGraphSetWidget::showEvent(QShowEvent *e)
 {
     PopupWidget::showEvent(e);
 
     // 居中显示。
     QRect r = windowManager.getMenuArea();
-//    move(r.x() + (r.width() - width()) / 2, r.y() + (2 * r.height() / 3 - height()));
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 
 }
 
-/***************************************************************************************************
- * 全部自动标尺槽函数
- **************************************************************************************************/
 void TrendGraphSetWidget::_allAutoReleased()
 {
     SetRulerItem *item = NULL;
@@ -243,35 +223,23 @@ void TrendGraphSetWidget::_allAutoReleased()
     }
 }
 
-/***************************************************************************************************
- * 趋势组槽函数
- **************************************************************************************************/
 void TrendGraphSetWidget::_trendGroupReleased(int g)
 {
     _trendGroup = (TrendGroup)g;
     upDateTrendGroup();
-    trendGraphWidget.upDateTrendGraph();
+    trendGraphWidget.updateTrendGraph();
 }
 
-/***************************************************************************************************
- * 时间间隔槽函数
- **************************************************************************************************/
 void TrendGraphSetWidget::_timeIntervalReleased(int timeInterval)
 {
     trendGraphWidget.timeIntervalChange(timeInterval);
 }
 
-/***************************************************************************************************
- * 波形数量槽函数
- **************************************************************************************************/
 void TrendGraphSetWidget::_waveNumberReleased(int num)
 {
     trendGraphWidget.waveNumberChange(num + 1);
 }
 
-/***************************************************************************************************
- * 自动标尺开关改变
- **************************************************************************************************/
 void TrendGraphSetWidget::_comboListIndexChanged(int id, int index)
 {
     if (id >= _itemList.count())
@@ -314,9 +282,6 @@ void TrendGraphSetWidget::_comboListIndexChanged(int id, int index)
     }
 }
 
-/***************************************************************************************************
- * 上下标尺限改变
- **************************************************************************************************/
 void TrendGraphSetWidget::_upDownRulerChange(QString, int id)
 {
     int curID = id / 2;
@@ -330,18 +295,12 @@ void TrendGraphSetWidget::_upDownRulerChange(QString, int id)
                                             item->upRuler->getText().toInt());
 }
 
-/**************************************************************************************************
- * 刷新趋势组
- *************************************************************************************************/
 void TrendGraphSetWidget::upDateTrendGroup()
 {
     _clearRulerLayout();
     _trendRulerLayout();
 }
 
-/**************************************************************************************************
- * 添加标尺控件
- *************************************************************************************************/
 void TrendGraphSetWidget::_trendRulerLayout()
 {
     SetRulerItem *item = NULL;
@@ -399,27 +358,20 @@ void TrendGraphSetWidget::_trendRulerLayout()
     }
 }
 
-/**************************************************************************************************
- * 清除标尺控件
- *************************************************************************************************/
 void TrendGraphSetWidget::_clearRulerLayout()
 {
     int count = _rulerLayout->count();
     for (int i = 0; i < count; i ++)
     {
         QLayoutItem *item = _rulerLayout->takeAt(0);
-        SetRulerItem *widget = (SetRulerItem *)item->widget();
+        SetRulerItem *widget = qobject_cast<SetRulerItem *>(item->widget());
         if (widget != NULL)
         {
             widget->setVisible(false);
-//            widget->setParent(NULL);
         }
     }
 }
 
-/**************************************************************************************************
- * 载入初始配置。
- *************************************************************************************************/
 void TrendGraphSetWidget::_loadOptions()
 {
     SetRulerItem *item;
@@ -478,10 +430,9 @@ void TrendGraphSetWidget::_loadOptions()
     }
 }
 
-/**************************************************************************************************
- * 构造。
- *************************************************************************************************/
-TrendGraphSetWidget::TrendGraphSetWidget() :  _trendGroup(TREND_GROUP_RESP)
+TrendGraphSetWidget::TrendGraphSetWidget() : _mScrollArea(NULL), _rulerSetWidget(NULL),
+    _allAuto(NULL), _trendGroupList(NULL), _timeIntervalList(NULL),
+    _waveNumberList(NULL), _trendGroup(TREND_GROUP_RESP), _rulerLayout(NULL)
 {
     SetRulerItem *item = NULL;
 

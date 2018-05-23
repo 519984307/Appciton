@@ -1019,7 +1019,7 @@ void IBPParam::setEntitle(IBPPressureName entitle, IBPSignalInput IBP)
     trendDataWidget.isIBPSubParamVisible(_ibp1.pressureName, true);
     trendDataWidget.isIBPSubParamVisible(_ibp2.pressureName, true);
     trendGraphSetWidget.upDateTrendGroup();
-    trendGraphWidget.upDateTrendGraph();
+    trendGraphWidget.updateTrendGraph();
 
     if (((_ibp1.pressureName >= IBP_PRESSURE_CVP) && (_ibp1.pressureName <= IBP_PRESSURE_ICP))
             && ((_ibp2.pressureName >= IBP_PRESSURE_CVP) && (_ibp2.pressureName <= IBP_PRESSURE_ICP)))

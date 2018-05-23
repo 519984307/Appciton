@@ -17,6 +17,7 @@
 #include "AlarmConfig.h"
 #include "EventDataSymbol.h"
 #include "EventWaveSetWidget.h"
+#include "ConfigManager.h"
 #include <QBoxLayout>
 #include "Debug.h"
 #include "Utility.h"
@@ -396,6 +397,15 @@ void EventReviewWindow::eventTrendUpdate()
     int paramNum = d_ptr->ctx.trendSegment->trendValueNum;
     for (int i = 0; i < paramNum; i ++)
     {
+        QString dataStr;
+        if (d_ptr->ctx.trendSegment->values[i].value == InvData())
+        {
+            dataStr = "-.-";
+        }
+        else
+        {
+            dataStr = QString::number(d_ptr->ctx.trendSegment->values[i].value);
+        }
         subId = (SubParamID)d_ptr->ctx.trendSegment->values[i].subParamId;
         switch (subId)
         {
@@ -404,21 +414,21 @@ void EventReviewWindow::eventTrendUpdate()
         case SUB_PARAM_PA_SYS:
         case SUB_PARAM_AUXP1_SYS:
         case SUB_PARAM_AUXP2_SYS:
-            sys = QString::number(d_ptr->ctx.trendSegment->values[i].value);
+            sys = dataStr;
             continue;
         case SUB_PARAM_NIBP_DIA:
         case SUB_PARAM_ART_DIA:
         case SUB_PARAM_PA_DIA:
         case SUB_PARAM_AUXP1_DIA:
         case SUB_PARAM_AUXP2_DIA:
-            dia = QString::number(d_ptr->ctx.trendSegment->values[i].value);
+            dia = dataStr;
             continue;
         case SUB_PARAM_NIBP_MAP:
         case SUB_PARAM_ART_MAP:
         case SUB_PARAM_PA_MAP:
         case SUB_PARAM_AUXP1_MAP:
         case SUB_PARAM_AUXP2_MAP:
-            map = QString::number(d_ptr->ctx.trendSegment->values[i].value);
+            map = dataStr;
             valueStr = sys + "/" + dia + "(" + map + ")";
             titleStr = paramInfo.getSubParamName(subId);
             titleStr = titleStr.left(titleStr.length() - 4);
@@ -438,21 +448,21 @@ void EventReviewWindow::eventTrendUpdate()
         case SUB_PARAM_ETAA1:
         case SUB_PARAM_ETAA2:
         case SUB_PARAM_ETO2:
-            et = QString::number(d_ptr->ctx.trendSegment->values[i].value);
+            et = dataStr;
             continue;
         case SUB_PARAM_FICO2:
         case SUB_PARAM_FIN2O:
         case SUB_PARAM_FIAA1:
         case SUB_PARAM_FIAA2:
         case SUB_PARAM_FIO2:
-            fi = QString::number(d_ptr->ctx.trendSegment->values[i].value);
+            fi = dataStr;
             valueStr = et + "/" + fi;
             titleStr = paramInfo.getSubParamName(subId);
             titleStr = titleStr.right(titleStr.length() - 2);
             valueFont = fontManager.numFont(26);
             break;
         default:
-            valueStr = QString::number(d_ptr->ctx.trendSegment->values[i].value);
+            valueStr = dataStr;
             titleStr = paramInfo.getSubParamName(subId);
             valueFont = fontManager.numFont(32);
             break;
@@ -594,6 +604,11 @@ void EventReviewWindow::_eventLevelSelect(int index)
  *************************************************************************************************/
 void EventReviewWindow::_leftMoveCoordinate()
 {
+    int durationBefore;
+    int durationAfter;
+    Config &conf =  configManager.getCurConfig();
+    conf.getNumValue("Event|WaveLengthBefore", durationBefore);
+    conf.getNumValue("Event|WaveLengthAfter", durationAfter);
     EventWaveWidget::SweepSpeed speed;
     speed = d_ptr->waveWidget->getSweepSpeed();
     int medSecond = d_ptr->waveWidget->getCurrentWaveMedSecond();
@@ -602,21 +617,21 @@ void EventReviewWindow::_leftMoveCoordinate()
     case EventWaveWidget::SWEEP_SPEED_62_5:
         return;
     case EventWaveWidget::SWEEP_SPEED_125:
-        if (medSecond == -4)
+        if (medSecond == -durationBefore + 4)
         {
             return;
         }
         medSecond --;
         break;
     case EventWaveWidget::SWEEP_SPEED_250:
-        if (medSecond == -6)
+        if (medSecond == -durationBefore + 2)
         {
             return;
         }
         medSecond --;
         break;
     case EventWaveWidget::SWEEP_SPEED_500:
-        if (medSecond == -7)
+        if (medSecond == -durationBefore + 1)
         {
             return;
         }
@@ -633,6 +648,11 @@ void EventReviewWindow::_leftMoveCoordinate()
  *************************************************************************************************/
 void EventReviewWindow::_rightMoveCoordinate()
 {
+    int durationBefore;
+    int durationAfter;
+    Config &conf =  configManager.getCurConfig();
+    conf.getNumValue("Event|WaveLengthBefore", durationBefore);
+    conf.getNumValue("Event|WaveLengthAfter", durationAfter);
     EventWaveWidget::SweepSpeed speed;
     speed = d_ptr->waveWidget->getSweepSpeed();
     int medSecond = d_ptr->waveWidget->getCurrentWaveMedSecond();
@@ -641,21 +661,21 @@ void EventReviewWindow::_rightMoveCoordinate()
     case EventWaveWidget::SWEEP_SPEED_62_5:
         return;
     case EventWaveWidget::SWEEP_SPEED_125:
-        if (medSecond == 4)
+        if (medSecond == durationAfter - 4)
         {
             return;
         }
         medSecond ++;
         break;
     case EventWaveWidget::SWEEP_SPEED_250:
-        if (medSecond == 6)
+        if (medSecond == durationAfter - 2)
         {
             return;
         }
         medSecond ++;
         break;
     case EventWaveWidget::SWEEP_SPEED_500:
-        if (medSecond == 7)
+        if (medSecond == durationAfter - 1)
         {
             return;
         }
