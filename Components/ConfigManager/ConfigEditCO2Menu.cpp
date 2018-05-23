@@ -12,104 +12,53 @@
 #include "Config.h"
 ConfigCO2Menu *ConfigCO2Menu::_selfObj = NULL;
 
-/**************************************************************************************************
- * 窒息时间改变。
- *************************************************************************************************/
-//void ConfigCO2Menu::_apneaTimeSlot(int index)
-//{
-//    co2Param.setApneaTime((CO2ApneaTime)index);
-//    respParam.setApneaTime((RESPApneaTime)index);
-//}
-
-/**************************************************************************************************
- * 速度改变。
- *************************************************************************************************/
 void ConfigCO2Menu::_speedSlot(int index)
 {
     Config *config = configEditMenuGrp.getCurrentEditConfig();
-   // co2Param.setSweepSpeed((CO2SweepSpeed)index);
     config->setNumValue("CO2|SweepSpeed",index);
 }
 
-/**************************************************************************************************
- * FICO2显示开关。
- *************************************************************************************************/
 void ConfigCO2Menu::_fico2DisplaySlot(int index)
 {
     Config *config = configEditMenuGrp.getCurrentEditConfig();
-   // int index  = 0;
-   // co2Param.setFiCO2Display((CO2FICO2Display)index);
     config->setNumValue("CO2|FICO2Display",index);
 }
 
-/**************************************************************************************************
- * O2补偿气体改变。
- *************************************************************************************************/
 void ConfigCO2Menu::_o2CompenReleased(QString strValue)
 {
     Config *config = configEditMenuGrp.getCurrentEditConfig();
-   // int index  = 0;
-    //co2Param.setCompensation(CO2_COMPEN_O2, strValue.toInt());
     config->setNumValue("CO2|Compensation|O2",strValue.toInt());
 }
 
-/**************************************************************************************************
- * N2O补偿气体改变。
- *************************************************************************************************/
 void ConfigCO2Menu::_n2oCompenReleased(QString strValue)
 {
     Config *config = configEditMenuGrp.getCurrentEditConfig();
-    //int index  = 0;
-    //co2Param.setCompensation(CO2_COMPEN_N2O, strValue.toInt());
     config->setNumValue("CO2|Compensation|NO2",strValue.toInt());
 }
 
-/**************************************************************************************************
- * 执行校零。
- *************************************************************************************************/
-void ConfigCO2Menu::_zeroCalibReleased(void)
-{
-    Config *config = configEditMenuGrp.getCurrentEditConfig();
-    int index  = 1;
-    //co2Param.zeroCalibration();
-    config->setNumValue("CO2|CeroCalibration",index);
-}
-
-/**************************************************************************************************
- * 载入当前配置。
- *************************************************************************************************/
 void ConfigCO2Menu::_loadOptions(void)
 {
     Config *config = configEditMenuGrp.getCurrentEditConfig();
     int index  = 0;
-    // 窒息时间。
-//    _apneaTime->setCurrentIndex(co2Param.getApneaTime());
+
     config->getNumValue("CO2|SweepSpeed",index);
-    // 波形速度。CO2SweepSpeed
     _speed->setCurrentIndex(index);
 
-    // 气体补偿。
     config->getNumValue("CO2|Compensation|O2",index);
     _o2Compen->setValue(index);
+
     config->getNumValue("CO2|Compensation|NO2",index);
     _n2oCompen->setValue(index);
 
-    // 显示控制。
     config->getNumValue("CO2|FICO2Display",index);
     _fico2Display->setCurrentIndex(index);
 }
 
-/**************************************************************************************************
- * 显示前确定配置。
- *************************************************************************************************/
 void ConfigCO2Menu::readyShow(void)
 {
     _loadOptions();
 }
 
-/**************************************************************************************************
- * 执行布局。
- *************************************************************************************************/
 void ConfigCO2Menu::layoutExec(void)
 {
     int submenuW = menuManager.getSubmenuWidth();
@@ -171,33 +120,18 @@ void ConfigCO2Menu::layoutExec(void)
     _n2oCompen->setFixedHeight(ITEM_H);
     _n2oCompen->setValueWidth(btnWidth);
     mainLayout->addWidget(_n2oCompen);
-
-    _zeroCalib = new LabelButton(trs("CO2ZeroCalib"));
-    _zeroCalib->setFont(defaultFont());
-    _zeroCalib->setValue(trs("CO2ZeroStart"));
-    connect(_zeroCalib->button, SIGNAL(realReleased()), this, SLOT(_zeroCalibReleased()));
-    _zeroCalib->label->setFixedSize(labelWidth, ITEM_H);
-    _zeroCalib->button->setFixedSize(btnWidth, ITEM_H);
-    mainLayout->addWidget(_zeroCalib);
 }
 
-/**************************************************************************************************
- * 构造。
- *************************************************************************************************/
 ConfigCO2Menu::ConfigCO2Menu() : SubMenu(trs("CO2")),
                                  _speed(NULL),
                                  _fico2Display(NULL),
                                  _o2Compen(NULL),
-                                 _n2oCompen(NULL),
-                                 _zeroCalib(NULL)
+                                 _n2oCompen(NULL)
 {
     setDesc(trs("CO2Desc"));
     startLayout();
 }
 
-/**************************************************************************************************
- * 析构。
- *************************************************************************************************/
 ConfigCO2Menu::~ConfigCO2Menu()
 {
 

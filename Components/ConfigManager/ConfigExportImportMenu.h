@@ -22,9 +22,9 @@ public:
 
     bool eventFilter(QObject *obj, QEvent *ev);
 
-    int exportFileToUSB();//导出文件到U盘接口
+    bool exportFileToUSB();//导出文件到U盘接口
 
-    int insertFileFromUSB();//从U盘导入文件的接口
+    bool insertFileFromUSB();//从U盘导入文件的接口
 
     QDomElement tagFindElement(const QStringList &list);//寻找本地的标签
 
@@ -61,6 +61,10 @@ private:
     QString           _sameImportXmlName;//首个同名的导入文件名称
 
     QString           _sameExportXmlName;//首个同名的导出文件名称
+
+    int               _checkExportFileFlag;//检查导出文件标志位
+
+    int               _checkImportFileFlag;//检查导入文件标志位
 
     QScopedPointer<ConfigExportImportMenuPrivate> d_ptr;
 

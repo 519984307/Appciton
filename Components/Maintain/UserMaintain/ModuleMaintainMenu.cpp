@@ -12,6 +12,7 @@
 #include "KeyBoardPanel.h"
 #include "Debug.h"
 #include "UserMaintainManager.h"
+#include "COParam.h"
 
 ModuleMaintainMenu *ModuleMaintainMenu::_selfObj = NULL;
 
@@ -25,7 +26,9 @@ ModuleMaintainMenu::ModuleMaintainMenu() : SubMenu(trs("ModuleMaintainMenu")),
                                            _nibpPressureTest(NULL),
                                            _nibpLeakageDetection(NULL),
                                            _ecgModuleCalibration(NULL),
-                                           _touchScreenCalibration(NULL)
+                                           _touchScreenCalibration(NULL),
+                                           _start(NULL),
+                                           _measureSta(CO_INST_START)
 {
     setDesc(trs("ModuleMaintainMenuDesc"));
 
@@ -140,6 +143,14 @@ void ModuleMaintainMenu::layoutExec()
     _touchScreenCalibration->button->setText("TouchScreenCalibration");
     connect(_touchScreenCalibration->button, SIGNAL(released(int)), this, SLOT(_isTouchScreenCalibrationSlot()));
     mainLayout->addWidget(_touchScreenCalibration);
+
+    _start = new LabelButton("");
+    _start->label->setFixedSize(labelWidth, ITEM_H);
+    _start->setFont(defaultFont());
+    _start->button->setFixedSize(btnWidth, ITEM_H);
+    _start->button->setText(trs("COStart"));
+    connect(_start, SIGNAL(realReleased()), this, SLOT(_startReleased()));
+    mainLayout->addWidget(_start, 0, Qt::AlignRight);
 }
 
 /**************************************************************************************************
@@ -241,6 +252,24 @@ void ModuleMaintainMenu::_isTouchScreenCalibrationSlot()
     else if(_touchScreenCalibration->button->text()=="StopTouchScreenCalibration")
     {
         _touchScreenCalibration->button->setText("TouchScreenCalibration");
+    }
+}
+
+/**************************************************************************************************
+ * 开始测量槽函数。
+ *************************************************************************************************/
+void ModuleMaintainMenu::_startReleased(void)
+{
+    coParam.measureCtrl(_measureSta);
+    if (_measureSta == CO_INST_START)
+    {
+        _start->button->setText(trs("Cancel"));
+        _measureSta = CO_INST_END;
+    }
+    else if (_measureSta == CO_INST_END)
+    {
+        _start->button->setText(trs("COStart"));
+        _measureSta = CO_INST_START;
     }
 }
 

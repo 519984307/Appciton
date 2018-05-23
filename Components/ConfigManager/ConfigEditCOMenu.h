@@ -10,6 +10,10 @@ class ConfigCOMenu : public SubMenu
     Q_OBJECT
 
 public:
+    /**
+     * @brief construction 初始化方法
+     * @return
+     */
     static ConfigCOMenu &construction(void)
     {
         if (_selfObj == NULL)
@@ -19,32 +23,42 @@ public:
         return *_selfObj;
     }
     static ConfigCOMenu *_selfObj;
-
+    /**
+     * @brief ConfigCOMenu  构造方法
+     */
     ConfigCOMenu();
     ~ConfigCOMenu();
 
 protected:
-    //布局
+    /**
+     * @brief layoutExec  布局方法
+     */
     virtual void layoutExec(void);
 
 private slots:
+    /**
+     * @brief _ductRatioReleased  CO系数改变方法
+     */
     void _ductRatioReleased(void);
+    /**
+     * @brief _inputModeSlot  Ti输入模式改变方法
+     * @param index  选择序列号
+     */
     void _inputModeSlot(int index);
+    /**
+     * @brief _injectionTempReleased 注射液温度改变方法
+     */
     void _injectionTempReleased(void);
+    /**
+     * @brief _injectionVolumnReleased 注射液体积改变方法
+     */
     void _injectionVolumnReleased(void);
-    void _startReleased();
 
 private:
-
-    LabelButton *_ductRatio;            // CO系数(漂浮导管系数)
-    IComboList *_inputMode;             // 注射液温度来源(Ti输入模式设置)
-    LabelButton *_injectionTemp;        // 注射液温度
-    LabelButton *_injectionVolumn;      // 注射液体积
-    IComboList *_measureMode;           // 测量模式
-    IButton *_start;                    // 开始测量
-
-    COInstCtl _measureSta;              // 测量状态
+    LabelButton  *_ductRatio;             // CO系数(漂浮导管系数)
+    IComboList   *_inputMode;             // 注射液温度来源(Ti输入模式设置)
+    LabelButton  *_injectionTemp;         // 注射液温度
+    LabelButton  *_injectionVolumn;       // 注射液体积
+    IComboList   *_measureMode;           // 测量模式
 
 };
-
-#define configCoMenu (ConfigCOMenu::construction())

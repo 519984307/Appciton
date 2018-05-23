@@ -19,33 +19,22 @@
 
 ConfigCOMenu *ConfigCOMenu::_selfObj = NULL;
 
-/**************************************************************************************************
- * 构造。
- *************************************************************************************************/
 ConfigCOMenu::ConfigCOMenu() : SubMenu(trs("C.O.")),
                                _ductRatio(NULL),
                                _inputMode(NULL),
                                _injectionTemp(NULL),
                                _injectionVolumn(NULL),
-                               _measureMode(NULL),
-                               _start(NULL),
-                              _measureSta(CO_INST_START)
+                               _measureMode(NULL)
 {
     setDesc(trs("C.O.Desc"));
     startLayout();
 }
 
-/**************************************************************************************************
- * 析构。
- *************************************************************************************************/
 ConfigCOMenu::~ConfigCOMenu()
 {
 
 }
 
-/**************************************************************************************************
- * 执行布局。
- *************************************************************************************************/
 void ConfigCOMenu::layoutExec()
 {
     int submenuW = publicMenuManager.getSubmenuWidth();
@@ -110,19 +99,8 @@ void ConfigCOMenu::layoutExec()
     _measureMode->combolist->setCurrentIndex(index);
     connect(_measureMode, SIGNAL(currentIndexChanged(int)), this, SLOT(_inputModeSlot(int)));
     mainLayout->addWidget(_measureMode);
-
-    _start = new IButton(trs("COStart"));
-    _start->setFont(defaultFont());
-    _start->setFixedSize(btnWidth, ITEM_H);
-    _start->setBorderEnabled(true);
-    connect(_start, SIGNAL(realReleased()), this, SLOT(_startReleased()));
-    mainLayout->addWidget(_start, 0, Qt::AlignRight);
-
 }
 
-/**************************************************************************************************
- * CO系数设置槽函数。
- *************************************************************************************************/
 void ConfigCOMenu::_ductRatioReleased()
 {
     NumberInput numberPad;
@@ -131,33 +109,26 @@ void ConfigCOMenu::_ductRatioReleased()
     numberPad.setInitString(_ductRatio->button->text());
     Config *config = configEditMenuGrp.getCurrentEditConfig();
 
-
     if (numberPad.exec())
     {
         QString text = numberPad.getStrValue();
         bool ok = false;
         float value = text.toFloat(&ok);
         unsigned short actualValue = value * 1000;
-        if (ok)
-        {
-            if (actualValue >= 1 && actualValue <= 999)
-            {
-                _ductRatio->button->setText(text);
-                config->setNumValue("CO|ratdio",value);/*保存数据*/
-            }
-            else
-            {
-                IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.001-0.999", QStringList(trs("EnglishYESChineseSURE")));
-                messageBox.exec();
-            }
 
+        if (ok && actualValue >= 1 && actualValue <= 999)
+        {
+            _ductRatio->button->setText(text);
+            config->setNumValue("CO|ratdio",value);/*保存数据*/
+        }
+        else
+        {
+            IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.001-0.999", QStringList(trs("EnglishYESChineseSURE")));
+            messageBox.exec();
         }
     }
 }
 
-/**************************************************************************************************
- * 注射液温度来源设置槽函数。
- *************************************************************************************************/
 void ConfigCOMenu::_inputModeSlot(int index)
 {
     Config *config = configEditMenuGrp.getCurrentEditConfig();
@@ -173,13 +144,9 @@ void ConfigCOMenu::_inputModeSlot(int index)
         _injectionTemp->button->setEnabled(false);
         _injectionTemp->button->setFocusPolicy(Qt::NoFocus);
         config->setNumValue("CO|InjectionTempSource",index);/*保存数据*/
-        //coParam.setTempSource((COTiMode)index);
     }
 }
 
-/**************************************************************************************************
- * 手动设置注射液温度槽函数。
- *************************************************************************************************/
 void ConfigCOMenu::_injectionTempReleased()
 {
     NumberInput numberPad;
@@ -194,27 +161,20 @@ void ConfigCOMenu::_injectionTempReleased()
         bool ok = false;
         float value = text.toFloat(&ok);
         unsigned short actualValue = value * 10;
-        if (ok)
-        {
-            if (actualValue <= 270)
-            {
-                _injectionTemp->button->setText(text);
-                //coParam.setTempSource(CO_TI_MODE_MANUAL, actualValue);
-                config->setNumValue("CO|InjectionTempSource",value);/*保存数据*/
-            }
-            else
-            {
-                IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.0-27.0", QStringList(trs("EnglishYESChineseSURE")));
-                messageBox.exec();
-            }
 
+        if (ok && actualValue <= 270)
+        {
+            _injectionTemp->button->setText(text);
+            config->setNumValue("CO|InjectionTempSource",value);/*保存数据*/
+        }
+        else
+        {
+            IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.0-27.0", QStringList(trs("EnglishYESChineseSURE")));
+            messageBox.exec();
         }
     }
 }
 
-/**************************************************************************************************
- * Manually set injection volumn slot funtion.
- *************************************************************************************************/
 void ConfigCOMenu::_injectionVolumnReleased()
 {
     NumberInput numberPad;
@@ -227,39 +187,16 @@ void ConfigCOMenu::_injectionVolumnReleased()
         QString text = numberPad.getStrValue();
         bool ok = false;
         unsigned int value = text.toInt(&ok);
-        if (ok)
-        {
-            if (value >= 1 && value <= 200)
-            {
-                _injectionVolumn->button->setText(text);
-               // coParam.setInjectionVolumn((unsigned char)value);
-                config->setNumValue("CO|InjectionTempSource",value);/*保存数据*/
-            }
-            else
-            {
-                IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.0-27.0", QStringList(trs("EnglishYESChineseSURE")));
-                messageBox.exec();
-            }
 
+        if (ok && value >= 1 && value <= 200)
+        {
+            _injectionVolumn->button->setText(text);
+            config->setNumValue("CO|InjectionTempSource",value);/*保存数据*/
+        }
+        else
+        {
+            IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.0-27.0", QStringList(trs("EnglishYESChineseSURE")));
+            messageBox.exec();
         }
     }
 }
-
-/**************************************************************************************************
- * 开始测量槽函数。
- *************************************************************************************************/
-void ConfigCOMenu::_startReleased(void)
-{
-    coParam.measureCtrl(_measureSta);
-    if (_measureSta == CO_INST_START)
-    {
-        _start->setText(trs("Cancel"));
-        _measureSta = CO_INST_END;
-    }
-    else if (_measureSta == CO_INST_END)
-    {
-        _start->setText(trs("COStart"));
-        _measureSta = CO_INST_START;
-    }
-}
-

@@ -23,11 +23,11 @@ void ConfigEditUnitSetupMenu::_hightUnitSlot(int index)
     Config *config = configEditMenuGrp.getCurrentEditConfig();
     if(index==0)
     {
-        index = UnitType(UNIT_CM);
+        index = UNIT_CM;
     }
     else if(index==1)
     {
-        index = UnitType(UNIT_INCH);
+        index = UNIT_INCH;
     }
     config->setNumValue("Unit|HightUnit",index);
 }
@@ -40,11 +40,11 @@ void ConfigEditUnitSetupMenu::_weightUnitSlot(int index)
     Config *config = configEditMenuGrp.getCurrentEditConfig();
     if(index==0)
     {
-        index = UnitType(UNIT_KG);
+        index = UNIT_KG;
     }
     else if(index==1)
     {
-        index = UnitType(UNIT_LB);
+        index = UNIT_LB;
     }
     config->setNumValue("Unit|WeightUnit",index);
 }
@@ -57,11 +57,11 @@ void ConfigEditUnitSetupMenu::_stUnitSlot(int index)
     Config *config = configEditMenuGrp.getCurrentEditConfig();
     if(index==0)
     {
-        index = UnitType(UNIT_MV);
+        index = UNIT_MV;
     }
     else if(index==1)
     {
-        index = UnitType(UNIT_MM);
+        index = UNIT_MM;
     }
     config->setNumValue("Unit|STUnit",index);
 }
@@ -74,15 +74,15 @@ void ConfigEditUnitSetupMenu::_pressureUnitSlot(int index)
     Config *config = configEditMenuGrp.getCurrentEditConfig();
     if(index==0)
     {
-        index = UnitType(UNIT_MMHG);
+        index = UNIT_MMHG;
     }
     else if(index==1)
     {
-        index = UnitType(UNIT_KPA);
+        index = UNIT_KPA;
     }
     else
     {
-        index = UnitType(UNIT_MMHG);
+        index = UNIT_MMHG;
     }
     config->setNumValue("Unit|PressureUnit",index);
 }
@@ -95,15 +95,15 @@ void ConfigEditUnitSetupMenu::_temperatureUnitSlot(int index)
     Config *config = configEditMenuGrp.getCurrentEditConfig();
     if(index==0)
     {
-        index = UnitType(UNIT_TF);
+        index = UNIT_TF;
     }
     else if(index==1)
     {
-        index = UnitType(UNIT_TC);
+        index = UNIT_TC;
     }
     else
     {
-        index = UnitType(UNIT_TF);
+        index = UNIT_TF;
     }
     config->setNumValue("Unit|TemperatureUnit",index);
 }
@@ -116,19 +116,19 @@ void ConfigEditUnitSetupMenu::_cvpUnitSlot(int index)
     Config *config = configEditMenuGrp.getCurrentEditConfig();
     if(index==0)
     {
-        index = UnitType(UNIT_MMHG);
+        index = UNIT_MMHG;
     }
     else if(index==1)
     {
-        index = UnitType(UNIT_KPA);
+        index = UNIT_KPA;
     }
     else if(index ==2)
     {
-        index = UnitType(UNIT_CMH2O);
+        index = UNIT_CMH2O;
     }
     else
     {
-        index = UnitType(UNIT_MMHG);
+        index = UNIT_MMHG;
     }
     config->setNumValue("Unit|CVPUnit",index);
 }
@@ -141,19 +141,19 @@ void ConfigEditUnitSetupMenu::_icpUnitSlot(int index)
     Config *config = configEditMenuGrp.getCurrentEditConfig();
     if(index==0)
     {
-        index = UnitType(UNIT_MMHG);
+        index = UNIT_MMHG;
     }
     else if(index==1)
     {
-        index = UnitType(UNIT_KPA);
+        index = UNIT_KPA;
     }
     else if(index ==2)
     {
-        index = UnitType(UNIT_CMH2O);
+        index = UNIT_CMH2O;
     }
     else
     {
-        index = UnitType(UNIT_MMHG);
+        index = UNIT_MMHG;
     }
     config->setNumValue("Unit|ICPUnit",index);
 }
@@ -166,19 +166,19 @@ void ConfigEditUnitSetupMenu::_co2UnitSlot(int index)
     Config *config = configEditMenuGrp.getCurrentEditConfig();
     if(index==0)
     {
-        index = UnitType(UNIT_MMHG);
+        index = UNIT_MMHG;
     }
     else if(index==1)
     {
-        index = UnitType(UNIT_KPA);
+        index = UNIT_KPA;
     }
     else if(index ==2)
     {
-        index = UnitType(UNIT_PERCENT);
+        index = UNIT_PERCENT;
     }
     else
     {
-        index = UnitType(UNIT_MMHG);
+        index = UNIT_MMHG;
     }
     config->setNumValue("Unit|CO2Unit",index);
 }

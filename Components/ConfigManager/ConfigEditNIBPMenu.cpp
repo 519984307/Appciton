@@ -55,7 +55,6 @@ void ConfigEditNIBPMenuPrivate::loadOptions()
     index  = 0;
     if (combos[NBIPInitialCuff]->count() == 0)
     {
-      //  combos[NBIPInitialCuff]->addItem(trs("OFF"));
         for(int i = 0; i < NIBP_INIT_PRE_NR; i++)
         {
             int time = 120 + 20 * i;
@@ -115,13 +114,6 @@ void ConfigEditNIBPMenu::layoutExec()
 void ConfigEditNIBPMenu::readyShow()
 {
     d_ptr->loadOptions();
-}
-
-void ConfigEditNIBPMenu::onBtnClick()
-{
-    //LButtonEx *btn = qobject_cast<LButtonEx *>(sender());
-
-
 }
 
 void ConfigEditNIBPMenu::onComboListConfigChanged(int index)

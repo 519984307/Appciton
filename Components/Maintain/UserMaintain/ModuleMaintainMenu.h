@@ -1,5 +1,6 @@
 #pragma once
 #include "SubMenu.h"
+#include "CODefine.h"
 
 class LabelButton;
 class IComboList;
@@ -33,6 +34,10 @@ private slots:
     void _isNIBPLeakageDetectionSlot(void);
     void _isECGModuleCalibrationSlot(void);
     void _isTouchScreenCalibrationSlot(void);
+    /**
+     * @brief _startReleased  开始测量改变方法
+     */
+    void _startReleased(void);
 
 private:
     ModuleMaintainMenu();
@@ -44,6 +49,8 @@ private:
     LabelButton  *_nibpLeakageDetection;              //NIBP漏气检测
     LabelButton  *_ecgModuleCalibration;              //ECG模块校准
     LabelButton  *_touchScreenCalibration;            //触摸屏模块校准
+    LabelButton  *_start;                             //CO开始测量
+    COInstCtl    _measureSta;                         // 测量状态
 
 };
 #define moduleMaintainMenu (ModuleMaintainMenu::construction())
