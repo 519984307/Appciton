@@ -60,7 +60,29 @@ public:
      */
     TrendGraphAxisInfo getAxisInfo(const RecordPage *page, const TrendGraphPageGenerator::TrendGraphInfo & graphInfo, bool onTop);
 
-    void drawTrendValue(QPainter *painter, const TrendGraphAxisInfo &axisInfo, const TrendGraphPageGenerator::TrendGraphInfo &graphInfo);
+    void drawTrendValue(QPainter *painter, const TrendGraphPageGenerator::TrendGraphInfo &graphInfo);
+
+    qreal timestampToX(unsigned t)
+    {
+        return (t - startTime) * 1.0 * (endTime - startTime) / AXIS_X_WIDTH;
+    }
+
+    qreal mapTrendYValue(TrendDataType val, const TrendGraphPageGenerator::TrendGraphInfo & graphInfo)
+    {
+        int axisH = AXIS_Y_SECTION_HEIGHT * AXIS_Y_SECTION_NUM;
+        qreal mapH = (val -  graphInfo.scale.min) * 1.0 * (graphInfo.scale.max - graphInfo.scale.min) / axisH;
+        if(mapH > axisH)
+        {
+            mapH = axisH;
+        }
+        else if(mapH < 0)
+        {
+            mapH = 0.0;
+        }
+        return - mapH;
+    }
+
+    QList<QPainterPath> generatePainterPath(const TrendGraphPageGenerator::TrendGraphInfo &graphInfo);
 
     RecordPage *drawGraphPage();
 
@@ -70,7 +92,6 @@ public:
     unsigned endTime;
     unsigned deltaT;
     QList<TrendGraphPageGenerator::TrendGraphInfo> trendGraphInfos;
-    QList<TrendGraphAxisInfo> axisInfos;
     int curDrawnGraph;
     int marginLeft;
 };
@@ -237,24 +258,193 @@ TrendGraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage 
     return axisInfo;
 }
 
-static inline qreal mapTrendValue(short val, int max, int min, const TrendGraphAxisInfo &axiInfo)
+#define isEqual(a, b) (qAbs((a)-(b)) < 0.000001)
+
+QList<QPainterPath> TrendGraphPageGeneratorPrivate::generatePainterPath(const TrendGraphPageGenerator::TrendGraphInfo &graphInfo)
 {
+    QList<QPainterPath> paths;
 
-}
-
-void TrendGraphPageGeneratorPrivate::drawTrendValue(QPainter *painter, const TrendGraphAxisInfo &axisInfo, const TrendGraphPageGenerator::TrendGraphInfo &graphInfo)
-{
-    painter->save();
-    const QVector<short> &trendData = graphInfo.trendData;
-    qreal deltaX = trendData.size() / axisInfo.width;
-
-    for(int i = 0; i < trendData.size(); i++)
+    switch (graphInfo.subParamID) {
+    case SUB_PARAM_NIBP_DIA:
     {
+        QPainterPath path;
+
+        QVector<TrendGraphPageGenerator::TrendGraphDataV3>::ConstIterator iter = graphInfo.trendDataV3.constBegin();
+        for(;iter != graphInfo.trendDataV3.constEnd(); iter++)
+        {
+            if(iter->data[0] == InvData())
+            {
+                continue;
+            }
+
+            qreal x = timestampToX(iter->timestamp);
+            qreal sys = mapTrendYValue(iter->data[0], graphInfo);
+            qreal dia = mapTrendYValue(iter->data[1], graphInfo);
+            qreal map = mapTrendYValue(iter->data[2], graphInfo);
+
+            //draw nibp symbol
+            path.moveTo(x - TICK_LENGTH / 2, sys - 0.866 * TICK_LENGTH);
+            path.lineTo(x, sys);
+            path.lineTo(x + TICK_LENGTH / 2, sys - 0.866 * TICK_LENGTH);
+
+            path.moveTo(x - TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
+            path.lineTo(x, dia);
+            path.moveTo(x + TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
+
+            path.moveTo(x, sys);
+            path.lineTo(x, dia);
+
+            path.moveTo(x - TICK_LENGTH / 2, map);
+            path.lineTo(x + TICK_LENGTH / 2, map);
+        }
+        paths.append(path);
+    }
+        break;
+    case SUB_PARAM_ART_SYS:
+    case SUB_PARAM_PA_SYS:
+    case SUB_PARAM_AUXP1_SYS:
+    case SUB_PARAM_AUXP2_SYS:
+    {
+        QPainterPath sysPath;
+        QPainterPath diaPath;
+        QPainterPath mapPath;
+
+        bool lastPointInvalid = true;
+        QPointF sysLastPoint;
+        QPointF diaLastPoint;
+        QPointF mapLastPoint;
+
+        QVector<TrendGraphPageGenerator::TrendGraphDataV3>::ConstIterator iter = graphInfo.trendDataV3.constBegin();
+        for(;iter != graphInfo.trendDataV3.constEnd(); iter++)
+        {
+            if(iter->data[0] == InvData())
+            {
+                if(!lastPointInvalid)
+                {
+                    sysPath.lineTo(sysLastPoint);
+                    diaPath.lineTo(diaLastPoint);
+                    mapPath.lineTo(mapLastPoint);
+                    lastPointInvalid = true;
+                }
+                continue;
+            }
+
+            qreal x = timestampToX(iter->timestamp);
+            qreal sys = mapTrendYValue(iter->data[0], graphInfo);
+            qreal dia = mapTrendYValue(iter->data[1], graphInfo);
+            qreal map = mapTrendYValue(iter->data[2], graphInfo);
+
+            if(lastPointInvalid)
+            {
+                sysPath.moveTo(x, sys);
+                diaPath.moveTo(x, dia);
+                mapPath.moveTo(x, map);
+                lastPointInvalid = false;
+            }
+            else
+            {
+                if(!isEqual(sysLastPoint.y(), sys))
+                {
+                    sysPath.lineTo(x, sys);
+                }
+
+                if(!isEqual(diaLastPoint.y(), dia))
+                {
+                    diaPath.lineTo(x, dia);
+                }
+
+                if(!isEqual(mapLastPoint.y(), map))
+                {
+                    mapPath.lineTo(x, map);
+                }
+            }
+
+            sysLastPoint.rx() = x;
+            sysLastPoint.ry() = sys;
+            diaLastPoint.rx() = x;
+            diaLastPoint.ry() = dia;
+            mapLastPoint.rx() = x;
+            mapLastPoint.ry() = map;
+        }
+
+        if(!lastPointInvalid)
+        {
+            sysPath.lineTo(sysLastPoint);
+            diaPath.lineTo(diaLastPoint);
+            mapPath.lineTo(mapLastPoint);
+        }
+
+        paths.append(sysPath);
+        paths.append(diaPath);
+        paths.append(mapPath);
 
     }
+        break;
+    default:
+    {
+        QPainterPath path;
 
+        QPointF lastPoint;
+        bool lastPointInvalid = true;
+        QVector<TrendGraphPageGenerator::TrendGraphData>::ConstIterator iter =  graphInfo.trendData.constBegin();
+        for(; iter != graphInfo.trendData.constEnd(); iter++)
+        {
+            if(iter->data == InvData())
+            {
+                if(!lastPointInvalid)
+                {
+                    path.lineTo(lastPoint);
+                    lastPointInvalid = true;
+                }
+                continue;
+            }
+
+            qreal x = timestampToX(iter->timestamp);
+            qreal y = mapTrendYValue(iter->data, graphInfo);
+
+            if(lastPointInvalid)
+            {
+                path.moveTo(x, y);
+            }
+            else
+            {
+                if(!isEqual(lastPoint.y(), y))
+                {
+                    path.lineTo(x, y);
+                }
+            }
+
+            lastPoint.rx() = x;
+            lastPoint.ry() = y;
+        }
+
+        if(!lastPointInvalid)
+        {
+            path.lineTo(lastPoint);
+        }
+
+        paths.append(path);
+    }
+        break;
+    }
+
+    return paths;
+}
+
+void TrendGraphPageGeneratorPrivate::drawTrendValue(QPainter *painter, const TrendGraphPageGenerator::TrendGraphInfo &graphInfo)
+{
+    painter->save();
+    painter->setPen(Qt::white);
+    painter->setBrush(Qt::NoBrush);
+    QList<QPainterPath> paths = generatePainterPath(graphInfo);
+    QList<QPainterPath>::ConstIterator iter;
+    for(iter = paths.constBegin(); iter != paths.constEnd(); iter++)
+    {
+        painter->drawPath(*iter);
+    }
     painter->restore();
 }
+
 
 RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
 {
@@ -279,13 +469,13 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
         drawAxis(&painter, axisInfo);
 
         //draw graph
-        drawTrendValue(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph));
+        drawTrendValue(&painter, trendGraphInfos.at(curDrawnGraph));
 
         curDrawnGraph++;
 
         axisInfo = getAxisInfo(page, trendGraphInfos.at(curDrawnGraph), false);
         drawAxis(&painter, axisInfo);
-        drawTrendValue(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph));
+        drawTrendValue(&painter, trendGraphInfos.at(curDrawnGraph));
         curDrawnGraph++;
     }
     else
@@ -293,7 +483,7 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
         //draw only one graph
         TrendGraphAxisInfo axisInfo = getAxisInfo(page, trendGraphInfos.at(curDrawnGraph), true);
         drawAxis(&painter, axisInfo);
-        drawTrendValue(&painter, axisInfo, trendGraphInfos.at(curDrawnGraph));
+        drawTrendValue(&painter, trendGraphInfos.at(curDrawnGraph));
         curDrawnGraph++;
     }
 

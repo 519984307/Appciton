@@ -12,6 +12,18 @@ public:
         Type = 3
     };
 
+    struct TrendGraphData
+    {
+        unsigned timestamp;
+        TrendDataType data;
+    };
+
+    struct TrendGraphDataV3     //trend graph draw 3 values
+    {
+        unsigned timestamp;
+        TrendDataType data[3];
+    };
+
     struct TrendGraphInfo
     {
         SubParamID subParamID;
@@ -20,7 +32,8 @@ public:
             int max;
             int min;
         } scale;
-        QVector<short> trendData;
+        QVector<TrendGraphData> trendData;
+        QVector<TrendGraphDataV3> trendDataV3;
     };
 
     TrendGraphPageGenerator(IStorageBackend *backend, const QList<TrendGraphInfo>& trendInfos, unsigned startTime, unsigned endTime, QObject *parent = NULL);
