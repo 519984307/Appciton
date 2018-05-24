@@ -11,7 +11,7 @@ class IBPTrendWidget: public TrendWidget
 
 public:
     // 设置测量实时数据。
-    void setData(unsigned short sys, unsigned short dia, unsigned short map);
+    void setData(short sys, short dia, short map);
 
     // 设置标名。
     void setEntitle(IBPPressureName entitle);

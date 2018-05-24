@@ -3,6 +3,8 @@
 #include "IBPParam.h"
 #include "COParam.h"
 
+#define     INVALID     0xff9d
+
 enum  // 位操作。
 {
     BIT0 = 0x01,
@@ -193,15 +195,15 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
         }
         case IBP_RSP_RESULT_DATA:
         {
-            unsigned short sys = (data[4] << 8) | data[5];
-            unsigned short dia = (data[6] << 8) | data[7];
-            unsigned short mean = (data[8] << 8) | data[9];
-            unsigned short pr = (data[10] << 8) | data[11];
+            short sys = (data[4] << 8) | data[5] == INVALID ? InvData() : (data[4] << 8) | data[5] - 100;
+            short dia = (data[6] << 8) | data[7] == INVALID ? InvData() : (data[6] << 8) | data[7] - 100;
+            short mean = (data[8] << 8) | data[9] == INVALID ? InvData() : (data[8] << 8) | data[9] - 100;
+            short pr = (data[10] << 8) | data[11] == INVALID ? InvData() : (data[10] << 8) | data[11] - 100;
             ibpParam.setRealTimeData(sys, dia, mean, pr, IBP_INPUT_1);
-            sys = (data[12] << 8) | data[13];
-            dia = (data[14] << 8) | data[15];
-            mean = (data[16] << 8) | data[17];
-            pr = (data[18] << 8) | data[19];
+            sys = (data[12] << 8) | data[13] == INVALID ? InvData() : (data[12] << 8) | data[13] - 100;
+            dia = (data[14] << 8) | data[15] == INVALID ? InvData() : (data[14] << 8) | data[15] - 100;
+            mean = (data[16] << 8) | data[17] == INVALID ? InvData() : (data[16] << 8) | data[17] - 100;
+            pr = (data[18] << 8) | data[19] == INVALID ? InvData() : (data[18] << 8) | data[19] - 100;
             ibpParam.setRealTimeData(sys, dia, mean, pr, IBP_INPUT_2);
             break;
         }

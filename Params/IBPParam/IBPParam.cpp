@@ -137,14 +137,14 @@ void IBPParam::handDemoWaveform(WaveformID id, short data)
 void IBPParam::handDemoTrendData()
 {
     _trendWidgetIBP1->setZeroFlag(true);
-    _ibp1.sys = qrand() % 15 + 205;
-    _ibp1.dia = qrand() % 15 + 175;
-    _ibp1.mean = qrand() % 15 + 190;
-    _ibp1.pr = qrand() % 15 + 170;
-    _ibp2.sys = qrand() % 15 + 205;
-    _ibp2.dia = qrand() % 15 + 175;
-    _ibp2.mean = qrand() % 15 + 190;
-    _ibp2.pr = qrand() % 15 + 170;
+    _ibp1.sys = qrand() % 15 + 105;
+    _ibp1.dia = qrand() % 15 + 75;
+    _ibp1.mean = qrand() % 15 + 90;
+    _ibp1.pr = qrand() % 15 + 70;
+    _ibp2.sys = qrand() % 15 + 105;
+    _ibp2.dia = qrand() % 15 + 75;
+    _ibp2.mean = qrand() % 15 + 90;
+    _ibp2.pr = qrand() % 15 + 70;
 
     if (NULL != _trendWidgetIBP1 && NULL != _trendWidgetIBP2)
     {

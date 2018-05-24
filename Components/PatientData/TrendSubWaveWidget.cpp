@@ -433,6 +433,27 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
             }
         }
     }
+    else if (_info.type == TREND_GRAPH_TYPE_ART_IBP)
+    {
+        for (int i = 0; i < _size - 1; i ++)
+        {
+            if (_trendWaveBuf[i].y() != InvData() && _trendWaveBuf[i + 1].y() != InvData())
+            {
+                barPainter.drawLine(_trendWaveBuf[i].x(), _trendWaveBuf[i].y(),
+                                    _trendWaveBuf[i + 1].x(), _trendWaveBuf[i + 1].y());
+            }
+            if (_trendWaveBufSecond[i].y() != InvData() && _trendWaveBufSecond[i + 1].y() != InvData())
+            {
+                barPainter.drawLine(_trendWaveBufSecond[i].x(), _trendWaveBufSecond[i].y(),
+                                    _trendWaveBufSecond[i + 1].x(), _trendWaveBufSecond[i + 1].y());
+            }
+            if (_trendWaveBufThird[i].y() != InvData() && _trendWaveBufThird[i + 1].y() != InvData())
+            {
+                barPainter.drawLine(_trendWaveBufThird[i].x(), _trendWaveBufThird[i].y(),
+                                    _trendWaveBufThird[i + 1].x(), _trendWaveBufThird[i + 1].y());
+            }
+        }
+    }
     barPainter.setPen(QPen(_color, 1, Qt::SolidLine));
 
     QFont font;

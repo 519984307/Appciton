@@ -10,12 +10,10 @@
 #include <QDebug>
 #include <QGroupBox>
 
-#define     INVALID     0xff9d
-
 /**************************************************************************************************
  * 设置测量结果的数据。
  *************************************************************************************************/
-void IBPTrendWidget::setData(unsigned short sys, unsigned short dia, unsigned short map)
+void IBPTrendWidget::setData(short sys, short dia, short map)
 {
     if((_entitle < IBP_PRESSURE_CVP) || (_entitle > IBP_PRESSURE_ICP))
     {
@@ -23,7 +21,7 @@ void IBPTrendWidget::setData(unsigned short sys, unsigned short dia, unsigned sh
         {
             setShowStacked(0);
         }
-        else if ((sys == INVALID) || (dia == INVALID) || (map == INVALID))
+        else if ((sys == InvData()) || (dia == InvData()) || (map == InvData()))
         {
             setShowStacked(1);
             _sysString = InvStr();
@@ -32,9 +30,9 @@ void IBPTrendWidget::setData(unsigned short sys, unsigned short dia, unsigned sh
         }
         else
         {
-            short calSys = sys - 100;
-            short calDia = dia - 100;
-            short calMap = map - 100;
+            short calSys = sys;
+            short calDia = dia;
+            short calMap = map;
             setShowStacked(1);
             _sysString = QString::number(calSys);
             _diaString = QString::number(calDia);
@@ -47,7 +45,7 @@ void IBPTrendWidget::setData(unsigned short sys, unsigned short dia, unsigned sh
         {
             setShowStacked(0);
         }
-        else if (map == INVALID)
+        else if (map == InvData())
         {
             setShowStacked(2);
            _veinString = InvStr();
