@@ -491,7 +491,7 @@ bool ConfigExportImportMenu::insertFileFromUSB()
        addTimeLogg();
        _textStream << QString("%1 open failed!!!\r\n").arg(fileLocal.fileName());
     }
-    if(_localXml.setContent(&fileLocal)<0)
+    if(!_localXml.setContent(&fileLocal))
     {
         addTimeLogg();
         _textStream << QString("%1 parser failed!!!\r\n").arg(fileLocal.fileName());
@@ -517,7 +517,7 @@ bool ConfigExportImportMenu::insertFileFromUSB()
                     addTimeLogg();
                     _textStream << QString("%1 open failed!!!\r\n").arg(file_import.fileName());
                 }
-                if(_importXml.setContent(&file_import)<0)
+                if(!_importXml.setContent(&file_import))
                 {
                     addTimeLogg();
                     _textStream << QString("%1 parser failed!!!\r\n").arg(file_import.fileName());

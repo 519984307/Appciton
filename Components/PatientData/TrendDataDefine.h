@@ -1,6 +1,7 @@
 #pragma once
 #include "BaseDefine.h"
 #include "ParamDefine.h"
+#include "UnitManager.h"
 
 /* data structure to store each sub param value */
 struct TrendValueSegment
@@ -87,6 +88,37 @@ enum TrendGraphType
     TREND_GRAPH_TYPE_NIBP,
     TREND_GRAPH_TYPE_ART_IBP,           // IBP动脉类型
     TREND_GRAPH_TYPE_AG_TEMP,
+};
+
+
+struct TrendGraphData
+{
+    unsigned timestamp;
+    TrendDataType data;
+};
+
+struct TrendGraphDataV2     //trend graph draw 2 values
+{
+    unsigned timestamp;
+    TrendDataType data[2];
+};
+
+struct TrendGraphDataV3     //trend graph draw 3 values
+{
+    unsigned timestamp;
+    TrendDataType data[3];
+};
+
+struct TrendGraphInfo
+{
+    SubParamID subParamID;
+    UnitType unit;
+    struct {
+        int max;
+        int min;
+    } scale;
+    QVector<TrendGraphData> trendData;
+    QVector<TrendGraphDataV3> trendDataV3;
 };
 
 /* 趋势图子窗口信息*/

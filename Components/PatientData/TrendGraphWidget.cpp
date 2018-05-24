@@ -10,6 +10,8 @@
 
 #include "EventReviewWindow.h"
 #include "OxyCRGEventWidget.h"
+#include "TrendGraphPageGenerator.h"
+#include "RecorderManager.h"
 
 #define ITEM_HEIGHT             30
 #define ITEM_WIDTH              100
@@ -91,6 +93,12 @@ void TrendGraphWidget::_downReleased()
 void TrendGraphWidget::_printReleased()
 {
 
+    //QList<TrendGraphPageGenerator::TrendGraphInfo> infos;
+    //TrendGraphPageGenerator::TrendGraphInfo info;
+
+    //RecordPageGenerator *pageGenerator = new TrendGraphPageGenerator(infos, );
+
+    //recorderManager.addPageGenerator(pageGenerator);
 }
 
 TrendGraphWidget::TrendGraphWidget() : _waveWidget(NULL), _moveCoordinate(NULL),

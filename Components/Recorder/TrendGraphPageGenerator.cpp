@@ -39,7 +39,6 @@ class TrendGraphPageGeneratorPrivate
 public:
     TrendGraphPageGeneratorPrivate()
         :curPageType(RecordPageGenerator::TitlePage),
-        backend(NULL),
         startTime(0),
         endTime(0),
         deltaT(0),
@@ -58,16 +57,16 @@ public:
      * @param graphInfo graph info
      * @param onTop graph is on the top region or not
      */
-    TrendGraphAxisInfo getAxisInfo(const RecordPage *page, const TrendGraphPageGenerator::TrendGraphInfo & graphInfo, bool onTop);
+    TrendGraphAxisInfo getAxisInfo(const RecordPage *page, const TrendGraphInfo & graphInfo, bool onTop);
 
-    void drawTrendValue(QPainter *painter, const TrendGraphPageGenerator::TrendGraphInfo &graphInfo);
+    void drawTrendValue(QPainter *painter, const TrendGraphInfo &graphInfo);
 
     qreal timestampToX(unsigned t)
     {
         return (t - startTime) * 1.0 * (endTime - startTime) / AXIS_X_WIDTH;
     }
 
-    qreal mapTrendYValue(TrendDataType val, const TrendGraphPageGenerator::TrendGraphInfo & graphInfo)
+    qreal mapTrendYValue(TrendDataType val, const TrendGraphInfo & graphInfo)
     {
         int axisH = AXIS_Y_SECTION_HEIGHT * AXIS_Y_SECTION_NUM;
         qreal mapH = (val -  graphInfo.scale.min) * 1.0 * (graphInfo.scale.max - graphInfo.scale.min) / axisH;
@@ -82,16 +81,15 @@ public:
         return - mapH;
     }
 
-    QList<QPainterPath> generatePainterPath(const TrendGraphPageGenerator::TrendGraphInfo &graphInfo);
+    QList<QPainterPath> generatePainterPath(const TrendGraphInfo &graphInfo);
 
     RecordPage *drawGraphPage();
 
     RecordPageGenerator::PageType curPageType;
-    IStorageBackend *backend;
     unsigned startTime;
     unsigned endTime;
     unsigned deltaT;
-    QList<TrendGraphPageGenerator::TrendGraphInfo> trendGraphInfos;
+    QList<TrendGraphInfo> trendGraphInfos;
     int curDrawnGraph;
     int marginLeft;
 };
@@ -191,7 +189,7 @@ void TrendGraphPageGeneratorPrivate::drawAxis(QPainter *painter, const TrendGrap
 }
 
 #define GRAPH_SPACING 24
-TrendGraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page, const TrendGraphPageGenerator::TrendGraphInfo &graphInfo, bool onTop)
+TrendGraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page, const TrendGraphInfo &graphInfo, bool onTop)
 {
     //draw two graph
     TrendGraphAxisInfo axisInfo;
@@ -260,7 +258,7 @@ TrendGraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage 
 
 #define isEqual(a, b) (qAbs((a)-(b)) < 0.000001)
 
-QList<QPainterPath> TrendGraphPageGeneratorPrivate::generatePainterPath(const TrendGraphPageGenerator::TrendGraphInfo &graphInfo)
+QList<QPainterPath> TrendGraphPageGeneratorPrivate::generatePainterPath(const TrendGraphInfo &graphInfo)
 {
     QList<QPainterPath> paths;
 
@@ -269,7 +267,7 @@ QList<QPainterPath> TrendGraphPageGeneratorPrivate::generatePainterPath(const Tr
     {
         QPainterPath path;
 
-        QVector<TrendGraphPageGenerator::TrendGraphDataV3>::ConstIterator iter = graphInfo.trendDataV3.constBegin();
+        QVector<TrendGraphDataV3>::ConstIterator iter = graphInfo.trendDataV3.constBegin();
         for(;iter != graphInfo.trendDataV3.constEnd(); iter++)
         {
             if(iter->data[0] == InvData())
@@ -314,7 +312,7 @@ QList<QPainterPath> TrendGraphPageGeneratorPrivate::generatePainterPath(const Tr
         QPointF diaLastPoint;
         QPointF mapLastPoint;
 
-        QVector<TrendGraphPageGenerator::TrendGraphDataV3>::ConstIterator iter = graphInfo.trendDataV3.constBegin();
+        QVector<TrendGraphDataV3>::ConstIterator iter = graphInfo.trendDataV3.constBegin();
         for(;iter != graphInfo.trendDataV3.constEnd(); iter++)
         {
             if(iter->data[0] == InvData())
@@ -386,7 +384,7 @@ QList<QPainterPath> TrendGraphPageGeneratorPrivate::generatePainterPath(const Tr
 
         QPointF lastPoint;
         bool lastPointInvalid = true;
-        QVector<TrendGraphPageGenerator::TrendGraphData>::ConstIterator iter =  graphInfo.trendData.constBegin();
+        QVector<TrendGraphData>::ConstIterator iter =  graphInfo.trendData.constBegin();
         for(; iter != graphInfo.trendData.constEnd(); iter++)
         {
             if(iter->data == InvData())
@@ -431,7 +429,7 @@ QList<QPainterPath> TrendGraphPageGeneratorPrivate::generatePainterPath(const Tr
     return paths;
 }
 
-void TrendGraphPageGeneratorPrivate::drawTrendValue(QPainter *painter, const TrendGraphPageGenerator::TrendGraphInfo &graphInfo)
+void TrendGraphPageGeneratorPrivate::drawTrendValue(QPainter *painter, const TrendGraphInfo &graphInfo)
 {
     painter->save();
     painter->setPen(Qt::white);
@@ -490,12 +488,10 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
     return page;
 }
 
-TrendGraphPageGenerator::TrendGraphPageGenerator(IStorageBackend *backend,
-                                                 const QList<TrendGraphPageGenerator::TrendGraphInfo> &trendInfos,
+TrendGraphPageGenerator::TrendGraphPageGenerator(const QList<TrendGraphInfo> &trendInfos,
                                                  unsigned startTime, unsigned endTime, QObject *parent)
     :RecordPageGenerator(parent), d_ptr(new TrendGraphPageGeneratorPrivate)
 {
-    d_ptr->backend = backend;
     d_ptr->startTime = startTime;
     d_ptr->endTime = endTime;
     d_ptr->trendGraphInfos = trendInfos;
