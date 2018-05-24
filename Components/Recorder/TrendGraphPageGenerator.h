@@ -12,8 +12,6 @@ public:
         Type = 3
     };
 
-
-
     TrendGraphPageGenerator(const QList<TrendGraphInfo>& trendInfos, unsigned startTime, unsigned endTime, QObject *parent = NULL);
 
     ~TrendGraphPageGenerator();

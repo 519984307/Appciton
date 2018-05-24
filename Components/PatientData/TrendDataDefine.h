@@ -118,6 +118,7 @@ struct TrendGraphInfo
         int min;
     } scale;
     QVector<TrendGraphData> trendData;
+    QVector<TrendGraphDataV3> trendDataV2;
     QVector<TrendGraphDataV3> trendDataV3;
 };
 

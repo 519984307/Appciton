@@ -29,7 +29,6 @@ struct TrendGraphAxisInfo
     qreal height;
     qreal width;
     qreal marginLeft;
-    qreal marginBottom;
     QStringList yLabels;
     QStringList xLabels;
 };
@@ -59,17 +58,17 @@ public:
      */
     TrendGraphAxisInfo getAxisInfo(const RecordPage *page, const TrendGraphInfo & graphInfo, bool onTop);
 
-    void drawTrendValue(QPainter *painter, const TrendGraphInfo &graphInfo);
+    void drawTrendValue(QPainter *painter, const QPointF &origin, const TrendGraphInfo &graphInfo);
 
     qreal timestampToX(unsigned t)
     {
-        return (t - startTime) * 1.0 * (endTime - startTime) / AXIS_X_WIDTH;
+        return (t - startTime) * 1.0 * AXIS_X_WIDTH / (endTime - startTime);
     }
 
     qreal mapTrendYValue(TrendDataType val, const TrendGraphInfo & graphInfo)
     {
         int axisH = AXIS_Y_SECTION_HEIGHT * AXIS_Y_SECTION_NUM;
-        qreal mapH = (val -  graphInfo.scale.min) * 1.0 * (graphInfo.scale.max - graphInfo.scale.min) / axisH;
+        qreal mapH = (val -  graphInfo.scale.min) * 1.0 * axisH / (graphInfo.scale.max - graphInfo.scale.min);
         if(mapH > axisH)
         {
             mapH = axisH;
@@ -127,19 +126,20 @@ void TrendGraphPageGeneratorPrivate::drawAxis(QPainter *painter, const TrendGrap
     //draw arrow
     QPainterPath upArrow;
     upArrow.moveTo(0, -axisInfo.height);
-    upArrow.lineTo(-TICK_LENGTH, -axisInfo.height + TICK_LENGTH);
-    upArrow.lineTo(TICK_LENGTH, -axisInfo.height + TICK_LENGTH);
+    upArrow.lineTo(-TICK_LENGTH * 0.80, -axisInfo.height + TICK_LENGTH * 1.5);
+    upArrow.lineTo(TICK_LENGTH * 0.80, -axisInfo.height + TICK_LENGTH * 1.5);
     upArrow.lineTo(0, -axisInfo.height);
     painter->fillPath(upArrow, Qt::white);
     QPainterPath rightArrow;
     rightArrow.moveTo(axisInfo.width, 0);
-    rightArrow.lineTo(axisInfo.width - TICK_LENGTH, TICK_LENGTH);
-    rightArrow.lineTo(axisInfo.width - TICK_LENGTH, -TICK_LENGTH);
+    rightArrow.lineTo(axisInfo.width - TICK_LENGTH * 1.5, TICK_LENGTH * 0.80);
+    rightArrow.lineTo(axisInfo.width - TICK_LENGTH * 1.5, -TICK_LENGTH * 0.80);
     rightArrow.lineTo(axisInfo.width, 0);
     painter->fillPath(rightArrow, Qt::white);
 
     //draw labels
-    QFont font = painter->font();
+    QFont font = fontManager.recordFont(18);
+    painter->setFont(font);
     qreal fontH = fontManager.textHeightInPixels(font);
     qreal pixSize = font.pixelSize();
 
@@ -165,8 +165,8 @@ void TrendGraphPageGeneratorPrivate::drawAxis(QPainter *painter, const TrendGrap
         if(!axisInfo.xLabels.at(i).isEmpty())
         {
             QRectF rect;
-            rect.setTop(-TICK_LENGTH);
-            rect.setHeight(axisInfo.marginBottom);
+            rect.setTop(TICK_LENGTH);
+            rect.setHeight(fontH);
             rect.setLeft(sectionWidth - AXIS_X_SECTION_WIDTH / 2);
             rect.setRight(sectionWidth + AXIS_X_SECTION_WIDTH / 2);
             painter->drawText(rect, Qt::AlignHCenter|Qt::AlignTop, axisInfo.xLabels[i]);
@@ -195,22 +195,42 @@ TrendGraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage 
     TrendGraphAxisInfo axisInfo;
     SubParamID subParamID = graphInfo.subParamID;
     UnitType unit = graphInfo.unit;
+    QString name;
+
+    switch(subParamID)
+    {
+        case SUB_PARAM_NIBP_SYS:
+        name = paramInfo.getParamName(PARAM_NIBP);
+        break;
+        case SUB_PARAM_ART_SYS:
+        case SUB_PARAM_PA_SYS:
+        case SUB_PARAM_CVP_MAP:
+        case SUB_PARAM_LAP_MAP:
+        case SUB_PARAM_RAP_MAP:
+        case SUB_PARAM_AUXP1_SYS:
+        case SUB_PARAM_AUXP2_SYS:
+        name = paramInfo.getIBPPressName(subParamID);
+        break;
+        default:
+        name = paramInfo.getSubParamName(subParamID);
+        break;
+    }
+
     axisInfo.caption = QString("%1/%2")
-            .arg(trs(paramInfo.getSubParamName(subParamID)))
-            .arg(Unit::getSymbol(unit));
+            .arg(trs(name))
+            .arg(trs(Unit::getSymbol(unit)));
+
     axisInfo.height =  AXIS_Y_HEIGH;
     axisInfo.width = AXIS_X_WIDTH;
     axisInfo.marginLeft = marginLeft;
 
     if(onTop)
     {
-        axisInfo.marginBottom = 0;
-        axisInfo.origin = QPointF(marginLeft, page->height() / 2 - GRAPH_SPACING / 2);
+        axisInfo.origin = QPointF(marginLeft, page->height() / 2 - GRAPH_SPACING );
     }
     else
     {
-        axisInfo.origin = QPointF(marginLeft, page->height() /2 +  GRAPH_SPACING / 2 + AXIS_Y_HEIGH);
-        axisInfo.marginBottom = page->height() / 2 - GRAPH_SPACING / 2 -  AXIS_Y_HEIGH;
+        axisInfo.origin = QPointF(marginLeft, page->height() /2 + AXIS_Y_HEIGH);
 
         //calcuelate the x labels
         unsigned t = startTime;
@@ -263,7 +283,7 @@ QList<QPainterPath> TrendGraphPageGeneratorPrivate::generatePainterPath(const Tr
     QList<QPainterPath> paths;
 
     switch (graphInfo.subParamID) {
-    case SUB_PARAM_NIBP_DIA:
+    case SUB_PARAM_NIBP_SYS:
     {
         QPainterPath path;
 
@@ -287,7 +307,7 @@ QList<QPainterPath> TrendGraphPageGeneratorPrivate::generatePainterPath(const Tr
 
             path.moveTo(x - TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
             path.lineTo(x, dia);
-            path.moveTo(x + TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
+            path.lineTo(x + TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
 
             path.moveTo(x, sys);
             path.lineTo(x, dia);
@@ -403,6 +423,7 @@ QList<QPainterPath> TrendGraphPageGeneratorPrivate::generatePainterPath(const Tr
             if(lastPointInvalid)
             {
                 path.moveTo(x, y);
+                lastPointInvalid = false;
             }
             else
             {
@@ -429,7 +450,7 @@ QList<QPainterPath> TrendGraphPageGeneratorPrivate::generatePainterPath(const Tr
     return paths;
 }
 
-void TrendGraphPageGeneratorPrivate::drawTrendValue(QPainter *painter, const TrendGraphInfo &graphInfo)
+void TrendGraphPageGeneratorPrivate::drawTrendValue(QPainter *painter, const QPointF& origin, const TrendGraphInfo &graphInfo)
 {
     painter->save();
     painter->setPen(Qt::white);
@@ -438,7 +459,10 @@ void TrendGraphPageGeneratorPrivate::drawTrendValue(QPainter *painter, const Tre
     QList<QPainterPath>::ConstIterator iter;
     for(iter = paths.constBegin(); iter != paths.constEnd(); iter++)
     {
+        painter->save();
+        painter->translate(origin);
         painter->drawPath(*iter);
+        painter->restore();
     }
     painter->restore();
 }
@@ -467,21 +491,21 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
         drawAxis(&painter, axisInfo);
 
         //draw graph
-        drawTrendValue(&painter, trendGraphInfos.at(curDrawnGraph));
+        drawTrendValue(&painter, axisInfo.origin, trendGraphInfos.at(curDrawnGraph));
 
         curDrawnGraph++;
 
         axisInfo = getAxisInfo(page, trendGraphInfos.at(curDrawnGraph), false);
         drawAxis(&painter, axisInfo);
-        drawTrendValue(&painter, trendGraphInfos.at(curDrawnGraph));
+        drawTrendValue(&painter, axisInfo.origin, trendGraphInfos.at(curDrawnGraph));
         curDrawnGraph++;
     }
     else
     {
         //draw only one graph
-        TrendGraphAxisInfo axisInfo = getAxisInfo(page, trendGraphInfos.at(curDrawnGraph), true);
+        TrendGraphAxisInfo axisInfo = getAxisInfo(page, trendGraphInfos.at(curDrawnGraph), false);
         drawAxis(&painter, axisInfo);
-        drawTrendValue(&painter, trendGraphInfos.at(curDrawnGraph));
+        drawTrendValue(&painter, axisInfo.origin, trendGraphInfos.at(curDrawnGraph));
         curDrawnGraph++;
     }
 

@@ -30,6 +30,10 @@ public:
     void setRulerLimit(SubParamID, int down, int up);
 
     void loadTrendData(SubParamID);
+
+    //test purpose
+    const QList<TrendDataPackage *> &getTrendDatapacketList() {return _trendDataPack;}
+
 protected:
     void paintEvent(QPaintEvent *event);
     void showEvent(QShowEvent *e);
