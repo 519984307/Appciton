@@ -1344,6 +1344,11 @@ RecordPage *RecordPageGenerator::createWaveSegments(QList<RecordWaveSegmentInfo>
     return page;
 }
 
+RecordPage *RecordPageGenerator::createOxyCRGGraph(const QList<TrendGraphInfo> &trendGraphInfo, const OxyCRGWaveInfo &waveInfo)
+{
+    //TODO
+}
+
 RecordPage *RecordPageGenerator::createStringListSegemnt(const QStringList &strList)
 {
     QFont font = fontManager.recordFont(24);

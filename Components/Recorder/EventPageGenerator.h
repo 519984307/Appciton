@@ -9,7 +9,7 @@ class EventPageGenerator : public RecordPageGenerator
     Q_OBJECT
 public:
     enum {
-        Type = 2
+        Type = 3
     };
 
     EventPageGenerator(IStorageBackend *backend, int eventIndex, QObject *parent = 0);

@@ -84,6 +84,7 @@ public:
         TrendPage,
         TrendTablePage,
         TrendGraphPage,
+        TrendOxyCRGPage,
         WaveScalePage,
         WaveSegmentPage,
         EndPage,
@@ -189,6 +190,15 @@ protected:
      * @return page
      */
     static RecordPage *createWaveSegments(QList<RecordWaveSegmentInfo> &waveInfos, int segmentIndex, PrintSpeed speed);
+
+
+    /**
+     * @brief createOxyCRGGraph create the OxyCRG graph page
+     * @param trendGraphInfo the trend info, the list usually contian 2 items, hr and spo2
+     * @param waveInfo the OxyCRG wave info, resp or co2 wave, contains all the wave data for the OxyCRG duration
+     * @return page
+     */
+    static RecordPage *createOxyCRGGraph(const QList<TrendGraphInfo> &trendGraphInfo, const OxyCRGWaveInfo &waveInfo);
 
 
     /**

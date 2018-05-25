@@ -292,6 +292,7 @@ SOURCES +=                                                                      
     Components/Recorder/ContinuousPageGenerator.cpp                             \
     Components/Recorder/EventPageGenerator.cpp                                  \
     Components/Recorder/TrendTablePageGenerator.cpp                             \
+    Components/Recorder/OxyCRGPageGenerator.cpp                                 \
     Components/Recorder/TrendGraphPageGenerator.cpp                             \
     Components/Recorder/RecordPageProcessor.cpp                                 \
     Components/PdfWriter/HaruPdfWriter.cpp                                      \
@@ -763,6 +764,7 @@ HEADERS +=                                                                      
     Components/Recorder/ContinuousPageGenerator.h                               \
     Components/Recorder/EventPageGenerator.h                                    \
     Components/Recorder/TrendTablePageGenerator.h                               \
+    Components/Recorder/OxyCRGPageGenerator.h                                   \
     Components/Recorder/TrendGraphPageGenerator.h                               \
     Components/Recorder/RecordPageProcessor.h                                   \
     Components/PdfWriter/HaruPdfWriter.h                                        \

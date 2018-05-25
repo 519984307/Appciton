@@ -9,18 +9,18 @@ class TrendGraphPageGenerator : public RecordPageGenerator
 {
 public:
     enum {
-        Type = 3
+        Type = 5
     };
 
     TrendGraphPageGenerator(const QList<TrendGraphInfo>& trendInfos, unsigned startTime, unsigned endTime, QObject *parent = NULL);
 
     ~TrendGraphPageGenerator();
 
-    /* overide */
+    /* override */
     virtual int type() const;
 
 protected:
-    /* overide */
+    /* override */
     virtual RecordPage *createPage();
 
 private:

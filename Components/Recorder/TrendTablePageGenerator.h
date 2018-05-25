@@ -9,7 +9,7 @@ class TrendTablePageGenerator : public RecordPageGenerator
     Q_OBJECT
 public:
     enum {
-        Type = 3
+        Type = 4
     };
 
     TrendTablePageGenerator(IStorageBackend *backend, int startIndex, int stopIndex, QObject *parent = 0);
