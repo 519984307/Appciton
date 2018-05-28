@@ -2,8 +2,6 @@
 #include "BaseDefine.h"
 #include "ParamDefine.h"
 #include "UnitManager.h"
-#include "RESPDefine.h"
-#include "CO2Define.h"
 
 /* data structure to store each sub param value */
 struct TrendValueSegment
@@ -120,27 +118,15 @@ struct TrendGraphInfo
         int min;
     } scale;
     QVector<TrendGraphData> trendData;
-    QVector<TrendGraphDataV3> trendDataV2;
+    QVector<TrendGraphDataV2> trendDataV2;
     QVector<TrendGraphDataV3> trendDataV3;
-};
 
-struct OxyCRGWaveInfo
-{
-    WaveformID id;
-    int sampleRate;
-    int maxWaveValue;
-    int minWaveValue;
-    int waveBaseLine;
-    QVector<WaveDataType> waveData;
-    union {
-        struct {
-            RESPZoom zoom;
-        } resp;
-
-        struct {
-            CO2DisplayZoom zoom;
-        } co2;
-    } waveInfo;
+    void reset()
+    {
+        trendData.clear();
+        trendDataV2.clear();
+        trendDataV3.clear();
+    }
 };
 
 /* 趋势图子窗口信息*/
@@ -148,15 +134,10 @@ struct TrendSubWidgetInfo
 {
     TrendSubWidgetInfo()
     {
-        downRuler = 0;
-        upRuler = 100;
     }
-    SubParamID id;
-    TrendGraphType type;
+
     int xHead;
     int xTail;
     int yTop;
     int yBottom;
-    int downRuler;
-    int upRuler;
 };

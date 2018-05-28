@@ -29,10 +29,7 @@ public:
     void setWaveNumber(int num);
     void setRulerLimit(SubParamID, int down, int up);
 
-    void loadTrendData(SubParamID);
-
-    //test purpose
-    const QList<TrendDataPackage *> &getTrendDatapacketList() {return _trendDataPack;}
+    void loadTrendData(SubParamID id);
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -42,6 +39,8 @@ private:
     void _trendLayout(void);
     void _clearLayout(void);
     void _getTrendData(void);
+    void _initWaveSubWidget(void);
+    double _getCursorPos(unsigned t);               // 获取坐标位置
 
 private:
     QVBoxLayout *_mainLayout;
@@ -52,7 +51,7 @@ private:
     int _oneFrameWidth;
 
     unsigned _initTime;
-    int _cursorPosition;
+    int _cursorPosIndex;                            //游标位置在存储数据结构容器中的索引值
     unsigned _currentCursorTime;
 
     IWidget *_subWidget;
@@ -68,4 +67,10 @@ private:
     int _currentDisplayNum;                         // 当前显示数据量
     int _totalPage;                                 // 总数据页数
     int _currentPage;                               // 当前页数
+
+    unsigned _leftTime;                             // 趋势图左边时间
+    unsigned _rightTime;                            // 趋势图右边时间
+
+    QMap<SubParamID, TrendSubWaveWidget *> _subWidgetMap;       // 子波形窗口容器；
+    TrendGraphInfo _trendGraphInfo;                 // 趋势图数据集合
 };

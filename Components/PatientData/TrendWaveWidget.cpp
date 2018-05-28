@@ -20,7 +20,7 @@
 TrendWaveWidget::TrendWaveWidget() :
     _timeInterval(RESOLUTION_RATIO_5_SECOND),
     _initTime(0),
-    _cursorPosition(GRAPH_POINT_NUMBER), _currentCursorTime(0),
+    _cursorPosIndex(0), _currentCursorTime(0),
     _displayGraphNum(3), _totalGraphNum(3), _dataSize(0)
 {
     _initTime = timeDate.time();
@@ -66,7 +66,7 @@ TrendWaveWidget::TrendWaveWidget() :
 
     setLayout(_mainLayout);
 
-    _getTrendData();
+//    _getTrendData();
 
 }
 
@@ -81,7 +81,6 @@ TrendWaveWidget::~TrendWaveWidget()
 void TrendWaveWidget::changeTrendDisplay()
 {
     _getTrendData();
-    _clearLayout();
     _trendLayout();
 }
 
@@ -93,6 +92,8 @@ void TrendWaveWidget::setWidgetSize(int w, int h)
     setFixedSize(w, h);
     _waveRegionWidth = width()/5 * 4;
     _oneFrameWidth = GRAPH_DATA_WIDTH/GRAPH_DISPLAY_DATA_NUMBER;
+    //确认好窗口大小后初始化子波形窗口
+    _initWaveSubWidget();
 }
 
 /**************************************************************************************************
@@ -108,8 +109,8 @@ void TrendWaveWidget::leftMoveCoordinate()
     {
         _currentPage ++;
     }
-    _cursorPosition = GRAPH_POINT_NUMBER;
-    _clearLayout();
+//    _cursorPosition = GRAPH_POINT_NUMBER;
+//    _clearLayout();
     _trendLayout();
 
     update();
@@ -128,8 +129,8 @@ void TrendWaveWidget::rightMoveCoordinate()
     {
         _currentPage --;
     }
-    _cursorPosition = GRAPH_POINT_NUMBER;
-    _clearLayout();
+//    _cursorPosition = GRAPH_POINT_NUMBER;
+//    _clearLayout();
     _trendLayout();
 
     update();
@@ -141,16 +142,12 @@ void TrendWaveWidget::rightMoveCoordinate()
  *************************************************************************************************/
 void TrendWaveWidget::leftMoveCursor()
 {
-    if (_cursorPosition <= 0)
+    if (_cursorPosIndex <= 0)
     {
-        _cursorPosition = 0;
-    }
-    else if((GRAPH_POINT_NUMBER - _cursorPosition) == (_currentDisplayNum - 1) || (_currentDisplayNum == 0))
-    {
-        _cursorPosition = _cursorPosition;
+        _cursorPosIndex = 0;
     }
     else{
-        _cursorPosition --;
+        _cursorPosIndex --;
     }
 
     int count = _hLayoutTrend->count();
@@ -160,10 +157,9 @@ void TrendWaveWidget::leftMoveCursor()
         TrendSubWaveWidget *widget = dynamic_cast<TrendSubWaveWidget *>(item->widget());
         if (widget != NULL)
         {
-            widget->cursorMove(_cursorPosition);
+            widget->cursorMove(_cursorPosIndex);
         }
     }
-
     update();
 }
 
@@ -172,12 +168,12 @@ void TrendWaveWidget::leftMoveCursor()
  *************************************************************************************************/
 void TrendWaveWidget::rightMoveCursor()
 {
-    if (_cursorPosition >= GRAPH_POINT_NUMBER)
+    if (_cursorPosIndex >= _trendGraphInfo.trendData.count() - 1)
     {
-        _cursorPosition = GRAPH_POINT_NUMBER;
+        _cursorPosIndex = _trendGraphInfo.trendData.count() - 1;
     }
     else{
-        _cursorPosition ++;
+        _cursorPosIndex ++;
     }
 
     int count = _hLayoutTrend->count();
@@ -187,10 +183,9 @@ void TrendWaveWidget::rightMoveCursor()
         TrendSubWaveWidget *widget = dynamic_cast<TrendSubWaveWidget *>(item->widget());
         if (widget != NULL)
         {
-            widget->cursorMove(_cursorPosition);
+            widget->cursorMove(_cursorPosIndex);
         }
     }
-
     update();
 }
 
@@ -235,7 +230,7 @@ void TrendWaveWidget::updateTrendGraph()
 void TrendWaveWidget::setTimeInterval(ResolutionRatio timeInterval)
 {
     _timeInterval = timeInterval;
-    _cursorPosition = GRAPH_POINT_NUMBER;
+    _cursorPosIndex = GRAPH_POINT_NUMBER;
     changeTrendDisplay();
     update();
 }
@@ -258,7 +253,7 @@ void TrendWaveWidget::setRulerLimit(SubParamID id, int down, int up)
     for (int i = 0; i < count; i ++)
     {
         QLayoutItem *item = _hLayoutTrend->itemAt(i);
-        TrendSubWaveWidget *widget = dynamic_cast<TrendSubWaveWidget *>(item->widget());
+        TrendSubWaveWidget *widget = qobject_cast<TrendSubWaveWidget *>(item->widget());
         if (widget->getSubParamID() == id)
         {
             widget->setRulerRange(down, up);
@@ -272,25 +267,130 @@ void TrendWaveWidget::setRulerLimit(SubParamID id, int down, int up)
  *************************************************************************************************/
 void TrendWaveWidget::loadTrendData(SubParamID subID)
 {
-    int intervalNum = TrendDataSymbol::convertValue(_timeInterval)/TrendDataSymbol::convertValue(RESOLUTION_RATIO_5_SECOND);
-    _dataSize = _trendDataPack.length() / intervalNum - GRAPH_POINT_NUMBER * (_currentPage - 1);
-    if (_dataSize > GRAPH_POINT_NUMBER + 1)
+    // 开始和结尾的索引查找
+    int startIndex = InvData();
+    int endIndex = InvData();
+
+    // 二分查找时间索引
+    int lowPos = 0;
+    int highPos = _trendDataPack.count() - 1;
+    while(lowPos <= highPos)
     {
-        _dataSize = GRAPH_POINT_NUMBER + 1;
-    }
-    _dataBuf = new int[_dataSize];
-    int j = 0;
-    for (int i = _trendDataPack.length() - 1 - intervalNum * GRAPH_POINT_NUMBER * (_currentPage - 1); i  >= 0;
-         i = i - intervalNum)
-    {
-        _dataBuf[j] = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
-        j ++;
-        if (j == _dataSize)
+        int midPos = (lowPos + highPos)/2;
+        int timeDiff = qAbs(_leftTime - _trendDataPack.at(midPos)->time);
+
+        if (_leftTime < _trendDataPack.at(midPos)->time)
         {
+            highPos = midPos - 1;
+        }
+        else if (_leftTime > _trendDataPack.at(midPos)->time)
+        {
+            lowPos = midPos + 1;
+        }
+
+        if (timeDiff == 0 || lowPos > highPos)
+        {
+            startIndex = midPos;
             break;
         }
     }
-    _currentDisplayNum = j;
+
+    lowPos = 0;
+    highPos = _trendDataPack.count() - 1;
+    while(lowPos <= highPos)
+    {
+        int midPos = (lowPos + highPos)/2;
+        int timeDiff = qAbs(_rightTime - _trendDataPack.at(midPos)->time);
+
+        if (_rightTime < _trendDataPack.at(midPos)->time)
+        {
+            highPos = midPos - 1;
+        }
+        else if (_rightTime > _trendDataPack.at(midPos)->time)
+        {
+            lowPos = midPos + 1;
+        }
+
+        if (timeDiff == 0 || lowPos > highPos)
+        {
+            endIndex = midPos;
+            break;
+        }
+    }
+
+    if (startIndex == InvData() || endIndex == InvData())
+    {
+        return;
+    }
+
+    _trendGraphInfo.reset();
+    switch (subID)
+    {
+    case SUB_PARAM_HR_PR:
+    case SUB_PARAM_SPO2:
+    case SUB_PARAM_RR_BR:
+    case SUB_PARAM_CVP_MAP:
+    case SUB_PARAM_LAP_MAP:
+    case SUB_PARAM_RAP_MAP:
+    case SUB_PARAM_ICP_MAP:
+    {
+        TrendGraphData dataV1;
+        for(int i = startIndex; i <= endIndex; i ++)
+        {
+            dataV1.data = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
+            dataV1.timestamp = _trendDataPack.at(i)->time;
+            _trendGraphInfo.trendData.append(dataV1);
+            _trendGraphInfo.subParamID = subID;
+        }
+        break;
+    }
+    case SUB_PARAM_NIBP_MAP:
+    case SUB_PARAM_ART_MAP:
+    case SUB_PARAM_PA_MAP:
+    case SUB_PARAM_AUXP1_MAP:
+    case SUB_PARAM_AUXP2_MAP:
+    {        
+        TrendGraphData dataV1;
+        TrendGraphDataV3 dataV3;
+        for(int i = startIndex; i <= endIndex; i ++)
+        {
+            dataV3.data[0] = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
+            dataV3.data[1] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID - 1), InvData());
+            dataV3.data[2] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID - 2), InvData());
+            dataV3.timestamp = _trendDataPack.at(i)->time;            
+            dataV1.timestamp = _trendDataPack.at(i)->time;
+            _trendGraphInfo.trendData.append(dataV1);
+            _trendGraphInfo.trendDataV3.append(dataV3);
+            _trendGraphInfo.subParamID = subID;
+        }
+        break;
+    }
+    case SUB_PARAM_ETCO2:
+    case SUB_PARAM_ETN2O:
+    case SUB_PARAM_ETAA1:
+    case SUB_PARAM_ETAA2:
+    case SUB_PARAM_ETO2:
+    case SUB_PARAM_T1:
+    {
+        TrendGraphData dataV1;
+        TrendGraphDataV2 dataV2;
+        for(int i = startIndex; i <= endIndex; i ++)
+        {
+            dataV2.data[0] = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
+            dataV2.data[1] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 1), InvData());
+            dataV2.timestamp = _trendDataPack.at(i)->time;
+            dataV1.timestamp = _trendDataPack.at(i)->time;
+            _trendGraphInfo.trendData.append(dataV1);
+            _trendGraphInfo.trendDataV2.append(dataV2);
+            _trendGraphInfo.subParamID = subID;
+        }
+        break;
+    }
+    default:
+        break;
+    }
+
+    _cursorPosIndex = _trendGraphInfo.trendData.count() - 1;
 }
 
 /**************************************************************************************************
@@ -306,26 +406,29 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     QRect rectAdjust =rect().adjusted(0,30,0,0);
     barPainter.drawLine(rectAdjust.topLeft(), rectAdjust.topRight());
 
-    unsigned t;
-    int intervalNum = TrendDataSymbol::convertValue(_timeInterval)/TrendDataSymbol::convertValue(RESOLUTION_RATIO_5_SECOND);
-    if (_trendDataPack.length() == 0)
+//    int intervalNum = TrendDataSymbol::convertValue(_timeInterval)/TrendDataSymbol::convertValue(RESOLUTION_RATIO_5_SECOND);
+
+    double cursorPos;
+    if (_trendGraphInfo.trendData.count() - 1 < _cursorPosIndex)
     {
-        t = _initTime;
+        cursorPos = (_waveRegionWidth + GRAPH_DATA_WIDTH)/2;
     }
     else
     {
-        t = _trendDataPack.at(_trendDataPack.length() - 1 - intervalNum * GRAPH_POINT_NUMBER * (_currentPage - 1))->time;
+        cursorPos = _getCursorPos(_trendGraphInfo.trendData.at(_cursorPosIndex).timestamp);
     }
-    unsigned startT = t;
+
+    unsigned t = _rightTime;
     QString tStr;
     unsigned onePixelTime;
+    onePixelTime = TrendDataSymbol::convertValue(_timeInterval);
+//    unsigned startT = _rightTime;
     // 坐标刻度
     for (int i = GRAPH_DISPLAY_DATA_NUMBER; i >= 0; i --)
     {
         timeDate.getTime(t, tStr, true);
         barPainter.drawText(rectAdjust.topLeft().x() + (_waveRegionWidth - GRAPH_DATA_WIDTH)/2 + i * _oneFrameWidth - 30,
                             rectAdjust.topLeft().y() - 5, tStr);
-        onePixelTime = TrendDataSymbol::convertValue(_timeInterval);
         t = t - onePixelTime * GRAPH_POINT_NUMBER/GRAPH_DISPLAY_DATA_NUMBER;
         barPainter.drawLine(rectAdjust.topLeft().x() + (_waveRegionWidth -GRAPH_DATA_WIDTH)/2 + i * _oneFrameWidth,
                             rectAdjust.topLeft().y(), rectAdjust.topLeft().x() + (_waveRegionWidth -GRAPH_DATA_WIDTH)/2 + i * _oneFrameWidth,
@@ -333,14 +436,17 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     }
 
     // 游标线
-    barPainter.drawLine((_waveRegionWidth - GRAPH_DATA_WIDTH)/2 + _cursorPosition * DATA_INTERVAL_PIXEL, rectAdjust.topLeft().y(),
-                        (_waveRegionWidth - GRAPH_DATA_WIDTH)/2 + _cursorPosition * DATA_INTERVAL_PIXEL, rectAdjust.bottomLeft().y());
+    barPainter.drawLine(cursorPos, rectAdjust.topLeft().y(),
+                        cursorPos, rectAdjust.bottomLeft().y());
 
     // 当前趋势记录的时间
-    timeDate.getDate(startT - onePixelTime * (GRAPH_POINT_NUMBER - _cursorPosition), tStr);
-    barPainter.drawText(_waveRegionWidth + 5, rectAdjust.topLeft().y() - 5, tStr);
-    timeDate.getTime(startT - onePixelTime * (GRAPH_POINT_NUMBER - _cursorPosition), tStr, true);
-    barPainter.drawText(_waveRegionWidth + 120, rectAdjust.topLeft().y() - 5, tStr);
+    if (_cursorPosIndex < _trendGraphInfo.trendData.count())
+    {
+        timeDate.getDate(_trendGraphInfo.trendData.at(_cursorPosIndex).timestamp, tStr);
+        barPainter.drawText(_waveRegionWidth + 5, rectAdjust.topLeft().y() - 5, tStr);
+        timeDate.getTime(_trendGraphInfo.trendData.at(_cursorPosIndex).timestamp, tStr, true);
+        barPainter.drawText(_waveRegionWidth + 120, rectAdjust.topLeft().y() - 5, tStr);
+    }
 
 
     barPainter.setPen(QPen(Qt::white, 1, Qt::DotLine));
@@ -350,9 +456,25 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
 void TrendWaveWidget::showEvent(QShowEvent *e)
 {
     IWidget::showEvent(e);
-    _cursorPosition = GRAPH_POINT_NUMBER;
-    changeTrendDisplay();
-    update();
+    _getTrendData();
+    _cursorPosIndex = 0;
+
+    unsigned t;
+    if (_trendDataPack.length() == 0)
+    {
+        t = _initTime;
+    }
+    else
+    {
+        t = _trendDataPack.last()->time;
+//        t = _trendDataPack.at(_trendDataPack.length() - 1 - intervalNum * GRAPH_POINT_NUMBER * (_currentPage - 1))->time;
+    }
+    unsigned onePixelTime;
+    onePixelTime = TrendDataSymbol::convertValue(_timeInterval);
+    _rightTime = t;
+    _leftTime = t - onePixelTime * GRAPH_POINT_NUMBER;
+    _trendLayout();
+//    update();
 }
 
 /**************************************************************************************************
@@ -361,61 +483,31 @@ void TrendWaveWidget::showEvent(QShowEvent *e)
 void TrendWaveWidget::_trendLayout()
 {
     int subWidgetHeight = (height() - 30)/_displayGraphNum;
-
-    TrendSubWaveWidget *subWidget;
-    _totalGraphNum = 0;    
-    int *_dataBufSecond = NULL;
-    int *_dataBufThird = NULL;
-    for (int i = 0; i < SUB_PARAM_NR; i ++)
+    TrendSubWidgetInfo info;
+    info.xHead = (_waveRegionWidth -GRAPH_DATA_WIDTH)/2;
+    info.xTail = (_waveRegionWidth + GRAPH_DATA_WIDTH)/2;
+    info.yTop = subWidgetHeight/5;
+    info.yBottom = subWidgetHeight/5*4;
+    _totalGraphNum = 0;
+    QMap<SubParamID, TrendSubWaveWidget *>::iterator it = _subWidgetMap.begin();
+    for (; it != _subWidgetMap.end(); it ++)
     {
-        TrendSubWidgetInfo info;
-
-        info.id = (SubParamID)i;
-        info.xHead = (_waveRegionWidth -GRAPH_DATA_WIDTH)/2;
-        info.xTail = (_waveRegionWidth + GRAPH_DATA_WIDTH)/2;
-        info.yTop = subWidgetHeight/5;
-        info.yBottom = subWidgetHeight/5*4;
+        SubParamID subId = it.key();
         if (trendGraphSetWidget.getTrendGroup() == TREND_GROUP_RESP)
         {
-            switch (i)
+            switch (subId)
             {
             case SUB_PARAM_HR_PR:
             case SUB_PARAM_SPO2:
             case SUB_PARAM_RR_BR:
-                info.type = TREND_GRAPH_TYPE_NORMAL;
-                subWidget = new TrendSubWaveWidget(info);
-                loadTrendData((SubParamID)i);
-                subWidget->trendData(_dataBuf, _dataSize);
-                qFree(_dataBuf);
-                _dataBuf = NULL;
-                break;
             case SUB_PARAM_NIBP_MAP:
-                info.type = TREND_GRAPH_TYPE_NIBP;
-                subWidget = new TrendSubWaveWidget(info);
-                loadTrendData((SubParamID)(i - 1));
-                _dataBufSecond = _dataBuf;
-                loadTrendData((SubParamID)i);
-                _dataBufThird = _dataBuf;
-                loadTrendData((SubParamID)(i - 2));
-                subWidget->trendData(_dataBuf, _dataBufSecond, _dataBufThird, _dataSize);
-                qFree(_dataBuf);
-                qFree(_dataBufSecond);
-                qFree(_dataBufThird);
-                _dataBuf = NULL;
-                break;
             case SUB_PARAM_ETCO2:
-            case SUB_PARAM_T1:
-                info.type = TREND_GRAPH_TYPE_AG_TEMP;
-                subWidget = new TrendSubWaveWidget(info);
-                loadTrendData((SubParamID)(i + 1));
-                _dataBufSecond = _dataBuf;
-                loadTrendData((SubParamID)i);
-                subWidget->trendData(_dataBuf, _dataBufSecond,  _dataSize);
-                qFree(_dataBuf);
-                qFree(_dataBufSecond);
-                _dataBuf = NULL;
+            case SUB_PARAM_T1:                
+                loadTrendData(subId);
+                it.value()->trendDataInfo(_trendGraphInfo);
                 break;
             default:
+                it.value()->setVisible(false);
                 continue;
             }
         }
@@ -424,13 +516,14 @@ void TrendWaveWidget::_trendLayout()
             SubParamID ibp1;
             SubParamID ibp2;
             ibpParam.getSubParamID(ibp1, ibp2);
-            if (i != ibp1 && i != ibp2 &&
-                    i != SUB_PARAM_HR_PR && i != SUB_PARAM_SPO2 &&
-                    i != SUB_PARAM_NIBP_MAP && i != SUB_PARAM_T1)
+            if (subId != ibp1 && subId != ibp2 &&
+                    subId != SUB_PARAM_HR_PR && subId != SUB_PARAM_SPO2 &&
+                    subId != SUB_PARAM_NIBP_MAP && subId != SUB_PARAM_T1)
             {
+                it.value()->setVisible(false);
                 continue;
             }
-            switch (i)
+            switch (subId)
             {
             case SUB_PARAM_HR_PR:
             case SUB_PARAM_SPO2:
@@ -438,114 +531,49 @@ void TrendWaveWidget::_trendLayout()
             case SUB_PARAM_LAP_MAP:
             case SUB_PARAM_RAP_MAP:
             case SUB_PARAM_ICP_MAP:
-                info.type = TREND_GRAPH_TYPE_NORMAL;
-                subWidget = new TrendSubWaveWidget(info);
-                loadTrendData((SubParamID)i);
-                subWidget->trendData(_dataBuf, _dataSize);
-                qFree(_dataBuf);
-                _dataBuf = NULL;
-                break;
             case SUB_PARAM_NIBP_MAP:
-                info.type = TREND_GRAPH_TYPE_NIBP;
-                subWidget = new TrendSubWaveWidget(info);
-                loadTrendData((SubParamID)(i - 1));
-                _dataBufSecond = _dataBuf;
-                loadTrendData((SubParamID)(i - 2));
-                _dataBufThird = _dataBuf;
-                loadTrendData((SubParamID)i);
-                subWidget->trendData(_dataBuf, _dataBufSecond, _dataBufThird, _dataSize);
-                qFree(_dataBuf);
-                qFree(_dataBufSecond);
-                qFree(_dataBufThird);
-                _dataBuf = NULL;
-                break;
             case SUB_PARAM_T1:
-                info.type = TREND_GRAPH_TYPE_AG_TEMP;
-                subWidget = new TrendSubWaveWidget(info);
-                loadTrendData((SubParamID)(i + 1));
-                _dataBufSecond = _dataBuf;
-                loadTrendData((SubParamID)i);
-                subWidget->trendData(_dataBuf, _dataBufSecond,  _dataSize);
-                qFree(_dataBuf);
-                qFree(_dataBufSecond);
-                _dataBuf = NULL;
-                break;
             case SUB_PARAM_ART_MAP:
             case SUB_PARAM_PA_MAP:
             case SUB_PARAM_AUXP1_MAP:
-            case SUB_PARAM_AUXP2_MAP:
-                info.type = TREND_GRAPH_TYPE_ART_IBP;
-                subWidget = new TrendSubWaveWidget(info);
-                loadTrendData((SubParamID)(i - 1));
-                _dataBufSecond = _dataBuf;
-                loadTrendData((SubParamID)i);
-                _dataBufThird = _dataBuf;
-                loadTrendData((SubParamID)(i - 2));
-                subWidget->trendData(_dataBuf, _dataBufSecond, _dataBufThird, _dataSize);
-                qFree(_dataBuf);
-                qFree(_dataBufSecond);
-                qFree(_dataBufThird);
-                _dataBuf = NULL;
+            case SUB_PARAM_AUXP2_MAP:                
+                loadTrendData(subId);
+                it.value()->trendDataInfo(_trendGraphInfo);
                 break;
             default:
+                it.value()->setVisible(false);
                 continue;
             }
         }
         else if (trendGraphSetWidget.getTrendGroup() == TREND_GROUP_AG)
         {
-            switch (i)
+            switch (subId)
             {
             case SUB_PARAM_HR_PR:
             case SUB_PARAM_SPO2:
-                info.type = TREND_GRAPH_TYPE_NORMAL;
-                subWidget = new TrendSubWaveWidget(info);
-                loadTrendData((SubParamID)i);
-                subWidget->trendData(_dataBuf, _dataSize);
-                qFree(_dataBuf);
-                _dataBuf = NULL;
-                break;
             case SUB_PARAM_NIBP_MAP:
-                info.type = TREND_GRAPH_TYPE_NIBP;
-                subWidget = new TrendSubWaveWidget(info);
-                loadTrendData((SubParamID)(i + 1));
-                _dataBufSecond = _dataBuf;
-                loadTrendData((SubParamID)(i + 2));
-                _dataBufThird = _dataBuf;
-                loadTrendData((SubParamID)i);
-                subWidget->trendData(_dataBuf, _dataBufSecond, _dataBufThird, _dataSize);
-                qFree(_dataBuf);
-                qFree(_dataBufSecond);
-                qFree(_dataBufThird);
-                _dataBuf = NULL;
-                break;
             case SUB_PARAM_ETCO2:
             case SUB_PARAM_ETN2O:
             case SUB_PARAM_ETAA1:
             case SUB_PARAM_ETAA2:
             case SUB_PARAM_ETO2:
             case SUB_PARAM_T1:
-                info.type = TREND_GRAPH_TYPE_AG_TEMP;
-                subWidget = new TrendSubWaveWidget(info);
-                loadTrendData((SubParamID)(i + 1));
-                _dataBufSecond = _dataBuf;
-                loadTrendData((SubParamID)i);
-                subWidget->trendData(_dataBuf, _dataBufSecond,  _dataSize);
-                qFree(_dataBuf);
-                qFree(_dataBufSecond);
-                _dataBuf = NULL;
+                loadTrendData(subId);
+                it.value()->trendDataInfo(_trendGraphInfo);
                 break;
             default:
+                it.value()->setVisible(false);
                 continue;
             }
-        }        
-        subWidget->updateTrendGraph();
-        subWidget->setFixedHeight(subWidgetHeight);
-        subWidget->setVisible(true);
-        subWidget->setParent(this);
-        subWidget->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID((SubParamID)i))));
-        _hLayoutTrend->addWidget(subWidget);
+        }
+
+        it.value()->setFixedHeight(subWidgetHeight);
+        it.value()->loadTrendSubWidgetInfo(info);
+        it.value()->setTimeRange(_leftTime, _rightTime);
+        it.value()->setVisible(true);
         _totalGraphNum ++;
     }
+
 }
 
 /**************************************************************************************************
@@ -599,4 +627,59 @@ void TrendWaveWidget::_getTrendData()
     int displayDataNum = _trendDataPack.length() / intervalNum;
     _totalPage = (displayDataNum % GRAPH_POINT_NUMBER) ? ((displayDataNum / GRAPH_POINT_NUMBER) + 1) : (displayDataNum / GRAPH_POINT_NUMBER);
     _currentPage = 1;
+}
+
+void TrendWaveWidget::_initWaveSubWidget()
+{
+    TrendGraphType type;
+    for (int i = 0; i < SUB_PARAM_NR; i ++)
+    {
+        switch (i)
+        {
+        case SUB_PARAM_HR_PR:
+        case SUB_PARAM_SPO2:
+        case SUB_PARAM_RR_BR:
+        case SUB_PARAM_CVP_MAP:
+        case SUB_PARAM_LAP_MAP:
+        case SUB_PARAM_RAP_MAP:
+        case SUB_PARAM_ICP_MAP:
+            type = TREND_GRAPH_TYPE_NORMAL;
+            break;
+        case SUB_PARAM_NIBP_MAP:
+            type = TREND_GRAPH_TYPE_NIBP;
+            break;
+        case SUB_PARAM_ETCO2:
+        case SUB_PARAM_ETN2O:
+        case SUB_PARAM_ETAA1:
+        case SUB_PARAM_ETAA2:
+        case SUB_PARAM_ETO2:
+        case SUB_PARAM_T1:
+            type = TREND_GRAPH_TYPE_AG_TEMP;
+            break;
+        case SUB_PARAM_ART_MAP:
+        case SUB_PARAM_PA_MAP:
+        case SUB_PARAM_AUXP1_MAP:
+        case SUB_PARAM_AUXP2_MAP:
+            type = TREND_GRAPH_TYPE_ART_IBP;
+            break;
+        default:
+            continue;
+        }
+
+        TrendSubWaveWidget *subWidget = new TrendSubWaveWidget((SubParamID)i, type);
+        subWidget->setVisible(true);
+        subWidget->setParent(this);
+        subWidget->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID((SubParamID)i))));
+        subWidget->setFocusPolicy(Qt::NoFocus);
+        _subWidgetMap.insert((SubParamID)i, subWidget);
+        _hLayoutTrend->addWidget(subWidget);
+    }
+}
+
+double TrendWaveWidget::_getCursorPos(unsigned t)
+{
+    double dpos = 0;
+    dpos = (t - _leftTime) * (GRAPH_DATA_WIDTH / (_rightTime - _leftTime)) + (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2;
+
+    return dpos;
 }

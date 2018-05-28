@@ -1201,6 +1201,8 @@
             <g>150</g>
             <b>205</b>
         </Purple>
+	<ECGDUPColor>Green</ECGDUPColor>
+	<RESPDUPColor>Red</RESPDUPColor>
         <ECGColor>Green</ECGColor>
         <SPO2Color>Yellow</SPO2Color>
         <NIBPColor>Blue</NIBPColor>

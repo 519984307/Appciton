@@ -92,95 +92,13 @@ void TrendGraphWidget::_downReleased()
 
 void TrendGraphWidget::_printReleased()
 {
-    //test code
-    const QList<TrendDataPackage *> trendDataPackList = _waveWidget->getTrendDatapacketList();
-    if(trendDataPackList.isEmpty())
-    {
-        return;
-    }
-    QList<TrendGraphInfo> infos;
-    TrendGraphInfo hrInfo;
-    TrendGraphInfo spo2Info;
-    TrendGraphInfo artInfo;
-    TrendGraphInfo nibpInfo;
-    hrInfo.subParamID = SUB_PARAM_HR_PR;
-    hrInfo.scale.max = 100;
-    hrInfo.scale.min = 50;
-    hrInfo.unit = UNIT_BPM;
-    spo2Info.subParamID = SUB_PARAM_SPO2;
-    spo2Info.scale.max = 100;
-    spo2Info.scale.min = 85;
-    spo2Info.unit = UNIT_PERCENT;
-    artInfo.subParamID = SUB_PARAM_ART_SYS;
-    artInfo.scale.max = 160;
-    artInfo.scale.min = 70;
-    artInfo.unit = UNIT_MMHG;
-    nibpInfo.subParamID = SUB_PARAM_NIBP_SYS;
-    nibpInfo.scale.max = 160;
-    nibpInfo.scale.min = 70;
-    nibpInfo.unit = UNIT_MMHG;
 
+    //QList<TrendGraphPageGenerator::TrendGraphInfo> infos;
+    //TrendGraphPageGenerator::TrendGraphInfo info;
 
+    //RecordPageGenerator *pageGenerator = new TrendGraphPageGenerator(infos, );
 
-    unsigned startTime = trendDataPackList.first()->time;
-    unsigned endTime = startTime + 4 * 60; //4 minutes ago
-
-    int index = 0;
-    while(index < trendDataPackList.size())
-    {
-        TrendDataPackage * p = trendDataPackList.at(index);
-
-        if(p->time > endTime)
-        {
-            break;
-        }
-
-        TrendGraphData hrData;
-        hrData.timestamp = p->time;
-        hrData.data = p->subparamValue.value(SUB_PARAM_HR_PR, InvData());
-        hrInfo.trendData.append(hrData);
-
-        TrendGraphData spo2Data;
-        spo2Data.timestamp = p->time;
-        spo2Data.data = p->subparamValue.value(SUB_PARAM_SPO2, InvData());
-        spo2Info.trendData.append(spo2Data);
-
-        TrendGraphDataV3 artData;
-        artData.timestamp = p->time;
-        artData.data[0] = p->subparamValue.value(SUB_PARAM_ART_SYS, InvData());
-        artData.data[1] = p->subparamValue.value(SUB_PARAM_ART_DIA, InvData());
-        artData.data[2] = p->subparamValue.value(SUB_PARAM_ART_MAP, InvData());
-        artInfo.trendDataV3.append(artData);
-
-        index ++;
-    };
-
-    //add some demo nibp value
-    TrendGraphDataV3 nibpData;
-    nibpData.timestamp = startTime + 60;
-    nibpData.data[0] = 120;
-    nibpData.data[1] = 90;
-    nibpData.data[2] = 100;
-    nibpInfo.trendDataV3.append(nibpData);
-    nibpData.timestamp = startTime + 120;
-    nibpData.data[0] = 130;
-    nibpData.data[1] = 100;
-    nibpData.data[2] = 110;
-    nibpInfo.trendDataV3.append(nibpData);
-    nibpData.timestamp = startTime + 180;
-    nibpData.data[0] = 150;
-    nibpData.data[1] = 110;
-    nibpData.data[2] = 130;
-    nibpInfo.trendDataV3.append(nibpData);
-
-    infos.append(hrInfo);
-    infos.append(spo2Info);
-    infos.append(artInfo);
-    infos.append(nibpInfo);
-
-    RecordPageGenerator *pageGenerator = new TrendGraphPageGenerator(infos, startTime, endTime);
-
-    recorderManager.addPageGenerator(pageGenerator);
+    //recorderManager.addPageGenerator(pageGenerator);
 }
 
 TrendGraphWidget::TrendGraphWidget() : _waveWidget(NULL), _moveCoordinate(NULL),
@@ -197,7 +115,6 @@ TrendGraphWidget::TrendGraphWidget() : _waveWidget(NULL), _moveCoordinate(NULL),
 
     _waveWidget = new TrendWaveWidget();
     _waveWidget->setWidgetSize(_maxWidth - 10, _maxHeight - ITEM_HEIGHT * 3);
-    _waveWidget-> changeTrendDisplay();
 
     _moveCoordinate = new IMoveButton(trs("MoveCoordinate"));
     _moveCoordinate->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
