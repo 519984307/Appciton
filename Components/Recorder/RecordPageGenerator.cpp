@@ -1109,6 +1109,82 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo & waveInfo, short wave)
 }
 
 /**
+ * @brief mapOxyCRGWaveValue
+ * @param waveInfo
+ * @param wave
+ * @return
+ */
+static qreal mapOxyCRGWaveValue(const OxyCRGWaveInfo &waveInfo, qreal waveHeight, short wave)
+{
+    qreal waveData = 0.0;
+
+    if(waveInfo.id == WAVE_RESP)
+    {
+        qreal respZoom = 1.0;
+        switch(waveInfo.waveInfo.resp.zoom)
+        {
+        case RESP_ZOOM_X025:
+            respZoom = 0.25;
+            break;
+        case RESP_ZOOM_X050:
+            respZoom = 0.5;
+            break;
+        case RESP_ZOOM_X100:
+            respZoom = 1.0;
+            break;
+        case RESP_ZOOM_X200:
+            respZoom = 2.0;
+            break;
+        case RESP_ZOOM_X300:
+            respZoom = 3.0;
+            break;
+        case RESP_ZOOM_X400:
+            respZoom = 4.0;
+            break;
+        case RESP_ZOOM_X500:
+            respZoom = 5.0;
+            break;
+        default:
+            break;
+        }
+
+        short zoomWave = (wave - waveInfo.waveBaseLine) * respZoom + waveInfo.waveBaseLine;
+        waveData = zoomWave * (waveHeight / (waveInfo.maxWaveValue -  waveInfo.minWaveValue));
+    }
+    else if(waveInfo.id == WAVE_CO2)
+    {
+        int max = waveInfo.maxWaveValue;
+        switch(waveInfo.waveInfo.co2.zoom)
+        {
+        case CO2_DISPLAY_ZOOM_4:
+            max = max * 4 / 20;
+            break;
+        case CO2_DISPLAY_ZOOM_8:
+            max  = max * 8 / 20;
+            break;
+        case CO2_DISPLAY_ZOOM_12:
+            max = max * 12 / 20;
+            break;
+        default:
+            break;
+        }
+
+        waveData = (wave - waveInfo.minWaveValue) * waveHeight / (max -  waveInfo.minWaveValue);
+    }
+
+    if(waveData > waveHeight )
+    {
+        waveData = waveHeight;
+    }
+    else if(waveData < 0)
+    {
+        waveData = 0;
+    }
+
+    return -waveData;
+}
+
+/**
  * @brief drawDottedLine draw a dotted line
  * @param painter paitner
  * @param x1 xPos of point 1
@@ -1344,9 +1420,465 @@ RecordPage *RecordPageGenerator::createWaveSegments(QList<RecordWaveSegmentInfo>
     return page;
 }
 
+void RecordPageGenerator::drawGraphAxis(QPainter *painter, const GraphAxisInfo &axisInfo)
+{
+    painter->save();
+    painter->translate(axisInfo.origin);
+    QPen pen(Qt::white, 1);
+    painter->setPen(pen);
+    painter->setBrush(Qt::NoBrush);
+
+    QVector<QLineF> lines;
+
+    //y axis
+    lines.append(QLineF(0, 0, 0, -axisInfo.height));
+    qreal sectionHeight = axisInfo.ySectionHeight;
+    for(int i = 0; i < axisInfo.ySectionNum && sectionHeight < axisInfo.height; i++)
+    {
+        lines.append(QLineF(-axisInfo.tickLength/2, -sectionHeight, axisInfo.tickLength/2, -sectionHeight));
+        sectionHeight += axisInfo.ySectionHeight;
+    }
+
+    //x axis
+    lines.append(QLineF(0, 0, axisInfo.width, 0));
+    qreal sectionWidth = axisInfo.xSectionWidth;
+    for(int i = 0; i< axisInfo.xSectionNum && sectionWidth < axisInfo.width; i++)
+    {
+        lines.append(QLine(sectionWidth, -axisInfo.tickLength/2, sectionWidth, axisInfo.tickLength/2));
+        sectionWidth += axisInfo.xSectionWidth;
+    }
+
+    painter->drawLines(lines);
+
+    //draw arrow
+    if(axisInfo.drawArrow)
+    {
+        QPainterPath upArrow;
+        upArrow.moveTo(0, -axisInfo.height);
+        upArrow.lineTo(-axisInfo.tickLength * 0.80, -axisInfo.height + axisInfo.tickLength * 1.5);
+        upArrow.lineTo(axisInfo.tickLength * 0.80, -axisInfo.height + axisInfo.tickLength * 1.5);
+        upArrow.lineTo(0, -axisInfo.height);
+        painter->fillPath(upArrow, Qt::white);
+        QPainterPath rightArrow;
+        rightArrow.moveTo(axisInfo.width, 0);
+        rightArrow.lineTo(axisInfo.width - axisInfo.tickLength * 1.5, axisInfo.tickLength * 0.80);
+        rightArrow.lineTo(axisInfo.width - axisInfo.tickLength * 1.5, -axisInfo.tickLength * 0.80);
+        rightArrow.lineTo(axisInfo.width, 0);
+        painter->fillPath(rightArrow, Qt::white);
+    }
+
+    //draw labels
+    QFont font = fontManager.recordFont(18);
+    painter->setFont(font);
+    qreal fontH = fontManager.textHeightInPixels(font);
+    qreal pixSize = font.pixelSize();
+
+    sectionHeight = 0;
+    for(int i = 0; i < axisInfo.yLabels.size() && sectionHeight < axisInfo.height; i++)
+    {
+        if(!axisInfo.yLabels.at(i).isEmpty())
+        {
+            QRectF rect;
+            rect.setLeft(-axisInfo.marginLeft);
+            rect.setRight(-pixSize);
+            rect.setTop(- sectionHeight - fontH / 2);
+            rect.setHeight(fontH);
+            painter->drawText(rect, Qt::AlignVCenter|Qt::AlignRight, axisInfo.yLabels[i]);
+        }
+
+        sectionHeight += axisInfo.ySectionHeight;
+    }
+
+    sectionWidth = 0;
+    for(int i = 0; i < axisInfo.xLabels.size() && sectionWidth < axisInfo.width; i++)
+    {
+        if(!axisInfo.xLabels.at(i).isEmpty())
+        {
+            QRectF rect;
+            rect.setTop(axisInfo.tickLength);
+            rect.setHeight(fontH);
+            rect.setLeft(sectionWidth - axisInfo.xSectionWidth/ 2);
+            rect.setRight(sectionWidth + axisInfo.xSectionWidth/ 2);
+            painter->drawText(rect, Qt::AlignHCenter|Qt::AlignTop, axisInfo.xLabels[i]);
+        }
+        sectionWidth += axisInfo.xSectionWidth;
+    }
+
+    //draw caption
+    int  captionHeigth = -(sectionHeight - axisInfo.ySectionHeight) - fontH / 2;
+    QRectF captionRect;
+    captionRect.setLeft(pixSize + pixSize / 2);
+    captionRect.setWidth(axisInfo.xSectionWidth * 2); //should be enough
+    captionRect.setTop(captionHeigth);
+    captionRect.setHeight(fontH);
+
+    painter->drawText(captionRect, Qt::AlignLeft|Qt::AlignVCenter, axisInfo.caption);
+
+
+    painter->restore();
+}
+
+
+#define isEqual(a, b) (qAbs((a)-(b)) < 0.000001)
+
+static inline qreal timestampToX(unsigned t, const GraphAxisInfo &axisInfo, const TrendGraphInfo& graphInfo)
+{
+    return (t - graphInfo.startTime) * 1.0 * axisInfo.validWidth / (graphInfo.endTime - graphInfo.startTime);
+}
+
+static inline qreal mapTrendYValue(TrendDataType val, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo)
+{
+    qreal validHeight = axisInfo.validHeight;
+    qreal mapH = (val - graphInfo.scale.min) * 1.0 * validHeight / (graphInfo.scale.max -  graphInfo.scale.min);
+    if(mapH > validHeight)
+    {
+        mapH = validHeight;
+    }
+    else
+    {
+        mapH = 0.0;
+    }
+    return mapH;
+}
+
+#define TICK_LENGTH         RECORDER_PIXEL_PER_MM
+QList<QPainterPath> generatorPainterPath(const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo)
+{
+    QList<QPainterPath> paths;
+
+    switch (graphInfo.subParamID) {
+    case SUB_PARAM_NIBP_SYS:
+    {
+        QPainterPath path;
+
+        QVector<TrendGraphDataV3>::ConstIterator iter = graphInfo.trendDataV3.constBegin();
+        for(;iter != graphInfo.trendDataV3.constEnd(); iter++)
+        {
+            if(iter->data[0] == InvData())
+            {
+                continue;
+            }
+
+            qreal x = timestampToX(iter->timestamp, axisInfo, graphInfo);
+            qreal sys = mapTrendYValue(iter->data[0], axisInfo, graphInfo);
+            qreal dia = mapTrendYValue(iter->data[1], axisInfo, graphInfo);
+            qreal map = mapTrendYValue(iter->data[2], axisInfo, graphInfo);
+
+            //draw nibp symbol
+            path.moveTo(x - TICK_LENGTH / 2, sys - 0.866 * TICK_LENGTH);
+            path.lineTo(x, sys);
+            path.lineTo(x + TICK_LENGTH / 2, sys - 0.866 * TICK_LENGTH);
+
+            path.moveTo(x - TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
+            path.lineTo(x, dia);
+            path.lineTo(x + TICK_LENGTH / 2, dia + 0.866 * TICK_LENGTH);
+
+            path.moveTo(x, sys);
+            path.lineTo(x, dia);
+
+            path.moveTo(x - TICK_LENGTH / 2, map);
+            path.lineTo(x + TICK_LENGTH / 2, map);
+        }
+        paths.append(path);
+    }
+        break;
+    case SUB_PARAM_ART_SYS:
+    case SUB_PARAM_PA_SYS:
+    case SUB_PARAM_AUXP1_SYS:
+    case SUB_PARAM_AUXP2_SYS:
+    {
+        QPainterPath sysPath;
+        QPainterPath diaPath;
+        QPainterPath mapPath;
+
+        bool lastPointInvalid = true;
+        QPointF sysLastPoint;
+        QPointF diaLastPoint;
+        QPointF mapLastPoint;
+
+        QVector<TrendGraphDataV3>::ConstIterator iter = graphInfo.trendDataV3.constBegin();
+        for(;iter != graphInfo.trendDataV3.constEnd(); iter++)
+        {
+            if(iter->data[0] == InvData())
+            {
+                if(!lastPointInvalid)
+                {
+                    sysPath.lineTo(sysLastPoint);
+                    diaPath.lineTo(diaLastPoint);
+                    mapPath.lineTo(mapLastPoint);
+                    lastPointInvalid = true;
+                }
+                continue;
+            }
+
+            qreal x = timestampToX(iter->timestamp, axisInfo, graphInfo);
+            qreal sys = mapTrendYValue(iter->data[0], axisInfo, graphInfo);
+            qreal dia = mapTrendYValue(iter->data[1], axisInfo, graphInfo);
+            qreal map = mapTrendYValue(iter->data[2], axisInfo, graphInfo);
+
+            if(lastPointInvalid)
+            {
+                sysPath.moveTo(x, sys);
+                diaPath.moveTo(x, dia);
+                mapPath.moveTo(x, map);
+                lastPointInvalid = false;
+            }
+            else
+            {
+                if(!isEqual(sysLastPoint.y(), sys))
+                {
+                    sysPath.lineTo(x, sys);
+                }
+
+                if(!isEqual(diaLastPoint.y(), dia))
+                {
+                    diaPath.lineTo(x, dia);
+                }
+
+                if(!isEqual(mapLastPoint.y(), map))
+                {
+                    mapPath.lineTo(x, map);
+                }
+            }
+
+            sysLastPoint.rx() = x;
+            sysLastPoint.ry() = sys;
+            diaLastPoint.rx() = x;
+            diaLastPoint.ry() = dia;
+            mapLastPoint.rx() = x;
+            mapLastPoint.ry() = map;
+        }
+
+        if(!lastPointInvalid)
+        {
+            sysPath.lineTo(sysLastPoint);
+            diaPath.lineTo(diaLastPoint);
+            mapPath.lineTo(mapLastPoint);
+        }
+
+        paths.append(sysPath);
+        paths.append(diaPath);
+        paths.append(mapPath);
+
+    }
+        break;
+    default:
+    {
+        QPainterPath path;
+
+        QPointF lastPoint;
+        bool lastPointInvalid = true;
+        QVector<TrendGraphData>::ConstIterator iter =  graphInfo.trendData.constBegin();
+        for(; iter != graphInfo.trendData.constEnd(); iter++)
+        {
+            if(iter->data == InvData())
+            {
+                if(!lastPointInvalid)
+                {
+                    path.lineTo(lastPoint);
+                    lastPointInvalid = true;
+                }
+                continue;
+            }
+
+            qreal x = timestampToX(iter->timestamp, axisInfo, graphInfo);
+            qreal y = mapTrendYValue(iter->data, axisInfo, graphInfo);
+
+            if(lastPointInvalid)
+            {
+                path.moveTo(x, y);
+                lastPointInvalid = false;
+            }
+            else
+            {
+                if(!isEqual(lastPoint.y(), y))
+                {
+                    path.lineTo(x, y);
+                }
+            }
+
+            lastPoint.rx() = x;
+            lastPoint.ry() = y;
+        }
+
+        if(!lastPointInvalid)
+        {
+            path.lineTo(lastPoint);
+        }
+
+        paths.append(path);
+    }
+        break;
+    }
+
+    return paths;
+}
+
+void RecordPageGenerator::drawTrendGraph(QPainter *painter, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo)
+{
+    painter->save();
+    painter->setPen(Qt::white);
+    painter->setBrush(Qt::NoBrush);
+    QList<QPainterPath> paths = generatorPainterPath(axisInfo, graphInfo);
+    QList<QPainterPath>::ConstIterator iter;
+    for(iter = paths.constBegin(); iter != paths.constEnd(); iter++)
+    {
+        painter->save();
+        painter->translate(axisInfo.origin);
+        painter->drawPath(*iter);
+        painter->restore();
+    }
+    painter->restore();
+}
+
+static void drawOxyCRGWaveform(QPainter *painter, const GraphAxisInfo &axisInfo, const OxyCRGWaveInfo &waveInfo)
+{
+    qreal x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+    int width = axisInfo.validWidth;
+    int waveNum = waveInfo.waveData.size();
+    //the waveInfo wavedata buffer should contain 4 miniutes waveform data
+    if(waveNum != (waveInfo.sampleRate * 4 * 60))
+    {
+        qWarning()<<"Data is not enough to draw the OxyCRG graph";
+    }
+
+    qreal offsetX = axisInfo.validWidth / waveNum; //the OxyCRG waveform last 4 minutes
+    for(int i = 0; i < waveNum; i++)
+    {
+        unsigned short flag = waveInfo.waveData[i] >> 16;
+        // invalid data
+        if(flag & INVALID_WAVE_FALG_BIT)
+        {
+            short wave = waveInfo.waveData[i] && 0xFFFF;
+            qreal waveData = mapOxyCRGWaveValue(waveInfo, axisInfo.validHeight, wave);
+            y1 = y2 = waveData;
+
+            int j = i + 1;
+            while(j < waveNum)
+            {
+                flag = waveInfo.waveData[j] >> 16;
+                if(!(flag & INVALID_WAVE_FALG_BIT))
+                {
+                    break;
+                }
+
+                if(x2 + offsetX > width - 1)
+                {
+                    break;
+                }
+                x2 += offsetX;
+                j++;
+            }
+            i = j -1;
+
+            drawDottedLine(painter, x1, waveData, x2, waveData);
+
+            x1 = x2;
+            x2 += offsetX;
+            y1 = y2;
+
+            if(x2 > width - 1)
+            {
+                return;
+            }
+        }
+        else
+        {
+            short wave = waveInfo.waveData[i] & 0xFFFF;
+            qreal waveData = mapOxyCRGWaveValue(waveInfo, axisInfo.validHeight, wave);
+            if(i == 0 || ((waveInfo.waveData[i - 1] >> 16) & INVALID_WAVE_FALG_BIT))
+            {
+                y1 = waveData;
+            }
+
+            y2 = waveData;
+
+            QLineF line(x1, y1, x2, y2);
+            painter->drawLine(line);
+            x1 = x2;
+            x2 += offsetX;
+            y1 = y2;
+
+            if(x2 > width - 1)
+            {
+                break;
+            }
+        }
+    }
+}
+
+#define AXIS_Y_SECTION_HEIGHT   (3 * RECORDER_PIXEL_PER_MM)
+#define AXIS_Y_SECTION_NUM  4
+#define AXIS_X_SECTION_WIDTH    (25 * RECORDER_PIXEL_PER_MM)
+#define AXIS_X_SECTION_NUM  4
+#define GRAPH_SPACING 16
+#define GRAPH_START_HEIGHT      (5 * RECORDER_PIXEL_PER_MM)
 RecordPage *RecordPageGenerator::createOxyCRGGraph(const QList<TrendGraphInfo> &trendGraphInfo, const OxyCRGWaveInfo &waveInfo)
 {
-    //TODO
+   GraphAxisInfo axisInfo;
+
+   axisInfo.ySectionHeight = AXIS_Y_SECTION_HEIGHT;
+   axisInfo.ySectionNum = AXIS_Y_SECTION_NUM;
+   axisInfo.height = axisInfo.ySectionHeight * axisInfo.ySectionNum;
+   axisInfo.validHeight = axisInfo.height;
+   axisInfo.marginLeft = AXIS_X_SECTION_WIDTH;
+   axisInfo.xSectionWidth = AXIS_X_SECTION_WIDTH;
+   axisInfo.xSectionNum = AXIS_X_SECTION_NUM;
+   axisInfo.width = axisInfo.xSectionWidth * axisInfo.xSectionNum;
+   axisInfo.validWidth = axisInfo.width;
+   axisInfo.tickLength = RECORDER_PIXEL_PER_MM;
+   axisInfo.drawArrow = false;
+
+   RecordPage *page = new RecordPage(axisInfo.marginLeft + axisInfo.marginLeft);
+   QPainter painter(page);
+
+   int heightOffset = GRAPH_START_HEIGHT;
+   //draw  trend graph
+   QList<TrendGraphInfo>::ConstIterator iter = trendGraphInfo.constBegin();
+   for(; iter != trendGraphInfo.constEnd(); iter++)
+   {
+       SubParamID subParamID = iter->subParamID;
+       QString name;
+       if(subParamID == SUB_PARAM_HR_PR)
+       {
+           name = paramInfo.getSubParamName(SUB_DUP_PARAM_HR);
+       }
+       else
+       {
+           name = paramInfo.getSubParamName(subParamID);
+       }
+
+       axisInfo.caption = name;
+       QStringList yLabels;
+       yLabels<<QString::number(iter->scale.min)
+             <<QString()<<QString()<<QString()
+            <<QString::number(iter->scale.max);
+
+       axisInfo.origin  = QPointF(axisInfo.marginLeft, heightOffset + axisInfo.height);
+
+       //draw axis
+       drawGraphAxis(&painter, axisInfo);
+
+       //draw trendgraph
+       drawTrendGraph(&painter, axisInfo, *iter);
+
+       heightOffset += axisInfo.height + GRAPH_SPACING;
+   }
+
+   //draw wave
+   axisInfo.caption = trs(paramInfo.getParamName(paramInfo.getParamID(waveInfo.id)));
+   axisInfo.yLabels = QStringList()<<QString::number(0)<<QString()<<QString()<<QString()
+                                  <<RESPSymbol::convert(waveInfo.waveInfo.resp.zoom);
+   axisInfo.xLabels = QStringList()<<"-2min"<<"-1min"<<"0"<<"1min"<<"2min";
+   axisInfo.origin = QPointF(axisInfo.marginLeft, heightOffset + axisInfo.height);
+
+   //draw axis
+   drawGraphAxis(&painter, axisInfo);
+
+   //draw the waveform
+   drawOxyCRGWaveform(&painter, axisInfo, waveInfo);
+
+   return page;
 }
 
 RecordPage *RecordPageGenerator::createStringListSegemnt(const QStringList &strList)

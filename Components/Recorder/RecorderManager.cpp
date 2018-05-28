@@ -69,7 +69,8 @@ PrintSpeed RecorderManager::getPrintSpeed() const
         speed = PRINT_SPEED_250;
     }
     //speed = PRINT_SPEED_500;
-    speed = PRINT_SPEED_250;
+    //speed = PRINT_SPEED_250;
+    speed = PRINT_SPEED_125;
     return (PrintSpeed)speed;
 }
 
@@ -218,7 +219,7 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
 
 void RecorderManager::testSlot()
 {
-    //addPageGenerator(new ContinuousPageGenerator());
+    addPageGenerator(new ContinuousPageGenerator());
     //addPageGenerator(new RecordPageGenerator());
 }
 

@@ -112,6 +112,8 @@ struct TrendGraphDataV3     //trend graph draw 3 values
 struct TrendGraphInfo
 {
     SubParamID subParamID;
+    unsigned startTime;    //trend graph startTime
+    unsigned endTime;      //trend graph endTime
     UnitType unit;
     struct {
         int max;

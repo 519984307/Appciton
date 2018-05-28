@@ -22,17 +22,6 @@
 #define TICK_LENGTH (RECORDER_PIXEL_PER_MM)
 
 
-struct TrendGraphAxisInfo
-{
-    QString caption;
-    QPointF origin;
-    qreal height;
-    qreal width;
-    qreal marginLeft;
-    QStringList yLabels;
-    QStringList xLabels;
-};
-
 class TrendGraphPageGeneratorPrivate
 {
 public:
@@ -47,8 +36,6 @@ public:
 
     RecordPage *createGraphPage();
 
-    void drawAxis(QPainter *painter, const TrendGraphAxisInfo &axisInfo);
-
     /**
      * @brief getAxisInfo get the axis info
      * @note each page can be drawn only two graph at most, one on the top, the other on the bottom
@@ -56,7 +43,7 @@ public:
      * @param graphInfo graph info
      * @param onTop graph is on the top region or not
      */
-    TrendGraphAxisInfo getAxisInfo(const RecordPage *page, const TrendGraphInfo & graphInfo, bool onTop);
+    GraphAxisInfo getAxisInfo(const RecordPage *page, const TrendGraphInfo & graphInfo, bool onTop);
 
     void drawTrendValue(QPainter *painter, const QPointF &origin, const TrendGraphInfo &graphInfo);
 
@@ -93,106 +80,12 @@ public:
     int marginLeft;
 };
 
-void TrendGraphPageGeneratorPrivate::drawAxis(QPainter *painter, const TrendGraphAxisInfo &axisInfo)
-{
-    painter->save();
-    painter->translate(axisInfo.origin);
-    QPen pen(Qt::white, 1);
-    painter->setPen(pen);
-    painter->setBrush(Qt::NoBrush);
-
-    QVector<QLineF> lines;
-
-    //y axis
-    lines.append(QLineF(0, 0, 0, -axisInfo.height));
-    qreal sectionHeight = AXIS_Y_SECTION_HEIGHT;
-    for(int i = 0; i < AXIS_Y_SECTION_NUM && sectionHeight < axisInfo.height; i++)
-    {
-        lines.append(QLineF(-TICK_LENGTH/2, -sectionHeight, TICK_LENGTH/2, -sectionHeight));
-        sectionHeight += AXIS_Y_SECTION_HEIGHT;
-    }
-
-    //x axis
-    lines.append(QLineF(0, 0, axisInfo.width, 0));
-    qreal sectionWidth = AXIS_X_SECTION_WIDTH;
-    for(int i = 0; i< AXIS_X_SECTION_NUM && sectionWidth < axisInfo.width; i++)
-    {
-        lines.append(QLine(sectionWidth, -TICK_LENGTH/2, sectionWidth, TICK_LENGTH/2));
-        sectionWidth += AXIS_X_SECTION_WIDTH;
-    }
-
-    painter->drawLines(lines);
-
-    //draw arrow
-    QPainterPath upArrow;
-    upArrow.moveTo(0, -axisInfo.height);
-    upArrow.lineTo(-TICK_LENGTH * 0.80, -axisInfo.height + TICK_LENGTH * 1.5);
-    upArrow.lineTo(TICK_LENGTH * 0.80, -axisInfo.height + TICK_LENGTH * 1.5);
-    upArrow.lineTo(0, -axisInfo.height);
-    painter->fillPath(upArrow, Qt::white);
-    QPainterPath rightArrow;
-    rightArrow.moveTo(axisInfo.width, 0);
-    rightArrow.lineTo(axisInfo.width - TICK_LENGTH * 1.5, TICK_LENGTH * 0.80);
-    rightArrow.lineTo(axisInfo.width - TICK_LENGTH * 1.5, -TICK_LENGTH * 0.80);
-    rightArrow.lineTo(axisInfo.width, 0);
-    painter->fillPath(rightArrow, Qt::white);
-
-    //draw labels
-    QFont font = fontManager.recordFont(18);
-    painter->setFont(font);
-    qreal fontH = fontManager.textHeightInPixels(font);
-    qreal pixSize = font.pixelSize();
-
-    sectionHeight = 0;
-    for(int i = 0; i < axisInfo.yLabels.size() && sectionHeight < axisInfo.height; i++)
-    {
-        if(!axisInfo.yLabels.at(i).isEmpty())
-        {
-            QRectF rect;
-            rect.setLeft(-axisInfo.marginLeft);
-            rect.setRight(-pixSize);
-            rect.setTop(- sectionHeight - fontH / 2);
-            rect.setHeight(fontH);
-            painter->drawText(rect, Qt::AlignVCenter|Qt::AlignRight, axisInfo.yLabels[i]);
-        }
-
-        sectionHeight += AXIS_Y_SECTION_HEIGHT;
-    }
-
-    sectionWidth = 0;
-    for(int i = 0; i < axisInfo.xLabels.size() && sectionWidth < axisInfo.width; i++)
-    {
-        if(!axisInfo.xLabels.at(i).isEmpty())
-        {
-            QRectF rect;
-            rect.setTop(TICK_LENGTH);
-            rect.setHeight(fontH);
-            rect.setLeft(sectionWidth - AXIS_X_SECTION_WIDTH / 2);
-            rect.setRight(sectionWidth + AXIS_X_SECTION_WIDTH / 2);
-            painter->drawText(rect, Qt::AlignHCenter|Qt::AlignTop, axisInfo.xLabels[i]);
-        }
-        sectionWidth += AXIS_X_SECTION_WIDTH;
-    }
-
-    //draw caption
-    int  captionHeigth = -(sectionHeight - AXIS_Y_SECTION_HEIGHT) - fontH / 2;
-    QRectF captionRect;
-    captionRect.setLeft(pixSize + pixSize / 2);
-    captionRect.setWidth(AXIS_X_SECTION_WIDTH * 2); //should be enough
-    captionRect.setTop(captionHeigth);
-    captionRect.setHeight(fontH);
-
-    painter->drawText(captionRect, Qt::AlignLeft|Qt::AlignVCenter, axisInfo.caption);
-
-
-    painter->restore();
-}
 
 #define GRAPH_SPACING 24
-TrendGraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page, const TrendGraphInfo &graphInfo, bool onTop)
+GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page, const TrendGraphInfo &graphInfo, bool onTop)
 {
     //draw two graph
-    TrendGraphAxisInfo axisInfo;
+    GraphAxisInfo axisInfo;
     SubParamID subParamID = graphInfo.subParamID;
     UnitType unit = graphInfo.unit;
     QString name;
@@ -223,6 +116,12 @@ TrendGraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage 
     axisInfo.height =  AXIS_Y_HEIGH;
     axisInfo.width = AXIS_X_WIDTH;
     axisInfo.marginLeft = marginLeft;
+    axisInfo.xSectionWidth = AXIS_X_SECTION_WIDTH;
+    axisInfo.xSectionNum = AXIS_X_SECTION_NUM;
+    axisInfo.ySectionHeight = AXIS_Y_SECTION_HEIGHT;
+    axisInfo.ySectionNum = AXIS_Y_SECTION_NUM;
+    axisInfo.tickLength = TICK_LENGTH;
+    axisInfo.drawArrow = true;
 
     if(onTop)
     {
@@ -485,10 +384,10 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
     if(curDrawnGraph + 2 <= trendGraphInfos.size())
     {
         //draw two graph
-        TrendGraphAxisInfo axisInfo = getAxisInfo(page, trendGraphInfos.at(curDrawnGraph), true);
+        GraphAxisInfo axisInfo = getAxisInfo(page, trendGraphInfos.at(curDrawnGraph), true);
 
         //draw the axis
-        drawAxis(&painter, axisInfo);
+        RecordPageGenerator::drawGraphAxis(&painter, axisInfo);
 
         //draw graph
         drawTrendValue(&painter, axisInfo.origin, trendGraphInfos.at(curDrawnGraph));
@@ -496,15 +395,15 @@ RecordPage *TrendGraphPageGeneratorPrivate::drawGraphPage()
         curDrawnGraph++;
 
         axisInfo = getAxisInfo(page, trendGraphInfos.at(curDrawnGraph), false);
-        drawAxis(&painter, axisInfo);
+        RecordPageGenerator::drawGraphAxis(&painter, axisInfo);
         drawTrendValue(&painter, axisInfo.origin, trendGraphInfos.at(curDrawnGraph));
         curDrawnGraph++;
     }
     else
     {
         //draw only one graph
-        TrendGraphAxisInfo axisInfo = getAxisInfo(page, trendGraphInfos.at(curDrawnGraph), false);
-        drawAxis(&painter, axisInfo);
+        GraphAxisInfo axisInfo = getAxisInfo(page, trendGraphInfos.at(curDrawnGraph), false);
+        RecordPageGenerator::drawGraphAxis(&painter, axisInfo);
         drawTrendValue(&painter, axisInfo.origin, trendGraphInfos.at(curDrawnGraph));
         curDrawnGraph++;
     }

@@ -69,6 +69,26 @@ struct RecordWaveSegmentInfo
     } waveInfo;
 };
 
+
+struct GraphAxisInfo
+{
+    QString caption;
+    QPointF origin;
+    qreal height;
+    qreal validHeight;
+    qreal width;
+    qreal validWidth;
+    qreal marginLeft;
+    int xSectionWidth;
+    int ySectionHeight;
+    int xSectionNum;
+    int ySectionNum;
+    int tickLength;
+    bool drawArrow;
+    QStringList yLabels;
+    QStringList xLabels;
+};
+
 class RecordPageGenerator : public QObject
 {
     Q_OBJECT
@@ -126,6 +146,21 @@ public slots:
      */
     void pageControl(bool pause);
 
+public:
+    /**
+     * @brief drawGraphAxis draw the graph axis info
+     * @param painter painter
+     * @param axisInfo the axis info
+     */
+    static void drawGraphAxis(QPainter * painter, const GraphAxisInfo &axisInfo);
+
+    /**
+     * @brief drawTrendGraph draw the trend graph
+     * @param painter painter
+     * @param axisInfo the trend graph axis info
+     * @param graphInfo the trend graph info
+     */
+    static void drawTrendGraph(QPainter *painter, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo);
 
 signals:
     /**
