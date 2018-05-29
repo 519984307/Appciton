@@ -6,7 +6,7 @@
 #include <QMutex>
 #include <QList>
 
-#define MAX_TREND_CACHE_NUM (180)//缓存的趋势数据条数
+#define MAX_TREND_CACHE_NUM (240)//缓存的趋势数据条数
 
 // 趋势缓存数据
 struct TrendCacheData

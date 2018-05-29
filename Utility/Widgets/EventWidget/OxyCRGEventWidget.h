@@ -34,6 +34,7 @@ private slots:
     void _leftMoveEvent(void);
     void _rightMoveEvent(void);
     void _setReleased(void);
+    void _printReleased(void);
 
 private:
     void _loadOxyCRGEventData(void);

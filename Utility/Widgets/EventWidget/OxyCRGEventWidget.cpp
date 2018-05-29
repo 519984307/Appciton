@@ -20,6 +20,12 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QStackedLayout>
+#include "OxyCRGPageGenerator.h"
+#include "TrendCache.h"
+#include "WaveformCache.h"
+#include "TimeDate.h"
+#include "CO2Param.h"
+#include "RecorderManager.h"
 
 #define ITEM_HEIGHT     30
 #define ITEM_WIDTH      100
@@ -336,6 +342,53 @@ void OxyCRGEventWidget::_setReleased()
     oxyCRGEventSetWidget.autoShow();
 }
 
+void OxyCRGEventWidget::_printReleased()
+{
+    QList<TrendGraphInfo> trendInfos;
+    TrendGraphInfo graphInfoHR;
+    TrendGraphInfo graphInfoSpo2;
+    graphInfoHR.subParamID = SUB_PARAM_HR_PR;
+    graphInfoHR.endTime = timeDate.time();
+    trendCache.collectTrendData(graphInfoHR.endTime);
+    graphInfoHR.startTime = graphInfoHR.endTime - 120;
+    graphInfoHR.unit = UNIT_BPM;
+    graphInfoHR.scale.max = 150;
+    graphInfoHR.scale.min = 50;
+    graphInfoSpo2.subParamID = SUB_PARAM_SPO2;
+    graphInfoSpo2.endTime = graphInfoHR.endTime;
+    graphInfoSpo2.startTime = graphInfoHR.startTime;
+    graphInfoSpo2.unit = UNIT_PERCENT;
+    graphInfoSpo2.scale.max = 100;
+    graphInfoSpo2.scale.min = 80;
+    for(unsigned t = graphInfoHR.startTime; t <= graphInfoHR.endTime; t++)
+    {
+        TrendCacheData data;
+        if(trendCache.getTendData(t,data))
+        {
+            TrendGraphData hrData = {t, data.values.value(SUB_PARAM_HR_PR, InvData())};
+            TrendGraphData spo2Data = {t, data.values.value(SUB_PARAM_SPO2, InvData())};
+            graphInfoHR.trendData.append(hrData);
+            graphInfoSpo2.trendData.append(spo2Data);
+        }
+    }
+    trendInfos.append(graphInfoHR);
+    trendInfos.append(graphInfoSpo2);
+
+    OxyCRGWaveInfo waveInfo;
+    waveInfo.id = WAVE_CO2;
+    waveformCache.getRange(WAVE_CO2, waveInfo.minWaveValue, waveInfo.maxWaveValue);
+    waveInfo.sampleRate = waveformCache.getSampleRate(WAVE_CO2);
+    waveformCache.getBaseline(WAVE_CO2, waveInfo.waveBaseLine);
+    waveInfo.waveInfo.co2.zoom = CO2_DISPLAY_ZOOM_20;
+
+    int waveNum = 2 * 60 * waveInfo.sampleRate;
+    waveInfo.waveData.resize(waveNum);
+    waveformCache.readStorageChannel(WAVE_CO2, waveInfo.waveData.data(), 2*60, false);
+
+    RecordPageGenerator *generator = new OxyCRGPageGenerator(trendInfos, waveInfo);
+    recorderManager.addPageGenerator(generator);
+}
+
 void OxyCRGEventWidget::_loadOxyCRGEventData()
 {
     d_ptr->dataIndex.clear();
@@ -499,6 +552,7 @@ OxyCRGEventWidget::OxyCRGEventWidget() : d_ptr(new OxyCRGEventWidgetPrivate())
     d_ptr->print = new IButton(trs("Print"));
     d_ptr->print->setFixedSize(ITEM_WIDTH, ITEM_H);
     d_ptr->print->setFont(font);
+    connect(d_ptr->print, SIGNAL(realReleased()), this, SLOT(_printReleased()));
 
     d_ptr->set = new IButton(trs("Set"));
     d_ptr->set->setFixedSize(ITEM_WIDTH, ITEM_H);

@@ -1,13 +1,34 @@
 #include "OxyCRGPageGenerator.h"
 #include "PatientManager.h"
-
+#include "TrendCache.h"
+#include "TimeDate.h"
 
 class OxyCRGPageGeneratorPrivate
 {
 public:
     OxyCRGPageGeneratorPrivate()
         :curPageType(RecordPageGenerator::TitlePage)
-    {}
+    {
+        TrendCacheData data;
+        TrendAlarmStatus almStatus;
+        unsigned t = timeDate.time();
+        trendCache.getTendData(t, data);
+        trendCache.getTrendAlarmStatus(t, almStatus);
+        bool alarm = false;
+        foreach (bool st, almStatus.alarms) {
+            if(st)
+            {
+                alarm = true;
+                break;
+            }
+        }
+        trendData.subparamValue = data.values;
+        trendData.subparamAlarm = almStatus.alarms;
+        trendData.co2Baro = data.co2baro;
+        trendData.time = t;
+        trendData.alarmFlag = alarm;
+    }
+
     TrendDataPackage trendData;
     RecordPageGenerator::PageType curPageType;
     QList<TrendGraphInfo> trendInfos;
@@ -45,6 +66,7 @@ RecordPage *OxyCRGPageGenerator::createPage()
         d_ptr->curPageType = TrendOxyCRGPage;
         return createTrendPage(d_ptr->trendData, true);
     case TrendOxyCRGPage:
+        d_ptr->curPageType = EndPage;
         return createOxyCRGGraph(d_ptr->trendInfos, d_ptr->oxyCRGWaveInfo);
     case EndPage:
         d_ptr->curPageType = NullPage;

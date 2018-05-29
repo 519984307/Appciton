@@ -1,7 +1,7 @@
 #pragma once
 
 #define DATA_STORAGE_WAVE_CHANNEL_NAME ("dataStorageWave")
-#define DATA_STORAGE_WAVE_TIME (18)
+#define DATA_STORAGE_WAVE_TIME (120)
 
 //数据类型
 enum RescueDataType

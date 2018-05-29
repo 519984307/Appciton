@@ -1433,7 +1433,7 @@ void RecordPageGenerator::drawGraphAxis(QPainter *painter, const GraphAxisInfo &
     //y axis
     lines.append(QLineF(0, 0, 0, -axisInfo.height));
     qreal sectionHeight = axisInfo.ySectionHeight;
-    for(int i = 0; i < axisInfo.ySectionNum && sectionHeight < axisInfo.height; i++)
+    for(int i = 0; i < axisInfo.ySectionNum && sectionHeight <= axisInfo.height; i++)
     {
         lines.append(QLineF(-axisInfo.tickLength/2, -sectionHeight, axisInfo.tickLength/2, -sectionHeight));
         sectionHeight += axisInfo.ySectionHeight;
@@ -1442,7 +1442,7 @@ void RecordPageGenerator::drawGraphAxis(QPainter *painter, const GraphAxisInfo &
     //x axis
     lines.append(QLineF(0, 0, axisInfo.width, 0));
     qreal sectionWidth = axisInfo.xSectionWidth;
-    for(int i = 0; i< axisInfo.xSectionNum && sectionWidth < axisInfo.width; i++)
+    for(int i = 0; i< axisInfo.xSectionNum && sectionWidth <= axisInfo.width; i++)
     {
         lines.append(QLine(sectionWidth, -axisInfo.tickLength/2, sectionWidth, axisInfo.tickLength/2));
         sectionWidth += axisInfo.xSectionWidth;
@@ -1474,7 +1474,7 @@ void RecordPageGenerator::drawGraphAxis(QPainter *painter, const GraphAxisInfo &
     qreal pixSize = font.pixelSize();
 
     sectionHeight = 0;
-    for(int i = 0; i < axisInfo.yLabels.size() && sectionHeight < axisInfo.height; i++)
+    for(int i = 0; i < axisInfo.yLabels.size() && sectionHeight <= axisInfo.height; i++)
     {
         if(!axisInfo.yLabels.at(i).isEmpty())
         {
@@ -1490,7 +1490,7 @@ void RecordPageGenerator::drawGraphAxis(QPainter *painter, const GraphAxisInfo &
     }
 
     sectionWidth = 0;
-    for(int i = 0; i < axisInfo.xLabels.size() && sectionWidth < axisInfo.width; i++)
+    for(int i = 0; i < axisInfo.xLabels.size() && sectionWidth <= axisInfo.width; i++)
     {
         if(!axisInfo.xLabels.at(i).isEmpty())
         {
@@ -1534,11 +1534,11 @@ static inline qreal mapTrendYValue(TrendDataType val, const GraphAxisInfo &axisI
     {
         mapH = validHeight;
     }
-    else
+    else if(mapH < 0.0)
     {
         mapH = 0.0;
     }
-    return mapH;
+    return -mapH;
 }
 
 #define TICK_LENGTH         RECORDER_PIXEL_PER_MM
@@ -1736,13 +1736,8 @@ static void drawOxyCRGWaveform(QPainter *painter, const GraphAxisInfo &axisInfo,
     qreal x1 = 0, y1 = 0, x2 = 0, y2 = 0;
     int width = axisInfo.validWidth;
     int waveNum = waveInfo.waveData.size();
-    //the waveInfo wavedata buffer should contain 4 miniutes waveform data
-    if(waveNum != (waveInfo.sampleRate * 4 * 60))
-    {
-        qWarning()<<"Data is not enough to draw the OxyCRG graph";
-    }
 
-    qreal offsetX = axisInfo.validWidth / waveNum; //the OxyCRG waveform last 4 minutes
+    qreal offsetX = axisInfo.validWidth / waveNum;
     for(int i = 0; i < waveNum; i++)
     {
         unsigned short flag = waveInfo.waveData[i] >> 16;
@@ -1812,7 +1807,7 @@ static void drawOxyCRGWaveform(QPainter *painter, const GraphAxisInfo &axisInfo,
 #define AXIS_X_SECTION_WIDTH    (25 * RECORDER_PIXEL_PER_MM)
 #define AXIS_X_SECTION_NUM  4
 #define GRAPH_SPACING 16
-#define GRAPH_START_HEIGHT      (5 * RECORDER_PIXEL_PER_MM)
+#define GRAPH_START_HEIGHT      (3 * RECORDER_PIXEL_PER_MM + RECORDER_PIXEL_PER_MM / 2)
 RecordPage *RecordPageGenerator::createOxyCRGGraph(const QList<TrendGraphInfo> &trendGraphInfo, const OxyCRGWaveInfo &waveInfo)
 {
    GraphAxisInfo axisInfo;
@@ -1821,16 +1816,17 @@ RecordPage *RecordPageGenerator::createOxyCRGGraph(const QList<TrendGraphInfo> &
    axisInfo.ySectionNum = AXIS_Y_SECTION_NUM;
    axisInfo.height = axisInfo.ySectionHeight * axisInfo.ySectionNum;
    axisInfo.validHeight = axisInfo.height;
-   axisInfo.marginLeft = AXIS_X_SECTION_WIDTH;
+   axisInfo.marginLeft = AXIS_X_SECTION_WIDTH / 2;
    axisInfo.xSectionWidth = AXIS_X_SECTION_WIDTH;
    axisInfo.xSectionNum = AXIS_X_SECTION_NUM;
-   axisInfo.width = axisInfo.xSectionWidth * axisInfo.xSectionNum;
-   axisInfo.validWidth = axisInfo.width;
+   axisInfo.validWidth = axisInfo.xSectionWidth * axisInfo.xSectionNum;
+   axisInfo.width = axisInfo.validWidth + axisInfo.xSectionWidth / 2;
    axisInfo.tickLength = RECORDER_PIXEL_PER_MM;
    axisInfo.drawArrow = false;
 
-   RecordPage *page = new RecordPage(axisInfo.marginLeft + axisInfo.marginLeft);
+   RecordPage *page = new RecordPage(axisInfo.marginLeft + axisInfo.width);
    QPainter painter(page);
+   painter.setPen(Qt::white);
 
    int heightOffset = GRAPH_START_HEIGHT;
    //draw  trend graph
@@ -1853,6 +1849,7 @@ RecordPage *RecordPageGenerator::createOxyCRGGraph(const QList<TrendGraphInfo> &
        yLabels<<QString::number(iter->scale.min)
              <<QString()<<QString()<<QString()
             <<QString::number(iter->scale.max);
+       axisInfo.yLabels = yLabels;
 
        axisInfo.origin  = QPointF(axisInfo.marginLeft, heightOffset + axisInfo.height);
 
@@ -1867,15 +1864,48 @@ RecordPage *RecordPageGenerator::createOxyCRGGraph(const QList<TrendGraphInfo> &
 
    //draw wave
    axisInfo.caption = trs(paramInfo.getParamName(paramInfo.getParamID(waveInfo.id)));
-   axisInfo.yLabels = QStringList()<<QString::number(0)<<QString()<<QString()<<QString()
-                                  <<RESPSymbol::convert(waveInfo.waveInfo.resp.zoom);
-   axisInfo.xLabels = QStringList()<<"-2min"<<"-1min"<<"0"<<"1min"<<"2min";
+   if(waveInfo.id == WAVE_CO2)
+   {
+       int high;
+       switch(waveInfo.waveInfo.co2.zoom)
+       {
+       case CO2_DISPLAY_ZOOM_4:
+           high = 4;
+           break;
+       case CO2_DISPLAY_ZOOM_8:
+           high = 8;
+           break;
+       case CO2_DISPLAY_ZOOM_12:
+           high = 12;
+           break;
+       case CO2_DISPLAY_ZOOM_20:
+       default:
+           high = 20;
+       }
+       axisInfo.yLabels = QStringList()<<QString::number(0)<<QString()<<QString()<<QString()
+                                      <<QString::number(high);
+   }
+   else
+   {
+       axisInfo.yLabels.clear();
+   }
+   if(waveInfo.waveData.size() / waveInfo.sampleRate <= 2*120)
+   {
+       //print from OxyCRG window
+       axisInfo.xLabels = QStringList()<<"-2min"<<"-90s"<<"-1min"<<"-30s"<<"0";
+   }
+   else
+   {
+       //print from the OxyCRG event
+       axisInfo.xLabels = QStringList()<<"-2min"<<"-1min"<<"0"<<"1min"<<"2min";
+   }
    axisInfo.origin = QPointF(axisInfo.marginLeft, heightOffset + axisInfo.height);
 
    //draw axis
    drawGraphAxis(&painter, axisInfo);
 
    //draw the waveform
+   painter.translate(axisInfo.origin);
    drawOxyCRGWaveform(&painter, axisInfo, waveInfo);
 
    return page;
