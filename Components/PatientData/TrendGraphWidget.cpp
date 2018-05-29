@@ -37,7 +37,7 @@ void TrendGraphWidget::timeIntervalChange(int timeInterval)
 
 void TrendGraphWidget::updateTrendGraph()
 {
-    _waveWidget->updateTrendGraph();
+    _waveWidget->updateTimeRange();
 }
 
 void TrendGraphWidget::setSubWidgetRulerLimit(SubParamID id, int down, int up)
@@ -67,12 +67,12 @@ void TrendGraphWidget::_rightMoveCursor()
 
 void TrendGraphWidget::_leftMoveEvent()
 {
-//TODO
+    _waveWidget->leftMoveEvent();
 }
 
 void TrendGraphWidget::_rightMoveEvent()
 {
-//TODO
+    _waveWidget->rightMoveEvent();
 }
 
 void TrendGraphWidget::_trendGraphSetReleased()

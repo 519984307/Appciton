@@ -201,4 +201,7 @@ COParam::COParam() : Param(PARAM_CO)
 {
     _provider = NULL;
     _trendWidget = NULL;
+    _coData = InvData();
+    _ciData = InvData();
+    _tbData = InvData();
 }

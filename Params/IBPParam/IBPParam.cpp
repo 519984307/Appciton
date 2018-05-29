@@ -538,43 +538,6 @@ bool IBPParam::isSubParamAvaliable(SubParamID id)
 
 }
 
-///**************************************************************************************************
-// * 功能： 标名对应的波形上下限。
-// *************************************************************************************************/
-//IBPEntitleLimitInfo IBPParam::limit[IBP_PRESSURE_NR] =
-//{
-//    {0, 160, IBP_RULER_RANGE_TENTH},
-//    {0, 30, IBP_RULER_RANGE_THIRD},
-//    {0, 30, IBP_RULER_RANGE_THIRD},
-//    {0, 20, IBP_RULER_RANGE_SECOND},
-//    {0, 20, IBP_RULER_RANGE_SECOND},
-//    {0, 20, IBP_RULER_RANGE_SECOND},
-//    {0, 160, IBP_RULER_RANGE_TENTH},
-//    {0, 160, IBP_RULER_RANGE_TENTH}
-//};
-
-///**************************************************************************************************
-// * 功能： 标尺对应的波形上下限。
-// *************************************************************************************************/
-//IBPEntitleLimitInfo IBPParam::rulerLimit[IBP_RULER_RANGE_NR] =
-//{
-//    {},
-//    {-10, 10, IBP_RULER_RANGE_FIRST},
-//    {0, 20, IBP_RULER_RANGE_SECOND},
-//    {0, 30, IBP_RULER_RANGE_THIRD},
-//    {0, 40, IBP_RULER_RANGE_FOURTH},
-//    {0, 60, IBP_RULER_RANGE_FIFTH},
-//    {0, 80, IBP_RULER_RANGE_SIXTH},
-//    {60, 140, IBP_RULER_RANGE_SEVENTH},
-//    {30, 140, IBP_RULER_RANGE_EIGHTH},
-//    {0, 140, IBP_RULER_RANGE_NINTH},
-//    {0, 160, IBP_RULER_RANGE_TENTH},
-//    {0, 200, IBP_RULER_RANGE_ELEVENTH},
-//    {0, 240, IBP_RULER_RANGE_TWELFTH},
-//    {0, 300, IBP_RULER_RANGE_THIRTEENTH},
-//    {}
-//};
-
 /**************************************************************************************************
  * 设置数据提供对象。
  *************************************************************************************************/

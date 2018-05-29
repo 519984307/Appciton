@@ -95,20 +95,45 @@ enum TrendGraphType
 
 struct TrendGraphData
 {
+    TrendGraphData()
+    {
+        isAlarm = false;
+    }
+    bool isAlarm;
     unsigned timestamp;
     TrendDataType data;
 };
 
 struct TrendGraphDataV2     //trend graph draw 2 values
 {
+    TrendGraphDataV2()
+    {
+        isAlarm = false;
+    }
+    bool isAlarm;
     unsigned timestamp;
     TrendDataType data[2];
 };
 
 struct TrendGraphDataV3     //trend graph draw 3 values
 {
+    TrendGraphDataV3()
+    {
+        isAlarm = false;
+    }
+    bool isAlarm;
     unsigned timestamp;
     TrendDataType data[3];
+};
+
+struct AlarmEventInfo       //alarm event and time
+{
+    AlarmEventInfo()
+    {
+        isAlarmEvent = false;
+    }
+    bool isAlarmEvent;
+    unsigned timestamp;
 };
 
 struct TrendGraphInfo
@@ -124,12 +149,14 @@ struct TrendGraphInfo
     QVector<TrendGraphData> trendData;
     QVector<TrendGraphDataV2> trendDataV2;
     QVector<TrendGraphDataV3> trendDataV3;
+    QVector<AlarmEventInfo> alarmInfo;
 
     void reset()
     {
         trendData.clear();
         trendDataV2.clear();
         trendDataV3.clear();
+        alarmInfo.clear();
     }
 };
 

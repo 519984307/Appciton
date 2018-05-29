@@ -1,4 +1,5 @@
 #pragma once
+#include "BaseDefine.h"
 #define  IBP_AUTO_SCALE_INDEX               0
 #define  IBP_MANUAL_SCALE_INDEX             14
 
@@ -111,6 +112,10 @@ struct IBPParamInfo
 {
     IBPParamInfo(){
         pressureName = IBP_PRESSURE_ART;
+        sys = InvData();
+        dia = InvData();
+        mean = InvData();
+        pr = InvData();
     }
     IBPPressureName pressureName;
     unsigned short sys;

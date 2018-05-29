@@ -20,6 +20,8 @@ public:
     void rightMoveCoordinate();
     void leftMoveCursor();
     void rightMoveCursor();
+    void leftMoveEvent();
+    void rightMoveEvent();
 
     void pageUpParam();
     void pageDownParam();
@@ -30,6 +32,7 @@ public:
     void setRulerLimit(SubParamID, int down, int up);
 
     void loadTrendData(SubParamID id);
+    void updateTimeRange(void);
 
 protected:
     void paintEvent(QPaintEvent *event);
@@ -41,6 +44,7 @@ private:
     void _getTrendData(void);
     void _initWaveSubWidget(void);
     double _getCursorPos(unsigned t);               // 获取坐标位置
+    void _calculationPage(void);                    // 计算当前数据量的页数
 
 private:
     QVBoxLayout *_mainLayout;
@@ -62,14 +66,11 @@ private:
     int _curVScroller;
 
     QList<TrendDataPackage *> _trendDataPack;       // 趋势数据包
-    int *_dataBuf;
-    int _dataSize;
-    int _currentDisplayNum;                         // 当前显示数据量
-    int _totalPage;                                 // 总数据页数
-    int _currentPage;                               // 当前页数
+    int _totalPage;                                 // 总数据页数 *
+    int _currentPage;                               // 当前页数 *
 
-    unsigned _leftTime;                             // 趋势图左边时间
-    unsigned _rightTime;                            // 趋势图右边时间
+    unsigned _leftTime;                             // 趋势图左边时间 *
+    unsigned _rightTime;                            // 趋势图右边时间 *
 
     QMap<SubParamID, TrendSubWaveWidget *> _subWidgetMap;       // 子波形窗口容器；
     TrendGraphInfo _trendGraphInfo;                 // 趋势图数据集合
