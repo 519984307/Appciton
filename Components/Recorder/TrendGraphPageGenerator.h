@@ -12,7 +12,7 @@ public:
         Type = 5
     };
 
-    TrendGraphPageGenerator(const QList<TrendGraphInfo>& trendInfos, unsigned startTime, unsigned endTime, QObject *parent = NULL);
+    TrendGraphPageGenerator(const QList<TrendGraphInfo>& trendInfos, QObject *parent = NULL);
 
     ~TrendGraphPageGenerator();
 

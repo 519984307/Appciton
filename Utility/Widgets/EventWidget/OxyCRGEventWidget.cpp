@@ -365,8 +365,12 @@ void OxyCRGEventWidget::_printReleased()
         TrendCacheData data;
         if(trendCache.getTendData(t,data))
         {
-            TrendGraphData hrData = {t, data.values.value(SUB_PARAM_HR_PR, InvData())};
-            TrendGraphData spo2Data = {t, data.values.value(SUB_PARAM_SPO2, InvData())};
+            TrendGraphData hrData;
+            hrData.timestamp = t;
+            hrData.data = data.values.value(SUB_PARAM_HR_PR, InvData());
+            TrendGraphData spo2Data;
+            spo2Data.timestamp = t;
+            spo2Data.data = data.values.value(SUB_PARAM_SPO2, InvData());
             graphInfoHR.trendData.append(hrData);
             graphInfoSpo2.trendData.append(spo2Data);
         }

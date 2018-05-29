@@ -34,6 +34,9 @@ public:
     void loadTrendData(SubParamID id);
     void updateTimeRange(void);
 
+    //test
+    const QList<TrendDataPackage*> getTrendDatapacketList() {return _trendDataPack;}
+
 protected:
     void paintEvent(QPaintEvent *event);
     void showEvent(QShowEvent *e);
