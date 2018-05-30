@@ -11,9 +11,6 @@
 #define DATA_INTERVAL_PIXEL         5
 #define TREND_DISPLAY_OFFSET        60
 
-/***************************************************************************************************
- * 构造
- **************************************************************************************************/
 TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id(id), _type(type)
 {
     SubParamID subID = id;
@@ -56,27 +53,15 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id
 
 }
 
-/***************************************************************************************************
- * 析构
- **************************************************************************************************/
 TrendSubWaveWidget::~TrendSubWaveWidget()
 {
+    _trendInfo.reset();
 }
 
 void TrendSubWaveWidget::trendDataInfo(TrendGraphInfo info)
 {
     _trendInfo = info;
     _cursorPosIndex = _trendInfo.alarmInfo.count() - 1;
-}
-
-/***************************************************************************************************
- * 更新趋势图
- **************************************************************************************************/
-void TrendSubWaveWidget::updateTrendGraph()
-{
-//    _cursorPosition = GRAPH_POINT_NUMBER;
-//    loadParamData();
-    update();
 }
 
 void TrendSubWaveWidget::loadTrendSubWidgetInfo(TrendSubWidgetInfo info)
@@ -93,9 +78,6 @@ void TrendSubWaveWidget::loadTrendSubWidgetInfo(TrendSubWidgetInfo info)
     _trendDataHead = info.xHead + info.xTail;
 }
 
-/***************************************************************************************************
- * 设置窗口主题颜色
- **************************************************************************************************/
 void TrendSubWaveWidget::setThemeColor(QColor color)
 {
     if (color != QColor(0, 0, 0))
@@ -104,9 +86,6 @@ void TrendSubWaveWidget::setThemeColor(QColor color)
     }
 }
 
-/***************************************************************************************************
- * 设置窗口标尺范围
- **************************************************************************************************/
 void TrendSubWaveWidget::setRulerRange(int down, int up)
 {
     _valueY.max = up;
@@ -119,26 +98,17 @@ void TrendSubWaveWidget::setTimeRange(unsigned leftTime, unsigned rightTime)
     _timeX.min = rightTime;
 }
 
-/***************************************************************************************************
- * 游标移动
- **************************************************************************************************/
 void TrendSubWaveWidget::cursorMove(int position)
 {
     _cursorPosIndex = position;
     update();
 }
 
-/***************************************************************************************************
- * 获取param id
- **************************************************************************************************/
 SubParamID TrendSubWaveWidget::getSubParamID()
 {
     return _id;
 }
 
-/***************************************************************************************************
- * 绘图事件
- **************************************************************************************************/
 void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
 {
     IWidget::paintEvent(e);

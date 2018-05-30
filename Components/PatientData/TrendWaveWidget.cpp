@@ -69,21 +69,11 @@ TrendWaveWidget::TrendWaveWidget() :
 
 TrendWaveWidget::~TrendWaveWidget()
 {
-
+    _trendDataPack.clear();
+    _subWidgetMap.clear();
+    _trendGraphInfo.reset();
 }
 
-/**************************************************************************************************
- * 切换趋势数据的显示
- *************************************************************************************************/
-void TrendWaveWidget::changeTrendDisplay()
-{
-    _getTrendData();
-    _trendLayout();
-}
-
-/**************************************************************************************************
- * 设置窗口大小
- *************************************************************************************************/
 void TrendWaveWidget::setWidgetSize(int w, int h)
 {
     setFixedSize(w, h);
@@ -93,9 +83,6 @@ void TrendWaveWidget::setWidgetSize(int w, int h)
     _initWaveSubWidget();
 }
 
-/**************************************************************************************************
- * 左移坐标
- *************************************************************************************************/
 void TrendWaveWidget::leftMoveCoordinate()
 {
     if (_currentPage >= _totalPage)
@@ -110,9 +97,6 @@ void TrendWaveWidget::leftMoveCoordinate()
     update();
 }
 
-/**************************************************************************************************
- * 右移坐标
- *************************************************************************************************/
 void TrendWaveWidget::rightMoveCoordinate()
 {
     if (_currentPage <= 1)
@@ -128,9 +112,6 @@ void TrendWaveWidget::rightMoveCoordinate()
 
 }
 
-/**************************************************************************************************
- * 左移游标
- *************************************************************************************************/
 void TrendWaveWidget::leftMoveCursor()
 {
     if (_cursorPosIndex <= 0)
@@ -154,9 +135,6 @@ void TrendWaveWidget::leftMoveCursor()
     update();
 }
 
-/**************************************************************************************************
- * 右移游标
- *************************************************************************************************/
 void TrendWaveWidget::rightMoveCursor()
 {
     if (_cursorPosIndex >= _trendGraphInfo.alarmInfo.count() - 1)
@@ -186,11 +164,37 @@ void TrendWaveWidget::leftMoveEvent()
     int index = _cursorPosIndex;
     while (flag || !_trendGraphInfo.alarmInfo.at(_cursorPosIndex).isAlarmEvent)
     {
-        flag = false;
+        flag = false;        
         if (_cursorPosIndex <= 0)
         {
-            _cursorPosIndex = index;
-            return;
+            unsigned time = _trendGraphInfo.alarmInfo.at(index).timestamp;
+            if (!_alarmEventTime.isEmpty())
+            {
+                if (time <= _alarmEventTime.first())
+                {
+                    _cursorPosIndex = index;
+                    return;
+                }
+                else
+                {
+                    if (_currentPage >= _totalPage)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        _currentPage ++;
+                    }
+                    updateTimeRange();
+                    _cursorPosIndex = _trendGraphInfo.alarmInfo.count() - 1;
+                    leftMoveEvent();
+                }
+            }
+            else
+            {
+                _cursorPosIndex = index;
+                return;
+            }
         }
         else{
             _cursorPosIndex --;
@@ -219,8 +223,34 @@ void TrendWaveWidget::rightMoveEvent()
         flag = false;
         if (_cursorPosIndex >= _trendGraphInfo.alarmInfo.count() - 1)
         {
-            _cursorPosIndex = index;
-            return;
+            unsigned time = _trendGraphInfo.alarmInfo.at(index).timestamp;
+            if (!_alarmEventTime.isEmpty())
+            {
+                if (time >= _alarmEventTime.last())
+                {
+                    _cursorPosIndex = index;
+                    return;
+                }
+                else
+                {
+                    if (_currentPage <= 1)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        _currentPage --;
+                    }
+                    updateTimeRange();
+                    _cursorPosIndex = 0;
+                    rightMoveEvent();
+                }
+            }
+            else
+            {
+                _cursorPosIndex = index;
+                return;
+            }
         }
         else{
             _cursorPosIndex ++;
@@ -240,9 +270,6 @@ void TrendWaveWidget::rightMoveEvent()
     update();
 }
 
-/**************************************************************************************************
- * 参数上翻页
- *************************************************************************************************/
 void TrendWaveWidget::pageUpParam()
 {
     int maxValue = _subWidgetScrollArea->verticalScrollBar()->maximum();
@@ -257,9 +284,6 @@ void TrendWaveWidget::pageUpParam()
 
 }
 
-/**************************************************************************************************
- * 参数下翻页
- *************************************************************************************************/
 void TrendWaveWidget::pageDownParam()
 {
     int maxValue = _subWidgetScrollArea->verticalScrollBar()->maximum();
@@ -272,12 +296,6 @@ void TrendWaveWidget::pageDownParam()
     }
 }
 
-void TrendWaveWidget::updateTrendGraph()
-{
-    changeTrendDisplay();
-    update();
-}
-
 void TrendWaveWidget::setTimeInterval(ResolutionRatio timeInterval)
 {
     _timeInterval = timeInterval;
@@ -286,18 +304,12 @@ void TrendWaveWidget::setTimeInterval(ResolutionRatio timeInterval)
     update();
 }
 
-/**************************************************************************************************
- * 设置波形数目
- *************************************************************************************************/
 void TrendWaveWidget::setWaveNumber(int num)
 {
     _displayGraphNum = num;    
-    changeTrendDisplay();
+    updateTimeRange();
 }
 
-/**************************************************************************************************
- * 设置标尺限
- *************************************************************************************************/
 void TrendWaveWidget::setRulerLimit(SubParamID id, int down, int up)
 {
     int count = _hLayoutTrend->count();
@@ -313,9 +325,6 @@ void TrendWaveWidget::setRulerLimit(SubParamID id, int down, int up)
     }
 }
 
-/**************************************************************************************************
- * 载入趋势数据到数组
- *************************************************************************************************/
 void TrendWaveWidget::loadTrendData(SubParamID subID)
 {
     // 开始和结尾的索引查找
@@ -473,9 +482,6 @@ void TrendWaveWidget::updateTimeRange()
     _trendLayout();
 }
 
-/**************************************************************************************************
- * 主窗口绘图事件
- *************************************************************************************************/
 void TrendWaveWidget::paintEvent(QPaintEvent *event)
 {
     IWidget::paintEvent(event);
@@ -548,9 +554,6 @@ void TrendWaveWidget::showEvent(QShowEvent *e)
     updateTimeRange();
 }
 
-/**************************************************************************************************
- * 添加显示控件
- *************************************************************************************************/
 void TrendWaveWidget::_trendLayout()
 {
     int subWidgetHeight = (height() - 30)/_displayGraphNum;
@@ -647,26 +650,6 @@ void TrendWaveWidget::_trendLayout()
 
 }
 
-/**************************************************************************************************
- * 清除显示控件
- *************************************************************************************************/
-void TrendWaveWidget::_clearLayout()
-{
-    int trendcount = _hLayoutTrend->count();
-    for (int i = 0; i < trendcount; i ++)
-    {
-        QLayoutItem *item = _hLayoutTrend->takeAt(0);
-        IWidget *widget = qobject_cast<IWidget *>(item->widget());
-        if (widget != NULL)
-        {
-            widget->deleteLater();
-        }
-    }
-}
-
-/**********************************************************************************************************************
- * 获取趋势数据
- **********************************************************************************************************************/
 void TrendWaveWidget::_getTrendData()
 {
     IStorageBackend *backend;
@@ -677,6 +660,7 @@ void TrendWaveWidget::_getTrendData()
     TrendDataPackage *pack;
     qDeleteAll(_trendDataPack);
     _trendDataPack.clear();
+    _alarmEventTime.clear();
     //TODO: low efficiency
     for (int i = 0; i < blockNum; i ++)
     {
@@ -692,6 +676,10 @@ void TrendWaveWidget::_getTrendData()
             {
                 pack->alarmFlag = dataSeg->values[j].alarmFlag;
             }
+        }
+        if (pack->alarmFlag)
+        {
+            _alarmEventTime.append(pack->time);
         }
         _trendDataPack.append(pack);
     }
