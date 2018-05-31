@@ -497,7 +497,7 @@ void PRT72Provider::getStatusInfo(void)
  **************************************************************************************************/
 void PRT72Provider::setPrintSpeed(PrintSpeed speed)
 {
-    unsigned char actualSpeed = speed + 1;
+    unsigned char actualSpeed = speed;
     sendCmd(PRINTER_CMD_SET_SPEED, &actualSpeed, 1);
 }
 

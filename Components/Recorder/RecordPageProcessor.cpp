@@ -14,7 +14,7 @@ class RecordPageProcessorPrivate
 public:
     RecordPageProcessorPrivate(PrintProviderIFace *iface)
         :iface(iface), flush(false), processing(false), pause(false),
-          updateSpeed(false), queueIsFull(false), curSpeed(PRINT_SPEED_250),
+          updateSpeed(false), queueIsFull(false), curSpeed(PRINT_SPEED_NR),
           timerID(-1), curProcessingPage(NULL), curPageXPos(0)
     {}
 
