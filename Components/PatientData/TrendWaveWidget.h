@@ -22,36 +22,6 @@ public:
     void setWidgetSize(int w, int h);
 
     /**
-     * @brief leftMoveCoordinate 左移坐标
-     */
-    void leftMoveCoordinate();
-
-    /**
-     * @brief rightMoveCoordinate 右移坐标
-     */
-    void rightMoveCoordinate();
-
-    /**
-     * @brief leftMoveCursor 左移游标
-     */
-    void leftMoveCursor();
-
-    /**
-     * @brief rightMoveCursor 右移游标
-     */
-    void rightMoveCursor();
-
-    /**
-     * @brief leftMoveEvent 左移事件
-     */
-    void leftMoveEvent();
-
-    /**
-     * @brief rightMoveEvent 右移事件
-     */
-    void rightMoveEvent();
-
-    /**
      * @brief pageUpParam 上翻页
      */
     void pageUpParam();
@@ -83,8 +53,17 @@ public:
     /**
      * @brief loadTrendData 根据子参数ID将一页趋势数据载入容器
      * @param id 子参数ID
+     * @param startIndex 开始数据的索引
+     * @param endIndex 结束数据的索引
      */
-    void loadTrendData(SubParamID id);
+    void loadTrendData(SubParamID id, const int startIndex, const int endIndex);
+
+    /**
+     * @brief dataIndex 获取开始与结束数据的索引
+     * @param startIndex 开始数据的索引
+     * @param endIndex 结束数据的索引
+     */
+    void dataIndex(int &startIndex, int &endIndex);
 
     /**
      * @brief updateTimeRange 根据当前数据页和时间间隔更新显示数据时间范围
@@ -93,6 +72,37 @@ public:
 
     //test
     const QList<TrendDataPackage*> getTrendDatapacketList() {return _trendDataPack;}
+
+public slots:
+    /**
+     * @brief leftMoveCoordinate 左移坐标
+     */
+    void leftMoveCoordinate();
+
+    /**
+     * @brief rightMoveCoordinate 右移坐标
+     */
+    void rightMoveCoordinate();
+
+    /**
+     * @brief leftMoveCursor 左移游标
+     */
+    void leftMoveCursor();
+
+    /**
+     * @brief rightMoveCursor 右移游标
+     */
+    void rightMoveCursor();
+
+    /**
+     * @brief leftMoveEvent 左移事件
+     */
+    void leftMoveEvent();
+
+    /**
+     * @brief rightMoveEvent 右移事件
+     */
+    void rightMoveEvent();
 
 protected:
     void paintEvent(QPaintEvent *event);

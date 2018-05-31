@@ -45,36 +45,6 @@ void TrendGraphWidget::setSubWidgetRulerLimit(SubParamID id, int down, int up)
     _waveWidget->setRulerLimit(id, down, up);
 }
 
-void TrendGraphWidget::_leftMoveCoordinate()
-{
-    _waveWidget->leftMoveCoordinate();
-}
-
-void TrendGraphWidget::_rightMoveCoordinate()
-{
-    _waveWidget->rightMoveCoordinate();
-}
-
-void TrendGraphWidget::_leftMoveCursor()
-{
-    _waveWidget->leftMoveCursor();
-}
-
-void TrendGraphWidget::_rightMoveCursor()
-{
-    _waveWidget->rightMoveCursor();
-}
-
-void TrendGraphWidget::_leftMoveEvent()
-{
-    _waveWidget->leftMoveEvent();
-}
-
-void TrendGraphWidget::_rightMoveEvent()
-{
-    _waveWidget->rightMoveEvent();
-}
-
 void TrendGraphWidget::_trendGraphSetReleased()
 {
     trendGraphSetWidget.autoShow();
@@ -211,20 +181,20 @@ TrendGraphWidget::TrendGraphWidget() : _waveWidget(NULL), _moveCoordinate(NULL),
     _moveCoordinate = new IMoveButton(trs("MoveCoordinate"));
     _moveCoordinate->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     _moveCoordinate->setFont(fontManager.textFont(fontSize));
-    connect(_moveCoordinate, SIGNAL(leftMove()), this, SLOT(_leftMoveCoordinate()));
-    connect(_moveCoordinate, SIGNAL(rightMove()), this, SLOT(_rightMoveCoordinate()));
+    connect(_moveCoordinate, SIGNAL(leftMove()), _waveWidget, SLOT(leftMoveCoordinate()));
+    connect(_moveCoordinate, SIGNAL(rightMove()), _waveWidget, SLOT(rightMoveCoordinate()));
 
     _moveCursor = new IMoveButton(trs("MoveCursor"));
     _moveCursor->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     _moveCursor->setFont(fontManager.textFont(fontSize));
-    connect(_moveCursor, SIGNAL(leftMove()), this, SLOT(_leftMoveCursor()));
-    connect(_moveCursor, SIGNAL(rightMove()), this, SLOT(_rightMoveCursor()));
+    connect(_moveCursor, SIGNAL(leftMove()), _waveWidget, SLOT(leftMoveCursor()));
+    connect(_moveCursor, SIGNAL(rightMove()), _waveWidget, SLOT(rightMoveCursor()));
 
     _moveEvent = new IMoveButton(trs("MoveEvent"));
     _moveEvent->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     _moveEvent->setFont(fontManager.textFont(fontSize));
-    connect(_moveEvent, SIGNAL(leftMove()), this, SLOT(_leftMoveEvent()));
-    connect(_moveEvent, SIGNAL(rightMove()), this, SLOT(_rightMoveEvent()));
+    connect(_moveEvent, SIGNAL(leftMove()), _waveWidget, SLOT(leftMoveEvent()));
+    connect(_moveEvent, SIGNAL(rightMove()), _waveWidget, SLOT(rightMoveEvent()));
 
     _print = new IButton(trs("Print"));
     _print->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);

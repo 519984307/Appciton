@@ -52,36 +52,6 @@ public:
 
 private slots:
     /**
-     * @brief _leftMoveCoordinate left move coordinate
-     */
-    void _leftMoveCoordinate();
-
-    /**
-     * @brief _rightMoveCoordinate right move coordinate
-     */
-    void _rightMoveCoordinate();
-
-    /**
-     * @brief _leftMoveCursor left move cursor
-     */
-    void _leftMoveCursor();
-
-    /**
-     * @brief _rightMoveCursor right move cursor
-     */
-    void _rightMoveCursor();
-
-    /**
-     * @brief _leftMoveEvent left move event
-     */
-    void _leftMoveEvent();
-
-    /**
-     * @brief _rightMoveEvent right move event
-     */
-    void _rightMoveEvent();
-
-    /**
      * @brief _trendGraphSetReleased open trend graph set widget slot funtion
      */
     void _trendGraphSetReleased();

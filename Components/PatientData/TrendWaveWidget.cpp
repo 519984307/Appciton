@@ -325,11 +325,173 @@ void TrendWaveWidget::setRulerLimit(SubParamID id, int down, int up)
     }
 }
 
-void TrendWaveWidget::loadTrendData(SubParamID subID)
+void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, const int endIndex)
+{
+    if (startIndex == InvData() || endIndex == InvData())
+    {
+        return;
+    }
+
+    _trendGraphInfo.reset();
+    unsigned interval = TrendDataSymbol::convertValue(_timeInterval);
+    switch (subID)
+    {
+    case SUB_PARAM_HR_PR:
+    case SUB_PARAM_SPO2:
+    case SUB_PARAM_RR_BR:
+    case SUB_PARAM_CVP_MAP:
+    case SUB_PARAM_LAP_MAP:
+    case SUB_PARAM_RAP_MAP:
+    case SUB_PARAM_ICP_MAP:
+    {
+        TrendGraphData dataV1;
+        AlarmEventInfo alarm;
+        unsigned lastTime = _trendDataPack.at(startIndex)->time;
+        bool startFlag = true;
+        for(int i = startIndex; i <= endIndex; i ++)
+        {
+            if(startFlag)
+            {
+                startFlag = false;
+            }
+            else
+            {
+                unsigned t = _trendDataPack.at(i)->time;
+                if (t > lastTime)
+                {
+                    dataV1.data = InvData();
+                    dataV1.isAlarm = false;
+                    dataV1.timestamp = lastTime;
+                    alarm.isAlarmEvent = false;
+                    alarm.timestamp = lastTime;
+                }
+                else if (t < lastTime)
+                {
+                    continue;
+                }
+            }
+            dataV1.data = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
+            dataV1.isAlarm = _trendDataPack.at(i)->subparamAlarm.value(subID, false);
+            dataV1.timestamp = _trendDataPack.at(i)->time;
+            alarm.isAlarmEvent = _trendDataPack.at(i)->alarmFlag;
+            alarm.timestamp = _trendDataPack.at(i)->time;
+            _trendGraphInfo.alarmInfo.append(alarm);
+            _trendGraphInfo.trendData.append(dataV1);
+            _trendGraphInfo.subParamID = subID;
+
+            lastTime = lastTime + interval;
+        }
+        break;
+    }
+    case SUB_PARAM_NIBP_MAP:
+    case SUB_PARAM_ART_MAP:
+    case SUB_PARAM_PA_MAP:
+    case SUB_PARAM_AUXP1_MAP:
+    case SUB_PARAM_AUXP2_MAP:
+    {        
+        AlarmEventInfo alarm;
+        TrendGraphDataV3 dataV3;
+        unsigned lastTime = _trendDataPack.at(startIndex)->time;
+        bool startFlag = true;
+        for(int i = startIndex; i <= endIndex; i ++)
+        {
+            if(startFlag)
+            {
+                startFlag = false;
+            }
+            else
+            {
+                unsigned t = _trendDataPack.at(i)->time;
+                if (t > lastTime)
+                {
+                    dataV3.data[0] = InvData();
+                    dataV3.data[1] = InvData();
+                    dataV3.data[2] = InvData();
+                    dataV3.isAlarm = false;
+                    dataV3.timestamp = lastTime;
+                    alarm.isAlarmEvent = false;
+                    alarm.timestamp = lastTime;
+                }
+                else if (t < lastTime)
+                {
+                    continue;
+                }
+            }
+            dataV3.data[0] = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
+            dataV3.data[1] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID - 1), InvData());
+            dataV3.data[2] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID - 2), InvData());
+            dataV3.isAlarm = _trendDataPack.at(i)->subparamAlarm.value(subID, false);
+            dataV3.timestamp = _trendDataPack.at(i)->time;
+            alarm.isAlarmEvent = _trendDataPack.at(i)->alarmFlag;
+            alarm.timestamp = _trendDataPack.at(i)->time;
+            _trendGraphInfo.alarmInfo.append(alarm);
+            _trendGraphInfo.trendDataV3.append(dataV3);
+            _trendGraphInfo.subParamID = subID;
+
+            lastTime = lastTime + interval;
+        }
+        break;
+    }
+    case SUB_PARAM_ETCO2:
+    case SUB_PARAM_ETN2O:
+    case SUB_PARAM_ETAA1:
+    case SUB_PARAM_ETAA2:
+    case SUB_PARAM_ETO2:
+    case SUB_PARAM_T1:
+    {
+        AlarmEventInfo alarm;
+        TrendGraphDataV2 dataV2;
+        unsigned lastTime = _trendDataPack.at(startIndex)->time;
+        bool startFlag = true;
+        for(int i = startIndex; i <= endIndex; i++)
+        {
+            if(startFlag)
+            {
+                startFlag = false;
+            }
+            else
+            {
+                unsigned t = _trendDataPack.at(i)->time;
+                if (t > lastTime)
+                {
+                    dataV2.data[0] = InvData();
+                    dataV2.data[1] = InvData();
+                    dataV2.isAlarm = false;
+                    dataV2.timestamp = lastTime;
+                    alarm.isAlarmEvent = false;
+                    alarm.timestamp = lastTime;
+                }
+                else if (t < lastTime)
+                {
+                    continue;
+                }
+            }
+            dataV2.data[0] = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
+            dataV2.data[1] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 1), InvData());
+            dataV2.isAlarm = _trendDataPack.at(i)->subparamAlarm.value(subID, false);
+            dataV2.timestamp = _trendDataPack.at(i)->time;
+            alarm.isAlarmEvent = _trendDataPack.at(i)->alarmFlag;
+            alarm.timestamp = _trendDataPack.at(i)->time;
+            _trendGraphInfo.alarmInfo.append(alarm);
+            _trendGraphInfo.trendDataV2.append(dataV2);
+            _trendGraphInfo.subParamID = subID;
+
+            lastTime = lastTime + interval;
+        }
+        break;
+    }
+    default:
+        break;
+    }
+
+    _cursorPosIndex = _trendGraphInfo.alarmInfo.count() - 1;
+}
+
+void TrendWaveWidget::dataIndex(int &startIndex, int &endIndex)
 {
     // 开始和结尾的索引查找
-    int startIndex = InvData();
-    int endIndex = InvData();
+    startIndex = InvData();
+    endIndex = InvData();
 
     // 二分查找时间索引
     int lowPos = 0;
@@ -377,90 +539,6 @@ void TrendWaveWidget::loadTrendData(SubParamID subID)
             break;
         }
     }
-
-    if (startIndex == InvData() || endIndex == InvData())
-    {
-        return;
-    }
-
-    _trendGraphInfo.reset();
-    int intervalNum = TrendDataSymbol::convertValue(_timeInterval)/TrendDataSymbol::convertValue(RESOLUTION_RATIO_5_SECOND);
-    switch (subID)
-    {
-    case SUB_PARAM_HR_PR:
-    case SUB_PARAM_SPO2:
-    case SUB_PARAM_RR_BR:
-    case SUB_PARAM_CVP_MAP:
-    case SUB_PARAM_LAP_MAP:
-    case SUB_PARAM_RAP_MAP:
-    case SUB_PARAM_ICP_MAP:
-    {
-        TrendGraphData dataV1;
-        AlarmEventInfo alarm;
-        for(int i = startIndex; i <= endIndex; i = i + intervalNum)
-        {
-            dataV1.data = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
-            dataV1.isAlarm = _trendDataPack.at(i)->subparamAlarm.value(subID, false);
-            dataV1.timestamp = _trendDataPack.at(i)->time;
-            alarm.isAlarmEvent = _trendDataPack.at(i)->alarmFlag;
-            alarm.timestamp = _trendDataPack.at(i)->time;
-            _trendGraphInfo.alarmInfo.append(alarm);
-            _trendGraphInfo.trendData.append(dataV1);
-            _trendGraphInfo.subParamID = subID;
-        }
-        break;
-    }
-    case SUB_PARAM_NIBP_MAP:
-    case SUB_PARAM_ART_MAP:
-    case SUB_PARAM_PA_MAP:
-    case SUB_PARAM_AUXP1_MAP:
-    case SUB_PARAM_AUXP2_MAP:
-    {        
-        AlarmEventInfo alarm;
-        TrendGraphDataV3 dataV3;
-        for(int i = startIndex; i <= endIndex; i = i + intervalNum)
-        {
-            dataV3.data[0] = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
-            dataV3.data[1] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID - 1), InvData());
-            dataV3.data[2] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID - 2), InvData());
-            dataV3.isAlarm = _trendDataPack.at(i)->subparamAlarm.value(subID, false);
-            dataV3.timestamp = _trendDataPack.at(i)->time;
-            alarm.isAlarmEvent = _trendDataPack.at(i)->alarmFlag;
-            alarm.timestamp = _trendDataPack.at(i)->time;
-            _trendGraphInfo.alarmInfo.append(alarm);
-            _trendGraphInfo.trendDataV3.append(dataV3);
-            _trendGraphInfo.subParamID = subID;
-        }
-        break;
-    }
-    case SUB_PARAM_ETCO2:
-    case SUB_PARAM_ETN2O:
-    case SUB_PARAM_ETAA1:
-    case SUB_PARAM_ETAA2:
-    case SUB_PARAM_ETO2:
-    case SUB_PARAM_T1:
-    {
-        AlarmEventInfo alarm;
-        TrendGraphDataV2 dataV2;
-        for(int i = startIndex; i <= endIndex; i = i + intervalNum)
-        {
-            dataV2.data[0] = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
-            dataV2.data[1] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 1), InvData());
-            dataV2.isAlarm = _trendDataPack.at(i)->subparamAlarm.value(subID, false);
-            dataV2.timestamp = _trendDataPack.at(i)->time;
-            alarm.isAlarmEvent = _trendDataPack.at(i)->alarmFlag;
-            alarm.timestamp = _trendDataPack.at(i)->time;
-            _trendGraphInfo.alarmInfo.append(alarm);
-            _trendGraphInfo.trendDataV2.append(dataV2);
-            _trendGraphInfo.subParamID = subID;
-        }
-        break;
-    }
-    default:
-        break;
-    }
-
-    _cursorPosIndex = _trendGraphInfo.alarmInfo.count() - 1;
 }
 
 void TrendWaveWidget::updateTimeRange()
@@ -563,6 +641,9 @@ void TrendWaveWidget::_trendLayout()
     info.yTop = subWidgetHeight/5;
     info.yBottom = subWidgetHeight/5*4;
     _totalGraphNum = 0;
+    int startIndex;
+    int endIndex;
+    dataIndex(startIndex, endIndex);
     QMap<SubParamID, TrendSubWaveWidget *>::iterator it = _subWidgetMap.begin();
     for (; it != _subWidgetMap.end(); it ++)
     {
@@ -577,7 +658,7 @@ void TrendWaveWidget::_trendLayout()
             case SUB_PARAM_NIBP_MAP:
             case SUB_PARAM_ETCO2:
             case SUB_PARAM_T1:                
-                loadTrendData(subId);
+                loadTrendData(subId, startIndex, endIndex);
                 it.value()->trendDataInfo(_trendGraphInfo);
                 break;
             default:
@@ -611,7 +692,7 @@ void TrendWaveWidget::_trendLayout()
             case SUB_PARAM_PA_MAP:
             case SUB_PARAM_AUXP1_MAP:
             case SUB_PARAM_AUXP2_MAP:                
-                loadTrendData(subId);
+                loadTrendData(subId, startIndex, endIndex);
                 it.value()->trendDataInfo(_trendGraphInfo);
                 break;
             default:
@@ -632,7 +713,7 @@ void TrendWaveWidget::_trendLayout()
             case SUB_PARAM_ETAA2:
             case SUB_PARAM_ETO2:
             case SUB_PARAM_T1:
-                loadTrendData(subId);
+                loadTrendData(subId, startIndex, endIndex);
                 it.value()->trendDataInfo(_trendGraphInfo);
                 break;
             default:

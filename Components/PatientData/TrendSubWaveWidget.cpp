@@ -10,6 +10,7 @@
 #define GRAPH_POINT_NUMBER          120
 #define DATA_INTERVAL_PIXEL         5
 #define TREND_DISPLAY_OFFSET        60
+#define isEqual(a, b) (qAbs((a)-(b)) < 0.000001)
 
 TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id(id), _type(type)
 {
@@ -58,13 +59,13 @@ TrendSubWaveWidget::~TrendSubWaveWidget()
     _trendInfo.reset();
 }
 
-void TrendSubWaveWidget::trendDataInfo(TrendGraphInfo info)
+void TrendSubWaveWidget::trendDataInfo(TrendGraphInfo &info)
 {
     _trendInfo = info;
     _cursorPosIndex = _trendInfo.alarmInfo.count() - 1;
 }
 
-void TrendSubWaveWidget::loadTrendSubWidgetInfo(TrendSubWidgetInfo info)
+void TrendSubWaveWidget::loadTrendSubWidgetInfo(TrendSubWidgetInfo &info)
 {
     _info = info;
     _valueY.start = info.yTop;
@@ -109,6 +110,240 @@ SubParamID TrendSubWaveWidget::getSubParamID()
     return _id;
 }
 
+QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInfo &graphInfo)
+{
+    QList<QPainterPath> paths;
+    switch (_type)
+    {
+    case TREND_GRAPH_TYPE_NIBP:
+    {
+        QPainterPath path;
+
+        QVector<TrendGraphDataV3>::ConstIterator iter = graphInfo.trendDataV3.constBegin();
+        for (; iter != graphInfo.trendDataV3.constEnd(); iter ++)
+        {
+            if (iter->data[0] == InvData())
+            {
+                continue;
+            }
+
+            qreal x = _mapValue(_timeX, iter->timestamp);
+            qreal map = _mapValue(_valueY, iter->data[0]);
+            qreal dia = _mapValue(_valueY, iter->data[1]);
+            qreal sys = _mapValue(_valueY, iter->data[2]);
+
+            path.moveTo(x - 3, sys - 3);
+            path.lineTo(x, sys);
+            path.lineTo(x + 3, sys - 3);
+
+            path.moveTo(x - 3, dia + 3);
+            path.lineTo(x, dia);
+            path.lineTo(x + 3, dia + 3);
+
+            path.moveTo(x, sys);
+            path.lineTo(x, dia);
+
+            path.moveTo(x - 3, map);
+            path.lineTo(x + 3, map);
+        }
+        paths.append(path);
+    }
+        break;
+    case TREND_GRAPH_TYPE_AG_TEMP:
+    {
+        QPainterPath fristPath;
+        QPainterPath secondPath;
+
+        bool lastPointInvalid = true;
+        QPointF fristPoint;
+        QPointF secondPoint;
+
+        QVector<TrendGraphDataV2>::ConstIterator iter = graphInfo.trendDataV2.constBegin();
+        for(; iter != graphInfo.trendDataV2.constEnd(); iter++)
+        {
+            if (iter->data[0] == InvData())
+            {
+                if (!lastPointInvalid)
+                {
+                    fristPath.lineTo(fristPoint);
+                    secondPath.lineTo(secondPoint);
+                    lastPointInvalid = true;
+                }
+                continue;
+            }
+
+            qreal x = _mapValue(_timeX, iter->timestamp);
+            qreal value1 = _mapValue(_valueY, iter->data[0] / 10);
+            qreal value2 = _mapValue(_valueY, iter->data[1] / 10);
+
+            if (lastPointInvalid)
+            {
+                fristPath.moveTo(x, value1);
+                secondPath.moveTo(x, value2);
+                lastPointInvalid = false;
+            }
+            else
+            {
+                if (!isEqual(fristPoint.y(), value1))
+                {
+                    fristPath.lineTo(fristPoint);
+                    fristPath.lineTo(x, value1);
+                }
+
+                if (!isEqual(secondPoint.y(), value2))
+                {
+                    secondPath.lineTo(secondPoint);
+                    secondPath.lineTo(x, value2);
+                }
+            }
+
+            fristPoint.rx() = x;
+            fristPoint.ry() = value1;
+            secondPoint.rx() = x;
+            secondPoint.ry() = value2;
+        }
+
+        if (!lastPointInvalid)
+        {
+            fristPath.lineTo(fristPoint);
+            secondPath.lineTo(secondPoint);
+        }
+
+        paths.append(fristPath);
+        paths.append(secondPath);
+    }
+        break;
+    case TREND_GRAPH_TYPE_ART_IBP:
+    {
+        QPainterPath sysPath;
+        QPainterPath diaPath;
+        QPainterPath mapPath;
+
+        bool lastPointInvalid = true;
+        QPointF sysLastPoint;
+        QPointF diaLastPoint;
+        QPointF mapLastPoint;
+
+        QVector<TrendGraphDataV3>::ConstIterator iter = graphInfo.trendDataV3.constBegin();
+        for(; iter != graphInfo.trendDataV3.constEnd(); iter++)
+        {
+            if (iter->data[0] == InvData())
+            {
+                if (!lastPointInvalid)
+                {
+                    sysPath.lineTo(sysLastPoint);
+                    diaPath.lineTo(diaLastPoint);
+                    mapPath.lineTo(mapLastPoint);
+                    lastPointInvalid = true;
+                }
+                continue;
+            }
+
+            qreal x = _mapValue(_timeX, iter->timestamp);
+            qreal map = _mapValue(_valueY, iter->data[0]);
+            qreal dia = _mapValue(_valueY, iter->data[1]);
+            qreal sys = _mapValue(_valueY, iter->data[2]);
+
+            if (lastPointInvalid)
+            {
+                sysPath.moveTo(x, sys);
+                diaPath.moveTo(x, dia);
+                mapPath.moveTo(x, map);
+                lastPointInvalid = false;
+            }
+            else
+            {
+                if (!isEqual(sysLastPoint.y(), sys))
+                {
+                    sysPath.lineTo(sysLastPoint);
+                    sysPath.lineTo(x, sys);
+                }
+
+                if (!isEqual(diaLastPoint.y(), dia))
+                {
+                    diaPath.lineTo(diaLastPoint);
+                    diaPath.lineTo(x, dia);
+                }
+
+                if (!isEqual(mapLastPoint.y(), map))
+                {
+                    mapPath.lineTo(mapLastPoint);
+                    mapPath.lineTo(x, map);
+                }
+            }
+
+            sysLastPoint.rx() = x;
+            sysLastPoint.ry() = sys;
+            diaLastPoint.rx() = x;
+            diaLastPoint.ry() = dia;
+            mapLastPoint.rx() = x;
+            mapLastPoint.ry() = map;
+        }
+
+        if (!lastPointInvalid)
+        {
+            sysPath.lineTo(sysLastPoint);
+            diaPath.lineTo(diaLastPoint);
+            mapPath.lineTo(mapLastPoint);
+        }
+
+        paths.append(sysPath);
+        paths.append(diaPath);
+        paths.append(mapPath);
+    }
+        break;
+    case TREND_GRAPH_TYPE_NORMAL:
+    {
+        QPainterPath path;
+
+        QPointF lastPoint;
+        bool lastPointInvalid = true;
+        QVector<TrendGraphData>::ConstIterator iter = graphInfo.trendData.constBegin();
+        for (; iter != graphInfo.trendData.constEnd(); iter ++)
+        {
+            if (iter->data == InvData())
+            {
+                if (!lastPointInvalid)
+                {
+                    path.lineTo(lastPoint);
+                    lastPointInvalid = true;
+                }
+                continue;
+            }
+
+            qreal x = _mapValue(_timeX, iter->timestamp);
+            qreal y = _mapValue(_valueY, iter->data);
+
+            if (lastPointInvalid)
+            {
+                path.moveTo(x, y);
+                lastPointInvalid = false;
+            }
+            else
+            {
+                if (!isEqual(lastPoint.y(), y))
+                {
+                    path.lineTo(lastPoint);
+                    path.lineTo(x, y);
+                }
+            }
+
+            lastPoint.rx() = x;
+            lastPoint.ry() = y;
+        }
+
+        if (!lastPointInvalid)
+        {
+            path.lineTo(lastPoint);
+        }
+
+        paths.append(path);
+    }
+        break;
+    }
+    return paths;
+}
+
 void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
 {
     IWidget::paintEvent(e);
@@ -138,147 +373,16 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     {
         return;
     }
-    if (_type == TREND_GRAPH_TYPE_NORMAL)
+    barPainter.save();
+    QList<QPainterPath> paths = generatorPainterPath(_trendInfo);
+    QList<QPainterPath>::ConstIterator iter;
+    for(iter = paths.constBegin(); iter != paths.constEnd(); iter++)
     {
-        for (int i = 0; i < _trendInfo.trendData.count() - 1; i ++)
-        {
-            double y1 = _mapValue(_valueY, _trendInfo.trendData.at(i).data);
-            double y2 = _mapValue(_valueY, _trendInfo.trendData.at(i + 1).data);
-            double x1 = _mapValue(_timeX, _trendInfo.trendData.at(i).timestamp);
-            double x2 = _mapValue(_timeX, _trendInfo.trendData.at(i + 1).timestamp);
-            if (y1 != InvData() && y2 != InvData())
-            {
-                barPainter.drawLine(x1, y1, x2, y2);
-            }
-            else if (y1 != InvData())
-            {
-                barPainter.drawPoint(x1, y1);
-            }
-            else if (y2 != InvData())
-            {
-                barPainter.drawPoint(x2, y2);
-            }
-        }
+        barPainter.save();
+        barPainter.drawPath(*iter);
+        barPainter.restore();
     }
-    else if (_type == TREND_GRAPH_TYPE_NIBP)
-    {
-        for (int i = 0; i < _trendInfo.trendDataV3.count(); i ++)
-        {
-            double x1 = _mapValue(_timeX, _trendInfo.trendDataV3.at(i).timestamp);
-            double map =  _mapValue(_valueY, _trendInfo.trendDataV3.at(i).data[0]);
-            double dia = _mapValue(_valueY, _trendInfo.trendDataV3.at(i).data[1]);
-            double sys = _mapValue(_valueY, _trendInfo.trendDataV3.at(i).data[2]);
-            if (map != InvData() && dia != InvData() && sys != InvData())
-            {
-                barPainter.drawLine(x1 - 3, sys - 3, x1, sys);
-                barPainter.drawLine(x1, sys, x1 + 3, sys - 3);
-                barPainter.drawLine(x1 - 3, dia + 3, x1, dia);
-                barPainter.drawLine(x1, dia, x1 + 3, dia + 3);
-                barPainter.drawLine(x1, sys, x1, dia);
-                barPainter.drawLine(x1 - 3, map, x1 + 3, map);
-            }
-        }
-    }
-    else if (_type == TREND_GRAPH_TYPE_AG_TEMP)
-    {
-        for (int i = 0; i < _trendInfo.trendDataV2.count() - 1; i ++)
-        {
-            double fristData1 = _trendInfo.trendDataV2.at(i).data[0] / 10;
-            double fristData2 = _trendInfo.trendDataV2.at(i + 1).data[0] / 10;
-            double secondData1 = _trendInfo.trendDataV2.at(i).data[1] / 10;
-            double secondData2 = _trendInfo.trendDataV2.at(i + 1).data[1] / 10;
-            double fristY1 = _mapValue(_valueY, fristData1);
-            double fristY2 = _mapValue(_valueY, fristData2);
-            double secondY1 = _mapValue(_valueY, secondData1);
-            double secondY2 = _mapValue(_valueY, secondData2);
-            double x1 = _mapValue(_timeX, _trendInfo.trendDataV2.at(i).timestamp);
-            double x2 = _mapValue(_timeX, _trendInfo.trendDataV2.at(i + 1).timestamp);
-            if (fristY1 != InvData() && fristY2 != InvData())
-            {
-                barPainter.drawLine(x1, fristY1, x2, fristY2);
-            }
-            else if (fristY1 != InvData())
-            {
-                barPainter.drawPoint(x1, fristY1);
-            }
-            else if (fristY2 != InvData())
-            {
-                barPainter.drawPoint(x2, fristY2);
-            }
-
-            if (secondY1 != InvData() && secondY2 != InvData())
-            {
-                barPainter.drawLine(x1, secondY1, x2, secondY2);
-            }
-            else if (secondY1 != InvData())
-            {
-                barPainter.drawPoint(x1, secondY1);
-            }
-            else if (secondY2 != InvData())
-            {
-                barPainter.drawPoint(x2, secondY2);
-            }
-        }
-    }
-    else if (_type == TREND_GRAPH_TYPE_ART_IBP)
-    {
-        for (int i = 0; i < _trendInfo.trendDataV3.count() - 1; i ++)
-        {
-            double fristData1 = _trendInfo.trendDataV3.at(i).data[0];
-            double fristData2 = _trendInfo.trendDataV3.at(i + 1).data[0];
-            double secondData1 = _trendInfo.trendDataV3.at(i).data[1];
-            double secondData2 = _trendInfo.trendDataV3.at(i + 1).data[1];
-            double thirdData1 = _trendInfo.trendDataV3.at(i).data[2];
-            double thirdData2 = _trendInfo.trendDataV3.at(i + 1).data[2];
-
-            double fristY1 = _mapValue(_valueY, fristData1);
-            double fristY2 = _mapValue(_valueY, fristData2);
-            double secondY1 = _mapValue(_valueY, secondData1);
-            double secondY2 = _mapValue(_valueY, secondData2);
-            double thirdY1 = _mapValue(_valueY, thirdData1);
-            double thirdY2 = _mapValue(_valueY, thirdData2);
-            double x1 = _mapValue(_timeX, _trendInfo.trendDataV3.at(i).timestamp);
-            double x2 = _mapValue(_timeX, _trendInfo.trendDataV3.at(i + 1).timestamp);
-            if (fristY1 != InvData() && fristY2 != InvData())
-            {
-                barPainter.drawLine(x1, fristY1, x2, fristY2);
-            }
-            else if (fristY1 != InvData())
-            {
-                barPainter.drawPoint(x1, fristY1);
-            }
-            else if (fristY2 != InvData())
-            {
-                barPainter.drawPoint(x2, fristY2);
-            }
-
-            if (secondY1 != InvData() && secondY2 != InvData())
-            {
-                barPainter.drawLine(x1, secondY1, x2, secondY2);
-            }
-            else if (secondY1 != InvData())
-            {
-                barPainter.drawPoint(x1, secondY1);
-            }
-            else if (secondY2 != InvData())
-            {
-                barPainter.drawPoint(x2, secondY2);
-            }
-
-            if (thirdY1 != InvData() && thirdY2 != InvData())
-            {
-                barPainter.drawLine(x1, thirdY1, x2, thirdY2);
-            }
-            else if (thirdY1 != InvData())
-            {
-                barPainter.drawPoint(x1, thirdY1);
-            }
-            else if (thirdY2 != InvData())
-            {
-                barPainter.drawPoint(x2, thirdY2);
-            }
-        }
-    }
+    barPainter.restore();
     barPainter.setPen(QPen(_color, 1, Qt::SolidLine));
 
     QFont font;
