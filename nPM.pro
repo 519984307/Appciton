@@ -389,6 +389,8 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditCO2Menu.cpp                              \
     Components/ConfigManager/ConfigEditCOMenu.cpp                               \
     Components/ConfigManager/ConfigEditUnitSetupMenu.cpp                        \
+    Components/Freeze/FreezeManager.cpp                                         \
+    Components/Freeze/FreezeWidget.cpp                                          \
 #################################################################################
     Params/AGParam/AGWidgets/AGMenu.cpp                                         \
     Params/AGParam/AGWidgets/AGTrendWidget.cpp                                  \
@@ -866,6 +868,8 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditCO2Menu.h                                \
     Components/ConfigManager/ConfigEditCOMenu.h                                 \
     Components/ConfigManager/ConfigEditUnitSetupMenu.h                          \
+    Components/Freeze/FreezeManager.h                                           \
+    Components/Freeze/FreezeWidget.h                                            \
 #################################################################################
     Params/AGParam/AGWidgets/AGMenu.h                                           \
     Params/AGParam/AGWidgets/AGTrendWidget.h                                    \
@@ -1093,6 +1097,7 @@ DEPENDPATH +=                                                                   
     Components/Calculation/DoseCalculationManager                               \
     Components/Calculation/HemodynamicManager                                   \
     Components/ConfigManager                                                    \
+    Components/Freeze                                                           \
     Providers                                                                   \
     Providers/PhaseinProvider                                                   \
     Providers/BLMNIBPProvider                                                   \
@@ -1229,6 +1234,7 @@ INCLUDEPATH +=                                                                  
     Components/Calculation/DoseCalculationManager                               \
     Components/Calculation/HemodynamicManager                                   \
     Components/ConfigManager                                                    \
+    Components/Freeze                                                           \
     Providers                                                                   \
     Providers/PhaseinProvider                                                   \
     Providers/BLMNIBPProvider                                                   \

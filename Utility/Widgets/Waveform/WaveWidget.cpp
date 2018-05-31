@@ -22,6 +22,7 @@
 #include "WaveWidgetLabel.h"
 #include "Debug.h"
 #include "WindowManager.h"
+#include "FreezeManager.h"
 
 float WaveWidget::_pixelWPitch = 0.248;
 float WaveWidget::_pixelHPitch = 0.248;
@@ -110,7 +111,7 @@ WaveWidget::WaveWidget(const QString &widgetName, const QString &title) : IWidge
         _dyBuf(NULL), _flagBuf(NULL), _size(0), _head(0), _tail(0), _margin(QMargins(2,2,2,2)), _spacing(2),
         _waveSpeed(12.5), _dataRate(125), _sampleCount(0), _timeLostFlag(false), _lineWidth(1), _minValue(-32768), _maxValue(32767),
         _isFill(false), _isAntialias(false), _isShowGrid(false), _id(-1),
-        _queuedDataBuf(NULL), _queuedDataRate(0), _dequeueTimer(), _dequeueSizeEachTime(0)
+        _queuedDataBuf(NULL), _queuedDataRate(0), _dequeueTimer(), _dequeueSizeEachTime(0), _isFreeze(false)
 {
     _spaceFlag = NULL;
     _pixelWPitch = systemManager.getScreenPixelWPitch();
@@ -139,6 +140,8 @@ WaveWidget::WaveWidget(const QString &widgetName, const QString &title) : IWidge
     palette.setColor(QPalette::Window, Qt::black);
     palette.setColor(QPalette::WindowText, Qt::white);
     setPalette(palette);
+
+   connect(&freezeManager, SIGNAL(freeze(bool)), this, SLOT(freeze(bool)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -340,6 +343,11 @@ void WaveWidget::getSubFocusWidget(QList<QWidget*> &subWidget) const
             subWidget.append(widget);
         }
     }
+}
+
+QString WaveWidget::waveLabel() const
+{
+    return _name->text();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1007,6 +1015,11 @@ void WaveWidget::addData(int value, int flag)
         return;
     }
 
+    if(_isFreeze)
+    {
+        return;
+    }
+
     if(!_mode)
     {
         return;
@@ -1130,6 +1143,26 @@ void WaveWidget::setID(int id)
 int WaveWidget::getID(void) const
 {
     return _id;
+}
+
+/**
+ * @brief WaveWidget::freeze
+ * @param flag
+ */
+void WaveWidget::freeze(bool flag)
+{
+   if(_isFreeze == flag)
+   {
+       return;
+   }
+
+   _isFreeze = flag;
+
+   if(!_isFreeze)
+   {
+       //reset the wave
+       resetWave();
+   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

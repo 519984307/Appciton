@@ -46,6 +46,13 @@ public:
     bool isFocus();
     void getSubFocusWidget(QList<QWidget *> &subWidget) const;
 
+    /**
+     * @brief waveLabel get the wave labels
+     * @return  the wave label string
+     */
+    QString waveLabel() const;
+
+
     // 窗口是否使能
     virtual bool waveEnable() {return true;}
 
@@ -239,6 +246,7 @@ public slots:
     void queueData(const QVector<short> &data);
     void setID(int id);
     int getID(void) const;
+    void freeze(bool flag);
 
 protected:
     void paintEvent(QPaintEvent *e);
@@ -351,6 +359,7 @@ private:
     bool _isShowGrid;                         // 是否显示网格
     int  _id;                                 // 波形的唯一ID。
     int _spaceDataNum;                        // 画虚线所需数据个数
+    bool _isFreeze;                           // isFreeze or not
 
     RingBuff<int> *_queuedDataBuf;            // 波形延时缓冲区
     float _queuedDataRate;                    // 创建波形延时缓冲时参照的速度率

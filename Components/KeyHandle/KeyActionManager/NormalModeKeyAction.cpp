@@ -18,6 +18,7 @@
 #include "SoundManager.h"
 #include "SystemAlarm.h"
 #include "MenuManager.h"
+#include "FreezeWidget.h"
 
 /**************************************************************************************************
  * 构造。
@@ -53,7 +54,8 @@ void NormalModeKeyAction::keyF2Pressed(bool multiBtnPress)
         return;
     }
 
-    //TODO: freeze
+    FreezeWidget freezeWidget;
+    freezeWidget.exec();
 }
 
 void NormalModeKeyAction::keyF3Pressed(bool multiBtnPress)

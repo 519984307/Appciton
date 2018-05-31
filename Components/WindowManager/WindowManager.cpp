@@ -1515,6 +1515,21 @@ void WindowManager::getDisplayedWaveform(QList<int> &id)
     }
 }
 
+/**
+ * @brief WindowManager::getDisplayedWaveformLabels get the display waves labels
+ * @param waveLabels string list of the wave labels
+ */
+void WindowManager::getDisplayedWaveformIDsAndLabels(QList<int> &id, QStringList &waveLabels)
+{
+    waveLabels.clear();
+    QList<WaveWidget*> waves;
+    _getDisplayedWaveform(waves);
+    for (int i = 0; i < waves.size(); i++)
+    {
+        waveLabels += waves[i]->waveLabel();
+    }
+}
+
 /***************************************************************************************************
  * 功能： 获取已显示的趋势窗体名称。
  * 参数：

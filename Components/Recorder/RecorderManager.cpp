@@ -69,8 +69,8 @@ PrintSpeed RecorderManager::getPrintSpeed() const
         speed = PRINT_SPEED_250;
     }
     //speed = PRINT_SPEED_500;
-    //speed = PRINT_SPEED_250;
-    speed = PRINT_SPEED_125;
+    speed = PRINT_SPEED_250;
+    //speed = PRINT_SPEED_125;
     return (PrintSpeed)speed;
 }
 

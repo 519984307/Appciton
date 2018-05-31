@@ -65,6 +65,7 @@ public:
     // 获取已显示的波形窗体名称。
     void getDisplayedWaveform(QStringList &waveformName);
     void getDisplayedWaveform(QList<int> &id);
+    void getDisplayedWaveformIDsAndLabels(QList<int> &id, QStringList &waveLabels);
     void getDisplayTrendWindow(QStringList &trendName);
 
     // 获取当前界面还能新增几道波形。
