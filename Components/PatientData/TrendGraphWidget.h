@@ -75,13 +75,13 @@ private:
     TrendGraphWidget();
 
     TrendWaveWidget *_waveWidget;
-    IMoveButton *_moveCoordinate;
-    IMoveButton *_moveCursor;
-    IMoveButton *_moveEvent;
-    IButton *_print;
-    IButton *_set;
-    IButton *_up;
-    IButton *_down;
+    IMoveButton *_moveCoordinateBtn;
+    IMoveButton *_moveCursorBtn;
+    IMoveButton *_moveEventBtn;
+    IButton *_printBtn;
+    IButton *_setBtn;
+    IButton *_upBtn;
+    IButton *_downBtn;
 
     int _maxWidth;
     int _maxHeight;

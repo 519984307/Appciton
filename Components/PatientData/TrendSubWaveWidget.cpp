@@ -62,7 +62,7 @@ TrendSubWaveWidget::~TrendSubWaveWidget()
 void TrendSubWaveWidget::trendDataInfo(TrendGraphInfo &info)
 {
     _trendInfo = info;
-    _cursorPosIndex = _trendInfo.alarmInfo.count() - 1;
+    _cursorPosIndex = 0;
 }
 
 void TrendSubWaveWidget::loadTrendSubWidgetInfo(TrendSubWidgetInfo &info)

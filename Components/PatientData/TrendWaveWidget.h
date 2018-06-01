@@ -164,5 +164,5 @@ private:
 
     QMap<SubParamID, TrendSubWaveWidget *> _subWidgetMap;       // 子波形窗口容器；
     TrendGraphInfo _trendGraphInfo;                 // 趋势图数据集合
-    QList<unsigned> _alarmEventTime;                // 报警发生时间
+    QList<unsigned> _alarmTimeList;                // 报警发生时间
 };

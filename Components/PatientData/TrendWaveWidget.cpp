@@ -114,12 +114,12 @@ void TrendWaveWidget::rightMoveCoordinate()
 
 void TrendWaveWidget::leftMoveCursor()
 {
-    if (_cursorPosIndex <= 0)
+    if (_cursorPosIndex >= _trendGraphInfo.alarmInfo.count() - 1)
     {
-        _cursorPosIndex = 0;
+        _cursorPosIndex = _trendGraphInfo.alarmInfo.count() - 1;
     }
     else{
-        _cursorPosIndex --;
+        _cursorPosIndex ++;
     }
 
     int count = _hLayoutTrend->count();
@@ -137,12 +137,12 @@ void TrendWaveWidget::leftMoveCursor()
 
 void TrendWaveWidget::rightMoveCursor()
 {
-    if (_cursorPosIndex >= _trendGraphInfo.alarmInfo.count() - 1)
+    if (_cursorPosIndex <= 0)
     {
-        _cursorPosIndex = _trendGraphInfo.alarmInfo.count() - 1;
+        _cursorPosIndex = 0;
     }
     else{
-        _cursorPosIndex ++;
+        _cursorPosIndex --;
     }
 
     int count = _hLayoutTrend->count();
@@ -165,12 +165,12 @@ void TrendWaveWidget::leftMoveEvent()
     while (flag || !_trendGraphInfo.alarmInfo.at(_cursorPosIndex).isAlarmEvent)
     {
         flag = false;        
-        if (_cursorPosIndex <= 0)
+        if (_cursorPosIndex >= _trendGraphInfo.alarmInfo.count() - 1)
         {
             unsigned time = _trendGraphInfo.alarmInfo.at(index).timestamp;
-            if (!_alarmEventTime.isEmpty())
+            if (!_alarmTimeList.isEmpty())
             {
-                if (time <= _alarmEventTime.first())
+                if (time <= _alarmTimeList.first())
                 {
                     _cursorPosIndex = index;
                     return;
@@ -186,7 +186,7 @@ void TrendWaveWidget::leftMoveEvent()
                         _currentPage ++;
                     }
                     updateTimeRange();
-                    _cursorPosIndex = _trendGraphInfo.alarmInfo.count() - 1;
+                    _cursorPosIndex = 0;
                     leftMoveEvent();
                 }
             }
@@ -197,7 +197,7 @@ void TrendWaveWidget::leftMoveEvent()
             }
         }
         else{
-            _cursorPosIndex --;
+            _cursorPosIndex ++;
         }
     }
 
@@ -221,12 +221,12 @@ void TrendWaveWidget::rightMoveEvent()
     while (flag || !_trendGraphInfo.alarmInfo.at(_cursorPosIndex).isAlarmEvent)
     {
         flag = false;
-        if (_cursorPosIndex >= _trendGraphInfo.alarmInfo.count() - 1)
+        if (_cursorPosIndex <= 0)
         {
             unsigned time = _trendGraphInfo.alarmInfo.at(index).timestamp;
-            if (!_alarmEventTime.isEmpty())
+            if (!_alarmTimeList.isEmpty())
             {
-                if (time >= _alarmEventTime.last())
+                if (time >= _alarmTimeList.last())
                 {
                     _cursorPosIndex = index;
                     return;
@@ -242,7 +242,7 @@ void TrendWaveWidget::rightMoveEvent()
                         _currentPage --;
                     }
                     updateTimeRange();
-                    _cursorPosIndex = 0;
+                    _cursorPosIndex = _trendGraphInfo.alarmInfo.count() - 1;
                     rightMoveEvent();
                 }
             }
@@ -253,7 +253,7 @@ void TrendWaveWidget::rightMoveEvent()
             }
         }
         else{
-            _cursorPosIndex ++;
+            _cursorPosIndex --;
         }
     }
 
@@ -346,9 +346,10 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
     {
         TrendGraphData dataV1;
         AlarmEventInfo alarm;
-        unsigned lastTime = _trendDataPack.at(startIndex)->time;
+        unsigned lastTime = _trendDataPack.at(endIndex)->time;
         bool startFlag = true;
-        for(int i = startIndex; i <= endIndex; i ++)
+
+        for(int i = endIndex; i >= startIndex; i --)
         {
             if(startFlag)
             {
@@ -357,7 +358,7 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
             else
             {
                 unsigned t = _trendDataPack.at(i)->time;
-                if (t > lastTime)
+                if (t < lastTime)
                 {
                     dataV1.data = InvData();
                     dataV1.isAlarm = false;
@@ -365,7 +366,7 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
                     alarm.isAlarmEvent = false;
                     alarm.timestamp = lastTime;
                 }
-                else if (t < lastTime)
+                else if (t > lastTime)
                 {
                     continue;
                 }
@@ -379,7 +380,7 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
             _trendGraphInfo.trendData.append(dataV1);
             _trendGraphInfo.subParamID = subID;
 
-            lastTime = lastTime + interval;
+            lastTime = lastTime - interval;
         }
         break;
     }
@@ -391,9 +392,9 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
     {        
         AlarmEventInfo alarm;
         TrendGraphDataV3 dataV3;
-        unsigned lastTime = _trendDataPack.at(startIndex)->time;
+        unsigned lastTime = _trendDataPack.at(endIndex)->time;
         bool startFlag = true;
-        for(int i = startIndex; i <= endIndex; i ++)
+        for(int i = endIndex; i >= startIndex; i --)
         {
             if(startFlag)
             {
@@ -402,7 +403,7 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
             else
             {
                 unsigned t = _trendDataPack.at(i)->time;
-                if (t > lastTime)
+                if (t < lastTime)
                 {
                     dataV3.data[0] = InvData();
                     dataV3.data[1] = InvData();
@@ -412,7 +413,7 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
                     alarm.isAlarmEvent = false;
                     alarm.timestamp = lastTime;
                 }
-                else if (t < lastTime)
+                else if (t > lastTime)
                 {
                     continue;
                 }
@@ -428,7 +429,7 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
             _trendGraphInfo.trendDataV3.append(dataV3);
             _trendGraphInfo.subParamID = subID;
 
-            lastTime = lastTime + interval;
+            lastTime = lastTime - interval;
         }
         break;
     }
@@ -441,9 +442,9 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
     {
         AlarmEventInfo alarm;
         TrendGraphDataV2 dataV2;
-        unsigned lastTime = _trendDataPack.at(startIndex)->time;
+        unsigned lastTime = _trendDataPack.at(endIndex)->time;
         bool startFlag = true;
-        for(int i = startIndex; i <= endIndex; i++)
+        for(int i = endIndex; i >= startIndex; i--)
         {
             if(startFlag)
             {
@@ -452,7 +453,7 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
             else
             {
                 unsigned t = _trendDataPack.at(i)->time;
-                if (t > lastTime)
+                if (t < lastTime)
                 {
                     dataV2.data[0] = InvData();
                     dataV2.data[1] = InvData();
@@ -461,7 +462,7 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
                     alarm.isAlarmEvent = false;
                     alarm.timestamp = lastTime;
                 }
-                else if (t < lastTime)
+                else if (t > lastTime)
                 {
                     continue;
                 }
@@ -476,7 +477,7 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
             _trendGraphInfo.trendDataV2.append(dataV2);
             _trendGraphInfo.subParamID = subID;
 
-            lastTime = lastTime + interval;
+            lastTime = lastTime - interval;
         }
         break;
     }
@@ -484,7 +485,7 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
         break;
     }
 
-    _cursorPosIndex = _trendGraphInfo.alarmInfo.count() - 1;
+    _cursorPosIndex = 0;
 }
 
 void TrendWaveWidget::dataIndex(int &startIndex, int &endIndex)
@@ -545,15 +546,18 @@ void TrendWaveWidget::updateTimeRange()
 {
     unsigned t;
     unsigned onePixelTime = TrendDataSymbol::convertValue(_timeInterval);
-    int intervalNum = onePixelTime/TrendDataSymbol::convertValue(RESOLUTION_RATIO_5_SECOND);
+//    int intervalNum = onePixelTime/TrendDataSymbol::convertValue(RESOLUTION_RATIO_5_SECOND);
     if (_trendDataPack.length() == 0)
     {
         t = _initTime;
     }
     else
     {
-        int index = _trendDataPack.length() - 1 - intervalNum * GRAPH_POINT_NUMBER * (_currentPage - 1);
-        t = _trendDataPack.at(index)->time;
+        unsigned lastTime = _trendDataPack.last()->time;
+        t = lastTime - onePixelTime * GRAPH_POINT_NUMBER * (_currentPage - 1);
+
+//        int index = _trendDataPack.length() - 1 - intervalNum * GRAPH_POINT_NUMBER * (_currentPage - 1);
+//        t = _trendDataPack.at(index)->time;
     }
     _rightTime = t;
     _leftTime = t - onePixelTime * GRAPH_POINT_NUMBER;
@@ -571,14 +575,7 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     barPainter.drawLine(rectAdjust.topLeft(), rectAdjust.topRight());
 
     double cursorPos;
-    if (_trendGraphInfo.alarmInfo.count() - 1 < _cursorPosIndex)
-    {
-        cursorPos = (_waveRegionWidth + GRAPH_DATA_WIDTH)/2;
-    }
-    else
-    {
-        cursorPos = _getCursorPos(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp);
-    }
+    cursorPos = _getCursorPos(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp);
 
     unsigned t = _rightTime;
     QString tStr;
@@ -741,7 +738,7 @@ void TrendWaveWidget::_getTrendData()
     TrendDataPackage *pack;
     qDeleteAll(_trendDataPack);
     _trendDataPack.clear();
-    _alarmEventTime.clear();
+    _alarmTimeList.clear();
     //TODO: low efficiency
     for (int i = 0; i < blockNum; i ++)
     {
@@ -760,7 +757,7 @@ void TrendWaveWidget::_getTrendData()
         }
         if (pack->alarmFlag)
         {
-            _alarmEventTime.append(pack->time);
+            _alarmTimeList.append(pack->time);
         }
         _trendDataPack.append(pack);
     }

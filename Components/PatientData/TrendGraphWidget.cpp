@@ -163,9 +163,9 @@ void TrendGraphWidget::_printReleased()
     recorderManager.addPageGenerator(pageGenerator);
 }
 
-TrendGraphWidget::TrendGraphWidget() : _waveWidget(NULL), _moveCoordinate(NULL),
-    _moveCursor(NULL), _moveEvent(NULL), _print(NULL), _set(NULL), _up(NULL),
-    _down(NULL), _maxWidth(0), _maxHeight(0)
+TrendGraphWidget::TrendGraphWidget() : _waveWidget(NULL), _moveCoordinateBtn(NULL),
+    _moveCursorBtn(NULL), _moveEventBtn(NULL), _printBtn(NULL), _setBtn(NULL), _upBtn(NULL),
+    _downBtn(NULL), _maxWidth(0), _maxHeight(0)
 {
     setTitleBarText(trs("TrendGraph"));
     _maxWidth = windowManager.getPopMenuWidth();
@@ -178,54 +178,54 @@ TrendGraphWidget::TrendGraphWidget() : _waveWidget(NULL), _moveCoordinate(NULL),
     _waveWidget = new TrendWaveWidget();
     _waveWidget->setWidgetSize(_maxWidth - 10, _maxHeight - ITEM_HEIGHT * 3);
 
-    _moveCoordinate = new IMoveButton(trs("MoveCoordinate"));
-    _moveCoordinate->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
-    _moveCoordinate->setFont(fontManager.textFont(fontSize));
-    connect(_moveCoordinate, SIGNAL(leftMove()), _waveWidget, SLOT(leftMoveCoordinate()));
-    connect(_moveCoordinate, SIGNAL(rightMove()), _waveWidget, SLOT(rightMoveCoordinate()));
+    _moveCoordinateBtn = new IMoveButton(trs("MoveCoordinate"));
+    _moveCoordinateBtn->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
+    _moveCoordinateBtn->setFont(fontManager.textFont(fontSize));
+    connect(_moveCoordinateBtn, SIGNAL(leftMove()), _waveWidget, SLOT(leftMoveCoordinate()));
+    connect(_moveCoordinateBtn, SIGNAL(rightMove()), _waveWidget, SLOT(rightMoveCoordinate()));
 
-    _moveCursor = new IMoveButton(trs("MoveCursor"));
-    _moveCursor->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
-    _moveCursor->setFont(fontManager.textFont(fontSize));
-    connect(_moveCursor, SIGNAL(leftMove()), _waveWidget, SLOT(leftMoveCursor()));
-    connect(_moveCursor, SIGNAL(rightMove()), _waveWidget, SLOT(rightMoveCursor()));
+    _moveCursorBtn = new IMoveButton(trs("MoveCursor"));
+    _moveCursorBtn->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
+    _moveCursorBtn->setFont(fontManager.textFont(fontSize));
+    connect(_moveCursorBtn, SIGNAL(leftMove()), _waveWidget, SLOT(leftMoveCursor()));
+    connect(_moveCursorBtn, SIGNAL(rightMove()), _waveWidget, SLOT(rightMoveCursor()));
 
-    _moveEvent = new IMoveButton(trs("MoveEvent"));
-    _moveEvent->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
-    _moveEvent->setFont(fontManager.textFont(fontSize));
-    connect(_moveEvent, SIGNAL(leftMove()), _waveWidget, SLOT(leftMoveEvent()));
-    connect(_moveEvent, SIGNAL(rightMove()), _waveWidget, SLOT(rightMoveEvent()));
+    _moveEventBtn = new IMoveButton(trs("MoveEvent"));
+    _moveEventBtn->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
+    _moveEventBtn->setFont(fontManager.textFont(fontSize));
+    connect(_moveEventBtn, SIGNAL(leftMove()), _waveWidget, SLOT(leftMoveEvent()));
+    connect(_moveEventBtn, SIGNAL(rightMove()), _waveWidget, SLOT(rightMoveEvent()));
 
-    _print = new IButton(trs("Print"));
-    _print->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
-    _print->setFont(fontManager.textFont(fontSize));
-    connect(_print, SIGNAL(realReleased()), this, SLOT(_printReleased()));
+    _printBtn = new IButton(trs("Print"));
+    _printBtn->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
+    _printBtn->setFont(fontManager.textFont(fontSize));
+    connect(_printBtn, SIGNAL(realReleased()), this, SLOT(_printReleased()));
 
-    _set = new IButton(trs("Set"));
-    _set->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
-    _set->setFont(fontManager.textFont(fontSize));
-    connect(_set, SIGNAL(realReleased()), this, SLOT(_trendGraphSetReleased()));
+    _setBtn = new IButton(trs("Set"));
+    _setBtn->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
+    _setBtn->setFont(fontManager.textFont(fontSize));
+    connect(_setBtn, SIGNAL(realReleased()), this, SLOT(_trendGraphSetReleased()));
 
-    _up = new IButton();
-    _up->setFixedSize(ITEM_HEIGHT, ITEM_HEIGHT);
-    _up->setPicture(QImage("/usr/local/nPM/icons/ArrowUp.png"));
-    connect(_up, SIGNAL(realReleased()), this, SLOT(_upReleased()));
+    _upBtn = new IButton();
+    _upBtn->setFixedSize(ITEM_HEIGHT, ITEM_HEIGHT);
+    _upBtn->setPicture(QImage("/usr/local/nPM/icons/ArrowUp.png"));
+    connect(_upBtn, SIGNAL(realReleased()), this, SLOT(_upReleased()));
 
-    _down = new IButton();
-    _down->setFixedSize(ITEM_HEIGHT, ITEM_HEIGHT);
-    _down->setPicture(QImage("/usr/local/nPM/icons/ArrowDown.png"));
-    connect(_down, SIGNAL(realReleased()), this, SLOT(_downReleased()));
+    _downBtn = new IButton();
+    _downBtn->setFixedSize(ITEM_HEIGHT, ITEM_HEIGHT);
+    _downBtn->setPicture(QImage("/usr/local/nPM/icons/ArrowDown.png"));
+    connect(_downBtn, SIGNAL(realReleased()), this, SLOT(_downReleased()));
 
     QHBoxLayout *lineLayout = new QHBoxLayout();
     lineLayout->setMargin(0);
     lineLayout->setSpacing(2);
-    lineLayout->addWidget(_moveCoordinate);
-    lineLayout->addWidget(_moveCursor);
-    lineLayout->addWidget(_moveEvent);
-    lineLayout->addWidget(_print);
-    lineLayout->addWidget(_set);
-    lineLayout->addWidget(_up);
-    lineLayout->addWidget(_down);
+    lineLayout->addWidget(_moveCoordinateBtn);
+    lineLayout->addWidget(_moveCursorBtn);
+    lineLayout->addWidget(_moveEventBtn);
+    lineLayout->addWidget(_printBtn);
+    lineLayout->addWidget(_setBtn);
+    lineLayout->addWidget(_upBtn);
+    lineLayout->addWidget(_downBtn);
 
     contentLayout->addWidget(_waveWidget);
     contentLayout->addStretch();
