@@ -11,6 +11,8 @@
 #include <QBasicTimer>
 #include "IWidget.h"
 #include "WaveDefine.h"
+#include <FreezeDataModel.h>
+#include <QPointer>
 
 class QFont;
 class QPixmap;
@@ -360,6 +362,7 @@ private:
     int  _id;                                 // 波形的唯一ID。
     int _spaceDataNum;                        // 画虚线所需数据个数
     bool _isFreeze;                           // isFreeze or not
+    QPointer<FreezeDataModel> freezeDataModel; // the freeze wave data model
 
     RingBuff<int> *_queuedDataBuf;            // 波形延时缓冲区
     float _queuedDataRate;                    // 创建波形延时缓冲时参照的速度率
@@ -375,6 +378,7 @@ private:
     friend class WaveCascadeMode;
     friend class WaveScanMode;
     friend class BarGraphScanMode;
+    friend class FreezeWaveReviewMode;
     friend class WaveScanCascadeMode;
     friend class WaveScrollMode;
     friend class WaveScrollCascadeMode;

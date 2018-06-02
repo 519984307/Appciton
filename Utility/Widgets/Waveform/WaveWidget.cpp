@@ -1151,17 +1151,22 @@ int WaveWidget::getID(void) const
  */
 void WaveWidget::freeze(bool flag)
 {
-   if(_isFreeze == flag)
+   if(_isFreeze == flag || !isVisible())
    {
        return;
    }
 
    _isFreeze = flag;
 
-   if(!_isFreeze)
+   if(_isFreeze)
    {
-       //reset the wave
-       resetWave();
+       freezeDataModel = freezeManager.getWaveDataModel(this->getID());
+       selectMode(FREEZE_REVIEW_MODE);
+   }
+   else
+   {
+       //free the data model
+       selectMode(SCAN_MODE);
    }
 }
 

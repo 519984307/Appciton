@@ -177,6 +177,11 @@ void WaveformCache::getTitle(WaveformID id, QString &waveTitle)
     waveTitle = it.value().waveTitle;
 }
 
+unsigned WaveformCache::channelDuration() const
+{
+    return DATA_STORAGE_WAVE_TIME;
+}
+
 /**
  * @brief WaveformCache::startRealtimeChannel enable the realtime channel
  */

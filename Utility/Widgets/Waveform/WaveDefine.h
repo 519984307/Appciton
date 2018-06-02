@@ -15,6 +15,7 @@ enum WaveModeFlag
     SCROLL_MODE = 1,      // 滚动模式
     REVIEW_MODE = 2,       // 回顾模式
     BAR_GRAPH_SCAN_MODE = 3, // bar graph scan mode
+    FREEZE_REVIEW_MODE = 4,  // freeze review mode
 };
 
 ////////////////////////////////////////////////////////////////////////////////

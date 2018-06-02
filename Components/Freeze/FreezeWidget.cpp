@@ -5,6 +5,8 @@
 #include "WindowManager.h"
 #include "FontManager.h"
 #include <QSet>
+#include "FreezeManager.h"
+#include <QKeyEvent>
 
 #define RECORD_FREEZE_WAVE_NUM 3
 class FreezeWidgetPrivate
@@ -81,18 +83,21 @@ FreezeWidget::FreezeWidget()
     d_ptr->leftBtn->setFixedHeight(ITEM_H);
     d_ptr->leftBtn->setPicture(QImage("/usr/local/nPM/icons/ArrowLeft.png"));
     d_ptr->leftBtn->setFixedWidth(100);
+    connect(d_ptr->leftBtn, SIGNAL(realReleased()), this, SLOT(onBtnClick()));
     hlayout->addWidget(d_ptr->leftBtn);
 
     d_ptr->rightBtn = new IButton;
     d_ptr->rightBtn->setFixedHeight(ITEM_H);
     d_ptr->rightBtn->setPicture(QImage("/usr/local/nPM/icons/ArrowRight.png"));
     d_ptr->rightBtn->setFixedWidth(100);
+    connect(d_ptr->rightBtn, SIGNAL(realReleased()), this, SLOT(onBtnClick()));
     hlayout->addWidget(d_ptr->rightBtn);
 
     d_ptr->printBtn = new IButton(trs("Print"));
     d_ptr->printBtn->setFont(font);
     d_ptr->printBtn->setFixedHeight(ITEM_H);
     d_ptr->printBtn->setFixedWidth(100);
+    connect(d_ptr->printBtn, SIGNAL(realReleased()), this, SLOT(onBtnClick()));
     if(waveNames.size() == 0)
     {
         d_ptr->printBtn->setEnabled(false);
@@ -116,11 +121,33 @@ void FreezeWidget::showEvent(QShowEvent *ev)
 
     //move to bottom
     move(rect.x() + (rect.width() - width()) / 2, rect.y() + rect.height() - height());
+
+    freezeManager.startFreeze();
 }
 
 void FreezeWidget::hideEvent(QHideEvent *ev)
 {
     PopupWidget::hideEvent(ev);
+    freezeManager.stopFreeze();
+}
+
+void FreezeWidget::keyPressEvent(QKeyEvent *e)
+{
+    switch (e->key())
+    {
+        case Qt::Key_Up:
+        case Qt::Key_Left:
+            focusPreviousChild();
+            break;
+        case Qt::Key_Down:
+        case Qt::Key_Right:
+            focusNextChild();
+            break;
+        default:
+            break;
+    }
+
+    QWidget::keyPressEvent(e);
 }
 
 void FreezeWidget::onSelectWaveChanged(const QString &waveName)
@@ -185,5 +212,32 @@ void FreezeWidget::onSelectWaveChanged(const QString &waveName)
 
             break;
         }
+    }
+}
+
+void FreezeWidget::onBtnClick()
+{
+    IButton *btn = qobject_cast<IButton *>(sender());
+    if(btn == d_ptr->leftBtn)
+    {
+        int reviewSecond = freezeManager.getCurReviewSecond() - 1;
+        if(reviewSecond < 0)
+        {
+            reviewSecond = 0;
+        }
+        freezeManager.setCurReviewSecond(reviewSecond);
+    }
+    else if(btn == d_ptr->rightBtn)
+    {
+        int reviewSecond = freezeManager.getCurReviewSecond() + 1;
+        if(reviewSecond > FreezeManager::MAX_REVIEW_SECOND)
+        {
+            reviewSecond = FreezeManager::MAX_REVIEW_SECOND;
+        }
+        freezeManager.setCurReviewSecond(reviewSecond);
+    }
+    else if(btn == d_ptr->printBtn)
+    {
+
     }
 }

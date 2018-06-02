@@ -1,6 +1,8 @@
 #pragma once
 #include <QObject>
 #include <QScopedPointer>
+#include "FreezeDataModel.h"
+
 
 class FreezeManagerPrivate;
 class FreezeManager : public QObject
@@ -16,6 +18,16 @@ public:
     static FreezeManager &getInstance();
 
     /**
+     * @brief startFreeze start freeze the wave
+     */
+    void startFreeze();
+
+    /**
+     * @brief stopFreeze stop freeze
+     */
+    void stopFreeze();
+
+    /**
      * @brief getCurReviewSecond get the current review second
      * @return
      */
@@ -27,14 +39,17 @@ public:
      */
     void setCurReviewSecond(int reviewSecond);
 
+    /**
+     * @brief getWaveDataModel get the review wave data model
+     * @param waveid
+     * @return
+     */
+    FreezeDataModel* getWaveDataModel(int waveid);
+
+
 signals:
-    //notify the freeze review time changed
-    void reviewSecondChanged(int second);
     //notify freeze or not
     void freeze(bool flag);
-
-private slots:
-    void testSlot();
 
 private:
     QScopedPointer<FreezeManagerPrivate> d_ptr;

@@ -56,7 +56,11 @@ public:
     // 获取标识值。
     void getTitle(WaveformID id, QString &waveTitle);
 
+
 public: // 通道相关。
+
+    // get the time duration of the channels;
+    unsigned channelDuration() const;
 
     // start the realtime channel
     void startRealtimeChannel();
