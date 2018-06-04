@@ -1,19 +1,29 @@
-﻿#pragma once
+#pragma once
 #include "SubMenu.h"
 #include <QScopedPointer>
 #include <QList>
 #include "IListWidget.h"
 
-class ConfigExportImportMenuPrivate;
-class ConfigExportImportMenu : public SubMenu
+class FactoryImportExportMenuPrivate;
+class FactoryImportExportMenu : public SubMenu
 {
     Q_OBJECT
 public:
     /**
-     * @brief ConfigExportImportMenu 构造方法
+     * @brief construction  初始化方法
+     * @return
      */
-    ConfigExportImportMenu();
-    ~ConfigExportImportMenu();
+    static FactoryImportExportMenu &construction()
+    {
+        if (NULL == _selfObj)
+        {
+            _selfObj = new FactoryImportExportMenu();
+        }
+        return *_selfObj;
+    }
+    static FactoryImportExportMenu *_selfObj;
+
+    ~FactoryImportExportMenu();
 
     enum Import_XML_Type
     {
@@ -72,6 +82,10 @@ private slots:
 
 private:
     /**
+     * @brief FactoryImportExportMenu 构造方法
+     */
+    FactoryImportExportMenu();
+    /**
      * @brief checkXMLContent  检查导入的xml文件有效性方法
      * @param importTagList    导入标签链表
      * @param importTag        导入标签
@@ -114,10 +128,10 @@ private:
     int               _usbFd;//挂载U盘的设备节点
 
     int               _repeatFileChooseFlag;//重复文件选择状态位
-    QScopedPointer<ConfigExportImportMenuPrivate> d_ptr;
+    QScopedPointer<FactoryImportExportMenuPrivate> d_ptr;
 };
 
-
+#define factoryImportExportMenu (FactoryImportExportMenu::construction())
 
 
 

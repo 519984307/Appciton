@@ -2,11 +2,12 @@
 #include "MenuWidget.h"
 #include <QStackedWidget>
 #include <QGroupBox>
+#include "SubMenu.h"
 
 class IComboList;
 class QLabel;
 class LabelButton;
-class FactoryTempMenu : public MenuWidget
+class FactoryTempMenu : public SubMenu
 {
     Q_OBJECT
 
@@ -24,7 +25,9 @@ public:
 
     ~FactoryTempMenu();
 
-    void readyShow();
+    virtual void readyShow();
+
+    virtual void layoutExec();
 
     void getResult(int channel, int value,bool flag);
 

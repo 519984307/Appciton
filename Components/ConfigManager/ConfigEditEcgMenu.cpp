@@ -236,7 +236,6 @@ void ConfigEditEcgMenu::layoutExec()
 
     mainLayout->addStretch(1);
 }
-
 void ConfigEditEcgMenu::readyShow()
 {
     d_ptr->loadOptions();

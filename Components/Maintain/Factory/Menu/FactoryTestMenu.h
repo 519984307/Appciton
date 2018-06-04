@@ -2,7 +2,7 @@
 #include "MenuWidget.h"
 #include "LabelButton.h"
 #include "ISpinBox.h"
-
+#include "SubMenu.h"
 //#define OUTPUT_TESTPACKET_THROUGH_USB
 #define TEST_REFRESH_RATE
 
@@ -24,7 +24,7 @@ enum FactoryTestType
 
 class QLabel;
 class LButtonEn;
-class FactoryTestMenu : public MenuWidget
+class FactoryTestMenu : public SubMenu
 {
     Q_OBJECT
 
@@ -41,7 +41,10 @@ public:
     static FactoryTestMenu *_selfObj;
 
     ~FactoryTestMenu();
-    void readyShow();
+
+    virtual void layoutExec();
+
+    virtual void readyShow();
 
 private slots:
     void _btnReleased(int);

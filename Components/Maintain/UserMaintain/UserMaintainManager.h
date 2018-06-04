@@ -13,9 +13,7 @@ public:
         return *_selfObj;
     }
     static UserMaintainManager *_selfObj;
-
     ~UserMaintainManager();
-
 private:
     UserMaintainManager();
 };

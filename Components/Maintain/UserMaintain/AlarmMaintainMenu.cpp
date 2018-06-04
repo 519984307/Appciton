@@ -51,73 +51,74 @@ AlarmMaintainMenu::AlarmMaintainMenu() : SubMenu(trs("AlarmMaintainMenu")),
 void AlarmMaintainMenu::readyShow()
 {
     QString tmpStr;
-    systemConfig.getStrValue("UserMaintain|AlarmMaintainMenu|MinAlarmVol", tmpStr);
-    _minAlarmVol->setCurrentIndex(tmpStr.toInt());
-    tmpStr.clear();
+    int index;
+    systemConfig.getNumValue("Alarms|MinAlarmVol", index);
+    _minAlarmVol->setCurrentIndex(index);
+    index = 0;
 
-    systemConfig.getStrValue("UserMaintain|AlarmMaintainMenu|AlarmPauseTime", tmpStr);
-    _pauseAlarmTime->setCurrentIndex(tmpStr.toInt());
-    tmpStr.clear();
+    systemConfig.getNumValue("Alarms|AlarmPauseTime", index);
+    _pauseAlarmTime->setCurrentIndex(index);
+    index = 0;
 
-    systemConfig.getStrValue("UserMaintain|AlarmMaintainMenu|STAlarmDraly", tmpStr);
-    _minAlarmVol->setCurrentIndex(tmpStr.toInt());
-    tmpStr.clear();
+    systemConfig.getNumValue("Alarms|STAlarmDraly", index);
+    _minAlarmVol->setCurrentIndex(index);
+    index = 0;
 
-    systemConfig.getStrValue("UserMaintain|AlarmMaintainMenu|PauseMaxAlarm15Min", tmpStr);
-    _isPauseMaxAlarm15Min->setCurrentIndex(tmpStr.toInt());
-    tmpStr.clear();
+    systemConfig.getNumValue("Alarms|PauseMaxAlarm15Min", index);
+    _isPauseMaxAlarm15Min->setCurrentIndex(index);
+    index = 0;
 
-    systemConfig.getStrValue("UserMaintain|AlarmMaintainMenu|AlarmVol", tmpStr);
-    _alarmVol->setCurrentIndex(tmpStr.toInt());
-    tmpStr.clear();
+    systemConfig.getNumValue("Alarms|AlarmVol", index);
+    _alarmVol->setCurrentIndex(index);
+    index = 0;
 
-    systemConfig.getStrValue("UserMaintain|AlarmMaintainMenu|ReminderToneIntervals", tmpStr);
-    _reminderToneIntervals->setCurrentIndex(tmpStr.toInt());
-    tmpStr.clear();
+    systemConfig.getNumValue("Alarms|ReminderToneIntervals", index);
+    _reminderToneIntervals->setCurrentIndex(index);
+    index = 0;
 
-    systemConfig.getStrValue("UserMaintain|AlarmMaintainMenu|EcgLeadOffLev", tmpStr);
-    _ecgLeadOffLev->setCurrentIndex(tmpStr.toInt());
-    tmpStr.clear();
+    systemConfig.getNumValue("Alarms|EcgLeadOffLev", index);
+    _ecgLeadOffLev->setCurrentIndex(index);
+    index = 0;
 
-    systemConfig.getStrValue("UserMaintain|AlarmMaintainMenu|SPO2LeadOffLev", tmpStr);
-    _spo2LeadOffLev->setCurrentIndex(tmpStr.toInt());
-    tmpStr.clear();
+    systemConfig.getNumValue("Alarms|SPO2LeadOffLev", index);
+    _spo2LeadOffLev->setCurrentIndex(index);
+    index = 0;
 
-    systemConfig.getStrValue("UserMaintain|AlarmMaintainMenu|IBPLeadOffLev", tmpStr);
-    _ibpLeadOffLev->setCurrentIndex(tmpStr.toInt());
-    tmpStr.clear();
+    systemConfig.getNumValue("Alarms|IBPLeadOffLev", index);
+    _ibpLeadOffLev->setCurrentIndex(index);
+    index = 0;
 
-    systemConfig.getStrValue("UserMaintain|AlarmMaintainMenu|LethalArrhOff", tmpStr);
-    _isLethalArrhOff->setCurrentIndex(tmpStr.toInt());
-    tmpStr.clear();
+    systemConfig.getNumValue("Alarms|LethalArrhOff", index);
+    _isLethalArrhOff->setCurrentIndex(index);
+    index = 0;
 
-    systemConfig.getStrValue("UserMaintain|AlarmMaintainMenu|ExtendedArrh", tmpStr);
-    _isExtendedArrh->setCurrentIndex(tmpStr.toInt());
-    tmpStr.clear();
+    systemConfig.getNumValue("Alarms|ExtendedArrh", index);
+    _isExtendedArrh->setCurrentIndex(index);
+    index = 0;
 
-    systemConfig.getStrValue("UserMaintain|AlarmMaintainMenu|AlarmLightOnAlarmReset", tmpStr);
-    _alarmLightOnAlarmReset->setCurrentIndex(tmpStr.toInt());
-    tmpStr.clear();
+    systemConfig.getNumValue("Alarms|AlarmLightOnAlarmReset", index);
+    _alarmLightOnAlarmReset->setCurrentIndex(index);
+    index = 0;
 
-    systemConfig.getStrValue("UserMaintain|AlarmMaintainMenu|AlarmDelay", tmpStr);
-    _alarmDelay->setCurrentIndex(tmpStr.toInt());
-    tmpStr.clear();
+    systemConfig.getNumValue("Alarms|AlarmDelay", index);
+    _alarmDelay->setCurrentIndex(index);
+    index = 0;
 
-    systemConfig.getStrValue("UserMaintain|AlarmMaintainMenu|HighAlarmIntervals", tmpStr);
+    systemConfig.getStrValue("Alarms|HighAlarmIntervals", tmpStr);
     _highAlarmIntervals->setValue(tmpStr);
     tmpStr.clear();
 
-    systemConfig.getStrValue("UserMaintain|AlarmMaintainMenu|MedAlarmIntervals", tmpStr);
+    systemConfig.getStrValue("Alarms|MedAlarmIntervals", tmpStr);
     _medAlarmIntervals->setValue(tmpStr);
     tmpStr.clear();
 
-    systemConfig.getStrValue("UserMaintain|AlarmMaintainMenu|LowAlarmIntervals", tmpStr);
+    systemConfig.getStrValue("Alarms|LowAlarmIntervals", tmpStr);
     _lowAlarmIntervals->setValue(tmpStr);
     tmpStr.clear();
 
-    systemConfig.getStrValue("UserMaintain|AlarmMaintainMenu|ReminderTone", tmpStr);
-    _minAlarmVol->setCurrentIndex(tmpStr.toInt());
-    tmpStr.clear();
+    systemConfig.getNumValue("Alarms|ReminderTone", index);
+    _minAlarmVol->setCurrentIndex(index);
+    index = 0;
 
 }
 
@@ -377,7 +378,7 @@ void AlarmMaintainMenu::_defaultsSlot()
  *************************************************************************************************/
 void AlarmMaintainMenu::_setChangeMinAlarmVol(int index)
 {
-    systemConfig.setNumValue("UserMaintain|AlarmMaintainMenu|MinAlarmVol", index);
+    systemConfig.setNumValue("Alarms|MinAlarmVol", index);
 }
 
 /**************************************************************************************************
@@ -385,7 +386,7 @@ void AlarmMaintainMenu::_setChangeMinAlarmVol(int index)
  *************************************************************************************************/
 void AlarmMaintainMenu::_alarmPauseTime(int index)
 {
-    systemConfig.setNumValue("UserMaintain|AlarmMaintainMenu|AlarmPauseTime", index);
+    systemConfig.setNumValue("Alarms|AlarmPauseTime", index);
 }
 
 /**************************************************************************************************
@@ -393,7 +394,7 @@ void AlarmMaintainMenu::_alarmPauseTime(int index)
  *************************************************************************************************/
 void AlarmMaintainMenu::_stAlarmDralySlot(int index)
 {
-    systemConfig.setNumValue("UserMaintain|AlarmMaintainMenu|STAlarmDraly", index);
+    systemConfig.setNumValue("Alarms|STAlarmDraly", index);
 }
 
 /**************************************************************************************************
@@ -401,7 +402,7 @@ void AlarmMaintainMenu::_stAlarmDralySlot(int index)
  *************************************************************************************************/
 void AlarmMaintainMenu::_pauseMaxAlarm15MinSlot(int index)
 {
-    systemConfig.setNumValue("UserMaintain|AlarmMaintainMenu|PauseMaxAlarm15Min", index);
+    systemConfig.setNumValue("Alarms|PauseMaxAlarm15Min", index);
 }
 
 /**************************************************************************************************
@@ -409,7 +410,7 @@ void AlarmMaintainMenu::_pauseMaxAlarm15MinSlot(int index)
  *************************************************************************************************/
 void AlarmMaintainMenu::_alarmVolSlot(int index)
 {
-    systemConfig.setNumValue("UserMaintain|AlarmMaintainMenu|AlarmVol", index);
+    systemConfig.setNumValue("Alarms|AlarmVol", index);
 }
 
 /**************************************************************************************************
@@ -417,7 +418,7 @@ void AlarmMaintainMenu::_alarmVolSlot(int index)
  *************************************************************************************************/
 void AlarmMaintainMenu::_reminderToneSlot(int index)
 {
-    systemConfig.setNumValue("UserMaintain|AlarmMaintainMenu|ReminderTone", index);
+    systemConfig.setNumValue("Alarms|ReminderTone", index);
 }
 
 /**************************************************************************************************
@@ -425,7 +426,7 @@ void AlarmMaintainMenu::_reminderToneSlot(int index)
  *************************************************************************************************/
 void AlarmMaintainMenu::_reminderToneIntervalsSlot(int index)
 {
-    systemConfig.setNumValue("UserMaintain|AlarmMaintainMenu|ReminderToneIntervals", index);
+    systemConfig.setNumValue("Alarms|ReminderToneIntervals", index);
 }
 
 /**************************************************************************************************
@@ -433,7 +434,7 @@ void AlarmMaintainMenu::_reminderToneIntervalsSlot(int index)
  *************************************************************************************************/
 void AlarmMaintainMenu::_ecgLeadOffLevSlot(int index)
 {
-    systemConfig.setNumValue("UserMaintain|AlarmMaintainMenu|EcgLeadOffLev", index);
+    systemConfig.setNumValue("Alarms|EcgLeadOffLev", index);
 }
 
 /**************************************************************************************************
@@ -441,7 +442,7 @@ void AlarmMaintainMenu::_ecgLeadOffLevSlot(int index)
  *************************************************************************************************/
 void AlarmMaintainMenu::_spo2LeadOffLevSlot(int index)
 {
-    systemConfig.setNumValue("UserMaintain|AlarmMaintainMenu|SPO2LeadOffLev", index);
+    systemConfig.setNumValue("Alarms|SPO2LeadOffLev", index);
 }
 
 /**************************************************************************************************
@@ -449,7 +450,7 @@ void AlarmMaintainMenu::_spo2LeadOffLevSlot(int index)
  *************************************************************************************************/
 void AlarmMaintainMenu::_ibpLeadOffLevSlot(int index)
 {
-    systemConfig.setNumValue("UserMaintain|AlarmMaintainMenu|IBPLeadOffLev", index);
+    systemConfig.setNumValue("Alarms|IBPLeadOffLev", index);
 }
 
 /**************************************************************************************************
@@ -457,7 +458,7 @@ void AlarmMaintainMenu::_ibpLeadOffLevSlot(int index)
  *************************************************************************************************/
 void AlarmMaintainMenu::_lethalArrhOffSlot(int index)
 {
-    systemConfig.setNumValue("UserMaintain|AlarmMaintainMenu|LethalArrhOff", index);
+    systemConfig.setNumValue("Alarms|LethalArrhOff", index);
 }
 
 /**************************************************************************************************
@@ -465,7 +466,7 @@ void AlarmMaintainMenu::_lethalArrhOffSlot(int index)
  *************************************************************************************************/
 void AlarmMaintainMenu::_extendedArrhSlot(int index)
 {
-    systemConfig.setNumValue("UserMaintain|AlarmMaintainMenu|ExtendedArrh", index);
+    systemConfig.setNumValue("Alarms|ExtendedArrh", index);
 }
 
 /**************************************************************************************************
@@ -473,7 +474,7 @@ void AlarmMaintainMenu::_extendedArrhSlot(int index)
  *************************************************************************************************/
 void AlarmMaintainMenu::_alarmLightOnAlarmResetSlot(int index)
 {
-    systemConfig.setNumValue("UserMaintain|AlarmMaintainMenu|AlarmLightOnAlarmReset", index);
+    systemConfig.setNumValue("Alarms|AlarmLightOnAlarmReset", index);
 }
 
 /**************************************************************************************************
@@ -481,7 +482,7 @@ void AlarmMaintainMenu::_alarmLightOnAlarmResetSlot(int index)
  *************************************************************************************************/
 void AlarmMaintainMenu::_alarmDelaySlot(int index)
 {
-    systemConfig.setNumValue("UserMaintain|AlarmMaintainMenu|AlarmDelay", index);
+    systemConfig.setNumValue("Alarms|AlarmDelay", index);
 }
 
 /**************************************************************************************************
@@ -489,7 +490,7 @@ void AlarmMaintainMenu::_alarmDelaySlot(int index)
  *************************************************************************************************/
 void AlarmMaintainMenu::_highAlarmIntervalsReleased(QString strValue)
 {
-    systemConfig.setNumValue("UserMaintain|AlarmMaintainMenu|HighAlarmIntervals", strValue.toInt());
+    systemConfig.setNumValue("Alarms|HighAlarmIntervals", strValue.toInt());
 }
 
 /**************************************************************************************************
@@ -497,7 +498,7 @@ void AlarmMaintainMenu::_highAlarmIntervalsReleased(QString strValue)
  *************************************************************************************************/
 void AlarmMaintainMenu::_medAlarmIntervalsReleased(QString strValue)
 {
-    systemConfig.setNumValue("UserMaintain|AlarmMaintainMenu|MedAlarmIntervals", strValue.toInt());
+    systemConfig.setNumValue("Alarms|MedAlarmIntervals", strValue.toInt());
 }
 
 /**************************************************************************************************
@@ -505,7 +506,7 @@ void AlarmMaintainMenu::_medAlarmIntervalsReleased(QString strValue)
  *************************************************************************************************/
 void AlarmMaintainMenu::_lowAlarmIntervalsReleased(QString strValue)
 {
-    systemConfig.setNumValue("UserMaintain|AlarmMaintainMenu|LowAlarmIntervals", strValue.toInt());
+    systemConfig.setNumValue("Alarms|LowAlarmIntervals", strValue.toInt());
 }
 
 /**************************************************************************************************

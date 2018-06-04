@@ -2,6 +2,7 @@
 #include <QPushButton>
 #include "MenuWidget.h"
 #include "MenuGroup.h"
+#include "SubMenu.h"
 #include "LabelButton.h"
 
 class QLabel;

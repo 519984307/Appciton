@@ -32,6 +32,15 @@ WiFiProfileInfo::WiFiProfileInfo():
 }
 
 /***************************************************************************************************
+ * check whether a ip string is valid
+ **************************************************************************************************/
+static bool isIpStrValid(const QString &ipStr)
+{
+    QRegExp reg("^(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$");
+    return reg.exactMatch(ipStr);
+}
+
+/***************************************************************************************************
  * copy constructor
  **************************************************************************************************/
 WiFiProfileInfo::WiFiProfileInfo(const WiFiProfileInfo &other)
@@ -48,7 +57,7 @@ WiFiProfileInfo::WiFiProfileInfo(const WiFiProfileInfo &other)
     isStatic = other.isStatic;
 }
 
-/***************************************************************************************************
+/*****************************************#include "Utility.h"**********************************************************
  * assignment operation override
  **************************************************************************************************/
 WiFiProfileInfo &WiFiProfileInfo::operator=(const WiFiProfileInfo &other)
@@ -65,15 +74,6 @@ WiFiProfileInfo &WiFiProfileInfo::operator=(const WiFiProfileInfo &other)
     isStatic = other.isStatic;
 
     return *this;
-}
-
-/***************************************************************************************************
- * check whether a ip string is valid
- **************************************************************************************************/
-static bool isIpStrValid(const QString &ipStr)
-{
-    QRegExp reg("^(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])\\.(\\d|[1-9]\\d|1\\d\\d|2[0-4]\\d|25[0-5])$");
-    return reg.exactMatch(ipStr);
 }
 
 /***************************************************************************************************

@@ -547,75 +547,108 @@ static void _initMenu(void)
     publicMenuManager.addSubMenu(&supervisorEntrance);
 
     userMaintainEntrance.contentsMargins();
+    factoryMaintainEntrance.construction();
     publicMenuManager.addSubMenu(&userMaintainEntrance);
+    publicMenuManager.addSubMenu(&factoryMaintainEntrance);
 
     userMaintainManager.construction();
+
 
     userMaintainGeneralSet.construction();
     moduleMaintainMenu.construction();
     alarmMaintainMenu.construction();
-    wifiMaintainMenu.construction();
+    //wifiMaintainMenu.construction();
     wiredWorkMaintainMenu.construction();
     othersMaintainMenu.construction();
+    unitSetup.construction();
 
     userMaintainManager.addSubMenu(&userMaintainGeneralSet);
     userMaintainManager.addSubMenu(&moduleMaintainMenu);
     userMaintainManager.addSubMenu(&alarmMaintainMenu);
-    userMaintainManager.addSubMenu(&wifiMaintainMenu);
+   // userMaintainManager.addSubMenu(&wifiMaintainMenu);
     userMaintainManager.addSubMenu(&wiredWorkMaintainMenu);
     userMaintainManager.addSubMenu(&othersMaintainMenu);
+    userMaintainManager.addSubMenu(&unitSetup);
     //userMaintainEntrance
+
+    factoryMaintainManager.construction();
+    softWareVersion.construction();
+    monitorInfo.construction();
+    machineConfigModule.construction();
+    factoryTestMenu.construction();
+    factoryDataRecord.construction();
+    factoryTempMenu.construction();
+    factorySystemInfoMenu.construction();
+    nibpCalibrationMenu.construction();
+    serviceUpdateEntrance.construction();
+    serviceErrorLogEntrance.construction();
+    selectStarterLogo.construction();
+    factoryImportExportMenu.construction();
+
+    factoryMaintainManager.addSubMenu(&softWareVersion);
+    factoryMaintainManager.addSubMenu(&monitorInfo);
+    factoryMaintainManager.addSubMenu(&machineConfigModule);
+    factoryMaintainManager.addSubMenu(&factoryTestMenu);
+    factoryMaintainManager.addSubMenu(&factoryDataRecord);
+    factoryMaintainManager.addSubMenu(&factoryTempMenu);
+    factoryMaintainManager.addSubMenu(&factorySystemInfoMenu);
+    factoryMaintainManager.addSubMenu(&nibpCalibrationMenu);
+    factoryMaintainManager.addSubMenu(&serviceUpdateEntrance);
+    factoryMaintainManager.addSubMenu(&serviceErrorLogEntrance);
+    factoryMaintainManager.addSubMenu(&selectStarterLogo);
+    factoryMaintainManager.addSubMenu(&factoryImportExportMenu);
+
 
     //supervisorMenuManager
     supervisorMenuManager.construction();
 
     supervisorGeneralSetMenu.construction();
-    supervisorMenuManager.addSubMenu(&supervisorGeneralSetMenu);
+    userMaintainManager.addSubMenu(&supervisorGeneralSetMenu);
 
     if (systemManager.isSupport(CONFIG_ECG12LEADS))
     {
         supervisor12LMenu.construction();
-        supervisorMenuManager.addSubMenu(&supervisor12LMenu);
+        userMaintainManager.addSubMenu(&supervisor12LMenu);
     }
 
     if (systemManager.isSupport(CONFIG_NIBP))
     {
         supervisorNIBPMenu.construction();
-        supervisorMenuManager.addSubMenu(&supervisorNIBPMenu);
+        userMaintainManager.addSubMenu(&supervisorNIBPMenu);
     }
 
     supervisorAlarmLimitMenu.construction();
-    supervisorMenuManager.addSubMenu(&supervisorAlarmLimitMenu);
+    userMaintainManager.addSubMenu(&supervisorAlarmLimitMenu);
 
     supervisorAlarmMenu.construction();
-    supervisorMenuManager.addSubMenu(&supervisorAlarmMenu);
+    userMaintainManager.addSubMenu(&supervisorAlarmMenu);
 
     supervisorLocalMenu.construction();
-    supervisorMenuManager.addSubMenu(&supervisorLocalMenu);
+    userMaintainManager.addSubMenu(&supervisorLocalMenu);
 
     supervisorDisplayMenu.construction();
-    supervisorMenuManager.addSubMenu(&supervisorDisplayMenu);
+    userMaintainManager.addSubMenu(&supervisorDisplayMenu);
 
     supervisorPrintMenu.construction();
-    supervisorMenuManager.addSubMenu(&supervisorPrintMenu);
+    userMaintainManager.addSubMenu(&supervisorPrintMenu);
 
     supervisorTimeMenu.construction();
-    supervisorMenuManager.addSubMenu(&supervisorTimeMenu);
+    userMaintainManager.addSubMenu(&supervisorTimeMenu);
 
     supervisorCodeMarker.construction();
-    supervisorMenuManager.addSubMenu(&supervisorCodeMarker);
+    userMaintainManager.addSubMenu(&supervisorCodeMarker);
 
     if (systemManager.isSupport(CONFIG_WIFI))
     {
         supervisorWifiMenu.construction();
-        supervisorMenuManager.addSubMenu(&supervisorWifiMenu);
+        userMaintainManager.addSubMenu(&supervisorWifiMenu);
 
         supervisorMailMenu.construction();
-        supervisorMenuManager.addSubMenu(&supervisorMailMenu);
+        userMaintainManager.addSubMenu(&supervisorMailMenu);
     }
 
     supervisorPortMenu.construction();
-    supervisorMenuManager.addSubMenu(&supervisorPortMenu);
+    userMaintainManager.addSubMenu(&supervisorPortMenu);
 
     //其它弹出菜单初始化
     patientManager.construction();

@@ -11,12 +11,10 @@ public:
     static WifiMaintainMenu &construction(void);
     void focusFirstItem();
     bool eventFilter(QObject *obj, QEvent *ev);
-
 protected:
     void layoutExec();
     void readyShow();
     const QScopedPointer<WifiMaintainMenuPrivate> d_ptr;
-
 private:
     WifiMaintainMenu();
     Q_DECLARE_PRIVATE(WifiMaintainMenu)

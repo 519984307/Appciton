@@ -9,31 +9,40 @@
 #include "FactoryWindowManager.h"
 #include "IConfig.h"
 #include "SystemManager.h"
+#include "FactoryMaintainManager.h"
 
 FactoryDataRecord *FactoryDataRecord::_selfObj = NULL;
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-FactoryDataRecord::FactoryDataRecord() : MenuWidget(trs("DataRecord"))
+FactoryDataRecord::FactoryDataRecord() : SubMenu(trs("FactoryDataRecord"))
 {
-    int submenuW = factoryWindowManager.getSubmenuWidth();
-    int submenuH = factoryWindowManager.getSubmenuHeight();
-    setFixedSize(submenuW, submenuH);
 
-    int itemW = submenuW - 200;
-    int fontsize = 15;
+    setDesc(trs("FactoryDataRecordDesc"));
+
+    startLayout();
+}
+
+
+void FactoryDataRecord::layoutExec()
+{
+    int submenuW = factoryMaintainManager.getSubmenuWidth();
+    int submenuH = factoryMaintainManager.getSubmenuHeight();
+    setMenuSize(submenuW, submenuH);
+
+    int itemW = submenuW - ICOMBOLIST_SPACE;
+    int fontSize = fontManager.getFontSize(1);
     int btnWidth = itemW / 2;
+    int labelWidth = itemW - btnWidth;
 
     QVBoxLayout *labelLayout = new QVBoxLayout();
-    labelLayout->setContentsMargins(50, 0, 50, 0);
-    labelLayout->setSpacing(10);
     labelLayout->setAlignment(Qt::AlignTop);
 
     _ECG = new IComboList(trs("ECG"));
-    _ECG->setFont(fontManager.textFont(fontsize));
-    _ECG->setLabelAlignment(Qt::AlignCenter);
-    _ECG->label->setFixedSize(btnWidth, ITEM_H);
+    _ECG->setFont(fontManager.textFont(fontSize));
+    _ECG->setLabelAlignment(Qt::AlignRight);
+    _ECG->label->setFixedSize(labelWidth, ITEM_H);
     _ECG->combolist->setFixedSize(btnWidth, ITEM_H);
     _ECG->addItem(trs("Off"));
     _ECG->addItem(trs("On"));
@@ -41,9 +50,9 @@ FactoryDataRecord::FactoryDataRecord() : MenuWidget(trs("DataRecord"))
     labelLayout->addWidget(_ECG);
 
     _SPO2 = new IComboList(trs("SPO2"));
-    _SPO2->setFont(fontManager.textFont(fontsize));
-    _SPO2->label->setFixedSize(btnWidth, ITEM_H);
-    _SPO2->setLabelAlignment(Qt::AlignCenter);
+    _SPO2->setFont(fontManager.textFont(fontSize));
+    _SPO2->label->setFixedSize(labelWidth, ITEM_H);
+    _SPO2->setLabelAlignment(Qt::AlignRight);
     _SPO2->combolist->setFixedSize(btnWidth, ITEM_H);
     _SPO2->addItem(trs("Off"));
     _SPO2->addItem(trs("On"));
@@ -51,9 +60,9 @@ FactoryDataRecord::FactoryDataRecord() : MenuWidget(trs("DataRecord"))
     labelLayout->addWidget(_SPO2);
 
     _NIBP = new IComboList(trs("NIBP"));
-    _NIBP->setFont(fontManager.textFont(fontsize));
-    _NIBP->label->setFixedSize(btnWidth, ITEM_H);
-    _NIBP->setLabelAlignment(Qt::AlignCenter);
+    _NIBP->setFont(fontManager.textFont(fontSize));
+    _NIBP->label->setFixedSize(labelWidth, ITEM_H);
+    _NIBP->setLabelAlignment(Qt::AlignRight);
     _NIBP->combolist->setFixedSize(btnWidth, ITEM_H);
     _NIBP->addItem(trs("Off"));
     _NIBP->addItem(trs("On"));
@@ -61,9 +70,9 @@ FactoryDataRecord::FactoryDataRecord() : MenuWidget(trs("DataRecord"))
     labelLayout->addWidget(_NIBP);
 
     _TEMP = new IComboList(trs("TEMP"));
-    _TEMP->setFont(fontManager.textFont(fontsize));
-    _TEMP->label->setFixedSize(btnWidth, ITEM_H);
-    _TEMP->setLabelAlignment(Qt::AlignCenter);
+    _TEMP->setFont(fontManager.textFont(fontSize));
+    _TEMP->label->setFixedSize(labelWidth, ITEM_H);
+    _TEMP->setLabelAlignment(Qt::AlignRight);
     _TEMP->combolist->setFixedSize(btnWidth, ITEM_H);
     _TEMP->addItem(trs("Off"));
     _TEMP->addItem(trs("On"));
@@ -71,9 +80,9 @@ FactoryDataRecord::FactoryDataRecord() : MenuWidget(trs("DataRecord"))
     labelLayout->addWidget(_TEMP);
 
     _battery = new IComboList(trs("BatteryInfo"));
-    _battery->setFont(fontManager.textFont(fontsize));
-    _battery->label->setFixedSize(btnWidth, ITEM_H);
-    _battery->setLabelAlignment(Qt::AlignCenter);
+    _battery->setFont(fontManager.textFont(fontSize));
+    _battery->label->setFixedSize(labelWidth, ITEM_H);
+    _battery->setLabelAlignment(Qt::AlignRight);
     _battery->combolist->setFixedSize(btnWidth, ITEM_H);
     _battery->addItem(trs("Off"));
     _battery->addItem(trs("On"));
@@ -81,9 +90,9 @@ FactoryDataRecord::FactoryDataRecord() : MenuWidget(trs("DataRecord"))
     labelLayout->addWidget(_battery);
 
     _PDCommLog = new IComboList(trs("PDCommData"));
-    _PDCommLog->setFont(fontManager.textFont(fontsize));
-    _PDCommLog->label->setFixedSize(btnWidth, ITEM_H);
-    _PDCommLog->setLabelAlignment(Qt::AlignCenter);
+    _PDCommLog->setFont(fontManager.textFont(fontSize));
+    _PDCommLog->label->setFixedSize(labelWidth, ITEM_H);
+    _PDCommLog->setLabelAlignment(Qt::AlignRight);
     _PDCommLog->combolist->setFixedSize(btnWidth, ITEM_H);
     _PDCommLog->addItem(trs("Off"));
     _PDCommLog->addItem(trs("On"));
@@ -91,18 +100,15 @@ FactoryDataRecord::FactoryDataRecord() : MenuWidget(trs("DataRecord"))
     labelLayout->addWidget(_PDCommLog);
 
     QLabel *_note = new QLabel(trs("RecordedDataUsesCPU"));
-    _note->setAlignment(Qt::AlignCenter);
+    _note->setAlignment(Qt::AlignHCenter);
     _note->setFixedHeight(TITLE_H);
-    _note->setFont(fontManager.textFont(fontsize));
+    _note->setFont(fontManager.textFont(fontSize));
     labelLayout->addWidget(_note);
 
     labelLayout->addStretch();
 
-    labelLayout->setSpacing(10);
-
     mainLayout->addLayout(labelLayout);
 }
-
 /**************************************************************************************************
  * 布局。
  *************************************************************************************************/

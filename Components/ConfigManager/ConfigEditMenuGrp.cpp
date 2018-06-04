@@ -7,6 +7,7 @@
 #include "ConfigEditSpO2Menu.h"
 #include "ConfigEditCO2Menu.h"
 #include "ConfigEditCOMenu.h"
+#include "ConfigEditIBPMenu.h"
 #include "AGMenu.h"
 #include "IBPMenu.h"
 #include "CO2Menu.h"
@@ -14,7 +15,7 @@
 #include "COMenu.h"
 #include "NIBPMenu.h"
 #include "SPO2Menu.h"
-#include "ConfigEditUnitSetupMenu.h"
+
 class ConfigEditMenuGrpPrivate
 {
 public:
@@ -65,8 +66,8 @@ void ConfigEditMenuGrp::initializeSubMenu()
     addSubMenu(new ConfigEditNIBPMenu());
     addSubMenu(new ConfigCOMenu());
     addSubMenu(new ConfigCO2Menu());
-    addSubMenu(new ConfigEditUnitSetupMenu());
-    //addSubMenu(new ConfigIBPMenu());
+    //addSubMenu(new ConfigEditUnitSetupMenu());
+    addSubMenu(new ConfigIBPMenu());
 //    addSubMenu(new COMenu());
 //    addSubMenu(new SPO2Menu());
 //    addSubMenu(new ECGMenu());

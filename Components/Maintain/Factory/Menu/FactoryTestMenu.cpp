@@ -10,7 +10,7 @@
 #include <QProcess>
 #include "IMessageBox.h"
 #include "USBManager.h"
-
+#include "FactoryMaintainManager.h"
 
 #ifdef OUTPUT_TESTPACKET_THROUGH_USB
 #include <sys/mman.h>
@@ -92,28 +92,33 @@ QString FactoryTestMenu::_btnStr[FACTORY_TEST_NR] =
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-FactoryTestMenu::FactoryTestMenu() : MenuWidget(trs("FactoryTest"))
+FactoryTestMenu::FactoryTestMenu() : SubMenu(trs("FactoryTest"))
 {
-    int submenuW = factoryWindowManager.getSubmenuWidth();
-    int submenuH = factoryWindowManager.getSubmenuHeight();
-    setFixedSize(submenuW, submenuH);
+    setDesc(trs("FactoryTestDesc"));
 
-    int itemW = submenuW - 200;
+    startLayout();
+}
+
+void FactoryTestMenu::layoutExec()
+{
+    int submenuW = factoryMaintainManager.getSubmenuWidth();
+    int submenuH = factoryMaintainManager.getSubmenuHeight();
+    setMenuSize(submenuW, submenuH);
+
+    int itemW = submenuW - ICOMBOLIST_SPACE;
     int fontSize = fontManager.getFontSize(1);
     int btnWidth = itemW / 2;
+    int labelWidth = itemW - btnWidth;
 
     QVBoxLayout *labelLayout = new QVBoxLayout();
-    labelLayout->setContentsMargins(50, 0, 50, 0);
-    labelLayout->setSpacing(10);
-    labelLayout->setAlignment(Qt::AlignTop);
 
     for (int i = 0; i < FACTORY_TEST_NR; ++i)
     {
         lbtn[i] = new LabelButton(trs(_btnStr[i]));
         lbtn[i]->button->setText(trs("FactoryTest"));
         lbtn[i]->setFont(fontManager.textFont(fontSize));
-        lbtn[i]->label->setFixedSize(btnWidth, ITEM_H);
-        lbtn[i]->label->setAlignment(Qt::AlignCenter);
+        lbtn[i]->label->setFixedSize(labelWidth, ITEM_H);
+        lbtn[i]->label->setAlignment(Qt::AlignRight);
         lbtn[i]->button->setFixedSize(btnWidth, ITEM_H);
         lbtn[i]->button->setID(i);
         connect(lbtn[i]->button, SIGNAL(released(int)), this, SLOT(_btnReleased(int)));
@@ -129,7 +134,7 @@ FactoryTestMenu::FactoryTestMenu() : MenuWidget(trs("FactoryTest"))
     _freshRateSpinBox->setStep(1);
     _freshRateSpinBox->setMode(ISPIN_MODE_INT);
     _freshRateSpinBox->setValueWidth(btnWidth);
-    _freshRateSpinBox->setLabelAlignment(Qt::AlignCenter);
+    _freshRateSpinBox->setLabelAlignment(Qt::AlignRight);
     _freshRateSpinBox->setLayoutSpacing(ICOMBOLIST_SPACE);
     _freshRateSpinBox->enableArrow(false);
     _freshRateSpinBox->setFont(fontManager.textFont(fontSize));
@@ -163,11 +168,9 @@ FactoryTestMenu::FactoryTestMenu() : MenuWidget(trs("FactoryTest"))
 
     labelLayout->addStretch();
 
-    labelLayout->setSpacing(10);
-
     mainLayout->addLayout(labelLayout);
-}
 
+}
 /**************************************************************************************************
  * 按钮槽函数。
  *************************************************************************************************/

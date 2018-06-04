@@ -12,6 +12,7 @@
 #include "Config.h"
 #include "ConfigEditUnitSetupMenu.h"
 #include "UnitManager.h"
+#include "IConfig.h"
 ConfigEditUnitSetupMenu *ConfigEditUnitSetupMenu::_selfObj = NULL;
 
 
@@ -20,7 +21,6 @@ ConfigEditUnitSetupMenu *ConfigEditUnitSetupMenu::_selfObj = NULL;
  *************************************************************************************************/
 void ConfigEditUnitSetupMenu::_hightUnitSlot(int index)
 {
-    Config *config = configEditMenuGrp.getCurrentEditConfig();
     if(index==0)
     {
         index = UNIT_CM;
@@ -29,7 +29,7 @@ void ConfigEditUnitSetupMenu::_hightUnitSlot(int index)
     {
         index = UNIT_INCH;
     }
-    config->setNumValue("Unit|HightUnit",index);
+    systemConfig.setNumValue("Unit|HightUnit",index);
 }
 
 /**************************************************************************************************
@@ -37,7 +37,6 @@ void ConfigEditUnitSetupMenu::_hightUnitSlot(int index)
  *************************************************************************************************/
 void ConfigEditUnitSetupMenu::_weightUnitSlot(int index)
 {
-    Config *config = configEditMenuGrp.getCurrentEditConfig();
     if(index==0)
     {
         index = UNIT_KG;
@@ -46,7 +45,7 @@ void ConfigEditUnitSetupMenu::_weightUnitSlot(int index)
     {
         index = UNIT_LB;
     }
-    config->setNumValue("Unit|WeightUnit",index);
+    systemConfig.setNumValue("Unit|WeightUnit",index);
 }
 
 /**************************************************************************************************
@@ -54,7 +53,6 @@ void ConfigEditUnitSetupMenu::_weightUnitSlot(int index)
  *************************************************************************************************/
 void ConfigEditUnitSetupMenu::_stUnitSlot(int index)
 {
-    Config *config = configEditMenuGrp.getCurrentEditConfig();
     if(index==0)
     {
         index = UNIT_MV;
@@ -63,7 +61,7 @@ void ConfigEditUnitSetupMenu::_stUnitSlot(int index)
     {
         index = UNIT_MM;
     }
-    config->setNumValue("Unit|STUnit",index);
+    systemConfig.setNumValue("Unit|STUnit",index);
 }
 
 /**************************************************************************************************
@@ -71,7 +69,6 @@ void ConfigEditUnitSetupMenu::_stUnitSlot(int index)
  *************************************************************************************************/
 void ConfigEditUnitSetupMenu::_pressureUnitSlot(int index)
 {
-    Config *config = configEditMenuGrp.getCurrentEditConfig();
     if(index==0)
     {
         index = UNIT_MMHG;
@@ -84,7 +81,7 @@ void ConfigEditUnitSetupMenu::_pressureUnitSlot(int index)
     {
         index = UNIT_MMHG;
     }
-    config->setNumValue("Unit|PressureUnit",index);
+    systemConfig.setNumValue("Unit|PressureUnit",index);
 }
 
 /**************************************************************************************************
@@ -92,7 +89,6 @@ void ConfigEditUnitSetupMenu::_pressureUnitSlot(int index)
  *************************************************************************************************/
 void ConfigEditUnitSetupMenu::_temperatureUnitSlot(int index)
 {
-    Config *config = configEditMenuGrp.getCurrentEditConfig();
     if(index==0)
     {
         index = UNIT_TF;
@@ -105,7 +101,7 @@ void ConfigEditUnitSetupMenu::_temperatureUnitSlot(int index)
     {
         index = UNIT_TF;
     }
-    config->setNumValue("Unit|TemperatureUnit",index);
+    systemConfig.setNumValue("Unit|TemperatureUnit",index);
 }
 
 /**************************************************************************************************
@@ -113,7 +109,6 @@ void ConfigEditUnitSetupMenu::_temperatureUnitSlot(int index)
  *************************************************************************************************/
 void ConfigEditUnitSetupMenu::_cvpUnitSlot(int index)
 {
-    Config *config = configEditMenuGrp.getCurrentEditConfig();
     if(index==0)
     {
         index = UNIT_MMHG;
@@ -130,7 +125,7 @@ void ConfigEditUnitSetupMenu::_cvpUnitSlot(int index)
     {
         index = UNIT_MMHG;
     }
-    config->setNumValue("Unit|CVPUnit",index);
+    systemConfig.setNumValue("Unit|CVPUnit",index);
 }
 
 /**************************************************************************************************
@@ -138,7 +133,6 @@ void ConfigEditUnitSetupMenu::_cvpUnitSlot(int index)
  *************************************************************************************************/
 void ConfigEditUnitSetupMenu::_icpUnitSlot(int index)
 {
-    Config *config = configEditMenuGrp.getCurrentEditConfig();
     if(index==0)
     {
         index = UNIT_MMHG;
@@ -155,7 +149,7 @@ void ConfigEditUnitSetupMenu::_icpUnitSlot(int index)
     {
         index = UNIT_MMHG;
     }
-    config->setNumValue("Unit|ICPUnit",index);
+    systemConfig.setNumValue("Unit|ICPUnit",index);
 }
 
 /**************************************************************************************************
@@ -163,7 +157,6 @@ void ConfigEditUnitSetupMenu::_icpUnitSlot(int index)
  *************************************************************************************************/
 void ConfigEditUnitSetupMenu::_co2UnitSlot(int index)
 {
-    Config *config = configEditMenuGrp.getCurrentEditConfig();
     if(index==0)
     {
         index = UNIT_MMHG;
@@ -180,7 +173,7 @@ void ConfigEditUnitSetupMenu::_co2UnitSlot(int index)
     {
         index = UNIT_MMHG;
     }
-    config->setNumValue("Unit|CO2Unit",index);
+    systemConfig.setNumValue("Unit|CO2Unit",index);
 }
 
 
@@ -189,37 +182,36 @@ void ConfigEditUnitSetupMenu::_co2UnitSlot(int index)
  *************************************************************************************************/
 void ConfigEditUnitSetupMenu::_loadOptions(void)
 {
-    Config *config = configEditMenuGrp.getCurrentEditConfig();
     int index  = 0;
-    config->getNumValue("Unit|HightUnit",index);
+    systemConfig.getNumValue("Unit|HightUnit",index);
 
     _hightUnit->setCurrentItem(trs(Unit::getSymbol(UnitType(index))));
 
     index=0;
-    config->getNumValue("Unit|WeightUnit",index);
+    systemConfig.getNumValue("Unit|WeightUnit",index);
     _weightUnit->setCurrentItem(trs(Unit::getSymbol(UnitType(index))));
 
     index=0;
-    config->getNumValue("Unit|STUnit",index);
+    systemConfig.getNumValue("Unit|STUnit",index);
     _stUnit->setCurrentItem(trs(Unit::getSymbol(UnitType(index))));
 
     index=0;
-    config->getNumValue("Unit|PressureUnit",index);
+    systemConfig.getNumValue("Unit|PressureUnit",index);
     _pressureUnit->setCurrentItem(trs(Unit::getSymbol(UnitType(index))));
 
     index=0;
-    config->getNumValue("Unit|TemperatureUnit",index);
+    systemConfig.getNumValue("Unit|TemperatureUnit",index);
     _temperatureUnit->setCurrentItem(trs(Unit::getSymbol(UnitType(index))));
     index=0;
-    config->getNumValue("Unit|CVPUnit",index);
+    systemConfig.getNumValue("Unit|CVPUnit",index);
     _cvpUnit->setCurrentItem(trs(Unit::getSymbol(UnitType(index))));
 
     index=0;
-    config->getNumValue("Unit|ICPUnit",index);
+    systemConfig.getNumValue("Unit|ICPUnit",index);
     _icpUnit->setCurrentItem(trs(Unit::getSymbol(UnitType(index))));
 
     index=0;
-    config->getNumValue("Unit|CO2Unit",index);
+    systemConfig.getNumValue("Unit|CO2Unit",index);
     _co2Unit->setCurrentItem(trs(Unit::getSymbol(UnitType(index))));
 }
 

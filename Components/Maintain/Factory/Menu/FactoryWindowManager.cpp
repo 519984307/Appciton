@@ -104,22 +104,22 @@ void FactoryWindowManager::upgradeMenu(void)
 
 void FactoryWindowManager::_testButtonSlot()
 {
-    factoryTestMenu.popup();
+   //factoryTestMenu.popup();
 }
 
 void FactoryWindowManager::_dataRecordButtonlot()
 {
-    factoryTestMenu.popup();
+    //factoryDataRecord.popup();
 }
 
 void FactoryWindowManager::_systemInfoButtonSlot()
 {
-    factorySystemInfoMenu.popup();
+    //factorySystemInfoMenu.popup();
 }
 
 void FactoryWindowManager::_tempCalibateButtonSlot()
 {
-    factoryTempMenu.popup();
+    //factoryTempMenu.popup();
 }
 
 /**************************************************************************************************

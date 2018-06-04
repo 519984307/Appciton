@@ -41,7 +41,7 @@ OthersMaintainMenu::OthersMaintainMenu() : SubMenu(trs("OthersMaintainMenu")),
 void OthersMaintainMenu::readyShow()
 {
     QString tmpStr;
-    systemConfig.getStrValue("UserMaintain|Others|WaveLine", tmpStr);
+    systemConfig.getStrValue("Others|WaveLine", tmpStr);
     if(tmpStr.toInt()>=_waveLine->count())
     {
         _waveLine->setCurrentIndex(0);
@@ -52,7 +52,7 @@ void OthersMaintainMenu::readyShow()
     }
     tmpStr.clear();
 
-    systemConfig.getStrValue("UserMaintain|Others|ECGStandard", tmpStr);
+    systemConfig.getStrValue("Others|ECGStandard", tmpStr);
     if(tmpStr.toInt()>=_ecgStandard->count())
     {
         _ecgStandard->setCurrentIndex(0);
@@ -63,7 +63,7 @@ void OthersMaintainMenu::readyShow()
     }
     tmpStr.clear();
 
-    systemConfig.getStrValue("UserMaintain|Others|FrequencyNotch", tmpStr);
+    systemConfig.getStrValue("Others|FrequencyNotch", tmpStr);
     if(tmpStr.toInt()>=_frequencyNotch->count())
     {
         _frequencyNotch->setCurrentIndex(0);
@@ -74,7 +74,7 @@ void OthersMaintainMenu::readyShow()
     }
     tmpStr.clear();
 
-    systemConfig.getStrValue("UserMaintain|Others|ParaSwitchPrem", tmpStr);
+    systemConfig.getStrValue("Others|ParaSwitchPrem", tmpStr);
     if(tmpStr.toInt()>=_paraSwitchPrem->count())
     {
         _paraSwitchPrem->setCurrentIndex(0);
@@ -85,7 +85,7 @@ void OthersMaintainMenu::readyShow()
     }
     tmpStr.clear();
 
-    systemConfig.getStrValue("UserMaintain|Others|ConfImpactItemSettings", tmpStr);
+    systemConfig.getStrValue("Others|ConfImpactItemSettings", tmpStr);
     if(tmpStr.toInt()>=_confImpactItemSettings->count())
     {
         _confImpactItemSettings->setCurrentIndex(0);
@@ -96,7 +96,7 @@ void OthersMaintainMenu::readyShow()
     }
     tmpStr.clear();
 
-    systemConfig.getStrValue("UserMaintain|Others|NurseCallSetting", tmpStr);
+    systemConfig.getStrValue("Others|NurseCallSetting", tmpStr);
     if(tmpStr.toInt()>=_nurseCallSetting->count())
     {
         _nurseCallSetting->setCurrentIndex(0);
@@ -111,7 +111,7 @@ void OthersMaintainMenu::readyShow()
     }
     tmpStr.clear();
 
-    systemConfig.getStrValue("UserMaintain|Others|SignalType", tmpStr);
+    systemConfig.getStrValue("Others|SignalType", tmpStr);
     if(tmpStr.toInt()>=_signalType->count())
     {
         _signalType->setCurrentIndex(0);
@@ -122,7 +122,7 @@ void OthersMaintainMenu::readyShow()
     }
     tmpStr.clear();
 
-    systemConfig.getStrValue("UserMaintain|Others|TriggerMode", tmpStr);
+    systemConfig.getStrValue("Others|TriggerMode", tmpStr);
     if(tmpStr.toInt()>=_triggerMode->count())
     {
         _triggerMode->setCurrentIndex(0);
@@ -133,7 +133,7 @@ void OthersMaintainMenu::readyShow()
     }
     tmpStr.clear();
 
-    systemConfig.getStrValue("UserMaintain|Others|AlarmLevel", tmpStr);
+    systemConfig.getStrValue("Others|AlarmLevel", tmpStr);
     if(tmpStr.toInt()>=_alarmLevel->count())
     {
         _alarmLevel->setCurrentIndex(0);
@@ -144,7 +144,7 @@ void OthersMaintainMenu::readyShow()
     }
     tmpStr.clear();
 
-    systemConfig.getStrValue("UserMaintain|Others|AlarmType", tmpStr);
+    systemConfig.getStrValue("Others|AlarmType", tmpStr);
     if(tmpStr.toInt()>=_alarmType->count())
     {
         _alarmType->setCurrentIndex(0);
@@ -178,6 +178,7 @@ void OthersMaintainMenu::layoutExec()
     _waveLine->addItem(trs("fat"));
     _waveLine->addItem(trs("med"));
     _waveLine->addItem(trs("thin"));
+    _waveLine->combolist->setProperty("ComboID",qVariantFromValue(0));
     connect(_waveLine->combolist, SIGNAL(currentIndexChanged(int)),
             this, SLOT(_editCombolistSlot(int)));
     mainLayout->addWidget(_waveLine);
@@ -190,6 +191,7 @@ void OthersMaintainMenu::layoutExec()
     _ecgStandard->combolist->setFixedSize(btnWidth, ITEM_H);
     _ecgStandard->addItem(trs("AHA"));
     _ecgStandard->addItem(trs("IEC"));
+    _ecgStandard->combolist->setProperty("ComboID",qVariantFromValue(1));
     connect(_ecgStandard->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_editCombolistSlot(int)));
     mainLayout->addWidget(_ecgStandard);
 
@@ -200,6 +202,7 @@ void OthersMaintainMenu::layoutExec()
     _frequencyNotch->addItem(trs("50 Hz"));
     _frequencyNotch->addItem(trs("60 Hz"));
     _frequencyNotch->setFont(fontManager.textFont(fontSize));
+    _frequencyNotch->combolist->setProperty("ComboID",qVariantFromValue(2));
     connect(_frequencyNotch->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_editCombolistSlot(int)));
     mainLayout->addWidget(_frequencyNotch);
 
@@ -210,6 +213,7 @@ void OthersMaintainMenu::layoutExec()
     _paraSwitchPrem->addItem(trs("open"));
     _paraSwitchPrem->addItem(trs("protected"));
     _paraSwitchPrem->setFont(fontManager.textFont(fontSize));
+    _paraSwitchPrem->combolist->setProperty("ComboID",qVariantFromValue(3));
     connect(_paraSwitchPrem->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_editCombolistSlot(int)));
     mainLayout->addWidget(_paraSwitchPrem);
 
@@ -220,6 +224,7 @@ void OthersMaintainMenu::layoutExec()
     _confImpactItemSettings->addItem(trs("close"));
     _confImpactItemSettings->addItem(trs("ParaSwitch"));
     _confImpactItemSettings->setFont(fontManager.textFont(fontSize));
+    _confImpactItemSettings->combolist->setProperty("ComboID",qVariantFromValue(4));
     connect(_confImpactItemSettings->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_editCombolistSlot(int)));
     mainLayout->addWidget(_confImpactItemSettings);
 
@@ -230,6 +235,7 @@ void OthersMaintainMenu::layoutExec()
     _nurseCallSetting->addItem(trs("setting"));
     _nurseCallSetting->addItem(trs("stopSetting"));
     _nurseCallSetting->setFont(fontManager.textFont(fontSize));
+    _nurseCallSetting->combolist->setProperty("ComboID",qVariantFromValue(5));
     connect(_nurseCallSetting->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_editCombolistSlot(int)));
     mainLayout->addWidget(_nurseCallSetting);
 
@@ -240,6 +246,7 @@ void OthersMaintainMenu::layoutExec()
     _signalType->setFont(fontManager.textFont(fontSize));
     _signalType->addItem(trs("Continuity"));
     _signalType->addItem(trs("Pluse"));
+    _signalType->combolist->setProperty("ComboID",qVariantFromValue(6));
     connect(_signalType->combolist, SIGNAL(currentIndexChanged(int)),
             this, SLOT(_editCombolistSlot(int)));
     mainLayout->addWidget(_signalType);
@@ -252,6 +259,7 @@ void OthersMaintainMenu::layoutExec()
     _triggerMode->setFont(fontManager.textFont(fontSize));
     _triggerMode->addItem(trs("Closed"));
     _triggerMode->addItem(trs("Opened"));
+    _triggerMode->combolist->setProperty("ComboID",qVariantFromValue(7));
     connect(_triggerMode->combolist, SIGNAL(currentIndexChanged(int)),
             this, SLOT(_editCombolistSlot(int)));
     mainLayout->addWidget(_triggerMode);
@@ -264,6 +272,7 @@ void OthersMaintainMenu::layoutExec()
     _alarmLevel->addItem(trs("High"));
     _alarmLevel->addItem(trs("Med"));
     _alarmLevel->addItem(trs("Low"));
+    _alarmLevel->combolist->setProperty("ComboID",qVariantFromValue(8));
     connect(_alarmLevel->combolist, SIGNAL(currentIndexChanged(int)),
             this, SLOT(_editCombolistSlot(int)));
     mainLayout->addWidget(_alarmLevel);
@@ -275,6 +284,7 @@ void OthersMaintainMenu::layoutExec()
     _alarmType->setFont(fontManager.textFont(fontSize));
     _alarmType->addItem(trs("Technology"));
     _alarmType->addItem(trs("Physiology"));
+    _alarmType->combolist->setProperty("ComboID",qVariantFromValue(9));
     connect(_alarmType->combolist, SIGNAL(currentIndexChanged(int)),
             this, SLOT(_editCombolistSlot(int)));
     mainLayout->addWidget(_alarmType);
@@ -285,57 +295,52 @@ void OthersMaintainMenu::layoutExec()
  *************************************************************************************************/
 void OthersMaintainMenu::_editCombolistSlot(int index)
 {
-    ComboList *mySender = qobject_cast<ComboList*>(sender());
-    if(!mySender)
+    ComboList *sen = qobject_cast<ComboList*>(sender());
+    if(!sen)
     {
         return;
     }
-    QString myQstring;
-    if(_waveLine->combolist==mySender)
+    QString string;
+    int comboID = sen->property("ComboID").toInt();
+
+    switch(comboID)
     {
-        myQstring = "WaveLine";
+        case 0:
+            string = "WaveLine";
+        break;
+        case 1:
+            string = "ECGStandard";
+        break;
+        case 2:
+            string = "FrequencyNotch";
+        break;
+        case 3:
+            string = "ParaSwitchPrem";
+        break;
+        case 4:
+            string = "ConfImpactItemSettings";
+        break;
+        case 5:
+            string = "NurseCallSetting";
+            _signalType->setEnabled(!index);
+            _triggerMode->setEnabled(!index);
+            _alarmLevel->setEnabled(!index);
+            _alarmType->setEnabled(!index);
+        break;
+        case 6:
+            string = "SignalType";
+        break;
+        case 7:
+            string = "TriggerMode";
+        break;
+        case 8:
+            string = "AlarmLevel";
+        break;
+        case 9:
+            string = "AlarmType";
+        break;
     }
-    else if(_ecgStandard->combolist==mySender)
-    {
-        myQstring = "ECGStandard";
-    }
-    else if(_frequencyNotch->combolist==mySender)
-    {
-        myQstring = "FrequencyNotch";
-    }
-    else if(_paraSwitchPrem->combolist==mySender)
-    {
-        myQstring = "ParaSwitchPrem";
-    }
-    else if(_confImpactItemSettings->combolist==mySender)
-    {
-        myQstring = "ConfImpactItemSettings";
-    }
-    else if(_nurseCallSetting->combolist==mySender)
-    {
-        myQstring = "NurseCallSetting";
-        _signalType->setEnabled(!index);
-        _triggerMode->setEnabled(!index);
-        _alarmLevel->setEnabled(!index);
-        _alarmType->setEnabled(!index);
-    }
-    else if(_signalType->combolist==mySender)
-    {
-        myQstring = "SignalType";
-    }
-    else if(_triggerMode->combolist==mySender)
-    {
-        myQstring = "TriggerMode";
-    }
-    else if(_alarmLevel->combolist==mySender)
-    {
-        myQstring = "AlarmLevel";
-    }
-    else if(_alarmType->combolist==mySender)
-    {
-        myQstring = "AlarmType";
-    }
-    systemConfig.setNumValue(QString("UserMaintain|Others|%1").arg(myQstring), index);
+    systemConfig.setNumValue(QString("Others|%1").arg(string), index);
 }
 
 /**************************************************************************************************

@@ -1,10 +1,11 @@
 #pragma once
 #include "MenuWidget.h"
+#include "SubMenu.h"
 
 class LabelButton;
 class LButtonEn;
 class QLabel;
-class FactorySystemInfoMenu : public MenuWidget
+class FactorySystemInfoMenu : public SubMenu
 {
     Q_OBJECT
 
@@ -21,8 +22,15 @@ public:
     static FactorySystemInfoMenu *_selfObj;
 
     ~FactorySystemInfoMenu();
-    void readyShow();
 
+    /**
+     * @brief readyShow  加载数据方法
+     */
+    virtual void readyShow();
+    /**
+     * @brief layoutExec  布局方法
+     */
+    virtual void layoutExec(void);
 private slots:
     void _serialNumReleased();
 

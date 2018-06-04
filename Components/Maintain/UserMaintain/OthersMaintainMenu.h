@@ -6,7 +6,6 @@ class IComboList;
 class OthersMaintainMenu : public SubMenu
 {
     Q_OBJECT
-
 public:
     static OthersMaintainMenu &construction()
     {
@@ -14,23 +13,17 @@ public:
         {
             _selfObj = new OthersMaintainMenu();
         }
-
         return *_selfObj;
     }
     static OthersMaintainMenu *_selfObj;
-
     ~OthersMaintainMenu();
-
 protected:
     virtual void layoutExec(void);
     virtual void readyShow(void);
-
 private slots:
     void _editCombolistSlot(int);
-
 private:
     OthersMaintainMenu();
-
     IComboList  *_waveLine;                //波形线条
     IComboList  *_ecgStandard;             //ECG标准
     IComboList  *_frequencyNotch;          //工频陷波
@@ -41,6 +34,5 @@ private:
     IComboList  *_triggerMode;             //触发方式
     IComboList  *_alarmLevel;              //报警级别
     IComboList  *_alarmType;               //报警类型
-
 };
 #define othersMaintainMenu (OthersMaintainMenu::construction())

@@ -10,42 +10,40 @@
 #include "Debug.h"
 #include "IButton.h"
 #include "FactoryWindowManager.h"
+#include "FactoryMaintainManager.h"
 
 FactorySystemInfoMenu *FactorySystemInfoMenu::_selfObj = NULL;
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-FactorySystemInfoMenu::FactorySystemInfoMenu() : MenuWidget(trs("SystemInfoSetting"))
+FactorySystemInfoMenu::FactorySystemInfoMenu() : SubMenu(trs("SystemInfoSetting"))
 {
-    int submenuW = factoryWindowManager.getSubmenuWidth();
-    int submenuH = factoryWindowManager.getSubmenuHeight();
-    setFixedSize(submenuW, submenuH);
 
-    int itemW = submenuW - 200;
+    setDesc(trs("SystemInfoSettingDesc"));
+    startLayout();
+}
+
+void FactorySystemInfoMenu::layoutExec()
+{
+    int submenuW = factoryMaintainManager.getSubmenuWidth();
+    int submenuH = factoryMaintainManager.getSubmenuHeight();
+    setMenuSize(submenuW, submenuH);
+
+    int itemW = submenuW - ICOMBOLIST_SPACE;
     int fontSize = fontManager.getFontSize(1);
     int btnWidth = itemW / 2;
+    int labelWidth = itemW - btnWidth;
 
     _serialNum = new LabelButton(trs("SerialNum"));
     _serialNum->setFont(fontManager.textFont(fontSize));
-    _serialNum->label->setFixedSize(btnWidth, ITEM_H);
-    _serialNum->label->setAlignment(Qt::AlignCenter);
+    _serialNum->label->setFixedSize(labelWidth, ITEM_H);
+    _serialNum->label->setAlignment(Qt::AlignRight);
     _serialNum->button->setFixedSize(btnWidth, ITEM_H);
     connect(_serialNum->button, SIGNAL(realReleased()), this, SLOT(_serialNumReleased()));
-
-    QVBoxLayout *labelLayout = new QVBoxLayout();
-    labelLayout->setContentsMargins(50, 0, 50, 0);
-    labelLayout->setSpacing(10);
-    labelLayout->setAlignment(Qt::AlignTop);
-    labelLayout->addWidget(_serialNum);
-
-    labelLayout->addStretch();
-
-    labelLayout->setSpacing(10);
-
-    mainLayout->addLayout(labelLayout);
+    mainLayout->addWidget(_serialNum,0,Qt::AlignRight);
+    mainLayout->addStretch();
 }
-
 /**************************************************************************************************
  * 布局。
  *************************************************************************************************/

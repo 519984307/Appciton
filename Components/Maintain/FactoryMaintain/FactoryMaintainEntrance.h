@@ -6,7 +6,7 @@
 
 class IComboList;
 class QStackedWidget;
-class UserMaintainEntrance : public SubMenu
+class FactoryMaintainEntrance : public SubMenu
 {
     Q_OBJECT
 public:
@@ -14,17 +14,17 @@ public:
      * @brief construction  初始化方法
      * @return
      */
-    static UserMaintainEntrance &construction(void)
+    static FactoryMaintainEntrance &construction(void)
     {
         if (_selfObj == NULL)
         {
-            _selfObj = new UserMaintainEntrance();
+            _selfObj = new FactoryMaintainEntrance();
         }
         return *_selfObj;
     }
-    static UserMaintainEntrance *_selfObj;
+    static FactoryMaintainEntrance *_selfObj;
 public:
-    ~UserMaintainEntrance();
+    ~FactoryMaintainEntrance();
 protected:
     /**
      * @brief layoutExec  布局方法
@@ -37,10 +37,10 @@ protected:
 private slots:
 private:
     /**
-     * @brief UserMaintainEntrance  构造方法
+     * @brief FactoryMaintainEntrance  构造方法
      */
-    UserMaintainEntrance();
+    FactoryMaintainEntrance();
     QStackedWidget      *_subMenu;           //子菜单
     PasswordMenuManage  *_passwordMenuManage;
 };
-#define userMaintainEntrance (UserMaintainEntrance::construction())
+#define factoryMaintainEntrance (FactoryMaintainEntrance::construction())

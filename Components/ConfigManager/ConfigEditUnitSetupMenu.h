@@ -93,3 +93,4 @@ private:
     IComboList *_icpUnit;                // ICP单位。
     IComboList *_co2Unit;                // CO2单位。
 };
+#define unitSetup    (ConfigEditUnitSetupMenu::construction())

@@ -1,4 +1,4 @@
-#include "UserMaintainEntrance.h"
+#include "FactoryMaintainEntrance.h"
 #include "SPO2Param.h"
 #include "IComboList.h"
 #include "LanguageManager.h"
@@ -10,22 +10,22 @@
 #include "IConfig.h"
 #include "MenuManager.h"
 
-UserMaintainEntrance *UserMaintainEntrance::_selfObj = NULL;
+FactoryMaintainEntrance *FactoryMaintainEntrance::_selfObj = NULL;
 
 /**************************************************************************************************
  * 执行布局。
  *************************************************************************************************/
-void UserMaintainEntrance::layoutExec(void)
+void FactoryMaintainEntrance::layoutExec(void)
 {
     int submenuW = userMaintainManager.getSubmenuWidth();
     int submenuH = userMaintainManager.getSubmenuHeight();
     setMenuSize(submenuW, submenuH);
 
-    QString userMaintainPassword;
-    systemConfig.getStrValue("General|UserMaintainPassword", userMaintainPassword);
+    QString factoryMaintainPassword;
+    systemConfig.getStrValue("General|FactoryMaintainPassword", factoryMaintainPassword);
 
-    _passwordMenuManage = new PasswordMenuManage(trs("UserMaintainPassword"));
-    _passwordMenuManage->setUserMaintainPassword(userMaintainPassword);
+    _passwordMenuManage = new PasswordMenuManage(trs("FactoryMaintainPassword"));
+    _passwordMenuManage->setUserMaintainPassword(factoryMaintainPassword);
 
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->addWidget(_passwordMenuManage);
@@ -36,27 +36,27 @@ void UserMaintainEntrance::layoutExec(void)
 /**************************************************************************************************
  * 显示。
  *************************************************************************************************/
-void UserMaintainEntrance::readyShow(void)
+void FactoryMaintainEntrance::readyShow(void)
 {
-    QString userMaintainPassword;
-    systemConfig.getStrValue("General|UserMaintainPassword", userMaintainPassword);
-    _passwordMenuManage->setUserMaintainPassword(userMaintainPassword);
+    QString factoryMaintainPassword;
+    systemConfig.getStrValue("General|FactoryMaintainPassword", factoryMaintainPassword);
+    _passwordMenuManage->setUserMaintainPassword(factoryMaintainPassword);
     _passwordMenuManage->clearPassword();
 }
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-UserMaintainEntrance::UserMaintainEntrance() : SubMenu(trs("UserMaintainSystem"))
+FactoryMaintainEntrance::FactoryMaintainEntrance() : SubMenu(trs("FactoryMaintainSystem"))
 {
-    setDesc(trs("UserMaintainSystem"));
+    setDesc(trs("FactoryMaintainSystem"));
     startLayout();
 }
 
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
-UserMaintainEntrance::~UserMaintainEntrance()
+FactoryMaintainEntrance::~FactoryMaintainEntrance()
 {
 
 }

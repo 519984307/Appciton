@@ -1,13 +1,13 @@
 #pragma once
 #include "MenuWidget.h"
-
+#include "SubMenu.h"
 
 class QLabel;
 class IComboList;
 class LButtonEn;
 class LabelButton;
 class QTimer;
-class FactoryDataRecord : public MenuWidget
+class FactoryDataRecord : public SubMenu
 {
     Q_OBJECT
 
@@ -25,7 +25,9 @@ public:
 
     ~FactoryDataRecord();
 
-    void readyShow();
+    virtual void layoutExec();
+
+    virtual void readyShow();
 
 private slots:
     void _ECGReleased(int);

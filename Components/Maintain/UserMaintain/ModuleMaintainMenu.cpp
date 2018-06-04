@@ -28,7 +28,14 @@ ModuleMaintainMenu::ModuleMaintainMenu() : SubMenu(trs("ModuleMaintainMenu")),
                                            _ecgModuleCalibration(NULL),
                                            _touchScreenCalibration(NULL),
                                            _start(NULL),
-                                           _measureSta(CO_INST_START)
+                                           _measureSta(CO_INST_START),
+                                           _isAnaesthesiaCal(true),
+                                           _isIBPPressureCal(true),
+                                           _isCO2Cal(true),
+                                           _isNIBPPressureTest(true),
+                                           _isNIBPLeakageDet(true),
+                                           _isECGCal(true),
+                                           _istouchScreenCal(true)
 {
     setDesc(trs("ModuleMaintainMenuDesc"));
 
@@ -40,30 +47,6 @@ ModuleMaintainMenu::ModuleMaintainMenu() : SubMenu(trs("ModuleMaintainMenu")),
  *************************************************************************************************/
 void ModuleMaintainMenu::readyShow()
 {
-
-//    QString tmpStr;
-//    systemConfig.getStrValue("UserMaintainManager|ModuleMaintain|AnaesthesiaModule", tmpStr);
-//    _anaesthesiaModuleCalibration->setValue(tmpStr);
-
-//    tmpStr.clear();
-//    systemConfig.getStrValue("General|UserMaintainPassword", tmpStr);
-//    _modifyPassword->setValue(tmpStr);
-
-//    tmpStr.clear();
-//    systemConfig.getStrValue("General|Department", tmpStr);
-//    _department->setValue(tmpStr);
-
-//    tmpStr.clear();
-//    systemConfig.getStrValue("General|BedNumber", tmpStr);
-//    _bedNumber->setValue(tmpStr);
-
-//    int value = 0;
-//    systemConfig.getNumValue("General|ChangeBedNumberRight", value);
-//    _changeBedNumberRight->setCurrentIndex(value);
-
-
-//    systemConfig.getNumValue("General|Language", value);
-//    _language->setCurrentIndex(value);
 
 }
 
@@ -158,13 +141,15 @@ void ModuleMaintainMenu::layoutExec()
  *************************************************************************************************/
 void ModuleMaintainMenu::_isAnaesthesiaSlot()
 {
-    if(_anaesthesiaModuleCalibration->button->text()=="Anaesthesia")
+    if(_isAnaesthesiaCal)
     {
-        _anaesthesiaModuleCalibration->button->setText("StopAnaesthesia");
+        _isAnaesthesiaCal = false;
+        _anaesthesiaModuleCalibration->button->setText(trs("StopAnaesthesia"));
     }
-    else if(_anaesthesiaModuleCalibration->button->text()=="StopAnaesthesia")
+    else if(!_isAnaesthesiaCal)
     {
-        _anaesthesiaModuleCalibration->button->setText("Anaesthesia");
+        _isAnaesthesiaCal = true;
+        _anaesthesiaModuleCalibration->button->setText(trs("Anaesthesia"));
     }
 }
 
@@ -173,13 +158,15 @@ void ModuleMaintainMenu::_isAnaesthesiaSlot()
  *************************************************************************************************/
 void ModuleMaintainMenu::_isNIBPPressureTestSlot()
 {
-    if(_nibpPressureTest->button->text()=="NIBPPressureTest")
+    if(_isNIBPPressureTest)
     {
-        _nibpPressureTest->button->setText("StopNIBPPressureTest");
+        _isNIBPPressureTest = false;
+        _nibpPressureTest->button->setText(trs("StopNIBPPressureTest"));
     }
-    else if(_nibpPressureTest->button->text()=="StopNIBPPressureTest")
+    else if(!_isNIBPPressureTest)
     {
-        _nibpPressureTest->button->setText("NIBPPressureTest");
+        _isNIBPPressureTest = true;
+        _nibpPressureTest->button->setText(trs("NIBPPressureTest"));
     }
 }
 /**************************************************************************************************
@@ -187,13 +174,15 @@ void ModuleMaintainMenu::_isNIBPPressureTestSlot()
  *************************************************************************************************/
 void ModuleMaintainMenu::_isNIBPLeakageDetectionSlot()
 {
-    if(_nibpLeakageDetection->button->text()=="NIBPLeakageDetection")
+    if(_isNIBPLeakageDet)
     {
-        _nibpLeakageDetection->button->setText("StopNIBPLeakageDetection");
+        _isNIBPLeakageDet = false;
+        _nibpLeakageDetection->button->setText(trs("StopNIBPLeakageDetection"));
     }
-    else if(_nibpLeakageDetection->button->text()=="StopNIBPLeakageDetection")
+    else if(!_isNIBPLeakageDet)
     {
-        _nibpLeakageDetection->button->setText("NIBPLeakageDetection");
+        _isNIBPLeakageDet = true;
+        _nibpLeakageDetection->button->setText(trs("NIBPLeakageDetection"));
     }
 }
 /**************************************************************************************************
@@ -201,13 +190,15 @@ void ModuleMaintainMenu::_isNIBPLeakageDetectionSlot()
  *************************************************************************************************/
 void ModuleMaintainMenu::_isECGModuleCalibrationSlot()
 {
-    if(_ecgModuleCalibration->button->text()=="ECGModuleCalibration")
+    if(_isECGCal)
     {
-        _ecgModuleCalibration->button->setText("StopECGModuleCalibration");
+        _isECGCal = false;
+        _ecgModuleCalibration->button->setText(trs("StopECGModuleCalibration"));
     }
-    else if(_ecgModuleCalibration->button->text()=="StopECGModuleCalibration")
+    else if(!_isECGCal)
     {
-        _ecgModuleCalibration->button->setText("ECGModuleCalibration");
+        _isECGCal = true;
+        _ecgModuleCalibration->button->setText(trs("ECGModuleCalibration"));
     }
 }
 /**************************************************************************************************
@@ -215,13 +206,15 @@ void ModuleMaintainMenu::_isECGModuleCalibrationSlot()
  *************************************************************************************************/
 void ModuleMaintainMenu::_isIBPPressureCalibrationSlot()
 {
-    if(_ibpPressureCalibration->button->text()=="IBPPressureCalibration")
+    if(_isIBPPressureCal)
     {
-        _ibpPressureCalibration->button->setText("StopIBPPressureCalibration");
+        _isIBPPressureCal = false;
+        _ibpPressureCalibration->button->setText(trs("StopIBPPressureCalibration"));
     }
-    else if(_ibpPressureCalibration->button->text()=="StopIBPPressureCalibration")
+    else if(!_isIBPPressureCal)
     {
-        _ibpPressureCalibration->button->setText("IBPPressureCalibration");
+        _isIBPPressureCal = true;
+        _ibpPressureCalibration->button->setText(trs("IBPPressureCalibration"));
     }
 }
 
@@ -230,13 +223,15 @@ void ModuleMaintainMenu::_isIBPPressureCalibrationSlot()
  *************************************************************************************************/
 void ModuleMaintainMenu::_isCO2ModuleMaintenanceSlot()
 {
-    if(_co2ModuleMaintenance->button->text()=="CO2ModuleMaintenance")
+    if(_isCO2Cal)
     {
-        _co2ModuleMaintenance->button->setText("StopCO2ModuleMaintenance");
+        _isCO2Cal = false;
+        _co2ModuleMaintenance->button->setText(trs("StopCO2ModuleMaintenance"));
     }
-    else if(_co2ModuleMaintenance->button->text()=="StopCO2ModuleMaintenance")
+    else if(!_isCO2Cal)
     {
-        _co2ModuleMaintenance->button->setText("CO2ModuleMaintenance");
+        _isCO2Cal = true;
+        _co2ModuleMaintenance->button->setText(trs("CO2ModuleMaintenance"));
     }
 }
 
@@ -245,13 +240,15 @@ void ModuleMaintainMenu::_isCO2ModuleMaintenanceSlot()
  *************************************************************************************************/
 void ModuleMaintainMenu::_isTouchScreenCalibrationSlot()
 {
-    if(_touchScreenCalibration->button->text()=="TouchScreenCalibration")
+    if(_istouchScreenCal)
     {
-        _touchScreenCalibration->button->setText("StopTouchScreenCalibration");
+        _istouchScreenCal = false;
+        _touchScreenCalibration->button->setText(trs("StopTouchScreenCalibration"));
     }
-    else if(_touchScreenCalibration->button->text()=="StopTouchScreenCalibration")
+    else if(!_istouchScreenCal)
     {
-        _touchScreenCalibration->button->setText("TouchScreenCalibration");
+        _istouchScreenCal = true;
+        _touchScreenCalibration->button->setText(trs("TouchScreenCalibration"));
     }
 }
 

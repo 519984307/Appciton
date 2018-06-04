@@ -3,6 +3,7 @@
 #include <QTimer>
 #include "IWidget.h"
 #include "SystemManager.h"
+#include "FactoryMaintainManager.h"
 
 class QLabel;
 class QVBoxLayout;
@@ -60,4 +61,5 @@ private:
     QString _superPassword;                   //超级密码
     QString _normalPassword;                  //普通密码
     QString _userMaintainPassword;            //用户维护密码
+
 };

@@ -33,6 +33,14 @@ void LabeledLabel::setText(const QString &text)
     _text->setText(text);
 }
 
+void LabeledLabel::setSize(const int &width, const int &height)
+{
+    _label->setFixedSize(width, height);
+    _text->setFixedSize(width, height);
+    _text->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+
+}
+
 void LabeledLabel::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);

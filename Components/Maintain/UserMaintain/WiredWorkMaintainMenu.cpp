@@ -12,6 +12,7 @@
 #include "KeyBoardPanel.h"
 #include "Debug.h"
 #include "UserMaintainManager.h"
+#include "Utility.h"
 
 #define MAX_IP_STRING_LENGTH 15
 
@@ -20,13 +21,13 @@ WiredWorkMaintainMenu *WiredWorkMaintainMenu::_selfObj = NULL;
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-WiredWorkMaintainMenu::WiredWorkMaintainMenu() : SubMenu(trs("UserMaintainGeneralMenu")),
+WiredWorkMaintainMenu::WiredWorkMaintainMenu() : SubMenu(trs("WiredWorkMaintainMenu")),
                                                  _addressType(NULL),
                                                  _ipAddress(NULL),
                                                  _subnetMask(NULL),
                                                  _gateWay(NULL)
 {
-    setDesc(trs("UserMaintainGeneralMenuDesc"));
+    setDesc(trs("WiredWorkMaintainMenuDesc"));
 
     startLayout();
 }
@@ -37,7 +38,7 @@ WiredWorkMaintainMenu::WiredWorkMaintainMenu() : SubMenu(trs("UserMaintainGenera
 void WiredWorkMaintainMenu::readyShow()
 {
     QString tmpStr;
-    systemConfig.getStrValue("UserMaintain|WiredWork|IpAddress", tmpStr);
+    systemConfig.getStrValue("WiredWork|IpAddress", tmpStr);
     if(tmpStr.isNull())
     {
         _ipAddress->button->setText("0.0.0.0");
@@ -48,7 +49,7 @@ void WiredWorkMaintainMenu::readyShow()
     }
     tmpStr.clear();
 
-    systemConfig.getStrValue("UserMaintain|WiredWork|SubnetMask", tmpStr);
+    systemConfig.getStrValue("WiredWork|SubnetMask", tmpStr);
     if(tmpStr.isNull())
     {
         _subnetMask->button->setText("0.0.0.0");
@@ -59,7 +60,7 @@ void WiredWorkMaintainMenu::readyShow()
     }
     tmpStr.clear();
 
-    systemConfig.getStrValue("UserMaintain|WiredWork|GateWay", tmpStr);
+    systemConfig.getStrValue("WiredWork|GateWay", tmpStr);
     if(tmpStr.isNull())
     {
         _gateWay->button->setText("255.255.255.0");
@@ -70,7 +71,7 @@ void WiredWorkMaintainMenu::readyShow()
     }
     tmpStr.clear();
 
-    systemConfig.getStrValue("UserMaintain|WiredWork|AddressType", tmpStr);
+    systemConfig.getStrValue("WiredWork|AddressType", tmpStr);
     if(tmpStr.toInt()>=_addressType->count())
     {
         _addressType->setCurrentIndex(0);
@@ -144,7 +145,7 @@ void WiredWorkMaintainMenu::layoutExec()
  *************************************************************************************************/
 void WiredWorkMaintainMenu::_addressTypeSlot(int index)
 {
-    systemConfig.setNumValue("UserMaintain|WiredWork|AddressType", index);
+    systemConfig.setNumValue("WiredWork|AddressType", index);
     _ipAddress->setEnabled(!index);
     _subnetMask->setEnabled(!index);
     _gateWay->setEnabled(!index);
@@ -164,41 +165,41 @@ static bool isIpStrValid(const QString &ipStr)
  *************************************************************************************************/
 void WiredWorkMaintainMenu::editIpAddress()
 {
-    LButton *mySender = qobject_cast<LButton*>(sender());
-    QString myQString;
-    if(!mySender)
+    LButton *sen = qobject_cast<LButton*>(sender());
+    QString string;
+    if(!sen)
     {
         return;
     }
 
     KeyBoardPanel englishPanel;
     englishPanel.setMaxInputLength(MAX_IP_STRING_LENGTH);
-    englishPanel.setInitString(mySender->text());
+    englishPanel.setInitString(sen->text());
     englishPanel.setSpaceEnable(false);
     englishPanel.setBtnEnable("[0-9.]");
     englishPanel.setCheckValueHook(isIpStrValid);
 
-    if (mySender == _ipAddress->button)
+    if (sen == _ipAddress->button)
     {
         englishPanel.setTitleBarText(trs("IpAddress"));
-        myQString = "IpAddress";
+        string = "IpAddress";
     }
-    else if (mySender == _gateWay->button)
+    else if (sen == _gateWay->button)
     {
         englishPanel.setTitleBarText(trs("GateWay"));
-        myQString = "GateWay";
+        string = "GateWay";
     }
-    else if (mySender == _subnetMask->button)
+    else if (sen == _subnetMask->button)
     {
         englishPanel.setTitleBarText(trs("SubnetMask"));
-        myQString = "SubnetMask";
+        string = "SubnetMask";
     }
 
     if (englishPanel.exec())
     {
         QString text = englishPanel.getStrValue();
-        systemConfig.setStrValue(QString("UserMaintain|WiredWork|%1").arg(myQString), text);
-        mySender->setText(text);
+        systemConfig.setStrValue(QString("WiredWork|%1").arg(string), text);
+        sen->setText(text);
     }
 }
 

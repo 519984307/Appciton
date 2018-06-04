@@ -68,6 +68,14 @@
         <NotchFilter>0</NotchFilter>
         <SmartLeadOff>0</SmartLeadOff>
     </ECG>
+    <IBP>
+        <ChannelPressureEntitle1>0</ChannelPressureEntitle1>
+        <ChannelPressureEntitle2>5</ChannelPressureEntitle2>
+        <IBPSweepSpeed>1</IBPSweepSpeed>
+        <FilterMode>0</FilterMode>
+        <Sensitivity>2</Sensitivity>
+        <Calibration>84</Calibration>
+    </IBP>
     <NIBP>
         <MeasureMode>0</MeasureMode>
         <AutoInterval>5</AutoInterval>
@@ -76,10 +84,31 @@
         <AdultInitialCuffInflation>2</AdultInitialCuffInflation>
         <PedInitialCuffInflation>4</PedInitialCuffInflation>
     </NIBP>
+    <SPO2>
+        <Sensitivity>1</Sensitivity>
+        <SmartPluseTone>1</SmartPluseTone>
+        <WaveVelocity>2</WaveVelocity>
+        <Gain>3</Gain>
+        <ModuleControl>1</ModuleControl>
+    </SPO2>
     <CO2>
         <CO2ModeDefault>1</CO2ModeDefault>
         <CO2SweepMode>0</CO2SweepMode>
+        <SweepSpeed>1</SweepSpeed>
+        <FICO2Display>0</FICO2Display>
+        <Compensation>
+            <O2>1</O2>
+            <NO2>0</NO2>
+        </Compensation>
+        <CeroCalibration>0</CeroCalibration>
     </CO2>
+    <CO>
+        <ratdio>0.555</ratdio>
+        <InjectionTempSource>1</InjectionTempSource>
+        <InjectionTemp>23.2</InjectionTemp>
+        <InjectionVolumn>3</InjectionVolumn>
+        <MeasureMode>1</MeasureMode>
+    </CO>
     <RESP>
         <AutoActivation>0</AutoActivation>
         <ApneaDelay>2</ApneaDelay>
@@ -1140,6 +1169,156 @@
                 </fahrenheit>
             </TD>
         </PED>
+        <NEO>
+            <HR_PR Enable="1" Prio="2">
+                <bpm>
+                    <Low Min="20" Max="299">100</Low>
+                    <High Min="21" Max="300">200</High>
+                    <Step>1</Step>
+                    <Scale>1</Scale>
+                </bpm>
+            </HR_PR>
+            <RR_BR Enable="0" Prio="2">
+                <rpm>
+                    <Low Min="2" Max="149">12</Low>
+                    <High Min="3" Max="150">80</High>
+                    <Step>1</Step>
+                    <Scale>1</Scale>
+                </rpm>
+            </RR_BR>
+            <SPO2 Enable="1" Prio="2">
+                <percent>
+                    <Low Min="50" Max="99">85</Low>
+                    <High Min="51" Max="100">95</High>
+                    <Step>1</Step>
+                    <Scale>1</Scale>
+                </percent>
+            </SPO2>
+            <NIBP_SYS Enable="1" Prio="2">
+                <mmHg>
+                    <Low Min="40" Max="134">50</Low>
+                    <High Min="41" Max="135">100</High>
+                    <Step>1</Step>
+                    <Scale>1</Scale>
+                </mmHg>
+                <kPa>
+                    <Low Min="53" Max="179">67</Low>
+                    <High Min="54" Max="180">133</High>
+                    <Step>1</Step>
+                    <Scale>10</Scale>
+                </kPa>
+            </NIBP_SYS>
+            <NIBP_DIA Enable="1" Prio="2">
+                <mmHg>
+                    <Low Min="10" Max="109">30</Low>
+                    <High Min="11" Max="110">70</High>
+                    <Step>1</Step>
+                    <Scale>1</Scale>
+                </mmHg>
+                <kPa>
+                    <Low Min="13" Max="145">40</Low>
+                    <High Min="14" Max="146">93</High>
+                    <Step>1</Step>
+                    <Scale>10</Scale>
+                </kPa>
+            </NIBP_DIA>
+            <NIBP_MAP Enable="1" Prio="2">
+                <mmHg>
+                    <Low Min="20" Max="119">35</Low>
+                    <High Min="21" Max="120">80</High>
+                    <Step>1</Step>
+                    <Scale>1</Scale>
+                </mmHg>
+                <kPa>
+                    <Low Min="27" Max="159">47</Low>
+                    <High Min="28" Max="160">107</High>
+                    <Step>1</Step>
+                    <Scale>10</Scale>
+                </kPa>
+            </NIBP_MAP>
+            <ETCO2 Enable="1" Prio="2">
+                <percent>
+                    <Low Min="0" Max="249">10</Low>
+                    <High Min="1" Max="250">80</High>
+                    <Step>1</Step>
+                    <Scale>10</Scale>
+                </percent>
+                <mmHg>
+                    <Low Min="0" Max="189">7</Low>
+                    <High Min="1" Max="190">60</High>
+                    <Step>1</Step>
+                    <Scale>1</Scale>
+                </mmHg>
+                <kPa>
+                    <Low Min="0" Max="249">10</Low>
+                    <High Min="1" Max="250">80</High>
+                    <Step>1</Step>
+                    <Scale>10</Scale>
+                </kPa>
+            </ETCO2>
+            <FICO2 Enable="0" Prio="2">
+                <percent>
+                    <Low Min="0" Max="249">0</Low>
+                    <High Min="1" Max="250">80</High>
+                    <Step>1</Step>
+                    <Scale>10</Scale>
+                </percent>
+                <mmHg>
+                    <Low Min="0" Max="189">0</Low>
+                    <High Min="1" Max="190">60</High>
+                    <Step>1</Step>
+                    <Scale>1</Scale>
+                </mmHg>
+                <kPa>
+                    <Low Min="0" Max="249">0</Low>
+                    <High Min="1" Max="250">80</High>
+                    <Step>1</Step>
+                    <Scale>10</Scale>
+                </kPa>
+            </FICO2>
+            <T1 Enable="0" Prio="2">
+                <celsius>
+                    <Low Min="0" Max="499">350</Low>
+                    <High Min="1" Max="500">378</High>
+                    <Step>1</Step>
+                    <Scale>10</Scale>
+                </celsius>
+                <fahrenheit>
+                    <Low Min="320" Max="1219">950</Low>
+                    <High Min="321" Max="1220">1000</High>
+                    <Step>1</Step>
+                    <Scale>10</Scale>
+                </fahrenheit>
+            </T1>
+            <T2 Enable="0" Prio="2">
+                <celsius>
+                    <Low Min="0" Max="499">350</Low>
+                    <High Min="1" Max="500">378</High>
+                    <Step>1</Step>
+                    <Scale>10</Scale>
+                </celsius>
+                <fahrenheit>
+                    <Low Min="320" Max="1219">950</Low>
+                    <High Min="321" Max="1220">1000</High>
+                    <Step>1</Step>
+                    <Scale>10</Scale>
+                </fahrenheit>
+            </T2>
+            <TD Enable="0" Prio="2">
+                <celsius>
+                    <Low Min="0" Max="49">0</Low>
+                    <High Min="1" Max="50">5</High>
+                    <Step>1</Step>
+                    <Scale>10</Scale>
+                </celsius>
+                <fahrenheit>
+                    <Low Min="0" Max="88">0</Low>
+                    <High Min="1" Max="89">9</High>
+                    <Step>1</Step>
+                    <Scale>10</Scale>
+                </fahrenheit>
+            </TD>
+        </NEO>
     </AlarmSource>
     <Local>
         <Language CurrentOption="0" OptionCount="2">

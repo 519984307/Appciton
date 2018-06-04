@@ -18,6 +18,9 @@ public:
     // 设置文本标签内容
     void setText(const QString &text);
 
+    // 设置标签、文本尺寸
+    void setSize(const int &width, const int &height);
+
 protected:
     void paintEvent(QPaintEvent *);
 

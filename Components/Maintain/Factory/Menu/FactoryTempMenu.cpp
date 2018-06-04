@@ -11,6 +11,7 @@
 #include "FactoryWindowManager.h"
 #include "TEMPParam.h"
 #include <QTimer>
+#include "FactoryMaintainManager.h"
 
 FactoryTempMenu *FactoryTempMenu::_selfObj = NULL;
 
@@ -45,31 +46,37 @@ QString FactoryTempMenu::_labelStr[10] =
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-FactoryTempMenu::FactoryTempMenu() : MenuWidget(trs("TEMPCalibrate"))
+FactoryTempMenu::FactoryTempMenu() : SubMenu(trs("TEMPCalibrate"))
 {
-    int submenuW = factoryWindowManager.getSubmenuWidth();
-    int submenuH = factoryWindowManager.getSubmenuHeight();
-    setFixedSize(submenuW, submenuH);
+    setDesc(trs("TEMPCalibrateDesc"));
+    startLayout();
+}
 
-    int itemW = submenuW - 200;
-    int fontsize = 15;
-    int labelWidth = itemW / 2;
-    int labelHeight = ITEM_H - 5;
+void FactoryTempMenu::layoutExec()
+{
+    int submenuW = factoryMaintainManager.getSubmenuWidth();
+    int submenuH = factoryMaintainManager.getSubmenuHeight();
+    setMenuSize(submenuW, submenuH);
+
+    int itemW = submenuW - ICOMBOLIST_SPACE;
+    int fontSize = fontManager.getFontSize(1);
+    int btnWidth = itemW / 2;
+    int labelWidth = itemW - btnWidth - ITEM_H;
+
 
     QVBoxLayout *labelLayout = new QVBoxLayout();
-    labelLayout->setContentsMargins(50, 0, 50, 0);
-    labelLayout->setSpacing(10);
+    labelLayout->setContentsMargins(0, 0, 0, 0);
     labelLayout->setAlignment(Qt::AlignTop);
 
     _tempChannel = new QLabel();
-    _tempChannel->setFont(fontManager.textFont(fontsize + 5));
-    _tempChannel->setFixedSize(labelWidth, ITEM_H + 10);
-    _tempChannel->setAlignment(Qt::AlignCenter);
+    _tempChannel->setFont(fontManager.textFont(fontSize));
+    _tempChannel->setFixedSize(labelWidth, ITEM_H);
+    _tempChannel->setAlignment(Qt::AlignRight);
 
     _tempValue = new QLabel("---");
-    _tempValue->setFont(fontManager.textFont(fontsize + 5));
-    _tempValue->setFixedSize(labelWidth, ITEM_H + 10);
-    _tempValue->setAlignment(Qt::AlignLeft);
+    _tempValue->setFont(fontManager.textFont(fontSize));
+    _tempValue->setFixedSize(labelWidth, ITEM_H);
+    _tempValue->setAlignment(Qt::AlignRight);
 
     QGroupBox *_groupBox = new QGroupBox();
     _groupBox->setStyleSheet("border:none");
@@ -80,28 +87,28 @@ FactoryTempMenu::FactoryTempMenu() : MenuWidget(trs("TEMPCalibrate"))
     _groupBox->setLayout(hLayout);
 
     _tempError = new QLabel();
-    _tempError->setFont(fontManager.textFont(fontsize + 5));
-    _tempError->setAlignment(Qt::AlignCenter);
+    _tempError->setFont(fontManager.textFont(fontSize));
+    _tempError->setAlignment(Qt::AlignRight);
 
     _stackedwidget = new QStackedWidget();
-    _stackedwidget->setFixedHeight(ITEM_H + 10);
+    _stackedwidget->setFixedHeight(ITEM_H);
     _stackedwidget->addWidget(_groupBox);
     _stackedwidget->addWidget(_tempError);
     labelLayout->addWidget(_stackedwidget);
 
     hLayout = new QHBoxLayout();
-    hLayout->setAlignment(Qt::AlignCenter);
+    hLayout->setAlignment(Qt::AlignHCenter);
     _channel = new IComboList(trs("TEMPChannel"));
-    _channel->setFont(fontManager.textFont(fontsize));
-    _channel->setLabelAlignment(Qt::AlignCenter);
-    _channel->label->setFixedSize(labelWidth, labelHeight);
-    _channel->combolist->setFixedSize(labelWidth, labelHeight);
+    _channel->setFont(fontManager.textFont(fontSize));
+    _channel->setLabelAlignment(Qt::AlignHCenter);
+    _channel->label->setFixedSize(labelWidth, ITEM_H);
+    _channel->combolist->setFixedSize(btnWidth, ITEM_H);
     _channel->addItem(trs("TEMP1"));
     _channel->addItem(trs("TEMP2"));
     connect(_channel->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_channelReleased(int)));
-    hLayout->addWidget(_channel,0,Qt::AlignCenter);
+    hLayout->addWidget(_channel,0,Qt::AlignHCenter);
 //    hLayout->addSpacing(10);
-    hLayout->setContentsMargins(0, 0, labelHeight+5, 0);
+    hLayout->setContentsMargins(0, 0,0, 0);
     labelLayout->addLayout(hLayout);
 
     _success = QImage("/usr/local/iDM/icons/select.png");
@@ -112,21 +119,20 @@ FactoryTempMenu::FactoryTempMenu() : MenuWidget(trs("TEMPCalibrate"))
     for (int i = 0; i < 10; ++i)
     {
         hLayout = new QHBoxLayout();
-        hLayout->setAlignment(Qt::AlignCenter);
+        hLayout->setAlignment(Qt::AlignRight);
 
         lbtn[i] = new LabelButton(trs(_labelStr[i]));
         lbtn[i]->button->setText(trs(_btnStr[i]));
-        lbtn[i]->setFont(fontManager.textFont(fontsize));
-        lbtn[i]->label->setFixedSize(labelWidth, labelHeight);
-        lbtn[i]->label->setAlignment(Qt::AlignLeft);
-        lbtn[i]->label->setContentsMargins(labelHeight * 2, 0, 0, 0);
-        lbtn[i]->button->setFixedSize(labelWidth, labelHeight);
+        lbtn[i]->setFont(fontManager.textFont(fontSize));
+        lbtn[i]->label->setFixedSize(labelWidth, ITEM_H);
+        lbtn[i]->label->setAlignment(Qt::AlignRight);
+        lbtn[i]->button->setFixedSize(btnWidth, ITEM_H);
         lbtn[i]->button->setID(i);
         connect(lbtn[i]->button, SIGNAL(released(int)), this, SLOT(_btnReleased(int)));
-        hLayout->addWidget(lbtn[i]);
+        hLayout->addWidget(lbtn[i],0,Qt::AlignRight);
 
         _calibrateResult[i] = new QLabel();
-        _calibrateResult[i]->setFixedSize(labelHeight, labelHeight);
+        _calibrateResult[i]->setFixedSize(ITEM_H, ITEM_H);
         hLayout->addWidget(_calibrateResult[i]);
 
         labelLayout->addLayout(hLayout);
@@ -134,13 +140,12 @@ FactoryTempMenu::FactoryTempMenu() : MenuWidget(trs("TEMPCalibrate"))
 
     labelLayout->addStretch();
 
-    labelLayout->setSpacing(8);
-
     mainLayout->addLayout(labelLayout);
 
     _timer = new QTimer();
     _timer->setInterval(2000);
     connect(_timer, SIGNAL(timeout()), this, SLOT(_timeOut()));
+
 }
 
 void FactoryTempMenu::hideEvent(QHideEvent *e)

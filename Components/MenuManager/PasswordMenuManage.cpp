@@ -228,30 +228,32 @@ void PasswordMenuManage::_okBtnSlot(int /*index*/)
     }
 
     //普通密码
-    if (_passwordStr == _normalPassword)
+    else if (_passwordStr == _normalPassword)
     {
         supervisorMenuManager.popup();
         return;
     }
 
     //服务密码
-    if (_passwordStr == SERVER_PASSWORD)
+    else if (_passwordStr == SERVER_PASSWORD)
     {
         serviceWindowManager.popup();
         return;
     }
 
     //用户维护密码
-    if (_passwordStr == _userMaintainPassword)
+    else if (_passwordStr == _userMaintainPassword)
     {
         userMaintainManager.popup();
+        //
         return;
     }
 
     //工厂密码
-    if (_passwordStr == FACTORY_PASSWORD)
+    else if (_passwordStr == FACTORY_PASSWORD)
     {
-        factoryWindowManager.popup();
+        //factoryWindowManager.popup();
+        factoryMaintainManager.popup();
         return;
     }
 

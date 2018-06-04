@@ -373,6 +373,16 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/WifiMaintainMenu.cpp                       \
     Components/Maintain/UserMaintain/WiredWorkMaintainMenu.cpp                  \
     Components/Maintain/UserMaintain/OthersMaintainMenu.cpp                     \
+    Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.cpp             \
+    Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
+    Components/Maintain/FactoryMaintain/SoftWareVersion.cpp                     \
+    Components/Maintain/FactoryMaintain/MonitorInfo.cpp                         \
+    Components/Maintain/FactoryMaintain/ServiceErrorLogEntrance.cpp             \
+    Components/Maintain/FactoryMaintain/ServiceUpdateEntrance.cpp               \
+    Components/Maintain/FactoryMaintain/MachineConfigModule.cpp                 \
+    Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.cpp                 \
+    Components/Maintain/FactoryMaintain/SelectStarterLogo.cpp                   \
+    Components/Maintain/FactoryMaintain/FactoryImportExportMenu.cpp             \
     Components/CodeMarker/Summary/CodeMarkerSummary.cpp                         \
     Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
@@ -390,6 +400,7 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditCO2Menu.cpp                              \
     Components/ConfigManager/ConfigEditCOMenu.cpp                               \
     Components/ConfigManager/ConfigEditUnitSetupMenu.cpp                        \
+    Components/ConfigManager/ConfigEditIBPMenu.cpp                              \
     Components/Freeze/FreezeManager.cpp                                         \
     Components/Freeze/FreezeWidget.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
@@ -853,6 +864,16 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/WifiMaintainMenu.h                         \
     Components/Maintain/UserMaintain/WiredWorkMaintainMenu.h                    \
     Components/Maintain/UserMaintain/OthersMaintainMenu.h                       \
+    Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.h               \
+    Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
+    Components/Maintain/FactoryMaintain/SoftWareVersion.h                       \
+    Components/Maintain/FactoryMaintain/MonitorInfo.h                           \
+    Components/Maintain/FactoryMaintain/SelectStarterLogo.h                     \
+    Components/Maintain/FactoryMaintain/ServiceErrorLogEntrance.h               \
+    Components/Maintain/FactoryMaintain/ServiceUpdateEntrance.h                 \
+    Components/Maintain/FactoryMaintain/MachineConfigModule.h                   \
+    Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.h                   \
+    Components/Maintain/FactoryMaintain/FactoryImportExportMenu.h               \
     Components/CodeMarker/Summary/CodeMarkerSummary.h                           \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWidget.h                            \
@@ -871,6 +892,7 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditCO2Menu.h                                \
     Components/ConfigManager/ConfigEditCOMenu.h                                 \
     Components/ConfigManager/ConfigEditUnitSetupMenu.h                          \
+    Components/ConfigManager/ConfigEditIBPMenu.h                                \
     Components/Freeze/FreezeManager.h                                           \
     Components/Freeze/FreezeWidget.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \
@@ -1096,6 +1118,7 @@ DEPENDPATH +=                                                                   
     Components/Maintain/Factory                                                 \
     Components/Maintain/Factory/Menu                                            \
     Components/Maintain/UserMaintain                                            \
+    Components/Maintain/FactoryMaintain                                         \
     Components/CodeMarker/Widgets                                               \
     Components/CodeMarker/Summary                                               \
     Components/Calculation/DoseCalculationManager                               \
@@ -1233,6 +1256,7 @@ INCLUDEPATH +=                                                                  
     Components/Maintain/Factory                                                 \
     Components/Maintain/Factory/Menu                                            \
     Components/Maintain/UserMaintain                                            \
+    Components/Maintain/FactoryMaintain                                         \
     Components/CodeMarker/Widgets                                               \
     Components/CodeMarker/Summary                                               \
     Components/Calculation/DoseCalculationManager                               \
