@@ -21,6 +21,7 @@ public:
         wavedata.resize(wavesize);
 
         waveformCache.readStorageChannel(id, wavedata.data(), duration, false);
+        waveformCache.getBaseline(id, baseline);
     }
 
     unsigned t;
@@ -28,6 +29,7 @@ public:
     int sampleRate;
     unsigned duration;
     unsigned reviewTime;
+    int baseline;
     QVector<WaveDataType> wavedata;
 };
 
@@ -85,6 +87,6 @@ void FreezeDataModel::getWaveData(WaveDataType *buff, int size)
         qMemCopy(buff + invalidDataLength, d_ptr->wavedata.constData(), leftSize * sizeof(WaveDataType));
 
         //fill invalid data
-        qFill(buff, buff + invalidDataLength, INVALID_WAVE_FALG_BIT);
+        qFill(buff, buff + invalidDataLength, (INVALID_WAVE_FALG_BIT<<16) | d_ptr->baseline);
     }
 }

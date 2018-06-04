@@ -21,6 +21,7 @@ class WaveDataModel;
 class WaveWidgetItem;
 class WaveWidgetLabel;
 class Configer;
+class FreezeTimeIndicator;
 
 template<typename T> class QVector;
 template<typename T> class RingBuff;
@@ -249,6 +250,7 @@ public slots:
     void setID(int id);
     int getID(void) const;
     void freeze(bool flag);
+    void enterFreezeReviewMode();
 
 protected:
     void paintEvent(QPaintEvent *e);
@@ -362,7 +364,8 @@ private:
     int  _id;                                 // 波形的唯一ID。
     int _spaceDataNum;                        // 画虚线所需数据个数
     bool _isFreeze;                           // isFreeze or not
-    QPointer<FreezeDataModel> freezeDataModel; // the freeze wave data model
+    QPointer<FreezeDataModel> _freezeDataModel; // the freeze wave data model
+    FreezeTimeIndicator *_freezeIndicator;      // the freeze time indicator
 
     RingBuff<int> *_queuedDataBuf;            // 波形延时缓冲区
     float _queuedDataRate;                    // 创建波形延时缓冲时参照的速度率

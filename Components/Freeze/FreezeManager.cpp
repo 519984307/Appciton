@@ -7,12 +7,14 @@ class FreezeManagerPrivate
 {
 public:
     FreezeManagerPrivate()
-        :currentReviewSecond(0)
+        :currentReviewSecond(0),
+          inReviewMode(false)
     {
 
     }
     int currentReviewSecond;
     QList<FreezeDataModel*> dataModels;
+    bool inReviewMode;
 };
 
 FreezeManager::FreezeManager()
@@ -46,6 +48,21 @@ void FreezeManager::stopFreeze()
     emit freeze(false);
     qDeleteAll(d_ptr->dataModels);
     d_ptr->dataModels.clear();
+    d_ptr->inReviewMode = false;
+}
+
+bool FreezeManager::isInReviewMode() const
+{
+    return d_ptr->inReviewMode;
+}
+
+void FreezeManager::enterReviewMode()
+{
+    if(!d_ptr->inReviewMode)
+    {
+        d_ptr->inReviewMode = true;
+        emit freezeReview();
+    }
 }
 
 int FreezeManager::getCurReviewSecond() const

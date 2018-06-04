@@ -4,6 +4,9 @@
 #include "ParamDefine.h"
 #include <QPointer>
 #include <QPainter>
+#include <QTimer>
+#include "WindowManager.h"
+#include "FreezeTimeIndicator.h"
 
 FreezeWaveReviewMode::FreezeWaveReviewMode(WaveWidget *wave)
     :QObject(), WaveNormalMode(wave)
@@ -62,26 +65,37 @@ void FreezeWaveReviewMode::paintWave(QPainter &painter, const QRect &rect)
 
 void FreezeWaveReviewMode::enter()
 {
-    if(!_wave || !_wave->freezeDataModel)
+    if(!_wave || !_wave->_freezeDataModel)
     {
         return;
     }
 
-    connect(_wave->freezeDataModel.data(), SIGNAL(dataChanged()), this, SLOT(_onModelChanged()));
+    connect(_wave->_freezeDataModel.data(), SIGNAL(dataChanged()), this, SLOT(_onModelChanged()));
+    //load data later, after the wave buffer reset
+    QTimer::singleShot(10, this, SLOT(_onModelChanged()));
+    if(windowManager.isLastWaveForm(_wave) && _wave->_freezeIndicator)
+    {
+        _wave->_freezeIndicator->setVisible(true);
+        _wave->_freezeIndicator->setPalette(_wave->palette());
+    }
 }
 
 void FreezeWaveReviewMode::exit()
 {
-    if(!_wave || !_wave->freezeDataModel)
+    if(!_wave || !_wave->_freezeDataModel)
     {
         return;
     }
-    disconnect(_wave->freezeDataModel.data(), SIGNAL(dataChanged()), this, SLOT(_onModelChanged()));
+    disconnect(_wave->_freezeDataModel.data(), SIGNAL(dataChanged()), this, SLOT(_onModelChanged()));
+    if(windowManager.isLastWaveForm(_wave) && _wave->_freezeIndicator)
+    {
+        _wave->_freezeIndicator->setVisible(false);
+    }
 }
 
 void FreezeWaveReviewMode::_onModelChanged()
 {
-    if(!_wave || !_wave->freezeDataModel)
+    if(!_wave || !_wave->_freezeDataModel)
     {
         return;
     }
@@ -89,13 +103,18 @@ void FreezeWaveReviewMode::_onModelChanged()
     //load the wave data
     _loadWaveData();
 
+    if(_wave->_freezeIndicator)
+    {
+        _wave->_freezeIndicator->setReviewTime(_wave->_freezeDataModel->getReviewStartSecond());
+    }
+
     _wave->update();
 }
 
 void FreezeWaveReviewMode::_loadWaveData()
 {
     if(!_wave || !_wave->_waveBuf || !_wave->_dataBuf || !_wave->_flagBuf
-            || !_wave->freezeDataModel)
+            || !_wave->_freezeDataModel)
     {
         return;
     }
@@ -105,7 +124,7 @@ void FreezeWaveReviewMode::_loadWaveData()
     _wave->_tail = 0;
 
     //load data
-    _wave->freezeDataModel->getWaveData((WaveDataType*)_wave->_dataBuf, _wave->_size);
+    _wave->_freezeDataModel->getWaveData((WaveDataType*)_wave->_dataBuf, _wave->_size);
     _wave->_head = _wave->_size - 1;
 
     //fill the buffer
@@ -150,7 +169,7 @@ void FreezeWaveReviewMode::_drawWave(QPainter &painter, int beginIndex, int endI
 void FreezeWaveReviewMode::_drawDotLine(QPainter &painter, int beginIndex, int endIndex)
 {
     QPen p = QPen(_wave->palette().windowText(), _wave->lineWidth());
-    qreal dashWidth =  _wave->_spaceDataNum / _wave->lineWidth();
+    qreal dashWidth =  6.5 / _wave->lineWidth();
     QVector<qreal> pat;
     pat << dashWidth<<dashWidth;
     p.setDashPattern(pat);

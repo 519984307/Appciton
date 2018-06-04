@@ -220,6 +220,12 @@ void FreezeWidget::onBtnClick()
     IButton *btn = qobject_cast<IButton *>(sender());
     if(btn == d_ptr->leftBtn)
     {
+        if(!freezeManager.isInReviewMode())
+        {
+            freezeManager.enterReviewMode();
+            return;
+        }
+
         int reviewSecond = freezeManager.getCurReviewSecond() - 1;
         if(reviewSecond < 0)
         {
@@ -229,6 +235,12 @@ void FreezeWidget::onBtnClick()
     }
     else if(btn == d_ptr->rightBtn)
     {
+        if(!freezeManager.isInReviewMode())
+        {
+            freezeManager.enterReviewMode();
+            return;
+        }
+
         int reviewSecond = freezeManager.getCurReviewSecond() + 1;
         if(reviewSecond > FreezeManager::MAX_REVIEW_SECOND)
         {

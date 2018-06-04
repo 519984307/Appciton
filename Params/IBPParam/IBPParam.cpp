@@ -129,6 +129,7 @@ void IBPParam::handDemoWaveform(WaveformID id, short data)
     default:
         break;
     }
+    waveformCache.addData(id, data);
 }
 
 /**************************************************************************************************
@@ -609,6 +610,7 @@ void IBPParam::addWaveformData(short wave, bool invalid, IBPSignalInput IBP)
         {
             _waveWidgetIBP1->addWaveformData(wave, flag);
         }
+        waveformCache.addData(WAVE_IBP1, (flag << 16) | wave);
     }
     else if (IBP == IBP_INPUT_2)
     {
@@ -616,6 +618,7 @@ void IBPParam::addWaveformData(short wave, bool invalid, IBPSignalInput IBP)
         {
             _waveWidgetIBP2->addWaveformData(wave, flag);
         }
+        waveformCache.addData(WAVE_IBP2, (flag << 16) | wave);
     }
 
 }

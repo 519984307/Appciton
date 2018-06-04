@@ -28,6 +28,17 @@ public:
     void stopFreeze();
 
     /**
+     * @brief isInReviewMode check whether in review freeze data mode
+     * @return
+     */
+    bool isInReviewMode() const;
+
+    /**
+     * @brief enterReviewMode enter the review freeze wave mode
+     */
+    void enterReviewMode();
+
+    /**
      * @brief getCurReviewSecond get the current review second
      * @return
      */
@@ -48,8 +59,10 @@ public:
 
 
 signals:
-    //notify freeze or not
+    // notify freeze or not
     void freeze(bool flag);
+    // enter freeze review mode
+    void freezeReview();
 
 private:
     QScopedPointer<FreezeManagerPrivate> d_ptr;

@@ -102,6 +102,9 @@ public:
     // 获取当前显示的波形窗体内容。
     void getCurrentWaveforms(QStringList &waveformNames);
 
+    // check whether the wave form is the last waveform
+    bool isLastWaveForm(WaveWidget *w);
+
 private:
     WindowManager();
 

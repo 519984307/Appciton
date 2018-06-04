@@ -5,6 +5,7 @@
 #include <QFont>
 #include <QPainter>
 #include <QPaintEvent>
+#include <QResizeEvent>
 #include "WaveWidget.h"
 #include "WaveDataModel.h"
 #include "WaveScanMode.h"
@@ -23,6 +24,8 @@
 #include "Debug.h"
 #include "WindowManager.h"
 #include "FreezeManager.h"
+#include "FreezeWaveReviewMode.h"
+#include "FreezeTimeIndicator.h"
 
 float WaveWidget::_pixelWPitch = 0.248;
 float WaveWidget::_pixelHPitch = 0.248;
@@ -123,7 +126,8 @@ WaveWidget::WaveWidget(const QString &widgetName, const QString &title) : IWidge
     // 初始化工作模式对象列表
     _modes.append(new WaveScanMode(this));
     _modes.append(new WaveScrollMode(this));
-    _modes.append(new WaveReviewMode(this));
+    //_modes.append(new WaveReviewMode(this));
+    _modes.append(new FreezeWaveReviewMode(this));
 
     // 选择默认工作模式
     _mode = _findMode(_modeFlag, _isCascade);
@@ -135,13 +139,19 @@ WaveWidget::WaveWidget(const QString &widgetName, const QString &title) : IWidge
     _name = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
     addItem(_name);
 
+    _freezeIndicator = new FreezeTimeIndicator(this);
+    _freezeIndicator->setVisible(false);
+
+
     // 根据参数类型初始化波形与标签的颜色
     QPalette palette;
     palette.setColor(QPalette::Window, Qt::black);
     palette.setColor(QPalette::WindowText, Qt::white);
     setPalette(palette);
 
+
    connect(&freezeManager, SIGNAL(freeze(bool)), this, SLOT(freeze(bool)));
+   connect(&freezeManager, SIGNAL(freezeReview()), this, SLOT(enterFreezeReviewMode()));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -260,8 +270,10 @@ void WaveWidget::removeItem(WaveWidgetItem *item)
 {
     if (item)
     {
-        _items.removeOne(item);
-        item->update();
+        if(_items.removeOne(item))
+        {
+            item->update();
+        }
     }
 }
 
@@ -1160,14 +1172,22 @@ void WaveWidget::freeze(bool flag)
 
    if(_isFreeze)
    {
-       freezeDataModel = freezeManager.getWaveDataModel(this->getID());
-       selectMode(FREEZE_REVIEW_MODE);
+       _freezeDataModel = freezeManager.getWaveDataModel(this->getID());
    }
    else
    {
        //free the data model
        selectMode(SCAN_MODE);
+       resetWave();
    }
+}
+
+void WaveWidget::enterFreezeReviewMode()
+{
+    if(_isFreeze && isVisible())
+    {
+        selectMode(FREEZE_REVIEW_MODE);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1321,6 +1341,11 @@ void WaveWidget::resizeEvent(QResizeEvent *e)
     if (_model)
     {
         _model->update();
+    }
+
+    if(_freezeIndicator)
+    {
+        _freezeIndicator->resize(this->rect());
     }
 }
 
