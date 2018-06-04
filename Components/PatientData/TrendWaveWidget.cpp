@@ -575,7 +575,10 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     barPainter.drawLine(rectAdjust.topLeft(), rectAdjust.topRight());
 
     double cursorPos;
-    cursorPos = _getCursorPos(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp);
+    if (_trendGraphInfo.alarmInfo.count() != 0)
+    {
+        cursorPos = _getCursorPos(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp);
+    }
 
     unsigned t = _rightTime;
     QString tStr;
