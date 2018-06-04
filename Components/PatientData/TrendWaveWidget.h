@@ -73,6 +73,8 @@ public:
     //test
     const QList<TrendDataPackage*> getTrendDatapacketList() {return _trendDataPack;}
 
+    const QList<TrendGraphInfo> &getTrendGraphPrint(){return _infosList;}
+
 public slots:
     /**
      * @brief leftMoveCoordinate 左移坐标
@@ -164,5 +166,6 @@ private:
 
     QMap<SubParamID, TrendSubWaveWidget *> _subWidgetMap;       // 子波形窗口容器；
     TrendGraphInfo _trendGraphInfo;                 // 趋势图数据集合
-    QList<unsigned> _alarmTimeList;                // 报警发生时间
+    QList<unsigned> _alarmTimeList;                 // 报警发生时间
+    QList<TrendGraphInfo> _infosList;                    // 打印趋势图数据链表
 };

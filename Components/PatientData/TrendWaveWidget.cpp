@@ -333,6 +333,8 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
     }
 
     _trendGraphInfo.reset();
+    _trendGraphInfo.startTime = _leftTime;
+    _trendGraphInfo.endTime = _rightTime;
     unsigned interval = TrendDataSymbol::convertValue(_timeInterval);
     switch (subID)
     {
@@ -384,11 +386,11 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
         }
         break;
     }
-    case SUB_PARAM_NIBP_MAP:
-    case SUB_PARAM_ART_MAP:
-    case SUB_PARAM_PA_MAP:
-    case SUB_PARAM_AUXP1_MAP:
-    case SUB_PARAM_AUXP2_MAP:
+    case SUB_PARAM_NIBP_SYS:
+    case SUB_PARAM_ART_SYS:
+    case SUB_PARAM_PA_SYS:
+    case SUB_PARAM_AUXP1_SYS:
+    case SUB_PARAM_AUXP2_SYS:
     {        
         AlarmEventInfo alarm;
         TrendGraphDataV3 dataV3;
@@ -419,8 +421,8 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
                 }
             }
             dataV3.data[0] = _trendDataPack.at(i)->subparamValue.value(subID, InvData());
-            dataV3.data[1] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID - 1), InvData());
-            dataV3.data[2] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID - 2), InvData());
+            dataV3.data[1] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 1), InvData());
+            dataV3.data[2] = _trendDataPack.at(i)->subparamValue.value(SubParamID(subID + 2), InvData());
             dataV3.isAlarm = _trendDataPack.at(i)->subparamAlarm.value(subID, false);
             dataV3.timestamp = _trendDataPack.at(i)->time;
             alarm.isAlarmEvent = _trendDataPack.at(i)->alarmFlag;
@@ -634,6 +636,7 @@ void TrendWaveWidget::showEvent(QShowEvent *e)
 
 void TrendWaveWidget::_trendLayout()
 {
+    _infosList.clear();
     int subWidgetHeight = (height() - 30)/_displayGraphNum;
     TrendSubWidgetInfo info;
     info.xHead = (_waveRegionWidth -GRAPH_DATA_WIDTH)/2;
@@ -655,7 +658,7 @@ void TrendWaveWidget::_trendLayout()
             case SUB_PARAM_HR_PR:
             case SUB_PARAM_SPO2:
             case SUB_PARAM_RR_BR:
-            case SUB_PARAM_NIBP_MAP:
+            case SUB_PARAM_NIBP_SYS:
             case SUB_PARAM_ETCO2:
             case SUB_PARAM_T1:                
                 loadTrendData(subId, startIndex, endIndex);
@@ -686,12 +689,12 @@ void TrendWaveWidget::_trendLayout()
             case SUB_PARAM_LAP_MAP:
             case SUB_PARAM_RAP_MAP:
             case SUB_PARAM_ICP_MAP:
-            case SUB_PARAM_NIBP_MAP:
+            case SUB_PARAM_NIBP_SYS:
             case SUB_PARAM_T1:
-            case SUB_PARAM_ART_MAP:
-            case SUB_PARAM_PA_MAP:
-            case SUB_PARAM_AUXP1_MAP:
-            case SUB_PARAM_AUXP2_MAP:                
+            case SUB_PARAM_ART_SYS:
+            case SUB_PARAM_PA_SYS:
+            case SUB_PARAM_AUXP1_SYS:
+            case SUB_PARAM_AUXP2_SYS:
                 loadTrendData(subId, startIndex, endIndex);
                 it.value()->trendDataInfo(_trendGraphInfo);
                 break;
@@ -706,7 +709,7 @@ void TrendWaveWidget::_trendLayout()
             {
             case SUB_PARAM_HR_PR:
             case SUB_PARAM_SPO2:
-            case SUB_PARAM_NIBP_MAP:
+            case SUB_PARAM_NIBP_SYS:
             case SUB_PARAM_ETCO2:
             case SUB_PARAM_ETN2O:
             case SUB_PARAM_ETAA1:
@@ -726,6 +729,9 @@ void TrendWaveWidget::_trendLayout()
         it.value()->loadTrendSubWidgetInfo(info);
         it.value()->setTimeRange(_leftTime, _rightTime);
         it.value()->setVisible(true);
+        _trendGraphInfo.unit = paramInfo.getUnitOfSubParam(subId);
+        it.value()->getValueLimit(_trendGraphInfo.scale.max, _trendGraphInfo.scale.min);
+        _infosList.append(_trendGraphInfo);
         _totalGraphNum ++;
     }
 
@@ -783,7 +789,7 @@ void TrendWaveWidget::_initWaveSubWidget()
         case SUB_PARAM_ICP_MAP:
             type = TREND_GRAPH_TYPE_NORMAL;
             break;
-        case SUB_PARAM_NIBP_MAP:
+        case SUB_PARAM_NIBP_SYS:
             type = TREND_GRAPH_TYPE_NIBP;
             break;
         case SUB_PARAM_ETCO2:
@@ -794,10 +800,10 @@ void TrendWaveWidget::_initWaveSubWidget()
         case SUB_PARAM_T1:
             type = TREND_GRAPH_TYPE_AG_TEMP;
             break;
-        case SUB_PARAM_ART_MAP:
-        case SUB_PARAM_PA_MAP:
-        case SUB_PARAM_AUXP1_MAP:
-        case SUB_PARAM_AUXP2_MAP:
+        case SUB_PARAM_ART_SYS:
+        case SUB_PARAM_PA_SYS:
+        case SUB_PARAM_AUXP1_SYS:
+        case SUB_PARAM_AUXP2_SYS:
             type = TREND_GRAPH_TYPE_ART_IBP;
             break;
         default:

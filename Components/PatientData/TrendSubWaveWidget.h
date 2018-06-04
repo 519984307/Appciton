@@ -36,6 +36,8 @@ public:
      */
     void loadTrendSubWidgetInfo(TrendSubWidgetInfo &info);
 
+    void getValueLimit(int &max, int &min);
+
 public:
     /**
      * @brief setThemeColor 设置子窗口主题色

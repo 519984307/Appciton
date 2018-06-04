@@ -35,8 +35,8 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id
     }
     else if (_type == TREND_GRAPH_TYPE_ART_IBP || _type == TREND_GRAPH_TYPE_NIBP)
     {
-        LimitAlarmConfig configUp = alarmConfig.getLimitAlarmConfig(SubParamID(subID - 2), unitType);
-        LimitAlarmConfig configDown = alarmConfig.getLimitAlarmConfig(SubParamID(subID - 1), unitType);
+        LimitAlarmConfig configUp = alarmConfig.getLimitAlarmConfig(SubParamID(subID), unitType);
+        LimitAlarmConfig configDown = alarmConfig.getLimitAlarmConfig(SubParamID(subID + 1), unitType);
         if (configUp.scale == 1)
         {
             _valueY.min = configDown.lowLimit;
@@ -77,6 +77,12 @@ void TrendSubWaveWidget::loadTrendSubWidgetInfo(TrendSubWidgetInfo &info)
     _xSize = info.xHead - info.xTail;
     _ySize = info.yBottom - info.yTop;
     _trendDataHead = info.xHead + info.xTail;
+}
+
+void TrendSubWaveWidget::getValueLimit(int &max, int &min)
+{
+    max = _valueY.max;
+    min = _valueY.min;
 }
 
 void TrendSubWaveWidget::setThemeColor(QColor color)
@@ -128,9 +134,9 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
             }
 
             qreal x = _mapValue(_timeX, iter->timestamp);
-            qreal map = _mapValue(_valueY, iter->data[0]);
+            qreal sys = _mapValue(_valueY, iter->data[0]);
             qreal dia = _mapValue(_valueY, iter->data[1]);
-            qreal sys = _mapValue(_valueY, iter->data[2]);
+            qreal map = _mapValue(_valueY, iter->data[2]);
 
             path.moveTo(x - 3, sys - 3);
             path.lineTo(x, sys);
@@ -240,9 +246,9 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
             }
 
             qreal x = _mapValue(_timeX, iter->timestamp);
-            qreal map = _mapValue(_valueY, iter->data[0]);
+            qreal sys = _mapValue(_valueY, iter->data[0]);
             qreal dia = _mapValue(_valueY, iter->data[1]);
-            qreal sys = _mapValue(_valueY, iter->data[2]);
+            qreal map = _mapValue(_valueY, iter->data[2]);
 
             if (lastPointInvalid)
             {
@@ -433,9 +439,9 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         {
             barPainter.fillRect(dataRect, Qt::black);
         }
-        TrendDataType map =  _trendInfo.trendDataV3.at(_cursorPosIndex).data[0];
+        TrendDataType sys =  _trendInfo.trendDataV3.at(_cursorPosIndex).data[0];
         TrendDataType dia = _trendInfo.trendDataV3.at(_cursorPosIndex).data[1];
-        TrendDataType sys = _trendInfo.trendDataV3.at(_cursorPosIndex).data[2];
+        TrendDataType map = _trendInfo.trendDataV3.at(_cursorPosIndex).data[2];
 
         if (map != InvData() && dia != InvData() && sys != InvData())
         {
