@@ -11,6 +11,15 @@
 #include "SystemManager.h"
 #include "ParamManager.h"
 #include "RESPSymbol.h"
+#include "WaveformCache.h"
+#include "RESPParam.h"
+#include "SPO2Param.h"
+#include "IBPParam.h"
+#include "AGParam.h"
+#include "ECGParam.h"
+#include "CO2Param.h"
+#include "WindowManager.h"
+#include "Utility.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
@@ -46,7 +55,7 @@ void RecordPageGenerator::pageControl(bool pause)
     qDebug()<<"Page Generator "<< (pause ? "pause" : "restart");
 }
 
-QFont RecordPageGenerator::font() const
+QFont RecordPageGenerator::font()
 {
     return fontManager.recordFont(24);
 }
@@ -401,7 +410,7 @@ static void converToStringSegmets(const QStringList &trendStringList, QList<Tren
     }
 }
 
-RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendData, bool showEventTime)
+RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendData, bool showEventTime, const QString &timeStringCaption)
 {
     QStringList trendStringList = getTrendStringList(trendData);
 
@@ -409,7 +418,14 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
     if(showEventTime)
     {
         QDateTime dt = QDateTime::fromTime_t(trendData.time);
-        timeStr = QString("%1: %2").arg(trs("EventTime")).arg(dt.toString("yyyy-MM-dd HH:mm:ss"));
+        if(timeStringCaption.isEmpty())
+        {
+            timeStr = QString("%1: %2").arg(trs("EventTime")).arg(dt.toString("yyyy-MM-dd HH:mm:ss"));
+        }
+        else
+        {
+            timeStr = QString("%1: %2").arg(timeStringCaption).arg(dt.toString("yyyy-MM-dd HH:mm:ss"));
+        }
     }
 
     QFont font = fontManager.recordFont(24);
@@ -1224,7 +1240,10 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
     int pageWidth = page->width();
     qreal offsetX = pageWidth * 1.0 / waveInfo.sampleRate;
     int i;
-    for(i = 0; i < waveInfo.sampleRate; i++)
+
+    int wavebuffSize = waveInfo.secondWaveBuff.size();
+
+    for(i = 0; i < waveInfo.sampleRate && i < wavebuffSize; i++)
     {
         unsigned short flag = waveInfo.secondWaveBuff[i] >> 16;
         //invalid data
@@ -1241,7 +1260,7 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
             y1 = y2 = waveData;
 
             int j = i + 1;
-            while(j < waveInfo.sampleRate)
+            while(j < waveInfo.sampleRate && j < wavebuffSize)
             {
                 flag = waveInfo.secondWaveBuff[j] >> 16;
                 if(!(flag & INVALID_WAVE_FALG_BIT))
@@ -1733,6 +1752,120 @@ void RecordPageGenerator::drawTrendGraph(QPainter *painter, const GraphAxisInfo 
         painter->restore();
     }
     painter->restore();
+}
+
+QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<WaveformID> &waves)
+{
+    QList<RecordWaveSegmentInfo> infos;
+
+    for(int i = 0; i < waves.length(); i++)
+    {
+        WaveformID id = waves.at(i);
+        QString caption = paramInfo.getParamName(paramInfo.getParamID(id));
+        int captionLength = 0;
+        RecordWaveSegmentInfo info;
+        info.id = id;
+        info.sampleRate = waveformCache.getSampleRate(id);
+        waveformCache.getRange(id, info.minWaveValue, info.maxWaveValue);
+        waveformCache.getBaseline(id, info.waveBaseLine);
+        switch(id)
+        {
+        case WAVE_ECG_I:
+        case WAVE_ECG_II:
+        case WAVE_ECG_III:
+        case WAVE_ECG_aVR:
+        case WAVE_ECG_aVL:
+        case WAVE_ECG_aVF:
+        case WAVE_ECG_V1:
+        case WAVE_ECG_V2:
+        case WAVE_ECG_V3:
+        case WAVE_ECG_V4:
+        case WAVE_ECG_V5:
+        case WAVE_ECG_V6:
+            info.waveInfo.ecg.gain = ecgParam.getGain(ecgParam.waveIDToLeadID(id));
+            caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
+                                                                ecgParam.getLeadConvention()))
+                    .arg(ECGSymbol::convert(ecgParam.getFilterMode()));
+            info.waveInfo.ecg.in12LeadMode = windowManager.getUFaceType() == UFACE_MONITOR_12LEAD;
+            info.waveInfo.ecg._12LeadDisplayFormat = ecgParam.get12LDisplayFormat();
+            captionLength = fontManager.textWidthInPixels(caption, font());
+            break;
+        case WAVE_RESP:
+            info.waveInfo.resp.zoom = respParam.getZoom();
+            break;
+        case WAVE_SPO2:
+            info.waveInfo.spo2.gain = spo2Param.getGain();
+            caption = trs("PLETH");
+            break;
+        case WAVE_CO2:
+            info.waveInfo.co2.zoom = co2Param.getDisplayZoom();
+            break;
+        case WAVE_N2O:
+        case WAVE_AA1:
+        case WAVE_AA2:
+        case WAVE_O2:
+            info.waveInfo.ag.zoom = agParam.getDisplayZoom();
+            break;
+        case WAVE_IBP1:
+        {
+            info.waveInfo.ibp.pressureName = ibpParam.getEntitle(IBP_INPUT_1);
+            IBPScaleInfo scaleInfo = ibpParam.getIBPScale(info.waveInfo.ibp.pressureName);
+            info.waveInfo.ibp.high = scaleInfo.high;
+            info.waveInfo.ibp.low = scaleInfo.low;
+            info.waveInfo.ibp.isAuto = scaleInfo.isAuto;
+            info.waveInfo.ibp.unit = paramManager.getSubParamUnit(PARAM_IBP, SUB_PARAM_ART_SYS);
+        }
+            break;
+        case WAVE_IBP2:
+        {
+            info.waveInfo.ibp.pressureName = ibpParam.getEntitle(IBP_INPUT_2);
+            IBPScaleInfo scaleInfo = ibpParam.getIBPScale(info.waveInfo.ibp.pressureName);
+            info.waveInfo.ibp.high = scaleInfo.high;
+            info.waveInfo.ibp.low = scaleInfo.low;
+            info.waveInfo.ibp.isAuto = scaleInfo.isAuto;
+            info.waveInfo.ibp.unit = paramManager.getSubParamUnit(PARAM_IBP, SUB_PARAM_ART_SYS);
+            break;
+        }
+        default:
+            break;
+        }
+
+        captionLength = fontManager.textWidthInPixels(caption, font());
+        info.drawCtx.captionPixLength = captionLength;
+        Util::strlcpy(info.drawCtx.caption, qPrintable(caption), sizeof(info.drawCtx.caption));
+        info.drawCtx.curPageFirstXpos = 0.0;
+        info.drawCtx.prevSegmentLastYpos = 0.0;
+        info.drawCtx.dashOffset = 0.0;
+        info.drawCtx.lastWaveFlags = 0;
+        infos.append(info);
+    }
+
+    //calculate the wave region in the print page
+    int waveRegionHeight = (RECORDER_PAGE_HEIGHT - RECORDER_WAVE_UPPER_MARGIN - RECORDER_WAVE_LOWER_MARGIN)
+                            / infos.size();
+
+    // wave heights when has 3 waves
+    int waveHeights[] = {120, 120, 80};
+
+    QList<RecordWaveSegmentInfo>::iterator iter;
+    int yOffset = RECORDER_WAVE_UPPER_MARGIN;
+    int j=0;
+    for(iter = infos.begin(); iter != infos.end(); iter++)
+    {
+        iter->startYOffset = yOffset;
+        if(infos.size() == 3)
+        {
+            yOffset += waveHeights[j++];
+        }
+        else
+        {
+            yOffset += waveRegionHeight;
+        }
+        iter->endYOffset = yOffset;
+        iter->middleYOffset = (iter->startYOffset + iter->endYOffset) / 2;
+    }
+
+    return infos;
 }
 
 static void drawOxyCRGWaveform(QPainter *painter, const GraphAxisInfo &axisInfo, const OxyCRGWaveInfo &waveInfo)

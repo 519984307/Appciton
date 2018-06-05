@@ -24,7 +24,7 @@ struct RecordWaveSegmentInfo
     int maxWaveValue;               // maximum wave value
     int waveBaseLine;               // wave base line
     int sampleRate;                 // wave sample rate
-    QVector<WaveDataType> secondWaveBuff; // wave buffer of one second
+    QVector<WaveDataType> secondWaveBuff; // wave buffer of one second, the size should equal to sample
 
     struct {
         qreal prevSegmentLastYpos;  // the y value on the previous segment page edge
@@ -124,7 +124,7 @@ public:
      * @brief font get the print font
      * @return  the print font
      */
-    QFont font() const;
+    static QFont font();
 
 
 public slots:
@@ -161,6 +161,13 @@ public:
      * @param graphInfo the trend graph info
      */
     static void drawTrendGraph(QPainter *painter, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo);
+
+    /**
+     * @brief getWaveInfos get the waveinfo for each wave in @waves base on the current running config
+     * @param waves a list of wave ids
+     * @return a list fo wave infos
+     */
+    static QList<RecordWaveSegmentInfo> getWaveInfos(const QList<WaveformID> &waves);
 
 signals:
     /**
@@ -199,7 +206,7 @@ protected:
      * @param showEventTime show the event time or not
      * @return a record page
      */
-    static RecordPage *createTrendPage(const TrendDataPackage& trendData, bool showEventTime = false);
+    static RecordPage *createTrendPage(const TrendDataPackage& trendData, bool showEventTime = false, const QString  &timeStringCaption = QString());
 
     /**
      * @brief getTrendStringList get a trend string list from the trend data,

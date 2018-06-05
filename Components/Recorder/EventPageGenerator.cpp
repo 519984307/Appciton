@@ -170,6 +170,7 @@ public:
                 break;
             case WAVE_SPO2:
                 info.waveInfo.spo2.gain = spo2Param.getGain();
+                caption = trs("PLETH");
                 break;
             case WAVE_CO2:
                 info.waveInfo.co2.zoom = co2Param.getDisplayZoom();

@@ -67,12 +67,23 @@ public:
 QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfos()
 {
     QList<int> waveID;
-    QList<RecordWaveSegmentInfo> infos;
 
     int printWaveNum = recorderManager.getPrintWaveNum();
 
     windowManager.getDisplayedWaveform(waveID);
 
+    QList<WaveformID> waves;
+
+    //FIXME: Currently, we print the the first @printWaveNum waves in the window manager,
+    //       but we should dispay the waveform form the configuration
+    for(int i = 0; i< waveID.length() && i < printWaveNum; i++)
+    {
+        waves.append((WaveformID)waveID.at(i));
+    }
+
+    return RecordPageGenerator::getWaveInfos(waves);
+
+    /*
     //FIXME: Currently, we print the the first @printWaveNum waves in the window manager,
     //       but we should dispay the waveform form the configuration
 
@@ -183,6 +194,7 @@ QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfos()
     }
 
     return infos;
+    */
 }
 
 /**
