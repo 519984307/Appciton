@@ -1,5 +1,6 @@
 #pragma once
 #include "PopupWidget.h"
+#include "ParamDefine.h"
 
 class OxyCRGEventWidgetPrivate;
 class OxyCRGEventWidget : public PopupWidget
@@ -23,7 +24,7 @@ public:
     void loadWaveformData();
 
     void waveWidgetTrend1(bool isRR);
-    void waveWidgetCompressed(bool isCO2);
+    void waveWidgetCompressed(WaveformID id);
 
 protected:
     void showEvent(QShowEvent *e);

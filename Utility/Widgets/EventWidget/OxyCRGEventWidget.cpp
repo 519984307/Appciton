@@ -323,6 +323,7 @@ void OxyCRGEventWidget::loadTrendData()
 
 void OxyCRGEventWidget::loadWaveformData()
 {
+    d_ptr->waveInfo.reset();
     waveformCache.getRange(d_ptr->waveInfo.id, d_ptr->waveInfo.minWaveValue, d_ptr->waveInfo.maxWaveValue);
     d_ptr->waveInfo.sampleRate = waveformCache.getSampleRate(d_ptr->waveInfo.id);
     waveformCache.getBaseline(d_ptr->waveInfo.id, d_ptr->waveInfo.waveBaseLine);
@@ -356,9 +357,11 @@ void OxyCRGEventWidget::waveWidgetTrend1(bool isRR)
     d_ptr->waveWidget->setWaveWidgetTrend1(isRR);
 }
 
-void OxyCRGEventWidget::waveWidgetCompressed(bool isCO2)
+void OxyCRGEventWidget::waveWidgetCompressed(WaveformID id)
 {
-    d_ptr->waveWidget->setWaveWidgetCompressed(isCO2);
+    d_ptr->waveWidget->setWaveWidgetCompressed(id);
+    d_ptr->waveInfo.id = id;
+    loadWaveformData();
 }
 
 /**************************************************************************************************

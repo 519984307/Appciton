@@ -108,16 +108,9 @@ void OxyCRGEventWaveWidget::setWaveTrendSegments(const QVector<WaveformDataSegme
     update();
 }
 
-void OxyCRGEventWaveWidget::setWaveWidgetCompressed(bool isCO2)
+void OxyCRGEventWaveWidget::setWaveWidgetCompressed(WaveformID id)
 {
-    if (isCO2)
-    {
-        d_ptr->currentWaveID = WAVE_CO2;
-    }
-    else
-    {
-        d_ptr->currentWaveID = WAVE_RESP;
-    }
+    d_ptr->currentWaveID = id;
     update();
 }
 

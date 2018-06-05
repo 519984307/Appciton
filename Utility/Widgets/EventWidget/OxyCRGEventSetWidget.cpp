@@ -41,16 +41,16 @@ void OxyCRGEventSetWidget::_trend1Slot(int index)
 
 void OxyCRGEventSetWidget::_compressedSlot(int index)
 {
-    bool isCO2;
+    WaveformID waveID;
     if (index == 0)
     {
-        isCO2 = false;
+        waveID = WAVE_RESP;
     }
     else
     {
-        isCO2 = true;
+        waveID = WAVE_CO2;
     }
-    oxyCRGEventWidget.waveWidgetCompressed(isCO2);
+    oxyCRGEventWidget.waveWidgetCompressed(waveID);
 }
 
 OxyCRGEventSetWidget::OxyCRGEventSetWidget()

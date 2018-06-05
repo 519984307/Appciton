@@ -177,6 +177,11 @@ struct OxyCRGWaveInfo
             CO2DisplayZoom zoom;
         } co2;
     } waveInfo;
+
+    void reset()
+    {
+        waveData.clear();
+    }
 };
 
 /* 趋势图子窗口信息*/
