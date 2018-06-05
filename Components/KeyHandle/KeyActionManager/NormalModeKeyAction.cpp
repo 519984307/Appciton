@@ -19,6 +19,7 @@
 #include "SystemAlarm.h"
 #include "MenuManager.h"
 #include "FreezeWidget.h"
+#include <QPointer>
 
 /**************************************************************************************************
  * 构造。
@@ -49,12 +50,21 @@ void NormalModeKeyAction::keyF1Pressed(bool multiBtnPress)
 
 void NormalModeKeyAction::keyF2Pressed(bool multiBtnPress)
 {
+
+    static QPointer<FreezeWidget> currentFreezeWidget;
     if (multiBtnPress)
     {
         return;
     }
 
+    if(currentFreezeWidget)
+    {
+        currentFreezeWidget->done(0);
+        return;
+    }
+
     FreezeWidget freezeWidget;
+    currentFreezeWidget = &freezeWidget;
     freezeWidget.exec();
 }
 

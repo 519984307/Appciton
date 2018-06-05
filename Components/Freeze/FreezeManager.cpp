@@ -49,6 +49,7 @@ void FreezeManager::stopFreeze()
     qDeleteAll(d_ptr->dataModels);
     d_ptr->dataModels.clear();
     d_ptr->inReviewMode = false;
+    d_ptr->currentReviewSecond = 0;
 }
 
 bool FreezeManager::isInReviewMode() const
