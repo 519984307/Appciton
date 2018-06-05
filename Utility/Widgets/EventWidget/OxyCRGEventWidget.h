@@ -19,6 +19,8 @@ public:
 
     void eventInfoUpdate(void);
     void eventWaveUpdate(void);
+    void loadTrendData();
+    void loadWaveformData();
 
     void waveWidgetTrend1(bool isRR);
     void waveWidgetCompressed(bool isCO2);

@@ -335,6 +335,7 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
     _trendGraphInfo.reset();
     _trendGraphInfo.startTime = _leftTime;
     _trendGraphInfo.endTime = _rightTime;
+    _trendGraphInfo.subParamID = subID;
     unsigned interval = TrendDataSymbol::convertValue(_timeInterval);
     switch (subID)
     {
@@ -350,7 +351,6 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
         AlarmEventInfo alarm;
         unsigned lastTime = _trendDataPack.at(endIndex)->time;
         bool startFlag = true;
-
         for(int i = endIndex; i >= startIndex; i --)
         {
             if(startFlag)
@@ -367,6 +367,10 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
                     dataV1.timestamp = lastTime;
                     alarm.isAlarmEvent = false;
                     alarm.timestamp = lastTime;
+                    _trendGraphInfo.alarmInfo.append(alarm);
+                    _trendGraphInfo.trendData.append(dataV1);
+                    lastTime = lastTime - interval;
+                    continue;
                 }
                 else if (t > lastTime)
                 {
@@ -380,8 +384,6 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
             alarm.timestamp = _trendDataPack.at(i)->time;
             _trendGraphInfo.alarmInfo.append(alarm);
             _trendGraphInfo.trendData.append(dataV1);
-            _trendGraphInfo.subParamID = subID;
-
             lastTime = lastTime - interval;
         }
         break;
@@ -414,6 +416,10 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
                     dataV3.timestamp = lastTime;
                     alarm.isAlarmEvent = false;
                     alarm.timestamp = lastTime;
+                    _trendGraphInfo.alarmInfo.append(alarm);
+                    _trendGraphInfo.trendDataV3.append(dataV3);
+                    lastTime = lastTime - interval;
+                    continue;
                 }
                 else if (t > lastTime)
                 {
@@ -429,8 +435,6 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
             alarm.timestamp = _trendDataPack.at(i)->time;
             _trendGraphInfo.alarmInfo.append(alarm);
             _trendGraphInfo.trendDataV3.append(dataV3);
-            _trendGraphInfo.subParamID = subID;
-
             lastTime = lastTime - interval;
         }
         break;
@@ -463,6 +467,10 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
                     dataV2.timestamp = lastTime;
                     alarm.isAlarmEvent = false;
                     alarm.timestamp = lastTime;
+                    _trendGraphInfo.alarmInfo.append(alarm);
+                    _trendGraphInfo.trendDataV2.append(dataV2);
+                    lastTime = lastTime - interval;
+                    continue;
                 }
                 else if (t > lastTime)
                 {
@@ -477,8 +485,6 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
             alarm.timestamp = _trendDataPack.at(i)->time;
             _trendGraphInfo.alarmInfo.append(alarm);
             _trendGraphInfo.trendDataV2.append(dataV2);
-            _trendGraphInfo.subParamID = subID;
-
             lastTime = lastTime - interval;
         }
         break;

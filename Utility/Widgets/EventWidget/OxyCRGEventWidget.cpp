@@ -77,6 +77,7 @@ public:
     OxyCRGEventWidgetPrivate()
         :eventTable(NULL)
     {
+        waveInfo.id = WAVE_RESP;
         backend = eventStorageManager.backend();
     }
 
@@ -181,6 +182,8 @@ public:
     IStorageBackend *backend;
 
     QList<int> dataIndex;           // 当前选中事件项对应的数据所在索引
+    QList<TrendGraphInfo> trendInfoList;    // 呼吸氧合数据链表
+    OxyCRGWaveInfo waveInfo;                // 波形数据
 };
 
 /**************************************************************************************************
@@ -244,6 +247,108 @@ void OxyCRGEventWidget::eventInfoUpdate()
 void OxyCRGEventWidget::eventWaveUpdate()
 {
     d_ptr->waveWidget->setWaveTrendSegments(d_ptr->ctx.waveSegments, d_ptr->ctx.trendSegments);
+
+}
+
+void OxyCRGEventWidget::loadTrendData()
+{
+    TrendGraphInfo trendInfoHR;
+    TrendGraphInfo trendInfoSPO2;
+    TrendGraphInfo trendInfoRR;
+
+    trendInfoHR.startTime = d_ptr->ctx.infoSegment->timestamp - d_ptr->ctx.infoSegment->duration_before;
+    trendInfoSPO2.startTime = d_ptr->ctx.infoSegment->timestamp - d_ptr->ctx.infoSegment->duration_before;
+    trendInfoRR.startTime = d_ptr->ctx.infoSegment->timestamp - d_ptr->ctx.infoSegment->duration_before;
+
+    trendInfoHR.endTime = d_ptr->ctx.infoSegment->timestamp + d_ptr->ctx.infoSegment->duration_after;
+    trendInfoSPO2.endTime = d_ptr->ctx.infoSegment->timestamp + d_ptr->ctx.infoSegment->duration_after;
+    trendInfoRR.endTime = d_ptr->ctx.infoSegment->timestamp + d_ptr->ctx.infoSegment->duration_after;
+
+    trendInfoHR.subParamID = SUB_PARAM_HR_PR;
+    trendInfoSPO2.subParamID = SUB_PARAM_SPO2;
+    trendInfoRR.subParamID = SUB_PARAM_RR_BR;
+
+    trendInfoHR.unit = paramManager.getSubParamUnit(paramInfo.getParamID(SUB_PARAM_HR_PR), SUB_PARAM_HR_PR);
+    trendInfoSPO2.unit = paramManager.getSubParamUnit(paramInfo.getParamID(SUB_PARAM_SPO2), SUB_PARAM_SPO2);
+    trendInfoRR.unit = paramManager.getSubParamUnit(paramInfo.getParamID(SUB_PARAM_RR_BR), SUB_PARAM_RR_BR);
+
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_HR_PR, trendInfoHR.unit);
+    trendInfoHR.scale.min = (double)config.lowLimit / config.scale;
+    trendInfoHR.scale.max = (double)config.highLimit / config.scale;
+    config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_SPO2, trendInfoSPO2.unit);
+    trendInfoSPO2.scale.min = (double)config.lowLimit / config.scale;
+    trendInfoSPO2.scale.max = (double)config.highLimit / config.scale;
+    config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_RR_BR, trendInfoRR.unit);
+    trendInfoRR.scale.min = (double)config.lowLimit / config.scale;
+    trendInfoRR.scale.max = (double)config.highLimit / config.scale;
+
+    TrendGraphData dataHR;
+    TrendGraphData dataSPO2;
+    TrendGraphData dataRR;
+    TrendDataSegment *trendSegment;
+    for (int i = 0; i < d_ptr->ctx.trendSegments.count(); i ++)
+    {
+        unsigned t = d_ptr->ctx.trendSegments.at(i)->timestamp;
+        trendSegment = d_ptr->ctx.trendSegments.at(i);
+        for(int j = 0; j < trendSegment->trendValueNum; j ++)
+        {
+            TrendValueSegment valueSegment = trendSegment->values[j];
+            switch((SubParamID)valueSegment.subParamId)
+            {
+            case SUB_PARAM_HR_PR:
+                dataHR.data = valueSegment.value;
+                dataHR.timestamp = t;
+                trendInfoHR.trendData.append(dataHR);
+                break;
+            case SUB_PARAM_SPO2:
+                dataSPO2.data = valueSegment.value;
+                dataSPO2.timestamp = t;
+                trendInfoSPO2.trendData.append(dataSPO2);
+                break;
+            case SUB_PARAM_RR_BR:
+                dataRR.data = valueSegment.value;
+                dataRR.timestamp = t;
+                trendInfoRR.trendData.append(dataRR);
+                break;
+            default:
+                break;
+            }
+        }
+    }
+    d_ptr->trendInfoList.clear();
+    d_ptr->trendInfoList.append(trendInfoHR);
+    d_ptr->trendInfoList.append(trendInfoSPO2);
+    d_ptr->trendInfoList.append(trendInfoRR);
+}
+
+void OxyCRGEventWidget::loadWaveformData()
+{
+    waveformCache.getRange(d_ptr->waveInfo.id, d_ptr->waveInfo.minWaveValue, d_ptr->waveInfo.maxWaveValue);
+    d_ptr->waveInfo.sampleRate = waveformCache.getSampleRate(d_ptr->waveInfo.id);
+    waveformCache.getBaseline(d_ptr->waveInfo.id, d_ptr->waveInfo.waveBaseLine);
+    if (d_ptr->waveInfo.id == WAVE_RESP)
+    {
+        d_ptr->waveInfo.waveInfo.resp.zoom = RESP_ZOOM_X100;
+    }
+    else if (d_ptr->waveInfo.id == WAVE_CO2)
+    {
+        d_ptr->waveInfo.waveInfo.co2.zoom = CO2_DISPLAY_ZOOM_20;
+    }
+    d_ptr->waveInfo.waveData.resize(d_ptr->ctx.waveSegments.count());
+    WaveformDataSegment *waveData;
+    for (int i = 0; d_ptr->ctx.waveSegments.count(); i ++)
+    {
+        waveData = d_ptr->ctx.waveSegments.at(i);
+        if (waveData->waveID == d_ptr->waveInfo.id)
+        {
+            break;
+        }
+    }
+    for (int j = 0; j < waveData->waveNum; j ++)
+    {
+        WaveDataType waveValue = waveData->waveData[j];
+        d_ptr->waveInfo.waveData.append(waveValue);
+    }
 }
 
 void OxyCRGEventWidget::waveWidgetTrend1(bool isRR)
@@ -305,6 +410,8 @@ void OxyCRGEventWidget::_detailReleased()
     d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->eventTable->currentRow()));
     eventInfoUpdate();
     eventWaveUpdate();
+    loadTrendData();
+    loadWaveformData();
     d_ptr->eventList->setFocus();
 }
 
@@ -345,51 +452,9 @@ void OxyCRGEventWidget::_setReleased()
 void OxyCRGEventWidget::_printReleased()
 {
     QList<TrendGraphInfo> trendInfos;
-    TrendGraphInfo graphInfoHR;
-    TrendGraphInfo graphInfoSpo2;
-    graphInfoHR.subParamID = SUB_PARAM_HR_PR;
-    graphInfoHR.endTime = timeDate.time();
-    trendCache.collectTrendData(graphInfoHR.endTime);
-    graphInfoHR.startTime = graphInfoHR.endTime - 120;
-    graphInfoHR.unit = UNIT_BPM;
-    graphInfoHR.scale.max = 150;
-    graphInfoHR.scale.min = 50;
-    graphInfoSpo2.subParamID = SUB_PARAM_SPO2;
-    graphInfoSpo2.endTime = graphInfoHR.endTime;
-    graphInfoSpo2.startTime = graphInfoHR.startTime;
-    graphInfoSpo2.unit = UNIT_PERCENT;
-    graphInfoSpo2.scale.max = 100;
-    graphInfoSpo2.scale.min = 80;
-    for(unsigned t = graphInfoHR.startTime; t <= graphInfoHR.endTime; t++)
-    {
-        TrendCacheData data;
-        if(trendCache.getTendData(t,data))
-        {
-            TrendGraphData hrData;
-            hrData.timestamp = t;
-            hrData.data = data.values.value(SUB_PARAM_HR_PR, InvData());
-            TrendGraphData spo2Data;
-            spo2Data.timestamp = t;
-            spo2Data.data = data.values.value(SUB_PARAM_SPO2, InvData());
-            graphInfoHR.trendData.append(hrData);
-            graphInfoSpo2.trendData.append(spo2Data);
-        }
-    }
-    trendInfos.append(graphInfoHR);
-    trendInfos.append(graphInfoSpo2);
-
-    OxyCRGWaveInfo waveInfo;
-    waveInfo.id = WAVE_CO2;
-    waveformCache.getRange(WAVE_CO2, waveInfo.minWaveValue, waveInfo.maxWaveValue);
-    waveInfo.sampleRate = waveformCache.getSampleRate(WAVE_CO2);
-    waveformCache.getBaseline(WAVE_CO2, waveInfo.waveBaseLine);
-    waveInfo.waveInfo.co2.zoom = CO2_DISPLAY_ZOOM_20;
-
-    int waveNum = 2 * 60 * waveInfo.sampleRate;
-    waveInfo.waveData.resize(waveNum);
-    waveformCache.readStorageChannel(WAVE_CO2, waveInfo.waveData.data(), 2*60, false);
-
-    RecordPageGenerator *generator = new OxyCRGPageGenerator(trendInfos, waveInfo);
+    trendInfos.append(d_ptr->trendInfoList.at(0));
+    trendInfos.append(d_ptr->trendInfoList.at(1));
+    RecordPageGenerator *generator = new OxyCRGPageGenerator(trendInfos, d_ptr->waveInfo);
     recorderManager.addPageGenerator(generator);
 }
 
