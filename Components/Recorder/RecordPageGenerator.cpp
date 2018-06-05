@@ -1627,16 +1627,19 @@ QList<QPainterPath> generatorPainterPath(const GraphAxisInfo &axisInfo, const Tr
             {
                 if(!isEqual(sysLastPoint.y(), sys))
                 {
+                    sysPath.lineTo(sysLastPoint);
                     sysPath.lineTo(x, sys);
                 }
 
                 if(!isEqual(diaLastPoint.y(), dia))
                 {
+                    diaPath.lineTo(diaLastPoint);
                     diaPath.lineTo(x, dia);
                 }
 
                 if(!isEqual(mapLastPoint.y(), map))
                 {
+                    mapPath.lineTo(mapLastPoint);
                     mapPath.lineTo(x, map);
                 }
             }
@@ -1693,6 +1696,7 @@ QList<QPainterPath> generatorPainterPath(const GraphAxisInfo &axisInfo, const Tr
             {
                 if(!isEqual(lastPoint.y(), y))
                 {
+                    path.lineTo(lastPoint);
                     path.lineTo(x, y);
                 }
             }
