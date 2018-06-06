@@ -674,8 +674,9 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
  * @param page print page
  * @param painter painter of the page
  * @param waveInfo wave info
+ * @param waveNum total wave num in the page
  */
-static void drawECGGain(RecordPage *page, QPainter *painter, const RecordWaveSegmentInfo &waveInfo)
+static void drawECGGain(RecordPage *page, QPainter *painter, const RecordWaveSegmentInfo &waveInfo, int waveNum)
 {
     int rulerHeight = 10 * RECORDER_PIXEL_PER_MM; // height for 1.0 ECG gain
     QString str = "1 mV";
@@ -704,10 +705,15 @@ static void drawECGGain(RecordPage *page, QPainter *painter, const RecordWaveSeg
     }
 
     int pageWidth = page->width();
-    // draw at the baseline
-    //int yBottom = waveInfo.startYOffset + (waveInfo.endYOffset - waveInfo.startYOffset) / 2;
     // draw at the bottom
     int yBottom = waveInfo.endYOffset;
+
+    if(waveNum == 1)
+    {
+        // only one wave, draw at the baseline
+        yBottom = waveInfo.startYOffset + (waveInfo.endYOffset - waveInfo.startYOffset) / 2;
+    }
+
     QPainterPath path;
     path.moveTo(0, yBottom);
     path.lineTo(pageWidth / 3, yBottom);
@@ -823,6 +829,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
     QRect rect(0, fontH / 2, page->width(), fontH);
     painter.drawText(rect, Qt::AlignLeft|Qt::AlignVCenter, PrintSymbol::convert(speed));
 
+    int waveNum = waveInfos.size();
     QList<RecordWaveSegmentInfo>::ConstIterator iter;
     for(iter = waveInfos.constBegin(); iter != waveInfos.constEnd(); iter++)
     {
@@ -840,7 +847,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
         case WAVE_ECG_V4:
         case WAVE_ECG_V5:
         case WAVE_ECG_V6:
-            drawECGGain(page, &painter, *iter);
+            drawECGGain(page, &painter, *iter, waveNum);
             break;
         case WAVE_RESP:
             drawRespZoom(page, &painter, *iter);
@@ -1397,7 +1404,7 @@ static void drawWaveSegment(RecordPage *page, QPainter *painter, RecordWaveSegme
     }
     else
     {
-        if(!(waveInfo.drawCtx.lastWaveFlags & INVALID_WAVE_FALG_BIT))
+        if(!(waveInfo.drawCtx.lastWaveFlags & INVALID_WAVE_FALG_BIT) && wavebuffSize == waveInfo.sampleRate)
         {
             //draw to the edge
             y2 = y1;
@@ -1839,6 +1846,12 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
         info.drawCtx.lastWaveFlags = 0;
         infos.append(info);
     }
+
+    if(infos.size() == 0)
+    {
+        return infos;
+    }
+
 
     //calculate the wave region in the print page
     int waveRegionHeight = (RECORDER_PAGE_HEIGHT - RECORDER_WAVE_UPPER_MARGIN - RECORDER_WAVE_LOWER_MARGIN)

@@ -49,7 +49,7 @@ bool FreezePageGeneratorPrivate::loadWaveData(int waveSegment)
         int startIndex = waveSegment * sampleRate;
         const QVector<WaveDataType> &dataBuf = freezeWaveInfos.at(i).data;
         QVector<WaveDataType> &destBuf = waveSegInfos[i].secondWaveBuff;
-        if(startIndex > dataBuf.size())
+        if(startIndex >= dataBuf.size())
         {
             //no enough data
             destBuf.clear();
@@ -58,6 +58,10 @@ bool FreezePageGeneratorPrivate::loadWaveData(int waveSegment)
         {
             hasWaveData = true;
             int size = dataBuf.size();
+            if(destBuf.size() != sampleRate)
+            {
+                destBuf.resize(sampleRate);
+            }
             if(startIndex + sampleRate < size)
             {
                 for(int i = 0; i < sampleRate; i++)
@@ -149,8 +153,11 @@ RecordPage *FreezePageGenerator::createPage()
 
     case WaveScalePage:
         d_ptr->curPageType = WaveSegmentPage;
-        return createWaveScalePage(d_ptr->waveSegInfos, recorderManager.getPrintSpeed());
-
+        if(d_ptr->freezeWaveInfos.size() > 0)
+        {
+            return createWaveScalePage(d_ptr->waveSegInfos, recorderManager.getPrintSpeed());
+        }
+        //fall through
     case WaveSegmentPage:
         if(d_ptr->loadWaveData(d_ptr->curDrawWaveSegment))
         {

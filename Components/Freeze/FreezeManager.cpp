@@ -2,6 +2,9 @@
 #include "ParamDefine.h"
 #include "TimeDate.h"
 #include <QList>
+#include "TimeDate.h"
+#include "TrendCache.h"
+#include "TrendDataDefine.h"
 
 class FreezeManagerPrivate
 {
@@ -15,6 +18,7 @@ public:
     int currentReviewSecond;
     QList<FreezeDataModel*> dataModels;
     bool inReviewMode;
+    TrendDataPackage trendData;
 };
 
 FreezeManager::FreezeManager()
@@ -41,6 +45,24 @@ FreezeManager &FreezeManager::getInstance()
 void FreezeManager::startFreeze()
 {
     emit freeze(true);
+    TrendCacheData data;
+    TrendAlarmStatus almStatus;
+    unsigned t = timeDate.time();
+    trendCache.getTendData(t, data);
+    trendCache.getTrendAlarmStatus(t, almStatus);
+    bool alarm = false;
+    foreach (bool st, almStatus.alarms) {
+        if(st)
+        {
+            alarm = true;
+            break;
+        }
+    }
+    d_ptr->trendData.subparamValue = data.values;
+    d_ptr->trendData.subparamAlarm = almStatus.alarms;
+    d_ptr->trendData.co2Baro = data.co2baro;
+    d_ptr->trendData.time = t;
+    d_ptr->trendData.alarmFlag = alarm;
 }
 
 void FreezeManager::stopFreeze()
@@ -88,7 +110,21 @@ void FreezeManager::setCurReviewSecond(int reviewSecond)
 FreezeDataModel *FreezeManager::getWaveDataModel(int waveid)
 {
     WaveformID id = static_cast<WaveformID> (waveid);
+
+    //check whether already exist
+    foreach (FreezeDataModel *m, d_ptr->dataModels) {
+        if(m->getWaveformID() == id)
+        {
+            return m;
+        }
+    }
+
     FreezeDataModel *model = new FreezeDataModel(timeDate.time(), id);
     d_ptr->dataModels.append(model);
     return model;
+}
+
+const TrendDataPackage &FreezeManager::getTrendData() const
+{
+    return d_ptr->trendData;
 }

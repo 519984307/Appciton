@@ -2,7 +2,7 @@
 #include <QObject>
 #include <QScopedPointer>
 #include "FreezeDataModel.h"
-
+#include "TrendDataDefine.h"
 
 class FreezeManagerPrivate;
 class FreezeManager : public QObject
@@ -57,6 +57,11 @@ public:
      */
     FreezeDataModel* getWaveDataModel(int waveid);
 
+    /**
+     * @brief getTrendData get the trend data that capture when the freeze button press
+     * @return trenddatapacket
+     */
+    const TrendDataPackage &getTrendData() const;
 
 signals:
     // notify freeze or not

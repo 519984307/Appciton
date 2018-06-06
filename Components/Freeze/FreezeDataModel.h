@@ -50,6 +50,18 @@ public:
      */
     void getWaveData(WaveDataType *buff, int size);
 
+    /**
+     * @brief getWaveformID get waveform id of this model
+     * @return the waveform id
+     */
+    WaveformID getWaveformID() const;
+
+    /**
+     * @brief getSampleRate get the wave's sample rate
+     * @return sample rate
+     */
+    int getSampleRate() const;
+
 
 signals:
     /**

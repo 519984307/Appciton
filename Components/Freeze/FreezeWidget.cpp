@@ -7,6 +7,8 @@
 #include <QSet>
 #include "FreezeManager.h"
 #include <QKeyEvent>
+#include "FreezePageGenerator.h"
+#include "RecorderManager.h"
 
 #define RECORD_FREEZE_WAVE_NUM 3
 class FreezeWidgetPrivate
@@ -170,15 +172,6 @@ void FreezeWidget::onSelectWaveChanged(const QString &waveName)
         }
     }
 
-    if(wavenames.size() == 0)
-    {
-        d_ptr->printBtn->setEnabled(false);
-    }
-    else
-    {
-        d_ptr->printBtn->setEnabled(true);
-    }
-
     if(wavenames.size() == count)
     {
         //no duplicated wavenames
@@ -250,6 +243,39 @@ void FreezeWidget::onBtnClick()
     }
     else if(btn == d_ptr->printBtn)
     {
+        QList<FreezePageGenerator::FreezeWaveInfo> waveinfos;
 
+        for(int i = 0; i< RECORD_FREEZE_WAVE_NUM; i++)
+        {
+            int curIndex = d_ptr->comboLists[i]->currentIndex() - 1;
+            if(curIndex < 0)
+            {
+                continue;
+            }
+
+            FreezePageGenerator::FreezeWaveInfo waveinfo;
+            waveinfo.id= static_cast<WaveformID>(d_ptr->waveIDs.at(curIndex));
+            FreezeDataModel *model = freezeManager.getWaveDataModel(waveinfo.id);
+            waveinfo.timestampOfLastSecond = model->timestamp() - model->getReviewStartSecond();
+            WaveWidget *w = windowManager.getWaveWidget(waveinfo.id);
+            if(w)
+            {
+                int datasize = w->bufSize();
+                int sampleRate = model->getSampleRate();
+                if(datasize % sampleRate != 0)
+                {
+                    //get wave data align to the seconds, datasize should be divided by sample rate without remains.
+                    datasize = ((datasize / sampleRate) + 1) * sampleRate;
+                }
+                waveinfo.data.resize(datasize);
+                model->getWaveData(waveinfo.data.data(), datasize);
+            }
+            waveinfos.append(waveinfo);
+        }
+
+        RecordPageGenerator *generator = new FreezePageGenerator(freezeManager.getTrendData(),
+                                                                 waveinfos);
+
+        recorderManager.addPageGenerator(generator);
     }
 }

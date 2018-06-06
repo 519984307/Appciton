@@ -217,6 +217,12 @@ public:
             infos.append(info);
         }
 
+
+        if(infos.size() == 0)
+        {
+            return infos;
+        }
+
         //calculate the wave region in the print page
         int waveRegionHeight = (RECORDER_PAGE_HEIGHT - RECORDER_WAVE_UPPER_MARGIN - RECORDER_WAVE_LOWER_MARGIN)
                 / infos.size();

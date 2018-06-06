@@ -90,3 +90,13 @@ void FreezeDataModel::getWaveData(WaveDataType *buff, int size)
         qFill(buff, buff + invalidDataLength, (INVALID_WAVE_FALG_BIT<<16) | d_ptr->baseline);
     }
 }
+
+WaveformID FreezeDataModel::getWaveformID() const
+{
+    return d_ptr->id;
+}
+
+int FreezeDataModel::getSampleRate() const
+{
+    return d_ptr->sampleRate;
+}
