@@ -95,6 +95,13 @@ void AlarmLimitMenu::_limitChange(QString valueStr, int id)
  *************************************************************************************************/
 void AlarmLimitMenu::_comboListIndexChanged(int id, int index)
 {
+    IComboList *combo = qobject_cast<IComboList*>(sender());
+    if(!combo)
+    {
+        qdebug("Invalid signal sender.");
+        return;
+    }
+
     // 参数的字符名。
     if (id >= _itemList.count())
     {
@@ -111,17 +118,26 @@ void AlarmLimitMenu::_comboListIndexChanged(int id, int index)
     }
 
     SubParamID subID = item->sid;
-
-    alarmConfig.setLimitAlarmEnable(subID, index);
-
-    if (0 == index)
+    if(combo->combolist == item->combo->combolist)
     {
-        systemAlarm.setOneShotAlarm(SOME_LIMIT_ALARM_DISABLED, true);
+        alarmConfig.setLimitAlarmEnable(subID, index);
+
+        if (0 == index)
+        {
+            systemAlarm.setOneShotAlarm(SOME_LIMIT_ALARM_DISABLED, true);
+        }
+        else
+        {
+            checkAlarmEnableStatus();
+        }
     }
-    else
+    else if(combo->combolist == item->priority->combolist)
     {
-        checkAlarmEnableStatus();
+        currentConfig.setNumAttr(QString("AlarmSource|%1|%2").arg(patientManager.getTypeStr()).arg(paramInfo.getSubParamName(subID, true)),
+                                  "Prio",
+                                  index);
     }
+
 }
 
 /**************************************************************************************************
@@ -280,6 +296,7 @@ void AlarmLimitMenu::_loadOptions(void)
     QString step;
     QString tmpStr;
 
+
     SetItem *item = _itemList.at(0);
     if (NULL != item)
     {
@@ -335,6 +352,12 @@ void AlarmLimitMenu::_loadOptions(void)
             item->upper->setValue((double)config.highLimit / config.scale);
             item->upper->setStep(fStepValue);
         }
+
+        int index=0;
+        currentConfig.getNumAttr(QString("AlarmSource|%1|%2").arg(patientManager.getTypeStr()).arg(paramInfo.getSubParamName(subID, true)),
+                                  "Prio",
+                                  index);
+        item->priority->combolist->setCurrentIndex(index);
     }
 }
 
@@ -421,6 +444,7 @@ void AlarmLimitMenu::layoutExec(void)
             this, SLOT(_comboListIndexChanged(int, int)));
     item->lower->setVisible(false);
     item->upper->setVisible(false);
+    item->priority->setVisible(false);
     mainLayout->addWidget(item, 0, Qt::AlignLeft);
 
     if (!systemManager.isSupport(CONFIG_CO2) && !systemManager.isSupport(CONFIG_RESP))
@@ -447,15 +471,6 @@ void AlarmLimitMenu::layoutExec(void)
         connect(item->combo, SIGNAL(currentIndexChanged(int, int)),
                 this, SLOT(_comboListIndexChanged(int, int)));
 
-        item->priority->label->setFixedSize(0, 0);
-        item->priority->label->setAlignment(Qt::AlignCenter);
-        item->priority->combolist->setFixedSize(itemW, ITEM_H);
-        item->priority->addItem(trs("HIGH"));
-        item->priority->addItem(trs("NORMAL"));
-        item->priority->addItem(trs("LOW"));
-        item->priority->SetID(i);
-        item->priority->setFont(defaultFont());
-
         item->lower->setFixedSize(itemW, ITEM_H);
         item->lower->setFont(defaultFont());
         item->lower->enableCycle(false);
@@ -469,6 +484,17 @@ void AlarmLimitMenu::layoutExec(void)
         item->upper->setID(i * 2 + 1);
         connect(item->upper, SIGNAL(valueChange(QString,int)),
                 this, SLOT(_limitChange(QString, int)));
+
+        item->priority->label->setFixedSize(0,0);
+        item->priority->label->setVisible(false);
+        item->priority->combolist->setFixedSize(itemW, ITEM_H);
+        item->priority->combolist->addItem(trs("high"));
+        item->priority->combolist->addItem(trs("normal"));
+        item->priority->combolist->addItem(trs("low"));
+        item->priority->SetID(i);
+        item->priority->setFont(fontManager.textFont(fontManager.getFontSize(1)));
+        connect(item->priority, SIGNAL(currentIndexChanged(int, int)),
+                this, SLOT(_comboListIndexChanged(int, int)));
 
         mainLayout->addWidget(item);
     }

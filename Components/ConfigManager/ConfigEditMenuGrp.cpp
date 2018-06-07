@@ -15,6 +15,8 @@
 #include "COMenu.h"
 #include "NIBPMenu.h"
 #include "SPO2Menu.h"
+#include "SupervisorCodeMarker.h"
+#include "ConfigEditDisplayMenu.h"
 
 class ConfigEditMenuGrpPrivate
 {
@@ -68,6 +70,8 @@ void ConfigEditMenuGrp::initializeSubMenu()
     addSubMenu(new ConfigCO2Menu());
     //addSubMenu(new ConfigEditUnitSetupMenu());
     addSubMenu(new ConfigIBPMenu());
+    addSubMenu(new SupervisorCodeMarker());
+    addSubMenu(new ConfigEditDisplayMenu());
 //    addSubMenu(new COMenu());
 //    addSubMenu(new SPO2Menu());
 //    addSubMenu(new ECGMenu());

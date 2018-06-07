@@ -35,9 +35,9 @@ private slots:
     void _phyAlarmAutoPrintSlot(int index);
     void _codemarkerAutoPrintSlot(int index);
     void _NIBPAutoPrintSlot(int index);
-    void _diagECGAutoPrintSlot(int index);
-    void _autoPrintInAEDSlot(int index);
-    void _autoPrint30JtestResultSlot(int index);
+//    void _diagECGAutoPrintSlot(int index);
+//    void _autoPrintInAEDSlot(int index);
+//    void _autoPrint30JtestResultSlot(int index);
 
 private:
     SupervisorPrintMenu();
@@ -47,8 +47,8 @@ private:
     IComboList *_phyAlarmAutoPrint;               // 自动打印生理报警快照
     IComboList *_codemarkerAutoPrint;             // 自动打印coder marker快照
     IComboList *_NIBPAutoPrint;                    // Automatic print nibp snapshot
-    IComboList *_diagECGAutoPrint;                // Automatic print diag ecg snapshot
-    IComboList *_autoPrintInAED;                  // AED模式自动打印
-    IComboList *_30jSelftest;                     // 30J自测
+//    IComboList *_diagECGAutoPrint;                // Automatic print diag ecg snapshot
+//    IComboList *_autoPrintInAED;                  // AED模式自动打印
+//    IComboList *_30jSelftest;                     // 30J自测
 };
 #define supervisorPrintMenu (SupervisorPrintMenu::construction())

@@ -101,8 +101,8 @@ ECGGain,增益,Gain
 ECGPacemaker,起搏器,Pacemaker
 ECGSweepSpeed,波形速度,Sweep Speed
 ECGQRSToneVolume,QRS/PR 音量,QRS/PR Volume
-ECGMenu,ECG,ECG
-ECGMenuDesc,ECG设置,ECG Setting
+ECGMenu,心电,ECG
+ECGMenuDesc,心电设置,ECG Setting
 ECGSTSWitch,ST开关,ST SWitch
 ECGSTPoint,ST点,ST Point
 ECGISOPoint,ISO点,ISO Point
@@ -112,7 +112,7 @@ SPO2SmartPulseTone,智能脉搏音,Smart Pulse Tone
 SPO2SweepSpeed,波形速度,Sweep Speed
 SPO2PRDisplay,脉率显示,PR Display
 SPO2SmartPluseTone,智能脉搏音,Smart Pulse Tone
-SPO2Menu,SPO2,SPO2
+SPO2Menu,血氧,SPO2
 RESPSweepSpeed,波形速度,Sweep Speed
 RESPApneaTime,窒息时间,Apnea Time
 RESPZoom,缩放,Zoom
@@ -122,11 +122,11 @@ RRLow,RR低,RR Low
 RRHigh,RR高,RR High
 RESPApnea,呼吸窒息,RESP Apnea
 RESPAutoActivation,呼吸激活,RESP Automatic Activation
-NIBPMeasurement,NIBP测量,NIBP Measurement
+NIBPMeasurement,无创血压测量,NIBP Measurement
 NIBPMeasureMode,测量摸式,Measure Mode
 NIBPAutoInterval,自动间隔,Auto Interval
-NIBPMenu,NIBP,NIBP
-NIBPMenuDesc,NIBP设置,NIBP Setting
+NIBPMenu,无创血压,NIBP
+NIBPMenuDesc,无创血压设置,NIBP Setting
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
 CO2SweepMode,CO2波形模式,CO2 Sweep Mode
@@ -142,7 +142,7 @@ CO2Menu,二氧化碳,CO2
 CO2Switch,二氧化碳开关,CO2 Switch
 AGMenu,AG,AG
 AGSweepSpeed,波形速度,Sweep Speed
-IBPMenu,IBP,IBP
+IBPMenu,有创血压,IBP
 IBPSweepSpeed,波形速度,Sweep Speed
 ChannelPressureEntitle1,通道１压力标名,Pressure Entitle Channel 1
 ChannelPressureEntitle2,通道２压力标名,Pressure Entitle Channel 2
@@ -229,8 +229,8 @@ PowerupRecorderPressed,前面板打印键短路,Front Panel Recorder Btn Stuck
 PowerupEnergyUpPressed,前面板能量增加键短路,Front Panel Energy Up Btn Stuck
 PowerupEnergyDnPressed,前面板能量减少键短路,Front Panel Energy Down Btn Stuck
 PowerupCommunicationStop,前面板通讯停止,Front Panel Communication Stop
-WiFiMenu,Wifi,Wifi
-WiFiMenuDesc,Wifi设置,Wifi Setting
+WiFiMenu,无线网络,Wifi
+WiFiMenuDesc,无线网络设置,Wifi Setting
 Switch,开关,Switch
 Add,添加,Add
 Edit,编辑,Edit
@@ -266,7 +266,6 @@ AuthTimeout,认证超时,Authentication Timeout
 PwdChanged,密码已更改,Password Changed
 Disconnected,网络已断开,Network Disconnected
 GetIPFailed,获取动态IP失败,Get Dymatic IP Failed
-DHCP,DHCP,DHCP
 SubnetMask,子网掩码,Subnet Mask
 GateWay,网关,GateWay
 PreferrendDNS,首选DNS,Preferrend DNS
@@ -980,17 +979,243 @@ LessThan,小于,Less Than
 GreaterThan,大于,Greater Than
 ZeroRequired,需要校零,Zero Required
 Channel,通道,Channel
-SmartPluseTone,智能脉搏音,SmartPluseTone
-WaveVelocity,波形速度,WaveVelocity
+SmartPluseTone,智能脉搏音,Smart PluseTone
+WaveVelocity,波形速度,Wave Velocity
 Gain,波形增益,Gain
-ModuleControl,模块控制,ModuleControl
+ModuleControl,模块控制,Module Control
 HIGH,高,HIGH
 NORMAL,中,NORMAL
 LOW,低,LOW
 OFF,关闭,OFF
 ON,打开,ON
-NBIPInitialCuff,初始袖口气压,NBIPInitialCuff
-IntervalTime,自动间隔时间,IntervalTime
-NIBPMeasureMode,测量模式,NIBPMeasureMode
-Export File Completed,导出文件完成,Export File Completed
-Export File Failed,导出文件失败,Export File Failed
+NBIPInitialCuff,初始袖口气压,NBIP Initial Cuff
+IntervalTime,自动间隔时间,Interval Time
+NIBPMeasureMode,测量模式,NIBP Measure Mode
+ExportFileCompleted,导出文件完成,Export File Completed
+ExportFileFailed,导出文件失败,Export File Failed
+ExportImport,导出/导入,Export/Import
+ExportImportConfig,导出/导入配置,Export/ImportConfig
+Export,导出,Export
+Import,导入,Import
+NotRepeated,取消覆盖,Not Repeated
+Repeated,覆盖,Repeated
+AllNotRepeated,全部取消覆盖,All Not Repeated
+AllRepeated,全部覆盖,All Repeated
+IfSelectTheSameNameFile,存在同名文件，是否选择覆盖,if select the same name file
+ExportFilefailed,导出失败,Export File Failed
+ExportFileCompleted,导出文件完成,Export File Completed
+NotFoundDeviceNode,未发现U盘节点，请插入U盘,Not Found Device Node
+NotFoundUDisk,未发现U盘，请插入U盘,Not Found U Disk
+PleaseSelectFiles,请选择文件,Please Select Files
+PleaseAddExportFiles,请增加导出文件,Please Add Export Files
+ImportFilefailed,导入文件失败,Import File failed
+ImportFileCompleted,导入文件完成,Import File Completed
+PleaseAddImportFiles,请增加导入文件,Please Add Import Files
+FactoryMaintainSystem,工厂维护系统,Factory Maintain 3System
+FactoryMaintainPassword,工厂维护密码,Factory Maintain Password
+FactoryMaintainModifyConfig,工厂维护修改配置,Factory Maintain Modify Config
+MachineConfigModuleMenu,机器配置模块菜单,Machine Config Module Menu
+IBPModule,有创血压模块,IBP Module
+CO2Module,二氧化碳模块,CO2 Module
+ECG12LeadsModule,心电12导模块,ECG 12Leads Module
+PrinterModule,打印机模块,Printer Module
+HDMIModule,高清晰度多媒体接口模块,HDMI Module
+WifiModule,无线网络模块,Wifi Module
+ScreenModule,触摸屏模块,Screen Module
+NurseCallingModule,护士呼叫设置模块,Nurse Calling Module
+AnalogOutputModule,模拟输出模块,Analog Output Module
+SYNCDefibrillationModule,同步除颤模块,SYNC Defibrillation Module
+COModule,一氧化碳模块,COModule
+PHASEIN,像素,PHASEIN
+M601,M601,M601
+MachineConfigModuleMenuDesc,机器配置设置,Machine Config Module Menu Desc
+MonitorInfoMenu,监护仪信息,Monitor Info Menu
+CumulativeWorkingTime,累计工作时间,Cumulative Working Time
+TemperatureInsideCase,箱内温度,Temperature Inside Case
+BatteryLevel,电池级别,Battery Level
+BatteryVoltage,电池电压,Battery Voltage
+MachineType,机器型号,Machine Type
+MACAddress,硬件地址,MAC Address
+ScreenResolationSize,屏幕分辨率尺寸,Screen Resolation Size
+ElectronicSerialNumber,电子序列号,Electronic Serial Number
+SetElectronicSerialNumber,设置电子序列号,Set Electronic Serial Number
+MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info Menu Desc
+NIBPCalibrationMenu,无创血压校准菜单,NIBP Calibration Menu
+NIBPCalibration,无创血压校准,NIBP Calibration
+NIBPCalibrationMenuDesc,无创血压校准菜单设置,NIBP CalibrationMenu Desc
+SelectStarterLogoMenu,选择开机图片菜单,Select StarterLogo Menu
+SelectStarterLogo,选择开机图片,Select Starter Logo
+SelectStarterLogoMenuDesc,选择开机图片设置,Select Starter Logo Menu Desc
+ServiceErrorLogEntrance,错误日志进入,Service ErrorLog Entrance
+ServiceErrorLogEntranceDesc,错误日志进入设置,Service ErrorLog Entrance Desc
+ServiceUpdateEntrance,更新模块进入,Service Update Entrance
+ServiceUpdateEntranceDesc,更新模块进入设置,Service Update Entrance Desc
+SoftWareVersionMenu,软件版本菜单,SoftWare Version Menu
+SystemSoftwareVersion,系统软件版本,System Software Version
+PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Version
+Uboot,系统引导文件,Uboot
+Kernel,内核,Kernel
+KeyboardModule,按键模块,Keyboard Module
+RecorderModule,记录模块,Recorder Module
+ECGAlgorithmType,心电算法类型,ECG Algorithm Type
+UserMaintainGeneralMenuDesc,用户维护通用菜单设置,User Maintain General Menu Desc
+BootAndStandbyLogoVersion,开机标准logo版本,BootAndStandbyLogoVersion
+UserMaintainGeneralMenu,用户维护通用菜单,User Maintain General Menu
+AlarmMaintainMenu,报警维护菜单,Alarm Maintain Menu
+MinimumALarmVolume,最小报警音量,Minimum Alarm Volume
+AlarmPauseTime,报警暂停时间,Alarm PauseTime
+AlarmOffPromptMechanism,报警关闭提示机制,Alarm Off Prompt Mechanism
+EnableAlarmAudioOff,报警音关闭,Enable Alarm Audio Off
+EnableAlarmOff,报警关闭,Enable Alarm Off
+AlarmOffAtPowerOn,接通电源报警,Alarm Off At Power On
+No,否,No
+Yes,是,Yes
+IsPauseMaxAlarm15Min,是否暂停最大报警15分钟,Is Pause Max Alarm 15Min
+forbid,禁止,forbid
+allow,允许,allow
+ReminderTone,提醒音,Reminder Tone
+close,关闭,close
+open,打开,open
+openAgain,再次打开,Open Again
+ReminderToneIntervals,提醒音间隔,Reminder Tone Intervals
+H1min,1分钟,1min
+H2min,2分钟,2min
+H3min,3分钟,3min
+_alarmLightOnAlarmReset,报警灯复位,Alarm Light On Alarm Reset
+Defaults,默认,Defaults
+RecoverDefaults,默认覆盖,Recover Defaults
+ModuleMaintainMenu,模块维护菜单,Module Maintain Menu
+ModuleMaintainMenuDesc,模块维护菜单,Module Maintain Menu Desc
+AnaesthesiaModuleCalibration,麻醉模块化校准,Anaesthesia Module Calibration
+IBPPressureCalibration,IBP压力校准,IBP Pressure Calibration
+CO2ModuleMaintenance,二氧化碳模块维护,CO2 Module Maintenance
+NIBPPressureTest,NIBP压力测试,NIBP Pressure Test
+NIBPLeakageDetection,NIBP泄露检测,NIBP Leakage Detection
+ECGModuleCalibration,心电模块校准,ECG Module Calibration
+TouchScreenCalibration,触摸屏校准,Touch Screen Calibration
+COStart,一氧化碳开始,CO Start
+StopAnaesthesia,停止麻醉模块,Stop Anaesthesia
+Anaesthesia,麻醉模块,Anaesthesia
+StopNIBPPressureTest,停止无创血压测试,Stop NIBP Pressure Test
+StopIBPPressureCalibration,停止有创血压校准,Stop IBP Pressure Calibration
+StopNIBPLeakageDetection,停止无创血压泄露检测,Stop NIBP Leakage Detection
+StopECGModuleCalibration,停止心电模块校准,Stop ECG Module Calibration
+StopCO2ModuleMaintenance,停止二氧化碳模块,Stop CO2 Module Maintenance
+StopTouchScreenCalibration,停止触摸屏校准,Stop Touch Screen Calibration
+Cancel,取消覆盖,Cancel
+OthersMaintainMenu,其他维护菜单,Others Maintain Menu
+OthersMaintainMenuDesc,其他维护菜单设置,Others Maintain Menu Desc
+WaveLine,波线,WaveLine
+fat,粗,fat
+med,中,med
+thin,细,thin
+ECGStandard,心电标准,ECG Standard
+AHA,美国心脏协会,AHA
+IEC,国际电工委员会,IEC
+FrequencyNotch,频率刻度,Frequency Notch
+paraSwitchPrem,参数开关权限,Para Switch Prem
+protected,保护,protected
+ConfImpactItemSettings,,Conf ImpactItemSettings
+ParaSwitch,参数开关,ParaSwitch
+NurseCallSetting,护士呼叫设置,Nurse Call Setting
+setting,设置,setting
+stopSetting,停止设置,Stop Setting
+SignalType,信号类型,Signal Type
+Continuity,继续,Continuity
+Pluse,波形,Pluse
+TriggerMode,触发模式,Trigger Mode
+AlarmLevel,报警级别,Alarm Level
+Technology,技术,Technology
+Physiology,生理,Physiology
+UserMaintainPassword,用户维护密码,User Maintain Password
+UserMaintainSystem,用户维护系统,User Maintain System
+Department,部门,Department
+BedNumber,床号,Bed Number
+ModifyPassword,修改密码,Modify Password
+ChangeBedNumberRight,改变床号权限,Change Bed Number Right
+Language,语言,Language
+EditMonitorName,编辑监护仪名称,Edit Monitor Name
+UserMaintainModifyConfig,用户维护修改配置,User Maintain Modify Config
+ProfileConflict,配置冲突,Profile Conflict
+WiredWorkMaintainMenu,有线网络,Wired Work Maintain Menu
+WiredWorkMaintainMenuDesc,有线网络维护菜单设置,Wired Work Maintain Menu Desc
+AddressType,地址类型,Address Type
+manual,手动,manual
+DHCP,动态主机配置协议,DHCP
+IpAddress,IP地址,IP Address
+high,高,High
+normal,中,Normal
+low,低,Low
+ConfigManager,配置管理,Config Manager
+DefaultConfig,默认配置,Default Config
+AdultDefaultConfig,成人默认配置,Adult Default Config
+PedDefaultConfig,小儿默认配置,Ped Default Config
+NeoDefaultConfig,新生儿默认配置,Neo Default Config
+FactoryConfig,工厂配置,Factory Config
+CurrentConfig,当前配置,Current Config
+ConfigManagerment,配置管理,Config Managerment
+ConfigManagermentDesc,配置管理设置,Config Managerment Desc
+General,通用,General
+GeneralSettings,通用设置,General Settings
+ConfigName,配置名称,Config Name
+ConfigIBPMenu,有创血压,Config IBP
+ConfigIBPMenuDesc,有创血压,Config IBP Menu
+ConfigEditDisplayMenu,模块颜色,Display Menu
+English,英文,English
+Chinese,中文,Chinese
+UnitSetup,单位,Unit Setup
+UnitSetupDesc,单位设置,Unit Setup Desc
+HightUnit,高度单位,Hight Unit
+WeightUnit,重量单位,Weight Unit
+STUnit,ST段单位,ST Unit
+PressureUnit,压力单位,Pressure Unit
+TemperatureUnit,温度单位,Temperature Unit
+CVPUnit,中心静脉压单位,CVP Unit
+ICPUnit,颅内压单位,ICP Unit
+CO2Unit,二氧化碳单位,CO2 Unit
+ApneaDelay,窒息延迟,Apnea Delay
+BreathLead,呼吸导联,Breath Lead
+SweepSpeed,波形速度,Sweep Speed
+RespMenu,呼吸,Resp Menu
+manaul,手动,manaul
+FactoryTest,测试,Factory Test
+FactoryTestDesc,测试设置,Factory Test Desc
+FactoryLight,灯光,Factory Light
+FactorySound,声音,Factory Sound
+FactoryKey,按键 ,Factory Key
+FactoryPrinter,打印机,Factory Printer
+FactoryWifi,无线网,Factory Wifi
+FactoryEnthernet,有线网 ,Factory Enthernet
+FactoryBattery,电池 ,Factory Battery
+RefreshRate,更新速率,Refresh Rate
+Note,注释,Note
+RefreshRateUpdatedRebootNow,刷新率,Refresh Rate Updated Reboot Now
+FactoryDataRecord,数据记录,Factory Data Record
+FactoryDataRecordDesc,数据记录设置,Factory Data Record Desc
+PDCommData,PD 通信数据,PD Comm Data
+TEMPCalibrate0,温度校准0,TEMP Calibrate0
+TEMPCalibrate10,温度校准10,TEMP Calibrate10
+TEMPCalibrate15,温度校准15,TEMP Calibrate15
+TEMPCalibrate20,温度校准20,TEMP Calibrate20
+TEMPCalibrate25,温度校准25,TEMP Calibrate25
+TEMPCalibrate30,温度校准30,TEMP Calibrate30
+TEMPCalibrate35,温度校准35,TEMP Calibrate35
+TEMPCalibrate40,温度校准40,TEMP Calibrate40
+TEMPCalibrate45,温度校准45,TEMP Calibrate45
+TEMPCalibrate50,温度校准50,TEMP Calibrate50
+TEMPCalibrate0is7409.3,温度校准0是7409.3,TEMP Calibrate0 is 7409.3
+TEMPCalibrate10is4491.1,温度校准10是4491.1,TEMP Calibrate10 is 4491.1
+TEMPCalibrate15is3541.3,温度校准15是3541.3,TEMP Calibrate15 is 3541.3
+TEMPCalibrate20is2813.9,温度校准20是2813.9,TEMP Calibrate20 is 2813.9
+TEMPCalibrate25is2252,温度校准25是2252,TEMP Calibrate25 is 2252
+TEMPCalibrate30is1814.5,温度校准30是1814.5,TEMP Calibrate30 is 1814.5
+TEMPCalibrate35is1471.1,温度校准35是1471.1,TEMP Calibrate35 is 1471.1
+TEMPCalibrate40is1199.8,温度校准40是1199.8,TEMP Calibrate40 is 1199.8
+TEMPCalibrate45is984,温度校准45是984,TEMP Calibrate45 is 984
+TEMPCalibrate50is811.3,温度校准50是811.3,TEMP Calibrate50 is 811.3
+TEMP1,温度1,TEMP1
+TEMP2,温度2,TEMP2
+TEMPModuleDisable,温度模块失能,TEMP Module Disable
+TEMPCommunicationStop,温度通信停止,TEMP Communication Stop
+TEMPChannel,温度通道,TEMP Channel
+TEMPCalibrate,温度校准 ,TEMP Calibrate 

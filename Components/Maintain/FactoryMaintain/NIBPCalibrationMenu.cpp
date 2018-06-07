@@ -40,7 +40,7 @@ NIBPCalibrationMenu::NIBPCalibrationMenu() : SubMenu(trs("NIBPCalibrationMenu"))
 
     _button = new LabelButton(trs(""));
 
-    _button->button->setText(trs("NIBPCalibration>>"));
+    _button->button->setText(QString("%1 >>").arg(trs("NIBPCalibration")));
     connect(_button->button, SIGNAL(realReleased()), this, SLOT(_onBtnSlot()));
 
     setDesc(trs("NIBPCalibrationMenuDesc"));

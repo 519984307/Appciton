@@ -16,7 +16,7 @@
 #include "ImportFileSubWidget.h"
 #define CONFIG_LIST_ITEM_H 30
 #define CONFIG_LIST_ITME_W 200
-#define CONFIG_MAX_NUM 3
+#define CONFIG_MAX_NUM 6
 
 #define USB0_DEVICE_NODE      ("/dev/sda2")
 #define USB0_PATH_NAME        ("/mnt/usb0")
@@ -83,14 +83,21 @@ public:
 
 void FactoryImportExportMenuPrivate::loadConfigs()
 {
-//    configs
+     QString factoryConfigInfoList[]={
+        CONFIG_FILE_ADULT, CONFIG_FILE_NEO, CONFIG_FILE_PED,
+        CONFIG_FILE_SYSTEM, CONFIG_FILE_MACHINE
+    };
     FactoryConfigInfo factoryConfigInfo;
-    if(QFile::exists(QString("%1%2").arg(CONFIG_DIR).arg(CONFIG_FILE_ADULT)))
+    for(unsigned int i=0; i<sizeof(factoryConfigInfoList)/sizeof(QString); i++)
     {
-        factoryConfigInfo.fileName = CONFIG_FILE_ADULT;
-        factoryConfigInfo.name = CONFIG_FILE_ADULT;
-        factoryConfigInfo.name.replace(".xml","");
-        configs.append(factoryConfigInfo);
+        if(QFile::exists(QString("%1%2").arg(CONFIG_DIR).arg(factoryConfigInfoList[i])))
+        {
+            factoryConfigInfo.fileName = factoryConfigInfoList[i];
+            factoryConfigInfo.name = factoryConfigInfoList[i];
+            factoryConfigInfo.name.replace(".Original","");
+            factoryConfigInfo.name.replace(".xml","OfFactory");
+            configs.append(factoryConfigInfo);
+        }
     }
 }
 
@@ -122,9 +129,9 @@ void FactoryImportExportMenuPrivate::updateConfigList()
 }
 
 FactoryImportExportMenu::FactoryImportExportMenu()
-    :SubMenu(trs("Export/Import")), d_ptr(new FactoryImportExportMenuPrivate)
+    :SubMenu(trs("ExportImport")), d_ptr(new FactoryImportExportMenuPrivate)
 {
-    setDesc(trs("Export/Import"));
+    setDesc(trs("ExportImport"));
     startLayout();
 }
 
@@ -158,6 +165,10 @@ bool FactoryImportExportMenu::eventFilter(QObject *obj, QEvent *ev)
                 d_ptr->exportBtn->setEnabled(false);
                 d_ptr->selectItems.clear();
             }
+            while(!d_ptr->configs.isEmpty())
+            {
+                d_ptr->configs.removeLast();
+            }
         }
     }
     return false;
@@ -179,7 +190,7 @@ void FactoryImportExportMenu::layoutExec()
     margin.setLeft(15);
     margin.setBottom(10);
     label->setContentsMargins(margin);
-    label->setText(trs("Export/ExportConfig"));
+    label->setText(trs("ExportImportConfig"));
     mainLayout->addWidget(label);
 
     //config list
@@ -295,7 +306,10 @@ void FactoryImportExportMenu::onConfigClick()
     else
     {
         d_ptr->selectItems.append(item);/*将选择项指针压入链表中*/
-        item->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
+        if(item!=NULL)
+        {
+            item->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
+        }
     }
 
     /*更新导出按钮使能状态*/
@@ -395,7 +409,7 @@ bool FactoryImportExportMenu::exportFileToUSB()
                 stringList.append(trs("AllNotRepeated"));//2
                 stringList.append(trs("AllRepeated"));//3
                 IMessageBox messageBox(trs("Export"),
-                                       QString("%1%2").arg(d_ptr->selectItems.at(i)->text()).arg("\r\nif select the same name file?"),
+                                       trs(QString("%1\r\n%2?").arg(d_ptr->selectItems.at(i)->text()).arg(trs("IfSelectTheSameNameFile"))),
                                        stringList);
                 messageBox.setFixedSize(configMaintainMenuGrp.getSubmenuWidth()*2/3,configMaintainMenuGrp.getSubmenuHeight()/3);
                 repeatFileChooseFlag = messageBox.exec();
@@ -404,29 +418,32 @@ bool FactoryImportExportMenu::exportFileToUSB()
 
             if(repeatFileChooseFlag==1||repeatFileChooseFlag==3)//yes
             {
-                fileName = QString("%1%2").arg(CONFIG_DIR).arg(_exportFileName.at(i));
-                QFile file(fileName);
-                if(xml.setContent(&file)==false)
-                {
-                    file.close();
-                    _checkExportFileFlag = FactoryImportExportMenuPrivate::FAILED;//
-                    _failedExportXmlName = _exportFileName.at(i);
-                    return false;
-                }
+                QFile::copy(QString("%1/%2").arg(CONFIG_DIR).arg(_exportFileName.at(i)),
+                            QString("%1%2").arg(USB0_PATH_NAME).arg(_exportFileName.at(i)));
 
-                fileNameTemp = QString("%1/%2").arg(USB0_PATH_NAME).arg(_exportFileName.at(i));
-                QFile fileTemp(fileNameTemp);
-                if(!fileTemp.open(QIODevice::WriteOnly | QIODevice::Text))
-                {
-                    _checkExportFileFlag = FactoryImportExportMenuPrivate::FAILED;//
-                    _failedExportXmlName = _exportFileName.at(i);
-                    return false;
-                }
+//                fileName = QString("%1%2").arg(CONFIG_DIR).arg(_exportFileName.at(i));
+//                QFile file(fileName);
+//                if(xml.setContent(&file)==false)
+//                {
+//                    file.close();
+//                    _checkExportFileFlag = FactoryImportExportMenuPrivate::FAILED;//
+//                    _failedExportXmlName = _exportFileName.at(i);
+//                    return false;
+//                }
 
-                QTextStream writer(&fileTemp);
-                writer.setCodec("UTF-8");
-                xml.save(writer, 4, QDomNode::EncodingFromTextStream);
-                fileTemp.close();
+//                fileNameTemp = QString("%1/%2").arg(USB0_PATH_NAME).arg(_exportFileName.at(i));
+//                QFile fileTemp(fileNameTemp);
+//                if(!fileTemp.open(QIODevice::WriteOnly | QIODevice::Text))
+//                {
+//                    _checkExportFileFlag = FactoryImportExportMenuPrivate::FAILED;//
+//                    _failedExportXmlName = _exportFileName.at(i);
+//                    return false;
+//                }
+
+//                QTextStream writer(&fileTemp);
+//                writer.setCodec("UTF-8");
+//                xml.save(writer, 4, QDomNode::EncodingFromTextStream);
+//                fileTemp.close();
             }
             else if(repeatFileChooseFlag==0||repeatFileChooseFlag==2)//no
             {
@@ -487,7 +504,11 @@ bool FactoryImportExportMenu::insertFileFromUSB()
     //遍历U盘USB0目录下内所有xml格式文件
     QDir dir(QString("%1%2").arg(USB0_PATH_NAME).arg("/"));
     QStringList nameFilters;
-    nameFilters.append("*.xml");
+    nameFilters.append(CONFIG_FILE_ADULT);
+    nameFilters.append(CONFIG_FILE_NEO);
+    nameFilters.append(CONFIG_FILE_PED);
+    nameFilters.append(CONFIG_FILE_SYSTEM);
+    nameFilters.append(CONFIG_FILE_MACHINE);
     QStringList files = dir.entryList(nameFilters, QDir::Files|QDir::Readable, QDir::Name);
     if(files.isEmpty())
     {
@@ -534,7 +555,6 @@ bool FactoryImportExportMenu::insertFileFromUSB()
     fileLocal.close();
 
 
-    d_ptr->loadConfigs();
     bool checkXmlFlag = false;
     QList<QDomElement> importTagList;
     QDomElement  importTag = _importXml.documentElement();
@@ -614,7 +634,7 @@ bool FactoryImportExportMenu::insertFileFromUSB()
                 stringList.append(trs("AllNotRepeated"));//2
                 stringList.append(trs("AllRepeated"));//3
                 IMessageBox messageBox(trs("Import"),
-                                       QString("%1%2").arg(d_ptr->selectItemsImport.at(i)->text()).arg("\r\nif select the same name file?"),
+                                       trs(QString("%1\r\n%2?").arg(d_ptr->selectItemsImport.at(i)->text()).arg(trs("IfSelectTheSameNameFile"))),
                                        stringList);
                 messageBox.setFixedSize(configMaintainMenuGrp.getSubmenuWidth()*2/3,configMaintainMenuGrp.getSubmenuHeight()/3);
                 repeatFileChooseFlag = messageBox.exec();
@@ -850,7 +870,7 @@ void FactoryImportExportMenu::onBtnClick()
         case FactoryImportExportMenuPrivate::FAILED:
             isClose = false;
             paramTitle = trs("Export");
-            paraText = QString("ExportFilefailed:%1").arg(_failedExportXmlName);
+            paraText = QString("%1:%2").arg(trs("ExportFilefailed")).arg(_failedExportXmlName);
         break;
         case FactoryImportExportMenuPrivate::SUCCEED:
             isClose = false;
@@ -884,7 +904,7 @@ void FactoryImportExportMenu::onBtnClick()
         _checkExportFileFlag = 0;
         if(isClose==false)
         {
-            IMessageBox messageBox(paramTitle,paraText,false);
+            IMessageBox messageBox(paramTitle, paraText, false);
             messageBox.setFixedSize(configMaintainMenuGrp.getSubmenuWidth()*2/3,configMaintainMenuGrp.getSubmenuHeight()/3);
             messageBox.exec();
         }
@@ -901,7 +921,7 @@ void FactoryImportExportMenu::onBtnClick()
         {
         case FactoryImportExportMenuPrivate::FAILED:
             paramTitle = trs("Import");
-            paraText = QString("ImportFilefailed:\n%1").arg(_failedImportXmlName);
+            paraText = QString("%1:\n%2").arg("ImportFilefailed").arg(_failedImportXmlName);
             isClose = false;
         break;
         case FactoryImportExportMenuPrivate::SUCCEED:
@@ -936,7 +956,7 @@ void FactoryImportExportMenu::onBtnClick()
         _checkImportFileFlag = 0;
         if(isClose==false)
         {
-            IMessageBox messageBox(paramTitle,paraText,false);
+            IMessageBox messageBox(paramTitle, paraText, false);
             messageBox.setFixedSize(configMaintainMenuGrp.getSubmenuWidth()*2/3,configMaintainMenuGrp.getSubmenuHeight()/3);
             messageBox.exec();
         }

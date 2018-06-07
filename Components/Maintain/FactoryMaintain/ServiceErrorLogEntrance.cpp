@@ -32,7 +32,7 @@ ServiceErrorLogEntrance::ServiceErrorLogEntrance() : SubMenu(trs("ServiceErrorLo
 
     _button = new LabelButton(trs(""));
 
-    _button->button->setText(trs("ServiceErrorLogEntrance>>"));
+    _button->button->setText(QString("%1%2").arg(trs("ServiceErrorLogEntrance")).arg(">>"));
     connect(_button->button, SIGNAL(realReleased()), this, SLOT(_onBtnSlot()));
 
     setDesc(trs("ServiceErrorLogEntranceDesc"));

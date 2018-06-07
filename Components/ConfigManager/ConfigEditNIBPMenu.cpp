@@ -37,7 +37,7 @@ void ConfigEditNIBPMenuPrivate::loadOptions()
     int index  = 0;
     if (combos[NIBPMeasureMode]->count() == 0)
     {
-        combos[NIBPMeasureMode]->addItem(trs("Manaul"));
+        combos[NIBPMeasureMode]->addItem(trs("manaul"));
         combos[NIBPMeasureMode]->addItem(trs("Auto"));
         config->getNumValue("NIBP|NIBPMeasureMode", index);
         combos[NIBPMeasureMode]->setCurrentIndex(index);

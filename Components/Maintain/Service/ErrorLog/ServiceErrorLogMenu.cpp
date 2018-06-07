@@ -100,12 +100,12 @@ ServiceErrorLogMenu::ServiceErrorLogMenu() : MenuWidget(trs("ErrorLogInfo"))
 
     _upBtn = new IButton();
     _upBtn->setFixedSize(ITEM_H, ITEM_H);
-    _upBtn->setPicture(QImage("/usr/local/iDM/icons/ArrowUp.png"));
+    _upBtn->setPicture(QImage("/usr/local/nPM/icons/ArrowUp.png"));
     connect(_upBtn, SIGNAL(realReleased()), this, SLOT(upBtnClick()));
 
     _downBtn = new IButton();
     _downBtn->setFixedSize(ITEM_H, ITEM_H);
-    _downBtn->setPicture(QImage("/usr/local/iDM/icons/ArrowDown.png"));
+    _downBtn->setPicture(QImage("/usr/local/nPM/icons/ArrowDown.png"));
     connect(_downBtn, SIGNAL(realReleased()), this, SLOT(downBtnClick()));
 
 

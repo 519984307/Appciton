@@ -41,7 +41,10 @@ void ImportSubWidget::onConfigClickImport()
     else
     {
         selectItemsImport.append(item);/*将选择项指针压入链表中*/
-        item->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
+        if(item!=NULL)
+        {
+            item->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
+        }
     }
 }
 

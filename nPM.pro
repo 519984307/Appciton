@@ -403,6 +403,7 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditCOMenu.cpp                               \
     Components/ConfigManager/ConfigEditUnitSetupMenu.cpp                        \
     Components/ConfigManager/ConfigEditIBPMenu.cpp                              \
+    Components/ConfigManager/ConfigEditDisplayMenu.cpp                          \
     Components/Freeze/FreezeManager.cpp                                         \
     Components/Freeze/FreezeWidget.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
@@ -897,6 +898,7 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditCOMenu.h                                 \
     Components/ConfigManager/ConfigEditUnitSetupMenu.h                          \
     Components/ConfigManager/ConfigEditIBPMenu.h                                \
+    Components/ConfigManager/ConfigEditDisplayMenu.h                            \
     Components/Freeze/FreezeManager.h                                           \
     Components/Freeze/FreezeWidget.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \

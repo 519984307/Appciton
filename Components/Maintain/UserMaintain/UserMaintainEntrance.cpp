@@ -39,9 +39,13 @@ void UserMaintainEntrance::layoutExec(void)
 void UserMaintainEntrance::readyShow(void)
 {
     QString userMaintainPassword;
+    QString superPassword;
+    systemConfig.getStrValue("General|SuperPassword", superPassword);
     systemConfig.getStrValue("General|UserMaintainPassword", userMaintainPassword);
+    _passwordMenuManage->setSuperPassword(superPassword);
     _passwordMenuManage->setUserMaintainPassword(userMaintainPassword);
     _passwordMenuManage->clearPassword();
+    _passwordMenuManage->setOkBtn('U');
 }
 
 /**************************************************************************************************

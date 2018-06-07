@@ -110,8 +110,10 @@ void WiredWorkMaintainMenu::layoutExec()
     _addressType->combolist->addItem(trs("DHCP"));
     mainLayout->addWidget(_addressType);
 
+    QString string = trs("IpAddress");
+    QString string2 = trs("SubnetMask");
     //_ipAddress
-    _ipAddress = new LabelButton("IpAddress");
+    _ipAddress = new LabelButton(trs("IpAddress"));
     _ipAddress->button->setFixedSize(btnWidth, ITEM_H);
     _ipAddress->label->setFixedSize(labelWidth, ITEM_H);
     _ipAddress->setFont(fontManager.textFont(fontSize));
@@ -119,7 +121,7 @@ void WiredWorkMaintainMenu::layoutExec()
     mainLayout->addStretch();
 
     //_subnetMask
-    _subnetMask = new LabelButton("SubnetMask");
+    _subnetMask = new LabelButton(trs("SubnetMask"));
     _subnetMask->button->setFixedSize(btnWidth, ITEM_H);
     _subnetMask->label->setFixedSize(labelWidth, ITEM_H);
     _subnetMask->setFont(fontManager.textFont(fontSize));
@@ -127,7 +129,7 @@ void WiredWorkMaintainMenu::layoutExec()
     mainLayout->addStretch();
 
     //_gateWay
-    _gateWay = new LabelButton("GateWay");
+    _gateWay = new LabelButton(trs("GateWay"));
     _gateWay->button->setFixedSize(btnWidth, ITEM_H);
     _gateWay->label->setFixedSize(labelWidth, ITEM_H);
     _gateWay->setFont(fontManager.textFont(fontSize));

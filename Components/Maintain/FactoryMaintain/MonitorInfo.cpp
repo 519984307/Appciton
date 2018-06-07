@@ -21,7 +21,7 @@ MonitorInfo *MonitorInfo::_selfObj = NULL;
 MonitorInfo::MonitorInfo() : SubMenu(trs("MonitorInfoMenu"))
 {
     QString stringTemp[]={
-        "CumulativeWsorkingTime", "TemperatureInsideCase", "BatteryLevel",
+        "CumulativeWorkingTime", "TemperatureInsideCase", "BatteryLevel",
         "BatteryVoltage", "MachineType", "MACAddress", "ScreenResolationSize",
         "ElectronicSerialNumber", "NULL"
     };
@@ -32,10 +32,10 @@ MonitorInfo::MonitorInfo() : SubMenu(trs("MonitorInfoMenu"))
 
     for(int i=CUMULATIVE_WORKING_TIME; i<TYPE_NR; i++)
     {
-        _labeledLabel[i] = new LabeledLabel(trs(QString("%1%2").arg(_stringTypeName[i]).arg(":")),"NULL");
+        _labeledLabel[i] = new LabeledLabel(trs(QString("%1%2").arg(trs(_stringTypeName[i])).arg(":")),"NULL");
     }
     _setSerialNumber = new LabelButton("");
-    _setSerialNumber->button->setText(trs("SetElectronicSerialNumber >>"));
+    _setSerialNumber->button->setText(trs("%1 >>").arg(trs("SetElectronicSerialNumber")));
     connect(_setSerialNumber->button, SIGNAL(released()), this, SLOT(_setSerialNumberSlot()));
     setDesc(trs("MonitorInfoMenuDesc"));
 

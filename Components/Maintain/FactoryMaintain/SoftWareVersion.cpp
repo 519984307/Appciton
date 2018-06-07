@@ -23,7 +23,6 @@ SoftWareVersion::SoftWareVersion() : SubMenu(trs("SoftWareVersionMenu"))
     QString stringTemp[]={
         "SystemSoftwareVersion", "PowerManagerSoftwareVersion", "Uboot",
         "Kernel", "KeyboardModule", "RecorderModule", "ECGAlgorithmType",
-        "FPGALogicNiosSoftwareVersion", "HostFPGALogicNiosSoftwareVersion",
         "BootAndStandbyLogoVersion", "NULL"
     };
     for(unsigned int i=SOFT_TYPE_SYSTEM_SOFTWARE_VERSION; i<SOFT_TYPE_NR && i < sizeof(stringTemp); i++)
@@ -33,7 +32,7 @@ SoftWareVersion::SoftWareVersion() : SubMenu(trs("SoftWareVersionMenu"))
 
     for(int i=SOFT_TYPE_SYSTEM_SOFTWARE_VERSION; i<SOFT_TYPE_NR; i++)
     {
-        _labelType[i].typeName = new QLabel(trs(QString("%1%2").arg(_stringTypeName[i]).arg(":")));
+        _labelType[i].typeName = new QLabel(trs(QString("%1%2").arg(trs(_stringTypeName[i])).arg(":")));
         _labelType[i].typeName->setAlignment(Qt::AlignRight);
         _labelType[i].typeInfo = new QLabel(trs("NULL"));
         _labelType[i].typeInfo->setAlignment(Qt::AlignHCenter);

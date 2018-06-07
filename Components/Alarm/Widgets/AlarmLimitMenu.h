@@ -32,11 +32,11 @@ public:
         manlayout->setMargin(0);
 
         manlayout->addWidget(combo);
-        combo->setSpacing(2);
+        combo->setSpacing(0);
         manlayout->addWidget(lower);
         manlayout->addWidget(upper);
         manlayout->addWidget(priority);
-        priority->setSpacing(3);
+        priority->setSpacing(0);
 #if 0
         manlayout->addWidget(record);
         priority->setSpacing(2);

@@ -87,6 +87,9 @@ void ConfigEditAlarmLimitMenuPrivate::loadOptions()
         item->combo->label->setText(name);
         //获取指定路径上属性的值 例如"AlarmSource|Adult|HR_PR"的“Enable”属性值
         config->getNumAttr(prefix, "Enable", enable);
+        //获取指定路径上属性的值 例如"AlarmSource|Adult|HR_PR"的“Prio”属性值
+        int index=0;
+        config->getNumAttr(prefix, "Prio", index);
         //获得更具体的路径，例如"AlarmSource|Adult|HR_PR|bpm|Low"
         prefix += "|";
         prefix += Unit::getSymbol((UnitType)type);
@@ -98,6 +101,8 @@ void ConfigEditAlarmLimitMenuPrivate::loadOptions()
 
         //设置当前item的属性值
         item->combo->setCurrentIndex(enable);
+        item->priority->combolist->setCurrentIndex(index);
+        index = 0;
         //初始化模式为浮点型
         ISpinMode mode = ISPIN_MODE_FLOAT;
         int lowMinValue = 0, lowMaxValue = 0, highMinValue = 0, highMaxValue = 0, stepValue = 0;
@@ -262,17 +267,6 @@ void ConfigEditAlarmLimitMenu::layoutExec()
         connect(item->combo, SIGNAL(currentIndexChanged(int, int)),
                 this, SLOT(_comboListIndexChanged(int, int)));
 
-        item->priority->label->setFixedSize(0, 0);
-        item->priority->label->setAlignment(Qt::AlignCenter);
-        item->priority->combolist->setFixedSize(itemW, ITEM_H);
-        item->priority->addItem(trs("HIGH"));
-        item->priority->addItem(trs("NORMAL"));
-        item->priority->addItem(trs("LOW"));
-        item->priority->SetID(i);
-        item->priority->setFont(defaultFont());
-        connect(item->priority, SIGNAL(currentIndexChanged(int, int)),
-                this, SLOT(_comboListIndexChanged(int, int)));
-
         item->lower->setFixedSize(itemW, ITEM_H);
         item->lower->setFont(fontManager.textFont(fontSize));
         item->lower->enableCycle(false);
@@ -287,6 +281,17 @@ void ConfigEditAlarmLimitMenu::layoutExec()
         item->upper->setID(i * 2 + 1);
         connect(item->upper, SIGNAL(valueChange(QString,int)),
                 this, SLOT(_limitChanged(QString, int)));
+
+        item->priority->label->setFixedSize(0, 0);
+        item->priority->label->setAlignment(Qt::AlignCenter);
+        item->priority->combolist->setFixedSize(itemW, ITEM_H);
+        item->priority->addItem(trs("high"));
+        item->priority->addItem(trs("normal"));
+        item->priority->addItem(trs("low"));
+        item->priority->SetID(i);
+        item->priority->setFont(defaultFont());
+        connect(item->priority, SIGNAL(currentIndexChanged(int, int)),
+                this, SLOT(_comboListIndexChanged(int, int)));
 
         mainLayout->addWidget(item);
     }
@@ -402,6 +407,12 @@ void ConfigEditAlarmLimitMenu::_limitChanged(QString valueStr, int id)
 //关闭或者打开报警参数限制
 void ConfigEditAlarmLimitMenu::_comboListIndexChanged(int id, int index)
 {
+    IComboList *combo = qobject_cast<IComboList*>(sender());
+    if(!combo)
+    {
+        qdebug("Invalid Signal Sender");
+        return;
+    }
     // 获得当前的编辑配置
     Config *config = configEditMenuGrp.getCurrentEditConfig();
     //判断传参的合法性
@@ -421,8 +432,16 @@ void ConfigEditAlarmLimitMenu::_comboListIndexChanged(int id, int index)
     SubParamID subID = item->sid;
     QString prefix = "AlarmSource|" + patStr + "|";
     prefix += paramInfo.getSubParamName(subID, true);
-    //改变指定路径上的属性值
-    config->setNumAttr(prefix, "Enable", index);
+
+    if(combo->combolist == item->combo->combolist)
+    {
+        //改变指定路径上的属性值
+        config->setNumAttr(prefix, "Enable", index);
+    }
+    else if(combo->combolist == item->priority->combolist)
+    {
+        config->setNumAttr(prefix, "Prio", index);
+    }
 
 }
 

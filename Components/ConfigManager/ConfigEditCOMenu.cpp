@@ -62,7 +62,7 @@ void ConfigCOMenu::layoutExec()
     _inputMode = new IComboList(trs("InjectionTempSource"));
     _inputMode->setFont(defaultFont());
     _inputMode->addItem(trs("Auto"));
-    _inputMode->addItem(trs("Manual"));
+    _inputMode->addItem(trs("manual"));
     _inputMode->label->setFixedSize(labelWidth, ITEM_H);
     _inputMode->combolist->setFixedSize(btnWidth, ITEM_H);
     _inputMode->combolist->setCurrentIndex(index);
@@ -92,7 +92,7 @@ void ConfigCOMenu::layoutExec()
      config->getNumValue("CO|MeasureMode", index);
     _measureMode = new IComboList(trs("MeasureMode"));
     _measureMode->setFont(defaultFont());
-    _measureMode->addItem(trs("Manual"));
+    _measureMode->addItem(trs("manual"));
     _measureMode->addItem(trs("Auto"));
     _measureMode->label->setFixedSize(labelWidth, ITEM_H);
     _measureMode->combolist->setFixedSize(btnWidth, ITEM_H);

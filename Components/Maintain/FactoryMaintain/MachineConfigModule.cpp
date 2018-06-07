@@ -47,7 +47,7 @@ MachineConfigModule::MachineConfigModule() : SubMenu(trs("MachineConfigModuleMen
 
     for(int i=MODULE_TYPE_IBP; i<MODULE_TYPE_NR; i++)
     {
-        _icomboList[i] = new IComboList(trs(QString("%1").arg(_stringTypeName[i])));
+        _icomboList[i] = new IComboList(trs(QString("%1").arg(trs(_stringTypeName[i]))));
         _icomboList[i]->combolist->addItems(_stringItems[i]);
         connect(_icomboList[i]->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboListConfigChanged(int)));
         _icomboList[i]->combolist->setProperty("comboListID",qVariantFromValue(i));

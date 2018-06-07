@@ -105,9 +105,15 @@ void ConfigExportImportMenuPrivate::updateConfigList()
 }
 
 ConfigExportImportMenu::ConfigExportImportMenu()
-    :SubMenu(trs("Export/Import")), d_ptr(new ConfigExportImportMenuPrivate)
+    :SubMenu(trs("ExportImport")),
+     _checkExportFileFlag(0),
+     _checkImportFileFlag(0),
+     _usbFd(0),
+     _repeatFileChooseFlag(0),
+     d_ptr(new ConfigExportImportMenuPrivate)
+
 {
-    setDesc(trs("Export/Import"));
+    setDesc(trs("ExportImport"));
     startLayout();
 }
 
@@ -162,7 +168,7 @@ void ConfigExportImportMenu::layoutExec()
     margin.setLeft(15);
     margin.setBottom(10);
     label->setContentsMargins(margin);
-    label->setText(trs("Export/ExportConfig"));
+    label->setText(trs("ExportImportConfig"));
     mainLayout->addWidget(label);
 
     //config list
@@ -373,12 +379,13 @@ bool ConfigExportImportMenu::exportFileToUSB()
             if(isExist==true)//发现同名文件
             {
                 QStringList stringList;
+                QString stringtemp = trs("IfSelectTheSameNameFile");
                 stringList.append(trs("NotRepeated"));//0
                 stringList.append(trs("Repeated"));//1
                 stringList.append(trs("AllNotRepeated"));//2
                 stringList.append(trs("AllRepeated"));//3
                 IMessageBox messageBox(trs("Export"),
-                                       QString("%1%2").arg(d_ptr->selectItems.at(i)->text()).arg("\r\nif select the same name file?"),
+                                       trs(QString("%1\r\n%2?").arg(d_ptr->selectItems.at(i)->text()).arg(stringtemp)),
                                        stringList);
                 messageBox.setFixedSize(configMaintainMenuGrp.getSubmenuWidth()*2/3,configMaintainMenuGrp.getSubmenuHeight()/3);
                 repeatFileChooseFlag = messageBox.exec();
@@ -592,12 +599,13 @@ bool ConfigExportImportMenu::insertFileFromUSB()
             if(isExist==true)//发现同名文件
             {
                 QStringList stringList;
+                QString stringtemp = trs("IfSelectTheSameNameFile");
                 stringList.append(trs("NotRepeated"));//0
                 stringList.append(trs("Repeated"));//1
                 stringList.append(trs("AllNotRepeated"));//2
                 stringList.append(trs("AllRepeated"));//3
                 IMessageBox messageBox(trs("Import"),
-                                       QString("%1%2").arg(d_ptr->selectItemsImport.at(i)->text()).arg("\r\nif select the same name file?"),
+                                       trs(QString("%1\r\n%2?").arg(d_ptr->selectItemsImport.at(i)->text()).arg(stringtemp)),
                                        stringList);
                 messageBox.setFixedSize(configMaintainMenuGrp.getSubmenuWidth()*2/3,configMaintainMenuGrp.getSubmenuHeight()/3);
                 repeatFileChooseFlag = messageBox.exec();
@@ -822,6 +830,7 @@ bool ConfigExportImportMenu::checkXMLContent(QList<QDomElement> &importTagList, 
 void ConfigExportImportMenu::onBtnClick()
 {
     LButtonEx *btn = qobject_cast<LButtonEx *>(sender());
+
     if(btn == d_ptr->exportBtn)
     {
         exportFileToUSB();
@@ -833,7 +842,7 @@ void ConfigExportImportMenu::onBtnClick()
         case ConfigExportImportMenuPrivate::FAILED:
             isClose = false;
             paramTitle = trs("Export");
-            paraText = QString("ExportFilefailed:%1").arg(_failedExportXmlName);
+            paraText = QString("%1:%2").arg(trs("ExportFilefailed")).arg(_failedExportXmlName);
         break;
         case ConfigExportImportMenuPrivate::SUCCEED:
             isClose = false;
@@ -884,7 +893,7 @@ void ConfigExportImportMenu::onBtnClick()
         {
         case ConfigExportImportMenuPrivate::FAILED:
             paramTitle = trs("Import");
-            paraText = QString("ImportFilefailed:\n%1").arg(_failedImportXmlName);
+            paraText = QString("%1:\n%2").arg(trs("ImportFilefailed")).arg(_failedImportXmlName);
             isClose = false;           
         break;
         case ConfigExportImportMenuPrivate::SUCCEED:

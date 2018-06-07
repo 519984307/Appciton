@@ -1,0 +1,1223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language>
+	<LanguageNameEnglish>English</LanguageNameEnglish>
+	<LanguageNameChinese>Chinese</LanguageNameChinese>
+	<LanguageNameLocal>English</LanguageNameLocal>
+	<HOST>HOST</HOST>
+	<TE3>TE3</TE3>
+	<TN3>TN3</TN3>
+	<TS3>TS3</TS3>
+	<TT3>TT3</TT3>
+	<PRT72>PRT72</PRT72>
+	<iDMBoard>iDMBoard</iDMBoard>
+	<BedNum>Bed:</BedNum>
+	<Adult>Adult</Adult>
+	<PED>Pediatric</PED>
+	<NEO>Neonate</NEO>
+	<UserFaceStandard>Standard</UserFaceStandard>
+	<UserFace12Lead>12 Lead</UserFace12Lead>
+	<UserFaceOxyCRG>OxyCRG</UserFaceOxyCRG>
+	<UserFaceTrend>Trend</UserFaceTrend>
+	<UserFaceBigFont>Big Font</UserFaceBigFont>
+	<UserFaceCustom>Custom</UserFaceCustom>
+	<UserFaceUnknow>Unknow</UserFaceUnknow>
+	<ECG>ECG</ECG>
+	<HR>HR</HR>
+	<HR_PR>HR/PR</HR_PR>
+	<ST-I>ST-I</ST-I>
+	<ST-II>ST-II</ST-II>
+	<ST-III>ST-III</ST-III>
+	<ST-aVR>ST-aVR</ST-aVR>
+	<ST-aVL>ST-aVL</ST-aVL>
+	<ST-aVF>ST-aVF</ST-aVF>
+	<ST-V1>ST-V1</ST-V1>
+	<ST-V2>ST-V2</ST-V2>
+	<ST-V3>ST-V3</ST-V3>
+	<ST-V4>ST-V4</ST-V4>
+	<ST-V5>ST-V5</ST-V5>
+	<ST-V6>ST-V6</ST-V6>
+	<PVCS>PVCS</PVCS>
+	<ST>ST</ST>
+	<CO2>CO2</CO2>
+	<ETCO2>EtCO2</ETCO2>
+	<FICO2>FiCO2</FICO2>
+	<ETN2O>EtN2O</ETN2O>
+	<FIN2O>FiN2O</FIN2O>
+	<ETAA1>EtAA1</ETAA1>
+	<FIAA1>FiAA1</FIAA1>
+	<ETAA2>EtAA2</ETAA2>
+	<FIAA2>FiAA2</FIAA2>
+	<ETO2>EtO2</ETO2>
+	<FIO2>FiO2</FIO2>
+	<ART_SYS>ART-SYS</ART_SYS>
+	<ART_DIA>ART-DIA</ART_DIA>
+	<ART_MEAN>ART-MEAN</ART_MEAN>
+	<ART_PR>ART-PR</ART_PR>
+	<PA_SYS>PA-SYS</PA_SYS>
+	<PA_DIA>PA-DIA</PA_DIA>
+	<PA_MEAN>PA-MEAN</PA_MEAN>
+	<PA_PR>PA-PR</PA_PR>
+	<CVP_MEAN>CVP-MEAN</CVP_MEAN>
+	<CVP_PR>CVP-PR</CVP_PR>
+	<LAP_MEAN>LAP-MEAN</LAP_MEAN>
+	<LAP_PR>LAP-PR</LAP_PR>
+	<RAP_MEAN>RAP-MEAN</RAP_MEAN>
+	<RAP_PR>RAP-PR</RAP_PR>
+	<ICP_MEAN>ICP-MEAN</ICP_MEAN>
+	<ICP_PR>ICP-PR</ICP_PR>
+	<AUXP1_SYS>AUXP1-SYS</AUXP1_SYS>
+	<AUXP1_DIA>AUXP1-DIA</AUXP1_DIA>
+	<AUXP1_MEAN>AUXP1-MEAN</AUXP1_MEAN>
+	<AUXP1_PR>AUXP1-PR</AUXP1_PR>
+	<AUXP2_SYS>AUXP2-SYS</AUXP2_SYS>
+	<AUXP2_DIA>AUXP2-DIA</AUXP2_DIA>
+	<AUXP2_MEAN>AUXP2-MEAN</AUXP2_MEAN>
+	<AUXP2_PR>AUXP2-PR</AUXP2_PR>
+	<C.O.>C.O.</C.O.>
+	<C.I.>C.I.</C.I.>
+	<TB>TB</TB>
+	<SPO2>SPO2</SPO2>
+	<PR>PR</PR>
+	<PLETH>Pleth</PLETH>
+	<NIBP>NIBP</NIBP>
+	<RESP>RESP</RESP>
+	<RR>RR</RR>
+	<BR>BR</BR>
+	<RR_BR>RR/BR</RR_BR>
+	<Close>Close</Close>
+	<Back>Back</Back>
+	<PatientID>Patient ID</PatientID>
+	<PatientType>Patient Type</PatientType>
+	<PatientSex>Patient Sex</PatientSex>
+	<PatientPacemarker>Pacemarker</PatientPacemarker>
+	<PatientBloodType>Blood Type</PatientBloodType>
+	<PatientWeight>Weight</PatientWeight>
+	<PatientHeight>Height</PatientHeight>
+	<PatientMenu>Patient</PatientMenu>
+	<ECGLeadMode>Lead Mode</ECGLeadMode>
+	<ECGDisplayMode>Display Mode</ECGDisplayMode>
+	<ECGCalcLead>Calculation Lead</ECGCalcLead>
+	<ECGBandwidth>Bandwidth</ECGBandwidth>
+	<ECGGain>Gain</ECGGain>
+	<ECGPacemaker>Pacemaker</ECGPacemaker>
+	<ECGSweepSpeed>Sweep Speed</ECGSweepSpeed>
+	<ECGQRSToneVolume>QRS/PR Volume</ECGQRSToneVolume>
+	<ECGMenu>ECG</ECGMenu>
+	<ECGMenuDesc>ECG Setting</ECGMenuDesc>
+	<ECGSTSWitch>ST SWitch</ECGSTSWitch>
+	<ECGSTPoint>ST Point</ECGSTPoint>
+	<ECGISOPoint>ISO Point</ECGISOPoint>
+	<STMenu>ST</STMenu>
+	<SPO2Sensitivity>Sensitivity</SPO2Sensitivity>
+	<SPO2SmartPulseTone>Smart Pulse Tone</SPO2SmartPulseTone>
+	<SPO2SweepSpeed>Sweep Speed</SPO2SweepSpeed>
+	<SPO2PRDisplay>PR Display</SPO2PRDisplay>
+	<SPO2SmartPluseTone>Smart Pulse Tone</SPO2SmartPluseTone>
+	<SPO2Menu>SPO2</SPO2Menu>
+	<RESPSweepSpeed>Sweep Speed</RESPSweepSpeed>
+	<RESPApneaTime>Apnea Time</RESPApneaTime>
+	<RESPZoom>Zoom</RESPZoom>
+	<RESPLead>RESP Lead</RESPLead>
+	<RESPMenu>RESP</RESPMenu>
+	<RRLow>RR Low</RRLow>
+	<RRHigh>RR High</RRHigh>
+	<RESPApnea>RESP Apnea</RESPApnea>
+	<RESPAutoActivation>RESP Automatic Activation</RESPAutoActivation>
+	<NIBPMeasurement>NIBP Measurement</NIBPMeasurement>
+	<NIBPMeasureMode>Measure Mode</NIBPMeasureMode>
+	<NIBPAutoInterval>Auto Interval</NIBPAutoInterval>
+	<NIBPMenu>NIBP</NIBPMenu>
+	<NIBPMenuDesc>NIBP Setting</NIBPMenuDesc>
+	<CO2ApneaTime>Apnea Time</CO2ApneaTime>
+	<CO2SweepSpeed>Sweep Speed</CO2SweepSpeed>
+	<CO2SweepMode>CO2 Sweep Mode</CO2SweepMode>
+	<CO2Curve>Curve</CO2Curve>
+	<CO2Filled>Filled</CO2Filled>
+	<CO2Zoom>Zoom</CO2Zoom>
+	<CO2FiCO2Display>FiCO2 Display</CO2FiCO2Display>
+	<O2Compensation>O2 Compensation</O2Compensation>
+	<N2OCompensation>N2O Compensation</N2OCompensation>
+	<CO2ZeroCalib>Zero</CO2ZeroCalib>
+	<CO2ZeroStart>Start</CO2ZeroStart>
+	<CO2Menu>CO2</CO2Menu>
+	<CO2Switch>CO2 Switch</CO2Switch>
+	<AGMenu>AG</AGMenu>
+	<AGSweepSpeed>Sweep Speed</AGSweepSpeed>
+	<IBPMenu>IBP</IBPMenu>
+	<IBPSweepSpeed>Sweep Speed</IBPSweepSpeed>
+	<ChannelPressureEntitle1>Pressure Entitle Channel 1</ChannelPressureEntitle1>
+	<ChannelPressureEntitle2>Pressure Entitle Channel 2</ChannelPressureEntitle2>
+	<FilterMode>Filter Mode</FilterMode>
+	<IBPZeroCalib>Zero</IBPZeroCalib>
+	<IBPZeroStart>Start</IBPZeroStart>
+	<COMenu>C.O.</COMenu>
+	<Auto>Auto</Auto>
+	<Manual>Manual</Manual>
+	<CORatio>C.O.Ratio</CORatio>
+	<COStart>Start</COStart>
+	<COCancel>Cancel</COCancel>
+	<InjectionTempSource>Injection Temp Source</InjectionTempSource>
+	<InjectionTemp>Injection Temp</InjectionTemp>
+	<InjectionVolumn>Injection Volumn</InjectionVolumn>
+	<MeasureMode>Measure Mode</MeasureMode>
+	<TEMP>TEMP</TEMP>
+	<T1>T1</T1>
+	<T2>T2</T2>
+	<TD>ΔT</TD>
+	<TEMPMenu>TEMP</TEMPMenu>
+	<TEMPUnit>Unit</TEMPUnit>
+	<TEMP1Low>TEMP1 Low</TEMP1Low>
+	<TEMP1High>TEMP1 High</TEMP1High>
+	<TEMP2Low>TEMP2 Low</TEMP2Low>
+	<TEMP2High>TEMP2 High</TEMP2High>
+	<TEMPTDLow>ΔT Low</TEMPTDLow>
+	<TEMPTDHigh>ΔT High</TEMPTDHigh>
+	<TEMP1SensorOff>TEMP1 Sensor Off</TEMP1SensorOff>
+	<TEMP2SensorOff>TEMP2 Sensor Off</TEMP2SensorOff>
+	<TEMPSensorOffAll>TEMP Sensor Off All</TEMPSensorOffAll>
+	<TEMP1OverRange>TEMP1 Over Range</TEMP1OverRange>
+	<TEMP2OverRange>TEMP2 Over Range</TEMP2OverRange>
+	<TEMPOverRangeAll>TEMP Over Range All</TEMPOverRangeAll>
+	<TEMP1ProbeTypeError>TEMP1ProbeTypeError</TEMP1ProbeTypeError>
+	<TEMP2ProbeTypeError>TEMP2ProbeTypeError</TEMP2ProbeTypeError>
+	<TEMPProbeTypeErrorAll>TEMPProbeTypeErrorAll</TEMPProbeTypeErrorAll>
+	<TEMPCommunicationStop>TEMP Communication Stop</TEMPCommunicationStop>
+	<celsius>℃</celsius>
+	<fahrenheit>℉</fahrenheit>
+	<percent>%</percent>
+	<AlarmSettingMenu>Alarm</AlarmSettingMenu>
+	<AlarmLimitMenu>Alarm Limit</AlarmLimitMenu>
+	<AlarmLimitMenuDesc>Alarm Limit Setting</AlarmLimitMenuDesc>
+	<PrintSpeed>Print Speed</PrintSpeed>
+	<PrintNumOfTraces>Number Of Print Traces</PrintNumOfTraces>
+	<PrintAlarmTriger>Alarm Trigger</PrintAlarmTriger>
+	<PrintDefibTriger>Defib Trigger</PrintDefibTriger>
+	<Print12LeadFormat>12-Lead Format</Print12LeadFormat>
+	<PrintSetup>Print</PrintSetup>
+	<SystemAlarmVolume>Alarm Audio Volume</SystemAlarmVolume>
+	<MinimumALarmVolume>Minimum Alarm Volume</MinimumALarmVolume>
+	<DefaultAlarmVolume>Default Alarm Volume</DefaultAlarmVolume>
+	<SystemAlarmMuteTime>Alarm Mute Time</SystemAlarmMuteTime>
+	<SystemBrightness>Brightness</SystemBrightness>
+	<LTAAlarm>LTA Alarm</LTAAlarm>
+	<SystemMenu>System</SystemMenu>
+	<PatientMenuDesc>Patient Setting</PatientMenuDesc>
+	<ECGMenuDesc>ECG Setting</ECGMenuDesc>
+	<STMenuDesc>ST Setting</STMenuDesc>
+	<SPO2MenuDesc>SPO2 Setting</SPO2MenuDesc>
+	<RESPMenuDesc>RESP Setting</RESPMenuDesc>
+	<NIBPMenuDesc>NIBP Setting</NIBPMenuDesc>
+	<CO2MenuDesc>CO2 Setting</CO2MenuDesc>
+	<IBPMenuDesc>IBP Setting</IBPMenuDesc>
+	<COMenuDesc>C.O. Setting</COMenuDesc>
+	<RESPAndCO2Menu>RESP &amp; CO2</RESPAndCO2Menu>
+	<RESPAndCO2MenuDesc>RESP &amp; CO2 Setting</RESPAndCO2MenuDesc>
+	<CPRMenuDesc>CPR Setting</CPRMenuDesc>
+	<TEMPMenuDesc>TEMP Setting</TEMPMenuDesc>
+	<AlarmSettingMenuDesc>Alarm Setting</AlarmSettingMenuDesc>
+	<PrintSetupDesc>Print Setting</PrintSetupDesc>
+	<SystemMenuDesc>System Setting</SystemMenuDesc>
+	<SystemStatusDesc>System Status</SystemStatusDesc>
+	<SystemInfo>System Info</SystemInfo>
+	<SystemInfoSetting>System Info Setting</SystemInfoSetting>
+	<ErrorLog>Error Log</ErrorLog>
+	<SystemStatus>Status</SystemStatus>
+	<SomeLimitAlarmDisabled>Some Limit Alarm Disabled</SomeLimitAlarmDisabled>
+	<PowerupSyncPressed>Sync Btn Stuck</PowerupSyncPressed>
+	<PowerupChargePressed>Front Panel Charge Btn Stuck</PowerupChargePressed>
+	<PowerupShockPressed>Front Panel Shock Btn Stuck</PowerupShockPressed>
+	<PowerupRecorderPressed>Front Panel Recorder Btn Stuck</PowerupRecorderPressed>
+	<PowerupEnergyUpPressed>Front Panel Energy Up Btn Stuck</PowerupEnergyUpPressed>
+	<PowerupEnergyDnPressed>Front Panel Energy Down Btn Stuck</PowerupEnergyDnPressed>
+	<PowerupCommunicationStop>Front Panel Communication Stop</PowerupCommunicationStop>
+	<WiFiMenu>Wifi</WiFiMenu>
+	<WiFiMenuDesc>Wifi Setting</WiFiMenuDesc>
+	<Switch>Switch</Switch>
+	<Add>Add</Add>
+	<Edit>Edit</Edit>
+	<Delete>Delete</Delete>
+	<On>On</On>
+	<Off>Off</Off>
+	<Yes>Yes</Yes>
+	<EnglishYESChineseSURE>Yes</EnglishYESChineseSURE>
+	<No>No</No>
+	<Disable>Disable</Disable>
+	<Enable>Enable</Enable>
+	<Return>Return</Return>
+	<AccessPointProfile>Access Point Profile</AccessPointProfile>
+	<ConfiguredAccessPointProfiles>Configured Access Point Profiles</ConfiguredAccessPointProfiles>
+	<SelectAccessPoint>Access Point</SelectAccessPoint>
+	<ProfileName>Profile Name</ProfileName>
+	<WiFiProfileEdit>Edit WiFi Profile</WiFiProfileEdit>
+	<StaticIp>Static IP</StaticIp>
+	<NetworkSetting>Network Setting</NetworkSetting>
+	<Mac>Mac</Mac>
+	<LocalIp>Local IP</LocalIp>
+	<WiFiAP>SSID</WiFiAP>
+	<EncryptType>Encrypt Type</EncryptType>
+	<Signal>Signal</Signal>
+	<Status>Status</Status>
+	<Connecting>Connecting</Connecting>
+	<Connected>Connected</Connected>
+	<ConnectSuccess>Connect Success</ConnectSuccess>
+	<ConnectFailure>Connect Failed</ConnectFailure>
+	<NoLinkAdapter>Wireless Adapter Off</NoLinkAdapter>
+	<PwdError>Password Error</PwdError>
+	<AuthTimeout>Authentication Timeout</AuthTimeout>
+	<PwdChanged>Password Changed</PwdChanged>
+	<Disconnected>Network Disconnected</Disconnected>
+	<GetIPFailed>Get Dymatic IP Failed</GetIPFailed>
+	<SubnetMask>Subnet Mask</SubnetMask>
+	<GateWay>GateWay</GateWay>
+	<PreferrendDNS>Preferrend DNS</PreferrendDNS>
+	<AlternateDNS>Alternate DNS</AlternateDNS>
+	<EnglishKeyboard>English Keyboard</EnglishKeyboard>
+	<NumberKeyboard>Number Keyboard</NumberKeyboard>
+	<ErrorInput>Error Input</ErrorInput>
+	<Male>Male</Male>
+	<Female>Female</Female>
+	<PatientAge>Patient Age</PatientAge>
+	<PatientName>Patient Name</PatientName>
+	<PatientInformation>Patient Information</PatientInformation>
+	<PatientNew>New Patient</PatientNew>
+	<GetPatientInfo>Get Patient Info</GetPatientInfo>
+	<PatientSave>Save Patient</PatientSave>
+	<PatientCreate>Create Patient</PatientCreate>
+	<FastReceivingPatients>Fast Receiving Patients</FastReceivingPatients>
+	<ReceivingPatients>Receiving Patients</ReceivingPatients>
+	<RelievePatient>Relieve Patient</RelievePatient>
+	<CleanPatientData>Clean Patient Data</CleanPatientData>
+	<Standby>Whether to enter the standby machine？</Standby>
+	<RemoveAndRecePatient>Relieving the current patient and receiving new patients?</RemoveAndRecePatient>
+	<ApplicationDataToReceivingPatients>Application data to receiving patients?</ApplicationDataToReceivingPatients>
+	<PatientManagement>Patient Management</PatientManagement>
+	<WindowLayout>Window Layout</WindowLayout>
+	<ResetLayout>Reset</ResetLayout>
+	<SaveLayout>Save</SaveLayout>
+	<Enter>Enter</Enter>
+	<Cancel>Cancel</Cancel>
+	<ECGNormal>Normal</ECGNormal>
+	<ECG5-Lead-Full>5-Lead Full</ECG5-Lead-Full>
+	<ECG12-Lead-Full>12-Lead Full</ECG12-Lead-Full>
+	<SPO2SensLow>Low</SPO2SensLow>
+	<SPO2SensMed>Medium</SPO2SensMed>
+	<SPO2SensHigh>High</SPO2SensHigh>
+	<NIBPManual>Manual</NIBPManual>
+	<NIBPAUTO>Auto</NIBPAUTO>
+	<NIBPCONT>Continuous</NIBPCONT>
+	<STATCLOSE>STAT Close</STATCLOSE>
+	<STATSTOPPED>STAT Stopped</STATSTOPPED>
+	<STATOPEN>STAT Open</STATOPEN>
+	<STATCOMPLETING>STAT Completing</STATCOMPLETING>
+	<STATSTOP>Stop STAT</STATSTOP>
+	<STATSTART>Start STAT</STATSTART>
+	<STATDONE>STAT Done</STATDONE>
+	<NIBPADDITIONAL>Additional</NIBPADDITIONAL>
+	<NIBPMEASURE>Measure</NIBPMEASURE>
+	<NIBPREADING>Reading</NIBPREADING>
+	<NIBPFAILED>Failed</NIBPFAILED>
+	<NIBPSTOPPED>Stopped</NIBPSTOPPED>
+	<NIBPWAITING>NIBP Waiting</NIBPWAITING>
+	<NIBPModule>NIBP Module</NIBPModule>
+	<NIBPNoResponse>No Response</NIBPNoResponse>
+	<NIBPTemporarily>Temporarily</NIBPTemporarily>
+	<NIBPDisable>Disable</NIBPDisable>
+	<_1min>1 min</_1min>
+	<_1.5min>1.5 min</_1.5min>
+	<_2min>2 min</_2min>
+	<_2.5min>2.5 min</_2.5min>
+	<_3min>3 min</_3min>
+	<_3.5min>3.5 min</_3.5min>
+	<_4min>4 min</_4min>
+	<_5min>5 min</_5min>
+	<_10min>10 min</_10min>
+	<_15min>15 min</_15min>
+	<_20min>20 min</_20min>
+	<_30min>30 min</_30min>
+	<_45min>45 min</_45min>
+	<_60min>60 min</_60min>
+	<_90min>90 min</_90min>
+	<_120min>120 min</_120min>
+	<min>min</min>
+	<Parameter>Parameter</Parameter>
+	<AlarmStatus>Status</AlarmStatus>
+	<LowerLimit>Lower Limit</LowerLimit>
+	<UpperLimit>Upper Limit</UpperLimit>
+	<NIBP_SYS>SYS</NIBP_SYS>
+	<NIBP_DIA>DIA</NIBP_DIA>
+	<NIBP_MAP>MAP</NIBP_MAP>
+	<NIBP_PR>PR</NIBP_PR>
+	<ECG3-Lead>3-Lead</ECG3-Lead>
+	<ECG5-Lead>5-Lead</ECG5-Lead>
+	<ECG12-Lead>12-Lead</ECG12-Lead>
+	<_10sec>10 sec</_10sec>
+	<_15sec>15 sec</_15sec>
+	<_20sec>20 sec</_20sec>
+	<_25sec>25 sec</_25sec>
+	<_30sec>30 sec</_30sec>
+	<_35sec>35 sec</_35sec>
+	<_40sec>40 sec</_40sec>
+	<_45sec>45 sec</_45sec>
+	<_50sec>50 sec</_50sec>
+	<_55sec>55 sec</_55sec>
+	<_60sec>60 sec</_60sec>
+	<_90sec>90 sec</_90sec>
+	<_120sec>120 sec</_120sec>
+	<_150sec>150 sec</_150sec>
+	<_180sec>180 sec</_180sec>
+	<_210sec>210 sec</_210sec>
+	<_240sec>240 sec</_240sec>
+	<sec>second</sec>
+	<PatientData>Patient Data</PatientData>
+	<NIBPData>NIBP Data</NIBPData>
+	<Interval>Interval</Interval>
+	<Print>Print</Print>
+	<SummaryDesc>Summary Description</SummaryDesc>
+	<SummaryData>Summary Data</SummaryData>
+	<AlarmList>Alarm List</AlarmList>
+	<PhyAlarmList>PHY Alarm</PhyAlarmList>
+	<TechAlarmList>TECH Alarm</TechAlarmList>
+	<AlarmTime>Time</AlarmTime>
+	<AlarmPriority>Priority</AlarmPriority>
+	<AlarmInfo>Message</AlarmInfo>
+	<High>High</High>
+	<Medium>Medium</Medium>
+	<Low>Low</Low>
+	<HRHigh>HR High</HRHigh>
+	<HRLow>HR Low</HRLow>
+	<PVCSLow>PVCS Low</PVCSLow>
+	<PVCSHigh>PVCS High</PVCSHigh>
+	<ST-Low>ST-I Low</ST-Low>
+	<ST-High>ST-I High</ST-High>
+	<ST-IILow>ST-II Low</ST-IILow>
+	<ST-IIHigh>ST-II High</ST-IIHigh>
+	<ST-IIILow>ST-III Low</ST-IIILow>
+	<ST-IIIHigh>ST-III High</ST-IIIHigh>
+	<ST-aVRLow>ST-aVR Low</ST-aVRLow>
+	<ST-aVRHigh>ST-aVR High</ST-aVRHigh>
+	<ST-aVLLow>ST-aVL Low</ST-aVLLow>
+	<ST-aVLHigh>ST-aVL High</ST-aVLHigh>
+	<ST-aVFLow>ST-aVF Low</ST-aVFLow>
+	<ST-aVFHigh>ST-aVF High</ST-aVFHigh>
+	<ST-V1Low>ST-V1 Low</ST-V1Low>
+	<ST-V1High>ST-V1 High</ST-V1High>
+	<ST-V2Low>ST-V2 Low</ST-V2Low>
+	<ST-V2High>ST-V2 High</ST-V2High>
+	<ST-V3Low>ST-V3 Low</ST-V3Low>
+	<ST-V3High>ST-V3 High</ST-V3High>
+	<ST-V4Low>ST-V4 Low</ST-V4Low>
+	<ST-V4High>ST-V4 High</ST-V4High>
+	<ST-V5Low>ST-V5 Low</ST-V5Low>
+	<ST-V5High>ST-V5 High</ST-V5High>
+	<ST-V6Low>ST-V6 Low</ST-V6Low>
+	<ST-V6High>ST-V6 High</ST-V6High>
+	<ECGArrASYSTOLE>ASYSTOLE</ECGArrASYSTOLE>
+	<ECGArrVFIBVTAC>VFIB/VTAC</ECGArrVFIBVTAC>
+	<ECGArrRONT>R ON T</ECGArrRONT>
+	<ECGArrVTL2>VT&gt;2</ECGArrVTL2>
+	<ECGArrCOUPLET>COUPLET</ECGArrCOUPLET>
+	<ECGArPVC>PVC</ECGArPVC>
+	<ECGArrBIGEMINY>BIGEMINY</ECGArrBIGEMINY>
+	<ECGArrTRIGEMINY>TRIGEMINY</ECGArrTRIGEMINY>
+	<ECGArrTACHY>TACHY</ECGArrTACHY>
+	<ECGArrBRADY>BRADY</ECGArrBRADY>
+	<ECGrrPNC>PNC</ECGrrPNC>
+	<ECGArrPNP>PNP</ECGArrPNP>
+	<ECGArrMISSEDBEATS>MISSED BEATS</ECGArrMISSEDBEATS>
+	<ECGArrSINUS>SINUS</ECGArrSINUS>
+	<ECGArrVENT>VENT</ECGArrVENT>
+	<ECGArrIRR>IRR</ECGArrIRR>
+	<LeadOff>Lead Off</LeadOff>
+	<ECGLeadOff>ECG Lead Off</ECGLeadOff>
+	<ECGV1LeadOff>ECG V1 Lead Off</ECGV1LeadOff>
+	<ECGV2LeadOff>ECG V2 Lead Off</ECGV2LeadOff>
+	<ECGV3LeadOff>ECG V3 Lead Off</ECGV3LeadOff>
+	<ECGV4LeadOff>ECG V4 Lead Off</ECGV4LeadOff>
+	<ECGV5LeadOff>ECG V5 Lead Off</ECGV5LeadOff>
+	<ECGV6LeadOff>ECG V6 Lead Off</ECGV6LeadOff>
+	<ECGC1LeadOff>ECG C1 Lead Off</ECGC1LeadOff>
+	<ECGC2LeadOff>ECG C2 Lead Off</ECGC2LeadOff>
+	<ECGC3LeadOff>ECG C3 Lead Off</ECGC3LeadOff>
+	<ECGC4LeadOff>ECG C4 Lead Off</ECGC4LeadOff>
+	<ECGC5LeadOff>ECG C5 Lead Off</ECGC5LeadOff>
+	<ECGC6LeadOff>ECG C6 Lead Off</ECGC6LeadOff>
+	<ECGOverLoad>ECG Over Load</ECGOverLoad>
+	<ECGCommunicationStop>ECG Communication Stop</ECGCommunicationStop>
+	<ECG12LSnapShot>12 Lead SnapShot</ECG12LSnapShot>
+	<ECGAcquiring12L>Acquiring 12 Lead</ECGAcquiring12L>
+	<ECGAcquired12L>Acquire 12 Lead Complete</ECGAcquired12L>
+	<RESPCommunicationStop>RESP Communication Stop</RESPCommunicationStop>
+	<SPO2Low>SPO2 Low</SPO2Low>
+	<SPO2High>SPO2 High</SPO2High>
+	<SPO2PRLow>PR Low</SPO2PRLow>
+	<SPO2PRHigh>PR High</SPO2PRHigh>
+	<SPO2SensorOff>SPO2 Sensor Off</SPO2SensorOff>
+	<SPO2CheckSensor>SPO2 Check Sensor</SPO2CheckSensor>
+	<SPO2SearchPulseTooLong>SPO2 Search Pulse Too Long</SPO2SearchPulseTooLong>
+	<SPO2SearchingPulse>SPO2 Searching Pulse</SPO2SearchingPulse>
+	<SPO2CommunicationStop>SPO2 Communication Stop</SPO2CommunicationStop>
+	<SPO2ProbeFault>SPO2 Probe Fault</SPO2ProbeFault>
+	<CO2EtCO2Low>EtCO2 Low</CO2EtCO2Low>
+	<CO2EtCO2High>EtCO2 High</CO2EtCO2High>
+	<CO2FiCO2Low>FiCO2 Low</CO2FiCO2Low>
+	<CO2FiCO2High>FiCO2 High</CO2FiCO2High>
+	<CO2BRLow>BR Low</CO2BRLow>
+	<CO2BRHigh>BR High</CO2BRHigh>
+	<CO2Apnea>Apnea</CO2Apnea>
+	<CO2SoftwareError>CO2 Software Error</CO2SoftwareError>
+	<CO2HardwareError>CO2 Hardware Error</CO2HardwareError>
+	<CO2MotorError>CO2 Motor Speed Error</CO2MotorError>
+	<CO2MissFactoryCali>CO2 Miss Factory Calib</CO2MissFactoryCali>
+	<CO2ReplaceAdapter>CO2 Replace Adapter</CO2ReplaceAdapter>
+	<CO2NoAdapter>CO2 No Adapter</CO2NoAdapter>
+	<CO2OutRange>CO2 Out Accuracy Range</CO2OutRange>
+	<CO2TempOutRange>CO2 Temp Out Range</CO2TempOutRange>
+	<CO2BaroPressOutRange>CO2 BaroPress Out Range</CO2BaroPressOutRange>
+	<CO2ZeroRequired>CO2 Zero Required</CO2ZeroRequired>
+	<CO2ZeroDisable>CO2 Zero Disable</CO2ZeroDisable>
+	<CO2ZeroInprogress>CO2 Zero In Progress</CO2ZeroInprogress>
+	<CO2SpanCalibFailed>CO2 Span Calib Failed</CO2SpanCalibFailed>
+	<CO2SpanCalibInprogress>CO2 Span Calib Inprogress</CO2SpanCalibInprogress>
+	<IBP1SYSLow>SYS Low</IBP1SYSLow>
+	<IBP1SYSHigh>SYS High</IBP1SYSHigh>
+	<IBP1DIALow>DIA Low</IBP1DIALow>
+	<IBP1DIAHigh>DIA High</IBP1DIAHigh>
+	<IBP1MEANLow>MEAN Low</IBP1MEANLow>
+	<IBP1MEANHigh>MEAN High</IBP1MEANHigh>
+	<IBP1PRLow>PR Low</IBP1PRLow>
+	<IBP1PRHigh>PR High</IBP1PRHigh>
+	<IBP2SYSLow>SYS Low</IBP2SYSLow>
+	<IBP2SYSHigh>SYS High</IBP2SYSHigh>
+	<IBP2DIALow>DIA Low</IBP2DIALow>
+	<IBP2DIAHigh>DIA High</IBP2DIAHigh>
+	<IBP2MEANLow>MEAN Low</IBP2MEANLow>
+	<IBP2MEANHigh>MEAN High</IBP2MEANHigh>
+	<IBP2PRLow>PR Low</IBP2PRLow>
+	<IBP2PRHigh>PR High</IBP2PRHigh>
+	<COCOLow>CO Low</COCOLow>
+	<COCOHigh>CO High</COCOHigh>
+	<COCILow>CI Low</COCILow>
+	<COCIHigh>CI High</COCIHigh>
+	<COTBLow>TB Low</COTBLow>
+	<COTBHigh>TB High</COTBHigh>
+	<NIBPSYSLow>NIBP SYS Low</NIBPSYSLow>
+	<NIBPSYSHigh>NIBP SYS High</NIBPSYSHigh>
+	<NIBPDIALow>NIBP DIA Low</NIBPDIALow>
+	<NIBPDIAHigh>NIBP DIA High</NIBPDIAHigh>
+	<NIBPMAPLow>NIBP MAP Low</NIBPMAPLow>
+	<NIBPMAPHigh>NIBP MAP High</NIBPMAPHigh>
+	<NIBPCommunicationStop>NIBP Communication Stop</NIBPCommunicationStop>
+	<NIBPCommunicationTimeout>NIBP Communication Timeout</NIBPCommunicationTimeout>
+	<NIBPMeasurementAbort>Measurement Aborted</NIBPMeasurementAbort>
+	<NIBPCuffTypeError>NIBP Cuff Type Error </NIBPCuffTypeError>
+	<NIBPCuffError>NIBP Cuff Error</NIBPCuffError>
+	<NIBPCuffAirLeakage>NIBP Cuff Air Leakage</NIBPCuffAirLeakage>
+	<NIBPPneumaticBlockage>NIBP Pneumatic Blockage</NIBPPneumaticBlockage>
+	<NIBPCuffOverPressure>NIBP Cuff Over Pressure</NIBPCuffOverPressure>
+	<NIBPPressureError>NIBP Pressure Error</NIBPPressureError>
+	<NIBPSignalWeak>NIBP Signal Weak</NIBPSignalWeak>
+	<NIBPSignalSaturation>NIBP Signal Saturation</NIBPSignalSaturation>
+	<NIBPMeasureOverRange>NIBP Measure Over Range</NIBPMeasureOverRange>
+	<NIBPMeasureTimeout>NIBP Measure Timeout</NIBPMeasureTimeout>
+	<NIBPExcessiveMoving>NIBP Excessive Moving</NIBPExcessiveMoving>
+	<NIBPHardwareError>NIBP Hardware Error</NIBPHardwareError>
+	<NIBPTransducerOverRange>NIBP Transducer Over Range</NIBPTransducerOverRange>
+	<NIBPEEPROMFailure>NIBP EEPROM Failure</NIBPEEPROMFailure>
+	<NIBPServiceError>NIBP Service Error</NIBPServiceError>
+	<NIBPServiceErrorReturn>NIBP Service Error, Please Return!</NIBPServiceErrorReturn>
+	<NIBPServiceWait>NIBP Service Wait</NIBPServiceWait>
+	<NIBPServiceWaitAgain>NIBP Service Wait, Please Again!</NIBPServiceWaitAgain>
+	<CalibratePoint1>CalibratePoint 1</CalibratePoint1>
+	<CalibratePoint2>CalibratePoint 2</CalibratePoint2>
+	<ServiceCalibrate>Calibrate</ServiceCalibrate>
+	<NIBPCalibrateModel>NIBP Calibrate Model</NIBPCalibrateModel>
+	<ServiceSuccess>Success</ServiceSuccess>
+	<ServiceAgain>Again</ServiceAgain>
+	<ServiceManometer>Manometer</ServiceManometer>
+	<NIBPManometerModel>NIBP Manometer Model</NIBPManometerModel>
+	<ServicePressure>Pressure</ServicePressure>
+	<ServicePressureControl>Pressure Control</ServicePressureControl>
+	<NIBPPressureControlModel>NIBP Pressure Control Model</NIBPPressureControlModel>
+	<ServicePatientType>Patient Type</ServicePatientType>
+	<ServiceChargePressure>Charge Pressure</ServiceChargePressure>
+	<ServiceInflate>Inflate</ServiceInflate>
+	<ServiceDeflate>Deflate</ServiceDeflate>
+	<ServiceCalibrateZero>Calibrate Zero</ServiceCalibrateZero>
+	<NIBPCalibrateZeroModel>NIBP Calibrate Zero Model</NIBPCalibrateZeroModel>
+	<ServiceStart>Start</ServiceStart>
+	<UpgradeModule>Upgrade Module</UpgradeModule>
+	<UpgradeStart>Start</UpgradeStart>
+	<ModuleUpgradeStart>Module Upgrade Start</ModuleUpgradeStart>
+	<UpgradeReturn>Return</UpgradeReturn>
+	<UpgradeTimeout>Timeout</UpgradeTimeout>
+	<UpgradeCommunicationInterrupt>Communication Interrupt</UpgradeCommunicationInterrupt>
+	<UpgradeInit>Upgrade Init</UpgradeInit>
+	<UpgradeInitFailure>Upgrade Init Failure</UpgradeInitFailure>
+	<UpgradeInitSuccess>Upgrade Init Success</UpgradeInitSuccess>
+	<UPGRADECLEARING>Upgrade Clearing</UPGRADECLEARING>
+	<UpgradeClearFailure>Upgrade Clear Failure</UpgradeClearFailure>
+	<UpgradeClearSuccess>Upgrade Clear Success</UpgradeClearSuccess>
+	<UpgradeSuccess>Upgrade Success</UpgradeSuccess>
+	<UpgradeFailure>Upgrade Failure</UpgradeFailure>
+	<UpgradeInterrupt>Upgrade Interrupt</UpgradeInterrupt>
+	<UpgradeProgressing>Upgrade Progressing</UpgradeProgressing>
+	<UpgradeReadFailure>Upgrade Read Failure</UpgradeReadFailure>
+	<UpgradeReadSuccess>Upgrade Read Success</UpgradeReadSuccess>
+	<UpgradeFileReadError>Upgrade File Read Error</UpgradeFileReadError>
+	<UpgradeFileReadLastError>Upgrade File Read Last Error</UpgradeFileReadLastError>
+	<UpgradePowerOffReset>Please Power Off and Reset</UpgradePowerOffReset>
+	<UpgradeOpenFail>open fail</UpgradeOpenFail>
+	<UpgradeEntering>Enter Upgrade Mode</UpgradeEntering>
+	<UpgradeEnterFailure>Enter Upgrade Mode Failure</UpgradeEnterFailure>
+	<UpgradeEnterSuccess>Enter Upgrade Mode Success</UpgradeEnterSuccess>
+	<UpgradeCompilateError>Upgrade File Compilate Error</UpgradeCompilateError>
+	<UpgradeVersionNumber>Num</UpgradeVersionNumber>
+	<UpgradeSoftwareNumber>SoftwareNum</UpgradeSoftwareNumber>
+	<UpgradeHardwareNumber>HardwareNum</UpgradeHardwareNumber>
+	<UpgradeFindImage>Find Image …</UpgradeFindImage>
+	<UPGRADEBLMLOADERSTART>Upgrade BLMLoader Start</UPGRADEBLMLOADERSTART>
+	<UPGRADEBLMLOADERLOAD>Upgrade BLMLoader Load</UPGRADEBLMLOADERLOAD>
+	<UPGRADEIMAGETRANSFERRING>Upgrade Image Transferring</UPGRADEIMAGETRANSFERRING>
+	<UPGRADESIGNFAIL>Upgrade Sign Fail</UPGRADESIGNFAIL>
+	<UPGRADECLEARSTART>Upgrade Clear Start</UPGRADECLEARSTART>
+	<UPGRADECLEARFAIL>Upgrade Clear Failure</UPGRADECLEARFAIL>
+	<UPGRADESOFTWARENUMERROR>Upgrade Software Num Error</UPGRADESOFTWARENUMERROR>
+	<UPGRADEHARDWARENUMERROR>Upgrade Hardware Num Error</UPGRADEHARDWARENUMERROR>
+	<UPGRADEVERSIONWRITEFAIL>Upgrade Version Write Fail</UPGRADEVERSIONWRITEFAIL>
+	<UPGRADEFILENUMBERERROR>Upgrade File Num Error</UPGRADEFILENUMBERERROR>
+	<UPGRADEFILEFLASHFAIL>Upgrade File Write to Flash Error</UPGRADEFILEFLASHFAIL>
+	<UpgradeWarningNoImportFile>Warning No Import File</UpgradeWarningNoImportFile>
+	<UpgradeWarningNoImportFolder>Warning No Import Folder</UpgradeWarningNoImportFolder>
+	<UpgradeiDMWillRestartPleasedonotpoweroff>iDM will restart. Please do not power off.</UpgradeiDMWillRestartPleasedonotpoweroff>
+	<SystemWillRestartPleasedonotpoweroff>System will restart. Please do not power off.</SystemWillRestartPleasedonotpoweroff>
+	<ServiceSystem>Service System</ServiceSystem>
+	<ServiceVersion>Version</ServiceVersion>
+	<ServiceCPUTemp>CPU Temp</ServiceCPUTemp>
+	<iDMVersion>iDM</iDMVersion>
+	<ECGVersion>ECG</ECGVersion>
+	<NIBPVersion>NIBP</NIBPVersion>
+	<SPO2Version>SPO2</SPO2Version>
+	<TEMPVersion>TEMP</TEMPVersion>
+	<iDMBoardVersion>iDMBoard</iDMBoardVersion>
+	<PRT72Version>PRT72</PRT72Version>
+	<PDVersion>PD</PDVersion>
+	<COREVersion>CORE</COREVersion>
+	<VersionReturn>Return</VersionReturn>
+	<FactorySystem>Factory System</FactorySystem>
+	<PDModuleTest>PD Module Test</PDModuleTest>
+	<ModuleCfg>Module Config</ModuleCfg>
+	<SupervisorSystem>Supervisor System Main Menu</SupervisorSystem>
+	<SupervisorModifyConfig>Modify Config</SupervisorModifyConfig>
+	<SupervisorExitSave>Exit &amp; Save Config</SupervisorExitSave>
+	<SupervisorExitNotSave>Exit &amp; Not Save Config</SupervisorExitNotSave>
+	<SupervisorDeviceIdentifier>Device Identifier</SupervisorDeviceIdentifier>
+	<SupervisorDefaultPatType>Default Patient Type</SupervisorDefaultPatType>
+	<PassWord>Password</PassWord>
+	<SupervisorDel>Del</SupervisorDel>
+	<SupervisorOK>OK</SupervisorOK>
+	<NoPasscodeEntered>No PassWord Entered</NoPasscodeEntered>
+	<InCorrectPasscode>Incorrect Password Entered</InCorrectPasscode>
+	<SupervisorExportImport>Import/Export</SupervisorExportImport>
+	<SupervisorExport>Export</SupervisorExport>
+	<SupervisorImport>Import</SupervisorImport>
+	<SupervisorExportingPleaseWait>Exporting, please wait!</SupervisorExportingPleaseWait>
+	<SupervisorImportingPleaseWait>Importing, please wait!</SupervisorImportingPleaseWait>
+	<SupervisorPrint>Print</SupervisorPrint>
+	<SupervisorPrintConfig>Print Config</SupervisorPrintConfig>
+	<SupervisorRestore>Restore Defaults</SupervisorRestore>
+	<SupervisorRestoreDefaultConfig>Restore to factory default configurations</SupervisorRestoreDefaultConfig>
+	<SupervisorGeneralMenu>General</SupervisorGeneralMenu>
+	<SupervisorGeneralMenuDesc>General Setting</SupervisorGeneralMenuDesc>
+	<SupervisorNotchFilter>Notch Filter</SupervisorNotchFilter>
+	<SupervisorLimbFrequency>Limb/chest Leads ECG Bandwidth</SupervisorLimbFrequency>
+	<Supervisor12lFrequency>12-Lead ECG Bandwidth</Supervisor12lFrequency>
+	<SupervisorStartOnHRAlarm>Measure On HR ALarm</SupervisorStartOnHRAlarm>
+	<SupervisorStartOnMeasureFail>Measure On Previous Failed</SupervisorStartOnMeasureFail>
+	<SupervisorSTATFunction>STAT Function</SupervisorSTATFunction>
+	<SupervisorAdultInitialCuff>Adult Initial Cuff Inflation</SupervisorAdultInitialCuff>
+	<SupervisorPrediatricInitialCuff>Pediatric Initial Cuff Inflation</SupervisorPrediatricInitialCuff>
+	<SupervisorNeonatalInitialCuff>Neonate Initial Cuff Inflation</SupervisorNeonatalInitialCuff>
+	<SupervisorNIBPMeasureMode>NIBP Measure Mode</SupervisorNIBPMeasureMode>
+	<SupervisorNIBPAutoInterval>NIBP Auto Interval</SupervisorNIBPAutoInterval>
+	<SupervisorLocalMenu>Locale</SupervisorLocalMenu>
+	<SupervisorLocalMenuDesc>Locale Setting</SupervisorLocalMenuDesc>
+	<SupervisorDisplayMenu>Display</SupervisorDisplayMenu>
+	<SupervisorDisplayMenuDesc>Display Setting</SupervisorDisplayMenuDesc>
+	<SupervisorLanguage>Default Language</SupervisorLanguage>
+	<SupervisorOtherMenu>Other</SupervisorOtherMenu>
+	<SupervisorNIBPUnit>NIBP Unit</SupervisorNIBPUnit>
+	<SupervisorCO2Unit>CO2 Unit</SupervisorCO2Unit>
+	<SupervisorTEMPUnit>TEMP Unit</SupervisorTEMPUnit>
+	<SupervisorWeightUnit>Weight Unit</SupervisorWeightUnit>
+	<SupervisorHeightUnit>Height Unit</SupervisorHeightUnit>
+	<Green>Green</Green>
+	<Yellow>Yellow</Yellow>
+	<Blue>Blue</Blue>
+	<Red>Red</Red>
+	<Brown>Brown</Brown>
+	<White>White</White>
+	<Magenta>Magenta</Magenta>
+	<Orange>Orange</Orange>
+	<Cyan>Cyan</Cyan>
+	<Purple>Purple</Purple>
+	<SupervisorAudioMenu>Audio</SupervisorAudioMenu>
+	<SupervisorAudioMenuDesc>Audio Setting</SupervisorAudioMenuDesc>
+	<SupervisorVoiceVolume>Default Voice Prompt Tone</SupervisorVoiceVolume>
+	<AlarmPauseTime>Alarm Pause Time</AlarmPauseTime>
+	<AlarmOffPromptMechanism>Alarm Off Prompt Mechanism</AlarmOffPromptMechanism>
+	<EnableAlarmAudioOff>Enable Alarm Audio Off</EnableAlarmAudioOff>
+	<EnableAlarmOff>Enable Alarm Off </EnableAlarmOff>
+	<AlarmOffAtPowerOn>Alarm Off At Power On</AlarmOffAtPowerOn>
+	<SupervisorLocalPort>Local Port</SupervisorLocalPort>
+	<SupervisorServerIP>Server IP</SupervisorServerIP>
+	<SupervisorServerPort>Server Port</SupervisorServerPort>
+	<Time>Time</Time>
+	<Date>Date</Date>
+	<SupervisorTimeAndDataMenu>Date Time</SupervisorTimeAndDataMenu>
+	<SupervisorTimeAndDataMenuDesc>Time And Date Setting</SupervisorTimeAndDataMenuDesc>
+	<SupervisorYear>Year</SupervisorYear>
+	<SupervisorMonth>Month</SupervisorMonth>
+	<SupervisorDay>Day</SupervisorDay>
+	<SupervisorHour>Hour</SupervisorHour>
+	<SupervisorMinute>Minute</SupervisorMinute>
+	<SupervisorSecond>Second</SupervisorSecond>
+	<SupervisorDateFormat>Date Format</SupervisorDateFormat>
+	<YMD>YYYY/MM/DD</YMD>
+	<MDY>MM/DD/YYYY</MDY>
+	<DMY>DD/MM/YYYY</DMY>
+	<SupervisorTimeFormat>Time Format</SupervisorTimeFormat>
+	<SupervisorDisplaySec>Display Second</SupervisorDisplaySec>
+	<SupervisorCodeMarker>Code Marker</SupervisorCodeMarker>
+	<SupervisorCodeMarkerDesc>Code Marker Setting</SupervisorCodeMarkerDesc>
+	<SupervisorMonitorLead>Default ECG Lead In Monitor Mode</SupervisorMonitorLead>
+	<SupervisorLeadNameConvention>ECG Lead Convention</SupervisorLeadNameConvention>
+	<SupervisorDisplayUserPrompt>Display User Prompt</SupervisorDisplayUserPrompt>
+	<SupervisorDisplayAnalysisKey>Display Analyze Key</SupervisorDisplayAnalysisKey>
+	<SupervisorPhyAlarmVisualIndicator>Physiological Alarm Visual Indicator</SupervisorPhyAlarmVisualIndicator>
+	<DisplayFixRateKey>Fixed Rate Pacing</DisplayFixRateKey>
+	<SupervisorPrintMenu>Print</SupervisorPrintMenu>
+	<SupervisorPrintMenuDesc>Print Setting</SupervisorPrintMenuDesc>
+	<SupervisorAutoPrint30Jtest>Print 30J Self-test Results</SupervisorAutoPrint30Jtest>
+	<SupervisorAutoPrint12L>Automatic Printing Of 12-Lead Report</SupervisorAutoPrint12L>
+	<Supervisor12LMenu>12-Lead</Supervisor12LMenu>
+	<Supervisor12LMenuDesc>12-Lead Setting</Supervisor12LMenuDesc>
+	<Print12LSnapshotFormat>12-Lead Snapshot Print Format</Print12LSnapshotFormat>
+	<PDFReportFormat>12-Lead PDF Report Format</PDFReportFormat>
+	<Standard>Standard</Standard>
+	<Cabrera>Cabrera</Cabrera>
+	<ECG12LDisplayFormat>12-Lead Display Format</ECG12LDisplayFormat>
+	<SupervisorTimeWindow2x6PDF>2x6 12-Lead Report Time Interval</SupervisorTimeWindow2x6PDF>
+	<SupervisorAutoTransforByWifi>Automatic 12-Lead ECG Transmission</SupervisorAutoTransforByWifi>
+	<SupervisorTransforFileFormat>12-Lead File Format</SupervisorTransforFileFormat>
+	<RealTimePrintTopLead>Real-Time Print Top Lead</RealTimePrintTopLead>
+	<RealTimePrintMidLead>Real-Time Print Middle Lead</RealTimePrintMidLead>
+	<RealTimePrintBottomLead>Real-Time Print Bottom Lead</RealTimePrintBottomLead>
+	<ErrorPassWordERROR>Password Error!</ErrorPassWordERROR>
+	<Warn>Warning</Warn>
+	<WarningNoUSB>Not find USB, please check!</WarningNoUSB>
+	<WarnLessUSBFreeSpace>USB free space not enough, please check!</WarnLessUSBFreeSpace>
+	<WarningNoImportFile>Import file does not exist, please check!</WarningNoImportFile>
+	<WarningImportFileError>Import file error:</WarningImportFileError>
+	<WarningLoadDefaultCfgFail>Load default Config fail, please check!</WarningLoadDefaultCfgFail>
+	<FileIsExistContinue>File exists,continue?</FileIsExistContinue>
+	<MD5NOTMATCH>MD5 Not Match</MD5NOTMATCH>
+	<ORIGINALMD5>Original MD5</ORIGINALMD5>
+	<CALCULATEDMD5>Calculated MD5</CALCULATEDMD5>
+	<MD5NOFIND>MD5 No Find</MD5NOFIND>
+	<Prompt>Prompt</Prompt>
+	<PromptCfgNotSave>Config file is not saved, can you save?</PromptCfgNotSave>
+	<PromptExportOK>Export Config OK!</PromptExportOK>
+	<PromptImportOK>Config Imported, Press Modify Config to View!</PromptImportOK>
+	<PromptLoadDefaultCfgOK>Defaults Restored, Press Modify Config to View!</PromptLoadDefaultCfgOK>
+	<ComfirmLoadDefaultCfg>Do you Comfirm that restore default config?</ComfirmLoadDefaultCfg>
+	<WaveformSources>Waveform Sources</WaveformSources>
+	<Replace>Replace</Replace>
+	<Insert>Insert</Insert>
+	<Remove>Remove</Remove>
+	<TransferRescueDataByUSB>Transferring Rescue Data to USB</TransferRescueDataByUSB>
+	<TransferRescueDataByWIFI>Transferring Rescue Data to WIFI</TransferRescueDataByWIFI>
+	<TransferSupervisorByUSB>Transferring Supervisor Config to USB</TransferSupervisorByUSB>
+	<TransferSupervisorByWIFI>Transferring Supervisor Config to WIFI</TransferSupervisorByWIFI>
+	<TransferRescueDataComplete>Rescue Data Transfer Complete</TransferRescueDataComplete>
+	<TransferSupervisorComplete>Supervisor Config Transfer Complete</TransferSupervisorComplete>
+	<TransferFailed>Transfer Failed</TransferFailed>
+	<TransferCancel>Transfer Cancel</TransferCancel>
+	<ECG12LTransfersuccess>ECG 12 Lead Transfer Success</ECG12LTransfersuccess>
+	<ECG12LTransferfail>ECG 12 Lead Transfer Fail</ECG12LTransferfail>
+	<TransferDisconnect>U-disk disconnected abnormally</TransferDisconnect>
+	<NotDisconnectUSB>Do not disconnect the U-disk</NotDisconnectUSB>
+	<RemoveUSB>Transfer is done, you can remove the U-disk safely</RemoveUSB>
+	<USB>USB</USB>
+	<PrintSelectedRescue>Select Rescue Incident to Print</PrintSelectedRescue>
+	<TransferSelectedRescue>Select Rescue Incident to Transfer</TransferSelectedRescue>
+	<TransferType>Transfer Type</TransferType>
+	<TransferSelect>Transfer Selection</TransferSelect>
+	<TransferAll>Transfer All</TransferAll>
+	<EraseSelectedRescue>Erase Selected Rescue</EraseSelectedRescue>
+	<EraseSelectedRescueData>Erase Selected Rescue Data?</EraseSelectedRescueData>
+	<EraseSelect>Erase Select</EraseSelect>
+	<UpDownPage>Up Down Page</UpDownPage>
+	<LeftRightPage>Left Right Page</LeftRightPage>
+	<IncidentMove>Incident Move</IncidentMove>
+	<Set>Set</Set>
+	<Incident>Incident</Incident>
+	<WaveInfo>Wave Info</WaveInfo>
+	<Type>Type</Type>
+	<Level>Level</Level>
+	<Upper>Upper</Upper>
+	<Lower>Lower</Lower>
+	<EventList>Event List</EventList>
+	<RealTimePrint>RealTIme Print</RealTimePrint>
+	<WaveFreeze>Wave Freeze</WaveFreeze>
+	<All >All</All >
+	<Hint >Hint</Hint >
+	<Interval>Interval</Interval>
+	<Rescue>Currect Rescue</Rescue>
+	<AllRescue>All Rescue</AllRescue>
+	<RangeRescue>Range Rescue</RangeRescue>
+	<CurrentIncident>Current Incident</CurrentIncident>
+	<AllIncidents>All Incidents</AllIncidents>
+	<SelectIncidents>Select Incidents</SelectIncidents>
+	<Selected>Selected</Selected>
+	<IncidentLog>Incident Log</IncidentLog>
+	<AllSnapshots>All Snapshots</AllSnapshots>
+	<RescueData>Rescue Data</RescueData>
+	<AllHeader>Heads of All Incidents</AllHeader>
+	<More>More</More>
+	<SelectedHeadAndSnapshot>Head and Snapshots of Selected Incidents</SelectedHeadAndSnapshot>
+	<SelectedLogs>Logs of Selected Incidents</SelectedLogs>
+	<AllSnapshotIncident>Snapshots of All Incidents</AllSnapshotIncident>
+	<PrintOption>Print Option</PrintOption>
+	<PrintIncident>Print Incident</PrintIncident>
+	<SelectIncidentsToPrint>Select Incidents to Print</SelectIncidentsToPrint>
+	<PrintEventLog>Print Event Log</PrintEventLog>
+	<SelectSnapshotsToPrint>Select Snapshots to Print</SelectSnapshotsToPrint>
+	<SelectSnapshotsToTransfer>Select Snapshots to Transfer</SelectSnapshotsToTransfer>
+	<SelectSingleIncidentToSelectSnapshots>Select Single Incident to Select Snapshots to print!</SelectSingleIncidentToSelectSnapshots>
+	<PrintSnapshot>Print Snapshot</PrintSnapshot>
+	<PatTrendData>Patient Trend Data</PatTrendData>
+	<TrendTableSet>Trend Table Set</TrendTableSet>
+	<ResolutionRatio>Resolution Ratio</ResolutionRatio>
+	<TrendGroup>Trend Group</TrendGroup>
+	<MoveCoordinate>Move Coordinate</MoveCoordinate>
+	<MoveCursor>Move Cursor</MoveCursor>
+	<MoveEvent>Move Event</MoveEvent>
+	<AllAuto>All Auto</AllAuto>
+	<TimeInterval>Time Interval</TimeInterval>
+	<WaveNumber>Wave Number</WaveNumber>
+	<AutoRuler>Auto Ruler</AutoRuler>
+	<DownRuler>Down Ruler</DownRuler>
+	<UpRuler>Up Ruler</UpRuler>
+	<NewPatientConnected>New Patiend Connected</NewPatientConnected>
+	<TrendDataNotAvailableForPriorPatients>Trend data no avaliable for prior patients - New Patient Connected.</TrendDataNotAvailableForPriorPatients>
+	<Column>Column</Column>
+	<Trend>Trend</Trend>
+	<Summary>Summary</Summary>
+	<SummaryReportComplete>Summary Report Complete!</SummaryReportComplete>
+	<ExportToUSB>Export to U-Disk</ExportToUSB>
+	<Clear>Clear</Clear>
+	<ClearAllRescueData>Clear All Rescue Data?</ClearAllRescueData>
+	<ECGRhythm>ECG Rhythm</ECGRhythm>
+	<ECGForeAnalysis>Foreground ECG Analysis</ECGForeAnalysis>
+	<ShockDelivery>Shock Delivery</ShockDelivery>
+	<CheckPatient>Check Patient</CheckPatient>
+	<PacerStartup>Pacer Startup</PacerStartup>
+	<NIBPReading>NIBP Reading</NIBPReading>
+	<PhyAlarm>Physiological Alarm</PhyAlarm>
+	<AlarmMute>Mute</AlarmMute>
+	<RecorderAction>Recorder Action</RecorderAction>
+	<PrinterDoorOpened>Printer Door Opened</PrinterDoorOpened>
+	<PrinterOutOfPaper>Printer Out Of Paper</PrinterOutOfPaper>
+	<PrinterFault>Printer Fault</PrinterFault>
+	<DefibDisabled>Defib Disabled</DefibDisabled>
+	<PacerDisabled>Pacer Disabled</PacerDisabled>
+	<ReplaceBattery>Replace Battery</ReplaceBattery>
+	<BatteryDisconnected>Battery Disconnected</BatteryDisconnected>
+	<BatteryError>Battery Error</BatteryError>
+	<BatteryCommFault>Battery Comm Fault</BatteryCommFault>
+	<BatteryInfo>Battery Info</BatteryInfo>
+	<BatteryCapacityIcons>Battery Capacity Incons</BatteryCapacityIcons>
+	<SmtpServer>SMTP Server</SmtpServer>
+	<SmtpServerPort>SMTP Server Port</SmtpServerPort>
+	<Username>Username</Username>
+	<ConnectionSecurity>Connection Security</ConnectionSecurity>
+	<ConfiguredMailRecipients>Configured Mail Recipients</ConfiguredMailRecipients>
+	<Mail>Mail</Mail>
+	<MailSetting>Mail Setting</MailSetting>
+	<RecipientInfoEdit>Recipient Info Edit</RecipientInfoEdit>
+	<Name>Name</Name>
+	<EmailAddress>E-mail Address</EmailAddress>
+	<InvalidEmailAddress>Invalid E-mail Address</InvalidEmailAddress>
+	<Confirm>Confirm</Confirm>
+	<ConfirmToMDefib>You are about to Exit AED mode and Enter to Manual mode. Are you sure?</ConfirmToMDefib>
+	<USB>USB</USB>
+	<EMAIL>E-mail</EMAIL>
+	<Transfer>Transfer</Transfer>
+	<MailCurrentRescue>Mail Current Rescue</MailCurrentRescue>
+	<MailSelectReport>Mail Select Rescue</MailSelectReport>
+	<UsbCurrentRescue>USB Current Rescue</UsbCurrentRescue>
+	<UsbCurrentReport>USB Select Report</UsbCurrentReport>
+	<TransferECG12LeadByUSB>Transfer 12 Lead ECG by USB</TransferECG12LeadByUSB>
+	<TransferECG12LeadByWIFI>Transfer 12 Lead ECG by WIFI</TransferECG12LeadByWIFI>
+	<TransferECG12LeadComplete>Transfer 12 Lead ECG Complete</TransferECG12LeadComplete>
+	<ECG12LEADECGSNAPSHOT>12 LEAD ECG SNAPSHOT</ECG12LEADECGSNAPSHOT>
+	<IncidentIdentificationNumber>Incident Identification Number</IncidentIdentificationNumber>
+	<ECG12LeadAcquired>12 Lead Acquired</ECG12LeadAcquired>
+	<ECG12LeadRescueStarttime>Rescue Start Time</ECG12LeadRescueStarttime>
+	<SucceedRescueDataByWIFI>Succeed to Transfer Email by WIFI</SucceedRescueDataByWIFI>
+	<PleaseseletSnapShot>Select SnapShots</PleaseseletSnapShot>
+	<PleaseseletPrint>Select Snapshots to Print </PleaseseletPrint>
+	<ECG12LeadAcquisitionHalted>12 Lead Acquisition Halted</ECG12LeadAcquisitionHalted>
+	<USBTransferHasCanceled>USB Transfer Has Canceled</USBTransferHasCanceled>
+	<ThisSnapShotNoData>There is no data in this SnapShot</ThisSnapShotNoData>
+	<ECG12LeadSnapshot>ECG 12 Lead Snapshot List</ECG12LeadSnapshot>
+	<E-Mail>E-Mail</E-Mail>
+	<NumID>Num</NumID>
+	<MailAddress>Mail Address</MailAddress>
+	<E-mailAddressList>E-mail Address List</E-mailAddressList>
+	<ECGGain>ECG Gain</ECGGain>
+	<Printspeed>Print speed</Printspeed>
+	<SerialNum>Serial Number</SerialNum>
+	<SWVersion>Software Version</SWVersion>
+	<CodeMarker>Code Marker</CodeMarker>
+	<CodeMarkerSnapshot>CodeMarker Snapshot</CodeMarkerSnapshot>
+	<CodeMarkerDefault>Code Marker</CodeMarkerDefault>
+	<CodeMarker1>CPR</CodeMarker1>
+	<CodeMarker2>EPI</CodeMarker2>
+	<CodeMarker3>Atrop</CodeMarker3>
+	<CodeMarker4>DOPA</CodeMarker4>
+	<CodeMarker5>Bicarb</CodeMarker5>
+	<CodeMarker6>Aspirin</CodeMarker6>
+	<CodeMarker7>Oxygen</CodeMarker7>
+	<CodeMarker8>IV</CodeMarker8>
+	<CodeMarker9>Morphine</CodeMarker9>
+	<CodeMarker10>Valium</CodeMarker10>
+	<CodeMarker11>B-block</CodeMarker11>
+	<CodeMarker12>LIDO</CodeMarker12>
+	<CodeMarker13>Mag Sulf</CodeMarker13>
+	<CodeMarker14>Thrombo</CodeMarker14>
+	<CodeMarker15>Heparin</CodeMarker15>
+	<CodeMarker16>Procain</CodeMarker16>
+	<CodeMarker17>Cordar</CodeMarker17>
+	<CodeMarker18>Thiamine</CodeMarker18>
+	<CodeMarker19>Intubate</CodeMarker19>
+	<CodeMarker20>Narcan</CodeMarker20>
+	<CodeMarker21>Atrovent</CodeMarker21>
+	<CodeMarker22>Adenosin</CodeMarker22>
+	<CodeMarker23>Fentanyl</CodeMarker23>
+	<CodeMarker24>Digoxin</CodeMarker24>
+	<CodeMarker25>Vasopr</CodeMarker25>
+	<CodeMarker26>Dextrose</CodeMarker26>
+	<CodeMarker27>Paralytic</CodeMarker27>
+	<CodeMarker28>Nitro</CodeMarker28>
+	<CodeMarker29>Lasix</CodeMarker29>
+	<CodeMarker30>Calcium</CodeMarker30>
+	<CodeMarker31></CodeMarker31>
+	<CodeMarker32></CodeMarker32>
+	<DoseCalculation>Dose Calculation</DoseCalculation>
+	<DrugName>Drug Name</DrugName>
+	<DrugTotal>Drug Total</DrugTotal>
+	<LiquidVolume>Liquid Volume</LiquidVolume>
+	<DrugConcentration>DrugConcentration</DrugConcentration>
+	<Dosemin>Dose</Dosemin>
+	<Dosehr>Dose</Dosehr>
+	<DoseKgmin>Dose</DoseKgmin>
+	<DoseKghr>Dose</DoseKghr>
+	<InfusionRate>Infusion Rate</InfusionRate>
+	<DripRate>Drip Rate</DripRate>
+	<DropSize>Drop Size</DropSize>
+	<Duration>Duration</Duration>
+	<TitrationTable>Titration Table</TitrationTable>
+	<DrugA>Drug A </DrugA>
+	<DrugB>Drug B</DrugB>
+	<DrugC>Drug C</DrugC>
+	<DrugD>Drug D</DrugD>
+	<DrugE>Drug E</DrugE>
+	<Aminophyline></Aminophyline>
+	<Dobutamine></Dobutamine>
+	<Dopamine></Dopamine>
+	<Epinephrine></Epinephrine>
+	<Heparin></Heparin>
+	<Isuprel></Isuprel>
+	<Lidocaine></Lidocaine>
+	<Nipride></Nipride>
+	<Nitroglycerin></Nitroglycerin>
+	<Pitocin></Pitocin>
+	<InvalidInput>Invalid input, valid range</InvalidInput>
+	<Record>record</Record>
+	<TitrateTableSet>titrate table set</TitrateTableSet>
+	<Step>step</Step>
+	<DatumTerm>datum term</DatumTerm>
+	<DoseType>dose type</DoseType>
+	<minDose>dose/min</minDose>
+	<hDose>dose/h</hDose>
+	<kgminDose>dose/kg/min</kgminDose>
+	<kghDose>dose/kg/h</kghDose>
+	<InputValue>Input Value</InputValue>
+	<OutputValue>Output Value</OutputValue>
+	<CalculationReview>Calculation Review</CalculationReview>
+	<CheckOutput>Check Output</CheckOutput>
+	<Calculation ></Calculation >
+	<ReferenceRange>Reference Range</ReferenceRange>
+	<CheckInput>Check Input</CheckInput>
+	<PrimitiveCalculation>Primitive Calculation</PrimitiveCalculation>
+	<InOutValue></InOutValue>
+	<ZeroCalibSuccess></ZeroCalibSuccess>
+	<CalibrationSuccess></CalibrationSuccess>
+	<MeasurePressureIsPulse></MeasurePressureIsPulse>
+	<ZeroCalibPressureBeyondMeasureRange></ZeroCalibPressureBeyondMeasureRange>
+	<CalibrationPressureBeyondMeasureRange></CalibrationPressureBeyondMeasureRange>
+	<NoZeroCalib></NoZeroCalib>
+	<LeadOffZeroCalibFail></LeadOffZeroCalibFail>
+	<LeadOffCalibrationFail></LeadOffCalibrationFail>
+	<NoSetZeroCalibTime></NoSetZeroCalibTime>
+	<NoSetCalibrationTime></NoSetCalibrationTime>
+	<Sensitivity>Sensitivity</Sensitivity>
+	<ManualRulerSet>Manual Ruler Set</ManualRulerSet>
+	<PressureHighRuler>Pressure High Ruler</PressureHighRuler>
+	<PressureLowRuler>Pressure Low Ruler</PressureLowRuler>
+	<LessThan>Less Than</LessThan>
+	<GreaterThan>Greater Than</GreaterThan>
+	<ZeroRequired>Zero Required</ZeroRequired>
+	<Channel>Channel</Channel>
+	<SmartPluseTone>Smart PluseTone</SmartPluseTone>
+	<WaveVelocity>Wave Velocity</WaveVelocity>
+	<Gain>Gain</Gain>
+	<ModuleControl>Module Control</ModuleControl>
+	<HIGH>HIGH</HIGH>
+	<NORMAL>NORMAL</NORMAL>
+	<LOW>LOW</LOW>
+	<OFF>OFF</OFF>
+	<ON>ON</ON>
+	<NBIPInitialCuff>NBIP Initial Cuff</NBIPInitialCuff>
+	<IntervalTime>Interval Time</IntervalTime>
+	<NIBPMeasureMode>NIBP Measure Mode</NIBPMeasureMode>
+	<ExportFileCompleted>Export File Completed</ExportFileCompleted>
+	<ExportFileFailed>Export File Failed</ExportFileFailed>
+	<ExportImport>Export/Import</ExportImport>
+	<ExportImportConfig>Export/ImportConfig</ExportImportConfig>
+	<Export>Export</Export>
+	<Import>Import</Import>
+	<NotRepeated>Not Repeated</NotRepeated>
+	<Repeated>Repeated</Repeated>
+	<AllNotRepeated>All Not Repeated</AllNotRepeated>
+	<AllRepeated>All Repeated</AllRepeated>
+	<IfSelectTheSameNameFile>if select the same name file</IfSelectTheSameNameFile>
+	<ExportFilefailed>Export File Failed</ExportFilefailed>
+	<ExportFileCompleted>Export File Completed</ExportFileCompleted>
+	<NotFoundDeviceNode>Not Found Device Node</NotFoundDeviceNode>
+	<NotFoundUDisk>Not Found U Disk</NotFoundUDisk>
+	<PleaseSelectFiles>Please Select Files</PleaseSelectFiles>
+	<PleaseAddExportFiles>Please Add Export Files</PleaseAddExportFiles>
+	<ImportFilefailed>Import File failed</ImportFilefailed>
+	<ImportFileCompleted>Import File Completed</ImportFileCompleted>
+	<PleaseAddImportFiles>Please Add Import Files</PleaseAddImportFiles>
+	<FactoryMaintainSystem>Factory Maintain 3System</FactoryMaintainSystem>
+	<FactoryMaintainPassword>Factory Maintain Password</FactoryMaintainPassword>
+	<FactoryMaintainModifyConfig>Factory Maintain Modify Config</FactoryMaintainModifyConfig>
+	<MachineConfigModuleMenu>Machine Config Module Menu</MachineConfigModuleMenu>
+	<IBPModule>IBP Module</IBPModule>
+	<CO2Module>CO2 Module</CO2Module>
+	<ECG12LeadsModule>ECG 12Leads Module</ECG12LeadsModule>
+	<PrinterModule>Printer Module</PrinterModule>
+	<HDMIModule>HDMI Module</HDMIModule>
+	<WifiModule>Wifi Module</WifiModule>
+	<ScreenModule>Screen Module</ScreenModule>
+	<NurseCallingModule>Nurse Calling Module</NurseCallingModule>
+	<AnalogOutputModule>Analog Output Module</AnalogOutputModule>
+	<SYNCDefibrillationModule>SYNC Defibrillation Module</SYNCDefibrillationModule>
+	<COModule>COModule</COModule>
+	<PHASEIN>PHASEIN</PHASEIN>
+	<M601>M601</M601>
+	<MachineConfigModuleMenuDesc>Machine Config Module Menu Desc</MachineConfigModuleMenuDesc>
+	<MonitorInfoMenu>Monitor Info Menu</MonitorInfoMenu>
+	<CumulativeWorkingTime>Cumulative Working Time</CumulativeWorkingTime>
+	<TemperatureInsideCase>Temperature Inside Case</TemperatureInsideCase>
+	<BatteryLevel>Battery Level</BatteryLevel>
+	<BatteryVoltage>Battery Voltage</BatteryVoltage>
+	<MachineType>Machine Type</MachineType>
+	<MACAddress>MAC Address</MACAddress>
+	<ScreenResolationSize>Screen Resolation Size</ScreenResolationSize>
+	<ElectronicSerialNumber>Electronic Serial Number</ElectronicSerialNumber>
+	<SetElectronicSerialNumber>Set Electronic Serial Number</SetElectronicSerialNumber>
+	<MonitorInfoMenuDesc>Monitor Info Menu Desc</MonitorInfoMenuDesc>
+	<NIBPCalibrationMenu>NIBP Calibration Menu</NIBPCalibrationMenu>
+	<NIBPCalibration>NIBP Calibration</NIBPCalibration>
+	<NIBPCalibrationMenuDesc>NIBP CalibrationMenu Desc</NIBPCalibrationMenuDesc>
+	<SelectStarterLogoMenu>Select StarterLogo Menu</SelectStarterLogoMenu>
+	<SelectStarterLogo>Select Starter Logo</SelectStarterLogo>
+	<SelectStarterLogoMenuDesc>Select Starter Logo Menu Desc</SelectStarterLogoMenuDesc>
+	<ServiceErrorLogEntrance>Service ErrorLog Entrance</ServiceErrorLogEntrance>
+	<ServiceErrorLogEntranceDesc>Service ErrorLog Entrance Desc</ServiceErrorLogEntranceDesc>
+	<ServiceUpdateEntrance>Service Update Entrance</ServiceUpdateEntrance>
+	<ServiceUpdateEntranceDesc>Service Update Entrance Desc</ServiceUpdateEntranceDesc>
+	<SoftWareVersionMenu>SoftWare Version Menu</SoftWareVersionMenu>
+	<SystemSoftwareVersion>System Software Version</SystemSoftwareVersion>
+	<PowerManagerSoftwareVersion>Power Manager Software Version</PowerManagerSoftwareVersion>
+	<Uboot>Uboot</Uboot>
+	<Kernel>Kernel</Kernel>
+	<KeyboardModule>Keyboard Module</KeyboardModule>
+	<RecorderModule>Recorder Module</RecorderModule>
+	<ECGAlgorithmType>ECG Algorithm Type</ECGAlgorithmType>
+	<UserMaintainGeneralMenuDesc>User Maintain General Menu Desc</UserMaintainGeneralMenuDesc>
+	<BootAndStandbyLogoVersion>BootAndStandbyLogoVersion</BootAndStandbyLogoVersion>
+	<UserMaintainGeneralMenu>User Maintain General Menu</UserMaintainGeneralMenu>
+	<AlarmMaintainMenu>Alarm Maintain Menu</AlarmMaintainMenu>
+	<MinimumALarmVolume>Minimum Alarm Volume</MinimumALarmVolume>
+	<AlarmPauseTime>Alarm PauseTime</AlarmPauseTime>
+	<AlarmOffPromptMechanism>Alarm Off Prompt Mechanism</AlarmOffPromptMechanism>
+	<EnableAlarmAudioOff>Enable Alarm Audio Off</EnableAlarmAudioOff>
+	<EnableAlarmOff>Enable Alarm Off</EnableAlarmOff>
+	<AlarmOffAtPowerOn>Alarm Off At Power On</AlarmOffAtPowerOn>
+	<No>No</No>
+	<Yes>Yes</Yes>
+	<IsPauseMaxAlarm15Min>Is Pause Max Alarm 15Min</IsPauseMaxAlarm15Min>
+	<forbid>forbid</forbid>
+	<allow>allow</allow>
+	<ReminderTone>Reminder Tone</ReminderTone>
+	<close>close</close>
+	<open>open</open>
+	<openAgain>Open Again</openAgain>
+	<ReminderToneIntervals>Reminder Tone Intervals</ReminderToneIntervals>
+	<H1min>1min</H1min>
+	<H2min>2min</H2min>
+	<H3min>3min</H3min>
+	<_alarmLightOnAlarmReset>Alarm Light On Alarm Reset</_alarmLightOnAlarmReset>
+	<Defaults>Defaults</Defaults>
+	<RecoverDefaults>Recover Defaults</RecoverDefaults>
+	<ModuleMaintainMenu>Module Maintain Menu</ModuleMaintainMenu>
+	<ModuleMaintainMenuDesc>Module Maintain Menu Desc</ModuleMaintainMenuDesc>
+	<AnaesthesiaModuleCalibration>Anaesthesia Module Calibration</AnaesthesiaModuleCalibration>
+	<IBPPressureCalibration>IBP Pressure Calibration</IBPPressureCalibration>
+	<CO2ModuleMaintenance>CO2 Module Maintenance</CO2ModuleMaintenance>
+	<NIBPPressureTest>NIBP Pressure Test</NIBPPressureTest>
+	<NIBPLeakageDetection>NIBP Leakage Detection</NIBPLeakageDetection>
+	<ECGModuleCalibration>ECG Module Calibration</ECGModuleCalibration>
+	<TouchScreenCalibration>Touch Screen Calibration</TouchScreenCalibration>
+	<COStart>CO Start</COStart>
+	<StopAnaesthesia>Stop Anaesthesia</StopAnaesthesia>
+	<Anaesthesia>Anaesthesia</Anaesthesia>
+	<StopNIBPPressureTest>Stop NIBP Pressure Test</StopNIBPPressureTest>
+	<StopIBPPressureCalibration>Stop IBP Pressure Calibration</StopIBPPressureCalibration>
+	<StopNIBPLeakageDetection>Stop NIBP Leakage Detection</StopNIBPLeakageDetection>
+	<StopECGModuleCalibration>Stop ECG Module Calibration</StopECGModuleCalibration>
+	<StopCO2ModuleMaintenance>Stop CO2 Module Maintenance</StopCO2ModuleMaintenance>
+	<StopTouchScreenCalibration>Stop Touch Screen Calibration</StopTouchScreenCalibration>
+	<Cancel>Cancel</Cancel>
+	<OthersMaintainMenu>Others Maintain Menu</OthersMaintainMenu>
+	<OthersMaintainMenuDesc>Others Maintain Menu Desc</OthersMaintainMenuDesc>
+	<WaveLine>WaveLine</WaveLine>
+	<fat>fat</fat>
+	<med>med</med>
+	<thin>thin</thin>
+	<ECGStandard>ECG Standard</ECGStandard>
+	<AHA>AHA</AHA>
+	<IEC>IEC</IEC>
+	<FrequencyNotch>Frequency Notch</FrequencyNotch>
+	<paraSwitchPrem>Para Switch Prem</paraSwitchPrem>
+	<protected>protected</protected>
+	<ConfImpactItemSettings>Conf ImpactItemSettings</ConfImpactItemSettings>
+	<ParaSwitch>ParaSwitch</ParaSwitch>
+	<NurseCallSetting>Nurse Call Setting</NurseCallSetting>
+	<setting>setting</setting>
+	<stopSetting>Stop Setting</stopSetting>
+	<SignalType>Signal Type</SignalType>
+	<Continuity>Continuity</Continuity>
+	<Pluse>Pluse</Pluse>
+	<TriggerMode>Trigger Mode</TriggerMode>
+	<AlarmLevel>Alarm Level</AlarmLevel>
+	<Technology>Technology</Technology>
+	<Physiology>Physiology</Physiology>
+	<UserMaintainPassword>User Maintain Password</UserMaintainPassword>
+	<UserMaintainSystem>User Maintain System</UserMaintainSystem>
+	<Department>Department</Department>
+	<BedNumber>Bed Number</BedNumber>
+	<ModifyPassword>Modify Password</ModifyPassword>
+	<ChangeBedNumberRight>Change Bed Number Right</ChangeBedNumberRight>
+	<Language>Language</Language>
+	<EditMonitorName>Edit Monitor Name</EditMonitorName>
+	<UserMaintainModifyConfig>User Maintain Modify Config</UserMaintainModifyConfig>
+	<ProfileConflict>Profile Conflict</ProfileConflict>
+	<WiredWorkMaintainMenu>Wired Work Maintain Menu</WiredWorkMaintainMenu>
+	<WiredWorkMaintainMenuDesc>Wired Work Maintain Menu Desc</WiredWorkMaintainMenuDesc>
+	<AddressType>Address Type</AddressType>
+	<manual>manual</manual>
+	<DHCP>DHCP</DHCP>
+	<IpAddress>IP Address</IpAddress>
+	<high>High</high>
+	<normal>Normal</normal>
+	<low>Low</low>
+	<ConfigManager>Config Manager</ConfigManager>
+	<DefaultConfig>Default Config</DefaultConfig>
+	<AdultDefaultConfig>Adult Default Config</AdultDefaultConfig>
+	<PedDefaultConfig>Ped Default Config</PedDefaultConfig>
+	<NeoDefaultConfig>Neo Default Config</NeoDefaultConfig>
+	<FactoryConfig>Factory Config</FactoryConfig>
+	<CurrentConfig>Current Config</CurrentConfig>
+	<ConfigManagerment>Config Managerment</ConfigManagerment>
+	<ConfigManagermentDesc>Config Managerment Desc</ConfigManagermentDesc>
+	<General>General</General>
+	<GeneralSettings>General Settings</GeneralSettings>
+	<ConfigName>Config Name</ConfigName>
+	<ConfigIBPMenu>Config IBP</ConfigIBPMenu>
+	<ConfigIBPMenuDesc>Config IBP Menu</ConfigIBPMenuDesc>
+	<ConfigEditDisplayMenu>Display Menu</ConfigEditDisplayMenu>
+	<English>English</English>
+	<Chinese>Chinese</Chinese>
+	<UnitSetup>Unit Setup</UnitSetup>
+	<UnitSetupDesc>Unit Setup Desc</UnitSetupDesc>
+	<HightUnit>Hight Unit</HightUnit>
+	<WeightUnit>Weight Unit</WeightUnit>
+	<STUnit>ST Unit</STUnit>
+	<PressureUnit>Pressure Unit</PressureUnit>
+	<TemperatureUnit>Temperature Unit</TemperatureUnit>
+	<CVPUnit>CVP Unit</CVPUnit>
+	<ICPUnit>ICP Unit</ICPUnit>
+	<CO2Unit>CO2 Unit</CO2Unit>
+	<ApneaDelay>Apnea Delay</ApneaDelay>
+	<BreathLead>Breath Lead</BreathLead>
+	<SweepSpeed>Sweep Speed</SweepSpeed>
+	<RespMenu>Resp Menu</RespMenu>
+	<manaul>manaul</manaul>
+	<FactoryTest>Factory Test</FactoryTest>
+	<FactoryTestDesc>Factory Test Desc</FactoryTestDesc>
+	<FactoryLight>Factory Light</FactoryLight>
+	<FactorySound>Factory Sound</FactorySound>
+	<FactoryKey>Factory Key</FactoryKey>
+	<FactoryPrinter>Factory Printer</FactoryPrinter>
+	<FactoryWifi>Factory Wifi</FactoryWifi>
+	<FactoryEnthernet>Factory Enthernet</FactoryEnthernet>
+	<FactoryBattery>Factory Battery</FactoryBattery>
+	<RefreshRate>Refresh Rate</RefreshRate>
+	<Note>Note</Note>
+	<RefreshRateUpdatedRebootNow>Refresh Rate Updated Reboot Now</RefreshRateUpdatedRebootNow>
+	<FactoryDataRecord>Factory Data Record</FactoryDataRecord>
+	<FactoryDataRecordDesc>Factory Data Record Desc</FactoryDataRecordDesc>
+	<PDCommData>PD Comm Data</PDCommData>
+	<TEMPCalibrate0>TEMP Calibrate0</TEMPCalibrate0>
+	<TEMPCalibrate10>TEMP Calibrate10</TEMPCalibrate10>
+	<TEMPCalibrate15>TEMP Calibrate15</TEMPCalibrate15>
+	<TEMPCalibrate20>TEMP Calibrate20</TEMPCalibrate20>
+	<TEMPCalibrate25>TEMP Calibrate25</TEMPCalibrate25>
+	<TEMPCalibrate30>TEMP Calibrate30</TEMPCalibrate30>
+	<TEMPCalibrate35>TEMP Calibrate35</TEMPCalibrate35>
+	<TEMPCalibrate40>TEMP Calibrate40</TEMPCalibrate40>
+	<TEMPCalibrate45>TEMP Calibrate45</TEMPCalibrate45>
+	<TEMPCalibrate50>TEMP Calibrate50</TEMPCalibrate50>
+	<TEMPCalibrate0is7409.3>TEMP Calibrate0 is 7409.3</TEMPCalibrate0is7409.3>
+	<TEMPCalibrate10is4491.1>TEMP Calibrate10 is 4491.1</TEMPCalibrate10is4491.1>
+	<TEMPCalibrate15is3541.3>TEMP Calibrate15 is 3541.3</TEMPCalibrate15is3541.3>
+	<TEMPCalibrate20is2813.9>TEMP Calibrate20 is 2813.9</TEMPCalibrate20is2813.9>
+	<TEMPCalibrate25is2252>TEMP Calibrate25 is 2252</TEMPCalibrate25is2252>
+	<TEMPCalibrate30is1814.5>TEMP Calibrate30 is 1814.5</TEMPCalibrate30is1814.5>
+	<TEMPCalibrate35is1471.1>TEMP Calibrate35 is 1471.1</TEMPCalibrate35is1471.1>
+	<TEMPCalibrate40is1199.8>TEMP Calibrate40 is 1199.8</TEMPCalibrate40is1199.8>
+	<TEMPCalibrate45is984>TEMP Calibrate45 is 984</TEMPCalibrate45is984>
+	<TEMPCalibrate50is811.3>TEMP Calibrate50 is 811.3</TEMPCalibrate50is811.3>
+	<TEMP1>TEMP1</TEMP1>
+	<TEMP2>TEMP2</TEMP2>
+	<TEMPModuleDisable>TEMP Module Disable</TEMPModuleDisable>
+	<TEMPCommunicationStop>TEMP Communication Stop</TEMPCommunicationStop>
+	<TEMPChannel>TEMP Channel</TEMPChannel>
+	<TEMPCalibrate>TEMP Calibrate </TEMPCalibrate>
+</language>

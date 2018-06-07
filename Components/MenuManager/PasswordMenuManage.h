@@ -30,6 +30,10 @@ public:
     void setPassword(const QString &password);
     void clearPassword(void);
     void setUserMaintainPassword(const QString &password);
+    void setFactoryMaintainPassword(const QString &password);
+    void setSuperPassword(const QString &password);
+
+    void setOkBtn(int id);
 
 signals:
     // 返回到菜单列表。
@@ -59,7 +63,8 @@ private:
     QString _title;
     QString _passwordStr;                     //密码
     QString _superPassword;                   //超级密码
-    QString _normalPassword;                  //普通密码
+    QString _normalPassword;                  //通用配置管理密码
     QString _userMaintainPassword;            //用户维护密码
+    QString _factoryMaintainPassword;         //工厂维护密码
 
 };

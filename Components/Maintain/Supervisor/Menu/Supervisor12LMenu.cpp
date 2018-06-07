@@ -36,11 +36,11 @@ void Supervisor12LMenu::readyShow()
     currentConfig.getNumValue("ECG12L|PrintSnapshotFormat", index);
     _printSnapshotFormat->setCurrentIndex(index);
 
-    currentConfig.getNumValue("ECG12L|PDFReportFormat", index);
-    _pdfReportFormat->setCurrentIndex(index);
+//    currentConfig.getNumValue("ECG12L|PDFReportFormat", index);
+//    _pdfReportFormat->setCurrentIndex(index);
 
-    currentConfig.getNumValue("ECG12L|DisplayFormat", index);
-    _displayFormat->setCurrentIndex(index);
+//    currentConfig.getNumValue("ECG12L|DisplayFormat", index);
+//    _displayFormat->setCurrentIndex(index);
 
     currentConfig.getNumValue("ECG12L|TimeIntervalFor2x6Report", index);
     _timeWindowFor2x6PDF->setCurrentIndex(index);
@@ -48,11 +48,11 @@ void Supervisor12LMenu::readyShow()
     currentConfig.getNumValue("ECG12L|AutoPrinting12LReport", index);
     _autoPrint12Lead->setCurrentIndex(index);
 
-    currentConfig.getNumValue("ECG12L|AutoTransmission", index);
-    _autoTransforViaWifi->setCurrentIndex(index);
+//    currentConfig.getNumValue("ECG12L|AutoTransmission", index);
+//    _autoTransforViaWifi->setCurrentIndex(index);
 
-    currentConfig.getNumValue("ECG12L|TransmissionFormat", index);
-    _transforFileFormat->setCurrentIndex(index);
+//    currentConfig.getNumValue("ECG12L|TransmissionFormat", index);
+//    _transforFileFormat->setCurrentIndex(index);
 
     int leadNameConvention = 0, displayMode = 0;
     currentConfig.getNumValue("ECG|ECGLeadConvention", leadNameConvention);
@@ -133,33 +133,33 @@ void Supervisor12LMenu::layoutExec()
             SLOT(_printFormatSlot(int)));
     mainLayout->addWidget(_printSnapshotFormat);
 
-    //PDF Report format
-    _pdfReportFormat = new IComboList(trs("PDFReportFormat"));
-    _pdfReportFormat->setFont(fontManager.textFont(fontSize));
-    _pdfReportFormat->label->setFixedSize(labelWidth, ITEM_H);
-    _pdfReportFormat->combolist->setFixedSize(btnWidth, ITEM_H);
-    for (int i = 0; i < PRINT_12LEAD_PDF_NR; ++i)
-    {
-        _pdfReportFormat->addItem(PrintSymbol::convert((Print12LeadPDFFormat)i));
-    }
+//    //PDF Report format
+//    _pdfReportFormat = new IComboList(trs("PDFReportFormat"));
+//    _pdfReportFormat->setFont(fontManager.textFont(fontSize));
+//    _pdfReportFormat->label->setFixedSize(labelWidth, ITEM_H);
+//    _pdfReportFormat->combolist->setFixedSize(btnWidth, ITEM_H);
+//    for (int i = 0; i < PRINT_12LEAD_PDF_NR; ++i)
+//    {
+//        _pdfReportFormat->addItem(PrintSymbol::convert((Print12LeadPDFFormat)i));
+//    }
 
-    connect(_pdfReportFormat, SIGNAL(currentIndexChanged(int)), this,
-            SLOT(_pdfReportSlot(int)));
-    mainLayout->addWidget(_pdfReportFormat);
+//    connect(_pdfReportFormat, SIGNAL(currentIndexChanged(int)), this,
+//            SLOT(_pdfReportSlot(int)));
+//    mainLayout->addWidget(_pdfReportFormat);
 
     //display format
-    _displayFormat = new IComboList(trs("ECG12LDisplayFormat"));
-    _displayFormat->setFont(fontManager.textFont(fontSize));
-    _displayFormat->label->setFixedSize(labelWidth, ITEM_H);
-    _displayFormat->combolist->setFixedSize(btnWidth, ITEM_H);
-    for (int i = 0; i < DISPLAY_12LEAD_NR; ++i)
-    {
-        _displayFormat->addItem(trs(ECGSymbol::convert((Display12LeadFormat)i)));
-    }
+//    _displayFormat = new IComboList(trs("ECG12LDisplayFormat"));
+//    _displayFormat->setFont(fontManager.textFont(fontSize));
+//    _displayFormat->label->setFixedSize(labelWidth, ITEM_H);
+//    _displayFormat->combolist->setFixedSize(btnWidth, ITEM_H);
+//    for (int i = 0; i < DISPLAY_12LEAD_NR; ++i)
+//    {
+//        _displayFormat->addItem(trs(ECGSymbol::convert((Display12LeadFormat)i)));
+//    }
 
-    connect(_displayFormat, SIGNAL(currentIndexChanged(int)), this,
-            SLOT(_displayFormatSlot(int)));
-    mainLayout->addWidget(_displayFormat);
+//    connect(_displayFormat, SIGNAL(currentIndexChanged(int)), this,
+//            SLOT(_displayFormatSlot(int)));
+//    mainLayout->addWidget(_displayFormat);
 
     //时间间隔
     _timeWindowFor2x6PDF = new IComboList(trs("SupervisorTimeWindow2x6PDF"));
@@ -185,29 +185,29 @@ void Supervisor12LMenu::layoutExec()
     mainLayout->addWidget(_autoPrint12Lead);
 
     //auto transfor
-    _autoTransforViaWifi = new IComboList(trs("SupervisorAutoTransforByWifi"));
-    _autoTransforViaWifi->setFont(fontManager.textFont(fontSize));
-    _autoTransforViaWifi->label->setFixedSize(labelWidth, ITEM_H);
-    _autoTransforViaWifi->combolist->setFixedSize(btnWidth, ITEM_H);
-    _autoTransforViaWifi->addItem(trs("Disable"));
-    _autoTransforViaWifi->addItem(trs("Enable"));
-    connect(_autoTransforViaWifi, SIGNAL(currentIndexChanged(int)), this,
-            SLOT(_autoTransforViaWifiSlot(int)));
-    if (systemManager.isSupport(CONFIG_WIFI))
-    {
-        mainLayout->addWidget(_autoTransforViaWifi);
-    }
+//    _autoTransforViaWifi = new IComboList(trs("SupervisorAutoTransforByWifi"));
+//    _autoTransforViaWifi->setFont(fontManager.textFont(fontSize));
+//    _autoTransforViaWifi->label->setFixedSize(labelWidth, ITEM_H);
+//    _autoTransforViaWifi->combolist->setFixedSize(btnWidth, ITEM_H);
+//    _autoTransforViaWifi->addItem(trs("Disable"));
+//    _autoTransforViaWifi->addItem(trs("Enable"));
+//    connect(_autoTransforViaWifi, SIGNAL(currentIndexChanged(int)), this,
+//            SLOT(_autoTransforViaWifiSlot(int)));
+//    if (systemManager.isSupport(CONFIG_WIFI))
+//    {
+//        mainLayout->addWidget(_autoTransforViaWifi);
+//    }
 
     //file format
-    _transforFileFormat = new IComboList(trs("SupervisorTransforFileFormat"));
-    _transforFileFormat->setFont(fontManager.textFont(fontSize));
-    _transforFileFormat->label->setFixedSize(labelWidth, ITEM_H);
-    _transforFileFormat->combolist->setFixedSize(btnWidth, ITEM_H);
-    _transforFileFormat->addItem("PDF");
-    _transforFileFormat->addItem("JSON");
-    connect(_transforFileFormat, SIGNAL(currentIndexChanged(int)), this,
-            SLOT(_transforFileFormatSlot(int)));
-    mainLayout->addWidget(_transforFileFormat);
+//    _transforFileFormat = new IComboList(trs("SupervisorTransforFileFormat"));
+//    _transforFileFormat->setFont(fontManager.textFont(fontSize));
+//    _transforFileFormat->label->setFixedSize(labelWidth, ITEM_H);
+//    _transforFileFormat->combolist->setFixedSize(btnWidth, ITEM_H);
+//    _transforFileFormat->addItem("PDF");
+//    _transforFileFormat->addItem("JSON");
+//    connect(_transforFileFormat, SIGNAL(currentIndexChanged(int)), this,
+//            SLOT(_transforFileFormatSlot(int)));
+//    mainLayout->addWidget(_transforFileFormat);
 
     //real-time top lead
     _realTimePrintTopLead = new IComboList(trs("RealTimePrintTopLead"));
@@ -272,34 +272,34 @@ void Supervisor12LMenu::_pdfReportSlot(int index)
 /**************************************************************************************************
  * display format。
  *************************************************************************************************/
-void Supervisor12LMenu::_displayFormatSlot(int index)
-{
-    currentConfig.setNumValue("ECG12L|DisplayFormat", index);
+//void Supervisor12LMenu::_displayFormatSlot(int index)
+//{
+//    currentConfig.setNumValue("ECG12L|DisplayFormat", index);
 
-    int leadNameConvention = 0;
-    currentConfig.getNumValue("ECG|ECGLeadConvention", leadNameConvention);
-    int topLead = _realTimePrintTopLead->currentIndex();
-    int midLead = _realTimePrintMidLead->currentIndex();
-    int botLead = _realTimePrintBotLead->currentIndex();
-    _realTimePrintTopLead->clear();
-    _realTimePrintMidLead->clear();
-    _realTimePrintBotLead->clear();
-    for (int i = ECG_LEAD_I; i <= ECG_LEAD_V6; ++i)
-    {
-        _realTimePrintTopLead->addItem(ECGSymbol::convert((ECGLead)i,
-            (ECGLeadNameConvention)leadNameConvention, true, index));
+//    int leadNameConvention = 0;
+//    currentConfig.getNumValue("ECG|ECGLeadConvention", leadNameConvention);
+//    int topLead = _realTimePrintTopLead->currentIndex();
+//    int midLead = _realTimePrintMidLead->currentIndex();
+//    int botLead = _realTimePrintBotLead->currentIndex();
+//    _realTimePrintTopLead->clear();
+//    _realTimePrintMidLead->clear();
+//    _realTimePrintBotLead->clear();
+//    for (int i = ECG_LEAD_I; i <= ECG_LEAD_V6; ++i)
+//    {
+//        _realTimePrintTopLead->addItem(ECGSymbol::convert((ECGLead)i,
+//            (ECGLeadNameConvention)leadNameConvention, true, index));
 
-        _realTimePrintMidLead->addItem(ECGSymbol::convert((ECGLead)i,
-            (ECGLeadNameConvention)leadNameConvention, true, index));
+//        _realTimePrintMidLead->addItem(ECGSymbol::convert((ECGLead)i,
+//            (ECGLeadNameConvention)leadNameConvention, true, index));
 
-        _realTimePrintBotLead->addItem(ECGSymbol::convert((ECGLead)i,
-            (ECGLeadNameConvention)leadNameConvention, true, index));
-    }
+//        _realTimePrintBotLead->addItem(ECGSymbol::convert((ECGLead)i,
+//            (ECGLeadNameConvention)leadNameConvention, true, index));
+//    }
 
-    _realTimePrintTopLead->setCurrentIndex(topLead);
-    _realTimePrintMidLead->setCurrentIndex(midLead);
-    _realTimePrintBotLead->setCurrentIndex(botLead);
-}
+//    _realTimePrintTopLead->setCurrentIndex(topLead);
+//    _realTimePrintMidLead->setCurrentIndex(midLead);
+//    _realTimePrintBotLead->setCurrentIndex(botLead);
+//}
 
 /**************************************************************************************************
  * Time Window For 2x6 PDF format
@@ -320,19 +320,18 @@ void Supervisor12LMenu::_autoPrint12LeadSlot(int index)
 /**************************************************************************************************
  * 自动传输。
  *************************************************************************************************/
-void Supervisor12LMenu::_autoTransforViaWifiSlot(int index)
-{
-    currentConfig.setNumValue("ECG12L|AutoTransmission", index);
-}
+//void Supervisor12LMenu::_autoTransforViaWifiSlot(int index)
+//{
+//    currentConfig.setNumValue("ECG12L|AutoTransmission", index);
+//}
 
 /**************************************************************************************************
  * 传输文件格式。
  *************************************************************************************************/
-void Supervisor12LMenu::_transforFileFormatSlot(int index)
-{
-    currentConfig.setNumValue("ECG12L|TransmissionFormat", index);
-}
-
+//void Supervisor12LMenu::_transforFileFormatSlot(int index)
+//{
+//    currentConfig.setNumValue("ECG12L|TransmissionFormat", index);
+//}
 /**************************************************************************************************
  * real-time print top lead。
  *************************************************************************************************/

@@ -124,9 +124,9 @@ QString UserConfigEditMenuPrivate::generateDefaultConfigName() const
 }
 
 UserConfigEditMenu::UserConfigEditMenu()
-    :SubMenu(trs("ConfigManagement")), d_ptr(new UserConfigEditMenuPrivate())
+    :SubMenu(trs("ConfigManagerment")), d_ptr(new UserConfigEditMenuPrivate())
 {
-    setDesc(trs("ConfigManagement"));/*更改标题栏标题*/
+    setDesc(trs("ConfigManagermentDesc"));/*更改标题栏标题*/
     startLayout();/*布局*/
 
     //保存配置管理的数据
@@ -195,7 +195,7 @@ void UserConfigEditMenu::layoutExec()
     margin.setLeft(15);
     margin.setBottom(10);
     label->setContentsMargins(margin);
-    label->setText(trs("ConfigManagement"));
+    label->setText(trs("ConfigManagerment"));
     mainLayout->addWidget(label);
 
     //config list

@@ -542,11 +542,13 @@ static void _initMenu(void)
     {
         publicMenuManager.addSubMenu(&wifiProfileMenu);
     }
+    supervisorDisplayMenu.construction();
+    publicMenuManager.addSubMenu(&supervisorDisplayMenu);
 
     publicMenuManager.addSubMenu(&systemMenu);
-    publicMenuManager.addSubMenu(&supervisorEntrance);
+//    publicMenuManager.addSubMenu(&supervisorEntrance);
 
-    userMaintainEntrance.contentsMargins();
+    userMaintainEntrance.construction();
     factoryMaintainEntrance.construction();
     publicMenuManager.addSubMenu(&userMaintainEntrance);
     publicMenuManager.addSubMenu(&factoryMaintainEntrance);
@@ -557,18 +559,20 @@ static void _initMenu(void)
     userMaintainGeneralSet.construction();
     moduleMaintainMenu.construction();
     alarmMaintainMenu.construction();
-    //wifiMaintainMenu.construction();
+    wifiMaintainMenu.construction();
     wiredWorkMaintainMenu.construction();
     othersMaintainMenu.construction();
     unitSetup.construction();
+    serviceErrorLogEntrance.construction();
 
     userMaintainManager.addSubMenu(&userMaintainGeneralSet);
     userMaintainManager.addSubMenu(&moduleMaintainMenu);
     userMaintainManager.addSubMenu(&alarmMaintainMenu);
-   // userMaintainManager.addSubMenu(&wifiMaintainMenu);
+    userMaintainManager.addSubMenu(&wifiMaintainMenu);
     userMaintainManager.addSubMenu(&wiredWorkMaintainMenu);
     userMaintainManager.addSubMenu(&othersMaintainMenu);
     userMaintainManager.addSubMenu(&unitSetup);
+    userMaintainManager.addSubMenu(&serviceErrorLogEntrance);
     //userMaintainEntrance
 
     factoryMaintainManager.construction();
@@ -581,7 +585,7 @@ static void _initMenu(void)
     factorySystemInfoMenu.construction();
     nibpCalibrationMenu.construction();
     serviceUpdateEntrance.construction();
-    serviceErrorLogEntrance.construction();
+
     selectStarterLogo.construction();
     factoryImportExportMenu.construction();
 
@@ -594,7 +598,6 @@ static void _initMenu(void)
     factoryMaintainManager.addSubMenu(&factorySystemInfoMenu);
     factoryMaintainManager.addSubMenu(&nibpCalibrationMenu);
     factoryMaintainManager.addSubMenu(&serviceUpdateEntrance);
-    factoryMaintainManager.addSubMenu(&serviceErrorLogEntrance);
     factoryMaintainManager.addSubMenu(&selectStarterLogo);
     factoryMaintainManager.addSubMenu(&factoryImportExportMenu);
 
@@ -602,8 +605,8 @@ static void _initMenu(void)
     //supervisorMenuManager
     supervisorMenuManager.construction();
 
-    supervisorGeneralSetMenu.construction();
-    userMaintainManager.addSubMenu(&supervisorGeneralSetMenu);
+//    supervisorGeneralSetMenu.construction();
+//    userMaintainManager.addSubMenu(&supervisorGeneralSetMenu);
 
     if (systemManager.isSupport(CONFIG_ECG12LEADS))
     {
@@ -611,23 +614,23 @@ static void _initMenu(void)
         userMaintainManager.addSubMenu(&supervisor12LMenu);
     }
 
-    if (systemManager.isSupport(CONFIG_NIBP))
-    {
-        supervisorNIBPMenu.construction();
-        userMaintainManager.addSubMenu(&supervisorNIBPMenu);
-    }
+//    if (systemManager.isSupport(CONFIG_NIBP))
+//    {
+//        supervisorNIBPMenu.construction();
+//        userMaintainManager.addSubMenu(&supervisorNIBPMenu);
+//    }
 
-    supervisorAlarmLimitMenu.construction();
-    userMaintainManager.addSubMenu(&supervisorAlarmLimitMenu);
+//    supervisorAlarmLimitMenu.construction();
+//    userMaintainManager.addSubMenu(&supervisorAlarmLimitMenu);
 
-    supervisorAlarmMenu.construction();
-    userMaintainManager.addSubMenu(&supervisorAlarmMenu);
+//    supervisorAlarmMenu.construction();
+//    userMaintainManager.addSubMenu(&supervisorAlarmMenu);
 
-    supervisorLocalMenu.construction();
-    userMaintainManager.addSubMenu(&supervisorLocalMenu);
+//    supervisorLocalMenu.construction();
+//    userMaintainManager.addSubMenu(&supervisorLocalMenu);
 
-    supervisorDisplayMenu.construction();
-    userMaintainManager.addSubMenu(&supervisorDisplayMenu);
+//    supervisorDisplayMenu.construction();
+//    userMaintainManager.addSubMenu(&supervisorDisplayMenu);
 
     supervisorPrintMenu.construction();
     userMaintainManager.addSubMenu(&supervisorPrintMenu);
@@ -635,20 +638,20 @@ static void _initMenu(void)
     supervisorTimeMenu.construction();
     userMaintainManager.addSubMenu(&supervisorTimeMenu);
 
-    supervisorCodeMarker.construction();
-    userMaintainManager.addSubMenu(&supervisorCodeMarker);
+//    supervisorCodeMarker.construction();
+//    userMaintainManager.addSubMenu(&supervisorCodeMarker);
 
-    if (systemManager.isSupport(CONFIG_WIFI))
-    {
-        supervisorWifiMenu.construction();
-        userMaintainManager.addSubMenu(&supervisorWifiMenu);
+//    if (systemManager.isSupport(CONFIG_WIFI))
+//    {
+//        //supervisorWifiMenu.construction();
+//        //userMaintainManager.addSubMenu(&supervisorWifiMenu);
 
-        supervisorMailMenu.construction();
-        userMaintainManager.addSubMenu(&supervisorMailMenu);
-    }
+//        supervisorMailMenu.construction();
+//        userMaintainManager.addSubMenu(&supervisorMailMenu);
+//    }
 
-    supervisorPortMenu.construction();
-    userMaintainManager.addSubMenu(&supervisorPortMenu);
+//    supervisorPortMenu.construction();
+//    userMaintainManager.addSubMenu(&supervisorPortMenu);
 
     //其它弹出菜单初始化
     patientManager.construction();

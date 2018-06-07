@@ -99,11 +99,11 @@ void FactoryDataRecord::layoutExec()
     connect(_PDCommLog->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_pdCommLog(int)));
     labelLayout->addWidget(_PDCommLog);
 
-    QLabel *_note = new QLabel(trs("RecordedDataUsesCPU"));
-    _note->setAlignment(Qt::AlignHCenter);
-    _note->setFixedHeight(TITLE_H);
-    _note->setFont(fontManager.textFont(fontSize));
-    labelLayout->addWidget(_note);
+//    QLabel *_note = new QLabel(trs("RecordedDataUsesCPU"));
+//    _note->setAlignment(Qt::AlignHCenter);
+//    _note->setFixedHeight(TITLE_H);
+//    _note->setFont(fontManager.textFont(fontSize));
+//    labelLayout->addWidget(_note);
 
     labelLayout->addStretch();
 

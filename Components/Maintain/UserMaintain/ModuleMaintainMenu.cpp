@@ -69,7 +69,7 @@ void ModuleMaintainMenu::layoutExec()
     _anaesthesiaModuleCalibration->setFont(fontManager.textFont(fontSize));
     _anaesthesiaModuleCalibration->label->setFixedSize(labelWidth, ITEM_H);
     _anaesthesiaModuleCalibration->button->setFixedSize(btnWidth, ITEM_H);
-    _anaesthesiaModuleCalibration->button->setText("Anaesthesia");
+    _anaesthesiaModuleCalibration->button->setText(trs("Anaesthesia"));
     connect(_anaesthesiaModuleCalibration->button, SIGNAL(released(int)), this, SLOT(_isAnaesthesiaSlot()));
     mainLayout->addWidget(_anaesthesiaModuleCalibration);
 
@@ -78,7 +78,7 @@ void ModuleMaintainMenu::layoutExec()
     _ibpPressureCalibration->label->setFixedSize(labelWidth, ITEM_H);
     _ibpPressureCalibration->button->setFixedSize(btnWidth, ITEM_H);
     _ibpPressureCalibration->setFont(fontManager.textFont(fontSize));
-    _ibpPressureCalibration->button->setText("IBPPressureCalibration");
+    _ibpPressureCalibration->button->setText(trs("IBPPressureCalibration"));
     connect(_ibpPressureCalibration->button, SIGNAL(released(int)), this, SLOT(_isIBPPressureCalibrationSlot()));
     mainLayout->addWidget(_ibpPressureCalibration);
 
@@ -87,16 +87,16 @@ void ModuleMaintainMenu::layoutExec()
     _co2ModuleMaintenance->label->setFixedSize(labelWidth, ITEM_H);
     _co2ModuleMaintenance->button->setFixedSize(btnWidth, ITEM_H);
     _co2ModuleMaintenance->setFont(fontManager.textFont(fontSize));
-    _co2ModuleMaintenance->button->setText("CO2ModuleMaintenance");
+    _co2ModuleMaintenance->button->setText(trs("CO2ModuleMaintenance"));
     connect(_co2ModuleMaintenance->button, SIGNAL(released(int)), this, SLOT(_isCO2ModuleMaintenanceSlot()));
     mainLayout->addWidget(_co2ModuleMaintenance);
 
     //NIBP Pressure Test
-    _nibpPressureTest = new LabelButton("NIBPPressureTest");
+    _nibpPressureTest = new LabelButton(trs("NIBPPressureTest"));
     _nibpPressureTest->label->setFixedSize(labelWidth, ITEM_H);
     _nibpPressureTest->button->setFixedSize(btnWidth, ITEM_H);
     _nibpPressureTest->setFont(fontManager.textFont(fontSize));
-    _nibpPressureTest->button->setText("NIBPPressureTest");
+    _nibpPressureTest->button->setText(trs("NIBPPressureTest"));
     connect(_nibpPressureTest->button, SIGNAL(released(int)), this, SLOT(_isNIBPPressureTestSlot()));
     mainLayout->addWidget(_nibpPressureTest);
 
@@ -105,7 +105,7 @@ void ModuleMaintainMenu::layoutExec()
     _nibpLeakageDetection->label->setFixedSize(labelWidth, ITEM_H);
     _nibpLeakageDetection->button->setFixedSize(btnWidth, ITEM_H);
     _nibpLeakageDetection->setFont(fontManager.textFont(fontSize));
-    _nibpLeakageDetection->button->setText("NIBPLeakageDetection");
+    _nibpLeakageDetection->button->setText(trs("NIBPLeakageDetection"));
     connect(_nibpLeakageDetection->button, SIGNAL(released(int)), this, SLOT(_isNIBPLeakageDetectionSlot()));
     mainLayout->addWidget(_nibpLeakageDetection);
 
@@ -114,7 +114,7 @@ void ModuleMaintainMenu::layoutExec()
     _ecgModuleCalibration->label->setFixedSize(labelWidth, ITEM_H);
     _ecgModuleCalibration->button->setFixedSize(btnWidth, ITEM_H);
     _ecgModuleCalibration->setFont(fontManager.textFont(fontSize));
-    _ecgModuleCalibration->button->setText("ECGModuleCalibration");
+    _ecgModuleCalibration->button->setText(trs("ECGModuleCalibration"));
     connect(_ecgModuleCalibration->button, SIGNAL(released(int)), this, SLOT(_isECGModuleCalibrationSlot()));
     mainLayout->addWidget(_ecgModuleCalibration);
 
@@ -123,7 +123,7 @@ void ModuleMaintainMenu::layoutExec()
     _touchScreenCalibration->label->setFixedSize(labelWidth, ITEM_H);
     _touchScreenCalibration->button->setFixedSize(btnWidth, ITEM_H);
     _touchScreenCalibration->setFont(fontManager.textFont(fontSize));
-    _touchScreenCalibration->button->setText("TouchScreenCalibration");
+    _touchScreenCalibration->button->setText(trs("TouchScreenCalibration"));
     connect(_touchScreenCalibration->button, SIGNAL(released(int)), this, SLOT(_isTouchScreenCalibrationSlot()));
     mainLayout->addWidget(_touchScreenCalibration);
 

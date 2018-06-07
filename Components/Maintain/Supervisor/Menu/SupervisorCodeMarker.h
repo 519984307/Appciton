@@ -10,16 +10,17 @@ class SupervisorCodeMarker : public SubMenu
     Q_OBJECT
 
 public:
-    static SupervisorCodeMarker &construction()
-    {
-        if (NULL == _selfobj)
-        {
-            _selfobj = new SupervisorCodeMarker();
-        }
+    SupervisorCodeMarker();
+//    static SupervisorCodeMarker &construction()
+//    {
+//        if (NULL == _selfobj)
+//        {
+//            _selfobj = new SupervisorCodeMarker();
+//        }
 
-        return *_selfobj;
-    }
-    static SupervisorCodeMarker *_selfobj;
+//        return *_selfobj;
+//    }
+//    static SupervisorCodeMarker *_selfobj;
 
     ~SupervisorCodeMarker();
 
@@ -34,7 +35,7 @@ private slots:
     void _returnBtnSlot();
 
 private:
-    SupervisorCodeMarker();
+
 
     // 载入可选项的值。
     void _loadOptions(void);
@@ -47,4 +48,4 @@ private:
     int _LanguageIndex;
 };
 
-#define supervisorCodeMarker (SupervisorCodeMarker::construction())
+//#define supervisorCodeMarker (SupervisorCodeMarker::construction())

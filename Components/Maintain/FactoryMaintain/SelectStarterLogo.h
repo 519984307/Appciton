@@ -27,7 +27,7 @@ public:
      * @param ev  对象中事件
      * @return
      */
-    bool eventFilter(QObject *obj, QEvent *ev);
+    virtual bool eventFilter(QObject *obj, QEvent *ev);
 protected:
     /**
      * @brief layoutExec  布局方法

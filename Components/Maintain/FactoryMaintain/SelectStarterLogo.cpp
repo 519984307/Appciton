@@ -37,6 +37,7 @@ SelectStarterLogo::SelectStarterLogo() : SubMenu(trs("SelectStarterLogoMenu"))
     for(int i=SELECT_STATRTER_LOGO; i<SELECT_STARTER_TYPE_NR; i++)
     {
         _selectLogoCombo[i] = new IComboList(trs(_stringTypeName[i]));
+        _selectLogoCombo[i]->installEventFilter(this);
     }
     _returnFlag = 1;
     setDesc(trs("SelectStarterLogoMenuDesc"));
@@ -101,32 +102,7 @@ void SelectStarterLogo::readyShow()
 
 bool SelectStarterLogo::eventFilter(QObject *obj, QEvent *ev)
 {
-//    if(obj == d_ptr->configList)
-//    {
-//        if (ev->type() == QEvent::FocusIn)
-//        {
-//            QFocusEvent *e = static_cast<QFocusEvent *>(ev);
-//            if(e->reason() == Qt::TabFocusReason)
-//            {
-//                d_ptr->configList->setCurrentRow(0);
-//            }
-//            else if (e->reason() == Qt::BacktabFocusReason)
-//            {
-//                d_ptr->configList->setCurrentRow(d_ptr->configList->count() - 1);
-//            }
-//        }
-
-//        if (ev->type() == QEvent::Hide)
-//        {
-//            if(!d_ptr->selectItems.isEmpty())
-//            {
-//                d_ptr->importBtn->setEnabled(true);
-//                d_ptr->exportBtn->setEnabled(false);
-//                d_ptr->selectItems.clear();
-//            }
-//        }
-//    }
-    if(obj == this)
+    if(obj == _selectLogoCombo[SELECT_STATRTER_LOGO])
     {
         if (ev->type() == QEvent::FocusIn)
         {
@@ -134,7 +110,17 @@ bool SelectStarterLogo::eventFilter(QObject *obj, QEvent *ev)
         }
         else if (ev->type() == QEvent::Hide)
         {
-
+            for(int i=SELECT_STATRTER_LOGO; i<SELECT_STARTER_TYPE_NR; i++)
+            {
+                for(int j=0; j<_selectLogoCombo[i]->combolist->count() ; j++)
+                {
+                    _selectLogoCombo[i]->combolist->removeItem(j);
+                }
+            }
+            while(!_logoNames.isEmpty())
+            {
+                _logoNames.removeLast();
+            }
         }
     }
     return false;

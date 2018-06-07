@@ -21,7 +21,7 @@ public:
 };
 
 SelectDefaultConfigMenu::SelectDefaultConfigMenu()
-    :SubMenu(trs("DefaultConfig1")),
+    :SubMenu(trs("DefaultConfig")),
       d_ptr(new SelectDefaultConfigMenuPrivate())
 {
     setDesc(trs("SelectDefaultConfig"));

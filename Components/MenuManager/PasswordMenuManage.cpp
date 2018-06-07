@@ -149,7 +149,7 @@ PasswordMenuManage::PasswordMenuManage(const QString &title) :
 }
 
 /**************************************************************************************************
- * 功能: 设置密码
+ * 功能: 设置通用配置管理密码
 **************************************************************************************************/
 void PasswordMenuManage::setPassword(const QString &password)
 {
@@ -162,6 +162,22 @@ void PasswordMenuManage::setPassword(const QString &password)
 void PasswordMenuManage::setUserMaintainPassword(const QString &password)
 {
     _userMaintainPassword = password;
+}
+
+/**************************************************************************************************
+ * 功能: 设置工厂维护密码
+**************************************************************************************************/
+void PasswordMenuManage::setFactoryMaintainPassword(const QString &password)
+{
+    _factoryMaintainPassword = password;
+}
+
+/**************************************************************************************************
+ * 功能: 设置超级密码
+**************************************************************************************************/
+void PasswordMenuManage::setSuperPassword(const QString &password)
+{
+    _superPassword = password;
 }
 
 /**************************************************************************************************
@@ -219,47 +235,82 @@ void PasswordMenuManage::_backspaceBtnSlot(int /*index*/)
 **************************************************************************************************/
 void PasswordMenuManage::_okBtnSlot(int /*index*/)
 {
-    //超级密码
-    if (_passwordStr == _superPassword)
+//    //超级密码
+//    if (_passwordStr == _superPassword)
+//    {
+////        emit enterSignal();
+//        supervisorMenuManager.popup();
+//        return;
+//    }
+
+//    //普通密码
+//    else if (_passwordStr == _normalPassword)
+//    {
+//        supervisorMenuManager.popup();
+//        return;
+//    }
+
+//    //服务密码
+//    else if (_passwordStr == SERVER_PASSWORD)
+//    {
+//        serviceWindowManager.popup();
+//        return;
+//    }
+
+//    //用户维护密码
+//    else if (_passwordStr == _userMaintainPassword)
+//    {
+//        userMaintainManager.popup();
+//        //
+//        return;
+//    }
+
+//    //工厂密码
+//    else if (_passwordStr == FACTORY_PASSWORD)
+//    {
+//        //factoryWindowManager.popup();
+//        factoryMaintainManager.popup();
+//        return;
+//    }
+#if 1
+    if (_numBtn!=NULL && _numBtn[11]!=NULL)
     {
-//        emit enterSignal();
-        supervisorMenuManager.popup();
-        return;
+        switch(_numBtn[11]->getID())
+        {
+        case 'U'://用户维护
+            if (_passwordStr == _userMaintainPassword || _passwordStr == _superPassword)
+            {
+                userMaintainManager.popup();
+                return;
+            }
+            break;
+        case 'F'://工厂维护
+            if (_passwordStr == _factoryMaintainPassword || _passwordStr == _superPassword)
+            {
+                factoryMaintainManager.popup();
+                return;
+            }
+            break;
+        case 'G'://通用配置管理
+            if (_passwordStr == _normalPassword)
+            {
+                serviceWindowManager.popup();
+                return;
+            }
+            break;
+        }
+
     }
 
-    //普通密码
-    else if (_passwordStr == _normalPassword)
-    {
-        supervisorMenuManager.popup();
-        return;
-    }
-
-    //服务密码
-    else if (_passwordStr == SERVER_PASSWORD)
-    {
-        serviceWindowManager.popup();
-        return;
-    }
-
-    //用户维护密码
-    else if (_passwordStr == _userMaintainPassword)
-    {
-        userMaintainManager.popup();
-        //
-        return;
-    }
-
-    //工厂密码
-    else if (_passwordStr == FACTORY_PASSWORD)
-    {
-        //factoryWindowManager.popup();
-        factoryMaintainManager.popup();
-        return;
-    }
-
+#endif
     clearPassword();
     _infoLabel->setText(trs("ErrorPassWordERROR"));
     _timer->start(2*1000);
+}
+
+void PasswordMenuManage::setOkBtn(int id)
+{
+   _numBtn[11]->setID(id);
 }
 
 /**************************************************************************************************

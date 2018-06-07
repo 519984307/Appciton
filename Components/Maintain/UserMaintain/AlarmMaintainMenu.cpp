@@ -11,8 +11,11 @@
 #include "SupervisorMenuManager.h"
 #include "SupervisorConfigManager.h"
 #include "PatientDefine.h"
+#include "SoundManager.h"
 #include "KeyBoardPanel.h"
 #include "Debug.h"
+#include "AlarmSymbol.h"
+#include "AlarmStateDefine.h"
 #include "UserMaintainManager.h"
 
 AlarmMaintainMenu *AlarmMaintainMenu::_selfObj = NULL;
@@ -21,23 +24,16 @@ AlarmMaintainMenu *AlarmMaintainMenu::_selfObj = NULL;
  * 构造。
  *************************************************************************************************/
 AlarmMaintainMenu::AlarmMaintainMenu() : SubMenu(trs("AlarmMaintainMenu")),
-                                         _minAlarmVol(NULL),
-                                         _pauseAlarmTime(NULL),
+                                         _minAlarmVolume(NULL),
+                                         _alarmPauseTime(NULL),
+                                         _alarmClosePromptTime(NULL),
+                                         _enableAlarmAudioOff(NULL),
+                                         _enableAlarmOff(NULL),
+                                         _alarmOffAtPowerOn(NULL),                                         
                                          _isPauseMaxAlarm15Min(NULL),
-                                         _alarmVol(NULL),
-                                         _highAlarmIntervals(NULL),
-                                         _medAlarmIntervals(NULL),
-                                         _lowAlarmIntervals(NULL),
                                          _reminderTone(NULL),
                                          _reminderToneIntervals(NULL),
-                                         _ecgLeadOffLev(NULL),
-                                         _spo2LeadOffLev(NULL),
-                                         _ibpLeadOffLev(NULL),
-                                         _isLethalArrhOff(NULL),
-                                         _isExtendedArrh(NULL),
                                          _alarmLightOnAlarmReset(NULL),
-                                         _alarmDelay(NULL),
-                                         _stAlarmDraly(NULL),
                                          _defaults(NULL)
 {
     setDesc(trs("AlarmMaintainMenuDesc"));
@@ -50,74 +46,56 @@ AlarmMaintainMenu::AlarmMaintainMenu() : SubMenu(trs("AlarmMaintainMenu")),
  *************************************************************************************************/
 void AlarmMaintainMenu::readyShow()
 {
-    QString tmpStr;
+//    QString tmpStr;
     int index;
-    systemConfig.getNumValue("Alarms|MinAlarmVol", index);
-    _minAlarmVol->setCurrentIndex(index);
-    index = 0;
+
+    systemConfig.getNumValue("Alarms|MinimumAlarmVolume", index);
+    _minAlarmVolume->setCurrentIndex(index);
 
     systemConfig.getNumValue("Alarms|AlarmPauseTime", index);
-    _pauseAlarmTime->setCurrentIndex(index);
-    index = 0;
+    _alarmPauseTime->setCurrentIndex(index);
 
-    systemConfig.getNumValue("Alarms|STAlarmDraly", index);
-    _minAlarmVol->setCurrentIndex(index);
-    index = 0;
+    systemConfig.getNumValue("Alarms|AlarmOffPrompting", index);
+    _alarmClosePromptTime->setCurrentIndex(index);
+
+    systemConfig.getNumValue("Alarms|EnableAlarmAudioOff", index);
+    _enableAlarmAudioOff->setCurrentIndex(index);
+
+    systemConfig.getNumValue("Alarms|EnableAlarmOff", index);
+    _enableAlarmOff->setCurrentIndex(index);
+
+    if (0 == index)
+    {
+        _alarmOffAtPowerOn->setDisabled(true);
+    }
+    else
+    {
+        _alarmOffAtPowerOn->setDisabled(false);
+    }
+    systemConfig.getNumValue("Alarms|AlarmOffAtPowerOn", index);
+    _alarmOffAtPowerOn->setCurrentIndex(index);
+
+//    systemConfig.getNumValue("Alarms|NonAlertsBeepsInNonAED", index);
+//    _nonAlertsBeepsInNonAED->setCurrentIndex(index);
 
     systemConfig.getNumValue("Alarms|PauseMaxAlarm15Min", index);
     _isPauseMaxAlarm15Min->setCurrentIndex(index);
     index = 0;
 
-    systemConfig.getNumValue("Alarms|AlarmVol", index);
-    _alarmVol->setCurrentIndex(index);
-    index = 0;
+//    systemConfig.getNumValue("Alarms|AlarmVol", index);
+//    _alarmVol->setCurrentIndex(index);
+//    index = 0;
 
     systemConfig.getNumValue("Alarms|ReminderToneIntervals", index);
     _reminderToneIntervals->setCurrentIndex(index);
-    index = 0;
-
-    systemConfig.getNumValue("Alarms|EcgLeadOffLev", index);
-    _ecgLeadOffLev->setCurrentIndex(index);
-    index = 0;
-
-    systemConfig.getNumValue("Alarms|SPO2LeadOffLev", index);
-    _spo2LeadOffLev->setCurrentIndex(index);
-    index = 0;
-
-    systemConfig.getNumValue("Alarms|IBPLeadOffLev", index);
-    _ibpLeadOffLev->setCurrentIndex(index);
-    index = 0;
-
-    systemConfig.getNumValue("Alarms|LethalArrhOff", index);
-    _isLethalArrhOff->setCurrentIndex(index);
-    index = 0;
-
-    systemConfig.getNumValue("Alarms|ExtendedArrh", index);
-    _isExtendedArrh->setCurrentIndex(index);
     index = 0;
 
     systemConfig.getNumValue("Alarms|AlarmLightOnAlarmReset", index);
     _alarmLightOnAlarmReset->setCurrentIndex(index);
     index = 0;
 
-    systemConfig.getNumValue("Alarms|AlarmDelay", index);
-    _alarmDelay->setCurrentIndex(index);
-    index = 0;
-
-    systemConfig.getStrValue("Alarms|HighAlarmIntervals", tmpStr);
-    _highAlarmIntervals->setValue(tmpStr);
-    tmpStr.clear();
-
-    systemConfig.getStrValue("Alarms|MedAlarmIntervals", tmpStr);
-    _medAlarmIntervals->setValue(tmpStr);
-    tmpStr.clear();
-
-    systemConfig.getStrValue("Alarms|LowAlarmIntervals", tmpStr);
-    _lowAlarmIntervals->setValue(tmpStr);
-    tmpStr.clear();
-
     systemConfig.getNumValue("Alarms|ReminderTone", index);
-    _minAlarmVol->setCurrentIndex(index);
+    _reminderTone->setCurrentIndex(index);
     index = 0;
 
 }
@@ -136,33 +114,98 @@ void AlarmMaintainMenu::layoutExec()
     int btnWidth = itemW / 2;
     int labelWidth = itemW - btnWidth;
 
+    //最小报警音量
+    _minAlarmVolume = new IComboList(trs("MinimumALarmVolume"));
+    _minAlarmVolume->setFont(fontManager.textFont(fontSize));
+    _minAlarmVolume->label->setFixedSize(labelWidth, ITEM_H);
+    _minAlarmVolume->combolist->setFixedSize(btnWidth, ITEM_H);
 
-    //_minAlarmVol
-    _minAlarmVol = new IComboList(trs("MinAlarmVol"));
-    _minAlarmVol->label->setFixedSize(labelWidth, ITEM_H);
-    _minAlarmVol->combolist->setFixedSize(btnWidth, ITEM_H);
-    _minAlarmVol->setFont(fontManager.textFont(fontSize));
-    for(int i=0; i<10; i++)
+    for(unsigned i = SoundManager::VOLUME_LEV_1; i <= SoundManager::VOLUME_LEV_5; ++i)
     {
-        _minAlarmVol->addItem(trs(QString("%1").arg(i)));
+        _minAlarmVolume->addItem(QString::number(i));
     }
-    connect(_minAlarmVol->combolist, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(_setChangeMinAlarmVol(int)));
-    mainLayout->addWidget(_minAlarmVol);
+    connect(_minAlarmVolume, SIGNAL(currentIndexChanged(int)), this,
+            SLOT(_minAlarmVolumeChangeSlot(int)));
+    mainLayout->addWidget(_minAlarmVolume);
 
+    //报警暂停时间
+    _alarmPauseTime = new IComboList(trs("AlarmPauseTime"));
+    _alarmPauseTime->setFont(fontManager.textFont(fontSize));
+    _alarmPauseTime->label->setFixedSize(labelWidth, ITEM_H);
+    _alarmPauseTime->combolist->setFixedSize(btnWidth, ITEM_H);
 
-    //_pauseAlarmTime
-    _pauseAlarmTime = new IComboList(trs("PauseAlarmTime"));
-    _pauseAlarmTime->label->setFixedSize(labelWidth, ITEM_H);
-    _pauseAlarmTime->combolist->setFixedSize(btnWidth, ITEM_H);
-    _pauseAlarmTime->setFont(fontManager.textFont(fontSize));
-    for(int i=0; i<ALARM_PAUSE_NR; i++)
+    for (int i = 0; i < ALARM_PAUSE_TIME_NR; ++i)
     {
-        _pauseAlarmTime->addItem(trs(AlarmMaintainSymbol::convert(MaintainAlarmPauseTime(i))));
+        _alarmPauseTime->addItem(trs(AlarmSymbol::convert((AlarmPauseTime)i)));
     }
-    connect(_pauseAlarmTime->combolist, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(_alarmPauseTime(int)));
-    mainLayout->addWidget(_pauseAlarmTime);
+
+    connect(_alarmPauseTime, SIGNAL(currentIndexChanged(int)), this,
+            SLOT(_alarmPauseTimeChangeSlot(int)));
+    mainLayout->addWidget(_alarmPauseTime);
+
+    //报警关闭，报警音关闭提示时间
+    _alarmClosePromptTime = new IComboList(trs("AlarmOffPromptMechanism"));
+    _alarmClosePromptTime->setFont(fontManager.textFont(fontSize));
+    _alarmClosePromptTime->label->setFixedSize(labelWidth, ITEM_H);
+    _alarmClosePromptTime->combolist->setFixedSize(btnWidth, ITEM_H);
+
+    for (int i = 0; i < ALARM_CLOSE_PROMPT_NR; ++i)
+    {
+        _alarmClosePromptTime->addItem(trs(AlarmSymbol::convert((AlarmClosePromptTime)i)));
+    }
+
+    connect(_alarmClosePromptTime, SIGNAL(currentIndexChanged(int)), this,
+            SLOT(_alarmClosePromptTimeChangeSlot(int)));
+    mainLayout->addWidget(_alarmClosePromptTime);
+
+    //eable alarm audio off
+    _enableAlarmAudioOff = new IComboList(trs("EnableAlarmAudioOff"));
+    _enableAlarmAudioOff->setFont(fontManager.textFont(fontSize));
+    _enableAlarmAudioOff->label->setFixedSize(labelWidth, ITEM_H);
+    _enableAlarmAudioOff->combolist->setFixedSize(btnWidth, ITEM_H);
+
+    _enableAlarmAudioOff->addItem(trs("No"));
+    _enableAlarmAudioOff->addItem(trs("Yes"));
+
+    connect(_enableAlarmAudioOff, SIGNAL(currentIndexChanged(int)), this,
+            SLOT(_enableAlarmAudioOffChangeSlot(int)));
+    mainLayout->addWidget(_enableAlarmAudioOff);
+
+    //enable alarm off
+    _enableAlarmOff = new IComboList(trs("EnableAlarmOff"));
+    _enableAlarmOff->setFont(fontManager.textFont(fontSize));
+    _enableAlarmOff->label->setFixedSize(labelWidth, ITEM_H);
+    _enableAlarmOff->combolist->setFixedSize(btnWidth, ITEM_H);
+
+    _enableAlarmOff->addItem(trs("No"));
+    _enableAlarmOff->addItem(trs("Yes"));
+
+    connect(_enableAlarmOff, SIGNAL(currentIndexChanged(int)), this,
+            SLOT(_enableAlarmOffChangeSlot(int)));
+    mainLayout->addWidget(_enableAlarmOff);
+
+    //alarm off at power on
+    _alarmOffAtPowerOn = new IComboList(trs("AlarmOffAtPowerOn"));
+    _alarmOffAtPowerOn->setFont(fontManager.textFont(fontSize));
+    _alarmOffAtPowerOn->label->setFixedSize(labelWidth, ITEM_H);
+    _alarmOffAtPowerOn->combolist->setFixedSize(btnWidth, ITEM_H);
+
+    _alarmOffAtPowerOn->addItem(trs("No"));
+    _alarmOffAtPowerOn->addItem(trs("Yes"));
+
+    connect(_alarmOffAtPowerOn, SIGNAL(currentIndexChanged(int)), this,
+            SLOT(_alarmOffAtPowerOnChangeSlot(int)));
+    mainLayout->addWidget(_alarmOffAtPowerOn);
+
+//    _nonAlertsBeepsInNonAED = new IComboList(trs("NonAlertsBeepsInNonAED"));
+//    _nonAlertsBeepsInNonAED->setFont(fontManager.textFont(fontSize));
+//    _nonAlertsBeepsInNonAED->label->setFixedSize(labelWidth, ITEM_H);
+//    _nonAlertsBeepsInNonAED->combolist->setFixedSize(btnWidth, ITEM_H);
+//    _nonAlertsBeepsInNonAED->addItem(trs("Disable"));
+//    _nonAlertsBeepsInNonAED->addItem(trs("Enable"));
+//    connect(_nonAlertsBeepsInNonAED, SIGNAL(currentIndexChanged(int)), this,
+//            SLOT(_nonAlertsBeepsInNonAEDSlot(int)));
+//    mainLayout->addWidget(_nonAlertsBeepsInNonAED);
 
     //_isPauseMaxAlarm15Min
     _isPauseMaxAlarm15Min = new IComboList(trs("IsPauseMaxAlarm15Min"));
@@ -177,63 +220,16 @@ void AlarmMaintainMenu::layoutExec()
 
 
     //_alarmVol
-    _alarmVol = new IComboList(trs("AlarmVol"));
-    _alarmVol->label->setFixedSize(labelWidth, ITEM_H);
-    _alarmVol->combolist->setFixedSize(btnWidth, ITEM_H);
-    _alarmVol->setFont(fontManager.textFont(fontSize));
-    _alarmVol->addItem(trs("ISO"));
-    _alarmVol->addItem(trs("mode 1"));
-    _alarmVol->addItem(trs("mode 2"));
-    connect(_alarmVol->combolist, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(_alarmVolSlot(int)));
-    mainLayout->addWidget(_alarmVol);
-
-    //_highAlarmIntervals
-    _highAlarmIntervals = new ISpinBox(trs("HighAlarmIntervals"));
-    _highAlarmIntervals->setRadius(4.0, 4.0);
-    _highAlarmIntervals->setRange(3, 15);
-    _highAlarmIntervals->setMode(ISPIN_MODE_INT);
-    _highAlarmIntervals->setStep(1);
-    _highAlarmIntervals->setFont(defaultFont());
-    _highAlarmIntervals->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    _highAlarmIntervals->enableArrow(false);
-    connect(_highAlarmIntervals, SIGNAL(valueChange(QString,int)),
-            this, SLOT(_highAlarmIntervalsReleased(QString)));
-    _highAlarmIntervals->setFixedHeight(ITEM_H);
-    _highAlarmIntervals->setValueWidth(btnWidth);
-    mainLayout->addWidget(_highAlarmIntervals);
-
-    //_medAlarmIntervals
-    _medAlarmIntervals = new ISpinBox(trs("MedAlarmIntervals"));
-    _medAlarmIntervals->setRadius(4.0, 4.0);
-    _medAlarmIntervals->setRange(3, 30);
-    _medAlarmIntervals->setMode(ISPIN_MODE_INT);
-    _medAlarmIntervals->setStep(1);
-    _medAlarmIntervals->setFont(defaultFont());
-    _medAlarmIntervals->setBorderColor(Qt::black);
-    _medAlarmIntervals->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    _medAlarmIntervals->enableArrow(false);
-    connect(_medAlarmIntervals, SIGNAL(valueChange(QString,int)),
-            this, SLOT(_medAlarmIntervalsReleased(QString)));
-    _medAlarmIntervals->setFixedHeight(ITEM_H);
-    _medAlarmIntervals->setValueWidth(btnWidth);
-    mainLayout->addWidget(_medAlarmIntervals);
-
-    //_lowAlarmIntervals
-    _lowAlarmIntervals = new ISpinBox(trs("LowAlarmIntervals"));
-    _lowAlarmIntervals->setRadius(4.0, 4.0);
-    _lowAlarmIntervals->setRange(16, 30);
-    _lowAlarmIntervals->setMode(ISPIN_MODE_INT);
-    _lowAlarmIntervals->setStep(1);
-    _lowAlarmIntervals->setFont(defaultFont());
-    _lowAlarmIntervals->setBorderColor(Qt::black);
-    _lowAlarmIntervals->setLabelAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    _lowAlarmIntervals->enableArrow(false);
-    connect(_lowAlarmIntervals, SIGNAL(valueChange(QString,int)),
-            this, SLOT(_lowAlarmIntervalsReleased(QString)));
-    _lowAlarmIntervals->setFixedHeight(ITEM_H);
-    _lowAlarmIntervals->setValueWidth(btnWidth);
-    mainLayout->addWidget(_lowAlarmIntervals);
+//    _alarmVol = new IComboList(trs("AlarmVol"));
+//    _alarmVol->label->setFixedSize(labelWidth, ITEM_H);
+//    _alarmVol->combolist->setFixedSize(btnWidth, ITEM_H);
+//    _alarmVol->setFont(fontManager.textFont(fontSize));
+//    _alarmVol->addItem(trs("ISO"));
+//    _alarmVol->addItem(trs("mode 1"));
+//    _alarmVol->addItem(trs("mode 2"));
+//    connect(_alarmVol->combolist, SIGNAL(currentIndexChanged(int)),
+//            this, SLOT(_alarmVolSlot(int)));
+//    mainLayout->addWidget(_alarmVol);
 
     //_reminderTone
     _reminderTone = new IComboList(trs("ReminderTone"));
@@ -252,70 +248,12 @@ void AlarmMaintainMenu::layoutExec()
     _reminderToneIntervals->label->setFixedSize(labelWidth, ITEM_H);
     _reminderToneIntervals->combolist->setFixedSize(btnWidth, ITEM_H);
     _reminderToneIntervals->setFont(fontManager.textFont(fontSize));
-    _reminderToneIntervals->addItem(trs("1min"));
-    _reminderToneIntervals->addItem(trs("2min"));
-    _reminderToneIntervals->addItem(trs("3min"));
+    _reminderToneIntervals->addItem(trs("H1min"));
+    _reminderToneIntervals->addItem(trs("H2min"));
+    _reminderToneIntervals->addItem(trs("H3min"));
     connect(_reminderToneIntervals->combolist, SIGNAL(currentIndexChanged(int)),
             this, SLOT(_reminderToneIntervalsSlot(int)));
     mainLayout->addWidget(_reminderToneIntervals);
-
-    //_ecgLeadOffLev
-    _ecgLeadOffLev = new IComboList(trs("EcgLeadOffLev"));
-    _ecgLeadOffLev->label->setFixedSize(labelWidth, ITEM_H);
-    _ecgLeadOffLev->combolist->setFixedSize(btnWidth, ITEM_H);
-    _ecgLeadOffLev->setFont(fontManager.textFont(fontSize));
-    _ecgLeadOffLev->addItem(trs("High"));
-    _ecgLeadOffLev->addItem(trs("Med"));
-    _ecgLeadOffLev->addItem(trs("Low"));
-    connect(_ecgLeadOffLev->combolist, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(_ecgLeadOffLevSlot(int)));
-    mainLayout->addWidget(_ecgLeadOffLev);
-
-    //_spo2LeadOffLev
-    _spo2LeadOffLev = new IComboList(trs("spo2LeadOffLev"));
-    _spo2LeadOffLev->label->setFixedSize(labelWidth, ITEM_H);
-    _spo2LeadOffLev->combolist->setFixedSize(btnWidth, ITEM_H);
-    _spo2LeadOffLev->setFont(fontManager.textFont(fontSize));
-    _spo2LeadOffLev->addItem(trs("High"));
-    _spo2LeadOffLev->addItem(trs("Med"));
-    _spo2LeadOffLev->addItem(trs("Low"));
-    connect(_spo2LeadOffLev->combolist, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(_spo2LeadOffLevSlot(int)));
-    mainLayout->addWidget(_spo2LeadOffLev);
-
-    //_ibpLeadOffLev
-    _ibpLeadOffLev = new IComboList(trs("IbpLeadOffLev"));
-    _ibpLeadOffLev->label->setFixedSize(labelWidth, ITEM_H);
-    _ibpLeadOffLev->combolist->setFixedSize(btnWidth, ITEM_H);
-    _ibpLeadOffLev->setFont(fontManager.textFont(fontSize));
-    _ibpLeadOffLev->addItem(trs("High"));
-    _ibpLeadOffLev->addItem(trs("Med"));
-    _ibpLeadOffLev->addItem(trs("Low"));
-    connect(_ibpLeadOffLev->combolist, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(_ibpLeadOffLevSlot(int)));
-    mainLayout->addWidget(_ibpLeadOffLev);
-
-    //_isLethalArrhOff
-    _isLethalArrhOff = new IComboList(trs("LethalArrhOff"));
-    _isLethalArrhOff->label->setFixedSize(labelWidth, ITEM_H);
-    _isLethalArrhOff->combolist->setFixedSize(btnWidth, ITEM_H);
-    _isLethalArrhOff->setFont(fontManager.textFont(fontSize));
-    _isLethalArrhOff->addItem(trs("forbid"));
-    _isLethalArrhOff->addItem(trs("allow"));
-    connect(_isLethalArrhOff->combolist, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(_ibpLeadOffLevSlot(int)));
-    mainLayout->addWidget(_isLethalArrhOff);
-
-    //_isExtendedArrh
-    _isExtendedArrh = new IComboList(trs("ExtendedArrh"));
-    _isExtendedArrh->label->setFixedSize(labelWidth, ITEM_H);
-    _isExtendedArrh->combolist->setFixedSize(btnWidth, ITEM_H);
-    _isExtendedArrh->setFont(fontManager.textFont(fontSize));
-    _isExtendedArrh->addItem(trs("forbid"));
-    _isExtendedArrh->addItem(trs("allow"));
-    connect(_isLethalArrhOff->combolist, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(_extendedArrhSlot(int)));
-    mainLayout->addWidget(_isExtendedArrh);
 
     //_alarmLightOnAlarmReset
     _alarmLightOnAlarmReset = new IComboList(trs("_alarmLightOnAlarmReset"));
@@ -324,36 +262,9 @@ void AlarmMaintainMenu::layoutExec()
     _alarmLightOnAlarmReset->setFont(fontManager.textFont(fontSize));
     _alarmLightOnAlarmReset->addItem(trs("close"));
     _alarmLightOnAlarmReset->addItem(trs("open"));
-    connect(_isExtendedArrh->combolist, SIGNAL(currentIndexChanged(int)),
+    connect(_alarmLightOnAlarmReset->combolist, SIGNAL(currentIndexChanged(int)),
             this, SLOT(_alarmLightOnAlarmResetSlot(int)));
     mainLayout->addWidget(_alarmLightOnAlarmReset);
-
-    //_alarmDelay
-    _alarmDelay = new IComboList(trs("AlarmDelay"));
-    _alarmDelay->label->setFixedSize(labelWidth, ITEM_H);
-    _alarmDelay->combolist->setFixedSize(btnWidth, ITEM_H);
-    _alarmDelay->setFont(fontManager.textFont(fontSize));
-    _alarmDelay->addItem(trs("close"));
-    for(int i=1; i<=8; i++)
-    {
-        _alarmDelay->addItem(trs(QString("%1").arg(i)));
-    }
-    connect(_alarmDelay->combolist, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(_alarmDelaySlot(int)));
-    mainLayout->addWidget(_alarmDelay);
-
-    //_stAlarmDraly
-    _stAlarmDraly = new IComboList(trs("PauseAlarmTime"));
-    _stAlarmDraly->label->setFixedSize(labelWidth, ITEM_H);
-    _stAlarmDraly->combolist->setFixedSize(btnWidth, ITEM_H);
-    _stAlarmDraly->setFont(fontManager.textFont(fontSize));
-    for(int i=0; i<ALARM_ST_DELAY_NR; i++)
-    {
-        _stAlarmDraly->addItem(trs(AlarmMaintainSymbol::convert(AlarmSTDelay(i))));
-    }
-    connect(_stAlarmDraly->combolist, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(_stAlarmDralySlot(int)));
-    mainLayout->addWidget(_stAlarmDraly);
 
     //Defaults
     _defaults = new LabelButton(trs("Defaults"));
@@ -372,31 +283,70 @@ void AlarmMaintainMenu::_defaultsSlot()
 {
 
 }
-
 /**************************************************************************************************
- * Change MinAlarmVol。
+ * 最低报警音量。
  *************************************************************************************************/
-void AlarmMaintainMenu::_setChangeMinAlarmVol(int index)
+void AlarmMaintainMenu::_minAlarmVolumeChangeSlot(int index)
 {
-    systemConfig.setNumValue("Alarms|MinAlarmVol", index);
+    systemConfig.setNumValue("Alarms|MinimumAlarmVolume", index);
 }
 
 /**************************************************************************************************
- * PauseAlarmTime。
+ * 报警暂停时间。
  *************************************************************************************************/
-void AlarmMaintainMenu::_alarmPauseTime(int index)
+void AlarmMaintainMenu::_alarmPauseTimeChangeSlot(int index)
 {
     systemConfig.setNumValue("Alarms|AlarmPauseTime", index);
 }
 
 /**************************************************************************************************
- *STAlarmDraly
+ * 报警关闭提示机制。
  *************************************************************************************************/
-void AlarmMaintainMenu::_stAlarmDralySlot(int index)
+void AlarmMaintainMenu::_alarmClosePromptTimeChangeSlot(int index)
 {
-    systemConfig.setNumValue("Alarms|STAlarmDraly", index);
+    systemConfig.setNumValue("Alarms|AlarmOffPrompting", index);
 }
 
+/**************************************************************************************************
+ * enable alarm audio off。
+ *************************************************************************************************/
+void AlarmMaintainMenu::_enableAlarmAudioOffChangeSlot(int index)
+{
+    systemConfig.setNumValue("Alarms|EnableAlarmAudioOff", index);
+}
+
+/**************************************************************************************************
+ * enable alarm off。
+ *************************************************************************************************/
+void AlarmMaintainMenu::_enableAlarmOffChangeSlot(int index)
+{
+    systemConfig.setNumValue("Alarms|EnableAlarmOff", index);
+
+    if (0 == index)
+    {
+        _alarmOffAtPowerOn->setDisabled(true);
+    }
+    else
+    {
+        _alarmOffAtPowerOn->setDisabled(false);
+    }
+}
+
+/**************************************************************************************************
+ * alarm off at power on。
+ *************************************************************************************************/
+void AlarmMaintainMenu::_alarmOffAtPowerOnChangeSlot(int index)
+{
+    systemConfig.setNumValue("Alarms|AlarmOffAtPowerOn", index);
+}
+
+/**************************************************************************************************
+ * Non-alerts beeps in Non-AED modes。
+ *************************************************************************************************/
+//void AlarmMaintainMenu::_nonAlertsBeepsInNonAEDSlot(int index)
+//{
+//    systemConfig.setNumValue("Alarms|NonAlertsBeepsInNonAED", index);
+//}
 /**************************************************************************************************
  * PauseMaxAlarm15Min。
  *************************************************************************************************/
@@ -408,10 +358,10 @@ void AlarmMaintainMenu::_pauseMaxAlarm15MinSlot(int index)
 /**************************************************************************************************
  * AlarmVol。
  *************************************************************************************************/
-void AlarmMaintainMenu::_alarmVolSlot(int index)
-{
-    systemConfig.setNumValue("Alarms|AlarmVol", index);
-}
+//void AlarmMaintainMenu::_alarmVolSlot(int index)
+//{
+//    systemConfig.setNumValue("Alarms|AlarmVol", index);
+//}
 
 /**************************************************************************************************
  * ReminderTone。
@@ -430,83 +380,11 @@ void AlarmMaintainMenu::_reminderToneIntervalsSlot(int index)
 }
 
 /**************************************************************************************************
- * EcgLeadOffLev。
- *************************************************************************************************/
-void AlarmMaintainMenu::_ecgLeadOffLevSlot(int index)
-{
-    systemConfig.setNumValue("Alarms|EcgLeadOffLev", index);
-}
-
-/**************************************************************************************************
- * SpO2LeadOffLev。
- *************************************************************************************************/
-void AlarmMaintainMenu::_spo2LeadOffLevSlot(int index)
-{
-    systemConfig.setNumValue("Alarms|SPO2LeadOffLev", index);
-}
-
-/**************************************************************************************************
- * IBPLeadOffLev。
- *************************************************************************************************/
-void AlarmMaintainMenu::_ibpLeadOffLevSlot(int index)
-{
-    systemConfig.setNumValue("Alarms|IBPLeadOffLev", index);
-}
-
-/**************************************************************************************************
- * LethalArrhOff。
- *************************************************************************************************/
-void AlarmMaintainMenu::_lethalArrhOffSlot(int index)
-{
-    systemConfig.setNumValue("Alarms|LethalArrhOff", index);
-}
-
-/**************************************************************************************************
- * ExtendedArrh。
- *************************************************************************************************/
-void AlarmMaintainMenu::_extendedArrhSlot(int index)
-{
-    systemConfig.setNumValue("Alarms|ExtendedArrh", index);
-}
-
-/**************************************************************************************************
  * AlarmLightOnAlarmReset。
  *************************************************************************************************/
 void AlarmMaintainMenu::_alarmLightOnAlarmResetSlot(int index)
 {
     systemConfig.setNumValue("Alarms|AlarmLightOnAlarmReset", index);
-}
-
-/**************************************************************************************************
- * AlarmDelay。
- *************************************************************************************************/
-void AlarmMaintainMenu::_alarmDelaySlot(int index)
-{
-    systemConfig.setNumValue("Alarms|AlarmDelay", index);
-}
-
-/**************************************************************************************************
- * 高级报警间隔。
- *************************************************************************************************/
-void AlarmMaintainMenu::_highAlarmIntervalsReleased(QString strValue)
-{
-    systemConfig.setNumValue("Alarms|HighAlarmIntervals", strValue.toInt());
-}
-
-/**************************************************************************************************
- * 中级报警间隔。
- *************************************************************************************************/
-void AlarmMaintainMenu::_medAlarmIntervalsReleased(QString strValue)
-{
-    systemConfig.setNumValue("Alarms|MedAlarmIntervals", strValue.toInt());
-}
-
-/**************************************************************************************************
- * 低级报警间隔。
- *************************************************************************************************/
-void AlarmMaintainMenu::_lowAlarmIntervalsReleased(QString strValue)
-{
-    systemConfig.setNumValue("Alarms|LowAlarmIntervals", strValue.toInt());
 }
 
 /**************************************************************************************************

@@ -38,14 +38,14 @@ void SupervisorPrintMenu::readyShow()
     currentConfig.getNumValue("Print|NIBPReading", index);
     _NIBPAutoPrint->setCurrentIndex(index);
 
-    currentConfig.getNumValue("Print|DiagnosticECG", index);
-    _diagECGAutoPrint->setCurrentIndex(index);
+//    currentConfig.getNumValue("Print|DiagnosticECG", index);
+//    _diagECGAutoPrint->setCurrentIndex(index);
 
-    currentConfig.getNumValue("Print|SummaryReportSnapshotPrintingInAED", index);
-    _autoPrintInAED->setCurrentIndex(index);
+//    currentConfig.getNumValue("Print|SummaryReportSnapshotPrintingInAED", index);
+//    _autoPrintInAED->setCurrentIndex(index);
 
-    currentConfig.getNumValue("Print|Print30JSelfTestReport", index);
-    _30jSelftest->setCurrentIndex(index);
+//    currentConfig.getNumValue("Print|Print30JSelfTestReport", index);
+//    _30jSelftest->setCurrentIndex(index);
 }
 
 /**************************************************************************************************
@@ -122,37 +122,37 @@ void SupervisorPrintMenu::layoutExec()
     }
 
     //Diagnostic ECG
-    _diagECGAutoPrint = new IComboList(trs("DiagnosticECG"));
-    _diagECGAutoPrint->setFont(fontManager.textFont(fontsize));
-    _diagECGAutoPrint->label->setFixedSize(labelWidth, ITEM_H);
-    _diagECGAutoPrint->combolist->setFixedSize(btnWidth, ITEM_H);
-    _diagECGAutoPrint->addItem(trs("Disable"));
-    _diagECGAutoPrint->addItem(trs("Enable"));
-    connect(_diagECGAutoPrint, SIGNAL(currentIndexChanged(int)), this,
-            SLOT(_diagECGAutoPrintSlot(int)));
-    mainLayout->addWidget(_diagECGAutoPrint);
+//    _diagECGAutoPrint = new IComboList(trs("DiagnosticECG"));
+//    _diagECGAutoPrint->setFont(fontManager.textFont(fontsize));
+//    _diagECGAutoPrint->label->setFixedSize(labelWidth, ITEM_H);
+//    _diagECGAutoPrint->combolist->setFixedSize(btnWidth, ITEM_H);
+//    _diagECGAutoPrint->addItem(trs("Disable"));
+//    _diagECGAutoPrint->addItem(trs("Enable"));
+//    connect(_diagECGAutoPrint, SIGNAL(currentIndexChanged(int)), this,
+//            SLOT(_diagECGAutoPrintSlot(int)));
+//    mainLayout->addWidget(_diagECGAutoPrint);
 
     //auto print in AED
-    _autoPrintInAED = new IComboList(trs("SupervisorAutoPrintInAED"));
-    _autoPrintInAED->setFont(fontManager.textFont(fontsize));
-    _autoPrintInAED->label->setFixedSize(labelWidth, ITEM_H);
-    _autoPrintInAED->combolist->setFixedSize(btnWidth, ITEM_H);
-    _autoPrintInAED->addItem(trs("Disable"));
-    _autoPrintInAED->addItem(trs("Enable"));
-    connect(_autoPrintInAED, SIGNAL(currentIndexChanged(int)), this,
-            SLOT(_autoPrintInAEDSlot(int)));
-    mainLayout->addWidget(_autoPrintInAED);
+//    _autoPrintInAED = new IComboList(trs("SupervisorAutoPrintInAED"));
+//    _autoPrintInAED->setFont(fontManager.textFont(fontsize));
+//    _autoPrintInAED->label->setFixedSize(labelWidth, ITEM_H);
+//    _autoPrintInAED->combolist->setFixedSize(btnWidth, ITEM_H);
+//    _autoPrintInAED->addItem(trs("Disable"));
+//    _autoPrintInAED->addItem(trs("Enable"));
+//    connect(_autoPrintInAED, SIGNAL(currentIndexChanged(int)), this,
+//            SLOT(_autoPrintInAEDSlot(int)));
+//    mainLayout->addWidget(_autoPrintInAED);
 
     //auto print 30J self-test
-    _30jSelftest = new IComboList(trs("SupervisorAutoPrint30Jtest"));
-    _30jSelftest->setFont(fontManager.textFont(fontsize));
-    _30jSelftest->label->setFixedSize(labelWidth, ITEM_H);
-    _30jSelftest->combolist->setFixedSize(btnWidth, ITEM_H);
-    _30jSelftest->addItem(trs("Disable"));
-    _30jSelftest->addItem(trs("Enable"));
-    connect(_30jSelftest, SIGNAL(currentIndexChanged(int)), this,
-            SLOT(_autoPrint30JtestResultSlot(int)));
-    mainLayout->addWidget(_30jSelftest);
+//    _30jSelftest = new IComboList(trs("SupervisorAutoPrint30Jtest"));
+//    _30jSelftest->setFont(fontManager.textFont(fontsize));
+//    _30jSelftest->label->setFixedSize(labelWidth, ITEM_H);
+//    _30jSelftest->combolist->setFixedSize(btnWidth, ITEM_H);
+//    _30jSelftest->addItem(trs("Disable"));
+//    _30jSelftest->addItem(trs("Enable"));
+//    connect(_30jSelftest, SIGNAL(currentIndexChanged(int)), this,
+//            SLOT(_autoPrint30JtestResultSlot(int)));
+//    mainLayout->addWidget(_30jSelftest);
 }
 
 /**************************************************************************************************
@@ -222,26 +222,26 @@ void SupervisorPrintMenu::_NIBPAutoPrintSlot(int index)
 /***************************************************************************************************
  * diag ecg
  **************************************************************************************************/
-void SupervisorPrintMenu::_diagECGAutoPrintSlot(int index)
-{
-    currentConfig.setNumValue("Print|DiagnosticECG", index);
-}
+//void SupervisorPrintMenu::_diagECGAutoPrintSlot(int index)
+//{
+//    currentConfig.setNumValue("Print|DiagnosticECG", index);
+//}
 
 /**************************************************************************************************
  * auto print in AED。
  *************************************************************************************************/
-void SupervisorPrintMenu::_autoPrintInAEDSlot(int index)
-{
-    currentConfig.setNumValue("Print|SummaryReportSnapshotPrintingInAED", index);
-}
+//void SupervisorPrintMenu::_autoPrintInAEDSlot(int index)
+//{
+//    currentConfig.setNumValue("Print|SummaryReportSnapshotPrintingInAED", index);
+//}
 
 /**************************************************************************************************
  * auto print 30J 自测结果。
  *************************************************************************************************/
-void SupervisorPrintMenu::_autoPrint30JtestResultSlot(int index)
-{
-    currentConfig.setNumValue("Print|Print30JSelfTestReport", index);
-}
+//void SupervisorPrintMenu::_autoPrint30JtestResultSlot(int index)
+//{
+//    currentConfig.setNumValue("Print|Print30JSelfTestReport", index);
+//}
 
 /**************************************************************************************************
  * 析构。

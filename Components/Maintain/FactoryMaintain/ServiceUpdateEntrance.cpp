@@ -25,16 +25,16 @@ ServiceUpdateEntrance  *ServiceUpdateEntrance ::_selfObj = NULL;
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ServiceUpdateEntrance ::ServiceUpdateEntrance () : SubMenu(trs("ServiceUpdateEntrance ")),
+ServiceUpdateEntrance ::ServiceUpdateEntrance () : SubMenu(trs("ServiceUpdateEntrance")),
                                              _button(NULL)
 {
 
     _button = new LabelButton(trs(""));
 
-    _button->button->setText(trs("ServiceUpdateEntrance >>"));
+    _button->button->setText(QString("%1>>").arg(trs("ServiceUpdateEntrance")));
     connect(_button->button, SIGNAL(realReleased()), this, SLOT(_onBtnSlot()));
 
-    setDesc(trs("ServiceUpdateEntrance Desc"));
+    setDesc(trs("ServiceUpdateEntranceDesc"));
     startLayout();
 }
 

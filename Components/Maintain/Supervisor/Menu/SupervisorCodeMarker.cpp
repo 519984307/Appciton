@@ -9,7 +9,7 @@
 #include "CodeMarkerList.h"
 #include "SupervisorMenuManager.h"
 
-SupervisorCodeMarker *SupervisorCodeMarker::_selfobj = NULL;
+//SupervisorCodeMarker *SupervisorCodeMarker::_selfobj = NULL;
 
 /**************************************************************************************************
  * 构造。

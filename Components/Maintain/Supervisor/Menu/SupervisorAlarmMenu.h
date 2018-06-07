@@ -29,7 +29,6 @@ protected:
 private slots:
 //    void _ltaAlarmChangeSlot(int index);
     void _minAlarmVolumeChangeSlot(int index);
-    void _defaultAlarmVolumeChangeSlot(int index);
     void _alarmPauseTimeChangeSlot(int index);
     void _alarmClosePromptTimeChangeSlot(int index);
     void _alarmOffAtPowerOnChangeSlot(int index);
@@ -42,7 +41,6 @@ private:
 
 //    IComboList *_ltaAlarm;            // 生命报警开关
     IComboList *_minAlarmVolume;      // 最小报警音
-    IComboList *_defaultAlarmVolume;  // 默认报警音
     IComboList *_alarmPauseTime;      // 报警暂停时间
     IComboList *_alarmClosePromptTime;// 报警关闭，报警音关闭提示时间
     IComboList *_enableAlarmAudioOff; // 使能报警声音关闭
