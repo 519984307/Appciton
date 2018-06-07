@@ -42,14 +42,14 @@ struct DisplayTimings {
  * The hSyncActive is toggled
  */
 static DisplayTimings dispTimings = {
-    .pixelClock = 83500000,
+    .pixelClock = 68200000,
     .hActive = 1280,
     .vActive = 800,
-    .hFrontPorch = 200,
-    .hBackPorch = 72,
+    .hFrontPorch = 5,
+    .hBackPorch = 64,
     .hSyncLen = 128,
-    .vBackPorch = 3,
-    .vFrontPorch = 22,
+    .vBackPorch = 40,
+    .vFrontPorch = 10,
     .vSyncLen = 6,
     .hSyncActive = 1,
     .vSyncActive = 1,
