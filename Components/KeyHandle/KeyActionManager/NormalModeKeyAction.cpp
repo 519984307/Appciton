@@ -20,6 +20,8 @@
 #include "MenuManager.h"
 #include "FreezeWidget.h"
 #include <QPointer>
+#include "RecorderManager.h"
+#include "ContinuousPageGenerator.h"
 
 /**************************************************************************************************
  * 构造。
@@ -76,7 +78,8 @@ void NormalModeKeyAction::keyF3Pressed(bool multiBtnPress)
     }
 
     //print
-    printManager.requestPrint(PRINT_TYPE_CONTINUOUS, PRINT_LAYOUT_ID_CONTINUOUS);
+    //printManager.requestPrint(PRINT_TYPE_CONTINUOUS, PRINT_LAYOUT_ID_CONTINUOUS);
+    recorderManager.addPageGenerator(new ContinuousPageGenerator());
 }
 
 void NormalModeKeyAction::keyF4Pressed(bool multiBtnPress)

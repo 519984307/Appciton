@@ -197,18 +197,22 @@ void RecorderManager::selfTest()
 
 bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
 {
-    if(d_ptr->generator)
+    if(!d_ptr->generator)
     {
-        //not generatory currently
+        //not generator currently
         d_ptr->generator = generator;
         generator->moveToThread(d_ptr->procThread);
     }
     else
     {
-        //TODO: check prority
+        // don't add the generator
+        generator->deleteLater();
+
+        //TODO: check prority and check whether or not to stop the generator
         QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
-        d_ptr->generator = generator;
-        generator->moveToThread(d_ptr->procThread);
+        //d_ptr->generator = generator;
+        //generator->moveToThread(d_ptr->procThread);
+        return false;
     }
     connect(generator, SIGNAL(stopped()), this, SLOT(onGeneratorStopped()), Qt::QueuedConnection);
     connect(generator, SIGNAL(generatePage(RecordPage*)), d_ptr->processor, SLOT(addPage(RecordPage*)), Qt::QueuedConnection);

@@ -76,7 +76,11 @@ void RecordPageProcessor::addPage(RecordPage *page)
     }
 
 #if 1
+#ifdef Q_WS_QWS
+    QString path("/mnt/nfs/tmp/");
+#elif
     QString path("/srv/nfs/tmp/");
+#endif
     //QString path("/usr/local/nPM/bin/");
     path += page->getID();
     path += ".png";
@@ -190,12 +194,14 @@ void RecordPageProcessor::timerEvent(QTimerEvent *ev)
         d_ptr->curProcessingPage->getColumnData(d_ptr->curPageXPos++, data);
         if(!d_ptr->iface->sendBitmapData(data, dataLen))
         {
+#if 0
                 //send failed, uart buffer might be full
                 qdebug("send bitmap data failed, send again after 20 ms.");
                 ::usleep(20*1000);
 
                 //send again, and don't care the result
                 d_ptr->iface->sendBitmapData(data, dataLen);
+#endif
         }
 
         if(d_ptr->curPageXPos >= d_ptr->curProcessingPage->width())

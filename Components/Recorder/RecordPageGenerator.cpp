@@ -2113,7 +2113,7 @@ void RecordPageGenerator::timerEvent(QTimerEvent *ev)
             killTimer(_timerID);
             _timerID = -1;
             _requestStop = false;
-            emit stop();
+            emit stopped();
             return;
         }
 
@@ -2126,7 +2126,7 @@ void RecordPageGenerator::timerEvent(QTimerEvent *ev)
         if(page == NULL)
         {
             killTimer(_timerID);
-            emit stop();
+            emit stopped();
             return;
         }
 
