@@ -6,33 +6,81 @@
     <General>
         <PatientType>0</PatientType><!--0:adult  1:ped  2:neo-->
 	<MonitorName>dd-89</MonitorName>
-	<UserMaintainPassword>123456</UserMaintainPassword>
+	<UserMaintainPassword>66666666</UserMaintainPassword>
+	<FactoryMaintainPassword>382425</FactoryMaintainPassword>
+	<SuperPassword>672401</SuperPassword>
 	<Department>d12</Department>
 	<BedNumber>b44</BedNumber>
 	<ChangeBedNumberRight>0</ChangeBedNumberRight>
-	<Language>0</Language>
+	<Language>1</Language>
     </General>
-    <UserMaintain>
-        <AlarmMaintainMenu>
-	    <MinAlarmVol>1</MinAlarmVol>
-	    <AlarmPauseTime>1</AlarmPauseTime>
-	    <STAlarmDraly>1</STAlarmDraly>
-	    <PauseMaxAlarm15Min>1</PauseMaxAlarm15Min>
-	    <AlarmVol>1</AlarmVol>
-	    <ReminderToneIntervals>1</ReminderToneIntervals>
-	    <EcgLeadOffLev>1</EcgLeadOffLev>
-	    <SPO2LeadOffLev>1</SPO2LeadOffLev>
-	    <IBPLeadOffLev>1</IBPLeadOffLev>
-	    <LethalArrhOff>1</LethalArrhOff>
-	    <ExtendedArrh>1</ExtendedArrh>
-	    <AlarmLightOnAlarmReset>1</AlarmLightOnAlarmReset>
-	    <AlarmDelay>1</AlarmDelay>
-	    <HighAlarmIntervals>1</HighAlarmIntervals>
-	    <MedAlarmIntervals>1</MedAlarmIntervals>
-	    <LowAlarmIntervals>1</LowAlarmIntervals>
-	    <ReminderTone>1</ReminderTone>
-	</AlarmMaintainMenu>
-        <Others>
+    <Alarms>
+	<MinAlarmVol>1</MinAlarmVol>
+	<AlarmPauseTime>1</AlarmPauseTime>
+	<STAlarmDraly>1</STAlarmDraly>
+	<PauseMaxAlarm15Min>1</PauseMaxAlarm15Min>
+	<AlarmVol>1</AlarmVol>
+	<ReminderToneIntervals>1</ReminderToneIntervals>
+	<EcgLeadOffLev>1</EcgLeadOffLev>
+	<SPO2LeadOffLev>1</SPO2LeadOffLev>
+	<IBPLeadOffLev>1</IBPLeadOffLev>
+	<LethalArrhOff>1</LethalArrhOff>
+	<ExtendedArrh>1</ExtendedArrh>
+	<AlarmLightOnAlarmReset>1</AlarmLightOnAlarmReset>
+	<AlarmDelay>1</AlarmDelay>
+	<HighAlarmIntervals>3</HighAlarmIntervals>
+	<MedAlarmIntervals>3</MedAlarmIntervals>
+	<LowAlarmIntervals>16</LowAlarmIntervals>
+	<ReminderTone>1</ReminderTone>
+	<PhyParAlarmBoltlockOn>1</PhyParAlarmBoltlockOn>
+    </Alarms>
+    <Unit>
+        <HightUnit>14</HightUnit>
+        <WeightUnit>12</WeightUnit>
+        <STUnit>11</STUnit>
+        <PressureUnit>5</PressureUnit>
+        <TemperatureUnit>2</TemperatureUnit>
+        <CVPUnit>5</CVPUnit>
+        <ICPUnit>5</ICPUnit>
+        <CO2Unit>5</CO2Unit>
+    </Unit>
+	<SelectStarterLogo>2</SelectStarterLogo>
+	<MonitorInfo>
+		<CumulativeWsorkingTime>0</CumulativeWsorkingTime>
+		<TemperatureInsideCase>39.5 c</TemperatureInsideCase>
+		<BatteryLevel>36%</BatteryLevel>
+		<BatteryVoltage>46.3</BatteryVoltage>
+		<MachineType>pmos-888888</MachineType>
+		<MACAddress>22:22:88:88</MACAddress>
+		<ScreenResolationSize>480*1078</ScreenResolationSize>
+		<ElectronicSerialNumber>1234567888</ElectronicSerialNumber>
+	</MonitorInfo>
+	<MachineConfigModule>
+		<IBPModule>0</IBPModule>
+		<CO2Module>1</CO2Module>
+		<ECG12LeadsModule>1</ECG12LeadsModule>
+		<PrinterModule>1</PrinterModule>
+		<HDMIModule>1</HDMIModule>
+		<WifiModule>1</WifiModule>
+		<ScreenModule>1</ScreenModule>
+		<NurseCallingModule>1</NurseCallingModule>
+		<AnalogOutputModule>1</AnalogOutputModule>
+		<SYNCDefibrillationModule>1</SYNCDefibrillationModule>
+		<COModule>1</COModule>
+	</MachineConfigModule>
+	<SoftWareVersion>
+		<SystemSoftwareVersion>05.35.00.154-01</SystemSoftwareVersion>
+		<PowerManagerSoftwareVersion>2.3</PowerManagerSoftwareVersion>
+		<Uboot>02.00.00.09</Uboot>
+		<Kernel>05.02.00.04-01</Kernel>
+		<KeyboardModule>1.4</KeyboardModule>
+		<RecorderModule>N/A</RecorderModule>
+		<ECGAlgorithmType>Mindray.ArrExtend.ST12</ECGAlgorithmType>
+		<FPGALogicNiosSoftwareVersion>N/A</FPGALogicNiosSoftwareVersion>
+		<HostFPGALogicNiosSoftwareVersion>N/A</HostFPGALogicNiosSoftwareVersion>
+		<BootAndStandbyLogoVersion>04.00.00.01</BootAndStandbyLogoVersion>
+	</SoftWareVersion>
+	<Others>
 	    <WaveLine>1</WaveLine>
 	    <ECGStandard>1</ECGStandard>
 	    <FrequencyNotch>1</FrequencyNotch>
@@ -44,7 +92,7 @@
 	    <AlarmLevel>1</AlarmLevel>
 	    <AlarmType>1</AlarmType>
 	</Others>
-        <WiredWork>
+	<WiredWork>
 	    <AddressType>1</AddressType>
 	    <IpAddress>192.168.10.1</IpAddress>
 	    <SubnetMask>192.168.10.0</SubnetMask>
@@ -57,7 +105,6 @@
 	    <ServerIP>0.0.0.0</ServerIP>
 	    <ServerPort>0</ServerPort>
 	</WiFi>
-    </UserMaintain>
     <DataStorage>
     <FolderSequenceNum>1</FolderSequenceNum>
     <FolderName></FolderName>

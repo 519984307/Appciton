@@ -68,6 +68,14 @@
         <NotchFilter>0</NotchFilter>
         <SmartLeadOff>0</SmartLeadOff>
     </ECG>
+    <IBP>
+        <ChannelPressureEntitle1>0</ChannelPressureEntitle1>
+        <ChannelPressureEntitle2>5</ChannelPressureEntitle2>
+        <IBPSweepSpeed>1</IBPSweepSpeed>
+        <FilterMode>0</FilterMode>
+        <Sensitivity>2</Sensitivity>
+        <Calibration>84</Calibration>
+    </IBP>
     <NIBP>
         <MeasureMode>0</MeasureMode>
         <AutoInterval>5</AutoInterval>
@@ -1163,7 +1171,7 @@
         </PED>
     </AlarmSource>
     <Local>
-        <Language CurrentOption="0" OptionCount="2">
+        <Language CurrentOption="1" OptionCount="2">
             <!-- note："XmlFileName" segment consistent with XML language file name -->
             <Opt0 XmlFileName="English">English</Opt0>
             <Opt1 XmlFileName="ChineseSimplified">简体中文</Opt1>
@@ -1222,8 +1230,6 @@
             <g>150</g>
             <b>205</b>
         </Purple>
-	<ECGDUPColor>Green</ECGDUPColor>
-	<RESPDUPColor>Red</RESPDUPColor>
         <ECGColor>Green</ECGColor>
         <SPO2Color>Yellow</SPO2Color>
         <NIBPColor>Blue</NIBPColor>

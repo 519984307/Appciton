@@ -67,6 +67,14 @@
 		<NotchFilter>0</NotchFilter>
 		<SmartLeadOff>0</SmartLeadOff>
     </ECG>
+    <IBP>
+        <ChannelPressureEntitle1>0</ChannelPressureEntitle1>
+        <ChannelPressureEntitle2>5</ChannelPressureEntitle2>
+        <IBPSweepSpeed>1</IBPSweepSpeed>
+        <FilterMode>0</FilterMode>
+        <Sensitivity>2</Sensitivity>
+        <Calibration>84</Calibration>
+    </IBP>
     <NIBP>
         <MeasureMode>0</MeasureMode>
         <AutoInterval>5</AutoInterval>
@@ -1219,8 +1227,6 @@
             <g>150</g>
             <b>205</b>
         </Purple>
-	<ECGDUPColor>Green</ECGDUPColor>
-	<RESPDUPColor>Red</RESPDUPColor>
         <ECGColor>Green</ECGColor>
         <SPO2Color>Yellow</SPO2Color>
         <NIBPColor>Blue</NIBPColor>
