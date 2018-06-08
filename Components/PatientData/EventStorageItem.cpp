@@ -147,6 +147,7 @@ void EventStorageItemPrivate::waveCacheCompleteCallback(WaveformID id, void *obj
 
 void EventStorageItemPrivate::trendCacheCompleteCallback(unsigned timestamp, const TrendCacheData &data, const TrendAlarmStatus &almStatus, void *obj)
 {
+    qDebug("timestamp = %d\n", timestamp);
     EventStorageItemPrivate *p = reinterpret_cast<EventStorageItemPrivate *>(obj);
     p->saveTrendData(timestamp, data, almStatus);
     Q_ASSERT(p != NULL);
@@ -293,20 +294,29 @@ bool EventStorageItem::startCollectTrendAndWaveformData()
 
     if(d_ptr->eventInfo.type == EventOxyCRG)
     {
-        QList<TrendCacheData> trendDataList = trendCache.getTrendData(currentTime - d_ptr->eventInfo.duration_before,
-                                                                      currentTime);
-        QList<TrendAlarmStatus> alarmStatusList = trendCache.getTrendAlarmStatus(currentTime - d_ptr->eventInfo.duration_before,
-                                                                                 currentTime);
+//        QList<TrendCacheData> trendDataList = trendCache.getTrendData(currentTime - d_ptr->eventInfo.duration_before,
+//                                                                      currentTime);
+//        QList<TrendAlarmStatus> alarmStatusList = trendCache.getTrendAlarmStatus(currentTime - d_ptr->eventInfo.duration_before,
+//                                                                                 currentTime);
 
-        unsigned t = currentTime - d_ptr->eventInfo.duration_before;
-        int i = 0;
-        while(t <= currentTime)
+//        unsigned t = currentTime - d_ptr->eventInfo.duration_before;
+//        int i = 0;
+//        while(t <= currentTime)
+//        {
+//            d_ptr->saveTrendData(t, trendDataList.at(i), alarmStatusList.at(i));
+//            t++;
+//            i++;
+//        };
+
+        for (unsigned t = currentTime - d_ptr->eventInfo.duration_before; t <= currentTime; t ++)
         {
-            d_ptr->saveTrendData(t, trendDataList.at(i), alarmStatusList.at(i));
-            t++;
-            i++;
-        };
-
+            TrendCacheData trendData;
+            TrendAlarmStatus trendAlarmStatus;
+            if (trendCache.getTendData(t, trendData) && trendCache.getTrendAlarmStatus(t, trendAlarmStatus))
+            {
+                d_ptr->saveTrendData(t, trendData, trendAlarmStatus);
+            }
+        }
 
         TrendRecorder trendRecorder;
         trendRecorder.toTimestamp =  currentTime + d_ptr->eventInfo.duration_after;

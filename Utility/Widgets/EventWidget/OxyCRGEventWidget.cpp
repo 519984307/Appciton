@@ -246,8 +246,8 @@ void OxyCRGEventWidget::eventInfoUpdate()
 
 void OxyCRGEventWidget::eventWaveUpdate()
 {
-    d_ptr->waveWidget->setWaveTrendSegments(d_ptr->ctx.waveSegments, d_ptr->ctx.trendSegments);
-
+//    d_ptr->waveWidget->setWaveTrendSegments(d_ptr->ctx.waveSegments, d_ptr->ctx.trendSegments);
+    d_ptr->waveWidget->loadOxyCRGEventData(d_ptr->trendInfoList, d_ptr->waveInfo, d_ptr->ctx.infoSegment);
 }
 
 void OxyCRGEventWidget::loadTrendData()
@@ -335,7 +335,6 @@ void OxyCRGEventWidget::loadWaveformData()
     {
         d_ptr->waveInfo.waveInfo.co2.zoom = CO2_DISPLAY_ZOOM_20;
     }
-    d_ptr->waveInfo.waveData.resize(d_ptr->ctx.waveSegments.count());
     WaveformDataSegment *waveData;
     for (int i = 0; d_ptr->ctx.waveSegments.count(); i ++)
     {
@@ -359,9 +358,9 @@ void OxyCRGEventWidget::waveWidgetTrend1(bool isRR)
 
 void OxyCRGEventWidget::waveWidgetCompressed(WaveformID id)
 {
-    d_ptr->waveWidget->setWaveWidgetCompressed(id);
     d_ptr->waveInfo.id = id;
     loadWaveformData();
+    eventWaveUpdate();
 }
 
 /**************************************************************************************************
@@ -411,10 +410,10 @@ void OxyCRGEventWidget::_detailReleased()
         return;
     }
     d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->eventTable->currentRow()));
-    eventInfoUpdate();
-    eventWaveUpdate();
     loadTrendData();
     loadWaveformData();
+    eventInfoUpdate();
+    eventWaveUpdate();
     d_ptr->eventList->setFocus();
 }
 
