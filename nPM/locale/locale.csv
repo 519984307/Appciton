@@ -1011,7 +1011,7 @@ PleaseAddExportFiles,请增加导出文件,Please Add Export Files
 ImportFilefailed,导入文件失败,Import File failed
 ImportFileCompleted,导入文件完成,Import File Completed
 PleaseAddImportFiles,请增加导入文件,Please Add Import Files
-FactoryMaintainSystem,工厂维护系统,Factory Maintain 3System
+FactoryMaintainSystem,工厂维护系统,Factory Maintain System
 FactoryMaintainPassword,工厂维护密码,Factory Maintain Password
 FactoryMaintainModifyConfig,工厂维护修改配置,Factory Maintain Modify Config
 MachineConfigModuleMenu,机器配置模块菜单,Machine Config Module Menu
