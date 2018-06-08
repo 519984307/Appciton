@@ -154,13 +154,11 @@ bool ContinuousPageGeneratorPrivate::isParamStop(WaveformID id)
 ContinuousPageGenerator::ContinuousPageGenerator(QObject *parent)
     :RecordPageGenerator(parent), d_ptr(new ContinuousPageGeneratorPrivate(this))
 {
-    waveformCache.startRealtimeChannel();
     d_ptr->waveInfos = d_ptr->getPrintWaveInfos();
 }
 
 ContinuousPageGenerator::~ContinuousPageGenerator()
 {
-    waveformCache.stopRealtimeChannel();
 }
 
 int ContinuousPageGenerator::type() const
@@ -203,5 +201,15 @@ RecordPage *ContinuousPageGenerator::createPage()
         break;
     }
     return NULL;
+}
+
+void ContinuousPageGenerator::onStartGenerate()
+{
+    waveformCache.startRealtimeChannel();
+}
+
+void ContinuousPageGenerator::onStopGenerate()
+{
+    waveformCache.stopRealtimeChannel();
 }
 
