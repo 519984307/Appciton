@@ -41,6 +41,7 @@ int RecordPageGenerator::type() const
 void RecordPageGenerator::start(int interval)
 {
     _timerID = startTimer(interval);
+    onStartGenerate();
 }
 
 void RecordPageGenerator::stop()
@@ -2114,6 +2115,7 @@ void RecordPageGenerator::timerEvent(QTimerEvent *ev)
             _timerID = -1;
             _requestStop = false;
             emit stopped();
+            onStopGenerate();
             return;
         }
 
@@ -2127,6 +2129,7 @@ void RecordPageGenerator::timerEvent(QTimerEvent *ev)
         {
             killTimer(_timerID);
             emit stopped();
+            onStopGenerate();
             return;
         }
 

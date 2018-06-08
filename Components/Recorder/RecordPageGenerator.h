@@ -263,6 +263,18 @@ protected:
      */
     void timerEvent(QTimerEvent *);
 
+    /**
+     * @brief onStartGenerate call when start generate
+     */
+    virtual void onStartGenerate() {}
+
+    /**
+     * @brief call when stop generate page
+     */
+    virtual void onStopGenerate() {}
+
+
+
 private:
     bool _requestStop; // request stop flag
     bool _generate;    // generate page or not

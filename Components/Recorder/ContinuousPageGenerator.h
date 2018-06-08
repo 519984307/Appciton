@@ -21,6 +21,13 @@ protected:
     /* override */
     virtual RecordPage *createPage();
 
+
+    /* override */
+    virtual void onStartGenerate();
+
+    /* override */
+    virtual void onStopGenerate();
+
 private:
     QScopedPointer<ContinuousPageGeneratorPrivate> d_ptr;
 };
