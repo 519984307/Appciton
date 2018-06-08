@@ -34,6 +34,7 @@ protected:
     virtual void focusInEvent(QFocusEvent */*e*/);
 
 private slots:
+    void _releaseHandle(IWidget *);
     void _zoomChangeSlot(IWidget *);
     void _popupDestroyed(void);
 

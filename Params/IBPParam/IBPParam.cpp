@@ -154,6 +154,20 @@ void IBPParam::handDemoTrendData()
     }
 }
 
+void IBPParam::getAvailableWaveforms(QStringList &waveforms, QStringList &waveformShowName, int)
+{
+    waveforms.clear();
+    waveformShowName.clear();
+
+    if (NULL != _waveWidgetIBP1 && NULL != _waveWidgetIBP2)
+    {
+        waveforms.append(_waveWidgetIBP1->name());
+        waveforms.append(_waveWidgetIBP2->name());
+        waveformShowName.append(_waveWidgetIBP1->getTitle());
+        waveformShowName.append(_waveWidgetIBP2->getTitle());
+    }
+}
+
 /**************************************************************************************************
  * 获取当前的单位。
  *************************************************************************************************/

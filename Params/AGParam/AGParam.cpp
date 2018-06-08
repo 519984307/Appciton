@@ -58,6 +58,25 @@ void AGParam::handDemoTrendData()
     }
 }
 
+void AGParam::getAvailableWaveforms(QStringList &waveforms, QStringList &waveformShowName, int)
+{
+    waveforms.clear();
+    waveformShowName.clear();
+
+    if (NULL != _waveWidgetN2O && NULL != _waveWidgetO2 &&
+            NULL != _waveWidgetAA1 && NULL != _waveWidgetAA2)
+    {
+        waveforms.append(_waveWidgetN2O->name());
+        waveforms.append(_waveWidgetO2->name());
+        waveforms.append(_waveWidgetAA1->name());
+        waveforms.append(_waveWidgetAA2->name());
+        waveformShowName.append(_waveWidgetN2O->getTitle());
+        waveformShowName.append(_waveWidgetO2->getTitle());
+        waveformShowName.append(_waveWidgetAA1->getTitle());
+        waveformShowName.append(_waveWidgetAA2->getTitle());
+    }
+}
+
 /**************************************************************************************************
  * 获取当前的单位。
  *************************************************************************************************/

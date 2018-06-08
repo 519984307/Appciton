@@ -51,7 +51,6 @@ public:
     OxyCRGEventWaveWidget();
     ~OxyCRGEventWaveWidget();
 
-    void setWaveTrendSegments(const QVector<WaveformDataSegment *> waveSegments, const QVector<TrendDataSegment *> trendSegments);
     void setWaveWidgetCompressed(WaveformID id);
     void setWaveWidgetTrend1(bool isRR);
 
@@ -71,11 +70,7 @@ protected:
     void paintEvent(QPaintEvent *e);
 
 private:
-    void _drawWave(QPainter &painter);
     double _mapWaveValue(WaveformDesc &waveDesc, int wave);
-    void _loadTrendData(void);
-    void _drawDottedLine(QPainter &painter, qreal x1, qreal y1, qreal x2, qreal y2);
-
     double _mapValue(TrendConvertDesc desc, int data);
 
 private:

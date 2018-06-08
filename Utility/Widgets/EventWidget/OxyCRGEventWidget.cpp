@@ -246,7 +246,6 @@ void OxyCRGEventWidget::eventInfoUpdate()
 
 void OxyCRGEventWidget::eventWaveUpdate()
 {
-//    d_ptr->waveWidget->setWaveTrendSegments(d_ptr->ctx.waveSegments, d_ptr->ctx.trendSegments);
     d_ptr->waveWidget->loadOxyCRGEventData(d_ptr->trendInfoList, d_ptr->waveInfo, d_ptr->ctx.infoSegment);
 }
 

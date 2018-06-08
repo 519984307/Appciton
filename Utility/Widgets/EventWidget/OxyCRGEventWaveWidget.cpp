@@ -19,36 +19,13 @@ public:
         startTime = -60;
         durationBefore = -120;
         currentWaveID = WAVE_RESP;
-        cursorPos = 0;
-        trendDataNum = 0;
-        subParamMap.insert(SUB_PARAM_HR_PR, InvData());
-        subParamMap.insert(SUB_PARAM_SPO2, InvData());
-        subParamMap.insert(SUB_PARAM_RR_BR, InvData());
         isRR = false;
-        hrDataBuf = NULL;
-        spo2DataBuf = NULL;
-        rrDataBuf = NULL;
         reset();
     }
     ~OxyCRGEventWaveWidgetPrivate(){}
 
     void reset()
     {
-        if (hrDataBuf)
-        {
-            qFree(hrDataBuf);
-            hrDataBuf = NULL;
-        }
-        if (spo2DataBuf)
-        {
-            qFree(spo2DataBuf);
-            hrDataBuf = NULL;
-        }
-        if (rrDataBuf)
-        {
-            qFree(rrDataBuf);
-            rrDataBuf = NULL;
-        }
         int durationType;
         if (currentConfig.getNumValue("OxyCRG|EventStorageSetup", durationType))
         {
@@ -65,24 +42,12 @@ public:
         }
     }
 
-    QVector<WaveformDataSegment *> waveSegments;
-    QVector<TrendDataSegment *> trendSegments;
-    int trendDataNum;
-    QMap<SubParamID, int> subParamMap;
-
     int startTime;
     int durationBefore;
-    float startX;
-    float endX;
     float waveRegWidth;             // 波形区域宽度
     WaveformID currentWaveID;       // 当前波形ID
-    float offsetSecond;             // 每秒的偏移量
-    int cursorPos;                // 游标索引位置
     float singleParamHigh;          // 单个参数行所占高度
     bool isRR;
-    int *hrDataBuf;                // 趋势数据缓存
-    int *spo2DataBuf;
-    int *rrDataBuf;
 
     // optimization
     QList<TrendGraphInfo> trendInfos;
@@ -105,15 +70,6 @@ OxyCRGEventWaveWidget::OxyCRGEventWaveWidget()
 OxyCRGEventWaveWidget::~OxyCRGEventWaveWidget()
 {
 
-}
-
-void OxyCRGEventWaveWidget::setWaveTrendSegments(const QVector<WaveformDataSegment *> waveSegments, const QVector<TrendDataSegment *> trendSegments)
-{
-    d_ptr->waveSegments = waveSegments;
-    d_ptr->trendSegments = trendSegments;
-    _loadTrendData();
-    d_ptr->cursorPos = 0;
-    update();
 }
 
 void OxyCRGEventWaveWidget::setWaveWidgetCompressed(WaveformID id)
@@ -371,11 +327,6 @@ QPainterPath OxyCRGEventWaveWidget::generatorWaveformPath(const OxyCRGWaveInfo &
 
 void OxyCRGEventWaveWidget::leftMoveCursor()
 {
-//    if (d_ptr->cursorPos <= -DISPLAY_TIME_RANGE / 2)
-//    {
-//        return;
-//    }
-//    d_ptr->cursorPos --;
     if (d_ptr->cursorTime <= (unsigned)d_ptr->timeDesc.max)
     {
         return;
@@ -386,11 +337,6 @@ void OxyCRGEventWaveWidget::leftMoveCursor()
 
 void OxyCRGEventWaveWidget::rightMoveCursor()
 {
-//    if (d_ptr->cursorPos >= DISPLAY_TIME_RANGE / 2)
-//    {
-//        return;
-//    }
-//    d_ptr->cursorPos ++;
     if (d_ptr->cursorTime >= (unsigned)d_ptr->timeDesc.min)
     {
         return;
@@ -527,106 +473,9 @@ void OxyCRGEventWaveWidget::paintEvent(QPaintEvent *e)
     color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(d_ptr->waveInfo.id)));
     painter.setPen(color);
     QPainterPath wavePath = generatorWaveformPath(d_ptr->waveInfo, painter);
-//    painter.setPen(QPen(Qt::SolidLine));
     painter.save();
     painter.drawPath(wavePath);
     painter.restore();
-
-}
-
-void OxyCRGEventWaveWidget::_drawWave(QPainter &painter)
-{
-    WaveformDataSegment *waveData = NULL;
-    if (!d_ptr->waveSegments.count())
-    {
-        return;
-    }
-    for (int i = 0; i < d_ptr->waveSegments.count(); i ++)
-    {
-        waveData = d_ptr->waveSegments.at(i);
-        if (waveData->waveID == d_ptr->currentWaveID)
-        {
-            break;
-        }
-    }
-    WaveformDesc waveDesc;
-    QColor color;
-    qreal x1 = 0, y1 = 0, x2 = 0, y2 = 0;
-    waveDesc.startY = d_ptr->singleParamHigh * 2 + d_ptr->singleParamHigh / 6;
-    waveDesc.endY = waveDesc.startY + d_ptr->singleParamHigh / 3 * 2;
-    waveDesc.waveID = waveData->waveID;
-    waveformCache.getRange(waveDesc.waveID, waveDesc.waveRangeMin, waveDesc.waveRangeMax);
-    if (waveData->sampleRate)
-    {
-        waveDesc.offsetX = (double)d_ptr->waveRegWidth / 4 / 30 / waveData->sampleRate;
-    }
-    else
-    {
-        return;
-    }
-    color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(waveDesc.waveID)));
-    if (color != QColor(0,0,0))
-    {
-        painter.setPen(color);
-    }
-    else
-    {
-        painter.setPen(Qt::red);
-    }
-
-    bool start = true;
-    int startIndex = (d_ptr->startTime - d_ptr->durationBefore) * waveData->sampleRate;
-    for (int i = startIndex; (x2 - d_ptr->startX) < (d_ptr->endX - d_ptr->startX); i ++)
-    {
-        short wave = waveData->waveData[i];
-        double waveValue = _mapWaveValue(waveDesc, wave);
-        if (start)
-        {
-            y1 = waveValue;
-            x1 = d_ptr->startX;
-            x2 = x1 + waveDesc.offsetX;
-            start = false;
-        }
-        y2 = waveValue;
-        if (y1 != InvData() && y2 != InvData())
-        {
-            QLineF line(x1, y1, x2, y2);
-            painter.drawLine(line);
-        }
-        else if (y1 != InvData())
-        {
-            painter.drawPoint(x1, y1);
-        }
-        else if (y2 != InvData())
-        {
-            painter.drawPoint(x2, y2);
-        }
-
-        x1 = x2;
-        x2 += waveDesc.offsetX;
-        y1 = y2;
-
-    }
-    QFont font;
-    font.setPixelSize(20);
-    painter.setFont(font);
-    QRect waveName(0,waveDesc.startY, d_ptr->startX, waveDesc.endY - waveDesc.startY );
-    painter.drawText(waveName, Qt::AlignVCenter | Qt::AlignHCenter, paramInfo.getParamName(paramInfo.getParamID(waveDesc.waveID)));
-
-    font.setPixelSize(15);
-    painter.setFont(font);
-    painter.setPen(QPen(color, 1,Qt::DotLine));
-    if (waveDesc.waveID == WAVE_CO2)
-    {
-        painter.drawLine(d_ptr->startX, waveDesc.startY, d_ptr->endX, waveDesc.startY);
-        painter.drawLine(d_ptr->startX, waveDesc.endY, d_ptr->endX, waveDesc.endY);
-
-        QRect upRulerRect(d_ptr->startX - 50, waveDesc.startY - 10, 50, 30);
-        painter.drawText(upRulerRect, Qt::AlignRight | Qt::AlignTop, QString::number(waveDesc.waveRangeMax));
-
-        QRect downRulerRect(d_ptr->startX - 50, waveDesc.endY - 10, 50, 30);
-        painter.drawText(downRulerRect, Qt::AlignRight | Qt::AlignTop, QString::number(waveDesc.waveRangeMin));
-    }
 
 }
 
@@ -654,56 +503,6 @@ double OxyCRGEventWaveWidget::_mapWaveValue(WaveformDesc &waveDesc, int wave)
         dpos = waveDesc.endY;
     }
     return dpos;
-}
-
-void OxyCRGEventWaveWidget::_loadTrendData()
-{
-    d_ptr->reset();
-    TrendDataSegment *trendSegment;
-    d_ptr->trendDataNum = d_ptr->trendSegments.count();
-    d_ptr->hrDataBuf = new int[d_ptr->trendDataNum];
-    d_ptr->spo2DataBuf = new int[d_ptr->trendDataNum];
-    d_ptr->rrDataBuf = new int[d_ptr->trendDataNum];
-    for (int i = 0; i < d_ptr->trendSegments.count(); i ++)
-    {
-        d_ptr->hrDataBuf[i] = InvData();
-        d_ptr->spo2DataBuf[i] = InvData();
-        d_ptr->rrDataBuf[i] = InvData();
-        trendSegment = d_ptr->trendSegments.at(i);
-        for (int j = 0; j < trendSegment->trendValueNum; j ++)
-        {
-            TrendValueSegment valueSegment = trendSegment->values[j];
-            switch ((SubParamID)valueSegment.subParamId)
-            {
-            case SUB_PARAM_HR_PR:
-                d_ptr->hrDataBuf[i] = valueSegment.value;
-                break;
-            case SUB_PARAM_SPO2:
-                d_ptr->spo2DataBuf[i] = valueSegment.value;
-                break;
-            case SUB_PARAM_RR_BR:
-                d_ptr->rrDataBuf[i] = valueSegment.value;
-                break;
-            default:
-                break;
-            }
-        }
-    }
-}
-
-void OxyCRGEventWaveWidget::_drawDottedLine(QPainter &painter, qreal x1, qreal y1, qreal x2, qreal y2)
-{
-    QPen oldPen = painter.pen();
-
-    QVector<qreal> darsh;
-    darsh << 5 << 5;
-    QPen pen(Qt::white);
-    pen.setDashPattern(darsh);
-    painter.setPen(pen);
-    QLineF dotLine(x1, y1, x2, y2);
-    painter.drawLine(dotLine);
-
-    painter.setPen(oldPen);
 }
 
 double OxyCRGEventWaveWidget::_mapValue(TrendConvertDesc desc, int data)
