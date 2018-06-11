@@ -13,7 +13,9 @@
 #include "NIBPSymbol.h"
 #include "CO2Symbol.h"
 #include "TEMPSymbol.h"
-
+#include "COSymbol.h"
+#include "IBPSymbol.h"
+#include "AGSymbol.h"
 
 #define MAX_STORE_WAVE_NUM 3
 
@@ -330,6 +332,36 @@ QString EventStorageManager::getPhyAlarmMessage(ParamID paramId, int alarmType, 
         else
         {
             return TEMPSymbol::convert((TEMPLimitAlarmType)alarmType);
+        }
+        break;
+    case PARAM_CO:
+        if (isOneShot)
+        {
+            return COSymbol::convert((COOneShotType)alarmType);
+        }
+        else
+        {
+            return COSymbol::convert((COLimitAlarmType)alarmType);
+        }
+        break;
+    case PARAM_IBP:
+        if (isOneShot)
+        {
+            return IBPSymbol::convert((IBPOneShotType)alarmType);
+        }
+        else
+        {
+            return IBPSymbol::convert((IBPLimitAlarmType)alarmType);
+        }
+        break;
+    case PARAM_AG:
+        if (isOneShot)
+        {
+            return AGSymbol::convert((AGOneShotType)alarmType);
+        }
+        else
+        {
+            return AGSymbol::convert((AGLimitAlarmType)alarmType);
         }
         break;
     default:

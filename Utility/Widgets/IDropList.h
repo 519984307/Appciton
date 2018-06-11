@@ -35,6 +35,22 @@ signals:
 protected:
     void hideEvent(QHideEvent *e);
 
+    // 处理键盘和飞棱事件。
+    void keyPressEvent(QKeyEvent *e)
+    {
+        switch (e->key())
+        {
+            case Qt::Key_Up:
+            case Qt::Key_Down:
+                e->ignore();
+                return;
+            default:
+                break;
+        }
+
+        QPushButton::keyPressEvent(e);
+    }
+
 private slots:
     void _showPopup();
     void _popupDestroyed();

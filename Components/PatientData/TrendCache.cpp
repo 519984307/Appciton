@@ -141,11 +141,6 @@ QList<TrendCacheData> TrendCache::getTrendData(unsigned start, unsigned stop)
         {
             trendDataList.append(trendData);
         }
-        else
-        {
-            TrendCacheData invalidData;
-            trendDataList.append(invalidData);
-        }
     }
     return trendDataList;
 }

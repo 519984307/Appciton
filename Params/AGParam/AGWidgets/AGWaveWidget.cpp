@@ -6,6 +6,7 @@
 #include "AGWaveRuler.h"
 #include "AGSymbol.h"
 #include "ComboListPopup.h"
+#include "WaveWidgetSelectMenu.h"
 #include "AGParam.h"
 
 /**************************************************************************************************
@@ -86,7 +87,7 @@ AGWaveWidget::AGWaveWidget(WaveformID id, const QString &waveName, const AGTypeG
     _name->setFont(fontManager.textFont(fontSize));
     _name->setFixedSize(130, 30);
     _name->setText(getTitle());
-//    connect(_name, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(_name, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
 
     _ruler = new AGWaveRuler(this);
     _ruler->setPalette(palette);
@@ -127,6 +128,23 @@ void AGWaveWidget::focusInEvent(QFocusEvent *)
     {
         _name->setFocus();
     }
+}
+
+void AGWaveWidget::_releaseHandle(IWidget *)
+{
+    QWidget *p = (QWidget*)parent();
+    if (p == NULL)
+    {
+        return;
+    }
+
+    QRect prect = p->geometry();
+    QRect r = geometry();
+
+    waveWidgetSelectMenu.setTopWaveform(false);
+    waveWidgetSelectMenu.setWaveformName(name());
+    waveWidgetSelectMenu.setShowPoint(prect.x() + r.x() + 50, prect.y() + r.y());
+    waveWidgetSelectMenu.autoShow();
 }
 
 /**************************************************************************************************

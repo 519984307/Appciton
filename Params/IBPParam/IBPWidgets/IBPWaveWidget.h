@@ -49,6 +49,7 @@ protected:
 
 
 private slots:
+    void _releaseHandle(IWidget *);
     void _IBPZoom(IWidget *widget);
     void _popupDestroyed();
 
