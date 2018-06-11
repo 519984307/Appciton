@@ -127,9 +127,10 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPr
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
     setPalette(palette);
 
-    int fontSize = fontManager.getFontSize(7);
-    _name->setFont(fontManager.textFont(fontSize));
-    _name->setFixedSize(130, 30);
+    int infoFont = 14;
+    int fontH = fontManager.textHeightInPixels(fontManager.textFont(infoFont)) + 4;
+    _name->setFont(fontManager.textFont(infoFont));
+    _name->setFixedSize(130, fontH);
     _name->setText(getTitle());
     connect(_name, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
 
@@ -139,19 +140,21 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPr
     addItem(_ruler);
 
     _zoom = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
-    _zoom->setFont(fontManager.textFont(fontSize));
-    _zoom->setFixedSize(120, 30);
+    _zoom->setFont(fontManager.textFont(infoFont));
+    _zoom->setFixedSize(120, fontH);
     _zoom->setText(QString::number(ibpParam.getIBPScale(entitle).low) + "~" +
                    QString::number(ibpParam.getIBPScale(entitle).high) + "mmHg");
     addItem(_zoom);
     connect(_zoom, SIGNAL(released(IWidget*)), this, SLOT(_IBPZoom(IWidget*)));
 
     _leadSta = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
-    _leadSta->setFont(fontManager.textFont(fontSize));
-    _leadSta->setFixedSize(120, 30);
+    _leadSta->setFont(fontManager.textFont(infoFont));
+    _leadSta->setFixedSize(120, fontH);
     _leadSta->setText(trs("LeadOff"));
     _leadSta->setFocusPolicy(Qt::NoFocus);
     addItem(_leadSta);
+
+    setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
 
     // 加载配置
 //    _loadConfig();
@@ -175,10 +178,13 @@ void IBPWaveWidget::paintEvent(QPaintEvent *e)
  *************************************************************************************************/
 void IBPWaveWidget::resizeEvent(QResizeEvent *e)
 {
-    _name->move(margin(), margin());
-    _zoom->move(margin() + _name->rect().width(), margin());
-    _leadSta->move(margin() + _name->rect().width() + _zoom->rect().width(), margin());
-    _ruler->resize(2, margin(), width() - 2, height() - margin() * 2);
+    _name->move(0, 0);
+    _zoom->move(_name->rect().width(), 0);
+    _leadSta->move(_name->rect().x() + _name->rect().width() +
+                   _zoom->rect().x() + _zoom->rect().width(), 0);
+    _ruler->resize(qmargins().left(), qmargins().top(),
+                   width() - qmargins().left() - qmargins().right(),
+                   height() - qmargins().top() - qmargins().bottom());
     WaveWidget::resizeEvent(e);
 }
 

@@ -13,10 +13,10 @@ void IBPWaveRuler::paintItem(QPainter &painter)
         return;
     }
 
-    int xLeft = x() + 50;
-    int xRight = x() + width() - 3;
-    int yUp = y() + 2;
-    int yLow = y() + height() - 3;
+    int xLeft = x();
+    int xRight = x() + width();
+    int yUp = y();
+    int yLow = y() + height() - 2;
     int yMid = (_mid - _low) * (yUp - yLow) / (_up - _low) + yLow;
 
     painter.setFont(font());

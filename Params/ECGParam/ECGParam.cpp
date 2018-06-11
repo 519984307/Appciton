@@ -1957,7 +1957,7 @@ ECGPaceMode ECGParam::get12LPacermaker(void)
  *************************************************************************************************/
 void ECGParam::setSweepSpeed(ECGSweepSpeed speed)
 {
-    systemConfig.setNumValue("PrimaryCfg|ECG|SweepSpeed", (int)speed);
+    systemConfig.setNumValue("ECG|SweepSpeed", (int)speed);
 
     for (int i = 0; i < ECG_LEAD_NR; ++i)
     {
@@ -1982,7 +1982,7 @@ void ECGParam::setSweepSpeed(ECGSweepSpeed speed)
 ECGSweepSpeed ECGParam::getSweepSpeed(void)
 {
     int speed = ECG_SWEEP_SPEED_250;
-    systemConfig.getNumValue("PrimaryCfg|ECG|SweepSpeed", speed);
+    systemConfig.getNumValue("ECG|SweepSpeed", speed);
     return (ECGSweepSpeed)speed;
 }
 

@@ -35,13 +35,13 @@ static DemoWaveDataDesc _demoWaveData[WAVE_NR] =
     {"ECG-V6",    WAVE_ECG_V6,    NULL, 250, 0},
     {"RESP",      WAVE_RESP,      NULL, 250, 0},
     {"SPO2",      WAVE_SPO2,      NULL, 50, 0},
-    {"CO2",       WAVE_CO2,       NULL, 20, 0},
-    {"N2O",       WAVE_N2O,       NULL, 50, 0},
-    {"AA1",       WAVE_AA1,       NULL, 50, 0},
-    {"AA2",       WAVE_AA2,       NULL, 50, 0},
-    {"O2",        WAVE_O2,        NULL, 50, 0},
-    {"IBP1",      WAVE_IBP1,      NULL, 50, 0},
-    {"IBP2",      WAVE_IBP2,      NULL, 50, 0},
+    {"CO2",       WAVE_CO2,       NULL, 40, 0},
+    {"N2O",       WAVE_N2O,       NULL, 125, 0},
+    {"AA1",       WAVE_AA1,       NULL, 125, 0},
+    {"AA2",       WAVE_AA2,       NULL, 125, 0},
+    {"O2",        WAVE_O2,        NULL, 125, 0},
+    {"IBP1",      WAVE_IBP1,      NULL, 125, 0},
+    {"IBP2",      WAVE_IBP2,      NULL, 125, 0},
 };
 
 struct DemoTrendDesc
