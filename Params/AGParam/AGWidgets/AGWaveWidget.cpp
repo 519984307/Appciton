@@ -83,9 +83,10 @@ AGWaveWidget::AGWaveWidget(WaveformID id, const QString &waveName, const AGTypeG
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
     setPalette(palette);
 
-    int fontSize = fontManager.getFontSize(7);
-    _name->setFont(fontManager.textFont(fontSize));
-    _name->setFixedSize(130, 30);
+    int infoFont = 14;
+    int fontH = fontManager.textHeightInPixels(fontManager.textFont(infoFont)) + 4;
+    _name->setFont(fontManager.textFont(infoFont));
+    _name->setFixedSize(130, fontH);
     _name->setText(getTitle());
     connect(_name, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
 
@@ -95,10 +96,12 @@ AGWaveWidget::AGWaveWidget(WaveformID id, const QString &waveName, const AGTypeG
     addItem(_ruler);
 
     _zoom = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
-    _zoom->setFont(fontManager.textFont(fontSize));
-    _zoom->setFixedSize(120, 30);
+    _zoom->setFont(fontManager.textFont(infoFont));
+    _zoom->setFixedSize(120, fontH);
     addItem(_zoom);
     connect(_zoom, SIGNAL(released(IWidget*)), this, SLOT(_zoomChangeSlot(IWidget*)));
+
+    setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
 }
 
 /**************************************************************************************************
@@ -113,9 +116,11 @@ AGWaveWidget::~AGWaveWidget()
  *************************************************************************************************/
 void AGWaveWidget::resizeEvent(QResizeEvent *e)
 {
-    _name->move(margin(), margin());
-    _zoom->move(margin() + _name->rect().width(), margin());
-    _ruler->resize(2, margin(), width() - 2, height() - margin() * 2);
+    _name->move(0, 0);
+    _zoom->move(_name->rect().width(), 0);
+    _ruler->resize(qmargins().left(), qmargins().top(),
+                   width() - qmargins().left() - qmargins().right(),
+                   height() - qmargins().top() - qmargins().bottom());
     WaveWidget::resizeEvent(e);
 }
 
