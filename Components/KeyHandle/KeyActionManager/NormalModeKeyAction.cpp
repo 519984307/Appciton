@@ -65,6 +65,11 @@ void NormalModeKeyAction::keyF2Pressed(bool multiBtnPress)
         return;
     }
 
+    while (NULL != QApplication::activeModalWidget())
+    {
+        QApplication::activeModalWidget()->close();
+    }
+
     FreezeWidget freezeWidget;
     currentFreezeWidget = &freezeWidget;
     freezeWidget.exec();
