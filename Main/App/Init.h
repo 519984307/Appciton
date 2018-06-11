@@ -15,6 +15,7 @@
 #include "SupervisorMenuManager.h"
 #include "KeyBoardPanel.h"
 #include "NumberPanel.h"
+#include "ConfigManagerEntrance.h"
 #include "SetWidget.h"
 #include "ConfigEditUnitSetupMenu.h"
 

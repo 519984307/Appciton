@@ -16,6 +16,7 @@
 #include "UserMaintainEntrance.h"
 #include "UserMaintainManager.h"
 #include "UserMaintainGeneralSet.h"
+#include "ConfigMaintainMenuGrp.h"
 /**************************************************************************************************
  * 功能: 构造函数
 **************************************************************************************************/
@@ -294,7 +295,8 @@ void PasswordMenuManage::_okBtnSlot(int /*index*/)
         case 'G'://通用配置管理
             if (_passwordStr == _normalPassword)
             {
-                serviceWindowManager.popup();
+                configMaintainMenuGrp.initializeSubMenu();
+                configMaintainMenuGrp.popup();
                 return;
             }
             break;

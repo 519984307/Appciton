@@ -268,9 +268,17 @@ void ECGMenu::setECGLeadMode(int leadMode)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ECGMenu::ECGMenu() : SubMenu(trs("ECGMenu"))
+ECGMenu::ECGMenu() : SubMenu(trs("ECGMenu")),
+                     _leadMode(NULL),
+                     _filterMode(NULL),
+                     _notch(NULL),
+                     _sweepSpeed(NULL),
+                     _pacemaker(NULL),
+                     _12Lpacemaker(NULL),
+                     _qrsTone(NULL)
 {
     setDesc(trs("ECGMenuDesc"));
+
     startLayout();
 }
 

@@ -546,7 +546,8 @@ bool FactoryImportExportMenu::insertFileFromUSB()
        _checkImportFileFlag = FactoryImportExportMenuPrivate::FAILED;//失败
        return false;
     }
-    if(_localXml.setContent(&fileLocal)<0)
+
+    if(!_localXml.setContent(&fileLocal))
     {
         _textStream << QString("%1 parser failed!!!\r\n").arg(fileLocal.fileName());
         _checkImportFileFlag = FactoryImportExportMenuPrivate::FAILED;//失败
@@ -574,7 +575,7 @@ bool FactoryImportExportMenu::insertFileFromUSB()
                     _checkImportFileFlag = FactoryImportExportMenuPrivate::FAILED;//失败
                     return false;
                 }
-                if(_importXml.setContent(&file_import)<0)
+                if(!_importXml.setContent(&file_import))
                 {
                     _textStream << QString("%1 parser failed!!!\r\n").arg(file_import.fileName());
                     _checkImportFileFlag = FactoryImportExportMenuPrivate::FAILED;//失败

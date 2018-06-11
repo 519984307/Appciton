@@ -50,7 +50,7 @@ void WiFiProfileMenuPrivate::loadProfiles()
     int tmpValue=0;
     int count;
     bool ok;
-    if(!currentConfig.getStrAttr("WiFi|Profiles", "Count", tmpStr))
+    if(!systemConfig.getStrAttr("WiFi|Profiles", "Count", tmpStr))
     {
         return;
     }
@@ -67,20 +67,20 @@ void WiFiProfileMenuPrivate::loadProfiles()
     {
         QString prefix = QString("WiFi|Profiles|Profile%1|").arg(i);
         WiFiProfileInfo profile;
-        currentConfig.getStrValue(prefix + "ProfileName", profile.profileName);
-        currentConfig.getStrValue(prefix + "SSID", profile.ssid);
-        currentConfig.getNumValue(prefix + "AuthType", tmpValue);
+        systemConfig.getStrValue(prefix + "ProfileName", profile.profileName);
+        systemConfig.getStrValue(prefix + "SSID", profile.ssid);
+        systemConfig.getNumValue(prefix + "AuthType", tmpValue);
         profile.authType = (WiFiProfileInfo::AuthenticationType) tmpValue;
-        currentConfig.getStrValue(prefix + "SecurityKey", profile.securityKey);
-        currentConfig.getNumValue(prefix + "IsStatic", tmpValue);
+        systemConfig.getStrValue(prefix + "SecurityKey", profile.securityKey);
+        systemConfig.getNumValue(prefix + "IsStatic", tmpValue);
         profile.isStatic = tmpValue;
         if(profile.isStatic)
         {
-            currentConfig.getStrValue(prefix + "StaticIP", profile.staticIp);
-            currentConfig.getStrValue(prefix + "DefaultGateway", profile.defaultGateway);
-            currentConfig.getStrValue(prefix + "SubnetMask", profile.subnetMask);
-            currentConfig.getStrValue(prefix + "PreferedDNS", profile.preferedDNS);
-            currentConfig.getStrValue(prefix + "AlternateDNS", profile.alternateDNS);
+            systemConfig.getStrValue(prefix + "StaticIP", profile.staticIp);
+            systemConfig.getStrValue(prefix + "DefaultGateway", profile.defaultGateway);
+            systemConfig.getStrValue(prefix + "SubnetMask", profile.subnetMask);
+            systemConfig.getStrValue(prefix + "PreferedDNS", profile.preferedDNS);
+            systemConfig.getStrValue(prefix + "AlternateDNS", profile.alternateDNS);
         }
         profiles.append(profile);
     }
@@ -94,14 +94,14 @@ void WiFiProfileMenuPrivate::loadProfiles()
     }
 
     //first item will be "OFF
-    comboProfileList->addItem(trs("Off"));
+    comboProfileList->addItem(trs("Off")) ;
 
     for(int i = 0; i < profiles.count(); i++)
     {
         comboProfileList->addItem(profiles.at(i).profileName);
     }
 
-    if(currentConfig.getStrAttr("WiFi|Profiles", "CurrentSelect", tmpStr))
+    if(systemConfig.getStrAttr("WiFi|Profiles", "CurrentSelect", tmpStr))
     {
         ok = false;
         int index = tmpStr.toInt(&ok);
@@ -134,7 +134,7 @@ void WiFiProfileMenuPrivate::onProfileSelect(int index)
     }
     ipLabelBtn->button->setText(QString());
     macLabelBtn->button->setText(QString());
-    currentConfig.setNumAttr("WiFi|Profiles", "CurrentSelect", select);
+    systemConfig.setNumAttr("WiFi|Profiles", "CurrentSelect", select);
 }
 
 /***************************************************************************************************
@@ -146,7 +146,7 @@ void WiFiProfileMenuPrivate::onWifiConnected(const QString &ssid)
     //So we need to check wether the select profile contain the ssid or not
     int select = 0;
 
-    currentConfig.getNumAttr("WiFi|Profiles", "CurrentSelect", select);
+    systemConfig.getNumAttr("WiFi|Profiles", "CurrentSelect", select);
 
     if(profiles.count() > 0 && select < profiles.count() && select >= 0)
     {
