@@ -277,7 +277,7 @@ void NetworkManager::close(NetworkType type)
 bool NetworkManager::isWifiTurnOn()
 {
     int st = 0;
-    currentConfig.getNumValue("WiFi|EnableWifi", st);
+    systemConfig.getNumValue("WiFi|EnableWifi", st);
     return st;
 }
 
@@ -312,7 +312,7 @@ bool NetworkManager::isWiFiConnected() const
 void NetworkManager::setWifiState(bool onOrOFF)
 {
     int st = onOrOFF;
-    currentConfig.setNumValue("WiFi|EnableWifi", st);
+    systemConfig.setNumValue("WiFi|EnableWifi", st);
 }
 
 

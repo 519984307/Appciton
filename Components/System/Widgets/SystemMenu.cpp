@@ -73,8 +73,8 @@ void SystemMenu::_printCfgSlot(void)
 
 void SystemMenu::_configManagerSlot()
 {
-    configMaintainMenuGrp.initializeSubMenu();
-    configMaintainMenuGrp.popup();
+//    configMaintainMenuGrp.initializeSubMenu();
+//    configMaintainMenuGrp.popup();
 }
 
 
@@ -211,14 +211,14 @@ void SystemMenu::layoutExec(void)
     _printCfg->button->setFixedSize(btnWidth, ITEM_H);
     mainLayout->addWidget(_printCfg);
 
-    // config Manager
-    _configManager = new LabelButton("");
-    _configManager->setFont(font);
-    _configManager->setValue(trs("ConfigManager"));
-    connect(_configManager->button, SIGNAL(realReleased()), this, SLOT(_configManagerSlot()));
-    _configManager->label->setFixedSize(labelWidth, ITEM_H);
-    _configManager->button->setFixedSize(btnWidth, ITEM_H);
-    mainLayout->addWidget(_configManager);
+//    // config Manager
+//    _configManager = new LabelButton("");
+//    _configManager->setFont(font);
+//    _configManager->setValue(trs("ConfigManager"));
+//    connect(_configManager->button, SIGNAL(realReleased()), this, SLOT(_configManagerSlot()));
+//    _configManager->label->setFixedSize(labelWidth, ITEM_H);
+//    _configManager->button->setFixedSize(btnWidth, ITEM_H);
+//    mainLayout->addWidget(_configManager);
 
 
 
