@@ -52,6 +52,8 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id
     }
     _paramUnit = Unit::getSymbol(paramInfo.getUnitOfSubParam(id));
 
+    setAttribute(Qt::WA_TransparentForMouseEvents,true);
+
 }
 
 TrendSubWaveWidget::~TrendSubWaveWidget()

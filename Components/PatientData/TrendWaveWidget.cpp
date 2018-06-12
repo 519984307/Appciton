@@ -33,6 +33,7 @@ TrendWaveWidget::TrendWaveWidget() :
 
     _subWidget = new IWidget();
     _subWidget->setFocusPolicy(Qt::NoFocus);
+    _subWidget->setAttribute(Qt::WA_TransparentForMouseEvents,true);
     _subWidgetScrollArea = new QScrollArea();
 
     // 重新调整子部件的大小
@@ -261,7 +262,7 @@ void TrendWaveWidget::rightMoveEvent()
     for (int i = 0; i < count; i++)
     {
         QLayoutItem *item = _hLayoutTrend->itemAt(i);
-        TrendSubWaveWidget *widget = dynamic_cast<TrendSubWaveWidget *>(item->widget());
+        TrendSubWaveWidget *widget = qobject_cast<TrendSubWaveWidget *>(item->widget());
         if (widget != NULL)
         {
             widget->cursorMove(_cursorPosIndex);
@@ -640,6 +641,56 @@ void TrendWaveWidget::showEvent(QShowEvent *e)
     updateTimeRange();
 }
 
+void TrendWaveWidget::mousePressEvent(QMouseEvent *e)
+{
+    if (_trendGraphInfo.alarmInfo.count() == 0)
+    {
+        return;
+    }
+    double waveHead = _getCursorPos( _trendGraphInfo.alarmInfo.last().timestamp);
+    double waveTail = _getCursorPos( _trendGraphInfo.alarmInfo.first().timestamp);
+    if (e->x() >= waveHead && e->x() <= waveTail)
+    {
+        double pos = e->x();
+        unsigned t = _getCursorTime(pos);
+        // 二分查找时间索引
+        int lowPos = 0;
+        int highPos = _trendGraphInfo.alarmInfo.count() - 1;
+        while(lowPos <= highPos)
+        {
+            int midPos = (lowPos + highPos)/2;
+            unsigned midTime = _trendGraphInfo.alarmInfo.at(midPos).timestamp;
+            int timeDiff = qAbs(t - midTime);
+
+            if (t < midTime)
+            {
+                lowPos = midPos + 1;
+            }
+            else if (t > midTime)
+            {
+                highPos = midPos - 1;
+            }
+
+            if (timeDiff == 0 || lowPos > highPos)
+            {
+                _cursorPosIndex = midPos;
+                break;
+            }
+        }
+        int count = _hLayoutTrend->count();
+        for (int i = 0; i < count; i++)
+        {
+            QLayoutItem *item = _hLayoutTrend->itemAt(i);
+            TrendSubWaveWidget *widget = dynamic_cast<TrendSubWaveWidget *>(item->widget());
+            if (widget != NULL)
+            {
+                widget->cursorMove(_cursorPosIndex);
+            }
+        }
+        update();
+    }
+}
+
 void TrendWaveWidget::_trendLayout()
 {
     _infosList.clear();
@@ -832,6 +883,13 @@ double TrendWaveWidget::_getCursorPos(unsigned t)
     dpos = (t - _leftTime) * GRAPH_DATA_WIDTH / (_rightTime - _leftTime) + (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2;
 
     return dpos;
+}
+
+unsigned TrendWaveWidget::_getCursorTime(double pos)
+{
+    unsigned t = 0;
+    t = (pos - (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2) * (_rightTime - _leftTime) / GRAPH_DATA_WIDTH + _leftTime;
+    return t;
 }
 
 void TrendWaveWidget::_calculationPage()
