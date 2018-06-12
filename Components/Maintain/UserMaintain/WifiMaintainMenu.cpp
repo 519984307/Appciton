@@ -52,6 +52,8 @@ void WifiMaintainMenuPrivate::onSwitch(int val)
 {
     systemConfig.setNumValue("WiFi|EnableWifi", val);
     systemConfig.save();
+    wifiMaintainMenu._isEnabled = !!val;
+    emit wifiMaintainMenu.updateWifiProfileSignal(wifiMaintainMenu._isEnabled);
 }
 
 /***************************************************************************************************
@@ -364,6 +366,8 @@ void WifiMaintainMenuPrivate::saveProfiles()
     systemConfig.setNumAttr("WiFi|Profiles", "CurrentSelect", currentSelect);
 
     systemConfig.save();
+
+    emit wifiMaintainMenu.updateWifiProfileSignal(wifiMaintainMenu._isEnabled);
 }
 
 /***************************************************************************************************
@@ -523,6 +527,7 @@ void WifiMaintainMenu::readyShow()
     Q_D(WifiMaintainMenu);
     bool enableWifi = false;
     systemConfig.getNumValue("WiFi|EnableWifi", enableWifi);
+    _isEnabled = !!enableWifi;
     d->switchCombo->setCurrentIndex(enableWifi);
     d->loadProfiles();
     d->updateProfileList();

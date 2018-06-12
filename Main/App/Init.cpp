@@ -538,7 +538,11 @@ static void _initMenu(void)
         publicMenuManager.addSubMenu(&co2Menu);
     }
     publicMenuManager.addSubMenu(&alarmLimitMenu);
-    if(systemManager.isSupport(CONFIG_WIFI) && NetworkManager::isWifiTurnOn())
+//    if(systemManager.isSupport(CONFIG_WIFI) && NetworkManager::isWifiTurnOn())
+//    {
+//        publicMenuManager.addSubMenu(&wifiProfileMenu);
+//    }
+    if(systemManager.isSupport(CONFIG_WIFI))
     {
         publicMenuManager.addSubMenu(&wifiProfileMenu);
     }

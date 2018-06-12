@@ -16,6 +16,8 @@ public:
 signals:
     void selectProfile(WiFiProfileInfo profile);
 
+private slots:
+    void updateWifiProfileSlot(bool isEnabled);
 protected:
     void layoutExec();
     const QScopedPointer<WiFiProfileMenuPrivate> d_ptr;
@@ -30,6 +32,7 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onProfileSelect(int))
     Q_PRIVATE_SLOT(d_func(), void onWifiConnected(const QString &ssid))
+    int _wifiProfileInt;
 };
 
 #define wifiProfileMenu (WiFiProfileMenu::construction())
