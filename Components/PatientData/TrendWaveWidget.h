@@ -109,6 +109,7 @@ public slots:
 protected:
     void paintEvent(QPaintEvent *event);
     void showEvent(QShowEvent *e);
+    void mousePressEvent(QMouseEvent *e);
 
 private:
     /**
@@ -132,6 +133,8 @@ private:
      * @return 像素位置
      */
     double _getCursorPos(unsigned t);               // 获取坐标位置
+
+    unsigned _getCursorTime(double pos);            // 获取游标位置时间
 
     /**
      * @brief _calculationPage 获取当前时间间隔的总数据页并设置当前页为1
