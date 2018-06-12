@@ -551,7 +551,6 @@ static void _initMenu(void)
 
     publicMenuManager.addSubMenu(&systemMenu);
 //    publicMenuManager.addSubMenu(&supervisorEntrance);
-
     userMaintainEntrance.construction();
     factoryMaintainEntrance.construction();
     configManagerEntrance.construction();

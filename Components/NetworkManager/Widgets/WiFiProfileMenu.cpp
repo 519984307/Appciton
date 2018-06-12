@@ -70,6 +70,7 @@ void WiFiProfileMenu::updateWifiProfileSlot(bool isEnabled)
  **************************************************************************************************/
 void WiFiProfileMenuPrivate::loadProfiles()
 {
+    Q_Q(WiFiProfileMenu);
     QString tmpStr;
     int tmpValue=0;
     int count;
@@ -135,7 +136,7 @@ void WiFiProfileMenuPrivate::loadProfiles()
             comboProfileList->setCurrentIndex(index + 1);
             comboProfileList->blockSignals(false);
             selectApBtn->button->setText(profiles.at(index).ssid);
-            wifiProfileMenu._wifiProfileInt = index+1;
+            q->_wifiProfileInt = index+1;
         }
     }
 }
@@ -152,7 +153,7 @@ void WiFiProfileMenuPrivate::onProfileSelect(int index)
     }
     int select = index - 1;
     //index 0 means turn off
-    wifiProfileMenu._wifiProfileInt = index;
+    q->_wifiProfileInt = index;
     if(index)
     {
         emit q->selectProfile(profiles.at(index - 1));
