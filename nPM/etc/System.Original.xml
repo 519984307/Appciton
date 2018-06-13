@@ -35,10 +35,6 @@
 	<ReminderTone>1</ReminderTone>
 	<PhyParAlarmBoltlockOn>1</PhyParAlarmBoltlockOn>
     </Alarms>
-    <AG>
-	<AGModule>0</AGModule>
-	<SweepSpeed>1</SweepSpeed>
-    </AG>
     <Unit>
         <HightUnit>14</HightUnit>
         <WeightUnit>12</WeightUnit>
@@ -163,6 +159,10 @@
 		    <NotchFilter>0</NotchFilter>
 		    <SmartLeadOff>0</SmartLeadOff>
         </ECG>
+		<AG>
+		    <AGModule>0</AGModule>
+		    <SweepSpeed>1</SweepSpeed>
+		</AG>
         <ECG12Lead>
             <EmailOffset>0</EmailOffset>
         </ECG12Lead>
