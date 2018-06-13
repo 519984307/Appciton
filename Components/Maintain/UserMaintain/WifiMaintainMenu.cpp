@@ -527,7 +527,7 @@ void WifiMaintainMenu::readyShow()
     Q_D(WifiMaintainMenu);
     bool enableWifi = false;
     systemConfig.getNumValue("WiFi|EnableWifi", enableWifi);
-    _isEnabled = !!enableWifi;
+    _isEnabled = enableWifi;
     d->switchCombo->setCurrentIndex(enableWifi);
     d->loadProfiles();
     d->updateProfileList();
