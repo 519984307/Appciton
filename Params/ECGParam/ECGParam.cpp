@@ -1219,7 +1219,7 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
     }
 
     int defaultLead = ECG_LEAD_II;
-    currentConfig.getNumValue("ECG|DefaultECGLeadInMonitorMode", defaultLead);
+    currentConfig.getNumValue("PrimaryCfg|ECG|DefaultECGLeadInMonitorMode", defaultLead);
 
     // 切换到正确的计算导联。
     ECGLead calcLead = getCalcLead();
@@ -1528,7 +1528,7 @@ void ECGParam::setCalcLead(ECGLead lead)
     }
 
     // 将新的计算导联保存道配置文件。
-    currentConfig.setNumValue("ECG|DefaultECGLeadInMonitorMode", (int)lead);
+    currentConfig.setNumValue("PrimaryCfg|ECG|DefaultECGLeadInMonitorMode", (int)lead);
     _calcLead = lead;
     if (NULL != _provider)
     {
@@ -1672,7 +1672,7 @@ void ECGParam::setBandwidth(int band)
 {
     if (_curLeadMode != ECG_LEAD_MODE_12)
     {
-        currentConfig.setNumValue("ECG|ChestLeadsECGBandwidth", (int)band);
+        currentConfig.setNumValue("PrimaryCfg|ECG|ChestLeadsECGBandwidth", (int)band);
         _chestFreqBand = (ECGBandwidth) band;
     }
     else
@@ -1685,7 +1685,7 @@ void ECGParam::setBandwidth(int band)
         }
         else
         {
-            currentConfig.setNumValue("ECG|ChestLeadsECGBandwidth", (int)band);
+            currentConfig.setNumValue("PrimaryCfg|ECG|ChestLeadsECGBandwidth", (int)band);
             _chestFreqBand = (ECGBandwidth) band;
         }
     }
@@ -1827,7 +1827,7 @@ ECGBandwidth ECGParam::getBandwidth(void)
 ECGBandwidth ECGParam::getMFCBandwidth(void)
 {
     int band = 0;
-    currentConfig.getNumValue("ECG|PadsECGBandwidth", band);
+    currentConfig.getNumValue("PrimaryCfg|ECG|PadsECGBandwidth", band);
 
     return (ECGBandwidth)band;
 }
@@ -1957,7 +1957,7 @@ ECGPaceMode ECGParam::get12LPacermaker(void)
  *************************************************************************************************/
 void ECGParam::setSweepSpeed(ECGSweepSpeed speed)
 {
-    systemConfig.setNumValue("ECG|SweepSpeed", (int)speed);
+    systemConfig.setNumValue("PrimaryCfg|ECG|SweepSpeed", (int)speed);
 
     for (int i = 0; i < ECG_LEAD_NR; ++i)
     {
@@ -1982,7 +1982,7 @@ void ECGParam::setSweepSpeed(ECGSweepSpeed speed)
 ECGSweepSpeed ECGParam::getSweepSpeed(void)
 {
     int speed = ECG_SWEEP_SPEED_250;
-    systemConfig.getNumValue("ECG|SweepSpeed", speed);
+    systemConfig.getNumValue("PrimaryCfg|ECG|SweepSpeed", speed);
     return (ECGSweepSpeed)speed;
 }
 
@@ -2148,7 +2148,7 @@ int ECGParam::getMaxGain(void)
  *************************************************************************************************/
 void ECGParam::setQRSToneVolume(int vol)
 {
-    currentConfig.setNumValue("ECG|QRSVolume", (int)vol);
+    currentConfig.setNumValue("PrimaryCfg|ECG|QRSVolume", (int)vol);
     soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, (SoundManager::VolumeLevel) vol);
 }
 
@@ -2158,7 +2158,7 @@ void ECGParam::setQRSToneVolume(int vol)
 int ECGParam::getQRSToneVolume(void)
 {
     int vol = SoundManager::VOLUME_LEV_2;
-    currentConfig.getNumValue("ECG|QRSVolume", vol);
+    currentConfig.getNumValue("PrimaryCfg|ECG|QRSVolume", vol);
     return vol;
 }
 
@@ -2218,7 +2218,7 @@ ECGNotchFilter ECGParam::getCalcLeadNotchFilter()
 ECGLeadNameConvention ECGParam::getLeadConvention(void) const
 {
     int leadConvention = 0;
-    currentConfig.getNumValue("ECG|ECGLeadConvention", leadConvention);
+    currentConfig.getNumValue("PrimaryCfg|ECG|ECGLeadConvention", leadConvention);
     if (leadConvention >= ECG_CONVENTION_NR)
     {
         leadConvention = 0;
@@ -2392,7 +2392,7 @@ ECGParam::ECGParam() : Param(PARAM_ECG)
     }
 
     int lead = ECG_LEAD_II;
-    currentConfig.getNumValue("ECG|DefaultECGLeadInMonitorMode", lead);
+    currentConfig.getNumValue("PrimaryCfg|ECG|DefaultECGLeadInMonitorMode", lead);
     _calcLead = (ECGLead)lead;
 
     int mode = ECG_LEAD_MODE_5;
@@ -2408,7 +2408,7 @@ ECGParam::ECGParam() : Param(PARAM_ECG)
     _12LeadPacerMarker = (ECGPaceMode) mode;
 
     mode = ECG_BANDWIDTH_067_20HZ;
-    currentConfig.getNumValue("ECG|ChestLeadsECGBandwidth", mode);
+    currentConfig.getNumValue("PrimaryCfg|ECG|ChestLeadsECGBandwidth", mode);
     _chestFreqBand = (ECGBandwidth) mode;
 
     mode = ECG_FILTERMODE_MONITOR;
