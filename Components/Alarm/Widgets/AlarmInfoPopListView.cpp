@@ -209,6 +209,11 @@ void AlarmInfoPopListVIew::_loadData()
     for (int i = _total - 1; i >= 0; --i)
     {
         alarmIndicator.getAlarmInfo(i, node);
+        if (node.alarmType != _alarmType)
+        {
+            continue;
+        }
+
         switch (node.alarmPriority)
         {
             case ALARM_PRIO_HIGH:
@@ -232,49 +237,40 @@ void AlarmInfoPopListVIew::_loadData()
     int count = highnode.count();
 
     int start = 0, end = 0;
-    if (count > _pageSize)
+    int totalPage = (0 == count % _pageSize) ? (count / _pageSize) : (count / _pageSize + 1);
+    if (_totalPage != totalPage)
     {
-        int totalPage = (0 == count % _pageSize) ? (count / _pageSize) : (count / _pageSize + 1);
-        if (_totalPage != totalPage)
+        _totalPage = totalPage;
+        _page->setRange(1, _totalPage);
+        if (_curPage > _totalPage)
         {
-            _totalPage = totalPage;
-            _page->setRange(1, _totalPage);
-            if (_curPage > _totalPage)
-            {
-                _curPage = _totalPage;
-            }
-
-            _page->setSuffix("/" + QString::number(_totalPage));
-            _page->setValue(_curPage);
+            _curPage = _totalPage;
         }
 
-        start = (_curPage - 1) * _pageSize;
+    }
+    _page->setSuffix("/" + QString::number(_totalPage));
+    _page->setValue(_curPage);
+
+    if (_page->isHidden() && _close->isHidden())
+    {
+        _page->setVisible(true);
+        _close->setVisible(true);
+        _page->setFocus();
+    }
+
+    start = (_curPage - 1) * _pageSize;
+    if (count > _pageSize)
+    {
         end = start + _pageSize;
         if (end > count)
         {
             end = count;
             start = count - _pageSize;
         }
-
-        if (_page->isHidden() && _close->isHidden())
-        {
-            _page->setVisible(true);
-            _close->setVisible(true);
-            _page->setFocus();
-        }
     }
     else
     {
-        _totalPage = 1;
-        _curPage = 1;
-        start = 0;
         end = _pageSize;
-
-        if (!_page->isHidden() && !_close->isHidden())
-        {
-            _page->setVisible(false);
-            _close->setVisible(false);
-        }
     }
 
     for (int i = start; i < end; ++i)
@@ -317,14 +313,7 @@ void AlarmInfoPopListVIew::_loadData()
         }
     }
 
-    if (_totalPage > 1)
-    {
-        setFixedHeight((_pageSize + 1) * _label[0].height());
-    }
-    else
-    {
-        setFixedHeight(count * _label[0].height());
-    }
+    setFixedHeight((_pageSize + 1) * _label[0].height());
 
     highnode.clear();
     midnode.clear();
