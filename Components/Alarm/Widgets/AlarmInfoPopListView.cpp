@@ -67,6 +67,7 @@ AlarmInfoPopListVIew::AlarmInfoPopListVIew(QWidget *parent, AlarmType alarmType)
     hlayout->addWidget(_close, 1);
 
     _mainLayout->addLayout(hlayout);
+    _mainLayout->addStretch();
 
     setLayout(_mainLayout);
     setAttribute(Qt::WA_TranslucentBackground);
