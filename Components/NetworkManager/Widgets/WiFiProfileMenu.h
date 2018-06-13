@@ -30,6 +30,7 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void onProfileSelect(int))
     Q_PRIVATE_SLOT(d_func(), void onWifiConnected(const QString &ssid))
+    Q_PRIVATE_SLOT(d_func(), void updateWifiProfileSlot(bool isEnabled))
 };
 
 #define wifiProfileMenu (WiFiProfileMenu::construction())

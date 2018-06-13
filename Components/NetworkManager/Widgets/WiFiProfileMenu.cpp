@@ -10,6 +10,7 @@
 #include "MenuManager.h"
 #include "ColorManager.h"
 #include "IComboList.h"
+#include "WifiMaintainMenu.h"
 #include <QBasicTimer>
 #include <IConfig.h>
 
@@ -32,6 +33,7 @@ public:
     void loadProfiles();
     void onProfileSelect(int index);
     void onWifiConnected(const QString &ssid);
+    void updateWifiProfileSlot(bool isEnabled);
     WiFiProfileMenu * const q_ptr;
     IComboList *comboProfileList;
     LabelButton *selectApBtn;
@@ -39,8 +41,32 @@ public:
     LabelButton *macLabelBtn;
     QVector<WiFiProfileInfo> profiles;
     QBasicTimer timer;
+    int _wifiProfileInt;
 };
 
+void WiFiProfileMenuPrivate::updateWifiProfileSlot(bool isEnabled)
+{
+    loadProfiles();
+    if(comboProfileList)
+    {
+        comboProfileList->combolist->setEnabled(isEnabled);
+        if(!isEnabled)
+        {
+            comboProfileList->combolist->setCurrentIndex(0);
+        }
+        else
+        {
+            if(comboProfileList->combolist->count()>_wifiProfileInt)
+            {
+                comboProfileList->combolist->setCurrentIndex(_wifiProfileInt);
+            }
+            else
+            {
+                comboProfileList->combolist->setCurrentIndex(0);
+            }
+        }
+    }
+}
 /***************************************************************************************************
  * loadProfiels : load the profile info from super config
  **************************************************************************************************/
@@ -111,6 +137,7 @@ void WiFiProfileMenuPrivate::loadProfiles()
             comboProfileList->setCurrentIndex(index + 1);
             comboProfileList->blockSignals(false);
             selectApBtn->button->setText(profiles.at(index).ssid);
+            _wifiProfileInt = index+1;
         }
     }
 }
@@ -121,8 +148,13 @@ void WiFiProfileMenuPrivate::loadProfiles()
 void WiFiProfileMenuPrivate::onProfileSelect(int index)
 {
     Q_Q(WiFiProfileMenu);
+    if(index<0)
+    {
+        index = 0;
+    }
     int select = index - 1;
     //index 0 means turn off
+    _wifiProfileInt = index;
     if(index)
     {
         emit q->selectProfile(profiles.at(index - 1));
@@ -212,6 +244,7 @@ WiFiProfileInfo WiFiProfileMenu::getCurrentWifiProfile() const
 void WiFiProfileMenu::layoutExec()
 {
     Q_D(WiFiProfileMenu);
+
     int submenuW = menuManager.getSubmenuWidth();
     int submenuH = menuManager.getSubmenuHeight();
     QFont font = fontManager.textFont(15);
@@ -281,6 +314,7 @@ void WiFiProfileMenu::showEvent(QShowEvent *e)
 {
     Q_D(WiFiProfileMenu);
     d->timer.start(1000, this);
+    connect(d->comboProfileList, SIGNAL(currentIndexChanged(int)), this, SLOT(onProfileSelect(int)));
     SubMenu::showEvent(e);
 }
 
@@ -288,6 +322,7 @@ void WiFiProfileMenu::hideEvent(QHideEvent *e)
 {
     Q_D(WiFiProfileMenu);
     d->timer.stop();
+    disconnect(d->comboProfileList, SIGNAL(currentIndexChanged(int)), this, SLOT(onProfileSelect(int)));
     SubMenu::hideEvent(e);
 }
 
@@ -305,6 +340,7 @@ WiFiProfileMenu::WiFiProfileMenu()
 
     connect(this, SIGNAL(selectProfile(WiFiProfileInfo)), &networkManager, SLOT(connectWiFiProfile(WiFiProfileInfo)), Qt::QueuedConnection);
     connect(&networkManager, SIGNAL(wifiConnectToAp(QString)), this, SLOT(onWifiConnected(QString)), Qt::QueuedConnection);
+    connect(&wifiMaintainMenu, SIGNAL(updateWifiProfileSignal(bool)), this, SLOT(updateWifiProfileSlot(bool)));
 }
 
 #include "moc_WiFiProfileMenu.cpp"

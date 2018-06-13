@@ -538,7 +538,8 @@ static void _initMenu(void)
         publicMenuManager.addSubMenu(&co2Menu);
     }
     publicMenuManager.addSubMenu(&alarmLimitMenu);
-    if(systemManager.isSupport(CONFIG_WIFI) && NetworkManager::isWifiTurnOn())
+
+    if(systemManager.isSupport(CONFIG_WIFI))
     {
         publicMenuManager.addSubMenu(&wifiProfileMenu);
     }
@@ -546,8 +547,6 @@ static void _initMenu(void)
     publicMenuManager.addSubMenu(&supervisorDisplayMenu);
 
     publicMenuManager.addSubMenu(&systemMenu);
-//    publicMenuManager.addSubMenu(&supervisorEntrance);
-
     userMaintainEntrance.construction();
     factoryMaintainEntrance.construction();
     configManagerEntrance.construction();
@@ -575,7 +574,7 @@ static void _initMenu(void)
     userMaintainManager.addSubMenu(&othersMaintainMenu);
     userMaintainManager.addSubMenu(&unitSetup);
     userMaintainManager.addSubMenu(&serviceErrorLogEntrance);
-    //userMaintainEntrance
+
 
     factoryMaintainManager.construction();
     softWareVersion.construction();
@@ -607,32 +606,11 @@ static void _initMenu(void)
     //supervisorMenuManager
     supervisorMenuManager.construction();
 
-//    supervisorGeneralSetMenu.construction();
-//    userMaintainManager.addSubMenu(&supervisorGeneralSetMenu);
-
     if (systemManager.isSupport(CONFIG_ECG12LEADS))
     {
         supervisor12LMenu.construction();
         userMaintainManager.addSubMenu(&supervisor12LMenu);
     }
-
-//    if (systemManager.isSupport(CONFIG_NIBP))
-//    {
-//        supervisorNIBPMenu.construction();
-//        userMaintainManager.addSubMenu(&supervisorNIBPMenu);
-//    }
-
-//    supervisorAlarmLimitMenu.construction();
-//    userMaintainManager.addSubMenu(&supervisorAlarmLimitMenu);
-
-//    supervisorAlarmMenu.construction();
-//    userMaintainManager.addSubMenu(&supervisorAlarmMenu);
-
-//    supervisorLocalMenu.construction();
-//    userMaintainManager.addSubMenu(&supervisorLocalMenu);
-
-//    supervisorDisplayMenu.construction();
-//    userMaintainManager.addSubMenu(&supervisorDisplayMenu);
 
     supervisorPrintMenu.construction();
     userMaintainManager.addSubMenu(&supervisorPrintMenu);
@@ -640,20 +618,6 @@ static void _initMenu(void)
     supervisorTimeMenu.construction();
     userMaintainManager.addSubMenu(&supervisorTimeMenu);
 
-//    supervisorCodeMarker.construction();
-//    userMaintainManager.addSubMenu(&supervisorCodeMarker);
-
-//    if (systemManager.isSupport(CONFIG_WIFI))
-//    {
-//        //supervisorWifiMenu.construction();
-//        //userMaintainManager.addSubMenu(&supervisorWifiMenu);
-
-//        supervisorMailMenu.construction();
-//        userMaintainManager.addSubMenu(&supervisorMailMenu);
-//    }
-
-//    supervisorPortMenu.construction();
-//    userMaintainManager.addSubMenu(&supervisorPortMenu);
 
     //其它弹出菜单初始化
     patientManager.construction();

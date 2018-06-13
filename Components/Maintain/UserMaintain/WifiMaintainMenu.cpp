@@ -43,6 +43,7 @@ public:
     LButtonEx *delBtn;
     QListWidgetItem *lastSelectItem;
     QVector<WiFiProfileInfo> profiles;
+    bool _isEnabled;
 };
 
 /***************************************************************************************************
@@ -52,6 +53,8 @@ void WifiMaintainMenuPrivate::onSwitch(int val)
 {
     systemConfig.setNumValue("WiFi|EnableWifi", val);
     systemConfig.save();
+    _isEnabled = !!val;
+    emit wifiMaintainMenu.updateWifiProfileSignal(_isEnabled);
 }
 
 /***************************************************************************************************
@@ -364,6 +367,8 @@ void WifiMaintainMenuPrivate::saveProfiles()
     systemConfig.setNumAttr("WiFi|Profiles", "CurrentSelect", currentSelect);
 
     systemConfig.save();
+
+    emit wifiMaintainMenu.updateWifiProfileSignal(_isEnabled);
 }
 
 /***************************************************************************************************
@@ -523,6 +528,7 @@ void WifiMaintainMenu::readyShow()
     Q_D(WifiMaintainMenu);
     bool enableWifi = false;
     systemConfig.getNumValue("WiFi|EnableWifi", enableWifi);
+    d->_isEnabled = enableWifi;
     d->switchCombo->setCurrentIndex(enableWifi);
     d->loadProfiles();
     d->updateProfileList();

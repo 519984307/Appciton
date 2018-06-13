@@ -6,6 +6,7 @@
     <General>
         <PatientType>0</PatientType><!--0:adult  1:ped  2:neo-->
 	<MonitorName>dd-89</MonitorName>
+	<ConfigManagerPassword>12345678</ConfigManagerPassword>
 	<UserMaintainPassword>66666666</UserMaintainPassword>
 	<FactoryMaintainPassword>382425</FactoryMaintainPassword>
 	<SuperPassword>672401</SuperPassword>
@@ -142,7 +143,26 @@
         </PatientInfo>
         <ECG>
             <PresentRhythm>0</PresentRhythm>
+		    <PadsECGBandwidth>0</PadsECGBandwidth>
+		    <ChestLeadsECGBandwidth>0</ChestLeadsECGBandwidth>
+		    <DefaultECGLeadInMonitorMode>1</DefaultECGLeadInMonitorMode>
+		    <QRSVolume>3</QRSVolume>
+		    <ECGLeadConvention>0</ECGLeadConvention>
+		    <AlarmSource>0</AlarmSource>
+		    <Ecg1Wave>0</Ecg1Wave>
+		    <Ecg2Wave>1</Ecg2Wave>
+		    <Ecg1Gain>0</Ecg1Gain>
+		    <Ecg2Gain>0</Ecg2Gain>
+		    <SweepSpeed>1</SweepSpeed>
+		    <Filter>0</Filter>
+		    <LeadMode>2</LeadMode>
+		    <NotchFilter>0</NotchFilter>
+		    <SmartLeadOff>0</SmartLeadOff>
         </ECG>
+		<AG>
+		    <AGModule>0</AGModule>
+		    <SweepSpeed>1</SweepSpeed>
+		</AG>
         <ECG12Lead>
             <EmailOffset>0</EmailOffset>
         </ECG12Lead>

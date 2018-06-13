@@ -15,6 +15,9 @@ protected:
     void layoutExec();
     void readyShow();
     const QScopedPointer<WifiMaintainMenuPrivate> d_ptr;
+signals:
+    void updateWifiProfileSignal(bool isEnabled);
+
 private:
     WifiMaintainMenu();
     Q_DECLARE_PRIVATE(WifiMaintainMenu)

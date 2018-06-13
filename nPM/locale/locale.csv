@@ -140,7 +140,7 @@ CO2ZeroCalib,校零,Zero
 CO2ZeroStart,开始,Start
 CO2Menu,二氧化碳,CO2
 CO2Switch,二氧化碳开关,CO2 Switch
-AGMenu,AG,AG
+AGMenu,麻醉,AG
 AGSweepSpeed,波形速度,Sweep Speed
 IBPMenu,有创血压,IBP
 IBPSweepSpeed,波形速度,Sweep Speed
@@ -1219,3 +1219,10 @@ TEMPModuleDisable,温度模块失能,TEMP Module Disable
 TEMPCommunicationStop,温度通信停止,TEMP Communication Stop
 TEMPChannel,温度通道,TEMP Channel
 TEMPCalibrate,温度校准 ,TEMP Calibrate 
+N2O,一氧化二氮,N2O
+AA1,自动识别麻醉气体1,AA1
+AA2,自动识别麻醉气体2,AA2
+O2,氧气,O2
+SetUp,设置,SetUp
+AGModule,麻醉模块,AGModule
+AG,麻醉,AG
