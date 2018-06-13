@@ -24,7 +24,7 @@ void AGMenu::readyShow()
 void AGMenu::_loadOptions()
 {
     int index=0;
-    systemConfig.getNumValue("AG|AGModule", index);
+    systemConfig.getNumValue("PrimaryCfg|AG|AGModule", index);
 
     _isEnableAGCombo->combolist->setCurrentIndex(index);
     _speedIcomb->setEnabled(!index);
@@ -34,7 +34,7 @@ void AGMenu::_loadOptions()
     }
     _isEnable = (!index);
 
-    systemConfig.getNumValue("AG|SweepSpeed", index);
+    systemConfig.getNumValue("PrimaryCfg|AG|SweepSpeed", index);
     _speedIcomb->combolist->setCurrentIndex((AGSweepSpeed)index);
 
 }
@@ -94,7 +94,7 @@ void AGMenu::layoutExec()
 void AGMenu::_speedIcombSlot(int index)
 {
     agParam.setSweepSpeed((AGSweepSpeed)index);
-    systemConfig.setNumValue("AG|SweepSpeed", index);
+    systemConfig.setNumValue("PrimaryCfg|AG|SweepSpeed", index);
 }
 
 /**************************************************************************************************
@@ -112,7 +112,7 @@ void AGMenu::_isEnableAGComboSlot(int index)
         }
         _isEnable = (!index);
     }
-    systemConfig.setNumValue("AG|AGModule", index);
+    systemConfig.setNumValue("PrimaryCfg|AG|AGModule", index);
 }
 /**************************************************************************************************
  * 气体类型设置槽函数。
