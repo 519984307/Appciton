@@ -68,10 +68,12 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *e);
+    void mousePressEvent(QMouseEvent *e);
 
 private:
     double _mapWaveValue(WaveformDesc &waveDesc, int wave);
     double _mapValue(TrendConvertDesc desc, int data);
+    int _getCursorTime(TrendConvertDesc desc, double pos);
 
 private:
     QScopedPointer<OxyCRGEventWaveWidgetPrivate> d_ptr;

@@ -5,6 +5,7 @@
 #include "ParamInfo.h"
 #include "ConfigManager.h"
 #include <QPainter>
+#include <QMouseEvent>
 
 #define WAVEFORM_SCALE_HIGH         30
 #define SCALELINE_NUM               5
@@ -479,6 +480,19 @@ void OxyCRGEventWaveWidget::paintEvent(QPaintEvent *e)
 
 }
 
+void OxyCRGEventWaveWidget::mousePressEvent(QMouseEvent *e)
+{
+    double waveHead = d_ptr->timeDesc.start;
+    double waveTail = d_ptr->timeDesc.end;
+    if (e->x() >= waveHead && e->x() <= waveTail)
+    {
+        double pos = e->x();
+        d_ptr->cursorTime = _getCursorTime(d_ptr->timeDesc, pos);
+        update();
+    }
+
+}
+
 double OxyCRGEventWaveWidget::_mapWaveValue(WaveformDesc &waveDesc, int wave)
 {
     if (wave == InvData())
@@ -525,4 +539,11 @@ double OxyCRGEventWaveWidget::_mapValue(TrendConvertDesc desc, int data)
     }
 
     return dpos;
+}
+
+int OxyCRGEventWaveWidget::_getCursorTime(TrendConvertDesc desc, double pos)
+{
+    int t = 0;
+    t = desc.max - (pos - desc.start) * (desc.max - desc.min) / (desc.end - desc.start);
+    return t;
 }
