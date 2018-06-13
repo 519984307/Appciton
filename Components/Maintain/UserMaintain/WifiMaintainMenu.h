@@ -27,7 +27,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onListExit(bool))
     Q_PRIVATE_SLOT(d_func(), void onProfileItemClick())
     Q_PRIVATE_SLOT(d_func(), void onBtnClick())
-    bool _isEnabled;
 };
 
 #define wifiMaintainMenu (WifiMaintainMenu::construction())
