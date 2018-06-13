@@ -99,6 +99,7 @@ void TrendSubWaveWidget::setRulerRange(int down, int up)
 {
     _valueY.max = up;
     _valueY.min = down;
+    update();
 }
 
 void TrendSubWaveWidget::setTimeRange(unsigned leftTime, unsigned rightTime)
