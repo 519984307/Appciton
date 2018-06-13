@@ -24,6 +24,9 @@ public:
     // 设置关闭按钮显示
     void setCloseBtnEnable(bool enable);
 
+    // 读取标题栏高度
+    int getTitleBarhight()const;
+
     //设置文本及图片
     void setCloseBtnTxt(const QString &txt);
     void setCloseBtnPic(const QImage &pic);

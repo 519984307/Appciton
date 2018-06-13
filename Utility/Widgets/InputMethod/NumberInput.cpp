@@ -80,6 +80,7 @@ bool NumberInput::getIntValue(int &v)
 
 NumberInput::NumberInput()
 {
+    _itemHeight = (_panelHeight-PopupWidget::getTitleBarhight()-_keySpace*1)/5;
     _maxLength = 20;
     _minLength = 0;
     setTitleBarText(trs("NumberKeyboard"));
@@ -91,7 +92,7 @@ NumberInput::NumberInput()
     grid->setHorizontalSpacing(5);
 
     int i = 0;
-    int fontSize = fontManager.getFontSize(1);
+    QFont keyFont = fontManager.textFont(_keyFontSize);
     QColor color(120, 120, 120);
     for (int r = 0; r < 4; r++)
     {
@@ -100,7 +101,7 @@ NumberInput::NumberInput()
             IButton *key = new IButton();
             key->setFixedSize(_itemWidth, _itemHeight);
             key->setText(KEY_SYMBOL[i++]);
-            key->setFont(fontManager.textFont(fontSize));
+            key->setFont(keyFont);
             key->setBorderEnabled(true);
             key->setBorderColor(color);
             connect(key, SIGNAL(clicked(QString)), this, SLOT(ClickedKey(QString)));
@@ -112,7 +113,7 @@ NumberInput::NumberInput()
     // Backspace
     IButton *back = new IButton();
     back->setFixedSize(_itemWidth, _itemHeight * 2);
-    back->setFont(fontManager.textFont(fontSize));
+    back->setFont(keyFont);
     back->setBorderEnabled(true);
     back->setBorderColor(color);
     back->setPicture(QImage("/usr/local/nPM/icons/backspace.png"));
@@ -122,7 +123,7 @@ NumberInput::NumberInput()
     // Enter
     _enter = new IButton();
     _enter->setFixedSize(_itemWidth, _itemHeight * 2);
-    _enter->setFont(fontManager.textFont(fontSize));
+    _enter->setFont(keyFont);
     _enter->setBorderEnabled(true);
     _enter->setBorderColor(color);
     _enter->setPicture(QImage("/usr/local/nPM/icons/enter.png"));
@@ -134,10 +135,10 @@ NumberInput::NumberInput()
     _textDisplay->setFixedSize(_itemWidth * 3, _itemHeight);
     _textDisplay->setReadOnly(true);
     _textDisplay->setFocusPolicy(Qt::NoFocus);
-    _textDisplay->setFont(fontManager.textFont(fontSize));
+    _textDisplay->setFont(keyFont);
 
    _unit = new QLabel();
-   _unit->setFont(fontManager.textFont(fontSize));
+   _unit->setFont(keyFont);
    _unit->setFixedSize(_itemWidth * 2, _itemHeight);
 //   _unit->setText("mcg/kg/min");
 
@@ -147,7 +148,7 @@ NumberInput::NumberInput()
     // 布局。
     QVBoxLayout *vLayout = new QVBoxLayout();
     vLayout->setMargin(2);
-    vLayout->setSpacing(15);
+    vLayout->setSpacing(_keySpace);
     vLayout->addStretch();
     vLayout->addLayout(hlayout);
     vLayout->addLayout(grid);
