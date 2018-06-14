@@ -48,10 +48,18 @@ protected slots:
     virtual void ClickedEnter(void);
 
 private:
-    static const int _titleBarHeight = 35;
-    static const int _itemWidth = 40;
-    static const int _itemHeight = 40;
+    static const int _panelWidth = 640;
+    static const int _panelHeight = 400;
+    static const int _keySpace = 15;
 
+    static const int _itemWidth = (_panelWidth-_keySpace*5)/4;
+
+
+    static const int _titleFontSize = 24;
+    static const int _keyFontSize = 28;
+
+
+    int _itemHeight;
     int _maxLength;
     int _minLength;
     IButton *_enter;
