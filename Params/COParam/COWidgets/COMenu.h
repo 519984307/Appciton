@@ -33,6 +33,7 @@ private slots:
     void _injectionTempReleased(void);
     void _injectionVolumnReleased(void);
     void _startReleased();
+    void _alarmLbtnSlot(void);
 
 private:
 
@@ -44,6 +45,7 @@ private:
     IButton *_start;                    // 开始测量
 
     COInstCtl _measureSta;              // 测量状态
+    LabelButton *_alarmLbtn;            //跳到报警项设置按钮
 
 };
 #define coMenu (COMenu::construction())

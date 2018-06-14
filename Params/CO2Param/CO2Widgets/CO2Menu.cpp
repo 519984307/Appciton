@@ -8,6 +8,8 @@
 #include "ISpinBox.h"
 #include "LanguageManager.h"
 #include "MenuManager.h"
+#include "AlarmLimitMenu.h"
+#include "PublicMenuManager.h"
 
 CO2Menu *CO2Menu::_selfObj = NULL;
 
@@ -169,6 +171,22 @@ void CO2Menu::layoutExec(void)
     _zeroCalib->label->setFixedSize(labelWidth, ITEM_H);
     _zeroCalib->button->setFixedSize(btnWidth, ITEM_H);
     mainLayout->addWidget(_zeroCalib);
+
+    _alarmLbtn = new LabelButton("");
+    _alarmLbtn->setFont(defaultFont());
+    _alarmLbtn->label->setFixedSize(labelWidth, ITEM_H);
+    _alarmLbtn->button->setFixedSize(btnWidth, ITEM_H);
+    _alarmLbtn->button->setText(trs("AlarmLimitSetUp"));
+    connect(_alarmLbtn->button, SIGNAL(realReleased()), this, SLOT(_alarmLbtnSlot()));
+    mainLayout->addWidget(_alarmLbtn);
+}
+
+
+//报警项设置
+void CO2Menu::_alarmLbtnSlot()
+{
+    alarmLimitMenu.setFocusIndex(SUB_PARAM_NONE+1);
+    publicMenuManager.changePage(&alarmLimitMenu, &co2Menu);
 }
 
 /**************************************************************************************************
