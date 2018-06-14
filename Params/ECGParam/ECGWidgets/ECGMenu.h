@@ -40,6 +40,7 @@ private slots:
     void _12LpaceMakerSlot(int index);
     void _sweepSpeedSlot(int index);
     void _qrsVolumSlot(int index);
+    void _alarmLbtnSlot(void);
 
 private:
     ECGMenu();
@@ -57,5 +58,7 @@ private:
     IComboList *_pacemaker;             // 起搏
     IComboList *_12Lpacemaker;          // 12导起搏
     IComboList *_qrsTone;               // 心跳音量。
+
+    LabelButton *_alarmLbtn;            //跳到报警项设置按钮
 };
  #define ecgMenu (ECGMenu::construction())

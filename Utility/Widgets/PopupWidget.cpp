@@ -280,6 +280,7 @@ PopupWidget::PopupWidget(bool isBlank) : QDialog(0, Qt::FramelessWindowHint)
         headLayout->setSpacing(0);
         headLayout->addWidget(_titleLabel, 1);
         headLayout->addWidget(_exitButton, 1,Qt::AlignVCenter);
+        headLayout->addStretch();
     }
 
     contentLayout = new QVBoxLayout();

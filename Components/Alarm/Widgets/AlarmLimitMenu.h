@@ -86,6 +86,12 @@ public:
     // IBP报警项设置
     void setIBPAlarmItem(IBPPressureName ibp1, IBPPressureName ibp2);
 
+    //获取聚焦点值
+    int getFocusIndex(void)const;
+
+    //设置聚焦点值
+    void setFocusIndex(int index);
+
 protected:
     virtual void layoutExec(void);
     virtual void readyShow(void);
@@ -102,5 +108,7 @@ private:
     void _loadOptions(void);
 
     QList<SetItem*> _itemList;
+
+    int _focusIndex;
 };
 #define alarmLimitMenu (AlarmLimitMenu::construction())

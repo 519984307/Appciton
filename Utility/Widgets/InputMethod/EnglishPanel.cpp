@@ -450,7 +450,7 @@ EnglishPanel::EnglishPanel() : PopupWidget()
 //    _size = 0;
 //    _shiftsize = 0;
 
-    QFont keyFont = fontManager.textFont(15);
+    QFont keyFont = fontManager.textFont(15*3/2);
 
     // 设置标题。
     setTitleBarText(trs("EnglishKeyboard"));
