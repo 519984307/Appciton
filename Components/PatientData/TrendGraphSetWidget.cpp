@@ -8,6 +8,7 @@
 #include "TrendGraphWidget.h"
 #include "IBPParam.h"
 #include "AlarmConfig.h"
+#include "IConfig.h"
 #include <QScrollBar>
 
 #define ITEM_HEIGHT     30
@@ -70,16 +71,26 @@ void TrendGraphSetWidget::layoutExec()
     hBottomLayout->addWidget(_allAuto);
     connect(_allAuto, SIGNAL(realReleased()), this, SLOT(_allAutoReleased()));
 
+    QString prefix = "ConfigManager|TrendGraph|";
+    int index = 0;
+
+    QString groupPrefix = prefix + "TrendGroup";
+    systemConfig.getNumValue(groupPrefix, index);
     _trendGroupList = new IDropList(trs("TrendGroup"));
     _trendGroupList->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     _trendGroupList->setFont(font);
     _trendGroupList->addItem("Resp");
     _trendGroupList->addItem("IBP");
     _trendGroupList->addItem("AG");
+    _trendGroupList->setCurrentIndex(index);
+    _trendGroup = (TrendGroup)index;
     hBottomLayout->addWidget(_trendGroupList);
     connect(_trendGroupList, SIGNAL(currentIndexChange(int)), this,
             SLOT(_trendGroupReleased(int)));
 
+    index = 0;
+    QString intervalPrefix = prefix + "TimeInterval";
+    systemConfig.getNumValue(intervalPrefix, index);
     _timeIntervalList = new IDropList(trs("TimeInterval"));
     _timeIntervalList->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     _timeIntervalList->setFont(font);
@@ -87,18 +98,21 @@ void TrendGraphSetWidget::layoutExec()
     {
         _timeIntervalList->addItem(TrendDataSymbol::convert((ResolutionRatio)i));
     }
-    _timeIntervalList->setCurrentIndex(0);
+    _timeIntervalList->setCurrentIndex(index);
     hBottomLayout->addWidget(_timeIntervalList);
     connect(_timeIntervalList, SIGNAL(currentIndexChange(int)), this,
             SLOT(_timeIntervalReleased(int)));
 
+    index = 0;
+    QString numPrefix = prefix + "WaveNumber";
+    systemConfig.getNumValue(numPrefix, index);
     _waveNumberList = new IDropList(trs("WaveNumber"));
     _waveNumberList->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     _waveNumberList->setFont(font);
     _waveNumberList->addItem("1");
     _waveNumberList->addItem("2");
     _waveNumberList->addItem("3");
-    _waveNumberList->setCurrentIndex(2);
+    _waveNumberList->setCurrentIndex(index);
     hBottomLayout->addWidget(_waveNumberList);
     connect(_waveNumberList, SIGNAL(currentIndexChange(int)), this,
             SLOT(_waveNumberReleased(int)));
@@ -201,22 +215,22 @@ void TrendGraphSetWidget::_allAutoReleased()
         SubParamID subID = item->sid;
         ParamID id = item->pid;
         UnitType type = paramManager.getSubParamUnit(id, subID);
-        LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subID, type);
+        ParamRulerConfig config = alarmConfig.getParamRulerConfig(subID, type);
         item->downRuler->setEnabled(false);
         item->downRuler->disable(true);
         item->upRuler->setEnabled(false);
         item->upRuler->disable(true);
         if (config.scale == 1)
         {
-            item->downRuler->setValue(config.lowLimit);
-            item->upRuler->setValue(config.highLimit);
+            item->downRuler->setValue(config.downRuler);
+            item->upRuler->setValue(config.upRuler);
             trendGraphWidget.setSubWidgetRulerLimit(subID, item->downRuler->getText().toInt(),
                                                     item->upRuler->getText().toInt());
         }
         else
         {
-            item->downRuler->setValue((double)config.lowLimit / config.scale);
-            item->upRuler->setValue((double)config.highLimit / config.scale);
+            item->downRuler->setValue((double)config.downRuler / config.scale);
+            item->upRuler->setValue((double)config.upRuler / config.scale);
             trendGraphWidget.setSubWidgetRulerLimit(subID, (int)item->downRuler->getText().toDouble(),
                                                     (int)item->upRuler->getText().toDouble());
         }
@@ -225,6 +239,8 @@ void TrendGraphSetWidget::_allAutoReleased()
 
 void TrendGraphSetWidget::_trendGroupReleased(int g)
 {
+    QString prefix = "ConfigManager|TrendGraph|TrendGroup";
+    systemConfig.setNumValue(prefix, g);
     _trendGroup = (TrendGroup)g;
     upDateTrendGroup();
     trendGraphWidget.updateTrendGraph();
@@ -232,11 +248,15 @@ void TrendGraphSetWidget::_trendGroupReleased(int g)
 
 void TrendGraphSetWidget::_timeIntervalReleased(int timeInterval)
 {
+    QString prefix = "ConfigManager|TrendGraph|TimeInterval";
+    systemConfig.setNumValue(prefix, timeInterval);
     trendGraphWidget.timeIntervalChange(timeInterval);
 }
 
 void TrendGraphSetWidget::_waveNumberReleased(int num)
 {
+    QString prefix = "ConfigManager|TrendGraph|WaveNumber";
+    systemConfig.setNumValue(prefix, num);
     trendGraphWidget.waveNumberChange(num + 1);
 }
 
@@ -260,22 +280,22 @@ void TrendGraphSetWidget::_comboListIndexChanged(int id, int index)
         SubParamID subID = item->sid;
         ParamID id = item->pid;
         UnitType type = paramManager.getSubParamUnit(id, subID);
-        LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subID, type);
+        ParamRulerConfig config = alarmConfig.getParamRulerConfig(subID, type);
         item->downRuler->setEnabled(false);
         item->downRuler->disable(true);
         item->upRuler->setEnabled(false);
         item->upRuler->disable(true);
         if (config.scale == 1)
         {
-            item->downRuler->setValue(config.lowLimit);
-            item->upRuler->setValue(config.highLimit);
+            item->downRuler->setValue(config.downRuler);
+            item->upRuler->setValue(config.upRuler);
             trendGraphWidget.setSubWidgetRulerLimit(subID, item->downRuler->getText().toInt(),
                                                     item->upRuler->getText().toInt());
         }
         else
         {
-            item->downRuler->setValue((double)config.lowLimit / config.scale);
-            item->upRuler->setValue((double)config.highLimit / config.scale);
+            item->downRuler->setValue((double)config.downRuler / config.scale);
+            item->upRuler->setValue((double)config.upRuler / config.scale);
             trendGraphWidget.setSubWidgetRulerLimit(subID, (int)item->downRuler->getText().toDouble(),
                                                     (int)item->upRuler->getText().toDouble());
         }
@@ -387,7 +407,7 @@ void TrendGraphSetWidget::_loadOptions()
         SubParamID subID = item->sid;
         ParamID id = item->pid;
         UnitType type = paramManager.getSubParamUnit(id, subID);
-        LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subID, type);
+        ParamRulerConfig config = alarmConfig.getParamRulerConfig(subID, type);
 
         item->combo->setCurrentIndex(1);
         item->downRuler->setEnabled(false);
@@ -398,33 +418,33 @@ void TrendGraphSetWidget::_loadOptions()
         if(config.scale == 1)
         {
             item->downRuler->setMode(ISPIN_MODE_INT);
-            item->downRuler->setRange(config.minLowLimit, config.highLimit - config.step);
-            item->downRuler->setValue(config.lowLimit);
-            item->downRuler->setStep(config.step);
+            item->downRuler->setRange(config.minDownRuler, config.upRuler - 1);
+            item->downRuler->setValue(config.downRuler);
+            item->downRuler->setStep(1);
 
             item->upRuler->setMode(ISPIN_MODE_INT);
-            item->upRuler->setRange(config.lowLimit + config.step, config.maxHighLimit);
-            item->upRuler->setValue(config.highLimit);
-            item->upRuler->setStep(config.step);
+            item->upRuler->setRange(config.downRuler + 1, config.maxUpRuler);
+            item->upRuler->setValue(config.upRuler);
+            item->upRuler->setStep(1);
 
         }
         else
         {
             int fStepValue, fLowMinValue, fLowMaxValue, fHighMinValue, fHighMaxValue;
-            fStepValue = config.step;
-            fLowMinValue = config.minLowLimit / config.scale;
-            fLowMaxValue = (config.highLimit - config.step) / config.scale;
-            fHighMinValue = (config.lowLimit + config.step) / config.scale;
-            fHighMaxValue = config.maxHighLimit / config.scale;
+            fStepValue = 1;
+            fLowMinValue = config.minDownRuler / config.scale;
+            fLowMaxValue = (config.upRuler - 1) / config.scale;
+            fHighMinValue = (config.downRuler + 1) / config.scale;
+            fHighMaxValue = config.maxUpRuler / config.scale;
 
             item->downRuler->setMode(ISPIN_MODE_INT);
             item->downRuler->setRange(fLowMinValue, fLowMaxValue);
-            item->downRuler->setValue(config.lowLimit / config.scale);
+            item->downRuler->setValue(config.downRuler / config.scale);
             item->downRuler->setStep(fStepValue);
 
             item->upRuler->setMode(ISPIN_MODE_INT);
             item->upRuler->setRange(fHighMinValue, fHighMaxValue);
-            item->upRuler->setValue(config.highLimit / config.scale);
+            item->upRuler->setValue(config.upRuler / config.scale);
             item->upRuler->setStep(fStepValue);
         }
     }

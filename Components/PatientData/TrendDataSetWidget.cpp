@@ -6,6 +6,7 @@
 #include "IButton.h"
 #include "TrendDataSymbol.h"
 #include "TrendDataWidget.h"
+#include "IConfig.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
@@ -36,6 +37,11 @@ void TrendDataSetWidget::layoutExec()
     int btnWidth = itemW / 4;
     int labelWidth = btnWidth;
 
+    QString prefix = "ConfigManager|TrendTable|";
+    int index = 0;
+
+    QString ratioPrefix = prefix + "ResolutionRatio";
+    systemConfig.getNumValue(ratioPrefix, index);
     _resolutionRatio = new IComboList(trs("ResolutionRatio"));
     _resolutionRatio->setFont(fontManager.textFont(fontSize));
     for (int i = 0; i < RESOLUTION_RATIO_NR; i ++)
@@ -45,8 +51,12 @@ void TrendDataSetWidget::layoutExec()
     _resolutionRatio->label->setAlignment(Qt::AlignHCenter);
     _resolutionRatio->label->setFixedSize(labelWidth, ITEM_HEIGHT);
     _resolutionRatio->combolist->setFixedSize(btnWidth, ITEM_HEIGHT);
+    _resolutionRatio->combolist->setCurrentIndex(index);
     connect(_resolutionRatio->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_timeIntervalReleased(int)));
 
+    index = 0;
+    QString groupPrefix = prefix + "TrendGroup";
+    systemConfig.getNumValue(groupPrefix, index);
     _trendGroupList = new IComboList(trs("TrendGroup"));
     _trendGroupList->setFont(fontManager.textFont(fontSize));
     _trendGroupList->label->setAlignment(Qt::AlignHCenter);
@@ -55,6 +65,7 @@ void TrendDataSetWidget::layoutExec()
     _trendGroupList->combolist->addItem("Resp");
     _trendGroupList->combolist->addItem("IBP");
     _trendGroupList->combolist->addItem("AG");
+    _trendGroupList->combolist->setCurrentIndex(index);
     connect(_trendGroupList->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(_trendGroupReleased(int)));
 
     _yes = new IButton(trs("EnglishYESChineseSURE"));
@@ -116,6 +127,8 @@ void TrendDataSetWidget::_cancelReleased()
  **************************************************************************************************/
 void TrendDataSetWidget::_timeIntervalReleased(int t)
 {
+    QString prefix = "ConfigManager|TrendTable|ResolutionRatio";
+    systemConfig.setNumValue(prefix, t);
     trendDataWidget.setTimeInterval((ResolutionRatio)t);
 }
 
@@ -124,6 +137,8 @@ void TrendDataSetWidget::_timeIntervalReleased(int t)
  **************************************************************************************************/
 void TrendDataSetWidget::_trendGroupReleased(int g)
 {
+    QString prefix = "ConfigManager|TrendTable|TrendGroup";
+    systemConfig.setNumValue(prefix, g);
     trendDataWidget.loadCurParam(g);
 }
 

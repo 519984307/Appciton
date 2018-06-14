@@ -147,6 +147,49 @@ LimitAlarmConfig AlarmConfig::getLimitAlarmConfig(SubParamID subParamId, UnitTyp
     return iter.value();
 }
 
+ParamRulerConfig AlarmConfig::getParamRulerConfig(SubParamID subParamId, UnitType unit)
+{
+    ParamRulerConfig config;
+
+    //load data from config file
+    QString prefix = "ConfigManager|TrendGraph|Ruler|";
+    prefix += paramInfo.getSubParamName(subParamId, true);
+    prefix += "|";
+    prefix += Unit::getSymbol(unit);
+    prefix += "|";
+    int v = 0;
+    QString highPrefix = prefix + "High";
+    systemConfig.getNumValue(highPrefix, v);
+    config.upRuler = v;
+
+    v = 0;
+    systemConfig.getNumAttr(highPrefix, "Min", v);
+    config.minUpRuler = v;
+
+    v = 0;
+    systemConfig.getNumAttr(highPrefix, "Max", v);
+    config.maxUpRuler = v;
+
+    v = 0;
+    QString lowPrefix = prefix + "Low";
+    systemConfig.getNumValue(lowPrefix, v);
+    config.downRuler = v;
+
+    v = 0;
+    systemConfig.getNumAttr(lowPrefix, "Min", v);
+    config.minDownRuler = v;
+
+    v = 0;
+    systemConfig.getNumAttr(lowPrefix, "Max", v);
+    config.maxDownRuler = v;
+
+    v = 1;
+    systemConfig.getNumValue(prefix + "Scale", v);
+    config.scale = v;
+
+    return config;
+}
+
 void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, const LimitAlarmConfig &config)
 {
     AlarmConfigKey key(subParamId, unit);

@@ -20,32 +20,32 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id
 
     if (_type == TREND_GRAPH_TYPE_NORMAL || _type == TREND_GRAPH_TYPE_AG_TEMP)
     {
-        LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subID, unitType);
+        ParamRulerConfig config = alarmConfig.getParamRulerConfig(subID, unitType);
         if (config.scale == 1)
         {
-            _valueY.min = config.lowLimit;
-            _valueY.max = config.highLimit;
+            _valueY.min = config.downRuler;
+            _valueY.max = config.upRuler;
         }
         else
         {
-            _valueY.min = (double)config.lowLimit / config.scale;
-            _valueY.max = (double)config.highLimit / config.scale;
+            _valueY.min = (double)config.downRuler / config.scale;
+            _valueY.max = (double)config.upRuler / config.scale;
         }
         _paramName = paramInfo.getSubParamName(id);
     }
     else if (_type == TREND_GRAPH_TYPE_ART_IBP || _type == TREND_GRAPH_TYPE_NIBP)
     {
-        LimitAlarmConfig configUp = alarmConfig.getLimitAlarmConfig(SubParamID(subID), unitType);
-        LimitAlarmConfig configDown = alarmConfig.getLimitAlarmConfig(SubParamID(subID + 1), unitType);
+        ParamRulerConfig configUp = alarmConfig.getParamRulerConfig(SubParamID(subID), unitType);
+        ParamRulerConfig configDown = alarmConfig.getParamRulerConfig(SubParamID(subID + 1), unitType);
         if (configUp.scale == 1)
         {
-            _valueY.min = configDown.lowLimit;
-            _valueY.max = configUp.highLimit;
+            _valueY.min = configDown.downRuler;
+            _valueY.max = configUp.upRuler;
         }
         else
         {
-            _valueY.min = (double)configDown.lowLimit / configDown.scale;
-            _valueY.max = (double)configUp.highLimit / configUp.scale;
+            _valueY.min = (double)configDown.downRuler / configDown.scale;
+            _valueY.max = (double)configUp.upRuler / configUp.scale;
         }
         QString str = paramInfo.getSubParamName(id);
         _paramName = str.left(str.length() - 4);
