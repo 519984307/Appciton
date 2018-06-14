@@ -56,6 +56,7 @@ private slots:
     void _sensitivitySlot(int index);
     void _zeroCalibReleased(void);
     void _calibrationReleased(void);
+    void _alarmLbtnSlot(void);
 
 private:
     IComboList *_entitle1;                  // 通道１标名设置。
@@ -66,5 +67,5 @@ private:
     LabelButton *_zeroCalib;                // 校零。
     LabelButton *_calibration;              // 校准
     QLabel *_zeroRev;                       // 校零校准回复信息
-
+    LabelButton *_alarmLbtn;                //跳到报警项设置按钮
 };

@@ -503,9 +503,11 @@ void AlarmLimitMenu::layoutExec(void)
 }
 
 //获取聚焦点值
-int AlarmLimitMenu::getFocusIndex()const
+int AlarmLimitMenu::getFocusIndex()
 {
-    return _focusIndex;
+    int focusIndex = _focusIndex;
+    _focusIndex = 0;
+    return focusIndex;
 }
 
 //设置聚焦点值

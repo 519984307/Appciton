@@ -16,6 +16,7 @@ protected:
 
 private slots:
     void onComboListConfigChanged(int index);
+    void _alarmLbtnSlot(void);
 
 private:
     QScopedPointer<ConfigEditRespMenuPrivate> d_ptr;

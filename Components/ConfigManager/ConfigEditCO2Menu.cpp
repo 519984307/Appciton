@@ -10,6 +10,8 @@
 #include "MenuManager.h"
 #include "ConfigEditMenuGrp.h"
 #include "Config.h"
+#include "ConfigEditAlarmLimitMenu.h"
+
 ConfigCO2Menu *ConfigCO2Menu::_selfObj = NULL;
 
 void ConfigCO2Menu::_speedSlot(int index)
@@ -120,6 +122,23 @@ void ConfigCO2Menu::layoutExec(void)
     _n2oCompen->setFixedHeight(ITEM_H);
     _n2oCompen->setValueWidth(btnWidth);
     mainLayout->addWidget(_n2oCompen);
+
+    _alarmLbtn = new LabelButton("");
+    _alarmLbtn->setFont(defaultFont());
+    _alarmLbtn->label->setFixedSize(labelWidth, ITEM_H);
+    _alarmLbtn->button->setFixedSize(btnWidth, ITEM_H);
+    _alarmLbtn->button->setText(trs("AlarmLimitSetUp"));
+    connect(_alarmLbtn->button, SIGNAL(realReleased()), this, SLOT(_alarmLbtnSlot()));
+    mainLayout->addWidget(_alarmLbtn);
+}
+//报警项设置
+void ConfigCO2Menu::_alarmLbtnSlot()
+{
+    SubMenu *subMenuPrevious = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigCO2Menu"] ;
+    SubMenu *subMenuCurrent = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditAlarmLimitMenu"] ;
+    ConfigEditAlarmLimitMenu* alarmLimit = qobject_cast<ConfigEditAlarmLimitMenu*>(subMenuCurrent);
+    alarmLimit->setFocusIndex(SUB_PARAM_NONE+1);
+    configEditMenuGrp.changePage(subMenuCurrent, subMenuPrevious);
 }
 
 ConfigCO2Menu::ConfigCO2Menu() : SubMenu(trs("CO2")),

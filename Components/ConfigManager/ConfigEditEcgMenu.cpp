@@ -3,6 +3,8 @@
 #include "IComboList.h"
 #include "ECGSymbol.h"
 #include "SoundManager.h"
+#include "LabelButton.h"
+#include "ConfigEditAlarmLimitMenu.h"
 //配置编辑ECG菜单私有类
 class ConfigEditEcgMenuPrivate {
 public:
@@ -43,6 +45,7 @@ public:
 
     IComboList *combos[ComboListMax];
     const char *comboLables[ComboListMax];
+    LabelButton *_alarmLbtn;            //跳到报警项设置按钮
 };
 
 void ConfigEditEcgMenuPrivate::loadOptions()
@@ -234,11 +237,27 @@ void ConfigEditEcgMenu::layoutExec()
         d_ptr->combos[i] = combo;
     }
 
+    d_ptr->_alarmLbtn = new LabelButton("");
+    d_ptr->_alarmLbtn->setFont(defaultFont());
+    d_ptr->_alarmLbtn->label->setFixedSize(labelWidth, ITEM_H);
+    d_ptr->_alarmLbtn->button->setFixedSize(btnWidth, ITEM_H);
+    d_ptr->_alarmLbtn->button->setText(trs("AlarmLimitSetUp"));
+    connect(d_ptr->_alarmLbtn->button, SIGNAL(realReleased()), this, SLOT(_alarmLbtnSlot()));
+    mainLayout->addWidget(d_ptr->_alarmLbtn);
     mainLayout->addStretch(1);
 }
 void ConfigEditEcgMenu::readyShow()
 {
     d_ptr->loadOptions();
+}
+//报警项设置
+void ConfigEditEcgMenu::_alarmLbtnSlot()
+{
+    SubMenu *subMenuPrevious = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditEcgMenu"] ;
+    SubMenu *subMenuCurrent = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditAlarmLimitMenu"] ;
+    ConfigEditAlarmLimitMenu* alarmLimit = qobject_cast<ConfigEditAlarmLimitMenu*>(subMenuCurrent);
+    alarmLimit->setFocusIndex(SUB_PARAM_ECG_PVCS+1);
+    configEditMenuGrp.changePage(subMenuCurrent, subMenuPrevious);
 }
 
 void ConfigEditEcgMenu::onComboListConfigChanged(int index)

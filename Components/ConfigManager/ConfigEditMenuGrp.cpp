@@ -31,6 +31,7 @@ public:
     bool isSubmenuInitial;
     Config *curEditConfig;
     QString configName;
+    QMap <QString, SubMenu*> subMenuMap;
 };
 
 ConfigEditMenuGrp::ConfigEditMenuGrp()
@@ -60,18 +61,62 @@ void ConfigEditMenuGrp::initializeSubMenu()
     if(d_ptr->isSubmenuInitial)
         return;
 
-    addSubMenu(new ConfigEditGeneralMenu());
-    addSubMenu(new ConfigEditAlarmLimitMenu());
-    addSubMenu(new ConfigEditEcgMenu());
-    addSubMenu(new ConfigEditRespMenu());
-    addSubMenu(new ConfigEditSpO2Menu());
-    addSubMenu(new ConfigEditNIBPMenu());
-    addSubMenu(new ConfigCOMenu());
-    addSubMenu(new ConfigCO2Menu());
-    //addSubMenu(new ConfigEditUnitSetupMenu());
-    addSubMenu(new ConfigIBPMenu());
-    addSubMenu(new SupervisorCodeMarker());
-    addSubMenu(new ConfigEditDisplayMenu());
+    d_ptr->subMenuMap.clear();
+
+    SubMenu *subMenu = new ConfigEditGeneralMenu();
+    addSubMenu(subMenu);
+    d_ptr->subMenuMap["ConfigEditGeneralMenu"] = subMenu;
+
+    subMenu = new ConfigEditAlarmLimitMenu();
+    addSubMenu(subMenu);
+    d_ptr->subMenuMap["ConfigEditAlarmLimitMenu"] = subMenu;
+
+    subMenu = new ConfigEditEcgMenu();
+    addSubMenu(subMenu);
+    d_ptr->subMenuMap["ConfigEditEcgMenu"] = subMenu;
+
+    subMenu = new ConfigEditRespMenu();
+    addSubMenu(subMenu);
+    d_ptr->subMenuMap["ConfigEditRespMenu"] = subMenu;
+
+    subMenu = new ConfigEditSpO2Menu();
+    addSubMenu(subMenu);
+    d_ptr->subMenuMap["ConfigEditSpO2Menu"] = subMenu;
+
+    subMenu = new ConfigEditNIBPMenu();
+    addSubMenu(subMenu);
+    d_ptr->subMenuMap["ConfigEditNIBPMenu"] = subMenu;
+
+    subMenu = new ConfigCOMenu();
+    addSubMenu(subMenu);
+    d_ptr->subMenuMap["ConfigCOMenu"] = subMenu;
+
+    subMenu = new ConfigCO2Menu();
+    addSubMenu(subMenu);
+    d_ptr->subMenuMap["ConfigCO2Menu"] = subMenu;
+
+    subMenu = new ConfigIBPMenu();
+    addSubMenu(subMenu);
+    d_ptr->subMenuMap["ConfigIBPMenu"] = subMenu;
+
+    subMenu = new SupervisorCodeMarker();
+    addSubMenu(subMenu);
+    d_ptr->subMenuMap["SupervisorCodeMarker"] = subMenu;
+
+    subMenu = new ConfigEditDisplayMenu();
+    addSubMenu(subMenu);
+    d_ptr->subMenuMap["ConfigEditDisplayMenu"] = subMenu;
+
+//    addSubMenu(new ConfigEditEcgMenu());
+//    addSubMenu(new ConfigEditRespMenu());
+//    addSubMenu(new ConfigEditSpO2Menu());
+//    addSubMenu(new ConfigEditNIBPMenu());
+//    addSubMenu(new ConfigCOMenu());
+//    addSubMenu(new ConfigCO2Menu());
+//    //addSubMenu(new ConfigEditUnitSetupMenu());
+//    addSubMenu(new ConfigIBPMenu());
+//    addSubMenu(new SupervisorCodeMarker());
+//    addSubMenu(new ConfigEditDisplayMenu());
 //    addSubMenu(new COMenu());
 //    addSubMenu(new SPO2Menu());
 //    addSubMenu(new ECGMenu());
@@ -102,4 +147,9 @@ void ConfigEditMenuGrp::setCurrentEditConfigName(const QString &name)
 QString ConfigEditMenuGrp::getCurrentEditConfigName() const
 {
     return d_ptr->configName;
+}
+
+QMap <QString, SubMenu*> ConfigEditMenuGrp::getCurrentEditConfigItem() const
+{
+    return d_ptr->subMenuMap;
 }

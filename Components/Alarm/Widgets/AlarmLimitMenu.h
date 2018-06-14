@@ -87,7 +87,7 @@ public:
     void setIBPAlarmItem(IBPPressureName ibp1, IBPPressureName ibp2);
 
     //获取聚焦点值
-    int getFocusIndex(void)const;
+    int getFocusIndex(void);
 
     //设置聚焦点值
     void setFocusIndex(int index);

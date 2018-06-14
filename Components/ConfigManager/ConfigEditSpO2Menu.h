@@ -29,6 +29,7 @@ private slots:
      * @param index  选择序列号
      */
     void onComboListConfigChanged(int index);
+    void _alarmLbtnSlot(void);
 
 private:
     QScopedPointer<ConfigEditSpO2MenuPrivate> d_ptr;

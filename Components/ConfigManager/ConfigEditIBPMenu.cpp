@@ -17,6 +17,7 @@
 #include "Config.h"
 #include "ConfigEditMenuGrp.h"
 #include "IBPParam.h"
+#include "ConfigEditAlarmLimitMenu.h"
 
 ConfigIBPMenu *ConfigIBPMenu::_selfObj = NULL;
 
@@ -168,7 +169,24 @@ void ConfigIBPMenu::layoutExec(void)
     _zeroRev->setFixedSize(btnWidth, ITEM_H);
     _zeroRev->setStyleSheet("background:transparent;border-width:0;border-style:outset");
     _zeroRev->setAlignment(Qt::AlignRight);
-    mainLayout->addWidget(_zeroRev);
+//    mainLayout->addWidget(_zeroRev);
+
+    _alarmLbtn = new LabelButton("");
+    _alarmLbtn->setFont(defaultFont());
+    _alarmLbtn->label->setFixedSize(labelWidth, ITEM_H);
+    _alarmLbtn->button->setFixedSize(btnWidth, ITEM_H);
+    _alarmLbtn->button->setText(trs("AlarmLimitSetUp"));
+    connect(_alarmLbtn->button, SIGNAL(realReleased()), this, SLOT(_alarmLbtnSlot()));
+    mainLayout->addWidget(_alarmLbtn);
+}
+//报警项设置
+void ConfigIBPMenu::_alarmLbtnSlot()
+{
+    SubMenu *subMenuPrevious = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigIBPMenu"] ;
+    SubMenu *subMenuCurrent = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditAlarmLimitMenu"] ;
+    ConfigEditAlarmLimitMenu* alarmLimit = qobject_cast<ConfigEditAlarmLimitMenu*>(subMenuCurrent);
+    alarmLimit->setFocusIndex(SUB_PARAM_ART_SYS+1);
+    configEditMenuGrp.changePage(subMenuCurrent, subMenuPrevious);
 }
 
 void ConfigIBPMenu::_speedSlot(int index)

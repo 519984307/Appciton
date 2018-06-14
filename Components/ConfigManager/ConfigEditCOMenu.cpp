@@ -16,6 +16,7 @@
 #include "ConfigManager.h"
 #include "Config.h"
 #include "ConfigEditMenuGrp.h"
+#include "ConfigEditAlarmLimitMenu.h"
 
 ConfigCOMenu *ConfigCOMenu::_selfObj = NULL;
 
@@ -99,6 +100,24 @@ void ConfigCOMenu::layoutExec()
     _measureMode->combolist->setCurrentIndex(index);
     connect(_measureMode, SIGNAL(currentIndexChanged(int)), this, SLOT(_inputModeSlot(int)));
     mainLayout->addWidget(_measureMode);
+
+
+    _alarmLbtn = new LabelButton("");
+    _alarmLbtn->setFont(defaultFont());
+    _alarmLbtn->label->setFixedSize(labelWidth, ITEM_H);
+    _alarmLbtn->button->setFixedSize(btnWidth, ITEM_H);
+    _alarmLbtn->button->setText(trs("AlarmLimitSetUp"));
+    connect(_alarmLbtn->button, SIGNAL(realReleased()), this, SLOT(_alarmLbtnSlot()));
+    mainLayout->addWidget(_alarmLbtn);
+}
+//报警项设置
+void ConfigCOMenu::_alarmLbtnSlot()
+{
+    SubMenu *subMenuPrevious = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigCOMenu"] ;
+    SubMenu *subMenuCurrent = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditAlarmLimitMenu"] ;
+    ConfigEditAlarmLimitMenu* alarmLimit = qobject_cast<ConfigEditAlarmLimitMenu*>(subMenuCurrent);
+    alarmLimit->setFocusIndex(SUB_PARAM_CO_CO+1);
+    configEditMenuGrp.changePage(subMenuCurrent, subMenuPrevious);
 }
 
 void ConfigCOMenu::_ductRatioReleased()
