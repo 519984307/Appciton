@@ -24,7 +24,7 @@ TrendWaveWidget::TrendWaveWidget() :
     _cursorPosIndex(0), _currentCursorTime(0),
     _displayGraphNum(3), _totalGraphNum(3)
 {
-    QString prefix = "ConfigManager|TrendGraph|";
+    QString prefix = "TrendGraph|";
     int index = 0;
     QString intervalPrefix = prefix + "TimeInterval";
     systemConfig.getNumValue(intervalPrefix, index);

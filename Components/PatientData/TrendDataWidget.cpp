@@ -317,7 +317,7 @@ TrendDataWidget::TrendDataWidget() : _timeInterval(RESOLUTION_RATIO_5_SECOND), _
 
     _curDate.clear();
 
-    QString prefix = "ConfigManager|TrendTable|";
+    QString prefix = "TrendTable|";
     int index = 0;
     QString ratioPrefix = prefix + "ResolutionRatio";
     systemConfig.getNumValue(ratioPrefix, index);

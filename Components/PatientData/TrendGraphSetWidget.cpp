@@ -71,7 +71,7 @@ void TrendGraphSetWidget::layoutExec()
     hBottomLayout->addWidget(_allAuto);
     connect(_allAuto, SIGNAL(realReleased()), this, SLOT(_allAutoReleased()));
 
-    QString prefix = "ConfigManager|TrendGraph|";
+    QString prefix = "TrendGraph|";
     int index = 0;
 
     QString groupPrefix = prefix + "TrendGroup";
@@ -239,7 +239,7 @@ void TrendGraphSetWidget::_allAutoReleased()
 
 void TrendGraphSetWidget::_trendGroupReleased(int g)
 {
-    QString prefix = "ConfigManager|TrendGraph|TrendGroup";
+    QString prefix = "TrendGraph|TrendGroup";
     systemConfig.setNumValue(prefix, g);
     _trendGroup = (TrendGroup)g;
     upDateTrendGroup();
@@ -248,14 +248,14 @@ void TrendGraphSetWidget::_trendGroupReleased(int g)
 
 void TrendGraphSetWidget::_timeIntervalReleased(int timeInterval)
 {
-    QString prefix = "ConfigManager|TrendGraph|TimeInterval";
+    QString prefix = "TrendGraph|TimeInterval";
     systemConfig.setNumValue(prefix, timeInterval);
     trendGraphWidget.timeIntervalChange(timeInterval);
 }
 
 void TrendGraphSetWidget::_waveNumberReleased(int num)
 {
-    QString prefix = "ConfigManager|TrendGraph|WaveNumber";
+    QString prefix = "TrendGraph|WaveNumber";
     systemConfig.setNumValue(prefix, num);
     trendGraphWidget.waveNumberChange(num + 1);
 }

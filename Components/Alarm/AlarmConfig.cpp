@@ -152,7 +152,7 @@ ParamRulerConfig AlarmConfig::getParamRulerConfig(SubParamID subParamId, UnitTyp
     ParamRulerConfig config;
 
     //load data from config file
-    QString prefix = "ConfigManager|TrendGraph|Ruler|";
+    QString prefix = "TrendGraph|Ruler|";
     prefix += paramInfo.getSubParamName(subParamId, true);
     prefix += "|";
     prefix += Unit::getSymbol(unit);

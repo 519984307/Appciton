@@ -110,10 +110,10 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
         case SUB_PARAM_AUXP2_PR:
             return "AUXP2_PR";
         case SUB_PARAM_CO_CO:
-            return "C_O_";
+            return "CO_CO";
 
         case SUB_PARAM_CO_CI:
-            return "C_I_";
+            return "CO_CI";
 
         case SUB_PARAM_CO_TB:
             return "TB";

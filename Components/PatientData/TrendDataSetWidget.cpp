@@ -37,7 +37,7 @@ void TrendDataSetWidget::layoutExec()
     int btnWidth = itemW / 4;
     int labelWidth = btnWidth;
 
-    QString prefix = "ConfigManager|TrendTable|";
+    QString prefix = "TrendTable|";
     int index = 0;
 
     QString ratioPrefix = prefix + "ResolutionRatio";
@@ -127,7 +127,7 @@ void TrendDataSetWidget::_cancelReleased()
  **************************************************************************************************/
 void TrendDataSetWidget::_timeIntervalReleased(int t)
 {
-    QString prefix = "ConfigManager|TrendTable|ResolutionRatio";
+    QString prefix = "TrendTable|ResolutionRatio";
     systemConfig.setNumValue(prefix, t);
     trendDataWidget.setTimeInterval((ResolutionRatio)t);
 }
@@ -137,7 +137,7 @@ void TrendDataSetWidget::_timeIntervalReleased(int t)
  **************************************************************************************************/
 void TrendDataSetWidget::_trendGroupReleased(int g)
 {
-    QString prefix = "ConfigManager|TrendTable|TrendGroup";
+    QString prefix = "TrendTable|TrendGroup";
     systemConfig.setNumValue(prefix, g);
     trendDataWidget.loadCurParam(g);
 }
