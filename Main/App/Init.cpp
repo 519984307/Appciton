@@ -55,12 +55,15 @@ static void _initSystem(void)
         QString selectTypeString;
         systemConfig.getStrAttr(selectIndexString, "type", selectTypeString);
 
-        QString selectNameString;
-        systemConfig.getStrValue(selectIndexString, selectNameString);
-        QString strOld = QString("%1%2").arg(CFG_PATH).arg(selectNameString);
-        QString strNew = systemConfig.getCurConfigName();
-        QFile::remove(strNew);
-        QFile::copy(strOld, strNew);
+        if(selectTypeString!="Current")//当前文件配置不再加载
+        {
+            QString selectNameString;
+            systemConfig.getStrValue(selectIndexString, selectNameString);
+            QString strOld = QString("%1%2").arg(CFG_PATH).arg(selectNameString);
+            QString strNew = systemConfig.getCurConfigName();
+            QFile::remove(strNew);
+            QFile::copy(strOld, strNew);
+        }
     }
 
     // 波形缓存。
