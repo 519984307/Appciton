@@ -17,6 +17,9 @@ public:
     /* override */
     virtual int type() const;
 
+    /* override */
+    PrintPriority getPriority() const;
+
 protected:
     /* override */
     virtual RecordPage *createPage();
