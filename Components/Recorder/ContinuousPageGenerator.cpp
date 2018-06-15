@@ -166,6 +166,11 @@ int ContinuousPageGenerator::type() const
     return Type;
 }
 
+RecordPageGenerator::PrintPriority ContinuousPageGenerator::getPriority() const
+{
+    return PriorityContinuous;
+}
+
 RecordPage *ContinuousPageGenerator::createPage()
 {
     switch(d_ptr->curPageType)

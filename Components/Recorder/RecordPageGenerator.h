@@ -111,8 +111,34 @@ public:
         NullPage,
     };
 
-    RecordPageGenerator(QObject *parent = 0 );
+    enum PrintPriority
+    {
+        PriorityNone = 0,
+        PriorityContinuous = 1,
+        PriorityReview = 2,
+        PriorityTrigger = 3,
+    };
+
+    RecordPageGenerator(QObject *parent = 0);
     ~RecordPageGenerator();
+
+    /**
+     * @brief setTrigger mark this generator as a trigger generator
+     * @param flag
+     */
+    void setTrigger(bool flag);
+
+    /**
+     * @brief isTrigger check whether this generator is a trigger generator
+     * @return
+     */
+    bool isTrigger() const;
+
+    /**
+     * @brief getPriority get the print prority of this generator
+     * @return
+     */
+    virtual PrintPriority getPriority() const;
 
     /**
      * @brief type get the type of the generator
@@ -278,5 +304,6 @@ protected:
 private:
     bool _requestStop; // request stop flag
     bool _generate;    // generate page or not
+    bool _trigger;     // store the trigger flag
     int _timerID;      // timer id
 };

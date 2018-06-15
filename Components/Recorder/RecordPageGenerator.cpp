@@ -25,12 +25,32 @@
 #define PEN_WIDTH 2
 #define DASH_LENGTH 5
 RecordPageGenerator::RecordPageGenerator(QObject *parent)
-    :QObject(parent), _requestStop(false), _generate(true), _timerID(-1)
+    :QObject(parent), _requestStop(false), _generate(true), _trigger(false), _timerID(-1)
 {
 }
 
 RecordPageGenerator::~RecordPageGenerator()
 {
+}
+
+void RecordPageGenerator::setTrigger(bool flag)
+{
+    _trigger = flag;
+}
+
+bool RecordPageGenerator::isTrigger() const
+{
+    return _trigger;
+}
+
+RecordPageGenerator::PrintPriority RecordPageGenerator::getPriority() const
+{
+    if(_trigger)
+    {
+        return PriorityTrigger;
+    }
+
+    return PriorityReview;
 }
 
 int RecordPageGenerator::type() const
