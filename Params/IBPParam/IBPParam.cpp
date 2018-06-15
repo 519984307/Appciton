@@ -1160,10 +1160,10 @@ SubParamID IBPParam::getSubParamID(IBPPressureName name)
     SubParamID id;
     switch (name) {
     case IBP_PRESSURE_ART:
-        id = SUB_PARAM_ART_MAP;
+        id = SUB_PARAM_ART_SYS;
         break;
     case IBP_PRESSURE_PA:
-        id = SUB_PARAM_PA_MAP;
+        id = SUB_PARAM_PA_SYS;
         break;
     case IBP_PRESSURE_CVP:
         id = SUB_PARAM_CVP_MAP;
@@ -1178,10 +1178,10 @@ SubParamID IBPParam::getSubParamID(IBPPressureName name)
         id = SUB_PARAM_ICP_MAP;
         break;
     case IBP_PRESSURE_AUXP1:
-        id = SUB_PARAM_AUXP1_MAP;
+        id = SUB_PARAM_AUXP1_SYS;
         break;
     case IBP_PRESSURE_AUXP2:
-        id = SUB_PARAM_AUXP2_MAP;
+        id = SUB_PARAM_AUXP2_SYS;
         break;
     default:
         break;

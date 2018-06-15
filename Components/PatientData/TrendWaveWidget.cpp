@@ -7,6 +7,7 @@
 #include "IBPParam.h"
 #include "TrendDataStorageManager.h"
 #include "TrendDataSymbol.h"
+#include "IConfig.h"
 #include <QPainter>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -23,6 +24,16 @@ TrendWaveWidget::TrendWaveWidget() :
     _cursorPosIndex(0), _currentCursorTime(0),
     _displayGraphNum(3), _totalGraphNum(3)
 {
+    QString prefix = "TrendGraph|";
+    int index = 0;
+    QString intervalPrefix = prefix + "TimeInterval";
+    systemConfig.getNumValue(intervalPrefix, index);
+    _timeInterval = (ResolutionRatio)index;
+    index = 0;
+    QString numberPrefix = prefix + "WaveNumber";
+    systemConfig.getNumValue(numberPrefix, index);
+    _displayGraphNum = index + 1;
+
     _initTime = timeDate.time();
     _initTime = _initTime - _initTime % 5;
     QPalette palette;
@@ -555,7 +566,6 @@ void TrendWaveWidget::updateTimeRange()
 {
     unsigned t;
     unsigned onePixelTime = TrendDataSymbol::convertValue(_timeInterval);
-//    int intervalNum = onePixelTime/TrendDataSymbol::convertValue(RESOLUTION_RATIO_5_SECOND);
     if (_trendDataPack.length() == 0)
     {
         t = _initTime;
@@ -564,9 +574,6 @@ void TrendWaveWidget::updateTimeRange()
     {
         unsigned lastTime = _trendDataPack.last()->time;
         t = lastTime - onePixelTime * GRAPH_POINT_NUMBER * (_currentPage - 1);
-
-//        int index = _trendDataPack.length() - 1 - intervalNum * GRAPH_POINT_NUMBER * (_currentPage - 1);
-//        t = _trendDataPack.at(index)->time;
     }
     _rightTime = t;
     _leftTime = t - onePixelTime * GRAPH_POINT_NUMBER;
@@ -733,7 +740,7 @@ void TrendWaveWidget::_trendLayout()
             ibpParam.getSubParamID(ibp1, ibp2);
             if (subId != ibp1 && subId != ibp2 &&
                     subId != SUB_PARAM_HR_PR && subId != SUB_PARAM_SPO2 &&
-                    subId != SUB_PARAM_NIBP_MAP && subId != SUB_PARAM_T1)
+                    subId != SUB_PARAM_NIBP_SYS && subId != SUB_PARAM_T1)
             {
                 it.value()->setVisible(false);
                 continue;

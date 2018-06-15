@@ -6,6 +6,8 @@
 #include "ConfigManager.h"
 #include <QPainter>
 #include <QMouseEvent>
+#include "AlarmConfig.h"
+#include "ParamManager.h"
 
 #define WAVEFORM_SCALE_HIGH         30
 #define SCALELINE_NUM               5
@@ -157,25 +159,24 @@ QMap<SubParamID, QPainterPath> OxyCRGEventWaveWidget::generatorPainterPath(const
         QPointF lastPoint;
         bool lastPointInvalid = true;
         TrendConvertDesc waveDesc;
+        ParamID paramId = paramInfo.getParamID(trendInfo.subParamID);
+        UnitType unitType = paramManager.getSubParamUnit(paramId, trendInfo.subParamID);
+        ParamRulerConfig config = alarmConfig.getParamRulerConfig(trendInfo.subParamID, unitType);
+        waveDesc.max = config.upRuler;
+        waveDesc.min = config.downRuler;
         switch(trendInfo.subParamID)
         {
         case SUB_PARAM_HR_PR:
             waveDesc.start = d_ptr->singleParamHigh / 6;
             waveDesc.end = waveDesc.start + d_ptr->singleParamHigh / 3 * 2;
-            waveDesc.max = 160;
-            waveDesc.min = 0;
             break;
         case SUB_PARAM_SPO2:
             waveDesc.start = d_ptr->singleParamHigh / 6 + d_ptr->singleParamHigh;
             waveDesc.end = waveDesc.start + d_ptr->singleParamHigh / 3 * 2;
-            waveDesc.max = 100;
-            waveDesc.min = 85;
             break;
         case SUB_PARAM_RR_BR:
             waveDesc.start = d_ptr->singleParamHigh / 6;
             waveDesc.end = waveDesc.start + d_ptr->singleParamHigh / 3 * 2;
-            waveDesc.max = 40;
-            waveDesc.min = 0;
             break;
         default:
             break;

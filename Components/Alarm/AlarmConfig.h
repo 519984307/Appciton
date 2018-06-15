@@ -30,6 +30,21 @@ struct LimitAlarmConfig {
     int step;
 };
 
+struct ParamRulerConfig
+{
+    ParamRulerConfig()
+        :upRuler(0), downRuler(0), scale(1)
+    {}
+
+    int upRuler;
+    int minUpRuler;
+    int maxUpRuler;
+    int downRuler;
+    int minDownRuler;
+    int maxDownRuler;
+    int scale;
+};
+
 struct LimitAlarmControl
 {
     LimitAlarmControl()
@@ -66,6 +81,9 @@ public:
 
     //get the alarm config
     LimitAlarmConfig getLimitAlarmConfig(SubParamID subParamId, UnitType unit);
+
+    //get ruler config
+    ParamRulerConfig getParamRulerConfig(SubParamID subParamId, UnitType unit);
 
     //set the alarm config
     void setLimitAlarmConfig(SubParamID subParamId, UnitType unit, const LimitAlarmConfig &config);

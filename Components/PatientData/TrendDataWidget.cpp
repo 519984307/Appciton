@@ -20,6 +20,7 @@
 #include <QScrollBar>
 #include "RecorderManager.h"
 #include "TrendTablePageGenerator.h"
+#include "IConfig.h"
 
 #define ITEM_HEIGHT             30
 #define ITEM_WIDTH              100
@@ -315,7 +316,16 @@ TrendDataWidget::TrendDataWidget() : _timeInterval(RESOLUTION_RATIO_5_SECOND), _
     setFixedSize(_maxWidth, _maxHeight);
 
     _curDate.clear();
-    loadCurParam();
+
+    QString prefix = "TrendTable|";
+    int index = 0;
+    QString ratioPrefix = prefix + "ResolutionRatio";
+    systemConfig.getNumValue(ratioPrefix, index);
+    _timeInterval = (ResolutionRatio)index;
+    index = 0;
+    QString groupPrefix = prefix + "TrendGroup";
+    systemConfig.getNumValue(groupPrefix, index);
+    loadCurParam(index);
     _updateHeaderDate();
 }
 
