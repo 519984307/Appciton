@@ -18,8 +18,11 @@
 #include <QStylePainter>
 #include <QApplication>
 #include <QScrollBar>
+#include <QTableWidgetItem>
 #include "RecorderManager.h"
 #include "TrendTablePageGenerator.h"
+#include "EventStorageManager.h"
+#include "EventDataParseContext.h"
 
 #define ITEM_HEIGHT             30
 #define ITEM_WIDTH              100
@@ -53,8 +56,6 @@ void TrendDataWidget::loadTrendData()
 {
     QString time;
     QStringList timeTitle;
-//    QBrush *middleAlarmColor = new QBrush(Qt::yellow);
-//    QBrush *highAlarmColor = new QBrush(Qt::red);
     QTableWidgetItem *item;
     int intervalNum = TrendDataSymbol::convertValue(_timeInterval)/TrendDataSymbol::convertValue(RESOLUTION_RATIO_5_SECOND);
     int col = 0;
@@ -117,6 +118,16 @@ void TrendDataWidget::loadTrendData()
                 QString dataStr = data == InvData() ?"---":QString::number(data);
                 item->setText(dataStr);
             }
+
+            bool isAlarm = _trendDataPack.at(i)->subparamAlarm.value(_displayList.at(j), false);
+            if (isAlarm)
+            {
+                item->setBackgroundColor(Qt::yellow);
+            }
+            else
+            {
+                item->setBackgroundColor(Qt::white);
+            }
         }
         col ++;
     }
@@ -140,6 +151,7 @@ void TrendDataWidget::loadTrendData()
 void TrendDataWidget::showEvent(QShowEvent *event)
 {
     PopupWidget::showEvent(event);
+    _currentMoveCount = 0;
     _loadTableTitle();
 }
 
@@ -555,26 +567,7 @@ void TrendDataWidget::_updateHeaderDate(unsigned t)
 {
     if (0 == t)
     {
-//        int index = getIncidentIndex();
-//        if(index <= 0)
-//        {
-            t = timeManager.getCurTime();
-//        }
-//        else
-//        {
-//            QStringList datatimeList;
-//            loadRescueTime(datatimeList);
-//            if(index < datatimeList.size())
-//            {
-//                QString str = datatimeList.at(index);
-//                QDateTime dt = QDateTime::fromString(str, "yyyyMMddHHmmss");
-//                t = dt.toTime_t();
-//            }
-//            else
-//            {
-//                t = timeManager.getCurTime();
-//            }
-//        }
+        t = timeManager.getCurTime();
     }
 
     QString updateDate;
@@ -597,6 +590,7 @@ void TrendDataWidget::_updateHeaderDate(unsigned t)
  **********************************************************************************************************************/
 void TrendDataWidget::_getTrendData()
 {
+    // 趋势数据
     IStorageBackend *backend;
     backend = trendDataStorageManager.backend();
     int blockNum = backend->getBlockNR();
