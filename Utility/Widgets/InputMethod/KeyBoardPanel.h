@@ -78,9 +78,9 @@ private:
 private:
     static const int _panelWidth = 640;
     static const int _panelHeight = 400;
-    static const int _keySpace = 10;
+    static const int _keySpace = 12;
 
-    static const int _itemWidth = (_panelWidth-_keySpace*3)/4;
+    static const int _itemWidth = (_panelWidth-_keySpace*3-44)/4;
     //static int _itemHeight =
 
     static const int _titleFontSize = 24;

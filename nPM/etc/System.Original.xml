@@ -722,10 +722,6 @@
 		    <NotchFilter>0</NotchFilter>
 		    <SmartLeadOff>0</SmartLeadOff>
         </ECG>
-		<AG>
-		    <AGModule>0</AGModule>
-		    <SweepSpeed>1</SweepSpeed>
-		</AG>
         <ECG12Lead>
             <EmailOffset>0</EmailOffset>
         </ECG12Lead>
@@ -735,6 +731,10 @@
             <NIBPmap>-5000</NIBPmap>
             <MeasureTime>0</MeasureTime>
         </NIBP>
+        <AG>
+            <AGModule>0</AGModule>
+            <SweepSpeed>1</SweepSpeed>
+        </AG>
         <UILayout>
         <!-- 控件的顺序与上面的布局节点对应 -->
             <WidgetsOrder>

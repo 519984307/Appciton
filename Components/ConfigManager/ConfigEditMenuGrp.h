@@ -45,6 +45,11 @@ public:
      */
     QString getCurrentEditConfigName() const;
 
+    /**
+     * @brief getCurrentEditConfigItem  获得当前的配置项
+     * @return
+     */
+    QMap <QString, SubMenu*> getCurrentEditConfigItem()const;
 
 private:
     ConfigEditMenuGrp();

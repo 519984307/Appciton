@@ -1,5 +1,6 @@
 #pragma once
 #include "SubMenu.h"
+#include "LabelButton.h"
 
 class IComboList;
 class RESPMenu : public SubMenu
@@ -30,6 +31,7 @@ private slots:
     void _zoomSlot(int index);
     void _calcLeadChange(int index);
     void _monitorSlot(int index);
+    void _alarmLbtnSlot(void);
 
 private:
     RESPMenu();
@@ -42,5 +44,6 @@ private:
 //    IComboList *_zoom;                // 波形放大倍数。
 //    IComboList *_calcLead;            // 呼吸导联
     IComboList *_monitor;             // 呼吸测量功能。
+    LabelButton *_alarmLbtn;            //跳到报警项设置按钮
 };
 #define respMenu (RESPMenu::construction())

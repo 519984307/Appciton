@@ -1,7 +1,7 @@
 #pragma once
 #include "SubMenu.h"
 #include <QScopedPointer>
-
+#include "ConfigEditAlarmLimitMenu.h"
 class ConfigEditNIBPMenuPrivate;
 class ConfigEditNIBPMenu : public SubMenu
 {
@@ -29,6 +29,8 @@ private slots:
      * @param index  选择序列号
      */
     void onComboListConfigChanged(int index);
+    void _alarmLbtnSlot(void);
+
 private:
     QScopedPointer<ConfigEditNIBPMenuPrivate> d_ptr;
 };

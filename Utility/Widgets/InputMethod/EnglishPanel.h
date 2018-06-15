@@ -53,8 +53,8 @@ private slots:
 
 private:
 //    void _keySort(const QString key);
-    static const int _itemWidth = 34;
-    static const int _itemHeight = 34;
+    static const int _itemWidth = 34*3/2;
+    static const int _itemHeight = 34*3/2;
 
     int _maxLength;
     bool _shift;

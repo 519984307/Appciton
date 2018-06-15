@@ -583,8 +583,8 @@ KeyBoardPanel::KeyBoardPanel(KeyType type) : PopupWidget()
         }
         mainLayout->addLayout(hLayout);
     }
-    setFixedSize(_panelWidth,_panelHeight);
     contentLayout->addLayout(mainLayout);
+    contentLayout->addStretch(2);
 }
 
 /**************************************************************************************************

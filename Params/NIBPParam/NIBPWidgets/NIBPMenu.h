@@ -32,6 +32,7 @@ private slots:
     void _autoIntervalSlot(int index);
     void _initialCuffChangeSlot(int index);
     void _statBtnSlot(void);
+    void _alarmLbtnSlot(void);
 
 private:
     NIBPMenu();
@@ -44,5 +45,7 @@ private:
     IComboList *_autoInterval;               // 自动模式下的时间间隔。
     IComboList *_initialCuff;                // 预充气值。
     LButtonEx *_statBtn;                     //STAT启动停止按钮
+
+    LabelButton *_alarmLbtn;                 //跳到报警项设置按钮
 };
 #define nibpMenu (NIBPMenu::construction())

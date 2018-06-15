@@ -8,14 +8,38 @@
 class ConfigEditAlarmLimitMenuPrivate
 {
 public:
-    ConfigEditAlarmLimitMenuPrivate()
+    ConfigEditAlarmLimitMenuPrivate():_focusIndex(0)
     {
     }
-
+    QList<SetItem *> getItemList()const;
     void loadOptions();
-
     QList<SetItem *> itemList;
+    int _focusIndex;
+    QLabel *lablelPara;
 };
+
+//获取聚焦点值
+QList<SetItem *> ConfigEditAlarmLimitMenuPrivate::getItemList()const
+{
+    return itemList;
+}
+
+//获取聚焦点值
+int ConfigEditAlarmLimitMenu::getFocusIndex()const
+{
+    int focusIndex = d_ptr->_focusIndex;
+    d_ptr->_focusIndex = 0;
+    return focusIndex;
+}
+
+//设置聚焦点值
+void ConfigEditAlarmLimitMenu::setFocusIndex(int index)
+{
+    if( index >= 0 && index < d_ptr->itemList.count() )
+    {
+        d_ptr->_focusIndex = index;
+    }
+}
 //加载当前的报警参数限制位信息接口
 void ConfigEditAlarmLimitMenuPrivate::loadOptions()
 {
@@ -199,6 +223,24 @@ ConfigEditAlarmLimitMenu::ConfigEditAlarmLimitMenu()
     //启动配置编辑报警限制页面显示
     startLayout();
 }
+
+bool ConfigEditAlarmLimitMenu::eventFilter(QObject *obj, QEvent *ev)
+{
+    if(d_ptr->itemList[0] == obj)
+    {
+
+        if (ev->type() == QEvent::FocusIn)
+        {
+
+        }
+        if (ev->type() == QEvent::Hide)
+        {
+
+        }
+
+    }
+    return false;
+}
 //析构函数接口
 ConfigEditAlarmLimitMenu::~ConfigEditAlarmLimitMenu()
 {
@@ -218,13 +260,15 @@ void ConfigEditAlarmLimitMenu::layoutExec()
 
     // 第一行，标签。
     QHBoxLayout *labelLayout = new QHBoxLayout();
-    QLabel *l = new QLabel(trs("Parameter"));
-    l->setFixedSize(itemW0, ITEM_H);
-    l->setAlignment(Qt::AlignCenter);
-    l->setFont(fontManager.textFont(fontSize));
-    labelLayout->addWidget(l);
+    d_ptr->lablelPara = new QLabel(trs("Parameter"));
+    d_ptr->lablelPara->setFixedSize(itemW0, ITEM_H);
+    d_ptr->lablelPara->setAlignment(Qt::AlignCenter);
+    d_ptr->lablelPara->setFont(fontManager.textFont(fontSize));
+    labelLayout->addWidget(d_ptr->lablelPara);
 
-    l = new QLabel(trs("AlarmStatus"));
+    d_ptr->itemList[0]->installEventFilter(this);
+
+    QLabel *l = new QLabel(trs("AlarmStatus"));
     l->setFixedSize(itemW, ITEM_H);
     l->setAlignment(Qt::AlignCenter);
     l->setFont(fontManager.textFont(fontSize));
@@ -300,6 +344,9 @@ void ConfigEditAlarmLimitMenu::layoutExec()
 void ConfigEditAlarmLimitMenu::readyShow()
 {
     d_ptr->loadOptions();
+    d_ptr->itemList.at(getFocusIndex())->combo->setFocus();
+    focusPreviousChild();
+    focusNextChild();
 }
 
 //用于更改报警参数限制值的接口
@@ -444,4 +491,3 @@ void ConfigEditAlarmLimitMenu::_comboListIndexChanged(int id, int index)
     }
 
 }
-
