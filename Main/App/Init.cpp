@@ -34,6 +34,33 @@ static void _initSystem(void)
         item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
         item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
         errorLog.append(item);
+
+        QString selectIndexString;
+        if(systemConfig.getCurConfigName().indexOf("Adult"))
+        {
+            selectIndexString = "ConfigManager|Default|Adult";
+        }
+        else if(systemConfig.getCurConfigName().indexOf("Ped"))
+        {
+            selectIndexString = "ConfigManager|Default|Ped";
+        }
+        else if(systemConfig.getCurConfigName().indexOf("Neo"))
+        {
+            selectIndexString = "ConfigManager|Default|Neo";
+        }
+        else
+        {
+            selectIndexString = "ConfigManager|Default|Adult";
+        }
+        QString selectTypeString;
+        systemConfig.getStrAttr(selectIndexString, "type", selectTypeString);
+
+        QString selectNameString;
+        systemConfig.getStrValue(selectIndexString, selectNameString);
+        QString strOld = QString("%1%2").arg(CFG_PATH).arg(selectNameString);
+        QString strNew = systemConfig.getCurConfigName();
+        QFile::remove(strNew);
+        QFile::copy(strOld, strNew);
     }
 
     // 波形缓存。
