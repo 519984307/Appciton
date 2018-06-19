@@ -3,6 +3,7 @@
 #include "AlarmLimitMenu.h"
 #include "IConfig.h"
 #include "PatientDefine.h"
+#include "LoadConfigMenu.h"
 //创建配置告警参数的私有类
 //方便管理，层次分明
 class ConfigEditAlarmLimitMenuPrivate
@@ -198,6 +199,15 @@ ConfigEditAlarmLimitMenu::ConfigEditAlarmLimitMenu()
     }
     //启动配置编辑报警限制页面显示
     startLayout();
+
+    connect(&loadConfigMenu, SIGNAL(disableWidgets()), this, SLOT(disableWidgets()));
+}
+void ConfigEditAlarmLimitMenu::disableWidgets()
+{
+    for(int i=0; i<d_ptr->itemList.count(); i++)
+    {
+        d_ptr->itemList.at(i)->setEnabled(false);
+    }
 }
 //析构函数接口
 ConfigEditAlarmLimitMenu::~ConfigEditAlarmLimitMenu()

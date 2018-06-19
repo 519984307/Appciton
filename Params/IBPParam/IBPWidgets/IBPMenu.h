@@ -50,6 +50,7 @@ private slots:
     void _sensitivitySlot(int index);
     void _zeroCalibReleased(void);
     void _calibrationReleased(void);
+    void _updateConfigSlot(void);
 
 private:    
     IBPMenu();

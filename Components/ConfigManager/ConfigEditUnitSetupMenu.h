@@ -77,6 +77,10 @@ private slots:
      * @param index  选择序列号
      */
     void _co2UnitSlot(int index);
+    /**
+     * @brief disableWidgets 失能窗口
+     */
+    void disableWidgets(void);
 
 private:
     /**

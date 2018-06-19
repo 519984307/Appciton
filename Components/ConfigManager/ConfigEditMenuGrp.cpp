@@ -31,6 +31,7 @@ public:
     bool isSubmenuInitial;
     Config *curEditConfig;
     QString configName;
+
 };
 
 ConfigEditMenuGrp::ConfigEditMenuGrp()

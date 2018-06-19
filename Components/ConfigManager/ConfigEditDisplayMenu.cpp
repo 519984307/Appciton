@@ -7,6 +7,7 @@
 #include "SupervisorConfigManager.h"
 #include "SupervisorCodeMarker.h"
 #include "SupervisorMenuManager.h"
+#include "LoadConfigMenu.h"
 
 /**************************************************************************************************
  * 构造。
@@ -20,8 +21,18 @@ ConfigEditDisplayMenu::ConfigEditDisplayMenu() : SubMenu(trs("ConfigEditDisplayM
     _colorList = color.split(',', QString::KeepEmptyParts);
 
     startLayout();
-}
 
+    connect(&loadConfigMenu, SIGNAL(disableWidgets()), this, SLOT(disableWidgets()));
+}
+void ConfigEditDisplayMenu::disableWidgets()
+{
+    _ecgColor->setEnabled(false);
+    _spo2Color->setEnabled(false);
+    _nibpColor->setEnabled(false);
+    _co2Color->setEnabled(false);
+    _respColor->setEnabled(false);
+    _tempColor->setEnabled(false);
+}
 /**************************************************************************************************
  * 显示。
  *************************************************************************************************/

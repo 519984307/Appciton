@@ -5,6 +5,7 @@
 #include "AGSymbol.h"
 #include "AGParam.h"
 #include "IConfig.h"
+#include "LoadConfigMenu.h"
 
 AGMenu *AGMenu::_selfObj = NULL;
 
@@ -37,6 +38,11 @@ void AGMenu::_loadOptions()
     systemConfig.getNumValue("PrimaryCfg|AG|SweepSpeed", index);
     _speedIcomb->combolist->setCurrentIndex((AGSweepSpeed)index);
 
+}
+
+void AGMenu::_updateConfigSlot()
+{
+    readyShow();
 }
 
 void AGMenu::readyhide(){}
@@ -147,4 +153,5 @@ AGMenu::AGMenu() : SubMenu(trs("AGMenu"))
 {
     setDesc(trs("AGMenuDesc"));
     startLayout();
+    connect(&loadConfigMenu, SIGNAL(updateConfigSignal()), this, SLOT(_updateConfigSlot()));
 }

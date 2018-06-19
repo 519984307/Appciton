@@ -17,6 +17,7 @@
 #include "Config.h"
 #include "ConfigEditMenuGrp.h"
 #include "IBPParam.h"
+#include "LoadConfigMenu.h"
 
 ConfigIBPMenu *ConfigIBPMenu::_selfObj = NULL;
 
@@ -24,8 +25,20 @@ ConfigIBPMenu::ConfigIBPMenu() : SubMenu(trs("ConfigIBPMenu"))
 {
     setDesc(trs("ConfigIBPMenuDesc"));
     startLayout();
+    connect(&loadConfigMenu, SIGNAL(disableWidgets()), this, SLOT(disableWidgets()));
 }
 
+void ConfigIBPMenu::disableWidgets()
+{
+    _entitle1->setEnabled(false);
+    _entitle2->setEnabled(false);
+    _speed->setEnabled(false);
+    _filter->setEnabled(false);
+    _sensitivity->setEnabled(false);
+    _zeroCalib->setEnabled(false);
+    _calibration->setEnabled(false);
+    _zeroRev->setEnabled(false);
+}
 ConfigIBPMenu::~ConfigIBPMenu()
 {
 

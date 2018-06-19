@@ -2,7 +2,7 @@
 #include "ConfigEditMenuGrp.h"
 #include "IComboList.h"
 #include "SPO2Symbol.h"
-
+#include "LoadConfigMenu.h"
 
 class ConfigEditSpO2MenuPrivate
 {
@@ -94,6 +94,15 @@ ConfigEditSpO2Menu::ConfigEditSpO2Menu()
 {
     setDesc(trs("SPO2MenuDesc"));
     startLayout();
+    connect(&loadConfigMenu, SIGNAL(disableWidgets()), this, SLOT(disableWidgets()));
+}
+
+void ConfigEditSpO2Menu::disableWidgets()
+{
+    for(int i =0; i<ConfigEditSpO2MenuPrivate::ComboListMax; i++)
+    {
+        d_ptr->combos[i]->setEnabled(false);
+    }
 }
 
 ConfigEditSpO2Menu::~ConfigEditSpO2Menu()

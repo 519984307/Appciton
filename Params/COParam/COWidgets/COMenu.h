@@ -33,6 +33,7 @@ private slots:
     void _injectionTempReleased(void);
     void _injectionVolumnReleased(void);
     void _startReleased();
+    void _updateConfigSlot();
 
 private:
 

@@ -32,6 +32,7 @@ private slots:
     void _autoIntervalSlot(int index);
     void _initialCuffChangeSlot(int index);
     void _statBtnSlot(void);
+    void _updateConfigSlot(void);
 
 private:
     NIBPMenu();

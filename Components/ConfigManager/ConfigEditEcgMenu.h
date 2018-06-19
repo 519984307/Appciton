@@ -16,7 +16,7 @@ protected:
 
 private slots:
     void onComboListConfigChanged(int index);
-
+    void disableWidgets();
 private:
     QScopedPointer<ConfigEditEcgMenuPrivate> d_ptr;
 };

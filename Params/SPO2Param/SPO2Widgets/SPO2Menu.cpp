@@ -6,6 +6,7 @@
 #include "IConfig.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include "LoadConfigMenu.h"
 
 SPO2Menu *SPO2Menu::_selfObj = NULL;
 
@@ -32,6 +33,11 @@ void SPO2Menu::readyShow(void)
 {
     _sensitivity->setCurrentIndex(spo2Param.getSensitivity());
     _smartPulseTone->setCurrentIndex(spo2Param.getSmartPulseTone());
+}
+
+void SPO2Menu::_updateConfigSlot()
+{
+    readyShow();
 }
 
 /**************************************************************************************************
@@ -80,6 +86,7 @@ SPO2Menu::SPO2Menu() : SubMenu(trs("SPO2Menu"))
 {
     setDesc(trs("SPO2MenuDesc"));
     startLayout();
+    connect(&loadConfigMenu, SIGNAL(updateConfigSignal()), this, SLOT(_updateConfigSlot()));
 }
 
 /**************************************************************************************************

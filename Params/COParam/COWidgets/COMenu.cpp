@@ -12,6 +12,7 @@
 #include "IMessageBox.h"
 #include "NumberInput.h"
 #include "COParam.h"
+#include "LoadConfigMenu.h"
 
 COMenu *COMenu::_selfObj = NULL;
 
@@ -22,6 +23,7 @@ COMenu::COMenu() : SubMenu(trs("COMenu")), _measureSta(CO_INST_START)
 {
     setDesc(trs("COMenuDesc"));
     startLayout();
+    connect(&loadConfigMenu, SIGNAL(updateConfigSignal()), this, SLOT(_updateConfigSlot()));
 }
 
 /**************************************************************************************************
@@ -212,6 +214,10 @@ void COMenu::_injectionVolumnReleased()
     }
 }
 
+void COMenu::_updateConfigSlot()
+{
+    ;
+}
 /**************************************************************************************************
  * 开始测量槽函数。
  *************************************************************************************************/

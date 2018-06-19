@@ -13,6 +13,7 @@
 #include "ConfigEditUnitSetupMenu.h"
 #include "UnitManager.h"
 #include "IConfig.h"
+#include "LoadConfigMenu.h"
 ConfigEditUnitSetupMenu *ConfigEditUnitSetupMenu::_selfObj = NULL;
 
 
@@ -331,8 +332,19 @@ ConfigEditUnitSetupMenu::ConfigEditUnitSetupMenu() : SubMenu(trs("UnitSetup")),
 {
     setDesc(trs("UnitSetupDesc"));
     startLayout();
+    connect(&loadConfigMenu, SIGNAL(disableWidgets()), this, SLOT(disableWidgets()));
 }
-
+void ConfigEditUnitSetupMenu::disableWidgets()
+{
+    _hightUnit->setEnabled(false);
+    _weightUnit->setEnabled(false);
+    _stUnit->setEnabled(false);
+    _pressureUnit->setEnabled(false);
+    _temperatureUnit->setEnabled(false);
+    _cvpUnit->setEnabled(false);
+    _icpUnit->setEnabled(false);
+    _co2Unit->setEnabled(false);
+}
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/

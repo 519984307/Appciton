@@ -16,7 +16,7 @@
 #include "ConfigManager.h"
 #include "Config.h"
 #include "ConfigEditMenuGrp.h"
-
+#include "LoadConfigMenu.h"
 ConfigCOMenu *ConfigCOMenu::_selfObj = NULL;
 
 ConfigCOMenu::ConfigCOMenu() : SubMenu(trs("C.O.")),
@@ -28,6 +28,15 @@ ConfigCOMenu::ConfigCOMenu() : SubMenu(trs("C.O.")),
 {
     setDesc(trs("C.O.Desc"));
     startLayout();
+    connect(&loadConfigMenu, SIGNAL(disableWidgets()), this, SLOT(disableWidgets()));
+}
+void ConfigCOMenu::disableWidgets()
+{
+    _ductRatio->setEnabled(false);
+    _inputMode->setEnabled(false);
+    _injectionTemp->setEnabled(false);
+    _injectionVolumn->setEnabled(false);
+    _measureMode->setEnabled(false);
 }
 
 ConfigCOMenu::~ConfigCOMenu()

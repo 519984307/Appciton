@@ -23,6 +23,7 @@ private slots:
     void _co2ColorChangeSlot(int index);
     void _respColorChangeSlot(int index);
     void _tempColorChangeSlot(int index);
+    void disableWidgets(void);
 
 private:
 

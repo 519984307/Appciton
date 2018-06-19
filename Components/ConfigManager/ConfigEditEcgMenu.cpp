@@ -3,6 +3,7 @@
 #include "IComboList.h"
 #include "ECGSymbol.h"
 #include "SoundManager.h"
+#include "LoadConfigMenu.h"
 //配置编辑ECG菜单私有类
 class ConfigEditEcgMenuPrivate {
 public:
@@ -205,8 +206,15 @@ ConfigEditEcgMenu::ConfigEditEcgMenu()
 {
     setDesc(trs("ECGMenuDesc"));
     startLayout();
+    connect(&loadConfigMenu, SIGNAL(disableWidgets()), this, SLOT(disableWidgets()));
 }
-
+void ConfigEditEcgMenu::disableWidgets()
+{
+    for(int i=0; i<ConfigEditEcgMenuPrivate::ComboListMax; i++)
+    {
+        d_ptr->combos[i]->setEnabled(false);
+    }
+}
 ConfigEditEcgMenu::~ConfigEditEcgMenu()
 {
 

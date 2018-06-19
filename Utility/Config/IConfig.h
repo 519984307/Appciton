@@ -1,9 +1,11 @@
 #pragma once
 #include "Config.h"
 #include "ConfigDefine.h"
+#include "LoadConfigMenu.h"
 
 class SystemConfig : public Config
 {
+
 public:
     static SystemConfig &construction(void)
     {
@@ -21,28 +23,12 @@ public:
 
     QString getCurConfigName(){return curConfigName;}
 
+    void updateCurConfigName();
+
 private:
     SystemConfig() : Config(SYSTEM_CFG_FILE)
     {
-        int numValue = 255;
-        getNumValue("General|PatientType", numValue);
-        switch(numValue)
-        {
-        case 0:
-            curConfigName = CFG_PATH"AdultConfig.xml";
-            break;
-        case 1:
-            curConfigName = CFG_PATH"PedConfig.xml";
-            break;
-        case 2:
-            curConfigName = CFG_PATH"NeoConfig.xml";
-            break;
-        }
-        if(numValue>2)
-        {
-            curConfigName = CFG_PATH"AdultConfig.xml";
-            numValue = 255;
-        }
+        updateCurConfigName();
     }
     QString curConfigName;
 };

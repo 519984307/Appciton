@@ -8,7 +8,7 @@
 #include "ISpinBox.h"
 #include "LanguageManager.h"
 #include "MenuManager.h"
-
+#include "LoadConfigMenu.h"
 CO2Menu *CO2Menu::_selfObj = NULL;
 
 /**************************************************************************************************
@@ -77,6 +77,11 @@ void CO2Menu::_loadOptions(void)
 
     // 显示控制。
     _fico2Display->setCurrentIndex(co2Param.getFICO2Display());
+}
+
+void CO2Menu::_updateConfigSlot()
+{
+    readyShow();
 }
 
 /**************************************************************************************************
@@ -178,6 +183,7 @@ CO2Menu::CO2Menu() : SubMenu(trs("CO2Menu"))
 {
     setDesc(trs("CO2MenuDesc"));
     startLayout();
+    connect(&loadConfigMenu, SIGNAL(updateConfigSignal()), this, SLOT(_updateConfigSlot()));
 }
 
 /**************************************************************************************************

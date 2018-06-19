@@ -11,6 +11,7 @@
 #include "MenuManager.h"
 #include "NumberInput.h"
 #include "IMessageBox.h"
+#include "LoadConfigMenu.h"
 
 IBPMenu *IBPMenu::_selfObj = NULL;
 
@@ -21,6 +22,7 @@ IBPMenu::IBPMenu() : SubMenu(trs("IBPMenu"))
 {
     setDesc(trs("IBPMenuDesc"));
     startLayout();
+    connect(&loadConfigMenu, SIGNAL(updateConfigSignal()), this, SLOT(_updateConfigSlot()));
 }
 
 /**************************************************************************************************
@@ -58,6 +60,11 @@ IBPMenu::~IBPMenu()
 void IBPMenu::readyShow() { }
 
 void IBPMenu::readyhide() { }
+
+void IBPMenu::_updateConfigSlot()
+{
+    readyShow();
+}
 
 /**************************************************************************************************
  * 执行布局。

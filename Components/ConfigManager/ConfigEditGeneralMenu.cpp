@@ -2,6 +2,7 @@
 #include "ConfigEditMenuGrp.h"
 #include "LabelButton.h"
 #include "KeyBoardPanel.h"
+#include "LoadConfigMenu.h"
 
 
 #define MAX_CONFIG_NAME_LEN 64
@@ -18,6 +19,12 @@ ConfigEditGeneralMenu::ConfigEditGeneralMenu()
 {
     setDesc(trs("GeneralSettings"));
     startLayout();
+    connect(&loadConfigMenu, SIGNAL(disableWidgets()), this, SLOT(disableWidgets()));
+}
+
+void ConfigEditGeneralMenu::disableWidgets()
+{
+    d_ptr->configName->setEnabled(false);
 }
 
 ConfigEditGeneralMenu::~ConfigEditGeneralMenu()

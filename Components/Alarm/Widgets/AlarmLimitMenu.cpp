@@ -17,6 +17,7 @@
 #include "RESPParam.h"
 #include "AlarmSymbol.h"
 #include "AlarmConfig.h"
+#include "LoadConfigMenu.h"
 
 AlarmLimitMenu *AlarmLimitMenu::_selfObj = NULL;
 
@@ -285,6 +286,10 @@ void AlarmLimitMenu::setIBPAlarmItem(IBPPressureName ibp1, IBPPressureName ibp2)
     }
 }
 
+void AlarmLimitMenu::_updateConfigSlot()
+{
+    readyShow();
+}
 /**************************************************************************************************
  * 载入初始配置。
  *************************************************************************************************/
@@ -527,6 +532,8 @@ AlarmLimitMenu::AlarmLimitMenu() : SubMenu(trs("AlarmLimitMenu"))
     startLayout();
 
     checkAlarmEnableStatus();
+
+    connect(&loadConfigMenu, SIGNAL(updateConfigSignal()), this, SLOT(_updateConfigSlot()));
 }
 
 /**************************************************************************************************

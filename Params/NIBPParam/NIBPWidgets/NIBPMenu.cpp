@@ -7,6 +7,7 @@
 #include <QVBoxLayout>
 #include "MenuManager.h"
 #include "IConfig.h"
+#include "LoadConfigMenu.h"
 
 NIBPMenu *NIBPMenu::_selfObj = NULL;
 
@@ -158,6 +159,11 @@ void NIBPMenu::_loadOptions(void)
     statBtnShow();
 }
 
+
+void NIBPMenu::_updateConfigSlot()
+{
+    readyShow();
+}
 /**************************************************************************************************
  * 显示前确定配置。
  *************************************************************************************************/
@@ -243,6 +249,7 @@ NIBPMenu::NIBPMenu() : SubMenu(trs("NIBPMenu"))
 {
     setDesc(trs("NIBPMenuDesc"));
     startLayout();
+    connect(&loadConfigMenu, SIGNAL(updateConfigSignal()), this, SLOT(_updateConfigSlot()));
 }
 
 /**************************************************************************************************

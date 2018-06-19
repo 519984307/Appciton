@@ -2,7 +2,7 @@
 #include "ConfigEditMenuGrp.h"
 #include "IComboList.h"
 #include "RESPSymbol.h"
-
+#include "LoadConfigMenu.h"
 class ConfigEditRespMenuPrivate
 {
 public:
@@ -86,8 +86,15 @@ ConfigEditRespMenu::ConfigEditRespMenu()
 {
     setDesc(trs("RespMenuDesc"));
     startLayout();
+    connect(&loadConfigMenu, SIGNAL(disableWidgets()), this, SLOT(disableWidgets()));
 }
-
+void ConfigEditRespMenu::disableWidgets()
+{
+    for(int i =0; i<ConfigEditRespMenuPrivate::ComboListMax; i++)
+    {
+        d_ptr->combos[i]->setEnabled(false);
+    }
+}
 ConfigEditRespMenu::~ConfigEditRespMenu()
 {
 

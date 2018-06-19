@@ -4,7 +4,7 @@
 #include "NIBPSymbol.h"
 #include "LabelButton.h"
 #include "MenuGroup.h"
-
+#include "LoadConfigMenu.h"
 class ConfigEditNIBPMenuPrivate
 {
 public:
@@ -71,8 +71,15 @@ ConfigEditNIBPMenu::ConfigEditNIBPMenu()
 {
     setDesc(trs("NIBPMenuDesc"));
     startLayout();
+    connect(&loadConfigMenu, SIGNAL(disableWidgets()), this, SLOT(disableWidgets()));
 }
-
+void ConfigEditNIBPMenu::disableWidgets()
+{
+    for(int i=0; i<ConfigEditNIBPMenuPrivate::ComboListMax; i++)
+    {
+        d_ptr->combos[i]->setEnabled(false);
+    }
+}
 ConfigEditNIBPMenu::~ConfigEditNIBPMenu()
 {
 

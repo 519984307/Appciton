@@ -6,6 +6,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include "MenuManager.h"
+#include "LoadConfigMenu.h"
 
 RESPMenu *RESPMenu::_selfObj = NULL;
 
@@ -69,6 +70,11 @@ void RESPMenu::_loadOptions(void)
 
     // 监护使能
     _monitor->setCurrentIndex(respParam.getRespMonitoring());
+}
+
+void RESPMenu::_updateConfigSlot()
+{
+    readyShow();
 }
 
 /**************************************************************************************************
@@ -159,6 +165,7 @@ RESPMenu::RESPMenu() : SubMenu(trs("RESPMenu"))
 {
     setDesc(trs("RESPMenuDesc"));
     startLayout();
+    connect(&loadConfigMenu, SIGNAL(updateConfigSignal()), this, SLOT(_updateConfigSlot()));
 }
 
 /**************************************************************************************************
