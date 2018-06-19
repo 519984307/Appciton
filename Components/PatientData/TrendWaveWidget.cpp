@@ -22,7 +22,7 @@ TrendWaveWidget::TrendWaveWidget() :
     _timeInterval(RESOLUTION_RATIO_5_SECOND),
     _initTime(0),
     _cursorPosIndex(0), _currentCursorTime(0),
-    _displayGraphNum(3), _totalGraphNum(3)
+    _displayGraphNum(3), _totalGraphNum(3), _pagingNum(0)
 {
     QString prefix = "TrendGraph|";
     int index = 0;
@@ -292,8 +292,8 @@ void TrendWaveWidget::pageUpParam()
         // 当前位置　－　最大位置乘以总行数除以看不见的行数
         int positon = _curVScroller - (maxValue * _displayGraphNum) / (_totalGraphNum - _displayGraphNum);
         scrollBar->setSliderPosition(positon);
+        _pagingNum --;
     }
-
 }
 
 void TrendWaveWidget::pageDownParam()
@@ -305,6 +305,7 @@ void TrendWaveWidget::pageDownParam()
         QScrollBar *scrollBar = _subWidgetScrollArea->verticalScrollBar();
         int positon = _curVScroller + (maxValue * _displayGraphNum) / (_totalGraphNum - _displayGraphNum);
         scrollBar->setSliderPosition(positon);
+        _pagingNum ++;
     }
 }
 
@@ -318,6 +319,7 @@ void TrendWaveWidget::setTimeInterval(ResolutionRatio timeInterval)
 
 void TrendWaveWidget::setWaveNumber(int num)
 {
+    setTrendWaveReset();
     _displayGraphNum = num;    
     updateTimeRange();
 }
@@ -578,6 +580,25 @@ void TrendWaveWidget::updateTimeRange()
     _rightTime = t;
     _leftTime = t - onePixelTime * GRAPH_POINT_NUMBER;
     _trendLayout();
+}
+
+void TrendWaveWidget::setTrendWaveReset()
+{
+    _pagingNum = 0;
+    _subWidgetScrollArea->verticalScrollBar()->setSliderPosition(0);
+}
+
+const QList<TrendGraphInfo> TrendWaveWidget::getTrendGraphPrint()
+{
+    QList<TrendGraphInfo> printList;
+    int j = 0;
+    for (int i = _pagingNum * _displayGraphNum; j < _displayGraphNum; i ++)
+    {
+        TrendGraphInfo info = _infosList.at(i);
+        printList.append(info);
+        j ++;
+    }
+    return printList;
 }
 
 void TrendWaveWidget::paintEvent(QPaintEvent *event)

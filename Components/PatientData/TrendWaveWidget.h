@@ -70,10 +70,12 @@ public:
      */
     void updateTimeRange(void);
 
+    void setTrendWaveReset(void);
+
     //test
     const QList<TrendDataPackage*> getTrendDatapacketList() {return _trendDataPack;}
 
-    const QList<TrendGraphInfo> &getTrendGraphPrint(){return _infosList;}
+    const QList<TrendGraphInfo> getTrendGraphPrint();
 
 public slots:
     /**
@@ -163,6 +165,7 @@ private:
     QList<TrendDataPackage *> _trendDataPack;       // 趋势数据包
     int _totalPage;                                 // 总数据页数 *
     int _currentPage;                               // 当前页数 *
+    int _pagingNum;                                 // 窗口上下翻页数;
 
     unsigned _leftTime;                             // 趋势图左边时间 *
     unsigned _rightTime;                            // 趋势图右边时间 *
