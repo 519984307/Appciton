@@ -48,7 +48,7 @@ void ConfigEditGeneralMenu::layoutExec()
     //d_ptr->configName->setValue(trs("confignametest"));
     d_ptr->configName->label->setFixedSize(labelWidth, ITEM_H);
     d_ptr->configName->button->setFixedSize(btnWidth, ITEM_H);
-    connect(d_ptr->configName->button, SIGNAL(released()), this, SLOT(editConfigName()));
+    connect(d_ptr->configName->button, SIGNAL(released(int)), this, SLOT(editConfigName()));
     mainLayout->addWidget(d_ptr->configName);
 }
 
