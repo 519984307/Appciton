@@ -27,6 +27,8 @@
 #include "EventDataParseContext.h"
 #include "RecorderManager.h"
 #include "EventPageGenerator.h"
+#include "IBPSymbol.h"
+#include "IBPParam.h"
 
 #define ITEM_HEIGHT     30
 #define ITEM_WIDTH      100
@@ -315,23 +317,34 @@ void EventReviewWindow::eventInfoUpdate()
         {
             infoStr = "";
         }
-        infoStr += paramInfo.getSubParamName(subId);
 
-        if ((alarmInfo >> 1) & 0x1)
+        ParamID paramId = paramInfo.getParamID(subId);
+        infoStr += " ";
+
+        if (paramId == PARAM_IBP)
         {
-            infoStr += trs("Upper");
-            infoStr += " > ";
+            infoStr += IBPSymbol::convert(ibpParam.getPressureName(subId));
+            infoStr += " ";
         }
-        else
+        infoStr += trs(eventStorageManager.getPhyAlarmMessage(paramId,
+                                                              alarmId,
+                                                              alarmInfo & 0x1));
+
+        if (!(alarmInfo & 0x1))
         {
-            infoStr += trs("Lower");
-            infoStr += " < ";
+            if (alarmInfo & 0x2)
+            {
+                infoStr += " > ";
+            }
+            else
+            {
+                infoStr += " < ";
+            }
+            UnitType unit = paramManager.getSubParamUnit(paramId, subId);
+            LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subId, unit);
+
+            infoStr += Util::convertToString(d_ptr->ctx.almSegment->alarmLimit, config.scale);
         }
-        ParamID id = paramInfo.getParamID(subId);
-        UnitType type = paramManager.getSubParamUnit(id, subId);
-        LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subId, type);
-        double limitValue = (double)d_ptr->ctx.almSegment->alarmLimit / config.scale;
-        infoStr += QString::number(limitValue);
         break;
     }
     case EventCodeMarker:
@@ -856,8 +869,14 @@ void EventReviewWindow::_loadEventData()
 
                 ParamID paramId = paramInfo.getParamID(subId);
                 infoStr += " ";
+
+                if (paramId == PARAM_IBP)
+                {
+                    infoStr += IBPSymbol::convert(ibpParam.getPressureName(subId));
+                    infoStr += " ";
+                }
                 infoStr += trs(eventStorageManager.getPhyAlarmMessage(paramId,
-                                                                      alarmInfo,
+                                                                      alarmId,
                                                                       alarmInfo & 0x1));
 
                 if (!(alarmInfo & 0x1))
