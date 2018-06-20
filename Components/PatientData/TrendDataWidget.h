@@ -91,6 +91,8 @@ private:
     ResolutionRatio _timeInterval;          // 时间间隔
     int _currentMoveCount;                  // 当前数据移动数目；
     int _hideColumn;
+
+    QList<unsigned> _eventList;             // 事件发生时间列表
 };
 #define trendDataWidget (TrendDataWidget::construction())
 #define deleteTrendDataWidget() (delete TrendDataWidget::_selfObj)

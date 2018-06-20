@@ -617,4 +617,17 @@ void TrendDataWidget::_getTrendData()
         }
         _trendDataPack.append(pack);
     }
+
+    // 事件数据
+    _eventList.clear();
+    backend = eventStorageManager.backend();
+    EventDataPraseContext ctx;
+    for (int i = 0; i < backend->getBlockNR(); i ++)
+    {
+        ctx.reset();
+        ctx.parse(backend, i);
+        unsigned t = ctx.infoSegment->timestamp;
+        _eventList.append(t);
+    }
+
 }
