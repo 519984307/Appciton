@@ -233,6 +233,7 @@ SOURCES +=                                                                      
     Components/PatientData/TrendCache.cpp                                       \
     Components/PatientData/TrendGraphWidget.cpp                                 \
     Components/PatientData/TrendDataWidget.cpp                                  \
+    Components/PatientData/TrendDataUtil.cpp                                  \
     Components/PatientData/TrendDataSetWidget.cpp                               \
     Components/PatientData/RescueDataDeleteWidget.cpp                           \
     Components/PatientData/TrendDataStorageManager.cpp                          \
@@ -297,6 +298,7 @@ SOURCES +=                                                                      
     Components/Recorder/OxyCRGPageGenerator.cpp                                 \
     Components/Recorder/FreezePageGenerator.cpp                                 \
     Components/Recorder/TrendGraphPageGenerator.cpp                             \
+    Components/Recorder/TriggerPageGenerator.cpp                                \
     Components/Recorder/RecordPageProcessor.cpp                                 \
     Components/PdfWriter/HaruPdfWriter.cpp                                      \
     Components/PdfWriter/QPrinterPdfWriter.cpp                                  \
@@ -788,6 +790,7 @@ HEADERS +=                                                                      
     Components/Recorder/OxyCRGPageGenerator.h                                   \
     Components/Recorder/FreezePageGenerator.h                                   \
     Components/Recorder/TrendGraphPageGenerator.h                               \
+    Components/Recorder/TriggerPageGenerator.h                                  \
     Components/Recorder/RecordPageProcessor.h                                   \
     Components/PdfWriter/HaruPdfWriter.h                                        \
     Components/PdfWriter/QPrinterPdfWriter.h                                    \

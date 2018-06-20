@@ -121,7 +121,7 @@ void ContinuousPageGeneratorPrivate::fetchWaveData()
                                                          iter->sampleRate - curSize,
                                                          iter->secondWaveBuff.data() + curSize);
 
-            if(++retryCount >= 1000) //1000 ms has passed and haven't finished reading
+            if(++retryCount >= 200) //1000 ms has passed and haven't finished reading
             {
                 if(curSize == lastReadSize)
                 {

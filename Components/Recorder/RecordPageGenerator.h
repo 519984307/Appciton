@@ -1,5 +1,6 @@
 #pragma once
 #include <QObject>
+#include <QBasicTimer>
 #include "RecordPage.h"
 #include "PatientDefine.h"
 #include "TrendDataDefine.h"
@@ -302,8 +303,9 @@ protected:
 
 
 private:
-    bool _requestStop; // request stop flag
-    bool _generate;    // generate page or not
-    bool _trigger;     // store the trigger flag
-    int _timerID;      // timer id
+    bool _requestStop;  // request stop flag
+    bool _generate;     // generate page or not
+    bool _trigger;      // store the trigger flag
+    QBasicTimer _timer; // timer to provide timer event
+    int _timerInterval; //timer interval
 };

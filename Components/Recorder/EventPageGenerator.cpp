@@ -9,7 +9,6 @@
 #include "ParamManager.h"
 #include "AlarmConfig.h"
 #include "Utility.h"
-#include "TrendDataStorageManager.h"
 #include "WaveformCache.h"
 #include "ECGParam.h"
 #include "WindowManager.h"
@@ -340,7 +339,7 @@ RecordPage *EventPageGenerator::createPage()
         d_ptr->curPageType = WaveScalePage;
         if(d_ptr->ctx.trendSegment)
         {
-            d_ptr->trendData = TrendDataStorageManager::parseTrendSegment(d_ptr->ctx.trendSegment);
+            d_ptr->trendData = parseTrendSegment(d_ptr->ctx.trendSegment);
             return createTrendPage(d_ptr->trendData, true);
         }
         //fall through

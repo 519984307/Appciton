@@ -2,11 +2,13 @@
 #include "EventDataDefine.h"
 #include <QScopedPointer>
 #include <QByteArray>
+#include <QObject>
 
 
 class EventStorageItemPrivate;
-class EventStorageItem
+class EventStorageItem : public QObject
 {
+    Q_OBJECT
 public:
     /**
      * @brief EventStorageItem
@@ -62,6 +64,50 @@ public:
 
     //get the storage data of the event storage item
     virtual QByteArray getStorageData() const;
+
+    /**
+     * @brief getStoreWaveforms get the store wave forms
+     * @return list of waveform ids
+     */
+    QList<WaveformID> getStoreWaveforms() const;
+
+    /**
+     * @brief getCurWaveCacheDuration get teh current wave cache duration
+     * @param waveId the wave id
+     * @return  return the actual duration in unit of second if the wave exists, otherwise, return -1
+     */
+    int getCurWaveCacheDuration(WaveformID waveId) const;
+
+    /**
+     * @brief getOneSecondWaveform get one second waveform
+     * @param waveId the waveform id
+     * @param waveBuf the wave buffer to store the wave data
+     * @param startSecond the start second of the the waveform
+     * @return true if has enough data, otherwise, return false
+     */
+    bool getOneSecondWaveform(WaveformID waveId, WaveDataType *waveBuf, int startSecond);
+
+    /**
+     * @brief getTotalWaveCacheDuration get the total wave cache duration of this item
+     * @return the wave duration
+     */
+    int getTotalWaveCacheDuration() const;
+
+    /**
+     * @brief getTrendData get the trend data package
+     * @return
+     */
+    TrendDataPackage getTrendData() const;
+
+    /**
+     * @brief setForTriggerPrintFlag wait for the trigger print finished before this item complete
+     * @param flag
+     */
+    void setWaitForTriggerPrintFlag(bool flag);
+
+private slots:
+    // callback when the trigger page generator is stopped
+    void onTriggerPrintStopped();
 
 private:
     QScopedPointer<EventStorageItemPrivate> d_ptr;
