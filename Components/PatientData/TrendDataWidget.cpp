@@ -37,7 +37,7 @@ TrendDataWidget *TrendDataWidget::_selfObj = NULL;
  **********************************************************************************************************************/
 TrendDataWidget::~TrendDataWidget()
 {
-
+    _trendDataPack.clear();
 }
 
 /**********************************************************************************************************************
@@ -239,8 +239,12 @@ void TrendDataWidget::_printWidgetRelease()
 {
     if (_trendDataPack.count() != 0)
     {
-        trendPrintWidget.initPrintTime(_startTime, _endTime);
-        trendPrintWidget.autoShow();
+        TrendPrintWidget printWidget;
+        unsigned startLimit = _trendDataPack.first()->time;
+        unsigned endLimit = _trendDataPack.last()->time;
+        printWidget.printTimeRange(startLimit, endLimit);
+        printWidget.initPrintTime(_startTime, _endTime);
+        printWidget.exec();
     }
     //TEST
 //    IStorageBackend *backend = trendDataStorageManager.backend();
@@ -727,13 +731,5 @@ void TrendDataWidget::_getTrendData()
             }
         }
         _trendDataPack.append(pack);
-    }
-
-    // 打印时间的上下限
-    if (_trendDataPack.count() != 0)
-    {
-        unsigned startLimit = _trendDataPack.first()->time;
-        unsigned endLimit = _trendDataPack.last()->time;
-        trendPrintWidget.printTimeRange(startLimit, endLimit);
     }
 }
