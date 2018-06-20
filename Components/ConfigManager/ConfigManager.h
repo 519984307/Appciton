@@ -73,6 +73,17 @@ public:
      */
     QString runningConfigFilename(PatientType patType);
 
+    /**
+     * @brief getWidgetsPreStatus 获取控件的预备失能
+     * @return 1:预备失能
+     */
+    bool getWidgetsPreStatus()const;
+
+    /**
+     * @brief setWidgetStatus 设置控件状态 失能或使能
+     * @param status 1, 0
+     */
+    void setWidgetStatus(bool status);
 signals:
     /**
      * @brief configChange
@@ -87,6 +98,11 @@ signals:
      * @note 
      */
     void userDefineConfigChanged();
+
+    /**
+     * @brief configUpdated  发送配置更新信号
+     */
+    void configUpdated(void);
 
 private slots:
     void _onPatientTypeChange(PatientType type);

@@ -33,7 +33,7 @@ private slots:
     void _o2CompenReleased(QString strValue);
     void _n2oCompenReleased(QString strValue);
     void _zeroCalibReleased(void);
-    void _updateConfigSlot(void);
+    void _onConfigUpdated(void);
 
 private:
     CO2Menu();

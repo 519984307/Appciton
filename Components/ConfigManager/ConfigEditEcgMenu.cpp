@@ -4,6 +4,7 @@
 #include "ECGSymbol.h"
 #include "SoundManager.h"
 #include "LoadConfigMenu.h"
+#include "ConfigManager.h"
 //配置编辑ECG菜单私有类
 class ConfigEditEcgMenuPrivate {
 public:
@@ -206,15 +207,8 @@ ConfigEditEcgMenu::ConfigEditEcgMenu()
 {
     setDesc(trs("ECGMenuDesc"));
     startLayout();
-    connect(&loadConfigMenu, SIGNAL(disableWidgets()), this, SLOT(disableWidgets()));
 }
-void ConfigEditEcgMenu::disableWidgets()
-{
-    for(int i=0; i<ConfigEditEcgMenuPrivate::ComboListMax; i++)
-    {
-        d_ptr->combos[i]->setEnabled(false);
-    }
-}
+
 ConfigEditEcgMenu::~ConfigEditEcgMenu()
 {
 
@@ -247,6 +241,13 @@ void ConfigEditEcgMenu::layoutExec()
 void ConfigEditEcgMenu::readyShow()
 {
     d_ptr->loadOptions();
+
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    for(int i=0; i<ConfigEditEcgMenuPrivate::ComboListMax; i++)
+    {
+        d_ptr->combos[i]->setEnabled(preStatusBool);
+    }
 }
 
 void ConfigEditEcgMenu::onComboListConfigChanged(int index)

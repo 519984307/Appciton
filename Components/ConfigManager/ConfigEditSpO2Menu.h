@@ -29,10 +29,6 @@ private slots:
      * @param index  选择序列号
      */
     void onComboListConfigChanged(int index);
-    /**
-     * @brief disableWidgets 失能窗口
-     */
-    void disableWidgets(void);
 
 private:
     QScopedPointer<ConfigEditSpO2MenuPrivate> d_ptr;

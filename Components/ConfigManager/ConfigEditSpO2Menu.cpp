@@ -3,6 +3,7 @@
 #include "IComboList.h"
 #include "SPO2Symbol.h"
 #include "LoadConfigMenu.h"
+#include "ConfigManager.h"
 
 class ConfigEditSpO2MenuPrivate
 {
@@ -94,15 +95,6 @@ ConfigEditSpO2Menu::ConfigEditSpO2Menu()
 {
     setDesc(trs("SPO2MenuDesc"));
     startLayout();
-    connect(&loadConfigMenu, SIGNAL(disableWidgets()), this, SLOT(disableWidgets()));
-}
-
-void ConfigEditSpO2Menu::disableWidgets()
-{
-    for(int i =0; i<ConfigEditSpO2MenuPrivate::ComboListMax; i++)
-    {
-        d_ptr->combos[i]->setEnabled(false);
-    }
 }
 
 ConfigEditSpO2Menu::~ConfigEditSpO2Menu()
@@ -146,6 +138,14 @@ void ConfigEditSpO2Menu::layoutExec()
 void ConfigEditSpO2Menu::readyShow()
 {
     d_ptr->loadOptions();
+
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    for(int i =0; i<ConfigEditSpO2MenuPrivate::ComboListMax; i++)
+    {
+        d_ptr->combos[i]->setEnabled(preStatusBool);
+    }
+
 }
 
 

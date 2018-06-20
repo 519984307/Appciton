@@ -17,7 +17,6 @@ protected:
 private slots:
     void _limitChanged(QString, int);
     void _comboListIndexChanged(int id, int index);
-    void disableWidgets(void);
 private:
     QScopedPointer<ConfigEditAlarmLimitMenuPrivate> d_ptr;
 };

@@ -199,16 +199,8 @@ ConfigEditAlarmLimitMenu::ConfigEditAlarmLimitMenu()
     }
     //启动配置编辑报警限制页面显示
     startLayout();
+}
 
-    connect(&loadConfigMenu, SIGNAL(disableWidgets()), this, SLOT(disableWidgets()));
-}
-void ConfigEditAlarmLimitMenu::disableWidgets()
-{
-    for(int i=0; i<d_ptr->itemList.count(); i++)
-    {
-        d_ptr->itemList.at(i)->setEnabled(false);
-    }
-}
 //析构函数接口
 ConfigEditAlarmLimitMenu::~ConfigEditAlarmLimitMenu()
 {
@@ -310,6 +302,14 @@ void ConfigEditAlarmLimitMenu::layoutExec()
 void ConfigEditAlarmLimitMenu::readyShow()
 {
     d_ptr->loadOptions();
+
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    for(int i=0; i<d_ptr->itemList.count(); i++)
+    {
+        d_ptr->itemList.at(i)->setEnabled(preStatusBool);
+    }
+
 }
 
 //用于更改报警参数限制值的接口

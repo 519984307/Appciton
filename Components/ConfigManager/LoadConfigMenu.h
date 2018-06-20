@@ -23,8 +23,7 @@ public:
     bool eventFilter(QObject *obj, QEvent *ev);
 
 signals:
-    void disableWidgets(void);
-    void updateConfigSignal(void);
+    void configUpdated(void);
 protected:
     virtual void layoutExec(void);
     virtual void readyShow(void);

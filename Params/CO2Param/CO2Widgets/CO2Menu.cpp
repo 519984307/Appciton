@@ -9,6 +9,7 @@
 #include "LanguageManager.h"
 #include "MenuManager.h"
 #include "LoadConfigMenu.h"
+#include "ConfigManager.h"
 CO2Menu *CO2Menu::_selfObj = NULL;
 
 /**************************************************************************************************
@@ -79,7 +80,7 @@ void CO2Menu::_loadOptions(void)
     _fico2Display->setCurrentIndex(co2Param.getFICO2Display());
 }
 
-void CO2Menu::_updateConfigSlot()
+void CO2Menu::_onConfigUpdated()
 {
     readyShow();
 }
@@ -183,7 +184,7 @@ CO2Menu::CO2Menu() : SubMenu(trs("CO2Menu"))
 {
     setDesc(trs("CO2MenuDesc"));
     startLayout();
-    connect(&loadConfigMenu, SIGNAL(updateConfigSignal()), this, SLOT(_updateConfigSlot()));
+    connect(&configManager, SIGNAL(configUpdated()), this, SLOT(_onConfigUpdated()));
 }
 
 /**************************************************************************************************

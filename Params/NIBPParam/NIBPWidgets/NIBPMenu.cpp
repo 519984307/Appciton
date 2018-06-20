@@ -160,7 +160,7 @@ void NIBPMenu::_loadOptions(void)
 }
 
 
-void NIBPMenu::_updateConfigSlot()
+void NIBPMenu::_onConfigUpdated()
 {
     readyShow();
 }
@@ -249,7 +249,7 @@ NIBPMenu::NIBPMenu() : SubMenu(trs("NIBPMenu"))
 {
     setDesc(trs("NIBPMenuDesc"));
     startLayout();
-    connect(&loadConfigMenu, SIGNAL(updateConfigSignal()), this, SLOT(_updateConfigSlot()));
+    connect(&configManager, SIGNAL(configUpdated()), this, SLOT(_onConfigUpdated()));
 }
 
 /**************************************************************************************************

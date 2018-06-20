@@ -25,20 +25,8 @@ ConfigIBPMenu::ConfigIBPMenu() : SubMenu(trs("ConfigIBPMenu"))
 {
     setDesc(trs("ConfigIBPMenuDesc"));
     startLayout();
-    connect(&loadConfigMenu, SIGNAL(disableWidgets()), this, SLOT(disableWidgets()));
 }
 
-void ConfigIBPMenu::disableWidgets()
-{
-    _entitle1->setEnabled(false);
-    _entitle2->setEnabled(false);
-    _speed->setEnabled(false);
-    _filter->setEnabled(false);
-    _sensitivity->setEnabled(false);
-    _zeroCalib->setEnabled(false);
-    _calibration->setEnabled(false);
-    _zeroRev->setEnabled(false);
-}
 ConfigIBPMenu::~ConfigIBPMenu()
 {
 
@@ -68,7 +56,19 @@ void ConfigIBPMenu::comboListChangeIBP2(IBPPressureName name)
 }
 
 
-void ConfigIBPMenu::readyShow() { }
+void ConfigIBPMenu::readyShow()
+{
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    _entitle1->setEnabled(preStatusBool);
+    _entitle2->setEnabled(preStatusBool);
+    _speed->setEnabled(preStatusBool);
+    _filter->setEnabled(preStatusBool);
+    _sensitivity->setEnabled(preStatusBool);
+    _zeroCalib->setEnabled(preStatusBool);
+    _calibration->setEnabled(preStatusBool);
+    _zeroRev->setEnabled(preStatusBool);
+}
 
 void ConfigIBPMenu::readyhide() { }
 

@@ -286,7 +286,7 @@ void AlarmLimitMenu::setIBPAlarmItem(IBPPressureName ibp1, IBPPressureName ibp2)
     }
 }
 
-void AlarmLimitMenu::_updateConfigSlot()
+void AlarmLimitMenu::_onConfigUpdated()
 {
     readyShow();
 }
@@ -533,7 +533,7 @@ AlarmLimitMenu::AlarmLimitMenu() : SubMenu(trs("AlarmLimitMenu"))
 
     checkAlarmEnableStatus();
 
-    connect(&loadConfigMenu, SIGNAL(updateConfigSignal()), this, SLOT(_updateConfigSlot()));
+    connect(&configManager, SIGNAL(configUpdated()), this, SLOT(_onConfigUpdated()));
 }
 
 /**************************************************************************************************

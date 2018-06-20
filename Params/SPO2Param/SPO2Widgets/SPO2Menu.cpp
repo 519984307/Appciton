@@ -35,7 +35,7 @@ void SPO2Menu::readyShow(void)
     _smartPulseTone->setCurrentIndex(spo2Param.getSmartPulseTone());
 }
 
-void SPO2Menu::_updateConfigSlot()
+void SPO2Menu::_onConfigUpdated()
 {
     readyShow();
 }
@@ -86,7 +86,7 @@ SPO2Menu::SPO2Menu() : SubMenu(trs("SPO2Menu"))
 {
     setDesc(trs("SPO2MenuDesc"));
     startLayout();
-    connect(&loadConfigMenu, SIGNAL(updateConfigSignal()), this, SLOT(_updateConfigSlot()));
+    connect(&configManager, SIGNAL(configUpdated()), this, SLOT(_onConfigUpdated()));
 }
 
 /**************************************************************************************************

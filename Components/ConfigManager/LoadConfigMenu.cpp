@@ -100,6 +100,8 @@ LoadConfigMenu::LoadConfigMenu()
 {
     setDesc(trs("LoadConfigDesc"));/*更改标题栏标题*/
     startLayout();/*布局*/
+
+    connect(&configManager, SIGNAL(configUpdated()), this, SIGNAL(configUpdated()));
 }
 
 LoadConfigMenu::~LoadConfigMenu()
@@ -278,7 +280,7 @@ void LoadConfigMenu::onBtnClick()
         patientManager.setType((PatientType)patitentTypeInt);
 
         //发送更新加载配置信号
-        emit updateConfigSignal();
+        emit configUpdated();
     }
     else if (btn == d_ptr->viewBtn)//查看配置
     {
@@ -291,9 +293,10 @@ void LoadConfigMenu::onBtnClick()
                                           .arg(d_ptr->configs.at(index).fileName));
             configEditMenuGrp.setCurrentEditConfigName(d_ptr->configs.at(index).name);
             configEditMenuGrp.setCurrentEditConfig(d_ptr->curConfig);
+            configManager.setWidgetStatus(true);
             configEditMenuGrp.initializeSubMenu();
             configEditMenuGrp.popup();
-            emit disableWidgets();
+
         }
     }
     else

@@ -21,18 +21,8 @@ ConfigEditDisplayMenu::ConfigEditDisplayMenu() : SubMenu(trs("ConfigEditDisplayM
     _colorList = color.split(',', QString::KeepEmptyParts);
 
     startLayout();
+}
 
-    connect(&loadConfigMenu, SIGNAL(disableWidgets()), this, SLOT(disableWidgets()));
-}
-void ConfigEditDisplayMenu::disableWidgets()
-{
-    _ecgColor->setEnabled(false);
-    _spo2Color->setEnabled(false);
-    _nibpColor->setEnabled(false);
-    _co2Color->setEnabled(false);
-    _respColor->setEnabled(false);
-    _tempColor->setEnabled(false);
-}
 /**************************************************************************************************
  * 显示。
  *************************************************************************************************/
@@ -56,6 +46,15 @@ void ConfigEditDisplayMenu::readyShow()
 
     currentConfig.getStrValue("Display|TEMPColor", color);
     _tempColor->setCurrentIndex(_colorList.indexOf(color));
+
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    _ecgColor->setEnabled(preStatusBool);
+    _spo2Color->setEnabled(preStatusBool);
+    _nibpColor->setEnabled(preStatusBool);
+    _co2Color->setEnabled(preStatusBool);
+    _respColor->setEnabled(preStatusBool);
+    _tempColor->setEnabled(preStatusBool);
 }
 
 /**************************************************************************************************

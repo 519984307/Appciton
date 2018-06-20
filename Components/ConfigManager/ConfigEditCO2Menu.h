@@ -61,10 +61,6 @@ private slots:
      * @param strValue 补偿值的字符串形式
      */
     void _n2oCompenReleased(QString strValue);
-    /**
-     * @brief disableWidgets  失能窗口
-     */
-    void disableWidgets(void);
 
 private:
     /**

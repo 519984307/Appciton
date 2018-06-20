@@ -30,7 +30,7 @@ private slots:
     void _zoomSlot(int index);
     void _calcLeadChange(int index);
     void _monitorSlot(int index);
-    void _updateConfigSlot(void);
+    void _onConfigUpdated(void);
 
 private:
     RESPMenu();

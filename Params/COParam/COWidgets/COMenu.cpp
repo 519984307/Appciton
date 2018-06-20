@@ -13,6 +13,7 @@
 #include "NumberInput.h"
 #include "COParam.h"
 #include "LoadConfigMenu.h"
+#include "ConfigManager.h"
 
 COMenu *COMenu::_selfObj = NULL;
 
@@ -23,7 +24,7 @@ COMenu::COMenu() : SubMenu(trs("COMenu")), _measureSta(CO_INST_START)
 {
     setDesc(trs("COMenuDesc"));
     startLayout();
-    connect(&loadConfigMenu, SIGNAL(updateConfigSignal()), this, SLOT(_updateConfigSlot()));
+    connect(&configManager, SIGNAL(configUpdated()), this, SLOT(_onConfigUpdated()));
 }
 
 /**************************************************************************************************
@@ -214,7 +215,7 @@ void COMenu::_injectionVolumnReleased()
     }
 }
 
-void COMenu::_updateConfigSlot()
+void COMenu::_onConfigUpdated()
 {
     ;
 }

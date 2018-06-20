@@ -94,7 +94,7 @@ protected:
 private slots:
     void _limitChange(QString, int);
     void _comboListIndexChanged(int id, int index);
-    void _updateConfigSlot(void);
+    void _onConfigUpdated(void);
 private:
     AlarmLimitMenu();
 

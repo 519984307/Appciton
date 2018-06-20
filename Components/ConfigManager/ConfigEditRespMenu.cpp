@@ -3,6 +3,7 @@
 #include "IComboList.h"
 #include "RESPSymbol.h"
 #include "LoadConfigMenu.h"
+#include "ConfigManager.h"
 class ConfigEditRespMenuPrivate
 {
 public:
@@ -86,15 +87,8 @@ ConfigEditRespMenu::ConfigEditRespMenu()
 {
     setDesc(trs("RespMenuDesc"));
     startLayout();
-    connect(&loadConfigMenu, SIGNAL(disableWidgets()), this, SLOT(disableWidgets()));
 }
-void ConfigEditRespMenu::disableWidgets()
-{
-    for(int i =0; i<ConfigEditRespMenuPrivate::ComboListMax; i++)
-    {
-        d_ptr->combos[i]->setEnabled(false);
-    }
-}
+
 ConfigEditRespMenu::~ConfigEditRespMenu()
 {
 
@@ -129,6 +123,14 @@ void ConfigEditRespMenu::layoutExec()
 void ConfigEditRespMenu::readyShow()
 {
     d_ptr->loadOptions();
+
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    for(int i =0; i<ConfigEditRespMenuPrivate::ComboListMax; i++)
+    {
+        d_ptr->combos[i]->setEnabled(preStatusBool);
+    }
+
 }
 
 void ConfigEditRespMenu::onComboListConfigChanged(int index)

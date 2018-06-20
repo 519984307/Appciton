@@ -40,7 +40,7 @@ private slots:
     void _12LpaceMakerSlot(int index);
     void _sweepSpeedSlot(int index);
     void _qrsVolumSlot(int index);
-    void _updateConfigSlot();
+    void _onConfigUpdated();
 
 private:
     ECGMenu();

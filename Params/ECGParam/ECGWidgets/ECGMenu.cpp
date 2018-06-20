@@ -126,7 +126,7 @@ void ECGMenu::_loadOptionsInSlot(void)
 }
 
 
-void ECGMenu::_updateConfigSlot()
+void ECGMenu::_onConfigUpdated()
 {
     readyShow();
 }
@@ -286,7 +286,7 @@ ECGMenu::ECGMenu() : SubMenu(trs("ECGMenu")),
 
     startLayout();
 
-    connect(&loadConfigMenu, SIGNAL(updateConfigSignal()), this, SLOT(_updateConfigSlot()));
+    connect(&configManager, SIGNAL(configUpdated()), this, SLOT(_onConfigUpdated()));
 }
 
 /**************************************************************************************************

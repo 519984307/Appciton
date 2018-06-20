@@ -45,7 +45,7 @@ private slots:
     void _speedIcombSlot(int index);
     void _isEnableAGComboSlot(int index);
     void _lBtonSlot(void);
-    void _updateConfigSlot(void);
+    void _onConfigUpdated(void);
 
 private:
     AGMenu();

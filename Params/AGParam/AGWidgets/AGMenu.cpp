@@ -40,7 +40,7 @@ void AGMenu::_loadOptions()
 
 }
 
-void AGMenu::_updateConfigSlot()
+void AGMenu::_onConfigUpdated()
 {
     readyShow();
 }
@@ -153,5 +153,5 @@ AGMenu::AGMenu() : SubMenu(trs("AGMenu"))
 {
     setDesc(trs("AGMenuDesc"));
     startLayout();
-    connect(&loadConfigMenu, SIGNAL(updateConfigSignal()), this, SLOT(_updateConfigSlot()));
+    connect(&configManager, SIGNAL(configUpdated()), this, SLOT(_onConfigUpdated()));
 }

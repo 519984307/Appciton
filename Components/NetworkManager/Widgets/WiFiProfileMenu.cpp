@@ -35,7 +35,7 @@ public:
     void onProfileSelect(int index);
     void onWifiConnected(const QString &ssid);
     void updateWifiProfileSlot(bool isEnabled);
-    void updateConfigSlot(void);
+    void onConfigUpdated(void);
     WiFiProfileMenu * const q_ptr;
     IComboList *comboProfileList;
     LabelButton *selectApBtn;
@@ -70,7 +70,7 @@ void WiFiProfileMenuPrivate::updateWifiProfileSlot(bool isEnabled)
     }
 }
 
-void WiFiProfileMenuPrivate::updateConfigSlot()
+void WiFiProfileMenuPrivate::onConfigUpdated()
 {
    loadProfiles();
 }
@@ -348,7 +348,7 @@ WiFiProfileMenu::WiFiProfileMenu()
     connect(this, SIGNAL(selectProfile(WiFiProfileInfo)), &networkManager, SLOT(connectWiFiProfile(WiFiProfileInfo)), Qt::QueuedConnection);
     connect(&networkManager, SIGNAL(wifiConnectToAp(QString)), this, SLOT(onWifiConnected(QString)), Qt::QueuedConnection);
     connect(&wifiMaintainMenu, SIGNAL(updateWifiProfileSignal(bool)), this, SLOT(updateWifiProfileSlot(bool)));
-    connect(&loadConfigMenu, SIGNAL(updateConfigSignal()), this, SLOT(d->updateConfigSlot()));
+    connect(&configManager, SIGNAL(configUpdated()), this, SLOT(d->onConfigUpdated()));
 }
 
 #include "moc_WiFiProfileMenu.cpp"

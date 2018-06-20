@@ -56,7 +56,6 @@ private slots:
     void _sensitivitySlot(int index);
     void _zeroCalibReleased(void);
     void _calibrationReleased(void);
-    void disableWidgets();
 
 private:
     IComboList *_entitle1;                  // 通道１标名设置。

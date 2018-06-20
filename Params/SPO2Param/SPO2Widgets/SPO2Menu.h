@@ -28,7 +28,7 @@ protected:
 private slots:
     void _sensitivitySlot(int index);
     void _smartPulseToneSlot(int index);
-    void _updateConfigSlot();
+    void _onConfigUpdated();
 
 private:
     SPO2Menu();

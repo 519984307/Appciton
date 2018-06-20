@@ -295,8 +295,10 @@ void PasswordMenuManage::_okBtnSlot(int /*index*/)
         case 'G'://通用配置管理
             if (_passwordStr == _normalPassword)
             {
+                configManager.setWidgetStatus(false);
                 configMaintainMenuGrp.initializeSubMenu();
                 configMaintainMenuGrp.popup();
+
                 return;
             }
             break;

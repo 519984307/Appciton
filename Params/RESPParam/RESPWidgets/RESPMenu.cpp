@@ -7,6 +7,7 @@
 #include <QVBoxLayout>
 #include "MenuManager.h"
 #include "LoadConfigMenu.h"
+#include "ConfigManager.h"
 
 RESPMenu *RESPMenu::_selfObj = NULL;
 
@@ -72,7 +73,7 @@ void RESPMenu::_loadOptions(void)
     _monitor->setCurrentIndex(respParam.getRespMonitoring());
 }
 
-void RESPMenu::_updateConfigSlot()
+void RESPMenu::_onConfigUpdated()
 {
     readyShow();
 }
@@ -165,7 +166,7 @@ RESPMenu::RESPMenu() : SubMenu(trs("RESPMenu"))
 {
     setDesc(trs("RESPMenuDesc"));
     startLayout();
-    connect(&loadConfigMenu, SIGNAL(updateConfigSignal()), this, SLOT(_updateConfigSlot()));
+    connect(&configManager, SIGNAL(configUpdated()), this, SLOT(_onConfigUpdated()));
 }
 
 /**************************************************************************************************

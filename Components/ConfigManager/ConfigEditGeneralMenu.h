@@ -16,7 +16,6 @@ protected:
 
 private slots:
     void editConfigName();
-    void disableWidgets(void);
 
 private:
     QScopedPointer<ConfigEditGeneralMenuPrivate> d_ptr;
