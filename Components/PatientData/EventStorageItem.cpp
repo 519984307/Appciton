@@ -465,7 +465,7 @@ int EventStorageItem::getTotalWaveCacheDuration() const
 
 TrendDataPackage EventStorageItem::getTrendData() const
 {
-
+    return parseTrendSegment(d_ptr->trendSegments.at(0));
 }
 
 void EventStorageItem::setWaitForTriggerPrintFlag(bool flag)

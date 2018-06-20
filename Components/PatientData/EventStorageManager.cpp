@@ -16,6 +16,8 @@
 #include "COSymbol.h"
 #include "IBPSymbol.h"
 #include "AGSymbol.h"
+#include "RecorderManager.h"
+#include "TriggerPageGenerator.h"
 
 #define MAX_STORE_WAVE_NUM 3
 
@@ -126,6 +128,13 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
                                                   d->getStoreWaveList(paramWave),
                                                   almInfo);
     item->startCollectTrendAndWaveformData();
+
+    //TODO: check whether support trigger print
+    if(recorderManager.addPageGenerator(new TriggerPageGenerator(item)))
+    {
+        item->setWaitForTriggerPrintFlag(true);
+    }
+
     if(item)
     {
         d->mutex.lock();

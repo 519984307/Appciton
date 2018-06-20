@@ -5,7 +5,7 @@ class TriggerPageGeneratorPrivate
 {
 public:
     TriggerPageGeneratorPrivate(EventStorageItem *item)
-        :curPageType(RecordPageGenerator::TrendGraphPage),
+        :curPageType(RecordPageGenerator::TrendPage),
           item(item),
           curDrawWaveSegment(0)
     {
