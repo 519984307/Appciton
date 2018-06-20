@@ -488,7 +488,7 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
     }
 }
 
-TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, int startIndex, int stopIndex, QObject *parent)
+TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, int startIndex, int stopIndex, ResolutionRatio interval, QObject *parent)
     :RecordPageGenerator(parent), d_ptr(new TrendTablePageGeneratorPrivate)
 {
     if(startIndex < stopIndex)
