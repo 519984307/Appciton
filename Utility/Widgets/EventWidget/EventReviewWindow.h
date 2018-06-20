@@ -2,6 +2,7 @@
 #include "PopupWidget.h"
 #include <QScopedPointer>
 #include <QStackedLayout>
+#include <QModelIndex>
 #include "EventDataDefine.h"
 #include "Alarm.h"
 
@@ -34,7 +35,7 @@ protected:
     void showEvent(QShowEvent *e);
 
 private slots:
-    void _waveInfoReleased(void);
+    void _waveInfoReleased(QModelIndex index);
     void _eventListReleased(void);
     void _upMoveEventReleased(void);
     void _downMoveEventReleased(void);
