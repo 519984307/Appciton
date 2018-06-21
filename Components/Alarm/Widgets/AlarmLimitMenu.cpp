@@ -288,6 +288,7 @@ void AlarmLimitMenu::setIBPAlarmItem(IBPPressureName ibp1, IBPPressureName ibp2)
 
 void AlarmLimitMenu::_onConfigUpdated()
 {
+    alarmConfig.alarmConfigClear();
     readyShow();
 }
 /**************************************************************************************************

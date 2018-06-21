@@ -15,6 +15,7 @@
 #include "SystemManager.h"
 #include "MenuWidget.h"
 #include "IConfig.h"
+#include "IMessageBox.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -108,8 +109,6 @@ LoadConfigMenu::LoadConfigMenu()
 {
     setDesc(trs("LoadConfigDesc"));/*更改标题栏标题*/
     startLayout();/*布局*/
-
-    connect(&configManager, SIGNAL(configUpdated()), this, SIGNAL(configUpdated()));
 }
 
 LoadConfigMenu::~LoadConfigMenu()
@@ -285,8 +284,18 @@ void LoadConfigMenu::onBtnClick()
         systemConfig.setNumValue("General|PatientType", patitentTypeInt);
         systemConfig.updateCurConfigName();
         patientManager.setType((PatientType)patitentTypeInt);
+       // currentConfig.reload();
         //发送更新加载配置信号
         emit configUpdated();
+
+        d_ptr->lastSelectItem->setIcon(QIcon());
+        d_ptr->lastSelectItem = NULL;
+
+        IMessageBox iMessageBox(trs("LoadConfig"), trs("LoadConfigSuccess"), false);
+        int subWidth = menuManager.getSubmenuWidth();
+        int subHeight = menuManager.getSubmenuHeight();
+        iMessageBox.setFixedSize(subWidth/2, subHeight/3);
+        iMessageBox.exec();
     }
     else if (btn == d_ptr->viewBtn)//查看配置
     {

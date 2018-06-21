@@ -510,6 +510,7 @@ static void _initPrint(void)
  *************************************************************************************************/
 static void _initMenu(void)
 {
+    loadConfigMenu.construction();
     menuManager.construction();
     publicMenuManager.construction();
     publicMenuManager.addSubMenu(&ecgMenu);
@@ -551,7 +552,6 @@ static void _initMenu(void)
     userMaintainEntrance.construction();
     factoryMaintainEntrance.construction();
     configManagerEntrance.construction();
-    loadConfigMenu.construction();
 
     publicMenuManager.addSubMenu(&loadConfigMenu);
     publicMenuManager.addSubMenu(&configManagerEntrance);

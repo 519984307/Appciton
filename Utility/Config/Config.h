@@ -266,6 +266,9 @@ public:
     // 加载指定文件的内容。
     bool load(const QString &configPath);
 
+    // 重新加载文件的内容。
+    void reload(){_xmlParser.reload();}
+
     //获取保存状态
     bool getSaveStatus() {return _requestToSave;}
 
