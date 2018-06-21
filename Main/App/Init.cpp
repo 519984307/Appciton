@@ -511,6 +511,7 @@ static void _initPrint(void)
 static void _initMenu(void)
 {
     loadConfigMenu.construction();
+    configManager.getInstance();
     menuManager.construction();
     publicMenuManager.construction();
     publicMenuManager.addSubMenu(&ecgMenu);
