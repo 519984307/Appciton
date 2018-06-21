@@ -41,6 +41,8 @@ public:
 
     void run();
 
+    bool getEventTriggerFlag(void);
+
     /**
      * @brief getPhyAlarmMessage get the alarm message
      * @param paramId param id
@@ -53,6 +55,7 @@ public:
 private:
     Q_DECLARE_PRIVATE(EventStorageManager)
     EventStorageManager();
+    bool _eventTriggerFlag;
 };
 
 #define eventStorageManager (EventStorageManager::getInstance())
