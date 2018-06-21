@@ -92,6 +92,14 @@ void LoadConfigMenuPrivate::updateConfigList()
     {
         configList->setFocusPolicy(Qt::NoFocus);
     }
+
+    if(lastSelectItem)
+    {
+        lastSelectItem->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
+    }
+    loadBtn->setEnabled(!!lastSelectItem);
+    viewBtn->setEnabled(!!lastSelectItem);
+
 }
 
 
@@ -191,8 +199,6 @@ void LoadConfigMenu::layoutExec()
     connect(d_ptr->viewBtn, SIGNAL(realReleased()), this, SLOT(onBtnClick()));
 
     mainLayout->addLayout(hlayout);
-
-
 }
 
 void LoadConfigMenu::readyShow()
@@ -235,7 +241,8 @@ void LoadConfigMenu::onConfigClick()
     {
         d_ptr->lastSelectItem = NULL;
     }
-
+    d_ptr->loadBtn->setEnabled(!!d_ptr->lastSelectItem);
+    d_ptr->viewBtn->setEnabled(!!d_ptr->lastSelectItem);
 }
 
 void LoadConfigMenu::onBtnClick()
@@ -278,7 +285,6 @@ void LoadConfigMenu::onBtnClick()
         systemConfig.setNumValue("General|PatientType", patitentTypeInt);
         systemConfig.updateCurConfigName();
         patientManager.setType((PatientType)patitentTypeInt);
-
         //发送更新加载配置信号
         emit configUpdated();
     }
@@ -296,6 +302,7 @@ void LoadConfigMenu::onBtnClick()
             configManager.setWidgetStatus(true);
             configEditMenuGrp.initializeSubMenu();
             configEditMenuGrp.popup();
+            d_ptr->lastSelectItem = NULL;
 
         }
     }
