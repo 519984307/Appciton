@@ -12,6 +12,14 @@
 #include "ParamManager.h"
 #include "EventDataDefine.h"
 #include "EventStorageManager.h"
+#include "SPO2Symbol.h"
+#include "RESPSymbol.h"
+#include "CO2Symbol.h"
+#include "IBPSymbol.h"
+#include "COSymbol.h"
+#include "AGSymbol.h"
+#include "TEMPSymbol.h"
+#include "NIBPSymbol.h"
 
 #define ALARM_LIMIT_TIMES (3)   //超限3次后，发生报警
 static int curSecondAlarmNum = 0; //record the number of alarms happend in the save seconds
@@ -785,4 +793,124 @@ Alarm::~Alarm()
     }
     _oneshotSources.clear();
     _alarmStatusList.clear();
+}
+
+QString Alarm::getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot)
+{
+    switch(paramId)
+    {
+    case PARAM_ECG:
+        if(isOneShot)
+        {
+            return ECGSymbol::convert((ECGOneShotType)alarmType, ecgParam.getLeadConvention());
+        }
+        else
+        {
+            //no limit alarm
+        }
+        break;
+    case PARAM_DUP_ECG:
+        if(isOneShot)
+        {
+            //no oneshot alarm
+        }
+        else
+        {
+            return ECGSymbol::convert((ECGDupLimitAlarmType)alarmType);
+        }
+        break;
+    case PARAM_SPO2:
+        if(isOneShot)
+        {
+            return SPO2Symbol::convert((SPO2OneShotType)alarmType);
+        }
+        else
+        {
+            return SPO2Symbol::convert((SPO2LimitAlarmType)alarmType);
+        }
+        break;
+    case PARAM_RESP:
+        if(isOneShot)
+        {
+            return RESPSymbol::convert((RESPOneShotType)alarmType);
+        }
+        else
+        {
+            //no limit alarm
+        }
+        break;
+    case PARAM_DUP_RESP:
+        if(isOneShot)
+        {
+            //no oneshot alarm
+        }
+        else
+        {
+            return RESPSymbol::convert((RESPDupLimitAlarmType)alarmType);
+        }
+        break;
+    case PARAM_NIBP:
+        if(isOneShot)
+        {
+            return NIBPSymbol::convert((NIBPOneShotType)alarmType);
+        }
+        else
+        {
+            return NIBPSymbol::convert((NIBPLimitAlarmType)alarmType);
+        }
+        break;
+    case PARAM_CO2:
+        if(isOneShot)
+        {
+            return CO2Symbol::convert((CO2OneShotType)alarmType);
+        }
+        else
+        {
+            return CO2Symbol::convert((CO2LimitAlarmType)alarmType);
+        }
+        break;
+    case PARAM_TEMP:
+        if(isOneShot)
+        {
+            return TEMPSymbol::convert((TEMPOneShotType)alarmType);
+        }
+        else
+        {
+            return TEMPSymbol::convert((TEMPLimitAlarmType)alarmType);
+        }
+        break;
+    case PARAM_CO:
+        if (isOneShot)
+        {
+            return COSymbol::convert((COOneShotType)alarmType);
+        }
+        else
+        {
+            return COSymbol::convert((COLimitAlarmType)alarmType);
+        }
+        break;
+    case PARAM_IBP:
+        if (isOneShot)
+        {
+            return IBPSymbol::convert((IBPOneShotType)alarmType);
+        }
+        else
+        {
+            return IBPSymbol::convert((IBPLimitAlarmType)alarmType);
+        }
+        break;
+    case PARAM_AG:
+        if (isOneShot)
+        {
+            return AGSymbol::convert((AGOneShotType)alarmType);
+        }
+        else
+        {
+            return AGSymbol::convert((AGLimitAlarmType)alarmType);
+        }
+        break;
+    default:
+        break;
+    }
+    return "";
 }

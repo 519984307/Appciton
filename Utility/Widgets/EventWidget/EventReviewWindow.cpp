@@ -875,7 +875,7 @@ void EventReviewWindow::_loadEventData()
                     infoStr += IBPSymbol::convert(ibpParam.getPressureName(subId));
                     infoStr += " ";
                 }
-                infoStr += trs(eventStorageManager.getPhyAlarmMessage(paramId,
+                infoStr += trs(Alarm::getPhyAlarmMessage(paramId,
                                                                       alarmId,
                                                                       alarmInfo & 0x1));
 

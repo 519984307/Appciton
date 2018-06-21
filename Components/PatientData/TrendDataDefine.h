@@ -196,3 +196,6 @@ struct TrendSubWidgetInfo
     int yTop;
     int yBottom;
 };
+
+/* parse the trend data segment */
+TrendDataPackage parseTrendSegment(const TrendDataSegment *dataSegment);

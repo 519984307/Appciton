@@ -1,6 +1,5 @@
 #include "TrendTablePageGenerator.h"
 #include "PatientManager.h"
-#include "TrendDataStorageManager.h"
 #include <QList>
 #include <QByteArray>
 #include "ParamManager.h"
@@ -77,7 +76,7 @@ bool TrendTablePageGeneratorPrivate::loadStringList()
             continue;
         }
 
-        TrendDataPackage dataPackage = TrendDataStorageManager::parseTrendSegment(dataSeg);
+        TrendDataPackage dataPackage = parseTrendSegment(dataSeg);
 
         if(printSubParams.isEmpty())
         {
