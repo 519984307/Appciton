@@ -17,7 +17,8 @@
 #include "Config.h"
 #include "ConfigEditMenuGrp.h"
 #include "ConfigEditAlarmLimitMenu.h"
-
+#include "LoadConfigMenu.h"
+#include "ConfigManager.h"
 ConfigCOMenu *ConfigCOMenu::_selfObj = NULL;
 
 ConfigCOMenu::ConfigCOMenu() : SubMenu(trs("C.O.")),
@@ -29,6 +30,17 @@ ConfigCOMenu::ConfigCOMenu() : SubMenu(trs("C.O.")),
 {
     setDesc(trs("C.O.Desc"));
     startLayout();
+}
+
+void ConfigCOMenu::readyShow()
+{
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    _ductRatio->setEnabled(preStatusBool);
+    _inputMode->setEnabled(preStatusBool);
+    _injectionTemp->setEnabled(preStatusBool);
+    _injectionVolumn->setEnabled(preStatusBool);
+    _measureMode->setEnabled(preStatusBool);
 }
 
 ConfigCOMenu::~ConfigCOMenu()

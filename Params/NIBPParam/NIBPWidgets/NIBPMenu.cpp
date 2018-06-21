@@ -9,6 +9,7 @@
 #include "IConfig.h"
 #include "AlarmLimitMenu.h"
 #include "PublicMenuManager.h"
+#include "LoadConfigMenu.h"
 
 NIBPMenu *NIBPMenu::_selfObj = NULL;
 
@@ -160,6 +161,11 @@ void NIBPMenu::_loadOptions(void)
     statBtnShow();
 }
 
+
+void NIBPMenu::_onConfigUpdated()
+{
+    readyShow();
+}
 /**************************************************************************************************
  * 显示前确定配置。
  *************************************************************************************************/
@@ -259,6 +265,7 @@ NIBPMenu::NIBPMenu() : SubMenu(trs("NIBPMenu"))
 {
     setDesc(trs("NIBPMenuDesc"));
     startLayout();
+    connect(&configManager, SIGNAL(configUpdated()), this, SLOT(_onConfigUpdated()));
 }
 
 /**************************************************************************************************

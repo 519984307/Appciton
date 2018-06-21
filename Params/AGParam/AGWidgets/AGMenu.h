@@ -46,6 +46,7 @@ private slots:
     void _isEnableAGComboSlot(int index);
     void _lBtonSlot(void);
     void _alarmLbtnSlot(void);
+    void _onConfigUpdated(void);
 
 private:
     AGMenu();

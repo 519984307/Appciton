@@ -14,6 +14,8 @@
 #include "COParam.h"
 #include "AlarmLimitMenu.h"
 #include "PublicMenuManager.h"
+#include "LoadConfigMenu.h"
+#include "ConfigManager.h"
 
 COMenu *COMenu::_selfObj = NULL;
 
@@ -24,6 +26,7 @@ COMenu::COMenu() : SubMenu(trs("COMenu")), _measureSta(CO_INST_START)
 {
     setDesc(trs("COMenuDesc"));
     startLayout();
+    connect(&configManager, SIGNAL(configUpdated()), this, SLOT(_onConfigUpdated()));
 }
 
 /**************************************************************************************************
@@ -221,6 +224,10 @@ void COMenu::_injectionVolumnReleased()
     }
 }
 
+void COMenu::_onConfigUpdated()
+{
+    ;
+}
 /**************************************************************************************************
  * 开始测量槽函数。
  *************************************************************************************************/

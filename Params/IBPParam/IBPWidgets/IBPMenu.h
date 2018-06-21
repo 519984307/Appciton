@@ -51,6 +51,7 @@ private slots:
     void _zeroCalibReleased(void);
     void _calibrationReleased(void);
     void _alarmLbtnSlot(void);
+    void _onConfigUpdated(void);
 
 private:    
     IBPMenu();

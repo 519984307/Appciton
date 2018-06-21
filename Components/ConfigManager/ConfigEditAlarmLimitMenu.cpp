@@ -3,6 +3,7 @@
 #include "AlarmLimitMenu.h"
 #include "IConfig.h"
 #include "PatientDefine.h"
+#include "LoadConfigMenu.h"
 //创建配置告警参数的私有类
 //方便管理，层次分明
 class ConfigEditAlarmLimitMenuPrivate
@@ -344,9 +345,19 @@ void ConfigEditAlarmLimitMenu::layoutExec()
 void ConfigEditAlarmLimitMenu::readyShow()
 {
     d_ptr->loadOptions();
-    d_ptr->itemList.at(getFocusIndex())->combo->setFocus();
-    focusPreviousChild();
-    focusNextChild();
+
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    for(int i=0; i<d_ptr->itemList.count(); i++)
+    {
+        d_ptr->itemList.at(i)->setEnabled(preStatusBool);
+    }
+    if(preStatusBool)
+    {
+        d_ptr->itemList.at(getFocusIndex())->combo->setFocus();
+        focusPreviousChild();
+        focusNextChild();
+    }
 }
 
 //用于更改报警参数限制值的接口

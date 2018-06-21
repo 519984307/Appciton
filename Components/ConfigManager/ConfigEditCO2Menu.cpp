@@ -11,7 +11,8 @@
 #include "ConfigEditMenuGrp.h"
 #include "Config.h"
 #include "ConfigEditAlarmLimitMenu.h"
-
+#include "LoadConfigMenu.h"
+#include "ConfigManager.h"
 ConfigCO2Menu *ConfigCO2Menu::_selfObj = NULL;
 
 void ConfigCO2Menu::_speedSlot(int index)
@@ -59,6 +60,13 @@ void ConfigCO2Menu::_loadOptions(void)
 void ConfigCO2Menu::readyShow(void)
 {
     _loadOptions();
+
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    _speed->setEnabled(preStatusBool);
+    _fico2Display->setEnabled(preStatusBool);
+    _o2Compen->setEnabled(preStatusBool);
+    _n2oCompen->setEnabled(preStatusBool);
 }
 
 void ConfigCO2Menu::layoutExec(void)

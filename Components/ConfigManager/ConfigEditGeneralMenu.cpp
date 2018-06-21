@@ -2,6 +2,8 @@
 #include "ConfigEditMenuGrp.h"
 #include "LabelButton.h"
 #include "KeyBoardPanel.h"
+#include "LoadConfigMenu.h"
+#include "ConfigManager.h"
 
 
 #define MAX_CONFIG_NAME_LEN 64
@@ -41,13 +43,17 @@ void ConfigEditGeneralMenu::layoutExec()
     //d_ptr->configName->setValue(trs("confignametest"));
     d_ptr->configName->label->setFixedSize(labelWidth, ITEM_H);
     d_ptr->configName->button->setFixedSize(btnWidth, ITEM_H);
-    connect(d_ptr->configName->button, SIGNAL(released()), this, SLOT(editConfigName()));
+    connect(d_ptr->configName->button, SIGNAL(released(int)), this, SLOT(editConfigName()));
     mainLayout->addWidget(d_ptr->configName);
 }
 
 void ConfigEditGeneralMenu::readyShow()
 {
     d_ptr->configName->button->setText(configEditMenuGrp.getCurrentEditConfigName());
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    d_ptr->configName->setEnabled(preStatusBool);
+
 }
 
 void ConfigEditGeneralMenu::editConfigName()

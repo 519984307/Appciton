@@ -5,7 +5,8 @@
 #include "LabelButton.h"
 #include "MenuGroup.h"
 #include "ConfigEditAlarmLimitMenu.h"
-
+#include "LoadConfigMenu.h"
+#include "ConfigManager.h"
 class ConfigEditNIBPMenuPrivate
 {
 public:
@@ -133,6 +134,13 @@ void ConfigEditNIBPMenu::_alarmLbtnSlot()
 void ConfigEditNIBPMenu::readyShow()
 {
     d_ptr->loadOptions();
+
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    for(int i=0; i<ConfigEditNIBPMenuPrivate::ComboListMax; i++)
+    {
+        d_ptr->combos[i]->setEnabled(preStatusBool);
+    }
 }
 
 void ConfigEditNIBPMenu::onComboListConfigChanged(int index)

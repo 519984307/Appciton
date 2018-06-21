@@ -128,6 +128,11 @@ void ECGMenu::_loadOptionsInSlot(void)
     _loadOptions();
 }
 
+
+void ECGMenu::_onConfigUpdated()
+{
+    readyShow();
+}
 /**************************************************************************************************
  * 载入当前配置。
  *************************************************************************************************/
@@ -297,6 +302,8 @@ ECGMenu::ECGMenu() : SubMenu(trs("ECGMenu")),
     setDesc(trs("ECGMenuDesc"));
 
     startLayout();
+
+    connect(&configManager, SIGNAL(configUpdated()), this, SLOT(_onConfigUpdated()));
 }
 
 /**************************************************************************************************

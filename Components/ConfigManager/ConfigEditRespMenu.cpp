@@ -4,7 +4,8 @@
 #include "RESPSymbol.h"
 #include "ConfigEditAlarmLimitMenu.h"
 #include "LabelButton.h"
-
+#include "LoadConfigMenu.h"
+#include "ConfigManager.h"
 class ConfigEditRespMenuPrivate
 {
 public:
@@ -142,6 +143,14 @@ void ConfigEditRespMenu::_alarmLbtnSlot()
 void ConfigEditRespMenu::readyShow()
 {
     d_ptr->loadOptions();
+
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    for(int i =0; i<ConfigEditRespMenuPrivate::ComboListMax; i++)
+    {
+        d_ptr->combos[i]->setEnabled(preStatusBool);
+    }
+
 }
 
 void ConfigEditRespMenu::onComboListConfigChanged(int index)

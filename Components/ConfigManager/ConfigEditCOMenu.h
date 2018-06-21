@@ -35,6 +35,8 @@ protected:
      */
     virtual void layoutExec(void);
 
+    virtual void readyShow(void);
+
 private slots:
     /**
      * @brief _ductRatioReleased  CO系数改变方法

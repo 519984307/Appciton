@@ -33,6 +33,7 @@ private slots:
     void _initialCuffChangeSlot(int index);
     void _statBtnSlot(void);
     void _alarmLbtnSlot(void);
+    void _onConfigUpdated(void);
 
 private:
     NIBPMenu();

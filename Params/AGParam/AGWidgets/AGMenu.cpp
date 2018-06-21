@@ -7,6 +7,7 @@
 #include "IConfig.h"
 #include "AlarmLimitMenu.h"
 #include "PublicMenuManager.h"
+#include "LoadConfigMenu.h"
 
 AGMenu *AGMenu::_selfObj = NULL;
 
@@ -39,6 +40,11 @@ void AGMenu::_loadOptions()
     systemConfig.getNumValue("PrimaryCfg|AG|SweepSpeed", index);
     _speedIcomb->combolist->setCurrentIndex((AGSweepSpeed)index);
 
+}
+
+void AGMenu::_onConfigUpdated()
+{
+    readyShow();
 }
 
 void AGMenu::readyhide(){}
@@ -164,4 +170,5 @@ AGMenu::AGMenu() : SubMenu(trs("AGMenu"))
 {
     setDesc(trs("AGMenuDesc"));
     startLayout();
+    connect(&configManager, SIGNAL(configUpdated()), this, SLOT(_onConfigUpdated()));
 }

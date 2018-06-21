@@ -13,6 +13,7 @@
 #include "WifiMaintainMenu.h"
 #include <QBasicTimer>
 #include <IConfig.h>
+#include "LoadConfigMenu.h"
 
 #define PROFILE_LIST_ITEM_H 30
 #define PROFILE_LIST_ITEM_W 200
@@ -34,6 +35,7 @@ public:
     void onProfileSelect(int index);
     void onWifiConnected(const QString &ssid);
     void updateWifiProfileSlot(bool isEnabled);
+    void onConfigUpdated(void);
     WiFiProfileMenu * const q_ptr;
     IComboList *comboProfileList;
     LabelButton *selectApBtn;
@@ -66,6 +68,11 @@ void WiFiProfileMenuPrivate::updateWifiProfileSlot(bool isEnabled)
             }
         }
     }
+}
+
+void WiFiProfileMenuPrivate::onConfigUpdated()
+{
+   loadProfiles();
 }
 /***************************************************************************************************
  * loadProfiels : load the profile info from super config
@@ -341,6 +348,7 @@ WiFiProfileMenu::WiFiProfileMenu()
     connect(this, SIGNAL(selectProfile(WiFiProfileInfo)), &networkManager, SLOT(connectWiFiProfile(WiFiProfileInfo)), Qt::QueuedConnection);
     connect(&networkManager, SIGNAL(wifiConnectToAp(QString)), this, SLOT(onWifiConnected(QString)), Qt::QueuedConnection);
     connect(&wifiMaintainMenu, SIGNAL(updateWifiProfileSignal(bool)), this, SLOT(updateWifiProfileSlot(bool)));
+    connect(&configManager, SIGNAL(configUpdated()), this, SLOT(d->onConfigUpdated()));
 }
 
 #include "moc_WiFiProfileMenu.cpp"

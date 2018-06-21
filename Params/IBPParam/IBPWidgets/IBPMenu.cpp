@@ -13,6 +13,8 @@
 #include "IMessageBox.h"
 #include "AlarmLimitMenu.h"
 #include "PublicMenuManager.h"
+#include "LoadConfigMenu.h"
+#include "ConfigManager.h"
 
 IBPMenu *IBPMenu::_selfObj = NULL;
 
@@ -23,6 +25,7 @@ IBPMenu::IBPMenu() : SubMenu(trs("IBPMenu"))
 {
     setDesc(trs("IBPMenuDesc"));
     startLayout();
+    connect(&configManager, SIGNAL(configUpdated()), this, SLOT(_onConfigUpdated()));
 }
 
 /**************************************************************************************************
@@ -60,6 +63,11 @@ IBPMenu::~IBPMenu()
 void IBPMenu::readyShow() { }
 
 void IBPMenu::readyhide() { }
+
+void IBPMenu::_onConfigUpdated()
+{
+    readyShow();
+}
 
 /**************************************************************************************************
  * 执行布局。

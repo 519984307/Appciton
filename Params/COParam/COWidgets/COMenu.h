@@ -34,6 +34,7 @@ private slots:
     void _injectionVolumnReleased(void);
     void _startReleased();
     void _alarmLbtnSlot(void);
+    void _onConfigUpdated();
 
 private:
 

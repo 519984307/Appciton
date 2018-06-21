@@ -26,6 +26,8 @@ public:
     // 3 config object for adult, ped, neo
     Config *patientConfig[3];
     Config *curConfig;
+
+    bool isDisableWidgets;//是否失能控件标志位 1:失能
 };
 
 ConfigManagerPrivate::~ConfigManagerPrivate()
@@ -203,6 +205,16 @@ QString ConfigManager::runningConfigFilename(PatientType patType)
     default:
         return "AdultConfig.xml";
     }
+}
+
+bool ConfigManager::getWidgetsPreStatus()const
+{
+    return d_ptr->isDisableWidgets;
+}
+
+void ConfigManager::setWidgetStatus(bool status)
+{
+    d_ptr->isDisableWidgets = status;
 }
 
 bool ConfigManager::saveUserDefineConfig(const QString &configName, Config *configObj)

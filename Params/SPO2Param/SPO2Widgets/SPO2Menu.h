@@ -30,6 +30,7 @@ private slots:
     void _sensitivitySlot(int index);
     void _smartPulseToneSlot(int index);
     void _alarmLbtnSlot(void);
+    void _onConfigUpdated();
 
 private:
     SPO2Menu();

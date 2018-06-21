@@ -8,6 +8,8 @@
 #include "MenuManager.h"
 #include "AlarmLimitMenu.h"
 #include "PublicMenuManager.h"
+#include "LoadConfigMenu.h"
+#include "ConfigManager.h"
 
 RESPMenu *RESPMenu::_selfObj = NULL;
 
@@ -76,6 +78,11 @@ void RESPMenu::_loadOptions(void)
 
     // 监护使能
     _monitor->setCurrentIndex(respParam.getRespMonitoring());
+}
+
+void RESPMenu::_onConfigUpdated()
+{
+    readyShow();
 }
 
 /**************************************************************************************************
@@ -174,6 +181,7 @@ RESPMenu::RESPMenu() : SubMenu(trs("RESPMenu"))
 {
     setDesc(trs("RESPMenuDesc"));
     startLayout();
+    connect(&configManager, SIGNAL(configUpdated()), this, SLOT(_onConfigUpdated()));
 }
 
 /**************************************************************************************************

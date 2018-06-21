@@ -32,6 +32,7 @@ private slots:
     void _calcLeadChange(int index);
     void _monitorSlot(int index);
     void _alarmLbtnSlot(void);
+    void _onConfigUpdated(void);
 
 private:
     RESPMenu();

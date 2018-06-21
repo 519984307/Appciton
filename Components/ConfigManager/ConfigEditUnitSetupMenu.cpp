@@ -13,6 +13,8 @@
 #include "ConfigEditUnitSetupMenu.h"
 #include "UnitManager.h"
 #include "IConfig.h"
+#include "LoadConfigMenu.h"
+#include "ConfigManager.h"
 ConfigEditUnitSetupMenu *ConfigEditUnitSetupMenu::_selfObj = NULL;
 
 
@@ -221,6 +223,17 @@ void ConfigEditUnitSetupMenu::_loadOptions(void)
 void ConfigEditUnitSetupMenu::readyShow(void)
 {
     _loadOptions();
+
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    _hightUnit->setEnabled(preStatusBool);
+    _weightUnit->setEnabled(preStatusBool);
+    _stUnit->setEnabled(preStatusBool);
+    _pressureUnit->setEnabled(preStatusBool);
+    _temperatureUnit->setEnabled(preStatusBool);
+    _cvpUnit->setEnabled(preStatusBool);
+    _icpUnit->setEnabled(preStatusBool);
+    _co2Unit->setEnabled(preStatusBool);
 }
 
 /**************************************************************************************************
@@ -332,7 +345,6 @@ ConfigEditUnitSetupMenu::ConfigEditUnitSetupMenu() : SubMenu(trs("UnitSetup")),
     setDesc(trs("UnitSetupDesc"));
     startLayout();
 }
-
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/

@@ -4,6 +4,8 @@
 #include "SPO2Symbol.h"
 #include "ConfigEditAlarmLimitMenu.h"
 #include "LabelButton.h"
+#include "LoadConfigMenu.h"
+#include "ConfigManager.h"
 
 class ConfigEditSpO2MenuPrivate
 {
@@ -154,6 +156,14 @@ void ConfigEditSpO2Menu::_alarmLbtnSlot()
 void ConfigEditSpO2Menu::readyShow()
 {
     d_ptr->loadOptions();
+
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    for(int i =0; i<ConfigEditSpO2MenuPrivate::ComboListMax; i++)
+    {
+        d_ptr->combos[i]->setEnabled(preStatusBool);
+    }
+
 }
 
 

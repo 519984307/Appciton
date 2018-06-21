@@ -5,6 +5,8 @@
 #include "SoundManager.h"
 #include "LabelButton.h"
 #include "ConfigEditAlarmLimitMenu.h"
+#include "LoadConfigMenu.h"
+#include "ConfigManager.h"
 //配置编辑ECG菜单私有类
 class ConfigEditEcgMenuPrivate {
 public:
@@ -249,6 +251,13 @@ void ConfigEditEcgMenu::layoutExec()
 void ConfigEditEcgMenu::readyShow()
 {
     d_ptr->loadOptions();
+
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    for(int i=0; i<ConfigEditEcgMenuPrivate::ComboListMax; i++)
+    {
+        d_ptr->combos[i]->setEnabled(preStatusBool);
+    }
 }
 //报警项设置
 void ConfigEditEcgMenu::_alarmLbtnSlot()

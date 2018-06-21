@@ -34,6 +34,7 @@ private slots:
     void _n2oCompenReleased(QString strValue);
     void _zeroCalibReleased(void);
     void _alarmLbtnSlot(void);
+    void _onConfigUpdated(void);
 
 private:
     CO2Menu();
