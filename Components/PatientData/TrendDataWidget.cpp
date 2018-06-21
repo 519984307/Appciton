@@ -21,6 +21,7 @@
 #include "RecorderManager.h"
 #include "TrendTablePageGenerator.h"
 #include "IConfig.h"
+#include "TrendPrintWidget.h"
 
 #define ITEM_HEIGHT             30
 #define ITEM_WIDTH              100
@@ -36,7 +37,8 @@ TrendDataWidget *TrendDataWidget::_selfObj = NULL;
  **********************************************************************************************************************/
 TrendDataWidget::~TrendDataWidget()
 {
-
+    qDeleteAll(_trendDataPack);
+    _trendDataPack.clear();
 }
 
 /**********************************************************************************************************************
@@ -59,6 +61,7 @@ void TrendDataWidget::loadTrendData()
     QTableWidgetItem *item;
     int intervalNum = TrendDataSymbol::convertValue(_timeInterval)/TrendDataSymbol::convertValue(RESOLUTION_RATIO_5_SECOND);
     int col = 0;
+    bool isStart = true;
     for (int i = _trendDataPack.length() - 1 - intervalNum * _currentMoveCount; i >= 0;
          i = i - intervalNum)
     {
@@ -68,6 +71,15 @@ void TrendDataWidget::loadTrendData()
         }
         timeDate.getTime(_trendDataPack.at(i)->time, time, true);
         timeTitle << time;
+
+        // 取出一屏的开始与结束时刻
+        _startTime = _trendDataPack.at(i)->time;
+        if (isStart)
+        {
+            _endTime = _trendDataPack.at(i)->time;
+            isStart = false;
+        }
+
         for (int j = 0; j < _curDisplayParamRow; j ++)
         {
             item = table->item(j, col);
@@ -120,6 +132,23 @@ void TrendDataWidget::loadTrendData()
             }
         }
         col ++;
+    }
+
+    // 当数据不够一屏时,后面补空
+    for (; col < TABLE_COL_NR; col ++)
+    {
+        timeTitle << "";
+        for (int j = 0; j < _curDisplayParamRow; j ++)
+        {
+            item = table->item(j, col);
+            if (!item)
+            {
+                item = new QTableWidgetItem();
+                item->setTextAlignment(Qt::AlignCenter);
+                table->setItem(j, col, item);
+            }
+            item->setText("");
+        }
     }
 
     for (timeTitle.length(); timeTitle.length() < TABLE_COL_NR;)
@@ -207,16 +236,25 @@ void TrendDataWidget::_rightReleased()
     loadTrendData();
 }
 
-void TrendDataWidget::_printRelease()
+void TrendDataWidget::_printWidgetRelease()
 {
-    //TEST
-    IStorageBackend *backend = trendDataStorageManager.backend();
-    if(backend->getBlockNR() <= 0)
+    if (_trendDataPack.count() != 0)
     {
-        return;
+        TrendPrintWidget printWidget;
+        unsigned startLimit = _trendDataPack.first()->time;
+        unsigned endLimit = _trendDataPack.last()->time;
+        printWidget.printTimeRange(startLimit, endLimit);
+        printWidget.initPrintTime(_startTime, _endTime);
+        printWidget.exec();
     }
-    RecordPageGenerator *gen= new TrendTablePageGenerator(backend, 0, backend->getBlockNR() - 1);
-    recorderManager.addPageGenerator(gen);
+    //TEST
+//    IStorageBackend *backend = trendDataStorageManager.backend();
+//    if(backend->getBlockNR() <= 0)
+//    {
+//        return;
+//    }
+//    RecordPageGenerator *gen= new TrendTablePageGenerator(backend, 0, backend->getBlockNR() - 1);
+//    recorderManager.addPageGenerator(gen);
 }
 
 /**********************************************************************************************************************
@@ -287,7 +325,7 @@ TrendDataWidget::TrendDataWidget() : _timeInterval(RESOLUTION_RATIO_5_SECOND), _
     _printParam->setFixedHeight(ITEM_HEIGHT);
     _printParam->setMinimumWidth(ITEM_WIDTH);
     _printParam->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
-    connect(_printParam, SIGNAL(realReleased()), this, SLOT(_printRelease()));
+    connect(_printParam, SIGNAL(realReleased()), this, SLOT(_printWidgetRelease()));
 
     _set = new IButton(trs("Set"));
     _set->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
@@ -478,6 +516,68 @@ void TrendDataWidget::loadCurParam(int index)
 void TrendDataWidget::setTimeInterval(ResolutionRatio flag)
 {
     _timeInterval = flag;
+}
+
+void TrendDataWidget::printTrendData(unsigned startTime, unsigned endTime)
+{
+    int startIndex;
+    int endIndex;
+
+    // 二分查找时间索引
+    int lowPos = 0;
+    int highPos = _trendDataPack.count() - 1;
+    while(lowPos <= highPos)
+    {
+        int midPos = (lowPos + highPos)/2;
+        int timeDiff = qAbs(startTime - _trendDataPack.at(midPos)->time);
+
+        if (startTime < _trendDataPack.at(midPos)->time)
+        {
+            highPos = midPos - 1;
+        }
+        else if (startTime > _trendDataPack.at(midPos)->time)
+        {
+            lowPos = midPos + 1;
+        }
+
+        if (timeDiff == 0 || lowPos > highPos)
+        {
+            startIndex = midPos;
+            break;
+        }
+    }
+
+    lowPos = 0;
+    highPos = _trendDataPack.count() - 1;
+    while(lowPos <= highPos)
+    {
+        int midPos = (lowPos + highPos)/2;
+        int timeDiff = qAbs(endTime - _trendDataPack.at(midPos)->time);
+
+        if (endTime < _trendDataPack.at(midPos)->time)
+        {
+            highPos = midPos - 1;
+        }
+        else if (endTime > _trendDataPack.at(midPos)->time)
+        {
+            lowPos = midPos + 1;
+        }
+
+        if (timeDiff == 0 || lowPos > highPos)
+        {
+            endIndex = midPos;
+            break;
+        }
+    }
+
+    // 打印
+    IStorageBackend *backend = trendDataStorageManager.backend();
+    if(backend->getBlockNR() <= 0)
+    {
+        return;
+    }
+    RecordPageGenerator *gen= new TrendTablePageGenerator(backend, startIndex, endIndex, TrendDataSymbol::convertValue(_timeInterval));
+    recorderManager.addPageGenerator(gen);
 }
 
 /**********************************************************************************************************************

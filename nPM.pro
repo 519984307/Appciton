@@ -244,6 +244,7 @@ SOURCES +=                                                                      
     Components/PatientData/TrendSubWaveWidget.cpp                               \
     Components/PatientData/IMoveButton.cpp                                      \
     Components/PatientData/TrendGraphSetWidget.cpp                              \
+    Components/PatientData/TrendPrintWidget.cpp                                 \
     Components/Summary/SummaryItem.cpp                                          \
     Components/Summary/SummaryRescueDataWidget.cpp                              \
     Components/Summary/SummaryRescueRangePrint.cpp                              \
@@ -517,9 +518,6 @@ SOURCES +=                                                                      
     Main/MergeConfig.cpp                                                        \
     Main/Starter.cpp                                                            \
 
-
-
-
 HEADERS +=                                                                      \
     SOUP/SmtpClientForQt/src/smtpexports.h                                      \
     SOUP/SmtpClientForQt/src/emailaddress.h                                     \
@@ -728,6 +726,7 @@ HEADERS +=                                                                      
     Components/PatientData/IMoveButton.h                                        \
     Components/PatientData/TrendGraphSetWidget.h                                \
     Components/PatientData/EventDataSymbol.h                                    \
+    Components/PatientData/TrendPrintWidget.h                                   \
     Components/PatientManager/PatientManager.h                                  \
     Components/PatientManager/PatientBarWidget.h                                \
     Components/PatientManager/PatientDefine.h                                   \

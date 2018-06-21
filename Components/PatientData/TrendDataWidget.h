@@ -39,6 +39,8 @@ public:
 
     void setTimeInterval(ResolutionRatio);
 
+    void printTrendData(unsigned startTime, unsigned endTime);
+
 protected:
     void showEvent(QShowEvent *event);
 
@@ -48,7 +50,7 @@ private slots:
     void _downReleased(void);
     void _leftReleased(void);
     void _rightReleased(void);
-    void _printRelease();
+    void _printWidgetRelease();
 
 private:
     TrendDataWidget();
@@ -91,6 +93,9 @@ private:
     ResolutionRatio _timeInterval;          // 时间间隔
     int _currentMoveCount;                  // 当前数据移动数目；
     int _hideColumn;
+
+    unsigned _startTime;                    // 一屏的开始时间
+    unsigned _endTime;                      // 一屏的结束时间
 };
 #define trendDataWidget (TrendDataWidget::construction())
 #define deleteTrendDataWidget() (delete TrendDataWidget::_selfObj)
