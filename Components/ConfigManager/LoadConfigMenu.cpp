@@ -134,7 +134,7 @@ bool LoadConfigMenu::eventFilter(QObject *obj, QEvent *ev)
         }
         if (ev->type() == QEvent::Hide)
         {
-
+            d_ptr->lastSelectItem = NULL;
         }
     }
     return false;
