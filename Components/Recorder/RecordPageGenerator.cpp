@@ -433,7 +433,8 @@ static void converToStringSegmets(const QStringList &trendStringList, QList<Tren
     }
 }
 
-RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendData, bool showEventTime, const QString &timeStringCaption)
+RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendData, bool showEventTime,
+                                                 const QString &timeStringCaption, const QString &trendPageTitle)
 {
     QStringList trendStringList = getTrendStringList(trendData);
 
@@ -515,13 +516,21 @@ RecordPage *RecordPageGenerator::createTrendPage(const TrendDataPackage &trendDa
     textOption.setAlignment(Qt::AlignVCenter|Qt::AlignLeft);
 
     int xoffset = font.pixelSize();
+    int startYoffset = fontH;
+    if(!trendPageTitle.isEmpty())
+    {
+        QRect rect(xoffset, startYoffset, page->width(), fontH);
+        painter.drawText(rect, trendPageTitle, textOption);
+        startYoffset += fontH;
+    }
+
     for(int i = 0; i<segmentWidths.size(); i+=3)
     {
-        QRectF nameRect(xoffset, fontH, segmentWidths[i], fontH);
+        QRectF nameRect(xoffset, startYoffset, segmentWidths[i], fontH);
         xoffset += segmentWidths[i];
-        QRectF valueRect(xoffset, fontH, segmentWidths[i+1], fontH);
+        QRectF valueRect(xoffset, startYoffset, segmentWidths[i+1], fontH);
         xoffset += segmentWidths[i+1];
-        QRectF unitRect(xoffset, fontH, segmentWidths[i+2], fontH);
+        QRectF unitRect(xoffset, startYoffset, segmentWidths[i+2], fontH);
         xoffset += segmentWidths[i+2];
         TrendStringSegmentInfo seg;
         for(int lines = 0; lines < avaliableLine; lines++)

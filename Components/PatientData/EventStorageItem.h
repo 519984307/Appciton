@@ -105,6 +105,12 @@ public:
      */
     void setWaitForTriggerPrintFlag(bool flag);
 
+    /**
+     * @brief getEventTitle get the event title string
+     * @return  title string, might be empty
+     */
+    QString getEventTitle() const;
+
 private slots:
     // callback when the trigger page generator is stopped
     void onTriggerPrintStopped();

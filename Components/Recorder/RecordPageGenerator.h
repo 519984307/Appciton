@@ -231,9 +231,12 @@ protected:
      * @brief createTrendPage create a trend page
      * @param trendData trend data
      * @param showEventTime show the event time or not
+     * @param timeStringCaption override the default time string, if the string is empty, use the default string
+     * @param trendPageTitle the trend page title string, if the string is empty, display nothing.
      * @return a record page
      */
-    static RecordPage *createTrendPage(const TrendDataPackage& trendData, bool showEventTime = false, const QString  &timeStringCaption = QString());
+    static RecordPage *createTrendPage(const TrendDataPackage& trendData, bool showEventTime = false,
+                                       const QString  &timeStringCaption = QString(), const QString &trendPageTitle = QString());
 
     /**
      * @brief getTrendStringList get a trend string list from the trend data,

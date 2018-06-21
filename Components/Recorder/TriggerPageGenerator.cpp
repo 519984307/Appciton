@@ -34,7 +34,7 @@ bool TriggerPageGeneratorPrivate::fetchWaveData()
         }
 
         int retryCount = 0;
-        while(curDrawWaveSegment > item->getCurWaveCacheDuration(iter->id))
+        while(curDrawWaveSegment >= item->getCurWaveCacheDuration(iter->id))
         {
             if (recorderManager.isAbort())
             {
@@ -91,7 +91,9 @@ RecordPage *TriggerPageGenerator::createPage()
     switch (d_ptr->curPageType) {
     case TrendPage:
         d_ptr->curPageType = WaveScalePage;
-        return createTrendPage(d_ptr->item->getTrendData(), true);
+        return createTrendPage(d_ptr->item->getTrendData(), true,
+                               QString(),
+                               d_ptr->item->getEventTitle());
 
     case WaveScalePage:
         d_ptr->curPageType = WaveSegmentPage;

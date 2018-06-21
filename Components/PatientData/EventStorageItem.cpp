@@ -14,6 +14,8 @@
 #include "Debug.h"
 #include "ConfigManager.h"
 #include "OxyCRGEventWaveWidget.h"
+#include "Alarm.h"
+#include "AlarmConfig.h"
 
 class EventStorageItemPrivate
 {
@@ -452,7 +454,7 @@ bool EventStorageItem::getOneSecondWaveform(WaveformID waveId, WaveDataType *wav
         int waveIndex = d_ptr->waveforms.indexOf(waveId);
         WaveformDataSegment *waveSegment = d_ptr->waveSegments.at(waveIndex);
         int startIndex = startSecond * waveSegment->sampleRate;
-        qMemCopy(waveBuf, waveSegment + startIndex, waveSegment->sampleRate * sizeof(WaveDataType));
+        qMemCopy(waveBuf, waveSegment->waveData + startIndex, waveSegment->sampleRate * sizeof(WaveDataType));
         return true;
     }
     return false;
@@ -471,6 +473,91 @@ TrendDataPackage EventStorageItem::getTrendData() const
 void EventStorageItem::setWaitForTriggerPrintFlag(bool flag)
 {
     d_ptr->waitForTriggerPrintFlag = flag;
+}
+
+QString EventStorageItem::getEventTitle() const
+{
+    QString eventTitle;
+    switch(d_ptr->eventInfo.type)
+    {
+    case EventPhysiologicalAlarm:
+    {
+        SubParamID subparamID = (SubParamID) d_ptr->almInfo->subParamID;
+        AlarmLimitIFace *almIface = alertor.getAlarmLimitIFace(subparamID);
+        AlarmPriority priority;
+        if (almIface)
+        {
+            priority = almIface->getAlarmPriority(d_ptr->almInfo->alarmType);
+        }
+        else
+        {
+            break;
+        }
+
+        QString titleStr;
+
+        if (priority == ALARM_PRIO_LOW)
+        {
+            titleStr = "*";
+        }
+        else if (priority == ALARM_PRIO_MED)
+        {
+            titleStr = "**";
+        }
+        else if(priority == ALARM_PRIO_HIGH)
+        {
+            titleStr = "***";
+        }
+
+        ParamID paramId = paramInfo.getParamID(subparamID);
+        titleStr += " ";
+        titleStr += trs(Alarm::getPhyAlarmMessage(paramId,
+                                                  d_ptr->almInfo->alarmType,
+                                                  d_ptr->almInfo->alarmInfo & 0x01));
+
+        if(!(d_ptr->almInfo->alarmInfo & 0x01))
+        {
+            if(d_ptr->almInfo->alarmInfo & 0x02)
+            {
+                titleStr += " > ";
+            }
+            else {
+                titleStr += " < ";
+            }
+
+            UnitType unit = paramManager.getSubParamUnit(paramId, subparamID);
+            LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subparamID, unit);
+
+            titleStr += Util::convertToString(d_ptr->almInfo->alarmLimit, config.scale);
+        }
+
+        eventTitle = titleStr;
+    }
+        break;
+    case EventCodeMarker:
+    {
+        eventTitle = trs(QString(d_ptr->codeMarkerInfo->codeName));
+    }
+        break;
+    case EventRealtimePrint:
+    {
+        eventTitle = trs("RealtimePrintSegment");
+    }
+        break;
+    case EventNIBPMeasurement:
+    {
+        eventTitle = trs("NibpMeasurement");
+    }
+        break;
+    case EventWaveFreeze:
+    {
+        eventTitle = trs("WaveFreeze");
+    }
+        break;
+    default:
+        break;
+    }
+    return eventTitle;
 }
 
 void EventStorageItem::onTriggerPrintStopped()

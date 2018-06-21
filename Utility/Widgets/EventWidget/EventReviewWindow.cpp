@@ -861,9 +861,9 @@ void EventReviewWindow::_loadEventData()
 
                 ParamID paramId = paramInfo.getParamID(subId);
                 infoStr += " ";
-                infoStr += trs(eventStorageManager.getPhyAlarmMessage(paramId,
-                                                                      alarmInfo,
-                                                                      alarmInfo & 0x1));
+                infoStr += trs(Alarm::getPhyAlarmMessage(paramId,
+                                                        alarmInfo,
+                                                        alarmInfo & 0x1));
 
                 if (!(alarmInfo & 0x1))
                 {

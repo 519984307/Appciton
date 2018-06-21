@@ -73,7 +73,7 @@ void WaveformCache::addData(WaveformID id, WaveDataType data)
             if(iter->curRecWaveNum < iter->totalRecWaveNum)
             {
                 iter->buf[iter->curRecWaveNum++] = data;
-                if(iter->curRecWaveNum / iter->sampleRate == 0)
+                if(iter->curRecWaveNum % iter->sampleRate == 0)
                 {
                     iter->recordDurationIncreaseCallback(id, iter->recObj);
                 }
