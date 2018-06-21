@@ -12,7 +12,7 @@ public:
         Type = 4
     };
 
-    TrendTablePageGenerator(IStorageBackend *backend, int startIndex, int stopIndex, ResolutionRatio interval,QObject *parent = 0);
+    TrendTablePageGenerator(IStorageBackend *backend, int startIndex, int stopIndex, int interval,QObject *parent = 0);
 
     ~TrendTablePageGenerator();
 

@@ -37,6 +37,7 @@ TrendDataWidget *TrendDataWidget::_selfObj = NULL;
  **********************************************************************************************************************/
 TrendDataWidget::~TrendDataWidget()
 {
+    qDeleteAll(_trendDataPack);
     _trendDataPack.clear();
 }
 
@@ -575,7 +576,7 @@ void TrendDataWidget::printTrendData(unsigned startTime, unsigned endTime)
     {
         return;
     }
-    RecordPageGenerator *gen= new TrendTablePageGenerator(backend, startIndex, endIndex, _timeInterval);
+    RecordPageGenerator *gen= new TrendTablePageGenerator(backend, startIndex, endIndex, TrendDataSymbol::convertValue(_timeInterval));
     recorderManager.addPageGenerator(gen);
 }
 
