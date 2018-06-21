@@ -14,6 +14,7 @@
 #include "ECGDupParam.h"
 #include "RESPDupParam.h"
 #include "TimeDate.h"
+#include "EventStorageManager.h"
 
 class TrendDataStorageManagerPrivate: public StorageManagerPrivate
 {
@@ -173,6 +174,7 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
     dataSegment->timestamp = t;
     dataSegment->co2Baro = data.co2baro;
     dataSegment->status = dataStatus;
+    dataSegment->eventFlag = eventStorageManager.getEventTriggerFlag();
 
     if(ecgDupParam.getHrSource() == ECGDupParam::HR_SOURCE_SPO2)
     {

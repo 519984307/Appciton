@@ -114,6 +114,8 @@ void EventStorageManager::triggerEvent(EventType type)
 
 void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, WaveformID paramWave)
 {
+    _eventTriggerFlag = true;
+
     Q_D(EventStorageManager);
 
     EventStorageItem *item = new EventStorageItem(EventPhysiologicalAlarm,
@@ -262,8 +264,19 @@ void EventStorageManager::run()
     dataStorageDirManager.addDataSize(saveData());
 }
 
+bool EventStorageManager::getEventTriggerFlag()
+{
+    bool flag = _eventTriggerFlag;
+    if (_eventTriggerFlag)
+    {
+        _eventTriggerFlag = false;
+    }
+    return flag;
+}
+
 EventStorageManager::EventStorageManager()
-    :StorageManager(new EventStorageManagerPrivate(this), new StorageFile())
+    :StorageManager(new EventStorageManagerPrivate(this), new StorageFile()),
+      _eventTriggerFlag(false)
 {
     Q_D(EventStorageManager);
     d->backend->reload(dataStorageDirManager.getCurFolder() + EVENT_DATA_FILE_NAME, QIODevice::ReadWrite);

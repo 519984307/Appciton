@@ -59,6 +59,9 @@ private:
     void _updateHeaderDate(unsigned t = 0);
     void _getTrendData();
 
+    void _dataIndex(int &startIndex, int &endIndex);
+    void _updateDisplayTime();
+
 private:
     int _curVScroller;
 
@@ -91,11 +94,13 @@ private:
     int _maxHeight;
 
     ResolutionRatio _timeInterval;          // 时间间隔
-    int _currentMoveCount;                  // 当前数据移动数目；
     int _hideColumn;
 
-    unsigned _startTime;                    // 一屏的开始时间
-    unsigned _endTime;                      // 一屏的结束时间
+    unsigned _startTime;                    // 打印的开始时间
+    unsigned _endTime;                      // 打印的结束时间
+
+    unsigned _leftTime;                     // 趋势表左侧时间
+    unsigned _rightTime;                    // 趋势表右侧时间
 };
 #define trendDataWidget (TrendDataWidget::construction())
 #define deleteTrendDataWidget() (delete TrendDataWidget::_selfObj)

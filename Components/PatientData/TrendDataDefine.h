@@ -19,6 +19,7 @@ struct TrendValueSegment
 /* data structure to store the trend data */
 struct TrendDataSegment
 {
+    bool eventFlag;                     /* event trigger flag */
     unsigned timestamp;                 /* timestamp when the data fetch */
     unsigned status;                    /* status of the fetch data */
     short co2Baro;                      /* current co2 baro */
