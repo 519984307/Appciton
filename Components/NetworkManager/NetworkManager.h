@@ -11,7 +11,6 @@
 #endif
 #include "NetworkDefine.h"
 #include "WpaCtrl.h"
-#include "smtpclient.h"
 
 class WiFiProfileInfo;
 

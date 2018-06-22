@@ -18,8 +18,6 @@
 #include "DoseCalculationWidget.h"
 #include "DoseCalculationManager.h"
 #include "HemodynamicWidget.h"
-#include "ECG12LDataAcquire.h"
-#include "ECG12LeadManager.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -146,10 +144,6 @@ void SoftkeyActionBase::WindowLayout(bool isPressed)
     {
         return;
     }
-    if (ecg12LDataAcquire.isAcquiring() || ecg12LeadManager.isTransfer())
-    {
-        return;
-    }
 
     bool isVisible = windowLayout.isVisible();
     while (NULL != QApplication::activeModalWidget())
@@ -203,10 +197,6 @@ void SoftkeyActionBase::patientInfo(bool isPressed)
     {
         return;
     }
-    if (ecg12LDataAcquire.isAcquiring() || ecg12LeadManager.isTransfer())
-    {
-        return;
-    }
 
     bool isVisible = patientInfoMenu.isVisible();
     while (NULL != QApplication::activeModalWidget())
@@ -233,10 +223,6 @@ void SoftkeyActionBase::patientInfo(bool isPressed)
 void SoftkeyActionBase::patientNew(bool isPressed)
 {
     if (isPressed)
-    {
-        return;
-    }
-    if (ecg12LDataAcquire.isAcquiring() || ecg12LeadManager.isTransfer())
     {
         return;
     }

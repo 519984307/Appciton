@@ -146,10 +146,6 @@ static void _storageThreadEntry(void)
         eventStorageManager.run();
     }
 
-    if(!systemManager.isGoingToTrunOff())
-    {
-        ecg12LDataStorage.run();
-    }
 
     if(!systemManager.isGoingToTrunOff())
     {
@@ -227,9 +223,7 @@ static void _initTasks(void)
     _networkThread = new QThread();
     _networkThread->setObjectName("Network");
     networkManager.moveToThread(_networkThread);
-    mailManager.moveToThread(_networkThread);
     QObject::connect(_networkThread, SIGNAL(finished()), &networkManager, SLOT(deleteLater()));
-    QObject::connect(_networkThread, SIGNAL(finished()), &mailManager, SLOT(deleteLater()));
 }
 
 /**************************************************************************************************

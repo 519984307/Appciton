@@ -8,10 +8,6 @@
 #include <sys/types.h>
 #include <signal.h>
 #include "IConfig.h"
-#include "mimetext.h"
-#include "mimeattachment.h"
-#include "MailManager.h"
-#include "EmailAddressLayout.h"
 #include "PatientManager.h"
 #include "SystemManager.h"
 #include "WiFiProfileMenu.h"

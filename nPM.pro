@@ -74,18 +74,6 @@ OTHER_FILES +=                                                                  
     nPM/locale/PrintEnglish.xml                                                 \
 
 SOURCES +=                                                                      \
-    SOUP/SmtpClientForQt/src/emailaddress.cpp                                   \
-    SOUP/SmtpClientForQt/src/mimecontentformatter.cpp                           \
-    SOUP/SmtpClientForQt/src/mimehtml.cpp                                       \
-    SOUP/SmtpClientForQt/src/mimemessage.cpp                                    \
-    SOUP/SmtpClientForQt/src/mimepart.cpp                                       \
-    SOUP/SmtpClientForQt/src/quotedprintable.cpp                                \
-    SOUP/SmtpClientForQt/src/mimeattachment.cpp                                 \
-    SOUP/SmtpClientForQt/src/mimefile.cpp                                       \
-    SOUP/SmtpClientForQt/src/mimeinlinefile.cpp                                 \
-    SOUP/SmtpClientForQt/src/mimemultipart.cpp                                  \
-    SOUP/SmtpClientForQt/src/mimetext.cpp                                       \
-    SOUP/SmtpClientForQt/src/smtpclient.cpp                                     \
     SOUP/Json/json_parser.cc                                                    \
     SOUP/Json/json_scanner.cc                                                   \
     SOUP/Json/json_scanner.cpp                                                  \
@@ -94,8 +82,6 @@ SOURCES +=                                                                      
     SOUP/Json/qobjecthelper.cpp                                                 \
     SOUP/Json/serializer.cpp                                                    \
     SOUP/Json/serializerrunnable.cpp                                            \
-    SOUP/Zip/zip.cpp                                                            \
-    SOUP/Zip/ioapi.cpp                                                          \
     Utility/Utility.cpp                                                         \
     Utility/Config/Config.cpp                                                   \
     Utility/Config/XmlParser.cpp                                                \
@@ -274,7 +260,6 @@ SOURCES +=                                                                      
     Components/WindowManager/WindowWidget.cpp                                   \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
     Components/USBManager/DataExporterBase.cpp                                  \
-    Components/USBManager/ECG12LeadExporter.cpp                                 \
     Components/USBManager/ErrorLogExporter.cpp                                  \
     Components/USBManager/UDiskInspector.cpp                                    \
     Components/USBManager/USBManager.cpp                                        \
@@ -284,7 +269,6 @@ SOURCES +=                                                                      
     Components/PrintManager/Alarm/PrintAlarm.cpp                                \
     Components/PrintManager/Summary/PrinterActionSummary.cpp                    \
     Components/PrintManager/PrintLayouts/PrintContinuousLayout.cpp              \
-    Components/PrintManager/PrintLayouts/PrintECG12LeadLayout.cpp               \
     Components/PrintManager/PrintLayouts/PrintOtherTriggerLayout.cpp            \
     Components/PrintManager/PrintLayouts/PrintSummaryLayout.cpp                 \
     Components/PrintManager/PrintLayouts/PrintSupervisorCfgLayout.cpp           \
@@ -309,7 +293,6 @@ SOURCES +=                                                                      
     Components/KeyHandle/SoftkeyActions/CalculateSoftkeyAction.cpp              \
     Components/KeyHandle/SoftkeyActions/DelRescueDataSoftkeyAction.cpp          \
     Components/KeyHandle/SoftkeyActions/MonitorSoftkeyAction.cpp                \
-    Components/KeyHandle/SoftkeyActions/ECG12LeadSoftkeyAction.cpp              \
     Components/KeyHandle/SoftkeyActions/RescueDataSoftKeyAction.cpp             \
     Components/KeyHandle/KeyActionManager/KeyActionManager.cpp                  \
     Components/KeyHandle/KeyActionManager/SupervisorModeKeyAction.cpp           \
@@ -327,18 +310,7 @@ SOURCES +=                                                                      
     Components/NetworkManager/Widgets/TableWidget.cpp                           \
     Components/NetworkManager/Widgets/WiFiProfileEditor.cpp                     \
     Components/NetworkManager/Widgets/WiFiProfileMenu.cpp                       \
-    Components/NetworkManager/Widgets/MailRecipientEditor.cpp                   \
-    Components/NetworkManager/Widgets/EmailAddressLayout.cpp                    \
-    Components/NetworkManager/MailManager.cpp                                   \
     Components/ActivityLog/ActivityLogManager.cpp                               \
-    Components/ECG12LeadManager/Widgets/ECG12LDataAcquire.cpp                   \
-    Components/ECG12LeadManager/Widgets/ECG12LDataMessNote.cpp                  \
-    Components/ECG12LeadManager/Widgets/ECG12LExportDataWidget.cpp              \
-    Components/ECG12LeadManager/Widgets/ECG12LSnapShotReview.cpp                \
-    Components/ECG12LeadManager/ECG12LDataPrint.cpp                             \
-    Components/ECG12LeadManager/ECG12LDataStorage.cpp                           \
-    Components/ECG12LeadManager/ECG12LeadManager.cpp                            \
-    Components/ECG12LeadManager/ECG12LeadPdfBuilder.cpp                         \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.cpp            \
     Components/Maintain/Supervisor/Menu/SupervisorPortMenu.cpp                  \
     Components/Maintain/Supervisor/Menu/SupervisorDisplayMenu.cpp               \
@@ -351,7 +323,6 @@ SOURCES +=                                                                      
     Components/Maintain/Supervisor/Menu/SupervisorAlarmLimitMenu.cpp            \
     Components/Maintain/Supervisor/Menu/SupervisorAlarmMenu.cpp                 \
     Components/Maintain/Supervisor/Menu/SupervisorWifiMenu.cpp                  \
-    Components/Maintain/Supervisor/Menu/SupervisorMailMenu.cpp                  \
     Components/Maintain/Supervisor/SupervisorConfigManager.cpp                  \
     Components/Maintain/Supervisor/SupervisorEntrance.cpp                       \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.cpp                \
@@ -520,19 +491,6 @@ SOURCES +=                                                                      
     Main/Starter.cpp                                                            \
 
 HEADERS +=                                                                      \
-    SOUP/SmtpClientForQt/src/smtpexports.h                                      \
-    SOUP/SmtpClientForQt/src/emailaddress.h                                     \
-    SOUP/SmtpClientForQt/src/mimecontentformatter.h                             \
-    SOUP/SmtpClientForQt/src/mimehtml.h                                         \
-    SOUP/SmtpClientForQt/src/mimemessage.h                                      \
-    SOUP/SmtpClientForQt/src/mimepart.h                                         \
-    SOUP/SmtpClientForQt/src/quotedprintable.h                                  \
-    SOUP/SmtpClientForQt/src/mimeattachment.h                                   \
-    SOUP/SmtpClientForQt/src/mimefile.h                                         \
-    SOUP/SmtpClientForQt/src/mimeinlinefile.h                                   \
-    SOUP/SmtpClientForQt/src/mimemultipart.h                                    \
-    SOUP/SmtpClientForQt/src/mimetext.h                                         \
-    SOUP/SmtpClientForQt/src/smtpclient.h                                       \
     SOUP/Json/FlexLexer.h                                                       \
     SOUP/Json/json_parser.hh                                                    \
     SOUP/Json/json_parser.yy                                                    \
@@ -549,9 +507,6 @@ HEADERS +=                                                                      
     SOUP/Json/serializer.h                                                      \
     SOUP/Json/serializerrunnable.h                                              \
     SOUP/Json/stack.hh                                                          \
-    SOUP/Zip/zip.h                                                              \
-    SOUP/Zip/ioapi.h                                                            \
-    SOUP/Zip/crypt.h                                                            \
     Utility/md5.h                                                               \
     Utility/Utility.h                                                           \
     Utility/Config/Config.h                                                     \
@@ -753,7 +708,6 @@ HEADERS +=                                                                      
     Components/TimeManager/ElapseTimeWidget.h                                   \
     Components/TimeManager/TimeManager.h                                        \
     Components/USBManager/DataExporterBase.h                                    \
-    Components/USBManager/ECG12LeadExporter.h                                   \
     Components/USBManager/ErrorLogExporter.h                                    \
     Components/USBManager/UDiskInspector.h                                      \
     Components/USBManager/USBManager.h                                          \
@@ -774,7 +728,6 @@ HEADERS +=                                                                      
     Components/PrintManager/Alarm/PrintAlarm.h                                  \
     Components/PrintManager/Summary/PrinterActionSummary.h                      \
     Components/PrintManager/PrintLayouts/PrintContinuousLayout.h                \
-    Components/PrintManager/PrintLayouts/PrintECG12LeadLayout.h                 \
     Components/PrintManager/PrintLayouts/PrintOtherTriggerLayout.h              \
     Components/PrintManager/PrintLayouts/PrintSummaryLayout.h                   \
     Components/PrintManager/PrintLayouts/PrintSupervisorCfgLayout.h             \
@@ -800,7 +753,6 @@ HEADERS +=                                                                      
     Components/KeyHandle/SoftkeyActions/CalculateSoftkeyAction.h                \
     Components/KeyHandle/SoftkeyActions/DelRescueDataSoftkeyAction.h            \
     Components/KeyHandle/SoftkeyActions/MonitorSoftkeyAction.h                  \
-    Components/KeyHandle/SoftkeyActions/ECG12LeadSoftkeyAction.h                \
     Components/KeyHandle/SoftkeyActions/RescueDataSoftKeyAction.h               \
     Components/KeyHandle/KeyActionManager/KeyActionManager.h                    \
     Components/KeyHandle/KeyActionManager/KeyActionIFace.h                      \
@@ -819,19 +771,7 @@ HEADERS +=                                                                      
     Components/NetworkManager/Widgets/TableWidget.h                             \
     Components/NetworkManager/Widgets/WiFiProfileEditor.h                       \
     Components/NetworkManager/Widgets/WiFiProfileMenu.h                         \
-    Components/NetworkManager/Widgets/MailRecipientEditor.h                     \
-    Components/NetworkManager/Widgets/EmailAddressLayout.h                      \
-    Components/NetworkManager/MailManager.h                                     \
     Components/ActivityLog/ActivityLogManager.h                                 \
-    Components/ECG12LeadManager/Widgets/ECG12LDataAcquire.h                     \
-    Components/ECG12LeadManager/Widgets/ECG12LSnapShotReview.h                  \
-    Components/ECG12LeadManager/Widgets/ECG12LDataMessNote.h                    \
-    Components/ECG12LeadManager/Widgets/ECG12LExportDataWidget.h                \
-    Components/ECG12LeadManager/ECG12LeadManager.h                              \
-    Components/ECG12LeadManager/ECG12LDataStorage.h                             \
-    Components/ECG12LeadManager/ECG12LDataPrint.h                               \
-    Components/ECG12LeadManager/ECG12LeadFileBuilderBase.h                      \
-    Components/ECG12LeadManager/ECG12LeadPdfBuilder.h                           \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.h              \
     Components/Maintain/Supervisor/Menu/SupervisorPortMenu.h                    \
     Components/Maintain/Supervisor/Menu/SupervisorDisplayMenu.h                 \
@@ -844,7 +784,6 @@ HEADERS +=                                                                      
     Components/Maintain/Supervisor/Menu/SupervisorAlarmLimitMenu.h              \
     Components/Maintain/Supervisor/Menu/SupervisorAlarmMenu.h                   \
     Components/Maintain/Supervisor/Menu/SupervisorWifiMenu.h                    \
-    Components/Maintain/Supervisor/Menu/SupervisorMailMenu.h                    \
     Components/Maintain/Supervisor/SupervisorConfigManager.h                    \
     Components/Maintain/Supervisor/SupervisorEntrance.h                         \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.h                  \
@@ -1051,7 +990,6 @@ HEADERS +=                                                                      
 
 #头文件修改后，重新编译依赖的源文件
 DEPENDPATH +=                                                                   \
-    SOUP/SmtpClientForQt/src                                                    \
     SOUP/Json                                                                   \
     Main                                                                        \
     Main/App                                                                    \
@@ -1116,8 +1054,6 @@ DEPENDPATH +=                                                                   
     Components/NetworkManager/WpaCtrl/utils                                     \
     Components/USBManager                                                       \
     Components/ActivityLog                                                      \
-    Components/ECG12LeadManager/Widgets                                         \
-    Components/ECG12LeadManager                                                 \
     Components/Maintain/Supervisor                                              \
     Components/Maintain/Supervisor/Menu                                         \
     Components/Maintain/Service                                                 \
@@ -1187,7 +1123,6 @@ DEPENDPATH +=                                                                   
 
 
 INCLUDEPATH +=                                                                  \
-    SOUP/SmtpClientForQt/src                                                    \
     SOUP/Json                                                                   \
     SOUP/libharu/include                                                        \
     SOUP/libssh2/include                                                        \
@@ -1254,8 +1189,6 @@ INCLUDEPATH +=                                                                  
     Components/NetworkManager/WpaCtrl/utils                                     \
     Components/USBManager                                                       \
     Components/ActivityLog                                                      \
-    Components/ECG12LeadManager/Widgets                                         \
-    Components/ECG12LeadManager                                                 \
     Components/Maintain/Supervisor                                              \
     Components/Maintain/Supervisor/Menu                                         \
     Components/Maintain/Service                                                 \

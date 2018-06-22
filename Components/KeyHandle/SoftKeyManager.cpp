@@ -148,9 +148,6 @@ bool SoftKeyManager::returnRootPage()
                     break;
             }
             return true;
-        case SOFTKEY_ACTION_12LEAD:
-            ecgParam.exit12Lead();
-            return true;
         default:
             break;
     }
@@ -292,9 +289,6 @@ SoftKeyActionType SoftKeyManager::uFaceTypeToSoftKeyType(UserFaceType type)
         actionType = SOFTKEY_ACTION_STANDARD;
         break;
 
-    case UFACE_MONITOR_12LEAD:
-        actionType = SOFTKEY_ACTION_12LEAD;
-        break;
 
     default:
         break;
@@ -425,8 +419,6 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager")
     SoftkeyActionBase *action = new MonitorSoftkeyAction();
     _actions.insert(action->getType(), action);
 
-    action = new ECG12LeadSoftkeyAction();
-    _actions.insert(action->getType(), action);
 
     action = new RescueDataSoftKeyAction();
     _actions.insert(action->getType(), action);

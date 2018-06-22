@@ -24,7 +24,6 @@
 #include "SoundManager.h"
 #include "NetworkManager.h"
 #include "ServiceErrorLogEntrance.h"
-#include "MailManager.h"
 #include "SystemTick.h"
 #include "SystemMenu.h"
 #include "SupervisorEntrance.h"
@@ -184,7 +183,6 @@
 #include "E5Provider.h"
 
 #include "WiFiProfileMenu.h"
-#include "EmailAddressLayout.h"
 
 #include "RawDataCollection.h"
 #include "RawDataCollectionTxt.h"
@@ -210,13 +208,6 @@
 
 #include "CodeMarkerWidget.h"
 
-#include "ECG12LDataAcquire.h"
-#include "ECG12LDataMessNote.h"
-#include "ECG12LSnapShotReview.h"
-#include "ECG12LDataPrint.h"
-#include "ECG12LDataStorage.h"
-#include "ECG12LeadManager.h"
-#include "PrintECG12LeadLayout.h"
 
 #include "PMessageBox.h"
 

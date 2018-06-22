@@ -29,9 +29,6 @@ public:
     //get the free space of the usb disk, in unit of KB
     int getUSBFreeSize() const;
 
-    //export 12 Lead ECG, will take the ownership of th fileBuilder
-    //will take the ownership of the file builder
-    bool export12LeadData(ECG12LeadFileBuilderBase *fileBuilder);
 
     //export error Log
     bool exportErrorLog();

@@ -26,9 +26,7 @@
 #include <QTimer>
 #include "Debug.h"
 #include <QTimer>
-#include "ECG12LDataStorage.h"
 #include "PrintManager.h"
-#include "ECG12LeadManager.h"
 #include "ErrorLogItem.h"
 #include "ErrorLog.h"
 
@@ -292,7 +290,7 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
                                  diagCalcTitle, _provider->getBaseLine());
 
     //申请完波形缓存后重新设置波形速率，因为进入监控页面波形是以250移动
-    _provider->setWaveformSample(ECG_WAVE_RATE_250);
+    _provider->setWaveformSample(250);
     for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
     {
         if (_waveWidget[i] == NULL)
@@ -1433,22 +1431,6 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
         }
     }
 
-    //如果12L还在进行文件传输则重新弹出进度条
-    if ((mode == ECG_DISPLAY_12_LEAD_FULL) && (ecg12LeadManager.isTransfer()))
-    {
-        if (EMAIL_SELECT == ecg12LeadManager.getTransferType())
-        {
-            unsigned char barBalue = (unsigned char)(ecg12LeadManager._exportWifiWidget->getBarValue());
-            ecg12LeadManager._exportWifiWidget->setVisible(true);
-            ecg12LeadManager._exportWifiWidget->setBarValue(barBalue);
-        }
-        else
-        {
-            unsigned char barBalue = (unsigned char)(ecg12LeadManager._exportUsbWidget->getBarValue());
-            ecg12LeadManager._exportUsbWidget->setVisible(true);
-            ecg12LeadManager._exportUsbWidget->setBarValue(barBalue);
-        }
-    }
 }
 
 /**************************************************************************************************

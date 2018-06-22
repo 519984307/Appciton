@@ -3,7 +3,6 @@
 #include <Debug.h>
 #include <sys/statfs.h>
 #include "ErrorLogExporter.h"
-#include "ECG12LeadExporter.h"
 #include <QTimer>
 #include <QProcess>
 #include "IMessageBox.h"
@@ -56,15 +55,6 @@ int USBManager::getUSBFreeSize() const
     return (usbStatfs.f_bfree * usbStatfs.f_bsize) >> 10;
 }
 
-bool USBManager::export12LeadData(ECG12LeadFileBuilderBase *fileBuilder)
-{
-    if(_addDataExporter(new ECG12LeadExporter(fileBuilder)))
-    {
-        return true;
-    }
-
-    return false;
-}
 
 bool USBManager::exportErrorLog()
 {

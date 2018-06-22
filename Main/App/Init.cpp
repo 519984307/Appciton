@@ -78,7 +78,6 @@ static void _initSystem(void)
 
     // 网络初始化。
 //    networkManager.construction();
-    mailManager.construction();
 
     // 按键板初始化。
 //    systemBoardProvider.construction();
@@ -182,7 +181,6 @@ static void _initComponents(void)
     // 数据管理。
     paramDataStorageManager.construction();
     summaryStorageManager.construction();
-    ecg12LDataStorage.construction();
     summaryRescueDataWidget.construction();
     summaryRescueRangePrint.construction();
     rescueDataExportWidget.construction();
@@ -194,9 +192,6 @@ static void _initComponents(void)
     rawDataCollection.construction();
     rawDataCollectionTxt.construction();
 
-    //12导
-    ecg12LDataPrint.construction();
-    ecg12LeadManager.construction();
 }
 
 /**************************************************************************************************
@@ -655,10 +650,6 @@ static void _initMenu(void)
 
     //其它弹出菜单初始化
     patientManager.construction();
-    ecg12LDataAcquire.construction();
-    ecg12LDataMessNote.construction();
-    ecg12LExportDataWidget.construction();
-    ecg12LSnapShotReview.construction();
 
     trendDataWidget.construction();
     trendRescueRangePrint.construction();
@@ -740,15 +731,7 @@ void deleteObjects(void)
     deleteUsbManager();
     deleteActivityLogManager();
 
-    deleteecg12LDataAcquire();
-    deleteecg12LDataMessNote();
-    deleteecg12LExportDataWidget();
-    deleteecg12LSnapShotReview();
-    deleteecg12LDataPrint();
-    deleteecg12LDataStorage();
-    deleteecg12LeadManager();
 
-    deletemailAddressWidget();
     deleteColorManager();
     deleteFontManager();
     deleteLanguageManager();
