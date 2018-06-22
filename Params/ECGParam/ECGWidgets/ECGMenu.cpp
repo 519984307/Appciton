@@ -10,6 +10,9 @@
 #include "WindowManager.h"
 #include "IConfig.h"
 #include <QTimer>
+#include "AlarmLimitMenu.h"
+#include "PublicMenuManager.h"
+#include "qlistwidget.h"
 
 ECGMenu *ECGMenu::_selfObj = NULL;
 
@@ -240,6 +243,14 @@ void ECGMenu::layoutExec(void)
     connect(_qrsTone, SIGNAL(currentIndexChanged(int)), this, SLOT(_qrsVolumSlot(int)));
     mainLayout->addWidget(_qrsTone);
 
+    _alarmLbtn = new LabelButton("");
+    _alarmLbtn->setFont(defaultFont());
+    _alarmLbtn->label->setFixedSize(labelWidth, ITEM_H);
+    _alarmLbtn->button->setFixedSize(btnWidth, ITEM_H);
+    _alarmLbtn->button->setText(trs("AlarmLimitSetUp"));
+    connect(_alarmLbtn->button, SIGNAL(realReleased()), this, SLOT(_alarmLbtnSlot()));
+    mainLayout->addWidget(_alarmLbtn);
+
     _addFixedOptions();
 
 
@@ -270,7 +281,12 @@ void ECGMenu::setECGLeadMode(int leadMode)
 
     return;
 }
-
+//报警项设置
+void ECGMenu::_alarmLbtnSlot()
+{
+    alarmLimitMenu.setFocusIndex(SUB_PARAM_ECG_PVCS+1);
+    publicMenuManager.changePage(&alarmLimitMenu, &ecgMenu);
+}
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -281,7 +297,8 @@ ECGMenu::ECGMenu() : SubMenu(trs("ECGMenu")),
                      _sweepSpeed(NULL),
                      _pacemaker(NULL),
                      _12Lpacemaker(NULL),
-                     _qrsTone(NULL)
+                     _qrsTone(NULL),
+                     _alarmLbtn(NULL)
 {
     setDesc(trs("ECGMenuDesc"));
 

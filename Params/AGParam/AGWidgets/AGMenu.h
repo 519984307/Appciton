@@ -45,6 +45,7 @@ private slots:
     void _speedIcombSlot(int index);
     void _isEnableAGComboSlot(int index);
     void _lBtonSlot(void);
+    void _alarmLbtnSlot(void);
     void _onConfigUpdated(void);
 
 private:
@@ -54,5 +55,6 @@ private:
     LabelButton *_agGasTypeLbtn[AG_TYPE_NR];//AG气体类型
     IComboList *_speedIcomb;             // 波形速度。
     bool _isEnable;//模块使能状态位
+    LabelButton *_alarmLbtn;            //跳到报警项设置按钮
 };
 #define agMenu (AGMenu::construction())

@@ -6,6 +6,8 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include "MenuManager.h"
+#include "AlarmLimitMenu.h"
+#include "PublicMenuManager.h"
 #include "LoadConfigMenu.h"
 #include "ConfigManager.h"
 
@@ -52,7 +54,12 @@ void RESPMenu::_monitorSlot(int index)
 {
     respParam.setRespMonitoring(index);
 }
-
+//报警项设置
+void RESPMenu::_alarmLbtnSlot()
+{
+    alarmLimitMenu.setFocusIndex(SUB_PARAM_NONE+1);
+    publicMenuManager.changePage(&alarmLimitMenu, &respMenu);
+}
 /**************************************************************************************************
  * 载入当前配置。
  *************************************************************************************************/
@@ -158,6 +165,14 @@ void RESPMenu::layoutExec(void)
     _monitor->addItem(trs("Enable"));
     connect(_monitor, SIGNAL(currentIndexChanged(int)), this, SLOT(_monitorSlot(int)));
     mainLayout->addWidget(_monitor);
+
+    _alarmLbtn = new LabelButton("");
+    _alarmLbtn->setFont(defaultFont());
+    _alarmLbtn->label->setFixedSize(labelWidth, ITEM_H);
+    _alarmLbtn->button->setFixedSize(btnWidth, ITEM_H);
+    _alarmLbtn->button->setText(trs("AlarmLimitSetUp"));
+    connect(_alarmLbtn->button, SIGNAL(realReleased()), this, SLOT(_alarmLbtnSlot()));
+    mainLayout->addWidget(_alarmLbtn);
 }
 
 /**************************************************************************************************

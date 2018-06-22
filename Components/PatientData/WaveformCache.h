@@ -12,8 +12,10 @@ struct WaveformRecorder
 {
     int curRecWaveNum;
     int totalRecWaveNum;
+    int sampleRate;
     WaveDataType *buf;
     void *recObj;
+    void (*recordDurationIncreaseCallback)(WaveformID id, void *obj);
     void (*recordCompleteCallback)(WaveformID id, void *obj);
 };
 

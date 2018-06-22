@@ -50,6 +50,7 @@ private slots:
     void _sensitivitySlot(int index);
     void _zeroCalibReleased(void);
     void _calibrationReleased(void);
+    void _alarmLbtnSlot(void);
     void _onConfigUpdated(void);
 
 private:    
@@ -63,5 +64,6 @@ private:
     LabelButton *_zeroCalib;                // 校零。
     LabelButton *_calibration;              // 校准
     QLabel *_zeroRev;                       // 校零校准回复信息
+    LabelButton *_alarmLbtn;                //跳到报警项设置按钮
 };
 #define ibpMenu (IBPMenu::construction())

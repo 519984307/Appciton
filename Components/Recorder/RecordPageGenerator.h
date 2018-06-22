@@ -1,5 +1,6 @@
 #pragma once
 #include <QObject>
+#include <QBasicTimer>
 #include "RecordPage.h"
 #include "PatientDefine.h"
 #include "TrendDataDefine.h"
@@ -111,8 +112,34 @@ public:
         NullPage,
     };
 
-    RecordPageGenerator(QObject *parent = 0 );
+    enum PrintPriority
+    {
+        PriorityNone = 0,
+        PriorityContinuous = 1,
+        PriorityReview = 2,
+        PriorityTrigger = 3,
+    };
+
+    RecordPageGenerator(QObject *parent = 0);
     ~RecordPageGenerator();
+
+    /**
+     * @brief setTrigger mark this generator as a trigger generator
+     * @param flag
+     */
+    void setTrigger(bool flag);
+
+    /**
+     * @brief isTrigger check whether this generator is a trigger generator
+     * @return
+     */
+    bool isTrigger() const;
+
+    /**
+     * @brief getPriority get the print prority of this generator
+     * @return
+     */
+    virtual PrintPriority getPriority() const;
 
     /**
      * @brief type get the type of the generator
@@ -204,9 +231,12 @@ protected:
      * @brief createTrendPage create a trend page
      * @param trendData trend data
      * @param showEventTime show the event time or not
+     * @param timeStringCaption override the default time string, if the string is empty, use the default string
+     * @param trendPageTitle the trend page title string, if the string is empty, display nothing.
      * @return a record page
      */
-    static RecordPage *createTrendPage(const TrendDataPackage& trendData, bool showEventTime = false, const QString  &timeStringCaption = QString());
+    static RecordPage *createTrendPage(const TrendDataPackage& trendData, bool showEventTime = false,
+                                       const QString  &timeStringCaption = QString(), const QString &trendPageTitle = QString());
 
     /**
      * @brief getTrendStringList get a trend string list from the trend data,
@@ -276,7 +306,9 @@ protected:
 
 
 private:
-    bool _requestStop; // request stop flag
-    bool _generate;    // generate page or not
-    int _timerID;      // timer id
+    bool _requestStop;  // request stop flag
+    bool _generate;     // generate page or not
+    bool _trigger;      // store the trigger flag
+    QBasicTimer _timer; // timer to provide timer event
+    int _timerInterval; //timer interval
 };

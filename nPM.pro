@@ -233,6 +233,7 @@ SOURCES +=                                                                      
     Components/PatientData/TrendCache.cpp                                       \
     Components/PatientData/TrendGraphWidget.cpp                                 \
     Components/PatientData/TrendDataWidget.cpp                                  \
+    Components/PatientData/TrendDataUtil.cpp                                  \
     Components/PatientData/TrendDataSetWidget.cpp                               \
     Components/PatientData/RescueDataDeleteWidget.cpp                           \
     Components/PatientData/TrendDataStorageManager.cpp                          \
@@ -243,6 +244,7 @@ SOURCES +=                                                                      
     Components/PatientData/TrendSubWaveWidget.cpp                               \
     Components/PatientData/IMoveButton.cpp                                      \
     Components/PatientData/TrendGraphSetWidget.cpp                              \
+    Components/PatientData/TrendPrintWidget.cpp                                 \
     Components/Summary/SummaryItem.cpp                                          \
     Components/Summary/SummaryRescueDataWidget.cpp                              \
     Components/Summary/SummaryRescueRangePrint.cpp                              \
@@ -297,6 +299,7 @@ SOURCES +=                                                                      
     Components/Recorder/OxyCRGPageGenerator.cpp                                 \
     Components/Recorder/FreezePageGenerator.cpp                                 \
     Components/Recorder/TrendGraphPageGenerator.cpp                             \
+    Components/Recorder/TriggerPageGenerator.cpp                                \
     Components/Recorder/RecordPageProcessor.cpp                                 \
     Components/PdfWriter/HaruPdfWriter.cpp                                      \
     Components/PdfWriter/QPrinterPdfWriter.cpp                                  \
@@ -516,9 +519,6 @@ SOURCES +=                                                                      
     Main/MergeConfig.cpp                                                        \
     Main/Starter.cpp                                                            \
 
-
-
-
 HEADERS +=                                                                      \
     SOUP/SmtpClientForQt/src/smtpexports.h                                      \
     SOUP/SmtpClientForQt/src/emailaddress.h                                     \
@@ -727,6 +727,7 @@ HEADERS +=                                                                      
     Components/PatientData/IMoveButton.h                                        \
     Components/PatientData/TrendGraphSetWidget.h                                \
     Components/PatientData/EventDataSymbol.h                                    \
+    Components/PatientData/TrendPrintWidget.h                                   \
     Components/PatientManager/PatientManager.h                                  \
     Components/PatientManager/PatientBarWidget.h                                \
     Components/PatientManager/PatientDefine.h                                   \
@@ -789,6 +790,7 @@ HEADERS +=                                                                      
     Components/Recorder/OxyCRGPageGenerator.h                                   \
     Components/Recorder/FreezePageGenerator.h                                   \
     Components/Recorder/TrendGraphPageGenerator.h                               \
+    Components/Recorder/TriggerPageGenerator.h                                  \
     Components/Recorder/RecordPageProcessor.h                                   \
     Components/PdfWriter/HaruPdfWriter.h                                        \
     Components/PdfWriter/QPrinterPdfWriter.h                                    \

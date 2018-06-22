@@ -120,6 +120,8 @@ public:
     // 注册自定义类型操作
     void registerUserOperate(ISpinBoxOperateIFace *operate);
 
+    //设置触发
+
     // 构造与析构。
     ISpinBox();
     ISpinBox(const QString &title, bool displayLabel = true);

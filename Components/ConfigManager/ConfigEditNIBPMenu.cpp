@@ -4,9 +4,9 @@
 #include "NIBPSymbol.h"
 #include "LabelButton.h"
 #include "MenuGroup.h"
+#include "ConfigEditAlarmLimitMenu.h"
 #include "LoadConfigMenu.h"
 #include "ConfigManager.h"
-
 class ConfigEditNIBPMenuPrivate
 {
 public:
@@ -31,6 +31,7 @@ public:
 
     IComboList *combos[ComboListMax];
     const char *comboLabels[ComboListMax];
+    LabelButton *_alarmLbtn;            //跳到报警项设置按钮
 };
 
 void ConfigEditNIBPMenuPrivate::loadOptions()
@@ -109,8 +110,25 @@ void ConfigEditNIBPMenu::layoutExec()
         //存放每个下拉框的指针
         d_ptr->combos[i] = combo;
     }
+
+    d_ptr->_alarmLbtn = new LabelButton("");
+    d_ptr->_alarmLbtn->setFont(defaultFont());
+    d_ptr->_alarmLbtn->label->setFixedSize(labelWidth, ITEM_H);
+    d_ptr->_alarmLbtn->button->setFixedSize(btnWidth, ITEM_H);
+    d_ptr->_alarmLbtn->button->setText(trs("AlarmLimitSetUp"));
+    connect(d_ptr->_alarmLbtn->button, SIGNAL(realReleased()), this, SLOT(_alarmLbtnSlot()));
+    mainLayout->addWidget(d_ptr->_alarmLbtn);
     //按照比例分配空余空间
     mainLayout->addStretch(1);
+}
+//报警项设置
+void ConfigEditNIBPMenu::_alarmLbtnSlot()
+{
+    SubMenu *subMenuPrevious = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditNIBPMenu"] ;
+    SubMenu *subMenuCurrent = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditAlarmLimitMenu"] ;
+    ConfigEditAlarmLimitMenu* alarmLimit = qobject_cast<ConfigEditAlarmLimitMenu*>(subMenuCurrent);
+    alarmLimit->setFocusIndex(SUB_PARAM_NIBP_SYS+1);
+    configEditMenuGrp.changePage(subMenuCurrent, subMenuPrevious);
 }
 
 void ConfigEditNIBPMenu::readyShow()

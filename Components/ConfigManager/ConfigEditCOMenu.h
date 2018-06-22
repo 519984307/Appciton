@@ -55,11 +55,16 @@ private slots:
      * @brief _injectionVolumnReleased 注射液体积改变方法
      */
     void _injectionVolumnReleased(void);
+    /**
+     * @brief _alarmLbtnSlot 报警设置槽函数
+     */
+    void _alarmLbtnSlot(void);
+
 private:
     LabelButton  *_ductRatio;             // CO系数(漂浮导管系数)
     IComboList   *_inputMode;             // 注射液温度来源(Ti输入模式设置)
     LabelButton  *_injectionTemp;         // 注射液温度
     LabelButton  *_injectionVolumn;       // 注射液体积
     IComboList   *_measureMode;           // 测量模式
-
+    LabelButton *_alarmLbtn;            //跳到报警项设置按钮
 };

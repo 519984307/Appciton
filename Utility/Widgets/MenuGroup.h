@@ -59,8 +59,14 @@ public:
     //获取子菜单高度
     int getSubmenuHeight() {return _submenuWidth;}
 
+    //设置当前子菜单
+    void setCurrentSubmenu(QWidget*widget);
+
     //获取子菜单宽度
     int getSubmenuWidth() {return _submenuWidth;}
+
+    //改变子页面
+    void changePage(SubMenu *current, SubMenu *previous);
 
     // 构造与析构。
     MenuGroup(const QString &name);
@@ -68,7 +74,7 @@ public:
 
 signals:
     void menuGroupReturn();
-
+    void _changePageSignal(QListWidgetItem*, QListWidgetItem*);
 protected slots:
     // 返回到菜单列表项。
     virtual void returnMenuList();

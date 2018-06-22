@@ -14,14 +14,19 @@
 #include "Debug.h"
 #include "ConfigManager.h"
 #include "OxyCRGEventWaveWidget.h"
+#include "Alarm.h"
+#include "AlarmConfig.h"
 
 class EventStorageItemPrivate
 {
 public:
-    EventStorageItemPrivate(EventType type, const QList<WaveformID> &waveforms) :
+    EventStorageItemPrivate(EventStorageItem * const q_ptr, EventType type, const QList<WaveformID> &waveforms) :
+        q_ptr(q_ptr),
         waveforms(waveforms),
         startCollect(false),
         trendCacheComplete(false),
+        waitForTriggerPrintFlag(false),
+        triggerPrintStopped(false),
         almInfo(NULL),
         codeMarkerInfo(NULL),
         oxyCRGInfo(NULL)
@@ -68,17 +73,23 @@ public:
 
     void saveTrendData(unsigned timestamp, const TrendCacheData &data, const TrendAlarmStatus &almStatus);
 
+    static void waveCacheDurationIncrease(WaveformID id, void *obj);
+
     static void waveCacheCompleteCallback(WaveformID id, void *obj);
 
     static void trendCacheCompleteCallback(unsigned timestamp, const TrendCacheData &data, const TrendAlarmStatus &almStatus, void *obj);
 
+    EventStorageItem * const q_ptr;
     QList<TrendDataSegment*> trendSegments;
     QList<WaveformDataSegment *> waveSegments;
     EventInfoSegment eventInfo;
     QList<WaveformID> waveforms;
     QMap<WaveformID, bool> waveComplete;
+    QMap<WaveformID, int> waveCacheDuration;
     bool startCollect;
     bool trendCacheComplete;
+    bool waitForTriggerPrintFlag;
+    bool triggerPrintStopped;
 
     AlarmInfoSegment *almInfo;
     CodeMarkerSegment *codeMarkerInfo;
@@ -135,14 +146,18 @@ void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCache
     trendSegments.append(trendSeg);
 }
 
+void EventStorageItemPrivate::waveCacheDurationIncrease(WaveformID id, void *obj)
+{
+    EventStorageItemPrivate *p = reinterpret_cast<EventStorageItemPrivate *>(obj);
+    Q_ASSERT(p != NULL);
+    p->waveCacheDuration[id]  += 1;
+}
+
 void EventStorageItemPrivate::waveCacheCompleteCallback(WaveformID id, void *obj)
 {
     EventStorageItemPrivate *p = reinterpret_cast<EventStorageItemPrivate *>(obj);
     Q_ASSERT(p != NULL);
-    if(p)
-    {
-        p->waveComplete[id] = true;
-    }
+    p->waveComplete[id] = true;
 }
 
 void EventStorageItemPrivate::trendCacheCompleteCallback(unsigned timestamp, const TrendCacheData &data, const TrendAlarmStatus &almStatus, void *obj)
@@ -158,13 +173,13 @@ void EventStorageItemPrivate::trendCacheCompleteCallback(unsigned timestamp, con
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms)
-    :d_ptr(new EventStorageItemPrivate(type, storeWaveforms))
+    :d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
 {
     qDebug()<<"Create Event Stroage Item:"<<this<<" type: "<<type;
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, const AlarmInfoSegment &almInfo)
-    :d_ptr(new EventStorageItemPrivate(type, storeWaveforms))
+    :d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
 {
     d_ptr->almInfo = new AlarmInfoSegment();
     d_ptr->almInfo->alarmLimit = almInfo.alarmLimit;
@@ -175,7 +190,7 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, const char *codeName)
-    :d_ptr(new EventStorageItemPrivate(type, storeWaveforms))
+    :d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
 {
     d_ptr->codeMarkerInfo = new CodeMarkerSegment;
     Util::strlcpy(d_ptr->codeMarkerInfo->codeName, codeName, sizeof(d_ptr->codeMarkerInfo->codeName));
@@ -183,7 +198,7 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, OxyCRGEventType oxyCRGtype, const AlarmInfoSegment &almInfo)
-    :d_ptr(new EventStorageItemPrivate(type, storeWaveforms))
+    :d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
 {
     d_ptr->almInfo = new AlarmInfoSegment();
     d_ptr->almInfo->alarmLimit = almInfo.alarmLimit;
@@ -223,7 +238,7 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, OxyCRGEventType oxyCRGtype)
-    :d_ptr(new EventStorageItemPrivate(type, storeWaveforms))
+    :d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
 {
     d_ptr->oxyCRGInfo = new OxyCRGSegment;
     d_ptr->oxyCRGInfo->type = oxyCRGtype;
@@ -242,6 +257,12 @@ EventType EventStorageItem::getType() const
 
 bool EventStorageItem::checkCompleted()
 {
+    if(d_ptr->waitForTriggerPrintFlag && !d_ptr->triggerPrintStopped)
+    {
+        //have to wait until the page generator is stopped
+        return false;
+    }
+
     if(timeManager.getCurTime() -  d_ptr->eventInfo.timestamp  > (unsigned) (d_ptr->eventInfo.duration_after + 2))
     {
         //time expired
@@ -294,20 +315,6 @@ bool EventStorageItem::startCollectTrendAndWaveformData()
 
     if(d_ptr->eventInfo.type == EventOxyCRG)
     {
-//        QList<TrendCacheData> trendDataList = trendCache.getTrendData(currentTime - d_ptr->eventInfo.duration_before,
-//                                                                      currentTime);
-//        QList<TrendAlarmStatus> alarmStatusList = trendCache.getTrendAlarmStatus(currentTime - d_ptr->eventInfo.duration_before,
-//                                                                                 currentTime);
-
-//        unsigned t = currentTime - d_ptr->eventInfo.duration_before;
-//        int i = 0;
-//        while(t <= currentTime)
-//        {
-//            d_ptr->saveTrendData(t, trendDataList.at(i), alarmStatusList.at(i));
-//            t++;
-//            i++;
-//        };
-
         for (unsigned t = currentTime - d_ptr->eventInfo.duration_before; t <= currentTime; t ++)
         {
             TrendCacheData trendData;
@@ -352,14 +359,17 @@ bool EventStorageItem::startCollectTrendAndWaveformData()
         waveSegment->waveNum = waveNum;
 
         d_ptr->waveComplete[waveid] = false;
+        d_ptr->waveCacheDuration[waveid] = d_ptr->eventInfo.duration_before;
 
         waveformCache.readStorageChannel(waveid, waveSegment->waveData, d_ptr->eventInfo.duration_before, false);
 
         WaveformRecorder recorder;
         recorder.buf = waveSegment->waveData;
         recorder.curRecWaveNum = d_ptr->eventInfo.duration_before * sampleRate;
-        recorder.totalRecWaveNum = waveSegment->waveNum;
+        recorder.sampleRate = sampleRate;
+        recorder.totalRecWaveNum = waveNum;
         recorder.recObj = d_ptr.data();
+        recorder.recordDurationIncreaseCallback = EventStorageItemPrivate::waveCacheDurationIncrease;
         recorder.recordCompleteCallback = EventStorageItemPrivate::waveCacheCompleteCallback;
         waveformCache.registerWaveformRecorder(waveid, recorder);
     }
@@ -425,5 +435,133 @@ QByteArray EventStorageItem::getStorageData() const
     }
 
     return buffer.data();
+}
+
+QList<WaveformID> EventStorageItem::getStoreWaveforms() const
+{
+    return d_ptr->waveforms;
+}
+
+int EventStorageItem::getCurWaveCacheDuration(WaveformID waveId) const
+{
+    return d_ptr->waveCacheDuration.value(waveId, -1);
+}
+
+bool EventStorageItem::getOneSecondWaveform(WaveformID waveId, WaveDataType *waveBuf, int startSecond)
+{
+    if(d_ptr->waveCacheDuration.contains(waveId) && d_ptr->waveCacheDuration.value(waveId) > startSecond)
+    {
+        int waveIndex = d_ptr->waveforms.indexOf(waveId);
+        WaveformDataSegment *waveSegment = d_ptr->waveSegments.at(waveIndex);
+        int startIndex = startSecond * waveSegment->sampleRate;
+        qMemCopy(waveBuf, waveSegment->waveData + startIndex, waveSegment->sampleRate * sizeof(WaveDataType));
+        return true;
+    }
+    return false;
+}
+
+int EventStorageItem::getTotalWaveCacheDuration() const
+{
+    return d_ptr->eventInfo.duration_after + d_ptr->eventInfo.duration_before;
+}
+
+TrendDataPackage EventStorageItem::getTrendData() const
+{
+    return parseTrendSegment(d_ptr->trendSegments.at(0));
+}
+
+void EventStorageItem::setWaitForTriggerPrintFlag(bool flag)
+{
+    d_ptr->waitForTriggerPrintFlag = flag;
+}
+
+QString EventStorageItem::getEventTitle() const
+{
+    QString eventTitle;
+    switch(d_ptr->eventInfo.type)
+    {
+    case EventPhysiologicalAlarm:
+    {
+        SubParamID subparamID = (SubParamID) d_ptr->almInfo->subParamID;
+        AlarmLimitIFace *almIface = alertor.getAlarmLimitIFace(subparamID);
+        AlarmPriority priority;
+        if (almIface)
+        {
+            priority = almIface->getAlarmPriority(d_ptr->almInfo->alarmType);
+        }
+        else
+        {
+            break;
+        }
+
+        QString titleStr;
+
+        if (priority == ALARM_PRIO_LOW)
+        {
+            titleStr = "*";
+        }
+        else if (priority == ALARM_PRIO_MED)
+        {
+            titleStr = "**";
+        }
+        else if(priority == ALARM_PRIO_HIGH)
+        {
+            titleStr = "***";
+        }
+
+        ParamID paramId = paramInfo.getParamID(subparamID);
+        titleStr += " ";
+        titleStr += trs(Alarm::getPhyAlarmMessage(paramId,
+                                                  d_ptr->almInfo->alarmType,
+                                                  d_ptr->almInfo->alarmInfo & 0x01));
+
+        if(!(d_ptr->almInfo->alarmInfo & 0x01))
+        {
+            if(d_ptr->almInfo->alarmInfo & 0x02)
+            {
+                titleStr += " > ";
+            }
+            else {
+                titleStr += " < ";
+            }
+
+            UnitType unit = paramManager.getSubParamUnit(paramId, subparamID);
+            LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subparamID, unit);
+
+            titleStr += Util::convertToString(d_ptr->almInfo->alarmLimit, config.scale);
+        }
+
+        eventTitle = titleStr;
+    }
+        break;
+    case EventCodeMarker:
+    {
+        eventTitle = trs(QString(d_ptr->codeMarkerInfo->codeName));
+    }
+        break;
+    case EventRealtimePrint:
+    {
+        eventTitle = trs("RealtimePrintSegment");
+    }
+        break;
+    case EventNIBPMeasurement:
+    {
+        eventTitle = trs("NibpMeasurement");
+    }
+        break;
+    case EventWaveFreeze:
+    {
+        eventTitle = trs("WaveFreeze");
+    }
+        break;
+    default:
+        break;
+    }
+    return eventTitle;
+}
+
+void EventStorageItem::onTriggerPrintStopped()
+{
+    d_ptr->triggerPrintStopped = true;
 }
 

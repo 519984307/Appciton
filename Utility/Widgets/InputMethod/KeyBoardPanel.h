@@ -76,12 +76,20 @@ private:
     void _loadHelpBtn(const QString &key);
 
 private:
-    static const int _itemWidth = 100;
-    static const int _itemHeight = 34;
+    static const int _panelWidth = 640;
+    static const int _panelHeight = 400;
+    static const int _keySpace = 12;
+
+    static const int _itemWidth = (_panelWidth-_keySpace*3-44)/4;
+    //static int _itemHeight =
+
+    static const int _titleFontSize = 24;
+    static const int _keyFontSize = 28;
 
     bool _isInvalid;
     bool _btnEnable;
     int _maxLength;
+    int _itemHeight;
     int _lastFoucsIndex;
     QList<IButton*> _helpKeys;
     QList<IButton*> _keys;

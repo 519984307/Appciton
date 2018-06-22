@@ -5,6 +5,8 @@
 #include "MenuManager.h"
 #include "IConfig.h"
 #include <QHBoxLayout>
+#include "AlarmLimitMenu.h"
+#include "PublicMenuManager.h"
 #include <QVBoxLayout>
 #include "LoadConfigMenu.h"
 
@@ -77,6 +79,21 @@ void SPO2Menu::layoutExec(void)
     _smartPulseTone->addItem(trs(SPO2Symbol::convert(SPO2_SMART_PLUSE_TONE_OFF)));
     connect(_smartPulseTone, SIGNAL(currentIndexChanged(int)), this, SLOT(_smartPulseToneSlot(int)));
     mainLayout->addWidget(_smartPulseTone);
+
+    _alarmLbtn = new LabelButton("");
+    _alarmLbtn->setFont(defaultFont());
+    _alarmLbtn->label->setFixedSize(labelWidth, ITEM_H);
+    _alarmLbtn->button->setFixedSize(btnWidth, ITEM_H);
+    _alarmLbtn->button->setText(trs("AlarmLimitSetUp"));
+    connect(_alarmLbtn->button, SIGNAL(realReleased()), this, SLOT(_alarmLbtnSlot()));
+    mainLayout->addWidget(_alarmLbtn);
+}
+
+//报警项设置
+void SPO2Menu::_alarmLbtnSlot()
+{
+    alarmLimitMenu.setFocusIndex(SUB_PARAM_SPO2+1);
+    publicMenuManager.changePage(&alarmLimitMenu, &spo2Menu);
 }
 
 /**************************************************************************************************

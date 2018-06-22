@@ -27,8 +27,8 @@ public:
     unsigned t;
     WaveformID id;
     int sampleRate;
-    unsigned duration;
-    unsigned reviewTime;
+    int duration;
+    int reviewTime;
     int baseline;
     QVector<WaveDataType> wavedata;
 };

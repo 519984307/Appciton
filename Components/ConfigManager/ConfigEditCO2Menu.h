@@ -61,6 +61,10 @@ private slots:
      * @param strValue 补偿值的字符串形式
      */
     void _n2oCompenReleased(QString strValue);
+    /**
+     * @brief _alarmLbtnSlot 报警设置槽函数
+     */
+    void _alarmLbtnSlot(void);
 
 private:
     /**
@@ -72,4 +76,5 @@ private:
     IComboList  *_fico2Display;           // FiCO2显示开关。
     ISpinBox    *_o2Compen;               // 氧气补偿。
     ISpinBox    *_n2oCompen;              // 笑气补偿。
+    LabelButton *_alarmLbtn;            //跳到报警项设置按钮
 };

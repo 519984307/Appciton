@@ -794,6 +794,15 @@ SelectSnapshotsToPrint,选择快照打印,Select Snapshots to Print
 SelectSnapshotsToTransfer,选择快照传输,Select Snapshots to Transfer
 SelectSingleIncidentToSelectSnapshots,选择一个营救事件以选择快照！,Select Single Incident to Select Snapshots to print!
 PrintSnapshot,打印快照,Print Snapshot
+PrintSet,打印设置,Print Set
+StartTime,开始时间,start time
+EndTime,结束时间,end time
+YearMonthDay,(年-月-日),(year-month-day)
+HourSystem,(24小时制),(24 hour system)
+PrintLength,打印长度,Print length
+Hour,小时,hour
+Minute,分钟,minute
+Second,秒,second
 PatTrendData,病人趋势数据,Patient Trend Data
 TrendTableSet,趋势表设置,Trend Table Set
 ResolutionRatio,分辨率,Resolution Ratio

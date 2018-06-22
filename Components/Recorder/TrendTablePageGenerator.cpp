@@ -1,6 +1,5 @@
 #include "TrendTablePageGenerator.h"
 #include "PatientManager.h"
-#include "TrendDataStorageManager.h"
 #include <QList>
 #include <QByteArray>
 #include "ParamManager.h"
@@ -15,7 +14,8 @@ public:
         :curPageType(RecordPageGenerator::TitlePage),
           backend(NULL),
           curIndex(-1),
-          stopIndex(-1)
+          stopIndex(-1),
+          interval(30)
     {}
 
     // load data from the backend, if don't have any more data, return false
@@ -29,6 +29,7 @@ public:
     QList<QStringList> stringLists;
     int curIndex;
     int stopIndex;
+    int interval;
 };
 
 bool  dataPacketLessThan(const TrendDataPackage& d1, const TrendDataPackage& d2)
@@ -55,7 +56,7 @@ bool TrendTablePageGeneratorPrivate::loadStringList()
 
     int count = 0;
     /* 1. get $RECORD_PER_PAGE trend data at most
-     * 2. the trend data timestamp can divide by 30
+     * 2. the trend data timestamp can divide by the interval
      * 3. the trend data must have  save sub param id.
      * 4. when the sub param id is different, we need to print it in next round
      */
@@ -72,12 +73,12 @@ bool TrendTablePageGeneratorPrivate::loadStringList()
 
         TrendDataSegment *dataSeg = reinterpret_cast<TrendDataSegment*> (data.data());
 
-        if(dataSeg->timestamp % 30 != 0)
+        if(dataSeg->timestamp % interval != 0)
         {
             continue;
         }
 
-        TrendDataPackage dataPackage = TrendDataStorageManager::parseTrendSegment(dataSeg);
+        TrendDataPackage dataPackage = parseTrendSegment(dataSeg);
 
         if(printSubParams.isEmpty())
         {
@@ -488,7 +489,7 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
     }
 }
 
-TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, int startIndex, int stopIndex, QObject *parent)
+TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, int startIndex, int stopIndex, int interval, QObject *parent)
     :RecordPageGenerator(parent), d_ptr(new TrendTablePageGeneratorPrivate)
 {
     if(startIndex < stopIndex)
@@ -508,6 +509,7 @@ TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, int s
     }
 
     d_ptr->backend = backend;
+    d_ptr->interval = interval;
 }
 
 TrendTablePageGenerator::~TrendTablePageGenerator()

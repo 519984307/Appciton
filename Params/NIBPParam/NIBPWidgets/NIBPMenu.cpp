@@ -7,6 +7,8 @@
 #include <QVBoxLayout>
 #include "MenuManager.h"
 #include "IConfig.h"
+#include "AlarmLimitMenu.h"
+#include "PublicMenuManager.h"
 #include "LoadConfigMenu.h"
 
 NIBPMenu *NIBPMenu::_selfObj = NULL;
@@ -240,8 +242,22 @@ void NIBPMenu::layoutExec(void)
     {
         _statBtn->show();
     }
+
+    _alarmLbtn = new LabelButton("");
+    _alarmLbtn->setFont(defaultFont());
+    _alarmLbtn->label->setFixedSize(labelWidth, ITEM_H);
+    _alarmLbtn->button->setFixedSize(btnWidth, ITEM_H);
+    _alarmLbtn->button->setText(trs("AlarmLimitSetUp"));
+    connect(_alarmLbtn->button, SIGNAL(realReleased()), this, SLOT(_alarmLbtnSlot()));
+    mainLayout->addWidget(_alarmLbtn);
 }
 
+//报警项设置
+void NIBPMenu::_alarmLbtnSlot()
+{
+    alarmLimitMenu.setFocusIndex(SUB_PARAM_NIBP_SYS+1);
+    publicMenuManager.changePage(&alarmLimitMenu, &nibpMenu);
+}
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/

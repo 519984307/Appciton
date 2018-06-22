@@ -8,14 +8,8 @@
 #include <QMutex>
 #include "Debug.h"
 #include "WindowManager.h"
-#include "RESPSymbol.h"
-#include "SPO2Symbol.h"
-#include "NIBPSymbol.h"
-#include "CO2Symbol.h"
-#include "TEMPSymbol.h"
-#include "COSymbol.h"
-#include "IBPSymbol.h"
-#include "AGSymbol.h"
+#include "RecorderManager.h"
+#include "TriggerPageGenerator.h"
 
 #define MAX_STORE_WAVE_NUM 3
 
@@ -126,6 +120,13 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
                                                   d->getStoreWaveList(paramWave),
                                                   almInfo);
     item->startCollectTrendAndWaveformData();
+
+    //TODO: check whether support trigger print
+    if(recorderManager.addPageGenerator(new TriggerPageGenerator(item)))
+    {
+        item->setWaitForTriggerPrintFlag(true);
+    }
+
     if(item)
     {
         d->mutex.lock();
@@ -249,127 +250,6 @@ void EventStorageManager::checkCompletedEvent()
         }
     }
 }
-
-QString EventStorageManager::getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot)
-{
-    switch(paramId)
-    {
-    case PARAM_ECG:
-        if(isOneShot)
-        {
-            return ECGSymbol::convert((ECGOneShotType)alarmType, ecgParam.getLeadConvention());
-        }
-        else
-        {
-            //no limit alarm
-        }
-        break;
-    case PARAM_DUP_ECG:
-        if(isOneShot)
-        {
-            //no oneshot alarm
-        }
-        else
-        {
-            return ECGSymbol::convert((ECGDupLimitAlarmType)alarmType);
-        }
-        break;
-    case PARAM_SPO2:
-        if(isOneShot)
-        {
-            return SPO2Symbol::convert((SPO2OneShotType)alarmType);
-        }
-        else
-        {
-            return SPO2Symbol::convert((SPO2LimitAlarmType)alarmType);
-        }
-        break;
-    case PARAM_RESP:
-        if(isOneShot)
-        {
-            return RESPSymbol::convert((RESPOneShotType)alarmType);
-        }
-        else
-        {
-            //no limit alarm
-        }
-        break;
-    case PARAM_DUP_RESP:
-        if(isOneShot)
-        {
-            //no oneshot alarm
-        }
-        else
-        {
-            return RESPSymbol::convert((RESPDupLimitAlarmType)alarmType);
-        }
-        break;
-    case PARAM_NIBP:
-        if(isOneShot)
-        {
-            return NIBPSymbol::convert((NIBPOneShotType)alarmType);
-        }
-        else
-        {
-            return NIBPSymbol::convert((NIBPLimitAlarmType)alarmType);
-        }
-        break;
-    case PARAM_CO2:
-        if(isOneShot)
-        {
-            return CO2Symbol::convert((CO2OneShotType)alarmType);
-        }
-        else
-        {
-            return CO2Symbol::convert((CO2LimitAlarmType)alarmType);
-        }
-        break;
-    case PARAM_TEMP:
-        if(isOneShot)
-        {
-            return TEMPSymbol::convert((TEMPOneShotType)alarmType);
-        }
-        else
-        {
-            return TEMPSymbol::convert((TEMPLimitAlarmType)alarmType);
-        }
-        break;
-    case PARAM_CO:
-        if (isOneShot)
-        {
-            return COSymbol::convert((COOneShotType)alarmType);
-        }
-        else
-        {
-            return COSymbol::convert((COLimitAlarmType)alarmType);
-        }
-        break;
-    case PARAM_IBP:
-        if (isOneShot)
-        {
-            return IBPSymbol::convert((IBPOneShotType)alarmType);
-        }
-        else
-        {
-            return IBPSymbol::convert((IBPLimitAlarmType)alarmType);
-        }
-        break;
-    case PARAM_AG:
-        if (isOneShot)
-        {
-            return AGSymbol::convert((AGOneShotType)alarmType);
-        }
-        else
-        {
-            return AGSymbol::convert((AGLimitAlarmType)alarmType);
-        }
-        break;
-    default:
-        break;
-    }
-    return "";
-}
-
 
 void EventStorageManager::run()
 {

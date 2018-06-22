@@ -171,6 +171,27 @@ void MenuGroup::_changePage(QListWidgetItem *current, QListWidgetItem *previous)
     _scorllArea->setWidget(m);
     titleLabel->setText(m->desc());
 }
+/**************************************************************************************************
+ * 功能： 改变当前页。
+ * 参数：
+ *      current: 当前页对象。
+ *      previous: 上个页对象。
+ *************************************************************************************************/
+void MenuGroup::changePage(SubMenu *current, SubMenu *previous)
+{
+    if(current==previous)
+    {
+        return;
+    }
+    for(int i=0; i<_listTable->count();i++)
+    {
+        if(current->name()==_listTable->item(i)->text())
+        {
+            _listTable->setCurrentRow(i);
+            break;
+        }
+    }
+}
 
 /**************************************************************************************************
  * 功能：反向操作显现或隐藏。
@@ -190,6 +211,19 @@ void MenuGroup::popup(int x, int y)
 //    move(x, y);
 //    show();
     menuManager.popupWidegt(this, x, y);
+}
+
+/**************************************************************************************************
+ * 功能： 设置当前子菜单。
+ * 参数：
+ *      widget：需聚焦的子菜单。
+ *************************************************************************************************/
+void MenuGroup::setCurrentSubmenu(QWidget *widget)
+{
+    if(widget)
+    {
+        _subMenus->setCurrentIndex(2);
+    }
 }
 
 /**************************************************************************************************

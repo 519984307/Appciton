@@ -11,6 +11,8 @@
 #include "MenuManager.h"
 #include "NumberInput.h"
 #include "IMessageBox.h"
+#include "AlarmLimitMenu.h"
+#include "PublicMenuManager.h"
 #include "LoadConfigMenu.h"
 #include "ConfigManager.h"
 
@@ -167,6 +169,15 @@ void IBPMenu::layoutExec(void)
     _zeroRev->setStyleSheet("background:transparent;border-width:0;border-style:outset");
     _zeroRev->setAlignment(Qt::AlignRight);
     mainLayout->addWidget(_zeroRev);
+
+    _alarmLbtn = new LabelButton("");
+    _alarmLbtn->setFont(defaultFont());
+    _alarmLbtn->label->setFixedSize(labelWidth, ITEM_H);
+    _alarmLbtn->button->setFixedSize(btnWidth, ITEM_H);
+    _alarmLbtn->button->setText(trs("AlarmLimitSetUp"));
+    connect(_alarmLbtn->button, SIGNAL(realReleased()), this, SLOT(_alarmLbtnSlot()));
+    mainLayout->addWidget(_alarmLbtn);
+
 }
 
 void IBPMenu::_speedSlot(int index)
@@ -213,6 +224,13 @@ void IBPMenu::_sensitivitySlot(int index)
 void IBPMenu::_zeroCalibReleased()
 {
     ibpParam.zeroCalibration(IBP_INPUT_1);
+}
+
+//报警项设置
+void IBPMenu::_alarmLbtnSlot()
+{
+    alarmLimitMenu.setFocusIndex(SUB_PARAM_ART_SYS+1);
+    publicMenuManager.changePage(&alarmLimitMenu, &ibpMenu);
 }
 
 /**************************************************************************************************

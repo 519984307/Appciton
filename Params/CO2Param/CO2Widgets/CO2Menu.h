@@ -33,6 +33,7 @@ private slots:
     void _o2CompenReleased(QString strValue);
     void _n2oCompenReleased(QString strValue);
     void _zeroCalibReleased(void);
+    void _alarmLbtnSlot(void);
     void _onConfigUpdated(void);
 
 private:
@@ -45,5 +46,6 @@ private:
     ISpinBox *_o2Compen;              // 氧气补偿。
     ISpinBox *_n2oCompen;             // 笑气补偿。
     LabelButton *_zeroCalib;             // 校零。
+    LabelButton *_alarmLbtn;            //跳到报警项设置按钮
 };
 #define co2Menu (CO2Menu::construction())

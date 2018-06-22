@@ -27,6 +27,8 @@
 #include "EventDataParseContext.h"
 #include "RecorderManager.h"
 #include "EventPageGenerator.h"
+#include "IBPSymbol.h"
+#include "IBPParam.h"
 
 #define ITEM_HEIGHT     30
 #define ITEM_WIDTH      100
@@ -78,7 +80,6 @@ public:
     IButton *downParam;
 
     ITableWidget *eventTable;
-    IButton *waveInfo;
     IButton *upTable;
     IButton *downTable;
     IDropList *type;
@@ -92,7 +93,7 @@ public:
     IStorageBackend *backend;
     int curParseIndex;
     int eventNum;                           // 总事件数
-//    int eventTable->currentRow();                        // 当前选中事件项在表格中的索引位置
+    int curListScroller;
     EventType curEventType;
     EventLevel curEventLevel;
     QList<int> dataIndex;                   // 当前选中事件项对应的数据所在索引
@@ -121,6 +122,7 @@ EventReviewWindow::EventReviewWindow()
     d_ptr->eventTable = new ITableWidget();
     d_ptr->eventTable->setColumnCount(2);
     d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
+    d_ptr->eventTable->horizontalHeader()->setEnabled(false);
     d_ptr->eventTable->verticalHeader()->setVisible(false);
     d_ptr->eventTable->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     d_ptr->eventTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -130,11 +132,7 @@ EventReviewWindow::EventReviewWindow()
     QStringList tableTitle;
     tableTitle << trs("Time") << trs("Incident");
     d_ptr->eventTable->setHorizontalHeaderLabels(tableTitle);
-
-    d_ptr->waveInfo = new IButton(trs("WaveInfo"));
-    d_ptr->waveInfo->setFixedSize(ITEM_WIDTH, ITEM_H);
-    d_ptr->waveInfo->setFont(font);
-    connect(d_ptr->waveInfo, SIGNAL(realReleased()), this, SLOT(_waveInfoReleased()));
+    connect(d_ptr->eventTable, SIGNAL(clicked(QModelIndex)), this, SLOT(_waveInfoReleased(QModelIndex)));
 
     d_ptr->type = new IDropList(trs("Type"));
     d_ptr->type->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
@@ -167,7 +165,6 @@ EventReviewWindow::EventReviewWindow()
     QHBoxLayout *hTableLayout = new QHBoxLayout();
     hTableLayout->setMargin(0);
     hTableLayout->setSpacing(2);
-    hTableLayout->addWidget(d_ptr->waveInfo);
     hTableLayout->addWidget(d_ptr->type);
     hTableLayout->addWidget(d_ptr->level);
     hTableLayout->addWidget(d_ptr->upTable);
@@ -320,23 +317,34 @@ void EventReviewWindow::eventInfoUpdate()
         {
             infoStr = "";
         }
-        infoStr += paramInfo.getSubParamName(subId);
 
-        if ((alarmInfo >> 1) & 0x1)
+        ParamID paramId = paramInfo.getParamID(subId);
+        infoStr += " ";
+
+        if (paramId == PARAM_IBP)
         {
-            infoStr += trs("Upper");
-            infoStr += " > ";
+            infoStr += IBPSymbol::convert(ibpParam.getPressureName(subId));
+            infoStr += " ";
         }
-        else
+        infoStr += trs(Alarm::getPhyAlarmMessage(paramId,
+                                                              alarmId,
+                                                              alarmInfo & 0x1));
+
+        if (!(alarmInfo & 0x1))
         {
-            infoStr += trs("Lower");
-            infoStr += " < ";
+            if (alarmInfo & 0x2)
+            {
+                infoStr += " > ";
+            }
+            else
+            {
+                infoStr += " < ";
+            }
+            UnitType unit = paramManager.getSubParamUnit(paramId, subId);
+            LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subId, unit);
+
+            infoStr += Util::convertToString(d_ptr->ctx.almSegment->alarmLimit, config.scale);
         }
-        ParamID id = paramInfo.getParamID(subId);
-        UnitType type = paramManager.getSubParamUnit(id, subId);
-        LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subId, type);
-        double limitValue = (double)d_ptr->ctx.almSegment->alarmLimit / config.scale;
-        infoStr += QString::number(limitValue);
         break;
     }
     case EventCodeMarker:
@@ -523,20 +531,12 @@ void EventReviewWindow::showEvent(QShowEvent *e)
 
     d_ptr->stackLayout->setCurrentIndex(0);
     _loadEventData();
-    if (d_ptr->eventTable->rowCount() == 0)
-    {
-        d_ptr->waveInfo->setEnabled(false);
-    }
-    else
-    {
-        d_ptr->waveInfo->setEnabled(true);
-    }
 }
 
 /**************************************************************************************************
  * 切换至波形事件布局
  *************************************************************************************************/
-void EventReviewWindow::_waveInfoReleased()
+void EventReviewWindow::_waveInfoReleased(QModelIndex index)
 {
     d_ptr->stackLayout->setCurrentIndex(1);
     if (!d_ptr->backend->getBlockNR())
@@ -544,7 +544,7 @@ void EventReviewWindow::_waveInfoReleased()
         return;
     }
 
-    d_ptr->parseEventData(d_ptr->dataIndex.at(d_ptr->eventTable->currentRow()));
+    d_ptr->parseEventData(d_ptr->dataIndex.at(index.row()));
     eventInfoUpdate();
     eventTrendUpdate();
     eventWaveUpdate();
@@ -560,24 +560,32 @@ void EventReviewWindow::_eventListReleased()
 }
 
 /**************************************************************************************************
- * 向上移动事件
+ * 向上事件翻页
  *************************************************************************************************/
 void EventReviewWindow::_upMoveEventReleased()
 {
-    if (d_ptr->eventTable->currentRow() != 0)
+    int maxValue = d_ptr->eventTable->verticalScrollBar()->maximum();
+    d_ptr->curListScroller = d_ptr->eventTable->verticalScrollBar()->value();
+    if (d_ptr->curListScroller > 0)
     {
-        d_ptr->eventTable->selectRow(d_ptr->eventTable->currentRow() - 1);
+        QScrollBar *scrollBar = d_ptr->eventTable->verticalScrollBar();
+        int positon = d_ptr->curListScroller - (maxValue * 15) / (d_ptr->eventTable->rowCount() - 15);
+        scrollBar->setSliderPosition(positon);
     }
 }
 
 /**************************************************************************************************
- * 向下移动事件
+ * 向下事件翻页
  *************************************************************************************************/
 void EventReviewWindow::_downMoveEventReleased()
 {
-    if (d_ptr->eventTable->currentRow() != d_ptr->eventTable->rowCount() - 1)
+    int maxValue = d_ptr->eventTable->verticalScrollBar()->maximum();
+    d_ptr->curListScroller = d_ptr->eventTable->verticalScrollBar()->value();
+    if (d_ptr->curListScroller < maxValue && d_ptr->eventTable->rowCount() != 15)
     {
-        d_ptr->eventTable->selectRow(d_ptr->eventTable->currentRow() + 1);
+        QScrollBar *scrollBar = d_ptr->eventTable->verticalScrollBar();
+        int positon = d_ptr->curListScroller + (maxValue * 15) / (d_ptr->eventTable->rowCount() - 15);
+        scrollBar->setSliderPosition(positon);
     }
 }
 
@@ -861,8 +869,14 @@ void EventReviewWindow::_loadEventData()
 
                 ParamID paramId = paramInfo.getParamID(subId);
                 infoStr += " ";
-                infoStr += trs(eventStorageManager.getPhyAlarmMessage(paramId,
-                                                                      alarmInfo,
+
+                if (paramId == PARAM_IBP)
+                {
+                    infoStr += IBPSymbol::convert(ibpParam.getPressureName(subId));
+                    infoStr += " ";
+                }
+                infoStr += trs(Alarm::getPhyAlarmMessage(paramId,
+                                                                      alarmId,
                                                                       alarmInfo & 0x1));
 
                 if (!(alarmInfo & 0x1))

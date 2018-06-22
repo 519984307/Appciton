@@ -5,6 +5,8 @@
 #include "AGSymbol.h"
 #include "AGParam.h"
 #include "IConfig.h"
+#include "AlarmLimitMenu.h"
+#include "PublicMenuManager.h"
 #include "LoadConfigMenu.h"
 
 AGMenu *AGMenu::_selfObj = NULL;
@@ -95,6 +97,14 @@ void AGMenu::layoutExec()
     _speedIcomb->combolist->setFixedSize(btnWidth, ITEM_H);
     mainLayout->addWidget(_speedIcomb);
 
+    _alarmLbtn = new LabelButton("");
+    _alarmLbtn->setFont(defaultFont());
+    _alarmLbtn->label->setFixedSize(labelWidth, ITEM_H);
+    _alarmLbtn->button->setFixedSize(btnWidth, ITEM_H);
+    _alarmLbtn->button->setText(trs("AlarmLimitSetUp"));
+    connect(_alarmLbtn->button, SIGNAL(realReleased()), this, SLOT(_alarmLbtnSlot()));
+    mainLayout->addWidget(_alarmLbtn);
+
 }
 
 /**************************************************************************************************
@@ -148,6 +158,13 @@ void AGMenu::_lBtonSlot()
 
     }
 
+}
+
+//报警项设置
+void AGMenu::_alarmLbtnSlot()
+{
+    alarmLimitMenu.setFocusIndex(SUB_PARAM_ETCO2+1);
+    publicMenuManager.changePage(&alarmLimitMenu, &agMenu);
 }
 /**************************************************************************************************
  * 构造。

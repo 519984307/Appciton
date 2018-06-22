@@ -459,13 +459,14 @@ KeyBoardPanel::KeyBoardPanel(KeyType type) : PopupWidget()
     _regExpStr.isNull();
     _keytype = type;
     _lastFoucsIndex = -1;
+    _itemHeight = (_panelHeight-PopupWidget::getTitleBarhight()-_keySpace*4)/6;
 
-    QFont keyFont = fontManager.textFont(15);
+    QFont keyFont = fontManager.textFont(_titleFontSize);
 
     // 设置标题。
     setTitleBarText(trs("EnglishKeyboard"));
 
-    int space = 5;
+    int space = _keySpace;
     QVBoxLayout *mainLayout = new QVBoxLayout();
     mainLayout->setMargin(2);
     mainLayout->setSpacing(space);
@@ -486,7 +487,7 @@ KeyBoardPanel::KeyBoardPanel(KeyType type) : PopupWidget()
     for (int i = 0; i < 9; ++i)
     {
         IButton *subKey = new IButton();
-        subKey->setFont(fontManager.textFont(18));
+        subKey->setFont(fontManager.textFont(_keyFontSize));
         subKey->setFixedSize(_itemHeight, _itemHeight);
         subKey->setBorderEnabled(false);
         subKey->setEnabled(false);
@@ -503,7 +504,7 @@ KeyBoardPanel::KeyBoardPanel(KeyType type) : PopupWidget()
     QColor color(120, 120, 120);
     QHBoxLayout *hLayout = NULL;
     IButton *key = NULL;
-    keyFont = fontManager.textFont(18);
+    keyFont = fontManager.textFont(_keyFontSize);
     for (int r = 0; r < 4; r++)
     {
         hLayout = new QHBoxLayout();
@@ -582,8 +583,8 @@ KeyBoardPanel::KeyBoardPanel(KeyType type) : PopupWidget()
         }
         mainLayout->addLayout(hLayout);
     }
-
     contentLayout->addLayout(mainLayout);
+    contentLayout->addStretch(2);
 }
 
 /**************************************************************************************************

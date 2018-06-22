@@ -308,7 +308,6 @@ void AlarmLimitMenu::_loadOptions(void)
         systemConfig.getNumValue("PrimaryCfg|Alarm|ApneaTime", enable);
         item->combo->setCurrentIndex(enable);
     }
-
     int count = _itemList.count();
     for (int i = 1; i < count; i++)
     {
@@ -317,7 +316,6 @@ void AlarmLimitMenu::_loadOptions(void)
         {
             continue;
         }
-
         SubParamID subID = item->sid;
         ParamID id = item->pid;
         UnitType type = paramManager.getSubParamUnit(id, subID);
@@ -364,6 +362,10 @@ void AlarmLimitMenu::_loadOptions(void)
                                   index);
         item->priority->combolist->setCurrentIndex(index);
     }
+
+    _itemList.at(getFocusIndex())->combo->setFocus();
+    focusPreviousChild();
+    focusNextChild();
 }
 
 /**************************************************************************************************
@@ -505,10 +507,28 @@ void AlarmLimitMenu::layoutExec(void)
     }
 }
 
+//获取聚焦点值
+int AlarmLimitMenu::getFocusIndex()
+{
+    int focusIndex = _focusIndex;
+    _focusIndex = 0;
+    return focusIndex;
+}
+
+//设置聚焦点值
+void AlarmLimitMenu::setFocusIndex(int index)
+{
+    if( index >= 0 && index < _itemList.count() )
+    {
+        _focusIndex = index;
+    }
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-AlarmLimitMenu::AlarmLimitMenu() : SubMenu(trs("AlarmLimitMenu"))
+AlarmLimitMenu::AlarmLimitMenu() : SubMenu(trs("AlarmLimitMenu")),
+                                   _focusIndex(0)
 {
     _itemList.clear();
     setDesc(trs("AlarmLimitMenuDesc"));

@@ -121,6 +121,15 @@ void PopupWidget::setTitleBarText(const QString &str)
 }
 
 /**************************************************************************************************
+ * 获取标题栏高度。
+ *************************************************************************************************/
+ int PopupWidget::getTitleBarhight()const
+{
+    int tempHight = _titleBarHeight;
+    return tempHight;
+}
+
+/**************************************************************************************************
  * 设置标题栏的字体。
  *************************************************************************************************/
 void PopupWidget::setTitleBarFont(const QFont &font)
@@ -271,6 +280,7 @@ PopupWidget::PopupWidget(bool isBlank) : QDialog(0, Qt::FramelessWindowHint)
         headLayout->setSpacing(0);
         headLayout->addWidget(_titleLabel, 1);
         headLayout->addWidget(_exitButton, 1,Qt::AlignVCenter);
+        headLayout->addStretch();
     }
 
     contentLayout = new QVBoxLayout();

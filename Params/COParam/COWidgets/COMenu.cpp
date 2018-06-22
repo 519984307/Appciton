@@ -12,6 +12,8 @@
 #include "IMessageBox.h"
 #include "NumberInput.h"
 #include "COParam.h"
+#include "AlarmLimitMenu.h"
+#include "PublicMenuManager.h"
 #include "LoadConfigMenu.h"
 #include "ConfigManager.h"
 
@@ -99,6 +101,13 @@ void COMenu::layoutExec()
     connect(_start, SIGNAL(realReleased()), this, SLOT(_startReleased()));
     mainLayout->addWidget(_start, 0, Qt::AlignRight);
 
+    _alarmLbtn = new LabelButton("");
+    _alarmLbtn->setFont(defaultFont());
+    _alarmLbtn->label->setFixedSize(labelWidth, ITEM_H);
+    _alarmLbtn->button->setFixedSize(btnWidth, ITEM_H);
+    _alarmLbtn->button->setText(trs("AlarmLimitSetUp"));
+    connect(_alarmLbtn->button, SIGNAL(realReleased()), this, SLOT(_alarmLbtnSlot()));
+    mainLayout->addWidget(_alarmLbtn);
 }
 
 /**************************************************************************************************
@@ -235,4 +244,10 @@ void COMenu::_startReleased(void)
         _start->setText(trs("COStart"));
         _measureSta = CO_INST_START;
     }
+}
+//报警项设置
+void COMenu::_alarmLbtnSlot()
+{
+    alarmLimitMenu.setFocusIndex(SUB_PARAM_CO_CO+1);
+    publicMenuManager.changePage(&alarmLimitMenu, &coMenu);
 }

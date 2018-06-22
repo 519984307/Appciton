@@ -60,6 +60,8 @@ public:
     // 析构。
     virtual ~Alarm();
 
+    static QString getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot);
+
 private:
     unsigned _timestamp;
     QMultiMap<ParamID, AlarmLimitIFace*> _limitSources;

@@ -197,27 +197,49 @@ void RecorderManager::selfTest()
 
 bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
 {
+    bool startImmediately = false;
     if(!d_ptr->generator)
     {
-        //not generator currently
+        //no generator currently
         d_ptr->generator = generator;
         generator->moveToThread(d_ptr->procThread);
+        startImmediately = true;
     }
     else
     {
-        // don't add the generator
-        generator->deleteLater();
 
-        //TODO: check prority and check whether or not to stop the generator
-        QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
-        //d_ptr->generator = generator;
-        //generator->moveToThread(d_ptr->procThread);
-        return false;
+        if(generator->getPriority() == RecordPageGenerator::PriorityContinuous)
+        {
+            // don't add the generator
+            generator->deleteLater();
+
+            // stop current generator
+            QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
+            return false;
+        }
+        else if (generator->getPriority() <= d_ptr->generator->getPriority())
+        {
+            //the priority is lower or equal to current generator
+            // don't add the generator
+            generator->deleteLater();
+            return false;
+        }
+        else
+        {
+            // stop current generator
+            QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
+            d_ptr->generator = generator;
+            generator->moveToThread(d_ptr->procThread);
+        }
     }
+
     connect(generator, SIGNAL(stopped()), this, SLOT(onGeneratorStopped()), Qt::QueuedConnection);
     connect(generator, SIGNAL(generatePage(RecordPage*)), d_ptr->processor, SLOT(addPage(RecordPage*)), Qt::QueuedConnection);
     connect(d_ptr->processor, SIGNAL(pageQueueFull(bool)), generator, SLOT(pageControl(bool)), Qt::QueuedConnection);
-    QMetaObject::invokeMethod(generator, "start");
+    if(startImmediately)
+    {
+        QMetaObject::invokeMethod(generator, "start");
+    }
     return true;
 }
 
@@ -395,6 +417,10 @@ void RecorderManager::providerReportError(unsigned char err)
 void RecorderManager::onGeneratorStopped()
 {
     sender()->deleteLater();
+    if(d_ptr->generator && d_ptr->generator.data() != sender())
+    {
+        QMetaObject::invokeMethod(d_ptr->generator.data(), "start");
+    }
     d_ptr->isAborted = false;
 }
 
