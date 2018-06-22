@@ -4,7 +4,6 @@
 #include "BatteryIconWidget.h"
 #include "SystemStatusBarWidget.h"
 #include "Debug.h"
-#include "PrintManager.h"
 #include <QTimer>
 #include "IMessageBox.h"
 #include "ErrorLog.h"

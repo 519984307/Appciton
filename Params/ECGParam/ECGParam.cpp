@@ -21,12 +21,10 @@
 #include "ECGAlarm.h"
 #include "QApplication"
 #include "ComboListPopup.h"
-#include "SummaryStorageManager.h"
 #include "TimeManager.h"
 #include <QTimer>
 #include "Debug.h"
 #include <QTimer>
-#include "PrintManager.h"
 #include "ErrorLogItem.h"
 #include "ErrorLog.h"
 
@@ -1768,12 +1766,6 @@ void ECGParam::restoreDiagBandwidth(int isCompleted)
         _waveWidget[i]->setBandWidth((ECGBandwidth)band);
     }
 
-    // 停止打印
-    if (printManager.isPrinting() &&
-            printManager.getCurPrintType() == PRINT_TYPE_TRIGGER_DIAG_ECG && !isCompleted)
-    {
-        printManager.abort();
-    }
 }
 
 /***************************************************************************************************

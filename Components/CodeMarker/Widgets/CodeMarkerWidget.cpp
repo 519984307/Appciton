@@ -1,7 +1,6 @@
 #include "Debug.h"
 #include <QScrollBar>
 #include <QTimer>
-#include "SummaryStorageManager.h"
 #include "TimeManager.h"
 #include "LabelButton.h"
 #include "FontManager.h"

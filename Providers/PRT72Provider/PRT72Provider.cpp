@@ -1,7 +1,6 @@
 #include <QTimerEvent>
 #include "Debug.h"
 #include "PRT72Provider.h"
-#include "PrintManager.h"
 #include "SystemManager.h"
 #include "BLMEDUpgradeParam.h"
 #include "ServiceVersion.h"
@@ -191,7 +190,6 @@ void PRT72Provider::_parseStatusInfo(const unsigned char *data, unsigned int len
     PrinterStatus status = PrinterStatus(data[1] & PRINTER_STAT_MASK);
 
     // 通知打印管理部件。
-    //printManager.providerStatusChanged(status);
     QMetaObject::invokeMethod(_sigSender, "statusChanged", Q_ARG(PrinterStatus, status));
 }
 
@@ -311,7 +309,6 @@ void PRT72Provider::_parseErrorReport(const unsigned char *data, unsigned int le
     _ack(PRINTER_CMD_ERROR_INFO);
 
     // 通知打印管理部件。
-    //printManager.providerErrorReport(data[1]);
     QMetaObject::invokeMethod(_sigSender, "error", Q_ARG(unsigned char, data[1]));
 }
 
@@ -335,7 +332,6 @@ void PRT72Provider::_parseBufStat(const unsigned char *data, unsigned int len)
     _ack(PRINTER_CMD_BUF_STAT);
 
     // 通知打印管理部件。
-    //printManager.providerBuffStatChanged(data[1]);
     QMetaObject::invokeMethod(_sigSender, "bufferFull", Q_ARG(bool, (bool)data[1]));
 }
 
@@ -373,7 +369,6 @@ void PRT72Provider::_parseBitmapDataAck(const unsigned char *data, unsigned int 
  **************************************************************************************************/
 void PRT72Provider::disconnected()
 {
-    //printManager.providerDisconnected();
     QMetaObject::invokeMethod(_sigSender, "connectionChanged", Q_ARG(bool, false));
     systemManager.setPoweronTestResult(PRINTER72_SELFTEST_RESULT, SELFTEST_FAILED);
 }
@@ -383,7 +378,6 @@ void PRT72Provider::disconnected()
  **************************************************************************************************/
 void PRT72Provider::reconnected()
 {
-    //printManager.providerConnected();
     QMetaObject::invokeMethod(_sigSender, "connectionChanged", Q_ARG(bool, true));
 }
 
@@ -417,7 +411,6 @@ void PRT72Provider::handlePacket(unsigned char *data, int len)
         case PRINTER_NOTIFY_START:
         {
             _ack(type);
-            //printManager.providerRestarted(); // 通知打印管理部件。
             QMetaObject::invokeMethod(_sigSender, "restart");
 
             systemManager.setPoweronTestResult(PRINTER72_SELFTEST_RESULT, SELFTEST_MODULE_RESET);

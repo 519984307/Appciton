@@ -180,9 +180,6 @@ static void _initComponents(void)
 
     // 数据管理。
     paramDataStorageManager.construction();
-    summaryStorageManager.construction();
-    summaryRescueDataWidget.construction();
-    summaryRescueRangePrint.construction();
     rescueDataExportWidget.construction();
     rescueDataDeleteWidget.construction();
 
@@ -652,7 +649,6 @@ static void _initMenu(void)
     patientManager.construction();
 
     trendDataWidget.construction();
-    trendRescueRangePrint.construction();
     codeMarkerWidget.construction();
 }
 
@@ -709,20 +705,13 @@ void deleteObjects(void)
     deleteTrendCache();
     deleteParamDataStorageManager();
     deleteTrendDataWidget();
-    deleteTrendRescueRangePrint();
     deleteRescueDataExportWidget();
     deleteRescueDataDeleteWidget();
 
     deleteCodeMarkerWidget();
 
-    deletePrintManager();
-    deletePrintExec();
 
     deleteRecorderManager();
-
-    deleteSummaryStorageManager();
-    deleteSummaryRescueDataWidget();
-    deleteSummaryRescueRangePrint();
 
 //    deleteNetworkManager();
     deleteSupervisorConfigManager();

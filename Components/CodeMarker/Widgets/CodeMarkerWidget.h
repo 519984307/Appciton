@@ -3,7 +3,6 @@
 #include "PopupWidget.h"
 #include <qscrollarea.h>
 #include "LabelButton.h"
-#include "CodeMarkerSummary.h"
 #include "SystemDefine.h"
 
 class CodeMarkerButton: public LButton

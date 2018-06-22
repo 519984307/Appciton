@@ -5,7 +5,6 @@
 #include <QMap>
 #include "ParamDataStorageManager.h"
 #include "TrendCache.h"
-#include "SummaryStorageManager.h"
 #include "AlarmStateMachine.h"
 #include "SystemManager.h"
 #include "ECGParam.h"

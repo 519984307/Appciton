@@ -29,7 +29,6 @@ private slots:
     void _brightnessSlot(int index);
     void _printSpeedSlot(int index);
     void _printWaveformNumSlot(int index);
-    void _printCfgSlot(void);
     void _configManagerSlot(void);
 
 
@@ -49,7 +48,6 @@ private:
     IComboList *_screenBrightness;                // 显示屏亮度。
     IComboList *_printSpeed;                      // 打印机速度。
     IComboList *_printWaveformNum;                // 打印波形数量。
-    LabelButton *_printCfg;                       // 打印配置
     LabelButton *_configManager;                  // config Manager
 #ifdef Q_WS_QWS
     LabelButton *_touchScreenCal;                 // touch screen calibraiton

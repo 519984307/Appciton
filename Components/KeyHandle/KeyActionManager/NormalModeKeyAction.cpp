@@ -11,7 +11,6 @@
 #include "SoftKeyManager.h"
 #include "ECGParam.h"
 #include "WindowManager.h"
-#include "PrintManager.h"
 #include "ECGMenu.h"
 #include "ComboListPopup.h"
 #include "SystemManager.h"
@@ -83,7 +82,6 @@ void NormalModeKeyAction::keyF3Pressed(bool multiBtnPress)
     }
 
     //print
-    //printManager.requestPrint(PRINT_TYPE_CONTINUOUS, PRINT_LAYOUT_ID_CONTINUOUS);
     recorderManager.addPageGenerator(new ContinuousPageGenerator());
 }
 

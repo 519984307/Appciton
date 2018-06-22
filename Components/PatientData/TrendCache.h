@@ -1,7 +1,6 @@
 ﻿#pragma once
 #include <QString>
 #include "ParamInfo.h"
-#include "PrintManager.h"
 #include "UnitManager.h"
 #include <QMutex>
 #include <QList>

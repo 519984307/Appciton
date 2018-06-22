@@ -8,12 +8,11 @@
 #include "LabelButton.h"
 #include "MenuManager.h"
 #include "SystemManager.h"
-#include "PrintManager.h"
 #include "ECGParam.h"
 #include "IConfig.h"
-#include "PrintManager.h"
 #include "MenuManager.h"
 #include "ConfigMaintainMenuGrp.h"
+#include "RecorderManager.h"
 #ifdef Q_WS_QWS
 #include "TSCalibrationWindow.h"
 #include <QWSServer>
@@ -51,7 +50,7 @@ void SystemMenu::_brightnessSlot(int index)
  *************************************************************************************************/
 void SystemMenu::_printSpeedSlot(int index)
 {
-    printManager.setPrintSpeed((PrintSpeed)index);
+    recorderManager.setPrintSpeed((PrintSpeed)index);
 }
 
 /**************************************************************************************************
@@ -59,16 +58,7 @@ void SystemMenu::_printSpeedSlot(int index)
  *************************************************************************************************/
 void SystemMenu::_printWaveformNumSlot(int index)
 {
-    printManager.setPrintWaveNum(index + 1);
-}
-
-/**************************************************************************************************
- * 打印配置。
- *************************************************************************************************/
-void SystemMenu::_printCfgSlot(void)
-{
-    printManager.enablePrinterSpeed(printManager.getPrintSpeed());
-    printManager.requestPrint(PRINT_TYPE_REVIEW, PRINT_LAYOUT_ID_SUPERVISOR_CONFIG);
+    recorderManager.setPrintWaveNum(index + 1);
 }
 
 void SystemMenu::_configManagerSlot()
@@ -99,8 +89,8 @@ void SystemMenu::_loadOptions(void)
     _audioVolume->setCurrentItem(QString::number((int)soundManager.
                                                  getVolume(SoundManager::SOUND_TYPE_ALARM)));
     _screenBrightness->setCurrentIndex(systemManager.getBrightness());
-    _printSpeed->setCurrentIndex(printManager.getPrintSpeed());
-    _printWaveformNum->setCurrentIndex(printManager.getPrintWaveNum() - 1);
+    _printSpeed->setCurrentIndex(recorderManager.getPrintSpeed());
+    _printWaveformNum->setCurrentIndex(recorderManager.getPrintWaveNum() - 1);
 }
 
 /**************************************************************************************************
@@ -203,13 +193,13 @@ void SystemMenu::layoutExec(void)
     mainLayout->addWidget(_printWaveformNum);
 
     // 打印配置
-    _printCfg = new LabelButton("");
-    _printCfg->setFont(font);
-    _printCfg->setValue(trs("SupervisorPrintConfig"));
-    connect(_printCfg->button, SIGNAL(realReleased()), this, SLOT(_printCfgSlot()));
-    _printCfg->label->setFixedSize(labelWidth, ITEM_H);
-    _printCfg->button->setFixedSize(btnWidth, ITEM_H);
-    mainLayout->addWidget(_printCfg);
+//    _printCfg = new LabelButton("");
+//    _printCfg->setFont(font);
+//    _printCfg->setValue(trs("SupervisorPrintConfig"));
+//    connect(_printCfg->button, SIGNAL(realReleased()), this, SLOT(_printCfgSlot()));
+//    _printCfg->label->setFixedSize(labelWidth, ITEM_H);
+//    _printCfg->button->setFixedSize(btnWidth, ITEM_H);
+//    mainLayout->addWidget(_printCfg);
 
 //    // config Manager
 //    _configManager = new LabelButton("");

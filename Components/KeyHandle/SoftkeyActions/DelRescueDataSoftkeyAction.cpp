@@ -2,7 +2,6 @@
 #include "DelRescueDataSoftkeyAction.h"
 #include "WindowManager.h"
 #include "TrendDataWidget.h"
-#include "SummaryRescueDataWidget.h"
 #include "RescueDataExportWidget.h"
 #include "IMessageBox.h"
 #include "DataStorageDirManager.h"

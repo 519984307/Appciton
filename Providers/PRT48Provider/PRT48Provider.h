@@ -107,5 +107,6 @@ private:
     unsigned int _errorCount;
     unsigned char _prePacketNum;
     PrinterSelfTestResult _selfTestResult;
+    PrinterProviderSignalSender *_sigSender;
 #endif
 };

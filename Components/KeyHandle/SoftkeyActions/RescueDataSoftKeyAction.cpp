@@ -3,8 +3,6 @@
 #include "WindowManager.h"
 #include "TrendDataWidget.h"
 #include "TrendGraphWidget.h"
-#include "SummaryRescueDataWidget.h"
-#include "SummaryRescueRangePrint.h"
 #include "RescueDataExportWidget.h"
 #include "IMessageBox.h"
 #include "DataStorageDirManager.h"

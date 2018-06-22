@@ -48,6 +48,11 @@ public:
      */
     void setPrintPrividerIFace(PrintProviderIFace *iface);
 
+    /**
+     * @brief provider get the print provider
+     * @return the print provider iterface
+     */
+    PrintProviderIFace *provider() const;
 
     /**
      * @brief isConnected check whether the printer is connected

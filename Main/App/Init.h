@@ -77,21 +77,11 @@
 #include "RescueDataExportWidget.h"
 #include "RescueDataDeleteWidget.h"
 
-#include "SummaryStorageManager.h"
-#include "SummaryRescueDataWidget.h"
-#include "SummaryRescueRangePrint.h"
 
 #include "EventStorageManager.h"
 
 #include "PRT72Provider.h"
-#include "PrintExec.h"
-#include "PrintManager.h"
-#include "PrintContinuousLayout.h"
-#include "PrintTrendDataLayout.h"
-#include "PrintTriggerSummaryLayout.h"
-#include "PrintViewSummaryLayout.h"
-#include "PrintOtherTriggerLayout.h"
-#include "PrintSupervisorCfgLayout.h"
+//#include "PrintExec.h"
 #include "PrintAlarm.h"
 
 #include "RecorderManager.h"

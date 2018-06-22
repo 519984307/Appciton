@@ -8,8 +8,6 @@
 #include "ErrorLogItem.h"
 
 static IThread *_storageThread = NULL;
-static IThread *_printThread = NULL;
-static IThread *_printExecThread = NULL;
 static QThread *_networkThread = NULL;
 
 /**************************************************************************************************
@@ -136,10 +134,6 @@ static void _storageThreadEntry(void)
         trendDataStorageManager.run();
     }
 
-    if(!systemManager.isGoingToTrunOff())
-    {
-        summaryStorageManager.run();
-    }
 
     if(!systemManager.isGoingToTrunOff())
     {
@@ -182,24 +176,6 @@ static void _storageThreadEntry(void)
 }
 
 /**************************************************************************************************
- * 打印线程。
- *************************************************************************************************/
-static void _printThreadEntry(void)
-{
-    printManager.threadRun();
-    IThread::msleep(5);
-}
-
-/**************************************************************************************************
- * 打印执行线程。
- *************************************************************************************************/
-static void _printExecThreadEntry(void)
-{
-    printExec.run();
-    IThread::msleep(5); // 5毫秒的间隔能够满足50mm/s的打印速度。
-}
-
-/**************************************************************************************************
  * 功能： 初始化任务。
  *************************************************************************************************/
 static void _initTasks(void)
@@ -217,8 +193,6 @@ static void _initTasks(void)
 
     // 初始化所有的线程。
     _storageThread = new IThread("storage", _storageThreadEntry);
-    _printThread = new IThread("print", _printThreadEntry);
-    _printExecThread = new IThread("printExec", _printExecThreadEntry);
 
     _networkThread = new QThread();
     _networkThread->setObjectName("Network");
@@ -236,8 +210,6 @@ static void _start(void)
 
     _storageThread->start();
 
-    _printThread->start();
-    _printExecThread->start();
     _networkThread->start();
     _networkThread->setPriority(QThread::IdlePriority);
     systemManager.loadInitBMode();
@@ -250,18 +222,13 @@ static void _start(void)
 static void _stop(void)
 {
     // 停止打印。
-    printManager.abort();
     recorderManager.abort();
 
     _storageThread->stop();
-    _printExecThread->stop();
-    _printThread->stop();
     _networkThread->quit();
 
     // 删除线程对象。
     delete _storageThread;
-    delete _printExecThread;
-    delete _printThread;
     //network thread might be still running, need to delete later
     _networkThread->deleteLater();
 }

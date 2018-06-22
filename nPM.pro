@@ -201,7 +201,6 @@ SOURCES +=                                                                      
     Components/Alarm/Widgets/AlarmMuteBarWidget.cpp                             \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.cpp                         \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.cpp                          \
-    Components/Alarm/Summary/AlarmSummary.cpp                                   \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.cpp    \
     Components/Calculation/DoseCalculationManager/DoseCalculationWidget.cpp     \
     Components/Calculation/DoseCalculationManager/TitrateTableWidget.cpp        \
@@ -212,9 +211,7 @@ SOURCES +=                                                                      
     Components/Calculation/HemodynamicManager/HemodynamicReviewWidget.cpp       \
     Components/PatientData/WaveformCache.cpp                                    \
     Components/PatientData/ParamDataStorageManager.cpp                          \
-    Components/PatientData/RescueDataReview.cpp                                 \
     Components/PatientData/RescueDataListWidget.cpp                             \
-    Components/PatientData/TrendRescueRangePrint.cpp                            \
     Components/PatientData/RescueDataExportWidget.cpp                           \
     Components/PatientData/TrendCache.cpp                                       \
     Components/PatientData/TrendGraphWidget.cpp                                 \
@@ -231,11 +228,6 @@ SOURCES +=                                                                      
     Components/PatientData/IMoveButton.cpp                                      \
     Components/PatientData/TrendGraphSetWidget.cpp                              \
     Components/PatientData/TrendPrintWidget.cpp                                 \
-    Components/Summary/SummaryItem.cpp                                          \
-    Components/Summary/SummaryRescueDataWidget.cpp                              \
-    Components/Summary/SummaryRescueRangePrint.cpp                              \
-    Components/Summary/SummaryStorageManager.cpp                                \
-    Components/Summary/SummaryUtil.cpp                                          \
     Components/TimeManager/DateTimeWidget.cpp                                   \
     Components/TimeManager/ElapseTimeWidget.cpp                                 \
     Components/TimeManager/TimeManager.cpp                                      \
@@ -263,18 +255,7 @@ SOURCES +=                                                                      
     Components/USBManager/ErrorLogExporter.cpp                                  \
     Components/USBManager/UDiskInspector.cpp                                    \
     Components/USBManager/USBManager.cpp                                        \
-    Components/PrintManager/PrintManager.cpp                                    \
-    Components/PrintManager/PrintExec.cpp                                       \
-    Components/PrintManager/PrintPage.cpp                                       \
     Components/PrintManager/Alarm/PrintAlarm.cpp                                \
-    Components/PrintManager/Summary/PrinterActionSummary.cpp                    \
-    Components/PrintManager/PrintLayouts/PrintContinuousLayout.cpp              \
-    Components/PrintManager/PrintLayouts/PrintOtherTriggerLayout.cpp            \
-    Components/PrintManager/PrintLayouts/PrintSummaryLayout.cpp                 \
-    Components/PrintManager/PrintLayouts/PrintSupervisorCfgLayout.cpp           \
-    Components/PrintManager/PrintLayouts/PrintTrendDataLayout.cpp               \
-    Components/PrintManager/PrintLayouts/PrintTriggerSummaryLayout.cpp          \
-    Components/PrintManager/PrintLayouts/PrintViewSummaryLayout.cpp             \
     Components/Recorder/RecorderManager.cpp                                     \
     Components/Recorder/RecordPageGenerator.cpp                                 \
     Components/Recorder/ContinuousPageGenerator.cpp                             \
@@ -295,7 +276,6 @@ SOURCES +=                                                                      
     Components/KeyHandle/SoftkeyActions/MonitorSoftkeyAction.cpp                \
     Components/KeyHandle/SoftkeyActions/RescueDataSoftKeyAction.cpp             \
     Components/KeyHandle/KeyActionManager/KeyActionManager.cpp                  \
-    Components/KeyHandle/KeyActionManager/SupervisorModeKeyAction.cpp           \
     Components/KeyHandle/KeyActionManager/NormalModeKeyAction.cpp               \
     Components/MenuManager/MenuManager.cpp                                      \
     Components/MenuManager/PasswordMenuManage.cpp                               \
@@ -359,7 +339,6 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.cpp                 \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.cpp                   \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.cpp             \
-    Components/CodeMarker/Summary/CodeMarkerSummary.cpp                         \
     Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
     Components/ConfigManager/ConfigMaintainMenuGrp.cpp                          \
@@ -394,7 +373,6 @@ SOURCES +=                                                                      
     Params/ECGParam/ECGDupAlarm.cpp                                             \
     Params/ECGParam/ECGDupParam.cpp                                             \
     Params/ECGParam/ECGParam.cpp                                                \
-    Params/ECGParam/ECGSummary.cpp                                              \
     Params/ECGParam/ECGWidgets/ECGWaveWidget.cpp                                \
     Params/ECGParam/ECGWidgets/ECGTrendWidget.cpp                               \
     Params/ECGParam/ECGWidgets/ECGPVCSTrendWidget.cpp                           \
@@ -440,7 +418,6 @@ SOURCES +=                                                                      
     Params/NIBPParam/NIBPWidgets/NIBPDataTrendWidget.cpp                        \
     Params/NIBPParam/NIBPWidgets/NIBPMenu.cpp                                   \
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTime.cpp                          \
-    Params/NIBPParam/NIBPSummary.cpp                                            \
     Params/SPO2Param/SPO2Param.cpp                                              \
     Params/SPO2Param/SPO2Alarm.cpp                                              \
     Params/SPO2Param/SPO2Widgets/SPO2WaveWidget.cpp                             \
@@ -644,8 +621,6 @@ HEADERS +=                                                                      
     Components/Alarm/Widgets/AlarmMuteBarWidget.h                               \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.h                           \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.h                            \
-    Components/Alarm/Summary/AlarmSummary.h                                     \
-    Components/Alarm/Summary/AlarmSummaryDefine.h                               \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.h      \
     Components/Calculation/DoseCalculationManager/DoseCalculationDefine.h       \
     Components/Calculation/DoseCalculationManager/DoseCalculationWidget.h       \
@@ -660,10 +635,8 @@ HEADERS +=                                                                      
     Components/PatientData/WaveformCache.h                                      \
     Components/PatientData/ParamDataDefine.h                                    \
     Components/PatientData/ParamDataStorageManager.h                            \
-    Components/PatientData/RescueDataReview.h                                   \
     Components/PatientData/RescueDataListWidget.h                               \
     Components/PatientData/RescueDataDefine.h                                   \
-    Components/PatientData/TrendRescueRangePrint.h                              \
     Components/PatientData/RescueDataExportWidget.h                             \
     Components/PatientData/TrendCache.h                                         \
     Components/PatientData/TrendGraphWidget.h                                   \
@@ -699,11 +672,6 @@ HEADERS +=                                                                      
     Components/PowerManager/BatteryIconWidget.h                                 \
     Components/PowerManager/PowerManager.h                                      \
     Components/PowerManager/PowerManagerProviderIFace.h                         \
-    Components/Summary/SummaryDefine.h                                          \
-    Components/Summary/SummaryItem.h                                            \
-    Components/Summary/SummaryStorageManager.h                                  \
-    Components/Summary/SummaryRescueDataWidget.h                                \
-    Components/Summary/SummaryRescueRangePrint.h                                \
     Components/TimeManager/DateTimeWidget.h                                     \
     Components/TimeManager/ElapseTimeWidget.h                                   \
     Components/TimeManager/TimeManager.h                                        \
@@ -720,20 +688,8 @@ HEADERS +=                                                                      
     Components/WindowManager/PromptInfoBarWidget.h                              \
     Components/PrintManager/PrintTypeDefine.h                                   \
     Components/PrintManager/PrintDefine.h                                       \
-    Components/PrintManager/PrintManager.h                                      \
-    Components/PrintManager/PrintExec.h                                         \
-    Components/PrintManager/PrintPage.h                                         \
     Components/PrintManager/PrintProviderIFace.h                                \
-    Components/PrintManager/PrintLayoutIFace.h                                  \
     Components/PrintManager/Alarm/PrintAlarm.h                                  \
-    Components/PrintManager/Summary/PrinterActionSummary.h                      \
-    Components/PrintManager/PrintLayouts/PrintContinuousLayout.h                \
-    Components/PrintManager/PrintLayouts/PrintOtherTriggerLayout.h              \
-    Components/PrintManager/PrintLayouts/PrintSummaryLayout.h                   \
-    Components/PrintManager/PrintLayouts/PrintSupervisorCfgLayout.h             \
-    Components/PrintManager/PrintLayouts/PrintTrendDataLayout.h                 \
-    Components/PrintManager/PrintLayouts/PrintTriggerSummaryLayout.h            \
-    Components/PrintManager/PrintLayouts/PrintViewSummaryLayout.h               \
     Components/Recorder/RecorderManager.h                                       \
     Components/Recorder/RecordPage.h                                            \
     Components/Recorder/RecordPageGenerator.h                                   \
@@ -756,7 +712,6 @@ HEADERS +=                                                                      
     Components/KeyHandle/SoftkeyActions/RescueDataSoftKeyAction.h               \
     Components/KeyHandle/KeyActionManager/KeyActionManager.h                    \
     Components/KeyHandle/KeyActionManager/KeyActionIFace.h                      \
-    Components/KeyHandle/KeyActionManager/SupervisorModeKeyAction.h             \
     Components/KeyHandle/KeyActionManager/NormalModeKeyAction.h                 \
     Components/MenuManager/MenuManager.h                                        \
     Components/MenuManager/PasswordMenuManage.h                                 \
@@ -822,7 +777,6 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/MachineConfigModule.h                   \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.h                   \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.h               \
-    Components/CodeMarker/Summary/CodeMarkerSummary.h                           \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWidget.h                            \
     Components/ConfigManager/ConfigManager.h                                    \
@@ -863,7 +817,6 @@ HEADERS +=                                                                      
     Params/ECGParam/ECGDupParam.h                                               \
     Params/ECGParam/ECGParam.h                                                  \
     Params/ECGParam/ECGProviderIFace.h                                          \
-    Params/ECGParam/ECGSummary.h                                                \
     Params/ECGParam/ECGSymbol.h                                                 \
     Params/ECGParam/ECGWidgets/ECGWaveWidget.h                                  \
     Params/ECGParam/ECGWidgets/ECGTrendWidget.h                                 \
@@ -926,7 +879,6 @@ HEADERS +=                                                                      
     Params/NIBPParam/NIBPWidgets/NIBPDataTrendWidget.h                          \
     Params/NIBPParam/NIBPWidgets/NIBPMenu.h                                     \
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTime.h                            \
-    Params/NIBPParam/NIBPSummary.h                                              \
     Params/SPO2Param/SPO2Param.h                                                \
     Params/SPO2Param/SPO2Alarm.h                                                \
     Params/SPO2Param/SPO2Define.h                                               \
@@ -1023,10 +975,7 @@ DEPENDPATH +=                                                                   
     Components/Alarm                                                            \
     Components/Alarm/AlarmStateMachine                                          \
     Components/Alarm/Widgets                                                    \
-    Components/Alarm/Summary                                                    \
     Components/Alarm/FullDisclosure                                             \
-    Components/Summary                                                          \
-    Components/Summary/Print                                                    \
     Components/PatientData                                                      \
     Components/TimeManager                                                      \
     Components/PatientManager                                                   \
@@ -1038,9 +987,7 @@ DEPENDPATH +=                                                                   
     Components/KeyHandle/KeyActionManager                                       \
     Components/Print/ContinuousPrint                                            \
     Components/PrintManager                                                     \
-    Components/PrintManager/PrintLayouts                                        \
     Components/PrintManager/PrintPages                                          \
-    Components/PrintManager/Summary                                             \
     Components/PrintManager/Alarm                                               \
     Components/Recorder                                                         \
     Components/PdfWriter                                                        \
@@ -1068,7 +1015,6 @@ DEPENDPATH +=                                                                   
     Components/Maintain/UserMaintain                                            \
     Components/Maintain/FactoryMaintain                                         \
     Components/CodeMarker/Widgets                                               \
-    Components/CodeMarker/Summary                                               \
     Components/Calculation/DoseCalculationManager                               \
     Components/Calculation/HemodynamicManager                                   \
     Components/ConfigManager                                                    \
@@ -1158,10 +1104,7 @@ INCLUDEPATH +=                                                                  
     Components/Alarm                                                            \
     Components/Alarm/AlarmStateMachine                                          \
     Components/Alarm/Widgets                                                    \
-    Components/Alarm/Summary                                                    \
     Components/Alarm/FullDisclosure                                             \
-    Components/Summary                                                          \
-    Components/Summary/Print                                                    \
     Components/PatientData                                                      \
     Components/TimeManager                                                      \
     Components/PatientManager                                                   \
@@ -1173,9 +1116,7 @@ INCLUDEPATH +=                                                                  
     Components/KeyHandle/KeyActionManager                                       \
     Components/Print/ContinuousPrint                                            \
     Components/PrintManager                                                     \
-    Components/PrintManager/PrintLayouts                                        \
     Components/PrintManager/PrintPages                                          \
-    Components/PrintManager/Summary                                             \
     Components/PrintManager/Alarm                                               \
     Components/Recorder                                                         \
     Components/PdfWriter                                                        \
@@ -1203,7 +1144,6 @@ INCLUDEPATH +=                                                                  
     Components/Maintain/UserMaintain                                            \
     Components/Maintain/FactoryMaintain                                         \
     Components/CodeMarker/Widgets                                               \
-    Components/CodeMarker/Summary                                               \
     Components/Calculation/DoseCalculationManager                               \
     Components/Calculation/HemodynamicManager                                   \
     Components/ConfigManager                                                    \

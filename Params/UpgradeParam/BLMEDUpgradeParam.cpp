@@ -5,7 +5,6 @@
 #include "NIBPParam.h"
 #include "SPO2Param.h"
 #include "TEMPParam.h"
-#include "PrintManager.h"
 #include "LightManager.h"
 #include "TE3Provider.h"
 #include "md5.h"
@@ -15,6 +14,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <QCryptographicHash>
+#include "RecorderManager.h"
 
 BLMEDUpgradeParam *BLMEDUpgradeParam::_selfObj = NULL;
 
@@ -910,7 +910,10 @@ void BLMEDUpgradeParam::_sendCmdData(unsigned char cmdId, const unsigned char *d
         tempParam.sendCmdData(cmdId,data,len);
         break;
     case UPGRADE_TYPE_PRT72:
-        printManager.sendCmdData(cmdId,data,len);
+        //printManager.sendCmdData(cmdId,data,len);
+        break;
+    case UPGRADE_TYPE_PRT48:
+        recorderManager.provider()->sendCmdData(cmdId, data, len);
         break;
     case UPGRADE_TYPE_nPMBoard:
         lightManager.sendCmdData(cmdId,data,len);

@@ -133,6 +133,11 @@ void RecorderManager::setPrintPrividerIFace(PrintProviderIFace *iface)
     QMetaObject::invokeMethod(d_ptr->processor, "updatePrintSpeed", Q_ARG(PrintSpeed, speed));
 }
 
+PrintProviderIFace *RecorderManager::provider() const
+{
+    return d_ptr->iface;
+}
+
 bool RecorderManager::isConnected() const
 {
     return d_ptr->connected;
