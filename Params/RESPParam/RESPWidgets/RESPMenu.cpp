@@ -19,6 +19,7 @@ RESPMenu *RESPMenu::_selfObj = NULL;
 void RESPMenu::_sweepSpeedSlot(int index)
 {
     respParam.setSweepSpeed((RESPSweepSpeed) index);
+    currentConfig.setNumValue("RESP|SweepSpeed", index);
 }
 
 /**************************************************************************************************

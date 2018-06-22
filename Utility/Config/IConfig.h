@@ -21,7 +21,7 @@ public:
     {
     }
 
-    QString getCurConfigName(){return curConfigName;}
+    const QString &getCurConfigName(){return curConfigName;}
 
     void updateCurConfigName();
 

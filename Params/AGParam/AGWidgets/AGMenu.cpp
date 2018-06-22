@@ -27,7 +27,7 @@ void AGMenu::readyShow()
 void AGMenu::_loadOptions()
 {
     int index=0;
-    systemConfig.getNumValue("PrimaryCfg|AG|AGModule", index);
+    currentConfig.getNumValue("AG|AGModule", index);
 
     _isEnableAGCombo->combolist->setCurrentIndex(index);
     _speedIcomb->setEnabled(!index);
@@ -37,14 +37,17 @@ void AGMenu::_loadOptions()
     }
     _isEnable = (!index);
 
-    systemConfig.getNumValue("PrimaryCfg|AG|SweepSpeed", index);
+    currentConfig.getNumValue("AG|SweepSpeed", index);
     _speedIcomb->combolist->setCurrentIndex((AGSweepSpeed)index);
 
 }
 
 void AGMenu::_onConfigUpdated()
 {
-    readyShow();
+   int index;
+   currentConfig.getNumValue("AG|SweepSpeed", index);
+   agParam.setSweepSpeed((AGSweepSpeed)index);
+   readyShow();
 }
 
 void AGMenu::readyhide(){}
@@ -110,7 +113,7 @@ void AGMenu::layoutExec()
 void AGMenu::_speedIcombSlot(int index)
 {
     agParam.setSweepSpeed((AGSweepSpeed)index);
-    systemConfig.setNumValue("PrimaryCfg|AG|SweepSpeed", index);
+    currentConfig.setNumValue("AG|SweepSpeed", index);
 }
 
 /**************************************************************************************************

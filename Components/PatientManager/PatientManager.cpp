@@ -35,7 +35,7 @@ void PatientManager::setType(PatientType type)
 
     if (_patientInfo.type == oldType)
     {
-        return;
+//        return;
     }
 
     // 病人类型被修改了，重新加载配置后，通知需要关注次事件的对象。

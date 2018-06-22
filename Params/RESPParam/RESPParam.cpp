@@ -246,7 +246,7 @@ void RESPParam::reset()
  *************************************************************************************************/
 void RESPParam::setSweepSpeed(RESPSweepSpeed speed)
 {
-    systemConfig.setNumValue("PrimaryCfg|RESP|SweepSpeed", (int)speed);
+    currentConfig.setNumValue("RESP|SweepSpeed", (int)speed);
     _setWaveformSpeed(speed);
 }
 
@@ -256,7 +256,7 @@ void RESPParam::setSweepSpeed(RESPSweepSpeed speed)
 RESPSweepSpeed RESPParam::getSweepSpeed(void)
 {
     int speed = RESP_SWEEP_SPEED_6_25;
-    systemConfig.getNumValue("PrimaryCfg|RESP|SweepSpeed", speed);
+    currentConfig.getNumValue("RESP|SweepSpeed", speed);
     return (RESPSweepSpeed)speed;
 }
 

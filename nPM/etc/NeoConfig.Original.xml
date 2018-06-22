@@ -21,6 +21,9 @@
         <ICPUnit>5</ICPUnit>
         <CO2Unit>5</CO2Unit>
     </Unit>
+	<Layout>
+		<SelectInterface>3</SelectInterface>
+	</Layout>
     <AED>
         <StartWithCPR>0</StartWithCPR>
         <PowerupToStartCPRDuration>1</PowerupToStartCPRDuration>
@@ -68,6 +71,10 @@
         <NotchFilter>0</NotchFilter>
         <SmartLeadOff>0</SmartLeadOff>
     </ECG>
+    <AG>
+         <AGModule>0</AGModule>
+         <SweepSpeed>1</SweepSpeed>
+    </AG>
     <IBP>
         <ChannelPressureEntitle1>0</ChannelPressureEntitle1>
         <ChannelPressureEntitle2>5</ChannelPressureEntitle2>

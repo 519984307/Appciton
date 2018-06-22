@@ -4,13 +4,16 @@
     <General>
         <SuperPassword>97878161</SuperPassword>
         <Password>1234</Password>
-	<UserMaintainPassword>123456</UserMaintainPassword>
+		<UserMaintainPassword>123456</UserMaintainPassword>
         <DeviceIdentifier>00000000000</DeviceIdentifier>
         <DefaultPatientType>0</DefaultPatientType>
         <!-- 0:adult；1:ped； -->
         <DefaultDisplayBrightness>7</DefaultDisplayBrightness>
         <FullDisclosureRecording>1</FullDisclosureRecording>
     </General>
+	<Layout>
+		<SelectInterface>3</SelectInterface>
+	</Layout>
     <Unit>
         <HightUnit>14</HightUnit>
         <WeightUnit>12</WeightUnit>
@@ -68,6 +71,10 @@
         <NotchFilter>0</NotchFilter>
         <SmartLeadOff>0</SmartLeadOff>
     </ECG>
+    <AG>
+         <AGModule>0</AGModule>
+         <SweepSpeed>1</SweepSpeed>
+    </AG>
     <IBP>
         <ChannelPressureEntitle1>0</ChannelPressureEntitle1>
         <ChannelPressureEntitle2>5</ChannelPressureEntitle2>
@@ -1171,7 +1178,7 @@
         </PED>
     </AlarmSource>
     <Local>
-        <Language CurrentOption="1" OptionCount="2">
+        <Language CurrentOption="0" OptionCount="2">
             <!-- note："XmlFileName" segment consistent with XML language file name -->
             <Opt0 XmlFileName="English">English</Opt0>
             <Opt1 XmlFileName="ChineseSimplified">简体中文</Opt1>

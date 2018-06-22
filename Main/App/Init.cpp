@@ -573,7 +573,6 @@ static void _initMenu(void)
     userMaintainEntrance.construction();
     factoryMaintainEntrance.construction();
     configManagerEntrance.construction();
-    loadConfigMenu.construction();
 
     publicMenuManager.addSubMenu(&loadConfigMenu);
     publicMenuManager.addSubMenu(&configManagerEntrance);

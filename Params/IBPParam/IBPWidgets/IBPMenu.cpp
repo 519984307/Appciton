@@ -60,7 +60,15 @@ IBPMenu::~IBPMenu()
 
 }
 
-void IBPMenu::readyShow() { }
+void IBPMenu::readyShow()
+{
+    int index = 0;
+    currentConfig.getNumValue("IBP|SweepSpeed", index);
+    if(_speed->combolist)
+    {
+        _speed->combolist->setCurrentIndex(index);
+    }
+}
 
 void IBPMenu::readyhide() { }
 
@@ -175,6 +183,7 @@ void IBPMenu::layoutExec(void)
 void IBPMenu::_speedSlot(int index)
 {
     ibpParam.setSweepSpeed((IBPSweepSpeed)index);
+    currentConfig.setNumValue("IBP|SweepSpeed", index);
 }
 
 /**************************************************************************************************
