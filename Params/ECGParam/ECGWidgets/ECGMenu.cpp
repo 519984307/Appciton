@@ -129,6 +129,7 @@ void ECGMenu::_loadOptionsInSlot(void)
 void ECGMenu::_onConfigUpdated()
 {
     readyShow();
+    ecgParam.setSweepSpeed(ecgParam.getSweepSpeed());
 }
 /**************************************************************************************************
  * 载入当前配置。

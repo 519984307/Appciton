@@ -244,6 +244,6 @@ ConfigManager::ConfigManager()
     :d_ptr(new ConfigManagerPrivate())
 {
     //在这里添加配置管理的初始化代码，该对象还要在其他处调用
-    connect(&loadConfigMenu, SIGNAL(configUpdated()), this, SIGNAL(configUpdated()));
+
 }
 

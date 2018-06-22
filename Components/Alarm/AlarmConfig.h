@@ -76,8 +76,6 @@ public:
     //utility function to convert the low limit to string
     static QString getLowLimitStr(const LimitAlarmConfig &config);
 
-    void alarmConfigClear();
-
 private slots:
     void onPatientTypeChange(PatientType type);
 

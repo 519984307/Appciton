@@ -27,6 +27,7 @@ CO2Menu *CO2Menu::_selfObj = NULL;
 void CO2Menu::_speedSlot(int index)
 {
     co2Param.setSweepSpeed((CO2SweepSpeed)index);
+    currentConfig.setNumValue("CO2|SweepSpeed", index);
 }
 
 /**************************************************************************************************

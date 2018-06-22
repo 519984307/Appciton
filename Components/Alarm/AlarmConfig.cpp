@@ -194,12 +194,6 @@ QString AlarmConfig::getLowLimitStr(const LimitAlarmConfig &config)
     }
 }
 
-void AlarmConfig::alarmConfigClear()
-{
-    _configCache.clear();
-    _controlCache.clear();
-}
-
 void AlarmConfig::onPatientTypeChange(PatientType type)
 {
     Q_UNUSED(type)

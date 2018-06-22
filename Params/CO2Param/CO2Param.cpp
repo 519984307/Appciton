@@ -627,7 +627,7 @@ bool CO2Param::getAwRRSwitch(void)
  *************************************************************************************************/
 void CO2Param::setSweepSpeed(CO2SweepSpeed speed)
 {
-    systemConfig.setNumValue("PrimaryCfg|CO2|SweepSpeed", (int)speed);
+    currentConfig.setNumValue("CO2|SweepSpeed", (int)speed);
     _setWaveformSpeed(speed);
 }
 
@@ -637,7 +637,7 @@ void CO2Param::setSweepSpeed(CO2SweepSpeed speed)
 CO2SweepSpeed CO2Param::getSweepSpeed(void)
 {
     int speed = CO2_SWEEP_SPEED_62_5;
-    systemConfig.getNumValue("PrimaryCfg|CO2|SweepSpeed", speed);
+    currentConfig.getNumValue("CO2|SweepSpeed", speed);
     return (CO2SweepSpeed)speed;
 }
 
