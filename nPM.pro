@@ -54,15 +54,15 @@ DEFINES += CONFIG_ECG_TEST
 LIBS += -ldl -lasound -lz
 
 linux-cortexa9hf-vfp-neon-gnueabi-g++ {
-    LIBS += -lts -L$$PWD/nPM/lib/ -lhpdf -lECGAlgInterface
+    LIBS += -lts -L$$PWD/nPM/lib/ -lECGAlgInterface
 }
 
 linux-arm-g++ {
-    LIBS += -lts -L$$PWD/nPM/lib/ -lhpdf -lECGAlgInterface
+    LIBS += -lts -L$$PWD/nPM/lib/ -lECGAlgInterface
 }
 
 linux-g++ {
-    LIBS += -lX11 -L$$PWD/nPM/libamd64/ -lhpdf -lECGAlgInterface
+    LIBS += -lX11 -L$$PWD/nPM/libamd64/ -lECGAlgInterface
 }
 
 OTHER_FILES +=                                                                  \
@@ -266,8 +266,6 @@ SOURCES +=                                                                      
     Components/Recorder/TrendGraphPageGenerator.cpp                             \
     Components/Recorder/TriggerPageGenerator.cpp                                \
     Components/Recorder/RecordPageProcessor.cpp                                 \
-    Components/PdfWriter/HaruPdfWriter.cpp                                      \
-    Components/PdfWriter/QPrinterPdfWriter.cpp                                  \
     Components/KeyHandle/SoftKeyManager.cpp                                     \
     Components/KeyHandle/SoftKeyWidget.cpp                                      \
     Components/KeyHandle/SoftkeyActionBase.cpp                                  \
@@ -701,8 +699,6 @@ HEADERS +=                                                                      
     Components/Recorder/TrendGraphPageGenerator.h                               \
     Components/Recorder/TriggerPageGenerator.h                                  \
     Components/Recorder/RecordPageProcessor.h                                   \
-    Components/PdfWriter/HaruPdfWriter.h                                        \
-    Components/PdfWriter/QPrinterPdfWriter.h                                    \
     Components/KeyHandle/SoftKeyManager.h                                       \
     Components/KeyHandle/SoftKeyWidget.h                                        \
     Components/KeyHandle/SoftkeyActionBase.h                                    \
@@ -990,7 +986,6 @@ DEPENDPATH +=                                                                   
     Components/PrintManager/PrintPages                                          \
     Components/PrintManager/Alarm                                               \
     Components/Recorder                                                         \
-    Components/PdfWriter                                                        \
     Components/PowerManager                                                     \
     Components/PowerManager/Battery                                             \
     Components/MenuManager                                                      \
@@ -1119,7 +1114,6 @@ INCLUDEPATH +=                                                                  
     Components/PrintManager/PrintPages                                          \
     Components/PrintManager/Alarm                                               \
     Components/Recorder                                                         \
-    Components/PdfWriter                                                        \
     Components/PowerManager                                                     \
     Components/PowerManager/Battery                                             \
     Components/MenuManager                                                      \
