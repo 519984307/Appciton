@@ -100,6 +100,7 @@ SOURCES +=                                                                      
     Utility/LanguageManager/LanguageManager.cpp                                 \
     Utility/FontManager/FontManager.cpp                                         \
     Utility/ColorManager/ColorManager.cpp                                       \
+    Utility/Widgets/Base/Button.cpp                                             \
     Utility/Widgets/IComboList/ComboList.cpp                                    \
     Utility/Widgets/IComboList/ComboListPopup.cpp                               \
     Utility/Widgets/IComboList/ComboListItem.cpp                                \
@@ -510,6 +511,7 @@ HEADERS +=                                                                      
     Utility/LanguageManager/LanguageManager.h                                   \
     Utility/FontManager/FontManager.h                                           \
     Utility/ColorManager/ColorManager.h                                         \
+    Utility/Widgets/Base/Button.h                                               \
     Utility/Widgets/IComboList/ComboList.h                                      \
     Utility/Widgets/IComboList/ComboListPopup.h                                 \
     Utility/Widgets/IComboList/ComboListItem.h                                  \
@@ -956,6 +958,7 @@ DEPENDPATH +=                                                                   
     Utility/FontManager                                                         \
     Utility/LanguageManager                                                     \
     Utility/Widgets                                                             \
+    Utility/Widgets/Base                                                        \
     Utility/Widgets/IComboList                                                  \
     Utility/Widgets/Waveform                                                    \
     Utility/Widgets/InputMethod                                                 \
@@ -1084,6 +1087,7 @@ INCLUDEPATH +=                                                                  
     Utility/FontManager                                                         \
     Utility/LanguageManager                                                     \
     Utility/Widgets                                                             \
+    Utility/Widgets/Base                                                        \
     Utility/Widgets/IComboList                                                  \
     Utility/Widgets/Waveform                                                    \
     Utility/Widgets/InputMethod                                                 \
