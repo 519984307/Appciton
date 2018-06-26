@@ -55,114 +55,6 @@ void TrendDataWidget::isIBPSubParamVisible(IBPPressureName name, bool flag)
 /**********************************************************************************************************************
  * 加载趋势数据
  **********************************************************************************************************************/
-//void TrendDataWidget::loadTrendData()
-//{
-//    QString time;
-//    QStringList timeTitle;
-//    QTableWidgetItem *item;
-//    int intervalNum = TrendDataSymbol::convertValue(_timeInterval)/TrendDataSymbol::convertValue(RESOLUTION_RATIO_5_SECOND);
-//    int col = 0;
-//    QList<int> indexList;
-//    for (int i = _trendDataPack.length() - 1 - intervalNum * _currentMoveCount; i >= 0;
-//         i = i - intervalNum)
-//    {
-//        if (col == TABLE_COL_NR)
-//        {
-//            break;
-//        }
-//        timeDate.getTime(_trendDataPack.at(i)->time, time, true);
-//        timeTitle << time;
-
-//        if (_trendDataPack.at(i)->alarmFlag)
-//        {
-//            indexList.append(col);
-//        }
-//        for (int j = 0; j < _curDisplayParamRow; j ++)
-//        {
-//            item = table->item(j, col);
-//            if (!item)
-//            {
-//                item = new QTableWidgetItem();
-//                item->setTextAlignment(Qt::AlignCenter);
-//                table->setItem(j, col, item);
-//            }
-
-//            if (_displayList.at(j) == SUB_PARAM_NIBP_MAP)
-//            {
-//                short nibpSys = _trendDataPack.at(i)->subparamValue.value((SubParamID)(_displayList.at(j) - 2), InvData());
-//                short nibpDia = _trendDataPack.at(i)->subparamValue.value((SubParamID)(_displayList.at(j) - 1), InvData());
-//                short nibpMap = _trendDataPack.at(i)->subparamValue.value(_displayList.at(j), InvData());
-//                QString sysStr = nibpSys == InvData() ?"---":QString::number(nibpSys);
-//                QString diaStr = nibpDia == InvData() ?"---":QString::number(nibpDia);
-//                QString mapStr = nibpMap == InvData() ?"---":QString::number(nibpMap);
-//                QString nibpStr = sysStr + "/" + diaStr + "(" + mapStr + ")";
-//                item->setText(nibpStr);
-//            }
-//            else if (_displayList.at(j) == SUB_PARAM_ART_MAP || _displayList.at(j) == SUB_PARAM_PA_MAP ||
-//                     _displayList.at(j) == SUB_PARAM_AUXP1_MAP || _displayList.at(j) == SUB_PARAM_AUXP2_MAP)
-//            {
-//                short ibpSys = _trendDataPack.at(i)->subparamValue.value((SubParamID)(_displayList.at(j) - 2), InvData());
-//                short ibpDia = _trendDataPack.at(i)->subparamValue.value((SubParamID)(_displayList.at(j) - 1), InvData());
-//                short ibpMap = _trendDataPack.at(i)->subparamValue.value(_displayList.at(j), InvData());
-//                QString sysStr = ibpSys == InvData() ?"---":QString::number(ibpSys);
-//                QString diaStr = ibpDia == InvData() ?"---":QString::number(ibpDia);
-//                QString mapStr = ibpMap == InvData() ?"---":QString::number(ibpMap);
-//                QString ibpStr = sysStr + "/" + diaStr + "(" + mapStr + ")";
-//                item->setText(ibpStr);
-//            }
-//            else if (_displayList.at(j) == SUB_PARAM_ETCO2 || _displayList.at(j) == SUB_PARAM_ETN2O ||
-//                     _displayList.at(j) == SUB_PARAM_ETAA1 || _displayList.at(j) == SUB_PARAM_ETAA2 ||
-//                     _displayList.at(j) == SUB_PARAM_ETO2 || _displayList.at(j) == SUB_PARAM_T1)
-//            {
-//                short data1 = _trendDataPack.at(i)->subparamValue.value(_displayList.at(j), InvData());
-//                short data2 = _trendDataPack.at(i)->subparamValue.value((SubParamID)(_displayList.at(j) + 1), InvData());
-//                QString dataStr1 = data1 == InvData() ?"---":QString::number(data1);
-//                QString dataStr2 = data2 == InvData() ?"---":QString::number(data2);
-//                QString dataStr = dataStr1 + "/" + dataStr2;
-//                item->setText(dataStr);
-//            }
-//            else
-//            {
-//                short data = _trendDataPack.at(i)->subparamValue.value(_displayList.at(j), InvData());
-//                QString dataStr = data == InvData() ?"---":QString::number(data);
-//                item->setText(dataStr);
-//            }
-
-//            bool isAlarm = _trendDataPack.at(i)->subparamAlarm.value(_displayList.at(j), false);
-//            if (isAlarm)
-//            {
-//                item->setBackgroundColor(Qt::yellow);
-//            }
-//            else
-//            {
-//                item->setBackgroundColor(Qt::white);
-//            }
-//        }
-//        col ++;
-//    }
-
-//    for (timeTitle.length(); timeTitle.length() < TABLE_COL_NR;)
-//    {
-//        timeTitle << "";
-//    }
-
-//    if ((_trendDataPack.length() - TABLE_COL_NR) < 0)
-//    {
-//        _hideColumn = 0;
-//    }
-//    else
-//    {
-//        _hideColumn = _trendDataPack.length() - TABLE_COL_NR;
-//    }
-//    table->setHorizontalHeaderLabels(timeTitle);
-
-//    for (int i = 0; i < indexList.count(); i ++)
-//    {
-//        item = table->horizontalHeaderItem(indexList.at(i));
-//        item->setBackgroundColor(Qt::yellow);
-//    }
-//}
-
 void TrendDataWidget::loadTrendData()
 {
     QString time;
@@ -178,6 +70,11 @@ void TrendDataWidget::loadTrendData()
     if (startIndex != InvData() && endIndex != InvData())
     {
         unsigned lastTime = _trendDataPack.at(startIndex)->time;
+        if (lastTime % timeInterval != 0)
+        {
+            lastTime = lastTime + (timeInterval - lastTime % timeInterval);
+        }
+
         TrendDataPackage *pack;
         for (int i = startIndex; i <= endIndex; i ++)
         {
@@ -272,6 +169,8 @@ void TrendDataWidget::loadTrendData()
         }
     }
 
+    _totalCol = col;
+
     // 当数据不够一屏时,后面补空
     for (; col < TABLE_COL_NR; col ++)
     {
@@ -290,21 +189,10 @@ void TrendDataWidget::loadTrendData()
         }
     }
 
-    for (timeTitle.length(); timeTitle.length() < TABLE_COL_NR;)
-    {
-        timeTitle << "";
-    }
-
-    if ((_trendDataPack.length() - TABLE_COL_NR) < 0)
-    {
-        _hideColumn = 0;
-    }
-    else
-    {
-        _hideColumn = _trendDataPack.length() - TABLE_COL_NR;
-    }
+    // 添加列头
     table->setHorizontalHeaderLabels(timeTitle);
 
+    // 设置列头背景(报警色)
     for (int i = 0; i < TABLE_COL_NR; i ++)
     {
         item = table->horizontalHeaderItem(i);
@@ -312,9 +200,13 @@ void TrendDataWidget::loadTrendData()
     }
     for (int i = 0; i < indexList.count(); i ++)
     {
-
-        item = table->horizontalHeaderItem(indexList.at(i));
-        item->setBackgroundColor(Qt::yellow);
+        // 列头不为空时才显示报警标识
+        int col = indexList.at(i);
+        if (timeTitle.at(col) != "")
+        {
+            item = table->horizontalHeaderItem(col);
+            item->setBackgroundColor(Qt::yellow);
+        }
     }
 }
 
@@ -322,6 +214,11 @@ void TrendDataWidget::showEvent(QShowEvent *event)
 {
     PopupWidget::showEvent(event);
     _loadTableTitle();
+    _updateEventIndex();
+
+    // 重新打开窗口时总是选择最后一列
+    _curSecCol = _totalCol - 1;
+    table->selectColumn(_curSecCol);
 }
 
 /**********************************************************************************************************************
@@ -368,24 +265,45 @@ void TrendDataWidget::_downReleased()
  **********************************************************************************************************************/
 void TrendDataWidget::_leftReleased()
 {
-    if (_trendDataPack.count() != 0)
+    if (_curSecIndex == 0)
     {
-        unsigned timeInterval = TrendDataSymbol::convertValue(_timeInterval);
-        _leftTime = _leftTime - timeInterval * 4;
-
-        unsigned startTime = _trendDataPack.first()->time;
-        if (startTime % timeInterval != 0)
-        {
-            startTime = startTime + (timeInterval - startTime % timeInterval);
-        }
-
-        if (_leftTime < startTime)
-        {
-            _leftTime = startTime;
-        }
-        _rightTime = _leftTime + timeInterval * (TABLE_COL_NR - 1);
-        loadTrendData();
+        return;
     }
+
+    _curSecIndex --;
+
+    if (_curSecCol != 0)
+    {
+        _curSecCol --;
+    }
+    else
+    {
+        if (_trendDataPack.count() != 0)
+        {
+            unsigned timeInterval = TrendDataSymbol::convertValue(_timeInterval);
+            _leftTime = _leftTime - timeInterval * 4;
+
+            unsigned startTime = _trendDataPack.first()->time;
+            if (startTime % timeInterval != 0)
+            {
+                startTime = startTime + (timeInterval - startTime % timeInterval);
+            }
+
+            _curSecCol = TABLE_COL_NR / 2;
+            if (_leftTime < startTime)
+            {
+                _curSecCol = _curSecCol - (startTime - _leftTime) / timeInterval;
+                _rightTime = startTime + timeInterval * (TABLE_COL_NR - 1);
+            }
+            else
+            {
+                _rightTime = _leftTime + timeInterval * (TABLE_COL_NR - 1);
+                _leftTime = _leftTime - timeInterval + 5;
+            }
+            loadTrendData();
+        }
+    }
+    table->selectColumn(_curSecCol);
 }
 
 /**********************************************************************************************************************
@@ -393,19 +311,40 @@ void TrendDataWidget::_leftReleased()
  **********************************************************************************************************************/
 void TrendDataWidget::_rightReleased()
 {
-    if (_trendDataPack.count() != 0)
+    if (_curSecIndex == _maxDataNum - 1)
     {
-        unsigned timeInterval = TrendDataSymbol::convertValue(_timeInterval);
-        _rightTime = _rightTime + timeInterval * 4;
-        unsigned endTime = _trendDataPack.last()->time;
-        endTime = endTime - endTime % timeInterval;
-        if (_rightTime > endTime)
-        {
-            _rightTime = endTime;
-        }
-        _leftTime = _rightTime - timeInterval * (TABLE_COL_NR - 1);
-        loadTrendData();
+        return;
     }
+
+    _curSecIndex ++;
+
+    if (_curSecCol != (TABLE_COL_NR - 1))
+    {
+        if (_curSecCol < _totalCol - 1)
+        {
+            _curSecCol ++;
+        }
+    }
+    else
+    {
+        if (_trendDataPack.count() != 0)
+        {
+            unsigned timeInterval = TrendDataSymbol::convertValue(_timeInterval);
+            _rightTime = _rightTime + timeInterval * 4;
+            unsigned endTime = _trendDataPack.last()->time;
+            endTime = endTime - endTime % timeInterval;
+
+            _curSecCol = TABLE_COL_NR / 2;
+            if (_rightTime > endTime)
+            {
+                _curSecCol = _curSecCol + (_rightTime - endTime) / timeInterval;
+                _rightTime = endTime;
+            }
+            _leftTime = _rightTime - timeInterval * (TABLE_COL_NR - 1);
+            loadTrendData();
+        }
+    }
+    table->selectColumn(_curSecCol);
 }
 
 void TrendDataWidget::_printWidgetRelease()
@@ -419,20 +358,82 @@ void TrendDataWidget::_printWidgetRelease()
         printWidget.initPrintTime(_startTime, _endTime);
         printWidget.exec();
     }
-    //TEST
-//    IStorageBackend *backend = trendDataStorageManager.backend();
-//    if(backend->getBlockNR() <= 0)
-//    {
-//        return;
-//    }
-//    RecordPageGenerator *gen= new TrendTablePageGenerator(backend, 0, backend->getBlockNR() - 1);
-//    recorderManager.addPageGenerator(gen);
+}
+
+void TrendDataWidget::_leftMoveEvent()
+{
+    for (int i = _eventList.count() - 1; i >= 0; i --)
+    {
+        unsigned timeInterval = TrendDataSymbol::convertValue(_timeInterval);
+        int eventIndex = _eventList.at(i);
+        if (eventIndex < _curSecIndex)
+        {
+            if (eventIndex < TABLE_COL_NR / 2)
+            {
+                _curSecCol = eventIndex;
+                unsigned startTime = _trendDataPack.first()->time;
+                _leftTime = startTime;
+                if (startTime % timeInterval != 0)
+                {
+                    startTime = startTime + (timeInterval - startTime % timeInterval);
+                }
+                _rightTime = startTime + timeInterval * (TABLE_COL_NR - 1);
+            }
+            else
+            {
+                int offset = _curSecIndex - eventIndex + TABLE_COL_NR / 2 - _curSecCol;
+                _leftTime = _leftTime - timeInterval * offset;
+                _rightTime = _leftTime + timeInterval * (TABLE_COL_NR - 1);
+                _curSecCol = TABLE_COL_NR / 2;
+            }
+            _curSecIndex = eventIndex;
+            table->selectColumn(_curSecCol);
+            loadTrendData();
+            return;
+        }
+
+    }
+}
+
+void TrendDataWidget::_rightMoveEvent()
+{
+    for (int i = 0; i < _eventList.count(); i ++)
+    {
+        unsigned timeInterval = TrendDataSymbol::convertValue(_timeInterval);
+        int eventIndex = _eventList.at(i);
+        if (eventIndex > _curSecIndex)
+        {
+            if (_maxDataNum < TABLE_COL_NR || eventIndex < TABLE_COL_NR)
+            {
+                _curSecCol = eventIndex;
+            }
+            else if ((_maxDataNum - 1 - eventIndex) <= TABLE_COL_NR / 2)
+            {
+                _curSecCol = TABLE_COL_NR - 1 - (_maxDataNum - 1 - eventIndex);
+                unsigned endTime = _trendDataPack.last()->time;
+                endTime = endTime - endTime % timeInterval;
+                _rightTime = endTime;
+                _leftTime = _rightTime - timeInterval * (TABLE_COL_NR - 1);
+            }
+            else
+            {
+                int offset = eventIndex - _curSecIndex -  TABLE_COL_NR / 2 + _curSecCol;
+                _rightTime = _rightTime + timeInterval * offset;
+                _leftTime = _rightTime - timeInterval * (TABLE_COL_NR - 1);
+                _curSecCol = TABLE_COL_NR / 2;
+            }
+            _curSecIndex = eventIndex;
+            table->selectColumn(_curSecCol);
+            loadTrendData();
+            return;
+        }
+    }
 }
 
 /**********************************************************************************************************************
  * 构造。
  **********************************************************************************************************************/
-TrendDataWidget::TrendDataWidget() : _timeInterval(RESOLUTION_RATIO_5_SECOND), _hideColumn(0)
+TrendDataWidget::TrendDataWidget() : _timeInterval(RESOLUTION_RATIO_5_SECOND)
 {
     setTitleBarText(trs("TrendTable"));
     _trendParamInit();
@@ -460,7 +461,7 @@ TrendDataWidget::TrendDataWidget() : _timeInterval(RESOLUTION_RATIO_5_SECOND), _
     table->horizontalHeader()->setClickable(false);
     table->setStyleSheet("QTableView { border: none;"
                              "background-color: rgb(255, 255, 255, 255);"
-                             "selection-background-color: rgb(65, 105, 225, 200);"
+                             "selection-background-color: rgb(65, 105, 225, 50);"
                              "selection-color: black;"
                              "font: 10pt;}");
 
@@ -488,9 +489,11 @@ TrendDataWidget::TrendDataWidget() : _timeInterval(RESOLUTION_RATIO_5_SECOND), _
     _right->setPicture(QImage("/usr/local/nPM/icons/ArrowRight.png"));
     connect(_right, SIGNAL(realReleased()), this, SLOT(_rightReleased()));
 
-    _incidentMove = new IButton(trs("IncidentMove"));
+    _incidentMove = new IMoveButton(trs("IncidentMove"));
     _incidentMove->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
     _incidentMove->setFont(fontManager.textFont(fontSize));
+    connect(_incidentMove, SIGNAL(leftMove()), this, SLOT(_leftMoveEvent()));
+    connect(_incidentMove, SIGNAL(rightMove()), this, SLOT(_rightMoveEvent()));
 
     _incident = new IDropList(trs("Incident"));
     _incident->setFont(fontManager.textFont(fontSize));
@@ -887,10 +890,6 @@ void TrendDataWidget::_getTrendData()
         {
             pack->subparamValue[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].value;
             pack->subparamAlarm[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].alarmFlag;
-//            if (!pack->alarmFlag && dataSeg->values[j].alarmFlag)
-//            {
-//                pack->alarmFlag = dataSeg->values[j].alarmFlag;
-//            }
             pack->alarmFlag = dataSeg->eventFlag;
         }
         _trendDataPack.append(pack);
@@ -961,5 +960,52 @@ void TrendDataWidget::_updateDisplayTime()
         t = lastTime - lastTime % timeInterval;
         _rightTime = t;
         _leftTime = t - timeInterval * (TABLE_COL_NR - 1);
+    }
+}
+
+void TrendDataWidget::_updateEventIndex()
+{
+    if (_trendDataPack.count() != 0)
+    {
+        _eventList.clear();
+        int  timeInterval = TrendDataSymbol::convertValue(_timeInterval);
+        unsigned lastTime = _trendDataPack.first()->time;
+        if (lastTime % timeInterval != 0)
+        {
+            lastTime = lastTime + (timeInterval - lastTime % timeInterval);
+        }
+
+        TrendDataPackage *pack;
+        bool isEvent = false;
+        int index = 0;
+        for (int i = 0; i < _trendDataPack.count(); i ++)
+        {
+            pack = _trendDataPack.at(i);
+            unsigned t = pack->time;
+
+            // 判断是否有事件发生
+            if (pack->alarmFlag)
+            {
+                isEvent = true;
+            }
+
+            // 是否满足时间间隔的时间
+            if (t != lastTime)
+            {
+                continue;
+            }
+
+            // 该时间间隔内是否发生事件
+            if (isEvent)
+            {
+                _eventList.append(index);
+                isEvent = false;
+            }
+
+            index ++;
+            lastTime = lastTime + timeInterval;
+        }
+        _maxDataNum = index;
+        _curSecIndex = index - 1;
     }
 }
