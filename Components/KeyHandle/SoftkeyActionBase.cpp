@@ -18,6 +18,7 @@
 #include "DoseCalculationWidget.h"
 #include "DoseCalculationManager.h"
 #include "HemodynamicWidget.h"
+#include "Window.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -68,6 +69,12 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     {
         return;
     }
+
+    Window testWin;
+    testWin.setFont(fontManager.textFont(17));
+    testWin.setWindowTitle("Test Window");
+    testWin.resize(640, 480);
+    testWin.exec();
 
 //co2Param.setConnected(true);
 //return;

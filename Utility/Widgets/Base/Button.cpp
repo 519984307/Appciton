@@ -64,7 +64,7 @@ int Button::borderRadius() const
     return d_ptr->m_borderRadius;
 }
 
-void Button::buttonStyle(Button::ButtonStyle style)
+void Button::setButtonStyle(Button::ButtonStyle style)
 {
     if(d_ptr->m_btnStyle ==  style)
     {
@@ -74,7 +74,7 @@ void Button::buttonStyle(Button::ButtonStyle style)
     updateGeometry();
 }
 
-Button::ButtonStyle Button::getButtonStyle() const
+Button::ButtonStyle Button::buttonStyle() const
 {
     return d_ptr->m_btnStyle;
 }

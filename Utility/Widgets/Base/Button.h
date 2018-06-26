@@ -52,13 +52,13 @@ public:
      * @brief setButtonStyle set the button style
      * @param style
      */
-    void buttonStyle(ButtonStyle style);
+    void setButtonStyle(ButtonStyle style);
 
     /**
      * @brief buttonStyle get the button style
      * @return
      */
-    ButtonStyle getButtonStyle() const;
+    ButtonStyle buttonStyle() const;
 
     /* reimplement */
     QSize sizeHint() const;
@@ -68,6 +68,5 @@ protected:
     void paintEvent(QPaintEvent *ev);
 
 private:
-    Q_DISABLE_COPY(Button)
     QScopedPointer<ButtonPrivate> d_ptr;
 };

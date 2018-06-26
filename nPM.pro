@@ -100,7 +100,10 @@ SOURCES +=                                                                      
     Utility/LanguageManager/LanguageManager.cpp                                 \
     Utility/FontManager/FontManager.cpp                                         \
     Utility/ColorManager/ColorManager.cpp                                       \
+    Utility/Widgets/Base/ShadowEffect.cpp                                       \
     Utility/Widgets/Base/Button.cpp                                             \
+    Utility/Widgets/Base/Window.cpp                                             \
+    Utility/Widgets/Base/MenuSideBar.cpp                                        \
     Utility/Widgets/IComboList/ComboList.cpp                                    \
     Utility/Widgets/IComboList/ComboListPopup.cpp                               \
     Utility/Widgets/IComboList/ComboListItem.cpp                                \
@@ -511,7 +514,10 @@ HEADERS +=                                                                      
     Utility/LanguageManager/LanguageManager.h                                   \
     Utility/FontManager/FontManager.h                                           \
     Utility/ColorManager/ColorManager.h                                         \
+    Utility/Widgets/Base/ShadowEffect.h                                         \
     Utility/Widgets/Base/Button.h                                               \
+    Utility/Widgets/Base/Window.h                                               \
+    Utility/Widgets/Base/MenuSideBar.h                                          \
     Utility/Widgets/IComboList/ComboList.h                                      \
     Utility/Widgets/IComboList/ComboListPopup.h                                 \
     Utility/Widgets/IComboList/ComboListItem.h                                  \
@@ -1198,3 +1204,6 @@ linux-arm-g++ {
 
     HEADERS +=  Utility/Widgets/TSCalibrationWindow.h
 }
+
+RESOURCES += \
+    Utility/Widgets/Base/res/ui.qrc
