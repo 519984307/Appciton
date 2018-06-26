@@ -53,10 +53,10 @@ public:
     virtual void notifyAlarm(int id, bool flag);
 
     // constructor and destructor.
+    IBPLimitAlarm();
     virtual ~IBPLimitAlarm();
 private:
-    IBPLimitAlarm();
-
+    bool _isAlarmLimit;
 };
 #define ibpLimitAlarm (IBPLimitAlarm::construction())
 

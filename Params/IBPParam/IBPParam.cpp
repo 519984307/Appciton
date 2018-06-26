@@ -154,6 +154,31 @@ void IBPParam::handDemoTrendData()
     }
 }
 
+void IBPParam::showSubParamValue()
+{
+    if (NULL != _trendWidgetIBP1)
+    {
+        _trendWidgetIBP1->showValue();
+    }
+
+    if (NULL != _trendWidgetIBP2)
+    {
+        _trendWidgetIBP2->showValue();
+    }
+}
+
+void IBPParam::noticeLimitAlarm(int id, bool isAlarm)
+{
+    if (NULL != _trendWidgetIBP1)
+    {
+        _trendWidgetIBP1->isAlarm(id, isAlarm);
+    }
+
+    if (NULL != _trendWidgetIBP2)
+    {
+        _trendWidgetIBP2->isAlarm(id, isAlarm);
+}
+
 void IBPParam::getAvailableWaveforms(QStringList &waveforms, QStringList &waveformShowName, int)
 {
     waveforms.clear();

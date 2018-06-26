@@ -328,7 +328,6 @@ int IBPLimitAlarm::getLower(int id)
  *************************************************************************************************/
 int IBPLimitAlarm::getCompare(int value, int id)
 {
-    value = value - 100;
     if (0 == id % 2)
     {
         if (value < getLower(id))
@@ -364,8 +363,9 @@ const char *IBPLimitAlarm::toString(int id)
 /**************************************************************************************************
  * alarm notify.
  *************************************************************************************************/
-void IBPLimitAlarm::notifyAlarm(int /*id*/, bool /*flag*/)
+void IBPLimitAlarm::notifyAlarm(int id, bool isAlarm)
 {
+    _isAlarmLimit |= isAlarm;
 
 }
 
