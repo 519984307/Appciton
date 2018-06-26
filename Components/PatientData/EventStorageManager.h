@@ -41,7 +41,16 @@ public:
 
     void run();
 
+    /**
+     * @brief getEventTriggerFlag 获取事件触发标识
+     * @return
+     */
     bool getEventTriggerFlag(void);
+
+    /**
+     * @brief clearEventTriggerFlag 清空事件触发标识
+     */
+    void clearEventTriggerFlag(void);
 
     /**
      * @brief getPhyAlarmMessage get the alarm message
@@ -55,7 +64,6 @@ public:
 private:
     Q_DECLARE_PRIVATE(EventStorageManager)
     EventStorageManager();
-    bool _eventTriggerFlag;
 };
 
 #define eventStorageManager (EventStorageManager::getInstance())

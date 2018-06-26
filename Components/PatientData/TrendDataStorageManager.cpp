@@ -175,6 +175,7 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
     dataSegment->co2Baro = data.co2baro;
     dataSegment->status = dataStatus;
     dataSegment->eventFlag = eventStorageManager.getEventTriggerFlag();
+    eventStorageManager.clearEventTriggerFlag();
 
     if(ecgDupParam.getHrSource() == ECGDupParam::HR_SOURCE_SPO2)
     {
