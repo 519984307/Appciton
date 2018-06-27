@@ -4,6 +4,7 @@
 #include "IBPDefine.h"
 #include "TrendDataSymbol.h"
 #include "TrendDataDefine.h"
+#include "IMoveButton.h"
 
 class ITableWidget;
 class IButton;
@@ -51,6 +52,8 @@ private slots:
     void _leftReleased(void);
     void _rightReleased(void);
     void _printWidgetRelease();
+    void _leftMoveEvent(void);
+    void _rightMoveEvent(void);
 
 private:
     TrendDataWidget();
@@ -59,6 +62,11 @@ private:
     void _updateHeaderDate(unsigned t = 0);
     void _getTrendData();
 
+    void _dataIndex(int &startIndex, int &endIndex);
+    void _updateDisplayTime();
+
+    void _updateEventIndex();
+
 private:
     int _curVScroller;
 
@@ -66,7 +74,7 @@ private:
     IButton *_down;
     IButton *_left;
     IButton *_right;
-    IButton *_incidentMove;
+    IMoveButton *_incidentMove;
     IDropList *_incident;
     IDropList *_printParam;
     IButton *_set;
@@ -91,11 +99,17 @@ private:
     int _maxHeight;
 
     ResolutionRatio _timeInterval;          // 时间间隔
-    int _currentMoveCount;                  // 当前数据移动数目；
-    int _hideColumn;
 
-    unsigned _startTime;                    // 一屏的开始时间
-    unsigned _endTime;                      // 一屏的结束时间
+    unsigned _startTime;                    // 打印的开始时间
+    unsigned _endTime;                      // 打印的结束时间
+
+    unsigned _leftTime;                     // 趋势表左侧时间
+    unsigned _rightTime;                    // 趋势表右侧时间
+    int _totalCol;                          // 总列数
+    int _curSecCol;                         // 当前选中列
+    QList<int> _eventList;                  // 表格数据是否存在事件发生
+    int _curSecIndex;                       // 当前选中索引
+    int _maxDataNum;                        // 趋势表最大数据量
 };
 #define trendDataWidget (TrendDataWidget::construction())
 #define deleteTrendDataWidget() (delete TrendDataWidget::_selfObj)
