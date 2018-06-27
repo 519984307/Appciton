@@ -84,7 +84,7 @@ void DemoProvider::timerEvent(QTimerEvent */*event*/)
             continue;
         }
 
-        if (elapseSum >= 2000)
+        if (elapseSum >= 1000)
         {
             elapseSum = 0;
             for ( int i = 0; i < PARAM_NR; i++)

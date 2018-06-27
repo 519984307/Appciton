@@ -135,6 +135,10 @@ void CO2Param::handDemoWaveform(WaveformID id, short data)
     {
         _waveWidget->addData(data);
     }
+    if (NULL != _oxyCRGCo2Widget)
+    {
+        _oxyCRGCo2Widget->addData(data);
+    }
     waveformCache.addData((WaveformID)id, data);
 }
 
@@ -256,7 +260,7 @@ void CO2Param::setProvider(CO2ProviderIFace *provider)
     // 界面显示部分。
     _waveWidget->setDataRate(_provider->getCO2WaveformSample());
     _setWaveformZoom(getDisplayZoom());
-
+    _oxyCRGCo2Widget->setDataRate(_provider->getCO2WaveformSample());
     // 窒息时间。
     _provider->setApneaTimeout(getApneaTime());
 
@@ -565,6 +569,18 @@ void CO2Param::setOneShotAlarm(CO2OneShotType t, bool status)
         co2OneShotAlarm.setOneShotAlarm(t, status);
     }
 }
+
+/**************************************************************************************************
+ * 设置呼吸氧和中的CO2窗口波形。
+ *************************************************************************************************/
+void CO2Param::setOxyCRGCO2Widget(OxyCRGCO2Widget* p)
+{
+    if (p)
+    {
+        _oxyCRGCo2Widget = p;
+    }
+}
+
 
 /**************************************************************************************************
  * 超限报警通知。

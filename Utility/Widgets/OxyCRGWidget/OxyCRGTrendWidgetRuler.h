@@ -14,7 +14,7 @@ public:
 
     OxyCRGTrendWidgetRuler(OxyCRGTrendWidget *wave);
     ~OxyCRGTrendWidgetRuler();
-
+    float getPixWidth()const{return _pixelWPitch;}
 private:
     int _up;             // 上标尺数值, 单位%
     int _mid;            // 中标尺数值, 单位%

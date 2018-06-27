@@ -21,6 +21,9 @@
         <ICPUnit>5</ICPUnit>
         <CO2Unit>5</CO2Unit>
     </Unit>
+	<Layout>
+		<SelectInterface>3</SelectInterface>
+	</Layout>
     <AED>
         <StartWithCPR>0</StartWithCPR>
         <PowerupToStartCPRDuration>1</PowerupToStartCPRDuration>
@@ -36,6 +39,21 @@
         <QRSPRTone>0</QRSPRTone>
         <PhyAlarmVisualIndicator>1</PhyAlarmVisualIndicator>
     </AED>
+	<OxyCRG>
+		<Trend1>1</Trend1>
+		<Trend2>0</Trend2>
+		<Wave>0</Wave>
+		<Ruler>
+			<HRLow>0</HRLow>	
+			<HRHigh>300</HRHigh>	
+			<SPO2Low>0</SPO2Low>	
+			<SPO2High>100</SPO2High>	
+			<CO2Low>0</CO2Low>	
+			<CO2High>100</CO2High>	
+			<RESPLow>-5000</RESPLow>	
+			<RESPHigh>-5000</RESPHigh>	
+		</Ruler>
+	</OxyCRG>
     <CPR>
         <EnableVoicePrompts>0</EnableVoicePrompts>
         <EnableTextPrompts>1</EnableTextPrompts>
@@ -68,6 +86,10 @@
         <NotchFilter>0</NotchFilter>
         <SmartLeadOff>0</SmartLeadOff>
     </ECG>
+    <AG>
+         <AGModule>0</AGModule>
+         <SweepSpeed>1</SweepSpeed>
+    </AG>
     <IBP>
         <ChannelPressureEntitle1>0</ChannelPressureEntitle1>
         <ChannelPressureEntitle2>5</ChannelPressureEntitle2>

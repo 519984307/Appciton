@@ -1226,3 +1226,16 @@ O2,氧气,O2
 SetUp,设置,SetUp
 AGModule,麻醉模块,AGModule
 AG,麻醉,AG
+LoadConfig,加载配置,Load Config
+SuccessToLoad,加载成功,Success ToLoad
+Load,加载,Load
+View,查看,View
+LoadConfigDesc,加载配置设置,Load Config Desc
+Trend1,趋势图1 ,Trend 1
+Trend2,趋势图2,Trend 2
+OxyCRGWidgetSetup,呼吸氧和设置,OxyCRGWidget Setup
+Wave,波形,Wave
+CO2Low,二氧化碳低,CO2 Low
+CO2High,二氧化碳高,CO2 High
+RESPLow,呼吸低,RESP Low
+RESPHigh,呼吸高,RESP High

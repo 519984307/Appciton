@@ -3,6 +3,7 @@
 #include "Param.h"
 #include "RESPSymbol.h"
 #include "AlarmDefine.h"
+#include "OxyCRGRESPWidget.h"
 
 class RESPWaveWidget;
 class RESPProviderIFace;
@@ -46,6 +47,9 @@ public:
 
     // 设置界面对象。
     void setWaveWidget(RESPWaveWidget *waveWidget);
+
+    // 设置血氧界面对象。
+    void setOxyWaveWidget(OxyCRGRESPWidget *waveWidget);
 
     // 设置波形值。
     void addWaveformData(int wave, int flag);
@@ -92,6 +96,7 @@ private:
 
     RESPProviderIFace *_provider;
     RESPWaveWidget *_waveWidget;
+    OxyCRGRESPWidget *_waveOxyCRGWidget;
     bool _respMonitoring;
 };
 #define respParam (RESPParam::construction())

@@ -297,6 +297,7 @@ static void _initProviderParam(void)
         paramInfo.getSubParamName(SUB_PARAM_HR_PR));
     ecgParam.setOxyCRGWaveWidget(hrOxyCRGWidget);
     windowManager.addWidget(hrOxyCRGWidget);
+    oxyCRGWidget->setOxyCrgHrWidget(hrOxyCRGWidget);
 
     // RESP部分。
     if (systemManager.isSupport(CONFIG_RESP) || systemManager.isSupport(CONFIG_CO2))
@@ -315,6 +316,12 @@ static void _initProviderParam(void)
             respParam.setWaveWidget(respWaveWidget);
             windowManager.addWidget(respWaveWidget);
             windowManager.addWidget(respTrendWidget);
+
+            OxyCRGRESPWidget *respOxyCRGWidget = new OxyCRGRESPWidget("OxyCRGRESPWidget",
+            "RESP");
+            respParam.setOxyWaveWidget(respOxyCRGWidget);
+            windowManager.addWidget(respOxyCRGWidget);
+            oxyCRGWidget->setOxyCrgRespWidget(respOxyCRGWidget);
         }
     }
 
@@ -353,6 +360,7 @@ static void _initProviderParam(void)
             paramInfo.getSubParamName(SUB_PARAM_SPO2));
         spo2Param.setOxyCRGWaveWidget(spo2OxyCRGWidget);
         windowManager.addWidget(spo2OxyCRGWidget);
+        oxyCRGWidget->setOxyCrgSpo2Widget(spo2OxyCRGWidget);
     }
 
     // NIBP部分。
@@ -397,6 +405,12 @@ static void _initProviderParam(void)
         co2Param.setWaveWidget(co2WaveWidget);
         windowManager.addWidget(co2WaveWidget);
         windowManager.addWidget(co2TrendWidget);
+
+        OxyCRGCO2Widget *co2OxyCRGWidget = new OxyCRGCO2Widget("OxyCRGCO2Widget",
+            "CO2");
+        co2Param.setOxyCRGCO2Widget(co2OxyCRGWidget);
+        windowManager.addWidget(co2OxyCRGWidget);
+        oxyCRGWidget->setOxyCrgCo2Widget(co2OxyCRGWidget);
     }
 
     //IBP test

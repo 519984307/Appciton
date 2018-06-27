@@ -118,7 +118,10 @@ void ECGParam::handDemoTrendData(void)
 {
     int hrValue = qrand() % 10 + 60;
     ecgDupParam.updateHR(hrValue);
-
+    if(NULL != _waveOxyCRGWidget)
+    {
+        _waveOxyCRGWidget->addData(hrValue);
+    }
     int pvcs = qrand() % 30 + 30;
     updatePVCS(pvcs);
 
@@ -301,7 +304,7 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
         }
         _waveWidget[i]->setDataRate(_provider->getWaveformSample());
     }
-	_waveOxyCRGWidget->setDataRate(_provider->getWaveformSample());
+    _waveOxyCRGWidget->setDataRate(1);
 
 //    <Gain>1</Gain>
     // todo：其他设置。

@@ -13,6 +13,7 @@
 #include "COProviderIFace.h"
 #include "AGProviderIFace.h"
 #include "AlarmDefine.h"
+#include "OxyCRGRESPWidget.h"
 
 
 class ECGParam;
@@ -30,6 +31,7 @@ class DemoProvider: public Provider,
         public AGProviderIFace
 {
 public:
+    void setOxyCRGRESPWidget(OxyCRGRESPWidget *p);
     virtual void sendVersion() { }
     // 实现Provider的接口。
     virtual bool attachParam(Param &param);
@@ -84,7 +86,7 @@ public:
     virtual void setApneaTimeout(ApneaAlarmTime /*t*/) { }
     virtual void setN2OCompensation(int /*comp*/) { }
     virtual void setO2Compensation(int /*comp*/) { }
-    virtual int getCO2WaveformSample(void) { return 20; }
+    virtual int getCO2WaveformSample(void) { return 40; }
     virtual int getCO2MaxWaveform(void) { return 50; }
     virtual int getCO2BaseLine(void) {return 0;}
     virtual void setWorkMode(CO2WorkMode /*mode*/) {}

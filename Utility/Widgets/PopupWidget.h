@@ -45,6 +45,7 @@ protected:
     virtual void showEvent(QShowEvent *event);
     virtual void hideEvent(QHideEvent *event);
     virtual void exit(void);
+    virtual void keyPressEvent(QKeyEvent *e);
     QVBoxLayout *contentLayout;
 
     // 设置边框宽度。

@@ -1,6 +1,11 @@
 #pragma once
 #include "IWidget.h"
 #include "OxyCRGSymbol.h"
+#include "OxyCRGRESPWidget.h"
+#include "OxyCRGHRWidget.h"
+#include "OxyCRGSPO2Widget.h"
+#include "IButton.h"
+#include "OxyCRGCO2Widget.h"
 
 class QLabel;
 class QHBoxLayout;
@@ -15,7 +20,12 @@ public:
     ~OxyCRGWidget();
 
     virtual void setVisible(bool visible);
-
+    void setOxyCrgRespWidget(OxyCRGRESPWidget* p);
+    void setOxyCrgHrWidget(OxyCRGHRWidget* p);
+    void setOxyCrgSpo2Widget(OxyCRGSPO2Widget* p);
+    void setOxyCrgCo2Widget(OxyCRGCO2Widget* p);
+    void setWaveType(int index);
+    int  getWaveType(void)const;
 protected:
     void paintEvent(QPaintEvent *event);
     // 窗体大小调整事件
@@ -24,9 +34,11 @@ protected:
 private slots:
     void _intervalSlot(IWidget *widget);
     void _changeTrendSlot(IWidget *widget);
+    void _onSetupUpdated(IWidget *widget);
     void _intervalDestroyed();
     void _changeTrendDestroyed();
-
+signals:
+    void _intervalChanged(int index);
 private:
     static const int _titleBarHeight = 15;
     static const int _labelHeight = 20;
@@ -34,11 +46,15 @@ private:
     QVBoxLayout *_hLayoutWave;
     QLabel *_titleLabel;
     QHBoxLayout *bottomLayout;
+    OxyCRGWidgetLabel *_setUp;
     OxyCRGWidgetLabel *_interval;         // 时间间隔
-    OxyCRGWidgetLabel *_changeTrend;      // 呼吸波与RR
+    OxyCRGWidgetLabel *_changeTrend;      // 呼吸波与CO2
     ComboListPopup *_intervalList;      // 时间间隔
-    ComboListPopup *_changeTrendList;   // 呼吸波与RR列表
-
+    ComboListPopup *_changeTrendList;   // 呼吸波与CO2列表
+    OxyCRGRESPWidget *_oxycrgWidget;
+    OxyCRGHRWidget *_oxycrgHrWidget;
+    OxyCRGSPO2Widget *_oxycrgSpo2Widget;
+    OxyCRGCO2Widget  *_oxycrgCo2Widget;
     void _trendLayout(void);
     void _clearLayout(void);
 
@@ -58,5 +74,6 @@ private:
     bool _isShowGrid;                         // 是否显示网格
     bool _isShowFrame;                         // 是否显示边框
     bool _isShowScale;                         // 是否显示刻度
+    int  _waveType;                    //波形类型
 
 };

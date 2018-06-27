@@ -4,6 +4,7 @@
 #include "CO2Symbol.h"
 #include "UnitManager.h"
 #include "AlarmDefine.h"
+#include "OxyCRGCO2Widget.h"
 
 class CO2TrendWidget;
 class CO2WaveWidget;
@@ -88,6 +89,9 @@ public:
     // 设置OneShot报警。
     void setOneShotAlarm(CO2OneShotType t, bool status);
 
+    //设置呼吸氧和中的CO2窗口波形
+    void setOxyCRGCO2Widget(OxyCRGCO2Widget* p);
+
     // 超限报警通知
     void noticeLimitAlarm(int id, bool flag);
 
@@ -142,6 +146,7 @@ private:
     CO2ProviderIFace *_provider;
     CO2TrendWidget *_trendWidget;
     CO2WaveWidget *_waveWidget;
+    OxyCRGCO2Widget *_oxyCRGCo2Widget;
 
     short _etco2Value;
     short _fico2Value;

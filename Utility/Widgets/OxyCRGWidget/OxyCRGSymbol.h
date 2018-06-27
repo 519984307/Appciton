@@ -18,7 +18,7 @@ public:
     {
         static const char *symbol[OxyCRG_Trend_NR] =
         {
-            "RESP", "RR"
+            "RESP", "CO2"
         };
         return symbol[index];
     }
