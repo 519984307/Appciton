@@ -23,8 +23,8 @@ struct TrendDataSegment
     unsigned status;                    /* status of the fetch data */
     short co2Baro;                      /* current co2 baro */
     short trendValueNum;                /* trend value segment this trend data contians */
-    TrendValueSegment values[0];        /* followed by the sub param value  */
     bool eventFlag;                     /* event trigger flag */
+    TrendValueSegment values[0];        /* followed by the sub param value  */
 };
 
 /* data description of the trend storage file */
