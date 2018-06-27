@@ -10,7 +10,7 @@ public:
     Window(QWidget *parent = NULL);
     ~Window();
 
-    //QLayout *windowLayout() const;
+    QLayout *getWindowLayout();
     void setWindowLayout(QLayout *layout);
 
 protected:

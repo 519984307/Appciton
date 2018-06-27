@@ -170,7 +170,6 @@ bool QScrollAreaKineticScroller::eventFilter(QObject *o, QEvent *e)
     bool isMouseEvent = false;
     bool isMouseDown = false;
 
-    qDebug("QScrollAreaKineticScroller::eventFilter: %d", e->type());
     if (d->area && (o == d->area->viewport()) &&
         !d->ignoreEvents && d->area->isEnabled() && isEnabled()) {
         switch (e->type()) {
@@ -248,7 +247,7 @@ bool QScrollAreaKineticScroller::eventFilter(QObject *o, QEvent *e)
             d->childWidget = d->mouseTransparentChildAtGlobalPos(d->area->viewport(), me->globalPos());
 
         if (d->childWidget) {
-            QMouseEvent cme(me->type(), me->pos(),
+            QMouseEvent cme(me->type(), d->childWidget->mapFrom(d->area->viewport(), me->pos()),
                     me->globalPos(), me->button(), me->buttons(), me->modifiers());
             d->sendEvent(d->childWidget, &cme);
             res = cme.isAccepted();

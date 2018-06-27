@@ -103,7 +103,12 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/ShadowEffect.cpp                                       \
     Utility/Widgets/Base/Button.cpp                                             \
     Utility/Widgets/Base/Window.cpp                                             \
-    Utility/Widgets/Base/MenuSideBar.cpp                                        \
+    Utility/Widgets/Base/MenuWindow.cpp                                         \
+    Utility/Widgets/Base/MenuSidebar.cpp                                        \
+    Utility/Widgets/Base/MenuSidebarItem.cpp                                    \
+    Utility/Widgets/Base/FloatScrollBar.cpp                                     \
+    Utility/Widgets/Base/KineticScroller/qkineticscroller.cpp                   \
+    Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.cpp         \
     Utility/Widgets/IComboList/ComboList.cpp                                    \
     Utility/Widgets/IComboList/ComboListPopup.cpp                               \
     Utility/Widgets/IComboList/ComboListItem.cpp                                \
@@ -517,7 +522,13 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/ShadowEffect.h                                         \
     Utility/Widgets/Base/Button.h                                               \
     Utility/Widgets/Base/Window.h                                               \
-    Utility/Widgets/Base/MenuSideBar.h                                          \
+    Utility/Widgets/Base/MenuWindow.h                                           \
+    Utility/Widgets/Base/MenuSidebar.h                                          \
+    Utility/Widgets/Base/MenuSidebarItem.h                                      \
+    Utility/Widgets/Base/FloatScrollBar.h                                       \
+    Utility/Widgets/Base/KineticScroller/qkineticscroller.h                     \
+    Utility/Widgets/Base/KineticScroller/qkineticscroller_p.h                   \
+    Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.h           \
     Utility/Widgets/IComboList/ComboList.h                                      \
     Utility/Widgets/IComboList/ComboListPopup.h                                 \
     Utility/Widgets/IComboList/ComboListItem.h                                  \
@@ -965,6 +976,7 @@ DEPENDPATH +=                                                                   
     Utility/LanguageManager                                                     \
     Utility/Widgets                                                             \
     Utility/Widgets/Base                                                        \
+    Utility/Widgets/Base/KineticScroller                                        \
     Utility/Widgets/IComboList                                                  \
     Utility/Widgets/Waveform                                                    \
     Utility/Widgets/InputMethod                                                 \
@@ -1094,6 +1106,7 @@ INCLUDEPATH +=                                                                  
     Utility/LanguageManager                                                     \
     Utility/Widgets                                                             \
     Utility/Widgets/Base                                                        \
+    Utility/Widgets/Base/KineticScroller                                        \
     Utility/Widgets/IComboList                                                  \
     Utility/Widgets/Waveform                                                    \
     Utility/Widgets/InputMethod                                                 \

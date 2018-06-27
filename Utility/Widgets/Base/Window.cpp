@@ -5,7 +5,7 @@
 #include <QBoxLayout>
 #include <QFrame>
 #include <QDebug>
-#include "ShadowEffect.h"
+#include "FontManager.h"
 
 #define TITLE_BAR_HEIGHT 40
 
@@ -53,6 +53,8 @@ Window::Window(QWidget *parent)
     d_ptr->m_widget = new QWidget();
     vLayout->addWidget(d_ptr->m_widget, 1);
     connect(closeBtn, SIGNAL(clicked(bool)), this, SLOT(close()));
+
+    setFont(fontManager.textFont(17));
 }
 
 Window::~Window()
@@ -60,10 +62,10 @@ Window::~Window()
 
 }
 
-//QLayout *Window::windowLayout() const
-//{
-//    return d_ptr->m_widget->layout();
-//}
+QLayout *Window::getWindowLayout()
+{
+    return d_ptr->m_widget->layout();
+}
 
 void Window::setWindowLayout(QLayout *layout)
 {
