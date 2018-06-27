@@ -202,8 +202,86 @@ const char *AGLimitAlarm::toString(int id)
 /**************************************************************************************************
  * alarm notify.
  *************************************************************************************************/
-void AGLimitAlarm::notifyAlarm(int /*id*/, bool /*flag*/)
+void AGLimitAlarm::notifyAlarm(int id, bool flag)
 {
+    AGLimitAlarmType alarmID = (AGLimitAlarmType)id;
+    SubParamID subID = getSubParamID(id);
+    switch (alarmID)
+    {
+    case AG_LIMIT_ALARM_ETN2O_LOW:
+        _isEtN2OAlarm |= flag;
+        break;
+    case AG_LIMIT_ALARM_ETN2O_HIGH:
+        _isEtN2OAlarm |= flag;
+        agParam.noticeLimitAlarm(subID, _isEtN2OAlarm);
+        _isEtN2OAlarm = false;
+        break;
+
+    case AG_LIMIT_ALARM_FIN2O_LOW:
+        _isFiN2OAlarm |= flag;
+        break;
+    case AG_LIMIT_ALARM_FIN2O_HIGH:
+        _isFiN2OAlarm |= flag;
+        agParam.noticeLimitAlarm(subID, _isFiN2OAlarm);
+        _isFiN2OAlarm = false;
+        break;
+
+    case AG_LIMIT_ALARM_ETAA1_LOW:
+        _isEtAA1Alarm |= flag;
+        break;
+    case AG_LIMIT_ALARM_ETAA1_HIGH:
+        _isEtAA1Alarm |= flag;
+        agParam.noticeLimitAlarm(subID, _isEtAA1Alarm);
+        _isEtAA1Alarm = false;
+        break;
+
+    case AG_LIMIT_ALARM_FIAA1_LOW:
+        _isFiAA1Alarm |= flag;
+        break;
+    case AG_LIMIT_ALARM_FIAA1_HIGH:
+        _isFiAA1Alarm |= flag;
+        agParam.noticeLimitAlarm(subID, _isFiAA1Alarm);
+        _isFiAA1Alarm = false;
+        break;
+
+    case AG_LIMIT_ALARM_ETAA2_LOW:
+        _isEtAA2Alarm |= flag;
+        break;
+    case AG_LIMIT_ALARM_ETAA2_HIGH:
+        _isEtAA2Alarm |= flag;
+        agParam.noticeLimitAlarm(subID, _isEtAA2Alarm);
+        _isEtAA2Alarm = false;
+        break;
+
+    case AG_LIMIT_ALARM_FIAA2_LOW:
+        _isFiAA2Alarm |= flag;
+        break;
+    case AG_LIMIT_ALARM_FIAA2_HIGH:
+        _isFiAA2Alarm |= flag;
+        agParam.noticeLimitAlarm(subID, _isFiAA2Alarm);
+        _isFiAA2Alarm = false;
+        break;
+
+    case AG_LIMIT_ALARM_ETO2_LOW:
+        _isEtO2Alarm |= flag;
+        break;
+    case AG_LIMIT_ALARM_ETO2_HIGH:
+        _isEtO2Alarm |= flag;
+        agParam.noticeLimitAlarm(subID, _isEtO2Alarm);
+        _isEtO2Alarm = false;
+        break;
+
+    case AG_LIMIT_ALARM_FIO2_LOW:
+        _isFiO2Alarm |= flag;
+        break;
+    case AG_LIMIT_ALARM_FIO2_HIGH:
+        _isFiO2Alarm |= flag;
+        agParam.noticeLimitAlarm(subID, _isFiO2Alarm);
+        _isFiO2Alarm = false;
+        break;
+    default:
+        break;
+    }
 
 }
 

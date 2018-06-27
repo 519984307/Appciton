@@ -52,7 +52,7 @@ void IBPTrendWidget::setData(short sys, short dia, short map)
         }
         else
         {
-            short calMap = map - 100;
+            short calMap = map;
             setShowStacked(2);
             _veinString = QString::number(calMap);
         }
@@ -107,7 +107,8 @@ void IBPTrendWidget::setZeroFlag(bool isEnabled)
  *************************************************************************************************/
 void IBPTrendWidget::isAlarm(int id, bool flag)
 {
-    switch (id)
+    SubParamID subID = (SubParamID)id;
+    switch (subID)
     {
     case SUB_PARAM_ART_SYS:
     case SUB_PARAM_PA_SYS:
@@ -182,11 +183,13 @@ void IBPTrendWidget::showValue()
         {
             p.setColor(QPalette::WindowText, Qt::red);
             _mapValue->setPalette(p);
+            _veinValue->setPalette(p);
         }
         else
         {
             p.setColor(QPalette::WindowText, fgColor);
             _mapValue->setPalette(p);
+            _veinValue->setPalette(p);
         }
     }
     else

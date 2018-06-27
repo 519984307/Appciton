@@ -37,7 +37,7 @@ public:
     virtual void showSubParamValue();
 
     // 是否超限报警
-    void noticeLimitAlarm(bool isAlarm);
+    void noticeLimitAlarm(int id, bool isAlarm, IBPSignalInput ibp);
 
     // 获取可得的波形控件集。
     virtual void getAvailableWaveforms(QStringList &waveforms,

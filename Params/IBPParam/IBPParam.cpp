@@ -138,6 +138,7 @@ void IBPParam::handDemoWaveform(WaveformID id, short data)
 void IBPParam::handDemoTrendData()
 {
     _trendWidgetIBP1->setZeroFlag(true);
+    _trendWidgetIBP2->setZeroFlag(true);
     _ibp1.sys = qrand() % 15 + 105;
     _ibp1.dia = qrand() % 15 + 75;
     _ibp1.mean = qrand() % 15 + 90;
@@ -167,16 +168,17 @@ void IBPParam::showSubParamValue()
     }
 }
 
-void IBPParam::noticeLimitAlarm(int id, bool isAlarm)
+void IBPParam::noticeLimitAlarm(int id, bool isAlarm, IBPSignalInput ibp)
 {
-    if (NULL != _trendWidgetIBP1)
+    if (ibp == IBP_INPUT_1 && NULL != _trendWidgetIBP1)
     {
         _trendWidgetIBP1->isAlarm(id, isAlarm);
     }
 
-    if (NULL != _trendWidgetIBP2)
+    if (ibp == IBP_INPUT_2 && NULL != _trendWidgetIBP2)
     {
         _trendWidgetIBP2->isAlarm(id, isAlarm);
+    }
 }
 
 void IBPParam::getAvailableWaveforms(QStringList &waveforms, QStringList &waveformShowName, int)

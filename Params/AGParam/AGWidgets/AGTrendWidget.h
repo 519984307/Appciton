@@ -15,6 +15,12 @@ public:
     void setEtData(unsigned char etValue);
     void setFiData(unsigned char fiValue);
 
+    // 是否报警
+    void isAlarm(int id, bool flag);
+
+    // 显示参数值
+    void showValue(void);
+
     // 构造与析构。
     AGTrendWidget(const QString &trendName, const AGTypeGas gasType);
     ~AGTrendWidget();
@@ -33,6 +39,8 @@ private:
 
     QString _etStr;
     QString _fiStr;
+    bool _etAlarm;
+    bool _fiAlarm;
 
     AGTypeGas _gasType;
 

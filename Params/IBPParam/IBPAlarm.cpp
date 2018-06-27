@@ -58,7 +58,8 @@ SubParamID IBPLimitAlarm::getSubParamID(int id)
 {
     IBPPressureName ibp1 = ibpParam.getParamData(IBP_INPUT_1).pressureName;
     IBPPressureName ibp2 = ibpParam.getParamData(IBP_INPUT_2).pressureName;
-    switch (id)
+    IBPLimitAlarmType alarmID = (IBPLimitAlarmType)id;
+    switch (alarmID)
     {
     case IBP1_LIMIT_ALARM_SYS_LOW:
     case IBP1_LIMIT_ALARM_SYS_HIGH:
@@ -365,8 +366,74 @@ const char *IBPLimitAlarm::toString(int id)
  *************************************************************************************************/
 void IBPLimitAlarm::notifyAlarm(int id, bool isAlarm)
 {
-    _isAlarmLimit |= isAlarm;
+    IBPLimitAlarmType alarmID = (IBPLimitAlarmType)id;
+    SubParamID subID = getSubParamID(id);
 
+    IBPSignalInput ibp;
+    switch (alarmID)
+    {
+    case IBP1_LIMIT_ALARM_SYS_LOW:
+        _isSysAlarm |= isAlarm;
+        break;
+    case IBP1_LIMIT_ALARM_SYS_HIGH:
+        _isSysAlarm |= isAlarm;
+        ibp = IBP_INPUT_1;
+        ibpParam.noticeLimitAlarm(subID, _isSysAlarm, ibp);
+        _isSysAlarm = false;
+        break;
+
+    case IBP1_LIMIT_ALARM_DIA_LOW:
+        _isDiaAlarm |= isAlarm;
+        break;
+    case IBP1_LIMIT_ALARM_DIA_HIGH:
+        _isDiaAlarm |= isAlarm;
+        ibp = IBP_INPUT_1;
+        ibpParam.noticeLimitAlarm(subID, _isDiaAlarm, ibp);
+        _isDiaAlarm = false;
+        break;
+
+    case IBP1_LIMIT_ALARM_MEAN_LOW:
+        _isMapAlarm |= isAlarm;
+        break;
+    case IBP1_LIMIT_ALARM_MEAN_HIGH:
+        _isMapAlarm |= isAlarm;
+        ibp = IBP_INPUT_1;
+        ibpParam.noticeLimitAlarm(subID, _isMapAlarm, ibp);
+        _isMapAlarm = false;
+        break;
+
+    case IBP2_LIMIT_ALARM_SYS_LOW:
+        _isSysAlarm |= isAlarm;
+        break;
+    case IBP2_LIMIT_ALARM_SYS_HIGH:
+        _isSysAlarm |= isAlarm;
+        ibp = IBP_INPUT_2;
+        ibpParam.noticeLimitAlarm(subID, _isSysAlarm, ibp);
+        _isSysAlarm = false;
+        break;
+
+    case IBP2_LIMIT_ALARM_DIA_LOW:
+        _isDiaAlarm |= isAlarm;
+        break;
+    case IBP2_LIMIT_ALARM_DIA_HIGH:
+        _isDiaAlarm |= isAlarm;
+        ibp = IBP_INPUT_2;
+        ibpParam.noticeLimitAlarm(subID, _isDiaAlarm, ibp);
+        _isDiaAlarm = false;
+        break;
+
+    case IBP2_LIMIT_ALARM_MEAN_LOW:
+        _isMapAlarm |= isAlarm;
+        break;
+    case IBP2_LIMIT_ALARM_MEAN_HIGH:
+        _isMapAlarm |= isAlarm;
+        ibp = IBP_INPUT_2;
+        ibpParam.noticeLimitAlarm(subID, _isMapAlarm, ibp);
+        _isMapAlarm = false;
+        break;
+    default:
+        break;
+    }
 }
 
 /**************************************************************************************************
@@ -380,7 +447,7 @@ IBPLimitAlarm::~IBPLimitAlarm()
 /**************************************************************************************************
  * constructor
  *************************************************************************************************/
-IBPLimitAlarm::IBPLimitAlarm()
+IBPLimitAlarm::IBPLimitAlarm() : _isSysAlarm(false), _isDiaAlarm(false), _isMapAlarm(false)
 {
 
 }

@@ -56,7 +56,9 @@ public:
     IBPLimitAlarm();
     virtual ~IBPLimitAlarm();
 private:
-    bool _isAlarmLimit;
+    bool _isSysAlarm;
+    bool _isDiaAlarm;
+    bool _isMapAlarm;
 };
 #define ibpLimitAlarm (IBPLimitAlarm::construction())
 
