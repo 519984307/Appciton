@@ -16,6 +16,7 @@
 #include "SystemManager.h"
 #include "OxyCRGSetupWidget.h"
 #include "IMessageBox.h"
+#include "ECGParam.h"
 
 /**************************************************************************************************
  * 析构。
@@ -106,10 +107,10 @@ void OxyCRGWidget::_trendLayout(void)
     systemConfig.getStrValue("PrimaryCfg|UILayout|WidgetsOrder|OxyCRGWidget", widgets);
     nodeWidgets = widgets.split(",");
 
-    IWidget *w = NULL;
+//    IWidget *w = NULL;
     for (int i = 0; i < nodeWidgets.size(); i++)
     {
-        w = windowManager.getWidget(nodeWidgets[i]);
+        IWidget *w = windowManager.getWidget(nodeWidgets[i]);
         if (w == NULL)
         {
             continue;
@@ -186,6 +187,8 @@ void OxyCRGWidget::_setInterval(OxyCRGInterval index)
     {
         _oxycrgSpo2Widget->setWaveSpeed(speed);
     }
+
+    ecgParam.clearOxyCRGWaveNum();
 }
 
 /**************************************************************************************************
@@ -449,6 +452,8 @@ void OxyCRGWidget::_onSetupUpdated(IWidget *widget)
         int index = setupWidget.getWaveTypeIndex();
         if(index != (getWaveType()) && (index==0 || index==1))
         {
+            ecgParam.clearOxyCRGWaveNum();
+
             setWaveType(index);
 
             _setTrend((OxyCRGTrend)index);
@@ -471,16 +476,6 @@ void OxyCRGWidget::_onSetupUpdated(IWidget *widget)
             _oxycrgCo2Widget->setValueRange(valueLow, valueHight);
         }
 
-//        valueLow = setupWidget.getRESPLow(status);
-//        valueHight = setupWidget.getRESPHigh(status);
-//        valueMid = (valueHight+valueLow)/2;
-//        if(status)
-//        {
-//            status = false;
-//            _oxycrgWidget->setRuler(valueHight, valueMid, valueLow);
-//            _oxycrgWidget->setValueRange(valueLow, valueHight);
-//        }
-
         valueLow = setupWidget.getHRLow(status);
         valueHight = setupWidget.getHRHigh(status);
         valueMid = (valueHight+valueLow)/2;
@@ -496,7 +491,6 @@ void OxyCRGWidget::_onSetupUpdated(IWidget *widget)
         valueMid = (valueHight+valueLow)/2;
         if(status)
         {
-            status = false;
             _oxycrgSpo2Widget->setRuler(valueHight, valueMid, valueLow);
             _oxycrgSpo2Widget->setValueRange(valueLow, valueHight);
         }
@@ -529,6 +523,8 @@ void OxyCRGWidget::_changeTrendDestroyed()
         _changeTrendList = NULL;
         return;
     }
+
+    ecgParam.clearOxyCRGWaveNum();
 
     setWaveType(index);
 

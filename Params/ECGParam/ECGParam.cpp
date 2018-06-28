@@ -121,14 +121,21 @@ void ECGParam::handDemoTrendData(void)
     if(NULL != _waveOxyCRGWidget)
     {
         _waveOxyCRGWidget->addData(hrValue);
+
+        _updateNum++;
+        if(_updateNum>=2)
+        {
+            _updateNum = 0;
+            emit oxyCRGWaveUpdated();//呼吸氧和波形更新信号
+        }
     }
     int pvcs = qrand() % 30 + 30;
     updatePVCS(pvcs);
 
-    int st;
+//    int st;
     for (int i = ECG_ST_I;i<ECG_ST_NR;i++)
         {
-        st = qrand() % 10 - 5;
+        int st = qrand() % 10 - 5;
         updateST((ECGST)i,st);
     }
 
@@ -2341,6 +2348,11 @@ void ECGParam::setCheckPatient(bool flag)
     _isCheckPatient = flag;
 }
 
+void ECGParam::clearOxyCRGWaveNum()
+{
+    _updateNum = 0;
+}
+
 /***************************************************************************************************
  * presentRhythm : presenting rhythm
  **************************************************************************************************/
@@ -2360,7 +2372,8 @@ void ECGParam::presentRhythm()
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ECGParam::ECGParam() : Param(PARAM_ECG)
+ECGParam::ECGParam() : Param(PARAM_ECG),
+                       _updateNum(0)
 {
     // 初始化成员。
     _provider = NULL;
@@ -2372,7 +2385,7 @@ ECGParam::ECGParam() : Param(PARAM_ECG)
     _hrValue = InvData();
     memset(_leadOff, 2, sizeof(_leadOff));
 
-    _monitorSoftkey = (MonitorSoftkeyAction*)softkeyManager.getAction(SOFTKEY_ACTION_STANDARD);
+    _monitorSoftkey = static_cast<MonitorSoftkeyAction*>(softkeyManager.getAction(SOFTKEY_ACTION_STANDARD));
 
 //    // 关闭/使能12导的快捷软按键。
 //    if (_monitorSoftkey != NULL)
@@ -2438,6 +2451,8 @@ ECGParam::ECGParam() : Param(PARAM_ECG)
 
 //    _lastCabelType = 0x00;
     _isPowerOnNewSession = true;
+
+    connect(this, SIGNAL(oxyCRGWaveUpdated()), this, SLOT(onOxyCRGWaveUpdated()));
 }
 
 /**************************************************************************************************
@@ -2448,6 +2463,33 @@ ECGParam::~ECGParam()
     _timer.stop();
 }
 
+void ECGParam::setOxyCRGCO2Widget(OxyCRGCO2Widget *p)
+{
+    if(p)
+    {
+        _oxyCRGCO2Widget = p;
+    }
+}
+
+void ECGParam::setOxyCRGRESPWidget(OxyCRGRESPWidget *p)
+{
+    if(p)
+    {
+        _oxyCRGRESPWidget = p;
+    }
+}
+
+void ECGParam::onOxyCRGWaveUpdated()
+{
+    if(_oxyCRGCO2Widget)
+    {
+        _oxyCRGCO2Widget->update();
+    }
+    if(_oxyCRGRESPWidget)
+    {
+        _oxyCRGRESPWidget->update();
+    }
+}
 /**************************************************************************************************
  * 发送协议命令。
  *************************************************************************************************/

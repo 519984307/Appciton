@@ -14,7 +14,7 @@
 class WaveReviewCascadeMode: public WaveCascadeMode
 {
 public:
-    WaveReviewCascadeMode(WaveWidget *wave);
+    explicit WaveReviewCascadeMode(WaveWidget *wave);
     ~WaveReviewCascadeMode();
     bool match(int mode, bool isCascade);
     void reviewWave(const QDateTime &time);

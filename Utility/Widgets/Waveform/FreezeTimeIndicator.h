@@ -4,7 +4,7 @@
 class FreezeTimeIndicator : public WaveWidgetItem
 {
 public:
-    FreezeTimeIndicator(WaveWidget *w);
+    explicit FreezeTimeIndicator(WaveWidget *w);
     virtual void paintItem(QPainter &painter);
 
     void setReviewTime(int t);

@@ -53,8 +53,6 @@ public:
     }rulerUpdated;
 };
 
-#define NUMLENS(arrName) (sizeof(arrName)/sizeof(arrName[0]))
-
 
 OxyCRGSetupWidget::OxyCRGSetupWidget():PopupWidget(),
                                        d_ptr(new OxyCRGSetupWidgetPrivate())
@@ -65,13 +63,21 @@ OxyCRGSetupWidget::OxyCRGSetupWidget():PopupWidget(),
     int btnWidth = itemW / 2;
     int labelWidth = itemW - btnWidth;
 
-    QString stringComboTypeName[]={
-        "Trend1", "Trend2", "Wave"
-    };
-    QString stringRulerAdjTypeName[]={
-        "HRLow", "HRHigh", "SPO2Low", "SPO2High",
-        "CO2Low", "CO2High", "RESPLow", "RESPHigh"
-    };
+    QStringList comboTypeNameList;
+    comboTypeNameList.append("TRend1");
+    comboTypeNameList.append("Trend2");
+    comboTypeNameList.append("Wave");
+
+    QStringList rulerAdjTypeNameList;
+    rulerAdjTypeNameList.append("HRLow");
+    rulerAdjTypeNameList.append("HRHigh");
+    rulerAdjTypeNameList.append("SPO2Low");
+    rulerAdjTypeNameList.append("SPO2High");
+    rulerAdjTypeNameList.append("CO2Low");
+    rulerAdjTypeNameList.append("CO2High");
+    rulerAdjTypeNameList.append("RESPLow");
+    rulerAdjTypeNameList.append("RESPHigh");
+
     QStringList comboItem[d_ptr->COMBOTYPE_NR];
     comboItem[d_ptr->COMBOTYPE_TREND_1].append(trs("HR_PR"));
     comboItem[d_ptr->COMBOTYPE_TREND_1].append(trs("RR"));
@@ -85,9 +91,9 @@ OxyCRGSetupWidget::OxyCRGSetupWidget():PopupWidget(),
     d_ptr->conLayout = new QVBoxLayout();
     d_ptr->conLayout->setContentsMargins(0, 0, 0, 0);
 
-    for(unsigned i=0; i<NUMLENS(stringComboTypeName); i++)
+    for(unsigned i=0; i<OxyCRGSetupWidgetPrivate::COMBOTYPE_NR; i++)
     {
-        d_ptr->comboList[i] = new IComboList(trs(stringComboTypeName[i]));
+        d_ptr->comboList[i] = new IComboList(trs(comboTypeNameList.at(i)));
         d_ptr->comboList[i]->setFont(defaultFont());
         d_ptr->comboList[i]->addItems(comboItem[i]);
         d_ptr->comboList[i]->label->setFixedSize(labelWidth,ITEM_H);
@@ -99,16 +105,16 @@ OxyCRGSetupWidget::OxyCRGSetupWidget():PopupWidget(),
         d_ptr->comboList[i]->setProperty("comboid", qVariantFromValue(i));
 
         int index=0;
-        currentConfig.getNumValue(QString("OxyCRG|%1").arg(stringComboTypeName[i]), index);
+        currentConfig.getNumValue(QString("OxyCRG|%1").arg(comboTypeNameList.at(i)), index);
         d_ptr->comboList[i]->combolist->setCurrentIndex(index);
         index = 0;
     }
 
     int rulerRange[8][2]={{0,300}, {0,300}, {0,100}, {0,100},
                         {0,100}, {0,100}, {InvData(),InvData()}, {InvData(),InvData()}};
-    for(unsigned i=0; i<NUMLENS(stringRulerAdjTypeName); i++)
+    for(unsigned i=0; i<OxyCRGSetupWidgetPrivate::RULERADJTYPE_NR; i++)
     {
-        d_ptr->spinBox[i] = new ISpinBox(trs(stringRulerAdjTypeName[i]));
+        d_ptr->spinBox[i] = new ISpinBox(trs(rulerAdjTypeNameList.at(i)));
         d_ptr->spinBox[i]->setFont(defaultFont());
         d_ptr->conLayout->addWidget(d_ptr->spinBox[i], 0, Qt::AlignRight);
         d_ptr->spinBox[i]->setLabelWidth(labelWidth);
@@ -123,7 +129,7 @@ OxyCRGSetupWidget::OxyCRGSetupWidget():PopupWidget(),
         d_ptr->spinBox[i]->setProperty("spinboxid", qVariantFromValue(i));
 
         int index=0;
-        currentConfig.getNumValue(QString("OxyCRG|Ruler|%1").arg(stringRulerAdjTypeName[i]), index);
+        currentConfig.getNumValue(QString("OxyCRG|Ruler|%1").arg(rulerAdjTypeNameList.at(i)), index);
         d_ptr->spinBox[i]->setValue(index);
         d_ptr->rulerValue.data[i] = index;
         index = 0;

@@ -63,7 +63,7 @@ bool WaveScanCascadeMode::match(int mode, bool isCascade)
 // 返回值:
 // 无
 ////////////////////////////////////////////////////////////////////////////////
-void WaveScanCascadeMode::addData(int /*value*/, int /*flag*/)
+void WaveScanCascadeMode::addData(int /*value*/, int /*flag*/, bool /*isUpdated*/)
 {
 
 }

@@ -14,10 +14,10 @@
 class WaveScrollCascadeMode: public WaveCascadeMode
 {
 public:
-    WaveScrollCascadeMode(WaveWidget *wave);
+    explicit WaveScrollCascadeMode(WaveWidget *wave);
     ~WaveScrollCascadeMode();
     bool match(int mode, bool isCascade);
-    void addData(int value, int flag);
+    void addData(int value, int flag, bool isUpdated=true);
     bool updateRegion(QRegion &region);
     int maxUpdateRate();
     void paintWave(QPainter &painter, const QRect &rect);

@@ -7,7 +7,7 @@ class FreezeWaveReviewMode : public QObject, public WaveNormalMode
 {
     Q_OBJECT
 public:
-    FreezeWaveReviewMode(WaveWidget *wave);
+    explicit FreezeWaveReviewMode(WaveWidget *wave);
     ~FreezeWaveReviewMode();
     bool match(int mode, bool isCascade);
     void prepareTransformFactor();

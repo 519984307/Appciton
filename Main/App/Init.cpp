@@ -206,7 +206,8 @@ static void _initProviderParam(void)
     paramInfo.construction();
 
     // 创建Provider.
-    paramManager.addProvider(*new DemoProvider());
+    DemoProvider *demo = new DemoProvider();
+    paramManager.addProvider(*demo);
     //TE3Provider *te3 = new TE3Provider();
     //paramManager.addProvider(*te3);
 
@@ -322,6 +323,8 @@ static void _initProviderParam(void)
             respParam.setOxyWaveWidget(respOxyCRGWidget);
             windowManager.addWidget(respOxyCRGWidget);
             oxyCRGWidget->setOxyCrgRespWidget(respOxyCRGWidget);
+            demo->setOxyCRGRESPWidget(respOxyCRGWidget);
+            ecgParam.setOxyCRGRESPWidget(respOxyCRGWidget);
         }
     }
 
@@ -411,6 +414,8 @@ static void _initProviderParam(void)
         co2Param.setOxyCRGCO2Widget(co2OxyCRGWidget);
         windowManager.addWidget(co2OxyCRGWidget);
         oxyCRGWidget->setOxyCrgCo2Widget(co2OxyCRGWidget);
+        demo->setOxyCRGCO2Widget(co2OxyCRGWidget);
+        ecgParam.setOxyCRGCO2Widget(co2OxyCRGWidget);
     }
 
     //IBP test
