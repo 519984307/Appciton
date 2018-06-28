@@ -12,7 +12,8 @@
 #define TREND_DISPLAY_OFFSET        60
 #define isEqual(a, b) (qAbs((a)-(b)) < 0.000001)
 
-TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id(id), _type(type)
+TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id(id), _type(type),
+    _trendInfo(TrendGraphInfo()), _xSize(0), _ySize(0), _trendDataHead(0), _cursorPosIndex(0)
 {
     SubParamID subID = id;
     ParamID paramId = paramInfo.getParamID(subID);
