@@ -90,27 +90,41 @@ UnitType AGParam::getCurrentUnit(SubParamID /*id*/)
  *************************************************************************************************/
 short AGParam::getSubParamValue(SubParamID id)
 {
+    unsigned char value;
     switch (id)
     {
     case SUB_PARAM_ETN2O:
-        return getEtData(AG_TYPE_N2O);
+        value = getEtData(AG_TYPE_N2O);
+        break;
     case SUB_PARAM_FIN2O:
-        return getFiData(AG_TYPE_N2O);
+        value = getFiData(AG_TYPE_N2O);
+        break;
     case SUB_PARAM_ETAA1:
-        return getEtData(AG_TYPE_AA1);
+        value = getEtData(AG_TYPE_AA1);
+        break;
     case SUB_PARAM_FIAA1:
-        return getFiData(AG_TYPE_AA1);
+        value = getFiData(AG_TYPE_AA1);
+        break;
     case SUB_PARAM_ETAA2:
-        return getEtData(AG_TYPE_AA2);
+        value = getEtData(AG_TYPE_AA2);
+        break;
     case SUB_PARAM_FIAA2:
-        return getFiData(AG_TYPE_AA2);
+        value = getFiData(AG_TYPE_AA2);
+        break;
     case SUB_PARAM_ETO2:
-        return getEtData(AG_TYPE_O2);
+        value = getEtData(AG_TYPE_O2);
+        break;
     case SUB_PARAM_FIO2:
-        return getFiData(AG_TYPE_O2);
+        value = getFiData(AG_TYPE_O2);
+        break;
     default:
         return InvData();
     }
+    if (value == INVALID)
+    {
+        return InvData();
+    }
+    return value;
 }
 
 /**************************************************************************************************

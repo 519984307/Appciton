@@ -471,11 +471,13 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         {
             barPainter.fillRect(dataRect, Qt::black);
         }
-        double value1 = _trendInfo.trendDataV2.at(_cursorPosIndex).data[0] / 10;
-        double value2 = _trendInfo.trendDataV2.at(_cursorPosIndex).data[1] / 10;
+        double value1 = _trendInfo.trendDataV2.at(_cursorPosIndex).data[0];
+        double value2 = _trendInfo.trendDataV2.at(_cursorPosIndex).data[1];
 
         if (value1 != InvData() && value2 != InvData())
         {
+            value1 /= 10;
+            value2 /= 10;
             QString trendStr = QString::number(value1, 'g', 2) + "/" + QString::number(value2, 'g', 2);
             barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height()/2, trendStr);
         }
