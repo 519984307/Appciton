@@ -166,7 +166,6 @@ void MenuSidebar::showEvent(QShowEvent *ev)
 void MenuSidebar::scrollContentsBy(int dx, int dy)
 {
     QScrollArea::scrollContentsBy(dx, dy);
-    qDebug()<<"scroll"<<dx<<dy;
     d_ptr->scrollBar->move(d_ptr->scrollBar->x(), d_ptr->scrollBar->y() + dy);
     d_ptr->scrollBar->setVisible(true);
 }
