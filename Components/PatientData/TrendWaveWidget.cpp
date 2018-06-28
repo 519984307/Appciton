@@ -172,6 +172,7 @@ void TrendWaveWidget::rightMoveCursor()
 
 void TrendWaveWidget::leftMoveEvent()
 {
+    // 遍历找到下一个事件发生时间
     for (int i = _alarmTimeList.count() - 1; i >= 0; i --)
     {
         unsigned alarmTime = _alarmTimeList.at(i);
@@ -179,6 +180,7 @@ void TrendWaveWidget::leftMoveEvent()
         int timeInterval = TrendDataSymbol::convertValue(_timeInterval);
         if (alarmTime < curTime)
         {
+            // 事件时间小于当前页最左侧时间时,进行翻页操作
             if (alarmTime < _leftTime)
             {
                 if (_currentPage >= _totalPage)
@@ -195,6 +197,7 @@ void TrendWaveWidget::leftMoveEvent()
             }
             else
             {
+                // 将游标移到事件发生时刻
                 int index = (curTime - alarmTime) / timeInterval;
                 _cursorPosIndex = _cursorPosIndex + index;
 
@@ -298,7 +301,7 @@ void TrendWaveWidget::setTimeInterval(ResolutionRatio timeInterval)
 
 void TrendWaveWidget::setWaveNumber(int num)
 {
-    setTrendWaveReset();
+    trendWaveReset();
     _displayGraphNum = num;    
     updateTimeRange();
 }
@@ -561,7 +564,7 @@ void TrendWaveWidget::updateTimeRange()
     _trendLayout();
 }
 
-void TrendWaveWidget::setTrendWaveReset()
+void TrendWaveWidget::trendWaveReset()
 {
     _pagingNum = 0;
     _subWidgetScrollArea->verticalScrollBar()->setSliderPosition(0);

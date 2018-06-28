@@ -70,10 +70,10 @@ public:
      */
     void updateTimeRange(void);
 
-    void setTrendWaveReset(void);
-
-    //test
-    const QList<TrendDataPackage*> getTrendDatapacketList() {return _trendDataPack;}
+    /**
+     * @brief trendWaveReset 趋势波形复位
+     */
+    void trendWaveReset(void);
 
     const QList<TrendGraphInfo> getTrendGraphPrint();
 
@@ -136,14 +136,22 @@ private:
      */
     double _getCursorPos(unsigned t);               // 获取坐标位置
 
-    unsigned _getCursorTime(double pos);            // 获取游标位置时间
+    /**
+     * @brief _getCursorTime 获取游标位置时间
+     * @param pos   游标位置
+     */
+    unsigned _getCursorTime(double pos);
 
     /**
      * @brief _calculationPage 获取当前时间间隔的总数据页并设置当前页为1
      */
     void _calculationPage(void);                    // 计算当前数据量的页数
 
+    /**
+     * @brief _updateEventIndex 刷新存储事件发生时间
+     */
     void _updateEventIndex();
+
 private:
     QVBoxLayout *_mainLayout;
     QVBoxLayout *_hLayoutTrend;
