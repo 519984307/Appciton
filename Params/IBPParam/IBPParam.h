@@ -33,6 +33,12 @@ public:
     virtual void handDemoWaveform(WaveformID id, short data);
     virtual void handDemoTrendData(void);
 
+    // 显示
+    virtual void showSubParamValue();
+
+    // 是否超限报警
+    void noticeLimitAlarm(int id, bool isAlarm, IBPSignalInput ibp);
+
     // 获取可得的波形控件集。
     virtual void getAvailableWaveforms(QStringList &waveforms,
             QStringList &waveformShowName, int);

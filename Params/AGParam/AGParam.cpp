@@ -48,13 +48,83 @@ void AGParam::handDemoWaveform(WaveformID id, short data)
  *************************************************************************************************/
 void AGParam::handDemoTrendData()
 {
-    _etn2o.value = qrand() % 20 + 20;
-    _fin2o.value = qrand() % 10 + 10;
+    _etn2o.value = qrand() % 20;
+    _fin2o.value = qrand() % 10;
 
     if (NULL != _trendWidgetN2O)
     {
         _trendWidgetN2O->setEtData(_etn2o.value);
         _trendWidgetN2O->setFiData(_fin2o.value);
+    }
+}
+
+void AGParam::showSubParamValue()
+{
+    if(NULL != _trendWidgetN2O)
+    {
+        _trendWidgetN2O->showValue();
+    }
+
+    if(NULL != _trendWidgetAA1)
+    {
+        _trendWidgetAA1->showValue();
+    }
+
+    if(NULL != _trendWidgetAA2)
+    {
+        _trendWidgetAA2->showValue();
+    }
+
+    if(NULL != _trendWidgetO2)
+    {
+        _trendWidgetO2->showValue();
+    }
+
+}
+
+void AGParam::noticeLimitAlarm(int id, bool flag)
+{
+    SubParamID subID = (SubParamID)id;
+    switch (subID)
+    {
+    case SUB_PARAM_ETN2O:
+    case SUB_PARAM_FIN2O:
+    {
+        if (NULL != _trendWidgetN2O)
+        {
+            _trendWidgetN2O->isAlarm(id, flag);
+        }
+        break;
+    }
+    case SUB_PARAM_ETAA1:
+    case SUB_PARAM_FIAA1:
+    {
+        if (NULL != _trendWidgetAA1)
+        {
+            _trendWidgetAA1->isAlarm(id, flag);
+        }
+        break;
+    }
+    case SUB_PARAM_ETAA2:
+    case SUB_PARAM_FIAA2:
+    {
+        if (NULL != _trendWidgetAA2)
+        {
+            _trendWidgetAA2->isAlarm(id, flag);
+        }
+        break;
+    }
+    case SUB_PARAM_ETO2:
+    case SUB_PARAM_FIO2:
+    {
+        if (NULL != _trendWidgetO2)
+        {
+            _trendWidgetO2->isAlarm(id, flag);
+        }
+        break;
+    }
+    default:
+        break;
     }
 }
 

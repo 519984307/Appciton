@@ -52,7 +52,7 @@ void IBPTrendWidget::setData(short sys, short dia, short map)
         }
         else
         {
-            short calMap = map - 100;
+            short calMap = map;
             setShowStacked(2);
             _veinString = QString::number(calMap);
         }
@@ -103,10 +103,112 @@ void IBPTrendWidget::setZeroFlag(bool isEnabled)
 }
 
 /**************************************************************************************************
+ * 是否报警。
+ *************************************************************************************************/
+void IBPTrendWidget::isAlarm(int id, bool flag)
+{
+    SubParamID subID = (SubParamID)id;
+    switch (subID)
+    {
+    case SUB_PARAM_ART_SYS:
+    case SUB_PARAM_PA_SYS:
+    case SUB_PARAM_AUXP1_SYS:
+    case SUB_PARAM_AUXP2_SYS:
+        _sysAlarm = flag;
+        break;
+    case SUB_PARAM_ART_DIA:
+    case SUB_PARAM_PA_DIA:
+    case SUB_PARAM_AUXP1_DIA:
+    case SUB_PARAM_AUXP2_DIA:
+        _diaAlarm = flag;
+        break;
+    case SUB_PARAM_ART_MAP:
+    case SUB_PARAM_PA_MAP:
+    case SUB_PARAM_AUXP1_MAP:
+    case SUB_PARAM_AUXP2_MAP:
+    case SUB_PARAM_CVP_MAP:
+    case SUB_PARAM_ICP_MAP:
+    case SUB_PARAM_LAP_MAP:
+    case SUB_PARAM_RAP_MAP:
+        _mapAlarm = flag;
+        break;
+    default:
+        break;
+    }
+
+    updateAlarm(_sysAlarm || _diaAlarm || _mapAlarm);
+}
+
+/**************************************************************************************************
+ * 是否显示。
+ *************************************************************************************************/
+void IBPTrendWidget::showValue()
+{
+    QPalette p = palette();
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
+    QColor fgColor = (psrc.windowText().color() == Qt::white) ? Qt::black :
+          psrc.windowText().color();
+    if (_sysAlarm || _diaAlarm || _mapAlarm)
+    {
+        if (p.window().color() != Qt::white)
+        {
+            p.setColor(QPalette::Window, Qt::white);
+            p.setColor(QPalette::WindowText, Qt::red);
+            setPalette(p);
+        }
+
+        if (_sysAlarm)
+        {
+            p.setColor(QPalette::WindowText, Qt::red);
+            _sysValue->setPalette(p);
+        }
+        else
+        {
+            p.setColor(QPalette::WindowText, fgColor);
+            _sysValue->setPalette(p);
+        }
+
+        if (_diaAlarm)
+        {
+            p.setColor(QPalette::WindowText, Qt::red);
+            _diaValue->setPalette(p);
+        }
+        else
+        {
+            p.setColor(QPalette::WindowText, fgColor);
+            _diaValue->setPalette(p);
+        }
+
+        if (_mapAlarm)
+        {
+            p.setColor(QPalette::WindowText, Qt::red);
+            _mapValue->setPalette(p);
+            _veinValue->setPalette(p);
+        }
+        else
+        {
+            p.setColor(QPalette::WindowText, fgColor);
+            _mapValue->setPalette(p);
+            _veinValue->setPalette(p);
+        }
+    }
+    else
+    {
+        if (p.window().color() != Qt::black)
+        {
+            setPalette(psrc);
+            _sysValue->setPalette(psrc);
+            _diaValue->setPalette(psrc);
+            _mapValue->setPalette(psrc);
+        }
+    }
+}
+
+/**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPPressureName &entitle) : TrendWidget(trendName),
-    _isZero(false)
+    _isZero(false), _sysAlarm(false), _diaAlarm(false), _mapAlarm(false)
 {
     _sysString = InvStr();
     _diaString = InvStr();
