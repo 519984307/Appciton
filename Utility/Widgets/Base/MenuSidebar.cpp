@@ -14,10 +14,11 @@
 class MenuSidebarPrivate
 {
 public:
-    MenuSidebarPrivate(MenuSidebar * const q_ptr)
+    explicit MenuSidebarPrivate(MenuSidebar * const q_ptr)
         : q_ptr(q_ptr),
-          viewPort(NULL),
+          widget(NULL),
           scroller(NULL),
+          scrollBar(NULL),
           itemLayout(NULL),
           curSelectIndex(-1),
           currentPage(0),
@@ -27,7 +28,7 @@ public:
     void updateItems(int itemNum);
     void reloadContent();
     MenuSidebar * const q_ptr;
-    QWidget *viewPort;
+    QWidget *widget;
     QScrollAreaKineticScroller *scroller;
     FloatScrollBar *scrollBar;
     QStringList itemTextList;
@@ -97,27 +98,26 @@ MenuSidebar::MenuSidebar(QWidget *parent)
 {
     setAutoFillBackground(true);
 
-    d_ptr->viewPort = new QWidget();
+    d_ptr->widget = new QWidget();
 
-    d_ptr->itemLayout = new QVBoxLayout(d_ptr->viewPort);
+    d_ptr->itemLayout = new QVBoxLayout(d_ptr->widget);
     d_ptr->itemLayout->setSpacing(0);
     d_ptr->itemLayout->setContentsMargins(0,0,0,0);
     d_ptr->itemLayout->addStretch(1);
 
     d_ptr->scroller = new QScrollAreaKineticScroller();
     d_ptr->scroller->setWidget(this);
-    d_ptr->scroller->setScrollMetric(QKineticScroller::OvershootMaximumDistance, qVariantFromValue(QPointF(0, 0.02)));
+    //d_ptr->scroller->setScrollMetric(QKineticScroller::OvershootMaximumDistance, qVariantFromValue(QPointF(0, 0.02)));
     d_ptr->scroller->setScrollMetric(QKineticScroller::OvershootSpringConstant, qVariantFromValue(80));
 
-    d_ptr->scrollBar = new FloatScrollBar();
-    d_ptr->scrollBar->setWidget(this);
+    d_ptr->scrollBar = new FloatScrollBar(this);
 
-    QPalette pal = d_ptr->viewPort->palette();
+    QPalette pal = d_ptr->widget->palette();
     QColor bgColor = pal.color(QPalette::Button);
     bgColor = bgColor.darker(120);
     pal.setColor(QPalette::Window, bgColor);
     pal.setColor(QPalette::Button, bgColor);
-    d_ptr->viewPort->setPalette(pal);
+    d_ptr->widget->setPalette(pal);
 
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -144,7 +144,8 @@ void MenuSidebar::addItem(const QString &text)
     item->setFixedHeight(PREFER_ITEM_HEIGHT);
     d_ptr->itemLayout->insertWidget(d_ptr->itemList.count(), item);
     d_ptr->itemList.append(item);
-    QObject::connect(item, SIGNAL(clicked(bool)), this, SLOT(onItemClicked()));
+    connect(item, SIGNAL(clicked(bool)), this, SLOT(onItemClicked()));
+    connect(item, SIGNAL(focusChanged(bool)), this, SLOT(onItemFocusChanged(bool)));
 }
 
 QSize MenuSidebar::sizeHint() const
@@ -155,19 +156,52 @@ QSize MenuSidebar::sizeHint() const
 void MenuSidebar::resizeEvent(QResizeEvent *ev)
 {
     QWidget::resizeEvent(ev);
+
+    d_ptr->scrollBar->move(ev->size().width() - d_ptr->scrollBar->width(),
+                           d_ptr->scrollBar->y());
 }
 
 void MenuSidebar::showEvent(QShowEvent *ev)
 {
-    setWidget(d_ptr->viewPort);
+    setWidget(d_ptr->widget);
+
+    int h = viewport()->height() * viewport()->height() / d_ptr->widget->height();
+    if(h >= viewport()->height())
+    {
+        h = viewport()->height();
+    }
+    d_ptr->scrollBar->resize(d_ptr->scrollBar->width(), h);
+    d_ptr->scrollBar->raise();
+
     QWidget::showEvent(ev);
 }
 
 void MenuSidebar::scrollContentsBy(int dx, int dy)
 {
     QScrollArea::scrollContentsBy(dx, dy);
-    d_ptr->scrollBar->move(d_ptr->scrollBar->x(), d_ptr->scrollBar->y() + dy);
+    int y = d_ptr->scrollBar->y() - dy;
+    if(y < 0)
+    {
+        y = 0;
+    }
+    else if(y > viewport()->height() - d_ptr->scrollBar->height())
+    {
+        y = viewport()->height() - d_ptr->scrollBar->height();
+    }
+    d_ptr->scrollBar->move(d_ptr->scrollBar->x(), y);
     d_ptr->scrollBar->setVisible(true);
+}
+
+bool MenuSidebar::focusNextPrevChild(bool next)
+{
+    qDebug()<<Q_FUNC_INFO;
+    return QScrollArea::focusNextPrevChild(next);
+}
+
+bool MenuSidebar::viewportEvent(QEvent *ev)
+{
+    qDebug()<<ev->type();
+    return QScrollArea::viewportEvent(ev);
 }
 
 void MenuSidebar::onItemClicked()
@@ -192,6 +226,14 @@ void MenuSidebar::onItemClicked()
         item->setChecked(true);
 
         emit selectItemChanged(item->text());
+    }
+}
+
+void MenuSidebar::onItemFocusChanged(bool in)
+{
+    if(in)
+    {
+        d_ptr->scrollBar->setVisible(true);
     }
 }
 

@@ -66,5 +66,17 @@ void MenuSidebarItem::paintEvent(QPaintEvent *ev)
 
 void MenuSidebarItem::nextCheckState()
 {
+    //do nothing
+}
 
+void MenuSidebarItem::focusInEvent(QFocusEvent *ev)
+{
+    QAbstractButton::focusInEvent(ev);
+    emit focusChanged(true);
+}
+
+void MenuSidebarItem::focusOutEvent(QFocusEvent *ev)
+{
+    QAbstractButton::focusOutEvent(ev);
+    emit focusChanged(false);
 }

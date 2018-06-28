@@ -7,7 +7,7 @@ class MenuSidebar : public QScrollArea
 {
     Q_OBJECT
 public:
-    MenuSidebar(QWidget *parent = NULL);
+    explicit MenuSidebar(QWidget *parent = NULL);
     ~MenuSidebar();
 
     /* add a string item */
@@ -24,9 +24,12 @@ protected:
     void resizeEvent(QResizeEvent *ev);
     void showEvent(QShowEvent *ev);
     void scrollContentsBy(int dx, int dy);
+    bool focusNextPrevChild(bool next);
+    bool viewportEvent(QEvent *ev);
 
 private slots:
     void onItemClicked();
+    void onItemFocusChanged(bool in);
 
 private:
     QScopedPointer<MenuSidebarPrivate> d_ptr;

@@ -1,25 +1,27 @@
 #pragma once
 #include <QWidget>
 
-
-class FloatScrollBarPrivate;
-class QScrollArea;
+class QBasicTimer;
 class FloatScrollBar : public QWidget
 {
     Q_OBJECT
 public:
-    FloatScrollBar();
+    explicit FloatScrollBar(QWidget *parent = NULL);
     ~FloatScrollBar();
 
-    bool eventFilter(QObject *obj, QEvent *ev);
-
-    void setWidget(QScrollArea *widget);
+    /* reimplement */
+    void setVisible(bool visiable);
 
 protected:
+    /* reimplement */
     void paintEvent(QPaintEvent *ev);
+    /* reimplement */
     void timerEvent(QTimerEvent *ev);
+    /* reimplement */
     void showEvent(QShowEvent *ev);
+    /* reimplement */
+    void moveEvent(QMoveEvent *ev);
 
 private:
-    QScopedPointer<FloatScrollBarPrivate> d_ptr;
+    QBasicTimer *_timer;
 };

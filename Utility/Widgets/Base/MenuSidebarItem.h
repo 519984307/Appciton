@@ -5,9 +5,13 @@ class MenuSidebarItem : public QAbstractButton
 {
     Q_OBJECT
 public:
-    MenuSidebarItem(QWidget *parent = NULL);
+    explicit MenuSidebarItem(QWidget *parent = NULL);
 
     QSize sizeHint() const;
+
+
+signals:
+    void focusChanged(bool in);
 
 protected:
     /* reimplement */
@@ -15,4 +19,10 @@ protected:
 
     /* reimplement */
     void nextCheckState();
+
+    /* reimplement */
+    void focusInEvent(QFocusEvent *ev);
+
+    /* reimplement */
+    void focusOutEvent(QFocusEvent *ev);
 };
