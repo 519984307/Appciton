@@ -143,6 +143,7 @@ private:
      */
     void _calculationPage(void);                    // 计算当前数据量的页数
 
+    void _updateEventIndex();
 private:
     QVBoxLayout *_mainLayout;
     QVBoxLayout *_hLayoutTrend;

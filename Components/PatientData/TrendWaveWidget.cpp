@@ -172,114 +172,92 @@ void TrendWaveWidget::rightMoveCursor()
 
 void TrendWaveWidget::leftMoveEvent()
 {
-    bool flag = true;
-    int index = _cursorPosIndex;
-    while (flag || !_trendGraphInfo.alarmInfo.at(_cursorPosIndex).isAlarmEvent)
+    for (int i = _alarmTimeList.count() - 1; i >= 0; i --)
     {
-        flag = false;        
-        if (_cursorPosIndex >= _trendGraphInfo.alarmInfo.count() - 1)
+        unsigned alarmTime = _alarmTimeList.at(i);
+        unsigned curTime = _trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp;
+        int timeInterval = TrendDataSymbol::convertValue(_timeInterval);
+        if (alarmTime < curTime)
         {
-            unsigned time = _trendGraphInfo.alarmInfo.at(index).timestamp;
-            if (!_alarmTimeList.isEmpty())
+            if (alarmTime < _leftTime)
             {
-                if (time <= _alarmTimeList.first())
+                if (_currentPage >= _totalPage)
                 {
-                    _cursorPosIndex = index;
                     return;
                 }
                 else
                 {
-                    if (_currentPage >= _totalPage)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        _currentPage ++;
-                    }
-                    updateTimeRange();
-                    _cursorPosIndex = 0;
-                    leftMoveEvent();
+                    _currentPage ++;
                 }
+                updateTimeRange();
+                _cursorPosIndex = 0;
+                leftMoveEvent();
             }
             else
             {
-                _cursorPosIndex = index;
-                return;
-            }
-        }
-        else{
-            _cursorPosIndex ++;
-        }
-    }
+                int index = (curTime - alarmTime) / timeInterval;
+                _cursorPosIndex = _cursorPosIndex + index;
 
-    int count = _hLayoutTrend->count();
-    for (int i = 0; i < count; i++)
-    {
-        QLayoutItem *item = _hLayoutTrend->itemAt(i);
-        TrendSubWaveWidget *widget = dynamic_cast<TrendSubWaveWidget *>(item->widget());
-        if (widget != NULL)
-        {
-            widget->cursorMove(_cursorPosIndex);
+                int count = _hLayoutTrend->count();
+                for (int i = 0; i < count; i++)
+                {
+                    QLayoutItem *item = _hLayoutTrend->itemAt(i);
+                    TrendSubWaveWidget *widget = dynamic_cast<TrendSubWaveWidget *>(item->widget());
+                    if (widget != NULL)
+                    {
+                        widget->cursorMove(_cursorPosIndex);
+                    }
+                }
+                update();
+            }
+            return;
         }
     }
-    update();
 }
 
 void TrendWaveWidget::rightMoveEvent()
 {
-    bool flag = true;
-    int index = _cursorPosIndex;
-    while (flag || !_trendGraphInfo.alarmInfo.at(_cursorPosIndex).isAlarmEvent)
+    for (int i = 0; i < _alarmTimeList.count(); i ++)
     {
-        flag = false;
-        if (_cursorPosIndex <= 0)
+        unsigned alarmTime = _alarmTimeList.at(i);
+        unsigned curTime = _trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp;
+        int timeInterval = TrendDataSymbol::convertValue(_timeInterval);
+        if (alarmTime > curTime)
         {
-            unsigned time = _trendGraphInfo.alarmInfo.at(index).timestamp;
-            if (!_alarmTimeList.isEmpty())
+            if (alarmTime > _rightTime)
             {
-                if (time >= _alarmTimeList.last())
+                if (_currentPage <= 1)
                 {
-                    _cursorPosIndex = index;
                     return;
                 }
                 else
                 {
-                    if (_currentPage <= 1)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        _currentPage --;
-                    }
-                    updateTimeRange();
-                    _cursorPosIndex = _trendGraphInfo.alarmInfo.count() - 1;
-                    rightMoveEvent();
+                    _currentPage --;
                 }
+                updateTimeRange();
+                _cursorPosIndex = _trendGraphInfo.alarmInfo.count() - 1;
+                rightMoveEvent();
             }
             else
             {
-                _cursorPosIndex = index;
-                return;
-            }
-        }
-        else{
-            _cursorPosIndex --;
-        }
-    }
+                int index = (alarmTime - curTime) / timeInterval;
+                _cursorPosIndex = _cursorPosIndex - index;
 
-    int count = _hLayoutTrend->count();
-    for (int i = 0; i < count; i++)
-    {
-        QLayoutItem *item = _hLayoutTrend->itemAt(i);
-        TrendSubWaveWidget *widget = qobject_cast<TrendSubWaveWidget *>(item->widget());
-        if (widget != NULL)
-        {
-            widget->cursorMove(_cursorPosIndex);
+                int count = _hLayoutTrend->count();
+                for (int i = 0; i < count; i++)
+                {
+                    QLayoutItem *item = _hLayoutTrend->itemAt(i);
+                    TrendSubWaveWidget *widget = dynamic_cast<TrendSubWaveWidget *>(item->widget());
+                    if (widget != NULL)
+                    {
+                        widget->cursorMove(_cursorPosIndex);
+                    }
+                }
+                update();
+            }
+            return;
         }
     }
-    update();
 }
 
 void TrendWaveWidget::pageUpParam()
@@ -313,6 +291,7 @@ void TrendWaveWidget::setTimeInterval(ResolutionRatio timeInterval)
 {
     _timeInterval = timeInterval;
     _calculationPage();
+    _updateEventIndex();
     updateTimeRange();
     update();
 }
@@ -651,11 +630,12 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
 
     // 报警事件的标志
     barPainter.setPen(QPen(Qt::yellow, 2, Qt::SolidLine));
-    for (int i = 0; i < _trendGraphInfo.alarmInfo.count(); i ++)
+    for (int i = 0; i < _alarmTimeList.count(); i ++)
     {
-        if (_trendGraphInfo.alarmInfo.at(i).isAlarmEvent)
+        unsigned alarmTime = _alarmTimeList.at(i);
+        if (alarmTime <= _rightTime && alarmTime >= _leftTime)
         {
-            double pos = _getCursorPos(_trendGraphInfo.alarmInfo.at(i).timestamp);
+            double pos = _getCursorPos(alarmTime);
             barPainter.drawLine(pos, 0, pos, 5);
         }
     }
@@ -666,6 +646,7 @@ void TrendWaveWidget::showEvent(QShowEvent *e)
     IWidget::showEvent(e);
     _getTrendData();
     _cursorPosIndex = 0;
+    _updateEventIndex();
     updateTimeRange();
 }
 
@@ -844,14 +825,7 @@ void TrendWaveWidget::_getTrendData()
         {
             pack->subparamValue[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].value;
             pack->subparamAlarm[(SubParamID)dataSeg->values[j].subParamId] = dataSeg->values[j].alarmFlag;
-            if (!pack->alarmFlag && dataSeg->values[j].alarmFlag)
-            {
-                pack->alarmFlag = dataSeg->values[j].alarmFlag;
-            }
-        }
-        if (pack->alarmFlag)
-        {
-            _alarmTimeList.append(pack->time);
+            pack->alarmFlag = dataSeg->eventFlag;
         }
         _trendDataPack.append(pack);
     }
@@ -935,4 +909,45 @@ void TrendWaveWidget::_calculationPage()
     int dataNum = timeDiff / timeInterval;
     _totalPage = (dataNum % GRAPH_POINT_NUMBER) ? ((dataNum / GRAPH_POINT_NUMBER) + 1) : (dataNum / GRAPH_POINT_NUMBER);
     _currentPage = 1;
+}
+
+void TrendWaveWidget::_updateEventIndex()
+{
+    if (_trendDataPack.count() != 0)
+    {
+        _alarmTimeList.clear();
+        int timeInterval = TrendDataSymbol::convertValue(_timeInterval);
+        unsigned diffTime = (_trendDataPack.last()->time - _trendDataPack.first()->time) % timeInterval;
+        unsigned lastTime = _trendDataPack.first()->time + diffTime;
+
+        TrendDataPackage *pack;
+        bool isEvent = false;
+        for (int i = 0; i < _trendDataPack.count(); i ++)
+        {
+            pack = _trendDataPack.at(i);
+            unsigned t = pack->time;
+
+            // 判断是否有事件发生
+            if (pack->alarmFlag)
+            {
+                isEvent = true;
+            }
+
+            // 是否满足时间间隔的时间
+            if (t != lastTime)
+            {
+                continue;
+            }
+
+            // 该时间间隔内是否发生事件
+            if (isEvent)
+            {
+                _alarmTimeList.append(t);
+                isEvent = false;
+            }
+
+            lastTime = lastTime + timeInterval;
+        }
+
+    }
 }
