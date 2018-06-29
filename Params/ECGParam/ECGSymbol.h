@@ -29,27 +29,25 @@ public:
     static const char *convert(ECGLead index, ECGLeadNameConvention convention,
                                bool is12L = false, bool isCabrera = false)
     {
-        static const char *symbol[ECG_CONVENTION_NR][ECG_LEAD_NR] =
-        {
-            {
-                "I",  "II", "III", "aVR", "aVL", "aVF",
-                "V1", "V2",  "V3", "V4",  "V5",  "V6"
-            },
-
-            {
-                "I",  "II", "III", "aVR", "aVL", "aVF",
-                "C1", "C2",  "C3", "C4",  "C5",  "C6",
-            }
-        };
-
-        static const char *ecg12LAVR = "-aVR";
-
         if ((index == ECG_LEAD_AVR) && is12L && isCabrera)
         {
+            static const char *ecg12LAVR = "-aVR";
             return ecg12LAVR;
         }
         else
         {
+            static const char *symbol[ECG_CONVENTION_NR][ECG_LEAD_NR] =
+            {
+                {
+                    "I",  "II", "III", "aVR", "aVL", "aVF",
+                    "V1", "V2",  "V3", "V4",  "V5",  "V6"
+                },
+
+                {
+                    "I",  "II", "III", "aVR", "aVL", "aVF",
+                    "C1", "C2",  "C3", "C4",  "C5",  "C6",
+                }
+            };
             return symbol[convention][index];
         }
     }
@@ -172,15 +170,6 @@ public:
             "ECGCommunicationStop"
         };
 
-        static const char *leadOff[6] =
-        {
-            "ECGC1LeadOff",
-            "ECGC2LeadOff",
-            "ECGC3LeadOff",
-            "ECGC4LeadOff",
-            "ECGC5LeadOff",
-            "ECGC6LeadOff"
-        };
 
         if (index >= ECG_ONESHOT_ALARM_V1_LEADOFF && index <= ECG_ONESHOT_ALARM_V6_LEADOFF)
         {
@@ -190,6 +179,15 @@ public:
             }
             else
             {
+                static const char *leadOff[6] =
+                {
+                    "ECGC1LeadOff",
+                    "ECGC2LeadOff",
+                    "ECGC3LeadOff",
+                    "ECGC4LeadOff",
+                    "ECGC5LeadOff",
+                    "ECGC6LeadOff"
+                };
                 return leadOff[index - ECG_ONESHOT_ALARM_V1_LEADOFF];
             }
         }

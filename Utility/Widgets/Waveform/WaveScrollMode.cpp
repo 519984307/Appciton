@@ -138,9 +138,9 @@ void WaveScrollMode::valueRangeChanged()
 // 返回值:
 // 无
 ////////////////////////////////////////////////////////////////////////////////
-void WaveScrollMode::addData(int value, int flag)
+void WaveScrollMode::addData(int value, int flag, bool isUpdated)
 {
-    _wave->_bufPush(0, valueToY(value), value, flag);
+    _wave->_bufPush(0, valueToY(value), value, flag, isUpdated);
 
     _isPending = true;
 }

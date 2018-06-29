@@ -73,6 +73,10 @@ void RESPParam::handDemoWaveform(WaveformID id, short data)
     {
         _waveWidget->addData(data);
     }
+    if(NULL != _waveOxyCRGWidget)
+    {
+        _waveOxyCRGWidget->addData(data,0,false);
+    }
     waveformCache.addData((WaveformID)id, data);
 }
 
@@ -152,6 +156,7 @@ void RESPParam::setProvider(RESPProviderIFace *provider)
 
     _provider = provider;
     _waveWidget->setDataRate(_provider->getRESPWaveformSample());
+    _waveOxyCRGWidget->setDataRate(_provider->getRESPWaveformSample());
 
     // 设置窒息时间
     _provider->setApneaTime(getApneaTime());
@@ -180,6 +185,15 @@ void RESPParam::setWaveWidget(RESPWaveWidget *waveWidget)
     }
     _waveWidget = waveWidget;
     _setWaveformSpeed(getSweepSpeed());
+}
+
+void RESPParam::setOxyWaveWidget(OxyCRGRESPWidget *waveWidget)
+{
+    if (waveWidget == NULL)
+    {
+        return;
+    }
+    _waveOxyCRGWidget = waveWidget;
 }
 
 /**************************************************************************************************

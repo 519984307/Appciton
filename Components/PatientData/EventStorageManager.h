@@ -41,6 +41,26 @@ public:
 
     void run();
 
+    /**
+     * @brief getEventTriggerFlag 获取事件触发标识
+     * @return
+     */
+    bool getEventTriggerFlag(void);
+
+    /**
+     * @brief clearEventTriggerFlag 清空事件触发标识
+     */
+    void clearEventTriggerFlag(void);
+
+    /**
+     * @brief getPhyAlarmMessage get the alarm message
+     * @param paramId param id
+     * @param alarmType alarm type
+     * @param isOneShot is oneshot alarm or not
+     * @return the alarm message
+     */
+    QString getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot);
+
 private:
     Q_DECLARE_PRIVATE(EventStorageManager)
     EventStorageManager();

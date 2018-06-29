@@ -19,7 +19,6 @@ void OxyCRGTrendWidgetRuler::paintItem(QPainter &painter)
     int xRight = x() + width() - 3;
     int yUp = y() + 1;
     int yLow = y() + height();
-//    int yMid;
 
 
     painter.setFont(font());
@@ -27,15 +26,11 @@ void OxyCRGTrendWidgetRuler::paintItem(QPainter &painter)
 
     int ystep = qRound(height() / 3);
 
-    painter.setPen(QPen(Qt::white, 1, Qt::DotLine));
-
     for (int length = yUp + ystep; length < yUp + height() - 5; length += ystep)
     {
         painter.drawLine(xLeft, length, xRight, length);
     }
 
-    // 上标尺
-//    painter.drawLine(xLeft, yUp, xRight, yUp);
     if (_up != InvData())
     {
         painter.setPen(QPen(palette().windowText(), 1, Qt::SolidLine));
@@ -44,20 +39,7 @@ void OxyCRGTrendWidgetRuler::paintItem(QPainter &painter)
     }
     painter.setPen(QPen(Qt::white, 1, Qt::DotLine));
 
-//    // 中标尺
-//    if (_mid != InvData())
-//    {
-//        yMid = (_mid - _low) * (yUp - yLow) / (_up - _low) + yLow;
-//        painter.drawLine(xLeft, yMid, xRight, yMid);
-//    }
-//    else
-//    {
-//        yMid = (height() / 2) + y();
-//        painter.drawLine(xLeft, yMid, xRight, yMid);
-//    }
 
-    // 下标尺
-//    painter.drawLine(xLeft, yLow, xRight, yLow);
     if (_low != InvData())
     {
         painter.setPen(QPen(palette().windowText(), 1, Qt::SolidLine));

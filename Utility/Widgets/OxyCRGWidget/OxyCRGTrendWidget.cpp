@@ -14,9 +14,10 @@
  *************************************************************************************************/
 void OxyCRGTrendWidget::resizeEvent(QResizeEvent *e)
 {
-    _name->move(margin(), margin());
+    _name->move(2, 2);
 
-    _ruler->resize(2, margin(), width() - 2, height() - margin() * 2);
+    _ruler->resize(2, 2, width() - 2, height() - 2 * 2);
+
     WaveWidget::resizeEvent(e);
 }
 
@@ -26,7 +27,7 @@ void OxyCRGTrendWidget::resizeEvent(QResizeEvent *e)
 OxyCRGTrendWidget::OxyCRGTrendWidget(const QString &waveName, const QString &title)
     : WaveWidget(waveName, title)
 {
-    setMargin(QMargins(2,0,2,0));
+    setMargin(QMargins(50,0,2,0));/*调整波形位置*/
 
     setFocusPolicy(Qt::NoFocus);
 
@@ -41,6 +42,25 @@ OxyCRGTrendWidget::OxyCRGTrendWidget(const QString &waveName, const QString &tit
     addItem(_ruler);
 }
 
+int OxyCRGTrendWidget::getRulerWidth()const
+{
+    return _ruler->width();
+}
+
+int OxyCRGTrendWidget::getRuleHeight()const
+{
+    return _ruler->height();
+}
+
+float OxyCRGTrendWidget::getRulerPixWidth()const
+{
+    return _ruler->getPixWidth();
+}
+
+void OxyCRGTrendWidget::setRuler(int up, int mid, int low)
+{
+    _ruler->setRuler(up, mid, low);
+}
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/

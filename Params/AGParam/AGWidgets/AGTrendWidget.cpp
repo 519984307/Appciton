@@ -10,8 +10,6 @@
 #include "PublicMenuManager.h"
 #include <QDebug>
 
-#define     INVALID     0xff
-
 /**************************************************************************************************
  * 设置麻醉剂类型。
  *************************************************************************************************/
@@ -32,9 +30,9 @@ void AGTrendWidget::setAnestheticType(AGAnaestheticType type)
 /**************************************************************************************************
  * 设置et结果数据。
  *************************************************************************************************/
-void AGTrendWidget::setEtData(unsigned char etValue)
+void AGTrendWidget::setEtData(short etValue)
 {
-    if (etValue == INVALID)
+    if (etValue == InvData())
     {
         _etStr = InvStr();
     }
@@ -46,8 +44,8 @@ void AGTrendWidget::setEtData(unsigned char etValue)
         }
         else
         {
-            unsigned char etValueInt = etValue/10;
-            unsigned char etValueDes = etValue%10;
+            short etValueInt = etValue/10;
+            short etValueDes = etValue%10;
             _etStr = QString::number(etValueInt) + "." + QString::number(etValueDes);
         }
     }
@@ -58,9 +56,9 @@ void AGTrendWidget::setEtData(unsigned char etValue)
 /**************************************************************************************************
  * 设置fi结果数据。
  *************************************************************************************************/
-void AGTrendWidget::setFiData(unsigned char fiValue)
+void AGTrendWidget::setFiData(short fiValue)
 {
-    if (fiValue == INVALID)
+    if (fiValue == InvData())
     {
         _fiStr = InvStr();
     }
@@ -80,10 +78,105 @@ void AGTrendWidget::setFiData(unsigned char fiValue)
 }
 
 /**************************************************************************************************
+ * 是否报警。
+ *************************************************************************************************/
+void AGTrendWidget::isAlarm(int id, bool flag)
+{
+    SubParamID subID = (SubParamID)id;
+    switch (subID)
+    {
+    case SUB_PARAM_ETN2O:
+    case SUB_PARAM_ETAA1:
+    case SUB_PARAM_ETAA2:
+    case SUB_PARAM_ETO2:
+        _etAlarm = flag;
+        break;
+    case SUB_PARAM_FIN2O:
+    case SUB_PARAM_FIAA1:
+    case SUB_PARAM_FIAA2:
+    case SUB_PARAM_FIO2:
+        _fiAlarm = flag;
+        break;
+    default:
+        break;
+    }
+
+    updateAlarm(_etAlarm || _fiAlarm);
+}
+
+/**************************************************************************************************
+ * 显示。
+ *************************************************************************************************/
+void AGTrendWidget::showValue()
+{
+    QPalette p;
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
+    QPalette fgColor = normalPalette(psrc);
+    QPalette alaColor = alarmPalette(psrc);
+    if (_fiAlarm || _etAlarm)
+    {
+        p = _etValue->palette();
+        if (_etAlarm)
+        {
+            if (p.windowText().color() != alaColor.windowText().color())
+            {
+                _etValue->setPalette(alaColor);
+            }
+            else
+            {
+                _etValue->setPalette(fgColor);
+            }
+        }
+        else
+        {
+            _etValue->setPalette(fgColor);
+        }
+
+        p = _fiValue->palette();
+        if (_fiAlarm)
+        {
+            if (p.windowText().color() != alaColor.windowText().color())
+            {
+                _fiValue->setPalette(alaColor);
+            }
+            else
+            {
+                _fiValue->setPalette(fgColor);
+            }
+        }
+        else
+        {
+            _fiValue->setPalette(fgColor);
+        }
+    }
+    else
+    {
+        p = _etValue->palette();
+        if (p.windowText().color() != fgColor.windowText().color())
+        {
+            _etValue->setPalette(fgColor);
+        }
+
+        p = _fiValue->palette();
+        if (p.windowText().color() != fgColor.windowText().color())
+        {
+            _fiValue->setPalette(fgColor);
+        }
+    }
+
+    _etValue->setText(_etStr);
+
+    if (!_fiValue->isHidden())
+    {
+        _fiValue->setText(_fiStr);
+    }
+}
+
+/**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 AGTrendWidget::AGTrendWidget(const QString &trendName, const AGTypeGas gasType)
-    : TrendWidget(trendName), _gasType(gasType)
+    : TrendWidget(trendName), _gasType(gasType), _etAlarm(false), _fiAlarm(false)
 {
     _etStr = InvStr();
     _fiStr = InvStr();

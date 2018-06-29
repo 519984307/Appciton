@@ -7,6 +7,7 @@
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "WaveWidgetSelectMenu.h"
+#include "ConfigManager.h"
 
 /**************************************************************************************************
  * 构造。
@@ -27,11 +28,18 @@ OxyCRGHRWidget::OxyCRGHRWidget(const QString &waveName, const QString &title)
 
     _ruler->setPalette(palette);
 
-    setValueRange(0, 300);
-    setWaveSpeed(1);
+    int valueLow=0;
+    int valueHigh=0;
+    currentConfig.getNumValue("OxyCRG|Ruler|HRLow", valueLow);
+    currentConfig.getNumValue("OxyCRG|Ruler|HRHigh", valueHigh);
+    setValueRange(valueLow, valueHigh);
+    setDataRate(1);
+
     selectMode(SCROLL_MODE);
 
-    _ruler->setRuler(300, 150, 0);
+    _ruler->setRuler(valueHigh, (valueLow+valueHigh)/2, valueLow);
+
+    setMargin(QMargins(50-2,0,2,0));
 }
 
 /**************************************************************************************************

@@ -23,6 +23,8 @@ struct TrendDataSegment
     unsigned status;                    /* status of the fetch data */
     short co2Baro;                      /* current co2 baro */
     short trendValueNum;                /* trend value segment this trend data contians */
+    char eventFlag;                     /* event trigger flag */
+    char reserved[3];
     TrendValueSegment values[0];        /* followed by the sub param value  */
 };
 
@@ -95,9 +97,8 @@ enum TrendGraphType
 
 struct TrendGraphData
 {
-    TrendGraphData()
+    TrendGraphData() : isAlarm(false), timestamp(0)
     {
-        isAlarm = false;
     }
     bool isAlarm;
     unsigned timestamp;
@@ -106,9 +107,8 @@ struct TrendGraphData
 
 struct TrendGraphDataV2     //trend graph draw 2 values
 {
-    TrendGraphDataV2()
+    TrendGraphDataV2() : isAlarm(false), timestamp(0)
     {
-        isAlarm = false;
     }
     bool isAlarm;
     unsigned timestamp;
@@ -117,9 +117,8 @@ struct TrendGraphDataV2     //trend graph draw 2 values
 
 struct TrendGraphDataV3     //trend graph draw 3 values
 {
-    TrendGraphDataV3()
+    TrendGraphDataV3() : isAlarm(false), timestamp(0)
     {
-        isAlarm = false;
     }
     bool isAlarm;
     unsigned timestamp;
@@ -128,9 +127,8 @@ struct TrendGraphDataV3     //trend graph draw 3 values
 
 struct AlarmEventInfo       //alarm event and time
 {
-    AlarmEventInfo()
+    AlarmEventInfo() : isAlarmEvent(false), timestamp(0)
     {
-        isAlarmEvent = false;
     }
     bool isAlarmEvent;
     unsigned timestamp;
@@ -187,7 +185,7 @@ struct OxyCRGWaveInfo
 /* 趋势图子窗口信息*/
 struct TrendSubWidgetInfo
 {
-    TrendSubWidgetInfo()
+    TrendSubWidgetInfo() : xHead(0), xTail(0), yTop(0), yBottom(0)
     {
     }
 

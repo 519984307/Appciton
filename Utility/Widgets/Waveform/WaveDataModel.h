@@ -34,7 +34,7 @@ enum WaveDataInfoType {
 class WaveDataModel: public QObject {
 		Q_OBJECT
 	public:
-		WaveDataModel(QObject *parent): QObject(parent) {}
+        explicit WaveDataModel(QObject *parent): QObject(parent) {}
 		// 获取待回顾波形数据的各种信息
 		virtual QVariant waveDataInfo(WaveDataInfoType type) = 0;
 		// 获取波形数据

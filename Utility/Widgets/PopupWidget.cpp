@@ -81,6 +81,23 @@ void PopupWidget::exit(void)
 {
     hide();
 }
+void PopupWidget::keyPressEvent(QKeyEvent *e)
+{
+   switch (e->key())
+   {
+       case Qt::Key_Up:
+       case Qt::Key_Left:
+           focusPreviousChild();
+           break;
+       case Qt::Key_Down:
+       case Qt::Key_Right:
+           focusNextChild();
+           break;
+       default:
+           break;
+   }
+   QWidget::keyPressEvent(e);
+}
 
 /**************************************************************************************************
  * 设置边框宽度。

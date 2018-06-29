@@ -14,14 +14,14 @@
 class WaveScanMode: public WaveNormalMode
 {
 public:
-    WaveScanMode(WaveWidget *wave);
+    explicit WaveScanMode(WaveWidget *wave);
     ~WaveScanMode();
     bool match(int mode, bool isCascade);
     int maxUpdateRate();
     bool updateRegion(QRegion &region);
     void prepareTransformFactor();
     void valueRangeChanged();
-    void addData(int value, int flag);
+    void addData(int value, int flag, bool isUpdated=true);
     void paintWave(QPainter &painter, const QRect &rect);
 
 private:

@@ -6,6 +6,8 @@
 #include "SoundManager.h"
 #include <QBasicTimer>
 #include "SystemDefine.h"
+#include "OxyCRGCO2Widget.h"
+#include "OxyCRGRESPWidget.h"
 
 enum
 {
@@ -26,7 +28,7 @@ class ECGParam: public Param
 {
     Q_OBJECT
 public:
-    static ECGParam &construction(void)
+    static ECGParam &construction()
     {
         if (_selfObj == NULL)
         {
@@ -43,6 +45,17 @@ public:
     friend class TestECGParam;
 #endif
 public:
+    /**
+     * @brief setOxyCRGRESPWidget //加入呼吸氧和中波形
+     * @param p //呼吸氧和中resp波形指针
+     */
+    void setOxyCRGRESPWidget(OxyCRGRESPWidget *p);
+    /**
+     * @brief setOxyCRGCO2Widget //加入呼吸氧和中波形
+     * @param p //呼吸氧和中co2波形指针
+     */
+    void setOxyCRGCO2Widget(OxyCRGCO2Widget *p);
+
     // 发送协议命令
     void sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len);
 
@@ -260,13 +273,26 @@ public: // 用于访问配置相关信息。
     void setCheckPatient(bool flag);
     bool getCheckPatient() {return _isCheckPatient;}
 
+    /**
+     * @brief clearOxyCRGWaveNum  //清除呼吸氧和波形更新计数
+     */
+    void clearOxyCRGWaveNum(void);
+
 signals:
     void calcLeadChanged();
+    /**
+     * @brief oxyCRGWaveUpdated 呼吸氧和波形更新信号
+     */
+    void oxyCRGWaveUpdated(void);
 
 private slots:
     //presenting rhythm, 6 seconds before the first primary lead on
     void presentRhythm();
 
+    /**
+     * @brief onOxyCRGWaveUpdated 呼吸氧和波形更新槽函数
+     */
+    void onOxyCRGWaveUpdated(void);
 private:
     // 构造。
     ECGParam();
@@ -292,6 +318,9 @@ private:
     ECGFilterMode _filterMode;
     Display12LeadFormat _12LeadDispFormat;
 
+    OxyCRGCO2Widget *_oxyCRGCO2Widget;
+    OxyCRGRESPWidget *_oxyCRGRESPWidget;
+
     unsigned _lastDiagModeTimestamp;
 
     char _leadOff[ECG_LEAD_NR];
@@ -305,5 +334,7 @@ private:
 
     bool _isEverLeadOn[ECG_LEAD_NR];    // is ever lead on
     bool _isCheckPatient;               // VF signal
+
+    int _updateNum;            //呼吸氧和波形更新标志计数
 };
 #define ecgParam (ECGParam::construction())

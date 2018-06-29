@@ -399,7 +399,7 @@ void WaveWidget::setMargin(const QMargins &margin)
 // 返回值:
 // 无
 ////////////////////////////////////////////////////////////////////////////////
-void WaveWidget::_bufPush(int x, int y, int value, int flag)
+void WaveWidget::_bufPush(int x, int y, int value, int flag, bool isUpdated)
 {
     if (bufIsFull())
     {
@@ -450,6 +450,11 @@ void WaveWidget::_bufPush(int x, int y, int value, int flag)
     _head = _bufNext(_head);
 
     _setDyBuf(i);
+
+    if(isUpdated==false)
+    {
+        return;
+    }
 
     QRegion region;
     if (_mode->updateRegion(region) && !region.isEmpty())
@@ -569,9 +574,30 @@ void WaveWidget::_resetBuffer()
     {
         _timeLostFlag = false;
     }
+//    QString nameBuffer = name();
+//    static bool respStatus=false;
     if ((n > 0) && (_size != n))
     {
         _size = n;
+
+//        if((nameBuffer=="OxyCRGRESPWidget" || nameBuffer=="OxyCRGHRWidget"|| \
+//            nameBuffer=="OxyCRGCO2Widget"|| nameBuffer=="OxyCRGSPO2Widget")&& respStatus==true)
+//        {
+//            _mode->prepareTransformFactor();
+
+//            // 重建索引换算X坐标缓存
+//            for (int i = 0; i < n; i++)
+//            {
+//                _xBuf[i] = _mode->indexToX(i);
+//            }
+//            return;
+//        }
+
+//        if(nameBuffer=="OxyCRGRESPWidget")
+//        {
+//            _size = 60000;
+//            respStatus = true;
+//        }
 
         if (_waveBuf)
         {
@@ -1020,7 +1046,7 @@ void WaveWidget::enableGrid(bool isEnable)
 // 返回值:
 // 无
 ////////////////////////////////////////////////////////////////////////////////
-void WaveWidget::addData(int value, int flag)
+void WaveWidget::addData(int value, int flag, bool isUpdated)
 {
     if(!isVisible())
     {
@@ -1047,7 +1073,7 @@ void WaveWidget::addData(int value, int flag)
         return;
     }
 
-    _mode->addData(value, flag);
+    _mode->addData(value, flag, isUpdated);
     if(_timeLostFlag)
     {
         _sampleCount ++;
@@ -1059,7 +1085,7 @@ void WaveWidget::addData(int value, int flag)
             if(_totalTimeLost > _timeForEachSample)
             {
                 _totalTimeLost -= _timeForEachSample;
-                _mode->addData(value, flag);
+                _mode->addData(value, flag, isUpdated);
                 _sampleCount ++;
                 qDebug()<<"Because of time lost, add one more sample for "<<_title;
             }

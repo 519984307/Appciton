@@ -264,7 +264,7 @@ void WaveScanMode::valueRangeChanged()
 // 返回值:
 // 无
 ////////////////////////////////////////////////////////////////////////////////
-void WaveScanMode::addData(int value, int flag)
+void WaveScanMode::addData(int value, int flag, bool isUpdated)
 {
     if(!_wave)
     {
@@ -360,10 +360,10 @@ void WaveScanMode::paintWave(QPainter &painter, const QRect &rect)
 ////////////////////////////////////////////////////////////////////////////////
 void WaveScanMode::_drawWave(QPainter &painter, int beginIndex, int endIndex)
 {
-    int j = 0;
+//    int j = 0;
     while (beginIndex <= endIndex)
     {
-        j = beginIndex + 1;
+        int j = beginIndex + 1;
         if (_wave->_flagBuf[beginIndex] & 0x4000)
         {
             while ((j <= endIndex) && (_wave->_flagBuf[j] & 0x4000))

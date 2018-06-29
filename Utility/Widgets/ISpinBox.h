@@ -71,6 +71,8 @@ public:
     // 设置显示控件的尺寸。
     void setValueWidth(int width);
     void setLabelWidth(int width);
+    void setValueHeight(int height);
+    void setLabelHeight(int height);
     void setStretch(int labelStretch, int valueStreth);
 
     // 设置显示的小数点显示的位数。

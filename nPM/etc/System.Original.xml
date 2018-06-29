@@ -125,7 +125,8 @@
             <PED type="Factory" name="" >PedConfig.Original.xml</PED>
             <NEO type="Factory" name="" >NeoConfig.Original.xml</NEO>
         </Default>
-        <UserDefine count="0"/>
+        <UserDefine count="0">
+        </UserDefine>
     </ConfigManager>
 
     <TrendTable>

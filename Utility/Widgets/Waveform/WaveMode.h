@@ -19,7 +19,7 @@ class WaveWidget;
 class WaveMode
 {
 public:
-    WaveMode(WaveWidget *wave)
+    explicit WaveMode(WaveWidget *wave)
             : _wave(wave)
     {
     }
@@ -40,7 +40,7 @@ public:
     virtual int indexToX(int index) = 0;
     virtual void prepareTransformFactor() = 0;
     virtual void valueRangeChanged() = 0;
-    virtual void addData(int /*value*/, int /*flag*/)
+    virtual void addData(int /*value*/, int /*flag*/, bool /*isUpdated*/)
     {
     }
     virtual void reviewWave(const QDateTime &/*time*/)
