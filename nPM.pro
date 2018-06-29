@@ -106,6 +106,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/MenuWindow.cpp                                         \
     Utility/Widgets/Base/MenuSidebar.cpp                                        \
     Utility/Widgets/Base/MenuSidebarItem.cpp                                    \
+    Utility/Widgets/Base/ScrollArea.cpp                                         \
     Utility/Widgets/Base/FloatScrollBar.cpp                                     \
     Utility/Widgets/Base/KineticScroller/qkineticscroller.cpp                   \
     Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.cpp         \
@@ -527,6 +528,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/MenuWindow.h                                           \
     Utility/Widgets/Base/MenuSidebar.h                                          \
     Utility/Widgets/Base/MenuSidebarItem.h                                      \
+    Utility/Widgets/Base/ScrollArea.h                                           \
     Utility/Widgets/Base/FloatScrollBar.h                                       \
     Utility/Widgets/Base/KineticScroller/qkineticscroller.h                     \
     Utility/Widgets/Base/KineticScroller/qkineticscroller_p.h                   \

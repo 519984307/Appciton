@@ -8,39 +8,28 @@
  ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/6/29
  **/
 
-
 #pragma once
-#include <QWidget>
 #include <QScrollArea>
 
-class MenuSidebarPrivate;
-class MenuSidebar : public QScrollArea
+class ScrollAreaPrivate;
+class ScrollArea : public QScrollArea
 {
     Q_OBJECT
 public:
-    explicit MenuSidebar(QWidget *parent = NULL);
-    ~MenuSidebar();
-
-    /* add a string item */
-    void addItem(const QString &text);
-
-    /* reimplement */
-    QSize sizeHint() const;
-
-
-signals:
-    void selectItemChanged(const QString &text);
+    explicit ScrollArea(QWidget *parent = NULL);
+    ~ScrollArea();
 
 protected:
+    /* reimplement */
     void resizeEvent(QResizeEvent *ev);
+    /* reimplement */
     void showEvent(QShowEvent *ev);
+    /* reimplement */
     void scrollContentsBy(int dx, int dy);
 
-private slots:
-    void onItemClicked();
-    void onItemFocusChanged(bool in);
+    ScrollArea(ScrollAreaPrivate *d, QWidget *parent);
 
 private:
-    QScopedPointer<MenuSidebarPrivate> d_ptr;
+    QScopedPointer<ScrollAreaPrivate> d_ptr;
+    Q_DECLARE_PRIVATE(ScrollArea)
 };
-
