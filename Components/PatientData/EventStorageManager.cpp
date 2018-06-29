@@ -19,7 +19,7 @@ public:
     Q_DECLARE_PUBLIC(EventStorageManager)
 
     EventStorageManagerPrivate(EventStorageManager *q_ptr)
-        :StorageManagerPrivate(q_ptr)
+        :StorageManagerPrivate(q_ptr), _eventTriggerFlag(false)
     {
 
     }
@@ -29,6 +29,7 @@ public:
 
     QList<EventStorageItem *> eventItemList;
     QMutex mutex;
+    bool _eventTriggerFlag;
 };
 
 QList<WaveformID> EventStorageManagerPrivate::getStoreWaveList(WaveformID paramWave)
@@ -115,6 +116,7 @@ void EventStorageManager::triggerEvent(EventType type)
 void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, WaveformID paramWave)
 {
     Q_D(EventStorageManager);
+    d->_eventTriggerFlag = true;
 
     EventStorageItem *item = new EventStorageItem(EventPhysiologicalAlarm,
                                                   d->getStoreWaveList(paramWave),
@@ -260,6 +262,18 @@ void EventStorageManager::run()
     }
 
     dataStorageDirManager.addDataSize(saveData());
+}
+
+bool EventStorageManager::getEventTriggerFlag()
+{
+    Q_D(EventStorageManager);
+    return d->_eventTriggerFlag;
+}
+
+void EventStorageManager::clearEventTriggerFlag()
+{
+    Q_D(EventStorageManager);
+    d->_eventTriggerFlag = false;
 }
 
 EventStorageManager::EventStorageManager()

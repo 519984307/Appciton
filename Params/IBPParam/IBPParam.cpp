@@ -138,6 +138,7 @@ void IBPParam::handDemoWaveform(WaveformID id, short data)
 void IBPParam::handDemoTrendData()
 {
     _trendWidgetIBP1->setZeroFlag(true);
+    _trendWidgetIBP2->setZeroFlag(true);
     _ibp1.sys = qrand() % 15 + 105;
     _ibp1.dia = qrand() % 15 + 75;
     _ibp1.mean = qrand() % 15 + 90;
@@ -151,6 +152,32 @@ void IBPParam::handDemoTrendData()
     {
         _trendWidgetIBP1->setData(_ibp1.sys, _ibp1.dia, _ibp1.mean);
         _trendWidgetIBP2->setData(_ibp2.sys, _ibp2.dia, _ibp2.mean);
+    }
+}
+
+void IBPParam::showSubParamValue()
+{
+    if (NULL != _trendWidgetIBP1)
+    {
+        _trendWidgetIBP1->showValue();
+    }
+
+    if (NULL != _trendWidgetIBP2)
+    {
+        _trendWidgetIBP2->showValue();
+    }
+}
+
+void IBPParam::noticeLimitAlarm(int id, bool isAlarm, IBPSignalInput ibp)
+{
+    if (ibp == IBP_INPUT_1 && NULL != _trendWidgetIBP1)
+    {
+        _trendWidgetIBP1->isAlarm(id, isAlarm);
+    }
+
+    if (ibp == IBP_INPUT_2 && NULL != _trendWidgetIBP2)
+    {
+        _trendWidgetIBP2->isAlarm(id, isAlarm);
     }
 }
 

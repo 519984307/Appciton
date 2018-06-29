@@ -22,6 +22,12 @@ public:
     // 校零标志
     void setZeroFlag(bool isEnabled);
 
+    // 是否报警
+    void isAlarm(int id, bool flag);
+
+    // 显示参数值
+    void showValue(void);
+
     // 构造与析构。
     IBPTrendWidget(const QString &trendName, const IBPPressureName &entitle);
     ~IBPTrendWidget();
@@ -52,6 +58,9 @@ private:
     QStackedWidget *_stackedwidget;
 
     bool _isZero;                // 校零标志
+    bool _sysAlarm;
+    bool _diaAlarm;
+    bool _mapAlarm;
 
     static const int _margin = 1;
 

@@ -53,10 +53,17 @@ public:
     virtual void notifyAlarm(int id, bool flag);
 
     // constructor and destructor.
+    AGLimitAlarm();
     virtual ~AGLimitAlarm();
 private:
-    AGLimitAlarm();
-
+    bool _isEtN2OAlarm;
+    bool _isFiN2OAlarm;
+    bool _isEtO2Alarm;
+    bool _isFiO2Alarm;
+    bool _isEtAA1Alarm;
+    bool _isFiAA1Alarm;
+    bool _isEtAA2Alarm;
+    bool _isFiAA2Alarm;
 
 };
 #define agLimitAlarm (AGLimitAlarm::construction())
