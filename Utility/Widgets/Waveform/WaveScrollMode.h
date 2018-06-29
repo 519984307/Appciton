@@ -14,13 +14,13 @@
 class WaveScrollMode: public WaveNormalMode
 {
 public:
-    WaveScrollMode(WaveWidget *wave);
+    explicit WaveScrollMode(WaveWidget *wave);
     ~WaveScrollMode();
     bool match(int mode, bool isCascade);
     int maxUpdateRate();
     bool updateRegion(QRegion &region);
     void valueRangeChanged();
-    void addData(int value, int flag);
+    void addData(int value, int flag, bool isUpdated=true);
     void preparePaint();
     bool supportPartialPaint()
     {

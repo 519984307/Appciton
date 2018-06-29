@@ -14,7 +14,7 @@
 class WaveCascadeMode: public WaveMode
 {
 public:
-    WaveCascadeMode(WaveWidget *wave);
+    explicit WaveCascadeMode(WaveWidget *wave);
     ~WaveCascadeMode();
     int dataSize();
     int yToValue(int y);

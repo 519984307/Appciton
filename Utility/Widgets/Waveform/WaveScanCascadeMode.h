@@ -14,10 +14,10 @@
 class WaveScanCascadeMode: public WaveCascadeMode
 {
 public:
-    WaveScanCascadeMode(WaveWidget *wave);
+    explicit WaveScanCascadeMode(WaveWidget *wave);
     ~WaveScanCascadeMode();
     bool match(int mode, bool isCascade);
-    void addData(int value, int flag);
+    void addData(int value, int flag, bool isUpdated=true);
     bool updateRegion(QRegion &region);
     int maxUpdateRate();
     void paintWave(QPainter &painter, const QRect &rect);

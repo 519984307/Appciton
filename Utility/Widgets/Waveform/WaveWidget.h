@@ -243,7 +243,7 @@ public slots:
     void enableFill(bool isEnable);
     void enableAntialias(bool isEnable);
     void enableGrid(bool isEnable);
-    void addData(int value, int flag = 0);
+    void addData(int value, int flag = 0, bool isUpdated=true);
     void reviewWave(const QDateTime &time);
     void queueData(const int *buf, int size);
     void queueData(const QVector<short> &data);
@@ -308,7 +308,7 @@ protected:
         return _waveBuf[(_tail + i) % _size];
     }
 
-    void _bufPush(int x, int y, int value, int flag);
+    void _bufPush(int x, int y, int value, int flag, bool isUpdated=true);
     void _bufPop(int n = 1);
     void _setDyBuf(int i);
 

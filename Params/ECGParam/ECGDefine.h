@@ -312,9 +312,9 @@ struct ECGAnalysisMetrics
     unsigned int calSum()
     {
         unsigned int checkSum = time;
+        checkSum += segment[0].calSum();
         checkSum += segment[1].calSum();
         checkSum += segment[2].calSum();
-        checkSum += segment[3].calSum();
 
         return checkSum;
     }

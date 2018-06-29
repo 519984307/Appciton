@@ -11,7 +11,10 @@ public:
     // 构造与析构。
     OxyCRGTrendWidget(const QString &waveName, const QString &title);
     ~OxyCRGTrendWidget();
-
+    int getRulerWidth(void)const;
+    int getRuleHeight(void)const;
+    float getRulerPixWidth(void)const;
+    void setRuler(int up, int mid, int low);
 protected:
     void paintEvent(QPaintEvent *e);
     void resizeEvent(QResizeEvent *e);

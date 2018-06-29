@@ -37,7 +37,7 @@ public:
     virtual void autoShow(int x, int y);
     virtual void autoShow(int x, int y, int w, int h);
 
-    PopupWidget(bool isBlank = false);
+    explicit PopupWidget(bool isBlank = false);
     virtual ~PopupWidget();
 
 protected:
@@ -45,6 +45,7 @@ protected:
     virtual void showEvent(QShowEvent *event);
     virtual void hideEvent(QHideEvent *event);
     virtual void exit(void);
+    virtual void keyPressEvent(QKeyEvent *e);
     QVBoxLayout *contentLayout;
 
     // 设置边框宽度。

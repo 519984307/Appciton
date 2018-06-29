@@ -115,9 +115,11 @@ SOURCES +=                                                                      
     Utility/Widgets/OxyCRGWidget/OxyCRGWidget.cpp                               \
     Utility/Widgets/OxyCRGWidget/OxyCRGHRWidget.cpp                             \
     Utility/Widgets/OxyCRGWidget/OxyCRGRESPWidget.cpp                           \
+    Utility/Widgets/OxyCRGWidget/OxyCRGCO2Widget.cpp                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGRRWidget.cpp                             \
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2Widget.cpp                           \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.cpp                          \
+    Utility/Widgets/OxyCRGWidget/OxyCRGSetupWidget.cpp                          \
     Utility/Widgets/Trendform/ShortTrendWidget.cpp                              \
     Utility/Widgets/Trendform/TrendCanvasWidget.cpp                             \
     Utility/Widgets/Trendform/ShortTrendWidgetLabel.cpp                         \
@@ -527,6 +529,8 @@ HEADERS +=                                                                      
     Utility/Widgets/OxyCRGWidget/OxyCRGRESPWidget.h                             \
     Utility/Widgets/OxyCRGWidget/OxyCRGRRWidget.h                               \
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2Widget.h                             \
+    Utility/Widgets/OxyCRGWidget/OxyCRGCO2Widget.h                              \
+    Utility/Widgets/OxyCRGWidget/OxyCRGSetupWidget.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGSymbol.h                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGDefine.h                                 \

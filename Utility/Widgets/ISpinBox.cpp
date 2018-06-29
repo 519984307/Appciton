@@ -160,18 +160,19 @@ void ISpinBox::_setText(const QString &valueStr)
 void ISpinBox::_timeOut()
 {
     static int count = 0;
-    if (0 != _keyPressCount)
+    if(0 == _keyPressCount)
     {
-        if (count == _keyPressCount)
-        {
-            count = 0;
-            _keyPressCount = 0;
-            emit valueChange(_valueStr, _id);
-        }
-        else
-        {
-            count = _keyPressCount;
-        }
+        return;
+    }
+    if (count == _keyPressCount)
+    {
+        count = 0;
+        _keyPressCount = 0;
+        emit valueChange(_valueStr, _id);
+    }
+    else
+    {
+        count = _keyPressCount;
     }
 }
 
@@ -514,7 +515,28 @@ void ISpinBox::setLabelWidth(int width)
         _label->setFixedWidth(width);
     }
 }
+/**************************************************************************************************
+ * 功能：设置显示区域的尺寸。
+ * 参数：
+ *      height：高度。
+ *************************************************************************************************/
+void ISpinBox::setValueHeight(int height)
+{
+    _value->setFixedHeight(height);
+}
 
+/**************************************************************************************************
+ * 功能：设置标题的尺寸。
+ * 参数：
+ *      height：高度。
+ *************************************************************************************************/
+void ISpinBox::setLabelHeight(int height)
+{
+    if (NULL != _label)
+    {
+        _label->setFixedHeight(height);
+    }
+}
 /**************************************************************************************************
  * 功能：设置显示比例。
  *************************************************************************************************/

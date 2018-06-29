@@ -62,7 +62,7 @@ bool WaveScrollCascadeMode::match(int mode, bool isCascade)
 // 返回值:
 // 无
 ////////////////////////////////////////////////////////////////////////////////
-void WaveScrollCascadeMode::addData(int /*value*/, int /*flag*/)
+void WaveScrollCascadeMode::addData(int /*value*/, int /*flag*/, bool /*isUpdated*/)
 {
 
 }

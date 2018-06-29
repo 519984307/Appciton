@@ -14,7 +14,7 @@
 class WaveNormalMode: public WaveMode
 {
 public:
-    WaveNormalMode(WaveWidget *wave);
+    explicit WaveNormalMode(WaveWidget *wave);
     ~WaveNormalMode();
     int dataSize();
     int dataSize(float minDataRateOfSameSpeedWave);

@@ -18,6 +18,6 @@ enum OxyCRGInterval
 enum OxyCRGTrend
 {
     OxyCRG_Trend_RESP,
-    OxyCRG_Trend_RR,
+    OxyCRG_Trend_CO2,
     OxyCRG_Trend_NR
 };

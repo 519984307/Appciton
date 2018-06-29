@@ -14,6 +14,9 @@
 #include "ComboListPopup.h"
 #include "ParamInfo.h"
 #include "SystemManager.h"
+#include "OxyCRGSetupWidget.h"
+#include "IMessageBox.h"
+#include "ECGParam.h"
 
 /**************************************************************************************************
  * 析构。
@@ -66,8 +69,15 @@ OxyCRGWidget::OxyCRGWidget():IWidget("OxyCRGWidget"),
     _changeTrend->setText("");
     connect(_changeTrend, SIGNAL(released(IWidget*)), this, SLOT(_changeTrendSlot(IWidget*)));
 
+    _setUp = new OxyCRGWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+    _setUp->setFont(fontManager.textFont(fontSize));
+    _setUp->setFixedSize(80, _labelHeight);
+    _setUp->setText("SetUp");
+    connect(_setUp, SIGNAL(released(IWidget*)), this, SLOT(_onSetupUpdated(IWidget*)));
+
     bottomLayout->addWidget(_interval);
     bottomLayout->addWidget(_changeTrend);
+    bottomLayout->addWidget(_setUp);
 
     _mainLayout->addWidget(_titleLabel,0,Qt::AlignCenter);
     _mainLayout->addLayout(_hLayoutWave);
@@ -97,10 +107,10 @@ void OxyCRGWidget::_trendLayout(void)
     systemConfig.getStrValue("PrimaryCfg|UILayout|WidgetsOrder|OxyCRGWidget", widgets);
     nodeWidgets = widgets.split(",");
 
-    IWidget *w = NULL;
+//    IWidget *w = NULL;
     for (int i = 0; i < nodeWidgets.size(); i++)
     {
-        w = windowManager.getWidget(nodeWidgets[i]);
+        IWidget *w = windowManager.getWidget(nodeWidgets[i]);
         if (w == NULL)
         {
             continue;
@@ -139,6 +149,46 @@ void OxyCRGWidget::_setInterval(OxyCRGInterval index)
     currentConfig.setNumValue("RESP|Interval", (int)index);
 
     _interval->setText(OxyCRGSymbol::convert(OxyCRGInterval(index)));
+
+    int len = _oxycrgHrWidget->getRulerWidth();
+    float pixel = _oxycrgHrWidget->getRulerPixWidth();
+    int speedPara;
+    switch(index)
+    {
+        case OxyCRG_Interval_1:
+            speedPara = 1;
+            break;
+        case OxyCRG_Interval_2:
+            speedPara = 2;
+            break;
+        case OxyCRG_Interval_4:
+            speedPara = 4;
+            break;
+        default:
+            speedPara = 1;
+            break;
+    };
+    float speed = len*pixel/(60*speedPara);
+
+    if(_oxycrgWidget != NULL)
+    {
+        _oxycrgWidget->setWaveSpeed(speed);
+    }
+    if(_oxycrgCo2Widget != NULL)
+    {
+        _oxycrgCo2Widget->setWaveSpeed(speed);
+    }
+    if(_oxycrgHrWidget != NULL)
+    {
+        _oxycrgHrWidget->setWaveSpeed(speed);
+    }
+
+    if(_oxycrgSpo2Widget != NULL)
+    {
+        _oxycrgSpo2Widget->setWaveSpeed(speed);
+    }
+
+    ecgParam.clearOxyCRGWaveNum();
 }
 
 /**************************************************************************************************
@@ -153,11 +203,11 @@ OxyCRGInterval OxyCRGWidget::_getInterval()
 }
 
 /**************************************************************************************************
- * 设置RESP/RR。
+ * 设置RESP/CO2。
  *************************************************************************************************/
 void OxyCRGWidget::_setTrend(OxyCRGTrend index)
 {
-    currentConfig.setNumValue("RESP|Trend", (int)index);
+    currentConfig.setNumValue("OxyCRG|Wave", (int)index);
 
     _changeTrend->setText(OxyCRGSymbol::convert(OxyCRGTrend(index)));
 
@@ -173,7 +223,7 @@ void OxyCRGWidget::_setTrend(OxyCRGTrend index)
 
         for (; i < nodeWidgets.size(); i++)
         {
-            if (nodeWidgets[i] == "OxyCRGRRWidget")
+            if (nodeWidgets[i] == "OxyCRGCO2Widget")
             {
                 nodeWidgets[i] = "OxyCRGRESPWidget";
 
@@ -188,7 +238,7 @@ void OxyCRGWidget::_setTrend(OxyCRGTrend index)
         {
             if (nodeWidgets[i] == "OxyCRGRESPWidget")
             {
-                nodeWidgets[i] = "OxyCRGRRWidget";
+                nodeWidgets[i] = "OxyCRGCO2Widget";
 
                 break;
             }
@@ -204,7 +254,7 @@ void OxyCRGWidget::_setTrend(OxyCRGTrend index)
 OxyCRGTrend OxyCRGWidget::_getTrend()
 {
     int index = OxyCRG_Trend_RESP;
-    currentConfig.getNumValue("RESP|Trend", index);
+    currentConfig.getNumValue("OxyCRG|Wave", index);
 
     return (OxyCRGTrend)index;
 }
@@ -304,6 +354,51 @@ void OxyCRGWidget::resizeEvent(QResizeEvent *e)
     _changeTrend->move(rect().left() + (rect().width() / 4) + l, rect().bottom() - _labelHeight - 2);
 }
 
+void OxyCRGWidget::setOxyCrgRespWidget(OxyCRGRESPWidget *p)
+{
+    if(p != NULL)
+    {
+        _oxycrgWidget = p;
+    }
+}
+
+void OxyCRGWidget::setOxyCrgHrWidget(OxyCRGHRWidget *p)
+{
+    if(p != NULL)
+    {
+        _oxycrgHrWidget = p;
+    }
+}
+
+void OxyCRGWidget::setOxyCrgSpo2Widget(OxyCRGSPO2Widget *p)
+{
+    if(p != NULL)
+    {
+        _oxycrgSpo2Widget = p;
+    }
+}
+
+void OxyCRGWidget::setOxyCrgCo2Widget(OxyCRGCO2Widget *p)
+{
+    if(p != NULL)
+    {
+        _oxycrgCo2Widget = p;
+    }
+}
+
+void OxyCRGWidget::setWaveType(int index)
+{
+    if(index==0 || index==1)
+    {
+        _waveType = index;
+    }
+}
+
+int OxyCRGWidget::getWaveType()const
+{
+    return _waveType;
+}
+
 /**************************************************************************************************
  * 时间时间触发。
  *************************************************************************************************/
@@ -344,6 +439,65 @@ void OxyCRGWidget::_changeTrendSlot(IWidget *widget)
     _changeTrendList->show();
 }
 
+/**************************************************************************************************
+ * 设置更新操作。
+ *************************************************************************************************/
+void OxyCRGWidget::_onSetupUpdated(IWidget *widget)
+{
+    if(widget == _setUp)
+    {
+        OxyCRGSetupWidget setupWidget;
+
+        setupWidget.exec();
+        int index = setupWidget.getWaveTypeIndex();
+        if(index != (getWaveType()) && (index==0 || index==1))
+        {
+            ecgParam.clearOxyCRGWaveNum();
+
+            setWaveType(index);
+
+            _setTrend((OxyCRGTrend)index);
+            _clearLayout();
+            _trendLayout();
+        }
+
+        bool status=false;
+        int valueLow=0;
+        int valueHight = 0;
+        int valueMid = 0;
+
+        valueLow = setupWidget.getCO2Low(status);
+        valueHight = setupWidget.getCO2High(status);
+        valueMid = (valueHight+valueLow)/2;
+        if(status)
+        {
+            status = false;
+            _oxycrgCo2Widget->setRuler(valueHight, valueMid, valueLow);
+            _oxycrgCo2Widget->setValueRange(valueLow, valueHight);
+        }
+
+        valueLow = setupWidget.getHRLow(status);
+        valueHight = setupWidget.getHRHigh(status);
+        valueMid = (valueHight+valueLow)/2;
+        if(status)
+        {
+            status = false;
+            _oxycrgHrWidget->setRuler(valueHight, valueMid, valueLow);
+            _oxycrgHrWidget->setValueRange(valueLow, valueHight);
+        }
+
+        valueLow = setupWidget.getSPO2Low(status);
+        valueHight = setupWidget.getSPO2High(status);
+        valueMid = (valueHight+valueLow)/2;
+        if(status)
+        {
+            _oxycrgSpo2Widget->setRuler(valueHight, valueMid, valueLow);
+            _oxycrgSpo2Widget->setValueRange(valueLow, valueHight);
+        }
+
+    }
+}
+
 void OxyCRGWidget::_intervalDestroyed()
 {
     int index = _intervalList->getCurIndex();
@@ -369,6 +523,10 @@ void OxyCRGWidget::_changeTrendDestroyed()
         _changeTrendList = NULL;
         return;
     }
+
+    ecgParam.clearOxyCRGWaveNum();
+
+    setWaveType(index);
 
     _setTrend((OxyCRGTrend)index);
     _clearLayout();
