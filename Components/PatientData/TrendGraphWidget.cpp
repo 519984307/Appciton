@@ -37,7 +37,7 @@ void TrendGraphWidget::timeIntervalChange(int timeInterval)
 
 void TrendGraphWidget::updateTrendGraph()
 {
-    _waveWidget->setTrendWaveReset();
+    _waveWidget->trendWaveReset();
     _waveWidget->updateTimeRange();
 }
 
