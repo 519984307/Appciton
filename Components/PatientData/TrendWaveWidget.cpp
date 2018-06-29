@@ -20,9 +20,12 @@
 
 TrendWaveWidget::TrendWaveWidget() :
     _timeInterval(RESOLUTION_RATIO_5_SECOND),
+    _waveRegionWidth(0), _oneFrameWidth(0),
     _initTime(0),
     _cursorPosIndex(0), _currentCursorTime(0),
-    _displayGraphNum(3), _totalGraphNum(3), _pagingNum(0)
+    _displayGraphNum(3), _totalGraphNum(3), _curVScroller(0),
+    _totalPage(0), _currentPage(0), _pagingNum(0), _leftTime(0), _rightTime(0),
+    _trendGraphInfo(TrendGraphInfo())
 {
     QString prefix = "TrendGraph|";
     int index = 0;
@@ -205,7 +208,7 @@ void TrendWaveWidget::leftMoveEvent()
                 for (int i = 0; i < count; i++)
                 {
                     QLayoutItem *item = _hLayoutTrend->itemAt(i);
-                    TrendSubWaveWidget *widget = dynamic_cast<TrendSubWaveWidget *>(item->widget());
+                    TrendSubWaveWidget *widget = qobject_cast<TrendSubWaveWidget *>(item->widget());
                     if (widget != NULL)
                     {
                         widget->cursorMove(_cursorPosIndex);
@@ -250,7 +253,7 @@ void TrendWaveWidget::rightMoveEvent()
                 for (int i = 0; i < count; i++)
                 {
                     QLayoutItem *item = _hLayoutTrend->itemAt(i);
-                    TrendSubWaveWidget *widget = dynamic_cast<TrendSubWaveWidget *>(item->widget());
+                    TrendSubWaveWidget *widget = qobject_cast<TrendSubWaveWidget *>(item->widget());
                     if (widget != NULL)
                     {
                         widget->cursorMove(_cursorPosIndex);
@@ -717,7 +720,7 @@ void TrendWaveWidget::_trendLayout()
     int endIndex;
     dataIndex(startIndex, endIndex);
     QMap<SubParamID, TrendSubWaveWidget *>::iterator it = _subWidgetMap.begin();
-    for (; it != _subWidgetMap.end(); it ++)
+    for (; it != _subWidgetMap.end(); ++ it)
     {
         SubParamID subId = it.key();
         if (trendGraphSetWidget.getTrendGroup() == TREND_GROUP_RESP)
@@ -813,16 +816,16 @@ void TrendWaveWidget::_getTrendData()
     int blockNum = backend->getBlockNR();
     QByteArray data;
     TrendDataSegment *dataSeg;
-    TrendDataPackage *pack;
     qDeleteAll(_trendDataPack);
     _trendDataPack.clear();
     _alarmTimeList.clear();
     //TODO: low efficiency
     for (int i = 0; i < blockNum; i ++)
     {
+        TrendDataPackage *pack;
         pack = new TrendDataPackage;
         data = backend->getBlockData((quint32)i);
-        dataSeg = (TrendDataSegment*)data.data();
+        dataSeg = reinterpret_cast<TrendDataSegment*>(data.data());
         pack->time = dataSeg->timestamp;
         for (int j = 0; j < dataSeg->trendValueNum; j ++)
         {
