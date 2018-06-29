@@ -52,15 +52,6 @@ public:
         {
             return symbol[convention][index];
         }
-
-        if(ecg12LAVR)
-        {
-
-        }
-        if(symbol[convention][index])
-        {
-
-        }
     }
 
     static const char *convert(ECGGain index)
@@ -205,11 +196,6 @@ public:
         else
         {
             return symbol[index];
-        }
-
-        if(leadOff)
-        {
-
         }
     }
 

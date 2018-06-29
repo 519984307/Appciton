@@ -580,14 +580,13 @@ void WaveWidget::_resetBuffer()
     {
         _size = n;
 
-//        if(nameBuffer=="OxyCRGRESPWidget" && respStatus==true)
+//        if((nameBuffer=="OxyCRGRESPWidget" || nameBuffer=="OxyCRGHRWidget"|| \
+//            nameBuffer=="OxyCRGCO2Widget"|| nameBuffer=="OxyCRGSPO2Widget")&& respStatus==true)
 //        {
 //            _mode->prepareTransformFactor();
-////            _head = 0;
-////            _tail = 0;
 
 //            // 重建索引换算X坐标缓存
-//            for (int i = 0; i < _size; i++)
+//            for (int i = 0; i < n; i++)
 //            {
 //                _xBuf[i] = _mode->indexToX(i);
 //            }
@@ -596,7 +595,7 @@ void WaveWidget::_resetBuffer()
 
 //        if(nameBuffer=="OxyCRGRESPWidget")
 //        {
-//            _size = 14160;
+//            _size = 60000;
 //            respStatus = true;
 //        }
 
