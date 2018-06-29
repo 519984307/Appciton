@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/6/29
+ **/
+
 #include "FloatScrollBar.h"
 #include <QBasicTimer>
 #include <QPainter>
@@ -7,11 +17,11 @@
 #define BAR_WIDTH 6
 
 FloatScrollBar::FloatScrollBar(QWidget *parent)
-    :QWidget(parent),
+    : QWidget(parent),
       _timer(new QBasicTimer())
 {
     setAutoFillBackground(false);
-    resize(BAR_WIDTH, 100); //default height 100 px
+    resize(BAR_WIDTH, 100);  // default height 100 px
 }
 
 FloatScrollBar::~FloatScrollBar()
@@ -34,7 +44,7 @@ void FloatScrollBar::paintEvent(QPaintEvent *ev)
     painter.setRenderHint(QPainter::Antialiasing);
 
     QRect rect = this->contentsRect();
-    QColor c= palette().color(QPalette::Highlight);
+    QColor c = palette().color(QPalette::Highlight);
     c.setAlpha(80);
     painter.setBrush(c);
     painter.drawRoundedRect(rect, rect.width() / 2, rect.width() / 2, Qt::AbsoluteSize);
@@ -42,7 +52,7 @@ void FloatScrollBar::paintEvent(QPaintEvent *ev)
 
 void FloatScrollBar::timerEvent(QTimerEvent *ev)
 {
-    if(ev->timerId() == _timer->timerId())
+    if (ev->timerId() == _timer->timerId())
     {
         setVisible(false);
         _timer->stop();
