@@ -1,0 +1,10 @@
+--style=allman
+--unpad-paren
+--pad-header
+--pad-oper
+--align-pointer=name
+--break-closing-brackets
+--break-one-line-headers
+--add-brackets
+--close-templates
+--max-code-length=120

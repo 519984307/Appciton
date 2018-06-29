@@ -1,0 +1,17 @@
+/** 
+@if ('%{CurrentProject:Name}' !== '')
+ ** This file is part of the %{CurrentProject:Name} project.
+@endif
+ ** Copyright (C) Better Life Medical Technology Co., Ltd. 
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+@if ('%{Env:QTC_COPYRIGHT_USER}' === '' || '%{Env:QTC_COPYRIGHT_EMAIL}' === '')
+ ** Written by $copyright_user$ <$copyright_email$>, %{CurrentDate:Locale}
+@else
+ ** Written by %{Env:QTC_COPYRIGHT_USER} <%{Env:QTC_COPYRIGHT_EMAIL}>, %{CurrentDate:Locale}
+@endif
+ **/
+
+$$
