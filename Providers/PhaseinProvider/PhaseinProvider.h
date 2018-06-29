@@ -27,11 +27,8 @@ enum  // 设置命令。
 
 struct  AGProviderStatus
 {
-    AGProviderStatus()
+    AGProviderStatus() : o2Config(true), co2Config(true), n2oConfig(true)
     {
-        o2Config = true;
-        co2Config = true;
-        n2oConfig = true;
     }
     // --------------------------------------------------------------------------------------------
     // ------------------------------ STS (Status summary) ----------------------------------------
