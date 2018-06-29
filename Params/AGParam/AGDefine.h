@@ -1,7 +1,6 @@
 #pragma once
 #include "UnitManager.h"
-
-#define     INVALID     0xff
+#include "BaseDefine.h"
 
 /**************************************************************************************************
  * AG work mode.
@@ -18,12 +17,10 @@ enum AGWorkMode
  *************************************************************************************************/
 struct AGParamInfo
 {
-    AGParamInfo()
+    AGParamInfo() : value(InvData()), unit(UNIT_PERCENT)
     {
-        value = INVALID;
-        unit = UNIT_PERCENT;
     }
-    unsigned char value;
+    short value;
     UnitType unit;
 };
 

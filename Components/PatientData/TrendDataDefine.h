@@ -108,10 +108,8 @@ struct TrendGraphData
 
 struct TrendGraphDataV2     //trend graph draw 2 values
 {
-    TrendGraphDataV2()
+    TrendGraphDataV2() : isAlarm(false), timestamp(0)
     {
-        isAlarm = false;
-        timestamp = 0;
     }
     bool isAlarm;
     unsigned timestamp;
@@ -120,10 +118,8 @@ struct TrendGraphDataV2     //trend graph draw 2 values
 
 struct TrendGraphDataV3     //trend graph draw 3 values
 {
-    TrendGraphDataV3()
+    TrendGraphDataV3() : isAlarm(false), timestamp(0)
     {
-        isAlarm = false;
-        timestamp = 0;
     }
     bool isAlarm;
     unsigned timestamp;
@@ -132,10 +128,8 @@ struct TrendGraphDataV3     //trend graph draw 3 values
 
 struct AlarmEventInfo       //alarm event and time
 {
-    AlarmEventInfo()
+    AlarmEventInfo() : isAlarmEvent(false), timestamp(0)
     {
-        isAlarmEvent = false;
-        timestamp = 0;
     }
     bool isAlarmEvent;
     unsigned timestamp;

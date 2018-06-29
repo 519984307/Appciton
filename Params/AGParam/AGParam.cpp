@@ -90,7 +90,7 @@ UnitType AGParam::getCurrentUnit(SubParamID /*id*/)
  *************************************************************************************************/
 short AGParam::getSubParamValue(SubParamID id)
 {
-    unsigned char value;
+    short value;
     switch (id)
     {
     case SUB_PARAM_ETN2O:
@@ -118,10 +118,6 @@ short AGParam::getSubParamValue(SubParamID id)
         value = getFiData(AG_TYPE_O2);
         break;
     default:
-        return InvData();
-    }
-    if (value == INVALID)
-    {
         return InvData();
     }
     return value;
@@ -436,7 +432,7 @@ AGDisplayZoom AGParam::getDisplayZoom()
 /**************************************************************************************************
  * get et value.
  *************************************************************************************************/
-unsigned char AGParam::getEtData(AGTypeGas gasType)
+short AGParam::getEtData(AGTypeGas gasType)
 {
     switch (gasType)
     {
@@ -468,7 +464,7 @@ unsigned char AGParam::getEtData(AGTypeGas gasType)
 /**************************************************************************************************
  * set et value.
  *************************************************************************************************/
-void AGParam::setEtData(unsigned char etValue, AGTypeGas gasType)
+void AGParam::setEtData(short etValue, AGTypeGas gasType)
 {
     switch (gasType)
     {
@@ -520,7 +516,7 @@ void AGParam::setEtData(unsigned char etValue, AGTypeGas gasType)
 /**************************************************************************************************
  * get fi value.
  *************************************************************************************************/
-unsigned char AGParam::getFiData(AGTypeGas gasType)
+short AGParam::getFiData(AGTypeGas gasType)
 {
     switch (gasType)
     {
@@ -552,7 +548,7 @@ unsigned char AGParam::getFiData(AGTypeGas gasType)
 /**************************************************************************************************
  * set fi value.
  *************************************************************************************************/
-void AGParam::setFiData(unsigned char fiValue, AGTypeGas gasType)
+void AGParam::setFiData(short fiValue, AGTypeGas gasType)
 {
     switch (gasType)
     {

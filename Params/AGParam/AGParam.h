@@ -68,12 +68,12 @@ public:
     AGDisplayZoom getDisplayZoom(void);
 
     // 设置获取et值
-    unsigned char getEtData(AGTypeGas gasType);
-    void setEtData(unsigned char etValue, AGTypeGas gasType);
+    short getEtData(AGTypeGas gasType);
+    void setEtData(short etValue, AGTypeGas gasType);
 
     // 设置获取fi值
-    unsigned char getFiData(AGTypeGas gasType);
-    void setFiData(unsigned char fiValue, AGTypeGas gasType);
+    short getFiData(AGTypeGas gasType);
+    void setFiData(short fiValue, AGTypeGas gasType);
 
     // 设置主麻醉的麻醉剂类型
     void setAnestheticType(AGAnaestheticType primary, AGAnaestheticType secondary);
