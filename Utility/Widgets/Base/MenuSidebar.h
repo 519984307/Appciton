@@ -11,10 +11,10 @@
 
 #pragma once
 #include <QWidget>
-#include <QScrollArea>
+#include "ScrollArea.h"
 
 class MenuSidebarPrivate;
-class MenuSidebar : public QScrollArea
+class MenuSidebar : public ScrollArea
 {
     Q_OBJECT
 public:
@@ -27,20 +27,15 @@ public:
     /* reimplement */
     QSize sizeHint() const;
 
-
 signals:
     void selectItemChanged(const QString &text);
 
 protected:
-    void resizeEvent(QResizeEvent *ev);
     void showEvent(QShowEvent *ev);
-    void scrollContentsBy(int dx, int dy);
-
-private slots:
-    void onItemClicked();
-    void onItemFocusChanged(bool in);
 
 private:
-    QScopedPointer<MenuSidebarPrivate> d_ptr;
+    Q_PRIVATE_SLOT(d_func(), void onItemClicked())
+    Q_PRIVATE_SLOT(d_func(), void onItemFocusChanged(bool))
+    Q_DECLARE_PRIVATE(MenuSidebar)
 };
 

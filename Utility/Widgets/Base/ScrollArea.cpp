@@ -13,21 +13,36 @@
 #include <QResizeEvent>
 
 ScrollAreaPrivate::ScrollAreaPrivate(ScrollArea *const q_ptr)
-    : q_ptr(q_ptr), scrollBar(new FloatScrollBar(q_ptr))
+    : q_ptr(q_ptr),
+      scrollBar(NULL),
+      scroller(NULL)
 {
+}
+
+void ScrollAreaPrivate::init()
+{
+    scrollBar = new FloatScrollBar(q_ptr);
+    scroller = new QScrollAreaKineticScroller();
+
+    scroller->setWidget(q_ptr);
+    // scroller->setScrollMetric(QKineticScroller::OvershootMaximumDistance,
+    //                                  qVariantFromValue(QPointF(0, 0.02)));
+    scroller->setScrollMetric(QKineticScroller::OvershootSpringConstant, qVariantFromValue(80));
 }
 
 ScrollArea::ScrollArea(QWidget *parent)
     : QScrollArea(parent), d_ptr(new ScrollAreaPrivate(this))
 {
-}
-
-ScrollArea::~ScrollArea()
-{
+    d_ptr->init();
 }
 
 ScrollArea::ScrollArea(ScrollAreaPrivate *d, QWidget *parent)
     : QScrollArea(parent), d_ptr(d)
+{
+    d_ptr->init();
+}
+
+ScrollArea::~ScrollArea()
 {
 }
 

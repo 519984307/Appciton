@@ -10,11 +10,19 @@
 
 #include "ScrollArea.h"
 #include "FloatScrollBar.h"
+#include "qscrollareakineticscroller.h"
+
 class ScrollAreaPrivate
 {
     Q_DECLARE_PUBLIC(ScrollArea)
 public:
     explicit ScrollAreaPrivate(ScrollArea * const q_ptr);
+
+    /**
+     * @brief init initialize the widget
+     */
+    void init();
     ScrollArea * const q_ptr;
     FloatScrollBar *scrollBar;
+    QScrollAreaKineticScroller *scroller;
 };

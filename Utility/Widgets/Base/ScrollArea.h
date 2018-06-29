@@ -29,7 +29,8 @@ protected:
 
     ScrollArea(ScrollAreaPrivate *d, QWidget *parent);
 
-private:
     QScopedPointer<ScrollAreaPrivate> d_ptr;
+
+private:
     Q_DECLARE_PRIVATE(ScrollArea)
 };
