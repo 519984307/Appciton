@@ -29,6 +29,12 @@ OxyCRGRESPWidget::OxyCRGRESPWidget(const QString &waveName, const QString &title
 
     setValueRange(-256, 255);
     selectMode(SCROLL_MODE);
+
+    _dataBufIndex = 0;
+    _dataBufLen = 60000;
+    _spaceFlag = new int[_dataBufLen];
+    _dataBuf = new int[_dataBufLen];
+
     _ruler->setRuler(InvData(), InvData(), InvData());
 }
 

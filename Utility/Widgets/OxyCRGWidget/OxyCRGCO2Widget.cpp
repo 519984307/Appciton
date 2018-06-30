@@ -37,8 +37,12 @@ OxyCRGCO2Widget::OxyCRGCO2Widget(const QString &waveName, const QString &title)
     setValueRange(valueLow, valueHigh);
     _ruler->setRuler(valueHigh, (valueLow+valueHigh)/2, valueLow);
 
-//    setDataRate(40);
     selectMode(SCROLL_MODE);
+
+    _dataBufIndex = 0;
+    _dataBufLen = 60000;
+    _spaceFlag = new int[_dataBufLen];
+    _dataBuf = new int[_dataBufLen];
 
     setMargin(QMargins(50,0,2,0));
 }

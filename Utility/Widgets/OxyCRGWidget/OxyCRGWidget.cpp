@@ -22,7 +22,11 @@
  * 析构。
  *************************************************************************************************/
 OxyCRGWidget::OxyCRGWidget():IWidget("OxyCRGWidget"),
-    _isShowGrid(true),_isShowFrame(true), _isShowScale(true)
+                             _intervalList(NULL),
+                             _changeTrendList(NULL),
+                             _isShowGrid(true),
+                             _isShowFrame(true),
+                             _isShowScale(true)
 {
     _pixelWPitch = systemManager.getScreenPixelWPitch();
     _pixelHPitch = systemManager.getScreenPixelHPitch();
