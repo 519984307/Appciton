@@ -41,8 +41,6 @@ OxyCRGTrendWidget::OxyCRGTrendWidget(const QString &waveName, const QString &tit
     _ruler = new OxyCRGTrendWidgetRuler(this);
     _ruler->setFont(fontManager.textFont(fontManager.getFontSize(0)));
     addItem(_ruler);
-
-    this->installEventFilter(this);
 }
 
 int OxyCRGTrendWidget::getRulerWidth()const
@@ -50,16 +48,13 @@ int OxyCRGTrendWidget::getRulerWidth()const
     return _ruler->width();
 }
 
-void OxyCRGTrendWidget::addDataBuf(int value)
+void OxyCRGTrendWidget::addDataBuf(int value, int flag)
 {
-    _dataBuf[_dataBufIndex] = value;
-    _dataBufIndex++;
-    if(_dataBufIndex >= _dataBufLen)
+    _dataBuf->push(value);
+    _falgBuf->push(flag);
+    _dataBufIndex ++;
+    if(_dataBufIndex>=_dataBufLen)
     {
-        for(int i=0; i<_dataBufLen-1; i++)
-        {
-            _dataBuf[i] = _dataBuf[i+1];
-        }
         _dataBufIndex = _dataBufLen - 1;
     }
 }
@@ -103,28 +98,23 @@ void OxyCRGTrendWidget::_resetBuffer()
 
 void OxyCRGTrendWidget::onTimeout()
 {
-    for(int i=0; i<_dataSizeLast; i++)
+    for(int i=0; i<_dataSizeLast && i<_dataBuf->dataSize(); i++)
     {
-        addData(_dataBuf[i],0,false);
+        addData(_dataBuf->at(i), _falgBuf->at(i), false);
     }
 
     update();
 }
 
-bool OxyCRGTrendWidget::eventFilter(QObject *obj, QEvent *ev)
+void OxyCRGTrendWidget::showEvent(QShowEvent *event)
 {
-    if(obj==this)
-    {
-        if(ev->type() == QEvent::Hide)
-        {
-             _dataBufIndex = 0;
-        }
-        else if(ev->type() == QEvent::Show)
-        {
-             _dataBufIndex = 0;
-        }
-    }
-    return false;
+    WaveWidget::showEvent(event);
+     _dataBufIndex = 0;
+}
+void OxyCRGTrendWidget::hideEvent(QHideEvent *event)
+{
+    WaveWidget::hideEvent(event);
+     _dataBufIndex = 0;
 }
 /**************************************************************************************************
  * 析构。

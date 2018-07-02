@@ -1,6 +1,6 @@
 #pragma once
 #include "WaveWidget.h"
-#include <QVector>
+#include "RingBuff.h"
 
 class OxyCRGTrendWidgetRuler;
 
@@ -23,17 +23,10 @@ public:
 
     /**
      * @brief addDataBuf  添加数据缓存
-     * @param value 缓存的数据
+     * @param value  缓存的数据
+     * @param flag  缓存的标记位
      */
-    void addDataBuf(int value);
-
-    /**
-     * @brief eventFilter 窗口事件过滤方法
-     * @param obj  窗口对象
-     * @param ev   事件
-     * @return     返回 false
-     */
-    bool eventFilter(QObject *obj, QEvent *ev);
+    void addDataBuf(int value, int flag);
 
 private slots:
     /**
@@ -44,10 +37,12 @@ private slots:
 protected:
     void paintEvent(QPaintEvent *e);
     void resizeEvent(QResizeEvent *e);
+    virtual void showEvent(QShowEvent * event );
+    virtual void hideEvent(QHideEvent * event );
     OxyCRGTrendWidgetRuler *_ruler;          // 标尺对象
 
-    int *_spaceFlag; //画虚线标记缓存
-    int *_dataBuf; //波形数据缓存
+    RingBuff<int> *_falgBuf;//给波形打标记的缓存
+    RingBuff<int> *_dataBuf;//波形数据缓存
     int _dataBufIndex; //波形数据缓存下标
     int _dataBufLen; //波形数据长度
     int _dataSizeLast; //上次的波形数据长度

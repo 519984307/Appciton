@@ -137,7 +137,7 @@ void CO2Param::handDemoWaveform(WaveformID id, short data)
     }
     if (NULL != _oxyCRGCo2Widget)
     {
-        _oxyCRGCo2Widget->addDataBuf(data);
+        _oxyCRGCo2Widget->addDataBuf(data, 0);
         _oxyCRGCo2Widget->addData(data, 0, false);
     }
     waveformCache.addData((WaveformID)id, data);

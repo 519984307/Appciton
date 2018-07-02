@@ -116,7 +116,7 @@ void ECGParam::handDemoTrendData(void)
     ecgDupParam.updateHR(hrValue);
     if(NULL != _waveOxyCRGWidget)
     {
-        _waveOxyCRGWidget->addDataBuf(hrValue);
+        _waveOxyCRGWidget->addDataBuf(hrValue, 0);
         _waveOxyCRGWidget->addData(hrValue);
 
         _updateNum++;

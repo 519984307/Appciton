@@ -38,9 +38,9 @@ OxyCRGHRWidget::OxyCRGHRWidget(const QString &waveName, const QString &title)
     selectMode(SCROLL_MODE);
 
     _dataBufIndex = 0;
-    _dataBufLen = 256;
-    _spaceFlag = new int[_dataBufLen];
-    _dataBuf = new int[_dataBufLen];
+    _dataBufLen = dataRate()*4*60; //最大4分钟数据
+    _dataBuf = new RingBuff<int>(_dataBufLen);
+    _falgBuf = new RingBuff<int>(_dataBufLen);
 
     _ruler->setRuler(valueHigh, (valueLow+valueHigh)/2, valueLow);
 

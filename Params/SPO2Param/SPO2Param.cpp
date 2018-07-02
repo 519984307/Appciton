@@ -97,7 +97,7 @@ void SPO2Param::handDemoTrendData(void)
     }
     if(NULL != _waveOxyCRGWidget)
     {
-        _waveOxyCRGWidget->addDataBuf(_spo2Value);
+        _waveOxyCRGWidget->addDataBuf(_spo2Value, 0);
         _waveOxyCRGWidget->addData(_spo2Value);
     }
     int prValue = qrand() % 55 + 45;

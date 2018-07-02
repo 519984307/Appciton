@@ -40,9 +40,9 @@ OxyCRGCO2Widget::OxyCRGCO2Widget(const QString &waveName, const QString &title)
     selectMode(SCROLL_MODE);
 
     _dataBufIndex = 0;
-    _dataBufLen = 60000;
-    _spaceFlag = new int[_dataBufLen];
-    _dataBuf = new int[_dataBufLen];
+    _dataBufLen = dataRate()*4*60; //最大4分钟数据
+    _dataBuf = new RingBuff<int>(_dataBufLen);
+    _falgBuf = new RingBuff<int>(_dataBufLen);
 
     setMargin(QMargins(50,0,2,0));
 }

@@ -31,9 +31,9 @@ OxyCRGRESPWidget::OxyCRGRESPWidget(const QString &waveName, const QString &title
     selectMode(SCROLL_MODE);
 
     _dataBufIndex = 0;
-    _dataBufLen = 60000;
-    _spaceFlag = new int[_dataBufLen];
-    _dataBuf = new int[_dataBufLen];
+    _dataBufLen = dataRate()*4*60; //最大4分钟数据
+    _dataBuf = new RingBuff<int>(_dataBufLen);
+    _falgBuf = new RingBuff<int>(_dataBufLen);
 
     _ruler->setRuler(InvData(), InvData(), InvData());
 }

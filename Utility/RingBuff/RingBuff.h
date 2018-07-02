@@ -131,7 +131,8 @@ void RingBuff<T>::_newSpace(int size)
         cap <<= 1;
     }
 
-    assert(cap <= 0x8000);  // 小于32K
+//    assert(cap <= 0x8000);  // 小于32K
+    assert(cap <= 0x10000);  // 小于64K
 
     _buf = new T[cap];
     _capacity = cap;
