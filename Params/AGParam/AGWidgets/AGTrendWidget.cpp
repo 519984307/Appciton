@@ -10,8 +10,6 @@
 #include "PublicMenuManager.h"
 #include <QDebug>
 
-#define     INVALID     0xff
-
 /**************************************************************************************************
  * 设置麻醉剂类型。
  *************************************************************************************************/
@@ -32,9 +30,9 @@ void AGTrendWidget::setAnestheticType(AGAnaestheticType type)
 /**************************************************************************************************
  * 设置et结果数据。
  *************************************************************************************************/
-void AGTrendWidget::setEtData(unsigned char etValue)
+void AGTrendWidget::setEtData(short etValue)
 {
-    if (etValue == INVALID)
+    if (etValue == InvData())
     {
         _etStr = InvStr();
     }
@@ -46,8 +44,8 @@ void AGTrendWidget::setEtData(unsigned char etValue)
         }
         else
         {
-            unsigned char etValueInt = etValue/10;
-            unsigned char etValueDes = etValue%10;
+            short etValueInt = etValue/10;
+            short etValueDes = etValue%10;
             _etStr = QString::number(etValueInt) + "." + QString::number(etValueDes);
         }
     }
@@ -58,9 +56,9 @@ void AGTrendWidget::setEtData(unsigned char etValue)
 /**************************************************************************************************
  * 设置fi结果数据。
  *************************************************************************************************/
-void AGTrendWidget::setFiData(unsigned char fiValue)
+void AGTrendWidget::setFiData(short fiValue)
 {
-    if (fiValue == INVALID)
+    if (fiValue == InvData())
     {
         _fiStr = InvStr();
     }

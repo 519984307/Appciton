@@ -7,6 +7,7 @@
 #include <QFileInfo>
 #include <syslog.h>
 #include <qglobal.h>
+#include <QCoreApplication>
 
 namespace Util
 {
@@ -117,5 +118,6 @@ QString convertToString(int value, int scale)
         return QString::number((double)value / scale, 'f', prec);
     }
 }
+
 
 }

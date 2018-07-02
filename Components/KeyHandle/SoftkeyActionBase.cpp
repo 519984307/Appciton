@@ -18,6 +18,9 @@
 #include "DoseCalculationWidget.h"
 #include "DoseCalculationManager.h"
 #include "HemodynamicWidget.h"
+#include "Window.h"
+#include "MenuSidebar.h"
+#include "MenuWindow.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -69,7 +72,49 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
         return;
     }
 
-//co2Param.setConnected(true);
+    //Window testWin;
+    //testWin.setFont(fontManager.textFont(17));
+    //testWin.setWindowTitle("Test Window");
+    //testWin.resize(640, 480);
+
+    //QHBoxLayout *layout = new QHBoxLayout;
+
+    //MenuSidebar *sideBar = new MenuSidebar();
+    //sideBar->addItem("ECG");
+    //sideBar->addItem("SPO2");
+    //sideBar->addItem("RESP");
+    //sideBar->addItem("NIBP");
+    //sideBar->addItem("TEMP");
+    //sideBar->addItem("AG");
+    //sideBar->addItem("IBP");
+    //sideBar->setFixedWidth(180);
+    //layout->addWidget(sideBar);
+    //layout->addStretch();
+    //testWin.setWindowLayout(layout);
+    //testWin.setVisible(true);
+
+    //testWin.exec();
+
+    MenuWindow win;
+    win.addMenuGroup("ECG");
+    win.addMenuGroup("SPO2");
+    win.addMenuGroup("RESP");
+    win.addMenuGroup("NIBP");
+    win.addMenuGroup("TEMP");
+    win.addMenuGroup("AG");
+    win.addMenuGroup("IBP");
+    win.addMenuGroup("CO2");
+    win.addMenuGroup("C.O.");
+    win.addMenuGroup("C.O.");
+    win.addMenuGroup("ALarmSetting");
+    win.addMenuGroup("WIFI");
+    win.addMenuGroup("Maintance");
+    win.addMenuGroup("Configuration");
+    win.exec();
+
+     return;
+
+//co 2Param.setConnected(true);
 //return;
 
     bool isVisible = codeMarkerWidget.isVisible();

@@ -12,8 +12,8 @@ public:
     void setAnestheticType(AGAnaestheticType type);
 
     // 设置测量实时数据。
-    void setEtData(unsigned char etValue);
-    void setFiData(unsigned char fiValue);
+    void setEtData(short etValue);
+    void setFiData(short fiValue);
 
     // 是否报警
     void isAlarm(int id, bool flag);
