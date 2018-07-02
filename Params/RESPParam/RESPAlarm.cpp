@@ -45,9 +45,9 @@ SubParamID RESPLimitAlarm::getSubParamID(int /*id*/)
 /**************************************************************************************************
  * 生理参数报警级别。
  *************************************************************************************************/
-AlarmPriority RESPLimitAlarm::getAlarmPriority(int /*id*/)
+AlarmPriority RESPLimitAlarm::getAlarmPriority(int id)
 {
-    return ALARM_PRIO_LOW;
+    return alarmConfig.getLimitAlarmPriority(getSubParamID(id));
 }
 
 /**************************************************************************************************

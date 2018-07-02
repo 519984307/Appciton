@@ -134,9 +134,7 @@ void AlarmLimitMenu::_comboListIndexChanged(int id, int index)
     }
     else if(combo->combolist == item->priority->combolist)
     {
-        currentConfig.setNumAttr(QString("AlarmSource|%1|%2").arg(patientManager.getTypeStr()).arg(paramInfo.getSubParamName(subID, true)),
-                                  "Prio",
-                                  index);
+        alarmConfig.setLimitAlarmPriority(subID, (AlarmPriority)index);
     }
 
 }
@@ -173,7 +171,6 @@ void AlarmLimitMenu::checkAlarmEnableStatus()
  *************************************************************************************************/
 void AlarmLimitMenu::setIBPAlarmItem(IBPPressureName ibp1, IBPPressureName ibp2)
 {
-    SetItem *item;
     QList<SubParamID> id;
     int count = _itemList.count();
     switch (ibp1)
@@ -270,6 +267,7 @@ void AlarmLimitMenu::setIBPAlarmItem(IBPPressureName ibp1, IBPPressureName ibp2)
 
     for (int i = 1; i < count; i ++)
     {
+        SetItem *item;
         item = _itemList.at(i);
         if (item->pid == PARAM_IBP)
         {
@@ -295,7 +293,6 @@ void AlarmLimitMenu::_onConfigUpdated()
  *************************************************************************************************/
 void AlarmLimitMenu::_loadOptions(void)
 {
-    int enable = 0;
     QString low;
     QString high;
     QString step;
@@ -305,6 +302,7 @@ void AlarmLimitMenu::_loadOptions(void)
     SetItem *item = _itemList.at(0);
     if (NULL != item)
     {
+        int enable = 0;
         systemConfig.getNumValue("PrimaryCfg|Alarm|ApneaTime", enable);
         item->combo->setCurrentIndex(enable);
     }
@@ -495,9 +493,9 @@ void AlarmLimitMenu::layoutExec(void)
         item->priority->label->setFixedSize(0,0);
         item->priority->label->setVisible(false);
         item->priority->combolist->setFixedSize(itemW, ITEM_H);
-        item->priority->combolist->addItem(trs("high"));
-        item->priority->combolist->addItem(trs("normal"));
         item->priority->combolist->addItem(trs("low"));
+        item->priority->combolist->addItem(trs("normal"));
+        item->priority->combolist->addItem(trs("high"));
         item->priority->SetID(i);
         item->priority->setFont(fontManager.textFont(fontManager.getFontSize(1)));
         connect(item->priority, SIGNAL(currentIndexChanged(int, int)),
