@@ -37,11 +37,11 @@ private:
     QLabel *_fiName;
     QLabel *_fiValue;
 
+    AGTypeGas _gasType;
+
     QString _etStr;
     QString _fiStr;
     bool _etAlarm;
     bool _fiAlarm;
-
-    AGTypeGas _gasType;
 
 };
