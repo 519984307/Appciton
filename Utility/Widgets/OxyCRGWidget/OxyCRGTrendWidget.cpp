@@ -26,7 +26,12 @@ void OxyCRGTrendWidget::resizeEvent(QResizeEvent *e)
  * 构造。
  *************************************************************************************************/
 OxyCRGTrendWidget::OxyCRGTrendWidget(const QString &waveName, const QString &title)
-    : WaveWidget(waveName, title),_dataSizeLast(0)
+    : WaveWidget(waveName, title),
+      _falgBuf(0),
+      _dataBuf(0),
+      _dataBufIndex(0),
+      _dataBufLen(0),
+      _dataSizeLast(0)
 {
     setMargin(QMargins(50,0,2,0));/*调整波形位置*/
 
