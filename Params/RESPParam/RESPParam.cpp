@@ -204,6 +204,7 @@ void RESPParam::addWaveformData(int wave, int flag)
 {
     if (NULL != _waveWidget)
     {
+        _waveOxyCRGWidget->addDataBuf(wave, flag);
         _waveWidget->addData(wave, flag);
     }
     waveformCache.addData(WAVE_RESP, (flag << 16) | (wave & 0xFFFF));

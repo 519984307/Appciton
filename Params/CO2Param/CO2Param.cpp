@@ -554,6 +554,7 @@ void CO2Param::addWaveformData(short wave, bool invalid)
 
     if (_waveWidget != NULL)
     {
+        _oxyCRGCo2Widget->addDataBuf(wave, flag);
         _waveWidget->addData(wave, flag);
     }
     waveformCache.addData(WAVE_CO2, (flag << 16) | (wave & 0xFFFF));
