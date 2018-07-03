@@ -46,9 +46,9 @@ SubParamID ECGLimitAlarm::getSubParamID(int /*id*/)
 /**************************************************************************************************
  * 生理参数报警级别。
  *************************************************************************************************/
-AlarmPriority ECGLimitAlarm::getAlarmPriority(int /*paramID*/)
+AlarmPriority ECGLimitAlarm::getAlarmPriority(int id)
 {
-    return ALARM_PRIO_LOW;
+    return alarmConfig.getLimitAlarmPriority(getSubParamID(id));
 }
 
 /**************************************************************************************************
