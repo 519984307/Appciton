@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/3
+ **/
+
+
+
 #include "Window.h"
 #include <QEvent>
 #include <QLabel>
@@ -13,7 +25,9 @@ class WindowPrivate
 {
 public:
     WindowPrivate()
-        :m_widget(NULL){}
+        : m_widget(NULL),
+          m_titleLbl(NULL)
+    {}
 
     QWidget *m_widget;
     QLabel *m_titleLbl;
@@ -29,22 +43,22 @@ Window::Window(QWidget *parent)
     titleLbl->setAlignment(Qt::AlignCenter);
     d_ptr->m_titleLbl = titleLbl;
     Button *closeBtn = new Button();
-    closeBtn->setIconSize(QSize(24,24));
+    closeBtn->setIconSize(QSize(24, 24));
     closeBtn->setBorderWidth(0);
     closeBtn->setFixedSize(TITLE_BAR_HEIGHT, TITLE_BAR_HEIGHT);
     closeBtn->setIcon(QIcon(":/ui/close.svg"));
     closeBtn->setButtonStyle(Button::ButtonIconOnly);
     QHBoxLayout *hlayout = new QHBoxLayout();
-    hlayout->setContentsMargins(0,0,0,0);
+    hlayout->setContentsMargins(0, 0, 0, 0);
     hlayout->addWidget(titleLbl, 1);
     hlayout->addWidget(closeBtn);
 
     QVBoxLayout *vLayout = new QVBoxLayout(this);
-    vLayout->setContentsMargins(0,0,0,0);
+    vLayout->setContentsMargins(0, 0, 0, 0);
     vLayout->setSpacing(0);
     vLayout->addLayout(hlayout);
     QFrame *line = new QFrame;
-    line->setFrameStyle(QFrame::HLine|QFrame::Sunken);
+    line->setFrameStyle(QFrame::HLine | QFrame::Sunken);
     line->setLineWidth(0);
     line->setMidLineWidth(1);
     vLayout->addWidget(line);
@@ -59,7 +73,6 @@ Window::Window(QWidget *parent)
 
 Window::~Window()
 {
-
 }
 
 QLayout *Window::getWindowLayout()
@@ -75,7 +88,7 @@ void Window::setWindowLayout(QLayout *layout)
 void Window::changeEvent(QEvent *ev)
 {
     QDialog::changeEvent(ev);
-    if(ev->type() == QEvent::WindowTitleChange)
+    if (ev->type() == QEvent::WindowTitleChange)
     {
         d_ptr->m_titleLbl->setText(windowTitle());
     }

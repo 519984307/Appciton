@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/3
+ **/
+
 #include <QEvent>
 #include <QPainter>
 #include "SoftKeyWidget.h"
@@ -42,7 +52,7 @@ void SoftkeyWidget::paintEvent(QPaintEvent *e)
     {
         int height = r.height();
         int width = r.width();
-        width = (width - height)/2;
+        width = (width - height) / 2;
         QRect PixmapR = r;
         PixmapR.adjust(width, 0, -width, 0);
 //        PixmapR.setSize(QSize(height, height));
@@ -60,9 +70,9 @@ void SoftkeyWidget::paintEvent(QPaintEvent *e)
     IWidget::paintEvent(e);
 }
 
-void SoftkeyWidget::resizeEvent(QResizeEvent */*e*/)
+void SoftkeyWidget::resizeEvent(QResizeEvent *e)
 {
-
+    Q_UNUSED(e)
 }
 
 /***************************************************************************************************
@@ -290,12 +300,13 @@ QColor SoftkeyWidget::backgroundColor(void)
 /***************************************************************************************************
  * 构造。
  **************************************************************************************************/
-SoftkeyWidget::SoftkeyWidget(QWidget *parent) : IWidget("SoftkeyWidget", parent)
+SoftkeyWidget::SoftkeyWidget(QWidget *parent)
+    : IWidget("SoftkeyWidget", parent),
+      _releaseColor(Qt::black),
+      _pressColor(Qt::black),
+      _borderColor(QColor(100, 100, 100)),
+      _pressed(false),
+      _enableBorder(false),
+      _isPixmapValid(true)
 {
-    _isPixmapValid = true;
-    _pressed = false;
-    //边框颜色
-    _borderColor = QColor(100, 100, 100);
-    _releaseColor = Qt::black;
-    _pressColor = Qt::black;
 }

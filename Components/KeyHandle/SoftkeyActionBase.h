@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/3
+ **/
+
+
 #pragma once
 #include <QString>
 #include <QList>
@@ -30,7 +41,7 @@ enum SoftBaseKeyType
     SOFT_BASE_KEY_NR
 };
 
-typedef void (*SoftkeyHook)(bool); // 参数为bool值，按下为1，弹起为0。
+typedef void (*SoftkeyHook)(bool);  // 参数为bool值，按下为1，弹起为0。
 struct KeyActionDesc
 {
     KeyActionDesc(const QString &txt = QString(), const QString &path = QString(),
@@ -40,16 +51,10 @@ struct KeyActionDesc
                   const QColor &color = Qt::white,
                   const QColor &pressColor = QColor(0x1C, 0x86, 0xEE),
                   bool border = true)
+        : text(txt), iconPath(path), hook(phook), type(type),
+          focus(focus), color(color), pressColor(pressColor),
+          releaseColor(releaseColor), border(border)
     {
-        text = txt;
-        iconPath = path;
-        hook = phook;
-        this->type = type;
-        this->focus = focus;
-        this->color = color;
-        this->pressColor = pressColor;
-        this->releaseColor = releaseColor;
-        this->border = border;
     }
 
     bool operator !=(const KeyActionDesc &desc)
@@ -102,10 +107,10 @@ public:
     SoftKeyActionType getType(void);
 
     // 构造与析构。
-    SoftkeyActionBase(SoftKeyActionType t);
+    explicit SoftkeyActionBase(SoftKeyActionType t);
     virtual ~SoftkeyActionBase();
 
-protected: // 处理翻页功能，需要派生类设置这些属性。
+protected:  // 处理翻页功能，需要派生类设置这些属性。
     // 翻到上一页。
     void previousPage(void);
     // 翻到下一页。

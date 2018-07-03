@@ -103,6 +103,8 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/ShadowEffect.cpp                                       \
     Utility/Widgets/Base/Button.cpp                                             \
     Utility/Widgets/Base/Window.cpp                                             \
+    Utility/Widgets/Base/Frame.cpp                                              \
+    Utility/Widgets/Base/FrameItem.cpp                                          \
     Utility/Widgets/Base/MenuWindow.cpp                                         \
     Utility/Widgets/Base/MenuSidebar.cpp                                        \
     Utility/Widgets/Base/MenuSidebarItem.cpp                                    \
@@ -525,6 +527,8 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/ShadowEffect.h                                         \
     Utility/Widgets/Base/Button.h                                               \
     Utility/Widgets/Base/Window.h                                               \
+    Utility/Widgets/Base/Frame.h                                                \
+    Utility/Widgets/Base/FrameItem.h                                            \
     Utility/Widgets/Base/MenuWindow.h                                           \
     Utility/Widgets/Base/MenuSidebar.h                                          \
     Utility/Widgets/Base/MenuSidebarItem.h                                      \

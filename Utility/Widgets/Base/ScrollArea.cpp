@@ -34,12 +34,20 @@ ScrollArea::ScrollArea(QWidget *parent)
     : QScrollArea(parent), d_ptr(new ScrollAreaPrivate(this))
 {
     d_ptr->init();
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setWidgetResizable(true);
+    setFrameStyle(QFrame::NoFrame);
 }
 
 ScrollArea::ScrollArea(ScrollAreaPrivate *d, QWidget *parent)
     : QScrollArea(parent), d_ptr(d)
 {
     d_ptr->init();
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setWidgetResizable(true);
+    setFrameStyle(QFrame::NoFrame);
 }
 
 ScrollArea::~ScrollArea()
