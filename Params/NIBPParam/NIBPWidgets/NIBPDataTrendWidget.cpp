@@ -73,7 +73,6 @@ void NIBPDataTrendWidget::isAlarm(bool isAlarm)
  *************************************************************************************************/
 void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
 {
-    int completeResult = 0;
     if(_nibpNrendCacheMap.contains(t))
     {
         return;
@@ -91,7 +90,7 @@ void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
 
     if ((data.sysvalue != InvData()) && (data.sysvalue != InvData()) && (data.sysvalue != InvData()))
     {
-        completeResult = nibpLimitAlarm.getCompare(data.sysvalue, NIBP_LIMIT_ALARM_SYS_LOW);
+        int completeResult = nibpLimitAlarm.getCompare(data.sysvalue, NIBP_LIMIT_ALARM_SYS_LOW);
         if (completeResult != 0)
         {
             data.sysAlarm = true;
@@ -151,7 +150,7 @@ void NIBPDataTrendWidget::showValue(void)
     for (int i = 0; i < _rowNR; i++)
     {
         _table->item(i, 0)->setText("");
-        QLabel *l = (QLabel*)_table->cellWidget(i, 1);
+        QLabel *l = static_cast<QLabel*>(_table->cellWidget(i, 1));
         l->setText("");
     }
 
@@ -221,7 +220,7 @@ void NIBPDataTrendWidget::showValue(void)
 
         if (t != _nibpNrendCacheMap.begin())
         {
-            t--;
+            t = t-1;
         }
         else
         {
@@ -235,7 +234,6 @@ void NIBPDataTrendWidget::showValue(void)
  *************************************************************************************************/
 void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
 {
-    QTableWidgetItem *item;
     TrendWidget::resizeEvent(e);
     _rowNR = _table->height() / _tableItemHeight;
     _table->setRowCount(_rowNR);
@@ -244,7 +242,7 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
     for (int i = 0; i < _rowNR; i++)
     {
         _table->setRowHeight(i, _tableItemHeight);
-        item = new QTableWidgetItem();
+        QTableWidgetItem *item = new QTableWidgetItem();
         item->setTextAlignment(Qt::AlignCenter);
         item->setTextColor(colorManager.getColor(paramInfo.getParamName(PARAM_NIBP)));
         _table->setItem(i, 0, item);
@@ -302,6 +300,8 @@ NIBPDataTrendWidget::NIBPDataTrendWidget() : TrendWidget("NIBPDataTrendWidget")
     _table->setStyleSheet(Style);
     connect(_table, SIGNAL(released(QMouseEvent *)), this, SLOT(mouseReleaseEvent(QMouseEvent *)));
 
+    _table->setSelectionMode(QAbstractItemView::NoSelection);
+
     // 布局。
     QHBoxLayout *mainLayout = new QHBoxLayout();
     mainLayout->setMargin(4);
@@ -314,9 +314,11 @@ NIBPDataTrendWidget::NIBPDataTrendWidget() : TrendWidget("NIBPDataTrendWidget")
     contentLayout->addStretch(1);
 
     // 释放事件。
-    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+//    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
 
     _isAlarm = false;
+
+    setFocusPolicy(Qt::NoFocus);
 }
 
 /**************************************************************************************************
