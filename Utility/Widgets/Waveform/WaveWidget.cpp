@@ -574,30 +574,9 @@ void WaveWidget::_resetBuffer()
     {
         _timeLostFlag = false;
     }
-//    QString nameBuffer = name();
-//    static bool respStatus=false;
     if ((n > 0) && (_size != n))
     {
         _size = n;
-
-//        if((nameBuffer=="OxyCRGRESPWidget" || nameBuffer=="OxyCRGHRWidget"|| \
-//            nameBuffer=="OxyCRGCO2Widget"|| nameBuffer=="OxyCRGSPO2Widget")&& respStatus==true)
-//        {
-//            _mode->prepareTransformFactor();
-
-//            // 重建索引换算X坐标缓存
-//            for (int i = 0; i < n; i++)
-//            {
-//                _xBuf[i] = _mode->indexToX(i);
-//            }
-//            return;
-//        }
-
-//        if(nameBuffer=="OxyCRGRESPWidget")
-//        {
-//            _size = 60000;
-//            respStatus = true;
-//        }
 
         if (_waveBuf)
         {

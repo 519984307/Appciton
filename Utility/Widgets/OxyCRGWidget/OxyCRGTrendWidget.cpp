@@ -8,6 +8,7 @@
 #include "ParamInfo.h"
 #include <QPainter>
 #include "WaveWidgetSelectMenu.h"
+#include <QTimer>
 
 /**************************************************************************************************
  * 尺寸变化。
@@ -25,7 +26,12 @@ void OxyCRGTrendWidget::resizeEvent(QResizeEvent *e)
  * 构造。
  *************************************************************************************************/
 OxyCRGTrendWidget::OxyCRGTrendWidget(const QString &waveName, const QString &title)
-    : WaveWidget(waveName, title)
+    : WaveWidget(waveName, title),
+      _falgBuf(0),
+      _dataBuf(0),
+      _dataBufIndex(0),
+      _dataBufLen(0),
+      _dataSizeLast(0)
 {
     setMargin(QMargins(50,0,2,0));/*调整波形位置*/
 
@@ -47,6 +53,17 @@ int OxyCRGTrendWidget::getRulerWidth()const
     return _ruler->width();
 }
 
+void OxyCRGTrendWidget::addDataBuf(int value, int flag)
+{
+    _dataBuf->push(value);
+    _falgBuf->push(flag);
+    _dataBufIndex ++;
+    if(_dataBufIndex>=_dataBufLen)
+    {
+        _dataBufIndex = _dataBufLen - 1;
+    }
+}
+
 int OxyCRGTrendWidget::getRuleHeight()const
 {
     return _ruler->height();
@@ -60,6 +77,49 @@ float OxyCRGTrendWidget::getRulerPixWidth()const
 void OxyCRGTrendWidget::setRuler(int up, int mid, int low)
 {
     _ruler->setRuler(up, mid, low);
+}
+
+void OxyCRGTrendWidget::_resetBuffer()
+{
+    WaveWidget::_resetBuffer();
+
+    if(bufSize() != _dataSizeLast)
+    {
+        _dataSizeLast = bufSize();
+
+        if(_dataSizeLast > _dataBufLen)
+        {
+            _dataSizeLast = _dataBufLen;
+        }
+
+        if(_dataSizeLast > _dataBufIndex)
+        {
+            _dataSizeLast = _dataBufIndex;
+        }
+
+        QTimer::singleShot(0, this, SLOT(onTimeout()));
+    }
+}
+
+void OxyCRGTrendWidget::onTimeout()
+{
+    for(int i=0; i<_dataSizeLast && i<_dataBuf->dataSize(); i++)
+    {
+        addData(_dataBuf->at(i), _falgBuf->at(i), false);
+    }
+
+    update();
+}
+
+void OxyCRGTrendWidget::showEvent(QShowEvent *event)
+{
+    WaveWidget::showEvent(event);
+     _dataBufIndex = 0;
+}
+void OxyCRGTrendWidget::hideEvent(QHideEvent *event)
+{
+    WaveWidget::hideEvent(event);
+     _dataBufIndex = 0;
 }
 /**************************************************************************************************
  * 析构。

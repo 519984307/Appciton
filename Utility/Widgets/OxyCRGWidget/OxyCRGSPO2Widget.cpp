@@ -40,7 +40,10 @@ OxyCRGSPO2Widget::OxyCRGSPO2Widget(const QString &waveName, const QString &title
     setDataRate(1);
     selectMode(SCROLL_MODE);
 
-
+    _dataBufIndex = 0;
+    _dataBufLen = dataRate()*4*60; //最大4分钟数据
+    _dataBuf = new RingBuff<int>(_dataBufLen);
+    _falgBuf = new RingBuff<int>(_dataBufLen);
 
     setMargin(QMargins(50-2,0,2,0));
 }

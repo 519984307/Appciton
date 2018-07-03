@@ -75,6 +75,7 @@ void RESPParam::handDemoWaveform(WaveformID id, short data)
     }
     if(NULL != _waveOxyCRGWidget)
     {
+        _waveOxyCRGWidget->addDataBuf(data, 0);
         _waveOxyCRGWidget->addData(data,0,false);
     }
     waveformCache.addData((WaveformID)id, data);
@@ -203,6 +204,7 @@ void RESPParam::addWaveformData(int wave, int flag)
 {
     if (NULL != _waveWidget)
     {
+        _waveOxyCRGWidget->addDataBuf(wave, flag);
         _waveWidget->addData(wave, flag);
     }
     waveformCache.addData(WAVE_RESP, (flag << 16) | (wave & 0xFFFF));

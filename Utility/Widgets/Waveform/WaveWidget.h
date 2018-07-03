@@ -315,10 +315,13 @@ protected:
 protected:
     WaveWidgetLabel *_name;
     QList<WaveMode*> _modes;                  // 支持的工作模式对象列表
+    /**
+     * @brief _resetBuffer 复位波形
+     */
+    virtual void _resetBuffer();
 
 private:
     WaveMode *_findMode(WaveModeFlag modeFlag, bool isCascade);
-    void _resetBuffer();
     void _resetBackground();
     void _startQueueWaveData();
     int _roundUp(int value, int step);

@@ -116,6 +116,7 @@ void ECGParam::handDemoTrendData(void)
     ecgDupParam.updateHR(hrValue);
     if(NULL != _waveOxyCRGWidget)
     {
+        _waveOxyCRGWidget->addDataBuf(hrValue, 0);
         _waveOxyCRGWidget->addData(hrValue);
 
         _updateNum++;
@@ -536,6 +537,18 @@ void ECGParam::updateHR(short hr)
 
     _hrValue = hr;
     ecgDupParam.updateHR(hr);
+
+    if(NULL != _waveOxyCRGWidget)
+    {
+        _waveOxyCRGWidget->addDataBuf(hr, 0);
+
+        _updateNum++;
+        if(_updateNum>=2)
+        {
+            _updateNum = 0;
+            emit oxyCRGWaveUpdated();//呼吸氧和波形更新信号
+        }
+    }
 }
 
 /***************************************************************************************************

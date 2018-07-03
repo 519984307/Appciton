@@ -97,6 +97,7 @@ void SPO2Param::handDemoTrendData(void)
     }
     if(NULL != _waveOxyCRGWidget)
     {
+        _waveOxyCRGWidget->addDataBuf(_spo2Value, 0);
         _waveOxyCRGWidget->addData(_spo2Value);
     }
     int prValue = qrand() % 55 + 45;
@@ -323,6 +324,11 @@ void SPO2Param::setSPO2(short spo2Value)
     {
         _trendWidget->setSPO2Value(_spo2Value);
     }
+    if(NULL != _waveOxyCRGWidget)
+    {
+        _waveOxyCRGWidget->addDataBuf(_spo2Value, 0);
+    }
+
 }
 
 /**************************************************************************************************
