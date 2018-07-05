@@ -77,6 +77,18 @@ public:
 
     const QList<TrendGraphInfo> getTrendGraphPrint();
 
+    /**
+     * @brief setHistoryDataPath 设置历史回顾数据的文件路径
+     * @param path 文件路径
+     */
+    void setHistoryDataPath(QString path);
+
+    /**
+     * @brief isHistoryDataFlag 此刻的趋势表是否为历史数据
+     * @param flag 标志
+     */
+    void isHistoryDataFlag(bool flag);
+
 public slots:
     /**
      * @brief leftMoveCoordinate 左移坐标
@@ -183,4 +195,7 @@ private:
     TrendGraphInfo _trendGraphInfo;                 // 趋势图数据集合
     QList<unsigned> _alarmTimeList;                 // 报警发生时间
     QList<TrendGraphInfo> _infosList;                    // 打印趋势图数据链表
+
+    bool _isHistory;                                // 历史回顾标志
+    QString _historyDataPath;                       // 历史数据路径
 };

@@ -25,6 +25,7 @@
 #include "TrendPrintWidget.h"
 #include "EventStorageManager.h"
 #include "EventDataParseContext.h"
+#include "DataStorageDefine.h"
 
 #define ITEM_HEIGHT             30
 #define ITEM_WIDTH              100
@@ -66,9 +67,9 @@ void TrendDataWidget::loadTrendData()
     int startIndex;
     int endIndex;
     _dataIndex(startIndex, endIndex);
-    bool isStart = true;
     if (startIndex != InvData() && endIndex != InvData())
     {
+        bool isStart = true;
         unsigned lastTime = _trendDataPack.at(startIndex)->time;
         if (lastTime % timeInterval != 0)
         {
@@ -213,6 +214,11 @@ void TrendDataWidget::loadTrendData()
 void TrendDataWidget::showEvent(QShowEvent *event)
 {
     PopupWidget::showEvent(event);
+
+    // 居中显示。
+    QRect r = windowManager.getMenuArea();
+    move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
+
     _loadTableTitle();
     _updateEventIndex();
 
@@ -434,6 +440,7 @@ void TrendDataWidget::_rightMoveEvent()
  * 构造。
  **********************************************************************************************************************/
 TrendDataWidget::TrendDataWidget() : _timeInterval(RESOLUTION_RATIO_5_SECOND)
+  , _isHistory(false)
 {
     setTitleBarText(trs("TrendTable"));
     _trendParamInit();
@@ -464,10 +471,6 @@ TrendDataWidget::TrendDataWidget() : _timeInterval(RESOLUTION_RATIO_5_SECOND)
                              "selection-background-color: rgb(65, 105, 225, 50);"
                              "selection-color: black;"
                              "font: 10pt;}");
-
-    // 左上角的按钮（表头交叉处）
-    label = new QLabel(table);
-    label->setFixedWidth(ITEM_WIDTH);
 
     _up = new IButton();
     _up->setFixedSize(ITEM_HEIGHT, ITEM_HEIGHT);
@@ -534,8 +537,6 @@ TrendDataWidget::TrendDataWidget() : _timeInterval(RESOLUTION_RATIO_5_SECOND)
 
     setFixedSize(_maxWidth, _maxHeight);
 
-    _curDate.clear();
-
     QString prefix = "TrendTable|";
     int index = 0;
     QString ratioPrefix = prefix + "ResolutionRatio";
@@ -545,7 +546,6 @@ TrendDataWidget::TrendDataWidget() : _timeInterval(RESOLUTION_RATIO_5_SECOND)
     QString groupPrefix = prefix + "TrendGroup";
     systemConfig.getNumValue(groupPrefix, index);
     loadCurParam(index);
-    _updateHeaderDate();
 }
 
 /**************************************************************************************************
@@ -558,9 +558,6 @@ void TrendDataWidget::_loadTableTitle()
 
     table->clear();
     _displayList.clear();
-
-    label->setText(_curDate);
-    str.clear();
 
     _curDisplayParamRow = 0;
     for (int i = 0; i < _curList.length(); i ++)
@@ -762,6 +759,16 @@ void TrendDataWidget::printTrendData(unsigned startTime, unsigned endTime)
     recorderManager.addPageGenerator(gen);
 }
 
+void TrendDataWidget::setHistoryDataPath(QString path)
+{
+    _historyDataPath = path;
+}
+
+void TrendDataWidget::isHistoryDataFlag(bool flag)
+{
+    _isHistory = flag;
+}
+
 /**********************************************************************************************************************
  * 趋势参数初始化。
  **********************************************************************************************************************/
@@ -780,7 +787,6 @@ void TrendDataWidget::_trendParamInit()
     paramManager.getParams(paramIDList);
     qSort(paramIDList);
 
-    int count = 0;
     for (int i = 0; i < SUB_PARAM_NR; i ++)
     {
         ParamID paramID = paramInfo.getParamID((SubParamID)i);
@@ -832,36 +838,10 @@ void TrendDataWidget::_trendParamInit()
             break;
         default:
         {
-            ++ count;
             _orderMap.insert(paramID, (SubParamID)i);
             break;
         }
         }
-    }
-}
-
-/**********************************************************************************************************************
- * 当前日期。
- **********************************************************************************************************************/
-void TrendDataWidget::_updateHeaderDate(unsigned t)
-{
-    if (0 == t)
-    {
-        t = timeManager.getCurTime();
-    }
-
-    QString updateDate;
-    timeDate.getDate(t, updateDate, true);
-
-    if (_curDate != updateDate)
-    {
-        QTableWidgetItem *item = table->verticalHeaderItem(0);
-        if (NULL != item)
-        {
-            item->setText(updateDate);
-        }
-
-        _curDate = updateDate;
     }
 }
 
@@ -872,18 +852,25 @@ void TrendDataWidget::_getTrendData()
 {
     // 趋势数据
     IStorageBackend *backend;
-    backend = trendDataStorageManager.backend();
+    if (_isHistory)
+    {
+        backend = StorageManager::open(_historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadWrite);
+    }
+    else
+    {
+        backend = trendDataStorageManager.backend();
+    }
     int blockNum = backend->getBlockNR();
     QByteArray data;
     TrendDataSegment *dataSeg;
-    TrendDataPackage *pack;
     qDeleteAll(_trendDataPack);
     _trendDataPack.clear();
     for (int i = 0; i < blockNum; i ++)
     {
+        TrendDataPackage *pack;
         pack = new TrendDataPackage;
         data = backend->getBlockData((quint32)i);
-        dataSeg = (TrendDataSegment*)data.data();
+        dataSeg = reinterpret_cast<TrendDataSegment*> (data.data());
         pack->time = dataSeg->timestamp;
         pack->co2Baro = dataSeg->co2Baro;
         for (int j = 0; j < dataSeg->trendValueNum; j ++)
@@ -952,10 +939,10 @@ void TrendDataWidget::_dataIndex(int &startIndex, int &endIndex)
 
 void TrendDataWidget::_updateDisplayTime()
 {
-    unsigned t;
     unsigned timeInterval = TrendDataSymbol::convertValue(_timeInterval);
     if (_trendDataPack.count() != 0)
     {
+        unsigned t;
         unsigned lastTime = _trendDataPack.last()->time;
         t = lastTime - lastTime % timeInterval;
         _rightTime = t;

@@ -46,6 +46,31 @@ void TrendGraphWidget::setSubWidgetRulerLimit(SubParamID id, int down, int up)
     _waveWidget->setRulerLimit(id, down, up);
 }
 
+void TrendGraphWidget::setHistoryDataPath(QString path)
+{
+    if (_waveWidget)
+    {
+        _waveWidget->setHistoryDataPath(path);
+    }
+}
+
+void TrendGraphWidget::isHistoryDataFlag(bool flag)
+{
+    if (_waveWidget)
+    {
+        _waveWidget->isHistoryDataFlag(flag);
+    }
+}
+
+void TrendGraphWidget::showEvent(QShowEvent *event)
+{
+    PopupWidget::showEvent(event);
+
+    // 居中显示。
+    QRect r = windowManager.getMenuArea();
+    move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
+}
+
 void TrendGraphWidget::_trendGraphSetReleased()
 {
     trendGraphSetWidget.autoShow();

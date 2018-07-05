@@ -26,6 +26,7 @@
 #include "TimeDate.h"
 #include "CO2Param.h"
 #include "RecorderManager.h"
+#include "DataStorageDefine.h"
 
 #define ITEM_HEIGHT     30
 #define ITEM_WIDTH      100
@@ -75,7 +76,12 @@ class OxyCRGEventWidgetPrivate
 {
 public:
     OxyCRGEventWidgetPrivate()
-        :eventTable(NULL)
+        :eventTable(NULL), detail(NULL), type(NULL),
+          upTable(NULL), downTable(NULL), infoWidget(NULL),
+          waveWidget(NULL), eventList(NULL), moveCoordinate(NULL),
+          moveCursor(NULL), moveEvent(NULL), print(NULL), set(NULL),
+          tableWidget(NULL), chartWidget(NULL), stackLayout(NULL),
+          backend(NULL), isHistory(false)
     {
         waveInfo.id = WAVE_RESP;
         backend = eventStorageManager.backend();
@@ -151,10 +157,6 @@ public:
             }
         }
 
-        if (parseBuffer >= buf + length)
-        {
-            parseEnd = true;
-        }
         return true;
 
     }
@@ -184,6 +186,9 @@ public:
     QList<int> dataIndex;           // 当前选中事件项对应的数据所在索引
     QList<TrendGraphInfo> trendInfoList;    // 呼吸氧合数据链表
     OxyCRGWaveInfo waveInfo;                // 波形数据
+
+    bool isHistory;                        // 历史回顾标志
+    QString historyDataPath;               // 历史数据路径
 };
 
 /**************************************************************************************************
@@ -362,6 +367,24 @@ void OxyCRGEventWidget::waveWidgetCompressed(WaveformID id)
     eventWaveUpdate();
 }
 
+void OxyCRGEventWidget::setHistoryDataPath(QString path)
+{
+    d_ptr->historyDataPath = path;
+}
+
+void OxyCRGEventWidget::isHistoryDataFlag(bool flag)
+{
+    d_ptr->isHistory = flag;
+    if ((d_ptr->historyDataPath != "") && d_ptr->isHistory)
+    {
+        d_ptr->backend =  StorageManager::open(d_ptr->historyDataPath + EVENT_DATA_FILE_NAME, QIODevice::ReadWrite);
+    }
+    else
+    {
+        d_ptr->backend = eventStorageManager.backend();
+    }
+}
+
 /**************************************************************************************************
  * 显示事件。
  *************************************************************************************************/
@@ -462,6 +485,8 @@ void OxyCRGEventWidget::_printReleased()
 void OxyCRGEventWidget::_loadOxyCRGEventData()
 {
     d_ptr->dataIndex.clear();
+    d_ptr->eventTable->clearContents();
+    d_ptr->eventTable->setRowCount(0);
     int eventNum = d_ptr->backend->getBlockNR();
 
     unsigned t = 0;
@@ -545,6 +570,7 @@ OxyCRGEventWidget::OxyCRGEventWidget() : d_ptr(new OxyCRGEventWidgetPrivate())
     d_ptr->eventTable = new ITableWidget();
     d_ptr->eventTable->setColumnCount(2);
     d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
+    d_ptr->eventTable->horizontalHeader()->setEnabled(false);
     d_ptr->eventTable->verticalHeader()->setVisible(false);
     d_ptr->eventTable->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     d_ptr->eventTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

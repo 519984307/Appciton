@@ -29,6 +29,7 @@
 #include "EventPageGenerator.h"
 #include "IBPSymbol.h"
 #include "IBPParam.h"
+#include "DataStorageDefine.h"
 
 #define ITEM_HEIGHT     30
 #define ITEM_WIDTH      100
@@ -40,10 +41,13 @@ class EventReviewWindowPrivate
 {
 public:
     EventReviewWindowPrivate()
-        :trendListWidget(NULL),
-          waveWidget(NULL),
-          backend(NULL),
-          curParseIndex(-1)
+        :infoWidget(NULL), trendListWidget(NULL),
+          waveWidget(NULL), eventList(NULL), moveCoordinate(NULL),
+          moveEvent(NULL), print(NULL), set(NULL), upParam(NULL),
+          downParam(NULL), eventTable(NULL), upTable(NULL), downTable(NULL),
+          type(NULL), level(NULL), dataWidget(NULL), chartWidget(NULL),
+          stackLayout(NULL), backend(NULL), curParseIndex(-1), eventNum(0),
+          curListScroller(0), isHistory(false)
     {
         backend = eventStorageManager.backend();
     }
@@ -97,6 +101,9 @@ public:
     EventType curEventType;
     EventLevel curEventLevel;
     QList<int> dataIndex;                   // 当前选中事件项对应的数据所在索引
+
+    bool isHistory;                        // 历史回顾标志
+    QString historyDataPath;               // 历史数据路径
 };
 
 /**************************************************************************************************
@@ -518,6 +525,24 @@ void EventReviewWindow::setWaveGain(int gain)
     d_ptr->waveWidget->setGain((ECGEventGain)gain);
 }
 
+void EventReviewWindow::setHistoryDataPath(QString path)
+{
+    d_ptr->historyDataPath = path;
+}
+
+void EventReviewWindow::isHistoryDataFlag(bool flag)
+{
+    d_ptr->isHistory = flag;
+    if ((d_ptr->historyDataPath != "") && d_ptr->isHistory)
+    {
+        d_ptr->backend =  StorageManager::open(d_ptr->historyDataPath + EVENT_DATA_FILE_NAME, QIODevice::ReadWrite);
+    }
+    else
+    {
+        d_ptr->backend = eventStorageManager.backend();
+    }
+}
+
 /**************************************************************************************************
  * 显示事件。
  *************************************************************************************************/
@@ -788,6 +813,7 @@ void EventReviewWindow::_printRelease()
 void EventReviewWindow::_loadEventData()
 {
     d_ptr->dataIndex.clear();
+    d_ptr->eventTable->clearContents();
     d_ptr->eventTable->setRowCount(0);
     d_ptr->eventNum = d_ptr->backend->getBlockNR();
 

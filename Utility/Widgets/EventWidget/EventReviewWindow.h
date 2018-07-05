@@ -31,6 +31,18 @@ public:
     void setWaveSpeed(int);
     void setWaveGain(int);
 
+    /**
+     * @brief setHistoryDataPath 设置历史回顾数据的文件路径
+     * @param path 文件路径
+     */
+    void setHistoryDataPath(QString path);
+
+    /**
+     * @brief isHistoryDataFlag 此刻的趋势表是否为历史数据
+     * @param flag 标志
+     */
+    void isHistoryDataFlag(bool flag);
+
 protected:
     void showEvent(QShowEvent *e);
 

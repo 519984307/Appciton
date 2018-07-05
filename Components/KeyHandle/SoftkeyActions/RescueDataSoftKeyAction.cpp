@@ -11,6 +11,7 @@
 #include "MenuManager.h"
 #include "EventReviewWindow.h"
 #include "OxyCRGEventWidget.h"
+#include "HistoryDataReviewWidget.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -32,7 +33,7 @@ static KeyActionDesc _rescueDataKeys[] =
     KeyActionDesc("", "Delete.png",  RescueDataSoftKeyAction::clearData),
     KeyActionDesc("", "Trend.png", RescueDataSoftKeyAction::eventReview),
     KeyActionDesc("", "Trend.png", RescueDataSoftKeyAction::oxyCRGEventReview),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "Export.png",   RescueDataSoftKeyAction::historyReview),
     KeyActionDesc("", "SoftkeyArrow.png", RescueDataSoftKeyAction::exit),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_MAIN_SETUP),
 };
@@ -62,6 +63,7 @@ void RescueDataSoftKeyAction::trendReview(bool isPressed)
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
     int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
+    trendDataWidget.isHistoryDataFlag(false);
     trendDataWidget.autoShow(x, y);
 }
 
@@ -92,6 +94,7 @@ void RescueDataSoftKeyAction::summaryReview(bool isPressed)
     int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
     int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
     //summaryRescueDataWidget.autoShow(x, y);
+    trendGraphWidget.isHistoryDataFlag(false);
     trendGraphWidget.autoShow(x, y);
 }
 
@@ -173,6 +176,7 @@ void RescueDataSoftKeyAction::eventReview(bool isPressed)
     int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
     int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
     //summaryRescueDataWidget.autoShow(x, y);
+    eventReviewWindow.isHistoryDataFlag(false);
     eventReviewWindow.autoShow(x, y);
 
 }
@@ -200,7 +204,33 @@ void RescueDataSoftKeyAction::oxyCRGEventReview(bool isPressed)
     int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
     int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
     //summaryRescueDataWidget.autoShow(x, y);
+    oxyCRGEventWidget.isHistoryDataFlag(false);
     oxyCRGEventWidget.autoShow(x, y);
+}
+
+void RescueDataSoftKeyAction::historyReview(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+
+    bool isVisible = historyDataReviewWidget.isVisible();
+    while (NULL != QApplication::activeModalWidget())
+    {
+        QApplication::activeModalWidget()->hide();
+        menuManager.close();
+    }
+
+    if (isVisible)
+    {
+        return;
+    }
+
+    QRect r = windowManager.getMenuArea();
+    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
+    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
+    historyDataReviewWidget.autoShow(x, y);
 }
 
 /***************************************************************************************************

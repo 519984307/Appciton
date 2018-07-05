@@ -240,6 +240,8 @@ SOURCES +=                                                                      
     Components/PatientData/IMoveButton.cpp                                      \
     Components/PatientData/TrendGraphSetWidget.cpp                              \
     Components/PatientData/TrendPrintWidget.cpp                                 \
+    Components/PatientData/HistoryDataReviewWidget.cpp                          \
+    Components/PatientData/HistoryDataSelWidget.cpp                             \
     Components/TimeManager/DateTimeWidget.cpp                                   \
     Components/TimeManager/ElapseTimeWidget.cpp                                 \
     Components/TimeManager/TimeManager.cpp                                      \
@@ -679,6 +681,8 @@ HEADERS +=                                                                      
     Components/PatientData/TrendGraphSetWidget.h                                \
     Components/PatientData/EventDataSymbol.h                                    \
     Components/PatientData/TrendPrintWidget.h                                   \
+    Components/PatientData/HistoryDataReviewWidget.h                            \
+    Components/PatientData/HistoryDataSelWidget.h                               \
     Components/PatientManager/PatientManager.h                                  \
     Components/PatientManager/PatientBarWidget.h                                \
     Components/PatientManager/PatientDefine.h                                   \
