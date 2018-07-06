@@ -38,10 +38,10 @@ public:
     void setHistoryDataPath(QString path);
 
     /**
-     * @brief isHistoryDataFlag 此刻的趋势表是否为历史数据
+     * @brief isHistoryData 此刻的趋势表是否为历史数据
      * @param flag 标志
      */
-    void isHistoryDataFlag(bool flag);
+    void isHistoryData(bool flag);
 
 protected:
     void showEvent(QShowEvent *e);

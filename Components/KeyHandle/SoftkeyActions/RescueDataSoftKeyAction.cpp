@@ -63,7 +63,7 @@ void RescueDataSoftKeyAction::trendReview(bool isPressed)
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
     int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-    trendDataWidget.isHistoryDataFlag(false);
+    trendDataWidget.isHistoryData(false);
     trendDataWidget.autoShow(x, y);
 }
 
@@ -94,7 +94,7 @@ void RescueDataSoftKeyAction::summaryReview(bool isPressed)
     int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
     int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
     //summaryRescueDataWidget.autoShow(x, y);
-    trendGraphWidget.isHistoryDataFlag(false);
+    trendGraphWidget.isHistoryData(false);
     trendGraphWidget.autoShow(x, y);
 }
 
@@ -176,7 +176,7 @@ void RescueDataSoftKeyAction::eventReview(bool isPressed)
     int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
     int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
     //summaryRescueDataWidget.autoShow(x, y);
-    eventReviewWindow.isHistoryDataFlag(false);
+    eventReviewWindow.isHistoryData(false);
     eventReviewWindow.autoShow(x, y);
 
 }
@@ -204,7 +204,7 @@ void RescueDataSoftKeyAction::oxyCRGEventReview(bool isPressed)
     int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
     int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
     //summaryRescueDataWidget.autoShow(x, y);
-    oxyCRGEventWidget.isHistoryDataFlag(false);
+    oxyCRGEventWidget.isHistoryData(false);
     oxyCRGEventWidget.autoShow(x, y);
 }
 

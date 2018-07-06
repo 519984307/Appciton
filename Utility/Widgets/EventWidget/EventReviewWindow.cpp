@@ -530,12 +530,18 @@ void EventReviewWindow::setHistoryDataPath(QString path)
     d_ptr->historyDataPath = path;
 }
 
-void EventReviewWindow::isHistoryDataFlag(bool flag)
+void EventReviewWindow::isHistoryData(bool flag)
 {
+    // 动态内存释放
+    if (d_ptr->isHistory)
+    {
+        delete d_ptr->backend;
+    }
+
     d_ptr->isHistory = flag;
     if ((d_ptr->historyDataPath != "") && d_ptr->isHistory)
     {
-        d_ptr->backend =  StorageManager::open(d_ptr->historyDataPath + EVENT_DATA_FILE_NAME, QIODevice::ReadWrite);
+        d_ptr->backend =  StorageManager::open(d_ptr->historyDataPath + EVENT_DATA_FILE_NAME, QIODevice::ReadOnly);
     }
     else
     {

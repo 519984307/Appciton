@@ -592,7 +592,7 @@ void TrendWaveWidget::setHistoryDataPath(QString path)
     _historyDataPath = path;
 }
 
-void TrendWaveWidget::isHistoryDataFlag(bool flag)
+void TrendWaveWidget::isHistoryData(bool flag)
 {
     _isHistory = flag;
 }
@@ -854,6 +854,12 @@ void TrendWaveWidget::_getTrendData()
         _trendDataPack.append(pack);
     }
     _calculationPage();
+
+    // 动态内存释放
+    if (_isHistory)
+    {
+        delete backend;
+    }
 }
 
 void TrendWaveWidget::_initWaveSubWidget()

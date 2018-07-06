@@ -48,28 +48,28 @@ void HistoryDataReviewWidget::_historyTimeReleased()
 void HistoryDataReviewWidget::_trendTableBtnReleased()
 {
     trendDataWidget.setHistoryDataPath(_selHistoryDataPath);
-    trendDataWidget.isHistoryDataFlag(true);
+    trendDataWidget.isHistoryData(true);
     trendDataWidget.autoShow();
 }
 
 void HistoryDataReviewWidget::_trendGraphBtnReleased()
 {
     trendGraphWidget.setHistoryDataPath(_selHistoryDataPath);
-    trendGraphWidget.isHistoryDataFlag(true);
+    trendGraphWidget.isHistoryData(true);
     trendGraphWidget.autoShow();
 }
 
 void HistoryDataReviewWidget::_eventReviewBtnReleased()
 {
     eventReviewWindow.setHistoryDataPath(_selHistoryDataPath);
-    eventReviewWindow.isHistoryDataFlag(true);
+    eventReviewWindow.isHistoryData(true);
     eventReviewWindow.autoShow();
 }
 
 void HistoryDataReviewWidget::_oxyCRGEventBtnReleased()
 {
     oxyCRGEventWidget.setHistoryDataPath(_selHistoryDataPath);
-    oxyCRGEventWidget.isHistoryDataFlag(true);
+    oxyCRGEventWidget.isHistoryData(true);
     oxyCRGEventWidget.autoShow();
 }
 

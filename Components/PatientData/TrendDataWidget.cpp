@@ -764,7 +764,7 @@ void TrendDataWidget::setHistoryDataPath(QString path)
     _historyDataPath = path;
 }
 
-void TrendDataWidget::isHistoryDataFlag(bool flag)
+void TrendDataWidget::isHistoryData(bool flag)
 {
     _isHistory = flag;
 }
@@ -880,6 +880,12 @@ void TrendDataWidget::_getTrendData()
             pack->alarmFlag = dataSeg->eventFlag;
         }
         _trendDataPack.append(pack);
+    }
+
+    // 动态内存释放
+    if (_isHistory)
+    {
+        delete backend;
     }
 }
 

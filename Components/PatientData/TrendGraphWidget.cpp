@@ -54,11 +54,11 @@ void TrendGraphWidget::setHistoryDataPath(QString path)
     }
 }
 
-void TrendGraphWidget::isHistoryDataFlag(bool flag)
+void TrendGraphWidget::isHistoryData(bool flag)
 {
     if (_waveWidget)
     {
-        _waveWidget->isHistoryDataFlag(flag);
+        _waveWidget->isHistoryData(flag);
     }
 }
 
