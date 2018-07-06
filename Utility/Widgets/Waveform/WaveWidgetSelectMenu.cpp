@@ -32,7 +32,16 @@ void WaveWidgetSelectMenu::_replaceListSlot(int index)
     }
 
     ecgParam.setLeadMode3DisplayLead(_replaceWaveforms[index]);
-    windowManager.replaceWaveform(_waveformName, _replaceWaveforms[index]);
+
+    if(windowManager.getUFaceType() == UFACE_MONITOR_BIGFONT)
+    {
+        windowManager.replacebigWaveform(_waveformName, _replaceWaveforms[index]);
+    }
+    else
+    {
+        windowManager.replaceWaveform(_waveformName, _replaceWaveforms[index]);
+    }
+
     _waveformName = _replaceWaveforms[index];
     QTimer::singleShot(0, this, SLOT(_loadWaveformsSlot()));
 }
@@ -88,7 +97,7 @@ void WaveWidgetSelectMenu::_loadWaveforms(void)
         _insertWaveformTitles.removeFirst();
     }
 
-    int index = -1;
+
     if (ecgParam.getLeadMode() == ECG_LEAD_MODE_3)
     {
         QStringList ecgLead3WaveName;
@@ -96,7 +105,7 @@ void WaveWidgetSelectMenu::_loadWaveforms(void)
         ecgLead3WaveName << ecgParam.getWaveWidgetName(ECG_LEAD_I);
         ecgLead3WaveName << ecgParam.getWaveWidgetName(ECG_LEAD_II);
         ecgLead3WaveName << ecgParam.getWaveWidgetName(ECG_LEAD_III);
-
+        int index = -1;
         for (index = 0; index <= 2; ++index)
         {
             if (-1 != displayedWaveform.indexOf(ecgLead3WaveName.at(index)))
@@ -108,10 +117,9 @@ void WaveWidgetSelectMenu::_loadWaveforms(void)
         // 只显示一道ECG
         if (index <= 2)
         {
-            int pos = -1;
             for (int i = 0; i <= 2; ++i)
             {
-                pos = _insertWaveforms.indexOf(ecgLead3WaveName.at(i));
+                int pos = _insertWaveforms.indexOf(ecgLead3WaveName.at(i));
                 if (-1 != pos)
                 {
                     _insertWaveforms.removeAt(pos);
@@ -166,9 +174,9 @@ void WaveWidgetSelectMenu::_loadWaveforms(void)
     }
 
     // 排除已经显示的波形。
-    int pos = -1;
     for (int i = 0; i < displayedWaveform.size(); i++)
     {
+        int pos = -1;
         if ((pos = _replaceWaveforms.indexOf(displayedWaveform[i])) != -1)
         {
             if (_replaceWaveforms[pos] != _waveformName)  // 不移除自己。
