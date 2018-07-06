@@ -316,7 +316,7 @@ int RingBuff<T>::copy(int index, T *buf, int len) const
 
 /*
  * 移除数据元素
- * count: 移出数据元素的个数
+ * count: 移出数据元素的个数  (旧数据元素)
  * 返回值: 实际移出数据元素的个数
  */
 template<typename T>

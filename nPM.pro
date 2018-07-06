@@ -455,6 +455,7 @@ SOURCES +=                                                                      
     Providers/BLMCO2Provider/BLMCO2Provider.cpp                                 \
     Providers/WitleafProvider/WitleafProvider.cpp                               \
     Providers/MasimoProvider/MasimoProvider.cpp                                 \
+    Providers/NellcorProvider/NellcorProvider.cpp                               \
     Providers/TE3Provider/TE3Provider.cpp                                       \
     Providers/E5Provider/E5Provider.cpp                                         \
     Providers/T5Provider/T5Provider.cpp                                         \
@@ -937,6 +938,7 @@ HEADERS +=                                                                      
     Providers/BLMCO2Provider/BLMCO2Provider.h                                   \
     Providers/WitleafProvider/WitleafProvider.h                                 \
     Providers/MasimoProvider/MasimoProvider.h                                   \
+    Providers/NellcorProvider/NellcorProvider.h                                 \
     Providers/TE3Provider/TE3Provider.h                                         \
     Providers/E5Provider/E5Provider.h                                           \
     Providers/T5Provider/T5Provider.h                                           \
@@ -1048,6 +1050,7 @@ DEPENDPATH +=                                                                   
     Providers/BLMCO2Provider                                                    \
     Providers/WitleafProvider                                                   \
     Providers/MasimoProvider                                                    \
+    Providers/NellcorProvider                                                    \
     Providers/SuntechProvider                                                   \
     Providers/BLMTEMPProvider                                                   \
     Providers/T5Provider                                                        \
@@ -1178,6 +1181,7 @@ INCLUDEPATH +=                                                                  
     Providers/BLMCO2Provider                                                    \
     Providers/WitleafProvider                                                   \
     Providers/MasimoProvider                                                    \
+    Providers/NellcorProvider                                                    \
     Providers/SuntechProvider                                                   \
     Providers/BLMTEMPProvider                                                   \
     Providers/T5Provider                                                        \
