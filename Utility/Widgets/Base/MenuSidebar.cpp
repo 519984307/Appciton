@@ -95,11 +95,6 @@ MenuSidebar::MenuSidebar(QWidget *parent)
     pal.setColor(QPalette::Window, bgColor);
     pal.setColor(QPalette::Button, bgColor);
     d->widget->setPalette(pal);
-
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setWidgetResizable(true);
-    setFrameStyle(QFrame::NoFrame);
 }
 
 MenuSidebar::~MenuSidebar()

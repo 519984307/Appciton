@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/6
+ **/
+
 #pragma once
 #include "LanguageManager.h"
 
@@ -44,7 +54,7 @@ public:
         return symbol[t];
     }
 
-    static const QString &localeSymbol(UnitType t)
+    static QString localeSymbol(UnitType t)
     {
         return trs(getSymbol(t));
     }
@@ -57,98 +67,98 @@ public:
     // 单位换算。
     template<typename T2>
     static inline QString convert(UnitType destUnit, UnitType srcUnit,
-                const T2 &srcVal, const float &baro = 1013)
+                                  const T2 &srcVal, const float &baro = 1013)
     {
         QString destVal = QString::number(srcVal);
 
         // % <---> mmHg
-        if((destUnit == UNIT_PERCENT) && (srcUnit == UNIT_MMHG))
+        if ((destUnit == UNIT_PERCENT) && (srcUnit == UNIT_MMHG))
         {
-            destVal.sprintf("%.1f", srcVal / baro * 1000 / 7.5);
+            destVal = QString::number(srcVal / baro * 1000 / 7.5, 'f', 1);
         }
-        else if((destUnit == UNIT_MMHG) && (srcUnit == UNIT_PERCENT))
+        else if ((destUnit == UNIT_MMHG) && (srcUnit == UNIT_PERCENT))
         {
-            destVal = QString::number((int)(srcVal * baro / 1000 * 7.5 + 0.5));
+            destVal = QString::number(static_cast<int>(srcVal * baro / 1000 * 7.5 + 0.5));
         }
 
         // kPa <---> mmHg
-        else if((destUnit == UNIT_KPA) && (srcUnit == UNIT_MMHG))
+        else if ((destUnit == UNIT_KPA) && (srcUnit == UNIT_MMHG))
         {
             destVal = QString::number(srcVal / 7.5, 'f', 1);
         }
-        else if((destUnit == UNIT_MMHG) && (srcUnit == UNIT_KPA))
+        else if ((destUnit == UNIT_MMHG) && (srcUnit == UNIT_KPA))
         {
-            destVal = QString::number((int)(srcVal * 7.5 + 0.5));
+            destVal = QString::number(static_cast<int>(srcVal * 7.5 + 0.5));
         }
 
         // % <---> kPa
-        else if((destUnit == UNIT_PERCENT) && (srcUnit == UNIT_KPA))
+        else if ((destUnit == UNIT_PERCENT) && (srcUnit == UNIT_KPA))
         {
-            destVal.sprintf("%.1f", srcVal / baro * 1000);
+            destVal = QString::number(srcVal / baro * 1000, 'f', 1);
         }
-        else if((destUnit == UNIT_KPA) && (srcUnit == UNIT_PERCENT))
+        else if ((destUnit == UNIT_KPA) && (srcUnit == UNIT_PERCENT))
         {
             destVal = QString::number(srcVal * baro / 1000, 'f', 1);
         }
 
         // inch <---> cm
-        else if((destUnit == UNIT_INCH) && (srcUnit == UNIT_CM))
+        else if ((destUnit == UNIT_INCH) && (srcUnit == UNIT_CM))
         {
-            destVal.sprintf("%.1f", srcVal / 2.54);
+            destVal = QString::number(srcVal / 2.54, 'f', 1);
         }
-        else if((destUnit == UNIT_CM) && (srcUnit == UNIT_INCH))
+        else if ((destUnit == UNIT_CM) && (srcUnit == UNIT_INCH))
         {
-            destVal.sprintf("%.1f", srcVal * 2.54);
+            destVal = QString::number(srcVal * 2.54, 'f', 1);
         }
 
         // inch <---> mm
-        else if((destUnit == UNIT_INCH) && (srcUnit == UNIT_MM))
+        else if ((destUnit == UNIT_INCH) && (srcUnit == UNIT_MM))
         {
-            destVal.sprintf("%.1f", srcVal / 25.4);
+            destVal = QString::number(srcVal / 25.4, 'f', 1);
         }
-        else if((destUnit == UNIT_MM) && (srcUnit == UNIT_INCH))
+        else if ((destUnit == UNIT_MM) && (srcUnit == UNIT_INCH))
         {
-            destVal.sprintf("%.1f", srcVal * 25.4);
+            destVal = QString::number(srcVal * 25.4, 'f', 1);
         }
 
         // cm <---> mm
-        else if((destUnit == UNIT_CM) && (srcUnit == UNIT_MM))
+        else if ((destUnit == UNIT_CM) && (srcUnit == UNIT_MM))
         {
-            destVal.sprintf("%.1f", srcVal / 10.0);
+            destVal = QString::number(srcVal / 10.0, 'f', 1);
         }
-        else if((destUnit == UNIT_MM) && (srcUnit == UNIT_CM))
+        else if ((destUnit == UNIT_MM) && (srcUnit == UNIT_CM))
         {
-            destVal = QString::number((int)srcVal * 10);
+            destVal = QString::number(static_cast<int>(srcVal * 10));
         }
 
         // lb <---> kg
-        else if((destUnit == UNIT_LB) && (srcUnit == UNIT_KG))
+        else if ((destUnit == UNIT_LB) && (srcUnit == UNIT_KG))
         {
-            destVal.sprintf("%.1f", srcVal * 2.20462);
+            destVal = QString::number(srcVal * 2.20462, 'f', 1);
         }
-        else if((destUnit == UNIT_KG) && (srcUnit == UNIT_LB))
+        else if ((destUnit == UNIT_KG) && (srcUnit == UNIT_LB))
         {
-            destVal.sprintf("%.1f", srcVal / 2.20462);
+            destVal = QString::number(srcVal / 2.20462, 'f', 1);
         }
 
         // ℉ <--->℃
-        else if((destUnit == UNIT_TC) && (srcUnit == UNIT_TF))
+        else if ((destUnit == UNIT_TC) && (srcUnit == UNIT_TF))
         {
-            destVal.sprintf("%.1f", (srcVal - 32.0) / 1.8);
+            destVal = QString::number((srcVal - 32.0) / 1.8, 'f', 1);
         }
-        else if((destUnit == UNIT_TF) && (srcUnit == UNIT_TC))
+        else if ((destUnit == UNIT_TF) && (srcUnit == UNIT_TC))
         {
-            destVal.sprintf("%.1f", 1.8 * srcVal + 32);
+            destVal = QString::number(1.8 * srcVal + 32, 'f', 1);
         }
 
         // ℉D <--->℃D
-        else if((destUnit == UNIT_TDF) && (srcUnit == UNIT_TDC))
+        else if ((destUnit == UNIT_TDF) && (srcUnit == UNIT_TDC))
         {
-            destVal.sprintf("%.1f", 1.8 * srcVal);
+            destVal = QString::number(1.8 * srcVal, 'f', 1);
         }
-        else if((destUnit == UNIT_TDC) && (srcUnit == UNIT_TDF))
+        else if ((destUnit == UNIT_TDC) && (srcUnit == UNIT_TDF))
         {
-            destVal.sprintf("%.1f", srcVal / 1.8);
+            destVal = QString::number(srcVal / 1.8, 'f', 1);
         }
 
         return destVal;

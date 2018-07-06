@@ -101,11 +101,18 @@ SOURCES +=                                                                      
     Utility/FontManager/FontManager.cpp                                         \
     Utility/ColorManager/ColorManager.cpp                                       \
     Utility/Widgets/Base/ShadowEffect.cpp                                       \
+    Utility/Widgets/Base/ThemeManager.cpp                                       \
     Utility/Widgets/Base/Button.cpp                                             \
     Utility/Widgets/Base/Window.cpp                                             \
+    Utility/Widgets/Base/Frame.cpp                                              \
+    Utility/Widgets/Base/FrameItem.cpp                                          \
+    Utility/Widgets/Base/ComboBox.cpp                                           \
+    Utility/Widgets/Base/PopupList.cpp                                          \
+    Utility/Widgets/Base/PopupListItem.cpp                                      \
     Utility/Widgets/Base/MenuWindow.cpp                                         \
     Utility/Widgets/Base/MenuSidebar.cpp                                        \
     Utility/Widgets/Base/MenuSidebarItem.cpp                                    \
+    Utility/Widgets/Base/MenuContent.cpp                                        \
     Utility/Widgets/Base/ScrollArea.cpp                                         \
     Utility/Widgets/Base/FloatScrollBar.cpp                                     \
     Utility/Widgets/Base/KineticScroller/qkineticscroller.cpp                   \
@@ -388,6 +395,7 @@ SOURCES +=                                                                      
     Params/ECGParam/ECGWidgets/ECGPVCSTrendWidget.cpp                           \
     Params/ECGParam/ECGWidgets/ECGSTTrendWidget.cpp                             \
     Params/ECGParam/ECGWidgets/ECGMenu.cpp                                      \
+    Params/ECGParam/ECGWidgets/ECGMenuContent.cpp                               \
     Params/CO2Param/CO2Param.cpp                                                \
     Params/CO2Param/CO2Alarm.cpp                                                \
     Params/CO2Param/CO2Widgets/CO2WaveWidget.cpp                                \
@@ -523,11 +531,18 @@ HEADERS +=                                                                      
     Utility/FontManager/FontManager.h                                           \
     Utility/ColorManager/ColorManager.h                                         \
     Utility/Widgets/Base/ShadowEffect.h                                         \
+    Utility/Widgets/Base/ThemeManager.h                                         \
     Utility/Widgets/Base/Button.h                                               \
     Utility/Widgets/Base/Window.h                                               \
+    Utility/Widgets/Base/Frame.h                                                \
+    Utility/Widgets/Base/FrameItem.h                                            \
+    Utility/Widgets/Base/ComboBox.h                                             \
+    Utility/Widgets/Base/PopupList.h                                            \
+    Utility/Widgets/Base/PopupListItem.h                                        \
     Utility/Widgets/Base/MenuWindow.h                                           \
     Utility/Widgets/Base/MenuSidebar.h                                          \
     Utility/Widgets/Base/MenuSidebarItem.h                                      \
+    Utility/Widgets/Base/MenuContent.h                                          \
     Utility/Widgets/Base/ScrollArea.h                                           \
     Utility/Widgets/Base/FloatScrollBar.h                                       \
     Utility/Widgets/Base/KineticScroller/qkineticscroller.h                     \
@@ -844,6 +859,7 @@ HEADERS +=                                                                      
     Params/ECGParam/ECGWidgets/ECGPVCSTrendWidget.h                             \
     Params/ECGParam/ECGWidgets/ECGSTTrendWidget.h                               \
     Params/ECGParam/ECGWidgets/ECGMenu.h                                        \
+    Params/ECGParam/ECGWidgets/ECGMenuContent.h                                 \
     Params/CO2Param/CO2Param.h                                                  \
     Params/CO2Param/CO2Alarm.h                                                  \
     Params/CO2Param/CO2Define.h                                                 \

@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/6
+ **/
+
+
 #include "LanguageManager.h"
 #include "IConfig.h"
 
@@ -18,8 +29,7 @@ LanguageManager::LanguageManager()
     _curLanguage = (LanguageName) langNo;
 
     // 获取语言文件的名称。
-    QString language;
-    language.sprintf("Local|Language|Opt%d", langNo);
+    QString language = QString("Local|Language|Opt%1").arg(langNo);
 
     currentConfig.getStrAttr(language, "XmlFileName", language);
     QString path =  LOCALE_FILE_PATH + language + ".xml";
@@ -37,7 +47,6 @@ LanguageManager::LanguageManager()
  *************************************************************************************************/
 LanguageManager::~LanguageManager()
 {
-
 }
 
 /**************************************************************************************************
@@ -46,7 +55,7 @@ LanguageManager::~LanguageManager()
  *      id：待翻译的字符串；
  * 返回值：翻译好的字符串。
  *************************************************************************************************/
-const QString &LanguageManager::translate(const char *id)
+QString LanguageManager::translate(const char *id)
 {
     static QString retNull("null");
     if (NULL == id)
@@ -64,7 +73,6 @@ const QString &LanguageManager::translate(const char *id)
         if (!ret)
         {
             retNull = idStr;
-            //debug("@@\t%s\t@@", id.toAscii().data());
             return retNull;
         }
         it = _languageMap.insert(idStr, value);
@@ -73,7 +81,7 @@ const QString &LanguageManager::translate(const char *id)
     return it.value();
 }
 
-const QString &LanguageManager::translate(const QString &id)
+QString LanguageManager::translate(const QString &id)
 {
     static QString retNull("null");
 
@@ -85,7 +93,6 @@ const QString &LanguageManager::translate(const QString &id)
         if (!ret)
         {
             retNull = id;
-            //debug("@@\t%s\t@@", id.toAscii().data());
             return retNull;
         }
         it = _languageMap.insert(id, value);
@@ -100,7 +107,7 @@ const QString &LanguageManager::translate(const QString &id)
  *      id：待翻译的字符串；
  * 返回值：翻译好的字符串。
  *************************************************************************************************/
-const QString &LanguageManager::translatePrint(const char *id)
+QString LanguageManager::translatePrint(const char *id)
 {
     QString idStr = QString::fromLatin1(id);
     LanguageMap::iterator it = _printLanguageMap.find(idStr);
@@ -119,7 +126,7 @@ const QString &LanguageManager::translatePrint(const char *id)
     return it.value();
 }
 
-const QString &LanguageManager::translatePrint(const QString &id)
+QString LanguageManager::translatePrint(const QString &id)
 {
     LanguageMap::iterator it = _printLanguageMap.find(id);
     if (_printLanguageMap.end() == it)
@@ -156,8 +163,7 @@ void LanguageManager::reload(int index)
         return;
     }
 
-    QString language;
-    language.sprintf("Local|Language|Opt%d", index);
+    QString language = QString("Local|Language|Opt%1").arg(index);
 
     bool ret = currentConfig.getStrAttr(language, "XmlFileName", language);
     if (!ret)
@@ -175,11 +181,10 @@ void LanguageManager::reload(int index)
  **************************************************************************************************/
 QString LanguageManager::getCurVoicePromptFolderName() const
 {
-    static const char * voicePromptStrings [Language_NR] = {
+    static const char *voicePromptStrings [Language_NR] =
+    {
         "English",
         "ChinaMainland",
-        //"ChinaTaiwan",
-        //"ChinaHongKong",
     };
     return voicePromptStrings[_curLanguage];
 }

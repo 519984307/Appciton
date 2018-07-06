@@ -1,6 +1,17 @@
-﻿#include <QApplication>
+﻿/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/3
+ **/
+
+
 #include "SoftkeyActionBase.h"
 #include "SoftKeyManager.h"
+#include <QApplication>
 #include "SoftKeyWidget.h"
 #include "ECGParam.h"
 #include "ECGMenu.h"
@@ -21,6 +32,10 @@
 #include "Window.h"
 #include "MenuSidebar.h"
 #include "MenuWindow.h"
+#include "Frame.h"
+#include "FrameItem.h"
+#include "ComboBox.h"
+#include "ECGMenuContent.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -34,7 +49,8 @@ static KeyActionDesc _baseKeys[] =
 //    KeyActionDesc("", "PatientInfo.png",   SoftkeyActionBase::patientInfo),
 //    KeyActionDesc("", "CO2Disable.png",    SoftkeyActionBase::co2OnOff),
 //    KeyActionDesc("", "SoftkeyArrow.png",  SoftkeyActionBase::nextPage),
-    KeyActionDesc("", "PatientInfo.png",   SoftkeyActionBase::patientInfo, SOFT_BASE_KEY_NR, true, QColor(143, 31, 132)),
+    KeyActionDesc("", "PatientInfo.png",   SoftkeyActionBase::patientInfo,
+    SOFT_BASE_KEY_NR, true, QColor(143, 31, 132)),
     KeyActionDesc("", "PatientNew.png",   SoftkeyActionBase::patientNew, SOFT_BASE_KEY_NR, true, QColor(143, 31, 132)),
     KeyActionDesc("", "previous-disable.png",  SoftkeyActionBase::previousPage),
     KeyActionDesc("", "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
@@ -57,8 +73,8 @@ void SoftkeyActionBase::ecgLeadChange(bool isPressed)
         return;
     }
 
-//co2Param.setConnected(false);
-//return;
+// co2Param.setConnected(false);
+// return;
     ecgParam.autoSetCalcLead();
 }
 
@@ -72,31 +88,41 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
         return;
     }
 
-    //Window testWin;
-    //testWin.setFont(fontManager.textFont(17));
-    //testWin.setWindowTitle("Test Window");
-    //testWin.resize(640, 480);
+    // Window testWin;
+    // testWin.setFont(fontManager.textFont(17));
+    // testWin.setWindowTitle("Test Window");
+    // testWin.resize(640, 480);
 
-    //QHBoxLayout *layout = new QHBoxLayout;
+    // QHBoxLayout *layout = new QHBoxLayout;
 
-    //MenuSidebar *sideBar = new MenuSidebar();
-    //sideBar->addItem("ECG");
-    //sideBar->addItem("SPO2");
-    //sideBar->addItem("RESP");
-    //sideBar->addItem("NIBP");
-    //sideBar->addItem("TEMP");
-    //sideBar->addItem("AG");
-    //sideBar->addItem("IBP");
-    //sideBar->setFixedWidth(180);
-    //layout->addWidget(sideBar);
-    //layout->addStretch();
-    //testWin.setWindowLayout(layout);
-    //testWin.setVisible(true);
+    // MenuSidebar *sideBar = new MenuSidebar();
+    // sideBar->addItem("ECG");
+    // sideBar->addItem("SPO2");
+    // sideBar->addItem("RESP");
+    // sideBar->addItem("NIBP");
+    // sideBar->addItem("TEMP");
+    // sideBar->addItem("AG");
+    // sideBar->addItem("IBP");
+    // sideBar->setFixedWidth(180);
+    // layout->addWidget(sideBar);
+    // layout->addStretch();
+    // testWin.setWindowLayout(layout);
+    // testWin.setVisible(true);
 
-    //testWin.exec();
+    // testWin.exec();
 
     MenuWindow win;
-    win.addMenuGroup("ECG");
+
+//    Frame *f = new Frame();
+//    f->setFont(fontManager.textFont(20));
+//    f->addItem(new FrameItem("LeadMode", f));
+//    f->addItem(new FrameItem("Bandwidth", f));
+//    f->addItem(new FrameItem("FilterMode", f));
+//    f->addItem(new FrameItem("SweepSpeed", f));
+//    f->addItem(new FrameItem("Pacer", f));
+//    f->addItem(new FrameItem("AlarmSetting", f));
+
+    win.addMenuContent(new ECGMenuContent);
     win.addMenuGroup("SPO2");
     win.addMenuGroup("RESP");
     win.addMenuGroup("NIBP");
@@ -112,10 +138,10 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     win.addMenuGroup("Configuration");
     win.exec();
 
-     return;
+    return;
 
-//co 2Param.setConnected(true);
-//return;
+// co 2Param.setConnected(true);
+// return;
 
     bool isVisible = codeMarkerWidget.isVisible();
     while (NULL != QApplication::activeModalWidget())
@@ -284,8 +310,8 @@ void SoftkeyActionBase::patientNew(bool isPressed)
         return;
     }
 
-    //创建新病人
-    //patientMenu.createPatient();
+    // 创建新病人
+    // patientMenu.createPatient();
 
 //    QRect r = windowManager.getMenuArea();
 //    int x = r.x() + (r.width() - patientMainMenu.width()) / 2;
@@ -343,7 +369,7 @@ KeyActionDesc *SoftkeyActionBase::getActionDesc(int index)
         }
     }
     else if (index == SOFT_BASE_KEY_NEXT_PAGE)
-        {
+    {
         if (softkeyManager.returnPage() == 1)
         {
             _baseKeys[index].iconPath = "next-disable.png";
@@ -371,8 +397,8 @@ SoftKeyActionType SoftkeyActionBase::getType(void)
  * 构造。
  **************************************************************************************************/
 SoftkeyActionBase::SoftkeyActionBase(SoftKeyActionType t)
+    :_type(t)
 {
-    _type = t;
 }
 
 /***************************************************************************************************
