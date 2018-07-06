@@ -530,7 +530,7 @@ void EventReviewWindow::setHistoryDataPath(QString path)
     d_ptr->historyDataPath = path;
 }
 
-void EventReviewWindow::isHistoryData(bool flag)
+void EventReviewWindow::setHistoryData(bool flag)
 {
     // 动态内存释放
     if (d_ptr->isHistory)

@@ -84,10 +84,10 @@ public:
     void setHistoryDataPath(QString path);
 
     /**
-     * @brief isHistoryData 此刻的趋势表是否为历史数据
+     * @brief setHistoryData 此刻的趋势表是否为历史数据
      * @param flag 标志
      */
-    void isHistoryData(bool flag);
+    void setHistoryData(bool flag);
 
 public slots:
     /**

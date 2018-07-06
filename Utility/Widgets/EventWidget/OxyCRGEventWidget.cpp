@@ -372,7 +372,7 @@ void OxyCRGEventWidget::setHistoryDataPath(QString path)
     d_ptr->historyDataPath = path;
 }
 
-void OxyCRGEventWidget::isHistoryData(bool flag)
+void OxyCRGEventWidget::setHistoryData(bool flag)
 {
     // 动态内存释放
     if (d_ptr->isHistory)

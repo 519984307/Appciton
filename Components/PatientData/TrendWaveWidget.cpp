@@ -592,7 +592,7 @@ void TrendWaveWidget::setHistoryDataPath(QString path)
     _historyDataPath = path;
 }
 
-void TrendWaveWidget::isHistoryData(bool flag)
+void TrendWaveWidget::setHistoryData(bool flag)
 {
     _isHistory = flag;
 }

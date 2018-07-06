@@ -764,7 +764,7 @@ void TrendDataWidget::setHistoryDataPath(QString path)
     _historyDataPath = path;
 }
 
-void TrendDataWidget::isHistoryData(bool flag)
+void TrendDataWidget::setHistoryData(bool flag)
 {
     _isHistory = flag;
 }
