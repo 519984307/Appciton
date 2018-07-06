@@ -6,6 +6,7 @@
 class NellcorSetProviderPrivate
 {
 public:
+#if 0
     union DataField{
         unsigned char dataField[31];
         struct{
@@ -26,7 +27,7 @@ public:
             unsigned char etx; //固定尾 0x03
         }s;
     };
-
+#endif
     union OxismartReport{
         unsigned char oxismartReport[8];
         struct{
@@ -281,7 +282,15 @@ void NellcorSetProvider::handlePacket(unsigned char *data, int /*len*/)
     {
     case 'j':  //oxismart 报告 包含spo2、pr、状态等相关信息
         NellcorSetProviderPrivate::OxismartReport *oxismartInfo = (NellcorSetProviderPrivate::OxismartReport *)data;
-        temp = oxismartInfo->s.spo2Value;
+        temp = oxismartInfo->s.key;
+        if(temp){}
+        temp = oxismartInfo->s.len;if(temp){}
+        temp = oxismartInfo->s.rateBpmValueNinth;if(temp){}
+        temp = oxismartInfo->s.rateBpmValueTopEight;if(temp){}
+        temp = oxismartInfo->s.rateDispType;if(temp){}
+        temp = oxismartInfo->s.satDispType;if(temp){}
+        temp = oxismartInfo->s.statusAndAlarmWord;if(temp){}
+        temp = oxismartInfo->s.spo2Value;if(temp){}
         spo2Param.setSPO2(temp);
         break;
     }
