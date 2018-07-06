@@ -140,6 +140,19 @@ void AlarmStateMachine::switchState(ALarmStateType type)
     _currentState->enter();
 }
 
+void AlarmStateMachine::alarmPause()
+{
+
+}
+
+void AlarmStateMachine::alarmReset()
+{
+    if (NULL != _currentState)
+    {
+        _currentState->handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_PRESSED_LONG_TIME, 0, 0);
+    }
+}
+
 /**************************************************************************************************
  * 事件处理。
  *************************************************************************************************/

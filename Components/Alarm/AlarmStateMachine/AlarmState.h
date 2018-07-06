@@ -8,7 +8,7 @@ class AlarmState : public QObject
     Q_OBJECT
 
 public:
-    AlarmState(ALarmStateType type = ALARM_STATE_NONE);
+    explicit AlarmState(ALarmStateType type = ALARM_STATE_NONE);
     virtual ~AlarmState() {}
 
     ALarmStateType type() const {return _type;}

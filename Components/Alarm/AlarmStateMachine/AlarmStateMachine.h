@@ -38,6 +38,10 @@ public:
     inline bool isEnableAlarmAudioOff() const {return _isEnableAlarmAudioOff;}
     inline bool isEnableAlarmOff() const {return _isEnableAlarmOff;}
 
+    void alarmPause();
+
+    void alarmReset();
+
 private slots:
     void _timeOut();
 

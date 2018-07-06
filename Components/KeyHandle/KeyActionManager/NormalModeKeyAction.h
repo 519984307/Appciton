@@ -20,5 +20,6 @@ public:
     virtual void keyF3Released(bool multiBtnPress);
     virtual void keyF4Released(bool multiBtnPress);
     virtual void keyF5Released(bool multiBtnPress);
+    virtual void keyF6Released(bool multiBtnPress);
 };
 

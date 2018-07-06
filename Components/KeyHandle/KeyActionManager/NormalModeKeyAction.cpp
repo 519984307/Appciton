@@ -21,6 +21,7 @@
 #include <QPointer>
 #include "RecorderManager.h"
 #include "ContinuousPageGenerator.h"
+#include "AlarmStateMachine.h"
 
 /**************************************************************************************************
  * 构造。
@@ -169,5 +170,16 @@ void NormalModeKeyAction::keyF5Released(bool multiBtnPress)
         return;
     }
 
-    alertor.updateMuteKeyStatus(false);
+//    alertor.updateMuteKeyStatus(false);
+    alarmStateMachine.alarmPause();
+}
+
+void NormalModeKeyAction::keyF6Released(bool multiBtnPress)
+{
+    if (multiBtnPress)
+    {
+        return;
+    }
+
+    alarmStateMachine.alarmReset();
 }
