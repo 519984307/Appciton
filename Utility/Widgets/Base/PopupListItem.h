@@ -5,34 +5,36 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/6
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/3
  **/
 
 #pragma once
-#include<QAbstractButton>
 
-class MenuSidebarItem : public QAbstractButton
+#include <QAbstractButton>
+
+class PopupListItemPrivate;
+class PopupListItem : public QAbstractButton
 {
     Q_OBJECT
 public:
-    explicit MenuSidebarItem(QWidget *parent = NULL);
+    explicit PopupListItem(const QString &text, QWidget *parent = NULL);
+    ~PopupListItem();
 
     QSize sizeHint() const;
 
-
-signals:
-    void focusChanged(bool in);
-
 protected:
     /* reimplement */
-    void paintEvent(QPaintEvent *ev);
+    void paintEvent(QPaintEvent *e);
 
     /* reimplement */
     void nextCheckState();
 
     /* reimplement */
-    void focusInEvent(QFocusEvent *ev);
+    void keyPressEvent(QKeyEvent *e);
 
     /* reimplement */
-    void focusOutEvent(QFocusEvent *ev);
+    void keyReleaseEvent(QKeyEvent *e);
+
+private:
+    QScopedPointer<PopupListItemPrivate> d_ptr;
 };

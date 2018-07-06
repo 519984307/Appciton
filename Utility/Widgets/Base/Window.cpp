@@ -16,7 +16,7 @@
 #include "Button.h"
 #include <QBoxLayout>
 #include <QFrame>
-#include <QDebug>
+#include <QResizeEvent>
 #include "FontManager.h"
 
 #define TITLE_BAR_HEIGHT 40
@@ -26,11 +26,13 @@ class WindowPrivate
 public:
     WindowPrivate()
         : m_widget(NULL),
-          m_titleLbl(NULL)
+          m_titleLbl(NULL),
+          m_mask(NULL)
     {}
 
     QWidget *m_widget;
     QLabel *m_titleLbl;
+    QWidget *m_mask;
 };
 
 Window::Window(QWidget *parent)
@@ -63,12 +65,18 @@ Window::Window(QWidget *parent)
     line->setMidLineWidth(1);
     vLayout->addWidget(line);
 
-
     d_ptr->m_widget = new QWidget();
     vLayout->addWidget(d_ptr->m_widget, 1);
     connect(closeBtn, SIGNAL(clicked(bool)), this, SLOT(close()));
 
     setFont(fontManager.textFont(17));
+
+    d_ptr->m_mask = new QWidget(this);
+    QPalette pal = d_ptr->m_mask->palette();
+    pal.setColor(QPalette::Window, QColor(20, 20, 20, 80));
+    d_ptr->m_mask->setPalette(pal);
+    d_ptr->m_mask->setVisible(false);
+    d_ptr->m_mask->setAutoFillBackground(true);
 }
 
 Window::~Window()
@@ -85,6 +93,25 @@ void Window::setWindowLayout(QLayout *layout)
     d_ptr->m_widget->setLayout(layout);
 }
 
+void Window::showMask(bool flag)
+{
+    if (flag)
+    {
+        d_ptr->m_mask->raise();
+        d_ptr->m_mask->setVisible(true);
+    }
+    else
+    {
+        d_ptr->m_mask->lower();
+        d_ptr->m_mask->setVisible(false);
+    }
+}
+
+bool Window::isShowingMask() const
+{
+    return d_ptr->m_mask->isVisible();
+}
+
 void Window::changeEvent(QEvent *ev)
 {
     QDialog::changeEvent(ev);
@@ -92,4 +119,10 @@ void Window::changeEvent(QEvent *ev)
     {
         d_ptr->m_titleLbl->setText(windowTitle());
     }
+}
+
+void Window::resizeEvent(QResizeEvent *ev)
+{
+    QDialog::resizeEvent(ev);
+    d_ptr->m_mask->resize(ev->size());
 }

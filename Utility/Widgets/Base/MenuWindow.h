@@ -10,6 +10,7 @@
 
 #pragma once
 #include "Window.h"
+#include "MenuContent.h"
 
 class MenuWindowPrivate;
 class MenuWindow : public Window
@@ -20,6 +21,8 @@ public:
     ~MenuWindow();
 
     void addMenuGroup(const QString &title, QWidget *w = NULL);
+
+    void addMenuContent(MenuContent *menu);
 
 private:
     QScopedPointer<MenuWindowPrivate> d_ptr;

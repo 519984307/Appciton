@@ -16,9 +16,23 @@
 #define HIDE_TIMEOUT 1500
 #define BAR_WIDTH 6
 
+class FloatScrollBarPrivate
+{
+public:
+    FloatScrollBarPrivate()
+        : timer(QBasicTimer()),
+          autoHide(true),
+          showWhenMove(true)
+    {}
+
+    QBasicTimer timer;
+    bool autoHide;
+    bool showWhenMove;
+};
+
 FloatScrollBar::FloatScrollBar(QWidget *parent)
     : QWidget(parent),
-      _timer(new QBasicTimer())
+      d_ptr(new FloatScrollBarPrivate())
 {
     setAutoFillBackground(false);
     resize(BAR_WIDTH, 100);  // default height 100 px
@@ -26,13 +40,26 @@ FloatScrollBar::FloatScrollBar(QWidget *parent)
 
 FloatScrollBar::~FloatScrollBar()
 {
-    delete _timer;
+    delete d_ptr;
 }
 
 void FloatScrollBar::setVisible(bool visiable)
 {
-    _timer->start(HIDE_TIMEOUT, this);
+    if (visiable && d_ptr->autoHide)
+    {
+        d_ptr->timer.start(HIDE_TIMEOUT, this);
+    }
     QWidget::setVisible(visiable);
+}
+
+void FloatScrollBar::setAutoHide(bool autoHide)
+{
+    d_ptr->autoHide = autoHide;
+}
+
+void FloatScrollBar::setShowWhenMove(bool show)
+{
+    d_ptr->showWhenMove = show;
 }
 
 void FloatScrollBar::paintEvent(QPaintEvent *ev)
@@ -52,22 +79,31 @@ void FloatScrollBar::paintEvent(QPaintEvent *ev)
 
 void FloatScrollBar::timerEvent(QTimerEvent *ev)
 {
-    if (ev->timerId() == _timer->timerId())
+    if (ev->timerId() == d_ptr->timer.timerId())
     {
-        setVisible(false);
-        _timer->stop();
+        if (d_ptr->autoHide)
+        {
+            setVisible(false);
+        }
+        d_ptr->timer.stop();
     }
 }
 
 void FloatScrollBar::showEvent(QShowEvent *ev)
 {
-    _timer->start(HIDE_TIMEOUT, this);
+    if (d_ptr->autoHide)
+    {
+        d_ptr->timer.start(HIDE_TIMEOUT, this);
+    }
     QWidget::showEvent(ev);
 }
 
 void FloatScrollBar::moveEvent(QMoveEvent *ev)
 {
-    setVisible(true);
+    if (d_ptr->showWhenMove)
+    {
+        setVisible(true);
+    }
     QWidget::moveEvent(ev);
 }
 

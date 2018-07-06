@@ -13,6 +13,7 @@
 #include "FontManager.h"
 #include <QBoxLayout>
 #include "MenuSidebar.h"
+#include <QDebug>
 
 class MenuWindowPrivate
 {
@@ -56,4 +57,11 @@ void MenuWindow::addMenuGroup(const QString &title, QWidget *w)
     {
         d_ptr->scrollArea->setWidget(w);
     }
+}
+
+void MenuWindow::addMenuContent(MenuContent *menu)
+{
+    d_ptr->sidebar->addItem(menu->name());
+    menu->layoutExec();
+    d_ptr->scrollArea->setWidget(menu);
 }

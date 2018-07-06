@@ -11,7 +11,7 @@
 #pragma once
 #include <QWidget>
 
-class QBasicTimer;
+class FloatScrollBarPrivate;
 class FloatScrollBar : public QWidget
 {
     Q_OBJECT
@@ -21,6 +21,18 @@ public:
 
     /* reimplement */
     void setVisible(bool visiable);
+
+    /**
+     * @brief setAutoHide set whether auto hide the bar
+     * @param autoHide true if want to auto hide, otherwise, false
+     */
+    void setAutoHide(bool autoHide);
+
+    /**
+     * @brief setShowWhenMove set whether show when move
+     * @param show show flag
+     */
+    void setShowWhenMove(bool show);
 
 protected:
     /* reimplement */
@@ -33,5 +45,5 @@ protected:
     void moveEvent(QMoveEvent *ev);
 
 private:
-    QBasicTimer *_timer;  // hide widget countdown timer
+    FloatScrollBarPrivate *const d_ptr;
 };

@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/6
+ **/
+
+
 #include "MenuSidebarItem.h"
 #include <QPainter>
 #include <QDebug>
@@ -6,7 +17,7 @@
 #define MARKER_WIDTH 6
 
 MenuSidebarItem::MenuSidebarItem(QWidget *parent)
-    :QAbstractButton(parent)
+    : QAbstractButton(parent)
 {
     setCheckable(true);
 }
@@ -15,7 +26,7 @@ QSize MenuSidebarItem::sizeHint() const
 {
     QFontMetrics fm = fontMetrics();
     int w = fm.width(text()) + MARKER_WIDTH * 2;
-    int h = fm.height() * 2;
+    int h = fm.height() * 3;
     return QSize(w, h);
 }
 
@@ -26,20 +37,26 @@ void MenuSidebarItem::paintEvent(QPaintEvent *ev)
     QColor bgColor;
     QColor textColor;
 
-    if(!isEnabled())
+    if (!isEnabled())
     {
         bgColor = pal.color(QPalette::Disabled, QPalette::Button);
         textColor = pal.color(QPalette::Disabled, QPalette::ButtonText);
     }
-    else if(isDown())
+    else if (isDown())
     {
         bgColor = pal.color(QPalette::Active, QPalette::Button);
         textColor = pal.color(QPalette::Active, QPalette::ButtonText);
     }
-    else if(hasFocus())
+    else if (hasFocus())
     {
         bgColor = pal.color(QPalette::Active, QPalette::Highlight);
         textColor = pal.color(QPalette::Active, QPalette::HighlightedText);
+    }
+    else if (isChecked())
+    {
+        bgColor = pal.color(QPalette::Active, QPalette::Window);
+        bgColor = QColor(239, 240, 241);
+        textColor = pal.color(QPalette::Active, QPalette::ButtonText);
     }
     else
     {
@@ -52,7 +69,7 @@ void MenuSidebarItem::paintEvent(QPaintEvent *ev)
     QPainter painter(this);
     painter.fillRect(rect, bgColor);
 
-    if(isChecked())
+    if (isChecked())
     {
         QRect markerRect =  rect;
         markerRect.setWidth(MARKER_WIDTH);
@@ -66,7 +83,7 @@ void MenuSidebarItem::paintEvent(QPaintEvent *ev)
 
 void MenuSidebarItem::nextCheckState()
 {
-    //do nothing
+    // do nothing
 }
 
 void MenuSidebarItem::focusInEvent(QFocusEvent *ev)

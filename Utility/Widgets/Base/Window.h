@@ -24,9 +24,23 @@ public:
     QLayout *getWindowLayout();
     void setWindowLayout(QLayout *layout);
 
+    /**
+     * @brief showMask show the window mask or not
+     * @param flag
+     */
+    void showMask(bool flag);
+
+    /**
+     * @brief isShowingMask check whether showing mask
+     * @return
+     */
+    bool isShowingMask() const;
+
 protected:
     /* reimplement */
     void changeEvent(QEvent *ev);
+    /* reimplement */
+    void resizeEvent(QResizeEvent *ev);
 
 private:
     QScopedPointer<WindowPrivate> d_ptr;

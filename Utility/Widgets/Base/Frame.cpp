@@ -47,7 +47,7 @@ bool Frame::addItem(FrameItem *item)
 
     item->setParent(this);
     d_ptr->items.append(item);
-    d_ptr->layout->insertWidget(d_ptr->items.count(), item);
+    d_ptr->layout->insertWidget(d_ptr->items.count()-1, item);
     return true;
 }
 

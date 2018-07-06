@@ -34,6 +34,8 @@
 #include "MenuWindow.h"
 #include "Frame.h"
 #include "FrameItem.h"
+#include "ComboBox.h"
+#include "ECGMenuContent.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -111,15 +113,16 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
 
     MenuWindow win;
 
-    Frame *f = new Frame();
-    f->setFont(fontManager.textFont(32));
-    f->addItem(new FrameItem("Bandwidth", f));
-    f->addItem(new FrameItem("FilterMode", f));
-    f->addItem(new FrameItem("SweepSpeed", f));
-    f->addItem(new FrameItem("AlarmSetting", f));
+//    Frame *f = new Frame();
+//    f->setFont(fontManager.textFont(20));
+//    f->addItem(new FrameItem("LeadMode", f));
+//    f->addItem(new FrameItem("Bandwidth", f));
+//    f->addItem(new FrameItem("FilterMode", f));
+//    f->addItem(new FrameItem("SweepSpeed", f));
+//    f->addItem(new FrameItem("Pacer", f));
+//    f->addItem(new FrameItem("AlarmSetting", f));
 
-
-    win.addMenuGroup("ECG", f);
+    win.addMenuContent(new ECGMenuContent);
     win.addMenuGroup("SPO2");
     win.addMenuGroup("RESP");
     win.addMenuGroup("NIBP");

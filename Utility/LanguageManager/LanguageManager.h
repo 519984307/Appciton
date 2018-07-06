@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/6
+ **/
+
+
+
 #pragma once
 
 #include <QObject>
@@ -10,12 +22,10 @@ class XmlParser;
 class LanguageManager
 {
 public:
-
-    enum LanguageName {
+    enum LanguageName
+    {
         English = 0,
         Chinese_Simplify,
-        //Chinese_Traditional_TW,
-        //Chinese_Traditional_HK,
         Language_NR
     };
 
@@ -31,10 +41,10 @@ public:
     ~LanguageManager();
 
 public:
-    const QString &translate(const char *id);
-    const QString &translate(const QString &id);
-    const QString &translatePrint(const char *id);
-    const QString &translatePrint(const QString &id);
+    QString translate(const char *id);
+    QString translate(const QString &id);
+    QString translatePrint(const char *id);
+    QString translatePrint(const QString &id);
     LanguageName getCurLanguage() const;
     void reload(int index);
     QString getCurVoicePromptFolderName() const;
@@ -58,5 +68,5 @@ private:
 #define deleteLanguageManager() (delete LanguageManager::_selfObj)
 
 #define trs(str) languageManager.translate(str)
-//#define ptrs(str) languageManager.translatePrint(str)
+// #define ptrs(str) languageManager.translatePrint(str)
 
