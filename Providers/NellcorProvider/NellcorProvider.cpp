@@ -3,54 +3,55 @@
 #include "SPO2Alarm.h"
 #include "Debug.h"
 
-class NellcorSetProviderPrivate
+
+enum OxismartReport
 {
-public:
-#if 0
-    union DataField{
-        unsigned char dataField[31];
-        struct{
-            unsigned char key; //密钥
-            unsigned char len; //实际长度 0-29
-            unsigned char value[31-2]; //接收值
-        }s;
-    };
-
-    union DataPackField{
-        unsigned char dataPackField[sizeof(DataField)+5];
-        struct{
-            unsigned char fixedHead; // 固定头 0x55
-            unsigned char stx; //固定字符 0x02
-            unsigned char size; //实际数据包长度 0-31
-            DataField data; //数据包
-            unsigned char validityCheck; //数据包有效性检查 crc校验
-            unsigned char etx; //固定尾 0x03
-        }s;
-    };
-#endif
-    union OxismartReport{
-        unsigned char oxismartReport[8];
-        struct{
-            unsigned char key; // 密钥 默认为'j'
-            unsigned char len; //报告长度 默认为6
-            unsigned char satDispType; //显示行为信息
-            unsigned char spo2Value;  //血氧值
-            unsigned char rateDispType:7;  //显示脉率信息
-            unsigned char rateBpmValueNinth:1; //脉率值的第9位
-            unsigned char rateBpmValueTopEight;  //脉率值的前8位
-            unsigned short statusAndAlarmWord;  //状态值和报警值
-        }s;
-    };
-
-    static const int _minPacketLen = 14;      // 最小数据包长度。
-
-    bool _isLowPerfusionFlag;                     // 低弱冠注
-
+    KEY=0,
+    LEN,
+    SAT_DISP_TYPE,
+    SPO2_VALUE,
+    RATE_DISP_TYPE,
+    RATE_BPM_VALUE_TOP_EIGHT,
+    STATUS_AND_ALARM_WORD_TOP_EIGHT,
+    STATUS_AND_ALARM_WORD_DOWN_EIGHT,
+    OXISMART_REPORT_NR
 };
 
-#define SOM             (0x02)
-#define EOM             (0x03)
+enum NellcorPacketType
+{
+    NELLCOR_HEAD = 0X55,
+    NELLCOR_STX = 0X02,
+    NELLCOR_ETX = 0X03,
+    NELLCOR_VER_INFO = 'V',
+    NELLCOR__SPO2PR_VAL = 'j',
+    NELLCOR_ALARM_LIMIT = 'h',
+    NELLCOR_SAT_SEC = 'u',
+    NELLCOR_WAVE_BLIP = '~'
+};
 
+enum Spo2ValueLimit
+{
+    SPO2_VALUE_NORMAL=0,
+    SPO2_VALUE_HIGH,
+    SPO2_VALUE_LOW
+};
+
+enum PRValueLimit
+{
+    PR_VALUE_NORMAL=0,
+    PR_VALUE_HIGH,
+    PR_VALUE_LOW
+};
+
+enum VolumeWarnPriority
+{
+    VOL_WAR_PRI_NOR=0,
+    VOL_WAR_PRI_LOW,
+    VOL_WAR_PRI_MID,
+    VOL_WAR_PRI_HIGH
+};
+
+#define rateBpmValueNinth   (0x01)
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
@@ -79,14 +80,20 @@ void NellcorSetProvider::dataArrived(void)
     unsigned char buff[64];
     while (ringBuff.dataSize() >= _minPacketLen)
     {
-        if (ringBuff.at(0) != SOM)
+        if (ringBuff.at(0) != NELLCOR_HEAD)
         {
             //debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));
             ringBuff.pop(1);
             continue;
         }
 
-        if (ringBuff.at(13) != EOM)
+        if(ringBuff.at(1) != NELLCOR_STX)
+        {
+            ringBuff.pop(1);
+            continue;
+        }
+
+        if (ringBuff.at(ringBuff.at(2) + 4) != NELLCOR_ETX)
         {
             //debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));
             ringBuff.pop(1);
@@ -94,25 +101,49 @@ void NellcorSetProvider::dataArrived(void)
         }
 
         // 将数据包读到buff中。
-        for (int i = 0; i < _minPacketLen; i++)
+        for (int i = 0; (i<static_cast<int>(sizeof(buff)) && i < ringBuff.at(2) + 5); i++)
         {
             buff[i] = ringBuff.at(0);
             ringBuff.pop(1);
         }
 
-        unsigned char sum = _calcCheckSum(&buff[1],_minPacketLen-3);
-        if (buff[_minPacketLen-2] == sum)
+        unsigned char sum = _calcCheckSum(&buff[3], buff[2]);
+        if (buff[3 + buff[2]] == sum)
         {
-            handlePacket(&buff[1], _minPacketLen - 3);
+            handlePacket(&buff[3], buff[2]);
         }
         else
         {
-            outHex(buff, _minPacketLen);
+            outHex(buff, buff[2]+5);
             debug("0x%02x",sum);
             debug("FCS error (%s)\n", qPrintable(getName()));
             ringBuff.pop(1);
         }
     }
+}
+
+void NellcorSetProvider::setSensitive(SPO2Sensitive sens)
+{
+    unsigned char spo2Sens = 0;
+    switch(sens)
+    {
+    case SPO2_SENS_LOW:
+        spo2Sens = 4;
+        break;
+    case SPO2_SENS_MED:
+        spo2Sens = 2;
+        break;
+    case SPO2_SENS_HIGH:
+        spo2Sens = 1;
+        break;
+    case SPO2_SENS_NR:
+        spo2Sens = 4;
+        break;
+    }
+    unsigned char data[3] = {'W', 0x01, 0x00};
+    data[2] = spo2Sens;
+    _sendCmd(data, 3);
+
 }
 
 /**************************************************************************************************
@@ -121,130 +152,109 @@ void NellcorSetProvider::dataArrived(void)
 void NellcorSetProvider::_sendCmd(const unsigned char *data, unsigned int len)
 {
     int index = 0;
-    unsigned char sendBuf[15] = {0};
+    unsigned int lenTemp = len;
+    unsigned char sendBuf[32] = {0};
 
-    sendBuf[index++] = SOM;
-    for (unsigned int i = 0; i < len; i++)
+    if(lenTemp>sizeof(sendBuf)-4)
+    {
+        lenTemp = sizeof(sendBuf)-4;
+    }
+
+    sendBuf[index++] = NELLCOR_HEAD;
+    sendBuf[index++] = NELLCOR_STX;
+    sendBuf[index++] = lenTemp;
+
+    for (unsigned int i = 0; i < lenTemp; i++)
     {
         sendBuf[index++] = data[i];
     }
 
-    sendBuf[index++] = _calcCheckSum(data,len);
-    sendBuf[index++] = EOM;
+    sendBuf[index++] = _calcCheckSum(data,lenTemp);
+    sendBuf[index++] = NELLCOR_ETX;
 
-    writeData(sendBuf, len + 3);
+    writeData(sendBuf, lenTemp + 4);
 }
+
+/*======================================================================*/
+/*  Description:   CRC Lookup Table	*/
+/*======================================================================*/
+unsigned char crcTable[256]={
+0, 94,188,226, 97, 63,221,131,194,156,126, 32,163,253, 31, 65,
+157,195, 33,127,252,162, 64, 30, 95,  1,227,189, 62, 96,130,220,
+35,125,159,193, 66, 28,254,160,225,191, 93,  3,128,222, 60, 98,
+190,224,  2, 92,223,129, 99, 61,124, 34,192,158, 29, 67,161,255,
+70, 24,250,164, 39,121,155,197,132,218, 56,102,229,187, 89,  7,
+219,133,103, 57,186,228,  6, 88, 25, 71,165,251,120, 38,196,154,
+101, 59,217,135,  4, 90,184,230,167,249, 27, 69,198,152,122, 36,
+248,166, 68, 26,153,199, 37,123, 58,100,134,216, 91,  5,231,185,
+140,210, 48,110,237,179, 81, 15, 78, 16,242,172, 47,113,147,205,
+17, 79,173,243,112, 46,204,146,211,141,111, 49,178,236, 14, 80,
+175,241, 19, 77,206,144,114, 44,109, 51,209,143, 12, 82,176,238,
+50,108,142,208, 83, 13,239,177,240,174, 76, 18,145,207, 45,115,
+202,148,118, 40,171,245, 23, 73,  8, 86,180,234,105, 55,213,139,
+87,  9,235,181, 54,104,138,212,149,203, 41,119,244,170, 72, 22,
+233,183, 85, 11,136,214, 52,106, 43,117,151,201, 74, 20,246,168,
+116, 42,200,150, 21, 75,169,247,182,232, 10,84, 215,137,107, 53};
 
 /**************************************************************************************************
  * calculate check sum.
  *************************************************************************************************/
 unsigned char NellcorSetProvider::_calcCheckSum(const unsigned char *data, int len)
 {
-    unsigned char sum = 0;
-    for (int i = 0; i < len; i++)
+    unsigned char crc = 0;
+    for(unsigned char i = 0;  i < len;  i++)
     {
-        sum = sum + data[i];
+        crc = crcTable[(unsigned char)(crc ^ data[i])];
     }
-    sum = sum & 0xFF;
-    return sum;
+    return crc;
 }
 
 void NellcorSetProvider::sendVersion()
 {
-    sendCmd(0, 0, 0);
+    unsigned char data[2] = {'V', 0x00};
+    _sendCmd(data, 2);
 }
 
-bool NellcorSetProvider::sendCmd(unsigned char cmdKey, const unsigned char *data, unsigned int len)
+void NellcorSetProvider::setWarnLimitValue(char spo2Low, char spo2High, short prLow, short prHigh)
 {
+    unsigned char data[8] = {0};
+    data[0] = 'h';
+    data[1] = 0x06;
+    data[2] = spo2Low;
+    data[3] = spo2High;
+    data[4] = prLow >> 8;
+    data[5] = prLow & 0xff;
+    data[6] = prHigh >> 8;
+    data[7] = prHigh & 0xff;
 
+    _sendCmd(data, 8);
 }
 
-/**************************************************************************************************
- * 设置灵敏度和FastSat。
- *************************************************************************************************/
-void NellcorSetProvider::setSensitivityFastSat(SensitivityMode mode, bool fastSat)
+void NellcorSetProvider::getWarnLimitValue()
 {
-    unsigned char cmd[7] = {0};
-    cmd[0] = 0x03;
-    cmd[1] = 0x00;
-    cmd[2] = 0x00;
-    // bit0 for SensitivityMode, 1-normal, 0-max
-    if (mode == (int)SPO2_MASIMO_SENS_NORMAL)
-    {
-        cmd[2] |= 0x01;
-    }
-
-    // bit1 for Fast Sat, 1-on, 0-off.
-    if (fastSat)
-    {
-        cmd[2] |= 0x02;
-    }
-
-    // bit2 for APOD, 1-on, 0-ignore.
-    if (mode == SPO2_MASIMO_SENS_APOD)
-    {
-        cmd[2] |= 0x04;
-    }
-    cmd[3] = 0x00;
-    cmd[4] = 0x00;
-    cmd[5] = 0x00;
-    cmd[6] = 0x00;
-
-    _sendCmd(cmd, 7);
+    unsigned char data[2] = {'h', 0x00};
+    _sendCmd(data, 2);
 }
 
-/**************************************************************************************************
- * 设置平均时间。
- *************************************************************************************************/
-void NellcorSetProvider::setAverageTime(AverageTime mode)
-{
-    unsigned char cmd[7] = {0};
-    cmd[0] = 0x02;
-    cmd[1] = (unsigned char)mode;
-    cmd[2] = 0x00;  // D2
-    cmd[3] = 0x00;  // D3
-    cmd[4] = 0x00;  // D4
-    cmd[5] = 0x00;  // D5
-    cmd[6] = 0x00;  // D6
-
-    _sendCmd(cmd, 7);
-}
-
-/**************************************************************************************************
- * 设置SMart Tone使能选项。
- *************************************************************************************************/
-void NellcorSetProvider::setSmartTone(bool enable)
-{
-    unsigned char cmd[7] = {0};
-    cmd[0] = 0x01;
-    cmd[1] = 0x18;
-    cmd[2] = 0x38;
-    if (enable)
-    {
-        cmd[3] = 0x50;
-    }
-    else
-    {
-        cmd[3] = 0x40;
-    }
-    cmd[4] = 0x00;
-    cmd[5] = 0x00;
-    cmd[6] = 0x00;
-
-    _sendCmd(cmd, 7);
-}
 
 /**************************************************************************************************
  * 功能：构造函数
  * 参数：
  *
  *************************************************************************************************/
-NellcorSetProvider::NellcorSetProvider() : Provider("NUCELL_SPO2"), SPO2ProviderIFace()
+NellcorSetProvider::NellcorSetProvider() : Provider("NUCELL_SPO2"), SPO2ProviderIFace(),
+                                           _spo2ValueLimitStatus(0),
+                                           _prValueLimitStatus(0),
+                                           _isInterfere(false),
+                                           _isLowPerfusionFlag(false),
+                                           _volumeWarnPriority(0),
+                                           _spo2Low(0),
+                                           _spo2High(0),
+                                           _prLow(0),
+                                           _prHigh(0)
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     initPort(portAttr);
-
-    _isLowPerfusionFlag = false;
 }
 
 /**************************************************************************************************
@@ -274,46 +284,213 @@ void NellcorSetProvider::reconnected()
     spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
 }
 
+bool NellcorSetProvider::isResultSPO2PR(unsigned char *packet)
+{
+    if (packet[0] != NELLCOR__SPO2PR_VAL)
+    {
+        return false;
+    }
+
+    short temp;
+    //血氧值
+    temp = packet[SPO2_VALUE];
+    if(temp)
+    {
+        spo2Param.setSPO2(temp);
+    }
+    else
+    {
+        spo2Param.setSPO2(InvData());
+    }
+
+    //脉率值
+    if(packet[RATE_DISP_TYPE]&rateBpmValueNinth)
+    {
+        temp = packet[RATE_BPM_VALUE_TOP_EIGHT] + (0x01<<9) ;
+    }
+    else
+    {
+        temp = packet[RATE_BPM_VALUE_TOP_EIGHT];
+    }
+    if(temp)
+    {
+        spo2Param.setPR(temp);
+    }
+    else
+    {
+        spo2Param.setPR(InvData());
+    }
+
+    return true;
+}
+
+bool NellcorSetProvider::isResult_BAR(unsigned char *packet)
+{
+    if (packet[0] != NELLCOR_WAVE_BLIP)
+    {
+        return false;
+    }
+
+    if(packet[1] == 0x02)
+    {
+       return false;
+    }
+    short temp;
+    temp = packet[3];
+    if(temp==127)
+    {
+        spo2Param.addWaveformData(InvData());
+        spo2Param.addBarData(InvData());
+    }
+    else
+    {
+        spo2Param.addWaveformData(temp);
+        spo2Param.addBarData(temp);
+    }
+
+    temp = packet[2];
+
+    spo2Param.setPulseAudio((temp & 0x80));
+
+    if((temp & 0x0f) < 3)
+    {
+        _isLowPerfusionFlag = true;
+    }
+    else
+    {
+        _isLowPerfusionFlag = false;
+    }
+
+    return true;
+}
+
+bool NellcorSetProvider::isStatus(unsigned char *packet)
+{
+    if (packet[0] != NELLCOR__SPO2PR_VAL)
+    {
+        return false;
+    }
+    short temp;
+    //传感器连接状态
+    temp = packet[STATUS_AND_ALARM_WORD_TOP_EIGHT];
+    bool isCableOff = ((temp>>6) & 0x03) ? (false) : (true);
+    spo2Param.setSensorOff(isCableOff);
+
+    //传感器搜索状态
+    temp = packet[STATUS_AND_ALARM_WORD_TOP_EIGHT];
+    unsigned char stat = (temp>>4) & 0x03;
+    bool isSearching = (stat>0 && stat<3) ? (true) : (false);
+
+    if (isCableOff)  // 存在报警则不显示searching for pulse。
+    {
+        spo2Param.setNotify(true,trs("SPO2CheckSensor"));
+        spo2Param.setValidStatus(false);
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
+
+    }
+    else
+    {
+        spo2Param.setValidStatus(true);
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
+        spo2Param.setSearchForPulse(isSearching);  // search pulse标志。
+        if (isSearching)
+        {
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
+        }
+        else
+        {
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, _isLowPerfusionFlag);
+        }
+    }
+    return true;
+}
+
+void NellcorSetProvider::setSatSeconds(Spo2SatSecondsType type)
+{
+    unsigned char data[3] = {NELLCOR_SAT_SEC, 0x01, type};
+    _sendCmd(data, 3);
+}
+
+void NellcorSetProvider::sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len)
+{
+    unsigned char dat[32]={0};
+    dat[0] = cmdId;
+    dat[1] = len;
+    for(unsigned int i=0; i<30 && i<len; i++)
+    {
+        dat[i+2] = data[i];
+    }
+    _sendCmd(dat, (len+2));
+}
+
 void NellcorSetProvider::handlePacket(unsigned char *data, int /*len*/)
 {
     feed();
     short temp;
     switch (data[0])
     {
-    case 'j':  //oxismart 报告 包含spo2、pr、状态等相关信息
-        NellcorSetProviderPrivate::OxismartReport *oxismartInfo = (NellcorSetProviderPrivate::OxismartReport *)data;
-        temp = oxismartInfo->s.key;
-        if(temp){}
-        temp = oxismartInfo->s.len;if(temp){}
-        temp = oxismartInfo->s.rateBpmValueNinth;if(temp){}
-        temp = oxismartInfo->s.rateBpmValueTopEight;if(temp){}
-        temp = oxismartInfo->s.rateDispType;if(temp){}
-        temp = oxismartInfo->s.satDispType;if(temp){}
-        temp = oxismartInfo->s.statusAndAlarmWord;if(temp){}
-        temp = oxismartInfo->s.spo2Value;if(temp){}
-        spo2Param.setSPO2(temp);
+    case NELLCOR__SPO2PR_VAL:  //oxismart 报告 包含spo2、pr、状态等相关信息
+
+        isResultSPO2PR(data);
+        isStatus(data);
+
+        //脉率高低限警报
+        temp = data[RATE_DISP_TYPE];
+        if((temp & 0x06) == 4)
+        {
+            _prValueLimitStatus = PR_VALUE_HIGH;
+        }
+        else if((temp & 0x06) == 2)
+        {
+            _prValueLimitStatus = PR_VALUE_LOW;
+        }
+        else
+        {
+            _prValueLimitStatus = PR_VALUE_NORMAL;
+        }
+
+        //血氧高低限警报
+        temp = data[SAT_DISP_TYPE];
+        if((temp & 0x06) == 4)
+        {
+            _spo2ValueLimitStatus = SPO2_VALUE_HIGH;
+        }
+        else if((temp & 0x06) == 2)
+        {
+            _spo2ValueLimitStatus = SPO2_VALUE_LOW;
+        }
+        else
+        {
+            _spo2ValueLimitStatus = SPO2_VALUE_NORMAL;
+        }
+
+        //干扰状态获取
+        temp = data[STATUS_AND_ALARM_WORD_TOP_EIGHT];
+        if((temp & 0xc0) == 0)
+        {
+            _isInterfere = false;
+        }
+        else
+        {
+            _isInterfere = true;
+        }
+
+        //声音报警优先级状态获取
+        temp = data[STATUS_AND_ALARM_WORD_DOWN_EIGHT];
+        _volumeWarnPriority = temp & 0x03;
+
+        break;
+    case NELLCOR_WAVE_BLIP:  //添加血氧波形数据 棒图数据 设置beep音标志
+        isResult_BAR(data);
+        break;
+    case NELLCOR_VER_INFO:  //获取版本信息
+        break;
+    case NELLCOR_ALARM_LIMIT:  //获取报警限值
+        _spo2Low = data[2];
+        _spo2High = data[3];
+        _prLow = data[4] << 8 | data[5];
+        _prHigh = data[6] <<8 | data[7];
         break;
     }
-
-    // 接收PLE波形。
-    char pleWaveformValue = 0;
-    pleWaveformValue = data[3];
-//    spo2Param.addWaveformData(100 - (unsigned char)(pleWaveformValue + 128) / 3);
-    spo2Param.addWaveformData(128 - pleWaveformValue);
-
-    // 棒图，使用PLETH为原始数据。
-    unsigned char barData;
-    barData = data[3];
-    spo2Param.addBarData(barData / 15);
-
-    // BEEP音。
-    if ((data[4] != 0) && !(data[4] & 0x80))
-    {
-        spo2Param.setPulseAudio(true);
-    }
-
-    // 接收SIQ波形。
-//    unsigned char siqWaveformValue = 0;
-//    siqWaveformValue = data[5];
-//    spo2Param.updataSiqWaveformValue((unsigned char)siqWaveformValue);
 }

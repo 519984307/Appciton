@@ -101,3 +101,12 @@ enum AverageTime
     SPO2_AVER_TIME_16SEC,
     SPO2_AVER_TIME_NR,
 };
+
+enum Spo2SatSecondsType
+{
+    SPO2_SAT_SECOND_0 = 0,
+    SPO2_SAT_SECOND_10 = 10,
+    SPO2_SAT_SECOND_25 = 25,
+    SPO2_SAT_SECOND_50 = 50,
+    SPO2_SAT_SECOND_100 = 100
+};

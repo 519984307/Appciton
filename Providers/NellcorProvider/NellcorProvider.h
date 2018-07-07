@@ -1,30 +1,6 @@
 #pragma once
 #include "Provider.h"
 #include "SPO2ProviderIFace.h"
-#include <QScopedPointer>
-
-class NellcorSetProviderPrivate;
-
-enum sensityList
-{
-    SENSITY_MAX,
-    SENSITY_NORMAL,
-    APOD,
-};
-
-enum fastsatList
-{
-    FASTSAT_OFF,
-    FASTSAT_ON,
-};
-
-enum avgTimeList
-{
-    SECOND2_4,
-    SECOND4_6,
-    SECOND8,
-    SECOND10,
-};
 
 class NellcorSetProvider : public Provider, public SPO2ProviderIFace
 {
@@ -32,7 +8,11 @@ public:
     virtual bool attachParam(Param &param);
     virtual void dataArrived(void);
 
-    virtual void setSensitive(SPO2Sensitive /*sens*/) { }
+    /**
+     * @brief setSensitive  设置灵敏度--相当于设置血氧值的更新速率
+     * @param sens 灵敏度级别
+     */
+    virtual void setSensitive(SPO2Sensitive sens);
 
     virtual int getSPO2WaveformSample(void) {return 62;}
     virtual int getSPO2BaseLine(void) {return 128;}
@@ -42,23 +22,50 @@ public:
      * @brief sendVersion  获取版本号
      */
     virtual void sendVersion(void);
+
     /**
-     * @brief sendCmd  发送指令ID方法，查询或设置底部模块
-     * @param cmdKey  指令密钥
-     * @param data  待发送的数据
-     * @param len  待发送数据的长度
-     * @return 发送成功返回 true；发送失败返回 false
+     * @brief setWarnLimitValue  设置报警限值
+     * @param spo2Low  血氧低限
+     * @param spo2High  血氧高限
+     * @param prLow  脉率低限
+     * @param prHigh  脉率高限
      */
-    bool sendCmd(unsigned char cmdKey, const unsigned char *data, unsigned int len);
+    virtual void setWarnLimitValue(char spo2Low, char spo2High, short prLow, short prHigh);
 
-    // 设置灵敏度和FastSat。
-    virtual void setSensitivityFastSat(SensitivityMode mode, bool fastSat);
-
-    // 设置平均时间。
-    virtual void setAverageTime(AverageTime mode);
-
-    // 设置SMart Tone使能选项。
-    virtual void setSmartTone(bool enable);
+    /**
+     * @brief getWarnLimitValue 查询报警限值
+     */
+    virtual void getWarnLimitValue(void);
+    /**
+     * @brief isResultSPO2PR  是否是血氧值与脉率值
+     * @param packet  数据包
+     * @return  是返回true  否返回false
+     */
+    virtual bool isResultSPO2PR(unsigned char *packet);
+    /**
+      * @brief isResult_BAR  描记波 棒图 报警音
+      * @param packet  数据包
+      * @return  是返回true  否返回false
+      */
+    virtual bool isResult_BAR(unsigned char *packet);
+    /**
+      * @brief isStatus  接收传感器的状态
+      * @param packet 数据包
+      * @return 是返回true  否返回false
+      */
+    virtual bool isStatus(unsigned char *packet);
+    /**
+     * @brief setSatSeconds 设置过高低限值的容忍时间
+     * @param type 时间类型
+     */
+    virtual void setSatSeconds(Spo2SatSecondsType type);
+    /**
+     * @brief sendCmdData  发送协议指令
+     * @param cmdId  指令ID
+     * @param data  数据包
+     * @param len  数据包长度
+     */
+    virtual void sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len);
 
 public:
     // 构造与构造
@@ -77,9 +84,23 @@ private:
     // 协议数据校验
     unsigned char _calcCheckSum(const unsigned char *data, int len);
 
-    static const int _minPacketLen = 14;      // 最小数据包长度。
+    static const int _minPacketLen = 5;      // 最小数据包长度。
 
-    bool _isLowPerfusionFlag;                     // 低弱冠注
+    unsigned char _spo2ValueLimitStatus;  //血氧高低限报警状态 0：无效 1：高限 2：低限
 
-    QScopedPointer<NellcorSetProviderPrivate> d_ptr;
+    unsigned char _prValueLimitStatus;  //脉率高低限报警状态 0：无效 1：高限 2：低限
+
+    bool _isInterfere;  //是否有干扰
+
+    bool _isLowPerfusionFlag;
+
+    unsigned char _volumeWarnPriority;  //声音报警优先级
+
+    unsigned char _spo2Low;
+
+    unsigned char _spo2High;
+
+    unsigned short _prLow;
+
+    unsigned short _prHigh;
 };
