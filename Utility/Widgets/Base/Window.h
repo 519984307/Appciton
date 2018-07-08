@@ -41,6 +41,10 @@ protected:
     void changeEvent(QEvent *ev);
     /* reimplement */
     void resizeEvent(QResizeEvent *ev);
+    /* reimplement */
+    void keyPressEvent(QKeyEvent *ev);
+    /* reimplement */
+    void keyReleaseEvent(QKeyEvent *ev);
 
 private:
     QScopedPointer<WindowPrivate> d_ptr;

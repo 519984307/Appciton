@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/8
+ **/
+
 #pragma once
 #include <QAbstractButton>
 #include <QScopedPointer>
@@ -7,8 +17,8 @@ class Button : public QAbstractButton
 {
     Q_OBJECT
 public:
-
-    enum ButtonStyle {
+    enum ButtonStyle
+    {
         ButtonTextOnly,
         ButtonIconOnly,
         ButtonTextBesideIcon,
@@ -21,7 +31,7 @@ public:
      * @param icon button icon
      * @param parent
      */
-    Button(const QString &text=QString(), const QIcon &icon=QIcon(), QWidget *parent = NULL);
+    explicit Button(const QString &text = QString(), const QIcon &icon = QIcon(), QWidget *parent = NULL);
 
     ~Button();
 
@@ -66,6 +76,11 @@ public:
 protected:
     /* reimplement */
     void paintEvent(QPaintEvent *ev);
+    /* reimplement */
+    void keyPressEvent(QKeyEvent *ev);
+    /* reimplement */
+    void keyReleaseEvent(QKeyEvent *ev);
+
 
 private:
     QScopedPointer<ButtonPrivate> d_ptr;

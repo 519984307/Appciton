@@ -71,6 +71,12 @@ void MenuSidebarPrivate::onItemFocusChanged(bool in)
 {
     if (in)
     {
+        Q_Q(MenuSidebar);
+        MenuSidebarItem *item = qobject_cast<MenuSidebarItem *>(q->sender());
+        if (item)
+        {
+            q_ptr->ensureWidgetVisible(item);
+        }
         scrollBar->setVisible(true);
     }
 }

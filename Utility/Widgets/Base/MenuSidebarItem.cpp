@@ -55,7 +55,7 @@ void MenuSidebarItem::paintEvent(QPaintEvent *ev)
     else if (isChecked())
     {
         bgColor = pal.color(QPalette::Active, QPalette::Window);
-        bgColor = QColor(239, 240, 241);
+        // bgColor = QColor(239, 240, 241);
         textColor = pal.color(QPalette::Active, QPalette::ButtonText);
     }
     else
@@ -96,4 +96,43 @@ void MenuSidebarItem::focusOutEvent(QFocusEvent *ev)
 {
     QAbstractButton::focusOutEvent(ev);
     emit focusChanged(false);
+}
+
+void MenuSidebarItem::keyPressEvent(QKeyEvent *ev)
+{
+    switch (ev->key())
+    {
+    case Qt::Key_Left:
+    case Qt::Key_Up:
+    case Qt::Key_Right:
+    case Qt::Key_Down:
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        break;
+    default:
+        QAbstractButton::keyPressEvent(ev);
+        break;
+    }
+}
+
+void MenuSidebarItem::keyReleaseEvent(QKeyEvent *ev)
+{
+    switch (ev->key())
+    {
+    case Qt::Key_Left:
+    case Qt::Key_Up:
+        focusPreviousChild();
+        break;
+    case Qt::Key_Right:
+    case Qt::Key_Down:
+        focusNextChild();
+        break;
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        click();
+        break;
+    default:
+        QAbstractButton::keyReleaseEvent(ev);
+        break;
+    }
 }

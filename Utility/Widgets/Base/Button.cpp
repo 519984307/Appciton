@@ -1,7 +1,18 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/8
+ **/
+
 #include "Button.h"
 #include <QFontMetrics>
 #include <QPainter>
 #include <QStyle>
+#include <QKeyEvent>
 
 #define PADDING 4
 #define ICON_TEXT_PADDING 4
@@ -10,7 +21,7 @@ class ButtonPrivate
 {
 public:
     ButtonPrivate()
-        :m_btnStyle(Button::ButtonTextBesideIcon),
+        : m_btnStyle(Button::ButtonTextBesideIcon),
           m_borderWidth(1),
           m_borderRadius(0)
     {}
@@ -21,7 +32,7 @@ public:
 };
 
 Button::Button(const QString &text, const QIcon &icon, QWidget *parent)
-    :QAbstractButton(parent),
+    : QAbstractButton(parent),
       d_ptr(new ButtonPrivate)
 {
     setText(text);
@@ -30,12 +41,11 @@ Button::Button(const QString &text, const QIcon &icon, QWidget *parent)
 
 Button::~Button()
 {
-
 }
 
 void Button::setBorderWidth(int width)
 {
-    if(d_ptr->m_borderWidth == width)
+    if (d_ptr->m_borderWidth == width)
     {
         return;
     }
@@ -51,7 +61,7 @@ int Button::borderWidth() const
 
 void Button::setBorderRadius(int radius)
 {
-    if(d_ptr->m_borderRadius == radius)
+    if (d_ptr->m_borderRadius == radius)
     {
         return;
     }
@@ -66,7 +76,7 @@ int Button::borderRadius() const
 
 void Button::setButtonStyle(Button::ButtonStyle style)
 {
-    if(d_ptr->m_btnStyle ==  style)
+    if (d_ptr->m_btnStyle ==  style)
     {
         return;
     }
@@ -87,7 +97,7 @@ QSize Button::sizeHint() const
     QSize icoSize = iconSize();
     QSize hint;
 
-    switch(d_ptr->m_btnStyle)
+    switch (d_ptr->m_btnStyle)
     {
     case ButtonTextOnly:
         hint.setWidth(textRect.width() + PADDING * 2);
@@ -102,20 +112,20 @@ QSize Button::sizeHint() const
     case ButtonTextUnderIcon:
     {
         int width = textRect.width();
-        if(width < icoSize.width())
+        if (width < icoSize.width())
         {
             width = icoSize.width();
         }
         hint.setWidth(width + PADDING * 2);
         hint.setHeight(iconSize().height() + textRect.height() + ICON_TEXT_PADDING + PADDING * 2);
     }
-        break;
+    break;
 
     case ButtonTextBesideIcon:
     default:
     {
         int height = icoSize.height();
-        if(height < textRect.height())
+        if (height < textRect.height())
         {
             height = textRect.height();
         }
@@ -123,7 +133,7 @@ QSize Button::sizeHint() const
 
         hint.setHeight(height + PADDING * 2);
     }
-        break;
+    break;
     }
 
     return hint;
@@ -137,19 +147,19 @@ void Button::paintEvent(QPaintEvent *ev)
     QColor textColor;
     QIcon::Mode icoMode = QIcon::Normal;
 
-    if(!isEnabled())
+    if (!isEnabled())
     {
         bgColor = pal.color(QPalette::Disabled, QPalette::Button);
         textColor = pal.color(QPalette::Disabled, QPalette::ButtonText);
         icoMode = QIcon::Disabled;
     }
-    else if((isCheckable() && isChecked()) || isDown())
+    else if ((isCheckable() && isChecked()) || isDown())
     {
         bgColor = pal.color(QPalette::Active, QPalette::Button);
         textColor = pal.color(QPalette::Active, QPalette::ButtonText);
         icoMode = QIcon::Selected;
     }
-    else if(hasFocus())
+    else if (hasFocus())
     {
         bgColor = pal.color(QPalette::Active, QPalette::Highlight);
         textColor = pal.color(QPalette::Active, QPalette::HighlightedText);
@@ -168,14 +178,14 @@ void Button::paintEvent(QPaintEvent *ev)
 
     painter.setRenderHint(QPainter::Antialiasing);
 
-    if(d_ptr->m_borderWidth)
+    if (d_ptr->m_borderWidth)
     {
         QPen pen(pal.color(QPalette::Inactive, QPalette::WindowText), d_ptr->m_borderWidth);
-        if(hasFocus())
+        if (hasFocus())
         {
             pen.setColor(pal.color(QPalette::Active, QPalette::WindowText));
         }
-        else if(!isEnabled())
+        else if (!isEnabled())
         {
             pen.setColor(pal.color(QPalette::Disabled, QPalette::WindowText));
         }
@@ -194,38 +204,80 @@ void Button::paintEvent(QPaintEvent *ev)
 
     painter.setPen(textColor);
     QIcon ico = icon();
-    switch (d_ptr->m_btnStyle) {
+    switch (d_ptr->m_btnStyle)
+    {
     case ButtonIconOnly:
     {
         QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignCenter, iconSize(), rect);
         ico.paint(&painter, iconRect, Qt::AlignCenter, icoMode);
     }
-        break;
+    break;
     case ButtonTextOnly:
     {
         painter.drawText(rect, Qt::AlignCenter, text());
     }
-        break;
+    break;
     case ButtonTextUnderIcon:
     {
-        QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignTop|Qt::AlignHCenter, iconSize(), rect.adjusted(0, PADDING, 0, 0));
+        QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignTop | Qt::AlignHCenter, iconSize(), rect.adjusted(0,
+                                             PADDING, 0, 0));
         ico.paint(&painter, iconRect, Qt::AlignCenter, icoMode);
 
         QRect textRect = rect;
         textRect.setTop(iconRect.bottom() + ICON_TEXT_PADDING);
         painter.drawText(textRect, Qt::AlignCenter, text());
     }
-        break;
+    break;
     case ButtonTextBesideIcon:
     default:
     {
-        QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignTop|Qt::AlignHCenter, iconSize(), rect.adjusted(PADDING, 0, 0, 0));
+        QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignTop | Qt::AlignHCenter, iconSize(),
+                                             rect.adjusted(PADDING, 0, 0, 0));
         ico.paint(&painter, iconRect, Qt::AlignCenter, icoMode);
 
         QRect textRect = rect;
         textRect.setLeft(iconRect.right() + ICON_TEXT_PADDING);
         painter.drawText(textRect, Qt::AlignCenter, text());
     }
+    break;
+    }
+}
+
+void Button::keyPressEvent(QKeyEvent *ev)
+{
+    switch (ev->key())
+    {
+    case Qt::Key_Left:
+    case Qt::Key_Up:
+    case Qt::Key_Right:
+    case Qt::Key_Down:
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        break;
+    default:
+        QAbstractButton::keyPressEvent(ev);
+        break;
+    }
+}
+
+void Button::keyReleaseEvent(QKeyEvent *ev)
+{
+    switch (ev->key())
+    {
+    case Qt::Key_Left:
+    case Qt::Key_Up:
+        focusPreviousChild();
+        break;
+    case Qt::Key_Right:
+    case Qt::Key_Down:
+        focusNextChild();
+        break;
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        click();
+        break;
+    default:
+        QAbstractButton::keyReleaseEvent(ev);
         break;
     }
 }

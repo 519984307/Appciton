@@ -35,4 +35,10 @@ protected:
 
     /* reimplement */
     void focusOutEvent(QFocusEvent *ev);
+
+    /* reimplement */
+    void keyPressEvent(QKeyEvent *ev);
+
+    /* reimplement */
+    void keyReleaseEvent(QKeyEvent *ev);
 };

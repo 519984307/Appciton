@@ -8,8 +8,6 @@
  ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/3
  **/
 
-
-
 #include "Window.h"
 #include <QEvent>
 #include <QLabel>
@@ -125,4 +123,39 @@ void Window::resizeEvent(QResizeEvent *ev)
 {
     QDialog::resizeEvent(ev);
     d_ptr->m_mask->resize(ev->size());
+}
+
+void Window::keyPressEvent(QKeyEvent *ev)
+{
+    QDialog::keyPressEvent(ev);
+    switch (ev->key())
+    {
+    case Qt::Key_Left:
+    case Qt::Key_Up:
+    case Qt::Key_Down:
+    case Qt::Key_Right:
+        break;
+    default:
+        QDialog::keyPressEvent(ev);
+        break;
+    }
+}
+
+void Window::keyReleaseEvent(QKeyEvent *ev)
+{
+    QDialog::keyReleaseEvent(ev);
+    switch (ev->key())
+    {
+    case Qt::Key_Left:
+    case Qt::Key_Up:
+        focusPreviousChild();
+        break;
+    case Qt::Key_Down:
+    case Qt::Key_Right:
+        focusNextChild();
+        break;
+    default:
+        QDialog::keyReleaseEvent(ev);
+        break;
+    }
 }
