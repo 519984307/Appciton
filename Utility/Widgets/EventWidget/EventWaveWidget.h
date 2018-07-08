@@ -41,7 +41,7 @@ public:
         SWEEP_SPEED_500
     };
 
-    EventWaveWidget(QWidget *parent = NULL);
+    explicit EventWaveWidget(QWidget *parent = NULL);
     ~EventWaveWidget();
 
     void initXCoordinate(void);
