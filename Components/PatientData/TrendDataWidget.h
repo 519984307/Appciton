@@ -29,7 +29,6 @@ public:
     ~TrendDataWidget();
 
     ITableWidget *table;
-    QLabel *label;
 
 public:
     void isIBPSubParamVisible(IBPPressureName, bool);
@@ -41,6 +40,18 @@ public:
     void setTimeInterval(ResolutionRatio);
 
     void printTrendData(unsigned startTime, unsigned endTime);
+
+    /**
+     * @brief setHistoryDataPath 设置历史回顾数据的文件路径
+     * @param path 文件路径
+     */
+    void setHistoryDataPath(QString path);
+
+    /**
+     * @brief setHistoryData 此刻的趋势表是否为历史数据
+     * @param flag  标志
+     */
+    void setHistoryData(bool flag);
 
 protected:
     void showEvent(QShowEvent *event);
@@ -59,7 +70,6 @@ private:
     TrendDataWidget();
     void _loadTableTitle(void);
     void _trendParamInit();
-    void _updateHeaderDate(unsigned t = 0);
     void _getTrendData();
 
     void _dataIndex(int &startIndex, int &endIndex);
@@ -110,6 +120,9 @@ private:
     QList<int> _eventList;                  // 表格数据是否存在事件发生
     int _curSecIndex;                       // 当前选中索引
     int _maxDataNum;                        // 趋势表最大数据量
+
+    bool _isHistory;                        // 历史回顾标志
+    QString _historyDataPath;               // 历史数据路径
 };
 #define trendDataWidget (TrendDataWidget::construction())
 #define deleteTrendDataWidget() (delete TrendDataWidget::_selfObj)

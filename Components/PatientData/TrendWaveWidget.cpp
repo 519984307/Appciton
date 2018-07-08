@@ -12,6 +12,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QScrollBar>
+#include "DataStorageDefine.h"
 
 #define GRAPH_DISPLAY_DATA_NUMBER           4
 #define GRAPH_POINT_NUMBER                  120                     // 一屏数据量
@@ -25,7 +26,7 @@ TrendWaveWidget::TrendWaveWidget() :
     _cursorPosIndex(0), _currentCursorTime(0),
     _displayGraphNum(3), _totalGraphNum(3), _curVScroller(0),
     _totalPage(0), _currentPage(0), _pagingNum(0), _leftTime(0), _rightTime(0),
-    _trendGraphInfo(TrendGraphInfo())
+    _trendGraphInfo(TrendGraphInfo()), _isHistory(false)
 {
     QString prefix = "TrendGraph|";
     int index = 0;
@@ -586,6 +587,16 @@ const QList<TrendGraphInfo> TrendWaveWidget::getTrendGraphPrint()
     return printList;
 }
 
+void TrendWaveWidget::setHistoryDataPath(QString path)
+{
+    _historyDataPath = path;
+}
+
+void TrendWaveWidget::setHistoryData(bool flag)
+{
+    _isHistory = flag;
+}
+
 void TrendWaveWidget::paintEvent(QPaintEvent *event)
 {
     IWidget::paintEvent(event);
@@ -812,7 +823,14 @@ void TrendWaveWidget::_trendLayout()
 void TrendWaveWidget::_getTrendData()
 {
     IStorageBackend *backend;
-    backend = trendDataStorageManager.backend();
+    if (_isHistory)
+    {
+        backend = StorageManager::open(_historyDataPath + TREND_DATA_FILE_NAME, QIODevice::ReadWrite);
+    }
+    else
+    {
+        backend = trendDataStorageManager.backend();
+    }
     int blockNum = backend->getBlockNR();
     QByteArray data;
     TrendDataSegment *dataSeg;
@@ -836,6 +854,12 @@ void TrendWaveWidget::_getTrendData()
         _trendDataPack.append(pack);
     }
     _calculationPage();
+
+    // 动态内存释放
+    if (_isHistory)
+    {
+        delete backend;
+    }
 }
 
 void TrendWaveWidget::_initWaveSubWidget()
