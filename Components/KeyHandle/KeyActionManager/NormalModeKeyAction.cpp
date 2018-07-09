@@ -106,8 +106,17 @@ void NormalModeKeyAction::keyF5Pressed(bool multiBtnPress)
         return;
     }
 
-    //alarm mute
-    alertor.updateMuteKeyStatus(true);
+    alarmStateMachine.alarmPause(true);
+}
+
+void NormalModeKeyAction::keyF6Pressed(bool multiBtnPress)
+{
+    if (multiBtnPress)
+    {
+        return;
+    }
+
+    alarmStateMachine.alarmReset(true);
 }
 
 void NormalModeKeyAction::keyF1Released(bool multiBtnPress)
@@ -170,8 +179,7 @@ void NormalModeKeyAction::keyF5Released(bool multiBtnPress)
         return;
     }
 
-//    alertor.updateMuteKeyStatus(false);
-    alarmStateMachine.alarmPause();
+    alarmStateMachine.alarmPause(false);
 }
 
 void NormalModeKeyAction::keyF6Released(bool multiBtnPress)
@@ -181,5 +189,5 @@ void NormalModeKeyAction::keyF6Released(bool multiBtnPress)
         return;
     }
 
-    alarmStateMachine.alarmReset();
+    alarmStateMachine.alarmReset(false);
 }

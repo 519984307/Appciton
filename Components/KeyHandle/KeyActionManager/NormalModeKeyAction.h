@@ -13,6 +13,7 @@ public:
     virtual void keyF3Pressed(bool multiBtnPress);
     virtual void keyF4Pressed(bool multiBtnPress);
     virtual void keyF5Pressed(bool multiBtnPress);
+    virtual void keyF6Pressed(bool multiBtnPress);
 
     //释放
     virtual void keyF1Released(bool multiBtnPress);
