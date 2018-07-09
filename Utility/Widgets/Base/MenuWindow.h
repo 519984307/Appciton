@@ -24,6 +24,9 @@ public:
 
     void addMenuContent(MenuContent *menu);
 
+private slots:
+    void onSelectItemChanged(int index);
+
 private:
     QScopedPointer<MenuWindowPrivate> d_ptr;
 };

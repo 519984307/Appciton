@@ -1237,3 +1237,6 @@ SuccessToLoad,加载成功,Success ToLoad
 Load,加载,Load
 View,查看,View
 LoadConfigDesc,加载配置设置,Load Config Desc
+NotchFilter,工频,Notch Filter
+ECGPaceMarker,起搏器,Pace Marker
+ECGQRSPRToneVolume,QRS/PR 音量,QRS/PR Volume

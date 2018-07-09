@@ -36,6 +36,7 @@
 #include "FrameItem.h"
 #include "ComboBox.h"
 #include "ECGMenuContent.h"
+#include "RESPMenuContent.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -123,19 +124,7 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
 //    f->addItem(new FrameItem("AlarmSetting", f));
 
     win.addMenuContent(new ECGMenuContent);
-    win.addMenuGroup("SPO2");
-    win.addMenuGroup("RESP");
-    win.addMenuGroup("NIBP");
-    win.addMenuGroup("TEMP");
-    win.addMenuGroup("AG");
-    win.addMenuGroup("IBP");
-    win.addMenuGroup("CO2");
-    win.addMenuGroup("C.O.");
-    win.addMenuGroup("C.O.");
-    win.addMenuGroup("ALarmSetting");
-    win.addMenuGroup("WIFI");
-    win.addMenuGroup("Maintance");
-    win.addMenuGroup("Configuration");
+    win.addMenuContent(new RESPMenuContent);
     win.exec();
 
     return;

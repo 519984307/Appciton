@@ -106,6 +106,7 @@ PopupList::PopupList(QWidget *parent, bool concatToParent)
     d_ptr->scrollArea->setContentsMargins(0, 0, 0, 0);
     d_ptr->scrollArea->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
     d_ptr->scrollArea->setFloatbarPolicy(ScrollArea::FloatBarShowForeverWhenNeeded);
+    d_ptr->scrollArea->setOverShot(false);
     layout->addWidget(d_ptr->scrollArea);
     int borderRadius = themeManger.getBorderRadius();
     setContentsMargins(borderRadius, borderRadius, borderRadius, borderRadius);

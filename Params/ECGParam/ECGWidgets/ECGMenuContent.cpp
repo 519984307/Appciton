@@ -71,6 +71,7 @@ ECGMenuContent::ECGMenuContent()
 
 ECGMenuContent::~ECGMenuContent()
 {
+    delete d_ptr;
 }
 
 void ECGMenuContent::readyShow()
@@ -208,7 +209,7 @@ void ECGMenuContent::layoutExec()
     }
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    comboBox->addItem(trs("off"));
+    comboBox->addItem(trs("Off"));
     for (int i = SoundManager::VOLUME_LEV_1; i <= SoundManager::VOLUME_LEV_MAX; i++)
     {
         comboBox->addItem(QString::number(i));
@@ -219,7 +220,6 @@ void ECGMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_QRS_TONE, comboBox);
-
 
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }

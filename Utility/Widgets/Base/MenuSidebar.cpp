@@ -64,12 +64,13 @@ void MenuSidebarPrivate::onItemClicked()
         item->setChecked(true);
 
         emit q->selectItemChanged(item->text());
+        emit q->selectItemChanged(curSelectIndex);
     }
 }
 
 void MenuSidebarPrivate::onItemFocusChanged(bool in)
 {
-    if (in)
+    if (in && widget->height() < q_ptr->viewport()->height())
     {
         Q_Q(MenuSidebar);
         MenuSidebarItem *item = qobject_cast<MenuSidebarItem *>(q->sender());
@@ -101,6 +102,8 @@ MenuSidebar::MenuSidebar(QWidget *parent)
     pal.setColor(QPalette::Window, bgColor);
     pal.setColor(QPalette::Button, bgColor);
     d->widget->setPalette(pal);
+
+    setFloatbarPolicy(FloatBarShowForAWhileWhenNeeded);
 }
 
 MenuSidebar::~MenuSidebar()
@@ -125,6 +128,42 @@ void MenuSidebar::addItem(const QString &text)
     d->itemList.append(item);
     connect(item, SIGNAL(clicked(bool)), this, SLOT(onItemClicked()));
     connect(item, SIGNAL(focusChanged(bool)), this, SLOT(onItemFocusChanged(bool)));
+}
+
+bool MenuSidebar::setChecked(const QString &text)
+{
+    Q_D(MenuSidebar);
+    int index = 0;
+    foreach(MenuSidebarItem *item, d->itemList)
+    {
+        if (item->text() == text)
+        {
+            break;
+        }
+        ++index;
+    }
+
+    if (index >= d->itemList.count())
+    {
+        // not found
+        return false;
+    }
+
+    if (index != d->curSelectIndex)
+    {
+        if (d->curSelectIndex >= 0)
+        {
+            // uncheck the previous item
+            MenuSidebarItem *lastCheckItem = d->itemList.at(d->curSelectIndex);
+            lastCheckItem->setChecked(false);
+        }
+
+        d->itemList.at(index)->setChecked(true);
+        d->curSelectIndex = index;
+        emit selectItemChanged(d->itemList.at(index)->text());
+        emit selectItemChanged(index);
+    }
+    return true;
 }
 
 QSize MenuSidebar::sizeHint() const
