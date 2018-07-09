@@ -342,6 +342,10 @@ static void _initProviderParam(void)
         {
             paramManager.addProvider(*new S5Provider());
         }
+        else if (str == "NELLCOR_SPO2")
+        {
+            paramManager.addProvider(*new NellcorSetProvider());
+        }
         paramManager.addParam(spo2Param.construction());
         alertor.addLimtSource(spo2LimitAlarm.construction());
         alertor.addOneShotSource(spo2OneShotAlarm.construction());

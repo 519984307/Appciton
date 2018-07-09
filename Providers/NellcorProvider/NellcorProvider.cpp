@@ -77,7 +77,7 @@ void NellcorSetProvider::dataArrived(void)
         return;
     }
 
-    unsigned char buff[64];
+    unsigned char buff[64] = {0};
     while (ringBuff.dataSize() >= _minPacketLen)
     {
         if (ringBuff.at(0) != NELLCOR_HEAD)
@@ -100,8 +100,9 @@ void NellcorSetProvider::dataArrived(void)
             continue;
         }
 
+        int length =ringBuff.at(2) + 5;
         // 将数据包读到buff中。
-        for (int i = 0; (i<static_cast<int>(sizeof(buff)) && i < ringBuff.at(2) + 5); i++)
+        for (int i = 0; (i<static_cast<int>(sizeof(buff)) && i < length); i++)
         {
             buff[i] = ringBuff.at(0);
             ringBuff.pop(1);
@@ -242,7 +243,7 @@ void NellcorSetProvider::getWarnLimitValue()
  * 参数：
  *
  *************************************************************************************************/
-NellcorSetProvider::NellcorSetProvider() : Provider("NUCELL_SPO2"), SPO2ProviderIFace(),
+NellcorSetProvider::NellcorSetProvider() : Provider("NELLCOR_SPO2"), SPO2ProviderIFace(),
                                            _spo2ValueLimitStatus(0),
                                            _prValueLimitStatus(0),
                                            _isInterfere(false),
@@ -331,7 +332,7 @@ bool NellcorSetProvider::isResult_BAR(unsigned char *packet)
         return false;
     }
 
-    if(packet[1] == 0x02)
+    if(packet[1] != 0x02)
     {
        return false;
     }
@@ -344,14 +345,15 @@ bool NellcorSetProvider::isResult_BAR(unsigned char *packet)
     }
     else
     {
-        spo2Param.addWaveformData(temp);
-        spo2Param.addBarData(temp);
+        spo2Param.addWaveformData(128 - temp);
+        spo2Param.addBarData(temp / 15);
     }
 
     temp = packet[2];
 
     spo2Param.setPulseAudio((temp & 0x80));
 
+    //低弱冠注
     if((temp & 0x0f) < 3)
     {
         _isLowPerfusionFlag = true;

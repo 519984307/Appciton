@@ -18,6 +18,7 @@
 #include "ConfigManagerEntrance.h"
 #include "SetWidget.h"
 #include "ConfigEditUnitSetupMenu.h"
+#include "NellcorProvider.h"
 
 #include "DataStorageDirManager.h"
 

@@ -33,7 +33,7 @@ public:
     bool connected();
 
     // 构造与析构。
-    Provider(const QString &name);
+    explicit Provider(const QString &name);
     virtual ~Provider();
 
 protected:
