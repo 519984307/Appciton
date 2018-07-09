@@ -17,6 +17,7 @@
 #include "AlarmSymbol.h"
 #include "AlarmStateDefine.h"
 #include "UserMaintainManager.h"
+#include "Alarm.h"
 
 AlarmMaintainMenu *AlarmMaintainMenu::_selfObj = NULL;
 
@@ -274,6 +275,19 @@ void AlarmMaintainMenu::layoutExec()
     _defaults->button->setText(trs("RecoverDefaults"));
     connect(_defaults->button, SIGNAL(released(int)), this, SLOT(_defaultsSlot()));
     mainLayout->addWidget(_defaults);
+
+    _boltLockComboList = new IComboList(trs("BoltLockSwitch"));
+    _boltLockComboList->label->setFixedSize(labelWidth, ITEM_H);
+    _boltLockComboList->combolist->setFixedSize(btnWidth, ITEM_H);
+    _boltLockComboList->setFont(fontManager.textFont(fontSize));
+    _boltLockComboList->addItem(trs("Off"));
+    _boltLockComboList->addItem(trs("On"));
+    int boltLockIndex = 0;
+    systemConfig.getNumValue("Alarms|PhyParAlarmBoltlockOn", boltLockIndex);
+    _boltLockComboList->combolist->setCurrentIndex(boltLockIndex);
+    connect(_boltLockComboList->combolist, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(_boltLockComboListSlot(int)));
+    mainLayout->addWidget(_boltLockComboList);
 }
 
 /**************************************************************************************************
@@ -282,6 +296,19 @@ void AlarmMaintainMenu::layoutExec()
 void AlarmMaintainMenu::_defaultsSlot()
 {
 
+}
+
+void AlarmMaintainMenu::_boltLockComboListSlot(int index)
+{
+    systemConfig.setNumValue("Alarms|PhyParAlarmBoltlockOn", index);
+    if (index == 0)
+    {
+        alertor.setBoltLockSta(false);
+    }
+    else
+    {
+        alertor.setBoltLockSta(true);
+    }
 }
 /**************************************************************************************************
  * 最低报警音量。

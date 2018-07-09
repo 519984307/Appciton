@@ -67,21 +67,28 @@ private slots:
      * @brief _defaultsSlot 设置恢复默认值方法
      */
     void _defaultsSlot(void);
+
+    /**
+     * @brief _boltLockComboListSlot 栓锁设置项槽函数
+     * @param index
+     */
+    void _boltLockComboListSlot(int index);
 private:
     AlarmMaintainMenu();
-    IComboList *_minAlarmVolume;      // 最小报警音
-    IComboList *_alarmPauseTime;      // 报警暂停时间
-    IComboList *_alarmClosePromptTime;// 报警关闭，报警音关闭提示时间
-    IComboList *_enableAlarmAudioOff; // 使能报警声音关闭
-    IComboList *_enableAlarmOff;      // 使能报警关闭
-    IComboList *_alarmOffAtPowerOn;   // 开机报警关闭
-//    IComboList *_nonAlertsBeepsInNonAED;   // Non-alerts beeps in Non-AED modes
+    IComboList *_minAlarmVolume;            // 最小报警音
+    IComboList *_alarmPauseTime;            // 报警暂停时间
+    IComboList *_alarmClosePromptTime;      // 报警关闭，报警音关闭提示时间
+    IComboList *_enableAlarmAudioOff;       // 使能报警声音关闭
+    IComboList *_enableAlarmOff;            // 使能报警关闭
+    IComboList *_alarmOffAtPowerOn;         // 开机报警关闭
+//    IComboList *_nonAlertsBeepsInNonAED;  // Non-alerts beeps in Non-AED modes
 
-    IComboList  *_isPauseMaxAlarm15Min;    //是否允许最大报警暂停15min
-//    IComboList  *_alarmVol;                //报警声音
-    IComboList  *_reminderTone;            //报警提示音
-    IComboList  *_reminderToneIntervals;   //报警提示音间隔时间
-    IComboList  *_alarmLightOnAlarmReset;  //报警复位时报警灯
-    LabelButton *_defaults;                //恢复默认值
+    IComboList  *_isPauseMaxAlarm15Min;     //是否允许最大报警暂停15min
+//    IComboList  *_alarmVol;               //报警声音
+    IComboList  *_reminderTone;             //报警提示音
+    IComboList  *_reminderToneIntervals;    //报警提示音间隔时间
+    IComboList  *_alarmLightOnAlarmReset;   //报警复位时报警灯
+    LabelButton *_defaults;                 //恢复默认值
+    IComboList *_boltLockComboList;         // 报警栓锁开关
 };
 #define alarmMaintainMenu (AlarmMaintainMenu::construction())

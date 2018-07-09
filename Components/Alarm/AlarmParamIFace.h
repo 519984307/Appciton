@@ -69,9 +69,8 @@ class AlarmOneShotIFace: public AlarmParamIFace
 {
 public:
     // 该报警是否为生命报警，技术报警和生理/命报警分开存放。
-    virtual AlarmType getAlarmType(int id)
+    virtual AlarmType getAlarmType(int)
     {
-        id = id;
         return ALARM_TYPE_TECH;
     }
 
@@ -116,7 +115,7 @@ public:
 private:
     struct OneShotAlarmDesc
     {
-        OneShotAlarmDesc(bool alarm)
+        explicit OneShotAlarmDesc(bool alarm)
         {
             isHandled = false;
             alarmList.clear();

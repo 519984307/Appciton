@@ -62,12 +62,19 @@ public:
 
     static QString getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot);
 
+    /**
+     * @brief setBoltLockSta 设置栓锁是否打开
+     * @param status 栓锁打开状态
+     */
+    void setBoltLockSta(bool status);
+
 private:
     unsigned _timestamp;
     QMultiMap<ParamID, AlarmLimitIFace*> _limitSources;
     QMultiMap<ParamID, AlarmOneShotIFace*> _oneshotSources;
     QList<AlarmAudioStatus> _alarmStatusList;
     AlarmAudioStatus _curAlarmStatus;
+    bool _isBoltLock;       // 栓锁状态
 
     // 构造。
     Alarm();
