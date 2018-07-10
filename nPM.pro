@@ -109,7 +109,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/ComboBox.cpp                                           \
     Utility/Widgets/Base/PopupList.cpp                                          \
     Utility/Widgets/Base/PopupListItem.cpp                                      \
-    Utility/Widgets/Base/TableWidget.cpp                                        \
+    Utility/Widgets/Base/TableView.cpp                                          \
     Utility/Widgets/Base/MenuWindow.cpp                                         \
     Utility/Widgets/Base/MenuSidebar.cpp                                        \
     Utility/Widgets/Base/MenuSidebarItem.cpp                                    \
@@ -210,6 +210,7 @@ SOURCES +=                                                                      
     Components/Alarm/AlarmConfig.cpp                                            \
     Components/Alarm/AlarmIndicator.cpp                                         \
     Components/Alarm/AlarmParamIFace.cpp                                        \
+    Components/Alarm/AlarmLimitModel.cpp                                        \
     Components/Alarm/AlarmStateMachine/AlarmStateMachine.cpp                    \
     Components/Alarm/AlarmStateMachine/AlarmState.cpp                           \
     Components/Alarm/AlarmStateMachine/AlarmNormalState.cpp                     \
@@ -544,7 +545,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/ComboBox.h                                             \
     Utility/Widgets/Base/PopupList.h                                            \
     Utility/Widgets/Base/PopupListItem.h                                        \
-    Utility/Widgets/Base/TableWidget.h                                          \
+    Utility/Widgets/Base/TableView.h                                            \
     Utility/Widgets/Base/MenuWindow.h                                           \
     Utility/Widgets/Base/MenuSidebar.h                                          \
     Utility/Widgets/Base/MenuSidebarItem.h                                      \
@@ -652,6 +653,7 @@ HEADERS +=                                                                      
     Components/Alarm/AlarmDefine.h                                              \
     Components/Alarm/AlarmIndicator.h                                           \
     Components/Alarm/AlarmParamIFace.h                                          \
+    Components/Alarm/AlarmLimitModel.h                                          \
     Components/Alarm/AlarmSymbol.h                                              \
     Components/Alarm/AlarmStateMachine/AlarmStateMachine.h                      \
     Components/Alarm/AlarmStateMachine/AlarmState.h                             \

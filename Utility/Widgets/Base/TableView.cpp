@@ -8,18 +8,14 @@
  ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/10
  **/
 
-#pragma once
+#include "TableView.h"
 
-#include <QTableWidget>
-
-class TableWidgetPrivate;
-class TableWidget : public QTableWidget
+TableView::TableView(QWidget *parent)
+    : QTableView(parent)
 {
-    Q_OBJECT
-public:
-    explicit TableWidget(QWidget *parent = NULL);
-    ~TableWidget();
+    setFrameStyle(QFrame::NoFrame);
+}
 
-private:
-    const TableWidgetPrivate *d_ptr;
-};
+TableView::~TableView()
+{
+}

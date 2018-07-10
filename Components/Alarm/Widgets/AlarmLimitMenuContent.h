@@ -27,5 +27,5 @@ public:
     void layoutExec();
 
 private:
-    AlarmLimitMenuContentPrivate * const d_ptr;
+    AlarmLimitMenuContentPrivate *const d_ptr;
 };

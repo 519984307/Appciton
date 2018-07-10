@@ -8,22 +8,14 @@
  ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/10
  **/
 
-#include "TableWidget.h"
+#include <QTableView>
 
-
-class TableWidgetPrivate
+class TableViewPrivate;
+class TableView : public QTableView
 {
+    Q_OBJECT
 public:
-    TableWidgetPrivate() {}
+    explicit TableView(QWidget *parent = NULL);
+    ~TableView();
 };
 
-TableWidget::TableWidget(QWidget *parent)
-    :QTableWidget(parent),
-      d_ptr(new TableWidgetPrivate)
-{
-}
-
-TableWidget::~TableWidget()
-{
-    delete d_ptr;
-}
