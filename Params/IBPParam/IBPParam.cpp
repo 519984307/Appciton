@@ -9,6 +9,7 @@
 #include "TrendGraphWidget.h"
 #include "TrendGraphSetWidget.h"
 #include "WaveformCache.h"
+#include "IConfig.h"
 
 IBPParam *IBPParam::_selfObj = NULL;
 
@@ -989,7 +990,15 @@ void IBPParam::leadStatus(bool staIBP1, bool staIBP2)
  *************************************************************************************************/
 void IBPParam::setSweepSpeed(IBPSweepSpeed speed)
 {
+    currentConfig.setNumValue("IBP|SweepSpeed", (int)speed);
     _setWaveformSpeed(speed);
+}
+
+IBPSweepSpeed IBPParam::getSweepSpeed()
+{
+    int speed = IBP_SWEEP_SPEED_62_5;
+    currentConfig.getNumValue("IBP|SweepSpeed", speed);
+    return (IBPSweepSpeed)speed;
 }
 
 /**************************************************************************************************
@@ -1067,8 +1076,16 @@ IBPPressureName IBPParam::getEntitle(IBPSignalInput signal) const
  *************************************************************************************************/
 void IBPParam::setFilter(IBPFilterMode filter)
 {
+    currentConfig.setNumValue("IBP|FilterMode", (int)filter);
     _provider->setFilter(IBP_INPUT_1, filter);
     _provider->setFilter(IBP_INPUT_2, filter);
+}
+
+IBPFilterMode IBPParam::getFilter()
+{
+    int filter = IBP_FILTER_MODE_0;
+    currentConfig.getNumValue("IBP|FilterMode", filter);
+    return (IBPFilterMode)filter;
 }
 
 /**************************************************************************************************
@@ -1076,9 +1093,17 @@ void IBPParam::setFilter(IBPFilterMode filter)
  *************************************************************************************************/
 void IBPParam::setSensitivity(IBPSensitivity sensitivity)
 {
+    currentConfig.setNumValue("IBP|Sensitivity", (int)sensitivity);
     unsigned char time = IBPSymbol::convertNumber(sensitivity);
     _provider->setAvergTime(IBP_INPUT_1, time);
     _provider->setAvergTime(IBP_INPUT_2, time);
+}
+
+IBPSensitivity IBPParam::getSensitivity()
+{
+    int sens = IBP_SENSITIVITY_MID;
+    currentConfig.getNumValue("IBP|Sensitivity", sens);
+    return (IBPSensitivity)sens;
 }
 
 /**************************************************************************************************
