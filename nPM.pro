@@ -387,6 +387,7 @@ SOURCES +=                                                                      
     Params/AGParam/AGWidgets/AGTrendWidget.cpp                                  \
     Params/AGParam/AGWidgets/AGWaveRuler.cpp                                    \
     Params/AGParam/AGWidgets/AGWaveWidget.cpp                                   \
+    Params/AGParam/AGWidgets/AGMenuContent.cpp                                  \
     Params/AGParam/AGParam.cpp                                                  \
     Params/AGParam/AGAlarm.cpp                                                  \
     Params/ECGParam/ECGAlarm.cpp                                                \
@@ -849,6 +850,7 @@ HEADERS +=                                                                      
     Params/AGParam/AGWidgets/AGTrendWidget.h                                    \
     Params/AGParam/AGWidgets/AGWaveRuler.h                                      \
     Params/AGParam/AGWidgets/AGWaveWidget.h                                     \
+    Params/AGParam/AGWidgets/AGMenuContent.h                                    \
     Params/AGParam/AGDefine.h                                                   \
     Params/AGParam/AGParam.h                                                    \
     Params/AGParam/AGProviderIFace.h                                            \

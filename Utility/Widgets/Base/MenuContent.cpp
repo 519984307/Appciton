@@ -45,3 +45,9 @@ const QString &MenuContent::description() const
 {
     return d_ptr->description;
 }
+
+void MenuContent::showEvent(QShowEvent *ev)
+{
+    readyShow();
+    QWidget::showEvent(ev);
+}

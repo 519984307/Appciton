@@ -41,6 +41,9 @@ public:
      */
     virtual void readyShow() {}
 
+protected:
+    void showEvent(QShowEvent *ev);
+
 private:
     MenuContentPrivate *const d_ptr;
 };
