@@ -53,18 +53,6 @@ public:
 
     //Nellcor
     /**
-     * @brief setWarnLimitValue  设置报警限值
-     * @param spo2Low  血氧低限
-     * @param spo2High  血氧高限
-     * @param prLow  脉率低限
-     * @param prHigh  脉率高限
-     */
-    virtual void setWarnLimitValue(char /*spo2Low*/, char /*spo2High*/, short /*prLow*/, short /*prHigh*/){}
-    /**
-     * @brief getWarnLimitValue 查询报警限值
-     */
-    virtual void getWarnLimitValue(){}
-    /**
      * @brief setSatSeconds 设置过高低限值的容忍时间
      * @param type 时间类型
      */

@@ -60,7 +60,6 @@ enum VolumeWarnPriority
     VOL_WAR_PRI_HIGH
 };
 
-#define rateBpmValueNinth   (0x01)
 /**************************************************************************************************
  * 模块与参数对接。
  *************************************************************************************************/
@@ -188,7 +187,7 @@ void NellcorSetProvider::_sendCmd(const unsigned char *data, unsigned int len)
 /*======================================================================*/
 /*  Description:   CRC Lookup Table	*/
 /*======================================================================*/
-unsigned char crcTable[256]={
+static unsigned char crcTable[256]={
 0, 94,188,226, 97, 63,221,131,194,156,126, 32,163,253, 31, 65,
 157,195, 33,127,252,162, 64, 30, 95,  1,227,189, 62, 96,130,220,
 35,125,159,193, 66, 28,254,160,225,191, 93,  3,128,222, 60, 98,
@@ -329,7 +328,7 @@ bool NellcorSetProvider::isResultSPO2PR(unsigned char *packet)
     }
 
     //脉率值
-    if(packet[RATE_DISP_TYPE]&rateBpmValueNinth)
+    if(packet[RATE_DISP_TYPE]&0x01)
     {
         temp = packet[RATE_BPM_VALUE_TOP_EIGHT] + (0x01<<9) ;
     }
