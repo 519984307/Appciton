@@ -110,3 +110,14 @@ enum Spo2SatSecondsType
     SPO2_SAT_SECOND_50 = 50,
     SPO2_SAT_SECOND_100 = 100
 };
+
+enum WaveUpdateType
+{
+    WAVE_UPDATE_0 = 0,  //无效值
+    WAVE_UPDATE_76,  //76HZ
+    WAVE_UPDATE_38,  //38HZ
+    WAVE_UPDATE_25,  //25.3HZ
+    WAVE_UPDATE_19,  //19HZ
+    WAVE_UPDATE_NR  //无效值
+};
+

@@ -23,10 +23,19 @@ enum NellcorPacketType
     NELLCOR_STX = 0X02,
     NELLCOR_ETX = 0X03,
     NELLCOR_VER_INFO = 'V',
-    NELLCOR__SPO2PR_VAL = 'j',
+    NELLCOR_SAT_RATE_INFO = '!',  //血氧、脉率值及其状态信息、模块复位信息  关掉
+    NELLCOR__SPO2PR_VAL = 'j',  //血氧、脉率值及其状态信息 更实时
     NELLCOR_ALARM_LIMIT = 'h',
-    NELLCOR_SAT_SEC = 'u',
-    NELLCOR_WAVE_BLIP = '~'
+    NELLCOR_SAT_SEC = 'u',  //数据越界（高低限）容忍时间
+    NELLCOR_SAT_SEC_REPORT = 'U',  //数据越界（高低限）容忍时间报告
+    NELLCOR_WAVE_BLIP = '~',
+    NELLCOR_RESET_INFO = 'A',  //系统复位信息
+    NELLCOR_HOST_SENSOR_KEY_INFO = 'Q',  //主机传感器密钥信息
+    NELLCOR_IR_PER_VALUE = '%',  //IR百分比调制报告
+    NELLCOR_WAVE_UPDATE_INFO = 'W',  //波形更新率信息
+    NELLCOR_WAVE_SELECT_INFO = 'w',  //波形选择信息
+    NELLCOR_C_CLOCK_INFO = 'Z',  //C_CLOCK相关信息
+    NELLCOR_ECG_TRIGER_INFO = '^',  //ECG触发器信息
 };
 
 enum Spo2ValueLimit
@@ -212,7 +221,7 @@ unsigned char NellcorSetProvider::_calcCheckSum(const unsigned char *data, int l
 
 void NellcorSetProvider::sendVersion()
 {
-    unsigned char data[2] = {'V', 0x00};
+    unsigned char data[2] = {NELLCOR_VER_INFO, 0x00};
     _sendCmd(data, 2);
 }
 
@@ -233,7 +242,7 @@ void NellcorSetProvider::setWarnLimitValue(char spo2Low, char spo2High, short pr
 
 void NellcorSetProvider::getWarnLimitValue()
 {
-    unsigned char data[2] = {'h', 0x00};
+    unsigned char data[2] = {NELLCOR_ALARM_LIMIT, 0x00};
     _sendCmd(data, 2);
 }
 
@@ -252,9 +261,24 @@ NellcorSetProvider::NellcorSetProvider() : Provider("NELLCOR_SPO2"), SPO2Provide
                                            _spo2Low(0),
                                            _spo2High(0),
                                            _prLow(0),
-                                           _prHigh(0)
+                                           _prHigh(0),
+                                           _hostSensorKeyOne(0),
+                                           _hostSensorKeyTwo(0),
+                                           _hostSensorKeyThree(0),
+                                           _hostSensorKeyFour(0),
+                                           _versionInfo(""),
+                                           _isreset(false),
+                                           _satSeconds(0),
+                                           _irPerModulValue(0),
+                                           _waveUpdateType(WAVE_UPDATE_0),
+                                           _waveSelectType(0),
+                                           _isEnableCClock(false),
+                                           _isEnableSensorEventRecord(false),
+                                           _sensorEventStatus(0),
+                                           _sensorEventType(0),
+                                           _sensorType(0)
 {
-    UartAttrDesc portAttr(9600, 8, 'N', 1);
+    UartAttrDesc portAttr(115200, 8, 'N', 1);
     initPort(portAttr);
 }
 
@@ -411,7 +435,289 @@ bool NellcorSetProvider::isStatus(unsigned char *packet)
 void NellcorSetProvider::setSatSeconds(Spo2SatSecondsType type)
 {
     unsigned char data[3] = {NELLCOR_SAT_SEC, 0x01, type};
-    _sendCmd(data, 3);
+    _sendCmd(data, sizeof(data));
+}
+
+void NellcorSetProvider::getSatSeconds(unsigned char *pack)
+{
+    if(pack[0] != NELLCOR_SAT_SEC_REPORT)
+    {
+        return ;
+    }
+    unsigned char count = pack[1];
+    if(count != 1)
+    {
+        return ;
+    }
+    _satSeconds = pack[2];
+}
+
+void NellcorSetProvider::sendResetInfo()
+{
+    unsigned char data[2] = {NELLCOR_RESET_INFO, 0x00};
+    _sendCmd(data, sizeof(data));
+}
+
+
+void NellcorSetProvider::resetNecllcorModule()
+{
+    unsigned char data[3] = {NELLCOR_RESET_INFO, 0x01, 0x0F};
+    _sendCmd(data, sizeof(data));
+}
+
+void NellcorSetProvider::sendHostSensorKeyInfo()
+{
+    unsigned char data[2] = {NELLCOR_HOST_SENSOR_KEY_INFO, 0x00};
+    _sendCmd(data, sizeof(data));
+}
+
+void NellcorSetProvider::setHostSensorKeyInfo(const unsigned char *keyInfo)
+{
+    if(!keyInfo)
+    {
+        return ;
+    }
+    if(!&keyInfo[3])
+    {
+        return;
+    }
+    unsigned char data[6] = {NELLCOR_HOST_SENSOR_KEY_INFO, 0x04};
+    memcpy(&data[2], keyInfo, 0x04);
+    _sendCmd(data, sizeof(data));
+}
+
+
+void NellcorSetProvider::sendWaveUpdateInfo()
+{
+    unsigned char data[2] = {NELLCOR_WAVE_UPDATE_INFO, 0x00};
+    _sendCmd(data, sizeof(data));
+}
+
+void NellcorSetProvider::sendWaveSelectInfo()
+{
+    unsigned char data[2] = {NELLCOR_WAVE_SELECT_INFO, 0x00};
+    _sendCmd(data, sizeof(data));
+}
+
+void NellcorSetProvider::setWaveUpdateInfo(unsigned char infoIndex)
+{
+    unsigned char data[3] = {NELLCOR_WAVE_UPDATE_INFO, 0x01, 0x00};
+    switch(infoIndex)
+    {
+    case WAVE_UPDATE_0:
+        break;
+    case WAVE_UPDATE_76:
+        data[2] = 0x01;
+        break;
+    case WAVE_UPDATE_38:
+        data[2] = 0x02;
+        break;
+    case WAVE_UPDATE_25:
+        data[2] = 0x03;
+        break;
+    case WAVE_UPDATE_19:
+        data[2] = 0x04;
+        break;
+    case WAVE_UPDATE_NR:
+        break;
+    }
+    if(infoIndex > WAVE_UPDATE_0 && infoIndex < WAVE_UPDATE_NR)
+    {
+        _sendCmd(data, sizeof(data));
+    }
+}
+
+void NellcorSetProvider::sendCClockInfo()
+{
+    unsigned char data[2] = {NELLCOR_C_CLOCK_INFO, 0x00};
+    _sendCmd(data, sizeof(data));
+}
+
+void NellcorSetProvider::sendTriggerInfo()
+{
+    unsigned char data[2] = {NELLCOR_ECG_TRIGER_INFO, 0x00};
+    _sendCmd(data, sizeof(data));
+}
+
+void NellcorSetProvider::disabledSatRateStatus()
+{
+    unsigned char data[3]={NELLCOR_SAT_RATE_INFO, 0x01, 0x0f};
+    _sendCmd(data, sizeof(data));
+}
+
+void NellcorSetProvider::setCClockInfo(bool isEnabled)
+{
+    unsigned char data[3] = {NELLCOR_C_CLOCK_INFO, 0x01, 0x00};
+    if(isEnabled)
+    {
+        data[2] = 0xf0;
+    }
+    else
+    {
+        data[2] = 0x0f;
+    }
+    _sendCmd(data, sizeof(data));
+}
+
+void NellcorSetProvider::setWaveSelectInfo(unsigned char index)
+{
+    unsigned char data[3] = {NELLCOR_WAVE_SELECT_INFO, 0x01, 0x00};
+    data[2] = index;
+    _sendCmd(data, sizeof(data));
+}
+
+
+void NellcorSetProvider::_analyzeHostSeneorKeyInfo(unsigned char *pack)
+{
+    if(pack[0] != NELLCOR_HOST_SENSOR_KEY_INFO)
+    {
+        return ;
+    }
+
+    unsigned char count = pack[1];
+    if(count != 4)
+    {
+        return ;
+    }
+    _hostSensorKeyOne = pack[2];
+    _hostSensorKeyTwo = pack[3];
+    _hostSensorKeyThree = pack[4];
+    _hostSensorKeyFour = pack[5];
+}
+
+void NellcorSetProvider::_analyzeVersionInfo(unsigned char *pack)
+{
+    if(pack[0] != NELLCOR_VER_INFO)
+    {
+        return ;
+    }
+
+    unsigned char count = pack[1];
+    if(count > 64)
+    {
+        return ;
+    }
+    _versionInfo.clear();
+    for(unsigned char i=0; i<count; i++)
+    {
+        _versionInfo.append(pack[i+2]);
+    }
+}
+
+
+void NellcorSetProvider::_analyzeIrPerModulValue(unsigned char *pack)
+{
+    if(pack[0] != NELLCOR_IR_PER_VALUE)
+    {
+        return ;
+    }
+
+    unsigned char count = pack[1];
+    if(count != 1)
+    {
+        return ;
+    }
+    _irPerModulValue = pack[2];
+}
+
+void NellcorSetProvider::_analyzeWaveUpdateInfo(unsigned char *pack)
+{
+    if(pack[0] != NELLCOR_WAVE_UPDATE_INFO)
+    {
+        return ;
+    }
+
+    unsigned char count = pack[1];
+    if(count != 1)
+    {
+        return ;
+    }
+    _waveUpdateType = static_cast<WaveUpdateType>(pack[2]);
+}
+
+void NellcorSetProvider::_analyzewaveSelectInfo(unsigned char *pack)
+{
+    if(pack[0] != NELLCOR_WAVE_SELECT_INFO)
+    {
+        return ;
+    }
+
+    unsigned char count = pack[1];
+    if(count != 1)
+    {
+        return ;
+    }
+    _waveSelectType = pack[2];
+}
+
+void NellcorSetProvider::_analyzeCClockInfo(unsigned char *pack)
+{
+    if(pack[0] != NELLCOR_C_CLOCK_INFO)
+    {
+        return ;
+    }
+
+    unsigned char count = pack[1];
+    if(count != 1)
+    {
+        return ;
+    }
+    if(pack[2] == 0xf0)
+    {
+        _isEnableCClock = true;
+    }
+    else if(pack[2] == 0x0f)
+    {
+        _isEnableCClock = false;
+    }
+}
+
+void NellcorSetProvider::_analyzeSensorEventInfo(unsigned char *pack)
+{
+    switch(pack[0])
+    {
+    case 'K':  //传感器启用、禁用信息
+        if(pack[1] != 1)
+        {
+            break;
+        }
+        if(pack[2] == 0xf0)
+        {
+            _isEnableSensorEventRecord = true;
+        }
+        else
+        {
+            _isEnableSensorEventRecord = false;
+        }
+        break;
+    case 'H':  //传感器时间spo2限值信息
+        if(pack[1] != 0x02)
+        {
+            break;
+        }
+        _spo2High = pack[2];
+        _spo2Low = pack[3];
+        break;
+    case 'Y':  //传感器事件报告
+        if(pack[1] != 0x03)
+        {
+            break;
+        }
+        _sensorEventStatus = pack[2];
+        _sensorEventType = pack[3];
+        _sensorType = pack[4];
+        break;
+    case 'T':  //传感器事件信息与时间信息
+        if(pack[1] != 0x07)
+        {
+            break;
+        }
+        QDate date(pack[2], pack[3], pack[4]);
+        QTime time(pack[5], pack[6], pack[7]);
+        _dataTime.setDate(date);
+        _dataTime.setTime(time);
+        break;
+    }
 }
 
 void NellcorSetProvider::sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len)
@@ -487,12 +793,28 @@ void NellcorSetProvider::handlePacket(unsigned char *data, int /*len*/)
         isResult_BAR(data);
         break;
     case NELLCOR_VER_INFO:  //获取版本信息
+        _analyzeVersionInfo(data);
         break;
     case NELLCOR_ALARM_LIMIT:  //获取报警限值
         _spo2Low = data[2];
         _spo2High = data[3];
         _prLow = data[4] << 8 | data[5];
         _prHigh = data[6] <<8 | data[7];
+        break;
+    case NELLCOR_SAT_SEC_REPORT:  //高低限值容忍时间报告
+        getSatSeconds(data);
+        break;
+    case NELLCOR_IR_PER_VALUE:  //IR百分比调制值
+        _analyzeIrPerModulValue(data);
+        break;
+    case NELLCOR_WAVE_UPDATE_INFO:  //波形更新
+        _analyzeWaveUpdateInfo(data);
+        break;
+    case NELLCOR_WAVE_SELECT_INFO:  //波形选择信息
+        _analyzewaveSelectInfo(data);
+        break;
+    default:
+        _analyzeSensorEventInfo(data);
         break;
     }
 }
