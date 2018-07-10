@@ -4,6 +4,7 @@
 #include "AGAlarm.h"
 #include "WindowManager.h"
 #include "WaveformCache.h"
+#include "IConfig.h"
 
 #define DEMO_DATA_NUM       180
 
@@ -684,7 +685,15 @@ void AGParam::setAnestheticType(AGAnaestheticType primary, AGAnaestheticType sec
  *************************************************************************************************/
 void AGParam::setSweepSpeed(AGSweepSpeed speed)
 {
+    currentConfig.setNumValue("AG|SweepSpeed", (int)speed);
     _setWaveformSpeed(speed);
+}
+
+AGSweepSpeed AGParam::getSweepSpeed()
+{
+    int speed = AG_SWEEP_SPEED_250;
+    currentConfig.getNumValue("AG|SweepSpeed", speed);
+    return (AGSweepSpeed)speed;
 }
 
 /**************************************************************************************************
