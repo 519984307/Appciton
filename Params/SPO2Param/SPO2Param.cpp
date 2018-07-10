@@ -500,6 +500,10 @@ int SPO2Param::setSensorOff(bool flag)
         QStringList curWaveList;
         windowManager.getDisplayedWaveform(curWaveList);
         int waveCount = curWaveList.count();
+        if(waveCount == 0)
+        {
+            return 0;
+        }
         if (waveCount < 4)
         {
             windowManager.insertWaveform(curWaveList.at(waveCount - 1), spo2Wave);

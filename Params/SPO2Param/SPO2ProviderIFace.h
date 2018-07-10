@@ -50,4 +50,11 @@ public:
 
     // 设置SMart Tone使能选项。
     virtual void setSmartTone(bool /*enable*/) { }
+
+    //Nellcor
+    /**
+     * @brief setSatSeconds 设置过高低限值的容忍时间
+     * @param type 时间类型
+     */
+    virtual void setSatSeconds(Spo2SatSecondsType /*type*/){}
 };
