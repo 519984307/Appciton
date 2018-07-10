@@ -92,7 +92,7 @@
     <IBP>
         <ChannelPressureEntitle1>0</ChannelPressureEntitle1>
         <ChannelPressureEntitle2>5</ChannelPressureEntitle2>
-        <IBPSweepSpeed>1</IBPSweepSpeed>
+        <SweepSpeed>1</SweepSpeed>
         <FilterMode>0</FilterMode>
         <Sensitivity>2</Sensitivity>
         <Calibration>84</Calibration>
