@@ -109,6 +109,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/ComboBox.cpp                                           \
     Utility/Widgets/Base/PopupList.cpp                                          \
     Utility/Widgets/Base/PopupListItem.cpp                                      \
+    Utility/Widgets/Base/TableWidget.cpp                                        \
     Utility/Widgets/Base/MenuWindow.cpp                                         \
     Utility/Widgets/Base/MenuSidebar.cpp                                        \
     Utility/Widgets/Base/MenuSidebarItem.cpp                                    \
@@ -217,6 +218,7 @@ SOURCES +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.cpp                   \
     Components/Alarm/Widgets/AlarmInfoPopListView.cpp                           \
     Components/Alarm/Widgets/AlarmLimitMenu.cpp                                 \
+    Components/Alarm/Widgets/AlarmLimitMenuContent.cpp                          \
     Components/Alarm/Widgets/AlarmMuteBarWidget.cpp                             \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.cpp                         \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.cpp                          \
@@ -306,7 +308,6 @@ SOURCES +=                                                                      
     Components/NetworkManager/WpaCtrl/utils/os_unix.c                           \
     Components/NetworkManager/WpaCtrl/WpaCtrl.cpp                               \
     Components/NetworkManager/Widgets/LabeledLabel.cpp                          \
-    Components/NetworkManager/Widgets/TableWidget.cpp                           \
     Components/NetworkManager/Widgets/WiFiProfileEditor.cpp                     \
     Components/NetworkManager/Widgets/WiFiProfileMenu.cpp                       \
     Components/ActivityLog/ActivityLogManager.cpp                               \
@@ -542,6 +543,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/ComboBox.h                                             \
     Utility/Widgets/Base/PopupList.h                                            \
     Utility/Widgets/Base/PopupListItem.h                                        \
+    Utility/Widgets/Base/TableWidget.h                                          \
     Utility/Widgets/Base/MenuWindow.h                                           \
     Utility/Widgets/Base/MenuSidebar.h                                          \
     Utility/Widgets/Base/MenuSidebarItem.h                                      \
@@ -659,6 +661,7 @@ HEADERS +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.h                     \
     Components/Alarm/Widgets/AlarmInfoPopListView.h                             \
     Components/Alarm/Widgets/AlarmLimitMenu.h                                   \
+    Components/Alarm/Widgets/AlarmLimitMenuContent.h                            \
     Components/Alarm/Widgets/AlarmMuteBarWidget.h                               \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.h                           \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.h                            \
@@ -764,7 +767,6 @@ HEADERS +=                                                                      
     Components/NetworkManager/NetworkManager.h                                  \
     Components/NetworkManager/WpaCtrl/WpaCtrl.h                                 \
     Components/NetworkManager/Widgets/LabeledLabel.h                            \
-    Components/NetworkManager/Widgets/TableWidget.h                             \
     Components/NetworkManager/Widgets/WiFiProfileEditor.h                       \
     Components/NetworkManager/Widgets/WiFiProfileMenu.h                         \
     Components/ActivityLog/ActivityLogManager.h                                 \
