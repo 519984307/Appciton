@@ -98,6 +98,24 @@ public:
         return symbol[index];
     }
 
+    static const char *convert(O2Compensation index)
+    {
+        static const char *symbol[O2_COMPEN_NR] =
+        {
+            "Low", "Med", "High"
+        };
+        return symbol[index];
+    }
+
+    static const char *convert(N2OCompensation index)
+    {
+        static const char *symbol[N2O_COMPEN_NR] =
+        {
+            "Low", "High"
+        };
+        return symbol[index];
+    }
+
     /**********************************************************************************************
      * 以下为报警字串转换。
      ********************************************************************************************/

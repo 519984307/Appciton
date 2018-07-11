@@ -16,6 +16,9 @@
 #include "AGSymbol.h"
 #include "IConfig.h"
 #include "AGParam.h"
+#include "CO2SetAGMenu.h"
+#include "N2OSetAGMenu.h"
+#include "HalSetAGMenu.h"
 
 class AGMenuContentPrivate
 {
@@ -189,6 +192,9 @@ void AGMenuContent::layoutExec()
 void AGMenuContent::onComboBoxIndexChanged(int index)
 {
     ComboBox *box = qobject_cast<ComboBox *>(sender());
+    CO2SetAGMenu co2SetAGMenu;
+    N2OSetAGMenu n2oSetAGMenu;
+    HalSetAGMenu halSetAGMenu;
     if (box)
     {
         AGMenuContentPrivate::MenuItem item
@@ -209,10 +215,13 @@ void AGMenuContent::onComboBoxIndexChanged(int index)
             systemConfig.setNumValue("PrimaryCfg|AG|AGModule", index);
             break;
         case AGMenuContentPrivate::ITEM_CBO_CO2_SET:
+            co2SetAGMenu.exec();
             break;
         case AGMenuContentPrivate::ITEM_CBO_N2O_SET:
+            n2oSetAGMenu.exec();
             break;
         case AGMenuContentPrivate::ITEM_CBO_AA1_SET:
+            halSetAGMenu.exec();
             break;
         case AGMenuContentPrivate::ITEM_CBO_AA2_SET:
             break;

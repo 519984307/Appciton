@@ -387,6 +387,9 @@ SOURCES +=                                                                      
     Params/AGParam/AGWidgets/AGWaveRuler.cpp                                    \
     Params/AGParam/AGWidgets/AGWaveWidget.cpp                                   \
     Params/AGParam/AGWidgets/AGMenuContent.cpp                                  \
+    Params/AGParam/AGWidgets/CO2SetAGMenu.cpp                                   \
+    Params/AGParam/AGWidgets/N2OSetAGMenu.cpp                                   \
+    Params/AGParam/AGWidgets/HalSetAGMenu.cpp                                   \
     Params/AGParam/AGParam.cpp                                                  \
     Params/AGParam/AGAlarm.cpp                                                  \
     Params/ECGParam/ECGAlarm.cpp                                                \
@@ -849,6 +852,9 @@ HEADERS +=                                                                      
     Params/AGParam/AGWidgets/AGWaveRuler.h                                      \
     Params/AGParam/AGWidgets/AGWaveWidget.h                                     \
     Params/AGParam/AGWidgets/AGMenuContent.h                                    \
+    Params/AGParam/AGWidgets/CO2SetAGMenu.h                                     \
+    Params/AGParam/AGWidgets/N2OSetAGMenu.h                                     \
+    Params/AGParam/AGWidgets/HalSetAGMenu.h                                     \
     Params/AGParam/AGDefine.h                                                   \
     Params/AGParam/AGParam.h                                                    \
     Params/AGParam/AGProviderIFace.h                                            \
