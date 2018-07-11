@@ -8,7 +8,9 @@
 #include "AlarmLimitMenu.h"
 #include "PublicMenuManager.h"
 #include "LoadConfigMenu.h"
-
+#include "CO2SetAGMenu.h"
+#include "N2OSetAGMenu.h"
+#include "HalSetAGMenu.h"
 AGMenu *AGMenu::_selfObj = NULL;
 
 /**************************************************************************************************
@@ -140,13 +142,19 @@ void AGMenu::_lBtonSlot()
 {
     LButton *gasTypeBtn = qobject_cast<LButton*>(sender());
     int gasTypeNum = (gasTypeBtn->property("Btn")).toInt();
+    CO2SetAGMenu co2SetAGMenu;
+    N2OSetAGMenu n2oSetAGMenu;
+    HalSetAGMenu halSetAGMenu;
     switch(gasTypeNum)
     {
     case AG_TYPE_CO2:
+        co2SetAGMenu.exec();
         break;
     case AG_TYPE_N2O:
+        n2oSetAGMenu.exec();
         break;
     case AG_TYPE_AA1:
+        halSetAGMenu.exec();
         break;
     case AG_TYPE_AA2:
         break;

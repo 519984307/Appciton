@@ -65,4 +65,58 @@ public:
         return symbol[index];
     }
 
+    static const QString &convert(AGModuleSwitch index)
+    {
+        static const QString symbol[AG_MODULE_SWITCH_NR] =
+        {
+          "Enable", "Disable"
+        };
+        return symbol[index];
+    }
+
+    static const QString &convert(AGModuleCO2Option index)
+    {
+        static const QString symbol[AG_MODULE_CO2_OPTION_NR] =
+        {
+            "SetUp"
+        };
+        return symbol[index];
+    }
+
+    static const QString &convert(AGModuleN2OOption index)
+    {
+        static const QString symbol[AG_MODULE_N2O_OPTION_NR] =
+        {
+            "SetUp"
+        };
+        return symbol[index];
+    }
+
+    static const QString &convert(AGModuleAA1Option index)
+    {
+        static const QString symbol[AG_MODULE_AA1_OPTION_NR] =
+        {
+            "SetUp"
+        };
+        return symbol[index];
+    }
+
+    static const QString &convert(AGModuleAA2Option index)
+    {
+        static const QString symbol[AG_MODULE_AA2_OPTION_NR] =
+        {
+            "SetUp"
+        };
+        return symbol[index];
+    }
+
+    static const QString &convert(AGModuleO2Option index)
+    {
+        static const QString symbol[AG_MODULE_O2_OPTION_NR] =
+        {
+            "SetUp"
+        };
+        return symbol[index];
+    }
+
 };

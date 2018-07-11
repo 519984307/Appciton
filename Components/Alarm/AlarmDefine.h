@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/10
+ **/
+
+
 #pragma once
 #include <stddef.h>
 
@@ -10,7 +21,8 @@ enum AlarmType
     ALARM_TYPE_TECH
 };
 
-enum LimitAlarmType {
+enum LimitAlarmType
+{
     NotLimitAlarm,
     LowLimitAlarm,
     HighLimitAlarm
@@ -32,18 +44,21 @@ struct AlarmInfoNode
     }
 
     AlarmInfoNode(unsigned t, AlarmType type, AlarmPriority priority,
-            const char *message)
+                  const char *message)
+        : alarmType(type), alarmPriority(priority), latch(false), acknowledge(false),
+          removeAfterLatch(false), promptAlarmBeep(false), pauseTime(0), displayTime(ALARM_INFO_DISPLAY_TIME),
+          alarmTime(t), alarmMessage(message)
     {
-        alarmType = type;
-        alarmPriority = priority;
-        latch = false;
-        acknowledge = false;
-        removeAfterLatch = false;
-        pauseTime = 0;
-        displayTime = ALARM_INFO_DISPLAY_TIME;
-        alarmTime = t;
-        alarmMessage = message;
-        promptAlarmBeep = false;
+        //    alarmType = type;
+        //    alarmPriority = priority;
+        //    latch = false;
+        //    acknowledge = false;
+        //    removeAfterLatch = false;
+        //    pauseTime = 0;
+        //    displayTime = ALARM_INFO_DISPLAY_TIME;
+        //    alarmTime = t;
+        //    alarmMessage = message;
+        //    promptAlarmBeep = false;
     }
 
     void reset()
@@ -65,7 +80,7 @@ struct AlarmInfoNode
     bool latch;
     bool acknowledge;
     bool removeAfterLatch;
-    bool promptAlarmBeep;//new prompt need to beep
+    bool promptAlarmBeep;  // new prompt need to beep
     unsigned pauseTime;
     unsigned displayTime;
     unsigned alarmTime;

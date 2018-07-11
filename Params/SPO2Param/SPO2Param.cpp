@@ -592,7 +592,7 @@ SPO2Sensitive SPO2Param::getSensitivity(void)
  *************************************************************************************************/
 void SPO2Param::setSmartPulseTone(SPO2SMARTPLUSETONE sens)
 {
-    systemConfig.setNumValue("PrimaryCfg|SPO2|SmartPulseTone", (int)sens);
+    currentConfig.setNumValue("SPO2|SmartPluseTone", (int)sens);
 }
 
 /**************************************************************************************************
@@ -601,7 +601,7 @@ void SPO2Param::setSmartPulseTone(SPO2SMARTPLUSETONE sens)
 SPO2SMARTPLUSETONE SPO2Param::getSmartPulseTone(void)
 {
     int sens = SPO2_SMART_PLUSE_TONE_OFF;
-    systemConfig.getNumValue("PrimaryCfg|SPO2|SmartPulseTone", sens);
+    currentConfig.getNumValue("SPO2|SmartPluseTone", sens);
     return (SPO2SMARTPLUSETONE)sens;
 }
 

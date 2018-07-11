@@ -21,14 +21,25 @@ public:
     explicit MenuSidebar(QWidget *parent = NULL);
     ~MenuSidebar();
 
-    /* add a string item */
+    /**
+     * @brief addItem add a string item
+     * @param text the string
+     */
     void addItem(const QString &text);
+
+    /**
+     * @brief setChecked check the string item
+     * @param text the string item text
+     * @return true if the string item exists
+     */
+    bool setChecked(const QString &text);
 
     /* reimplement */
     QSize sizeHint() const;
 
 signals:
     void selectItemChanged(const QString &text);
+    void selectItemChanged(int index);
 
 protected:
     void showEvent(QShowEvent *ev);

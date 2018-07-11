@@ -84,8 +84,9 @@ public:
     // 设置主麻醉的麻醉剂类型
     void setAnestheticType(AGAnaestheticType primary, AGAnaestheticType secondary);
 
-    // 设置波形速度
+    // 设置/获取波形速度
     void setSweepSpeed(AGSweepSpeed speed);
+    AGSweepSpeed getSweepSpeed(void);
 
     // 获取AG模块状态信息
     void AGModuleStatus(AGProviderStatus status);

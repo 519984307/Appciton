@@ -723,6 +723,10 @@
 		    <NotchFilter>0</NotchFilter>
 		    <SmartLeadOff>0</SmartLeadOff>
         </ECG>
+		<CO2>
+			<O2Compensation>55</O2Compensation>
+			<N2OCompensation>66</N2OCompensation>
+		</CO2>
         <ECG12Lead>
             <EmailOffset>0</EmailOffset>
         </ECG12Lead>

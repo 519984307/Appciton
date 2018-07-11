@@ -1,4 +1,14 @@
-﻿#pragma once
+﻿/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/10
+ **/
+
+#pragma once
 #include <QObject>
 #include "UnitManager.h"
 #include "ParamDefine.h"
@@ -7,9 +17,10 @@
 #include "PatientDefine.h"
 #include "AlarmDefine.h"
 
-struct LimitAlarmConfig {
+struct LimitAlarmConfig
+{
     LimitAlarmConfig()
-        :highLimit(0), maxHighLimit(0), minHighLimit(0),
+        : highLimit(0), maxHighLimit(0), minHighLimit(0),
           lowLimit(0), maxLowLimit(0), minLowLimit(0),
           scale(1), step(1)
     {}
@@ -17,7 +28,7 @@ struct LimitAlarmConfig {
     bool operator == (const LimitAlarmConfig &other) const
     {
         return this->highLimit == other.highLimit
-                && this->lowLimit == other.lowLimit;
+               && this->lowLimit == other.lowLimit;
     }
 
     int highLimit;
@@ -33,7 +44,7 @@ struct LimitAlarmConfig {
 struct ParamRulerConfig
 {
     ParamRulerConfig()
-        :upRuler(0), downRuler(0), scale(1)
+        : upRuler(0), minUpRuler(0), maxUpRuler(0), downRuler(0), minDownRuler(0), maxDownRuler(0), scale(1)
     {}
 
     int upRuler;
@@ -48,7 +59,7 @@ struct ParamRulerConfig
 struct LimitAlarmControl
 {
     LimitAlarmControl()
-        :priority(ALARM_PRIO_PROMPT),enable(false){}
+        : priority(ALARM_PRIO_PROMPT), enable(false) {}
 
     bool operator == (const LimitAlarmControl &other) const
     {
@@ -64,34 +75,33 @@ class AlarmConfig : public QObject
 {
     Q_OBJECT
 public:
-
     static AlarmConfig &getInstance();
 
-    //check whether limit alarm is enable
+    // check whether limit alarm is enable
     bool isLimitAlarmEnable(SubParamID subParamId);
 
-    //set limit alarm enable or not
+    // set limit alarm enable or not
     void setLimitAlarmEnable(SubParamID subParamId, bool enable);
 
-    //get the limit alarm priority
+    // get the limit alarm priority
     AlarmPriority getLimitAlarmPriority(SubParamID subParamId);
 
-    //set the limit alarm priority
+    // set the limit alarm priority
     void setLimitAlarmPriority(SubParamID subParamId, AlarmPriority prio);
 
-    //get the alarm config
+    // get the alarm config
     LimitAlarmConfig getLimitAlarmConfig(SubParamID subParamId, UnitType unit);
 
-    //get ruler config
+    // get ruler config
     ParamRulerConfig getParamRulerConfig(SubParamID subParamId, UnitType unit);
 
-    //set the alarm config
+    // set the alarm config
     void setLimitAlarmConfig(SubParamID subParamId, UnitType unit, const LimitAlarmConfig &config);
 
-    //utility function to convert the high limit to string
+    // utility function to convert the high limit to string
     static QString getHighLimitStr(const LimitAlarmConfig &config);
 
-    //utility function to convert the low limit to string
+    // utility function to convert the low limit to string
     static QString getLowLimitStr(const LimitAlarmConfig &config);
 
 private slots:

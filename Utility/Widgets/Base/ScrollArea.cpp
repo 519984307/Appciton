@@ -179,16 +179,20 @@ void ScrollArea::showEvent(QShowEvent *ev)
 void ScrollArea::scrollContentsBy(int dx, int dy)
 {
     QScrollArea::scrollContentsBy(dx, dy);
-    int y = d_ptr->scrollBar->y() - dy;
-    if (y < 0)
+    if (widget())
     {
-        y = 0;
+        int widgetHeight = widget()->height();
+        int viewportHeight = viewport()->height();
+        if (widgetHeight > viewportHeight)
+        {
+            // update the float bar position
+            int y = widget()->pos().y();
+            int range = widgetHeight - viewportHeight;
+            int barRange = viewportHeight - d_ptr->scrollBar->height();
+            int yPos = -barRange * y / range;
+            d_ptr->scrollBar->move(d_ptr->scrollBar->x(), yPos);
+        }
     }
-    else if (y > viewport()->height() - d_ptr->scrollBar->height())
-    {
-        y = viewport()->height() - d_ptr->scrollBar->height();
-    }
-    d_ptr->scrollBar->move(d_ptr->scrollBar->x(), y);
 }
 
 bool ScrollArea::viewportEvent(QEvent *ev)
@@ -226,4 +230,3 @@ bool ScrollArea::viewportEvent(QEvent *ev)
 
     return QScrollArea::viewportEvent(ev);
 }
-
