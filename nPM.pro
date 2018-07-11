@@ -410,6 +410,7 @@ SOURCES +=                                                                      
     Params/CO2Param/CO2Widgets/CO2WaveRuler.cpp                                 \
     Params/CO2Param/CO2Widgets/CO2TrendWidget.cpp                               \
     Params/CO2Param/CO2Widgets/CO2Menu.cpp                                      \
+    Params/CO2Param/CO2Widgets/CO2MenuContent.cpp                               \
     Params/IBPParam/IBPParam.cpp                                                \
     Params/IBPParam/IBPWidgets/IBPMenu.cpp                                      \
     Params/IBPParam/IBPWidgets/IBPWaveWidget.cpp                                \
@@ -890,6 +891,7 @@ HEADERS +=                                                                      
     Params/CO2Param/CO2Widgets/CO2WaveRuler.h                                   \
     Params/CO2Param/CO2Widgets/CO2TrendWidget.h                                 \
     Params/CO2Param/CO2Widgets/CO2Menu.h                                        \
+    Params/CO2Param/CO2Widgets/CO2MenuContent.h                                 \
     Params/IBPParam/IBPProviderIFace.h                                          \
     Params/IBPParam/IBPDefine.h                                                 \
     Params/IBPParam/IBPParam.h                                                  \

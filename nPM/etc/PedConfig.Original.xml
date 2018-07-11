@@ -98,7 +98,7 @@
     <IBP>
         <ChannelPressureEntitle1>0</ChannelPressureEntitle1>
         <ChannelPressureEntitle2>5</ChannelPressureEntitle2>
-        <SweepSpeed>1</SweepSpeed>
+        <IBPSweepSpeed>1</IBPSweepSpeed>
         <FilterMode>0</FilterMode>
         <Sensitivity>2</Sensitivity>
         <Calibration>84</Calibration>
@@ -130,10 +130,10 @@
         <CeroCalibration>0</CeroCalibration>
     </CO2>
     <CO>
-        <Ratio>542</Ratio>
+        <ratdio>0.555</ratdio>
         <InjectionTempSource>1</InjectionTempSource>
-        <InjectionTemp>200</InjectionTemp>
-        <InjectionVolumn>10</InjectionVolumn>
+        <InjectionTemp>23.2</InjectionTemp>
+        <InjectionVolumn>3</InjectionVolumn>
         <MeasureMode>1</MeasureMode>
     </CO>
     <RESP>

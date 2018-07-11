@@ -43,6 +43,7 @@
 #include "SPO2MenuContent.h"
 #include "AlarmLimitMenuContent.h"
 #include "NIBPMenuContent.h"
+#include "CO2MenuContent.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -137,6 +138,7 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     win.addMenuContent(new SPO2MenuContent);
     win.addMenuContent(new AlarmLimitMenuContent);
     win.addMenuContent(new NIBPMenuContent);
+    win.addMenuContent(new CO2MenuContent);
     win.exec();
 
     return;
