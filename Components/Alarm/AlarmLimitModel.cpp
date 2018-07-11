@@ -13,6 +13,8 @@
 #include "Utility.h"
 #include <QDebug>
 #include <QColor>
+#include <QResizeEvent>
+#include <QBrush>
 
 enum
 {
@@ -24,12 +26,18 @@ enum
     SECTION_NR
 };
 
+#define ROW_HEIGHT_HINT 40
+#define HEADER_HEIGHT_HINT 40
+
 class AlarmLimitModelPrivate
 {
 public:
-    AlarmLimitModelPrivate() {}
+    AlarmLimitModelPrivate()
+        : viewWidth(400)
+    {}
 
     QList<AlarmDataInfo> alarmDataInfos;
+    int viewWidth;
 };
 
 AlarmLimitModel::AlarmLimitModel(QObject *parent)
@@ -75,10 +83,16 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
 
     switch (role)
     {
-    case Qt::TextColorRole:
-        return QColor(Qt::black);
     case Qt::TextAlignmentRole:
-        return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
+        if (column == SECTION_PARAM_NAME)
+        {
+            return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
+        }
+        else
+        {
+            return QVariant(Qt::AlignCenter);
+        }
+        break;
     case Qt::DisplayRole:
     {
         switch (column)
@@ -119,6 +133,18 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
         }
     }
     break;
+
+    case Qt::ForegroundRole:
+        return QBrush(QColor("#2C405A"));
+        break;
+
+    case Qt::BackgroundRole:
+        return Qt::white;
+        break;
+
+    case Qt::SizeHintRole:
+        return QSize(10, ROW_HEIGHT_HINT);
+        break;
     default:
         break;
     }
@@ -131,7 +157,14 @@ QVariant AlarmLimitModel::headerData(int section, Qt::Orientation orientation, i
     switch (role)
     {
     case Qt::TextAlignmentRole:
-        return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
+        if (section == SECTION_PARAM_NAME)
+        {
+            return QVariant(Qt::AlignLeft | Qt::AlignVCenter);
+        }
+        else
+        {
+            return QVariant(Qt::AlignCenter);
+        }
         break;
     case Qt::DisplayRole:
         if (orientation == Qt::Horizontal)
@@ -139,24 +172,47 @@ QVariant AlarmLimitModel::headerData(int section, Qt::Orientation orientation, i
             switch (section)
             {
             case SECTION_PARAM_NAME:
-                return trs("Parameters");
+                return trs("Parameter");
                 break;
             case SECTION_STATUS:
-                return trs("Status");
+                return trs("AlarmStatus");
                 break;
             case SECTION_HIGH_LIMIT:
-                return trs("HighLimit");
+                return trs("UpperLimit");
                 break;
             case SECTION_LOW_LIMIT:
-                return trs("LowLimit");
+                return trs("LowerLimit");
                 break;
             case SECTION_LEVEL:
-                return trs("Level");
+                return trs("AlarmPriority");
                 break;
             default:
                 break;
             }
         }
+        break;
+    case Qt::SizeHintRole:
+        if (orientation == Qt::Horizontal)
+        {
+            int w = d_ptr->viewWidth / (SECTION_NR + 1);
+            if (section == SECTION_PARAM_NAME)
+            {
+                w += w;
+            }
+            else if (section == SECTION_NR - 1)
+            {
+                // add the remains for the last section
+                w += d_ptr->viewWidth % (SECTION_NR + 1);
+            }
+
+            return QSize(w, HEADER_HEIGHT_HINT);
+        }
+        break;
+    case Qt::BackgroundRole:
+        return QBrush(QColor(247, 247, 247));
+        break;
+    case Qt::ForegroundRole:
+        return QBrush(QColor("#2C405A"));
         break;
     default:
         break;
@@ -180,4 +236,26 @@ void AlarmLimitModel::setupAlarmDataInfos(const QList<AlarmDataInfo> &dataInfos)
     beginResetModel();
     d_ptr->alarmDataInfos = dataInfos;
     endResetModel();
+}
+
+bool AlarmLimitModel::eventFilter(QObject *obj, QEvent *ev)
+{
+    if (obj->isWidgetType() && ev->type() == QEvent::Resize)
+    {
+        // update the header width
+        QResizeEvent *re = static_cast<QResizeEvent *>(ev);
+        d_ptr->viewWidth = re->size().width();
+        emit headerDataChanged(Qt::Horizontal, 0, SECTION_NR);
+    }
+    return QObject::eventFilter(obj, ev);
+}
+
+int AlarmLimitModel::getRowHeightHint() const
+{
+    return ROW_HEIGHT_HINT;
+}
+
+int AlarmLimitModel::getHeaderHeightHint() const
+{
+    return HEADER_HEIGHT_HINT;
 }

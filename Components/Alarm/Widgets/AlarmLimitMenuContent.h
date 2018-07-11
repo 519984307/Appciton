@@ -26,6 +26,9 @@ public:
     /* reimplement */
     void layoutExec();
 
+private slots:
+    void onbtnClick();
+
 private:
     AlarmLimitMenuContentPrivate *const d_ptr;
 };

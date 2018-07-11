@@ -55,6 +55,21 @@ public:
      */
     void setupAlarmDataInfos(const QList<AlarmDataInfo> &dataInfos);
 
+    /* reimplement */
+    bool eventFilter(QObject *obj, QEvent *ev);
+
+    /**
+     * @brief getRowHeight get the row height hint
+     * @return row height hint
+     */
+    int getRowHeightHint() const;
+
+    /**
+     * @brief getHeaderHeightHint get the header height hint
+     * @return header height hint
+     */
+    int getHeaderHeightHint() const;
+
 private:
     AlarmLimitModelPrivate *const d_ptr;
 };

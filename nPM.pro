@@ -110,6 +110,8 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/PopupList.cpp                                          \
     Utility/Widgets/Base/PopupListItem.cpp                                      \
     Utility/Widgets/Base/TableView.cpp                                          \
+    Utility/Widgets/Base/TableHeaderView.cpp                                    \
+    Utility/Widgets/Base/TableViewItemDelegate.cpp                              \
     Utility/Widgets/Base/MenuWindow.cpp                                         \
     Utility/Widgets/Base/MenuSidebar.cpp                                        \
     Utility/Widgets/Base/MenuSidebarItem.cpp                                    \
@@ -547,6 +549,8 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/PopupList.h                                            \
     Utility/Widgets/Base/PopupListItem.h                                        \
     Utility/Widgets/Base/TableView.h                                            \
+    Utility/Widgets/Base/TableHeaderView.h                                      \
+    Utility/Widgets/Base/TableViewItemDelegate.h                                \
     Utility/Widgets/Base/MenuWindow.h                                           \
     Utility/Widgets/Base/MenuSidebar.h                                          \
     Utility/Widgets/Base/MenuSidebarItem.h                                      \
