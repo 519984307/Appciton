@@ -13,17 +13,19 @@
 #include <QPainter>
 #include <QStyle>
 #include <QKeyEvent>
+#include <ThemeManager.h>
 
 #define PADDING 4
 #define ICON_TEXT_PADDING 4
+#define DEFAULT_BUTTON_HEIGHT 40
 
 class ButtonPrivate
 {
 public:
     ButtonPrivate()
         : m_btnStyle(Button::ButtonTextBesideIcon),
-          m_borderWidth(1),
-          m_borderRadius(0)
+          m_borderWidth(themeManger.getBorderWidth()),
+          m_borderRadius(themeManger.getBorderRadius())
     {}
 
     Button::ButtonStyle m_btnStyle;
@@ -37,6 +39,9 @@ Button::Button(const QString &text, const QIcon &icon, QWidget *parent)
 {
     setText(text);
     setIcon(icon);
+    QPalette pal = palette();
+    themeManger.setupPalette(ThemeManager::ControlButton, pal);
+    setPalette(pal);
 }
 
 Button::~Button()
@@ -136,6 +141,11 @@ QSize Button::sizeHint() const
     break;
     }
 
+    if (hint.height() < DEFAULT_BUTTON_HEIGHT)
+    {
+        hint.setHeight(DEFAULT_BUTTON_HEIGHT);
+    }
+
     return hint;
 }
 
@@ -149,14 +159,14 @@ void Button::paintEvent(QPaintEvent *ev)
 
     if (!isEnabled())
     {
-        bgColor = pal.color(QPalette::Disabled, QPalette::Button);
-        textColor = pal.color(QPalette::Disabled, QPalette::ButtonText);
+        bgColor = pal.color(QPalette::Disabled, QPalette::Window);
+        textColor = pal.color(QPalette::Disabled, QPalette::WindowText);
         icoMode = QIcon::Disabled;
     }
     else if ((isCheckable() && isChecked()) || isDown())
     {
-        bgColor = pal.color(QPalette::Active, QPalette::Button);
-        textColor = pal.color(QPalette::Active, QPalette::ButtonText);
+        bgColor = pal.color(QPalette::Active, QPalette::Window);
+        textColor = pal.color(QPalette::Active, QPalette::WindowText);
         icoMode = QIcon::Selected;
     }
     else if (hasFocus())
@@ -167,8 +177,8 @@ void Button::paintEvent(QPaintEvent *ev)
     }
     else
     {
-        bgColor = pal.color(QPalette::Inactive, QPalette::Button);
-        textColor = pal.color(QPalette::Inactive, QPalette::ButtonText);
+        bgColor = pal.color(QPalette::Inactive, QPalette::Window);
+        textColor = pal.color(QPalette::Inactive, QPalette::WindowText);
         icoMode = QIcon::Normal;
     }
 
@@ -180,14 +190,14 @@ void Button::paintEvent(QPaintEvent *ev)
 
     if (d_ptr->m_borderWidth)
     {
-        QPen pen(pal.color(QPalette::Inactive, QPalette::WindowText), d_ptr->m_borderWidth);
+        QPen pen(pal.color(QPalette::Inactive, QPalette::Shadow), d_ptr->m_borderWidth);
         if (hasFocus())
         {
-            pen.setColor(pal.color(QPalette::Active, QPalette::WindowText));
+            pen.setColor(pal.color(QPalette::Active, QPalette::Shadow));
         }
         else if (!isEnabled())
         {
-            pen.setColor(pal.color(QPalette::Disabled, QPalette::WindowText));
+            pen.setColor(pal.color(QPalette::Disabled, QPalette::Shadow));
         }
 
         painter.setPen(pen);
