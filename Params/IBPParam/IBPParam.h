@@ -89,6 +89,7 @@ public:
 
     // 设置/获取波形速度。
     void setSweepSpeed(IBPSweepSpeed speed);
+    IBPSweepSpeed getSweepSpeed(void);
 
     // 设置标名。
     void setEntitle(IBPPressureName entitle, IBPSignalInput IBP);
@@ -98,9 +99,11 @@ public:
 
     // 设置滤波
     void setFilter(IBPFilterMode filter);
+    IBPFilterMode getFilter(void);
 
     // 设置灵敏度
     void setSensitivity(IBPSensitivity sensitivity);
+    IBPSensitivity getSensitivity(void);
 
     // 设置获取IBP计算结果值
     IBPParamInfo getParamData(IBPSignalInput IBP);
