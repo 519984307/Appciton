@@ -417,6 +417,7 @@ SOURCES +=                                                                      
     Params/COParam/COParam.cpp                                                  \
     Params/COParam/COWidgets/COMenu.cpp                                         \
     Params/COParam/COWidgets/COTrendWidget.cpp                                  \
+    Params/COParam/COWidgets/COMenuContent.cpp                                  \
     Params/NIBPParam/NIBPStateMachine/NIBPState.cpp                             \
     Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.cpp                      \
     Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorErrorState.cpp \
@@ -895,6 +896,7 @@ HEADERS +=                                                                      
     Params/COParam/COParam.h                                                    \
     Params/COParam/COWidgets/COMenu.h                                           \
     Params/COParam/COWidgets/COTrendWidget.h                                    \
+    Params/COParam/COWidgets/COMenuContent.h                                    \
     Params/NIBPParam/NIBPStateMachine/NIBPState.h                               \
     Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.h                        \
     Params/NIBPParam/NIBPStateMachine/NIBPStateMachineDefine.h                  \

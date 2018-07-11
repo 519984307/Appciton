@@ -1,5 +1,6 @@
 #include "COParam.h"
 #include "COTrendWidget.h"
+#include "IConfig.h"
 
 COParam *COParam::_selfObj = NULL;
 
@@ -114,7 +115,15 @@ void COParam::setCOTrendWidget(COTrendWidget *trendWidget)
  *************************************************************************************************/
 void COParam::setCORatio(unsigned short coRatio)
 {
+    currentConfig.setNumValue("CO|Ratio", (unsigned)coRatio);
     _provider->setDuctRatio(coRatio);
+}
+
+unsigned short COParam::getCORatio()
+{
+    unsigned ratio = 0;
+    currentConfig.getNumValue("CO|Ratio", ratio);
+    return ratio;
 }
 
 /**************************************************************************************************
@@ -122,7 +131,23 @@ void COParam::setCORatio(unsigned short coRatio)
  *************************************************************************************************/
 void COParam::setTempSource(COTiMode source, unsigned short temp)
 {
+    currentConfig.setNumValue("CO|InjectionTempSource", (int)source);
+    currentConfig.setNumValue("CO|InjectionTemp", (unsigned)temp);
     _provider->setInputMode(source, temp);
+}
+
+COTiMode COParam::getTempSource()
+{
+    int source = CO_TI_MODE_AUTO;
+    currentConfig.getNumValue("CO|InjectionTempSource", source);
+    return (COTiMode)source;
+}
+
+unsigned short COParam::getInjectionTemp()
+{
+    int temp = 0;
+    currentConfig.getNumValue("CO|InjectionTemp", temp);
+    return temp;
 }
 
 /**************************************************************************************************
@@ -130,7 +155,15 @@ void COParam::setTempSource(COTiMode source, unsigned short temp)
  *************************************************************************************************/
 void COParam::setInjectionVolumn(unsigned char volumn)
 {
+    currentConfig.setNumValue("CO|InjectionVolumn", (unsigned)volumn);
     _provider->setVolume(volumn);
+}
+
+unsigned char COParam::getInjectionVolumn()
+{
+    int volumn = 0;
+    currentConfig.getNumValue("CO|InjectionVolumn", volumn);
+    return volumn;
 }
 
 /**************************************************************************************************
@@ -138,7 +171,15 @@ void COParam::setInjectionVolumn(unsigned char volumn)
  *************************************************************************************************/
 void COParam::measureCtrl(COInstCtl sta)
 {
+    currentConfig.setNumValue("CO|MeasureMode", (int)sta);
     _provider->measureCtrl(sta);
+}
+
+COInstCtl COParam::getMeasureCtrl()
+{
+    int ctrl = CO_INST_START;
+    currentConfig.getNumValue("CO|MeasureMode", ctrl);
+    return (COInstCtl)ctrl;
 }
 
 /**************************************************************************************************

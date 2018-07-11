@@ -124,10 +124,10 @@
         <CeroCalibration>0</CeroCalibration>
     </CO2>
     <CO>
-        <ratdio>0.555</ratdio>
+        <Ratio>542</Ratio>
         <InjectionTempSource>1</InjectionTempSource>
-        <InjectionTemp>23.2</InjectionTemp>
-        <InjectionVolumn>3</InjectionVolumn>
+        <InjectionTemp>200</InjectionTemp>
+        <InjectionVolumn>10</InjectionVolumn>
         <MeasureMode>1</MeasureMode>
     </CO>
     <RESP>
