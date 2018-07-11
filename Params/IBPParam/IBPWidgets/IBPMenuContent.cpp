@@ -25,7 +25,7 @@ class IBPMenuContentPrivate
 public:
     enum MenuItem
     {
-        ITEM_CBO_ENTITLE_1,
+        ITEM_CBO_ENTITLE_1 = 1,
         ITEM_CBO_ENTITLE_2,
         ITEM_CBO_SWEEP_SPEED,
         ITEM_CBO_FILTER_MODE,
@@ -33,6 +33,8 @@ public:
         ITEM_CBO_CALIB_ZERO,
         ITEM_CBO_CALIBRATION
     };
+
+    IBPMenuContentPrivate() {}
 
     // load settings
     void loadOptions();
@@ -177,27 +179,27 @@ void IBPMenuContent::layoutExec()
 
     // 校零
     label = new QLabel(trs("IBPZeroCalib"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count() + 1, 0);
+    layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count(), 0);
     button = new Button(trs("IBPZeroStart"));
     button->setButtonStyle(Button::ButtonTextOnly);
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_CALIB_ZERO);
     button->setProperty("Item", qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->combos.count() + d_ptr->buttons.count() + 1, 1);
+    layout->addWidget(button, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
     d_ptr->buttons.insert(IBPMenuContentPrivate::ITEM_CBO_CALIB_ZERO, button);
 
     // 校准
     label = new QLabel(trs("ServiceCalibrate"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count() + 1, 0);
+    layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count(), 0);
     button = new Button(trs("80"));
     button->setButtonStyle(Button::ButtonTextOnly);
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_CALIBRATION);
     button->setProperty("Item", qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->combos.count() + d_ptr->buttons.count() + 1, 1);
+    layout->addWidget(button, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
     d_ptr->buttons.insert(IBPMenuContentPrivate::ITEM_CBO_CALIBRATION, button);
 
-    layout->setRowStretch(d_ptr->combos.count() + d_ptr->buttons.count() + 1, 1);
+    layout->setRowStretch(d_ptr->combos.count() + d_ptr->buttons.count(), 1);
 }
 
 void IBPMenuContent::onComboBoxIndexChanged(int index)

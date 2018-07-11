@@ -422,6 +422,7 @@ SOURCES +=                                                                      
     Params/COParam/COParam.cpp                                                  \
     Params/COParam/COWidgets/COMenu.cpp                                         \
     Params/COParam/COWidgets/COTrendWidget.cpp                                  \
+    Params/COParam/COWidgets/COMenuContent.cpp                                  \
     Params/NIBPParam/NIBPStateMachine/NIBPState.cpp                             \
     Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.cpp                      \
     Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorErrorState.cpp \
@@ -452,6 +453,7 @@ SOURCES +=                                                                      
     Params/SPO2Param/SPO2Widgets/SPO2TrendWidget.cpp                            \
     Params/SPO2Param/SPO2Widgets/SPO2BarWidget.cpp                              \
     Params/SPO2Param/SPO2Widgets/SPO2Menu.cpp                                   \
+    Params/SPO2Param/SPO2Widgets/SPO2MenuContent.cpp                            \
     Params/TEMPParam/TEMPParam.cpp                                              \
     Params/TEMPParam/TEMPAlarm.cpp                                              \
     Params/TEMPParam/TEMPWidgets/TEMPTrendWidget.cpp                            \
@@ -906,6 +908,7 @@ HEADERS +=                                                                      
     Params/COParam/COParam.h                                                    \
     Params/COParam/COWidgets/COMenu.h                                           \
     Params/COParam/COWidgets/COTrendWidget.h                                    \
+    Params/COParam/COWidgets/COMenuContent.h                                    \
     Params/NIBPParam/NIBPStateMachine/NIBPState.h                               \
     Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.h                        \
     Params/NIBPParam/NIBPStateMachine/NIBPStateMachineDefine.h                  \
@@ -946,6 +949,7 @@ HEADERS +=                                                                      
     Params/SPO2Param/SPO2Widgets/SPO2TrendWidget.h                              \
     Params/SPO2Param/SPO2Widgets/SPO2BarWidget.h                                \
     Params/SPO2Param/SPO2Widgets/SPO2Menu.h                                     \
+    Params/SPO2Param/SPO2Widgets/SPO2MenuContent.h                              \
     Params/TEMPParam/TEMPDefine.h                                               \
     Params/TEMPParam/TEMPSymbol.h                                               \
     Params/TEMPParam/TEMPParam.h                                                \

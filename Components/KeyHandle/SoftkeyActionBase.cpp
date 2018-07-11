@@ -39,6 +39,8 @@
 #include "RESPMenuContent.h"
 #include "AGMenuContent.h"
 #include "IBPMenuContent.h"
+#include "COMenuContent.h"
+#include "SPO2MenuContent.h"
 #include "AlarmLimitMenuContent.h"
 #include "NIBPMenuContent.h"
 
@@ -131,6 +133,8 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     win.addMenuContent(new RESPMenuContent);
     win.addMenuContent(new AGMenuContent);
     win.addMenuContent(new IBPMenuContent);
+    win.addMenuContent(new COMenuContent);
+    win.addMenuContent(new SPO2MenuContent);
     win.addMenuContent(new AlarmLimitMenuContent);
     win.addMenuContent(new NIBPMenuContent);
     win.exec();
