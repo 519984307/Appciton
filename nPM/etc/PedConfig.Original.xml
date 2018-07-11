@@ -88,11 +88,17 @@
     <AG>
          <AGModule>0</AGModule>
          <SweepSpeed>1</SweepSpeed>
+         <OperationMode>0</OperationMode>
+         <UnitSetUp>7</UnitSetUp>
+         <ApneaAlarm>0</ApneaAlarm>
+         <O2Compensation>1</O2Compensation>
+         <N2OCompensation>0</N2OCompensation>
+		 <Anesthetic>0</Anesthetic>
     </AG>
     <IBP>
         <ChannelPressureEntitle1>0</ChannelPressureEntitle1>
         <ChannelPressureEntitle2>5</ChannelPressureEntitle2>
-        <SweepSpeed>1</SweepSpeed>
+        <IBPSweepSpeed>1</IBPSweepSpeed>
         <FilterMode>0</FilterMode>
         <Sensitivity>2</Sensitivity>
         <Calibration>84</Calibration>

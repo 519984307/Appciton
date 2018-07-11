@@ -794,12 +794,6 @@ SelectSnapshotsToPrint,选择快照打印,Select Snapshots to Print
 SelectSnapshotsToTransfer,选择快照传输,Select Snapshots to Transfer
 SelectSingleIncidentToSelectSnapshots,选择一个营救事件以选择快照！,Select Single Incident to Select Snapshots to print!
 PrintSnapshot,打印快照,Print Snapshot
-TrendTable,趋势表,Trend Table  
-TrendGraph,趋势图,Trend Graph
-EventReview,事件回顾,Event Review
-OxyCRGEventReview,呼吸氧合事件回顾,OxyCRG Event Review
-HistoryTrend,历史趋势,History Trend
-HistoryDataList,历史数据列表,History Data List
 PatTrendData,病人趋势数据,Patient Trend Data
 TrendTableSet,趋势表设置,Trend Table Set
 ResolutionRatio,分辨率,Resolution Ratio
@@ -1237,6 +1231,11 @@ SuccessToLoad,加载成功,Success ToLoad
 Load,加载,Load
 View,查看,View
 LoadConfigDesc,加载配置设置,Load Config Desc
-NotchFilter,工频,Notch Filter
-ECGPaceMarker,起搏器,Pace Marker
-ECGQRSPRToneVolume,QRS/PR 音量,QRS/PR Volume
+Trend1,趋势图1 ,Trend 1
+Trend2,趋势图2,Trend 2
+OxyCRGWidgetSetup,呼吸氧和设置,OxyCRGWidget Setup
+Wave,波形,Wave
+CO2Low,二氧化碳低,CO2 Low
+CO2High,二氧化碳高,CO2 High
+RESPLow,呼吸低,RESP Low
+RESPHigh,呼吸高,RESP High

@@ -326,6 +326,7 @@ SOURCES +=                                                                      
     Components/Maintain/Supervisor/Menu/SupervisorAlarmLimitMenu.cpp            \
     Components/Maintain/Supervisor/Menu/SupervisorAlarmMenu.cpp                 \
     Components/Maintain/Supervisor/Menu/SupervisorWifiMenu.cpp                  \
+    Components/Maintain/Supervisor/Menu/DisplayMenuContent.cpp                  \
     Components/Maintain/Supervisor/SupervisorConfigManager.cpp                  \
     Components/Maintain/Supervisor/SupervisorEntrance.cpp                       \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.cpp                \
@@ -391,6 +392,9 @@ SOURCES +=                                                                      
     Params/AGParam/AGWidgets/AGWaveRuler.cpp                                    \
     Params/AGParam/AGWidgets/AGWaveWidget.cpp                                   \
     Params/AGParam/AGWidgets/AGMenuContent.cpp                                  \
+    Params/AGParam/AGWidgets/CO2SetAGMenu.cpp                                   \
+    Params/AGParam/AGWidgets/N2OSetAGMenu.cpp                                   \
+    Params/AGParam/AGWidgets/HalSetAGMenu.cpp                                   \
     Params/AGParam/AGParam.cpp                                                  \
     Params/AGParam/AGAlarm.cpp                                                  \
     Params/ECGParam/ECGAlarm.cpp                                                \
@@ -409,6 +413,7 @@ SOURCES +=                                                                      
     Params/CO2Param/CO2Widgets/CO2WaveRuler.cpp                                 \
     Params/CO2Param/CO2Widgets/CO2TrendWidget.cpp                               \
     Params/CO2Param/CO2Widgets/CO2Menu.cpp                                      \
+    Params/CO2Param/CO2Widgets/CO2MenuContent.cpp                               \
     Params/IBPParam/IBPParam.cpp                                                \
     Params/IBPParam/IBPWidgets/IBPMenu.cpp                                      \
     Params/IBPParam/IBPWidgets/IBPWaveWidget.cpp                                \
@@ -421,6 +426,7 @@ SOURCES +=                                                                      
     Params/COParam/COParam.cpp                                                  \
     Params/COParam/COWidgets/COMenu.cpp                                         \
     Params/COParam/COWidgets/COTrendWidget.cpp                                  \
+    Params/COParam/COWidgets/COMenuContent.cpp                                  \
     Params/NIBPParam/NIBPStateMachine/NIBPState.cpp                             \
     Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.cpp                      \
     Params/NIBPParam/NIBPStateMachine/NIBPMonitorStateMachine/NIBPMonitorErrorState.cpp \
@@ -443,6 +449,7 @@ SOURCES +=                                                                      
     Params/NIBPParam/NIBPWidgets/NIBPTrendWidget.cpp                            \
     Params/NIBPParam/NIBPWidgets/NIBPDataTrendWidget.cpp                        \
     Params/NIBPParam/NIBPWidgets/NIBPMenu.cpp                                   \
+    Params/NIBPParam/NIBPWidgets/NIBPMenuContent.cpp                            \
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTime.cpp                          \
     Params/SPO2Param/SPO2Param.cpp                                              \
     Params/SPO2Param/SPO2Alarm.cpp                                              \
@@ -450,6 +457,7 @@ SOURCES +=                                                                      
     Params/SPO2Param/SPO2Widgets/SPO2TrendWidget.cpp                            \
     Params/SPO2Param/SPO2Widgets/SPO2BarWidget.cpp                              \
     Params/SPO2Param/SPO2Widgets/SPO2Menu.cpp                                   \
+    Params/SPO2Param/SPO2Widgets/SPO2MenuContent.cpp                            \
     Params/TEMPParam/TEMPParam.cpp                                              \
     Params/TEMPParam/TEMPAlarm.cpp                                              \
     Params/TEMPParam/TEMPWidgets/TEMPTrendWidget.cpp                            \
@@ -790,6 +798,7 @@ HEADERS +=                                                                      
     Components/Maintain/Supervisor/Menu/SupervisorAlarmLimitMenu.h              \
     Components/Maintain/Supervisor/Menu/SupervisorAlarmMenu.h                   \
     Components/Maintain/Supervisor/Menu/SupervisorWifiMenu.h                    \
+    Components/Maintain/Supervisor/Menu/DisplayMenuContent.h                    \
     Components/Maintain/Supervisor/SupervisorConfigManager.h                    \
     Components/Maintain/Supervisor/SupervisorEntrance.h                         \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.h                  \
@@ -858,6 +867,9 @@ HEADERS +=                                                                      
     Params/AGParam/AGWidgets/AGWaveRuler.h                                      \
     Params/AGParam/AGWidgets/AGWaveWidget.h                                     \
     Params/AGParam/AGWidgets/AGMenuContent.h                                    \
+    Params/AGParam/AGWidgets/CO2SetAGMenu.h                                     \
+    Params/AGParam/AGWidgets/N2OSetAGMenu.h                                     \
+    Params/AGParam/AGWidgets/HalSetAGMenu.h                                     \
     Params/AGParam/AGDefine.h                                                   \
     Params/AGParam/AGParam.h                                                    \
     Params/AGParam/AGProviderIFace.h                                            \
@@ -885,6 +897,7 @@ HEADERS +=                                                                      
     Params/CO2Param/CO2Widgets/CO2WaveRuler.h                                   \
     Params/CO2Param/CO2Widgets/CO2TrendWidget.h                                 \
     Params/CO2Param/CO2Widgets/CO2Menu.h                                        \
+    Params/CO2Param/CO2Widgets/CO2MenuContent.h                                 \
     Params/IBPParam/IBPProviderIFace.h                                          \
     Params/IBPParam/IBPDefine.h                                                 \
     Params/IBPParam/IBPParam.h                                                  \
@@ -903,6 +916,7 @@ HEADERS +=                                                                      
     Params/COParam/COParam.h                                                    \
     Params/COParam/COWidgets/COMenu.h                                           \
     Params/COParam/COWidgets/COTrendWidget.h                                    \
+    Params/COParam/COWidgets/COMenuContent.h                                    \
     Params/NIBPParam/NIBPStateMachine/NIBPState.h                               \
     Params/NIBPParam/NIBPStateMachine/NIBPStateMachine.h                        \
     Params/NIBPParam/NIBPStateMachine/NIBPStateMachineDefine.h                  \
@@ -932,6 +946,7 @@ HEADERS +=                                                                      
     Params/NIBPParam/NIBPWidgets/NIBPTrendWidget.h                              \
     Params/NIBPParam/NIBPWidgets/NIBPDataTrendWidget.h                          \
     Params/NIBPParam/NIBPWidgets/NIBPMenu.h                                     \
+    Params/NIBPParam/NIBPWidgets/NIBPMenuContent.h                              \
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTime.h                            \
     Params/SPO2Param/SPO2Param.h                                                \
     Params/SPO2Param/SPO2Alarm.h                                                \
@@ -942,6 +957,7 @@ HEADERS +=                                                                      
     Params/SPO2Param/SPO2Widgets/SPO2TrendWidget.h                              \
     Params/SPO2Param/SPO2Widgets/SPO2BarWidget.h                                \
     Params/SPO2Param/SPO2Widgets/SPO2Menu.h                                     \
+    Params/SPO2Param/SPO2Widgets/SPO2MenuContent.h                              \
     Params/TEMPParam/TEMPDefine.h                                               \
     Params/TEMPParam/TEMPSymbol.h                                               \
     Params/TEMPParam/TEMPParam.h                                                \

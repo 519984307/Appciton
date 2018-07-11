@@ -25,4 +25,22 @@ public:
         };
         return symbol[index];
     }
+
+    static const char *convert(COTiMode index)
+    {
+        static const char *symbol[CO_TI_MODE_NR] =
+        {
+            "Auto", "Manual"
+        };
+        return symbol[index];
+    }
+
+    static const char *convert(COInstCtl index)
+    {
+        static const char *symbol[CO_INST_NR] =
+        {
+            "End", "Start", "Interrupt"
+        };
+        return symbol[index];
+    }
 };

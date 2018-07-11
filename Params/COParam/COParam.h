@@ -37,15 +37,20 @@ public:
 public:// Data sent by host
     // C.O.系数
     void setCORatio(unsigned short coRatio);
+    unsigned short getCORatio(void);
 
     // set source of injection temp.
     void setTempSource(COTiMode source, unsigned short temp = 0);
+    COTiMode getTempSource(void);
+    unsigned short getInjectionTemp(void);
 
     // set injection volumn.
     void setInjectionVolumn(unsigned char volumn);
+    unsigned char getInjectionVolumn(void);
 
     // measure control start stop  and interrupt.
     void measureCtrl(COInstCtl sta);
+    COInstCtl getMeasureCtrl(void);
 
 public:// Data sent by module
     // C.O. and C.I. data content.
