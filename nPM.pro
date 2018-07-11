@@ -109,6 +109,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/ComboBox.cpp                                           \
     Utility/Widgets/Base/PopupList.cpp                                          \
     Utility/Widgets/Base/PopupListItem.cpp                                      \
+    Utility/Widgets/Base/TableView.cpp                                          \
     Utility/Widgets/Base/MenuWindow.cpp                                         \
     Utility/Widgets/Base/MenuSidebar.cpp                                        \
     Utility/Widgets/Base/MenuSidebarItem.cpp                                    \
@@ -209,6 +210,7 @@ SOURCES +=                                                                      
     Components/Alarm/AlarmConfig.cpp                                            \
     Components/Alarm/AlarmIndicator.cpp                                         \
     Components/Alarm/AlarmParamIFace.cpp                                        \
+    Components/Alarm/AlarmLimitModel.cpp                                        \
     Components/Alarm/AlarmStateMachine/AlarmStateMachine.cpp                    \
     Components/Alarm/AlarmStateMachine/AlarmState.cpp                           \
     Components/Alarm/AlarmStateMachine/AlarmNormalState.cpp                     \
@@ -217,6 +219,7 @@ SOURCES +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.cpp                   \
     Components/Alarm/Widgets/AlarmInfoPopListView.cpp                           \
     Components/Alarm/Widgets/AlarmLimitMenu.cpp                                 \
+    Components/Alarm/Widgets/AlarmLimitMenuContent.cpp                          \
     Components/Alarm/Widgets/AlarmMuteBarWidget.cpp                             \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.cpp                         \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.cpp                          \
@@ -306,7 +309,6 @@ SOURCES +=                                                                      
     Components/NetworkManager/WpaCtrl/utils/os_unix.c                           \
     Components/NetworkManager/WpaCtrl/WpaCtrl.cpp                               \
     Components/NetworkManager/Widgets/LabeledLabel.cpp                          \
-    Components/NetworkManager/Widgets/TableWidget.cpp                           \
     Components/NetworkManager/Widgets/WiFiProfileEditor.cpp                     \
     Components/NetworkManager/Widgets/WiFiProfileMenu.cpp                       \
     Components/ActivityLog/ActivityLogManager.cpp                               \
@@ -387,6 +389,9 @@ SOURCES +=                                                                      
     Params/AGParam/AGWidgets/AGWaveRuler.cpp                                    \
     Params/AGParam/AGWidgets/AGWaveWidget.cpp                                   \
     Params/AGParam/AGWidgets/AGMenuContent.cpp                                  \
+    Params/AGParam/AGWidgets/CO2SetAGMenu.cpp                                   \
+    Params/AGParam/AGWidgets/N2OSetAGMenu.cpp                                   \
+    Params/AGParam/AGWidgets/HalSetAGMenu.cpp                                   \
     Params/AGParam/AGParam.cpp                                                  \
     Params/AGParam/AGAlarm.cpp                                                  \
     Params/ECGParam/ECGAlarm.cpp                                                \
@@ -545,6 +550,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/ComboBox.h                                             \
     Utility/Widgets/Base/PopupList.h                                            \
     Utility/Widgets/Base/PopupListItem.h                                        \
+    Utility/Widgets/Base/TableView.h                                            \
     Utility/Widgets/Base/MenuWindow.h                                           \
     Utility/Widgets/Base/MenuSidebar.h                                          \
     Utility/Widgets/Base/MenuSidebarItem.h                                      \
@@ -652,6 +658,7 @@ HEADERS +=                                                                      
     Components/Alarm/AlarmDefine.h                                              \
     Components/Alarm/AlarmIndicator.h                                           \
     Components/Alarm/AlarmParamIFace.h                                          \
+    Components/Alarm/AlarmLimitModel.h                                          \
     Components/Alarm/AlarmSymbol.h                                              \
     Components/Alarm/AlarmStateMachine/AlarmStateMachine.h                      \
     Components/Alarm/AlarmStateMachine/AlarmState.h                             \
@@ -662,6 +669,7 @@ HEADERS +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.h                     \
     Components/Alarm/Widgets/AlarmInfoPopListView.h                             \
     Components/Alarm/Widgets/AlarmLimitMenu.h                                   \
+    Components/Alarm/Widgets/AlarmLimitMenuContent.h                            \
     Components/Alarm/Widgets/AlarmMuteBarWidget.h                               \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.h                           \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.h                            \
@@ -767,7 +775,6 @@ HEADERS +=                                                                      
     Components/NetworkManager/NetworkManager.h                                  \
     Components/NetworkManager/WpaCtrl/WpaCtrl.h                                 \
     Components/NetworkManager/Widgets/LabeledLabel.h                            \
-    Components/NetworkManager/Widgets/TableWidget.h                             \
     Components/NetworkManager/Widgets/WiFiProfileEditor.h                       \
     Components/NetworkManager/Widgets/WiFiProfileMenu.h                         \
     Components/ActivityLog/ActivityLogManager.h                                 \
@@ -851,6 +858,9 @@ HEADERS +=                                                                      
     Params/AGParam/AGWidgets/AGWaveRuler.h                                      \
     Params/AGParam/AGWidgets/AGWaveWidget.h                                     \
     Params/AGParam/AGWidgets/AGMenuContent.h                                    \
+    Params/AGParam/AGWidgets/CO2SetAGMenu.h                                     \
+    Params/AGParam/AGWidgets/N2OSetAGMenu.h                                     \
+    Params/AGParam/AGWidgets/HalSetAGMenu.h                                     \
     Params/AGParam/AGDefine.h                                                   \
     Params/AGParam/AGParam.h                                                    \
     Params/AGParam/AGProviderIFace.h                                            \

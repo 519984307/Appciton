@@ -40,7 +40,7 @@
 #include "AGMenuContent.h"
 #include "IBPMenuContent.h"
 #include "COMenuContent.h"
-
+#include "AlarmLimitMenuContent.h"
 /***************************************************************************************************
  * 所有的快捷按键定义。
  **************************************************************************************************/
@@ -131,6 +131,7 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     win.addMenuContent(new AGMenuContent);
     win.addMenuContent(new IBPMenuContent);
     win.addMenuContent(new COMenuContent);
+    win.addMenuContent(new AlarmLimitMenuContent);
     win.exec();
 
     return;
