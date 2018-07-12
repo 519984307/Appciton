@@ -9,7 +9,6 @@ class WiFiProfileMenuContent: public MenuContent
 {
     Q_OBJECT
 public:
-    static WiFiProfileMenuContent &construction();
     explicit WiFiProfileMenuContent();
     ~WiFiProfileMenuContent();
 
@@ -37,4 +36,3 @@ private:
     const QScopedPointer<WiFiProfileMenuContentPrivate> d_ptr;
 };
 
-#define wifiProfileMenuContent (WiFiProfileMenuContent::construction())
