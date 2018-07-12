@@ -1096,7 +1096,10 @@ NIBPPressureTest,NIBP压力测试,NIBP Pressure Test
 NIBPLeakageDetection,NIBP泄露检测,NIBP Leakage Detection
 ECGModuleCalibration,心电模块校准,ECG Module Calibration
 TouchScreenCalibration,触摸屏校准,Touch Screen Calibration
-COStart,一氧化碳开始,CO Start
+COStart,开始,Start
+COEnd,终止,End
+COInterrupt,中断,Interrupt
+MeasureControl,测量控制,Measure Control
 StopAnaesthesia,停止麻醉模块,Stop Anaesthesia
 Anaesthesia,麻醉模块,Anaesthesia
 StopNIBPPressureTest,停止无创血压测试,Stop NIBP Pressure Test

@@ -166,9 +166,9 @@ void IBPMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << IBPSymbol::convert(IBP_SENSITIVITY_HIGH)
-                       << IBPSymbol::convert(IBP_SENSITIVITY_MID)
-                       << IBPSymbol::convert(IBP_SENSITIVITY_LOW)
+                       << trs(IBPSymbol::convert(IBP_SENSITIVITY_HIGH))
+                       << trs(IBPSymbol::convert(IBP_SENSITIVITY_MID))
+                       << trs(IBPSymbol::convert(IBP_SENSITIVITY_LOW))
                        );
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_SENSITIVITY);
     comboBox->setProperty("Item",
