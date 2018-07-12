@@ -263,9 +263,6 @@ void WiFiProfileMenuContentPrivate::onProfileSelect(int index)
     }
     btns[ITEM_BTN_LOCAL_IP]->setText(QString());
     btns[ITEM_BTN_MAC_ADDRESS]->setText(QString());
-    static int ii=0;
-    ii++;
-    qDebug()<<"7777777777777777777777----"<<ii<<"---fffffff---"<<select<<endl;
     systemConfig.setNumAttr("WiFi|Profiles", "CurrentSelect", select);
 }
 
@@ -301,18 +298,6 @@ void WiFiProfileMenuContentPrivate::onWifiConnected(const QString &ssid)
 
 }
 
-/***************************************************************************************************
- * singleton
- **************************************************************************************************/
-WiFiProfileMenuContent &WiFiProfileMenuContent::construction()
-{
-    static WiFiProfileMenuContent *_instance = NULL;
-    if(_instance == NULL)
-    {
-        _instance = new WiFiProfileMenuContent;
-    }
-    return *_instance;
-}
 
 /***************************************************************************************************
  * destructor
