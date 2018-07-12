@@ -31,7 +31,7 @@ class LoadConfigMenuPrivate {
 public:
     LoadConfigMenuPrivate()
         :configList(NULL), loadBtn(NULL), viewBtn(NULL),
-         lastSelectItem(NULL), curConfig(NULL)
+         lastSelectItem(NULL), curConfig(NULL), curEditIndex(0)
     {
 
     }
@@ -315,14 +315,14 @@ void LoadConfigMenu::onBtnClick()
             d_ptr->curConfig = new Config(QString("%1/%2")
                                           .arg(CONFIG_DIR)
                                           .arg(d_ptr->configs.at(index).fileName));
+            d_ptr->lastSelectItem->setIcon(QIcon());
+            d_ptr->lastSelectItem = NULL;
             configEditMenuGrp.setCurrentEditConfigName(d_ptr->configs.at(index).name);
             configEditMenuGrp.setCurrentEditConfig(d_ptr->curConfig);
             configManager.setWidgetStatus(true);
             configEditMenuGrp.initializeSubMenu();
             configEditMenuGrp.popup();
 
-            d_ptr->lastSelectItem->setIcon(QIcon());
-            d_ptr->lastSelectItem = NULL;
             d_ptr->loadBtn->setEnabled(!!d_ptr->lastSelectItem);
             d_ptr->viewBtn->setEnabled(!!d_ptr->lastSelectItem);
 

@@ -147,7 +147,6 @@ void NIBPMenuContentPrivate::loadOptions()
     currentConfig.getNumValue("Local|NIBPUnit", unit);
     combos[ITEM_CBO_INITIAL_CUFF]->blockSignals(true);
     combos[ITEM_CBO_INITIAL_CUFF]->clear();
-    combos[ITEM_CBO_INITIAL_CUFF]->blockSignals(false);
     PatientType type = patientManager.getType();
     if (type == PATIENT_TYPE_ADULT)
     {
@@ -194,6 +193,7 @@ void NIBPMenuContentPrivate::loadOptions()
         currentConfig.getNumValue("NIBP|NeoInitialCuffInflation", index);
         combos[ITEM_CBO_INITIAL_CUFF]->setCurrentIndex(index);
     }
+    combos[ITEM_CBO_INITIAL_CUFF]->blockSignals(false);
 
     statBtnShow();
 
@@ -250,6 +250,7 @@ void NIBPMenuContent::onBtnReleasedChanged()
 
 void NIBPMenuContent::onComboBoxIndexChanged(int index)
 {
+    static int i=0;
     ComboBox *combos = qobject_cast<ComboBox *>(sender());
     int indexType = combos->property("Item").toInt();
     switch(indexType)
@@ -262,6 +263,8 @@ void NIBPMenuContent::onComboBoxIndexChanged(int index)
         break;
     case NIBPMenuContentPrivate::ITEM_CBO_INITIAL_CUFF:
         nibpParam.setInitPressure(index);
+        i++;
+        qDebug()<<"NIBPMenuContent::onComboBoxIndexChanged(int index)----"<<i<<"---"<<index<<endl;
         break;
     }
 }

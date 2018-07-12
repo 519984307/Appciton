@@ -313,6 +313,7 @@ SOURCES +=                                                                      
     Components/NetworkManager/Widgets/LabeledLabel.cpp                          \
     Components/NetworkManager/Widgets/WiFiProfileEditor.cpp                     \
     Components/NetworkManager/Widgets/WiFiProfileMenu.cpp                       \
+    Components/NetworkManager/Widgets/WiFiProfileMenuContent.cpp                \
     Components/ActivityLog/ActivityLogManager.cpp                               \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.cpp            \
     Components/Maintain/Supervisor/Menu/SupervisorPortMenu.cpp                  \
@@ -785,6 +786,7 @@ HEADERS +=                                                                      
     Components/NetworkManager/Widgets/LabeledLabel.h                            \
     Components/NetworkManager/Widgets/WiFiProfileEditor.h                       \
     Components/NetworkManager/Widgets/WiFiProfileMenu.h                         \
+    Components/NetworkManager/Widgets/WiFiProfileMenuContent.h                  \
     Components/ActivityLog/ActivityLogManager.h                                 \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.h              \
     Components/Maintain/Supervisor/Menu/SupervisorPortMenu.h                    \

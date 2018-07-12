@@ -110,6 +110,7 @@
         <AutomaticRetry>0</AutomaticRetry>
         <AdultInitialCuffInflation>2</AdultInitialCuffInflation>
         <PedInitialCuffInflation>4</PedInitialCuffInflation>
+		<NeoInitialCuffInflation>3</NeoInitialCuffInflation>
     </NIBP>
     <SPO2>
         <Sensitivity>1</Sensitivity>

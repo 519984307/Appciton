@@ -155,7 +155,7 @@ void CO2MenuContent::layoutExec()
     int itemID;
 
     // wave speed
-    label = new QLabel("CO2WaveSpeed");
+    label = new QLabel(trs("CO2SweepSpeed"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
@@ -170,7 +170,7 @@ void CO2MenuContent::layoutExec()
     d_ptr->combos.insert(CO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED, comboBox);
 
     // fico2 display
-    label = new QLabel("CO2FiCO2Display");
+    label = new QLabel(trs("CO2FiCO2Display"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
@@ -186,7 +186,7 @@ void CO2MenuContent::layoutExec()
     int row = d_ptr->combos.count();
 
     // o2 compensation
-    label = new QLabel("O2Compensation");
+    label = new QLabel(trs("O2Compensation"));
     layout->addWidget(label, row + d_ptr->btns.count(), 0);
     button = new Button();
     button->setButtonStyle(Button::ButtonTextOnly);
@@ -198,7 +198,7 @@ void CO2MenuContent::layoutExec()
     d_ptr->btns.insert(CO2MenuContentPrivate::ITEM_BTN_O2_COMPEN, button);
 
     // n2o compensation
-    label = new QLabel("N2OCompensation");
+    label = new QLabel(trs("N2OCompensation"));
     layout->addWidget(label, row + d_ptr->btns.count(), 0);
     button = new Button("20");
     button->setButtonStyle(Button::ButtonTextOnly);
@@ -210,7 +210,7 @@ void CO2MenuContent::layoutExec()
     d_ptr->btns.insert(CO2MenuContentPrivate::ITEM_BTN_N2O_COMPEN, button);
 
     // zero calibration
-    label = new QLabel("CO2ZeroCalib");
+    label = new QLabel(trs("CO2ZeroCalib"));
     layout->addWidget(label, row + d_ptr->btns.count(), 0);
     button = new Button();
     button->setButtonStyle(Button::ButtonTextOnly);

@@ -45,6 +45,7 @@
 #include "NIBPMenuContent.h"
 #include "CO2MenuContent.h"
 #include "DisplayMenuContent.h"
+#include "WiFiProfileMenuContent.h"
 /***************************************************************************************************
  * 所有的快捷按键定义。
  **************************************************************************************************/
@@ -136,10 +137,12 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     win.addMenuContent(new IBPMenuContent);
     win.addMenuContent(new COMenuContent);
     win.addMenuContent(new SPO2MenuContent);
-    win.addMenuContent(new AlarmLimitMenuContent);
+
     win.addMenuContent(new NIBPMenuContent);
     win.addMenuContent(new CO2MenuContent);
     win.addMenuContent(new DisplayMenuContent);
+    win.addMenuContent(new AlarmLimitMenuContent);
+    win.addMenuContent(new WiFiProfileMenuContent);
     win.exec();
 
     return;

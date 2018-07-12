@@ -126,6 +126,7 @@ NIBPMeasurement,无创血压测量,NIBP Measurement
 NIBPMeasureMode,测量摸式,Measure Mode
 NIBPAutoInterval,自动间隔,Auto Interval
 NIBPMenu,无创血压,NIBP
+NIBPInitialCuff,初始压,NIBP Initial Cuff
 NIBPMenuDesc,无创血压设置,NIBP Setting
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
@@ -248,6 +249,8 @@ ConfiguredAccessPointProfiles,接入点配置,Configured Access Point Profiles
 SelectAccessPoint,接入点,Access Point
 ProfileName,配置名,Profile Name
 WiFiProfileEdit,WiFi配置编辑,Edit WiFi Profile
+WiFiProfileMenuContent,WiFi配置,Wifi
+WiFiProfileMenuContentDesc,WiFi配置编辑,Wifi Setting
 StaticIp,静态IP,Static IP
 NetworkSetting,网络设置,Network Setting
 Mac,Mac,Mac

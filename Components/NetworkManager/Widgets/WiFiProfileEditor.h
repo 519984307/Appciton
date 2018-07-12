@@ -37,7 +37,7 @@ class WiFiProfileEditor: public PopupWidget
 {
     Q_OBJECT
 public:
-    WiFiProfileEditor(const WiFiProfileInfo &profile = WiFiProfileInfo());
+   explicit WiFiProfileEditor(const WiFiProfileInfo &profile = WiFiProfileInfo());
     ~WiFiProfileEditor();
 
     //get the edit result
