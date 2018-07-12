@@ -57,15 +57,6 @@ MenuWindow::~MenuWindow()
 {
 }
 
-void MenuWindow::addMenuGroup(const QString &title, QWidget *w)
-{
-    d_ptr->sidebar->addItem(title);
-    if (w)
-    {
-        d_ptr->scrollArea->setWidget(w);
-    }
-}
-
 void MenuWindow::addMenuContent(MenuContent *menu)
 {
     d_ptr->sidebar->addItem(menu->name());

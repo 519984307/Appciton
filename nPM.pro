@@ -278,6 +278,7 @@ SOURCES +=                                                                      
     Components/WindowManager/WindowLayout.cpp                                   \
     Components/WindowManager/WindowWidget.cpp                                   \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
+    Components/WindowManager/MainMenuWindow.cpp                                 \
     Components/USBManager/DataExporterBase.cpp                                  \
     Components/USBManager/ErrorLogExporter.cpp                                  \
     Components/USBManager/UDiskInspector.cpp                                    \
@@ -751,6 +752,7 @@ HEADERS +=                                                                      
     Components/WindowManager/WindowLayout.h                                     \
     Components/WindowManager/WindowWidget.h                                     \
     Components/WindowManager/PromptInfoBarWidget.h                              \
+    Components/WindowManager/MainMenuWindow.h                                   \
     Components/PrintManager/PrintTypeDefine.h                                   \
     Components/PrintManager/PrintDefine.h                                       \
     Components/PrintManager/PrintProviderIFace.h                                \

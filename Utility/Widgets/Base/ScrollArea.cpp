@@ -11,13 +11,16 @@
 #include "ScrollArea_p.h"
 #include "FloatScrollBar.h"
 #include <QResizeEvent>
+#include <QScrollBar>
 #include <QDebug>
+
 
 ScrollAreaPrivate::ScrollAreaPrivate(ScrollArea *const q_ptr)
     : q_ptr(q_ptr),
       scrollBar(NULL),
       scroller(NULL),
-      scrollBarPolicy(ScrollArea::FloatBarShowForAWhile)
+      scrollBarPolicy(ScrollArea::FloatBarShowForAWhile),
+      direction(ScrollArea::ScrollBothDirection)
 {
 }
 
@@ -32,7 +35,7 @@ void ScrollAreaPrivate::init()
     scroller->setScrollMetric(QKineticScroller::OvershootSpringConstant, qVariantFromValue(80));
 }
 
-void ScrollAreaPrivate::setupScrollBarProxy()
+void ScrollAreaPrivate::setupScrollBarPolicy()
 {
     QWidget *w = q_ptr->widget();
     if (!w)
@@ -158,8 +161,13 @@ void ScrollArea::updateFloatBar()
         d_ptr->scrollBar->resize(d_ptr->scrollBar->width(), h);
         d_ptr->scrollBar->raise();
 
-        d_ptr->setupScrollBarProxy();
+        d_ptr->setupScrollBarPolicy();
     }
+}
+
+void ScrollArea::setScrollDirection(ScrollArea::ScrollDirection dir)
+{
+    d_ptr->direction = dir;
 }
 
 void ScrollArea::resizeEvent(QResizeEvent *ev)
@@ -178,6 +186,24 @@ void ScrollArea::showEvent(QShowEvent *ev)
 
 void ScrollArea::scrollContentsBy(int dx, int dy)
 {
+    if(!(d_ptr->direction & ScrollHorizontal))
+    {
+        if(horizontalScrollBar()->value() != 0)
+        {
+            horizontalScrollBar()->setValue(0);
+        }
+        dx = 0;
+    }
+
+    if(!(d_ptr->direction & ScrollVertical))
+    {
+        if(verticalScrollBar()->value() != 0)
+        {
+            verticalScrollBar()->setValue(0);
+        }
+        dy = 0;
+    }
+
     QScrollArea::scrollContentsBy(dx, dy);
     if (widget())
     {
@@ -191,6 +217,7 @@ void ScrollArea::scrollContentsBy(int dx, int dy)
             int barRange = viewportHeight - d_ptr->scrollBar->height();
             int yPos = -barRange * y / range;
             d_ptr->scrollBar->move(d_ptr->scrollBar->x(), yPos);
+            qDebug()<<"yPos"<<yPos;
         }
     }
 }
@@ -212,7 +239,7 @@ bool ScrollArea::viewportEvent(QEvent *ev)
             }
             d_ptr->scrollBar->resize(d_ptr->scrollBar->width(), h);
             d_ptr->scrollBar->raise();
-            d_ptr->setupScrollBarProxy();
+            d_ptr->setupScrollBarPolicy();
 
             ensureWidgetVisible(focusWidget());
 
