@@ -26,7 +26,7 @@
 MainMenuWindow *MainMenuWindow::getInstance()
 {
     static MainMenuWindow *instance = NULL;
-    if(instance == NULL)
+    if (instance == NULL)
     {
         instance = new MainMenuWindow;
 
@@ -70,6 +70,6 @@ MainMenuWindow *MainMenuWindow::getInstance()
 }
 
 MainMenuWindow::MainMenuWindow()
-    :MenuWindow()
+    : MenuWindow()
 {
 }

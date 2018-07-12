@@ -186,18 +186,18 @@ void ScrollArea::showEvent(QShowEvent *ev)
 
 void ScrollArea::scrollContentsBy(int dx, int dy)
 {
-    if(!(d_ptr->direction & ScrollHorizontal))
+    if (!(d_ptr->direction & ScrollHorizontal))
     {
-        if(horizontalScrollBar()->value() != 0)
+        if (horizontalScrollBar()->value() != 0)
         {
             horizontalScrollBar()->setValue(0);
         }
         dx = 0;
     }
 
-    if(!(d_ptr->direction & ScrollVertical))
+    if (!(d_ptr->direction & ScrollVertical))
     {
-        if(verticalScrollBar()->value() != 0)
+        if (verticalScrollBar()->value() != 0)
         {
             verticalScrollBar()->setValue(0);
         }
@@ -217,7 +217,7 @@ void ScrollArea::scrollContentsBy(int dx, int dy)
             int barRange = viewportHeight - d_ptr->scrollBar->height();
             int yPos = -barRange * y / range;
             d_ptr->scrollBar->move(d_ptr->scrollBar->x(), yPos);
-            qDebug()<<"yPos"<<yPos;
+            qDebug() << "yPos" << yPos;
         }
     }
 }
