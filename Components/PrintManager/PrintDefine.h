@@ -10,6 +10,15 @@ enum PrintSpeed
     PRINT_SPEED_NR
 };
 
+// 打印波形数量
+enum PrintWaveformNum
+{
+    PRINT_WAVEFORM_NUM_1 = 1,
+    PRINT_WAVEFORM_NUM_2,
+    PRINT_WAVEFORM_NUM_3,
+    PRINT_WAVEFORM_NUM_4,
+};
+
 // 打印触发开关。
 enum PrintTrigger
 {

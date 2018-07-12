@@ -14,7 +14,7 @@ public:
      * @brief RecordPage constructor
      * @param width page width
      */
-    RecordPage(int width)
+    explicit RecordPage(int width)
         :QImage(width, RECORDER_PAGE_HEIGHT, QImage::Format_MonoLSB)
     {
         id = QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz");
@@ -46,10 +46,10 @@ public:
         {
             return;
         }
-        unsigned char bit = 0;
         int index = 0;
         for(int y = height() - 1; y >= 0; y--)
         {
+            unsigned char bit = 0;
             bit = pixelIndex(x, y);
             buf[index / 8] |= (bit << (index % 8));
             index ++;

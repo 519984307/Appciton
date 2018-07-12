@@ -59,7 +59,7 @@ void COMenuContentPrivate::loadOptions()
     }
     buttons[ITEM_CBO_INJECTION_TEMP]->setText(QString::number((double)coParam.getInjectionTemp() / 10));
     buttons[ITEM_CBO_INJECTION_VOLUMN]->setText(QString::number(coParam.getInjectionVolumn()));
-    buttons[ITEM_CBO_MEASURE_CONTROL]->setText(COSymbol::convert(coParam.getMeasureCtrl()));
+    buttons[ITEM_CBO_MEASURE_CONTROL]->setText(trs(COSymbol::convert(coParam.getMeasureCtrl())));
 }
 
 COMenuContent::COMenuContent()
@@ -109,8 +109,8 @@ void COMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->buttons.count() + d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << COSymbol::convert(CO_TI_MODE_AUTO)
-                       << COSymbol::convert(CO_TI_MODE_MANUAL)
+                       << trs(COSymbol::convert(CO_TI_MODE_AUTO))
+                       << trs(COSymbol::convert(CO_TI_MODE_MANUAL))
                        );
     itemID = static_cast<int>(COMenuContentPrivate::ITEM_CBO_INJECT_TEMP_SOURCE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
@@ -284,7 +284,7 @@ void COMenuContent::onButtonReleased()
             coParam.measureCtrl(d_ptr->measureSta);
             if (d_ptr->measureSta == CO_INST_START)
             {
-                button->setText(trs("Cancel"));
+                button->setText(trs("COEnd"));
                 d_ptr->measureSta = CO_INST_END;
             }
             else if (d_ptr->measureSta == CO_INST_END)

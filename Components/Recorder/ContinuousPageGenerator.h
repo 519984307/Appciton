@@ -11,7 +11,7 @@ public:
         Type = 2
     };
 
-    ContinuousPageGenerator(QObject *parent = 0);
+    explicit ContinuousPageGenerator(QObject *parent = 0);
     ~ContinuousPageGenerator();
 
     /* override */

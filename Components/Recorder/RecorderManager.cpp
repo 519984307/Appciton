@@ -22,6 +22,7 @@ public:
           status(PRINTER_STAT_NORMAL),
           curSpeed(PRINT_SPEED_250),
           processor(NULL),
+          procThread(NULL),
           iface(NULL),
           generator(NULL)
     {
@@ -63,13 +64,13 @@ RecorderManager::~RecorderManager()
 PrintSpeed RecorderManager::getPrintSpeed() const
 {
     int speed = 0;
-    systemConfig.getNumValue("PrimaryCfg|System|PrintSpeed", speed);
+    currentConfig.getNumValue("Print|PrintSpeed", speed);
     if (speed >= PRINT_SPEED_NR)
     {
         speed = PRINT_SPEED_250;
     }
     //speed = PRINT_SPEED_500;
-    speed = PRINT_SPEED_250;
+//    speed = PRINT_SPEED_250;
     //speed = PRINT_SPEED_125;
     return (PrintSpeed)speed;
 }
@@ -81,7 +82,7 @@ void RecorderManager::setPrintSpeed(PrintSpeed speed)
         return;
     }
 
-    systemConfig.setNumValue("PrimaryCfg|System|PrintSpeed", (int)speed);
+    currentConfig.setNumValue("Print|PrintSpeed", (int)speed);
 
     emit speedChanged(speed);
 }
@@ -97,7 +98,7 @@ int RecorderManager::getPrintWaveNum()
 void RecorderManager::setPrintWaveNum(int num)
 {
     // 3 wave at most
-    if (num  > 3)
+    if (num  > 4)
     {
         return;
     }
