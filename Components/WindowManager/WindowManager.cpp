@@ -44,7 +44,7 @@ struct NodeDesc
     int h;
 };
 
-typedef QMap<QString, QList<NodeDesc>> LayoutStyleMap;
+typedef QMap<QString, QList<NodeDesc> > LayoutStyleMap;
 static LayoutStyleMap _layoutStyle;
 
 WindowManager *WindowManager::_selfObj = NULL;
