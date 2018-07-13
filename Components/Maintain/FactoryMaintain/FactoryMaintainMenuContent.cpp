@@ -8,7 +8,7 @@
  ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/13
  **/
 
-#include "UserMaintainMenuContent.h"
+#include "FactoryMaintainMenuContent.h"
 #include "LanguageManager.h"
 #include <QLabel>
 #include "ComboBox.h"
@@ -21,42 +21,42 @@
 #include <QVBoxLayout>
 #include "WindowManager.h"
 
-class UserMaintainMenuContentPrivate
+class FactoryMaintainMenuContentPrivate
 {
 public:
-    UserMaintainMenuContentPrivate() : passwordWidget(NULL)
+    FactoryMaintainMenuContentPrivate() : passwordWidget(NULL)
     {
     }
 
     PasswordWidget *passwordWidget;
 };
 
-UserMaintainMenuContent::UserMaintainMenuContent()
-    : MenuContent(trs("UserMaintainSystem"), trs("UserMaintainSystem")),
-      d_ptr(new UserMaintainMenuContentPrivate)
+FactoryMaintainMenuContent::FactoryMaintainMenuContent()
+    : MenuContent(trs("FactoryMaintainSystem"), trs("FactoryMaintainSystem")),
+      d_ptr(new FactoryMaintainMenuContentPrivate)
 {
 }
 
-UserMaintainMenuContent::~UserMaintainMenuContent()
+FactoryMaintainMenuContent::~FactoryMaintainMenuContent()
 {
     delete d_ptr;
 }
 
-void UserMaintainMenuContent::readyShow()
+void FactoryMaintainMenuContent::readyShow()
 {
 }
 
-void UserMaintainMenuContent::layoutExec()
+void FactoryMaintainMenuContent::layoutExec()
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
 
     QString password;
-    systemConfig.getStrValue("General|UserMaintainPassword", password);
-    d_ptr->passwordWidget = new PasswordWidget(trs("UserMaintainPassword"), password);
+    systemConfig.getStrValue("General|FactoryMaintainPassword", password);
+    d_ptr->passwordWidget = new PasswordWidget(trs("FactoryMaintainPassword"), password);
     layout->addWidget(d_ptr->passwordWidget, Qt::AlignCenter);
     connect(d_ptr->passwordWidget, SIGNAL(correctPassword()), this, SLOT(userInputCorrect()));
 }
 
-void UserMaintainMenuContent::userInputCorrect()
+void FactoryMaintainMenuContent::userInputCorrect()
 {
 }
