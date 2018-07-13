@@ -46,6 +46,11 @@ public:
      */
     void showMainMenu();
 
+    /**
+     * @brief showConfigManagerMenu show the configManager menu window
+     */
+    void showConfigManagerMenu();
+
 public:
     // 注册窗体。
     bool addWidget(IWidget *win, IWidget *trend = NULL);

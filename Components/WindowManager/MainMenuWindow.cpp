@@ -23,6 +23,7 @@
 #include "WiFiProfileMenuContent.h"
 #include "SystemMenuContent.h"
 #include "LoadConfigMenuContent.h"
+#include "ConfigManagerMenuContent.h"
 
 MainMenuWindow *MainMenuWindow::getInstance()
 {
@@ -66,6 +67,7 @@ MainMenuWindow *MainMenuWindow::getInstance()
         instance->addMenuContent(new DisplayMenuContent);
         instance->addMenuContent(new LoadConfigMenuContent);
         instance->addMenuContent(new SystemMenuContent);
+        instance->addMenuContent(new ConfigManagerMenuContent);
     }
 
     return instance;

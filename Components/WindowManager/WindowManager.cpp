@@ -27,6 +27,7 @@
 #include "PatientBarWidget.h"
 #include "WaveWidgetSelectMenu.h"
 #include "MainMenuWindow.h"
+#include "ConfigManagerMenWindow.h"
 
 struct NodeDesc
 {
@@ -2446,6 +2447,16 @@ WindowManager::~WindowManager()
 void WindowManager::showMainMenu()
 {
     MainMenuWindow *w = MainMenuWindow::getInstance();
+    QRect r = _volatileLayout->geometry();
+    QPoint globalTopLeft = mapToGlobal(r.topLeft());
+    r.moveTo(0, 0);
+    w->move(globalTopLeft + r.center() - w->rect().center());
+    w->show();
+}
+
+void WindowManager::showConfigManagerMenu()
+{
+    ConfigManagerMenWindow *w = ConfigManagerMenWindow::getInstance();
     QRect r = _volatileLayout->geometry();
     QPoint globalTopLeft = mapToGlobal(r.topLeft());
     r.moveTo(0, 0);

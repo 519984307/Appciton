@@ -201,6 +201,8 @@ void PasswordWidget::onButtonReleased()
             if (d_ptr->passwordStr == d_ptr->widgetPassword)
             {
                 emit correctPassword();
+                d_ptr->passwordStr.clear();
+                d_ptr->passwordEdit->setText(d_ptr->passwordStr);
             }
             else
             {
