@@ -120,6 +120,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/FloatScrollBar.cpp                                     \
     Utility/Widgets/Base/KineticScroller/qkineticscroller.cpp                   \
     Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.cpp         \
+    Utility/Widgets/Base/PasswordWidget.cpp                                     \
     Utility/Widgets/IComboList/ComboList.cpp                                    \
     Utility/Widgets/IComboList/ComboListPopup.cpp                               \
     Utility/Widgets/IComboList/ComboListItem.cpp                                \
@@ -279,6 +280,7 @@ SOURCES +=                                                                      
     Components/WindowManager/WindowWidget.cpp                                   \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
     Components/WindowManager/MainMenuWindow.cpp                                 \
+    Components/WindowManager/ConfigManagerMenWindow.cpp                         \
     Components/USBManager/DataExporterBase.cpp                                  \
     Components/USBManager/ErrorLogExporter.cpp                                  \
     Components/USBManager/UDiskInspector.cpp                                    \
@@ -356,6 +358,7 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/WifiMaintainMenu.cpp                       \
     Components/Maintain/UserMaintain/WiredWorkMaintainMenu.cpp                  \
     Components/Maintain/UserMaintain/OthersMaintainMenu.cpp                     \
+    Components/Maintain/UserMaintain/UserMaintainMenuContent.cpp                \
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.cpp             \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftWareVersion.cpp                     \
@@ -366,6 +369,7 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.cpp                 \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.cpp                   \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.cpp             \
+    Components/Maintain/FactoryMaintain/FactoryMaintainMenuContent.cpp          \
     Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
     Components/ConfigManager/ConfigMaintainMenuGrp.cpp                          \
@@ -386,6 +390,7 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditDisplayMenu.cpp                          \
     Components/ConfigManager/ConfigManagerEntrance.cpp                          \
     Components/ConfigManager/LoadConfigMenu.cpp                                 \
+    Components/ConfigManager/ConfigManagerMenuContent.cpp                       \
     Components/ConfigManager/LoadConfigMenuContent.cpp                          \
     Components/Freeze/FreezeManager.cpp                                         \
     Components/Freeze/FreezeWidget.cpp                                          \
@@ -572,6 +577,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/KineticScroller/qkineticscroller.h                     \
     Utility/Widgets/Base/KineticScroller/qkineticscroller_p.h                   \
     Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.h           \
+    Utility/Widgets/Base/PasswordWidget.h                                       \
     Utility/Widgets/IComboList/ComboList.h                                      \
     Utility/Widgets/IComboList/ComboListPopup.h                                 \
     Utility/Widgets/IComboList/ComboListItem.h                                  \
@@ -754,6 +760,7 @@ HEADERS +=                                                                      
     Components/WindowManager/WindowWidget.h                                     \
     Components/WindowManager/PromptInfoBarWidget.h                              \
     Components/WindowManager/MainMenuWindow.h                                   \
+    Components/WindowManager/ConfigManagerMenWindow.h                           \
     Components/PrintManager/PrintTypeDefine.h                                   \
     Components/PrintManager/PrintDefine.h                                       \
     Components/PrintManager/PrintProviderIFace.h                                \
@@ -834,6 +841,7 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/WifiMaintainMenu.h                         \
     Components/Maintain/UserMaintain/WiredWorkMaintainMenu.h                    \
     Components/Maintain/UserMaintain/OthersMaintainMenu.h                       \
+    Components/Maintain/UserMaintain/UserMaintainMenuContent.h                  \
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.h               \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersion.h                       \
@@ -844,6 +852,7 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/MachineConfigModule.h                   \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.h                   \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.h               \
+    Components/Maintain/FactoryMaintain/FactoryMaintainMenuContent.h            \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWidget.h                            \
     Components/ConfigManager/ConfigManager.h                                    \
@@ -865,6 +874,7 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditDisplayMenu.h                            \
     Components/ConfigManager/ConfigManagerEntrance.h                            \
     Components/ConfigManager/LoadConfigMenu.h                                   \
+    Components/ConfigManager/ConfigManagerMenuContent.h                         \
     Components/ConfigManager/LoadConfigMenuContent.h                            \
     Components/Freeze/FreezeManager.h                                           \
     Components/Freeze/FreezeWidget.h                                            \

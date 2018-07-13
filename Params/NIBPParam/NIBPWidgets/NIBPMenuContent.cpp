@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/13
+ **/
+
+
 #include "NIBPMenuContent.h"
 #include <QMap>
 #include "ComboBox.h"
@@ -22,7 +33,7 @@ public:
         ITEM_BTN_START_STAT = 0,
     };
 
-    explicit NIBPMenuContentPrivate(){}
+    NIBPMenuContentPrivate() {}
     /**
      * @brief loadOptions  //load settings
      */
@@ -38,10 +49,9 @@ public:
 
 
 NIBPMenuContent::NIBPMenuContent():
-                 MenuContent(trs("NIBPMenu"), trs("NIBPMenuDesc")),
-                 d_ptr(new NIBPMenuContentPrivate)
+    MenuContent(trs("NIBPMenu"), trs("NIBPMenuDesc")),
+    d_ptr(new NIBPMenuContentPrivate)
 {
-
 }
 
 NIBPMenuContent::~NIBPMenuContent()
@@ -56,10 +66,10 @@ void NIBPMenuContent::readyShow()
 
 void NIBPMenuContent::layoutExec()
 {
-    if(layout())
+    if (layout())
     {
         // already install layout
-        return ;
+        return;
     }
 
     QGridLayout *layout = new QGridLayout(this);
@@ -75,7 +85,7 @@ void NIBPMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(NIBPSymbol::convert(NIBP_MODE_MANUAL))
                        << trs(NIBPSymbol::convert(NIBP_MODE_AUTO))
-                       );
+                      );
     itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_CBO_MEASURE_MODE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -98,7 +108,7 @@ void NIBPMenuContent::layoutExec()
                        << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_90))
                        << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_120))
                        << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_NR))
-                       );
+                      );
     itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_CBO_AUTO_INTERVAL);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this,
@@ -122,7 +132,7 @@ void NIBPMenuContent::layoutExec()
 
     // start stat
     label = new QLabel(trs("Stat"));
-    layout->addWidget(label, row+d_ptr->btns.count(), 0);
+    layout->addWidget(label, row + d_ptr->btns.count(), 0);
     button = new Button();
     button->setText(trs("StatStart"));
     button->setButtonStyle(Button::ButtonTextOnly);
@@ -130,7 +140,7 @@ void NIBPMenuContent::layoutExec()
     button->setProperty("Btn", qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this,
             SLOT(onBtnReleasedChanged()));
-    layout->addWidget(button, row+d_ptr->btns.count(), 1);
+    layout->addWidget(button, row + d_ptr->btns.count(), 1);
     d_ptr->btns.insert(NIBPMenuContentPrivate::ITEM_BTN_START_STAT, button);
 
     layout->setRowStretch((row + d_ptr->btns.count()), 1);
@@ -196,7 +206,6 @@ void NIBPMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_INITIAL_CUFF]->blockSignals(false);
 
     statBtnShow();
-
 }
 
 void NIBPMenuContentPrivate::statBtnShow(void)
@@ -225,20 +234,20 @@ void NIBPMenuContent::onBtnReleasedChanged()
 {
     Button *btns = qobject_cast<Button *>(sender());
     int index = btns->property("Btn").toInt();
-    switch(index)
+    switch (index)
     {
-        case NIBPMenuContentPrivate::ITEM_BTN_START_STAT:
+    case NIBPMenuContentPrivate::ITEM_BTN_START_STAT:
         if (nibpParam.curStatusType() == NIBP_MONITOR_ERROR_STATE)
         {
             return;
         }
-        //退出STAT模式
+        // 退出STAT模式
         if (nibpParam.isSTATMeasure())
         {
             btns->setText(trs("STATSTART"));
             nibpCountdownTime.STATMeasureStop();
         }
-        //进入STAT模式
+        // 进入STAT模式
         else
         {
             btns->setText(trs("STATSTOP"));
@@ -250,10 +259,10 @@ void NIBPMenuContent::onBtnReleasedChanged()
 
 void NIBPMenuContent::onComboBoxIndexChanged(int index)
 {
-    static int i=0;
+    static int i = 0;
     ComboBox *combos = qobject_cast<ComboBox *>(sender());
     int indexType = combos->property("Item").toInt();
-    switch(indexType)
+    switch (indexType)
     {
     case NIBPMenuContentPrivate::ITEM_CBO_MEASURE_MODE:
         nibpParam.setMeasurMode((NIBPMode)index);
@@ -264,8 +273,7 @@ void NIBPMenuContent::onComboBoxIndexChanged(int index)
     case NIBPMenuContentPrivate::ITEM_CBO_INITIAL_CUFF:
         nibpParam.setInitPressure(index);
         i++;
-        qDebug()<<"NIBPMenuContent::onComboBoxIndexChanged(int index)----"<<i<<"---"<<index<<endl;
+        qDebug() << "NIBPMenuContent::onComboBoxIndexChanged(int index)----" << i << "---" << index << endl;
         break;
     }
 }
-
