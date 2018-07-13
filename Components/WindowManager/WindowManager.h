@@ -51,6 +51,10 @@ public:
      */
     void showConfigManagerMenu();
 
+    void showUserMaintainMenu();
+
+    void showFactoryMaintainMenu();
+
 public:
     // 注册窗体。
     bool addWidget(IWidget *win, IWidget *trend = NULL);

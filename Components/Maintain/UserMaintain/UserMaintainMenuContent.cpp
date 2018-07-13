@@ -59,4 +59,5 @@ void UserMaintainMenuContent::layoutExec()
 
 void UserMaintainMenuContent::userInputCorrect()
 {
+    windowManager.showUserMaintainMenu();
 }

@@ -8,20 +8,20 @@
  ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/13
  **/
 
-#include "ConfigManagerMenWindow.h"
+#include "ConfigManagerMenuWindow.h"
 
-ConfigManagerMenWindow *ConfigManagerMenWindow::getInstance()
+ConfigManagerMenuWindow *ConfigManagerMenuWindow::getInstance()
 {
-    static ConfigManagerMenWindow *instance = NULL;
+    static ConfigManagerMenuWindow *instance = NULL;
     if (instance == NULL)
     {
-        instance = new ConfigManagerMenWindow;
+        instance = new ConfigManagerMenuWindow;
     }
 
     return instance;
 }
 
-ConfigManagerMenWindow::ConfigManagerMenWindow()
+ConfigManagerMenuWindow::ConfigManagerMenuWindow()
     : MenuWindow()
 {
 }

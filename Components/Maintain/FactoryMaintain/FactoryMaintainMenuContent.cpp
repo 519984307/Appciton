@@ -59,4 +59,5 @@ void FactoryMaintainMenuContent::layoutExec()
 
 void FactoryMaintainMenuContent::userInputCorrect()
 {
+    windowManager.showFactoryMaintainMenu();
 }
