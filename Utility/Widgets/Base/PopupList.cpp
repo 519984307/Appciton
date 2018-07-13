@@ -20,7 +20,6 @@
 #include <QResizeEvent>
 #include "FontManager.h"
 #include <QKeyEvent>
-#include <QDebug>
 #include <QFocusEvent>
 
 #define DEFAULT_WIDTH 150
@@ -114,7 +113,6 @@ PopupList::PopupList(QWidget *parent, bool concatToParent)
 
 PopupList::~PopupList()
 {
-    qDebug() << Q_FUNC_INFO;
 }
 
 void PopupList::addItemText(const QString &text)
@@ -171,7 +169,6 @@ QSize PopupList::sizeHint() const
 
 void PopupList::showEvent(QShowEvent *e)
 {
-    qDebug() << Q_FUNC_INFO;
     d_ptr->scrollArea->setWidget(d_ptr->widget);
     d_ptr->scrollArea->updateFloatBar();
 

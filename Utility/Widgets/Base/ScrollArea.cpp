@@ -217,7 +217,6 @@ void ScrollArea::scrollContentsBy(int dx, int dy)
             int barRange = viewportHeight - d_ptr->scrollBar->height();
             int yPos = -barRange * y / range;
             d_ptr->scrollBar->move(d_ptr->scrollBar->x(), yPos);
-            qDebug() << "yPos" << yPos;
         }
     }
 }
