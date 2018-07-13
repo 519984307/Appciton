@@ -28,6 +28,7 @@ public:
 
 private slots:
     void onbtnClick();
+    void onRowClicked(int row);
 
 private:
     AlarmLimitMenuContentPrivate *const d_ptr;

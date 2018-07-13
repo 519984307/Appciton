@@ -43,6 +43,10 @@ public:
      */
     bool hasNextPage();
 
+signals:
+    /* emit when the row is clicked */
+    void rowClicked(int row);
+
 protected:
     /* reimplement */
     // void mouseMoveEvent(QMouseEvent *ev);
@@ -52,6 +56,12 @@ protected:
 
     /* reimplement */
     void keyReleaseEvent(QKeyEvent *ev);
+
+    /* reimplement */
+    void mousePressEvent(QMouseEvent *ev);
+
+    /* reimplement */
+    void mouseReleaseEvent(QMouseEvent *ev);
 
     /* reimplement */
     void focusInEvent(QFocusEvent *ev);

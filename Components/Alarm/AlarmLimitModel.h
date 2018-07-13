@@ -70,6 +70,23 @@ public:
      */
     int getHeaderHeightHint() const;
 
+    /**
+     * @brief editRowData edit the row data
+     * @param row row
+     */
+    void editRowData(int row);
+
+    /**
+     * @brief stopEditRow stop edit row data
+     */
+    void stopEditRow();
+
+    /**
+     * @brief curEditRow get the current edit row
+     * @return the current edit row, -1 means not row is under edited
+     */
+    int curEditRow() const;
+
 private:
     AlarmLimitModelPrivate *const d_ptr;
 };
