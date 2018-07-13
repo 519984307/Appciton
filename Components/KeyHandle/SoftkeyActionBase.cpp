@@ -35,18 +35,7 @@
 #include "Frame.h"
 #include "FrameItem.h"
 #include "ComboBox.h"
-#include "ECGMenuContent.h"
-#include "RESPMenuContent.h"
-#include "AGMenuContent.h"
-#include "IBPMenuContent.h"
-#include "COMenuContent.h"
-#include "SPO2MenuContent.h"
-#include "AlarmLimitMenuContent.h"
-#include "NIBPMenuContent.h"
-#include "CO2MenuContent.h"
-#include "DisplayMenuContent.h"
-#include "SystemMenuContent.h"
-#include "ConfigManagerMenuContent.h"
+
 /***************************************************************************************************
  * 所有的快捷按键定义。
  **************************************************************************************************/
@@ -98,53 +87,7 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
         return;
     }
 
-    // Window testWin;
-    // testWin.setFont(fontManager.textFont(17));
-    // testWin.setWindowTitle("Test Window");
-    // testWin.resize(640, 480);
-
-    // QHBoxLayout *layout = new QHBoxLayout;
-
-    // MenuSidebar *sideBar = new MenuSidebar();
-    // sideBar->addItem("ECG");
-    // sideBar->addItem("SPO2");
-    // sideBar->addItem("RESP");
-    // sideBar->addItem("NIBP");
-    // sideBar->addItem("TEMP");
-    // sideBar->addItem("AG");
-    // sideBar->addItem("IBP");
-    // sideBar->setFixedWidth(180);
-    // layout->addWidget(sideBar);
-    // layout->addStretch();
-    // testWin.setWindowLayout(layout);
-    // testWin.setVisible(true);
-
-    // testWin.exec();
-
-    MenuWindow win;
-
-//    Frame *f = new Frame();
-//    f->setFont(fontManager.textFont(20));
-//    f->addItem(new FrameItem("LeadMode", f));
-//    f->addItem(new FrameItem("Bandwidth", f));
-//    f->addItem(new FrameItem("FilterMode", f));
-//    f->addItem(new FrameItem("SweepSpeed", f));
-//    f->addItem(new FrameItem("Pacer", f));
-//    f->addItem(new FrameItem("AlarmSetting", f));
-
-    win.addMenuContent(new ECGMenuContent);
-    win.addMenuContent(new RESPMenuContent);
-    win.addMenuContent(new AGMenuContent);
-    win.addMenuContent(new IBPMenuContent);
-    win.addMenuContent(new COMenuContent);
-    win.addMenuContent(new SPO2MenuContent);
-    win.addMenuContent(new AlarmLimitMenuContent);
-    win.addMenuContent(new NIBPMenuContent);
-    win.addMenuContent(new CO2MenuContent);
-    win.addMenuContent(new DisplayMenuContent);
-    win.addMenuContent(new SystemMenuContent);
-    win.addMenuContent(new ConfigManagerMenuContent);
-    win.exec();
+    windowManager.showMainMenu();
 
     return;
 

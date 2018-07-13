@@ -70,7 +70,7 @@ void MenuSidebarPrivate::onItemClicked()
 
 void MenuSidebarPrivate::onItemFocusChanged(bool in)
 {
-    if (in && widget->height() < q_ptr->viewport()->height())
+    if (in && widget->height() > q_ptr->viewport()->height())
     {
         Q_Q(MenuSidebar);
         MenuSidebarItem *item = qobject_cast<MenuSidebarItem *>(q->sender());
@@ -104,6 +104,9 @@ MenuSidebar::MenuSidebar(QWidget *parent)
     d->widget->setPalette(pal);
 
     setFloatbarPolicy(FloatBarShowForAWhileWhenNeeded);
+
+    d->scroller->setHorizontalOvershootPolicy(QKineticScroller::OvershootAlwaysOff);
+    setScrollDirection(ScrollArea::ScrollVertical);
 }
 
 MenuSidebar::~MenuSidebar()

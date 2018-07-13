@@ -126,6 +126,7 @@ NIBPMeasurement,无创血压测量,NIBP Measurement
 NIBPMeasureMode,测量摸式,Measure Mode
 NIBPAutoInterval,自动间隔,Auto Interval
 NIBPMenu,无创血压,NIBP
+NIBPInitialCuff,初始压,NIBP Initial Cuff
 NIBPMenuDesc,无创血压设置,NIBP Setting
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
@@ -248,6 +249,8 @@ ConfiguredAccessPointProfiles,接入点配置,Configured Access Point Profiles
 SelectAccessPoint,接入点,Access Point
 ProfileName,配置名,Profile Name
 WiFiProfileEdit,WiFi配置编辑,Edit WiFi Profile
+WiFiProfileMenuContent,WiFi配置,Wifi
+WiFiProfileMenuContentDesc,WiFi配置编辑,Wifi Setting
 StaticIp,静态IP,Static IP
 NetworkSetting,网络设置,Network Setting
 Mac,Mac,Mac
@@ -1093,10 +1096,7 @@ NIBPPressureTest,NIBP压力测试,NIBP Pressure Test
 NIBPLeakageDetection,NIBP泄露检测,NIBP Leakage Detection
 ECGModuleCalibration,心电模块校准,ECG Module Calibration
 TouchScreenCalibration,触摸屏校准,Touch Screen Calibration
-COStart,开始,Start
-COEnd,终止,End
-COInterrupt,中断,Interrupt
-MeasureControl,测量控制,Measure Control
+COStart,一氧化碳开始,CO Start
 StopAnaesthesia,停止麻醉模块,Stop Anaesthesia
 Anaesthesia,麻醉模块,Anaesthesia
 StopNIBPPressureTest,停止无创血压测试,Stop NIBP Pressure Test
@@ -1242,3 +1242,5 @@ CO2Low,二氧化碳低,CO2 Low
 CO2High,二氧化碳高,CO2 High
 RESPLow,呼吸低,RESP Low
 RESPHigh,呼吸高,RESP High
+LoadConfigMenuContent,加载配置,Load Config
+LoadConfigMenuContentDesc,加载配置设置,Load Config Desc

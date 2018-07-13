@@ -279,6 +279,7 @@ SOURCES +=                                                                      
     Components/WindowManager/WindowLayout.cpp                                   \
     Components/WindowManager/WindowWidget.cpp                                   \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
+    Components/WindowManager/MainMenuWindow.cpp                                 \
     Components/USBManager/DataExporterBase.cpp                                  \
     Components/USBManager/ErrorLogExporter.cpp                                  \
     Components/USBManager/UDiskInspector.cpp                                    \
@@ -315,6 +316,7 @@ SOURCES +=                                                                      
     Components/NetworkManager/Widgets/LabeledLabel.cpp                          \
     Components/NetworkManager/Widgets/WiFiProfileEditor.cpp                     \
     Components/NetworkManager/Widgets/WiFiProfileMenu.cpp                       \
+    Components/NetworkManager/Widgets/WiFiProfileMenuContent.cpp                \
     Components/ActivityLog/ActivityLogManager.cpp                               \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.cpp            \
     Components/Maintain/Supervisor/Menu/SupervisorPortMenu.cpp                  \
@@ -386,6 +388,7 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigManagerEntrance.cpp                          \
     Components/ConfigManager/LoadConfigMenu.cpp                                 \
     Components/ConfigManager/ConfigManagerMenuContent.cpp                       \
+    Components/ConfigManager/LoadConfigMenuContent.cpp                          \
     Components/Freeze/FreezeManager.cpp                                         \
     Components/Freeze/FreezeWidget.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
@@ -753,6 +756,7 @@ HEADERS +=                                                                      
     Components/WindowManager/WindowLayout.h                                     \
     Components/WindowManager/WindowWidget.h                                     \
     Components/WindowManager/PromptInfoBarWidget.h                              \
+    Components/WindowManager/MainMenuWindow.h                                   \
     Components/PrintManager/PrintTypeDefine.h                                   \
     Components/PrintManager/PrintDefine.h                                       \
     Components/PrintManager/PrintProviderIFace.h                                \
@@ -790,6 +794,7 @@ HEADERS +=                                                                      
     Components/NetworkManager/Widgets/LabeledLabel.h                            \
     Components/NetworkManager/Widgets/WiFiProfileEditor.h                       \
     Components/NetworkManager/Widgets/WiFiProfileMenu.h                         \
+    Components/NetworkManager/Widgets/WiFiProfileMenuContent.h                  \
     Components/ActivityLog/ActivityLogManager.h                                 \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.h              \
     Components/Maintain/Supervisor/Menu/SupervisorPortMenu.h                    \
@@ -864,6 +869,7 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigManagerEntrance.h                            \
     Components/ConfigManager/LoadConfigMenu.h                                   \
     Components/ConfigManager/ConfigManagerMenuContent.h                         \
+    Components/ConfigManager/LoadConfigMenuContent.h                            \
     Components/Freeze/FreezeManager.h                                           \
     Components/Freeze/FreezeWidget.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \

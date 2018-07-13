@@ -110,6 +110,7 @@
         <AutomaticRetry>0</AutomaticRetry>
         <AdultInitialCuffInflation>2</AdultInitialCuffInflation>
         <PedInitialCuffInflation>4</PedInitialCuffInflation>
+		<NeoInitialCuffInflation>3</NeoInitialCuffInflation>
     </NIBP>
     <SPO2>
         <Sensitivity>1</Sensitivity>
@@ -1277,7 +1278,6 @@
         <DiagnosticECG>1</DiagnosticECG>
         <SummaryReportSnapshotPrintingInAED>0</SummaryReportSnapshotPrintingInAED>
         <Print30JSelfTestReport>0</Print30JSelfTestReport>
-	<PrintSpeed>0</PrintSpeed>
     </Print>
     <ECG12L>
         <NotchFilter>0</NotchFilter>

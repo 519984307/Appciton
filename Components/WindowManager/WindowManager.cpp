@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/12
+ **/
+
 #include "Debug.h"
 #include <QList>
 #include <QMap>
@@ -5,7 +15,6 @@
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include "IWidget.h"
-#include "WinLayout.h"
 #include "WindowManager.h"
 #include "SoftKeyManager.h"
 #include "IConfig.h"
@@ -17,6 +26,7 @@
 #include "ECGSymbol.h"
 #include "PatientBarWidget.h"
 #include "WaveWidgetSelectMenu.h"
+#include "MainMenuWindow.h"
 
 struct NodeDesc
 {
@@ -82,10 +92,10 @@ void WindowManager::getCurrentWaveforms(QStringList &waveformNames)
 bool WindowManager::isLastWaveForm(WaveWidget *w)
 {
     int count = _waveformBox->count();
-    for(int i = count - 1; i >= 0; i--)
+    for (int i = count - 1; i >= 0; i--)
     {
         WaveWidget *lastW = qobject_cast<WaveWidget *>(_waveformBox->itemAt(i)->widget());
-        if(!lastW)
+        if (!lastW)
         {
             continue;
         }
@@ -96,16 +106,16 @@ bool WindowManager::isLastWaveForm(WaveWidget *w)
     return false;
 }
 
-WaveWidget* WindowManager::getWaveWidget(int id)
+WaveWidget *WindowManager::getWaveWidget(int id)
 {
     int count = _waveformBox->count();
-    for(int i = count - 1; i >= 0; i--)
+    for (int i = count - 1; i >= 0; i--)
     {
         WaveWidget *wave = qobject_cast<WaveWidget *>(_waveformBox->itemAt(i)->widget());
 
-        if(wave && wave->getID() == id)
+        if (wave && wave->getID() == id)
         {
-            if(wave->isVisible())
+            if (wave->isVisible())
             {
                 return wave;
             }
@@ -252,16 +262,16 @@ void WindowManager::_getDisplayedWaveTrendWidget(QStringList &names)
     QString path;
     switch (_currenUserFaceType)
     {
-        case UFACE_MONITOR_STANDARD:
-        case UFACE_MONITOR_12LEAD:
-        case UFACE_MONITOR_OXYCRG:
-        case UFACE_MONITOR_TREND:
-        case UFACE_MONITOR_BIGFONT:
-        case UFACE_MONITOR_CUSTOM:
-            path = "PrimaryCfg|UILayout|WidgetsOrder|WaveTrendOrder";
-            break;
-        default:
-            break;
+    case UFACE_MONITOR_STANDARD:
+    case UFACE_MONITOR_12LEAD:
+    case UFACE_MONITOR_OXYCRG:
+    case UFACE_MONITOR_TREND:
+    case UFACE_MONITOR_BIGFONT:
+    case UFACE_MONITOR_CUSTOM:
+        path = "PrimaryCfg|UILayout|WidgetsOrder|WaveTrendOrder";
+        break;
+    default:
+        break;
     }
 
     if (!path.isEmpty())
@@ -277,13 +287,13 @@ void WindowManager::_getDisplayedWaveTrendWidget(QStringList &names)
  **************************************************************************************************/
 void WindowManager::_focusWaveformWidget(const QString &name)
 {
-    QMap<QString, IWidget*>::Iterator it = _waveformMap.find(name);
+    QMap<QString, IWidget *>::Iterator it = _waveformMap.find(name);
     if (it == _waveformMap.end())
     {
         return;
     }
 
-    IWidget *widget = dynamic_cast<IWidget*>(it.value());
+    IWidget *widget = dynamic_cast<IWidget *>(it.value());
     if (NULL != widget)
     {
         if (!widget->isVisible())
@@ -297,7 +307,7 @@ void WindowManager::_focusWaveformWidget(const QString &name)
 /***************************************************************************************************
  * 功能： 获取当前显示的波形。
  **************************************************************************************************/
-void WindowManager::_getDisplayedWaveform(QList<WaveWidget*> &widgets)
+void WindowManager::_getDisplayedWaveform(QList<WaveWidget *> &widgets)
 {
     widgets.clear();
 
@@ -356,7 +366,7 @@ void WindowManager::_getDisplayedWaveform(QList<WaveWidget*> &widgets)
 /***************************************************************************************************
  * 功能： 获取当前显示的波形。
  **************************************************************************************************/
-void WindowManager::_getDisplayedWaveWidget(QList<IWidget*> &widgets)
+void WindowManager::_getDisplayedWaveWidget(QList<IWidget *> &widgets)
 {
     widgets.clear();
 
@@ -403,12 +413,12 @@ void WindowManager::_getDisplayedWaveWidget(QList<IWidget*> &widgets)
         it = _waveformMap.find(nodeWidgets[i]);
         if (it != _waveformMap.end())
         {
-            WaveWidget *waveWidget = dynamic_cast<WaveWidget *>(it.value());
-            if (NULL != waveWidget && (-1 != waveWidgetList.indexOf(it.value())))//wave widget
+            WaveWidget *waveWidget = qobject_cast<WaveWidget *>(it.value());
+            if (NULL != waveWidget && (-1 != waveWidgetList.indexOf(it.value())))   // wave widget
             {
                 widgets += it.value();
             }
-            else if (NULL == waveWidget && NULL != it.value())//dash board
+            else if (NULL == waveWidget && NULL != it.value())   // dash board
             {
                 widgets += it.value();
             }
@@ -421,17 +431,17 @@ void WindowManager::_getDisplayedWaveWidget(QList<IWidget*> &widgets)
  **************************************************************************************************/
 void WindowManager::setFocusOrder(void)
 {
-    QList<QWidget*> allWidgets;
+    QList<QWidget *> allWidgets;
 
     // 获取当前显示的波形。
-    QList<IWidget*> waveWidgets;
+    QList<IWidget *> waveWidgets;
     waveWidgets.clear();
     _getDisplayedWaveWidget(waveWidgets);
 
     // 获取当前显示的趋势窗体。
     QStringList trendWidgetNames;
     _getCurrentDisplayTrendWindow(trendWidgetNames);
-    QList<QWidget*> trendWidgets;
+    QList<QWidget *> trendWidgets;
     for (int i = 0; i < trendWidgetNames.size(); i++)
     {
         trendWidgets += getWidget(trendWidgetNames[i]);
@@ -439,7 +449,7 @@ void WindowManager::setFocusOrder(void)
 
     QStringList waveTrendWidgetNames;
     _getDisplayedWaveTrendWidget(waveTrendWidgetNames);
-    QList<QWidget*> waveTrendWidgets;
+    QList<QWidget *> waveTrendWidgets;
     for (int i = 0; i < waveTrendWidgetNames.size(); i++)
     {
         waveTrendWidgets += getWidget(waveTrendWidgetNames[i]);
@@ -449,7 +459,7 @@ void WindowManager::setFocusOrder(void)
     QString name;
     systemConfig.getStrValue("PrimaryCfg|UILayout|WidgetsOrder|FocusOrder", name);
     QStringList names = name.split(",");
-    QList<QWidget*> subList;
+    QList<QWidget *> subList;
     for (int i = 0; i < names.size(); i++)
     {
         if (names[i] == "WaveGroup")
@@ -672,14 +682,14 @@ void WindowManager::_fixedLayout(void)
     }
 
     // 报警信息栏。
-    QHBoxLayout *hLayoutAlarmRow= new QHBoxLayout();
+    QHBoxLayout *hLayoutAlarmRow = new QHBoxLayout();
     hLayoutAlarmRow->setMargin(0);
     hLayoutAlarmRow->setSpacing(0);
 
     QStringList alarmRow;
     prefix = "PrimaryCfg|UILayout|WidgetsOrder|alarmRowOrder";
     alarmRow = systemConfig.getChildNodeNameList(prefix);
-    if (alarmRow.size() > 0 )
+    if (alarmRow.size() > 0)
     {
         for (int i = 0; i < alarmRow.size(); i++)
         {
@@ -714,7 +724,7 @@ void WindowManager::_fixedLayout(void)
     prefix = "PrimaryCfg|UILayout|WidgetsOrder|bottomBarRowOrder";
     bottomBarRow = systemConfig.getChildNodeNameList(prefix);
 
-    if (bottomBarRow.size() > 0 )
+    if (bottomBarRow.size() > 0)
     {
         for (int i = 0; i < bottomBarRow.size(); i++)
         {
@@ -759,14 +769,14 @@ void WindowManager::_trendLayout(UserFaceType type)
     for (int i = 0; i < trendcount; i++)
     {
         QLayoutItem *hlayoutitem = _trendRowLayout->takeAt(0);
-        QBoxLayout *lable = (QBoxLayout *)hlayoutitem->layout();
+        QBoxLayout *lable = qobject_cast<QBoxLayout *>(hlayoutitem->layout());
         if (lable != NULL)
         {
             int lablecount = lable->count();
             for (int j = 0; j < lablecount; j++)
             {
                 QLayoutItem *item = lable->takeAt(0);
-                IWidget *widget = (IWidget *)item->widget();
+                IWidget *widget = qobject_cast<IWidget *>(item->widget());
                 if (widget != NULL)
                 {
                     widget->setVisible(false);
@@ -781,14 +791,14 @@ void WindowManager::_trendLayout(UserFaceType type)
     for (int i = 0; i < trendcount; i++)
     {
         QLayoutItem *hlayoutitem = _paramBox->takeAt(0);
-        QBoxLayout *lable = (QBoxLayout *)hlayoutitem->layout();
+        QBoxLayout *lable = qobject_cast<QBoxLayout *>(hlayoutitem->layout());
         if (lable != NULL)
         {
             int lablecount = lable->count();
             for (int j = 0; j < lablecount; j++)
             {
                 QLayoutItem *item = lable->takeAt(0);
-                IWidget *widget = (IWidget *)item->widget();
+                IWidget *widget = qobject_cast<IWidget *>(item->widget());
                 if (widget != NULL)
                 {
                     widget->setVisible(false);
@@ -833,13 +843,13 @@ void WindowManager::_trendLayout(UserFaceType type)
             it = _winMap.find(nodeWidgets[i]);
             if (it == _winMap.end())
             {
-                _trendRowLayout->addLayout(hlayout,1);
+                _trendRowLayout->addLayout(hlayout, 1);
                 continue;
             }
             //相同的情况
             if (w == it.value())
             {
-                _trendRowLayout->addLayout(hlayout,1);
+                _trendRowLayout->addLayout(hlayout, 1);
                 continue;
             }
             w = it.value();
@@ -847,7 +857,7 @@ void WindowManager::_trendLayout(UserFaceType type)
             hlayout->addWidget(w);
         }
 
-        _trendRowLayout->addLayout(hlayout,1);
+        _trendRowLayout->addLayout(hlayout, 1);
     }
 
     for (int i = 0; i < nodeWidgets.size(); i++)
@@ -937,7 +947,6 @@ void WindowManager::_volatileBigFontLayout()
     QMap<QString, IWidget *>::iterator waveItem;
     QStringList nodeWidgets;
     QStringList tmpWidgets;
-    QVBoxLayout *vlayout;
     IWidget *trendWidgetItem = NULL;
     IWidget *waveWidgetItem = NULL;
 
@@ -951,12 +960,13 @@ void WindowManager::_volatileBigFontLayout()
 
     for (int i = 0; i < nodeWidgets.size(); i++)
     {
+        QVBoxLayout *vlayout;
         vlayout = new QVBoxLayout();
         vlayout->setMargin(0);
         vlayout->setSpacing(0);
 
 
-        //添加trend窗体
+        // 添加trend窗体
         trendItem = _winMap.find(nodeWidgets[i]);
         if (trendItem == _winMap.end())
         {
@@ -965,9 +975,9 @@ void WindowManager::_volatileBigFontLayout()
         trendWidgetItem = trendItem.value();
         trendWidgetItem->setParent(this); // 设置父窗体
         trendWidgetItem->setVisible(true);
-        vlayout->addWidget(trendWidgetItem,2);
+        vlayout->addWidget(trendWidgetItem, 2);
 
-        //添加波形
+        // 添加波形
         if (tmpWidgets[i] != "NULL")
         {
             // 添加心电的计算导联
@@ -987,7 +997,7 @@ void WindowManager::_volatileBigFontLayout()
                 continue;
             }
 
-            WaveWidget *waveWidget = dynamic_cast<WaveWidget*>(waveItem.value());
+            WaveWidget *waveWidget = dynamic_cast<WaveWidget *>(waveItem.value());
             if (NULL != waveWidget)
             {
                 if (!waveWidget->waveEnable())
@@ -1010,7 +1020,7 @@ void WindowManager::_volatileBigFontLayout()
 
         int row = (i / 2);
         int col = i % 2;
-        _bigformMap.insert(trendItem.key(),vlayout);
+        _bigformMap.insert(trendItem.key(), vlayout);
         _paramBox->addLayout(vlayout, row, col);
         _paramBox->setRowStretch(row, 1);
     }
@@ -1055,7 +1065,7 @@ void WindowManager::_calcWaveFactor(const QStringList &waveForms, int &normalFac
     normalFactor = 1;
     specialFactor = 1;
     trendFactor = 1;
-    //调整比例使面板区占整个波形区域的1/3
+    // 调整比例使面板区占整个波形区域的1/3
     if (count == 2)
     {
         if (_currenUserFaceType == UFACE_MONITOR_OXYCRG)
@@ -1142,7 +1152,7 @@ void WindowManager::_execVolitileLayout(QStringList &nodeWidgets)
             continue;
         }
 
-        WaveWidget *waveWidget = dynamic_cast<WaveWidget*>(it.value());
+        WaveWidget *waveWidget = dynamic_cast<WaveWidget *>(it.value());
         if (NULL != waveWidget)
         {
             if (!waveWidget->waveEnable())
@@ -1295,7 +1305,7 @@ void WindowManager::_setUFaceType(UserFaceType type)
     QMap<QString, IWidget *>::Iterator iter = _winMap.find("SystemModeBarWidget");
     if (iter != _winMap.end())
     {
-        SystemModeBarWidget *widget = (SystemModeBarWidget*)iter.value();
+        SystemModeBarWidget *widget = qobject_cast<SystemModeBarWidget *>(iter.value());
         widget->setMode(_currenUserFaceType);
     }
 }
@@ -1314,7 +1324,7 @@ void WindowManager::_setCustomFaceType(void)
     QMap<QString, IWidget *>::Iterator iter = _winMap.find("SystemModeBarWidget");
     if (iter != _winMap.end())
     {
-        SystemModeBarWidget *widget = (SystemModeBarWidget*)iter.value();
+        SystemModeBarWidget *widget = qobject_cast<SystemModeBarWidget *>(iter.value());
         widget->setMode(_currenUserFaceType);
     }
 }
@@ -1530,7 +1540,7 @@ void WindowManager::getDisplayedWaveform(QStringList &waveformName)
 {
     waveformName.clear();
 
-    QList<WaveWidget*> waves;
+    QList<WaveWidget *> waves;
     _getDisplayedWaveform(waves);
     for (int i = 0; i < waves.size(); i++)
     {
@@ -1547,7 +1557,7 @@ void WindowManager::getDisplayedWaveform(QList<int> &id)
 {
     id.clear();
 
-    QList<WaveWidget*> waves;
+    QList<WaveWidget *> waves;
     _getDisplayedWaveform(waves);
     for (int i = 0; i < waves.size(); i++)
     {
@@ -1562,7 +1572,7 @@ void WindowManager::getDisplayedWaveform(QList<int> &id)
 void WindowManager::getDisplayedWaveformIDsAndLabels(QList<int> &id, QStringList &waveLabels)
 {
     waveLabels.clear();
-    QList<WaveWidget*> waves;
+    QList<WaveWidget *> waves;
     _getDisplayedWaveform(waves);
     for (int i = 0; i < waves.size(); i++)
     {
@@ -1697,7 +1707,7 @@ void WindowManager::replaceTrendWindow(const QStringList &oldWin, const QStringL
  *      order:设置焦点顺序
  **************************************************************************************************/
 void WindowManager::replaceWaveform(const QString &oldWaveform, const QString &newWaveform,
-        bool setFocus, bool order)
+                                    bool setFocus, bool order)
 {
     QStringList currentWaveforms;
     getCurrentWaveforms(currentWaveforms);
@@ -1737,15 +1747,16 @@ void WindowManager::replaceWaveform(const QString &oldWaveform, const QString &n
     it = _waveformMap.find(oldWaveform);
     if (it != _waveformMap.end())
     {
-        WaveWidget *wave = dynamic_cast<WaveWidget*>(it.value());
+        WaveWidget *wave = qobject_cast<WaveWidget *>(it.value());
         if (NULL != wave)
         {
             isFocus = wave->isFocus();
         }
         it.value()->setVisible(false);
         it.value()->setParent(NULL);
+        IWidget *w = it.value();
         _waveformMap.erase(it);
-        _waveformBox->removeWidget(it.value());
+        _waveformBox->removeWidget(w);
     }
 
     int normalF, specialFactor, trendF;
@@ -1764,7 +1775,7 @@ void WindowManager::replaceWaveform(const QString &oldWaveform, const QString &n
                     _waveformBox->setStretchFactor(it.value(), trendF);
                 }
                 else if (name == "ShortTrendManager" || name == "OxyCRGWidget")
-                    {
+                {
                     _waveformBox->setStretchFactor(it.value(), specialFactor);
                 }
                 else
@@ -1825,7 +1836,7 @@ void WindowManager::replaceWaveform(const QStringList &oldWaveform, const QStrin
  *      newWidget：新窗体。
  **************************************************************************************************/
 void WindowManager::replacebigWidgetform(const QString &oldWidget, const QString &newWidget,
-                                   bool setFocus, bool order)
+        bool setFocus, bool order)
 {
     QStringList currentWidget;
     QStringList currentTrend;
@@ -1851,14 +1862,14 @@ void WindowManager::replacebigWidgetform(const QString &oldWidget, const QString
     QMap<QString, QVBoxLayout *>::iterator bigform = _bigformMap.find(oldWidget);
     if (bigform != _bigformMap.end())
     {
-        QBoxLayout *lable = (QBoxLayout *)bigform.value()->layout();
+        QBoxLayout *lable = qobject_cast<QBoxLayout *>(bigform.value()->layout());
         if (lable != NULL)
         {
             int lablecount = lable->count();
             for (int j = 0; j < lablecount; j++)
             {
                 QLayoutItem *item = lable->takeAt(0);
-                IWidget *widget = (IWidget *)item->widget();
+                IWidget *widget = qobject_cast<IWidget *>(item->widget());
                 if (widget != NULL)
                 {
                     widget->setVisible(false);
@@ -1866,12 +1877,11 @@ void WindowManager::replacebigWidgetform(const QString &oldWidget, const QString
                 }
             }
         }
+        QVBoxLayout *vl = bigform.value();
         _bigformMap.erase(bigform);
-        _paramBox->removeItem(bigform.value());
+        _paramBox->removeItem(vl);
     }
 
-    IWidget *trendWidget = NULL;
-    IWidget *waveWidget = NULL;
     QMap<QString, IWidget *>::iterator trendMap = _winMap.find(newWidget);
     if (trendMap != _winMap.end())
     {
@@ -1879,10 +1889,10 @@ void WindowManager::replacebigWidgetform(const QString &oldWidget, const QString
         vlayout->setMargin(0);
         vlayout->setSpacing(0);
 
-        trendWidget = trendMap.value();
+        IWidget * trendWidget = trendMap.value();
         trendWidget->setVisible(true);
         trendWidget->setParent(this);
-        vlayout->addWidget(trendWidget,2);
+        vlayout->addWidget(trendWidget, 2);
 
         QList<IWidget *> waveWidgetList;
         QString waveWidgetName;
@@ -1892,6 +1902,7 @@ void WindowManager::replacebigWidgetform(const QString &oldWidget, const QString
         }
         if (waveWidgetList.count() > 0)
         {
+            IWidget *waveWidget = NULL;
             if (trendWidget->name() == "ECGTrendWidget")
             {
                 waveWidgetName = ecgParam.getCalcLeadWaveformName();
@@ -1978,14 +1989,14 @@ void WindowManager::replacebigWaveform(const QString &oldWidget, const QString &
     QMap<QString, QVBoxLayout *>::iterator bigform = _bigformMap.find("ECGTrendWidget");
     if (bigform != _bigformMap.end())
     {
-        QBoxLayout *lable = (QBoxLayout *)bigform.value()->layout();
+        QBoxLayout *lable = qobject_cast<QBoxLayout *>(bigform.value()->layout());
         if (lable != NULL)
         {
             int lablecount = lable->count();
             for (int j = 0; j < lablecount; j++)
             {
                 QLayoutItem *item = lable->itemAt(j);
-                IWidget *widget = (IWidget *)item->widget();
+                IWidget *widget = qobject_cast<IWidget *>(item->widget());
                 if (widget != NULL)
                 {
                     if (widget->name() == oldWidget)
@@ -2035,7 +2046,7 @@ void WindowManager::replacebigWaveform(const QString &oldWidget, const QString &
  *      insertedWaveform： 插入的波形。
  **************************************************************************************************/
 void WindowManager::insertWaveform(const QString &frontWaveform, const QString &insertedWaveform,
-            bool setFocus, bool order)
+                                   bool setFocus, bool order)
 {
     QStringList currentWaveforms;
     getCurrentWaveforms(currentWaveforms);
@@ -2053,7 +2064,7 @@ void WindowManager::insertWaveform(const QString &frontWaveform, const QString &
 
     int i = 0;
     int size = currentWaveforms.size();
-    for (;i < size; i++)
+    for (; i < size; i++)
     {
         if (currentWaveforms[i] == frontWaveform)
         {
@@ -2094,7 +2105,7 @@ void WindowManager::insertWaveform(const QString &frontWaveform, const QString &
                     _waveformBox->setStretchFactor(it.value(), trendF);
                 }
                 else if (name == "ShortTrendManager" || name == "OxyCRGWidget")
-                    {
+                {
                     _waveformBox->setStretchFactor(it.value(), specialFactor);
                 }
                 else
@@ -2127,7 +2138,7 @@ void WindowManager::insertWaveform(const QString &frontWaveform, const QString &
     it = _waveformMap.find(frontWaveform);
     if (it != _waveformMap.end())
     {
-        WaveWidget *wave = dynamic_cast<WaveWidget*>(it.value());
+        WaveWidget *wave = dynamic_cast<WaveWidget *>(it.value());
         if (NULL != wave)
         {
             isFocus = wave->isFocus();
@@ -2215,7 +2226,7 @@ void WindowManager::removeWaveform(const QString &waveform, bool setFocus)
             QString name = it.value()->name();
             if (name == waveform)
             {
-                WaveWidget *wave = dynamic_cast<WaveWidget*>(it.value());
+                WaveWidget *wave = dynamic_cast<WaveWidget *>(it.value());
                 if (NULL != wave)
                 {
                     isFocus = wave->isFocus();
@@ -2235,7 +2246,7 @@ void WindowManager::removeWaveform(const QString &waveform, bool setFocus)
                     _waveformBox->setStretchFactor(it.value(), trendF);
                 }
                 else if (name == "ShortTrendManager" || name == "OxyCRGWidget")
-                    {
+                {
                     _waveformBox->setStretchFactor(it.value(), specialFactor);
                 }
                 else
@@ -2420,7 +2431,7 @@ WindowManager::~WindowManager()
 {
     // 清除窗体
     QList<IWidget *> winList = _winMap.values();
-    foreach (IWidget *w, winList)
+    foreach(IWidget *w, winList)
     {
         if (w && !w->parent())
         {
@@ -2430,4 +2441,14 @@ WindowManager::~WindowManager()
     }
 
     _winMap.clear();
+}
+
+void WindowManager::showMainMenu()
+{
+    MainMenuWindow *w = MainMenuWindow::getInstance();
+    QRect r = _volatileLayout->geometry();
+    QPoint globalTopLeft = mapToGlobal(r.topLeft());
+    r.moveTo(0, 0);
+    w->move(globalTopLeft + r.center() - w->rect().center());
+    w->show();
 }
