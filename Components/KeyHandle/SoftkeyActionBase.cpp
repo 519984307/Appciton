@@ -46,6 +46,7 @@
 #include "CO2MenuContent.h"
 #include "DisplayMenuContent.h"
 #include "SystemMenuContent.h"
+#include "ConfigManagerMenuContent.h"
 /***************************************************************************************************
  * 所有的快捷按键定义。
  **************************************************************************************************/
@@ -142,6 +143,7 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     win.addMenuContent(new CO2MenuContent);
     win.addMenuContent(new DisplayMenuContent);
     win.addMenuContent(new SystemMenuContent);
+    win.addMenuContent(new ConfigManagerMenuContent);
     win.exec();
 
     return;

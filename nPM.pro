@@ -120,6 +120,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/FloatScrollBar.cpp                                     \
     Utility/Widgets/Base/KineticScroller/qkineticscroller.cpp                   \
     Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.cpp         \
+    Utility/Widgets/Base/PasswordWidget.cpp                                     \
     Utility/Widgets/IComboList/ComboList.cpp                                    \
     Utility/Widgets/IComboList/ComboListPopup.cpp                               \
     Utility/Widgets/IComboList/ComboListItem.cpp                                \
@@ -384,6 +385,7 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditDisplayMenu.cpp                          \
     Components/ConfigManager/ConfigManagerEntrance.cpp                          \
     Components/ConfigManager/LoadConfigMenu.cpp                                 \
+    Components/ConfigManager/ConfigManagerMenuContent.cpp                       \
     Components/Freeze/FreezeManager.cpp                                         \
     Components/Freeze/FreezeWidget.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
@@ -569,6 +571,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/KineticScroller/qkineticscroller.h                     \
     Utility/Widgets/Base/KineticScroller/qkineticscroller_p.h                   \
     Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.h           \
+    Utility/Widgets/Base/PasswordWidget.h                                       \
     Utility/Widgets/IComboList/ComboList.h                                      \
     Utility/Widgets/IComboList/ComboListPopup.h                                 \
     Utility/Widgets/IComboList/ComboListItem.h                                  \
@@ -860,6 +863,7 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditDisplayMenu.h                            \
     Components/ConfigManager/ConfigManagerEntrance.h                            \
     Components/ConfigManager/LoadConfigMenu.h                                   \
+    Components/ConfigManager/ConfigManagerMenuContent.h                         \
     Components/Freeze/FreezeManager.h                                           \
     Components/Freeze/FreezeWidget.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \

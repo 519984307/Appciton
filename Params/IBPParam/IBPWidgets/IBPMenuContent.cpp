@@ -58,9 +58,8 @@ void IBPMenuContentPrivate::loadOptions()
 
 IBPMenuContent::IBPMenuContent()
     : MenuContent(trs("IBPMenu"), trs("IBPMenuDesc")),
-    d_ptr(new IBPMenuContentPrivate)
+      d_ptr(new IBPMenuContentPrivate)
 {
-
 }
 
 IBPMenuContent::~IBPMenuContent()
@@ -100,7 +99,7 @@ void IBPMenuContent::layoutExec()
                        << IBPSymbol::convert(IBP_PRESSURE_ICP)
                        << IBPSymbol::convert(IBP_PRESSURE_AUXP1)
                        << IBPSymbol::convert(IBP_PRESSURE_AUXP2)
-                       );
+                      );
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_ENTITLE_1);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -121,7 +120,7 @@ void IBPMenuContent::layoutExec()
                        << IBPSymbol::convert(IBP_PRESSURE_ICP)
                        << IBPSymbol::convert(IBP_PRESSURE_AUXP1)
                        << IBPSymbol::convert(IBP_PRESSURE_AUXP2)
-                       );
+                      );
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -138,7 +137,7 @@ void IBPMenuContent::layoutExec()
                        << IBPSymbol::convert(IBP_SWEEP_SPEED_125)
                        << IBPSymbol::convert(IBP_SWEEP_SPEED_250)
                        << IBPSymbol::convert(IBP_SWEEP_SPEED_500)
-                       );
+                      );
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_SWEEP_SPEED);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -153,7 +152,7 @@ void IBPMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << IBPSymbol::convert(IBP_FILTER_MODE_0)
                        << IBPSymbol::convert(IBP_FILTER_MODE_1)
-                       );
+                      );
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_FILTER_MODE);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -169,7 +168,7 @@ void IBPMenuContent::layoutExec()
                        << trs(IBPSymbol::convert(IBP_SENSITIVITY_HIGH))
                        << trs(IBPSymbol::convert(IBP_SENSITIVITY_MID))
                        << trs(IBPSymbol::convert(IBP_SENSITIVITY_LOW))
-                       );
+                      );
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_SENSITIVITY);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -208,17 +207,17 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
     if (box)
     {
         IBPMenuContentPrivate::MenuItem item
-                = (IBPMenuContentPrivate::MenuItem) box->property("Item").toInt();
+            = (IBPMenuContentPrivate::MenuItem) box->property("Item").toInt();
         switch (item)
         {
         case IBPMenuContentPrivate::ITEM_CBO_ENTITLE_1:
         {
-            if (index == (int)d_ptr->ibp2)
+            if (index == static_cast<int>(d_ptr->ibp2))
             {
                 box = d_ptr->combos.value(IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2);
                 d_ptr->ibp2 = d_ptr->ibp1;
                 box->blockSignals(true);
-                box->setCurrentIndex((int)d_ptr->ibp2);
+                box->setCurrentIndex(static_cast<int>(d_ptr->ibp2));
                 box->blockSignals(false);
             }
             d_ptr->ibp1 = (IBPPressureName)index;
@@ -227,12 +226,12 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
         }
         case IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2:
         {
-            if (index == (int)d_ptr->ibp1)
+            if (index == static_cast<int>(d_ptr->ibp1))
             {
                 box = d_ptr->combos.value(IBPMenuContentPrivate::ITEM_CBO_ENTITLE_1);
                 d_ptr->ibp1 = d_ptr->ibp2;
                 box->blockSignals(true);
-                box->setCurrentIndex((int)d_ptr->ibp1);
+                box->setCurrentIndex(static_cast<int>(d_ptr->ibp1));
                 box->blockSignals(false);
             }
             d_ptr->ibp2 = (IBPPressureName)index;
@@ -260,8 +259,9 @@ void IBPMenuContent::onButtonReleased()
     if (button)
     {
         IBPMenuContentPrivate::MenuItem item
-                 = (IBPMenuContentPrivate::MenuItem) button->property("Item").toInt();
-        switch (item) {
+            = (IBPMenuContentPrivate::MenuItem) button->property("Item").toInt();
+        switch (item)
+        {
         case IBPMenuContentPrivate::ITEM_CBO_CALIB_ZERO:
             ibpParam.zeroCalibration(IBP_INPUT_1);
             break;
@@ -275,7 +275,7 @@ void IBPMenuContent::onButtonReleased()
             {
                 QString text = numberPad.getStrValue();
                 bool ok = false;
-                unsigned short value = text.toShort(&ok);
+                quint16 value = text.toShort(&ok);
                 if (ok)
                 {
                     if (value >= 80 && value <= 300)
