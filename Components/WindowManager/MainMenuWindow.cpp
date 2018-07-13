@@ -24,6 +24,7 @@
 #include "SystemMenuContent.h"
 #include "LoadConfigMenuContent.h"
 #include "ConfigManagerMenuContent.h"
+#include "UserMaintainMenuContent.h"
 
 MainMenuWindow *MainMenuWindow::getInstance()
 {
@@ -68,6 +69,7 @@ MainMenuWindow *MainMenuWindow::getInstance()
         instance->addMenuContent(new LoadConfigMenuContent);
         instance->addMenuContent(new SystemMenuContent);
         instance->addMenuContent(new ConfigManagerMenuContent);
+        instance->addMenuContent(new UserMaintainMenuContent);
     }
 
     return instance;

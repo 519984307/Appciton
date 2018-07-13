@@ -358,6 +358,7 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/WifiMaintainMenu.cpp                       \
     Components/Maintain/UserMaintain/WiredWorkMaintainMenu.cpp                  \
     Components/Maintain/UserMaintain/OthersMaintainMenu.cpp                     \
+    Components/Maintain/UserMaintain/UserMaintainMenuContent.cpp                \
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.cpp             \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftWareVersion.cpp                     \
@@ -839,6 +840,7 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/WifiMaintainMenu.h                         \
     Components/Maintain/UserMaintain/WiredWorkMaintainMenu.h                    \
     Components/Maintain/UserMaintain/OthersMaintainMenu.h                       \
+    Components/Maintain/UserMaintain/UserMaintainMenuContent.h                  \
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.h               \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersion.h                       \
