@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018.07.13
+ **/
+
+
 #include "LoadConfigMenuContent.h"
 #include "Button.h"
 #include <QLabel>
@@ -34,13 +45,13 @@ public:
         ITEM_LTW_CONFIG_LIST = 0,
     };
 
-    explicit LoadConfigMenuContentPrivate();
+    LoadConfigMenuContentPrivate();
 
     void loadConfigs();
     void updateConfigList();
 
-    QMap <MenuItem, Button*> btns;
-    QMap <MenuItem, IListWidget*> ltws;
+    QMap <MenuItem, Button *> btns;
+    QMap <MenuItem, IListWidget *> ltws;
     QListWidgetItem *lastSelectItem;
     QList<ConfigManager::UserDefineConfigInfo> configs;
     Config *curConfig;
@@ -48,9 +59,9 @@ public:
 };
 
 LoadConfigMenuContentPrivate::LoadConfigMenuContentPrivate():
-                              lastSelectItem(NULL),
-                              curConfig(NULL),
-                              curEditIndex(0)
+    lastSelectItem(NULL),
+    curConfig(NULL),
+    curEditIndex(0)
 {
     btns.clear();
     ltws.clear();
@@ -60,17 +71,17 @@ LoadConfigMenuContentPrivate::LoadConfigMenuContentPrivate():
 void LoadConfigMenuContentPrivate::loadConfigs()
 {
     configs.clear();
-    ConfigManager::UserDefineConfigInfo userConfig[]={
+    ConfigManager::UserDefineConfigInfo userConfig[] =
+    {
         {"AdultConfig.Original", "AdultConfig.Original.xml"},
         {"PedConfig.Original", "PedConfig.Original.xml"},
         {"NeoConfig.Original", "NeoConfig.Original.xml"}
     };
-    for(int i=0;i< 3;i++)
+    for (int i = 0; i < 3; i++)
     {
         configs.append(userConfig[i]);
     }
     configs = configs + configManager.getUserDefineConfigInfos();
-
 }
 /**
  * @brief LoadConfigMenuContentPrivate::updateConfigList
@@ -78,8 +89,8 @@ void LoadConfigMenuContentPrivate::loadConfigs()
  */
 void LoadConfigMenuContentPrivate::updateConfigList()
 {
-    //remove old item
-    while(ltws[ITEM_LTW_CONFIG_LIST]->count())
+    // remove old item
+    while (ltws[ITEM_LTW_CONFIG_LIST]->count())
     {
         QListWidgetItem *item = ltws[ITEM_LTW_CONFIG_LIST]->takeItem(0);
         delete item;
@@ -92,7 +103,7 @@ void LoadConfigMenuContentPrivate::updateConfigList()
     }
 
     int count = configs.count();
-    if(count)
+    if (count)
     {
         ltws[ITEM_LTW_CONFIG_LIST]->setFocusPolicy(Qt::StrongFocus);
     }
@@ -101,21 +112,19 @@ void LoadConfigMenuContentPrivate::updateConfigList()
         ltws[ITEM_LTW_CONFIG_LIST]->setFocusPolicy(Qt::NoFocus);
     }
 
-    if(lastSelectItem)
+    if (lastSelectItem)
     {
         lastSelectItem->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
     }
     btns[ITEM_BTN_LOAD_CONFIG]->setEnabled(!!lastSelectItem);
     btns[LoadConfigMenuContentPrivate::ITEM_BTN_VIEW_CONFIG]->setEnabled(!!lastSelectItem);
-
 }
 LoadConfigMenuContent::LoadConfigMenuContent():
-                            MenuContent(trs("LoadConfigMenuContent"),
-                                        trs("LoadConfigMenuContentDesc")),
-                            d_ptr(new LoadConfigMenuContentPrivate)
+    MenuContent(trs("LoadConfigMenuContent"),
+                trs("LoadConfigMenuContentDesc")),
+    d_ptr(new LoadConfigMenuContentPrivate)
 {
     connect(this, SIGNAL(configUpdated()), &configManager, SIGNAL(configUpdated()));
-
 }
 
 LoadConfigMenuContent::~LoadConfigMenuContent()
@@ -131,10 +140,10 @@ void LoadConfigMenuContent::readyShow()
 
 void LoadConfigMenuContent::layoutExec()
 {
-    if(layout())
+    // already install layout
+    if (layout())
     {
-        //already install layout
-        return ;
+        return;
     }
 
     QGridLayout *layout = new QGridLayout(this);
@@ -159,10 +168,10 @@ void LoadConfigMenuContent::layoutExec()
                                            "QListWidget::item {padding:0px; border-radius:0px; border: none;"
                                            "background-color: %1;}\n"
                                            "QListWidget::item:focus {background-color: %2;}").
-            arg("gray").arg("blue");
+                                   arg("gray").arg("blue");
     listWidget->setStyleSheet(listWidgetStyleSheet);
     connect(listWidget, SIGNAL(realRelease()), this, SLOT(onConfigClick()));
-    listWidget->setFixedHeight(289);//size for 8 items
+    listWidget->setFixedHeight(289);// size for 8 items
     d_ptr->ltws.insert(LoadConfigMenuContentPrivate::ITEM_LTW_CONFIG_LIST, listWidget);
     layout->addWidget(listWidget, d_ptr->ltws.count(), 0);
 
@@ -186,15 +195,15 @@ void LoadConfigMenuContent::layoutExec()
     hl->addWidget(button);
     d_ptr->btns.insert(LoadConfigMenuContentPrivate::ITEM_BTN_VIEW_CONFIG, button);
 
-    layout->addLayout(hl, row+1, 0);
+    layout->addLayout(hl, row + 1, 0);
     layout->setRowStretch((row + d_ptr->btns.count()), 1);
 }
 
 void LoadConfigMenuContent::hideEvent(QHideEvent *ev)
 {
-    if(ev->type() == QEvent::Hide)
+    if (ev->type() == QEvent::Hide)
     {
-        if(d_ptr->lastSelectItem)
+        if (d_ptr->lastSelectItem)
         {
             d_ptr->lastSelectItem = NULL;
         }
@@ -204,26 +213,26 @@ void LoadConfigMenuContent::hideEvent(QHideEvent *ev)
 
 void LoadConfigMenuContent::changeEvent(QEvent *ev)
 {
-    if(ev->type() == QEvent::FontChange)
+    if (ev->type() == QEvent::FontChange)
     {
         d_ptr->ltws[LoadConfigMenuContentPrivate::ITEM_LTW_CONFIG_LIST]
-                ->setFont(fontManager.textFont(font().pixelSize()));
+        ->setFont(fontManager.textFont(font().pixelSize()));
     }
 }
 
 void LoadConfigMenuContent::onConfigClick()
 {
     QListWidgetItem *item = d_ptr->ltws[LoadConfigMenuContentPrivate::ITEM_LTW_CONFIG_LIST]->currentItem();
-    if(!item)
+    if (!item)
     {
         return;
     }
-    if(d_ptr->lastSelectItem)
+    if (d_ptr->lastSelectItem)
     {
         d_ptr->lastSelectItem->setIcon(QIcon());
     }
 
-    if(item != d_ptr->lastSelectItem)
+    if (item != d_ptr->lastSelectItem)
     {
         item->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
         d_ptr->lastSelectItem = item;
@@ -240,12 +249,12 @@ void LoadConfigMenuContent::onBtnClick()
 {
     Button *btn = qobject_cast<Button *>(sender());
 
-    if(btn==NULL || d_ptr->lastSelectItem==NULL)
+    if (btn == NULL || d_ptr->lastSelectItem == NULL)
     {
         return;
     }
 
-    if(btn == d_ptr->btns[LoadConfigMenuContentPrivate::ITEM_BTN_LOAD_CONFIG])//加载配置
+    if (btn == d_ptr->btns[LoadConfigMenuContentPrivate::ITEM_BTN_LOAD_CONFIG]) //加载配置
     {
         //加入最新配置文件
         int index = d_ptr->ltws[LoadConfigMenuContentPrivate::ITEM_LTW_CONFIG_LIST]->row(d_ptr->lastSelectItem);
@@ -257,15 +266,15 @@ void LoadConfigMenuContent::onBtnClick()
         //更新加载的病人类型
         int patitentTypeInt = 255;
         QString fileNameStr(d_ptr->configs.at(index).fileName);
-        if(fileNameStr.indexOf("Adult")>=0)
+        if (fileNameStr.indexOf("Adult") >= 0)
         {
             patitentTypeInt = 0;
         }
-        else if(fileNameStr.indexOf("Ped")>=0)
+        else if (fileNameStr.indexOf("Ped") >= 0)
         {
             patitentTypeInt = 1;
         }
-        else if(fileNameStr.indexOf("Neo")>=0)
+        else if (fileNameStr.indexOf("Neo") >= 0)
         {
             patitentTypeInt = 2;
         }
@@ -291,12 +300,12 @@ void LoadConfigMenuContent::onBtnClick()
         IMessageBox iMessageBox(title, text, false);
         int subWidth = menuManager.getSubmenuWidth();
         int subHeight = menuManager.getSubmenuHeight();
-        iMessageBox.setFixedSize(subWidth/2, subHeight/3);
+        iMessageBox.setFixedSize(subWidth / 2, subHeight / 3);
         iMessageBox.exec();
     }
     else if (btn == d_ptr->btns[LoadConfigMenuContentPrivate::ITEM_BTN_VIEW_CONFIG])//查看配置
     {
-        if(d_ptr->lastSelectItem)
+        if (d_ptr->lastSelectItem)
         {
             int index = d_ptr->ltws[LoadConfigMenuContentPrivate::ITEM_LTW_CONFIG_LIST]->row(d_ptr->lastSelectItem);
             d_ptr->curEditIndex = index;
@@ -313,7 +322,6 @@ void LoadConfigMenuContent::onBtnClick()
 
             d_ptr->btns[LoadConfigMenuContentPrivate::ITEM_BTN_LOAD_CONFIG]->setEnabled(!!d_ptr->lastSelectItem);
             d_ptr->btns[LoadConfigMenuContentPrivate::ITEM_BTN_VIEW_CONFIG]->setEnabled(!!d_ptr->lastSelectItem);
-
         }
     }
     else
