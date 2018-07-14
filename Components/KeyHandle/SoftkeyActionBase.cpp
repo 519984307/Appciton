@@ -98,7 +98,8 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
         return;
     }
 
-    windowManager.showMainMenu();
+//    windowManager.showMainMenu();
+    windowManager.showConfigMaintainMenu();
 
     return;
 

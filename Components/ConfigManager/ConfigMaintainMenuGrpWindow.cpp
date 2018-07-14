@@ -9,12 +9,13 @@
  **/
 #include "ConfigMaintainMenuGrpWindow.h"
 #include "LanguageManager.h"
+#include "SelectDefaultConfigMenuContent.h"
+#include "UserConfigEditMenuContent.h"
+#include "ConfigExportImportMenuContent.h"
 
 ConfigMaintainMenuGrpWindow::ConfigMaintainMenuGrpWindow():
     MenuWindow()
-{
-    setWindowTitle(trs("ConfigMaintance"));
-}
+{}
 
 ConfigMaintainMenuGrpWindow *ConfigMaintainMenuGrpWindow::getInstance()
 {
@@ -24,7 +25,9 @@ ConfigMaintainMenuGrpWindow *ConfigMaintainMenuGrpWindow::getInstance()
     {
         instance = new ConfigMaintainMenuGrpWindow;
 
-        // addMenuContent();
+        instance->addMenuContent(new SelectDefaultConfigMenuContent);
+        instance->addMenuContent(new UserConfigEditMenuContent);
+        instance->addMenuContent(new ConfigExportImportMenuContent);
     }
 
     return instance;

@@ -15,12 +15,12 @@ class ConfigMaintainMenuGrpWindow: public MenuWindow
 {
     Q_OBJECT
 public:
-    ConfigMaintainMenuGrpWindow();
-    ~ConfigMaintainMenuGrpWindow(){}
-
     /**
      * @brief getInstance
      * @return
      */
     static ConfigMaintainMenuGrpWindow* getInstance();
+private:
+    ConfigMaintainMenuGrpWindow();
+    ~ConfigMaintainMenuGrpWindow(){}
 };

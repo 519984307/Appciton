@@ -23,6 +23,7 @@
 #include "WiFiProfileMenuContent.h"
 #include "SystemMenuContent.h"
 #include "LoadConfigMenuContent.h"
+#include "ConfigMaintainMenuGrpWindow.h"
 
 MainMenuWindow *MainMenuWindow::getInstance()
 {

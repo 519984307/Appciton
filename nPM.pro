@@ -369,9 +369,13 @@ SOURCES +=                                                                      
     Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
     Components/ConfigManager/ConfigMaintainMenuGrp.cpp                          \
+    Components/ConfigManager/ConfigMaintainMenuGrpWindow.cpp                    \
     Components/ConfigManager/SelectDefaultConfigMenu.cpp                        \
+    Components/ConfigManager/SelectDefaultConfigMenuContent.cpp                 \
     Components/ConfigManager/UserConfigEditMenu.cpp                             \
+    Components/ConfigManager/UserConfigEditMenuContent.cpp                      \
     Components/ConfigManager/ConfigExportImportMenu.cpp                         \
+    Components/ConfigManager/ConfigExportImportMenuContent.cpp                  \
     Components/ConfigManager/ConfigEditMenuGrp.cpp                              \
     Components/ConfigManager/ConfigEditGeneralMenu.cpp                          \
     Components/ConfigManager/ConfigEditEcgMenu.cpp                              \
@@ -848,9 +852,13 @@ HEADERS +=                                                                      
     Components/CodeMarker/Widgets/CodeMarkerWidget.h                            \
     Components/ConfigManager/ConfigManager.h                                    \
     Components/ConfigManager/ConfigMaintainMenuGrp.h                            \
+    Components/ConfigManager/ConfigMaintainMenuGrpWindow.h                      \
     Components/ConfigManager/SelectDefaultConfigMenu.h                          \
+    Components/ConfigManager/SelectDefaultConfigMenuContent.h                   \
     Components/ConfigManager/UserConfigEditMenu.h                               \
+    Components/ConfigManager/UserConfigEditMenuContent.h                        \
     Components/ConfigManager/ConfigExportImportMenu.h                           \
+    Components/ConfigManager/ConfigExportImportMenuContent.h                    \
     Components/ConfigManager/ConfigEditMenuGrp.h                                \
     Components/ConfigManager/ConfigEditGeneralMenu.h                            \
     Components/ConfigManager/ConfigEditEcgMenu.h                                \
