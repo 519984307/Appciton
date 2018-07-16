@@ -77,7 +77,12 @@ void PasswordWidget::layoutExec()
         return;
     }
 
-    QGridLayout *layout = new QGridLayout(this);
+
+    QVBoxLayout *vlayout = new QVBoxLayout(this);
+
+    vlayout->addStretch(1);
+
+    QGridLayout *layout = new QGridLayout;
 
     QLabel *label;
     Button *button;
@@ -142,9 +147,8 @@ void PasswordWidget::layoutExec()
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
     layout->addWidget(button, row, col, 1, 1);
 
-    row++;
-
-    layout->setRowStretch(row, 3);
+    vlayout->addLayout(layout);
+    vlayout->addStretch(1);
 }
 
 void PasswordWidget::changeEvent(QEvent *ev)

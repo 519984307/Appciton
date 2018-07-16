@@ -10,6 +10,7 @@
 
 #include "ThemeManager.h"
 #include <QMap>
+#include <QIcon>
 
 #define COLOR_KEY(type, elem, state) (((type) << 16) | (elem) << 8 | (state))
 
@@ -19,6 +20,14 @@ public:
     ThemeManagerPrivate() {}
     void loadColorScheme();
     QMap<int, QColor> colorScheme;
+    QMap<ThemeManager::IconType, QIcon> iconMap;
+};
+
+static const char *iconPaths[ThemeManager::IconNR] =
+{
+    ":/ui/close.svg",
+    ":/ui/up.svg",
+    ":/ui/down.svg",
 };
 
 void ThemeManagerPrivate::loadColorScheme()
@@ -88,7 +97,6 @@ ThemeManager::~ThemeManager()
 const QColor &ThemeManager::getColor(ThemeManager::ControlType type, ThemeManager::ControlElement elem,
                                      ThemeManager::ControlState state) const
 {
-
     if (type > ControlTypeNR)
     {
         type = ControlTypeNR;
@@ -142,6 +150,24 @@ void ThemeManager::setupPalette(ThemeManager::ControlType type, QPalette &pal)
                  getColor(type, ElementBackgound, StateActive));
     pal.setColor(QPalette::Disabled, QPalette::Window,
                  getColor(type, ElementBackgound, StateDisabled));
+}
+
+const QIcon &ThemeManager::getIcon(ThemeManager::IconType icon)
+{
+    QMap<IconType, QIcon>::ConstIterator iter;
+    iter = d_ptr->iconMap.find(icon);
+    if (iter != d_ptr->iconMap.constEnd())
+    {
+        return iter.value();
+    }
+
+    // load the icon from resourse
+    QIcon ico;
+    if (icon >= 0 && icon < IconNR)
+    {
+        ico = QIcon(iconPaths[icon]);
+    }
+    return *d_ptr->iconMap.insert(icon, ico);
 }
 
 ThemeManager::ThemeManager()
