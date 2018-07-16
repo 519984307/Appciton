@@ -46,9 +46,13 @@ public:
      */
     void showMainMenu();
     /**
-     * @brief showConfigMaintainMenu  show the config maintain window
+     * @brief showConfigManagerMenu show the configManager menu window
      */
-    void showConfigMaintainMenu();
+    void showConfigManagerMenu();
+
+    void showUserMaintainMenu();
+
+    void showFactoryMaintainMenu();
 
 public:
     // 注册窗体。

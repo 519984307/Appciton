@@ -5,31 +5,29 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/10
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/12
  **/
 
 #pragma once
 #include "MenuContent.h"
 
-class AlarmLimitMenuContentPrivate;
-
-class AlarmLimitMenuContent : public MenuContent
+class ConfigManagerMenuContentPrivate;
+class ConfigManagerMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    AlarmLimitMenuContent();
-    ~AlarmLimitMenuContent();
+    ConfigManagerMenuContent();
+    ~ConfigManagerMenuContent();
 
-    /* reimplement */
+    /* reimplment */
     void readyShow();
 
     /* reimplement */
     void layoutExec();
 
 private slots:
-    void onbtnClick();
-    void onRowClicked(int row);
+    void userInputCorrect(void);
 
 private:
-    AlarmLimitMenuContentPrivate *const d_ptr;
+    ConfigManagerMenuContentPrivate * const d_ptr;
 };

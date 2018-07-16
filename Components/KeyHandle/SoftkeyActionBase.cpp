@@ -35,18 +35,7 @@
 #include "Frame.h"
 #include "FrameItem.h"
 #include "ComboBox.h"
-#include "ECGMenuContent.h"
-#include "RESPMenuContent.h"
-#include "AGMenuContent.h"
-#include "IBPMenuContent.h"
-#include "COMenuContent.h"
-#include "SPO2MenuContent.h"
-#include "AlarmLimitMenuContent.h"
-#include "NIBPMenuContent.h"
-#include "CO2MenuContent.h"
-#include "DisplayMenuContent.h"
-#include "WiFiProfileMenuContent.h"
-#include "SystemMenuContent.h"
+
 /***************************************************************************************************
  * 所有的快捷按键定义。
  **************************************************************************************************/
@@ -98,8 +87,7 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
         return;
     }
 
-//    windowManager.showMainMenu();
-    windowManager.showConfigMaintainMenu();
+    windowManager.showMainMenu();
 
     return;
 

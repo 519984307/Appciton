@@ -12,15 +12,18 @@
 #include <QKeyEvent>
 #include <QDebug>
 #include <QFocusEvent>
+#include <QMouseEvent>
 
 class TableViewPrivate
 {
 public:
     explicit TableViewPrivate(TableView *const q_ptr)
-        : q_ptr(q_ptr)
+        : q_ptr(q_ptr),
+          mouseClickRow(-1)
     {}
 
     TableView *const q_ptr;
+    int mouseClickRow;
 };
 
 TableView::TableView(QWidget *parent)
@@ -112,11 +115,9 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
         if (index.isValid())
         {
             QRect r = visualRect(nextIndex);
-            qDebug() << Q_FUNC_INFO << nextRow << r;
             if (rect().contains(r))
             {
                 selectRow(nextRow);
-                qDebug() << Q_FUNC_INFO << "select";
                 break;
             }
         }
@@ -133,11 +134,9 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
         {
             QModelIndex nextIndex = model()->index(nextRow, index.column());
             QRect r = visualRect(nextIndex);
-            qDebug() << Q_FUNC_INFO << nextRow << r;
             if (rect().contains(r))
             {
                 selectRow(nextRow);
-                qDebug() << Q_FUNC_INFO << "select";
                 break;
             }
         }
@@ -146,12 +145,48 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
     break;
     case Qt::Key_Return:
     case Qt::Key_End:
-        // TODO: enter edit mode
-        break;
+    {
+        QModelIndex index = currentIndex();
+        if (index.isValid())
+        {
+            emit rowClicked(index.row());
+        }
+    }
+    break;
     default:
         QTableView::keyReleaseEvent(ev);
         break;
     }
+}
+
+void TableView::mousePressEvent(QMouseEvent *ev)
+{
+    if (ev->button() && Qt::LeftButton)
+    {
+        QModelIndex index = indexAt(ev->pos());
+        if (index.isValid())
+        {
+            d_ptr->mouseClickRow = index.row();
+        }
+    }
+    QTableView::mousePressEvent(ev);
+}
+
+void TableView::mouseReleaseEvent(QMouseEvent *ev)
+{
+    if (ev->button() && Qt::LeftButton)
+    {
+        QModelIndex index = indexAt(ev->pos());
+        if (index.isValid())
+        {
+            if (index.row() == d_ptr->mouseClickRow)
+            {
+                emit rowClicked(d_ptr->mouseClickRow);
+                d_ptr->mouseClickRow = -1;
+            }
+        }
+    }
+    QTableView::mouseReleaseEvent(ev);
 }
 
 void TableView::focusInEvent(QFocusEvent *ev)

@@ -23,6 +23,7 @@
 #include "IBPParam.h"
 #include "TableViewItemDelegate.h"
 #include <Button.h>
+#include <QDebug>
 
 #define TABLE_ROW_NUM 6
 
@@ -119,6 +120,10 @@ void AlarmLimitMenuContent::layoutExec()
     table->setSelectionMode(QAbstractItemView::SingleSelection);
     table->setSelectionBehavior(QAbstractItemView::SelectRows);
     table->setShowGrid(false);
+    table->setEditTriggers(QAbstractItemView::SelectedClicked);
+
+    connect(table, SIGNAL(rowClicked(int)), this, SLOT(onRowClicked(int)));
+
     layout->addWidget(table);
 
     d_ptr->model = new AlarmLimitModel();
@@ -181,4 +186,10 @@ void AlarmLimitMenuContent::onbtnClick()
     {
         d_ptr->prevBtn->setFocus();
     }
+}
+
+void AlarmLimitMenuContent::onRowClicked(int row)
+{
+    qDebug() << Q_FUNC_INFO << row;
+    d_ptr->model->editRowData(row);
 }

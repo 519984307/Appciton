@@ -33,11 +33,13 @@ class AlarmLimitModelPrivate
 {
 public:
     AlarmLimitModelPrivate()
-        : viewWidth(400)
+        : viewWidth(400),  // set default value to 400
+          editRow(-1)
     {}
 
     QList<AlarmDataInfo> alarmDataInfos;
     int viewWidth;
+    int editRow;
 };
 
 AlarmLimitModel::AlarmLimitModel(QObject *parent)
@@ -134,6 +136,13 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
     }
     break;
 
+    case Qt::CheckStateRole:
+        if (index.row() == d_ptr->editRow && index.column() > SECTION_PARAM_NAME)
+        {
+            return QVariant(Qt::Checked);
+        }
+        break;
+
     case Qt::ForegroundRole:
         return QBrush(QColor("#2C405A"));
         break;
@@ -227,7 +236,22 @@ Qt::ItemFlags AlarmLimitModel::flags(const QModelIndex &index) const
         return QAbstractTableModel::flags(index);
     }
 
-    Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    Qt::ItemFlags flags;
+    if (d_ptr->editRow == index.row())
+    {
+        if (index.column() != SECTION_PARAM_NAME)
+        {
+            flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+        }
+        else
+        {
+            flags = Qt::ItemIsEnabled;
+        }
+    }
+    else
+    {
+        flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    }
     return flags;
 }
 
@@ -258,4 +282,42 @@ int AlarmLimitModel::getRowHeightHint() const
 int AlarmLimitModel::getHeaderHeightHint() const
 {
     return HEADER_HEIGHT_HINT;
+}
+
+void AlarmLimitModel::editRowData(int row)
+{
+    if (row == d_ptr->editRow)
+    {
+        return;
+    }
+
+    QModelIndex topLeft;
+    QModelIndex rightBottom;
+    int oldEditRow = d_ptr->editRow;
+    d_ptr->editRow = row;
+    if (oldEditRow >= 0 && oldEditRow < d_ptr->alarmDataInfos.count())
+    {
+        topLeft = index(oldEditRow, 0);
+        rightBottom = index(oldEditRow, SECTION_NR - 1);
+        emit dataChanged(topLeft, rightBottom);
+    }
+
+    if (d_ptr->editRow >= 0 && d_ptr->editRow < d_ptr->alarmDataInfos.count())
+    {
+        topLeft = index(d_ptr->editRow, 0);
+        rightBottom = index(d_ptr->editRow, SECTION_NR - 1);
+        emit dataChanged(topLeft, rightBottom);
+    }
+}
+
+void AlarmLimitModel::stopEditRow()
+{
+    int oldEditRow = d_ptr->editRow;
+    d_ptr->editRow = -1;
+    if (oldEditRow >= 0 && oldEditRow < d_ptr->alarmDataInfos.count())
+    {
+        QModelIndex topLeft = index(oldEditRow, 0);
+        QModelIndex rightBottom = index(oldEditRow, SECTION_NR - 1);
+        emit dataChanged(topLeft, rightBottom);
+    }
 }

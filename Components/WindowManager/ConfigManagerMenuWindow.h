@@ -5,22 +5,18 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018.07.13 10:10
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/13
  **/
 
 #pragma once
 #include "MenuWindow.h"
 
-class ConfigMaintainMenuGrpWindow: public MenuWindow
+class ConfigManagerMenuWindow : public MenuWindow
 {
     Q_OBJECT
 public:
-    /**
-     * @brief getInstance
-     * @return
-     */
-    static ConfigMaintainMenuGrpWindow* getInstance();
+    static ConfigManagerMenuWindow *getInstance();
+
 private:
-    ConfigMaintainMenuGrpWindow();
-    ~ConfigMaintainMenuGrpWindow(){}
+    ConfigManagerMenuWindow();
 };

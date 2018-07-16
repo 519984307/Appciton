@@ -5,30 +5,29 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018.07.13 10:10
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/13
  **/
-#include "ConfigMaintainMenuGrpWindow.h"
-#include "LanguageManager.h"
+
+#include "ConfigManagerMenuWindow.h"
 #include "SelectDefaultConfigMenuContent.h"
 #include "UserConfigEditMenuContent.h"
 #include "ConfigExportImportMenuContent.h"
 
-ConfigMaintainMenuGrpWindow::ConfigMaintainMenuGrpWindow():
-    MenuWindow()
-{}
-
-ConfigMaintainMenuGrpWindow *ConfigMaintainMenuGrpWindow::getInstance()
+ConfigManagerMenuWindow *ConfigManagerMenuWindow::getInstance()
 {
-    static ConfigMaintainMenuGrpWindow *instance = NULL;
-
+    static ConfigManagerMenuWindow *instance = NULL;
     if (instance == NULL)
     {
-        instance = new ConfigMaintainMenuGrpWindow;
-
+        instance = new ConfigManagerMenuWindow;
         instance->addMenuContent(new SelectDefaultConfigMenuContent);
         instance->addMenuContent(new UserConfigEditMenuContent);
         instance->addMenuContent(new ConfigExportImportMenuContent);
     }
 
     return instance;
+}
+
+ConfigManagerMenuWindow::ConfigManagerMenuWindow()
+    : MenuWindow()
+{
 }

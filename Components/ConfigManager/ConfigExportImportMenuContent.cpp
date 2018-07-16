@@ -59,7 +59,6 @@ public:
         sameExportXmlName(""),
         attrCheckFlag(true)
     {
-        configListImport->clear();
         selectItems.clear();
         selectItemsImport.clear();
         configs.clear();
