@@ -11,12 +11,12 @@
 #pragma once
 #include "MenuWindow.h"
 
-class ConfigManagerMenWindow : public MenuWindow
+class ConfigManagerMenuWindow : public MenuWindow
 {
     Q_OBJECT
 public:
-    static ConfigManagerMenWindow *getInstance();
+    static ConfigManagerMenuWindow *getInstance();
 
 private:
-    ConfigManagerMenWindow();
+    ConfigManagerMenuWindow();
 };

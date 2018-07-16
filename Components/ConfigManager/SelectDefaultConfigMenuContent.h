@@ -11,6 +11,7 @@
 #pragma once
 #include "MenuContent.h"
 
+class SelectDefaultConfigMenuContentPrivate;
 class SelectDefaultConfigMenuContent: public MenuContent
 {
     Q_OBJECT
@@ -22,6 +23,24 @@ public:
      * @brief readyShow
      */
     virtual void readyShow();
+    /**
+     * @brief layoutExec
+     */
+    virtual void layoutExec();
+
+private slots:
+    /**
+     * @brief onCurrentIndexChanged
+     * @param index
+     */
+    void onCurrentIndexChanged(int index);
+    /**
+     * @brief onUserDefinedConfigChanged
+     */
+    void onUserDefinedConfigChanged();
+
+private:
+    SelectDefaultConfigMenuContentPrivate *const d_ptr;
 };
 
 

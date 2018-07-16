@@ -281,7 +281,9 @@ SOURCES +=                                                                      
     Components/WindowManager/WindowWidget.cpp                                   \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
     Components/WindowManager/MainMenuWindow.cpp                                 \
-    Components/WindowManager/ConfigManagerMenWindow.cpp                         \
+    Components/WindowManager/FactoryMaintainMenuWindow.cpp                      \
+    Components/WindowManager/ConfigManagerMenuWindow.cpp                        \
+    Components/WindowManager/UserMaintainMenuWindow.cpp                         \
     Components/USBManager/DataExporterBase.cpp                                  \
     Components/USBManager/ErrorLogExporter.cpp                                  \
     Components/USBManager/UDiskInspector.cpp                                    \
@@ -375,8 +377,11 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigManager.cpp                                  \
     Components/ConfigManager/ConfigMaintainMenuGrp.cpp                          \
     Components/ConfigManager/SelectDefaultConfigMenu.cpp                        \
+    Components/ConfigManager/SelectDefaultConfigMenuContent.cpp                 \
     Components/ConfigManager/UserConfigEditMenu.cpp                             \
+    Components/ConfigManager/UserConfigEditMenuContent.cpp                      \
     Components/ConfigManager/ConfigExportImportMenu.cpp                         \
+    Components/ConfigManager/ConfigExportImportMenuContent.cpp                  \
     Components/ConfigManager/ConfigEditMenuGrp.cpp                              \
     Components/ConfigManager/ConfigEditGeneralMenu.cpp                          \
     Components/ConfigManager/ConfigEditEcgMenu.cpp                              \
@@ -763,7 +768,9 @@ HEADERS +=                                                                      
     Components/WindowManager/WindowWidget.h                                     \
     Components/WindowManager/PromptInfoBarWidget.h                              \
     Components/WindowManager/MainMenuWindow.h                                   \
-    Components/WindowManager/ConfigManagerMenWindow.h                           \
+    Components/WindowManager/FactoryMaintainMenuWindow.h                        \
+    Components/WindowManager/ConfigManagerMenuWindow.h                          \
+    Components/WindowManager/UserMaintainMenuWindow.h                           \
     Components/PrintManager/PrintTypeDefine.h                                   \
     Components/PrintManager/PrintDefine.h                                       \
     Components/PrintManager/PrintProviderIFace.h                                \
@@ -861,8 +868,11 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigManager.h                                    \
     Components/ConfigManager/ConfigMaintainMenuGrp.h                            \
     Components/ConfigManager/SelectDefaultConfigMenu.h                          \
+    Components/ConfigManager/SelectDefaultConfigMenuContent.h                   \
     Components/ConfigManager/UserConfigEditMenu.h                               \
+    Components/ConfigManager/UserConfigEditMenuContent.h                        \
     Components/ConfigManager/ConfigExportImportMenu.h                           \
+    Components/ConfigManager/ConfigExportImportMenuContent.h                    \
     Components/ConfigManager/ConfigEditMenuGrp.h                                \
     Components/ConfigManager/ConfigEditGeneralMenu.h                            \
     Components/ConfigManager/ConfigEditEcgMenu.h                                \
