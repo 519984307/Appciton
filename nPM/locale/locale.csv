@@ -1077,14 +1077,14 @@ IsPauseMaxAlarm15Min,是否暂停最大报警15分钟,Is Pause Max Alarm 15Min
 forbid,禁止,forbid
 allow,允许,allow
 ReminderTone,提醒音,Reminder Tone
-close,关闭,close
-open,打开,open
-openAgain,再次打开,Open Again
+Close,关闭,close
+Open,打开,open
+OpenAgain,再次打开,Open Again
 ReminderToneIntervals,提醒音间隔,Reminder Tone Intervals
 H1min,1分钟,1min
 H2min,2分钟,2min
 H3min,3分钟,3min
-_alarmLightOnAlarmReset,报警灯复位,Alarm Light On Alarm Reset
+AlarmLightOnAlarmReset,报警灯复位,Alarm Light On Alarm Reset
 Defaults,默认,Defaults
 RecoverDefaults,默认覆盖,Recover Defaults
 ModuleMaintainMenu,模块维护菜单,Module Maintain Menu
@@ -1132,6 +1132,8 @@ Technology,技术,Technology
 Physiology,生理,Physiology
 UserMaintainPassword,用户维护密码,User Maintain Password
 UserMaintainSystem,用户维护系统,User Maintain System
+Start,开始,Start
+MonitorName,监视器名称,Monitor Name
 Department,部门,Department
 BedNumber,床号,Bed Number
 ModifyPassword,修改密码,Modify Password

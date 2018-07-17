@@ -9,8 +9,6 @@
  **/
 
 #pragma once
-
-#include "LoadConfigMenuContent.h"
 #include "MenuContent.h"
 
 class LoadConfigMenuContentPrivate;
