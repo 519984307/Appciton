@@ -55,8 +55,8 @@ void ConfigEditCOMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_INJECT_TEMP_SOURCE]->blockSignals(true);
 
     Config *config = ConfigEditMenuWindow::getInstance()
-            ->getCurrentEditConfig();
-    int number=0;
+                     ->getCurrentEditConfig();
+    int number = 0;
     config->getNumValue("CO|Ratio", number);
     buttons[ITEM_CBO_CO_RATIO]->setText(QString::number(static_cast<double>(number) / 1000));
     number = 0;
@@ -287,7 +287,7 @@ void ConfigEditCOMenuContent::onButtonReleased()
                         IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.0-27.0", QStringList(trs("EnglishYESChineseSURE")));
                         messageBox.exec();
                     }
-               }
+                }
             }
             break;
         }
