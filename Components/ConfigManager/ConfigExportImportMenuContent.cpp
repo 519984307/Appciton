@@ -53,6 +53,7 @@ public:
         repeatFileChooseFlag(0),
         remainderImportItems(0),
         remainderExportItems(0),
+        configListImport(NULL),
         failedImportXmlName(""),
         failedExportXmlName(""),
         sameImportXmlName(""),
