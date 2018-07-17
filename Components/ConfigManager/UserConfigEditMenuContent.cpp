@@ -7,7 +7,6 @@
  **
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018.07.14
  **/
-#pragma once
 #include "UserConfigEditMenuContent.h"
 #include <QMap>
 #include "Button.h"
@@ -15,11 +14,13 @@
 #include "ConfigManager.h"
 #include "IListWidget.h"
 #include <QLabel>
-#include "ConfigEditMenuGrp.h"
 #include "PatientManager.h"
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include "FontManager.h"
+#include "ConfigEditMenuWindow.h"
+#include "WindowManager.h"
+#include <QHideEvent>
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -141,7 +142,6 @@ UserConfigEditMenuContent::UserConfigEditMenuContent()
                   trs("ConfigManagermentDesc")),
       d_ptr(new UserConfigEditMenuContentPrivate())
 {
-    connect(configEditMenuGrp.getCloseBtn(), SIGNAL(realReleased()), this, SLOT(onEditFinished()));
 }
 
 UserConfigEditMenuContent::~UserConfigEditMenuContent()
@@ -264,10 +264,9 @@ void UserConfigEditMenuContent::onBtnClick()
                                               .arg(configManager.runningConfigFilename(patientManager.getType())));
             }
 
-            configEditMenuGrp.setCurrentEditConfigName(d_ptr->generateDefaultConfigName());
-            configEditMenuGrp.setCurrentEditConfig(d_ptr->curConfig);
-            configEditMenuGrp.initializeSubMenu();
-            configEditMenuGrp.popup();
+            ConfigEditMenuWindow::getInstance()->setCurrentEditConfigName(d_ptr->generateDefaultConfigName());
+            ConfigEditMenuWindow::getInstance()->setCurrentEditConfig(d_ptr->curConfig);
+            windowManager.showConfigEditManagerMenu();
         }
     }
     else if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG])
@@ -284,10 +283,10 @@ void UserConfigEditMenuContent::onBtnClick()
             d_ptr->curConfig = new Config(QString("%1/%2")
                                           .arg(CONFIG_DIR)
                                           .arg(d_ptr->configs.at(index).fileName));
-            configEditMenuGrp.setCurrentEditConfigName(d_ptr->configs.at(index).name);
-            configEditMenuGrp.setCurrentEditConfig(d_ptr->curConfig);
-            configEditMenuGrp.initializeSubMenu();
-            configEditMenuGrp.popup();
+
+            ConfigEditMenuWindow::getInstance()->setCurrentEditConfigName(d_ptr->configs.at(index).name);
+            ConfigEditMenuWindow::getInstance()->setCurrentEditConfig(d_ptr->curConfig);
+            windowManager.showConfigEditManagerMenu();
         }
     }
     else if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG])
@@ -322,7 +321,11 @@ void UserConfigEditMenuContent::onEditFinished()
 {
     //  can't add, too many
     //  TODO show some message
-    QString configName = configEditMenuGrp.getCurrentEditConfigName();
+    QString configName = ConfigEditMenuWindow::getInstance()->getCurrentEditConfigName();
+    if (configName.isEmpty())
+    {
+        return;
+    }
     if (d_ptr->curEditIndex >= 0)
     {
         //  edit exist config
@@ -338,8 +341,8 @@ void UserConfigEditMenuContent::onEditFinished()
         //  add new config
         configManager.saveUserDefineConfig(configName, d_ptr->curConfig);
     }
-    configEditMenuGrp.setCurrentEditConfig(NULL);
-    configEditMenuGrp.setCurrentEditConfigName(QString());
+    ConfigEditMenuWindow::getInstance()->setCurrentEditConfig(NULL);
+    ConfigEditMenuWindow::getInstance()->setCurrentEditConfigName(QString());
 
     d_ptr->loadConfigs();
     d_ptr->updateConfigList();
@@ -423,3 +426,8 @@ void UserConfigEditMenuContent::changeEvent(QEvent *ev)
     }
 }
 
+void UserConfigEditMenuContent::hideEvent(QHideEvent *ev)
+{
+    onEditFinished();
+    MenuContent::hideEvent(ev);
+}

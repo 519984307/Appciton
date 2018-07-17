@@ -53,6 +53,10 @@ public:
     void showUserMaintainMenu();
 
     void showFactoryMaintainMenu();
+    /**
+     * @brief showConfigEditManagerMenu
+     */
+    void showConfigEditManagerMenu();
 
 public:
     // 注册窗体。

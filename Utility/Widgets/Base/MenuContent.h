@@ -11,6 +11,7 @@
 #include <QWidget>
 
 class MenuContentPrivate;
+class MenuWindow;
 class MenuContent : public QWidget
 {
     Q_OBJECT
@@ -40,6 +41,12 @@ public:
      * @brief readyShow start to show
      */
     virtual void readyShow() {}
+
+    /**
+     * @brief getMenuWindow get the menu window the window place in
+     * @return the menu window or NULL if the menu hasn't placed in the window yet
+     */
+    MenuWindow *getMenuWindow();
 
 protected:
     void showEvent(QShowEvent *ev);
