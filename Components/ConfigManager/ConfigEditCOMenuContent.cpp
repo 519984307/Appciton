@@ -29,7 +29,7 @@ class ConfigEditCOMenuContentPrivate
 public:
     enum MenuItem
     {
-        ITEM_CBO_CO_RATIO = 1,
+        ITEM_CBO_CO_RATIO = 0,
         ITEM_CBO_INJECT_TEMP_SOURCE,
         ITEM_CBO_INJECTION_TEMP,
         ITEM_CBO_INJECTION_VOLUMN,
@@ -48,8 +48,21 @@ public:
 
 void ConfigEditCOMenuContentPrivate::loadOptions()
 {
-    buttons[ITEM_CBO_CO_RATIO]->setText(QString::number(static_cast<double>(coParam.getCORatio()) / 1000));
-    combos[ITEM_CBO_INJECT_TEMP_SOURCE]->setCurrentIndex(coParam.getTempSource());
+    buttons[ITEM_CBO_CO_RATIO]->blockSignals(true);
+    buttons[ITEM_CBO_INJECTION_TEMP]->blockSignals(true);
+    buttons[ITEM_CBO_INJECTION_VOLUMN]->blockSignals(true);
+    buttons[ITEM_CBO_MEASURE_CONTROL]->blockSignals(true);
+    combos[ITEM_CBO_INJECT_TEMP_SOURCE]->blockSignals(true);
+
+    Config *config = ConfigEditMenuWindow::getInstance()
+            ->getCurrentEditConfig();
+    int number=0;
+    config->getNumValue("CO|Ratio", number);
+    buttons[ITEM_CBO_CO_RATIO]->setText(QString::number(static_cast<double>(number) / 1000));
+    number = 0;
+    config->getNumValue("CO|InjectionTempSource", number);
+    combos[ITEM_CBO_INJECT_TEMP_SOURCE]->setCurrentIndex(number);
+    number = 0;
     if (combos[ITEM_CBO_INJECT_TEMP_SOURCE]->currentIndex() == CO_TI_MODE_AUTO)
     {
         buttons[ITEM_CBO_INJECTION_TEMP]->setEnabled(false);
@@ -58,9 +71,20 @@ void ConfigEditCOMenuContentPrivate::loadOptions()
     {
         buttons[ITEM_CBO_INJECTION_TEMP]->setEnabled(true);
     }
-    buttons[ITEM_CBO_INJECTION_TEMP]->setText(QString::number(static_cast<double>(coParam.getInjectionTemp()) / 10));
-    buttons[ITEM_CBO_INJECTION_VOLUMN]->setText(QString::number(coParam.getInjectionVolumn()));
-    buttons[ITEM_CBO_MEASURE_CONTROL]->setText(trs(COSymbol::convert(coParam.getMeasureCtrl())));
+    config->getNumValue("CO|InjectionTemp", number);
+    buttons[ITEM_CBO_INJECTION_TEMP]->setText(QString::number(static_cast<double>(number) / 10));
+    number = 0;
+    config->getNumValue("CO|InjectionVolumn", number);
+    buttons[ITEM_CBO_INJECTION_VOLUMN]->setText(QString::number(number));
+    number = 0;
+    config->getNumValue("CO|MeasureMode", number);
+    buttons[ITEM_CBO_MEASURE_CONTROL]->setText(trs(COSymbol::convert((COInstCtl)number)));
+
+    buttons[ITEM_CBO_CO_RATIO]->blockSignals(false);
+    buttons[ITEM_CBO_INJECTION_TEMP]->blockSignals(false);
+    buttons[ITEM_CBO_INJECTION_VOLUMN]->blockSignals(false);
+    buttons[ITEM_CBO_MEASURE_CONTROL]->blockSignals(false);
+    combos[ITEM_CBO_INJECT_TEMP_SOURCE]->blockSignals(false);
 }
 
 ConfigEditCOMenuContent::ConfigEditCOMenuContent()
@@ -227,8 +251,7 @@ void ConfigEditCOMenuContent::onButtonReleased()
                     if (actualValue >= 1 && actualValue <= 999)
                     {
                         button->setText(text);
-                        coParam.setCORatio(actualValue);
-                        config->setNumValue("CO|ratdio", actualValue);
+                        config->setNumValue("CO|Ratio", static_cast<int>(actualValue));
                     }
                     else
                     {
@@ -256,8 +279,8 @@ void ConfigEditCOMenuContent::onButtonReleased()
                     if (actualValue <= 270)
                     {
                         button->setText(text);
-                        config->setNumValue("CO|InjectionTempSource", (unsigned)CO_TI_MODE_MANUAL);
-                        config->setNumValue("CO|InjectionTemp", (unsigned)actualValue);
+                        config->setNumValue("CO|InjectionTempSource", static_cast<int>(CO_TI_MODE_MANUAL));
+                        config->setNumValue("CO|InjectionTemp", static_cast<int>(actualValue));
                     }
                     else
                     {
@@ -284,7 +307,7 @@ void ConfigEditCOMenuContent::onButtonReleased()
                     if (value >= 1 && value <= 200)
                     {
                         button->setText(text);
-                        config->setNumValue("CO|InjectionVolumn", (unsigned)value);
+                        config->setNumValue("CO|InjectionVolumn", static_cast<int>(value));
                     }
                     else
                     {
@@ -297,7 +320,7 @@ void ConfigEditCOMenuContent::onButtonReleased()
         }
         case ConfigEditCOMenuContentPrivate::ITEM_CBO_MEASURE_CONTROL:
         {
-            coParam.measureCtrl(d_ptr->measureSta);
+            config->setNumValue("CO|MeasureMode", static_cast<int>(d_ptr->measureSta));
             if (d_ptr->measureSta == CO_INST_START)
             {
                 button->setText(trs("COEnd"));
