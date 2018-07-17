@@ -204,7 +204,11 @@ void PopupList::showEvent(QShowEvent *e)
             // pop under the parent widget
             if (!d_ptr->concatToParent)
             {
-                pos.ry() = pos.ry() + DEFAULT_GAP;
+                pos.ry() += DEFAULT_GAP;
+            }
+            else
+            {
+                pos.ry() -= borderRadius;
             }
 
             move(pos);
@@ -213,7 +217,7 @@ void PopupList::showEvent(QShowEvent *e)
         else
         {
             // pop above the parent widget
-            pos = parent->mapFromGlobal(parent->rect().topLeft());
+            pos = parent->mapToGlobal(parent->rect().topLeft());
             if (d_ptr->concatToParent)
             {
                 pos.ry() = pos.ry() - d_ptr->properItemsHeight();

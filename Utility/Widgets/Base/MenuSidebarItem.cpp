@@ -13,6 +13,7 @@
 #include <QPainter>
 #include <QDebug>
 #include <QMouseEvent>
+#include "ThemeManager.h"
 
 #define MARKER_WIDTH 6
 
@@ -27,6 +28,10 @@ QSize MenuSidebarItem::sizeHint() const
     QFontMetrics fm = fontMetrics();
     int w = fm.width(text()) + MARKER_WIDTH * 2;
     int h = fm.height() * 3;
+    if (h < themeManger.getAcceptableControlHeight())
+    {
+        h = themeManger.getAcceptableControlHeight();
+    }
     return QSize(w, h);
 }
 

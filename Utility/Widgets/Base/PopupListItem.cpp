@@ -14,7 +14,7 @@
 #include <QKeyEvent>
 #include <QDebug>
 
-#define DEFAULT_HEIGHT 40
+#define DEFAULT_HEIGHT (themeManger.getAcceptableControlHeight())
 
 
 class PopupListItemPrivate

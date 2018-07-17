@@ -17,7 +17,7 @@
 #include <QResizeEvent>
 #include "FontManager.h"
 
-#define TITLE_BAR_HEIGHT 40
+#define TITLE_BAR_HEIGHT 48
 
 class WindowPrivate
 {
@@ -67,7 +67,7 @@ Window::Window(QWidget *parent)
     vLayout->addWidget(d_ptr->m_widget, 1);
     connect(closeBtn, SIGNAL(clicked(bool)), this, SLOT(close()));
 
-    setFont(fontManager.textFont(17));
+    setFont(fontManager.textFont(20));
 
     d_ptr->m_mask = new QWidget(this);
     QPalette pal = d_ptr->m_mask->palette();

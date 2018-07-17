@@ -17,6 +17,7 @@
 #include <QBrush>
 #include "ItemEditInfo.h"
 #include "ParamManager.h"
+#include "ThemeManager.h"
 
 enum
 {
@@ -28,8 +29,8 @@ enum
     SECTION_NR
 };
 
-#define ROW_HEIGHT_HINT 40
-#define HEADER_HEIGHT_HINT 40
+#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define HEADER_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
 
 class AlarmLimitModelPrivate
 {
