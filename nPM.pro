@@ -321,6 +321,7 @@ SOURCES +=                                                                      
     Components/NetworkManager/Widgets/WiFiProfileEditor.cpp                     \
     Components/NetworkManager/Widgets/WiFiProfileMenu.cpp                       \
     Components/NetworkManager/Widgets/WiFiProfileMenuContent.cpp                \
+    Components/NetworkManager/Widgets/WiFiProfileEditorWindow.cpp               \
     Components/ActivityLog/ActivityLogManager.cpp                               \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.cpp            \
     Components/Maintain/Supervisor/Menu/SupervisorPortMenu.cpp                  \
@@ -362,6 +363,10 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/WiredWorkMaintainMenu.cpp                  \
     Components/Maintain/UserMaintain/OthersMaintainMenu.cpp                     \
     Components/Maintain/UserMaintain/UserMaintainMenuContent.cpp                \
+    Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.cpp         \
+    Components/Maintain/UserMaintain/ModuleMaintainMenuContent.cpp              \
+    Components/Maintain/UserMaintain/AlarmMaintainMenuContent.cpp               \
+    Components/Maintain/UserMaintain/WifiMaintainMenuContent.cpp                \
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.cpp             \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftWareVersion.cpp                     \
@@ -383,14 +388,18 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigExportImportMenu.cpp                         \
     Components/ConfigManager/ConfigExportImportMenuContent.cpp                  \
     Components/ConfigManager/ConfigEditMenuGrp.cpp                              \
+    Components/ConfigManager/ConfigEditMenuWindow.cpp                           \
     Components/ConfigManager/ConfigEditGeneralMenu.cpp                          \
     Components/ConfigManager/ConfigEditEcgMenu.cpp                              \
+    Components/ConfigManager/ConfigEditEcgMenuContent.cpp                       \
     Components/ConfigManager/ConfigEditRespMenu.cpp                             \
     Components/ConfigManager/ConfigEditAlarmLimitMenu.cpp                       \
     Components/ConfigManager/ConfigEditNIBPMenu.cpp                             \
     Components/ConfigManager/ConfigEditSpO2Menu.cpp                             \
     Components/ConfigManager/ConfigEditCO2Menu.cpp                              \
+    Components/ConfigManager/ConfigEditCO2MenuContent.cpp                       \
     Components/ConfigManager/ConfigEditCOMenu.cpp                               \
+    Components/ConfigManager/ConfigEditCOMenuContent.cpp                        \
     Components/ConfigManager/ConfigEditUnitSetupMenu.cpp                        \
     Components/ConfigManager/ConfigEditIBPMenu.cpp                              \
     Components/ConfigManager/ConfigEditDisplayMenu.cpp                          \
@@ -809,6 +818,7 @@ HEADERS +=                                                                      
     Components/NetworkManager/Widgets/WiFiProfileEditor.h                       \
     Components/NetworkManager/Widgets/WiFiProfileMenu.h                         \
     Components/NetworkManager/Widgets/WiFiProfileMenuContent.h                  \
+    Components/NetworkManager/Widgets/WiFiProfileEditorWindow.h                 \
     Components/ActivityLog/ActivityLogManager.h                                 \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.h              \
     Components/Maintain/Supervisor/Menu/SupervisorPortMenu.h                    \
@@ -852,6 +862,10 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/WiredWorkMaintainMenu.h                    \
     Components/Maintain/UserMaintain/OthersMaintainMenu.h                       \
     Components/Maintain/UserMaintain/UserMaintainMenuContent.h                  \
+    Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.h           \
+    Components/Maintain/UserMaintain/ModuleMaintainMenuContent.h                \
+    Components/Maintain/UserMaintain/AlarmMaintainMenuContent.h                 \
+    Components/Maintain/UserMaintain/WifiMaintainMenuContent.h                  \
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.h               \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersion.h                       \
@@ -874,14 +888,18 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigExportImportMenu.h                           \
     Components/ConfigManager/ConfigExportImportMenuContent.h                    \
     Components/ConfigManager/ConfigEditMenuGrp.h                                \
+    Components/ConfigManager/ConfigEditMenuWindow.h                             \
     Components/ConfigManager/ConfigEditGeneralMenu.h                            \
     Components/ConfigManager/ConfigEditEcgMenu.h                                \
+    Components/ConfigManager/ConfigEditEcgMenuContent.h                         \
     Components/ConfigManager/ConfigEditRespMenu.h                               \
     Components/ConfigManager/ConfigEditAlarmLimitMenu.h                         \
     Components/ConfigManager/ConfigEditNIBPMenu.h                               \
     Components/ConfigManager/ConfigEditSpO2Menu.h                               \
     Components/ConfigManager/ConfigEditCO2Menu.h                                \
+    Components/ConfigManager/ConfigEditCO2MenuContent.h                         \
     Components/ConfigManager/ConfigEditCOMenu.h                                 \
+    Components/ConfigManager/ConfigEditCOMenuContent.h                          \
     Components/ConfigManager/ConfigEditUnitSetupMenu.h                          \
     Components/ConfigManager/ConfigEditIBPMenu.h                                \
     Components/ConfigManager/ConfigEditDisplayMenu.h                            \

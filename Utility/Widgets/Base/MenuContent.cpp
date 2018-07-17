@@ -9,6 +9,7 @@
  **/
 
 #include "MenuContent.h"
+#include "MenuWindow.h"
 
 
 class MenuContentPrivate
@@ -44,6 +45,25 @@ const QString &MenuContent::name() const
 const QString &MenuContent::description() const
 {
     return d_ptr->description;
+}
+
+MenuWindow *MenuContent::getMenuWindow()
+{
+    QWidget *p = parentWidget();
+    while ((p != NULL))
+    {
+        MenuWindow *w = qobject_cast<MenuWindow *>(p);
+        if (w)
+        {
+            return w;
+        }
+        else
+        {
+            p = p->parentWidget();
+        }
+    }
+
+    return NULL;
 }
 
 void MenuContent::showEvent(QShowEvent *ev)

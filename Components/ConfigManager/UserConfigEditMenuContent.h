@@ -39,6 +39,10 @@ protected:
      * @brief changeEvent
      */
     virtual void changeEvent(QEvent *);
+    /**
+     * @brief hideEvent
+     */
+    virtual void hideEvent(QHideEvent *);
 
 private slots:
     /**
