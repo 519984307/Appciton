@@ -25,7 +25,7 @@ public:
           valueRect(0, 0, 40, 100),
           isUpPressed(false),
           isDownPressed(false),
-          hasMousePressedEvent(false)
+          hasBeenPressed(false)
     {}
 
     // check the mouse in which region
@@ -47,7 +47,7 @@ public:
     QRect valueRect;
     bool isUpPressed;
     bool isDownPressed;
-    bool hasMousePressedEvent;
+    bool hasBeenPressed;
 };
 
 bool PopupNumEditorPrivate::mouseInUpRegion(const QPoint &pos) const
@@ -75,17 +75,19 @@ bool PopupNumEditorPrivate::mouseInValueRegion(const QPoint &pos) const
 
 void PopupNumEditorPrivate::increaseValue()
 {
-    if (editInfo.curValue + editInfo.step < editInfo.highLimit)
+    if (editInfo.curValue + editInfo.step <= editInfo.highLimit)
     {
         editInfo.curValue += editInfo.step;
+        emit q_ptr->valueChanged(editInfo.curValue);
     }
 }
 
 void PopupNumEditorPrivate::decreaseValue()
 {
-    if (editInfo.curValue - editInfo.step > editInfo.lowLimit)
+    if (editInfo.curValue - editInfo.step >= editInfo.lowLimit)
     {
         editInfo.curValue -= editInfo.step;
+        emit q_ptr->valueChanged(editInfo.curValue);
     }
 }
 
@@ -206,6 +208,7 @@ QSize PopupNumEditor::sizeHint() const
 
 void PopupNumEditor::keyPressEvent(QKeyEvent *ev)
 {
+    d_ptr->hasBeenPressed = true;
     switch (ev->key())
     {
     case Qt::Key_Up:
@@ -229,6 +232,11 @@ void PopupNumEditor::keyPressEvent(QKeyEvent *ev)
 
 void PopupNumEditor::keyReleaseEvent(QKeyEvent *ev)
 {
+    if (!d_ptr->hasBeenPressed)
+    {
+        return;
+    }
+    d_ptr->hasBeenPressed = false;
     switch (ev->key())
     {
     case Qt::Key_Up:
@@ -255,16 +263,17 @@ void PopupNumEditor::keyReleaseEvent(QKeyEvent *ev)
 
 void PopupNumEditor::mousePressEvent(QMouseEvent *ev)
 {
-    d_ptr->hasMousePressedEvent = true;
+    d_ptr->hasBeenPressed = true;
     d_ptr->isUpPressed = d_ptr->mouseInUpRegion(ev->pos());
     d_ptr->isDownPressed = d_ptr->mouseInDownRegion(ev->pos());
 
     update();
+    ev->accept();
 }
 
 void PopupNumEditor::mouseReleaseEvent(QMouseEvent *ev)
 {
-    if (!d_ptr->hasMousePressedEvent)
+    if (!d_ptr->hasBeenPressed)
     {
         // don't process this event if have gone through press event
         return;
@@ -290,8 +299,9 @@ void PopupNumEditor::mouseReleaseEvent(QMouseEvent *ev)
 
     d_ptr->isUpPressed = false;
     d_ptr->isDownPressed = false;
-    d_ptr->hasMousePressedEvent = false;
+    d_ptr->hasBeenPressed = false;
     update();
+    ev->accept();
 }
 
 void PopupNumEditor::showEvent(QShowEvent *ev)

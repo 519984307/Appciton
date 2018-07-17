@@ -38,7 +38,6 @@ public:
     /* reimplement */
     QSize sizeHint() const;
 
-
 protected:
     /* reimplement */
     void keyPressEvent(QKeyEvent *ev);
@@ -57,4 +56,5 @@ signals:
 
 private:
     PopupNumEditorPrivate *const d_ptr;
+    friend class PopupNumEditorPrivate;
 };

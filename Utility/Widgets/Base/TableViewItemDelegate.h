@@ -21,11 +21,6 @@ public:
     ~TableViewItemDelegate();
 
     /* reimplement */
-    QWidget *createEditor(QWidget *parent,
-                          const QStyleOptionViewItem &option,
-                          const QModelIndex &index) const;
-
-    /* reimplement */
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 protected:
@@ -40,6 +35,7 @@ protected:
 
 private slots:
     void onPopupDestroy();
+    void onEditValueUpdate(int value);
 
 private:
     TableViewItemDelegatePrivate *const d_ptr;
