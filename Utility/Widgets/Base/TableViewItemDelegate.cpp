@@ -9,18 +9,27 @@
  **/
 
 #include "TableViewItemDelegate.h"
-#include <QDebug>
 #include "PopupList.h"
 #include <QPainter>
 #include "ThemeManager.h"
 #include <QKeyEvent>
 #include <QMouseEvent>
+#include <QTableView>
+#include "ItemEditInfo.h"
+#include "PopupNumEditor.h"
+#include "FontManager.h"
+#include <QDebug>
 
 #define MARGIN 2
 
 class TableViewItemDelegatePrivate
 {
 public:
+    TableViewItemDelegatePrivate()
+        : curEditingModel(NULL)
+    {
+    }
+
     const QWidget *widget(const QStyleOptionViewItem &option) const
     {
         if (const QStyleOptionViewItemV3 *v3 = qstyleoption_cast<const QStyleOptionViewItemV3 *>(&option))
@@ -31,7 +40,9 @@ public:
         return 0;
     }
 
-    QModelIndex curIndex;   // record current item's index
+    QModelIndex curPaintingIndex;   // record current painting item's index
+    QModelIndex curEditingIndex;    // record current painting item's index
+    QAbstractItemModel *curEditingModel; // current editing model
     Qt::CheckState checkState;  // record current item's check state
     QPalette pal;   // palette to used when draw check state
 };
@@ -57,7 +68,7 @@ QWidget *TableViewItemDelegate::createEditor(QWidget *parent, const QStyleOption
 void TableViewItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     // get the model index
-    d_ptr->curIndex = index;
+    d_ptr->curPaintingIndex = index;
     QItemDelegate::paint(painter, option, index);
 }
 
@@ -86,7 +97,7 @@ void TableViewItemDelegate::drawCheck(QPainter *painter, const QStyleOptionViewI
     painter->setRenderHint(QPainter::Antialiasing);
 
     // draw the item background color
-    QVariant value = d_ptr->curIndex.data(Qt::BackgroundRole);
+    QVariant value = d_ptr->curPaintingIndex.data(Qt::BackgroundRole);
     if (value.canConvert<QBrush>())
     {
         QPointF oldBO = painter->brushOrigin();
@@ -116,6 +127,15 @@ void TableViewItemDelegate::drawCheck(QPainter *painter, const QStyleOptionViewI
     QPen pen(borderColor, borderWidth);
     painter->setPen(pen);
     painter->setBrush(bgColor);
+    if (state == Qt::Checked)
+    {
+        // NOTE: we only draw the upper border radius here. This is fine for the popuplist widget, because the
+        // popuplist will concat to the item border; It's not so correct for the popupnumeditor, becacuse the
+        // popupnumeditor will not concat to the item border but overlay the item. So here is fine, we can't see
+        // the item when the popupnumeditor is shown. We can do some optimization here, fix it later.
+        painter->setClipRect(option.rect);
+        r.adjust(0, 0, 0, radius + borderWidth);
+    }
     painter->drawRoundedRect(r, radius, radius);
     painter->restore();
 }
@@ -138,7 +158,7 @@ void TableViewItemDelegate::drawDisplay(QPainter *painter, const QStyleOptionVie
     {
         QStyleOptionViewItem opt(option);
         opt.state &= (~QStyle::State_Selected);
-        QRect r = QItemDelegate::rect(opt, d_ptr->curIndex, Qt::DisplayRole);
+        QRect r = QItemDelegate::rect(opt, d_ptr->curPaintingIndex, Qt::DisplayRole);
         r = QStyle::alignedRect(option.direction, option.displayAlignment, r.size().boundedTo(option.rect.size()), option.rect);
         QItemDelegate::drawDisplay(painter, opt, r, text);
     }
@@ -167,19 +187,56 @@ bool TableViewItemDelegate::editorEvent(QEvent *event, QAbstractItemModel *model
         return false;
     }
 
-    const QWidget *w = d_ptr->widget(option);
+    const QTableView *view = qobject_cast<const QTableView *>(d_ptr->widget(option));
+    if (!view)
+    {
+        // can't access the view
+        return false;
+    }
 
     // make sure that we have the right event type
     if ((event->type() == QEvent::MouseButtonRelease)
             || (event->type() == QEvent::MouseButtonDblClick)
             || (event->type() == QEvent::MouseButtonPress))
     {
-        QMouseEvent *mv = static_cast<QMouseEvent *>(event);
-        PopupList *popup = new PopupList();
-        popup->addItemText("ON");
-        popup->addItemText("OFF");
-        popup->move(w->mapToGlobal(mv->pos()));
-        popup->show();
+
+        d_ptr->curEditingModel = model;
+        d_ptr->curEditingIndex = index;
+
+        model->setData(index, QVariant(Qt::Checked), Qt::CheckStateRole);
+        QVariant value = model->data(index, Qt::EditRole);
+        if (value.canConvert<ItemEditInfo>())
+        {
+
+            ItemEditInfo info = qvariant_cast<ItemEditInfo>(value);
+
+            QRect vrect = view->visualRect(index);
+            QRect rect(view->viewport()->mapToGlobal(vrect.topLeft()),
+                       view->viewport()->mapToGlobal(vrect.bottomRight()));
+
+            rect.adjust(MARGIN, 0, -MARGIN, 0);
+            if (info.type == ItemEditInfo::LIST)
+            {
+                PopupList *popup = new PopupList();
+                popup->setFixedWidth(rect.width());
+                popup->additemList(info.list);
+                popup->move(rect.bottomLeft());
+                connect(popup, SIGNAL(destroyed(QObject *)), this, SLOT(onPopupDestroy()));
+                popup->show();
+                return true;
+            }
+            else if (info.type == ItemEditInfo::VALUE)
+            {
+                PopupNumEditor *editor = new PopupNumEditor();
+                editor->setEditInfo(info);
+                editor->setFont(fontManager.textFont(view->font().pixelSize()));
+                editor->setPalette(d_ptr->pal);
+                editor->setEditValueGeometry(rect);
+                connect(editor, SIGNAL(destroyed(QObject *)), this, SLOT(onPopupDestroy()));
+                editor->show();
+                return true;
+            }
+        }
     }
     else if (event->type() == QEvent::KeyPress)
     {
@@ -190,4 +247,14 @@ bool TableViewItemDelegate::editorEvent(QEvent *event, QAbstractItemModel *model
     }
 
     return false;
+}
+
+void TableViewItemDelegate::onPopupDestroy()
+{
+    if (d_ptr->curEditingIndex.isValid())
+    {
+        d_ptr->curEditingModel->setData(d_ptr->curEditingIndex, QVariant(Qt::PartiallyChecked), Qt::CheckStateRole);
+        d_ptr->curEditingIndex = QModelIndex();
+        d_ptr->curEditingModel = NULL;
+    }
 }

@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/ui">
         <file>close.svg</file>
+        <file>up.svg</file>
+        <file>down.svg</file>
     </qresource>
 </RCC>

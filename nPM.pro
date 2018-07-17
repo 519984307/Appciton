@@ -109,6 +109,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/ComboBox.cpp                                           \
     Utility/Widgets/Base/PopupList.cpp                                          \
     Utility/Widgets/Base/PopupListItem.cpp                                      \
+    Utility/Widgets/Base/PopupNumEditor.cpp                                     \
     Utility/Widgets/Base/TableView.cpp                                          \
     Utility/Widgets/Base/TableHeaderView.cpp                                    \
     Utility/Widgets/Base/TableViewItemDelegate.cpp                              \
@@ -242,7 +243,7 @@ SOURCES +=                                                                      
     Components/PatientData/TrendCache.cpp                                       \
     Components/PatientData/TrendGraphWidget.cpp                                 \
     Components/PatientData/TrendDataWidget.cpp                                  \
-    Components/PatientData/TrendDataUtil.cpp                                  \
+    Components/PatientData/TrendDataUtil.cpp                                    \
     Components/PatientData/TrendDataSetWidget.cpp                               \
     Components/PatientData/RescueDataDeleteWidget.cpp                           \
     Components/PatientData/TrendDataStorageManager.cpp                          \
@@ -574,6 +575,8 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/ComboBox.h                                             \
     Utility/Widgets/Base/PopupList.h                                            \
     Utility/Widgets/Base/PopupListItem.h                                        \
+    Utility/Widgets/Base/ItemEditInfo.h                                         \
+    Utility/Widgets/Base/PopupNumEditor.h                                       \
     Utility/Widgets/Base/TableView.h                                            \
     Utility/Widgets/Base/TableHeaderView.h                                      \
     Utility/Widgets/Base/TableViewItemDelegate.h                                \
