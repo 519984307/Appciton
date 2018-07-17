@@ -45,7 +45,6 @@ public:
      * @brief showMainMenu show the main menu window
      */
     void showMainMenu();
-
     /**
      * @brief showConfigManagerMenu show the configManager menu window
      */
@@ -54,6 +53,10 @@ public:
     void showUserMaintainMenu();
 
     void showFactoryMaintainMenu();
+    /**
+     * @brief showConfigEditManagerMenu
+     */
+    void showConfigEditManagerMenu();
 
 public:
     // 注册窗体。

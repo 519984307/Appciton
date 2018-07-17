@@ -38,6 +38,9 @@ protected:
     /* reimplement */
     bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
 
+private slots:
+    void onPopupDestroy();
+
 private:
     TableViewItemDelegatePrivate *const d_ptr;
 };

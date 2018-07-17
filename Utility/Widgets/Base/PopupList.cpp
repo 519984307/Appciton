@@ -123,6 +123,15 @@ void PopupList::addItemText(const QString &text)
     connect(item, SIGNAL(clicked(bool)), this, SLOT(onItemSelected()));
 }
 
+void PopupList::additemList(const QStringList &list)
+{
+    QStringList::ConstIterator iter;
+    for (iter = list.constBegin(); iter != list.constEnd(); ++iter)
+    {
+        addItemText(*iter);
+    }
+}
+
 void PopupList::setCurrentIndex(int index)
 {
     if (d_ptr->curSelectIndex == index || index == d_ptr->items.count())
@@ -178,7 +187,6 @@ void PopupList::showEvent(QShowEvent *e)
     // find a proper position
     if (parent)
     {
-
         // set fix width;
         this->setFixedWidth(parent->width());
 

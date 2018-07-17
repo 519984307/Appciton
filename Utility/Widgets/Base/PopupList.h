@@ -32,6 +32,12 @@ public:
     void addItemText(const QString &text);
 
     /**
+     * @brief additemList add a list of item
+     * @param list the item text list
+     */
+    void additemList(const QStringList &list);
+
+    /**
      * @brief setCurrentIndex set the selected item, negative value meams uncheck
      * @param index
      */

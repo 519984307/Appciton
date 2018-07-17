@@ -13,6 +13,7 @@
 #include <QObject>
 #include <QPalette>
 
+class QIcon;
 class ThemeManagerPrivate;
 class ThemeManager : public QObject
 {
@@ -43,6 +44,13 @@ public:
         ElementBackgound,
         ElementText,
         ElementNR,
+    };
+
+    enum IconType {
+        IconClose,
+        IconUp,
+        IconDown,
+        IconNR
     };
 
     static ThemeManager &getInstance();
@@ -82,6 +90,13 @@ public:
     {
         return 4;
     }
+
+    /**
+     * @brief getIcon get a icon
+     * @param icon icon type
+     * @return reference to the icon
+     */
+    const QIcon &getIcon(IconType icon);
 
 private:
     ThemeManager();

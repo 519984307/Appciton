@@ -30,6 +30,7 @@
 #include "ConfigManagerMenuWindow.h"
 #include "UserMaintainMenuWindow.h"
 #include "FactoryMaintainMenuWindow.h"
+#include "ConfigEditMenuWindow.h"
 
 struct NodeDesc
 {
@@ -2479,6 +2480,17 @@ void WindowManager::showUserMaintainMenu()
 void WindowManager::showFactoryMaintainMenu()
 {
     FactoryMaintainMenuWindow *w = FactoryMaintainMenuWindow::getInstance();
+    QRect r = _volatileLayout->geometry();
+    QPoint globalTopLeft = mapToGlobal(r.topLeft());
+    r.moveTo(0, 0);
+    w->move(globalTopLeft + r.center() - w->rect().center());
+    w->show();
+}
+
+void WindowManager::showConfigEditManagerMenu()
+{
+    ConfigEditMenuWindow *w = ConfigEditMenuWindow::getInstance();
+    w->initializeSubMenu();
     QRect r = _volatileLayout->geometry();
     QPoint globalTopLeft = mapToGlobal(r.topLeft());
     r.moveTo(0, 0);

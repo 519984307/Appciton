@@ -997,6 +997,7 @@ NIBPMeasureMode,测量模式,NIBP Measure Mode
 ExportFileCompleted,导出文件完成,Export File Completed
 ExportFileFailed,导出文件失败,Export File Failed
 ExportImport,导出/导入,Export/Import
+ExportImportDesc,导出/导入配置,Export/Import Desc
 ExportImportConfig,导出/导入配置,Export/ImportConfig
 Export,导出,Export
 Import,导入,Import
@@ -1153,6 +1154,7 @@ normal,中,Normal
 low,低,Low
 ConfigManager,配置管理,Config Manager
 DefaultConfig,默认配置,Default Config
+DefaultConfigDesc,默认配置设置,Default Config Desc
 AdultDefaultConfig,成人默认配置,Adult Default Config
 PedDefaultConfig,小儿默认配置,Ped Default Config
 NeoDefaultConfig,新生儿默认配置,Neo Default Config

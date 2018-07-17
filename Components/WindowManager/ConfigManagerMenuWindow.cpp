@@ -9,6 +9,9 @@
  **/
 
 #include "ConfigManagerMenuWindow.h"
+#include "SelectDefaultConfigMenuContent.h"
+#include "UserConfigEditMenuContent.h"
+#include "ConfigExportImportMenuContent.h"
 
 ConfigManagerMenuWindow *ConfigManagerMenuWindow::getInstance()
 {
@@ -16,6 +19,9 @@ ConfigManagerMenuWindow *ConfigManagerMenuWindow::getInstance()
     if (instance == NULL)
     {
         instance = new ConfigManagerMenuWindow;
+        instance->addMenuContent(new SelectDefaultConfigMenuContent);
+        instance->addMenuContent(new UserConfigEditMenuContent);
+        instance->addMenuContent(new ConfigExportImportMenuContent);
     }
 
     return instance;

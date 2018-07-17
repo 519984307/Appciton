@@ -15,6 +15,7 @@
 #include <QColor>
 #include <QResizeEvent>
 #include <QBrush>
+#include "ItemEditInfo.h"
 
 enum
 {
@@ -40,6 +41,7 @@ public:
     QList<AlarmDataInfo> alarmDataInfos;
     int viewWidth;
     int editRow;
+    QModelIndex editIndex;
 };
 
 AlarmLimitModel::AlarmLimitModel(QObject *parent)
@@ -66,11 +68,38 @@ int AlarmLimitModel::rowCount(const QModelIndex &parent) const
 
 bool AlarmLimitModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    Q_UNUSED(index)
     Q_UNUSED(value)
-    Q_UNUSED(role)
-    qDebug() << Q_FUNC_INFO;
-    return false;
+
+    if (role == Qt::EditRole)
+    {
+        QString s = value.toString();
+        if (s.isEmpty())
+        {
+            d_ptr->editIndex = QModelIndex();
+        }
+        else if (s == "EDIT")
+        {
+            d_ptr->editIndex = index;
+        }
+    }
+
+    if (role == Qt::CheckStateRole)
+    {
+        Qt::CheckState checkState = static_cast<Qt::CheckState>(value.toInt());
+
+        if (checkState == Qt::PartiallyChecked)
+        {
+            d_ptr->editIndex = QModelIndex();
+        }
+        else if (checkState == Qt::Checked)
+        {
+            d_ptr->editIndex = index;
+        }
+        emit dataChanged(d_ptr->editIndex, d_ptr->editIndex);
+    }
+
+
+    return true;
 }
 
 QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
@@ -136,10 +165,57 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
     }
     break;
 
+    case Qt::EditRole:
+    {
+        if (index == d_ptr->editIndex)
+        {
+            int row = index.row();
+            ItemEditInfo editInfo;
+            switch (index.column())
+            {
+            case SECTION_STATUS:
+                editInfo.type = ItemEditInfo::LIST;
+                editInfo.list << trs("Off") << trs("On");
+                editInfo.curValue = d_ptr->alarmDataInfos.at(row).status;
+                break;
+            case SECTION_LEVEL:
+                editInfo.type = ItemEditInfo::LIST;
+                editInfo.list << trs("low") << trs("normal") << trs("high");
+                editInfo.curValue = d_ptr->alarmDataInfos.at(row).alarmLevel;
+                break;
+            case SECTION_LOW_LIMIT:
+                editInfo.type = ItemEditInfo::VALUE;
+                editInfo.scale = d_ptr->alarmDataInfos.at(row).limitConfig.scale;
+                editInfo.step = d_ptr->alarmDataInfos.at(row).limitConfig.step;
+                editInfo.curValue = d_ptr->alarmDataInfos.at(row).limitConfig.lowLimit;
+                editInfo.highLimit = d_ptr->alarmDataInfos.at(row).limitConfig.highLimit - editInfo.step;
+                editInfo.lowLimit = d_ptr->alarmDataInfos.at(row).limitConfig.minLowLimit;
+                break;
+            case SECTION_HIGH_LIMIT:
+                editInfo.type = ItemEditInfo::VALUE;
+                editInfo.scale = d_ptr->alarmDataInfos.at(row).limitConfig.scale;
+                editInfo.step = d_ptr->alarmDataInfos.at(row).limitConfig.step;
+                editInfo.curValue = d_ptr->alarmDataInfos.at(row).limitConfig.highLimit;
+                editInfo.highLimit = d_ptr->alarmDataInfos.at(row).limitConfig.maxHighLimit;
+                editInfo.lowLimit = d_ptr->alarmDataInfos.at(row).limitConfig.lowLimit + editInfo.step;
+                break;
+            default:
+                break;
+            }
+            return qVariantFromValue(editInfo);
+        }
+    }
+    break;
+
     case Qt::CheckStateRole:
         if (index.row() == d_ptr->editRow && index.column() > SECTION_PARAM_NAME)
         {
-            return QVariant(Qt::Checked);
+            if (index == d_ptr->editIndex)
+            {
+                return QVariant(Qt::Checked);
+            }
+
+            return QVariant(Qt::PartiallyChecked);
         }
         break;
 
