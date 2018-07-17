@@ -385,6 +385,7 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditMenuGrp.cpp                              \
     Components/ConfigManager/ConfigEditMenuWindow.cpp                           \
     Components/ConfigManager/ConfigEditGeneralMenu.cpp                          \
+    Components/ConfigManager/ConfigEditGeneralMenuContent.cpp                   \
     Components/ConfigManager/ConfigEditEcgMenu.cpp                              \
     Components/ConfigManager/ConfigEditEcgMenuContent.cpp                       \
     Components/ConfigManager/ConfigEditRespMenu.cpp                             \
@@ -880,6 +881,7 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditMenuGrp.h                                \
     Components/ConfigManager/ConfigEditMenuWindow.h                             \
     Components/ConfigManager/ConfigEditGeneralMenu.h                            \
+    Components/ConfigManager/ConfigEditGeneralMenuContent.h                     \
     Components/ConfigManager/ConfigEditEcgMenu.h                                \
     Components/ConfigManager/ConfigEditEcgMenuContent.h                         \
     Components/ConfigManager/ConfigEditRespMenu.h                               \

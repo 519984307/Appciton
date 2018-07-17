@@ -1161,9 +1161,19 @@ CurrentConfig,当前配置,Current Config
 ConfigManagerment,配置管理,Config Managerment
 ConfigManagermentDesc,配置管理设置,Config Managerment Desc
 General,通用,General
-GeneralSettings,通用设置,General Settings
+SetConfigName,设置配置项名称,Set Config Name
+GeneralDesc,通用设置,General Desc
 ConfigName,配置名称,Config Name
+AalrmSource,报警源,Aalrm Source
+Ecg1Wave,波形1,Ecg1 Wave
+Ecg2Wave,波形2,Ecg2 Wave
+Ecg1Gain,增益1,Ecg1 Gain
+Ecg2Gain,增益2,Ecg2 Gain
+Filter,滤波器,Filter
+QRSVolume,音量,QRS Volume
 ConfigIBPMenu,有创血压,Config IBP
+NotchFilter,陷波滤波器,Notch Filter
+MeasureControl,测量控制,Measure Control
 ConfigIBPMenuDesc,有创血压,Config IBP Menu
 ConfigEditDisplayMenu,模块颜色,Display Menu
 English,英文,English
