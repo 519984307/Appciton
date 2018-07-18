@@ -9,6 +9,12 @@
  **/
 
 #include "UserMaintainMenuWindow.h"
+#include "UserMaintainGeneralMenuContent.h"
+#include "ModuleMaintainMenuContent.h"
+#include "AlarmMaintainMenuContent.h"
+#include "WifiMaintainMenuContent.h"
+#include "WiredNetworkMaintainMenuContent.h"
+#include "OthersMaintainMenuContent.h"
 
 UserMaintainMenuWindow *UserMaintainMenuWindow::getInstance()
 {
@@ -16,6 +22,13 @@ UserMaintainMenuWindow *UserMaintainMenuWindow::getInstance()
     if (instance == NULL)
     {
         instance = new UserMaintainMenuWindow;
+
+        instance->addMenuContent(new UserMaintainGeneralMenuContent);
+        instance->addMenuContent(new ModuleMaintainMenuContent);
+        instance->addMenuContent(new AlarmMaintainMenuContent);
+        instance->addMenuContent(new WifiMaintainMenuContent);
+        instance->addMenuContent(new WiredNetworkMaintainMenuContent);
+        instance->addMenuContent(new OthersMaintainMenuContent);
     }
 
     return instance;

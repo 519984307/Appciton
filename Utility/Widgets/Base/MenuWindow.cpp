@@ -21,13 +21,11 @@ class MenuWindowPrivate
 public:
     MenuWindowPrivate()
         : sidebar(NULL),
-          scrollArea(NULL),
           stackWidget(NULL)
     {
     }
 
     MenuSidebar *sidebar;
-    ScrollArea *scrollArea;
     QStackedWidget *stackWidget;
 };
 
@@ -44,11 +42,9 @@ MenuWindow::MenuWindow()
     d_ptr->sidebar = new MenuSidebar();
     d_ptr->sidebar->setFixedWidth(180);
     layout->addWidget(d_ptr->sidebar);
-    d_ptr->scrollArea = new ScrollArea();
-    layout->addWidget(d_ptr->scrollArea, 1);
+
     d_ptr->stackWidget = new QStackedWidget();
-    d_ptr->scrollArea->setWidget(d_ptr->stackWidget);
-    d_ptr->scrollArea->setFloatbarPolicy(ScrollArea::FloatBarShowForeverWhenNeeded);
+    layout->addWidget(d_ptr->stackWidget, 1);
 
     connect(d_ptr->sidebar, SIGNAL(selectItemChanged(int)), this, SLOT(onSelectItemChanged(int)));
 }
@@ -61,7 +57,11 @@ void MenuWindow::addMenuContent(MenuContent *menu)
 {
     d_ptr->sidebar->addItem(menu->name());
     menu->layoutExec();
-    d_ptr->stackWidget->addWidget(menu);
+
+    ScrollArea *scrollArea = new ScrollArea;
+    scrollArea->setWidget(menu);
+    scrollArea->setFloatbarPolicy(ScrollArea::FloatBarShowForeverWhenNeeded);
+    d_ptr->stackWidget->addWidget(scrollArea);
 
     if (d_ptr->stackWidget->count() == 1)
     {

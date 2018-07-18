@@ -321,6 +321,7 @@ SOURCES +=                                                                      
     Components/NetworkManager/Widgets/WiFiProfileEditor.cpp                     \
     Components/NetworkManager/Widgets/WiFiProfileMenu.cpp                       \
     Components/NetworkManager/Widgets/WiFiProfileMenuContent.cpp                \
+    Components/NetworkManager/Widgets/WiFiProfileEditorWindow.cpp               \
     Components/ActivityLog/ActivityLogManager.cpp                               \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.cpp            \
     Components/Maintain/Supervisor/Menu/SupervisorPortMenu.cpp                  \
@@ -362,6 +363,12 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/WiredWorkMaintainMenu.cpp                  \
     Components/Maintain/UserMaintain/OthersMaintainMenu.cpp                     \
     Components/Maintain/UserMaintain/UserMaintainMenuContent.cpp                \
+    Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.cpp         \
+    Components/Maintain/UserMaintain/ModuleMaintainMenuContent.cpp              \
+    Components/Maintain/UserMaintain/AlarmMaintainMenuContent.cpp               \
+    Components/Maintain/UserMaintain/WifiMaintainMenuContent.cpp                \
+    Components/Maintain/UserMaintain/OthersMaintainMenuContent.cpp              \
+    Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.cpp        \
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.cpp             \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftWareVersion.cpp                     \
@@ -816,6 +823,7 @@ HEADERS +=                                                                      
     Components/NetworkManager/Widgets/WiFiProfileEditor.h                       \
     Components/NetworkManager/Widgets/WiFiProfileMenu.h                         \
     Components/NetworkManager/Widgets/WiFiProfileMenuContent.h                  \
+    Components/NetworkManager/Widgets/WiFiProfileEditorWindow.h                 \
     Components/ActivityLog/ActivityLogManager.h                                 \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.h              \
     Components/Maintain/Supervisor/Menu/SupervisorPortMenu.h                    \
@@ -859,6 +867,12 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/WiredWorkMaintainMenu.h                    \
     Components/Maintain/UserMaintain/OthersMaintainMenu.h                       \
     Components/Maintain/UserMaintain/UserMaintainMenuContent.h                  \
+    Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.h           \
+    Components/Maintain/UserMaintain/ModuleMaintainMenuContent.h                \
+    Components/Maintain/UserMaintain/AlarmMaintainMenuContent.h                 \
+    Components/Maintain/UserMaintain/WifiMaintainMenuContent.h                  \
+    Components/Maintain/UserMaintain/OthersMaintainMenuContent.h                \
+    Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.h          \
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.h               \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersion.h                       \

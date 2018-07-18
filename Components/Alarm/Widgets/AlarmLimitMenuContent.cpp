@@ -120,9 +120,9 @@ void AlarmLimitMenuContent::layoutExec()
     table->setSelectionMode(QAbstractItemView::SingleSelection);
     table->setSelectionBehavior(QAbstractItemView::SelectRows);
     table->setShowGrid(false);
-    table->setEditTriggers(QAbstractItemView::SelectedClicked);
 
     connect(table, SIGNAL(rowClicked(int)), this, SLOT(onRowClicked(int)));
+    connect(table, SIGNAL(selectRowChanged(int)), this, SLOT(onSelectRowChanged(int)));
 
     layout->addWidget(table);
 
@@ -192,4 +192,13 @@ void AlarmLimitMenuContent::onRowClicked(int row)
 {
     qDebug() << Q_FUNC_INFO << row;
     d_ptr->model->editRowData(row);
+}
+
+void AlarmLimitMenuContent::onSelectRowChanged(int row)
+{
+    int editRow = d_ptr->model->curEditRow();
+    if (editRow >= 0 && editRow != row)
+    {
+        d_ptr->model->stopEditRow();
+    }
 }

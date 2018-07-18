@@ -15,8 +15,9 @@
 #include "MenuSidebarItem.h"
 #include <QBoxLayout>
 #include <QResizeEvent>
+#include <ThemeManager.h>
 
-#define PREFER_ITEM_HEIGHT 40
+#define PREFER_ITEM_HEIGHT (themeManger.getAcceptableControlHeight())
 #define DEFAULT_ITEM_NUM 8
 
 class MenuSidebarPrivate : public ScrollAreaPrivate
