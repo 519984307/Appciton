@@ -124,9 +124,9 @@ RESPApnea,呼吸窒息,RESP Apnea
 RESPAutoActivation,呼吸激活,RESP Automatic Activation
 NIBPMeasurement,无创血压测量,NIBP Measurement
 NIBPMeasureMode,测量摸式,Measure Mode
+NIBPIntervalTime,间隔时间,NIBP Interval Time
 NIBPAutoInterval,自动间隔,Auto Interval
 NIBPMenu,无创血压,NIBP
-NIBPInitialCuff,初始压,NIBP Initial Cuff
 NIBPMenuDesc,无创血压设置,NIBP Setting
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
@@ -984,16 +984,16 @@ ZeroRequired,需要校零,Zero Required
 Channel,通道,Channel
 SmartPluseTone,智能脉搏音,Smart PluseTone
 WaveVelocity,波形速度,Wave Velocity
-Gain,波形增益,Gain
+RespMenuDesc,呼吸菜单设置,Resp Menu Desc
+RespGain,波形增益,Resp Gain
 ModuleControl,模块控制,Module Control
 HIGH,高,HIGH
 NORMAL,中,NORMAL
 LOW,低,LOW
 OFF,关闭,OFF
 ON,打开,ON
-NBIPInitialCuff,初始袖口气压,NBIP Initial Cuff
+NIBPInitialCuff,初始袖口气压,NIBP Initial Cuff
 IntervalTime,自动间隔时间,Interval Time
-NIBPMeasureMode,测量模式,NIBP Measure Mode
 ExportFileCompleted,导出文件完成,Export File Completed
 ExportFileFailed,导出文件失败,Export File Failed
 ExportImport,导出/导入,Export/Import
@@ -1015,7 +1015,7 @@ PleaseAddExportFiles,请增加导出文件,Please Add Export Files
 ImportFilefailed,导入文件失败,Import File failed
 ImportFileCompleted,导入文件完成,Import File Completed
 PleaseAddImportFiles,请增加导入文件,Please Add Import Files
-FactoryMaintainSystem,工厂维护系统,Factory Maintain System
+FactoryMaintainSystem,工厂维护系统,Factory Maintain
 FactoryMaintainPassword,工厂维护密码,Factory Maintain Password
 FactoryMaintainModifyConfig,工厂维护修改配置,Factory Maintain Modify Config
 MachineConfigModuleMenu,机器配置模块菜单,Machine Config Module Menu
@@ -1132,7 +1132,7 @@ AlarmLevel,报警级别,Alarm Level
 Technology,技术,Technology
 Physiology,生理,Physiology
 UserMaintainPassword,用户维护密码,User Maintain Password
-UserMaintainSystem,用户维护系统,User Maintain System
+UserMaintainSystem,用户维护系统,User Maintain
 Department,部门,Department
 BedNumber,床号,Bed Number
 ModifyPassword,修改密码,Modify Password
@@ -1256,3 +1256,5 @@ RESPLow,呼吸低,RESP Low
 RESPHigh,呼吸高,RESP High
 LoadConfigMenuContent,加载配置,Load Config
 LoadConfigMenuContentDesc,加载配置设置,Load Config Desc
+ConfigManagerPassword,配置管理密码,Config Manager Password
+ApenaDelay,,ApenaDelay

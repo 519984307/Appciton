@@ -389,8 +389,10 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditEcgMenu.cpp                              \
     Components/ConfigManager/ConfigEditEcgMenuContent.cpp                       \
     Components/ConfigManager/ConfigEditRespMenu.cpp                             \
+    Components/ConfigManager/ConfigEditRespMenuContent.cpp                      \
     Components/ConfigManager/ConfigEditAlarmLimitMenu.cpp                       \
     Components/ConfigManager/ConfigEditNIBPMenu.cpp                             \
+    Components/ConfigManager/ConfigEditNIBPMenuContent.cpp                      \
     Components/ConfigManager/ConfigEditSpO2Menu.cpp                             \
     Components/ConfigManager/ConfigEditCO2Menu.cpp                              \
     Components/ConfigManager/ConfigEditCO2MenuContent.cpp                       \
@@ -885,8 +887,10 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditEcgMenu.h                                \
     Components/ConfigManager/ConfigEditEcgMenuContent.h                         \
     Components/ConfigManager/ConfigEditRespMenu.h                               \
+    Components/ConfigManager/ConfigEditRespMenuContent.h  /                      \
     Components/ConfigManager/ConfigEditAlarmLimitMenu.h                         \
     Components/ConfigManager/ConfigEditNIBPMenu.h                               \
+    Components/ConfigManager/ConfigEditNIBPMenuContent.h                        \
     Components/ConfigManager/ConfigEditSpO2Menu.h                               \
     Components/ConfigManager/ConfigEditCO2Menu.h                                \
     Components/ConfigManager/ConfigEditCO2MenuContent.h                         \

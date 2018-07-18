@@ -23,6 +23,8 @@
 #include "ConfigEditCOMenuContent.h"
 #include "ConfigEditEcgMenuContent.h"
 #include "ConfigEditGeneralMenuContent.h"
+#include "ConfigEditNIBPMenuContent.h"
+#include "ConfigEditRespMenuContent.h"
 
 class ConfigEditMenuWindowPrivate
 {
@@ -84,17 +86,17 @@ void ConfigEditMenuWindow::initializeSubMenu()
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditEcgMenu"] = subMenu;
 
-//    subMenu = new ConfigEditRespMenu();
-//    addSubMenu(subMenu);
-//    d_ptr->subMenuMap["ConfigEditRespMenu"] = subMenu;
+    subMenu = new ConfigEditRespMenuContent();
+    addMenuContent(subMenu);
+    d_ptr->subMenuMap["ConfigEditRespMenu"] = subMenu;
 
 //    subMenu = new ConfigEditSpO2Menu();
 //    addSubMenu(subMenu);
 //    d_ptr->subMenuMap["ConfigEditSpO2Menu"] = subMenu;
 
-//    subMenu = new ConfigEditNIBPMenu();
-//    addSubMenu(subMenu);
-//    d_ptr->subMenuMap["ConfigEditNIBPMenu"] = subMenu;
+    subMenu = new ConfigEditNIBPMenuContent();
+    addMenuContent(subMenu);
+    d_ptr->subMenuMap["ConfigEditNIBPMenu"] = subMenu;
 
     subMenu = new ConfigEditCOMenuContent();
     addMenuContent(subMenu);
