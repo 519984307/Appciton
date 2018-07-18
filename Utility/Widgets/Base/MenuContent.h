@@ -51,6 +51,9 @@ public:
 protected:
     void showEvent(QShowEvent *ev);
 
+    /* reimplement */
+    void focusInEvent(QFocusEvent *ev);
+
 private:
     MenuContentPrivate *const d_ptr;
 };

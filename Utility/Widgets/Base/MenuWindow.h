@@ -27,6 +27,9 @@ public:
      */
     void addMenuContent(MenuContent *menu);
 
+protected:
+    bool focusNextPrevChild(bool next);
+
 private slots:
     void onSelectItemChanged(int index);
 
