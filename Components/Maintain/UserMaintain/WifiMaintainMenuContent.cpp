@@ -437,23 +437,27 @@ void WifiMaintainMenuContent::layoutExec()
 {
     Q_D(WifiMaintainMenuContent);
 
-    QGridLayout *layout = new QGridLayout(this);
+    QHBoxLayout *hLayout;
+    QVBoxLayout *layout = new QVBoxLayout(this);
     QLabel *label;
 
     // switch combo list
     label = new QLabel(trs("WiFiMenu"));
-    layout->addWidget(label, 0, 1);
     d->switchCombo = new ComboBox;
     d->switchCombo->addItems(QStringList()
                              << trs("Off")
                              << trs("On")
                             );
     connect(d->switchCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(onSwitch(int)));
-    layout->addWidget(d->switchCombo, 0, 2);
+
+    hLayout = new QHBoxLayout;
+    hLayout->addWidget(label);
+    hLayout->addWidget(d->switchCombo);
+    layout->addLayout(hLayout);
 
     // configure label
     label = new QLabel(trs("ConfiguredAccessPointProfiles"));
-    layout->addWidget(label, 1, 0);
+    layout->addWidget(label);
 
     // profile list
     d->profileList =  new IListWidget();
@@ -475,25 +479,27 @@ void WifiMaintainMenuContent::layoutExec()
     connect(d->profileList, SIGNAL(realRelease()), this, SLOT(onProfileItemClick()));
     d->profileList->installEventFilter(this);
     d->profileList->setFixedHeight(174); // size for 5 items
-    layout->addWidget(d->profileList, 2, 0, 5, 3);
+    layout->addWidget(d->profileList, Qt::AlignCenter);
 
     // buttons
     d->addBtn = new Button(trs("Add"));
     d->addBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d->addBtn, SIGNAL(released()), this, SLOT(onBtnClick()));
-    layout->addWidget(d->addBtn, 7, 0);
 
     d->editBtn = new Button(trs("Edit"));
     d->editBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d->editBtn, SIGNAL(released()), this, SLOT(onBtnClick()));
-    layout->addWidget(d->editBtn, 7, 1);
 
     d->delBtn = new Button(trs("Delete"));
     d->delBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d->delBtn, SIGNAL(released()), this, SLOT(onBtnClick()));
-    layout->addWidget(d->delBtn, 7, 2);
 
-    layout->setRowStretch(8, 1);
+    hLayout = new QHBoxLayout;
+    hLayout->addWidget(d->addBtn);
+    hLayout->addWidget(d->editBtn);
+    hLayout->addWidget(d->delBtn);
+    layout->addLayout(hLayout);
+    layout->addStretch();
 }
 
 /***************************************************************************************************

@@ -367,6 +367,8 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/ModuleMaintainMenuContent.cpp              \
     Components/Maintain/UserMaintain/AlarmMaintainMenuContent.cpp               \
     Components/Maintain/UserMaintain/WifiMaintainMenuContent.cpp                \
+    Components/Maintain/UserMaintain/OthersMaintainMenuContent.cpp              \
+    Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.cpp        \
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.cpp             \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftWareVersion.cpp                     \
@@ -390,11 +392,14 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditMenuGrp.cpp                              \
     Components/ConfigManager/ConfigEditMenuWindow.cpp                           \
     Components/ConfigManager/ConfigEditGeneralMenu.cpp                          \
+    Components/ConfigManager/ConfigEditGeneralMenuContent.cpp                   \
     Components/ConfigManager/ConfigEditEcgMenu.cpp                              \
     Components/ConfigManager/ConfigEditEcgMenuContent.cpp                       \
     Components/ConfigManager/ConfigEditRespMenu.cpp                             \
+    Components/ConfigManager/ConfigEditRespMenuContent.cpp                      \
     Components/ConfigManager/ConfigEditAlarmLimitMenu.cpp                       \
     Components/ConfigManager/ConfigEditNIBPMenu.cpp                             \
+    Components/ConfigManager/ConfigEditNIBPMenuContent.cpp                      \
     Components/ConfigManager/ConfigEditSpO2Menu.cpp                             \
     Components/ConfigManager/ConfigEditCO2Menu.cpp                              \
     Components/ConfigManager/ConfigEditCO2MenuContent.cpp                       \
@@ -866,6 +871,8 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/ModuleMaintainMenuContent.h                \
     Components/Maintain/UserMaintain/AlarmMaintainMenuContent.h                 \
     Components/Maintain/UserMaintain/WifiMaintainMenuContent.h                  \
+    Components/Maintain/UserMaintain/OthersMaintainMenuContent.h                \
+    Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.h          \
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.h               \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersion.h                       \
@@ -890,11 +897,14 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditMenuGrp.h                                \
     Components/ConfigManager/ConfigEditMenuWindow.h                             \
     Components/ConfigManager/ConfigEditGeneralMenu.h                            \
+    Components/ConfigManager/ConfigEditGeneralMenuContent.h                     \
     Components/ConfigManager/ConfigEditEcgMenu.h                                \
     Components/ConfigManager/ConfigEditEcgMenuContent.h                         \
     Components/ConfigManager/ConfigEditRespMenu.h                               \
+    Components/ConfigManager/ConfigEditRespMenuContent.h  /                      \
     Components/ConfigManager/ConfigEditAlarmLimitMenu.h                         \
     Components/ConfigManager/ConfigEditNIBPMenu.h                               \
+    Components/ConfigManager/ConfigEditNIBPMenuContent.h                        \
     Components/ConfigManager/ConfigEditSpO2Menu.h                               \
     Components/ConfigManager/ConfigEditCO2Menu.h                                \
     Components/ConfigManager/ConfigEditCO2MenuContent.h                         \

@@ -38,12 +38,12 @@ public:
         ITEM_CBO_DEFAULT
     };
 
-    AlarmMaintainMenuContentPrivate() {}
+    AlarmMaintainMenuContentPrivate() : defaultBtn(NULL) {}
 
     void loadOptions();
 
     QMap<MenuItem, ComboBox *> combos;
-    QMap<MenuItem, Button *> buttons;
+    Button *defaultBtn;
 };
 
 void AlarmMaintainMenuContentPrivate::loadOptions()
@@ -116,12 +116,11 @@ void AlarmMaintainMenuContent::layoutExec()
 
     ComboBox *comboBox;
     QLabel *label;
-    Button *button;
     int itemID;
 
     // 最小报警音量
     label = new QLabel(trs("MinimumALarmVolume"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count(), 0);
+    layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << QString::number(SoundManager::VOLUME_LEV_1)
@@ -133,12 +132,12 @@ void AlarmMaintainMenuContent::layoutExec()
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_MIN_ALARM_VOLUME);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_MIN_ALARM_VOLUME, comboBox);
 
     // 报警暂停时间
     label = new QLabel(trs("AlarmPauseTime"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count(), 0);
+    layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs(AlarmSymbol::convert(ALARM_PAUSE_TIME_60S))
@@ -152,12 +151,12 @@ void AlarmMaintainMenuContent::layoutExec()
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARAM_PAUSE_TIME);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARAM_PAUSE_TIME, comboBox);
 
     // 报警关闭,报警音关闭提示时间
     label = new QLabel(trs("AlarmOffPromptMechanism"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count(), 0);
+    layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs(AlarmSymbol::convert(ALARM_CLOSE_PROMPT_OFF))
@@ -168,12 +167,12 @@ void AlarmMaintainMenuContent::layoutExec()
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_CLOSE_PROMPT_TIME);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_CLOSE_PROMPT_TIME, comboBox);
 
     // enable alarm audio off
     label = new QLabel(trs("EnableAlarmAudioOff"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count(), 0);
+    layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("No")
@@ -182,12 +181,12 @@ void AlarmMaintainMenuContent::layoutExec()
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ENABLE_ALARM_AUDIO_OFF);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ENABLE_ALARM_AUDIO_OFF, comboBox);
 
     // enable alarm off
     label = new QLabel(trs("EnableAlarmOff"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count(), 0);
+    layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("No")
@@ -196,12 +195,12 @@ void AlarmMaintainMenuContent::layoutExec()
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ENABLE_ALARM_OFF);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ENABLE_ALARM_OFF, comboBox);
 
     // alarm off at power on
     label = new QLabel(trs("AlarmOffAtPowerOn"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count(), 0);
+    layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("No")
@@ -210,12 +209,12 @@ void AlarmMaintainMenuContent::layoutExec()
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_POWERON_ALARM_OFF);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_POWERON_ALARM_OFF, comboBox);
 
     // pause max alarm 15min
     label = new QLabel(trs("IsPauseMaxAlarm15Min"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count(), 0);
+    layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("No")
@@ -224,12 +223,12 @@ void AlarmMaintainMenuContent::layoutExec()
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_PAUSE_MAX_ALARM_15MIN);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_PAUSE_MAX_ALARM_15MIN, comboBox);
 
     // reminder tone
     label = new QLabel(trs("ReminderTone"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count(), 0);
+    layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Close")
@@ -239,12 +238,12 @@ void AlarmMaintainMenuContent::layoutExec()
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_REMINDER_TONE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_REMINDER_TONE, comboBox);
 
     // reminder tone interval
     label = new QLabel(trs("ReminderToneIntervals"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count(), 0);
+    layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("H1min")
@@ -254,12 +253,12 @@ void AlarmMaintainMenuContent::layoutExec()
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_REMINDER_TONE_INTERVAL);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_REMINDER_TONE_INTERVAL, comboBox);
 
     // alarmLight On Alarm Reset
     label = new QLabel(trs("AlarmLightOnAlarmReset"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count(), 0);
+    layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Close")
@@ -268,21 +267,20 @@ void AlarmMaintainMenuContent::layoutExec()
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LIGHT_RESET);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LIGHT_RESET, comboBox);
 
     // default
     label = new QLabel(trs("Defaults"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count(), 0);
-    button = new Button(trs("RecoverDefaults"));
-    button->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    d_ptr->defaultBtn = new Button(trs("RecoverDefaults"));
+    d_ptr->defaultBtn->setButtonStyle(Button::ButtonTextOnly);
     itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_DEFAULT);
-    button->setProperty("Item", qVariantFromValue(itemID));
-    connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
-    d_ptr->buttons.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_DEFAULT, button);
+    d_ptr->defaultBtn->setProperty("Item", qVariantFromValue(itemID));
+    connect(d_ptr->defaultBtn, SIGNAL(released()), this, SLOT(onButtonReleased()));
+    layout->addWidget(d_ptr->defaultBtn, d_ptr->combos.count(), 1);
 
-    layout->setRowStretch(d_ptr->combos.count() + d_ptr->buttons.count(), 1);
+    layout->setRowStretch(d_ptr->combos.count() + 1, 1);
 }
 
 void AlarmMaintainMenuContent::onComboBoxIndexChanged(int index)
