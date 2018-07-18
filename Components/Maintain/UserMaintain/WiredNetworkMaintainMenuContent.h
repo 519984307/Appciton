@@ -11,13 +11,13 @@
 #pragma once
 #include "MenuContent.h"
 
-class WiredWorkMaintainMenuContentPrivate;
-class WiredWorkMaintainMenuContent : public MenuContent
+class WiredNetworkMaintainMenuContentPrivate;
+class WiredNetworkMaintainMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    WiredWorkMaintainMenuContent();
-    ~WiredWorkMaintainMenuContent();
+    WiredNetworkMaintainMenuContent();
+    ~WiredNetworkMaintainMenuContent();
 
     /* reimplement */
     virtual void readyShow();
@@ -30,6 +30,6 @@ private slots:
     void onButtonReleased(void);
 
 private:
-    friend class WiredWorkMaintainMenuContentPrivate;
-    WiredWorkMaintainMenuContentPrivate * const d_ptr;
+    friend class WiredNetworkMaintainMenuContentPrivate;
+    WiredNetworkMaintainMenuContentPrivate * const d_ptr;
 };
