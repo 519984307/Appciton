@@ -25,8 +25,9 @@
 class TableViewItemDelegatePrivate
 {
 public:
-    TableViewItemDelegatePrivate()
-        : curEditingModel(NULL)
+    explicit TableViewItemDelegatePrivate(TableViewItemDelegate *const q_ptr)
+        : q_ptr(q_ptr),
+          curEditingModel(NULL)
     {
     }
 
@@ -40,6 +41,50 @@ public:
         return 0;
     }
 
+    bool showEditor(const QTableView *view, QAbstractItemModel *model, QModelIndex index)
+    {
+        model->setData(index, QVariant(Qt::Checked), Qt::CheckStateRole);
+        QVariant value = model->data(index, Qt::EditRole);
+        if (value.canConvert<ItemEditInfo>())
+        {
+
+            ItemEditInfo info = qvariant_cast<ItemEditInfo>(value);
+
+            QRect vrect = view->visualRect(index);
+            QRect rect(view->viewport()->mapToGlobal(vrect.topLeft()),
+                       view->viewport()->mapToGlobal(vrect.bottomRight()));
+
+            rect.adjust(MARGIN, 0, -MARGIN, 0);
+            if (info.type == ItemEditInfo::LIST)
+            {
+                PopupList *popup = new PopupList();
+                popup->setFixedWidth(rect.width());
+                popup->additemList(info.list);
+                popup->setCurrentIndex(info.curValue);
+                popup->move(rect.bottomLeft());
+                QObject::connect(popup, SIGNAL(selectItemChanged(int)), q_ptr, SLOT(onEditValueUpdate(int)));
+                QObject::connect(popup, SIGNAL(destroyed(QObject *)), q_ptr, SLOT(onPopupDestroy()));
+                popup->show();
+                return true;
+            }
+            else if (info.type == ItemEditInfo::VALUE)
+            {
+                PopupNumEditor *editor = new PopupNumEditor();
+                editor->setEditInfo(info);
+                editor->setFont(fontManager.textFont(view->font().pixelSize()));
+                editor->setPalette(pal);
+                editor->setEditValueGeometry(rect);
+                QObject::connect(editor, SIGNAL(valueChanged(int)), q_ptr, SLOT(onEditValueUpdate(int)));
+                QObject::connect(editor, SIGNAL(destroyed(QObject *)), q_ptr, SLOT(onPopupDestroy()));
+                editor->show();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    TableViewItemDelegate *const q_ptr;
     QModelIndex curPaintingIndex;   // record current painting item's index
     QModelIndex curEditingIndex;    // record current painting item's index
     QAbstractItemModel *curEditingModel; // current editing model
@@ -48,7 +93,7 @@ public:
 };
 
 TableViewItemDelegate::TableViewItemDelegate(QObject *parent)
-    : QItemDelegate(parent), d_ptr(new TableViewItemDelegatePrivate())
+    : QItemDelegate(parent), d_ptr(new TableViewItemDelegatePrivate(this))
 {
     themeManger.setupPalette(ThemeManager::ControlComboBox, d_ptr->pal);
 }
@@ -56,13 +101,6 @@ TableViewItemDelegate::TableViewItemDelegate(QObject *parent)
 TableViewItemDelegate::~TableViewItemDelegate()
 {
     delete d_ptr;
-}
-
-QWidget *TableViewItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option,
-        const QModelIndex &index) const
-{
-    qDebug() << Q_FUNC_INFO << index.row();
-    return QItemDelegate::createEditor(parent, option, index);
 }
 
 void TableViewItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -203,43 +241,18 @@ bool TableViewItemDelegate::editorEvent(QEvent *event, QAbstractItemModel *model
         d_ptr->curEditingModel = model;
         d_ptr->curEditingIndex = index;
 
-        model->setData(index, QVariant(Qt::Checked), Qt::CheckStateRole);
-        QVariant value = model->data(index, Qt::EditRole);
-        if (value.canConvert<ItemEditInfo>())
-        {
-
-            ItemEditInfo info = qvariant_cast<ItemEditInfo>(value);
-
-            QRect vrect = view->visualRect(index);
-            QRect rect(view->viewport()->mapToGlobal(vrect.topLeft()),
-                       view->viewport()->mapToGlobal(vrect.bottomRight()));
-
-            rect.adjust(MARGIN, 0, -MARGIN, 0);
-            if (info.type == ItemEditInfo::LIST)
-            {
-                PopupList *popup = new PopupList();
-                popup->setFixedWidth(rect.width());
-                popup->additemList(info.list);
-                popup->move(rect.bottomLeft());
-                connect(popup, SIGNAL(destroyed(QObject *)), this, SLOT(onPopupDestroy()));
-                popup->show();
-                return true;
-            }
-            else if (info.type == ItemEditInfo::VALUE)
-            {
-                PopupNumEditor *editor = new PopupNumEditor();
-                editor->setEditInfo(info);
-                editor->setFont(fontManager.textFont(view->font().pixelSize()));
-                editor->setPalette(d_ptr->pal);
-                editor->setEditValueGeometry(rect);
-                connect(editor, SIGNAL(destroyed(QObject *)), this, SLOT(onPopupDestroy()));
-                editor->show();
-                return true;
-            }
-        }
+        return d_ptr->showEditor(view, model, index);
     }
     else if (event->type() == QEvent::KeyPress)
     {
+        QKeyEvent *keyEv = static_cast<QKeyEvent *>(event);
+        if (keyEv->key() == Qt::Key_Enter || keyEv->key() == Qt::Key_Return)
+        {
+            d_ptr->curEditingModel = model;
+            d_ptr->curEditingIndex = index;
+
+            return d_ptr->showEditor(view, model, index);
+        }
     }
     else
     {
@@ -256,5 +269,13 @@ void TableViewItemDelegate::onPopupDestroy()
         d_ptr->curEditingModel->setData(d_ptr->curEditingIndex, QVariant(Qt::PartiallyChecked), Qt::CheckStateRole);
         d_ptr->curEditingIndex = QModelIndex();
         d_ptr->curEditingModel = NULL;
+    }
+}
+
+void TableViewItemDelegate::onEditValueUpdate(int value)
+{
+    if (d_ptr->curEditingIndex.isValid())
+    {
+        d_ptr->curEditingModel->setData(d_ptr->curEditingIndex, qVariantFromValue(value), Qt::EditRole);
     }
 }

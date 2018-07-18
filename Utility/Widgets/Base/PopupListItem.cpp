@@ -14,13 +14,14 @@
 #include <QKeyEvent>
 #include <QDebug>
 
-#define DEFAULT_HEIGHT 40
+#define DEFAULT_HEIGHT (themeManger.getAcceptableControlHeight())
 
 
 class PopupListItemPrivate
 {
 public:
-    PopupListItemPrivate() {}
+    PopupListItemPrivate() : hasBeenPressed(false) {}
+    bool hasBeenPressed;
 };
 
 PopupListItem::PopupListItem(const QString &text, QWidget *parent)
@@ -92,6 +93,7 @@ void PopupListItem::nextCheckState()
 
 void PopupListItem::keyPressEvent(QKeyEvent *e)
 {
+    d_ptr->hasBeenPressed = true;
     switch (e->key())
     {
     case Qt::Key_Left:
@@ -110,6 +112,11 @@ void PopupListItem::keyPressEvent(QKeyEvent *e)
 
 void PopupListItem::keyReleaseEvent(QKeyEvent *e)
 {
+    if (!d_ptr->hasBeenPressed)
+    {
+        return;
+    }
+    d_ptr->hasBeenPressed = false;
     switch (e->key())
     {
     case Qt::Key_Left:

@@ -16,6 +16,8 @@
 #include <QResizeEvent>
 #include <QBrush>
 #include "ItemEditInfo.h"
+#include "ParamManager.h"
+#include "ThemeManager.h"
 
 enum
 {
@@ -27,8 +29,8 @@ enum
     SECTION_NR
 };
 
-#define ROW_HEIGHT_HINT 40
-#define HEADER_HEIGHT_HINT 40
+#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define HEADER_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
 
 class AlarmLimitModelPrivate
 {
@@ -72,14 +74,39 @@ bool AlarmLimitModel::setData(const QModelIndex &index, const QVariant &value, i
 
     if (role == Qt::EditRole)
     {
-        QString s = value.toString();
-        if (s.isEmpty())
+        if (value.type() == QVariant::Int)
         {
-            d_ptr->editIndex = QModelIndex();
-        }
-        else if (s == "EDIT")
-        {
-            d_ptr->editIndex = index;
+            int newValue = value.toInt();
+            int row = index.row();
+            SubParamID subParamID = d_ptr->alarmDataInfos.at(row).subParamID;
+            ParamID paramID = d_ptr->alarmDataInfos.at(row).paramID;
+            UnitType unit = paramManager.getSubParamUnit(paramID,
+                            subParamID);
+            switch (index.column())
+            {
+            case SECTION_STATUS:
+                d_ptr->alarmDataInfos[row].status = newValue;
+                alarmConfig.setLimitAlarmEnable(subParamID, newValue);
+                break;
+            case SECTION_LEVEL:
+                d_ptr->alarmDataInfos[row].alarmLevel = newValue;
+                alarmConfig.setLimitAlarmPriority(subParamID, static_cast<AlarmPriority>(newValue));
+                break;
+            case SECTION_HIGH_LIMIT:
+                d_ptr->alarmDataInfos[row].limitConfig.highLimit = newValue;
+                alarmConfig.setLimitAlarmConfig(subParamID,
+                                                unit,
+                                                d_ptr->alarmDataInfos.at(row).limitConfig);
+                break;
+            case SECTION_LOW_LIMIT:
+                d_ptr->alarmDataInfos[row].limitConfig.lowLimit = newValue;
+                alarmConfig.setLimitAlarmConfig(subParamID,
+                                                unit,
+                                                d_ptr->alarmDataInfos.at(row).limitConfig);
+                break;
+            default:
+                break;
+            }
         }
     }
 
@@ -396,4 +423,9 @@ void AlarmLimitModel::stopEditRow()
         QModelIndex rightBottom = index(oldEditRow, SECTION_NR - 1);
         emit dataChanged(topLeft, rightBottom);
     }
+}
+
+int AlarmLimitModel::curEditRow() const
+{
+    return d_ptr->editRow;
 }

@@ -98,6 +98,16 @@ public:
      */
     const QIcon &getIcon(IconType icon);
 
+    /**
+     * @brief getAcceptableControlHeight get the acceptable control height,
+     *        all controls should use this value as it's default height
+     * @return height;
+     */
+    int getAcceptableControlHeight() const
+    {
+        return 48;
+    }
+
 private:
     ThemeManager();
     ThemeManagerPrivate *const d_ptr;

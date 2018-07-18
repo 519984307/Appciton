@@ -10,21 +10,43 @@
 
 #include "TableView.h"
 #include <QKeyEvent>
-#include <QDebug>
 #include <QFocusEvent>
 #include <QMouseEvent>
+#include <QApplication>
+#include <QTimer>
 
 class TableViewPrivate
 {
 public:
     explicit TableViewPrivate(TableView *const q_ptr)
         : q_ptr(q_ptr),
-          mouseClickRow(-1)
+          mouseClickRow(-1),
+          mouseSelectRowChanged(false)
     {}
+
+    // focus the editable item in the row
+    void focusTheEditableItem(int row);
 
     TableView *const q_ptr;
     int mouseClickRow;
+    QModelIndex lastIndex;  // the last index that has been mouse press or key press
+    bool mouseSelectRowChanged;
 };
+
+void TableViewPrivate::focusTheEditableItem(int row)
+{
+    int columnCount = q_ptr->model()->columnCount();
+    for (int i = 0; i < columnCount; ++i)
+    {
+        QModelIndex index = q_ptr->model()->index(row, i);
+        if (index.isValid() && (q_ptr->model()->flags(index) & Qt::ItemIsEditable))
+        {
+            q_ptr->setCurrentIndex(index);
+            lastIndex = index;
+            break;
+        }
+    }
+}
 
 TableView::TableView(QWidget *parent)
     : QTableView(parent), d_ptr(new TableViewPrivate(this))
@@ -35,6 +57,7 @@ TableView::TableView(QWidget *parent)
     setAutoScroll(false);
     setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
     setTabKeyNavigation(false);
+    setEditTriggers(QAbstractItemView::SelectedClicked);
 }
 
 TableView::~TableView()
@@ -93,9 +116,18 @@ void TableView::keyPressEvent(QKeyEvent *ev)
     case Qt::Key_Up:
     case Qt::Key_Right:
     case Qt::Key_Down:
+        break;
     case Qt::Key_Enter:
     case Qt::Key_Return:
-        break;
+    {
+        QModelIndex index = currentIndex();
+        if (index.isValid() && (model()->flags(index) & Qt::ItemIsEditable))
+        {
+            d_ptr->lastIndex = index;
+            edit(index, EditKeyPressed, ev);
+        }
+    }
+    break;
     default:
         QTableView::keyPressEvent(ev);
         break;
@@ -110,6 +142,18 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
     case Qt::Key_Up:
     {
         QModelIndex index = currentIndex();
+        int column = index.column();
+        if (column > 0)
+        {
+            column -= 1;
+            QModelIndex itemIndex = model()->index(index.row(), column);
+            Qt::ItemFlags itemFlags = model()->flags(itemIndex);
+            if (itemFlags & Qt::ItemIsEditable)
+            {
+                setCurrentIndex(itemIndex);
+                break;
+            }
+        }
         int nextRow = index.row() - 1;
         QModelIndex nextIndex = model()->index(nextRow, index.column());
         if (index.isValid())
@@ -118,6 +162,7 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
             if (rect().contains(r))
             {
                 selectRow(nextRow);
+                emit selectRowChanged(nextRow);
                 break;
             }
         }
@@ -128,6 +173,18 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
     case Qt::Key_Down:
     {
         QModelIndex index = currentIndex();
+        int column = index.column();
+        if (column < model()->columnCount() - 1)
+        {
+            column += 1;
+            QModelIndex itemIndex = model()->index(index.row(), column);
+            Qt::ItemFlags itemFlags = model()->flags(itemIndex);
+            if (itemFlags & Qt::ItemIsEditable)
+            {
+                setCurrentIndex(itemIndex);
+                break;
+            }
+        }
         int nextRow = index.row() + 1;
         int lastRow = rowAt(viewport()->height() - 1);
         if (nextRow <= lastRow)
@@ -137,6 +194,7 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
             if (rect().contains(r))
             {
                 selectRow(nextRow);
+                emit selectRowChanged(nextRow);
                 break;
             }
         }
@@ -150,6 +208,7 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
         if (index.isValid())
         {
             emit rowClicked(index.row());
+            d_ptr->focusTheEditableItem(index.row());
         }
     }
     break;
@@ -166,7 +225,19 @@ void TableView::mousePressEvent(QMouseEvent *ev)
         QModelIndex index = indexAt(ev->pos());
         if (index.isValid())
         {
+            if (!(model()->flags(index) & Qt::ItemIsSelectable))
+            {
+                // do nothing if the item  is unselectable
+                ev->accept();
+                return;
+            }
+
+            if (d_ptr->mouseClickRow != index.row())
+            {
+                d_ptr->mouseSelectRowChanged = true;
+            }
             d_ptr->mouseClickRow = index.row();
+            d_ptr->lastIndex = index;
         }
     }
     QTableView::mousePressEvent(ev);
@@ -179,9 +250,25 @@ void TableView::mouseReleaseEvent(QMouseEvent *ev)
         QModelIndex index = indexAt(ev->pos());
         if (index.isValid())
         {
+            if (!(model()->flags(index) & Qt::ItemIsSelectable))
+            {
+                // do nothing if the item  is unselectable
+                ev->accept();
+                return;
+            }
+
             if (index.row() == d_ptr->mouseClickRow)
             {
+                if (d_ptr->mouseSelectRowChanged)
+                {
+                    emit selectRowChanged(d_ptr->mouseClickRow);
+                    d_ptr->mouseSelectRowChanged = false;
+                }
                 emit rowClicked(d_ptr->mouseClickRow);
+                if (!(model()->flags(index) & Qt::ItemIsEditable))
+                {
+                    d_ptr->focusTheEditableItem(d_ptr->mouseClickRow);
+                }
                 d_ptr->mouseClickRow = -1;
             }
         }
@@ -211,11 +298,31 @@ void TableView::focusInEvent(QFocusEvent *ev)
             selectRow(model()->rowCount() - 1);
         }
     }
+    else if (ev->reason() == Qt::PopupFocusReason || ev->reason() == Qt::MouseFocusReason)
+    {
+        setCurrentIndex(d_ptr->lastIndex);
+    }
 }
 
 void TableView::focusOutEvent(QFocusEvent *ev)
 {
     clearSelection();
     setCurrentIndex(QModelIndex());
+
+    if (ev->reason() == Qt::MouseFocusReason
+            || ev->reason() == Qt::TabFocusReason
+            || ev->reason() == Qt::BacktabFocusReason)
+    {
+        QTimer::singleShot(0, this, SLOT(checkAfterFocusOut()));
+    }
     QTableView::focusOutEvent(ev);
+}
+
+void TableView::checkAfterFocusOut()
+{
+    if (!hasFocus() && !QApplication::activePopupWidget())
+    {
+        // don't have focus and not any popup widget (popup widget might be the editor)
+        emit selectRowChanged(-1);
+    }
 }
