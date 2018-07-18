@@ -16,6 +16,7 @@
 #include <QBoxLayout>
 #include <QResizeEvent>
 #include <ThemeManager.h>
+#include <QDebug>
 
 #define PREFER_ITEM_HEIGHT (themeManger.getAcceptableControlHeight())
 #define DEFAULT_ITEM_NUM 8
@@ -48,6 +49,10 @@ void MenuSidebarPrivate::onItemClicked()
     MenuSidebarItem *item = qobject_cast<MenuSidebarItem *>(q->sender());
     if (item)
     {
+        int index = itemList.indexOf(item);
+
+        emit q->itemClicked(index);
+
         if (item->isChecked())
         {
             // current item, do nothing
@@ -64,7 +69,6 @@ void MenuSidebarPrivate::onItemClicked()
         curSelectIndex = itemList.indexOf(item);
         item->setChecked(true);
 
-        emit q->selectItemChanged(item->text());
         emit q->selectItemChanged(curSelectIndex);
     }
 }
@@ -77,7 +81,7 @@ void MenuSidebarPrivate::onItemFocusChanged(bool in)
         MenuSidebarItem *item = qobject_cast<MenuSidebarItem *>(q->sender());
         if (item)
         {
-            q_ptr->ensureWidgetVisible(item);
+            q_ptr->ensureWidgetVisible(item, 0, 0);
         }
         scrollBar->setVisible(true);
     }
@@ -164,15 +168,25 @@ bool MenuSidebar::setChecked(const QString &text)
 
         d->itemList.at(index)->setChecked(true);
         d->curSelectIndex = index;
-        emit selectItemChanged(d->itemList.at(index)->text());
         emit selectItemChanged(index);
     }
     return true;
 }
 
+QWidget *MenuSidebar::getChecked() const
+{
+    Q_D(const MenuSidebar);
+    if (d->curSelectIndex >= 0)
+    {
+        return d->itemList.at(d->curSelectIndex);
+    }
+
+    return NULL;
+}
+
 QSize MenuSidebar::sizeHint() const
 {
-    return QSize(180, PREFER_ITEM_HEIGHT * DEFAULT_ITEM_NUM);
+    return QSize(200, PREFER_ITEM_HEIGHT * DEFAULT_ITEM_NUM);
 }
 
 void MenuSidebar::showEvent(QShowEvent *ev)

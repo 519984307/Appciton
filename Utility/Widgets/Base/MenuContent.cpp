@@ -10,7 +10,7 @@
 
 #include "MenuContent.h"
 #include "MenuWindow.h"
-
+#include <QFocusEvent>
 
 class MenuContentPrivate
 {
@@ -70,4 +70,43 @@ void MenuContent::showEvent(QShowEvent *ev)
 {
     readyShow();
     QWidget::showEvent(ev);
+}
+
+void MenuContent::focusInEvent(QFocusEvent *ev)
+{
+    QObjectList objects = children();
+    if (ev->reason() == Qt::BacktabFocusReason)
+    {
+        while (!objects.isEmpty())
+        {
+            QObject *obj = objects.takeLast();
+            if (!obj->isWidgetType())
+            {
+                continue;
+            }
+            QWidget *w = qobject_cast<QWidget *>(obj);
+            if (w->focusPolicy() != Qt::NoFocus)
+            {
+                w->setFocus();
+                return;
+            }
+        }
+    }
+    else
+    {
+        while (!objects.isEmpty())
+        {
+            QObject *obj = objects.takeFirst();
+            if (!obj->isWidgetType())
+            {
+                continue;
+            }
+            QWidget *w = qobject_cast<QWidget *>(obj);
+            if (w->focusPolicy() != Qt::NoFocus)
+            {
+                w->setFocus(Qt::TabFocusReason);
+                return;
+            }
+        }
+    }
 }
