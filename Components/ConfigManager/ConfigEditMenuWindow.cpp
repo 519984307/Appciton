@@ -25,6 +25,9 @@
 #include "ConfigEditGeneralMenuContent.h"
 #include "ConfigEditNIBPMenuContent.h"
 #include "ConfigEditRespMenuContent.h"
+#include "ConfigEditIBPMenuContent.h"
+#include "ConfigEditDisplayMenuContent.h"
+#include "ConfigEditSpO2MenuContent.h"
 
 class ConfigEditMenuWindowPrivate
 {
@@ -90,9 +93,9 @@ void ConfigEditMenuWindow::initializeSubMenu()
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditRespMenu"] = subMenu;
 
-//    subMenu = new ConfigEditSpO2Menu();
-//    addSubMenu(subMenu);
-//    d_ptr->subMenuMap["ConfigEditSpO2Menu"] = subMenu;
+    subMenu = new ConfigEditSpO2MenuContent();
+    addMenuContent(subMenu);
+    d_ptr->subMenuMap["ConfigEditSpO2Menu"] = subMenu;
 
     subMenu = new ConfigEditNIBPMenuContent();
     addMenuContent(subMenu);
@@ -100,23 +103,23 @@ void ConfigEditMenuWindow::initializeSubMenu()
 
     subMenu = new ConfigEditCOMenuContent();
     addMenuContent(subMenu);
-    d_ptr->subMenuMap["ConfigCOMenu"] = subMenu;
+    d_ptr->subMenuMap["ConfigEditCOMenu"] = subMenu;
 
     subMenu = new ConfigEditCO2MenuContent();
     addMenuContent(subMenu);
-    d_ptr->subMenuMap["ConfigCO2Menu"] = subMenu;
+    d_ptr->subMenuMap["ConfigEditCO2Menu"] = subMenu;
 
-//    subMenu = new ConfigIBPMenu();
-//    addSubMenu(subMenu);
-//    d_ptr->subMenuMap["ConfigIBPMenu"] = subMenu;
+    subMenu = new ConfigEditIBPMenuContent();
+    addMenuContent(subMenu);
+    d_ptr->subMenuMap["ConfigEditIBPMenu"] = subMenu;
 
 //    subMenu = new SupervisorCodeMarker();
 //    addSubMenu(subMenu);
 //    d_ptr->subMenuMap["SupervisorCodeMarker"] = subMenu;
 
-//    subMenu = new ConfigEditDisplayMenu();
-//    addSubMenu(subMenu);
-//    d_ptr->subMenuMap["ConfigEditDisplayMenu"] = subMenu;
+    subMenu = new ConfigEditDisplayMenuContent();
+    addMenuContent(subMenu);
+    d_ptr->subMenuMap["ConfigEditDisplayMenu"] = subMenu;
 
 
     d_ptr->isSubmenuInitial = true;

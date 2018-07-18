@@ -59,10 +59,8 @@ void ConfigEditGeneralMenuContent::readyShow()
 
 void ConfigEditGeneralMenuContentPrivate::loadOptions()
 {
-    btns[ITEM_BTN_CONFIG_NAME]->setText(ConfigEditMenuWindow::getInstance()
-                                        ->getCurrentEditConfigName());
-    bool isEdited = !configManager.getWidgetsPreStatus();
-    btns[ITEM_BTN_CONFIG_NAME]->setEnabled(isEdited);
+    btns[ITEM_BTN_CONFIG_NAME]->setText(ConfigEditMenuWindow
+                                        ::getInstance()->getCurrentEditConfigName());
 }
 void ConfigEditGeneralMenuContent::layoutExec()
 {
