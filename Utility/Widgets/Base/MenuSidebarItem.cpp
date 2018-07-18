@@ -21,6 +21,9 @@ MenuSidebarItem::MenuSidebarItem(QWidget *parent)
     : QAbstractButton(parent)
 {
     setCheckable(true);
+    QPalette pal = palette();
+    themeManger.setupPalette(ThemeManager::ControlMenuSideBarItem, pal);
+    setPalette(pal);
 }
 
 QSize MenuSidebarItem::sizeHint() const
@@ -60,7 +63,6 @@ void MenuSidebarItem::paintEvent(QPaintEvent *ev)
     else if (isChecked())
     {
         bgColor = pal.color(QPalette::Active, QPalette::Window);
-        // bgColor = QColor(239, 240, 241);
         textColor = pal.color(QPalette::Active, QPalette::ButtonText);
     }
     else

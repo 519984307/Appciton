@@ -186,7 +186,7 @@ QWidget *MenuSidebar::getChecked() const
 
 QSize MenuSidebar::sizeHint() const
 {
-    return QSize(180, PREFER_ITEM_HEIGHT * DEFAULT_ITEM_NUM);
+    return QSize(200, PREFER_ITEM_HEIGHT * DEFAULT_ITEM_NUM);
 }
 
 void MenuSidebar::showEvent(QShowEvent *ev)

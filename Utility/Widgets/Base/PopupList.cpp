@@ -86,7 +86,7 @@ PopupList::PopupList(QWidget *parent, bool concatToParent)
     }
     else
     {
-        setFont(fontManager.textFont(17));
+        setFont(fontManager.textFont(themeManger.defaultFontPixSize()));
     }
 
     QPalette p =  palette();

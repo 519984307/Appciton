@@ -104,7 +104,7 @@ void MenuContent::focusInEvent(QFocusEvent *ev)
             QWidget *w = qobject_cast<QWidget *>(obj);
             if (w->focusPolicy() != Qt::NoFocus)
             {
-                w->setFocus();
+                w->setFocus(Qt::TabFocusReason);
                 return;
             }
         }

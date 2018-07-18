@@ -40,7 +40,7 @@ MenuWindow::MenuWindow()
     setWindowLayout(layout);
 
     d_ptr->sidebar = new MenuSidebar();
-    d_ptr->sidebar->setFixedWidth(180);
+    d_ptr->sidebar->setFixedWidth(200);
     layout->addWidget(d_ptr->sidebar);
 
     d_ptr->stackWidget = new QStackedWidget();

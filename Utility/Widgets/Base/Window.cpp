@@ -16,6 +16,7 @@
 #include <QFrame>
 #include <QResizeEvent>
 #include "FontManager.h"
+#include "ThemeManager.h"
 
 #define TITLE_BAR_HEIGHT 48
 
@@ -67,10 +68,14 @@ Window::Window(QWidget *parent)
     vLayout->addWidget(d_ptr->m_widget, 1);
     connect(closeBtn, SIGNAL(clicked(bool)), this, SLOT(close()));
 
-    setFont(fontManager.textFont(20));
+    setFont(fontManager.textFont(themeManger.defaultFontPixSize()));
+
+    QPalette pal = palette();
+    themeManger.setupPalette(ThemeManager::ControlWindow, pal);
+    setPalette(pal);
 
     d_ptr->m_mask = new QWidget(this);
-    QPalette pal = d_ptr->m_mask->palette();
+    pal = d_ptr->m_mask->palette();
     pal.setColor(QPalette::Window, QColor(20, 20, 20, 80));
     d_ptr->m_mask->setPalette(pal);
     d_ptr->m_mask->setVisible(false);
