@@ -410,6 +410,8 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditCOMenu.cpp                               \
     Components/ConfigManager/ConfigEditCOMenuContent.cpp                        \
     Components/ConfigManager/ConfigEditCodeMarkerMenuContent.cpp                \
+    Components/ConfigManager/ConfigEditAlarmLimitMenuContent.cpp                \
+    Components/ConfigManager/ConfigEditAlarmLimitModel.cpp                      \
     Components/ConfigManager/ConfigEditUnitSetupMenu.cpp                        \
     Components/ConfigManager/ConfigEditIBPMenu.cpp                              \
     Components/ConfigManager/ConfigEditIBPMenuContent.cpp                       \
@@ -912,7 +914,7 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditEcgMenu.h                                \
     Components/ConfigManager/ConfigEditEcgMenuContent.h                         \
     Components/ConfigManager/ConfigEditRespMenu.h                               \
-    Components/ConfigManager/ConfigEditRespMenuContent.h  /                      \
+    Components/ConfigManager/ConfigEditRespMenuContent.h                        \
     Components/ConfigManager/ConfigEditAlarmLimitMenu.h                         \
     Components/ConfigManager/ConfigEditNIBPMenu.h                               \
     Components/ConfigManager/ConfigEditNIBPMenuContent.h                        \
@@ -923,6 +925,8 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditCOMenu.h                                 \
     Components/ConfigManager/ConfigEditCOMenuContent.h                          \
     Components/ConfigManager/ConfigEditUnitSetupMenu.h                          \
+    Components/ConfigManager/ConfigEditAlarmLimitMenuContent.h                  \
+    Components/ConfigManager/ConfigEditAlarmLimitModel.h                        \
     Components/ConfigManager/ConfigEditIBPMenu.h                                \
     Components/ConfigManager/ConfigEditIBPMenuContent.h                         \
     Components/ConfigManager/ConfigEditDisplayMenu.h                            \
