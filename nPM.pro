@@ -336,6 +336,9 @@ SOURCES +=                                                                      
     Components/Maintain/Supervisor/Menu/SupervisorAlarmMenu.cpp                 \
     Components/Maintain/Supervisor/Menu/SupervisorWifiMenu.cpp                  \
     Components/Maintain/Supervisor/Menu/DisplayMenuContent.cpp                  \
+    Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.cpp            \
+    Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.cpp          \
+    Components/Maintain/Supervisor/Menu/SupervisorTimeMenuContent.cpp           \
     Components/Maintain/Supervisor/SupervisorConfigManager.cpp                  \
     Components/Maintain/Supervisor/SupervisorEntrance.cpp                       \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.cpp                \
@@ -416,6 +419,7 @@ SOURCES +=                                                                      
     Components/ConfigManager/LoadConfigMenu.cpp                                 \
     Components/ConfigManager/ConfigManagerMenuContent.cpp                       \
     Components/ConfigManager/LoadConfigMenuContent.cpp                          \
+    Components/ConfigManager/UnitSetupMenuContent.cpp                           \
     Components/Freeze/FreezeManager.cpp                                         \
     Components/Freeze/FreezeWidget.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
@@ -842,6 +846,9 @@ HEADERS +=                                                                      
     Components/Maintain/Supervisor/Menu/SupervisorAlarmMenu.h                   \
     Components/Maintain/Supervisor/Menu/SupervisorWifiMenu.h                    \
     Components/Maintain/Supervisor/Menu/DisplayMenuContent.h                    \
+    Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.h              \
+    Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.h            \
+    Components/Maintain/Supervisor/Menu/SupervisorTimeMenuContent.h             \
     Components/Maintain/Supervisor/SupervisorConfigManager.h                    \
     Components/Maintain/Supervisor/SupervisorEntrance.h                         \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.h                  \
@@ -925,6 +932,7 @@ HEADERS +=                                                                      
     Components/ConfigManager/LoadConfigMenu.h                                   \
     Components/ConfigManager/ConfigManagerMenuContent.h                         \
     Components/ConfigManager/LoadConfigMenuContent.h                            \
+    Components/ConfigManager/UnitSetupMenuContent.h                             \
     Components/Freeze/FreezeManager.h                                           \
     Components/Freeze/FreezeWidget.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \
