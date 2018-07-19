@@ -395,19 +395,25 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditMenuGrp.cpp                              \
     Components/ConfigManager/ConfigEditMenuWindow.cpp                           \
     Components/ConfigManager/ConfigEditGeneralMenu.cpp                          \
+    Components/ConfigManager/ConfigEditGeneralMenuContent.cpp                   \
     Components/ConfigManager/ConfigEditEcgMenu.cpp                              \
     Components/ConfigManager/ConfigEditEcgMenuContent.cpp                       \
     Components/ConfigManager/ConfigEditRespMenu.cpp                             \
+    Components/ConfigManager/ConfigEditRespMenuContent.cpp                      \
     Components/ConfigManager/ConfigEditAlarmLimitMenu.cpp                       \
     Components/ConfigManager/ConfigEditNIBPMenu.cpp                             \
+    Components/ConfigManager/ConfigEditNIBPMenuContent.cpp                      \
     Components/ConfigManager/ConfigEditSpO2Menu.cpp                             \
+    Components/ConfigManager/ConfigEditSpO2MenuContent.cpp                      \
     Components/ConfigManager/ConfigEditCO2Menu.cpp                              \
     Components/ConfigManager/ConfigEditCO2MenuContent.cpp                       \
     Components/ConfigManager/ConfigEditCOMenu.cpp                               \
     Components/ConfigManager/ConfigEditCOMenuContent.cpp                        \
     Components/ConfigManager/ConfigEditUnitSetupMenu.cpp                        \
     Components/ConfigManager/ConfigEditIBPMenu.cpp                              \
+    Components/ConfigManager/ConfigEditIBPMenuContent.cpp                       \
     Components/ConfigManager/ConfigEditDisplayMenu.cpp                          \
+    Components/ConfigManager/ConfigEditDisplayMenuContent.cpp                   \
     Components/ConfigManager/ConfigManagerEntrance.cpp                          \
     Components/ConfigManager/LoadConfigMenu.cpp                                 \
     Components/ConfigManager/ConfigManagerMenuContent.cpp                       \
@@ -901,19 +907,25 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditMenuGrp.h                                \
     Components/ConfigManager/ConfigEditMenuWindow.h                             \
     Components/ConfigManager/ConfigEditGeneralMenu.h                            \
+    Components/ConfigManager/ConfigEditGeneralMenuContent.h                     \
     Components/ConfigManager/ConfigEditEcgMenu.h                                \
     Components/ConfigManager/ConfigEditEcgMenuContent.h                         \
     Components/ConfigManager/ConfigEditRespMenu.h                               \
+    Components/ConfigManager/ConfigEditRespMenuContent.h  /                      \
     Components/ConfigManager/ConfigEditAlarmLimitMenu.h                         \
     Components/ConfigManager/ConfigEditNIBPMenu.h                               \
+    Components/ConfigManager/ConfigEditNIBPMenuContent.h                        \
     Components/ConfigManager/ConfigEditSpO2Menu.h                               \
+    Components/ConfigManager/ConfigEditSpO2MenuContent.h                        \
     Components/ConfigManager/ConfigEditCO2Menu.h                                \
     Components/ConfigManager/ConfigEditCO2MenuContent.h                         \
     Components/ConfigManager/ConfigEditCOMenu.h                                 \
     Components/ConfigManager/ConfigEditCOMenuContent.h                          \
     Components/ConfigManager/ConfigEditUnitSetupMenu.h                          \
     Components/ConfigManager/ConfigEditIBPMenu.h                                \
+    Components/ConfigManager/ConfigEditIBPMenuContent.h                         \
     Components/ConfigManager/ConfigEditDisplayMenu.h                            \
+    Components/ConfigManager/ConfigEditDisplayMenuContent.h                     \
     Components/ConfigManager/ConfigManagerEntrance.h                            \
     Components/ConfigManager/LoadConfigMenu.h                                   \
     Components/ConfigManager/ConfigManagerMenuContent.h                         \

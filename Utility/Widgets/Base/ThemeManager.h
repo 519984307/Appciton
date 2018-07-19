@@ -35,6 +35,7 @@ public:
         ControlComboBox,
         ControlPopupList,
         ControlPopupListItem,
+        ControlMenuSideBarItem,
         ControlTypeNR,
     };
 
@@ -106,6 +107,15 @@ public:
     int getAcceptableControlHeight() const
     {
         return 48;
+    }
+
+    /**
+     * @brief defaultFontPixSize get the default font pixsize
+     * @return the font pix size
+     */
+    int defaultFontPixSize() const
+    {
+        return 20;
     }
 
 private:

@@ -167,16 +167,16 @@ bool UserConfigEditMenuContent::eventFilter(QObject *obj, QEvent *ev)
             }
         }
 
-        if (ev->type() == QEvent::Hide)
-        {
-            if (d_ptr->lastSelectItem)
-            {
-                d_ptr->lastSelectItem->setIcon(QIcon());
-                d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG]->setEnabled(false);
-                d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG]->setEnabled(false);
-                d_ptr->lastSelectItem = NULL;
-            }
-        }
+//        if (ev->type() == QEvent::Hide)
+//        {
+//            if (d_ptr->lastSelectItem)
+//            {
+//                d_ptr->lastSelectItem->setIcon(QIcon());
+//                d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG]->setEnabled(false);
+//                d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG]->setEnabled(false);
+//                d_ptr->lastSelectItem = NULL;
+//            }
+//        }
     }
     return false;
 }
@@ -428,6 +428,13 @@ void UserConfigEditMenuContent::changeEvent(QEvent *ev)
 
 void UserConfigEditMenuContent::hideEvent(QHideEvent *ev)
 {
+    if (d_ptr->lastSelectItem)
+    {
+        d_ptr->lastSelectItem->setIcon(QIcon());
+        d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG]->setEnabled(false);
+        d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG]->setEnabled(false);
+        d_ptr->lastSelectItem = NULL;
+    }
     onEditFinished();
     MenuContent::hideEvent(ev);
 }

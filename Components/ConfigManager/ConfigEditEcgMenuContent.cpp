@@ -372,7 +372,6 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
     iiii++;
     if (box)
     {
-        bool stat;
         Config *config = ConfigEditMenuWindow::getInstance()->getCurrentEditConfig();
         ConfigEditECGMenuContentPrivate::MenuItem item
             = (ConfigEditECGMenuContentPrivate::MenuItem) box->property("Item").toInt();
@@ -380,44 +379,34 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
         {
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_LEAD_MODE:
             config->setNumValue("ECG|LeadMode", index);
-            qDebug() << "config->setNumValue(ECG|LeadMode, index)----" << iiii << endl;
             d_ptr->loadOptions();
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_FILTER_MODE:
-            stat = config->setNumValue("ECG|Filter", index);
-            qDebug() << "config->setNumValue(ECG|Filter, index)----" << stat << endl;
+            config->setNumValue("ECG|Filter", index);
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER:
             config->setNumValue("ECG|NotchFilter", index);
-            qDebug() << "config->setNumValue(ECG|NotchFilter, index)----" << iiii << endl;
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ALARM_SOURCE:
             config->setNumValue("ECG|AlarmSource", index);
-            qDebug() << "config->setNumValue(ECG|AlarmSource, index)----" << iiii << endl;
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_WAVE:
             config->setNumValue("ECG|Ecg1Wave", index);
-            qDebug() << "config->setNumValue(ECG|Ecg1Wave, index)----" << iiii << endl;
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_WAVE:
             config->setNumValue("ECG|Ecg2Wave", index);
-            qDebug() << "config->setNumValue(ECG|Ecg2Wave, index)----" << iiii << endl;
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_GAIN:
             config->setNumValue("ECG|Ecg1Gain", index);
-            qDebug() << "config->setNumValue(ECG|Ecg1Gain, index)----" << iiii << endl;
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_GAIN:
             config->setNumValue("ECG|Ecg2Gain", index);
-            qDebug() << "config->setNumValue(ECG|Ecg2Gain, index)----" << iiii << endl;
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL:
             config->setNumValue("ECG|QRSVolume", index);
-            qDebug() << "config->setNumValue(ECG|QRSVolume, index)----" << iiii << endl;
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED:
             config->setNumValue("ECG|SweepSpeed", index);
-            qDebug() << "config->setNumValue(ECG|SweepSpeed, index)----" << iiii << endl;
             break;
         default:
             break;
