@@ -28,6 +28,7 @@
 #include "ConfigEditIBPMenuContent.h"
 #include "ConfigEditDisplayMenuContent.h"
 #include "ConfigEditSpO2MenuContent.h"
+#include "ConfigEditCodeMarkerMenuContent.h"
 
 class ConfigEditMenuWindowPrivate
 {
@@ -113,9 +114,9 @@ void ConfigEditMenuWindow::initializeSubMenu()
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditIBPMenu"] = subMenu;
 
-//    subMenu = new SupervisorCodeMarker();
-//    addSubMenu(subMenu);
-//    d_ptr->subMenuMap["SupervisorCodeMarker"] = subMenu;
+    subMenu = new ConfigEditCodeMarkerMenuContent();
+    addMenuContent(subMenu);
+    d_ptr->subMenuMap["ConfigEditCodeMarkerMenu"] = subMenu;
 
     subMenu = new ConfigEditDisplayMenuContent();
     addMenuContent(subMenu);
