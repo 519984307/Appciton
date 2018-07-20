@@ -25,7 +25,7 @@ public:
 
 private slots:
     void onComboBoxIndexChanged(int index);
-    void onButtonReleased(void);
+    void onSpinBoxValueChanged(int value, int scale);
 
 private:
     SupervisorTimeMenuContentPrivate * const d_ptr;
