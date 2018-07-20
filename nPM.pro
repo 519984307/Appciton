@@ -353,6 +353,7 @@ SOURCES +=                                                                      
     Components/Maintain/Service/Version/ServiceVersion.cpp                      \
     Components/Maintain/Factory/FactoryConfigManager.cpp                        \
     Components/Maintain/Factory/Menu/FactoryDataRecord.cpp                      \
+    Components/Maintain/FactoryMaintain/FactoryDataRecordContent.cpp            \
     Components/Maintain/Factory/Menu/FactorySystemInfoMenu.cpp                  \
     Components/Maintain/Factory/Menu/FactoryTempMenu.cpp                        \
     Components/Maintain/Factory/Menu/FactoryTestMenu.cpp                        \
@@ -375,12 +376,16 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.cpp             \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftWareVersion.cpp                     \
+    Components/Maintain/FactoryMaintain/SoftWareVersionContent.cpp              \
     Components/Maintain/FactoryMaintain/MonitorInfo.cpp                         \
+    Components/Maintain/FactoryMaintain/MonitorInfoContent.cpp                  \
     Components/Maintain/FactoryMaintain/ServiceErrorLogEntrance.cpp             \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntrance.cpp               \
     Components/Maintain/FactoryMaintain/MachineConfigModule.cpp                 \
+    Components/Maintain/FactoryMaintain/MachineConfigModuleContent.cpp          \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.cpp                 \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.cpp                   \
+    Components/Maintain/FactoryMaintain/SelectStarterLogoContent.cpp            \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.cpp             \
     Components/Maintain/FactoryMaintain/FactoryMaintainMenuContent.cpp          \
     Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
@@ -869,6 +874,7 @@ HEADERS +=                                                                      
     Components/Maintain/Factory/Menu/FactoryTestMenu.h                          \
     Components/Maintain/Factory/Menu/FactorySystemInfoMenu.h                    \
     Components/Maintain/Factory/Menu/FactoryDataRecord.h                        \
+    Components/Maintain/FactoryMaintain/FactoryDataRecordContent.h              \
     Components/Maintain/UserMaintain/UserMaintainEntrance.h                     \
     Components/Maintain/UserMaintain/UserMaintainManager.h                      \
     Components/Maintain/UserMaintain/UserMaintainGeneralSet.h                   \
@@ -889,11 +895,15 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.h               \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersion.h                       \
+    Components/Maintain/FactoryMaintain/SoftWareVersionContent.h                \
     Components/Maintain/FactoryMaintain/MonitorInfo.h                           \
+    Components/Maintain/FactoryMaintain/MonitorInfoContent.h                    \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.h                     \
+    Components/Maintain/FactoryMaintain/SelectStarterLogoContent.h              \
     Components/Maintain/FactoryMaintain/ServiceErrorLogEntrance.h               \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntrance.h                 \
     Components/Maintain/FactoryMaintain/MachineConfigModule.h                   \
+    Components/Maintain/FactoryMaintain/MachineConfigModuleContent.h            \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.h                   \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.h               \
     Components/Maintain/FactoryMaintain/FactoryMaintainMenuContent.h            \

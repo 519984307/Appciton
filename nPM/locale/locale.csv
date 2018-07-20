@@ -1018,7 +1018,7 @@ PleaseAddImportFiles,请增加导入文件,Please Add Import Files
 FactoryMaintainSystem,工厂维护系统,Factory Maintain
 FactoryMaintainPassword,工厂维护密码,Factory Maintain Password
 FactoryMaintainModifyConfig,工厂维护修改配置,Factory Maintain Modify Config
-MachineConfigModuleMenu,机器配置模块菜单,Machine Config Module Menu
+MachineConfigModuleMenu,机器配置,Machine Config
 IBPModule,有创血压模块,IBP Module
 CO2Module,二氧化碳模块,CO2 Module
 ECG12LeadsModule,心电12导模块,ECG 12Leads Module
@@ -1029,11 +1029,11 @@ ScreenModule,触摸屏模块,Screen Module
 NurseCallingModule,护士呼叫设置模块,Nurse Calling Module
 AnalogOutputModule,模拟输出模块,Analog Output Module
 SYNCDefibrillationModule,同步除颤模块,SYNC Defibrillation Module
-COModule,一氧化碳模块,COModule
+COModule,一氧化碳模块,CO Module
 PHASEIN,像素,PHASEIN
 M601,M601,M601
-MachineConfigModuleMenuDesc,机器配置设置,Machine Config Module Menu Desc
-MonitorInfoMenu,监护仪信息,Monitor Info Menu
+MachineConfigModuleMenuDesc,机器配置设置,Machine Config  Desc
+MonitorInfoMenu,监护仪信息,Monitor Info
 CumulativeWorkingTime,累计工作时间,Cumulative Working Time
 TemperatureInsideCase,箱内温度,Temperature Inside Case
 BatteryLevel,电池级别,Battery Level
@@ -1043,18 +1043,18 @@ MACAddress,硬件地址,MAC Address
 ScreenResolationSize,屏幕分辨率尺寸,Screen Resolation Size
 ElectronicSerialNumber,电子序列号,Electronic Serial Number
 SetElectronicSerialNumber,设置电子序列号,Set Electronic Serial Number
-MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info Menu Desc
+MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info Desc
 NIBPCalibrationMenu,无创血压校准菜单,NIBP Calibration Menu
 NIBPCalibration,无创血压校准,NIBP Calibration
 NIBPCalibrationMenuDesc,无创血压校准菜单设置,NIBP CalibrationMenu Desc
-SelectStarterLogoMenu,选择开机图片菜单,Select StarterLogo Menu
-SelectStarterLogo,选择开机图片,Select Starter Logo
-SelectStarterLogoMenuDesc,选择开机图片设置,Select Starter Logo Menu Desc
+SelectStarterLogoMenu,开机图片,Start Logo
+SelectStarterLogoMenuDesc,开机图片设置,Start Logo Desc
 ServiceErrorLogEntrance,错误日志进入,Service ErrorLog Entrance
 ServiceErrorLogEntranceDesc,错误日志进入设置,Service ErrorLog Entrance Desc
 ServiceUpdateEntrance,更新模块进入,Service Update Entrance
 ServiceUpdateEntranceDesc,更新模块进入设置,Service Update Entrance Desc
-SoftWareVersionMenu,软件版本菜单,SoftWare Version Menu
+SoftWareVersionMenu,软件版本,SoftWare Version
+SoftWareVersionMenuDesc,软件版本设置,SoftWare Version Desc
 SystemSoftwareVersion,系统软件版本,System Software Version
 PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Version
 Uboot,系统引导文件,Uboot
@@ -1063,7 +1063,7 @@ KeyboardModule,按键模块,Keyboard Module
 RecorderModule,记录模块,Recorder Module
 ECGAlgorithmType,心电算法类型,ECG Algorithm Type
 UserMaintainGeneralMenuDesc,用户维护通用菜单设置,User Maintain General Menu Desc
-BootAndStandbyLogoVersion,开机标准logo版本,BootAndStandbyLogoVersion
+BootAndStandbyLogoVersion,开机标准logo版本,Boot And Standby LogoVersion
 UserMaintainGeneralMenu,用户维护通用菜单,User Maintain General Menu
 AlarmMaintainMenu,报警维护菜单,Alarm Maintain Menu
 MinimumALarmVolume,最小报警音量,Minimum Alarm Volume
@@ -1207,7 +1207,7 @@ FactoryBattery,电池 ,Factory Battery
 RefreshRate,更新速率,Refresh Rate
 Note,注释,Note
 RefreshRateUpdatedRebootNow,刷新率,Refresh Rate Updated Reboot Now
-FactoryDataRecord,数据记录,Factory Data Record
+FactoryDataRecord,数据记录,Factory Data
 FactoryDataRecordDesc,数据记录设置,Factory Data Record Desc
 PDCommData,PD 通信数据,PD Comm Data
 TEMPCalibrate0,温度校准0,TEMP Calibrate0
