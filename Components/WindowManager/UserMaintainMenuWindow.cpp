@@ -15,6 +15,10 @@
 #include "WifiMaintainMenuContent.h"
 #include "WiredNetworkMaintainMenuContent.h"
 #include "OthersMaintainMenuContent.h"
+#include "UnitSetupMenuContent.h"
+#include "Supervisor12LMenuContent.h"
+#include "SupervisorPrintMenuContent.h"
+#include "SupervisorTimeMenuContent.h"
 
 UserMaintainMenuWindow *UserMaintainMenuWindow::getInstance()
 {
@@ -29,6 +33,10 @@ UserMaintainMenuWindow *UserMaintainMenuWindow::getInstance()
         instance->addMenuContent(new WifiMaintainMenuContent);
         instance->addMenuContent(new WiredNetworkMaintainMenuContent);
         instance->addMenuContent(new OthersMaintainMenuContent);
+        instance->addMenuContent(new UnitSetupMenuContent);
+        instance->addMenuContent(new Supervisor12LMenuContent);
+        instance->addMenuContent(new SupervisorPrintMenuContent);
+        instance->addMenuContent(new SupervisorTimeMenuContent);
     }
 
     return instance;

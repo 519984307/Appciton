@@ -102,13 +102,14 @@ ECGPacemaker,起搏器,Pacemaker
 ECGSweepSpeed,波形速度,Sweep Speed
 ECGQRSToneVolume,QRS/PR 音量,QRS/PR Volume
 ECGMenu,心电,ECG
-ECGMenuDesc,心电设置,ECG Setting
 ECGSTSWitch,ST开关,ST SWitch
 ECGSTPoint,ST点,ST Point
 ECGISOPoint,ISO点,ISO Point
 STMenu,ST,ST
 SPO2Sensitivity,灵敏度,Sensitivity
+ConfigEditSpO2Menu,血氧,SPO2
 SPO2SmartPulseTone,智能脉搏音,Smart Pulse Tone
+ConfigEditIBPMenu,有创血压,IBP
 SPO2SweepSpeed,波形速度,Sweep Speed
 SPO2PRDisplay,脉率显示,PR Display
 SPO2SmartPluseTone,智能脉搏音,Smart Pulse Tone
@@ -127,7 +128,7 @@ NIBPMeasureMode,测量摸式,Measure Mode
 NIBPIntervalTime,间隔时间,NIBP Interval Time
 NIBPAutoInterval,自动间隔,Auto Interval
 NIBPMenu,无创血压,NIBP
-NIBPMenuDesc,无创血压设置,NIBP Setting
+NIBPMenuDesc,无创血压设置,NIBP Desc
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
 CO2SweepMode,CO2波形模式,CO2 Sweep Mode
@@ -147,6 +148,7 @@ IBPMenu,有创血压,IBP
 IBPSweepSpeed,波形速度,Sweep Speed
 ChannelPressureEntitle1,通道１压力标名,Pressure Entitle Channel 1
 ChannelPressureEntitle2,通道２压力标名,Pressure Entitle Channel 2
+Sensitivity,灵敏度,Sensitivity
 FilterMode,滤波模式,Filter Mode
 IBPZeroCalib,校零,Zero
 IBPZeroStart,开始,Start
@@ -202,14 +204,13 @@ SystemBrightness,屏幕亮度,Brightness
 LTAAlarm,生命报警,LTA Alarm
 SystemMenu,系统,System
 PatientMenuDesc,病人设置,Patient Setting
-ECGMenuDesc,心电设置,ECG Setting
+ECGMenuDesc,心电设置,ECG Desc
 STMenuDesc,ST设置,ST Setting
 SPO2MenuDesc,血氧设置,SPO2 Setting
 RESPMenuDesc,呼吸设置,RESP Setting
-NIBPMenuDesc,血压设置,NIBP Setting
-CO2MenuDesc,二氧化碳设置,CO2 Setting
-IBPMenuDesc,有创血压设置,IBP Setting
-COMenuDesc,心排量设置,C.O. Setting
+CO2MenuDesc,二氧化碳设置,CO2 Desc
+IBPMenuDesc,有创血压设置,IBP Desc
+COMenuDesc,心排量设置,C.O. Desc
 RESPAndCO2Menu,RESP和CO2,RESP & CO2
 RESPAndCO2MenuDesc,RESP和CO2设置,RESP & CO2 Setting
 CPRMenuDesc,CPR设置,CPR Setting
@@ -974,7 +975,6 @@ LeadOffZeroCalibFail,导联脱落（校零失败）,
 LeadOffCalibrationFail,导联脱落（校准失败）,
 NoSetZeroCalibTime,没有设置校零时间,
 NoSetCalibrationTime,没有设置校准时间,
-Sensitivity,灵敏度,Sensitivity
 ManualRulerSet,手动标尺设置,Manual Ruler Set
 PressureHighRuler,压力上标尺,Pressure High Ruler
 PressureLowRuler,压力下标尺,Pressure Low Ruler
@@ -984,7 +984,7 @@ ZeroRequired,需要校零,Zero Required
 Channel,通道,Channel
 SmartPluseTone,智能脉搏音,Smart PluseTone
 WaveVelocity,波形速度,Wave Velocity
-RespMenuDesc,呼吸菜单设置,Resp Menu Desc
+RespMenuDesc,呼吸菜单设置,Resp Desc
 RespGain,波形增益,Resp Gain
 ModuleControl,模块控制,Module Control
 HIGH,高,HIGH
@@ -1018,7 +1018,7 @@ PleaseAddImportFiles,请增加导入文件,Please Add Import Files
 FactoryMaintainSystem,工厂维护系统,Factory Maintain
 FactoryMaintainPassword,工厂维护密码,Factory Maintain Password
 FactoryMaintainModifyConfig,工厂维护修改配置,Factory Maintain Modify Config
-MachineConfigModuleMenu,机器配置模块菜单,Machine Config Module Menu
+MachineConfigModuleMenu,机器配置,Machine Config
 IBPModule,有创血压模块,IBP Module
 CO2Module,二氧化碳模块,CO2 Module
 ECG12LeadsModule,心电12导模块,ECG 12Leads Module
@@ -1029,11 +1029,11 @@ ScreenModule,触摸屏模块,Screen Module
 NurseCallingModule,护士呼叫设置模块,Nurse Calling Module
 AnalogOutputModule,模拟输出模块,Analog Output Module
 SYNCDefibrillationModule,同步除颤模块,SYNC Defibrillation Module
-COModule,一氧化碳模块,COModule
+COModule,一氧化碳模块,CO Module
 PHASEIN,像素,PHASEIN
 M601,M601,M601
-MachineConfigModuleMenuDesc,机器配置设置,Machine Config Module Menu Desc
-MonitorInfoMenu,监护仪信息,Monitor Info Menu
+MachineConfigModuleMenuDesc,机器配置设置,Machine Config  Desc
+MonitorInfoMenu,监护仪信息,Monitor Info
 CumulativeWorkingTime,累计工作时间,Cumulative Working Time
 TemperatureInsideCase,箱内温度,Temperature Inside Case
 BatteryLevel,电池级别,Battery Level
@@ -1043,18 +1043,18 @@ MACAddress,硬件地址,MAC Address
 ScreenResolationSize,屏幕分辨率尺寸,Screen Resolation Size
 ElectronicSerialNumber,电子序列号,Electronic Serial Number
 SetElectronicSerialNumber,设置电子序列号,Set Electronic Serial Number
-MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info Menu Desc
+MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info Desc
 NIBPCalibrationMenu,无创血压校准菜单,NIBP Calibration Menu
 NIBPCalibration,无创血压校准,NIBP Calibration
 NIBPCalibrationMenuDesc,无创血压校准菜单设置,NIBP CalibrationMenu Desc
-SelectStarterLogoMenu,选择开机图片菜单,Select StarterLogo Menu
-SelectStarterLogo,选择开机图片,Select Starter Logo
-SelectStarterLogoMenuDesc,选择开机图片设置,Select Starter Logo Menu Desc
+SelectStarterLogoMenu,开机图片,Start Logo
+SelectStarterLogoMenuDesc,开机图片设置,Start Logo Desc
 ServiceErrorLogEntrance,错误日志进入,Service ErrorLog Entrance
 ServiceErrorLogEntranceDesc,错误日志进入设置,Service ErrorLog Entrance Desc
 ServiceUpdateEntrance,更新模块进入,Service Update Entrance
 ServiceUpdateEntranceDesc,更新模块进入设置,Service Update Entrance Desc
-SoftWareVersionMenu,软件版本菜单,SoftWare Version Menu
+SoftWareVersionMenu,软件版本,SoftWare Version
+SoftWareVersionMenuDesc,软件版本设置,SoftWare Version Desc
 SystemSoftwareVersion,系统软件版本,System Software Version
 PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Version
 Uboot,系统引导文件,Uboot
@@ -1063,7 +1063,7 @@ KeyboardModule,按键模块,Keyboard Module
 RecorderModule,记录模块,Recorder Module
 ECGAlgorithmType,心电算法类型,ECG Algorithm Type
 UserMaintainGeneralMenuDesc,用户维护通用菜单设置,User Maintain General Menu Desc
-BootAndStandbyLogoVersion,开机标准logo版本,BootAndStandbyLogoVersion
+BootAndStandbyLogoVersion,开机标准logo版本,Boot And Standby LogoVersion
 UserMaintainGeneralMenu,用户维护通用菜单,User Maintain General Menu
 AlarmMaintainMenu,报警维护菜单,Alarm Maintain Menu
 MinimumALarmVolume,最小报警音量,Minimum Alarm Volume
@@ -1078,14 +1078,14 @@ IsPauseMaxAlarm15Min,是否暂停最大报警15分钟,Is Pause Max Alarm 15Min
 forbid,禁止,forbid
 allow,允许,allow
 ReminderTone,提醒音,Reminder Tone
-Close,关闭,close
-Open,打开,open
-OpenAgain,再次打开,Open Again
+close,关闭,close
+open,打开,open
+openAgain,再次打开,Open Again
 ReminderToneIntervals,提醒音间隔,Reminder Tone Intervals
 H1min,1分钟,1min
 H2min,2分钟,2min
 H3min,3分钟,3min
-AlarmLightOnAlarmReset,报警灯复位,Alarm Light On Alarm Reset
+_alarmLightOnAlarmReset,报警灯复位,Alarm Light On Alarm Reset
 Defaults,默认,Defaults
 RecoverDefaults,默认覆盖,Recover Defaults
 ModuleMaintainMenu,模块维护菜单,Module Maintain Menu
@@ -1133,8 +1133,6 @@ Technology,技术,Technology
 Physiology,生理,Physiology
 UserMaintainPassword,用户维护密码,User Maintain Password
 UserMaintainSystem,用户维护系统,User Maintain
-Start,开始,Start
-MonitorName,监视器名称,Monitor Name
 Department,部门,Department
 BedNumber,床号,Bed Number
 ModifyPassword,修改密码,Modify Password
@@ -1152,6 +1150,7 @@ IpAddress,IP地址,IP Address
 high,高,High
 normal,中,Normal
 low,低,Low
+ConfigManagerDesc,配置管理设置,Config Manager Desc
 ConfigManager,配置管理,Config Manager
 DefaultConfig,默认配置,Default Config
 DefaultConfigDesc,默认配置设置,Default Config Desc
@@ -1178,6 +1177,7 @@ NotchFilter,陷波滤波器,Notch Filter
 MeasureControl,测量控制,Measure Control
 ConfigIBPMenuDesc,有创血压,Config IBP Menu
 ConfigEditDisplayMenu,模块颜色,Display Menu
+ConfigEditDisplayMenuDesc,模块颜色设置,Display Desc
 English,英文,English
 Chinese,中文,Chinese
 UnitSetup,单位,Unit Setup
@@ -1207,7 +1207,7 @@ FactoryBattery,电池 ,Factory Battery
 RefreshRate,更新速率,Refresh Rate
 Note,注释,Note
 RefreshRateUpdatedRebootNow,刷新率,Refresh Rate Updated Reboot Now
-FactoryDataRecord,数据记录,Factory Data Record
+FactoryDataRecord,数据记录,Factory Data
 FactoryDataRecordDesc,数据记录设置,Factory Data Record Desc
 PDCommData,PD 通信数据,PD Comm Data
 TEMPCalibrate0,温度校准0,TEMP Calibrate0
@@ -1259,4 +1259,7 @@ RESPHigh,呼吸高,RESP High
 LoadConfigMenuContent,加载配置,Load Config
 LoadConfigMenuContentDesc,加载配置设置,Load Config Desc
 ConfigManagerPassword,配置管理密码,Config Manager Password
-ApenaDelay,,ApenaDelay
+ConfigEditCodeMarkerMenu,代码标记,Code Marker
+ConfigEditCodeMarkerMenuDesc,代码标记设置,Code Marker Desc
+ConfigEditIBPMenuDesc,有创血压设置,IBP Desc
+ConfigEditSpO2MenuDesc,血氧设置,SpO2 Desc

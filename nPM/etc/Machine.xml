@@ -23,27 +23,36 @@
     <SoftwareVersion>0.0.0.1</SoftwareVersion>
     <!--参数信息-->
     <AllParams>ECG,SPO2,RESP,NIBP,CO2,IBP,AG,CO,TEMP,PD</AllParams>
+    <!--数据记录使能选择-->
+    <Record>
+        <ECG>0</ECG>
+        <SPO2>1</SPO2>
+        <Battery>1</Battery>
+        <NIBP>1</NIBP>
+        <TEMP>1</TEMP>
+        <PDCommLog>1</PDCommLog>
+    </Record>
     <!--参数与Provider的关系-->
-    <ECG SptProvider="DemoProvider,BLM_E5">BLM_E5</ECG>
+    <ECG SptProvider="DemoProvider,BLM_E5">DemoProvider</ECG>
     <RESP SptProvider="DemoProvider,BLM_E5">BLM_E5</RESP>
-    <SPO2 SptProvider="DemoProvider,BLM_SPO2,BLM_TS3,BLM_S5,MASIMO_SPO2">BLM_S5</SPO2>
-    <NIBP SptProvider="DemoProvider,BLM_NIBP,BLM_TN3,SUNTECH_NIBP">BLM_TN3</NIBP>
-    <CO2 SptProvider="DemoProvider,BLM_CO2">BLM_CO2</CO2>
-    <IBP SptProvider="DemoProvider,WITLEAF_IBP">WITLEAF_IBP</IBP>
-    <AG SptProvider="DemoProvider,PHASEIN_AG">PHASEIN_AG</AG>
-    <CO SptProvider="DemoProvider,WITLEAF_IBP">WITLEAF_IBP</CO>
-    <TEMP SptProvider="DemoProvider,BLM_TT3,BLM_T5">BLM_T5</TEMP>
+    <SPO2 SptProvider="DemoProvider,BLM_SPO2,BLM_TS3,BLM_S5,MASIMO_SPO2,NELLCOR_SPO2">NELLCOR_SPO2</SPO2>
+    <NIBP SptProvider="DemoProvider,BLM_NIBP,BLM_TN3,SUNTECH_NIBP">DemoProvider</NIBP>
+    <CO2 SptProvider="DemoProvider,BLM_CO2">DemoProvider</CO2>
+    <IBP SptProvider="DemoProvider,WITLEAF_IBP">DemoProvider</IBP>
+    <AG SptProvider="DemoProvider,PHASEIN_AG">DemoProvider</AG>
+    <CO SptProvider="DemoProvider,WITLEAF_IBP">DemoProvider</CO>
+    <TEMP SptProvider="DemoProvider,BLM_TT3,BLM_T5">DemoProvider</TEMP>
     <PD SptProvider="PDProvider">PDProvider</PD>
     <!--Provider端口信息-->
     <PRT72Port>/dev/ttyS0</PRT72Port>
     <BLM_E5Port>/dev/ttyS1</BLM_E5Port>
     <BLM_TN3Port>/dev/ttyS2</BLM_TN3Port>
-<!--    <SUNTECH_NIBPPort>/dev/ttyS2</SUNTECH_NIBPPort>-->
+    <!--    <SUNTECH_NIBPPort>/dev/ttyS2</SUNTECH_NIBPPort>-->
     <BLM_S5Port>/dev/ttyS3</BLM_S5Port>
-<!--    <MASIMO_SPO2Port>/dev/ttyS3</MASIMO_SPO2Port>-->
+    <!--    <MASIMO_SPO2Port>/dev/ttyS3</MASIMO_SPO2Port>-->
     <SystemBoardPort>/dev/ttyS4</SystemBoardPort>
     <BLM_T5Port>/dev/ttyS5</BLM_T5Port>
     <WITLEAF_IBPPort>/dev/ttyWK2</WITLEAF_IBPPort>
     <BLM_CO2Port>/dev/ttyWK3</BLM_CO2Port>
-<!--    <PHASEIN_AGPort>/dev/ttyWK3</PHASEIN_AGPort>-->
+    <!--    <PHASEIN_AGPort>/dev/ttyWK3</PHASEIN_AGPort>-->
 </Machine>

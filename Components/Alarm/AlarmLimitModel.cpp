@@ -19,15 +19,6 @@
 #include "ParamManager.h"
 #include "ThemeManager.h"
 
-enum
-{
-    SECTION_PARAM_NAME,
-    SECTION_STATUS,
-    SECTION_HIGH_LIMIT,
-    SECTION_LOW_LIMIT,
-    SECTION_LEVEL,
-    SECTION_NR
-};
 
 #define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
 #define HEADER_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
@@ -68,6 +59,30 @@ int AlarmLimitModel::rowCount(const QModelIndex &parent) const
     return d_ptr->alarmDataInfos.count();
 }
 
+void AlarmLimitModel::alarmDataUpdate(const AlarmDataInfo &info, int type)
+{
+    UnitType unit = paramManager.getSubParamUnit(info.paramID,
+                    info.subParamID);
+    switch (type)
+    {
+    case SECTION_STATUS:
+        alarmConfig.setLimitAlarmEnable(info.subParamID, info.status);
+        break;
+    case SECTION_LEVEL:
+        alarmConfig.setLimitAlarmPriority(info.subParamID,
+                                          static_cast<AlarmPriority>(info.alarmLevel));
+        break;
+    case SECTION_HIGH_LIMIT:
+        alarmConfig.setLimitAlarmConfig(info.subParamID,
+                                        unit, info.limitConfig);
+        break;
+    case SECTION_LOW_LIMIT:
+        alarmConfig.setLimitAlarmConfig(info.subParamID,
+                                        unit, info.limitConfig);
+        break;
+    }
+}
+
 bool AlarmLimitModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
     Q_UNUSED(value)
@@ -78,31 +93,23 @@ bool AlarmLimitModel::setData(const QModelIndex &index, const QVariant &value, i
         {
             int newValue = value.toInt();
             int row = index.row();
-            SubParamID subParamID = d_ptr->alarmDataInfos.at(row).subParamID;
-            ParamID paramID = d_ptr->alarmDataInfos.at(row).paramID;
-            UnitType unit = paramManager.getSubParamUnit(paramID,
-                            subParamID);
             switch (index.column())
             {
             case SECTION_STATUS:
                 d_ptr->alarmDataInfos[row].status = newValue;
-                alarmConfig.setLimitAlarmEnable(subParamID, newValue);
+                alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
                 break;
             case SECTION_LEVEL:
                 d_ptr->alarmDataInfos[row].alarmLevel = newValue;
-                alarmConfig.setLimitAlarmPriority(subParamID, static_cast<AlarmPriority>(newValue));
+                alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
                 break;
             case SECTION_HIGH_LIMIT:
                 d_ptr->alarmDataInfos[row].limitConfig.highLimit = newValue;
-                alarmConfig.setLimitAlarmConfig(subParamID,
-                                                unit,
-                                                d_ptr->alarmDataInfos.at(row).limitConfig);
+                alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
                 break;
             case SECTION_LOW_LIMIT:
                 d_ptr->alarmDataInfos[row].limitConfig.lowLimit = newValue;
-                alarmConfig.setLimitAlarmConfig(subParamID,
-                                                unit,
-                                                d_ptr->alarmDataInfos.at(row).limitConfig);
+                alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
                 break;
             default:
                 break;

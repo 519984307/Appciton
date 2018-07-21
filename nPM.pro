@@ -338,6 +338,9 @@ SOURCES +=                                                                      
     Components/Maintain/Supervisor/Menu/SupervisorAlarmMenu.cpp                 \
     Components/Maintain/Supervisor/Menu/SupervisorWifiMenu.cpp                  \
     Components/Maintain/Supervisor/Menu/DisplayMenuContent.cpp                  \
+    Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.cpp            \
+    Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.cpp          \
+    Components/Maintain/Supervisor/Menu/SupervisorTimeMenuContent.cpp           \
     Components/Maintain/Supervisor/SupervisorConfigManager.cpp                  \
     Components/Maintain/Supervisor/SupervisorEntrance.cpp                       \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.cpp                \
@@ -352,6 +355,7 @@ SOURCES +=                                                                      
     Components/Maintain/Service/Version/ServiceVersion.cpp                      \
     Components/Maintain/Factory/FactoryConfigManager.cpp                        \
     Components/Maintain/Factory/Menu/FactoryDataRecord.cpp                      \
+    Components/Maintain/FactoryMaintain/FactoryDataRecordContent.cpp            \
     Components/Maintain/Factory/Menu/FactorySystemInfoMenu.cpp                  \
     Components/Maintain/Factory/Menu/FactoryTempMenu.cpp                        \
     Components/Maintain/Factory/Menu/FactoryTestMenu.cpp                        \
@@ -374,12 +378,16 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.cpp             \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftWareVersion.cpp                     \
+    Components/Maintain/FactoryMaintain/SoftWareVersionContent.cpp              \
     Components/Maintain/FactoryMaintain/MonitorInfo.cpp                         \
+    Components/Maintain/FactoryMaintain/MonitorInfoContent.cpp                  \
     Components/Maintain/FactoryMaintain/ServiceErrorLogEntrance.cpp             \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntrance.cpp               \
     Components/Maintain/FactoryMaintain/MachineConfigModule.cpp                 \
+    Components/Maintain/FactoryMaintain/MachineConfigModuleContent.cpp          \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.cpp                 \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.cpp                   \
+    Components/Maintain/FactoryMaintain/SelectStarterLogoContent.cpp            \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.cpp             \
     Components/Maintain/FactoryMaintain/FactoryMaintainMenuContent.cpp          \
     Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
@@ -403,17 +411,24 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditNIBPMenu.cpp                             \
     Components/ConfigManager/ConfigEditNIBPMenuContent.cpp                      \
     Components/ConfigManager/ConfigEditSpO2Menu.cpp                             \
+    Components/ConfigManager/ConfigEditSpO2MenuContent.cpp                      \
     Components/ConfigManager/ConfigEditCO2Menu.cpp                              \
     Components/ConfigManager/ConfigEditCO2MenuContent.cpp                       \
     Components/ConfigManager/ConfigEditCOMenu.cpp                               \
     Components/ConfigManager/ConfigEditCOMenuContent.cpp                        \
+    Components/ConfigManager/ConfigEditCodeMarkerMenuContent.cpp                \
+    Components/ConfigManager/ConfigEditAlarmLimitMenuContent.cpp                \
+    Components/ConfigManager/ConfigEditAlarmLimitModel.cpp                      \
     Components/ConfigManager/ConfigEditUnitSetupMenu.cpp                        \
     Components/ConfigManager/ConfigEditIBPMenu.cpp                              \
+    Components/ConfigManager/ConfigEditIBPMenuContent.cpp                       \
     Components/ConfigManager/ConfigEditDisplayMenu.cpp                          \
+    Components/ConfigManager/ConfigEditDisplayMenuContent.cpp                   \
     Components/ConfigManager/ConfigManagerEntrance.cpp                          \
     Components/ConfigManager/LoadConfigMenu.cpp                                 \
     Components/ConfigManager/ConfigManagerMenuContent.cpp                       \
     Components/ConfigManager/LoadConfigMenuContent.cpp                          \
+    Components/ConfigManager/UnitSetupMenuContent.cpp                           \
     Components/Freeze/FreezeManager.cpp                                         \
     Components/Freeze/FreezeWidget.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
@@ -842,6 +857,9 @@ HEADERS +=                                                                      
     Components/Maintain/Supervisor/Menu/SupervisorAlarmMenu.h                   \
     Components/Maintain/Supervisor/Menu/SupervisorWifiMenu.h                    \
     Components/Maintain/Supervisor/Menu/DisplayMenuContent.h                    \
+    Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.h              \
+    Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.h            \
+    Components/Maintain/Supervisor/Menu/SupervisorTimeMenuContent.h             \
     Components/Maintain/Supervisor/SupervisorConfigManager.h                    \
     Components/Maintain/Supervisor/SupervisorEntrance.h                         \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.h                  \
@@ -860,6 +878,7 @@ HEADERS +=                                                                      
     Components/Maintain/Factory/Menu/FactoryTestMenu.h                          \
     Components/Maintain/Factory/Menu/FactorySystemInfoMenu.h                    \
     Components/Maintain/Factory/Menu/FactoryDataRecord.h                        \
+    Components/Maintain/FactoryMaintain/FactoryDataRecordContent.h              \
     Components/Maintain/UserMaintain/UserMaintainEntrance.h                     \
     Components/Maintain/UserMaintain/UserMaintainManager.h                      \
     Components/Maintain/UserMaintain/UserMaintainGeneralSet.h                   \
@@ -880,11 +899,15 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.h               \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersion.h                       \
+    Components/Maintain/FactoryMaintain/SoftWareVersionContent.h                \
     Components/Maintain/FactoryMaintain/MonitorInfo.h                           \
+    Components/Maintain/FactoryMaintain/MonitorInfoContent.h                    \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.h                     \
+    Components/Maintain/FactoryMaintain/SelectStarterLogoContent.h              \
     Components/Maintain/FactoryMaintain/ServiceErrorLogEntrance.h               \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntrance.h                 \
     Components/Maintain/FactoryMaintain/MachineConfigModule.h                   \
+    Components/Maintain/FactoryMaintain/MachineConfigModuleContent.h            \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.h                   \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.h               \
     Components/Maintain/FactoryMaintain/FactoryMaintainMenuContent.h            \
@@ -905,22 +928,29 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditEcgMenu.h                                \
     Components/ConfigManager/ConfigEditEcgMenuContent.h                         \
     Components/ConfigManager/ConfigEditRespMenu.h                               \
-    Components/ConfigManager/ConfigEditRespMenuContent.h  /                      \
+    Components/ConfigManager/ConfigEditRespMenuContent.h                        \
     Components/ConfigManager/ConfigEditAlarmLimitMenu.h                         \
     Components/ConfigManager/ConfigEditNIBPMenu.h                               \
     Components/ConfigManager/ConfigEditNIBPMenuContent.h                        \
     Components/ConfigManager/ConfigEditSpO2Menu.h                               \
+    Components/ConfigManager/ConfigEditSpO2MenuContent.h                        \
     Components/ConfigManager/ConfigEditCO2Menu.h                                \
     Components/ConfigManager/ConfigEditCO2MenuContent.h                         \
     Components/ConfigManager/ConfigEditCOMenu.h                                 \
     Components/ConfigManager/ConfigEditCOMenuContent.h                          \
     Components/ConfigManager/ConfigEditUnitSetupMenu.h                          \
+    Components/ConfigManager/ConfigEditAlarmLimitMenuContent.h                  \
+    Components/ConfigManager/ConfigEditAlarmLimitModel.h                        \
     Components/ConfigManager/ConfigEditIBPMenu.h                                \
+    Components/ConfigManager/ConfigEditIBPMenuContent.h                         \
     Components/ConfigManager/ConfigEditDisplayMenu.h                            \
+    Components/ConfigManager/ConfigEditDisplayMenuContent.h                     \
+    Components/ConfigManager/ConfigEditCodeMarkerMenuContent.h                  \
     Components/ConfigManager/ConfigManagerEntrance.h                            \
     Components/ConfigManager/LoadConfigMenu.h                                   \
     Components/ConfigManager/ConfigManagerMenuContent.h                         \
     Components/ConfigManager/LoadConfigMenuContent.h                            \
+    Components/ConfigManager/UnitSetupMenuContent.h                             \
     Components/Freeze/FreezeManager.h                                           \
     Components/Freeze/FreezeWidget.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \
