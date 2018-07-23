@@ -124,6 +124,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/KineticScroller/qkineticscroller.cpp                   \
     Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.cpp         \
     Utility/Widgets/Base/PasswordWidget.cpp                                     \
+    Utility/Widgets/Base/SpinBox.cpp                                            \
     Utility/Widgets/IComboList/ComboList.cpp                                    \
     Utility/Widgets/IComboList/ComboListPopup.cpp                               \
     Utility/Widgets/IComboList/ComboListItem.cpp                                \
@@ -619,6 +620,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/KineticScroller/qkineticscroller_p.h                   \
     Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.h           \
     Utility/Widgets/Base/PasswordWidget.h                                       \
+    Utility/Widgets/Base/SpinBox.h                                              \
     Utility/Widgets/IComboList/ComboList.h                                      \
     Utility/Widgets/IComboList/ComboListPopup.h                                 \
     Utility/Widgets/IComboList/ComboListItem.h                                  \
