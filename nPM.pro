@@ -113,6 +113,8 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/TableView.cpp                                          \
     Utility/Widgets/Base/TableHeaderView.cpp                                    \
     Utility/Widgets/Base/TableViewItemDelegate.cpp                              \
+    Utility/Widgets/Base/ListView.cpp                                           \
+    Utility/Widgets/Base/ListDataModel.cpp                                      \
     Utility/Widgets/Base/MenuWindow.cpp                                         \
     Utility/Widgets/Base/MenuSidebar.cpp                                        \
     Utility/Widgets/Base/MenuSidebarItem.cpp                                    \
@@ -122,6 +124,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/KineticScroller/qkineticscroller.cpp                   \
     Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.cpp         \
     Utility/Widgets/Base/PasswordWidget.cpp                                     \
+    Utility/Widgets/Base/SpinBox.cpp                                            \
     Utility/Widgets/IComboList/ComboList.cpp                                    \
     Utility/Widgets/IComboList/ComboListPopup.cpp                               \
     Utility/Widgets/IComboList/ComboListItem.cpp                                \
@@ -609,6 +612,8 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/TableView.h                                            \
     Utility/Widgets/Base/TableHeaderView.h                                      \
     Utility/Widgets/Base/TableViewItemDelegate.h                                \
+    Utility/Widgets/Base/ListView.h                                             \
+    Utility/Widgets/Base/ListDataModel.h                                        \
     Utility/Widgets/Base/MenuWindow.h                                           \
     Utility/Widgets/Base/MenuSidebar.h                                          \
     Utility/Widgets/Base/MenuSidebarItem.h                                      \
@@ -619,6 +624,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/KineticScroller/qkineticscroller_p.h                   \
     Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.h           \
     Utility/Widgets/Base/PasswordWidget.h                                       \
+    Utility/Widgets/Base/SpinBox.h                                              \
     Utility/Widgets/IComboList/ComboList.h                                      \
     Utility/Widgets/IComboList/ComboListPopup.h                                 \
     Utility/Widgets/IComboList/ComboListItem.h                                  \
