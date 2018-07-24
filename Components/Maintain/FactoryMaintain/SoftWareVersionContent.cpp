@@ -12,6 +12,7 @@
 #include <QLabel>
 #include <QMap>
 #include "IConfig.h"
+#include <QProcess>
 
 class SoftWareVersionContentPrivate
 {
@@ -45,6 +46,23 @@ SoftWareVersionContentPrivate::SoftWareVersionContentPrivate()
 
 void SoftWareVersionContentPrivate::loadOptions()
 {
+
+    QString outPut;
+    QProcess process;
+    outPut.clear();
+    process.start("cat /proc/version");
+
+    if (process.waitForFinished())
+    {
+        QByteArray byteArray = process.readAll();
+        outPut = byteArray;
+    }
+    QStringList versionList = outPut.split(" ");
+    if (versionList.count() >= 3)
+    {
+        labs[ITEM_LAB_KERNEL]->setText(trs(versionList.at(2)));
+    }
+
     QString tmpStr;
 
     tmpStr.clear();
@@ -58,10 +76,6 @@ void SoftWareVersionContentPrivate::loadOptions()
     tmpStr.clear();
     systemConfig.getStrValue("SoftWareVersion|Uboot", tmpStr);
     labs[ITEM_LAB_U_BOOT]->setText(trs(tmpStr));
-
-    tmpStr.clear();
-    systemConfig.getStrValue("SoftWareVersion|Kernel", tmpStr);
-    labs[ITEM_LAB_KERNEL]->setText(trs(tmpStr));
 
     tmpStr.clear();
     systemConfig.getStrValue("SoftWareVersion|KeyboardModule", tmpStr);

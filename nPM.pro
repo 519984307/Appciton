@@ -374,6 +374,7 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/OthersMaintainMenuContent.cpp              \
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.cpp        \
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.cpp             \
+    Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.cpp        \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftWareVersion.cpp                     \
     Components/Maintain/FactoryMaintain/SoftWareVersionContent.cpp              \
@@ -381,12 +382,15 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/MonitorInfoContent.cpp                  \
     Components/Maintain/FactoryMaintain/ServiceErrorLogEntrance.cpp             \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntrance.cpp               \
+    Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.cpp        \
     Components/Maintain/FactoryMaintain/MachineConfigModule.cpp                 \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.cpp          \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.cpp                 \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.cpp                   \
     Components/Maintain/FactoryMaintain/SelectStarterLogoContent.cpp            \
+    Components/Maintain/FactoryMaintain/ServiceUpgradeWindow.cpp               \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.cpp             \
+    Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
     Components/Maintain/FactoryMaintain/FactoryMaintainMenuContent.cpp          \
     Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
@@ -893,6 +897,7 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/OthersMaintainMenuContent.h                \
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.h          \
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.h               \
+    Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.h          \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersion.h                       \
     Components/Maintain/FactoryMaintain/SoftWareVersionContent.h                \
@@ -900,12 +905,15 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/MonitorInfoContent.h                    \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.h                     \
     Components/Maintain/FactoryMaintain/SelectStarterLogoContent.h              \
+    Components/Maintain/FactoryMaintain/ServiceUpgradeWindow.h                 \
     Components/Maintain/FactoryMaintain/ServiceErrorLogEntrance.h               \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntrance.h                 \
+    Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.h          \
     Components/Maintain/FactoryMaintain/MachineConfigModule.h                   \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.h            \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.h                   \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.h               \
+    Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.h        \
     Components/Maintain/FactoryMaintain/FactoryMaintainMenuContent.h            \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWidget.h                            \

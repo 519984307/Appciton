@@ -9,7 +9,7 @@
  **/
 #include "SelectStarterLogoContent.h"
 #include <QMap>
-#include <QGridLayout>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <ComboBox.h>
 #include "IConfig.h"
@@ -100,17 +100,17 @@ void SelectStarterLogoContent::layoutExec()
         return;
     }
 
-    QGridLayout *layout = new QGridLayout(this);
+    QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setMargin(10);
 
     QLabel *label = new QLabel(trs("SelectStarterLogo"));
-    layout->addWidget(label, 0, 0);
+    layout->addWidget(label);
     ComboBox *combo = new ComboBox;
-    layout->addWidget(combo, 0 , 1);
+    layout->addWidget(combo);
     d_ptr->combo = combo;
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
-    layout->setRowStretch(1, 1);
+    layout->setAlignment(Qt::AlignTop);
 }
 
 void SelectStarterLogoContent::onComboBoxIndexChanged(int index)

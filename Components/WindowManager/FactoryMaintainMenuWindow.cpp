@@ -14,6 +14,9 @@
 #include "MachineConfigModuleContent.h"
 #include "FactoryDataRecordContent.h"
 #include "SelectStarterLogoContent.h"
+#include "FactorySystemInfoMenuContent.h"
+#include "FactoryImportExportMenuContent.h"
+#include "ServiceUpdateEntranceContent.h"
 
 FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
 {
@@ -26,6 +29,9 @@ FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
         instance->addMenuContent(new MachineConfigModuleContent);
         instance->addMenuContent(new FactoryDataRecordContent);
         instance->addMenuContent(new SelectStarterLogoContent);
+        instance->addMenuContent(new FactorySystemInfoMenuContent);
+        instance->addMenuContent(new FactoryImportExportMenuContent);
+        instance->addMenuContent(new ServiceUpdateEntranceContent);
     }
 
     return instance;
