@@ -17,6 +17,7 @@
 #include "FactorySystemInfoMenuContent.h"
 #include "FactoryImportExportMenuContent.h"
 #include "ServiceUpdateEntranceContent.h"
+#include "NIBPCalibrationMenuContent.h"
 
 FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
 {
@@ -32,6 +33,7 @@ FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
         instance->addMenuContent(new FactorySystemInfoMenuContent);
         instance->addMenuContent(new FactoryImportExportMenuContent);
         instance->addMenuContent(new ServiceUpdateEntranceContent);
+        instance->addMenuContent(new NIBPCalibrationMenuContent);
     }
 
     return instance;

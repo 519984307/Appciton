@@ -389,9 +389,15 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/MachineConfigModule.cpp                 \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.cpp          \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.cpp                 \
+    Components/Maintain/FactoryMaintain/NIBPCalibrationMenuContent.cpp          \
+    Components/Maintain/FactoryMaintain/NIBPCalibrateContent.cpp                \
+    Components/Maintain/FactoryMaintain/NIBPManometerContent.cpp                \
+    Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.cpp                \
+    Components/Maintain/FactoryMaintain/NIBPZeroPointContent.cpp                \
+    Components/Maintain/FactoryMaintain/NIBPPressureControlContent.cpp          \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.cpp                   \
     Components/Maintain/FactoryMaintain/SelectStarterLogoContent.cpp            \
-    Components/Maintain/FactoryMaintain/ServiceUpgradeWindow.cpp               \
+    Components/Maintain/FactoryMaintain/ServiceUpgradeWindow.cpp                \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.cpp             \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
     Components/Maintain/FactoryMaintain/FactoryMaintainMenuContent.cpp          \
@@ -885,6 +891,7 @@ HEADERS +=                                                                      
     Components/Maintain/Factory/Menu/FactorySystemInfoMenu.h                    \
     Components/Maintain/Factory/Menu/FactoryDataRecord.h                        \
     Components/Maintain/FactoryMaintain/FactoryDataRecordContent.h              \
+    Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.h                  \
     Components/Maintain/UserMaintain/UserMaintainEntrance.h                     \
     Components/Maintain/UserMaintain/UserMaintainManager.h                      \
     Components/Maintain/UserMaintain/UserMaintainGeneralSet.h                   \
@@ -918,6 +925,11 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/MachineConfigModule.h                   \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.h            \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.h                   \
+    Components/Maintain/FactoryMaintain/NIBPCalibrationMenuContent.h            \
+    Components/Maintain/FactoryMaintain/NIBPCalibrateContent.h                  \
+    Components/Maintain/FactoryMaintain/NIBPManometerContent.h                  \
+    Components/Maintain/FactoryMaintain/NIBPZeroPointContent.h                  \
+    Components/Maintain/FactoryMaintain/NIBPPressureControlContent.h            \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.h               \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.h        \
     Components/Maintain/FactoryMaintain/FactoryMaintainMenuContent.h            \
