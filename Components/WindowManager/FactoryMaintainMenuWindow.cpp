@@ -18,6 +18,8 @@
 #include "FactoryImportExportMenuContent.h"
 #include "ServiceUpdateEntranceContent.h"
 #include "NIBPCalibrationMenuContent.h"
+#include "FactoryTestMenuContent.h"
+#include "FactoryTempMenuContent.h"
 
 FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
 {
@@ -34,6 +36,8 @@ FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
         instance->addMenuContent(new FactoryImportExportMenuContent);
         instance->addMenuContent(new ServiceUpdateEntranceContent);
         instance->addMenuContent(new NIBPCalibrationMenuContent);
+        instance->addMenuContent(new FactoryTestMenuContent);
+        instance->addMenuContent(new FactoryTempMenuContent);
     }
 
     return instance;

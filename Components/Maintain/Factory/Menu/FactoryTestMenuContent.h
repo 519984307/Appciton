@@ -1,0 +1,57 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/25
+ **/
+
+#pragma once
+#include "MenuContent.h"
+
+// #define OUTPUT_TESTPACKET_THROUGH_USB_CONTENT
+#define TEST_REFRESH_RATE_CONTENT
+
+enum FactoryContentTestType
+{
+    FACTORY_CONTENT_TEST_LIGHT,
+    FACTORY_CONTENT_TEST_SOUND,
+    FACTORY_CONTENT_TEST_KEY,
+    FACTORY_CONTENT_TEST_PRINT,
+#ifdef OUTPUT_TESTPACKET_THROUGH_USB_CONTENT
+    FACTORY_CONTENT_TEST_USB_HS,
+    FACTORY_CONTENT_TEST_USB_FS,
+#endif
+    FACTORY_CONTENT_TEST_WIFI,
+    FACTORY_CONTENT_TEST_ENTHERNET,
+    FACTORY_CONTENT_TEST_BATTERY,
+    FACTORY_CONTENT_TEST_NR
+};
+
+class FactoryTestMenuContentPrivate;
+class FactoryTestMenuContent : public MenuContent
+{
+    Q_OBJECT
+public:
+    FactoryTestMenuContent();
+    ~FactoryTestMenuContent();
+
+protected:
+    virtual void layoutExec();
+
+    virtual void readyShow();
+
+private slots:
+    void onBtnReleased(int);
+
+#ifdef TEST_REFRESH_RATE_CONTENT
+private slots:
+    void onFreshRateChanged(int valStr);
+#endif
+
+private:
+    FactoryTestMenuContentPrivate *const d_ptr;
+};
+

@@ -534,19 +534,24 @@ CalibratePoint1,校准点1,CalibratePoint 1
 CalibratePoint2,校准点2,CalibratePoint 2
 ServiceCalibrate,校准,Calibrate
 NIBPCalibrateModel,校准模式,NIBP Calibrate Model
+ServiceCalibrateDesc,校准,Calibrate Desc
 ServiceSuccess,成功,Success
 ServiceAgain,重新校准,Again
 ServiceManometer,压力计,Manometer
 NIBPManometerModel,校准模式,NIBP Manometer Model
+NIBPManometerContent,压力计,NIBP Manometer
 ServicePressure,压力值,Pressure
 ServicePressureControl,压力控制,Pressure Control
+ServicePressureControlDesc,压力控制模式,Pressure Control
 NIBPPressureControlModel,压力控制模式,NIBP Pressure Control Model
 ServicePatientType,病人类型,Patient Type
 ServiceChargePressure,预充气压力,Charge Pressure
+TEMPModuleDisConnect,温度模块未连接,TEMP Module DisConnected
 ServiceInflate,充气,Inflate
 ServiceDeflate,放气,Deflate
 ServiceCalibrateZero,校零,Calibrate Zero
 NIBPCalibrateZeroModel,校零模式,NIBP Calibrate Zero Model
+NIBPCalibrateZero,校零模式,NIBP Calibrate Zero 
 ServiceStart,开始,Start
 UpgradeModule,升级模块,Upgrade Module
 UpgradeStart,开始,Start
@@ -1044,15 +1049,16 @@ ScreenResolationSize,屏幕分辨率尺寸,Screen Resolation Size
 ElectronicSerialNumber,电子序列号,Electronic Serial Number
 SetElectronicSerialNumber,设置电子序列号,Set Electronic Serial Number
 MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info Desc
-NIBPCalibrationMenu,无创血压校准菜单,NIBP Calibration Menu
+NIBPCalibrationMenu,无创血压校准,NIBP Calibration
 NIBPCalibration,无创血压校准,NIBP Calibration
-NIBPCalibrationMenuDesc,无创血压校准菜单设置,NIBP CalibrationMenu Desc
-SelectStarterLogoMenu,开机图片,Start Logo
+NIBPCalibrationMenuDesc,无创血压校准设置,NIBP Calibration Desc
+SelectStarterLogo,开机图片,Start Logo
+SelectStarterLogoMenu,开机图片,Starter Logo
 SelectStarterLogoMenuDesc,开机图片设置,Start Logo Desc
 ServiceErrorLogEntrance,错误日志进入,Service ErrorLog Entrance
 ServiceErrorLogEntranceDesc,错误日志进入设置,Service ErrorLog Entrance Desc
-ServiceUpdateEntrance,更新模块进入,Service Update Entrance
-ServiceUpdateEntranceDesc,更新模块进入设置,Service Update Entrance Desc
+ServiceUpdateEntrance,更新模块,Service Update
+ServiceUpdateEntranceDesc,更新模块设置,Service Update Entrance Desc
 SoftWareVersionMenu,软件版本,SoftWare Version
 SoftWareVersionMenuDesc,软件版本设置,SoftWare Version Desc
 SystemSoftwareVersion,系统软件版本,System Software Version
@@ -1210,6 +1216,9 @@ RefreshRateUpdatedRebootNow,刷新率,Refresh Rate Updated Reboot Now
 FactoryDataRecord,数据记录,Factory Data
 FactoryDataRecordDesc,数据记录设置,Factory Data Record Desc
 PDCommData,PD 通信数据,PD Comm Data
+TEMPCalibrateDesc,温度校准设置,TEMP Calibrate Desc
+SystemInfoSettingDesc,系统信息设置,System Info Setting Desc
+SelectStarterLogo,选择开始菜单,Select Starter Logo
 TEMPCalibrate0,温度校准0,TEMP Calibrate0
 TEMPCalibrate10,温度校准10,TEMP Calibrate10
 TEMPCalibrate15,温度校准15,TEMP Calibrate15
