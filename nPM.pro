@@ -131,8 +131,10 @@ SOURCES +=                                                                      
     Utility/Widgets/IComboList/IComboList.cpp                                   \
     Utility/Widgets/IComboList/CombolistWidget.cpp                              \
     Utility/Widgets/InputMethod/EnglishPanel.cpp                                \
+    Utility/Widgets/InputMethod/EnglishInputPanel.cpp                           \
     Utility/Widgets/InputMethod/Key.cpp                                         \
     Utility/Widgets/InputMethod/KeyBoardPanel.cpp                               \
+    Utility/Widgets/InputMethod/KeyInputPanel.cpp                              \
     Utility/Widgets/InputMethod/NumberPanel.cpp                                 \
     Utility/Widgets/InputMethod/NumberInput.cpp                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.cpp                          \
@@ -169,6 +171,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Waveform/WaveWidget.cpp                                     \
     Utility/Widgets/Waveform/WaveWidgetSelectMenu.cpp                           \
     Utility/Widgets/BarWidget.cpp                                               \
+    Utility/Widgets/MessageBox.cpp                                              \
     Utility/Widgets/ExportDataWidget.cpp                                        \
     Utility/Widgets/FreezeTableWidget.cpp                                       \
     Utility/Widgets/IButton.cpp                                                 \
@@ -639,8 +642,10 @@ HEADERS +=                                                                      
     Utility/Widgets/IComboList/IComboList.h                                     \
     Utility/Widgets/IComboList/CombolistWidget.h                                \
     Utility/Widgets/InputMethod/EnglishPanel.h                                  \
+    Utility/Widgets/InputMethod/EnglishInputPanel.h                             \
     Utility/Widgets/InputMethod/Key.h                                           \
     Utility/Widgets/InputMethod/KeyBoardPanel.h                                 \
+    Utility/Widgets/InputMethod/KeyInputPanel.h                                 \
     Utility/Widgets/InputMethod/NumberPanel.h                                   \
     Utility/Widgets/InputMethod/NumberInput.h                                   \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.h                            \
@@ -689,6 +694,7 @@ HEADERS +=                                                                      
     Utility/Widgets/ILabel.h                                                    \
     Utility/Widgets/IListWidget.h                                               \
     Utility/Widgets/IMessageBox.h                                               \
+    Utility/Widgets/MessageBox.h                                                \
     Utility/Widgets/IPrograssBar.h                                              \
     Utility/Widgets/ISpinBox.h                                                  \
     Utility/Widgets/ITableWidget.h                                              \
