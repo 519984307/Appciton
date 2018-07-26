@@ -75,7 +75,6 @@ bool SpinBox::isArrow() const
 void SpinBox::setValue(int value)
 {
     d_ptr->info.curValue = value;
-    emit valueChange(d_ptr->info.curValue, d_ptr->info.scale);
     update();
 }
 

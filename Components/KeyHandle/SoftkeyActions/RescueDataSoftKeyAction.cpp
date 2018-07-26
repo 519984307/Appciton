@@ -1,7 +1,18 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/26
+ **/
+
 #include <QApplication>
 #include "RescueDataSoftKeyAction.h"
 #include "WindowManager.h"
 #include "TrendDataWidget.h"
+#include "TrendTableWindow.h"
 #include "TrendGraphWidget.h"
 #include "RescueDataExportWidget.h"
 #include "IMessageBox.h"
@@ -78,24 +89,25 @@ void RescueDataSoftKeyAction::summaryReview(bool isPressed)
     }
 
 //    bool isVisible = summaryRescueDataWidget.isVisible();
-    bool isVisible = trendGraphWidget.isVisible();
-    while (NULL != QApplication::activeModalWidget())
-    {
-        QApplication::activeModalWidget()->hide();
-        menuManager.close();
-    }
+//    bool isVisible = trendGraphWidget.isVisible();
+//    while (NULL != QApplication::activeModalWidget())
+//    {
+//        QApplication::activeModalWidget()->hide();
+//        menuManager.close();
+//    }
 
-    if (isVisible)
-    {
-        return;
-    }
+//    if (isVisible)
+//    {
+//        return;
+//    }
 
-    QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
-    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-    //summaryRescueDataWidget.autoShow(x, y);
-    trendGraphWidget.setHistoryData(false);
-    trendGraphWidget.autoShow(x, y);
+//    QRect r = windowManager.getMenuArea();
+//    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
+//    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
+    // summaryRescueDataWidget.autoShow(x, y);
+//    trendGraphWidget.setHistoryData(false);
+//    trendGraphWidget.autoShow(x, y);
+    trendTableWindow.show();
 }
 
 /***************************************************************************************************
@@ -175,10 +187,9 @@ void RescueDataSoftKeyAction::eventReview(bool isPressed)
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
     int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-    //summaryRescueDataWidget.autoShow(x, y);
+    // summaryRescueDataWidget.autoShow(x, y);
     eventReviewWindow.setHistoryData(false);
     eventReviewWindow.autoShow(x, y);
-
 }
 
 void RescueDataSoftKeyAction::oxyCRGEventReview(bool isPressed)
@@ -203,7 +214,7 @@ void RescueDataSoftKeyAction::oxyCRGEventReview(bool isPressed)
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
     int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-    //summaryRescueDataWidget.autoShow(x, y);
+    // summaryRescueDataWidget.autoShow(x, y);
     oxyCRGEventWidget.setHistoryData(false);
     oxyCRGEventWidget.autoShow(x, y);
 }
@@ -246,7 +257,7 @@ int RescueDataSoftKeyAction::getActionDescNR(void)
  **************************************************************************************************/
 KeyActionDesc *RescueDataSoftKeyAction::getActionDesc(int index)
 {
-    if (index >= (int)(sizeof(_rescueDataKeys) / sizeof(KeyActionDesc)))
+    if (index >= static_cast<int>(sizeof(_rescueDataKeys) / sizeof(KeyActionDesc)))
     {
         return NULL;
     }
@@ -264,7 +275,6 @@ KeyActionDesc *RescueDataSoftKeyAction::getActionDesc(int index)
  **************************************************************************************************/
 RescueDataSoftKeyAction::RescueDataSoftKeyAction() : SoftkeyActionBase(SOFTKEY_ACTION_RESCUE_DATA)
 {
-
 }
 
 /***************************************************************************************************
@@ -272,5 +282,4 @@ RescueDataSoftKeyAction::RescueDataSoftKeyAction() : SoftkeyActionBase(SOFTKEY_A
  **************************************************************************************************/
 RescueDataSoftKeyAction::~RescueDataSoftKeyAction()
 {
-
 }
