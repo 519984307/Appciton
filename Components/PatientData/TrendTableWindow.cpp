@@ -44,6 +44,7 @@
 #include "TrendDataSymbol.h"
 #include "TableViewItemDelegate.h"
 #include "TrendTableSetWindow.h"
+#include "TrendPrintWindow.h"
 
 #define ITEM_HEIGHT             30
 #define ITEM_WIDTH              100
@@ -58,23 +59,23 @@ class TrendTableWindowPrivate
 {
 public:
     TrendTableWindowPrivate()
-        : model(NULL), table(NULL), up(NULL), down(NULL),
-          left(NULL), right(NULL), incidentMove(NULL), incident(NULL),
-          printParam(NULL), set(NULL), timeInterval(RESOLUTION_RATIO_5_SECOND),
+        : model(NULL), table(NULL), upBtn(NULL), downBtn(NULL),
+          leftBtn(NULL), rightBtn(NULL), previousEventBtn(NULL), nextEventBtn(NULL),
+          printParamBtn(NULL), setBtn(NULL), timeInterval(RESOLUTION_RATIO_5_SECOND),
           curSecCol(0)
     {}
 
 public:
     TrendTableModel *model;
     TableView *table;
-    Button *up;
-    Button *down;
-    Button *left;
-    Button *right;
-    IMoveButton *incidentMove;
-    Button *incident;
-    Button *printParam;
-    Button *set;
+    Button *upBtn;
+    Button *downBtn;
+    Button *leftBtn;
+    Button *rightBtn;
+    Button *previousEventBtn;
+    Button *nextEventBtn;
+    Button *printParamBtn;
+    Button *setBtn;
     ResolutionRatio timeInterval;          // 时间间隔
 
     int curSecCol;                         // 当前选中列
@@ -102,6 +103,11 @@ void TrendTableWindow::setHistoryDataPath(QString path)
 void TrendTableWindow::setHistoryData(bool flag)
 {
     d_ptr->model->setHistoryData(flag);
+}
+
+void TrendTableWindow::printTrendData(unsigned startTime, unsigned endTime)
+{
+    d_ptr->model->printTrendData(startTime, endTime);
 }
 
 void TrendTableWindow::showEvent(QShowEvent *ev)
@@ -140,51 +146,50 @@ TrendTableWindow::TrendTableWindow()
     d_ptr->table->setItemDelegate(new TableViewItemDelegate(this));
 
     QIcon upIcon = themeManger.getIcon(ThemeManager::IconUp);
-    d_ptr->up = new Button("", upIcon);
-    d_ptr->up->setButtonStyle(Button::ButtonIconOnly);
-    connect(d_ptr->up, SIGNAL(released()), this, SLOT(upReleased()));
+    d_ptr->upBtn = new Button("", upIcon);
+    d_ptr->upBtn->setButtonStyle(Button::ButtonIconOnly);
+    connect(d_ptr->upBtn, SIGNAL(released()), this, SLOT(upReleased()));
 
     QIcon downIcon = themeManger.getIcon(ThemeManager::IconDown);
-    d_ptr->down = new Button("", downIcon);
-    d_ptr->down->setButtonStyle(Button::ButtonIconOnly);
-    connect(d_ptr->down, SIGNAL(released()), this, SLOT(downReleased()));
+    d_ptr->downBtn = new Button("", downIcon);
+    d_ptr->downBtn->setButtonStyle(Button::ButtonIconOnly);
+    connect(d_ptr->downBtn, SIGNAL(released()), this, SLOT(downReleased()));
 
     QIcon leftIcon = themeManger.getIcon(ThemeManager::IconLeft);
-    d_ptr->left = new Button("", leftIcon);
-    d_ptr->left->setButtonStyle(Button::ButtonIconOnly);
-    connect(d_ptr->left, SIGNAL(released()), this, SLOT(leftReleased()));
+    d_ptr->leftBtn = new Button("", leftIcon);
+    d_ptr->leftBtn->setButtonStyle(Button::ButtonIconOnly);
+    connect(d_ptr->leftBtn, SIGNAL(released()), this, SLOT(leftReleased()));
 
     QIcon rightIcon = themeManger.getIcon(ThemeManager::IconRight);
-    d_ptr->right = new Button("", rightIcon);
-    d_ptr->right->setButtonStyle(Button::ButtonIconOnly);
-    connect(d_ptr->right, SIGNAL(released()), this, SLOT(rightReleased()));
+    d_ptr->rightBtn = new Button("", rightIcon);
+    d_ptr->rightBtn->setButtonStyle(Button::ButtonIconOnly);
+    connect(d_ptr->rightBtn, SIGNAL(released()), this, SLOT(rightReleased()));
 
-    d_ptr->incidentMove = new IMoveButton(trs("IncidentMove"));
-    d_ptr->incidentMove->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
-    d_ptr->incidentMove->setFont(fontManager.textFont(fontManager.getFontSize(1)));
-    connect(d_ptr->incidentMove, SIGNAL(leftMove()), this, SLOT(leftMoveEvent()));
-    connect(d_ptr->incidentMove, SIGNAL(rightMove()), this, SLOT(rightMoveEvent()));
+    d_ptr->previousEventBtn = new Button(trs("PreviousEvent"));
+    d_ptr->previousEventBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->previousEventBtn, SIGNAL(released()), this, SLOT(leftMoveEvent()));
 
-    d_ptr->incident = new Button(trs("Incident"));
-    d_ptr->incident->setButtonStyle(Button::ButtonTextOnly);
+    d_ptr->nextEventBtn = new Button(trs("NextEvent"));
+    d_ptr->nextEventBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->nextEventBtn, SIGNAL(released()), this, SLOT(rightMoveEvent()));
 
-    d_ptr->printParam = new Button(trs("Print"));
-    d_ptr->printParam->setButtonStyle(Button::ButtonTextOnly);
-    connect(d_ptr->printParam, SIGNAL(released()), this, SLOT(printWidgetRelease()));
+    d_ptr->printParamBtn = new Button(trs("Print"));
+    d_ptr->printParamBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->printParamBtn, SIGNAL(released()), this, SLOT(printWidgetRelease()));
 
-    d_ptr->set = new Button(trs("Set"));
-    d_ptr->set->setButtonStyle(Button::ButtonTextOnly);
-    connect(d_ptr->set, SIGNAL(released()), this, SLOT(trendDataSetReleased()));
+    d_ptr->setBtn = new Button(trs("Set"));
+    d_ptr->setBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->setBtn, SIGNAL(released()), this, SLOT(trendDataSetReleased()));
 
     QHBoxLayout *hLayout = new QHBoxLayout(this);
-    hLayout->addWidget(d_ptr->up);
-    hLayout->addWidget(d_ptr->down);
-    hLayout->addWidget(d_ptr->left);
-    hLayout->addWidget(d_ptr->right);
-    hLayout->addWidget(d_ptr->incidentMove);
-    hLayout->addWidget(d_ptr->incident);
-    hLayout->addWidget(d_ptr->printParam);
-    hLayout->addWidget(d_ptr->set);
+    hLayout->addWidget(d_ptr->upBtn, 1);
+    hLayout->addWidget(d_ptr->downBtn, 1);
+    hLayout->addWidget(d_ptr->leftBtn, 1);
+    hLayout->addWidget(d_ptr->rightBtn, 1);
+    hLayout->addWidget(d_ptr->previousEventBtn, 2);
+    hLayout->addWidget(d_ptr->nextEventBtn, 2);
+    hLayout->addWidget(d_ptr->printParamBtn, 2);
+    hLayout->addWidget(d_ptr->setBtn, 2);
 
     QVBoxLayout *layout = new QVBoxLayout();
 
@@ -237,6 +242,22 @@ void TrendTableWindow::rightMoveEvent()
 {
     d_ptr->model->rightMoveEvent(d_ptr->curSecCol);
     d_ptr->table->selectColumn(d_ptr->curSecCol);
+}
+
+void TrendTableWindow::printWidgetRelease()
+{
+    unsigned startLimit = 0;
+    unsigned endLimit = 0;
+    if (d_ptr->model->getDataTimeRange(startLimit, endLimit))
+    {
+        TrendPrintWindow printWindow;
+        unsigned startTime = 0;
+        unsigned endTime = 0;
+        d_ptr->model->displayDataTimeRange(startTime, endTime);
+        printWindow.printTimeRange(startLimit, endLimit);
+        printWindow.initPrintTime(startTime, endTime);
+        printWindow.exec();
+    }
 }
 
 void TrendTableWindow::trendDataSetReleased()

@@ -25,11 +25,12 @@ class TrendTableSetWindowPrivate
 {
 public:
     TrendTableSetWindowPrivate()
-        : resolutionRatioCbo(NULL), trendGroupCbo(NULL), yesBtn(NULL)
+        : resolutionRatioCbo(NULL), trendGroupCbo(NULL), eventTypeCbo(NULL), yesBtn(NULL)
     {}
 
     ComboBox *resolutionRatioCbo;
     ComboBox *trendGroupCbo;
+    ComboBox *eventTypeCbo;
     Button *yesBtn;
 };
 
@@ -67,6 +68,11 @@ void TrendTableSetWindow::trendGroupReleased(int g)
     trendTableWindow.setTrendGroup(g);
 }
 
+void TrendTableSetWindow::incidentReleased(int type)
+{
+    Q_UNUSED(type)
+}
+
 void TrendTableSetWindow::yesReleased()
 {
     hide();
@@ -79,7 +85,7 @@ TrendTableSetWindow::TrendTableSetWindow()
     setWindowTitle(trs("TrendTableSet"));
 
     QVBoxLayout *layout = new QVBoxLayout();
-    QHBoxLayout *hLayout;
+    QGridLayout *gridLayout = new QGridLayout();
     QLabel *label;
 
     label = new QLabel(trs("ResolutionRatio"));
@@ -89,10 +95,8 @@ TrendTableSetWindow::TrendTableSetWindow()
         d_ptr->resolutionRatioCbo->addItem(trs(TrendDataSymbol::convert((ResolutionRatio)i)));
     }
     connect(d_ptr->resolutionRatioCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(timeIntervalReleased(int)));
-    hLayout = new QHBoxLayout();
-    hLayout->addWidget(label);
-    hLayout->addWidget(d_ptr->resolutionRatioCbo);
-    layout->addLayout(hLayout);
+    gridLayout->addWidget(label, 0, 0);
+    gridLayout->addWidget(d_ptr->resolutionRatioCbo, 0, 1);
 
     label = new QLabel(trs("TrendGroup"));
     d_ptr->trendGroupCbo = new ComboBox();
@@ -102,14 +106,20 @@ TrendTableSetWindow::TrendTableSetWindow()
                                    << "AG"
                                   );
     connect(d_ptr->trendGroupCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(trendGroupReleased(int)));
-    hLayout = new QHBoxLayout();
-    hLayout->addWidget(label);
-    hLayout->addWidget(d_ptr->trendGroupCbo);
-    layout->addLayout(hLayout);
+    gridLayout->addWidget(label, 1, 0);
+    gridLayout->addWidget(d_ptr->trendGroupCbo, 1, 1);
+
+    label = new QLabel(trs("Incident"));
+    d_ptr->eventTypeCbo = new ComboBox();
+    connect(d_ptr->eventTypeCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(incidentReleased(int)));
+    gridLayout->addWidget(label, 2, 0);
+    gridLayout->addWidget(d_ptr->eventTypeCbo, 2, 1);
 
     d_ptr->yesBtn = new Button(trs("EnglishYESChineseSURE"));
     d_ptr->yesBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->yesBtn, SIGNAL(released()), this, SLOT(yesReleased()));
+
+    layout->addLayout(gridLayout);
     layout->addWidget(d_ptr->yesBtn);
 
     setWindowLayout(layout);

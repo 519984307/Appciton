@@ -19,6 +19,8 @@
 #include "TrendDataSymbol.h"
 #include "TrendDataDefine.h"
 #include "IConfig.h"
+#include "RecorderManager.h"
+#include "TrendTablePageGenerator.h"
 #include <QDebug>
 
 #define COLUMN_COUNT        7
@@ -30,13 +32,7 @@
 class TrendTableModelPrivate
 {
 public:
-    TrendTableModelPrivate()
-        : rowCount(0), startIndex(0), endIndex(0),
-          isHistory(false), historyDataPath(""),
-          timeInterval(RESOLUTION_RATIO_5_SECOND), leftTime(0),
-          rightTime(0), startTime(0), endTime(0), totalCol(0),
-          curSecIndex(0), maxDataNum(0)
-    {}
+    TrendTableModelPrivate();
 
     void loadTableTitle();
     void getTrendData();
@@ -73,8 +69,8 @@ public:
     unsigned rightTime;                     // 趋势表右侧时间
     unsigned startTime;                     // 打印的开始时间
     unsigned endTime;                       // 打印的结束时间
-    int totalCol;                          // 总列数
-    int curSecIndex;                       // 当前选中索引
+    int totalCol;                           // 总列数
+    int curSecIndex;                        // 当前选中索引
     int maxDataNum;                         // 趋势表总的数据量
 
     typedef QList<TrendDataContent> TableDataColList;
@@ -501,7 +497,92 @@ void TrendTableModel::rightMoveEvent(int &curSecCol)
     }
 }
 
-TrendTableModelPrivate::TrendTableModelPrivate() : isHistory(false)
+bool TrendTableModel::getDataTimeRange(unsigned &start, unsigned &end)
+{
+    if (d_ptr->trendDataPack.count() != 0)
+    {
+        start = d_ptr->trendDataPack.first()->time;
+        end = d_ptr->trendDataPack.last()->time;
+        return true;
+    }
+    return false;
+}
+
+void TrendTableModel::displayDataTimeRange(unsigned &start, unsigned &end)
+{
+    start = d_ptr->startTime;
+    end = d_ptr->endTime;
+}
+
+void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
+{
+    int startIndex;
+    int endIndex;
+
+    // 二分查找时间索引
+    int lowPos = 0;
+    int highPos = d_ptr->trendDataPack.count() - 1;
+    while (lowPos <= highPos)
+    {
+        int midPos = (lowPos + highPos) / 2;
+        int timeDiff = qAbs(startTime - d_ptr->trendDataPack.at(midPos)->time);
+
+        if (startTime < d_ptr->trendDataPack.at(midPos)->time)
+        {
+            highPos = midPos - 1;
+        }
+        else if (startTime > d_ptr->trendDataPack.at(midPos)->time)
+        {
+            lowPos = midPos + 1;
+        }
+
+        if (timeDiff == 0 || lowPos > highPos)
+        {
+            startIndex = midPos;
+            break;
+        }
+    }
+
+    lowPos = 0;
+    highPos = d_ptr->trendDataPack.count() - 1;
+    while (lowPos <= highPos)
+    {
+        int midPos = (lowPos + highPos) / 2;
+        int timeDiff = qAbs(endTime - d_ptr->trendDataPack.at(midPos)->time);
+
+        if (endTime < d_ptr->trendDataPack.at(midPos)->time)
+        {
+            highPos = midPos - 1;
+        }
+        else if (endTime > d_ptr->trendDataPack.at(midPos)->time)
+        {
+            lowPos = midPos + 1;
+        }
+
+        if (timeDiff == 0 || lowPos > highPos)
+        {
+            endIndex = midPos;
+            break;
+        }
+    }
+
+    // 打印
+    IStorageBackend *backend = trendDataStorageManager.backend();
+    if (backend->getBlockNR() <= 0)
+    {
+        return;
+    }
+    RecordPageGenerator *gen = new TrendTablePageGenerator(backend, startIndex, endIndex,
+            TrendDataSymbol::convertValue(d_ptr->timeInterval));
+    recorderManager.addPageGenerator(gen);
+}
+
+TrendTableModelPrivate::TrendTableModelPrivate()
+    : rowCount(0), startIndex(0), endIndex(0),
+      isHistory(false), historyDataPath(""),
+      timeInterval(RESOLUTION_RATIO_5_SECOND), leftTime(0),
+      rightTime(0), startTime(0), endTime(0), totalCol(0),
+      curSecIndex(0), maxDataNum(0)
 {
     ibpNameMap.clear();
 

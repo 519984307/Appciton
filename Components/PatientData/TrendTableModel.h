@@ -61,6 +61,12 @@ public:
 
     void rightMoveEvent(int &curSecCol);
 
+    bool getDataTimeRange(unsigned &start, unsigned &end);
+
+    void displayDataTimeRange(unsigned &start, unsigned &end);
+
+    void printTrendData(unsigned startTime, unsigned endTime);
+
 private:
     TrendTableModelPrivate * const d_ptr;
 };

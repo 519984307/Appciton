@@ -37,6 +37,8 @@ public:
 
     void setHistoryData(bool flag);
 
+    void printTrendData(unsigned startTime, unsigned endTime);
+
 protected:
     void showEvent(QShowEvent *ev);
 
@@ -47,6 +49,7 @@ private slots:
     void downReleased(void);
     void leftMoveEvent(void);
     void rightMoveEvent(void);
+    void printWidgetRelease(void);
     void trendDataSetReleased(void);
 
 private:

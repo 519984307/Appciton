@@ -32,6 +32,7 @@ protected:
 private slots:
     void timeIntervalReleased(int);
     void trendGroupReleased(int);
+    void incidentReleased(int);
     void yesReleased(void);
 
 private:

@@ -19,6 +19,14 @@ public:
     TrendPrintWindow();
     ~TrendPrintWindow();
 
+    void initPrintTime(unsigned start, unsigned end);
+    void printTimeRange(unsigned startLimit, unsigned endLimit);
+
+private slots:
+    void startTimeChangeSlot(int, int);
+    void endTimeChangeSlot(int, int);
+    void printReleased(void);
+
 private:
     QScopedPointer<TrendPrintWindowPrivate> d_ptr;
 };
