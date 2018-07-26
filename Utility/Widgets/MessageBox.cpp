@@ -59,7 +59,7 @@ MessageBox::MessageBox(const QString &title, const QString &text, bool btn)
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
 
-    d_ptr->inde++;
+    d_ptr->index++;
     QLabel *label = new QLabel(trs(text));
     layout->addWidget(label, 1, 0, Qt::AlignCenter);
     d_ptr->index++;
