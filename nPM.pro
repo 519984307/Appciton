@@ -257,6 +257,10 @@ SOURCES +=                                                                      
     Components/PatientData/TrendPrintWidget.cpp                                 \
     Components/PatientData/HistoryDataReviewWidget.cpp                          \
     Components/PatientData/HistoryDataSelWidget.cpp                             \
+    Components/PatientData/TrendTableWindow.cpp                                 \
+    Components/PatientData/TrendTableModel.cpp                                  \
+    Components/PatientData/TrendTableSetWindow.cpp                              \
+    Components/PatientData/TrendPrintWindow.cpp                                 \
     Components/TimeManager/DateTimeWidget.cpp                                   \
     Components/TimeManager/ElapseTimeWidget.cpp                                 \
     Components/TimeManager/TimeManager.cpp                                      \
@@ -761,6 +765,10 @@ HEADERS +=                                                                      
     Components/PatientData/TrendPrintWidget.h                                   \
     Components/PatientData/HistoryDataReviewWidget.h                            \
     Components/PatientData/HistoryDataSelWidget.h                               \
+    Components/PatientData/TrendTableWindow.h                                   \
+    Components/PatientData/TrendTableModel.h                                    \
+    Components/PatientData/TrendTableSetWindow.h                                \
+    Components/PatientData/TrendPrintWindow.h                                   \
     Components/PatientManager/PatientManager.h                                  \
     Components/PatientManager/PatientBarWidget.h                                \
     Components/PatientManager/PatientDefine.h                                   \
