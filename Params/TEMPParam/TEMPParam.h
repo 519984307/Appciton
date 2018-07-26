@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn,2018/7/25
+ **/
+
 #pragma once
 #include "Param.h"
 #include "TEMPSymbol.h"
@@ -24,11 +34,11 @@ public:
     virtual void initParam(void);
 
     // 处理DEMO数据。
-    virtual void handDemoWaveform(WaveformID id, short data);
+    virtual void handDemoWaveform(WaveformID id, int16_t data);
     virtual void handDemoTrendData(void);
 
     // 获取子参数值
-    virtual short getSubParamValue(SubParamID id);
+    virtual int16_t getSubParamValue(SubParamID id);
 
     // 显示
     virtual void showSubParamValue();
@@ -52,12 +62,18 @@ public:
     // 设置服务模式升级数据提供对象。
     void setServiceProvider(TEMPProviderIFace *provider);
 
+    /**
+     * @brief isServiceProviderOk  服务模式升级数据提供的对象是否存在
+     * @return 存在返回true
+     */
+    bool isServiceProviderOk();
+
     // 设置界面对象。
     void setTrendWidget(TEMPTrendWidget *trendWidget);
 
     // 设置/获取TEMP的值。
-    void setTEMP(short t1, short t2, short td);
-    void getTEMP(short &t1, short &t2, short &td);
+    void setTEMP(int16_t t1, int16_t t2, int16_t td);
+    void getTEMP(int16_t &t1, int16_t &t2, int16_t &td);
 
     // 设置OneShot报警。
     void setOneShotAlarm(TEMPOneShotType t, bool f);
@@ -88,9 +104,9 @@ private:
     TEMPProviderIFace *_provider;
     TEMPTrendWidget *_trendWidget;
 
-    short _t1Value;
-    short _t2Value;
-    short _tdValue;
+    int16_t _t1Value;
+    int16_t _t2Value;
+    int16_t _tdValue;
 
     int _calibrateChannel;
     int _calibrateValue;

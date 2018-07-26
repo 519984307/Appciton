@@ -24,7 +24,7 @@ public:
         StateInactive,
         StateActive,
         StateDisabled,
-        StateHightlight,
+        StateHighlight,
         StateNR,
     };
 
@@ -32,6 +32,7 @@ public:
     {
         ControlWindow,
         ControlButton,
+        ControlSpinBox,
         ControlComboBox,
         ControlPopupList,
         ControlPopupListItem,

@@ -113,6 +113,8 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/TableView.cpp                                          \
     Utility/Widgets/Base/TableHeaderView.cpp                                    \
     Utility/Widgets/Base/TableViewItemDelegate.cpp                              \
+    Utility/Widgets/Base/ListView.cpp                                           \
+    Utility/Widgets/Base/ListDataModel.cpp                                      \
     Utility/Widgets/Base/MenuWindow.cpp                                         \
     Utility/Widgets/Base/MenuSidebar.cpp                                        \
     Utility/Widgets/Base/MenuSidebarItem.cpp                                    \
@@ -122,6 +124,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/KineticScroller/qkineticscroller.cpp                   \
     Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.cpp         \
     Utility/Widgets/Base/PasswordWidget.cpp                                     \
+    Utility/Widgets/Base/SpinBox.cpp                                            \
     Utility/Widgets/IComboList/ComboList.cpp                                    \
     Utility/Widgets/IComboList/ComboListPopup.cpp                               \
     Utility/Widgets/IComboList/ComboListItem.cpp                                \
@@ -357,9 +360,12 @@ SOURCES +=                                                                      
     Components/Maintain/Service/Version/ServiceVersion.cpp                      \
     Components/Maintain/Factory/FactoryConfigManager.cpp                        \
     Components/Maintain/Factory/Menu/FactoryDataRecord.cpp                      \
+    Components/Maintain/FactoryMaintain/FactoryDataRecordContent.cpp            \
     Components/Maintain/Factory/Menu/FactorySystemInfoMenu.cpp                  \
     Components/Maintain/Factory/Menu/FactoryTempMenu.cpp                        \
+    Components/Maintain/Factory/Menu/FactoryTempMenuContent.cpp                 \
     Components/Maintain/Factory/Menu/FactoryTestMenu.cpp                        \
+    Components/Maintain/Factory/Menu/FactoryTestMenuContent.cpp                 \
     Components/Maintain/Factory/Menu/FactoryWindowManager.cpp                   \
     Components/Maintain/UserMaintain/UserMaintainEntrance.cpp                   \
     Components/Maintain/UserMaintain/UserMaintainManager.cpp                    \
@@ -377,15 +383,29 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/OthersMaintainMenuContent.cpp              \
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.cpp        \
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.cpp             \
+    Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.cpp        \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftWareVersion.cpp                     \
+    Components/Maintain/FactoryMaintain/SoftWareVersionContent.cpp              \
     Components/Maintain/FactoryMaintain/MonitorInfo.cpp                         \
+    Components/Maintain/FactoryMaintain/MonitorInfoContent.cpp                  \
     Components/Maintain/FactoryMaintain/ServiceErrorLogEntrance.cpp             \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntrance.cpp               \
+    Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.cpp        \
     Components/Maintain/FactoryMaintain/MachineConfigModule.cpp                 \
+    Components/Maintain/FactoryMaintain/MachineConfigModuleContent.cpp          \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.cpp                 \
+    Components/Maintain/FactoryMaintain/NIBPCalibrationMenuContent.cpp          \
+    Components/Maintain/FactoryMaintain/NIBPCalibrateContent.cpp                \
+    Components/Maintain/FactoryMaintain/NIBPManometerContent.cpp                \
+    Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.cpp                \
+    Components/Maintain/FactoryMaintain/NIBPZeroPointContent.cpp                \
+    Components/Maintain/FactoryMaintain/NIBPPressureControlContent.cpp          \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.cpp                   \
+    Components/Maintain/FactoryMaintain/SelectStarterLogoContent.cpp            \
+    Components/Maintain/FactoryMaintain/ServiceUpgradeWindow.cpp                \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.cpp             \
+    Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
     Components/Maintain/FactoryMaintain/FactoryMaintainMenuContent.cpp          \
     Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
@@ -604,6 +624,8 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/TableView.h                                            \
     Utility/Widgets/Base/TableHeaderView.h                                      \
     Utility/Widgets/Base/TableViewItemDelegate.h                                \
+    Utility/Widgets/Base/ListView.h                                             \
+    Utility/Widgets/Base/ListDataModel.h                                        \
     Utility/Widgets/Base/MenuWindow.h                                           \
     Utility/Widgets/Base/MenuSidebar.h                                          \
     Utility/Widgets/Base/MenuSidebarItem.h                                      \
@@ -614,6 +636,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/KineticScroller/qkineticscroller_p.h                   \
     Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.h           \
     Utility/Widgets/Base/PasswordWidget.h                                       \
+    Utility/Widgets/Base/SpinBox.h                                              \
     Utility/Widgets/IComboList/ComboList.h                                      \
     Utility/Widgets/IComboList/ComboListPopup.h                                 \
     Utility/Widgets/IComboList/ComboListItem.h                                  \
@@ -874,9 +897,13 @@ HEADERS +=                                                                      
     Components/Maintain/Factory/FactoryConfigManager.h                          \
     Components/Maintain/Factory/Menu/FactoryWindowManager.h                     \
     Components/Maintain/Factory/Menu/FactoryTempMenu.h                          \
+    Components/Maintain/Factory/Menu/FactoryTempMenuContent.h                   \
     Components/Maintain/Factory/Menu/FactoryTestMenu.h                          \
+    Components/Maintain/Factory/Menu/FactoryTestMenuContent.h                   \
     Components/Maintain/Factory/Menu/FactorySystemInfoMenu.h                    \
     Components/Maintain/Factory/Menu/FactoryDataRecord.h                        \
+    Components/Maintain/FactoryMaintain/FactoryDataRecordContent.h              \
+    Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.h                  \
     Components/Maintain/UserMaintain/UserMaintainEntrance.h                     \
     Components/Maintain/UserMaintain/UserMaintainManager.h                      \
     Components/Maintain/UserMaintain/UserMaintainGeneralSet.h                   \
@@ -895,15 +922,28 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/OthersMaintainMenuContent.h                \
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.h          \
     Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.h               \
+    Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.h          \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersion.h                       \
+    Components/Maintain/FactoryMaintain/SoftWareVersionContent.h                \
     Components/Maintain/FactoryMaintain/MonitorInfo.h                           \
+    Components/Maintain/FactoryMaintain/MonitorInfoContent.h                    \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.h                     \
+    Components/Maintain/FactoryMaintain/SelectStarterLogoContent.h              \
+    Components/Maintain/FactoryMaintain/ServiceUpgradeWindow.h                 \
     Components/Maintain/FactoryMaintain/ServiceErrorLogEntrance.h               \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntrance.h                 \
+    Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.h          \
     Components/Maintain/FactoryMaintain/MachineConfigModule.h                   \
+    Components/Maintain/FactoryMaintain/MachineConfigModuleContent.h            \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.h                   \
+    Components/Maintain/FactoryMaintain/NIBPCalibrationMenuContent.h            \
+    Components/Maintain/FactoryMaintain/NIBPCalibrateContent.h                  \
+    Components/Maintain/FactoryMaintain/NIBPManometerContent.h                  \
+    Components/Maintain/FactoryMaintain/NIBPZeroPointContent.h                  \
+    Components/Maintain/FactoryMaintain/NIBPPressureControlContent.h            \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.h               \
+    Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.h        \
     Components/Maintain/FactoryMaintain/FactoryMaintainMenuContent.h            \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWidget.h                            \

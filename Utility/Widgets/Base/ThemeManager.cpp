@@ -51,7 +51,7 @@ void ThemeManagerPrivate::loadColorScheme()
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlTypeNR, ThemeManager::ElementBorder,
                                  ThemeManager::StateDisabled), QColor("#E6E8EB"));
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlTypeNR, ThemeManager::ElementBorder,
-                                 ThemeManager::StateHightlight), QColor("#13CE66"));
+                                 ThemeManager::StateHighlight), QColor("#13CE66"));
 
     // default background color scheme
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
@@ -61,7 +61,7 @@ void ThemeManagerPrivate::loadColorScheme()
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                  ThemeManager::StateDisabled), QColor("#E1E3E5"));
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
-                                 ThemeManager::StateHightlight), QColor("#78A4FA"));
+                                 ThemeManager::StateHighlight), QColor("#78A4FA"));
 
     // default text color scheme
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlTypeNR, ThemeManager::ElementText,
@@ -71,11 +71,15 @@ void ThemeManagerPrivate::loadColorScheme()
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlTypeNR, ThemeManager::ElementText,
                                  ThemeManager::StateDisabled), QColor("#E6E8EB"));
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlTypeNR, ThemeManager::ElementText,
-                                 ThemeManager::StateHightlight), QColor("#2C405A"));
+                                 ThemeManager::StateHighlight), QColor("#2C405A"));
 
     // Popup List item
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlPopupListItem, ThemeManager::ElementBackgound,
                                  ThemeManager::StateActive), QColor("#BCD2FD"));
+
+    // SpinBox
+    colorScheme.insert(COLOR_KEY(ThemeManager::ControlSpinBox, ThemeManager::ElementBackgound,
+                                 ThemeManager::StateHighlight), QColor("#C0C6CE"));
 }
 
 ThemeManager &ThemeManager::getInstance()
@@ -138,6 +142,8 @@ void ThemeManager::setupPalette(ThemeManager::ControlType type, QPalette &pal)
                  getColor(type, ElementBorder, StateActive));
     pal.setColor(QPalette::Disabled, QPalette::Shadow,
                  getColor(type, ElementBorder, StateDisabled));
+    pal.setColor(QPalette::Highlight,
+                 getColor(type, ElementBorder, StateHighlight));
 
     pal.setColor(QPalette::Inactive, QPalette::WindowText,
                  getColor(type, ElementText, StateInactive));
@@ -145,6 +151,8 @@ void ThemeManager::setupPalette(ThemeManager::ControlType type, QPalette &pal)
                  getColor(type, ElementText, StateActive));
     pal.setColor(QPalette::Disabled, QPalette::WindowText,
                  getColor(type, ElementText, StateDisabled));
+    pal.setColor(QPalette::HighlightedText,
+                 getColor(type, ElementText, StateHighlight));
 
     pal.setColor(QPalette::Inactive, QPalette::Window,
                  getColor(type, ElementBackgound, StateInactive));
@@ -152,6 +160,8 @@ void ThemeManager::setupPalette(ThemeManager::ControlType type, QPalette &pal)
                  getColor(type, ElementBackgound, StateActive));
     pal.setColor(QPalette::Disabled, QPalette::Window,
                  getColor(type, ElementBackgound, StateDisabled));
+    pal.setColor(QPalette::Highlight,
+                 getColor(type, ElementBackgound, StateHighlight));
 }
 
 const QIcon &ThemeManager::getIcon(ThemeManager::IconType icon)
