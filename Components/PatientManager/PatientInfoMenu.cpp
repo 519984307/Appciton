@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/26
+ **/
+
+
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include "PatientInfoMenu.h"
@@ -13,6 +25,7 @@
 #include "RelievePatientWidget.h"
 #include "IMessageBox.h"
 #include "DataStorageDirManager.h"
+#include "EnglishInputPanel.h"
 
 PatientInfoMenu *PatientInfoMenu::_selfObj = NULL;
 
@@ -224,16 +237,16 @@ void PatientInfoMenu::keyPressEvent(QKeyEvent *e)
 {
     switch (e->key())
     {
-        case Qt::Key_Up:
-        case Qt::Key_Left:
-            focusPreviousChild();
-            break;
-        case Qt::Key_Down:
-        case Qt::Key_Right:
-            focusNextChild();
-            break;
-        default:
-            break;
+    case Qt::Key_Up:
+    case Qt::Key_Left:
+        focusPreviousChild();
+        break;
+    case Qt::Key_Down:
+    case Qt::Key_Right:
+        focusNextChild();
+        break;
+    default:
+        break;
     }
 
     QWidget::keyPressEvent(e);
@@ -244,8 +257,8 @@ void PatientInfoMenu::keyPressEvent(QKeyEvent *e)
  *************************************************************************************************/
 void PatientInfoMenu::_idReleased()
 {
-    EnglishPanel englishPanel;
-    englishPanel.setTitleBarText(trs("PatientID"));
+    EnglishInputPanel englishPanel;
+    englishPanel.setWindowTitle(trs("PatientID"));
     englishPanel.setMaxInputLength(patientManager.getIDLength());
     englishPanel.setInitString(_id->button->text());
     if (englishPanel.exec())
@@ -260,8 +273,8 @@ void PatientInfoMenu::_idReleased()
  *************************************************************************************************/
 void PatientInfoMenu::_nameReleased()
 {
-    EnglishPanel englishPanel;
-    englishPanel.setTitleBarText(trs("PatientName"));
+    EnglishInputPanel englishPanel;
+    englishPanel.setWindowTitle(trs("PatientName"));
     englishPanel.setMaxInputLength(patientManager.getIDLength());
     englishPanel.setInitString(_name->button->text());
     if (englishPanel.exec())
@@ -376,7 +389,7 @@ void PatientInfoMenu::_weightReleased()
 void PatientInfoMenu::_relieveReleased()
 {
     this->hide();
-    if(_relieveFlag == true)
+    if (_relieveFlag == true)
     {
         relievePatientWidget.setTitleBarText(trs("RelievePatient"));
         relievePatientWidget.autoShow();
@@ -443,5 +456,4 @@ PatientInfoMenu::PatientInfoMenu() : PopupWidget(), _patientNew(false), _relieve
  *************************************************************************************************/
 PatientInfoMenu::~PatientInfoMenu()
 {
-
 }

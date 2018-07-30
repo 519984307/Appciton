@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/26
+ **/
+
+
+
 #pragma once
 #include <string.h>
 #include "BaseDefine.h"
@@ -14,7 +26,7 @@ enum PatientType
 
 enum PatientSex
 {
-    PATIENT_SEX_NULL,                 //性别为空主要用于开机时性别框要显示为空白
+    PATIENT_SEX_NULL,                 // 性别为空主要用于开机时性别框要显示为空白
     PATIENT_SEX_MALE,
     PATIENT_SEX_FEMALE,
     PATIENT_SEX_NR
@@ -51,8 +63,8 @@ struct PatientInfo
     {
         pacer = PATIENT_PACER_ON;
         type = PATIENT_TYPE_ADULT;
-        sex = PATIENT_SEX_NULL;      //性别为空主要用于开机时性别框要显示为空白
-        age = -1;                     //年纪设置为-1主要用于开机时年纪框不让设置数据要显示为空白
+        sex = PATIENT_SEX_NULL;      //  性别为空主要用于开机时性别框要显示为空白
+        age = -1;                     //  年纪设置为-1主要用于开机时年纪框不让设置数据要显示为空白
         blood = PATIENT_BLOOD_TYPE_NULL;
         weight = 0;
         height  = 0;
