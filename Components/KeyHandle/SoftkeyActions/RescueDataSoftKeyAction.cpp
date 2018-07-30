@@ -23,6 +23,7 @@
 #include "EventReviewWindow.h"
 #include "OxyCRGEventWidget.h"
 #include "HistoryDataReviewWidget.h"
+#include "TrendGraphWindow.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -59,37 +60,7 @@ void RescueDataSoftKeyAction::trendReview(bool isPressed)
         return;
     }
 
-    bool isVisible = trendDataWidget.isVisible();
-    while (NULL != QApplication::activeModalWidget())
-    {
-        QApplication::activeModalWidget()->hide();
-        menuManager.close();
-    }
-
-    if (isVisible)
-    {
-        return;
-    }
-
-    QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
-    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-    trendDataWidget.setHistoryData(false);
-    trendDataWidget.autoShow(x, y);
-}
-
-/***************************************************************************************************
- * summary回顾回调。
- **************************************************************************************************/
-void RescueDataSoftKeyAction::summaryReview(bool isPressed)
-{
-    if (isPressed)
-    {
-        return;
-    }
-
-//    bool isVisible = summaryRescueDataWidget.isVisible();
-//    bool isVisible = trendGraphWidget.isVisible();
+//    bool isVisible = trendDataWidget.isVisible();
 //    while (NULL != QApplication::activeModalWidget())
 //    {
 //        QApplication::activeModalWidget()->hide();
@@ -104,23 +75,22 @@ void RescueDataSoftKeyAction::summaryReview(bool isPressed)
 //    QRect r = windowManager.getMenuArea();
 //    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
 //    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-    // summaryRescueDataWidget.autoShow(x, y);
-//    trendGraphWidget.setHistoryData(false);
-//    trendGraphWidget.autoShow(x, y);
+//    trendDataWidget.setHistoryData(false);
+//    trendDataWidget.autoShow(x, y);
     trendTableWindow.show();
 }
 
 /***************************************************************************************************
- * 数据导出回调。
+ * summary回顾回调。
  **************************************************************************************************/
-void RescueDataSoftKeyAction::exportData(bool isPressed)
+void RescueDataSoftKeyAction::summaryReview(bool isPressed)
 {
     if (isPressed)
     {
         return;
     }
 
-    bool isVisible = rescueDataExportWidget.isVisible();
+    bool isVisible = trendGraphWidget.isVisible();
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
@@ -135,7 +105,37 @@ void RescueDataSoftKeyAction::exportData(bool isPressed)
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
     int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-    rescueDataExportWidget.autoShow(x, y);
+    trendGraphWidget.setHistoryData(false);
+    trendGraphWidget.autoShow(x, y);
+}
+
+/***************************************************************************************************
+ * 数据导出回调。
+ **************************************************************************************************/
+void RescueDataSoftKeyAction::exportData(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+
+//    bool isVisible = rescueDataExportWidget.isVisible();
+//    while (NULL != QApplication::activeModalWidget())
+//    {
+//        QApplication::activeModalWidget()->hide();
+//        menuManager.close();
+//    }
+
+//    if (isVisible)
+//    {
+//        return;
+//    }
+
+//    QRect r = windowManager.getMenuArea();
+//    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
+//    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
+//    rescueDataExportWidget.autoShow(x, y);
+    trendGraphWindow.show();
 }
 
 /***************************************************************************************************

@@ -564,6 +564,7 @@ SOURCES +=                                                                      
     Main/IThread.cpp                                                            \
     Main/MergeConfig.cpp                                                        \
     Main/Starter.cpp                                                            \
+    Components/PatientData/TrendGraphWindow.cpp
 
 HEADERS +=                                                                      \
     SOUP/Json/FlexLexer.h                                                       \
@@ -1137,6 +1138,7 @@ HEADERS +=                                                                      
     Main/Starter.h                                                              \
     Main/Version.h \
     Utility/Widgets/ImportFileSubWidget.h \
+    Components/PatientData/TrendGraphWindow.h
 
 #头文件修改后，重新编译依赖的源文件
 DEPENDPATH +=                                                                   \

@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/30
+ **/
+
 #include "TrendWaveWidget.h"
 #include "TrendSubWaveWidget.h"
 #include "TimeDate.h"
@@ -48,7 +58,7 @@ TrendWaveWidget::TrendWaveWidget() :
 
     _subWidget = new IWidget();
     _subWidget->setFocusPolicy(Qt::NoFocus);
-    _subWidget->setAttribute(Qt::WA_TransparentForMouseEvents,true);
+    _subWidget->setAttribute(Qt::WA_TransparentForMouseEvents, true);
     _subWidgetScrollArea = new QScrollArea();
 
     // 重新调整子部件的大小
@@ -61,11 +71,11 @@ TrendWaveWidget::TrendWaveWidget() :
     _subWidgetScrollArea->setFocusPolicy(Qt::NoFocus);
 
     _subWidgetScrollArea->verticalScrollBar()->setStyleSheet(
-                                                             "QScrollBar:vertical"
-                                                             "{"
-                                                             "width:12px;"
-                                                             "}"
-                                                             );
+        "QScrollBar:vertical"
+        "{"
+        "width:12px;"
+        "}"
+    );
 
     _mainLayout = new QVBoxLayout();
     _mainLayout->setMargin(0);
@@ -93,8 +103,8 @@ TrendWaveWidget::~TrendWaveWidget()
 void TrendWaveWidget::setWidgetSize(int w, int h)
 {
     setFixedSize(w, h);
-    _waveRegionWidth = width()/5 * 4;
-    _oneFrameWidth = GRAPH_DATA_WIDTH/GRAPH_DISPLAY_DATA_NUMBER;
+    _waveRegionWidth = width() / 5 * 4;
+    _oneFrameWidth = GRAPH_DATA_WIDTH / GRAPH_DISPLAY_DATA_NUMBER;
     //确认好窗口大小后初始化子波形窗口
     _initWaveSubWidget();
 }
@@ -107,7 +117,7 @@ void TrendWaveWidget::leftMoveCoordinate()
     }
     else
     {
-        _currentPage ++;
+        _currentPage++;
     }
     updateTimeRange();
     update();
@@ -121,11 +131,10 @@ void TrendWaveWidget::rightMoveCoordinate()
     }
     else
     {
-        _currentPage --;
+        _currentPage--;
     }
     updateTimeRange();
     update();
-
 }
 
 void TrendWaveWidget::leftMoveCursor()
@@ -134,8 +143,9 @@ void TrendWaveWidget::leftMoveCursor()
     {
         _cursorPosIndex = _trendGraphInfo.alarmInfo.count() - 1;
     }
-    else{
-        _cursorPosIndex ++;
+    else
+    {
+        _cursorPosIndex++;
     }
 
     int count = _hLayoutTrend->count();
@@ -157,8 +167,9 @@ void TrendWaveWidget::rightMoveCursor()
     {
         _cursorPosIndex = 0;
     }
-    else{
-        _cursorPosIndex --;
+    else
+    {
+        _cursorPosIndex--;
     }
 
     int count = _hLayoutTrend->count();
@@ -193,7 +204,7 @@ void TrendWaveWidget::leftMoveEvent()
                 }
                 else
                 {
-                    _currentPage ++;
+                    _currentPage++;
                 }
                 updateTimeRange();
                 _cursorPosIndex = 0;
@@ -239,7 +250,7 @@ void TrendWaveWidget::rightMoveEvent()
                 }
                 else
                 {
-                    _currentPage --;
+                    _currentPage--;
                 }
                 updateTimeRange();
                 _cursorPosIndex = _trendGraphInfo.alarmInfo.count() - 1;
@@ -277,7 +288,7 @@ void TrendWaveWidget::pageUpParam()
         // 当前位置　－　最大位置乘以总行数除以看不见的行数
         int positon = _curVScroller - (maxValue * _displayGraphNum) / (_totalGraphNum - _displayGraphNum);
         scrollBar->setSliderPosition(positon);
-        _pagingNum --;
+        _pagingNum--;
     }
 }
 
@@ -290,7 +301,7 @@ void TrendWaveWidget::pageDownParam()
         QScrollBar *scrollBar = _subWidgetScrollArea->verticalScrollBar();
         int positon = _curVScroller + (maxValue * _displayGraphNum) / (_totalGraphNum - _displayGraphNum);
         scrollBar->setSliderPosition(positon);
-        _pagingNum ++;
+        _pagingNum++;
     }
 }
 
@@ -306,7 +317,7 @@ void TrendWaveWidget::setTimeInterval(ResolutionRatio timeInterval)
 void TrendWaveWidget::setWaveNumber(int num)
 {
     trendWaveReset();
-    _displayGraphNum = num;    
+    _displayGraphNum = num;
     updateTimeRange();
 }
 
@@ -351,9 +362,9 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
         AlarmEventInfo alarm;
         unsigned lastTime = _trendDataPack.at(endIndex)->time;
         bool startFlag = true;
-        for(int i = endIndex; i >= startIndex; i --)
+        for (int i = endIndex; i >= startIndex; i --)
         {
-            if(startFlag)
+            if (startFlag)
             {
                 startFlag = false;
             }
@@ -393,14 +404,14 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
     case SUB_PARAM_PA_SYS:
     case SUB_PARAM_AUXP1_SYS:
     case SUB_PARAM_AUXP2_SYS:
-    {        
+    {
         AlarmEventInfo alarm;
         TrendGraphDataV3 dataV3;
         unsigned lastTime = _trendDataPack.at(endIndex)->time;
         bool startFlag = true;
-        for(int i = endIndex; i >= startIndex; i --)
+        for (int i = endIndex; i >= startIndex; i --)
         {
-            if(startFlag)
+            if (startFlag)
             {
                 startFlag = false;
             }
@@ -450,9 +461,9 @@ void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, cons
         TrendGraphDataV2 dataV2;
         unsigned lastTime = _trendDataPack.at(endIndex)->time;
         bool startFlag = true;
-        for(int i = endIndex; i >= startIndex; i--)
+        for (int i = endIndex; i >= startIndex; i--)
         {
-            if(startFlag)
+            if (startFlag)
             {
                 startFlag = false;
             }
@@ -505,9 +516,9 @@ void TrendWaveWidget::dataIndex(int &startIndex, int &endIndex)
     // 二分查找时间索引
     int lowPos = 0;
     int highPos = _trendDataPack.count() - 1;
-    while(lowPos <= highPos)
+    while (lowPos <= highPos)
     {
-        int midPos = (lowPos + highPos)/2;
+        int midPos = (lowPos + highPos) / 2;
         int timeDiff = qAbs(_leftTime - _trendDataPack.at(midPos)->time);
 
         if (_leftTime < _trendDataPack.at(midPos)->time)
@@ -528,9 +539,9 @@ void TrendWaveWidget::dataIndex(int &startIndex, int &endIndex)
 
     lowPos = 0;
     highPos = _trendDataPack.count() - 1;
-    while(lowPos <= highPos)
+    while (lowPos <= highPos)
     {
-        int midPos = (lowPos + highPos)/2;
+        int midPos = (lowPos + highPos) / 2;
         int timeDiff = qAbs(_rightTime - _trendDataPack.at(midPos)->time);
 
         if (_rightTime < _trendDataPack.at(midPos)->time)
@@ -582,7 +593,7 @@ const QList<TrendGraphInfo> TrendWaveWidget::getTrendGraphPrint()
     {
         TrendGraphInfo info = _infosList.at(i);
         printList.append(info);
-        j ++;
+        j++;
     }
     return printList;
 }
@@ -604,7 +615,7 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     QPainter barPainter(this);
 
     barPainter.setPen(QPen(Qt::white, 1, Qt::SolidLine));
-    QRect rectAdjust =rect().adjusted(0,30,0,0);
+    QRect rectAdjust = rect().adjusted(0, 30, 0, 0);
     barPainter.drawLine(rectAdjust.topLeft(), rectAdjust.topRight());
 
     double cursorPos;
@@ -621,11 +632,11 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     for (int i = GRAPH_DISPLAY_DATA_NUMBER; i >= 0; i --)
     {
         timeDate.getTime(t, tStr, true);
-        barPainter.drawText(rectAdjust.topLeft().x() + (_waveRegionWidth - GRAPH_DATA_WIDTH)/2 + i * _oneFrameWidth - 30,
+        barPainter.drawText(rectAdjust.topLeft().x() + (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2 + i * _oneFrameWidth - 30,
                             rectAdjust.topLeft().y() - 5, tStr);
-        t = t - onePixelTime * GRAPH_POINT_NUMBER/GRAPH_DISPLAY_DATA_NUMBER;
-        barPainter.drawLine(rectAdjust.topLeft().x() + (_waveRegionWidth -GRAPH_DATA_WIDTH)/2 + i * _oneFrameWidth,
-                            rectAdjust.topLeft().y(), rectAdjust.topLeft().x() + (_waveRegionWidth -GRAPH_DATA_WIDTH)/2 + i * _oneFrameWidth,
+        t = t - onePixelTime * GRAPH_POINT_NUMBER / GRAPH_DISPLAY_DATA_NUMBER;
+        barPainter.drawLine(rectAdjust.topLeft().x() + (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2 + i * _oneFrameWidth,
+                            rectAdjust.topLeft().y(), rectAdjust.topLeft().x() + (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2 + i * _oneFrameWidth,
                             rectAdjust.topLeft().y() + 5);
     }
 
@@ -639,7 +650,7 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
         timeDate.getDate(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp, tStr);
         barPainter.drawText(_waveRegionWidth + 5, rectAdjust.topLeft().y() - 5, tStr);
         timeDate.getTime(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp, tStr, true);
-        barPainter.drawText(_waveRegionWidth + 120, rectAdjust.topLeft().y() - 5, tStr);
+        barPainter.drawText(_waveRegionWidth + 105, rectAdjust.topLeft().y() - 5, tStr);
     }
 
     barPainter.setPen(QPen(Qt::white, 1, Qt::DotLine));
@@ -673,8 +684,8 @@ void TrendWaveWidget::mousePressEvent(QMouseEvent *e)
     {
         return;
     }
-    double waveHead = _getCursorPos( _trendGraphInfo.alarmInfo.last().timestamp);
-    double waveTail = _getCursorPos( _trendGraphInfo.alarmInfo.first().timestamp);
+    double waveHead = _getCursorPos(_trendGraphInfo.alarmInfo.last().timestamp);
+    double waveTail = _getCursorPos(_trendGraphInfo.alarmInfo.first().timestamp);
     if (e->x() >= waveHead && e->x() <= waveTail)
     {
         double pos = e->x();
@@ -682,9 +693,9 @@ void TrendWaveWidget::mousePressEvent(QMouseEvent *e)
         // 二分查找时间索引
         int lowPos = 0;
         int highPos = _trendGraphInfo.alarmInfo.count() - 1;
-        while(lowPos <= highPos)
+        while (lowPos <= highPos)
         {
-            int midPos = (lowPos + highPos)/2;
+            int midPos = (lowPos + highPos) / 2;
             unsigned midTime = _trendGraphInfo.alarmInfo.at(midPos).timestamp;
             int timeDiff = qAbs(t - midTime);
 
@@ -720,18 +731,18 @@ void TrendWaveWidget::mousePressEvent(QMouseEvent *e)
 void TrendWaveWidget::_trendLayout()
 {
     _infosList.clear();
-    int subWidgetHeight = (height() - 30)/_displayGraphNum;
+    int subWidgetHeight = (height() - 30) / _displayGraphNum;
     TrendSubWidgetInfo info;
-    info.xHead = (_waveRegionWidth -GRAPH_DATA_WIDTH)/2;
-    info.xTail = (_waveRegionWidth + GRAPH_DATA_WIDTH)/2;
-    info.yTop = subWidgetHeight/5;
-    info.yBottom = subWidgetHeight/5*4;
+    info.xHead = (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2;
+    info.xTail = (_waveRegionWidth + GRAPH_DATA_WIDTH) / 2;
+    info.yTop = subWidgetHeight / 5;
+    info.yBottom = subWidgetHeight / 5 * 4;
     _totalGraphNum = 0;
     int startIndex;
     int endIndex;
     dataIndex(startIndex, endIndex);
     QMap<SubParamID, TrendSubWaveWidget *>::iterator it = _subWidgetMap.begin();
-    for (; it != _subWidgetMap.end(); ++ it)
+    for (; it != _subWidgetMap.end(); ++it)
     {
         SubParamID subId = it.key();
         if (trendGraphSetWidget.getTrendGroup() == TREND_GROUP_RESP)
@@ -743,7 +754,7 @@ void TrendWaveWidget::_trendLayout()
             case SUB_PARAM_RR_BR:
             case SUB_PARAM_NIBP_SYS:
             case SUB_PARAM_ETCO2:
-            case SUB_PARAM_T1:                
+            case SUB_PARAM_T1:
                 loadTrendData(subId, startIndex, endIndex);
                 it.value()->trendDataInfo(_trendGraphInfo);
                 break;
@@ -752,7 +763,7 @@ void TrendWaveWidget::_trendLayout()
                 continue;
             }
         }
-        else if(trendGraphSetWidget.getTrendGroup() == TREND_GROUP_IBP)
+        else if (trendGraphSetWidget.getTrendGroup() == TREND_GROUP_IBP)
         {
             SubParamID ibp1;
             SubParamID ibp2;
@@ -815,9 +826,8 @@ void TrendWaveWidget::_trendLayout()
         _trendGraphInfo.unit = paramInfo.getUnitOfSubParam(subId);
         it.value()->getValueLimit(_trendGraphInfo.scale.max, _trendGraphInfo.scale.min);
         _infosList.append(_trendGraphInfo);
-        _totalGraphNum ++;
+        _totalGraphNum++;
     }
-
 }
 
 void TrendWaveWidget::_getTrendData()
@@ -837,13 +847,13 @@ void TrendWaveWidget::_getTrendData()
     qDeleteAll(_trendDataPack);
     _trendDataPack.clear();
     _alarmTimeList.clear();
-    //TODO: low efficiency
+    // TODO: low efficiency
     for (int i = 0; i < blockNum; i ++)
     {
         TrendDataPackage *pack;
         pack = new TrendDataPackage;
         data = backend->getBlockData((quint32)i);
-        dataSeg = reinterpret_cast<TrendDataSegment*>(data.data());
+        dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
         pack->time = dataSeg->timestamp;
         for (int j = 0; j < dataSeg->trendValueNum; j ++)
         {
@@ -978,6 +988,5 @@ void TrendWaveWidget::_updateEventIndex()
 
             lastTime = lastTime + timeInterval;
         }
-
     }
 }
