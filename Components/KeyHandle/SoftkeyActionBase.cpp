@@ -35,6 +35,7 @@
 #include "Frame.h"
 #include "FrameItem.h"
 #include "ComboBox.h"
+#include "PatientInfoWindow.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -220,7 +221,7 @@ void SoftkeyActionBase::patientInfo(bool isPressed)
         return;
     }
 
-    bool isVisible = patientInfoMenu.isVisible();
+    bool isVisible = PatientInfoWindow::getInstance()->isVisible();
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
@@ -237,9 +238,9 @@ void SoftkeyActionBase::patientInfo(bool isPressed)
 //    int y = r.y() + (r.height() - patientMenu.height());
 //    patientMenu.autoShow(x, y);
     //    patientMenu.autoShow();
-    patientInfoMenu.newPatientStatus(false);
-    patientInfoMenu.widgetChange();
-    patientInfoMenu.autoShow();
+    PatientInfoWindow::getInstance()->newPatientStatus(false);
+    PatientInfoWindow::getInstance()->widgetChange();
+    PatientInfoWindow::getInstance()->exec();
 }
 
 void SoftkeyActionBase::patientNew(bool isPressed)
@@ -249,7 +250,7 @@ void SoftkeyActionBase::patientNew(bool isPressed)
         return;
     }
 
-    bool isVisible = patientInfoMenu.isVisible();
+    bool isVisible = PatientInfoWindow::getInstance()->isVisible();
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
@@ -273,9 +274,9 @@ void SoftkeyActionBase::patientNew(bool isPressed)
     if (messageBox.exec() == 0)
     {
         dataStorageDirManager.createDir(true);
-        patientInfoMenu.newPatientStatus(true);
-        patientInfoMenu.widgetChange();
-        patientInfoMenu.autoShow();
+        PatientInfoWindow::getInstance()->newPatientStatus(true);
+        PatientInfoWindow::getInstance()->widgetChange();
+        PatientInfoWindow::getInstance()->exec();
     }
 }
 

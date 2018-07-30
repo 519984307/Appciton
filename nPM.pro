@@ -276,7 +276,9 @@ SOURCES +=                                                                      
     Components/PatientManager/PatientInfoWidget.cpp                             \
     Components/PatientManager/PatientStatusBarWidget.cpp                        \
     Components/PatientManager/PatientInfoMenu.cpp                               \
+    Components/PatientManager/PatientInfoWindow.cpp                             \
     Components/PatientManager/RelievePatientWidget.cpp                          \
+    Components/PatientManager/RelievePatientWindow.cpp                          \
     Components/PowerManager/BatteryMessage.cpp                                  \
     Components/PowerManager/BatteryAlarm.cpp                                    \
     Components/PowerManager/BatteryIndicatorWidget.cpp                          \
@@ -451,6 +453,7 @@ SOURCES +=                                                                      
     Components/ConfigManager/UnitSetupMenuContent.cpp                           \
     Components/Freeze/FreezeManager.cpp                                         \
     Components/Freeze/FreezeWidget.cpp                                          \
+    Components/Freeze/FreezeWindow.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
 #################################################################################
     Params/AGParam/AGWidgets/AGMenu.cpp                                         \
@@ -805,7 +808,9 @@ HEADERS +=                                                                      
     Components/PatientManager/PatientInfoWidget.h                               \
     Components/PatientManager/PatientStatusBarWidget.h                          \
     Components/PatientManager/PatientInfoMenu.h                                 \
+    Components/PatientManager/PatientInfoWindow.h                               \
     Components/PatientManager/RelievePatientWidget.h                            \
+    Components/PatientManager/RelievePatientWindow.h                            \
     Components/PowerManager/BatteryAlarm.h                                      \
     Components/PowerManager/BatteryMessage.h                                    \
     Components/PowerManager/BatteryDefine.h                                     \
@@ -993,6 +998,7 @@ HEADERS +=                                                                      
     Components/ConfigManager/UnitSetupMenuContent.h                             \
     Components/Freeze/FreezeManager.h                                           \
     Components/Freeze/FreezeWidget.h                                            \
+    Components/Freeze/FreezeWindow.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \
 #################################################################################
     Params/AGParam/AGWidgets/AGMenu.h                                           \

@@ -82,6 +82,7 @@ struct PatientInfo
         blood = other.blood;
         weight = other.weight;
         height = other.height;
+        weightUnit = other.weightUnit;
         ::memcpy(name, other.name, sizeof(name));
         ::memcpy(id, other.id, sizeof(id));
         return *this;
@@ -117,7 +118,7 @@ class PatientSymbol
 public:
     static const char *convert(PatientType index)
     {
-        static const char *symbol[PATIENT_TYPE_NR] =
+        static const char *symbol[PATIENT_TYPE_NR + 1] =
         {
             "Adult", "PED", "NEO", "NULL"
         };
@@ -135,7 +136,7 @@ public:
 
     static const char *convert(PatientPacer index)
     {
-        static const char *symbol[PATIENT_TYPE_NR] =
+        static const char *symbol[PATIENT_PACER_NR] =
         {
             "Off", "On"
         };
