@@ -633,7 +633,8 @@ KeyInputPanel::KeyInputPanel(KeyType type)
                 switch (c)
                 {
                 case 0:
-                    key->setText(" ");
+                    key->setButtonStyle(Button::ButtonIconOnly);
+                    key->setIconSize(QSize(100, 100));
                     key->setIcon(QIcon("/usr/local/nPM/icons/blank.png"));
                     connect(key, SIGNAL(clicked()), this, SLOT(onKeyClicked()));
                     break;

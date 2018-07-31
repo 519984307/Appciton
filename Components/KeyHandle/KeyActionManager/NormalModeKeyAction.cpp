@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/30
+ **/
+
+
+
 #include <QApplication>
 #include "NormalModeKeyAction.h"
 #include "Debug.h"
@@ -21,13 +33,13 @@
 #include <QPointer>
 #include "RecorderManager.h"
 #include "ContinuousPageGenerator.h"
+#include "FreezeWindow.h"
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 NormalModeKeyAction::NormalModeKeyAction()
 {
-
 }
 
 /**************************************************************************************************
@@ -35,7 +47,6 @@ NormalModeKeyAction::NormalModeKeyAction()
  *************************************************************************************************/
 NormalModeKeyAction::~NormalModeKeyAction()
 {
-
 }
 
 void NormalModeKeyAction::keyF1Pressed(bool multiBtnPress)
@@ -45,20 +56,21 @@ void NormalModeKeyAction::keyF1Pressed(bool multiBtnPress)
         return;
     }
 
-    //menu
-    //handle event when release
+    // menu
+    // handle event when release
 }
 
 void NormalModeKeyAction::keyF2Pressed(bool multiBtnPress)
 {
 
-    static QPointer<FreezeWidget> currentFreezeWidget;
+//    static QPointer<FreezeWidget> currentFreezeWidget;
+    static QPointer<FreezeWindow> currentFreezeWidget;
     if (multiBtnPress)
     {
         return;
     }
 
-    if(currentFreezeWidget)
+    if (currentFreezeWidget)
     {
         currentFreezeWidget->done(0);
         return;
@@ -69,7 +81,8 @@ void NormalModeKeyAction::keyF2Pressed(bool multiBtnPress)
         QApplication::activeModalWidget()->close();
     }
 
-    FreezeWidget freezeWidget;
+//    FreezeWidget freezeWidget;
+    FreezeWindow freezeWidget;
     currentFreezeWidget = &freezeWidget;
     freezeWidget.exec();
 }
@@ -81,7 +94,7 @@ void NormalModeKeyAction::keyF3Pressed(bool multiBtnPress)
         return;
     }
 
-    //print
+    // print
     recorderManager.addPageGenerator(new ContinuousPageGenerator());
 }
 
@@ -91,7 +104,7 @@ void NormalModeKeyAction::keyF4Pressed(bool multiBtnPress)
     {
         return;
     }
-    //nibp
+    // nibp
     if (systemManager.isSupport(CONFIG_NIBP))
     {
         nibpParam.keyPressed();
@@ -105,7 +118,7 @@ void NormalModeKeyAction::keyF5Pressed(bool multiBtnPress)
         return;
     }
 
-    //alarm mute
+    // alarm mute
     alertor.updateMuteKeyStatus(true);
 }
 
@@ -137,7 +150,7 @@ void NormalModeKeyAction::keyF2Released(bool multiBtnPress)
         return;
     }
 
-    //TODO: freeze
+    // TODO: freeze
 }
 
 void NormalModeKeyAction::keyF3Released(bool multiBtnPress)
@@ -146,7 +159,7 @@ void NormalModeKeyAction::keyF3Released(bool multiBtnPress)
     {
         return;
     }
-    //print button release
+    // print button release
 }
 
 void NormalModeKeyAction::keyF4Released(bool multiBtnPress)
