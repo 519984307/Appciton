@@ -18,6 +18,7 @@
 #include "WindowManager.h"
 #include "TrendGraphPageGenerator.h"
 #include "RecorderManager.h"
+#include "TrendGraphSetWindow.h"
 
 TrendGraphWindow *TrendGraphWindow::selfObj = NULL;
 
@@ -48,6 +49,30 @@ TrendGraphWindow::~TrendGraphWindow()
 {
 }
 
+void TrendGraphWindow::setSubWidgetRulerLimit(SubParamID id, int down, int up)
+{
+    d_ptr->waveWidget->setRulerLimit(id, down, up);
+}
+
+void TrendGraphWindow::updateTrendGraph()
+{
+    d_ptr->waveWidget->trendWaveReset();
+    d_ptr->waveWidget->updateTimeRange();
+}
+
+void TrendGraphWindow::timeIntervalChange(int timeInterval)
+{
+    d_ptr->waveWidget->setTimeInterval((ResolutionRatio)timeInterval);
+}
+
+void TrendGraphWindow::waveNumberChange(int num)
+{
+    if (num > 0 && num <= 3)
+    {
+        d_ptr->waveWidget->setWaveNumber(num);
+    }
+}
+
 void TrendGraphWindow::onButtonReleased()
 {
     Button *button = qobject_cast<Button *>(sender());
@@ -67,6 +92,7 @@ void TrendGraphWindow::onButtonReleased()
         }
         case TrendGraphWindowPrivate::ACTION_BTN_SET_WIDGET:
         {
+            trendGraphSetWindow.exec();
             break;
         }
         case TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE:

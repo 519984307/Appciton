@@ -146,23 +146,19 @@ TrendTableWindow::TrendTableWindow()
     d_ptr->table->setFixedWidth(800);
     d_ptr->table->setItemDelegate(new TableViewItemDelegate(this));
 
-    QIcon upIcon = themeManger.getIcon(ThemeManager::IconUp);
-    d_ptr->upBtn = new Button("", upIcon);
+    d_ptr->upBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));
     d_ptr->upBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->upBtn, SIGNAL(released()), this, SLOT(upReleased()));
 
-    QIcon downIcon = themeManger.getIcon(ThemeManager::IconDown);
-    d_ptr->downBtn = new Button("", downIcon);
+    d_ptr->downBtn = new Button("", QIcon("/usr/local/nPM/icons/down.png"));
     d_ptr->downBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->downBtn, SIGNAL(released()), this, SLOT(downReleased()));
 
-    QIcon leftIcon = themeManger.getIcon(ThemeManager::IconLeft);
-    d_ptr->leftBtn = new Button("", leftIcon);
+    d_ptr->leftBtn = new Button("", QIcon("/usr/local/nPM/icons/left.png"));
     d_ptr->leftBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->leftBtn, SIGNAL(released()), this, SLOT(leftReleased()));
 
-    QIcon rightIcon = themeManger.getIcon(ThemeManager::IconRight);
-    d_ptr->rightBtn = new Button("", rightIcon);
+    d_ptr->rightBtn = new Button("", QIcon("/usr/local/nPM/icons/right.png"));
     d_ptr->rightBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->rightBtn, SIGNAL(released()), this, SLOT(rightReleased()));
 

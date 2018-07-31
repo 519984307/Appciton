@@ -10,6 +10,7 @@
 
 #pragma once
 #include "Window.h"
+#include "ParamInfo.h"
 
 class TrendGraphWindowPrivate;
 class TrendGraphWindow : public Window
@@ -25,6 +26,15 @@ public:
         return *selfObj;
     }
     ~TrendGraphWindow();
+
+public:
+    void setSubWidgetRulerLimit(SubParamID id, int down, int up);
+
+    void updateTrendGraph();
+
+    void timeIntervalChange(int timeInterval);
+
+    void waveNumberChange(int num);
 
 private slots:
     void onButtonReleased(void);

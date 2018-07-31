@@ -77,7 +77,7 @@ void RescueDataSoftKeyAction::trendReview(bool isPressed)
 //    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
 //    trendDataWidget.setHistoryData(false);
 //    trendDataWidget.autoShow(x, y);
-    trendTableWindow.show();
+    trendTableWindow.exec();
 }
 
 /***************************************************************************************************
@@ -90,23 +90,24 @@ void RescueDataSoftKeyAction::summaryReview(bool isPressed)
         return;
     }
 
-    bool isVisible = trendGraphWidget.isVisible();
-    while (NULL != QApplication::activeModalWidget())
-    {
-        QApplication::activeModalWidget()->hide();
-        menuManager.close();
-    }
+//    bool isVisible = trendGraphWidget.isVisible();
+//    while (NULL != QApplication::activeModalWidget())
+//    {
+//        QApplication::activeModalWidget()->hide();
+//        menuManager.close();
+//    }
 
-    if (isVisible)
-    {
-        return;
-    }
+//    if (isVisible)
+//    {
+//        return;
+//    }
 
-    QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
-    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-    trendGraphWidget.setHistoryData(false);
-    trendGraphWidget.autoShow(x, y);
+//    QRect r = windowManager.getMenuArea();
+//    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
+//    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
+//    trendGraphWidget.setHistoryData(false);
+//    trendGraphWidget.autoShow(x, y);
+    trendGraphWindow.exec();
 }
 
 /***************************************************************************************************
@@ -135,7 +136,6 @@ void RescueDataSoftKeyAction::exportData(bool isPressed)
 //    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
 //    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
 //    rescueDataExportWidget.autoShow(x, y);
-    trendGraphWindow.show();
 }
 
 /***************************************************************************************************

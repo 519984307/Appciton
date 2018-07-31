@@ -14,6 +14,7 @@
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "TrendGraphSetWidget.h"
+#include "TrendGraphSetWindow.h"
 #include "IBPParam.h"
 #include "TrendDataStorageManager.h"
 #include "TrendDataSymbol.h"
@@ -591,7 +592,7 @@ const QList<TrendGraphInfo> TrendWaveWidget::getTrendGraphPrint()
     int j = 0;
     for (int i = _pagingNum * _displayGraphNum; j < _displayGraphNum; i ++)
     {
-        TrendGraphInfo info = _infosList.at(i);
+            TrendGraphInfo info = _infosList.at(i);
         printList.append(info);
         j++;
     }
@@ -745,7 +746,7 @@ void TrendWaveWidget::_trendLayout()
     for (; it != _subWidgetMap.end(); ++it)
     {
         SubParamID subId = it.key();
-        if (trendGraphSetWidget.getTrendGroup() == TREND_GROUP_RESP)
+        if (trendGraphSetWindow.getTrendGroup() == TREND_GROUP_RESP)
         {
             switch (subId)
             {
@@ -763,7 +764,7 @@ void TrendWaveWidget::_trendLayout()
                 continue;
             }
         }
-        else if (trendGraphSetWidget.getTrendGroup() == TREND_GROUP_IBP)
+        else if (trendGraphSetWindow.getTrendGroup() == TREND_GROUP_IBP)
         {
             SubParamID ibp1;
             SubParamID ibp2;
@@ -797,7 +798,7 @@ void TrendWaveWidget::_trendLayout()
                 continue;
             }
         }
-        else if (trendGraphSetWidget.getTrendGroup() == TREND_GROUP_AG)
+        else if (trendGraphSetWindow.getTrendGroup() == TREND_GROUP_AG)
         {
             switch (subId)
             {

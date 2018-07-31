@@ -284,10 +284,10 @@ ParamID ParamInfo::getParamID(SubParamID id)
     case SUB_PARAM_ST_V4:
     case SUB_PARAM_ST_V5:
     case SUB_PARAM_ST_V6:
-        paramID = PARAM_ECG;
+        paramID = PARAM_DUP_ECG;
         break;
     case SUB_PARAM_RR_BR:
-        paramID = PARAM_RESP;
+        paramID = PARAM_DUP_RESP;
         break;
     case SUB_PARAM_SPO2:
         paramID = PARAM_SPO2;
