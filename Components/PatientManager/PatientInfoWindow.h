@@ -5,7 +5,6 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
-<<<<<<< HEAD
  ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/7/31
  **/
 

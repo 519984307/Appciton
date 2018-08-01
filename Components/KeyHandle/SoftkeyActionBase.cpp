@@ -88,10 +88,6 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
         return;
     }
 
-    windowManager.showMainMenu();
-
-    return;
-
 // co 2Param.setConnected(true);
 // return;
 
@@ -295,7 +291,8 @@ void SoftkeyActionBase::mainsetup(bool isPressed)
     {
         return;
     }
-    windowManager.setUFaceType();
+//    windowManager.setUFaceType();
+    windowManager.showMainMenu();
 }
 
 /***************************************************************************************************

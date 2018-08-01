@@ -5,7 +5,6 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
-<<<<<<< HEAD
  ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/7/31
  **/
 
@@ -21,7 +20,7 @@
 #include "EnglishInputPanel.h"
 #include "KeyInputPanel.h"
 #include "PatientManager.h"
-#include "RelievePatientWidget.h"
+#include "RelievePatientWindow.h"
 #include "DataStorageDirManager.h"
 #include <QMap>
 #include "Button.h"
@@ -77,11 +76,6 @@ public:
     QMap<MenuItem , Button *> buttons;
 };
 
-/**
- * @brief checkAgeValue
- * @param value
- * @return
- */
 static bool checkAgeValue(const QString &value)
 {
     if (value.isEmpty())
@@ -544,13 +538,13 @@ void PatientInfoWindow::_relieveReleased()
     this->hide();
     if (d_ptr->_relieveFlag == true)
     {
-        relievePatientWidget.setTitleBarText(trs("RelievePatient"));
-        relievePatientWidget.autoShow();
+        RelievePatientWindow::getInstance()->setWindowTitle(trs("RelievePatient"));
+        RelievePatientWindow::getInstance()->exec();
     }
     else
     {
-        relievePatientWidget.setTitleBarText(trs("CleanPatientData"));
-        relievePatientWidget.autoShow();
+        RelievePatientWindow::getInstance()->setWindowTitle(trs("CleanPatientData"));
+        RelievePatientWindow::getInstance()->exec();
     }
 }
 
