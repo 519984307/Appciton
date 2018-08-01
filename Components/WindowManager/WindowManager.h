@@ -57,6 +57,10 @@ public:
      * @brief showConfigEditManagerMenu
      */
     void showConfigEditManagerMenu();
+    /**
+     * @brief showNIBPRepairMenu
+     */
+    void showNIBPRepairMenu();
 
 public:
     // 注册窗体。

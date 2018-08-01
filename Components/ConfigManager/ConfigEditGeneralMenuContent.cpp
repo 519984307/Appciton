@@ -17,6 +17,7 @@
 #include "ConfigEditMenuWindow.h"
 #include <QRegExp>
 #include "ConfigManager.h"
+#include "KeyInputPanel.h"
 
 #define MAX_CONFIG_NAME_LEN 64
 
@@ -89,12 +90,12 @@ void ConfigEditGeneralMenuContent::layoutExec()
 
 void ConfigEditGeneralMenuContent::onBtnReleasedChanged()
 {
-    KeyBoardPanel panel;
-    panel.setTitleBarText(trs("SetConfigName"));
+    KeyInputPanel panel;
+    panel.setWindowTitle(trs("SetConfigName"));
     panel.setInitString(ConfigEditMenuWindow::getInstance()
                         ->getCurrentEditConfigName());
     panel.setMaxInputLength(MAX_CONFIG_NAME_LEN);
-    QString regKeyStr("[a-zA-Z][0-9]|_");
+    QString regKeyStr("[a-zA-Z]|[0-9]|_");
     panel.setBtnEnable(regKeyStr);
 
     if (1 == panel.exec())

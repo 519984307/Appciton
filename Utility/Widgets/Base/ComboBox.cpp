@@ -83,6 +83,8 @@ void ComboBox::keyPressEvent(QKeyEvent *ev)
     case Qt::Key_F4:
         // will show popup when focus, ignore this hey
         break;
+    case Qt::Key_Up:
+    case Qt::Key_Down:
     case Qt::Key_Return:
         break;
     default:
@@ -104,6 +106,8 @@ void ComboBox::keyReleaseEvent(QKeyEvent *ev)
     case Qt::Key_Return:
         showPopup();
         break;
+    case Qt::Key_Up:
+    case Qt::Key_Down:
     case Qt::Key_F4:
         break;
     default:

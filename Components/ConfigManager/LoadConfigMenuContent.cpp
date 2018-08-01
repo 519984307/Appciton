@@ -23,6 +23,7 @@
 #include <QFile>
 #include "PatientManager.h"
 #include "IMessageBox.h"
+#include "MessageBox.h"
 #include "MenuManager.h"
 #include "ConfigEditMenuGrp.h"
 #include <QHBoxLayout>
@@ -312,11 +313,8 @@ void LoadConfigMenuContent::onBtnClick()
 
         QString title(trs("LoadConfig"));
         QString text(trs("SuccessToLoad"));
-        IMessageBox iMessageBox(title, text, false);
-        int subWidth = menuManager.getSubmenuWidth();
-        int subHeight = menuManager.getSubmenuHeight();
-        iMessageBox.setFixedSize(subWidth / 2, subHeight / 3);
-        iMessageBox.exec();
+        MessageBox message(title, text, false);
+        message.exec();
     }
     else if (btn == d_ptr->btns[LoadConfigMenuContentPrivate::ITEM_BTN_VIEW_CONFIG])//查看配置
     {

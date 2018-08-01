@@ -21,7 +21,7 @@
 #include "SystemBoardProvider.h"
 #include "WindowManager.h"
 #include "WindowLayout.h"
-#include "PatientInfoMenu.h"
+#include "PatientInfoWindow.h"
 #include "IMessageBox.h"
 #include "CO2Param.h"
 #include "SystemManager.h"
@@ -35,6 +35,7 @@
 #include "Frame.h"
 #include "FrameItem.h"
 #include "ComboBox.h"
+#include "PatientInfoWindow.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -220,7 +221,8 @@ void SoftkeyActionBase::patientInfo(bool isPressed)
         return;
     }
 
-    bool isVisible = patientInfoMenu.isVisible();
+    bool isVisible = patientInfoWindow.isVisible();
+
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
@@ -237,9 +239,12 @@ void SoftkeyActionBase::patientInfo(bool isPressed)
 //    int y = r.y() + (r.height() - patientMenu.height());
 //    patientMenu.autoShow(x, y);
     //    patientMenu.autoShow();
-    patientInfoMenu.newPatientStatus(false);
-    patientInfoMenu.widgetChange();
-    patientInfoMenu.autoShow();
+//    patientInfoMenu.newPatientStatus(false);
+//    patientInfoMenu.widgetChange();
+//    patientInfoMenu.autoShow();
+    patientInfoWindow.newPatientStatus(false);
+    patientInfoWindow.widgetChange();
+    patientInfoWindow.autoShow();
 }
 
 void SoftkeyActionBase::patientNew(bool isPressed)
@@ -249,7 +254,9 @@ void SoftkeyActionBase::patientNew(bool isPressed)
         return;
     }
 
-    bool isVisible = patientInfoMenu.isVisible();
+//    bool isVisible = patientInfoMenu.isVisible();
+    bool isVisible = patientInfoWindow.isVisible();
+
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
@@ -273,9 +280,12 @@ void SoftkeyActionBase::patientNew(bool isPressed)
     if (messageBox.exec() == 0)
     {
         dataStorageDirManager.createDir(true);
-        patientInfoMenu.newPatientStatus(true);
-        patientInfoMenu.widgetChange();
-        patientInfoMenu.autoShow();
+//        patientInfoMenu.newPatientStatus(true);
+//        patientInfoMenu.widgetChange();
+//        patientInfoMenu.autoShow();
+        patientInfoWindow.newPatientStatus(true);
+        patientInfoWindow.widgetChange();
+        patientInfoWindow.autoShow();
     }
 }
 

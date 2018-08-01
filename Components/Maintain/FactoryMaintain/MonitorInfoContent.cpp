@@ -16,6 +16,8 @@
 #include "IConfig.h"
 #include "KeyBoardPanel.h"
 #include "Button.h"
+#include <QApplication>
+#include <QDesktopWidget>
 
 class MonitorInfoContentPrivate
 {
@@ -60,7 +62,13 @@ MonitorInfoContent::MonitorInfoContent()
 
 void MonitorInfoContentPrivate::loadOptions()
 {
+
+    QDesktopWidget *w = QApplication::desktop();
     QString temStr;
+
+    labs[ITEM_LAB_SCR_RESOLASIZE]->setText(trs(QString("%1*%2")
+                                         .arg(w->width())
+                                         .arg(w->height())));
 
     temStr.clear();
     systemConfig.getStrValue("MonitorInfo|CumulativeWorkingTime", temStr);
@@ -85,10 +93,6 @@ void MonitorInfoContentPrivate::loadOptions()
     temStr.clear();
     systemConfig.getStrValue("MonitorInfo|MACAddress", temStr);
     labs[ITEM_LAB_MAC_ADDR]->setText(trs(temStr));
-
-    temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|ScreenResolationSize", temStr);
-    labs[ITEM_LAB_SCR_RESOLASIZE]->setText(trs(temStr));
 
     temStr.clear();
     systemConfig.getStrValue("MonitorInfo|ElectronicSerialNumber", temStr);

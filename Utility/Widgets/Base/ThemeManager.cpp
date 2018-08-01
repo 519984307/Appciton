@@ -28,6 +28,8 @@ static const char *iconPaths[ThemeManager::IconNR] =
     ":/ui/close.svg",
     ":/ui/up.svg",
     ":/ui/down.svg",
+    ":/ui/left.svg",
+    ":/ui/right.svg",
     ":/ui/checked.svg",
 };
 

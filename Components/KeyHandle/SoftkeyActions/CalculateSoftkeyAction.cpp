@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/1
+ **/
+
+
+
 #include <QApplication>
 #include "CalculateSoftkeyAction.h"
 #include "WindowManager.h"
@@ -5,7 +17,7 @@
 #include "MenuGroup.h"
 #include "MenuManager.h"
 #include "DataStorageDirManager.h"
-#include "DoseCalculationWidget.h"
+#include "DoseCalculationWindow.h"
 #include "DoseCalculationManager.h"
 #include "HemodynamicWidget.h"
 
@@ -23,8 +35,8 @@ static KeyActionDesc _calculationDataKeys[] =
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_PAT_INFO),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_PAT_NEW),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_PREVIOUS_PAGE),
-    KeyActionDesc("", "dosecalculation.png",CalculateSoftkeyAction::doseCalculation),
-    KeyActionDesc("", "blood.png",CalculateSoftkeyAction::Hemodynamic),
+    KeyActionDesc("", "dosecalculation.png", CalculateSoftkeyAction::doseCalculation),
+    KeyActionDesc("", "blood.png", CalculateSoftkeyAction::Hemodynamic),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
@@ -44,7 +56,7 @@ void CalculateSoftkeyAction::doseCalculation(bool isPressed)
         return;
     }
 
-    bool isVisible = doseCalculationWidget.isVisible();
+    bool isVisible = DoseCalculationWindow::getInstance()->isVisible();
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
@@ -61,7 +73,8 @@ void CalculateSoftkeyAction::doseCalculation(bool isPressed)
 //    int y = r.y() + (r.height() - patientMenu.height());
 //    patientMenu.autoShow(x, y);
 //    //    patientMenu.autoShow();
-    doseCalculationWidget.autoShow();
+//    doseCalculationWidget.autoShow();
+    DoseCalculationWindow::getInstance()->exec();
 }
 
 /***************************************************************************************************
@@ -115,7 +128,7 @@ int CalculateSoftkeyAction::getActionDescNR(void)
  **************************************************************************************************/
 KeyActionDesc *CalculateSoftkeyAction::getActionDesc(int index)
 {
-    if (index >= (int)(sizeof(_calculationDataKeys) / sizeof(KeyActionDesc)))
+    if (index >= static_cast<int>(sizeof(_calculationDataKeys) / sizeof(KeyActionDesc)))
     {
         return NULL;
     }
@@ -133,7 +146,6 @@ KeyActionDesc *CalculateSoftkeyAction::getActionDesc(int index)
  **************************************************************************************************/
 CalculateSoftkeyAction::CalculateSoftkeyAction() : SoftkeyActionBase(SOFTKEY_ACTION_CALCULATE)
 {
-
 }
 
 /***************************************************************************************************
@@ -141,5 +153,4 @@ CalculateSoftkeyAction::CalculateSoftkeyAction() : SoftkeyActionBase(SOFTKEY_ACT
  **************************************************************************************************/
 CalculateSoftkeyAction::~CalculateSoftkeyAction()
 {
-
 }

@@ -21,6 +21,7 @@
 #include <QDir>
 #include "ExportDataWidget.h"
 #include "IMessageBox.h"
+#include "MessageBox.h"
 #include "ImportFileSubWidget.h"
 #include "ConfigExportImportMenuContent.h"
 #include <QGridLayout>
@@ -441,10 +442,9 @@ bool ConfigExportImportMenuContent::exportFileToUSB()
                 stringList.append(trs("Repeated"));//  1
                 stringList.append(trs("AllNotRepeated"));//  2
                 stringList.append(trs("AllRepeated"));//  3
-                IMessageBox messageBox(trs("Export"),
+                MessageBox messageBox(trs("Export"),
                                        trs(QString("%1\r\n%2?").arg(d_ptr->selectItems.at(i)->text()).arg(stringtemp)),
                                        stringList);
-                messageBox.setFixedSize(configMaintainMenuGrp.getSubmenuWidth() * 2 / 3, configMaintainMenuGrp.getSubmenuHeight() / 3);
                 d_ptr->repeatFileChooseFlag = messageBox.exec();
                 d_ptr->repeatFileChooseFlag = repeatFileChooseFlag;
             }
@@ -660,10 +660,9 @@ bool ConfigExportImportMenuContent::insertFileFromUSB()
                 stringList.append(trs("Repeated"));//  1
                 stringList.append(trs("AllNotRepeated"));//  2
                 stringList.append(trs("AllRepeated"));//  3
-                IMessageBox messageBox(trs("Import"),
+                MessageBox messageBox(trs("Import"),
                                        trs(QString("%1\r\n%2?").arg(d_ptr->selectItemsImport.at(i)->text()).arg(stringtemp)),
                                        stringList);
-                messageBox.setFixedSize(configMaintainMenuGrp.getSubmenuWidth() * 2 / 3, configMaintainMenuGrp.getSubmenuHeight() / 3);
                 repeatFileChooseFlag = messageBox.exec();
                 d_ptr->repeatFileChooseFlag = repeatFileChooseFlag;
             }
@@ -934,8 +933,7 @@ void ConfigExportImportMenuContent::onBtnClick()
         d_ptr->checkExportFileFlag = 0;
         if (isClose == false)
         {
-            IMessageBox messageBox(paramTitle, paraText, false);
-            messageBox.setFixedSize(configMaintainMenuGrp.getSubmenuWidth() * 2 / 3, configMaintainMenuGrp.getSubmenuHeight() / 3);
+            MessageBox messageBox(paramTitle, paraText, false);
             messageBox.exec();
         }
     }
@@ -984,8 +982,7 @@ void ConfigExportImportMenuContent::onBtnClick()
         d_ptr->checkImportFileFlag = 0;
         if (isClose == false)
         {
-            IMessageBox messageBox(paramTitle, paraText, false);
-            messageBox.setFixedSize(configMaintainMenuGrp.getSubmenuWidth() * 2 / 3, configMaintainMenuGrp.getSubmenuHeight() / 3);
+            MessageBox messageBox(paramTitle, paraText, false);
             messageBox.exec();
         }
         d_ptr->selectItemsImport.clear();

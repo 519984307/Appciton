@@ -75,7 +75,6 @@ bool SpinBox::isArrow() const
 void SpinBox::setValue(int value)
 {
     d_ptr->info.curValue = value;
-    emit valueChange(d_ptr->info.curValue, d_ptr->info.scale);
     update();
 }
 
@@ -223,6 +222,23 @@ void SpinBox::keyPressEvent(QKeyEvent *ev)
     {
     case Qt::Key_Left:
     case Qt::Key_Up:
+    case Qt::Key_Right:
+    case Qt::Key_Down:
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        break;
+    default:
+        QAbstractButton::keyPressEvent(ev);
+        break;
+    }
+}
+
+void SpinBox::keyReleaseEvent(QKeyEvent *ev)
+{
+    switch (ev->key())
+    {
+    case Qt::Key_Left:
+    case Qt::Key_Up:
         if (d_ptr->status != SPIN_BOX_EDITABLE)
         {
             d_ptr->status = SPIN_BOX_FOCUS_OUT;
@@ -252,26 +268,6 @@ void SpinBox::keyPressEvent(QKeyEvent *ev)
                 update();
             }
         }
-        break;
-    case Qt::Key_Enter:
-    case Qt::Key_Return:
-    {
-        break;
-    }
-    default:
-        QAbstractButton::keyPressEvent(ev);
-        break;
-    }
-}
-
-void SpinBox::keyReleaseEvent(QKeyEvent *ev)
-{
-    switch (ev->key())
-    {
-    case Qt::Key_Left:
-    case Qt::Key_Up:
-    case Qt::Key_Right:
-    case Qt::Key_Down:
         break;
     case Qt::Key_Enter:
     case Qt::Key_Return:
