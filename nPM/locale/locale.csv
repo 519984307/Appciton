@@ -804,7 +804,14 @@ SelectSnapshotsToTransfer,选择快照传输,Select Snapshots to Transfer
 SelectSingleIncidentToSelectSnapshots,选择一个营救事件以选择快照！,Select Single Incident to Select Snapshots to print!
 PrintSnapshot,打印快照,Print Snapshot
 PatTrendData,病人趋势数据,Patient Trend Data
+TrendTable,趋势表,Trend Table
+TrendGraph,趋势图,Trend Graph
+PreviousEvent,上个事件,Prv Event
+NextEvent,下个事件,Next Event
+EventReview,事件回顾,Event Review
+OxyCRGEventReview,呼吸氧合事件回顾,OxyCRG Event Review
 TrendTableSet,趋势表设置,Trend Table Set
+TrendGraphSet,趋势图设置,Trend Graph Set
 ResolutionRatio,分辨率,Resolution Ratio
 TrendGroup,趋势组,Trend Group
 MoveCoordinate,移坐标,Move Coordinate

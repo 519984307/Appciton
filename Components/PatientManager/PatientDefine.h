@@ -118,7 +118,7 @@ class PatientSymbol
 public:
     static const char *convert(PatientType index)
     {
-        static const char *symbol[PATIENT_TYPE_NR] =
+        static const char *symbol[PATIENT_TYPE_NR + 1] =
         {
             "Adult", "PED", "NEO", "NULL"
         };

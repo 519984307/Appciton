@@ -49,6 +49,8 @@ public:
      */
     int getCurrentIndex() const;
 
+    int count() const;
+
     /* reimplement */
     QSize sizeHint() const;
 

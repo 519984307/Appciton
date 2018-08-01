@@ -35,6 +35,7 @@
 #include "Frame.h"
 #include "FrameItem.h"
 #include "ComboBox.h"
+#include "PatientInfoWindow.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -255,6 +256,7 @@ void SoftkeyActionBase::patientNew(bool isPressed)
 
 //    bool isVisible = patientInfoMenu.isVisible();
     bool isVisible = patientInfoWindow.isVisible();
+
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();

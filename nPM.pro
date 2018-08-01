@@ -125,6 +125,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.cpp         \
     Utility/Widgets/Base/PasswordWidget.cpp                                     \
     Utility/Widgets/Base/SpinBox.cpp                                            \
+    Utility/Widgets/Base/DropList.cpp                                           \
     Utility/Widgets/IComboList/ComboList.cpp                                    \
     Utility/Widgets/IComboList/ComboListPopup.cpp                               \
     Utility/Widgets/IComboList/ComboListItem.cpp                                \
@@ -267,6 +268,8 @@ SOURCES +=                                                                      
     Components/PatientData/TrendTableModel.cpp                                  \
     Components/PatientData/TrendTableSetWindow.cpp                              \
     Components/PatientData/TrendPrintWindow.cpp                                 \
+    Components/PatientData/TrendGraphWindow.cpp                                 \
+    Components/PatientData/TrendGraphSetWindow.cpp                              \
     Components/TimeManager/DateTimeWidget.cpp                                   \
     Components/TimeManager/ElapseTimeWidget.cpp                                 \
     Components/TimeManager/TimeManager.cpp                                      \
@@ -278,6 +281,7 @@ SOURCES +=                                                                      
     Components/PatientManager/PatientInfoMenu.cpp                               \
     Components/PatientManager/RelievePatientWidget.cpp                          \
     Components/PatientManager/PatientInfoWindow.cpp                             \
+    Components/PatientManager/RelievePatientWindow.cpp                          \
     Components/PowerManager/BatteryMessage.cpp                                  \
     Components/PowerManager/BatteryAlarm.cpp                                    \
     Components/PowerManager/BatteryIndicatorWidget.cpp                          \
@@ -452,6 +456,7 @@ SOURCES +=                                                                      
     Components/ConfigManager/UnitSetupMenuContent.cpp                           \
     Components/Freeze/FreezeManager.cpp                                         \
     Components/Freeze/FreezeWidget.cpp                                          \
+    Components/Freeze/FreezeWindow.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
 #################################################################################
     Params/AGParam/AGWidgets/AGMenu.cpp                                         \
@@ -641,6 +646,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.h           \
     Utility/Widgets/Base/PasswordWidget.h                                       \
     Utility/Widgets/Base/SpinBox.h                                              \
+    Utility/Widgets/Base/DropList.h                                             \
     Utility/Widgets/IComboList/ComboList.h                                      \
     Utility/Widgets/IComboList/ComboListPopup.h                                 \
     Utility/Widgets/IComboList/ComboListItem.h                                  \
@@ -799,6 +805,8 @@ HEADERS +=                                                                      
     Components/PatientData/TrendTableModel.h                                    \
     Components/PatientData/TrendTableSetWindow.h                                \
     Components/PatientData/TrendPrintWindow.h                                   \
+    Components/PatientData/TrendGraphSetWindow.h                                \
+    Components/PatientData/TrendGraphWindow.h                                   \
     Components/PatientManager/PatientManager.h                                  \
     Components/PatientManager/PatientBarWidget.h                                \
     Components/PatientManager/PatientDefine.h                                   \
@@ -806,8 +814,9 @@ HEADERS +=                                                                      
     Components/PatientManager/PatientInfoWidget.h                               \
     Components/PatientManager/PatientStatusBarWidget.h                          \
     Components/PatientManager/PatientInfoMenu.h                                 \
-    Components/PatientManager/RelievePatientWidget.h                            \
     Components/PatientManager/PatientInfoWindow.h                               \
+    Components/PatientManager/RelievePatientWidget.h                            \
+    Components/PatientManager/RelievePatientWindow.h                            \
     Components/PowerManager/BatteryAlarm.h                                      \
     Components/PowerManager/BatteryMessage.h                                    \
     Components/PowerManager/BatteryDefine.h                                     \
@@ -995,6 +1004,7 @@ HEADERS +=                                                                      
     Components/ConfigManager/UnitSetupMenuContent.h                             \
     Components/Freeze/FreezeManager.h                                           \
     Components/Freeze/FreezeWidget.h                                            \
+    Components/Freeze/FreezeWindow.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \
 #################################################################################
     Params/AGParam/AGWidgets/AGMenu.h                                           \

@@ -5,13 +5,12 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
+<<<<<<< HEAD
  ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/7/31
  **/
 
 #pragma once
 #include "Window.h"
-#include "WindowManager.h"
-
 
 class PatientInfoWindowPrivate;
 class PatientInfoWindow : public Window
@@ -28,15 +27,12 @@ public:
     }
     static PatientInfoWindow *_selfObj;
     ~PatientInfoWindow();
-
-
     void readyShow();
     void layoutExec();
     void widgetChange(void);
     void relieveStatus(bool);
     void newPatientStatus(bool);
     void autoShow(void);
-
 private slots:
     void _idReleased(void);
     void _nameReleased(void);
@@ -53,3 +49,5 @@ private:
 
 #define patientInfoWindow (PatientInfoWindow::construction())
 #define deletePatientInfoWindow() (delete PatientInfoWindow::_selfObj)
+
+

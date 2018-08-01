@@ -5,6 +5,7 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
+<<<<<<< HEAD
  ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/7/31
  **/
 
@@ -15,7 +16,6 @@
 #include "LanguageManager.h"
 #include <QStringList>
 #include "PatientDefine.h"
-#include "Button.h"
 #include "MessageBox.h"
 #include <QHBoxLayout>
 #include "EnglishInputPanel.h"
@@ -23,9 +23,11 @@
 #include "PatientManager.h"
 #include "RelievePatientWidget.h"
 #include "DataStorageDirManager.h"
+#include <QMap>
+#include "Button.h"
+#include "WindowManager.h"
 
 PatientInfoWindow *PatientInfoWindow::_selfObj = NULL;
-
 class PatientInfoWindowPrivate
 {
 public:
@@ -75,6 +77,11 @@ public:
     QMap<MenuItem , Button *> buttons;
 };
 
+/**
+ * @brief checkAgeValue
+ * @param value
+ * @return
+ */
 static bool checkAgeValue(const QString &value)
 {
     if (value.isEmpty())
@@ -97,7 +104,58 @@ static bool checkAgeValue(const QString &value)
     return true;
 }
 
+/**
+ * @brief checkHeightValue
+ * @param value
+ * @return
+ */
+static bool checkHeightValue(const QString &value)
+{
+    if (value.isEmpty())
+    {
+        return true;
+    }
 
+    bool ok = false;
+    int age = value.toInt(&ok);
+    if (!ok)
+    {
+        return false;
+    }
+
+    if (age > 480 || age < 0)
+    {
+        return false;
+    }
+
+    return true;
+}
+/**
+ * @brief checkWeightValue
+ * @param value
+ * @return
+ */
+static bool checkWeightValue(const QString &value)
+{
+    if (value.isEmpty())
+    {
+        return true;
+    }
+
+    bool ok = false;
+    int age = value.toInt(&ok);
+    if (!ok)
+    {
+        return false;
+    }
+
+    if (age > 480 || age < 0)
+    {
+        return false;
+    }
+
+    return true;
+}
 void PatientInfoWindowPrivate::loadOptions()
 {
     combos[ITEM_CBO_PATIENT_TYPE]->setCurrentIndex(0);
@@ -118,11 +176,6 @@ PatientInfoWindow::PatientInfoWindow()
     setWindowTitle("Patient Infomation");
     layoutExec();
 }
-
-PatientInfoWindow::~PatientInfoWindow()
-{
-}
-
 void PatientInfoWindow::readyShow()
 {
     d_ptr->loadOptions();
@@ -365,7 +418,7 @@ void PatientInfoWindow::autoShow()
     else
     {
         setFixedWidth(500);
-        setFixedHeight(600);
+        setFixedHeight(630);
         exec();
     }
 }
@@ -435,7 +488,7 @@ void PatientInfoWindow::_heightReleased()
     englishPanel.setSpaceEnable(false);
     englishPanel.setSymbolEnable(false);
     englishPanel.setKeytypeSwitchEnable(false);
-    englishPanel.setCheckValueHook(checkAgeValue);
+    englishPanel.setCheckValueHook(checkHeightValue);
 
     if (englishPanel.exec())
     {
@@ -465,7 +518,7 @@ void PatientInfoWindow::_weightReleased()
     englishPanel.setSpaceEnable(false);
     englishPanel.setSymbolEnable(false);
     englishPanel.setKeytypeSwitchEnable(false);
-    englishPanel.setCheckValueHook(checkAgeValue);
+    englishPanel.setCheckValueHook(checkWeightValue);
 
     if (englishPanel.exec())
     {
@@ -539,6 +592,17 @@ void PatientInfoWindow::_saveInfoReleased()
         }
     }
 }
+
+PatientInfoWindow::~PatientInfoWindow()
+{
+    delete d_ptr;
+}
+
+
+
+
+
+
 
 
 
