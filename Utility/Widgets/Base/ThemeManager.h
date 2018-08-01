@@ -54,6 +54,7 @@ public:
         IconDown,
         IconLeft,
         IconRight,
+        IconChecked,
         IconNR
     };
 

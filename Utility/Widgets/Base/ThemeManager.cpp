@@ -30,6 +30,7 @@ static const char *iconPaths[ThemeManager::IconNR] =
     ":/ui/down.svg",
     ":/ui/left.svg",
     ":/ui/right.svg",
+    ":/ui/checked.svg",
 };
 
 void ThemeManagerPrivate::loadColorScheme()

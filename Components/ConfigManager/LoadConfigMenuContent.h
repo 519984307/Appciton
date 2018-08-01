@@ -37,6 +37,7 @@ public:
      * @brief changeEvent
      */
     virtual void changeEvent(QEvent *);
+
 signals:
     /**
      * @brief configUpdated

@@ -28,10 +28,14 @@
 #include "ConfigEditMenuGrp.h"
 #include <QHBoxLayout>
 #include "FontManager.h"
+#include "ListView.h"
+#include "ListDataModel.h"
+#include "ListViewItemDelegate.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
 
+#define LISTVIEW_MAX_VISIABLE_TIME 6
 #define CONFIG_LIST_ITEM_H 30
 #define CONFIG_LIST_ITME_W 200
 #define CONFIG_MAX_NUM 3
@@ -147,12 +151,13 @@ void LoadConfigMenuContent::layoutExec()
         return;
     }
 
-    QGridLayout *layout = new QGridLayout(this);
+    QVBoxLayout *layout = new QVBoxLayout(this);
+
     layout->setMargin(10);
 
     // load config
     QLabel *label = new QLabel(trs("LoadConfig"));
-    layout->addWidget(label, d_ptr->ltws.count(), 0);
+    layout->addWidget(label);
 
     // config list
     IListWidget *listWidget = new IListWidget();
@@ -174,9 +179,8 @@ void LoadConfigMenuContent::layoutExec()
     connect(listWidget, SIGNAL(realRelease()), this, SLOT(onConfigClick()));
     listWidget->setFixedHeight(289);// size for 8 items
     d_ptr->ltws.insert(LoadConfigMenuContentPrivate::ITEM_LTW_CONFIG_LIST, listWidget);
-    layout->addWidget(listWidget, d_ptr->ltws.count(), 0);
+    layout->addWidget(listWidget);
 
-    int row = d_ptr->ltws.count();
     Button *button;
 
     QHBoxLayout *hl = new QHBoxLayout;
@@ -196,8 +200,19 @@ void LoadConfigMenuContent::layoutExec()
     hl->addWidget(button);
     d_ptr->btns.insert(LoadConfigMenuContentPrivate::ITEM_BTN_VIEW_CONFIG, button);
 
-    layout->addLayout(hl, row + 1, 0);
-    layout->setRowStretch((row + d_ptr->btns.count()), 1);
+    layout->addLayout(hl);
+
+    ListView *listView = new ListView();
+    listView->setItemDelegate(new ListViewItemDelegate(listView));
+    layout->addWidget(listView);
+    ListDataModel *model = new ListDataModel(this);
+    listView->setFixedHeight(LISTVIEW_MAX_VISIABLE_TIME * model->getRowHeightHint()
+                             + listView->spacing() * (LISTVIEW_MAX_VISIABLE_TIME * 2));
+    model->setStringList(QStringList() << "One" << "Two" << "Three" << "FOUR" << "FIVE" << "SIX");
+    listView->setModel(model);
+
+    layout->addStretch(1);
+    listWidget->setVisible(false);
 }
 
 void LoadConfigMenuContent::hideEvent(QHideEvent *ev)
@@ -327,24 +342,3 @@ void LoadConfigMenuContent::onBtnClick()
         qdebug("Unknown singal sender!");
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
