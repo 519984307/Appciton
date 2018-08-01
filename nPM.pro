@@ -115,6 +115,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/TableViewItemDelegate.cpp                              \
     Utility/Widgets/Base/ListView.cpp                                           \
     Utility/Widgets/Base/ListDataModel.cpp                                      \
+    Utility/Widgets/Base/ListViewItemDelegate.cpp                                      \
     Utility/Widgets/Base/MenuWindow.cpp                                         \
     Utility/Widgets/Base/MenuSidebar.cpp                                        \
     Utility/Widgets/Base/MenuSidebarItem.cpp                                    \
@@ -610,6 +611,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/TableViewItemDelegate.h                                \
     Utility/Widgets/Base/ListView.h                                             \
     Utility/Widgets/Base/ListDataModel.h                                        \
+    Utility/Widgets/Base/ListViewItemDelegate.h                                 \
     Utility/Widgets/Base/MenuWindow.h                                           \
     Utility/Widgets/Base/MenuSidebar.h                                          \
     Utility/Widgets/Base/MenuSidebarItem.h                                      \

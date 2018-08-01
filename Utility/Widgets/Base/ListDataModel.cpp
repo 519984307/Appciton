@@ -10,6 +10,7 @@
 
 #include "ListDataModel.h"
 #include <QStringList>
+#include <QIcon>
 #include "ThemeManager.h"
 
 #define DEFAULT_ROW_HEIGHT (themeManger.getAcceptableControlHeight())
@@ -19,6 +20,7 @@ class ListDataModelPrivate
 public:
     ListDataModelPrivate() {}
     QStringList list;
+    QList<QIcon> iconList;
 };
 
 ListDataModel::ListDataModel(QObject *parent)
@@ -49,9 +51,13 @@ QVariant ListDataModel::data(const QModelIndex &index, int role) const
         }
         break;
 
+    case Qt::DecorationRole:
+        return QVariant(d_ptr->iconList.at(index.row()));
+        break;
+
     case Qt::SizeHintRole:
     {
-        return QSize(DEFAULT_ROW_HEIGHT, 10);
+        return QSize(10, DEFAULT_ROW_HEIGHT);
     }
     break;
 
@@ -73,14 +79,48 @@ QVariant ListDataModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+bool ListDataModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (index.isValid() && index.row() >= d_ptr->list.count())
+    {
+        return false;
+    }
+
+    switch (role)
+    {
+    case Qt::DisplayRole:
+        d_ptr->list[index.row()] = value.toString();
+        emit dataChanged(index, index);
+        return true;
+    case Qt::DecorationRole:
+        d_ptr->iconList[index.row()] = qvariant_cast<QIcon>(value);
+        emit dataChanged(index, index);
+        return true;
+    default:
+        break;
+    }
+
+    return false;
+}
+
 void ListDataModel::setStringList(const QStringList &list)
 {
     beginResetModel();
     d_ptr->list = list;
+    d_ptr->iconList.clear();
+    for (int i = 0; i < d_ptr->list.count(); i++)
+    {
+        d_ptr->iconList.append(QIcon());
+    }
     endResetModel();
 }
 
 QStringList ListDataModel::getStringList() const
 {
     return d_ptr->list;
+}
+
+int ListDataModel::getRowHeightHint() const
+{
+    return DEFAULT_ROW_HEIGHT;
 }
