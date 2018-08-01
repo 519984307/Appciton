@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/1
+ **/
+
+
 #pragma once
 
 /**************************************************************************************************
@@ -136,7 +147,7 @@ enum ECGBandwidth
     ECG_BANDWIDTH_0525_40HZ,
     ECG_BANDWIDTH_0525_150HZ,
     ECG_BANDWIDTH_NR,
-    ECG_BANDWIDTH_MULTIPLE = ECG_BANDWIDTH_NR,   //multiple bandwidth, equal to the bandwidth NR
+    ECG_BANDWIDTH_MULTIPLE = ECG_BANDWIDTH_NR,   // multiple bandwidth, equal to the bandwidth NR
 };
 
 /**************************************************************************************************
@@ -227,98 +238,3 @@ enum ECGWaveNotify
     ECG_WAVE_NOTIFY_CHECK_PATIENT,
     ECG_WAVE_NOTIFY_NR
 };
-
-// ecg 分析结果
-struct ECGAnalysisResult
-{
-    ECGAnalysisResult()
-    {
-        time = 0;
-        analysisType = 0;
-        startTime = 0;
-        endTime = 0;
-        segNumber = 0;
-        intervalCode = 0;
-        noisyNumber = 0;
-        saturatedNumber = 0;
-        adviseDection = 0;
-    }
-
-    unsigned int calSum()
-    {
-        unsigned checkSum = 0;
-        checkSum += (time + analysisType + startTime + endTime);
-        checkSum += (segNumber + intervalCode + noisyNumber + saturatedNumber);
-        checkSum += adviseDection;
-
-        return checkSum;
-    }
-
-    unsigned time;
-    short analysisType;
-    unsigned startTime;
-    unsigned endTime;
-    short segNumber;
-    short intervalCode;
-    short noisyNumber;
-    short saturatedNumber;
-    short adviseDection;
-}__attribute__((packed));
-
-struct ECGAnalysisMetricsUnit
-{
-    ECGAnalysisMetricsUnit()
-    {
-        segType = 0;
-        segStartTime = 0;
-        segEndTime = 0;
-        segMode = 0;
-        segNumber = 0;
-
-        for (int i = 0; i < 13; ++i)
-        {
-            segSequence[i] = 0;
-        }
-    }
-
-    unsigned int calSum()
-    {
-        unsigned int checkSum = 0;
-        checkSum += (segType + segStartTime + segEndTime + segMode + segNumber);
-        for (int i = 0; i < 13; ++i)
-        {
-            checkSum += segSequence[i];
-        }
-
-        return checkSum;
-    }
-
-    short segType;
-    unsigned segStartTime;
-    unsigned segEndTime;
-    short segMode;
-    short segNumber;
-    short segSequence[13];
-}__attribute__((packed));
-
-// ecg analysis metrics
-struct ECGAnalysisMetrics
-{
-    ECGAnalysisMetrics()
-    {
-        time = 0;
-    }
-
-    unsigned int calSum()
-    {
-        unsigned int checkSum = time;
-        checkSum += segment[0].calSum();
-        checkSum += segment[1].calSum();
-        checkSum += segment[2].calSum();
-
-        return checkSum;
-    }
-
-    unsigned time;
-    ECGAnalysisMetricsUnit segment[3];
-}__attribute__((packed));

@@ -13,6 +13,7 @@
 #include <QObject>
 #include <QPalette>
 
+class QIcon;
 class ThemeManagerPrivate;
 class ThemeManager : public QObject
 {
@@ -23,7 +24,7 @@ public:
         StateInactive,
         StateActive,
         StateDisabled,
-        StateHightlight,
+        StateHighlight,
         StateNR,
     };
 
@@ -31,9 +32,11 @@ public:
     {
         ControlWindow,
         ControlButton,
+        ControlSpinBox,
         ControlComboBox,
         ControlPopupList,
         ControlPopupListItem,
+        ControlMenuSideBarItem,
         ControlTypeNR,
     };
 
@@ -43,6 +46,16 @@ public:
         ElementBackgound,
         ElementText,
         ElementNR,
+    };
+
+    enum IconType {
+        IconClose,
+        IconUp,
+        IconDown,
+        IconLeft,
+        IconRight,
+        IconChecked,
+        IconNR
     };
 
     static ThemeManager &getInstance();
@@ -81,6 +94,32 @@ public:
     int getBorderRadius() const
     {
         return 4;
+    }
+
+    /**
+     * @brief getIcon get a icon
+     * @param icon icon type
+     * @return reference to the icon
+     */
+    const QIcon &getIcon(IconType icon);
+
+    /**
+     * @brief getAcceptableControlHeight get the acceptable control height,
+     *        all controls should use this value as it's default height
+     * @return height;
+     */
+    int getAcceptableControlHeight() const
+    {
+        return 48;
+    }
+
+    /**
+     * @brief defaultFontPixSize get the default font pixsize
+     * @return the font pix size
+     */
+    int defaultFontPixSize() const
+    {
+        return 20;
     }
 
 private:

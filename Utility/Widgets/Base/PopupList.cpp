@@ -20,7 +20,6 @@
 #include <QResizeEvent>
 #include "FontManager.h"
 #include <QKeyEvent>
-#include <QDebug>
 #include <QFocusEvent>
 
 #define DEFAULT_WIDTH 150
@@ -87,7 +86,7 @@ PopupList::PopupList(QWidget *parent, bool concatToParent)
     }
     else
     {
-        setFont(fontManager.textFont(17));
+        setFont(fontManager.textFont(themeManger.defaultFontPixSize()));
     }
 
     QPalette p =  palette();
@@ -114,7 +113,6 @@ PopupList::PopupList(QWidget *parent, bool concatToParent)
 
 PopupList::~PopupList()
 {
-    qDebug() << Q_FUNC_INFO;
 }
 
 void PopupList::addItemText(const QString &text)
@@ -123,6 +121,15 @@ void PopupList::addItemText(const QString &text)
     d_ptr->items.append(item);
     d_ptr->itemLayout->addWidget(item);
     connect(item, SIGNAL(clicked(bool)), this, SLOT(onItemSelected()));
+}
+
+void PopupList::additemList(const QStringList &list)
+{
+    QStringList::ConstIterator iter;
+    for (iter = list.constBegin(); iter != list.constEnd(); ++iter)
+    {
+        addItemText(*iter);
+    }
 }
 
 void PopupList::setCurrentIndex(int index)
@@ -151,6 +158,11 @@ int PopupList::getCurrentIndex() const
     return d_ptr->curSelectIndex;
 }
 
+int PopupList::count() const
+{
+    return d_ptr->items.count();
+}
+
 QSize PopupList::sizeHint() const
 {
     QWidget *parent = parentWidget();
@@ -171,7 +183,6 @@ QSize PopupList::sizeHint() const
 
 void PopupList::showEvent(QShowEvent *e)
 {
-    qDebug() << Q_FUNC_INFO;
     d_ptr->scrollArea->setWidget(d_ptr->widget);
     d_ptr->scrollArea->updateFloatBar();
 
@@ -181,7 +192,6 @@ void PopupList::showEvent(QShowEvent *e)
     // find a proper position
     if (parent)
     {
-
         // set fix width;
         this->setFixedWidth(parent->width());
 
@@ -199,7 +209,11 @@ void PopupList::showEvent(QShowEvent *e)
             // pop under the parent widget
             if (!d_ptr->concatToParent)
             {
-                pos.ry() = pos.ry() + DEFAULT_GAP;
+                pos.ry() += DEFAULT_GAP;
+            }
+            else
+            {
+                pos.ry() -= borderRadius;
             }
 
             move(pos);
@@ -208,7 +222,7 @@ void PopupList::showEvent(QShowEvent *e)
         else
         {
             // pop above the parent widget
-            pos = parent->mapFromGlobal(parent->rect().topLeft());
+            pos = parent->mapToGlobal(parent->rect().topLeft());
             if (d_ptr->concatToParent)
             {
                 pos.ry() = pos.ry() - d_ptr->properItemsHeight();

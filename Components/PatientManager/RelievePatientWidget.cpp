@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/30
+ **/
+
+
+
 #include "RelievePatientWidget.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -7,6 +19,7 @@
 #include "PatientInfoMenu.h"
 #include "LanguageManager.h"
 #include "DataStorageDirManager.h"
+#include "PatientInfoWindow.h"
 
 RelievePatientWidget *RelievePatientWidget::_selfObj = NULL;
 
@@ -15,7 +28,6 @@ RelievePatientWidget *RelievePatientWidget::_selfObj = NULL;
  *************************************************************************************************/
 RelievePatientWidget::~RelievePatientWidget()
 {
-
 }
 
 /**************************************************************************************************
@@ -23,7 +35,7 @@ RelievePatientWidget::~RelievePatientWidget()
  *************************************************************************************************/
 void RelievePatientWidget::layoutExec()
 {
-    //setFixedWidth(windowManager.getPopMenuWidth()*2/3);
+    // setFixedWidth(windowManager.getPopMenuWidth()*2/3);
 
     int  submenuW = windowManager.getPopMenuWidth();
 
@@ -85,7 +97,6 @@ void RelievePatientWidget::showEvent(QShowEvent *e)
 void RelievePatientWidget::exit()
 {
     this->hide();
-    patientInfoMenu.exec();
 }
 
 /***************************************************************************************************
@@ -95,7 +106,6 @@ void RelievePatientWidget::_yesReleased()
 {
     this->hide();
     dataStorageDirManager.createDir(true);
-    patientInfoMenu.relieveStatus(false);
 }
 
 /***************************************************************************************************
@@ -105,7 +115,6 @@ void RelievePatientWidget::_noReleased()
 {
     this->hide();
     dataStorageDirManager.createDir(true);
-    patientInfoMenu.relieveStatus(false);
 }
 
 /**************************************************************************************************

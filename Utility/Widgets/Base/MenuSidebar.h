@@ -14,6 +14,7 @@
 #include "ScrollArea.h"
 
 class MenuSidebarPrivate;
+class MenuSideBarItem;
 class MenuSidebar : public ScrollArea
 {
     Q_OBJECT
@@ -34,12 +35,20 @@ public:
      */
     bool setChecked(const QString &text);
 
+    /**
+     * @brief getChecked get get focus item
+     * @return  the focus item
+     */
+    QWidget *getChecked() const;
+
+
     /* reimplement */
     QSize sizeHint() const;
 
 signals:
     void selectItemChanged(const QString &text);
     void selectItemChanged(int index);
+    void itemClicked(int index);
 
 protected:
     void showEvent(QShowEvent *ev);

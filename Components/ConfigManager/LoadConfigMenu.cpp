@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/13
+ **/
+
 #include <QLabel>
 #include "LoadConfigMenu.h"
 #include "ConfigMaintainMenuGrp.h"
@@ -25,21 +35,21 @@
 #define CONFIG_LIST_ITME_W 200
 #define CONFIG_MAX_NUM 3
 
-LoadConfigMenu* LoadConfigMenu::selfObj = NULL;
+LoadConfigMenu *LoadConfigMenu::selfObj = NULL;
 
-class LoadConfigMenuPrivate {
+class LoadConfigMenuPrivate
+{
 public:
     LoadConfigMenuPrivate()
-        :configList(NULL), loadBtn(NULL), viewBtn(NULL),
-         lastSelectItem(NULL), curConfig(NULL)
+        : configList(NULL), loadBtn(NULL), viewBtn(NULL),
+          lastSelectItem(NULL), curConfig(NULL), curEditIndex(0)
     {
-
     }
 
     void loadConfigs();
     void updateConfigList();
 
-    //check whether a config exist base on the config name
+    // check whether a config exist base on the config name
     bool isConfigExist(const QString &name) const;
 
     IListWidget *configList;
@@ -54,12 +64,13 @@ public:
 void LoadConfigMenuPrivate::loadConfigs()
 {
     configs.clear();
-    ConfigManager::UserDefineConfigInfo userConfig[]={
+    ConfigManager::UserDefineConfigInfo userConfig[] =
+    {
         {"AdultConfig.Original", "AdultConfig.Original.xml"},
         {"PedConfig.Original", "PedConfig.Original.xml"},
         {"NeoConfig.Original", "NeoConfig.Original.xml"}
     };
-    for(int i=0;i< 3;i++)
+    for (int i = 0; i < 3; i++)
     {
         configs.append(userConfig[i]);
     }
@@ -72,8 +83,8 @@ void LoadConfigMenuPrivate::loadConfigs()
  */
 void LoadConfigMenuPrivate::updateConfigList()
 {
-    //remove old item
-    while(configList->count())
+    // remove old item
+    while (configList->count())
     {
         QListWidgetItem *item = configList->takeItem(0);
         delete item;
@@ -86,7 +97,7 @@ void LoadConfigMenuPrivate::updateConfigList()
     }
 
     int count = configs.count();
-    if(count)
+    if (count)
     {
         configList->setFocusPolicy(Qt::StrongFocus);
     }
@@ -95,29 +106,26 @@ void LoadConfigMenuPrivate::updateConfigList()
         configList->setFocusPolicy(Qt::NoFocus);
     }
 
-    if(lastSelectItem)
+    if (lastSelectItem)
     {
         lastSelectItem->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
     }
     loadBtn->setEnabled(!!lastSelectItem);
     viewBtn->setEnabled(!!lastSelectItem);
-
 }
 
 
 LoadConfigMenu::LoadConfigMenu()
-    :SubMenu(trs("LoadConfig")), d_ptr(new LoadConfigMenuPrivate())
+    : SubMenu(trs("LoadConfig")), d_ptr(new LoadConfigMenuPrivate())
 {
     setDesc(trs("LoadConfigDesc"));/*更改标题栏标题*/
     startLayout();/*布局*/
 
     connect(this, SIGNAL(configUpdated()), &configManager, SIGNAL(configUpdated()));
-
 }
 
 LoadConfigMenu::~LoadConfigMenu()
 {
-
 }
 
 /***************************************************************************************************
@@ -129,12 +137,8 @@ LoadConfigMenu::~LoadConfigMenu()
  **************************************************************************************************/
 bool LoadConfigMenu::eventFilter(QObject *obj, QEvent *ev)
 {
-    if(obj == d_ptr->configList)
+    if (obj == d_ptr->configList)
     {
-        if (ev->type() == QEvent::FocusIn)
-        {
-
-        }
         if (ev->type() == QEvent::Hide)
         {
             d_ptr->lastSelectItem = NULL;
@@ -143,7 +147,7 @@ bool LoadConfigMenu::eventFilter(QObject *obj, QEvent *ev)
     return false;
 }
 
-//对应界面的ConfigManagerment选项
+// 对应界面的ConfigManagerment选项
 void LoadConfigMenu::layoutExec()
 {
     int submenuW = configMaintainMenuGrp.getSubmenuWidth();
@@ -152,7 +156,7 @@ void LoadConfigMenu::layoutExec()
 
     int fontSize = fontManager.getFontSize(1);
 
-    //configure label
+    // configure label
     QLabel *label = new QLabel();
     label->setFont(fontManager.textFont(fontSize));
     QMargins margin = label->contentsMargins();
@@ -163,7 +167,7 @@ void LoadConfigMenu::layoutExec()
     label->setText(trs("LoadConfig"));
     mainLayout->addWidget(label);
 
-    //config list
+    // config list
     d_ptr->configList = new IListWidget();
     d_ptr->configList->setFont(fontManager.textFont(fontSize));
     d_ptr->configList->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -171,20 +175,21 @@ void LoadConfigMenu::layoutExec()
     d_ptr->configList->setFrameStyle(QFrame::Plain);
     d_ptr->configList->setSpacing(2);
     d_ptr->configList->setUniformItemSizes(true);
-    d_ptr->configList->setIconSize(QSize(16,16));
+    d_ptr->configList->setIconSize(QSize(16, 16));
 
-    QString configListStyleSheet = QString("QListWidget { margin-left: 15px; border:1px solid #808080; border-radius: 2px; background-color: transparent; outline: none; }\n "
-    "QListWidget::item {padding: 5px; border-radius: 2px; border: none; background-color: %1;}\n"
-    "QListWidget::item:focus {background-color: %2;}").arg("blue").arg(colorManager.getHighlight().name());
+    QString configListStyleSheet =
+        QString("QListWidget { margin-left: 15px; border:1px solid #808080; border-radius: 2px; background-color: transparent; outline: none; }\n "
+                "QListWidget::item {padding: 5px; border-radius: 2px; border: none; background-color: %1;}\n"
+                "QListWidget::item:focus {background-color: %2;}").arg("blue").arg(colorManager.getHighlight().name());
 
     d_ptr->configList->setStyleSheet(configListStyleSheet);
     connect(d_ptr->configList, SIGNAL(exitList(bool)), this, SLOT(onExitList(bool)));
     connect(d_ptr->configList, SIGNAL(realRelease()), this, SLOT(onConfigClick()));
     d_ptr->configList->installEventFilter(this);
-    d_ptr->configList->setFixedHeight(289); //size for 8 items
+    d_ptr->configList->setFixedHeight(289); // size for 8 items
     mainLayout->addWidget(d_ptr->configList);
 
-    //buttons
+    // buttons
     QHBoxLayout *hlayout = new QHBoxLayout();
     hlayout->setContentsMargins(QMargins(15, 10, 0, 40));
     hlayout->setSpacing(10);
@@ -213,7 +218,7 @@ void LoadConfigMenu::readyShow()
 // handle config list exit event
 void LoadConfigMenu::onExitList(bool backTab)
 {
-    if(backTab)
+    if (backTab)
     {
         focusPreviousChild();
     }
@@ -226,16 +231,16 @@ void LoadConfigMenu::onExitList(bool backTab)
 void LoadConfigMenu::onConfigClick()
 {
     QListWidgetItem *item = d_ptr->configList->currentItem();
-    if(!item)
+    if (!item)
     {
         return;
     }
-    if(d_ptr->lastSelectItem)
+    if (d_ptr->lastSelectItem)
     {
         d_ptr->lastSelectItem->setIcon(QIcon());
     }
 
-    if(item != d_ptr->lastSelectItem)
+    if (item != d_ptr->lastSelectItem)
     {
         item->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
         d_ptr->lastSelectItem = item;
@@ -252,12 +257,12 @@ void LoadConfigMenu::onBtnClick()
 {
     LButtonEx *btn = qobject_cast<LButtonEx *>(sender());
 
-    if(btn==NULL || d_ptr->lastSelectItem==NULL)
+    if (btn == NULL || d_ptr->lastSelectItem == NULL)
     {
         return;
     }
 
-    if(btn == d_ptr->loadBtn)//加载配置
+    if (btn == d_ptr->loadBtn) //加载配置
     {
         //加入最新配置文件
         int index = d_ptr->configList->row(d_ptr->lastSelectItem);
@@ -269,15 +274,15 @@ void LoadConfigMenu::onBtnClick()
         //更新加载的病人类型
         int patitentTypeInt = 255;
         QString fileNameStr(d_ptr->configs.at(index).fileName);
-        if(fileNameStr.indexOf("Adult")>=0)
+        if (fileNameStr.indexOf("Adult") >= 0)
         {
             patitentTypeInt = 0;
         }
-        else if(fileNameStr.indexOf("Ped")>=0)
+        else if (fileNameStr.indexOf("Ped") >= 0)
         {
             patitentTypeInt = 1;
         }
-        else if(fileNameStr.indexOf("Neo")>=0)
+        else if (fileNameStr.indexOf("Neo") >= 0)
         {
             patitentTypeInt = 2;
         }
@@ -303,29 +308,28 @@ void LoadConfigMenu::onBtnClick()
         IMessageBox iMessageBox(title, text, false);
         int subWidth = menuManager.getSubmenuWidth();
         int subHeight = menuManager.getSubmenuHeight();
-        iMessageBox.setFixedSize(subWidth/2, subHeight/3);
+        iMessageBox.setFixedSize(subWidth / 2, subHeight / 3);
         iMessageBox.exec();
     }
     else if (btn == d_ptr->viewBtn)//查看配置
     {
-        if(d_ptr->lastSelectItem)
+        if (d_ptr->lastSelectItem)
         {
             int index = d_ptr->configList->row(d_ptr->lastSelectItem);
             d_ptr->curEditIndex = index;
             d_ptr->curConfig = new Config(QString("%1/%2")
                                           .arg(CONFIG_DIR)
                                           .arg(d_ptr->configs.at(index).fileName));
+            d_ptr->lastSelectItem->setIcon(QIcon());
+            d_ptr->lastSelectItem = NULL;
             configEditMenuGrp.setCurrentEditConfigName(d_ptr->configs.at(index).name);
             configEditMenuGrp.setCurrentEditConfig(d_ptr->curConfig);
             configManager.setWidgetStatus(true);
             configEditMenuGrp.initializeSubMenu();
             configEditMenuGrp.popup();
 
-            d_ptr->lastSelectItem->setIcon(QIcon());
-            d_ptr->lastSelectItem = NULL;
             d_ptr->loadBtn->setEnabled(!!d_ptr->lastSelectItem);
             d_ptr->viewBtn->setEnabled(!!d_ptr->lastSelectItem);
-
         }
     }
     else
@@ -333,4 +337,3 @@ void LoadConfigMenu::onBtnClick()
         qdebug("Unknown singal sender!");
     }
 }
-

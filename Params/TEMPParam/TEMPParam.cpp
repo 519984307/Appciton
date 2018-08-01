@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn,2018/7/25
+ **/
+
 #include "TEMPParam.h"
 #include "TEMPAlarm.h"
 #include "TEMPTrendWidget.h"
@@ -19,7 +29,7 @@ void TEMPParam::initParam(void)
 /**************************************************************************************************
  * 处理DEMO数据。
  *************************************************************************************************/
-void TEMPParam::handDemoWaveform(WaveformID /*id*/, short /*data*/)
+void TEMPParam::handDemoWaveform(WaveformID /*id*/, int16_t /*data*/)
 {
     return;
 }
@@ -41,21 +51,21 @@ void TEMPParam::handDemoTrendData(void)
 /**************************************************************************************************
  * 功能： 获取子参数值。
  *************************************************************************************************/
-short TEMPParam::getSubParamValue(SubParamID id)
+int16_t TEMPParam::getSubParamValue(SubParamID id)
 {
     switch (id)
     {
-        case SUB_PARAM_T1:
-            return _t1Value;
+    case SUB_PARAM_T1:
+        return _t1Value;
 
-        case SUB_PARAM_T2:
-            return _t2Value;
+    case SUB_PARAM_T2:
+        return _t2Value;
 
-        case SUB_PARAM_TD:
-            return _tdValue;
+    case SUB_PARAM_TD:
+        return _tdValue;
 
-        default:
-            return InvData();
+    default:
+        return InvData();
     }
 }
 
@@ -131,6 +141,15 @@ void TEMPParam::setServiceProvider(TEMPProviderIFace *provider)
     _provider = provider;
 }
 
+bool TEMPParam::isServiceProviderOk()
+{
+    if (!_provider)
+    {
+        return false;
+    }
+    return true;
+}
+
 /**************************************************************************************************
  * 设置界面对象。
  *************************************************************************************************/
@@ -142,7 +161,7 @@ void TEMPParam::setTrendWidget(TEMPTrendWidget *trendWidget)
 /**************************************************************************************************
  * 设置TEMP的值。
  *************************************************************************************************/
-void TEMPParam::setTEMP(short t1, short t2, short td)
+void TEMPParam::setTEMP(int16_t t1, int16_t t2, int16_t td)
 {
     if (_isTEMPDisable)
     {
@@ -166,7 +185,7 @@ void TEMPParam::setTEMP(short t1, short t2, short td)
 /**************************************************************************************************
  * 获取TEMP的值。
  *************************************************************************************************/
-void TEMPParam::getTEMP(short &t1, short &t2, short &td)
+void TEMPParam::getTEMP(int16_t &t1, int16_t &t2, int16_t &td)
 {
     t1 = _t1Value;
     t2 = _t2Value;
@@ -185,7 +204,7 @@ void TEMPParam::setOneShotAlarm(TEMPOneShotType t, bool f)
             tempOneShotAlarm.clear();
         }
     }
-    tempOneShotAlarm.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE,_isTEMPDisable);
+    tempOneShotAlarm.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE, _isTEMPDisable);
     if (t >= TEMP_OVER_RANGR_1)
     {
         tempOneShotAlarm.setOneShotAlarm(t, f);
@@ -221,7 +240,7 @@ void TEMPParam::sendCmdData(unsigned char cmdId, const unsigned char *data, unsi
 {
     if (NULL != _provider)
     {
-        _provider->sendCmdData(cmdId,data,len);
+        _provider->sendCmdData(cmdId, data, len);
     }
 }
 
@@ -229,7 +248,7 @@ void TEMPParam::sendCalibrateData(int channel, int value)
 {
     _calibrateChannel = channel;
     _calibrateValue = value;
-    _provider->sendCalibrateData(channel,value);
+    _provider->sendCalibrateData(channel, value);
 }
 
 void TEMPParam::getCalibrateData(unsigned char *packet)
@@ -238,7 +257,7 @@ void TEMPParam::getCalibrateData(unsigned char *packet)
     {
         return;
     }
-    factoryTempMenu.getResult(packet[1],packet[2],packet[3]);
+    factoryTempMenu.getResult(packet[1], packet[2], packet[3]);
 }
 
 /**************************************************************************************************
@@ -246,7 +265,7 @@ void TEMPParam::getCalibrateData(unsigned char *packet)
  *************************************************************************************************/
 void TEMPParam::setUnit(UnitType u)
 {
-    currentConfig.setNumValue("Display|TEMPUnit", (int)u);
+    currentConfig.setNumValue("Display|TEMPUnit", static_cast<int>(u));
 
     if (NULL != _trendWidget)
     {
@@ -286,5 +305,4 @@ TEMPParam::TEMPParam() : Param(PARAM_TEMP)
  *************************************************************************************************/
 TEMPParam::~TEMPParam()
 {
-
 }

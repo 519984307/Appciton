@@ -16,7 +16,7 @@
 #include <QPainter>
 #include "ThemeManager.h"
 
-#define DEFAULT_HEIGHT 40
+#define DEFAULT_HEIGHT (themeManger.getAcceptableControlHeight())
 
 class ComboBoxPrivate
 {
@@ -83,6 +83,8 @@ void ComboBox::keyPressEvent(QKeyEvent *ev)
     case Qt::Key_F4:
         // will show popup when focus, ignore this hey
         break;
+    case Qt::Key_Up:
+    case Qt::Key_Down:
     case Qt::Key_Return:
         break;
     default:
@@ -104,6 +106,8 @@ void ComboBox::keyReleaseEvent(QKeyEvent *ev)
     case Qt::Key_Return:
         showPopup();
         break;
+    case Qt::Key_Up:
+    case Qt::Key_Down:
     case Qt::Key_F4:
         break;
     default:
@@ -161,10 +165,6 @@ void ComboBox::paintEvent(QPaintEvent *ev)
     int borderWidth = themeManger.getBorderWidth();
     int radius = themeManger.getBorderRadius();
     r.adjust(borderWidth / 2, borderWidth / 2, -borderWidth / 2, -borderWidth / 2);
-    if (d_ptr->popupList)
-    {
-        r.adjust(0, 0, 0, radius + borderWidth);
-    }
     QPen pen(borderColor, borderWidth);
     painter.setPen(pen);
     painter.setBrush(bgColor);

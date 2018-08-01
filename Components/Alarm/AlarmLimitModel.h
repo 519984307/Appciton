@@ -14,6 +14,16 @@
 #include "AlarmConfig.h"
 #include <QList>
 
+enum
+{
+    SECTION_PARAM_NAME,
+    SECTION_STATUS,
+    SECTION_HIGH_LIMIT,
+    SECTION_LOW_LIMIT,
+    SECTION_LEVEL,
+    SECTION_NR
+};
+
 struct AlarmDataInfo
 {
     ParamID paramID;
@@ -69,6 +79,30 @@ public:
      * @return header height hint
      */
     int getHeaderHeightHint() const;
+
+    /**
+     * @brief editRowData edit the row data
+     * @param row row
+     */
+    void editRowData(int row);
+
+    /**
+     * @brief stopEditRow stop edit row data
+     */
+    void stopEditRow();
+
+    /**
+     * @brief curEditRow get the current edit row
+     * @return the current edit row, -1 means not row is under edited
+     */
+    int curEditRow() const;
+
+protected:
+    /**
+     * @brief alarmDataUpdate callback when specific alarm config changed
+     * @param info the change alarm info
+     */
+    virtual void alarmDataUpdate(const AlarmDataInfo & /*info*/, int /*type*/);
 
 private:
     AlarmLimitModelPrivate *const d_ptr;

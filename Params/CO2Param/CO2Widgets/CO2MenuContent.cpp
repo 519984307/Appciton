@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/13
+ **/
+
 #include "CO2MenuContent.h"
 #include <QMap>
 #include <QLabel>
@@ -24,7 +34,7 @@ public:
         ITEM_BTN_ZERO_CALIB,
     };
 
-    CO2MenuContentPrivate(){}
+    CO2MenuContentPrivate() {}
 
     /**
      * @brief loadOptions  // load settings
@@ -36,10 +46,9 @@ public:
 };
 
 CO2MenuContent::CO2MenuContent():
-                MenuContent(trs("CO2Menu"), trs("CO2MenuDesc")),
-                d_ptr(new CO2MenuContentPrivate)
+    MenuContent(trs("CO2Menu"), trs("CO2MenuDesc")),
+    d_ptr(new CO2MenuContentPrivate)
 {
-
 }
 
 CO2MenuContent::~CO2MenuContent()
@@ -59,81 +68,81 @@ void CO2MenuContentPrivate::loadOptions()
 
     // 气体补偿。
     btns[ITEM_BTN_O2_COMPEN]->setText(QString::number(co2Param.getCompensation(CO2_COMPEN_O2)));
-    btns[ITEM_BTN_N2O_COMPEN]->setText(QString::number( co2Param.getCompensation(CO2_COMPEN_N2O)));
+    btns[ITEM_BTN_N2O_COMPEN]->setText(QString::number(co2Param.getCompensation(CO2_COMPEN_N2O)));
 
     // 显示控制。
     combos[ITEM_CBO_FICO2_DISPLAY]->setCurrentIndex(co2Param.getFICO2Display());
-
 }
 
 void CO2MenuContent::onComboBoxIndexChanged(int index)
 {
-    ComboBox *combos = qobject_cast<ComboBox*>(sender());
+    ComboBox *combos = qobject_cast<ComboBox *>(sender());
     int indexType = combos->property("Item").toInt();
 
-    switch(indexType)
+    switch (indexType)
     {
     case CO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED:
-    co2Param.setSweepSpeed((CO2SweepSpeed)index);
-    currentConfig.setNumValue("CO2|SweepSpeed", index);
+        co2Param.setSweepSpeed((CO2SweepSpeed)index);
+        currentConfig.setNumValue("CO2|SweepSpeed", index);
         break;
     case CO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY:
-    co2Param.setFiCO2Display((CO2FICO2Display)index);
+        co2Param.setFiCO2Display((CO2FICO2Display)index);
         break;
     };
 }
 
 void CO2MenuContent::onBtnReleasedChanged()
 {
-    Button *button = qobject_cast<Button*>(sender());
+    Button *button = qobject_cast<Button *>(sender());
     int index = button->property("Btn").toInt();
 
     NumberInput numberInput;
     unsigned num = 1000;
-    switch (index) {
-    case CO2MenuContentPrivate::ITEM_BTN_O2_COMPEN:
-    numberInput.setTitleBarText(trs("O2Compensation"));
-    numberInput.setMaxInputLength(3);
-    numberInput.setInitString(button->text());
-    if(numberInput.exec())
+    switch (index)
     {
-        QString strValue = numberInput.getStrValue();
-        num = strValue.toShort();
-        if(num <=100)
+    case CO2MenuContentPrivate::ITEM_BTN_O2_COMPEN:
+        numberInput.setTitleBarText(trs("O2Compensation"));
+        numberInput.setMaxInputLength(3);
+        numberInput.setInitString(button->text());
+        if (numberInput.exec())
         {
-            co2Param.setCompensation(CO2_COMPEN_O2, num);
-            button->setText(strValue);
+            QString strValue = numberInput.getStrValue();
+            num = strValue.toShort();
+            if (num <= 100)
+            {
+                co2Param.setCompensation(CO2_COMPEN_O2, num);
+                button->setText(strValue);
+            }
+            else
+            {
+                IMessageBox messageBox(trs("O2Compensation"), trs("InvalidInput") + "0-100", QStringList(trs("EnglishYESChineseSURE")));
+                messageBox.exec();
+            }
         }
-        else
-        {
-            IMessageBox messageBox(trs("O2Compensation"), trs("InvalidInput") + "0-100", QStringList(trs("EnglishYESChineseSURE")));
-            messageBox.exec();
-        }
-
-    }
         break;
     case CO2MenuContentPrivate::ITEM_BTN_N2O_COMPEN:
-    numberInput.setTitleBarText(trs("N2OCompensation"));
-    numberInput.setMaxInputLength(3);
-    numberInput.setInitString(button->text());
-    if(numberInput.exec())
-    {
-        QString strValue = numberInput.getStrValue();
-        num = strValue.toShort();
-        if(num <=100)
+        numberInput.setTitleBarText(trs("N2OCompensation"));
+        numberInput.setMaxInputLength(3);
+        numberInput.setInitString(button->text());
+        if (numberInput.exec())
         {
-            co2Param.setCompensation(CO2_COMPEN_N2O, num);
-            button->setText(strValue);
+            QString strValue = numberInput.getStrValue();
+            num = strValue.toShort();
+            if (num <= 100)
+            {
+                co2Param.setCompensation(CO2_COMPEN_N2O, num);
+                button->setText(strValue);
+            }
+            else
+            {
+                IMessageBox messageBox(trs("N2OCompensation"), trs("InvalidInput") + "0-100",
+                                       QStringList(trs("EnglishYESChineseSURE")));
+                messageBox.exec();
+            }
         }
-        else
-        {
-            IMessageBox messageBox(trs("N2OCompensation"), trs("InvalidInput") + "0-100", QStringList(trs("EnglishYESChineseSURE")));
-            messageBox.exec();
-        }
-    }
-            break;
+        break;
     case CO2MenuContentPrivate::ITEM_BTN_ZERO_CALIB:
-    co2Param.zeroCalibration();
+        co2Param.zeroCalibration();
         break;
     default:
         break;
@@ -142,10 +151,10 @@ void CO2MenuContent::onBtnReleasedChanged()
 
 void CO2MenuContent::layoutExec()
 {
-    if(layout())
+    if (layout())
     {
         // already install layout
-        return ;
+        return;
     }
 
     QGridLayout *layout = new QGridLayout(this);
@@ -155,14 +164,14 @@ void CO2MenuContent::layoutExec()
     int itemID;
 
     // wave speed
-    label = new QLabel("CO2WaveSpeed");
+    label = new QLabel(trs("CO2SweepSpeed"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_62_5)
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_125)
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_250)
-                       );
+                      );
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     itemID = CO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED;
@@ -170,13 +179,13 @@ void CO2MenuContent::layoutExec()
     d_ptr->combos.insert(CO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED, comboBox);
 
     // fico2 display
-    label = new QLabel("CO2FiCO2Display");
+    label = new QLabel(trs("CO2FiCO2Display"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << CO2Symbol::convert(CO2_FICO2_DISPLAY_OFF)
                        << CO2Symbol::convert(CO2_FICO2_DISPLAY_ON)
-                       );
+                      );
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     itemID = CO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY;
@@ -186,7 +195,7 @@ void CO2MenuContent::layoutExec()
     int row = d_ptr->combos.count();
 
     // o2 compensation
-    label = new QLabel("O2Compensation");
+    label = new QLabel(trs("O2Compensation"));
     layout->addWidget(label, row + d_ptr->btns.count(), 0);
     button = new Button();
     button->setButtonStyle(Button::ButtonTextOnly);
@@ -198,7 +207,7 @@ void CO2MenuContent::layoutExec()
     d_ptr->btns.insert(CO2MenuContentPrivate::ITEM_BTN_O2_COMPEN, button);
 
     // n2o compensation
-    label = new QLabel("N2OCompensation");
+    label = new QLabel(trs("N2OCompensation"));
     layout->addWidget(label, row + d_ptr->btns.count(), 0);
     button = new Button("20");
     button->setButtonStyle(Button::ButtonTextOnly);
@@ -210,7 +219,7 @@ void CO2MenuContent::layoutExec()
     d_ptr->btns.insert(CO2MenuContentPrivate::ITEM_BTN_N2O_COMPEN, button);
 
     // zero calibration
-    label = new QLabel("CO2ZeroCalib");
+    label = new QLabel(trs("CO2ZeroCalib"));
     layout->addWidget(label, row + d_ptr->btns.count(), 0);
     button = new Button();
     button->setButtonStyle(Button::ButtonTextOnly);
@@ -223,5 +232,4 @@ void CO2MenuContent::layoutExec()
 
     layout->setRowStretch((row + d_ptr->btns.count()), 1);
 }
-
 

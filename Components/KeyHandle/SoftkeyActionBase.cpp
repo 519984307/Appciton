@@ -21,7 +21,7 @@
 #include "SystemBoardProvider.h"
 #include "WindowManager.h"
 #include "WindowLayout.h"
-#include "PatientInfoMenu.h"
+#include "PatientInfoWindow.h"
 #include "IMessageBox.h"
 #include "CO2Param.h"
 #include "SystemManager.h"
@@ -35,16 +35,8 @@
 #include "Frame.h"
 #include "FrameItem.h"
 #include "ComboBox.h"
-#include "ECGMenuContent.h"
-#include "RESPMenuContent.h"
-#include "AGMenuContent.h"
-#include "IBPMenuContent.h"
-#include "COMenuContent.h"
-#include "SPO2MenuContent.h"
-#include "AlarmLimitMenuContent.h"
-#include "NIBPMenuContent.h"
-#include "CO2MenuContent.h"
-#include "DisplayMenuContent.h"
+#include "PatientInfoWindow.h"
+
 /***************************************************************************************************
  * 所有的快捷按键定义。
  **************************************************************************************************/
@@ -95,54 +87,6 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     {
         return;
     }
-
-    // Window testWin;
-    // testWin.setFont(fontManager.textFont(17));
-    // testWin.setWindowTitle("Test Window");
-    // testWin.resize(640, 480);
-
-    // QHBoxLayout *layout = new QHBoxLayout;
-
-    // MenuSidebar *sideBar = new MenuSidebar();
-    // sideBar->addItem("ECG");
-    // sideBar->addItem("SPO2");
-    // sideBar->addItem("RESP");
-    // sideBar->addItem("NIBP");
-    // sideBar->addItem("TEMP");
-    // sideBar->addItem("AG");
-    // sideBar->addItem("IBP");
-    // sideBar->setFixedWidth(180);
-    // layout->addWidget(sideBar);
-    // layout->addStretch();
-    // testWin.setWindowLayout(layout);
-    // testWin.setVisible(true);
-
-    // testWin.exec();
-
-    MenuWindow win;
-
-//    Frame *f = new Frame();
-//    f->setFont(fontManager.textFont(20));
-//    f->addItem(new FrameItem("LeadMode", f));
-//    f->addItem(new FrameItem("Bandwidth", f));
-//    f->addItem(new FrameItem("FilterMode", f));
-//    f->addItem(new FrameItem("SweepSpeed", f));
-//    f->addItem(new FrameItem("Pacer", f));
-//    f->addItem(new FrameItem("AlarmSetting", f));
-
-    win.addMenuContent(new ECGMenuContent);
-    win.addMenuContent(new RESPMenuContent);
-    win.addMenuContent(new AGMenuContent);
-    win.addMenuContent(new IBPMenuContent);
-    win.addMenuContent(new COMenuContent);
-    win.addMenuContent(new SPO2MenuContent);
-    win.addMenuContent(new AlarmLimitMenuContent);
-    win.addMenuContent(new NIBPMenuContent);
-    win.addMenuContent(new CO2MenuContent);
-    win.addMenuContent(new DisplayMenuContent);
-    win.exec();
-
-    return;
 
 // co 2Param.setConnected(true);
 // return;
@@ -273,7 +217,8 @@ void SoftkeyActionBase::patientInfo(bool isPressed)
         return;
     }
 
-    bool isVisible = patientInfoMenu.isVisible();
+    bool isVisible = patientInfoWindow.isVisible();
+
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
@@ -290,9 +235,12 @@ void SoftkeyActionBase::patientInfo(bool isPressed)
 //    int y = r.y() + (r.height() - patientMenu.height());
 //    patientMenu.autoShow(x, y);
     //    patientMenu.autoShow();
-    patientInfoMenu.newPatientStatus(false);
-    patientInfoMenu.widgetChange();
-    patientInfoMenu.autoShow();
+//    patientInfoMenu.newPatientStatus(false);
+//    patientInfoMenu.widgetChange();
+//    patientInfoMenu.autoShow();
+    patientInfoWindow.newPatientStatus(false);
+    patientInfoWindow.widgetChange();
+    patientInfoWindow.autoShow();
 }
 
 void SoftkeyActionBase::patientNew(bool isPressed)
@@ -302,7 +250,9 @@ void SoftkeyActionBase::patientNew(bool isPressed)
         return;
     }
 
-    bool isVisible = patientInfoMenu.isVisible();
+//    bool isVisible = patientInfoMenu.isVisible();
+    bool isVisible = patientInfoWindow.isVisible();
+
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
@@ -326,9 +276,12 @@ void SoftkeyActionBase::patientNew(bool isPressed)
     if (messageBox.exec() == 0)
     {
         dataStorageDirManager.createDir(true);
-        patientInfoMenu.newPatientStatus(true);
-        patientInfoMenu.widgetChange();
-        patientInfoMenu.autoShow();
+//        patientInfoMenu.newPatientStatus(true);
+//        patientInfoMenu.widgetChange();
+//        patientInfoMenu.autoShow();
+        patientInfoWindow.newPatientStatus(true);
+        patientInfoWindow.widgetChange();
+        patientInfoWindow.autoShow();
     }
 }
 
@@ -338,7 +291,8 @@ void SoftkeyActionBase::mainsetup(bool isPressed)
     {
         return;
     }
-    windowManager.setUFaceType();
+//    windowManager.setUFaceType();
+    windowManager.showMainMenu();
 }
 
 /***************************************************************************************************

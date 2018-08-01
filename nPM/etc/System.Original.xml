@@ -72,11 +72,11 @@
 	<SoftWareVersion>
 		<SystemSoftwareVersion>05.35.00.154-01</SystemSoftwareVersion>
 		<PowerManagerSoftwareVersion>2.3</PowerManagerSoftwareVersion>
-		<Uboot>02.00.00.09</Uboot>
-		<Kernel>05.02.00.04-01</Kernel>
+		<Uboot>2016.09.01</Uboot>
+		<Kernel>N/A</Kernel>
 		<KeyboardModule>1.4</KeyboardModule>
 		<RecorderModule>N/A</RecorderModule>
-		<ECGAlgorithmType>Mindray.ArrExtend.ST12</ECGAlgorithmType>
+		<ECGAlgorithmType>N/A</ECGAlgorithmType>
 		<FPGALogicNiosSoftwareVersion>N/A</FPGALogicNiosSoftwareVersion>
 		<HostFPGALogicNiosSoftwareVersion>N/A</HostFPGALogicNiosSoftwareVersion>
 		<BootAndStandbyLogoVersion>04.00.00.01</BootAndStandbyLogoVersion>

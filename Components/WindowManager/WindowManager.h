@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/12
+ **/
+
 #pragma once
 #include <QMap>
 #include <QWidget>
@@ -30,6 +40,29 @@ public:
     ~WindowManager();
 
 public:
+    /* window relate api */
+    /**
+     * @brief showMainMenu show the main menu window
+     */
+    void showMainMenu();
+    /**
+     * @brief showConfigManagerMenu show the configManager menu window
+     */
+    void showConfigManagerMenu();
+
+    void showUserMaintainMenu();
+
+    void showFactoryMaintainMenu();
+    /**
+     * @brief showConfigEditManagerMenu
+     */
+    void showConfigEditManagerMenu();
+    /**
+     * @brief showNIBPRepairMenu
+     */
+    void showNIBPRepairMenu();
+
+public:
     // 注册窗体。
     bool addWidget(IWidget *win, IWidget *trend = NULL);
 
@@ -48,7 +81,10 @@ public:
     // 设置界面类型。
     void setUFaceType(UserFaceType type);
     void setUFaceType(void);
-    UserFaceType getUFaceType() const {return _currenUserFaceType;}
+    UserFaceType getUFaceType() const
+    {
+        return _currenUserFaceType;
+    }
 
     // 获取菜单区域的Rect，实际上是波形区域。
     QRect getMenuArea(void);
@@ -77,16 +113,16 @@ public:
 
     // 替换波形。
     void replaceWaveform(const QString &oldWaveform, const QString &newWaveform,
-        bool setFocus = true, bool order = true);
+                         bool setFocus = true, bool order = true);
     void replaceWaveform(const QStringList &oldWaveform, const QStringList &newWaveform);
     void replacebigWidgetform(const QString &oldWidget, const QString &newWidget,
-                        bool setFocus = true, bool order = true);
+                              bool setFocus = true, bool order = true);
     void replacebigWaveform(const QString &oldWidget, const QString &newWidget,
-                        bool setFocus = true, bool order = true);
+                            bool setFocus = true, bool order = true);
 
     // 插入波形。
     void insertWaveform(const QString &frontWaveform, const QString &insertedWaveform,
-        bool setFocus = true, bool order = true);
+                        bool setFocus = true, bool order = true);
     void insertTrendWindow(const QString &insertTrendWindow);
 
     // 移除波形。
@@ -123,8 +159,8 @@ private:
     void _focusWaveformWidget(const QString &name);
 
     // 获取当前显示的波形。
-    void _getDisplayedWaveform(QList<WaveWidget*> &widgets);
-    void _getDisplayedWaveWidget(QList<IWidget*> &widgets);
+    void _getDisplayedWaveform(QList<WaveWidget *> &widgets);
+    void _getDisplayedWaveWidget(QList<IWidget *> &widgets);
     void _getDisplayedWaveTrendWidget(QStringList &names);
     void _getCurrentDisplayTrendWindow(QStringList &names);
 

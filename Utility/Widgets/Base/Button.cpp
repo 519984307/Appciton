@@ -17,7 +17,7 @@
 
 #define PADDING 4
 #define ICON_TEXT_PADDING 4
-#define DEFAULT_BUTTON_HEIGHT 40
+#define DEFAULT_BUTTON_HEIGHT (themeManger.getAcceptableControlHeight())
 
 class ButtonPrivate
 {
