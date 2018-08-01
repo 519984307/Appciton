@@ -47,7 +47,10 @@ void TableHeaderView::paintSection(QPainter *painter, const QRect &rect, int log
 
     QString text  = m->headerData(logicalIndex, orientation(), Qt::DisplayRole).toString();
 
-    text = opt.fontMetrics.elidedText(text, Qt::ElideRight, rect.width() - 4);
+    if (orientation() == Qt::Horizontal)
+    {
+        text = opt.fontMetrics.elidedText(text, Qt::ElideRight, rect.width() - 4);
+    }
 
     QVariant foregroundBrush = m->headerData(logicalIndex, orientation(), Qt::ForegroundRole);
     if (foregroundBrush.canConvert<QBrush>())

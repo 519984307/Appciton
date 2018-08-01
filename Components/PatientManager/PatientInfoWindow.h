@@ -5,8 +5,10 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/27
+<<<<<<< HEAD
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/7/31
  **/
+
 #pragma once
 #include "Window.h"
 
@@ -15,38 +17,37 @@ class PatientInfoWindow : public Window
 {
     Q_OBJECT
 public:
-    static PatientInfoWindow* getInstance();
+    static PatientInfoWindow &construction(void)
+    {
+        if (_selfObj == NULL)
+        {
+            _selfObj = new PatientInfoWindow();
+        }
+        return *_selfObj;
+    }
+    static PatientInfoWindow *_selfObj;
     ~PatientInfoWindow();
-
-public:
-    /**
-     * @brief widgetChange
-     */
+    void readyShow();
+    void layoutExec();
     void widgetChange(void);
-    /**
-     * @brief relieveStatus
-     */
     void relieveStatus(bool);
-    /**
-     * @brief newPatientStatus
-     */
     void newPatientStatus(bool);
-protected:
-    virtual void showEvent(QShowEvent *ev);
-    virtual void keyPressEvent(QKeyEvent *ev);
-
-private slots :
-    /**
-     * @brief onBtnReleased
-     */
-    void onBtnReleased();
-    /**
-     * @brief onComboIndexChanged
-     */
-    void onComboIndexChanged();
+    void autoShow(void);
+private slots:
+    void _idReleased(void);
+    void _nameReleased(void);
+    void _ageReleased(void);
+    void _heightReleased(void);
+    void _weightReleased(void);
+    void _relieveReleased(void);
+    void _saveInfoReleased(void);
 
 private:
     PatientInfoWindow();
-    PatientInfoWindowPrivate *const d_ptr;
+    PatientInfoWindowPrivate * const d_ptr;
 };
+
+#define patientInfoWindow (PatientInfoWindow::construction())
+#define deletePatientInfoWindow() (delete PatientInfoWindow::_selfObj)
+
 

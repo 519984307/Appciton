@@ -5,46 +5,61 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/3
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/30
  **/
 
-
-#include "ComboBox.h"
+#include "DropList.h"
 #include "PopupList.h"
+#include "ThemeManager.h"
 #include <QPointer>
 #include <QKeyEvent>
 #include <QPainter>
-#include "ThemeManager.h"
 
 #define DEFAULT_HEIGHT (themeManger.getAcceptableControlHeight())
 
-class ComboBoxPrivate
+class DropListPrivate
 {
 public:
-    ComboBoxPrivate()
-        : isPopup(false),
-          popupList(NULL)
+    DropListPrivate()
+        : isPopup(false), popupList(NULL),
+          curIndex(0)
     {}
 
     bool isPopup;
     QPointer<PopupList> popupList;
+    QStringList strList;
+    int curIndex;
 };
 
-ComboBox::ComboBox(QWidget *parent)
-    : QComboBox(parent), d_ptr(new ComboBoxPrivate)
+DropList::DropList(const QString &text, QWidget *parent)
+    : QAbstractButton(parent),
+      d_ptr(new DropListPrivate())
 {
+    setText(text);
     QPalette pal = palette();
     themeManger.setupPalette(ThemeManager::ControlComboBox, pal);
     setPalette(pal);
+
+    connect(this, SIGNAL(released()), this, SLOT(showPopup()));
 }
 
-ComboBox::~ComboBox()
+DropList::~DropList()
 {
 }
 
-void ComboBox::showPopup()
+void DropList::addItem(const QString &text)
 {
-    if (count() <= 0)
+    d_ptr->strList.append(text);
+}
+
+void DropList::addItems(const QStringList &textList)
+{
+    d_ptr->strList = textList;
+}
+
+void DropList::showPopup()
+{
+    if (d_ptr->strList.count() <= 0)
     {
         return;
     }
@@ -53,47 +68,42 @@ void ComboBox::showPopup()
     {
         d_ptr->popupList = new PopupList(this);
 
-        for (int i = 0; i < count(); i++)
+        for (int i = 0; i < d_ptr->strList.count(); i++)
         {
-            d_ptr->popupList->addItemText(itemText(i));
+            d_ptr->popupList->addItemText(d_ptr->strList.at(i));
         }
-        d_ptr->popupList->setCurrentIndex(currentIndex());
-        connect(d_ptr->popupList.data(), SIGNAL(destroyed(QObject *)), this, SLOT(onPopupDestroyed()));
+        d_ptr->popupList->setCurrentIndex(d_ptr->curIndex);
         connect(d_ptr->popupList.data(), SIGNAL(selectItemChanged(int)), this, SLOT(setCurrentIndex(int)));
     }
 
     d_ptr->popupList->show();
 }
 
-QSize ComboBox::sizeHint() const
+QSize DropList::sizeHint() const
 {
-    QSize s = QComboBox::sizeHint();
+    QSize s = QAbstractButton::sizeHint();
     s.setHeight(DEFAULT_HEIGHT);
     return s;
 }
 
-void ComboBox::keyPressEvent(QKeyEvent *ev)
+void DropList::keyPressEvent(QKeyEvent *ev)
 {
     switch (ev->key())
     {
     case Qt::Key_Left:
-        break;
-    case Qt::Key_Right:
-        break;
-    case Qt::Key_F4:
-        // will show popup when focus, ignore this hey
-        break;
     case Qt::Key_Up:
+    case Qt::Key_Right:
     case Qt::Key_Down:
+    case Qt::Key_Enter:
     case Qt::Key_Return:
         break;
     default:
-        QComboBox::keyPressEvent(ev);
+        QAbstractButton::keyPressEvent(ev);
         break;
     }
 }
 
-void ComboBox::keyReleaseEvent(QKeyEvent *ev)
+void DropList::keyReleaseEvent(QKeyEvent *ev)
 {
     switch (ev->key())
     {
@@ -106,17 +116,15 @@ void ComboBox::keyReleaseEvent(QKeyEvent *ev)
     case Qt::Key_Return:
         showPopup();
         break;
-    case Qt::Key_Up:
-    case Qt::Key_Down:
     case Qt::Key_F4:
         break;
     default:
-        QComboBox::keyPressEvent(ev);
+        QAbstractButton::keyPressEvent(ev);
         break;
     }
 }
 
-void ComboBox::hideEvent(QHideEvent *ev)
+void DropList::hideEvent(QHideEvent *ev)
 {
     Q_UNUSED(ev)
     if (d_ptr->popupList)
@@ -125,7 +133,7 @@ void ComboBox::hideEvent(QHideEvent *ev)
     }
 }
 
-void ComboBox::paintEvent(QPaintEvent *ev)
+void DropList::paintEvent(QPaintEvent *ev)
 {
     Q_UNUSED(ev)
     QPainter painter(this);
@@ -171,10 +179,16 @@ void ComboBox::paintEvent(QPaintEvent *ev)
     painter.drawRoundedRect(r, radius, radius);
 
     painter.setPen(textColor);
-    painter.drawText(contentsRect(), Qt::AlignCenter, currentText());
+    painter.drawText(contentsRect(), Qt::AlignCenter, text());
 }
 
-void ComboBox::onPopupDestroyed()
+void DropList::setCurrentIndex(int index)
 {
-    hidePopup();
+    if (index >= d_ptr->strList.count())
+    {
+        return;
+    }
+
+    d_ptr->curIndex = index;
+    emit currentIndexChanged(index);
 }

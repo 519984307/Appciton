@@ -158,6 +158,11 @@ int PopupList::getCurrentIndex() const
     return d_ptr->curSelectIndex;
 }
 
+int PopupList::count() const
+{
+    return d_ptr->items.count();
+}
+
 QSize PopupList::sizeHint() const
 {
     QWidget *parent = parentWidget();

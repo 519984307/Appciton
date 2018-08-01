@@ -97,7 +97,6 @@ void RelievePatientWindow::showEvent(QShowEvent *e)
 void RelievePatientWindow::exit()
 {
     hide();
-    PatientInfoWindow::getInstance()->exec();
 }
 
 /***************************************************************************************************
@@ -107,7 +106,6 @@ void RelievePatientWindow::onYesReleased()
 {
     hide();
     dataStorageDirManager.createDir(true);
-    PatientInfoWindow::getInstance()->relieveStatus(false);
 }
 
 /***************************************************************************************************
@@ -117,7 +115,6 @@ void RelievePatientWindow::onNoReleased()
 {
     hide();
     dataStorageDirManager.createDir(true);
-    PatientInfoWindow::getInstance()->relieveStatus(false);
 }
 
 /**************************************************************************************************

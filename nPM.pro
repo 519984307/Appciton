@@ -125,6 +125,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.cpp         \
     Utility/Widgets/Base/PasswordWidget.cpp                                     \
     Utility/Widgets/Base/SpinBox.cpp                                            \
+    Utility/Widgets/Base/DropList.cpp                                           \
     Utility/Widgets/IComboList/ComboList.cpp                                    \
     Utility/Widgets/IComboList/ComboListPopup.cpp                               \
     Utility/Widgets/IComboList/ComboListItem.cpp                                \
@@ -271,6 +272,8 @@ SOURCES +=                                                                      
     Components/PatientData/TrendTableModel.cpp                                  \
     Components/PatientData/TrendTableSetWindow.cpp                              \
     Components/PatientData/TrendPrintWindow.cpp                                 \
+    Components/PatientData/TrendGraphWindow.cpp                                 \
+    Components/PatientData/TrendGraphSetWindow.cpp                              \
     Components/TimeManager/DateTimeWidget.cpp                                   \
     Components/TimeManager/ElapseTimeWidget.cpp                                 \
     Components/TimeManager/TimeManager.cpp                                      \
@@ -280,8 +283,8 @@ SOURCES +=                                                                      
     Components/PatientManager/PatientInfoWidget.cpp                             \
     Components/PatientManager/PatientStatusBarWidget.cpp                        \
     Components/PatientManager/PatientInfoMenu.cpp                               \
-    Components/PatientManager/PatientInfoWindow.cpp                             \
     Components/PatientManager/RelievePatientWidget.cpp                          \
+    Components/PatientManager/PatientInfoWindow.cpp                             \
     Components/PatientManager/RelievePatientWindow.cpp                          \
     Components/PowerManager/BatteryMessage.cpp                                  \
     Components/PowerManager/BatteryAlarm.cpp                                    \
@@ -647,6 +650,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/KineticScroller/qscrollareakineticscroller.h           \
     Utility/Widgets/Base/PasswordWidget.h                                       \
     Utility/Widgets/Base/SpinBox.h                                              \
+    Utility/Widgets/Base/DropList.h                                             \
     Utility/Widgets/IComboList/ComboList.h                                      \
     Utility/Widgets/IComboList/ComboListPopup.h                                 \
     Utility/Widgets/IComboList/ComboListItem.h                                  \
@@ -809,6 +813,8 @@ HEADERS +=                                                                      
     Components/PatientData/TrendTableModel.h                                    \
     Components/PatientData/TrendTableSetWindow.h                                \
     Components/PatientData/TrendPrintWindow.h                                   \
+    Components/PatientData/TrendGraphSetWindow.h                                \
+    Components/PatientData/TrendGraphWindow.h                                   \
     Components/PatientManager/PatientManager.h                                  \
     Components/PatientManager/PatientBarWidget.h                                \
     Components/PatientManager/PatientDefine.h                                   \
