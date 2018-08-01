@@ -13,6 +13,7 @@
 #include <QPainter>
 #include <QDebug>
 #include <QMouseEvent>
+#include "ThemeManager.h"
 
 #define MARKER_WIDTH 6
 
@@ -20,6 +21,9 @@ MenuSidebarItem::MenuSidebarItem(QWidget *parent)
     : QAbstractButton(parent)
 {
     setCheckable(true);
+    QPalette pal = palette();
+    themeManger.setupPalette(ThemeManager::ControlMenuSideBarItem, pal);
+    setPalette(pal);
 }
 
 QSize MenuSidebarItem::sizeHint() const
@@ -27,6 +31,10 @@ QSize MenuSidebarItem::sizeHint() const
     QFontMetrics fm = fontMetrics();
     int w = fm.width(text()) + MARKER_WIDTH * 2;
     int h = fm.height() * 3;
+    if (h < themeManger.getAcceptableControlHeight())
+    {
+        h = themeManger.getAcceptableControlHeight();
+    }
     return QSize(w, h);
 }
 
@@ -55,7 +63,6 @@ void MenuSidebarItem::paintEvent(QPaintEvent *ev)
     else if (isChecked())
     {
         bgColor = pal.color(QPalette::Active, QPalette::Window);
-        // bgColor = QColor(239, 240, 241);
         textColor = pal.color(QPalette::Active, QPalette::ButtonText);
     }
     else

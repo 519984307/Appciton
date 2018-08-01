@@ -18,11 +18,17 @@ class MenuWindow : public Window
     Q_OBJECT
 public:
     MenuWindow();
+
     ~MenuWindow();
 
-    void addMenuGroup(const QString &title, QWidget *w = NULL);
-
+    /**
+     * @brief addMenuContent add a menu to the window
+     * @param menu menu content obj
+     */
     void addMenuContent(MenuContent *menu);
+
+protected:
+    bool focusNextPrevChild(bool next);
 
 private slots:
     void onSelectItemChanged(int index);

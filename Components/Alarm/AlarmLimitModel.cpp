@@ -15,29 +15,26 @@
 #include <QColor>
 #include <QResizeEvent>
 #include <QBrush>
+#include "ItemEditInfo.h"
+#include "ParamManager.h"
+#include "ThemeManager.h"
 
-enum
-{
-    SECTION_PARAM_NAME,
-    SECTION_STATUS,
-    SECTION_HIGH_LIMIT,
-    SECTION_LOW_LIMIT,
-    SECTION_LEVEL,
-    SECTION_NR
-};
 
-#define ROW_HEIGHT_HINT 40
-#define HEADER_HEIGHT_HINT 40
+#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define HEADER_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
 
 class AlarmLimitModelPrivate
 {
 public:
     AlarmLimitModelPrivate()
-        : viewWidth(400)
+        : viewWidth(400),  // set default value to 400
+          editRow(-1)
     {}
 
     QList<AlarmDataInfo> alarmDataInfos;
     int viewWidth;
+    int editRow;
+    QModelIndex editIndex;
 };
 
 AlarmLimitModel::AlarmLimitModel(QObject *parent)
@@ -62,13 +59,81 @@ int AlarmLimitModel::rowCount(const QModelIndex &parent) const
     return d_ptr->alarmDataInfos.count();
 }
 
+void AlarmLimitModel::alarmDataUpdate(const AlarmDataInfo &info, int type)
+{
+    UnitType unit = paramManager.getSubParamUnit(info.paramID,
+                    info.subParamID);
+    switch (type)
+    {
+    case SECTION_STATUS:
+        alarmConfig.setLimitAlarmEnable(info.subParamID, info.status);
+        break;
+    case SECTION_LEVEL:
+        alarmConfig.setLimitAlarmPriority(info.subParamID,
+                                          static_cast<AlarmPriority>(info.alarmLevel));
+        break;
+    case SECTION_HIGH_LIMIT:
+        alarmConfig.setLimitAlarmConfig(info.subParamID,
+                                        unit, info.limitConfig);
+        break;
+    case SECTION_LOW_LIMIT:
+        alarmConfig.setLimitAlarmConfig(info.subParamID,
+                                        unit, info.limitConfig);
+        break;
+    }
+}
+
 bool AlarmLimitModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    Q_UNUSED(index)
     Q_UNUSED(value)
-    Q_UNUSED(role)
-    qDebug() << Q_FUNC_INFO;
-    return false;
+
+    if (role == Qt::EditRole)
+    {
+        if (value.type() == QVariant::Int)
+        {
+            int newValue = value.toInt();
+            int row = index.row();
+            switch (index.column())
+            {
+            case SECTION_STATUS:
+                d_ptr->alarmDataInfos[row].status = newValue;
+                alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
+                break;
+            case SECTION_LEVEL:
+                d_ptr->alarmDataInfos[row].alarmLevel = newValue;
+                alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
+                break;
+            case SECTION_HIGH_LIMIT:
+                d_ptr->alarmDataInfos[row].limitConfig.highLimit = newValue;
+                alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
+                break;
+            case SECTION_LOW_LIMIT:
+                d_ptr->alarmDataInfos[row].limitConfig.lowLimit = newValue;
+                alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
+    if (role == Qt::CheckStateRole)
+    {
+        Qt::CheckState checkState = static_cast<Qt::CheckState>(value.toInt());
+
+        if (checkState == Qt::PartiallyChecked)
+        {
+            d_ptr->editIndex = QModelIndex();
+        }
+        else if (checkState == Qt::Checked)
+        {
+            d_ptr->editIndex = index;
+        }
+        emit dataChanged(d_ptr->editIndex, d_ptr->editIndex);
+    }
+
+
+    return true;
 }
 
 QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
@@ -133,6 +198,60 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
         }
     }
     break;
+
+    case Qt::EditRole:
+    {
+        if (index == d_ptr->editIndex)
+        {
+            int row = index.row();
+            ItemEditInfo editInfo;
+            switch (index.column())
+            {
+            case SECTION_STATUS:
+                editInfo.type = ItemEditInfo::LIST;
+                editInfo.list << trs("Off") << trs("On");
+                editInfo.curValue = d_ptr->alarmDataInfos.at(row).status;
+                break;
+            case SECTION_LEVEL:
+                editInfo.type = ItemEditInfo::LIST;
+                editInfo.list << trs("low") << trs("normal") << trs("high");
+                editInfo.curValue = d_ptr->alarmDataInfos.at(row).alarmLevel;
+                break;
+            case SECTION_LOW_LIMIT:
+                editInfo.type = ItemEditInfo::VALUE;
+                editInfo.scale = d_ptr->alarmDataInfos.at(row).limitConfig.scale;
+                editInfo.step = d_ptr->alarmDataInfos.at(row).limitConfig.step;
+                editInfo.curValue = d_ptr->alarmDataInfos.at(row).limitConfig.lowLimit;
+                editInfo.highLimit = d_ptr->alarmDataInfos.at(row).limitConfig.highLimit - editInfo.step;
+                editInfo.lowLimit = d_ptr->alarmDataInfos.at(row).limitConfig.minLowLimit;
+                break;
+            case SECTION_HIGH_LIMIT:
+                editInfo.type = ItemEditInfo::VALUE;
+                editInfo.scale = d_ptr->alarmDataInfos.at(row).limitConfig.scale;
+                editInfo.step = d_ptr->alarmDataInfos.at(row).limitConfig.step;
+                editInfo.curValue = d_ptr->alarmDataInfos.at(row).limitConfig.highLimit;
+                editInfo.highLimit = d_ptr->alarmDataInfos.at(row).limitConfig.maxHighLimit;
+                editInfo.lowLimit = d_ptr->alarmDataInfos.at(row).limitConfig.lowLimit + editInfo.step;
+                break;
+            default:
+                break;
+            }
+            return qVariantFromValue(editInfo);
+        }
+    }
+    break;
+
+    case Qt::CheckStateRole:
+        if (index.row() == d_ptr->editRow && index.column() > SECTION_PARAM_NAME)
+        {
+            if (index == d_ptr->editIndex)
+            {
+                return QVariant(Qt::Checked);
+            }
+
+            return QVariant(Qt::PartiallyChecked);
+        }
+        break;
 
     case Qt::ForegroundRole:
         return QBrush(QColor("#2C405A"));
@@ -227,7 +346,22 @@ Qt::ItemFlags AlarmLimitModel::flags(const QModelIndex &index) const
         return QAbstractTableModel::flags(index);
     }
 
-    Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    Qt::ItemFlags flags;
+    if (d_ptr->editRow == index.row())
+    {
+        if (index.column() != SECTION_PARAM_NAME)
+        {
+            flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+        }
+        else
+        {
+            flags = Qt::ItemIsEnabled;
+        }
+    }
+    else
+    {
+        flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    }
     return flags;
 }
 
@@ -258,4 +392,47 @@ int AlarmLimitModel::getRowHeightHint() const
 int AlarmLimitModel::getHeaderHeightHint() const
 {
     return HEADER_HEIGHT_HINT;
+}
+
+void AlarmLimitModel::editRowData(int row)
+{
+    if (row == d_ptr->editRow)
+    {
+        return;
+    }
+
+    QModelIndex topLeft;
+    QModelIndex rightBottom;
+    int oldEditRow = d_ptr->editRow;
+    d_ptr->editRow = row;
+    if (oldEditRow >= 0 && oldEditRow < d_ptr->alarmDataInfos.count())
+    {
+        topLeft = index(oldEditRow, 0);
+        rightBottom = index(oldEditRow, SECTION_NR - 1);
+        emit dataChanged(topLeft, rightBottom);
+    }
+
+    if (d_ptr->editRow >= 0 && d_ptr->editRow < d_ptr->alarmDataInfos.count())
+    {
+        topLeft = index(d_ptr->editRow, 0);
+        rightBottom = index(d_ptr->editRow, SECTION_NR - 1);
+        emit dataChanged(topLeft, rightBottom);
+    }
+}
+
+void AlarmLimitModel::stopEditRow()
+{
+    int oldEditRow = d_ptr->editRow;
+    d_ptr->editRow = -1;
+    if (oldEditRow >= 0 && oldEditRow < d_ptr->alarmDataInfos.count())
+    {
+        QModelIndex topLeft = index(oldEditRow, 0);
+        QModelIndex rightBottom = index(oldEditRow, SECTION_NR - 1);
+        emit dataChanged(topLeft, rightBottom);
+    }
+}
+
+int AlarmLimitModel::curEditRow() const
+{
+    return d_ptr->editRow;
 }

@@ -1,0 +1,318 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/19
+ **/
+
+#include "SpinBox.h"
+#include <QFontMetrics>
+#include <QPainter>
+#include <QStyle>
+#include <QKeyEvent>
+#include <ThemeManager.h>
+#include "PopupNumEditor.h"
+#include "FontManager.h"
+#include "Utility.h"
+
+#define PADDING 4
+#define ICON_TEXT_PADDING 4
+#define DEFAULT_BUTTON_HEIGHT (themeManger.getAcceptableControlHeight())
+
+class SpinBoxPrivate
+{
+public:
+    SpinBoxPrivate()
+        : m_borderWidth(themeManger.getBorderWidth()),
+          m_borderRadius(themeManger.getBorderRadius()),
+          arrow(true),
+          status(SpinBox::SPIN_BOX_FOCUS_IN)
+    {}
+
+    // get the value
+    QString value() const;
+
+    int m_borderWidth;
+    int m_borderRadius;
+
+    ItemEditInfo info;
+    bool arrow;
+    SpinBox::CtrlStatus status;
+};
+
+QString SpinBoxPrivate::value() const
+{
+    return Util::convertToString(info.curValue, info.scale);
+}
+
+SpinBox::SpinBox(QWidget *parent)
+    : QAbstractButton(parent),
+      d_ptr(new SpinBoxPrivate)
+
+{
+    QPalette pal = palette();
+    themeManger.setupPalette(ThemeManager::ControlSpinBox, pal);
+    setPalette(pal);
+}
+
+SpinBox::~SpinBox()
+{
+}
+
+void SpinBox::setArrow(bool arrow)
+{
+    d_ptr->arrow = arrow;
+}
+
+bool SpinBox::isArrow() const
+{
+    return d_ptr->arrow;
+}
+
+void SpinBox::setValue(int value)
+{
+    d_ptr->info.curValue = value;
+    update();
+}
+
+int SpinBox::getValue()
+{
+    return d_ptr->info.curValue;
+}
+
+void SpinBox::setRange(int min, int max)
+{
+    d_ptr->info.lowLimit = min;
+    d_ptr->info.highLimit = max;
+}
+
+void SpinBox::getRange(int &min, int &max)
+{
+    min = d_ptr->info.lowLimit;
+    max = d_ptr->info.highLimit;
+}
+
+void SpinBox::setScale(int scale)
+{
+    d_ptr->info.scale = scale;
+}
+
+void SpinBox::setStep(int step)
+{
+    d_ptr->info.step = step;
+}
+
+QSize SpinBox::sizeHint() const
+{
+    QString t = text();
+    QFontMetrics fm(font());
+    QRect textRect = fm.boundingRect(t);
+    QSize hint;
+
+    hint.setWidth(textRect.width() + PADDING * 2);
+    hint.setHeight(textRect.height() + PADDING * 2);
+
+    if (hint.height() < DEFAULT_BUTTON_HEIGHT)
+    {
+        hint.setHeight(DEFAULT_BUTTON_HEIGHT);
+    }
+
+    return hint;
+}
+
+void SpinBox::onPopupDestroy()
+{
+    emit valueChange(d_ptr->info.curValue, d_ptr->info.scale);
+}
+
+void SpinBox::onEditValueUpdate(int value)
+{
+    d_ptr->info.curValue = value;
+    update();
+}
+
+void SpinBox::paintEvent(QPaintEvent *ev)
+{
+    Q_UNUSED(ev)
+    QPalette pal = palette();
+    QColor bgColor;
+    QColor textColor;
+
+    if (!isEnabled())
+    {
+        bgColor = pal.color(QPalette::Disabled, QPalette::Window);
+        textColor = pal.color(QPalette::Disabled, QPalette::WindowText);
+    }
+    else if ((isCheckable() && isChecked()) || isDown() || hasFocus())
+    {
+        if (d_ptr->status == SPIN_BOX_EDITABLE)
+        {
+            bgColor = pal.color(QPalette::Active, QPalette::Highlight);
+            textColor = pal.color(QPalette::Active, QPalette::WindowText);
+        }
+        else
+        {
+            bgColor = pal.color(QPalette::Active, QPalette::Window);
+            textColor = pal.color(QPalette::Active, QPalette::WindowText);
+        }
+    }
+    else
+    {
+        bgColor = pal.color(QPalette::Inactive, QPalette::Window);
+        textColor = pal.color(QPalette::Inactive, QPalette::WindowText);
+    }
+
+    QRect rect = contentsRect();
+
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    if (d_ptr->m_borderWidth)
+    {
+        QPen pen(pal.color(QPalette::Inactive, QPalette::Shadow), d_ptr->m_borderWidth);
+        if (hasFocus())
+        {
+            pen.setColor(pal.color(QPalette::Active, QPalette::Shadow));
+        }
+        else if (!isEnabled())
+        {
+            pen.setColor(pal.color(QPalette::Disabled, QPalette::Shadow));
+        }
+
+        painter.setPen(pen);
+        painter.setBrush(bgColor);
+        QRect r = rect.adjusted(d_ptr->m_borderWidth, d_ptr->m_borderWidth, -d_ptr->m_borderWidth, -d_ptr->m_borderWidth);
+        painter.drawRoundedRect(r, d_ptr->m_borderRadius, d_ptr->m_borderRadius);
+    }
+    else
+    {
+        QPainterPath path;
+        path.addRoundedRect(rect, d_ptr->m_borderRadius, d_ptr->m_borderRadius);
+        painter.fillPath(path, bgColor);
+    }
+
+    painter.setPen(textColor);
+    if (d_ptr->arrow)
+    {
+        if (d_ptr->info.curValue < d_ptr->info.highLimit)
+        {
+            QIcon upIcon = themeManger.getIcon(ThemeManager::IconUp);
+            QRect upRect = QStyle::alignedRect(layoutDirection(), Qt::AlignVCenter | Qt::AlignHCenter,
+                                               iconSize(), rect.adjusted(width() / 6 * 5, 0, 0, -(height() / 2)));
+            upIcon.paint(&painter, upRect);
+        }
+
+        if (d_ptr->info.curValue > d_ptr->info.lowLimit)
+        {
+            QIcon downIcon = themeManger.getIcon(ThemeManager::IconDown);
+            QRect downRect = QStyle::alignedRect(layoutDirection(), Qt::AlignVCenter | Qt::AlignHCenter,
+                                                 iconSize(), rect.adjusted(width() / 6 * 5, height() / 2, 0, 0));
+            downIcon.paint(&painter, downRect);
+        }
+    }
+    painter.drawText(rect, Qt::AlignCenter, d_ptr->value());
+}
+
+void SpinBox::keyPressEvent(QKeyEvent *ev)
+{
+    switch (ev->key())
+    {
+    case Qt::Key_Left:
+    case Qt::Key_Up:
+    case Qt::Key_Right:
+    case Qt::Key_Down:
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        break;
+    default:
+        QAbstractButton::keyPressEvent(ev);
+        break;
+    }
+}
+
+void SpinBox::keyReleaseEvent(QKeyEvent *ev)
+{
+    switch (ev->key())
+    {
+    case Qt::Key_Left:
+    case Qt::Key_Up:
+        if (d_ptr->status != SPIN_BOX_EDITABLE)
+        {
+            d_ptr->status = SPIN_BOX_FOCUS_OUT;
+            focusPreviousChild();
+        }
+        else
+        {
+            if (d_ptr->info.curValue > d_ptr->info.lowLimit)
+            {
+                d_ptr->info.curValue -= d_ptr->info.step;
+                update();
+            }
+        }
+        break;
+    case Qt::Key_Right:
+    case Qt::Key_Down:
+        if (d_ptr->status != SPIN_BOX_EDITABLE)
+        {
+            d_ptr->status = SPIN_BOX_FOCUS_OUT;
+            focusNextChild();
+        }
+        else
+        {
+            if (d_ptr->info.curValue < d_ptr->info.highLimit)
+            {
+                d_ptr->info.curValue += d_ptr->info.step;
+                update();
+            }
+        }
+        break;
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        if (d_ptr->status == SPIN_BOX_EDITABLE)
+        {
+            d_ptr->status = SPIN_BOX_FOCUS_IN;
+            emit valueChange(d_ptr->info.curValue, d_ptr->info.scale);
+        }
+        else if (d_ptr->status == SPIN_BOX_FOCUS_IN)
+        {
+            d_ptr->status = SPIN_BOX_EDITABLE;
+        }
+        update();
+        break;
+    default:
+        QAbstractButton::keyReleaseEvent(ev);
+        break;
+    }
+}
+
+void SpinBox::mouseReleaseEvent(QMouseEvent *ev)
+{
+    Q_UNUSED(ev)
+    QRect vrect = rect();
+    QRect rect(mapToGlobal(vrect.topLeft()),
+               mapToGlobal(vrect.bottomRight()));
+    QPalette pal = palette();
+    PopupNumEditor *editor = new PopupNumEditor();
+    editor->setEditInfo(d_ptr->info);
+    editor->setFont(fontManager.textFont(font().pixelSize()));
+    editor->setPalette(pal);
+    editor->setEditValueGeometry(rect);
+    QObject::connect(editor, SIGNAL(valueChanged(int)), this, SLOT(onEditValueUpdate(int)));
+    QObject::connect(editor, SIGNAL(destroyed(QObject *)), this, SLOT(onPopupDestroy()));
+    editor->show();
+}
+
+void SpinBox::focusInEvent(QFocusEvent *ev)
+{
+    QAbstractButton::focusInEvent(ev);
+    d_ptr->status = SPIN_BOX_FOCUS_IN;
+}
+
+void SpinBox::focusOutEvent(QFocusEvent *ev)
+{
+    QAbstractButton::focusInEvent(ev);
+    d_ptr->status = SPIN_BOX_FOCUS_OUT;
+}

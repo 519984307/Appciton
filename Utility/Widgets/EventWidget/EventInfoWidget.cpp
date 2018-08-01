@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/1
+ **/
+
 #include "EventInfoWidget.h"
 #include "FontManager.h"
 #include <QPainter>
@@ -8,6 +18,7 @@
 EventInfoWidget::EventInfoWidget(QWidget *parent)
     :QWidget(parent)
 {
+    setFocusPolicy(Qt::NoFocus);
     QPalette pal = this->palette();
     pal.setBrush(QPalette::Window, Qt::black);
     this->setPalette(pal);
@@ -19,7 +30,6 @@ EventInfoWidget::EventInfoWidget(QWidget *parent)
  *************************************************************************************************/
 EventInfoWidget::~EventInfoWidget()
 {
-
 }
 
 void EventInfoWidget::loadDataInfo(QString info, QString time, QString index)

@@ -23,10 +23,11 @@ public:
      */
     void init();
 
-    void setupScrollBarProxy();
+    void setupScrollBarPolicy();
 
     ScrollArea *const q_ptr;
     FloatScrollBar *scrollBar;
     QScrollAreaKineticScroller *scroller;
     ScrollArea::FloatBarPolicy scrollBarPolicy;
+    ScrollArea::ScrollDirection direction;
 };

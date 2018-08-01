@@ -120,7 +120,7 @@ public:
         PriorityTrigger = 3,
     };
 
-    RecordPageGenerator(QObject *parent = 0);
+    explicit RecordPageGenerator(QObject *parent = 0);
     ~RecordPageGenerator();
 
     /**

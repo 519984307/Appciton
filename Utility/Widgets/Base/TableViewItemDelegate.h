@@ -12,12 +12,31 @@
 
 #include <QItemDelegate>
 
+class TableViewItemDelegatePrivate;
 class TableViewItemDelegate : public QItemDelegate
 {
     Q_OBJECT
 public:
     explicit TableViewItemDelegate(QObject *parent = NULL);
+    ~TableViewItemDelegate();
+
+    /* reimplement */
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 protected:
+    /* reimplement */
+    void drawCheck(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, Qt::CheckState state) const;
+    /* reimplement */
     void drawFocus(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect) const;
+    /* reimplement */
+    void drawDisplay(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QString &text) const;
+    /* reimplement */
+    bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
+
+private slots:
+    void onPopupDestroy();
+    void onEditValueUpdate(int value);
+
+private:
+    TableViewItemDelegatePrivate *const d_ptr;
 };

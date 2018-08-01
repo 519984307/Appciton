@@ -39,7 +39,7 @@ public:
     {
         static const char *symbol[CO_INST_NR] =
         {
-            "End", "Start", "Interrupt"
+            "COEnd", "COStart", "COInterrupt"
         };
         return symbol[index];
     }

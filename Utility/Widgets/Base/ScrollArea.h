@@ -26,6 +26,12 @@ public:
                                             // higher than the area
     };
 
+    enum ScrollDirection {
+        ScrollHorizontal = 0x01,
+        ScrollVertical = 0x02,
+        ScrollBothDirection = ScrollHorizontal|ScrollVertical,
+    };
+
     explicit ScrollArea(QWidget *parent = NULL);
     ~ScrollArea();
 
@@ -47,6 +53,11 @@ public:
      */
     void updateFloatBar();
 
+    /**
+     * @brief setScrollDirection set the scroll direction
+     * @param dir direction
+     */
+    void setScrollDirection(ScrollDirection dir);
 
 protected:
     /* reimplement */

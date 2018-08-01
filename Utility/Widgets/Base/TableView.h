@@ -43,6 +43,13 @@ public:
      */
     bool hasNextPage();
 
+signals:
+    /* emit when the row is clicked */
+    void rowClicked(int row);
+
+    /* emit when the select row changed */
+    void selectRowChanged(int row);
+
 protected:
     /* reimplement */
     // void mouseMoveEvent(QMouseEvent *ev);
@@ -54,10 +61,22 @@ protected:
     void keyReleaseEvent(QKeyEvent *ev);
 
     /* reimplement */
+    void mousePressEvent(QMouseEvent *ev);
+
+    /* reimplement */
+    void mouseReleaseEvent(QMouseEvent *ev);
+
+    /* reimplement */
     void focusInEvent(QFocusEvent *ev);
 
     /* reimplement */
     void focusOutEvent(QFocusEvent *ev);
+
+private slots:
+    /* need to perform some check when the table is focus out, if the table don't have focus any more,
+     * it would update the selection and select nothing
+     */
+    void checkAfterFocusOut();
 
 private:
     TableViewPrivate *const d_ptr;
