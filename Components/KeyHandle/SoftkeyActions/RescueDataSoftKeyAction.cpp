@@ -21,6 +21,7 @@
 #include "MenuGroup.h"
 #include "MenuManager.h"
 #include "EventReviewWindow.h"
+#include "EventWindow.h"
 #include "OxyCRGEventWidget.h"
 #include "HistoryDataReviewWidget.h"
 #include "TrendGraphWindow.h"
@@ -136,6 +137,7 @@ void RescueDataSoftKeyAction::exportData(bool isPressed)
 //    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
 //    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
 //    rescueDataExportWidget.autoShow(x, y);
+    eventWindow.exec();
 }
 
 /***************************************************************************************************
