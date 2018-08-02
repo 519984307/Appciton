@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/2
+ **/
+
+
+
 #include <QLabel>
 #include "UserConfigEditMenu.h"
 #include "ConfigMaintainMenuGrp.h"
@@ -11,7 +23,6 @@
 #include "PublicMenuManager.h"
 #include "Debug.h"
 #include "MenuManager.h"
-#include "SystemMenu.h"
 #include "SystemManager.h"
 #include "MenuWidget.h"
 
@@ -22,22 +33,22 @@
 #define CONFIG_LIST_ITME_W 200
 #define CONFIG_MAX_NUM 3
 
-class UserConfigEditMenuPrivate {
+class UserConfigEditMenuPrivate
+{
 public:
     UserConfigEditMenuPrivate()
-        :configList(NULL), addBtn(NULL), editBtn(NULL),
+        : configList(NULL), addBtn(NULL), editBtn(NULL),
           delBtn(NULL), lastSelectItem(NULL), curConfig(NULL), curEditIndex(-1)
     {
-
     }
 
     void loadConfigs();
     void updateConfigList();
 
-    //check whether a config exist base on the config name
+    // check whether a config exist base on the config name
     bool isConfigExist(const QString &name) const;
 
-    //get a default config name
+    // get a default config name
     QString generateDefaultConfigName() const;
 
 
@@ -62,8 +73,8 @@ void UserConfigEditMenuPrivate::loadConfigs()
  */
 void UserConfigEditMenuPrivate::updateConfigList()
 {
-    //remove old item
-    while(configList->count())
+    // remove old item
+    while (configList->count())
     {
         QListWidgetItem *item = configList->takeItem(0);
         delete item;
@@ -76,7 +87,7 @@ void UserConfigEditMenuPrivate::updateConfigList()
     }
 
     int count = configs.count();
-    if(count)
+    if (count)
     {
         configList->setFocusPolicy(Qt::StrongFocus);
     }
@@ -85,7 +96,7 @@ void UserConfigEditMenuPrivate::updateConfigList()
         configList->setFocusPolicy(Qt::NoFocus);
     }
 
-    if(count >= CONFIG_MAX_NUM)
+    if (count >= CONFIG_MAX_NUM)
     {
         addBtn->setEnabled(false);
     }
@@ -93,14 +104,13 @@ void UserConfigEditMenuPrivate::updateConfigList()
     {
         addBtn->setEnabled(true);
     }
-
 }
 
 bool UserConfigEditMenuPrivate::isConfigExist(const QString &name) const
 {
-    for(int i = 0 ; i < configs.size(); i++)
+    for (int i = 0 ; i < configs.size(); i++)
     {
-        if(configs.at(i).name == name)
+        if (configs.at(i).name == name)
         {
             return true;
         }
@@ -111,10 +121,10 @@ bool UserConfigEditMenuPrivate::isConfigExist(const QString &name) const
 QString UserConfigEditMenuPrivate::generateDefaultConfigName() const
 {
     QString prefix("UserConfig");
-    for(int i = 1; i <= CONFIG_MAX_NUM; i++)
+    for (int i = 1; i <= CONFIG_MAX_NUM; i++)
     {
-        QString name = prefix+QString::number(i);
-        if(!isConfigExist(name))
+        QString name = prefix + QString::number(i);
+        if (!isConfigExist(name))
         {
             return name;
         }
@@ -124,22 +134,20 @@ QString UserConfigEditMenuPrivate::generateDefaultConfigName() const
 }
 
 UserConfigEditMenu::UserConfigEditMenu()
-    :SubMenu(trs("ConfigManagerment")), d_ptr(new UserConfigEditMenuPrivate())
+    : SubMenu(trs("ConfigManagerment")), d_ptr(new UserConfigEditMenuPrivate())
 {
     setDesc(trs("ConfigManagermentDesc"));/*更改标题栏标题*/
     startLayout();/*布局*/
 
-    //保存配置管理的数据
+    // 保存配置管理的数据
     connect(configEditMenuGrp.getCloseBtn(), SIGNAL(realReleased()), this, SLOT(onEditFinished()));
 
-    //connect(&configEditMenuGrp, SIGNAL(menuexitsignal()), this, SLOT(onEditFinished()));
+    // connect(&configEditMenuGrp, SIGNAL(menuexitsignal()), this, SLOT(onEditFinished()));
 }
 
 UserConfigEditMenu::~UserConfigEditMenu()
 {
-
 }
-
 /***************************************************************************************************
  * eventFilter : handle the config list focus in event, the operation of the list will be more natrual.
  *              If we don't handle the focus in event, the focus item will be the last item of the list
@@ -149,12 +157,12 @@ UserConfigEditMenu::~UserConfigEditMenu()
  **************************************************************************************************/
 bool UserConfigEditMenu::eventFilter(QObject *obj, QEvent *ev)
 {
-    if(obj == d_ptr->configList)
+    if (obj == d_ptr->configList)
     {
         if (ev->type() == QEvent::FocusIn)
         {
             QFocusEvent *e = static_cast<QFocusEvent *>(ev);
-            if(e->reason() == Qt::TabFocusReason)
+            if (e->reason() == Qt::TabFocusReason)
             {
                 d_ptr->configList->setCurrentRow(0);
             }
@@ -166,7 +174,7 @@ bool UserConfigEditMenu::eventFilter(QObject *obj, QEvent *ev)
 
         if (ev->type() == QEvent::Hide)
         {
-            if(d_ptr->lastSelectItem)
+            if (d_ptr->lastSelectItem)
             {
                 d_ptr->lastSelectItem->setIcon(QIcon());
                 d_ptr->delBtn->setEnabled(false);
@@ -178,7 +186,7 @@ bool UserConfigEditMenu::eventFilter(QObject *obj, QEvent *ev)
     return false;
 }
 
-//对应界面的ConfigManagerment选项
+// 对应界面的ConfigManagerment选项
 void UserConfigEditMenu::layoutExec()
 {
     int submenuW = configMaintainMenuGrp.getSubmenuWidth();
@@ -187,7 +195,7 @@ void UserConfigEditMenu::layoutExec()
 
     int fontSize = fontManager.getFontSize(1);
 
-    //configure label
+    // configure label
     QLabel *label = new QLabel();
     label->setFont(fontManager.textFont(fontSize));
     QMargins margin = label->contentsMargins();
@@ -198,7 +206,7 @@ void UserConfigEditMenu::layoutExec()
     label->setText(trs("ConfigManagerment"));
     mainLayout->addWidget(label);
 
-    //config list
+    // config list
     d_ptr->configList = new IListWidget();
     d_ptr->configList->setFont(fontManager.textFont(fontSize));
     d_ptr->configList->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -206,20 +214,21 @@ void UserConfigEditMenu::layoutExec()
     d_ptr->configList->setFrameStyle(QFrame::Plain);
     d_ptr->configList->setSpacing(2);
     d_ptr->configList->setUniformItemSizes(true);
-    d_ptr->configList->setIconSize(QSize(16,16));
+    d_ptr->configList->setIconSize(QSize(16, 16));
 
-    QString configListStyleSheet = QString("QListWidget { margin-left: 15px; border:1px solid #808080; border-radius: 2px; background-color: transparent; outline: none; }\n "
-    "QListWidget::item {padding: 5px; border-radius: 2px; border: none; background-color: %1;}\n"
-    "QListWidget::item:focus {background-color: %2;}").arg("blue").arg(colorManager.getHighlight().name());
+    QString configListStyleSheet =
+        QString("QListWidget { margin-left: 15px; border:1px solid #808080; border-radius: 2px; background-color: transparent; outline: none; }\n "
+                "QListWidget::item {padding: 5px; border-radius: 2px; border: none; background-color: %1;}\n"
+                "QListWidget::item:focus {background-color: %2;}").arg("blue").arg(colorManager.getHighlight().name());
 
     d_ptr->configList->setStyleSheet(configListStyleSheet);
     connect(d_ptr->configList, SIGNAL(exitList(bool)), this, SLOT(onExitList(bool)));
     connect(d_ptr->configList, SIGNAL(realRelease()), this, SLOT(onConfigClick()));
     d_ptr->configList->installEventFilter(this);
-    d_ptr->configList->setFixedHeight(174); //size for 5 items
+    d_ptr->configList->setFixedHeight(174); // size for 5 items
     mainLayout->addWidget(d_ptr->configList);
 
-    //buttons
+    // buttons
     QHBoxLayout *hlayout = new QHBoxLayout();
     hlayout->setContentsMargins(QMargins(15, 10, 0, 40));
     hlayout->setSpacing(10);
@@ -242,8 +251,6 @@ void UserConfigEditMenu::layoutExec()
     connect(d_ptr->delBtn, SIGNAL(realReleased()), this, SLOT(onBtnClick()));
 
     mainLayout->addLayout(hlayout);
-
-
 }
 
 void UserConfigEditMenu::readyShow()
@@ -255,7 +262,7 @@ void UserConfigEditMenu::readyShow()
 // handle config list exit event
 void UserConfigEditMenu::onExitList(bool backTab)
 {
-    if(backTab)
+    if (backTab)
     {
         focusPreviousChild();
     }
@@ -268,12 +275,12 @@ void UserConfigEditMenu::onExitList(bool backTab)
 void UserConfigEditMenu::onConfigClick()
 {
     QListWidgetItem *item = d_ptr->configList->currentItem();
-    if(d_ptr->lastSelectItem)
+    if (d_ptr->lastSelectItem)
     {
         d_ptr->lastSelectItem->setIcon(QIcon());
     }
 
-    if(item != d_ptr->lastSelectItem)
+    if (item != d_ptr->lastSelectItem)
     {
         item->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
         d_ptr->lastSelectItem = item;
@@ -283,7 +290,7 @@ void UserConfigEditMenu::onConfigClick()
         d_ptr->lastSelectItem = NULL;
     }
 
-    if(d_ptr->lastSelectItem)
+    if (d_ptr->lastSelectItem)
     {
         d_ptr->delBtn->setEnabled(true);
         d_ptr->editBtn->setEnabled(true);
@@ -293,24 +300,23 @@ void UserConfigEditMenu::onConfigClick()
         d_ptr->delBtn->setEnabled(false);
         d_ptr->editBtn->setEnabled(false);
     }
-
 }
 
 void UserConfigEditMenu::onBtnClick()
 {
     LButtonEx *btn = qobject_cast<LButtonEx *>(sender());
 
-    if(btn == d_ptr->addBtn)
+    if (btn == d_ptr->addBtn)
     {
-        if(d_ptr->configList->count() >= CONFIG_MAX_NUM)
+        if (d_ptr->configList->count() >= CONFIG_MAX_NUM)
         {
 
-            //can't add, too many
-            //TODO show some message
+            // can't add, too many
+            // TODO show some message
         }
         else
         {
-            if(d_ptr->curConfig)
+            if (d_ptr->curConfig)
             {
                 delete d_ptr->curConfig;
             }
@@ -318,7 +324,7 @@ void UserConfigEditMenu::onBtnClick()
             QFile myFile(QString("%1/%2")
                          .arg(CONFIG_DIR)
                          .arg(configManager.runningConfigFilename(patientManager.getType())));
-            if(!myFile.open(QIODevice::ReadOnly | QIODevice::Text))
+            if (!myFile.open(QIODevice::ReadOnly | QIODevice::Text))
             {
                 d_ptr->curConfig = new Config(QString("%1/%2")
                                               .arg(CONFIG_DIR)
@@ -338,16 +344,15 @@ void UserConfigEditMenu::onBtnClick()
             configEditMenuGrp.initializeSubMenu();
             configEditMenuGrp.popup();
         }
-
     }
     else if (btn == d_ptr->editBtn)
     {
-        if(d_ptr->curConfig)
+        if (d_ptr->curConfig)
         {
             delete d_ptr->curConfig;
         }
 
-        if(d_ptr->lastSelectItem)
+        if (d_ptr->lastSelectItem)
         {
             int index = d_ptr->configList->row(d_ptr->lastSelectItem);
             d_ptr->curEditIndex = index;
@@ -362,12 +367,12 @@ void UserConfigEditMenu::onBtnClick()
     }
     else if (btn == d_ptr->delBtn)
     {
-        if(d_ptr->lastSelectItem)
+        if (d_ptr->lastSelectItem)
         {
             int index = d_ptr->configList->row(d_ptr->lastSelectItem);
             QString filename  = QString("%1/%2").arg(CONFIG_DIR).arg(d_ptr->configs.at(index).fileName);
 
-            //delete the config file
+            // delete the config file
             QFile::remove(filename);
             d_ptr->configs.removeAt(index);
             configManager.saveUserConfigInfo(d_ptr->configs);
@@ -375,7 +380,7 @@ void UserConfigEditMenu::onBtnClick()
             d_ptr->loadConfigs();
             d_ptr->updateConfigList();
 
-            //update widget status
+            // update widget status
             d_ptr->lastSelectItem = NULL;
             d_ptr->addBtn->setEnabled(true);
             d_ptr->editBtn->setEnabled(false);
@@ -391,11 +396,11 @@ void UserConfigEditMenu::onBtnClick()
 void UserConfigEditMenu::onEditFinished()
 {
     QString configName = configEditMenuGrp.getCurrentEditConfigName();
-    if(d_ptr->curEditIndex >= 0)
+    if (d_ptr->curEditIndex >= 0)
     {
-        //edit exist config
+        // edit exist config
         d_ptr->curConfig->saveToDisk();
-        if(d_ptr->configs.at(d_ptr->curEditIndex).name != configName)
+        if (d_ptr->configs.at(d_ptr->curEditIndex).name != configName)
         {
             d_ptr->configs[d_ptr->curEditIndex].name = configName;
             configManager.saveUserConfigInfo(d_ptr->configs);
@@ -403,7 +408,7 @@ void UserConfigEditMenu::onEditFinished()
     }
     else
     {
-        //add new config
+        // add new config
         configManager.saveUserDefineConfig(configName, d_ptr->curConfig);
     }
     configEditMenuGrp.setCurrentEditConfig(NULL);

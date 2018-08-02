@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/2
+ **/
+
+
 #include "MenuWidget.h"
 #include "WindowManager.h"
 #include <QVBoxLayout>
@@ -5,7 +16,7 @@
 #include <QLabel>
 #include <QPainter>
 #include "ColorManager.h"
-#include "SystemMenu.h"
+#include "FontManager.h"
 #include "MenuManager.h"
 
 /**************************************************************************************************
@@ -45,7 +56,7 @@ void MenuWidget::popup(int x, int y)
 /**************************************************************************************************
  * 重绘制。
  *************************************************************************************************/
-void MenuWidget::paintEvent(QPaintEvent */*event*/)
+void MenuWidget::paintEvent(QPaintEvent *event)
 {
     QPainterPath clipPath;
     clipPath.addRoundedRect(this->rect(), 5, 5);
@@ -99,7 +110,11 @@ void MenuWidget::_closeSlot(void)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-MenuWidget::MenuWidget(const QString &name) : QWidget(0, Qt::FramelessWindowHint)
+MenuWidget::MenuWidget(const QString &name)
+    : QWidget(0, Qt::FramelessWindowHint)
+    , _listWidth(0)
+    , _submenuWidth(0)
+    , _submenuHeight(0)
 {
     // 设定为模态窗口。
     setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
@@ -113,7 +128,7 @@ MenuWidget::MenuWidget(const QString &name) : QWidget(0, Qt::FramelessWindowHint
     // 创建资源。
     QPalette p;
     p.setColor(QPalette::Foreground, Qt::black);
-    setAttribute(Qt::WA_NoSystemBackground); //draw background in paintEvent
+    setAttribute(Qt::WA_NoSystemBackground); // draw background in paintEvent
 
     int fontSize = fontManager.getFontSize(1);
     // 标题栏。
@@ -148,14 +163,11 @@ MenuWidget::MenuWidget(const QString &name) : QWidget(0, Qt::FramelessWindowHint
 *************************************************************************************************/
 void MenuWidget::_addSubMenu(void)
 {
-
 }
-
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
 MenuWidget::~MenuWidget()
 {
-
 }
 

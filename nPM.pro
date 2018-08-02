@@ -208,7 +208,6 @@ SOURCES +=                                                                      
     Components/System/SystemManager.cpp                                         \
     Components/System/SystemAlarm.cpp                                           \
     Components/System/TDA19988Ctrl.cpp                                          \
-    Components/System/Widgets/SystemMenu.cpp                                    \
     Components/System/Widgets/SystemModeSelectWidget.cpp                        \
     Components/System/Widgets/SystemModeBarWidget.cpp                           \
     Components/System/Widgets/SystemSelftestMenu.cpp                            \
@@ -739,7 +738,6 @@ HEADERS +=                                                                      
     Components/System/SystemManager.h                                           \
     Components/System/SystemAlarm.h                                             \
     Components/System/TDA19988Ctrl.h                                            \
-    Components/System/Widgets/SystemMenu.h                                      \
     Components/System/Widgets/SystemStatusBarWidget.h                           \
     Components/System/Widgets/SystemModeSelectWidget.h                          \
     Components/System/Widgets/SystemSelftestMenu.h                              \

@@ -599,7 +599,6 @@ static void _initMenu(void)
         publicMenuManager.addSubMenu(&wifiProfileMenu);
     }
 
-    publicMenuManager.addSubMenu(&systemMenu);
     userMaintainEntrance.construction();
     factoryMaintainEntrance.construction();
     configManagerEntrance.construction();

@@ -39,7 +39,7 @@ public:
 
     void popup(int x = 0, int y = 0);
 
-    MenuWidget(const QString &name);
+    explicit MenuWidget(const QString &name);
     ~MenuWidget();
 
 protected:

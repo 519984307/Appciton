@@ -37,7 +37,6 @@
 #include "NetworkManager.h"
 #include "ServiceErrorLogEntrance.h"
 #include "SystemTick.h"
-#include "SystemMenu.h"
 #include "SupervisorEntrance.h"
 #include "UserMaintainEntrance.h"
 #include "FactoryImportExportMenu.h"
