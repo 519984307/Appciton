@@ -7,12 +7,10 @@
  **
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018.07.14
  **/
-#include "ConfigExportImportMenu.h"
 #include "ConfigMaintainMenuGrp.h"
 #include "ConfigEditMenuGrp.h"
 #include "ConfigManager.h"
 #include "IListWidget.h"
-#include <fcntl.h>
 #include "IConfig.h"
 #include <unistd.h>
 #include <QProcess>
@@ -20,7 +18,6 @@
 #include <dirent.h>
 #include <QDir>
 #include "ExportDataWidget.h"
-#include "IMessageBox.h"
 #include "MessageBox.h"
 #include "ImportFileSubWidget.h"
 #include "ConfigExportImportMenuContent.h"
@@ -30,7 +27,9 @@
 #include "Button.h"
 #include <QDomComment>
 #include <QHBoxLayout>
-#include "FontManager.h"
+#include "ListView.h"
+#include "ListDataModel.h"
+#include "ListViewItemDelegate.h"
 
 #define CONFIG_LIST_ITEM_H 30
 #define CONFIG_LIST_ITME_W 200

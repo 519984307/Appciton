@@ -29,14 +29,6 @@ public:
      * @brief layoutExec
      */
     virtual void layoutExec();
-    /**
-     * @brief hideEvent
-     */
-    virtual void hideEvent(QHideEvent *);
-    /**
-     * @brief changeEvent
-     */
-    virtual void changeEvent(QEvent *);
 
 signals:
     /**
@@ -45,13 +37,13 @@ signals:
     void configUpdated();
 private slots:
     /**
-     * @brief onConfigClick
-     */
-    void onConfigClick();
-    /**
      * @brief onBtnClick
      */
     void onBtnClick();
+    /**
+     * @brief updateBtnStatus
+     */
+    void updateBtnStatus(void);
 private:
     LoadConfigMenuContentPrivate * const d_ptr;
 };
