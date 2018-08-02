@@ -53,6 +53,7 @@ public:
         comboLables[LeadMode] = "LeadMode";
         comboLables[NotchFilter] = "NotchFilter";
         comboLables[SmartLeadOff] = "SmartLeadOff";
+        _alarmLbtn = NULL;
     }
     void loadOptions();
     IComboList *combos[ComboListMax];
