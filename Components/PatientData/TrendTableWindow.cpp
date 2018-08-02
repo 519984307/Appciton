@@ -138,8 +138,8 @@ TrendTableWindow::TrendTableWindow()
     d_ptr->table->setSelectionBehavior(QAbstractItemView::SelectColumns);
     d_ptr->table->setShowGrid(false);
     d_ptr->table->setCornerButtonEnabled(false);
-    d_ptr->table->installEventFilter(d_ptr->model);
     d_ptr->model = new TrendTableModel();
+    d_ptr->table->installEventFilter(d_ptr->model);
     d_ptr->table->setModel(d_ptr->model);
     d_ptr->table->setFixedHeight(d_ptr->model->getHeaderHeightHint()
                                  + d_ptr->model->getRowHeightHint() * TABLE_ROW_NR);

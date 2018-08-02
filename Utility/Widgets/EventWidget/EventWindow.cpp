@@ -34,6 +34,14 @@
 #include "IBPParam.h"
 #include "ParamManager.h"
 #include "Utility.h"
+#include "FontManager.h"
+#include "ColorManager.h"
+#include <QScrollBar>
+#include "RecorderManager.h"
+#include "EventPageGenerator.h"
+#include "IConfig.h"
+#include "EventWaveSetWindow.h"
+#include "DataStorageDefine.h"
 
 EventWindow *EventWindow::selfObj = NULL;
 
@@ -48,10 +56,12 @@ public:
           prvEventBtn(NULL), nextEventBtn(NULL), printBtn(NULL),
           setBtn(NULL), upParamBtn(NULL), downParamBtn(NULL),
           tableWidget(NULL), chartWidget(NULL), stackLayout(NULL),
-          backend(NULL), curParseIndex(0), eventNum(0),
+          backend(NULL), curParseIndex(0), eventNum(0), curDisplayEventNum(0),
           curListScroller(0), isHistory(false)
     {
         backend = eventStorageManager.backend();
+        curEventType = EventAll;
+        curEventLevel = EVENT_LEVEL_ALL;
     }
 
     // prase the event data from the backend
@@ -63,8 +73,32 @@ public:
         return ctx.parse(backend, dataIndex);
     }
 
+    /**
+     * @brief loadEventData 载入事件回顾数据
+     */
     void loadEventData();
+
+    /**
+     * @brief levelToPriority 事件等级对应报警等级
+     * @return
+     */
     AlarmPriority levelToPriority(EventLevel);
+
+    /**
+     * @brief eventInfoUpdate   事件信息窗口刷新
+     * @param curRow    当前选中行数
+     */
+    void eventInfoUpdate(int curRow);
+
+    /**
+     * @brief eventTrendUpdate 事件趋势数据窗口刷新
+     */
+    void eventTrendUpdate(void);
+
+    /**
+     * @brief eventWaveUpdate 事件波形数据窗口刷新
+     */
+    void eventWaveUpdate(void);
 public:
     TableView *eventTable;
     EventReviewModel *model;
@@ -93,7 +127,8 @@ public:
     EventDataPraseContext ctx;
     IStorageBackend *backend;
     int curParseIndex;
-    int eventNum;                       // 总事件数
+    int eventNum;                       // 存储总事件数
+    int curDisplayEventNum;             // 当前显示事件数
     int curListScroller;
     EventType curEventType;
     EventLevel curEventLevel;
@@ -107,12 +142,261 @@ EventWindow::~EventWindow()
 {
 }
 
+void EventWindow::setWaveSpeed(int speed)
+{
+    d_ptr->waveWidget->setSweepSpeed((EventWaveWidget::SweepSpeed)speed);
+}
+
+void EventWindow::setWaveGain(int gain)
+{
+    d_ptr->waveWidget->setGain((ECGEventGain)gain);
+}
+
+void EventWindow::setHistoryDataPath(QString path)
+{
+    d_ptr->historyDataPath = path;
+}
+
+void EventWindow::setHistoryData(bool flag)
+{
+    // 动态内存释放
+    if (d_ptr->isHistory)
+    {
+        delete d_ptr->backend;
+    }
+
+    d_ptr->isHistory = flag;
+    if ((d_ptr->historyDataPath != "") && d_ptr->isHistory)
+    {
+        d_ptr->backend =  StorageManager::open(d_ptr->historyDataPath + EVENT_DATA_FILE_NAME, QIODevice::ReadOnly);
+    }
+    else
+    {
+        d_ptr->backend = eventStorageManager.backend();
+    }
+}
+
 void EventWindow::showEvent(QShowEvent *ev)
 {
     Window::showEvent(ev);
 
     d_ptr->stackLayout->setCurrentIndex(0);
     d_ptr->loadEventData();
+}
+
+void EventWindow::waveInfoReleased(QModelIndex index)
+{
+    d_ptr->stackLayout->setCurrentIndex(1);
+    if (!d_ptr->backend->getBlockNR())
+    {
+        return;
+    }
+
+    d_ptr->parseEventData(d_ptr->dataIndex.at(index.row()));
+    d_ptr->eventInfoUpdate(index.row());
+    d_ptr->eventTrendUpdate();
+    d_ptr->eventWaveUpdate();
+    d_ptr->eventListBtn->setFocus();
+}
+
+void EventWindow::eventTypeSelect(int index)
+{
+    d_ptr->curEventType = (EventType)index;
+    d_ptr->loadEventData();
+}
+
+void EventWindow::eventLevelSelect(int index)
+{
+    d_ptr->curEventLevel = (EventLevel)index;
+    d_ptr->loadEventData();
+}
+
+void EventWindow::upPageReleased()
+{
+    int maxValue = d_ptr->eventTable->verticalScrollBar()->maximum();
+    d_ptr->curListScroller = d_ptr->eventTable->verticalScrollBar()->value();
+    if (d_ptr->curListScroller > 0)
+    {
+        QScrollBar *scrollBar = d_ptr->eventTable->verticalScrollBar();
+        int positon = d_ptr->curListScroller - (maxValue * 15) / (d_ptr->curDisplayEventNum - 15);
+        scrollBar->setSliderPosition(positon);
+    }
+}
+
+void EventWindow::downPageReleased()
+{
+    int maxValue = d_ptr->eventTable->verticalScrollBar()->maximum();
+    d_ptr->curListScroller = d_ptr->eventTable->verticalScrollBar()->value();
+    if (d_ptr->curListScroller < maxValue && d_ptr->curDisplayEventNum != 15)
+    {
+        QScrollBar *scrollBar = d_ptr->eventTable->verticalScrollBar();
+        int positon = d_ptr->curListScroller + (maxValue * 15) / (d_ptr->curDisplayEventNum - 15);
+        scrollBar->setSliderPosition(positon);
+    }
+}
+
+void EventWindow::eventListReleased()
+{
+    d_ptr->stackLayout->setCurrentIndex(0);
+}
+
+void EventWindow::leftMoveCoordinate()
+{
+    int durationBefore;
+    int durationAfter;
+    Config &conf =  configManager.getCurConfig();
+    conf.getNumValue("Event|WaveLengthBefore", durationBefore);
+    conf.getNumValue("Event|WaveLengthAfter", durationAfter);
+    EventWaveWidget::SweepSpeed speed;
+    speed = d_ptr->waveWidget->getSweepSpeed();
+    int medSecond = d_ptr->waveWidget->getCurrentWaveMedSecond();
+    switch (speed)
+    {
+    case EventWaveWidget::SWEEP_SPEED_62_5:
+        return;
+    case EventWaveWidget::SWEEP_SPEED_125:
+        if (medSecond == -durationBefore + 4)
+        {
+            return;
+        }
+        medSecond--;
+        break;
+    case EventWaveWidget::SWEEP_SPEED_250:
+        if (medSecond == -durationBefore + 2)
+        {
+            return;
+        }
+        medSecond--;
+        break;
+    case EventWaveWidget::SWEEP_SPEED_500:
+        if (medSecond == -durationBefore + 1)
+        {
+            return;
+        }
+        medSecond--;
+        break;
+    default:
+        break;
+    }
+    d_ptr->waveWidget->setWaveMedSecond(medSecond);
+}
+
+void EventWindow::rightMoveCoordinate()
+{
+    int durationBefore;
+    int durationAfter;
+    Config &conf =  configManager.getCurConfig();
+    conf.getNumValue("Event|WaveLengthBefore", durationBefore);
+    conf.getNumValue("Event|WaveLengthAfter", durationAfter);
+    EventWaveWidget::SweepSpeed speed;
+    speed = d_ptr->waveWidget->getSweepSpeed();
+    int medSecond = d_ptr->waveWidget->getCurrentWaveMedSecond();
+    switch (speed)
+    {
+    case EventWaveWidget::SWEEP_SPEED_62_5:
+        return;
+    case EventWaveWidget::SWEEP_SPEED_125:
+        if (medSecond == durationAfter - 4)
+        {
+            return;
+        }
+        medSecond++;
+        break;
+    case EventWaveWidget::SWEEP_SPEED_250:
+        if (medSecond == durationAfter - 2)
+        {
+            return;
+        }
+        medSecond++;
+        break;
+    case EventWaveWidget::SWEEP_SPEED_500:
+        if (medSecond == durationAfter - 1)
+        {
+            return;
+        }
+        medSecond++;
+        break;
+    default:
+        break;
+    }
+    d_ptr->waveWidget->setWaveMedSecond(medSecond);
+}
+
+void EventWindow::leftMoveEvent()
+{
+    int curIndex = d_ptr->eventTable->currentIndex().row();
+    if (curIndex != 0)
+    {
+        curIndex--;
+        d_ptr->eventTable->selectRow(curIndex);
+    }
+    if (!d_ptr->backend->getBlockNR())
+    {
+        return;
+    }
+
+    d_ptr->parseEventData(d_ptr->dataIndex.at(curIndex));
+    d_ptr->eventInfoUpdate(curIndex);
+    d_ptr->eventTrendUpdate();
+    d_ptr->eventWaveUpdate();
+}
+
+void EventWindow::rightMoveEvent()
+{
+    int curIndex = d_ptr->eventTable->currentIndex().row();
+    if (curIndex != d_ptr->curDisplayEventNum - 1)
+    {
+        curIndex++;
+        d_ptr->eventTable->selectRow(curIndex);
+    }
+    if (!d_ptr->backend->getBlockNR())
+    {
+        return;
+    }
+
+    d_ptr->parseEventData(d_ptr->dataIndex.at(curIndex));
+    d_ptr->eventInfoUpdate(curIndex);
+    d_ptr->eventTrendUpdate();
+    d_ptr->eventWaveUpdate();
+}
+
+void EventWindow::printRelease()
+{
+    int curIndex = d_ptr->eventTable->currentIndex().row();
+    if (curIndex < d_ptr->dataIndex.size() &&
+            curIndex >= 0)
+    {
+        recorderManager.addPageGenerator(new EventPageGenerator(d_ptr->backend, d_ptr->dataIndex.at(curIndex)));
+    }
+}
+
+void EventWindow::setReleased()
+{
+    eventWaveSetWindow.exec();
+}
+
+void EventWindow::upReleased()
+{
+    int maxValue = d_ptr->trendListWidget->verticalScrollBar()->maximum();
+    int curScroller = d_ptr->trendListWidget->verticalScrollBar()->value();
+    if (curScroller > 0)
+    {
+        QScrollBar *scrollBar = d_ptr->trendListWidget->verticalScrollBar();
+        int position = curScroller - (maxValue * 4) / (d_ptr->trendListWidget->count() - 4);
+        scrollBar->setSliderPosition(position);
+    }
+}
+
+void EventWindow::downReleased()
+{
+    int maxValue = d_ptr->trendListWidget->verticalScrollBar()->maximum();
+    int curScroller = d_ptr->trendListWidget->verticalScrollBar()->value();
+    if (curScroller < maxValue && d_ptr->trendListWidget->count() != 4)
+    {
+        QScrollBar *scrollBar = d_ptr->trendListWidget->verticalScrollBar();
+        int position = curScroller + (maxValue * 4) / (d_ptr->trendListWidget->count() - 4);
+        scrollBar->setSliderPosition(position);
+    }
 }
 
 EventWindow::EventWindow()
@@ -131,12 +415,17 @@ EventWindow::EventWindow()
     d_ptr->eventTable->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     d_ptr->eventTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
+    d_ptr->eventTable->setShowGrid(false);
+    d_ptr->model = new EventReviewModel();
+    d_ptr->eventTable->setModel(d_ptr->model);
+    connect(d_ptr->eventTable, SIGNAL(clicked(QModelIndex)), this, SLOT(waveInfoReleased(QModelIndex)));
 
     d_ptr->typeDpt = new DropList(trs("Type"));
     for (int i = 0; i < EventTypeMax; i ++)
     {
         d_ptr->typeDpt->addItem(trs(EventDataSymbol::convert((EventType)i)));
     }
+    connect(d_ptr->typeDpt, SIGNAL(currentIndexChanged(int)), this, SLOT(eventTypeSelect(int)));
 
     d_ptr->levelDpt = new DropList(trs("Level"));
     for (int i = 0; i < EVENT_LEVEL_NR; i ++)
@@ -147,9 +436,11 @@ EventWindow::EventWindow()
 
     d_ptr->upPageBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));
     d_ptr->upPageBtn->setButtonStyle(Button::ButtonIconOnly);
+    connect(d_ptr->upPageBtn, SIGNAL(released()), this, SLOT(upPageReleased()));
 
     d_ptr->downPageBtn = new Button("", QIcon("/usr/local/nPM/icons/down.png"));
     d_ptr->downPageBtn->setButtonStyle(Button::ButtonIconOnly);
+    connect(d_ptr->downPageBtn, SIGNAL(released()), this, SLOT(downPageReleased()));
 
     QHBoxLayout *hTableLayout = new QHBoxLayout();
     hTableLayout->addWidget(d_ptr->typeDpt, 2);
@@ -184,30 +475,39 @@ EventWindow::EventWindow()
 
     d_ptr->eventListBtn = new Button(trs("EventList"));
     d_ptr->eventListBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->eventListBtn, SIGNAL(released()), this, SLOT(eventListReleased()));
 
     d_ptr->leftCoordinateBtn = new Button("", QIcon("/usr/local/nPM/icons/doubleleft.png"));
     d_ptr->leftCoordinateBtn->setButtonStyle(Button::ButtonIconOnly);
+    connect(d_ptr->leftCoordinateBtn, SIGNAL(released()), this, SLOT(leftMoveCoordinate()));
 
     d_ptr->rightCoordinateBtn = new Button("", QIcon("/usr/local/nPM/icons/doubleright.png"));
     d_ptr->rightCoordinateBtn->setButtonStyle(Button::ButtonIconOnly);
+    connect(d_ptr->rightCoordinateBtn, SIGNAL(released()), this, SLOT(rightMoveCoordinate()));
 
     d_ptr->prvEventBtn = new Button(trs("PreviousEvent"));
     d_ptr->prvEventBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->prvEventBtn, SIGNAL(released()), this, SLOT(leftMoveEvent()));
 
     d_ptr->nextEventBtn = new Button(trs("NextEvent"));
     d_ptr->nextEventBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->nextEventBtn, SIGNAL(released()), this, SLOT(rightMoveEvent()));
 
     d_ptr->printBtn = new Button(trs("Print"));
     d_ptr->printBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->printBtn, SIGNAL(released()), this, SLOT(printRelease()));
 
     d_ptr->setBtn = new Button(trs("Set"));
     d_ptr->setBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->setBtn, SIGNAL(released()), this, SLOT(setReleased()));
 
     d_ptr->upParamBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));
     d_ptr->upParamBtn->setButtonStyle(Button::ButtonIconOnly);
+    connect(d_ptr->upParamBtn, SIGNAL(released()), this, SLOT(upReleased()));
 
     d_ptr->downParamBtn = new Button("", QIcon("/usr/local/nPM/icons/down.png"));
     d_ptr->downParamBtn->setButtonStyle(Button::ButtonIconOnly);
+    connect(d_ptr->downParamBtn, SIGNAL(released()), this, SLOT(downReleased()));
 
     QHBoxLayout *btnLayout = new QHBoxLayout();
     btnLayout->addWidget(d_ptr->eventListBtn, 2);
@@ -271,7 +571,6 @@ void EventWindowPrivate::loadEventData()
             timeDate.getDate(t, dateStr, true);
             timeDate.getTime(t, timeStr, true);
             QString timeItemStr = dateStr + " " + timeStr;
-            timeList.append(timeItemStr);
 
             switch (ctx.infoSegment->type)
             {
@@ -342,12 +641,14 @@ void EventWindowPrivate::loadEventData()
 
                     infoStr += Util::convertToString(ctx.almSegment->alarmLimit, config.scale);
                 }
+                timeList.append(timeItemStr);
                 eventList.append(infoStr);
                 break;
             }
             case EventCodeMarker:
             {
                 infoStr = (QString)ctx.codeMarkerSegment->codeName;
+                timeList.append(timeItemStr);
                 eventList.append(infoStr);
                 break;
             }
@@ -366,6 +667,8 @@ void EventWindowPrivate::loadEventData()
             dataIndex.append(i);
         }
     }
+    curDisplayEventNum = timeList.count();
+    model->updateEvent(timeList, eventList);
 }
 
 AlarmPriority EventWindowPrivate::levelToPriority(EventLevel level)
@@ -390,4 +693,229 @@ AlarmPriority EventWindowPrivate::levelToPriority(EventLevel level)
     {
         return ALARM_PRIO_PROMPT;
     }
+}
+
+void EventWindowPrivate::eventInfoUpdate(int curRow)
+{
+    QString infoStr;
+    QString timeInfoStr;
+    QString indexStr;
+
+    switch (ctx.infoSegment->type)
+    {
+    case EventPhysiologicalAlarm:
+    {
+        SubParamID subId = (SubParamID)(ctx.almSegment->subParamID);
+        AlarmLimitIFace *alarmLimit = alertor.getAlarmLimitIFace(subId);
+        unsigned char alarmId = ctx.almSegment->alarmType;
+        unsigned char alarmInfo = ctx.almSegment->alarmInfo;
+        AlarmPriority priority;
+        if (alarmLimit)
+        {
+            priority = alarmLimit->getAlarmPriority(alarmId);
+        }
+        else
+        {
+            return;
+        }
+
+        if (priority == ALARM_PRIO_LOW)
+        {
+            infoStr = "*";
+        }
+        else if (priority == ALARM_PRIO_MED)
+        {
+            infoStr = "**";
+        }
+        else if (priority == ALARM_PRIO_HIGH)
+        {
+            infoStr = "***";
+        }
+        else
+        {
+            infoStr = "";
+        }
+
+        ParamID paramId = paramInfo.getParamID(subId);
+        infoStr += " ";
+
+        if (paramId == PARAM_IBP)
+        {
+            infoStr += IBPSymbol::convert(ibpParam.getPressureName(subId));
+            infoStr += " ";
+        }
+        infoStr += trs(Alarm::getPhyAlarmMessage(paramId,
+                       alarmId,
+                       alarmInfo & 0x1));
+
+        if (!(alarmInfo & 0x1))
+        {
+            if (alarmInfo & 0x2)
+            {
+                infoStr += " > ";
+            }
+            else
+            {
+                infoStr += " < ";
+            }
+            UnitType unit = paramManager.getSubParamUnit(paramId, subId);
+            LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subId, unit);
+
+            infoStr += Util::convertToString(ctx.almSegment->alarmLimit, config.scale);
+        }
+        break;
+    }
+    case EventCodeMarker:
+    {
+        infoStr = (QString)ctx.codeMarkerSegment->codeName;
+        break;
+    }
+    case EventRealtimePrint:
+    {
+        break;
+    }
+    case EventNIBPMeasurement:
+    {
+        break;
+    }
+    case EventWaveFreeze:
+    {
+        break;
+    }
+    default:
+        break;
+    }
+
+
+    unsigned t = 0;
+    QString timeStr;
+    QString dateStr;
+    t = ctx.infoSegment->timestamp;
+    timeDate.getDate(t, dateStr, true);
+    timeDate.getTime(t, timeStr, true);
+    timeInfoStr = dateStr + " " + timeStr;
+
+    indexStr = QString::number(curRow + 1) + "/" + QString::number(curDisplayEventNum);
+
+    infoWidget->loadDataInfo(infoStr, timeInfoStr, indexStr);
+}
+
+void EventWindowPrivate::eventTrendUpdate()
+{
+    trendListWidget->clear();
+    QListWidgetItem *item;
+    SubParamID subId;
+    QColor color;
+    QFont valueFont;
+    QFont titleFont = fontManager.textFont(20);
+    QFont unitFont = fontManager.textFont(15);
+
+    QString sys;
+    QString dia;
+    QString map;
+    QString et;
+    QString fi;
+    QString valueStr;
+    QString titleStr;
+    int paramNum = ctx.trendSegment->trendValueNum;
+    for (int i = 0; i < paramNum; i ++)
+    {
+        QString dataStr;
+        if (ctx.trendSegment->values[i].value == InvData())
+        {
+            dataStr = "-.-";
+        }
+        else
+        {
+            dataStr = QString::number(ctx.trendSegment->values[i].value);
+        }
+        subId = (SubParamID)ctx.trendSegment->values[i].subParamId;
+        switch (subId)
+        {
+        case SUB_PARAM_NIBP_SYS:
+        case SUB_PARAM_ART_SYS:
+        case SUB_PARAM_PA_SYS:
+        case SUB_PARAM_AUXP1_SYS:
+        case SUB_PARAM_AUXP2_SYS:
+            sys = dataStr;
+            continue;
+        case SUB_PARAM_NIBP_DIA:
+        case SUB_PARAM_ART_DIA:
+        case SUB_PARAM_PA_DIA:
+        case SUB_PARAM_AUXP1_DIA:
+        case SUB_PARAM_AUXP2_DIA:
+            dia = dataStr;
+            continue;
+        case SUB_PARAM_NIBP_MAP:
+        case SUB_PARAM_ART_MAP:
+        case SUB_PARAM_PA_MAP:
+        case SUB_PARAM_AUXP1_MAP:
+        case SUB_PARAM_AUXP2_MAP:
+            map = dataStr;
+            valueStr = sys + "/" + dia + "(" + map + ")";
+            titleStr = paramInfo.getSubParamName(subId);
+            titleStr = titleStr.left(titleStr.length() - 4);
+            valueFont = fontManager.numFont(25);
+            break;
+        case SUB_PARAM_ART_PR:
+        case SUB_PARAM_PA_PR:
+        case SUB_PARAM_CVP_PR:
+        case SUB_PARAM_LAP_PR:
+        case SUB_PARAM_RAP_PR:
+        case SUB_PARAM_ICP_PR:
+        case SUB_PARAM_AUXP1_PR:
+        case SUB_PARAM_AUXP2_PR:
+            continue;
+        case SUB_PARAM_ETCO2:
+        case SUB_PARAM_ETN2O:
+        case SUB_PARAM_ETAA1:
+        case SUB_PARAM_ETAA2:
+        case SUB_PARAM_ETO2:
+            et = dataStr;
+            continue;
+        case SUB_PARAM_FICO2:
+        case SUB_PARAM_FIN2O:
+        case SUB_PARAM_FIAA1:
+        case SUB_PARAM_FIAA2:
+        case SUB_PARAM_FIO2:
+            fi = dataStr;
+            valueStr = et + "/" + fi;
+            titleStr = paramInfo.getSubParamName(subId);
+            titleStr = titleStr.right(titleStr.length() - 2);
+            valueFont = fontManager.numFont(31);
+            break;
+        default:
+            valueStr = dataStr;
+            titleStr = paramInfo.getSubParamName(subId);
+            valueFont = fontManager.numFont(37);
+            break;
+        }
+
+        item = new QListWidgetItem(trendListWidget);
+        item->setData(EventTrendItemDelegate::ValueFontRole, qVariantFromValue(valueFont));
+        item->setData(EventTrendItemDelegate::TitleFontRole, qVariantFromValue(titleFont));
+        item->setData(EventTrendItemDelegate::UnitFontRole, qVariantFromValue(unitFont));
+
+        item->setData(EventTrendItemDelegate::ValueTextRole, valueStr);
+        item->setData(EventTrendItemDelegate::TitleTextRole, titleStr);
+        item->setData(EventTrendItemDelegate::UnitTextRole, Unit::getSymbol(paramInfo.getUnitOfSubParam(subId)));
+
+
+        item->setData(EventTrendItemDelegate::TrendAlarmRole, ctx.trendSegment->values[i].alarmFlag);
+        color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId)));
+        if (color != QColor(0, 0, 0))
+        {
+            item->setTextColor(color);
+        }
+        else
+        {
+            item->setTextColor(Qt::red);
+        }
+        item->setFlags(Qt::NoItemFlags);
+    }
+}
+
+void EventWindowPrivate::eventWaveUpdate()
+{
+    waveWidget->setWaveSegments(ctx.waveSegments);
 }

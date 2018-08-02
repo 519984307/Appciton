@@ -52,7 +52,7 @@ void EventInfoWidget::paintEvent(QPaintEvent *e)
     int fontSize = fontManager.getFontSize(4);
     QFont font = fontManager.textFont(fontSize);
     painter.setFont(font);
-    painter.drawText(rect(), Qt::AlignLeft, eventInfo);
+    painter.drawText(rect(), Qt::AlignLeft | Qt::AlignVCenter, eventInfo);
     painter.drawText(rect(), Qt::AlignCenter, eventTime);
-    painter.drawText(rect(), Qt::AlignRight, eventIndex);
+    painter.drawText(rect(), Qt::AlignRight | Qt::AlignVCenter, eventIndex);
 }
