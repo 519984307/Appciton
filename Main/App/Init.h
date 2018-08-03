@@ -128,7 +128,6 @@
 #include "CO2WaveWidget.h"
 #include "CO2TrendWidget.h"
 #include "CO2BRTrendWidget.h"
-#include "CO2Menu.h"
 
 #include "WitleafProvider.h"
 #include "IBPAlarm.h"
@@ -176,9 +175,6 @@
 #include "ECGMenu.h"
 
 #include "E5Provider.h"
-
-#include "WiFiProfileMenu.h"
-
 #include "RawDataCollection.h"
 #include "RawDataCollectionTxt.h"
 

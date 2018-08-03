@@ -232,8 +232,8 @@ QString AlarmConfig::getLowLimitStr(const LimitAlarmConfig &config)
     }
     else
     {
-        return QString("%1.%2").arg(config.lowLimit / config.scale)
-                .arg(config.lowLimit % config.scale);
+        return QString("%1.%2").number(config.lowLimit / config.scale , 'f' , 3)
+                .number(config.lowLimit % config.scale , 'f' , 3);
     }
 }
 
@@ -253,8 +253,8 @@ QString AlarmConfig::getHighLimitStr(const LimitAlarmConfig &config)
     }
     else
     {
-        return QString("%1.%2").arg(config.highLimit / config.scale)
-                .arg(config.highLimit % config.scale);
+        return QString("%1.%2").number(config.highLimit / config.scale , 'f' , 3)
+                .number(config.highLimit % config.scale , 'f' , 3);
     }
 }
 

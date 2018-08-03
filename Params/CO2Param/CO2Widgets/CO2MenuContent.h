@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #pragma once
 
 #include "MenuContent.h"
@@ -7,7 +18,7 @@ class CO2MenuContent: public MenuContent
 {
     Q_OBJECT
 public:
-    explicit CO2MenuContent();
+    static CO2MenuContent *getInstance();
     ~CO2MenuContent();
     /**
      * @brief readyShow
@@ -29,4 +40,5 @@ private slots:
     void onBtnReleasedChanged();
 private:
     CO2MenuContentPrivate * const d_ptr;
+    CO2MenuContent();
 };

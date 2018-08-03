@@ -59,12 +59,12 @@ MainMenuWindow *MainMenuWindow::getInstance()
         }
         if (systemManager.isSupport(CONFIG_CO2))
         {
-            instance->addMenuContent(new CO2MenuContent);
+            instance->addMenuContent(CO2MenuContent::getInstance());
         }
         instance->addMenuContent(new AlarmLimitMenuContent);
         if (systemManager.isSupport(CONFIG_WIFI))
         {
-            instance->addMenuContent(new WiFiProfileMenuContent);
+            instance->addMenuContent(WiFiProfileMenuContent::getInstance());
         }
         instance->addMenuContent(new DisplayMenuContent);
         instance->addMenuContent(new LoadConfigMenuContent);

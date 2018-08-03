@@ -340,7 +340,6 @@ SOURCES +=                                                                      
     Components/NetworkManager/WpaCtrl/WpaCtrl.cpp                               \
     Components/NetworkManager/Widgets/LabeledLabel.cpp                          \
     Components/NetworkManager/Widgets/WiFiProfileEditor.cpp                     \
-    Components/NetworkManager/Widgets/WiFiProfileMenu.cpp                       \
     Components/NetworkManager/Widgets/WiFiProfileMenuContent.cpp                \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.cpp               \
     Components/ActivityLog/ActivityLogManager.cpp                               \
@@ -488,7 +487,6 @@ SOURCES +=                                                                      
     Params/CO2Param/CO2Widgets/CO2WaveWidget.cpp                                \
     Params/CO2Param/CO2Widgets/CO2WaveRuler.cpp                                 \
     Params/CO2Param/CO2Widgets/CO2TrendWidget.cpp                               \
-    Params/CO2Param/CO2Widgets/CO2Menu.cpp                                      \
     Params/CO2Param/CO2Widgets/CO2MenuContent.cpp                               \
     Params/IBPParam/IBPParam.cpp                                                \
     Params/IBPParam/IBPWidgets/IBPMenu.cpp                                      \
@@ -887,7 +885,6 @@ HEADERS +=                                                                      
     Components/NetworkManager/WpaCtrl/WpaCtrl.h                                 \
     Components/NetworkManager/Widgets/LabeledLabel.h                            \
     Components/NetworkManager/Widgets/WiFiProfileEditor.h                       \
-    Components/NetworkManager/Widgets/WiFiProfileMenu.h                         \
     Components/NetworkManager/Widgets/WiFiProfileMenuContent.h                  \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.h                 \
     Components/ActivityLog/ActivityLogManager.h                                 \
@@ -1047,7 +1044,6 @@ HEADERS +=                                                                      
     Params/CO2Param/CO2Widgets/CO2WaveWidget.h                                  \
     Params/CO2Param/CO2Widgets/CO2WaveRuler.h                                   \
     Params/CO2Param/CO2Widgets/CO2TrendWidget.h                                 \
-    Params/CO2Param/CO2Widgets/CO2Menu.h                                        \
     Params/CO2Param/CO2Widgets/CO2MenuContent.h                                 \
     Params/IBPParam/IBPProviderIFace.h                                          \
     Params/IBPParam/IBPDefine.h                                                 \

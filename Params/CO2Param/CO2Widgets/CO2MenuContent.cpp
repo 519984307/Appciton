@@ -51,6 +51,16 @@ CO2MenuContent::CO2MenuContent():
 {
 }
 
+CO2MenuContent *CO2MenuContent::getInstance()
+{
+    static CO2MenuContent *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new CO2MenuContent;
+    }
+    return instance;
+}
+
 CO2MenuContent::~CO2MenuContent()
 {
     delete d_ptr;

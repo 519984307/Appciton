@@ -19,9 +19,8 @@ class WiFiProfileMenuContent: public MenuContent
 {
     Q_OBJECT
 public:
-    WiFiProfileMenuContent();
     ~WiFiProfileMenuContent();
-
+    static WiFiProfileMenuContent* getInstance(void);
     WiFiProfileInfo getCurrentWifiProfile() const;
 
     virtual void readyShow();
@@ -44,5 +43,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void onConfigUpdated(void))
 
     const QScopedPointer<WiFiProfileMenuContentPrivate> d_ptr;
+    WiFiProfileMenuContent();
 };
 

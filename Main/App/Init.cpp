@@ -567,16 +567,8 @@ static void _initMenu(void)
     menuManager.construction();
     publicMenuManager.construction();
     publicMenuManager.addSubMenu(&ecgMenu);
-    if (systemManager.isSupport(CONFIG_CO2))
-    {
-        publicMenuManager.addSubMenu(&co2Menu);
-    }
     publicMenuManager.addSubMenu(&alarmLimitMenu);
 
-    if (systemManager.isSupport(CONFIG_WIFI))
-    {
-        publicMenuManager.addSubMenu(&wifiProfileMenu);
-    }
 
     userMaintainEntrance.construction();
     factoryMaintainEntrance.construction();
