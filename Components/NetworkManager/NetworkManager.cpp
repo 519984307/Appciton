@@ -163,17 +163,11 @@ void NetworkManager::setStaticIp(unsigned int ip)
 
     _ipMode = IPMODE_STATIC;
 
-    QString cmd = "";
-//    cmd.sprintf("ifconfig eth0 %d.%d.%d.%d\n",
-//                (ip & 0xFF000000) >> 24,
-//                (ip & 0x00FF0000) >> 16,
-//                (ip & 0x0000FF00) >> 8,
-//                ip & 0x000000FF);
-    cmd = QString("ifconfig eth0 %1.%2.%3.%4\n").
-            arg((ip & 0xFF000000) >> 24).
-            arg((ip & 0x00FF0000) >> 16).
-            arg((ip & 0x0000FF00) >> 8).
-            arg(ip & 0x000000FF);
+    QString cmd = QString("ifconfig eth0 %1.%2.%3.%4\n").
+            number((ip & 0xFF000000) >> 24).
+            number((ip & 0x00FF0000) >> 16).
+            number((ip & 0x0000FF00) >> 8).
+            number(ip & 0x000000FF);
     QProcess::startDetached(cmd);
 }
 
@@ -614,7 +608,8 @@ void NetworkManager::timerEvent(QTimerEvent *e)
         timeCounter = -1;
         if (_wpaCtrl == NULL && isWifiTurnOn() && systemManager.isSupport(CONFIG_WIFI))
         {
-            this->connectWiFiProfile(WiFiProfileMenuContent::getInstance()->getCurrentWifiProfile());
+            // TODO: connect to last profile
+            // this->connectWiFiProfile(WiFiProfileMenuContent::getInstance()->getCurrentWifiProfile());
         }
     }
 }

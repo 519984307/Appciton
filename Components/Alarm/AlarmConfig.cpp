@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/10
+ **/
+
+
 #include "AlarmConfig.h"
 #include "PatientManager.h"
 #include "ParamInfo.h"
@@ -6,7 +17,7 @@
 AlarmConfig &AlarmConfig::getInstance()
 {
     static AlarmConfig *instance = NULL;
-    if(instance == NULL)
+    if (instance == NULL)
     {
         instance = new AlarmConfig();
     }
@@ -16,11 +27,11 @@ AlarmConfig &AlarmConfig::getInstance()
 bool AlarmConfig::isLimitAlarmEnable(SubParamID subParamId)
 {
     LimitAlarmControlCache::iterator iter = _controlCache.find(subParamId);
-    if(iter == _controlCache.end())
+    if (iter == _controlCache.end())
     {
         LimitAlarmControl ctrl;
 
-        //load data from config file
+        // load data from config file
         QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
         prefix += paramInfo.getSubParamName(subParamId, true);
         int v = 0;
@@ -36,19 +47,19 @@ bool AlarmConfig::isLimitAlarmEnable(SubParamID subParamId)
 
 void AlarmConfig::setLimitAlarmEnable(SubParamID subParamId, bool enable)
 {
-    if(isLimitAlarmEnable(subParamId) == enable)
+    if (isLimitAlarmEnable(subParamId) == enable)
     {
         return;
     }
 
-    //update cache, the cache must be found here
+    // update cache, the cache must be found here
     LimitAlarmControlCache::iterator iter = _controlCache.find(subParamId);
     iter->enable = enable;
 
     QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
     prefix += paramInfo.getSubParamName(subParamId, true);
 
-    //save to config file
+    // save to config file
     int val = enable;
     currentConfig.setNumAttr(prefix, "Enable", val);
 }
@@ -56,11 +67,11 @@ void AlarmConfig::setLimitAlarmEnable(SubParamID subParamId, bool enable)
 AlarmPriority AlarmConfig::getLimitAlarmPriority(SubParamID subParamId)
 {
     LimitAlarmControlCache::iterator iter = _controlCache.find(subParamId);
-    if(iter == _controlCache.end())
+    if (iter == _controlCache.end())
     {
         LimitAlarmControl ctrl;
 
-        //load data from config file
+        // load data from config file
         QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
         prefix += paramInfo.getSubParamName(subParamId, true);
         int v = 0;
@@ -76,19 +87,19 @@ AlarmPriority AlarmConfig::getLimitAlarmPriority(SubParamID subParamId)
 
 void AlarmConfig::setLimitAlarmPriority(SubParamID subParamId, AlarmPriority prio)
 {
-    if(getLimitAlarmPriority(subParamId) == prio)
+    if (getLimitAlarmPriority(subParamId) == prio)
     {
         return;
     }
 
-    //update cache, the cache must be found here
+    // update cache, the cache must be found here
     LimitAlarmControlCache::iterator iter = _controlCache.find(subParamId);
     iter->priority = prio;
 
     QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
     prefix += paramInfo.getSubParamName(subParamId, true);
 
-    //save to config file
+    // save to config file
     int val = prio;
     currentConfig.setNumAttr(prefix, "Prio", val);
 }
@@ -97,11 +108,11 @@ LimitAlarmConfig AlarmConfig::getLimitAlarmConfig(SubParamID subParamId, UnitTyp
 {
     AlarmConfigKey key(subParamId, unit);
     LimitAlarmConfigCache::iterator iter = _configCache.find(key);
-    if(iter == _configCache.end())
+    if (iter == _configCache.end())
     {
         LimitAlarmConfig config;
 
-        //load data from config file
+        // load data from config file
         QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
         prefix += paramInfo.getSubParamName(subParamId, true);
         prefix += "|";
@@ -151,7 +162,7 @@ ParamRulerConfig AlarmConfig::getParamRulerConfig(SubParamID subParamId, UnitTyp
 {
     ParamRulerConfig config;
 
-    //load data from config file
+    // load data from config file
     QString prefix = "TrendGraph|Ruler|";
     prefix += paramInfo.getSubParamName(subParamId, true);
     prefix += "|";
@@ -194,7 +205,7 @@ void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, cons
 {
     AlarmConfigKey key(subParamId, unit);
     LimitAlarmConfig curConfig = getLimitAlarmConfig(subParamId, unit);
-    if(curConfig == config)
+    if (curConfig == config)
     {
         return;
     }
@@ -206,60 +217,59 @@ void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, cons
 
     prefix += "|";
     prefix += Unit::getSymbol(unit);
-    if(curConfig.highLimit != config.highLimit)
+    if (curConfig.highLimit != config.highLimit)
     {
         val = config.highLimit;
         currentConfig.setNumValue(prefix + "|High", val);
     }
 
-    if(curConfig.lowLimit != config.lowLimit)
+    if (curConfig.lowLimit != config.lowLimit)
     {
         val = config.lowLimit;
         currentConfig.setNumValue(prefix + "|Low", val);
     }
 
-    //TODO: update limit of other unit??
+    // TODO: update limit of other unit??
 
     _configCache.insert(key, config);
-
 }
 
 QString AlarmConfig::getLowLimitStr(const LimitAlarmConfig &config)
 {
-    if(config.scale == 1)
+    if (config.scale == 1)
     {
         return QString::number(config.lowLimit);
     }
     else
     {
         return QString("%1.%2").number(config.lowLimit / config.scale , 'f' , 3)
-                .number(config.lowLimit % config.scale , 'f' , 3);
+               .number(config.lowLimit % config.scale , 'f' , 3);
     }
 }
 
 void AlarmConfig::onPatientTypeChange(PatientType type)
 {
     Q_UNUSED(type)
-    //need to reload config when patient type changed
+    // need to reload config when patient type changed
     _configCache.clear();
     _controlCache.clear();
 }
 
 QString AlarmConfig::getHighLimitStr(const LimitAlarmConfig &config)
 {
-    if(config.scale == 1)
+    if (config.scale == 1)
     {
         return QString::number(config.highLimit);
     }
     else
     {
         return QString("%1.%2").number(config.highLimit / config.scale , 'f' , 3)
-                .number(config.highLimit % config.scale , 'f' , 3);
+               .number(config.highLimit % config.scale , 'f' , 3);
     }
 }
 
 AlarmConfig::AlarmConfig()
-    :QObject()
+    : QObject()
 {
     connect(&patientManager, SIGNAL(signalPatientType(PatientType)), this, SLOT(onPatientTypeChange(PatientType)));
 }

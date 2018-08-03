@@ -110,9 +110,12 @@ struct ApInfo
 {
     ApInfo()
     {
+        signalLevel = 0;
+        encType = OPEN_AP;
         status = AP_UNCONNECTED;
         isSaved = false;
         netId = -1;
+        updateFlag = -1;
     }
 
     QString ssid;           // ssid

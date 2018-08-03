@@ -339,5 +339,4 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget", true)
  *************************************************************************************************/
 CO2TrendWidget::~CO2TrendWidget()
 {
-
 }

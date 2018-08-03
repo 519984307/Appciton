@@ -41,7 +41,6 @@ private slots:
     void _sweepSpeedSlot(int index);
     void _qrsVolumSlot(int index);
     void _alarmLbtnSlot(void);
-    void _onConfigUpdated();
 
 private:
     ECGMenu();

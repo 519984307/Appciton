@@ -97,7 +97,7 @@ private slots:
     void _udhcpcFinished(int exitCode, QProcess::ExitStatus exitStatus);
 
 private:
-    NetworkManager(QObject *parent = 0);
+    explicit NetworkManager(QObject *parent = 0);
 
     // 根据网络类型返回网卡名称
     QString _getInterfaceName(NetworkType type);
