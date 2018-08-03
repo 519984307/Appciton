@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/3
+ **/
+
 #pragma once
 #include <QString>
 #include "AlarmParamIFace.h"
@@ -8,12 +18,13 @@
 class Alarm
 {
 public:
-    struct AlarmInfo {
+    struct AlarmInfo
+    {
         int paramid;
         int alarmType;
         unsigned timestamp;
         bool isOneshot;
-        char order;            //record the order of this alarm when many alarms happen in the same timestamp
+        char order;            // record the order of this alarm when many alarms happen in the same timestamp
     };
 
     static Alarm &construction(void)
@@ -34,7 +45,7 @@ public:
     void updateMuteKeyStatus(bool isPressed);
 
     // 获取报警源参数的值。
-    void getAlarmSourceValue(short *data, int len);
+    void getAlarmSourceValue(qint32 *data, int len);
 
     // 获取报警源参数的报警状态。
     char getAlarmSourceStatus(const QString &sourceName, SubParamID id);
@@ -45,17 +56,17 @@ public:
     // 添加报警状态
     void addAlarmStatus(AlarmAudioStatus status);
 
-    //get the alarm string from alarm source
+    // get the alarm string from alarm source
     const char *getAlarmMessage(ParamID paramId, int alarmType, bool isOneshotAlarm);
 
-    //get the current alarm info list
+    // get the current alarm info list
     QList<AlarmInfo> getCurrentPhyAlarmInfo();
 
-    //check specific oneshot alarm is active
+    // check specific oneshot alarm is active
     bool getOneShotAlarmStatus(AlarmOneShotIFace *iface, int alarmId);
 
-    //according to SubParamID get alarmLimitIFace
-    AlarmLimitIFace* getAlarmLimitIFace(SubParamID id);
+    // according to SubParamID get alarmLimitIFace
+    AlarmLimitIFace *getAlarmLimitIFace(SubParamID id);
 
     // 析构。
     virtual ~Alarm();
@@ -63,18 +74,18 @@ public:
     static QString getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot);
 
     /**
-     * @brief setBoltLockSta 设置栓锁是否打开
+     * @brief setLatchLockSta 设置栓锁是否打开
      * @param status 栓锁打开状态
      */
-    void setBoltLockSta(bool status);
+    void setLatchLockSta(bool status);
 
 private:
     unsigned _timestamp;
-    QMultiMap<ParamID, AlarmLimitIFace*> _limitSources;
-    QMultiMap<ParamID, AlarmOneShotIFace*> _oneshotSources;
+    QMultiMap<ParamID, AlarmLimitIFace *> _limitSources;
+    QMultiMap<ParamID, AlarmOneShotIFace *> _oneshotSources;
     QList<AlarmAudioStatus> _alarmStatusList;
     AlarmAudioStatus _curAlarmStatus;
-    bool _isBoltLock;       // 栓锁状态
+    bool _isLatchLock;       // 栓锁状态
 
     // 构造。
     Alarm();

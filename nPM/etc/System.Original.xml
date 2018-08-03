@@ -33,7 +33,7 @@
 	<MedAlarmIntervals>3</MedAlarmIntervals>
 	<LowAlarmIntervals>16</LowAlarmIntervals>
 	<ReminderTone>1</ReminderTone>
-	<PhyParAlarmBoltlockOn>1</PhyParAlarmBoltlockOn>
+        <PhyParAlarmLatchlockOn>1</PhyParAlarmLatchlockOn>
     </Alarms>
     <Unit>
         <HightUnit>14</HightUnit>

@@ -185,7 +185,7 @@ celsius,℃,℃
 fahrenheit,℉,℉
 percent,%,%
 AlarmSettingMenu,报警,Alarm
-BoltLockSwitch,报警栓锁,Alarm Bolt Lock
+LatchLockSwitch,报警栓锁,Alarm Latch Lock
 AlarmLimitMenu,报警限,Alarm Limit
 AlarmLimitMenuDesc,报警限设置,Alarm Limit Setting
 PrintSpeed,打印速度,Print Speed
