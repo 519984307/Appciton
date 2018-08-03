@@ -22,7 +22,7 @@ class PasswordMenuManage : public IWidget
 
 public:
     //构造函数
-    PasswordMenuManage(const QString &title);
+    explicit PasswordMenuManage(const QString &title);
     ~PasswordMenuManage(); // 析构函数
 
 public:

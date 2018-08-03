@@ -28,7 +28,7 @@ public:
         ComboListMax,
     };
 
-    ConfigEditRespMenuPrivate()
+    ConfigEditRespMenuPrivate():_alarmLbtn(NULL)
     {
         memset(combos, 0, sizeof(combos));
 

@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "PasswordMenuManage.h"
 #include <QLabel>
 #include <QLineEdit>
@@ -24,7 +35,7 @@ PasswordMenuManage::PasswordMenuManage(const QString &title) :
 {
     QPalette p;
 
-    //2s后清除警告信息
+    // 2s后清除警告信息
     _timer = new QTimer(this);
     _timer->setSingleShot(true);
     connect(_timer, SIGNAL(timeout()), this, SLOT(_timeOutSlot()));
@@ -65,7 +76,7 @@ PasswordMenuManage::PasswordMenuManage(const QString &title) :
     p.setColor(QPalette::Foreground, Qt::red);
     _infoLabel->setPalette(p);
 
-    //第三行，数字，0-4
+    // 第三行，数字，0-4
     _numBtn[0] = new LButton(0);
     _numBtn[1] = new LButton(1);
     _numBtn[2] = new LButton(2);
@@ -80,7 +91,7 @@ PasswordMenuManage::PasswordMenuManage(const QString &title) :
     thirdRowLayout->addWidget(_numBtn[4]);
     thirdRowLayout->addWidget(_numBtn[5]);
 
-    //第四行，数字，5-9
+    // 第四行，数字，5-9
     _numBtn[6] = new LButton(5);
     _numBtn[7] = new LButton(6);
     _numBtn[8] = new LButton(7);
@@ -217,7 +228,7 @@ void PasswordMenuManage::_numBtnSlot(int index)
 /**************************************************************************************************
  * 功能: 删除键处理
 **************************************************************************************************/
-void PasswordMenuManage::_backspaceBtnSlot(int /*index*/)
+void PasswordMenuManage::_backspaceBtnSlot(int index)
 {
     if (_passwordStr.size() == 0)
     {
@@ -233,7 +244,7 @@ void PasswordMenuManage::_backspaceBtnSlot(int /*index*/)
 /**************************************************************************************************
  * 功能: ok键处理
 **************************************************************************************************/
-void PasswordMenuManage::_okBtnSlot(int /*index*/)
+void PasswordMenuManage::_okBtnSlot(int index)
 {
 //    //超级密码
 //    if (_passwordStr == _superPassword)
@@ -273,9 +284,9 @@ void PasswordMenuManage::_okBtnSlot(int /*index*/)
 //        return;
 //    }
 #if 1
-    if (_numBtn!=NULL && _numBtn[11]!=NULL)
+    if (_numBtn != NULL && _numBtn[11] != NULL)
     {
-        switch(_numBtn[11]->getID())
+        switch (_numBtn[11]->getID())
         {
         case 'U'://用户维护
             if (_passwordStr == _userMaintainPassword || _passwordStr == _superPassword)
@@ -302,18 +313,17 @@ void PasswordMenuManage::_okBtnSlot(int /*index*/)
             }
             break;
         }
-
     }
 
 #endif
     clearPassword();
     _infoLabel->setText(trs("ErrorPassWordERROR"));
-    _timer->start(2*1000);
+    _timer->start(2 * 1000);
 }
 
 void PasswordMenuManage::setOkBtn(int id)
 {
-   _numBtn[11]->setID(id);
+    _numBtn[11]->setID(id);
 }
 
 /**************************************************************************************************

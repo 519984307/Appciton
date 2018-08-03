@@ -28,10 +28,9 @@ public:
         ComboListMax,
     };
 
-    ConfigEditNIBPMenuPrivate()
+    ConfigEditNIBPMenuPrivate():_alarmLbtn(NULL)
     {
         memset(combos, 0, sizeof(combos));
-
         //常量存放在静态变量区
         comboLabels[NBIPInitialCuff] = "NBIPInitialCuff";
         comboLabels[IntervalTime] = "IntervalTime";
