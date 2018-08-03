@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "SPO2Menu.h"
 #include "SPO2Param.h"
 #include "IComboList.h"
@@ -92,7 +103,7 @@ void SPO2Menu::layoutExec(void)
 //报警项设置
 void SPO2Menu::_alarmLbtnSlot()
 {
-    alarmLimitMenu.setFocusIndex(SUB_PARAM_SPO2+1);
+    alarmLimitMenu.setFocusIndex(SUB_PARAM_SPO2 + 1);
     publicMenuManager.changePage(&alarmLimitMenu, &spo2Menu);
 }
 
@@ -111,5 +122,4 @@ SPO2Menu::SPO2Menu() : SubMenu(trs("SPO2Menu"))
  *************************************************************************************************/
 SPO2Menu::~SPO2Menu()
 {
-
 }

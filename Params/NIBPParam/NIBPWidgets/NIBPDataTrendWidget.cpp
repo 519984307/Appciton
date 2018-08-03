@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QHeaderView>
@@ -19,24 +30,23 @@
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
-void NIBPDataTrendWidget::_releaseHandle(IWidget *)
+void NIBPDataTrendWidget::_releaseHandle(IWidget *iWidget)
 {
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
     MainMenuWindow *p = MainMenuWindow::getInstance();
-    p->popup(NIBPMenuContent::getInstance());
+    p->popup(NIBPMenuContent::getInstance() , x , y);
 }
 
 void NIBPDataTrendWidget::_releaseHandle()
 {
-
 }
 
 /**************************************************************************************************
  * 设置HR的值。
  *************************************************************************************************/
-void NIBPDataTrendWidget::setHRValue(short hr, bool isHR)
+void NIBPDataTrendWidget::setHRValue(int16_t hr, bool isHR)
 {
     if (isHR)
     {
@@ -75,7 +85,7 @@ void NIBPDataTrendWidget::isAlarm(bool isAlarm)
  *************************************************************************************************/
 void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
 {
-    if(_nibpNrendCacheMap.contains(t))
+    if (_nibpNrendCacheMap.contains(t))
     {
         return;
     }
@@ -139,7 +149,7 @@ void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
  *************************************************************************************************/
 void NIBPDataTrendWidget::showValue(void)
 {
-    NIBPTrendCacheMap::iterator t = _nibpNrendCacheMap.end()-1;
+    NIBPTrendCacheMap::iterator t = _nibpNrendCacheMap.end() - 1;
     if (_nibpNrendCacheMap.end() == _nibpNrendCacheMap.begin())
     {
         return;
@@ -152,7 +162,7 @@ void NIBPDataTrendWidget::showValue(void)
     for (int i = 0; i < _rowNR; i++)
     {
         _table->item(i, 0)->setText("");
-        QLabel *l = qobject_cast<QLabel*>(_table->cellWidget(i, 1));
+        QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
         l->setText("");
     }
 
@@ -165,7 +175,9 @@ void NIBPDataTrendWidget::showValue(void)
         if (providerBuff.sysvalue == InvData() || providerBuff.diavalue == InvData() ||
                 providerBuff.mapvalue == InvData())
         {
-            textStr.sprintf("<center>%s/%s/%s</center>", InvStr(), InvStr(), InvStr());
+//            textStr.s ("<center>%s/%s/%s</center>", InvStr(), InvStr(), InvStr());
+            textStr = QString("<center>%1/%2/%3</center>").
+                    arg(InvStr()).arg(InvStr()).arg(InvStr());
         }
         else
         {
@@ -207,22 +219,21 @@ void NIBPDataTrendWidget::showValue(void)
                 {
                     textStr = textStr.arg(QString::number(providerBuff.mapvalue));
                 }
-
             }
             else
             {
                 textStr = textStr.arg(Unit::convert(unit, defUnitType, providerBuff.sysvalue))
-                                 .arg(Unit::convert(unit, defUnitType, providerBuff.diavalue))
-                                 .arg(Unit::convert(unit, defUnitType, providerBuff.mapvalue));
+                          .arg(Unit::convert(unit, defUnitType, providerBuff.diavalue))
+                          .arg(Unit::convert(unit, defUnitType, providerBuff.mapvalue));
             }
         }
-        QLabel *l = qobject_cast<QLabel*>(_table->cellWidget(i, 1));
+        QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
         l->setText(textStr);
         l->setTextInteractionFlags(Qt::NoTextInteraction);
 
         if (t != _nibpNrendCacheMap.begin())
         {
-            t = t-1;
+            t = t - 1;
         }
         else
         {
@@ -239,8 +250,8 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
     TrendWidget::resizeEvent(e);
     _rowNR = _table->height() / _tableItemHeight;
     _table->setRowCount(_rowNR);
-    _table->setColumnWidth(0,_table->width() / 2);
-    _table->setColumnWidth(1,_table->width() / 2);
+    _table->setColumnWidth(0, _table->width() / 2);
+    _table->setColumnWidth(1, _table->width() / 2);
     for (int i = 0; i < _rowNR; i++)
     {
         _table->setRowHeight(i, _tableItemHeight);
@@ -263,7 +274,7 @@ void NIBPDataTrendWidget::setTextSize()
     // 字体。
 //    int fontsize = fontManager.adjustNumFontSizeXML(r,"220/150/100");
 //    fontsize = fontManager.getFontSize(fontsize);
-    int fontsize = fontManager.adjustNumFontSize(r,true,"220/150/100");
+    int fontsize = fontManager.adjustNumFontSize(r, true, "220/150/100");
     QFont font = fontManager.numFont(fontsize, true);
 //    font.setStretch(105); // 横向放大。
     font.setWeight(QFont::Black);

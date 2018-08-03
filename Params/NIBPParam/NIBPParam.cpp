@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "NIBPParam.h"
 #include "NIBPAlarm.h"
 #include "IConfig.h"
@@ -27,7 +38,7 @@ void NIBPParam::_patientTypeChangeSlot(PatientType /*type*/)
     setSwitchFlagType(true);
 
     // 模式修改则停止当前的测量。
-    handleNIBPEvent(NIBP_EVENT_TRIGGER_PATIENT_TYPE,NULL,0);
+    handleNIBPEvent(NIBP_EVENT_TRIGGER_PATIENT_TYPE, NULL, 0);
 
     //设置病人类型与预充气值
     if (NULL != _provider)
@@ -75,7 +86,7 @@ void NIBPParam::initParam(void)
 void NIBPParam::errorDisable(void)
 {
     _isNIBPDisable = true;
-    handleNIBPEvent(NIBP_EVENT_MODULE_ERROR,NULL,0);
+    handleNIBPEvent(NIBP_EVENT_MODULE_ERROR, NULL, 0);
     nibpOneShotAlarm.clear();
     nibpOneShotAlarm.setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, true);
 }
@@ -105,21 +116,21 @@ void NIBPParam::handDemoTrendData(void)
 /**************************************************************************************************
  * 功能： 获取子参数值。
  *************************************************************************************************/
-short NIBPParam::getSubParamValue(SubParamID id)
+int16_t NIBPParam::getSubParamValue(SubParamID id)
 {
     switch (id)
     {
-        case SUB_PARAM_NIBP_SYS:
-            return getSYS();
+    case SUB_PARAM_NIBP_SYS:
+        return getSYS();
 
-        case SUB_PARAM_NIBP_DIA:
-            return getDIA();
+    case SUB_PARAM_NIBP_DIA:
+        return getDIA();
 
-        case SUB_PARAM_NIBP_MAP:
-            return getMAP();
+    case SUB_PARAM_NIBP_MAP:
+        return getMAP();
 
-        default:
-            return InvData();
+    default:
+        return InvData();
     }
 }
 
@@ -161,19 +172,19 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
 
     // 监护模式状态机。
     NIBPStateMachine *machine = new NIBPMonitorStateMachine();
-    _activityMachine= machine;
+    _activityMachine = machine;
     _machines.insert(machine->type(), machine);
 
     machine = new NIBPServiceStateMachine();
     _machines.insert(machine->type(), machine);
 
-    if(_activityMachine->isExit())
+    if (_activityMachine->isExit())
     {
         _activityMachine->enter();
     }
     else
     {
-        //state machine might reentry while it is existing, don't enter again
+        // state machine might reentry while it is existing, don't enter again
         qdebug("Already in NIBP monitor state machine\n");
     }
 }
@@ -208,7 +219,7 @@ void NIBPParam::reset(void)
 
     initParam();
 
-    handleNIBPEvent(NIBP_EVENT_MODULE_RESET,NULL,0);
+    handleNIBPEvent(NIBP_EVENT_MODULE_RESET, NULL, 0);
 }
 
 /**************************************************************************************************
@@ -244,7 +255,7 @@ void NIBPParam::setNIBPTrendWidget(NIBPTrendWidget *trendWidget)
 
     _trendWidget = trendWidget;
 
-    short sys(InvData()), dia(InvData()), map(InvData());
+    int16_t sys(InvData()), dia(InvData()), map(InvData());
     unsigned time(0);
     _trendWidget->recoverResults(sys, dia, map, time);
     _trendWidget->setResults(sys, dia, map, time);
@@ -254,7 +265,7 @@ void NIBPParam::setNIBPTrendWidget(NIBPTrendWidget *trendWidget)
     _lastTime = time;
 
     unsigned char cmd = 0x00;
-    handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL,&cmd,1);
+    handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
 }
 
 /**************************************************************************************************
@@ -272,8 +283,8 @@ void NIBPParam::setNIBPDataTrendWidget(NIBPDataTrendWidget *trendWidget)
 /**************************************************************************************************
  * 解析测量结果。
  *************************************************************************************************/
-bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short &sys,
-                               short &dia, short &map, short &pr, NIBPOneShotType &err)
+bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, int16_t &sys,
+                               int16_t &dia, int16_t &map, int16_t &pr, NIBPOneShotType &err)
 {
     err = NIBP_ONESHOT_NONE;
 
@@ -282,19 +293,32 @@ bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short &
     {
         switch (packet[1])
         {
-        case 0x02: err = NIBP_ONESHOT_ALARM_CUFF_ERROR; break;
-        case 0x05: err = NIBP_ONESHOT_ALARM_SIGNAL_WEAK; break;
-        case 0x06: err = NIBP_ONESHOT_ALARM_MEASURE_OVER_RANGE; break;
-        case 0x08: err = NIBP_ONESHOT_ALARM_CUFF_OVER_PRESSURE; break;
-        case 0x09: err = NIBP_ONESHOT_ALARM_SIGNAL_SATURATION; break;
-        case 0x0A: err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT; break;
-        default: break;
+        case 0x02:
+            err = NIBP_ONESHOT_ALARM_CUFF_ERROR;
+            break;
+        case 0x05:
+            err = NIBP_ONESHOT_ALARM_SIGNAL_WEAK;
+            break;
+        case 0x06:
+            err = NIBP_ONESHOT_ALARM_MEASURE_OVER_RANGE;
+            break;
+        case 0x08:
+            err = NIBP_ONESHOT_ALARM_CUFF_OVER_PRESSURE;
+            break;
+        case 0x09:
+            err = NIBP_ONESHOT_ALARM_SIGNAL_SATURATION;
+            break;
+        case 0x0A:
+            err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT;
+            break;
+        default:
+            break;
         }
 
         return true;
     }
     // 测量无错，获取测量结果。
-    int t = (int)((packet[3]<<8)+packet[2]);
+    int t = static_cast<int>((packet[3] << 8) + packet[2]);
     if (t == 65535)
     {
         sys = InvData();
@@ -304,7 +328,7 @@ bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short &
         sys = t;
     }
 
-    t = (int)((packet[5]<<8)+packet[4]);
+    t = static_cast<int>((packet[5] << 8) + packet[4]);
     if (t == 65535)
     {
         dia = InvData();
@@ -314,7 +338,7 @@ bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short &
         dia = t;
     }
 
-    t = (int)((packet[7]<<8)+packet[6]);
+    t = static_cast<int>((packet[7] << 8) + packet[6]);
     if (t == 65535)
     {
         map = InvData();
@@ -324,7 +348,7 @@ bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short &
         map = t;
     }
 
-    t = (int)((packet[9]<<8)+packet[8]);
+    t = static_cast<int>((packet[9] << 8) + packet[8]);
     if (t == 65535)
     {
         pr = InvData();
@@ -346,7 +370,7 @@ bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short &
 /**************************************************************************************************
  * 设置测量结果。
  *************************************************************************************************/
-void NIBPParam::setResult(short sys, short dia, short map, short pr, NIBPOneShotType err)
+void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIBPOneShotType err)
 {
     setLastTime();
 
@@ -357,7 +381,7 @@ void NIBPParam::setResult(short sys, short dia, short map, short pr, NIBPOneShot
         nibpOneShotAlarm.setOneShotAlarm(err, true);
         if (nibpParam.getMeasurMode() == NIBP_MODE_MANUAL || nibpParam.getMeasurMode() == NIBP_MODE_AUTO)
         {
-            if(!isAdditionalMeasure())
+            if (!isAdditionalMeasure())
             {
                 int index = NIBP_PR_DISPLAY_NR;
                 currentConfig.getNumValue("NIBP|AutomaticRetry", index);
@@ -372,16 +396,16 @@ void NIBPParam::setResult(short sys, short dia, short map, short pr, NIBPOneShot
             }
         }
 
-        //额外测量需要隐藏上次测量时间
+        // 额外测量需要隐藏上次测量时间
         clearResult();
 
-        if(!isAdditionalMeasure())
+        if (!isAdditionalMeasure())
         {
-            //set complete even failed
+            // set complete even failed
             setMeasureResult(NIBP_MEASURE_FAIL);
         }
 
-        //record nibp snapshot event following a additional measure
+        // record nibp snapshot event following a additional measure
         createSnapshot(err);
         return;
     }
@@ -511,11 +535,11 @@ void NIBPParam::invResultData(void)
     _mapVaule = InvData();
     _prVaule = InvData();
 
-    transferResults(InvData(), InvData(), InvData(), 0);//显示“---”
-   setCountdown(-1);//倒计时为“0”
+    transferResults(InvData(), InvData(), InvData(), 0);// 显示“---”
+    setCountdown(-1);// 倒计时为“0”
 
     // 将进行启动测量， 清除界面。
-   nibpOneShotAlarm.clear();  // 清除所有报警。
+    nibpOneShotAlarm.clear();  // 清除所有报警。
 }
 
 /**************************************************************************************************
@@ -523,7 +547,7 @@ void NIBPParam::invResultData(void)
  *************************************************************************************************/
 bool NIBPParam::isConnected(void)
 {
-    Provider *provider = dynamic_cast<Provider*>(_provider);
+    Provider *provider = dynamic_cast<Provider *>(_provider);
     if (NULL == provider)
     {
         return false;
@@ -536,13 +560,13 @@ void NIBPParam::connectedFlag(bool flag)
 {
     if (flag)
     {
-        handleNIBPEvent(NIBP_EVENT_CONNECTION_NORMAL,NULL,0);
+        handleNIBPEvent(NIBP_EVENT_CONNECTION_NORMAL, NULL, 0);
         nibpOneShotAlarm.setOneShotAlarm(NIBP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
         _connectedFlag = true;
     }
     else
     {
-        handleNIBPEvent(NIBP_EVENT_MODULE_ERROR,NULL,0);
+        handleNIBPEvent(NIBP_EVENT_MODULE_ERROR, NULL, 0);
         //通信中断，清除所有报警，只产生通信中断报警
         nibpOneShotAlarm.clear();
         nibpOneShotAlarm.setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, _isNIBPDisable);
@@ -556,7 +580,7 @@ void NIBPParam::connectedFlag(bool flag)
  **************************************************************************************************/
 bool NIBPParam::isMeasuring() const
 {
-    if(!_activityMachine)
+    if (!_activityMachine)
     {
         return false;
     }
@@ -569,13 +593,12 @@ bool NIBPParam::isMeasuring() const
  *************************************************************************************************/
 void NIBPParam::connectedTimeout()
 {
-
 }
 
 /**************************************************************************************************
  * 设置测量结果的数据。
  *************************************************************************************************/
-void NIBPParam::transferResults(short sys, short dia, short map, unsigned time)
+void NIBPParam::transferResults(int16_t sys, int16_t dia, int16_t map, unsigned time)
 {
     if (NULL != _trendWidget)
     {
@@ -655,7 +678,7 @@ void NIBPParam::setModelText(QString text)
 /**************************************************************************************************
  * 获取SYS。
  *************************************************************************************************/
-short NIBPParam::getSYS(void)
+int16_t NIBPParam::getSYS(void)
 {
     return _sysValue;
 }
@@ -663,7 +686,7 @@ short NIBPParam::getSYS(void)
 /**************************************************************************************************
  * 获取DIA。
  *************************************************************************************************/
-short NIBPParam::getDIA(void)
+int16_t NIBPParam::getDIA(void)
 {
     return _diaValue;
 }
@@ -671,7 +694,7 @@ short NIBPParam::getDIA(void)
 /**************************************************************************************************
  * 获取MAP。
  *************************************************************************************************/
-short NIBPParam::getMAP(void)
+int16_t NIBPParam::getMAP(void)
 {
     return _mapVaule;
 }
@@ -679,7 +702,7 @@ short NIBPParam::getMAP(void)
 /**************************************************************************************************
  * 获取MAP。
  *************************************************************************************************/
-short NIBPParam::getPR(void)
+int16_t NIBPParam::getPR(void)
 {
     return _prVaule;
 }
@@ -854,7 +877,7 @@ void NIBPParam::createSnapshot(NIBPOneShotType err)
             nibpParam.setMeasureResult(NIBP_MEASURE_FAIL);
         }
         setSnapshotFlag(false);
-        //summaryStorageManager.addNIBP(_lastTime, err);
+        // summaryStorageManager.addNIBP(_lastTime, err);
     }
 }
 
@@ -935,13 +958,13 @@ void NIBPParam::setMeasurMode(NIBPMode mode)
     {
         nibpParam.setSTATFirst(true);
         cmd = 0x01;
-        handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL,&cmd,1);
+        handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
     }
     else
     {
-        currentConfig.setNumValue("NIBP|MeasureMode", (int)mode);
+        currentConfig.setNumValue("NIBP|MeasureMode", static_cast<int>(mode));
         cmd = 0x00;
-        handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL,&cmd,1);
+        handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
     }
 }
 
@@ -998,14 +1021,14 @@ bool NIBPParam::isSTATMeasure()
  *************************************************************************************************/
 void NIBPParam::setAutoInterval(NIBPAutoInterval interv)
 {
-    currentConfig.setNumValue("NIBP|AutoInterval", (int)interv);
+    currentConfig.setNumValue("NIBP|AutoInterval", static_cast<int>(interv));
 
     // 测量间隔修改，停止当前的测量，只在自动模式生效。
     if (getSuperMeasurMode() == NIBP_MODE_AUTO)
     {
         setSwitchFlagTime(true);
         unsigned char cmd = 0x00;
-        handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL,&cmd,1);
+        handleNIBPEvent(NIBP_EVENT_TRIGGER_MODEL, &cmd, 1);
     }
 }
 
@@ -1025,7 +1048,7 @@ NIBPAutoInterval NIBPParam::getAutoInterval(void)
 int NIBPParam::getAutoIntervalTime(void)
 {
     int _timing = 0;
-    switch(getAutoInterval())
+    switch (getAutoInterval())
     {
     case NIBP_AUTO_INTERVAL_2_5:
         _timing = 150;
@@ -1083,9 +1106,9 @@ void NIBPParam::setIntelligentInflate(NIBPIntelligentInflate mode)
     {
         return;
     }
-    int on_off = (int)mode;
-    systemConfig.setNumValue("PrimaryCfg|NIBP|IntelligentInflate", (int)mode);
-    if(on_off == 0)
+    int on_off = static_cast<int>(mode);
+    systemConfig.setNumValue("PrimaryCfg|NIBP|IntelligentInflate", static_cast<int>(mode));
+    if (on_off == 0)
     {
         _provider->enableSmartPressure(false);
     }
@@ -1135,13 +1158,13 @@ void NIBPParam::keyPressed(void)
 {
     int index = NIBP_PR_DISPLAY_NR;
     currentConfig.getNumValue("NIBP|StatFunction", index);
-    //STAT功能关闭，按钮为按下触发，无长按功能
+    // STAT功能关闭，按钮为按下触发，无长按功能
     if (index == NIBP_PR_DISPLAY_OFF)
     {
         _toggleMeasureLongFlag = true;
         toggleMeasureShort();
     }
-    //STAT功能打开，按钮为弹起触发，有长按，短按功能
+    // STAT功能打开，按钮为弹起触发，有长按，短按功能
     else
     {
         _btnTimer->start(2 * 1000);
@@ -1164,7 +1187,7 @@ void NIBPParam::_btnTimeOut()
  *************************************************************************************************/
 void NIBPParam::toggleMeasureShort(void)
 {
-    handleNIBPEvent(NIBP_EVENT_TRIGGER_BUTTON,NULL,0);
+    handleNIBPEvent(NIBP_EVENT_TRIGGER_BUTTON, NULL, 0);
 }
 
 /**************************************************************************************************
@@ -1242,7 +1265,7 @@ void NIBPParam::switchToManual(void)
  *************************************************************************************************/
 void NIBPParam::stopMeasure(void)
 {
-    handleNIBPEvent(NIBP_EVENT_MONITOR_STOP,NULL,0);
+    handleNIBPEvent(NIBP_EVENT_MONITOR_STOP, NULL, 0);
 }
 
 /**************************************************************************************************
@@ -1290,7 +1313,7 @@ int NIBPParam::curStatusType() const
 {
     if (NULL != _activityMachine)
     {
-        debug("%d\n",_activityMachine->curStatusType());
+        debug("%d\n", _activityMachine->curStatusType());
         return _activityMachine->curStatusType();
     }
 

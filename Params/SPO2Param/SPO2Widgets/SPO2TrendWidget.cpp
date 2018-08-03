@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "SPO2TrendWidget.h"
 #include "ParamManager.h"
 #include "ParamInfo.h"
@@ -12,20 +23,20 @@
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
-void SPO2TrendWidget::_releaseHandle(IWidget *)
+void SPO2TrendWidget::_releaseHandle(IWidget *iWidget)
 {
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
 
     MainMenuWindow *p = MainMenuWindow::getInstance();
-    p->popup(SPO2MenuContent::getInstance());
+    p->popup(SPO2MenuContent::getInstance() , x , y);
 }
 
 /**************************************************************************************************
  * 设置SPO2的值。
  *************************************************************************************************/
-void SPO2TrendWidget::setSPO2Value(short spo2)
+void SPO2TrendWidget::setSPO2Value(int16_t spo2)
 {
 //    debug("------------spo2 = %d",spo2);
     if (spo2 >= 0)
@@ -45,7 +56,7 @@ void SPO2TrendWidget::setSPO2Value(short spo2)
 /**************************************************************************************************
  * 设置bar图的值。
  *************************************************************************************************/
-void SPO2TrendWidget::setBarValue(short bar)
+void SPO2TrendWidget::setBarValue(int16_t bar)
 {
     _spo2Bar->setValue(bar);
 }
@@ -122,7 +133,7 @@ void SPO2TrendWidget::setTextSize()
     // 字体。
 //    int fontsize = fontManager.adjustNumFontSizeXML(r);
 //    fontsize = fontManager.getFontSize(fontsize);
-    int fontsize = fontManager.adjustNumFontSize(r,true);
+    int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
 
 //    font.setStretch(105); // 横向放大。
@@ -167,7 +178,7 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     contentLayout->addStretch(1);
 
     // 释放事件。
-    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 }
 
 /**************************************************************************************************
@@ -175,5 +186,4 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
  *************************************************************************************************/
 SPO2TrendWidget::~SPO2TrendWidget()
 {
-
 }
