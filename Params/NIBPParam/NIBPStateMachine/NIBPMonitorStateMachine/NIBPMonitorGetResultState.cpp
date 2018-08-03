@@ -99,7 +99,9 @@ void NIBPMonitorGetResultState::handleNIBPEvent(NIBPEvent event, const unsigned 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-NIBPMonitorGetResultState::NIBPMonitorGetResultState() : NIBPState(NIBP_MONITOR_GET_RESULT_STATE)
+NIBPMonitorGetResultState::NIBPMonitorGetResultState()
+    : NIBPState(NIBP_MONITOR_GET_RESULT_STATE)
+    , same_time_flag(false)
 {
 }
 
