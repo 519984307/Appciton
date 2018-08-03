@@ -39,7 +39,7 @@ MainMenuWindow *MainMenuWindow::getInstance()
         instance->addMenuContent(RESPMenuContent::getInstance());
         if (systemManager.isSupport(CONFIG_AG))
         {
-            instance->addMenuContent(new AGMenuContent);
+            instance->addMenuContent(AGMenuContent::getInstace());
         }
         if (systemManager.isSupport(CONFIG_IBP))
         {

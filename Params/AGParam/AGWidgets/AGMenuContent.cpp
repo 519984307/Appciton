@@ -61,6 +61,16 @@ AGMenuContent::AGMenuContent()
 
 }
 
+AGMenuContent *AGMenuContent::getInstace()
+{
+    static AGMenuContent *instance = NULL;
+    if(instance == NULL)
+    {
+        instance = new AGMenuContent;
+    }
+    return instance;
+}
+
 AGMenuContent::~AGMenuContent()
 {
     delete d_ptr;

@@ -8,7 +8,6 @@
 #include "ConfigEditCO2Menu.h"
 #include "ConfigEditCOMenu.h"
 #include "ConfigEditIBPMenu.h"
-#include "AGMenu.h"
 #include "IBPMenu.h"
 #include "CO2Menu.h"
 #include "ECGMenu.h"

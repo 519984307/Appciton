@@ -149,7 +149,6 @@
 #include "AGParam.h"
 #include "AGWaveWidget.h"
 #include "AGTrendWidget.h"
-#include "AGMenu.h"
 
 #include "SPO2Param.h"
 #include "SPO2Alarm.h"

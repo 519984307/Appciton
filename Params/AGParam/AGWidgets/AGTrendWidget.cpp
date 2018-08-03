@@ -6,9 +6,10 @@
 #include "TrendWidgetLabel.h"
 #include "AGSymbol.h"
 #include "WindowManager.h"
-#include "AGMenu.h"
 #include "PublicMenuManager.h"
 #include <QDebug>
+#include "MainMenuWindow.h"
+#include "AGMenuContent.h"
 
 /**************************************************************************************************
  * 设置麻醉剂类型。
@@ -269,5 +270,7 @@ void AGTrendWidget::_releaseHandle(IWidget *)
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
-    publicMenuManager.popup(&agMenu, x, y);
+    MainMenuWindow *mainMenu =  MainMenuWindow::getInstance();
+    mainMenu->popup(AGMenuContent::getInstace() , x , y);
+
 }

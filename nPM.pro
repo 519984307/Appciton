@@ -464,7 +464,6 @@ SOURCES +=                                                                      
     Components/Freeze/FreezeWindow.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
 #################################################################################
-    Params/AGParam/AGWidgets/AGMenu.cpp                                         \
     Params/AGParam/AGWidgets/AGTrendWidget.cpp                                  \
     Params/AGParam/AGWidgets/AGWaveRuler.cpp                                    \
     Params/AGParam/AGWidgets/AGWaveWidget.cpp                                   \
@@ -1017,7 +1016,6 @@ HEADERS +=                                                                      
     Components/Freeze/FreezeWindow.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \
 #################################################################################
-    Params/AGParam/AGWidgets/AGMenu.h                                           \
     Params/AGParam/AGWidgets/AGTrendWidget.h                                    \
     Params/AGParam/AGWidgets/AGWaveRuler.h                                      \
     Params/AGParam/AGWidgets/AGWaveWidget.h                                     \
