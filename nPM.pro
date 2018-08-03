@@ -453,7 +453,6 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditIBPMenuContent.cpp                       \
     Components/ConfigManager/ConfigEditDisplayMenu.cpp                          \
     Components/ConfigManager/ConfigEditDisplayMenuContent.cpp                   \
-    Components/ConfigManager/ConfigManagerEntrance.cpp                          \
     Components/ConfigManager/LoadConfigMenu.cpp                                 \
     Components/ConfigManager/ConfigManagerMenuContent.cpp                       \
     Components/ConfigManager/LoadConfigMenuContent.cpp                          \
@@ -1001,7 +1000,6 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditDisplayMenu.h                            \
     Components/ConfigManager/ConfigEditDisplayMenuContent.h                     \
     Components/ConfigManager/ConfigEditCodeMarkerMenuContent.h                  \
-    Components/ConfigManager/ConfigManagerEntrance.h                            \
     Components/ConfigManager/LoadConfigMenu.h                                   \
     Components/ConfigManager/ConfigManagerMenuContent.h                         \
     Components/ConfigManager/LoadConfigMenuContent.h                            \

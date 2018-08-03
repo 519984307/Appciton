@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -17,7 +28,6 @@
 #include "RESPParam.h"
 #include "AlarmSymbol.h"
 #include "AlarmConfig.h"
-#include "LoadConfigMenu.h"
 
 AlarmLimitMenu *AlarmLimitMenu::_selfObj = NULL;
 
@@ -44,10 +54,10 @@ void AlarmLimitMenu::_limitChange(QString valueStr, int id)
     UnitType type = paramManager.getSubParamUnit(paramID, subID);
 
     LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subID, type);
-    if(0 == id % 2)
+    if (0 == id % 2)
     {
-        //low limit changed
-        if(config.scale == 1)
+        // low limit changed
+        if (config.scale == 1)
         {
             int min, max;
             int value = valueStr.toInt();
@@ -61,15 +71,15 @@ void AlarmLimitMenu::_limitChange(QString valueStr, int id)
             double dmin, dmax;
             double value = valueStr.toDouble();
             item->upper->getRange(dmin, dmax);
-            dmin = value + (double) config.step / config.scale;
+            dmin = value + static_cast<double>(config.step / config.scale);
             item->upper->setRange(dmin, dmax);
             config.lowLimit = value * config.scale;
         }
     }
     else
     {
-        //high limit changed
-        if(config.scale == 1)
+        // high limit changed
+        if (config.scale == 1)
         {
             int min, max;
             int value = valueStr.toInt();
@@ -83,7 +93,7 @@ void AlarmLimitMenu::_limitChange(QString valueStr, int id)
             double dmin, dmax;
             double value = valueStr.toDouble();
             item->lower->getRange(dmin, dmax);
-            dmax = value - (double)config.step / config.scale;
+            dmax = value - static_cast<double>(config.step / config.scale);
             item->lower->setRange(dmin, dmax);
             config.highLimit = value * config.scale;
         }
@@ -96,8 +106,8 @@ void AlarmLimitMenu::_limitChange(QString valueStr, int id)
  *************************************************************************************************/
 void AlarmLimitMenu::_comboListIndexChanged(int id, int index)
 {
-    IComboList *combo = qobject_cast<IComboList*>(sender());
-    if(!combo)
+    IComboList *combo = qobject_cast<IComboList *>(sender());
+    if (!combo)
     {
         qdebug("Invalid signal sender.");
         return;
@@ -119,7 +129,7 @@ void AlarmLimitMenu::_comboListIndexChanged(int id, int index)
     }
 
     SubParamID subID = item->sid;
-    if(combo->combolist == item->combo->combolist)
+    if (combo->combolist == item->combo->combolist)
     {
         alarmConfig.setLimitAlarmEnable(subID, index);
 
@@ -132,11 +142,10 @@ void AlarmLimitMenu::_comboListIndexChanged(int id, int index)
             checkAlarmEnableStatus();
         }
     }
-    else if(combo->combolist == item->priority->combolist)
+    else if (combo->combolist == item->priority->combolist)
     {
         alarmConfig.setLimitAlarmPriority(subID, (AlarmPriority)index);
     }
-
 }
 
 /**************************************************************************************************
@@ -321,7 +330,7 @@ void AlarmLimitMenu::_loadOptions(void)
 
         item->combo->setCurrentIndex(alarmConfig.isLimitAlarmEnable(subID));
 
-        if(config.scale == 1)
+        if (config.scale == 1)
         {
             item->lower->setMode(ISPIN_MODE_INT);
             item->lower->setRange(config.minLowLimit, config.highLimit - config.step);
@@ -332,32 +341,32 @@ void AlarmLimitMenu::_loadOptions(void)
             item->upper->setRange(config.lowLimit + config.step, config.maxHighLimit);
             item->upper->setValue(config.highLimit);
             item->upper->setStep(config.step);
-
         }
         else
         {
             double fStepValue, fLowMinValue, fLowMaxValue, fHighMinValue, fHighMaxValue;
-            fStepValue = (double)config.step / config.scale;
-            fLowMinValue = (double)config.minLowLimit / config.scale;
-            fLowMaxValue = (double)(config.highLimit - config.step) / config.scale;
-            fHighMinValue = (double)(config.lowLimit + config.step) / config.scale;
-            fHighMaxValue = (double)config.maxHighLimit / config.scale;
+            fStepValue = static_cast<double>(config.step / config.scale);
+            fLowMinValue = static_cast<double>(config.minLowLimit / config.scale);
+            fLowMaxValue = static_cast<double>((config.highLimit - config.step) / config.scale);
+            fHighMinValue = static_cast<double>((config.lowLimit + config.step) / config.scale);
+            fHighMaxValue = static_cast<double>(config.maxHighLimit / config.scale);
 
             item->lower->setMode(ISPIN_MODE_FLOAT);
             item->lower->setRange(fLowMinValue, fLowMaxValue);
-            item->lower->setValue((double)config.lowLimit / config.scale);
+            item->lower->setValue(static_cast<double>(config.lowLimit / config.scale));
             item->lower->setStep(fStepValue);
 
             item->upper->setMode(ISPIN_MODE_FLOAT);
             item->upper->setRange(fHighMinValue, fHighMaxValue);
-            item->upper->setValue((double)config.highLimit / config.scale);
+            item->upper->setValue(static_cast<double>(config.highLimit / config.scale));
             item->upper->setStep(fStepValue);
         }
 
-        int index=0;
-        currentConfig.getNumAttr(QString("AlarmSource|%1|%2").arg(patientManager.getTypeStr()).arg(paramInfo.getSubParamName(subID, true)),
-                                  "Prio",
-                                  index);
+        int index = 0;
+        currentConfig.getNumAttr(QString("AlarmSource|%1|%2").arg(patientManager.getTypeStr()).arg(paramInfo.getSubParamName(
+                                     subID, true)),
+                                 "Prio",
+                                 index);
         item->priority->combolist->setCurrentIndex(index);
     }
 
@@ -480,17 +489,17 @@ void AlarmLimitMenu::layoutExec(void)
         item->lower->setFont(defaultFont());
         item->lower->enableCycle(false);
         item->lower->setID(i * 2);
-        connect(item->lower, SIGNAL(valueChange(QString,int)),
-                this, SLOT(_limitChange(QString,int)));
+        connect(item->lower, SIGNAL(valueChange(QString, int)),
+                this, SLOT(_limitChange(QString, int)));
 
         item->upper->setFixedSize(itemW, ITEM_H);
         item->upper->setFont(defaultFont());
         item->upper->enableCycle(false);
         item->upper->setID(i * 2 + 1);
-        connect(item->upper, SIGNAL(valueChange(QString,int)),
+        connect(item->upper, SIGNAL(valueChange(QString, int)),
                 this, SLOT(_limitChange(QString, int)));
 
-        item->priority->label->setFixedSize(0,0);
+        item->priority->label->setFixedSize(0, 0);
         item->priority->label->setVisible(false);
         item->priority->combolist->setFixedSize(itemW, ITEM_H);
         item->priority->combolist->addItem(trs("low"));
@@ -516,7 +525,7 @@ int AlarmLimitMenu::getFocusIndex()
 //设置聚焦点值
 void AlarmLimitMenu::setFocusIndex(int index)
 {
-    if( index >= 0 && index < _itemList.count() )
+    if (index >= 0 && index < _itemList.count())
     {
         _focusIndex = index;
     }
@@ -526,18 +535,18 @@ void AlarmLimitMenu::setFocusIndex(int index)
  * 构造。
  *************************************************************************************************/
 AlarmLimitMenu::AlarmLimitMenu() : SubMenu(trs("AlarmLimitMenu")),
-                                   _focusIndex(0)
+    _focusIndex(0)
 {
     _itemList.clear();
     setDesc(trs("AlarmLimitMenuDesc"));
 
-    //LAT alarm item
+    // LAT alarm item
     SetItem *item = new SetItem(PARAM_NONE, SUB_PARAM_NONE);
     _itemList.append(item);
 
     QList<ParamID> pids;
     paramManager.getParams(pids);
-    for (int i = 0; i< SUB_PARAM_NR; ++i)
+    for (int i = 0; i < SUB_PARAM_NR; ++i)
     {
         ParamID id = paramInfo.getParamID((SubParamID)i);
         if (-1 != pids.indexOf(id))

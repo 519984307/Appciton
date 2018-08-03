@@ -13,7 +13,6 @@
 #include "ConfigEditUnitSetupMenu.h"
 #include "UnitManager.h"
 #include "IConfig.h"
-#include "LoadConfigMenu.h"
 #include "ConfigManager.h"
 ConfigEditUnitSetupMenu *ConfigEditUnitSetupMenu::_selfObj = NULL;
 

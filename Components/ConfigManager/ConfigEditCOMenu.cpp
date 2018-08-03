@@ -9,6 +9,17 @@
 #include "LanguageManager.h"
 #include "SetWidget.h"
 #include "PublicMenuManager.h"
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "NumberInput.h"
 #include "IMessageBox.h"
 #include "NumberInput.h"
@@ -17,7 +28,6 @@
 #include "Config.h"
 #include "ConfigEditMenuGrp.h"
 #include "ConfigEditAlarmLimitMenu.h"
-#include "LoadConfigMenu.h"
 #include "ConfigManager.h"
 ConfigCOMenu *ConfigCOMenu::_selfObj = NULL;
 

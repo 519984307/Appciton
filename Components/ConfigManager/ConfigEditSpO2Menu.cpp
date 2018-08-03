@@ -4,7 +4,6 @@
 #include "SPO2Symbol.h"
 #include "ConfigEditAlarmLimitMenu.h"
 #include "LabelButton.h"
-#include "LoadConfigMenu.h"
 #include "ConfigManager.h"
 
 class ConfigEditSpO2MenuPrivate

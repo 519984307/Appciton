@@ -4,7 +4,6 @@
 #include "RESPSymbol.h"
 #include "ConfigEditAlarmLimitMenu.h"
 #include "LabelButton.h"
-#include "LoadConfigMenu.h"
 #include "ConfigManager.h"
 class ConfigEditRespMenuPrivate
 {

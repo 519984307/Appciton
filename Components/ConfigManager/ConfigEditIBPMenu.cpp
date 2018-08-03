@@ -18,7 +18,6 @@
 #include "ConfigEditMenuGrp.h"
 #include "IBPParam.h"
 #include "ConfigEditAlarmLimitMenu.h"
-#include "LoadConfigMenu.h"
 
 ConfigIBPMenu *ConfigIBPMenu::_selfObj = NULL;
 

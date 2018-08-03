@@ -5,7 +5,6 @@
 #include "LabelButton.h"
 #include "MenuGroup.h"
 #include "ConfigEditAlarmLimitMenu.h"
-#include "LoadConfigMenu.h"
 #include "ConfigManager.h"
 class ConfigEditNIBPMenuPrivate
 {

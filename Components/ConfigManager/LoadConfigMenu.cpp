@@ -9,7 +9,6 @@
  **/
 
 #include <QLabel>
-#include "LoadConfigMenu.h"
 #include "ConfigMaintainMenuGrp.h"
 #include "IListWidget.h"
 #include "IButton.h"

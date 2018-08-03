@@ -13,7 +13,6 @@
 #include "IMessageBox.h"
 #include "AlarmLimitMenu.h"
 #include "PublicMenuManager.h"
-#include "LoadConfigMenu.h"
 #include "ConfigManager.h"
 
 IBPMenu *IBPMenu::_selfObj = NULL;

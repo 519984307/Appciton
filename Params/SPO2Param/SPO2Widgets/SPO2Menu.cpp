@@ -19,7 +19,6 @@
 #include "AlarmLimitMenu.h"
 #include "PublicMenuManager.h"
 #include <QVBoxLayout>
-#include "LoadConfigMenu.h"
 
 SPO2Menu *SPO2Menu::_selfObj = NULL;
 

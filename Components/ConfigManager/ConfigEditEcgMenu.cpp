@@ -16,7 +16,6 @@
 #include "SoundManager.h"
 #include "LabelButton.h"
 #include "ConfigEditAlarmLimitMenu.h"
-#include "LoadConfigMenu.h"
 #include "ConfigManager.h"
 // 配置编辑ECG菜单私有类
 class ConfigEditEcgMenuPrivate

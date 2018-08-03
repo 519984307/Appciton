@@ -7,7 +7,6 @@
 #include "SupervisorConfigManager.h"
 #include "SupervisorCodeMarker.h"
 #include "SupervisorMenuManager.h"
-#include "LoadConfigMenu.h"
 
 /**************************************************************************************************
  * 构造。

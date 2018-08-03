@@ -11,7 +11,6 @@
 
 #include "Init.h"
 #include "ErrorLogItem.h"
-#include "LoadConfigMenu.h"
 
 /**************************************************************************************************
  * 功能： 初始化系统。
@@ -566,16 +565,9 @@ static void _initMenu(void)
 {
     menuManager.construction();
     publicMenuManager.construction();
-    publicMenuManager.addSubMenu(&ecgMenu);
-    publicMenuManager.addSubMenu(&alarmLimitMenu);
-
 
     userMaintainEntrance.construction();
     factoryMaintainEntrance.construction();
-    configManagerEntrance.construction();
-
-    publicMenuManager.addSubMenu(&loadConfigMenu);
-    publicMenuManager.addSubMenu(&configManagerEntrance);
     publicMenuManager.addSubMenu(&userMaintainEntrance);
     publicMenuManager.addSubMenu(&factoryMaintainEntrance);
 
