@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #pragma once
 #include "TrendWidget.h"
 #include <QLabel>
@@ -13,10 +24,10 @@ public:
 
 public:
     // display C.O. and C.I. data.
-    void setMeasureResult(unsigned short coData, unsigned short ciData);
+    void setMeasureResult(u_int16_t coData, u_int16_t ciData);
 
     // display temp blood data.
-    void setTBData(unsigned short tbData);
+    void setTBData(u_int16_t tbData);
 
 protected:
     virtual void setTextSize(void);
@@ -25,7 +36,6 @@ private slots:
     void _releaseHandle(IWidget *);
 
 private:
-
     QLabel *_coValue;
 
     QLabel *_ciName;
@@ -36,5 +46,4 @@ private:
     QString _coStr;
     QString _ciStr;
     QString _tbStr;
-
 };
