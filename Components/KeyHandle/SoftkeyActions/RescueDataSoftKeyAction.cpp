@@ -78,7 +78,7 @@ void RescueDataSoftKeyAction::trendReview(bool isPressed)
 //    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
 //    trendDataWidget.setHistoryData(false);
 //    trendDataWidget.autoShow(x, y);
-    trendTableWindow.exec();
+    windowManager.showWindow(&trendTableWindow);
 }
 
 /***************************************************************************************************
@@ -108,7 +108,7 @@ void RescueDataSoftKeyAction::summaryReview(bool isPressed)
 //    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
 //    trendGraphWidget.setHistoryData(false);
 //    trendGraphWidget.autoShow(x, y);
-    trendGraphWindow.exec();
+    windowManager.showWindow(&trendGraphWindow);
 }
 
 /***************************************************************************************************
@@ -137,7 +137,6 @@ void RescueDataSoftKeyAction::exportData(bool isPressed)
 //    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
 //    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
 //    rescueDataExportWidget.autoShow(x, y);
-    eventWindow.exec();
 }
 
 /***************************************************************************************************
@@ -174,24 +173,25 @@ void RescueDataSoftKeyAction::eventReview(bool isPressed)
         return;
     }
 
-    bool isVisible = eventReviewWindow.isVisible();
-    while (NULL != QApplication::activeModalWidget())
-    {
-        QApplication::activeModalWidget()->hide();
-        menuManager.close();
-    }
+//    bool isVisible = eventReviewWindow.isVisible();
+//    while (NULL != QApplication::activeModalWidget())
+//    {
+//        QApplication::activeModalWidget()->hide();
+//        menuManager.close();
+//    }
 
-    if (isVisible)
-    {
-        return;
-    }
+//    if (isVisible)
+//    {
+//        return;
+//    }
 
-    QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
-    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-    // summaryRescueDataWidget.autoShow(x, y);
-    eventReviewWindow.setHistoryData(false);
-    eventReviewWindow.autoShow(x, y);
+//    QRect r = windowManager.getMenuArea();
+//    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
+//    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
+//    // summaryRescueDataWidget.autoShow(x, y);
+//    eventReviewWindow.setHistoryData(false);
+//    eventReviewWindow.autoShow(x, y);
+    windowManager.showWindow(&eventWindow);
 }
 
 void RescueDataSoftKeyAction::oxyCRGEventReview(bool isPressed)

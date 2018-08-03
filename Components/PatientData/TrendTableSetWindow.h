@@ -28,12 +28,12 @@ public:
 
 protected:
     void showEvent(QShowEvent *ev);
+    void hideEvent(QHideEvent *ev);
 
 private slots:
     void timeIntervalReleased(int);
     void trendGroupReleased(int);
     void incidentReleased(int);
-    void yesReleased(void);
 
 private:
     TrendTableSetWindow();

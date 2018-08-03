@@ -40,27 +40,11 @@ public:
     ~WindowManager();
 
 public:
-    /* window relate api */
     /**
-     * @brief showMainMenu show the main menu window
+     * @brief showWindow 从这里调用显示所有的窗口
+     * @param w
      */
-    void showMainMenu();
-    /**
-     * @brief showConfigManagerMenu show the configManager menu window
-     */
-    void showConfigManagerMenu();
-
-    void showUserMaintainMenu();
-
-    void showFactoryMaintainMenu();
-    /**
-     * @brief showConfigEditManagerMenu
-     */
-    void showConfigEditManagerMenu();
-    /**
-     * @brief showNIBPRepairMenu
-     */
-    void showNIBPRepairMenu();
+    void showWindow(QWidget *w);
 
 public:
     // 注册窗体。

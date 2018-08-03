@@ -92,17 +92,29 @@ void TrendGraphWindow::onButtonReleased()
         }
         case TrendGraphWindowPrivate::ACTION_BTN_SET_WIDGET:
         {
-            trendGraphSetWindow.exec();
+            windowManager.showWindow(&trendGraphSetWindow);
             break;
         }
         case TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE:
         {
             d_ptr->waveWidget->pageUpParam();
+            bool hasBtn = d_ptr->waveWidget->hasUpPage();
+            d_ptr->buttons[TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE]->setEnabled(hasBtn);
+            hasBtn = d_ptr->waveWidget->hasDownPage();
+            d_ptr->buttons[TrendGraphWindowPrivate::ACTION_BTN_DOWN_PAGE]->setEnabled(hasBtn);
             break;
         }
         case TrendGraphWindowPrivate::ACTION_BTN_DOWN_PAGE:
         {
             d_ptr->waveWidget->pageDownParam();
+            bool hasBtn = d_ptr->waveWidget->hasUpPage();
+            d_ptr->buttons[TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE]->setEnabled(hasBtn);
+            hasBtn = d_ptr->waveWidget->hasDownPage();
+            d_ptr->buttons[TrendGraphWindowPrivate::ACTION_BTN_DOWN_PAGE]->setEnabled(hasBtn);
+            if (!hasBtn)
+            {
+                d_ptr->buttons[TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE]->setFocus();
+            }
             break;
         }
         default:
@@ -115,8 +127,8 @@ TrendGraphWindow::TrendGraphWindow()
     : Window(), d_ptr(new TrendGraphWindowPrivate())
 {
     setWindowTitle(trs("TrendGraph"));
-    int maxWidth = windowManager.getPopMenuWidth();
-    int maxHeight = windowManager.getPopMenuHeight();
+    int maxWidth = 800;
+    int maxHeight = 580;
     resize(maxWidth, maxHeight);
 
     d_ptr->waveWidget = new TrendWaveWidget();

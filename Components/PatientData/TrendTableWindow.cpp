@@ -260,5 +260,5 @@ void TrendTableWindow::printWidgetRelease()
 void TrendTableWindow::trendDataSetReleased()
 {
     hide();
-    trendTableSetWindow.show();
+    windowManager.showWindow(&trendTableSetWindow);
 }

@@ -36,6 +36,7 @@
 #include "FrameItem.h"
 #include "ComboBox.h"
 #include "PatientInfoWindow.h"
+#include "MainMenuWindow.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -292,7 +293,9 @@ void SoftkeyActionBase::mainsetup(bool isPressed)
         return;
     }
 //    windowManager.setUFaceType();
-    windowManager.showMainMenu();
+//    windowManager.showMainMenu();
+    MainMenuWindow *w = MainMenuWindow::getInstance();
+    windowManager.showWindow(w);
 }
 
 /***************************************************************************************************

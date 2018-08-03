@@ -21,6 +21,7 @@
 #include "ConfigEditMenuWindow.h"
 #include "WindowManager.h"
 #include <QHideEvent>
+#include "ConfigManagerMenuWindow.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -266,7 +267,8 @@ void UserConfigEditMenuContent::onBtnClick()
 
             ConfigEditMenuWindow::getInstance()->setCurrentEditConfigName(d_ptr->generateDefaultConfigName());
             ConfigEditMenuWindow::getInstance()->setCurrentEditConfig(d_ptr->curConfig);
-            windowManager.showConfigEditManagerMenu();
+            ConfigManagerMenuWindow *w = ConfigManagerMenuWindow::getInstance();
+            windowManager.showWindow(w);
         }
     }
     else if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG])
@@ -286,7 +288,8 @@ void UserConfigEditMenuContent::onBtnClick()
 
             ConfigEditMenuWindow::getInstance()->setCurrentEditConfigName(d_ptr->configs.at(index).name);
             ConfigEditMenuWindow::getInstance()->setCurrentEditConfig(d_ptr->curConfig);
-            windowManager.showConfigEditManagerMenu();
+            ConfigManagerMenuWindow *w = ConfigManagerMenuWindow::getInstance();
+            windowManager.showWindow(w);
         }
     }
     else if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG])

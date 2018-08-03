@@ -18,6 +18,7 @@
 #include "TrendDataSymbol.h"
 #include "TrendTableWindow.h"
 #include "IConfig.h"
+#include "WindowManager.h"
 
 TrendTableSetWindow *TrendTableSetWindow::selfObj = NULL;
 
@@ -25,13 +26,12 @@ class TrendTableSetWindowPrivate
 {
 public:
     TrendTableSetWindowPrivate()
-        : resolutionRatioCbo(NULL), trendGroupCbo(NULL), eventTypeCbo(NULL), yesBtn(NULL)
+        : resolutionRatioCbo(NULL), trendGroupCbo(NULL), eventTypeCbo(NULL)
     {}
 
     ComboBox *resolutionRatioCbo;
     ComboBox *trendGroupCbo;
     ComboBox *eventTypeCbo;
-    Button *yesBtn;
 };
 
 TrendTableSetWindow::~TrendTableSetWindow()
@@ -54,6 +54,12 @@ void TrendTableSetWindow::showEvent(QShowEvent *ev)
     d_ptr->trendGroupCbo->setCurrentIndex(index);
 }
 
+void TrendTableSetWindow::hideEvent(QHideEvent *ev)
+{
+    Window::hideEvent(ev);
+    windowManager.showWindow(&trendTableWindow);
+}
+
 void TrendTableSetWindow::timeIntervalReleased(int t)
 {
     QString prefix = "TrendTable|ResolutionRatio";
@@ -73,18 +79,11 @@ void TrendTableSetWindow::incidentReleased(int type)
     Q_UNUSED(type)
 }
 
-void TrendTableSetWindow::yesReleased()
-{
-    hide();
-    trendTableWindow.show();
-}
-
 TrendTableSetWindow::TrendTableSetWindow()
     : Window(), d_ptr(new TrendTableSetWindowPrivate())
 {
     setWindowTitle(trs("TrendTableSet"));
 
-    QVBoxLayout *layout = new QVBoxLayout();
     QGridLayout *gridLayout = new QGridLayout();
     QLabel *label;
 
@@ -115,12 +114,5 @@ TrendTableSetWindow::TrendTableSetWindow()
     gridLayout->addWidget(label, 2, 0);
     gridLayout->addWidget(d_ptr->eventTypeCbo, 2, 1);
 
-    d_ptr->yesBtn = new Button(trs("EnglishYESChineseSURE"));
-    d_ptr->yesBtn->setButtonStyle(Button::ButtonTextOnly);
-    connect(d_ptr->yesBtn, SIGNAL(released()), this, SLOT(yesReleased()));
-
-    layout->addLayout(gridLayout);
-    layout->addWidget(d_ptr->yesBtn);
-
-    setWindowLayout(layout);
+    setWindowLayout(gridLayout);
 }

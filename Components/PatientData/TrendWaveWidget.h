@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/3
+ **/
+
 #pragma once
 #include "IWidget.h"
 #include "TrendSubWaveWidget.h"
@@ -27,9 +37,21 @@ public:
     void pageUpParam();
 
     /**
+     * @brief hasUpPage 检查是否可上翻页
+     * @return
+     */
+    bool hasUpPage();
+
+    /**
      * @brief pageDownParam 下翻页
      */
     void pageDownParam();
+
+    /**
+     * @brief hasDownPage 检查是否可下翻页
+     * @return
+     */
+    bool hasDownPage();
 
     /**
      * @brief setTimeInterval 设置时间间隔

@@ -42,6 +42,7 @@
 #include "IConfig.h"
 #include "EventWaveSetWindow.h"
 #include "DataStorageDefine.h"
+#include "TableViewItemDelegate.h"
 
 EventWindow *EventWindow::selfObj = NULL;
 
@@ -221,6 +222,13 @@ void EventWindow::upPageReleased()
         int positon = d_ptr->curListScroller - (maxValue * 15) / (d_ptr->curDisplayEventNum - 15);
         scrollBar->setSliderPosition(positon);
     }
+
+    // 上下翻页事件按钮使能
+    int curScroller = d_ptr->eventTable->verticalScrollBar()->value();
+    bool hasBtn = curScroller > 0;
+    d_ptr->upPageBtn->setEnabled(hasBtn);
+    hasBtn = curScroller < maxValue;
+    d_ptr->downPageBtn->setEnabled(hasBtn);
 }
 
 void EventWindow::downPageReleased()
@@ -232,6 +240,17 @@ void EventWindow::downPageReleased()
         QScrollBar *scrollBar = d_ptr->eventTable->verticalScrollBar();
         int positon = d_ptr->curListScroller + (maxValue * 15) / (d_ptr->curDisplayEventNum - 15);
         scrollBar->setSliderPosition(positon);
+    }
+
+    // 上下翻页事件按钮使能
+    int curScroller = d_ptr->eventTable->verticalScrollBar()->value();
+    bool hasBtn = curScroller > 0;
+    d_ptr->upPageBtn->setEnabled(hasBtn);
+    hasBtn = curScroller < maxValue;
+    d_ptr->downPageBtn->setEnabled(hasBtn);
+    if (!hasBtn)
+    {
+        d_ptr->upPageBtn->setFocus();
     }
 }
 
@@ -385,6 +404,13 @@ void EventWindow::upReleased()
         int position = curScroller - (maxValue * 4) / (d_ptr->trendListWidget->count() - 4);
         scrollBar->setSliderPosition(position);
     }
+
+    // 上下翻页参数按钮使能
+    curScroller = d_ptr->trendListWidget->verticalScrollBar()->value();
+    bool hasBtn = curScroller > 0;
+    d_ptr->upParamBtn->setEnabled(hasBtn);
+    hasBtn = curScroller < maxValue;
+    d_ptr->downParamBtn->setEnabled(hasBtn);
 }
 
 void EventWindow::downReleased()
@@ -396,6 +422,17 @@ void EventWindow::downReleased()
         QScrollBar *scrollBar = d_ptr->trendListWidget->verticalScrollBar();
         int position = curScroller + (maxValue * 4) / (d_ptr->trendListWidget->count() - 4);
         scrollBar->setSliderPosition(position);
+    }
+
+    // 上下翻页参数按钮使能
+    curScroller = d_ptr->trendListWidget->verticalScrollBar()->value();
+    bool hasBtn = curScroller > 0;
+    d_ptr->upParamBtn->setEnabled(hasBtn);
+    hasBtn = curScroller < maxValue;
+    d_ptr->downParamBtn->setEnabled(hasBtn);
+    if (!hasBtn)
+    {
+        d_ptr->upParamBtn->setFocus();
     }
 }
 
@@ -409,10 +446,12 @@ EventWindow::EventWindow()
     d_ptr->eventTable = new TableView();
     TableHeaderView *horizontalHeader = new TableHeaderView(Qt::Horizontal);
     d_ptr->eventTable->setHorizontalHeader(horizontalHeader);
-    horizontalHeader->setResizeMode(QHeaderView::Stretch);
+    horizontalHeader->setResizeMode(QHeaderView::ResizeToContents);
+    d_ptr->eventTable->verticalHeader()->setVisible(false);
+    d_ptr->eventTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
     d_ptr->eventTable->setSelectionMode(QAbstractItemView::SingleSelection);
     d_ptr->eventTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    d_ptr->eventTable->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    d_ptr->eventTable->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     d_ptr->eventTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
     d_ptr->eventTable->setShowGrid(false);
@@ -443,8 +482,11 @@ EventWindow::EventWindow()
     connect(d_ptr->downPageBtn, SIGNAL(released()), this, SLOT(downPageReleased()));
 
     QHBoxLayout *hTableLayout = new QHBoxLayout();
+    hTableLayout->addStretch(2);
     hTableLayout->addWidget(d_ptr->typeDpt, 2);
+    hTableLayout->addStretch(2);
     hTableLayout->addWidget(d_ptr->levelDpt, 2);
+    hTableLayout->addStretch(2);
     hTableLayout->addWidget(d_ptr->upPageBtn, 1);
     hTableLayout->addWidget(d_ptr->downPageBtn, 1);
 
@@ -471,6 +513,8 @@ EventWindow::EventWindow()
     d_ptr->trendListWidget->setItemDelegate(new EventTrendItemDelegate(d_ptr->trendListWidget));
     d_ptr->trendListWidget->setResizeMode(QListWidget::Adjust);
     d_ptr->trendListWidget->setFocusPolicy(Qt::NoFocus);
+    d_ptr->trendListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    d_ptr->trendListWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     hLayout->addWidget(d_ptr->trendListWidget, 1);
 
     d_ptr->eventListBtn = new Button(trs("EventList"));
@@ -534,8 +578,8 @@ EventWindow::EventWindow()
 
     setWindowLayout(d_ptr->stackLayout);
 
-    int width = windowManager.getPopMenuWidth();
-    int height = windowManager.getPopMenuHeight();
+    int width = 800;
+    int height = 580;
     setFixedSize(width, height);
 }
 
