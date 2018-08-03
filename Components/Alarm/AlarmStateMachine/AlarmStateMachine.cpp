@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/3
+ **/
+
+
 #include <QTimer>
 #include "AlarmDefine.h"
 #include "AlarmStateMachine.h"
@@ -91,14 +102,14 @@ void AlarmStateMachine::start()
 void AlarmStateMachine::_timeOut()
 {
     ++_pressTime;
-    if (_pressTime > 10 && _pressTime <= 11)//1-3s
+    if (_pressTime > 10 && _pressTime <= 11)  // 1-3s
     {
         if (NULL != _currentState)
         {
             _currentState->handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_PRESSED_SHORT_TIME, 0, 0);
         }
     }
-    else if (_pressTime > 28)//>3s,系统有延迟这里少等待200ms
+    else if (_pressTime > 28)  // >3s,系统有延迟这里少等待200ms
     {
         if (NULL != _currentState)
         {
@@ -140,6 +151,37 @@ void AlarmStateMachine::switchState(ALarmStateType type)
     _currentState->enter();
 }
 
+void AlarmStateMachine::alarmPause(bool isPressed)
+{
+    if (NULL != _currentState)
+    {
+        if (isPressed)
+        {
+            _currentState->handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_PRESSED, 0, 0);
+        }
+        else
+        {
+            _currentState->handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_RELEASED, 0, 0);
+        }
+    }
+}
+
+void AlarmStateMachine::alarmReset(bool isPressed)
+{
+    if (NULL != _currentState)
+    {
+        if (isPressed)
+        {
+            _currentState->handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_PRESSED, 0, 0);
+            _currentState->handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_PRESSED_LONG_TIME, 0, 0);
+        }
+        else
+        {
+            _currentState->handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_RELEASED, 0, 0);
+        }
+    }
+}
+
 /**************************************************************************************************
  * 事件处理。
  *************************************************************************************************/
@@ -147,19 +189,19 @@ void AlarmStateMachine::handAlarmEvent(AlarmStateEvent event, unsigned char *dat
 {
     switch (event)
     {
-        case ALARM_STATE_EVENT_MUTE_BTN_PRESSED:
-        {
-            _pressTime = 0;
-            _timer->start();
-            break;
-        }
-        case ALARM_STATE_EVENT_MUTE_BTN_RELEASED:
-        {
-            _timer->stop();
-            break;
-        }
-        default:
-            break;
+    case ALARM_STATE_EVENT_MUTE_BTN_PRESSED:
+    {
+        _pressTime = 0;
+        _timer->start();
+        break;
+    }
+    case ALARM_STATE_EVENT_MUTE_BTN_RELEASED:
+    {
+        _timer->stop();
+        break;
+    }
+    default:
+        break;
     }
 
     if (NULL != _currentState)

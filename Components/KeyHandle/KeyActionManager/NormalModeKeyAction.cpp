@@ -34,6 +34,7 @@
 #include "RecorderManager.h"
 #include "ContinuousPageGenerator.h"
 #include "FreezeWindow.h"
+#include "AlarmStateMachine.h"
 
 /**************************************************************************************************
  * 构造。
@@ -118,8 +119,17 @@ void NormalModeKeyAction::keyF5Pressed(bool multiBtnPress)
         return;
     }
 
-    // alarm mute
-    alertor.updateMuteKeyStatus(true);
+    alarmStateMachine.alarmPause(true);
+}
+
+void NormalModeKeyAction::keyF6Pressed(bool multiBtnPress)
+{
+    if (multiBtnPress)
+    {
+        return;
+    }
+
+    alarmStateMachine.alarmReset(true);
 }
 
 void NormalModeKeyAction::keyF1Released(bool multiBtnPress)
@@ -182,5 +192,15 @@ void NormalModeKeyAction::keyF5Released(bool multiBtnPress)
         return;
     }
 
-    alertor.updateMuteKeyStatus(false);
+    alarmStateMachine.alarmPause(false);
+}
+
+void NormalModeKeyAction::keyF6Released(bool multiBtnPress)
+{
+    if (multiBtnPress)
+    {
+        return;
+    }
+
+    alarmStateMachine.alarmReset(false);
 }

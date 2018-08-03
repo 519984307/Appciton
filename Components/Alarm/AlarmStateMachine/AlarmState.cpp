@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "AlarmState.h"
 
 /**************************************************************************************************
@@ -5,7 +16,6 @@
  *************************************************************************************************/
 AlarmState::AlarmState(ALarmStateType type) : QObject(), _type(type), _timerID(0)
 {
-
 }
 
 /**************************************************************************************************
@@ -36,7 +46,6 @@ void AlarmState::endTimer()
  *************************************************************************************************/
 void AlarmState::enter()
 {
-
 }
 
 /**************************************************************************************************
@@ -44,7 +53,6 @@ void AlarmState::enter()
  *************************************************************************************************/
 void AlarmState::exit()
 {
-
 }
 
 /**************************************************************************************************
@@ -52,14 +60,13 @@ void AlarmState::exit()
  *************************************************************************************************/
 void AlarmState::handAlarmEvent(AlarmStateEvent /*event*/, unsigned char */*data*/, unsigned /*len*/)
 {
-
 }
 
 /**************************************************************************************************
  * 定时器事件处理。
  *************************************************************************************************/
-void AlarmState::timerEvent(QTimerEvent */*e*/)
+void AlarmState::timerEvent(QTimerEvent *e)
 {
-
+    Q_UNUSED(e)
 }
 

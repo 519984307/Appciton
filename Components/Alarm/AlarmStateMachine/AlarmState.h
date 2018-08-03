@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/3
+ **/
+
+
 #pragma once
 #include <QObject>
 #include "AlarmStateDefine.h"
@@ -8,7 +19,7 @@ class AlarmState : public QObject
     Q_OBJECT
 
 public:
-    AlarmState(ALarmStateType type = ALARM_STATE_NONE);
+    explicit AlarmState(ALarmStateType type = ALARM_STATE_NONE);
     virtual ~AlarmState() {}
 
     ALarmStateType type() const {return _type;}
