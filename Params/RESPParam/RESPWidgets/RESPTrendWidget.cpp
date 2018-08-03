@@ -1,18 +1,21 @@
 #include "RESPTrendWidget.h"
-#include "RESPMenu.h"
 #include "ParamManager.h"
 #include "ParamInfo.h"
 #include <QHBoxLayout>
 #include "PublicMenuManager.h"
 #include "RESPParam.h"
 #include "TrendWidgetLabel.h"
+#include "MainMenuWindow.h"
+#include "RESPMenuContent.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
 void RESPTrendWidget::_releaseHandle(IWidget *)
 {
-    publicMenuManager.popup(&respMenu);
+    MainMenuWindow *mainMenu = MainMenuWindow::getInstance();
+    RESPMenuContent *RespContent = RESPMenuContent::getInstance();
+    mainMenu->popup(RespContent);
 }
 
 /**************************************************************************************************

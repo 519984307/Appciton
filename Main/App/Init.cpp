@@ -567,7 +567,6 @@ static void _initMenu(void)
     menuManager.construction();
     publicMenuManager.construction();
     publicMenuManager.addSubMenu(&ecgMenu);
-    publicMenuManager.addSubMenu(&respMenu);
     if (systemManager.isSupport(CONFIG_AG))
     {
         publicMenuManager.addSubMenu(&agMenu);

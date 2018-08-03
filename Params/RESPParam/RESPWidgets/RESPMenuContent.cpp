@@ -58,6 +58,16 @@ RESPMenuContent::RESPMenuContent()
 {
 }
 
+RESPMenuContent *RESPMenuContent::getInstance()
+{
+    static RESPMenuContent *instance = NULL;
+    if(instance == NULL)
+    {
+        instance = new RESPMenuContent;
+    }
+    return instance;
+}
+
 RESPMenuContent::~RESPMenuContent()
 {
     delete d_ptr;

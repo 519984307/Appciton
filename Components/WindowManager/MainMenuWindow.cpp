@@ -36,7 +36,7 @@ MainMenuWindow *MainMenuWindow::getInstance()
 
         // initialize the window content
         instance->addMenuContent(new ECGMenuContent);
-        instance->addMenuContent(new RESPMenuContent);
+        instance->addMenuContent(RESPMenuContent::getInstance());
         if (systemManager.isSupport(CONFIG_AG))
         {
             instance->addMenuContent(new AGMenuContent);

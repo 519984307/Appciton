@@ -544,7 +544,6 @@ SOURCES +=                                                                      
     Params/RESPParam/RESPParam.cpp                                              \
     Params/RESPParam/RESPWidgets/RESPWaveWidget.cpp                             \
     Params/RESPParam/RESPWidgets/RESPTrendWidget.cpp                            \
-    Params/RESPParam/RESPWidgets/RESPMenu.cpp                                   \
     Params/RESPParam/RESPWidgets/RESPMenuContent.cpp                            \
     Params/UpgradeParam/BLMEDUpgradeParam.cpp                                   \
     Params/UpgradeParam/BLMEDUpgradeTime.cpp                                    \
@@ -1129,7 +1128,6 @@ HEADERS +=                                                                      
     Params/RESPParam/RESPSymbol.h                                               \
     Params/RESPParam/RESPWidgets/RESPWaveWidget.h                               \
     Params/RESPParam/RESPWidgets/RESPTrendWidget.h                              \
-    Params/RESPParam/RESPWidgets/RESPMenu.h                                     \
     Params/RESPParam/RESPWidgets/RESPMenuContent.h                              \
     Params/UpgradeParam/BLMEDUpgradeParam.h                                     \
     Params/UpgradeParam/BLMEDUpgradeTime.h                                      \

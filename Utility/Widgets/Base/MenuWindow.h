@@ -27,6 +27,8 @@ public:
      */
     void addMenuContent(MenuContent *menu);
 
+    void popup(MenuContent *menu , int x = 0 , int y = 0);
+
 protected:
     bool focusNextPrevChild(bool next);
 

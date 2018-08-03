@@ -70,6 +70,13 @@ void MenuWindow::addMenuContent(MenuContent *menu)
     }
 }
 
+void MenuWindow::popup(MenuContent *menu , int x, int y)
+{
+//    move(x , y);
+    show();
+    d_ptr->sidebar->popupWidget(menu->name());
+}
+
 bool MenuWindow::focusNextPrevChild(bool next)
 {
     /*

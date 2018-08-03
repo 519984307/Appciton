@@ -41,6 +41,8 @@ public:
      */
     QWidget *getChecked() const;
 
+    void popupWidget(const QString &text);
+
 
     /* reimplement */
     QSize sizeHint() const;
