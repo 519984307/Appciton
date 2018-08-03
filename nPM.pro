@@ -201,6 +201,7 @@ SOURCES +=                                                                      
     Utility/Widgets/EventWidget/OxyCRGEventSetWidget.cpp                        \
     Utility/Widgets/EventWidget/EventWindow.cpp                                 \
     Utility/Widgets/EventWidget/EventReviewModel.cpp                            \
+    Utility/Widgets/EventWidget/EventWaveSetWindow.cpp                          \
     Utility/ScreenCapture.cpp                                                   \
     Utility/RunLengthEncode.cpp                                                 \
 #################################################################################
@@ -735,6 +736,7 @@ HEADERS +=                                                                      
     Utility/Widgets/EventWidget/OxyCRGEventSetWidget.h                          \
     Utility/Widgets/EventWidget/EventWindow.h                                   \
     Utility/Widgets/EventWidget/EventReviewModel.h                              \
+    Utility/Widgets/EventWidget/EventWaveSetWindow.h                            \
 #################################################################################
     Components/System/SystemTick.h                                              \
     Components/System/SystemManager.h                                           \

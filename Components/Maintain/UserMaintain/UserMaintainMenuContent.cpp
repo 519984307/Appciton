@@ -20,6 +20,7 @@
 #include "PasswordWidget.h"
 #include <QVBoxLayout>
 #include "WindowManager.h"
+#include "UserMaintainMenuWindow.h"
 
 class UserMaintainMenuContentPrivate
 {
@@ -59,5 +60,6 @@ void UserMaintainMenuContent::layoutExec()
 
 void UserMaintainMenuContent::userInputCorrect()
 {
-    windowManager.showUserMaintainMenu();
+    UserMaintainMenuWindow *w = UserMaintainMenuWindow::getInstance();
+    windowManager.showWindow(w);
 }

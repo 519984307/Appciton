@@ -2448,61 +2448,8 @@ WindowManager::~WindowManager()
     _winMap.clear();
 }
 
-void WindowManager::showMainMenu()
+void WindowManager::showWindow(QWidget *w)
 {
-    MainMenuWindow *w = MainMenuWindow::getInstance();
-    QRect r = _volatileLayout->geometry();
-    QPoint globalTopLeft = mapToGlobal(r.topLeft());
-    r.moveTo(0, 0);
-    w->move(globalTopLeft + r.center() - w->rect().center());
-    w->show();
-}
-
-void WindowManager::showConfigManagerMenu()
-{
-    ConfigManagerMenuWindow *w = ConfigManagerMenuWindow::getInstance();
-    QRect r = _volatileLayout->geometry();
-    QPoint globalTopLeft = mapToGlobal(r.topLeft());
-    r.moveTo(0, 0);
-    w->move(globalTopLeft + r.center() - w->rect().center());
-    w->show();
-}
-
-void WindowManager::showUserMaintainMenu()
-{
-    UserMaintainMenuWindow *w = UserMaintainMenuWindow::getInstance();
-    QRect r = _volatileLayout->geometry();
-    QPoint globalTopLeft = mapToGlobal(r.topLeft());
-    r.moveTo(0, 0);
-    w->move(globalTopLeft + r.center() - w->rect().center());
-    w->show();
-}
-
-void WindowManager::showFactoryMaintainMenu()
-{
-    FactoryMaintainMenuWindow *w = FactoryMaintainMenuWindow::getInstance();
-    QRect r = _volatileLayout->geometry();
-    QPoint globalTopLeft = mapToGlobal(r.topLeft());
-    r.moveTo(0, 0);
-    w->move(globalTopLeft + r.center() - w->rect().center());
-    w->show();
-}
-
-void WindowManager::showConfigEditManagerMenu()
-{
-    ConfigEditMenuWindow *w = ConfigEditMenuWindow::getInstance();
-    w->initializeSubMenu();
-    QRect r = _volatileLayout->geometry();
-    QPoint globalTopLeft = mapToGlobal(r.topLeft());
-    r.moveTo(0, 0);
-    w->move(globalTopLeft + r.center() - w->rect().center());
-    w->show();
-}
-
-void WindowManager::showNIBPRepairMenu()
-{
-    NIBPRepairMenuWindow *w = NIBPRepairMenuWindow::getInstance();
-    w->init();
     QRect r = _volatileLayout->geometry();
     QPoint globalTopLeft = mapToGlobal(r.topLeft());
     r.moveTo(0, 0);

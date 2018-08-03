@@ -22,8 +22,9 @@
 #include <QPainter>
 #include <QRect>
 #include "TrendGraphWindow.h"
+#include "ThemeManager.h"
 
-#define ITEM_HEIGHT     35
+#define ITEM_HEIGHT     (themeManger.getAcceptableControlHeight())
 #define ITEM_WIDTH      100
 
 TrendGraphSetWindow *TrendGraphSetWindow::selfObj = NULL;

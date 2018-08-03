@@ -19,6 +19,7 @@
 #include "LanguageManager.h"
 #include "Debug.h"
 #include "WindowManager.h"
+#include "NIBPRepairMenuWindow.h"
 
 /**************************************************************************************************
  * 构造。
@@ -57,5 +58,7 @@ void NIBPCalibrationMenuContent::layoutExec()
 
 void NIBPCalibrationMenuContent::onBtnSlot()
 {
-    windowManager.showNIBPRepairMenu();
+    NIBPRepairMenuWindow *w = NIBPRepairMenuWindow::getInstance();
+    w->init();
+    windowManager.showWindow(w);
 }

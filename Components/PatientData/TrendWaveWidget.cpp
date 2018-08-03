@@ -28,7 +28,7 @@
 #define GRAPH_DISPLAY_DATA_NUMBER           4
 #define GRAPH_POINT_NUMBER                  120                     // 一屏数据量
 #define DATA_INTERVAL_PIXEL                 5                       // 两数据之间的像素点个数
-#define GRAPH_DATA_WIDTH                    600                     // 一屏数据所占像素点
+#define GRAPH_DATA_WIDTH                    480                     // 一屏数据所占像素点
 
 TrendWaveWidget::TrendWaveWidget() :
     _timeInterval(RESOLUTION_RATIO_5_SECOND),
@@ -61,6 +61,9 @@ TrendWaveWidget::TrendWaveWidget() :
     _subWidget->setFocusPolicy(Qt::NoFocus);
     _subWidget->setAttribute(Qt::WA_TransparentForMouseEvents, true);
     _subWidgetScrollArea = new QScrollArea();
+
+    // 隐藏垂直滚动条
+    _subWidgetScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     // 重新调整子部件的大小
     _subWidgetScrollArea->setWidgetResizable(true);
@@ -104,7 +107,7 @@ TrendWaveWidget::~TrendWaveWidget()
 void TrendWaveWidget::setWidgetSize(int w, int h)
 {
     setFixedSize(w, h);
-    _waveRegionWidth = width() / 5 * 4;
+    _waveRegionWidth = width() / 4 * 3;
     _oneFrameWidth = GRAPH_DATA_WIDTH / GRAPH_DISPLAY_DATA_NUMBER;
     //确认好窗口大小后初始化子波形窗口
     _initWaveSubWidget();
@@ -293,6 +296,12 @@ void TrendWaveWidget::pageUpParam()
     }
 }
 
+bool TrendWaveWidget::hasUpPage()
+{
+    _curVScroller = _subWidgetScrollArea->verticalScrollBar()->value();
+    return _curVScroller > 0;
+}
+
 void TrendWaveWidget::pageDownParam()
 {
     int maxValue = _subWidgetScrollArea->verticalScrollBar()->maximum();
@@ -304,6 +313,13 @@ void TrendWaveWidget::pageDownParam()
         scrollBar->setSliderPosition(positon);
         _pagingNum++;
     }
+}
+
+bool TrendWaveWidget::hasDownPage()
+{
+    int maxValue = _subWidgetScrollArea->verticalScrollBar()->maximum();
+    _curVScroller = _subWidgetScrollArea->verticalScrollBar()->value();
+    return _curVScroller < maxValue;
 }
 
 void TrendWaveWidget::setTimeInterval(ResolutionRatio timeInterval)
@@ -646,12 +662,13 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
                         cursorPos, rectAdjust.bottomLeft().y());
 
     // 当前趋势记录的时间
+    QRect timeRect = rect().adjusted(_waveRegionWidth + 5, 5, -5, 0);
     if (_cursorPosIndex < _trendGraphInfo.alarmInfo.count())
     {
         timeDate.getDate(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp, tStr);
-        barPainter.drawText(_waveRegionWidth + 5, rectAdjust.topLeft().y() - 5, tStr);
+        barPainter.drawText(timeRect, Qt::AlignLeft, tStr);
         timeDate.getTime(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp, tStr, true);
-        barPainter.drawText(_waveRegionWidth + 105, rectAdjust.topLeft().y() - 5, tStr);
+        barPainter.drawText(timeRect, Qt::AlignRight, tStr);
     }
 
     barPainter.setPen(QPen(Qt::white, 1, Qt::DotLine));
