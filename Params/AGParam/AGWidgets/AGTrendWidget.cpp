@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "AGTrendWidget.h"
 #include "ColorManager.h"
 #include "FontManager.h"
@@ -31,7 +42,7 @@ void AGTrendWidget::setAnestheticType(AGAnaestheticType type)
 /**************************************************************************************************
  * 设置et结果数据。
  *************************************************************************************************/
-void AGTrendWidget::setEtData(short etValue)
+void AGTrendWidget::setEtData(int16_t etValue)
 {
     if (etValue == InvData())
     {
@@ -45,8 +56,8 @@ void AGTrendWidget::setEtData(short etValue)
         }
         else
         {
-            short etValueInt = etValue/10;
-            short etValueDes = etValue%10;
+            int16_t etValueInt = etValue / 10;
+            int16_t etValueDes = etValue % 10;
             _etStr = QString::number(etValueInt) + "." + QString::number(etValueDes);
         }
     }
@@ -57,21 +68,20 @@ void AGTrendWidget::setEtData(short etValue)
 /**************************************************************************************************
  * 设置fi结果数据。
  *************************************************************************************************/
-void AGTrendWidget::setFiData(short fiValue)
+void AGTrendWidget::setFiData(int16_t fiValue)
 {
     if (fiValue == InvData())
     {
         _fiStr = InvStr();
     }
-    else
-    if (_gasType == AG_TYPE_N2O || _gasType == AG_TYPE_O2)
+    else if (_gasType == AG_TYPE_N2O || _gasType == AG_TYPE_O2)
     {
         _fiStr = QString::number(fiValue);
     }
     else
     {
-        unsigned char fiValueInt = fiValue/10;
-        unsigned char fiValueDes = fiValue%10;
+        unsigned char fiValueInt = fiValue / 10;
+        unsigned char fiValueDes = fiValue % 10;
         _fiStr = QString::number(fiValueInt) + "." + QString::number(fiValueDes);
     }
 
@@ -221,8 +231,7 @@ AGTrendWidget::AGTrendWidget(const QString &trendName, const AGTypeGas gasType)
     contentLayout->addLayout(vLayout);
 
     // 释放事件。
-    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
-
+    connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 }
 
 /**************************************************************************************************
@@ -230,7 +239,6 @@ AGTrendWidget::AGTrendWidget(const QString &trendName, const AGTypeGas gasType)
  *************************************************************************************************/
 AGTrendWidget::~AGTrendWidget()
 {
-
 }
 
 /**************************************************************************************************
@@ -239,18 +247,18 @@ AGTrendWidget::~AGTrendWidget()
 void AGTrendWidget::setTextSize()
 {
     QRect r;
-    int h = ((height()-nameLabel->height()) / 3);
+    int h = ((height() - nameLabel->height()) / 3);
     int w = (width() - unitLabel->width());
     r.setSize(QSize(w, (h * 2)));
 
-    int fontsize = fontManager.adjustNumFontSize(r,true,"2222");
+    int fontsize = fontManager.adjustNumFontSize(r, true, "2222");
     QFont font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
 
     _etValue->setFont(font);
 
     r.setSize(QSize(w, h));
-    fontsize = fontManager.adjustNumFontSize(r,true,"2222");
+    fontsize = fontManager.adjustNumFontSize(r, true, "2222");
     font = fontManager.numFont(fontsize - 5);
     font.setWeight(QFont::Black);
     _fiName->setFont(font);
@@ -258,19 +266,17 @@ void AGTrendWidget::setTextSize()
     font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
     _fiValue->setFont(font);
-
 }
 
 
 /**************************************************************************************************
  * 趋势槽函数。
  *************************************************************************************************/
-void AGTrendWidget::_releaseHandle(IWidget *)
+void AGTrendWidget::_releaseHandle(IWidget *iWidget)
 {
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
     MainMenuWindow *mainMenu =  MainMenuWindow::getInstance();
     mainMenu->popup(AGMenuContent::getInstace() , x , y);
-
 }
