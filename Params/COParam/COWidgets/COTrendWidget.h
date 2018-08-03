@@ -8,7 +8,7 @@ class COTrendWidget: public TrendWidget
 
 public:
     // 构造和析构
-    COTrendWidget(const QString &trendName);
+    explicit COTrendWidget(const QString &trendName);
     ~COTrendWidget();
 
 public:
