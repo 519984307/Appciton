@@ -47,7 +47,7 @@ MainMenuWindow *MainMenuWindow::getInstance()
         }
         if (systemManager.isSupport(CONFIG_CO))
         {
-            instance->addMenuContent(new COMenuContent);
+            instance->addMenuContent(COMenuContent::getInstance());
         }
         if (systemManager.isSupport(CONFIG_SPO2))
         {

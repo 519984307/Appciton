@@ -47,7 +47,7 @@ public:
 
 void COMenuContentPrivate::loadOptions()
 {
-    buttons[ITEM_CBO_CO_RATIO]->setText(QString::number((double)coParam.getCORatio() / 1000));
+    buttons[ITEM_CBO_CO_RATIO]->setText(QString::number(static_cast<double>(coParam.getCORatio() / 1000)));
     combos[ITEM_CBO_INJECT_TEMP_SOURCE]->setCurrentIndex(coParam.getTempSource());
     if (combos[ITEM_CBO_INJECT_TEMP_SOURCE]->currentIndex() == CO_TI_MODE_AUTO)
     {
@@ -57,7 +57,7 @@ void COMenuContentPrivate::loadOptions()
     {
         buttons[ITEM_CBO_INJECTION_TEMP]->setEnabled(true);
     }
-    buttons[ITEM_CBO_INJECTION_TEMP]->setText(QString::number((double)coParam.getInjectionTemp() / 10));
+    buttons[ITEM_CBO_INJECTION_TEMP]->setText(QString::number(static_cast<double>(coParam.getInjectionTemp() / 10)));
     buttons[ITEM_CBO_INJECTION_VOLUMN]->setText(QString::number(coParam.getInjectionVolumn()));
     buttons[ITEM_CBO_MEASURE_CONTROL]->setText(trs(COSymbol::convert(coParam.getMeasureCtrl())));
 }
@@ -66,7 +66,16 @@ COMenuContent::COMenuContent()
     : MenuContent(trs("COMenu"), trs("COMenuDesc")),
       d_ptr(new COMenuContentPrivate)
 {
+}
 
+COMenuContent *COMenuContent::getInstance()
+{
+    static COMenuContent *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new COMenuContent;
+    }
+    return instance;
 }
 
 COMenuContent::~COMenuContent()
@@ -165,11 +174,11 @@ void COMenuContent::onComboBoxIndexChanged(int index)
         {
         case COMenuContentPrivate::ITEM_CBO_INJECT_TEMP_SOURCE:
         {
-            if (index == (int)CO_TI_MODE_MANUAL)
+            if (index == static_cast<int>(CO_TI_MODE_MANUAL))
             {
                 d_ptr->buttons.value(COMenuContentPrivate::ITEM_CBO_INJECTION_TEMP)->setEnabled(true);
             }
-            else if (index == (int)CO_TI_MODE_AUTO)
+            else if (index == static_cast<int>(CO_TI_MODE_AUTO))
             {
                 d_ptr->buttons.value(COMenuContentPrivate::ITEM_CBO_INJECTION_TEMP)->setEnabled(false);
             }
@@ -181,7 +190,6 @@ void COMenuContent::onComboBoxIndexChanged(int index)
             break;
         }
     }
-
 }
 
 void COMenuContent::onButtonReleased()
@@ -204,7 +212,7 @@ void COMenuContent::onButtonReleased()
                 QString text = numberPad.getStrValue();
                 bool ok = false;
                 float value = text.toFloat(&ok);
-                unsigned short actualValue = value * 1000;
+                u_int16_t actualValue = value * 1000;
                 if (ok)
                 {
                     if (actualValue >= 1 && actualValue <= 999)
@@ -217,7 +225,6 @@ void COMenuContent::onButtonReleased()
                         IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.001-0.999", QStringList(trs("EnglishYESChineseSURE")));
                         messageBox.exec();
                     }
-
                 }
             }
             break;
@@ -233,7 +240,7 @@ void COMenuContent::onButtonReleased()
                 QString text = numberPad.getStrValue();
                 bool ok = false;
                 float value = text.toFloat(&ok);
-                unsigned short actualValue = value * 10;
+                u_int16_t actualValue = value * 10;
                 if (ok)
                 {
                     if (actualValue <= 270)
@@ -246,7 +253,6 @@ void COMenuContent::onButtonReleased()
                         IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.0-27.0", QStringList(trs("EnglishYESChineseSURE")));
                         messageBox.exec();
                     }
-
                 }
             }
             break;
@@ -274,7 +280,6 @@ void COMenuContent::onButtonReleased()
                         IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "1-200", QStringList(trs("EnglishYESChineseSURE")));
                         messageBox.exec();
                     }
-
                 }
             }
             break;

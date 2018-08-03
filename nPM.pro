@@ -500,7 +500,6 @@ SOURCES +=                                                                      
     Params/IBPParam/IBPAlarm.cpp                                                \
     Params/COParam/COAlarm.cpp                                                  \
     Params/COParam/COParam.cpp                                                  \
-    Params/COParam/COWidgets/COMenu.cpp                                         \
     Params/COParam/COWidgets/COTrendWidget.cpp                                  \
     Params/COParam/COWidgets/COMenuContent.cpp                                  \
     Params/NIBPParam/NIBPStateMachine/NIBPState.cpp                             \
@@ -1067,7 +1066,6 @@ HEADERS +=                                                                      
     Params/COParam/COProviderIFace.h                                            \
     Params/COParam/CODefine.h                                                   \
     Params/COParam/COParam.h                                                    \
-    Params/COParam/COWidgets/COMenu.h                                           \
     Params/COParam/COWidgets/COTrendWidget.h                                    \
     Params/COParam/COWidgets/COMenuContent.h                                    \
     Params/NIBPParam/NIBPStateMachine/NIBPState.h                               \

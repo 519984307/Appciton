@@ -140,7 +140,6 @@
 
 #include "COParam.h"
 #include "COAlarm.h"
-#include "COMenu.h"
 #include "COTrendWidget.h"
 #include "COParam.h"
 
