@@ -16,7 +16,7 @@ class SPO2MenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    SPO2MenuContent();
+    static SPO2MenuContent *getInstance(void);
     ~SPO2MenuContent();
 
     /* reimplment */
@@ -30,4 +30,5 @@ private slots:
 
 private:
     SPO2MenuContentPrivate * const d_ptr;
+    SPO2MenuContent();
 };

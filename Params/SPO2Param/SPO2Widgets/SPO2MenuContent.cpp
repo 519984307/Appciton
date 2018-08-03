@@ -48,6 +48,16 @@ SPO2MenuContent::SPO2MenuContent()
 
 }
 
+SPO2MenuContent *SPO2MenuContent::getInstance()
+{
+    SPO2MenuContent *instance = NULL;
+    if(instance == NULL)
+    {
+        instance = new SPO2MenuContent;
+    }
+    return instance;
+}
+
 SPO2MenuContent::~SPO2MenuContent()
 {
     delete d_ptr;

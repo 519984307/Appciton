@@ -122,7 +122,6 @@
 #include "NIBPTrendWidget.h"
 #include "NIBPDataTrendWidget.h"
 #include "WaveTrendWidget.h"
-#include "NIBPMenu.h"
 
 #include "CO2Param.h"
 #include "CO2Alarm.h"
@@ -153,7 +152,6 @@
 #include "SPO2Alarm.h"
 #include "SPO2WaveWidget.h"
 #include "SPO2TrendWidget.h"
-#include "SPO2Menu.h"
 #include "ShortTrendManager.h"
 
 #include "TEMPParam.h"

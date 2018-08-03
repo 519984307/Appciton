@@ -2,11 +2,12 @@
 #include "ParamManager.h"
 #include "ParamInfo.h"
 #include <QHBoxLayout>
-#include "SPO2Menu.h"
 #include "PublicMenuManager.h"
 #include "WindowManager.h"
 #include "SPO2Param.h"
 #include "TrendWidgetLabel.h"
+#include "MainMenuWindow.h"
+#include "SPO2MenuContent.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -17,7 +18,8 @@ void SPO2TrendWidget::_releaseHandle(IWidget *)
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
 
-    publicMenuManager.popup(&spo2Menu, x, y);
+    MainMenuWindow *p = MainMenuWindow::getInstance();
+    p->popup(SPO2MenuContent::getInstance());
 }
 
 /**************************************************************************************************

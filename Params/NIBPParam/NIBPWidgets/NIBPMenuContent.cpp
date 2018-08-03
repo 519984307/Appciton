@@ -54,6 +54,16 @@ NIBPMenuContent::NIBPMenuContent():
 {
 }
 
+NIBPMenuContent *NIBPMenuContent::getInstance()
+{
+    static NIBPMenuContent *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new NIBPMenuContent;
+    }
+    return instance;
+}
+
 NIBPMenuContent::~NIBPMenuContent()
 {
     delete d_ptr;

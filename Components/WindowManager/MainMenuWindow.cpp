@@ -51,11 +51,11 @@ MainMenuWindow *MainMenuWindow::getInstance()
         }
         if (systemManager.isSupport(CONFIG_SPO2))
         {
-            instance->addMenuContent(new SPO2MenuContent);
+            instance->addMenuContent(SPO2MenuContent::getInstance());
         }
         if (systemManager.isSupport(CONFIG_NIBP))
         {
-            instance->addMenuContent(new NIBPMenuContent);
+            instance->addMenuContent(NIBPMenuContent::getInstance());
         }
         if (systemManager.isSupport(CONFIG_CO2))
         {

@@ -1,6 +1,5 @@
 #include "NIBPParam.h"
 #include "NIBPAlarm.h"
-#include "NIBPMenu.h"
 #include "IConfig.h"
 #include "TimeDate.h"
 #include "TN3Provider.h"
@@ -983,7 +982,7 @@ void NIBPParam::setSTATMeasure(bool flag)
         setAdditionalMeasure(false);
     }
     _statModelFlag = flag;
-    nibpMenu.statBtnShow();
+//    nibpMenu.statBtnShow();
 }
 
 /**************************************************************************************************

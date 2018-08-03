@@ -567,14 +567,6 @@ static void _initMenu(void)
     menuManager.construction();
     publicMenuManager.construction();
     publicMenuManager.addSubMenu(&ecgMenu);
-    if (systemManager.isSupport(CONFIG_SPO2))
-    {
-        publicMenuManager.addSubMenu(&spo2Menu);
-    }
-    if (systemManager.isSupport(CONFIG_NIBP))
-    {
-        publicMenuManager.addSubMenu(&nibpMenu);
-    }
     if (systemManager.isSupport(CONFIG_CO2))
     {
         publicMenuManager.addSubMenu(&co2Menu);

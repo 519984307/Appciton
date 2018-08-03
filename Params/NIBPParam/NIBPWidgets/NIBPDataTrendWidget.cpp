@@ -6,7 +6,6 @@
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "Debug.h"
-#include "NIBPMenu.h"
 #include "NIBPAlarm.h"
 #include "PublicMenuManager.h"
 #include "WindowManager.h"
@@ -14,6 +13,8 @@
 #include "TimeDate.h"
 #include "Alarm.h"
 #include "TrendWidgetLabel.h"
+#include "MainMenuWindow.h"
+#include "NIBPMenuContent.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -23,7 +24,8 @@ void NIBPDataTrendWidget::_releaseHandle(IWidget *)
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
-    publicMenuManager.popup(&nibpMenu, x, y);
+    MainMenuWindow *p = MainMenuWindow::getInstance();
+    p->popup(NIBPMenuContent::getInstance());
 }
 
 void NIBPDataTrendWidget::_releaseHandle()

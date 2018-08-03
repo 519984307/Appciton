@@ -4,13 +4,14 @@
 #include "ParamInfo.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include "NIBPMenu.h"
 #include "PublicMenuManager.h"
 #include "TimeDate.h"
 #include "TimeManager.h"
 #include "WindowManager.h"
 #include "IConfig.h"
 #include "TrendWidgetLabel.h"
+#include "MainMenuWindow.h"
+#include "NIBPMenuContent.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -20,8 +21,8 @@ void NIBPTrendWidget::_releaseHandle(IWidget *)
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
-
-    publicMenuManager.popup(&nibpMenu, x, y);
+    MainMenuWindow *p = MainMenuWindow::getInstance();
+    p->popup(NIBPMenuContent::getInstance());
 }
 
 /**************************************************************************************************

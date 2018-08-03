@@ -7,7 +7,7 @@ class NIBPMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    explicit NIBPMenuContent();
+    static NIBPMenuContent *getInstance(void);
     ~NIBPMenuContent();
     /**
      * @brief readyShow  //reimplment load settings
@@ -29,4 +29,5 @@ private slots:
     void onBtnReleasedChanged(void);
 private:
     NIBPMenuContentPrivate * const d_ptr;
+    NIBPMenuContent();
 };

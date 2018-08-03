@@ -22,8 +22,6 @@
 #include "IBPMenu.h"
 #include "CO2Menu.h"
 #include "ECGMenu.h"
-#include "NIBPMenu.h"
-#include "SPO2Menu.h"
 #include "SupervisorCodeMarker.h"
 #include "ConfigEditDisplayMenu.h"
 
