@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #ifndef NETWORKMANAGER_H
 #define NETWORKMANAGER_H
 
@@ -55,27 +66,27 @@ public:
     // 关闭网络
     void close(NetworkType type);
 
-    //get the wifi status, on or off
+    // get the wifi status, on or off
     static bool isWifiTurnOn();
 
-    //check whether the wifi is working
+    // check whether the wifi is working
     bool isWifiWorking() const;
 
-    //check wheter the wifi is connected to ap
+    // check wheter the wifi is connected to ap
     bool isWiFiConnected() const;
 
-    //set the wifi status, on or off
+    // set the wifi status, on or off
     void setWifiState(bool onOrOFF);
 
 public slots:
     void connectWiFiProfile(const WiFiProfileInfo &profile);
 
 signals:
-    //open network operation
+    // open network operation
     void openNetwork(NetworkType type);
-    //close network operation
+    // close network operation
     void closeNetwork(NetworkType type);
-    //connected to ap signal
+    // connected to ap signal
     void wifiConnectToAp(const QString &ssid);
 
     // 网络类型发生改变
@@ -89,9 +100,9 @@ protected:
 private slots:
     void _onWifiApConnected(const QString &ssid);
     void _onWifiApDisconnected(const QString &ssid);
-    //open network operation
+    // open network operation
     void _openNetwork(NetworkType type);
-    //close network operation
+    // close network operation
     void _closeNetwork(NetworkType type);
     // 有线网络udhcpc执行结束
     void _udhcpcFinished(int exitCode, QProcess::ExitStatus exitStatus);
@@ -108,8 +119,8 @@ private:
     bool _isWiFiConnected;              // wifi is connected
 
     WpaCtrl *_wpaCtrl;                  // wpa control interface
-    WiFiProfileInfo _curProfile;        //wifi profile
-    bool _lastProfileIsStatic;         //last  wifi profile is static ip
+    WiFiProfileInfo _curProfile;        // wifi profile
+    bool _lastProfileIsStatic;          // last  wifi profile is static ip
     QProcess *_udhcpc;                  // udhcpc进程
     QBasicTimer _timer;                 // 1秒定时器
 };

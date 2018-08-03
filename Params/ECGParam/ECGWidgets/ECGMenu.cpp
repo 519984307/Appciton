@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "ECGMenu.h"
 #include "ECGParam.h"
 #include "IComboList.h"
@@ -79,13 +90,13 @@ void ECGMenu:: _qrsVolumSlot(int index)
  *************************************************************************************************/
 void ECGMenu::_addFixedOptions(void)
 {
-    //filter mode
+    // filter mode
     _filterMode->addItem(trs(ECGSymbol::convert(ECG_FILTERMODE_MONITOR)));
     _filterMode->addItem(trs(ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC)));
     _filterMode->addItem(trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY)));
     _filterMode->addItem(trs(ECGSymbol::convert(ECG_FILTERMODE_ST)));
 
-    //notch filter
+    // notch filter
     _notch->addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF1)));
     _notch->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)));
     _notch->addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)));
@@ -134,7 +145,7 @@ void ECGMenu::_loadOptionsInSlot(void)
  *************************************************************************************************/
 void ECGMenu::_loadOptions(void)
 {
-    //lead mode
+    // lead mode
     _leadMode->setCurrentIndex(ecgParam.getLeadMode());
 
     //滤波和陷波
@@ -307,5 +318,4 @@ ECGMenu::ECGMenu() : SubMenu(trs("ECGMenu")),
  *************************************************************************************************/
 ECGMenu::~ECGMenu()
 {
-
 }
