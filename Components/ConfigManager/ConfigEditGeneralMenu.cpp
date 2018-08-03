@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "ConfigEditGeneralMenu.h"
 #include "ConfigEditMenuGrp.h"
 #include "LabelButton.h"
@@ -7,15 +18,16 @@
 
 #define MAX_CONFIG_NAME_LEN 64
 
-class ConfigEditGeneralMenuPrivate {
+class ConfigEditGeneralMenuPrivate
+{
 public:
     ConfigEditGeneralMenuPrivate()
-        :configName(NULL){}
+        : configName(NULL) {}
     LabelButton *configName;
 };
 
 ConfigEditGeneralMenu::ConfigEditGeneralMenu()
-    :SubMenu(trs("General")), d_ptr(new ConfigEditGeneralMenuPrivate())
+    : SubMenu(trs("General")), d_ptr(new ConfigEditGeneralMenuPrivate())
 {
     setDesc(trs("GeneralSettings"));
     startLayout();
@@ -23,7 +35,6 @@ ConfigEditGeneralMenu::ConfigEditGeneralMenu()
 
 ConfigEditGeneralMenu::~ConfigEditGeneralMenu()
 {
-
 }
 
 void ConfigEditGeneralMenu::layoutExec()
@@ -39,7 +50,7 @@ void ConfigEditGeneralMenu::layoutExec()
 
     d_ptr->configName = new LabelButton(trs("ConfigName"));
     d_ptr->configName->setFont(fontManager.textFont(fontSize));
-    //d_ptr->configName->setValue(trs("confignametest"));
+    // d_ptr->configName->setValue(trs("confignametest"));
     d_ptr->configName->label->setFixedSize(labelWidth, ITEM_H);
     d_ptr->configName->button->setFixedSize(btnWidth, ITEM_H);
     connect(d_ptr->configName->button, SIGNAL(released(int)), this, SLOT(editConfigName()));
@@ -52,7 +63,6 @@ void ConfigEditGeneralMenu::readyShow()
     bool preStatusBool = !configManager.getWidgetsPreStatus();
 
     d_ptr->configName->setEnabled(preStatusBool);
-
 }
 
 void ConfigEditGeneralMenu::editConfigName()
@@ -70,11 +80,10 @@ void ConfigEditGeneralMenu::editConfigName()
         QString oldStr = d_ptr->configName->button->text();
         QString text = namePanel.getStrValue();
 
-        if(oldStr != text)
+        if (oldStr != text)
         {
             configEditMenuGrp.setCurrentEditConfigName(text);
             d_ptr->configName->button->setText(text);
-
         }
     }
 }

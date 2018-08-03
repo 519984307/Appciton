@@ -1,14 +1,3 @@
-//////////////////////////////////////////////
-#include "ConfigEditCOMenu.h"
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QLabel>
-#include "IComboList.h"
-#include "LabelButton.h"
-#include "ISpinBox.h"
-#include "LanguageManager.h"
-#include "SetWidget.h"
-#include "PublicMenuManager.h"
 /**
  ** This file is part of the nPM project.
  ** Copyright (C) Better Life Medical Technology Co., Ltd.
@@ -20,6 +9,16 @@
  **/
 
 
+#include "ConfigEditCOMenu.h"
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QLabel>
+#include "IComboList.h"
+#include "LabelButton.h"
+#include "ISpinBox.h"
+#include "LanguageManager.h"
+#include "SetWidget.h"
+#include "PublicMenuManager.h"
 #include "NumberInput.h"
 #include "IMessageBox.h"
 #include "NumberInput.h"
@@ -32,11 +31,12 @@
 ConfigCOMenu *ConfigCOMenu::_selfObj = NULL;
 
 ConfigCOMenu::ConfigCOMenu() : SubMenu(trs("C.O.")),
-                               _ductRatio(NULL),
-                               _inputMode(NULL),
-                               _injectionTemp(NULL),
-                               _injectionVolumn(NULL),
-                               _measureMode(NULL)
+    _ductRatio(NULL),
+    _inputMode(NULL),
+    _injectionTemp(NULL),
+    _injectionVolumn(NULL),
+    _measureMode(NULL),
+    _alarmLbtn(NULL)
 {
     setDesc(trs("C.O.Desc"));
     startLayout();
@@ -55,7 +55,6 @@ void ConfigCOMenu::readyShow()
 
 ConfigCOMenu::~ConfigCOMenu()
 {
-
 }
 
 void ConfigCOMenu::layoutExec()
@@ -112,7 +111,7 @@ void ConfigCOMenu::layoutExec()
     connect(_injectionVolumn->button, SIGNAL(realReleased()), this, SLOT(_injectionVolumnReleased()));
     mainLayout->addWidget(_injectionVolumn);
 
-     config->getNumValue("CO|MeasureMode", index);
+    config->getNumValue("CO|MeasureMode", index);
     _measureMode = new IComboList(trs("MeasureMode"));
     _measureMode->setFont(defaultFont());
     _measureMode->addItem(trs("manual"));
@@ -135,10 +134,10 @@ void ConfigCOMenu::layoutExec()
 //报警项设置
 void ConfigCOMenu::_alarmLbtnSlot()
 {
-    SubMenu *subMenuPrevious = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigCOMenu"] ;
-    SubMenu *subMenuCurrent = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditAlarmLimitMenu"] ;
-    ConfigEditAlarmLimitMenu* alarmLimit = qobject_cast<ConfigEditAlarmLimitMenu*>(subMenuCurrent);
-    alarmLimit->setFocusIndex(SUB_PARAM_CO_CO+1);
+    SubMenu *subMenuPrevious = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigCOMenu"];
+    SubMenu *subMenuCurrent = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditAlarmLimitMenu"];
+    ConfigEditAlarmLimitMenu *alarmLimit = qobject_cast<ConfigEditAlarmLimitMenu *>(subMenuCurrent);
+    alarmLimit->setFocusIndex(SUB_PARAM_CO_CO + 1);
     configEditMenuGrp.changePage(subMenuCurrent, subMenuPrevious);
 }
 
@@ -155,12 +154,12 @@ void ConfigCOMenu::_ductRatioReleased()
         QString text = numberPad.getStrValue();
         bool ok = false;
         float value = text.toFloat(&ok);
-        unsigned short actualValue = value * 1000;
+        u_int16_t actualValue = value * 1000;
 
         if (ok && actualValue >= 1 && actualValue <= 999)
         {
             _ductRatio->button->setText(text);
-            config->setNumValue("CO|ratdio",value);/*保存数据*/
+            config->setNumValue("CO|ratdio", value); /*保存数据*/
         }
         else
         {
@@ -178,13 +177,12 @@ void ConfigCOMenu::_inputModeSlot(int index)
     {
         _injectionTemp->button->setEnabled(true);
         _injectionTemp->button->setFocusPolicy(Qt::StrongFocus);
-
     }
     else if (index == CO_TI_MODE_AUTO)
     {
         _injectionTemp->button->setEnabled(false);
         _injectionTemp->button->setFocusPolicy(Qt::NoFocus);
-        config->setNumValue("CO|InjectionTempSource",index);/*保存数据*/
+        config->setNumValue("CO|InjectionTempSource", index); /*保存数据*/
     }
 }
 
@@ -201,12 +199,12 @@ void ConfigCOMenu::_injectionTempReleased()
         QString text = numberPad.getStrValue();
         bool ok = false;
         float value = text.toFloat(&ok);
-        unsigned short actualValue = value * 10;
+        u_int16_t actualValue = value * 10;
 
         if (ok && actualValue <= 270)
         {
             _injectionTemp->button->setText(text);
-            config->setNumValue("CO|InjectionTempSource",value);/*保存数据*/
+            config->setNumValue("CO|InjectionTempSource", value); /*保存数据*/
         }
         else
         {
@@ -222,7 +220,7 @@ void ConfigCOMenu::_injectionVolumnReleased()
     numberPad.setTitleBarText(trs("InjectionVolumn"));
     numberPad.setMaxInputLength(3);
     numberPad.setInitString(_injectionVolumn->button->text());
-     Config *config = configEditMenuGrp.getCurrentEditConfig();
+    Config *config = configEditMenuGrp.getCurrentEditConfig();
     if (numberPad.exec())
     {
         QString text = numberPad.getStrValue();
@@ -232,7 +230,7 @@ void ConfigCOMenu::_injectionVolumnReleased()
         if (ok && value >= 1 && value <= 200)
         {
             _injectionVolumn->button->setText(text);
-            config->setNumValue("CO|InjectionTempSource",value);/*保存数据*/
+            config->setNumValue("CO|InjectionTempSource", value); /*保存数据*/
         }
         else
         {

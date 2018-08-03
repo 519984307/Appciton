@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include <QVBoxLayout>
 #include "FontManager.h"
 #include "LanguageManager.h"
@@ -11,7 +22,14 @@
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ConfigEditDisplayMenu::ConfigEditDisplayMenu() : SubMenu(trs("ConfigEditDisplayMenu"))
+ConfigEditDisplayMenu::ConfigEditDisplayMenu() : SubMenu(trs("ConfigEditDisplayMenu")),
+   _ecgColor(NULL),
+   _spo2Color(NULL),
+   _nibpColor(NULL),
+   _co2Color(NULL),
+   _respColor(NULL),
+   _respColor(NULL),
+   _tempColor(NULL)
 {
     setDesc(trs("ConfigEditDisplayMenuDesc"));
 
@@ -71,7 +89,7 @@ void ConfigEditDisplayMenu::layoutExec()
     int labelWidth = itemW - btnWidth;
     int size = _colorList.size();
 
-    //ecg color
+    // ecg color
     _ecgColor = new IComboList("ECG");
     _ecgColor->setFont(fontManager.textFont(fontSize));
     _ecgColor->label->setFixedSize(labelWidth, ITEM_H);
@@ -85,7 +103,7 @@ void ConfigEditDisplayMenu::layoutExec()
             SLOT(_ecgColorChangeSlot(int)));
     mainLayout->addWidget(_ecgColor);
 
-    //spo2 color
+    // spo2 color
     _spo2Color = new IComboList("SPO2");
     _spo2Color->setFont(fontManager.textFont(fontSize));
     _spo2Color->label->setFixedSize(labelWidth, ITEM_H);
@@ -102,7 +120,7 @@ void ConfigEditDisplayMenu::layoutExec()
         mainLayout->addWidget(_spo2Color);
     }
 
-    //nibp color
+    // nibp color
     _nibpColor = new IComboList("NIBP");
     _nibpColor->setFont(fontManager.textFont(fontSize));
     _nibpColor->label->setFixedSize(labelWidth, ITEM_H);
@@ -119,7 +137,7 @@ void ConfigEditDisplayMenu::layoutExec()
         mainLayout->addWidget(_nibpColor);
     }
 
-    //co2 color
+    // co2 color
     _co2Color = new IComboList("CO2");
     _co2Color->setFont(fontManager.textFont(fontSize));
     _co2Color->label->setFixedSize(labelWidth, ITEM_H);
@@ -136,7 +154,7 @@ void ConfigEditDisplayMenu::layoutExec()
         mainLayout->addWidget(_co2Color);
     }
 
-    //resp color
+    // resp color
     _respColor = new IComboList("RESP");
     _respColor->setFont(fontManager.textFont(fontSize));
     _respColor->label->setFixedSize(labelWidth, ITEM_H);
@@ -153,7 +171,7 @@ void ConfigEditDisplayMenu::layoutExec()
         mainLayout->addWidget(_respColor);
     }
 
-    //temp color
+    // temp color
     _tempColor = new IComboList("TEMP");
     _tempColor->setFont(fontManager.textFont(fontSize));
     _tempColor->label->setFixedSize(labelWidth, ITEM_H);
@@ -224,5 +242,4 @@ void ConfigEditDisplayMenu::_tempColorChangeSlot(int index)
  *************************************************************************************************/
 ConfigEditDisplayMenu::~ConfigEditDisplayMenu()
 {
-
 }

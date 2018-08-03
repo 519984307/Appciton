@@ -163,7 +163,8 @@ ConfigCO2Menu::ConfigCO2Menu() : SubMenu(trs("CO2")),
     _speed(NULL),
     _fico2Display(NULL),
     _o2Compen(NULL),
-    _n2oCompen(NULL)
+    _n2oCompen(NULL),
+    _alarmLbtn(NULL)
 {
     setDesc(trs("CO2Desc"));
     startLayout();

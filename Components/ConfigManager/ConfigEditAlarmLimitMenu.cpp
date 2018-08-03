@@ -19,7 +19,7 @@
 class ConfigEditAlarmLimitMenuPrivate
 {
 public:
-    ConfigEditAlarmLimitMenuPrivate(): _focusIndex(0)
+    ConfigEditAlarmLimitMenuPrivate(): _focusIndex(0), lablelPara(NULL)
     {
     }
     QList<SetItem *> getItemList()const;
@@ -140,8 +140,6 @@ void ConfigEditAlarmLimitMenuPrivate::loadOptions()
         index = 0;
         // 初始化模式为浮点型
         ISpinMode mode = ISPIN_MODE_FLOAT;
-        int lowMinValue = 0, lowMaxValue = 0, highMinValue = 0, highMaxValue = 0, stepValue = 0;
-        double fLowMinValue = 0, fLowMaxValue = 0, fHighMinValue = 0, fHighMaxValue = 0, fStepValue = 0;
         if (scale == 1)
         {
             mode = ISPIN_MODE_INT;
@@ -152,14 +150,18 @@ void ConfigEditAlarmLimitMenuPrivate::loadOptions()
         // 整形模式下的处理
         if (ISPIN_MODE_INT == mode)
         {
-
+            int lowMinValue = 0;
+            int lowMaxValue = 0;
+            int highMinValue = 0;
+            int highMaxValue = 0;
+            int stepValue = 0;
             stepValue = step;
-            //读取指定路径中的属性值 例如"AlarmSource|Adult|HR_PR|bpm|Low"中的"Min"
+            // 读取指定路径中的属性值 例如"AlarmSource|Adult|HR_PR|bpm|Low"中的"Min"
             config->getNumAttr(prefix + "|Low", "Min", lowMinValue);
             lowMaxValue = high - stepValue;
             highMinValue = low + stepValue;
             config->getNumAttr(prefix + "|High", "Max", highMaxValue);
-            //根据读取到值设置相应参数值
+            // 根据读取到值设置相应参数值
             item->lower->setRange(lowMinValue, lowMaxValue);
             item->lower->setValue(low);
             item->lower->setStep(stepValue);
@@ -169,6 +171,7 @@ void ConfigEditAlarmLimitMenuPrivate::loadOptions()
         }
         else //浮点型模式的处理
         {
+            double fLowMinValue = 0, fLowMaxValue = 0, fHighMinValue = 0, fHighMaxValue = 0, fStepValue = 0;
             fStepValue = static_cast<double>(step / scale);
             config->getNumAttr(prefix + "|Low", "Min", tmp);
             fLowMinValue = static_cast<double>(tmp / scale);
@@ -303,10 +306,10 @@ void ConfigEditAlarmLimitMenu::layoutExec()
 
     mainLayout->addLayout(labelLayout);
 
-    SetItem *item;
     int count = d_ptr->itemList.count();
     for (int i = 0; i < count; i++)
     {
+        SetItem *item;
         item = d_ptr->itemList.at(i);
 
         item->combo->label->setFixedSize(itemW0, ITEM_H);
