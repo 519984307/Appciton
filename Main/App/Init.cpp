@@ -565,15 +565,7 @@ static void _initMenu(void)
 {
     menuManager.construction();
     publicMenuManager.construction();
-
-    userMaintainEntrance.construction();
-    factoryMaintainEntrance.construction();
-    publicMenuManager.addSubMenu(&userMaintainEntrance);
-    publicMenuManager.addSubMenu(&factoryMaintainEntrance);
-
     userMaintainManager.construction();
-
-
     userMaintainGeneralSet.construction();
     moduleMaintainMenu.construction();
     alarmMaintainMenu.construction();

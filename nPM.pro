@@ -379,7 +379,6 @@ SOURCES +=                                                                      
     Components/Maintain/Factory/Menu/FactoryTestMenu.cpp                        \
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.cpp                 \
     Components/Maintain/Factory/Menu/FactoryWindowManager.cpp                   \
-    Components/Maintain/UserMaintain/UserMaintainEntrance.cpp                   \
     Components/Maintain/UserMaintain/UserMaintainManager.cpp                    \
     Components/Maintain/UserMaintain/UserMaintainGeneralSet.cpp                 \
     Components/Maintain/UserMaintain/ModuleMaintainMenu.cpp                     \
@@ -394,7 +393,6 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/WifiMaintainMenuContent.cpp                \
     Components/Maintain/UserMaintain/OthersMaintainMenuContent.cpp              \
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.cpp        \
-    Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.cpp             \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.cpp        \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftWareVersion.cpp                     \
@@ -924,7 +922,6 @@ HEADERS +=                                                                      
     Components/Maintain/Factory/Menu/FactoryDataRecord.h                        \
     Components/Maintain/FactoryMaintain/FactoryDataRecordContent.h              \
     Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.h                  \
-    Components/Maintain/UserMaintain/UserMaintainEntrance.h                     \
     Components/Maintain/UserMaintain/UserMaintainManager.h                      \
     Components/Maintain/UserMaintain/UserMaintainGeneralSet.h                   \
     Components/Maintain/UserMaintain/ModuleMaintainMenu.h                       \
@@ -941,7 +938,6 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/WifiMaintainMenuContent.h                  \
     Components/Maintain/UserMaintain/OthersMaintainMenuContent.h                \
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.h          \
-    Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.h               \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.h          \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersion.h                       \

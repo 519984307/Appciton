@@ -30,9 +30,7 @@ public:
         ComboListMax,
     };
 
-    ConfigEditSpO2MenuPrivate():combos(NULL),
-        comboLabels(NULL),
-        _alarmLbtn(NULL)
+    ConfigEditSpO2MenuPrivate()
     {
         memset(combos, 0, sizeof(combos));
 

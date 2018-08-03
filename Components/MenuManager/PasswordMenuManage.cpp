@@ -13,7 +13,6 @@
 #include "SupervisorMenuManager.h"
 #include "ServiceWindowManager.h"
 #include "FactoryWindowManager.h"
-#include "UserMaintainEntrance.h"
 #include "UserMaintainManager.h"
 #include "UserMaintainGeneralSet.h"
 #include "ConfigMaintainMenuGrp.h"

@@ -22,14 +22,7 @@
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ConfigEditDisplayMenu::ConfigEditDisplayMenu() : SubMenu(trs("ConfigEditDisplayMenu")),
-   _ecgColor(NULL),
-   _spo2Color(NULL),
-   _nibpColor(NULL),
-   _co2Color(NULL),
-   _respColor(NULL),
-   _respColor(NULL),
-   _tempColor(NULL)
+ConfigEditDisplayMenu::ConfigEditDisplayMenu() : SubMenu(trs("ConfigEditDisplayMenu"))
 {
     setDesc(trs("ConfigEditDisplayMenuDesc"));
 

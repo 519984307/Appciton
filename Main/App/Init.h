@@ -31,13 +31,11 @@
 #include "NellcorProvider.h"
 
 #include "DataStorageDirManager.h"
-
 #include "SoundManager.h"
 #include "NetworkManager.h"
 #include "ServiceErrorLogEntrance.h"
 #include "SystemTick.h"
 #include "SupervisorEntrance.h"
-#include "UserMaintainEntrance.h"
 #include "FactoryImportExportMenu.h"
 #include "FactoryDataRecord.h"
 #include "FactoryTempMenu.h"
@@ -55,7 +53,6 @@
 #include "WifiMaintainMenu.h"
 #include "WiredWorkMaintainMenu.h"
 #include "OthersMaintainMenu.h"
-#include "FactoryMaintainEntrance.h"
 #include "MonitorInfo.h"
 #include "SystemStatusBarWidget.h"
 #include "SystemModeBarWidget.h"
