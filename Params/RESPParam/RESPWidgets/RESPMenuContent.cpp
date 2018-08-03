@@ -61,7 +61,7 @@ RESPMenuContent::RESPMenuContent()
 RESPMenuContent *RESPMenuContent::getInstance()
 {
     static RESPMenuContent *instance = NULL;
-    if(instance == NULL)
+    if (instance == NULL)
     {
         instance = new RESPMenuContent;
     }

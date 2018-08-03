@@ -11,7 +11,7 @@ public:
     bool enable();
 
     // 刷新BR和RR的值。
-    void setRRValue(short rr, bool isRR);
+    void setRRValue(int16_t rr, bool isRR);
 
     // 是否报警
     void isAlarm(bool flag);
