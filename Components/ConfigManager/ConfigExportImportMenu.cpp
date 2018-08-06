@@ -41,7 +41,9 @@ public:
      */
     ConfigExportImportMenuPrivate()
         : configList(NULL), configListImport(),
-          exportBtn(NULL), importBtn(NULL)
+          exportBtn(NULL), importBtn(NULL),
+          remainderImportItems(0),
+          remainderExportItems(0)
     {
         selectItems.clear();
         selectItemsImport.clear();
@@ -269,9 +271,9 @@ void ConfigExportImportMenu::onConfigClick()
 {
     QListWidgetItem *item = d_ptr->configList->currentItem();
     /*加入链表*/
-    int indexFlag = 0;
     if (!d_ptr->selectItems.isEmpty()) /*链表不为空，进入比较*/
     {
+        int indexFlag = 0;
         for (int index = 0; index < d_ptr->selectItems.count(); index ++) /*轮询比较是否再次选中对应选择项*/
         {
             if (d_ptr->selectItems.at(index) == item) /*只能进行指针比较，不能变量比较*/
@@ -531,13 +533,13 @@ bool ConfigExportImportMenu::insertFileFromUSB()
 
 
     d_ptr->loadConfigs();
-    bool checkXmlFlag = false;
     QList<QDomElement> importTagList;
     QDomElement  importTag = _importXml.documentElement();
     _repeatFileChooseFlag = -1;
     for (int i = 0; i < d_ptr->selectItemsImport.count(); i++)
     {
 
+        bool checkXmlFlag = false;
         for (int j = 0; j < files.count(); j++)
         {
             if (files.at(j) == d_ptr->selectItemsImport.at(i)->text())
@@ -640,7 +642,6 @@ bool ConfigExportImportMenu::insertFileFromUSB()
                 {
                     d_ptr->configs.append(userDefine);
                 }
-                configFlag = false;
                 if (d_ptr->configs.count() >= CONFIG_MAX_NUM)
                 {
                     d_ptr->importBtn->setEnabled(false);
