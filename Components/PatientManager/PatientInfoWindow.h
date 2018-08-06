@@ -27,7 +27,6 @@ public:
     static PatientInfoWindow *_selfObj;
     ~PatientInfoWindow();
     void readyShow();
-    void layoutExec();
     void widgetChange(void);
     void relieveStatus(bool);
     void newPatientStatus(bool);
