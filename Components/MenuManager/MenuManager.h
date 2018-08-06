@@ -71,8 +71,6 @@ private:
     int _listWidth;                      // 列表宽度
     int _submenuWidth;                   // 子菜单宽度
     int _submenuHeight;                  // 高度
-
-    void _fun();
 };
 #define menuManager (MenuManager::construction())
 #define deleteMenuManager() (delete MenuManager::_selfObj)

@@ -86,7 +86,7 @@ void MenuManager::_currentMenuGroup(int index)
  * 构造。
  *************************************************************************************************/
 MenuManager::MenuManager()
-    : _subMenus(NULL)
+    : _subMenus(new QStackedWidget())
     , _menuGroup(NULL)
     , _listWidth(0)
     , _submenuWidth(0)
@@ -97,7 +97,6 @@ MenuManager::MenuManager()
     _submenuWidth = windowManager.getPopMenuWidth() - _listWidth - 20;
     _submenuHeight = windowManager.getPopMenuHeight() - 30 - 30 - 20;
     _widgetList.clear();
-    _fun();
 }
 
 /**************************************************************************************************
@@ -105,6 +104,10 @@ MenuManager::MenuManager()
  *************************************************************************************************/
 MenuManager::~MenuManager()
 {
+    if (_subMenus)
+    {
+        delete _subMenus;
+    }
 }
 
 /**************************************************************************************************
@@ -112,9 +115,4 @@ MenuManager::~MenuManager()
 *************************************************************************************************/
 void MenuManager::_addSubMenu(void)
 {
-}
-
-void MenuManager::_fun()
-{
-    _subMenus =  new QStackedWidget();
 }
