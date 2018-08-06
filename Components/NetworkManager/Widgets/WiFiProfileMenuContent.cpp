@@ -318,6 +318,16 @@ WiFiProfileMenuContent::~WiFiProfileMenuContent()
 {
 }
 
+WiFiProfileMenuContent *WiFiProfileMenuContent::getInstance()
+{
+    static WiFiProfileMenuContent *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new WiFiProfileMenuContent;
+    }
+    return instance;
+}
+
 /***************************************************************************************************
  * get the curret select wifi profile
  **************************************************************************************************/

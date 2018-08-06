@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -13,7 +24,6 @@
 #include "IMessageBox.h"
 #include "AlarmLimitMenu.h"
 #include "PublicMenuManager.h"
-#include "LoadConfigMenu.h"
 #include "ConfigManager.h"
 
 IBPMenu *IBPMenu::_selfObj = NULL;
@@ -57,14 +67,13 @@ void IBPMenu::comboListChangeIBP2(IBPPressureName name)
  *************************************************************************************************/
 IBPMenu::~IBPMenu()
 {
-
 }
 
 void IBPMenu::readyShow()
 {
     int index = 0;
     currentConfig.getNumValue("IBP|SweepSpeed", index);
-    if(_speed->combolist)
+    if (_speed->combolist)
     {
         _speed->combolist->setCurrentIndex(index);
     }
@@ -177,7 +186,6 @@ void IBPMenu::layoutExec(void)
     _alarmLbtn->button->setText(trs("AlarmLimitSetUp"));
     connect(_alarmLbtn->button, SIGNAL(realReleased()), this, SLOT(_alarmLbtnSlot()));
     mainLayout->addWidget(_alarmLbtn);
-
 }
 
 void IBPMenu::_speedSlot(int index)
@@ -229,7 +237,7 @@ void IBPMenu::_zeroCalibReleased()
 //报警项设置
 void IBPMenu::_alarmLbtnSlot()
 {
-    alarmLimitMenu.setFocusIndex(SUB_PARAM_ART_SYS+1);
+    alarmLimitMenu.setFocusIndex(SUB_PARAM_ART_SYS + 1);
     publicMenuManager.changePage(&alarmLimitMenu, &ibpMenu);
 }
 
@@ -246,7 +254,7 @@ void IBPMenu::_calibrationReleased()
     {
         QString text = numberPad.getStrValue();
         bool ok = false;
-        unsigned short value = text.toShort(&ok);
+        u_int16_t value = text.toShort(&ok);
         if (ok)
         {
             if (value >= 80 && value <= 300)

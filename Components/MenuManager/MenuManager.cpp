@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/2
+ **/
+
+
 #include "MenuManager.h"
 #include "WindowManager.h"
 #include <QVBoxLayout>
@@ -5,9 +16,7 @@
 #include <QLabel>
 #include <QPainter>
 #include "ColorManager.h"
-#include "SystemMenu.h"
 #include "SupervisorEntrance.h"
-#include "UserMaintainEntrance.h"
 #include "PublicMenuManager.h"
 #include "SupervisorMenuManager.h"
 #include "MenuGroup.h"
@@ -67,7 +76,7 @@ void MenuManager::close()
     _widgetList.clear();
 }
 
-void MenuManager::_currentMenuGroup(int /*index*/)
+void MenuManager::_currentMenuGroup(int index)
 {
 //    _menuGroup = (MenuGroup*)_subMenus->currentWidget();
     _menuGroup = dynamic_cast<MenuGroup *>(_subMenus->currentWidget());
@@ -77,23 +86,17 @@ void MenuManager::_currentMenuGroup(int /*index*/)
  * 构造。
  *************************************************************************************************/
 MenuManager::MenuManager()
+    : _subMenus(new QStackedWidget())
+    , _menuGroup(NULL)
+    , _listWidth(0)
+    , _submenuWidth(0)
+    , _submenuHeight(0)
 {
 //    setFixedSize(windowManager.getPopMenuWidth(), windowManager.getPopMenuHeight());
     _listWidth = windowManager.getPopMenuWidth() / 4;
     _submenuWidth = windowManager.getPopMenuWidth() - _listWidth - 20;
     _submenuHeight = windowManager.getPopMenuHeight() - 30 - 30 - 20;
-
     _widgetList.clear();
-
-    _subMenus = new QStackedWidget();
-}
-
-/**************************************************************************************************
-* 功能: 添加子菜单
-*************************************************************************************************/
-void MenuManager::_addSubMenu(void)
-{
-
 }
 
 /**************************************************************************************************
@@ -101,5 +104,15 @@ void MenuManager::_addSubMenu(void)
  *************************************************************************************************/
 MenuManager::~MenuManager()
 {
+    if (_subMenus)
+    {
+        delete _subMenus;
+    }
+}
 
+/**************************************************************************************************
+* 功能: 添加子菜单
+*************************************************************************************************/
+void MenuManager::_addSubMenu(void)
+{
 }

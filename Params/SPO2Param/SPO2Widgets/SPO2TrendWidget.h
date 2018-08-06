@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #pragma once
 #include "TrendWidget.h"
 #include "SPO2BarWidget.h"
@@ -9,10 +20,10 @@ class SPO2TrendWidget: public TrendWidget
 
 public:
     // 设置SPO2的值。
-    void setSPO2Value(short spo2);
+    void setSPO2Value(int16_t spo2);
 
     // 设置棒图的值。
-    void setBarValue(short bar);
+    void setBarValue(int16_t bar);
 
     // 显示搜索脉搏的提示信息。
     void setSearchForPulse(bool isSearching);

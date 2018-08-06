@@ -209,7 +209,6 @@ SOURCES +=                                                                      
     Components/System/SystemManager.cpp                                         \
     Components/System/SystemAlarm.cpp                                           \
     Components/System/TDA19988Ctrl.cpp                                          \
-    Components/System/Widgets/SystemMenu.cpp                                    \
     Components/System/Widgets/SystemModeSelectWidget.cpp                        \
     Components/System/Widgets/SystemModeBarWidget.cpp                           \
     Components/System/Widgets/SystemSelftestMenu.cpp                            \
@@ -342,13 +341,11 @@ SOURCES +=                                                                      
     Components/NetworkManager/WpaCtrl/WpaCtrl.cpp                               \
     Components/NetworkManager/Widgets/LabeledLabel.cpp                          \
     Components/NetworkManager/Widgets/WiFiProfileEditor.cpp                     \
-    Components/NetworkManager/Widgets/WiFiProfileMenu.cpp                       \
     Components/NetworkManager/Widgets/WiFiProfileMenuContent.cpp                \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.cpp               \
     Components/ActivityLog/ActivityLogManager.cpp                               \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.cpp            \
     Components/Maintain/Supervisor/Menu/SupervisorPortMenu.cpp                  \
-    Components/Maintain/Supervisor/Menu/SupervisorDisplayMenu.cpp               \
     Components/Maintain/Supervisor/Menu/SupervisorTimeMenu.cpp                  \
     Components/Maintain/Supervisor/Menu/SupervisorNIBPMenu.cpp                  \
     Components/Maintain/Supervisor/Menu/SupervisorPrintMenu.cpp                 \
@@ -383,7 +380,6 @@ SOURCES +=                                                                      
     Components/Maintain/Factory/Menu/FactoryTestMenu.cpp                        \
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.cpp                 \
     Components/Maintain/Factory/Menu/FactoryWindowManager.cpp                   \
-    Components/Maintain/UserMaintain/UserMaintainEntrance.cpp                   \
     Components/Maintain/UserMaintain/UserMaintainManager.cpp                    \
     Components/Maintain/UserMaintain/UserMaintainGeneralSet.cpp                 \
     Components/Maintain/UserMaintain/ModuleMaintainMenu.cpp                     \
@@ -398,7 +394,6 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/WifiMaintainMenuContent.cpp                \
     Components/Maintain/UserMaintain/OthersMaintainMenuContent.cpp              \
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.cpp        \
-    Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.cpp             \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.cpp        \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftWareVersion.cpp                     \
@@ -457,7 +452,6 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditIBPMenuContent.cpp                       \
     Components/ConfigManager/ConfigEditDisplayMenu.cpp                          \
     Components/ConfigManager/ConfigEditDisplayMenuContent.cpp                   \
-    Components/ConfigManager/ConfigManagerEntrance.cpp                          \
     Components/ConfigManager/LoadConfigMenu.cpp                                 \
     Components/ConfigManager/ConfigManagerMenuContent.cpp                       \
     Components/ConfigManager/LoadConfigMenuContent.cpp                          \
@@ -467,7 +461,6 @@ SOURCES +=                                                                      
     Components/Freeze/FreezeWindow.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
 #################################################################################
-    Params/AGParam/AGWidgets/AGMenu.cpp                                         \
     Params/AGParam/AGWidgets/AGTrendWidget.cpp                                  \
     Params/AGParam/AGWidgets/AGWaveRuler.cpp                                    \
     Params/AGParam/AGWidgets/AGWaveWidget.cpp                                   \
@@ -492,7 +485,6 @@ SOURCES +=                                                                      
     Params/CO2Param/CO2Widgets/CO2WaveWidget.cpp                                \
     Params/CO2Param/CO2Widgets/CO2WaveRuler.cpp                                 \
     Params/CO2Param/CO2Widgets/CO2TrendWidget.cpp                               \
-    Params/CO2Param/CO2Widgets/CO2Menu.cpp                                      \
     Params/CO2Param/CO2Widgets/CO2MenuContent.cpp                               \
     Params/IBPParam/IBPParam.cpp                                                \
     Params/IBPParam/IBPWidgets/IBPMenu.cpp                                      \
@@ -504,7 +496,6 @@ SOURCES +=                                                                      
     Params/IBPParam/IBPAlarm.cpp                                                \
     Params/COParam/COAlarm.cpp                                                  \
     Params/COParam/COParam.cpp                                                  \
-    Params/COParam/COWidgets/COMenu.cpp                                         \
     Params/COParam/COWidgets/COTrendWidget.cpp                                  \
     Params/COParam/COWidgets/COMenuContent.cpp                                  \
     Params/NIBPParam/NIBPStateMachine/NIBPState.cpp                             \
@@ -528,7 +519,6 @@ SOURCES +=                                                                      
     Params/NIBPParam/NIBPAlarm.cpp                                              \
     Params/NIBPParam/NIBPWidgets/NIBPTrendWidget.cpp                            \
     Params/NIBPParam/NIBPWidgets/NIBPDataTrendWidget.cpp                        \
-    Params/NIBPParam/NIBPWidgets/NIBPMenu.cpp                                   \
     Params/NIBPParam/NIBPWidgets/NIBPMenuContent.cpp                            \
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTime.cpp                          \
     Params/SPO2Param/SPO2Param.cpp                                              \
@@ -547,7 +537,6 @@ SOURCES +=                                                                      
     Params/RESPParam/RESPParam.cpp                                              \
     Params/RESPParam/RESPWidgets/RESPWaveWidget.cpp                             \
     Params/RESPParam/RESPWidgets/RESPTrendWidget.cpp                            \
-    Params/RESPParam/RESPWidgets/RESPMenu.cpp                                   \
     Params/RESPParam/RESPWidgets/RESPMenuContent.cpp                            \
     Params/UpgradeParam/BLMEDUpgradeParam.cpp                                   \
     Params/UpgradeParam/BLMEDUpgradeTime.cpp                                    \
@@ -742,7 +731,6 @@ HEADERS +=                                                                      
     Components/System/SystemManager.h                                           \
     Components/System/SystemAlarm.h                                             \
     Components/System/TDA19988Ctrl.h                                            \
-    Components/System/Widgets/SystemMenu.h                                      \
     Components/System/Widgets/SystemStatusBarWidget.h                           \
     Components/System/Widgets/SystemModeSelectWidget.h                          \
     Components/System/Widgets/SystemSelftestMenu.h                              \
@@ -896,13 +884,11 @@ HEADERS +=                                                                      
     Components/NetworkManager/WpaCtrl/WpaCtrl.h                                 \
     Components/NetworkManager/Widgets/LabeledLabel.h                            \
     Components/NetworkManager/Widgets/WiFiProfileEditor.h                       \
-    Components/NetworkManager/Widgets/WiFiProfileMenu.h                         \
     Components/NetworkManager/Widgets/WiFiProfileMenuContent.h                  \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.h                 \
     Components/ActivityLog/ActivityLogManager.h                                 \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.h              \
     Components/Maintain/Supervisor/Menu/SupervisorPortMenu.h                    \
-    Components/Maintain/Supervisor/Menu/SupervisorDisplayMenu.h                 \
     Components/Maintain/Supervisor/Menu/SupervisorTimeMenu.h                    \
     Components/Maintain/Supervisor/Menu/SupervisorNIBPMenu.h                    \
     Components/Maintain/Supervisor/Menu/SupervisorPrintMenu.h                   \
@@ -938,7 +924,6 @@ HEADERS +=                                                                      
     Components/Maintain/Factory/Menu/FactoryDataRecord.h                        \
     Components/Maintain/FactoryMaintain/FactoryDataRecordContent.h              \
     Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.h                  \
-    Components/Maintain/UserMaintain/UserMaintainEntrance.h                     \
     Components/Maintain/UserMaintain/UserMaintainManager.h                      \
     Components/Maintain/UserMaintain/UserMaintainGeneralSet.h                   \
     Components/Maintain/UserMaintain/ModuleMaintainMenu.h                       \
@@ -955,7 +940,6 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/WifiMaintainMenuContent.h                  \
     Components/Maintain/UserMaintain/OthersMaintainMenuContent.h                \
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.h          \
-    Components/Maintain/FactoryMaintain/FactoryMaintainEntrance.h               \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.h          \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersion.h                       \
@@ -1014,7 +998,6 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditDisplayMenu.h                            \
     Components/ConfigManager/ConfigEditDisplayMenuContent.h                     \
     Components/ConfigManager/ConfigEditCodeMarkerMenuContent.h                  \
-    Components/ConfigManager/ConfigManagerEntrance.h                            \
     Components/ConfigManager/LoadConfigMenu.h                                   \
     Components/ConfigManager/ConfigManagerMenuContent.h                         \
     Components/ConfigManager/LoadConfigMenuContent.h                            \
@@ -1024,7 +1007,6 @@ HEADERS +=                                                                      
     Components/Freeze/FreezeWindow.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \
 #################################################################################
-    Params/AGParam/AGWidgets/AGMenu.h                                           \
     Params/AGParam/AGWidgets/AGTrendWidget.h                                    \
     Params/AGParam/AGWidgets/AGWaveRuler.h                                      \
     Params/AGParam/AGWidgets/AGWaveWidget.h                                     \
@@ -1058,7 +1040,6 @@ HEADERS +=                                                                      
     Params/CO2Param/CO2Widgets/CO2WaveWidget.h                                  \
     Params/CO2Param/CO2Widgets/CO2WaveRuler.h                                   \
     Params/CO2Param/CO2Widgets/CO2TrendWidget.h                                 \
-    Params/CO2Param/CO2Widgets/CO2Menu.h                                        \
     Params/CO2Param/CO2Widgets/CO2MenuContent.h                                 \
     Params/IBPParam/IBPProviderIFace.h                                          \
     Params/IBPParam/IBPDefine.h                                                 \
@@ -1076,7 +1057,6 @@ HEADERS +=                                                                      
     Params/COParam/COProviderIFace.h                                            \
     Params/COParam/CODefine.h                                                   \
     Params/COParam/COParam.h                                                    \
-    Params/COParam/COWidgets/COMenu.h                                           \
     Params/COParam/COWidgets/COTrendWidget.h                                    \
     Params/COParam/COWidgets/COMenuContent.h                                    \
     Params/NIBPParam/NIBPStateMachine/NIBPState.h                               \
@@ -1107,7 +1087,6 @@ HEADERS +=                                                                      
     Params/NIBPParam/NIBPProviderIFace.h                                        \
     Params/NIBPParam/NIBPWidgets/NIBPTrendWidget.h                              \
     Params/NIBPParam/NIBPWidgets/NIBPDataTrendWidget.h                          \
-    Params/NIBPParam/NIBPWidgets/NIBPMenu.h                                     \
     Params/NIBPParam/NIBPWidgets/NIBPMenuContent.h                              \
     Params/NIBPParam/NIBPTrigger/NIBPCountdownTime.h                            \
     Params/SPO2Param/SPO2Param.h                                                \
@@ -1135,7 +1114,6 @@ HEADERS +=                                                                      
     Params/RESPParam/RESPSymbol.h                                               \
     Params/RESPParam/RESPWidgets/RESPWaveWidget.h                               \
     Params/RESPParam/RESPWidgets/RESPTrendWidget.h                              \
-    Params/RESPParam/RESPWidgets/RESPMenu.h                                     \
     Params/RESPParam/RESPWidgets/RESPMenuContent.h                              \
     Params/UpgradeParam/BLMEDUpgradeParam.h                                     \
     Params/UpgradeParam/BLMEDUpgradeTime.h                                      \

@@ -1,24 +1,38 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "RESPTrendWidget.h"
-#include "RESPMenu.h"
 #include "ParamManager.h"
 #include "ParamInfo.h"
 #include <QHBoxLayout>
 #include "PublicMenuManager.h"
 #include "RESPParam.h"
 #include "TrendWidgetLabel.h"
+#include "MainMenuWindow.h"
+#include "RESPMenuContent.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
-void RESPTrendWidget::_releaseHandle(IWidget *)
+void RESPTrendWidget::_releaseHandle(IWidget *iWidget)
 {
-    publicMenuManager.popup(&respMenu);
+    MainMenuWindow *mainMenu = MainMenuWindow::getInstance();
+    RESPMenuContent *RespContent = RESPMenuContent::getInstance();
+    mainMenu->popup(RespContent);
 }
 
 /**************************************************************************************************
  * 设置PR的值。
  *************************************************************************************************/
-void RESPTrendWidget::setRRValue(short rr, bool isRR)
+void RESPTrendWidget::setRRValue(int16_t rr , bool isRR)
 {
     if (isRR)
     {
@@ -108,7 +122,7 @@ void RESPTrendWidget::setTextSize()
     // 字体。
 //    int fontsize = fontManager.adjustNumFontSizeXML(r);
 //    fontsize = fontManager.getFontSize(fontsize);
-    int fontsize = fontManager.adjustNumFontSize(r,true);
+    int fontsize = fontManager.adjustNumFontSize(r , true);
     QFont font = fontManager.numFont(fontsize, true);
 //    font.setStretch(105); // 横向放大。
     font.setWeight(QFont::Black);
@@ -147,7 +161,7 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
     contentLayout->addStretch(1);
 
     // 释放事件。
-    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 }
 
 /**************************************************************************************************
@@ -155,5 +169,4 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
  *************************************************************************************************/
 RESPTrendWidget::~RESPTrendWidget()
 {
-
 }

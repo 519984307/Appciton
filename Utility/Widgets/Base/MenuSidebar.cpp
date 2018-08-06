@@ -184,6 +184,19 @@ QWidget *MenuSidebar::getChecked() const
     return NULL;
 }
 
+void MenuSidebar::popupWidget(const QString &text)
+{
+    Q_D(MenuSidebar);
+    foreach(MenuSidebarItem *item, d->itemList)
+    {
+        if (item->text() == text)
+        {
+            item->click();
+            return;
+        }
+    }
+}
+
 QSize MenuSidebar::sizeHint() const
 {
     return QSize(200, PREFER_ITEM_HEIGHT * DEFAULT_ITEM_NUM);

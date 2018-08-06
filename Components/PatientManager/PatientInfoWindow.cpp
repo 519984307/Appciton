@@ -168,26 +168,15 @@ PatientInfoWindow::PatientInfoWindow()
     , d_ptr(new PatientInfoWindowPrivate)
 {
     setWindowTitle("Patient Infomation");
-    layoutExec();
-}
-void PatientInfoWindow::readyShow()
-{
-    d_ptr->loadOptions();
-}
-
-void PatientInfoWindow::layoutExec()
-{
-    QGridLayout *backgroundLayout = new QGridLayout(this);
     QGridLayout *layout = new QGridLayout(this);
     QHBoxLayout *buttonLayout = new QHBoxLayout(this);
-
     QLabel *label;
     int itemId;
 
     // patient type
     label = new QLabel(trs("PatientType"));
     layout->addWidget(label
-                      , d_ptr->combos.count() + d_ptr->buttons.count()
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 0);
     d_ptr->_type = new ComboBox();
     d_ptr->_type ->addItems(QStringList()
@@ -197,15 +186,17 @@ void PatientInfoWindow::layoutExec()
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_CBO_PATIENT_TYPE);
     d_ptr->_type ->setProperty("Item" , qVariantFromValue(itemId));
     layout->addWidget(d_ptr->_type
-                      , d_ptr->combos.count() + d_ptr->buttons.count() , 1);
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
+                      , 1);
+    d_ptr->_type->setFixedWidth(200);
     d_ptr->combos.insert(PatientInfoWindowPrivate::ITEM_CBO_PATIENT_TYPE
                          , d_ptr->_type);
 
     // patient pace marker
     label = new QLabel(trs("PatientPacemarker"));
     layout->addWidget(label
-                      , d_ptr->combos.count() + d_ptr->buttons.count()
-                      , 0);
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
+                      , 2);
     d_ptr->_pacer = new ComboBox();
     d_ptr->_pacer->addItems(QStringList()
                             << trs(PatientSymbol::convert(PATIENT_PACER_OFF))
@@ -215,23 +206,25 @@ void PatientInfoWindow::layoutExec()
              (PatientInfoWindowPrivate::ITEM_CBO_PACER_MARKER);
     d_ptr->_pacer->setProperty("Item" , qVariantFromValue(itemId));
     layout->addWidget(d_ptr->_pacer
-                      , d_ptr->combos.count() + d_ptr->buttons.count()
-                      , 1);
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
+                      , 3);
+    d_ptr->_pacer->setFixedWidth(200);
     d_ptr->combos.insert(PatientInfoWindowPrivate::ITEM_CBO_PACER_MARKER
                          , d_ptr->_pacer);
 
     // patient id
     label = new QLabel(trs("PatientID"));
     layout->addWidget(label
-                      , d_ptr->combos.count() + d_ptr->buttons.count()
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 0);
     d_ptr->_id = new Button();
     d_ptr->_id->setButtonStyle(Button::ButtonTextOnly);
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_ID);
     d_ptr->_id->setProperty("Item" , qVariantFromValue(itemId));
     layout->addWidget(d_ptr->_id
-                      , d_ptr->combos.count() + d_ptr->buttons.count()
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 1);
+    d_ptr->_id->setFixedWidth(200);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_ID
                           , d_ptr->_id);
     connect(d_ptr->_id, SIGNAL(released()), this, SLOT(_idReleased()));
@@ -239,26 +232,27 @@ void PatientInfoWindow::layoutExec()
     // patient sex
     label = new QLabel(trs("PatientSex"));
     layout->addWidget(label
-                      , d_ptr->combos.count() + d_ptr->buttons.count()
-                      , 0);
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
+                      , 2);
     d_ptr->_sex = new ComboBox();
     d_ptr->_sex->addItems(QStringList()
                           << ""
                           << trs(PatientSymbol::convert(PATIENT_SEX_MALE))
                           << trs(PatientSymbol::convert(PATIENT_SEX_FEMALE))
                          );
+    d_ptr->_sex->setFixedWidth(200);
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_CBO_PATIENT_SEX);
     d_ptr->_sex->setProperty("Item" , qVariantFromValue(itemId));
     layout->addWidget(d_ptr->_sex
-                      , d_ptr->combos.count() + d_ptr->buttons.count()
-                      , 1);
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
+                      , 3);
     d_ptr->combos.insert(PatientInfoWindowPrivate::ITEM_CBO_PATIENT_SEX
                          , d_ptr->_sex);
 
     // blood type
     label = new QLabel(trs("PatientBloodType"));
     layout->addWidget(label
-                      , d_ptr->combos.count() + d_ptr->buttons.count()
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 0);
     d_ptr->_blood = new ComboBox();
     d_ptr->_blood->addItems(QStringList()
@@ -271,23 +265,25 @@ void PatientInfoWindow::layoutExec()
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_CBO_BLOOD_TYPE);
     d_ptr->_blood->setProperty("Item" , qVariantFromValue(itemId));
     layout->addWidget(d_ptr->_blood
-                      , d_ptr->combos.count() + d_ptr->buttons.count()
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 1);
+    d_ptr->_blood->setFixedWidth(200);
     d_ptr->combos.insert(PatientInfoWindowPrivate::ITEM_CBO_BLOOD_TYPE
                          , d_ptr->_blood);
 
     // patient name
     label = new QLabel(trs("PatientName"));
     layout->addWidget(label
-                      , d_ptr->combos.count() + d_ptr->buttons.count()
-                      , 0);
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
+                      , 2);
     d_ptr->_name = new Button();
     d_ptr->_name->setButtonStyle(Button::ButtonTextOnly);
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_NAME);
     d_ptr->_name->setProperty("Item" , qVariantFromValue(itemId));
     layout->addWidget(d_ptr->_name
-                      , d_ptr->combos.count() + d_ptr->buttons.count()
-                      , 1);
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
+                      , 3);
+    d_ptr->_name->setFixedWidth(200);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_NAME
                           , d_ptr->_name);
     connect(d_ptr->_name, SIGNAL(released()), this, SLOT(_nameReleased()));
@@ -295,15 +291,16 @@ void PatientInfoWindow::layoutExec()
     // patient age
     label = new QLabel(trs("PatientAge"));
     layout->addWidget(label
-                      , d_ptr->combos.count() + d_ptr->buttons.count()
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 0);
     d_ptr->_age = new Button();
     d_ptr->_age->setButtonStyle(Button::ButtonTextOnly);
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_AGE);
     d_ptr->_age->setProperty("Item" , qVariantFromValue(itemId));
     layout->addWidget(d_ptr->_age
-                      , d_ptr->combos.count() + d_ptr->buttons.count()
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 1);
+    d_ptr->_age->setFixedWidth(200);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_AGE
                           , d_ptr->_age);
 
@@ -312,15 +309,17 @@ void PatientInfoWindow::layoutExec()
     // Patient Height
     label = new QLabel(trs("PatientHeight"));
     layout->addWidget(label
-                      , d_ptr->combos.count() + d_ptr->buttons.count()
-                      , 0);
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
+                      , 2);
+    label->setFixedWidth(150);
     d_ptr->_height = new Button();
     d_ptr->_height->setButtonStyle(Button::ButtonTextOnly);
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_HEIGHT);
     d_ptr->_height->setProperty("Item" , qVariantFromValue(itemId));
     layout->addWidget(d_ptr->_height
-                      , d_ptr->combos.count() + d_ptr->buttons.count()
-                      , 1);
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
+                      , 3);
+    d_ptr->_height->setFixedWidth(200);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_HEIGHT
                           , d_ptr->_height);
     connect(d_ptr->_height, SIGNAL(released()), this, SLOT(_heightReleased()));
@@ -328,19 +327,19 @@ void PatientInfoWindow::layoutExec()
     // Patient Weight
     label = new QLabel(trs("PatientWeight"));
     layout->addWidget(label
-                      , d_ptr->combos.count() + d_ptr->buttons.count()
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 0);
+    label->setFixedWidth(150);
     d_ptr->_weight = new Button();
     d_ptr->_weight->setButtonStyle(Button::ButtonTextOnly);
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_WEIGHT);
     d_ptr->_weight->setProperty("Item" , qVariantFromValue(itemId));
     layout->addWidget(d_ptr->_weight
-                      , d_ptr->combos.count() + d_ptr->buttons.count()
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 1);
+    d_ptr->_weight->setFixedWidth(200);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_WEIGHT
                           , d_ptr->_weight);
-    layout->setRowStretch(d_ptr->combos.count() + d_ptr->buttons.count() , 1);
-    backgroundLayout->addLayout(layout , 1 , 0);
     connect(d_ptr->_weight, SIGNAL(released()), this, SLOT(_weightReleased()));
 
     // create patient button
@@ -348,12 +347,14 @@ void PatientInfoWindow::layoutExec()
     d_ptr->_savePatientInfo->setButtonStyle(Button::ButtonTextOnly);
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_BTN_CREATE_PATIENT);
     d_ptr->_savePatientInfo->setProperty("Item" , qVariantFromValue(itemId));
-    buttonLayout->addStretch(50);
-    buttonLayout->addWidget(d_ptr->_savePatientInfo, 150);
-    buttonLayout->addStretch(50);
+    buttonLayout->addSpacing(10);
+    buttonLayout->addWidget(d_ptr->_savePatientInfo);
+    buttonLayout->addSpacing(10);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_CREATE_PATIENT
                           , d_ptr->_savePatientInfo);
-
+    layout->addLayout(buttonLayout
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
+                      , 1);
     connect(d_ptr->_savePatientInfo, SIGNAL(released()), this, SLOT(_saveInfoReleased()));
 
     // clean patient data
@@ -361,15 +362,18 @@ void PatientInfoWindow::layoutExec()
     d_ptr->_relievePatient->setButtonStyle(Button::ButtonTextOnly);
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_BTN_CLEAR_PATIENT);
     d_ptr->_relievePatient->setProperty("Item" , qVariantFromValue(itemId));
-    buttonLayout->addStretch(50);
-    buttonLayout->addWidget(d_ptr->_relievePatient, 150);
-    buttonLayout->addStretch(50);
+    layout->addWidget(d_ptr->_relievePatient
+                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
+                      , 2);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_CLEAR_PATIENT
                           , d_ptr->_relievePatient);
     connect(d_ptr->_relievePatient, SIGNAL(released()), this, SLOT(_relieveReleased()));
-
-    backgroundLayout->addLayout(buttonLayout , 2 , 0);
-    setWindowLayout(backgroundLayout);
+    layout->setRowStretch(d_ptr->combos.count() + d_ptr->buttons.count() , 1);
+    setWindowLayout(layout);
+}
+void PatientInfoWindow::readyShow()
+{
+    d_ptr->loadOptions();
 }
 
 void PatientInfoWindow::widgetChange()
@@ -411,8 +415,8 @@ void PatientInfoWindow::autoShow()
     }
     else
     {
-        setFixedWidth(500);
-        setFixedHeight(630);
+        setFixedWidth(800);
+        setFixedHeight(400);
         exec();
     }
 }

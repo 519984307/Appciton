@@ -1,6 +1,16 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/2
+ **/
+
+
 #include "Init.h"
 #include "ErrorLogItem.h"
-#include "LoadConfigMenu.h"
 
 /**************************************************************************************************
  * 功能： 初始化系统。
@@ -12,14 +22,14 @@ static void _initSystem(void)
 
     systemConfig.construction();
 
-    //superConfig.construction();
+    // superConfig.construction();
 
-   // superRunConfig.construction();
+    // superRunConfig.construction();
 
     // 新会话，需要恢复主配置文件
     if (timeManager.getPowerOnSession() == POWER_ON_SESSION_NEW)
     {
-       // currentConfig.load(curConfigName);
+        // currentConfig.load(curConfigName);
 
         Config systemDefCfg(systemConfig.getCurConfigName());
         systemConfig.setNodeValue("PrimaryCfg", systemDefCfg);
@@ -37,15 +47,15 @@ static void _initSystem(void)
         errorLog.append(item);
 
         QString selectIndexString;
-        if(systemConfig.getCurConfigName().indexOf("Adult"))
+        if (systemConfig.getCurConfigName().indexOf("Adult"))
         {
             selectIndexString = "ConfigManager|Default|Adult";
         }
-        else if(systemConfig.getCurConfigName().indexOf("Ped"))
+        else if (systemConfig.getCurConfigName().indexOf("Ped"))
         {
             selectIndexString = "ConfigManager|Default|Ped";
         }
-        else if(systemConfig.getCurConfigName().indexOf("Neo"))
+        else if (systemConfig.getCurConfigName().indexOf("Neo"))
         {
             selectIndexString = "ConfigManager|Default|Neo";
         }
@@ -56,7 +66,7 @@ static void _initSystem(void)
         QString selectTypeString;
         systemConfig.getStrAttr(selectIndexString, "type", selectTypeString);
 
-        if(selectTypeString!="Current")//当前文件配置不再加载
+        if (selectTypeString != "Current") // 当前文件配置不再加载
         {
             QString selectNameString;
             systemConfig.getStrValue(selectIndexString, selectNameString);
@@ -138,7 +148,7 @@ static void _initComponents(void)
 
     // 提示信息烂
     PromptInfoBarWidget *promptInfo = new PromptInfoBarWidget("PromptInfoBarWidget");
-    windowManager.addWidget(promptInfo); //添加窗体到_winMap变量链表中
+    windowManager.addWidget(promptInfo); // 添加窗体到_winMap变量链表中
     ibpParam.setInfobarWidget(promptInfo);
 
     // 系统状态栏
@@ -183,14 +193,12 @@ static void _initComponents(void)
     rescueDataExportWidget.construction();
     rescueDataDeleteWidget.construction();
 
-    //U盘管理
+    // U盘管理
     usbManager.getInstance();
-    //U盘数据储存
+    // U盘数据储存
     rawDataCollection.construction();
     rawDataCollectionTxt.construction();
-
 }
-
 /**************************************************************************************************
  * 功能： 初始化参数和提供者对象。
  *************************************************************************************************/
@@ -201,8 +209,8 @@ static void _initProviderParam(void)
     // 创建Provider.
     DemoProvider *demo = new DemoProvider();
     paramManager.addProvider(*demo);
-    //TE3Provider *te3 = new TE3Provider();
-    //paramManager.addProvider(*te3);
+    // TE3Provider *te3 = new TE3Provider();
+    // paramManager.addProvider(*te3);
 
     E5Provider *e5 = new E5Provider();
     paramManager.addProvider(*e5);
@@ -225,62 +233,62 @@ static void _initProviderParam(void)
     windowManager.addWidget(ecgSTTrendWidget);
 
     ECGWaveWidget *ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_I, "ECGIWaveWidget",
-        ECGSymbol::convert(ECG_LEAD_I, ecgParam.getLeadConvention()));
+            ECGSymbol::convert(ECG_LEAD_I, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_I);
     windowManager.addWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_II, "ECGIIWaveWidget",
-        ECGSymbol::convert(ECG_LEAD_II, ecgParam.getLeadConvention()));
+                                      ECGSymbol::convert(ECG_LEAD_II, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_II);
     windowManager.addWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_III, "ECGIIIWaveWidget",
-        ECGSymbol::convert(ECG_LEAD_III, ecgParam.getLeadConvention()));
+                                      ECGSymbol::convert(ECG_LEAD_III, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_III);
     windowManager.addWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_aVR, "ECGaVRWaveWidget",
-        ECGSymbol::convert(ECG_LEAD_AVR, ecgParam.getLeadConvention()));
+                                      ECGSymbol::convert(ECG_LEAD_AVR, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_AVR);
     windowManager.addWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_aVL, "ECGaVLWaveWidget",
-        ECGSymbol::convert(ECG_LEAD_AVL, ecgParam.getLeadConvention()));
+                                      ECGSymbol::convert(ECG_LEAD_AVL, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_AVL);
     windowManager.addWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_aVF, "ECGaVFWaveWidget",
-        ECGSymbol::convert(ECG_LEAD_AVF, ecgParam.getLeadConvention()));
+                                      ECGSymbol::convert(ECG_LEAD_AVF, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_AVF);
     windowManager.addWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_V1, "ECGV1WaveWidget",
-        ECGSymbol::convert(ECG_LEAD_V1, ecgParam.getLeadConvention()));
+                                      ECGSymbol::convert(ECG_LEAD_V1, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_V1);
     windowManager.addWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_V2, "ECGV2WaveWidget",
-        ECGSymbol::convert(ECG_LEAD_V2, ecgParam.getLeadConvention()));
+                                      ECGSymbol::convert(ECG_LEAD_V2, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_V2);
     windowManager.addWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_V3, "ECGV3WaveWidget",
-        ECGSymbol::convert(ECG_LEAD_V3, ecgParam.getLeadConvention()));
+                                      ECGSymbol::convert(ECG_LEAD_V3, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_V3);
     windowManager.addWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_V4, "ECGV4WaveWidget",
-        ECGSymbol::convert(ECG_LEAD_V4, ecgParam.getLeadConvention()));
+                                      ECGSymbol::convert(ECG_LEAD_V4, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_V4);
     windowManager.addWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_V5, "ECGV5WaveWidget",
-        ECGSymbol::convert(ECG_LEAD_V5, ecgParam.getLeadConvention()));
+                                      ECGSymbol::convert(ECG_LEAD_V5, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_V5);
     windowManager.addWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_V6, "ECGV6WaveWidget",
-        ECGSymbol::convert(ECG_LEAD_V6, ecgParam.getLeadConvention()));
+                                      ECGSymbol::convert(ECG_LEAD_V6, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_V6);
     windowManager.addWidget(ecgWaveWidget);
 
@@ -288,7 +296,7 @@ static void _initProviderParam(void)
     windowManager.addWidget(oxyCRGWidget);
 
     OxyCRGHRWidget *hrOxyCRGWidget = new OxyCRGHRWidget("OxyCRGHRWidget",
-        paramInfo.getSubParamName(SUB_PARAM_HR_PR));
+            paramInfo.getSubParamName(SUB_PARAM_HR_PR));
     ecgParam.setOxyCRGWaveWidget(hrOxyCRGWidget);
     windowManager.addWidget(hrOxyCRGWidget);
     oxyCRGWidget->setOxyCrgHrWidget(hrOxyCRGWidget);
@@ -304,7 +312,7 @@ static void _initProviderParam(void)
             alertor.addLimtSource(respLimitAlarm.construction());
             alertor.addOneShotSource(respOneShotAlarm.construction());
             RESPWaveWidget *respWaveWidget = new RESPWaveWidget("RESPWaveWidget",
-                paramInfo.getParamName(PARAM_RESP));
+                    paramInfo.getParamName(PARAM_RESP));
             RESPTrendWidget *respTrendWidget = new RESPTrendWidget();
             respDupParam.setTrendWidget(respTrendWidget);
             respParam.setWaveWidget(respWaveWidget);
@@ -312,7 +320,7 @@ static void _initProviderParam(void)
             windowManager.addWidget(respTrendWidget);
 
             OxyCRGRESPWidget *respOxyCRGWidget = new OxyCRGRESPWidget("OxyCRGRESPWidget",
-            "RESP");
+                    "RESP");
             respParam.setOxyWaveWidget(respOxyCRGWidget);
             windowManager.addWidget(respOxyCRGWidget);
             oxyCRGWidget->setOxyCrgRespWidget(respOxyCRGWidget);
@@ -357,7 +365,7 @@ static void _initProviderParam(void)
         windowManager.addWidget(spo2TrendWidget);
 
         OxyCRGSPO2Widget *spo2OxyCRGWidget = new OxyCRGSPO2Widget("OxyCRGSPO2Widget",
-            paramInfo.getSubParamName(SUB_PARAM_SPO2));
+                paramInfo.getSubParamName(SUB_PARAM_SPO2));
         spo2Param.setOxyCRGWaveWidget(spo2OxyCRGWidget);
         windowManager.addWidget(spo2OxyCRGWidget);
         oxyCRGWidget->setOxyCrgSpo2Widget(spo2OxyCRGWidget);
@@ -407,7 +415,7 @@ static void _initProviderParam(void)
         windowManager.addWidget(co2TrendWidget);
 
         OxyCRGCO2Widget *co2OxyCRGWidget = new OxyCRGCO2Widget("OxyCRGCO2Widget",
-            "CO2");
+                "CO2");
         co2Param.setOxyCRGCO2Widget(co2OxyCRGWidget);
         windowManager.addWidget(co2OxyCRGWidget);
         oxyCRGWidget->setOxyCrgCo2Widget(co2OxyCRGWidget);
@@ -415,7 +423,7 @@ static void _initProviderParam(void)
         ecgParam.setOxyCRGCO2Widget(co2OxyCRGWidget);
     }
 
-    //IBP test
+    // IBP test
     if (systemManager.isSupport(CONFIG_IBP))
     {
         paramManager.addProvider(*new WitleafProvider());
@@ -424,27 +432,27 @@ static void _initProviderParam(void)
         alertor.addOneShotSource(ibpOneShotAlarm.construction());
 
         IBPTrendWidget *ibp1TrendWidget = new IBPTrendWidget("IBP1TrendWidget",
-                                                             IBP_PRESSURE_ART);
-        ibpParam.setIBPTrendWidget(ibp1TrendWidget,IBP_INPUT_1);
+                IBP_PRESSURE_ART);
+        ibpParam.setIBPTrendWidget(ibp1TrendWidget, IBP_INPUT_1);
         windowManager.addWidget(ibp1TrendWidget);
 
         IBPTrendWidget *ibp2TrendWidget = new IBPTrendWidget("IBP2TrendWidget",
-                                                             IBP_PRESSURE_PA);
-        ibpParam.setIBPTrendWidget(ibp2TrendWidget,IBP_INPUT_2);
+                IBP_PRESSURE_PA);
+        ibpParam.setIBPTrendWidget(ibp2TrendWidget, IBP_INPUT_2);
         windowManager.addWidget(ibp2TrendWidget);
 
         IBPWaveWidget *ibp1WaveWidget = new IBPWaveWidget(WAVE_IBP1, "IBP1WaveWidget",
-                                                          IBP_PRESSURE_ART);
-        ibpParam.setWaveWidget(ibp1WaveWidget,IBP_INPUT_1);
+                IBP_PRESSURE_ART);
+        ibpParam.setWaveWidget(ibp1WaveWidget, IBP_INPUT_1);
         windowManager.addWidget(ibp1WaveWidget, ibp1TrendWidget);
 
         IBPWaveWidget *ibp2WaveWidget = new IBPWaveWidget(WAVE_IBP2, "IBP2WaveWidget",
-                                                          IBP_PRESSURE_PA);
-        ibpParam.setWaveWidget(ibp2WaveWidget,IBP_INPUT_2);
+                IBP_PRESSURE_PA);
+        ibpParam.setWaveWidget(ibp2WaveWidget, IBP_INPUT_2);
         windowManager.addWidget(ibp2WaveWidget, ibp2TrendWidget);
     }
 
-    //CO
+    // CO
     if (systemManager.isSupport(CONFIG_CO))
     {
         paramManager.addParam(coParam.construction());
@@ -455,7 +463,7 @@ static void _initProviderParam(void)
         windowManager.addWidget(coTrendWidget);
     }
 
-    //AG
+    // AG
     if (systemManager.isSupport(CONFIG_AG))
     {
         paramManager.addProvider(*new PhaseinProvider());
@@ -530,20 +538,20 @@ static void _initProviderParam(void)
 static void _initPrint(void)
 {
     // 初始化打印。
-    //printExec.construction();
-    //printManager.construction();
-    //alertor.addOneShotSource(printOneShotAlarm.construction());
-    //PRT72Provider *prtProvider = new PRT72Provider();
-    //printManager.setPrintProviderIFace(prtProvider);
-    //printManager.addPrintLayout(new PrintContinuousLayout());
-    //printManager.addPrintLayout(new PrintTrendDataLayout());
-    //printManager.addPrintLayout(new PrintTriggerSummaryLayout());
-    //printManager.addPrintLayout(new PrintViewSummaryLayout());
-    //printManager.addPrintLayout(new PrintECG12LeadLayout());
-    //printManager.addPrintLayout(new PrintOtherTriggerLayout());
-    //printManager.addPrintLayout(new PrintSupervisorCfgLayout());
-    //printManager.selftest();
-    //paramManager.addProvider(*prtProvider);
+    // printExec.construction();
+    // printManager.construction();
+    // alertor.addOneShotSource(printOneShotAlarm.construction());
+    // PRT72Provider *prtProvider = new PRT72Provider();
+    // printManager.setPrintProviderIFace(prtProvider);
+    // printManager.addPrintLayout(new PrintContinuousLayout());
+    // printManager.addPrintLayout(new PrintTrendDataLayout());
+    // printManager.addPrintLayout(new PrintTriggerSummaryLayout());
+    // printManager.addPrintLayout(new PrintViewSummaryLayout());
+    // printManager.addPrintLayout(new PrintECG12LeadLayout());
+    // printManager.addPrintLayout(new PrintOtherTriggerLayout());
+    // printManager.addPrintLayout(new PrintSupervisorCfgLayout());
+    // printManager.selftest();
+    // paramManager.addProvider(*prtProvider);
 
     PRT72Provider *prtProvider = new PRT72Provider();
     recorderManager.setPrintPrividerIFace(prtProvider);
@@ -557,54 +565,7 @@ static void _initMenu(void)
 {
     menuManager.construction();
     publicMenuManager.construction();
-    publicMenuManager.addSubMenu(&ecgMenu);
-    publicMenuManager.addSubMenu(&respMenu);
-    if (systemManager.isSupport(CONFIG_AG))
-    {
-        publicMenuManager.addSubMenu(&agMenu);
-    }
-    if (systemManager.isSupport(CONFIG_IBP))
-    {
-        publicMenuManager.addSubMenu(&ibpMenu);
-    }
-    if (systemManager.isSupport(CONFIG_CO))
-    {
-        publicMenuManager.addSubMenu(&coMenu);
-    }
-    if (systemManager.isSupport(CONFIG_SPO2))
-    {
-        publicMenuManager.addSubMenu(&spo2Menu);
-    }
-    if (systemManager.isSupport(CONFIG_NIBP))
-    {
-        publicMenuManager.addSubMenu(&nibpMenu);
-    }
-    if (systemManager.isSupport(CONFIG_CO2))
-    {
-        publicMenuManager.addSubMenu(&co2Menu);
-    }
-    publicMenuManager.addSubMenu(&alarmLimitMenu);
-
-    if(systemManager.isSupport(CONFIG_WIFI))
-    {
-        publicMenuManager.addSubMenu(&wifiProfileMenu);
-    }
-    supervisorDisplayMenu.construction();
-    publicMenuManager.addSubMenu(&supervisorDisplayMenu);
-
-    publicMenuManager.addSubMenu(&systemMenu);
-    userMaintainEntrance.construction();
-    factoryMaintainEntrance.construction();
-    configManagerEntrance.construction();
-
-    publicMenuManager.addSubMenu(&loadConfigMenu);
-    publicMenuManager.addSubMenu(&configManagerEntrance);
-    publicMenuManager.addSubMenu(&userMaintainEntrance);
-    publicMenuManager.addSubMenu(&factoryMaintainEntrance);
-
     userMaintainManager.construction();
-
-
     userMaintainGeneralSet.construction();
     moduleMaintainMenu.construction();
     alarmMaintainMenu.construction();
@@ -651,7 +612,7 @@ static void _initMenu(void)
     factoryMaintainManager.addSubMenu(&factoryImportExportMenu);
 
 
-    //supervisorMenuManager
+    // supervisorMenuManager
     supervisorMenuManager.construction();
 
     if (systemManager.isSupport(CONFIG_ECG12LEADS))
@@ -697,7 +658,7 @@ void deleteObjects(void)
     deletePublicMenuManager();
     deleteSupervisorMenuManager();
     deleteMenuManager();
-    //deletePatientMenu();
+    // deletePatientMenu();
     deleteParamManager();
     deleteParamInfo();
     deletePatientManager();
@@ -705,7 +666,7 @@ void deleteObjects(void)
     deleteTimeDate();
     deleteMachineConfig();
     deleteSystemConfig();
-    //deleteSuperConfig();
+    // deleteSuperConfig();
     deleteSuperRunConfig();
     deleteSystemTick();
     deleteSystemManager();

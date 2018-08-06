@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "NIBPMonitorGetResultState.h"
 #include "NIBPParam.h"
 
@@ -16,7 +27,7 @@ void NIBPMonitorGetResultState::enter(void)
  *************************************************************************************************/
 void NIBPMonitorGetResultState::handleNIBPEvent(NIBPEvent event, const unsigned char *args, int argLen)
 {
-    short sys(InvData()), dia(InvData()), map(InvData()), pr(InvData());
+    int16_t sys(InvData()), dia(InvData()), map(InvData()), pr(InvData());
     NIBPOneShotType err;
 
     switch (event)
@@ -77,19 +88,20 @@ void NIBPMonitorGetResultState::handleNIBPEvent(NIBPEvent event, const unsigned 
 
         nibpParam.setResult(sys, dia, map, pr, err);
 
-        debug("0x%02x, %d",args[1],err);
+        debug("0x%02x, %d", args[1], err);
 
         switchState(NIBP_MONITOR_SAFEWAITTIME_STATE);
         break;
     default:
         break;
     }
-
 }
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-NIBPMonitorGetResultState::NIBPMonitorGetResultState() : NIBPState(NIBP_MONITOR_GET_RESULT_STATE)
+NIBPMonitorGetResultState::NIBPMonitorGetResultState()
+    : NIBPState(NIBP_MONITOR_GET_RESULT_STATE)
+    , same_time_flag(false)
 {
 }
 
@@ -98,5 +110,4 @@ NIBPMonitorGetResultState::NIBPMonitorGetResultState() : NIBPState(NIBP_MONITOR_
  *************************************************************************************************/
 NIBPMonitorGetResultState::~NIBPMonitorGetResultState()
 {
-
 }

@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/2
+ **/
+
+
 #pragma once
 
 #include "IThread.h"
@@ -15,20 +26,16 @@
 #include "SupervisorMenuManager.h"
 #include "KeyBoardPanel.h"
 #include "NumberPanel.h"
-#include "ConfigManagerEntrance.h"
 #include "SetWidget.h"
 #include "ConfigEditUnitSetupMenu.h"
 #include "NellcorProvider.h"
 
 #include "DataStorageDirManager.h"
-
 #include "SoundManager.h"
 #include "NetworkManager.h"
 #include "ServiceErrorLogEntrance.h"
 #include "SystemTick.h"
-#include "SystemMenu.h"
 #include "SupervisorEntrance.h"
-#include "UserMaintainEntrance.h"
 #include "FactoryImportExportMenu.h"
 #include "FactoryDataRecord.h"
 #include "FactoryTempMenu.h"
@@ -46,7 +53,6 @@
 #include "WifiMaintainMenu.h"
 #include "WiredWorkMaintainMenu.h"
 #include "OthersMaintainMenu.h"
-#include "FactoryMaintainEntrance.h"
 #include "MonitorInfo.h"
 #include "SystemStatusBarWidget.h"
 #include "SystemModeBarWidget.h"
@@ -112,14 +118,12 @@
 #include "NIBPTrendWidget.h"
 #include "NIBPDataTrendWidget.h"
 #include "WaveTrendWidget.h"
-#include "NIBPMenu.h"
 
 #include "CO2Param.h"
 #include "CO2Alarm.h"
 #include "CO2WaveWidget.h"
 #include "CO2TrendWidget.h"
 #include "CO2BRTrendWidget.h"
-#include "CO2Menu.h"
 
 #include "WitleafProvider.h"
 #include "IBPAlarm.h"
@@ -130,7 +134,6 @@
 
 #include "COParam.h"
 #include "COAlarm.h"
-#include "COMenu.h"
 #include "COTrendWidget.h"
 #include "COParam.h"
 
@@ -139,13 +142,11 @@
 #include "AGParam.h"
 #include "AGWaveWidget.h"
 #include "AGTrendWidget.h"
-#include "AGMenu.h"
 
 #include "SPO2Param.h"
 #include "SPO2Alarm.h"
 #include "SPO2WaveWidget.h"
 #include "SPO2TrendWidget.h"
-#include "SPO2Menu.h"
 #include "ShortTrendManager.h"
 
 #include "TEMPParam.h"
@@ -158,7 +159,6 @@
 #include "RESPAlarm.h"
 #include "RESPWaveWidget.h"
 #include "RESPTrendWidget.h"
-#include "RESPMenu.h"
 
 #include "ECGDupAlarm.h"
 #include "ECGDupParam.h"
@@ -171,9 +171,6 @@
 #include "ECGMenu.h"
 
 #include "E5Provider.h"
-
-#include "WiFiProfileMenu.h"
-
 #include "RawDataCollection.h"
 #include "RawDataCollectionTxt.h"
 
@@ -181,7 +178,6 @@
 #include "SupervisorGeneralSetMenu.h"
 #include "SupervisorPortMenu.h"
 #include "SupervisorNIBPMenu.h"
-#include "SupervisorDisplayMenu.h"
 #include "SupervisorPrintMenu.h"
 #include "Supervisor12LMenu.h"
 #include "SupervisorTimeMenu.h"

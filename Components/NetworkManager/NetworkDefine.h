@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #pragma once
 
 #include <QMetaType>
@@ -110,9 +121,12 @@ struct ApInfo
 {
     ApInfo()
     {
+        signalLevel = 0;
+        encType = OPEN_AP;
         status = AP_UNCONNECTED;
         isSaved = false;
         netId = -1;
+        updateFlag = -1;
     }
 
     QString ssid;           // ssid

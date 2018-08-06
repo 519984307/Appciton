@@ -46,9 +46,19 @@ public:
 };
 
 CO2MenuContent::CO2MenuContent():
-    MenuContent(trs("CO2Menu"), trs("CO2MenuDesc")),
+    MenuContent(trs("CO2Menu") , trs("CO2MenuDesc")),
     d_ptr(new CO2MenuContentPrivate)
 {
+}
+
+CO2MenuContent *CO2MenuContent::getInstance()
+{
+    static CO2MenuContent *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new CO2MenuContent;
+    }
+    return instance;
 }
 
 CO2MenuContent::~CO2MenuContent()

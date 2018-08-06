@@ -1,16 +1,27 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "ConfigEditSpO2Menu.h"
 #include "ConfigEditMenuGrp.h"
 #include "IComboList.h"
 #include "SPO2Symbol.h"
 #include "ConfigEditAlarmLimitMenu.h"
 #include "LabelButton.h"
-#include "LoadConfigMenu.h"
 #include "ConfigManager.h"
 
 class ConfigEditSpO2MenuPrivate
 {
 public:
-    enum ComboListId {
+    enum ComboListId
+    {
         Sensitivity,  /*灵敏度*/
         SmartPluseTone,/*智能脉搏音*/
         WaveVelocity,/*血氧波形*/
@@ -19,7 +30,7 @@ public:
         ComboListMax,
     };
 
-    ConfigEditSpO2MenuPrivate()
+    ConfigEditSpO2MenuPrivate():_alarmLbtn(NULL)
     {
         memset(combos, 0, sizeof(combos));
 
@@ -29,7 +40,6 @@ public:
         comboLabels[WaveVelocity] = "WaveVelocity";
         comboLabels[Gain] = "Gain";
         comboLabels[ModuleControl] = "ModuleControl";
-
     }
 
     void loadOptions();
@@ -64,7 +74,7 @@ void ConfigEditSpO2MenuPrivate::loadOptions()
     index  = 0;
     if (combos[WaveVelocity]->count() == 0)
     {
-        for(int i = 0; i < SPO2_WAVE_VELOCITY_NR; i++)
+        for (int i = 0; i < SPO2_WAVE_VELOCITY_NR; i++)
         {
             combos[WaveVelocity]->addItem(SPO2Symbol::convert((SPO2WaveVelocity)i));
         }
@@ -74,7 +84,7 @@ void ConfigEditSpO2MenuPrivate::loadOptions()
     index  = 0;
     if (combos[Gain]->count() == 0)
     {
-        for(int i = 0; i < SPO2_GAIN_NR; i++)
+        for (int i = 0; i < SPO2_GAIN_NR; i++)
         {
             combos[Gain]->addItem(SPO2Symbol::convert((SPO2Gain)i));
         }
@@ -89,12 +99,11 @@ void ConfigEditSpO2MenuPrivate::loadOptions()
         config->getNumValue("SPO2|ModuleControl", index);
         combos[ModuleControl]->setCurrentIndex(index);
     }
-
 }
 
 ConfigEditSpO2Menu::ConfigEditSpO2Menu()
-    :SubMenu(trs("SPO2Menu")),
-    d_ptr(new ConfigEditSpO2MenuPrivate())
+    : SubMenu(trs("SPO2Menu")),
+      d_ptr(new ConfigEditSpO2MenuPrivate())
 {
     setDesc(trs("SPO2MenuDesc"));
     startLayout();
@@ -102,7 +111,6 @@ ConfigEditSpO2Menu::ConfigEditSpO2Menu()
 
 ConfigEditSpO2Menu::~ConfigEditSpO2Menu()
 {
-
 }
 
 void ConfigEditSpO2Menu::layoutExec()
@@ -115,7 +123,7 @@ void ConfigEditSpO2Menu::layoutExec()
     int btnWidth = itemW / 2;
     int labelWidth = itemW - btnWidth;
 
-    for(int i = 0; i< ConfigEditSpO2MenuPrivate::ComboListMax; i++)
+    for (int i = 0; i < ConfigEditSpO2MenuPrivate::ComboListMax; i++)
     {
         //申请一个标签下拉框，用于填充子菜单布局中
         IComboList *combo = new IComboList(trs(d_ptr->comboLabels[i]));
@@ -142,15 +150,14 @@ void ConfigEditSpO2Menu::layoutExec()
     mainLayout->addWidget(d_ptr->_alarmLbtn);
     //按照比例分配空余空间
     mainLayout->addStretch(1);
-
 }
 //报警项设置
 void ConfigEditSpO2Menu::_alarmLbtnSlot()
 {
-    SubMenu *subMenuPrevious = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditSpO2Menu"] ;
-    SubMenu *subMenuCurrent = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditAlarmLimitMenu"] ;
-    ConfigEditAlarmLimitMenu* alarmLimit = qobject_cast<ConfigEditAlarmLimitMenu*>(subMenuCurrent);
-    alarmLimit->setFocusIndex(SUB_PARAM_SPO2+1);
+    SubMenu *subMenuPrevious = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditSpO2Menu"];
+    SubMenu *subMenuCurrent = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditAlarmLimitMenu"];
+    ConfigEditAlarmLimitMenu *alarmLimit = qobject_cast<ConfigEditAlarmLimitMenu *>(subMenuCurrent);
+    alarmLimit->setFocusIndex(SUB_PARAM_SPO2 + 1);
     configEditMenuGrp.changePage(subMenuCurrent, subMenuPrevious);
 }
 void ConfigEditSpO2Menu::readyShow()
@@ -159,24 +166,24 @@ void ConfigEditSpO2Menu::readyShow()
 
     bool preStatusBool = !configManager.getWidgetsPreStatus();
 
-    for(int i =0; i<ConfigEditSpO2MenuPrivate::ComboListMax; i++)
+    for (int i = 0; i < ConfigEditSpO2MenuPrivate::ComboListMax; i++)
     {
         d_ptr->combos[i]->setEnabled(preStatusBool);
     }
-
 }
 
 
 void ConfigEditSpO2Menu::onComboListConfigChanged(int index)
 {
     IComboList *combo = qobject_cast<IComboList *>(sender());
-    if(!combo)
+    if (!combo)
     {
         qdebug("Invalid signal sender.");
         return;
     }
     //根据索引设置对应列表的参数值
-    ConfigEditSpO2MenuPrivate::ComboListId comboId = (ConfigEditSpO2MenuPrivate::ComboListId) combo->property("comboId").toInt();
+    ConfigEditSpO2MenuPrivate::ComboListId comboId = (ConfigEditSpO2MenuPrivate::ComboListId)
+            combo->property("comboId").toInt();
 
     Config *config = configEditMenuGrp.getCurrentEditConfig();
 

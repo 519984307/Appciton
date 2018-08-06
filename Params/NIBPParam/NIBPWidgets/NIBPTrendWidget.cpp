@@ -1,33 +1,45 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "NIBPTrendWidget.h"
 #include "NIBPParam.h"
 #include "ParamManager.h"
 #include "ParamInfo.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include "NIBPMenu.h"
 #include "PublicMenuManager.h"
 #include "TimeDate.h"
 #include "TimeManager.h"
 #include "WindowManager.h"
 #include "IConfig.h"
 #include "TrendWidgetLabel.h"
+#include "MainMenuWindow.h"
+#include "NIBPMenuContent.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
-void NIBPTrendWidget::_releaseHandle(IWidget *)
+void NIBPTrendWidget::_releaseHandle(IWidget *iWidget)
 {
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
-
-    publicMenuManager.popup(&nibpMenu, x, y);
+    MainMenuWindow *p = MainMenuWindow::getInstance();
+    p->popup(NIBPMenuContent::getInstance() , x , y);
 }
 
 /**************************************************************************************************
  * 设置测量结果的数据。
  *************************************************************************************************/
-void NIBPTrendWidget::setResults(short sys, short dia, short map, unsigned time)
+void NIBPTrendWidget::setResults(int16_t sys, int16_t dia, int16_t map, unsigned time)
 {
     //当测量结束，实时压力值显示“---”
     _pressureString = InvStr();
@@ -40,13 +52,13 @@ void NIBPTrendWidget::setResults(short sys, short dia, short map, unsigned time)
     {
         QString timeStr("@ ");
         QString tmpStr;
-        timeDate.getTime(time,tmpStr,false);
+        timeDate.getTime(time , tmpStr , false);
 //        tmpStr.sprintf("%02d:%02d", timeDate.getTimeHour(time), timeDate.getTimeMinute(time));
         timeStr += tmpStr;
         _measureTime = timeStr;
     }
 
-    saveResults(sys,dia,map,time);
+    saveResults(sys , dia , map , time);
 
     if ((sys == InvData()) || (dia == InvData()) || (map == InvData()))
     {
@@ -80,7 +92,7 @@ void NIBPTrendWidget::setResults(short sys, short dia, short map, unsigned time)
 /**************************************************************************************************
  * 恢复测量结果的数据。
  *************************************************************************************************/
-void NIBPTrendWidget::recoverResults(short &sys, short &dia, short &map,unsigned &time)
+void NIBPTrendWidget::recoverResults(int16_t &sys, int16_t &dia, int16_t &map, unsigned &time)
 {
     QString str = InvStr();
 
@@ -100,7 +112,7 @@ void NIBPTrendWidget::recoverResults(short &sys, short &dia, short &map,unsigned
 /**************************************************************************************************
  * 保存测量结果的数据。
  *************************************************************************************************/
-void NIBPTrendWidget::saveResults(short sys, short dia, short map, unsigned time)
+void NIBPTrendWidget::saveResults(int16_t sys, int16_t dia, int16_t map, unsigned time)
 {
     systemConfig.setStrValue("PrimaryCfg|NIBP|NIBPsys", QString::number(sys));
     systemConfig.setStrValue("PrimaryCfg|NIBP|NIBPdia", QString::number(dia));
@@ -148,11 +160,13 @@ void NIBPTrendWidget::setCountdown(int t)
     QString str;
     if (hour != 0)
     {
-        str.sprintf("%.2d:%.2d:%.2d", hour, min, sec);
+//        str.sprintf("%.2d:%.2d:%.2d", hour, min, sec);
+        str = QString("%1:%2:%3").arg(hour).arg(min).arg(sec);
     }
     else
     {
-        str.sprintf("%.2d:%.2d", min, sec);
+//        str.sprintf("%.2d:%.2d", min, sec);
+        str = QString("%1:%2").arg(min).arg(sec);
     }
 //    setInfo(str);
     setCountDown(str);
@@ -344,11 +358,11 @@ void NIBPTrendWidget::showModelText(QString text)
 void NIBPTrendWidget::setTextSize()
 {
     QRect r;
-    r.setSize(QSize(((width() - nameLabel->width())/4),((height() / 4) * 3)));
+    r.setSize(QSize(((width() - nameLabel->width())/4), ((height() / 4) * 3)));
 //    int fontsize = fontManager.adjustNumFontSizeXML(r);
 //    int size = fontManager.getFontSize(fontsize);
 //    QFont font = fontManager.numFont(size, true);
-    int fontsize = fontManager.adjustNumFontSize(r,true);
+    int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
 //    font.setStretch(105); // 横向放大。
     font.setWeight(QFont::Black);
@@ -530,5 +544,4 @@ NIBPTrendWidget::NIBPTrendWidget() : TrendWidget("NIBPTrendWidget")
  *************************************************************************************************/
 NIBPTrendWidget::~NIBPTrendWidget()
 {
-
 }

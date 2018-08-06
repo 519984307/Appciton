@@ -1,4 +1,14 @@
-//////////////////////////////////////////////
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "ConfigEditIBPMenu.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -18,11 +28,19 @@
 #include "ConfigEditMenuGrp.h"
 #include "IBPParam.h"
 #include "ConfigEditAlarmLimitMenu.h"
-#include "LoadConfigMenu.h"
 
 ConfigIBPMenu *ConfigIBPMenu::_selfObj = NULL;
 
-ConfigIBPMenu::ConfigIBPMenu() : SubMenu(trs("ConfigIBPMenu"))
+ConfigIBPMenu::ConfigIBPMenu() : SubMenu(trs("ConfigIBPMenu")),
+    _entitle1(NULL),
+    _entitle2(NULL),
+    _speed(NULL),
+    _filter(NULL),
+    _sensitivity(NULL),
+    _zeroCalib(NULL),
+    _calibration(NULL),
+    _zeroRev(NULL),
+    _alarmLbtn(NULL)
 {
     setDesc(trs("ConfigIBPMenuDesc"));
     startLayout();
@@ -30,7 +48,6 @@ ConfigIBPMenu::ConfigIBPMenu() : SubMenu(trs("ConfigIBPMenu"))
 
 ConfigIBPMenu::~ConfigIBPMenu()
 {
-
 }
 /**************************************************************************************************
  * 显示校零校准提示信息。
@@ -131,7 +148,7 @@ void ConfigIBPMenu::layoutExec(void)
     mainLayout->addWidget(_speed);
 
     index = 0;
-    config->getNumValue("IBP|FilterMode",index);
+    config->getNumValue("IBP|FilterMode", index);
     _filter = new IComboList(trs("FilterMode"));
     _filter->setFont(defaultFont());
     for (int i = 0; i < IBP_FILTER_MODE_NR; i ++)
@@ -158,7 +175,6 @@ void ConfigIBPMenu::layoutExec(void)
     _sensitivity->combolist->setCurrentIndex(index);
     mainLayout->addWidget(_sensitivity);
 
-    index = 0;
     _zeroCalib = new LabelButton(trs("IBPZeroCalib"));
     _zeroCalib->setFont(defaultFont());
     _zeroCalib->setValue(trs("IBPZeroStart"));
@@ -195,10 +211,10 @@ void ConfigIBPMenu::layoutExec(void)
 //报警项设置
 void ConfigIBPMenu::_alarmLbtnSlot()
 {
-    SubMenu *subMenuPrevious = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigIBPMenu"] ;
-    SubMenu *subMenuCurrent = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditAlarmLimitMenu"] ;
-    ConfigEditAlarmLimitMenu* alarmLimit = qobject_cast<ConfigEditAlarmLimitMenu*>(subMenuCurrent);
-    alarmLimit->setFocusIndex(SUB_PARAM_ART_SYS+1);
+    SubMenu *subMenuPrevious = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigIBPMenu"];
+    SubMenu *subMenuCurrent = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditAlarmLimitMenu"];
+    ConfigEditAlarmLimitMenu *alarmLimit = qobject_cast<ConfigEditAlarmLimitMenu *>(subMenuCurrent);
+    alarmLimit->setFocusIndex(SUB_PARAM_ART_SYS + 1);
     configEditMenuGrp.changePage(subMenuCurrent, subMenuPrevious);
 }
 
@@ -272,7 +288,7 @@ void ConfigIBPMenu::_calibrationReleased()
     {
         QString text = numberPad.getStrValue();
         bool ok = false;
-        unsigned short value = text.toShort(&ok);
+        u_int16_t value = text.toShort(&ok);
         if (ok)
         {
             if (value >= 80 && value <= 300)

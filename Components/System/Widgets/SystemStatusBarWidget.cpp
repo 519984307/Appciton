@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include <QPixmap>
 #include <QPainter>
 #include "SystemStatusBarWidget.h"
@@ -7,8 +18,9 @@
 #include <QLabel>
 #include "NetworkManager.h"
 #include "PublicMenuManager.h"
-#include "WiFiProfileMenu.h"
 #include "WindowManager.h"
+#include "MainMenuWindow.h"
+#include "WiFiProfileMenuContent.h"
 
 SystemStatusBarWidget *SystemStatusBarWidget::_selfObj = NULL;
 #define ICON_WIDTH 32
@@ -24,7 +36,7 @@ void SystemStatusBarWidget::hideIcon(SystemIconLabel iconlabel)
     }
 
     QLabel *l = qobject_cast<QLabel *> (_iconMap.value(iconlabel)->children().at(1));
-    if(l)
+    if (l)
     {
         l->setPixmap(_icons[SYSTEM_ICON_NONE]);
         _iconMap.value(iconlabel)->setFocusPolicy(Qt::NoFocus);
@@ -52,7 +64,7 @@ void SystemStatusBarWidget::changeIcon(SystemIconLabel iconlabel, int status, bo
     }
 
     QLabel *l = qobject_cast<QLabel *> (_iconMap.value(iconlabel)->children().at(1));
-    if(l)
+    if (l)
     {
         l->setPixmap(_icons[(SystemStatusIcon)status]);
         IWidget *w = _iconMap.value(iconlabel);
@@ -82,11 +94,11 @@ void SystemStatusBarWidget::changeIcon(SystemIconLabel iconlabel, int status, bo
  * 函数说明:
  *         获取焦点子控件。
  *************************************************************************************************/
-void SystemStatusBarWidget::getSubFocusWidget(QList<QWidget*> &subWidgets) const
+void SystemStatusBarWidget::getSubFocusWidget(QList<QWidget *> &subWidgets) const
 {
     subWidgets.clear();
 
-    for(int i = 0; i < SYSTEM_ICON_LABEL_NR; i++)
+    for (int i = 0; i < SYSTEM_ICON_LABEL_NR; i++)
     {
         IWidget *subWidget = _iconMap.value((SystemIconLabel)i);
         if (NULL != subWidget)
@@ -101,22 +113,23 @@ void SystemStatusBarWidget::getSubFocusWidget(QList<QWidget*> &subWidgets) const
  *************************************************************************************************/
 void SystemStatusBarWidget::onIconClicked(int iconLabel)
 {
-    if(iconLabel == SYSTEM_ICON_LABEL_WIFI)
+    if (iconLabel == SYSTEM_ICON_LABEL_WIFI)
     {
         QRect r = windowManager.getMenuArea();
         int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
         int y = r.y() + (r.height() - publicMenuManager.height());
 
-        publicMenuManager.popup(&wifiProfileMenu,x,y);
+        MainMenuWindow *p = MainMenuWindow::getInstance();
+        p->popup(WiFiProfileMenuContent::getInstance() , x , y);
     }
 }
 
 /**************************************************************************************************
  * 绘画事件。
  *************************************************************************************************/
-void SystemStatusBarWidget::paintEvent(QPaintEvent */*e*/)
+void SystemStatusBarWidget::paintEvent(QPaintEvent *e)
 {
-    //do nothing
+    // do nothing
 }
 
 /***************************************************************************************************
@@ -124,13 +137,13 @@ void SystemStatusBarWidget::paintEvent(QPaintEvent */*e*/)
  **************************************************************************************************/
 void SystemStatusBarWidget::timerEvent(QTimerEvent *e)
 {
-    if(e->timerId() == _timer.timerId())
+    if (e->timerId() == _timer.timerId())
     {
-        if(networkManager.isWifiWorking())
+        if (networkManager.isWifiWorking())
         {
             changeIcon(SYSTEM_ICON_LABEL_WIFI, networkManager.isWiFiConnected()
                        ? SYSTEM_ICON_WIFI_CONNECTED
-                       :SYSTEM_ICON_WIFI_DISCONNECTED, true);
+                       : SYSTEM_ICON_WIFI_DISCONNECTED, true);
         }
         else
         {
@@ -142,13 +155,13 @@ void SystemStatusBarWidget::timerEvent(QTimerEvent *e)
 /**************************************************************************************************
  * 显示事件。
  *************************************************************************************************/
-void SystemStatusBarWidget::showEvent(QShowEvent */*e*/)
+void SystemStatusBarWidget::showEvent(QShowEvent *e)
 {
-    //pacer icon
+    // pacer icon
     QLabel *l = qobject_cast<QLabel *> (_iconMap.value(SYSTEM_ICON_LABEL_PACER)->children().at(1));
-    if(l)
+    if (l)
     {
-        if(patientManager.getPacermaker())
+        if (patientManager.getPacermaker())
         {
             l->setPixmap(_icons[SYSTEM_ICON_PACER_ON]);
         }
@@ -170,23 +183,23 @@ SystemStatusBarWidget::SystemStatusBarWidget() : IWidget("SystemStatusBarWidget"
     _icons[SYSTEM_ICON_WIFI_CONNECTED] = QPixmap("/usr/local/nPM/icons/wifi.png");
     _icons[SYSTEM_ICON_WIFI_DISCONNECTED] = QPixmap("/usr/local/nPM/icons/wifi_disconnected.png");
     _icons[SYSTEM_ICON_PACER_OFF] = QPixmap("/usr/local/nPM/icons/PaceMarkerOff.png");
-    _icons[SYSTEM_ICON_PACER_ON] = QPixmap("");//"/usr/local/nPM/icons/Pacemarkeron.png");打开时不需要图标。
+    _icons[SYSTEM_ICON_PACER_ON] = QPixmap("");// "/usr/local/nPM/icons/Pacemarkeron.png");打开时不需要图标。
 
     setFocusPolicy(Qt::NoFocus);
 
     QHBoxLayout *mainLayout = new QHBoxLayout(this);
-    mainLayout->setContentsMargins(0,0,0,0);
+    mainLayout->setContentsMargins(0, 0, 0, 0);
 
-    for(int i = 0; i < SYSTEM_ICON_LABEL_NR; i++)
+    for (int i = 0; i < SYSTEM_ICON_LABEL_NR; i++)
     {
-        IWidget *w = new IWidget(QString("icon%1").arg(i+1));
+        IWidget *w = new IWidget(QString("icon%1").arg(i + 1));
         w->setAttribute(Qt::WA_NoSystemBackground);
         w->setFocusPolicy(Qt::NoFocus);
         w->setFixedWidth(ICON_WIDTH);
         connect(w, SIGNAL(released()), _signalMapper, SLOT(map()));
         _signalMapper->setMapping(w, i);
         QHBoxLayout *layout = new QHBoxLayout(w);
-        layout->setContentsMargins(0,0,0,0);
+        layout->setContentsMargins(0, 0, 0, 0);
         QLabel *l = new QLabel();
         l->setPixmap(_icons[SYSTEM_ICON_NONE]);
         layout->addWidget(l, 0, Qt::AlignCenter);
@@ -205,5 +218,5 @@ SystemStatusBarWidget::SystemStatusBarWidget() : IWidget("SystemStatusBarWidget"
  *************************************************************************************************/
 SystemStatusBarWidget::~SystemStatusBarWidget()
 {
-   _timer.stop();
+    _timer.stop();
 }

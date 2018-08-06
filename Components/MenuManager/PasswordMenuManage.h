@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #pragma once
 #include <QList>
 #include <QTimer>
@@ -22,7 +33,7 @@ class PasswordMenuManage : public IWidget
 
 public:
     //构造函数
-    PasswordMenuManage(const QString &title);
+    explicit PasswordMenuManage(const QString &title);
     ~PasswordMenuManage(); // 析构函数
 
 public:
@@ -47,8 +58,6 @@ private slots:
     void _timeOutSlot();
 
 private:
-
-
     //初始化数据
     void _initData(void);
 
@@ -66,5 +75,4 @@ private:
     QString _normalPassword;                  //通用配置管理密码
     QString _userMaintainPassword;            //用户维护密码
     QString _factoryMaintainPassword;         //工厂维护密码
-
 };

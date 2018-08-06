@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include <QTimerEvent>
 #include "Debug.h"
 #include "NetworkManager.h"
@@ -10,10 +21,10 @@
 #include "IConfig.h"
 #include "PatientManager.h"
 #include "SystemManager.h"
-#include "WiFiProfileMenu.h"
+#include "WiFiProfileMenuContent.h"
 
 #define TIMER_INTERVAL     (1000) // 1s
-#define AUTO_START_WIFI_TIME    (5*1000) //auto start wifi after 5s from start up if the wifi is configured on
+#define AUTO_START_WIFI_TIME    (5*1000) // auto start wifi after 5s from start up if the wifi is configured on
 #define WIFI_UDHCPC_PID_FILE "/var/run/udhcpc_wifi.pid"
 #define RESOLV_CONF_FILE "/etc/resolv.conf"
 
@@ -38,8 +49,8 @@ NetworkManager::NetworkManager(QObject *parent)
     , _udhcpc(NULL)
 {
     _timer.start(TIMER_INTERVAL, this);
-    //queued signal-slots need to know how to handle object creation and destruction at runtime.
-    //the follwing register function is needed.
+    // queued signal-slots need to know how to handle object creation and destruction at runtime.
+    // the follwing register function is needed.
     qRegisterMetaType<NetworkType>();
     qRegisterMetaType<WiFiProfileInfo>();
     connect(this, SIGNAL(openNetwork(NetworkType)), this, SLOT(_openNetwork(NetworkType)));
@@ -74,25 +85,25 @@ void NetworkManager::_openNetwork(NetworkType type)
 
     switch (type)
     {
-        case NETWORK_WIFI:
-            if(!_wpaCtrl)
-            {
-                _wpaCtrl = new WpaCtrl(this);
-                connect(_wpaCtrl, SIGNAL(connectToAp(QString)), this, SLOT(_onWifiApConnected(QString)));
-                connect(_wpaCtrl, SIGNAL(disconnectFromAp(QString)), this, SLOT(_onWifiApDisconnected(QString)));
-            }
+    case NETWORK_WIFI:
+        if (!_wpaCtrl)
+        {
+            _wpaCtrl = new WpaCtrl(this);
+            connect(_wpaCtrl, SIGNAL(connectToAp(QString)), this, SLOT(_onWifiApConnected(QString)));
+            connect(_wpaCtrl, SIGNAL(disconnectFromAp(QString)), this, SLOT(_onWifiApDisconnected(QString)));
+        }
 
-            if(_wpaCtrl->openInterface(name))
-            {
-                qDebug()<<Q_FUNC_INFO<<"Open interface "<<name<<" failed.";
-            }
-            break;
-        case NETWORK_MOBILEDATA:
-            break;
-        case NETWORK_WIRED:
-        default:
-            QProcess::startDetached(QString("ifconfig %1 up").arg(name));
-            break;
+        if (_wpaCtrl->openInterface(name))
+        {
+            qDebug() << Q_FUNC_INFO << "Open interface " << name << " failed.";
+        }
+        break;
+    case NETWORK_MOBILEDATA:
+        break;
+    case NETWORK_WIRED:
+    default:
+        QProcess::startDetached(QString("ifconfig %1 up").arg(name));
+        break;
     }
 }
 
@@ -105,19 +116,19 @@ void NetworkManager::_closeNetwork(NetworkType type)
 
     switch (type)
     {
-        case NETWORK_WIFI:
-            if(_wpaCtrl)
-            {
-                delete _wpaCtrl;
-                _wpaCtrl = NULL;
-            }
-            break;
-        case NETWORK_MOBILEDATA:
-            break;
-        case NETWORK_WIRED:
-        default:
-            QProcess::startDetached(QString("ifconfig %1 down").arg(name));
-            break;
+    case NETWORK_WIFI:
+        if (_wpaCtrl)
+        {
+            delete _wpaCtrl;
+            _wpaCtrl = NULL;
+        }
+        break;
+    case NETWORK_MOBILEDATA:
+        break;
+    case NETWORK_WIRED:
+    default:
+        QProcess::startDetached(QString("ifconfig %1 down").arg(name));
+        break;
     }
 }
 
@@ -127,7 +138,7 @@ void NetworkManager::_closeNetwork(NetworkType type)
 void NetworkManager::setNetworkType(NetworkType type)
 {
 
-    if(_netType == type)
+    if (_netType == type)
     {
         return;
     }
@@ -145,19 +156,18 @@ void NetworkManager::setNetworkType(NetworkType type)
  **************************************************************************************************/
 void NetworkManager::setStaticIp(unsigned int ip)
 {
-    if(0 == ip)
+    if (0 == ip)
     {
         return;
     }
 
     _ipMode = IPMODE_STATIC;
 
-    QString cmd = "";
-    cmd.sprintf("ifconfig eth0 %d.%d.%d.%d\n",
-                (ip & 0xFF000000) >> 24,
-                (ip & 0x00FF0000) >> 16,
-                (ip & 0x0000FF00) >> 8,
-                ip & 0x000000FF);
+    QString cmd = QString("ifconfig eth0 %1.%2.%3.%4\n").
+            number((ip & 0xFF000000) >> 24).
+            number((ip & 0x00FF0000) >> 16).
+            number((ip & 0x0000FF00) >> 8).
+            number(ip & 0x000000FF);
     QProcess::startDetached(cmd);
 }
 
@@ -168,11 +178,11 @@ void NetworkManager::setDynamicIp()
 {
     _ipMode = IPMODE_DHCP;
 
-    if(NULL == _udhcpc)
+    if (NULL == _udhcpc)
     {
         _udhcpc = new QProcess(this);
-        connect(_udhcpc, SIGNAL(finished(int,QProcess::ExitStatus)),
-                SLOT(_udhcpcFinished(int,QProcess::ExitStatus)));
+        connect(_udhcpc, SIGNAL(finished(int, QProcess::ExitStatus)),
+                SLOT(_udhcpcFinished(int, QProcess::ExitStatus)));
     }
 
     QString cmd = "udhcpc -q -i eth0";
@@ -190,7 +200,7 @@ int NetworkManager::getIp(NetworkType type)
 {
     QNetworkInterface interface = getInterface(type);
 
-    if(!interface.isValid()
+    if (!interface.isValid()
             || interface.addressEntries().isEmpty())
     {
         return 0;
@@ -210,7 +220,7 @@ QString NetworkManager::getIpString(NetworkType type)
 {
     QNetworkInterface interface = getInterface(type);
 
-    if(!interface.isValid()
+    if (!interface.isValid()
             || interface.addressEntries().isEmpty())
     {
         return QString();
@@ -242,7 +252,7 @@ QNetworkInterface NetworkManager::getInterface(NetworkType type)
 
     foreach(QNetworkInterface iface, interfaceList)
     {
-        if(iface.name() == ifname)
+        if (iface.name() == ifname)
         {
             return iface;
         }
@@ -285,7 +295,7 @@ bool NetworkManager::isWifiWorking() const
 #if defined (Q_WS_X11)
     return true;
 #else
-    if(_wpaCtrl)
+    if (_wpaCtrl)
     {
         return _wpaCtrl->isValid();
     }
@@ -314,7 +324,8 @@ void NetworkManager::setWifiState(bool onOrOFF)
 
 static QString authTypeToString(WiFiProfileInfo::AuthenticationType type)
 {
-    switch (type) {
+    switch (type)
+    {
     case WiFiProfileInfo::Open:
         return QString("NONE");
         break;
@@ -332,7 +343,7 @@ static QString authTypeToString(WiFiProfileInfo::AuthenticationType type)
  **************************************************************************************************/
 void NetworkManager::connectWiFiProfile(const WiFiProfileInfo &profile)
 {
-    if(!profile.isValid())
+    if (!profile.isValid())
     {
         _lastProfileIsStatic = _curProfile.isStatic;
     }
@@ -343,22 +354,25 @@ void NetworkManager::connectWiFiProfile(const WiFiProfileInfo &profile)
 
     _curProfile = profile;
 
-    if(!_wpaCtrl)
+    if (!_wpaCtrl)
+    {
         this->_openNetwork(NETWORK_WIFI);
-    if(_wpaCtrl->isValid())
+    }
+    if (_wpaCtrl->isValid())
     {
         int id;
         QString idStr;
         QList<WiFiNetworkInfo> infos = _wpaCtrl->getNetworks();
-        if(!infos.isEmpty())
+        if (!infos.isEmpty())
         {
-            //always using the first network config
+            // always using the first network config
             id = infos.at(0).id.toInt();
             idStr = QString::number(id);
         }
-        else{
+        else
+        {
             idStr = _wpaCtrl->addNetwork();
-            if(idStr.isEmpty())
+            if (idStr.isEmpty())
             {
                 qdebug("add network failed.");
                 return;
@@ -366,34 +380,34 @@ void NetworkManager::connectWiFiProfile(const WiFiProfileInfo &profile)
             id = idStr.toInt();
         }
 
-        if(!profile.isValid())
+        if (!profile.isValid())
         {
-            //invalid profile, disable the network
+            // invalid profile, disable the network
             _wpaCtrl->disableNetwork(idStr);
         }
         else
         {
-            if(_wpaCtrl->setNetworkParam(id, "ssid", profile.ssid.toAscii().constData(), true))
+            if (_wpaCtrl->setNetworkParam(id, "ssid", profile.ssid.toAscii().constData(), true))
             {
                 qdebug("set ssid failed.");
                 return;
             }
-            if(_wpaCtrl->setNetworkParam(id, "key_mgmt", authTypeToString(profile.authType).toAscii().constData(), false))
+            if (_wpaCtrl->setNetworkParam(id, "key_mgmt", authTypeToString(profile.authType).toAscii().constData(), false))
             {
                 qdebug("set key_mgmt failed.");
                 return;
             }
-            if(profile.authType == WiFiProfileInfo::Wpa_psk || profile.authType == WiFiProfileInfo::Wpa2_psk)
+            if (profile.authType == WiFiProfileInfo::Wpa_psk || profile.authType == WiFiProfileInfo::Wpa2_psk)
             {
-                if(_wpaCtrl->setNetworkParam(id, "psk", profile.securityKey.toAscii().constData(), true))
+                if (_wpaCtrl->setNetworkParam(id, "psk", profile.securityKey.toAscii().constData(), true))
                 {
                     qdebug("set psk failed");
                     return;
                 }
             }
-            else if(profile.authType == WiFiProfileInfo::Open)
+            else if (profile.authType == WiFiProfileInfo::Open)
             {
-                //TODO
+                // TODO
             }
 
             _wpaCtrl->disableNetwork(idStr);
@@ -412,14 +426,14 @@ static int getUDHCPCPid()
 {
     bool ok = false;
     int pid = -1;
-    if(QFile::exists(WIFI_UDHCPC_PID_FILE))
+    if (QFile::exists(WIFI_UDHCPC_PID_FILE))
     {
-        //get the pid
+        // get the pid
         QFile pidfile(WIFI_UDHCPC_PID_FILE);
-        pidfile.open(QIODevice::ReadOnly|QIODevice::Text);
+        pidfile.open(QIODevice::ReadOnly | QIODevice::Text);
         pid = pidfile.readLine().trimmed().toInt(&ok);
     }
-    return ok? pid : -1;
+    return ok ? pid : -1;
 }
 
 /***************************************************************************************************
@@ -429,44 +443,44 @@ void NetworkManager::_onWifiApConnected(const QString &ssid)
 {
     Q_UNUSED(ssid)
 
-    if(!_curProfile.isValid())
+    if (!_curProfile.isValid())
     {
-        //automatic connect to the last select AP at power up
-        //try to load the ap info of the last connected AP
+        // automatic connect to the last select AP at power up
+        // try to load the ap info of the last connected AP
 
         bool ok;
         int index;
         int count;
         int tmpValue = 0;
         QString tmpStr;
-        if(!currentConfig.getStrAttr("WiFi|Profiles", "CurrentSelect", tmpStr))
+        if (!currentConfig.getStrAttr("WiFi|Profiles", "CurrentSelect", tmpStr))
         {
-            //failed to find current select AP attribute
+            // failed to find current select AP attribute
             connectWiFiProfile(WiFiProfileInfo());
             return;
         }
 
         index = tmpStr.toInt(&ok);
 
-        if(!ok || index < 0)
+        if (!ok || index < 0)
         {
-            //failed to find current select AP attribute
+            // failed to find current select AP attribute
             connectWiFiProfile(WiFiProfileInfo());
             return;
         }
 
-        if(!currentConfig.getStrAttr("WiFi|Profiles", "Count", tmpStr))
+        if (!currentConfig.getStrAttr("WiFi|Profiles", "Count", tmpStr))
         {
-            //failed to find current select AP attribute
+            // failed to find current select AP attribute
             connectWiFiProfile(WiFiProfileInfo());
             return;
         }
 
         count = tmpStr.toInt(&ok);
 
-        if(!ok || count <= index)
+        if (!ok || count <= index)
         {
-            //failed to find current select AP attribute
+            // failed to find current select AP attribute
             connectWiFiProfile(WiFiProfileInfo());
             return;
         }
@@ -480,7 +494,7 @@ void NetworkManager::_onWifiApConnected(const QString &ssid)
         currentConfig.getStrValue(prefix + "SecurityKey", profile.securityKey);
         currentConfig.getNumValue(prefix + "IsStatic", tmpValue);
         profile.isStatic = tmpValue;
-        if(profile.isStatic)
+        if (profile.isStatic)
         {
             currentConfig.getStrValue(prefix + "StaticIP", profile.staticIp);
             currentConfig.getStrValue(prefix + "DefaultGateway", profile.defaultGateway);
@@ -492,30 +506,32 @@ void NetworkManager::_onWifiApConnected(const QString &ssid)
         _curProfile = profile;
     }
 
-    if(_curProfile.isStatic)
+    if (_curProfile.isStatic)
     {
-        //stop udhcpc process if exist
+        // stop udhcpc process if exist
         int pid = getUDHCPCPid();
-        if(pid >= 0)
+        if (pid >= 0)
         {
             kill(pid, SIGTERM);
             qdebug("Kill udhcpc...");
         }
-        QString cmdIpconfig = QString("ifconfig %1 %2 netmask %3").arg(_getInterfaceName(NETWORK_WIFI)).arg(_curProfile.staticIp).arg(_curProfile.subnetMask);
-        QString cmdRoute = QString("route add default gw %1 dev %2").arg(_curProfile.defaultGateway).arg(_getInterfaceName(NETWORK_WIFI));
+        QString cmdIpconfig = QString("ifconfig %1 %2 netmask %3").arg(_getInterfaceName(NETWORK_WIFI)).arg(
+                                  _curProfile.staticIp).arg(_curProfile.subnetMask);
+        QString cmdRoute = QString("route add default gw %1 dev %2").arg(_curProfile.defaultGateway).arg(_getInterfaceName(
+                               NETWORK_WIFI));
 
         qdebug("add static ip...");
         QProcess::execute(cmdIpconfig);
-        QProcess::execute("route del default"); //delete exists default gw
+        QProcess::execute("route del default"); // delete exists default gw
         QProcess::execute(cmdRoute);
 
         QFile resovFile(RESOLV_CONF_FILE);
-        resovFile.open(QIODevice::WriteOnly|QIODevice::Truncate);
-        if(_curProfile.preferedDNS != QString("0.0.0.0"))
+        resovFile.open(QIODevice::WriteOnly | QIODevice::Truncate);
+        if (_curProfile.preferedDNS != QString("0.0.0.0"))
         {
             resovFile.write(QString("nameserver %1\n").arg(_curProfile.preferedDNS).toAscii());
         }
-        if(_curProfile.alternateDNS != QString("0.0.0.0"))
+        if (_curProfile.alternateDNS != QString("0.0.0.0"))
         {
             resovFile.write(QString("nameserver %1\n").arg(_curProfile.alternateDNS).toAscii());
         }
@@ -523,18 +539,18 @@ void NetworkManager::_onWifiApConnected(const QString &ssid)
     }
     else
     {
-        //perform dhcp
+        // perform dhcp
         int pid = getUDHCPCPid();
-        if(pid >= 0)
+        if (pid >= 0)
         {
-                //send a SIGUSR1 to udhcpc will cause a renew
-                kill(pid, SIGUSR1);
-                qdebug("udhcpc renew...");
+            // send a SIGUSR1 to udhcpc will cause a renew
+            kill(pid, SIGUSR1);
+            qdebug("udhcpc renew...");
         }
         else
         {
-            //start a new dhcpc process, if get the ip address successfully, udhcpc will create a deamon process and exit, the daemon
-            //process will handle the renew issue. Otherwise, udhcpc will loop until get the ip.
+            // start a new dhcpc process, if get the ip address successfully, udhcpc will create a deamon process and exit, the daemon
+            // process will handle the renew issue. Otherwise, udhcpc will loop until get the ip.
             QProcess::startDetached(QString("udhcpc -i %1 -p %2 ").arg(_getInterfaceName(NETWORK_WIFI)).arg(WIFI_UDHCPC_PID_FILE));
         }
     }
@@ -550,7 +566,7 @@ void NetworkManager::_onWifiApConnected(const QString &ssid)
 void NetworkManager::_onWifiApDisconnected(const QString &ssid)
 {
     Q_UNUSED(ssid)
-    if(_lastProfileIsStatic)
+    if (_lastProfileIsStatic)
     {
         QString cmdIpconfig = QString("ifconfig %1 0.0.0.0").arg(_getInterfaceName(NETWORK_WIFI));
         QString cmdRoute = QString("route del default gw dev %1").arg(_getInterfaceName(NETWORK_WIFI));
@@ -560,9 +576,9 @@ void NetworkManager::_onWifiApDisconnected(const QString &ssid)
     }
     else
     {
-        //stop udhcpc
+        // stop udhcpc
         int pid = getUDHCPCPid();
-        if(pid >= 0)
+        if (pid >= 0)
         {
             kill(pid, SIGTERM);
             qdebug("Kill udhcpc...");
@@ -577,20 +593,23 @@ void NetworkManager::_onWifiApDisconnected(const QString &ssid)
 void NetworkManager::timerEvent(QTimerEvent *e)
 {
     static qint32 timeCounter = 0;
-    if(e->timerId() != _timer.timerId())
+    if (e->timerId() != _timer.timerId())
     {
         return;
     }
 
-    if(timeCounter >= 0 && timeCounter < AUTO_START_WIFI_TIME)
+    if (timeCounter >= 0 && timeCounter < AUTO_START_WIFI_TIME)
+    {
         timeCounter += TIMER_INTERVAL;
+    }
 
     if (timeCounter >= AUTO_START_WIFI_TIME)
     {
         timeCounter = -1;
-        if(_wpaCtrl == NULL && isWifiTurnOn() && systemManager.isSupport(CONFIG_WIFI))
+        if (_wpaCtrl == NULL && isWifiTurnOn() && systemManager.isSupport(CONFIG_WIFI))
         {
-            this->connectWiFiProfile(wifiProfileMenu.getCurrentWifiProfile());
+            // TODO: connect to last profile
+            // this->connectWiFiProfile(WiFiProfileMenuContent::getInstance()->getCurrentWifiProfile());
         }
     }
 }
@@ -602,8 +621,9 @@ void NetworkManager::_udhcpcFinished(int exitCode, QProcess::ExitStatus exitStat
 {
     bool isNormalExit = ((exitStatus == QProcess::NormalExit) && (exitCode == 0));
 
-    if(isNormalExit && IPMODE_DHCP == _ipMode)
-    { // 发出信号，主要用于IP刷新
+    if (isNormalExit && IPMODE_DHCP == _ipMode)
+    {
+        // 发出信号，主要用于IP刷新
         emit connected(NETWORK_WIRED);
     }
     else
@@ -617,15 +637,16 @@ void NetworkManager::_udhcpcFinished(int exitCode, QProcess::ExitStatus exitStat
  **************************************************************************************************/
 QString NetworkManager::_getInterfaceName(NetworkType type)
 {
-    switch(type)
-    { // 根据网络类型返回其名称
-        case NETWORK_WIRED:
-            return QString("eth0");
-        case NETWORK_MOBILEDATA:
-            return QString("ppp0");
-        case NETWORK_WIFI:
-            return QString("wlan0");
-        default:
-            return QString("Unknown");
+    switch (type)
+    {
+    // 根据网络类型返回其名称
+    case NETWORK_WIRED:
+        return QString("eth0");
+    case NETWORK_MOBILEDATA:
+        return QString("ppp0");
+    case NETWORK_WIFI:
+        return QString("wlan0");
+    default:
+        return QString("Unknown");
     }
 }

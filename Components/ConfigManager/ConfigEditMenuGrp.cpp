@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "ConfigEditMenuGrp.h"
 #include "ConfigEditAlarmLimitMenu.h"
 #include "ConfigEditGeneralMenu.h"
@@ -8,13 +19,8 @@
 #include "ConfigEditCO2Menu.h"
 #include "ConfigEditCOMenu.h"
 #include "ConfigEditIBPMenu.h"
-#include "AGMenu.h"
 #include "IBPMenu.h"
-#include "CO2Menu.h"
 #include "ECGMenu.h"
-#include "COMenu.h"
-#include "NIBPMenu.h"
-#include "SPO2Menu.h"
 #include "SupervisorCodeMarker.h"
 #include "ConfigEditDisplayMenu.h"
 
@@ -22,44 +28,43 @@ class ConfigEditMenuGrpPrivate
 {
 public:
     ConfigEditMenuGrpPrivate()
-        :isSubmenuInitial(false),
+        : isSubmenuInitial(false),
           curEditConfig(NULL)
     {
-
     }
 
     bool isSubmenuInitial;
     Config *curEditConfig;
     QString configName;
-    QMap <QString, SubMenu*> subMenuMap;
+    QMap <QString, SubMenu *> subMenuMap;
 };
 
 ConfigEditMenuGrp::ConfigEditMenuGrp()
-    :MenuGroup("ConfigEdit"),
+    : MenuGroup("ConfigEdit"),
       d_ptr(new ConfigEditMenuGrpPrivate())
 {
-
 }
 
 ConfigEditMenuGrp &ConfigEditMenuGrp::getInstance()
 {
     static ConfigEditMenuGrp *instance = NULL;
-    if(instance == NULL)
+    if (instance == NULL)
     {
-       instance = new ConfigEditMenuGrp();
+        instance = new ConfigEditMenuGrp();
     }
     return *instance;
 }
 
 ConfigEditMenuGrp::~ConfigEditMenuGrp()
 {
-
 }
 
 void ConfigEditMenuGrp::initializeSubMenu()
 {
-    if(d_ptr->isSubmenuInitial)
+    if (d_ptr->isSubmenuInitial)
+    {
         return;
+    }
 
     d_ptr->subMenuMap.clear();
 
@@ -124,7 +129,7 @@ void ConfigEditMenuGrp::initializeSubMenu()
 //    addSubMenu(new IBPMenu);
 //    addSubMenu(new CO2Menu());
 
-    //addSubMenu(new ConfigEditTEMPMenu());
+//    addSubMenu(new ConfigEditTEMPMenu());
 
     d_ptr->isSubmenuInitial = true;
 }
@@ -149,7 +154,7 @@ QString ConfigEditMenuGrp::getCurrentEditConfigName() const
     return d_ptr->configName;
 }
 
-QMap <QString, SubMenu*> ConfigEditMenuGrp::getCurrentEditConfigItem() const
+QMap <QString, SubMenu *> ConfigEditMenuGrp::getCurrentEditConfigItem() const
 {
     return d_ptr->subMenuMap;
 }

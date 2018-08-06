@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "CO2TrendWidget.h"
 #include "CO2Param.h"
 #include "ParamManager.h"
@@ -6,22 +17,24 @@
 #include "ParamInfo.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include "CO2Menu.h"
 #include "PublicMenuManager.h"
 #include "TrendWidgetLabel.h"
+#include "MainMenuWindow.h"
+#include "CO2MenuContent.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
-void CO2TrendWidget::_releaseHandle(IWidget *)
+void CO2TrendWidget::_releaseHandle(IWidget *iWidget)
 {
-    publicMenuManager.popup(&co2Menu);
+    MainMenuWindow *p = MainMenuWindow::getInstance();
+    p->popup(CO2MenuContent::getInstance());
 }
 
 /**************************************************************************************************
  * 转换值。
  *************************************************************************************************/
-void CO2TrendWidget::_setValue(short v, QString &str)
+void CO2TrendWidget::_setValue(int16_t v, QString &str)
 {
     if (v == InvData())
     {
@@ -40,7 +53,7 @@ void CO2TrendWidget::_setValue(short v, QString &str)
         }
         else
         {
-            str.sprintf("%.1f", v * 1.0 / mul);
+            str = QString("%1").number(v * 1.0 / mul, 'f', 1);
         }
 
         return;
@@ -61,7 +74,7 @@ bool CO2TrendWidget::enable()
 /**************************************************************************************************
  * 设置ETCO2的值。
  *************************************************************************************************/
-void CO2TrendWidget::setEtCO2Value(short v)
+void CO2TrendWidget::setEtCO2Value(int16_t v)
 {
     _setValue(v, _etco2Str);
 }
@@ -69,7 +82,7 @@ void CO2TrendWidget::setEtCO2Value(short v)
 /**************************************************************************************************
  * 设置FICO2的值。
  *************************************************************************************************/
-void CO2TrendWidget::setFiCO2Value(short v)
+void CO2TrendWidget::setFiCO2Value(int16_t v)
 {
     _setValue(v, _fico2Str);
 }
@@ -108,14 +121,14 @@ void CO2TrendWidget::isAlarm(int id, bool flag)
 {
     switch (id)
     {
-        case SUB_PARAM_ETCO2:
-            _etco2Alarm = flag;
-            break;
-        case SUB_PARAM_FICO2:
-            _fico2Alarm = flag;
-            break;
-        default:
-            break;
+    case SUB_PARAM_ETCO2:
+        _etco2Alarm = flag;
+        break;
+    case SUB_PARAM_FICO2:
+        _fico2Alarm = flag;
+        break;
+    default:
+        break;
     }
 
     updateAlarm(_fico2Alarm || _etco2Alarm);
@@ -202,13 +215,13 @@ void CO2TrendWidget::showValue()
 void CO2TrendWidget::setTextSize()
 {
     QRect r;
-    int h = ((height()-nameLabel->height()) / 3);
+    int h = ((height() - nameLabel->height()) / 3);
     int w = (width() - unitLabel->width());
     r.setSize(QSize(w, (h * 2)));
     // 字体。
 //    int fontsize = fontManager.adjustNumFontSizeXML(r,"2222");
 //    fontsize = fontManager.getFontSize(fontsize);
-    int fontsize = fontManager.adjustNumFontSize(r,true,"2222");
+    int fontsize = fontManager.adjustNumFontSize(r, true, "2222");
     QFont font = fontManager.numFont(fontsize, true);
 //    font.setStretch(105); // 横向放大。
     font.setWeight(QFont::Black);
@@ -218,7 +231,7 @@ void CO2TrendWidget::setTextSize()
     r.setSize(QSize(w, h));
 //    fontsize = fontManager.adjustNumFontSizeXML(r,"2222");
 //    fontsize = fontManager.getFontSize(fontsize);
-    fontsize = fontManager.adjustNumFontSize(r,true,"2222");
+    fontsize = fontManager.adjustNumFontSize(r, true, "2222");
 
     font = fontManager.numFont(fontsize - 5);
     font.setWeight(QFont::Black);
@@ -232,14 +245,14 @@ void CO2TrendWidget::setTextSize()
 // 立刻显示数据。
 void CO2TrendWidget::flushValue(void)
 {
-     _fico2Value->setText(_fico2Str);
-     _etco2Value->setText(_etco2Str);
+    _fico2Value->setText(_fico2Str);
+    _etco2Value->setText(_etco2Str);
 }
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget",true)
+CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget", true)
 {
     _etco2Str = InvStr();
     _fico2Str = InvStr();
@@ -279,7 +292,7 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget",true)
 
     QVBoxLayout *unitLayout = new QVBoxLayout();
     unitLayout->addWidget(unitLabel);
-    unitLayout->addLayout(mLayout,1);
+    unitLayout->addLayout(mLayout, 1);
     unitLayout->addStretch();
     unitLayout->setSpacing(0);
     unitLayout->setContentsMargins(5, 1, 0, 0);
@@ -289,9 +302,9 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget",true)
 
     QHBoxLayout *fico2Layout = new QHBoxLayout();
     fico2Layout->addStretch(2);
-    fico2Layout->addWidget(_fico2Label,1);
+    fico2Layout->addWidget(_fico2Label, 1);
     fico2Layout->addStretch(1);
-    fico2Layout->addWidget(_fico2Value,2);
+    fico2Layout->addWidget(_fico2Value, 2);
     fico2Layout->addStretch(2);
 
     QVBoxLayout *vLayout = new QVBoxLayout();
@@ -318,7 +331,7 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget",true)
 
 
     // 释放事件。
-    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 }
 
 /**************************************************************************************************
@@ -326,5 +339,4 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget",true)
  *************************************************************************************************/
 CO2TrendWidget::~CO2TrendWidget()
 {
-
 }

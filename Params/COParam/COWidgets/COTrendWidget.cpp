@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "COTrendWidget.h"
 #include "ColorManager.h"
 #include "FontManager.h"
@@ -6,8 +17,9 @@
 #include "TrendWidgetLabel.h"
 #include "PublicMenuManager.h"
 #include "WindowManager.h"
-#include "COMenu.h"
 #include <QDebug>
+#include "MainMenuWindow.h"
+#include "COMenuContent.h"
 
 #define     INVALDATA     0xffff
 
@@ -65,7 +77,6 @@ COTrendWidget::COTrendWidget(const QString &trendName)
     contentLayout->addLayout(vLayout);
 
     connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
-
 }
 
 /**************************************************************************************************
@@ -73,13 +84,12 @@ COTrendWidget::COTrendWidget(const QString &trendName)
  *************************************************************************************************/
 COTrendWidget::~COTrendWidget()
 {
-
 }
 
 /**************************************************************************************************
  * display C.O. and C.I. data.。
  *************************************************************************************************/
-void COTrendWidget::setMeasureResult(unsigned short coData, unsigned short ciData)
+void COTrendWidget::setMeasureResult(u_int16_t coData, u_int16_t ciData)
 {
     if (coData == INVALDATA || ciData == INVALDATA)
     {
@@ -88,14 +98,13 @@ void COTrendWidget::setMeasureResult(unsigned short coData, unsigned short ciDat
     }
     else
     {
-        unsigned short coInt = coData / 100;
-        unsigned short coDec = coData % 100;
-        unsigned short ciInt = ciData / 10;
-        unsigned short ciDec = ciData % 10;
+        u_int16_t coInt = coData / 100;
+        u_int16_t coDec = coData % 100;
+        u_int16_t ciInt = ciData / 10;
+        u_int16_t ciDec = ciData % 10;
         _coStr = QString::number(coInt) + "." + QString::number(coDec);
         _ciStr = QString::number(ciInt) + "." + QString::number(ciDec);
     }
-
     _coValue->setText(_coStr);
     _ciValue->setText(_ciStr);
 
@@ -105,7 +114,7 @@ void COTrendWidget::setMeasureResult(unsigned short coData, unsigned short ciDat
 /**************************************************************************************************
  * display temp blood data。
  *************************************************************************************************/
-void COTrendWidget::setTBData(unsigned short tbData)
+void COTrendWidget::setTBData(u_int16_t tbData)
 {
     if (tbData == INVALDATA)
     {
@@ -113,13 +122,12 @@ void COTrendWidget::setTBData(unsigned short tbData)
     }
     else
     {
-        unsigned short tbInt = tbData / 100;
-        unsigned short tbDec = tbData % 100;
+        u_int16_t tbInt = tbData / 100;
+        u_int16_t tbDec = tbData % 100;
         _tbStr = QString::number(tbInt) + "." + QString::number(tbDec);
     }
 
     _tbValue->setText(_tbStr);
-
     return;
 }
 
@@ -133,14 +141,14 @@ void COTrendWidget::setTextSize()
     int w = (width() - unitLabel->width());
     r.setSize(QSize(w, (h * 2)));
 
-    int fontsize = fontManager.adjustNumFontSize(r,true,"2222");
-    QFont font = fontManager.numFont(fontsize, true);
+    int fontsize = fontManager.adjustNumFontSize(r , true , "2222");
+    QFont font = fontManager.numFont(fontsize , true);
     font.setWeight(QFont::Black);
 
     _coValue->setFont(font);
 
     r.setSize(QSize(w, h));
-    fontsize = fontManager.adjustNumFontSize(r,true,"2222");
+    fontsize = fontManager.adjustNumFontSize(r , true , "2222");
     font = fontManager.numFont(fontsize);
     font.setWeight(QFont::Black);
     _ciName->setFont(font);
@@ -152,10 +160,11 @@ void COTrendWidget::setTextSize()
 /**************************************************************************************************
  * 趋势槽函数。
  *************************************************************************************************/
-void COTrendWidget::_releaseHandle(IWidget *)
+void COTrendWidget::_releaseHandle(IWidget *iWidget)
 {
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
-    publicMenuManager.popup(&coMenu, x, y);
+    MainMenuWindow *p = MainMenuWindow::getInstance();
+    p->popup(COMenuContent::getInstance() , x , y);
 }

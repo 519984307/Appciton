@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "ConfigEditNIBPMenu.h"
 #include "ConfigEditMenuGrp.h"
 #include "IComboList.h"
@@ -5,22 +16,21 @@
 #include "LabelButton.h"
 #include "MenuGroup.h"
 #include "ConfigEditAlarmLimitMenu.h"
-#include "LoadConfigMenu.h"
 #include "ConfigManager.h"
 class ConfigEditNIBPMenuPrivate
 {
 public:
-    enum ComboListId {
+    enum ComboListId
+    {
         NIBPMeasureMode,/*测量模式*/
         IntervalTime,/*自动间隔时间*/
         NBIPInitialCuff,/*初始化袖带气压*/
         ComboListMax,
     };
 
-    ConfigEditNIBPMenuPrivate()
+    ConfigEditNIBPMenuPrivate():_alarmLbtn(NULL)
     {
         memset(combos, 0, sizeof(combos));
-
         //常量存放在静态变量区
         comboLabels[NBIPInitialCuff] = "NBIPInitialCuff";
         comboLabels[IntervalTime] = "IntervalTime";
@@ -58,7 +68,7 @@ void ConfigEditNIBPMenuPrivate::loadOptions()
     index  = 0;
     if (combos[NBIPInitialCuff]->count() == 0)
     {
-        for(int i = 0; i < NIBP_INIT_PRE_NR; i++)
+        for (int i = 0; i < NIBP_INIT_PRE_NR; i++)
         {
             int time = 120 + 20 * i;
             combos[NBIPInitialCuff]->addItem(QString::number(time) + " mmHg");
@@ -69,8 +79,8 @@ void ConfigEditNIBPMenuPrivate::loadOptions()
 }
 
 ConfigEditNIBPMenu::ConfigEditNIBPMenu()
-    :SubMenu(trs("NIBPMenu")),
-    d_ptr(new ConfigEditNIBPMenuPrivate())
+    : SubMenu(trs("NIBPMenu")),
+      d_ptr(new ConfigEditNIBPMenuPrivate())
 {
     setDesc(trs("NIBPMenuDesc"));
     startLayout();
@@ -78,7 +88,6 @@ ConfigEditNIBPMenu::ConfigEditNIBPMenu()
 
 ConfigEditNIBPMenu::~ConfigEditNIBPMenu()
 {
-
 }
 
 
@@ -92,7 +101,7 @@ void ConfigEditNIBPMenu::layoutExec()
     int btnWidth = itemW / 2;
     int labelWidth = itemW - btnWidth;
 
-    for(int i = 0; i< ConfigEditNIBPMenuPrivate::ComboListMax; i++)
+    for (int i = 0; i < ConfigEditNIBPMenuPrivate::ComboListMax; i++)
     {
         //申请一个标签下拉框，用于填充子菜单布局中
         IComboList *combo = new IComboList(trs(d_ptr->comboLabels[i]));
@@ -124,10 +133,10 @@ void ConfigEditNIBPMenu::layoutExec()
 //报警项设置
 void ConfigEditNIBPMenu::_alarmLbtnSlot()
 {
-    SubMenu *subMenuPrevious = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditNIBPMenu"] ;
-    SubMenu *subMenuCurrent = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditAlarmLimitMenu"] ;
-    ConfigEditAlarmLimitMenu* alarmLimit = qobject_cast<ConfigEditAlarmLimitMenu*>(subMenuCurrent);
-    alarmLimit->setFocusIndex(SUB_PARAM_NIBP_SYS+1);
+    SubMenu *subMenuPrevious = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditNIBPMenu"];
+    SubMenu *subMenuCurrent = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditAlarmLimitMenu"];
+    ConfigEditAlarmLimitMenu *alarmLimit = qobject_cast<ConfigEditAlarmLimitMenu *>(subMenuCurrent);
+    alarmLimit->setFocusIndex(SUB_PARAM_NIBP_SYS + 1);
     configEditMenuGrp.changePage(subMenuCurrent, subMenuPrevious);
 }
 
@@ -137,7 +146,7 @@ void ConfigEditNIBPMenu::readyShow()
 
     bool preStatusBool = !configManager.getWidgetsPreStatus();
 
-    for(int i=0; i<ConfigEditNIBPMenuPrivate::ComboListMax; i++)
+    for (int i = 0; i < ConfigEditNIBPMenuPrivate::ComboListMax; i++)
     {
         d_ptr->combos[i]->setEnabled(preStatusBool);
     }
@@ -146,13 +155,14 @@ void ConfigEditNIBPMenu::readyShow()
 void ConfigEditNIBPMenu::onComboListConfigChanged(int index)
 {
     IComboList *combo = qobject_cast<IComboList *>(sender());
-    if(!combo)
+    if (!combo)
     {
         qdebug("Invalid signal sender.");
         return;
     }
 
-    ConfigEditNIBPMenuPrivate::ComboListId comboId = (ConfigEditNIBPMenuPrivate::ComboListId) combo->property("comboId").toInt();
+    ConfigEditNIBPMenuPrivate::ComboListId comboId = (ConfigEditNIBPMenuPrivate::ComboListId)
+            combo->property("comboId").toInt();
     Config *config = configEditMenuGrp.getCurrentEditConfig();
     switch (comboId)
     {

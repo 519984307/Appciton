@@ -1,15 +1,26 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #include "ConfigEditRespMenu.h"
 #include "ConfigEditMenuGrp.h"
 #include "IComboList.h"
 #include "RESPSymbol.h"
 #include "ConfigEditAlarmLimitMenu.h"
 #include "LabelButton.h"
-#include "LoadConfigMenu.h"
 #include "ConfigManager.h"
 class ConfigEditRespMenuPrivate
 {
 public:
-    enum ComboListId {
+    enum ComboListId
+    {
         ApneaDelay,
         BreathLead,
         Gain,
@@ -17,7 +28,7 @@ public:
         ComboListMax,
     };
 
-    ConfigEditRespMenuPrivate()
+    ConfigEditRespMenuPrivate():_alarmLbtn(NULL)
     {
         memset(combos, 0, sizeof(combos));
 
@@ -43,7 +54,7 @@ void ConfigEditRespMenuPrivate::loadOptions()
     if (combos[ApneaDelay]->count() == 0)
     {
         combos[ApneaDelay]->addItem(trs("OFF"));
-        for(int i = 1; i < RESP_APNEA_TIME_NR; i++)
+        for (int i = 1; i < RESP_APNEA_TIME_NR; i++)
         {
             int time = 15 + 5 * i;
             combos[ApneaDelay]->addItem(QString::number(time) + " s");
@@ -81,12 +92,11 @@ void ConfigEditRespMenuPrivate::loadOptions()
         config->getNumValue("RESP|SweepSpeed", index);
         combos[SweepSpeed]->setCurrentIndex(index);
     }
-
 }
 
 ConfigEditRespMenu::ConfigEditRespMenu()
-    :SubMenu(trs("RespMenu")),
-    d_ptr(new ConfigEditRespMenuPrivate())
+    : SubMenu(trs("RespMenu")),
+      d_ptr(new ConfigEditRespMenuPrivate())
 {
     setDesc(trs("RespMenuDesc"));
     startLayout();
@@ -94,7 +104,6 @@ ConfigEditRespMenu::ConfigEditRespMenu()
 
 ConfigEditRespMenu::~ConfigEditRespMenu()
 {
-
 }
 
 void ConfigEditRespMenu::layoutExec()
@@ -107,7 +116,7 @@ void ConfigEditRespMenu::layoutExec()
     int btnWidth = itemW / 2;
     int labelWidth = itemW - btnWidth;
 
-    for(int i = 0; i< ConfigEditRespMenuPrivate::ComboListMax; i++)
+    for (int i = 0; i < ConfigEditRespMenuPrivate::ComboListMax; i++)
     {
         IComboList *combo = new IComboList(trs(d_ptr->comboLabels[i]));
         combo->setFont(defaultFont());
@@ -128,15 +137,14 @@ void ConfigEditRespMenu::layoutExec()
     mainLayout->addWidget(d_ptr->_alarmLbtn);
 
     mainLayout->addStretch(1);
-
 }
-//报警项设置
+// 报警项设置
 void ConfigEditRespMenu::_alarmLbtnSlot()
 {
-    SubMenu *subMenuPrevious = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditRespMenu"] ;
-    SubMenu *subMenuCurrent = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditAlarmLimitMenu"] ;
-    ConfigEditAlarmLimitMenu* alarmLimit = qobject_cast<ConfigEditAlarmLimitMenu*>(subMenuCurrent);
-    alarmLimit->setFocusIndex(SUB_PARAM_NONE+1);
+    SubMenu *subMenuPrevious = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditRespMenu"];
+    SubMenu *subMenuCurrent = (configEditMenuGrp.getCurrentEditConfigItem())["ConfigEditAlarmLimitMenu"];
+    ConfigEditAlarmLimitMenu *alarmLimit = qobject_cast<ConfigEditAlarmLimitMenu *>(subMenuCurrent);
+    alarmLimit->setFocusIndex(SUB_PARAM_NONE + 1);
     configEditMenuGrp.changePage(subMenuCurrent, subMenuPrevious);
 }
 
@@ -146,23 +154,23 @@ void ConfigEditRespMenu::readyShow()
 
     bool preStatusBool = !configManager.getWidgetsPreStatus();
 
-    for(int i =0; i<ConfigEditRespMenuPrivate::ComboListMax; i++)
+    for (int i = 0; i < ConfigEditRespMenuPrivate::ComboListMax; i++)
     {
         d_ptr->combos[i]->setEnabled(preStatusBool);
     }
-
 }
 
 void ConfigEditRespMenu::onComboListConfigChanged(int index)
 {
     IComboList *combo = qobject_cast<IComboList *>(sender());
-    if(!combo)
+    if (!combo)
     {
         qdebug("Invalid signal sender.");
         return;
     }
 
-    ConfigEditRespMenuPrivate::ComboListId comboId = (ConfigEditRespMenuPrivate::ComboListId) combo->property("comboId").toInt();
+    ConfigEditRespMenuPrivate::ComboListId comboId = (ConfigEditRespMenuPrivate::ComboListId)
+            combo->property("comboId").toInt();
     Config *config = configEditMenuGrp.getCurrentEditConfig();
     switch (comboId)
     {

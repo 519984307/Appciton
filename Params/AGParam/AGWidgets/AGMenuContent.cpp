@@ -58,7 +58,16 @@ AGMenuContent::AGMenuContent()
     : MenuContent(trs("AGMenu"), trs("AGMenuDesc")),
     d_ptr(new AGMenuContentPrivate)
 {
+}
 
+AGMenuContent *AGMenuContent::getInstace()
+{
+    static AGMenuContent *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new AGMenuContent;
+    }
+    return instance;
 }
 
 AGMenuContent::~AGMenuContent()
@@ -202,7 +211,7 @@ void AGMenuContent::onComboBoxIndexChanged(int index)
         switch (item)
         {
         case AGMenuContentPrivate::ITEM_CBO_MODULE_SWITCH:
-            if((!index) != d_ptr->isEnable)
+            if ((!index) != d_ptr->isEnable)
             {
                 d_ptr->combos.value(AGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED)->setEnabled(!index);
                 d_ptr->combos.value(AGMenuContentPrivate::ITEM_CBO_CO2_SET)->setEnabled(!index);

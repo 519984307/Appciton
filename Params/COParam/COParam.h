@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #pragma once
 #include "Param.h"
 #include "COProviderIFace.h"
@@ -19,14 +30,14 @@ public:
 
 public:
     // 处理DEMO数据。
-    virtual void handDemoWaveform(WaveformID id, short data);
+    virtual void handDemoWaveform(WaveformID id, int16_t data);
     virtual void handDemoTrendData(void);
 
     // 获取当前的单位。
     virtual UnitType getCurrentUnit(SubParamID id);
 
     // 获取子参数值。
-    virtual short getSubParamValue(SubParamID id);
+    virtual int16_t getSubParamValue(SubParamID id);
 
     // 设置数据提供对象。
     void setProvider(COProviderIFace *provider);
@@ -36,13 +47,13 @@ public:
 
 public:// Data sent by host
     // C.O.系数
-    void setCORatio(unsigned short coRatio);
-    unsigned short getCORatio(void);
+    void setCORatio(u_int16_t coRatio);
+    u_int16_t getCORatio(void);
 
     // set source of injection temp.
-    void setTempSource(COTiMode source, unsigned short temp = 0);
+    void setTempSource(COTiMode source, u_int16_t temp = 0);
     COTiMode getTempSource(void);
-    unsigned short getInjectionTemp(void);
+    u_int16_t getInjectionTemp(void);
 
     // set injection volumn.
     void setInjectionVolumn(unsigned char volumn);
@@ -54,20 +65,20 @@ public:// Data sent by host
 
 public:// Data sent by module
     // C.O. and C.I. data content.
-    void measureResultCO(unsigned short coData, unsigned short ciData);
+    void measureResultCO(u_int16_t coData, u_int16_t ciData);
 
     // temp blood data content.
-    void realTimeTBData(unsigned short tbData);
+    void realTimeTBData(u_int16_t tbData);
 
 public:
     // get C.O. data.
-    unsigned short getCOData(void);
+    u_int16_t getCOData(void);
 
     // get C.I. data.
-    unsigned short getCIData(void);
+    u_int16_t getCIData(void);
 
     // get TB data.
-    unsigned short getTBData(void);
+    u_int16_t getTBData(void);
 
 
 private:
@@ -78,9 +89,8 @@ private:
 
     COTrendWidget *_trendWidget;
 
-    unsigned short _coData;
-    unsigned short _ciData;
-    unsigned short _tbData;
-
+    u_int16_t _coData;
+    u_int16_t _ciData;
+    u_int16_t _tbData;
 };
 #define coParam (COParam::construction())

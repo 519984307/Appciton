@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/2
+ **/
+
+
 #pragma once
 #include <QWidget>
 #include "IButton.h"
@@ -53,14 +64,13 @@ private:
     //初始化子菜单
     void _addSubMenu();
 
-    QStackedWidget *_subMenus;           //子菜单
+    QStackedWidget *_subMenus;           // 子菜单
     MenuGroup *_menuGroup;
     QList<QWidget *> _widgetList;
 
-    int _listWidth;                      //列表宽度
-    int _submenuWidth;                   //子菜单宽度
-    int _submenuHeight;                  //高度
-
+    int _listWidth;                      // 列表宽度
+    int _submenuWidth;                   // 子菜单宽度
+    int _submenuHeight;                  // 高度
 };
 #define menuManager (MenuManager::construction())
 #define deleteMenuManager() (delete MenuManager::_selfObj)

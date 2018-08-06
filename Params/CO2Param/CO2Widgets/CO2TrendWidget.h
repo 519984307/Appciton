@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #pragma once
 #include "TrendWidget.h"
 #include "CO2Define.h"
@@ -13,8 +24,8 @@ public:
     virtual bool enable();
 
     // 设置测量值。
-    void setEtCO2Value(short v);
-    void setFiCO2Value(short v);
+    void setEtCO2Value(int16_t v);
+    void setFiCO2Value(int16_t v);
 
     // 单位更改。
     void setUNit(UnitType unit);
@@ -42,7 +53,7 @@ private slots:
     void _releaseHandle(IWidget *);
 
 private:
-    void _setValue(short v, QString &str);
+    void _setValue(int16_t v, QString &str);
 
     QLabel *_etco2Value;
     QLabel *_fico2Label;

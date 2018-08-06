@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/3
+ **/
+
+
 #pragma once
 #include "TrendWidget.h"
 #include "BarWidget.h"
@@ -13,13 +24,13 @@ class NIBPTrendWidget: public TrendWidget
 #endif
 public:
     // 设置测量结果的数据。
-    void setResults(short sys, short dia, short map, unsigned time);
+    void setResults(int16_t sys, int16_t dia, int16_t map, unsigned time);
 
     // 恢复测量结果的数据。
-    void recoverResults(short &sys, short &dia, short &map, unsigned &time);
+    void recoverResults(int16_t &sys, int16_t &dia, int16_t &map, unsigned &time);
 
     // 保存测量结果的数据。
-    void saveResults(short sys, short dia, short map, unsigned time);
+    void saveResults(int16_t sys, int16_t dia, int16_t map, unsigned time);
 
     // 设置实时袖带压。
     void setCuffPressure(int p);

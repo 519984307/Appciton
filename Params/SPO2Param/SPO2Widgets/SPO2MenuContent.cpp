@@ -45,7 +45,16 @@ SPO2MenuContent::SPO2MenuContent()
     : MenuContent(trs("SPO2Menu"), trs("SPO2MenuDesc")),
       d_ptr(new SPO2MenuContentPrivate)
 {
+}
 
+SPO2MenuContent *SPO2MenuContent::getInstance()
+{
+    SPO2MenuContent *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new SPO2MenuContent;
+    }
+    return instance;
 }
 
 SPO2MenuContent::~SPO2MenuContent()
