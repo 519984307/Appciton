@@ -202,6 +202,8 @@ void ListView::keyReleaseEvent(QKeyEvent *ev)
         if (!icon.isNull())
         {
             model()->setData(index, QVariant(QIcon()), Qt::DecorationRole);
+            // record selected rows when is on multi select mode
+            d_ptr->rowsSelectedMap[index.row()] = false;
             emit enterSignal();
             break;
         }
@@ -288,6 +290,8 @@ void ListView::onRowClicked(QModelIndex index)
     if (!icon.isNull())
     {
         model()->setData(index, QVariant(QIcon()), Qt::DecorationRole);
+        // record selected rows when is on multi select mode
+        d_ptr->rowsSelectedMap[index.row()] = false;
         emit enterSignal();
         return;
     }

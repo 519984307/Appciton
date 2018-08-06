@@ -1,107 +1,105 @@
-﻿#include "ImportFileSubWidget.h"
+﻿/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/6
+ **/
 
+#include "ImportFileSubWidget.h"
+#include <QVBoxLayout>
+#include <QLabel>
+#include "Button.h"
+#include "LanguageManager.h"
+#include "ListView.h"
+#include "ListViewItemDelegate.h"
+#include "ListDataModel.h"
+#include <QMap>
 
+#define LISTVIEW_MAX_VISIABLE_TIME 6
 
-void ImportSubWidget::onExitList(bool backTab)
+class ImportSubWidgetPrivate
 {
-    if(backTab)
+public:
+    ImportSubWidgetPrivate();
+
+    Button *oKBtn;
+    ListView *importListView;
+    ListDataModel *model;
+    QMap<int, bool> rowsMap;
+};
+
+ImportSubWidgetPrivate::ImportSubWidgetPrivate()
+    : oKBtn(NULL),
+      importListView(NULL),
+      model(NULL)
+{
+    rowsMap.clear();
+}
+
+ImportSubWidget::ImportSubWidget(const QStringList &iListWidgetName)
+    : Window(),
+      d_ptr(new ImportSubWidgetPrivate)
+{
+    setWindowTitle(trs("ImportFiles"));
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(10);
+    layout->setAlignment(Qt::AlignTop);
+
+    QLabel *label;
+
+    label = new QLabel(trs("SelectFiles"));
+    layout->addWidget(label);
+
+    ListView *listView = new ListView;
+    ListDataModel *model = new ListDataModel(this);
+    listView->setItemDelegate(new ListViewItemDelegate(listView));
+    listView->setFixedHeight(LISTVIEW_MAX_VISIABLE_TIME * model->getRowHeightHint()
+                             + listView->spacing() * (LISTVIEW_MAX_VISIABLE_TIME * 2));
+    model->setStringList(iListWidgetName);
+    listView->setModel(model);
+    listView->setRowsSelectMode(true);
+    connect(listView, SIGNAL(enterSignal()), this, SLOT(updateBtnStatus()));
+    layout->addWidget(listView);
+    d_ptr->importListView = listView;
+    d_ptr->model = model;
+
+    Button *button = new Button(trs("Ok"));
+    button->setButtonStyle(Button::ButtonTextOnly);
+    connect(button, SIGNAL(released()), this, SLOT(getSelsectItems()));
+    layout->addWidget(button, Qt::AlignVCenter);
+    button->setEnabled(false);
+    d_ptr->oKBtn = button;
+
+    layout->addStretch(1);
+    setWindowLayout(layout);
+}
+
+void ImportSubWidget::getSelsectItems()
+{
+    d_ptr->rowsMap = d_ptr->importListView->getRowsSelectMap();
+    done(1);
+}
+
+QMap<int, bool> &ImportSubWidget::readRowsMap()
+{
+    return d_ptr->rowsMap;
+}
+
+void ImportSubWidget::updateBtnStatus()
+{
+    int row = d_ptr->importListView->curCheckedRow();
+    bool isEnabled;
+    if (row == -1)
     {
-        focusPreviousChild();
+        isEnabled = false;
     }
     else
     {
-        focusNextChild();
+        isEnabled = true;
     }
-}
-
-void ImportSubWidget::onConfigClickImport()
-{
-    QListWidgetItem *item = myIListWidget->currentItem();
-    /*加入链表*/
-    int indexFlag = 0;
-    if(!selectItemsImport.isEmpty())/*链表不为空，进入比较*/
-    {
-        for(int index = 0; index < selectItemsImport.count(); index ++)/*轮询比较是否再次选中对应选择项*/
-        {
-            if(selectItemsImport.at(index)==item)/*只能进行指针比较，不能变量比较*/
-            {
-                item->setIcon(QIcon());
-                selectItemsImport.removeAt(index);
-                indexFlag = 1;
-                break;
-            }
-        }
-        if(indexFlag == 0)
-        {
-            selectItemsImport.append(item);/*将选择项指针压入链表中*/
-            item->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
-        }
-        indexFlag = 0;/*复位标志位*/
-    }
-    else
-    {
-        selectItemsImport.append(item);/*将选择项指针压入链表中*/
-        if(item!=NULL)
-        {
-            item->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
-        }
-    }
-}
-
-QList<QListWidgetItem*>& ImportSubWidget::readSelectItemsImport()
-{
-    return selectItemsImport;
-}
-
-ImportSubWidget::ImportSubWidget(const QStringList &iListWidgetName): PopupWidget()
-{
-    //标题栏
-    setTitleBarText(trs("Import Files"));
-
-    QHBoxLayout *hlayout = new QHBoxLayout();
-    hlayout->setContentsMargins(0, 0, 0, 0);
-    QVBoxLayout *vlayout = new QVBoxLayout();
-    vlayout->setContentsMargins(10, 0, 40, 0);
-
-    //列表说明
-    QLabel *l = new QLabel(trs("Select Files"));
-    l->setFont(fontManager.textFont(15));
-    hlayout->addWidget(l,0,Qt::AlignHCenter);
-    hlayout->addStretch();
-    vlayout->addLayout(hlayout);
-
-
-    myIListWidget = new IListWidget;
-
-    myIListWidget->addItems(iListWidgetName);
-
-    myIListWidget->setFont(fontManager.textFont(15));
-    myIListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    myIListWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-    myIListWidget->setFrameStyle(QFrame::Plain);
-    myIListWidget->setSpacing(2);
-    myIListWidget->setUniformItemSizes(true);
-    myIListWidget->setIconSize(QSize(16,16));
-
-    QString configListStyleSheet = QString("QListWidget { margin-left: 15px; border:1px solid #808080; border-radius: 2px; background-color: transparent; outline: none; }\n "
-    "QListWidget::item {padding: 5px; border-radius: 2px; border: none; background-color: %1;}\n"
-    "QListWidget::item:focus {background-color: %2;}").arg("white").arg(colorManager.getHighlight().name());
-
-    myIListWidget->setStyleSheet(configListStyleSheet);
-    connect(myIListWidget, SIGNAL(exitList(bool)), this, SLOT(onExitList(bool)));
-    connect(myIListWidget, SIGNAL(realRelease()), this, SLOT(onConfigClickImport()));
-    myIListWidget->setFixedHeight(174); //size for 5 items
-    vlayout->addWidget(myIListWidget);
-    vlayout->addStretch();
-
-    ibutton = new IButton(trs("Ok"));
-    ibutton->setFont(fontManager.textFont(15));
-    connect(ibutton, SIGNAL(realReleased()), this, SLOT(getSelsectItems()));
-
-
-    vlayout->addWidget(ibutton,0,Qt::AlignHCenter);
-    vlayout->addStretch();
-    contentLayout->addLayout(vlayout);
-    QDesktopWidget *w = QApplication::desktop();
-    setFixedSize(w->width() / 3, w->height() / 4);
+    d_ptr->oKBtn->setEnabled(isEnabled);
 }

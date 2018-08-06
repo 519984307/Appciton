@@ -422,8 +422,8 @@ WiFiProfileEditorWindow::WiFiProfileEditorWindow(const WiFiProfileWindowInfo &pr
     connect(d->profileNameBtn, SIGNAL(clicked()), this, SLOT(editNormalText()));
     connect(d->ssidBtn, SIGNAL(clicked()), this, SLOT(editNormalText()));
     connect(d->securityKeyBtn, SIGNAL(clicked()), this, SLOT(editNormalText()));
-    connect(d->cancelBtn, SIGNAL(realReleased()), this, SLOT(onCancel()));
-    connect(d->commitBtn, SIGNAL(realReleased()), this, SLOT(onCommit()));
+    connect(d->cancelBtn, SIGNAL(clicked()), this, SLOT(onCancel()));
+    connect(d->commitBtn, SIGNAL(clicked()), this, SLOT(onCommit()));
 }
 
 /***************************************************************************************************

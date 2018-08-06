@@ -124,3 +124,8 @@ int ListDataModel::getRowHeightHint() const
 {
     return DEFAULT_ROW_HEIGHT;
 }
+
+int ListDataModel::getRowCount() const
+{
+    return d_ptr->list.count();
+}

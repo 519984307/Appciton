@@ -1,33 +1,27 @@
-#pragma once
-#include "PopupWidget.h"
-#include <QKeyEvent>
-#include <QButtonGroup>
-#include <QTimer>
-#include <QApplication>
-#include <QDesktopWidget>
-#include "PopupWidget.h"
-#include "IButton.h"
-#include "FontManager.h"
-#include "LanguageManager.h"
-#include "SystemManager.h"
-#include "WindowManager.h"
-#include <QPixmap>
-#include <QSignalMapper>
-#include "ColorManager.h"
-#include "ConfigExportImportMenu.h"
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/6
+ **/
 
-class ImportSubWidget :public PopupWidget
+#pragma once
+#include "Window.h"
+
+class ImportSubWidgetPrivate;
+class ImportSubWidget :public Window
 {
     Q_OBJECT
 public:
     explicit ImportSubWidget(const QStringList &iListWidgetName);
 public slots:
-    void onConfigClickImport();
-    void onExitList(bool);
-    void getSelsectItems(){done(1);}
-public:
-     QList<QListWidgetItem*>  selectItemsImport;
-     IListWidget             *myIListWidget;
-     IButton                 *ibutton;
-     QList<QListWidgetItem*> &readSelectItemsImport();
+    void getSelsectItems();
+    void updateBtnStatus();
+    QMap<int, bool> &readRowsMap();
+
+private:
+    ImportSubWidgetPrivate *const d_ptr;
 };

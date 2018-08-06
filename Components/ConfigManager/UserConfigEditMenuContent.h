@@ -18,14 +18,6 @@ public:
     UserConfigEditMenuContent();
     ~UserConfigEditMenuContent();
 
-    /**
-     * @brief eventFilter
-     * @param obj
-     * @param ev
-     * @return
-     */
-    bool eventFilter(QObject *obj, QEvent *ev);
-
 protected:
     /**
      * @brief layoutExec
@@ -35,24 +27,8 @@ protected:
      * @brief readyShow
      */
     virtual void readyShow(void);
-    /**
-     * @brief changeEvent
-     */
-    virtual void changeEvent(QEvent *);
-    /**
-     * @brief hideEvent
-     */
-    virtual void hideEvent(QHideEvent *);
 
 private slots:
-    /**
-     * @brief onExitList
-     */
-    void onExitList(bool);
-    /**
-     * @brief onConfigClick
-     */
-    void onConfigClick();
     /**
      * @brief onBtnClick
      */
@@ -61,7 +37,10 @@ private slots:
      * @brief onEditFinished
      */
     void onEditFinished();
-
+    /**
+     * @brief updateBtnStatus
+     */
+    void updateBtnStatus();
 private:
     UserConfigEditMenuContentPrivate *const d_ptr;
 };

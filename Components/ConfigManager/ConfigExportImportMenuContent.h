@@ -8,9 +8,10 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018.07.14
  **/
 #pragma once
-#include "ConfigExportImportMenuContent.h"
 #include "MenuContent.h"
 #include <QDomDocument>
+
+
 class ConfigExportImportMenuContentPrivate;
 
 class ConfigExportImportMenuContent : public MenuContent
@@ -27,14 +28,7 @@ public:
         USER_CONFIG_XML,
         XML_NR
     };
-    /**
-     * @brief eventFilter
-     * @param obj
-     * @param ev
-     * @return
-     */
-    bool eventFilter(QObject *obj, QEvent *ev);
-    /**
+   /**
      * @brief exportFileToUSB export XML to usb
      * @return  true-export success   false- export fail
      */
@@ -49,7 +43,7 @@ public:
      * @param list     the element path
      * @return         true-the element path  false--0
      */
-    QDomElement tagFindElement(const QStringList &list);//寻找本地的标签
+    QDomElement tagFindElement(const QStringList &list);
 
 protected:
     /**
@@ -60,24 +54,15 @@ protected:
      * @brief readyShow
      */
     virtual void readyShow();
-    /**
-     * @brief changeEvent
-     */
-    virtual void changeEvent(QEvent *);
 private slots:
-    /**
-     * @brief onExitList
-     */
-    void onExitList(bool);
-    /**
-     * @brief onConfigClick
-     */
-    void onConfigClick();
     /**
      * @brief onBtnClick
      */
     void onBtnClick();
-
+    /**
+     * @brief updateBtnStatus
+     */
+    void updateBtnStatus();
 private:
     /**
      * @brief checkXMLContent  check validity of the import XML
