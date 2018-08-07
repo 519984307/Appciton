@@ -10,6 +10,7 @@
 
 #pragma once
 #include <QListView>
+#include <QMap>
 
 class ListsViewPrivate;
 class ListView : public QListView
@@ -30,6 +31,23 @@ public:
      */
     void clearCheckRow();
 
+    /**
+     * @brief clearAllCheckedRows clear all the checked row
+     */
+    void clearAllCheckedRows();
+
+    /**
+     * @brief setRowsSelectMode set rows select mode
+     * @param isMultiMode false:single mode  true:multi mode
+     */
+    void setRowsSelectMode(bool isMultiMode = false);
+
+    /**
+     * @brief getRowsSelectMap get rows selected map
+     * @return
+     */
+    QMap<int, bool> getRowsSelectMap() const;
+
     /* reimplement */
     void setModel(QAbstractItemModel *model);
 
@@ -48,6 +66,11 @@ protected:
     void rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end);
     /* reimplement */
     void rowsInserted(const QModelIndex &parent, int start, int end);
+    /* reimplement */
+    void hideEvent(QHideEvent *ev);
+
+signals:
+    void enterSignal(void);
 
 private slots:
     void onRowClicked(QModelIndex index);

@@ -47,6 +47,11 @@ public:
      */
     int getRowHeightHint() const;
 
+    /**
+     * @brief getRowCount  get row count
+     * @return
+     */
+    int getRowCount() const;
 private:
     ListDataModelPrivate * const d_ptr;
 };

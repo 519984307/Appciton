@@ -58,17 +58,11 @@ static bool isIpStrValid(const QString &ipStr)
  * copy constructor
  **************************************************************************************************/
 WiFiProfileWindowInfo::WiFiProfileWindowInfo(const WiFiProfileWindowInfo &other)
+    : profileName(other.profileName), ssid(other.ssid), securityKey(other.securityKey),
+      staticIp(other.staticIp), defaultGateway(other.defaultGateway), subnetMask(other.subnetMask),
+      preferedDNS(other.preferedDNS), alternateDNS(other.alternateDNS), authType(other.authType),
+      isStatic(other.isStatic)
 {
-    profileName = other.profileName;
-    ssid = other.ssid;
-    securityKey = other.securityKey;
-    staticIp = other.staticIp;
-    defaultGateway = other.defaultGateway;
-    subnetMask = other.subnetMask;
-    preferedDNS = other.preferedDNS;
-    alternateDNS = other.alternateDNS;
-    authType = other.authType;
-    isStatic = other.isStatic;
 }
 
 /*****************************************#include "Utility.h"**********************************************************
@@ -422,8 +416,8 @@ WiFiProfileEditorWindow::WiFiProfileEditorWindow(const WiFiProfileWindowInfo &pr
     connect(d->profileNameBtn, SIGNAL(clicked()), this, SLOT(editNormalText()));
     connect(d->ssidBtn, SIGNAL(clicked()), this, SLOT(editNormalText()));
     connect(d->securityKeyBtn, SIGNAL(clicked()), this, SLOT(editNormalText()));
-    connect(d->cancelBtn, SIGNAL(realReleased()), this, SLOT(onCancel()));
-    connect(d->commitBtn, SIGNAL(realReleased()), this, SLOT(onCommit()));
+    connect(d->cancelBtn, SIGNAL(clicked()), this, SLOT(onCancel()));
+    connect(d->commitBtn, SIGNAL(clicked()), this, SLOT(onCommit()));
 }
 
 /***************************************************************************************************

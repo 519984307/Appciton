@@ -12,7 +12,6 @@
 #include "Button.h"
 #include "LanguageManager.h"
 #include "ConfigManager.h"
-#include "IListWidget.h"
 #include <QLabel>
 #include "PatientManager.h"
 #include <QGridLayout>
@@ -21,14 +20,15 @@
 #include "ConfigEditMenuWindow.h"
 #include "WindowManager.h"
 #include <QHideEvent>
+#include "ListView.h"
+#include "ListDataModel.h"
+#include "ListViewItemDelegate.h"
 #include "ConfigManagerMenuWindow.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
-
-#define CONFIG_LIST_ITEM_H 30
-#define CONFIG_LIST_ITME_W 200
 #define CONFIG_MAX_NUM 3
+#define LISTVIEW_MAX_VISIABLE_TIME 6
 
 class UserConfigEditMenuContentPrivate
 {
@@ -43,10 +43,10 @@ public:
     };
 
     UserConfigEditMenuContentPrivate()
-        : lastSelectItem(NULL), curConfig(NULL), curEditIndex(-1)
+        :  curConfig(NULL), curEditIndex(-1),
+           configDataModel(NULL), configListView(NULL)
     {
         btns.clear();
-        ltws.clear();
     }
 
     void loadConfigs();
@@ -58,13 +58,14 @@ public:
     //  get a default config name
     QString generateDefaultConfigName() const;
 
-    QListWidgetItem *lastSelectItem;
     QList<ConfigManager::UserDefineConfigInfo> configs;
     Config *curConfig;
     int curEditIndex;
 
     QMap <MenuItem, Button *> btns;
-    QMap <MenuItem, IListWidget *> ltws;
+
+    ListDataModel *configDataModel;
+    ListView *configListView;
 };
 
 void UserConfigEditMenuContentPrivate::loadConfigs()
@@ -78,37 +79,35 @@ void UserConfigEditMenuContentPrivate::loadConfigs()
  */
 void UserConfigEditMenuContentPrivate::updateConfigList()
 {
-    //  remove old item
-    while (ltws[ITEM_LTW_CONFIG_LIST]->count())
-    {
-        QListWidgetItem *item = ltws[ITEM_LTW_CONFIG_LIST]->takeItem(0);
-        delete item;
-    }
-
+    QStringList configNameList;
     for (int i = 0; i < configs.count(); i++)
     {
-        QListWidgetItem *item = new QListWidgetItem(configs.at(i).name, ltws[ITEM_LTW_CONFIG_LIST]);
-        item->setSizeHint(QSize(CONFIG_LIST_ITME_W, CONFIG_LIST_ITEM_H));
+        configNameList.append(configs.at(i).name);
     }
+    configDataModel->setStringList(configNameList);
 
-    int count = configs.count();
-    if (count)
+    int curSelectedRow = configListView->curCheckedRow();
+    bool isEnable;
+    if (curSelectedRow == -1)
     {
-        ltws[ITEM_LTW_CONFIG_LIST]->setFocusPolicy(Qt::StrongFocus);
+        isEnable = false;
     }
     else
     {
-        ltws[ITEM_LTW_CONFIG_LIST]->setFocusPolicy(Qt::NoFocus);
+        isEnable = true;
     }
+    btns[ITEM_BTN_EDIT_CONFIG]->setEnabled(isEnable);
+    btns[ITEM_BTN_DEL_CONFIG]->setEnabled(isEnable);
 
-    if (count >= CONFIG_MAX_NUM)
+    if (configDataModel->getRowCount() >= CONFIG_MAX_NUM)
     {
-        btns[ITEM_BTN_ADD_CONFIG]->setEnabled(false);
+        isEnable = false;
     }
     else
     {
-        btns[ITEM_BTN_ADD_CONFIG]->setEnabled(true);
+        isEnable = true;
     }
+    btns[ITEM_BTN_ADD_CONFIG]->setEnabled(isEnable);
 }
 
 bool UserConfigEditMenuContentPrivate::isConfigExist(const QString &name) const
@@ -149,38 +148,6 @@ UserConfigEditMenuContent::~UserConfigEditMenuContent()
 {
 }
 
-bool UserConfigEditMenuContent::eventFilter(QObject *obj, QEvent *ev)
-{
-    if (obj == d_ptr->ltws[UserConfigEditMenuContentPrivate::ITEM_LTW_CONFIG_LIST])
-    {
-        if (ev->type() == QEvent::FocusIn)
-        {
-            QFocusEvent *e = static_cast<QFocusEvent *>(ev);
-            if (e->reason() == Qt::TabFocusReason)
-            {
-                d_ptr->ltws[UserConfigEditMenuContentPrivate::ITEM_LTW_CONFIG_LIST]->setCurrentRow(0);
-            }
-            else if (e->reason() == Qt::BacktabFocusReason)
-            {
-                d_ptr->ltws[UserConfigEditMenuContentPrivate::ITEM_LTW_CONFIG_LIST]
-                ->setCurrentRow(d_ptr->ltws[UserConfigEditMenuContentPrivate
-                                            ::ITEM_LTW_CONFIG_LIST]->count() - 1);
-            }
-        }
-
-//        if (ev->type() == QEvent::Hide)
-//        {
-//            if (d_ptr->lastSelectItem)
-//            {
-//                d_ptr->lastSelectItem->setIcon(QIcon());
-//                d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG]->setEnabled(false);
-//                d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG]->setEnabled(false);
-//                d_ptr->lastSelectItem = NULL;
-//            }
-//        }
-    }
-    return false;
-}
 
 void UserConfigEditMenuContent::readyShow()
 {
@@ -188,57 +155,13 @@ void UserConfigEditMenuContent::readyShow()
     d_ptr->updateConfigList();
 }
 
-// handle config list exit event
-void UserConfigEditMenuContent::onExitList(bool backTab)
-{
-    if (backTab)
-    {
-        focusPreviousChild();
-    }
-    else
-    {
-        focusNextChild();
-    }
-}
-
-void UserConfigEditMenuContent::onConfigClick()
-{
-    QListWidgetItem *item = d_ptr->ltws[UserConfigEditMenuContentPrivate::ITEM_LTW_CONFIG_LIST]->currentItem();
-    if (d_ptr->lastSelectItem)
-    {
-        d_ptr->lastSelectItem->setIcon(QIcon());
-    }
-
-    if (item != d_ptr->lastSelectItem)
-    {
-        item->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
-        d_ptr->lastSelectItem = item;
-    }
-    else
-    {
-        d_ptr->lastSelectItem = NULL;
-    }
-
-    if (d_ptr->lastSelectItem)
-    {
-        d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG]->setEnabled(true);
-        d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG]->setEnabled(true);
-    }
-    else
-    {
-        d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG]->setEnabled(false);
-        d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG]->setEnabled(false);
-    }
-}
-
-
 void UserConfigEditMenuContent::onBtnClick()
 {
     Button *btn = qobject_cast<Button *>(sender());
 
     if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_ADD_CONFIG])
     {
-        if (d_ptr->ltws[UserConfigEditMenuContentPrivate::ITEM_LTW_CONFIG_LIST]->count() >= CONFIG_MAX_NUM)
+        if (d_ptr->configDataModel->getRowCount() >= CONFIG_MAX_NUM)
         {
         }
         else
@@ -277,42 +200,29 @@ void UserConfigEditMenuContent::onBtnClick()
         {
             delete d_ptr->curConfig;
         }
+        int index = d_ptr->configListView->curCheckedRow();
+        d_ptr->curEditIndex = index;
+        d_ptr->curConfig = new Config(QString("%1/%2")
+                                      .arg(CONFIG_DIR)
+                                      .arg(d_ptr->configs.at(index).fileName));
 
-        if (d_ptr->lastSelectItem)
-        {
-            int index = d_ptr->ltws[UserConfigEditMenuContentPrivate::ITEM_LTW_CONFIG_LIST]->row(d_ptr->lastSelectItem);
-            d_ptr->curEditIndex = index;
-            d_ptr->curConfig = new Config(QString("%1/%2")
-                                          .arg(CONFIG_DIR)
-                                          .arg(d_ptr->configs.at(index).fileName));
-
-            ConfigEditMenuWindow::getInstance()->setCurrentEditConfigName(d_ptr->configs.at(index).name);
-            ConfigEditMenuWindow::getInstance()->setCurrentEditConfig(d_ptr->curConfig);
-            ConfigManagerMenuWindow *w = ConfigManagerMenuWindow::getInstance();
-            windowManager.showWindow(w);
-        }
+        ConfigEditMenuWindow::getInstance()->setCurrentEditConfigName(d_ptr->configs.at(index).name);
+        ConfigEditMenuWindow::getInstance()->setCurrentEditConfig(d_ptr->curConfig);
+        ConfigEditMenuWindow::getInstance()->initializeSubMenu();
+        windowManager.showWindow(ConfigEditMenuWindow::getInstance());
     }
     else if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG])
     {
-        if (d_ptr->lastSelectItem)
-        {
-            int index = d_ptr->ltws[UserConfigEditMenuContentPrivate::ITEM_LTW_CONFIG_LIST]->row(d_ptr->lastSelectItem);
-            QString filename  = QString("%1/%2").arg(CONFIG_DIR).arg(d_ptr->configs.at(index).fileName);
+        int index = d_ptr->configListView->curCheckedRow();
+        QString filename  = QString("%1/%2").arg(CONFIG_DIR).arg(d_ptr->configs.at(index).fileName);
 
-            //  delete the config file
-            QFile::remove(filename);
-            d_ptr->configs.removeAt(index);
-            configManager.saveUserConfigInfo(d_ptr->configs);
+        //  delete the config file
+        QFile::remove(filename);
+        d_ptr->configs.removeAt(index);
+        configManager.saveUserConfigInfo(d_ptr->configs);
 
-            d_ptr->loadConfigs();
-            d_ptr->updateConfigList();
-
-            //  update widget status
-            d_ptr->lastSelectItem = NULL;
-            d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_ADD_CONFIG]->setEnabled(true);
-            d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG]->setEnabled(false);
-            d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG]->setEnabled(false);
-        }
+        d_ptr->loadConfigs();
+        d_ptr->updateConfigList();
     }
     else
     {
@@ -360,33 +270,23 @@ void UserConfigEditMenuContent::layoutExec()
         return;
     }
 
-    QGridLayout *layout = new QGridLayout(this);
+    QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(10);
+    layout->setAlignment(Qt::AlignTop);
 
     QLabel *label = new QLabel(trs("ConfigManagerment"));
-    layout->addWidget(label, d_ptr->ltws.count(), 0);
+    layout->addWidget(label);
 
-    IListWidget *listWidget = new IListWidget;
-    listWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    listWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-    listWidget->setFrameStyle(QFrame::Plain);
-    listWidget->setSpacing(2);
-    listWidget->setUniformItemSizes(true);
-    listWidget->installEventFilter(this);
-    listWidget->setIconSize(QSize(16, 16));
-    QString configListStyleSheet =
-        QString("QListWidget { margin-left: 0px; border:1px solid #808080; border-radius: 0px; background-color: transparent; outline: none; }\n "
-                "QListWidget::item {padding: 0px; border-radius: 0px; border: none; background-color: %1;}\n"
-                "QListWidget::item:focus {background-color: %2;}").arg("gray").arg("blue");
-    listWidget->setStyleSheet(configListStyleSheet);
-    d_ptr->ltws.insert(UserConfigEditMenuContentPrivate::ITEM_LTW_CONFIG_LIST, listWidget);
-    layout->addWidget(listWidget, d_ptr->ltws.count(), 0);
-    connect(d_ptr->ltws[UserConfigEditMenuContentPrivate::ITEM_LTW_CONFIG_LIST],
-            SIGNAL(exitList(bool)), this, SLOT(onExitList(bool)));
-    connect(d_ptr->ltws[UserConfigEditMenuContentPrivate::ITEM_LTW_CONFIG_LIST],
-            SIGNAL(realRelease()), this, SLOT(onConfigClick()));
-    //  size for 5 items
-    d_ptr->ltws[UserConfigEditMenuContentPrivate::ITEM_LTW_CONFIG_LIST]->setFixedHeight(174);
+    ListView *listView = new ListView(this);
+    listView->setItemDelegate(new ListViewItemDelegate(listView));
+    ListDataModel *model = new ListDataModel(this);
+    listView->setModel(model);
+    listView->setFixedHeight(LISTVIEW_MAX_VISIABLE_TIME * model->getRowHeightHint()
+                         + listView->spacing() * (LISTVIEW_MAX_VISIABLE_TIME * 2));
+    d_ptr->configDataModel = model;
+    connect(listView, SIGNAL(enterSignal()), this, SLOT(updateBtnStatus()));
+    d_ptr->configListView = listView;
+    layout->addWidget(listView);
 
     //  buttons
     QHBoxLayout *hl = new QHBoxLayout;
@@ -408,36 +308,29 @@ void UserConfigEditMenuContent::layoutExec()
     d_ptr->btns.insert(UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG, button);
 
     //  del buttons
-    button = new Button(trs("Del"));
+    button = new Button(trs("Delete"));
     button->setButtonStyle(Button::ButtonTextOnly);
     button->setEnabled(false);
     connect(button, SIGNAL(released()), this, SLOT(onBtnClick()));
     hl->addWidget(button);
     d_ptr->btns.insert(UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG, button);
 
-    layout->addLayout(hl, (d_ptr->ltws.count() + 1), 0);
-
-    layout->setRowStretch((d_ptr->ltws.count() + 2), 1);
+    layout->addLayout(hl);
+    layout->addStretch(1);
 }
 
-void UserConfigEditMenuContent::changeEvent(QEvent *ev)
+void UserConfigEditMenuContent::updateBtnStatus()
 {
-    if (ev->type() == QEvent::FontChange)
+    int curSelectedRow = d_ptr->configListView->curCheckedRow();
+    bool isEnable;
+    if (curSelectedRow == -1)
     {
-        d_ptr->ltws[UserConfigEditMenuContentPrivate::ITEM_LTW_CONFIG_LIST]
-        ->setFont(fontManager.textFont(font().pixelSize()));
+        isEnable = false;
     }
-}
-
-void UserConfigEditMenuContent::hideEvent(QHideEvent *ev)
-{
-    if (d_ptr->lastSelectItem)
+    else
     {
-        d_ptr->lastSelectItem->setIcon(QIcon());
-        d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG]->setEnabled(false);
-        d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG]->setEnabled(false);
-        d_ptr->lastSelectItem = NULL;
+        isEnable = true;
     }
-    onEditFinished();
-    MenuContent::hideEvent(ev);
+    d_ptr->btns[d_ptr->ITEM_BTN_DEL_CONFIG]->setEnabled(isEnable);
+    d_ptr->btns[d_ptr->ITEM_BTN_EDIT_CONFIG]->setEnabled(isEnable);
 }

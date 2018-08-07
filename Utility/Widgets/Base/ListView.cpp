@@ -12,19 +12,27 @@
 #include <QKeyEvent>
 #include <QFocusEvent>
 #include "ThemeManager.h"
+#include <QMap>
 
 class ListsViewPrivate
 {
 public:
     explicit ListsViewPrivate(ListView *const q_ptr)
-        : q_ptr(q_ptr)
+        : q_ptr(q_ptr),
+          isMultiSelectMode(false)
     {}
 
     int findCheckedRow() const;
 
     void clearCheckedRow(int row);
 
+    void clearAllCheckedRows();
+
     ListView *const q_ptr;
+
+    bool isMultiSelectMode;
+
+    QMap <int, bool> rowsSelectedMap;
 };
 
 int ListsViewPrivate::findCheckedRow() const
@@ -60,6 +68,22 @@ void ListsViewPrivate::clearCheckedRow(int row)
     q_ptr->model()->setData(index, QVariant(QIcon()), Qt::DecorationRole);
 }
 
+void ListsViewPrivate::clearAllCheckedRows()
+{
+    if (!q_ptr->model())
+    {
+        return;
+    }
+
+    for (int i = 0; i < q_ptr->model()->rowCount(); i++)
+    {
+        QModelIndex index = q_ptr->model()->index(i, 0);
+        q_ptr->model()->setData(index, QVariant(QIcon()), Qt::DecorationRole);
+        // clear all selected rows map
+        rowsSelectedMap[index.row()] = false;
+    }
+}
+
 ListView::ListView(QWidget *parent)
     : QListView(parent),
       d_ptr(new ListsViewPrivate(this))
@@ -89,9 +113,25 @@ void ListView::clearCheckRow()
     d_ptr->clearCheckedRow(d_ptr->findCheckedRow());
 }
 
+void ListView::clearAllCheckedRows()
+{
+    d_ptr->clearAllCheckedRows();
+}
+
+void ListView::setRowsSelectMode(bool isMultiMode)
+{
+    Q_UNUSED(isMultiMode)
+    d_ptr->isMultiSelectMode = isMultiMode;
+}
+
+QMap<int, bool> ListView::getRowsSelectMap() const
+{
+    return d_ptr->rowsSelectedMap;
+}
+
 void ListView::setModel(QAbstractItemModel *model)
 {
-    if (model && model->rowCount())
+    if (model)
     {
         setFocusPolicy(Qt::StrongFocus);
     }
@@ -153,23 +193,34 @@ void ListView::keyReleaseEvent(QKeyEvent *ev)
     case Qt::Key_Return:
     {
         QModelIndex index = currentIndex();
-        if (index.isValid())
+        if (!index.isValid())
         {
-            QVariant value = model()->data(index, Qt::DecorationRole);
-            QIcon icon = qvariant_cast<QIcon>(value);
-            if (!icon.isNull())
-            {
-                model()->setData(index, QVariant(QIcon()), Qt::DecorationRole);
-            }
-            else
-            {
-                // clear the row that already checked
-                clearCheckRow();
-                QIcon icon = themeManger.getIcon(ThemeManager::IconChecked);
-                // set current checked row
-                model()->setData(index, icon, Qt::DecorationRole);
-            }
+            break;
         }
+        QVariant value = model()->data(index, Qt::DecorationRole);
+        QIcon icon = qvariant_cast<QIcon>(value);
+        if (!icon.isNull())
+        {
+            model()->setData(index, QVariant(QIcon()), Qt::DecorationRole);
+            // record selected rows when is on multi select mode
+            d_ptr->rowsSelectedMap[index.row()] = false;
+            emit enterSignal();
+            break;
+        }
+        if (!d_ptr->isMultiSelectMode)
+        {
+            // clear the row that already checked
+            clearCheckRow();
+        }
+        else
+        {
+            // record selected rows when is on multi select mode
+            d_ptr->rowsSelectedMap[index.row()] = true;
+        }
+        icon = themeManger.getIcon(ThemeManager::IconChecked);
+        // set current checked row
+        model()->setData(index, icon, Qt::DecorationRole);
+        emit enterSignal();
     }
     break;
     default:
@@ -221,23 +272,41 @@ void ListView::rowsInserted(const QModelIndex &parent, int start, int end)
     setFocusPolicy(Qt::StrongFocus);
 }
 
+void ListView::hideEvent(QHideEvent *ev)
+{
+    QListView::hideEvent(ev);
+    clearAllCheckedRows();
+}
+
 void ListView::onRowClicked(QModelIndex index)
 {
-    if (index.isValid())
+    if (!index.isValid())
     {
-        QVariant value = model()->data(index, Qt::DecorationRole);
-        QIcon icon = qvariant_cast<QIcon>(value);
-        if (!icon.isNull())
-        {
-            model()->setData(index, QVariant(QIcon()), Qt::DecorationRole);
-        }
-        else
-        {
-            // clear the row that already checked
-            clearCheckRow();
-            QIcon icon = themeManger.getIcon(ThemeManager::IconChecked);
-            // set current checked row
-            model()->setData(index, icon, Qt::DecorationRole);
-        }
+        return;
     }
+
+    QVariant value = model()->data(index, Qt::DecorationRole);
+    QIcon icon = qvariant_cast<QIcon>(value);
+    if (!icon.isNull())
+    {
+        model()->setData(index, QVariant(QIcon()), Qt::DecorationRole);
+        // record selected rows when is on multi select mode
+        d_ptr->rowsSelectedMap[index.row()] = false;
+        emit enterSignal();
+        return;
+    }
+    if (!d_ptr->isMultiSelectMode)
+    {
+        // clear the row that already checked
+        clearCheckRow();
+    }
+    else
+    {
+        // record selected rows when is on multi select mode
+        d_ptr->rowsSelectedMap[index.row()] = true;
+    }
+    icon = themeManger.getIcon(ThemeManager::IconChecked);
+    // set current checked row
+    model()->setData(index, icon, Qt::DecorationRole);
+    emit enterSignal();
 }

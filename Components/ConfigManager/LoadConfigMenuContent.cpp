@@ -8,26 +8,20 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018.07.13
  **/
 
-
 #include "LoadConfigMenuContent.h"
 #include "Button.h"
 #include <QLabel>
 #include <QMap>
 #include "LanguageManager.h"
 #include "ConfigManager.h"
-#include "IListWidget.h"
-#include <QGridLayout>
-#include "ColorManager.h"
 #include <QList>
 #include "IConfig.h"
 #include <QFile>
 #include "PatientManager.h"
-#include "IMessageBox.h"
 #include "MessageBox.h"
 #include "MenuManager.h"
 #include "ConfigEditMenuGrp.h"
 #include <QHBoxLayout>
-#include "FontManager.h"
 #include "ListView.h"
 #include "ListDataModel.h"
 #include "ListViewItemDelegate.h"
@@ -35,41 +29,35 @@
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
 
-#define LISTVIEW_MAX_VISIABLE_TIME 6
-#define CONFIG_LIST_ITEM_H 30
-#define CONFIG_LIST_ITME_W 200
 #define CONFIG_MAX_NUM 3
+#define LISTVIEW_MAX_VISIABLE_TIME 6
 class LoadConfigMenuContentPrivate
 {
 public:
-    enum MenuItem
-    {
-        ITEM_BTN_LOAD_CONFIG = 0,
-        ITEM_BTN_VIEW_CONFIG,
-
-        ITEM_LTW_CONFIG_LIST = 0,
-    };
-
     LoadConfigMenuContentPrivate();
 
     void loadConfigs();
     void updateConfigList();
 
-    QMap <MenuItem, Button *> btns;
-    QMap <MenuItem, IListWidget *> ltws;
     QListWidgetItem *lastSelectItem;
     QList<ConfigManager::UserDefineConfigInfo> configs;
     Config *curConfig;
     int curEditIndex;
+    Button *loadBtn;
+    Button *ViewBtn;
+    ListView *configListView;
+    ListDataModel *configDataModel;
 };
 
 LoadConfigMenuContentPrivate::LoadConfigMenuContentPrivate():
     lastSelectItem(NULL),
     curConfig(NULL),
-    curEditIndex(0)
+    curEditIndex(0),
+    loadBtn(NULL),
+    ViewBtn(NULL),
+    configListView(NULL),
+    configDataModel(NULL)
 {
-    btns.clear();
-    ltws.clear();
     configs.clear();
 }
 
@@ -94,36 +82,27 @@ void LoadConfigMenuContentPrivate::loadConfigs()
  */
 void LoadConfigMenuContentPrivate::updateConfigList()
 {
-    // remove old item
-    while (ltws[ITEM_LTW_CONFIG_LIST]->count())
-    {
-        QListWidgetItem *item = ltws[ITEM_LTW_CONFIG_LIST]->takeItem(0);
-        delete item;
-    }
-
+    QStringList configNameList;
     for (int i = 0; i < configs.count(); i++)
     {
-        QListWidgetItem *item = new QListWidgetItem(configs.at(i).name, ltws[ITEM_LTW_CONFIG_LIST]);
-        item->setSizeHint(QSize(CONFIG_LIST_ITME_W, CONFIG_LIST_ITEM_H));
+        configNameList.append(configs.at(i).name);
     }
+    configDataModel->setStringList(configNameList);
 
-    int count = configs.count();
-    if (count)
+    int curSelectedRow = configListView->curCheckedRow();
+    bool isEnable;
+    if (curSelectedRow == -1)
     {
-        ltws[ITEM_LTW_CONFIG_LIST]->setFocusPolicy(Qt::StrongFocus);
+        isEnable = false;
     }
     else
     {
-        ltws[ITEM_LTW_CONFIG_LIST]->setFocusPolicy(Qt::NoFocus);
+        isEnable = true;
     }
-
-    if (lastSelectItem)
-    {
-        lastSelectItem->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
-    }
-    btns[ITEM_BTN_LOAD_CONFIG]->setEnabled(!!lastSelectItem);
-    btns[LoadConfigMenuContentPrivate::ITEM_BTN_VIEW_CONFIG]->setEnabled(!!lastSelectItem);
+    loadBtn->setEnabled(isEnable);
+    ViewBtn->setEnabled(isEnable);
 }
+
 LoadConfigMenuContent::LoadConfigMenuContent():
     MenuContent(trs("LoadConfigMenuContent"),
                 trs("LoadConfigMenuContentDesc")),
@@ -152,45 +131,35 @@ void LoadConfigMenuContent::layoutExec()
     }
 
     QVBoxLayout *layout = new QVBoxLayout(this);
-
     layout->setMargin(10);
+    layout->setAlignment(Qt::AlignTop);
 
     // load config
     QLabel *label = new QLabel(trs("LoadConfig"));
     layout->addWidget(label);
 
-    // config list
-    IListWidget *listWidget = new IListWidget();
-    listWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    listWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-    listWidget->setFrameStyle(QFrame::Plain);
-    listWidget->setFocusPolicy(Qt::StrongFocus);
-    listWidget->setSpacing(2);
-    listWidget->setIconSize(QSize(16, 16));
-    listWidget->setUniformItemSizes(true);
-    QString listWidgetStyleSheet = QString("QListWidget { margin-left: 0px; border:1px solid #808080; "
-                                           "border-radius: 0px; background-color: transparent; "
-                                           "outline: none; }\n "
-                                           "QListWidget::item {padding:0px; border-radius:0px; border: none;"
-                                           "background-color: %1;}\n"
-                                           "QListWidget::item:focus {background-color: %2;}").
-                                   arg("gray").arg("blue");
-    listWidget->setStyleSheet(listWidgetStyleSheet);
-    connect(listWidget, SIGNAL(realRelease()), this, SLOT(onConfigClick()));
-    listWidget->setFixedHeight(289);// size for 8 items
-    d_ptr->ltws.insert(LoadConfigMenuContentPrivate::ITEM_LTW_CONFIG_LIST, listWidget);
-    layout->addWidget(listWidget);
+    ListView *listView = new ListView();
+    listView->setItemDelegate(new ListViewItemDelegate(listView));
+    layout->addWidget(listView);
+    ListDataModel *model = new ListDataModel(this);
+    d_ptr->configDataModel = model;
+    listView->setFixedHeight(LISTVIEW_MAX_VISIABLE_TIME * model->getRowHeightHint()
+                             + listView->spacing() * (LISTVIEW_MAX_VISIABLE_TIME * 2));
+    listView->setModel(model);
+    listView->setRowsSelectMode();
+    connect(listView, SIGNAL(enterSignal()), this, SLOT(updateBtnStatus()));
+    d_ptr->configListView = listView;
 
     Button *button;
-
     QHBoxLayout *hl = new QHBoxLayout;
+
     // load buton
     button = new Button();
     button->setText(trs("Load"));
     button->setButtonStyle(Button::ButtonTextOnly);
     connect(button, SIGNAL(released()), this, SLOT(onBtnClick()));
-    d_ptr->btns.insert(LoadConfigMenuContentPrivate::ITEM_BTN_LOAD_CONFIG, button);
     hl->addWidget(button);
+    d_ptr->loadBtn = button;
 
     // view buton
     button = new Button();
@@ -198,88 +167,33 @@ void LoadConfigMenuContent::layoutExec()
     button->setButtonStyle(Button::ButtonTextOnly);
     connect(button, SIGNAL(released()), this, SLOT(onBtnClick()));
     hl->addWidget(button);
-    d_ptr->btns.insert(LoadConfigMenuContentPrivate::ITEM_BTN_VIEW_CONFIG, button);
+    d_ptr->ViewBtn = button;
 
     layout->addLayout(hl);
-
-    ListView *listView = new ListView();
-    listView->setItemDelegate(new ListViewItemDelegate(listView));
-    layout->addWidget(listView);
-    ListDataModel *model = new ListDataModel(this);
-    listView->setFixedHeight(LISTVIEW_MAX_VISIABLE_TIME * model->getRowHeightHint()
-                             + listView->spacing() * (LISTVIEW_MAX_VISIABLE_TIME * 2));
-    model->setStringList(QStringList() << "One" << "Two" << "Three" << "FOUR" << "FIVE" << "SIX");
-    listView->setModel(model);
-
-    layout->addStretch(1);
-    listWidget->setVisible(false);
+    layout->addStretch();
 }
 
-void LoadConfigMenuContent::hideEvent(QHideEvent *ev)
-{
-    if (ev->type() == QEvent::Hide)
-    {
-        if (d_ptr->lastSelectItem)
-        {
-            d_ptr->lastSelectItem = NULL;
-        }
-    }
-    MenuContent::hideEvent(ev);
-}
-
-void LoadConfigMenuContent::changeEvent(QEvent *ev)
-{
-    if (ev->type() == QEvent::FontChange)
-    {
-        d_ptr->ltws[LoadConfigMenuContentPrivate::ITEM_LTW_CONFIG_LIST]
-        ->setFont(fontManager.textFont(font().pixelSize()));
-    }
-}
-
-void LoadConfigMenuContent::onConfigClick()
-{
-    QListWidgetItem *item = d_ptr->ltws[LoadConfigMenuContentPrivate::ITEM_LTW_CONFIG_LIST]->currentItem();
-    if (!item)
-    {
-        return;
-    }
-    if (d_ptr->lastSelectItem)
-    {
-        d_ptr->lastSelectItem->setIcon(QIcon());
-    }
-
-    if (item != d_ptr->lastSelectItem)
-    {
-        item->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
-        d_ptr->lastSelectItem = item;
-    }
-    else
-    {
-        d_ptr->lastSelectItem = NULL;
-    }
-    d_ptr->btns[LoadConfigMenuContentPrivate::ITEM_BTN_LOAD_CONFIG]->setEnabled(!!d_ptr->lastSelectItem);
-    d_ptr->btns[LoadConfigMenuContentPrivate::ITEM_BTN_VIEW_CONFIG]->setEnabled(!!d_ptr->lastSelectItem);
-}
 
 void LoadConfigMenuContent::onBtnClick()
 {
     Button *btn = qobject_cast<Button *>(sender());
 
-    if (btn == NULL || d_ptr->lastSelectItem == NULL)
+    if (!btn)
     {
         return;
     }
 
-    if (btn == d_ptr->btns[LoadConfigMenuContentPrivate::ITEM_BTN_LOAD_CONFIG]) //加载配置
+    // load the config
+    if (btn == d_ptr->loadBtn)
     {
-        //加入最新配置文件
-        int index = d_ptr->ltws[LoadConfigMenuContentPrivate::ITEM_LTW_CONFIG_LIST]->row(d_ptr->lastSelectItem);
+        // add new config setting
+        int index = d_ptr->configListView->curCheckedRow();
         d_ptr->curEditIndex = index;
         QFile::remove(systemConfig.getCurConfigName());
         QFile::copy(QString("%1/%2").arg(CONFIG_DIR).arg(d_ptr->configs.at(index).fileName),
                     systemConfig.getCurConfigName());
 
-        //更新加载的病人类型
+        // update patient type
         int patitentTypeInt = 255;
         QString fileNameStr(d_ptr->configs.at(index).fileName);
         if (fileNameStr.indexOf("Adult") >= 0)
@@ -302,43 +216,49 @@ void LoadConfigMenuContent::onBtnClick()
         systemConfig.updateCurConfigName();
         patientManager.setType((PatientType)patitentTypeInt);
         currentConfig.reload();
-        //发送更新加载配置信号
+        // send update signal
         emit configUpdated();
-
-        d_ptr->lastSelectItem->setIcon(QIcon());
-        d_ptr->lastSelectItem = NULL;
-
-        d_ptr->btns[LoadConfigMenuContentPrivate::ITEM_BTN_LOAD_CONFIG]->setEnabled(!!d_ptr->lastSelectItem);
-        d_ptr->btns[LoadConfigMenuContentPrivate::ITEM_BTN_VIEW_CONFIG]->setEnabled(!!d_ptr->lastSelectItem);
 
         QString title(trs("LoadConfig"));
         QString text(trs("SuccessToLoad"));
         MessageBox message(title, text, false);
         message.exec();
     }
-    else if (btn == d_ptr->btns[LoadConfigMenuContentPrivate::ITEM_BTN_VIEW_CONFIG])//查看配置
+    // view config
+    else if (btn == d_ptr->ViewBtn)
     {
-        if (d_ptr->lastSelectItem)
+        int index = d_ptr->configListView->curCheckedRow();
+        if (index != -1)
         {
-            int index = d_ptr->ltws[LoadConfigMenuContentPrivate::ITEM_LTW_CONFIG_LIST]->row(d_ptr->lastSelectItem);
             d_ptr->curEditIndex = index;
             d_ptr->curConfig = new Config(QString("%1/%2")
                                           .arg(CONFIG_DIR)
                                           .arg(d_ptr->configs.at(index).fileName));
-            d_ptr->lastSelectItem->setIcon(QIcon());
-            d_ptr->lastSelectItem = NULL;
             configEditMenuGrp.setCurrentEditConfigName(d_ptr->configs.at(index).name);
             configEditMenuGrp.setCurrentEditConfig(d_ptr->curConfig);
             configManager.setWidgetStatus(true);
             configEditMenuGrp.initializeSubMenu();
             configEditMenuGrp.popup();
-
-            d_ptr->btns[LoadConfigMenuContentPrivate::ITEM_BTN_LOAD_CONFIG]->setEnabled(!!d_ptr->lastSelectItem);
-            d_ptr->btns[LoadConfigMenuContentPrivate::ITEM_BTN_VIEW_CONFIG]->setEnabled(!!d_ptr->lastSelectItem);
         }
     }
     else
     {
         qdebug("Unknown singal sender!");
     }
+}
+
+void LoadConfigMenuContent::updateBtnStatus()
+{
+    int row = d_ptr->configListView->curCheckedRow();
+    bool isEnabled;
+    if (row == -1)
+    {
+        isEnabled = false;
+    }
+    else
+    {
+        isEnabled = true;
+    }
+    d_ptr->loadBtn->setEnabled(isEnabled);
+    d_ptr->ViewBtn->setEnabled(isEnabled);
 }

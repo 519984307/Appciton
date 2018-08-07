@@ -21,7 +21,6 @@ public:
     ~WifiMaintainMenuContent();
 
     void focusFirstItem();
-    bool eventFilter(QObject *obj, QEvent *ev);
 protected:
     void layoutExec();
     void readyShow();
@@ -34,7 +33,6 @@ private:
     Q_DISABLE_COPY(WifiMaintainMenuContent)
 
     Q_PRIVATE_SLOT(d_func(), void onSwitch(int))
-    Q_PRIVATE_SLOT(d_func(), void onListExit(bool))
-    Q_PRIVATE_SLOT(d_func(), void onProfileItemClick())
     Q_PRIVATE_SLOT(d_func(), void onBtnClick())
+    Q_PRIVATE_SLOT(d_func(), void updateBtnStatus())
 };

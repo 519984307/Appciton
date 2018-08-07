@@ -12,19 +12,19 @@
 #include "FontManager.h"
 #include "NetworkManager.h"
 #include "Debug.h"
-#include "IListWidget.h"
+#include "ListView.h"
+#include "ListDataModel.h"
+#include "ListViewItemDelegate.h"
 #include "IConfig.h"
 #include <QFocusEvent>
 #include "WiFiProfileEditorWindow.h"
-#include "IMessageBox.h"
-#include "ColorManager.h"
+#include "MessageBox.h"
 #include "SupervisorMenuManager.h"
 #include "ComboBox.h"
 #include "Button.h"
 
-#define PROFILE_LIST_ITEM_H 30
-#define PROFILE_LIST_ITEM_W 200
 #define PROFILE_MAX_NUM 5
+#define LISTVIEW_MAX_VISIABLE_TIME 6
 
 class WifiMaintainMenuContentPrivate
 {
@@ -33,24 +33,23 @@ public:
 
     explicit WifiMaintainMenuContentPrivate(WifiMaintainMenuContent *const q_ptr)
         : q_ptr(q_ptr), switchCombo(NULL), profileList(NULL),
-          addBtn(NULL), editBtn(NULL), delBtn(NULL),
-          lastSelectItem(NULL) {}
+          model(NULL), addBtn(NULL), editBtn(NULL), delBtn(NULL)
+    {}
 
     void onSwitch(int val);
-    void onProfileItemClick();
     void updateProfileList();
-    void onListExit(bool backtab);
     void onBtnClick();
     void loadProfiles();
     void saveProfiles();
+    void updateBtnStatus();
 
     WifiMaintainMenuContent *const q_ptr;
     ComboBox *switchCombo;
-    IListWidget *profileList;
+    ListView *profileList;
+    ListDataModel *model;
     Button *addBtn;
     Button *editBtn;
     Button *delBtn;
-    QListWidgetItem *lastSelectItem;
     QVector<WiFiProfileWindowInfo> profiles;
     bool _isEnabled;
 };
@@ -67,57 +66,18 @@ void WifiMaintainMenuContentPrivate::onSwitch(int val)
 }
 
 /***************************************************************************************************
- * onProfileItemClick : private slot, handle the profile list item click signal
- **************************************************************************************************/
-void WifiMaintainMenuContentPrivate::onProfileItemClick()
-{
-    QListWidgetItem *item = profileList->currentItem();
-    if (lastSelectItem)
-    {
-        lastSelectItem->setIcon(QIcon());
-    }
-
-    if (item != lastSelectItem)
-    {
-        item->setIcon(QIcon("/usr/local/nPM/icons/select.png"));
-        lastSelectItem = item;
-    }
-    else
-    {
-        lastSelectItem = NULL;
-    }
-
-    if (lastSelectItem)
-    {
-        delBtn->setEnabled(true);
-        editBtn->setEnabled(true);
-    }
-    else
-    {
-        delBtn->setEnabled(false);
-        editBtn->setEnabled(false);
-    }
-}
-
-/***************************************************************************************************
  * updateProfileList : Update the profile List item from config
  **************************************************************************************************/
 void WifiMaintainMenuContentPrivate::updateProfileList()
 {
-    // remove old item
-    while (profileList->count())
-    {
-        QListWidgetItem *item = profileList->takeItem(0);
-        delete item;
-    }
-
+    QStringList profileListName;
     for (int i = 0; i < profiles.count(); i++)
     {
-        QListWidgetItem *item = new QListWidgetItem(profiles.at(i).profileName, profileList);
-        item->setSizeHint(QSize(PROFILE_LIST_ITEM_W, PROFILE_LIST_ITEM_H));
+        profileListName.append(profiles.at(i).profileName);
     }
+    model->setStringList(profileListName);
 
-    int count = profileList->count();
+    int count = profiles.count();
 
     if (count)
     {
@@ -136,23 +96,11 @@ void WifiMaintainMenuContentPrivate::updateProfileList()
     {
         addBtn->setEnabled(true);
     }
+
+    editBtn->setEnabled(false);
+    delBtn->setEnabled(false);
 }
 
-/***************************************************************************************************
- * onListExit : private slot, handle IListWidget exitList event
- **************************************************************************************************/
-void WifiMaintainMenuContentPrivate::onListExit(bool backTab)
-{
-    Q_Q(WifiMaintainMenuContent);
-    if (backTab)
-    {
-        q->focusPreviousChild();
-    }
-    else
-    {
-        q->focusNextChild();
-    }
-}
 
 /***************************************************************************************************
  * caseInsensitiveLessThan, use to compare profile name
@@ -190,8 +138,8 @@ void WifiMaintainMenuContentPrivate::onBtnClick()
             if (duplicate)
             {
                 QString title = trs("ProfileConflict");
-                IMessageBox msgBox(title, QString("%1 %2 %3").arg(trs("Profile")).arg(editProfile.profileName).arg(trs("AlreadyExist")),
-                                   false);
+                MessageBox msgBox(title, QString("%1 %2 %3").arg(trs("Profile")).arg(editProfile.profileName).arg(trs("AlreadyExist")),
+                                  false);
                 msgBox.exec();
                 continue;
             }
@@ -200,7 +148,6 @@ void WifiMaintainMenuContentPrivate::onBtnClick()
                 profiles.append(editor.getProfileInfo());
                 qSort(profiles.begin(), profiles.end(), caseInsensitiveLessThan);
                 updateProfileList();
-                lastSelectItem = NULL;
                 saveProfiles();
                 break;
             }
@@ -208,69 +155,51 @@ void WifiMaintainMenuContentPrivate::onBtnClick()
     }
     else if (sender == editBtn)
     {
-        if (lastSelectItem)
+        int index = profileList->curCheckedRow();
+        WiFiProfileEditorWindow editor(profiles[index]);
+        while (editor.exec())
         {
-            int index = profileList->row(lastSelectItem);
-            WiFiProfileEditorWindow editor(profiles[index]);
-            while (editor.exec())
+            bool duplicate = false;
+            QString profileName = editor.getProfileInfo().profileName;
+            for (int i = 0;  i < profiles.size(); i++)
             {
-                bool duplicate = false;
-                QString profileName = editor.getProfileInfo().profileName;
-                for (int i = 0;  i < profiles.size(); i++)
+                if (i != index && profileName == profiles[i].profileName)
                 {
-                    if (i != index && profileName == profiles[i].profileName)
-                    {
-                        duplicate = true;
-                        break;
-                    }
+                    duplicate = true;
+                    break;
                 }
-
-                if (duplicate)
-                {
-                    QString title = trs("ProfileConflict");
-                    IMessageBox msgBox(title, QString("%1 %2 %3").arg(trs("Profile")).arg(profileName).arg(trs("AlreadyExist")), false);
-                    msgBox.exec();
-                    continue;
-                }
-
-                profiles[index] = editor.getProfileInfo();
-                qSort(profiles.begin(), profiles.end(), caseInsensitiveLessThan);
-                updateProfileList();
-                lastSelectItem = NULL;
-                saveProfiles();
-
-                for (int i = 0; i < profiles.size(); i++)
-                {
-                    if (profiles[i].profileName == profileName)
-                    {
-                        profileList->setCurrentRow(i);
-                        QMetaObject::invokeMethod(profileList, "realRelease", Qt::QueuedConnection);
-                        break;
-                    }
-                }
-                break;
             }
+
+            if (duplicate)
+            {
+                QString title = trs("ProfileConflict");
+                MessageBox msgBox(title, QString("%1 %2 %3").arg(trs("Profile")).arg(profileName).arg(trs("AlreadyExist")), false);
+                msgBox.exec();
+                continue;
+            }
+
+            profiles[index] = editor.getProfileInfo();
+            qSort(profiles.begin(), profiles.end(), caseInsensitiveLessThan);
+            updateProfileList();
+            saveProfiles();
+            break;
         }
     }
     else if (sender == delBtn)
     {
-        if (lastSelectItem)
+        MessageBox messageBox(trs("Prompt"), trs("DeleteSelectedWifiProfile"));
+        if (messageBox.exec() == 0)
         {
-            IMessageBox messageBox(trs("Prompt"), trs("DeleteSelectedWifiProfile"));
-            if (messageBox.exec() == 0)
-            {
-                return;
-            }
-
-            int index = profileList->row(lastSelectItem);
-            profiles.remove(index);
-            qSort(profiles.begin(), profiles.end(), caseInsensitiveLessThan);
-            updateProfileList();
-            saveProfiles();
-            lastSelectItem = NULL;
-            delBtn->setEnabled(false);
-            editBtn->setEnabled(false);
+            return;
         }
+
+        int index = profileList->curCheckedRow();
+        profiles.remove(index);
+        qSort(profiles.begin(), profiles.end(), caseInsensitiveLessThan);
+        updateProfileList();
+        saveProfiles();
+        delBtn->setEnabled(false);
+        editBtn->setEnabled(false);
     }
     else
     {
@@ -392,45 +321,6 @@ void WifiMaintainMenuContent::focusFirstItem()
 }
 
 /***************************************************************************************************
- * eventFilter : handle the profile list focus in event, the operation of the list will be more natrual.
- *              If we don't handle the focus in event, the focus item will be the last item of the list
- *              when the focus reason is tab, or the first item when the focus reason is back tab.
- *
- *              Handle the profile list hide event, clear the select item when the widget is hidden.
- **************************************************************************************************/
-bool WifiMaintainMenuContent::eventFilter(QObject *obj, QEvent *ev)
-{
-    Q_D(WifiMaintainMenuContent);
-    if (obj == d->profileList)
-    {
-        if (ev->type() == QEvent::FocusIn)
-        {
-            QFocusEvent *e = static_cast<QFocusEvent *>(ev);
-            if (e->reason() == Qt::TabFocusReason)
-            {
-                d->profileList->setCurrentRow(0);
-            }
-            else if (e->reason() == Qt::BacktabFocusReason)
-            {
-                d->profileList->setCurrentRow(d->profileList->count() - 1);
-            }
-        }
-
-        if (ev->type() == QEvent::Hide)
-        {
-            if (d->lastSelectItem)
-            {
-                d->lastSelectItem->setIcon(QIcon());
-                d->delBtn->setEnabled(false);
-                d->editBtn->setEnabled(false);
-                d->lastSelectItem = NULL;
-            }
-        }
-    }
-    return false;
-}
-
-/***************************************************************************************************
  * layoutExec : layout issue
  **************************************************************************************************/
 void WifiMaintainMenuContent::layoutExec()
@@ -460,26 +350,16 @@ void WifiMaintainMenuContent::layoutExec()
     layout->addWidget(label);
 
     // profile list
-    d->profileList =  new IListWidget();
-    d->profileList->setFont(fontManager.textFont(fontManager.getFontSize(1)));
-    d->profileList->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    d->profileList->setSelectionMode(QAbstractItemView::SingleSelection);
-    d->profileList->setFrameStyle(QFrame::Plain);
-    d->profileList->setSpacing(2);
-    d->profileList->setUniformItemSizes(true);
-    d->profileList->setIconSize(QSize(16, 16));
-
-    QString profileListStyleSheet =
-        QString("QListWidget { margin-left: 15px; border:1px solid #808080; border-radius: 2px; background-color: transparent; outline: none; }\n "
-                "QListWidget::item {padding: 5px; border-radius: 2px; border: none; background-color: %1;}\n"
-                "QListWidget::item:focus {background-color: %2;}").arg("white").arg(colorManager.getHighlight().name());
-
-    d->profileList->setStyleSheet(profileListStyleSheet);
-    connect(d->profileList, SIGNAL(exitList(bool)), this, SLOT(onListExit(bool)));
-    connect(d->profileList, SIGNAL(realRelease()), this, SLOT(onProfileItemClick()));
-    d->profileList->installEventFilter(this);
-    d->profileList->setFixedHeight(174); // size for 5 items
-    layout->addWidget(d->profileList, Qt::AlignCenter);
+    ListView *listView = new ListView();
+    listView->setItemDelegate(new ListViewItemDelegate(listView));
+    ListDataModel *model = new ListDataModel(this);
+    listView->setModel(model);
+    listView->setFixedHeight(LISTVIEW_MAX_VISIABLE_TIME * model->getRowHeightHint()
+                             + listView->spacing() * (LISTVIEW_MAX_VISIABLE_TIME * 2));
+    connect(listView, SIGNAL(enterSignal()), this, SLOT(updateBtnStatus()));
+    layout->addWidget(listView);
+    d->profileList = listView;
+    d->model = model;
 
     // buttons
     d->addBtn = new Button(trs("Add"));
@@ -528,6 +408,22 @@ WifiMaintainMenuContent::WifiMaintainMenuContent()
 
 WifiMaintainMenuContent::~WifiMaintainMenuContent()
 {
+}
+
+void WifiMaintainMenuContentPrivate::updateBtnStatus()
+{
+    int row = profileList->curCheckedRow();
+    bool isEnabled;
+    if (row == -1)
+    {
+        isEnabled = false;
+    }
+    else
+    {
+        isEnabled = true;
+    }
+    editBtn->setEnabled(isEnabled);
+    delBtn->setEnabled(isEnabled);
 }
 
 #include "moc_WifiMaintainMenuContent.cpp"
