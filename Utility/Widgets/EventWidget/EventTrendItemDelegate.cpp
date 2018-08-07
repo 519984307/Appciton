@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/7
+ **/
+
 #include "EventTrendItemDelegate.h"
 #include "QStyleOptionViewItem"
 #include "FontManager.h"
@@ -8,12 +18,12 @@
 #define ALARM_ITEM_BG_COLOR (Qt::white)
 
 EventTrendItemDelegate::EventTrendItemDelegate(QObject *parent)
-    :QStyledItemDelegate(parent)
+    : QStyledItemDelegate(parent)
 {
-
 }
 
-void EventTrendItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void EventTrendItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
+                                   const QModelIndex &index) const
 {
     QStyleOptionViewItem opt = option;
     initStyleOption(&opt, index);
@@ -23,8 +33,8 @@ void EventTrendItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem
     QColor textColor = opt.palette.color(QPalette::Text);
 
 
-    //fill background if alarm
-    if(alarm)
+    // fill background if alarm
+    if (alarm)
     {
         painter->fillRect(opt.rect, ALARM_ITEM_BG_COLOR);
     }
@@ -35,10 +45,10 @@ void EventTrendItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem
     QVariant value;
     QRect textRect = opt.rect.adjusted(MARGIN, MARGIN, -MARGIN, -MARGIN);
 
-    //draw value text
+    // draw value text
     QString text = index.data(ValueTextRole).toString();
     value = index.data(ValueFontRole);
-    if(value.isValid())
+    if (value.isValid())
     {
         font = qvariant_cast<QFont>(value);
     }
@@ -49,9 +59,9 @@ void EventTrendItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem
     painter->setFont(font);
     painter->drawText(textRect, Qt::AlignVCenter | Qt::AlignRight, text);
 
-    //draw title
+    // draw title
     value = index.data(TitleFontRole);
-    if(value.isValid())
+    if (value.isValid())
     {
         font = qvariant_cast<QFont>(value);
     }
@@ -65,7 +75,7 @@ void EventTrendItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem
 
     textRect.adjust(0, fontManager.textHeightInPixels(font), 0, 0);
     value = index.data(UnitFontRole);
-    if(value.isValid())
+    if (value.isValid())
     {
         font = qvariant_cast<QFont>(value);
     }
@@ -82,7 +92,7 @@ QSize EventTrendItemDelegate::sizeHint(const QStyleOptionViewItem &option, const
 {
 
     QVariant value = index.data(Qt::SizeHintRole);
-    if(value.isValid())
+    if (value.isValid())
     {
         return qvariant_cast<QSize>(value);
     }
@@ -94,19 +104,19 @@ QSize EventTrendItemDelegate::sizeHint(const QStyleOptionViewItem &option, const
     QFont unitFont = opt.font;
 
     value = (index.data(ValueFontRole));
-    if(value.isValid())
+    if (value.isValid())
     {
         valueFont = qvariant_cast<QFont>(value);
     }
 
     value = (index.data(TitleFontRole));
-    if(value.isValid())
+    if (value.isValid())
     {
         titleFont = qvariant_cast<QFont>(value);
     }
 
     value = (index.data(UnitFontRole));
-    if(value.isValid())
+    if (value.isValid())
     {
         unitFont = qvariant_cast<QFont>(value);
     }
@@ -115,17 +125,17 @@ QSize EventTrendItemDelegate::sizeHint(const QStyleOptionViewItem &option, const
     int titleHeight = fontManager.textHeightInPixels(titleFont);
     int unitHeight = fontManager.textHeightInPixels((unitFont));
 
-    if(height < titleHeight + unitHeight)
+    if (height < titleHeight + unitHeight)
     {
         height = titleHeight + unitHeight;
     }
 
 //    height += 2 * MARGIN;
-    height += 14 * MARGIN;
+    height += 16 * MARGIN;
 
     QString valueText = index.data(ValueTextRole).toString();
     QString unitText = index.data(UnitTextRole).toString();
-    QString titleText =index.data(TitleTextRole).toString();
+    QString titleText = index.data(TitleTextRole).toString();
 
     int unitTextWidth  = fontManager.textWidthInPixels(unitText, unitFont);
     int titleTextWidth = fontManager.textWidthInPixels(titleText, titleFont);

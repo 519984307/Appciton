@@ -516,6 +516,7 @@ EventWindow::EventWindow()
     d_ptr->trendListWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     d_ptr->trendListWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     hLayout->addWidget(d_ptr->trendListWidget, 1);
+    hLayout->setSpacing(0);
 
     d_ptr->eventListBtn = new Button(trs("EventList"));
     d_ptr->eventListBtn->setButtonStyle(Button::ButtonTextOnly);
@@ -568,6 +569,7 @@ EventWindow::EventWindow()
     vWaveLayout->addWidget(d_ptr->infoWidget, 1);
     vWaveLayout->addLayout(hLayout, 15);
     vWaveLayout->addLayout(btnLayout);
+    vWaveLayout->setSpacing(0);
 
     d_ptr->chartWidget = new QWidget();
     d_ptr->chartWidget->setLayout(vWaveLayout);
