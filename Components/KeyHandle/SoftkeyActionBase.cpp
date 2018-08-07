@@ -37,6 +37,7 @@
 #include "ComboBox.h"
 #include "PatientInfoWindow.h"
 #include "MainMenuWindow.h"
+#include "CodeMarkerWindow.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -92,7 +93,7 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
 // co 2Param.setConnected(true);
 // return;
 
-    bool isVisible = codeMarkerWidget.isVisible();
+    bool isVisible = codeMarkerWindow.isVisible();
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
@@ -103,8 +104,7 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     {
         return;
     }
-
-    codeMarkerWidget.autoShow();
+    codeMarkerWindow.exec();
 }
 
 void SoftkeyActionBase::previousPage(bool isPressed)
