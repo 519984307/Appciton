@@ -93,7 +93,7 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
 // co 2Param.setConnected(true);
 // return;
 
-    bool isVisible = CodeMarkerWindow::getInstance()->isVisible();
+    bool isVisible = codeMarkerWindow.isVisible();
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
@@ -104,7 +104,7 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     {
         return;
     }
-    CodeMarkerWindow::getInstance()->exec();
+    codeMarkerWindow.exec();
 }
 
 void SoftkeyActionBase::previousPage(bool isPressed)

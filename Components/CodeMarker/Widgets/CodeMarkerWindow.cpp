@@ -24,12 +24,12 @@ class CodeMarkerWindowPrivate
 {
 public:
     CodeMarkerWindowPrivate()
-        : isPress(false)
-        , isChosen(false)
-        , codeMarkerNum(0)
-        , scrollArea(NULL)
+        : scrollArea(NULL)
         , timer(NULL)
         , closeTimer(NULL)
+        , isPress(false)
+        , isChosen(false)
+        , codeMarkerNum(0)
     {
         for (int i = 0 ; i < 30 ; i++)
         {
@@ -77,7 +77,7 @@ CodeMarkerWindow::CodeMarkerWindow() : Window()
     QWidget *widget = new QWidget();
     widget->setFixedWidth(windowManager.getPopMenuWidth() - borderWidth * 2 - barWidth);
     setFixedWidth(windowManager.getPopMenuWidth());
-    // srocll
+    // scroll
     d_ptr->scrollArea = new QScrollArea();
     d_ptr->scrollArea->setFocusPolicy(Qt::NoFocus);
     d_ptr->scrollArea->setFrameStyle(QFrame::NoFrame);
@@ -114,14 +114,14 @@ CodeMarkerWindow::CodeMarkerWindow() : Window()
     connect(d_ptr->closeTimer, SIGNAL(timeout()), this, SLOT(_timerOut()));
 }
 
-CodeMarkerWindow *CodeMarkerWindow::getInstance()
+CodeMarkerWindow &CodeMarkerWindow::getInstance()
 {
     static CodeMarkerWindow *instance = NULL;
     if (instance == NULL)
     {
         instance = new CodeMarkerWindow();
     }
-    return instance;
+    return *instance;
 }
 
 CodeMarkerWindow::~CodeMarkerWindow()
@@ -231,21 +231,21 @@ void CodeMarkerWindowButton::focusInEvent(QFocusEvent *e)
     if (0 == _id)
     {
         // 调整滚动条位置。
-        CodeMarkerWindow::getInstance()->changeScrollValue(0);
+        codeMarkerWindow.changeScrollValue(0);
     }
 
     // 如果是最后一个button
-    if (CodeMarkerWindow::getInstance()->getCodeMarkerTypeSize() == _id + 1)
+    if (codeMarkerWindow.getCodeMarkerTypeSize() == _id + 1)
     {
         // 调整滚动条位置。
-        CodeMarkerWindow::getInstance()->changeScrollValue(1);
+        codeMarkerWindow.changeScrollValue(1);
     }
     Button::focusInEvent(e);
 }
 
 void CodeMarkerWindowButton::keyPressEvent(QKeyEvent *e)
 {
-    if (CodeMarkerWindow::getInstance()->getPress())
+    if (codeMarkerWindow.getPress())
     {
         return;
     }
@@ -256,7 +256,7 @@ void CodeMarkerWindowButton::keyPressEvent(QKeyEvent *e)
 
             if (!e->isAutoRepeat())
             {
-                CodeMarkerWindow::getInstance()->setPress(true);
+                codeMarkerWindow.setPress(true);
                 update();
             }
             eventStorageManager.triggerCodeMarkerEvent(text().toLatin1().data());
@@ -265,7 +265,7 @@ void CodeMarkerWindowButton::keyPressEvent(QKeyEvent *e)
         case Qt::Key_Right:
         case Qt::Key_Up:
         case Qt::Key_Down:
-            CodeMarkerWindow::getInstance()->startTimer();
+            codeMarkerWindow.startTimer();
             update();
             break;
         default:

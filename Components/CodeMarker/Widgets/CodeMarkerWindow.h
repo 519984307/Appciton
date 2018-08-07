@@ -35,7 +35,7 @@ class CodeMarkerWindow : public Window
 {
     Q_OBJECT
 public:
-    static CodeMarkerWindow *getInstance(void);
+    static CodeMarkerWindow &getInstance(void);
     ~CodeMarkerWindow();
 public:
     void setPress(bool flag);
@@ -67,3 +67,5 @@ private:
     CodeMarkerWindow();
     CodeMarkerWindowPrivate * const d_ptr;
 };
+#define codeMarkerWindow (CodeMarkerWindow::getInstance())
+#define deleteCodeMarkerWindow (delete CodeMarkerWindow)
