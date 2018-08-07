@@ -18,7 +18,7 @@ class CO2MenuContent: public MenuContent
 {
     Q_OBJECT
 public:
-    static CO2MenuContent *getInstance();
+    CO2MenuContent();
     ~CO2MenuContent();
     /**
      * @brief readyShow
@@ -40,5 +40,4 @@ private slots:
     void onBtnReleasedChanged();
 private:
     CO2MenuContentPrivate * const d_ptr;
-    CO2MenuContent();
 };

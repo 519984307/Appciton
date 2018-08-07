@@ -20,7 +20,6 @@
 #include "PublicMenuManager.h"
 #include <QDebug>
 #include "MainMenuWindow.h"
-#include "AGMenuContent.h"
 
 /**************************************************************************************************
  * 设置麻醉剂类型。
@@ -278,5 +277,5 @@ void AGTrendWidget::_releaseHandle(IWidget *iWidget)
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
     MainMenuWindow *mainMenu =  MainMenuWindow::getInstance();
-    mainMenu->popup(AGMenuContent::getInstace() , x , y);
+    mainMenu->popup(trs("AGMenu") , x , y);
 }

@@ -36,10 +36,10 @@ MainMenuWindow *MainMenuWindow::getInstance()
 
         // initialize the window content
         instance->addMenuContent(new ECGMenuContent);
-        instance->addMenuContent(RESPMenuContent::getInstance());
+        instance->addMenuContent(new RESPMenuContent);
         if (systemManager.isSupport(CONFIG_AG))
         {
-            instance->addMenuContent(AGMenuContent::getInstace());
+            instance->addMenuContent(new AGMenuContent);
         }
         if (systemManager.isSupport(CONFIG_IBP))
         {
@@ -47,24 +47,24 @@ MainMenuWindow *MainMenuWindow::getInstance()
         }
         if (systemManager.isSupport(CONFIG_CO))
         {
-            instance->addMenuContent(COMenuContent::getInstance());
+            instance->addMenuContent(new COMenuContent);
         }
         if (systemManager.isSupport(CONFIG_SPO2))
         {
-            instance->addMenuContent(SPO2MenuContent::getInstance());
+            instance->addMenuContent(new SPO2MenuContent);
         }
         if (systemManager.isSupport(CONFIG_NIBP))
         {
-            instance->addMenuContent(NIBPMenuContent::getInstance());
+            instance->addMenuContent(new NIBPMenuContent);
         }
         if (systemManager.isSupport(CONFIG_CO2))
         {
-            instance->addMenuContent(CO2MenuContent::getInstance());
+            instance->addMenuContent(new CO2MenuContent);
         }
         instance->addMenuContent(new AlarmLimitMenuContent);
         if (systemManager.isSupport(CONFIG_WIFI))
         {
-            instance->addMenuContent(WiFiProfileMenuContent::getInstance());
+            instance->addMenuContent(new WiFiProfileMenuContent);
         }
         instance->addMenuContent(new DisplayMenuContent);
         instance->addMenuContent(new LoadConfigMenuContent);

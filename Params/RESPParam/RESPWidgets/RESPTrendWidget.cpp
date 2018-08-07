@@ -17,7 +17,6 @@
 #include "RESPParam.h"
 #include "TrendWidgetLabel.h"
 #include "MainMenuWindow.h"
-#include "RESPMenuContent.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -25,8 +24,7 @@
 void RESPTrendWidget::_releaseHandle(IWidget *iWidget)
 {
     MainMenuWindow *mainMenu = MainMenuWindow::getInstance();
-    RESPMenuContent *RespContent = RESPMenuContent::getInstance();
-    mainMenu->popup(RespContent);
+    mainMenu->popup(trs("RESPMenu"));
 }
 
 /**************************************************************************************************

@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/7
+ **/
+
+
 #pragma once
 #include "TrendWidget.h"
 #include "ECGDefine.h"
@@ -9,7 +20,7 @@ class ECGPVCSTrendWidget: public TrendWidget
 
 public:
     // 刷新PVCS的值。
-    void setPVCSValue(short pvcs);
+    void setPVCSValue(int16_t pvcs);
 
     // 是否发生报警
     void isAlarm(bool isAlarm);

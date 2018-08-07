@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/7
+ **/
+
+
 #include <QHBoxLayout>
 #include "TEMPTrendWidget.h"
 #include "UnitManager.h"
@@ -8,17 +19,19 @@
 #include "WindowManager.h"
 #include "AlarmLimitMenu.h"
 #include "TrendWidgetLabel.h"
+#include "MainMenuWindow.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
-void TEMPTrendWidget::_releaseHandle(IWidget *)
+void TEMPTrendWidget::_releaseHandle(IWidget *iWidget)
 {
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
 
-    publicMenuManager.popup(&alarmLimitMenu, x, y);
+    MainMenuWindow *p = MainMenuWindow::getInstance();
+    p->popup(trs("AlarmLimitMenu") , x , y);
 }
 
 /**************************************************************************************************
@@ -48,7 +61,7 @@ void TEMPTrendWidget::_alarmIndicate(bool isAlarm)
 /**************************************************************************************************
  * 设置TEMP的值。
  *************************************************************************************************/
-void TEMPTrendWidget::setTEMPValue(short t1, short t2, short td)
+void TEMPTrendWidget::setTEMPValue(int16_t t1, int16_t t2, int16_t td)
 {
     UnitType type = tempParam.getUnit();
     if (type == UNIT_TC)
@@ -69,7 +82,8 @@ void TEMPTrendWidget::setTEMPValue(short t1, short t2, short td)
             }
             else
             {
-                _t1Str.sprintf("%.1f", t1 / 10.0);
+//                _t1Str.sprintf("%.1f", t1 / 10.0);
+                _t1Str = QString("%1").number(t1 / 10.0 , 'f' , 1);
             }
         }
 
@@ -89,7 +103,8 @@ void TEMPTrendWidget::setTEMPValue(short t1, short t2, short td)
             }
             else
             {
-                _t2Str.sprintf("%.1f", t2 / 10.0);
+//                _t2Str.sprintf("%.1f", t2 / 10.0);
+                _t2Str = QString("%1").number(t2 / 10.0 , 'f' , 1);
             }
         }
 
@@ -99,7 +114,8 @@ void TEMPTrendWidget::setTEMPValue(short t1, short t2, short td)
         }
         else
         {
-            _tdStr.sprintf("%.1f", td / 10.0);
+//            _tdStr.sprintf("%.1f", td / 10.0);
+            _tdStr = QString("%1").number(td / 10.0 , 'f' , 1);
         }
 
         return;
@@ -153,7 +169,10 @@ void TEMPTrendWidget::setTEMPValue(short t1, short t2, short td)
     {
 //        _tdStr = Unit::convert(type, UNIT_TC, td / 10.0);
 //        _tdStr.sprintf("%.1f", _tdStr.toDouble() - 32);
-        _tdStr.sprintf("%.1f", fabs(_t1Str.toDouble() - _t2Str.toDouble()));
+//        _tdStr.sprintf("%.1f", fabs(_t1Str.toDouble() - _t2Str.toDouble()));
+        _tdStr = QString("%1").number(fabs(_t1Str.toDouble() - _t2Str.toDouble())
+                                      , 'f'
+                                      , 1);
     }
 }
 
@@ -164,16 +183,16 @@ void TEMPTrendWidget::setUNit(UnitType u)
 {
     switch (u)
     {
-        case UNIT_TC:
-            setUnit("Td (" + Unit::localeSymbol(UNIT_TC) + ")");
-            break;
+    case UNIT_TC:
+        setUnit("Td (" + Unit::localeSymbol(UNIT_TC) + ")");
+        break;
 
-        case UNIT_TF:
-            setUnit("Td (" + Unit::localeSymbol(UNIT_TF) + ")");
-            break;
+    case UNIT_TF:
+        setUnit("Td (" + Unit::localeSymbol(UNIT_TF) + ")");
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -184,20 +203,20 @@ void TEMPTrendWidget::isAlarm(int id, bool flag)
 {
     switch (id)
     {
-        case SUB_PARAM_T1:
-            _t1Alarm = flag;
-            break;
+    case SUB_PARAM_T1:
+        _t1Alarm = flag;
+        break;
 
-        case SUB_PARAM_T2:
-            _t2Alarm = flag;
-            break;
+    case SUB_PARAM_T2:
+        _t2Alarm = flag;
+        break;
 
-        case SUB_PARAM_TD:
-            _tdAlarm = flag;
-            break;
+    case SUB_PARAM_TD:
+        _tdAlarm = flag;
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -251,12 +270,12 @@ void TEMPTrendWidget::showValue(void)
  *************************************************************************************************/
 void TEMPTrendWidget::setTextSize()
 {
-    QRect r ;
-    r.setSize(QSize((width() - (nameLabel->width() * 1.5)),height()));
+    QRect r;
+    r.setSize(QSize((width() - (nameLabel->width() * 1.5)), height()));
     // 字体。
 //    int fontsize = fontManager.adjustNumFontSizeXML(r,"3888");
 //    fontsize = fontManager.getFontSize(fontsize);
-    int fontsize = fontManager.adjustNumFontSize(r,true,"3888");
+    int fontsize = fontManager.adjustNumFontSize(r, true, "3888");
     QFont font = fontManager.numFont(fontsize, true);
 //    font.setStretch(105); // 横向放大。
     font.setWeight(QFont::Black);
@@ -311,7 +330,7 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     contentLayout->addLayout(mainLayout);
 
     // 释放事件。
-    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 }
 
 /**************************************************************************************************
@@ -319,5 +338,4 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
  *************************************************************************************************/
 TEMPTrendWidget::~TEMPTrendWidget()
 {
-
 }

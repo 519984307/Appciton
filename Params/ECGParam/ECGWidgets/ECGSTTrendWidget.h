@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/7
+ **/
+
+
 #pragma once
 #include "TrendWidget.h"
 #include "ECGDefine.h"
@@ -9,7 +20,7 @@ class ECGSTTrendWidget: public TrendWidget
 
 public:
     // 刷新HR和ST的值。
-    void setSTValue(ECGST lead, short st);
+    void setSTValue(ECGST lead, int16_t st);
 
     // 是否发生报警
     void isAlarm(int id, bool flag);

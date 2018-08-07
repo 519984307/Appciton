@@ -16,7 +16,7 @@ class RESPMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    static RESPMenuContent *getInstance();
+    RESPMenuContent();
     ~RESPMenuContent();
 
     /* reimplment */
@@ -30,5 +30,4 @@ private slots:
 
 private:
     RESPMenuContentPrivate * const d_ptr;
-    RESPMenuContent();
 };

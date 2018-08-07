@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/7
+ **/
+
+
 #pragma once
 #include "TrendWidget.h"
 #include <QLabel>
@@ -8,7 +19,7 @@ class TEMPTrendWidget: public TrendWidget
 
 public:
     // 设置体温的值。
-    void setTEMPValue(short t1, short t2, short td);
+    void setTEMPValue(int16_t t1, int16_t t2, int16_t td);
 
     // 设置体温单位
     void setUNit(UnitType u);
@@ -31,7 +42,7 @@ private slots:
 private:
     void _alarmIndicate(bool isAlarm);
 
-    short _showWhich;     // 显示的值。
+    int16_t _showWhich;     // 显示的值。
     QLabel *_tValue;
 
     QString _t1Str;
