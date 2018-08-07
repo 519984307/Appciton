@@ -42,7 +42,11 @@ public:
     bool getPress(void);
 
     //滚动区域变化
-    void changeScrollValue(int value);
+    /**
+     * @brief ensureWidgetVisiable
+     * @param id 哪个控件要被显示在scrollArea
+     */
+    void ensureWidgetVisiable(int id);
 
     // 获取code marker Type个数。
     int getCodeMarkerTypeSize();

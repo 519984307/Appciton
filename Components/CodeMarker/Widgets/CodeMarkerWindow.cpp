@@ -139,20 +139,9 @@ bool CodeMarkerWindow::getPress()
     return d_ptr->isPress;
 }
 
-void CodeMarkerWindow::changeScrollValue(int value)
+void CodeMarkerWindow::ensureWidgetVisiable(int id)
 {
-    QScrollBar *bar = d_ptr->scrollArea->verticalScrollBar();
-    if (NULL != bar)
-    {
-        if (1 == value)
-        {
-            bar->setValue(bar->maximum());
-        }
-        else
-        {
-            bar->setValue(0);
-        }
-    }
+    d_ptr->scrollArea->ensureWidgetVisible(d_ptr->codeMarkerButton[id]);
 }
 
 int CodeMarkerWindow::getCodeMarkerTypeSize()
@@ -231,14 +220,14 @@ void CodeMarkerWindowButton::focusInEvent(QFocusEvent *e)
     if (0 == _id)
     {
         // 调整滚动条位置。
-        codeMarkerWindow.changeScrollValue(0);
+        codeMarkerWindow.ensureWidgetVisiable(0);
     }
 
     // 如果是最后一个button
     if (codeMarkerWindow.getCodeMarkerTypeSize() == _id + 1)
     {
         // 调整滚动条位置。
-        codeMarkerWindow.changeScrollValue(1);
+        codeMarkerWindow.ensureWidgetVisiable(_id);
     }
     Button::focusInEvent(e);
 }
