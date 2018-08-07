@@ -421,6 +421,7 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
     Components/Maintain/FactoryMaintain/FactoryMaintainMenuContent.cpp          \
     Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
+    Components/CodeMarker/Widgets/CodeMarkerWindow.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
     Components/ConfigManager/ConfigMaintainMenuGrp.cpp                          \
     Components/ConfigManager/SelectDefaultConfigMenu.cpp                        \
@@ -969,6 +970,7 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryMaintainMenuContent.h            \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWidget.h                            \
+    Components/CodeMarker/Widgets/CodeMarkerWindow.h                            \
     Components/ConfigManager/ConfigManager.h                                    \
     Components/ConfigManager/ConfigMaintainMenuGrp.h                            \
     Components/ConfigManager/SelectDefaultConfigMenu.h                          \
