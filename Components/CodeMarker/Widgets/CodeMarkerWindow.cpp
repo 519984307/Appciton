@@ -20,7 +20,6 @@
 #include <QTimer>
 #include "EventStorageManager.h"
 
-CodeMarkerWindow *CodeMarkerWindow::_selfObj = NULL;
 class CodeMarkerWindowPrivate
 {
 public:
@@ -113,6 +112,16 @@ CodeMarkerWindow::CodeMarkerWindow() : Window()
     d_ptr->closeTimer = new QTimer();
     d_ptr->closeTimer->setInterval(500);
     connect(d_ptr->closeTimer, SIGNAL(timeout()), this, SLOT(_timerOut()));
+}
+
+CodeMarkerWindow *CodeMarkerWindow::getInstance()
+{
+    static CodeMarkerWindow *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new CodeMarkerWindow();
+    }
+    return instance;
 }
 
 CodeMarkerWindow::~CodeMarkerWindow()
@@ -222,21 +231,21 @@ void CodeMarkerWindowButton::focusInEvent(QFocusEvent *e)
     if (0 == _id)
     {
         // 调整滚动条位置。
-        codeMarkerWindow.changeScrollValue(0);
+        CodeMarkerWindow::getInstance()->changeScrollValue(0);
     }
 
     // 如果是最后一个button
-    if (codeMarkerWindow.getCodeMarkerTypeSize() == _id + 1)
+    if (CodeMarkerWindow::getInstance()->getCodeMarkerTypeSize() == _id + 1)
     {
         // 调整滚动条位置。
-        codeMarkerWindow.changeScrollValue(1);
+        CodeMarkerWindow::getInstance()->changeScrollValue(1);
     }
     Button::focusInEvent(e);
 }
 
 void CodeMarkerWindowButton::keyPressEvent(QKeyEvent *e)
 {
-    if (codeMarkerWindow.getPress())
+    if (CodeMarkerWindow::getInstance()->getPress())
     {
         return;
     }
@@ -247,7 +256,7 @@ void CodeMarkerWindowButton::keyPressEvent(QKeyEvent *e)
 
             if (!e->isAutoRepeat())
             {
-                codeMarkerWindow.setPress(true);
+                CodeMarkerWindow::getInstance()->setPress(true);
                 update();
             }
             eventStorageManager.triggerCodeMarkerEvent(text().toLatin1().data());
@@ -256,7 +265,7 @@ void CodeMarkerWindowButton::keyPressEvent(QKeyEvent *e)
         case Qt::Key_Right:
         case Qt::Key_Up:
         case Qt::Key_Down:
-            codeMarkerWindow.startTimer();
+            CodeMarkerWindow::getInstance()->startTimer();
             update();
             break;
         default:
