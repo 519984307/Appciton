@@ -19,7 +19,6 @@
 #include "WindowManager.h"
 #include <QDebug>
 #include "MainMenuWindow.h"
-#include "COMenuContent.h"
 
 #define     INVALDATA     0xffff
 
@@ -166,5 +165,5 @@ void COTrendWidget::_releaseHandle(IWidget *iWidget)
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
     MainMenuWindow *p = MainMenuWindow::getInstance();
-    p->popup(COMenuContent::getInstance() , x , y);
+    p->popup(trs("COMenu") , x , y);
 }

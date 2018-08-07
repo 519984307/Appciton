@@ -20,7 +20,6 @@
 #include "PublicMenuManager.h"
 #include "WindowManager.h"
 #include "MainMenuWindow.h"
-#include "WiFiProfileMenuContent.h"
 
 SystemStatusBarWidget *SystemStatusBarWidget::_selfObj = NULL;
 #define ICON_WIDTH 32
@@ -120,7 +119,7 @@ void SystemStatusBarWidget::onIconClicked(int iconLabel)
         int y = r.y() + (r.height() - publicMenuManager.height());
 
         MainMenuWindow *p = MainMenuWindow::getInstance();
-        p->popup(WiFiProfileMenuContent::getInstance() , x , y);
+        p->popup(trs("WiFiMenu") , x , y);
     }
 }
 

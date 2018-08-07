@@ -20,7 +20,6 @@
 #include "PublicMenuManager.h"
 #include "TrendWidgetLabel.h"
 #include "MainMenuWindow.h"
-#include "CO2MenuContent.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -28,7 +27,7 @@
 void CO2TrendWidget::_releaseHandle(IWidget *iWidget)
 {
     MainMenuWindow *p = MainMenuWindow::getInstance();
-    p->popup(CO2MenuContent::getInstance());
+    p->popup(trs("CO2Menu"));
 }
 
 /**************************************************************************************************

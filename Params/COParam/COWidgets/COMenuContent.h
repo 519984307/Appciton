@@ -16,7 +16,7 @@ class COMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    static COMenuContent *getInstance(void);
+    COMenuContent();
     ~COMenuContent();
 
     /* reimplment */
@@ -31,5 +31,4 @@ private slots:
 
 private:
     COMenuContentPrivate * const d_ptr;
-    COMenuContent();
 };

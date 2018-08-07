@@ -37,6 +37,7 @@
 #include "ComboBox.h"
 #include "PatientInfoWindow.h"
 #include "MainMenuWindow.h"
+#include "MainMenuWindow.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -155,7 +156,8 @@ void SoftkeyActionBase::limitMenu(bool isPressed)
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
-    publicMenuManager.popup(&alarmLimitMenu, x, y);
+    MainMenuWindow *p = MainMenuWindow::getInstance();
+    p->popup(trs("AlarmLimitMenu") , x , y);
 }
 
 void SoftkeyActionBase::WindowLayout(bool isPressed)

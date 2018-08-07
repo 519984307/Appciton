@@ -18,7 +18,6 @@
 #include "SPO2Param.h"
 #include "TrendWidgetLabel.h"
 #include "MainMenuWindow.h"
-#include "SPO2MenuContent.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -30,7 +29,7 @@ void SPO2TrendWidget::_releaseHandle(IWidget *iWidget)
     int y = r.y() + (r.height() - publicMenuManager.height());
 
     MainMenuWindow *p = MainMenuWindow::getInstance();
-    p->popup(SPO2MenuContent::getInstance() , x , y);
+    p->popup(trs("SPO2Menu") , x , y);
 }
 
 /**************************************************************************************************

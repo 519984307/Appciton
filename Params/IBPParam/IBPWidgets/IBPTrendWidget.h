@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/7
+ **/
+
+
 #pragma once
 #include "TrendWidget.h"
 #include "IBPDefine.h"
@@ -11,7 +22,7 @@ class IBPTrendWidget: public TrendWidget
 
 public:
     // 设置测量实时数据。
-    void setData(short sys, short dia, short map);
+    void setData(int16_t sys, int16_t dia, int16_t map);
 
     // 设置标名。
     void setEntitle(IBPPressureName entitle);
@@ -63,5 +74,4 @@ private:
     bool _mapAlarm;
 
     static const int _margin = 1;
-
 };

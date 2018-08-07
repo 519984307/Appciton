@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/7
+ **/
+
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPixmap>
@@ -15,17 +26,19 @@
 #include "ECGParam.h"
 #include "ECGDupParam.h"
 #include "qpainter.h"
+#include "MainMenuWindow.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
-void ECGTrendWidget::_releaseHandle(IWidget *)
+void ECGTrendWidget::_releaseHandle(IWidget *iWidget)
 {
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
 
-    publicMenuManager.popup(&ecgMenu, x, y);
+    MainMenuWindow *p = MainMenuWindow::getInstance();
+    p->popup(trs("ECGMenu") , x , y);
 }
 
 /**************************************************************************************************
@@ -40,7 +53,7 @@ void ECGTrendWidget::_timeOut()
 /**************************************************************************************************
  * 设置HR的值。
  *************************************************************************************************/
-void ECGTrendWidget::setHRValue(short hr, bool isHR)
+void ECGTrendWidget::setHRValue(int16_t hr, bool isHR)
 {
     if (isHR)
     {
@@ -178,7 +191,7 @@ void ECGTrendWidget::setTextSize(void)
     // 字体。
 //    int fontsize = fontManager.adjustNumFontSizeXML(r);
 //    fontsize = fontManager.getFontSize(fontsize);
-    int fontsize = fontManager.adjustNumFontSize(r,true);
+    int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
 //    font.setStretch(105); // 横向放大。
     font.setWeight(QFont::Black);
@@ -263,7 +276,7 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget")
     contentLayout->addStretch(1);
 
     // 释放事件。
-    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
     _isAlarm = false;
 

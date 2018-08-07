@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/7
+ **/
+
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include "ECGSTTrendWidget.h"
@@ -10,22 +21,24 @@
 #include "PublicMenuManager.h"
 #include "ECGSymbol.h"
 #include "TrendWidgetLabel.h"
+#include "MainMenuWindow.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
-void ECGSTTrendWidget::_releaseHandle(IWidget *)
+void ECGSTTrendWidget::_releaseHandle(IWidget *iWidget)
 {
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
-    publicMenuManager.popup(&ecgMenu, x, y);
+    MainMenuWindow *p = MainMenuWindow::getInstance();
+    p->popup(trs("ECGMenu") , x , y);
 }
 
 /**************************************************************************************************
  * 设置HR的值。
  *************************************************************************************************/
-void ECGSTTrendWidget::setSTValue(ECGST lead, short st)
+void ECGSTTrendWidget::setSTValue(ECGST lead, int16_t st)
 {
     if (st == InvData())
     {
@@ -33,7 +46,8 @@ void ECGSTTrendWidget::setSTValue(ECGST lead, short st)
     }
     else
     {
-        _stString[lead].sprintf("%.1f", st / 10.0);
+//        _stString[lead].sprintf("%.1f", st / 10.0);
+        _stString[lead] = QString("%1").number(st / 10.0 , 'f' , 1);
     }
 }
 
@@ -68,7 +82,7 @@ void ECGSTTrendWidget::showValue(void)
 //            setPalette(p);
 //        }
 
-        for (int i = ECG_ST_I;i < ECG_ST_NR;i++)
+        for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
         {
             p = _stLabel[i]->palette();
             if (_isAlarm[i])
@@ -94,7 +108,7 @@ void ECGSTTrendWidget::showValue(void)
     }
     else
     {
-        for (int i = ECG_ST_I;i < ECG_ST_NR;i++)
+        for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
         {
             if (p.window().color() != Qt::black)
             {
@@ -105,7 +119,7 @@ void ECGSTTrendWidget::showValue(void)
             }
         }
     }
-    for (int i = ECG_ST_I;i < ECG_ST_NR;i++)
+    for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
     {
         _stValue[i]->setText(_stString[i]);
     }
@@ -119,11 +133,11 @@ void ECGSTTrendWidget::setTextSize(void)
 //    QRect r = this->rect();
 //    r.adjust(nameLabel->width(), 0, 0, 0);
     QRect r;
-    r.setSize(QSize(((width()-nameLabel->width())/6),(height()/4)));
+    r.setSize(QSize(((width() - nameLabel->width()) / 6), (height() / 4)));
     // 字体。
 //    int fontsize = fontManager.adjustNumFontSizeXML(r);
 //    fontsize = fontManager.getFontSize(fontsize);
-    int fontsize = fontManager.adjustNumFontSize(r,true,"2222");
+    int fontsize = fontManager.adjustNumFontSize(r, true, "2222");
     QFont font = fontManager.numFont(fontsize, true);
 //    font.setStretch(105); // 横向放大。
     font.setWeight(QFont::Black);
@@ -131,7 +145,7 @@ void ECGSTTrendWidget::setTextSize(void)
     QFont font1 = fontManager.numFont(fontsize);
     font1.setWeight(QFont::Black);
 
-    for (int i = ECG_ST_I;i<ECG_ST_NR;i++)
+    for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
     {
         _stLabel[i]->setFont(font1);
 
@@ -153,7 +167,7 @@ ECGSTTrendWidget::ECGSTTrendWidget() : TrendWidget("ECGSTTrendWidget")
 
 
     QHBoxLayout *hlayout[ECG_ST_NR];
-    for (int i = ECG_ST_I;i<ECG_ST_NR;i++)
+    for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
     {
         _stLabel[i] = new QLabel();
         _stLabel[i]->setPalette(palette);
@@ -205,16 +219,16 @@ ECGSTTrendWidget::ECGSTTrendWidget() : TrendWidget("ECGSTTrendWidget")
     QHBoxLayout *mainlayout = new QHBoxLayout();
     mainlayout->setMargin(1);
     mainlayout->setSpacing(1);
-    mainlayout->addLayout(vlayout0,1);
-    mainlayout->addLayout(vlayout1,1);
-    mainlayout->addLayout(vlayout2,1);
+    mainlayout->addLayout(vlayout0, 1);
+    mainlayout->addLayout(vlayout1, 1);
+    mainlayout->addLayout(vlayout2, 1);
 
 //    contentLayout->addStretch(1);
     contentLayout->addLayout(mainlayout);
 //    contentLayout->addStretch(1);
 
     // 释放事件。
-    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 }
 
 /**************************************************************************************************
@@ -222,5 +236,4 @@ ECGSTTrendWidget::ECGSTTrendWidget() : TrendWidget("ECGSTTrendWidget")
  *************************************************************************************************/
 ECGSTTrendWidget::~ECGSTTrendWidget()
 {
-
 }

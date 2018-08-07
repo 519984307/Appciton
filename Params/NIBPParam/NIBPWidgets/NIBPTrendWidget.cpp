@@ -22,7 +22,6 @@
 #include "IConfig.h"
 #include "TrendWidgetLabel.h"
 #include "MainMenuWindow.h"
-#include "NIBPMenuContent.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -33,7 +32,7 @@ void NIBPTrendWidget::_releaseHandle(IWidget *iWidget)
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
     MainMenuWindow *p = MainMenuWindow::getInstance();
-    p->popup(NIBPMenuContent::getInstance() , x , y);
+    p->popup(trs("NIBPMenu") , x , y);
 }
 
 /**************************************************************************************************

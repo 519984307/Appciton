@@ -16,7 +16,7 @@ class AGMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    static AGMenuContent *getInstace(void);
+    AGMenuContent();
     ~AGMenuContent();
 
     /* reimplement */
@@ -30,5 +30,4 @@ private slots:
 
 private:
     AGMenuContentPrivate * const d_ptr;
-    AGMenuContent();
 };

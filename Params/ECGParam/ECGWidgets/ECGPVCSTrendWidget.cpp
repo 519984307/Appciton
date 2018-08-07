@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/7
+ **/
+
+
 #include "ECGPVCSTrendWidget.h"
 #include "ParamManager.h"
 #include "ColorManager.h"
@@ -8,22 +19,24 @@
 #include <QHBoxLayout>
 #include "TrendWidgetLabel.h"
 #include "WindowManager.h"
+#include "MainMenuWindow.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
-void ECGPVCSTrendWidget::_releaseHandle(IWidget *)
+void ECGPVCSTrendWidget::_releaseHandle(IWidget * iWidget)
 {
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
-    publicMenuManager.popup(&ecgMenu, x, y);
+    MainMenuWindow *p = MainMenuWindow::getInstance();
+    p->popup(trs("ECGMenu") , x , y);
 }
 
 /**************************************************************************************************
  * 设置HR的值。
  *************************************************************************************************/
-void ECGPVCSTrendWidget::setPVCSValue(short pvcs)
+void ECGPVCSTrendWidget::setPVCSValue(int16_t pvcs)
 {
     if (pvcs == InvData())
     {
@@ -90,8 +103,8 @@ void ECGPVCSTrendWidget::setTextSize(void)
     // 字体。
 //    int fontsize = fontManager.adjustNumFontSizeXML(r);
 //    fontsize = fontManager.getFontSize(fontsize);
-    int fontsize = fontManager.adjustNumFontSize(r,true);
-    QFont font = fontManager.numFont(fontsize, true);
+    int fontsize = fontManager.adjustNumFontSize(r , true);
+    QFont font = fontManager.numFont(fontsize , true);
 //    font.setStretch(105); // 横向放大。
     font.setWeight(QFont::Black);
 
@@ -129,7 +142,7 @@ ECGPVCSTrendWidget::ECGPVCSTrendWidget() : TrendWidget("ECGPVCSTrendWidget")
     contentLayout->addStretch(1);
 
     // 释放事件。
-    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
     _isAlarm = false;
 }
@@ -139,5 +152,4 @@ ECGPVCSTrendWidget::ECGPVCSTrendWidget() : TrendWidget("ECGPVCSTrendWidget")
  *************************************************************************************************/
 ECGPVCSTrendWidget::~ECGPVCSTrendWidget()
 {
-
 }

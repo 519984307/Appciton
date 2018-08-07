@@ -68,16 +68,6 @@ COMenuContent::COMenuContent()
 {
 }
 
-COMenuContent *COMenuContent::getInstance()
-{
-    static COMenuContent *instance = NULL;
-    if (instance == NULL)
-    {
-        instance = new COMenuContent;
-    }
-    return instance;
-}
-
 COMenuContent::~COMenuContent()
 {
     delete d_ptr;

@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/7
+ **/
+
+
 #include "IBPTrendWidget.h"
 #include "IBPParam.h"
 #include "PublicMenuManager.h"
@@ -9,13 +20,14 @@
 #include "IBPMenu.h"
 #include <QDebug>
 #include <QGroupBox>
+#include "MainMenuWindow.h"
 
 /**************************************************************************************************
  * 设置测量结果的数据。
  *************************************************************************************************/
-void IBPTrendWidget::setData(short sys, short dia, short map)
+void IBPTrendWidget::setData(int16_t sys, int16_t dia, int16_t map)
 {
-    if((_entitle < IBP_PRESSURE_CVP) || (_entitle > IBP_PRESSURE_ICP))
+    if ((_entitle < IBP_PRESSURE_CVP) || (_entitle > IBP_PRESSURE_ICP))
     {
         if (!_isZero)
         {
@@ -30,9 +42,9 @@ void IBPTrendWidget::setData(short sys, short dia, short map)
         }
         else
         {
-            short calSys = sys;
-            short calDia = dia;
-            short calMap = map;
+            int16_t calSys = sys;
+            int16_t calDia = dia;
+            int16_t calMap = map;
             setShowStacked(1);
             _sysString = QString::number(calSys);
             _diaString = QString::number(calDia);
@@ -48,11 +60,11 @@ void IBPTrendWidget::setData(short sys, short dia, short map)
         else if (map == InvData())
         {
             setShowStacked(2);
-           _veinString = InvStr();
+            _veinString = InvStr();
         }
         else
         {
-            short calMap = map;
+            int16_t calMap = map;
             setShowStacked(2);
             _veinString = QString::number(calMap);
         }
@@ -147,7 +159,7 @@ void IBPTrendWidget::showValue()
     QPalette p = palette();
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
     QColor fgColor = (psrc.windowText().color() == Qt::white) ? Qt::black :
-          psrc.windowText().color();
+                     psrc.windowText().color();
     if (_sysAlarm || _diaAlarm || _mapAlarm)
     {
         if (p.window().color() != Qt::white)
@@ -292,10 +304,10 @@ IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPPressureName &
     _stackedwidget->addWidget(_groupBox1);
     _stackedwidget->addWidget(_groupBox2);
 
-    contentLayout->addWidget(_stackedwidget,Qt::AlignCenter);
+    contentLayout->addWidget(_stackedwidget, Qt::AlignCenter);
 
     // 释放事件。
-    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 }
 
 /**************************************************************************************************
@@ -303,7 +315,6 @@ IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPPressureName &
  *************************************************************************************************/
 IBPTrendWidget::~IBPTrendWidget()
 {
-
 }
 
 /**************************************************************************************************
@@ -312,8 +323,8 @@ IBPTrendWidget::~IBPTrendWidget()
 void IBPTrendWidget::setTextSize()
 {
     QRect r;
-    r.setSize(QSize(((width() - nameLabel->width())/4),((height() / 4) * 3)));
-    int fontsize = fontManager.adjustNumFontSize(r,true);
+    r.setSize(QSize(((width() - nameLabel->width()) / 4), ((height() / 4) * 3)));
+    int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
 
@@ -333,10 +344,11 @@ void IBPTrendWidget::setTextSize()
     _zeroWarn->setFont(font);
 }
 
-void IBPTrendWidget::_releaseHandle(IWidget *)
+void IBPTrendWidget::_releaseHandle(IWidget *iWidget)
 {
     QRect r = windowManager.getMenuArea();
     int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
     int y = r.y() + (r.height() - publicMenuManager.height());
-    publicMenuManager.popup(&ibpMenu, x, y);
+    MainMenuWindow *p = MainMenuWindow::getInstance();
+    p->popup(trs("IBPMenu") , x , y);
 }
