@@ -418,6 +418,8 @@ void EventWaveWidget::paintEvent(QPaintEvent *ev)
 
     QWidget::paintEvent(ev);
     QPainter painter(this);
+    painter.setPen(QPen(Qt::gray));
+    painter.drawLine(rect().topRight(), rect().bottomRight());
     painter.setPen(QPen(Qt::white));
     int fontSize = fontManager.getFontSize(4);
     QFont font = fontManager.textFont(fontSize);

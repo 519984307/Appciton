@@ -23,6 +23,7 @@
 #include "EventReviewWindow.h"
 #include "EventWindow.h"
 #include "OxyCRGEventWidget.h"
+#include "OxyCRGEventWindow.h"
 #include "HistoryDataReviewWidget.h"
 #include "TrendGraphWindow.h"
 
@@ -201,24 +202,25 @@ void RescueDataSoftKeyAction::oxyCRGEventReview(bool isPressed)
         return;
     }
 
-    bool isVisible = oxyCRGEventWidget.isVisible();
-    while (NULL != QApplication::activeModalWidget())
-    {
-        QApplication::activeModalWidget()->hide();
-        menuManager.close();
-    }
+//    bool isVisible = oxyCRGEventWidget.isVisible();
+//    while (NULL != QApplication::activeModalWidget())
+//    {
+//        QApplication::activeModalWidget()->hide();
+//        menuManager.close();
+//    }
 
-    if (isVisible)
-    {
-        return;
-    }
+//    if (isVisible)
+//    {
+//        return;
+//    }
 
-    QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
-    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-    // summaryRescueDataWidget.autoShow(x, y);
-    oxyCRGEventWidget.setHistoryData(false);
-    oxyCRGEventWidget.autoShow(x, y);
+//    QRect r = windowManager.getMenuArea();
+//    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
+//    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
+//    // summaryRescueDataWidget.autoShow(x, y);
+//    oxyCRGEventWidget.setHistoryData(false);
+//    oxyCRGEventWidget.autoShow(x, y);
+    windowManager.showWindow(&oxyCRGEventWindow);
 }
 
 void RescueDataSoftKeyAction::historyReview(bool isPressed)

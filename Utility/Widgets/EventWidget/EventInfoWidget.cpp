@@ -48,6 +48,8 @@ void EventInfoWidget::paintEvent(QPaintEvent *e)
     QWidget::paintEvent(e);
 
     QPainter painter(this);
+    painter.setPen(QPen(Qt::gray));
+    painter.drawLine(rect().bottomLeft(), rect().bottomRight());
     painter.setPen(QPen(Qt::yellow));
     int fontSize = fontManager.getFontSize(4);
     QFont font = fontManager.textFont(fontSize);
