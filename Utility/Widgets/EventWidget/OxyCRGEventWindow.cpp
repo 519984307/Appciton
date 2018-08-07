@@ -93,7 +93,8 @@ public:
 
     bool parseEventData(int dataIndex)
     {
-        if (!backend || dataIndex >= backend->getBlockNR() || dataIndex < 0)
+        int blockNR = static_cast<int>(backend->getBlockNR());
+        if (!backend || dataIndex >= blockNR || dataIndex < 0)
         {
             return false;
         }
