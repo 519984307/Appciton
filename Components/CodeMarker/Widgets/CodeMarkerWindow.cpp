@@ -25,29 +25,29 @@ class CodeMarkerWindowPrivate
 {
 public:
     CodeMarkerWindowPrivate()
-        : _isPress(false)
-        , _isChosen(false)
-        , _codeMarkerNum(0)
-        , _scrollArea(NULL)
-        , _timer(NULL)
-        , _closeTimer(NULL)
+        : isPress(false)
+        , isChosen(false)
+        , codeMarkerNum(0)
+        , scrollArea(NULL)
+        , timer(NULL)
+        , closeTimer(NULL)
     {
         for (int i = 0 ; i < 30 ; i++)
         {
-            _codeMarkerButton[i] = NULL;
+            codeMarkerButton[i] = NULL;
         }
     }
 
-    QScrollArea *_scrollArea;
-    QList<Button *> _button;
-    Button *_codeMarkerButton[30];
-    QStringList _origCodeMarker;      // 未经过翻译的code emarker。
-    QStringList _localeCodeMarker;    // 翻译后的code emarker。
-    QTimer *_timer;
-    QTimer *_closeTimer;
-    bool _isPress;                    // codemark按钮被按下
-    bool _isChosen;                   // codemark按钮已按下选中
-    int _codeMarkerNum;
+    QScrollArea *scrollArea;
+    QList<Button *> button;
+    Button *codeMarkerButton[30];
+    QStringList origCodeMarker;      // 未经过翻译的code emarker。
+    QStringList localeCodeMarker;    // 翻译后的code emarker。
+    QTimer *timer;
+    QTimer *closeTimer;
+    bool isPress;                    // codemark按钮被按下
+    bool isChosen;                   // codemark按钮已按下选中
+    int codeMarkerNum;
 };
 
 CodeMarkerWindow::CodeMarkerWindow() : Window()
@@ -59,14 +59,14 @@ CodeMarkerWindow::CodeMarkerWindow() : Window()
     QString markerStr = "CodeMarker|SelectMarker|Language";
     markerStr += QString::number(num, 10);
     currentConfig.getStrValue(markerStr, codemarkerStr);
-    d_ptr->_origCodeMarker = codemarkerStr.split(',');
-    for (int i = 0; i < d_ptr->_origCodeMarker.size(); i++)
+    d_ptr->origCodeMarker = codemarkerStr.split(',');
+    for (int i = 0; i < d_ptr->origCodeMarker.size(); i++)
     {
-        d_ptr->_localeCodeMarker.append(trs(d_ptr->_origCodeMarker[i]));
+        d_ptr->localeCodeMarker.append(trs(d_ptr->origCodeMarker[i]));
     }
 
     setPress(false);
-    d_ptr->_isChosen = false;
+    d_ptr->isChosen = false;
 
 
     int fontSize = fontManager.getFontSize(1);
@@ -79,22 +79,22 @@ CodeMarkerWindow::CodeMarkerWindow() : Window()
     widget->setFixedWidth(windowManager.getPopMenuWidth() - borderWidth * 2 - barWidth);
     setFixedWidth(windowManager.getPopMenuWidth());
     // srocll
-    d_ptr->_scrollArea = new QScrollArea();
-    d_ptr->_scrollArea->setFocusPolicy(Qt::NoFocus);
-    d_ptr->_scrollArea->setFrameStyle(QFrame::NoFrame);
-    d_ptr->_scrollArea->setAlignment(Qt::AlignTop);
-    d_ptr->_scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    d_ptr->_scrollArea->verticalScrollBar()->setFixedWidth(barWidth);
+    d_ptr->scrollArea = new QScrollArea();
+    d_ptr->scrollArea->setFocusPolicy(Qt::NoFocus);
+    d_ptr->scrollArea->setFrameStyle(QFrame::NoFrame);
+    d_ptr->scrollArea->setAlignment(Qt::AlignTop);
+    d_ptr->scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    d_ptr->scrollArea->verticalScrollBar()->setFixedWidth(barWidth);
 
     QGridLayout *layoutG = new QGridLayout();
     layoutG->setContentsMargins(4, 2, 4, 2);
     layoutG->setSpacing(0);
 
-    CodeMarkerWindowButton *codeMarkerButton[d_ptr->_localeCodeMarker.size()];
-    for (int i = 0 ; i < d_ptr->_localeCodeMarker.size() ; i++)
+    CodeMarkerWindowButton *codeMarkerButton[d_ptr->localeCodeMarker.size()];
+    for (int i = 0 ; i < d_ptr->localeCodeMarker.size() ; i++)
     {
         codeMarkerButton[i] = new CodeMarkerWindowButton(i);
-        codeMarkerButton[i]->setText(d_ptr->_localeCodeMarker[i]);
+        codeMarkerButton[i]->setText(d_ptr->localeCodeMarker[i]);
         codeMarkerButton[i]->setButtonStyle(Button::ButtonTextOnly);
         codeMarkerButton[i]->setBorderWidth(0);
         codeMarkerButton[i]->setFont(fontManager.textFont(fontSize));
@@ -106,13 +106,13 @@ CodeMarkerWindow::CodeMarkerWindow() : Window()
 
     setWindowLayout(layoutG);
 
-    d_ptr->_timer = new QTimer();
-    d_ptr->_timer->setInterval(5000);
-    connect(d_ptr->_timer, SIGNAL(timeout()), this, SLOT(_closeWidgetTimerFun()));
+    d_ptr->timer = new QTimer();
+    d_ptr->timer->setInterval(5000);
+    connect(d_ptr->timer, SIGNAL(timeout()), this, SLOT(_closeWidgetTimerFun()));
 
-    d_ptr->_closeTimer = new QTimer();
-    d_ptr->_closeTimer->setInterval(500);
-    connect(d_ptr->_closeTimer, SIGNAL(timeout()), this, SLOT(_timerOut()));
+    d_ptr->closeTimer = new QTimer();
+    d_ptr->closeTimer->setInterval(500);
+    connect(d_ptr->closeTimer, SIGNAL(timeout()), this, SLOT(_timerOut()));
 }
 
 CodeMarkerWindow::~CodeMarkerWindow()
@@ -122,17 +122,17 @@ CodeMarkerWindow::~CodeMarkerWindow()
 
 void CodeMarkerWindow::setPress(bool flag)
 {
-    d_ptr->_isPress = flag;
+    d_ptr->isPress = flag;
 }
 
 bool CodeMarkerWindow::getPress()
 {
-    return d_ptr->_isPress;
+    return d_ptr->isPress;
 }
 
 void CodeMarkerWindow::changeScrollValue(int value)
 {
-    QScrollBar *bar = d_ptr->_scrollArea->verticalScrollBar();
+    QScrollBar *bar = d_ptr->scrollArea->verticalScrollBar();
     if (NULL != bar)
     {
         if (1 == value)
@@ -148,19 +148,19 @@ void CodeMarkerWindow::changeScrollValue(int value)
 
 int CodeMarkerWindow::getCodeMarkerTypeSize()
 {
-    return d_ptr->_localeCodeMarker.size();
+    return d_ptr->localeCodeMarker.size();
 }
 
 void CodeMarkerWindow::startTimer()
 {
-    d_ptr->_timer->start();
+    d_ptr->timer->start();
 }
 
 void CodeMarkerWindow::showEvent(QShowEvent *e)
 {
     setPress(false);
-    d_ptr->_isChosen = false;
-    d_ptr->_timer->start();
+    d_ptr->isChosen = false;
+    d_ptr->timer->start();
     Window::showEvent(e);
 
     // 居中显示。
@@ -177,10 +177,10 @@ void CodeMarkerWindow::hideEvent(QHideEvent *e)
         // summaryStorageManager.addCodeMarker(timeManager.getCurTime(),
         //        defCodeMarker.toLocal8Bit().constData());
     }
-    d_ptr->_timer->stop();
+    d_ptr->timer->stop();
 
     setPress(false);
-    d_ptr->_isChosen = false;
+    d_ptr->isChosen = false;
 
     Window::hideEvent(e);
 }
@@ -194,11 +194,11 @@ void CodeMarkerWindow::_btnReleased()
 {
     CodeMarkerWindowButton *btn = qobject_cast<CodeMarkerWindowButton *>(sender());
     int index = btn->property("Item").toInt();
-    if (!d_ptr->_isChosen)
+    if (!d_ptr->isChosen)
     {
-        d_ptr->_closeTimer->start();
-        d_ptr->_codeMarkerNum = index;
-        d_ptr->_isChosen = true;
+        d_ptr->closeTimer->start();
+        d_ptr->codeMarkerNum = index;
+        d_ptr->isChosen = true;
     }
 }
 
@@ -209,7 +209,7 @@ void CodeMarkerWindow::_closeWidgetTimerFun()
 
 void CodeMarkerWindow::_timerOut()
 {
-    d_ptr->_closeTimer->stop();
+    d_ptr->closeTimer->stop();
     // 存储code marker数据到summary。
     // summaryStorageManager.addCodeMarker(timeManager.getCurTime(),
     //        _localeCodeMarker[_codeMarkerNum].toLocal8Bit().constData());
