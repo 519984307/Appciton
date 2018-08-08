@@ -22,8 +22,6 @@
 #include "HistoryDataSelWindow.h"
 #include "WindowManager.h"
 
-HistoryDataReviewWindow *HistoryDataReviewWindow::selfObj = NULL;
-
 class HistoryDataReviewWindowPrivate
 {
 public:
@@ -42,6 +40,16 @@ public:
     QMap<ButtonItem, Button *> buttons;
     QString selHistoryDataPath;
 };
+
+HistoryDataReviewWindow *HistoryDataReviewWindow::getInstance()
+{
+    static HistoryDataReviewWindow *instance = NULL;
+    if (!instance)
+    {
+        instance = new HistoryDataReviewWindow;
+    }
+    return instance;
+}
 
 HistoryDataReviewWindow::~HistoryDataReviewWindow()
 {
@@ -78,24 +86,24 @@ void HistoryDataReviewWindow::onButtonReleased()
         switch (item)
         {
         case HistoryDataReviewWindowPrivate::ITEM_TREND_TABLE:
-            trendTableWindow.setHistoryDataPath(d_ptr->selHistoryDataPath);
-            trendTableWindow.setHistoryData(true);
-            windowManager.showWindow(&trendTableWindow);
+            TrendTableWindow::getInstance()->setHistoryDataPath(d_ptr->selHistoryDataPath);
+            TrendTableWindow::getInstance()->setHistoryData(true);
+            windowManager.showWindow(TrendTableWindow::getInstance());
             break;
         case HistoryDataReviewWindowPrivate::ITEM_TREND_GRAPH:
-            trendGraphWindow.setHistoryDataPath(d_ptr->selHistoryDataPath);
-            trendGraphWindow.setHistoryData(true);
-            windowManager.showWindow(&trendGraphWindow);
+            TrendGraphWindow::getInstance()->setHistoryDataPath(d_ptr->selHistoryDataPath);
+            TrendGraphWindow::getInstance()->setHistoryData(true);
+            windowManager.showWindow(TrendGraphWindow::getInstance());
             break;
         case HistoryDataReviewWindowPrivate::ITEM_EVENT_REVIEW:
-            eventWindow.setHistoryDataPath(d_ptr->selHistoryDataPath);
-            eventWindow.setHistoryData(true);
-            windowManager.showWindow(&eventWindow);
+            EventWindow::getInstance()->setHistoryDataPath(d_ptr->selHistoryDataPath);
+            EventWindow::getInstance()->setHistoryData(true);
+            windowManager.showWindow(EventWindow::getInstance());
             break;
         case HistoryDataReviewWindowPrivate::ITEM_OXYCRGEVENT_REVIEW:
-            oxyCRGEventWindow.setHistoryDataPath(d_ptr->selHistoryDataPath);
-            oxyCRGEventWindow.setHistoryData(true);
-            windowManager.showWindow(&oxyCRGEventWindow);
+            OxyCRGEventWindow::getInstance()->setHistoryDataPath(d_ptr->selHistoryDataPath);
+            OxyCRGEventWindow::getInstance()->setHistoryData(true);
+            windowManager.showWindow(OxyCRGEventWindow::getInstance());
             break;
         case HistoryDataReviewWindowPrivate::ITEM_HISTORY_TIME:
         {

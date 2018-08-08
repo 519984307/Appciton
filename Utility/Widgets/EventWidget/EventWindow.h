@@ -18,14 +18,7 @@ class EventWindow : public Window
 {
     Q_OBJECT
 public:
-    static EventWindow &construction()
-    {
-        if (NULL == selfObj)
-        {
-            selfObj = new EventWindow();
-        }
-        return *selfObj;
-    }
+    static EventWindow *getInstance();
     ~EventWindow();
 
     /**
@@ -71,8 +64,5 @@ private slots:
 
 private:
     EventWindow();
-    static EventWindow *selfObj;
     QScopedPointer<EventWindowPrivate> d_ptr;
 };
-#define eventWindow             (EventWindow::construction())
-#define deleteEventWindow       (delete EventWindow::selfObj)

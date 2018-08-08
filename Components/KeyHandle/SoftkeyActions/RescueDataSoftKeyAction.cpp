@@ -63,25 +63,8 @@ void RescueDataSoftKeyAction::trendReview(bool isPressed)
         return;
     }
 
-//    bool isVisible = trendDataWidget.isVisible();
-//    while (NULL != QApplication::activeModalWidget())
-//    {
-//        QApplication::activeModalWidget()->hide();
-//        menuManager.close();
-//    }
-
-//    if (isVisible)
-//    {
-//        return;
-//    }
-
-//    QRect r = windowManager.getMenuArea();
-//    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
-//    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-//    trendDataWidget.setHistoryData(false);
-//    trendDataWidget.autoShow(x, y);
-    trendTableWindow.setHistoryData(false);
-    windowManager.showWindow(&trendTableWindow);
+    TrendTableWindow::getInstance()->setHistoryData(false);
+    windowManager.showWindow(TrendTableWindow::getInstance());
 }
 
 /***************************************************************************************************
@@ -94,25 +77,8 @@ void RescueDataSoftKeyAction::summaryReview(bool isPressed)
         return;
     }
 
-//    bool isVisible = trendGraphWidget.isVisible();
-//    while (NULL != QApplication::activeModalWidget())
-//    {
-//        QApplication::activeModalWidget()->hide();
-//        menuManager.close();
-//    }
-
-//    if (isVisible)
-//    {
-//        return;
-//    }
-
-//    QRect r = windowManager.getMenuArea();
-//    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
-//    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-//    trendGraphWidget.setHistoryData(false);
-//    trendGraphWidget.autoShow(x, y);
-    trendGraphWindow.setHistoryData(false);
-    windowManager.showWindow(&trendGraphWindow);
+    TrendGraphWindow::getInstance()->setHistoryData(false);
+    windowManager.showWindow(TrendGraphWindow::getInstance());
 }
 
 /***************************************************************************************************
@@ -124,23 +90,6 @@ void RescueDataSoftKeyAction::exportData(bool isPressed)
     {
         return;
     }
-
-//    bool isVisible = rescueDataExportWidget.isVisible();
-//    while (NULL != QApplication::activeModalWidget())
-//    {
-//        QApplication::activeModalWidget()->hide();
-//        menuManager.close();
-//    }
-
-//    if (isVisible)
-//    {
-//        return;
-//    }
-
-//    QRect r = windowManager.getMenuArea();
-//    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
-//    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-//    rescueDataExportWidget.autoShow(x, y);
 }
 
 /***************************************************************************************************
@@ -177,26 +126,8 @@ void RescueDataSoftKeyAction::eventReview(bool isPressed)
         return;
     }
 
-//    bool isVisible = eventReviewWindow.isVisible();
-//    while (NULL != QApplication::activeModalWidget())
-//    {
-//        QApplication::activeModalWidget()->hide();
-//        menuManager.close();
-//    }
-
-//    if (isVisible)
-//    {
-//        return;
-//    }
-
-//    QRect r = windowManager.getMenuArea();
-//    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
-//    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-//    // summaryRescueDataWidget.autoShow(x, y);
-//    eventReviewWindow.setHistoryData(false);
-//    eventReviewWindow.autoShow(x, y);
-    eventWindow.setHistoryData(false);
-    windowManager.showWindow(&eventWindow);
+    EventWindow::getInstance()->setHistoryData(false);
+    windowManager.showWindow(EventWindow::getInstance());
 }
 
 void RescueDataSoftKeyAction::oxyCRGEventReview(bool isPressed)
@@ -206,26 +137,8 @@ void RescueDataSoftKeyAction::oxyCRGEventReview(bool isPressed)
         return;
     }
 
-//    bool isVisible = oxyCRGEventWidget.isVisible();
-//    while (NULL != QApplication::activeModalWidget())
-//    {
-//        QApplication::activeModalWidget()->hide();
-//        menuManager.close();
-//    }
-
-//    if (isVisible)
-//    {
-//        return;
-//    }
-
-//    QRect r = windowManager.getMenuArea();
-//    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
-//    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-//    // summaryRescueDataWidget.autoShow(x, y);
-//    oxyCRGEventWidget.setHistoryData(false);
-//    oxyCRGEventWidget.autoShow(x, y);
-    oxyCRGEventWindow.setHistoryData(false);
-    windowManager.showWindow(&oxyCRGEventWindow);
+    OxyCRGEventWindow::getInstance()->setHistoryData(false);
+    windowManager.showWindow(OxyCRGEventWindow::getInstance());
 }
 
 void RescueDataSoftKeyAction::historyReview(bool isPressed)
@@ -235,23 +148,7 @@ void RescueDataSoftKeyAction::historyReview(bool isPressed)
         return;
     }
 
-//    bool isVisible = historyDataReviewWidget.isVisible();
-//    while (NULL != QApplication::activeModalWidget())
-//    {
-//        QApplication::activeModalWidget()->hide();
-//        menuManager.close();
-//    }
-
-//    if (isVisible)
-//    {
-//        return;
-//    }
-
-//    QRect r = windowManager.getMenuArea();
-//    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
-//    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-//    historyDataReviewWidget.autoShow(x, y);
-    windowManager.showWindow(&historyDataReviewWindow);
+    windowManager.showWindow(HistoryDataReviewWindow::getInstance());
 }
 
 /***************************************************************************************************

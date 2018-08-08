@@ -20,8 +20,6 @@
 #include "RecorderManager.h"
 #include "TrendGraphSetWindow.h"
 
-TrendGraphWindow *TrendGraphWindow::selfObj = NULL;
-
 class TrendGraphWindowPrivate
 {
 public:
@@ -45,6 +43,16 @@ public:
 
     QMap<KeyAction, Button *> buttons;
 };
+TrendGraphWindow *TrendGraphWindow::getInstance()
+{
+    static TrendGraphWindow *instance = NULL;
+    if (!instance)
+    {
+        instance = new TrendGraphWindow;
+    }
+    return instance;
+}
+
 TrendGraphWindow::~TrendGraphWindow()
 {
 }

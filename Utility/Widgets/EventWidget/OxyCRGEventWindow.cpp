@@ -33,8 +33,6 @@
 #include "WindowManager.h"
 #include "DataStorageDefine.h"
 
-OxyCRGEventWindow *OxyCRGEventWindow::selfObj = NULL;
-
 struct OxyCRGEventContex
 {
     OxyCRGEventContex()
@@ -211,6 +209,16 @@ public:
     bool isHistory;                             // 历史回顾标志
     QString historyDataPath;                    // 历史数据路径
 };
+
+OxyCRGEventWindow *OxyCRGEventWindow::getInstance()
+{
+    static OxyCRGEventWindow *instance = NULL;
+    if (!instance)
+    {
+        instance = new OxyCRGEventWindow;
+    }
+    return instance;
+}
 
 OxyCRGEventWindow::~OxyCRGEventWindow()
 {

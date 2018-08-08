@@ -53,8 +53,6 @@
 #define TABLE_ITEM_WIDTH        65
 #define TABLE_ITEM_HEIGHT       35
 
-TrendTableWindow *TrendTableWindow::_selfObj = NULL;
-
 class TrendTableWindowPrivate
 {
 public:
@@ -80,6 +78,16 @@ public:
 
     int curSecCol;                         // 当前选中列
 };
+
+TrendTableWindow *TrendTableWindow::getInstance()
+{
+    static TrendTableWindow *instance = NULL;
+    if (!instance)
+    {
+        instance = new TrendTableWindow;
+    }
+    return instance;
+}
 
 TrendTableWindow::~TrendTableWindow()
 {

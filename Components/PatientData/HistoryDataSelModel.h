@@ -10,6 +10,7 @@
 
 #pragma once
 #include <QAbstractTableModel>
+#include <QScopedPointer>
 
 class HistoryDataSelModelPrivate;
 class HistoryDataSelModel : public QAbstractTableModel
@@ -31,11 +32,23 @@ public:
     /* reimplement */
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
+    /**
+     * @brief getRowHeightHint 获取行高
+     * @return
+     */
     int getRowHeightHint(void);
 
+    /**
+     * @brief updateData 更新载入历史数据文件名
+     */
     void updateData(void);
 
+    /**
+     * @brief getDateTimeStr 获取转换后的日期字符串
+     * @param index 指定索引
+     * @return
+     */
     QString getDateTimeStr(int index);
 private:
-    HistoryDataSelModelPrivate * const d_ptr;
+    QScopedPointer<HistoryDataSelModelPrivate> d_ptr;
 };

@@ -35,12 +35,9 @@ public:
         upRuler->setArrow(false);
 
         QHBoxLayout *mainlayout = new QHBoxLayout();
-//        manlayout->setSpacing(2);
-//        manlayout->setMargin(0);
 
         mainlayout->addWidget(label);
         mainlayout->addWidget(combo);
-//        combo->setSpacing(2);
         mainlayout->addWidget(downRuler);
         mainlayout->addWidget(upRuler);
 
@@ -79,8 +76,15 @@ public:
     ~TrendGraphSetWindow();
 
 public:
+    /**
+     * @brief getTrendGroup 获取当前趋势组
+     * @return
+     */
     TrendGroup getTrendGroup();
 
+    /**
+     * @brief upDateTrendGroup 更新对应趋势组的数据
+     */
     void upDateTrendGroup(void);
 
 protected:
@@ -109,6 +113,11 @@ private slots:
 
     void onComboBoxChanged(int index);
 
+    /**
+     * @brief upDownRulerChange 上下限标尺改变
+     * @param value 值
+     * @param scale 比例
+     */
     void upDownRulerChange(int value, int scale);
 
 private:

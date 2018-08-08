@@ -44,8 +44,6 @@
 #include "DataStorageDefine.h"
 #include "TableViewItemDelegate.h"
 
-EventWindow *EventWindow::selfObj = NULL;
-
 class EventWindowPrivate
 {
 public:
@@ -138,6 +136,16 @@ public:
     bool isHistory;                     // 历史回顾标志
     QString historyDataPath;            // 历史数据路径
 };
+
+EventWindow *EventWindow::getInstance()
+{
+    static EventWindow *instance = NULL;
+    if (!instance)
+    {
+        instance = new EventWindow;
+    }
+    return instance;
+}
 
 EventWindow::~EventWindow()
 {

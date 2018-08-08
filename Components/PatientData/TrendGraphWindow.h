@@ -17,14 +17,7 @@ class TrendGraphWindow : public Window
 {
     Q_OBJECT
 public:
-    static TrendGraphWindow &construction()
-    {
-        if (NULL == selfObj)
-        {
-            selfObj = new TrendGraphWindow();
-        }
-        return *selfObj;
-    }
+    static TrendGraphWindow *getInstance();
     ~TrendGraphWindow();
 
 public:
@@ -52,9 +45,6 @@ private slots:
     void onButtonReleased(void);
 
 private:
-    static TrendGraphWindow *selfObj;
     TrendGraphWindow();
     QScopedPointer<TrendGraphWindowPrivate> d_ptr;
 };
-#define trendGraphWindow (TrendGraphWindow::construction())
-#define deleteTrendGraphWindow() (delete TrendGraphWindow::selfObj)

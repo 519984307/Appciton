@@ -95,7 +95,7 @@ void HistoryDataSelWindow::itemSelReleased(QModelIndex index)
 {
     int dataIndex = index.row() * 2 + index.column();
     QString timeStr = d_ptr->model->getDateTimeStr(dataIndex);
-    historyDataReviewWindow.setHistoryReviewIndex(dataIndex, timeStr);
+    HistoryDataReviewWindow::getInstance()->setHistoryReviewIndex(dataIndex, timeStr);
     close();
 }
 

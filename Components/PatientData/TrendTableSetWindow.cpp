@@ -57,21 +57,21 @@ void TrendTableSetWindow::showEvent(QShowEvent *ev)
 void TrendTableSetWindow::hideEvent(QHideEvent *ev)
 {
     Window::hideEvent(ev);
-    windowManager.showWindow(&trendTableWindow);
+    windowManager.showWindow(TrendTableWindow::getInstance());
 }
 
 void TrendTableSetWindow::timeIntervalReleased(int t)
 {
     QString prefix = "TrendTable|ResolutionRatio";
     systemConfig.setNumValue(prefix, t);
-    trendTableWindow.setTimeInterval(t);
+    TrendTableWindow::getInstance()->setTimeInterval(t);
 }
 
 void TrendTableSetWindow::trendGroupReleased(int g)
 {
     QString prefix = "TrendTable|TrendGroup";
     systemConfig.setNumValue(prefix, g);
-    trendTableWindow.setTrendGroup(g);
+    TrendTableWindow::getInstance()->setTrendGroup(g);
 }
 
 void TrendTableSetWindow::incidentReleased(int type)

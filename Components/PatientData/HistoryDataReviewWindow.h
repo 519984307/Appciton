@@ -17,14 +17,7 @@ class HistoryDataReviewWindow : public Window
 {
     Q_OBJECT
 public:
-    static HistoryDataReviewWindow &constraction()
-    {
-        if (NULL == selfObj)
-        {
-            selfObj = new HistoryDataReviewWindow();
-        }
-        return *selfObj;
-    }
+    static HistoryDataReviewWindow* getInstance();
     ~HistoryDataReviewWindow();
 
     /**
@@ -42,8 +35,5 @@ private slots:
 
 private:
     HistoryDataReviewWindow();
-    static HistoryDataReviewWindow *selfObj;
     QScopedPointer<HistoryDataReviewWindowPrivate> d_ptr;
 };
-#define historyDataReviewWindow         (HistoryDataReviewWindow::constraction())
-#define deleteHistoryDataReviewWindow   (delete HistoryDataReviewWindow::selfObj)
