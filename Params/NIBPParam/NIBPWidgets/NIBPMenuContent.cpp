@@ -212,11 +212,11 @@ void NIBPMenuContentPrivate::statBtnShow(void)
 {
     if (nibpParam.isConnected())
     {
-        btns[ITEM_BTN_START_STAT]->setDisabled(false);
+        btns[ITEM_BTN_START_STAT]->setEnabled(true);
     }
     else
     {
-        btns[ITEM_BTN_START_STAT]->setDisabled(true);
+        btns[ITEM_BTN_START_STAT]->setEnabled(false);
     }
 
     if (nibpParam.isSTATMeasure())

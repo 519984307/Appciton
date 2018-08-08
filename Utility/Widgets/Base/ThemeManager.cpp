@@ -81,6 +81,28 @@ void ThemeManagerPrivate::loadColorScheme()
     // SpinBox
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlSpinBox, ThemeManager::ElementBackgound,
                                  ThemeManager::StateHighlight), QColor("#C0C6CE"));
+    colorScheme.insert(COLOR_KEY(ThemeManager::ControlSpinBox , ThemeManager::ElementText,
+                                 ThemeManager::StateDisabled), QColor(186, 186, 186));
+    colorScheme.insert(COLOR_KEY(ThemeManager::ControlSpinBox , ThemeManager::ElementBorder,
+                                 ThemeManager::StateDisabled), QColor(225, 225, 225));
+    colorScheme.insert(COLOR_KEY(ThemeManager::ControlSpinBox , ThemeManager::ElementBackgound,
+                                 ThemeManager::StateDisabled), QColor("#EFF0F1"));
+
+    // button
+    colorScheme.insert(COLOR_KEY(ThemeManager::ControlButton , ThemeManager::ElementText,
+                                 ThemeManager::StateDisabled), QColor(186, 186, 186));
+    colorScheme.insert(COLOR_KEY(ThemeManager::ControlButton , ThemeManager::ElementBorder,
+                                 ThemeManager::StateDisabled), QColor(225, 225, 225));
+    colorScheme.insert(COLOR_KEY(ThemeManager::ControlButton , ThemeManager::ElementBackgound,
+                                 ThemeManager::StateDisabled), QColor("#EFF0F1"));
+
+    // comboBox
+    colorScheme.insert(COLOR_KEY(ThemeManager::ControlComboBox, ThemeManager::ElementText,
+                                 ThemeManager::StateDisabled), QColor(186, 186, 186));
+    colorScheme.insert(COLOR_KEY(ThemeManager::ControlComboBox, ThemeManager::ElementBorder,
+                                 ThemeManager::StateDisabled), QColor(225, 225, 225));
+    colorScheme.insert(COLOR_KEY(ThemeManager::ControlComboBox, ThemeManager::ElementBackgound,
+                                 ThemeManager::StateDisabled), QColor("#EFF0F1"));
 }
 
 ThemeManager &ThemeManager::getInstance()

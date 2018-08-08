@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/8
+ **/
+
+
 #include "ColorManager.h"
 #include "IConfig.h"
 
@@ -68,7 +79,7 @@ QColor ColorManager::getColor(const QString &param)
  *************************************************************************************************/
 QColor ColorManager::getHighlight(void)
 {
-    return QColor(227, 89, 42);//(98, 177, 213);
+    return QColor(227, 89, 42);// (98, 177, 213);
 }
 
 /**************************************************************************************************
@@ -96,7 +107,6 @@ QColor ColorManager::getBarBkColor(void)
  *************************************************************************************************/
 ColorManager::ColorManager()
 {
-
 }
 
 /**************************************************************************************************
