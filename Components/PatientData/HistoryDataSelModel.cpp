@@ -48,11 +48,13 @@ HistoryDataSelModel::~HistoryDataSelModel()
 
 int HistoryDataSelModel::columnCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent)
     return COLUMN_COUNT;
 }
 
 int HistoryDataSelModel::rowCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent)
     return d_ptr->firstDataList.count();
 }
 
