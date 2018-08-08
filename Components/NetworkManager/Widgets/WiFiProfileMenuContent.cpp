@@ -101,10 +101,6 @@ void WiFiProfileMenuContent::layoutExec()
     layout->addWidget(label, (row + d_ptr->btns.count()), 0);
     button = new Button();
     button->setButtonStyle(Button::ButtonTextOnly);
-    QPalette pal = button->palette();
-    pal.setColor(QPalette::Disabled, QPalette::WindowText, Qt::black);
-    pal.setColor(QPalette::Disabled, QPalette::Window, QColor("#d0d0d0"));
-    button->setPalette(pal);
     button->setEnabled(false);
     layout->addWidget(button, (row + d_ptr->btns.count()), 1);
     d_ptr->btns.insert(WiFiProfileMenuContentPrivate::ITEM_BTN_SELECT_ACCESSPOINT,
@@ -116,7 +112,6 @@ void WiFiProfileMenuContent::layoutExec()
     layout->addWidget(label, (row + d_ptr->btns.count()), 0);
     button = new Button();
     button->setButtonStyle(Button::ButtonTextOnly);
-    button->setPalette(pal);
     button->setEnabled(false);
     layout->addWidget(button, (row + d_ptr->btns.count()), 1);
     d_ptr->btns.insert(WiFiProfileMenuContentPrivate::ITEM_BTN_LOCAL_IP,
@@ -128,7 +123,6 @@ void WiFiProfileMenuContent::layoutExec()
     layout->addWidget(label, (row + d_ptr->btns.count()), 0);
     button = new Button();
     button->setButtonStyle(Button::ButtonTextOnly);
-    button->setPalette(pal);
     button->setEnabled(false);
     layout->addWidget(button, (row + d_ptr->btns.count()), 1);
     d_ptr->btns.insert(WiFiProfileMenuContentPrivate::ITEM_BTN_MAC_ADDRESS,
