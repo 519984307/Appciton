@@ -26,6 +26,7 @@
 #include "OxyCRGEventWindow.h"
 #include "HistoryDataReviewWidget.h"
 #include "TrendGraphWindow.h"
+#include "HistoryDataReviewWindow.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -79,6 +80,7 @@ void RescueDataSoftKeyAction::trendReview(bool isPressed)
 //    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
 //    trendDataWidget.setHistoryData(false);
 //    trendDataWidget.autoShow(x, y);
+    trendTableWindow.setHistoryData(false);
     windowManager.showWindow(&trendTableWindow);
 }
 
@@ -109,6 +111,7 @@ void RescueDataSoftKeyAction::summaryReview(bool isPressed)
 //    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
 //    trendGraphWidget.setHistoryData(false);
 //    trendGraphWidget.autoShow(x, y);
+    trendGraphWindow.setHistoryData(false);
     windowManager.showWindow(&trendGraphWindow);
 }
 
@@ -192,6 +195,7 @@ void RescueDataSoftKeyAction::eventReview(bool isPressed)
 //    // summaryRescueDataWidget.autoShow(x, y);
 //    eventReviewWindow.setHistoryData(false);
 //    eventReviewWindow.autoShow(x, y);
+    eventWindow.setHistoryData(false);
     windowManager.showWindow(&eventWindow);
 }
 
@@ -220,6 +224,7 @@ void RescueDataSoftKeyAction::oxyCRGEventReview(bool isPressed)
 //    // summaryRescueDataWidget.autoShow(x, y);
 //    oxyCRGEventWidget.setHistoryData(false);
 //    oxyCRGEventWidget.autoShow(x, y);
+    oxyCRGEventWindow.setHistoryData(false);
     windowManager.showWindow(&oxyCRGEventWindow);
 }
 
@@ -230,22 +235,23 @@ void RescueDataSoftKeyAction::historyReview(bool isPressed)
         return;
     }
 
-    bool isVisible = historyDataReviewWidget.isVisible();
-    while (NULL != QApplication::activeModalWidget())
-    {
-        QApplication::activeModalWidget()->hide();
-        menuManager.close();
-    }
+//    bool isVisible = historyDataReviewWidget.isVisible();
+//    while (NULL != QApplication::activeModalWidget())
+//    {
+//        QApplication::activeModalWidget()->hide();
+//        menuManager.close();
+//    }
 
-    if (isVisible)
-    {
-        return;
-    }
+//    if (isVisible)
+//    {
+//        return;
+//    }
 
-    QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
-    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-    historyDataReviewWidget.autoShow(x, y);
+//    QRect r = windowManager.getMenuArea();
+//    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
+//    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
+//    historyDataReviewWidget.autoShow(x, y);
+    windowManager.showWindow(&historyDataReviewWindow);
 }
 
 /***************************************************************************************************

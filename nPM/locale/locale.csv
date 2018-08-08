@@ -805,6 +805,9 @@ SelectSnapshotsToTransfer,选择快照传输,Select Snapshots to Transfer
 SelectSingleIncidentToSelectSnapshots,选择一个营救事件以选择快照！,Select Single Incident to Select Snapshots to print!
 PrintSnapshot,打印快照,Print Snapshot
 PatTrendData,病人趋势数据,Patient Trend Data
+HistoryTrend,历史回顾,History Review
+HistoryDataList,历史数据,History Data
+SelectHistoryData,选择历史数据,Select Data
 TrendTable,趋势表,Trend Table
 TrendGraph,趋势图,Trend Graph
 PreviousEvent,上个事件,Prv Event

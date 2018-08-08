@@ -73,6 +73,22 @@ void TrendGraphWindow::waveNumberChange(int num)
     }
 }
 
+void TrendGraphWindow::setHistoryDataPath(QString path)
+{
+    if (d_ptr->waveWidget)
+    {
+        d_ptr->waveWidget->setHistoryDataPath(path);
+    }
+}
+
+void TrendGraphWindow::setHistoryData(bool flag)
+{
+    if (d_ptr->waveWidget)
+    {
+        d_ptr->waveWidget->setHistoryData(flag);
+    }
+}
+
 void TrendGraphWindow::onButtonReleased()
 {
     Button *button = qobject_cast<Button *>(sender());

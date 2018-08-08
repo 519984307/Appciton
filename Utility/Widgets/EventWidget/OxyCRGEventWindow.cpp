@@ -31,6 +31,7 @@
 #include "RecorderManager.h"
 #include "OxyCRGEventSetWindow.h"
 #include "WindowManager.h"
+#include "DataStorageDefine.h"
 
 OxyCRGEventWindow *OxyCRGEventWindow::selfObj = NULL;
 
@@ -225,6 +226,30 @@ void OxyCRGEventWindow::waveWidgetCompressed(WaveformID id)
     d_ptr->waveInfo.id = id;
     d_ptr->loadWaveformData();
     d_ptr->eventWaveUpdate();
+}
+
+void OxyCRGEventWindow::setHistoryDataPath(QString path)
+{
+    d_ptr->historyDataPath = path;
+}
+
+void OxyCRGEventWindow::setHistoryData(bool flag)
+{
+    // 动态内存释放
+    if (d_ptr->isHistory)
+    {
+        delete d_ptr->backend;
+    }
+
+    d_ptr->isHistory = flag;
+    if ((d_ptr->historyDataPath != "") && d_ptr->isHistory)
+    {
+        d_ptr->backend =  StorageManager::open(d_ptr->historyDataPath + EVENT_DATA_FILE_NAME, QIODevice::ReadWrite);
+    }
+    else
+    {
+        d_ptr->backend = eventStorageManager.backend();
+    }
 }
 
 void OxyCRGEventWindow::showEvent(QShowEvent *ev)
