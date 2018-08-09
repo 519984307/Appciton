@@ -545,7 +545,7 @@ KeyInputPanel::KeyInputPanel(KeyType type)
 
     int space = d_ptr->keySpace;
     QVBoxLayout *mainLayout = new QVBoxLayout();
-    mainLayout->setMargin(2);
+    mainLayout->setMargin(0);
     mainLayout->setSpacing(space);
 
     // 显示框。
@@ -587,7 +587,7 @@ KeyInputPanel::KeyInputPanel(KeyType type)
     {
        QHBoxLayout *hLayout = new QHBoxLayout();
         hLayout->setSpacing(space);
-
+        hLayout->addSpacing(space);
         for (int c = 0; c < 4; c++)
         {
             key = new Button();
@@ -597,9 +597,6 @@ KeyInputPanel::KeyInputPanel(KeyType type)
 
             if (c == 3)
             {
-                pal = key->palette();
-                pal.setColor(QPalette::Background, QColor(185, 190, 194));
-                key->setPalette(pal);
                 if (r <= 2)
                 {
                     key->setButtonStyle(Button::ButtonIconOnly);
@@ -663,8 +660,10 @@ KeyInputPanel::KeyInputPanel(KeyType type)
             hLayout->addWidget(key);
             d_ptr->keys.append(key);
         }
+        hLayout->addSpacing(space);
         mainLayout->addLayout(hLayout);
     }
+    mainLayout->addSpacing(d_ptr->keySpace);
     setWindowLayout(mainLayout);
 }
 
