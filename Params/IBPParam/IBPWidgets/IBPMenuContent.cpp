@@ -16,9 +16,9 @@
 #include "IBPSymbol.h"
 #include "IConfig.h"
 #include "IBPParam.h"
-#include "NumberInput.h"
-#include "IMessageBox.h"
+#include "MessageBox.h"
 #include "Button.h"
+#include "KeyInputPanel.h"
 
 class IBPMenuContentPrivate
 {
@@ -267,8 +267,8 @@ void IBPMenuContent::onButtonReleased()
             break;
         case IBPMenuContentPrivate::ITEM_CBO_CALIBRATION:
         {
-            NumberInput numberPad;
-            numberPad.setTitleBarText(trs("ServiceCalibrate"));
+            KeyInputPanel numberPad;
+            numberPad.setWindowTitle(trs("ServiceCalibrate"));
             numberPad.setMaxInputLength(7);
             numberPad.setInitString(button->text());
             if (numberPad.exec())
@@ -285,7 +285,7 @@ void IBPMenuContent::onButtonReleased()
                     }
                     else
                     {
-                        IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "80-300", QStringList(trs("EnglishYESChineseSURE")));
+                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + " 80-300 ", QStringList(trs("EnglishYESChineseSURE")));
                         messageBox.exec();
                     }
                 }

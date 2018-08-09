@@ -70,9 +70,8 @@ void MenuWindow::addMenuContent(MenuContent *menu)
     }
 }
 
-void MenuWindow::popup(QString menuName , int x, int y)
+void MenuWindow::popup(const QString &menuName)
 {
-//    move(x , y);
     show();
     d_ptr->sidebar->popupWidget(menuName);
 }
