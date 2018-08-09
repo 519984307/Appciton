@@ -2450,6 +2450,9 @@ WindowManager::~WindowManager()
 
 void WindowManager::showWindow(QWidget *w)
 {
+    // 设置窗口为模态
+    w->setWindowModality(Qt::ApplicationModal);
+
     QRect r = _volatileLayout->geometry();
     QPoint globalTopLeft = mapToGlobal(r.topLeft());
     r.moveTo(0, 0);
