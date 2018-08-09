@@ -18,7 +18,7 @@
 #include "WindowManager.h"
 #include "Debug.h"
 #include "KeyBoardPanel.h"
-#include "IMessageBox.h"
+#include "MessageBox.h"
 #include "SystemManager.h"
 #include <QApplication>
 #include "Button.h"
@@ -370,14 +370,14 @@ void WiFiProfileEditorWindowPrivate::onCommit()
     // check input
     if (profileNameBtn->text().isEmpty())
     {
-        IMessageBox(QString(trs("NoProfileName")), QString(trs("PleaseInputProfileName")),
+        MessageBox(QString(trs("NoProfileName")), QString(trs("PleaseInputProfileName")),
                     QStringList(trs("EnglishYESChineseSURE"))).exec();
         return;
     }
 
     if (ssidBtn->text().isEmpty())
     {
-        IMessageBox(QString(trs("NoSSID")), QString(trs("PleaseInputSSIDName")),
+        MessageBox(QString(trs("NoSSID")), QString(trs("PleaseInputSSIDName")),
                     QStringList(trs("EnglishYESChineseSURE"))).exec();
         return;
     }
@@ -388,7 +388,7 @@ void WiFiProfileEditorWindowPrivate::onCommit()
         int keylen = securityKeyBtn->text().length();
         if (keylen < 8 || keylen >= 64)
         {
-            IMessageBox(QString(trs("SecurityKeyError")), QString(trs("WpaPskRequires")),
+            MessageBox(QString(trs("SecurityKeyError")), QString(trs("WpaPskRequires")),
                         QStringList(trs("EnglishYESChineseSURE"))).exec();
             return;
         }

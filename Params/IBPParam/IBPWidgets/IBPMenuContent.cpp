@@ -17,7 +17,7 @@
 #include "IConfig.h"
 #include "IBPParam.h"
 #include "NumberInput.h"
-#include "IMessageBox.h"
+#include "MessageBox.h"
 #include "Button.h"
 
 class IBPMenuContentPrivate
@@ -285,7 +285,7 @@ void IBPMenuContent::onButtonReleased()
                     }
                     else
                     {
-                        IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "80-300", QStringList(trs("EnglishYESChineseSURE")));
+                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "80-300", QStringList(trs("EnglishYESChineseSURE")));
                         messageBox.exec();
                     }
                 }

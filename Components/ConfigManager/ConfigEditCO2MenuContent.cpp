@@ -18,7 +18,7 @@
 #include "CO2Param.h"
 #include "ConfigManager.h"
 #include "NumberInput.h"
-#include "IMessageBox.h"
+#include "MessageBox.h"
 #include "ConfigEditMenuWindow.h"
 
 class ConfigEditCO2MenuContentPrivate
@@ -122,7 +122,7 @@ void ConfigEditCO2MenuContent::onBtnReleasedChanged()
             }
             else
             {
-                IMessageBox messageBox(trs("O2Compensation"), trs("InvalidInput") + "0-100", QStringList(trs("EnglishYESChineseSURE")));
+                MessageBox messageBox(trs("O2Compensation"), trs("InvalidInput") + "0-100", QStringList(trs("EnglishYESChineseSURE")));
                 messageBox.exec();
             }
         }
@@ -142,7 +142,7 @@ void ConfigEditCO2MenuContent::onBtnReleasedChanged()
             }
             else
             {
-                IMessageBox messageBox(trs("N2OCompensation"), trs("InvalidInput") + "0-100",
+                MessageBox messageBox(trs("N2OCompensation"), trs("InvalidInput") + "0-100",
                                        QStringList(trs("EnglishYESChineseSURE")));
                 messageBox.exec();
             }

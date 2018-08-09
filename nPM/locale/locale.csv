@@ -34,9 +34,13 @@ ST-V2,ST-V2,ST-V2
 ST-V3,ST-V3,ST-V3
 ST-V4,ST-V4,ST-V4
 ST-V5,ST-V5,ST-V5
+ExportFailed,导出失败,Export Failed
 ST-V6,ST-V6,ST-V6
 PVCS,PVCS,PVCS
 ST,ST,ST
+Input,输入,Input
+Output,输出,Output
+ReviewWindow,回顾窗口,Review Window
 CO2,二氧化碳,CO2
 ETCO2,呼末CO2,EtCO2
 FICO2,FiCO2,FiCO2

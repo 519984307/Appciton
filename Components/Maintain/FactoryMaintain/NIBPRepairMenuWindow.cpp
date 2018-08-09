@@ -11,7 +11,7 @@
 #include "NIBPProviderIFace.h"
 #include "NIBPServiceStateDefine.h"
 #include "NIBPState.h"
-#include "IMessageBox.h"
+#include "MessageBox.h"
 #include "NIBPRepairMenuWindow.h"
 #include <QWidget>
 #include <QVBoxLayout>
@@ -38,8 +38,8 @@ class NIBPRepairMenuWindowPrivate
 public:
     NIBPRepairMenuWindowPrivate();
 
-    IMessageBox *messageBoxWait;
-    IMessageBox *messageBoxError;
+    MessageBox *messageBoxWait;
+    MessageBox *messageBoxError;
 
     bool replyFlag;                     // 进入维护模式标志
     bool repairError;                   // 维护模式错误
@@ -185,9 +185,9 @@ NIBPRepairMenuWindow::NIBPRepairMenuWindow()
     setWindowTitle(trs("NIBPRepairMenuWindow"));
     d_ptr->repairError = false;
     d_ptr->replyFlag = false;
-    d_ptr->messageBoxWait = new IMessageBox(trs("Warn"), trs("NIBPServiceWaitAgain"),
+    d_ptr->messageBoxWait = new MessageBox(trs("Warn"), trs("NIBPServiceWaitAgain"),
                                             QStringList(trs("EnglishYESChineseSURE")));
-    d_ptr->messageBoxError = new IMessageBox(trs("Warn"), trs("NIBPServiceModuleErrorQuitTryAgain"),
+    d_ptr->messageBoxError = new MessageBox(trs("Warn"), trs("NIBPServiceModuleErrorQuitTryAgain"),
             QStringList(trs("EnglishYESChineseSURE")));
 }
 
