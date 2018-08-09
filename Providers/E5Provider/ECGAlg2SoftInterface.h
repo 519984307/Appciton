@@ -1,48 +1,80 @@
+﻿/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ **/
+
+
 #pragma once
-#include "RTypeDefine.h"
-using namespace E5ECGALG;
+#include "ECGTypeDefine.h"
 
 class ECGInterfaceIFace
 {
 public:
+    virtual ~ECGInterfaceIFace();
 
-	virtual ~ECGInterfaceIFace();
+    // 算法重启
+    virtual void reset() = 0;
 
-	
-	/* 算法初始化设置 */
-	// 设置ECG工作模式：Monitor/Diagnostic/ST/Surgery
-	virtual ECGUsrFlt setEcgMode(ECGUsrFlt ecgcalmode) = 0;
+    //---------------------------- 设置参数 ----------------------------//
+    // ECG工作模式设置: 监护/起搏/除颤
+    virtual bool setWorkMode(ECGAlg::ECGWorkMode workmode) = 0;
 
-	// 导联模式切换 3/5/12
-	virtual ECGMode setLeadMode(ECGMode ecgmode) = 0;
+    // ECG分析模式设置: 监护/诊断/手术/ST
+    virtual bool setCalcMode(ECGAlg::ECGCalcMode calcmode) = 0;
 
-	// 陷波频率设置
-	virtual ECGNotch setNotchFilt(ECGNotch notch) = 0;
+    // 导联模式设置: 3导联/5导联/12导联
+    virtual bool setLeadMode(ECGAlg::ECGLeadMode leadmode) = 0;
 
-	// 计算导联设置
-	virtual ECGLeads setCalLead(ECGLeads calcLead) = 0;
+    // 陷波频率设置: OFF/50Hz/60Hz/50&60Hz
+    virtual bool setNotchType(ECGAlg::ECGNotchFilter notchtype) = 0;
 
-	// 患者类型设置
-	virtual PatientTyp setPatientType(PatientTyp ptype) = 0;
+    // 计算导联设置: I/II/III/V1/V2/V3/V4/V5/V6/aVR/aVL/aVF
+    virtual bool setCalcLead(ECGAlg::ECGLeads calclead) = 0;
 
-	// Pace检测开关设置
-	virtual bool setPaceOnOff(bool onoff) = 0;
+    // 患者类型设置: 成人/少儿/新生儿
+    virtual bool setPatientType(ECGAlg::PatientType ptype) = 0;
 
-	/* 填数据给算法，调用计算 */
-	//1. 送进来的数据解释：iPaceIn   - pace信号的标记，这个是ADAS1000计算得到的体内PACE检测的结果
-	//                     leadoff[] - 导联脱落标志，每一个bit代表一个电极,共9bits
-	//                     ecgData[] - 9导联的心电电极数据,24bit，500Hz
-	virtual void setHandleData(int iPaceIn, short leadoff, int ecgData[]) = 0;
+    // Pace检测开关设置: ON/OFF
+    virtual bool setPaceOnOff(bool onoff) = 0;
 
-	/* 算法输出 */
-	virtual short getHR() = 0;        //输出心率值，返回值为hr,值的范围[0,n],-100范围值计算输入为无效
-	virtual ECG_ARR_ALARM getArr() = 0;       //输出ARR
+    // 自学习开关设置: ON/OFF
+    virtual bool setSelfLearn(bool onoff) = 0;
 
-	//算法输出心电标识
-	virtual void getWaveform(bool &qrsDisp, bool &overload, short &leadoff, short &iPace, int ecgDisplayData[]) = 0;
+    // ARR阈值设置: 设置参数，设置阈值
+    virtual bool setARRThreshold(ECGAlg::ARRPara parameter, short value) = 0;
 
-	/*算法重启*/
-	virtual void reSet() = 0;
+    // ---------------------------- 算法入口 ------------------------------------//
+    // 心电算法调用接口, 参数及心电数据输入
+    /*
+    ecgdisp: 9导心电显示数据, 数组长度为9, 分别对应I/II/III/V1/V2/V3/V4/V5/V6
+    ecgcalc: 9导心电计算数据, 数组长度为9, 分别对应I/II/III/V1/V2/V3/V4/V5/V6
+    qrsdelay: 常规R波检出延时
+    leadoff: 9导电极导联脱落标记, 从高到低按位对应RLD-LA-LL-RA-V1-V2-V3-V4-V5-V6
+    paceflag: 体内起搏标记
+    qrsflag: 快速R波标记
+    overload: 直流过载标记
+    pdblank: PDBlank标记
+    */
+    virtual void setHandleData(int ecgdisp[], int ecgcalc[], int qrsdelay, short leadoff, bool qrsflag, bool paceflag, bool overload, bool pdblank) = 0;
+
+    // ---------------------------- 算法输出项 -----------------------------------//
+    // 心律失常报警输出，-1为无效值
+    virtual ECGAlg::ARRCODE getARR() = 0;
+
+    // 心电显示数据及相关指示标记输出
+    /*
+    ecgdisp: 12导心电显示数据, 数组长度为12, 分别对应I/II/III/V1/V2/V3/V4/V5/V6/aVR/aVL/aVF
+    leadoff: 9导电极导联脱落标记, 从高到低按位对应RLD-LA-LL-RA-V1-V2-V3-V4-V5-V6
+    qrsflag: 快速R波标记
+    paceflag: 体内起搏标记
+    overload: 直流过载标记
+    pdblank: PDBlank标记
+    */
+    virtual bool getDispData(int ecgdisp[], short &leadoff, bool &qrsflag, bool &paceflag, bool &overload, bool &pdblank) = 0;
 };
 
-ECGInterfaceIFace *getEcgInterface(void);
+ECGInterfaceIFace *getECGInterface(void);

@@ -62,7 +62,7 @@ linux-arm-g++ {
 }
 
 linux-g++ {
-    LIBS += -lX11 -L$$PWD/nPM/libamd64/ -lECGAlgInterface
+    LIBS += -lX11 -L$$PWD/nPM/libamd64/ -lECGAlg2SoftInterface
 }
 
 OTHER_FILES +=                                                                  \
