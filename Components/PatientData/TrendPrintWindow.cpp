@@ -230,7 +230,7 @@ void TrendPrintWindow::endTimeChangeSlot(int, int)
 
 void TrendPrintWindow::printReleased()
 {
-    trendTableWindow.printTrendData(d_ptr->printStartTime, d_ptr->printEndTime);
+    TrendTableWindow::getInstance()->printTrendData(d_ptr->printStartTime, d_ptr->printEndTime);
     hide();
 }
 

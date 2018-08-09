@@ -35,12 +35,12 @@ EventWaveSetWindow::~EventWaveSetWindow()
 
 void EventWaveSetWindow::waveGainReleased(int index)
 {
-    eventWindow.setWaveGain(index);
+    EventWindow::getInstance()->setWaveGain(index);
 }
 
 void EventWaveSetWindow::waveSpeedReleased(int index)
 {
-    eventWindow.setWaveSpeed(index);
+    EventWindow::getInstance()->setWaveSpeed(index);
 }
 
 EventWaveSetWindow::EventWaveSetWindow()

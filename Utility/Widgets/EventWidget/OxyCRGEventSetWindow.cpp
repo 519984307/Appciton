@@ -44,7 +44,7 @@ void OxyCRGEventSetWindow::trend1Slot(int index)
     {
         isRR = true;
     }
-    oxyCRGEventWindow.waveWidgetTrend1(isRR);
+    OxyCRGEventWindow::getInstance()->waveWidgetTrend1(isRR);
 }
 
 void OxyCRGEventSetWindow::compressedSlot(int index)
@@ -58,7 +58,7 @@ void OxyCRGEventSetWindow::compressedSlot(int index)
     {
         waveID = WAVE_CO2;
     }
-    oxyCRGEventWindow.waveWidgetCompressed(waveID);
+    OxyCRGEventWindow::getInstance()->waveWidgetCompressed(waveID);
 }
 
 OxyCRGEventSetWindow::OxyCRGEventSetWindow()

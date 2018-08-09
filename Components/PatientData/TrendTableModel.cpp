@@ -137,6 +137,9 @@ QVariant TrendTableModel::data(const QModelIndex &index, int role) const
         QColor color = d_ptr->tableDataList.at(column).at(row).dataColor;
         return color;
     }
+    case Qt::ForegroundRole:
+        return QBrush(QColor("#2C405A"));
+        break;
     default:
         break;
     }
@@ -206,6 +209,9 @@ QVariant TrendTableModel::headerData(int section, Qt::Orientation orientation, i
         {
             return d_ptr->colHeadList.at(section).dataColor;
         }
+        break;
+    case Qt::ForegroundRole:
+        return QBrush(QColor("#2C405A"));
         break;
     default:
         break;

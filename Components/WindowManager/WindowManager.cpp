@@ -32,6 +32,7 @@
 #include "FactoryMaintainMenuWindow.h"
 #include "ConfigEditMenuWindow.h"
 #include "NIBPRepairMenuWindow.h"
+#include <QApplication>
 
 struct NodeDesc
 {
@@ -2450,6 +2451,17 @@ WindowManager::~WindowManager()
 
 void WindowManager::showWindow(QWidget *w)
 {
+    bool isVisible = w->isVisible();
+    while (NULL != QApplication::activeModalWidget())
+    {
+        QApplication::activeModalWidget()->hide();
+    }
+
+    if (isVisible)
+    {
+        return;
+    }
+
     QRect r = _volatileLayout->geometry();
     QPoint globalTopLeft = mapToGlobal(r.topLeft());
     r.moveTo(0, 0);

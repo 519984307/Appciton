@@ -93,7 +93,7 @@ void TrendGraphSetWindow::allAutoReleased()
         item->downRuler->setValue(config.downRuler);
         item->upRuler->setScale(config.scale);
         item->upRuler->setValue(config.upRuler);
-        trendGraphWindow.setSubWidgetRulerLimit(subID, item->downRuler->getValue(),
+        TrendGraphWindow::getInstance()->setSubWidgetRulerLimit(subID, item->downRuler->getValue(),
                                                 item->upRuler->getValue());
     }
 }
@@ -105,21 +105,21 @@ void TrendGraphSetWindow::trendGroupReleased(int g)
     d_ptr->trendGroup = (TrendGroup)g;
     qDebug() << "trend group = " << g << endl;
     upDateTrendGroup();
-    trendGraphWindow.updateTrendGraph();
+    TrendGraphWindow::getInstance()->updateTrendGraph();
 }
 
 void TrendGraphSetWindow::timeIntervalReleased(int timeInterval)
 {
     QString prefix = "TrendGraph|TimeInterval";
     systemConfig.setNumValue(prefix, timeInterval);
-    trendGraphWindow.timeIntervalChange(timeInterval);
+    TrendGraphWindow::getInstance()->timeIntervalChange(timeInterval);
 }
 
 void TrendGraphSetWindow::waveNumberReleased(int num)
 {
     QString prefix = "TrendGraph|WaveNumber";
     systemConfig.setNumValue(prefix, num);
-    trendGraphWindow.waveNumberChange(num + 1);
+    TrendGraphWindow::getInstance()->waveNumberChange(num + 1);
 }
 
 void TrendGraphSetWindow::onComboBoxChanged(int index)
@@ -147,7 +147,7 @@ void TrendGraphSetWindow::onComboBoxChanged(int index)
             item->downRuler->setValue(config.downRuler);
             item->upRuler->setScale(config.scale);
             item->upRuler->setValue(config.upRuler);
-            trendGraphWindow.setSubWidgetRulerLimit(subID, item->downRuler->getValue(),
+            TrendGraphWindow::getInstance()->setSubWidgetRulerLimit(subID, item->downRuler->getValue(),
                                                     item->upRuler->getValue());
         }
     }
@@ -160,7 +160,7 @@ void TrendGraphSetWindow::upDownRulerChange(int, int)
     {
         int id = spb->property("Ruler").toInt();
         RulerItem *item = d_ptr->itemList.at(id / 2);
-        trendGraphWindow.setSubWidgetRulerLimit(item->sid, item->downRuler->getValue(),
+        TrendGraphWindow::getInstance()->setSubWidgetRulerLimit(item->sid, item->downRuler->getValue(),
                                                 item->upRuler->getValue());
     }
 }

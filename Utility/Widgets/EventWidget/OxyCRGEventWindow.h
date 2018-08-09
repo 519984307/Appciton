@@ -19,18 +19,32 @@ class OxyCRGEventWindow : public Window
 {
     Q_OBJECT
 public:
-    static OxyCRGEventWindow &constraction()
-    {
-        if (NULL == selfObj)
-        {
-            selfObj = new OxyCRGEventWindow();
-        }
-        return *selfObj;
-    }
+    static OxyCRGEventWindow *getInstance();
     ~OxyCRGEventWindow();
 
+    /**
+     * @brief waveWidgetTrend1 趋势1显示波形设置
+     * @param isRR
+     */
     void waveWidgetTrend1(bool isRR);
+
+    /**
+     * @brief waveWidgetCompressed 当前显示压缩波形
+     * @param id
+     */
     void waveWidgetCompressed(WaveformID id);
+
+    /**
+     * @brief setHistoryDataPath 设置历史回顾数据的文件路径
+     * @param path 文件路径
+     */
+    void setHistoryDataPath(QString path);
+
+    /**
+     * @brief setHistoryData 此刻的趋势表是否为历史数据
+     * @param flag 标志
+     */
+    void setHistoryData(bool flag);
 
 protected:
     void showEvent(QShowEvent *ev);
@@ -45,8 +59,5 @@ private slots:
 
 private:
     OxyCRGEventWindow();
-    static OxyCRGEventWindow *selfObj;
     QScopedPointer<OxyCRGEventWindowPrivate> d_ptr;
 };
-#define oxyCRGEventWindow               (OxyCRGEventWindow::constraction())
-#define deleteOxyCRGEventWindow         (delete OxyCRGEventWindow::selfObj)

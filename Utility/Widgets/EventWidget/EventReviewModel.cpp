@@ -77,6 +77,9 @@ QVariant EventReviewModel::data(const QModelIndex &index, int role) const
     }
     case Qt::TextAlignmentRole:
         return QVariant(Qt::AlignCenter);
+    case Qt::ForegroundRole:
+        return QBrush(QColor("#2C405A"));
+        break;
     default:
         break;
     }
@@ -114,6 +117,9 @@ QVariant EventReviewModel::headerData(int section, Qt::Orientation orientation, 
         }
         break;
     }
+    case Qt::ForegroundRole:
+        return QBrush(QColor("#2C405A"));
+        break;
     default:
         break;
     }
