@@ -273,9 +273,6 @@ void AGTrendWidget::setTextSize()
  *************************************************************************************************/
 void AGTrendWidget::_releaseHandle(IWidget *iWidget)
 {
-    QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
-    int y = r.y() + (r.height() - publicMenuManager.height());
     MainMenuWindow *mainMenu =  MainMenuWindow::getInstance();
-    mainMenu->popup(trs("AGMenu") , x , y);
+    mainMenu->popup(trs("AGMenu"));
 }

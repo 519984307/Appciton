@@ -26,12 +26,8 @@
  *************************************************************************************************/
 void TEMPTrendWidget::_releaseHandle(IWidget *iWidget)
 {
-    QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
-    int y = r.y() + (r.height() - publicMenuManager.height());
-
     MainMenuWindow *p = MainMenuWindow::getInstance();
-    p->popup(trs("AlarmLimitMenu") , x , y);
+    p->popup(trs("AlarmLimitMenu"));
 }
 
 /**************************************************************************************************

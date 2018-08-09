@@ -18,8 +18,8 @@
 #include "CO2Symbol.h"
 #include "CO2Param.h"
 #include "ConfigManager.h"
-#include "NumberInput.h"
-#include "IMessageBox.h"
+#include "KeyInputPanel.h"
+#include "MessageBox.h"
 
 class CO2MenuContentPrivate
 {
@@ -96,12 +96,12 @@ void CO2MenuContent::onBtnReleasedChanged()
     Button *button = qobject_cast<Button *>(sender());
     int index = button->property("Btn").toInt();
 
-    NumberInput numberInput;
+    KeyInputPanel numberInput;
     unsigned num = 1000;
     switch (index)
     {
     case CO2MenuContentPrivate::ITEM_BTN_O2_COMPEN:
-        numberInput.setTitleBarText(trs("O2Compensation"));
+        numberInput.setWindowTitle(trs("O2Compensation"));
         numberInput.setMaxInputLength(3);
         numberInput.setInitString(button->text());
         if (numberInput.exec())
@@ -115,13 +115,13 @@ void CO2MenuContent::onBtnReleasedChanged()
             }
             else
             {
-                IMessageBox messageBox(trs("O2Compensation"), trs("InvalidInput") + "0-100", QStringList(trs("EnglishYESChineseSURE")));
+                MessageBox messageBox(trs("O2Compensation"), trs("InvalidInput") + " 0-100 ", QStringList(trs("EnglishYESChineseSURE")));
                 messageBox.exec();
             }
         }
         break;
     case CO2MenuContentPrivate::ITEM_BTN_N2O_COMPEN:
-        numberInput.setTitleBarText(trs("N2OCompensation"));
+        numberInput.setWindowTitle(trs("N2OCompensation"));
         numberInput.setMaxInputLength(3);
         numberInput.setInitString(button->text());
         if (numberInput.exec())
@@ -135,7 +135,7 @@ void CO2MenuContent::onBtnReleasedChanged()
             }
             else
             {
-                IMessageBox messageBox(trs("N2OCompensation"), trs("InvalidInput") + "0-100",
+                MessageBox messageBox(trs("N2OCompensation"), trs("InvalidInput") + " 0-100 ",
                                        QStringList(trs("EnglishYESChineseSURE")));
                 messageBox.exec();
             }
