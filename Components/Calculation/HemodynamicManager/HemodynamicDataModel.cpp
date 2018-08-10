@@ -132,10 +132,10 @@ QVariant HemodynamicDataModel::data(const QModelIndex &index, int role) const
             switch (column)
             {
             case COLUMN_VALUE_TYPE:
-                return QBrush(QColor("#21D214"));
+                return QBrush(QColor("#C7CfD6"));
                 break;
             case COLUMN_UNIT_RANGE:
-                return QBrush(QColor("#21D214"));
+                return QBrush(QColor("#C7CfD6"));
                 break;
             case COLUMN_TIME_1:
                 if (d_ptr->colorInfos.at(row).time.count() < column - 1)

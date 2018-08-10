@@ -190,10 +190,14 @@ void HemodynamicWindow::layoutExec()
     d_ptr->outputTable->setFocusPolicy(Qt::NoFocus);
     d_ptr->outputTable->setRowCount(9);
     d_ptr->outputTable->setColumnCount(6);
+    d_ptr->outputTable->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+
+    d_ptr->outputTable->setFrameStyle(QFrame::NoFrame);
+    d_ptr->outputTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     d_ptr->outputTable->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    d_ptr->outputTable->horizontalHeader()->setClickable(false);
-    d_ptr->outputTable->horizontalHeader()->setHidden(true);
-    d_ptr->outputTable->verticalHeader()->setHidden(true);
+
+    d_ptr->outputTable->horizontalHeader()->setVisible(false);
+    d_ptr->outputTable->verticalHeader()->setVisible(false);
     d_ptr->outputTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
     d_ptr->outputTable->verticalHeader()->setResizeMode(QHeaderView::Stretch);
     d_ptr->outputTable->setFixedHeight(ROW_HEIGHT * TABLE_ROW_NUM);
