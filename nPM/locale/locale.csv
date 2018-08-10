@@ -1058,6 +1058,9 @@ SelectStarterLogoMenu,开机图片,Starter Logo
 SelectStarterLogoMenuDesc,开机图片设置,Start Logo Desc
 ServiceErrorLogEntrance,错误日志进入,Service ErrorLog Entrance
 ServiceErrorLogEntranceDesc,错误日志进入设置,Service ErrorLog Entrance Desc
+ErrorLogErase,擦除,Erase
+ErrorLogExport,导出,Export
+ErrorLogInfo,信息,Info
 ServiceUpdateEntrance,更新模块,Service Update
 ServiceUpdateEntranceDesc,更新模块设置,Service Update Entrance Desc
 SoftWareVersionMenu,软件版本,SoftWare Version
