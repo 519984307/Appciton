@@ -28,7 +28,6 @@ public:
 
 protected:
     void showEvent(QShowEvent *ev);
-    void hideEvent(QHideEvent *ev);
 
 private slots:
     void timeIntervalReleased(int);

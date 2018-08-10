@@ -79,7 +79,7 @@ void RescueDataSoftKeyAction::trendReview(bool isPressed)
 //    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
 //    trendDataWidget.setHistoryData(false);
 //    trendDataWidget.autoShow(x, y);
-    windowManager.showWindow(&trendTableWindow);
+    windowManager.showWindow(&trendTableWindow, WindowManager::WINDOW_TYPE_NONMODAL);
 }
 
 /***************************************************************************************************
@@ -109,7 +109,7 @@ void RescueDataSoftKeyAction::summaryReview(bool isPressed)
 //    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
 //    trendGraphWidget.setHistoryData(false);
 //    trendGraphWidget.autoShow(x, y);
-    windowManager.showWindow(&trendGraphWindow);
+    windowManager.showWindow(&trendGraphWindow, WindowManager::WINDOW_TYPE_NONMODAL);
 }
 
 /***************************************************************************************************
@@ -192,7 +192,7 @@ void RescueDataSoftKeyAction::eventReview(bool isPressed)
 //    // summaryRescueDataWidget.autoShow(x, y);
 //    eventReviewWindow.setHistoryData(false);
 //    eventReviewWindow.autoShow(x, y);
-    windowManager.showWindow(&eventWindow);
+    windowManager.showWindow(&eventWindow, WindowManager::WINDOW_TYPE_NONMODAL);
 }
 
 void RescueDataSoftKeyAction::oxyCRGEventReview(bool isPressed)
@@ -220,7 +220,7 @@ void RescueDataSoftKeyAction::oxyCRGEventReview(bool isPressed)
 //    // summaryRescueDataWidget.autoShow(x, y);
 //    oxyCRGEventWidget.setHistoryData(false);
 //    oxyCRGEventWidget.autoShow(x, y);
-    windowManager.showWindow(&oxyCRGEventWindow);
+    windowManager.showWindow(&oxyCRGEventWindow, WindowManager::WINDOW_TYPE_NONMODAL);
 }
 
 void RescueDataSoftKeyAction::historyReview(bool isPressed)

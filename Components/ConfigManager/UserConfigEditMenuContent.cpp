@@ -191,7 +191,7 @@ void UserConfigEditMenuContent::onBtnClick()
             ConfigEditMenuWindow::getInstance()->setCurrentEditConfigName(d_ptr->generateDefaultConfigName());
             ConfigEditMenuWindow::getInstance()->setCurrentEditConfig(d_ptr->curConfig);
             ConfigManagerMenuWindow *w = ConfigManagerMenuWindow::getInstance();
-            windowManager.showWindow(w);
+            windowManager.showWindow(w, WindowManager::WINDOW_TYPE_NONMODAL);
         }
     }
     else if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG])
@@ -209,7 +209,7 @@ void UserConfigEditMenuContent::onBtnClick()
         ConfigEditMenuWindow::getInstance()->setCurrentEditConfigName(d_ptr->configs.at(index).name);
         ConfigEditMenuWindow::getInstance()->setCurrentEditConfig(d_ptr->curConfig);
         ConfigEditMenuWindow::getInstance()->initializeSubMenu();
-        windowManager.showWindow(ConfigEditMenuWindow::getInstance());
+        windowManager.showWindow(ConfigEditMenuWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
     }
     else if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG])
     {

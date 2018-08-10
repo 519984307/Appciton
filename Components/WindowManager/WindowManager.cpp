@@ -32,6 +32,7 @@
 #include "FactoryMaintainMenuWindow.h"
 #include "ConfigEditMenuWindow.h"
 #include "NIBPRepairMenuWindow.h"
+#include <QApplication>
 
 struct NodeDesc
 {
@@ -2389,7 +2390,7 @@ IWidget *WindowManager::getWidget(const QString &name)
 #if defined(Q_WS_QWS)
 WindowManager::WindowManager() : QWidget(NULL, Qt::FramelessWindowHint)
 #else
-WindowManager::WindowManager() : QWidget()
+WindowManager::WindowManager() : QWidget(), _activeWindow(NULL)
 #endif
 {
     _winMap.clear();
@@ -2448,10 +2449,20 @@ WindowManager::~WindowManager()
     _winMap.clear();
 }
 
-void WindowManager::showWindow(QWidget *w)
+void WindowManager::showWindow(QWidget *w, WindowType type)
 {
-    // 设置窗口为模态
-    w->setWindowModality(Qt::ApplicationModal);
+    if (type == WINDOW_TYPE_NONMODAL)
+    {
+        if (_activeWindow)
+        {
+            _activeWindow->hide();
+        }
+        _activeWindow = w;
+    }
+    else if (type == WINDOW_TYPE_MODAL)
+    {
+         w->setWindowModality(Qt::ApplicationModal);
+    }
 
     QRect r = _volatileLayout->geometry();
     QPoint globalTopLeft = mapToGlobal(r.topLeft());
