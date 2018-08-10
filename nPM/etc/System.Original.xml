@@ -763,10 +763,9 @@
                 <FocusOrder>PatientBarWidget,AlarmPhyInfoBarWidget,AlarmTechInfoBarWidget,TrendGroup,SystemStatusBarWidget,BatteryBarWidget,SoftKeyManager,PromptInfoBarWidget,WaveGroup</FocusOrder>
                 <!-- 界面顶层布局器 -->
                 <ScreenVLayoutStretch>
-                    <topBarRow>40</topBarRow>
+                    <topBarRow>30</topBarRow>
                     <alarmRow>40</alarmRow>
                     <paramLayout>600</paramLayout>
-                    <bottomBarRow>40</bottomBarRow>
                     <softkeyRow>80</softkeyRow>
                 </ScreenVLayoutStretch>
                 <!-- 波形区与趋势区的比列 -->
@@ -776,11 +775,13 @@
                 </ScreenHLayoutStretch>
                 <!-- 顶部信息栏比列 -->
                 <topBarRowOrder>
-                    <PatientInfoWidget>300</PatientInfoWidget>
-                    <PatientBarWidget>100</PatientBarWidget>
-                    <PatientStatusBarWidget>40</PatientStatusBarWidget>
-                    <AlarmMuteBarWidget>40</AlarmMuteBarWidget>
-                    <SystemModeBarWidget>320</SystemModeBarWidget>
+                    <PromptInfoBarWidget>300</PromptInfoBarWidget>
+                    <PatientInfoWidget>100</PatientInfoWidget>
+                    <AlarmMuteBarWidget>50</AlarmMuteBarWidget>
+                    <SystemModeBarWidget>100</SystemModeBarWidget>
+                    <SystemStatusBarWidget>50</SystemStatusBarWidget>
+                    <DateTimeWidget>100</DateTimeWidget>
+                    <BatteryBarWidget>50</BatteryBarWidget>
                 </topBarRowOrder>
                 <!-- 报警栏比列 -->
                 <alarmRowOrder>
@@ -788,11 +789,7 @@
                     <AlarmTechInfoBarWidget>1</AlarmTechInfoBarWidget>
                 </alarmRowOrder>
                 <!-- 底部信息栏比列 -->
-                <bottomBarRowOrder>
-                    <PromptInfoBarWidget>300</PromptInfoBarWidget>
-                    <SystemStatusBarWidget>250</SystemStatusBarWidget>
-                    <BatteryBarWidget>50</BatteryBarWidget>
-                    <DateTimeWidget>200</DateTimeWidget>
+                <bottomBarRowOrder>                                    
                 </bottomBarRowOrder>
                 <WaveTrendOrder>NIBPTrendWidget,NIBPDataTrendWidget</WaveTrendOrder>
                 <OxyCRGWidget>OxyCRGHRWidget,OxyCRGSPO2Widget,OxyCRGRESPWidget</OxyCRGWidget>
