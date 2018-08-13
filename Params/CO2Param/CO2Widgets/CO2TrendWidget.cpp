@@ -251,7 +251,7 @@ void CO2TrendWidget::flushValue(void)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget", true)
+CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
 {
     _etco2Str = InvStr();
     _fico2Str = InvStr();
@@ -266,9 +266,7 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget", true)
     setName(trs(paramInfo.getSubParamName(SUB_PARAM_ETCO2)));
     setUnit(Unit::localeSymbol(co2Param.getUnit()));
 
-
-
-    // 构造资源。
+//    // 构造资源。
     _etco2Value = new QLabel();
     _etco2Value->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
 
@@ -284,50 +282,17 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget", true)
     _fico2Value->setPalette(palette);
     _fico2Value->setText(InvStr());
 
-    QHBoxLayout *titleLayout = new QHBoxLayout();
-    titleLayout->setContentsMargins(5, 1, 0, 0);
-    titleLayout->setSpacing(0);
-    titleLayout->addWidget(nameLabel);
-
-    QVBoxLayout *unitLayout = new QVBoxLayout();
-    unitLayout->addWidget(unitLabel);
-    unitLayout->addLayout(mLayout, 1);
-    unitLayout->addStretch();
-    unitLayout->setSpacing(0);
-    unitLayout->setContentsMargins(5, 1, 0, 0);
-
     QHBoxLayout *hLayout = new QHBoxLayout();
+    hLayout->addStretch();
     hLayout->addWidget(_etco2Value);
-
-    QHBoxLayout *fico2Layout = new QHBoxLayout();
-    fico2Layout->addStretch(2);
-    fico2Layout->addWidget(_fico2Label, 1);
-    fico2Layout->addStretch(1);
-    fico2Layout->addWidget(_fico2Value, 2);
-    fico2Layout->addStretch(2);
+    hLayout->addStretch();
 
     QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->addStretch();
     vLayout->addLayout(hLayout);
-    vLayout->addLayout(fico2Layout);
+    vLayout->addStretch();
 
-    QHBoxLayout *mhLayout = new QHBoxLayout();
-    mhLayout->addLayout(unitLayout);
-    mhLayout->addLayout(vLayout);
-
-//    contentLayout->addStretch(1);
-//    contentLayout->addLayout(vLayout);
-//    contentLayout->addStretch(1);
-
-    QVBoxLayout *mLayout = new QVBoxLayout();
-    mLayout->setMargin(1);
-    mLayout->setSpacing(1);
-    mLayout->addLayout(titleLayout);
-    mLayout->addLayout(mhLayout);
-    mLayout->addStretch(1);
-
-    setLayout(mLayout);
-
-
+    contentLayout->addLayout(vLayout);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
