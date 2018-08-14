@@ -79,6 +79,23 @@ void SelectDefaultConfigMenuContentPrivate::updateUserConfig()
         }
 
         QString index = prefix + combos[menuItem]->property("nodeName").toString();
+        int nodeNameIndex = combos[menuItem]->property("nodeName").toInt();
+        switch (nodeNameIndex)
+        {
+        case 0:
+            index = index + "Adult";
+            break;
+        case 1:
+            index = index + "PED";
+            break;
+        case 2:
+            index = index + "NEO";
+            break;
+        default:
+            index = index + "";
+            break;
+        }
+
         systemConfig.getStrAttr(index, "type", type);
         if (type.toUpper() == "FACTORY")
         {
@@ -127,9 +144,25 @@ void SelectDefaultConfigMenuContent::onCurrentIndexChanged(int index)
 
     if (combo)
     {
-        QString nodeIndex = "ConfigManager|Default|"  + combo->property("Item").toString();
+        QString nodeIndex = "ConfigManager|Default|";
         QList<ConfigManager::UserDefineConfigInfo> infos = configManager.getUserDefineConfigInfos();
         ConfigManager::UserDefineConfigInfo info;
+        int itemId = combo->property("Item").toInt();
+        switch (itemId)
+        {
+        case 0:
+            nodeIndex = nodeIndex + "Adult";
+            break;
+        case 1:
+            nodeIndex = nodeIndex + "PED";
+            break;
+        case 2:
+            nodeIndex = nodeIndex + "NEO";
+            break;
+        default:
+            nodeIndex = nodeIndex + "";
+            break;
+        }
         switch (index)
         {
         case 0:
@@ -194,6 +227,8 @@ void SelectDefaultConfigMenuContent::layoutExec()
     connect(combox, SIGNAL(currentIndexChanged(int)), this, SLOT(onCurrentIndexChanged(int)));
     itemID = SelectDefaultConfigMenuContentPrivate::ITEM_CBO_ADULT_DEFCONFIG;
     combox->setProperty("Item", qVariantFromValue(itemID));
+    combox->setProperty("factoryConfigFile", qVariantFromValue(configManager.factoryConfigFilename(PATIENT_TYPE_ADULT)));
+    combox->setProperty("currentConfigFile", qVariantFromValue(configManager.runningConfigFilename(PATIENT_TYPE_ADULT)));
 
     //  ped default config
     label = new QLabel(trs("PedDefaultConfig"));
@@ -208,6 +243,8 @@ void SelectDefaultConfigMenuContent::layoutExec()
     connect(combox, SIGNAL(currentIndexChanged(int)), this, SLOT(onCurrentIndexChanged(int)));
     itemID = SelectDefaultConfigMenuContentPrivate::ITEM_CBO_PED_DEFCONFIG;
     combox->setProperty("Item", qVariantFromValue(itemID));
+    combox->setProperty("factoryConfigFile", qVariantFromValue(configManager.factoryConfigFilename(PATIENT_TYPE_PED)));
+    combox->setProperty("currentConfigFile", qVariantFromValue(configManager.runningConfigFilename(PATIENT_TYPE_PED)));
 
     //  neo default config
     label = new QLabel(trs("NeoDefaultConfig"));
@@ -222,6 +259,8 @@ void SelectDefaultConfigMenuContent::layoutExec()
     connect(combox, SIGNAL(currentIndexChanged(int)), this, SLOT(onCurrentIndexChanged(int)));
     itemID = SelectDefaultConfigMenuContentPrivate::ITEM_CBO_NEO_DEFCONFIG;
     combox->setProperty("Item", qVariantFromValue(itemID));
+    combox->setProperty("factoryConfigFile", qVariantFromValue(configManager.factoryConfigFilename(PATIENT_TYPE_NEO)));
+    combox->setProperty("currentConfigFile", qVariantFromValue(configManager.runningConfigFilename(PATIENT_TYPE_NEO)));
 
     //  add a stretch
     layout->setRowStretch(d_ptr->combos.count(), 1);
