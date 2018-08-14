@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/14
+ **/
+
 #include "SystemManager.h"
 #include <fcntl.h>
 #include <unistd.h>
@@ -39,14 +49,16 @@ const char *systemSelftestMessage[SELFTEST_STATUS_NR][MODULE_POWERON_TEST_RESULT
 {
     {NULL, NULL, NULL, NULL, NULL, NULL, NULL},
 
-    {NULL, NULL, NULL, NULL, NULL, NULL,NULL},
+    {NULL, NULL, NULL, NULL, NULL, NULL, NULL},
 
     {NULL, NULL, NULL, NULL, NULL, "PrinterRestart", NULL},
 
-    {"ECGSelftestFailed", "NIBPSelftestFailed", "SPO2SelftestFailed", "TEMPSelftestFailed",
-     "CO2SelftestFailed", "PrinterSelftestFailed", "PanelKeySelftestFailed"},
+    {
+        "ECGSelftestFailed", "NIBPSelftestFailed", "SPO2SelftestFailed", "TEMPSelftestFailed",
+        "CO2SelftestFailed", "PrinterSelftestFailed", "PanelKeySelftestFailed"
+    },
 
-    {NULL, NULL, NULL, NULL, NULL,"PrinterSelftestSuccess", NULL},
+    {NULL, NULL, NULL, NULL, NULL, "PrinterSelftestSuccess", NULL},
 
     {NULL, NULL, NULL, NULL, NULL, NULL, NULL}
 };
@@ -93,17 +105,38 @@ bool SystemManager::isSupport(ConfiguredFuncs funcs) const
     QString path;
     switch (funcs)
     {
-    case CONFIG_RESP: path = "RESPEnable"; break;
-    case CONFIG_ECG12LEADS: path = "ECG12LEADEnable"; break;
-    case CONFIG_SPO2: path = "SPO2Enable"; break;
-    case CONFIG_NIBP: path = "NIBPEnable"; break;
-    case CONFIG_CO2: path = "CO2Enable"; break;
-    case CONFIG_AG: path = "AGEnable"; break;
-    case CONFIG_CO: path = "COEnable"; break;
-    case CONFIG_IBP: path = "IBPEnable"; break;
-    case CONFIG_TEMP: path = "TEMPEnable"; break;
-    case CONFIG_WIFI: path = "WIFIEnable"; break;
-    default:break;
+    case CONFIG_RESP:
+        path = "RESPEnable";
+        break;
+    case CONFIG_ECG12LEADS:
+        path = "ECG12LEADEnable";
+        break;
+    case CONFIG_SPO2:
+        path = "SPO2Enable";
+        break;
+    case CONFIG_NIBP:
+        path = "NIBPEnable";
+        break;
+    case CONFIG_CO2:
+        path = "CO2Enable";
+        break;
+    case CONFIG_AG:
+        path = "AGEnable";
+        break;
+    case CONFIG_CO:
+        path = "COEnable";
+        break;
+    case CONFIG_IBP:
+        path = "IBPEnable";
+        break;
+    case CONFIG_TEMP:
+        path = "TEMPEnable";
+        break;
+    case CONFIG_WIFI:
+        path = "WIFIEnable";
+        break;
+    default:
+        break;
     }
 
     bool enable = false;
@@ -123,15 +156,32 @@ bool SystemManager::isSupport(ParamID paramID) const
     case PARAM_ECG:
         return true;
     case PARAM_DUP_RESP:
-    case PARAM_RESP: path = "RESPEnable"; break;
-    case PARAM_SPO2: path = "SPO2Enable"; break;
-    case PARAM_NIBP: path = "NIBPEnable"; break;
-    case PARAM_CO2: path = "CO2Enable"; break;
-    case PARAM_AG: path = "AGEnable"; break;
-    case PARAM_CO: path = "COEnable"; break;
-    case PARAM_IBP: path = "IBPEnable"; break;
-    case PARAM_TEMP: path = "TEMPEnable"; break;
-    default:break;
+    case PARAM_RESP:
+        path = "RESPEnable";
+        break;
+    case PARAM_SPO2:
+        path = "SPO2Enable";
+        break;
+    case PARAM_NIBP:
+        path = "NIBPEnable";
+        break;
+    case PARAM_CO2:
+        path = "CO2Enable";
+        break;
+    case PARAM_AG:
+        path = "AGEnable";
+        break;
+    case PARAM_CO:
+        path = "COEnable";
+        break;
+    case PARAM_IBP:
+        path = "IBPEnable";
+        break;
+    case PARAM_TEMP:
+        path = "TEMPEnable";
+        break;
+    default:
+        break;
     }
 
     bool enable = false;
@@ -146,13 +196,13 @@ unsigned int SystemManager::getModuleConfig() const
 {
     short status = 0;
     unsigned short config = CONFIG_RESP;
-    while(config && config <= CONFIG_WIFI)
+    while (config && config <= CONFIG_WIFI)
     {
-        if(isSupport((ConfiguredFuncs)config))
+        if (isSupport((ConfiguredFuncs)config))
         {
             status |= config;
         }
-        config <<=1;
+        config <<= 1;
     }
     return status;
 }
@@ -214,14 +264,6 @@ void SystemManager::setPoweronTestResult(ModulePoweronTestResult module,
  **************************************************************************************************/
 void SystemManager::parseKeyValue(const unsigned char *data, unsigned int len)
 {
-    int temp;
-    if(data)
-    {
-        temp = data[0];
-        temp = len;
-        temp ++;
-    }
-
 #ifdef Q_WS_QWS
     if ((NULL == data) || (len != 2))
     {
@@ -230,7 +272,7 @@ void SystemManager::parseKeyValue(const unsigned char *data, unsigned int len)
 
     int keyCode;
 
-    switch(data[0])
+    switch (data[0])
     {
     case ',':
         keyCode = Qt::Key_Left;
@@ -256,12 +298,16 @@ void SystemManager::parseKeyValue(const unsigned char *data, unsigned int len)
     case 'e':
         keyCode = Qt::Key_F5;
         break;
+    case 'f':
+        keyCode = Qt::Key_F6;
+        break;
     default:
         qdebug("unkown keyCode");
         return;
     }
 
-    if(QApplication::activeWindow() == NULL) {
+    if (QApplication::activeWindow() == NULL)
+    {
         windowManager.activateWindow();
     }
 
@@ -276,7 +322,7 @@ void SystemManager::setBrightness(BrightnessLevel br)
 {
     enableBrightness(br);
 
-    currentConfig.setNumValue("General|DefaultDisplayBrightness", (int)br);
+    currentConfig.setNumValue("General|DefaultDisplayBrightness", static_cast<int>(br));
 }
 
 /***************************************************************************************************
@@ -287,7 +333,7 @@ void SystemManager::enableBrightness(BrightnessLevel br)
 #ifdef Q_WS_X11
     QByteArray data;
     data.append(0x81);
-    data.append((char) br);
+    data.append(static_cast<char>(br));
     sendCommand(data);
 #else
     if (_backlightFd < 0)
@@ -303,7 +349,7 @@ void SystemManager::enableBrightness(BrightnessLevel br)
 
     int brValue = 255 * (br + 1) / BRT_LEVEL_NR;
     char str[8];
-    sprintf(str, "%d", brValue);
+    snprintf(str, sizeof(str), "%d", brValue);
     int ret = write(_backlightFd, str, sizeof(str));
     if (ret < 0)
     {
@@ -330,9 +376,9 @@ void SystemManager::loadInitBMode()
     _handleBMode();
 }
 
- /***************************************************************************************************
-  * 获取软件版本。
-  **************************************************************************************************/
+/***************************************************************************************************
+ * 获取软件版本。
+ **************************************************************************************************/
 void SystemManager::getSoftwareVersion(QString &revision)
 {
     revision.clear();
@@ -374,16 +420,16 @@ void SystemManager::closeSystemTestDialog()
 
 void SystemManager::turnOff(bool flag)
 {
-    if(_isTurnOff == flag)
+    if (_isTurnOff == flag)
     {
         return;
     }
 
     _isTurnOff = flag;
-    if(flag)
+    if (flag)
     {
-        qDebug()<<"System is going to turn off.";
-        Util::waitInEventLoop(1000); //wait long enough to let the world get the message
+        qDebug() << "System is going to turn off.";
+        Util::waitInEventLoop(1000); // wait long enough to let the world get the message
     }
 }
 
@@ -394,15 +440,15 @@ bool SystemManager::_isTestModuleSupport(ModulePoweronTestResult module)
 {
     switch (module)
     {
-        default:
-            return true;
+    default:
+        return true;
     }
 }
 
 #ifdef Q_WS_X11
 bool SystemManager::sendCommand(const QByteArray &cmd)
 {
-    if(_ctrlSocket->isValid() && _ctrlSocket->state() == QAbstractSocket::ConnectedState)
+    if (_ctrlSocket->isValid() && _ctrlSocket->state() == QAbstractSocket::ConnectedState)
     {
         _ctrlSocket->write(cmd);
         _ctrlSocket->waitForBytesWritten(1000);
@@ -415,43 +461,42 @@ bool SystemManager::sendCommand(const QByteArray &cmd)
 }
 
 #define SOCKET_INFO_PACKET_LENGHT 2
-enum ControlInfo {
+enum ControlInfo
+{
     CTRL_INFO_METRONOME = 0x80,
 };
 
 void SystemManager::onCtrlSocketReadReady()
 {
     QByteArray data = _ctrlSocket->readAll();
-    for(int i = 0; i < data.size(); i++)
+    for (int i = 0; i < data.size(); i++)
     {
         _socketInfoData.append(data.at(i));
     }
 
-    while(_socketInfoData.size() >= SOCKET_INFO_PACKET_LENGHT)
+    while (_socketInfoData.size() >= SOCKET_INFO_PACKET_LENGHT)
     {
         unsigned char infoType = _socketInfoData.takeFirst();
-        if(!(infoType & 0x80))
+        if (!(infoType & 0x80))
         {
-            //not a info type
+            // not a info type
             continue;
         }
         char infoData = _socketInfoData.takeFirst();
-        infoData = infoData;
-        switch((ControlInfo)infoType)
+        switch ((ControlInfo)infoType)
         {
 
         case CTRL_INFO_METRONOME:
         {
             emit metronomeReceived();
         }
-            break;
+        break;
 
         default:
             qdebug("unknown info type:%02x", infoType);
             break;
         }
     }
-
 }
 #endif
 
@@ -493,7 +538,7 @@ void SystemManager::_publishTestResult(void)
             }
             else
             {
-                //test fail
+                // test fail
                 QString str("");
                 if (SELFTEST_SUCCESS != _modulePostResult[TE3_MODULE_SELFTEST_RESULT])
                 {
@@ -649,7 +694,8 @@ void SystemManager::_publishTestResult(void)
                         && _isTestModuleSupport((ModulePoweronTestResult)i))
                 {
                     showDialog = true;
-                    _selfTestResult->appendInfo((ModulePoweronTestResult) i, (ModulePoweronTestStatus)_modulePostResult[i], trs(systemSelftestMessage[_modulePostResult[i]][i]));
+                    _selfTestResult->appendInfo((ModulePoweronTestResult) i, (ModulePoweronTestStatus)_modulePostResult[i],
+                                                trs(systemSelftestMessage[_modulePostResult[i]][i]));
                 }
             }
 
@@ -700,19 +746,19 @@ void SystemManager::_publishTestResult(void)
 SystemManager::SystemManager() ://申请一个动态的模块加载结果数组
     _modulePostResult(MODULE_POWERON_TEST_RESULT_NR, SELFTEST_UNKNOWN)
 {
-    //打开背光灯文件描述符
-    _backlightFd = open(BACKLIGHT_DEV, O_WRONLY|O_NONBLOCK);
-    if(_backlightFd < 0)
+    // 打开背光灯文件描述符
+    _backlightFd = open(BACKLIGHT_DEV, O_WRONLY | O_NONBLOCK);
+    if (_backlightFd < 0)
     {
         debug("Open %s failed: %s\n", BACKLIGHT_DEV, strerror(errno));
     }
 
-    //构建一个500ms的轮询函数接口_publishTestResult()--发布测试结果
+    // 构建一个500ms的轮询函数接口_publishTestResult()--发布测试结果
     _publishTestTimer = new QTimer();
     _publishTestTimer->setInterval(500);
     connect(_publishTestTimer, SIGNAL(timeout()), this, SLOT(_publishTestResult()));
 
-    //查询配置文件中是否支持下列项目
+    // 查询配置文件中是否支持下列项目
     if (!isSupport(CONFIG_SPO2))
     {
         _modulePostResult[TS3_MODULE_SELFTEST_RESULT] = SELFTEST_NOT_SUPPORT;
@@ -748,12 +794,11 @@ SystemManager::SystemManager() ://申请一个动态的模块加载结果数组
     _ctrlSocket->connectToHost("192.168.10.2", 8088);
     _ctrlSocket->setSocketOption(QAbstractSocket::LowDelayOption, 1);
     connect(_ctrlSocket, SIGNAL(readyRead()), this, SLOT(onCtrlSocketReadReady()));
-    if(!_ctrlSocket->waitForConnected(1000))
+    if (!_ctrlSocket->waitForConnected(1000))
     {
         qdebug("connect to control server failed!");
     }
 #endif
-
 }
 
 
@@ -766,7 +811,7 @@ void SystemManager::_handleBMode(void)
 
     // Layout & Show
     windowManager.move((pDesk->width() - windowManager.width()) / 2,
-            (pDesk->height() - windowManager.height()) / 2);
+                       (pDesk->height() - windowManager.height()) / 2);
 
     if (ecgParam.getDisplayMode() == ECG_DISPLAY_12_LEAD_FULL)
     {
@@ -827,10 +872,9 @@ SystemManager::~SystemManager()
         _selfTestResult = NULL;
     }
 
-    if( NULL != _workerThread)
+    if (NULL != _workerThread)
     {
         _workerThread->quit();
         _workerThread->wait();
     }
-
 }
