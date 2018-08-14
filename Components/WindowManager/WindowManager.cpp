@@ -585,14 +585,6 @@ void WindowManager::_newLayoutStyle(void)
     _paramBox->setContentsMargins(2, 0, 2, 0);
     _paramBox->setHorizontalSpacing(5);
 
-    _bottomBarRow = new QHBoxLayout();
-    _bottomBarRow->setMargin(0);
-    _bottomBarRow->setSpacing(3);
-
-    _bottomBarWidget = new QWidget();
-    _bottomBarWidget->setStyleSheet("color:lightGray;background:rgb(48,48,48);");
-    _bottomBarRow->addWidget(_bottomBarWidget);
-
     _softkeyRow = new QHBoxLayout();
     _softkeyRow->setMargin(0);
     _softkeyRow->setSpacing(0);
@@ -600,7 +592,7 @@ void WindowManager::_newLayoutStyle(void)
     // 界面顶层布局器。
     QStringList factors;
     factors = systemConfig.getChildNodeNameList("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch");
-    if (factors.size() < 5)
+    if (factors.size() < 4)
     {
         debug("size of ScreenVLayoutStretch is wrong \n");
         return;
@@ -620,9 +612,6 @@ void WindowManager::_newLayoutStyle(void)
 
     systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|paramLayout", index);
     _mainLayout->addLayout(_paramLayout, index);
-
-    systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|bottomBarRow", index);
-    _mainLayout->addLayout(_bottomBarRow, index);
 
     systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|softkeyRow", index);
     _mainLayout->addLayout(_softkeyRow, index);
@@ -649,6 +638,8 @@ void WindowManager::_fixedLayout(void)
     }
     _doesFixedLayout = true;
 
+    IWidget *w = NULL;
+    QMap<QString, IWidget *>::iterator it;
     QString prefix;
 
     // 顶部信息栏。
@@ -660,8 +651,6 @@ void WindowManager::_fixedLayout(void)
     prefix = "PrimaryCfg|UILayout|WidgetsOrder|topBarRowOrder";
     topBarRow = systemConfig.getChildNodeNameList(prefix);
 
-    IWidget *w = NULL;
-    QMap<QString, IWidget *>::iterator it;
     if (topBarRow.size() > 0)
     {
         for (int i = 0; i < topBarRow.size(); i++)
@@ -719,45 +708,8 @@ void WindowManager::_fixedLayout(void)
         debug("topBarRow is null \n");
         return;
     }
-
-    // 底部信息栏。
-    QHBoxLayout *hLayoutBottomBar = new QHBoxLayout();
-    hLayoutBottomBar->setMargin(0);
-    hLayoutBottomBar->setSpacing(0);
-    hLayoutBottomBar->addStretch(1);
-
-    QStringList bottomBarRow;
-    prefix = "PrimaryCfg|UILayout|WidgetsOrder|bottomBarRowOrder";
-    bottomBarRow = systemConfig.getChildNodeNameList(prefix);
-
-    if (bottomBarRow.size() > 0)
-    {
-        for (int i = 0; i < bottomBarRow.size(); i++)
-        {
-            it = _winMap.find(bottomBarRow[i]);
-            if (it == _winMap.end())
-            {
-                continue;
-            }
-
-            w = it.value();
-            w->setParent(this);            // 设置父窗体。
-            w->setVisible(true);           // 可见。
-            QString string = prefix + "|" + bottomBarRow[i];
-            int index = 1;
-            systemConfig.getNumValue(string, index);
-            hLayoutBottomBar->addWidget(w, index);
-        }
-    }
-    else
-    {
-        debug("bottomBarRow is null \n");
-        return;
-    }
-
     _topBarRow->addLayout(hLayoutTopBarRow);
     _alarmRow->addLayout(hLayoutAlarmRow);
-    _bottomBarWidget->setLayout(hLayoutBottomBar);
 
     // 软按键区。
     _softkeyRow->addWidget(&softkeyManager);

@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/10
+ **/
+
+
 #include "PromptInfoBarWidget.h"
 #include <QHBoxLayout>
 #include <QPainter>
@@ -30,6 +41,14 @@ PromptInfoBarWidget::PromptInfoBarWidget(const QString &name) :
     IWidget(name)
 {
 //    setFocusPolicy(Qt::NoFocus);
+    QLabel *label = new QLabel(this);
+    label->setAlignment(Qt::AlignCenter | Qt::AlignHCenter);
+    label->setFont(fontManager.textFont(fontManager.getFontSize(2)));
+    label->setText(trs("Prompt"));
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->setContentsMargins(5, 5, 5, 5);
+    layout->addWidget(label);
+    setLayout(layout);
     _timer = new QTimer(this);
     _timer->setInterval(1500);
     connect(_timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
@@ -40,7 +59,6 @@ PromptInfoBarWidget::PromptInfoBarWidget(const QString &name) :
  *************************************************************************************************/
 PromptInfoBarWidget::~PromptInfoBarWidget()
 {
-
 }
 
 /**************************************************************************************************
@@ -57,7 +75,7 @@ void PromptInfoBarWidget::paintEvent(QPaintEvent *e)
  *************************************************************************************************/
 void PromptInfoBarWidget::onTimeout()
 {
-    if(_stringList.isEmpty())
+    if (_stringList.isEmpty())
     {
         _text.clear();
         _timer->stop();
@@ -91,5 +109,4 @@ void PromptInfoBarWidget::_drawText()
     int fontSize = fontManager.adjustTextFontSize(SizeFont);
     painter.setFont(fontManager.textFont(fontSize));
     painter.drawText(r, Qt::AlignVCenter | Qt::AlignLeft, _text);
-
 }

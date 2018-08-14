@@ -216,8 +216,6 @@ private:
     QVBoxLayout *_volatileLayout;           // 放置波形窗体。
     QVBoxLayout *_trendRowLayout;           // 放置趋势窗体。
     QGridLayout *_paramBox;                 // 大字体界面窗体。
-    QHBoxLayout *_bottomBarRow;             // 底部信息栏。
-    QWidget *_bottomBarWidget;              // 底部信息栏。
     QHBoxLayout *_softkeyRow;               // softkey布局器。
 
     // 这些布局器将根据实际情况放到_volatileLayout中。
