@@ -384,7 +384,6 @@ EnglishInputPanel::EnglishInputPanel()
     mainLayout->addWidget(d_ptr->textDisplay);
 
     // 键盘区。
-    QColor color(120, 120, 120);
     QHBoxLayout *hLayout = NULL;
     Button *key = NULL;
     int index = 0;
@@ -481,6 +480,7 @@ EnglishInputPanel::EnglishInputPanel()
     hLayout->addWidget(d_ptr->enter, 1);
 
     mainLayout->addLayout(hLayout);
+    mainLayout->addSpacing(5);
     setWindowLayout(mainLayout);
 }
 
