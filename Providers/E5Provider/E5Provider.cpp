@@ -1,7 +1,16 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/9
+ **/
+
 #include "E5Provider.h"
 #include "ECGParam.h"
 #include "RESPParam.h"
-#include "RTypeDefine.h"
 #include "PatientDefine.h"
 #include "ECGAlg2SoftInterface.h"
 #include "Uart.h"
@@ -30,11 +39,11 @@ enum E5RecvPacketType
 
     E5_PERIODIC_ALIVE           = 0xB0,         // module alive packet, receive frequency will be 1Hz
     E5_PERIODIC_ECG_DATA        = 0xBA,         // ecg data
+    E5_PERIODIC_HR              = 0xBB,         // HR, -1 means invalid
     E5_PERIODIC_RESP_DATA       = 0xD0,         // resp data
     E5_PERIODIC_RR              = 0xD1,         // respiration rate
 
     E5_STATUS_ERROR_OR_WARN     = 0xF0,         // error or warning
-
 };
 
 enum E5SendPacketType
@@ -53,10 +62,10 @@ enum E5SendPacketType
 class E5ProviderPrivate
 {
 public:
-    E5ProviderPrivate(E5Provider * const q_ptr)
-        :q_ptr(q_ptr),
-          ecgAlgInterface(getEcgInterface()),
-          lastHR(0),
+    explicit E5ProviderPrivate(E5Provider *const q_ptr)
+        : q_ptr(q_ptr),
+          ecgAlgInterface(getECGInterface()),
+          lastLeadOff(0),
           support12Lead(false),
           ecgLeadMode(ECG_LEAD_MODE_5),
           respApneaTime(APNEA_ALARM_TIME_OFF),
@@ -69,9 +78,8 @@ public:
     void handleEcgRawData(unsigned char *data, int len);
     void handleRESPRawData(unsigned char *data, int len);
 
-    E5Provider * const q_ptr;
+    E5Provider *const q_ptr;
     ECGInterfaceIFace *ecgAlgInterface;
-    short lastHR;
     short lastLeadOff;
     bool support12Lead;
     char selftestResult[8];
@@ -84,107 +92,109 @@ public:
 /* parse the data from the module and pass it to the algorithm interface */
 void E5ProviderPrivate::handleEcgRawData(unsigned char *data, int len)
 {
-    Q_ASSERT(len >= 32);
-    int ecgData[9];
-    short ipace;
+    Q_ASSERT(len >= 41);
+    int ecgDisp[9];
+    int ecgCalc[9];
+    int qrsdelay;
     short leadoff;
+    bool qrsflag;
+    bool paceflag;
+    bool overload;
+    bool pdblank = false;
+
     int offset = 0;
-
-
-    for(int i = 0; i < 9; i++)
+    for (int i = 0; i < 9; i++)
     {
-        ecgData[i] = data[offset] | (data[offset + 1] << 8) | (data[offset + 2] << 16);
-        //ecgData[i] = (data[offset] << 16) | (data[offset + 1] << 8) | data[offset + 2];
-        offset += 3;
+        ecgDisp[i] = data[offset] | (data[offset + 1] << 8);
+        ecgCalc[i] = data[18 + offset] | (data[18 + offset + 1] << 8);
+        offset += 2;
     }
 
-    ipace = data[offset]  | (data[offset + 1] << 8) | (data[offset + 2] << 16);
-    offset += 3;
+    qrsdelay = data[36] | (data[37] << 8);
+    leadoff = data[38] | (data[39] << 8);
+    paceflag = data[40] & 0x01;
+    qrsflag = data[40] & 0x02;
+    overload = data[40] & 0x04;
 
-    leadoff = data[offset] | (data[offset +1] << 8);
+    ecgAlgInterface->setHandleData(ecgDisp, ecgCalc, qrsdelay, leadoff, qrsflag, paceflag, overload, pdblank);
 
-
-    // handle in algorithm interface
-    ecgAlgInterface->setHandleData(ipace, leadoff, ecgData);
-
-    short newHR = ecgAlgInterface->getHR();
-
-    if(newHR != lastHR)
-    {
-        lastHR = newHR;
-        ecgParam.updateHR(newHR);
-    }
 
     int algleadData[ECG_LEAD_NR] = {0};
-    bool qrsFlag;
-    bool overload;
     bool leadOFFStatus[ECG_LEAD_NR];
 
-    ecgAlgInterface->getWaveform(qrsFlag, overload, leadoff, ipace, algleadData);
+    ecgAlgInterface->getDispData(algleadData, leadoff, qrsflag, paceflag, overload, pdblank);
 
-    //need to swap some field
+    for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
+    {
+        // get the sign
+        short tmp = algleadData[i];
+        algleadData[i] = tmp;
+    }
+
+    // need to swap some field
     int leadData[ECG_LEAD_NR];
-    leadData[ECG_LEAD_I] = algleadData[E5ECGALG::I];
-    leadData[ECG_LEAD_II] = algleadData[E5ECGALG::II];
-    leadData[ECG_LEAD_III] = algleadData[E5ECGALG::III];
-    leadData[ECG_LEAD_AVR] = algleadData[E5ECGALG::aVR];
-    leadData[ECG_LEAD_AVL] = algleadData[E5ECGALG::aVL];
-    leadData[ECG_LEAD_AVF] = algleadData[E5ECGALG::aVF];
-    leadData[ECG_LEAD_V1] = algleadData[E5ECGALG::V1];
-    leadData[ECG_LEAD_V2] = algleadData[E5ECGALG::V2];
-    leadData[ECG_LEAD_V3] = algleadData[E5ECGALG::V3];
-    leadData[ECG_LEAD_V4] = algleadData[E5ECGALG::V4];
-    leadData[ECG_LEAD_V5] = algleadData[E5ECGALG::V5];
-    leadData[ECG_LEAD_V6] = algleadData[E5ECGALG::V6];
+    leadData[ECG_LEAD_I] = algleadData[ECGAlg::I];
+    leadData[ECG_LEAD_II] = algleadData[ECGAlg::II];
+    leadData[ECG_LEAD_III] = algleadData[ECGAlg::III];
+    leadData[ECG_LEAD_AVR] = algleadData[ECGAlg::aVR];
+    leadData[ECG_LEAD_AVL] = algleadData[ECGAlg::aVL];
+    leadData[ECG_LEAD_AVF] = algleadData[ECGAlg::aVF];
+    leadData[ECG_LEAD_V1] = algleadData[ECGAlg::V1];
+    leadData[ECG_LEAD_V2] = algleadData[ECGAlg::V2];
+    leadData[ECG_LEAD_V3] = algleadData[ECGAlg::V3];
+    leadData[ECG_LEAD_V4] = algleadData[ECGAlg::V4];
+    leadData[ECG_LEAD_V5] = algleadData[ECGAlg::V5];
+    leadData[ECG_LEAD_V6] = algleadData[ECGAlg::V6];
 
-    //static bool initFlag =false;
-    //static QFile * f[ECG_LEAD_NR];
-    //static QTextStream *stream[ECG_LEAD_NR];
-    //if(!initFlag)
-    //{
-    //    initFlag = true;
-    //    for(int i = 0; i < ECG_LEAD_NR; i++)
-    //    {
-    //        QString name = "/tmp/WAVE_";
-    //        name += ECGSymbol::convert((ECGLead)i, ECG_CONVENTION_AAMI);
-    //        f[i] = new QFile(name);
-    //        f[i]->open(QIODevice::WriteOnly);
-    //        stream[i] = new QTextStream(f[i]);
-    //    }
-    //}
+#if 0
+    static bool initFlag = false;
+    static QFile *f[ECG_LEAD_NR];
+    static QTextStream *stream[ECG_LEAD_NR];
+    if (!initFlag)
+    {
+        initFlag = true;
+        for (int i = 0; i < ECG_LEAD_NR; i++)
+        {
+            QString name = "/tmp/WAVE_";
+            name += ECGSymbol::convert((ECGLead)i, ECG_CONVENTION_AAMI);
+            f[i] = new QFile(name);
+            f[i]->open(QIODevice::WriteOnly);
+            stream[i] = new QTextStream(f[i]);
+        }
+    }
 
-    //for(int i= 0 ; i< ECG_LEAD_NR; i++)
-    //{
-    //    *stream[i] << leadData[i]<<endl;
-    //}
+    for (int i = 0 ; i < ECG_LEAD_NR; i++)
+    {
+        *stream[i] << leadData[i] << endl;
+    }
+#endif
 
 
-    leadOFFStatus[ECG_LEAD_I] = leadoff & (1 << E5ECGALG::I);
-    leadOFFStatus[ECG_LEAD_II] = leadoff & (1 << E5ECGALG::II);
-    leadOFFStatus[ECG_LEAD_III] = leadoff & (1 << E5ECGALG::III);
-    leadOFFStatus[ECG_LEAD_V1] = leadoff & (1 << E5ECGALG::V1);
-    leadOFFStatus[ECG_LEAD_V2] = leadoff & (1 << E5ECGALG::V2);
-    leadOFFStatus[ECG_LEAD_V3] = leadoff & (1 << E5ECGALG::V3);
-    leadOFFStatus[ECG_LEAD_V4] = leadoff & (1 << E5ECGALG::V4);
-    leadOFFStatus[ECG_LEAD_V5] = leadoff & (1 << E5ECGALG::V5);
-    leadOFFStatus[ECG_LEAD_V6] = leadoff & (1 << E5ECGALG::V6);
-    leadOFFStatus[ECG_LEAD_AVR] = leadoff & (1 << E5ECGALG::aVR);
-    leadOFFStatus[ECG_LEAD_AVL] = leadoff & (1 << E5ECGALG::aVL);
-    leadOFFStatus[ECG_LEAD_AVF] = leadoff & (1 << E5ECGALG::aVF);
+    leadOFFStatus[ECG_LEAD_I] = leadoff & (1 << ECGAlg::I);
+    leadOFFStatus[ECG_LEAD_II] = leadoff & (1 << ECGAlg::II);
+    leadOFFStatus[ECG_LEAD_III] = leadoff & (1 << ECGAlg::III);
+    leadOFFStatus[ECG_LEAD_V1] = leadoff & (1 << ECGAlg::V1);
+    leadOFFStatus[ECG_LEAD_V2] = leadoff & (1 << ECGAlg::V2);
+    leadOFFStatus[ECG_LEAD_V3] = leadoff & (1 << ECGAlg::V3);
+    leadOFFStatus[ECG_LEAD_V4] = leadoff & (1 << ECGAlg::V4);
+    leadOFFStatus[ECG_LEAD_V5] = leadoff & (1 << ECGAlg::V5);
+    leadOFFStatus[ECG_LEAD_V6] = leadoff & (1 << ECGAlg::V6);
+    leadOFFStatus[ECG_LEAD_AVR] = leadoff & (1 << ECGAlg::aVR);
+    leadOFFStatus[ECG_LEAD_AVL] = leadoff & (1 << ECGAlg::aVL);
+    leadOFFStatus[ECG_LEAD_AVF] = leadoff & (1 << ECGAlg::aVF);
 
-    if(lastLeadOff != leadoff )
+    if (lastLeadOff != leadoff)
     {
         lastLeadOff = leadoff;
 
-        for(int i=0; i< ECG_LEAD_NR; i++)
+        for (int i = 0; i < ECG_LEAD_NR; i++)
         {
             ecgParam.setLeadOff((ECGLead)i, leadOFFStatus[i]);
         }
     }
 
     ecgParam.setOverLoad(overload);
-    ecgParam.updateWaveform(leadData, leadOFFStatus, ipace, false, qrsFlag);
-
+    ecgParam.updateWaveform(leadData, leadOFFStatus, paceflag, false, qrsflag);
 }
 
 void E5ProviderPrivate::handleRESPRawData(unsigned char *data, int /*len*/)
@@ -192,7 +202,7 @@ void E5ProviderPrivate::handleRESPRawData(unsigned char *data, int /*len*/)
     bool leadOff = data[0] & 0x80;
     int resp;
     int flag = 0;
-    if(leadOff)
+    if (leadOff)
     {
         flag |= INVALID_WAVE_FALG_BIT;
         resp = q_ptr->getRESPBaseLine();
@@ -204,7 +214,7 @@ void E5ProviderPrivate::handleRESPRawData(unsigned char *data, int /*len*/)
 
         if (waveValue & 0x4000)
         {
-            //negative value
+            // negative value
             waveValue |= 0x8000;
         }
         resp = waveValue;
@@ -214,53 +224,53 @@ void E5ProviderPrivate::handleRESPRawData(unsigned char *data, int /*len*/)
 }
 
 E5Provider::E5Provider()
-    :BLMProvider("BLM_E5"),
+    : BLMProvider("BLM_E5"),
       d_ptr(new E5ProviderPrivate(this))
 {
-    UartAttrDesc portAttr(460800, 8, 'N', 1, 0, FlOW_CTRL_HARD);
+    // UartAttrDesc portAttr(460800, 8, 'N', 1, 0, FlOW_CTRL_HARD);
+    UartAttrDesc portAttr(460800, 8, 'N', 1);
     initPort(portAttr);
-    d_ptr->ecgAlgInterface->setCalLead(E5ECGALG::II);
-    d_ptr->ecgAlgInterface->setEcgMode(E5ECGALG::ECG_FILTER_MONITOR);
-    d_ptr->ecgAlgInterface->setLeadMode(E5ECGALG::ECG_MODE_5_LEAD);
-    d_ptr->ecgAlgInterface->setNotchFilt(E5ECGALG::ECG_NOTCH_60_HZ);
-    d_ptr->ecgAlgInterface->setPatientType(E5ECGALG::PATIENT_AUDLT);
+    d_ptr->ecgAlgInterface->reset();
+    d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::II);
+    d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_MONITOR);
+    d_ptr->ecgAlgInterface->setLeadMode(ECGAlg::ECG_MODE_5_LEAD);
+    d_ptr->ecgAlgInterface->setNotchType(ECGAlg::ECG_NOTCH_60HZ);
+    d_ptr->ecgAlgInterface->setPatientType(ECGAlg::PATIENT_ADULT);
     d_ptr->ecgAlgInterface->setPaceOnOff(true);
 
-    //get selftest result
+    // get selftest result
     sendCmd(E5_CMD_GET_SELFTEST_RESULT, NULL, 0);
 
-    //get 12 Lead support status
+    // get 12 Lead support status
     sendCmd(E5_CMD_CHECK_12LEAD_SUPPORT, NULL, 0);
 }
 
 E5Provider::~E5Provider()
 {
-
 }
 
 bool E5Provider::attachParam(Param &param)
 {
     bool ret = false;
-    if(param.getParamID() == PARAM_ECG)
+    if (param.getParamID() == PARAM_ECG)
     {
-        //TODO: fix the relation between param and provider, should use the abstrace class to
+        // TODO: fix the relation between param and provider, should use the abstrace class to
         //      set the provider, in other word, setprovider should be virtual.
         ecgParam.setProvider(this);
         ret = true;
     }
-    else if(param.getParamID() == PARAM_RESP)
+    else if (param.getParamID() == PARAM_RESP)
     {
         respParam.setProvider(this);
         ret = true;
     }
 
     return ret;
-
 }
 
 void E5Provider::detachParam(Param &/*param*/)
 {
-    //TODO
+    // TODO
 }
 
 void E5Provider::handlePacket(unsigned char *data, int len)
@@ -274,10 +284,10 @@ void E5Provider::handlePacket(unsigned char *data, int len)
     case E5_RSP_VERSION:
         break;
     case E5_RSP_SELFTEST_RESULT:
-        qMemCopy(d_ptr->selftestResult, data+1, sizeof(d_ptr->selftestResult));
+        qMemCopy(d_ptr->selftestResult, data + 1, sizeof(d_ptr->selftestResult));
         break;
     case E5_RSP_LEAD_MODE:
-        d_ptr->ecgAlgInterface->setLeadMode((ECGMode) data[1]);
+        d_ptr->ecgAlgInterface->setLeadMode((ECGAlg::ECGLeadMode) data[1]);
         break;
     case E5_RSP_12LEAD_SUPPORT:
         d_ptr->support12Lead = data[2];
@@ -290,28 +300,28 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         break;
     case E5_NOTIFY_SYSTEM_START:
     {
-        //module restart, perfrom initialize
+        // module restart, perfrom initialize
 
-        //get selftest result
+        // get selftest result
         sendCmd(E5_CMD_GET_SELFTEST_RESULT, NULL, 0);
 
         // get 12 Lead support status
         sendCmd(E5_CMD_CHECK_12LEAD_SUPPORT, NULL, 0);
 
-        //set lead mode again
+        // set lead mode again
         setLeadSystem(d_ptr->ecgLeadMode);
 
-        //resp setting
+        // resp setting
         setRESPCalcLead(d_ptr->resplead);
-        //resp apnea time
+        // resp apnea time
         setApneaTime(d_ptr->respApneaTime);
-        //resp calculation
+        // resp calculation
         enableRESPCalc(d_ptr->enableRespCalc);
     }
-        break;
+    break;
     case E5_NOTIFY_RESP_ALARM:
-        //apnea alarm status
-        if(data[1])
+        // apnea alarm status
+        if (data[1])
         {
             respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_APNEA, true);
         }
@@ -326,19 +336,25 @@ void E5Provider::handlePacket(unsigned char *data, int len)
     case E5_PERIODIC_ECG_DATA:
         d_ptr->handleEcgRawData(data + 1, len - 1);
         break;
+    case E5_PERIODIC_HR:
+    {
+        short hr = data[1] + (data[2] << 8);
+        ecgParam.updateHR(hr);
+    }
+    break;
     case E5_PERIODIC_RESP_DATA:
         d_ptr->handleRESPRawData(data + 1, len - 1);
         break;
     case E5_PERIODIC_RR:
     {
         short rr = data[1] + (data[2] << 8);
-        if(rr == -1)
+        if (rr == -1)
         {
             rr = InvData();
         }
         respParam.setRR(rr);
     }
-        break;
+    break;
     case E5_STATUS_ERROR_OR_WARN:
         break;
     default:
@@ -359,7 +375,7 @@ void E5Provider::disconnected()
     respOneShotAlarm.clear();
     ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ALARM_COMMUNICATION_STOP, true);
     respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
-    for(int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
+    for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
     {
         ecgParam.setLeadOff((ECGLead)i, true);
     }
@@ -380,38 +396,38 @@ int E5Provider::getWaveformSample()
     return 250;
 }
 
-void E5Provider::setWaveformSample(int /*rate*/)
+void E5Provider::setWaveformSample(int rate)
 {
-    //TODO
+    Q_UNUSED(rate)
 }
 
 void E5Provider::get05mV(int &p05mv, int &n05mv)
 {
-    //about 1.224 uV per unit
+    // about 1.224 uV per unit
     p05mv = 408;
     n05mv = -408;
 }
 
 void E5Provider::getLeadCabelType()
 {
-    //TODO
+    // TODO
 }
 
 void E5Provider::setLeadSystem(ECGLeadMode leadSystem)
 {
     d_ptr->ecgLeadMode = leadSystem;
 
-    switch(leadSystem)
+    switch (leadSystem)
     {
     case ECG_LEAD_MODE_3:
-        d_ptr->ecgAlgInterface->setLeadMode(E5ECGALG::ECG_MODE_3_LEAD);
-            break;
+        d_ptr->ecgAlgInterface->setLeadMode(ECGAlg::ECG_MODE_3_LEAD);
+        break;
     case ECG_LEAD_MODE_12:
-        d_ptr->ecgAlgInterface->setLeadMode(E5ECGALG::ECG_MODE_12_LEAD);
+        d_ptr->ecgAlgInterface->setLeadMode(ECGAlg::ECG_MODE_12_LEAD);
         break;
     case ECG_LEAD_MODE_5:
     default:
-        d_ptr->ecgAlgInterface->setLeadMode(E5ECGALG::ECG_MODE_5_LEAD);
+        d_ptr->ecgAlgInterface->setLeadMode(ECGAlg::ECG_MODE_5_LEAD);
         break;
     }
 
@@ -421,103 +437,103 @@ void E5Provider::setLeadSystem(ECGLeadMode leadSystem)
 
 void E5Provider::setCalcLead(ECGLead lead)
 {
-    switch(lead)
+    switch (lead)
     {
     case ECG_LEAD_I:
-        d_ptr->ecgAlgInterface->setCalLead(E5ECGALG::I);
+        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::I);
         break;
     case ECG_LEAD_II:
-        d_ptr->ecgAlgInterface->setCalLead(E5ECGALG::II);
+        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::II);
         break;
     case ECG_LEAD_III:
-        d_ptr->ecgAlgInterface->setCalLead(E5ECGALG::III);
+        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::III);
         break;
     case ECG_LEAD_AVR:
-        d_ptr->ecgAlgInterface->setCalLead(E5ECGALG::aVR);
+        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::aVR);
         break;
     case ECG_LEAD_AVL:
-        d_ptr->ecgAlgInterface->setCalLead(E5ECGALG::aVL);
+        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::aVL);
         break;
     case ECG_LEAD_AVF:
-        d_ptr->ecgAlgInterface->setCalLead(E5ECGALG::aVF);
+        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::aVF);
         break;
     case ECG_LEAD_V1:
-        d_ptr->ecgAlgInterface->setCalLead(E5ECGALG::V1);
+        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::V1);
         break;
     case ECG_LEAD_V2:
-        d_ptr->ecgAlgInterface->setCalLead(E5ECGALG::V2);
+        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::V2);
         break;
     case ECG_LEAD_V3:
-        d_ptr->ecgAlgInterface->setCalLead(E5ECGALG::V3);
+        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::V3);
         break;
     case ECG_LEAD_V4:
-        d_ptr->ecgAlgInterface->setCalLead(E5ECGALG::V4);
+        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::V4);
         break;
     case ECG_LEAD_V5:
-        d_ptr->ecgAlgInterface->setCalLead(E5ECGALG::V5);
+        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::V5);
         break;
     case ECG_LEAD_V6:
-        d_ptr->ecgAlgInterface->setCalLead(E5ECGALG::V6);
+        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::V6);
         break;
     default:
-        d_ptr->ecgAlgInterface->setCalLead(E5ECGALG::II);
+        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::II);
         break;
     }
 }
 
 void E5Provider::setPatientType(unsigned char type)
 {
-    switch(type)
+    switch (type)
     {
     case PATIENT_TYPE_PED:
-        d_ptr->ecgAlgInterface->setPatientType(E5ECGALG::PATIENT_PEDIATRIC);
+        d_ptr->ecgAlgInterface->setPatientType(ECGAlg::PATIENT_PEDIATRIC);
         break;
     case PATIENT_TYPE_NEO:
-        d_ptr->ecgAlgInterface->setPatientType(E5ECGALG::PATIENT_NEONATE);
+        d_ptr->ecgAlgInterface->setPatientType(ECGAlg::PATIENT_NEONATE);
         break;
     case PATIENT_TYPE_ADULT:
     default:
-        d_ptr->ecgAlgInterface->setPatientType(E5ECGALG::PATIENT_AUDLT);
+        d_ptr->ecgAlgInterface->setPatientType(ECGAlg::PATIENT_ADULT);
         break;
     }
 }
 
 void E5Provider::setBandwidth(ECGBandwidth bandwidth)
 {
-    switch(bandwidth)
+    switch (bandwidth)
     {
     case ECG_BANDWIDTH_067_20HZ:
-        d_ptr->ecgAlgInterface->setEcgMode(E5ECGALG::ECG_FILTER_SURGERY);
+        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_SURGERY);
         break;
     case ECG_BANDWIDTH_067_40HZ:
-        d_ptr->ecgAlgInterface->setEcgMode(E5ECGALG::ECG_FILTER_MONITOR);
+        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_MONITOR);
         break;
     case ECG_BANDWIDTH_0525_40HZ:
-        d_ptr->ecgAlgInterface->setEcgMode(E5ECGALG::ECG_FILTER_ST);
+        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_ST);
         break;
     case ECG_BANDWIDTH_0525_150HZ:
-        d_ptr->ecgAlgInterface->setEcgMode(E5ECGALG::ECG_FILTER_DIAGNOSTIC);
+        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_DIAGNOSIS);
     default:
-        d_ptr->ecgAlgInterface->setEcgMode(E5ECGALG::ECG_FILTER_MONITOR);
+        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_MONITOR);
         break;
     }
 }
 
 void E5Provider::setFilterMode(ECGFilterMode mode)
 {
-    switch(mode)
+    switch (mode)
     {
     case ECG_FILTERMODE_MONITOR:
-        d_ptr->ecgAlgInterface->setEcgMode(E5ECGALG::ECG_FILTER_MONITOR);
+        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_MONITOR);
         break;
     case ECG_FILTERMODE_DIAGNOSTIC:
-        d_ptr->ecgAlgInterface->setEcgMode(E5ECGALG::ECG_FILTER_DIAGNOSTIC);
+        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_DIAGNOSIS);
         break;
     case ECG_FILTERMODE_SURGERY:
-        d_ptr->ecgAlgInterface->setEcgMode(E5ECGALG::ECG_FILTER_SURGERY);
+        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_SURGERY);
         break;
     case ECG_FILTERMODE_ST:
-        d_ptr->ecgAlgInterface->setEcgMode(E5ECGALG::ECG_FILTER_ST);
+        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_ST);
         break;
     default:
         qdebug("Unknown filter mode.");
@@ -532,33 +548,33 @@ void E5Provider::enablePacermaker(ECGPaceMode onoff)
 
 void E5Provider::setNotchFilter(ECGNotchFilter notch)
 {
-    switch (notch) {
+    switch (notch)
+    {
     case ECG_NOTCH_50HZ:
-        d_ptr->ecgAlgInterface->setNotchFilt(E5ECGALG::ECG_NOTCH_50_HZ);
+        d_ptr->ecgAlgInterface->setNotchType(ECGAlg::ECG_NOTCH_50HZ);
         break;
     case ECG_NOTCH_60HZ:
-        d_ptr->ecgAlgInterface->setNotchFilt(E5ECGALG::ECG_NOTCH_60_HZ);
+        d_ptr->ecgAlgInterface->setNotchType(ECGAlg::ECG_NOTCH_60HZ);
         break;
     case ECG_NOTCH_50_AND_60HZ:
-        d_ptr->ecgAlgInterface->setNotchFilt(E5ECGALG::ECG_NOTCH_5060_HZ);
+        d_ptr->ecgAlgInterface->setNotchType(ECGAlg::ECG_NOTCH_5060HZ);
         break;
     case ECG_NOTCH_OFF1:
     default:
-        d_ptr->ecgAlgInterface->setNotchFilt(E5ECGALG::ECG_NOTCH_OFF);
+        d_ptr->ecgAlgInterface->setNotchType(ECGAlg::ECG_NOTCH_OFF);
         break;
     }
 }
 
-void E5Provider::enableSTAnalysis(bool /*onoff*/)
+void E5Provider::enableSTAnalysis(bool onoff)
 {
-
-    //TODO
+    Q_UNUSED(onoff)
+    // TODO
 }
 
 void E5Provider::setSTPoints(int /*iso*/, int /*st*/)
 {
-
-    //TODO
+    // TODO
 }
 
 int E5Provider::getRESPWaveformSample()
@@ -582,12 +598,12 @@ void E5Provider::setApneaTime(ApneaAlarmTime t)
 
 void E5Provider::setWaveformZoom(RESPZoom /*zoom*/)
 {
-    //TODO
+    // TODO
 }
 
 void E5Provider::setRESPCalcLead(RESPLead lead)
 {
-    d_ptr->resplead == lead;
+    d_ptr->resplead = lead;
     unsigned char l = lead;
     sendCmd(E5_CMD_SET_RESP_CALC_LEAD, &l, 1);
 }
