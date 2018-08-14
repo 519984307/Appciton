@@ -61,5 +61,5 @@ void ConfigManagerMenuContent::layoutExec()
 void ConfigManagerMenuContent::userInputCorrect()
 {
     ConfigManagerMenuWindow *w = ConfigManagerMenuWindow::getInstance();
-    windowManager.showWindow(w);
+    windowManager.showWindow(w, WindowManager::WINDOW_TYPE_NONMODAL);
 }

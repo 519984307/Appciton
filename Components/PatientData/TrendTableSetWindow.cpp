@@ -54,12 +54,6 @@ void TrendTableSetWindow::showEvent(QShowEvent *ev)
     d_ptr->trendGroupCbo->setCurrentIndex(index);
 }
 
-void TrendTableSetWindow::hideEvent(QHideEvent *ev)
-{
-    Window::hideEvent(ev);
-    windowManager.showWindow(TrendTableWindow::getInstance());
-}
-
 void TrendTableSetWindow::timeIntervalReleased(int t)
 {
     QString prefix = "TrendTable|ResolutionRatio";

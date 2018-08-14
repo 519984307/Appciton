@@ -2390,7 +2390,7 @@ IWidget *WindowManager::getWidget(const QString &name)
 #if defined(Q_WS_QWS)
 WindowManager::WindowManager() : QWidget(NULL, Qt::FramelessWindowHint)
 #else
-WindowManager::WindowManager() : QWidget()
+WindowManager::WindowManager() : QWidget(), _activeWindow(NULL)
 #endif
 {
     _winMap.clear();
@@ -2449,17 +2449,19 @@ WindowManager::~WindowManager()
     _winMap.clear();
 }
 
-void WindowManager::showWindow(QWidget *w)
+void WindowManager::showWindow(QWidget *w, WindowType type)
 {
-    bool isVisible = w->isVisible();
-    while (NULL != QApplication::activeModalWidget())
+    if (type == WINDOW_TYPE_NONMODAL)
     {
-        QApplication::activeModalWidget()->hide();
+        if (_activeWindow)
+        {
+            _activeWindow->hide();
+        }
+        _activeWindow = w;
     }
-
-    if (isVisible)
+    else if (type == WINDOW_TYPE_MODAL)
     {
-        return;
+         w->setWindowModality(Qt::ApplicationModal);
     }
 
     QRect r = _volatileLayout->geometry();

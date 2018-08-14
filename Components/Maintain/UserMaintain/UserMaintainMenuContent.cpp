@@ -61,5 +61,5 @@ void UserMaintainMenuContent::layoutExec()
 void UserMaintainMenuContent::userInputCorrect()
 {
     UserMaintainMenuWindow *w = UserMaintainMenuWindow::getInstance();
-    windowManager.showWindow(w);
+    windowManager.showWindow(w, WindowManager::WINDOW_TYPE_NONMODAL);
 }

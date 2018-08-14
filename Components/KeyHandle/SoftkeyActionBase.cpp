@@ -140,19 +140,8 @@ void SoftkeyActionBase::limitMenu(bool isPressed)
         return;
     }
 
-    bool isVisible = publicMenuManager.isVisible();
-    while (NULL != QApplication::activeModalWidget())
-    {
-        QApplication::activeModalWidget()->hide();
-        menuManager.close();
-    }
-
-    if (isVisible)
-    {
-        return;
-    }
     MainMenuWindow *p = MainMenuWindow::getInstance();
-    p->popup(trs("AlarmLimitMenu"));
+    windowManager.showWindow(p, WindowManager::WINDOW_TYPE_NONMODAL);
 }
 
 void SoftkeyActionBase::WindowLayout(bool isPressed)
@@ -292,7 +281,7 @@ void SoftkeyActionBase::mainsetup(bool isPressed)
 //    windowManager.setUFaceType();
 //    windowManager.showMainMenu();
     MainMenuWindow *w = MainMenuWindow::getInstance();
-    windowManager.showWindow(w);
+    windowManager.showWindow(w, WindowManager::WINDOW_TYPE_NONMODAL);
 }
 
 /***************************************************************************************************

@@ -63,6 +63,8 @@ public:
           curSecCol(0)
     {}
 
+    void updateTable(void);
+
 public:
     TrendTableModel *model;
     TableView *table;
@@ -96,11 +98,13 @@ TrendTableWindow::~TrendTableWindow()
 void TrendTableWindow::setTimeInterval(int t)
 {
     d_ptr->model->setTimeInterval(t);
+    d_ptr->updateTable();
 }
 
 void TrendTableWindow::setTrendGroup(int g)
 {
     d_ptr->model->loadCurParam(g);
+    d_ptr->updateTable();
 }
 
 void TrendTableWindow::setHistoryDataPath(QString path)
@@ -121,12 +125,7 @@ void TrendTableWindow::printTrendData(unsigned startTime, unsigned endTime)
 void TrendTableWindow::showEvent(QShowEvent *ev)
 {
     Window::showEvent(ev);
-    d_ptr->model->updateData();
-
-    // 重新打开窗口时总是选择最后一列
-    int totalCol = d_ptr->model->columnCount(QModelIndex());
-    d_ptr->curSecCol = totalCol - 1;
-    d_ptr->table->selectColumn(d_ptr->curSecCol);
+    d_ptr->updateTable();
 }
 
 TrendTableWindow::TrendTableWindow()
@@ -267,6 +266,15 @@ void TrendTableWindow::printWidgetRelease()
 
 void TrendTableWindow::trendDataSetReleased()
 {
-    hide();
-    windowManager.showWindow(&trendTableSetWindow);
+    windowManager.showWindow(&trendTableSetWindow, WindowManager::WINDOW_TYPE_MODAL);
+}
+
+void TrendTableWindowPrivate::updateTable()
+{
+    model->updateData();
+
+    // 重新打开窗口时总是选择最后一列
+    int totalCol = model->columnCount(QModelIndex());
+    curSecCol = totalCol - 1;
+    table->selectColumn(curSecCol);
 }

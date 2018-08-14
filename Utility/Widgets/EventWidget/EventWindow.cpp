@@ -399,7 +399,7 @@ void EventWindow::printRelease()
 
 void EventWindow::setReleased()
 {
-    eventWaveSetWindow.exec();
+    windowManager.showWindow(&eventWaveSetWindow, WindowManager::WINDOW_TYPE_MODAL);
 }
 
 void EventWindow::upReleased()

@@ -88,27 +88,27 @@ void HistoryDataReviewWindow::onButtonReleased()
         case HistoryDataReviewWindowPrivate::ITEM_TREND_TABLE:
             TrendTableWindow::getInstance()->setHistoryDataPath(d_ptr->selHistoryDataPath);
             TrendTableWindow::getInstance()->setHistoryData(true);
-            windowManager.showWindow(TrendTableWindow::getInstance());
+            windowManager.showWindow(TrendTableWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
             break;
         case HistoryDataReviewWindowPrivate::ITEM_TREND_GRAPH:
             TrendGraphWindow::getInstance()->setHistoryDataPath(d_ptr->selHistoryDataPath);
             TrendGraphWindow::getInstance()->setHistoryData(true);
-            windowManager.showWindow(TrendGraphWindow::getInstance());
+            windowManager.showWindow(TrendGraphWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
             break;
         case HistoryDataReviewWindowPrivate::ITEM_EVENT_REVIEW:
             EventWindow::getInstance()->setHistoryDataPath(d_ptr->selHistoryDataPath);
             EventWindow::getInstance()->setHistoryData(true);
-            windowManager.showWindow(EventWindow::getInstance());
+            windowManager.showWindow(EventWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
             break;
         case HistoryDataReviewWindowPrivate::ITEM_OXYCRGEVENT_REVIEW:
             OxyCRGEventWindow::getInstance()->setHistoryDataPath(d_ptr->selHistoryDataPath);
             OxyCRGEventWindow::getInstance()->setHistoryData(true);
-            windowManager.showWindow(OxyCRGEventWindow::getInstance());
+            windowManager.showWindow(OxyCRGEventWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
             break;
         case HistoryDataReviewWindowPrivate::ITEM_HISTORY_TIME:
         {
             HistoryDataSelWindow *window = new HistoryDataSelWindow();
-            windowManager.showWindow(window);
+            windowManager.showWindow(window, WindowManager::WINDOW_TYPE_NONMODAL);
             break;
         }
         default:

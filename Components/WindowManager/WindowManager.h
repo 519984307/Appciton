@@ -28,6 +28,12 @@ class WindowManager : public QWidget
 {
     Q_OBJECT
 public:
+    enum WindowType
+    {
+        WINDOW_TYPE_MODAL,
+        WINDOW_TYPE_NONMODAL
+    };
+
     static WindowManager &construction(void)
     {
         if (_selfObj == NULL)
@@ -44,7 +50,7 @@ public:
      * @brief showWindow 从这里调用显示所有的窗口
      * @param w
      */
-    void showWindow(QWidget *w);
+    void showWindow(QWidget *w, WindowType type);
 
 public:
     // 注册窗体。
@@ -229,6 +235,8 @@ private:
     QMap<QString, IWidget *> _waveformMap; // 保存当前波形区的窗体。
     QMap<QString, QVBoxLayout *> _bigformMap; // 保存当前大字体区的窗体。
     QMultiMap<IWidget *, IWidget *> _trendWave;            // 参数列表
+
+    QWidget *_activeWindow;
 };
 #define windowManager (WindowManager::construction())
 #define deleteWindowManager() (delete WindowManager::_selfObj)

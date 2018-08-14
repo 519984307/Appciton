@@ -64,7 +64,7 @@ void RescueDataSoftKeyAction::trendReview(bool isPressed)
     }
 
     TrendTableWindow::getInstance()->setHistoryData(false);
-    windowManager.showWindow(TrendTableWindow::getInstance());
+    windowManager.showWindow(TrendTableWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
 }
 
 /***************************************************************************************************
@@ -78,7 +78,7 @@ void RescueDataSoftKeyAction::summaryReview(bool isPressed)
     }
 
     TrendGraphWindow::getInstance()->setHistoryData(false);
-    windowManager.showWindow(TrendGraphWindow::getInstance());
+    windowManager.showWindow(TrendGraphWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
 }
 
 /***************************************************************************************************
@@ -127,7 +127,7 @@ void RescueDataSoftKeyAction::eventReview(bool isPressed)
     }
 
     EventWindow::getInstance()->setHistoryData(false);
-    windowManager.showWindow(EventWindow::getInstance());
+    windowManager.showWindow(EventWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
 }
 
 void RescueDataSoftKeyAction::oxyCRGEventReview(bool isPressed)
@@ -138,7 +138,7 @@ void RescueDataSoftKeyAction::oxyCRGEventReview(bool isPressed)
     }
 
     OxyCRGEventWindow::getInstance()->setHistoryData(false);
-    windowManager.showWindow(OxyCRGEventWindow::getInstance());
+    windowManager.showWindow(OxyCRGEventWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
 }
 
 void RescueDataSoftKeyAction::historyReview(bool isPressed)
@@ -148,7 +148,7 @@ void RescueDataSoftKeyAction::historyReview(bool isPressed)
         return;
     }
 
-    windowManager.showWindow(HistoryDataReviewWindow::getInstance());
+    windowManager.showWindow(HistoryDataReviewWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
 }
 
 /***************************************************************************************************
