@@ -33,7 +33,7 @@
         <PDCommLog>1</PDCommLog>
     </Record>
     <!--参数与Provider的关系-->
-    <ECG SptProvider="DemoProvider,BLM_E5">DemoProvider</ECG>
+    <ECG SptProvider="DemoProvider,BLM_E5">BLM_E5</ECG>
     <RESP SptProvider="DemoProvider,BLM_E5">BLM_E5</RESP>
     <SPO2 SptProvider="DemoProvider,BLM_SPO2,BLM_TS3,BLM_S5,MASIMO_SPO2,NELLCOR_SPO2">NELLCOR_SPO2</SPO2>
     <NIBP SptProvider="DemoProvider,BLM_NIBP,BLM_TN3,SUNTECH_NIBP">DemoProvider</NIBP>
@@ -44,13 +44,13 @@
     <TEMP SptProvider="DemoProvider,BLM_TT3,BLM_T5">DemoProvider</TEMP>
     <PD SptProvider="PDProvider">PDProvider</PD>
     <!--Provider端口信息-->
-    <PRT72Port>/dev/ttyS0</PRT72Port>
+    <PRT72Port>/dev/null</PRT72Port>
     <BLM_E5Port>/dev/ttyS1</BLM_E5Port>
     <BLM_TN3Port>/dev/ttyS2</BLM_TN3Port>
     <!--    <SUNTECH_NIBPPort>/dev/ttyS2</SUNTECH_NIBPPort>-->
     <BLM_S5Port>/dev/ttyS3</BLM_S5Port>
     <!--    <MASIMO_SPO2Port>/dev/ttyS3</MASIMO_SPO2Port>-->
-    <SystemBoardPort>/dev/ttyS4</SystemBoardPort>
+    <SystemBoardPort>/dev/ttyPM0</SystemBoardPort>
     <BLM_T5Port>/dev/ttyS5</BLM_T5Port>
     <WITLEAF_IBPPort>/dev/ttyWK2</WITLEAF_IBPPort>
     <BLM_CO2Port>/dev/ttyWK3</BLM_CO2Port>
