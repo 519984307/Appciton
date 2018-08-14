@@ -16,6 +16,7 @@
 #include "ThemeManager.h"
 #include "Utility.h"
 #include <QDebug>
+#include <QTimer>
 
 class PopupNumEditorPrivate
 {
@@ -25,7 +26,8 @@ public:
           valueRect(0, 0, 40, 100),
           isUpPressed(false),
           isDownPressed(false),
-          hasBeenPressed(false)
+          hasBeenPressed(false),
+          timer(NULL)
     {}
 
     // check the mouse in which region
@@ -48,6 +50,8 @@ public:
     bool isUpPressed;
     bool isDownPressed;
     bool hasBeenPressed;
+
+    QTimer *timer;
 };
 
 bool PopupNumEditorPrivate::mouseInUpRegion(const QPoint &pos) const
@@ -269,10 +273,29 @@ void PopupNumEditor::mousePressEvent(QMouseEvent *ev)
 
     update();
     ev->accept();
+
+    if (!d_ptr->isUpPressed && !d_ptr->isDownPressed)
+    {
+        return;
+    }
+    if (d_ptr->timer)
+    {
+        return;
+    }
+    d_ptr->timer = new QTimer(this);
+    d_ptr->timer->start(400);
+    connect(d_ptr->timer, SIGNAL(timeout()), this, SLOT(timeOutExec()));
 }
 
 void PopupNumEditor::mouseReleaseEvent(QMouseEvent *ev)
 {
+    if (d_ptr->timer)
+    {
+        d_ptr->timer->stop();
+        delete d_ptr->timer;
+        d_ptr->timer = NULL;
+    }
+
     if (!d_ptr->hasBeenPressed)
     {
         // don't process this event if have gone through press event
@@ -310,5 +333,36 @@ void PopupNumEditor::showEvent(QShowEvent *ev)
     QRect rr = this->rect();
     move(r.center() - rr.center() + d_ptr->valueRect.topLeft());
     QWidget::showEvent(ev);
+}
+
+void PopupNumEditor::timeOutExec()
+{
+    if (!d_ptr->hasBeenPressed)
+    {
+        d_ptr->timer->stop();
+        delete d_ptr->timer;
+        d_ptr->timer = NULL;
+        return;
+    }
+    if (!d_ptr->isUpPressed && !d_ptr->isDownPressed)
+    {
+        d_ptr->timer->stop();
+        delete d_ptr->timer;
+        d_ptr->timer = NULL;
+        return;
+    }
+
+    if (d_ptr->isUpPressed)
+    {
+        d_ptr->increaseValue();
+    }
+    else if (d_ptr->isDownPressed)
+    {
+        d_ptr->decreaseValue();
+    }
+
+    update();
+
+    d_ptr->timer->start(40);
 }
 

@@ -54,6 +54,12 @@ signals:
     /* emit when edit value changed */
     void valueChanged(int value);
 
+private slots:
+    /**
+     * @brief timeOutExec
+     */
+    void timeOutExec();
+
 private:
     PopupNumEditorPrivate *const d_ptr;
     friend class PopupNumEditorPrivate;
