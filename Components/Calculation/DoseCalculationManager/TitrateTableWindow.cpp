@@ -130,7 +130,7 @@ void TitrateTableWindow::layoutExecIt()
     d_ptr->titrateTable = new TableView();
     d_ptr->titrateTable->setSelectionMode(QAbstractItemView::NoSelection);
     d_ptr->titrateTable->setFocusPolicy(Qt::NoFocus);
-    d_ptr->titrateTable->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    d_ptr->titrateTable->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     TableHeaderView *hor = new TableHeaderView(Qt::Horizontal);
     d_ptr->titrateTable->setHorizontalHeader(hor);

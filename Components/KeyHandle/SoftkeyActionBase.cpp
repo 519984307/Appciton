@@ -22,7 +22,7 @@
 #include "WindowManager.h"
 #include "WindowLayout.h"
 #include "PatientInfoWindow.h"
-#include "IMessageBox.h"
+#include "MessageBox.h"
 #include "CO2Param.h"
 #include "SystemManager.h"
 #include "DataStorageDirManager.h"
@@ -270,7 +270,7 @@ void SoftkeyActionBase::patientNew(bool isPressed)
 //    int y = r.y() + (r.height() - patientMainMenu.height());
     QStringList slist;
     slist << trs("EnglishYESChineseSURE") << trs("No");
-    IMessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist);
+    MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist);
     if (messageBox.exec() == 0)
     {
         dataStorageDirManager.createDir(true);

@@ -1,16 +1,28 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/9
+ **/
+
+
+
 #include <QApplication>
 #include "DelRescueDataSoftkeyAction.h"
 #include "WindowManager.h"
 #include "TrendDataWidget.h"
 #include "RescueDataExportWidget.h"
-#include "IMessageBox.h"
+#include "MessageBox.h"
 #include "DataStorageDirManager.h"
 #include "SoftKeyManager.h"
 #include "MenuGroup.h"
 #include "RescueDataDeleteWidget.h"
 #include "MenuManager.h"
 
-IMessageBox *DelRescueDataSoftkeyAction::_messageBox = NULL;
+MessageBox *DelRescueDataSoftkeyAction::_messageBox = NULL;
 /***************************************************************************************************
  * 所有的快捷按键定义。
  **************************************************************************************************/
@@ -48,7 +60,7 @@ void DelRescueDataSoftkeyAction::delAll(bool isPressed)
 
     if (NULL == _messageBox)
     {
-        _messageBox = new IMessageBox(trs("Prompt"), trs("ClearAllRescueData"));
+        _messageBox = new MessageBox(trs("Prompt"), trs("ClearAllRescueData"));
     }
 
     bool isVisible = _messageBox->isVisible();
@@ -123,7 +135,7 @@ int DelRescueDataSoftkeyAction::getActionDescNR(void)
  **************************************************************************************************/
 KeyActionDesc *DelRescueDataSoftkeyAction::getActionDesc(int index)
 {
-    if (index >= (int)(sizeof(_delRescueDataKeys) / sizeof(KeyActionDesc)))
+    if (index >= static_cast<int>(sizeof(_delRescueDataKeys) / sizeof(KeyActionDesc)))
     {
         return NULL;
     }
@@ -142,7 +154,6 @@ KeyActionDesc *DelRescueDataSoftkeyAction::getActionDesc(int index)
 DelRescueDataSoftkeyAction::DelRescueDataSoftkeyAction() :
     SoftkeyActionBase(SOFTKEY_ACTION_DEL_RESCUE_DATA)
 {
-
 }
 
 /***************************************************************************************************

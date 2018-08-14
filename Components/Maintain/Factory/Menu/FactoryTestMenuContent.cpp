@@ -16,7 +16,7 @@
 #include "Button.h"
 #include "FactoryWindowManager.h"
 #include <QProcess>
-#include "IMessageBox.h"
+#include "MessageBox.h"
 #include "USBManager.h"
 #include "FactoryMaintainManager.h"
 #include "SpinBox.h"
@@ -228,7 +228,7 @@ void FactoryTestMenuContent::onFreshRateChanged(int valStr)
                          valStr);
     QProcess::execute(cmdStr);
     QProcess::execute("sync");
-    IMessageBox msgBox(trs("Note"), trs("RefreshRateUpdatedRebootNow"), true);
+    MessageBox msgBox(trs("Note"), trs("RefreshRateUpdatedRebootNow"), true);
     if (msgBox.exec() == 1)
     {
         QProcess::execute("reboot");

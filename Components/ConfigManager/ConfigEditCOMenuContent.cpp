@@ -21,7 +21,7 @@
 #include "COParam.h"
 #include "IConfig.h"
 #include "NumberInput.h"
-#include "IMessageBox.h"
+#include "MessageBox.h"
 #include "ConfigEditMenuWindow.h"
 
 class ConfigEditCOMenuContentPrivate
@@ -243,7 +243,7 @@ void ConfigEditCOMenuContent::onButtonReleased()
                     }
                     else
                     {
-                        IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.001-0.999", QStringList(trs("EnglishYESChineseSURE")));
+                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.001-0.999", QStringList(trs("EnglishYESChineseSURE")));
                         messageBox.exec();
                     }
                 }
@@ -272,7 +272,7 @@ void ConfigEditCOMenuContent::onButtonReleased()
                     }
                     else
                     {
-                        IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.0-27.0", QStringList(trs("EnglishYESChineseSURE")));
+                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.0-27.0", QStringList(trs("EnglishYESChineseSURE")));
                         messageBox.exec();
                     }
                 }
@@ -299,7 +299,7 @@ void ConfigEditCOMenuContent::onButtonReleased()
                     }
                     else
                     {
-                        IMessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "1-200", QStringList(trs("EnglishYESChineseSURE")));
+                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "1-200", QStringList(trs("EnglishYESChineseSURE")));
                         messageBox.exec();
                     }
                 }
