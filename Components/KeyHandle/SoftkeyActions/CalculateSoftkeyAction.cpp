@@ -20,6 +20,7 @@
 #include "DoseCalculationWindow.h"
 #include "DoseCalculationManager.h"
 #include "HemodynamicWidget.h"
+#include "HemodynamicWindow.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -87,7 +88,8 @@ void CalculateSoftkeyAction::Hemodynamic(bool isPressed)
         return;
     }
 
-    bool isVisible = hemodynamicWidget.isVisible();
+//    bool isVisible = hemodynamicWidget.isVisible();
+    bool isVisible = HemodynamicWindow::getInstance()->isVisible();
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
@@ -104,7 +106,7 @@ void CalculateSoftkeyAction::Hemodynamic(bool isPressed)
 //    int y = r.y() + (r.height() - patientMenu.height());
 //    patientMenu.autoShow(x, y);
 //    //    patientMenu.autoShow();
-    hemodynamicWidget.autoShow();
+    HemodynamicWindow::getInstance()->exec();
 }
 
 void CalculateSoftkeyAction::exit(bool isPressed)

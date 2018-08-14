@@ -251,8 +251,11 @@ SOURCES +=                                                                      
     Components/Calculation/DoseCalculationManager/TitrateTableSetWidget.cpp     \
     Components/Calculation/DoseCalculationManager/TitrateTableSetWindow.cpp     \
     Components/Calculation/HemodynamicManager/HemodynamicWidget.cpp             \
+    Components/Calculation/HemodynamicManager/HemodynamicWindow.cpp             \
     Components/Calculation/HemodynamicManager/HemodynamicManager.cpp            \
     Components/Calculation/HemodynamicManager/HemodynamicReviewWidget.cpp       \
+    Components/Calculation/HemodynamicManager/HemodynamicReviewWindow.cpp       \
+    Components/Calculation/HemodynamicManager/HemodynamicDataModel.cpp          \
     Components/PatientData/WaveformCache.cpp                                    \
     Components/PatientData/ParamDataStorageManager.cpp                          \
     Components/PatientData/RescueDataListWidget.cpp                             \
@@ -790,9 +793,12 @@ HEADERS +=                                                                      
     Components/Calculation/DoseCalculationManager/TitrateTableSetWidget.h       \
     Components/Calculation/DoseCalculationManager/TitrateTableSetWindow.h       \
     Components/Calculation/HemodynamicManager/HemodynamicWidget.h               \
+    Components/Calculation/HemodynamicManager/HemodynamicWindow.h               \
     Components/Calculation/HemodynamicManager/HemodynamicDefine.h               \
     Components/Calculation/HemodynamicManager/HemodynamicManager.h              \
     Components/Calculation/HemodynamicManager/HemodynamicReviewWidget.h         \
+    Components/Calculation/HemodynamicManager/HemodynamicReviewWindow.h         \
+    Components/Calculation/HemodynamicManager/HemodynamicDataModel.h            \
     Components/PatientData/WaveformCache.h                                      \
     Components/PatientData/ParamDataDefine.h                                    \
     Components/PatientData/ParamDataStorageManager.h                            \
