@@ -46,9 +46,6 @@ struct ECGDataPack
     int     I;      // 各数据导联的数据
     int     II;
     int     III;
-    int     aVR;
-    int     aVL;
-    int     aVF;
     int     V1;
     int     V2;
     int     V3;

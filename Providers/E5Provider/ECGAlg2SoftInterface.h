@@ -62,12 +62,15 @@ public:
     virtual void setHandleData(int ecgdisp[], int ecgcalc[], int qrsdelay, short leadoff, bool qrsflag, bool paceflag, bool overload, bool pdblank) = 0;
 
     // ---------------------------- 算法输出项 -----------------------------------//
-    // 心律失常报警输出，-1为无效值
+    // 心律失常报警输出, -1为无效值
     virtual ECGAlg::ARRCODE getARR() = 0;
+
+    // 获取PVC率, -1为无效值
+    virtual short getPVCRate() = 0;
 
     // 心电显示数据及相关指示标记输出
     /*
-    ecgdisp: 12导心电显示数据, 数组长度为12, 分别对应I/II/III/V1/V2/V3/V4/V5/V6/aVR/aVL/aVF
+    ecgdisp: 12导心电显示数据, 数组长度为12, 分别对应I/II/III/aVR/aVL/aVF/V1/V2/V3/V4/V5/V6
     leadoff: 9导电极导联脱落标记, 从高到低按位对应RLD-LA-LL-RA-V1-V2-V3-V4-V5-V6
     qrsflag: 快速R波标记
     paceflag: 体内起搏标记
