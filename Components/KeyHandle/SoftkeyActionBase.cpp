@@ -151,12 +151,8 @@ void SoftkeyActionBase::limitMenu(bool isPressed)
     {
         return;
     }
-
-    QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
-    int y = r.y() + (r.height() - publicMenuManager.height());
     MainMenuWindow *p = MainMenuWindow::getInstance();
-    p->popup(trs("AlarmLimitMenu") , x , y);
+    p->popup(trs("AlarmLimitMenu"));
 }
 
 void SoftkeyActionBase::WindowLayout(bool isPressed)

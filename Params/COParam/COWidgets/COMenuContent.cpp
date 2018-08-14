@@ -20,7 +20,7 @@
 #include "SystemManager.h"
 #include "COParam.h"
 #include "IConfig.h"
-#include "NumberInput.h"
+#include "KeyInputPanel.h"
 #include "MessageBox.h"
 
 class COMenuContentPrivate
@@ -193,8 +193,8 @@ void COMenuContent::onButtonReleased()
         case COMenuContentPrivate::ITEM_CBO_CO_RATIO:
         {
 
-            NumberInput numberPad;
-            numberPad.setTitleBarText(trs("CORatio"));
+            KeyInputPanel numberPad;
+            numberPad.setWindowTitle(trs("CORatio"));
             numberPad.setMaxInputLength(5);
             numberPad.setInitString(button->text());
             if (numberPad.exec())
@@ -212,7 +212,7 @@ void COMenuContent::onButtonReleased()
                     }
                     else
                     {
-                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.001-0.999", QStringList(trs("EnglishYESChineseSURE")));
+                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + " 0.001-0.999 ", QStringList(trs("EnglishYESChineseSURE")));
                         messageBox.exec();
                     }
                 }
@@ -221,8 +221,8 @@ void COMenuContent::onButtonReleased()
         }
         case COMenuContentPrivate::ITEM_CBO_INJECTION_TEMP:
         {
-            NumberInput numberPad;
-            numberPad.setTitleBarText(trs("InjectionTemp"));
+            KeyInputPanel numberPad;
+            numberPad.setWindowTitle(trs("InjectionTemp"));
             numberPad.setMaxInputLength(4);
             numberPad.setInitString(button->text());
             if (numberPad.exec())
@@ -240,7 +240,7 @@ void COMenuContent::onButtonReleased()
                     }
                     else
                     {
-                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "0.0-27.0", QStringList(trs("EnglishYESChineseSURE")));
+                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + " 0.0-27.0 ", QStringList(trs("EnglishYESChineseSURE")));
                         messageBox.exec();
                     }
                 }
@@ -249,8 +249,8 @@ void COMenuContent::onButtonReleased()
         }
         case COMenuContentPrivate::ITEM_CBO_INJECTION_VOLUMN:
         {
-            NumberInput numberPad;
-            numberPad.setTitleBarText(trs("InjectionVolumn"));
+            KeyInputPanel numberPad;
+            numberPad.setWindowTitle(trs("InjectionVolumn"));
             numberPad.setMaxInputLength(3);
             numberPad.setInitString(button->text());
             if (numberPad.exec())
@@ -267,7 +267,7 @@ void COMenuContent::onButtonReleased()
                     }
                     else
                     {
-                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + "1-200", QStringList(trs("EnglishYESChineseSURE")));
+                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + " 1-200 ", QStringList(trs("EnglishYESChineseSURE")));
                         messageBox.exec();
                     }
                 }

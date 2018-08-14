@@ -27,7 +27,7 @@ public:
      */
     void addMenuContent(MenuContent *menu);
 
-    void popup(QString menuName , int x = 0 , int y = 0);
+    void popup(const QString &menuName);
 
 protected:
     bool focusNextPrevChild(bool next);

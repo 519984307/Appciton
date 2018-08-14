@@ -93,6 +93,7 @@ SOURCES +=                                                                      
     Utility/ErrorLog/ErrorLog.cpp                                               \
     Utility/ErrorLog/ErrorLogItem.cpp                                           \
     Utility/ErrorLog/ErrorLogViewer.cpp                                         \
+    Utility/ErrorLog/ErrorLogViewerWindow.cpp                                   \
     Utility/TimeDate/TimeDate.cpp                                               \
     Utility/Uart/Uart.cpp                                                       \
     Utility/Uart/UartSocket.cpp                                                 \
@@ -367,6 +368,8 @@ SOURCES +=                                                                      
     Components/Maintain/Supervisor/SupervisorConfigManager.cpp                  \
     Components/Maintain/Supervisor/SupervisorEntrance.cpp                       \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.cpp                \
+    Components/Maintain/Service/ErrorLog/ErrorLogWindow.cpp                     \
+    Components/Maintain/Service/ErrorLog/ErrorLogTableModel.cpp                 \
     Components/Maintain/Service/Menu/ServiceWindowManager.cpp                   \
     Components/Maintain/Service/NIBP/NIBPPressureControl.cpp                    \
     Components/Maintain/Service/NIBP/NIBPCalibrate.cpp                          \
@@ -399,6 +402,7 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/WifiMaintainMenuContent.cpp                \
     Components/Maintain/UserMaintain/OthersMaintainMenuContent.cpp              \
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.cpp        \
+    Components/Maintain/UserMaintain/ErrorLogEntranceContent.cpp                \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.cpp        \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftWareVersion.cpp                     \
@@ -610,6 +614,7 @@ HEADERS +=                                                                      
     Utility/ErrorLog/ErrorLog.h                                                 \
     Utility/ErrorLog/ErrorLogItem.h                                             \
     Utility/ErrorLog/ErrorLogViewer.h                                           \
+    Utility/ErrorLog/ErrorLogViewerWindow.h                                     \
     Utility/TimeDate/TimeDate.h                                                 \
     Utility/TimeDate/TimeDefine.h                                               \
     Utility/TimeDate/TimeSymbol.h                                               \
@@ -916,6 +921,8 @@ HEADERS +=                                                                      
     Components/Maintain/Supervisor/SupervisorConfigManager.h                    \
     Components/Maintain/Supervisor/SupervisorEntrance.h                         \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.h                  \
+    Components/Maintain/Service/ErrorLog/ErrorLogWindow.h                       \
+    Components/Maintain/Service/ErrorLog/ErrorLogTableModel.h                   \
     Components/Maintain/Service/Menu/ServiceWindowManager.h                     \
     Components/Maintain/Service/NIBP/NIBPPressureControl.h                      \
     Components/Maintain/Service/NIBP/NIBPCalibrate.h                            \
@@ -951,6 +958,7 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/WifiMaintainMenuContent.h                  \
     Components/Maintain/UserMaintain/OthersMaintainMenuContent.h                \
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.h          \
+    Components/Maintain/UserMaintain/ErrorLogEntranceContent.h                  \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.h          \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersion.h                       \
