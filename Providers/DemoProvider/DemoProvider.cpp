@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/15
+ **/
+
 #include "DemoProvider.h"
 #include "SystemManager.h"
 #include "Param.h"
@@ -58,7 +68,7 @@ static DemoTrendDesc _demoTrendData[PARAM_NR];
 
 void DemoProvider::setOxyCRGCO2Widget(OxyCRGCO2Widget *p)
 {
-    if(p)
+    if (p)
     {
         _oxyCRGCO2Widget = p;
     }
@@ -66,7 +76,7 @@ void DemoProvider::setOxyCRGCO2Widget(OxyCRGCO2Widget *p)
 
 void DemoProvider::setOxyCRGRESPWidget(OxyCRGRESPWidget *p)
 {
-    if(p)
+    if (p)
     {
         _oxyCRGRESPWidget = p;
     }
@@ -74,8 +84,9 @@ void DemoProvider::setOxyCRGRESPWidget(OxyCRGRESPWidget *p)
 /**************************************************************************************************
  * 定时器Slot函数。
  *************************************************************************************************/
-void DemoProvider::timerEvent(QTimerEvent */*event*/)
+void DemoProvider::timerEvent(QTimerEvent *event)
 {
+    Q_UNUSED(event)
     static int elapseSum = 0;
     int elapsed = _time.elapsed();
     _time.restart();
@@ -95,7 +106,7 @@ void DemoProvider::timerEvent(QTimerEvent */*event*/)
         int len = _demoWaveData[i].sampleRate * elapsed + _demoWaveData[i].error;
         _demoWaveData[i].error = len % 1000;
         len /= 1000;
-        if(len <= 0)
+        if (len <= 0)
         {
             continue;
         }
@@ -103,7 +114,7 @@ void DemoProvider::timerEvent(QTimerEvent */*event*/)
         if (elapseSum >= 1000)
         {
             elapseSum = 0;
-            for ( int i = 0; i < PARAM_NR; i++)
+            for (int i = 0; i < PARAM_NR; i++)
             {
                 if (_demoTrendData[i].param != NULL)
                 {
@@ -241,15 +252,14 @@ void DemoProvider::detachParam(Param &param)
  *************************************************************************************************/
 void DemoProvider::dataArrived(void)
 {
-
 }
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 DemoProvider::DemoProvider() : Provider("DemoProvider"),
-                               _oxyCRGCO2Widget(NULL),
-                               _oxyCRGRESPWidget(NULL)
+    _oxyCRGCO2Widget(NULL),
+    _oxyCRGRESPWidget(NULL)
 {
     _timerID = 0;
 

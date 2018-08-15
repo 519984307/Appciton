@@ -14,6 +14,7 @@
 	<BedNumber>b44</BedNumber>
 	<ChangeBedNumberRight>0</ChangeBedNumberRight>
 	<Language>1</Language>
+        <DefaultPatientType>0</DefaultPatientType>
     </General>
     <Alarms>
 	<MinAlarmVol>1</MinAlarmVol>
@@ -707,21 +708,47 @@
         </PatientInfo>
         <ECG>
             <PresentRhythm>0</PresentRhythm>
-		    <PadsECGBandwidth>0</PadsECGBandwidth>
-		    <ChestLeadsECGBandwidth>0</ChestLeadsECGBandwidth>
-		    <DefaultECGLeadInMonitorMode>1</DefaultECGLeadInMonitorMode>
-		    <QRSVolume>3</QRSVolume>
-		    <ECGLeadConvention>0</ECGLeadConvention>
-		    <AlarmSource>0</AlarmSource>
-		    <Ecg1Wave>0</Ecg1Wave>
-		    <Ecg2Wave>1</Ecg2Wave>
-		    <Ecg1Gain>0</Ecg1Gain>
-		    <Ecg2Gain>0</Ecg2Gain>
-		    <SweepSpeed>1</SweepSpeed>
-		    <Filter>0</Filter>
-		    <LeadMode>2</LeadMode>
-		    <NotchFilter>0</NotchFilter>
-		    <SmartLeadOff>0</SmartLeadOff>
+	    <PadsECGBandwidth>0</PadsECGBandwidth>
+            <ChestLeadsECGBandwidth>0</ChestLeadsECGBandwidth>
+	    <DefaultECGLeadInMonitorMode>1</DefaultECGLeadInMonitorMode>
+	    <QRSVolume>3</QRSVolume>
+	    <ECGLeadConvention>0</ECGLeadConvention>
+	    <AlarmSource>0</AlarmSource>
+	    <Ecg1Wave>0</Ecg1Wave>
+	    <Ecg2Wave>1</Ecg2Wave>
+	    <Ecg1Gain>0</Ecg1Gain>
+	    <Ecg2Gain>0</Ecg2Gain>
+	    <SweepSpeed>1</SweepSpeed>
+	    <Filter>0</Filter>
+	    <LeadMode>2</LeadMode>
+            <DisplayMode>0</DisplayMode>
+	    <NotchFilter>0</NotchFilter>
+	    <SmartLeadOff>0</SmartLeadOff>
+     	    <ECG12LeadPacerMaker>0</ECG12LeadPacerMaker>
+            <PacerMaker>0</PacerMaker>
+	    <FilterMode>0</FilterMode>
+            <SelfLearn>0</SelfLearn>
+            <EverLeadOn>
+	        <I>0</I>
+                <II>0</II>                
+		<III>0</III>                
+		<aVR>0</aVR>                
+		<aVL>0</aVL>                
+		<aVF>0</aVF>                
+		<V1>0</V1>                
+		<V2>0</V2>                
+		<V3>0</V3>                
+		<V4>0</V4>                
+		<V5>0</V5>                
+		<V6>0</V6>                
+		<C1>0</C1>                
+		<C2>0</C2>                
+		<C3>0</C3>                
+		<C4>0</C4>                
+		<C5>0</C5>                
+		<C6>0</C6>                                
+	    </EverLeadOn>
+
         </ECG>
 		<CO2>
 			<O2Compensation>55</O2Compensation>
@@ -729,6 +756,8 @@
 		</CO2>
         <ECG12Lead>
             <EmailOffset>0</EmailOffset>
+            <ECG12LeadBandwidth>0</ECG12LeadBandwidth>
+            <DisplayFormat>0</DisplayFormat>
         </ECG12Lead>
         <NIBP>
             <NIBPsys>-5000</NIBPsys>

@@ -31,6 +31,7 @@ public:
         ITEM_CBO_NOTCH_FITER,
         ITEM_CBO_PACER_MARK,
         ITEM_CBO_12LPACER_MARK,
+        ITEM_CBO_SELF_LEARN,
         ITEM_CBO_SWEEP_SPEED,
         ITEM_CBO_QRS_TONE,
     };
@@ -57,6 +58,8 @@ void ECGMenuContentPrivate::loadOptions()
     {
         combos[ITEM_CBO_12LPACER_MARK]->setCurrentIndex(ecgParam.get12LPacermaker());
     }
+
+    combos[ITEM_CBO_SELF_LEARN]->setCurrentIndex(ecgParam.getSelfLearn());
 
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(ecgParam.getSweepSpeed());
 
@@ -182,6 +185,21 @@ void ECGMenuContent::layoutExec()
         d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_12LPACER_MARK, NULL);
     }
 
+    // self learn
+    label = new QLabel(trs("SelfLearn"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("Off")
+                       << trs("On")
+                      );
+    itemID = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_SELF_LEARN);
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_SELF_LEARN, comboBox);
+
     // sweep speed
     label = new QLabel(trs("ECGSweepSpeed"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -246,11 +264,12 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
         case ECGMenuContentPrivate::ITEM_CBO_PACER_MARK:
             ecgParam.setPacermaker((ECGPaceMode)index);
             break;
-
         case ECGMenuContentPrivate::ITEM_CBO_12LPACER_MARK:
             ecgParam.set12LPacermaker((ECGPaceMode)index);
             break;
-
+        case ECGMenuContentPrivate::ITEM_CBO_SELF_LEARN:
+            ecgParam.setSelfLearn(index);
+            break;
         case ECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED:
             ecgParam.setSweepSpeed((ECGSweepSpeed)index);
             break;

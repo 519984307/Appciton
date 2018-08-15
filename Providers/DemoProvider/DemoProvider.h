@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/15
+ **/
+
 #pragma once
 #include <QObject>
 #include <QTimer>
@@ -58,6 +68,7 @@ public:
     virtual void setNotchFilter(ECGNotchFilter /*lotch*/) {}
     virtual void enableSTAnalysis(bool /*onoff*/) { }
     virtual void setSTPoints(int /*iso*/, int /*st*/) { }
+    virtual void setSelfLearn(bool /*onOff*/) { }
 
     // 实现SPO2的接口。
     virtual void setSensitive(SPO2Sensitive /*sens*/) { }
@@ -129,5 +140,4 @@ private:
     QTime _time;
 
     int _waveSampleRate;
-
 };

@@ -89,6 +89,9 @@ public:
     // ST point setting
     virtual void setSTPoints(int iso, int st);
 
+    // set self learn
+    virtual void setSelfLearn(bool onOff);
+
 public:
     // RESP provider interface
     // max wave value

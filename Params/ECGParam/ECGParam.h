@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/15
+ **/
+
 #pragma once
 #include <QPalette>
 #include "Param.h"
@@ -68,7 +78,7 @@ public:
 
     // 获取可得的波形控件集。
     virtual void getAvailableWaveforms(QStringList &waveforms,
-            QStringList &waveformShowName, int flag);
+                                       QStringList &waveformShowName, int flag);
 
     // 获取可得的趋势控件集。
     virtual void getTrendWindow(QStringList &trend);
@@ -96,11 +106,11 @@ public:
 
     // 更新波形数据。
     void updateWaveform(int waveform[], bool *leadoff, bool ipaceMark = false,
-            bool epaceMark = false, bool rMark = false);
+                        bool epaceMark = false, bool rMark = false);
 
     // 更新HR的数值
     void updateHR(short hr);
-    //get HR, if hr invalid, return invData instead of return pr
+    // get HR, if hr invalid, return invData instead of return pr
     short getHR() const;
 
     // 更新HR的数值
@@ -108,7 +118,7 @@ public:
     short getPVCS() const;
 
     // 更新HR的数值
-    void updateST(ECGST lead,short st);
+    void updateST(ECGST lead, short st);
     short getST(ECGST lead) const;
 
     // 更新VFVT的数值
@@ -185,10 +195,10 @@ public: // 用于访问配置相关信息。
     void setLeadMode3DisplayLead(const QString &leadWaveform);
     ECGLead getCalcLead(void);
 
-    //设置12导界面下波形的增益。
+    // 设置12导界面下波形的增益。
     void set12LGain(ECGGain gain, ECGLead lead);
 
-    //设置12导界面下波形的增益。
+    // 设置12导界面下波形的增益。
     ECGGain get12LGain(ECGLead lead);
 
     // 设置病人类型
@@ -202,17 +212,27 @@ public: // 用于访问配置相关信息。
     void setBandwidth(int band);
     void setDiagBandwidth();
     void restoreDiagBandwidth(int isCompleted = false);
-    ECGBandwidth getDiagBandwidth() {return ECG_BANDWIDTH_0525_40HZ;}
+    ECGBandwidth getDiagBandwidth()
+    {
+        return ECG_BANDWIDTH_0525_40HZ;
+    }
     ECGBandwidth getCalcLeadBandWidth(void);
     ECGBandwidth getBandwidth(void);
     ECGBandwidth getMFCBandwidth(void);
     ECGBandwidth getDisplayBandWidth(void);
-    //get the last diag mode timestamp
-    unsigned lastDiagModeTimestamp() const { return _lastDiagModeTimestamp;}
+    // get the last diag mode timestamp
+    unsigned lastDiagModeTimestamp() const
+    {
+        return _lastDiagModeTimestamp;
+    }
 
-    //filter mode
+    // filter mode
     void setFilterMode(int mode);
     ECGFilterMode getFilterMode() const;
+
+    // 自学习设置
+    void setSelfLearn(bool onOff);
+    bool getSelfLearn() const;
 
     // 获取计算导联带宽字符串
     QString getCalBandWidthStr();
@@ -263,15 +283,18 @@ public: // 用于访问配置相关信息。
     // 通过导联线类型获取导联模式
     ECGLeadMode getECGModeByECGCabelType(unsigned char cabelType);
 
-    //get is ever lead on
+    // get is ever lead on
     bool getEverLeadOn(ECGLead lead);
 
-    //设置计算导联字串
+    // 设置计算导联字串
     void setECGTrendWidgetCalcName(ECGLead calLead);
 
-    //set/get is VF signal
+    // set/get is VF signal
     void setCheckPatient(bool flag);
-    bool getCheckPatient() {return _isCheckPatient;}
+    bool getCheckPatient()
+    {
+        return _isCheckPatient;
+    }
 
     /**
      * @brief clearOxyCRGWaveNum  //清除呼吸氧和波形更新计数
@@ -286,7 +309,7 @@ signals:
     void oxyCRGWaveUpdated(void);
 
 private slots:
-    //presenting rhythm, 6 seconds before the first primary lead on
+    // presenting rhythm, 6 seconds before the first primary lead on
     void presentRhythm();
 
     /**
@@ -317,6 +340,7 @@ private:
     ECGBandwidth _12LeadFreqBand;
     ECGFilterMode _filterMode;
     Display12LeadFormat _12LeadDispFormat;
+    bool _isSelfLearn;
 
     OxyCRGCO2Widget *_oxyCRGCO2Widget;
     OxyCRGRESPWidget *_oxyCRGRESPWidget;
@@ -326,15 +350,15 @@ private:
     char _leadOff[ECG_LEAD_NR];
     MonitorSoftkeyAction *_monitorSoftkey;
 
-    bool _isDisableDiaSoftKey;   //进入DIA模式后，1s内禁用此软按键
+    bool _isDisableDiaSoftKey;   // 进入DIA模式后，1s内禁用此软按键
 
     bool _waveDataInvalid;
 
-    bool _isPowerOnNewSession;              //用于设置计算导联，开机时只判断一次
+    bool _isPowerOnNewSession;              // 用于设置计算导联，开机时只判断一次
 
     bool _isEverLeadOn[ECG_LEAD_NR];    // is ever lead on
     bool _isCheckPatient;               // VF signal
 
-    int _updateNum;            //呼吸氧和波形更新标志计数
+    int _updateNum;            // 呼吸氧和波形更新标志计数
 };
 #define ecgParam (ECGParam::construction())

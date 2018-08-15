@@ -577,6 +577,11 @@ void E5Provider::setSTPoints(int /*iso*/, int /*st*/)
     // TODO
 }
 
+void E5Provider::setSelfLearn(bool onOff)
+{
+    d_ptr->ecgAlgInterface->setSelfLearn(onOff);
+}
+
 int E5Provider::getRESPWaveformSample()
 {
     return 125;

@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/15
+ **/
+
 #include "ECGParam.h"
 #include "ECGDupParam.h"
 #include "BaseDefine.h"
@@ -30,7 +40,7 @@
 
 #define ECG_TIMER_INTERVAL (100)
 #define GET_DIA_DATA_PERIOD (12000)
-#define DISABLE_DIA_SOFTKEY_PERIOD (900)//1s,定时有差异，使用900ms
+#define DISABLE_DIA_SOFTKEY_PERIOD (900)// 1s,定时有差异，使用900ms
 
 unsigned ECGParam::selfTestResult = 0;
 ECGParam *ECGParam::_selfObj = NULL;
@@ -114,13 +124,13 @@ void ECGParam::handDemoTrendData(void)
 {
     int hrValue = qrand() % 10 + 60;
     ecgDupParam.updateHR(hrValue);
-    if(NULL != _waveOxyCRGWidget)
+    if (NULL != _waveOxyCRGWidget)
     {
         _waveOxyCRGWidget->addDataBuf(hrValue, 0);
         _waveOxyCRGWidget->addData(hrValue);
 
         _updateNum++;
-        if(_updateNum>=2)
+        if (_updateNum >= 2)
         {
             _updateNum = 0;
             emit oxyCRGWaveUpdated();//呼吸氧和波形更新信号
@@ -130,12 +140,11 @@ void ECGParam::handDemoTrendData(void)
     updatePVCS(pvcs);
 
 //    int st;
-    for (int i = ECG_ST_I;i<ECG_ST_NR;i++)
-        {
+    for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
+    {
         int st = qrand() % 10 - 5;
-        updateST((ECGST)i,st);
+        updateST((ECGST)i, st);
     }
-
 }
 
 /**************************************************************************************************
@@ -145,50 +154,50 @@ short ECGParam::getSubParamValue(SubParamID id)
 {
     switch (id)
     {
-        case SUB_PARAM_HR_PR:
-            return getHR();
+    case SUB_PARAM_HR_PR:
+        return getHR();
 
-        case SUB_PARAM_ECG_PVCS:
-            return getPVCS();
+    case SUB_PARAM_ECG_PVCS:
+        return getPVCS();
 
-        case SUB_PARAM_ST_I:
-            return getST(ECG_ST_I);
+    case SUB_PARAM_ST_I:
+        return getST(ECG_ST_I);
 
-        case SUB_PARAM_ST_II:
-            return getST(ECG_ST_II);
+    case SUB_PARAM_ST_II:
+        return getST(ECG_ST_II);
 
-        case SUB_PARAM_ST_III:
-            return getST(ECG_ST_III);
+    case SUB_PARAM_ST_III:
+        return getST(ECG_ST_III);
 
-        case SUB_PARAM_ST_aVR:
-            return getST(ECG_ST_aVR);
+    case SUB_PARAM_ST_aVR:
+        return getST(ECG_ST_aVR);
 
-        case SUB_PARAM_ST_aVL:
-            return getST(ECG_ST_aVL);
+    case SUB_PARAM_ST_aVL:
+        return getST(ECG_ST_aVL);
 
-        case SUB_PARAM_ST_aVF:
-            return getST(ECG_ST_aVF);
+    case SUB_PARAM_ST_aVF:
+        return getST(ECG_ST_aVF);
 
-        case SUB_PARAM_ST_V1:
-            return getST(ECG_ST_V1);
+    case SUB_PARAM_ST_V1:
+        return getST(ECG_ST_V1);
 
-        case SUB_PARAM_ST_V2:
-            return getST(ECG_ST_V2);
+    case SUB_PARAM_ST_V2:
+        return getST(ECG_ST_V2);
 
-        case SUB_PARAM_ST_V3:
-            return getST(ECG_ST_V3);
+    case SUB_PARAM_ST_V3:
+        return getST(ECG_ST_V3);
 
-        case SUB_PARAM_ST_V4:
-            return getST(ECG_ST_V4);
+    case SUB_PARAM_ST_V4:
+        return getST(ECG_ST_V4);
 
-        case SUB_PARAM_ST_V5:
-            return getST(ECG_ST_V5);
+    case SUB_PARAM_ST_V5:
+        return getST(ECG_ST_V5);
 
-        case SUB_PARAM_ST_V6:
-            return getST(ECG_ST_V6);
+    case SUB_PARAM_ST_V6:
+        return getST(ECG_ST_V6);
 
-        default:
-            return InvData();
+    default:
+        return InvData();
     }
 }
 
@@ -214,26 +223,26 @@ UnitType ECGParam::getCurrentUnit(SubParamID id)
 {
     switch (id)
     {
-        case SUB_PARAM_HR_PR:
-        case SUB_PARAM_ECG_PVCS:
-            return UNIT_BPM;
+    case SUB_PARAM_HR_PR:
+    case SUB_PARAM_ECG_PVCS:
+        return UNIT_BPM;
 
-        case SUB_PARAM_ST_I:
-        case SUB_PARAM_ST_II:
-        case SUB_PARAM_ST_III:
-        case SUB_PARAM_ST_aVR:
-        case SUB_PARAM_ST_aVL:
-        case SUB_PARAM_ST_aVF:
-        case SUB_PARAM_ST_V1:
-        case SUB_PARAM_ST_V2:
-        case SUB_PARAM_ST_V3:
-        case SUB_PARAM_ST_V4:
-        case SUB_PARAM_ST_V5:
-        case SUB_PARAM_ST_V6:
-            return UNIT_MV;
+    case SUB_PARAM_ST_I:
+    case SUB_PARAM_ST_II:
+    case SUB_PARAM_ST_III:
+    case SUB_PARAM_ST_aVR:
+    case SUB_PARAM_ST_aVL:
+    case SUB_PARAM_ST_aVF:
+    case SUB_PARAM_ST_V1:
+    case SUB_PARAM_ST_V2:
+    case SUB_PARAM_ST_V3:
+    case SUB_PARAM_ST_V4:
+    case SUB_PARAM_ST_V5:
+    case SUB_PARAM_ST_V6:
+        return UNIT_MV;
 
-        default:
-            return UNIT_BPM;
+    default:
+        return UNIT_BPM;
     }
 }
 
@@ -290,15 +299,15 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
         QString tile = _waveWidget[i]->getTitle();
         // 注册波形缓存。
         waveformCache.registerSource((WaveformID)i, _provider->getWaveformSample(), n05, p05,
-                tile, _provider->getBaseLine());
+                                     tile, _provider->getBaseLine());
     }
 
-    //register ECG calculation lead
+    // register ECG calculation lead
     QString diagCalcTitle("CALC.ECG");
     waveformCache.registerSource(WAVE_ECG_CALC, _provider->getWaveformSample(), n05, p05,
                                  diagCalcTitle, _provider->getBaseLine());
 
-    //申请完波形缓存后重新设置波形速率，因为进入监控页面波形是以250移动
+    // 申请完波形缓存后重新设置波形速率，因为进入监控页面波形是以250移动
     _provider->setWaveformSample(250);
     for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
     {
@@ -413,7 +422,7 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
 
         flag = tmpFalg;
 
-        //12导模式下需要内部起搏标记(数据无效时不标记)
+        // 12导模式下需要内部起搏标记(数据无效时不标记)
         if ((faceType == UFACE_MONITOR_12LEAD) && ipaceMark && (!leadoff[i]))
         {
             flag |= ECG_INTERNAL_FLAG_BIT;
@@ -434,27 +443,27 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
         // can't display wave set invalid flag
         switch (ecgParam.getLeadMode())
         {
-            case ECG_LEAD_MODE_3:
-                if (i > ECG_LEAD_III && i <= ECG_LEAD_V6)
-                {
-                    flag |= INVALID_WAVE_FALG_BIT;
-                }
-                break;
+        case ECG_LEAD_MODE_3:
+            if (i > ECG_LEAD_III && i <= ECG_LEAD_V6)
+            {
+                flag |= INVALID_WAVE_FALG_BIT;
+            }
+            break;
 
-            case ECG_LEAD_MODE_5:
-                if (i > ECG_LEAD_V1 && i <= ECG_LEAD_V6)
-                {
-                    flag |= INVALID_WAVE_FALG_BIT;
-                }
-                break;
+        case ECG_LEAD_MODE_5:
+            if (i > ECG_LEAD_V1 && i <= ECG_LEAD_V6)
+            {
+                flag |= INVALID_WAVE_FALG_BIT;
+            }
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
 
 #if 1
-        //诊断模式和12L模式的全部导联
-        if ((faceType == UFACE_MONITOR_12LEAD) || (WAVE_SAMPLE_RATE_500 == rate && i != ECG_LEAD_V6 +1))
+        // 诊断模式和12L模式的全部导联
+        if ((faceType == UFACE_MONITOR_12LEAD) || (WAVE_SAMPLE_RATE_500 == rate && i != ECG_LEAD_V6 + 1))
         {
             flag &= ~ECG_WAVE_RATE_250_BIT;
         }
@@ -463,7 +472,7 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
             flag |= ECG_WAVE_RATE_250_BIT;
         }
 #else
-        if(WAVE_SAMPLE_RATE_250 == rate)
+        if (WAVE_SAMPLE_RATE_250 == rate)
         {
             flag |= ECG_WAVE_RATE_250_BIT;
         }
@@ -479,11 +488,11 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
 //            flag &= ~ECG_EXTERNAL_DOT_FLAG_BIT;
             flag &= ~ECG_EXTERNAL_SOLD_FLAG_BIT;
         }
-        //当前带宽
+        // 当前带宽
         flag |= bandwidth;
-        if(i == ECG_LEAD_V6 + 1) //TE3 CalCulation lead data, not MFC
+        if (i == ECG_LEAD_V6 + 1) // TE3 CalCulation lead data, not MFC
         {
-            //store the TE3 Calculation lead data
+            // store the TE3 Calculation lead data
             waveformCache.addData(WAVE_ECG_CALC, ((flag & 0xFFFF) << 16) | (waveform[i] & 0xFFFF));
             break;
         }
@@ -493,8 +502,8 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
         }
 
         static int flagUnsaved[ECG_LEAD_NR] = {0};
-        //在普通模式中，在监控模式下所有的波形数据要扔掉一半，以250显示
-        if(ECG_DISPLAY_NORMAL == displaymode)
+        // 在普通模式中，在监控模式下所有的波形数据要扔掉一半，以250显示
+        if (ECG_DISPLAY_NORMAL == displaymode)
         {
             if (_waveDataInvalid)
             {
@@ -512,7 +521,7 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
         }
 
         if (!(i == WAVE_ECG_aVR && faceType == UFACE_MONITOR_12LEAD &&
-              ecgParam.get12LDisplayFormat() == DISPLAY_12LEAD_CABRELA))
+                ecgParam.get12LDisplayFormat() == DISPLAY_12LEAD_CABRELA))
         {
             _waveWidget[i]->addWaveformData(waveform[i], norfalg & 0xFFFF);
         }
@@ -538,12 +547,12 @@ void ECGParam::updateHR(short hr)
     _hrValue = hr;
     ecgDupParam.updateHR(hr);
 
-    if(NULL != _waveOxyCRGWidget)
+    if (NULL != _waveOxyCRGWidget)
     {
         _waveOxyCRGWidget->addDataBuf(hr, 0);
 
         _updateNum++;
-        if(_updateNum>=2)
+        if (_updateNum >= 2)
         {
             _updateNum = 0;
             emit oxyCRGWaveUpdated();//呼吸氧和波形更新信号
@@ -582,12 +591,12 @@ short ECGParam::getPVCS() const
 /**************************************************************************************************
  * 更新ST数值。
  *************************************************************************************************/
-void ECGParam::updateST(ECGST lead,short st)
+void ECGParam::updateST(ECGST lead, short st)
 {
     _stValue[lead] = st;
     if (_ecgSTTrendWidget != NULL)
     {
-        _ecgSTTrendWidget->setSTValue(lead,st);
+        _ecgSTTrendWidget->setSTValue(lead, st);
     }
 }
 
@@ -620,7 +629,7 @@ void ECGParam::setLeadOff(ECGLead lead, bool status)
 //        updateECGNotifyMesg(lead);
     }
 
-    if(checkFirstLeadOn && (0 == _leadOff[lead]) && _calcLead == lead)
+    if (checkFirstLeadOn && (0 == _leadOff[lead]) && _calcLead == lead)
     {
         QTimer::singleShot(6000, this, SLOT(presentRhythm()));
         checkFirstLeadOn = false;
@@ -632,26 +641,26 @@ void ECGParam::setLeadOff(ECGLead lead, bool status)
         everLeadOnStr += ECGSymbol::convert(lead, ECG_CONVENTION_AAMI);
         switch (_curLeadMode)
         {
-            case ECG_LEAD_MODE_3:
-                if (lead > ECG_LEAD_III)
-                {
-                    return;
-                }
-                break;
+        case ECG_LEAD_MODE_3:
+            if (lead > ECG_LEAD_III)
+            {
+                return;
+            }
+            break;
 
-            case ECG_LEAD_MODE_5:
-                if (lead > ECG_LEAD_V1)
-                {
-                    return;
-                }
-                break;
+        case ECG_LEAD_MODE_5:
+            if (lead > ECG_LEAD_V1)
+            {
+                return;
+            }
+            break;
 
-            default:
-                if (lead > ECG_LEAD_V6)
-                {
-                    return;
-                }
-                break;
+        default:
+            if (lead > ECG_LEAD_V6)
+            {
+                return;
+            }
+            break;
         }
 
         _isEverLeadOn[lead] = true;
@@ -717,7 +726,7 @@ char ECGParam::doesLeadOff(int lead)
         return 2;
     }
 
-    //never receive ecg module lead status
+    // never receive ecg module lead status
     if (2 == _leadOff[lead])
     {
         return _leadOff[lead];
@@ -735,7 +744,7 @@ bool ECGParam::isConnected()
     {
         return false;
     }
-    Provider *provider = dynamic_cast<Provider*>(_provider);
+    Provider *provider = dynamic_cast<Provider *>(_provider);
     if (NULL == provider)
     {
         return false;
@@ -775,33 +784,33 @@ void ECGParam::noticeLimitAlarm(int id, bool isAlarm)
 {
     switch (id)
     {
-        case SUB_PARAM_ECG_PVCS:
-            if (_pvcsTrendWidget != NULL)
-            {
-                _pvcsTrendWidget->isAlarm(isAlarm);
-            }
-            break;
+    case SUB_PARAM_ECG_PVCS:
+        if (_pvcsTrendWidget != NULL)
+        {
+            _pvcsTrendWidget->isAlarm(isAlarm);
+        }
+        break;
 
-        case SUB_PARAM_ST_I:
-        case SUB_PARAM_ST_II:
-        case SUB_PARAM_ST_III:
-        case SUB_PARAM_ST_aVR:
-        case SUB_PARAM_ST_aVL:
-        case SUB_PARAM_ST_aVF:
-        case SUB_PARAM_ST_V1:
-        case SUB_PARAM_ST_V2:
-        case SUB_PARAM_ST_V3:
-        case SUB_PARAM_ST_V4:
-        case SUB_PARAM_ST_V5:
-        case SUB_PARAM_ST_V6:
-            if (_ecgSTTrendWidget != NULL)
-            {
-                _ecgSTTrendWidget->isAlarm((id - SUB_PARAM_ST_I),isAlarm);
-            }
-            break;
+    case SUB_PARAM_ST_I:
+    case SUB_PARAM_ST_II:
+    case SUB_PARAM_ST_III:
+    case SUB_PARAM_ST_aVR:
+    case SUB_PARAM_ST_aVL:
+    case SUB_PARAM_ST_aVF:
+    case SUB_PARAM_ST_V1:
+    case SUB_PARAM_ST_V2:
+    case SUB_PARAM_ST_V3:
+    case SUB_PARAM_ST_V4:
+    case SUB_PARAM_ST_V5:
+    case SUB_PARAM_ST_V6:
+        if (_ecgSTTrendWidget != NULL)
+        {
+            _ecgSTTrendWidget->isAlarm((id - SUB_PARAM_ST_I), isAlarm);
+        }
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -924,7 +933,9 @@ void ECGParam::getAvailableLeads(QList<ECGLead> &leads)
 
         case WAVE_ECG_aVL:
             if (getCalcLead() != ECG_LEAD_AVL)
+            {
                 leads.removeOne(ECG_LEAD_AVL);
+            }
             break;
         case WAVE_ECG_aVF:
             if (getCalcLead() != ECG_LEAD_AVF)
@@ -935,7 +946,9 @@ void ECGParam::getAvailableLeads(QList<ECGLead> &leads)
 
         case WAVE_ECG_V1:
             if (getCalcLead() != ECG_LEAD_V1)
+            {
                 leads.removeOne(ECG_LEAD_V1);
+            }
             break;
 
         case WAVE_ECG_V2:
@@ -994,32 +1007,32 @@ ECGLead ECGParam::waveIDToLeadID(WaveformID id)
 {
     switch (id)
     {
-        case WAVE_ECG_I:
-            return ECG_LEAD_I;
-        case WAVE_ECG_II:
-            return ECG_LEAD_II;
-        case WAVE_ECG_III:
-            return ECG_LEAD_III;
-        case WAVE_ECG_aVR:
-            return ECG_LEAD_AVR;
-        case WAVE_ECG_aVL:
-            return ECG_LEAD_AVL;
-        case WAVE_ECG_aVF:
-            return ECG_LEAD_AVF;
-        case WAVE_ECG_V1:
-            return ECG_LEAD_V1;
-        case WAVE_ECG_V2:
-            return ECG_LEAD_V2;
-        case WAVE_ECG_V3:
-            return ECG_LEAD_V3;
-        case WAVE_ECG_V4:
-            return ECG_LEAD_V4;
-        case WAVE_ECG_V5:
-            return ECG_LEAD_V5;
-        case WAVE_ECG_V6:
-            return ECG_LEAD_V6;
-        default:
-            return ECG_LEAD_NR;
+    case WAVE_ECG_I:
+        return ECG_LEAD_I;
+    case WAVE_ECG_II:
+        return ECG_LEAD_II;
+    case WAVE_ECG_III:
+        return ECG_LEAD_III;
+    case WAVE_ECG_aVR:
+        return ECG_LEAD_AVR;
+    case WAVE_ECG_aVL:
+        return ECG_LEAD_AVL;
+    case WAVE_ECG_aVF:
+        return ECG_LEAD_AVF;
+    case WAVE_ECG_V1:
+        return ECG_LEAD_V1;
+    case WAVE_ECG_V2:
+        return ECG_LEAD_V2;
+    case WAVE_ECG_V3:
+        return ECG_LEAD_V3;
+    case WAVE_ECG_V4:
+        return ECG_LEAD_V4;
+    case WAVE_ECG_V5:
+        return ECG_LEAD_V5;
+    case WAVE_ECG_V6:
+        return ECG_LEAD_V6;
+    default:
+        return ECG_LEAD_NR;
     }
 }
 
@@ -1030,32 +1043,32 @@ WaveformID ECGParam::leadToWaveID(ECGLead lead)
 {
     switch (lead)
     {
-        case ECG_LEAD_I:
-            return WAVE_ECG_I;
-        case ECG_LEAD_II:
-            return WAVE_ECG_II;
-        case ECG_LEAD_III:
-            return WAVE_ECG_III;
-        case ECG_LEAD_AVR:
-            return WAVE_ECG_aVR;
-        case ECG_LEAD_AVL:
-            return WAVE_ECG_aVL;
-        case ECG_LEAD_AVF:
-            return WAVE_ECG_aVF;
-        case ECG_LEAD_V1:
-            return WAVE_ECG_V1;
-        case ECG_LEAD_V2:
-            return WAVE_ECG_V2;
-        case ECG_LEAD_V3:
-            return WAVE_ECG_V3;
-        case ECG_LEAD_V4:
-            return WAVE_ECG_V4;
-        case ECG_LEAD_V5:
-            return WAVE_ECG_V5;
-        case ECG_LEAD_V6:
-            return WAVE_ECG_V6;
-        default:
-            return WAVE_ECG_II;
+    case ECG_LEAD_I:
+        return WAVE_ECG_I;
+    case ECG_LEAD_II:
+        return WAVE_ECG_II;
+    case ECG_LEAD_III:
+        return WAVE_ECG_III;
+    case ECG_LEAD_AVR:
+        return WAVE_ECG_aVR;
+    case ECG_LEAD_AVL:
+        return WAVE_ECG_aVL;
+    case ECG_LEAD_AVF:
+        return WAVE_ECG_aVF;
+    case ECG_LEAD_V1:
+        return WAVE_ECG_V1;
+    case ECG_LEAD_V2:
+        return WAVE_ECG_V2;
+    case ECG_LEAD_V3:
+        return WAVE_ECG_V3;
+    case ECG_LEAD_V4:
+        return WAVE_ECG_V4;
+    case ECG_LEAD_V5:
+        return WAVE_ECG_V5;
+    case ECG_LEAD_V6:
+        return WAVE_ECG_V6;
+    default:
+        return WAVE_ECG_II;
     }
 }
 
@@ -1122,7 +1135,7 @@ void ECGParam::handleSelfTestResult()
         flag = false;
     }
     systemManager.setPoweronTestResult(TE3_MODULE_SELFTEST_RESULT,
-            flag ? SELFTEST_SUCCESS : SELFTEST_FAILED);
+                                       flag ? SELFTEST_SUCCESS : SELFTEST_FAILED);
 
     if (!errStr.isEmpty())
     {
@@ -1151,7 +1164,7 @@ void ECGParam::enableVFCalc(bool enable)
  * 获取可得的波形控件集。
  *************************************************************************************************/
 void ECGParam::getAvailableWaveforms(QStringList &waveforms,
-        QStringList &waveformShowName,int)
+                                     QStringList &waveformShowName, int)
 {
     waveforms.clear();
     waveformShowName.clear();
@@ -1220,7 +1233,7 @@ void ECGParam::getTrendWindow(QStringList &trend)
  *************************************************************************************************/
 void ECGParam::setLeadMode(ECGLeadMode newMode)
 {
-    if(newMode == _curLeadMode)
+    if (newMode == _curLeadMode)
     {
         return;
     }
@@ -1230,7 +1243,7 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
     ECGLeadMode oldMode = _curLeadMode;
 
     // 将新模式保存到配置文件中。
-    systemConfig.setNumValue("PrimaryCfg|ECG|LeadMode", (int)newMode);
+    systemConfig.setNumValue("PrimaryCfg|ECG|LeadMode", static_cast<int>(newMode));
     _curLeadMode = newMode;
     if (NULL != _provider)
     {
@@ -1238,24 +1251,12 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
     }
 
     int defaultLead = ECG_LEAD_II;
-    currentConfig.getNumValue("PrimaryCfg|ECG|DefaultECGLeadInMonitorMode", defaultLead);
+    systemConfig.getNumValue("PrimaryCfg|ECG|DefaultECGLeadInMonitorMode", defaultLead);
 
     // 切换到正确的计算导联。
     ECGLead calcLead = getCalcLead();
     ECGLead newCaclLead = calcLead;
-    if (oldMode == ECG_LEAD_MODE_3)      // 3导切5导或12导，计算导联不用更改。
-    {
-        if (newMode == ECG_LEAD_MODE_12)
-        {
-
-        }
-
-        if (newMode == ECG_LEAD_MODE_5)
-        {
-
-        }
-    }
-    else if (oldMode == ECG_LEAD_MODE_5) // 5导切3导或12导。
+    if (oldMode == ECG_LEAD_MODE_5) // 5导切3导或12导。
     {
         if (newMode == ECG_LEAD_MODE_3)
         {
@@ -1266,7 +1267,6 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
         }
         else if (newMode == ECG_LEAD_MODE_12)
         {
-
         }
     }
     else if (oldMode == ECG_LEAD_MODE_12)  // 12导切5到或3导。
@@ -1296,7 +1296,7 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
         }
         else
         {
-             ecgDupParam.setECGTrendWidgetCalcName(_calcLead);
+            ecgDupParam.setECGTrendWidgetCalcName(_calcLead);
         }
     }
 
@@ -1320,7 +1320,6 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
             windowManager.setExcludeWaveforms(disabledWaveforms);
         }
     }
-
 }
 
 /**************************************************************************************************
@@ -1348,10 +1347,10 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
     }
     else
     {
-        //进入12L模式前，如果是在诊断时间范围內则先关闭诊断功能
+        // 进入12L模式前，如果是在诊断时间范围內则先关闭诊断功能
         band = _12LeadFreqBand;
 
-        currentConfig.getNumValue("ECG12L|NotchFilter", filter);
+        systemConfig.getNumValue("PrimaryCfg|ECG|NotchFilter", filter);
     }
 
     if (NULL != _provider)
@@ -1360,27 +1359,27 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
         _provider->setNotchFilter((ECGNotchFilter)filter);
     }
 
-    systemConfig.setNumValue("PrimaryCfg|ECG|DisplayMode", (int)mode);
+    systemConfig.setNumValue("PrimaryCfg|ECG|DisplayMode", static_cast<int>(mode));
     _displayMode = mode;
 
     // 布局界面。
     UserFaceType type = UFACE_MONITOR_STANDARD;
     if (mode == ECG_DISPLAY_NORMAL)
     {
-        //设置波形采样率
+        // 设置波形采样率
         _provider->setWaveformSample(WAVE_SAMPLE_RATE_250);
 
-        //退出12L界面前先还原起搏标记
+        // 退出12L界面前先还原起搏标记
         setPacermaker(ecgPaceMaker);
     }
     else if (mode == ECG_DISPLAY_12_LEAD_FULL)
     {
         type = UFACE_MONITOR_12LEAD;
 
-        //设置波形采样率
+        // 设置波形采样率
         _provider->setWaveformSample(WAVE_SAMPLE_RATE_500);
 
-        //进入12L界面前先设置起搏标记
+        // 进入12L界面前先设置起搏标记
         set12LPacermaker(ecg12LPaceMaker);
     }
 
@@ -1390,7 +1389,7 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
         {
             continue;
         }
-        //更新波形速率
+        // 更新波形速率
         _waveWidget[i]->setDataRate(_provider->getWaveformSample());
     }
     ecgMenu.refresh();
@@ -1422,7 +1421,7 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
         }
     }
 
-    //由12L界面退出至普通界面由于可能存在导联切换问题，因此需要对波形的显示做相关处理
+    // 由12L界面退出至普通界面由于可能存在导联切换问题，因此需要对波形的显示做相关处理
     if (mode != ECG_DISPLAY_12_LEAD_FULL)
     {
         ECGLead calLead = getCalcLead();
@@ -1451,7 +1450,6 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
             windowManager.setExcludeWaveforms(disabledWaveforms);
         }
     }
-
 }
 
 /**************************************************************************************************
@@ -1475,7 +1473,7 @@ void ECGParam::setCalcLead(const QString &leadWaveform)
         }
         if (_waveWidget[i]->name() == leadWaveform)
         {
-            setCalcLead((ECGLead)i);
+            setCalcLead(static_cast<ECGLead>(i));
             break;
         }
     }
@@ -1499,7 +1497,7 @@ void ECGParam::setCalcLead(ECGLead lead)
         leads.append(ECG_LEAD_AVF);
         leads.append(ECG_LEAD_V1);
     }
-    if ( _curLeadMode >= ECG_LEAD_MODE_12)
+    if (_curLeadMode >= ECG_LEAD_MODE_12)
     {
         leads.append(ECG_LEAD_V2);
         leads.append(ECG_LEAD_V3);
@@ -1510,7 +1508,7 @@ void ECGParam::setCalcLead(ECGLead lead)
 
     if (windowManager.getUFaceType() != UFACE_MONITOR_12LEAD)
     {
-        //切换计算导联的时候先退出诊断在切换，原因是因为诊断会改变波形采样和速率
+        // 切换计算导联的时候先退出诊断在切换，原因是因为诊断会改变波形采样和速率
         restoreDiagBandwidth();
     }
 
@@ -1531,14 +1529,14 @@ void ECGParam::setCalcLead(ECGLead lead)
     }
 
     // 将新的计算导联保存道配置文件。
-    currentConfig.setNumValue("PrimaryCfg|ECG|DefaultECGLeadInMonitorMode", (int)lead);
+    systemConfig.setNumValue("PrimaryCfg|ECG|DefaultECGLeadInMonitorMode", static_cast<int>(lead));
     _calcLead = lead;
     if (NULL != _provider)
     {
         _provider->setCalcLead(lead);
     }
 
-    //need to refresh to hide or show the Diag.ECG soft key
+    // need to refresh to hide or show the Diag.ECG soft key
     softkeyManager.refresh();
 
     emit calcLeadChanged();
@@ -1665,7 +1663,7 @@ void ECGParam::setPatientType(unsigned char type)
 unsigned char ECGParam::getPatientType(void)
 {
     int type = 3;
-    currentConfig.getNumValue("General|DefaultPatientType", type);
+    systemConfig.getNumValue("General|DefaultPatientType", type);
     return (unsigned char)type;
 }
 /**************************************************************************************************
@@ -1675,27 +1673,27 @@ void ECGParam::setBandwidth(int band)
 {
     if (_curLeadMode != ECG_LEAD_MODE_12)
     {
-        currentConfig.setNumValue("PrimaryCfg|ECG|ChestLeadsECGBandwidth", (int)band);
-        _chestFreqBand = (ECGBandwidth) band;
+        systemConfig.setNumValue("PrimaryCfg|ECG|ChestLeadsECGBandwidth", band);
+        _chestFreqBand = static_cast<ECGBandwidth>(band);
     }
     else
     {
         if (ecgParam.getDisplayMode() == ECG_DISPLAY_12_LEAD_FULL)
         {
-            currentConfig.setNumValue("ECG12L|ECG12LeadBandwidth", (int)band);
+            systemConfig.setNumValue("ECG12L|ECG12LeadBandwidth", band);
             band += ECG_BANDWIDTH_0525_40HZ;
-            _12LeadFreqBand = (ECGBandwidth) band;
+            _12LeadFreqBand = static_cast<ECGBandwidth>(band);
         }
         else
         {
-            currentConfig.setNumValue("PrimaryCfg|ECG|ChestLeadsECGBandwidth", (int)band);
-            _chestFreqBand = (ECGBandwidth) band;
+            systemConfig.setNumValue("PrimaryCfg|ECG|ChestLeadsECGBandwidth", band);
+            _chestFreqBand = static_cast<ECGBandwidth>(band);
         }
     }
 
     if (NULL != _provider)
     {
-        _provider->setBandwidth((ECGBandwidth)band);
+        _provider->setBandwidth(static_cast<ECGBandwidth>(band));
     }
 
     for (int i = 0; i < ECG_LEAD_NR; ++i)
@@ -1704,7 +1702,7 @@ void ECGParam::setBandwidth(int band)
         {
             continue;
         }
-        _waveWidget[i]->setBandWidth((ECGBandwidth)band);
+        _waveWidget[i]->setBandWidth(static_cast<ECGBandwidth>(band));
     }
 }
 
@@ -1724,10 +1722,10 @@ void ECGParam::setDiagBandwidth()
         _provider->setBandwidth(ECG_BANDWIDTH_0525_40HZ);
 
         int filter = 0;
-        currentConfig.getNumValue("ECG12L|NotchFilter", filter);
+        systemConfig.getNumValue("PrimaryCfg|ECG|NotchFilter", filter);
         _provider->setNotchFilter((ECGNotchFilter)filter);
 
-        //重新设置波形速率
+        // 重新设置波形速率
         _provider->setWaveformSample(WAVE_SAMPLE_RATE_500);
         for (int i = 0; i < ECG_LEAD_NR; ++i)
         {
@@ -1739,7 +1737,7 @@ void ECGParam::setDiagBandwidth()
         }
 
         unsigned ts = timeManager.getCurTime();
-        //summaryStorageManager.addDiagnosticECG(ts, ECG_BANDWIDTH_0525_40HZ);
+        // summaryStorageManager.addDiagnosticECG(ts, ECG_BANDWIDTH_0525_40HZ);
         _lastDiagModeTimestamp = ts;
     }
 
@@ -1767,7 +1765,7 @@ void ECGParam::restoreDiagBandwidth(int isCompleted)
         _provider->setBandwidth((ECGBandwidth)band);
         _provider->setNotchFilter(getNotchFilter());
 
-        //重新设置波形速率
+        // 重新设置波形速率
         _provider->setWaveformSample(WAVE_SAMPLE_RATE_250);
         for (int i = 0; i < ECG_LEAD_NR; ++i)
         {
@@ -1777,7 +1775,6 @@ void ECGParam::restoreDiagBandwidth(int isCompleted)
             }
             _waveWidget[i]->setDataRate(_provider->getWaveformSample());
         }
-
     }
 
     for (int i = 0; i < ECG_LEAD_NR; ++i)
@@ -1788,7 +1785,6 @@ void ECGParam::restoreDiagBandwidth(int isCompleted)
         }
         _waveWidget[i]->setBandWidth((ECGBandwidth)band);
     }
-
 }
 
 /***************************************************************************************************
@@ -1806,7 +1802,7 @@ ECGBandwidth ECGParam::getBandwidth(void)
 {
     int band = 0;
 
-    if(ecgParam.getDisplayMode() == ECG_DISPLAY_12_LEAD_FULL)
+    if (ecgParam.getDisplayMode() == ECG_DISPLAY_12_LEAD_FULL)
     {
         band = _12LeadFreqBand;
     }
@@ -1824,7 +1820,7 @@ ECGBandwidth ECGParam::getBandwidth(void)
 ECGBandwidth ECGParam::getMFCBandwidth(void)
 {
     int band = 0;
-    currentConfig.getNumValue("PrimaryCfg|ECG|PadsECGBandwidth", band);
+    systemConfig.getNumValue("PrimaryCfg|ECG|PadsECGBandwidth", band);
 
     return (ECGBandwidth)band;
 }
@@ -1836,7 +1832,7 @@ ECGBandwidth ECGParam::getDisplayBandWidth(void)
 {
     int band = 0;
     band = _chestFreqBand;
-    if(_displayMode == ECG_DISPLAY_12_LEAD_FULL)
+    if (_displayMode == ECG_DISPLAY_12_LEAD_FULL)
     {
         band = _12LeadFreqBand;
     }
@@ -1853,8 +1849,10 @@ ECGBandwidth ECGParam::getDisplayBandWidth(void)
  *************************************************************************************************/
 void ECGParam::setFilterMode(int mode)
 {
-    if(mode == _filterMode)
+    if (mode == _filterMode)
+    {
         return;
+    }
     _filterMode = (ECGFilterMode)mode;
     if (NULL != _provider)
     {
@@ -1868,6 +1866,24 @@ void ECGParam::setFilterMode(int mode)
 ECGFilterMode ECGParam::getFilterMode() const
 {
     return _filterMode;
+}
+
+void ECGParam::setSelfLearn(bool onOff)
+{
+    if (onOff == _isSelfLearn)
+    {
+        return;
+    }
+    _isSelfLearn = onOff;
+    if (NULL != _provider)
+    {
+        _provider->setSelfLearn(_isSelfLearn);
+    }
+}
+
+bool ECGParam::getSelfLearn() const
+{
+    return _isSelfLearn;
 }
 
 /**************************************************************************************************
@@ -1897,7 +1913,7 @@ QString ECGParam::getCalBandWidthStr(void)
  *************************************************************************************************/
 void ECGParam::setPacermaker(ECGPaceMode onoff)
 {
-    systemConfig.setNumValue("PrimaryCfg|ECG|PacerMaker", (int)onoff);
+    systemConfig.setNumValue("PrimaryCfg|ECG|PacerMaker", static_cast<int>(onoff));
 
     if (ECG_DISPLAY_12_LEAD_FULL != ecgParam.getDisplayMode())
     {
@@ -1905,10 +1921,10 @@ void ECGParam::setPacermaker(ECGPaceMode onoff)
         {
             _provider->enablePacermaker(onoff);
         }
-        sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_PACER, (int)onoff);
+        sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_PACER, static_cast<int>(onoff));
     }
 
-    return ;
+    return;
 }
 
 /**************************************************************************************************
@@ -1926,7 +1942,7 @@ ECGPaceMode ECGParam::getPacermaker(void)
  *************************************************************************************************/
 void ECGParam::set12LPacermaker(ECGPaceMode onoff)
 {
-    systemConfig.setNumValue("PrimaryCfg|ECG|ECG12LeadPacerMaker", (int)onoff);
+    systemConfig.setNumValue("PrimaryCfg|ECG|ECG12LeadPacerMaker", static_cast<int>(onoff));
     _12LeadPacerMarker = onoff;
 
     if (ECG_DISPLAY_12_LEAD_FULL == ecgParam.getDisplayMode())
@@ -1935,7 +1951,7 @@ void ECGParam::set12LPacermaker(ECGPaceMode onoff)
         {
             _provider->enablePacermaker(onoff);
         }
-        sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_PACER, (int)onoff);
+        sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_PACER, static_cast<int>(onoff));
     }
 
     return;
@@ -1954,7 +1970,7 @@ ECGPaceMode ECGParam::get12LPacermaker(void)
  *************************************************************************************************/
 void ECGParam::setSweepSpeed(ECGSweepSpeed speed)
 {
-    currentConfig.setNumValue("ECG|SweepSpeed", (int)speed);
+    systemConfig.setNumValue("PrimaryCfg|ECG|SweepSpeed", static_cast<int>(speed));
     for (int i = 0; i < ECG_LEAD_NR; ++i)
     {
         if (_waveWidget[i] == NULL)
@@ -1978,7 +1994,7 @@ void ECGParam::setSweepSpeed(ECGSweepSpeed speed)
 ECGSweepSpeed ECGParam::getSweepSpeed(void)
 {
     int speed = ECG_SWEEP_SPEED_250;
-    currentConfig.getNumValue("ECG|SweepSpeed", speed);
+    systemConfig.getNumValue("PrimaryCfg|ECG|SweepSpeed", speed);
     return (ECGSweepSpeed)speed;
 }
 
@@ -2006,7 +2022,7 @@ void ECGParam::setGain(ECGGain gain, ECGLead lead)
     }
 
     QString wavename = _waveWidget[lead]->name();
-    systemConfig.setNumValue("PrimaryCfg|ECG|Gain|" + wavename, (int)gain);
+    systemConfig.setNumValue("PrimaryCfg|ECG|Gain|" + wavename, static_cast<int>(gain));
     _waveWidget[lead]->setGain(gain);
 }
 
@@ -2076,7 +2092,7 @@ void ECGParam::setAutoGain(ECGLead lead, int flag)
 {
     if (lead > ECG_LEAD_V6)
     {
-        return ;
+        return;
     }
 
     if (_waveWidget[lead] == NULL)
@@ -2108,7 +2124,7 @@ bool ECGParam::getAutoGain(ECGLead lead)
 
     int gain = 0;
     systemConfig.getNumValue("PrimaryCfg|ECG|AutoGain|" + waveName, gain);
-    return (bool)gain;
+    return gain;
 }
 
 /**************************************************************************************************
@@ -2144,7 +2160,7 @@ int ECGParam::getMaxGain(void)
  *************************************************************************************************/
 void ECGParam::setQRSToneVolume(int vol)
 {
-    currentConfig.setNumValue("PrimaryCfg|ECG|QRSVolume", (int)vol);
+    systemConfig.setNumValue("PrimaryCfg|ECG|QRSVolume", vol);
     soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, (SoundManager::VolumeLevel) vol);
 }
 
@@ -2154,7 +2170,7 @@ void ECGParam::setQRSToneVolume(int vol)
 int ECGParam::getQRSToneVolume(void)
 {
     int vol = SoundManager::VOLUME_LEV_2;
-    currentConfig.getNumValue("PrimaryCfg|ECG|QRSVolume", vol);
+    systemConfig.getNumValue("PrimaryCfg|ECG|QRSVolume", vol);
     return vol;
 }
 
@@ -2171,7 +2187,7 @@ void ECGParam::setNotchFilter(int filter)
     {
         if (ecgParam.getDisplayMode() == ECG_DISPLAY_12_LEAD_FULL)
         {
-            currentConfig.setNumValue("ECG12L|NotchFilter", filter);
+            systemConfig.setNumValue("PrimaryCfg|ECG|NotchFilter", filter);
         }
         else
         {
@@ -2194,7 +2210,7 @@ ECGNotchFilter ECGParam::getNotchFilter()
 
     if (ecgParam.getDisplayMode() == ECG_DISPLAY_12_LEAD_FULL)
     {
-        currentConfig.getNumValue("ECG12L|NotchFilter", filter);
+        systemConfig.getNumValue("PrimaryCfg|ECG|NotchFilter", filter);
     }
 
     return (ECGNotchFilter)filter;
@@ -2214,7 +2230,7 @@ ECGNotchFilter ECGParam::getCalcLeadNotchFilter()
 ECGLeadNameConvention ECGParam::getLeadConvention(void) const
 {
     int leadConvention = 0;
-    currentConfig.getNumValue("PrimaryCfg|ECG|ECGLeadConvention", leadConvention);
+    systemConfig.getNumValue("PrimaryCfg|ECG|ECGLeadConvention", leadConvention);
     if (leadConvention >= ECG_CONVENTION_NR)
     {
         leadConvention = 0;
@@ -2240,14 +2256,14 @@ void ECGParam::handleECGLeadCabelType(unsigned char cabelType)
 
     if ((ECG_LEAD_MODE_NR <= leadMode) || (ECG_LEAD_MODE_3 > leadMode))
     {
-        //如果是新规划，并且是开机第一次判断，则如果导联现不能识别就设置为3导，否则保持上一次不变
+        // 如果是新规划，并且是开机第一次判断，则如果导联现不能识别就设置为3导，否则保持上一次不变
         if (_isPowerOnNewSession && (POWER_ON_SESSION_NEW == timeManager.getPowerOnSession()))
         {
             leadMode = ECG_LEAD_MODE_3;
         }
         else
         {
-            return ;
+            return;
         }
     }
 
@@ -2265,7 +2281,7 @@ void ECGParam::handleECGLeadCabelType(unsigned char cabelType)
     setLeadMode(leadMode);
     QTimer::singleShot(0, &ecgMenu, SLOT(_loadOptionsInSlot()));
 
-    return ;
+    return;
 }
 
 /***************************************************************************************************
@@ -2275,7 +2291,8 @@ ECGLeadMode ECGParam::getECGModeByECGCabelType(unsigned char cabelType)
 {
     ECGLeadMode leadMode = ECG_LEAD_MODE_3;
 
-    switch (cabelType) {
+    switch (cabelType)
+    {
     case (0x00):
         leadMode = ECG_LEAD_MODE_NR;
         break;
@@ -2346,12 +2363,12 @@ void ECGParam::presentRhythm()
 {
     int rhythm = 0;
     systemConfig.getNumValue("PrimaryCfg|ECG|PresentRhythm", rhythm);
-    //check first lead on during the incident
-    if(!rhythm)
+    // check first lead on during the incident
+    if (!rhythm)
     {
         rhythm = 1;
         systemConfig.setNumValue("PrimaryCfg|ECG|PresentRhythm", rhythm);
-        //summaryStorageManager.addPrensentingRhythm(timeManager.getCurTime());
+        // summaryStorageManager.addPrensentingRhythm(timeManager.getCurTime());
     }
 }
 
@@ -2359,7 +2376,7 @@ void ECGParam::presentRhythm()
  * 构造。
  *************************************************************************************************/
 ECGParam::ECGParam() : Param(PARAM_ECG),
-                       _updateNum(0)
+    _updateNum(0)
 {
     // 初始化成员。
     _provider = NULL;
@@ -2371,7 +2388,7 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     _hrValue = InvData();
     memset(_leadOff, 2, sizeof(_leadOff));
 
-    _monitorSoftkey = static_cast<MonitorSoftkeyAction*>(softkeyManager.getAction(SOFTKEY_ACTION_STANDARD));
+    _monitorSoftkey = static_cast<MonitorSoftkeyAction *>(softkeyManager.getAction(SOFTKEY_ACTION_STANDARD));
 
 //    // 关闭/使能12导的快捷软按键。
 //    if (_monitorSoftkey != NULL)
@@ -2394,7 +2411,7 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     }
 
     int lead = ECG_LEAD_II;
-    currentConfig.getNumValue("PrimaryCfg|ECG|DefaultECGLeadInMonitorMode", lead);
+    systemConfig.getNumValue("PrimaryCfg|ECG|DefaultECGLeadInMonitorMode", lead);
     _calcLead = (ECGLead)lead;
 
     int mode = ECG_LEAD_MODE_5;
@@ -2410,20 +2427,24 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     _12LeadPacerMarker = (ECGPaceMode) mode;
 
     mode = ECG_BANDWIDTH_067_20HZ;
-    currentConfig.getNumValue("PrimaryCfg|ECG|ChestLeadsECGBandwidth", mode);
+    systemConfig.getNumValue("PrimaryCfg|ECG|ChestLeadsECGBandwidth", mode);
     _chestFreqBand = (ECGBandwidth) mode;
 
     mode = ECG_FILTERMODE_MONITOR;
-    currentConfig.getNumValue("PrimaryCfg|ECG|FilterMode", mode);
+    systemConfig.getNumValue("PrimaryCfg|ECG|FilterMode", mode);
     _filterMode = (ECGFilterMode) mode;
 
     mode = 0;
-    currentConfig.getNumValue("ECG12L|ECG12LeadBandwidth", mode);
+    systemConfig.getNumValue("PrimaryCfg|ECG|SelfLearn", mode);
+    _isSelfLearn = mode;
+
+    mode = 0;
+    systemConfig.getNumValue("ECG12Lead|ECG12LeadBandwidth", mode);
     mode += ECG_BANDWIDTH_0525_40HZ;
     _12LeadFreqBand = (ECGBandwidth) mode;
 
     mode = DISPLAY_12LEAD_STAND;
-    currentConfig.getNumValue("ECG12L|DisplayFormat", mode);
+    systemConfig.getNumValue("ECG12Lead|DisplayFormat", mode);
     _12LeadDispFormat = (Display12LeadFormat)mode;
 
     for (int i = 0; i < ECG_LEAD_NR; ++i)
@@ -2451,7 +2472,7 @@ ECGParam::~ECGParam()
 
 void ECGParam::setOxyCRGCO2Widget(OxyCRGCO2Widget *p)
 {
-    if(p)
+    if (p)
     {
         _oxyCRGCO2Widget = p;
     }
@@ -2459,7 +2480,7 @@ void ECGParam::setOxyCRGCO2Widget(OxyCRGCO2Widget *p)
 
 void ECGParam::setOxyCRGRESPWidget(OxyCRGRESPWidget *p)
 {
-    if(p)
+    if (p)
     {
         _oxyCRGRESPWidget = p;
     }
@@ -2467,11 +2488,11 @@ void ECGParam::setOxyCRGRESPWidget(OxyCRGRESPWidget *p)
 
 void ECGParam::onOxyCRGWaveUpdated()
 {
-    if(_oxyCRGCO2Widget)
+    if (_oxyCRGCO2Widget)
     {
         _oxyCRGCO2Widget->update();
     }
-    if(_oxyCRGRESPWidget)
+    if (_oxyCRGRESPWidget)
     {
         _oxyCRGRESPWidget->update();
     }
@@ -2483,6 +2504,6 @@ void ECGParam::sendCmdData(unsigned char cmdId, const unsigned char *data, unsig
 {
     if (NULL != _provider)
     {
-        _provider->sendCmdData(cmdId,data,len);
+        _provider->sendCmdData(cmdId, data, len);
     }
 }
