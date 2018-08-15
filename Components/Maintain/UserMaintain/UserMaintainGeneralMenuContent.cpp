@@ -199,6 +199,21 @@ void UserMaintainGeneralMenuContent::onComboBoxIndexChanged(int index)
     }
 }
 
+static bool checkPasswordValue(const QString &passwordValue)
+{
+        if (passwordValue.isEmpty())
+        {
+            return false;
+        }
+        int len = passwordValue.length();
+        if (len != 8)
+        {
+            return false;
+        }
+        return true;
+}
+
+
 void UserMaintainGeneralMenuContent::onButtonReleased()
 {
     Button *button = qobject_cast<Button *>(sender());
@@ -280,9 +295,10 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
             KeyBoardPanel idPanel(KeyBoardPanel::KEY_TYPE_NUMBER);
             idPanel.setTitleBarText(trs("ModifyPassword"));
             idPanel.setInitString(button->text());
-            idPanel.setMaxInputLength(11);
+            idPanel.setMaxInputLength(8);
             QString regKeyStr("[a-zA-Z]|[0-9]|_");
             idPanel.setBtnEnable(regKeyStr);
+            idPanel.setCheckValueHook(checkPasswordValue);
 
             if (1 == idPanel.exec())
             {
