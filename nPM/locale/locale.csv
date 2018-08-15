@@ -1070,7 +1070,7 @@ NIBPCalibrationMenuDesc,无创血压校准设置,NIBP Calibration Desc
 SelectStarterLogo,开机图片,Start Logo
 SelectStarterLogoMenu,开机图片,Starter Logo
 SelectStarterLogoMenuDesc,开机图片设置,Start Logo Desc
-ServiceErrorLogEntrance,错误日志进入,Service ErrorLog Entrance
+ServiceErrorLogEntrance,错误日志进入,Service ErrorLog
 ServiceErrorLogEntranceDesc,错误日志进入设置,Service ErrorLog Entrance Desc
 ErrorLogErase,擦除,Erase
 ErrorLogExport,导出,Export
@@ -1088,8 +1088,8 @@ RecorderModule,记录模块,Recorder Module
 ECGAlgorithmType,心电算法类型,ECG Algorithm Type
 UserMaintainGeneralMenuDesc,用户维护通用菜单设置,User Maintain General Menu Desc
 BootAndStandbyLogoVersion,开机标准logo版本,Boot And Standby LogoVersion
-UserMaintainGeneralMenu,用户维护通用菜单,User Maintain General Menu
-AlarmMaintainMenu,报警维护菜单,Alarm Maintain Menu
+UserMaintainGeneralMenu,用户维护通用菜单,General Menu
+AlarmMaintainMenu,报警维护菜单,Alarm Maintain
 MinimumALarmVolume,最小报警音量,Minimum Alarm Volume
 AlarmPauseTime,报警暂停时间,Alarm PauseTime
 AlarmOffPromptMechanism,报警关闭提示机制,Alarm Off Prompt Mechanism
@@ -1112,7 +1112,7 @@ H3min,3分钟,3min
 _alarmLightOnAlarmReset,报警灯复位,Alarm Light On Alarm Reset
 Defaults,默认,Defaults
 RecoverDefaults,默认覆盖,Recover Defaults
-ModuleMaintainMenu,模块维护菜单,Module Maintain Menu
+ModuleMaintainMenu,模块维护菜单,Module Maintain
 ModuleMaintainMenuDesc,模块维护菜单,Module Maintain Menu Desc
 AnaesthesiaModuleCalibration,麻醉模块化校准,Anaesthesia Module Calibration
 IBPPressureCalibration,IBP压力校准,IBP Pressure Calibration
@@ -1131,8 +1131,8 @@ StopECGModuleCalibration,停止心电模块校准,Stop ECG Module Calibration
 StopCO2ModuleMaintenance,停止二氧化碳模块,Stop CO2 Module Maintenance
 StopTouchScreenCalibration,停止触摸屏校准,Stop Touch Screen Calibration
 Cancel,取消覆盖,Cancel
-OthersMaintainMenu,其他维护菜单,Others Maintain Menu
-OthersMaintainMenuDesc,其他维护菜单设置,Others Maintain Menu Desc
+OthersMaintainMenu,其他维护菜单,Others Menu
+OthersMaintainMenuDesc,其他维护菜单设置,Others Menu Desc
 WaveLine,波线,WaveLine
 fat,粗,fat
 med,中,med
@@ -1143,7 +1143,7 @@ IEC,国际电工委员会,IEC
 FrequencyNotch,频率刻度,Frequency Notch
 paraSwitchPrem,参数开关权限,Para Switch Prem
 protected,保护,protected
-ConfImpactItemSettings,,Conf ImpactItemSettings
+ConfImpactItemSettings,受配置影响项设置,Conf ImpactItemSettings
 ParaSwitch,参数开关,ParaSwitch
 NurseCallSetting,护士呼叫设置,Nurse Call Setting
 setting,设置,setting
@@ -1165,8 +1165,8 @@ Language,语言,Language
 EditMonitorName,编辑监护仪名称,Edit Monitor Name
 UserMaintainModifyConfig,用户维护修改配置,User Maintain Modify Config
 ProfileConflict,配置冲突,Profile Conflict
-WiredWorkMaintainMenu,有线网络,Wired Work Maintain Menu
-WiredWorkMaintainMenuDesc,有线网络维护菜单设置,Wired Work Maintain Menu Desc
+WiredWorkMaintainMenu,有线网络,Wired Work
+WiredWorkMaintainMenuDesc,有线网络维护菜单设置,Wired Work  Desc
 AddressType,地址类型,Address Type
 manual,手动,manual
 DHCP,动态主机配置协议,DHCP
@@ -1183,7 +1183,7 @@ PedDefaultConfig,小儿默认配置,Ped Default Config
 NeoDefaultConfig,新生儿默认配置,Neo Default Config
 FactoryConfig,工厂配置,Factory Config
 CurrentConfig,当前配置,Current Config
-ConfigManagerment,配置管理,Config Managerment
+ConfigManagerment,配置管理,Config Manager
 ConfigManagermentDesc,配置管理设置,Config Managerment Desc
 General,通用,General
 SetConfigName,设置配置项名称,Set Config Name
