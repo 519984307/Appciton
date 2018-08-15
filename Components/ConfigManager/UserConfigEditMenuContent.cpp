@@ -30,6 +30,7 @@
 #define CONFIG_MAX_NUM 3
 #define LISTVIEW_MAX_VISIABLE_TIME 6
 
+UserConfigEditMenuContent *UserConfigEditMenuContent::_selfObj = NULL;
 class UserConfigEditMenuContentPrivate
 {
 public:
@@ -142,11 +143,11 @@ UserConfigEditMenuContent::UserConfigEditMenuContent()
                   trs("ConfigManagermentDesc")),
       d_ptr(new UserConfigEditMenuContentPrivate())
 {
-    connect(ConfigEditMenuWindow::getInstance() , SIGNAL(hideWindow()) , this , SLOT(onEditFinished()));
 }
 
 UserConfigEditMenuContent::~UserConfigEditMenuContent()
 {
+    delete d_ptr;
 }
 
 

@@ -30,6 +30,7 @@
 #include "ConfigEditSpO2MenuContent.h"
 #include "ConfigEditCodeMarkerMenuContent.h"
 #include "ConfigEditAlarmLimitMenuContent.h"
+#include "UserConfigEditMenuContent.h"
 
 class ConfigEditMenuWindowPrivate
 {
@@ -154,6 +155,6 @@ QMap <QString, MenuContent *> ConfigEditMenuWindow::getCurrentEditConfigItem() c
 
 void ConfigEditMenuWindow::hideEvent(QHideEvent *e)
 {
-    emit hideWindow();
+    userConfigEditMenuContent.onEditFinished();
     QDialog::hideEvent(e);
 }

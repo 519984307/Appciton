@@ -62,9 +62,6 @@ public:
 protected:
     void hideEvent(QHideEvent *);
 
-signals:
-    void hideWindow();
-
 private:
     ConfigEditMenuWindow();
     ConfigEditMenuWindowPrivate *const d_ptr;
