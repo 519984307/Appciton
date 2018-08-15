@@ -215,8 +215,11 @@ void SystemMenuContent::onComboBoxIndexChanged(int index)
             break;
         }
         case SystemMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME_NUM:
-            // TODO:Add keypress volume code
+        {
+            int volume = box->itemText(index).toInt();
+            soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , (SoundManager::VolumeLevel)volume);
             break;
+        }
         default:
             break;
         }
