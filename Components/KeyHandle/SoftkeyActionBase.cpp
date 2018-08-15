@@ -55,7 +55,6 @@ static KeyActionDesc _baseKeys[] =
     SOFT_BASE_KEY_NR, true, QColor(143, 31, 132)),
     KeyActionDesc("", "PatientNew.png",   SoftkeyActionBase::patientNew, SOFT_BASE_KEY_NR, true, QColor(143, 31, 132)),
     KeyActionDesc("", "previous-disable.png",  SoftkeyActionBase::previousPage),
-    KeyActionDesc("", "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
     KeyActionDesc("", "Bell.png",          SoftkeyActionBase::limitMenu),
     KeyActionDesc("", "CodeMarker.png",    SoftkeyActionBase::codeMarker),
     KeyActionDesc("", "Data.png",          SoftkeyActionBase::rescueData),
