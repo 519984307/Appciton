@@ -280,7 +280,12 @@ void EventWindow::leftMoveCoordinate()
     switch (speed)
     {
     case EventWaveWidget::SWEEP_SPEED_62_5:
-        return;
+        if (medSecond == -durationBefore + 8)
+        {
+            return;
+        }
+        medSecond--;
+        break;
     case EventWaveWidget::SWEEP_SPEED_125:
         if (medSecond == -durationBefore + 4)
         {
@@ -321,7 +326,12 @@ void EventWindow::rightMoveCoordinate()
     switch (speed)
     {
     case EventWaveWidget::SWEEP_SPEED_62_5:
-        return;
+        if (medSecond == durationAfter - 8)
+        {
+            return;
+        }
+        medSecond++;
+        break;
     case EventWaveWidget::SWEEP_SPEED_125:
         if (medSecond == durationAfter - 4)
         {
