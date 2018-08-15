@@ -17,7 +17,7 @@
 #include "FontManager.h"
 #include "WindowManager.h"
 #include "Debug.h"
-#include "KeyBoardPanel.h"
+#include "KeyInputPanel.h"
 #include "IMessageBox.h"
 #include "SystemManager.h"
 #include <QApplication>
@@ -282,7 +282,7 @@ void WiFiProfileEditorWindowPrivate::editIpAddress()
         return;
     }
 
-    KeyBoardPanel englishPanel;
+    KeyInputPanel englishPanel;
     englishPanel.setMaxInputLength(MAX_IP_STRING_LENGTH);
     englishPanel.setInitString(sender->text());
     englishPanel.setSpaceEnable(false);
@@ -291,23 +291,23 @@ void WiFiProfileEditorWindowPrivate::editIpAddress()
 
     if (sender == staticIpBtn)
     {
-        englishPanel.setTitleBarText(trs("StaticIp"));
+        englishPanel.setWindowTitle(trs("StaticIp"));
     }
     else if (sender == defaultGatewayBtn)
     {
-        englishPanel.setTitleBarText(trs("GateWay"));
+        englishPanel.setWindowTitle(trs("GateWay"));
     }
     else if (sender == subnetMaskBtn)
     {
-        englishPanel.setTitleBarText(trs("SubnetMask"));
+        englishPanel.setWindowTitle(trs("SubnetMask"));
     }
     else if (sender == preferedDNSBtn)
     {
-        englishPanel.setTitleBarText(trs("PreferrendDNS"));
+        englishPanel.setWindowTitle(trs("PreferrendDNS"));
     }
     else if (sender == alternateDNSBtn)
     {
-        englishPanel.setTitleBarText(trs("AlternateDNS"));
+        englishPanel.setWindowTitle(trs("AlternateDNS"));
     }
 
     if (englishPanel.exec())
@@ -329,21 +329,21 @@ void WiFiProfileEditorWindowPrivate::editNormalText()
         return;
     }
 
-    KeyBoardPanel englishPanel;
+    KeyInputPanel englishPanel;
     if (sender == profileNameBtn)
     {
         englishPanel.setMaxInputLength(24);
-        englishPanel.setTitleBarText(trs("ProfileName"));
+        englishPanel.setWindowTitle(trs("ProfileName"));
     }
     else if (sender == ssidBtn)
     {
         englishPanel.setMaxInputLength(32);
-        englishPanel.setTitleBarText(trs("WiFiAP"));
+        englishPanel.setWindowTitle(trs("WiFiAP"));
     }
     else if (sender == securityKeyBtn)
     {
         englishPanel.setMaxInputLength(63);
-        englishPanel.setTitleBarText(trs("PassWord"));
+        englishPanel.setWindowTitle(trs("PassWord"));
     }
 
     englishPanel.setInitString(sender->text());

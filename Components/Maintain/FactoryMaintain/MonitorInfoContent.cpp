@@ -14,7 +14,7 @@
 #include <QLabel>
 #include "LanguageManager.h"
 #include "IConfig.h"
-#include "KeyBoardPanel.h"
+#include "KeyInputPanel.h"
 #include "Button.h"
 #include <QApplication>
 #include <QDesktopWidget>
@@ -106,9 +106,9 @@ void MonitorInfoContent::readyShow()
 
 void MonitorInfoContent::onBtnReleasedChanged()
 {
-    KeyBoardPanel setSerialNumber;
+    KeyInputPanel setSerialNumber;
     setSerialNumber.setMaxInputLength(16);
-    setSerialNumber.setTitleBarText(trs("SetElectronicSerialNumber"));
+    setSerialNumber.setWindowTitle(trs("SetElectronicSerialNumber"));
     setSerialNumber.setInitString(d_ptr->button->text());
     QString regKeyStr("[a-zA-Z][0-9]|_");
     setSerialNumber.setBtnEnable(regKeyStr);
