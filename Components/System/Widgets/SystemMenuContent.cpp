@@ -29,7 +29,8 @@ public:
         ITEM_CBO_ALARM_VOLUME,
         ITEM_CBO_SCREEN_BRIGHTNESS,
         ITEM_CBO_PRINT_SPEED,
-        ITEM_CBO_PRINT_WAVEFORM_NUM
+        ITEM_CBO_PRINT_WAVEFORM_NUM,
+        ITEM_CBO_KEYPRESS_VOLUME_NUM
     };
 
     SystemMenuContentPrivate() {}
@@ -60,7 +61,6 @@ SystemMenuContent::SystemMenuContent()
     : MenuContent(trs("SystemMenu"), trs("SystemMenuDesc")),
       d_ptr(new SystemMenuContentPrivate)
 {
-
 }
 
 SystemMenuContent::~SystemMenuContent()
@@ -160,6 +160,24 @@ void SystemMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SystemMenuContentPrivate::ITEM_CBO_PRINT_WAVEFORM_NUM, comboBox);
 
+    // key press volume
+    label = new QLabel(trs("KeyPressVolume"));
+    layout->addWidget(label , d_ptr->combos.count() , 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       <<QString::number(SoundManager::VOLUME_LEV_0)
+                       <<QString::number(SoundManager::VOLUME_LEV_1)
+                       <<QString::number(SoundManager::VOLUME_LEV_2)
+                       <<QString::number(SoundManager::VOLUME_LEV_3)
+                       <<QString::number(SoundManager::VOLUME_LEV_4)
+                       <<QString::number(SoundManager::VOLUME_LEV_5)
+                       );
+    layout->addWidget(comboBox , d_ptr->combos.count() , 1);
+    itemID = static_cast<int>(SystemMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME_NUM);
+    comboBox->setProperty("Item" , qVariantFromValue(itemID));
+    connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->combos.insert(SystemMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME_NUM , comboBox);
+
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
 
@@ -196,6 +214,9 @@ void SystemMenuContent::onComboBoxIndexChanged(int index)
             recorderManager.setPrintWaveNum(waveformNum);
             break;
         }
+        case SystemMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME_NUM:
+            // TODO:Add keypress volume code
+            break;
         default:
             break;
         }
