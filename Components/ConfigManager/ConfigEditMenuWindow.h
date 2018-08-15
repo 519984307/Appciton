@@ -59,6 +59,11 @@ public:
      * @return
      */
     QMap <QString, MenuContent *> getCurrentEditConfigItem()const;
+protected:
+    void hideEvent(QHideEvent *);
+
+signals:
+    void hideWindow();
 
 private:
     ConfigEditMenuWindow();

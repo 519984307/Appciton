@@ -151,3 +151,9 @@ QMap <QString, MenuContent *> ConfigEditMenuWindow::getCurrentEditConfigItem() c
 {
     return d_ptr->subMenuMap;
 }
+
+void ConfigEditMenuWindow::hideEvent(QHideEvent *e)
+{
+    emit hideWindow();
+    QDialog::hideEvent(e);
+}

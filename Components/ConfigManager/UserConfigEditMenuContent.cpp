@@ -142,6 +142,7 @@ UserConfigEditMenuContent::UserConfigEditMenuContent()
                   trs("ConfigManagermentDesc")),
       d_ptr(new UserConfigEditMenuContentPrivate())
 {
+    connect(ConfigEditMenuWindow::getInstance() , SIGNAL(hideWindow()) , this , SLOT(onEditFinished()));
 }
 
 UserConfigEditMenuContent::~UserConfigEditMenuContent()
@@ -190,8 +191,8 @@ void UserConfigEditMenuContent::onBtnClick()
 
             ConfigEditMenuWindow::getInstance()->setCurrentEditConfigName(d_ptr->generateDefaultConfigName());
             ConfigEditMenuWindow::getInstance()->setCurrentEditConfig(d_ptr->curConfig);
-            ConfigManagerMenuWindow *w = ConfigManagerMenuWindow::getInstance();
-            windowManager.showWindow(w, WindowManager::WINDOW_TYPE_NONMODAL);
+            ConfigEditMenuWindow::getInstance()->initializeSubMenu();
+            windowManager.showWindow(ConfigEditMenuWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
         }
     }
     else if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG])
