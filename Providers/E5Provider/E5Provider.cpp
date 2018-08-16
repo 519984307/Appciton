@@ -120,7 +120,7 @@ void E5ProviderPrivate::handleEcgRawData(unsigned char *data, int len)
 
 
     int algleadData[ECG_LEAD_NR] = {0};
-    bool leadOFFStatus[ECG_LEAD_NR];
+    bool leadOFFStatus[ECG_LEAD_NR] = {0};
 
     ecgAlgInterface->getDispData(algleadData, leadoff, qrsflag, paceflag, overload, pdblank);
 
@@ -169,19 +169,58 @@ void E5ProviderPrivate::handleEcgRawData(unsigned char *data, int len)
     }
 #endif
 
+    if (ecgParam.getLeadMode() == ECG_LEAD_MODE_5)
+    {
+        leadoff &= 0xFFE0;
+    }
 
-    leadOFFStatus[ECG_LEAD_I] = leadoff & (1 << ECGAlg::I);
-    leadOFFStatus[ECG_LEAD_II] = leadoff & (1 << ECGAlg::II);
-    leadOFFStatus[ECG_LEAD_III] = leadoff & (1 << ECGAlg::III);
-    leadOFFStatus[ECG_LEAD_V1] = leadoff & (1 << ECGAlg::V1);
-    leadOFFStatus[ECG_LEAD_V2] = leadoff & (1 << ECGAlg::V2);
-    leadOFFStatus[ECG_LEAD_V3] = leadoff & (1 << ECGAlg::V3);
-    leadOFFStatus[ECG_LEAD_V4] = leadoff & (1 << ECGAlg::V4);
-    leadOFFStatus[ECG_LEAD_V5] = leadoff & (1 << ECGAlg::V5);
-    leadOFFStatus[ECG_LEAD_V6] = leadoff & (1 << ECGAlg::V6);
-    leadOFFStatus[ECG_LEAD_AVR] = leadoff & (1 << ECGAlg::aVR);
-    leadOFFStatus[ECG_LEAD_AVL] = leadoff & (1 << ECGAlg::aVL);
-    leadOFFStatus[ECG_LEAD_AVF] = leadoff & (1 << ECGAlg::aVF);
+    if (ecgParam.getLeadMode() == ECG_LEAD_MODE_3)
+    {
+        leadoff &= 0xFFC0;
+    }
+
+    if (leadoff & 0x3C0) // RL/LA/LL/RA
+    {
+        // all lead will be off if any limb lead is off
+        for (int i = 0; i < ECG_LEAD_NR; i++)
+        {
+            leadData[i] = 0;
+            leadOFFStatus[i] = true;
+        }
+    }
+    else
+    {
+        if (leadoff & 0x20)                // bit5 V1
+        {
+            leadData[ECG_LEAD_V1] = 0;
+            leadOFFStatus[ECG_LEAD_V1] = true;
+        }
+        if (leadoff & 0x10)                // bit4 V2
+        {
+            leadData[ECG_LEAD_V2] = 0;
+            leadOFFStatus[ECG_LEAD_V2] = true;
+        }
+        if (leadoff & 0x08)                // bit3 V3
+        {
+            leadData[ECG_LEAD_V3] = 0;
+            leadOFFStatus[ECG_LEAD_V3] = true;
+        }
+        if (leadoff & 0x04)                // bit2 V4
+        {
+            leadData[ECG_LEAD_V4] = 0;
+            leadOFFStatus[ECG_LEAD_V4] = true;
+        }
+        if (leadoff & 0x02)               // bit1 V5
+        {
+            leadData[ECG_LEAD_V5] = 0;
+            leadOFFStatus[ECG_LEAD_V5] = true;
+        }
+        if (leadoff & 0x01)               // bit0 V6
+        {
+            leadData[ECG_LEAD_V6] = 0;
+            leadOFFStatus[ECG_LEAD_V6] = true;
+        }
+    }
 
     if (lastLeadOff != leadoff)
     {
