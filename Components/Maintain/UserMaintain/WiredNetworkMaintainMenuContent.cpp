@@ -15,7 +15,7 @@
 #include <QGridLayout>
 #include "IConfig.h"
 #include "Button.h"
-#include "KeyBoardPanel.h"
+#include "KeyInputPanel.h"
 
 #define MAX_IP_STRING_LENGTH 15
 
@@ -204,7 +204,7 @@ void WiredNetworkMaintainMenuContent::onButtonReleased()
     if (button)
     {
         QString string;
-        KeyBoardPanel englishPanel;
+        KeyInputPanel englishPanel;
         englishPanel.setMaxInputLength(MAX_IP_STRING_LENGTH);
         englishPanel.setInitString(button->text());
         englishPanel.setSpaceEnable(false);
@@ -216,15 +216,15 @@ void WiredNetworkMaintainMenuContent::onButtonReleased()
         switch (item)
         {
         case WiredNetworkMaintainMenuContentPrivate::ITEM_BTN_IP_ADDRESS:
-            englishPanel.setTitleBarText(trs("IpAddress"));
+            englishPanel.setWindowTitle(trs("IpAddress"));
             string = "IpAddress";
             break;
         case WiredNetworkMaintainMenuContentPrivate::ITEM_BTN_SUBNET_MASK:
-            englishPanel.setTitleBarText(trs("GateWay"));
+            englishPanel.setWindowTitle(trs("GateWay"));
             string = "GateWay";
             break;
         case WiredNetworkMaintainMenuContentPrivate::ITEM_BTN_GATEWAY:
-            englishPanel.setTitleBarText(trs("SubnetMask"));
+            englishPanel.setWindowTitle(trs("SubnetMask"));
             string = "SubnetMask";
             break;
         default:

@@ -17,7 +17,7 @@
 #include "NumberInput.h"
 #include "IMessageBox.h"
 #include "Button.h"
-#include "KeyBoardPanel.h"
+#include "KeyInputPanel.h"
 
 class UserMaintainGeneralMenuContentPrivate
 {
@@ -225,8 +225,8 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
         {
         case UserMaintainGeneralMenuContentPrivate::ITEM_BTN_MONITOR_NAME:
         {
-            KeyBoardPanel idPanel;
-            idPanel.setTitleBarText(trs("EditMonitorName"));
+            KeyInputPanel idPanel;
+            idPanel.setWindowTitle(trs("EditMonitorName"));
             idPanel.setInitString(button->text());
             idPanel.setMaxInputLength(MAX_DEVICE_ID_LEN - 1);
 
@@ -248,8 +248,8 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
         }
         case UserMaintainGeneralMenuContentPrivate::ITEM_BTN_DEPARTMENT:
         {
-            KeyBoardPanel idPanel;
-            idPanel.setTitleBarText(trs("Department"));
+            KeyInputPanel idPanel;
+            idPanel.setWindowTitle(trs("Department"));
             idPanel.setInitString(button->text());
             idPanel.setMaxInputLength(11);
             QString regKeyStr("[a-zA-Z]|[0-9]|_");
@@ -270,8 +270,8 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
         }
         case UserMaintainGeneralMenuContentPrivate::ITEM_BTN_BED_NUMBER:
         {
-            KeyBoardPanel idPanel;
-            idPanel.setTitleBarText(trs("BedNumber"));
+            KeyInputPanel idPanel;
+            idPanel.setWindowTitle(trs("BedNumber"));
             idPanel.setInitString(button->text());
             idPanel.setMaxInputLength(11);
             QString regKeyStr("[a-zA-Z]|[0-9]|_");
@@ -292,8 +292,8 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
         }
         case UserMaintainGeneralMenuContentPrivate::ITEM_BTN_MODIFY_PASSWORD:
         {
-            KeyBoardPanel idPanel(KeyBoardPanel::KEY_TYPE_NUMBER);
-            idPanel.setTitleBarText(trs("ModifyPassword"));
+            KeyInputPanel idPanel(KeyInputPanel::KEY_TYPE_NUMBER);
+            idPanel.setWindowTitle(trs("ModifyPassword"));
             idPanel.setInitString(button->text());
             idPanel.setMaxInputLength(8);
             QString regKeyStr("[a-zA-Z]|[0-9]|_");

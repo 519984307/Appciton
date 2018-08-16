@@ -13,7 +13,7 @@
 #include <QLabel>
 #include <Button.h>
 #include <QHBoxLayout>
-#include "KeyBoardPanel.h"
+#include "KeyInputPanel.h"
 #include "IConfig.h"
 
 class FactorySystemInfoMenuContentPrivate
@@ -92,10 +92,10 @@ void FactorySystemInfoMenuContent::onBtnReleasedChanged()
         return;
     }
 
-    KeyBoardPanel panel;
+    KeyInputPanel panel;
     panel.setMaxInputLength(11);
     panel.setInitString(button->text());
-    panel.setTitleBarText(trs("SerialNum"));
+    panel.setWindowTitle(trs("SerialNum"));
     panel.setSpaceEnable(false);
     panel.setBtnEnable("[a-zA-Z0-9]");
 
