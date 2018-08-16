@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/15
+ **/
+
+
+
 #include "MonitorSoftkeyAction.h"
 #include "SoftKeyManager.h"
 #include "ECGParam.h"
@@ -24,12 +36,12 @@ static KeyActionDesc _monitorKeys[] =
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_PAT_INFO),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_PAT_NEW),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_PREVIOUS_PAGE),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_ECG_LEAD_CHANGE),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_ALARM_LIMIT),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_CODE_MARKER),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_RESCUE_DATA),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_WINDOWLAYOUT),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_CALCULATION),
+    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NEXT_PAGE),
     KeyActionDesc("", "", NULL, SOFT_BASE_KEY_MAIN_SETUP),
@@ -48,7 +60,7 @@ int MonitorSoftkeyAction::getActionDescNR(void)
  **************************************************************************************************/
 KeyActionDesc *MonitorSoftkeyAction::getActionDesc(int index)
 {
-    if (index >= (int)(sizeof(_monitorKeys) / sizeof(KeyActionDesc)))
+    if (index >= static_cast<int>(sizeof(_monitorKeys) / sizeof(KeyActionDesc)))
     {
         return NULL;
     }
@@ -66,7 +78,6 @@ KeyActionDesc *MonitorSoftkeyAction::getActionDesc(int index)
  **************************************************************************************************/
 MonitorSoftkeyAction::MonitorSoftkeyAction() : SoftkeyActionBase(SOFTKEY_ACTION_STANDARD)
 {
-
 }
 
 /***************************************************************************************************
@@ -74,5 +85,4 @@ MonitorSoftkeyAction::MonitorSoftkeyAction() : SoftkeyActionBase(SOFTKEY_ACTION_
  **************************************************************************************************/
 MonitorSoftkeyAction::~MonitorSoftkeyAction()
 {
-
 }
