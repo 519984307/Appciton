@@ -87,8 +87,17 @@ void MachineConfigModuleContentPrivte::loadOptions()
     systemConfig.getNumValue("MachineConfigModule|AnalogOutputModule", index);
     combos[ITEM_CBO_ANANLOG]->setCurrentIndex(index);
 
-    index = 0;
-    systemConfig.getNumValue("MachineConfigModule|SYNCDefibrillationModule", index);
+    if (index == 1)
+    {
+        combos[ITEM_CBO_SYNC]->setEnabled(false);
+        index = 0;
+        systemConfig.setNumValue("MachineConfigModule|SYNCDefibrillationModule", index);
+    }
+    else
+    {
+        systemConfig.getNumValue("MachineConfigModule|SYNCDefibrillationModule", index);
+        combos[ITEM_CBO_SYNC]->setEnabled(true);
+    }
     combos[ITEM_CBO_SYNC]->setCurrentIndex(index);
 
     index = 0;
@@ -317,9 +326,11 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         break;
     case MachineConfigModuleContentPrivte::ITEM_CBO_ANANLOG:
         str = "AnalogOutputModule";
+        d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_SYNC]->setEnabled(!index);
         break;
     case MachineConfigModuleContentPrivte::ITEM_CBO_SYNC:
         str = "SYNCDefibrillationModule";
+        d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_ANANLOG]->setEnabled(!index);
         break;
     case MachineConfigModuleContentPrivte::ITEM_CBO_CO:
         str = "COModule";
