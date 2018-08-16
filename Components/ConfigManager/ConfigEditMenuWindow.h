@@ -16,13 +16,7 @@ class ConfigEditMenuWindow : public MenuWindow
 {
     Q_OBJECT
 public:
-    /**
-     * @brief getInstance
-     * @return  get an instance
-     */
-    static ConfigEditMenuWindow *getInstance();
-
-
+    ConfigEditMenuWindow();
     ~ConfigEditMenuWindow();
 
     /**
@@ -59,10 +53,8 @@ public:
      * @return
      */
     QMap <QString, MenuContent *> getCurrentEditConfigItem()const;
-protected:
-    void hideEvent(QHideEvent *);
+
 
 private:
-    ConfigEditMenuWindow();
     ConfigEditMenuWindowPrivate *const d_ptr;
 };

@@ -29,16 +29,19 @@ public:
         ITEM_CBO_MAX,
     };
 
-    ConfigEditRespMenuContentPrivate();
+    explicit ConfigEditRespMenuContentPrivate(ConfigEditRespMenuContent * const p_ptr);
     /**
      * @brief loadOptions
      */
     void loadOptions();
 
     QMap <MenuItem, ComboBox *> combos;
+    ConfigEditRespMenuContent *p_ptr;
 };
 
-ConfigEditRespMenuContentPrivate::ConfigEditRespMenuContentPrivate()
+ConfigEditRespMenuContentPrivate
+    ::ConfigEditRespMenuContentPrivate(ConfigEditRespMenuContent * const p_ptr)
+    : p_ptr(p_ptr)
 {
     combos.clear();
 }
@@ -46,7 +49,7 @@ ConfigEditRespMenuContentPrivate::ConfigEditRespMenuContentPrivate()
 ConfigEditRespMenuContent::ConfigEditRespMenuContent():
     MenuContent(trs("RespMenu"),
                 trs("RespMenuDesc")),
-    d_ptr(new ConfigEditRespMenuContentPrivate)
+    d_ptr(new ConfigEditRespMenuContentPrivate(this))
 {
 }
 
@@ -57,8 +60,9 @@ ConfigEditRespMenuContent::~ConfigEditRespMenuContent()
 
 void ConfigEditRespMenuContentPrivate::loadOptions()
 {
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
+    ConfigEditMenuWindow *w
+            = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    Config *config = w->getCurrentEditConfig();
     int index = 0;
     config->getNumValue("RESP|ApneaDelay", index);
     combos[ITEM_CBO_APNEA_DELAY]->setCurrentIndex(index);
@@ -87,8 +91,8 @@ void ConfigEditRespMenuContent::onComboIndexChanged(int index)
     }
     int indexType = combo->property("Item").toInt();
 
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+    Config *config = w->getCurrentEditConfig();
     switch (indexType)
     {
     case ConfigEditRespMenuContentPrivate::ITEM_CBO_APNEA_DELAY:

@@ -28,7 +28,7 @@ public:
         ITEM_CBO_INIT_CUFF,
     };
 
-    ConfigEditNIBPMenuContentPrivate();
+    explicit ConfigEditNIBPMenuContentPrivate(ConfigEditNIBPMenuContent * const p_ptr);
     /**
      * @brief loadOptions
      */
@@ -40,9 +40,13 @@ public:
     void setInitPressure(int index);
 
     QMap <MenuItem, ComboBox *> combos;
+
+    ConfigEditNIBPMenuContent *p_ptr;
 };
 
-ConfigEditNIBPMenuContentPrivate::ConfigEditNIBPMenuContentPrivate()
+ConfigEditNIBPMenuContentPrivate
+    ::ConfigEditNIBPMenuContentPrivate(ConfigEditNIBPMenuContent * const p_ptr)
+    :p_ptr(p_ptr)
 {
     combos.clear();
 }
@@ -50,7 +54,7 @@ ConfigEditNIBPMenuContentPrivate::ConfigEditNIBPMenuContentPrivate()
 ConfigEditNIBPMenuContent::ConfigEditNIBPMenuContent():
     MenuContent(trs("NIBPMenu"),
                 trs("NIBPMenuDesc")),
-    d_ptr(new ConfigEditNIBPMenuContentPrivate)
+    d_ptr(new ConfigEditNIBPMenuContentPrivate(this))
 {
 }
 
@@ -61,8 +65,9 @@ ConfigEditNIBPMenuContent::~ConfigEditNIBPMenuContent()
 
 void ConfigEditNIBPMenuContentPrivate::loadOptions()
 {
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
+    ConfigEditMenuWindow *w
+            = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    Config *config = w->getCurrentEditConfig();
     int index;
     index = 0;
     config->getNumValue("NIBP|NIBPMeasureMode", index);
@@ -126,8 +131,8 @@ void ConfigEditNIBPMenuContentPrivate::loadOptions()
 
 void ConfigEditNIBPMenuContentPrivate::setInitPressure(int index)
 {
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    Config *config = w->getCurrentEditConfig();
 
     PatientType type = patientManager.getType();
     QString path;
@@ -160,8 +165,8 @@ void ConfigEditNIBPMenuContent::onComboIndexChanged(int index)
         return;
     }
     int indexType = combo->property("Item").toInt();
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+    Config *config = w->getCurrentEditConfig();
     switch (indexType)
     {
 

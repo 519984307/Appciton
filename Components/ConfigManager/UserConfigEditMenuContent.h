@@ -15,21 +15,8 @@ class UserConfigEditMenuContent: public MenuContent
 {
     Q_OBJECT
 public:
-    static UserConfigEditMenuContent &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new UserConfigEditMenuContent();
-        }
-        return *_selfObj;
-    }
-    static UserConfigEditMenuContent *_selfObj;
+    UserConfigEditMenuContent();
     ~UserConfigEditMenuContent();
-
-    /**
-     * @brief onEditFinished
-     */
-    void onEditFinished();
 
 protected:
     /**
@@ -50,8 +37,12 @@ private slots:
      * @brief updateBtnStatus
      */
     void updateBtnStatus();
+
+    /**
+     * @brief onEditFinished
+     */
+    void onEditFinished();
+
 private:
     UserConfigEditMenuContentPrivate *const d_ptr;
-    UserConfigEditMenuContent();
 };
-#define userConfigEditMenuContent (UserConfigEditMenuContent::construction())

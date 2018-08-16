@@ -32,16 +32,19 @@ public:
         ITEM_CBO_MAX,
     };
 
-    ConfigEditSpO2MenuContentPrivate();
+    explicit ConfigEditSpO2MenuContentPrivate(ConfigEditSpO2MenuContent * const p_ptr);
     /**
      * @brief loadOptions
      */
     void loadOptions();
 
     QMap <MenuItem, ComboBox *> combos;
+    ConfigEditSpO2MenuContent * const p_ptr;
 };
 
-ConfigEditSpO2MenuContentPrivate::ConfigEditSpO2MenuContentPrivate()
+ConfigEditSpO2MenuContentPrivate
+    ::ConfigEditSpO2MenuContentPrivate(ConfigEditSpO2MenuContent * const p_ptr)
+    : p_ptr(p_ptr)
 {
     combos.clear();
 }
@@ -49,7 +52,7 @@ ConfigEditSpO2MenuContentPrivate::ConfigEditSpO2MenuContentPrivate()
 ConfigEditSpO2MenuContent::ConfigEditSpO2MenuContent():
     MenuContent(trs("ConfigEditSpO2Menu"),
                 trs("ConfigEditSpO2MenuDesc")),
-    d_ptr(new ConfigEditSpO2MenuContentPrivate)
+    d_ptr(new ConfigEditSpO2MenuContentPrivate(this))
 {
 }
 
@@ -60,9 +63,8 @@ ConfigEditSpO2MenuContent::~ConfigEditSpO2MenuContent()
 
 void ConfigEditSpO2MenuContentPrivate::loadOptions()
 {
-
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    Config *config = w->getCurrentEditConfig();
     QStringList strList = QStringList()
                           << "Sensitivity"
                           << "SmartPluseTone"
@@ -189,8 +191,8 @@ void ConfigEditSpO2MenuContent::onComboBoxIndexChanged(int index)
 {
     ComboBox *combo = qobject_cast<ComboBox *>(sender());
     int indexType = combo->property("Item").toInt();
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
+    ConfigEditMenuWindow * w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+    Config *config = w->getCurrentEditConfig();
     QString str;
     switch (indexType)
     {

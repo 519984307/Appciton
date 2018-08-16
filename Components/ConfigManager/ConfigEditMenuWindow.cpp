@@ -55,16 +55,6 @@ ConfigEditMenuWindow::ConfigEditMenuWindow()
 {
 }
 
-ConfigEditMenuWindow *ConfigEditMenuWindow::getInstance()
-{
-    static ConfigEditMenuWindow *instance = NULL;
-    if (instance == NULL)
-    {
-        instance = new ConfigEditMenuWindow();
-    }
-    return instance;
-}
-
 ConfigEditMenuWindow::~ConfigEditMenuWindow()
 {
 }
@@ -120,8 +110,15 @@ void ConfigEditMenuWindow::initializeSubMenu()
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditCodeMarkerMenu"] = subMenu;
 
-    subMenu = new ConfigEditDisplayMenuContent();
+    QStringList colorList;
+    QString color;
+    Config *config = getCurrentEditConfig();
+    config->getStrValue("Display|AllColors", color);
+    colorList = color.split(',', QString::KeepEmptyParts);
+
+    subMenu = new ConfigEditDisplayMenuContent(colorList);
     addMenuContent(subMenu);
+
     d_ptr->subMenuMap["ConfigEditDisplayMenu"] = subMenu;
 
 
@@ -153,8 +150,3 @@ QMap <QString, MenuContent *> ConfigEditMenuWindow::getCurrentEditConfigItem() c
     return d_ptr->subMenuMap;
 }
 
-void ConfigEditMenuWindow::hideEvent(QHideEvent *e)
-{
-    userConfigEditMenuContent.onEditFinished();
-    QDialog::hideEvent(e);
-}

@@ -40,13 +40,16 @@ public:
         ITEM_CBO_MAX,
     };
 
-    ConfigEditECGMenuContentPrivate() {}
+    explicit ConfigEditECGMenuContentPrivate(ConfigEditECGMenuContent * const p_ptr)
+        :p_ptr(p_ptr)
+    {}
 
     // load settings
     void loadOptions();
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, QLabel *> comboLabels;
+    ConfigEditECGMenuContent * const p_ptr;
 };
 
 void ConfigEditECGMenuContentPrivate::loadOptions()
@@ -57,7 +60,8 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
         combos[item]->blockSignals(true);
     }
 
-    Config *config = ConfigEditMenuWindow::getInstance()->getCurrentEditConfig();
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    Config *config = w->getCurrentEditConfig();
 
     int index = 0;
 
@@ -175,7 +179,7 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
 
 ConfigEditECGMenuContent::ConfigEditECGMenuContent()
     : MenuContent(trs("ECGMenu"), trs("ECGMenuDesc")),
-      d_ptr(new ConfigEditECGMenuContentPrivate)
+      d_ptr(new ConfigEditECGMenuContentPrivate(this))
 {
 }
 
@@ -365,7 +369,8 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
     iiii++;
     if (box)
     {
-        Config *config = ConfigEditMenuWindow::getInstance()->getCurrentEditConfig();
+        ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+        Config *config = w->getCurrentEditConfig();
         ConfigEditECGMenuContentPrivate::MenuItem item
             = (ConfigEditECGMenuContentPrivate::MenuItem) box->property("Item").toInt();
         switch (item)

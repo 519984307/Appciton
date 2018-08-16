@@ -31,13 +31,14 @@
 class ConfigEditAlarmLimitMenuContentPrivate
 {
 public:
-    ConfigEditAlarmLimitMenuContentPrivate()
-        : model(NULL), table(NULL),
+    explicit ConfigEditAlarmLimitMenuContentPrivate(ConfigEditAlarmLimitMenuContent * const q_ptr)
+        : q_ptr(q_ptr), model(NULL), table(NULL),
           prevBtn(NULL), nextBtn(NULL)
     {}
 
     void loadoptions();
 
+    ConfigEditAlarmLimitMenuContent * const q_ptr;
     ConfigEditAlarmLimitModel *model;
     TableView *table;
     Button *prevBtn;
@@ -73,8 +74,8 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
             info.status = alarmConfig.isLimitAlarmEnable(subId);
             UnitType unit  = paramManager.getSubParamUnit(pid, subId);
 
-            Config *config = ConfigEditMenuWindow
-                             ::getInstance()->getCurrentEditConfig();
+            ConfigEditMenuWindow *cmw = qobject_cast<ConfigEditMenuWindow *>(q_ptr->getMenuWindow());
+            Config *config =  cmw->getCurrentEditConfig();
 
             QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
             prefix += paramInfo.getSubParamName(subId, true);
@@ -130,7 +131,7 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
 
 ConfigEditAlarmLimitMenuContent::ConfigEditAlarmLimitMenuContent()
     : MenuContent(trs("AlarmLimitMenu"), trs("AlarmLimitMenuDesc")),
-      d_ptr(new ConfigEditAlarmLimitMenuContentPrivate())
+      d_ptr(new ConfigEditAlarmLimitMenuContentPrivate(this))
 {
 }
 
@@ -169,7 +170,8 @@ void ConfigEditAlarmLimitMenuContent::layoutExec()
 
     layout->addWidget(table);
 
-    d_ptr->model = new ConfigEditAlarmLimitModel();
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+    d_ptr->model = new ConfigEditAlarmLimitModel(w);
 
     table->setModel(d_ptr->model);
 

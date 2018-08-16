@@ -26,18 +26,22 @@ public:
         ITEM_CBO_MAX = 28,
     };
 
+    explicit ConfigEditCodeMarkerMenuContentPrivate(ConfigEditCodeMarkerMenuContent * const p_ptr)
+        :p_ptr(p_ptr), languageIndex(-1)
+    {}
     void loadOptions();
 
     QMap <MenuItem, ComboBox *> combos;
     int languageIndex;
     QStringList allCodeMarkers;  // all codemarker types
     QStringList selectedCodeMarkers;  // current selected codemarker types
+    ConfigEditCodeMarkerMenuContent * const p_ptr;
 };
 
 ConfigEditCodeMarkerMenuContent::ConfigEditCodeMarkerMenuContent():
     MenuContent(trs("ConfigEditCodeMarkerMenu"),
                 trs("ConfigEditCodeMarkerMenuDesc")),
-    d_ptr(new ConfigEditCodeMarkerMenuContentPrivate)
+    d_ptr(new ConfigEditCodeMarkerMenuContentPrivate(this))
 {
 }
 
@@ -59,8 +63,8 @@ void ConfigEditCodeMarkerMenuContent::hideEvent(QHideEvent *ev)
 void ConfigEditCodeMarkerMenuContentPrivate::loadOptions()
 {
     languageIndex = 0;
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    Config *config = w->getCurrentEditConfig();
     config->getNumAttr("Local|Language", "CurrentOption", languageIndex);
     if (languageIndex != languageManager.getCurLanguage())
     {
@@ -172,8 +176,8 @@ void ConfigEditCodeMarkerMenuContent::onComboBoxIndexChanged(int index)
     {
         return;
     }
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+    Config *config = w->getCurrentEditConfig();
     int itemType = combo->property("Item").toInt();
     // new code marker
     d_ptr->selectedCodeMarkers[itemType] = d_ptr->allCodeMarkers[index];

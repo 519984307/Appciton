@@ -36,7 +36,11 @@ public:
         ITEM_CBO_MEASURE_CONTROL,
     };
 
-    ConfigEditCOMenuContentPrivate() : measureSta(CO_INST_START) {}
+    explicit ConfigEditCOMenuContentPrivate(ConfigEditCOMenuContent * const p_ptr)
+        : measureSta(CO_INST_START)
+        , p_ptr(p_ptr)
+    {
+    }
 
     // load settings
     void loadOptions();
@@ -44,6 +48,7 @@ public:
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> buttons;
     COInstCtl measureSta;              // 测量状态
+    ConfigEditCOMenuContent * const p_ptr;
 };
 
 void ConfigEditCOMenuContentPrivate::loadOptions()
@@ -54,8 +59,8 @@ void ConfigEditCOMenuContentPrivate::loadOptions()
     buttons[ITEM_CBO_MEASURE_CONTROL]->blockSignals(true);
     combos[ITEM_CBO_INJECT_TEMP_SOURCE]->blockSignals(true);
 
-    Config *config = ConfigEditMenuWindow::getInstance()
-                     ->getCurrentEditConfig();
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    Config *config = w->getCurrentEditConfig();
     int number = 0;
     config->getNumValue("CO|Ratio", number);
     buttons[ITEM_CBO_CO_RATIO]->setText(QString::number(static_cast<double>(number) / 1000));
@@ -89,7 +94,7 @@ void ConfigEditCOMenuContentPrivate::loadOptions()
 
 ConfigEditCOMenuContent::ConfigEditCOMenuContent()
     : MenuContent(trs("COMenu"), trs("COMenuDesc")),
-      d_ptr(new ConfigEditCOMenuContentPrivate)
+      d_ptr(new ConfigEditCOMenuContentPrivate(this))
 {
 }
 
@@ -183,7 +188,8 @@ void ConfigEditCOMenuContent::onComboBoxIndexChanged(int index)
     ComboBox *box = qobject_cast<ComboBox *>(sender());
     if (box)
     {
-        Config *config = ConfigEditMenuWindow::getInstance()->getCurrentEditConfig();
+        ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+        Config *config = w->getCurrentEditConfig();
 
         ConfigEditCOMenuContentPrivate::MenuItem item
             = (ConfigEditCOMenuContentPrivate::MenuItem)box->property("Item").toInt();
@@ -215,7 +221,8 @@ void ConfigEditCOMenuContent::onButtonReleased()
     Button *button = qobject_cast<Button *>(sender());
     if (button)
     {
-        Config *config = ConfigEditMenuWindow::getInstance()->getCurrentEditConfig();
+        ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+        Config *config = w->getCurrentEditConfig();
 
         ConfigEditCOMenuContentPrivate::MenuItem item
             = (ConfigEditCOMenuContentPrivate::MenuItem) button->property("Item").toInt();

@@ -20,7 +20,7 @@ ConfigManagerMenuWindow *ConfigManagerMenuWindow::getInstance()
     {
         instance = new ConfigManagerMenuWindow;
         instance->addMenuContent(new SelectDefaultConfigMenuContent);
-        instance->addMenuContent(&userConfigEditMenuContent);
+        instance->addMenuContent(new UserConfigEditMenuContent);
         instance->addMenuContent(new ConfigExportImportMenuContent);
     }
 

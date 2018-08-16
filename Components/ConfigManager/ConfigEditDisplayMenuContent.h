@@ -15,7 +15,7 @@ class ConfigEditDisplayMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    ConfigEditDisplayMenuContent();
+    explicit ConfigEditDisplayMenuContent(QStringList colorList);
     ~ConfigEditDisplayMenuContent();
 
 protected:

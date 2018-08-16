@@ -32,16 +32,18 @@ public:
         ITEM_CBO_MAX,
     };
 
-    ConfigEditIBPMenuContentPrivate();
+    explicit ConfigEditIBPMenuContentPrivate(ConfigEditIBPMenuContent * const p_ptr);
     /**
      * @brief loadOptions
      */
     void loadOptions();
 
     QMap <MenuItem, ComboBox *> combos;
+    ConfigEditIBPMenuContent * const p_ptr;
 };
 
-ConfigEditIBPMenuContentPrivate::ConfigEditIBPMenuContentPrivate()
+ConfigEditIBPMenuContentPrivate::ConfigEditIBPMenuContentPrivate(ConfigEditIBPMenuContent *p_ptr)
+    :p_ptr(p_ptr)
 {
     combos.clear();
 }
@@ -49,7 +51,7 @@ ConfigEditIBPMenuContentPrivate::ConfigEditIBPMenuContentPrivate()
 ConfigEditIBPMenuContent::ConfigEditIBPMenuContent():
     MenuContent(trs("ConfigEditIBPMenu"),
                 trs("ConfigEditIBPMenuDesc")),
-    d_ptr(new ConfigEditIBPMenuContentPrivate)
+    d_ptr(new ConfigEditIBPMenuContentPrivate(this))
 {
 }
 
@@ -60,8 +62,8 @@ ConfigEditIBPMenuContent::~ConfigEditIBPMenuContent()
 
 void ConfigEditIBPMenuContentPrivate::loadOptions()
 {
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    Config *config = w->getCurrentEditConfig();
     QStringList strList = QStringList()
                           << "ChannelPressureEntitle1"
                           << "ChannelPressureEntitle2"
@@ -200,8 +202,8 @@ void ConfigEditIBPMenuContent::onComboBoxIndexChanged(int index)
 {
     ComboBox *combo = qobject_cast<ComboBox *>(sender());
     int indexType = combo->property("Item").toInt();
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+    Config *config = w->getCurrentEditConfig();
     QString str;
     switch (indexType)
     {

@@ -33,7 +33,9 @@ public:
         ITEM_BTN_N2O_COMPEN,
     };
 
-    ConfigEditCO2MenuContentPrivate() {}
+    explicit ConfigEditCO2MenuContentPrivate(ConfigEditCO2MenuContent * const p_ptr)
+        :p_ptr(p_ptr)
+    {}
 
     /**
      * @brief loadOptions  // load settings
@@ -42,11 +44,12 @@ public:
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> btns;
+    ConfigEditCO2MenuContent * const p_ptr;
 };
 
 ConfigEditCO2MenuContent::ConfigEditCO2MenuContent():
     MenuContent(trs("CO2Menu"), trs("CO2MenuDesc")),
-    d_ptr(new ConfigEditCO2MenuContentPrivate)
+    d_ptr(new ConfigEditCO2MenuContentPrivate(this))
 {
 }
 
@@ -63,7 +66,8 @@ void ConfigEditCO2MenuContent::readyShow()
 
 void ConfigEditCO2MenuContentPrivate::loadOptions()
 {
-    Config *config = ConfigEditMenuWindow::getInstance()->getCurrentEditConfig();
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    Config *config = w->getCurrentEditConfig();
     int index = 0;
 
     // 波形速度。
@@ -85,7 +89,8 @@ void ConfigEditCO2MenuContent::onComboBoxIndexChanged(int index)
 {
     ComboBox *combos = qobject_cast<ComboBox *>(sender());
     int indexType = combos->property("Item").toInt();
-    Config *config = ConfigEditMenuWindow::getInstance()->getCurrentEditConfig();
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+    Config *config = w->getCurrentEditConfig();
     switch (indexType)
     {
     case ConfigEditCO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED:
@@ -102,7 +107,8 @@ void ConfigEditCO2MenuContent::onBtnReleasedChanged()
     Button *button = qobject_cast<Button *>(sender());
     int index = button->property("Btn").toInt();
 
-    Config *config = ConfigEditMenuWindow::getInstance()->getCurrentEditConfig();
+    ConfigEditMenuWindow * w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+    Config *config = w->getCurrentEditConfig();
     NumberInput numberInput;
     unsigned num = 1000;
     switch (index)
