@@ -79,7 +79,7 @@ void SelectDefaultConfigMenuContentPrivate::updateUserConfig()
         }
 
         QString index = prefix + combos[menuItem]->property("nodeName").toString();
-        int nodeNameIndex = combos[menuItem]->property("nodeName").toInt();
+        int nodeNameIndex = i;
         switch (nodeNameIndex)
         {
         case 0:
