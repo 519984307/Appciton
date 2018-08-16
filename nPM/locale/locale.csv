@@ -102,9 +102,11 @@ ECGDisplayMode,显示模式,Display Mode
 ECGCalcLead,计算导联,Calculation Lead
 ECGBandwidth,带宽,Bandwidth
 ECGGain,增益,Gain
-ECGPacemaker,起搏器,Pacemaker
+ECGPaceMarker,起搏器,Pacemarker
+ECG12LPaceMarker,12L起搏器,12LPacemarker
 ECGSweepSpeed,波形速度,Sweep Speed
-ECGQRSToneVolume,QRS/PR 音量,QRS/PR Volume
+ECGQRSToneVolume,QRS 音量,QRS Volume
+ECGQRSPRToneVolume,QRS/PR 音量,QRS/PR Voume
 ECGMenu,心电,ECG
 ECGSTSWitch,ST开关,ST SWitch
 ECGSTPoint,ST点,ST Point
@@ -161,7 +163,7 @@ Auto,自动,Auto
 Manual,手动,Manual
 CORatio,C.O.系数,C.O.Ratio
 COStart,开始,Start
-COCancel,取消,Cancel
+COEnd,取消,End
 InjectionTempSource,注射液温度来源,Injection Temp Source
 InjectionTemp,注射液温度,Injection Temp
 InjectionVolumn,注射液体积,Injection Volumn
@@ -220,6 +222,7 @@ RESPAndCO2Menu,RESP和CO2,RESP & CO2
 RESPAndCO2MenuDesc,RESP和CO2设置,RESP & CO2 Setting
 CPRMenuDesc,CPR设置,CPR Setting
 TEMPMenuDesc,体温设置,TEMP Setting
+AGMenuDesc,麻醉设置,AG Setting
 AlarmSettingMenuDesc,报警设置,Alarm Setting
 PrintSetupDesc,打印设置,Print Setting
 SystemMenuDesc,系统设置,System Setting
@@ -1050,7 +1053,7 @@ NurseCallingModule,护士呼叫设置模块,Nurse Calling Module
 AnalogOutputModule,模拟输出模块,Analog Output Module
 SYNCDefibrillationModule,同步除颤模块,SYNC Defibrillation Module
 COModule,一氧化碳模块,CO Module
-PHASEIN,像素,PHASEIN
+PHASEIN,PHASEIN,PHASEIN
 M601,M601,M601
 MachineConfigModuleMenuDesc,机器配置设置,Machine Config  Desc
 MonitorInfoMenu,监护仪信息,Monitor Info
@@ -1121,7 +1124,6 @@ NIBPPressureTest,NIBP压力测试,NIBP Pressure Test
 NIBPLeakageDetection,NIBP泄露检测,NIBP Leakage Detection
 ECGModuleCalibration,心电模块校准,ECG Module Calibration
 TouchScreenCalibration,触摸屏校准,Touch Screen Calibration
-COStart,一氧化碳开始,CO Start
 StopAnaesthesia,停止麻醉模块,Stop Anaesthesia
 Anaesthesia,麻醉模块,Anaesthesia
 StopNIBPPressureTest,停止无创血压测试,Stop NIBP Pressure Test
@@ -1138,18 +1140,18 @@ fat,粗,fat
 med,中,med
 thin,细,thin
 ECGStandard,心电标准,ECG Standard
-AHA,美国心脏协会,AHA
-IEC,国际电工委员会,IEC
+AHA,AHA,AHA
+IEC,IEC,IEC
 FrequencyNotch,频率刻度,Frequency Notch
 paraSwitchPrem,参数开关权限,Para Switch Prem
-protected,保护,protected
+Protected,保护,Protected
 ConfImpactItemSettings,,Conf ImpactItemSettings
 ParaSwitch,参数开关,ParaSwitch
 NurseCallSetting,护士呼叫设置,Nurse Call Setting
-setting,设置,setting
-stopSetting,停止设置,Stop Setting
+Setting,设置,Setting
+StopSetting,停止设置,Stop Setting
 SignalType,信号类型,Signal Type
-Continuity,继续,Continuity
+Continuity,连续,Continuity
 Pluse,波形,Pluse
 TriggerMode,触发模式,Trigger Mode
 AlarmLevel,报警级别,Alarm Level
@@ -1169,7 +1171,7 @@ WiredWorkMaintainMenu,有线网络,Wired Work Maintain Menu
 WiredWorkMaintainMenuDesc,有线网络维护菜单设置,Wired Work Maintain Menu Desc
 AddressType,地址类型,Address Type
 manual,手动,manual
-DHCP,动态主机配置协议,DHCP
+DHCP,DHCP,DHCP
 IpAddress,IP地址,IP Address
 high,高,High
 normal,中,Normal
@@ -1291,3 +1293,12 @@ ConfigEditCodeMarkerMenuDesc,代码标记设置,Code Marker Desc
 ConfigEditIBPMenuDesc,有创血压设置,IBP Desc
 ConfigEditSpO2MenuDesc,血氧设置,SpO2 Desc
 DeleteSelectedWifiProfile,确定删除选择的wifi配置？, Do delete selected wifi profile ?
+Open,开放,Open
+Start,开始,Start
+AlarmLightOnAlarmReset,警示复位灯,Alarm Light On Alarm Reset
+OpenAgain,重新报警,OpenAgain
+Prev,上一页,Prev
+Next,下一页,Next
+Opened,已开,Opened
+Closed,已关,Closed
+AlarmType,报警类型,Alarm Type

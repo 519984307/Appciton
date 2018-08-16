@@ -183,8 +183,8 @@ void CO2MenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << CO2Symbol::convert(CO2_FICO2_DISPLAY_OFF)
-                       << CO2Symbol::convert(CO2_FICO2_DISPLAY_ON)
+                       << trs(CO2Symbol::convert(CO2_FICO2_DISPLAY_OFF))
+                       << trs(CO2Symbol::convert(CO2_FICO2_DISPLAY_ON))
                       );
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);

@@ -12,6 +12,7 @@
 #include "SelectDefaultConfigMenuContent.h"
 #include "UserConfigEditMenuContent.h"
 #include "ConfigExportImportMenuContent.h"
+#include "LanguageManager.h"
 
 ConfigManagerMenuWindow *ConfigManagerMenuWindow::getInstance()
 {
@@ -22,6 +23,7 @@ ConfigManagerMenuWindow *ConfigManagerMenuWindow::getInstance()
         instance->addMenuContent(new SelectDefaultConfigMenuContent);
         instance->addMenuContent(new UserConfigEditMenuContent);
         instance->addMenuContent(new ConfigExportImportMenuContent);
+        instance->setWindowTitle(trs("DefaultConfigDesc"));
     }
 
     return instance;

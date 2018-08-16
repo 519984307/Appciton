@@ -94,7 +94,7 @@ void UserMaintainGeneralMenuContent::layoutExec()
     int itemID;
 
     // monitor name
-    label = new QLabel(trs("MonitorName"));
+    label = new QLabel(trs("EditMonitorName"));
     layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count(), 0);
     button = new Button();
     button->setButtonStyle(Button::ButtonTextOnly);

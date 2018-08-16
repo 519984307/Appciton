@@ -72,6 +72,7 @@ MainMenuWindow *MainMenuWindow::getInstance()
         instance->addMenuContent(new ConfigManagerMenuContent);
         instance->addMenuContent(new UserMaintainMenuContent);
         instance->addMenuContent(new FactoryMaintainMenuContent);
+        instance->setWindowTitle(trs("ECGMenuDesc"));
     }
 
     return instance;
