@@ -18,6 +18,7 @@
 #include "SystemDefine.h"
 #include "OxyCRGCO2Widget.h"
 #include "OxyCRGRESPWidget.h"
+#include "ECGAlg2SoftInterface.h"
 
 enum
 {
@@ -233,6 +234,9 @@ public: // 用于访问配置相关信息。
     // 自学习设置
     void setSelfLearn(bool onOff);
     bool getSelfLearn() const;
+
+    // 阀值设置
+    void setARRThreshold(ECGAlg::ARRPara parameter, short value);
 
     // 获取计算导联带宽字符串
     QString getCalBandWidthStr();

@@ -69,6 +69,7 @@ public:
     virtual void enableSTAnalysis(bool /*onoff*/) { }
     virtual void setSTPoints(int /*iso*/, int /*st*/) { }
     virtual void setSelfLearn(bool /*onOff*/) { }
+    virtual void setARRThreshold(ECGAlg::ARRPara /*parameter*/, short /*value*/) {}
 
     // 实现SPO2的接口。
     virtual void setSensitive(SPO2Sensitive /*sens*/) { }

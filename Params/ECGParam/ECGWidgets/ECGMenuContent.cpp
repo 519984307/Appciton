@@ -19,7 +19,9 @@
 #include "SystemManager.h"
 #include "ECGParam.h"
 #include "IConfig.h"
-
+#include "Button.h"
+#include "ArrhythmiaMenuWindow.h"
+#include "WindowManager.h"
 
 class ECGMenuContentPrivate
 {
@@ -36,12 +38,15 @@ public:
         ITEM_CBO_QRS_TONE,
     };
 
-    ECGMenuContentPrivate() {}
+    ECGMenuContentPrivate()
+        : arrhythmiaBtn(NULL)
+    {}
 
     // load settings
     void loadOptions();
 
     QMap<MenuItem, ComboBox *> combos;
+    Button *arrhythmiaBtn;
 };
 
 void ECGMenuContentPrivate::loadOptions()
@@ -239,7 +244,12 @@ void ECGMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_QRS_TONE, comboBox);
 
-    layout->setRowStretch(d_ptr->combos.count(), 1);
+    d_ptr->arrhythmiaBtn = new Button(trs("Arrhythmia"));
+    d_ptr->arrhythmiaBtn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(d_ptr->arrhythmiaBtn, d_ptr->combos.count(), 1);
+    connect(d_ptr->arrhythmiaBtn, SIGNAL(released()), this, SLOT(arrhythmiaBtnReleased()));
+
+    layout->setRowStretch(d_ptr->combos.count() + 1, 1);
 }
 
 void ECGMenuContent::onComboBoxIndexChanged(int index)
@@ -280,6 +290,12 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             break;
         }
     }
+}
+
+void ECGMenuContent::arrhythmiaBtnReleased()
+{
+    ArrhythmiaMenuWindow *instance = ArrhythmiaMenuWindow::getInstance();
+    windowManager.showWindow(instance, WindowManager::WINDOW_TYPE_MODAL);
 }
 
 

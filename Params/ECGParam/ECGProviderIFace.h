@@ -11,6 +11,7 @@
 #pragma once
 #include "ECGDefine.h"
 #include "SystemDefine.h"
+#include "ECGTypeDefine.h"
 
 #define WAVE_SAMPLE_RATE_250    (250)
 #define WAVE_SAMPLE_RATE_500    (500)
@@ -49,6 +50,9 @@ public:
 
     // set self learn
     virtual void setSelfLearn(bool onOff) = 0;
+
+    // set threshold
+    virtual void setARRThreshold(ECGAlg::ARRPara parameter, short value) = 0;
 
     // 起搏器设置。
     virtual void enablePacermaker(ECGPaceMode onoff) = 0;

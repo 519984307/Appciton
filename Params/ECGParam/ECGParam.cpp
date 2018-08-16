@@ -1886,6 +1886,14 @@ bool ECGParam::getSelfLearn() const
     return _isSelfLearn;
 }
 
+void ECGParam::setARRThreshold(ECGAlg::ARRPara parameter, short value)
+{
+    if (NULL != _provider)
+    {
+        _provider->setARRThreshold(parameter, value);
+    }
+}
+
 /**************************************************************************************************
  * 获取计算导联带宽字符串
  *************************************************************************************************/
