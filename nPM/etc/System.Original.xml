@@ -3,6 +3,8 @@
 <System>
     <!--日期格式，0:y/m/d, 1:m/d/y, 2:d/m/y-->
     <DateFormat>0</DateFormat>
+    <Timestamp>0</Timestamp>
+    <ElapseStartTime>0</ElapseStartTime>
     <General>
         <PatientType>0</PatientType><!--0:adult  1:ped  2:neo-->
 	<MonitorName>dd-89</MonitorName>
@@ -121,9 +123,9 @@
 
     <ConfigManager>
         <Default>
-            <Adult type="Factory" name="" >AdultConfig.Original.xml</Adult>
-            <PED type="Factory" name="" >PedConfig.Original.xml</PED>
-            <NEO type="Factory" name="" >NeoConfig.Original.xml</NEO>
+            <Adult type="Current" name="" >AdultConfig.xml</Adult>
+            <PED type="Current" name="" >PedConfig.xml</PED>
+            <NEO type="Current" name="" >NeoConfig.xml</NEO>
         </Default>
         <UserDefine count="0">
         </UserDefine>
