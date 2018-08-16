@@ -15,6 +15,7 @@
 #include <QStackedWidget>
 #include "MenuSidebar.h"
 #include <QDebug>
+#include "WindowManager.h"
 
 class MenuWindowPrivate
 {
@@ -72,7 +73,7 @@ void MenuWindow::addMenuContent(MenuContent *menu)
 
 void MenuWindow::popup(const QString &menuName)
 {
-    show();
+    windowManager.showWindow(this, WindowManager::WINDOW_TYPE_NONMODAL);
     d_ptr->sidebar->popupWidget(menuName);
 }
 
