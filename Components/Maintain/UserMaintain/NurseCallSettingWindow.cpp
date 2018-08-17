@@ -15,6 +15,8 @@
 #include "IConfig.h"
 #include "ThemeManager.h"
 #include <QMap>
+#include <QHBoxLayout>
+#include "LanguageManager.h"
 
 class NurseCallSettingWindowPrivate
 {
@@ -67,7 +69,7 @@ NurseCallSettingWindow::~NurseCallSettingWindow()
 void NurseCallSettingWindow::layoutExec()
 {
 
-    setWindowTitle(trs("NurseCallSettingWindow"));
+    setWindowTitle(trs("NurseCallingSettingWindow"));
 
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
@@ -131,107 +133,141 @@ void NurseCallSettingWindow::layoutExec()
 
     label = new QLabel(trs("AlarmLevel"));
     layout->addWidget(label, index, 0);
-    label = new QLabel(trs("AlarmType"));
-    layout->addWidget(label, index, 2);
     index++;
+
+    label = new QLabel(trs("AlarmType"));
+    layout->addWidget(label, index, 0);
 
     int indexBtn = index;
     bool isSelected;
-    QIcon icon = themeManger.getIcon(ThemeManager::IconChecked);
-    button = new Button(trs("High"));
+    QHBoxLayout *vlRight = new QHBoxLayout;
+
+    QHBoxLayout *vl = new QHBoxLayout;
+    vlRight->addLayout(vl);
+
+    QIcon icon("/usr/local/nPM/icons/Checked.png");
+    int btnWidth = 25;
+
+    button = new Button();
     button->setIcon(icon);
-    button->setMinimumWidth(150);
+    button->setFixedSize(btnWidth, btnWidth);
     d_ptr->highBtn = button;
-    button->setButtonStyle(Button::ButtonTextOnly);
+    button->setButtonStyle(Button::ButtonIconOnly);
     itemID = 0;
     button->setProperty("Item",
                         qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
-    layout->addWidget(button, indexBtn, 0);
+    layout->addLayout(vlRight, index-1, 2);
     indexBtn++;
     systemConfig.getNumValue("Others|AlarmLevel|High", isSelected);
 
-    if (isSelected)
+    if (!isSelected)
     {
-        button->setButtonStyle(Button::ButtonTextUnderIcon);
+        button->setIcon(QIcon());
     }
     d_ptr->btnMaps[itemID] = isSelected;
     isSelected = false;
+    label = new QLabel(trs("High"));
+    vl->addWidget(button, Qt::AlignLeft);
+    vl->addWidget(label, Qt::AlignRight);
 
-    button = new Button(trs("Med"));
+    button = new Button();
     button->setIcon(icon);
+    button->setFixedSize(btnWidth, btnWidth);
     d_ptr->medBtn = button;
-    button->setButtonStyle(Button::ButtonTextOnly);
+    button->setButtonStyle(Button::ButtonIconOnly);
+    vl = new QHBoxLayout;
+    vlRight->addLayout(vl);
+
     itemID = 1;
     button->setProperty("Item",
                         qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
-    layout->addWidget(button, indexBtn, 0);
+
     indexBtn++;
     systemConfig.getNumValue("Others|AlarmLevel|Med", isSelected);
-    if (isSelected)
+    if (!isSelected)
     {
-        button->setButtonStyle(Button::ButtonTextUnderIcon);
+        button->setIcon(QIcon());
     }
     d_ptr->btnMaps[itemID] = isSelected;
     isSelected = false;
+    label = new QLabel(trs("Med"));
+    vl->addWidget(button, Qt::AlignLeft);
+    vl->addWidget(label, Qt::AlignRight);
 
-    button = new Button(trs("Low"));
+    button = new Button();
     button->setIcon(icon);
+    button->setFixedSize(btnWidth, btnWidth);
     d_ptr->lowBtn = button;
-    button->setButtonStyle(Button::ButtonTextOnly);
+    button->setButtonStyle(Button::ButtonIconOnly);
+    vl = new QHBoxLayout;
+    vlRight->addLayout(vl);
     itemID = 2;
     button->setProperty("Item",
                         qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
-    layout->addWidget(button, indexBtn, 0);
+
     indexBtn++;
     systemConfig.getNumValue("Others|AlarmLevel|Low", isSelected);
-    if (isSelected)
+    if (!isSelected)
     {
-        button->setButtonStyle(Button::ButtonTextUnderIcon);
+        button->setIcon(QIcon());
     }
     d_ptr->btnMaps[itemID] = isSelected;
     isSelected = false;
+    label = new QLabel(trs("Low"));
+    vl->addWidget(button, Qt::AlignLeft);
+    vl->addWidget(label, Qt::AlignRight);
 
-    button = new Button(trs("Technology"));
+    vlRight = new QHBoxLayout;
+    layout->addLayout(vlRight, index, 2);
+    button = new Button();
     button->setIcon(icon);
+    button->setFixedSize(btnWidth, btnWidth);
     d_ptr->techBtn = button;
-    button->setButtonStyle(Button::ButtonTextOnly);
+    button->setButtonStyle(Button::ButtonIconOnly);
+    vl = new QHBoxLayout;
+    vlRight->addLayout(vl);
     itemID = 3;
     button->setProperty("Item",
                         qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
-    layout->addWidget(button, index, 2);
     index++;
     systemConfig.getNumValue("Others|AlarmType|Technology", isSelected);
-    if (isSelected)
+    if (!isSelected)
     {
-        button->setButtonStyle(Button::ButtonTextUnderIcon);
+        button->setIcon(QIcon());
     }
     d_ptr->btnMaps[itemID] = isSelected;
     isSelected = false;
+    label = new QLabel(trs("Technology"));
+    vl->addWidget(button, Qt::AlignLeft);
+    vl->addWidget(label, Qt::AlignRight);
 
-    button = new Button(trs("Physiology"));
+    button = new Button();
     button->setIcon(icon);
-    button->setMinimumWidth(150);
+    button->setFixedSize(btnWidth, btnWidth);
     d_ptr->physBtn = button;
-    button->setButtonStyle(Button::ButtonTextOnly);
+    button->setButtonStyle(Button::ButtonIconOnly);
+    vl = new QHBoxLayout;
+    vlRight->addLayout(vl);
     itemID = 4;
     button->setProperty("Item",
                         qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
-    layout->addWidget(button, index, 2);
     index++;
     systemConfig.getNumValue("Others|AlarmType|Physiology", isSelected);
-    if (isSelected)
+    if (!isSelected)
     {
-        button->setButtonStyle(Button::ButtonTextUnderIcon);
+        button->setIcon(QIcon());
     }
+    label = new QLabel(trs("Physiology"));
+    vl->addWidget(button, Qt::AlignLeft);
+    vl->addWidget(label, Qt::AlignRight);
     d_ptr->btnMaps[itemID] = isSelected;
-    isSelected = false;
 
-    layout->setRowStretch(indexBtn, 1);
+    layout->setRowStretch(index + 1, 1);
     layout->setColumnMinimumWidth(1, 200);
     setWindowLayout(layout);
 }
@@ -257,6 +293,7 @@ void NurseCallSettingWindow::onBtnReleased()
     Button *button = qobject_cast<Button *>(sender());
     int indexType = button->property("Item").toInt();
     QString strPath;
+    QIcon icon("/usr/local/nPM/icons/Checked.png");
 
     switch (indexType)
     {
@@ -282,11 +319,11 @@ void NurseCallSettingWindow::onBtnReleased()
 
     if (d_ptr->btnMaps[indexType])
     {
-        button->setButtonStyle(Button::ButtonTextUnderIcon);
+        button->setIcon(icon);
     }
     else
     {
-        button->setButtonStyle(Button::ButtonTextOnly);
+        button->setIcon(QIcon());
     }
 
     systemConfig.setNumValue(strPath, d_ptr->btnMaps[indexType]);
