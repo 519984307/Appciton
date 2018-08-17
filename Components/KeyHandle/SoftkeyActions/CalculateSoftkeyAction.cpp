@@ -21,6 +21,7 @@
 #include "DoseCalculationManager.h"
 #include "HemodynamicWidget.h"
 #include "HemodynamicWindow.h"
+#include "LanguageManager.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -33,18 +34,18 @@ static KeyActionDesc _calculationDataKeys[] =
 //    KeyActionDesc("", "Delete.png",  CalculateSoftkeyAction::clearData),
 //    KeyActionDesc("", "SoftkeyArrow.png", CalculateSoftkeyAction::exit),
 
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_PAT_INFO),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_PAT_NEW),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_PREVIOUS_PAGE),
-    KeyActionDesc("", "dosecalculation.png", CalculateSoftkeyAction::doseCalculation),
-    KeyActionDesc("", "blood.png", CalculateSoftkeyAction::Hemodynamic),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "SoftkeyArrow.png", CalculateSoftkeyAction::exit),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_MAIN_SETUP),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_INFO),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_NEW),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PREVIOUS_PAGE),
+    KeyActionDesc("", trs("Dose"), "dosecalculation.png", CalculateSoftkeyAction::doseCalculation),
+    KeyActionDesc("", trs("Blood"), "blood.png", CalculateSoftkeyAction::Hemodynamic),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "SoftkeyArrow.png", CalculateSoftkeyAction::exit),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_MAIN_SETUP),
 };
 
 /***************************************************************************************************

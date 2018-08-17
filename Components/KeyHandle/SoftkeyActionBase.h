@@ -43,16 +43,19 @@ enum SoftBaseKeyType
 typedef void (*SoftkeyHook)(bool);  // 参数为bool值，按下为1，弹起为0。
 struct KeyActionDesc
 {
-    KeyActionDesc(const QString &txt = QString(), const QString &path = QString(),
+    KeyActionDesc(const QString &txt = QString(),
+                  const QString &hint = "",
+                  const QString &path = QString(),
                   SoftkeyHook phook = NULL, SoftBaseKeyType type = SOFT_BASE_KEY_NR,
                   bool focus = true,
                   const QColor &releaseColor = QColor(32, 32, 32),
                   const QColor &color = Qt::white,
                   const QColor &pressColor = QColor(0x1C, 0x86, 0xEE),
-                  bool border = true)
+                  bool border = true
+                  )
         : text(txt), iconPath(path), hook(phook), type(type),
           focus(focus), color(color), pressColor(pressColor),
-          releaseColor(releaseColor), border(border)
+          releaseColor(releaseColor), border(border), hint(hint)
     {
     }
 
@@ -76,9 +79,9 @@ struct KeyActionDesc
     QColor pressColor;
     QColor releaseColor;
     bool border;
+    QString hint;
 };
 
-class SoftkeyWidget;
 class SoftkeyActionBase
 {
 public:    // 一些共有的功能处理。

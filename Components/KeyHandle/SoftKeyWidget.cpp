@@ -52,9 +52,16 @@ void SoftkeyWidget::paintEvent(QPaintEvent *e)
     {
         int height = r.height();
         int width = r.width();
-        width = (width - height) / 2;
+        width = (width - height) / 1.5;
         QRect PixmapR = r;
-        PixmapR.adjust(width, 0, -width, 0);
+        if (_hint.isEmpty())
+        {
+            PixmapR.adjust(width, width/2, -width, -width/2);
+        }
+        else
+        {
+            PixmapR.adjust(width, 0, -width, -width);
+        }
 //        PixmapR.setSize(QSize(height, height));
         painter.drawPixmap(PixmapR, _pixmap);
     }
@@ -66,6 +73,15 @@ void SoftkeyWidget::paintEvent(QPaintEvent *e)
         painter.setPen(_color);
         painter.setFont(fontManager.textFont(fontSize, true));
         painter.drawText(r, Qt::AlignCenter | Qt::TextWordWrap, txt);
+    }
+
+    if (!_hint.isEmpty())
+    {
+        QString hint = _hint;
+        int fontSize = _adjustHintFontSize(r, hint);
+        painter.setPen(_color);
+        painter.setFont(fontManager.textFont(fontSize));
+        painter.drawText(r, Qt::AlignBottom | Qt::AlignCenter , hint);
     }
     IWidget::paintEvent(e);
 }
@@ -235,6 +251,42 @@ int SoftkeyWidget::_adjustFontSize(const QRect &r, QString &txt)
     return fontSize;
 }
 
+int SoftkeyWidget::_adjustHintFontSize(const QRect &r, QString &hint)
+{
+    if (_hint.isEmpty())
+    {
+        return 0;
+    }
+
+    if (r.width() < 4)
+    {
+        return 0;
+    }
+
+    int fontSize = fontManager.getFontSize(2);
+    int width = r.width() - 6;
+    QFont font = fontManager.textFont(fontSize, true);
+    int txtLen = fontManager.textWidthInPixels(_hint, font);
+    if (txtLen <= width)
+    {
+        hint = _hint;
+        return fontSize;
+    }
+    QString text;
+    int maxLen = 0;
+    hint = _hint;
+    text = _hint;
+    maxLen = txtLen;
+    while (maxLen > width && fontSize > 0)
+    {
+        font = fontManager.textFont(fontSize, true);
+        maxLen = fontManager.textWidthInPixels(text, font);
+        --fontSize;
+    }
+
+    return fontSize;
+}
+
 /***************************************************************************************************
  * 功能：设置显示内容。
  * 参数：
@@ -267,6 +319,7 @@ void SoftkeyWidget::setContent(const KeyActionDesc &desc)
     _enableBorder = desc.border;
     _pressColor = desc.pressColor;
     _releaseColor = desc.releaseColor;
+    _hint = desc.hint;
 
     update();
 }

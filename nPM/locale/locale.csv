@@ -287,7 +287,7 @@ Female,女性,Female
 PatientAge,病人年龄,Patient Age
 PatientName,病人姓名,Patient Name
 PatientInformation,病人信息,Patient Information
-PatientNew,新病人,New Patient
+PatientNew,新增病人,New Patient
 GetPatientInfo,病人信息获取,Get Patient Info
 PatientSave,保存病人,Save Patient
 PatientCreate,新建病人,Create Patient
@@ -937,7 +937,7 @@ CodeMarker29,Dextrose,Lasix
 CodeMarker30,Paralytic,Calcium
 CodeMarker31,Albuterol,
 CodeMarker32,Nitro,
-DoseCalculation,药物计算,Dose Calculation
+DoseCalculation,剂量计算,Dose Calculation
 DrugName,药物名称,Drug Name
 DrugTotal,药物总量,Drug Total
 LiquidVolume,液体体积,Liquid Volume
@@ -980,7 +980,7 @@ InputValue,输入值,Input Value
 OutputValue,输出值,Output Value
 CalculationReview,计算回顾,Calculation Review
 CheckOutput,查看输出,Check Output
-Calculation ,计算 ,
+Calculation ,计算,Calculation
 ReferenceRange,参考范围,Reference Range
 CheckInput,查看输入,Check Input
 PrimitiveCalculation,原始计算,Primitive Calculation
@@ -1292,3 +1292,9 @@ ConfigEditIBPMenuDesc,有创血压设置,IBP Desc
 ConfigEditSpO2MenuDesc,血氧设置,SpO2 Desc
 DeleteSelectedWifiProfile,确定删除选择的wifi配置？, Do delete selected wifi profile ?
 KeyPressVolume,按键音量,Key Press Volume
+SoftKeyPatientInfo,病人信息,Patient Info.
+Interface,界面,Interface
+Dose,剂量,Dose
+Blood,血液,Blood
+DeleteAll,删除全部,Delete All
+DeleteCase,删除事件,Delete Case
