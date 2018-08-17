@@ -44,6 +44,12 @@ public:
     // 设置静音键状态。
     void updateMuteKeyStatus(bool isPressed);
 
+    /**
+     * @brief updateResetKeyStatus update the status of the reset key
+     * @param isPressed key is press or not
+     */
+    void updateResetKeyStatus(bool isPressed);
+
     // 获取报警源参数的值。
     void getAlarmSourceValue(qint32 *data, int len);
 

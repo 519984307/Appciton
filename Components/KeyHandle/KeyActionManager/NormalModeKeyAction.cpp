@@ -120,7 +120,7 @@ void NormalModeKeyAction::keyF5Pressed(bool multiBtnPress)
         return;
     }
 
-    alarmStateMachine.alarmPause(true);
+    alertor.updateMuteKeyStatus(true);
 }
 
 void NormalModeKeyAction::keyF6Pressed(bool multiBtnPress)
@@ -130,7 +130,7 @@ void NormalModeKeyAction::keyF6Pressed(bool multiBtnPress)
         return;
     }
 
-    alarmStateMachine.alarmReset(true);
+    alertor.updateResetKeyStatus(true);
 }
 
 void NormalModeKeyAction::keyF1Released(bool multiBtnPress)
@@ -210,7 +210,7 @@ void NormalModeKeyAction::keyF5Released(bool multiBtnPress)
         return;
     }
 
-    alarmStateMachine.alarmPause(false);
+    alertor.updateMuteKeyStatus(false);
 }
 
 void NormalModeKeyAction::keyF6Released(bool multiBtnPress)
@@ -220,5 +220,5 @@ void NormalModeKeyAction::keyF6Released(bool multiBtnPress)
         return;
     }
 
-    alarmStateMachine.alarmReset(false);
+    alertor.updateResetKeyStatus(false);
 }

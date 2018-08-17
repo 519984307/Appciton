@@ -55,10 +55,6 @@ public:
         return _isEnableAlarmOff;
     }
 
-    void alarmPause(bool isPressed);
-
-    void alarmReset(bool isPressed);
-
 private slots:
     void _timeOut();
 

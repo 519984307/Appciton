@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/17
+ **/
+
+
 #include "BatteryMessage.h"
 #include "SystemBoardProvider.h"
 #include "SystemBoardProviderDefine.h"
@@ -7,9 +18,12 @@
  * 构造
  **************************************************************************************************/
 BatteryMessage::BatteryMessage()
+    :_curBarStatus(BAT_STATUS_NONE)
 {
-    systemBoardProvider.queryFixedBatMessage();
-    _curBarStatus = BAT_STATUS_NONE;
+    systemBoardProvider.queryBatteryInfo();
+
+    memset(_statusData, 0, sizeof(_statusData));
+    memset(_modeData, 0, sizeof(_modeData));
 
     // 给剩余电量参数设置一个初始值
     setInit();
@@ -20,7 +34,6 @@ BatteryMessage::BatteryMessage()
  **************************************************************************************************/
 BatteryMessage::~BatteryMessage()
 {
-
 }
 
 /***************************************************************************************************

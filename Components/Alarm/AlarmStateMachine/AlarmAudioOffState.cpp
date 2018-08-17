@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/17
+ **/
+
+
 #include <QTimerEvent>
 #include "AlarmAudioOffState.h"
 #include "AlarmIndicator.h"
@@ -12,7 +23,6 @@
  *************************************************************************************************/
 AlarmAudioOffState::AlarmAudioOffState() : AlarmState(ALARM_AUDIO_OFF_STATE)
 {
-
 }
 
 /**************************************************************************************************
@@ -20,7 +30,6 @@ AlarmAudioOffState::AlarmAudioOffState() : AlarmState(ALARM_AUDIO_OFF_STATE)
  *************************************************************************************************/
 AlarmAudioOffState::~AlarmAudioOffState()
 {
-
 }
 
 /**************************************************************************************************
@@ -56,7 +65,7 @@ void AlarmAudioOffState::timerEvent(QTimerEvent *e)
 {
     if (e->timerId() == getTimerID())
     {
-        //soundManager.playSound(SOUND_TYPE_TECH_ALARM, ALARM_PRIO_LOW);
+        // soundManager.playSound(SOUND_TYPE_TECH_ALARM, ALARM_PRIO_LOW);
     }
 }
 
@@ -67,26 +76,44 @@ void AlarmAudioOffState::handAlarmEvent(AlarmStateEvent event, unsigned char */*
 {
     switch (event)
     {
-        case ALARM_STATE_EVENT_MUTE_BTN_PRESSED:
+#if 1
+    case ALARM_STATE_EVENT_RESET_BTN_PRESSED:
+    {
+        alarmIndicator.techAlarmPauseStatusHandle();
+        if (alarmIndicator.hasLatchPhyAlarm())
         {
-            bool ret = alarmIndicator.techAlarmPauseStatusHandle();
-            if (alarmIndicator.hasLatchPhyAlarm())
-            {
-                alarmIndicator.delLatchPhyAlarm();
-                ret |= true;
-            }
-            break;
+            alarmIndicator.delLatchPhyAlarm();
         }
+        break;
+    }
 
-        case ALARM_STATE_EVENT_MUTE_BTN_PRESSED_LONG_TIME:
-            if (alarmStateMachine.isEnableAlarmOff())
-            {
-                alarmStateMachine.switchState(ALARM_OFF_STATE);
-            }
-            break;
+    case ALARM_STATE_EVENT_MUTE_BTN_PRESSED:
+    {
+        alarmStateMachine.switchState(ALARM_NORMAL_STATE);
+        break;
+    }
+#else
+    case ALARM_STATE_EVENT_MUTE_BTN_PRESSED:
+    {
+        bool ret = alarmIndicator.techAlarmPauseStatusHandle();
+        if (alarmIndicator.hasLatchPhyAlarm())
+        {
+            alarmIndicator.delLatchPhyAlarm();
+            ret |= true;
+        }
+        break;
+    }
+#endif
 
-        default:
-            break;
+    case ALARM_STATE_EVENT_MUTE_BTN_PRESSED_LONG_TIME:
+        if (alarmStateMachine.isEnableAlarmOff())
+        {
+            alarmStateMachine.switchState(ALARM_OFF_STATE);
+        }
+        break;
+
+    default:
+        break;
     }
 }
 
