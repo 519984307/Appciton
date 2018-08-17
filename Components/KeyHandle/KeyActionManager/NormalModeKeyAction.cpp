@@ -35,6 +35,7 @@
 #include "ContinuousPageGenerator.h"
 #include "FreezeWindow.h"
 #include "AlarmStateMachine.h"
+#include "MainMenuWindow.h"
 
 /**************************************************************************************************
  * 构造。
@@ -139,17 +140,34 @@ void NormalModeKeyAction::keyF1Released(bool multiBtnPress)
         return;
     }
 
-    while (NULL != QApplication::activeModalWidget())
+    bool closePupup = false;
+    while (QApplication::activePopupWidget())
     {
-        QApplication::activeModalWidget()->hide();
-        menuManager.close();
+        QApplication::activePopupWidget()->close();
+        closePupup = true;
+    }
+
+    if (closePupup)
+    {
         return;
     }
 
-    QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - publicMenuManager.width()) / 2;
-    int y = r.y() + (r.height() - publicMenuManager.height());
-    publicMenuManager.popup(x, y);
+
+    QWidget *wm = &windowManager;
+    QWidget *activeWindow = QApplication::activeWindow();
+    if (activeWindow == wm || activeWindow == NULL)
+    {
+        MainMenuWindow *w = MainMenuWindow::getInstance();
+        windowManager.showWindow(w, WindowManager::WINDOW_TYPE_NONMODAL);
+    }
+    else
+    {
+        while (QApplication::activeModalWidget())
+        {
+            QApplication::activeModalWidget()->close();
+        }
+        QTimer::singleShot(0, &windowManager, SLOT(closeAllWidows()));
+    }
 }
 
 void NormalModeKeyAction::keyF2Released(bool multiBtnPress)

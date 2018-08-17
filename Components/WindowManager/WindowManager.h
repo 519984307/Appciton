@@ -52,6 +52,12 @@ public:
      */
     void showWindow(QWidget *w, WindowType type);
 
+public slots:
+    /**
+     * @brief closeAllWidows close all the windows
+     */
+    void closeAllWidows();
+
 public:
     // 注册窗体。
     bool addWidget(IWidget *win, IWidget *trend = NULL);

@@ -50,7 +50,7 @@ struct NodeDesc
     int h;
 };
 
-typedef QMap<QString, QList<NodeDesc> > LayoutStyleMap;
+typedef QMap<QString, QList<NodeDesc>> LayoutStyleMap;
 static LayoutStyleMap _layoutStyle;
 
 WindowManager *WindowManager::_selfObj = NULL;
@@ -1847,7 +1847,7 @@ void WindowManager::replacebigWidgetform(const QString &oldWidget, const QString
         vlayout->setMargin(0);
         vlayout->setSpacing(0);
 
-        IWidget * trendWidget = trendMap.value();
+        IWidget *trendWidget = trendMap.value();
         trendWidget->setVisible(true);
         trendWidget->setParent(this);
         vlayout->addWidget(trendWidget, 2);
@@ -2415,7 +2415,7 @@ void WindowManager::showWindow(QWidget *w, WindowType type)
     }
     else if (type == WINDOW_TYPE_MODAL)
     {
-         w->setWindowModality(Qt::ApplicationModal);
+        w->setWindowModality(Qt::ApplicationModal);
     }
 
     QRect r = _volatileLayout->geometry();
@@ -2423,4 +2423,17 @@ void WindowManager::showWindow(QWidget *w, WindowType type)
     r.moveTo(0, 0);
     w->move(globalTopLeft + r.center() - w->rect().center());
     w->show();
+}
+
+void WindowManager::closeAllWidows()
+{
+    QWidget *activeWindow = NULL;
+    while ((activeWindow = QApplication::activeWindow()))
+    {
+        if (activeWindow == this)
+        {
+            break;
+        }
+        activeWindow->close();
+    }
 }

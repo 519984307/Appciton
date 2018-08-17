@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/17
+ **/
+
+
 #include "LightManager.h"
 #include "LightProviderIFace.h"
 
@@ -17,7 +28,7 @@ void LightManager::sendCmdData(unsigned char cmdId, const unsigned char *data, u
 {
     if (NULL != _provider)
     {
-        _provider->sendCmdData(cmdId,data,len);
+        _provider->sendCmdData(cmdId, data, len);
     }
 }
 
@@ -48,19 +59,6 @@ void LightManager::enableAlarmAudioMute(bool enable)
 }
 
 /**************************************************************************************************
- * 开启/关闭除颤准备灯。
- *************************************************************************************************/
-void LightManager::enableDefibReadyLED(bool enable)
-{
-    if (_provider == NULL)
-    {
-        return;
-    }
-
-    _provider->enableDefibReadyLED(enable);
-}
-
-/**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 LightManager::LightManager()
@@ -73,5 +71,4 @@ LightManager::LightManager()
  *************************************************************************************************/
 LightManager::~LightManager()
 {
-
 }
