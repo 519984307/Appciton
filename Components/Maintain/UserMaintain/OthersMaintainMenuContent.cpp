@@ -318,7 +318,7 @@ void OthersMaintainMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("High")
-                       << trs("Med")
+                       << trs("Medium")
                        << trs("Low")
                       );
     itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_ALARM_LEVEL);

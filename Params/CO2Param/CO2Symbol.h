@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/16
+ **/
+
+
 #pragma once
 #include "CO2Define.h"
 
@@ -39,7 +50,7 @@ public:
         static const char *symbol[GAS_STRENGTH_NR] =
         {
             "0", "2%", "4%", "6%", "8%", "10%", "12%", "14%",
-            "16%", "18%","20%","22%","24%","26%","28%","30%",
+            "16%", "18%", "20%", "22%", "24%", "26%", "28%", "30%",
         };
         return symbol[index];
     }
@@ -93,7 +104,7 @@ public:
     {
         static const char *symbol[CO2_FICO2_DISPLAY_NR] =
         {
-            "Off", "On"
+            "OFF", "ON"
         };
         return symbol[index];
     }
