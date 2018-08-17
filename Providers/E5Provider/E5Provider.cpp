@@ -316,6 +316,7 @@ void E5Provider::handlePacket(unsigned char *data, int len)
 {
     BLMProvider::handlePacket(data, len);
 
+    qDebug() << __FILE__ << __LINE__ << "data = " << data << endl;
     switch (data[0])
     {
     case E5_RSP_ACK:
@@ -614,6 +615,16 @@ void E5Provider::enableSTAnalysis(bool onoff)
 void E5Provider::setSTPoints(int /*iso*/, int /*st*/)
 {
     // TODO
+}
+
+void E5Provider::setSelfLearn(bool onOff)
+{
+    d_ptr->ecgAlgInterface->setSelfLearn(onOff);
+}
+
+void E5Provider::setARRThreshold(ECGAlg::ARRPara parameter, short value)
+{
+    d_ptr->ecgAlgInterface->setARRThreshold(parameter, value);
 }
 
 int E5Provider::getRESPWaveformSample()

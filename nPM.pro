@@ -315,6 +315,7 @@ SOURCES +=                                                                      
     Components/WindowManager/FactoryMaintainMenuWindow.cpp                      \
     Components/WindowManager/ConfigManagerMenuWindow.cpp                        \
     Components/WindowManager/UserMaintainMenuWindow.cpp                         \
+    Components/WindowManager/ArrhythmiaMenuWindow.cpp                           \
     Components/USBManager/DataExporterBase.cpp                                  \
     Components/USBManager/ErrorLogExporter.cpp                                  \
     Components/USBManager/UDiskInspector.cpp                                    \
@@ -493,6 +494,8 @@ SOURCES +=                                                                      
     Params/ECGParam/ECGWidgets/ECGSTTrendWidget.cpp                             \
     Params/ECGParam/ECGWidgets/ECGMenu.cpp                                      \
     Params/ECGParam/ECGWidgets/ECGMenuContent.cpp                               \
+    Params/ECGParam/ECGWidgets/ArrhythmiaAnalysisMenu.cpp                       \
+    Params/ECGParam/ECGWidgets/ArrhythmiaThresholdMenu.cpp                      \
     Params/CO2Param/CO2Param.cpp                                                \
     Params/CO2Param/CO2Alarm.cpp                                                \
     Params/CO2Param/CO2Widgets/CO2WaveWidget.cpp                                \
@@ -583,7 +586,7 @@ SOURCES +=                                                                      
     Main/IApplication.cpp                                                       \
     Main/IThread.cpp                                                            \
     Main/MergeConfig.cpp                                                        \
-    Main/Starter.cpp                                                            \
+    Main/Starter.cpp \
 
 HEADERS +=                                                                      \
     SOUP/Json/FlexLexer.h                                                       \
@@ -870,6 +873,7 @@ HEADERS +=                                                                      
     Components/WindowManager/FactoryMaintainMenuWindow.h                        \
     Components/WindowManager/ConfigManagerMenuWindow.h                          \
     Components/WindowManager/UserMaintainMenuWindow.h                           \
+    Components/WindowManager/ArrhythmiaMenuWindow.h                             \
     Components/PrintManager/PrintTypeDefine.h                                   \
     Components/PrintManager/PrintDefine.h                                       \
     Components/PrintManager/PrintProviderIFace.h                                \
@@ -1058,6 +1062,8 @@ HEADERS +=                                                                      
     Params/ECGParam/ECGWidgets/ECGSTTrendWidget.h                               \
     Params/ECGParam/ECGWidgets/ECGMenu.h                                        \
     Params/ECGParam/ECGWidgets/ECGMenuContent.h                                 \
+    Params/ECGParam/ECGWidgets/ArrhythmiaAnalysisMenu.h                         \
+    Params/ECGParam/ECGWidgets/ArrhythmiaThresholdMenu.h                        \
     Params/CO2Param/CO2Param.h                                                  \
     Params/CO2Param/CO2Alarm.h                                                  \
     Params/CO2Param/CO2Define.h                                                 \

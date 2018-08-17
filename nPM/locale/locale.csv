@@ -102,13 +102,31 @@ ECGDisplayMode,显示模式,Display Mode
 ECGCalcLead,计算导联,Calculation Lead
 ECGBandwidth,带宽,Bandwidth
 ECGGain,增益,Gain
-ECGPacemaker,起搏器,Pacemaker
 ECGSweepSpeed,波形速度,Sweep Speed
-ECGQRSToneVolume,QRS/PR 音量,QRS/PR Volume
 ECGMenu,心电,ECG
 ECGSTSWitch,ST开关,ST SWitch
 ECGSTPoint,ST点,ST Point
 ECGISOPoint,ISO点,ISO Point
+ArrhythmiaAnalysisMenu,心律失常分析 ,Arrh.Analysis
+ArrhythmiaAnalysisMenuDesc,心律失常分析 ,Arrh.Analysis
+ArrhythmiaThresholdMenu,心律失常阀值,Arrh.Threshold
+ArrhythmiaThresholdMenuDesc,心律失常阀值,"Arrh,Threshold"
+Arrhythmia,心律失常 >>,Arrhythmia >>
+ECGPaceMarker,起搏标记,Pace maker
+ECG12LPaceMarker,12导起搏标记,12L Pace maker
+SelfLearn,自学习,Self Learn
+ECGQRSPRToneVolume,QRS/PR 音量,QRS/PR Volume
+Asystole,停搏时间,Asystole
+HeartPause,暂停时间,Heart Pause
+Tachycardia,心动过速,Tachy cardia
+Bradycardia,心动过缓,Brady cardia
+Extachycardia,极度心动过速,Extachy cardia
+Exbradycardia,极度心动过缓,Exbrady cardia
+VentTachy,室速心律,Vent Tachy
+VentBrady,室缓心律,Vent Brady
+TachyPVC,室速PVC,Tachy PVC
+BradyPVC,室缓PVC,Brady PVC
+MultifPVC,多形PVC,Multif PVC
 STMenu,ST,ST
 SPO2Sensitivity,灵敏度,Sensitivity
 ConfigEditSpO2Menu,血氧,SPO2

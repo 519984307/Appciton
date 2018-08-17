@@ -2353,6 +2353,8 @@ WindowManager::WindowManager() : QWidget(), _activeWindow(NULL)
     _doesFixedLayout = false;
     _currenUserFaceType = UFACE_MONITOR_UNKNOW;
 
+    _activeWindow = NULL;
+
     // 设置调色
     QPalette p;
     p.setColor(QPalette::Background, Qt::black);
