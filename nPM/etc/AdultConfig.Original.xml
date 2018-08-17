@@ -146,8 +146,8 @@
         <SweepSpeed>1</SweepSpeed>
     </RESP>
     <Event>
-        <WaveLengthBefore>8</WaveLengthBefore>
-        <WaveLengthAfter>8</WaveLengthAfter>
+        <WaveLengthBefore>16</WaveLengthBefore>
+        <WaveLengthAfter>16</WaveLengthAfter>
     </Event>
     <Alarm>
         <MinimumAlarmVolume>0</MinimumAlarmVolume>

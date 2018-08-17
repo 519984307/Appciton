@@ -398,6 +398,7 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/WifiMaintainMenu.cpp                       \
     Components/Maintain/UserMaintain/WiredWorkMaintainMenu.cpp                  \
     Components/Maintain/UserMaintain/OthersMaintainMenu.cpp                     \
+    Components/Maintain/UserMaintain/NurseCallSettingWindow.cpp                 \
     Components/Maintain/UserMaintain/UserMaintainMenuContent.cpp                \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.cpp         \
     Components/Maintain/UserMaintain/ModuleMaintainMenuContent.cpp              \
@@ -957,6 +958,7 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/WifiMaintainMenu.h                         \
     Components/Maintain/UserMaintain/WiredWorkMaintainMenu.h                    \
     Components/Maintain/UserMaintain/OthersMaintainMenu.h                       \
+    Components/Maintain/UserMaintain/NurseCallSettingWindow.h                   \
     Components/Maintain/UserMaintain/UserMaintainMenuContent.h                  \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.h           \
     Components/Maintain/UserMaintain/ModuleMaintainMenuContent.h                \
