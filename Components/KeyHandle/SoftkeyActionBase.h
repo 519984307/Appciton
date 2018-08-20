@@ -13,6 +13,8 @@
 #include <QString>
 #include <QList>
 #include <QColor>
+#define ICON_FILE_LEFT              "left.png"
+#define ICON_FILE_RIGHT             "right.png"
 
 enum SoftKeyActionType
 {

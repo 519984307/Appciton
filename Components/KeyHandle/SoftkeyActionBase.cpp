@@ -55,7 +55,7 @@ static KeyActionDesc _baseKeys[] =
     SOFT_BASE_KEY_NR, true, QColor(143, 31, 132)),
     KeyActionDesc("", trs("PatientNew"), "PatientNew.png"
                     , SoftkeyActionBase::patientNew, SOFT_BASE_KEY_NR, true, QColor(143, 31, 132)),
-    KeyActionDesc("", "", "left.png",  SoftkeyActionBase::previousPage),
+    KeyActionDesc("", "", ICON_FILE_LEFT,  SoftkeyActionBase::previousPage),
     KeyActionDesc("", trs("AlarmSettingMenu"), "limitSet.png", SoftkeyActionBase::limitMenu),
     KeyActionDesc("", trs("CodeMarker"), "CodeMarker.png", SoftkeyActionBase::codeMarker),
     KeyActionDesc("", trs("RescueData"), "Data.png",       SoftkeyActionBase::rescueData),
@@ -63,7 +63,7 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", trs("Calculation"), "dosecalculation.png", SoftkeyActionBase::calculation),
     KeyActionDesc("", trs("Freeze"), "freeze.png", SoftkeyActionBase::freeze),
     KeyActionDesc("", trs("LockScreen"), "LockScreen.png", SoftkeyActionBase::lockScreen),
-    KeyActionDesc("", "", "right.png",  SoftkeyActionBase::nextPage),
+    KeyActionDesc("", "", ICON_FILE_RIGHT,  SoftkeyActionBase::nextPage),
     KeyActionDesc("", "", "main.png",  SoftkeyActionBase::mainsetup
                     , SOFT_BASE_KEY_NR, true, QColor(255, 200, 0)),
 };
@@ -293,7 +293,7 @@ void SoftkeyActionBase::freeze(bool isPressed)
     {
         return;
     }
-    // To Do
+    // TODO : freeze
 }
 
 void SoftkeyActionBase::lockScreen(bool isPressed)
@@ -302,7 +302,7 @@ void SoftkeyActionBase::lockScreen(bool isPressed)
     {
         return;
     }
-    // To Do
+    // TODO : lockScreen
 }
 
 /***************************************************************************************************
@@ -325,9 +325,9 @@ KeyActionDesc *SoftkeyActionBase::getActionDesc(int index)
 
     if (index == SOFT_BASE_KEY_PREVIOUS_PAGE)
     {
-        if (softkeyManager.returnPage() & 2)
+        if (softkeyManager.hasPreviousPage())
         {
-            _baseKeys[index].iconPath = "left.png";
+            _baseKeys[index].iconPath = ICON_FILE_LEFT;
             _baseKeys[index].focus = true;
         }
         else
@@ -338,9 +338,9 @@ KeyActionDesc *SoftkeyActionBase::getActionDesc(int index)
     }
     else if (index == SOFT_BASE_KEY_NEXT_PAGE)
     {
-        if (softkeyManager.returnPage() & 1)
+        if (softkeyManager.hasNextPage())
         {
-            _baseKeys[index].iconPath = "right.png";
+            _baseKeys[index].iconPath = ICON_FILE_RIGHT;
             _baseKeys[index].focus = true;
         }
         else

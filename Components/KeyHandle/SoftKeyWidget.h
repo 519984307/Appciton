@@ -56,5 +56,4 @@ private:
     bool _enableBorder;
     bool _isPixmapValid;
     QString _hint;
-    QString _iconPath;
 };

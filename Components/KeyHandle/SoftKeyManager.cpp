@@ -125,18 +125,14 @@ void SoftKeyManager::nextPage(void)
     _layoutKeys();
 }
 
-int SoftKeyManager::returnPage()
+bool SoftKeyManager::hasPreviousPage()
 {
-    int ret = 0;
-    if (_currentPage > 0)
-    {
-        ret += 2;
-    }
-    if (_currentPage < _totalPages - 1)
-    {
-        ret += 1;
-    }
-    return ret;
+    return _currentPage > 0;
+}
+
+bool SoftKeyManager::hasNextPage()
+{
+    return _currentPage < _totalPages - 1;
 }
 
 /***************************************************************************************************

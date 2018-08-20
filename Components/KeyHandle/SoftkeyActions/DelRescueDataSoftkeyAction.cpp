@@ -36,7 +36,7 @@ static KeyActionDesc _delRescueDataKeys[] =
 
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_INFO),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_NEW),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PREVIOUS_PAGE),
+    KeyActionDesc("", "", ICON_FILE_LEFT, NULL, SOFT_BASE_KEY_PREVIOUS_PAGE),
     KeyActionDesc("", trs("DeleteAll"), "delAll.png", DelRescueDataSoftkeyAction::delAll),
     KeyActionDesc("", trs("DeleteCase"), "delCase.png", DelRescueDataSoftkeyAction::delCase),
     KeyActionDesc("", "", "SoftkeyArrow.png", DelRescueDataSoftkeyAction::exit),
@@ -44,7 +44,7 @@ static KeyActionDesc _delRescueDataKeys[] =
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NEXT_PAGE),
+    KeyActionDesc("", "", ICON_FILE_RIGHT, NULL, SOFT_BASE_KEY_NEXT_PAGE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_MAIN_SETUP)
 };
 
