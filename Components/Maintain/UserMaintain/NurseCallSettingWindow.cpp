@@ -146,10 +146,12 @@ void NurseCallSettingWindow::layoutExec()
     vlRight->addLayout(vl);
 
     QIcon icon("/usr/local/nPM/icons/Checked.png");
-    int btnWidth = 32;
+    int btnWidth = themeManger.getAcceptableControlHeight();
+    QSize iconSize(btnWidth * 2 / 3, btnWidth * 2 / 3);
 
     button = new Button();
     button->setIcon(icon);
+    button->setIconSize(iconSize);
     button->setFixedSize(btnWidth, btnWidth);
     d_ptr->highBtn = button;
     button->setButtonStyle(Button::ButtonIconOnly);
@@ -173,6 +175,7 @@ void NurseCallSettingWindow::layoutExec()
 
     button = new Button();
     button->setIcon(icon);
+    button->setIconSize(iconSize);
     button->setFixedSize(btnWidth, btnWidth);
     d_ptr->medBtn = button;
     button->setButtonStyle(Button::ButtonIconOnly);
@@ -198,6 +201,7 @@ void NurseCallSettingWindow::layoutExec()
 
     button = new Button();
     button->setIcon(icon);
+    button->setIconSize(iconSize);
     button->setFixedSize(btnWidth, btnWidth);
     d_ptr->lowBtn = button;
     button->setButtonStyle(Button::ButtonIconOnly);
@@ -224,6 +228,7 @@ void NurseCallSettingWindow::layoutExec()
     layout->addLayout(vlRight, index, 2);
     button = new Button();
     button->setIcon(icon);
+    button->setIconSize(iconSize);
     button->setFixedSize(btnWidth, btnWidth);
     d_ptr->techBtn = button;
     button->setButtonStyle(Button::ButtonIconOnly);
@@ -247,6 +252,7 @@ void NurseCallSettingWindow::layoutExec()
 
     button = new Button();
     button->setIcon(icon);
+    button->setIconSize(iconSize);
     button->setFixedSize(btnWidth, btnWidth);
     d_ptr->physBtn = button;
     button->setButtonStyle(Button::ButtonIconOnly);
