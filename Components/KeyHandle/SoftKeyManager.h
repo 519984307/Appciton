@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/20
+ **/
+
+
 #pragma once
 #include "IWidget.h"
 #include "SystemDefine.h"
@@ -41,8 +52,11 @@ public:
     // 切换到下一个page。
     void nextPage(void);
 
-    // 返回页码信息。
-    int returnPage(void);
+    // 是否存在上一页
+    bool hasPreviousPage();
+
+    // 是否存在下一页
+    bool hasNextPage();
 
     // 切换到首页
     bool returnRootPage(void);

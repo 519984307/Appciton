@@ -13,6 +13,8 @@
 #include <QString>
 #include <QList>
 #include <QColor>
+#define ICON_FILE_LEFT              "left.png"
+#define ICON_FILE_RIGHT             "right.png"
 
 enum SoftKeyActionType
 {
@@ -35,6 +37,8 @@ enum SoftBaseKeyType
     SOFT_BASE_KEY_RESCUE_DATA,
     SOFT_BASE_KEY_WINDOWLAYOUT,
     SOFT_BASE_KEY_CALCULATION,
+    SOFT_BASE_KEY_FREEZE,
+    SOFT_BASE_KEY_LOCK_SCREEN,
     SOFT_BASE_KEY_NEXT_PAGE,
     SOFT_BASE_KEY_MAIN_SETUP,
     SOFT_BASE_KEY_NR
@@ -43,16 +47,19 @@ enum SoftBaseKeyType
 typedef void (*SoftkeyHook)(bool);  // 参数为bool值，按下为1，弹起为0。
 struct KeyActionDesc
 {
-    KeyActionDesc(const QString &txt = QString(), const QString &path = QString(),
+    KeyActionDesc(const QString &txt = QString(),
+                  const QString &hint = "",
+                  const QString &path = QString(),
                   SoftkeyHook phook = NULL, SoftBaseKeyType type = SOFT_BASE_KEY_NR,
                   bool focus = true,
                   const QColor &releaseColor = QColor(32, 32, 32),
                   const QColor &color = Qt::white,
                   const QColor &pressColor = QColor(0x1C, 0x86, 0xEE),
-                  bool border = true)
+                  bool border = true
+                  )
         : text(txt), iconPath(path), hook(phook), type(type),
           focus(focus), color(color), pressColor(pressColor),
-          releaseColor(releaseColor), border(border)
+          releaseColor(releaseColor), border(border), hint(hint)
     {
     }
 
@@ -76,9 +83,9 @@ struct KeyActionDesc
     QColor pressColor;
     QColor releaseColor;
     bool border;
+    QString hint;
 };
 
-class SoftkeyWidget;
 class SoftkeyActionBase
 {
 public:    // 一些共有的功能处理。
@@ -94,6 +101,8 @@ public:    // 一些共有的功能处理。
     static void calculation(bool isPressed);
 
     static void mainsetup(bool isPressed);
+    static void freeze(bool isPressed);
+    static void lockScreen(bool isPressed);
 
 public:
     // 获取动作描述总个数。

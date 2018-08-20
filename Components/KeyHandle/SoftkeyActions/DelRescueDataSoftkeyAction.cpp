@@ -34,18 +34,18 @@ static KeyActionDesc _delRescueDataKeys[] =
 //    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, Qt::black, Qt::black, Qt::black, false),
 //    KeyActionDesc("", "SoftkeyArrow.png", DelRescueDataSoftkeyAction::exit),
 
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_PAT_INFO),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_PAT_NEW),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_PREVIOUS_PAGE),
-    KeyActionDesc("", "delAll.png", DelRescueDataSoftkeyAction::delAll),
-    KeyActionDesc("", "delCase.png", DelRescueDataSoftkeyAction::delCase),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "SoftkeyArrow.png", DelRescueDataSoftkeyAction::exit),
-    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_MAIN_SETUP),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_INFO),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_NEW),
+    KeyActionDesc("", "", ICON_FILE_LEFT, NULL, SOFT_BASE_KEY_PREVIOUS_PAGE),
+    KeyActionDesc("", trs("DeleteAll"), "delAll.png", DelRescueDataSoftkeyAction::delAll),
+    KeyActionDesc("", trs("DeleteCase"), "delCase.png", DelRescueDataSoftkeyAction::delCase),
+    KeyActionDesc("", "", "SoftkeyArrow.png", DelRescueDataSoftkeyAction::exit),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", ICON_FILE_RIGHT, NULL, SOFT_BASE_KEY_NEXT_PAGE),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_MAIN_SETUP)
 };
 
 /***************************************************************************************************

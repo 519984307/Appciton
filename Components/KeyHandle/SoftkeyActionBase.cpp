@@ -51,17 +51,21 @@ static KeyActionDesc _baseKeys[] =
 //    KeyActionDesc("", "PatientInfo.png",   SoftkeyActionBase::patientInfo),
 //    KeyActionDesc("", "CO2Disable.png",    SoftkeyActionBase::co2OnOff),
 //    KeyActionDesc("", "SoftkeyArrow.png",  SoftkeyActionBase::nextPage),
-    KeyActionDesc("", "PatientInfo.png",   SoftkeyActionBase::patientInfo,
+    KeyActionDesc("", trs("SoftKeyPatientInfo"), "PatientInfo.png",   SoftkeyActionBase::patientInfo,
     SOFT_BASE_KEY_NR, true, QColor(143, 31, 132)),
-    KeyActionDesc("", "PatientNew.png",   SoftkeyActionBase::patientNew, SOFT_BASE_KEY_NR, true, QColor(143, 31, 132)),
-    KeyActionDesc("", "previous-disable.png",  SoftkeyActionBase::previousPage),
-    KeyActionDesc("", "Bell.png",          SoftkeyActionBase::limitMenu),
-    KeyActionDesc("", "CodeMarker.png",    SoftkeyActionBase::codeMarker),
-    KeyActionDesc("", "Data.png",          SoftkeyActionBase::rescueData),
-    KeyActionDesc("", "interface.png",    SoftkeyActionBase::WindowLayout),
-    KeyActionDesc("", "dosecalculation.png",    SoftkeyActionBase::calculation),
-    KeyActionDesc("", "next-enable.png",  SoftkeyActionBase::nextPage),
-    KeyActionDesc("", "MainSetup.png",  SoftkeyActionBase::mainsetup, SOFT_BASE_KEY_NR, true, QColor(255, 200, 0)),
+    KeyActionDesc("", trs("PatientNew"), "PatientNew.png"
+                    , SoftkeyActionBase::patientNew, SOFT_BASE_KEY_NR, true, QColor(143, 31, 132)),
+    KeyActionDesc("", "", ICON_FILE_LEFT,  SoftkeyActionBase::previousPage),
+    KeyActionDesc("", trs("AlarmSettingMenu"), "limitSet.png", SoftkeyActionBase::limitMenu),
+    KeyActionDesc("", trs("CodeMarker"), "CodeMarker.png", SoftkeyActionBase::codeMarker),
+    KeyActionDesc("", trs("RescueData"), "Data.png",       SoftkeyActionBase::rescueData),
+    KeyActionDesc("", trs("Interface"), "interface.png",   SoftkeyActionBase::WindowLayout),
+    KeyActionDesc("", trs("Calculation"), "dosecalculation.png", SoftkeyActionBase::calculation),
+    KeyActionDesc("", trs("Freeze"), "freeze.png", SoftkeyActionBase::freeze),
+    KeyActionDesc("", trs("LockScreen"), "LockScreen.png", SoftkeyActionBase::lockScreen),
+    KeyActionDesc("", "", ICON_FILE_RIGHT,  SoftkeyActionBase::nextPage),
+    KeyActionDesc("", "", "main.png",  SoftkeyActionBase::mainsetup
+                    , SOFT_BASE_KEY_NR, true, QColor(255, 200, 0)),
 };
 
 /***************************************************************************************************
@@ -140,7 +144,7 @@ void SoftkeyActionBase::limitMenu(bool isPressed)
     }
 
     MainMenuWindow *p = MainMenuWindow::getInstance();
-    windowManager.showWindow(p, WindowManager::WINDOW_TYPE_NONMODAL);
+    p->popup(trs("AlarmLimitMenu"));
 }
 
 void SoftkeyActionBase::WindowLayout(bool isPressed)
@@ -283,6 +287,24 @@ void SoftkeyActionBase::mainsetup(bool isPressed)
 //    windowManager.showWindow(w, WindowManager::WINDOW_TYPE_NONMODAL);
 }
 
+void SoftkeyActionBase::freeze(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+    // TODO : freeze
+}
+
+void SoftkeyActionBase::lockScreen(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+    // TODO : lockScreen
+}
+
 /***************************************************************************************************
  * 获取动作描述总个数。
  **************************************************************************************************/
@@ -303,28 +325,28 @@ KeyActionDesc *SoftkeyActionBase::getActionDesc(int index)
 
     if (index == SOFT_BASE_KEY_PREVIOUS_PAGE)
     {
-        if (softkeyManager.returnPage() == 0)
+        if (softkeyManager.hasPreviousPage())
         {
-            _baseKeys[index].iconPath = "previous-disable.png";
-            _baseKeys[index].focus = false;
+            _baseKeys[index].iconPath = ICON_FILE_LEFT;
+            _baseKeys[index].focus = true;
         }
         else
         {
-            _baseKeys[index].iconPath = "previous-enable.png";
-            _baseKeys[index].focus = true;
+            _baseKeys[index].iconPath = "";
+            _baseKeys[index].focus = false;
         }
     }
     else if (index == SOFT_BASE_KEY_NEXT_PAGE)
     {
-        if (softkeyManager.returnPage() == 1)
+        if (softkeyManager.hasNextPage())
         {
-            _baseKeys[index].iconPath = "next-disable.png";
-            _baseKeys[index].focus = false;
+            _baseKeys[index].iconPath = ICON_FILE_RIGHT;
+            _baseKeys[index].focus = true;
         }
         else
         {
-            _baseKeys[index].iconPath = "next-enable.png";
-            _baseKeys[index].focus = true;
+            _baseKeys[index].iconPath = "";
+            _baseKeys[index].focus = false;
         }
     }
 

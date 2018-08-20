@@ -167,7 +167,7 @@ PatientInfoWindow::PatientInfoWindow()
     : Window()
     , d_ptr(new PatientInfoWindowPrivate)
 {
-    setWindowTitle("Patient Infomation");
+    setWindowTitle("PatientInformation");
     QGridLayout *layout = new QGridLayout(this);
     QHBoxLayout *buttonLayout = new QHBoxLayout(this);
     QLabel *label;

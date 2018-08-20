@@ -42,6 +42,7 @@ protected:
 private:
     // 计算合适的字体大小
     int _adjustFontSize(const QRect &r, QString &txt);
+    int _adjustHintFontSize(const QRect &r, QString &hint);
 
 private:
     QPixmap _pixmap;
@@ -54,4 +55,5 @@ private:
     bool _pressed;
     bool _enableBorder;
     bool _isPixmapValid;
+    QString _hint;
 };
