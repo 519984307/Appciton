@@ -41,7 +41,7 @@ static KeyActionDesc _rescueDataKeys[] =
 
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_INFO),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_NEW),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PREVIOUS_PAGE),
+    KeyActionDesc("", "", "left.png", NULL, SOFT_BASE_KEY_PREVIOUS_PAGE),
     KeyActionDesc("", trs("TrendTable"), "Trend.png",   RescueDataSoftKeyAction::trendReview),
     KeyActionDesc("", trs("TrendGraph"), "Summary.png", RescueDataSoftKeyAction::summaryReview),
     KeyActionDesc("", trs("ExportImport"), "Export.png",  RescueDataSoftKeyAction::exportData),
@@ -50,7 +50,14 @@ static KeyActionDesc _rescueDataKeys[] =
     KeyActionDesc("", trs("OxyCRGEventReview"), "Trend.png", RescueDataSoftKeyAction::oxyCRGEventReview),
     KeyActionDesc("", trs("HistoryTrend"), "Export.png",   RescueDataSoftKeyAction::historyReview),
     KeyActionDesc("", "", "SoftkeyArrow.png", RescueDataSoftKeyAction::exit),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_MAIN_SETUP),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "right.png", NULL , SOFT_BASE_KEY_NEXT_PAGE),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_MAIN_SETUP)
 };
 
 /***************************************************************************************************

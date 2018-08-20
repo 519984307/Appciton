@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/20
+ **/
+
+
 #include "SoftKeyManager.h"
 #include <QVBoxLayout>
 #include <QPushButton>
@@ -114,20 +125,18 @@ void SoftKeyManager::nextPage(void)
     _layoutKeys();
 }
 
-int SoftKeyManager::returnPage(void)
+int SoftKeyManager::returnPage()
 {
-    if (_currentPage == 0)
+    int ret = 0;
+    if (_currentPage > 0)
     {
-        return 0;
+        ret += 2;
     }
-    else if (_currentPage == _totalPages - 1)
+    if (_currentPage < _totalPages - 1)
     {
-        return 1;
+        ret += 1;
     }
-    else
-    {
-        return 2;
-    }
+    return ret;
 }
 
 /***************************************************************************************************
@@ -137,19 +146,19 @@ bool SoftKeyManager::returnRootPage()
 {
     switch (_curSoftKeyType)
     {
-        case SOFTKEY_ACTION_RESCUE_DATA:
-        case SOFTKEY_ACTION_DEL_RESCUE_DATA:
-            switch (windowManager.getUFaceType())
-            {
-                case UFACE_MONITOR_STANDARD:
-                    switchTo(SOFTKEY_ACTION_STANDARD);
-                    break;
-                default:
-                    break;
-            }
-            return true;
+    case SOFTKEY_ACTION_RESCUE_DATA:
+    case SOFTKEY_ACTION_DEL_RESCUE_DATA:
+        switch (windowManager.getUFaceType())
+        {
+        case UFACE_MONITOR_STANDARD:
+            switchTo(SOFTKEY_ACTION_STANDARD);
+            break;
         default:
             break;
+        }
+        return true;
+    default:
+        break;
     }
 
     bool ret = false;
@@ -198,7 +207,7 @@ SoftkeyActionBase *SoftKeyManager::getAction(SoftKeyActionType t)
  * 函数说明:
  *         获取焦点子控件。
  *************************************************************************************************/
-void SoftKeyManager::getSubFocusWidget(QList<QWidget*> &subWidgets) const
+void SoftKeyManager::getSubFocusWidget(QList<QWidget *> &subWidgets) const
 {
     subWidgets.clear();
 
@@ -218,18 +227,28 @@ void SoftKeyManager::getSubFocusWidget(QList<QWidget*> &subWidgets) const
 void SoftKeyManager::_clickKey(IWidget *w)
 {
     int index = 0;
-    for (; index < SOFTKEY_WIDGET_NR; index++)
+    int actionSize = _currentAction->getActionDescNR();
+    for (; index < _keyWidgets.size() ; index++)
     {
         if (_keyWidgets[index] == w)
         {
             break;
         }
     }
+    // menu tail
+    if (index >= SOFT_BASE_KEY_NEXT_PAGE)
+    {
+        index = actionSize - (SOFTKEY_WIDGET_NR - index);
+    }
+    // menu body
+    else if (index < SOFT_BASE_KEY_NEXT_PAGE && index > SOFT_BASE_KEY_PREVIOUS_PAGE)
+    {
+        index = index + (SOFTKEY_WIDGET_NR - 5) * _currentPage;
+    }
 
     if (_currentAction != NULL)
     {
-        int i = _currentPage * SOFTKEY_WIDGET_NR + index;
-        KeyActionDesc *desc = _currentAction->getActionDesc(i);
+        KeyActionDesc *desc = _currentAction->getActionDesc(index);
         if ((desc != NULL) && (desc->hook != NULL))
         {
             desc->hook(0);
@@ -247,10 +266,36 @@ void SoftKeyManager::_layoutKeys(void)
         return;
     }
 
-    int startIndex = _currentPage * SOFTKEY_WIDGET_NR;
-    for (int i = 0; i < SOFTKEY_WIDGET_NR; i++)
+    int startIndex = 0;
+    // menu head
+    for (int i = 0; i <= SOFT_BASE_KEY_PREVIOUS_PAGE; i++)
     {
         KeyActionDesc *desc = _currentAction->getActionDesc(startIndex++);
+        if (desc != NULL)
+        {
+            _keyWidgets[i]->setContent(*desc);
+        }
+    }
+
+    // menu body
+    if (_currentPage)
+    {
+        startIndex = startIndex + (SOFTKEY_WIDGET_NR - 5) * _currentPage;
+    }
+    for (int i = SOFT_BASE_KEY_PREVIOUS_PAGE + 1; i < SOFT_BASE_KEY_NEXT_PAGE; i++)
+    {
+        KeyActionDesc *desc = _currentAction->getActionDesc(startIndex++);
+        if (desc != NULL)
+        {
+            _keyWidgets[i]->setContent(*desc);
+        }
+    }
+
+    // menu tail
+    int actionSize = _currentAction->getActionDescNR() - 2;
+    for (int i = SOFT_BASE_KEY_NEXT_PAGE; i < SOFTKEY_WIDGET_NR; i++)
+    {
+        KeyActionDesc *desc = _currentAction->getActionDesc(actionSize++);
         if (desc != NULL)
         {
             _keyWidgets[i]->setContent(*desc);
@@ -357,7 +402,7 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager")
     QStringList screen;
     QString prefix = "PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch";
     screen = systemConfig.getChildNodeNameList(prefix);
-    if (screen.size() > 0 )
+    if (screen.size() > 0)
     {
         for (int i = 0; i < screen.size(); i++)
         {
@@ -374,7 +419,7 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager")
     int w = 1;
     systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|softkeyRow", w);
     //获取配置文件中软按键栏的高度
-    _KEY_SIZE_H = (w * screenHeight)/sum;
+    _KEY_SIZE_H = (w * screenHeight) / sum;
     _KEY_SIZE_H = _KEY_SIZE_H - 4;
 
 
@@ -389,18 +434,11 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager")
         {
             widget->setFixedSize(1.4 * _KEY_SIZE_H, _KEY_SIZE_H);
         }
-//        widget->setFocusPolicy(Qt::NoFocus);
-        connect(widget, SIGNAL(released(IWidget*)), this, SLOT(_clickKey(IWidget*)));
+        connect(widget, SIGNAL(released(IWidget *)), this, SLOT(_clickKey(IWidget *)));
         if (i < SOFTKEY_WIDGET_NR - 2)
         {
             hbox->addWidget(widget, 0, Qt::AlignHCenter | Qt::AlignLeft);
-//            hbox->addStretch();
         }
-//        else if (i < SOFTKEY_WIDGET_NR - 2)
-//        {
-//            hbox->addWidget(widget, 1, Qt::AlignHCenter);
-//            hbox->addStretch();
-//        }
         else
         {
             if (i == SOFTKEY_WIDGET_NR - 2)
@@ -413,12 +451,10 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager")
         _keyWidgets.append(widget);
     }
     setLayout(hbox);
-//    setFixedHeight(_KEY_SIZE_H + 4);
 
     // new出SoftkeyAction对象。
     SoftkeyActionBase *action = new MonitorSoftkeyAction();
     _actions.insert(action->getType(), action);
-
 
     action = new RescueDataSoftKeyAction();
     _actions.insert(action->getType(), action);

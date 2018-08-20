@@ -1293,8 +1293,10 @@ ConfigEditSpO2MenuDesc,血氧设置,SpO2 Desc
 DeleteSelectedWifiProfile,确定删除选择的wifi配置？, Do delete selected wifi profile ?
 KeyPressVolume,按键音量,Key Press Volume
 SoftKeyPatientInfo,病人信息,Patient Info.
-Interface,界面,Interface
+Interface,界面布局,Interface
 Dose,剂量,Dose
 Blood,血液,Blood
 DeleteAll,删除全部,Delete All
 DeleteCase,删除事件,Delete Case
+Freeze,冻结,Freeze
+LockScreen,锁屏,LockScreen

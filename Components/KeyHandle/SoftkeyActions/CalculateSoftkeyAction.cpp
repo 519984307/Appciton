@@ -39,13 +39,13 @@ static KeyActionDesc _calculationDataKeys[] =
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PREVIOUS_PAGE),
     KeyActionDesc("", trs("Dose"), "dosecalculation.png", CalculateSoftkeyAction::doseCalculation),
     KeyActionDesc("", trs("Blood"), "blood.png", CalculateSoftkeyAction::Hemodynamic),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
     KeyActionDesc("", "", "SoftkeyArrow.png", CalculateSoftkeyAction::exit),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_MAIN_SETUP),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NEXT_PAGE),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_MAIN_SETUP)
 };
 
 /***************************************************************************************************

@@ -52,18 +52,29 @@ void SoftkeyWidget::paintEvent(QPaintEvent *e)
     {
         int height = r.height();
         int width = r.width();
-        width = (width - height) / 1.5;
         QRect PixmapR = r;
-        if (_hint.isEmpty())
+        if (_iconPath == "right.png" || _iconPath == "left.png")
         {
-            PixmapR.adjust(width, width/2, -width, -width/2);
+            PixmapR.setWidth(width * 3 / 4);
+            PixmapR.setHeight(height * 3 / 4);
+            int top = height / 8;
+            int left = width / 8;
+            PixmapR.adjust(left , top , left , top);
+            painter.drawPixmap(PixmapR, _pixmap);
         }
         else
         {
-            PixmapR.adjust(width, 0, -width, -width);
+            width = (width - height) / 1.5;
+            if (_hint.isEmpty())
+            {
+                PixmapR.adjust(width, width / 2, -width, -width / 2);
+            }
+            else
+            {
+                PixmapR.adjust(width, 0, -width, -width);
+            }
+            painter.drawPixmap(PixmapR, _pixmap);
         }
-//        PixmapR.setSize(QSize(height, height));
-        painter.drawPixmap(PixmapR, _pixmap);
     }
 
     if (!_text.isEmpty())
@@ -320,7 +331,7 @@ void SoftkeyWidget::setContent(const KeyActionDesc &desc)
     _pressColor = desc.pressColor;
     _releaseColor = desc.releaseColor;
     _hint = desc.hint;
-
+    _iconPath = desc.iconPath;
     update();
 }
 
