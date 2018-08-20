@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/20
+ **/
+
+
+
 #pragma once
 #include "WaveWidget.h"
 #include "RingBuff.h"
@@ -37,8 +49,8 @@ private slots:
 protected:
     void paintEvent(QPaintEvent *e);
     void resizeEvent(QResizeEvent *e);
-    virtual void showEvent(QShowEvent * event );
-    virtual void hideEvent(QHideEvent * event );
+    virtual void showEvent(QShowEvent *event);
+    virtual void hideEvent(QHideEvent *event);
     OxyCRGTrendWidgetRuler *_ruler;          // 标尺对象
 
     RingBuff<int> *_falgBuf;//给波形打标记的缓存
@@ -46,5 +58,4 @@ protected:
     int _dataBufIndex; //波形数据缓存下标
     int _dataBufLen; //波形数据长度
     int _dataSizeLast; //上次的波形数据长度
-
 };

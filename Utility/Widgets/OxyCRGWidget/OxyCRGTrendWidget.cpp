@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/20
+ **/
+
 #include <QResizeEvent>
 #include "OxyCRGTrendWidget.h"
 #include "OxyCRGTrendWidgetRuler.h"
@@ -33,7 +43,7 @@ OxyCRGTrendWidget::OxyCRGTrendWidget(const QString &waveName, const QString &tit
       _dataBufLen(0),
       _dataSizeLast(0)
 {
-    setMargin(QMargins(50,0,2,0));/*调整波形位置*/
+    setMargin(QMargins(50, 0, 2, 0)); /*调整波形位置*/
 
     setFocusPolicy(Qt::NoFocus);
 
@@ -57,8 +67,8 @@ void OxyCRGTrendWidget::addDataBuf(int value, int flag)
 {
     _dataBuf->push(value);
     _falgBuf->push(flag);
-    _dataBufIndex ++;
-    if(_dataBufIndex>=_dataBufLen)
+    _dataBufIndex++;
+    if (_dataBufIndex >= _dataBufLen)
     {
         _dataBufIndex = _dataBufLen - 1;
     }
@@ -83,16 +93,16 @@ void OxyCRGTrendWidget::_resetBuffer()
 {
     WaveWidget::_resetBuffer();
 
-    if(bufSize() != _dataSizeLast)
+    if (bufSize() != _dataSizeLast)
     {
         _dataSizeLast = bufSize();
 
-        if(_dataSizeLast > _dataBufLen)
+        if (_dataSizeLast > _dataBufLen)
         {
             _dataSizeLast = _dataBufLen;
         }
 
-        if(_dataSizeLast > _dataBufIndex)
+        if (_dataSizeLast > _dataBufIndex)
         {
             _dataSizeLast = _dataBufIndex;
         }
@@ -103,7 +113,7 @@ void OxyCRGTrendWidget::_resetBuffer()
 
 void OxyCRGTrendWidget::onTimeout()
 {
-    for(int i=0; i<_dataSizeLast && i<_dataBuf->dataSize(); i++)
+    for (int i = 0; i < _dataSizeLast && i < _dataBuf->dataSize(); i++)
     {
         addData(_dataBuf->at(i), _falgBuf->at(i), false);
     }
@@ -114,19 +124,16 @@ void OxyCRGTrendWidget::onTimeout()
 void OxyCRGTrendWidget::showEvent(QShowEvent *event)
 {
     WaveWidget::showEvent(event);
-     _dataBufIndex = 0;
 }
 void OxyCRGTrendWidget::hideEvent(QHideEvent *event)
 {
     WaveWidget::hideEvent(event);
-     _dataBufIndex = 0;
 }
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
 OxyCRGTrendWidget::~OxyCRGTrendWidget()
 {
-
 }
 
 void OxyCRGTrendWidget::paintEvent(QPaintEvent *e)

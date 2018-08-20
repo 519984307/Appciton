@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/20
+ **/
+
+
+
 #pragma once
 #include <algorithm>
 #include <string.h>
@@ -13,7 +25,7 @@ class RingBuff
 {
 public:
     RingBuff(const RingBuff<T> &o);
-    RingBuff(int size);
+    explicit RingBuff(int size);
     RingBuff();
     ~RingBuff();
 
@@ -94,7 +106,6 @@ RingBuff<T>::RingBuff()
         , _out(0)
         , _validDataNum(0)
 {
-
 }
 
 /*
@@ -132,7 +143,8 @@ void RingBuff<T>::_newSpace(int size)
     }
 
 //    assert(cap <= 0x8000);  // 小于32K
-    assert(cap <= 0x10000);  // 小于64K
+//    assert(cap <= 0x10000);  // 小于64K
+    assert(cap <= 0x20000);  // 小于128K
 
     _buf = new T[cap];
     _capacity = cap;
