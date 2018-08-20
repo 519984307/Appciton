@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/20
+ **/
+
+
+
 #include <QResizeEvent>
 #include "OxyCRGHRWidget.h"
 #include "OxyCRGTrendWidgetRuler.h"
@@ -28,8 +40,8 @@ OxyCRGHRWidget::OxyCRGHRWidget(const QString &waveName, const QString &title)
 
     _ruler->setPalette(palette);
 
-    int valueLow=0;
-    int valueHigh=0;
+    int valueLow = 0;
+    int valueHigh = 0;
     currentConfig.getNumValue("OxyCRG|Ruler|HRLow", valueLow);
     currentConfig.getNumValue("OxyCRG|Ruler|HRHigh", valueHigh);
     setValueRange(valueLow, valueHigh);
@@ -38,13 +50,13 @@ OxyCRGHRWidget::OxyCRGHRWidget(const QString &waveName, const QString &title)
     selectMode(SCROLL_MODE);
 
     _dataBufIndex = 0;
-    _dataBufLen = dataRate()*4*60; //最大4分钟数据
+    _dataBufLen = dataRate() * 8 * 60; // 最大8分钟数据
     _dataBuf = new RingBuff<int>(_dataBufLen);
     _falgBuf = new RingBuff<int>(_dataBufLen);
 
-    _ruler->setRuler(valueHigh, (valueLow+valueHigh)/2, valueLow);
+    _ruler->setRuler(valueHigh, (valueLow + valueHigh) / 2, valueLow);
 
-    setMargin(QMargins(50-2,0,2,0));
+    setMargin(QMargins(50 - 2, 0, 2, 0));
 }
 
 /**************************************************************************************************
@@ -52,5 +64,4 @@ OxyCRGHRWidget::OxyCRGHRWidget(const QString &waveName, const QString &title)
  *************************************************************************************************/
 OxyCRGHRWidget::~OxyCRGHRWidget()
 {
-
 }
