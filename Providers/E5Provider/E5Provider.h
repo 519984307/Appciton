@@ -12,6 +12,7 @@
 #include "BLMProvider.h"
 #include "ECGProviderIFace.h"
 #include "RESPProviderIFace.h"
+#include "ECGAlg2SoftInterface.h"
 #include <QScopedPointer>
 
 class E5ProviderPrivate;
@@ -88,6 +89,12 @@ public:
 
     // ST point setting
     virtual void setSTPoints(int iso, int st);
+
+    // set self learn
+    virtual void setSelfLearn(bool onOff);
+
+    // set threshold
+    virtual void setARRThreshold(ECGAlg::ARRPara parameter, short value);
 
 public:
     // RESP provider interface

@@ -19,6 +19,7 @@
 #include "NumberInput.h"
 #include "IMessageBox.h"
 #include "Button.h"
+#include "NurseCallSettingWindow.h"
 
 class OthersMaintainMenuContentPrivate
 {
@@ -30,18 +31,19 @@ public:
         ITEM_CBO_FREQUENCY_NOTCH,
         ITEM_CBO_PARAM_SWITCH_PREM,
         ITEM_CBO_CONFIG_SET,
-        ITEM_CBO_NURSE_CALL_SET,
-        ITEM_CBO_SIGNAL_TYPE,
-        ITEM_CBO_TRIGGER_MODE,
-        ITEM_CBO_ALARM_LEVEL,
-        ITEM_CBO_ALARM_TYPE
     };
 
-    OthersMaintainMenuContentPrivate() {}
+    OthersMaintainMenuContentPrivate()
+        : NurseCallingBtn(NULL)
+    {
+        combos.clear();
+    }
 
     void loadOptions();
 
     QMap<MenuItem, ComboBox *> combos;
+
+    Button *NurseCallingBtn;
 };
 
 void OthersMaintainMenuContentPrivate::loadOptions()
@@ -100,66 +102,6 @@ void OthersMaintainMenuContentPrivate::loadOptions()
     {
         combos[ITEM_CBO_CONFIG_SET]->setCurrentIndex(tmpStr.toInt());
     }
-    tmpStr.clear();
-
-    systemConfig.getStrValue("Others|NurseCallSetting", tmpStr);
-    if (tmpStr.toInt() >= combos[ITEM_CBO_NURSE_CALL_SET]->count())
-    {
-        combos[ITEM_CBO_NURSE_CALL_SET]->setCurrentIndex(0);
-    }
-    else
-    {
-        combos[ITEM_CBO_NURSE_CALL_SET]->setCurrentIndex(tmpStr.toInt());
-        combos[ITEM_CBO_SIGNAL_TYPE]->setEnabled(!tmpStr.toInt());
-        combos[ITEM_CBO_TRIGGER_MODE]->setEnabled(!tmpStr.toInt());
-        combos[ITEM_CBO_ALARM_LEVEL]->setEnabled(!tmpStr.toInt());
-        combos[ITEM_CBO_ALARM_TYPE]->setEnabled(!tmpStr.toInt());
-    }
-    tmpStr.clear();
-
-    systemConfig.getStrValue("Others|SignalType", tmpStr);
-    if (tmpStr.toInt() >= combos[ITEM_CBO_SIGNAL_TYPE]->count())
-    {
-        combos[ITEM_CBO_SIGNAL_TYPE]->setCurrentIndex(0);
-    }
-    else
-    {
-        combos[ITEM_CBO_SIGNAL_TYPE]->setCurrentIndex(tmpStr.toInt());
-    }
-    tmpStr.clear();
-
-    systemConfig.getStrValue("Others|TriggerMode", tmpStr);
-    if (tmpStr.toInt() >= combos[ITEM_CBO_TRIGGER_MODE]->count())
-    {
-        combos[ITEM_CBO_TRIGGER_MODE]->setCurrentIndex(0);
-    }
-    else
-    {
-        combos[ITEM_CBO_TRIGGER_MODE]->setCurrentIndex(tmpStr.toInt());
-    }
-    tmpStr.clear();
-
-    systemConfig.getStrValue("Others|AlarmLevel", tmpStr);
-    if (tmpStr.toInt() >= combos[ITEM_CBO_ALARM_LEVEL]->count())
-    {
-        combos[ITEM_CBO_ALARM_LEVEL]->setCurrentIndex(0);
-    }
-    else
-    {
-        combos[ITEM_CBO_ALARM_LEVEL]->setCurrentIndex(tmpStr.toInt());
-    }
-    tmpStr.clear();
-
-    systemConfig.getStrValue("Others|AlarmType", tmpStr);
-    if (tmpStr.toInt() >= combos[ITEM_CBO_ALARM_TYPE]->count())
-    {
-        combos[ITEM_CBO_ALARM_TYPE]->setCurrentIndex(0);
-    }
-    else
-    {
-        combos[ITEM_CBO_ALARM_TYPE]->setCurrentIndex(tmpStr.toInt());
-    }
-    tmpStr.clear();
 }
 
 OthersMaintainMenuContent::OthersMaintainMenuContent()
@@ -242,7 +184,7 @@ void OthersMaintainMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << trs("Open")
+                       << trs("Unprotected")
                        << trs("Protected")
                       );
     itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_PARAM_SWITCH_PREM);
@@ -270,80 +212,13 @@ void OthersMaintainMenuContent::layoutExec()
     // nurse Call Setting
     label = new QLabel(trs("NurseCallSetting"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("Setting")
-                       << trs("StopSetting")
-                      );
-    itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_NURSE_CALL_SET);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_NURSE_CALL_SET, comboBox);
+    Button *button = new Button(trs("NurseCallSetting"));
+    d_ptr->NurseCallingBtn = button;
+    button->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(button, d_ptr->combos.count(), 1);
+    connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
 
-    // Signal Type
-    label = new QLabel(trs("SignalType"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("Continuity")
-                       << trs("Pluse")
-                      );
-    itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_SIGNAL_TYPE);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_SIGNAL_TYPE, comboBox);
-
-    // trigger Mode
-    label = new QLabel(trs("TriggerMode"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("Closed")
-                       << trs("Opened")
-                      );
-    itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_TRIGGER_MODE);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_TRIGGER_MODE, comboBox);
-
-    // alarm Level
-    label = new QLabel(trs("AlarmLevel"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("High")
-                       << trs("Med")
-                       << trs("Low")
-                      );
-    itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_ALARM_LEVEL);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_ALARM_LEVEL, comboBox);
-
-    // alarm type
-    label = new QLabel(trs("AlarmType"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("Technology")
-                       << trs("Physiology")
-                      );
-    itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_ALARM_TYPE);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(OthersMaintainMenuContentPrivate::ITEM_CBO_ALARM_TYPE, comboBox);
-
-    layout->setRowStretch(d_ptr->combos.count(), 1);
+    layout->setRowStretch(d_ptr->combos.count() + 1, 1);
 }
 
 void OthersMaintainMenuContent::onComboBoxIndexChanged(int index)
@@ -368,31 +243,15 @@ void OthersMaintainMenuContent::onComboBoxIndexChanged(int index)
         case OthersMaintainMenuContentPrivate::ITEM_CBO_PARAM_SWITCH_PREM:
             string = "ParaSwitchPrem";
             break;
-        case OthersMaintainMenuContentPrivate::ITEM_CBO_CONFIG_SET:
-            string = "ConfImpactItemSettings";
-            break;
-        case OthersMaintainMenuContentPrivate::ITEM_CBO_NURSE_CALL_SET:
-            string = "NurseCallSetting";
-            d_ptr->combos[OthersMaintainMenuContentPrivate::ITEM_CBO_SIGNAL_TYPE]->setEnabled(!index);
-            d_ptr->combos[OthersMaintainMenuContentPrivate::ITEM_CBO_TRIGGER_MODE]->setEnabled(!index);
-            d_ptr->combos[OthersMaintainMenuContentPrivate::ITEM_CBO_ALARM_LEVEL]->setEnabled(!index);
-            d_ptr->combos[OthersMaintainMenuContentPrivate::ITEM_CBO_ALARM_TYPE]->setEnabled(!index);
-            break;
-        case OthersMaintainMenuContentPrivate::ITEM_CBO_SIGNAL_TYPE:
-            string = "SignalType";
-            break;
-        case OthersMaintainMenuContentPrivate::ITEM_CBO_TRIGGER_MODE:
-            string = "TriggerMode";
-            break;
-        case OthersMaintainMenuContentPrivate::ITEM_CBO_ALARM_LEVEL:
-            string = "AlarmLevel";
-            break;
-        case OthersMaintainMenuContentPrivate::ITEM_CBO_ALARM_TYPE:
-            string = "AlarmType";
-            break;
         default:
             break;
         }
         systemConfig.setNumValue(QString("Others|%1").arg(string), index);
     }
+}
+
+void OthersMaintainMenuContent::onBtnReleased()
+{
+    NurseCallSettingWindow nurseCall;
+    nurseCall.exec();
 }

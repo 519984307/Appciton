@@ -109,6 +109,26 @@ ECGMenu,心电,ECG
 ECGSTSWitch,ST开关,ST SWitch
 ECGSTPoint,ST点,ST Point
 ECGISOPoint,ISO点,ISO Point
+ArrhythmiaAnalysisMenu,心律失常分析 ,Arrh.Analysis
+ArrhythmiaAnalysisMenuDesc,心律失常分析 ,Arrh.Analysis
+ArrhythmiaThresholdMenu,心律失常阀值,Arrh.Threshold
+ArrhythmiaThresholdMenuDesc,心律失常阀值,"Arrh,Threshold"
+Arrhythmia,心律失常 >>,Arrhythmia >>
+ECGPaceMarker,起搏标记,Pace maker
+ECG12LPaceMarker,12导起搏标记,12L Pace maker
+SelfLearn,自学习,Self Learn
+ECGQRSPRToneVolume,QRS/PR 音量,QRS/PR Volume
+Asystole,停搏时间,Asystole
+HeartPause,暂停时间,Heart Pause
+Tachycardia,心动过速,Tachy cardia
+Bradycardia,心动过缓,Brady cardia
+Extachycardia,极度心动过速,Extachy cardia
+Exbradycardia,极度心动过缓,Exbrady cardia
+VentTachy,室速心律,Vent Tachy
+VentBrady,室缓心律,Vent Brady
+TachyPVC,室速PVC,Tachy PVC
+BradyPVC,室缓PVC,Brady PVC
+MultifPVC,多形PVC,Multif PVC
 STMenu,ST,ST
 SPO2Sensitivity,灵敏度,Sensitivity
 ConfigEditSpO2Menu,血氧,SPO2
@@ -161,7 +181,7 @@ Auto,自动,Auto
 Manual,手动,Manual
 CORatio,C.O.系数,C.O.Ratio
 COStart,开始,Start
-COCancel,取消,Cancel
+COEnd,取消,End
 InjectionTempSource,注射液温度来源,Injection Temp Source
 InjectionTemp,注射液温度,Injection Temp
 InjectionVolumn,注射液体积,Injection Volumn
@@ -220,6 +240,7 @@ RESPAndCO2Menu,RESP和CO2,RESP & CO2
 RESPAndCO2MenuDesc,RESP和CO2设置,RESP & CO2 Setting
 CPRMenuDesc,CPR设置,CPR Setting
 TEMPMenuDesc,体温设置,TEMP Setting
+AGMenuDesc,麻醉设置,AG Setting
 AlarmSettingMenuDesc,报警设置,Alarm Setting
 PrintSetupDesc,打印设置,Print Setting
 SystemMenuDesc,系统设置,System Setting
@@ -1050,7 +1071,7 @@ NurseCallingModule,护士呼叫设置模块,Nurse Calling Module
 AnalogOutputModule,模拟输出模块,Analog Output Module
 SYNCDefibrillationModule,同步除颤模块,SYNC Defibrillation Module
 COModule,一氧化碳模块,CO Module
-PHASEIN,像素,PHASEIN
+PHASEIN,PHASEIN,PHASEIN
 M601,M601,M601
 MachineConfigModuleMenuDesc,机器配置设置,Machine Config  Desc
 MonitorInfoMenu,监护仪信息,Monitor Info
@@ -1070,7 +1091,7 @@ NIBPCalibrationMenuDesc,无创血压校准设置,NIBP Calibration Desc
 SelectStarterLogo,开机图片,Start Logo
 SelectStarterLogoMenu,开机图片,Starter Logo
 SelectStarterLogoMenuDesc,开机图片设置,Start Logo Desc
-ServiceErrorLogEntrance,错误日志进入,Service ErrorLog Entrance
+ServiceErrorLogEntrance,错误日志进入,Service ErrorLog
 ServiceErrorLogEntranceDesc,错误日志进入设置,Service ErrorLog Entrance Desc
 ErrorLogErase,擦除,Erase
 ErrorLogExport,导出,Export
@@ -1088,8 +1109,8 @@ RecorderModule,记录模块,Recorder Module
 ECGAlgorithmType,心电算法类型,ECG Algorithm Type
 UserMaintainGeneralMenuDesc,用户维护通用菜单设置,User Maintain General Menu Desc
 BootAndStandbyLogoVersion,开机标准logo版本,Boot And Standby LogoVersion
-UserMaintainGeneralMenu,用户维护通用菜单,User Maintain General Menu
-AlarmMaintainMenu,报警维护菜单,Alarm Maintain Menu
+UserMaintainGeneralMenu,用户维护通用菜单,General Menu
+AlarmMaintainMenu,报警维护菜单,Alarm Maintain
 MinimumALarmVolume,最小报警音量,Minimum Alarm Volume
 AlarmPauseTime,报警暂停时间,Alarm PauseTime
 AlarmOffPromptMechanism,报警关闭提示机制,Alarm Off Prompt Mechanism
@@ -1102,6 +1123,8 @@ IsPauseMaxAlarm15Min,是否暂停最大报警15分钟,Is Pause Max Alarm 15Min
 forbid,禁止,forbid
 allow,允许,allow
 ReminderTone,提醒音,Reminder Tone
+AllClosed,全部关闭,All Closed
+AllOpened,全部打开,All Opened
 close,关闭,close
 open,打开,open
 openAgain,再次打开,Open Again
@@ -1112,7 +1135,7 @@ H3min,3分钟,3min
 _alarmLightOnAlarmReset,报警灯复位,Alarm Light On Alarm Reset
 Defaults,默认,Defaults
 RecoverDefaults,默认覆盖,Recover Defaults
-ModuleMaintainMenu,模块维护菜单,Module Maintain Menu
+ModuleMaintainMenu,模块维护菜单,Module Maintain
 ModuleMaintainMenuDesc,模块维护菜单,Module Maintain Menu Desc
 AnaesthesiaModuleCalibration,麻醉模块化校准,Anaesthesia Module Calibration
 IBPPressureCalibration,IBP压力校准,IBP Pressure Calibration
@@ -1121,7 +1144,6 @@ NIBPPressureTest,NIBP压力测试,NIBP Pressure Test
 NIBPLeakageDetection,NIBP泄露检测,NIBP Leakage Detection
 ECGModuleCalibration,心电模块校准,ECG Module Calibration
 TouchScreenCalibration,触摸屏校准,Touch Screen Calibration
-COStart,一氧化碳开始,CO Start
 StopAnaesthesia,停止麻醉模块,Stop Anaesthesia
 Anaesthesia,麻醉模块,Anaesthesia
 StopNIBPPressureTest,停止无创血压测试,Stop NIBP Pressure Test
@@ -1131,28 +1153,30 @@ StopECGModuleCalibration,停止心电模块校准,Stop ECG Module Calibration
 StopCO2ModuleMaintenance,停止二氧化碳模块,Stop CO2 Module Maintenance
 StopTouchScreenCalibration,停止触摸屏校准,Stop Touch Screen Calibration
 Cancel,取消覆盖,Cancel
-OthersMaintainMenu,其他维护菜单,Others Maintain Menu
-OthersMaintainMenuDesc,其他维护菜单设置,Others Maintain Menu Desc
+OthersMaintainMenu,其他维护菜单,Others Menu
+OthersMaintainMenuDesc,其他维护菜单设置,Others Menu Desc
 WaveLine,波线,WaveLine
-fat,粗,fat
-med,中,med
-thin,细,thin
+Fat,粗,Fat
+Med,中,Med
+Thin,细,Thin
 ECGStandard,心电标准,ECG Standard
-AHA,美国心脏协会,AHA
-IEC,国际电工委员会,IEC
+AHA,AHA,AHA
+IEC,IEC,IEC
 FrequencyNotch,频率刻度,Frequency Notch
-paraSwitchPrem,参数开关权限,Para Switch Prem
-protected,保护,protected
-ConfImpactItemSettings,,Conf ImpactItemSettings
-ParaSwitch,参数开关,ParaSwitch
+paraSwitchPrem,参数开关权限,Para Switch Authority 
+Protected,保护,Protected
+Unprotected,非保护,Unprotected
+ConfImpactItemSettings,受配置影响项设置,Configuration-influenced Settings
+ParaSwitch,参数开关,Parameters Switch
 NurseCallSetting,护士呼叫设置,Nurse Call Setting
-setting,设置,setting
-stopSetting,停止设置,Stop Setting
+Setting,设置,Setting
+StopSetting,停止设置,Stop Setting
 SignalType,信号类型,Signal Type
-Continuity,继续,Continuity
+Continuity,连续,Continuity
 Pluse,波形,Pluse
 TriggerMode,触发模式,Trigger Mode
 AlarmLevel,报警级别,Alarm Level
+AlarmType,报警类型,Alarm Type 
 Technology,技术,Technology
 Physiology,生理,Physiology
 UserMaintainPassword,用户维护密码,User Maintain Password
@@ -1165,11 +1189,11 @@ Language,语言,Language
 EditMonitorName,编辑监护仪名称,Edit Monitor Name
 UserMaintainModifyConfig,用户维护修改配置,User Maintain Modify Config
 ProfileConflict,配置冲突,Profile Conflict
-WiredWorkMaintainMenu,有线网络,Wired Work Maintain Menu
-WiredWorkMaintainMenuDesc,有线网络维护菜单设置,Wired Work Maintain Menu Desc
+WiredWorkMaintainMenu,有线网络,Wired Work
+WiredWorkMaintainMenuDesc,有线网络维护菜单设置,Wired Work  Desc
 AddressType,地址类型,Address Type
 manual,手动,manual
-DHCP,动态主机配置协议,DHCP
+DHCP,DHCP,DHCP
 IpAddress,IP地址,IP Address
 high,高,High
 normal,中,Normal
@@ -1183,7 +1207,7 @@ PedDefaultConfig,小儿默认配置,Ped Default Config
 NeoDefaultConfig,新生儿默认配置,Neo Default Config
 FactoryConfig,工厂配置,Factory Config
 CurrentConfig,当前配置,Current Config
-ConfigManagerment,配置管理,Config Managerment
+ConfigManagerment,配置管理,Config Manager
 ConfigManagermentDesc,配置管理设置,Config Managerment Desc
 General,通用,General
 SetConfigName,设置配置项名称,Set Config Name
@@ -1300,3 +1324,12 @@ DeleteAll,删除全部,Delete All
 DeleteCase,删除事件,Delete Case
 Freeze,冻结,Freeze
 LockScreen,锁屏,LockScreen
+Open,开放,Open
+Start,开始,Start
+AlarmLightOnAlarmReset,警示复位灯,Alarm Light On Alarm Reset
+OpenAgain,重新报警,OpenAgain
+Prev,上一页,Prev
+Next,下一页,Next
+Opened,已开,Opened
+Closed,已关,Closed
+AlarmType,报警类型,Alarm Type

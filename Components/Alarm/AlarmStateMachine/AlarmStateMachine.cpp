@@ -151,37 +151,6 @@ void AlarmStateMachine::switchState(ALarmStateType type)
     _currentState->enter();
 }
 
-void AlarmStateMachine::alarmPause(bool isPressed)
-{
-    if (NULL != _currentState)
-    {
-        if (isPressed)
-        {
-            _currentState->handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_PRESSED, 0, 0);
-        }
-        else
-        {
-            _currentState->handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_RELEASED, 0, 0);
-        }
-    }
-}
-
-void AlarmStateMachine::alarmReset(bool isPressed)
-{
-    if (NULL != _currentState)
-    {
-        if (isPressed)
-        {
-            _currentState->handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_PRESSED, 0, 0);
-            _currentState->handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_PRESSED_LONG_TIME, 0, 0);
-        }
-        else
-        {
-            _currentState->handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_RELEASED, 0, 0);
-        }
-    }
-}
-
 /**************************************************************************************************
  * 事件处理。
  *************************************************************************************************/

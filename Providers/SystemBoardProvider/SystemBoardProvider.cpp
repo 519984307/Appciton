@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/17
+ **/
+
 #include <QTimer>
 #include "crc8.h"
 #include "Debug.h"
@@ -26,13 +36,11 @@ enum SystemBoardMessageType
     MSG_CMD_SET_INDICATOR_LED      = 0x16,   // 指示灯控制
     MSG_CMD_QUERY_KEY_STATUS       = 0x18,   // 获取除颤按键状态
     MSG_CMD_TRIGGER_BUZZER         = 0x1A,   // 蜂鸣控制器
-    MSG_CMD_CFG_BAT_ARGS           = 0x1C,   // 配置电池参数
-    MSG_CMD_FIXED_BAT_INFO         = 0x1E,   // 获取电池的固定信息
-    MSG_CMD_SET_SHOCK_LED          = 0x20,   // 设置SHOCK背景灯
+    MSG_CMD_BATTERY_INFO           = 0x1E,   // 获取电池信息
+    MSG_CMD_SET_ALARM_MUTE_LED     = 0x20,   // set alarm mute LED
     MSG_CMD_LED_SELFTEST           = 0x22,   // 设置LED灯自检
     MSG_CMD_REQUEST_SHUTDOWM       = 0x24,   // 请求关机
     MSG_CMD_QEQUEST_RESET          = 0x26,   // 请求复位
-    MSG_CMD_NOTIFY_PD_MODULE_RESET = 0X28,   // notify pd module reset
 
     // 上行数据
     MSG_RSP_VERSION                = 0x11,    // 版本应答
@@ -41,20 +49,15 @@ enum SystemBoardMessageType
     MSG_RSP_KEY_STATUS             = 0x19,    // 按键状态应答
     MSG_RSP_TRIGGER_BUZZER         = 0x1B,    // 蜂鸣控制应答
     MSG_RSP_CFG_BAT_ARGS           = 0x1D,    // 配置电池参数应答
-    MSG_RSP_FIXED_BAT_INFO         = 0x1F,    // 获取电池的固定信息应答
-    MSG_RSP_SET_SHOCK_LED          = 0x21,    // 设置SHOCK背景灯应答
+    MSG_RSP_BATTERY_INFO           = 0x1F,    // 获取电池信息应答
+    MSG_RSP_SET_ALARM_MUTE_LED     = 0x21,    // set alarm mute led response
     MSG_RSP_LED_SELFTEST           = 0x23,    // 设置LED灯自检应答
-    MSG_RSP_NOTIFY_PD_MODULE_RESET = 0X29,    // notify pd module reset
     MSG_NOTIFY_START               = 0x40,    // 启动
     MSG_NOTIFY_KEY                 = 0x41,    // 按键
-    MSG_NOTIFY_DEFIB_KEY           = 0x42,    // 除颤按键信息
     MSG_NOTIFY_MODE_CHANGE         = 0X43,    // 模式更改
     MSG_NOTIFY_AC_BAT_CHANGE       = 0x44,    // 电池状态更改
-    MSG_NOTIFY_MODE_FAST_CHANGE    = 0x45,    // 模式快速改变
-    MSG_NOTIFY_XHOST_INT_FINISH    = 0x46,    // XHOST_INT 100ms
     MSG_PERIODIC_KEEP_ALIVE        = 0x5B,    // 保活
     MSG_PERIODIC_BAT_INFO          = 0x5C,    // 电池信息
-    MSG_PERIODIC_BAT_VALUE         = 0x5D,    // 电池ADC电压
     MSG_ERROR_INFO                 = 0x76,    // 错误帧
 
     MSG_UPGRADE_ALIVE              = 0xFE,    //升级保活帧
@@ -79,17 +82,17 @@ void SystemBoardProvider::_parseVersionInfo(unsigned char *data, int len)
     }
 
     modeStatus.hwVersion = QString("%1.%2.%3")
-            .arg(QString::number(data[1]))
-            .arg(QString::number(data[2]))
-            .arg(QString::number(data[3]));
+                           .arg(QString::number(data[1]))
+                           .arg(QString::number(data[2]))
+                           .arg(QString::number(data[3]));
     modeStatus.swVersion = QString("%1.%2.%3")
-            .arg(QString::number(data[4]))
-            .arg(QString::number(data[5]))
-            .arg(QString::number(data[6]));
+                           .arg(QString::number(data[4]))
+                           .arg(QString::number(data[5]))
+                           .arg(QString::number(data[6]));
     modeStatus.protoVersion = QString("%1.%2.%3")
-            .arg(QString::number(data[7]))
-            .arg(QString::number(data[8]))
-            .arg(QString::number(data[9]));
+                              .arg(QString::number(data[7]))
+                              .arg(QString::number(data[8]))
+                              .arg(QString::number(data[9]));
 }
 
 /***************************************************************************************************
@@ -137,7 +140,9 @@ void SystemBoardProvider::_parsePowerStat(unsigned char *data, int len)
         suplyType = POWER_SUPLY_UNKOWN;
     }
 
-    modeStatus.powerSuply = (PowerSuplyType)suplyType;
+    modeStatus.powerSuply = static_cast<PowerSuplyType>(suplyType);
+
+    // TODO: update the screen battery info
 }
 
 /***************************************************************************************************
@@ -157,23 +162,8 @@ void SystemBoardProvider::_parseOperateMode(unsigned char *data, int len)
     }
 
     _notifyAck(&data[0], len);
-}
 
-/***************************************************************************************************
- * 模式改变解析
- **************************************************************************************************/
-void SystemBoardProvider::_parseFastOperateMode(unsigned char *data, int len)
-{
-    if (NULL == data)
-    {
-        return;
-    }
-
-    if (len != 2)
-    {
-        debug("Invalid operate mode packet!");
-        return;
-    }
+    // TODO: handle power off
 }
 
 /***************************************************************************************************
@@ -218,80 +208,29 @@ void SystemBoardProvider::_parsePowerOnStat(unsigned char *data, int len)
     default:
         break;
     }
-
-    _gotInitSwitchKeyStatus = true;
 }
 
 /***************************************************************************************************
  * 函数说明：
  *      解析运行时不变的电池信息。
  **************************************************************************************************/
-void SystemBoardProvider::_parseFixedBatteryInfo(unsigned char *data, int len)
+void SystemBoardProvider::_parseBatteryInfo(unsigned char *data, int len)
 {
     if (NULL == data)
     {
         return;
     }
 
-    if (len != 151)
+    if (len != 4)
     {
-        debug("Invalid power on status packet!");
+        qdebug("Invalid battery info packet!");
         return;
     }
 
-    powerManager.batteryMessage.updateFixedBatMessage(&data[1]);
-    return;
-}
+    modeStatus.isCharging = data[1];
+    modeStatus.adcValue = (data[3] << 8) | data[2];
 
-/***************************************************************************************************
- * 函数说明:
- *      解析周期性电池信息
- **************************************************************************************************/
-void SystemBoardProvider::_parsePeriodicBatteryInfo(unsigned char *data, int len)
-{
-    if (NULL == data)
-    {
-        return;
-    }
-
-    if (len != 51)
-    {
-        debug("Invalid power on status packet!");
-        return;
-    }
-
-    if (_recordBatInfo)
-    {
-        unsigned char buf[53];
-        ::memcpy(buf, data, 51);
-        buf[51] = _adcValue[0];
-        buf[52] = _adcValue[1];
-        rawDataCollectionTxt.PushData("Battery", buf, sizeof(buf));
-    }
-
-    powerManager.batteryMessage.updatePeriodicBatMessage(&data[1]);
-
-    return;
-}
-
-void SystemBoardProvider::_parsePeriodicBatteryValue(unsigned char *data, int len)
-{
-    if (NULL == data)
-    {
-        return;
-    }
-
-    if (len != 3)
-    {
-        debug("Invalid power on status packet!");
-        return;
-    }
-
-    _adcValue[0] = data[1];
-    _adcValue[1] = data[2];
-    powerManager.batteryMessage.updatePeriodicBatValue(&data[1]);
-
-    return;
+    // TODO: update the battery info in the screen
 }
 
 /***************************************************************************************************
@@ -366,17 +305,14 @@ void SystemBoardProvider::handlePacket(unsigned char *data, int len)
     case MSG_RSP_CFG_BAT_ARGS:
         break;
 
-    case MSG_RSP_FIXED_BAT_INFO:
-        _parseFixedBatteryInfo(data, len);
+    case MSG_RSP_BATTERY_INFO:
+        _parseBatteryInfo(data, len);
         break;
 
-    case MSG_RSP_SET_SHOCK_LED:
+    case MSG_RSP_SET_ALARM_MUTE_LED:
         break;
 
     case MSG_RSP_LED_SELFTEST:
-        break;
-
-    case MSG_RSP_NOTIFY_PD_MODULE_RESET:
         break;
 
     case MSG_NOTIFY_START:
@@ -394,10 +330,6 @@ void SystemBoardProvider::handlePacket(unsigned char *data, int len)
         _parseKeyEvent(data, len);
         break;
 
-    case MSG_NOTIFY_DEFIB_KEY:
-        _notifyAck(&data[0], len);
-        break;
-
     case MSG_NOTIFY_MODE_CHANGE:
         _parseOperateMode(data, len);
         break;
@@ -407,21 +339,8 @@ void SystemBoardProvider::handlePacket(unsigned char *data, int len)
         _parsePowerStat(data, len);
         break;
 
-    case MSG_NOTIFY_MODE_FAST_CHANGE:
-        _notifyAck(&data[0], len);
-        _parseFastOperateMode(data, len);
-        break;
-
-    case MSG_NOTIFY_XHOST_INT_FINISH:
-        _notifyAck(&data[0], len);
-        break;
-
     case MSG_PERIODIC_BAT_INFO:
-        _parsePeriodicBatteryInfo(data, len);
-        break;
-
-    case MSG_PERIODIC_BAT_VALUE:
-        _parsePeriodicBatteryValue(data, len);
+        _parseBatteryInfo(data, len);
         break;
 
     case MSG_PERIODIC_KEEP_ALIVE:
@@ -444,7 +363,7 @@ void SystemBoardProvider::handlePacket(unsigned char *data, int len)
  *************************************************************************************************/
 void SystemBoardProvider::disconnected(void)
 {
-    systemAlarm.setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP,true);
+    systemAlarm.setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP, true);
 }
 
 /**************************************************************************************************
@@ -452,7 +371,7 @@ void SystemBoardProvider::disconnected(void)
  *************************************************************************************************/
 void SystemBoardProvider::reconnected(void)
 {
-    systemAlarm.setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP,false);
+    systemAlarm.setOneShotAlarm(SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP, false);
 }
 
 
@@ -505,20 +424,11 @@ void SystemBoardProvider::updateAlarm(bool hasAlarmed, AlarmPriority priority)
 }
 
 /***************************************************************************************************
- * 查询初始模式与状态。
+ * query the battery info
  **************************************************************************************************/
-void SystemBoardProvider::querySwitchKeyStatus(void)
+void SystemBoardProvider::queryBatteryInfo(void)
 {
-    sendCmd(MSG_CMD_QUERY_SWITCH_KEY, NULL, 0);
-    _gotInitSwitchKeyStatus = false;
-}
-
-/***************************************************************************************************
- * 查询固定不变的电池信息
- **************************************************************************************************/
-void SystemBoardProvider::queryFixedBatMessage(void)
-{
-    sendCmd(MSG_CMD_FIXED_BAT_INFO, NULL, 0);
+    sendCmd(MSG_CMD_BATTERY_INFO, NULL, 0);
 }
 
 /***************************************************************************************************
@@ -565,14 +475,6 @@ void SystemBoardProvider::requestReset()
 }
 
 /***************************************************************************************************
- * notify PD Module reset
- **************************************************************************************************/
-void SystemBoardProvider::pdModuleReset()
-{
-    sendCmd(MSG_CMD_NOTIFY_PD_MODULE_RESET, NULL, 0);
-}
-
-/***************************************************************************************************
  * 通知消息应答
  * 参数:
  *    type:应答类型
@@ -587,9 +489,11 @@ void SystemBoardProvider::_notifyAck(unsigned char *data, int len)
  * 参数:
  *    enable:当前是否为静音状态
  **************************************************************************************************/
-void SystemBoardProvider::enableAlarmAudioMute(bool /*enable*/)
+void SystemBoardProvider::enableAlarmAudioMute(bool enable)
 {
-    // 不支持。
+    unsigned char stat = enable ? 1 : 0;
+    sendCmd(MSG_CMD_SET_ALARM_MUTE_LED, &stat, 1);
+    qDebug() << Q_FUNC_INFO << enable;
 }
 
 /***************************************************************************************************
@@ -604,41 +508,26 @@ void SystemBoardProvider::enableIndicatorLight(bool enable)
 }
 
 /***************************************************************************************************
- * 更新指示灯
- * 参数:
- *    enable: true打开，false关闭。
- **************************************************************************************************/
-void SystemBoardProvider::enableDefibReadyLED(bool enable)
-{
-    unsigned char stat = enable ? 1 : 0;
-    sendCmd(MSG_CMD_SET_SHOCK_LED, &stat, 1);
-}
-
-/***************************************************************************************************
  * 构造函数
  **************************************************************************************************/
-//如果一个子类继承的父类中具有参数构造函数，那么子类在构造对象时有责任将相关参数传递到父类
+// 如果一个子类继承的父类中具有参数构造函数，那么子类在构造对象时有责任将相关参数传递到父类
 SystemBoardProvider::SystemBoardProvider() : BLMProvider("SystemBoard"),
-        PowerManagerProviderIFace(), LightProviderIFace()
+    PowerManagerProviderIFace(), LightProviderIFace()
 {
-    _gotInitSwitchKeyStatus = false;
-
     UartAttrDesc portAttr(115200, 8, 'N', 1);
-    //初始化串口
+    // 初始化串口
     initPort(portAttr);
     setDisconnectThreshold(5);
 
     // 主动给系统板一个应答，让其尽快发送其他数据。
-    //相当于模拟底板上行一个启动帧到系统版
+    // 相当于模拟底板上行一个启动帧到系统版
     unsigned char start = MSG_NOTIFY_START;
-    //系统版立即给底板一个回应帧
+    // 系统版立即给底板一个回应帧
     _notifyAck(&start, 1);
 
     _recordBatInfo = false;
-    //从XML文件读取指定节点的配置值
+    // 从XML文件读取指定节点的配置值
     machineConfig.getNumValue("Record|Battery", _recordBatInfo);
-    //清0 _adcValue
-    ::memset(_adcValue, 0, sizeof(_adcValue));
 }
 
 /***************************************************************************************************
@@ -646,5 +535,4 @@ SystemBoardProvider::SystemBoardProvider() : BLMProvider("SystemBoard"),
  **************************************************************************************************/
 SystemBoardProvider::~SystemBoardProvider(void)
 {
-
 }

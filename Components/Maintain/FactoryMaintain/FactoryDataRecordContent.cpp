@@ -140,8 +140,8 @@ void FactoryDataRecordContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs("off")
-                    << trs("on")
+                    << trs("Off")
+                    << trs("On")
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(FactoryDataRecordContentPrivate
@@ -156,8 +156,8 @@ void FactoryDataRecordContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs("off")
-                    << trs("on")
+                    << trs("Off")
+                    << trs("On")
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(FactoryDataRecordContentPrivate
@@ -172,8 +172,8 @@ void FactoryDataRecordContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs("off")
-                    << trs("on")
+                    << trs("Off")
+                    << trs("On")
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(FactoryDataRecordContentPrivate
@@ -188,8 +188,8 @@ void FactoryDataRecordContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs("off")
-                    << trs("on")
+                    << trs("Off")
+                    << trs("On")
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(FactoryDataRecordContentPrivate
@@ -204,8 +204,8 @@ void FactoryDataRecordContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs("off")
-                    << trs("on")
+                    << trs("Off")
+                    << trs("On")
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(FactoryDataRecordContentPrivate
@@ -220,8 +220,8 @@ void FactoryDataRecordContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs("off")
-                    << trs("on")
+                    << trs("Off")
+                    << trs("On")
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(FactoryDataRecordContentPrivate

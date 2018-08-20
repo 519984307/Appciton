@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/17
+ **/
+
+
 #pragma once
 #include "AlarmDefine.h"
 
@@ -18,14 +29,11 @@ public:
     // 指示灯控制。
     virtual void enableIndicatorLight(bool enable) = 0;
 
-    // 开启/关闭除颤准备灯
-    virtual void enableDefibReadyLED(bool enable) = 0;
-
     //发送协议命令
     virtual void sendCmdData(unsigned char /*cmdId*/, const unsigned char */*data*/,
                              unsigned int /*len*/) { }
 
     // 构造与析构。
     LightProviderIFace() {}
-    ~LightProviderIFace() {}
+    virtual ~LightProviderIFace() {}
 };

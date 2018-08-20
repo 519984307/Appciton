@@ -525,6 +525,18 @@ void Alarm::updateMuteKeyStatus(bool isPressed)
     }
 }
 
+void Alarm::updateResetKeyStatus(bool isPressed)
+{
+    if (isPressed)
+    {
+        alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_RESET_BTN_PRESSED, 0, 0);
+    }
+    else
+    {
+        alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_RESET_BTN_RELEASED, 0, 0);
+    }
+}
+
 /**************************************************************************************************
  * 功能： 获取报警源参数的值。
  * 参数：

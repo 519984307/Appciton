@@ -5,19 +5,20 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/5
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/15
  **/
 
 #pragma once
 #include "MenuContent.h"
+#include <QScopedPointer>
 
-class ECGMenuContentPrivate;
-class ECGMenuContent : public MenuContent
+class ArrhythmiaThresholdMenuPrivate;
+class ArrhythmiaThresholdMenu : public MenuContent
 {
     Q_OBJECT
 public:
-    ECGMenuContent();
-    ~ECGMenuContent();
+    ArrhythmiaThresholdMenu();
+    ~ArrhythmiaThresholdMenu();
 
     /* reimplment */
     void readyShow();
@@ -26,9 +27,9 @@ public:
     void layoutExec();
 
 private slots:
-    void onComboBoxIndexChanged(int index);
-    void arrhythmiaBtnReleased(void);
+    void onButtonReleased(void);
+    void pauseChangeSlot(int);
 
 private:
-    ECGMenuContentPrivate * const d_ptr;
+    QScopedPointer<ArrhythmiaThresholdMenuPrivate> d_ptr;
 };

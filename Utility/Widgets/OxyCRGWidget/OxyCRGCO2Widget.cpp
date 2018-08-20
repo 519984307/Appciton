@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/20
+ **/
+
+
+
 #include <QResizeEvent>
 #include "OxyCRGCO2Widget.h"
 #include "OxyCRGTrendWidgetRuler.h"
@@ -30,26 +42,25 @@ OxyCRGCO2Widget::OxyCRGCO2Widget(const QString &waveName, const QString &title)
 
     _ruler->setPalette(palette);
 
-    int valueLow=0;
-    int valueHigh=0;
+    int valueLow = 0;
+    int valueHigh = 0;
     currentConfig.getNumValue("OxyCRG|Ruler|CO2Low", valueLow);
     currentConfig.getNumValue("OxyCRG|Ruler|CO2High", valueHigh);
     setValueRange(valueLow, valueHigh);
-    _ruler->setRuler(valueHigh, (valueLow+valueHigh)/2, valueLow);
+    _ruler->setRuler(valueHigh, (valueLow + valueHigh) / 2, valueLow);
 
     selectMode(SCROLL_MODE);
 
     _dataBufIndex = 0;
-    _dataBufLen = dataRate()*4*60; //最大4分钟数据
+    _dataBufLen = dataRate() * 8 * 60; // 最大8分钟数据
     _dataBuf = new RingBuff<int>(_dataBufLen);
     _falgBuf = new RingBuff<int>(_dataBufLen);
 
-    setMargin(QMargins(50,0,2,0));
+    setMargin(QMargins(50, 0, 2, 0));
 }
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
 OxyCRGCO2Widget::~OxyCRGCO2Widget()
 {
-
 }

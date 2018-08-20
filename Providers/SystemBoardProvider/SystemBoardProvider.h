@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/17
+ **/
+
 #pragma once
 #include "BLMProvider.h"
 #include "SystemDefine.h"
@@ -8,7 +18,7 @@
  * 系统前面板数据提供者对象定义
  **************************************************************************************************/
 class SystemBoardProvider : public BLMProvider,
-        public PowerManagerProviderIFace, public LightProviderIFace
+    public PowerManagerProviderIFace, public LightProviderIFace
 {
     Q_OBJECT
 
@@ -51,15 +61,9 @@ public: // LightProviderIFace
     // 指示灯控制。
     virtual void enableIndicatorLight(bool enable);
 
-    // 开启/关闭除颤准备灯
-    virtual void enableDefibReadyLED(bool enable);
-
 public:
-    // 查询初始旋钮的位置和快捷按钮的状态。
-    void querySwitchKeyStatus(void);
-
-    // 查询固定不变的电池信息
-    void queryFixedBatMessage(void);
+    // query the battery info
+    void queryBatteryInfo(void);
 
     // 触发蜂鸣器。
     void triggerBuzzer(void);
@@ -76,9 +80,6 @@ public:
     // 请求复位
     void requestReset(void);
 
-    // notify PD Module reset
-    void pdModuleReset();
-
 protected:
     virtual void handlePacket(unsigned char *data, int len);
     virtual void disconnected(void);
@@ -89,11 +90,8 @@ private:
     void _parseKeyEvent(unsigned char *data, int len);
     void _parsePowerStat(unsigned char *data, int len);
     void _parseOperateMode(unsigned char *data, int len);
-    void _parseFastOperateMode(unsigned char *data, int len);
     void _parsePowerOnStat(unsigned char *data, int len);
-    void _parseFixedBatteryInfo(unsigned char *data, int len);
-    void _parsePeriodicBatteryInfo(unsigned char *data, int len);
-    void _parsePeriodicBatteryValue(unsigned char *data, int len);
+    void _parseBatteryInfo(unsigned char *data, int len);
     void _parseErrorWaringCode(unsigned char *data, int len);
 
     // 通知消息应答。
@@ -106,8 +104,10 @@ private:
     {
         ModeStatus()
         {
-           powerSuply = POWER_SUPLY_UNKOWN;
-           errorCode = ERR_CODE_NONE;
+            powerSuply = POWER_SUPLY_UNKOWN;
+            errorCode = ERR_CODE_NONE;
+            adcValue = 0;
+            isCharging = false;
         }
 
         QString hwVersion;
@@ -115,10 +115,11 @@ private:
         QString protoVersion;
         PowerSuplyType powerSuply;
         ErrorWaringCode errorCode;
+        short adcValue;
+        bool isCharging;
     } modeStatus;
 
     bool _recordBatInfo;
-    unsigned char _adcValue[2];
 };
 #define systemBoardProvider (SystemBoardProvider::construction())
 #define deleteSystemBoardProvider() (delete SystemBoardProvider::_selfObj)

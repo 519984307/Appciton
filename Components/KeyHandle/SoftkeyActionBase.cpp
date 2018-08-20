@@ -281,10 +281,10 @@ void SoftkeyActionBase::mainsetup(bool isPressed)
     {
         return;
     }
-//    windowManager.setUFaceType();
+    windowManager.setUFaceType();
 //    windowManager.showMainMenu();
-    MainMenuWindow *w = MainMenuWindow::getInstance();
-    windowManager.showWindow(w, WindowManager::WINDOW_TYPE_NONMODAL);
+//    MainMenuWindow *w = MainMenuWindow::getInstance();
+//    windowManager.showWindow(w, WindowManager::WINDOW_TYPE_NONMODAL);
 }
 
 void SoftkeyActionBase::freeze(bool isPressed)

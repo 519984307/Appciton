@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/17
+ **/
+
+
 #pragma once
 #include "AlarmDefine.h"
 
@@ -20,9 +31,6 @@ public:
     void setProvider(LightProviderIFace *iface);
     void updateAlarm(bool hasAlarm, AlarmPriority priority);
     void enableAlarmAudioMute(bool enable);
-
-    // 开启/关闭除颤准备灯
-    void enableDefibReadyLED(bool enable);
 
     // 发送协议命令
     void sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len);

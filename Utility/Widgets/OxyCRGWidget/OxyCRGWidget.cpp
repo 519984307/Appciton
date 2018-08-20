@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/20
+ **/
+
 #include "OxyCRGWidget.h"
 #include "FontManager.h"
 #include "LanguageManager.h"
@@ -21,12 +31,12 @@
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
-OxyCRGWidget::OxyCRGWidget():IWidget("OxyCRGWidget"),
-                             _intervalList(NULL),
-                             _changeTrendList(NULL),
-                             _isShowGrid(true),
-                             _isShowFrame(true),
-                             _isShowScale(true)
+OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
+    _intervalList(NULL),
+    _changeTrendList(NULL),
+    _isShowGrid(true),
+    _isShowFrame(true),
+    _isShowScale(true)
 {
     _pixelWPitch = systemManager.getScreenPixelWPitch();
     _pixelHPitch = systemManager.getScreenPixelHPitch();
@@ -36,7 +46,6 @@ OxyCRGWidget::OxyCRGWidget():IWidget("OxyCRGWidget"),
     palette.setColor(QPalette::Window, Qt::black);
 //    palette.setColor(QPalette::Foreground, Qt::black);
     setPalette(palette);
-
     _mainLayout = new QVBoxLayout();
     _mainLayout->setMargin(0);
     _mainLayout->setSpacing(0);
@@ -65,25 +74,25 @@ OxyCRGWidget::OxyCRGWidget():IWidget("OxyCRGWidget"),
     _interval->setFont(fontManager.textFont(fontSize));
     _interval->setFixedSize(80, _labelHeight);
     _interval->setText("");
-    connect(_interval, SIGNAL(released(IWidget*)), this, SLOT(_intervalSlot(IWidget*)));
+    connect(_interval, SIGNAL(released(IWidget *)), this, SLOT(_intervalSlot(IWidget *)));
 
     _changeTrend = new OxyCRGWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _changeTrend->setFont(fontManager.textFont(fontSize));
     _changeTrend->setFixedSize(80, _labelHeight);
     _changeTrend->setText("");
-    connect(_changeTrend, SIGNAL(released(IWidget*)), this, SLOT(_changeTrendSlot(IWidget*)));
+    connect(_changeTrend, SIGNAL(released(IWidget *)), this, SLOT(_changeTrendSlot(IWidget *)));
 
     _setUp = new OxyCRGWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _setUp->setFont(fontManager.textFont(fontSize));
     _setUp->setFixedSize(80, _labelHeight);
     _setUp->setText("SetUp");
-    connect(_setUp, SIGNAL(released(IWidget*)), this, SLOT(_onSetupUpdated(IWidget*)));
+    connect(_setUp, SIGNAL(released(IWidget *)), this, SLOT(_onSetupUpdated(IWidget *)));
 
     bottomLayout->addWidget(_interval);
     bottomLayout->addWidget(_changeTrend);
     bottomLayout->addWidget(_setUp);
 
-    _mainLayout->addWidget(_titleLabel,0,Qt::AlignCenter);
+    _mainLayout->addWidget(_titleLabel, 0, Qt::AlignCenter);
     _mainLayout->addLayout(_hLayoutWave);
     _mainLayout->addLayout(bottomLayout);
 
@@ -122,7 +131,7 @@ void OxyCRGWidget::_trendLayout(void)
         w->setParent(this);            // 设置父窗体。
         w->setVisible(true);           // 可见。
 
-        _hLayoutWave->addWidget(w,1);
+        _hLayoutWave->addWidget(w, 1);
     }
 }
 
@@ -136,7 +145,7 @@ void OxyCRGWidget::_clearLayout()
     for (int i = 0; i < trendcount; i++)
     {
         QLayoutItem *item = _hLayoutWave->takeAt(0);
-        IWidget *widget = (IWidget *)item->widget();
+        IWidget *widget = qobject_cast<IWidget *>(item->widget());
         if (widget != NULL)
         {
             widget->setVisible(false);
@@ -150,44 +159,47 @@ void OxyCRGWidget::_clearLayout()
  *************************************************************************************************/
 void OxyCRGWidget::_setInterval(OxyCRGInterval index)
 {
-    currentConfig.setNumValue("RESP|Interval", (int)index);
+    currentConfig.setNumValue("RESP|Interval", static_cast<int>(index));
 
     _interval->setText(OxyCRGSymbol::convert(OxyCRGInterval(index)));
 
     int len = _oxycrgHrWidget->getRulerWidth();
     float pixel = _oxycrgHrWidget->getRulerPixWidth();
     int speedPara;
-    switch(index)
+    switch (index)
     {
-        case OxyCRG_Interval_1:
-            speedPara = 1;
-            break;
-        case OxyCRG_Interval_2:
-            speedPara = 2;
-            break;
-        case OxyCRG_Interval_4:
-            speedPara = 4;
-            break;
-        default:
-            speedPara = 1;
-            break;
+    case OxyCRG_Interval_1:
+        speedPara = 1;
+        break;
+    case OxyCRG_Interval_2:
+        speedPara = 2;
+        break;
+    case OxyCRG_Interval_4:
+        speedPara = 4;
+        break;
+    case OxyCRG_Interval_8:
+        speedPara = 8;
+        break;
+    default:
+        speedPara = 1;
+        break;
     };
-    float speed = len*pixel/(60*speedPara);
+    float speed = len * pixel / (60 * speedPara);
 
-    if(_oxycrgWidget != NULL)
+    if (_oxycrgWidget != NULL)
     {
         _oxycrgWidget->setWaveSpeed(speed);
     }
-    if(_oxycrgCo2Widget != NULL)
+    if (_oxycrgCo2Widget != NULL)
     {
         _oxycrgCo2Widget->setWaveSpeed(speed);
     }
-    if(_oxycrgHrWidget != NULL)
+    if (_oxycrgHrWidget != NULL)
     {
         _oxycrgHrWidget->setWaveSpeed(speed);
     }
 
-    if(_oxycrgSpo2Widget != NULL)
+    if (_oxycrgSpo2Widget != NULL)
     {
         _oxycrgSpo2Widget->setWaveSpeed(speed);
     }
@@ -211,7 +223,7 @@ OxyCRGInterval OxyCRGWidget::_getInterval()
  *************************************************************************************************/
 void OxyCRGWidget::_setTrend(OxyCRGTrend index)
 {
-    currentConfig.setNumValue("OxyCRG|Wave", (int)index);
+    currentConfig.setNumValue("OxyCRG|Wave", static_cast<int>(index));
 
     _changeTrend->setText(OxyCRGSymbol::convert(OxyCRGTrend(index)));
 
@@ -234,7 +246,6 @@ void OxyCRGWidget::_setTrend(OxyCRGTrend index)
                 break;
             }
         }
-
     }
     else
     {
@@ -323,27 +334,27 @@ void OxyCRGWidget::paintEvent(QPaintEvent *event)
     barPainter.setPen(pen);
     barPainter.drawRect(rect());
 
-    QRect rectAdjust =rect().adjusted(1, _titleBarHeight-1, -1, -_labelHeight-4);
+    QRect rectAdjust = rect().adjusted(1, _titleBarHeight - 1, -1, -_labelHeight - 4);
 //    barPainter.drawRect(rectAdjust);
-    barPainter.drawLine(rectAdjust.bottomLeft(),rectAdjust.bottomRight());
+    barPainter.drawLine(rectAdjust.bottomLeft(), rectAdjust.bottomRight());
 
-    //画上x轴刻度线
+    // 画上x轴刻度线
     barPainter.setPen(QPen(Qt::white, 1, Qt::SolidLine));
-    for(int i=0;i<4;i++)//分成10份
+    for (int i = 0; i < 4; i++) // 分成10份
     {
         barPainter.setFont(fontManager.textFont(fontManager.getFontSize(0)));
-        //选取合适的坐标，绘制一段长度为4的直线，用于表示刻度
+        // 选取合适的坐标，绘制一段长度为4的直线，用于表示刻度
 //        barPainter.drawLine(rectAdjust.bottomRight().x() - (i * (rectAdjust.bottomRight().x() / 4)),rectAdjust.bottomRight().y(),
 //                         rectAdjust.bottomRight().x() - (i * (rectAdjust.bottomRight().x() / 4)),(rectAdjust.bottomRight().y() + 4));
 
-        barPainter.drawText((rectAdjust.bottomRight().x() - (i * (rectAdjust.bottomRight().x() / 4))) + 2,  (rectAdjust.bottomRight().y() + 12)
-                         ,QString::number(i));
+        barPainter.drawText((rectAdjust.bottomRight().x() - (i * (rectAdjust.bottomRight().x() / 4))) + 2,
+                            (rectAdjust.bottomRight().y() + 12)
+                            , QString::number(i));
     }
 
     QRect r = rect();
     r.setBottom(_titleBarHeight);
-    barPainter.fillRect(r, QColor(255, 255, 0));
-
+    barPainter.fillRect(r, QColor(152, 245, 255));
 }
 
 /**************************************************************************************************
@@ -353,14 +364,14 @@ void OxyCRGWidget::resizeEvent(QResizeEvent *e)
 {
     IWidget::resizeEvent(e);
 
-    int l = ((rect().width() / 4) - _interval->width())/2;
+    int l = ((rect().width() / 4) - _interval->width()) / 2;
     _interval->move(rect().left() + l, rect().bottom() - _labelHeight - 2);
     _changeTrend->move(rect().left() + (rect().width() / 4) + l, rect().bottom() - _labelHeight - 2);
 }
 
 void OxyCRGWidget::setOxyCrgRespWidget(OxyCRGRESPWidget *p)
 {
-    if(p != NULL)
+    if (p != NULL)
     {
         _oxycrgWidget = p;
     }
@@ -368,7 +379,7 @@ void OxyCRGWidget::setOxyCrgRespWidget(OxyCRGRESPWidget *p)
 
 void OxyCRGWidget::setOxyCrgHrWidget(OxyCRGHRWidget *p)
 {
-    if(p != NULL)
+    if (p != NULL)
     {
         _oxycrgHrWidget = p;
     }
@@ -376,7 +387,7 @@ void OxyCRGWidget::setOxyCrgHrWidget(OxyCRGHRWidget *p)
 
 void OxyCRGWidget::setOxyCrgSpo2Widget(OxyCRGSPO2Widget *p)
 {
-    if(p != NULL)
+    if (p != NULL)
     {
         _oxycrgSpo2Widget = p;
     }
@@ -384,7 +395,7 @@ void OxyCRGWidget::setOxyCrgSpo2Widget(OxyCRGSPO2Widget *p)
 
 void OxyCRGWidget::setOxyCrgCo2Widget(OxyCRGCO2Widget *p)
 {
-    if(p != NULL)
+    if (p != NULL)
     {
         _oxycrgCo2Widget = p;
     }
@@ -392,7 +403,7 @@ void OxyCRGWidget::setOxyCrgCo2Widget(OxyCRGCO2Widget *p)
 
 void OxyCRGWidget::setWaveType(int index)
 {
-    if(index==0 || index==1)
+    if (index == 0 || index == 1)
     {
         _waveType = index;
     }
@@ -448,13 +459,13 @@ void OxyCRGWidget::_changeTrendSlot(IWidget *widget)
  *************************************************************************************************/
 void OxyCRGWidget::_onSetupUpdated(IWidget *widget)
 {
-    if(widget == _setUp)
+    if (widget == _setUp)
     {
         OxyCRGSetupWidget setupWidget;
 
         setupWidget.exec();
         int index = setupWidget.getWaveTypeIndex();
-        if(index != (getWaveType()) && (index==0 || index==1))
+        if (index != (getWaveType()) && (index == 0 || index == 1))
         {
             ecgParam.clearOxyCRGWaveNum();
 
@@ -465,15 +476,15 @@ void OxyCRGWidget::_onSetupUpdated(IWidget *widget)
             _trendLayout();
         }
 
-        bool status=false;
-        int valueLow=0;
+        bool status = false;
+        int valueLow = 0;
         int valueHight = 0;
         int valueMid = 0;
 
         valueLow = setupWidget.getCO2Low(status);
         valueHight = setupWidget.getCO2High(status);
-        valueMid = (valueHight+valueLow)/2;
-        if(status)
+        valueMid = (valueHight + valueLow) / 2;
+        if (status)
         {
             status = false;
             _oxycrgCo2Widget->setRuler(valueHight, valueMid, valueLow);
@@ -482,8 +493,8 @@ void OxyCRGWidget::_onSetupUpdated(IWidget *widget)
 
         valueLow = setupWidget.getHRLow(status);
         valueHight = setupWidget.getHRHigh(status);
-        valueMid = (valueHight+valueLow)/2;
-        if(status)
+        valueMid = (valueHight + valueLow) / 2;
+        if (status)
         {
             status = false;
             _oxycrgHrWidget->setRuler(valueHight, valueMid, valueLow);
@@ -492,13 +503,12 @@ void OxyCRGWidget::_onSetupUpdated(IWidget *widget)
 
         valueLow = setupWidget.getSPO2Low(status);
         valueHight = setupWidget.getSPO2High(status);
-        valueMid = (valueHight+valueLow)/2;
-        if(status)
+        valueMid = (valueHight + valueLow) / 2;
+        if (status)
         {
             _oxycrgSpo2Widget->setRuler(valueHight, valueMid, valueLow);
             _oxycrgSpo2Widget->setValueRange(valueLow, valueHight);
         }
-
     }
 }
 

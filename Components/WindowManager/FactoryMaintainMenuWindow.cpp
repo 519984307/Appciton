@@ -20,6 +20,7 @@
 #include "NIBPCalibrationMenuContent.h"
 #include "FactoryTestMenuContent.h"
 #include "FactoryTempMenuContent.h"
+#include "LanguageManager.h"
 
 FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
 {
@@ -38,6 +39,7 @@ FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
         instance->addMenuContent(new NIBPCalibrationMenuContent);
         instance->addMenuContent(new FactoryTestMenuContent);
         instance->addMenuContent(new FactoryTempMenuContent);
+        instance->setWindowTitle(trs("SoftWareVersionMenuDesc"));
     }
 
     return instance;
