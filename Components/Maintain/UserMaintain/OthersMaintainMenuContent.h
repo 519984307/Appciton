@@ -26,8 +26,15 @@ public:
     virtual void layoutExec();
 
 private slots:
+    /**
+     * @brief onComboBoxIndexChanged
+     * @param index
+     */
     void onComboBoxIndexChanged(int index);
-
+    /**
+     * @brief onBtnReleased
+     */
+    void onBtnReleased(void);
 private:
     OthersMaintainMenuContentPrivate * const d_ptr;
 };

@@ -1123,6 +1123,8 @@ IsPauseMaxAlarm15Min,是否暂停最大报警15分钟,Is Pause Max Alarm 15Min
 forbid,禁止,forbid
 allow,允许,allow
 ReminderTone,提醒音,Reminder Tone
+AllClosed,全部关闭,All Closed
+AllOpened,全部打开,All Opened
 close,关闭,close
 open,打开,open
 openAgain,再次打开,Open Again
@@ -1154,17 +1156,18 @@ Cancel,取消覆盖,Cancel
 OthersMaintainMenu,其他维护菜单,Others Menu
 OthersMaintainMenuDesc,其他维护菜单设置,Others Menu Desc
 WaveLine,波线,WaveLine
-fat,粗,fat
-med,中,med
-thin,细,thin
+Fat,粗,Fat
+Med,中,Med
+Thin,细,Thin
 ECGStandard,心电标准,ECG Standard
 AHA,AHA,AHA
 IEC,IEC,IEC
 FrequencyNotch,频率刻度,Frequency Notch
-paraSwitchPrem,参数开关权限,Para Switch Prem
-protected,保护,protected
-ConfImpactItemSettings,,Conf ImpactItemSettings
-ParaSwitch,参数开关,ParaSwitch
+paraSwitchPrem,参数开关权限,Para Switch Authority 
+Protected,保护,Protected
+Unprotected,非保护,Unprotected
+ConfImpactItemSettings,受配置影响项设置,Configuration-influenced Settings
+ParaSwitch,参数开关,Parameters Switch
 NurseCallSetting,护士呼叫设置,Nurse Call Setting
 Setting,设置,Setting
 StopSetting,停止设置,Stop Setting
@@ -1173,6 +1176,7 @@ Continuity,连续,Continuity
 Pluse,波形,Pluse
 TriggerMode,触发模式,Trigger Mode
 AlarmLevel,报警级别,Alarm Level
+AlarmType,报警类型,Alarm Type 
 Technology,技术,Technology
 Physiology,生理,Physiology
 UserMaintainPassword,用户维护密码,User Maintain Password
