@@ -146,7 +146,7 @@ void NurseCallSettingWindow::layoutExec()
     vlRight->addLayout(vl);
 
     QIcon icon("/usr/local/nPM/icons/Checked.png");
-    int btnWidth = 25;
+    int btnWidth = 32;
 
     button = new Button();
     button->setIcon(icon);
