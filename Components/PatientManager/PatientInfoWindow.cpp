@@ -37,7 +37,7 @@ public:
         , _relievePatient(NULL) , _savePatientInfo(NULL)
         , _infoChange(false)
         , _patientNew(false)
-        , _relieveFlag(false)
+        , _relieveFlag(true)
     {}
 
     enum MenuItem
@@ -167,8 +167,9 @@ PatientInfoWindow::PatientInfoWindow()
     : Window()
     , d_ptr(new PatientInfoWindowPrivate)
 {
-    setWindowTitle("Patient Infomation");
+    setWindowTitle(trs("PatientInformation"));
     QGridLayout *layout = new QGridLayout(this);
+    QVBoxLayout *backgroundLayout = new QVBoxLayout(this);
     QHBoxLayout *buttonLayout = new QHBoxLayout(this);
     QLabel *label;
     int itemId;
@@ -347,14 +348,10 @@ PatientInfoWindow::PatientInfoWindow()
     d_ptr->_savePatientInfo->setButtonStyle(Button::ButtonTextOnly);
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_BTN_CREATE_PATIENT);
     d_ptr->_savePatientInfo->setProperty("Item" , qVariantFromValue(itemId));
-    buttonLayout->addSpacing(10);
+    d_ptr->_savePatientInfo->setFixedWidth(200);
     buttonLayout->addWidget(d_ptr->_savePatientInfo);
-    buttonLayout->addSpacing(10);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_CREATE_PATIENT
                           , d_ptr->_savePatientInfo);
-    layout->addLayout(buttonLayout
-                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
-                      , 1);
     connect(d_ptr->_savePatientInfo, SIGNAL(released()), this, SLOT(_saveInfoReleased()));
 
     // clean patient data
@@ -362,14 +359,15 @@ PatientInfoWindow::PatientInfoWindow()
     d_ptr->_relievePatient->setButtonStyle(Button::ButtonTextOnly);
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_BTN_CLEAR_PATIENT);
     d_ptr->_relievePatient->setProperty("Item" , qVariantFromValue(itemId));
-    layout->addWidget(d_ptr->_relievePatient
-                      , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
-                      , 2);
+    d_ptr->_relievePatient->setFixedWidth(200);
+    buttonLayout->addWidget(d_ptr->_relievePatient);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_CLEAR_PATIENT
                           , d_ptr->_relievePatient);
     connect(d_ptr->_relievePatient, SIGNAL(released()), this, SLOT(_relieveReleased()));
     layout->setRowStretch(d_ptr->combos.count() + d_ptr->buttons.count() , 1);
-    setWindowLayout(layout);
+    backgroundLayout->addLayout(layout);
+    backgroundLayout->addLayout(buttonLayout);
+    setWindowLayout(backgroundLayout);
 }
 void PatientInfoWindow::readyShow()
 {
@@ -543,7 +541,9 @@ void PatientInfoWindow::_relieveReleased()
     if (d_ptr->_relieveFlag == true)
     {
         RelievePatientWindow::getInstance()->setWindowTitle(trs("RelievePatient"));
-        RelievePatientWindow::getInstance()->exec();
+        int ret = RelievePatientWindow::getInstance()->exec();
+        if (ret)
+            relieveStatus(false);
     }
     else
     {
@@ -559,22 +559,22 @@ void PatientInfoWindow::_saveInfoReleased()
     if (d_ptr->_patientNew == true)
     {
         this->hide();
-        d_ptr->_relieveFlag = true;
+        relieveStatus(true);
     }
     else if (d_ptr->_patientNew == false && d_ptr->_relieveFlag == false)
     {
         QStringList slist;
-        slist << trs("EnglishYESChineseSURE") << trs("No") << trs("Cancel");
+        slist << trs("Cancel") << trs("EnglishYESChineseSURE");
         MessageBox messageBox(trs("Warn"), trs("ApplicationDataToReceivingPatients"), slist);
         this->hide();
         warnStatus = messageBox.exec();
         if (warnStatus == 0)
         {
-            d_ptr->_relieveFlag = true;
+            relieveStatus(false);
         }
         else if (warnStatus == 1)
         {
-            d_ptr->_relieveFlag = true;
+            relieveStatus(true);
             dataStorageDirManager.createDir(true);
         }
     }
@@ -582,9 +582,9 @@ void PatientInfoWindow::_saveInfoReleased()
     {
         this->hide();
         QStringList slist;
-        slist << trs("EnglishYESChineseSURE") << trs("No");
+        slist << trs("No") << trs("EnglishYESChineseSURE");
         MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist);
-        if (messageBox.exec() == 0)
+        if (messageBox.exec() == 1)
         {
             dataStorageDirManager.createDir(true);
         }

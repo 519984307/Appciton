@@ -52,5 +52,5 @@ void ErrorLogEntranceContent::layoutExec()
 
 void ErrorLogEntranceContent::onButtonReleased()
 {
-    windowManager.showWindow(ErrorLogWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
+    windowManager.showWindow(ErrorLogWindow::getInstance(), WindowManager::WINDOW_TYPE_MODAL);
 }
