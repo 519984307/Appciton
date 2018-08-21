@@ -10,13 +10,16 @@
 
 #pragma once
 #include "AlarmLimitModel.h"
+#include "ConfigEditMenuWindow.h"
 
 class ConfigEditAlarmLimitModel : public AlarmLimitModel
 {
     Q_OBJECT
 public:
-    ConfigEditAlarmLimitModel() {}
+    explicit ConfigEditAlarmLimitModel(ConfigEditMenuWindow *w):w(w) {}
     ~ConfigEditAlarmLimitModel() {}
 protected:
     virtual void alarmDataUpdate(const AlarmDataInfo &info, int type);
+private:
+    ConfigEditMenuWindow *w;
 };

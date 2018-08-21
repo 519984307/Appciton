@@ -22,7 +22,6 @@
 #include "IConfig.h"
 #include "NumberInput.h"
 #include "MessageBox.h"
-#include "ConfigEditMenuWindow.h"
 
 class ConfigEditCOMenuContentPrivate
 {
@@ -36,7 +35,11 @@ public:
         ITEM_CBO_MEASURE_CONTROL,
     };
 
-    ConfigEditCOMenuContentPrivate() : measureSta(CO_INST_START) {}
+    explicit ConfigEditCOMenuContentPrivate(Config *const config)
+        : measureSta(CO_INST_START),
+          config(config)
+    {
+    }
 
     // load settings
     void loadOptions();
@@ -44,6 +47,7 @@ public:
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> buttons;
     COInstCtl measureSta;              // 测量状态
+    Config * const config;
 };
 
 void ConfigEditCOMenuContentPrivate::loadOptions()
@@ -54,8 +58,6 @@ void ConfigEditCOMenuContentPrivate::loadOptions()
     buttons[ITEM_CBO_MEASURE_CONTROL]->blockSignals(true);
     combos[ITEM_CBO_INJECT_TEMP_SOURCE]->blockSignals(true);
 
-    Config *config = ConfigEditMenuWindow::getInstance()
-                     ->getCurrentEditConfig();
     int number = 0;
     config->getNumValue("CO|Ratio", number);
     buttons[ITEM_CBO_CO_RATIO]->setText(QString::number(static_cast<double>(number) / 1000));
@@ -87,9 +89,9 @@ void ConfigEditCOMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_INJECT_TEMP_SOURCE]->blockSignals(false);
 }
 
-ConfigEditCOMenuContent::ConfigEditCOMenuContent()
+ConfigEditCOMenuContent::ConfigEditCOMenuContent(Config * const config)
     : MenuContent(trs("COMenu"), trs("COMenuDesc")),
-      d_ptr(new ConfigEditCOMenuContentPrivate)
+      d_ptr(new ConfigEditCOMenuContentPrivate(config))
 {
 }
 
@@ -183,8 +185,6 @@ void ConfigEditCOMenuContent::onComboBoxIndexChanged(int index)
     ComboBox *box = qobject_cast<ComboBox *>(sender());
     if (box)
     {
-        Config *config = ConfigEditMenuWindow::getInstance()->getCurrentEditConfig();
-
         ConfigEditCOMenuContentPrivate::MenuItem item
             = (ConfigEditCOMenuContentPrivate::MenuItem)box->property("Item").toInt();
         switch (item)
@@ -200,8 +200,8 @@ void ConfigEditCOMenuContent::onComboBoxIndexChanged(int index)
                 d_ptr->buttons.value(ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECTION_TEMP)->setEnabled(false);
             }
             int temp = d_ptr->buttons[ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECTION_TEMP]->text().toFloat() * 10;
-            config->setNumValue("CO|InjectionTemp", (unsigned)temp);
-            config->setNumValue("CO|InjectionTempSource", index);
+            d_ptr->config->setNumValue("CO|InjectionTemp", (unsigned)temp);
+            d_ptr->config->setNumValue("CO|InjectionTempSource", index);
             break;
         }
         default:
@@ -215,8 +215,6 @@ void ConfigEditCOMenuContent::onButtonReleased()
     Button *button = qobject_cast<Button *>(sender());
     if (button)
     {
-        Config *config = ConfigEditMenuWindow::getInstance()->getCurrentEditConfig();
-
         ConfigEditCOMenuContentPrivate::MenuItem item
             = (ConfigEditCOMenuContentPrivate::MenuItem) button->property("Item").toInt();
         switch (item)
@@ -239,7 +237,7 @@ void ConfigEditCOMenuContent::onButtonReleased()
                     if (actualValue >= 1 && actualValue <= 999)
                     {
                         button->setText(text);
-                        config->setNumValue("CO|Ratio", static_cast<int>(actualValue));
+                        d_ptr->config->setNumValue("CO|Ratio", static_cast<int>(actualValue));
                     }
                     else
                     {
@@ -267,8 +265,8 @@ void ConfigEditCOMenuContent::onButtonReleased()
                     if (actualValue <= 270)
                     {
                         button->setText(text);
-                        config->setNumValue("CO|InjectionTempSource", static_cast<int>(CO_TI_MODE_MANUAL));
-                        config->setNumValue("CO|InjectionTemp", static_cast<int>(actualValue));
+                        d_ptr->config->setNumValue("CO|InjectionTempSource", static_cast<int>(CO_TI_MODE_MANUAL));
+                        d_ptr->config->setNumValue("CO|InjectionTemp", static_cast<int>(actualValue));
                     }
                     else
                     {
@@ -295,7 +293,7 @@ void ConfigEditCOMenuContent::onButtonReleased()
                     if (value >= 1 && value <= 200)
                     {
                         button->setText(text);
-                        config->setNumValue("CO|InjectionVolumn", static_cast<int>(value));
+                        d_ptr->config->setNumValue("CO|InjectionVolumn", static_cast<int>(value));
                     }
                     else
                     {
@@ -308,7 +306,7 @@ void ConfigEditCOMenuContent::onButtonReleased()
         }
         case ConfigEditCOMenuContentPrivate::ITEM_CBO_MEASURE_CONTROL:
         {
-            config->setNumValue("CO|MeasureMode", static_cast<int>(d_ptr->measureSta));
+            d_ptr->config->setNumValue("CO|MeasureMode", static_cast<int>(d_ptr->measureSta));
             if (d_ptr->measureSta == CO_INST_START)
             {
                 button->setText(trs("COEnd"));

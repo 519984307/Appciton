@@ -9,13 +9,14 @@
  **/
 #pragma once
 #include "MenuContent.h"
+#include "ConfigEditMenuWindow.h"
 
 class ConfigEditDisplayMenuContentPrivate;
 class ConfigEditDisplayMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    ConfigEditDisplayMenuContent();
+    explicit ConfigEditDisplayMenuContent(QStringList colorList, Config * const config);
     ~ConfigEditDisplayMenuContent();
 
 protected:

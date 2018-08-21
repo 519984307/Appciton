@@ -13,7 +13,6 @@
 #include "LanguageManager.h"
 #include <QMap>
 #include "ComboBox.h"
-#include "ConfigEditMenuWindow.h"
 #include "ConfigManager.h"
 
 class ConfigEditDisplayMenuContentPrivate
@@ -31,7 +30,7 @@ public:
         ITEM_CBO_MAX,
     };
 
-    ConfigEditDisplayMenuContentPrivate();
+    explicit ConfigEditDisplayMenuContentPrivate(QStringList colorList, Config * const config);
     /**
      * @brief loadOptions
      */
@@ -39,24 +38,22 @@ public:
 
     QMap <MenuItem, ComboBox *> combos;
     QStringList colorList;
+    Config * const config;
 };
 
-ConfigEditDisplayMenuContentPrivate::ConfigEditDisplayMenuContentPrivate()
+ConfigEditDisplayMenuContentPrivate
+    ::ConfigEditDisplayMenuContentPrivate(QStringList colorList, Config * const config)
+    : colorList(colorList),
+      config(config)
 {
     combos.clear();
 }
 
-ConfigEditDisplayMenuContent::ConfigEditDisplayMenuContent():
+ConfigEditDisplayMenuContent::ConfigEditDisplayMenuContent(QStringList colorList , Config * const config):
     MenuContent(trs("ConfigEditDisplayMenu"),
                 trs("ConfigEditDisplayMenuDesc")),
-    d_ptr(new ConfigEditDisplayMenuContentPrivate)
+    d_ptr(new ConfigEditDisplayMenuContentPrivate(colorList, config))
 {
-
-    QString color;
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
-    config->getStrValue("Display|AllColors", color);
-    d_ptr->colorList = color.split(',', QString::KeepEmptyParts);
 }
 
 ConfigEditDisplayMenuContent::~ConfigEditDisplayMenuContent()
@@ -66,8 +63,6 @@ ConfigEditDisplayMenuContent::~ConfigEditDisplayMenuContent()
 
 void ConfigEditDisplayMenuContentPrivate::loadOptions()
 {
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
     QStringList strList = QStringList()
                           << "ECGColor"
                           << "SPO2Color"
@@ -223,8 +218,6 @@ void ConfigEditDisplayMenuContent::onComboBoxIndexChanged(int index)
 {
     ComboBox *combo = qobject_cast<ComboBox *>(sender());
     int indexType = combo->property("Item").toInt();
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
     QString str;
     switch (indexType)
     {
@@ -253,7 +246,7 @@ void ConfigEditDisplayMenuContent::onComboBoxIndexChanged(int index)
         str = "Color";
         break;
     }
-    config->setStrValue(QString("Display|%1").arg(str), d_ptr->colorList.at(index));
+    d_ptr->config->setStrValue(QString("Display|%1").arg(str), d_ptr->colorList.at(index));
 }
 
 

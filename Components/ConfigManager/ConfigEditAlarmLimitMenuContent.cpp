@@ -23,7 +23,6 @@
 #include "TableViewItemDelegate.h"
 #include <Button.h>
 #include <QDebug>
-#include "ConfigEditMenuWindow.h"
 #include "ConfigEditAlarmLimitModel.h"
 
 #define TABLE_ROW_NUM 6
@@ -31,9 +30,10 @@
 class ConfigEditAlarmLimitMenuContentPrivate
 {
 public:
-    ConfigEditAlarmLimitMenuContentPrivate()
+    explicit ConfigEditAlarmLimitMenuContentPrivate(Config *const config)
         : model(NULL), table(NULL),
-          prevBtn(NULL), nextBtn(NULL)
+          prevBtn(NULL), nextBtn(NULL),
+          config(config)
     {}
 
     void loadoptions();
@@ -42,6 +42,7 @@ public:
     TableView *table;
     Button *prevBtn;
     Button *nextBtn;
+    Config *config;
 };
 
 void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
@@ -72,9 +73,6 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
             info.subParamID = subId;
             info.status = alarmConfig.isLimitAlarmEnable(subId);
             UnitType unit  = paramManager.getSubParamUnit(pid, subId);
-
-            Config *config = ConfigEditMenuWindow
-                             ::getInstance()->getCurrentEditConfig();
 
             QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
             prefix += paramInfo.getSubParamName(subId, true);
@@ -128,9 +126,9 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
     model->setupAlarmDataInfos(infos);
 }
 
-ConfigEditAlarmLimitMenuContent::ConfigEditAlarmLimitMenuContent()
+ConfigEditAlarmLimitMenuContent::ConfigEditAlarmLimitMenuContent(Config *const config)
     : MenuContent(trs("AlarmLimitMenu"), trs("AlarmLimitMenuDesc")),
-      d_ptr(new ConfigEditAlarmLimitMenuContentPrivate())
+      d_ptr(new ConfigEditAlarmLimitMenuContentPrivate(config))
 {
 }
 
@@ -169,7 +167,8 @@ void ConfigEditAlarmLimitMenuContent::layoutExec()
 
     layout->addWidget(table);
 
-    d_ptr->model = new ConfigEditAlarmLimitModel();
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+    d_ptr->model = new ConfigEditAlarmLimitModel(w);
 
     table->setModel(d_ptr->model);
 

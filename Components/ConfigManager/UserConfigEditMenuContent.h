@@ -34,13 +34,15 @@ private slots:
      */
     void onBtnClick();
     /**
-     * @brief onEditFinished
-     */
-    void onEditFinished();
-    /**
      * @brief updateBtnStatus
      */
     void updateBtnStatus();
+
+    /**
+     * @brief onEditFinished
+     */
+    void onEditFinished();
+
 private:
     UserConfigEditMenuContentPrivate *const d_ptr;
 };

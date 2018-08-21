@@ -19,7 +19,7 @@
 #include "SystemManager.h"
 #include "ECGParam.h"
 #include "IConfig.h"
-#include "ConfigEditMenuWindow.h"
+
 
 class ConfigEditECGMenuContentPrivate
 {
@@ -40,13 +40,16 @@ public:
         ITEM_CBO_MAX,
     };
 
-    ConfigEditECGMenuContentPrivate() {}
+    explicit ConfigEditECGMenuContentPrivate(Config * const config)
+        :config(config)
+    {}
 
     // load settings
     void loadOptions();
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, QLabel *> comboLabels;
+    Config *const config;
 };
 
 void ConfigEditECGMenuContentPrivate::loadOptions()
@@ -56,8 +59,6 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
         MenuItem item = (MenuItem)i;
         combos[item]->blockSignals(true);
     }
-
-    Config *config = ConfigEditMenuWindow::getInstance()->getCurrentEditConfig();
 
     int index = 0;
 
@@ -173,9 +174,9 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
     }
 }
 
-ConfigEditECGMenuContent::ConfigEditECGMenuContent()
+ConfigEditECGMenuContent::ConfigEditECGMenuContent(Config * const config)
     : MenuContent(trs("ECGMenu"), trs("ECGMenuDesc")),
-      d_ptr(new ConfigEditECGMenuContentPrivate)
+      d_ptr(new ConfigEditECGMenuContentPrivate(config))
 {
 }
 
@@ -365,41 +366,40 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
     iiii++;
     if (box)
     {
-        Config *config = ConfigEditMenuWindow::getInstance()->getCurrentEditConfig();
         ConfigEditECGMenuContentPrivate::MenuItem item
             = (ConfigEditECGMenuContentPrivate::MenuItem) box->property("Item").toInt();
         switch (item)
         {
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_LEAD_MODE:
-            config->setNumValue("ECG|LeadMode", index);
+            d_ptr->config->setNumValue("ECG|LeadMode", index);
             d_ptr->loadOptions();
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_FILTER_MODE:
-            config->setNumValue("ECG|Filter", index);
+            d_ptr->config->setNumValue("ECG|Filter", index);
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER:
-            config->setNumValue("ECG|NotchFilter", index);
+            d_ptr->config->setNumValue("ECG|NotchFilter", index);
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ALARM_SOURCE:
-            config->setNumValue("ECG|AlarmSource", index);
+            d_ptr->config->setNumValue("ECG|AlarmSource", index);
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_WAVE:
-            config->setNumValue("ECG|Ecg1Wave", index);
+            d_ptr->config->setNumValue("ECG|Ecg1Wave", index);
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_WAVE:
-            config->setNumValue("ECG|Ecg2Wave", index);
+            d_ptr->config->setNumValue("ECG|Ecg2Wave", index);
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_GAIN:
-            config->setNumValue("ECG|Ecg1Gain", index);
+            d_ptr->config->setNumValue("ECG|Ecg1Gain", index);
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_GAIN:
-            config->setNumValue("ECG|Ecg2Gain", index);
+            d_ptr->config->setNumValue("ECG|Ecg2Gain", index);
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL:
-            config->setNumValue("ECG|QRSVolume", index);
+            d_ptr->config->setNumValue("ECG|QRSVolume", index);
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED:
-            config->setNumValue("ECG|SweepSpeed", index);
+            d_ptr->config->setNumValue("ECG|SweepSpeed", index);
             break;
         default:
             break;

@@ -16,7 +16,6 @@
 #include <QGridLayout>
 #include "SPO2Symbol.h"
 #include "SPO2Define.h"
-#include "ConfigEditMenuWindow.h"
 #include "ConfigManager.h"
 
 class ConfigEditSpO2MenuContentPrivate
@@ -32,24 +31,27 @@ public:
         ITEM_CBO_MAX,
     };
 
-    ConfigEditSpO2MenuContentPrivate();
+    explicit ConfigEditSpO2MenuContentPrivate(Config * const config);
     /**
      * @brief loadOptions
      */
     void loadOptions();
 
     QMap <MenuItem, ComboBox *> combos;
+    Config *const config;
 };
 
-ConfigEditSpO2MenuContentPrivate::ConfigEditSpO2MenuContentPrivate()
+ConfigEditSpO2MenuContentPrivate
+    ::ConfigEditSpO2MenuContentPrivate(Config * const config)
+    : config(config)
 {
     combos.clear();
 }
 
-ConfigEditSpO2MenuContent::ConfigEditSpO2MenuContent():
+ConfigEditSpO2MenuContent::ConfigEditSpO2MenuContent(Config * const config):
     MenuContent(trs("ConfigEditSpO2Menu"),
                 trs("ConfigEditSpO2MenuDesc")),
-    d_ptr(new ConfigEditSpO2MenuContentPrivate)
+    d_ptr(new ConfigEditSpO2MenuContentPrivate(config))
 {
 }
 
@@ -60,9 +62,6 @@ ConfigEditSpO2MenuContent::~ConfigEditSpO2MenuContent()
 
 void ConfigEditSpO2MenuContentPrivate::loadOptions()
 {
-
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
     QStringList strList = QStringList()
                           << "Sensitivity"
                           << "SmartPluseTone"
@@ -189,8 +188,6 @@ void ConfigEditSpO2MenuContent::onComboBoxIndexChanged(int index)
 {
     ComboBox *combo = qobject_cast<ComboBox *>(sender());
     int indexType = combo->property("Item").toInt();
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
     QString str;
     switch (indexType)
     {
@@ -213,7 +210,7 @@ void ConfigEditSpO2MenuContent::onComboBoxIndexChanged(int index)
         qdebug("Invalid combo id.");
         break;
     }
-    config->setNumValue(QString("SPO2|%1").arg(str), index);
+    d_ptr->config->setNumValue(QString("SPO2|%1").arg(str), index);
 }
 
 

@@ -19,7 +19,6 @@
 #include "ConfigManager.h"
 #include "NumberInput.h"
 #include "MessageBox.h"
-#include "ConfigEditMenuWindow.h"
 
 class ConfigEditCO2MenuContentPrivate
 {
@@ -33,7 +32,9 @@ public:
         ITEM_BTN_N2O_COMPEN,
     };
 
-    ConfigEditCO2MenuContentPrivate() {}
+    explicit ConfigEditCO2MenuContentPrivate(Config *const config)
+        : config(config)
+    {}
 
     /**
      * @brief loadOptions  // load settings
@@ -42,11 +43,12 @@ public:
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> btns;
+    Config *const config;
 };
 
-ConfigEditCO2MenuContent::ConfigEditCO2MenuContent():
+ConfigEditCO2MenuContent::ConfigEditCO2MenuContent(Config *const config):
     MenuContent(trs("CO2Menu"), trs("CO2MenuDesc")),
-    d_ptr(new ConfigEditCO2MenuContentPrivate)
+    d_ptr(new ConfigEditCO2MenuContentPrivate(config))
 {
 }
 
@@ -63,7 +65,6 @@ void ConfigEditCO2MenuContent::readyShow()
 
 void ConfigEditCO2MenuContentPrivate::loadOptions()
 {
-    Config *config = ConfigEditMenuWindow::getInstance()->getCurrentEditConfig();
     int index = 0;
 
     // 波形速度。
@@ -85,14 +86,13 @@ void ConfigEditCO2MenuContent::onComboBoxIndexChanged(int index)
 {
     ComboBox *combos = qobject_cast<ComboBox *>(sender());
     int indexType = combos->property("Item").toInt();
-    Config *config = ConfigEditMenuWindow::getInstance()->getCurrentEditConfig();
     switch (indexType)
     {
     case ConfigEditCO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED:
-        config->setNumValue("CO2|SweepSpeed", index);
+        d_ptr->config->setNumValue("CO2|SweepSpeed", index);
         break;
     case ConfigEditCO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY:
-        config->setNumValue("CO2|FICO2Display", index);
+        d_ptr->config->setNumValue("CO2|FICO2Display", index);
         break;
     };
 }
@@ -102,7 +102,6 @@ void ConfigEditCO2MenuContent::onBtnReleasedChanged()
     Button *button = qobject_cast<Button *>(sender());
     int index = button->property("Btn").toInt();
 
-    Config *config = ConfigEditMenuWindow::getInstance()->getCurrentEditConfig();
     NumberInput numberInput;
     unsigned num = 1000;
     switch (index)
@@ -117,7 +116,7 @@ void ConfigEditCO2MenuContent::onBtnReleasedChanged()
             num = strValue.toShort();
             if (num <= 100)
             {
-                config->setNumValue("CO2|Compensation|O2", num);
+                d_ptr->config->setNumValue("CO2|Compensation|O2", num);
                 button->setText(strValue);
             }
             else
@@ -137,7 +136,7 @@ void ConfigEditCO2MenuContent::onBtnReleasedChanged()
             num = strValue.toShort();
             if (num <= 100)
             {
-                config->setNumValue("CO2|Compensation|NO2", num);
+                d_ptr->config->setNumValue("CO2|Compensation|NO2", num);
                 button->setText(strValue);
             }
             else

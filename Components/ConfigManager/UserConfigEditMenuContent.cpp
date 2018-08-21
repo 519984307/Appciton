@@ -44,7 +44,8 @@ public:
 
     UserConfigEditMenuContentPrivate()
         :  curConfig(NULL), curEditIndex(-1),
-           configDataModel(NULL), configListView(NULL)
+           configDataModel(NULL), configListView(NULL),
+           editWindow(NULL)
     {
         btns.clear();
     }
@@ -66,6 +67,7 @@ public:
 
     ListDataModel *configDataModel;
     ListView *configListView;
+    ConfigEditMenuWindow *editWindow;
 };
 
 void UserConfigEditMenuContentPrivate::loadConfigs()
@@ -146,6 +148,7 @@ UserConfigEditMenuContent::UserConfigEditMenuContent()
 
 UserConfigEditMenuContent::~UserConfigEditMenuContent()
 {
+    delete d_ptr;
 }
 
 
@@ -188,10 +191,12 @@ void UserConfigEditMenuContent::onBtnClick()
                                               .arg(configManager.runningConfigFilename(patientManager.getType())));
             }
 
-            ConfigEditMenuWindow::getInstance()->setCurrentEditConfigName(d_ptr->generateDefaultConfigName());
-            ConfigEditMenuWindow::getInstance()->setCurrentEditConfig(d_ptr->curConfig);
-            ConfigManagerMenuWindow *w = ConfigManagerMenuWindow::getInstance();
-            windowManager.showWindow(w, WindowManager::WINDOW_TYPE_NONMODAL);
+            d_ptr->editWindow = new ConfigEditMenuWindow();
+            d_ptr->editWindow->setCurrentEditConfigName(d_ptr->generateDefaultConfigName());
+            d_ptr->editWindow->setCurrentEditConfig(d_ptr->curConfig);
+            d_ptr->editWindow->initializeSubMenu();
+            windowManager.showWindow(d_ptr->editWindow, WindowManager::WINDOW_TYPE_NONMODAL);
+            connect(d_ptr->editWindow , SIGNAL(finished(int)) , this , SLOT(onEditFinished()));
         }
     }
     else if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG])
@@ -205,11 +210,12 @@ void UserConfigEditMenuContent::onBtnClick()
         d_ptr->curConfig = new Config(QString("%1/%2")
                                       .arg(CONFIG_DIR)
                                       .arg(d_ptr->configs.at(index).fileName));
-
-        ConfigEditMenuWindow::getInstance()->setCurrentEditConfigName(d_ptr->configs.at(index).name);
-        ConfigEditMenuWindow::getInstance()->setCurrentEditConfig(d_ptr->curConfig);
-        ConfigEditMenuWindow::getInstance()->initializeSubMenu();
-        windowManager.showWindow(ConfigEditMenuWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
+        d_ptr->editWindow = new ConfigEditMenuWindow();
+        d_ptr->editWindow->setCurrentEditConfigName(d_ptr->configs.at(index).name);
+        d_ptr->editWindow->setCurrentEditConfig(d_ptr->curConfig);
+        d_ptr->editWindow->initializeSubMenu();
+        windowManager.showWindow(d_ptr->editWindow, WindowManager::WINDOW_TYPE_NONMODAL);
+        connect(d_ptr->editWindow , SIGNAL(finished(int)) , this , SLOT(onEditFinished()));
     }
     else if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG])
     {
@@ -234,7 +240,7 @@ void UserConfigEditMenuContent::onEditFinished()
 {
     //  can't add, too many
     //  TODO show some message
-    QString configName = ConfigEditMenuWindow::getInstance()->getCurrentEditConfigName();
+    QString configName = d_ptr->editWindow->getCurrentEditConfigName();
     if (configName.isEmpty())
     {
         return;
@@ -254,8 +260,9 @@ void UserConfigEditMenuContent::onEditFinished()
         //  add new config
         configManager.saveUserDefineConfig(configName, d_ptr->curConfig);
     }
-    ConfigEditMenuWindow::getInstance()->setCurrentEditConfig(NULL);
-    ConfigEditMenuWindow::getInstance()->setCurrentEditConfigName(QString());
+
+    d_ptr->editWindow->setCurrentEditConfig(NULL);
+    d_ptr->editWindow->setCurrentEditConfigName(QString());
 
     d_ptr->loadConfigs();
     d_ptr->updateConfigList();

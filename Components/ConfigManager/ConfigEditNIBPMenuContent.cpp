@@ -15,7 +15,6 @@
 #include "NIBPSymbol.h"
 #include "NIBPDefine.h"
 #include <QGridLayout>
-#include "ConfigEditMenuWindow.h"
 #include "PatientManager.h"
 
 class ConfigEditNIBPMenuContentPrivate
@@ -28,7 +27,7 @@ public:
         ITEM_CBO_INIT_CUFF,
     };
 
-    ConfigEditNIBPMenuContentPrivate();
+    explicit ConfigEditNIBPMenuContentPrivate(Config *const config);
     /**
      * @brief loadOptions
      */
@@ -40,17 +39,20 @@ public:
     void setInitPressure(int index);
 
     QMap <MenuItem, ComboBox *> combos;
+    Config *const config;
 };
 
-ConfigEditNIBPMenuContentPrivate::ConfigEditNIBPMenuContentPrivate()
+ConfigEditNIBPMenuContentPrivate
+    ::ConfigEditNIBPMenuContentPrivate(Config *const config)
+    :config(config)
 {
     combos.clear();
 }
 
-ConfigEditNIBPMenuContent::ConfigEditNIBPMenuContent():
+ConfigEditNIBPMenuContent::ConfigEditNIBPMenuContent(Config *const config):
     MenuContent(trs("NIBPMenu"),
                 trs("NIBPMenuDesc")),
-    d_ptr(new ConfigEditNIBPMenuContentPrivate)
+    d_ptr(new ConfigEditNIBPMenuContentPrivate(config))
 {
 }
 
@@ -61,8 +63,6 @@ ConfigEditNIBPMenuContent::~ConfigEditNIBPMenuContent()
 
 void ConfigEditNIBPMenuContentPrivate::loadOptions()
 {
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
     int index;
     index = 0;
     config->getNumValue("NIBP|NIBPMeasureMode", index);
@@ -126,9 +126,6 @@ void ConfigEditNIBPMenuContentPrivate::loadOptions()
 
 void ConfigEditNIBPMenuContentPrivate::setInitPressure(int index)
 {
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
-
     PatientType type = patientManager.getType();
     QString path;
     if (type == PATIENT_TYPE_ADULT)
@@ -160,8 +157,6 @@ void ConfigEditNIBPMenuContent::onComboIndexChanged(int index)
         return;
     }
     int indexType = combo->property("Item").toInt();
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
     switch (indexType)
     {
 
@@ -169,10 +164,10 @@ void ConfigEditNIBPMenuContent::onComboIndexChanged(int index)
         d_ptr->setInitPressure(index);
         break;
     case ConfigEditNIBPMenuContentPrivate::ITEM_CBO_INTERVAL_TIME:
-        config->setNumValue("NIBP|IntervalTime", index);
+        d_ptr->config->setNumValue("NIBP|IntervalTime", index);
         break;
     case ConfigEditNIBPMenuContentPrivate::ITEM_CBO_MEASURE_MODE:
-        config->setNumValue("NIBP|NIBPMeasureMode", index);
+        d_ptr->config->setNumValue("NIBP|NIBPMeasureMode", index);
         break;
     default:
         break;

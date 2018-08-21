@@ -9,13 +9,14 @@
  **/
 
 #include "MenuContent.h"
+#include "ConfigEditMenuWindow.h"
 
 class ConfigEditNIBPMenuContentPrivate;
 class ConfigEditNIBPMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    ConfigEditNIBPMenuContent();
+    explicit ConfigEditNIBPMenuContent(Config *const config);
     ~ConfigEditNIBPMenuContent();
 
 protected:

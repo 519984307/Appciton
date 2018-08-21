@@ -14,7 +14,6 @@
 #include "LanguageManager.h"
 #include <QMap>
 #include <QVBoxLayout>
-#include "ConfigEditMenuWindow.h"
 #include <QEvent>
 
 class ConfigEditCodeMarkerMenuContentPrivate
@@ -26,18 +25,24 @@ public:
         ITEM_CBO_MAX = 28,
     };
 
+    explicit ConfigEditCodeMarkerMenuContentPrivate(Config *const config)
+        : languageIndex(-1),
+          config(config)
+    {
+    }
     void loadOptions();
 
     QMap <MenuItem, ComboBox *> combos;
     int languageIndex;
     QStringList allCodeMarkers;  // all codemarker types
     QStringList selectedCodeMarkers;  // current selected codemarker types
+    Config *const config;
 };
 
-ConfigEditCodeMarkerMenuContent::ConfigEditCodeMarkerMenuContent():
+ConfigEditCodeMarkerMenuContent::ConfigEditCodeMarkerMenuContent(Config *const config):
     MenuContent(trs("ConfigEditCodeMarkerMenu"),
                 trs("ConfigEditCodeMarkerMenuDesc")),
-    d_ptr(new ConfigEditCodeMarkerMenuContentPrivate)
+    d_ptr(new ConfigEditCodeMarkerMenuContentPrivate(config))
 {
 }
 
@@ -59,8 +64,6 @@ void ConfigEditCodeMarkerMenuContent::hideEvent(QHideEvent *ev)
 void ConfigEditCodeMarkerMenuContentPrivate::loadOptions()
 {
     languageIndex = 0;
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
     config->getNumAttr("Local|Language", "CurrentOption", languageIndex);
     if (languageIndex != languageManager.getCurLanguage())
     {
@@ -172,16 +175,14 @@ void ConfigEditCodeMarkerMenuContent::onComboBoxIndexChanged(int index)
     {
         return;
     }
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
     int itemType = combo->property("Item").toInt();
     // new code marker
     d_ptr->selectedCodeMarkers[itemType] = d_ptr->allCodeMarkers[index];
     QStringList tmpList(d_ptr->selectedCodeMarkers);
     QString strValue = tmpList.join(",");
     int num = 0;
-    config->getNumAttr("Local|Language", "CurrentOption", num);
+    d_ptr->config->getNumAttr("Local|Language", "CurrentOption", num);
     QString markerStr = "CodeMarker|SelectMarker|Language";
     markerStr += QString::number(num, 10);
-    config->setStrValue(markerStr, strValue);
+    d_ptr->config->setStrValue(markerStr, strValue);
 }

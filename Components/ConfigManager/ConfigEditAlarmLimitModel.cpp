@@ -9,15 +9,13 @@
  **/
 
 #include "ConfigEditAlarmLimitModel.h"
-#include "ConfigEditMenuWindow.h"
 #include "PatientManager.h"
 #include "ParamInfo.h"
 #include "ParamManager.h"
 
 void ConfigEditAlarmLimitModel::alarmDataUpdate(const AlarmDataInfo &info, int type)
 {
-    Config *config = ConfigEditMenuWindow
-                     ::getInstance()->getCurrentEditConfig();
+    Config *config = w->getCurrentEditConfig();
 
     UnitType unit  = paramManager.getSubParamUnit(info.paramID, info.subParamID);
 
