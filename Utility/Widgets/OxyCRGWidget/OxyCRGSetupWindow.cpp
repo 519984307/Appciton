@@ -43,6 +43,7 @@ public:
         {
             rulerValue.data[i] = 0;
         }
+        rulerValue.s.spo2High = 100;
         rulerUpdated.hrUpdatedStatus = false;
         rulerUpdated.spo2UpdatedStatus = false;
         rulerUpdated.co2UpdatedStatus = false;
