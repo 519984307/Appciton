@@ -2407,11 +2407,16 @@ void WindowManager::showWindow(QWidget *w, WindowType type)
 {
     if (type == WINDOW_TYPE_NONMODAL)
     {
-        if (_activeWindow)
+        if (_activeWindow && _activeWindow->isVisible())
         {
             _activeWindow->hide();
+            _activeWindow = NULL;
+            return;
         }
-        _activeWindow = w;
+        else
+        {
+            _activeWindow = w;
+        }
     }
     else if (type == WINDOW_TYPE_MODAL)
     {
