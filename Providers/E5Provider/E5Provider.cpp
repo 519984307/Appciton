@@ -523,6 +523,9 @@ void E5Provider::setCalcLead(ECGLead lead)
         d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::II);
         break;
     }
+
+    unsigned char calcLead = lead;
+    sendCmd(E5_CMD_SET_CALC_LEAD, &calcLead, 1);
 }
 
 void E5Provider::setPatientType(unsigned char type)
@@ -540,27 +543,39 @@ void E5Provider::setPatientType(unsigned char type)
         d_ptr->ecgAlgInterface->setPatientType(ECGAlg::PATIENT_ADULT);
         break;
     }
+
+    unsigned char patientType = type;
+    sendCmd(E5_CMD_SET_PATIENT_TYPE, &patientType, 1);
 }
 
 void E5Provider::setBandwidth(ECGBandwidth bandwidth)
 {
+    ECGFilterMode mode;
     switch (bandwidth)
     {
     case ECG_BANDWIDTH_067_20HZ:
+        mode = ECG_FILTERMODE_SURGERY;
         d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_SURGERY);
         break;
     case ECG_BANDWIDTH_067_40HZ:
+        mode = ECG_FILTERMODE_MONITOR;
         d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_MONITOR);
         break;
     case ECG_BANDWIDTH_0525_40HZ:
+        mode = ECG_FILTERMODE_ST;
         d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_ST);
         break;
     case ECG_BANDWIDTH_0525_150HZ:
+        mode = ECG_FILTERMODE_DIAGNOSTIC;
         d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_DIAGNOSIS);
     default:
+        mode = ECG_FILTERMODE_MONITOR;
         d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_MONITOR);
         break;
     }
+
+    unsigned char filterMode = mode;
+    sendCmd(E5_CMD_SET_CALC_MODE, &filterMode, 1);
 }
 
 void E5Provider::setFilterMode(ECGFilterMode mode)
