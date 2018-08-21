@@ -45,13 +45,13 @@
 		<Wave>0</Wave>
 		<Ruler>
 			<HRLow>0</HRLow>	
-			<HRHigh>300</HRHigh>	
+			<HRHigh>0</HRHigh>	
+			<RRLow>0</RRLow>	
+			<RRHigh>0</RRHigh>	
 			<SPO2Low>0</SPO2Low>	
-			<SPO2High>100</SPO2High>	
+			<SPO2High>0</SPO2High>	
 			<CO2Low>0</CO2Low>	
-			<CO2High>100</CO2High>	
-			<RESPLow>-5000</RESPLow>	
-			<RESPHigh>-5000</RESPHigh>	
+			<CO2High>0</CO2High>	
 		</Ruler>
 	</OxyCRG>
     <CPR>

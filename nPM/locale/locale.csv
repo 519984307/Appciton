@@ -414,6 +414,8 @@ Medium,中,Medium
 Low,低,Low
 HRHigh,心率高,HR High
 HRLow,心率低,HR Low
+HRRRLow,心率/呼吸率低,HR/RR Low
+HRRRHigh,心率/呼吸率高,HR/RR High
 PVCSLow,PVCS 低,PVCS Low
 PVCSHigh,PVCS 高,PVCS High
 ST-Low,ST-I 低,ST-I Low
@@ -1068,6 +1070,7 @@ HDMIModule,高清晰度多媒体接口模块,HDMI Module
 WifiModule,无线网络模块,Wifi Module
 ScreenModule,触摸屏模块,Screen Module
 NurseCallingModule,护士呼叫设置模块,Nurse Calling Module
+NurseCallingSettingWindow,护士呼叫设置窗口,Nurse Calling Setting Window
 AnalogOutputModule,模拟输出模块,Analog Output Module
 SYNCDefibrillationModule,同步除颤模块,SYNC Defibrillation Module
 COModule,一氧化碳模块,CO Module

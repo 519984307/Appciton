@@ -90,6 +90,7 @@
 	    <FrequencyNotch>1</FrequencyNotch>
 	    <ParaSwitchPrem>1</ParaSwitchPrem>
 	    <ConfImpactItemSettings>1</ConfImpactItemSettings>
+	    <NurseCallSetting>1</NurseCallSetting>
 	    <SignalType>1</SignalType>
 	    <TriggerMode>1</TriggerMode>
 	    <AlarmLevel>
