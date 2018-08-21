@@ -25,6 +25,7 @@
 #include "ParamInfo.h"
 #include "SystemManager.h"
 #include "OxyCRGSetupWidget.h"
+#include "OxyCRGSetupWindow.h"
 #include "IMessageBox.h"
 #include "ECGParam.h"
 
@@ -461,7 +462,8 @@ void OxyCRGWidget::_onSetupUpdated(IWidget *widget)
 {
     if (widget == _setUp)
     {
-        OxyCRGSetupWidget setupWidget;
+//        OxyCRGSetupWidget setupWidget;
+        OxyCRGSetupWindow setupWidget;
 
         setupWidget.exec();
         int index = setupWidget.getWaveTypeIndex();

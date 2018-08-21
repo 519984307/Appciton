@@ -20,6 +20,7 @@
 #include "ParamInfo.h"
 #include "WaveWidgetSelectMenu.h"
 #include "ConfigManager.h"
+#include "OxyCRGSymbol.h"
 
 /**************************************************************************************************
  * 构造。
@@ -44,6 +45,11 @@ OxyCRGHRWidget::OxyCRGHRWidget(const QString &waveName, const QString &title)
     int valueHigh = 0;
     currentConfig.getNumValue("OxyCRG|Ruler|HRLow", valueLow);
     currentConfig.getNumValue("OxyCRG|Ruler|HRHigh", valueHigh);
+    QString strValueLow =  OxyCRGSymbol::convert(HRLowTypes(valueLow));
+    valueLow = strValueLow.toInt();
+    QString strValueHigh =  OxyCRGSymbol::convert(HRHighTypes(valueHigh));
+    valueHigh = strValueHigh.toInt();
+
     setValueRange(valueLow, valueHigh);
     setDataRate(1);
 

@@ -22,6 +22,7 @@
 #include "SPO2Define.h"
 #include "SPO2Param.h"
 #include "ConfigManager.h"
+#include "OxyCRGSymbol.h"
 
 /**************************************************************************************************
  * 构造。
@@ -46,6 +47,11 @@ OxyCRGCO2Widget::OxyCRGCO2Widget(const QString &waveName, const QString &title)
     int valueHigh = 0;
     currentConfig.getNumValue("OxyCRG|Ruler|CO2Low", valueLow);
     currentConfig.getNumValue("OxyCRG|Ruler|CO2High", valueHigh);
+    QString strValueLow =  OxyCRGSymbol::convert(CO2LowTypes(valueLow));
+    valueLow = strValueLow.toInt();
+    QString strValueHigh =  OxyCRGSymbol::convert(CO2HighTypes(valueHigh));
+    valueHigh = strValueHigh.toInt();
+
     setValueRange(valueLow, valueHigh);
     _ruler->setRuler(valueHigh, (valueLow + valueHigh) / 2, valueLow);
 
