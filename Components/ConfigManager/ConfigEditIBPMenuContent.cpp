@@ -17,7 +17,6 @@
 #include "ConfigManager.h"
 #include "IBPSymbol.h"
 #include "Button.h"
-#include "ConfigEditMenuWindow.h"
 
 class ConfigEditIBPMenuContentPrivate
 {
@@ -32,26 +31,26 @@ public:
         ITEM_CBO_MAX,
     };
 
-    explicit ConfigEditIBPMenuContentPrivate(ConfigEditIBPMenuContent * const q_ptr);
+    explicit ConfigEditIBPMenuContentPrivate(Config * const config);
     /**
      * @brief loadOptions
      */
     void loadOptions();
 
     QMap <MenuItem, ComboBox *> combos;
-    ConfigEditIBPMenuContent * const q_ptr;
+    Config *const config;
 };
 
-ConfigEditIBPMenuContentPrivate::ConfigEditIBPMenuContentPrivate(ConfigEditIBPMenuContent *q_ptr)
-    :q_ptr(q_ptr)
+ConfigEditIBPMenuContentPrivate::ConfigEditIBPMenuContentPrivate(Config *const config)
+    :config(config)
 {
     combos.clear();
 }
 
-ConfigEditIBPMenuContent::ConfigEditIBPMenuContent():
+ConfigEditIBPMenuContent::ConfigEditIBPMenuContent(Config * const config):
     MenuContent(trs("ConfigEditIBPMenu"),
                 trs("ConfigEditIBPMenuDesc")),
-    d_ptr(new ConfigEditIBPMenuContentPrivate(this))
+    d_ptr(new ConfigEditIBPMenuContentPrivate(config))
 {
 }
 
@@ -62,8 +61,7 @@ ConfigEditIBPMenuContent::~ConfigEditIBPMenuContent()
 
 void ConfigEditIBPMenuContentPrivate::loadOptions()
 {
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(q_ptr->getMenuWindow());
-    Config *config = w->getCurrentEditConfig();
+
     QStringList strList = QStringList()
                           << "ChannelPressureEntitle1"
                           << "ChannelPressureEntitle2"
@@ -202,8 +200,6 @@ void ConfigEditIBPMenuContent::onComboBoxIndexChanged(int index)
 {
     ComboBox *combo = qobject_cast<ComboBox *>(sender());
     int indexType = combo->property("Item").toInt();
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
-    Config *config = w->getCurrentEditConfig();
     QString str;
     switch (indexType)
     {
@@ -226,7 +222,7 @@ void ConfigEditIBPMenuContent::onComboBoxIndexChanged(int index)
         qdebug("Invalid combo id.");
         break;
     }
-    config->setNumValue(QString("IBP|%1").arg(str), index);
+    d_ptr->config->setNumValue(QString("IBP|%1").arg(str), index);
 }
 
 

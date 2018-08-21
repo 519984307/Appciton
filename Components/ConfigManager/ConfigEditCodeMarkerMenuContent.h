@@ -10,13 +10,14 @@
 
 #pragma once
 #include "MenuContent.h"
+#include "ConfigEditMenuWindow.h"
 
 class ConfigEditCodeMarkerMenuContentPrivate;
 class ConfigEditCodeMarkerMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    ConfigEditCodeMarkerMenuContent();
+    explicit ConfigEditCodeMarkerMenuContent(Config *const config);
     ~ConfigEditCodeMarkerMenuContent();
 
 protected:

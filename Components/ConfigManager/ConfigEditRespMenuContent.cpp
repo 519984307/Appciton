@@ -15,7 +15,6 @@
 #include <QMap>
 #include "RESPDefine.h"
 #include "RESPSymbol.h"
-#include "ConfigEditMenuWindow.h"
 
 class ConfigEditRespMenuContentPrivate
 {
@@ -29,27 +28,27 @@ public:
         ITEM_CBO_MAX,
     };
 
-    explicit ConfigEditRespMenuContentPrivate(ConfigEditRespMenuContent * const q_ptr);
+    explicit ConfigEditRespMenuContentPrivate(Config * const config);
     /**
      * @brief loadOptions
      */
     void loadOptions();
 
     QMap <MenuItem, ComboBox *> combos;
-    ConfigEditRespMenuContent *q_ptr;
+    Config *const config;
 };
 
 ConfigEditRespMenuContentPrivate
-    ::ConfigEditRespMenuContentPrivate(ConfigEditRespMenuContent * const q_ptr)
-    : q_ptr(q_ptr)
+    ::ConfigEditRespMenuContentPrivate(Config *const config)
+    : config(config)
 {
     combos.clear();
 }
 
-ConfigEditRespMenuContent::ConfigEditRespMenuContent():
+ConfigEditRespMenuContent::ConfigEditRespMenuContent(Config *const config):
     MenuContent(trs("RespMenu"),
                 trs("RespMenuDesc")),
-    d_ptr(new ConfigEditRespMenuContentPrivate(this))
+    d_ptr(new ConfigEditRespMenuContentPrivate(config))
 {
 }
 
@@ -60,9 +59,6 @@ ConfigEditRespMenuContent::~ConfigEditRespMenuContent()
 
 void ConfigEditRespMenuContentPrivate::loadOptions()
 {
-    ConfigEditMenuWindow *w
-            = qobject_cast<ConfigEditMenuWindow *>(q_ptr->getMenuWindow());
-    Config *config = w->getCurrentEditConfig();
     int index = 0;
     config->getNumValue("RESP|ApneaDelay", index);
     combos[ITEM_CBO_APNEA_DELAY]->setCurrentIndex(index);
@@ -90,22 +86,19 @@ void ConfigEditRespMenuContent::onComboIndexChanged(int index)
         return;
     }
     int indexType = combo->property("Item").toInt();
-
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
-    Config *config = w->getCurrentEditConfig();
     switch (indexType)
     {
     case ConfigEditRespMenuContentPrivate::ITEM_CBO_APNEA_DELAY:
-        config->setNumValue("RESP|ApneaDelay", index);
+        d_ptr->config->setNumValue("RESP|ApneaDelay", index);
         break;
     case ConfigEditRespMenuContentPrivate::ITEM_CBO_BREATH_LEAD:
-        config->setNumValue("RESP|BreathLead", index);
+        d_ptr->config->setNumValue("RESP|BreathLead", index);
         break;
     case ConfigEditRespMenuContentPrivate::ITEM_CBO_RESP_GAIN:
-        config->setNumValue("RESP|Gain", index);
+        d_ptr->config->setNumValue("RESP|Gain", index);
         break;
     case ConfigEditRespMenuContentPrivate::ITEM_CBO_SWEEP_SPEED:
-        config->setNumValue("RESP|SweepSpeed", index);
+        d_ptr->config->setNumValue("RESP|SweepSpeed", index);
         break;
     default:
         qdebug("Invalid combo id.");

@@ -23,7 +23,6 @@
 #include "TableViewItemDelegate.h"
 #include <Button.h>
 #include <QDebug>
-#include "ConfigEditMenuWindow.h"
 #include "ConfigEditAlarmLimitModel.h"
 
 #define TABLE_ROW_NUM 6
@@ -31,18 +30,19 @@
 class ConfigEditAlarmLimitMenuContentPrivate
 {
 public:
-    explicit ConfigEditAlarmLimitMenuContentPrivate(ConfigEditAlarmLimitMenuContent * const q_ptr)
-        : q_ptr(q_ptr), model(NULL), table(NULL),
-          prevBtn(NULL), nextBtn(NULL)
+    explicit ConfigEditAlarmLimitMenuContentPrivate(Config *const config)
+        : model(NULL), table(NULL),
+          prevBtn(NULL), nextBtn(NULL),
+          config(config)
     {}
 
     void loadoptions();
 
-    ConfigEditAlarmLimitMenuContent * const q_ptr;
     ConfigEditAlarmLimitModel *model;
     TableView *table;
     Button *prevBtn;
     Button *nextBtn;
+    Config *config;
 };
 
 void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
@@ -73,9 +73,6 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
             info.subParamID = subId;
             info.status = alarmConfig.isLimitAlarmEnable(subId);
             UnitType unit  = paramManager.getSubParamUnit(pid, subId);
-
-            ConfigEditMenuWindow *cmw = qobject_cast<ConfigEditMenuWindow *>(q_ptr->getMenuWindow());
-            Config *config =  cmw->getCurrentEditConfig();
 
             QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
             prefix += paramInfo.getSubParamName(subId, true);
@@ -129,9 +126,9 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
     model->setupAlarmDataInfos(infos);
 }
 
-ConfigEditAlarmLimitMenuContent::ConfigEditAlarmLimitMenuContent()
+ConfigEditAlarmLimitMenuContent::ConfigEditAlarmLimitMenuContent(Config *const config)
     : MenuContent(trs("AlarmLimitMenu"), trs("AlarmLimitMenuDesc")),
-      d_ptr(new ConfigEditAlarmLimitMenuContentPrivate(this))
+      d_ptr(new ConfigEditAlarmLimitMenuContentPrivate(config))
 {
 }
 

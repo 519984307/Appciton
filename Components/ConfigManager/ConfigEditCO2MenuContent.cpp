@@ -19,7 +19,6 @@
 #include "ConfigManager.h"
 #include "NumberInput.h"
 #include "MessageBox.h"
-#include "ConfigEditMenuWindow.h"
 
 class ConfigEditCO2MenuContentPrivate
 {
@@ -33,8 +32,8 @@ public:
         ITEM_BTN_N2O_COMPEN,
     };
 
-    explicit ConfigEditCO2MenuContentPrivate(ConfigEditCO2MenuContent * const q_ptr)
-        :q_ptr(q_ptr)
+    explicit ConfigEditCO2MenuContentPrivate(Config *const config)
+        : config(config)
     {}
 
     /**
@@ -44,12 +43,12 @@ public:
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> btns;
-    ConfigEditCO2MenuContent * const q_ptr;
+    Config *const config;
 };
 
-ConfigEditCO2MenuContent::ConfigEditCO2MenuContent():
+ConfigEditCO2MenuContent::ConfigEditCO2MenuContent(Config *const config):
     MenuContent(trs("CO2Menu"), trs("CO2MenuDesc")),
-    d_ptr(new ConfigEditCO2MenuContentPrivate(this))
+    d_ptr(new ConfigEditCO2MenuContentPrivate(config))
 {
 }
 
@@ -66,8 +65,6 @@ void ConfigEditCO2MenuContent::readyShow()
 
 void ConfigEditCO2MenuContentPrivate::loadOptions()
 {
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(q_ptr->getMenuWindow());
-    Config *config = w->getCurrentEditConfig();
     int index = 0;
 
     // 波形速度。
@@ -89,15 +86,13 @@ void ConfigEditCO2MenuContent::onComboBoxIndexChanged(int index)
 {
     ComboBox *combos = qobject_cast<ComboBox *>(sender());
     int indexType = combos->property("Item").toInt();
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
-    Config *config = w->getCurrentEditConfig();
     switch (indexType)
     {
     case ConfigEditCO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED:
-        config->setNumValue("CO2|SweepSpeed", index);
+        d_ptr->config->setNumValue("CO2|SweepSpeed", index);
         break;
     case ConfigEditCO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY:
-        config->setNumValue("CO2|FICO2Display", index);
+        d_ptr->config->setNumValue("CO2|FICO2Display", index);
         break;
     };
 }
@@ -107,8 +102,6 @@ void ConfigEditCO2MenuContent::onBtnReleasedChanged()
     Button *button = qobject_cast<Button *>(sender());
     int index = button->property("Btn").toInt();
 
-    ConfigEditMenuWindow * w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
-    Config *config = w->getCurrentEditConfig();
     NumberInput numberInput;
     unsigned num = 1000;
     switch (index)
@@ -123,7 +116,7 @@ void ConfigEditCO2MenuContent::onBtnReleasedChanged()
             num = strValue.toShort();
             if (num <= 100)
             {
-                config->setNumValue("CO2|Compensation|O2", num);
+                d_ptr->config->setNumValue("CO2|Compensation|O2", num);
                 button->setText(strValue);
             }
             else
@@ -143,7 +136,7 @@ void ConfigEditCO2MenuContent::onBtnReleasedChanged()
             num = strValue.toShort();
             if (num <= 100)
             {
-                config->setNumValue("CO2|Compensation|NO2", num);
+                d_ptr->config->setNumValue("CO2|Compensation|NO2", num);
                 button->setText(strValue);
             }
             else

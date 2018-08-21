@@ -10,6 +10,7 @@
 
 #pragma once
 #include "MenuContent.h"
+#include "ConfigEditMenuWindow.h"
 
 class ConfigEditAlarmLimitMenuContentPrivate;
 
@@ -17,7 +18,7 @@ class ConfigEditAlarmLimitMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    ConfigEditAlarmLimitMenuContent();
+    explicit ConfigEditAlarmLimitMenuContent(Config *const config);
     ~ConfigEditAlarmLimitMenuContent();
 
     /* reimplement */

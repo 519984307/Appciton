@@ -14,7 +14,6 @@
 #include "LanguageManager.h"
 #include <QGridLayout>
 #include "KeyBoardPanel.h"
-#include "ConfigEditMenuWindow.h"
 #include <QRegExp>
 #include "ConfigManager.h"
 #include "KeyInputPanel.h"
@@ -28,28 +27,28 @@ public:
     {
         ITEM_BTN_CONFIG_NAME = 0,
     };
-    explicit ConfigEditGeneralMenuContentPrivate(ConfigEditGeneralMenuContent * const q_ptr);
+    explicit ConfigEditGeneralMenuContentPrivate(ConfigEditMenuWindow * const cmw);
     /**
      * @brief loadOptions
      */
     void loadOptions();
 
     QMap <MenuItem, Button *> btns;
-    ConfigEditGeneralMenuContent * const q_ptr;
+    ConfigEditMenuWindow *const cmw;
 };
 
 ConfigEditGeneralMenuContentPrivate
-    ::ConfigEditGeneralMenuContentPrivate(ConfigEditGeneralMenuContent *q_ptr)
-    : q_ptr(q_ptr)
+    ::ConfigEditGeneralMenuContentPrivate(ConfigEditMenuWindow * const cmw)
+    : cmw(cmw)
 
 {
     btns.clear();
 }
 
-ConfigEditGeneralMenuContent::ConfigEditGeneralMenuContent():
+ConfigEditGeneralMenuContent::ConfigEditGeneralMenuContent(ConfigEditMenuWindow *const cmw):
     MenuContent(trs("General"),
                 trs("GeneralDesc")),
-    d_ptr(new ConfigEditGeneralMenuContentPrivate(this))
+    d_ptr(new ConfigEditGeneralMenuContentPrivate(cmw))
 {}
 
 ConfigEditGeneralMenuContent::~ConfigEditGeneralMenuContent()
@@ -64,8 +63,8 @@ void ConfigEditGeneralMenuContent::readyShow()
 
 void ConfigEditGeneralMenuContentPrivate::loadOptions()
 {
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(q_ptr->getMenuWindow());
-    btns[ITEM_BTN_CONFIG_NAME]->setText(w->getCurrentEditConfigName());
+
+    btns[ITEM_BTN_CONFIG_NAME]->setText(cmw->getCurrentEditConfigName());
 }
 void ConfigEditGeneralMenuContent::layoutExec()
 {
@@ -96,8 +95,7 @@ void ConfigEditGeneralMenuContent::onBtnReleasedChanged()
 {
     KeyInputPanel panel;
     panel.setWindowTitle(trs("SetConfigName"));
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
-    panel.setInitString(w->getCurrentEditConfigName());
+    panel.setInitString(d_ptr->cmw->getCurrentEditConfigName());
     panel.setMaxInputLength(MAX_CONFIG_NAME_LEN);
     QString regKeyStr("[a-zA-Z]|[0-9]|_");
     panel.setBtnEnable(regKeyStr);
@@ -109,8 +107,7 @@ void ConfigEditGeneralMenuContent::onBtnReleasedChanged()
         QString newStr(panel.getStrValue());
         if (oldStr != newStr)
         {
-            ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
-            w->setCurrentEditConfigName(newStr);
+            d_ptr->cmw->setCurrentEditConfigName(newStr);
             d_ptr->btns[ConfigEditGeneralMenuContentPrivate
                         ::ITEM_BTN_CONFIG_NAME]->setText(newStr);
         }

@@ -9,13 +9,14 @@
  **/
 #pragma once
 #include "MenuContent.h"
+#include "ConfigEditMenuWindow.h"
 
 class ConfigEditSpO2MenuContentPrivate;
 class ConfigEditSpO2MenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    ConfigEditSpO2MenuContent();
+    explicit ConfigEditSpO2MenuContent(Config *const config);
     ~ConfigEditSpO2MenuContent();
 
 protected:

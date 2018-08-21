@@ -70,53 +70,53 @@ void ConfigEditMenuWindow::initializeSubMenu()
 
     MenuContent *subMenu;
 
-    subMenu = new ConfigEditGeneralMenuContent();
+    Config *config = getCurrentEditConfig();
+    subMenu = new ConfigEditGeneralMenuContent(this);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditGeneralMenu"] = subMenu;
 
-    subMenu = new ConfigEditAlarmLimitMenuContent();
+    subMenu = new ConfigEditAlarmLimitMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditAlarmLimitMenu"] = subMenu;
 
-    subMenu = new ConfigEditECGMenuContent();
+    subMenu = new ConfigEditECGMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditEcgMenu"] = subMenu;
 
-    subMenu = new ConfigEditRespMenuContent();
+    subMenu = new ConfigEditRespMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditRespMenu"] = subMenu;
 
-    subMenu = new ConfigEditSpO2MenuContent();
+    subMenu = new ConfigEditSpO2MenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditSpO2Menu"] = subMenu;
 
-    subMenu = new ConfigEditNIBPMenuContent();
+    subMenu = new ConfigEditNIBPMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditNIBPMenu"] = subMenu;
 
-    subMenu = new ConfigEditCOMenuContent();
+    subMenu = new ConfigEditCOMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditCOMenu"] = subMenu;
 
-    subMenu = new ConfigEditCO2MenuContent();
+    subMenu = new ConfigEditCO2MenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditCO2Menu"] = subMenu;
 
-    subMenu = new ConfigEditIBPMenuContent();
+    subMenu = new ConfigEditIBPMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditIBPMenu"] = subMenu;
 
-    subMenu = new ConfigEditCodeMarkerMenuContent();
+    subMenu = new ConfigEditCodeMarkerMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditCodeMarkerMenu"] = subMenu;
 
     QStringList colorList;
     QString color;
-    Config *config = getCurrentEditConfig();
     config->getStrValue("Display|AllColors", color);
     colorList = color.split(',', QString::KeepEmptyParts);
 
-    subMenu = new ConfigEditDisplayMenuContent(colorList);
+    subMenu = new ConfigEditDisplayMenuContent(colorList, config);
     addMenuContent(subMenu);
 
     d_ptr->subMenuMap["ConfigEditDisplayMenu"] = subMenu;
