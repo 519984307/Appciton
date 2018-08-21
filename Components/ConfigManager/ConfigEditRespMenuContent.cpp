@@ -29,19 +29,19 @@ public:
         ITEM_CBO_MAX,
     };
 
-    explicit ConfigEditRespMenuContentPrivate(ConfigEditRespMenuContent * const p_ptr);
+    explicit ConfigEditRespMenuContentPrivate(ConfigEditRespMenuContent * const q_ptr);
     /**
      * @brief loadOptions
      */
     void loadOptions();
 
     QMap <MenuItem, ComboBox *> combos;
-    ConfigEditRespMenuContent *p_ptr;
+    ConfigEditRespMenuContent *q_ptr;
 };
 
 ConfigEditRespMenuContentPrivate
-    ::ConfigEditRespMenuContentPrivate(ConfigEditRespMenuContent * const p_ptr)
-    : p_ptr(p_ptr)
+    ::ConfigEditRespMenuContentPrivate(ConfigEditRespMenuContent * const q_ptr)
+    : q_ptr(q_ptr)
 {
     combos.clear();
 }
@@ -61,7 +61,7 @@ ConfigEditRespMenuContent::~ConfigEditRespMenuContent()
 void ConfigEditRespMenuContentPrivate::loadOptions()
 {
     ConfigEditMenuWindow *w
-            = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+            = qobject_cast<ConfigEditMenuWindow *>(q_ptr->getMenuWindow());
     Config *config = w->getCurrentEditConfig();
     int index = 0;
     config->getNumValue("RESP|ApneaDelay", index);

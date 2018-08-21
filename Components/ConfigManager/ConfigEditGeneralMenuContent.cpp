@@ -28,19 +28,19 @@ public:
     {
         ITEM_BTN_CONFIG_NAME = 0,
     };
-    explicit ConfigEditGeneralMenuContentPrivate(ConfigEditGeneralMenuContent * const p_ptr);
+    explicit ConfigEditGeneralMenuContentPrivate(ConfigEditGeneralMenuContent * const q_ptr);
     /**
      * @brief loadOptions
      */
     void loadOptions();
 
     QMap <MenuItem, Button *> btns;
-    ConfigEditGeneralMenuContent * const p_ptr;
+    ConfigEditGeneralMenuContent * const q_ptr;
 };
 
 ConfigEditGeneralMenuContentPrivate
-    ::ConfigEditGeneralMenuContentPrivate(ConfigEditGeneralMenuContent *p_ptr)
-    : p_ptr(p_ptr)
+    ::ConfigEditGeneralMenuContentPrivate(ConfigEditGeneralMenuContent *q_ptr)
+    : q_ptr(q_ptr)
 
 {
     btns.clear();
@@ -64,7 +64,7 @@ void ConfigEditGeneralMenuContent::readyShow()
 
 void ConfigEditGeneralMenuContentPrivate::loadOptions()
 {
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(q_ptr->getMenuWindow());
     btns[ITEM_BTN_CONFIG_NAME]->setText(w->getCurrentEditConfigName());
 }
 void ConfigEditGeneralMenuContent::layoutExec()

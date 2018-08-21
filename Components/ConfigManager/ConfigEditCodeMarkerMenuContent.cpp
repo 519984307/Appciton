@@ -26,8 +26,8 @@ public:
         ITEM_CBO_MAX = 28,
     };
 
-    explicit ConfigEditCodeMarkerMenuContentPrivate(ConfigEditCodeMarkerMenuContent * const p_ptr)
-        :p_ptr(p_ptr), languageIndex(-1)
+    explicit ConfigEditCodeMarkerMenuContentPrivate(ConfigEditCodeMarkerMenuContent * const q_ptr)
+        :q_ptr(q_ptr), languageIndex(-1)
     {}
     void loadOptions();
 
@@ -35,7 +35,7 @@ public:
     int languageIndex;
     QStringList allCodeMarkers;  // all codemarker types
     QStringList selectedCodeMarkers;  // current selected codemarker types
-    ConfigEditCodeMarkerMenuContent * const p_ptr;
+    ConfigEditCodeMarkerMenuContent * const q_ptr;
 };
 
 ConfigEditCodeMarkerMenuContent::ConfigEditCodeMarkerMenuContent():
@@ -63,7 +63,7 @@ void ConfigEditCodeMarkerMenuContent::hideEvent(QHideEvent *ev)
 void ConfigEditCodeMarkerMenuContentPrivate::loadOptions()
 {
     languageIndex = 0;
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(q_ptr->getMenuWindow());
     Config *config = w->getCurrentEditConfig();
     config->getNumAttr("Local|Language", "CurrentOption", languageIndex);
     if (languageIndex != languageManager.getCurLanguage())

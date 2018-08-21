@@ -36,9 +36,9 @@ public:
         ITEM_CBO_MEASURE_CONTROL,
     };
 
-    explicit ConfigEditCOMenuContentPrivate(ConfigEditCOMenuContent * const p_ptr)
+    explicit ConfigEditCOMenuContentPrivate(ConfigEditCOMenuContent * const q_ptr)
         : measureSta(CO_INST_START)
-        , p_ptr(p_ptr)
+        , q_ptr(q_ptr)
     {
     }
 
@@ -48,7 +48,7 @@ public:
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> buttons;
     COInstCtl measureSta;              // 测量状态
-    ConfigEditCOMenuContent * const p_ptr;
+    ConfigEditCOMenuContent * const q_ptr;
 };
 
 void ConfigEditCOMenuContentPrivate::loadOptions()
@@ -59,7 +59,7 @@ void ConfigEditCOMenuContentPrivate::loadOptions()
     buttons[ITEM_CBO_MEASURE_CONTROL]->blockSignals(true);
     combos[ITEM_CBO_INJECT_TEMP_SOURCE]->blockSignals(true);
 
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(q_ptr->getMenuWindow());
     Config *config = w->getCurrentEditConfig();
     int number = 0;
     config->getNumValue("CO|Ratio", number);

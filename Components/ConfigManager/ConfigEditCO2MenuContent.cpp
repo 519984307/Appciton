@@ -33,8 +33,8 @@ public:
         ITEM_BTN_N2O_COMPEN,
     };
 
-    explicit ConfigEditCO2MenuContentPrivate(ConfigEditCO2MenuContent * const p_ptr)
-        :p_ptr(p_ptr)
+    explicit ConfigEditCO2MenuContentPrivate(ConfigEditCO2MenuContent * const q_ptr)
+        :q_ptr(q_ptr)
     {}
 
     /**
@@ -44,7 +44,7 @@ public:
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> btns;
-    ConfigEditCO2MenuContent * const p_ptr;
+    ConfigEditCO2MenuContent * const q_ptr;
 };
 
 ConfigEditCO2MenuContent::ConfigEditCO2MenuContent():
@@ -66,7 +66,7 @@ void ConfigEditCO2MenuContent::readyShow()
 
 void ConfigEditCO2MenuContentPrivate::loadOptions()
 {
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(q_ptr->getMenuWindow());
     Config *config = w->getCurrentEditConfig();
     int index = 0;
 

@@ -31,7 +31,7 @@ public:
         ITEM_CBO_MAX,
     };
 
-    explicit ConfigEditDisplayMenuContentPrivate(ConfigEditDisplayMenuContent * const p_ptr
+    explicit ConfigEditDisplayMenuContentPrivate(ConfigEditDisplayMenuContent * const q_ptr
                                         , QStringList colorList);
     /**
      * @brief loadOptions
@@ -40,13 +40,13 @@ public:
 
     QMap <MenuItem, ComboBox *> combos;
     QStringList colorList;
-    ConfigEditDisplayMenuContent * const p_ptr;
+    ConfigEditDisplayMenuContent * const q_ptr;
 };
 
 ConfigEditDisplayMenuContentPrivate
-    ::ConfigEditDisplayMenuContentPrivate(ConfigEditDisplayMenuContent * const p_ptr
+    ::ConfigEditDisplayMenuContentPrivate(ConfigEditDisplayMenuContent * const q_ptr
                                           , QStringList colorList)
-    : p_ptr(p_ptr), colorList(colorList)
+    : q_ptr(q_ptr), colorList(colorList)
 {
     combos.clear();
 }
@@ -65,7 +65,7 @@ ConfigEditDisplayMenuContent::~ConfigEditDisplayMenuContent()
 
 void ConfigEditDisplayMenuContentPrivate::loadOptions()
 {
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(q_ptr->getMenuWindow());
     Config *config = w->getCurrentEditConfig();
     QStringList strList = QStringList()
                           << "ECGColor"

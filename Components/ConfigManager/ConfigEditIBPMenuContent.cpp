@@ -32,18 +32,18 @@ public:
         ITEM_CBO_MAX,
     };
 
-    explicit ConfigEditIBPMenuContentPrivate(ConfigEditIBPMenuContent * const p_ptr);
+    explicit ConfigEditIBPMenuContentPrivate(ConfigEditIBPMenuContent * const q_ptr);
     /**
      * @brief loadOptions
      */
     void loadOptions();
 
     QMap <MenuItem, ComboBox *> combos;
-    ConfigEditIBPMenuContent * const p_ptr;
+    ConfigEditIBPMenuContent * const q_ptr;
 };
 
-ConfigEditIBPMenuContentPrivate::ConfigEditIBPMenuContentPrivate(ConfigEditIBPMenuContent *p_ptr)
-    :p_ptr(p_ptr)
+ConfigEditIBPMenuContentPrivate::ConfigEditIBPMenuContentPrivate(ConfigEditIBPMenuContent *q_ptr)
+    :q_ptr(q_ptr)
 {
     combos.clear();
 }
@@ -62,7 +62,7 @@ ConfigEditIBPMenuContent::~ConfigEditIBPMenuContent()
 
 void ConfigEditIBPMenuContentPrivate::loadOptions()
 {
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(q_ptr->getMenuWindow());
     Config *config = w->getCurrentEditConfig();
     QStringList strList = QStringList()
                           << "ChannelPressureEntitle1"

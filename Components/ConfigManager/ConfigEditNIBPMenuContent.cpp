@@ -28,7 +28,7 @@ public:
         ITEM_CBO_INIT_CUFF,
     };
 
-    explicit ConfigEditNIBPMenuContentPrivate(ConfigEditNIBPMenuContent * const p_ptr);
+    explicit ConfigEditNIBPMenuContentPrivate(ConfigEditNIBPMenuContent * const q_ptr);
     /**
      * @brief loadOptions
      */
@@ -41,12 +41,12 @@ public:
 
     QMap <MenuItem, ComboBox *> combos;
 
-    ConfigEditNIBPMenuContent *p_ptr;
+    ConfigEditNIBPMenuContent *q_ptr;
 };
 
 ConfigEditNIBPMenuContentPrivate
-    ::ConfigEditNIBPMenuContentPrivate(ConfigEditNIBPMenuContent * const p_ptr)
-    :p_ptr(p_ptr)
+    ::ConfigEditNIBPMenuContentPrivate(ConfigEditNIBPMenuContent * const q_ptr)
+    :q_ptr(q_ptr)
 {
     combos.clear();
 }
@@ -66,7 +66,7 @@ ConfigEditNIBPMenuContent::~ConfigEditNIBPMenuContent()
 void ConfigEditNIBPMenuContentPrivate::loadOptions()
 {
     ConfigEditMenuWindow *w
-            = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+            = qobject_cast<ConfigEditMenuWindow *>(q_ptr->getMenuWindow());
     Config *config = w->getCurrentEditConfig();
     int index;
     index = 0;
@@ -131,7 +131,7 @@ void ConfigEditNIBPMenuContentPrivate::loadOptions()
 
 void ConfigEditNIBPMenuContentPrivate::setInitPressure(int index)
 {
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(q_ptr->getMenuWindow());
     Config *config = w->getCurrentEditConfig();
 
     PatientType type = patientManager.getType();

@@ -32,19 +32,19 @@ public:
         ITEM_CBO_MAX,
     };
 
-    explicit ConfigEditSpO2MenuContentPrivate(ConfigEditSpO2MenuContent * const p_ptr);
+    explicit ConfigEditSpO2MenuContentPrivate(ConfigEditSpO2MenuContent * const q_ptr);
     /**
      * @brief loadOptions
      */
     void loadOptions();
 
     QMap <MenuItem, ComboBox *> combos;
-    ConfigEditSpO2MenuContent * const p_ptr;
+    ConfigEditSpO2MenuContent * const q_ptr;
 };
 
 ConfigEditSpO2MenuContentPrivate
-    ::ConfigEditSpO2MenuContentPrivate(ConfigEditSpO2MenuContent * const p_ptr)
-    : p_ptr(p_ptr)
+    ::ConfigEditSpO2MenuContentPrivate(ConfigEditSpO2MenuContent * const q_ptr)
+    : q_ptr(q_ptr)
 {
     combos.clear();
 }
@@ -63,7 +63,7 @@ ConfigEditSpO2MenuContent::~ConfigEditSpO2MenuContent()
 
 void ConfigEditSpO2MenuContentPrivate::loadOptions()
 {
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(q_ptr->getMenuWindow());
     Config *config = w->getCurrentEditConfig();
     QStringList strList = QStringList()
                           << "Sensitivity"

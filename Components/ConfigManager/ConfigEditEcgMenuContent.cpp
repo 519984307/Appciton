@@ -40,8 +40,8 @@ public:
         ITEM_CBO_MAX,
     };
 
-    explicit ConfigEditECGMenuContentPrivate(ConfigEditECGMenuContent * const p_ptr)
-        :p_ptr(p_ptr)
+    explicit ConfigEditECGMenuContentPrivate(ConfigEditECGMenuContent * const q_ptr)
+        :q_ptr(q_ptr)
     {}
 
     // load settings
@@ -49,7 +49,7 @@ public:
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, QLabel *> comboLabels;
-    ConfigEditECGMenuContent * const p_ptr;
+    ConfigEditECGMenuContent * const q_ptr;
 };
 
 void ConfigEditECGMenuContentPrivate::loadOptions()
@@ -60,7 +60,7 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
         combos[item]->blockSignals(true);
     }
 
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(p_ptr->getMenuWindow());
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(q_ptr->getMenuWindow());
     Config *config = w->getCurrentEditConfig();
 
     int index = 0;
