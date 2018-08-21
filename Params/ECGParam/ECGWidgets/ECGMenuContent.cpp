@@ -32,20 +32,19 @@ public:
         ITEM_CBO_FILTER_MODE,
         ITEM_CBO_NOTCH_FITER,
         ITEM_CBO_PACER_MARK,
-        ITEM_CBO_12LPACER_MARK,
-        ITEM_CBO_SELF_LEARN,
         ITEM_CBO_SWEEP_SPEED,
         ITEM_CBO_QRS_TONE,
     };
 
     ECGMenuContentPrivate()
-        : arrhythmiaBtn(NULL)
+        : selfLearnBtn(NULL), arrhythmiaBtn(NULL)
     {}
 
     // load settings
     void loadOptions();
 
     QMap<MenuItem, ComboBox *> combos;
+    Button *selfLearnBtn;
     Button *arrhythmiaBtn;
 };
 
@@ -53,18 +52,41 @@ void ECGMenuContentPrivate::loadOptions()
 {
     combos[ITEM_CBO_LEAD_MODE]->setCurrentIndex(ecgParam.getLeadMode());
 
+    ECGFilterMode filterMode = ecgParam.getFilterMode();
+    ECGNotchFilter notchFilter = ecgParam.getNotchFilter();
     combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(ecgParam.getFilterMode());
 
-    combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(ecgParam.getNotchFilter());
-
-    combos[ITEM_CBO_PACER_MARK]->setCurrentIndex(ecgParam.getPacermaker());
-
-    if (combos[ITEM_CBO_12LPACER_MARK])
+    combos[ITEM_CBO_NOTCH_FITER]->clear();
+    switch (filterMode)
     {
-        combos[ITEM_CBO_12LPACER_MARK]->setCurrentIndex(ecgParam.get12LPacermaker());
+    case ECG_FILTERMODE_MONITOR:
+    case ECG_FILTERMODE_SURGERY:
+        combos[ITEM_CBO_NOTCH_FITER]->
+                addItems(QStringList()
+                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
+                         << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
+                         );
+        if (notchFilter == ECG_NOTCH_50_AND_60HZ)
+        {
+            combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(1);
+        }
+        break;
+    case ECG_FILTERMODE_DIAGNOSTIC:
+    case ECG_FILTERMODE_ST:
+        combos[ITEM_CBO_NOTCH_FITER]->
+                addItems(QStringList()
+                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
+                         << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
+                         << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
+                          );
+        break;
+    default:
+        break;
     }
 
-    combos[ITEM_CBO_SELF_LEARN]->setCurrentIndex(ecgParam.getSelfLearn());
+    combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(notchFilter);
+
+    combos[ITEM_CBO_PACER_MARK]->setCurrentIndex(ecgParam.getPacermaker());
 
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(ecgParam.getSweepSpeed());
 
@@ -138,12 +160,6 @@ void ECGMenuContent::layoutExec()
     label = new QLabel(trs("NotchFilter"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
-                       << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
-                       << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
-                       << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
-                      );
     itemID = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -165,45 +181,6 @@ void ECGMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_PACER_MARK, comboBox);
-
-    // 12 lead pace mark
-    int ecg12LeadEnable = 0;
-    machineConfig.getNumValue("ECG12LEADEnable", ecg12LeadEnable);
-    if (ecg12LeadEnable)
-    {
-        label = new QLabel(trs("ECG12LPaceMarker"));
-        layout->addWidget(label, d_ptr->combos.count(), 0);
-        comboBox = new ComboBox();
-        comboBox->addItems(QStringList()
-                           << trs(ECGSymbol::convert(ECG_PACE_OFF))
-                           << trs(ECGSymbol::convert(ECG_PACE_ON))
-                          );
-        itemID = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_12LPACER_MARK);
-        comboBox->setProperty("Item",
-                              qVariantFromValue(itemID));
-        connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-        layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-        d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_12LPACER_MARK, comboBox);
-    }
-    else
-    {
-        d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_12LPACER_MARK, NULL);
-    }
-
-    // self learn
-    label = new QLabel(trs("SelfLearn"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("Off")
-                       << trs("On")
-                      );
-    itemID = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_SELF_LEARN);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_SELF_LEARN, comboBox);
 
     // sweep speed
     label = new QLabel(trs("ECGSweepSpeed"));
@@ -244,16 +221,27 @@ void ECGMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_QRS_TONE, comboBox);
 
+    // self lear
+    d_ptr->selfLearnBtn = new Button(trs("SelfLearn"));
+    d_ptr->selfLearnBtn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(d_ptr->selfLearnBtn, d_ptr->combos.count(), 1);
+    connect(d_ptr->selfLearnBtn, SIGNAL(released()), this, SLOT(selfLearnBtnReleased()));
+
+    // 心律失常
     d_ptr->arrhythmiaBtn = new Button(trs("Arrhythmia"));
     d_ptr->arrhythmiaBtn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(d_ptr->arrhythmiaBtn, d_ptr->combos.count(), 1);
+    layout->addWidget(d_ptr->arrhythmiaBtn, d_ptr->combos.count() + 1, 1);
     connect(d_ptr->arrhythmiaBtn, SIGNAL(released()), this, SLOT(arrhythmiaBtnReleased()));
 
-    layout->setRowStretch(d_ptr->combos.count() + 1, 1);
+    layout->setRowStretch(d_ptr->combos.count() + 2, 1);
 }
 
 void ECGMenuContent::onComboBoxIndexChanged(int index)
 {
+    if (index < 0)
+    {
+        return;
+    }
     ComboBox *box = qobject_cast<ComboBox *>(sender());
     if (box)
     {
@@ -266,19 +254,40 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             d_ptr->loadOptions();
             break;
         case ECGMenuContentPrivate::ITEM_CBO_FILTER_MODE:
+        {
             ecgParam.setFilterMode(index);
+            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->clear();
+            switch (index)
+            {
+            case ECG_FILTERMODE_MONITOR:
+            case ECG_FILTERMODE_SURGERY:
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                        addItems(QStringList()
+                                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
+                                 << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
+                                 );
+                break;
+            case ECG_FILTERMODE_DIAGNOSTIC:
+            case ECG_FILTERMODE_ST:
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                        addItems(QStringList()
+                                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
+                                 << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
+                                 << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
+                                  );
+                break;
+            default:
+                break;
+            }
+            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                    setCurrentIndex(ECG_NOTCH_OFF1);
             break;
+        }
         case ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER:
             ecgParam.setNotchFilter(index);
             break;
         case ECGMenuContentPrivate::ITEM_CBO_PACER_MARK:
             ecgParam.setPacermaker((ECGPaceMode)index);
-            break;
-        case ECGMenuContentPrivate::ITEM_CBO_12LPACER_MARK:
-            ecgParam.set12LPacermaker((ECGPaceMode)index);
-            break;
-        case ECGMenuContentPrivate::ITEM_CBO_SELF_LEARN:
-            ecgParam.setSelfLearn(index);
             break;
         case ECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED:
             ecgParam.setSweepSpeed((ECGSweepSpeed)index);
@@ -296,6 +305,11 @@ void ECGMenuContent::arrhythmiaBtnReleased()
 {
     ArrhythmiaMenuWindow *instance = ArrhythmiaMenuWindow::getInstance();
     windowManager.showWindow(instance, WindowManager::WINDOW_TYPE_MODAL);
+}
+
+void ECGMenuContent::selfLearnBtnReleased()
+{
+    ecgParam.setSelfLearn(1);
 }
 
 

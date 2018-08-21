@@ -28,6 +28,7 @@ public:
 private slots:
     void onComboBoxIndexChanged(int index);
     void arrhythmiaBtnReleased(void);
+    void selfLearnBtnReleased(void);
 
 private:
     ECGMenuContentPrivate * const d_ptr;
