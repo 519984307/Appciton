@@ -68,17 +68,17 @@ public :
      */
     int getCO2High(bool &status)const;
     /**
-     * @brief getRESPLow
+     * @brief getRRLow
      * @param status
      * @return
      */
-    int getRESPLow(bool &status)const;
+    int getRRLow(bool &status)const;
     /**
-     * @brief getRESPHigh
+     * @brief getRRHigh
      * @param status
      * @return
      */
-    int getRESPHigh(bool &status)const;
+    int getRRHigh(bool &status)const;
 
 protected:
     /**

@@ -30,6 +30,8 @@ public:
         ITEM_CBO_SPO2_HIGH,
         ITEM_CBO_CO2_LOW,
         ITEM_CBO_CO2_HIGH,
+        ITEM_CBO_RR_LOW,
+        ITEM_CBO_RR_HIGH,
         ITEM_CBO_MAX,
     };
 
@@ -41,10 +43,10 @@ public:
         {
             rulerValue.data[i] = 0;
         }
-        rulerUpdated.hrRrUpdatedStatus = false;
+        rulerUpdated.hrUpdatedStatus = false;
         rulerUpdated.spo2UpdatedStatus = false;
         rulerUpdated.co2UpdatedStatus = false;
-        rulerUpdated.respUpdatedStatus = false;
+        rulerUpdated.rrUpdatedStatus = false;
         combos.clear();
     }
     union RulerValue
@@ -52,23 +54,23 @@ public:
             int data[8];
             struct RulerValueStruct
             {
-                int hrRrLow;
-                int hrRrHigh;
+                int hrLow;
+                int hrHigh;
                 int spo2Low;
                 int spo2High;
                 int co2Low;
                 int co2High;
-                int respLow;
-                int respHigh;
+                int rrLow;
+                int rrHigh;
             } s;
         } rulerValue;
 
     struct RulerUpdated
     {
-        bool hrRrUpdatedStatus;
+        bool hrUpdatedStatus;
         bool spo2UpdatedStatus;
         bool co2UpdatedStatus;
-        bool respUpdatedStatus;
+        bool rrUpdatedStatus;
     } rulerUpdated;
 
     int waveTypeIndex;
@@ -94,6 +96,8 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
                          << "SPO2High"
                          << "CO2Low"
                          << "CO2High"
+                         << "RRLow"
+                         << "RRHigh"
                         );
 
     QLabel *label;
@@ -104,15 +108,6 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     for (int i = 0; i < itemId / 2; i++)
     {
         label = new QLabel(trs(nameList.at(i)));
-        if (i == 3)
-        {
-            label->setText(trs("HRRRLow"));
-        }
-        else if (i == 4)
-        {
-            label->setText(trs("HRRRHigh"));
-        }
-
         layout->addWidget(label, i, 0);
 
         combo = new ComboBox;
@@ -126,14 +121,6 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     for (int i = itemId / 2; i < itemId; i++)
     {
         label = new QLabel(trs(nameList.at(i)));
-        if (i == 3)
-        {
-            label->setText(trs("HRRRLow"));
-        }
-        else if (i == 4)
-        {
-            label->setText(trs("HRRRHigh"));
-        }
 
         layout->addWidget(label, i - itemId / 2, 3);
 
@@ -166,40 +153,17 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
         comboItemList[2].append(
             trs(OxyCRGSymbol::convert(OxyCRGTrend(i))));
     }
-
-    int index = 0;
-    currentConfig.getNumValue("OxyCRG|TRend1", index);
-
-    if (index)  // RR
+    for (int i = 0; i < HR_LOW_NR; i++)
     {
-        for (int i = 0; i < RR_LOW_NR; i++)
-        {
-            comboItemList[3].append(
-                trs(OxyCRGSymbol::convert(RRLowTypes(i))));
-        }
-
-        for (int i = 0; i < RR_HIGH_NR; i++)
-        {
-            comboItemList[4].append(
-                trs(OxyCRGSymbol::convert(RRHighTypes(i))));
-        }
-    }
-    else  // HR_PR
-    {
-        for (int i = 0; i < HR_LOW_NR; i++)
-        {
-            comboItemList[3].append(
-                trs(OxyCRGSymbol::convert(HRLowTypes(i))));
-        }
-
-        for (int i = 0; i < HR_HIGH_NR; i++)
-        {
-            comboItemList[4].append(
-                trs(OxyCRGSymbol::convert(HRHighTypes(i))));
-        }
+        comboItemList[3].append(
+            trs(OxyCRGSymbol::convert(HRLowTypes(i))));
     }
 
-
+    for (int i = 0; i < HR_HIGH_NR; i++)
+    {
+        comboItemList[4].append(
+            trs(OxyCRGSymbol::convert(HRHighTypes(i))));
+    }
 
     for (int i = 0; i < SPO2_LOW_NR; i++)
     {
@@ -225,6 +189,18 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
             trs(OxyCRGSymbol::convert(CO2HighTypes(i))));
     }
 
+    for (int i = 0; i < RR_LOW_NR; i++)
+    {
+        comboItemList[9].append(
+            trs(OxyCRGSymbol::convert(RRLowTypes(i))));
+    }
+
+    for (int i = 0; i < RR_HIGH_NR; i++)
+    {
+        comboItemList[10].append(
+            trs(OxyCRGSymbol::convert(RRHighTypes(i))));
+    }
+
     for (int i = 0; i < itemId; i++)
     {
         d_ptr->combos[i]->blockSignals(true);
@@ -239,20 +215,20 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
         {
             str = "OxyCRG|Ruler|%1";
         }
-
-        if (i == 3 && index)
-        {
-            nameList[i] = "RRLow";
-        }
-        else if (i == 4 && index)
-        {
-            nameList[i] = "RRHigh";
-        }
         currentConfig.getNumValue(QString(str)
                                   .arg(nameList.at(i)), indexSelect);
 
         d_ptr->combos[i]->setCurrentIndex(indexSelect);
         d_ptr->combos[i]->blockSignals(false);
+
+        if (i == OxyCRGSetupWindowPrivate::ITEM_CBO_RR_HIGH)
+        {
+            if (indexSelect == 0)
+            {
+                d_ptr->combos[i-1]->setEnabled(false);
+                d_ptr->combos[i-1]->setCurrentIndex(0);
+            }
+        }
     }
 }
 
@@ -276,14 +252,14 @@ int OxyCRGSetupWindow::getWaveTypeIndex() const
 
 int OxyCRGSetupWindow::getHRLow(bool &status) const
 {
-    status = d_ptr->rulerUpdated.hrRrUpdatedStatus;
-    return d_ptr->rulerValue.s.hrRrLow;
+    status = d_ptr->rulerUpdated.hrUpdatedStatus;
+    return d_ptr->rulerValue.s.hrLow;
 }
 
 int OxyCRGSetupWindow::getHRHigh(bool &status) const
 {
-    status = d_ptr->rulerUpdated.hrRrUpdatedStatus;
-    return d_ptr->rulerValue.s.hrRrHigh;
+    status = d_ptr->rulerUpdated.hrUpdatedStatus;
+    return d_ptr->rulerValue.s.hrHigh;
 }
 
 int OxyCRGSetupWindow::getSPO2Low(bool &status) const
@@ -310,22 +286,22 @@ int OxyCRGSetupWindow::getCO2High(bool &status) const
     return d_ptr->rulerValue.s.co2High;
 }
 
-int OxyCRGSetupWindow::getRESPLow(bool &status) const
+int OxyCRGSetupWindow::getRRLow(bool &status) const
 {
-    status = d_ptr->rulerUpdated.respUpdatedStatus;
-    return d_ptr->rulerValue.s.respLow;
+    status = d_ptr->rulerUpdated.rrUpdatedStatus;
+    return d_ptr->rulerValue.s.rrLow;
 }
 
-int OxyCRGSetupWindow::getRESPHigh(bool &status) const
+int OxyCRGSetupWindow::getRRHigh(bool &status) const
 {
-    status = d_ptr->rulerUpdated.respUpdatedStatus;
-    return d_ptr->rulerValue.s.respHigh;
+    status = d_ptr->rulerUpdated.rrUpdatedStatus;
+    return d_ptr->rulerValue.s.rrHigh;
 }
 
 void OxyCRGSetupWindow::showEvent(QShowEvent *ev)
 {
     Window::showEvent(ev);
-    d_ptr->combos[4]->setFixedWidth(d_ptr->combos[0]->width());
+    d_ptr->combos[5]->setFixedWidth(d_ptr->combos[0]->width());
 }
 
 void OxyCRGSetupWindow::onComboUpdated(int index)
@@ -342,40 +318,6 @@ void OxyCRGSetupWindow::onComboUpdated(int index)
     {
     case OxyCRGSetupWindowPrivate::ITEM_CBO_TREND_ONE:
         currentConfig.setNumValue("OxyCRG|Trend1", index);
-        d_ptr->combos[3]->blockSignals(true);
-        d_ptr->combos[4]->blockSignals(true);
-        d_ptr->combos[3]->clear();
-        d_ptr->combos[4]->clear();
-        if (index)  // RR
-        {
-            for (int i = 0; i < RR_LOW_NR; i++)
-            {
-                d_ptr->combos[3]->addItem(
-                    trs(OxyCRGSymbol::convert(RRLowTypes(i))));
-            }
-
-            for (int i = 0; i < RR_HIGH_NR; i++)
-            {
-                d_ptr->combos[4]->addItem(
-                    trs(OxyCRGSymbol::convert(RRHighTypes(i))));
-            }
-        }
-        else  // HR_PR
-        {
-            for (int i = 0; i < HR_LOW_NR; i++)
-            {
-                d_ptr->combos[3]->addItem(
-                    trs(OxyCRGSymbol::convert(HRLowTypes(i))));
-            }
-
-            for (int i = 0; i < HR_HIGH_NR; i++)
-            {
-                d_ptr->combos[4]->addItem(
-                    trs(OxyCRGSymbol::convert(HRHighTypes(i))));
-            }
-        }
-        d_ptr->combos[3]->blockSignals(false);
-        d_ptr->combos[4]->blockSignals(false);
         break;
     case OxyCRGSetupWindowPrivate::ITEM_CBO_TREND_TWO:
         currentConfig.setNumValue("OxyCRG|Trend2", index);
@@ -385,32 +327,16 @@ void OxyCRGSetupWindow::onComboUpdated(int index)
         currentConfig.setNumValue("OxyCRG|Wave", index);
         break;
     case OxyCRGSetupWindowPrivate::ITEM_CBO_HR_LOW:
-        currentConfig.getNumValue("OxyCRG|Trend1", trendIndex);
-        if (trendIndex)  // RR
-        {
-            currentConfig.setNumValue("OxyCRG|Ruler|RRLow", index);
-        }
-        else  // HR_PR
-        {
-            currentConfig.setNumValue("OxyCRG|Ruler|RRLow", index);
-        }
-        d_ptr->rulerValue.s.hrRrLow =
+        currentConfig.setNumValue("OxyCRG|Ruler|HRLow", trendIndex);
+        d_ptr->rulerValue.s.hrLow =
             combo->currentText().toInt();
-        d_ptr->rulerUpdated.hrRrUpdatedStatus = true;
+        d_ptr->rulerUpdated.hrUpdatedStatus = true;
         break;
     case OxyCRGSetupWindowPrivate::ITEM_CBO_HR_HIGH:
-        currentConfig.getNumValue("OxyCRG|Trend1", trendIndex);
-        if (trendIndex)  // RR
-        {
-            currentConfig.setNumValue("OxyCRG|Ruler|RRHigh", index);
-        }
-        else  // HR_PR
-        {
-            currentConfig.setNumValue("OxyCRG|Ruler|RRHigh", index);
-        }
-        d_ptr->rulerValue.s.hrRrHigh =
+        currentConfig.setNumValue("OxyCRG|Ruler|HRHigh", trendIndex);
+        d_ptr->rulerValue.s.hrHigh =
             combo->currentText().toInt();
-        d_ptr->rulerUpdated.hrRrUpdatedStatus = true;
+        d_ptr->rulerUpdated.hrUpdatedStatus = true;
         break;
     case OxyCRGSetupWindowPrivate::ITEM_CBO_SPO2_LOW:
         currentConfig.setNumValue("OxyCRG|Ruler|SPO2Low", index);
@@ -431,6 +357,33 @@ void OxyCRGSetupWindow::onComboUpdated(int index)
         currentConfig.setNumValue("OxyCRG|Ruler|CO2High", index);
         d_ptr->rulerValue.s.co2High = combo->currentText().toInt();
         d_ptr->rulerUpdated.co2UpdatedStatus = true;
+        break;
+    case OxyCRGSetupWindowPrivate::ITEM_CBO_RR_LOW:
+        currentConfig.setNumValue("OxyCRG|Ruler|RRLow", index);
+        d_ptr->rulerValue.s.rrLow =
+            combo->currentText().toInt();
+        d_ptr->rulerUpdated.rrUpdatedStatus = true;
+        break;
+    case OxyCRGSetupWindowPrivate::ITEM_CBO_RR_HIGH:
+        currentConfig.setNumValue("OxyCRG|Ruler|RRHigh", index);
+        d_ptr->rulerValue.s.rrHigh =
+            combo->currentText().toInt();
+        d_ptr->rulerUpdated.rrUpdatedStatus = true;
+        d_ptr->combos[OxyCRGSetupWindowPrivate::
+                ITEM_CBO_RR_LOW]->setEnabled(true);
+        if (index != 0)
+        {
+            break;
+        }
+        d_ptr->combos[OxyCRGSetupWindowPrivate::
+                ITEM_CBO_RR_LOW]->setEnabled(false);
+        d_ptr->combos[OxyCRGSetupWindowPrivate::
+                ITEM_CBO_RR_LOW]->blockSignals(true);
+        d_ptr->combos[OxyCRGSetupWindowPrivate::
+                ITEM_CBO_RR_LOW]->setCurrentIndex(0);
+        d_ptr->combos[OxyCRGSetupWindowPrivate::
+                ITEM_CBO_RR_LOW]->blockSignals(false);
+        currentConfig.setNumValue("OxyCRG|Ruler|RRLow", 0);
         break;
     };
 }
