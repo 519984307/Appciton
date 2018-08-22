@@ -150,6 +150,7 @@ SOURCES +=                                                                      
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2Widget.cpp                           \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWidget.cpp                          \
+    Utility/Widgets/OxyCRGWidget/OxyCRGSetupWindow.cpp                          \
     Utility/Widgets/Trendform/ShortTrendWidget.cpp                              \
     Utility/Widgets/Trendform/TrendCanvasWidget.cpp                             \
     Utility/Widgets/Trendform/ShortTrendWidgetLabel.cpp                         \
@@ -685,6 +686,7 @@ HEADERS +=                                                                      
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2Widget.h                             \
     Utility/Widgets/OxyCRGWidget/OxyCRGCO2Widget.h                              \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWidget.h                            \
+    Utility/Widgets/OxyCRGWidget/OxyCRGSetupWindow.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGSymbol.h                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGDefine.h                                 \
