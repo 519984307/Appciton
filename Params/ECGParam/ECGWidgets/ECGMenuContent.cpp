@@ -70,6 +70,10 @@ void ECGMenuContentPrivate::loadOptions()
         {
             combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(1);
         }
+        else
+        {
+            combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(notchFilter);
+        }
         break;
     case ECG_FILTERMODE_DIAGNOSTIC:
     case ECG_FILTERMODE_ST:
@@ -79,12 +83,11 @@ void ECGMenuContentPrivate::loadOptions()
                          << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
                          << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
                           );
+        combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(notchFilter);
         break;
     default:
         break;
     }
-
-    combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(notchFilter);
 
     combos[ITEM_CBO_PACER_MARK]->setCurrentIndex(ecgParam.getPacermaker());
 

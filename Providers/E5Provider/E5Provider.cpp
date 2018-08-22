@@ -30,14 +30,14 @@ enum E5RecvPacketType
     E5_RSP_VERSION              = 0x11,         // version response
     E5_RSP_SELFTEST_RESULT      = 0x13,         // selftest result
 
-    E5_RSP_WORK_MODE            = 0x15,         // set lead mode
-    E5_RSP_CALC_MODE            = 0x17,         // set lead mode
-    E5_RSP_LEAD_MODE            = 0x19,         // set lead mode
-    E5_RSP_CALC_LEAD            = 0x1B,         // set lead mode
-    E5_RSP_NOTCH_TYPE           = 0x1D,         // set lead mode
-    E5_RSP_PATIENT_TYPE         = 0x1F,         // set lead mode
-    E5_RSP_PACE_ONOFF           = 0x21,         // set lead mode
-    E5_RSP_SELFLEARN_ONOFF      = 0x23,         // set lead mode
+    E5_RSP_WORK_MODE            = 0x15,         // get work mode
+    E5_RSP_CALC_MODE            = 0x17,         // get calculation mode
+    E5_RSP_LEAD_MODE            = 0x19,         // get lead mode
+    E5_RSP_CALC_LEAD            = 0x1B,         // get calculation lead
+    E5_RSP_NOTCH_TYPE           = 0x1D,         // get notch type
+    E5_RSP_PATIENT_TYPE         = 0x1F,         // get patient type
+    E5_RSP_PACE_ONOFF           = 0x21,         // get pace onoff
+    E5_RSP_SELFLEARN_ONOFF      = 0x23,         // get selflearn onoff
 
     E5_RSP_12LEAD_SUPPORT       = 0x33,         // response of get version
     E5_RSP_RESP_CALC_LEAD       = 0x51,         // response of set resp calculate lead
