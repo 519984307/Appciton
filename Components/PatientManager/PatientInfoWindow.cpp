@@ -25,6 +25,8 @@
 #include <QMap>
 #include "Button.h"
 #include "WindowManager.h"
+#include "IConfig.h"
+#include "UnitManager.h"
 
 PatientInfoWindow *PatientInfoWindow::_selfObj = NULL;
 class PatientInfoWindowPrivate
@@ -109,19 +111,33 @@ static bool checkHeightValue(const QString &value)
     {
         return true;
     }
-
+    int unitHeightIndex = -1;
+    systemConfig.getNumValue("Unit|HightUnit", unitHeightIndex);
     bool ok = false;
-    int age = value.toInt(&ok);
+    float heightValue = value.toFloat(&ok);
     if (!ok)
     {
         return false;
     }
-
-    if (age > 480 || age < 0)
+    switch (unitHeightIndex)
     {
+    case UNIT_CM:         // cm: 20.0-300.0(cm)
+        if (heightValue - 300.0 > 0.000001 ||
+                heightValue - 20.0 < 0.000001)
+        {
+            return false;
+        }
+        break;
+    case UNIT_INCH:         // inch: 8.0-118.0(inch)
+        if (heightValue - 118.0 > 0.000001 ||
+                heightValue - 8.0 < 0.000001)
+        {
+            return false;
+        }
+        break;
+    default:
         return false;
     }
-
     return true;
 }
 /**
@@ -136,18 +152,34 @@ static bool checkWeightValue(const QString &value)
         return true;
     }
 
+    int unitWeightValue = -1;
+    systemConfig.getNumValue("Unit|WeightUnit", unitWeightValue);
     bool ok = false;
-    int age = value.toInt(&ok);
+    float weightValue = value.toFloat(&ok);
     if (!ok)
     {
         return false;
     }
-
-    if (age > 480 || age < 0)
+    switch (unitWeightValue)
     {
+    case UNIT_KG:           // 0.1-200.0
+        if (weightValue - 0.1 < 0.000001 ||
+                weightValue - 200.0 > 0.000001)
+        {
+            return false;
+        }
+        break;
+    case UNIT_LB:           // 0.2-440.9
+        if (weightValue - 0.2 < 0.000001 ||
+                weightValue - 440.9 > 0.000001)
+        {
+            return false;
+        }
+        break;
+    default:
         return false;
+        break;
     }
-
     return true;
 }
 void PatientInfoWindowPrivate::loadOptions()
@@ -425,7 +457,7 @@ void PatientInfoWindow::_idReleased()
 {
     EnglishInputPanel englishPanel;
     englishPanel.setWindowTitle(trs("PatientID"));
-    englishPanel.setMaxInputLength(100);
+    englishPanel.setMaxInputLength(120);
     englishPanel.setInitString(d_ptr->_id->text());
     if (englishPanel.exec())
     {
@@ -438,7 +470,7 @@ void PatientInfoWindow::_nameReleased()
 {
     EnglishInputPanel englishPanel;
     englishPanel.setWindowTitle(trs("PatientName"));
-    englishPanel.setMaxInputLength(100);
+    englishPanel.setMaxInputLength(120);
     englishPanel.setInitString(d_ptr->_name->text());
     if (englishPanel.exec())
     {
@@ -481,7 +513,6 @@ void PatientInfoWindow::_heightReleased()
 {
     KeyInputPanel englishPanel;
     englishPanel.setWindowTitle(trs("PatientHeight"));
-    englishPanel.setMaxInputLength(3);
     englishPanel.setInitString(d_ptr->_height->text());
     englishPanel.setSpaceEnable(false);
     englishPanel.setSymbolEnable(false);
@@ -492,11 +523,11 @@ void PatientInfoWindow::_heightReleased()
     {
         QString text = englishPanel.getStrValue();
         bool ok = false;
-        int age = text.toInt(&ok);
+        float height = text.toFloat(&ok);
         if (ok)
         {
-            patientManager.setAge(age);
-            d_ptr->_height->setText(QString::number(age));
+            patientManager.setAge(height);
+            d_ptr->_height->setText(QString::number(height));
         }
         else if (text.isEmpty())
         {
@@ -511,7 +542,6 @@ void PatientInfoWindow::_weightReleased()
 {
     KeyInputPanel englishPanel;
     englishPanel.setWindowTitle(trs("PatientWeight"));
-    englishPanel.setMaxInputLength(3);
     englishPanel.setInitString(d_ptr->_weight->text());
     englishPanel.setSpaceEnable(false);
     englishPanel.setSymbolEnable(false);
@@ -522,11 +552,11 @@ void PatientInfoWindow::_weightReleased()
     {
         QString text = englishPanel.getStrValue();
         bool ok = false;
-        int age = text.toInt(&ok);
+        float weight = text.toFloat(&ok);
         if (ok)
         {
-            patientManager.setAge(age);
-            d_ptr->_weight->setText(QString::number(age));
+            patientManager.setAge(weight);
+            d_ptr->_weight->setText(QString::number(weight));
         }
         else if (text.isEmpty())
         {
