@@ -36,6 +36,12 @@ public:
      */
     bool isShowingMask() const;
 
+signals:
+    /**
+     * @brief windowHide emit when the window going to hide
+     */
+    void windowHide(Window *w);
+
 protected:
     /* reimplement */
     void changeEvent(QEvent *ev);
@@ -45,6 +51,9 @@ protected:
     void keyPressEvent(QKeyEvent *ev);
     /* reimplement */
     void keyReleaseEvent(QKeyEvent *ev);
+    /* reimplement */
+    void hideEvent(QHideEvent *ev);
+
 
 private:
     QScopedPointer<WindowPrivate> d_ptr;

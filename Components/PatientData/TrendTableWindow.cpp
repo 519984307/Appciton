@@ -266,7 +266,7 @@ void TrendTableWindow::printWidgetRelease()
 
 void TrendTableWindow::trendDataSetReleased()
 {
-    windowManager.showWindow(&trendTableSetWindow, WindowManager::WINDOW_TYPE_MODAL);
+    windowManager.showWindow(&trendTableSetWindow, WindowManager::ShowBehaviorModal);
 }
 
 void TrendTableWindowPrivate::updateTable()

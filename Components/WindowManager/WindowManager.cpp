@@ -33,6 +33,7 @@
 #include "ConfigEditMenuWindow.h"
 #include "NIBPRepairMenuWindow.h"
 #include <QApplication>
+#include "Window.h"
 
 struct NodeDesc
 {
@@ -2403,31 +2404,95 @@ WindowManager::~WindowManager()
     _winMap.clear();
 }
 
-void WindowManager::showWindow(QWidget *w, WindowType type)
+void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
 {
-    if (type == WINDOW_TYPE_NONMODAL)
+    if (w == NULL)
     {
-        if (_activeWindow && _activeWindow->isVisible())
+        qWarning() << "Invalid window";
+        return;
+    }
+
+    Window *top = topWindow();
+
+    if (top == w)
+    {
+        if (behaviors & ShowBehaviorCloseIfVisiable)
         {
-            _activeWindow->hide();
-            _activeWindow = NULL;
-            return;
+            // close will emit windowHide signal, so the window will remove from the stack after calling
+            // the window hide slot
+            w->close();
+        }
+        return;
+    }
+
+
+    if (behaviors & ShowBehaviorCloseOthers)
+    {
+        while (!windowStacks.isEmpty())
+        {
+            Window *p = windowStacks.last();
+            if (p)
+            {
+                p->close();
+            }
+        }
+        // when got here, no any top window
+        top = NULL;
+    }
+
+    if (top)
+    {
+        // will not enter here if the behaviro is close others
+        if (behaviors & ShowBehaviorHideOthers)
+        {
+            // don't emit windowHide signal
+            top->blockSignals(true);
+            top->hide();
+            top->blockSignals(false);
         }
         else
         {
-            _activeWindow = w;
+            top->showMask(true);
         }
     }
-    else if (type == WINDOW_TYPE_MODAL)
-    {
-        w->setWindowModality(Qt::ApplicationModal);
-    }
 
+    QPointer<Window> newP = w;
+    windowStacks.append(newP);
+    connect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)), Qt::DirectConnection);
+
+    // move the proper position
     QRect r = _volatileLayout->geometry();
     QPoint globalTopLeft = mapToGlobal(r.topLeft());
     r.moveTo(0, 0);
     w->move(globalTopLeft + r.center() - w->rect().center());
-    w->show();
+
+    if (behaviors & ShowBehaviorModal)
+    {
+        w->exec();
+    }
+    else
+    {
+        w->show();
+    }
+}
+
+Window *WindowManager::topWindow()
+{
+    // find top window
+    QPointer<Window> top;
+    while (!windowStacks.isEmpty())
+    {
+        top = windowStacks.last();
+        if (top)
+        {
+            break;
+        }
+        else
+        {
+            windowStacks.takeLast();
+        }
+    }
+    return top.data();
 }
 
 void WindowManager::closeAllWidows()
@@ -2440,5 +2505,30 @@ void WindowManager::closeAllWidows()
             break;
         }
         activeWindow->close();
+    }
+}
+
+void WindowManager::onWindowHide(Window *w)
+{
+    // find top window
+    Window *top = topWindow();
+
+    if (top == w)
+    {
+        // remove the window,
+        windowStacks.takeLast();
+        disconnect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)));
+
+        // show the previous window
+        top = topWindow();
+        if (top)
+        {
+            top->showMask(false);
+            top->show();
+        }
+    }
+    else if (windowStacks.isEmpty())
+    {
+        disconnect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)));
     }
 }

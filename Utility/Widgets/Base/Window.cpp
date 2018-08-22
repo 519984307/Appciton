@@ -164,3 +164,9 @@ void Window::keyReleaseEvent(QKeyEvent *ev)
         break;
     }
 }
+
+void Window::hideEvent(QHideEvent *ev)
+{
+    QDialog::hideEvent(ev);
+    emit windowHide(this);
+}

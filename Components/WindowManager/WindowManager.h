@@ -24,16 +24,11 @@ class SoftKeyManager;
 class QHBoxLayout;
 class QVBoxLayout;
 class QGridLayout;
+class Window;
 class WindowManager : public QWidget
 {
     Q_OBJECT
 public:
-    enum WindowType
-    {
-        WINDOW_TYPE_MODAL,
-        WINDOW_TYPE_NONMODAL
-    };
-
     static WindowManager &construction(void)
     {
         if (_selfObj == NULL)
@@ -46,17 +41,36 @@ public:
     ~WindowManager();
 
 public:
+    enum ShowBehaviorFlags
+    {
+        ShowBehaviorNone = 0x00,            // no any special behavior
+        ShowBehaviorCloseIfVisiable = 0x01, // close the window that request to show and remove from the window stack
+                                            // if the window is on the top of the window stack
+        ShowBehaviorModal = 0x02,           // Show the window as modal window
+        ShowBehaviorHideOthers = 0x04,      // show the window and hide others window, the other windows still in the window stack
+        ShowBehaviorCloseOthers = 0x08,     // show the window and close others window, the other windows will remove from the window stack
+    };
+    Q_DECLARE_FLAGS(ShowBehavior, ShowBehaviorFlags)
+
     /**
-     * @brief showWindow 从这里调用显示所有的窗口
-     * @param w
+     * @brief showWindow show a window and push the window to the window stack
+     * @param w the window need to show
+     * @param behaviors the behavior need to perform when showing the window
      */
-    void showWindow(QWidget *w, WindowType type);
+    void showWindow(Window *w, ShowBehavior behaviors = ShowBehaviorNone);
+
+    /**
+     * @brief topWindow get the top window
+     * @return the top window or NULL if the not top window
+     */
+    Window *topWindow();
 
 public slots:
     /**
      * @brief closeAllWidows close all the windows
      */
     void closeAllWidows();
+    void onWindowHide(Window *w);
 
 public:
     // 注册窗体。
@@ -240,7 +254,10 @@ private:
     QMap<QString, QVBoxLayout *> _bigformMap; // 保存当前大字体区的窗体。
     QMultiMap<IWidget *, IWidget *> _trendWave;            // 参数列表
 
+    QList<QPointer<Window> > windowStacks;
+
     QWidget *_activeWindow;
 };
 #define windowManager (WindowManager::construction())
 #define deleteWindowManager() (delete WindowManager::_selfObj)
+Q_DECLARE_OPERATORS_FOR_FLAGS(WindowManager::ShowBehavior)

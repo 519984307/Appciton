@@ -71,7 +71,8 @@ void RescueDataSoftKeyAction::trendReview(bool isPressed)
     }
 
     TrendTableWindow::getInstance()->setHistoryData(false);
-    windowManager.showWindow(TrendTableWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
+    windowManager.showWindow(TrendTableWindow::getInstance(),
+                             WindowManager::ShowBehaviorCloseIfVisiable | WindowManager::ShowBehaviorCloseOthers);
 }
 
 /***************************************************************************************************
@@ -85,7 +86,8 @@ void RescueDataSoftKeyAction::summaryReview(bool isPressed)
     }
 
     TrendGraphWindow::getInstance()->setHistoryData(false);
-    windowManager.showWindow(TrendGraphWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
+    windowManager.showWindow(TrendGraphWindow::getInstance(),
+                             WindowManager::ShowBehaviorCloseIfVisiable | WindowManager::ShowBehaviorCloseOthers);
 }
 
 /***************************************************************************************************
@@ -134,7 +136,8 @@ void RescueDataSoftKeyAction::eventReview(bool isPressed)
     }
 
     EventWindow::getInstance()->setHistoryData(false);
-    windowManager.showWindow(EventWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
+    windowManager.showWindow(EventWindow::getInstance(), WindowManager::ShowBehaviorCloseIfVisiable
+                             | WindowManager::ShowBehaviorCloseOthers);
 }
 
 void RescueDataSoftKeyAction::oxyCRGEventReview(bool isPressed)
@@ -145,7 +148,8 @@ void RescueDataSoftKeyAction::oxyCRGEventReview(bool isPressed)
     }
 
     OxyCRGEventWindow::getInstance()->setHistoryData(false);
-    windowManager.showWindow(OxyCRGEventWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
+    windowManager.showWindow(OxyCRGEventWindow::getInstance(), WindowManager::ShowBehaviorCloseIfVisiable
+                             | WindowManager::ShowBehaviorCloseOthers);
 }
 
 void RescueDataSoftKeyAction::historyReview(bool isPressed)
@@ -155,7 +159,8 @@ void RescueDataSoftKeyAction::historyReview(bool isPressed)
         return;
     }
 
-    windowManager.showWindow(HistoryDataReviewWindow::getInstance(), WindowManager::WINDOW_TYPE_NONMODAL);
+    windowManager.showWindow(HistoryDataReviewWindow::getInstance(), WindowManager::ShowBehaviorCloseIfVisiable
+                             | WindowManager::ShowBehaviorCloseOthers);
 }
 
 /***************************************************************************************************

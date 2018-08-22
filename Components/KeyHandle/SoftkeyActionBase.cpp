@@ -107,7 +107,7 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     {
         return;
     }
-    windowManager.showWindow(&codeMarkerWindow , WindowManager::WINDOW_TYPE_MODAL);
+    windowManager.showWindow(&codeMarkerWindow , WindowManager::ShowBehaviorModal);
 }
 
 void SoftkeyActionBase::previousPage(bool isPressed)

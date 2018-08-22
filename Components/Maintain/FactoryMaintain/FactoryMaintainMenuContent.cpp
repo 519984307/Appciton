@@ -61,5 +61,5 @@ void FactoryMaintainMenuContent::layoutExec()
 void FactoryMaintainMenuContent::userInputCorrect()
 {
     FactoryMaintainMenuWindow *w = FactoryMaintainMenuWindow::getInstance();
-    windowManager.showWindow(w, WindowManager::WINDOW_TYPE_MODAL);
+    windowManager.showWindow(w, WindowManager::ShowBehaviorModal);
 }

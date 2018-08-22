@@ -327,7 +327,7 @@ void OxyCRGEventWindow::printReleased()
 
 void OxyCRGEventWindow::setReleased()
 {
-    windowManager.showWindow(&oxyCRGEventSetWindow, WindowManager::WINDOW_TYPE_MODAL);
+    windowManager.showWindow(&oxyCRGEventSetWindow, WindowManager::ShowBehaviorModal);
 }
 
 OxyCRGEventWindow::OxyCRGEventWindow()

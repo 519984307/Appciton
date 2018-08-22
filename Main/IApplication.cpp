@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/22
+ **/
+
 #include <QShortcut>
 #include <QStyleFactory>
 #include "FontManager.h"
@@ -6,7 +16,7 @@
 #include "KeyActionManager.h"
 #include "Debug.h"
 #include "USBManager.h"
-#ifdef CONFIG_CAPTURE_SCREEN
+#if defined(CONFIG_CAPTURE_SCREEN) && defined(Q_WS_QWS)
 #include <QDateTime>
 #include "Utility.h"
 #include "IMessageBox.h"
@@ -91,44 +101,44 @@ bool IApplication::x11EventFilter(XEvent *e)
     {
         switch (e->xkey.keycode)
         {
-            case 67:                      // F1
-                keyActionManager.handleKeyAction(KEY_F1_PRESSED);
-                break;
+        case 67:                      // F1
+            keyActionManager.handleKeyAction(KEY_F1_PRESSED);
+            break;
 
-            case 68:                      // F2
-                keyActionManager.handleKeyAction(KEY_F2_PRESSED);
-                break;
+        case 68:                      // F2
+            keyActionManager.handleKeyAction(KEY_F2_PRESSED);
+            break;
 
-            case 69:                      // F3
-                keyActionManager.handleKeyAction(KEY_F3_PRESSED);
-                break;
+        case 69:                      // F3
+            keyActionManager.handleKeyAction(KEY_F3_PRESSED);
+            break;
 
-            case 70:                      // F4
-                keyActionManager.handleKeyAction(KEY_F4_PRESSED);
-                break;
+        case 70:                      // F4
+            keyActionManager.handleKeyAction(KEY_F4_PRESSED);
+            break;
 
-            case 71:                      // F5
-                keyActionManager.handleKeyAction(KEY_F5_PRESSED);
-                break;
+        case 71:                      // F5
+            keyActionManager.handleKeyAction(KEY_F5_PRESSED);
+            break;
 
-            case 72:                      // F6
-                keyActionManager.handleKeyAction(KEY_F6_PRESSED);
-                break;
+        case 72:                      // F6
+            keyActionManager.handleKeyAction(KEY_F6_PRESSED);
+            break;
 
-            case 73:                      // F7
-                keyActionManager.handleKeyAction(KEY_F7_PRESSED);
-                break;
+        case 73:                      // F7
+            keyActionManager.handleKeyAction(KEY_F7_PRESSED);
+            break;
 
-            case 74:                      // F8
-                keyActionManager.handleKeyAction(KEY_F8_PRESSED);
-                break;
+        case 74:                      // F8
+            keyActionManager.handleKeyAction(KEY_F8_PRESSED);
+            break;
 
-            case 75:                      // F9
-                keyActionManager.handleKeyAction(KEY_F9_PRESSED);
-                break;
+        case 75:                      // F9
+            keyActionManager.handleKeyAction(KEY_F9_PRESSED);
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
     }
 
@@ -142,32 +152,32 @@ bool IApplication::x11EventFilter(XEvent *e)
 #include <QWSEvent>
 
 #ifdef CONFIG_CAPTURE_SCREEN
-static long capture(const QVariant & para)
+static long capture(const QVariant &para)
 {
     QString filepath = para.toString();
-    if(filepath.isEmpty())
+    if (filepath.isEmpty())
     {
         return 0;
     }
-    QImage * screen = new QImage(Util::captureScreen());
+    QImage *screen = new QImage(Util::captureScreen());
 
-    if(screen->isNull() || (!screen->save(filepath)))
+    if (screen->isNull() || (!screen->save(filepath)))
     {
         delete screen;
         return 0;
     }
     else
     {
-        //Note: screen is deleted in slot
+        // Note: screen is deleted in slot
         return (long) screen;
     }
 }
 
 void IApplication::handleScreenCaptureResult(long result)
 {
-    if(result)
+    if (result)
     {
-        QImage *image = (QImage *) result;
+        QImage *image = reinterpret_cast<QImage *> (result);
         IMessageBox msgbox("Screen capture", QPixmap::fromImage(*image).scaled(
                                150, 90, Qt::IgnoreAspectRatio, Qt::SmoothTransformation), "Capture screen Success.", false);
         msgbox.exec();
@@ -178,7 +188,6 @@ void IApplication::handleScreenCaptureResult(long result)
         IMessageBox msgbox("Screen capture", "Capture screen failed.", QStringList(trs("EnglishYESChineseSURE")));
         msgbox.exec();
     }
-
 }
 #endif
 
@@ -189,12 +198,12 @@ void IApplication::handleScreenCaptureResult(long result)
  *************************************************************************************************/
 bool IApplication::qwsEventFilter(QWSEvent *e)
 {
-    if(e->type == QWSEvent::Key)
+    if (e->type == QWSEvent::Key)
     {
-        QWSKeyEvent *keyEvent = static_cast<QWSKeyEvent*>(e);
+        QWSKeyEvent *keyEvent = static_cast<QWSKeyEvent *>(e);
 
 #ifdef CONFIG_CAPTURE_SCREEN
-        //To peform a screen caputure, must meet the following conditions:
+        // To peform a screen caputure, must meet the following conditions:
         // 1. Menu Key and Enter key Press at the same time
         // 2. USB disk is connected
         // 3. only one capture action during one second
@@ -202,32 +211,32 @@ bool IApplication::qwsEventFilter(QWSEvent *e)
         static bool menuKeyPress = false;
         static QDateTime lastDatetime;
         static bool isCaptureProcess = false;
-        if(keyEvent->simpleData.keycode == Qt::Key_F7)
+        if (keyEvent->simpleData.keycode == Qt::Key_F7)
         {
             menuKeyPress = keyEvent->simpleData.is_press;
-            if(isCaptureProcess && (!menuKeyPress && returnKeyPress))
+            if (isCaptureProcess && (!menuKeyPress && returnKeyPress))
             {
-                //filter this event
+                // filter this event
                 return true;
             }
         }
-        if(keyEvent->simpleData.keycode == Qt::Key_Return)
+        if (keyEvent->simpleData.keycode == Qt::Key_Return)
         {
             returnKeyPress = keyEvent->simpleData.is_press;
-            if(isCaptureProcess && (!returnKeyPress && menuKeyPress))
+            if (isCaptureProcess && (!returnKeyPress && menuKeyPress))
             {
-                //filter this event
+                // filter this event
                 return true;
             }
         }
-        if(returnKeyPress && menuKeyPress && usbManager.checkStatus())
+        if (returnKeyPress && menuKeyPress && usbManager.checkStatus())
         {
             QDateTime curDt = QDateTime::currentDateTime();
-            if(curDt != lastDatetime)
+            if (curDt != lastDatetime)
             {
-                QString imageFilename= QString("%1/%2.png")
-                        .arg(usbManager.getUdiskMountPoint())
-                        .arg(curDt.toString("yyyyMMddhhmmss"));
+                QString imageFilename = QString("%1/%2.png")
+                                        .arg(usbManager.getUdiskMountPoint())
+                                        .arg(curDt.toString("yyyyMMddhhmmss"));
 
                 Util::WorkerThread *workerThread = new Util::WorkerThread(capture, imageFilename);
                 connect(workerThread, SIGNAL(resultReady(long)), this, SLOT(handleScreenCaptureResult(long)));
@@ -237,12 +246,12 @@ bool IApplication::qwsEventFilter(QWSEvent *e)
                 return true;
             }
         }
-        else if ( isCaptureProcess && (!returnKeyPress && !menuKeyPress) )
+        else if (isCaptureProcess && (!returnKeyPress && !menuKeyPress))
         {
-            //return_key and menu_key is released, exit capture process
-            //still need to filter this key event
+            // return_key and menu_key is released, exit capture process
+            // still need to filter this key event
             isCaptureProcess = false;
-           keyActionManager.reset();
+            keyActionManager.reset();
             return true;
         }
 #endif
@@ -250,7 +259,7 @@ bool IApplication::qwsEventFilter(QWSEvent *e)
 
         if (!keyEvent->simpleData.is_press)   // release事件。
         {
-            switch(keyEvent->simpleData.keycode)
+            switch (keyEvent->simpleData.keycode)
             {
             case Qt::Key_F1:
                 keyActionManager.handleKeyAction(KEY_F1_RELEASED);
@@ -294,7 +303,7 @@ bool IApplication::qwsEventFilter(QWSEvent *e)
         }
         else if (keyEvent->simpleData.is_press)   // press事件。
         {
-            switch(keyEvent->simpleData.keycode)
+            switch (keyEvent->simpleData.keycode)
             {
             case Qt::Key_F1:
                 keyActionManager.handleKeyAction(KEY_F1_PRESSED);
@@ -361,5 +370,4 @@ IApplication::IApplication(int &argc, char **argv) : QApplication(argc, argv)
  *************************************************************************************************/
 IApplication::~IApplication()
 {
-
 }

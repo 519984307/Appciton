@@ -14,9 +14,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 #PRE_TARGETDEPS += build
 
 #版本及编译时间
-versioninfo.commands += ($$PWD/Scripts/version.sh $$PWD)
-QMAKE_EXTRA_TARGETS += versioninfo
-PRE_TARGETDEPS += versioninfo
+#versioninfo.commands += ($$PWD/Scripts/version.sh $$PWD)
+#QMAKE_EXTRA_TARGETS += versioninfo
+#PRE_TARGETDEPS += versioninfo
 
 # Build as an application
 TARGET = nPM

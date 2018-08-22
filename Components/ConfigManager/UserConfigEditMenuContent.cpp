@@ -195,7 +195,7 @@ void UserConfigEditMenuContent::onBtnClick()
             d_ptr->editWindow->setCurrentEditConfigName(d_ptr->generateDefaultConfigName());
             d_ptr->editWindow->setCurrentEditConfig(d_ptr->curConfig);
             d_ptr->editWindow->initializeSubMenu();
-            windowManager.showWindow(d_ptr->editWindow, WindowManager::WINDOW_TYPE_NONMODAL);
+            windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorNone);
             connect(d_ptr->editWindow , SIGNAL(finished(int)) , this , SLOT(onEditFinished()));
         }
     }
@@ -214,7 +214,7 @@ void UserConfigEditMenuContent::onBtnClick()
         d_ptr->editWindow->setCurrentEditConfigName(d_ptr->configs.at(index).name);
         d_ptr->editWindow->setCurrentEditConfig(d_ptr->curConfig);
         d_ptr->editWindow->initializeSubMenu();
-        windowManager.showWindow(d_ptr->editWindow, WindowManager::WINDOW_TYPE_NONMODAL);
+        windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorNone);
         connect(d_ptr->editWindow , SIGNAL(finished(int)) , this , SLOT(onEditFinished()));
     }
     else if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG])

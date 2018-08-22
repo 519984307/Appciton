@@ -158,7 +158,7 @@ void NormalModeKeyAction::keyF1Released(bool multiBtnPress)
     if (activeWindow == wm || activeWindow == NULL)
     {
         MainMenuWindow *w = MainMenuWindow::getInstance();
-        windowManager.showWindow(w, WindowManager::WINDOW_TYPE_NONMODAL);
+        windowManager.showWindow(w, WindowManager::ShowBehaviorNone);
     }
     else
     {
