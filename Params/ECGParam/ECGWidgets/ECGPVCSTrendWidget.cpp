@@ -35,7 +35,7 @@ void ECGPVCSTrendWidget::_releaseHandle(IWidget * iWidget)
  *************************************************************************************************/
 void ECGPVCSTrendWidget::setPVCSValue(int16_t pvcs)
 {
-    if (pvcs == InvData())
+    if (pvcs < 0)
     {
         _pvcsString = InvStr();
     }

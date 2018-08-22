@@ -260,7 +260,6 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
 
     // 初始化相关参数。
     // 导联模式。
-    _provider->setLeadSystem(_curLeadMode);
     _provider->getLeadCabelType();
 
     // 计算导联。

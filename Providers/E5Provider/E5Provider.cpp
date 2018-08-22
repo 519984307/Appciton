@@ -21,6 +21,7 @@
 #include <Debug.h>
 #include <QTextStream>
 #include <QFile>
+#include "IConfig.h"
 
 enum E5RecvPacketType
 {
@@ -28,7 +29,16 @@ enum E5RecvPacketType
 
     E5_RSP_VERSION              = 0x11,         // version response
     E5_RSP_SELFTEST_RESULT      = 0x13,         // selftest result
-    E5_RSP_LEAD_MODE            = 0x31,         // response of set mode
+
+    E5_RSP_WORK_MODE            = 0x15,         // get work mode
+    E5_RSP_CALC_MODE            = 0x17,         // get calculation mode
+    E5_RSP_LEAD_MODE            = 0x19,         // get lead mode
+    E5_RSP_CALC_LEAD            = 0x1B,         // get calculation lead
+    E5_RSP_NOTCH_TYPE           = 0x1D,         // get notch type
+    E5_RSP_PATIENT_TYPE         = 0x1F,         // get patient type
+    E5_RSP_PACE_ONOFF           = 0x21,         // get pace onoff
+    E5_RSP_SELFLEARN_ONOFF      = 0x23,         // get selflearn onoff
+
     E5_RSP_12LEAD_SUPPORT       = 0x33,         // response of get version
     E5_RSP_RESP_CALC_LEAD       = 0x51,         // response of set resp calculate lead
     E5_RSP_RESP_APNEA_TIME      = 0x53,         // response of set resp apnea time
@@ -50,7 +60,16 @@ enum E5SendPacketType
 {
     E5_CMD_GET_VERSION          = 0x10,         // get version
     E5_CMD_GET_SELFTEST_RESULT  = 0x12,         // get system test result
-    E5_CMD_SET_LEAD_MODE        = 0x30,         // set lead mode
+
+    E5_CMD_SET_WORK_MODE        = 0x14,         // set work mode
+    E5_CMD_SET_CALC_MODE        = 0x16,         // set calculation mode
+    E5_CMD_SET_LEAD_MODE        = 0x18,         // set lead mode
+    E5_CMD_SET_CALC_LEAD        = 0x1A,         // set calculation lead
+    E5_CMD_SET_NOTCH_TYPE       = 0x1C,         // set notch type
+    E5_CMD_SET_PATIENT_TYPE     = 0x1E,         // set patient type
+    E5_CMD_SET_PACE_ONOFF       = 0x20,         // set pace onoff
+    E5_CMD_SET_SELFLEARN_ONOFF  = 0x22,         // set selflearn onoff
+
     E5_CMD_CHECK_12LEAD_SUPPORT = 0x32,         // check 12 lead support
     E5_CMD_SET_RESP_CALC_LEAD   = 0x50,         // set resp calculate lead
     E5_CMD_SET_RESP_APNEA_TIME  = 0x52,         // set resp apnea time
@@ -103,10 +122,15 @@ void E5ProviderPrivate::handleEcgRawData(unsigned char *data, int len)
     bool pdblank = false;
 
     int offset = 0;
+
     for (int i = 0; i < 9; i++)
     {
-        ecgDisp[i] = data[offset] | (data[offset + 1] << 8);
-        ecgCalc[i] = data[18 + offset] | (data[18 + offset + 1] << 8);
+        short tmp = 0;
+        tmp = data[offset] | (data[offset + 1] << 8);
+        ecgDisp[i] = tmp;
+
+        tmp = data[18 + offset] | (data[18 + offset + 1] << 8);
+        ecgCalc[i] = tmp;
         offset += 2;
     }
 
@@ -118,33 +142,15 @@ void E5ProviderPrivate::handleEcgRawData(unsigned char *data, int len)
 
     ecgAlgInterface->setHandleData(ecgDisp, ecgCalc, qrsdelay, leadoff, qrsflag, paceflag, overload, pdblank);
 
-
-    int algleadData[ECG_LEAD_NR] = {0};
+    int leadData[ECG_LEAD_NR] = {0};
     bool leadOFFStatus[ECG_LEAD_NR] = {0};
 
-    ecgAlgInterface->getDispData(algleadData, leadoff, qrsflag, paceflag, overload, pdblank);
+    ecgAlgInterface->getDispData(leadData, leadoff, qrsflag, paceflag, overload, pdblank);
 
-    for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
-    {
-        // get the sign
-        short tmp = algleadData[i];
-        algleadData[i] = tmp;
-    }
+    short pvcRate = ecgAlgInterface->getPVCRate();
+    ecgParam.updatePVCS(pvcRate);
 
-    // need to swap some field
-    int leadData[ECG_LEAD_NR];
-    leadData[ECG_LEAD_I] = algleadData[ECGAlg::I];
-    leadData[ECG_LEAD_II] = algleadData[ECGAlg::II];
-    leadData[ECG_LEAD_III] = algleadData[ECGAlg::III];
-    leadData[ECG_LEAD_AVR] = algleadData[ECGAlg::aVR];
-    leadData[ECG_LEAD_AVL] = algleadData[ECGAlg::aVL];
-    leadData[ECG_LEAD_AVF] = algleadData[ECGAlg::aVF];
-    leadData[ECG_LEAD_V1] = algleadData[ECGAlg::V1];
-    leadData[ECG_LEAD_V2] = algleadData[ECGAlg::V2];
-    leadData[ECG_LEAD_V3] = algleadData[ECGAlg::V3];
-    leadData[ECG_LEAD_V4] = algleadData[ECGAlg::V4];
-    leadData[ECG_LEAD_V5] = algleadData[ECGAlg::V5];
-    leadData[ECG_LEAD_V6] = algleadData[ECGAlg::V6];
+//    ECGAlg::ARRCODE ARRcode = ecgAlgInterface->getARR();
 
 #if 0
     static bool initFlag = false;
@@ -270,12 +276,20 @@ E5Provider::E5Provider()
     UartAttrDesc portAttr(460800, 8, 'N', 1);
     initPort(portAttr);
     d_ptr->ecgAlgInterface->reset();
-    d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::II);
     d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_MONITOR);
-    d_ptr->ecgAlgInterface->setLeadMode(ECGAlg::ECG_MODE_5_LEAD);
     d_ptr->ecgAlgInterface->setNotchType(ECGAlg::ECG_NOTCH_60HZ);
     d_ptr->ecgAlgInterface->setPatientType(ECGAlg::PATIENT_ADULT);
     d_ptr->ecgAlgInterface->setPaceOnOff(true);
+
+    // set lead mode
+    int leadMode;
+    systemConfig.getNumValue("PrimaryCfg|ECG|LeadMode", leadMode);
+    setLeadSystem(static_cast<ECGLeadMode>(leadMode));
+
+    // set calculation lead
+    int calcLead;
+    systemConfig.getNumValue("PrimaryCfg|ECG|DefaultECGLeadInMonitorMode", calcLead);
+    setCalcLead(static_cast<ECGLead>(calcLead));
 
     // get selftest result
     sendCmd(E5_CMD_GET_SELFTEST_RESULT, NULL, 0);
@@ -316,7 +330,6 @@ void E5Provider::handlePacket(unsigned char *data, int len)
 {
     BLMProvider::handlePacket(data, len);
 
-    qDebug() << __FILE__ << __LINE__ << "data = " << data << endl;
     switch (data[0])
     {
     case E5_RSP_ACK:
@@ -349,7 +362,7 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         sendCmd(E5_CMD_CHECK_12LEAD_SUPPORT, NULL, 0);
 
         // set lead mode again
-        setLeadSystem(d_ptr->ecgLeadMode);
+//        setLeadSystem(d_ptr->ecgLeadMode);
 
         // resp setting
         setRESPCalcLead(d_ptr->resplead);
@@ -519,6 +532,9 @@ void E5Provider::setCalcLead(ECGLead lead)
         d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::II);
         break;
     }
+
+    unsigned char calcLead = lead;
+    sendCmd(E5_CMD_SET_CALC_LEAD, &calcLead, 1);
 }
 
 void E5Provider::setPatientType(unsigned char type)
@@ -536,27 +552,39 @@ void E5Provider::setPatientType(unsigned char type)
         d_ptr->ecgAlgInterface->setPatientType(ECGAlg::PATIENT_ADULT);
         break;
     }
+
+    unsigned char patientType = type;
+    sendCmd(E5_CMD_SET_PATIENT_TYPE, &patientType, 1);
 }
 
 void E5Provider::setBandwidth(ECGBandwidth bandwidth)
 {
+    ECGFilterMode mode;
     switch (bandwidth)
     {
     case ECG_BANDWIDTH_067_20HZ:
+        mode = ECG_FILTERMODE_SURGERY;
         d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_SURGERY);
         break;
     case ECG_BANDWIDTH_067_40HZ:
+        mode = ECG_FILTERMODE_MONITOR;
         d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_MONITOR);
         break;
     case ECG_BANDWIDTH_0525_40HZ:
+        mode = ECG_FILTERMODE_ST;
         d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_ST);
         break;
     case ECG_BANDWIDTH_0525_150HZ:
+        mode = ECG_FILTERMODE_DIAGNOSTIC;
         d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_DIAGNOSIS);
     default:
+        mode = ECG_FILTERMODE_MONITOR;
         d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_MONITOR);
         break;
     }
+
+    unsigned char filterMode = mode;
+    sendCmd(E5_CMD_SET_CALC_MODE, &filterMode, 1);
 }
 
 void E5Provider::setFilterMode(ECGFilterMode mode)
@@ -579,11 +607,16 @@ void E5Provider::setFilterMode(ECGFilterMode mode)
         qdebug("Unknown filter mode.");
         break;
     }
+
+    unsigned char filterMode = mode;
+    sendCmd(E5_CMD_SET_CALC_MODE, &filterMode, 1);
 }
 
 void E5Provider::enablePacermaker(ECGPaceMode onoff)
 {
     d_ptr->ecgAlgInterface->setPaceOnOff(onoff == ECG_PACE_ON);
+    unsigned char pacemaker = onoff;
+    sendCmd(E5_CMD_SET_PACE_ONOFF, &pacemaker, 1);
 }
 
 void E5Provider::setNotchFilter(ECGNotchFilter notch)
@@ -604,6 +637,9 @@ void E5Provider::setNotchFilter(ECGNotchFilter notch)
         d_ptr->ecgAlgInterface->setNotchType(ECGAlg::ECG_NOTCH_OFF);
         break;
     }
+
+    unsigned char notchChar = notch;
+    sendCmd(E5_CMD_SET_NOTCH_TYPE, &notchChar, 1);
 }
 
 void E5Provider::enableSTAnalysis(bool onoff)
@@ -620,6 +656,8 @@ void E5Provider::setSTPoints(int /*iso*/, int /*st*/)
 void E5Provider::setSelfLearn(bool onOff)
 {
     d_ptr->ecgAlgInterface->setSelfLearn(onOff);
+    unsigned char learn = onOff;
+    sendCmd(E5_CMD_SET_SELFLEARN_ONOFF, &learn, 1);
 }
 
 void E5Provider::setARRThreshold(ECGAlg::ARRPara parameter, short value)
