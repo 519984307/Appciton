@@ -86,7 +86,7 @@
 	</SoftWareVersion>
 	<Others>
 	    <WaveLine>1</WaveLine>
-	    <ECGStandard>1</ECGStandard>
+	    <ECGStandard>0</ECGStandard>
 	    <FrequencyNotch>1</FrequencyNotch>
 	    <ParaSwitchPrem>1</ParaSwitchPrem>
 	    <ConfImpactItemSettings>1</ConfImpactItemSettings>
@@ -722,7 +722,7 @@
 	    <Ecg2Gain>0</Ecg2Gain>
 	    <SweepSpeed>1</SweepSpeed>
 	    <Filter>0</Filter>
-	    <LeadMode>2</LeadMode>
+	    <LeadMode>1</LeadMode>
             <DisplayMode>0</DisplayMode>
 	    <NotchFilter>0</NotchFilter>
 	    <SmartLeadOff>0</SmartLeadOff>

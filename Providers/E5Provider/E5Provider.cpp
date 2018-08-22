@@ -21,6 +21,7 @@
 #include <Debug.h>
 #include <QTextStream>
 #include <QFile>
+#include "IConfig.h"
 
 enum E5RecvPacketType
 {
@@ -149,7 +150,7 @@ void E5ProviderPrivate::handleEcgRawData(unsigned char *data, int len)
     short pvcRate = ecgAlgInterface->getPVCRate();
     ecgParam.updatePVCS(pvcRate);
 
-    ECGAlg::ARRCODE ARRcode = ecgAlgInterface->getARR();
+//    ECGAlg::ARRCODE ARRcode = ecgAlgInterface->getARR();
 
 #if 0
     static bool initFlag = false;
@@ -275,12 +276,20 @@ E5Provider::E5Provider()
     UartAttrDesc portAttr(460800, 8, 'N', 1);
     initPort(portAttr);
     d_ptr->ecgAlgInterface->reset();
-    d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::II);
     d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_MONITOR);
-    d_ptr->ecgAlgInterface->setLeadMode(ECGAlg::ECG_MODE_5_LEAD);
     d_ptr->ecgAlgInterface->setNotchType(ECGAlg::ECG_NOTCH_60HZ);
     d_ptr->ecgAlgInterface->setPatientType(ECGAlg::PATIENT_ADULT);
     d_ptr->ecgAlgInterface->setPaceOnOff(true);
+
+    // set lead mode
+    int leadMode;
+    systemConfig.getNumValue("PrimaryCfg|ECG|LeadMode", leadMode);
+    setLeadSystem(static_cast<ECGLeadMode>(leadMode));
+
+    // set calculation lead
+    int calcLead;
+    systemConfig.getNumValue("PrimaryCfg|ECG|DefaultECGLeadInMonitorMode", calcLead);
+    setCalcLead(static_cast<ECGLead>(calcLead));
 
     // get selftest result
     sendCmd(E5_CMD_GET_SELFTEST_RESULT, NULL, 0);
@@ -612,7 +621,6 @@ void E5Provider::enablePacermaker(ECGPaceMode onoff)
 
 void E5Provider::setNotchFilter(ECGNotchFilter notch)
 {
-    qDebug() << __LINE__ << notch << endl;
     switch (notch)
     {
     case ECG_NOTCH_50HZ:

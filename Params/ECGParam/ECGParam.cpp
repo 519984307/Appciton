@@ -260,7 +260,6 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
 
     // 初始化相关参数。
     // 导联模式。
-    _provider->setLeadSystem(_curLeadMode);
     _provider->getLeadCabelType();
 
     // 计算导联。
@@ -1922,11 +1921,15 @@ QString ECGParam::getCalBandWidthStr(void)
 void ECGParam::setPacermaker(ECGPaceMode onoff)
 {
     systemConfig.setNumValue("PrimaryCfg|ECG|PacerMaker", static_cast<int>(onoff));
-    if (NULL != _provider)
+
+    if (ECG_DISPLAY_12_LEAD_FULL != ecgParam.getDisplayMode())
     {
-        _provider->enablePacermaker(onoff);
+        if (NULL != _provider)
+        {
+            _provider->enablePacermaker(onoff);
+        }
+        sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_PACER, static_cast<int>(onoff));
     }
-    sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_PACER, static_cast<int>(onoff));
 
     return;
 }
@@ -2183,32 +2186,22 @@ int ECGParam::getQRSToneVolume(void)
  *************************************************************************************************/
 void ECGParam::setNotchFilter(int filter)
 {
-//    if (_curLeadMode != ECG_LEAD_MODE_12)
-//    {
-//        filter = ECG_NOTCH_50_AND_60HZ;
-//    }
-//    else
-//    {
-//        if (ecgParam.getDisplayMode() == ECG_DISPLAY_12_LEAD_FULL)
-//        {
-//            systemConfig.setNumValue("PrimaryCfg|ECG|NotchFilter", filter);
-//        }
-//        else
-//        {
-//            filter = ECG_NOTCH_50_AND_60HZ;
-//        }
-//    }
-
-    ECGFilterMode filterMode = getFilterMode();
-    if (filterMode == ECG_FILTERMODE_MONITOR || filterMode == ECG_FILTERMODE_SURGERY)
+    if (_curLeadMode != ECG_LEAD_MODE_12)
     {
-        if (filter == 1)
+        filter = ECG_NOTCH_50_AND_60HZ;
+    }
+    else
+    {
+        if (ecgParam.getDisplayMode() == ECG_DISPLAY_12_LEAD_FULL)
+        {
+            systemConfig.setNumValue("PrimaryCfg|ECG|NotchFilter", filter);
+        }
+        else
         {
             filter = ECG_NOTCH_50_AND_60HZ;
         }
     }
 
-    systemConfig.setNumValue("PrimaryCfg|ECG|NotchFilter", filter);
     if (NULL != _provider)
     {
         _provider->setNotchFilter((ECGNotchFilter)filter);
@@ -2220,8 +2213,12 @@ void ECGParam::setNotchFilter(int filter)
  *************************************************************************************************/
 ECGNotchFilter ECGParam::getNotchFilter()
 {
-    int filter;
-    systemConfig.getNumValue("PrimaryCfg|ECG|NotchFilter", filter);
+    int filter = ECG_NOTCH_50_AND_60HZ;
+
+    if (ecgParam.getDisplayMode() == ECG_DISPLAY_12_LEAD_FULL)
+    {
+        systemConfig.getNumValue("PrimaryCfg|ECG|NotchFilter", filter);
+    }
 
     return (ECGNotchFilter)filter;
 }

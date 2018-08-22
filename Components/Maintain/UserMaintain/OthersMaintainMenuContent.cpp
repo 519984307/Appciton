@@ -212,8 +212,8 @@ void OthersMaintainMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << trs("AHA")
-                       << trs("IEC")
+                       << "AAMI"
+                       << "IEC"
                       );
     itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_ECG_STANDARD);
     comboBox->setProperty("Item",
