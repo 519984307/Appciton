@@ -20,6 +20,7 @@
 #include "ThemeManager.h"
 #include <QHeaderView>
 #include "HemodynamicReviewWindow.h"
+#include "WindowManager.h"
 
 #define TABLE_ROW_NUM           9
 #define ROW_HEIGHT   (themeManger.getAcceptableControlHeight())
@@ -394,6 +395,16 @@ void HemodynamicWindow::defaultInput()
     d_ptr->calcParam[6]->setText("256");
     d_ptr->calcParam[7]->setText("177");
     d_ptr->calcParam[8]->setText("65");
+}
+
+void HemodynamicWindow::resizeEvent(QResizeEvent *e)
+{
+    Window::resizeEvent(e);
+    QRect r1 = windowManager.getMenuArea();
+    QRect r2 = rect();
+    int xpos = r1.left() + (r1.width() - r2.width()) / 2;
+    int ypos = r1.top() + (r1.height() - r2.height()) / 2;
+    this->move(QPoint(xpos, ypos));
 }
 
 void HemodynamicWindow::onBtnParamReleased()

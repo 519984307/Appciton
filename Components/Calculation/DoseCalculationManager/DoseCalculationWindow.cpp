@@ -485,6 +485,16 @@ void DoseCalculationWindow::showEvent(QShowEvent *e)
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 }
 
+void DoseCalculationWindow::resizeEvent(QResizeEvent *e)
+{
+    Window::resizeEvent(e);
+    QRect r1 = windowManager.getMenuArea();
+    QRect r2 = rect();
+    int xpos = r1.left() + (r1.width() - r2.width()) / 2;
+    int ypos = r1.top() + (r1.height() - r2.height()) / 2;
+    this->move(QPoint(xpos, ypos));
+}
+
 /***************************************************************************************************
  * 药物计算参数设置槽函数
  **************************************************************************************************/

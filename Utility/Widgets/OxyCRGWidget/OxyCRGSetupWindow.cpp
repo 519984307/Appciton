@@ -15,6 +15,10 @@
 #include <QGridLayout>
 #include "OxyCRGSymbol.h"
 #include "ConfigManager.h"
+#include <QGroupBox>
+#include "Button.h"
+#include "WindowManager.h"
+#include <QLineEdit>
 
 class OxyCRGSetupWindowPrivate
 {
@@ -22,16 +26,13 @@ public:
     enum MenuItem
     {
         ITEM_CBO_TREND_ONE = 0,
-        ITEM_CBO_TREND_TWO,
         ITEM_CBO_WAVE_SELECT,
         ITEM_CBO_HR_LOW,
         ITEM_CBO_HR_HIGH,
-        ITEM_CBO_SPO2_LOW,
-        ITEM_CBO_SPO2_HIGH,
-        ITEM_CBO_CO2_LOW,
-        ITEM_CBO_CO2_HIGH,
         ITEM_CBO_RR_LOW,
         ITEM_CBO_RR_HIGH,
+        ITEM_CBO_SPO2_LOW,
+        ITEM_CBO_CO2_HIGH,
         ITEM_CBO_MAX,
     };
 
@@ -44,11 +45,11 @@ public:
             rulerValue.data[i] = 0;
         }
         rulerValue.s.spo2High = 100;
+        rulerValue.s.co2Low = 0;
         rulerUpdated.hrUpdatedStatus = false;
         rulerUpdated.spo2UpdatedStatus = false;
         rulerUpdated.co2UpdatedStatus = false;
         rulerUpdated.rrUpdatedStatus = false;
-        combos.clear();
     }
     union RulerValue
         {
@@ -75,7 +76,18 @@ public:
     } rulerUpdated;
 
     int waveTypeIndex;
-    QMap<int, ComboBox *> combos;
+
+    ComboBox *trend1;
+    Button * trend2;
+    ComboBox *wave;
+    ComboBox *hrLow;
+    ComboBox *hrHigh;
+    ComboBox *rrLow;
+    ComboBox *rrHigh;
+    ComboBox *spo2Low;
+    Button   *spo2High;
+    Button   *co2Low;
+    ComboBox *co2High;
 };
 
 OxyCRGSetupWindow::OxyCRGSetupWindow()
@@ -84,153 +96,301 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
 {
     setWindowTitle(trs("OxyCRGWidgetSetup"));
 
+    QGroupBox *groupBox = new QGroupBox(trs("TrendWaveSelect"));
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
+    int configIndex;
+    QHBoxLayout *hlsub;
 
-    QStringList nameList(QStringList()
-                         << "TRend1"
-                         << "Trend2"
-                         << "Wave"
-                         << "HRLow"
-                         << "HRHigh"
-                         << "SPO2Low"
-                         << "SPO2High"
-                         << "CO2Low"
-                         << "CO2High"
-                         << "RRLow"
-                         << "RRHigh"
-                        );
+    int comboIndex = 0;
+    int layoutIndex = 0;
+    // trend1
+    QLabel *label = new QLabel(trs("TRend1"));
+    layout->addWidget(label, layoutIndex, 0);
+    ComboBox *combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs(OxyCRGSymbol::convert(TREND_HR_PR))
+                    << trs(OxyCRGSymbol::convert(TREND_RR))
+                    );
+    layout->addWidget(combo, layoutIndex, 1);
+    combo->setProperty("Item", qVariantFromValue(comboIndex));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
+    d_ptr->trend1 = combo;
+    layoutIndex++;
+    comboIndex++;
+    configIndex = 0;
+    currentConfig.getNumValue("OxyCRG|Trend1", configIndex);
+    combo->blockSignals(true);
+    combo->setCurrentIndex(configIndex);
+    combo->blockSignals(false);
 
-    QLabel *label;
-    ComboBox *combo;
-    int itemId = OxyCRGSetupWindowPrivate::ITEM_CBO_MAX;
-    QStringList comboItemList[itemId];
+    // trend2
+    label = new QLabel(trs("TRend2"));
+    layout->addWidget(label, layoutIndex, 0);
+    Button *btn = new Button();
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    btn->setText(OxyCRGSymbol::convert(TREND_SPO2));
+    btn->setEnabled(false);
+    layout->addWidget(btn, layoutIndex, 1);
+    d_ptr->trend2 = btn;
+    layoutIndex++;
 
-    for (int i = 0; i < itemId / 2; i++)
+    // wave
+    label = new QLabel(trs("Wave"));
+    layout->addWidget(label, layoutIndex, 0);
+    combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs(OxyCRGSymbol::convert(OxyCRG_Trend_RESP))
+                    << trs(OxyCRGSymbol::convert(OxyCRG_Trend_CO2))
+                    );
+    layout->addWidget(combo, layoutIndex, 1);
+    combo->setProperty("Item", qVariantFromValue(comboIndex));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
+    d_ptr->wave = combo;
+    layoutIndex++;
+    comboIndex++;
+    configIndex = 0;
+    currentConfig.getNumValue("OxyCRG|Wave", configIndex);
+    combo->blockSignals(true);
+    combo->setCurrentIndex(configIndex);
+    combo->blockSignals(false);
+
+    groupBox->setLayout(layout);
+
+    QVBoxLayout *vl = new QVBoxLayout(this);
+    QVBoxLayout *vlSub = new QVBoxLayout;
+    vl->addWidget(groupBox);
+
+    // ruler adjust
+    groupBox = new QGroupBox(trs("RulerAdjust"));
+    layout = new QGridLayout;
+    QHBoxLayout *hl = new QHBoxLayout;
+    int layoutIndexTwo = 0;
+
+    // hrlow
+    hlsub = new QHBoxLayout;
+    label = new QLabel;
+    hlsub->addWidget(label);
+    label = new QLabel(trs("HR"));
+    hlsub->addWidget(label);
+    label = new QLabel;
+    hlsub->addWidget(label);
+    vlSub->addLayout(hlsub, Qt::AlignBottom);
+
+    label = new QLabel(trs("Low"));
+    layout->addWidget(label, layoutIndexTwo, 0);
+    combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs(OxyCRGSymbol::convert(HR_LOW_0))
+                    << trs(OxyCRGSymbol::convert(HR_LOW_40))
+                    << trs(OxyCRGSymbol::convert(HR_LOW_80))
+                    << trs(OxyCRGSymbol::convert(HR_LOW_120))
+                    );
+    layout->addWidget(combo, layoutIndexTwo, 1);
+    combo->setProperty("Item", qVariantFromValue(comboIndex));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
+    d_ptr->hrLow = combo;
+    layoutIndexTwo++;
+    comboIndex++;
+    configIndex = 0;
+    currentConfig.getNumValue("OxyCRG|Ruler|HRLow", configIndex);
+    combo->blockSignals(true);
+    combo->setCurrentIndex(configIndex);
+    combo->blockSignals(false);
+
+    // hr high
+    label = new QLabel(trs("High"));
+    layout->addWidget(label, layoutIndexTwo, 0);
+    combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs(OxyCRGSymbol::convert(HR_HIGH_160))
+                    << trs(OxyCRGSymbol::convert(HR_HIGH_200))
+                    << trs(OxyCRGSymbol::convert(HR_HIGH_240))
+                    << trs(OxyCRGSymbol::convert(HR_HIGH_280))
+                    << trs(OxyCRGSymbol::convert(HR_HIGH_320))
+                    << trs(OxyCRGSymbol::convert(HR_HIGH_360))
+                    );
+    layout->addWidget(combo, layoutIndexTwo, 1);
+    combo->setProperty("Item", qVariantFromValue(comboIndex));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
+    d_ptr->hrHigh = combo;
+    layoutIndexTwo++;
+    comboIndex++;
+    configIndex = 0;
+    currentConfig.getNumValue("OxyCRG|Ruler|HRHigh", configIndex);
+    combo->blockSignals(true);
+    combo->setCurrentIndex(configIndex);
+    combo->blockSignals(false);
+
+    vlSub->addLayout(layout);
+    hl->addLayout(vlSub);
+
+
+    // rrlow
+    vlSub = new QVBoxLayout;
+    int layoutIndexThree = 0;
+    layout = new QGridLayout;
+    hlsub = new QHBoxLayout;
+    label = new QLabel;
+    hlsub->addWidget(label);
+    label = new QLabel(trs("RR"));
+    hlsub->addWidget(label);
+    label = new QLabel;
+    hlsub->addWidget(label);
+    vlSub->addLayout(hlsub, Qt::AlignBottom);
+
+    label = new QLabel(trs("Low"));
+    layout->addWidget(label, layoutIndexThree, 0);
+    combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs(OxyCRGSymbol::convert(RR_LOW_0))
+                    << trs(OxyCRGSymbol::convert(RR_LOW_40))
+                    );
+    layout->addWidget(combo, layoutIndexThree, 1);
+    combo->setProperty("Item", qVariantFromValue(comboIndex));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
+    d_ptr->rrLow = combo;
+    layoutIndexThree++;
+    comboIndex++;
+    configIndex = 0;
+    currentConfig.getNumValue("OxyCRG|Ruler|RRLow", configIndex);
+    combo->blockSignals(true);
+    combo->setCurrentIndex(configIndex);
+    combo->blockSignals(false);
+
+    // hr high
+    label = new QLabel(trs("High"));
+    layout->addWidget(label, layoutIndexThree, 0);
+    combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs(OxyCRGSymbol::convert(RR_HIGH_40))
+                    << trs(OxyCRGSymbol::convert(RR_HIGH_80))
+                    << trs(OxyCRGSymbol::convert(RR_HIGH_120))
+                    << trs(OxyCRGSymbol::convert(RR_HIGH_160))
+                    );
+    layout->addWidget(combo, layoutIndexThree, 1);
+    combo->setProperty("Item", qVariantFromValue(comboIndex));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
+    d_ptr->rrHigh = combo;
+    layoutIndexThree++;
+    comboIndex++;
+    configIndex = 0;
+    currentConfig.getNumValue("OxyCRG|Ruler|RRHigh", configIndex);
+    combo->blockSignals(true);
+    combo->setCurrentIndex(configIndex);
+    combo->blockSignals(false);
+    if (configIndex == 0)
     {
-        label = new QLabel(trs(nameList.at(i)));
-        layout->addWidget(label, i, 0);
-
-        combo = new ComboBox;
-        layout->addWidget(combo, i, 1);
-        connect(combo, SIGNAL(currentIndexChanged(int)), this,
-                SLOT(onComboUpdated(int)));
-
-        combo->setProperty("Item", qVariantFromValue(i));
-        d_ptr->combos[i] = combo;
+        d_ptr->rrLow->setEnabled(false);
+        d_ptr->rrLow->setCurrentIndex(0);
     }
-    for (int i = itemId / 2; i < itemId; i++)
-    {
-        label = new QLabel(trs(nameList.at(i)));
+    vlSub->addLayout(layout);
+    hl->addLayout(vlSub);
 
-        layout->addWidget(label, i - itemId / 2, 3);
+    // spo2low
+    vlSub = new QVBoxLayout;
+    int layoutIndexFour = 0;
+    layout = new QGridLayout;
+    hlsub = new QHBoxLayout;
+    label = new QLabel;
+    hlsub->addWidget(label);
+    label = new QLabel(trs("SPO2"));
+    hlsub->addWidget(label);
+    label = new QLabel;
+    hlsub->addWidget(label);
+    vlSub->addLayout(hlsub, Qt::AlignBottom);
 
-        combo = new ComboBox;
-        layout->addWidget(combo, i - itemId / 2, 4);
-        connect(combo, SIGNAL(currentIndexChanged(int)), this,
-                SLOT(onComboUpdated(int)));
 
-        combo->setProperty("Item", qVariantFromValue(i));
-        d_ptr->combos[i] = combo;
-    }
-    layout->setColumnMinimumWidth(2, 100);
-    setWindowLayout(layout);
-    layout->setRowStretch(itemId, 1);
+    label = new QLabel(trs("Low"));
+    layout->addWidget(label, layoutIndexFour, 0);
+    combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs(OxyCRGSymbol::convert(SPO2_LOW_60))
+                    << trs(OxyCRGSymbol::convert(SPO2_LOW_68))
+                    << trs(OxyCRGSymbol::convert(SPO2_LOW_76))
+                    << trs(OxyCRGSymbol::convert(SPO2_LOW_84))
+                    << trs(OxyCRGSymbol::convert(SPO2_LOW_92))
+                    );
+    layout->addWidget(combo, layoutIndexFour, 1);
+    combo->setProperty("Item", qVariantFromValue(comboIndex));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
+    d_ptr->spo2Low = combo;
+    layoutIndexFour++;
+    comboIndex++;
+    configIndex = 0;
+    currentConfig.getNumValue("OxyCRG|Ruler|SPO2Low", configIndex);
+    combo->blockSignals(true);
+    combo->setCurrentIndex(configIndex);
+    combo->blockSignals(false);
 
-    for (int i = 0; i < TRENDONE_NR; i++)
-    {
-        comboItemList[0].append(
-            trs(OxyCRGSymbol::convert(TrendTypeOne(i))));
-    }
+    // spo2 high
+    label = new QLabel(trs("High"));
+    layout->addWidget(label, layoutIndexFour, 0);
+    btn = new Button();
+    btn->setText(trs(OxyCRGSymbol::convert(SPO2_HIGH_100)));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    btn->setEnabled(false);
+    layout->addWidget(btn, layoutIndexFour, 1);
+    d_ptr->spo2High = btn;
+    layoutIndexFour++;
+    vlSub->addLayout(layout);
+    hl->addLayout(vlSub);
 
-    for (int i = 0; i < TRENDTWO_NR; i++)
-    {
-        comboItemList[1].append(
-            trs(OxyCRGSymbol::convert(TrendTypeTwo(i))));
-    }
+    // co2low
+    vlSub = new QVBoxLayout;
+    int layoutIndexFive = 0;
+    layout = new QGridLayout;
 
-    for (int i = 0; i < OxyCRG_Trend_NR; i++)
-    {
-        comboItemList[2].append(
-            trs(OxyCRGSymbol::convert(OxyCRGTrend(i))));
-    }
-    for (int i = 0; i < HR_LOW_NR; i++)
-    {
-        comboItemList[3].append(
-            trs(OxyCRGSymbol::convert(HRLowTypes(i))));
-    }
+    hlsub = new QHBoxLayout;
+    label = new QLabel;
+    hlsub->addWidget(label);
+    label = new QLabel(trs("CO2"));
+    hlsub->addWidget(label);
+    label = new QLabel;
+    hlsub->addWidget(label);
+    vlSub->addLayout(hlsub, Qt::AlignBottom);
 
-    for (int i = 0; i < HR_HIGH_NR; i++)
-    {
-        comboItemList[4].append(
-            trs(OxyCRGSymbol::convert(HRHighTypes(i))));
-    }
+    label = new QLabel(trs("Low"));
+    layout->addWidget(label, layoutIndexFive, 0);
+    btn = new Button();
+    btn->setText(trs(OxyCRGSymbol::convert(CO2_LOW_0)));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(btn, layoutIndexFive, 1);
+    btn->setEnabled(false);
+    d_ptr->co2Low = btn;
+    layoutIndexFive++;
+    comboIndex++;
 
-    for (int i = 0; i < SPO2_LOW_NR; i++)
-    {
-        comboItemList[5].append(
-            trs(OxyCRGSymbol::convert(SPO2LowTypes(i))));
-    }
+    // co2 high
+    label = new QLabel(trs("High"));
+    layout->addWidget(label, layoutIndexFive, 0);
+    combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs(OxyCRGSymbol::convert(CO2_HIGH_15))
+                    << trs(OxyCRGSymbol::convert(CO2_HIGH_20))
+                    << trs(OxyCRGSymbol::convert(CO2_HIGH_25))
+                    << trs(OxyCRGSymbol::convert(CO2_HIGH_40))
+                    << trs(OxyCRGSymbol::convert(CO2_HIGH_50))
+                    << trs(OxyCRGSymbol::convert(CO2_HIGH_60))
+                    << trs(OxyCRGSymbol::convert(CO2_HIGH_80))
+                    );
+    layout->addWidget(combo, layoutIndexFive, 1);
+    combo->setProperty("Item", qVariantFromValue(comboIndex));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
+    d_ptr->co2High = combo;
+    layoutIndexFive++;
+    configIndex = 0;
+    currentConfig.getNumValue("OxyCRG|Ruler|CO2High", configIndex);
+    combo->blockSignals(true);
+    combo->setCurrentIndex(configIndex);
+    combo->blockSignals(false);
+    vlSub->addLayout(layout);
+    hl->addLayout(vlSub);
 
-    for (int i = 0; i < SPO2_HIGH_NR; i++)
-    {
-        comboItemList[6].append(
-            trs(OxyCRGSymbol::convert(SPO2HighTypes(i))));
-    }
+    groupBox->setLayout(hl);
+    vl->addWidget(groupBox);
 
-    for (int i = 0; i < CO2_LOW_NR; i++)
-    {
-        comboItemList[7].append(
-            trs(OxyCRGSymbol::convert(CO2LowTypes(i))));
-    }
-
-    for (int i = 0; i < CO2_HIGH_NR; i++)
-    {
-        comboItemList[8].append(
-            trs(OxyCRGSymbol::convert(CO2HighTypes(i))));
-    }
-
-    for (int i = 0; i < RR_LOW_NR; i++)
-    {
-        comboItemList[9].append(
-            trs(OxyCRGSymbol::convert(RRLowTypes(i))));
-    }
-
-    for (int i = 0; i < RR_HIGH_NR; i++)
-    {
-        comboItemList[10].append(
-            trs(OxyCRGSymbol::convert(RRHighTypes(i))));
-    }
-
-    for (int i = 0; i < itemId; i++)
-    {
-        d_ptr->combos[i]->blockSignals(true);
-        d_ptr->combos[i]->addItems(comboItemList[i]);
-        int indexSelect = 0;
-        QString str;
-        if (i < 3)
-        {
-            str = "OxyCRG|%1";
-        }
-        else
-        {
-            str = "OxyCRG|Ruler|%1";
-        }
-        currentConfig.getNumValue(QString(str)
-                                  .arg(nameList.at(i)), indexSelect);
-
-        d_ptr->combos[i]->setCurrentIndex(indexSelect);
-        d_ptr->combos[i]->blockSignals(false);
-
-        if (i == OxyCRGSetupWindowPrivate::ITEM_CBO_RR_HIGH)
-        {
-            if (indexSelect == 0)
-            {
-                d_ptr->combos[i-1]->setEnabled(false);
-                d_ptr->combos[i-1]->setCurrentIndex(0);
-            }
-        }
-    }
+    setWindowLayout(vl);
 }
 
 OxyCRGSetupWindow::~OxyCRGSetupWindow()
@@ -302,7 +462,20 @@ int OxyCRGSetupWindow::getRRHigh(bool &status) const
 void OxyCRGSetupWindow::showEvent(QShowEvent *ev)
 {
     Window::showEvent(ev);
-    d_ptr->combos[5]->setFixedWidth(d_ptr->combos[0]->width());
+    d_ptr->hrLow->setMinimumWidth(100);
+    d_ptr->rrLow->setMinimumWidth(100);
+    d_ptr->spo2Low->setMinimumWidth(100);
+    d_ptr->co2Low->setMinimumWidth(100);
+}
+
+void OxyCRGSetupWindow::resizeEvent(QResizeEvent *e)
+{
+    Window::resizeEvent(e);
+    QRect r1 = windowManager.getMenuArea();
+    QRect r2 = rect();
+    int xpos = r1.left() + (r1.width() - r2.width()) / 2;
+    int ypos = r1.top() + (r1.height() - r2.height()) / 2;
+    this->move(QPoint(xpos, ypos));
 }
 
 void OxyCRGSetupWindow::onComboUpdated(int index)
@@ -319,9 +492,6 @@ void OxyCRGSetupWindow::onComboUpdated(int index)
     {
     case OxyCRGSetupWindowPrivate::ITEM_CBO_TREND_ONE:
         currentConfig.setNumValue("OxyCRG|Trend1", index);
-        break;
-    case OxyCRGSetupWindowPrivate::ITEM_CBO_TREND_TWO:
-        currentConfig.setNumValue("OxyCRG|Trend2", index);
         break;
     case OxyCRGSetupWindowPrivate::ITEM_CBO_WAVE_SELECT:
         setWaveTypeIndex(index);
@@ -344,16 +514,6 @@ void OxyCRGSetupWindow::onComboUpdated(int index)
         d_ptr->rulerValue.s.spo2Low = combo->currentText().toInt();
         d_ptr->rulerUpdated.spo2UpdatedStatus = true;
         break;
-    case OxyCRGSetupWindowPrivate::ITEM_CBO_SPO2_HIGH:
-        currentConfig.setNumValue("OxyCRG|Ruler|SPO2High", index);
-        d_ptr->rulerValue.s.spo2High = combo->currentText().toInt();
-        d_ptr->rulerUpdated.spo2UpdatedStatus = true;
-        break;
-    case OxyCRGSetupWindowPrivate::ITEM_CBO_CO2_LOW:
-        currentConfig.setNumValue("OxyCRG|Ruler|CO2Low", index);
-        d_ptr->rulerValue.s.co2Low = combo->currentText().toInt();
-        d_ptr->rulerUpdated.co2UpdatedStatus = true;
-        break;
     case OxyCRGSetupWindowPrivate::ITEM_CBO_CO2_HIGH:
         currentConfig.setNumValue("OxyCRG|Ruler|CO2High", index);
         d_ptr->rulerValue.s.co2High = combo->currentText().toInt();
@@ -370,20 +530,15 @@ void OxyCRGSetupWindow::onComboUpdated(int index)
         d_ptr->rulerValue.s.rrHigh =
             combo->currentText().toInt();
         d_ptr->rulerUpdated.rrUpdatedStatus = true;
-        d_ptr->combos[OxyCRGSetupWindowPrivate::
-                ITEM_CBO_RR_LOW]->setEnabled(true);
+        d_ptr->rrLow->setEnabled(true);
         if (index != 0)
         {
             break;
         }
-        d_ptr->combos[OxyCRGSetupWindowPrivate::
-                ITEM_CBO_RR_LOW]->setEnabled(false);
-        d_ptr->combos[OxyCRGSetupWindowPrivate::
-                ITEM_CBO_RR_LOW]->blockSignals(true);
-        d_ptr->combos[OxyCRGSetupWindowPrivate::
-                ITEM_CBO_RR_LOW]->setCurrentIndex(0);
-        d_ptr->combos[OxyCRGSetupWindowPrivate::
-                ITEM_CBO_RR_LOW]->blockSignals(false);
+        d_ptr->rrLow->setEnabled(false);
+        d_ptr->rrLow->blockSignals(true);
+        d_ptr->rrLow->setCurrentIndex(0);
+        d_ptr->rrLow->blockSignals(false);
         currentConfig.setNumValue("OxyCRG|Ruler|RRLow", 0);
         break;
     };

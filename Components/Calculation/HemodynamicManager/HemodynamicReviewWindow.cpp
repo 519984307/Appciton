@@ -21,6 +21,7 @@
 #include "HemodynamicManager.h"
 #include <QDateTime>
 #include "HemodynamicWidget.h"
+#include "WindowManager.h"
 
 #define MAX_ROW_COUNT           28
 #define MAX_COLUMN_COUNT        12
@@ -334,6 +335,16 @@ void HemodynaimcReviewWindow::updateReviewTable()
 void HemodynaimcReviewWindow::showEvent(QShowEvent *ev)
 {
     Q_UNUSED(ev)
+}
+
+void HemodynaimcReviewWindow::resizeEvent(QResizeEvent *e)
+{
+    Window::resizeEvent(e);
+    QRect r1 = windowManager.getMenuArea();
+    QRect r2 = rect();
+    int xpos = r1.left() + (r1.width() - r2.width()) / 2;
+    int ypos = r1.top() + (r1.height() - r2.height()) / 2;
+    this->move(QPoint(xpos, ypos));
 }
 
 

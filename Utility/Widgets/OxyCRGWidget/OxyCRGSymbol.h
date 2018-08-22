@@ -39,7 +39,7 @@ public:
     {
         static const char *symbol[TRENDONE_NR] =
         {
-            "HR_PR", "RR"
+            "HR_PR", "HR+RR"
         };
         return symbol[index];
     }
