@@ -344,7 +344,6 @@ private:
     ECGBandwidth _12LeadFreqBand;
     ECGFilterMode _filterMode;
     Display12LeadFormat _12LeadDispFormat;
-    bool _isSelfLearn;
 
     OxyCRGCO2Widget *_oxyCRGCO2Widget;
     OxyCRGRESPWidget *_oxyCRGRESPWidget;

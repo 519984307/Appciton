@@ -1869,20 +1869,10 @@ ECGFilterMode ECGParam::getFilterMode() const
 
 void ECGParam::setSelfLearn(bool onOff)
 {
-    if (onOff == _isSelfLearn)
-    {
-        return;
-    }
-    _isSelfLearn = onOff;
     if (NULL != _provider)
     {
-        _provider->setSelfLearn(_isSelfLearn);
+        _provider->setSelfLearn(onOff);
     }
-}
-
-bool ECGParam::getSelfLearn() const
-{
-    return _isSelfLearn;
 }
 
 void ECGParam::setARRThreshold(ECGAlg::ARRPara parameter, short value)
@@ -1922,14 +1912,11 @@ void ECGParam::setPacermaker(ECGPaceMode onoff)
 {
     systemConfig.setNumValue("PrimaryCfg|ECG|PacerMaker", static_cast<int>(onoff));
 
-    if (ECG_DISPLAY_12_LEAD_FULL != ecgParam.getDisplayMode())
+    if (NULL != _provider)
     {
-        if (NULL != _provider)
-        {
-            _provider->enablePacermaker(onoff);
-        }
-        sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_PACER, static_cast<int>(onoff));
+        _provider->enablePacermaker(onoff);
     }
+    sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_PACER, static_cast<int>(onoff));
 
     return;
 }
@@ -2186,22 +2173,15 @@ int ECGParam::getQRSToneVolume(void)
  *************************************************************************************************/
 void ECGParam::setNotchFilter(int filter)
 {
-    if (_curLeadMode != ECG_LEAD_MODE_12)
+    ECGFilterMode filterMode = getFilterMode();
+    if (filterMode == ECG_FILTERMODE_MONITOR || filterMode == ECG_FILTERMODE_SURGERY)
     {
-        filter = ECG_NOTCH_50_AND_60HZ;
-    }
-    else
-    {
-        if (ecgParam.getDisplayMode() == ECG_DISPLAY_12_LEAD_FULL)
-        {
-            systemConfig.setNumValue("PrimaryCfg|ECG|NotchFilter", filter);
-        }
-        else
+        if (filter == 1)
         {
             filter = ECG_NOTCH_50_AND_60HZ;
         }
     }
-
+    systemConfig.setNumValue("PrimaryCfg|ECG|NotchFilter", filter);
     if (NULL != _provider)
     {
         _provider->setNotchFilter((ECGNotchFilter)filter);
@@ -2213,12 +2193,8 @@ void ECGParam::setNotchFilter(int filter)
  *************************************************************************************************/
 ECGNotchFilter ECGParam::getNotchFilter()
 {
-    int filter = ECG_NOTCH_50_AND_60HZ;
-
-    if (ecgParam.getDisplayMode() == ECG_DISPLAY_12_LEAD_FULL)
-    {
-        systemConfig.getNumValue("PrimaryCfg|ECG|NotchFilter", filter);
-    }
+    int filter;
+    systemConfig.getNumValue("PrimaryCfg|ECG|NotchFilter", filter);
 
     return (ECGNotchFilter)filter;
 }
@@ -2440,10 +2416,6 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     mode = ECG_FILTERMODE_MONITOR;
     systemConfig.getNumValue("PrimaryCfg|ECG|FilterMode", mode);
     _filterMode = (ECGFilterMode) mode;
-
-    mode = 0;
-    systemConfig.getNumValue("PrimaryCfg|ECG|SelfLearn", mode);
-    _isSelfLearn = mode;
 
     mode = 0;
     systemConfig.getNumValue("ECG12Lead|ECG12LeadBandwidth", mode);
