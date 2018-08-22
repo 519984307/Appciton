@@ -160,10 +160,6 @@ void CodeMarkerWindow::showEvent(QShowEvent *e)
     d_ptr->isChosen = false;
     d_ptr->timer->start();
     Window::showEvent(e);
-
-    // 居中显示。
-    QRect r = windowManager.getMenuArea();
-    move(r.x() + (r.width() - width()) / 2, r.y() + (2 * r.height() / 3 - height()));
 }
 
 void CodeMarkerWindow::hideEvent(QHideEvent *e)
