@@ -114,6 +114,7 @@ void HemodynaimcReviewWindow::layoutExec()
     TableHeaderView *hl = new TableHeaderView(Qt::Horizontal);
     d_ptr->tableView->setHorizontalHeader(hl);
     hl->setResizeMode(QHeaderView::ResizeToContents);
+    d_ptr->tableView->setFocusPolicy(Qt::ClickFocus);
     d_ptr->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     d_ptr->tableView->setSelectionBehavior(QAbstractItemView::SelectColumns);
     d_ptr->tableView->setModel(model);
