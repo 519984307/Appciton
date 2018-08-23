@@ -325,6 +325,13 @@ void TrendTableModel::loadCurParam(int trendGroup)
             qSort(list);
             d_ptr->curList.append(list);
         }
+
+        if (d_ptr->orderMap.contains(PARAM_CO2))
+        {
+            list = d_ptr->orderMap.values(PARAM_CO2);
+            qSort(list);
+            d_ptr->curList.append(list);
+        }
     }
 }
 
