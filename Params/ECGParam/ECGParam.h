@@ -267,11 +267,11 @@ public: // 用于访问配置相关信息。
     int getMaxGain(void);
 
     // 设置/获取QRS音量。
-    void setQRSToneVolume(int vol);
+    void setQRSToneVolume(SoundManager::VolumeLevel vol);
     int getQRSToneVolume(void);
 
     // 设置/获取工频滤波。
-    void setNotchFilter(int filter);
+    void setNotchFilter(ECGNotchFilter filter);
     ECGNotchFilter getNotchFilter();
     ECGNotchFilter getCalcLeadNotchFilter();
 
@@ -344,7 +344,6 @@ private:
     ECGBandwidth _12LeadFreqBand;
     ECGFilterMode _filterMode;
     Display12LeadFormat _12LeadDispFormat;
-    bool _isSelfLearn;
 
     OxyCRGCO2Widget *_oxyCRGCO2Widget;
     OxyCRGRESPWidget *_oxyCRGRESPWidget;
