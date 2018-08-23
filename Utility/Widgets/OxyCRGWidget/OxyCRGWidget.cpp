@@ -462,10 +462,10 @@ void OxyCRGWidget::_onSetupUpdated(IWidget *widget)
 {
     if (widget == _setUp)
     {
-//        OxyCRGSetupWidget setupWidget;
         OxyCRGSetupWindow setupWidget;
 
-        setupWidget.exec();
+        windowManager.showWindow(&setupWidget, WindowManager::ShowBehaviorModal);
+
         int index = setupWidget.getWaveTypeIndex();
         if (index != (getWaveType()) && (index == 0 || index == 1))
         {

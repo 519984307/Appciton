@@ -636,7 +636,8 @@ void DoseCalculationWindow::onBtnTitrateTableReleased()
 {
 //    titrateTableWidget.updateTitrateTableData();
 //    titrateTableWidget.autoShow();
-    TitrateTableWindow::getInstance()->exec();
+    windowManager.showWindow(TitrateTableWindow::getInstance(),
+                             WindowManager::ShowBehaviorModal);
 }
 
 /**************************************************************************************************
