@@ -1,8 +1,19 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/23
+ **/
+
+
 #pragma once
 #include "IWidget.h"
 #include <QMap>
 #include "BatteryIconWidget.h"
-#include "BatteryIndicatorWidget.h"
+#include "BatteryIndicatorWindow.h"
 
 /***************************************************************************************************
  * 系统状态栏，主要显示一些系统提示图标。
@@ -28,7 +39,10 @@ public:
     void setStatus(BatteryIconStatus status);
 
     // 获取当前电池状态
-    BatteryIconStatus getStatus() {return _batteryStatus;}
+    BatteryIconStatus getStatus()
+    {
+        return _batteryStatus;
+    }
 
     // 设置电量参数level = 0-15.
     void setVolume(int level);
@@ -50,7 +64,8 @@ private slots:
 private:
     BatteryBarWidget();
 
-    BatteryIndicatorWidget _batteryIndicatorWidget;
+    BatteryIndicatorWindow _batteryIndicatorWindow;
+
     BatteryIconWidget *_batteryIconWidget;
 
     BatteryIconStatus _batteryStatus;            // 电池状态

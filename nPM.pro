@@ -308,6 +308,7 @@ SOURCES +=                                                                      
     Components/PowerManager/BatteryMessage.cpp                                  \
     Components/PowerManager/BatteryAlarm.cpp                                    \
     Components/PowerManager/BatteryIndicatorWidget.cpp                          \
+    Components/PowerManager/BatteryIndicatorWindow.cpp                          \
     Components/PowerManager/BatteryBarWidget.cpp                                \
     Components/PowerManager/BatteryIconWidget.cpp                               \
     Components/PowerManager/PowerManager.cpp                                    \
@@ -862,6 +863,7 @@ HEADERS +=                                                                      
     Components/PowerManager/BatteryMessage.h                                    \
     Components/PowerManager/BatteryDefine.h                                     \
     Components/PowerManager/BatteryIndicatorWidget.h                            \
+    Components/PowerManager/BatteryIndicatorWindow.h                            \
     Components/PowerManager/BatteryBarWidget.h                                  \
     Components/PowerManager/BatteryIconWidget.h                                 \
     Components/PowerManager/PowerManager.h                                      \
