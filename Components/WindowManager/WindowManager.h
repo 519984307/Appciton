@@ -44,8 +44,9 @@ public:
     enum ShowBehaviorFlags
     {
         ShowBehaviorNone = 0x00,            // no any special behavior
-        ShowBehaviorCloseIfVisiable = 0x01, // close the window that request to show and remove from the window stack
-                                            // if the window is on the top of the window stack
+        ShowBehaviorCloseIfVisiable = 0x01, // close the window that request to show and remove it from the window stack
+                                            // when the window is on the top of the window stack
+
         ShowBehaviorModal = 0x02,           // Show the window as modal window
         ShowBehaviorHideOthers = 0x04,      // show the window and hide others window, the other windows still in the window stack
         ShowBehaviorCloseOthers = 0x08,     // show the window and close others window, the other windows will remove from the window stack

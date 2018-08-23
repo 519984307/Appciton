@@ -317,7 +317,7 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
 void ECGMenuContent::arrhythmiaBtnReleased()
 {
     ArrhythmiaMenuWindow *instance = ArrhythmiaMenuWindow::getInstance();
-    windowManager.showWindow(instance, WindowManager::ShowBehaviorModal);
+    windowManager.showWindow(instance, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorHideOthers);
 }
 
 void ECGMenuContent::selfLearnBtnReleased()

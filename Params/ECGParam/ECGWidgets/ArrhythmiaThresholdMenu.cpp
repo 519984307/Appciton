@@ -283,7 +283,7 @@ void ArrhythmiaThresholdMenu::onButtonReleased()
             bool isValid = true;
             float highLimit = 0;
             float lowLimit = 0;
-            QString rangeStr;
+            QString rangeStr = " ";
             switch (item)
             {
             case ECGAlg::ASYS_THRESHOLD:
@@ -417,7 +417,7 @@ void ArrhythmiaThresholdMenu::onButtonReleased()
             }
             else
             {
-                rangeStr = QString::number(lowLimit) + "-" + QString::number(highLimit);
+                rangeStr += QString::number(lowLimit) + "-" + QString::number(highLimit);
                 MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + rangeStr, QStringList(trs("EnglishYESChineseSURE")));
                 messageBox.exec();
             }

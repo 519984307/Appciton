@@ -107,7 +107,8 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     {
         return;
     }
-    windowManager.showWindow(&codeMarkerWindow , WindowManager::ShowBehaviorModal);
+    windowManager.showWindow(&codeMarkerWindow , WindowManager::ShowBehaviorCloseIfVisiable |
+                             WindowManager::ShowBehaviorCloseOthers);
 }
 
 void SoftkeyActionBase::previousPage(bool isPressed)
@@ -209,7 +210,7 @@ void SoftkeyActionBase::patientInfo(bool isPressed)
 
     patientInfoWindow.newPatientStatus(false);
     patientInfoWindow.widgetChange();
-    windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers |WindowManager::ShowBehaviorModal
+    windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers
                              | WindowManager::ShowBehaviorCloseIfVisiable);
 }
 
@@ -242,8 +243,7 @@ void SoftkeyActionBase::patientNew(bool isPressed)
         dataStorageDirManager.createDir(true);
         patientInfoWindow.newPatientStatus(true);
         patientInfoWindow.widgetChange();
-        windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers
-                                 | WindowManager::ShowBehaviorModal);
+        windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers);
     }
 }
 

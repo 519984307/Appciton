@@ -73,7 +73,7 @@ void MenuWindow::addMenuContent(MenuContent *menu)
 
 void MenuWindow::popup(const QString &menuName)
 {
-    windowManager.showWindow(this, WindowManager::ShowBehaviorNone);
+    windowManager.showWindow(this, WindowManager::ShowBehaviorCloseOthers);
     d_ptr->sidebar->popupWidget(menuName);
 }
 
