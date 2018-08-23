@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/23
+ **/
+
+
 #include "BatteryIconWidget.h"
 #include "qpainter.h"
 #include "Debug.h"
@@ -10,7 +21,7 @@ void BatteryIconWidget::setStatus(BatteryIconStatus status)
     _batteryStatus = status;
 
     if ((_batteryStatus == _lastBatteryStatus) && (_batteryVolume == _lastBatteryVolume)
-            &&(_timeRelative == _lastTimeRelative))
+            && (_timeRelative == _lastTimeRelative))
     {
         return;
     }
@@ -62,12 +73,12 @@ void BatteryIconWidget::setTimeValue(int time)
         if (_timeRelative % 2 == 1)
         {
             _printString = QString("%1%2%3")
-                  .arg(_timeRelative/2).arg(":").arg("30+");
+                           .arg(_timeRelative / 2).arg(":").arg("30+");
         }
         else
         {
             _printString = QString("%1%2%3")
-                  .arg(_timeRelative/2).arg(":").arg("00+");
+                           .arg(_timeRelative / 2).arg(":").arg("00+");
         }
     }
 }
@@ -119,42 +130,42 @@ void BatteryIconWidget::_drawBatteryImage(QPainter &painter, QRect &rect)
     painter.setFont(font);
     painter.setPen(QPen(Qt::white, _boarderWidth));
 
-    switch(_batteryStatus)
+    switch (_batteryStatus)
     {
-        case BATTERY_NORMAL:
+    case BATTERY_NORMAL:
 
-            // 正常电量图标显示
-            _drawBatteryFillRect(painter,rect);
-            // 剩余时间显示成字符串,
-            if (_batteryVolume > 0 && _batteryVolume < 5)
-            {
-                painter.drawText(rect, Qt::AlignCenter, _printString);
-            }
-            break;
+        // 正常电量图标显示
+        _drawBatteryFillRect(painter, rect);
+        // 剩余时间显示成字符串,
+        if (_batteryVolume > 0 && _batteryVolume < 5)
+        {
+            painter.drawText(rect, Qt::AlignCenter, _printString);
+        }
+        break;
 
-        case BATTERY_NOT_EXISTED:
+    case BATTERY_NOT_EXISTED:
 
-            // 电池不存在
-            _drawBatteryNo(painter,rect);
-            break;
+        // 电池不存在
+        _drawBatteryNo(painter, rect);
+        break;
 
-        case BATTERY_ERROR:
+    case BATTERY_ERROR:
 
-            // 电池故障
-            _drawBatteryError(painter,rect);
-            break;
+        // 电池故障
+        _drawBatteryError(painter, rect);
+        break;
 
-        case BATTERY_COM_FAULT:
+    case BATTERY_COM_FAULT:
 
-            // 电池通讯错误
-            _drawBatteryCommFault(painter,rect);
-            break;
-        case BATTERY_CALIBRATION_REQUIRED:
-            // 电池需要校准
-            _drawBatteryCalibrate(painter,rect);
+        // 电池通讯错误
+        _drawBatteryCommFault(painter, rect);
+        break;
+    case BATTERY_CALIBRATION_REQUIRED:
+        // 电池需要校准
+        _drawBatteryCalibrate(painter, rect);
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -162,33 +173,33 @@ void BatteryIconWidget::_drawBatteryImage(QPainter &painter, QRect &rect)
  * 画电池边框
  *************************************************************************************************/
 void BatteryIconWidget::_drawBatteryFrameLine(QPainter &painter, QRect &/*rect*/, QPainterPath &path)
-{  
-    painter.setPen(QPen(QColor(220, 220, 220), _boarderWidth, Qt::SolidLine));
+{
+    painter.setPen(QPen(QColor(178, 178, 178), _boarderWidth, Qt::SolidLine));
     painter.drawPath(path);
 
-/* // 带虚线的电池边框
-    rect = rect.adjusted(1, 1, 0, 0);
-    QPoint topright = rect.topRight();
-    QPoint bottomright = rect.bottomRight();
+    /* // 带虚线的电池边框
+        rect = rect.adjusted(1, 1, 0, 0);
+        QPoint topright = rect.topRight();
+        QPoint bottomright = rect.bottomRight();
 
-    if (_batteryStatus == BATTERY_NOT_EXISTED)
-    {
-        painter.setPen(QPen(QColor(220, 220, 220), _boarderWidth , Qt::DotLine));
-    }
-    else
-    {
+        if (_batteryStatus == BATTERY_NOT_EXISTED)
+        {
+            painter.setPen(QPen(QColor(220, 220, 220), _boarderWidth , Qt::DotLine));
+        }
+        else
+        {
+            painter.setPen(QPen(QColor(220, 220, 220), _boarderWidth , Qt::SolidLine));
+        }
+
+        painter.drawPath(path);
         painter.setPen(QPen(QColor(220, 220, 220), _boarderWidth , Qt::SolidLine));
-    }
-
-    painter.drawPath(path);
-    painter.setPen(QPen(QColor(220, 220, 220), _boarderWidth , Qt::SolidLine));
-    painter.drawLine(topright.x() - rect.width() / _wCount, topright.y() + rect.height() * 3 / 10,
-            topright.x(), topright.y() + rect.height() * 3 / 10);
-    painter.drawLine(topright.x(), topright.y() + rect.height() * 3 / 10,
-            bottomright.x(), bottomright.y() - rect.height() * 3 / 10);
-    painter.drawLine(bottomright.x(), bottomright.y() - rect.height() * 3 / 10,
-            bottomright.x() - rect.width() / _wCount, bottomright.y() - rect.height() * 3 / 10);
- */
+        painter.drawLine(topright.x() - rect.width() / _wCount, topright.y() + rect.height() * 3 / 10,
+                topright.x(), topright.y() + rect.height() * 3 / 10);
+        painter.drawLine(topright.x(), topright.y() + rect.height() * 3 / 10,
+                bottomright.x(), bottomright.y() - rect.height() * 3 / 10);
+        painter.drawLine(bottomright.x(), bottomright.y() - rect.height() * 3 / 10,
+                bottomright.x() - rect.width() / _wCount, bottomright.y() - rect.height() * 3 / 10);
+     */
 }
 
 /**************************************************************************************************
@@ -209,17 +220,17 @@ QPainterPath BatteryIconWidget::_drawBatteryFrame(QPainter &painter, QRect &rect
     mypath.lineTo(topleft + QPoint(0, _radius));
     mypath.quadTo(topleft, topleft + QPoint(_radius, 0));
     mypath.lineTo(topright.x() - rect.width() / wCount - _radius / 2, topright.y());
-    mypath.quadTo(topright.x() - rect.width() / wCount, topright.y(),topright.x() -
-            rect.width() / wCount, topright.y()  + _radius / 2);
+    mypath.quadTo(topright.x() - rect.width() / wCount, topright.y(), topright.x() -
+                  rect.width() / wCount, topright.y()  + _radius / 2);
     mypath.lineTo(topright.x() - rect.width() / wCount, topright.y() + rect.height() * 3 / 10);
     mypath.lineTo(topright.x(), topright.y() + rect.height() * 3 / 10);
     mypath.lineTo(bottomright.x(), bottomright.y() - rect.height() * 3 / 10);
     mypath.lineTo(bottomright.x() - rect.width() / wCount, bottomright.y() - rect.height() * 3 / 10);
     mypath.lineTo(bottomright.x() - rect.width() / wCount, bottomright.y() - _radius / 2);
     mypath.quadTo(bottomright.x() - rect.width() / wCount, bottomright.y(),
-            bottomright.x() - rect.width() / wCount - _radius / 2, bottomright.y());
+                  bottomright.x() - rect.width() / wCount - _radius / 2, bottomright.y());
     mypath.lineTo(bottomleft + QPoint(_radius, 0));
-    mypath.quadTo(bottomleft,bottomleft - QPoint(0, _radius));
+    mypath.quadTo(bottomleft, bottomleft - QPoint(0, _radius));
 
     // 用黑色作为路径填充色
     painter.fillPath(mypath, QBrush(Qt::black));
@@ -234,8 +245,8 @@ QPainterPath BatteryIconWidget::_drawBatteryFrame(QPainter &painter, QRect &rect
 void BatteryIconWidget::_drawBatteryNo(QPainter &painter, QRect &rect)
 {
     // 获得新的矩形顶点坐标
-    QRect rectAdjust =rect.adjusted(rect.width() * 8 / 21, rect.height() / 3,
-            -rect.width() * 3 / 7, -rect.height() / 3);
+    QRect rectAdjust = rect.adjusted(rect.width() * 8 / 21, rect.height() / 3,
+                                     -rect.width() * 3 / 7, -rect.height() / 3);
     QPoint topleft = rectAdjust.topLeft();
     QPoint topright = rectAdjust.topRight();
     QPoint bottomleft = rectAdjust.bottomLeft();
@@ -250,36 +261,36 @@ void BatteryIconWidget::_drawBatteryNo(QPainter &painter, QRect &rect)
     painter.drawLine(bottomleft.x(), bottomleft.y(), topright.x(), topright.y());
     painter.setRenderHint(QPainter::Antialiasing, true);
 
-/*  // 复制原电池边框路径，并画成虚线
-    QPoint topleft = rect.topLeft();
-    QPoint topright = rect.topRight();
-    QPoint bottomleft = rect.bottomLeft();
-    QPoint bottomright = rect.bottomRight();
+    /*  // 复制原电池边框路径，并画成虚线
+        QPoint topleft = rect.topLeft();
+        QPoint topright = rect.topRight();
+        QPoint bottomleft = rect.bottomLeft();
+        QPoint bottomright = rect.bottomRight();
 
-    painter.setPen(QPen(Qt::white, _boarderWidth, Qt::SolidLine));
-    QPainterPath mypath;
-    mypath.moveTo(bottomleft - QPoint(0, _radius));
-    mypath.lineTo(topleft + QPoint(0, _radius));
-    mypath.quadTo(topleft, topleft + QPoint(_radius, 0));
-    mypath.lineTo(topright.x() - rect.width() / 10 - _radius / 4, topright.y());
-    mypath.quadTo(topright.x() - rect.width() / 10, topright.y(),topright.x() - rect.width() / 10,
-            topright.y() + rect.height() * 3 / 10 + _radius / 4);
-    mypath.lineTo(topright.x() - rect.width() / 10, topright.y() +
-                  rect.height() * 3 / 10);
-    mypath.lineTo(topright.x(), topright.y() + rect.height() * 3 / 10);
-    mypath.lineTo(bottomright.x(), bottomright.y() - rect.height() * 3 / 10);
-    mypath.lineTo(bottomright.x() - rect.width() / 10, bottomright.y() - rect.height() * 3 / 10);
-    mypath.lineTo(bottomright.x() - rect.width() / 10, bottomright.y() - _radius / 4);
-    mypath.quadTo(bottomright.x() - rect.width() / 10, bottomright.y(),
-                  bottomright.x() - rect.width() / 10 - _radius / 4, bottomright.y());
-    mypath.lineTo(bottomleft + QPoint(_radius, 0));
-    mypath.quadTo(bottomleft,bottomleft - QPoint(0, _radius));
-    painter.fillPath(mypath, QBrush(Qt::black));
-    painter.setPen(QPen(Qt::white, _boarderWidth, Qt::DotLine));
-    painter.drawPath(mypath);
-    painter.fillRect(rect.x() + rect.width() * 9 / 10 -_boarderWidth, rect.y() + rect.height() * 3 / 10,
-            rect.width() / 10, rect.height() - rect.height() * 6 / 10, QBrush(Qt::black));
-*/
+        painter.setPen(QPen(Qt::white, _boarderWidth, Qt::SolidLine));
+        QPainterPath mypath;
+        mypath.moveTo(bottomleft - QPoint(0, _radius));
+        mypath.lineTo(topleft + QPoint(0, _radius));
+        mypath.quadTo(topleft, topleft + QPoint(_radius, 0));
+        mypath.lineTo(topright.x() - rect.width() / 10 - _radius / 4, topright.y());
+        mypath.quadTo(topright.x() - rect.width() / 10, topright.y(),topright.x() - rect.width() / 10,
+                topright.y() + rect.height() * 3 / 10 + _radius / 4);
+        mypath.lineTo(topright.x() - rect.width() / 10, topright.y() +
+                      rect.height() * 3 / 10);
+        mypath.lineTo(topright.x(), topright.y() + rect.height() * 3 / 10);
+        mypath.lineTo(bottomright.x(), bottomright.y() - rect.height() * 3 / 10);
+        mypath.lineTo(bottomright.x() - rect.width() / 10, bottomright.y() - rect.height() * 3 / 10);
+        mypath.lineTo(bottomright.x() - rect.width() / 10, bottomright.y() - _radius / 4);
+        mypath.quadTo(bottomright.x() - rect.width() / 10, bottomright.y(),
+                      bottomright.x() - rect.width() / 10 - _radius / 4, bottomright.y());
+        mypath.lineTo(bottomleft + QPoint(_radius, 0));
+        mypath.quadTo(bottomleft,bottomleft - QPoint(0, _radius));
+        painter.fillPath(mypath, QBrush(Qt::black));
+        painter.setPen(QPen(Qt::white, _boarderWidth, Qt::DotLine));
+        painter.drawPath(mypath);
+        painter.fillRect(rect.x() + rect.width() * 9 / 10 -_boarderWidth, rect.y() + rect.height() * 3 / 10,
+                rect.width() / 10, rect.height() - rect.height() * 6 / 10, QBrush(Qt::black));
+    */
 }
 
 /**************************************************************************************************
@@ -288,8 +299,8 @@ void BatteryIconWidget::_drawBatteryNo(QPainter &painter, QRect &rect)
 void BatteryIconWidget::_drawBatteryError(QPainter &painter, QRect &rect)
 {
     // 获得新的矩形顶点坐标
-    QRect rectAdjust =rect.adjusted(rect.width() / 6, rect.height() / 4,
-            -rect.width() / 5, -rect.height() / 5);
+    QRect rectAdjust = rect.adjusted(rect.width() / 6, rect.height() / 4,
+                                     -rect.width() / 5, -rect.height() / 5);
     QPoint topleft = rectAdjust.topLeft();
     QPoint topright = rectAdjust.topRight();
     QPoint bottomleft = rectAdjust.bottomLeft();
@@ -321,58 +332,58 @@ void BatteryIconWidget::_drawBatteryCommFault(QPainter &painter, QRect &rect)
     QPainterPath mypath;
     int wCount = 15;
     mypath.moveTo(topright.x() - rect.width() * 3 / wCount,
-            topleft.y() + rect.height() / 3);
+                  topleft.y() + rect.height() / 3);
     mypath.lineTo(topright.x() - rect.width() * 3 / wCount,
-            topleft.y() + rect.height() / 3 + rect.height() / 10 -1);
-    mypath.lineTo(topleft.x() + rect.width() *2 / wCount,
-            topleft.y() + rect.height() / 3 + rect.height() / 10 - 1);
+                  topleft.y() + rect.height() / 3 + rect.height() / 10 - 1);
+    mypath.lineTo(topleft.x() + rect.width() * 2 / wCount,
+                  topleft.y() + rect.height() / 3 + rect.height() / 10 - 1);
     mypath.lineTo(topleft.x() + rect.width() * 3 / wCount,
-             topleft.y() + rect.height() / 3 - rect.height() / 10 - 1);
+                  topleft.y() + rect.height() / 3 - rect.height() / 10 - 1);
     mypath.lineTo(topleft.x() + rect.width() * 3 / wCount + rect.width() / 20,
-            topleft.y() + rect.height() / 3 - rect.height() / 10 - 1);
+                  topleft.y() + rect.height() / 3 - rect.height() / 10 - 1);
     mypath.lineTo(topleft.x() + rect.width() * 3 / wCount,
-            topleft.y() + rect.height() / 3);
+                  topleft.y() + rect.height() / 3);
     mypath.lineTo(topright.x() - rect.width() * 3 / wCount,
-           topleft.y() + rect.height() / 3);
+                  topleft.y() + rect.height() / 3);
     painter.drawPath(mypath);
     painter.fillPath(mypath, QBrush(Qt::white));
 
     mypath.moveTo(topleft.x() + rect.width() * 2 / wCount,
-            topleft.y() + rect.height() * 2 / 3);
+                  topleft.y() + rect.height() * 2 / 3);
     mypath.lineTo(topleft.x() + rect.width() * 2 / wCount,
-            topleft.y() + rect.height() * 2 / 3 - rect.height() / 10);
+                  topleft.y() + rect.height() * 2 / 3 - rect.height() / 10);
     mypath.lineTo(topright.x() - rect.width() * 3 / wCount,
-            topleft.y() + rect.height() * 2 / 3 - rect.height() / 10);
+                  topleft.y() + rect.height() * 2 / 3 - rect.height() / 10);
     mypath.lineTo(topright.x() - rect.width() * 4 / wCount,
-            topleft.y() + rect.height() * 2 / 3 + rect.height() / 10);
+                  topleft.y() + rect.height() * 2 / 3 + rect.height() / 10);
     mypath.lineTo(topright.x() - rect.width() * 4 / wCount - rect.width() / 20,
-            topleft.y() + rect.height() * 2 / 3 + rect.height() / 10);
+                  topleft.y() + rect.height() * 2 / 3 + rect.height() / 10);
     mypath.lineTo(topright.x() - rect.width() * 4 / wCount,
-            topleft.y() + rect.height() * 2 / 3);
+                  topleft.y() + rect.height() * 2 / 3);
     mypath.lineTo(topleft.x() + rect.width() * 2 / wCount,
-            topleft.y() + rect.height() * 2 / 3);
+                  topleft.y() + rect.height() * 2 / 3);
     painter.drawPath(mypath);
     painter.fillPath(mypath, QBrush(QColor(220, 220, 220)));
 
     // 画红色斜线
-    QPen pen = QPen(Qt::red,rect.height() / 6);
+    QPen pen = QPen(Qt::red, rect.height() / 6);
     pen.setCapStyle(Qt::RoundCap);
     painter.setPen(pen);
     painter.drawLine((topleft.x() + topright.x() - rect.width() / wCount) / 2 +
-            rect.width() / wCount, topright.y() + rect.height() / 6,
-            (topleft.x() + topright.x() - rect.width() / wCount) / 2 - rect.width() / wCount ,
-            bottomright.y() - rect.height() / 6);
+                     rect.width() / wCount, topright.y() + rect.height() / 6,
+                     (topleft.x() + topright.x() - rect.width() / wCount) / 2 - rect.width() / wCount ,
+                     bottomright.y() - rect.height() / 6);
 
     // 画两条黑色斜线
     painter.setPen(QPen(Qt::black, rect.height() / 12));
     painter.drawLine((topleft.x() + topright.x() - rect.width() / wCount) / 2 + rect.width() / wCount
-            - rect.height() / 10, topright.y() + rect.height() / 6, (topleft.x() + topright.x()
-            - rect.width() / wCount) / 2 - rect.width() / wCount - rect.height() / 10, bottomright.y()
-            - rect.height() / 6);
+                     - rect.height() / 10, topright.y() + rect.height() / 6, (topleft.x() + topright.x()
+                             - rect.width() / wCount) / 2 - rect.width() / wCount - rect.height() / 10, bottomright.y()
+                     - rect.height() / 6);
     painter.drawLine((topleft.x() + topright.x() - rect.width() / wCount) / 2 + rect.width() / wCount
-            + rect.height() / 10, topright.y() + rect.height() / 6, (topleft.x() + topright.x()
-            - rect.width() / wCount) / 2 - rect.width() / wCount + rect.height() / 10, bottomright.y()
-            - rect.height() / 6);
+                     + rect.height() / 10, topright.y() + rect.height() / 6, (topleft.x() + topright.x()
+                             - rect.width() / wCount) / 2 - rect.width() / wCount + rect.height() / 10, bottomright.y()
+                     - rect.height() / 6);
 }
 
 /**************************************************************************************************
@@ -407,7 +418,7 @@ void BatteryIconWidget::_drawBatteryFillRect(QPainter &painter, QRect &rect)
     {
         int wCount = 15;
         mypath.lineTo(topright.x() - rect.width() / wCount - _radius / 2, topright.y());
-        mypath.quadTo(topright.x() - rect.width() / wCount, topright.y(),topright.x() -
+        mypath.quadTo(topright.x() - rect.width() / wCount, topright.y(), topright.x() -
                       rect.width() / wCount, topright.y()  + _radius / 2);
 
         mypath.lineTo(topright.x() - rect.width() / wCount, topright.y() + rect.height() * 3 / 10);
@@ -451,16 +462,16 @@ void BatteryIconWidget::_drawBatteryFillRect(QPainter &painter, QRect &rect)
 //    }
 //    mypath.lineTo(bottomleft.x() + rect.width() * 2 / _wCount, bottomleft.y());
     mypath.lineTo(bottomleft + QPoint(_radius, 0));
-    mypath.quadTo(bottomleft,bottomleft - QPoint(0, _radius));
-//printf("_batteryVolume = %d\n_timeRelative = %d\n",_batteryVolume,_timeRelative);
-//if (_fillColor == QColor(0, 128, 0))
-//{
+    mypath.quadTo(bottomleft, bottomleft - QPoint(0, _radius));
+// printf("_batteryVolume = %d\n_timeRelative = %d\n",_batteryVolume,_timeRelative);
+// if (_fillColor == QColor(0, 128, 0))
+// {
 //    printf("current fillcolor is white\n");
-//}
-//else
-//{
+// }
+// else
+// {
 //    printf("current fillcolor is yellow\n");
-//}
+// }
     // 选择填充色
     painter.fillPath(mypath, _fillColor);
 }
@@ -489,5 +500,4 @@ BatteryIconWidget::BatteryIconWidget() : QWidget(NULL)
  *************************************************************************************************/
 BatteryIconWidget::~BatteryIconWidget()
 {
-
 }

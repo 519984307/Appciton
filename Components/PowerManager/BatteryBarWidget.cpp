@@ -1,7 +1,17 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/23
+ **/
+
+
 #include <QPixmap>
 #include "BatteryBarWidget.h"
 #include "FontManager.h"
-#include "BatteryIndicatorWidget.h"
 #include "WindowManager.h"
 #include "MenuManager.h"
 
@@ -88,14 +98,9 @@ void BatteryBarWidget::setIconLow()
 /**************************************************************************************************
  * 释放事件回调函数
  *************************************************************************************************/
-void BatteryBarWidget::_batRealsed(IWidget *)
+void BatteryBarWidget::_batRealsed(IWidget * iWidget)
 {
-    QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
-    int y = r.y() + 35;
-    _batteryIndicatorWidget.autoShow(x, y);
-
-//    _batteryIndicatorWidget.autoShow();
+    windowManager.showWindow(&_batteryIndicatorWindow , WindowManager::ShowBehaviorModal);
 }
 
 /**************************************************************************************************
@@ -120,5 +125,4 @@ BatteryBarWidget::BatteryBarWidget() : IWidget("BatteryBarWidget")
  *************************************************************************************************/
 BatteryBarWidget::~BatteryBarWidget()
 {
-
 }
