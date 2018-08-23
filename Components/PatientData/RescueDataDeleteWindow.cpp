@@ -20,8 +20,7 @@
 #include <QEventLoop>
 #include "Utility.h"
 #include "DataStorageDirManager.h"
-
-#define ITEM_HEIGHT 30
+#include "ThemeManager.h"
 
 RescueDataDeleteWindow *RescueDataDeleteWindow::_selfObj = NULL;
 
@@ -57,7 +56,8 @@ public:
           deleteCase(NULL),
           deleteAll(NULL),
           up(NULL),
-          down(NULL)
+          down(NULL),
+          widgetHeight(themeManger.getAcceptableControlHeight())
     {}
     ~RescueDataDeleteWindowPrivate(){}
 
@@ -67,6 +67,7 @@ public:
     Button *up;
     Button *down;
     QPointer<QThread> deleteThreadPtr;
+    int widgetHeight;
 };
 
 RescueDataDeleteWindow::~RescueDataDeleteWindow()
@@ -212,7 +213,8 @@ RescueDataDeleteWindow::RescueDataDeleteWindow()
     int maxw = windowManager.getPopMenuWidth();
     int maxh = windowManager.getPopMenuHeight();
 
-    d_ptr->dataListWidget = new RescueDataListNewWidget(maxw - 20, maxh - 60 - 36);
+    d_ptr->dataListWidget = new RescueDataListNewWidget(maxw - 20,
+                                                        maxh - d_ptr->widgetHeight * 2 - 36);
     d_ptr->dataListWidget->setShowCurRescue(false);
     d_ptr->dataListWidget->setScrollbarVisiable(false);
     connect(d_ptr->dataListWidget , SIGNAL(pageInfoChange()),
@@ -220,22 +222,22 @@ RescueDataDeleteWindow::RescueDataDeleteWindow()
 
     d_ptr->deleteCase = new Button(trs("EraseSelected"));
     d_ptr->deleteCase->setButtonStyle(Button::ButtonTextOnly);
-    d_ptr->deleteCase->setFixedHeight(ITEM_HEIGHT);
+    d_ptr->deleteCase->setFixedHeight(d_ptr->widgetHeight);
     connect(d_ptr->deleteCase, SIGNAL(released()), this, SLOT(_deleteSelectReleased()));
 
     d_ptr->deleteAll = new Button(trs("EraseAll"));
     d_ptr->deleteAll->setButtonStyle(Button::ButtonTextOnly);
-    d_ptr->deleteAll->setFixedHeight(ITEM_HEIGHT);
+    d_ptr->deleteAll->setFixedHeight(d_ptr->widgetHeight);
     connect(d_ptr->deleteAll, SIGNAL(released()), this, SLOT(_deleteAllReleased()));
 
     d_ptr->up = new Button();
-    d_ptr->up->setFixedSize(ITEM_HEIGHT, ITEM_HEIGHT);
+    d_ptr->up->setFixedSize(d_ptr->widgetHeight, d_ptr->widgetHeight);
     d_ptr->up->setButtonStyle(Button::ButtonIconOnly);
     d_ptr->up->setIcon(QIcon("/usr/local/nPM/icons/ArrowUp.png"));
     connect(d_ptr->up, SIGNAL(released()), this, SLOT(_upReleased()));
 
     d_ptr->down = new Button();
-    d_ptr->down->setFixedSize(ITEM_HEIGHT, ITEM_HEIGHT);
+    d_ptr->down->setFixedSize(d_ptr->widgetHeight, d_ptr->widgetHeight);
     d_ptr->down->setButtonStyle(Button::ButtonIconOnly);
     d_ptr->down->setIcon(QIcon("/usr/local/nPM/icons/ArrowDown.png"));
     connect(d_ptr->down, SIGNAL(released()), this, SLOT(_downReleased()));
