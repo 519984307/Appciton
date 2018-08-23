@@ -68,7 +68,7 @@ CodeMarkerWindow::CodeMarkerWindow() : Window()
     d_ptr->isChosen = false;
 
 
-    int fontSize = fontManager.getFontSize(1);
+    int fontSize = fontManager.getFontSize(3);
     int barWidth = 20;
     int borderWidth = 4;
 
