@@ -143,6 +143,7 @@ TrendTableWindow::TrendTableWindow()
     verticalHeader->setResizeMode(QHeaderView::ResizeToContents);
     d_ptr->table->setSelectionMode(QAbstractItemView::SingleSelection);
     d_ptr->table->setSelectionBehavior(QAbstractItemView::SelectColumns);
+    d_ptr->table->setFocusPolicy(Qt::ClickFocus);
     d_ptr->table->setShowGrid(false);
     d_ptr->table->setCornerButtonEnabled(false);
     d_ptr->model = new TrendTableModel();
