@@ -241,7 +241,7 @@ void Button::paintEvent(QPaintEvent *ev)
     case ButtonTextBesideIcon:
     default:
     {
-        QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignTop | Qt::AlignHCenter, iconSize(),
+        QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignVCenter | Qt::AlignLeft, iconSize(),
                                              rect.adjusted(PADDING, 0, 0, 0));
         ico.paint(&painter, iconRect, Qt::AlignCenter, icoMode);
 

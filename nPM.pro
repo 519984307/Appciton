@@ -259,6 +259,7 @@ SOURCES +=                                                                      
     Components/PatientData/WaveformCache.cpp                                    \
     Components/PatientData/ParamDataStorageManager.cpp                          \
     Components/PatientData/RescueDataListWidget.cpp                             \
+    Components/PatientData/RescueDataListNewWidget.cpp                          \
     Components/PatientData/RescueDataExportWidget.cpp                           \
     Components/PatientData/TrendCache.cpp                                       \
     Components/PatientData/TrendGraphWidget.cpp                                 \
@@ -266,6 +267,7 @@ SOURCES +=                                                                      
     Components/PatientData/TrendDataUtil.cpp                                    \
     Components/PatientData/TrendDataSetWidget.cpp                               \
     Components/PatientData/RescueDataDeleteWidget.cpp                           \
+    Components/PatientData/RescueDataDeleteWindow.cpp                           \
     Components/PatientData/TrendDataStorageManager.cpp                          \
     Components/PatientData/EventDataParseContext.cpp                            \
     Components/PatientData/EventStorageItem.cpp                                 \
@@ -807,6 +809,7 @@ HEADERS +=                                                                      
     Components/PatientData/ParamDataDefine.h                                    \
     Components/PatientData/ParamDataStorageManager.h                            \
     Components/PatientData/RescueDataListWidget.h                               \
+    Components/PatientData/RescueDataListNewWidget.h                            \
     Components/PatientData/RescueDataDefine.h                                   \
     Components/PatientData/RescueDataExportWidget.h                             \
     Components/PatientData/TrendCache.h                                         \
@@ -816,6 +819,7 @@ HEADERS +=                                                                      
     Components/PatientData/TrendDataSymbol.h                                    \
     Components/PatientData/TrendDataDefine.h                                    \
     Components/PatientData/RescueDataDeleteWidget.h                             \
+    Components/PatientData/RescueDataDeleteWindow.h                             \
     Components/PatientData/TrendDataStorageManager.h                            \
     Components/PatientData/EventDataDefine.h                                    \
     Components/PatientData/EventDataParseContext.h                              \
