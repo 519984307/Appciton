@@ -84,11 +84,6 @@ public:
 
 protected:
     void showEvent(QShowEvent *ev);
-    /**
-     * @brief resizeEvent
-     * @param e
-     */
-    virtual void resizeEvent(QResizeEvent *e);
 
 private slots:
     void onBtnParamReleased();

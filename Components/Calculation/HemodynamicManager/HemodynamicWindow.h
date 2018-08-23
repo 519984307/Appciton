@@ -35,13 +35,6 @@ public:
      */
     void defaultInput(void);
 
-protected:
-    /**
-     * @brief resizeEvent
-     * @param e
-     */
-    virtual void resizeEvent(QResizeEvent *e);
-
 signals:
     void checkOutputSignal(int);
     void checkInputSignal(int);

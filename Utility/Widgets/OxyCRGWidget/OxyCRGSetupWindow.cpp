@@ -467,16 +467,6 @@ void OxyCRGSetupWindow::showEvent(QShowEvent *ev)
     d_ptr->co2Low->setMinimumWidth(100);
 }
 
-void OxyCRGSetupWindow::resizeEvent(QResizeEvent *e)
-{
-    Window::resizeEvent(e);
-    QRect r1 = windowManager.getMenuArea();
-    QRect r2 = rect();
-    int xpos = r1.left() + (r1.width() - r2.width()) / 2;
-    int ypos = r1.top() + (r1.height() - r2.height()) / 2;
-    this->move(QPoint(xpos, ypos));
-}
-
 void OxyCRGSetupWindow::onComboUpdated(int index)
 {
     ComboBox *combo = qobject_cast<ComboBox *>(sender());

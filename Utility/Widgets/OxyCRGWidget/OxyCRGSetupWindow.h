@@ -86,11 +86,6 @@ protected:
      * @param ev
      */
     virtual void showEvent(QShowEvent *ev);
-    /**
-     * @brief resizeEvent
-     * @param e
-     */
-    virtual void resizeEvent(QResizeEvent *e);
 
 public slots:
     /**
