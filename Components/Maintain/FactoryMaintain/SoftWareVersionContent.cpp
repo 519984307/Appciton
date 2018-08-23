@@ -20,6 +20,7 @@ public:
     enum MenuItem
     {
         ITEM_LAB_SYS_VER = 0,
+        ITEM_LAB_BIULD_TIME,
         ITEM_LAB_PMG_VER,
         ITEM_LAB_U_BOOT,
         ITEM_LAB_KERNEL,
@@ -65,9 +66,9 @@ void SoftWareVersionContentPrivate::loadOptions()
 
     QString tmpStr;
 
-    tmpStr.clear();
-    systemConfig.getStrValue("SoftWareVersion|SystemSoftwareVersion", tmpStr);
-    labs[ITEM_LAB_SYS_VER]->setText(trs(tmpStr));
+    labs[ITEM_LAB_SYS_VER]->setText(GIT_VERSION);
+
+    labs[ITEM_LAB_BIULD_TIME]->setText(QString("%1 %2").arg(__TIME__).arg(__DATE__));
 
     tmpStr.clear();
     systemConfig.getStrValue("SoftWareVersion|PowerManagerSoftwareVersion", tmpStr);
@@ -127,13 +128,23 @@ void SoftWareVersionContent::layoutExec()
     labelLeft = new QLabel(trs("SystemSoftwareVersion"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(SoftWareVersionContentPrivate
                        ::ITEM_LAB_SYS_VER, labelRight);
 
+    labelLeft = new QLabel(trs("BuildTime"));
+    layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
+    labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
+    d_ptr->labs.insert(SoftWareVersionContentPrivate
+                       ::ITEM_LAB_BIULD_TIME, labelRight);
+
     labelLeft = new QLabel(trs("PowerManagerSoftwareVersion"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(SoftWareVersionContentPrivate
                        ::ITEM_LAB_PMG_VER, labelRight);
@@ -141,6 +152,7 @@ void SoftWareVersionContent::layoutExec()
     labelLeft = new QLabel(trs("Uboot"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(SoftWareVersionContentPrivate
                        ::ITEM_LAB_U_BOOT, labelRight);
@@ -148,6 +160,7 @@ void SoftWareVersionContent::layoutExec()
     labelLeft = new QLabel(trs("Kernel"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(SoftWareVersionContentPrivate
                        ::ITEM_LAB_KERNEL, labelRight);
@@ -155,6 +168,7 @@ void SoftWareVersionContent::layoutExec()
     labelLeft = new QLabel(trs("KeyboardModule"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(SoftWareVersionContentPrivate
                        ::ITEM_LAB_KEYBD_MOD, labelRight);
@@ -162,6 +176,7 @@ void SoftWareVersionContent::layoutExec()
     labelLeft = new QLabel(trs("RecorderModule"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(SoftWareVersionContentPrivate
                        ::ITEM_LAB_RECOD_MOD, labelRight);
@@ -169,6 +184,7 @@ void SoftWareVersionContent::layoutExec()
     labelLeft = new QLabel(trs("ECGAlgorithmType"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(SoftWareVersionContentPrivate
                        ::ITEM_LAB_ECG_ALGHTP, labelRight);
@@ -176,6 +192,7 @@ void SoftWareVersionContent::layoutExec()
     labelLeft = new QLabel(trs("BootAndStandbyLogoVersion"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(SoftWareVersionContentPrivate
                        ::ITEM_LAB_BOOTSTD_LOGOVER, labelRight);
