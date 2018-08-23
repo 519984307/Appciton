@@ -65,14 +65,12 @@ RescueDataListNewWidget::RescueDataListNewWidget(int w, int h)
 
         Button *btn1 = new Button();
         btn1->setProperty("Id" , qVariantFromValue(i * 2));
-        btn1->setFixedHeight(d_ptr->widgetHeight);
         btn1->setFont(fontManager.textFont(fontSize));
         btn1->setButtonStyle(Button::ButtonTextBesideIcon);
         connect(btn1, SIGNAL(released()), this, SLOT(_btnPressed()));
 
         Button *btn2 = new Button();
         btn2->setProperty("Id" , qVariantFromValue(i * 2 + 1));
-        btn2->setFixedHeight(d_ptr->widgetHeight);
         btn2->setFont(fontManager.textFont(fontSize));
         btn2->setButtonStyle(Button::ButtonTextBesideIcon);
         connect(btn2, SIGNAL(released()), this, SLOT(_btnPressed()));
