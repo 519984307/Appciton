@@ -103,6 +103,8 @@ void ThemeManagerPrivate::loadColorScheme()
                                  ThemeManager::StateDisabled), QColor(225, 225, 225));
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlComboBox, ThemeManager::ElementBackgound,
                                  ThemeManager::StateDisabled), QColor("#EFF0F1"));
+    colorScheme.insert(COLOR_KEY(ThemeManager::ControlComboBox, ThemeManager::ElementBackgound,
+                                 ThemeManager::StateActive), QColor(186, 186, 186));
 }
 
 ThemeManager &ThemeManager::getInstance()
