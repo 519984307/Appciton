@@ -30,7 +30,6 @@ public:
     void widgetChange(void);
     void relieveStatus(bool);
     void newPatientStatus(bool);
-    void autoShow(void);
 private slots:
     void _idReleased(void);
     void _nameReleased(void);

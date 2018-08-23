@@ -60,15 +60,23 @@ enum PatientWeightUnit
 struct PatientInfo
 {
     PatientInfo()
+        :type(PATIENT_TYPE_ADULT),
+          pacer(PATIENT_PACER_ON),
+          sex(PATIENT_SEX_NULL),  //  性别为空主要用于开机时性别框要显示为空白
+          age(-1), //  年纪设置为-1主要用于开机时年纪框不让设置数据要显示为空白
+          blood(PATIENT_BLOOD_TYPE_NULL),
+          weightUnit(PATIENT_WEIGHT_UNIT_KG),
+          weight(0),
+          height(0)
     {
-        pacer = PATIENT_PACER_ON;
-        type = PATIENT_TYPE_ADULT;
-        sex = PATIENT_SEX_NULL;      //  性别为空主要用于开机时性别框要显示为空白
-        age = -1;                     //  年纪设置为-1主要用于开机时年纪框不让设置数据要显示为空白
-        blood = PATIENT_BLOOD_TYPE_NULL;
-        weight = 0;
-        height  = 0;
-        weightUnit = PATIENT_WEIGHT_UNIT_KG;
+        // pacer = PATIENT_PACER_ON;
+        // type = PATIENT_TYPE_ADULT;
+        // sex = PATIENT_SEX_NULL;
+        // age = -1;
+        // blood = PATIENT_BLOOD_TYPE_NULL;
+        // weight = 0;
+        // height  = 0;
+        // weightUnit = PATIENT_WEIGHT_UNIT_KG;
         memset(name, 0, sizeof(name));
         memset(id, 0, sizeof(id));
     }

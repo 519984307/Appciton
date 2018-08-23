@@ -207,30 +207,10 @@ void SoftkeyActionBase::patientInfo(bool isPressed)
         return;
     }
 
-    bool isVisible = patientInfoWindow.isVisible();
-
-    while (NULL != QApplication::activeModalWidget())
-    {
-        QApplication::activeModalWidget()->hide();
-        menuManager.close();
-    }
-
-    if (isVisible)
-    {
-        return;
-    }
-
-//    QRect r = windowManager.getMenuArea();
-//    int x = r.x() + (r.width() - patientMenu.width()) / 2;
-//    int y = r.y() + (r.height() - patientMenu.height());
-//    patientMenu.autoShow(x, y);
-    //    patientMenu.autoShow();
-//    patientInfoMenu.newPatientStatus(false);
-//    patientInfoMenu.widgetChange();
-//    patientInfoMenu.autoShow();
     patientInfoWindow.newPatientStatus(false);
     patientInfoWindow.widgetChange();
-    patientInfoWindow.autoShow();
+    windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers |WindowManager::ShowBehaviorModal
+                             | WindowManager::ShowBehaviorCloseIfVisiable);
 }
 
 void SoftkeyActionBase::patientNew(bool isPressed)
@@ -239,8 +219,6 @@ void SoftkeyActionBase::patientNew(bool isPressed)
     {
         return;
     }
-
-//    bool isVisible = patientInfoMenu.isVisible();
     bool isVisible = patientInfoWindow.isVisible();
 
     while (NULL != QApplication::activeModalWidget())
@@ -256,22 +234,16 @@ void SoftkeyActionBase::patientNew(bool isPressed)
 
     // 创建新病人
     // patientMenu.createPatient();
-
-//    QRect r = windowManager.getMenuArea();
-//    int x = r.x() + (r.width() - patientMainMenu.width()) / 2;
-//    int y = r.y() + (r.height() - patientMainMenu.height());
     QStringList slist;
-    slist << trs("EnglishYESChineseSURE") << trs("No");
+    slist << trs("No") << trs("EnglishYESChineseSURE");
     MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist);
-    if (messageBox.exec() == 0)
+    if (messageBox.exec() == 1)
     {
         dataStorageDirManager.createDir(true);
-//        patientInfoMenu.newPatientStatus(true);
-//        patientInfoMenu.widgetChange();
-//        patientInfoMenu.autoShow();
         patientInfoWindow.newPatientStatus(true);
         patientInfoWindow.widgetChange();
-        patientInfoWindow.autoShow();
+        windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers
+                                 | WindowManager::ShowBehaviorModal);
     }
 }
 
