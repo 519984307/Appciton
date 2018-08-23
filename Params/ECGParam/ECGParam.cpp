@@ -1810,7 +1810,7 @@ ECGBandwidth ECGParam::getBandwidth(void)
         band = _chestFreqBand;
     }
 
-    return (ECGBandwidth)band;
+    return static_cast<ECGBandwidth>(band);
 }
 
 /**************************************************************************************************
@@ -1821,7 +1821,7 @@ ECGBandwidth ECGParam::getMFCBandwidth(void)
     int band = 0;
     systemConfig.getNumValue("PrimaryCfg|ECG|PadsECGBandwidth", band);
 
-    return (ECGBandwidth)band;
+    return static_cast<ECGBandwidth>(band);
 }
 
 /**************************************************************************************************
@@ -1840,7 +1840,7 @@ ECGBandwidth ECGParam::getDisplayBandWidth(void)
         band = getDiagBandwidth();
     }
 
-    return (ECGBandwidth)band;
+    return static_cast<ECGBandwidth>(band);
 }
 
 /**************************************************************************************************
@@ -1928,7 +1928,7 @@ ECGPaceMode ECGParam::getPacermaker(void)
 {
     int onoff = 0;
     systemConfig.getNumValue("PrimaryCfg|ECG|PacerMaker", onoff);
-    return (ECGPaceMode)onoff;
+    return static_cast<ECGPaceMode>(onoff);
 }
 
 /**************************************************************************************************
@@ -1989,7 +1989,7 @@ ECGSweepSpeed ECGParam::getSweepSpeed(void)
 {
     int speed = ECG_SWEEP_SPEED_250;
     systemConfig.getNumValue("PrimaryCfg|ECG|SweepSpeed", speed);
-    return (ECGSweepSpeed)speed;
+    return static_cast<ECGSweepSpeed>(speed);
 }
 
 /**************************************************************************************************
@@ -2076,7 +2076,7 @@ ECGGain ECGParam::getGain(ECGLead lead)
 
     int gain = ECG_GAIN_X10;
     systemConfig.getNumValue("PrimaryCfg|ECG|Gain|" + waveName, gain);
-    return (ECGGain)gain;
+    return static_cast<ECGGain>(gain);
 }
 
 /**************************************************************************************************
@@ -2188,7 +2188,7 @@ ECGNotchFilter ECGParam::getNotchFilter()
     int filter;
     systemConfig.getNumValue("PrimaryCfg|ECG|NotchFilter", filter);
 
-    return (ECGNotchFilter)filter;
+    return static_cast<ECGNotchFilter>(filter);
 }
 
 /***************************************************************************************************
@@ -2211,7 +2211,7 @@ ECGLeadNameConvention ECGParam::getLeadConvention(void) const
         leadConvention = 0;
     }
 
-    return (ECGLeadNameConvention)leadConvention;
+    return static_cast<ECGLeadNameConvention>(leadConvention);
 }
 
 /**************************************************************************************************
