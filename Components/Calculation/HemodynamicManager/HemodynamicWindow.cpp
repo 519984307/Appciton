@@ -509,7 +509,8 @@ void HemodynamicWindow::onCalcReleased()
 
 void HemodynamicWindow::onCalcReviewReleased()
 {
-    HemodynaimcReviewWindow::getInstance()->exec();
+    windowManager.showWindow(HemodynaimcReviewWindow::getInstance(),
+                             WindowManager::ShowBehaviorModal);
 }
 
 HemodynamicWindow::HemodynamicWindow()

@@ -76,7 +76,8 @@ void CalculateSoftkeyAction::doseCalculation(bool isPressed)
 //    patientMenu.autoShow(x, y);
 //    //    patientMenu.autoShow();
 //    doseCalculationWidget.autoShow();
-    DoseCalculationWindow::getInstance()->exec();
+    windowManager.showWindow(DoseCalculationWindow::getInstance(),
+                             WindowManager::ShowBehaviorModal);
 }
 
 /***************************************************************************************************
@@ -107,7 +108,8 @@ void CalculateSoftkeyAction::Hemodynamic(bool isPressed)
 //    int y = r.y() + (r.height() - patientMenu.height());
 //    patientMenu.autoShow(x, y);
 //    //    patientMenu.autoShow();
-    HemodynamicWindow::getInstance()->exec();
+    windowManager.showWindow(HemodynamicWindow::getInstance(),
+                             WindowManager::ShowBehaviorModal);
 }
 
 void CalculateSoftkeyAction::exit(bool isPressed)
