@@ -2152,10 +2152,10 @@ int ECGParam::getMaxGain(void)
 /**************************************************************************************************
  * 设置QRS音量。
  *************************************************************************************************/
-void ECGParam::setQRSToneVolume(int vol)
+void ECGParam::setQRSToneVolume(SoundManager::VolumeLevel vol)
 {
-    systemConfig.setNumValue("PrimaryCfg|ECG|QRSVolume", vol);
-    soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, (SoundManager::VolumeLevel) vol);
+    systemConfig.setNumValue("PrimaryCfg|ECG|QRSVolume", static_cast<int>(vol));
+    soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, vol);
 }
 
 /**************************************************************************************************
@@ -2171,20 +2171,12 @@ int ECGParam::getQRSToneVolume(void)
 /**************************************************************************************************
  * 设置/获取工频滤波。
  *************************************************************************************************/
-void ECGParam::setNotchFilter(int filter)
+void ECGParam::setNotchFilter(ECGNotchFilter filter)
 {
-    ECGFilterMode filterMode = getFilterMode();
-    if (filterMode == ECG_FILTERMODE_MONITOR || filterMode == ECG_FILTERMODE_SURGERY)
-    {
-        if (filter == 1)
-        {
-            filter = ECG_NOTCH_50_AND_60HZ;
-        }
-    }
-    systemConfig.setNumValue("PrimaryCfg|ECG|NotchFilter", filter);
+    systemConfig.setNumValue("PrimaryCfg|ECG|NotchFilter", static_cast<int>(filter));
     if (NULL != _provider)
     {
-        _provider->setNotchFilter((ECGNotchFilter)filter);
+        _provider->setNotchFilter(filter);
     }
 }
 
