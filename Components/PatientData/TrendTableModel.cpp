@@ -895,7 +895,7 @@ void TrendTableModelPrivate::loadTrendData()
     {
         if (colHeadList.isEmpty())
         {
-            break;
+            return;
         }
         // 列头不为空时才显示报警标识
         int col = indexList.at(i);
