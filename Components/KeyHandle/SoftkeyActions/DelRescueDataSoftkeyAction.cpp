@@ -19,8 +19,8 @@
 #include "DataStorageDirManager.h"
 #include "SoftKeyManager.h"
 #include "MenuGroup.h"
-#include "RescueDataDeleteWidget.h"
 #include "MenuManager.h"
+#include "RescueDataDeleteWindow.h"
 
 MessageBox *DelRescueDataSoftkeyAction::_messageBox = NULL;
 /***************************************************************************************************
@@ -91,7 +91,7 @@ void DelRescueDataSoftkeyAction::delCase(bool isPressed)
         return;
     }
 
-    bool isVisible = rescueDataDeleteWidget.isVisible();
+    bool isVisible = rescueDataDeleteWindow.isVisible();
     while (NULL != QApplication::activeModalWidget())
     {
         QApplication::activeModalWidget()->hide();
@@ -102,11 +102,7 @@ void DelRescueDataSoftkeyAction::delCase(bool isPressed)
     {
         return;
     }
-
-    QRect r = windowManager.getMenuArea();
-    int x = r.x() + (r.width() - menuManager.getSubmenuWidth()) / 2;
-    int y = r.y() + (r.height() - menuManager.getSubmenuHeight());
-    rescueDataDeleteWidget.autoShow(x, y);
+    windowManager.showWindow(&rescueDataDeleteWindow , WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorCloseOthers);
 }
 
 /***************************************************************************************************
