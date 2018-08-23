@@ -36,6 +36,9 @@ public:
      */
     bool isShowingMask() const;
 
+    /* reimpelment */
+    int exec();
+
 signals:
     /**
      * @brief windowHide emit when the window going to hide

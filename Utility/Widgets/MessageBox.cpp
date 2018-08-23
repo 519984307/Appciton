@@ -14,8 +14,10 @@
 #include <QLabel>
 #include <QSignalMapper>
 #include "LanguageManager.h"
-#include <QApplication>
-#include <QDesktopWidget>
+
+#define BUTTON_WIDTH 120
+#define WINDOW_WIDTH 320
+#define WINDOW_HEIGHT 180
 
 class MessageBoxPrivate
 {
@@ -66,6 +68,7 @@ MessageBox::MessageBox(const QString &title, const QString &text, bool btn)
 
     QHBoxLayout *hl = new QHBoxLayout;
     Button *button = new Button(trs("Yes"));
+    button->setFixedWidth(BUTTON_WIDTH);
     button->setButtonStyle(Button::ButtonTextOnly);
     hl->addWidget(button);
     connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
@@ -74,6 +77,7 @@ MessageBox::MessageBox(const QString &title, const QString &text, bool btn)
     if (btn)
     {
         button = new Button(trs("No"));
+        button->setFixedWidth(BUTTON_WIDTH);
         button->setButtonStyle(Button::ButtonTextOnly);
         hl->addWidget(button);
         connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
@@ -85,8 +89,7 @@ MessageBox::MessageBox(const QString &title, const QString &text, bool btn)
     d_ptr->layout = layout;
     setWindowLayout(layout);
 
-    QDesktopWidget *w = QApplication::desktop();
-    setFixedSize(w->width() / 4, w->height() / 4);
+    resize(WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
 MessageBox::MessageBox(const QString &title, const QPixmap &icon, const QString &text, bool btn)
@@ -110,6 +113,7 @@ MessageBox::MessageBox(const QString &title, const QPixmap &icon, const QString 
 
     QHBoxLayout *hl = new QHBoxLayout;
     Button *button = new Button(trs("Yes"));
+    button->setFixedWidth(BUTTON_WIDTH);
     button->setButtonStyle(Button::ButtonTextOnly);
     hl->addWidget(button);
     connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
@@ -118,6 +122,7 @@ MessageBox::MessageBox(const QString &title, const QPixmap &icon, const QString 
     if (btn)
     {
         button = new Button(trs("No"));
+        button->setFixedWidth(BUTTON_WIDTH);
         button->setButtonStyle(Button::ButtonTextOnly);
         hl->addWidget(button);
         connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
@@ -129,8 +134,7 @@ MessageBox::MessageBox(const QString &title, const QPixmap &icon, const QString 
     d_ptr->layout = layout;
     setWindowLayout(layout);
 
-    QDesktopWidget *w = QApplication::desktop();
-    setFixedSize(w->width() / 4, w->height() / 4);
+    resize(WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
 MessageBox::MessageBox(const QString &title, const QString &text, const QStringList &btnNameList)
@@ -152,7 +156,7 @@ MessageBox::MessageBox(const QString &title, const QString &text, const QStringL
     foreach(QString btnName, btnNameList)
     {
         Button *key = new Button(trs(btnName));
-        key->setMinimumWidth(100);
+        key->setFixedWidth(BUTTON_WIDTH);
         key->setButtonStyle(Button::ButtonTextOnly);
         hl->addWidget(key);
         connect(key, SIGNAL(released()), signalMapper, SLOT(map()));
@@ -165,8 +169,7 @@ MessageBox::MessageBox(const QString &title, const QString &text, const QStringL
     d_ptr->layout = layout;
     setWindowLayout(layout);
 
-//    QDesktopWidget *w = QApplication::desktop();
-//    setFixedSize(w->width() / 4, w->height() / 4);
+    resize(WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
 void MessageBox::onBtnReleased()
@@ -206,23 +209,6 @@ void MessageBox::showEvent(QShowEvent *ev)
 {
     Window::showEvent(ev);
 
-
-    if (d_ptr->yesKey)
-    {
-        d_ptr->yesKey->setMinimumWidth(100);
-        d_ptr->yesKey->setMaximumWidth(200);
-    }
-    if (d_ptr->noKey)
-    {
-        d_ptr->noKey->setMinimumWidth(100);
-        d_ptr->noKey->setMaximumWidth(200);
-    }
-
-    if (d_ptr->layout)
-    {
-        d_ptr->layout->setRowMinimumHeight(d_ptr->index, 30);
-        d_ptr->layout->setRowMinimumHeight(0, 15);
-    }
 
     if (d_ptr->yesKey)
     {

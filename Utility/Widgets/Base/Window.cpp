@@ -17,6 +17,7 @@
 #include <QResizeEvent>
 #include "FontManager.h"
 #include "ThemeManager.h"
+#include "WindowManager.h"
 
 #define TITLE_BAR_HEIGHT 48
 
@@ -114,6 +115,21 @@ bool Window::isShowingMask() const
 {
     return d_ptr->m_mask->isVisible();
 }
+
+int Window::exec()
+{
+    if (windowManager.topWindow() == this)
+    {
+        return QDialog::exec();
+    }
+    else
+    {
+        // add this window to the window stack
+        windowManager.showWindow(this, WindowManager::ShowBehaviorModal);
+        return this->result();
+    }
+}
+
 
 void Window::changeEvent(QEvent *ev)
 {
