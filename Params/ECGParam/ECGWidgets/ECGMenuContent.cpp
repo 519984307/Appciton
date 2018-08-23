@@ -62,10 +62,10 @@ void ECGMenuContentPrivate::loadOptions()
     case ECG_FILTERMODE_MONITOR:
     case ECG_FILTERMODE_SURGERY:
         combos[ITEM_CBO_NOTCH_FITER]->
-                addItems(QStringList()
-                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
-                         << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
-                         );
+        addItems(QStringList()
+                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
+                 << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
+                );
         if (notchFilter == ECG_NOTCH_50_AND_60HZ)
         {
             combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(1);
@@ -78,11 +78,11 @@ void ECGMenuContentPrivate::loadOptions()
     case ECG_FILTERMODE_DIAGNOSTIC:
     case ECG_FILTERMODE_ST:
         combos[ITEM_CBO_NOTCH_FITER]->
-                addItems(QStringList()
-                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
-                         << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
-                         << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
-                          );
+        addItems(QStringList()
+                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
+                 << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
+                 << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
+                );
         combos[ITEM_CBO_NOTCH_FITER]->setCurrentIndex(notchFilter);
         break;
     default:
@@ -253,7 +253,7 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
         switch (item)
         {
         case ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE:
-            ecgParam.setLeadMode((ECGLeadMode)index);
+            ecgParam.setLeadMode(static_cast<ECGLeadMode>(index));
             d_ptr->loadOptions();
             break;
         case ECGMenuContentPrivate::ITEM_CBO_FILTER_MODE:
@@ -265,38 +265,48 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             case ECG_FILTERMODE_MONITOR:
             case ECG_FILTERMODE_SURGERY:
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
-                        addItems(QStringList()
-                                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
-                                 << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
-                                 );
+                addItems(QStringList()
+                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
+                         << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
+                        );
                 break;
             case ECG_FILTERMODE_DIAGNOSTIC:
             case ECG_FILTERMODE_ST:
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
-                        addItems(QStringList()
-                                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
-                                 << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
-                                 << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
-                                  );
+                addItems(QStringList()
+                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
+                         << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
+                         << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
+                        );
                 break;
             default:
                 break;
             }
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
-                    setCurrentIndex(ECG_NOTCH_OFF1);
+            setCurrentIndex(ECG_NOTCH_OFF1);
             break;
         }
         case ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER:
-            ecgParam.setNotchFilter(index);
+        {
+            ECGFilterMode filterMode = ecgParam.getFilterMode();
+            if (filterMode == ECG_FILTERMODE_MONITOR || filterMode == ECG_FILTERMODE_SURGERY)
+            {
+                if (index == 1)
+                {
+                    index = ECG_NOTCH_50_AND_60HZ;
+                }
+            }
+            ecgParam.setNotchFilter(static_cast<ECGNotchFilter>(index));
             break;
+        }
         case ECGMenuContentPrivate::ITEM_CBO_PACER_MARK:
-            ecgParam.setPacermaker((ECGPaceMode)index);
+            ecgParam.setPacermaker(static_cast<ECGPaceMode>(index));
             break;
         case ECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED:
-            ecgParam.setSweepSpeed((ECGSweepSpeed)index);
+            ecgParam.setSweepSpeed(static_cast<ECGSweepSpeed>(index));
             break;
         case ECGMenuContentPrivate::ITEM_CBO_QRS_TONE:
-            ecgParam.setQRSToneVolume(index);
+            ecgParam.setQRSToneVolume(static_cast<SoundManager::VolumeLevel>(index));
             break;
         default:
             break;
@@ -314,5 +324,4 @@ void ECGMenuContent::selfLearnBtnReleased()
 {
     ecgParam.setSelfLearn(1);
 }
-
 

@@ -1810,7 +1810,7 @@ ECGBandwidth ECGParam::getBandwidth(void)
         band = _chestFreqBand;
     }
 
-    return (ECGBandwidth)band;
+    return static_cast<ECGBandwidth>(band);
 }
 
 /**************************************************************************************************
@@ -1821,7 +1821,7 @@ ECGBandwidth ECGParam::getMFCBandwidth(void)
     int band = 0;
     systemConfig.getNumValue("PrimaryCfg|ECG|PadsECGBandwidth", band);
 
-    return (ECGBandwidth)band;
+    return static_cast<ECGBandwidth>(band);
 }
 
 /**************************************************************************************************
@@ -1840,7 +1840,7 @@ ECGBandwidth ECGParam::getDisplayBandWidth(void)
         band = getDiagBandwidth();
     }
 
-    return (ECGBandwidth)band;
+    return static_cast<ECGBandwidth>(band);
 }
 
 /**************************************************************************************************
@@ -1869,20 +1869,10 @@ ECGFilterMode ECGParam::getFilterMode() const
 
 void ECGParam::setSelfLearn(bool onOff)
 {
-    if (onOff == _isSelfLearn)
-    {
-        return;
-    }
-    _isSelfLearn = onOff;
     if (NULL != _provider)
     {
-        _provider->setSelfLearn(_isSelfLearn);
+        _provider->setSelfLearn(onOff);
     }
-}
-
-bool ECGParam::getSelfLearn() const
-{
-    return _isSelfLearn;
 }
 
 void ECGParam::setARRThreshold(ECGAlg::ARRPara parameter, short value)
@@ -1922,14 +1912,11 @@ void ECGParam::setPacermaker(ECGPaceMode onoff)
 {
     systemConfig.setNumValue("PrimaryCfg|ECG|PacerMaker", static_cast<int>(onoff));
 
-    if (ECG_DISPLAY_12_LEAD_FULL != ecgParam.getDisplayMode())
+    if (NULL != _provider)
     {
-        if (NULL != _provider)
-        {
-            _provider->enablePacermaker(onoff);
-        }
-        sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_PACER, static_cast<int>(onoff));
+        _provider->enablePacermaker(onoff);
     }
+    sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_PACER, static_cast<int>(onoff));
 
     return;
 }
@@ -1941,7 +1928,7 @@ ECGPaceMode ECGParam::getPacermaker(void)
 {
     int onoff = 0;
     systemConfig.getNumValue("PrimaryCfg|ECG|PacerMaker", onoff);
-    return (ECGPaceMode)onoff;
+    return static_cast<ECGPaceMode>(onoff);
 }
 
 /**************************************************************************************************
@@ -2002,7 +1989,7 @@ ECGSweepSpeed ECGParam::getSweepSpeed(void)
 {
     int speed = ECG_SWEEP_SPEED_250;
     systemConfig.getNumValue("PrimaryCfg|ECG|SweepSpeed", speed);
-    return (ECGSweepSpeed)speed;
+    return static_cast<ECGSweepSpeed>(speed);
 }
 
 /**************************************************************************************************
@@ -2089,7 +2076,7 @@ ECGGain ECGParam::getGain(ECGLead lead)
 
     int gain = ECG_GAIN_X10;
     systemConfig.getNumValue("PrimaryCfg|ECG|Gain|" + waveName, gain);
-    return (ECGGain)gain;
+    return static_cast<ECGGain>(gain);
 }
 
 /**************************************************************************************************
@@ -2165,10 +2152,10 @@ int ECGParam::getMaxGain(void)
 /**************************************************************************************************
  * 设置QRS音量。
  *************************************************************************************************/
-void ECGParam::setQRSToneVolume(int vol)
+void ECGParam::setQRSToneVolume(SoundManager::VolumeLevel vol)
 {
-    systemConfig.setNumValue("PrimaryCfg|ECG|QRSVolume", vol);
-    soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, (SoundManager::VolumeLevel) vol);
+    systemConfig.setNumValue("PrimaryCfg|ECG|QRSVolume", static_cast<int>(vol));
+    soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, vol);
 }
 
 /**************************************************************************************************
@@ -2184,27 +2171,12 @@ int ECGParam::getQRSToneVolume(void)
 /**************************************************************************************************
  * 设置/获取工频滤波。
  *************************************************************************************************/
-void ECGParam::setNotchFilter(int filter)
+void ECGParam::setNotchFilter(ECGNotchFilter filter)
 {
-    if (_curLeadMode != ECG_LEAD_MODE_12)
-    {
-        filter = ECG_NOTCH_50_AND_60HZ;
-    }
-    else
-    {
-        if (ecgParam.getDisplayMode() == ECG_DISPLAY_12_LEAD_FULL)
-        {
-            systemConfig.setNumValue("PrimaryCfg|ECG|NotchFilter", filter);
-        }
-        else
-        {
-            filter = ECG_NOTCH_50_AND_60HZ;
-        }
-    }
-
+    systemConfig.setNumValue("PrimaryCfg|ECG|NotchFilter", static_cast<int>(filter));
     if (NULL != _provider)
     {
-        _provider->setNotchFilter((ECGNotchFilter)filter);
+        _provider->setNotchFilter(filter);
     }
 }
 
@@ -2213,14 +2185,10 @@ void ECGParam::setNotchFilter(int filter)
  *************************************************************************************************/
 ECGNotchFilter ECGParam::getNotchFilter()
 {
-    int filter = ECG_NOTCH_50_AND_60HZ;
+    int filter;
+    systemConfig.getNumValue("PrimaryCfg|ECG|NotchFilter", filter);
 
-    if (ecgParam.getDisplayMode() == ECG_DISPLAY_12_LEAD_FULL)
-    {
-        systemConfig.getNumValue("PrimaryCfg|ECG|NotchFilter", filter);
-    }
-
-    return (ECGNotchFilter)filter;
+    return static_cast<ECGNotchFilter>(filter);
 }
 
 /***************************************************************************************************
@@ -2243,7 +2211,7 @@ ECGLeadNameConvention ECGParam::getLeadConvention(void) const
         leadConvention = 0;
     }
 
-    return (ECGLeadNameConvention)leadConvention;
+    return static_cast<ECGLeadNameConvention>(leadConvention);
 }
 
 /**************************************************************************************************
@@ -2440,10 +2408,6 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     mode = ECG_FILTERMODE_MONITOR;
     systemConfig.getNumValue("PrimaryCfg|ECG|FilterMode", mode);
     _filterMode = (ECGFilterMode) mode;
-
-    mode = 0;
-    systemConfig.getNumValue("PrimaryCfg|ECG|SelfLearn", mode);
-    _isSelfLearn = mode;
 
     mode = 0;
     systemConfig.getNumValue("ECG12Lead|ECG12LeadBandwidth", mode);

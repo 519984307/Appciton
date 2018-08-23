@@ -50,7 +50,7 @@ void ECGMenu::_filterModeSlot(int index)
  *************************************************************************************************/
 void ECGMenu::_notchSlot(int index)
 {
-    ecgParam.setNotchFilter(index);
+//    ecgParam.setNotchFilter(index);
 }
 
 /**************************************************************************************************
@@ -82,7 +82,7 @@ void ECGMenu::_12LpaceMakerSlot(int index)
  *************************************************************************************************/
 void ECGMenu:: _qrsVolumSlot(int index)
 {
-    ecgParam.setQRSToneVolume(index);
+//    ecgParam.setQRSToneVolume(index);
 }
 
 /**************************************************************************************************
