@@ -14,20 +14,27 @@
 #include <QBoxLayout>
 #include <QStackedWidget>
 #include "MenuSidebar.h"
-#include <QDebug>
+#include "MenuSidebarItem.h"
 #include "WindowManager.h"
+#include "Button.h"
+#include "LanguageManager.h"
+#include <QList>
 
 class MenuWindowPrivate
 {
 public:
     MenuWindowPrivate()
         : sidebar(NULL),
-          stackWidget(NULL)
+          stackWidget(NULL),
+          retBtn(NULL),
+          rightLayout(NULL)
     {
     }
 
     MenuSidebar *sidebar;
     QStackedWidget *stackWidget;
+    Button *retBtn;
+    QBoxLayout *rightLayout;
 };
 
 MenuWindow::MenuWindow()
@@ -38,16 +45,29 @@ MenuWindow::MenuWindow()
 
     QHBoxLayout *layout = new QHBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
     setWindowLayout(layout);
 
     d_ptr->sidebar = new MenuSidebar();
     d_ptr->sidebar->setFixedWidth(200);
     layout->addWidget(d_ptr->sidebar);
 
-    d_ptr->stackWidget = new QStackedWidget();
-    layout->addWidget(d_ptr->stackWidget, 1);
+    d_ptr->rightLayout = new QVBoxLayout();
+    d_ptr->rightLayout->setContentsMargins(0, 0, 0, 0);
+    d_ptr->rightLayout->setSpacing(0);
+    layout->addLayout(d_ptr->rightLayout);
 
-    connect(d_ptr->sidebar, SIGNAL(itemClicked(int)), this, SLOT(onSelectItemChanged(int)));
+    d_ptr->stackWidget = new QStackedWidget();
+    d_ptr->rightLayout->addWidget(d_ptr->stackWidget, 1);
+
+    QFrame *line = new QFrame;
+    line->setFrameStyle(QFrame::HLine | QFrame::Sunken);
+    line->setLineWidth(0);
+    line->setMidLineWidth(1);
+    d_ptr->rightLayout->addWidget(line);
+
+
+    connect(d_ptr->sidebar, SIGNAL(selectItemChanged(int)), this, SLOT(onSelectItemChanged(int)));
 }
 
 MenuWindow::~MenuWindow()
@@ -73,8 +93,8 @@ void MenuWindow::addMenuContent(MenuContent *menu)
 
 void MenuWindow::popup(const QString &menuName)
 {
+    d_ptr->sidebar->setChecked(menuName);
     windowManager.showWindow(this, WindowManager::ShowBehaviorCloseOthers);
-    d_ptr->sidebar->popupWidget(menuName);
 }
 
 bool MenuWindow::focusNextPrevChild(bool next)
@@ -88,39 +108,53 @@ bool MenuWindow::focusNextPrevChild(bool next)
 
     if (d_ptr->sidebar->isAncestorOf(cur))
     {
-        return Window::focusNextPrevChild(next);
+        // keep the focus inside the menu sidebar
+        int index = d_ptr->sidebar->indexOf(qobject_cast<MenuSidebarItem *>(cur));
+        int count = d_ptr->sidebar->itemCount();
+        if (index >= 0)
+        {
+            int newIndex = 0;
+            if (next)
+            {
+                newIndex = (index + 1) % count;
+            }
+            else
+            {
+                newIndex = (index + count -  1) % count;
+            }
+            MenuSidebarItem *item = d_ptr->sidebar->itemAt(newIndex);
+            item->setFocus();
+        }
+        return true;
     }
 
+    QWidget *w = NULL;
     if (next)
     {
-        QWidget *w = cur->nextInFocusChain();
+        w = cur->nextInFocusChain();
         // find previous focus widget in the focus chain
         while (w && cur != w)
         {
             if (w->isEnabled()
                     && (w->focusPolicy() & Qt::TabFocus)
                     && w->isVisibleTo(this)
-                    && w->isEnabled())
+                    && w->isEnabled()
+                    && !d_ptr->sidebar->isAncestorOf(w))
             {
                 break;
             }
             w = w->nextInFocusChain();
         }
 
-        if (w && d_ptr->sidebar->isAncestorOf(w))
+        if (w)
         {
-            // the next focus widget is inside the menusidebar
-            QWidget *f = d_ptr->sidebar->getChecked();
-            if (f)
-            {
-                f->setFocus();
-                return true;
-            }
+            w->setFocus();
+            return true;;
         }
     }
     else
     {
-        QWidget *w = focusWidget()->previousInFocusChain();
+        w = cur->previousInFocusChain();
 
         // find previous focus widget in the focus chain
         while (w && cur != w)
@@ -128,26 +162,45 @@ bool MenuWindow::focusNextPrevChild(bool next)
             if (w->isEnabled()
                     && (w->focusPolicy() & Qt::TabFocus)
                     && w->isVisibleTo(this)
-                    && w->isEnabled())
+                    && w->isEnabled()
+                    && !d_ptr->sidebar->isAncestorOf(w))
             {
                 break;
             }
             w = w->previousInFocusChain();
         }
 
-        if (w && d_ptr->sidebar->isAncestorOf(w))
+        if (w)
         {
-            // the previous focus widget is inside the menusidebar
-            QWidget *f = d_ptr->sidebar->getChecked();
-            if (f)
-            {
-                f->setFocus();
-                return true;
-            }
+            w->setFocus();
+            return true;;
         }
     }
 
     return Window::focusNextPrevChild(next);
+}
+
+void MenuWindow::showEvent(QShowEvent *ev)
+{
+    /**
+     * Here is a workround, we want the return button as the last widget to has focus in the window,
+     * But the Qt's tab order is based on the construction order, so we make the return button create
+     * at the last, after all the menu content is added
+     */
+    if (d_ptr->retBtn == NULL)
+    {
+        QHBoxLayout *bottomLayout = new QHBoxLayout;
+        bottomLayout->setContentsMargins(4, 4, 8, 4);
+        bottomLayout->addStretch(1);
+
+        d_ptr->retBtn = new Button(trs("Return"));
+        d_ptr->retBtn->setButtonStyle(Button::ButtonTextOnly);
+        d_ptr->retBtn->setMinimumWidth(100);
+        bottomLayout->addWidget(d_ptr->retBtn);
+        d_ptr->rightLayout->addLayout(bottomLayout);
+        connect(d_ptr->retBtn, SIGNAL(clicked()), this, SLOT(onReturnBtnClick()));
+    }
+    Window::showEvent(ev);
 }
 
 void MenuWindow::onSelectItemChanged(int index)
@@ -166,5 +219,15 @@ void MenuWindow::onSelectItemChanged(int index)
             setWindowTitle(content->description());
             content->setFocus();
         }
+    }
+}
+
+void MenuWindow::onReturnBtnClick()
+{
+    // set focus back to the menubar
+    QWidget *f = d_ptr->sidebar->getChecked();
+    if (f)
+    {
+        f->setFocus();
     }
 }

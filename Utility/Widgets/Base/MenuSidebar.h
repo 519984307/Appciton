@@ -14,7 +14,7 @@
 #include "ScrollArea.h"
 
 class MenuSidebarPrivate;
-class MenuSideBarItem;
+class MenuSidebarItem;
 class MenuSidebar : public ScrollArea
 {
     Q_OBJECT
@@ -29,6 +29,11 @@ public:
     void addItem(const QString &text);
 
     /**
+     * @brief itemCount get the number of the items
+     */
+    int itemCount() const;
+
+    /**
      * @brief setChecked check the string item
      * @param text the string item text
      * @return true if the string item exists
@@ -39,10 +44,21 @@ public:
      * @brief getChecked get get focus item
      * @return  the focus item
      */
-    QWidget *getChecked() const;
+    MenuSidebarItem *getChecked() const;
 
-    void popupWidget(const QString &text);
+    /**
+     * @brief indexOf get the index of the item
+     * @param item the menu item
+     * @return index of the item or -1 if the item is not exist
+     */
+    int indexOf(MenuSidebarItem *item) const;
 
+    /**
+     * @brief itemAt get the item at specific index
+     * @param index the item index
+     * @return pointer to the item or NULL if the index is invalid
+     */
+    MenuSidebarItem *itemAt(int index) const;
 
     /* reimplement */
     QSize sizeHint() const;
@@ -50,7 +66,6 @@ public:
 signals:
     void selectItemChanged(const QString &text);
     void selectItemChanged(int index);
-    void itemClicked(int index);
 
 protected:
     void showEvent(QShowEvent *ev);

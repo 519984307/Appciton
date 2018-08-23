@@ -49,10 +49,6 @@ void MenuSidebarPrivate::onItemClicked()
     MenuSidebarItem *item = qobject_cast<MenuSidebarItem *>(q->sender());
     if (item)
     {
-        int index = itemList.indexOf(item);
-
-        emit q->itemClicked(index);
-
         if (item->isChecked())
         {
             // current item, do nothing
@@ -138,6 +134,12 @@ void MenuSidebar::addItem(const QString &text)
     connect(item, SIGNAL(focusChanged(bool)), this, SLOT(onItemFocusChanged(bool)));
 }
 
+int MenuSidebar::itemCount() const
+{
+    Q_D(const MenuSidebar);
+    return d->itemList.count();
+}
+
 bool MenuSidebar::setChecked(const QString &text)
 {
     Q_D(MenuSidebar);
@@ -173,7 +175,7 @@ bool MenuSidebar::setChecked(const QString &text)
     return true;
 }
 
-QWidget *MenuSidebar::getChecked() const
+MenuSidebarItem *MenuSidebar::getChecked() const
 {
     Q_D(const MenuSidebar);
     if (d->curSelectIndex >= 0)
@@ -184,17 +186,21 @@ QWidget *MenuSidebar::getChecked() const
     return NULL;
 }
 
-void MenuSidebar::popupWidget(const QString &text)
+int MenuSidebar::indexOf(MenuSidebarItem *item) const
 {
-    Q_D(MenuSidebar);
-    foreach(MenuSidebarItem *item, d->itemList)
+    Q_D(const MenuSidebar);
+    return d->itemList.indexOf(item);
+}
+
+MenuSidebarItem *MenuSidebar::itemAt(int index) const
+{
+    Q_D(const MenuSidebar);
+    if (index < 0 || index >= d->itemList.count())
     {
-        if (item->text() == text)
-        {
-            item->click();
-            return;
-        }
+        return NULL;
     }
+
+    return d->itemList.at(index);
 }
 
 QSize MenuSidebar::sizeHint() const

@@ -31,9 +31,11 @@ public:
 
 protected:
     bool focusNextPrevChild(bool next);
+    void showEvent(QShowEvent *ev);
 
 private slots:
     void onSelectItemChanged(int index);
+    void onReturnBtnClick();
 
 private:
     QScopedPointer<MenuWindowPrivate> d_ptr;

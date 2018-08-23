@@ -2422,6 +2422,10 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
             // the window hide slot
             w->close();
         }
+        else
+        {
+            w->activateWindow();
+        }
         return;
     }
 
@@ -2473,6 +2477,7 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
     else
     {
         w->show();
+        w->activateWindow();
     }
 }
 
