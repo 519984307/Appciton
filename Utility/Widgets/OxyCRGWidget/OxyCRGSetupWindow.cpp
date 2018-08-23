@@ -359,7 +359,6 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     btn->setEnabled(false);
     d_ptr->co2Low = btn;
     layoutIndexFive++;
-    comboIndex++;
 
     // co2 high
     label = new QLabel(trs("High"));
@@ -486,7 +485,6 @@ void OxyCRGSetupWindow::onComboUpdated(int index)
         return;
     }
     int indexType = combo->property("Item").toInt();
-    int trendIndex = 0;
 
     switch (indexType)
     {
@@ -498,13 +496,13 @@ void OxyCRGSetupWindow::onComboUpdated(int index)
         currentConfig.setNumValue("OxyCRG|Wave", index);
         break;
     case OxyCRGSetupWindowPrivate::ITEM_CBO_HR_LOW:
-        currentConfig.setNumValue("OxyCRG|Ruler|HRLow", trendIndex);
+        currentConfig.setNumValue("OxyCRG|Ruler|HRLow", index);
         d_ptr->rulerValue.s.hrLow =
             combo->currentText().toInt();
         d_ptr->rulerUpdated.hrUpdatedStatus = true;
         break;
     case OxyCRGSetupWindowPrivate::ITEM_CBO_HR_HIGH:
-        currentConfig.setNumValue("OxyCRG|Ruler|HRHigh", trendIndex);
+        currentConfig.setNumValue("OxyCRG|Ruler|HRHigh", index);
         d_ptr->rulerValue.s.hrHigh =
             combo->currentText().toInt();
         d_ptr->rulerUpdated.hrUpdatedStatus = true;
