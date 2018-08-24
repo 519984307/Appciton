@@ -153,23 +153,16 @@ bool TrendTableWindow::eventFilter(QObject *o, QEvent *e)
             // paint by hand (borrowed from QTableCornerButton)
 
             QStyleOptionHeader opt;
-            opt.init(btn);
-            QStyle::State state = QStyle::State_None;
-            if (btn->isEnabled())
-                state |= QStyle::State_Enabled;
-            if (btn->isActiveWindow())
-                state |= QStyle::State_Active;
-            if (btn->isDown())
-                state |= QStyle::State_Sunken;
-            opt.state = state;
             opt.rect = btn->rect();
             opt.text = btn->text(); // this line is the only difference to QTableCornerButton
 
             QPainter painter(btn);
             QPalette pal = palette();
+            QColor textColor = themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementText,
+                                                    ThemeManager::StateInactive);
             pal.setColor(QPalette::Background, Qt::white);
             painter.fillRect(opt.rect, pal.background());
-            painter.setPen(QPen(QColor("#2C405A"), 1, Qt::SolidLine));
+            painter.setPen(QPen(textColor, 1, Qt::SolidLine));
             painter.drawText(opt.rect, Qt::AlignCenter, btn->text());
             return true;
         }
