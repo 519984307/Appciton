@@ -57,11 +57,6 @@ TEMPMenu::~TEMPMenu()
 
 void TEMPMenu::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *glayout = new QGridLayout(this);
     glayout->setMargin(10);
 
