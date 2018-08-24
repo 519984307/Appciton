@@ -126,6 +126,55 @@ void TrendTableWindow::showEvent(QShowEvent *ev)
 {
     Window::showEvent(ev);
     d_ptr->updateTable();
+    QAbstractButton *btn = d_ptr->table->findChild<QAbstractButton *>();
+    if (btn)
+    {
+        QString dataTime;
+        timeDate.getDate(dataTime);
+        btn->setText(dataTime);
+        btn->installEventFilter(this);
+        QStyleOptionHeader opt;
+        opt.text = btn->text();
+        QSize s = (btn->style()->sizeFromContents(QStyle::CT_HeaderSection, &opt, QSize(), btn).expandedTo(QApplication::globalStrut()));
+        if (s.isValid())
+        {
+            d_ptr->table->verticalHeader()->setMinimumWidth(s.width());
+        }
+    }
+}
+
+bool TrendTableWindow::eventFilter(QObject *o, QEvent *e)
+{
+    if (e->type() == QEvent::Paint)
+    {
+        QAbstractButton* btn = qobject_cast<QAbstractButton*>(o);
+        if (btn)
+        {
+            // paint by hand (borrowed from QTableCornerButton)
+
+            QStyleOptionHeader opt;
+            opt.init(btn);
+            QStyle::State state = QStyle::State_None;
+            if (btn->isEnabled())
+                state |= QStyle::State_Enabled;
+            if (btn->isActiveWindow())
+                state |= QStyle::State_Active;
+            if (btn->isDown())
+                state |= QStyle::State_Sunken;
+            opt.state = state;
+            opt.rect = btn->rect();
+            opt.text = btn->text(); // this line is the only difference to QTableCornerButton
+
+            QPainter painter(btn);
+            QPalette pal = palette();
+            pal.setColor(QPalette::Background, Qt::white);
+            painter.fillRect(opt.rect, pal.background());
+            painter.setPen(QPen(QColor("#2C405A"), 1, Qt::SolidLine));
+            painter.drawText(opt.rect, Qt::AlignCenter, btn->text());
+            return true;
+        }
+    }
+    return false;
 }
 
 TrendTableWindow::TrendTableWindow()
