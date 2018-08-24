@@ -9,7 +9,6 @@
  **/
 
 #include "RescueDataListNewWidget.h"
-#include <QScrollBar>
 #include <QVBoxLayout>
 #include "FontManager.h"
 #include <QVariant>
@@ -29,9 +28,15 @@ public:
           totalPage(0),
           curPage(0),
           pageNum(-1),
-          bar(NULL),
           widgetHeight(themeManger.getAcceptableControlHeight())
     {}
+
+    ~RescueDataListNewWidgetPrivate()
+    {
+        strList.clear();
+        checkFlag.clear();
+        btnList.clear();
+    }
 
     QString convertTimeStr(const QString &str);
     bool singleSelect;              // only select one item, default select multi items
@@ -41,7 +46,6 @@ public:
     int pageNum;                    // 每一页的个数
     int widgetHeight;
 
-    QScrollBar *bar;
     QList<QString> strList;         // 字符
     QList<unsigned char> checkFlag; // 选中标志
     QList<Button *> btnList;        // 按钮列表
@@ -84,19 +88,10 @@ RescueDataListNewWidget::RescueDataListNewWidget(int w, int h)
         d_ptr->btnList.append(btn2);
     }
 
-    d_ptr->bar = new QScrollBar();
-    d_ptr->bar->setOrientation(Qt::Vertical);
-    d_ptr->bar->setFixedHeight(d_ptr->pageNum * (d_ptr->widgetHeight + 2) - 2);
-    d_ptr->bar->setMinimum(0);
-    d_ptr->bar->setMaximum(0);
-    d_ptr->bar->setSingleStep(1);
-
-
     QHBoxLayout *mainLayout = new QHBoxLayout();
     mainLayout->setMargin(0);
     mainLayout->setSpacing(2);
     mainLayout->addLayout(leftLayout);
-    mainLayout->addWidget(d_ptr->bar);
 
     setLayout(mainLayout);
     setFixedSize(w, h);
@@ -202,11 +197,6 @@ int RescueDataListNewWidget::getTotalPage() const
     return d_ptr->totalPage;
 }
 
-void RescueDataListNewWidget::setScrollbarVisiable(bool visiable)
-{
-    return d_ptr->bar->setVisible(visiable);
-}
-
 void RescueDataListNewWidget::showEvent(QShowEvent *e)
 {
     QWidget::showEvent(e);
@@ -231,6 +221,13 @@ void RescueDataListNewWidget::_btnPressed()
     int btnCount = d_ptr->btnList.count();
     CheckIter iter = d_ptr->checkFlag.begin();
     int index = d_ptr->curPage * btnCount + id;
+    int strCount = d_ptr->strList.count();
+
+    if (index + 1 > strCount)
+    {
+        return;
+    }
+
     if (0 == *(iter + index))
     {
         QIcon pixmap("/usr/local/nPM/icons/select.png");
@@ -277,6 +274,7 @@ void RescueDataListNewWidget::_btnPressed()
             iter++;
         }
     }
+    emit btnRelease();
 }
 
 void RescueDataListNewWidget::_loadData()
@@ -312,8 +310,6 @@ void RescueDataListNewWidget::_loadData()
 
         index++;
     }
-
-    d_ptr->bar->setValue(d_ptr->curPage);
 }
 
 void RescueDataListNewWidget::_caclInfo()
@@ -341,9 +337,8 @@ void RescueDataListNewWidget::_caclInfo()
     {
         d_ptr->checkFlag.append(0);
     }
-
-    d_ptr->bar->setMaximum(d_ptr->totalPage - 1);
     emit pageInfoChange();
+    emit btnRelease();
 }
 
 QString RescueDataListNewWidgetPrivate::convertTimeStr(const QString &str)
