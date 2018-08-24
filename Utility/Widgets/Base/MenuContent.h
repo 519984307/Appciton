@@ -33,9 +33,9 @@ public:
     const QString &description() const;
 
     /**
-     * @brief layoutExec do the layout
+     * @brief doLayout perform the layout
      */
-    virtual void layoutExec() {}
+    void doLayout();
 
     /**
      * @brief readyShow start to show
@@ -67,6 +67,11 @@ protected:
 
     /* reimplement */
     void focusInEvent(QFocusEvent *ev);
+
+    /**
+     * @brief layoutExec do the layout
+     */
+    virtual void layoutExec() {}
 
 private:
     MenuContentPrivate *const d_ptr;

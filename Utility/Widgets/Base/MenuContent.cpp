@@ -48,6 +48,17 @@ const QString &MenuContent::description() const
     return d_ptr->description;
 }
 
+void MenuContent::doLayout()
+{
+    if (layout())
+    {
+        // alread layout
+        return;
+    }
+
+    layoutExec();
+}
+
 MenuWindow *MenuContent::getMenuWindow()
 {
     QWidget *p = parentWidget();

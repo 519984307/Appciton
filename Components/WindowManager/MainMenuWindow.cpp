@@ -26,6 +26,7 @@
 #include "ConfigManagerMenuContent.h"
 #include "UserMaintainMenuContent.h"
 #include "FactoryMaintainMenuContent.h"
+#include "ScreenMenuContent.h"
 
 MainMenuWindow *MainMenuWindow::getInstance()
 {
@@ -67,6 +68,7 @@ MainMenuWindow *MainMenuWindow::getInstance()
             instance->addMenuContent(new WiFiProfileMenuContent);
         }
         instance->addMenuContent(new DisplayMenuContent);
+        instance->addMenuContent(new ScreenMenuContent);
         instance->addMenuContent(new LoadConfigMenuContent);
         instance->addMenuContent(new SystemMenuContent);
         instance->addMenuContent(new ConfigManagerMenuContent);
