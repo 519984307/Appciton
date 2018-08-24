@@ -151,12 +151,6 @@ void CO2MenuContent::onBtnReleasedChanged()
 
 void CO2MenuContent::layoutExec()
 {
-    if (layout())
-    {
-        // already install layout
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
     ComboBox *comboBox;
     Button *button;

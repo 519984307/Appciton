@@ -19,6 +19,7 @@ public:
     UserMaintainMenuContent();
     ~UserMaintainMenuContent();
 
+protected:
     /* reimplment */
     void readyShow();
 

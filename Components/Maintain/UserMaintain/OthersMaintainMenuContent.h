@@ -19,6 +19,7 @@ public:
     OthersMaintainMenuContent();
     ~OthersMaintainMenuContent();
 
+protected:
     /* reimplement */
     virtual void readyShow();
 

@@ -19,6 +19,7 @@ public:
     AlarmMaintainMenuContent();
     ~AlarmMaintainMenuContent();
 
+protected:
     /* reimplment */
     void readyShow();
 

@@ -5,30 +5,30 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/12
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/24
  **/
 
-#pragma once
 #include "MenuContent.h"
 
-class SystemMenuContentPrivate;
-class SystemMenuContent : public MenuContent
+class  ScreenMenuContentPrivate;
+class ScreenMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    SystemMenuContent();
-    ~SystemMenuContent();
+    ScreenMenuContent();
+    ~ScreenMenuContent();
 
 protected:
-    /* reimplment */
+    /* reimplement */
     void readyShow();
 
     /* reimplement */
     void layoutExec();
 
 private slots:
-    void onComboBoxIndexChanged(int index);
+    void onComboxIndexChanged(int index);
+    void settingLayout();
 
 private:
-    SystemMenuContentPrivate * const d_ptr;
+    ScreenMenuContentPrivate * const d_ptr;
 };

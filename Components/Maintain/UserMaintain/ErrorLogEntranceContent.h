@@ -20,6 +20,7 @@ public:
     ErrorLogEntranceContent();
     ~ErrorLogEntranceContent();
 
+protected:
     /* reimplement */
     void layoutExec();
 

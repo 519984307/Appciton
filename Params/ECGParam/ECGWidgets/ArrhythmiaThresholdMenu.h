@@ -20,6 +20,7 @@ public:
     ArrhythmiaThresholdMenu();
     ~ArrhythmiaThresholdMenu();
 
+protected:
     /* reimplment */
     void readyShow();
 

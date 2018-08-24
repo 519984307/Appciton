@@ -20,6 +20,7 @@ public:
     ArrhythmiaAnalysisMenu();
     ~ArrhythmiaAnalysisMenu();
 
+protected:
     /* reimplment */
     void readyShow();
 

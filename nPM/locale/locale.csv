@@ -796,7 +796,8 @@ TransferSelect,传输选择项,Transfer Selection
 TransferAll,传输所有,Transfer All
 EraseSelectedRescue,删除选择的营救,Erase Selected Rescue
 EraseSelectedRescueData,删除选择的营救数据？,Erase Selected Rescue Data?
-EraseSelect,删除选择项,Erase Select
+EraseSelect,擦除选择项,Erase Select
+EraseAll,擦除全部,Erase All
 UpDownPage,上下翻页,Up Down Page
 LeftRightPage,左右翻页,Left Right Page
 IncidentMove,事件移动,Incident Move
@@ -1356,3 +1357,4 @@ Next,下一页,Next
 Opened,已开,Opened
 Closed,已关,Closed
 AlarmType,报警类型,Alarm Type
+EraseData,擦除数据,EraseData

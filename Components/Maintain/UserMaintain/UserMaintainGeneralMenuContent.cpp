@@ -81,11 +81,6 @@ void UserMaintainGeneralMenuContent::readyShow()
 
 void UserMaintainGeneralMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
 
     ComboBox *comboBox;

@@ -19,6 +19,7 @@ public:
     COMenuContent();
     ~COMenuContent();
 
+protected:
     /* reimplment */
     void readyShow();
 

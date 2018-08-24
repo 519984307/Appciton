@@ -20,6 +20,7 @@ public:
     explicit ConfigEditECGMenuContent(Config * const config);
     ~ConfigEditECGMenuContent();
 
+protected:
     /* reimplment */
     void readyShow();
 

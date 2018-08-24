@@ -9,15 +9,14 @@
  **/
 
 #include "RescueDataListNewWidget.h"
-#include <QScrollBar>
 #include <QVBoxLayout>
 #include "FontManager.h"
 #include <QVariant>
 #include "DataStorageDirManager.h"
 #include <QDateTime>
 #include "TimeDate.h"
+#include "ThemeManager.h"
 
-#define ITEM_HEIGHT (30)
 #define PIC_WIDTH (16)
 
 class RescueDataListNewWidgetPrivate
@@ -29,8 +28,10 @@ public:
           totalPage(0),
           curPage(0),
           pageNum(-1),
-          bar(NULL)
+          widgetHeight(themeManger.getAcceptableControlHeight())
     {}
+
+    ~RescueDataListNewWidgetPrivate(){}
 
     QString convertTimeStr(const QString &str);
     bool singleSelect;              // only select one item, default select multi items
@@ -38,8 +39,8 @@ public:
     int totalPage;                  // 总页数
     int curPage;                    // 当前页
     int pageNum;                    // 每一页的个数
+    int widgetHeight;
 
-    QScrollBar *bar;
     QList<QString> strList;         // 字符
     QList<unsigned char> checkFlag; // 选中标志
     QList<Button *> btnList;        // 按钮列表
@@ -48,13 +49,13 @@ public:
 RescueDataListNewWidget::RescueDataListNewWidget(int w, int h)
     :d_ptr(new RescueDataListNewWidgetPrivate())
 {
-    d_ptr->pageNum = h / (ITEM_HEIGHT + 2);
+    d_ptr->pageNum = h / (d_ptr->widgetHeight + 2);
 
     QVBoxLayout *leftLayout = new QVBoxLayout();
     leftLayout->setMargin(1);
     leftLayout->setSpacing(2);
 
-    int fontSize = fontManager.getFontSize(1);
+    int fontSize = fontManager.getFontSize(3);
     for (int i = 0; i < d_ptr->pageNum; ++i)
     {
         QHBoxLayout *layout = new QHBoxLayout();
@@ -63,14 +64,12 @@ RescueDataListNewWidget::RescueDataListNewWidget(int w, int h)
 
         Button *btn1 = new Button();
         btn1->setProperty("Id" , qVariantFromValue(i * 2));
-        btn1->setFixedHeight(ITEM_HEIGHT);
         btn1->setFont(fontManager.textFont(fontSize));
         btn1->setButtonStyle(Button::ButtonTextBesideIcon);
         connect(btn1, SIGNAL(released()), this, SLOT(_btnPressed()));
 
         Button *btn2 = new Button();
         btn2->setProperty("Id" , qVariantFromValue(i * 2 + 1));
-        btn2->setFixedHeight(ITEM_HEIGHT);
         btn2->setFont(fontManager.textFont(fontSize));
         btn2->setButtonStyle(Button::ButtonTextBesideIcon);
         connect(btn2, SIGNAL(released()), this, SLOT(_btnPressed()));
@@ -84,19 +83,10 @@ RescueDataListNewWidget::RescueDataListNewWidget(int w, int h)
         d_ptr->btnList.append(btn2);
     }
 
-    d_ptr->bar = new QScrollBar();
-    d_ptr->bar->setOrientation(Qt::Vertical);
-    d_ptr->bar->setFixedHeight(d_ptr->pageNum * (ITEM_HEIGHT + 2) - 2);
-    d_ptr->bar->setMinimum(0);
-    d_ptr->bar->setMaximum(0);
-    d_ptr->bar->setSingleStep(1);
-
-
     QHBoxLayout *mainLayout = new QHBoxLayout();
     mainLayout->setMargin(0);
     mainLayout->setSpacing(2);
     mainLayout->addLayout(leftLayout);
-    mainLayout->addWidget(d_ptr->bar);
 
     setLayout(mainLayout);
     setFixedSize(w, h);
@@ -202,11 +192,6 @@ int RescueDataListNewWidget::getTotalPage() const
     return d_ptr->totalPage;
 }
 
-void RescueDataListNewWidget::setScrollbarVisiable(bool visiable)
-{
-    return d_ptr->bar->setVisible(visiable);
-}
-
 void RescueDataListNewWidget::showEvent(QShowEvent *e)
 {
     QWidget::showEvent(e);
@@ -231,6 +216,13 @@ void RescueDataListNewWidget::_btnPressed()
     int btnCount = d_ptr->btnList.count();
     CheckIter iter = d_ptr->checkFlag.begin();
     int index = d_ptr->curPage * btnCount + id;
+    int strCount = d_ptr->strList.count();
+
+    if (index + 1 > strCount)
+    {
+        return;
+    }
+
     if (0 == *(iter + index))
     {
         QIcon pixmap("/usr/local/nPM/icons/select.png");
@@ -277,6 +269,7 @@ void RescueDataListNewWidget::_btnPressed()
             iter++;
         }
     }
+    emit btnRelease();
 }
 
 void RescueDataListNewWidget::_loadData()
@@ -312,8 +305,6 @@ void RescueDataListNewWidget::_loadData()
 
         index++;
     }
-
-    d_ptr->bar->setValue(d_ptr->curPage);
 }
 
 void RescueDataListNewWidget::_caclInfo()
@@ -341,9 +332,8 @@ void RescueDataListNewWidget::_caclInfo()
     {
         d_ptr->checkFlag.append(0);
     }
-
-    d_ptr->bar->setMaximum(d_ptr->totalPage - 1);
     emit pageInfoChange();
+    emit btnRelease();
 }
 
 QString RescueDataListNewWidgetPrivate::convertTimeStr(const QString &str)

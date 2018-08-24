@@ -61,11 +61,6 @@ void ModuleMaintainMenuContent::readyShow()
 
 void ModuleMaintainMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
 
     Button *button;

@@ -20,6 +20,7 @@ public:
     explicit ConfigEditCOMenuContent(Config *const config);
     ~ConfigEditCOMenuContent();
 
+protected:
     /* reimplment */
     void readyShow();
 

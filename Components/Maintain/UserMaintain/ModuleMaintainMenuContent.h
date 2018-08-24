@@ -19,6 +19,7 @@ public:
     ModuleMaintainMenuContent();
     ~ModuleMaintainMenuContent();
 
+protected:
     /* reimplment */
     void readyShow();
 

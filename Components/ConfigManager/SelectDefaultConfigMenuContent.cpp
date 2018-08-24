@@ -201,12 +201,6 @@ void SelectDefaultConfigMenuContent::onUserDefinedConfigChanged()
 }
 void SelectDefaultConfigMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        // already install layout
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
 

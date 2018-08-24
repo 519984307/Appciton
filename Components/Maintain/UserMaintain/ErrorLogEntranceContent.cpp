@@ -36,11 +36,6 @@ ErrorLogEntranceContent::~ErrorLogEntranceContent()
 
 void ErrorLogEntranceContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QHBoxLayout *layout = new QHBoxLayout(this);
 
     d_ptr->entranceErrLogBtn = new Button(QString("%1%2").arg(trs("ServiceErrorLogEntrance")).arg(">>"));

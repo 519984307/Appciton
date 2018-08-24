@@ -19,6 +19,7 @@ public:
     RESPMenuContent();
     ~RESPMenuContent();
 
+protected:
     /* reimplment */
     void readyShow();
 

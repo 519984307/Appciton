@@ -157,11 +157,6 @@ void SupervisorTimeMenuContent::readyShow()
 
 void SupervisorTimeMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
 
     ComboBox *comboBox;

@@ -52,7 +52,6 @@ public:
      * @param endTime 打印的结束时间
      */
     void printTrendData(unsigned startTime, unsigned endTime);
-
 protected:
     void showEvent(QShowEvent *ev);
 

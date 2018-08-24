@@ -122,11 +122,6 @@ void OthersMaintainMenuContent::readyShow()
 
 void OthersMaintainMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
 
     ComboBox *comboBox;

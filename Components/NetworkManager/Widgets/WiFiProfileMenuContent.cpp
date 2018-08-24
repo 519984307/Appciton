@@ -70,12 +70,6 @@ WiFiProfileMenuContent::WiFiProfileMenuContent()
 
 void WiFiProfileMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        // already install layout
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
 
     QLabel *label;

@@ -19,6 +19,7 @@ public:
     ECGMenuContent();
     ~ECGMenuContent();
 
+protected:
     /* reimplment */
     void readyShow();
 

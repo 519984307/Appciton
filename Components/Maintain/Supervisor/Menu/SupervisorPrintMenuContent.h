@@ -19,6 +19,7 @@ public:
     SupervisorPrintMenuContent();
     ~SupervisorPrintMenuContent();
 
+protected:
     /* reimplement */
     virtual void readyShow();
 

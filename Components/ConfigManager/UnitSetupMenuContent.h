@@ -19,6 +19,7 @@ public:
     UnitSetupMenuContent();
     ~UnitSetupMenuContent();
 
+protected:
     virtual void readyShow();
 
     virtual void layoutExec();

@@ -122,11 +122,6 @@ void FactoryDataRecordContent::readyShow()
 
 void FactoryDataRecordContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
 

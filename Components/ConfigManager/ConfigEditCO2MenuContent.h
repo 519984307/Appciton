@@ -19,6 +19,8 @@ class ConfigEditCO2MenuContent: public MenuContent
 public:
     explicit ConfigEditCO2MenuContent(Config *const config);
     ~ConfigEditCO2MenuContent();
+
+protected:
     /**
      * @brief readyShow
      */
@@ -27,6 +29,7 @@ public:
      * @brief layoutExec
      */
     virtual void layoutExec();
+
 private slots:
     /**
      * @brief onComboBoxIndexChanged

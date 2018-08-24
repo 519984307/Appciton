@@ -19,6 +19,7 @@ public:
     WiredNetworkMaintainMenuContent();
     ~WiredNetworkMaintainMenuContent();
 
+protected:
     /* reimplement */
     virtual void readyShow();
 

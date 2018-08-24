@@ -53,11 +53,6 @@ void ArrhythmiaThresholdMenu::readyShow()
 
 void ArrhythmiaThresholdMenu::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QVBoxLayout *layout = new QVBoxLayout(this);
 
     QLabel *label;
