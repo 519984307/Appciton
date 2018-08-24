@@ -48,7 +48,21 @@ public:
      */
     MenuWindow *getMenuWindow();
 
+    /**
+     * @brief setShowParam set the menu content param that should be handled before show
+     *                       the param can be read only once by the takeShowParam interface
+     * @param param the param
+     */
+    void setShowParam(const QVariant &param);
+
+    /**
+     * @brief takeShowParam take the show param and reset internal param to invalid
+     * @return the show param
+     */
+    QVariant takeShowParam();
+
 protected:
+    /* reimplement */
     void showEvent(QShowEvent *ev);
 
     /* reimplement */

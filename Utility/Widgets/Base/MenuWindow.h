@@ -11,6 +11,7 @@
 #pragma once
 #include "Window.h"
 #include "MenuContent.h"
+#include <QVariant>
 
 class MenuWindowPrivate;
 class MenuWindow : public Window
@@ -27,7 +28,7 @@ public:
      */
     void addMenuContent(MenuContent *menu);
 
-    void popup(const QString &menuName);
+    void popup(const QString &menuName, const QVariant &param = QVariant());
 
 protected:
     bool focusNextPrevChild(bool next);

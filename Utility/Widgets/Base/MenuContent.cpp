@@ -22,6 +22,7 @@ public:
 
     QString name;
     QString description;
+    QVariant showParam;
 };
 
 MenuContent::MenuContent(const QString &name, const QString &description, QWidget *parent)
@@ -64,6 +65,18 @@ MenuWindow *MenuContent::getMenuWindow()
     }
 
     return NULL;
+}
+
+QVariant MenuContent::takeShowParam()
+{
+    QVariant v = d_ptr->showParam;
+    d_ptr->showParam = QVariant();
+    return v;
+}
+
+void MenuContent::setShowParam(const QVariant &param)
+{
+    d_ptr->showParam = param;
 }
 
 void MenuContent::showEvent(QShowEvent *ev)

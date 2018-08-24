@@ -91,9 +91,21 @@ void MenuWindow::addMenuContent(MenuContent *menu)
     }
 }
 
-void MenuWindow::popup(const QString &menuName)
+void MenuWindow::popup(const QString &menuName, const QVariant &param)
 {
     d_ptr->sidebar->setChecked(menuName);
+
+    // find current menucontent and set the show param
+    ScrollArea *area = qobject_cast<ScrollArea *>(d_ptr->stackWidget->currentWidget());
+    if (area)
+    {
+        MenuContent *content = qobject_cast<MenuContent *>(area->widget());
+        if (content)
+        {
+            content->setShowParam(param);
+        }
+    }
+
     windowManager.showWindow(this, WindowManager::ShowBehaviorCloseOthers);
 }
 
