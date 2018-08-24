@@ -12,6 +12,7 @@
 
 #include <QAbstractTableModel>
 #include "TrendDataDefine.h"
+#include "IBPDefine.h"
 
 class TrendTableModelPrivate;
 class TrendTableModel : public QAbstractTableModel
@@ -66,7 +67,6 @@ public:
     void displayDataTimeRange(unsigned &start, unsigned &end);
 
     void printTrendData(unsigned startTime, unsigned endTime);
-
 private:
     TrendTableModelPrivate * const d_ptr;
 };
