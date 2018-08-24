@@ -20,8 +20,10 @@
 #include <QEventLoop>
 #include "Utility.h"
 #include "DataStorageDirManager.h"
+#include "ThemeManager.h"
 
-#define ITEM_HEIGHT 30
+#define PATH_ICON_UP "/usr/local/nPM/icons/ArrowUp.png"
+#define PATH_ICON_DOWN "/usr/local/nPM/icons/ArrowDown.png"
 
 RescueDataDeleteWindow *RescueDataDeleteWindow::_selfObj = NULL;
 
@@ -57,7 +59,8 @@ public:
           deleteCase(NULL),
           deleteAll(NULL),
           up(NULL),
-          down(NULL)
+          down(NULL),
+          widgetHeight(themeManger.getAcceptableControlHeight())
     {}
     ~RescueDataDeleteWindowPrivate(){}
 
@@ -67,6 +70,7 @@ public:
     Button *up;
     Button *down;
     QPointer<QThread> deleteThreadPtr;
+    int widgetHeight;
 };
 
 RescueDataDeleteWindow::~RescueDataDeleteWindow()
@@ -204,6 +208,63 @@ void RescueDataDeleteWindow::_downReleased()
     }
 }
 
+void RescueDataDeleteWindow::_updatePageBtnStatus()
+{
+    int dataListCurPage = d_ptr->dataListWidget->getCurPage();
+    int dataListTotalPage = d_ptr->dataListWidget->getTotalPage();
+
+    // previous page button
+    if (dataListCurPage <= 0)
+    {
+        d_ptr->up->setEnabled(false);
+        d_ptr->up->setIcon(QIcon(""));
+    }
+    else
+    {
+        d_ptr->up->setEnabled(true);
+        d_ptr->up->setIcon(QIcon(PATH_ICON_UP));
+    }
+    // next page button
+    if (dataListCurPage >= dataListTotalPage - 1)
+    {
+        d_ptr->down->setEnabled(false);
+        d_ptr->down->setIcon(QIcon(""));
+    }
+    else
+    {
+        d_ptr->down->setEnabled(true);
+        d_ptr->down->setIcon(QIcon(PATH_ICON_DOWN));
+    }
+}
+
+void RescueDataDeleteWindow::_updateEraseBtnStatus()
+{
+    QStringList checkList , strList;
+    d_ptr->dataListWidget->getCheckList(checkList);
+    d_ptr->dataListWidget->getStrList(strList);
+    int checkListCount = checkList.count();
+    int strListCount = strList.count();
+    // erase select button
+    if (checkListCount > 0)
+    {
+        d_ptr->deleteCase->setEnabled(true);
+    }
+    else
+    {
+        d_ptr->deleteCase->setEnabled(false);
+    }
+
+    // erase all button
+    if (strListCount > 0)
+    {
+        d_ptr->deleteAll->setEnabled(true);
+    }
+    else
+    {
+        d_ptr->deleteAll->setEnabled(false);
+    }
+}
+
 RescueDataDeleteWindow::RescueDataDeleteWindow()
     :Window(),
       d_ptr(new RescueDataDeleteWindowPrivate())
@@ -212,38 +273,39 @@ RescueDataDeleteWindow::RescueDataDeleteWindow()
     int maxw = windowManager.getPopMenuWidth();
     int maxh = windowManager.getPopMenuHeight();
 
-    d_ptr->dataListWidget = new RescueDataListNewWidget(maxw - 20, maxh - 60 - 36);
+    d_ptr->dataListWidget = new RescueDataListNewWidget(maxw - 20,
+                                                        maxh - d_ptr->widgetHeight * 2 - 36);
     d_ptr->dataListWidget->setShowCurRescue(false);
-    d_ptr->dataListWidget->setScrollbarVisiable(false);
     connect(d_ptr->dataListWidget , SIGNAL(pageInfoChange()),
             this, SLOT(_updateWindowTitle()));
+    connect(d_ptr->dataListWidget , SIGNAL(pageInfoChange()),
+            this, SLOT(_updatePageBtnStatus()));
+    connect(d_ptr->dataListWidget, SIGNAL(btnRelease()),
+            this, SLOT(_updateEraseBtnStatus()));
 
-    d_ptr->deleteCase = new Button(trs("EraseSelected"));
+    d_ptr->deleteCase = new Button(trs("EraseSelect"));
     d_ptr->deleteCase->setButtonStyle(Button::ButtonTextOnly);
-    d_ptr->deleteCase->setFixedHeight(ITEM_HEIGHT);
     connect(d_ptr->deleteCase, SIGNAL(released()), this, SLOT(_deleteSelectReleased()));
 
     d_ptr->deleteAll = new Button(trs("EraseAll"));
     d_ptr->deleteAll->setButtonStyle(Button::ButtonTextOnly);
-    d_ptr->deleteAll->setFixedHeight(ITEM_HEIGHT);
     connect(d_ptr->deleteAll, SIGNAL(released()), this, SLOT(_deleteAllReleased()));
 
     d_ptr->up = new Button();
-    d_ptr->up->setFixedSize(ITEM_HEIGHT, ITEM_HEIGHT);
     d_ptr->up->setButtonStyle(Button::ButtonIconOnly);
-    d_ptr->up->setIcon(QIcon("/usr/local/nPM/icons/ArrowUp.png"));
+    d_ptr->up->setIcon(QIcon(PATH_ICON_UP));
     connect(d_ptr->up, SIGNAL(released()), this, SLOT(_upReleased()));
 
     d_ptr->down = new Button();
-    d_ptr->down->setFixedSize(ITEM_HEIGHT, ITEM_HEIGHT);
+
     d_ptr->down->setButtonStyle(Button::ButtonIconOnly);
-    d_ptr->down->setIcon(QIcon("/usr/local/nPM/icons/ArrowDown.png"));
+    d_ptr->down->setIcon(QIcon(PATH_ICON_DOWN));
     connect(d_ptr->down, SIGNAL(released()), this, SLOT(_downReleased()));
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(0);
     layout->setSpacing(2);
-    layout->addStretch(3);
+    layout->addStretch(4);
     layout->addWidget(d_ptr->deleteCase, 2);
     layout->addWidget(d_ptr->deleteAll, 2);
     layout->addStretch(2);

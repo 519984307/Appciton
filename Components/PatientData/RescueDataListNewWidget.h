@@ -41,13 +41,13 @@ public:
 
     int getCurPage() const;
     int getTotalPage() const;
-    void setScrollbarVisiable(bool visiable);
 
 protected:
     void showEvent(QShowEvent *e);
 
 signals:
     void pageInfoChange();
+    void btnRelease();
 private slots:
     void _btnPressed();
 private:
