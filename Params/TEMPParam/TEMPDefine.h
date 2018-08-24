@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/24
+ **/
+
 #pragma once
 
 /**************************************************************************************************
@@ -28,4 +38,25 @@ enum TEMPLimitAlarmType
     TEMP_LIMIT_ALARM_TD_LOW,
     TEMP_LIMIT_ALARM_TD_HIGH,
     TEMP_LIMIT_ALARM_NR
+};
+
+
+enum TEMPChannelType
+{
+    TEMP_CHANNEL_T_ONE = 0,
+    TEMP_CHANNEL_T_TWO = 0,
+    TEMP_CHANNEL_T_SKIN,
+    TEMP_CHANNEL_T_CORE,
+    TEMP_CHANNEL_T_AXIL,
+    TEMP_CHANNEL_T_NASO,
+    TEMP_CHANNEL_T_ESO,
+    TEMP_CHANNEL_T_RECT,
+    TEMP_CHANNEL_T_AMB,
+    TEMP_CHANNEL_T_AIRW,
+    TEMP_CHANNEL_T_VESIC,
+    TEMP_CHANNEL_T_BLOOD,
+    TEMP_CHANNEL_T_MYO,
+    TEMP_CHANNEL_T_TYMP,
+    TEMP_CHANNEL_T_BRAIN,
+    TEMP_CHANNEL_NR,
 };
