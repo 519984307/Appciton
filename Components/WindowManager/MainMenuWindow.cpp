@@ -26,6 +26,7 @@
 #include "ConfigManagerMenuContent.h"
 #include "UserMaintainMenuContent.h"
 #include "FactoryMaintainMenuContent.h"
+#include "TEMPMenu.h"
 #include "ScreenMenuContent.h"
 
 MainMenuWindow *MainMenuWindow::getInstance()
@@ -38,6 +39,7 @@ MainMenuWindow *MainMenuWindow::getInstance()
         // initialize the window content
         instance->addMenuContent(new ECGMenuContent);
         instance->addMenuContent(new RESPMenuContent);
+        instance->addMenuContent(new TEMPMenu);
         if (systemManager.isSupport(CONFIG_AG))
         {
             instance->addMenuContent(new AGMenuContent);
