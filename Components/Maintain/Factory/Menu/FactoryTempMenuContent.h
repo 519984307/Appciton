@@ -21,9 +21,6 @@ public:
 
     ~FactoryTempMenuContent();
 
-    virtual void readyShow();
-
-    virtual void layoutExec();
 
     /**
      * @brief getResult
@@ -46,6 +43,9 @@ public:
 
 protected:
     void hideEvent(QHideEvent *e);
+    virtual void readyShow();
+
+    virtual void layoutExec();
 
 private slots:
     /**

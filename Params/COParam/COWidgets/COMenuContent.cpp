@@ -80,11 +80,6 @@ void COMenuContent::readyShow()
 
 void COMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
 
     ComboBox *comboBox;

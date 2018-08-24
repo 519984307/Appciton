@@ -107,11 +107,6 @@ void AlarmMaintainMenuContent::readyShow()
 
 void AlarmMaintainMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
 
     ComboBox *comboBox;

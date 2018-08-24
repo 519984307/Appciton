@@ -67,11 +67,6 @@ NIBPZeroPointContent::NIBPZeroPointContent()
  *************************************************************************************************/
 void NIBPZeroPointContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setMargin(10);
     layout->setAlignment(Qt::AlignTop);

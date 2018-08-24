@@ -109,11 +109,6 @@ void Supervisor12LMenuContent::readyShow()
 
 void Supervisor12LMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
 
     ComboBox *comboBox;

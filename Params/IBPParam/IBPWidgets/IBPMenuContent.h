@@ -19,6 +19,7 @@ public:
     IBPMenuContent();
     ~IBPMenuContent();
 
+protected:
     /* reimplement */
     virtual void readyShow();
 

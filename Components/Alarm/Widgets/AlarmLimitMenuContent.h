@@ -20,6 +20,7 @@ public:
     AlarmLimitMenuContent();
     ~AlarmLimitMenuContent();
 
+protected:
     /* reimplement */
     void readyShow();
 

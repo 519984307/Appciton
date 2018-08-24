@@ -95,11 +95,6 @@ void SelectStarterLogoContent::readyShow()
 
 void SelectStarterLogoContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setMargin(10);
 

@@ -19,6 +19,7 @@ public:
     SystemMenuContent();
     ~SystemMenuContent();
 
+protected:
     /* reimplment */
     void readyShow();
 

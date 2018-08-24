@@ -19,6 +19,7 @@ public:
     AGMenuContent();
     ~AGMenuContent();
 
+protected:
     /* reimplement */
     virtual void readyShow();
 

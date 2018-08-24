@@ -37,10 +37,6 @@ public:
      */
     void doLayout();
 
-    /**
-     * @brief readyShow start to show
-     */
-    virtual void readyShow() {}
 
     /**
      * @brief getMenuWindow get the menu window the window place in
@@ -67,6 +63,11 @@ protected:
 
     /* reimplement */
     void focusInEvent(QFocusEvent *ev);
+
+    /**
+     * @brief readyShow start to show
+     */
+    virtual void readyShow() {}
 
     /**
      * @brief layoutExec do the layout

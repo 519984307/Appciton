@@ -154,12 +154,6 @@ void ConfigEditCO2MenuContent::onBtnReleasedChanged()
 
 void ConfigEditCO2MenuContent::layoutExec()
 {
-    if (layout())
-    {
-        // already install layout
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
     ComboBox *comboBox;
     Button *button;

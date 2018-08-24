@@ -176,11 +176,6 @@ void ConfigEditNIBPMenuContent::onComboIndexChanged(int index)
 
 void ConfigEditNIBPMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
 

@@ -20,6 +20,8 @@ class CO2MenuContent: public MenuContent
 public:
     CO2MenuContent();
     ~CO2MenuContent();
+
+protected:
     /**
      * @brief readyShow
      */

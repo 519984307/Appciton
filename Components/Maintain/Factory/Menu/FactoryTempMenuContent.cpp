@@ -108,11 +108,6 @@ FactoryTempMenuContent::FactoryTempMenuContent()
 
 void FactoryTempMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
     QHBoxLayout *hl;

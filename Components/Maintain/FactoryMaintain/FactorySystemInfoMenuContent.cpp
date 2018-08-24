@@ -64,11 +64,6 @@ void FactorySystemInfoMenuContent::readyShow()
 
 void FactorySystemInfoMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setMargin(10);
 

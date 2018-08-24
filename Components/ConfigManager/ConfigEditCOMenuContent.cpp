@@ -107,11 +107,6 @@ void ConfigEditCOMenuContent::readyShow()
 
 void ConfigEditCOMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
 
     ComboBox *comboBox;
