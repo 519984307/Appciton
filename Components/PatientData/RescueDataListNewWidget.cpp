@@ -31,12 +31,7 @@ public:
           widgetHeight(themeManger.getAcceptableControlHeight())
     {}
 
-    ~RescueDataListNewWidgetPrivate()
-    {
-        strList.clear();
-        checkFlag.clear();
-        btnList.clear();
-    }
+    ~RescueDataListNewWidgetPrivate(){}
 
     QString convertTimeStr(const QString &str);
     bool singleSelect;              // only select one item, default select multi items
