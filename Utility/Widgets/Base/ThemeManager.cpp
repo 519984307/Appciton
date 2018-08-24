@@ -77,6 +77,8 @@ void ThemeManagerPrivate::loadColorScheme()
     // Popup List item
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlPopupListItem, ThemeManager::ElementBackgound,
                                  ThemeManager::StateActive), QColor("#BCD2FD"));
+    colorScheme.insert(COLOR_KEY(ThemeManager::ControlPopupListItem, ThemeManager::ElementBackgound,
+                                 ThemeManager::StateInactive), QColor("#9AFF9A"));
 
     // SpinBox
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlSpinBox, ThemeManager::ElementBackgound,
@@ -103,8 +105,6 @@ void ThemeManagerPrivate::loadColorScheme()
                                  ThemeManager::StateDisabled), QColor(225, 225, 225));
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlComboBox, ThemeManager::ElementBackgound,
                                  ThemeManager::StateDisabled), QColor("#EFF0F1"));
-    colorScheme.insert(COLOR_KEY(ThemeManager::ControlComboBox, ThemeManager::ElementBackgound,
-                                 ThemeManager::StateActive), QColor(186, 186, 186));
 }
 
 ThemeManager &ThemeManager::getInstance()

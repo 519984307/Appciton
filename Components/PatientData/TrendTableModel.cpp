@@ -61,7 +61,6 @@ public:
     typedef QList<SubParamID> TrendParamList;
     TrendParamList curList;                 // 当前列表中包含的子参数
     TrendParamList displayList;             // 显示行列表
-    QMap<IBPPressureName, bool> ibpNameMap; // IBP压力标名对应是否开启
     bool isHistory;                         // 历史回顾标志
     QString historyDataPath;                // 历史数据路径
     ResolutionRatio timeInterval;           // 时间间隔
@@ -178,17 +177,17 @@ QVariant TrendTableModel::headerData(int section, Qt::Orientation orientation, i
             QString str;
             switch (id)
             {
-            case SUB_PARAM_NIBP_MAP:
+            case SUB_PARAM_NIBP_SYS:
                 str = trs(paramInfo.getParamName(PARAM_NIBP));
                 break;
-            case SUB_PARAM_ART_MAP:
-            case SUB_PARAM_PA_MAP:
+            case SUB_PARAM_ART_SYS:
+            case SUB_PARAM_PA_SYS:
             case SUB_PARAM_CVP_MAP:
             case SUB_PARAM_LAP_MAP:
             case SUB_PARAM_RAP_MAP:
             case SUB_PARAM_ICP_MAP:
-            case SUB_PARAM_AUXP1_MAP:
-            case SUB_PARAM_AUXP2_MAP:
+            case SUB_PARAM_AUXP1_SYS:
+            case SUB_PARAM_AUXP2_SYS:
                 str = paramInfo.getSubParamName(id);
                 str = str.left(str.length() - 4);
                 break;
@@ -590,13 +589,6 @@ TrendTableModelPrivate::TrendTableModelPrivate()
       rightTime(0), startTime(0), endTime(0), totalCol(0),
       curSecIndex(0), maxDataNum(0)
 {
-    ibpNameMap.clear();
-
-    for (int i = 0; i < IBP_PRESSURE_NR; i ++)
-    {
-        ibpNameMap.insert((IBPPressureName)i, false);
-    }
-
     orderMap.clear();
 
     QList<ParamID> paramIDList;
@@ -626,23 +618,23 @@ TrendTableModelPrivate::TrendTableModelPrivate()
         case SUB_PARAM_ST_V4:
         case SUB_PARAM_ST_V5:
         case SUB_PARAM_ST_V6:
-        case SUB_PARAM_NIBP_SYS:
+        case SUB_PARAM_NIBP_MAP:
         case SUB_PARAM_NIBP_DIA:
         case SUB_PARAM_ART_DIA:
-        case SUB_PARAM_ART_SYS:
+        case SUB_PARAM_ART_MAP:
         case SUB_PARAM_ART_PR:
         case SUB_PARAM_PA_DIA:
-        case SUB_PARAM_PA_SYS:
+        case SUB_PARAM_PA_MAP:
         case SUB_PARAM_PA_PR:
         case SUB_PARAM_CVP_PR:
         case SUB_PARAM_LAP_PR:
         case SUB_PARAM_RAP_PR:
         case SUB_PARAM_ICP_PR:
         case SUB_PARAM_AUXP1_DIA:
-        case SUB_PARAM_AUXP1_SYS:
+        case SUB_PARAM_AUXP1_MAP:
         case SUB_PARAM_AUXP1_PR:
         case SUB_PARAM_AUXP2_DIA:
-        case SUB_PARAM_AUXP2_SYS:
+        case SUB_PARAM_AUXP2_MAP:
         case SUB_PARAM_AUXP2_PR:
         case SUB_PARAM_FICO2:
         case SUB_PARAM_FIN2O:
@@ -832,8 +824,8 @@ void TrendTableModelPrivate::loadTrendData()
                     QString mapStr = nibpMap == InvData() ? "---" : QString::number(nibpMap);
                     dataContent.dataStr = sysStr + "/" + diaStr + "\n(" + mapStr + ")";
                 }
-                else if (displayList.at(j) == SUB_PARAM_ART_MAP || displayList.at(j) == SUB_PARAM_PA_MAP ||
-                         displayList.at(j) == SUB_PARAM_AUXP1_MAP || displayList.at(j) == SUB_PARAM_AUXP2_MAP)
+                else if (displayList.at(j) == SUB_PARAM_ART_SYS || displayList.at(j) == SUB_PARAM_PA_SYS ||
+                         displayList.at(j) == SUB_PARAM_AUXP1_SYS || displayList.at(j) == SUB_PARAM_AUXP2_SYS)
                 {
                     qint16 ibpSys = pack->subparamValue.value((SubParamID)(displayList.at(j) - 2), InvData());
                     qint16 ibpDia = pack->subparamValue.value((SubParamID)(displayList.at(j) - 1), InvData());
@@ -958,19 +950,23 @@ void TrendTableModelPrivate::loadTableTitle()
         SubParamID id = curList.at(i);
         switch (id)
         {
-        case SUB_PARAM_ART_MAP:
-        case SUB_PARAM_PA_MAP:
+        case SUB_PARAM_ART_SYS:
+        case SUB_PARAM_PA_SYS:
         case SUB_PARAM_CVP_MAP:
         case SUB_PARAM_LAP_MAP:
         case SUB_PARAM_RAP_MAP:
         case SUB_PARAM_ICP_MAP:
-        case SUB_PARAM_AUXP1_MAP:
-        case SUB_PARAM_AUXP2_MAP:
-            if (!ibpNameMap.value(ibpParam.getPressureName(id), false))
+        case SUB_PARAM_AUXP1_SYS:
+        case SUB_PARAM_AUXP2_SYS:
+        {
+            SubParamID ibp1 = ibpParam.getSubParamID(ibpParam.getEntitle(IBP_INPUT_1));
+            SubParamID ibp2 = ibpParam.getSubParamID(ibpParam.getEntitle(IBP_INPUT_2));
+            if (id != ibp1 && id != ibp2)
             {
                 continue;
             }
             break;
+        }
         default:
             break;
         }
