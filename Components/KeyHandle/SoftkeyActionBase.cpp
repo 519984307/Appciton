@@ -61,7 +61,6 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", trs("RescueData"), "Data.png",       SoftkeyActionBase::rescueData),
     KeyActionDesc("", trs("Interface"), "interface.png",   SoftkeyActionBase::WindowLayout),
     KeyActionDesc("", trs("Calculation"), "dosecalculation.png", SoftkeyActionBase::calculation),
-    KeyActionDesc("", trs("Freeze"), "freeze.png", SoftkeyActionBase::freeze),
     KeyActionDesc("", trs("LockScreen"), "LockScreen.png", SoftkeyActionBase::lockScreen),
     KeyActionDesc("", "", ICON_FILE_RIGHT,  SoftkeyActionBase::nextPage),
     KeyActionDesc("", "", "main.png",  SoftkeyActionBase::mainsetup
@@ -257,15 +256,6 @@ void SoftkeyActionBase::mainsetup(bool isPressed)
 //    windowManager.showMainMenu();
 //    MainMenuWindow *w = MainMenuWindow::getInstance();
 //    windowManager.showWindow(w, WindowManager::WINDOW_TYPE_NONMODAL);
-}
-
-void SoftkeyActionBase::freeze(bool isPressed)
-{
-    if (isPressed)
-    {
-        return;
-    }
-    // TODO : freeze
 }
 
 void SoftkeyActionBase::lockScreen(bool isPressed)
