@@ -25,6 +25,10 @@
 
 SoftKeyManager *SoftKeyManager::_selfObj = NULL;
 
+#define SOFTKEY_WIDGET_NR  12      // 按钮显示的数量
+#define SOFTKEY_HEAD_NR 3          // 开头固定软按键个数
+#define SOFTKEY_TAIL_NR 2          // 结尾固定软按键个数
+
 /***************************************************************************************************
  * 功能：前面板按键处理。
  * 参数:
@@ -232,14 +236,15 @@ void SoftKeyManager::_clickKey(IWidget *w)
         }
     }
     // menu tail
-    if (index >= SOFTKEY_WIDGET_NR - 2)
+    if (index >= SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR)
     {
         index = actionSize - (SOFTKEY_WIDGET_NR - index);
     }
     // menu body
-    else if (index < SOFTKEY_WIDGET_NR - 2 && index > SOFT_BASE_KEY_PREVIOUS_PAGE)
+    else if (index < SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR && index > SOFTKEY_HEAD_NR - 1)
     {
-        index = index + (SOFTKEY_WIDGET_NR - 5) * _currentPage;
+        index = index +
+                (SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR - SOFTKEY_HEAD_NR) * _currentPage;
     }
 
     if (_currentAction != NULL)
@@ -264,7 +269,7 @@ void SoftKeyManager::_layoutKeys(void)
 
     int startIndex = 0;
     // menu head
-    for (int i = 0; i <= SOFT_BASE_KEY_PREVIOUS_PAGE; i++)
+    for (int i = 0; i <= SOFTKEY_HEAD_NR - 1; i++)
     {
         KeyActionDesc *desc = _currentAction->getActionDesc(startIndex++);
         if (desc != NULL)
@@ -276,9 +281,11 @@ void SoftKeyManager::_layoutKeys(void)
     // menu body
     if (_currentPage)
     {
-        startIndex = startIndex + (SOFTKEY_WIDGET_NR - 5) * _currentPage;
+        startIndex = startIndex +
+                (SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR - SOFTKEY_HEAD_NR)* _currentPage;
     }
-    for (int i = SOFT_BASE_KEY_PREVIOUS_PAGE + 1; i < SOFTKEY_WIDGET_NR - 2; i++)
+    for (int i = SOFTKEY_HEAD_NR;
+         i < SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR; i++)
     {
         KeyActionDesc *desc = _currentAction->getActionDesc(startIndex++);
         if (desc != NULL)
@@ -288,8 +295,8 @@ void SoftKeyManager::_layoutKeys(void)
     }
 
     // menu tail
-    int actionSize = _currentAction->getActionDescNR() - 2;
-    for (int i = SOFTKEY_WIDGET_NR - 2; i < SOFTKEY_WIDGET_NR; i++)
+    int actionSize = _currentAction->getActionDescNR() - SOFTKEY_TAIL_NR;
+    for (int i = SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR; i < SOFTKEY_WIDGET_NR; i++)
     {
         KeyActionDesc *desc = _currentAction->getActionDesc(actionSize++);
         if (desc != NULL)
@@ -423,7 +430,7 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager")
     for (int i = 0; i < SOFTKEY_WIDGET_NR; i++)
     {
         SoftkeyWidget *widget = new SoftkeyWidget(this);
-        if (2 == i || i == SOFTKEY_WIDGET_NR - 2)
+        if (2 == i || i == SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR)
         {
             widget->setFixedSize(1.4 * _KEY_SIZE_H / 2, _KEY_SIZE_H);
         }
@@ -432,13 +439,13 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager")
             widget->setFixedSize(1.4 * _KEY_SIZE_H, _KEY_SIZE_H);
         }
         connect(widget, SIGNAL(released(IWidget *)), this, SLOT(_clickKey(IWidget *)));
-        if (i < SOFTKEY_WIDGET_NR - 2)
+        if (i < SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR)
         {
             hbox->addWidget(widget, 0, Qt::AlignHCenter | Qt::AlignLeft);
         }
         else
         {
-            if (i == SOFTKEY_WIDGET_NR - 2)
+            if (i == SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR)
             {
                 hbox->addStretch();
             }
