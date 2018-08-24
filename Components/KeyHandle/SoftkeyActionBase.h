@@ -37,7 +37,6 @@ enum SoftBaseKeyType
     SOFT_BASE_KEY_RESCUE_DATA,
     SOFT_BASE_KEY_WINDOWLAYOUT,
     SOFT_BASE_KEY_CALCULATION,
-    SOFT_BASE_KEY_FREEZE,
     SOFT_BASE_KEY_LOCK_SCREEN,
     SOFT_BASE_KEY_NEXT_PAGE,
     SOFT_BASE_KEY_MAIN_SETUP,
@@ -101,7 +100,6 @@ public:    // 一些共有的功能处理。
     static void calculation(bool isPressed);
 
     static void mainsetup(bool isPressed);
-    static void freeze(bool isPressed);
     static void lockScreen(bool isPressed);
 
 public:

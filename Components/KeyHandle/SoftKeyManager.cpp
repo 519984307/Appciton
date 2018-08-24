@@ -232,12 +232,12 @@ void SoftKeyManager::_clickKey(IWidget *w)
         }
     }
     // menu tail
-    if (index >= SOFT_BASE_KEY_NEXT_PAGE)
+    if (index >= SOFTKEY_WIDGET_NR - 2)
     {
         index = actionSize - (SOFTKEY_WIDGET_NR - index);
     }
     // menu body
-    else if (index < SOFT_BASE_KEY_NEXT_PAGE && index > SOFT_BASE_KEY_PREVIOUS_PAGE)
+    else if (index < SOFTKEY_WIDGET_NR - 2 && index > SOFT_BASE_KEY_PREVIOUS_PAGE)
     {
         index = index + (SOFTKEY_WIDGET_NR - 5) * _currentPage;
     }
@@ -278,7 +278,7 @@ void SoftKeyManager::_layoutKeys(void)
     {
         startIndex = startIndex + (SOFTKEY_WIDGET_NR - 5) * _currentPage;
     }
-    for (int i = SOFT_BASE_KEY_PREVIOUS_PAGE + 1; i < SOFT_BASE_KEY_NEXT_PAGE; i++)
+    for (int i = SOFT_BASE_KEY_PREVIOUS_PAGE + 1; i < SOFTKEY_WIDGET_NR - 2; i++)
     {
         KeyActionDesc *desc = _currentAction->getActionDesc(startIndex++);
         if (desc != NULL)
@@ -289,7 +289,7 @@ void SoftKeyManager::_layoutKeys(void)
 
     // menu tail
     int actionSize = _currentAction->getActionDescNR() - 2;
-    for (int i = SOFT_BASE_KEY_NEXT_PAGE; i < SOFTKEY_WIDGET_NR; i++)
+    for (int i = SOFTKEY_WIDGET_NR - 2; i < SOFTKEY_WIDGET_NR; i++)
     {
         KeyActionDesc *desc = _currentAction->getActionDesc(actionSize++);
         if (desc != NULL)
@@ -326,6 +326,7 @@ SoftKeyActionType SoftKeyManager::uFaceTypeToSoftKeyType(UserFaceType type)
     case UFACE_MONITOR_OXYCRG:
     case UFACE_MONITOR_TREND:
     case UFACE_MONITOR_BIGFONT:
+    case UFACE_MONITOR_12LEAD:
     case UFACE_MONITOR_CUSTOM:
         actionType = SOFTKEY_ACTION_STANDARD;
         break;
