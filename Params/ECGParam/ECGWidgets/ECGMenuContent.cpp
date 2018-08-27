@@ -218,7 +218,7 @@ void ECGMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_QRS_TONE, comboBox);
 
-    // self lear
+    // self learn
     d_ptr->selfLearnBtn = new Button(trs("SelfLearn"));
     d_ptr->selfLearnBtn->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(d_ptr->selfLearnBtn, d_ptr->combos.count(), 1);
