@@ -54,6 +54,7 @@ public:
     void printTrendData(unsigned startTime, unsigned endTime);
 protected:
     void showEvent(QShowEvent *ev);
+    bool eventFilter(QObject *, QEvent *);
 
 private slots:
     void leftReleased(void);
