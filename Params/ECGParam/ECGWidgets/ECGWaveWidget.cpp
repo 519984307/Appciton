@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
+ **/
+
 #include <QResizeEvent>
 #include <QPainter>
 #include "ECGParam.h"
@@ -46,7 +56,7 @@ void ECGWaveWidget::_autoGainHandle(int data)
     for (; gain >= ECG_GAIN_X0125; gain--)
     {
         if ((_autoGainTraveVally >= _autoGainLogicalRange[gain].minRange) &&
-            (_autoGainTracePeek <= _autoGainLogicalRange[gain].maxRange))
+                (_autoGainTracePeek <= _autoGainLogicalRange[gain].maxRange))
         {
             break;
         }
@@ -60,12 +70,12 @@ void ECGWaveWidget::_autoGainHandle(int data)
     {
         gain = ECG_GAIN_X0125;
 //        gain = ECG_GAIN_X05;
-        //return;
+        // return;
     }
 
-    if (gain != (int)ecgParam.getGain(ecgParam.waveIDToLeadID((WaveformID)getID())))
+    if (gain != static_cast<int>(ecgParam.getGain(ecgParam.waveIDToLeadID((WaveformID)getID()))))
     {
-        ecgParam.setGain((ECGGain)gain, getID());
+        ecgParam.setGain(static_cast<ECGGain>(gain), getID());
     }
 }
 
@@ -80,14 +90,14 @@ void ECGWaveWidget::_calcGainRange(void)
         int rulerHeight = _calcRulerHeight((ECGGain)i);
 
         int rulerTop = qmargins().top()
-                + ((height() - qmargins().top() - qmargins().bottom() - rulerHeight) / 2);
+                       + ((height() - qmargins().top() - qmargins().bottom() - rulerHeight) / 2);
         int rulerBottom = rulerTop + rulerHeight - 1;
 
         int valueMax = (_p05mV - _n05mV) * (qmargins().top() -
-                        rulerBottom) / (rulerTop - rulerBottom) + _n05mV;
+                                            rulerBottom) / (rulerTop - rulerBottom) + _n05mV;
 
         int valueMin = (_p05mV - _n05mV) * (height() - 1 - qmargins().bottom() -
-                        rulerBottom) / (rulerTop - rulerBottom) + _n05mV;
+                                            rulerBottom) / (rulerTop - rulerBottom) + _n05mV;
 
         _autoGainLogicalRange[i].minRange = valueMin;
         _autoGainLogicalRange[i].maxRange = valueMax;
@@ -104,51 +114,36 @@ double ECGWaveWidget::_calcRulerHeight(ECGGain gain)
     double rulerHeight = 0.0;
     switch (gain)
     {
-        case ECG_GAIN_X0125:
-            rulerHeight = 1.25 / pixelHPitch();
-            break;
+    case ECG_GAIN_X0125:
+        rulerHeight = 1.25 / pixelHPitch();
+        break;
 
-        case ECG_GAIN_X025:
-            rulerHeight = 2.5 / pixelHPitch();
-            break;
+    case ECG_GAIN_X025:
+        rulerHeight = 2.5 / pixelHPitch();
+        break;
 
-        case ECG_GAIN_X05:
-            rulerHeight = 5 / pixelHPitch();
-            break;
+    case ECG_GAIN_X05:
+        rulerHeight = 5 / pixelHPitch();
+        break;
 
-        case ECG_GAIN_X10:
-            rulerHeight = 10 / pixelHPitch();
-            break;
+    case ECG_GAIN_X10:
+        rulerHeight = 10 / pixelHPitch();
+        break;
 
-        case ECG_GAIN_X20:
-            rulerHeight = 20 / pixelHPitch();
-            break;
+    case ECG_GAIN_X20:
+        rulerHeight = 20 / pixelHPitch();
+        break;
 
-        case ECG_GAIN_X40:
-            rulerHeight = 40 / pixelHPitch();
-            break;
+    case ECG_GAIN_X40:
+        rulerHeight = 40 / pixelHPitch();
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     return rulerHeight;
 }
-
-/**************************************************************************************************
- * 根据波形增益初始化标尺。
- * 参数:
- *      gain: 波形增益。
- *************************************************************************************************/
-//void ECGWaveWidget::_initRuler(ECGGain gain)
-//{
-//    if (!_ruler)
-//    {
-//        return;
-//    }
-
-//    _ruler->setRulerHeight(_calcRulerHeight(gain));
-//}
 
 /**************************************************************************************************
  * 根据校准信息初始化波形数值范围。
@@ -163,14 +158,14 @@ void ECGWaveWidget::_initValueRange(ECGGain gain)
     double rulerHeight = _calcRulerHeight(gain);
 
     double rulerTop = qmargins().top()
-            + ((height() - qmargins().top() - qmargins().bottom() - rulerHeight) / 2);
+                      + ((height() - qmargins().top() - qmargins().bottom() - rulerHeight) / 2);
     double rulerBottom = rulerTop + rulerHeight - 1;
 
     int valueMax = (_p05mV - _n05mV) * (qmargins().top() - rulerBottom)
-            / (rulerTop - rulerBottom) + _n05mV;
+                   / (rulerTop - rulerBottom) + _n05mV;
 
     int valueMin = (_p05mV - _n05mV) * (height() - 1 - qmargins().bottom() - rulerBottom)
-            / (rulerTop - rulerBottom) + _n05mV;
+                   / (rulerTop - rulerBottom) + _n05mV;
 
     setValueRange(valueMin, valueMax);
 }
@@ -178,9 +173,10 @@ void ECGWaveWidget::_initValueRange(ECGGain gain)
 /**************************************************************************************************
  * 鼠标释放事件，弹出菜单。
  *************************************************************************************************/
-void ECGWaveWidget::_releaseHandle(IWidget *)
+void ECGWaveWidget::_releaseHandle(IWidget * w)
 {
-    QWidget *p = (QWidget*)parent();
+    Q_UNUSED(w)
+    QWidget *p = qobject_cast<QWidget *>(parent());
     if (p == NULL)
     {
         return;
@@ -208,7 +204,7 @@ void ECGWaveWidget::_releaseHandle(IWidget *)
  *************************************************************************************************/
 void ECGWaveWidget::_ecgGain(IWidget *widget)
 {
-    WaveWidgetLabel* tempGain = NULL;
+    WaveWidgetLabel *tempGain = NULL;
 
     if (NULL == _gainList)
     {
@@ -233,8 +229,8 @@ void ECGWaveWidget::_ecgGain(IWidget *widget)
         }
 
         int maxGain = ecgParam.getMaxGain();
-        //12导模式下增益不需要AUTO
-        if(ECG_DISPLAY_12_LEAD_FULL == ecgParam.getDisplayMode())
+        // 12导模式下增益不需要AUTO
+        if (ECG_DISPLAY_12_LEAD_FULL == ecgParam.getDisplayMode())
         {
             maxGain = maxGain - 1;
         }
@@ -263,7 +259,7 @@ void ECGWaveWidget::_ecgGain(IWidget *widget)
 
     if (windowManager.getUFaceType() == UFACE_MONITOR_12LEAD)
     {
-        if(NULL != tempGain)
+        if (NULL != tempGain)
         {
             delete tempGain;
             tempGain = NULL;
@@ -295,7 +291,7 @@ void ECGWaveWidget::_popupDestroyed(void)
 
     if (windowManager.getUFaceType() == UFACE_MONITOR_12LEAD)
     {
-        for(int i = ECG_LEAD_I; i <= ECG_LEAD_V6; i++)
+        for (int i = ECG_LEAD_I; i <= ECG_LEAD_V6; i++)
         {
             ecgParam.set12LGain((ECGGain)index, (ECGLead)i);
         }
@@ -306,7 +302,7 @@ void ECGWaveWidget::_popupDestroyed(void)
 
         if (!_isAutoGain)
         {
-            //修改增益后清空R波重绘标记记录
+            // 修改增益后清空R波重绘标记记录
             rMarkList.clear();
 
             ecgParam.setGain((ECGGain)index, getID());
@@ -330,7 +326,7 @@ void ECGWaveWidget::_onCalcLeadChanged()
 {
     if (UFACE_MONITOR_12LEAD != windowManager.getUFaceType())
     {
-        if(ecgParam.getCalcLead() == getID())
+        if (ecgParam.getCalcLead() == getID())
         {
             _filter->setVisible(true);
         }
@@ -366,7 +362,7 @@ void ECGWaveWidget::_loadConfig(void)
         _filter->setText(filter);
 
         _name->setText(ECGSymbol::convert(ecgParam.waveIDToLeadID((WaveformID)getID()),
-        ecgParam.getLeadConvention(), true, ecgParam.get12LDisplayFormat()));
+                                          ecgParam.getLeadConvention(), true, ecgParam.get12LDisplayFormat()));
 
         _name->setFixedWidth(70);
         _gain->setFixedWidth(120);
@@ -375,7 +371,7 @@ void ECGWaveWidget::_loadConfig(void)
     else
     {
         _name->setText(ECGSymbol::convert(ecgParam.waveIDToLeadID((WaveformID)getID()),
-        ecgParam.getLeadConvention(), false, false));
+                                          ecgParam.getLeadConvention(), false, false));
         _name->setFocusPolicy(Qt::StrongFocus);
         _gain->setFocusPolicy(Qt::StrongFocus);
         _gain->setVisible(true);
@@ -465,32 +461,32 @@ void ECGWaveWidget::setGain(ECGGain gain)
 
     switch (gain)
     {
-        case ECG_GAIN_X0125:
-            text += "0.125 cm/mV";
-            break;
+    case ECG_GAIN_X0125:
+        text += "0.125 cm/mV";
+        break;
 
-        case ECG_GAIN_X025:
-            text += "0.25 cm/mV";
-            break;
+    case ECG_GAIN_X025:
+        text += "0.25 cm/mV";
+        break;
 
-        case ECG_GAIN_X05:
-            text += "0.5 cm/mV";
-            break;
+    case ECG_GAIN_X05:
+        text += "0.5 cm/mV";
+        break;
 
-        case ECG_GAIN_X10:
-            text += "1.0 cm/mV";
-            break;
+    case ECG_GAIN_X10:
+        text += "1.0 cm/mV";
+        break;
 
-        case ECG_GAIN_X20:
-            text += "2.0 cm/mV";
-            break;
+    case ECG_GAIN_X20:
+        text += "2.0 cm/mV";
+        break;
 
-        case ECG_GAIN_X40:
-            text += "4.0 cm/mV";
-            break;
+    case ECG_GAIN_X40:
+        text += "4.0 cm/mV";
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     _gain->setText(text);
@@ -505,7 +501,7 @@ void ECGWaveWidget::setGain(ECGGain gain)
 void ECGWaveWidget::set12LGain(ECGGain gain)
 {
     _12LGain = gain;
-    return ;
+    return;
 }
 
 /**************************************************************************************************
@@ -525,23 +521,23 @@ ECGGain ECGWaveWidget::get12LGain()
 void ECGWaveWidget::setSpeed(ECGSweepSpeed speed)
 {
     // 波形速度。
-    switch(speed)
+    switch (speed)
     {
-        case ECG_SWEEP_SPEED_125:
-            setWaveSpeed(12.5);
-            break;
+    case ECG_SWEEP_SPEED_125:
+        setWaveSpeed(12.5);
+        break;
 
-        case ECG_SWEEP_SPEED_250:
-            setWaveSpeed(25.0);
-            break;
+    case ECG_SWEEP_SPEED_250:
+        setWaveSpeed(25.0);
+        break;
 
-        case ECG_SWEEP_SPEED_500:
-            setWaveSpeed(50);
-            break;
+    case ECG_SWEEP_SPEED_500:
+        setWaveSpeed(50);
+        break;
 
-        default:
-            setWaveSpeed(25.0);
-            break;
+    default:
+        setWaveSpeed(25.0);
+        break;
     }
 
     windowManager.resetWave();
@@ -593,6 +589,11 @@ void ECGWaveWidget::updateLeadDisplayName(const QString &name)
     setTitle(name);
 }
 
+void ECGWaveWidget::updateWaveConfig()
+{
+    _loadConfig();
+}
+
 /**************************************************************************************************
  * set wave notify message
  *************************************************************************************************/
@@ -606,19 +607,19 @@ void ECGWaveWidget::setNotifyMesg(ECGWaveNotify mesg)
     _mesg = mesg;
     switch (_mesg)
     {
-        case ECG_WAVE_NOTIFY_LEAD_OFF:
-            _notify->setText(trs("LeadOff"));
-            break;
+    case ECG_WAVE_NOTIFY_LEAD_OFF:
+        _notify->setText(trs("LeadOff"));
+        break;
 
-        case ECG_WAVE_NOTIFY_CHECK_PATIENT:
-        {
-            _notify->setText(trs("CheckPatient"));
-            break;
-        }
+    case ECG_WAVE_NOTIFY_CHECK_PATIENT:
+    {
+        _notify->setText(trs("CheckPatient"));
+        break;
+    }
 
-        default:
-            _notify->setText("");
-            break;
+    default:
+        _notify->setText("");
+        break;
     }
 }
 
@@ -632,20 +633,21 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
 {
     WaveWidget::paintEvent(e);
 
-    if(ECG_DISPLAY_NORMAL == ecgParam.getDisplayMode())
+    if (ECG_DISPLAY_NORMAL == ecgParam.getDisplayMode())
     {
         if (getID() != ecgParam.getCalcLead())
         {
             return;
         }
     }
-    else if(ECG_DISPLAY_12_LEAD_FULL == ecgParam.getDisplayMode())
+    else if (ECG_DISPLAY_12_LEAD_FULL == ecgParam.getDisplayMode())
     {
         QStringList currentWaveforms;
         windowManager.getCurrentWaveforms(currentWaveforms);
-        if (!((ECG_PACE_ON == (ECGPaceMode)ecgParam.get12LPacermaker()) && (!currentWaveforms.empty()) && (currentWaveforms[0] == name())))
+        if (!((ECG_PACE_ON == (ECGPaceMode)ecgParam.get12LPacermaker()) && (!currentWaveforms.empty())
+                && (currentWaveforms[0] == name())))
         {
-            return ;
+            return;
         }
     }
 
@@ -660,7 +662,7 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
     painter.setRenderHint(QPainter::Antialiasing, false);
     QMargins margin = qmargins();
 
-    //记录R波标记,用于重画
+    // 记录R波标记,用于重画
     QList<rMark_record> temprMarkList = rMarkList;
     rMarkList.clear();
 
@@ -679,16 +681,16 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
             endIndex = qMin(rightIndex, bufHead() - 1);
             for (int i = beginIndex; i <= endIndex; i++)
             {
-                //if (flagBuf(i) & ECG_INTERNAL_FLAG_BIT)//ipace
-                if ((flagBuf(i) & ECG_INTERNAL_FLAG_BIT) && !(flagBuf(i) & INVALID_WAVE_FALG_BIT))//ipace
+                // if (flagBuf(i) & ECG_INTERNAL_FLAG_BIT)//ipace
+                if ((flagBuf(i) & ECG_INTERNAL_FLAG_BIT) && !(flagBuf(i) & INVALID_WAVE_FALG_BIT))  // ipace
                 {
                     QPoint start(xBuf(i), margin.top());
-                    QPoint end(xBuf(i),this->rect().height() - 10);
+                    QPoint end(xBuf(i), this->rect().height() - 10);
                     drawIPaceMark(painter, start, end);
                 }
 
 //                if (flagBuf(i) & (ECG_EXTERNAL_DOT_FLAG_BIT|ECG_EXTERNAL_SOLD_FLAG_BIT))//epace
-                if (flagBuf(i) & ECG_EXTERNAL_SOLD_FLAG_BIT)//epace
+                if (flagBuf(i) & ECG_EXTERNAL_SOLD_FLAG_BIT)  // epace
                 {
                     QPoint start = getWavePoint(i);
                     QPoint end(xBuf(i), this->rect().height() - 10 - fontH);
@@ -711,16 +713,16 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
             endIndex = qMin(rightIndex, bufSize() - 1);
             for (int i = beginIndex; i <= endIndex; i++)
             {
-                //if (flagBuf(i) & ECG_INTERNAL_FLAG_BIT)//ipace
-                if ((flagBuf(i) & ECG_INTERNAL_FLAG_BIT) && !(flagBuf(i) & INVALID_WAVE_FALG_BIT))//ipace
+                // if (flagBuf(i) & ECG_INTERNAL_FLAG_BIT)//ipace
+                if ((flagBuf(i) & ECG_INTERNAL_FLAG_BIT) && !(flagBuf(i) & INVALID_WAVE_FALG_BIT))  // ipace
                 {
                     QPoint start(xBuf(i), margin.top());
-                    QPoint end(xBuf(i),this->rect().height() - 10);
+                    QPoint end(xBuf(i), this->rect().height() - 10);
                     drawIPaceMark(painter, start, end);
                 }
 
 //                if (flagBuf(i) & (ECG_EXTERNAL_DOT_FLAG_BIT|ECG_EXTERNAL_SOLD_FLAG_BIT))//epace
-                if (flagBuf(i) & ECG_EXTERNAL_SOLD_FLAG_BIT)//epace
+                if (flagBuf(i) & ECG_EXTERNAL_SOLD_FLAG_BIT)  // epace
                 {
                     QPoint start = getWavePoint(i);
                     QPoint end(xBuf(i), this->rect().height() - 10 - fontH);
@@ -740,16 +742,16 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
             endIndex = qMin(rightIndex, bufHead() - 1);
             for (int i = beginIndex; i <= endIndex; i++)
             {
-                //if (flagBuf(i) & ECG_INTERNAL_FLAG_BIT)//ipace
-                if ((flagBuf(i) & ECG_INTERNAL_FLAG_BIT) && !(flagBuf(i) & INVALID_WAVE_FALG_BIT))//ipace
+                // if (flagBuf(i) & ECG_INTERNAL_FLAG_BIT)//ipace
+                if ((flagBuf(i) & ECG_INTERNAL_FLAG_BIT) && !(flagBuf(i) & INVALID_WAVE_FALG_BIT))  // ipace
                 {
                     QPoint start(xBuf(i), margin.top());
-                    QPoint end(xBuf(i),this->rect().height() - 10);
+                    QPoint end(xBuf(i), this->rect().height() - 10);
                     drawIPaceMark(painter, start, end);
                 }
 
 //                if (flagBuf(i) & (ECG_EXTERNAL_DOT_FLAG_BIT|ECG_EXTERNAL_SOLD_FLAG_BIT))//epace
-                if (flagBuf(i) & ECG_EXTERNAL_SOLD_FLAG_BIT)//epace
+                if (flagBuf(i) & ECG_EXTERNAL_SOLD_FLAG_BIT)  // epace
                 {
                     QPoint start = getWavePoint(i);
                     QPoint end(xBuf(i), this->rect().height() - 10 - fontH);
@@ -767,7 +769,7 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
         }
     }
 
-    //记录R波标记,用于重画，防止R波标记被刷新后只显示一半
+    // 记录R波标记,用于重画，防止R波标记被刷新后只显示一半
     QList<rMark_record>::iterator it;
     for (it = temprMarkList.begin(); it != temprMarkList.end(); ++it)
     {
@@ -802,7 +804,7 @@ void ECGWaveWidget::resizeEvent(QResizeEvent *e)
     _name->move(0, 0);
     _gain->move(_name->rect().width(), 0);
     _filter->move(_name->rect().x() + _name->rect().width() +
-            _gain->rect().x() + _gain->rect().width(), 0);
+                  _gain->rect().x() + _gain->rect().width(), 0);
 
     _notify->setFixedWidth(width() / 2);
     _notify->move((width() - _notify->width()) / 2,
@@ -827,8 +829,9 @@ void ECGWaveWidget::resizeEvent(QResizeEvent *e)
 // 返回值:
 // 无
 ////////////////////////////////////////////////////////////////////////////////
-void ECGWaveWidget::focusInEvent(QFocusEvent */*e*/)
+void ECGWaveWidget::focusInEvent(QFocusEvent *e)
 {
+    Q_UNUSED(e)
     _name->setFocus();
 }
 
@@ -846,7 +849,7 @@ void ECGWaveWidget::showEvent(QShowEvent *e)
     _loadConfig();
 
     int fontH = fontManager.textHeightInPixels(fontManager.textFont(14)) + 4;
-    if(ECG_DISPLAY_NORMAL == ecgParam.getDisplayMode())
+    if (ECG_DISPLAY_NORMAL == ecgParam.getDisplayMode())
     {
         // 设置带宽显示（为计算导联、PADS为计算导联、12导为计算导联但带宽不一致时都显示带宽）
         if (getID() == ecgParam.getCalcLead())
@@ -861,12 +864,12 @@ void ECGWaveWidget::showEvent(QShowEvent *e)
 
         setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
     }
-    else if(ECG_DISPLAY_12_LEAD_FULL == ecgParam.getDisplayMode())
+    else if (ECG_DISPLAY_12_LEAD_FULL == ecgParam.getDisplayMode())
     {
         QStringList currentWaveforms;
         windowManager.getCurrentWaveforms(currentWaveforms);
 
-        if((!currentWaveforms.empty()) && (currentWaveforms[0] == name()))
+        if ((!currentWaveforms.empty()) && (currentWaveforms[0] == name()))
         {
             _filter->setVisible(true);
             _gain->setVisible(true);
@@ -910,12 +913,12 @@ void ECGWaveWidget::hideEvent(QHideEvent *e)
  *      leadName: 导联名称，波形标名
  *************************************************************************************************/
 ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QString &leadName)
-        : WaveWidget(widgetName, leadName)
-        , _gain(NULL)
-        , _notify(NULL)
-        , _gainList(NULL)
-        , _p05mV(3185)
-        , _n05mV(-3185)
+    : WaveWidget(widgetName, leadName)
+    , _gain(NULL)
+    , _notify(NULL)
+    , _gainList(NULL)
+    , _p05mV(3185)
+    , _n05mV(-3185)
 {
     _autoGainTracePeek = -100000000;
     _autoGainTraveVally = 100000000;
@@ -937,14 +940,14 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     _name->setFont(fontManager.textFont(fontSize));
     _name->setFixedSize(70, fontH);
     _name->setText(leadName);
-    connect(_name, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(_name, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 //    addItem(_name);
 
     _gain = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _gain->setFont(fontManager.textFont(fontSize));
     _gain->setFixedSize(150, fontH);
     _gain->setText("");
-    connect(_gain, SIGNAL(released(IWidget*)), this, SLOT(_ecgGain(IWidget*)));
+    connect(_gain, SIGNAL(released(IWidget *)), this, SLOT(_ecgGain(IWidget *)));
     addItem(_gain);
 
     _filter = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
@@ -970,7 +973,6 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
  *************************************************************************************************/
 ECGWaveWidget::~ECGWaveWidget()
 {
-
 }
 
 /**************************************************************************************************
@@ -1058,7 +1060,7 @@ void ECGWaveWidget::drawRMark(QPainter &painter, QPoint &p, QRect &r, ECGWaveWid
     painter.setPen(Qt::white);
 
     QPointF center(p);
-    //圆点的半径为3
+    // 圆点的半径为3
     if (p.x() - r.x() < 3)
     {
         center.setX(r.x() + 3);
@@ -1101,7 +1103,7 @@ void ECGWaveWidget::drawRMark(QPainter &painter, QPoint &p, QRect &r, ECGWaveWid
             }
         }
 
-        //记录R波标记,用于重画
+        // 记录R波标记,用于重画
         if (0 == pObj->rMarkList.count())
         {
             rMark_record rec;
@@ -1114,7 +1116,7 @@ void ECGWaveWidget::drawRMark(QPainter &painter, QPoint &p, QRect &r, ECGWaveWid
         else
         {
             QList<rMark_record>::const_iterator it = pObj->rMarkList.begin();
-            for (; it!=pObj->rMarkList.end(); ++it)
+            for (; it != pObj->rMarkList.end(); ++it)
             {
                 if ((*it).ellipse_x == center.x() && (*it).ellipse_y == center.y() &&
                         (*it).s_x ==  startX && (*it).s_y == startY)
@@ -1133,7 +1135,6 @@ void ECGWaveWidget::drawRMark(QPainter &painter, QPoint &p, QRect &r, ECGWaveWid
                 pObj->rMarkList.append(rec);
             }
         }
-
     }
     else
     {

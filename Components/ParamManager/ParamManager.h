@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
+ **/
+
 #pragma once
 #include <QMap>
 #include <QString>
@@ -31,6 +41,9 @@ public:
     // 将数据生产者和参数对象关联起来。
     void connectParamProvider(void);
 
+    // connect the paramters to the demo provider
+    void connectDemoParamProvider(void);
+
     // 获取子参数值。
     short getSubParamValue(const QString &paramName, SubParamID id);
     short getSubParamValue(ParamID paramID, SubParamID id);
@@ -56,7 +69,7 @@ public:
     // 获取版本号。Notify the providers to get version info
     void getVersion(void);
 
-    //get the BLMProvider by paramID
+    // get the BLMProvider by paramID
     BLMProvider *getBLMProvider(ParamID paramId);
 
 

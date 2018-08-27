@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
+ **/
+
 #pragma once
 #include <QPalette>
 #include "Param.h"
@@ -32,6 +42,8 @@ public:
     // 处理DEMO数据。
     virtual void handDemoWaveform(WaveformID id, short data);
     virtual void handDemoTrendData(void);
+    /* reimplement */
+    virtual void exitDemo();
 
     // 获取可得的波形控件集。
     virtual void getAvailableWaveforms(QStringList &waveforms,
@@ -89,7 +101,7 @@ public:
     // 设置OneShot报警。
     void setOneShotAlarm(CO2OneShotType t, bool status);
 
-    //设置呼吸氧和中的CO2窗口波形
+    // 设置呼吸氧和中的CO2窗口波形
     void setOxyCRGCO2Widget(OxyCRGCO2Widget* p);
 
     // 超限报警通知
@@ -132,7 +144,7 @@ public:
     void setCO2Switch(int onoff);
     bool getCO2Switch();
 
-    //获取CO2
+    // 获取CO2
     short getEtCO2MaxValue();
     short getEtCO2MinValue();
 

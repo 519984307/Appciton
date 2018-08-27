@@ -63,7 +63,7 @@ void ScreenMenuContent::layoutExec()
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Standard")
-                       << trs("12Lead")
+                       << trs("_12Lead")
                        << trs("OxyCRG")
                        << trs("Trend")
                        << trs("BigFont")

@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
+ **/
+
 #include "COParam.h"
 #include "COTrendWidget.h"
 #include "IConfig.h"
@@ -9,7 +19,6 @@ COParam *COParam::_selfObj = NULL;
  *************************************************************************************************/
 COParam::~COParam()
 {
-
 }
 
 /**************************************************************************************************
@@ -17,7 +26,6 @@ COParam::~COParam()
  *************************************************************************************************/
 void COParam::handDemoWaveform(WaveformID /*id*/, short /*data*/)
 {
-
 }
 
 /**************************************************************************************************
@@ -33,6 +41,18 @@ void COParam::handDemoTrendData()
     {
         _trendWidget->setMeasureResult(_coData, _ciData);
         _trendWidget->setTBData(_tbData);
+    }
+}
+
+void COParam::exitDemo()
+{
+    _coData = InvData();
+    _ciData = InvData();
+    _tbData = InvData();
+    if (NULL != _trendWidget)
+    {
+        _trendWidget->setMeasureResult(InvData(), InvData());
+        _trendWidget->setTBData(InvData());
     }
 }
 
@@ -57,7 +77,6 @@ UnitType COParam::getCurrentUnit(SubParamID id)
     {
         return UNIT_NONE;
     }
-
 }
 
 /**************************************************************************************************
@@ -131,8 +150,8 @@ unsigned short COParam::getCORatio()
  *************************************************************************************************/
 void COParam::setTempSource(COTiMode source, unsigned short temp)
 {
-    currentConfig.setNumValue("CO|InjectionTempSource", (int)source);
-    currentConfig.setNumValue("CO|InjectionTemp", (unsigned)temp);
+    currentConfig.setNumValue("CO|InjectionTempSource", static_cast<int>(source));
+    currentConfig.setNumValue("CO|InjectionTemp", static_cast<unsigned>(temp));
     _provider->setInputMode(source, temp);
 }
 
@@ -171,7 +190,7 @@ unsigned char COParam::getInjectionVolumn()
  *************************************************************************************************/
 void COParam::measureCtrl(COInstCtl sta)
 {
-    currentConfig.setNumValue("CO|MeasureMode", (int)sta);
+    currentConfig.setNumValue("CO|MeasureMode", static_cast<int>(sta));
     _provider->measureCtrl(sta);
 }
 

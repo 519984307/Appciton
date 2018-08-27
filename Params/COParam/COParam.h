@@ -32,6 +32,8 @@ public:
     // 处理DEMO数据。
     virtual void handDemoWaveform(WaveformID id, int16_t data);
     virtual void handDemoTrendData(void);
+    /* reimplement */
+    virtual void exitDemo();
 
     // 获取当前的单位。
     virtual UnitType getCurrentUnit(SubParamID id);
