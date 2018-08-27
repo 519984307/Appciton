@@ -7,15 +7,15 @@
  **
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/24
  **/
-#include "ConfigEditTEMPMenu.h"
+#include "TEMPMenu.h"
 #include "ComboBox.h"
 #include <QLabel>
 #include <QGridLayout>
 #include "LanguageManager.h"
 #include "TEMPSymbol.h"
-#include "Config.h"
+#include "TEMPParam.h"
 
-class ConfigEditTEMPMenuPrivate
+class TEMPMenuPrivate
 {
 public:
     enum MenuItem
@@ -25,11 +25,10 @@ public:
         ITEM_CBO_ENABLE,
     };
 
-    explicit ConfigEditTEMPMenuPrivate(Config *const config)
+    TEMPMenuPrivate()
         : tempChannelOne(NULL),
           tempChannelTwo(NULL),
-          tempChannelDisable(NULL),
-          config(config)
+          tempChannelDisable(NULL)
     {
     }
     /**
@@ -40,30 +39,24 @@ public:
     ComboBox *tempChannelOne;
     ComboBox *tempChannelTwo;
     ComboBox *tempChannelDisable;
-    Config *const config;
 };
 
 
 
-ConfigEditTEMPMenu::ConfigEditTEMPMenu(Config *const config)
-    : MenuContent(trs("ConfigEditTEMPMenu"),
-                  trs("ConfigEditTEMPMenuDesc")),
-      d_ptr(new ConfigEditTEMPMenuPrivate(config))
+TEMPMenu::TEMPMenu()
+    : MenuContent(trs("TEMPMenu"),
+                  trs("TEMPMenuDesc")),
+      d_ptr(new TEMPMenuPrivate)
 {
 }
 
-ConfigEditTEMPMenu::~ConfigEditTEMPMenu()
+TEMPMenu::~TEMPMenu()
 {
     delete d_ptr;
 }
 
-void ConfigEditTEMPMenu::layoutExec()
+void TEMPMenu::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *glayout = new QGridLayout(this);
     glayout->setMargin(10);
 
@@ -126,12 +119,12 @@ void ConfigEditTEMPMenu::layoutExec()
     glayout->setRowStretch(layoutIndex , 1);
 }
 
-void ConfigEditTEMPMenu::readyShow()
+void TEMPMenu::readyShow()
 {
     d_ptr->loadOption();
 }
 
-void ConfigEditTEMPMenu::onComboIndexUpdated(int index)
+void TEMPMenu::onComboIndexUpdated(int index)
 {
     Q_UNUSED(index)
     ComboBox *combo = qobject_cast<ComboBox *>(sender());
@@ -141,36 +134,34 @@ void ConfigEditTEMPMenu::onComboIndexUpdated(int index)
         return;
     }
 
-    int item = combo->property("Item").toInt();
-    QString strPath;
+    int item = combo->property("item").toInt();
     switch (item)
     {
-    case ConfigEditTEMPMenuPrivate::ITEM_CBO_ONE:
-        strPath = "TEMP|ChannelOne";
+    case TEMPMenuPrivate::ITEM_CBO_ONE:
         break;
-    case ConfigEditTEMPMenuPrivate::ITEM_CBO_TWO:
-        strPath = "TEMP|ChannelTwo";
+    case TEMPMenuPrivate::ITEM_CBO_TWO:
         break;
-    case ConfigEditTEMPMenuPrivate::ITEM_CBO_ENABLE:
-        strPath = "TEMP|ChannelDisable";
+    case TEMPMenuPrivate::ITEM_CBO_ENABLE:
+        if (index)
+        {
+            tempParam.setErrorDisable();
+        }
+        else
+        {
+            tempParam.setModuleEnable();
+        }
         break;
     }
-    d_ptr->config->setNumValue(strPath, index);
 }
 
-void ConfigEditTEMPMenuPrivate::loadOption()
+void TEMPMenuPrivate::loadOption()
 {
-    int index;
-
-    index = 0;
-    config->getNumValue("TEMP|ChannelOne", index);
-    tempChannelOne->setCurrentIndex(index);
-
-    index = 0;
-    config->getNumValue("TEMP|ChannelTwo", index);
-    tempChannelTwo->setCurrentIndex(index);
-
-    index = 0;
-    config->getNumValue("TEMP|ChannelDisable", index);
-    tempChannelDisable->setCurrentIndex(index);
+    if (!tempParam.getErrorDisable())
+    {
+        tempChannelDisable->setCurrentIndex(0);
+    }
+    else
+    {
+        tempChannelDisable->setCurrentIndex(1);
+    }
 }

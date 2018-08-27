@@ -190,6 +190,8 @@ TEMP,体温,TEMP
 T1,T1,T1
 T2,T2,T2
 TD,ΔT,ΔT
+ConfigEditTEMPMenu,体温,TEMP
+ConfigEditTEMPMenuDesc,体温设置,TEMP Desc
 TEMPMenu,体温,TEMP
 TEMPUnit,单位,Unit
 TEMP1Low,体温1低,TEMP1 Low
@@ -575,6 +577,9 @@ NIBPPressureControlModel,压力控制模式,NIBP Pressure Control Model
 ServicePatientType,病人类型,Patient Type
 ServiceChargePressure,预充气压力,Charge Pressure
 TEMPModuleDisConnect,温度模块未连接,TEMP Module DisConnected
+TEMPChannelOne,体温通道1,TEMP Channel One
+TEMPChannelTwo,体温通道2,TEMP Channel Two 
+TEMPChannelDisable,体温通道失能,TEMP Channel Disable 
 ServiceInflate,充气,Inflate
 ServiceDeflate,放气,Deflate
 ServiceCalibrateZero,校零,Calibrate Zero
@@ -1133,6 +1138,21 @@ open,打开,open
 openAgain,再次打开,Open Again
 ReminderToneIntervals,提醒音间隔,Reminder Tone Intervals
 H1min,1分钟,1min
+T1,T1,T1
+T2,T2,T2
+Tskin,体表,T skin
+Tcore,核心,T core
+Taxil,腋下,T axil
+Tnaso,鼻咽,T naso
+Teso,食道,T eso
+Trect,直肠,T rect
+Tamb,环境,T amb
+Tairw,气道,T airw
+Tvesic,膀胱,T vesic
+Tblood,血液,T blood
+Tmyo,心肌,T myo
+Ttymp,鼓膜,T tymp
+Tbrain,大脑,T brain
 H2min,2分钟,2min
 H3min,3分钟,3min
 _alarmLightOnAlarmReset,报警灯复位,Alarm Light On Alarm Reset

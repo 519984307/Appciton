@@ -96,6 +96,11 @@
          <N2OCompensation>0</N2OCompensation>
 		 <Anesthetic>0</Anesthetic>
     </AG>
+    <TEMP>
+         <ChannelOne>0</ChannelOne>
+         <ChannelTwo>0</ChannelTwo>
+         <ChannelDisable>0</ChannelDisable>
+    </TEMP>
     <IBP>
         <ChannelPressureEntitle1>0</ChannelPressureEntitle1>
         <ChannelPressureEntitle2>5</ChannelPressureEntitle2>

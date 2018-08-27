@@ -54,6 +54,7 @@ public:
 
     // 模块错误,模块禁用
     void setErrorDisable(void);
+    void setModuleEnable(void);
     bool getErrorDisable(void) { return _isTEMPDisable;}
 
     // 通信中断

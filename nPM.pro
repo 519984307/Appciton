@@ -456,6 +456,7 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditGeneralMenu.cpp                          \
     Components/ConfigManager/ConfigEditGeneralMenuContent.cpp                   \
     Components/ConfigManager/ConfigEditEcgMenu.cpp                              \
+    Components/ConfigManager/ConfigEditTEMPMenu.cpp                             \
     Components/ConfigManager/ConfigEditEcgMenuContent.cpp                       \
     Components/ConfigManager/ConfigEditRespMenu.cpp                             \
     Components/ConfigManager/ConfigEditRespMenuContent.cpp                      \
@@ -557,6 +558,7 @@ SOURCES +=                                                                      
     Params/TEMPParam/TEMPParam.cpp                                              \
     Params/TEMPParam/TEMPAlarm.cpp                                              \
     Params/TEMPParam/TEMPWidgets/TEMPTrendWidget.cpp                            \
+    Params/TEMPParam/TEMPWidgets/TEMPMenu.cpp                                   \
     Params/RESPParam/RESPAlarm.cpp                                              \
     Params/RESPParam/RESPDupAlarm.cpp                                           \
     Params/RESPParam/RESPDupParam.cpp                                           \
@@ -1024,6 +1026,7 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditGeneralMenu.h                            \
     Components/ConfigManager/ConfigEditGeneralMenuContent.h                     \
     Components/ConfigManager/ConfigEditEcgMenu.h                                \
+    Components/ConfigManager/ConfigEditTEMPMenu.h                               \
     Components/ConfigManager/ConfigEditEcgMenuContent.h                         \
     Components/ConfigManager/ConfigEditRespMenu.h                               \
     Components/ConfigManager/ConfigEditRespMenuContent.h                        \
@@ -1152,6 +1155,7 @@ HEADERS +=                                                                      
     Params/TEMPParam/TEMPParam.h                                                \
     Params/TEMPParam/TEMPAlarm.h                                                \
     Params/TEMPParam/TEMPWidgets/TEMPTrendWidget.h                              \
+    Params/TEMPParam/TEMPWidgets/TEMPMenu.h                                     \
     Params/TEMPParam/TEMPProviderIFace.h                                        \
     Params/RESPParam/RESPAlarm.h                                                \
     Params/RESPParam/RESPDefine.h                                               \
