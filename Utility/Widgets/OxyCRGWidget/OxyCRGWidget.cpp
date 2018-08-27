@@ -43,7 +43,7 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     _pixelHPitch = systemManager.getScreenPixelHPitch();
 
     QPalette palette;
-    palette.setColor(QPalette::WindowText, QColor(255, 255, 0));
+    palette.setColor(QPalette::WindowText, QColor(152, 245, 255));
     palette.setColor(QPalette::Window, Qt::black);
 //    palette.setColor(QPalette::Foreground, Qt::black);
     setPalette(palette);
@@ -71,19 +71,19 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     bottomLayout->setMargin(2);
     bottomLayout->setSpacing(1);
 
-    _interval = new OxyCRGWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+    _interval = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
     _interval->setFont(fontManager.textFont(fontSize));
     _interval->setFixedSize(80, _labelHeight);
     _interval->setText("");
     connect(_interval, SIGNAL(released(IWidget *)), this, SLOT(_intervalSlot(IWidget *)));
 
-    _changeTrend = new OxyCRGWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+    _changeTrend = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
     _changeTrend->setFont(fontManager.textFont(fontSize));
     _changeTrend->setFixedSize(80, _labelHeight);
     _changeTrend->setText("");
     connect(_changeTrend, SIGNAL(released(IWidget *)), this, SLOT(_changeTrendSlot(IWidget *)));
 
-    _setUp = new OxyCRGWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+    _setUp = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
     _setUp->setFont(fontManager.textFont(fontSize));
     _setUp->setFixedSize(80, _labelHeight);
     _setUp->setText("SetUp");

@@ -53,7 +53,7 @@ signals:
     void _intervalChanged(int index);
 private:
     static const int _titleBarHeight = 15;
-    static const int _labelHeight = 20;
+    static const int _labelHeight = 40;
     QVBoxLayout *_mainLayout;
     QVBoxLayout *_hLayoutWave;
     QLabel *_titleLabel;
