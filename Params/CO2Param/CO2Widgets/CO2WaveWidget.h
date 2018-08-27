@@ -1,10 +1,21 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
+ **/
+
+
 #pragma once
 #include "WaveWidget.h"
 #include "CO2Define.h"
 
 class WaveWidgetLabel;
 class CO2WaveRuler;
-class ComboListPopup;
+class PopupList;
 
 class CO2WaveWidget: public WaveWidget
 {
@@ -33,10 +44,12 @@ private slots:
     void _releaseHandle(IWidget *);
     void _zoomChangeSlot(IWidget *);
     void _popupDestroyed(void);
+    void _getItemIndex(int);
 
 private:
 //    WaveWidgetLabel *_name;        // 名称
     WaveWidgetLabel *_zoom;        // 标尺
-    ComboListPopup *_gainList;     // 增益列表
+    PopupList *_gainList;          // 增益列表
     CO2WaveRuler *_ruler;          // 标尺对象
+    int _currentItemIndex;
 };

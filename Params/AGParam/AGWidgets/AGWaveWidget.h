@@ -1,10 +1,21 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
+ **/
+
+
 #pragma once
 #include "WaveWidget.h"
 #include "AGDefine.h"
 #include "ParamInfo.h"
 
 class AGWaveRuler;
-class ComboListPopup;
+class PopupList;
 class AGWaveWidget: public WaveWidget
 {
     Q_OBJECT
@@ -37,10 +48,11 @@ private slots:
     void _releaseHandle(IWidget *);
     void _zoomChangeSlot(IWidget *);
     void _popupDestroyed(void);
+    void _getItemIndex(int);
 
 private:
     AGWaveRuler *_ruler;               // 标尺对象
     WaveWidgetLabel *_zoom;             // 标尺
-    ComboListPopup *_gainList;
-
+    PopupList *_gainList;
+    int _currentItemIndex;
 };

@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
+ **/
+
+
 #include <QResizeEvent>
 #include "CO2WaveWidget.h"
 #include "CO2WaveRuler.h"
@@ -7,15 +18,15 @@
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "WaveWidgetSelectMenu.h"
-#include "ComboListPopup.h"
+#include "PopupList.h"
 #include "CO2Param.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
-void CO2WaveWidget::_releaseHandle(IWidget *)
+void CO2WaveWidget::_releaseHandle(IWidget *iWidget)
 {
-    QWidget *p = (QWidget*)parent();
+    QWidget *p = static_cast<QWidget *>(parent());
     if (p == NULL)
     {
         return;
@@ -54,7 +65,7 @@ void CO2WaveWidget::resizeEvent(QResizeEvent *e)
  * 参数：
  *      e: 事件。
  *************************************************************************************************/
-void CO2WaveWidget::focusInEvent(QFocusEvent */*e*/)
+void CO2WaveWidget::focusInEvent(QFocusEvent *e)
 {
     _name->setFocus();
 }
@@ -95,24 +106,24 @@ void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
     float zoomValue = 0;
     switch (zoom)
     {
-        case CO2_DISPLAY_ZOOM_4:
-            _ruler->setRuler(4.0, 2.0, 0);
-            zoomValue = 4.0;
-            break;
-        case CO2_DISPLAY_ZOOM_8:
-            _ruler->setRuler(8.0, 4.0, 0);
-            zoomValue = 8.0;
-            break;
-        case CO2_DISPLAY_ZOOM_12:
-            _ruler->setRuler(12.0, 6.0, 0);
-            zoomValue = 12.0;
-            break;
-        case CO2_DISPLAY_ZOOM_20:
-            _ruler->setRuler(20.0, 10.0, 0);
-            zoomValue = 20.0;
-            break;
-        default:
-            break;
+    case CO2_DISPLAY_ZOOM_4:
+        _ruler->setRuler(4.0, 2.0, 0);
+        zoomValue = 4.0;
+        break;
+    case CO2_DISPLAY_ZOOM_8:
+        _ruler->setRuler(8.0, 4.0, 0);
+        zoomValue = 8.0;
+        break;
+    case CO2_DISPLAY_ZOOM_12:
+        _ruler->setRuler(12.0, 6.0, 0);
+        zoomValue = 12.0;
+        break;
+    case CO2_DISPLAY_ZOOM_20:
+        _ruler->setRuler(20.0, 10.0, 0);
+        zoomValue = 20.0;
+        break;
+    default:
+        break;
     }
 
     UnitType unit = co2Param.getUnit();
@@ -120,7 +131,9 @@ void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
     if (unit == UNIT_KPA)
     {
         float tempVal = Unit::convert(UNIT_KPA, UNIT_PERCENT, zoomValue).toFloat();
-        str.sprintf("0.0~%.1f",(float)(int)(tempVal + 0.5));
+//        str.sprintf("0.0~%.1f", (float)(int)(tempVal + 0.5));
+        float num = static_cast<int>(tempVal + 0.5);
+        str = QString("0.0~%1").number(num, 'f' , 1);
     }
     else if (unit == UNIT_MMHG)
     {
@@ -131,7 +144,7 @@ void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
     }
     else
     {
-        str.sprintf("0.0~%.1f", zoomValue);
+        str = QString("0.0~%1").number(zoomValue, 'f', 1);
     }
     str += " ";
     str += Unit::localeSymbol(unit);
@@ -150,7 +163,8 @@ bool CO2WaveWidget::waveEnable()
  * 构造。
  *************************************************************************************************/
 CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
-    : WaveWidget(waveName, title), _gainList(NULL)
+    : WaveWidget(waveName, title), _gainList(NULL),
+      _currentItemIndex(-1)
 {
     setFocusPolicy(Qt::NoFocus);
     setID(WAVE_CO2);
@@ -173,7 +187,7 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
     _name->setFixedSize(130, fontH);
     _name->setText(title);
 //    addItem(_name);
-    connect(_name, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(_name, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
     _ruler = new CO2WaveRuler(this);
     _ruler->setPalette(palette);
@@ -185,7 +199,7 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
     _zoom->setFixedSize(120, fontH);
     _zoom->setText(title);
     addItem(_zoom);
-    connect(_zoom, SIGNAL(released(IWidget*)), this, SLOT(_zoomChangeSlot(IWidget*)));
+    connect(_zoom, SIGNAL(released(IWidget *)), this, SLOT(_zoomChangeSlot(IWidget *)));
 
     setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
 }
@@ -199,10 +213,7 @@ void CO2WaveWidget::_zoomChangeSlot(IWidget *widget)
     {
         CO2DisplayZoom zoom = co2Param.getDisplayZoom();
         int maxZoom = CO2_DISPLAY_ZOOM_NR;
-        _gainList = new ComboListPopup(widget, POPUP_TYPE_USER, maxZoom, zoom);
-        _gainList->setBorderColor(colorManager.getBarBkColor());
-        _gainList->setBorderWidth(5);
-        _gainList->popupUp(true);
+        _gainList = new PopupList(_zoom);
         float zoomArray[] = {4.0, 8.0, 12.0, 20.0};
         QString str;
         UnitType unit = co2Param.getUnit();
@@ -212,7 +223,8 @@ void CO2WaveWidget::_zoomChangeSlot(IWidget *widget)
             if (unit == UNIT_KPA)
             {
                 float tempVal = Unit::convert(UNIT_KPA, UNIT_PERCENT, zoomArray[i]).toFloat();
-                str.sprintf("0.0~%.1f",(float)(int)(tempVal + 0.5));
+                float num = static_cast<int>(tempVal + 0.5);
+                str = QString("0.0~%1").number(num, 'f', 1);
             }
             else if (unit == UNIT_MMHG)
             {
@@ -223,13 +235,12 @@ void CO2WaveWidget::_zoomChangeSlot(IWidget *widget)
             }
             else
             {
-                str.sprintf("0.0~%.1f", zoomArray[i]);
+                str = QString("0.0~%1").number(zoomArray[i], 'f', 1);
             }
             str += " ";
             str += Unit::localeSymbol(unit);
             _gainList->addItemText(str);
         }
-        _gainList->setItemDrawMark(false);
         _gainList->setFont(fontManager.textFont(14));
         connect(_gainList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
     }
@@ -242,15 +253,19 @@ void CO2WaveWidget::_zoomChangeSlot(IWidget *widget)
  *************************************************************************************************/
 void CO2WaveWidget::_popupDestroyed(void)
 {
-    int index = _gainList->getCurIndex();
-    if (index == -1)
+    if (_currentItemIndex == -1)
     {
         _gainList = NULL;
         return;
     }
 
-    co2Param.setDisplayZoom((CO2DisplayZoom)index);
+    co2Param.setDisplayZoom((CO2DisplayZoom)_currentItemIndex);
     _gainList = NULL;
+}
+
+void CO2WaveWidget::_getItemIndex(int index)
+{
+    _currentItemIndex = index;
 }
 
 /**************************************************************************************************
@@ -258,5 +273,4 @@ void CO2WaveWidget::_popupDestroyed(void)
  *************************************************************************************************/
 CO2WaveWidget::~CO2WaveWidget()
 {
-
 }

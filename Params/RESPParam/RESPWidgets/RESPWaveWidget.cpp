@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
+ **/
+
+
 #include "RESPWaveWidget.h"
 #include "RESPParam.h"
 #include "FontManager.h"
@@ -6,14 +17,14 @@
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "WaveWidgetSelectMenu.h"
-#include "ComboListPopup.h"
+#include "PopupList.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
-void RESPWaveWidget::_releaseHandle(IWidget *)
+void RESPWaveWidget::_releaseHandle(IWidget *iWidget)
 {
-    QWidget *p = (QWidget*)parent();
+    QWidget *p = static_cast<QWidget *>(parent());
     if (p == NULL)
     {
         return;
@@ -35,19 +46,15 @@ void RESPWaveWidget::_respZoom(IWidget *widget)
 {
     if (NULL == _gainList)
     {
-        _gainList = new ComboListPopup(widget, POPUP_TYPE_USER, RESP_ZOOM_NR, respParam.getZoom());
-        _gainList->setBorderColor(colorManager.getBarBkColor());
-        _gainList->setBorderWidth(5);
-        _gainList->popupUp(true);
+        _gainList = new PopupList(_gain);
         for (int i = 0; i < RESP_ZOOM_NR; i++)
         {
             _gainList->addItemText(RESPSymbol::convert(RESPZoom(i)));
         }
-        _gainList->setItemDrawMark(false);
         _gainList->setFont(fontManager.textFont(14));
         connect(_gainList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
+        connect(_gainList , SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
     }
-
     _gainList->show();
 }
 
@@ -56,16 +63,20 @@ void RESPWaveWidget::_respZoom(IWidget *widget)
  *************************************************************************************************/
 void RESPWaveWidget::_popupDestroyed(void)
 {
-    int index = _gainList->getCurIndex();
-    if (index == -1)
+    if (_currentItemIndex == -1)
     {
         _gainList = NULL;
         return;
     }
 
-    respParam.setZoom((RESPZoom)index);
+    respParam.setZoom((RESPZoom)_currentItemIndex);
 
     _gainList = NULL;
+}
+
+void RESPWaveWidget::_getItemIndex(int index)
+{
+    _currentItemIndex = index;
 }
 
 /**************************************************************************************************
@@ -73,13 +84,14 @@ void RESPWaveWidget::_popupDestroyed(void)
  *************************************************************************************************/
 RESPWaveWidget::RESPWaveWidget(const QString &waveName, const QString &title)
     : WaveWidget(waveName, title), _notify(NULL), _gain(NULL), _gainList(NULL)
+    , _currentItemIndex(-1)
 {
     setFocusPolicy(Qt::NoFocus);
     setID(WAVE_RESP);
 
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
     setPalette(palette);
-    
+
     int infoFont = 14;
     int fontH = fontManager.textHeightInPixels(fontManager.textFont(infoFont)) + 4;
 //    _name = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
@@ -87,14 +99,14 @@ RESPWaveWidget::RESPWaveWidget(const QString &waveName, const QString &title)
     _name->setFont(fontManager.textFont(infoFont));
     _name->setText(title);
 //    addItem(_name);
-    connect(_name, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(_name, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
     _gain = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _gain->setFont(fontManager.textFont(infoFont));
     _gain->setFixedSize(120, fontH);
     _gain->setText("");
     addItem(_gain);
-    connect(_gain, SIGNAL(released(IWidget*)), this, SLOT(_respZoom(IWidget*)));
+    connect(_gain, SIGNAL(released(IWidget *)), this, SLOT(_respZoom(IWidget *)));
 
     _notify = new WaveWidgetLabel(" ", Qt::AlignCenter, this);
     _notify->setFont(fontManager.textFont(infoFont));
@@ -113,7 +125,6 @@ RESPWaveWidget::RESPWaveWidget(const QString &waveName, const QString &title)
  *************************************************************************************************/
 RESPWaveWidget::~RESPWaveWidget()
 {
-
 }
 
 /**************************************************************************************************
@@ -123,37 +134,37 @@ void RESPWaveWidget::setZoom(int zoom)
 {
     switch (zoom)
     {
-        case RESP_ZOOM_X025:
-            setValueRange(-0x4000 * 4, 0x3FFF * 4);
-            break;
+    case RESP_ZOOM_X025:
+        setValueRange(-0x4000 * 4, 0x3FFF * 4);
+        break;
 
-        case RESP_ZOOM_X050:
-            setValueRange(-0x4000 * 2, 0x3FFF * 2);
-            break;
+    case RESP_ZOOM_X050:
+        setValueRange(-0x4000 * 2, 0x3FFF * 2);
+        break;
 
-        case RESP_ZOOM_X100:
-            setValueRange(-0x4000, 0x3FFF);
-            break;
+    case RESP_ZOOM_X100:
+        setValueRange(-0x4000, 0x3FFF);
+        break;
 
-        case RESP_ZOOM_X200:
-            setValueRange(-0x2000, 0x1FFF);
-            break;
+    case RESP_ZOOM_X200:
+        setValueRange(-0x2000, 0x1FFF);
+        break;
 
-        case RESP_ZOOM_X300:
-            setValueRange(-0x1555, 0x1554);
-            break;
+    case RESP_ZOOM_X300:
+        setValueRange(-0x1555, 0x1554);
+        break;
 
-        case RESP_ZOOM_X400:
-            setValueRange(-0x1000, 0xFFF);
-            break;
+    case RESP_ZOOM_X400:
+        setValueRange(-0x1000, 0xFFF);
+        break;
 
-        case RESP_ZOOM_X500:
-            setValueRange(-0xCCC, 0xCCB);
-            break;
+    case RESP_ZOOM_X500:
+        setValueRange(-0xCCC, 0xCCB);
+        break;
 
-        default:
-            zoom = RESP_ZOOM_X100;
-            break;
+    default:
+        zoom = RESP_ZOOM_X100;
+        break;
     }
 
     _gain->setText(RESPSymbol::convert((RESPZoom)zoom));
@@ -201,7 +212,7 @@ void RESPWaveWidget::_loadConfig()
         setWaveSpeed(25.0);
     }
 
-    setZoom((int)respParam.getZoom());
+    setZoom(static_cast<int>(respParam.getZoom()));
 }
 
 /**************************************************************************************************
@@ -219,7 +230,7 @@ void RESPWaveWidget::resizeEvent(QResizeEvent *e)
     // 居中显示。
     _notify->setFixedWidth(width() / 2);
     _notify->move((width() - _notify->width()) / 2,
-         qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
+                  qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
 
     if (NULL != _gainList)
     {
@@ -232,7 +243,7 @@ void RESPWaveWidget::resizeEvent(QResizeEvent *e)
  * 参数：
  *      e: 事件。
  *************************************************************************************************/
-void RESPWaveWidget::focusInEvent(QFocusEvent */*e*/)
+void RESPWaveWidget::focusInEvent(QFocusEvent *e)
 {
     _name->setFocus();
 }

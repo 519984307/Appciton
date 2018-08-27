@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
+ **/
+
+
 #include "AGWaveWidget.h"
 #include "LanguageManager.h"
 #include "ColorManager.h"
@@ -5,9 +16,9 @@
 #include "WaveWidgetLabel.h"
 #include "AGWaveRuler.h"
 #include "AGSymbol.h"
-#include "ComboListPopup.h"
 #include "WaveWidgetSelectMenu.h"
 #include "AGParam.h"
+#include "PopupList.h"
 
 /**************************************************************************************************
  * 设置麻醉剂类型。
@@ -65,7 +76,8 @@ void AGWaveWidget::setRuler(AGDisplayZoom zoom)
     }
 
     QString str;
-    str.sprintf("0.0~%.1f", zoomValue);
+//    str.sprintf("0.0~%.1f", zoomValue);
+    str = QString("0.0~%1").number(zoomValue, 'f', 1);
     str += " ";
     str += trs("percent");
     _zoom->setText(str);
@@ -76,6 +88,7 @@ void AGWaveWidget::setRuler(AGDisplayZoom zoom)
  *************************************************************************************************/
 AGWaveWidget::AGWaveWidget(WaveformID id, const QString &waveName, const AGTypeGas gasType)
     : WaveWidget(waveName, AGSymbol::convert(gasType))
+    , _currentItemIndex(-1)
 {
     setFocusPolicy(Qt::NoFocus);
     setID(id);
@@ -88,7 +101,7 @@ AGWaveWidget::AGWaveWidget(WaveformID id, const QString &waveName, const AGTypeG
     _name->setFont(fontManager.textFont(infoFont));
     _name->setFixedSize(130, fontH);
     _name->setText(getTitle());
-    connect(_name, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(_name, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
     _ruler = new AGWaveRuler(this);
     _ruler->setPalette(palette);
@@ -99,7 +112,7 @@ AGWaveWidget::AGWaveWidget(WaveformID id, const QString &waveName, const AGTypeG
     _zoom->setFont(fontManager.textFont(infoFont));
     _zoom->setFixedSize(120, fontH);
     addItem(_zoom);
-    connect(_zoom, SIGNAL(released(IWidget*)), this, SLOT(_zoomChangeSlot(IWidget*)));
+    connect(_zoom, SIGNAL(released(IWidget *)), this, SLOT(_zoomChangeSlot(IWidget *)));
 
     setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
 }
@@ -127,7 +140,7 @@ void AGWaveWidget::resizeEvent(QResizeEvent *e)
 /**************************************************************************************************
  * 焦点进入。
  *************************************************************************************************/
-void AGWaveWidget::focusInEvent(QFocusEvent *)
+void AGWaveWidget::focusInEvent(QFocusEvent *e)
 {
     if (Qt::NoFocus != _name->focusPolicy())
     {
@@ -135,9 +148,10 @@ void AGWaveWidget::focusInEvent(QFocusEvent *)
     }
 }
 
-void AGWaveWidget::_releaseHandle(IWidget *)
+void AGWaveWidget::_releaseHandle(IWidget *iWidget)
 {
-    QWidget *p = (QWidget*)parent();
+//    QWidget *p = (QWidget *)parent();
+    QWidget *p = static_cast<QWidget*>(parent());
     if (p == NULL)
     {
         return;
@@ -161,23 +175,20 @@ void AGWaveWidget::_zoomChangeSlot(IWidget *widget)
     {
         AGDisplayZoom zoom = AG_DISPLAY_ZOOM_4;
         int maxZoom = AG_DISPLAY_ZOOM_NR;
-        _gainList = new ComboListPopup(widget, POPUP_TYPE_USER, maxZoom, zoom);
-        _gainList->setBorderColor(colorManager.getBarBkColor());
-        _gainList->setBorderWidth(5);
-        _gainList->popupUp(true);
+        _gainList = new PopupList(_zoom);
         float zoomArray[] = {4.0, 8.0, 15.0};
         QString str;
         for (int i = 0; i < maxZoom; i ++)
         {
             str.clear();
-            str.sprintf("0.0~%.1f", zoomArray[i]);
+            str = QString("0.0~%1").number(zoomArray[i] , 'f' , 1);
             str += " ";
             str += trs("percent");
             _gainList->addItemText(str);
         }
-        _gainList->setItemDrawMark(false);
         _gainList->setFont(fontManager.textFont(14));
         connect(_gainList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
+        connect(_gainList , SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
     }
     _gainList->show();
 }
@@ -187,13 +198,17 @@ void AGWaveWidget::_zoomChangeSlot(IWidget *widget)
  *************************************************************************************************/
 void AGWaveWidget::_popupDestroyed()
 {
-    int index = _gainList->getCurIndex();
-    if (index == -1)
+    if (_currentItemIndex == -1)
     {
         _gainList = NULL;
         return;
     }
 
-    agParam.setDisplayZoom((AGDisplayZoom)index);
+    agParam.setDisplayZoom((AGDisplayZoom)_currentItemIndex);
     _gainList = NULL;
+}
+
+void AGWaveWidget::_getItemIndex(int index)
+{
+    _currentItemIndex = index;
 }

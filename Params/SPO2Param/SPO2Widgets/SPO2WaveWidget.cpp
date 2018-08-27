@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
+ **/
+
+
 #include "SPO2WaveWidget.h"
 #include "SPO2Param.h"
 #include "FontManager.h"
@@ -6,7 +17,7 @@
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "WaveWidgetSelectMenu.h"
-#include "ComboListPopup.h"
+#include "PopupList.h"
 #include "IConfig.h"
 #include "Debug.h"
 
@@ -24,16 +35,16 @@ void SPO2WaveWidget::setGain(SPO2Gain gain)
     QString text = NULL;
     switch (gain)
     {
-        case SPO2_GAIN_X10:
-        case SPO2_GAIN_X20:
-        case SPO2_GAIN_X40:
-        case SPO2_GAIN_X80:
-            text += SPO2Symbol::convert(gain);
-            break;
+    case SPO2_GAIN_X10:
+    case SPO2_GAIN_X20:
+    case SPO2_GAIN_X40:
+    case SPO2_GAIN_X80:
+        text += SPO2Symbol::convert(gain);
+        break;
 
-        default:
-            text += "X1";
-            break;
+    default:
+        text += "X1";
+        break;
     }
 
     _gain->setText(text);
@@ -42,9 +53,9 @@ void SPO2WaveWidget::setGain(SPO2Gain gain)
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
-void SPO2WaveWidget::_releaseHandle(IWidget *)
+void SPO2WaveWidget::_releaseHandle(IWidget *iWidget)
 {
-    QWidget *p = (QWidget*)parent();
+    QWidget *p = static_cast<QWidget *>(parent());
     if (p == NULL)
     {
         return;
@@ -66,17 +77,14 @@ void SPO2WaveWidget::_spo2Gain(IWidget *widget)
 {
     if (NULL == _gainList)
     {
-        _gainList = new ComboListPopup(widget, POPUP_TYPE_USER, SPO2_GAIN_NR, spo2Param.getGain());
-        _gainList->setBorderColor(colorManager.getBarBkColor());
-        _gainList->setBorderWidth(5);
-        _gainList->popupUp(true);
+        _gainList = new PopupList(_gain);
         for (int i = 0; i < SPO2_GAIN_NR; i++)
         {
             _gainList->addItemText(SPO2Symbol::convert(SPO2Gain(i)));
         }
-        _gainList->setItemDrawMark(false);
         _gainList->setFont(fontManager.textFont(14));
         connect(_gainList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
+        connect(_gainList, SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
     }
 
     _gainList->show();
@@ -87,16 +95,20 @@ void SPO2WaveWidget::_spo2Gain(IWidget *widget)
  *************************************************************************************************/
 void SPO2WaveWidget::_popupDestroyed()
 {
-    int index = _gainList->getCurIndex();
-    if (index == -1)
+    if (_currentItemIndex == -1)
     {
         _gainList = NULL;
         return;
     }
 
-    spo2Param.setGain((SPO2Gain)index);
+    spo2Param.setGain((SPO2Gain)_currentItemIndex);
 
     _gainList = NULL;
+}
+
+void SPO2WaveWidget::_getItemIndex(int index)
+{
+    _currentItemIndex = index;
 }
 
 /**************************************************************************************************
@@ -106,35 +118,35 @@ void SPO2WaveWidget::getGainToValue(SPO2Gain gain, int &min, int &max)
 {
     int mid = spo2Param.getSPO2MaxValue() / 2;
     int diff;
-    switch(gain)
+    switch (gain)
     {
-        case SPO2_GAIN_X10:
-            min = 0;
-            max = spo2Param.getSPO2MaxValue();
-            break;
+    case SPO2_GAIN_X10:
+        min = 0;
+        max = spo2Param.getSPO2MaxValue();
+        break;
 
-        case SPO2_GAIN_X20:
-            diff = spo2Param.getSPO2MaxValue() / 4;
-            min = mid - diff;
-            max = mid + diff;
-            break;
+    case SPO2_GAIN_X20:
+        diff = spo2Param.getSPO2MaxValue() / 4;
+        min = mid - diff;
+        max = mid + diff;
+        break;
 
-        case SPO2_GAIN_X40:
-            diff = spo2Param.getSPO2MaxValue() / 8;
-            min = mid - diff;
-            max = mid + diff;
-            break;
+    case SPO2_GAIN_X40:
+        diff = spo2Param.getSPO2MaxValue() / 8;
+        min = mid - diff;
+        max = mid + diff;
+        break;
 
-        case SPO2_GAIN_X80:
-            diff = spo2Param.getSPO2MaxValue() / 16;
-            min = mid - diff;
-            max = mid + diff;
-            break;
+    case SPO2_GAIN_X80:
+        diff = spo2Param.getSPO2MaxValue() / 16;
+        min = mid - diff;
+        max = mid + diff;
+        break;
 
-        default:
-            min = 0;
-            max = spo2Param.getSPO2MaxValue();
-            break;
+    default:
+        min = 0;
+        max = spo2Param.getSPO2MaxValue();
+        break;
     }
 }
 
@@ -188,7 +200,7 @@ void SPO2WaveWidget::resizeEvent(QResizeEvent *e)
  * 参数：
  *      e: 事件。
  *************************************************************************************************/
-void SPO2WaveWidget::focusInEvent(QFocusEvent */*e*/)
+void SPO2WaveWidget::focusInEvent(QFocusEvent *e)
 {
     _name->setFocus();
 }
@@ -218,7 +230,7 @@ void SPO2WaveWidget::_loadConfig(void)
 
 void SPO2WaveWidget::setNotify(bool enable, QString str)
 {
-    if(enable)
+    if (enable)
     {
         _notify->setVisible(true);
         _notify->setText(str);
@@ -254,13 +266,13 @@ SPO2WaveWidget::SPO2WaveWidget(const QString &waveName, const QString &title)
     _name->setFixedSize(130, fontH);
     _name->setText(title);
 //    addItem(_name);
-    connect(_name, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(_name, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
     _gain = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _gain->setFont(fontManager.textFont(infoFont));
     _gain->setFixedSize(120, fontH);
     _gain->setText("");
-    connect(_gain, SIGNAL(released(IWidget*)), this, SLOT(_spo2Gain(IWidget*)));
+    connect(_gain, SIGNAL(released(IWidget *)), this, SLOT(_spo2Gain(IWidget *)));
     addItem(_gain);
 
     _notify = new WaveWidgetLabel(" ", Qt::AlignCenter, this);
@@ -281,5 +293,4 @@ SPO2WaveWidget::SPO2WaveWidget(const QString &waveName, const QString &title)
  *************************************************************************************************/
 SPO2WaveWidget::~SPO2WaveWidget()
 {
-
 }

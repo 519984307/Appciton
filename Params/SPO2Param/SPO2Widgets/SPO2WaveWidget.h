@@ -1,10 +1,21 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
+ **/
+
+
 #pragma once
 #include "WaveWidget.h"
 #include "SPO2Define.h"
 
 class WaveWidgetLabel;
 
-class ComboListPopup;
+class PopupList;
 class SPO2WaveWidget : public WaveWidget
 {
     Q_OBJECT
@@ -32,6 +43,7 @@ private slots:
     void _releaseHandle(IWidget *);
     void _spo2Gain(IWidget *widget);
     void _popupDestroyed();
+    void _getItemIndex(int);
 
 private:
     void _initValueRange(SPO2Gain gain);
@@ -40,5 +52,6 @@ private:
 //    WaveWidgetLabel *_name;
     WaveWidgetLabel *_gain;         // 增益标签
     WaveWidgetLabel *_notify;
-    ComboListPopup *_gainList;      // 增益列表
+    PopupList *_gainList;           // 增益列表
+    int _currentItemIndex;
 };
