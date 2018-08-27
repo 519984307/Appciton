@@ -846,7 +846,7 @@ TrendGraph,趋势图,Trend Graph
 PreviousEvent,上个事件,Prv Event
 NextEvent,下个事件,Next Event
 EventReview,事件回顾,Event Review
-OxyCRGEventReview,呼吸氧合事件回顾,OxyCRG Event Review
+OxyCRGEventReview,呼吸氧合回顾,OxyCRG Review
 TrendTableSet,趋势表设置,Trend Table Set
 TrendGraphSet,趋势图设置,Trend Graph Set
 ResolutionRatio,分辨率,Resolution Ratio
