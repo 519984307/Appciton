@@ -53,7 +53,7 @@ void SoftkeyWidget::paintEvent(QPaintEvent *e)
         int height = r.height();
         int width = r.width();
         QRect PixmapR = r;
-        if (width < 1.4 * height / 2)
+        if (width < 1.58 * height / 2)   // thin button
         {
             PixmapR.setWidth(width * 3 / 4);
             PixmapR.setHeight(height * 3 / 4);
@@ -67,11 +67,11 @@ void SoftkeyWidget::paintEvent(QPaintEvent *e)
             width = (width - height) / 1.5;
             if (_hint.isEmpty())
             {
-                PixmapR.adjust(width, width / 2, -width, -width / 2);
+                PixmapR.adjust(width, width / 3, -width, -width / 3);
             }
             else
             {
-                PixmapR.adjust(width, 0, -width, -width);
+                PixmapR.adjust(width, 0, -width, -width / 2);
             }
             painter.drawPixmap(PixmapR, _pixmap);
         }

@@ -432,11 +432,11 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager")
         SoftkeyWidget *widget = new SoftkeyWidget(this);
         if (2 == i || i == SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR)
         {
-            widget->setFixedSize(1.4 * _KEY_SIZE_H / 2, _KEY_SIZE_H);
+            widget->setFixedSize(1.58 * _KEY_SIZE_H / 2, _KEY_SIZE_H);
         }
         else
         {
-            widget->setFixedSize(1.4 * _KEY_SIZE_H, _KEY_SIZE_H);
+            widget->setFixedSize(1.58 * _KEY_SIZE_H, _KEY_SIZE_H);
         }
         connect(widget, SIGNAL(released(IWidget *)), this, SLOT(_clickKey(IWidget *)));
         if (i < SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR)
