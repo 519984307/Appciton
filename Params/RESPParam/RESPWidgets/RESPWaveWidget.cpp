@@ -1,5 +1,6 @@
 /**
  ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
  ** Copyright (C) Better Life Medical Technology Co., Ltd.
  ** All Rights Reserved.
  ** Unauthorized copying of this file, via any medium is strictly prohibited
@@ -17,14 +18,17 @@
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "WaveWidgetSelectMenu.h"
+#include "ComboListPopup.h"
+#include "WindowManager.h"
 #include "PopupList.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
-void RESPWaveWidget::_releaseHandle(IWidget *iWidget)
+void RESPWaveWidget::_releaseHandle(IWidget *w)
 {
-    QWidget *p = static_cast<QWidget *>(parent());
+    Q_UNUSED(w);
+    QWidget *p = qobject_cast<QWidget *>(parent());
     if (p == NULL)
     {
         return;
@@ -36,7 +40,7 @@ void RESPWaveWidget::_releaseHandle(IWidget *iWidget)
     waveWidgetSelectMenu.setTopWaveform(false);
     waveWidgetSelectMenu.setWaveformName(name());
     waveWidgetSelectMenu.setShowPoint(prect.x() + r.x() + 50, prect.y() + r.y());
-    waveWidgetSelectMenu.autoShow();
+    windowManager.showWindow(&waveWidgetSelectMenu, WindowManager::ShowBehaviorModal);
 }
 
 /**************************************************************************************************
@@ -44,6 +48,7 @@ void RESPWaveWidget::_releaseHandle(IWidget *iWidget)
  *************************************************************************************************/
 void RESPWaveWidget::_respZoom(IWidget *widget)
 {
+    Q_UNUSED(widget);
     if (NULL == _gainList)
     {
         _gainList = new PopupList(_gain, false);
@@ -246,6 +251,7 @@ void RESPWaveWidget::resizeEvent(QResizeEvent *e)
  *************************************************************************************************/
 void RESPWaveWidget::focusInEvent(QFocusEvent *e)
 {
+    Q_UNUSED(e);
     _name->setFocus();
 }
 

@@ -1,5 +1,6 @@
 /**
  ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
  ** Copyright (C) Better Life Medical Technology Co., Ltd.
  ** All Rights Reserved.
  ** Unauthorized copying of this file, via any medium is strictly prohibited
@@ -197,7 +198,7 @@ void ECGWaveWidget::_releaseHandle(IWidget * w)
 
     waveWidgetSelectMenu.setWaveformName(name());
     waveWidgetSelectMenu.setShowPoint(prect.x() + r.x() + 50, prect.y() + r.y());
-    waveWidgetSelectMenu.autoShow();
+    windowManager.showWindow(&waveWidgetSelectMenu, WindowManager::ShowBehaviorModal);
 }
 
 /**************************************************************************************************
@@ -503,6 +504,7 @@ void ECGWaveWidget::setGain(ECGGain gain)
 void ECGWaveWidget::set12LGain(ECGGain gain)
 {
     _12LGain = gain;
+    return;
 }
 
 /**************************************************************************************************

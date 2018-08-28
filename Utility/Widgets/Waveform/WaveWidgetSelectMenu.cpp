@@ -1,64 +1,109 @@
-#include <QBoxLayout>
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/27
+ **/
+
 #include "WaveWidgetSelectMenu.h"
 #include "ParamManager.h"
 #include "WindowManager.h"
 #include "ECGParam.h"
 #include "LanguageManager.h"
-#include "FontManager.h"
-#include "IComboList.h"
-#include "IButton.h"
+#include "ComboBox.h"
+#include <QLabel>
+#include "Button.h"
 #include "SystemManager.h"
 #include "Debug.h"
 #include <QTimer>
+#include <QGridLayout>
 
-WaveWidgetSelectMenu *WaveWidgetSelectMenu::_selfObj = NULL;
+class WaveWidgetSelectMenuPrivate
+{
+public:
+    WaveWidgetSelectMenuPrivate()
+        : replaceList(NULL),
+          insertList(NULL),
+          removeButton(NULL),
+          isTopWaveform(NULL),
+          waveformName(""),
+          x(0),
+          y(0)
+
+    {
+        replaceWaveforms.clear();
+        replaceWaveformTitles.clear();
+        insertWaveforms.clear();
+        insertWaveformTitles.clear();
+    }
+    void loadWaveforms(void);
+
+    ComboBox  *replaceList;
+    ComboBox  *insertList;
+    Button    *removeButton;
+
+    bool       isTopWaveform;
+    QString    waveformName;
+
+    // 保存替换选项和插入选项中的波形信息。
+    QStringList  replaceWaveforms;
+    QStringList  replaceWaveformTitles;
+    QStringList  insertWaveforms;
+    QStringList  insertWaveformTitles;
+
+    int  x;
+    int  y;
+};
 
 /**************************************************************************************************
  * 载入波形。
  *************************************************************************************************/
-void WaveWidgetSelectMenu::_loadWaveformsSlot(void)
+void WaveWidgetSelectMenu::loadWaveformsSlot(void)
 {
-    _loadWaveforms();
+    d_ptr->loadWaveforms();
 }
 
 /**************************************************************************************************
  * 替换波形。
  *************************************************************************************************/
-void WaveWidgetSelectMenu::_replaceListSlot(int index)
+void WaveWidgetSelectMenu::replaceListSlot(int index)
 {
-    if (_isTopWaveform)
+    if (d_ptr->isTopWaveform)
     {
-        ecgParam.setCalcLead(_replaceWaveforms[index]);
+        ecgParam.setCalcLead(d_ptr->replaceWaveforms[index]);
     }
 
-    ecgParam.setLeadMode3DisplayLead(_replaceWaveforms[index]);
+    ecgParam.setLeadMode3DisplayLead(d_ptr->replaceWaveforms[index]);
 
-    if(windowManager.getUFaceType() == UFACE_MONITOR_BIGFONT)
+    if (windowManager.getUFaceType() == UFACE_MONITOR_BIGFONT)
     {
-        windowManager.replacebigWaveform(_waveformName, _replaceWaveforms[index]);
+        windowManager.replacebigWaveform(d_ptr->waveformName, d_ptr->replaceWaveforms[index]);
     }
     else
     {
-        windowManager.replaceWaveform(_waveformName, _replaceWaveforms[index]);
+        windowManager.replaceWaveform(d_ptr->waveformName, d_ptr->replaceWaveforms[index]);
     }
 
-    _waveformName = _replaceWaveforms[index];
-    QTimer::singleShot(0, this, SLOT(_loadWaveformsSlot()));
+    d_ptr->waveformName = d_ptr->replaceWaveforms[index];
+    QTimer::singleShot(0, this, SLOT(loadWaveformsSlot()));
 }
 
 /**************************************************************************************************
  * 插入新波形。
  *************************************************************************************************/
-void WaveWidgetSelectMenu::_insertListSlot(int index)
+void WaveWidgetSelectMenu::insertListSlot(int index)
 {
-    if (_insertList->combolist->itemText(index).isEmpty())
+    if (d_ptr->insertList->itemText(index).isEmpty())
     {
-        _insertList->setCurrentIndex(-1);
+        d_ptr->insertList->setCurrentIndex(-1);
         return;
     }
 
-    ecgParam.setLeadMode3DisplayLead(_insertWaveforms[index]);
-    windowManager.insertWaveform(_waveformName, _insertWaveforms[index]);
+    ecgParam.setLeadMode3DisplayLead(d_ptr->insertWaveforms[index]);
+    windowManager.insertWaveform(d_ptr->waveformName, d_ptr->insertWaveforms[index]);
 //    _loadWaveforms();
     hide();
 }
@@ -66,35 +111,36 @@ void WaveWidgetSelectMenu::_insertListSlot(int index)
 /**************************************************************************************************
  * 移除。
  *************************************************************************************************/
-void WaveWidgetSelectMenu::_removeButtonSlot(void)
+void WaveWidgetSelectMenu::removeButtonSlot(void)
 {
-    windowManager.removeWaveform(_waveformName);
+    windowManager.removeWaveform(d_ptr->waveformName);
     hide();
 }
 
 /**************************************************************************************************
  * 载入波形控件的名称。
  *************************************************************************************************/
-void WaveWidgetSelectMenu::_loadWaveforms(void)
+void WaveWidgetSelectMenuPrivate::loadWaveforms(void)
 {
     QStringList displayedWaveform;
     windowManager.getDisplayedWaveform(displayedWaveform);
 
-    _replaceWaveforms.clear();
-    _replaceWaveformTitles.clear();
-    _insertWaveforms.clear();
-    _insertWaveformTitles.clear();
-
+    replaceWaveforms.clear();
+    replaceWaveformTitles.clear();
+    insertWaveforms.clear();
+    insertWaveformTitles.clear();
+    replaceList->blockSignals(true);
+    insertList->blockSignals(true);
     // 获取ECG当前支持的波形窗体。
-    ecgParam.getAvailableWaveforms(_replaceWaveforms, _replaceWaveformTitles, _isTopWaveform);
-    _insertWaveforms = _replaceWaveforms;
-    _insertWaveformTitles = _replaceWaveformTitles;
+    ecgParam.getAvailableWaveforms(replaceWaveforms, replaceWaveformTitles, isTopWaveform);
+    insertWaveforms = replaceWaveforms;
+    insertWaveformTitles = replaceWaveformTitles;
 
-    if (_isTopWaveform)
+    if (isTopWaveform)
     {
         // 如果是Top Waveform则从insert菜单中剔除PADS;
-        _insertWaveforms.removeFirst();
-        _insertWaveformTitles.removeFirst();
+        insertWaveforms.removeFirst();
+        insertWaveformTitles.removeFirst();
     }
 
 
@@ -119,20 +165,20 @@ void WaveWidgetSelectMenu::_loadWaveforms(void)
         {
             for (int i = 0; i <= 2; ++i)
             {
-                int pos = _insertWaveforms.indexOf(ecgLead3WaveName.at(i));
+                int pos = insertWaveforms.indexOf(ecgLead3WaveName.at(i));
                 if (-1 != pos)
                 {
-                    _insertWaveforms.removeAt(pos);
-                    _insertWaveformTitles.removeAt(pos);
+                    insertWaveforms.removeAt(pos);
+                    insertWaveformTitles.removeAt(pos);
                 }
 
-                if (-1 == ecgLead3WaveName.indexOf(_waveformName))
+                if (-1 == ecgLead3WaveName.indexOf(waveformName))
                 {
-                    pos = _replaceWaveforms.indexOf(ecgLead3WaveName.at(i));
+                    pos = replaceWaveforms.indexOf(ecgLead3WaveName.at(i));
                     if (-1 != pos)
                     {
-                        _replaceWaveforms.removeAt(pos);
-                        _replaceWaveformTitles.removeAt(pos);
+                        replaceWaveforms.removeAt(pos);
+                        replaceWaveformTitles.removeAt(pos);
                     }
                 }
             }
@@ -140,7 +186,7 @@ void WaveWidgetSelectMenu::_loadWaveforms(void)
     }
 
     // 其他参数支持的波形窗体。
-    QList<Param*> params;
+    QList<Param *> params;
     paramManager.getParams(params);
 
     QStringList waveforms;
@@ -165,59 +211,63 @@ void WaveWidgetSelectMenu::_loadWaveforms(void)
     }
 
     // 根据是否为Top Waveform将选项添加到替换和插入列表。
-    _insertWaveforms += otherWaveforms;
-    _insertWaveformTitles += otherWaveformTitles;
-    if (!_isTopWaveform)  // 只有非Top Waveform才能替换成非ECG窗体。
+    insertWaveforms += otherWaveforms;
+    insertWaveformTitles += otherWaveformTitles;
+    if (!isTopWaveform)  // 只有非Top Waveform才能替换成非ECG窗体。
     {
-        _replaceWaveforms += otherWaveforms;
-        _replaceWaveformTitles += otherWaveformTitles;
+        replaceWaveforms += otherWaveforms;
+        replaceWaveformTitles += otherWaveformTitles;
     }
 
     // 排除已经显示的波形。
     for (int i = 0; i < displayedWaveform.size(); i++)
     {
         int pos = -1;
-        if ((pos = _replaceWaveforms.indexOf(displayedWaveform[i])) != -1)
+        if ((pos = replaceWaveforms.indexOf(displayedWaveform[i])) != -1)
         {
-            if (_replaceWaveforms[pos] != _waveformName)  // 不移除自己。
+            if (replaceWaveforms[pos] != waveformName)  // 不移除自己。
             {
-                _replaceWaveforms.removeAt(pos);
-                _replaceWaveformTitles.removeAt(pos);
+                replaceWaveforms.removeAt(pos);
+                replaceWaveformTitles.removeAt(pos);
             }
         }
 
-        if ((pos = _insertWaveforms.indexOf(displayedWaveform[i])) != -1)
+        if ((pos = insertWaveforms.indexOf(displayedWaveform[i])) != -1)
         {
-            _insertWaveforms.removeAt(pos);
-            _insertWaveformTitles.removeAt(pos);
+            insertWaveforms.removeAt(pos);
+            insertWaveformTitles.removeAt(pos);
         }
     }
 
 
     // 将波形名称添加到下拉框。
-    _replaceList->clear();
-    _replaceList->addItems(_replaceWaveformTitles);
-    _insertList->clear();
-    _insertList->addItems(_insertWaveformTitles);
+    replaceList->clear();
+    replaceList->addItems(replaceWaveformTitles);
+    insertList->clear();
+    insertList->addItems(insertWaveformTitles);
 
     // 添加一项空值，以便放弃插入波形
-    _insertList->addItem(QString());
+    insertList->addItem(QString());
 
 
     // 定位到当前项。
-    for (int i = 0; i < _replaceWaveforms.size(); i++)
+    for (int i = 0; i < replaceWaveforms.size(); i++)
     {
-        if (_replaceWaveforms[i] == _waveformName)
+        if (replaceWaveforms[i] == waveformName)
         {
-            _replaceList->setCurrentIndex(i);
+            replaceList->setCurrentIndex(i);
             break;
         }
     }
 
     // 风格统一，默认没有当前选择项
-    _insertList->setCurrentIndex(-1);
 
-    _insertList->setEnabled(true);
+    insertList->setCurrentIndex(-1);
+    insertList->blockSignals(false);
+
+    insertList->setEnabled(true);
+
+    replaceList->blockSignals(false);
 }
 
 /**************************************************************************************************
@@ -225,27 +275,26 @@ void WaveWidgetSelectMenu::_loadWaveforms(void)
  *************************************************************************************************/
 void WaveWidgetSelectMenu::showEvent(QShowEvent *event)
 {
-    if (_isTopWaveform)
+    if (d_ptr->isTopWaveform)
     {
-        _removeButton->setEnabled(false);
+        d_ptr->removeButton->setEnabled(false);
     }
     else
     {
-        _removeButton->setEnabled(true);
+        d_ptr->removeButton->setEnabled(true);
     }
 
-    _loadWaveforms();
-    PopupWidget::showEvent(event);
-    setCloseBtnFocus();
+    d_ptr->loadWaveforms();
+    Window::showEvent(event);
 
     QRect r = rect();
     QRect wr = windowManager.geometry();
-    if (_y + r.height() > wr.y() + wr.height())
+    if (d_ptr->y + r.height() > wr.y() + wr.height())
     {
-        _y = wr.y() + wr.height() - r.height();
+        d_ptr->y = wr.y() + wr.height() - r.height();
     }
 
-    move(_x, _y);
+    move(d_ptr->x, d_ptr->y);
 }
 
 /**************************************************************************************************
@@ -255,21 +304,21 @@ void WaveWidgetSelectMenu::keyPressEvent(QKeyEvent *event)
 {
     switch (event->key())
     {
-        case Qt::Key_Up:
-        case Qt::Key_Left:
-            focusNextPrevChild(false);
-            break;
+    case Qt::Key_Up:
+    case Qt::Key_Left:
+        focusNextPrevChild(false);
+        break;
 
-        case Qt::Key_Down:
-        case Qt::Key_Right:
-            focusNextChild();
-            break;
+    case Qt::Key_Down:
+    case Qt::Key_Right:
+        focusNextChild();
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
-    PopupWidget::keyPressEvent(event);
+    Window::keyPressEvent(event);
 }
 
 /**************************************************************************************************
@@ -277,7 +326,7 @@ void WaveWidgetSelectMenu::keyPressEvent(QKeyEvent *event)
  *************************************************************************************************/
 void WaveWidgetSelectMenu::setTopWaveform(bool isTopWaveform)
 {
-    _isTopWaveform = isTopWaveform;
+    d_ptr->isTopWaveform = isTopWaveform;
 }
 
 /**************************************************************************************************
@@ -285,7 +334,7 @@ void WaveWidgetSelectMenu::setTopWaveform(bool isTopWaveform)
  *************************************************************************************************/
 void WaveWidgetSelectMenu::setWaveformName(const QString &name)
 {
-    _waveformName = name;
+    d_ptr->waveformName = name;
 }
 
 /**************************************************************************************************
@@ -293,7 +342,7 @@ void WaveWidgetSelectMenu::setWaveformName(const QString &name)
  *************************************************************************************************/
 bool WaveWidgetSelectMenu::isTopWaveform(void) const
 {
-    return _isTopWaveform;
+    return d_ptr->isTopWaveform;
 }
 
 /**************************************************************************************************
@@ -306,7 +355,7 @@ void WaveWidgetSelectMenu::refresh(void)
         return;
     }
 
-    _loadWaveforms();
+    d_ptr->loadWaveforms();
 }
 
 /**************************************************************************************************
@@ -319,55 +368,81 @@ void WaveWidgetSelectMenu::updateMFCWaveName(const QString &name)
         return;
     }
 
-    if (_isTopWaveform)
+    if (d_ptr->isTopWaveform)
     {
-        _replaceList->setItemText(0, name);
+        d_ptr->replaceList->setItemText(0, name);
     }
+}
+
+void WaveWidgetSelectMenu::setShowPoint(int x, int y)
+{
+    d_ptr->x = x;
+    d_ptr->y = y;
 }
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-WaveWidgetSelectMenu::WaveWidgetSelectMenu() : PopupWidget()
+WaveWidgetSelectMenu::WaveWidgetSelectMenu()
+    : Window(),
+      d_ptr(new WaveWidgetSelectMenuPrivate)
 {
-    _isTopWaveform = false;
-    setTitleBarText(trs("WaveformSources"));
+    d_ptr->isTopWaveform = false;
+    setWindowTitle(trs("WaveformSources"));
 
-    int fontSize = 15;
+//    int fontSize = 15;
     setFixedWidth(300);
 
-    _replaceList = new IComboList(trs("Replace"));
-    _replaceList->setFont(fontManager.textFont(fontSize));
-    _replaceList->setStretch(1, 2);
-    connect(_replaceList, SIGNAL(currentIndexChanged(int)), this, SLOT(_replaceListSlot(int)));
+    QLabel *label;
+    ComboBox *combo;
+    Button *button;
+    int layoutIndex = 0;
+    QGridLayout *layout = new QGridLayout(this);
+    layout->setMargin(10);
 
-    _insertList = new IComboList(trs("Insert"));
-    _insertList->setFont(fontManager.textFont(fontSize));
-    _insertList->setStretch(1, 2);
-    connect(_insertList, SIGNAL(currentIndexChanged(int)), this, SLOT(_insertListSlot(int)));
+    label = new QLabel(trs("Replace"));
+    layout->addWidget(label, layoutIndex, 0);
+    combo = new ComboBox;
+    layout->addWidget(combo, layoutIndex, 1);
+    connect(combo, SIGNAL(currentIndexChanged(int)), this,
+            SLOT(replaceListSlot(int)));
+    layoutIndex++;
+    d_ptr->replaceList = combo;
 
-    QHBoxLayout *hlayout = new QHBoxLayout();
-    _removeButton = new IButton(trs("Remove"));
-    _removeButton->setBorderEnabled(true);
-    _removeButton->setFont(fontManager.textFont(fontSize));
-    connect(_removeButton, SIGNAL(realReleased()), this, SLOT(_removeButtonSlot()));
-    hlayout->addStretch(100);
-    hlayout->addWidget(_removeButton, 190);
+    label = new QLabel(trs("Insert"));
+    layout->addWidget(label, layoutIndex, 0);
+    combo = new ComboBox;
+    layout->addWidget(combo, layoutIndex, 1);
+    connect(combo, SIGNAL(currentIndexChanged(int)), this,
+            SLOT(insertListSlot(int)));
+    layoutIndex++;
+    d_ptr->insertList = combo;
 
-    QVBoxLayout *layout = new QVBoxLayout();
-    layout->setContentsMargins(0, 1, 2, 1);
-    layout->setSpacing(2);
-    layout->addWidget(_replaceList);
-    layout->addWidget(_insertList);
-    layout->addLayout(hlayout);
+    button = new Button(trs("Remove"));
+    button->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(button, layoutIndex, 1);
+    connect(button, SIGNAL(realReleased()), this,
+            SLOT(removeButtonSlot()));
+    d_ptr->removeButton = button;
 
-    contentLayout->addLayout(layout);
+    setWindowLayout(layout);
 }
 
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
+WaveWidgetSelectMenu &WaveWidgetSelectMenu::getInstance()
+{
+    static WaveWidgetSelectMenu *instance = NULL;
+    if (!instance)
+    {
+        instance = new WaveWidgetSelectMenu;
+    }
+    return *instance;
+}
+
 WaveWidgetSelectMenu::~WaveWidgetSelectMenu()
 {
-
+    delete d_ptr;
 }
+

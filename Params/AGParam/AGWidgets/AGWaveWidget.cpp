@@ -1,5 +1,6 @@
 /**
  ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
  ** Copyright (C) Better Life Medical Technology Co., Ltd.
  ** All Rights Reserved.
  ** Unauthorized copying of this file, via any medium is strictly prohibited
@@ -7,7 +8,6 @@
  **
  ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
  **/
-
 
 #include "AGWaveWidget.h"
 #include "LanguageManager.h"
@@ -18,6 +18,7 @@
 #include "AGSymbol.h"
 #include "WaveWidgetSelectMenu.h"
 #include "AGParam.h"
+#include "WindowManager.h"
 #include "PopupList.h"
 
 /**************************************************************************************************
@@ -76,7 +77,8 @@ void AGWaveWidget::setRuler(AGDisplayZoom zoom)
     }
 
     QString str;
-    str = QString("0.0~%1").number(zoomValue, 'f', 1);
+    str = QString("0.0~%1").arg(QString::number(zoomValue, 'f', 1));
+//    str = QString("0.0~%1").number(zoomValue, 'f', 1);
     str += " ";
     str += trs("percent");
     _zoom->setText(str);
@@ -141,14 +143,16 @@ void AGWaveWidget::resizeEvent(QResizeEvent *e)
  *************************************************************************************************/
 void AGWaveWidget::focusInEvent(QFocusEvent *e)
 {
+    Q_UNUSED(e);
     if (Qt::NoFocus != _name->focusPolicy())
     {
         _name->setFocus();
     }
 }
 
-void AGWaveWidget::_releaseHandle(IWidget *iWidget)
+void AGWaveWidget::_releaseHandle(IWidget *w)
 {
+    Q_UNUSED(w);
     QWidget *p = static_cast<QWidget*>(parent());
     if (p == NULL)
     {
@@ -161,7 +165,7 @@ void AGWaveWidget::_releaseHandle(IWidget *iWidget)
     waveWidgetSelectMenu.setTopWaveform(false);
     waveWidgetSelectMenu.setWaveformName(name());
     waveWidgetSelectMenu.setShowPoint(prect.x() + r.x() + 50, prect.y() + r.y());
-    waveWidgetSelectMenu.autoShow();
+    windowManager.showWindow(&waveWidgetSelectMenu, WindowManager::ShowBehaviorModal);
 }
 
 /**************************************************************************************************
@@ -169,6 +173,7 @@ void AGWaveWidget::_releaseHandle(IWidget *iWidget)
  *************************************************************************************************/
 void AGWaveWidget::_zoomChangeSlot(IWidget *widget)
 {
+    Q_UNUSED(widget);
     if (NULL == _gainList)
     {
         AGDisplayZoom zoom = AG_DISPLAY_ZOOM_4;
@@ -179,7 +184,7 @@ void AGWaveWidget::_zoomChangeSlot(IWidget *widget)
         for (int i = 0; i < maxZoom; i ++)
         {
             str.clear();
-            str = QString("0.0~%1").number(zoomArray[i] , 'f' , 1);
+            str = QString("0.0~%1").arg(QString::number(zoomArray[i], 'f', 1));
             str += " ";
             str += trs("percent");
             _gainList->addItemText(str);

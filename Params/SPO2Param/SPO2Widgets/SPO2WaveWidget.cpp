@@ -1,5 +1,6 @@
 /**
  ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
  ** Copyright (C) Better Life Medical Technology Co., Ltd.
  ** All Rights Reserved.
  ** Unauthorized copying of this file, via any medium is strictly prohibited
@@ -20,6 +21,7 @@
 #include "PopupList.h"
 #include "IConfig.h"
 #include "Debug.h"
+#include "WindowManager.h"
 
 /**************************************************************************************************
  * 设置波形增益
@@ -53,9 +55,10 @@ void SPO2WaveWidget::setGain(SPO2Gain gain)
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
-void SPO2WaveWidget::_releaseHandle(IWidget *iWidget)
+void SPO2WaveWidget::_releaseHandle(IWidget *w)
 {
-    QWidget *p = static_cast<QWidget *>(parent());
+    Q_UNUSED(w);
+    QWidget *p = qobject_cast<QWidget *>(parent());
     if (p == NULL)
     {
         return;
@@ -67,7 +70,7 @@ void SPO2WaveWidget::_releaseHandle(IWidget *iWidget)
     waveWidgetSelectMenu.setTopWaveform(false);
     waveWidgetSelectMenu.setWaveformName(name());
     waveWidgetSelectMenu.setShowPoint(prect.x() + r.x() + 50, prect.y() + r.y());
-    waveWidgetSelectMenu.autoShow();
+    windowManager.showWindow(&waveWidgetSelectMenu, WindowManager::ShowBehaviorModal);
 }
 
 /**************************************************************************************************
@@ -203,6 +206,7 @@ void SPO2WaveWidget::resizeEvent(QResizeEvent *e)
  *************************************************************************************************/
 void SPO2WaveWidget::focusInEvent(QFocusEvent *e)
 {
+    Q_UNUSED(e);
     _name->setFocus();
 }
 

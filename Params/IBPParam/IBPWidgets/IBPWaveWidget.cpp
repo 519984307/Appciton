@@ -1,5 +1,6 @@
 /**
  ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
  ** Copyright (C) Better Life Medical Technology Co., Ltd.
  ** All Rights Reserved.
  ** Unauthorized copying of this file, via any medium is strictly prohibited
@@ -207,15 +208,17 @@ void IBPWaveWidget::showEvent(QShowEvent *e)
 
 void IBPWaveWidget::focusInEvent(QFocusEvent *e)
 {
+    Q_UNUSED(e);
     if (Qt::NoFocus != _name->focusPolicy())
     {
         _name->setFocus();
     }
 }
 
-void IBPWaveWidget::_releaseHandle(IWidget *iWidget)
+void IBPWaveWidget::_releaseHandle(IWidget *w)
 {
-    QWidget *p = static_cast<QWidget *>(parent());
+    Q_UNUSED(w);
+    QWidget *p = qobject_cast<QWidget *>(parent());
     if (p == NULL)
     {
         return;
@@ -227,7 +230,7 @@ void IBPWaveWidget::_releaseHandle(IWidget *iWidget)
     waveWidgetSelectMenu.setTopWaveform(false);
     waveWidgetSelectMenu.setWaveformName(name());
     waveWidgetSelectMenu.setShowPoint(prect.x() + r.x() + 50, prect.y() + r.y());
-    waveWidgetSelectMenu.autoShow();
+    windowManager.showWindow(&waveWidgetSelectMenu, WindowManager::ShowBehaviorModal);
 }
 
 void IBPWaveWidget::_IBPZoom(IWidget *widget)

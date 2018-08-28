@@ -1,5 +1,6 @@
 /**
  ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
  ** Copyright (C) Better Life Medical Technology Co., Ltd.
  ** All Rights Reserved.
  ** Unauthorized copying of this file, via any medium is strictly prohibited
@@ -20,14 +21,16 @@
 #include "WaveWidgetSelectMenu.h"
 #include "PopupList.h"
 #include "CO2Param.h"
+#include "WindowManager.h"
 #include "ThemeManager.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
-void CO2WaveWidget::_releaseHandle(IWidget *iWidget)
+void CO2WaveWidget::_releaseHandle(IWidget *w)
 {
-    QWidget *p = static_cast<QWidget *>(parent());
+    Q_UNUSED(w);
+    QWidget *p = qobject_cast<QWidget *>(parent());
     if (p == NULL)
     {
         return;
@@ -39,7 +42,7 @@ void CO2WaveWidget::_releaseHandle(IWidget *iWidget)
     waveWidgetSelectMenu.setTopWaveform(false);
     waveWidgetSelectMenu.setWaveformName(name());
     waveWidgetSelectMenu.setShowPoint(prect.x() + r.x() + 50, prect.y() + r.y());
-    waveWidgetSelectMenu.autoShow();
+    windowManager.showWindow(&waveWidgetSelectMenu, WindowManager::ShowBehaviorModal);
 }
 
 /**************************************************************************************************
@@ -68,6 +71,7 @@ void CO2WaveWidget::resizeEvent(QResizeEvent *e)
  *************************************************************************************************/
 void CO2WaveWidget::focusInEvent(QFocusEvent *e)
 {
+    Q_UNUSED(e);
     _name->setFocus();
 }
 
@@ -132,9 +136,9 @@ void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
     if (unit == UNIT_KPA)
     {
         float tempVal = Unit::convert(UNIT_KPA, UNIT_PERCENT, zoomValue).toFloat();
-//        str.sprintf("0.0~%.1f", (float)(int)(tempVal + 0.5));
-        float num = static_cast<int>(tempVal + 0.5);
-        str = QString("0.0~%1").number(num, 'f' , 1);
+        str = QString("0.0~%1").arg(QString::number(
+                        static_cast<float>(
+                            static_cast<int>(tempVal + 0.5)), 'f', 1));
     }
     else if (unit == UNIT_MMHG)
     {
@@ -145,7 +149,7 @@ void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
     }
     else
     {
-        str = QString("0.0~%1").number(zoomValue, 'f', 1);
+        str = QString("0.0~%1").arg(QString::number(zoomValue, 'f', 1));
     }
     str += " ";
     str += Unit::localeSymbol(unit);
@@ -210,6 +214,7 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
  *************************************************************************************************/
 void CO2WaveWidget::_zoomChangeSlot(IWidget *widget)
 {
+    Q_UNUSED(widget)
     if (NULL == _gainList)
     {
         CO2DisplayZoom zoom = co2Param.getDisplayZoom();
@@ -224,8 +229,9 @@ void CO2WaveWidget::_zoomChangeSlot(IWidget *widget)
             if (unit == UNIT_KPA)
             {
                 float tempVal = Unit::convert(UNIT_KPA, UNIT_PERCENT, zoomArray[i]).toFloat();
-                float num = static_cast<int>(tempVal + 0.5);
-                str = QString("0.0~%1").number(num, 'f', 1);
+                str = QString("0.0~%1").arg(QString::number(
+                                static_cast<float>(
+                                    static_cast<int>(tempVal + 0.5)), 'f', 1));
             }
             else if (unit == UNIT_MMHG)
             {
@@ -236,7 +242,7 @@ void CO2WaveWidget::_zoomChangeSlot(IWidget *widget)
             }
             else
             {
-                str = QString("0.0~%1").number(zoomArray[i], 'f', 1);
+                str = QString("0.0~%1").arg(QString::number(zoomArray[i], 'f', 1));
             }
             str += " ";
             str += Unit::localeSymbol(unit);

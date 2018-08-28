@@ -113,7 +113,7 @@ static void _initSystem(void)
 static void _initWindowManager(void)
 {
     windowManager.construction();
-    waveWidgetSelectMenu.construction();
+    waveWidgetSelectMenu.getInstance();
 
     // Set window size
     int screenWidth = 0;
@@ -654,7 +654,7 @@ void newObjects(void)
 void deleteObjects(void)
 {
     deleteWindowManager();
-    deleteWaveWidgetSelectMenu();
+//    deleteWaveWidgetSelectMenu();
     deletePublicMenuManager();
     deleteSupervisorMenuManager();
     deleteMenuManager();
