@@ -133,9 +133,9 @@ void OthersMaintainMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << trs("fat")
-                       << trs("med")
-                       << trs("thin")
+                       << trs("Fat")
+                       << trs("Med")
+                       << trs("Thin")
                       );
     itemID = static_cast<int>(OthersMaintainMenuContentPrivate::ITEM_CBO_WAVE_LINE);
     comboBox->setProperty("Item",

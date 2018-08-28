@@ -60,7 +60,7 @@ public:
 TrendPrintWindow::TrendPrintWindow()
     : Window(), d_ptr(new TrendPrintWindowPrivate())
 {
-    setWindowTitle(trs("PrintSet"));
+    setWindowTitle(trs("PrintSetup"));
 
     QPalette pal = palette();
     d_ptr->startBox = new QGroupBox();
@@ -236,7 +236,7 @@ void TrendPrintWindow::printReleased()
 
 void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindowPrivate::SubGroupBox *subBox)
 {
-    subBox->dateLbl = new QLabel(trs("YearMonthDay"));
+    subBox->dateLbl = new QLabel(trs("YMD"));
     subBox->timeLbl = new QLabel(trs("HourSystem"));
     subBox->yearSbx = new SpinBox();
     subBox->monthSbx = new SpinBox();
