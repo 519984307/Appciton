@@ -234,8 +234,7 @@ void IBPWaveWidget::_IBPZoom(IWidget *widget)
 {
     if (NULL == _zoomList)
     {
-        _zoomList = new PopupList(_zoom);
-//        _zoomList = new ComboListPopup(widget, POPUP_TYPE_USER, ibpParam.ibpScaleList.count());
+        _zoomList = new PopupList(_zoom, false);
         for (int i = 0; i < ibpParam.ibpScaleList.count(); i++)
         {
             if (i == 0)
@@ -252,8 +251,7 @@ void IBPWaveWidget::_IBPZoom(IWidget *widget)
                                        QString::number(ibpParam.ibpScaleList.at(i).high));
             }
         }
-//        _zoomList->setItemDrawMark(false);
-        _zoomList->setFont(fontManager.textFont(fontManager.getFontSize(1)));
+        _zoomList->setFont(fontManager.textFont(fontManager.getFontSize(3)));
         connect(_zoomList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
         connect(_zoomList, SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
     }

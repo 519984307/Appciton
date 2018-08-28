@@ -423,13 +423,12 @@ void OxyCRGWidget::_intervalSlot(IWidget *widget)
 {
     if (NULL == _intervalList)
     {
-//        _intervalList = new ComboListPopup(widget, POPUP_TYPE_USER, OxyCRG_Interval_NR, _getInterval());
-        _intervalList = new PopupList(_interval);
+        _intervalList = new PopupList(_interval, false);
         for (int i = 0; i < OxyCRG_Interval_NR; i++)
         {
             _intervalList->addItemText(OxyCRGSymbol::convert(OxyCRGInterval(i)));
         }
-        _intervalList->setFont(fontManager.textFont(fontManager.getFontSize(1)));
+        _intervalList->setFont(fontManager.textFont(fontManager.getFontSize(3)));
         connect(_intervalList, SIGNAL(destroyed()), this, SLOT(_intervalDestroyed()));
         connect(_intervalList, SIGNAL(selectItemChanged(int)), this , SLOT(_getIntervalIndex(int)));
     }
@@ -444,13 +443,12 @@ void OxyCRGWidget::_changeTrendSlot(IWidget *widget)
 {
     if (NULL == _changeTrendList)
     {
-//        _changeTrendList = new ComboListPopup(widget, POPUP_TYPE_USER, OxyCRG_Trend_NR, _getTrend());
-        _changeTrendList = new PopupList(_changeTrend);
+        _changeTrendList = new PopupList(_changeTrend, false);
         for (int i = 0; i < OxyCRG_Trend_NR; i++)
         {
             _changeTrendList->addItemText(OxyCRGSymbol::convert(OxyCRGTrend(i)));
         }
-        _changeTrendList->setFont(fontManager.textFont(fontManager.getFontSize(1)));
+        _changeTrendList->setFont(fontManager.textFont(fontManager.getFontSize(3)));
         connect(_changeTrendList, SIGNAL(destroyed()), this, SLOT(_changeTrendDestroyed()));
         connect(_changeTrendList, SIGNAL(selectItemChanged(int)), this , SLOT(_getChangeTrendIndex(int)));
     }

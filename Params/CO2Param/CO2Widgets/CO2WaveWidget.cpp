@@ -20,6 +20,7 @@
 #include "WaveWidgetSelectMenu.h"
 #include "PopupList.h"
 #include "CO2Param.h"
+#include "ThemeManager.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -213,7 +214,7 @@ void CO2WaveWidget::_zoomChangeSlot(IWidget *widget)
     {
         CO2DisplayZoom zoom = co2Param.getDisplayZoom();
         int maxZoom = CO2_DISPLAY_ZOOM_NR;
-        _gainList = new PopupList(_zoom);
+        _gainList = new PopupList(_zoom, false);
         float zoomArray[] = {4.0, 8.0, 12.0, 20.0};
         QString str;
         UnitType unit = co2Param.getUnit();
@@ -241,8 +242,10 @@ void CO2WaveWidget::_zoomChangeSlot(IWidget *widget)
             str += Unit::localeSymbol(unit);
             _gainList->addItemText(str);
         }
-        _gainList->setFont(fontManager.textFont(14));
+        int fontSize = fontManager.getFontSize(3);
+        _gainList->setFont(fontManager.textFont(fontSize));
         connect(_gainList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
+        connect(_gainList, SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
     }
 
     _gainList->show();

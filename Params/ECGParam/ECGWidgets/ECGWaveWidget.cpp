@@ -256,13 +256,14 @@ void ECGWaveWidget::_ecgGain(IWidget *widget)
                 gain = ECG_GAIN_AUTO;
             }
         }
-        _gainList = new PopupList(_gain);
+        _gainList = new PopupList(_gain, false);
         for (int i = 0; i < maxGain; i++)
         {
             _gainList->addItemText(ECGSymbol::convert((ECGGain)i));
         }
 
-        _gainList->setFont(fontManager.textFont(14));
+        int fontSize = fontManager.getFontSize(3);
+        _gainList->setFont(fontManager.textFont(fontSize));
         connect(_gainList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
         connect(_gainList, SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
     }

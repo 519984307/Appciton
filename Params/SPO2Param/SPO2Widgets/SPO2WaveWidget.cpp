@@ -77,12 +77,13 @@ void SPO2WaveWidget::_spo2Gain(IWidget *widget)
 {
     if (NULL == _gainList)
     {
-        _gainList = new PopupList(_gain);
+        _gainList = new PopupList(_gain, false);
         for (int i = 0; i < SPO2_GAIN_NR; i++)
         {
             _gainList->addItemText(SPO2Symbol::convert(SPO2Gain(i)));
         }
-        _gainList->setFont(fontManager.textFont(14));
+        int fontSize = fontManager.getFontSize(3);
+        _gainList->setFont(fontManager.textFont(fontSize));
         connect(_gainList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
         connect(_gainList, SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
     }

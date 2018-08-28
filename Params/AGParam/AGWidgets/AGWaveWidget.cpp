@@ -76,7 +76,6 @@ void AGWaveWidget::setRuler(AGDisplayZoom zoom)
     }
 
     QString str;
-//    str.sprintf("0.0~%.1f", zoomValue);
     str = QString("0.0~%1").number(zoomValue, 'f', 1);
     str += " ";
     str += trs("percent");
@@ -150,7 +149,6 @@ void AGWaveWidget::focusInEvent(QFocusEvent *e)
 
 void AGWaveWidget::_releaseHandle(IWidget *iWidget)
 {
-//    QWidget *p = (QWidget *)parent();
     QWidget *p = static_cast<QWidget*>(parent());
     if (p == NULL)
     {
@@ -175,7 +173,7 @@ void AGWaveWidget::_zoomChangeSlot(IWidget *widget)
     {
         AGDisplayZoom zoom = AG_DISPLAY_ZOOM_4;
         int maxZoom = AG_DISPLAY_ZOOM_NR;
-        _gainList = new PopupList(_zoom);
+        _gainList = new PopupList(_zoom , false);
         float zoomArray[] = {4.0, 8.0, 15.0};
         QString str;
         for (int i = 0; i < maxZoom; i ++)
@@ -186,7 +184,8 @@ void AGWaveWidget::_zoomChangeSlot(IWidget *widget)
             str += trs("percent");
             _gainList->addItemText(str);
         }
-        _gainList->setFont(fontManager.textFont(14));
+        int fontSize = fontManager.getFontSize(3);
+        _gainList->setFont(fontManager.textFont(fontSize));
         connect(_gainList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
         connect(_gainList , SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
     }

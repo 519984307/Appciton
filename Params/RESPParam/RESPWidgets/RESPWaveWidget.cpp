@@ -46,12 +46,13 @@ void RESPWaveWidget::_respZoom(IWidget *widget)
 {
     if (NULL == _gainList)
     {
-        _gainList = new PopupList(_gain);
+        _gainList = new PopupList(_gain, false);
         for (int i = 0; i < RESP_ZOOM_NR; i++)
         {
             _gainList->addItemText(RESPSymbol::convert(RESPZoom(i)));
         }
-        _gainList->setFont(fontManager.textFont(14));
+        int fontSize = fontManager.getFontSize(3);
+        _gainList->setFont(fontManager.textFont(fontSize));
         connect(_gainList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
         connect(_gainList , SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
     }
