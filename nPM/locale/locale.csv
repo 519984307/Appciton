@@ -252,12 +252,7 @@ SystemInfoSetting,系统信息设置,System Info Setting
 ErrorLog,错误日志,Error Log
 SystemStatus,状态,Status
 SomeLimitAlarmDisabled,有超限报警被关闭,Some Limit Alarm Disabled
-PowerupSyncPressed,前面板同步软按键短路,Sync Btn Stuck
-PowerupChargePressed,前面板充电键短路,Front Panel Charge Btn Stuck
-PowerupShockPressed,前面板放电键短路,Front Panel Shock Btn Stuck
 PowerupRecorderPressed,前面板打印键短路,Front Panel Recorder Btn Stuck
-PowerupEnergyUpPressed,前面板能量增加键短路,Front Panel Energy Up Btn Stuck
-PowerupEnergyDnPressed,前面板能量减少键短路,Front Panel Energy Down Btn Stuck
 PowerupCommunicationStop,前面板通讯停止,Front Panel Communication Stop
 WiFiMenu,无线网络,Wifi
 WiFiMenuDesc,无线网络设置,Wifi Setting
