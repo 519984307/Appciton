@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/28
+ **/
+
+
+
 #include <QResizeEvent>
 #include "IBPWaveWidget.h"
 #include "IBPParam.h"
@@ -26,7 +38,6 @@ void IBPWaveWidget::addWaveformData(short wave, int flag)
     {
         _autoRulerHandle(wave);
     }
-
 }
 
 /**************************************************************************************************
@@ -95,7 +106,7 @@ void IBPWaveWidget::setEntitle(IBPPressureName entitle)
 {
     _name->setText(IBPSymbol::convert(entitle));
     QString zoomStr = QString::number(ibpParam.getIBPScale(entitle).low) + "-" +
-            QString::number(ibpParam.getIBPScale(entitle).high) + "mmHg";
+                      QString::number(ibpParam.getIBPScale(entitle).high) + "mmHg";
     _zoom->setText(zoomStr);
     _entitle = entitle;
     setLimit(ibpParam.getIBPScale(getEntitle()).low, ibpParam.getIBPScale(getEntitle()).high);
@@ -132,7 +143,7 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPr
     _name->setFont(fontManager.textFont(infoFont));
     _name->setFixedSize(130, fontH);
     _name->setText(getTitle());
-    connect(_name, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(_name, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
     _ruler = new IBPWaveRuler(this);
     _ruler->setPalette(palette);
@@ -145,7 +156,7 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPr
     _zoom->setText(QString::number(ibpParam.getIBPScale(entitle).low) + "~" +
                    QString::number(ibpParam.getIBPScale(entitle).high) + "mmHg");
     addItem(_zoom);
-    connect(_zoom, SIGNAL(released(IWidget*)), this, SLOT(_IBPZoom(IWidget*)));
+    connect(_zoom, SIGNAL(released(IWidget *)), this, SLOT(_IBPZoom(IWidget *)));
 
     _leadSta = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
     _leadSta->setFont(fontManager.textFont(infoFont));
@@ -165,7 +176,6 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPr
  *************************************************************************************************/
 IBPWaveWidget::~IBPWaveWidget()
 {
-
 }
 
 void IBPWaveWidget::paintEvent(QPaintEvent *e)
@@ -193,17 +203,19 @@ void IBPWaveWidget::showEvent(QShowEvent *e)
     WaveWidget::showEvent(e);
 }
 
-void IBPWaveWidget::focusInEvent(QFocusEvent *)
+void IBPWaveWidget::focusInEvent(QFocusEvent *e)
 {
+    Q_UNUSED(e);
     if (Qt::NoFocus != _name->focusPolicy())
     {
         _name->setFocus();
     }
 }
 
-void IBPWaveWidget::_releaseHandle(IWidget *)
+void IBPWaveWidget::_releaseHandle(IWidget *w)
 {
-    QWidget *p = (QWidget*)parent();
+    Q_UNUSED(w);
+    QWidget *p = qobject_cast<QWidget *>(parent());
     if (p == NULL)
     {
         return;
@@ -215,7 +227,7 @@ void IBPWaveWidget::_releaseHandle(IWidget *)
     waveWidgetSelectMenu.setTopWaveform(false);
     waveWidgetSelectMenu.setWaveformName(name());
     waveWidgetSelectMenu.setShowPoint(prect.x() + r.x() + 50, prect.y() + r.y());
-    waveWidgetSelectMenu.autoShow();
+    windowManager.showWindow(&waveWidgetSelectMenu, WindowManager::ShowBehaviorModal);
 }
 
 void IBPWaveWidget::_IBPZoom(IWidget *widget)
@@ -325,7 +337,6 @@ void IBPWaveWidget::_autoRulerHandle(short data)
                 break;
             }
         }
-
     }
 
     // ruler为新的增益。

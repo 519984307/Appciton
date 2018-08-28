@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/28
+ **/
+
+
+
 #pragma once
 #include "WaveWidgetItem.h"
 
@@ -12,7 +24,7 @@ public:
     virtual void paintItem(QPainter &painter);
     void setRuler(double up, double mid, double low);
 
-    CO2WaveRuler(CO2WaveWidget *wave);
+    explicit CO2WaveRuler(CO2WaveWidget *wave);
     ~CO2WaveRuler();
 
 private:

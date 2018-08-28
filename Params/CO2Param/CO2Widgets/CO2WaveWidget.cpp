@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/28
+ **/
+
+
+
 #include <QResizeEvent>
 #include "CO2WaveWidget.h"
 #include "CO2WaveRuler.h"
@@ -9,13 +21,15 @@
 #include "WaveWidgetSelectMenu.h"
 #include "ComboListPopup.h"
 #include "CO2Param.h"
+#include "WindowManager.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
-void CO2WaveWidget::_releaseHandle(IWidget *)
+void CO2WaveWidget::_releaseHandle(IWidget *w)
 {
-    QWidget *p = (QWidget*)parent();
+    Q_UNUSED(w);
+    QWidget *p = qobject_cast<QWidget *>(parent());
     if (p == NULL)
     {
         return;
@@ -27,7 +41,7 @@ void CO2WaveWidget::_releaseHandle(IWidget *)
     waveWidgetSelectMenu.setTopWaveform(false);
     waveWidgetSelectMenu.setWaveformName(name());
     waveWidgetSelectMenu.setShowPoint(prect.x() + r.x() + 50, prect.y() + r.y());
-    waveWidgetSelectMenu.autoShow();
+    windowManager.showWindow(&waveWidgetSelectMenu, WindowManager::ShowBehaviorModal);
 }
 
 /**************************************************************************************************
@@ -54,8 +68,9 @@ void CO2WaveWidget::resizeEvent(QResizeEvent *e)
  * 参数：
  *      e: 事件。
  *************************************************************************************************/
-void CO2WaveWidget::focusInEvent(QFocusEvent */*e*/)
+void CO2WaveWidget::focusInEvent(QFocusEvent *e)
 {
+    Q_UNUSED(e);
     _name->setFocus();
 }
 
@@ -95,24 +110,24 @@ void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
     float zoomValue = 0;
     switch (zoom)
     {
-        case CO2_DISPLAY_ZOOM_4:
-            _ruler->setRuler(4.0, 2.0, 0);
-            zoomValue = 4.0;
-            break;
-        case CO2_DISPLAY_ZOOM_8:
-            _ruler->setRuler(8.0, 4.0, 0);
-            zoomValue = 8.0;
-            break;
-        case CO2_DISPLAY_ZOOM_12:
-            _ruler->setRuler(12.0, 6.0, 0);
-            zoomValue = 12.0;
-            break;
-        case CO2_DISPLAY_ZOOM_20:
-            _ruler->setRuler(20.0, 10.0, 0);
-            zoomValue = 20.0;
-            break;
-        default:
-            break;
+    case CO2_DISPLAY_ZOOM_4:
+        _ruler->setRuler(4.0, 2.0, 0);
+        zoomValue = 4.0;
+        break;
+    case CO2_DISPLAY_ZOOM_8:
+        _ruler->setRuler(8.0, 4.0, 0);
+        zoomValue = 8.0;
+        break;
+    case CO2_DISPLAY_ZOOM_12:
+        _ruler->setRuler(12.0, 6.0, 0);
+        zoomValue = 12.0;
+        break;
+    case CO2_DISPLAY_ZOOM_20:
+        _ruler->setRuler(20.0, 10.0, 0);
+        zoomValue = 20.0;
+        break;
+    default:
+        break;
     }
 
     UnitType unit = co2Param.getUnit();
@@ -120,7 +135,9 @@ void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
     if (unit == UNIT_KPA)
     {
         float tempVal = Unit::convert(UNIT_KPA, UNIT_PERCENT, zoomValue).toFloat();
-        str.sprintf("0.0~%.1f",(float)(int)(tempVal + 0.5));
+        str = QString("0.0~%1").arg(QString::number(
+                        static_cast<float>(
+                            static_cast<int>(tempVal + 0.5)), 'f', 1));
     }
     else if (unit == UNIT_MMHG)
     {
@@ -131,7 +148,7 @@ void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
     }
     else
     {
-        str.sprintf("0.0~%.1f", zoomValue);
+        str = QString("0.0~%1").arg(QString::number(zoomValue, 'f', 1));
     }
     str += " ";
     str += Unit::localeSymbol(unit);
@@ -173,7 +190,7 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
     _name->setFixedSize(130, fontH);
     _name->setText(title);
 //    addItem(_name);
-    connect(_name, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(_name, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
     _ruler = new CO2WaveRuler(this);
     _ruler->setPalette(palette);
@@ -185,7 +202,7 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
     _zoom->setFixedSize(120, fontH);
     _zoom->setText(title);
     addItem(_zoom);
-    connect(_zoom, SIGNAL(released(IWidget*)), this, SLOT(_zoomChangeSlot(IWidget*)));
+    connect(_zoom, SIGNAL(released(IWidget *)), this, SLOT(_zoomChangeSlot(IWidget *)));
 
     setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
 }
@@ -212,7 +229,9 @@ void CO2WaveWidget::_zoomChangeSlot(IWidget *widget)
             if (unit == UNIT_KPA)
             {
                 float tempVal = Unit::convert(UNIT_KPA, UNIT_PERCENT, zoomArray[i]).toFloat();
-                str.sprintf("0.0~%.1f",(float)(int)(tempVal + 0.5));
+                str = QString("0.0~%1").arg(QString::number(
+                                static_cast<float>(
+                                    static_cast<int>(tempVal + 0.5)), 'f', 1));
             }
             else if (unit == UNIT_MMHG)
             {
@@ -223,7 +242,8 @@ void CO2WaveWidget::_zoomChangeSlot(IWidget *widget)
             }
             else
             {
-                str.sprintf("0.0~%.1f", zoomArray[i]);
+//                str.sprintf("0.0~%.1f", zoomArray[i]);
+                str = QString("0.0~%1").arg(QString::number(zoomArray[i], 'f', 1));
             }
             str += " ";
             str += Unit::localeSymbol(unit);
@@ -258,5 +278,4 @@ void CO2WaveWidget::_popupDestroyed(void)
  *************************************************************************************************/
 CO2WaveWidget::~CO2WaveWidget()
 {
-
 }
