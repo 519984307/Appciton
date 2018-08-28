@@ -482,6 +482,9 @@ EnglishInputPanel::EnglishInputPanel()
     mainLayout->addLayout(hLayout);
     mainLayout->addSpacing(5);
     setWindowLayout(mainLayout);
+
+    // proper size to hold all the keys
+    resize(773, 387);
 }
 
 /**************************************************************************************************
