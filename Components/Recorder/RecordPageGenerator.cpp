@@ -922,7 +922,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
                 break;
             }
 
-            drawPercentRuler(page, &painter, *iter, QString().snprintf("%.01f", static_cast<double>(high)), "0");
+            drawPercentRuler(page, &painter, *iter, QString::number(high, 'g', 1), "0");
         }
         break;
         case WAVE_N2O:
@@ -945,7 +945,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
                 high = 15;
                 break;
             }
-            drawPercentRuler(page, &painter, *iter, QString().snprintf("%.01f", static_cast<double>(high)), "0");
+            drawPercentRuler(page, &painter, *iter, QString::number(high, 'g', 1), "0");
         }
         break;
 

@@ -30,8 +30,8 @@ struct DemoWaveDataDesc
     const char *waveformName;       // 对应的波形名称。
     const WaveformID waveID;        // 波形标识。
     Param *param;                   // 处理数据的Param对象。
-//    short sampleRate;               // 采样率。
-//    int error;                      // 数据产生时的误差记录。
+    short sampleRate;               // 采样率。
+    int error;                      // 数据产生时的误差记录。
 };
 
 static DemoWaveDataDesc _demoWaveData[WAVE_NR] =
@@ -55,7 +55,7 @@ static DemoWaveDataDesc _demoWaveData[WAVE_NR] =
     {"AA1",       WAVE_AA1,       NULL, 50, 0},
     {"AA2",       WAVE_AA2,       NULL, 50, 0},
     {"O2",        WAVE_O2,        NULL, 50, 0},
-    {"ART" ,      WAVE_ART,       NULL, 50, 0},
+    {"ART",       WAVE_ART,       NULL, 50, 0},
     {"PA",        WAVE_PA,        NULL, 50, 0},
     {"CVP",       WAVE_CVP,       NULL, 50, 0},
     {"LAP",       WAVE_LAP,       NULL, 50, 0},
@@ -257,9 +257,10 @@ void WindowWidget::_drawCurves(WaveformID id, QPainter *painter, int maxWaveform
         return;
     }
 
-//    int elapsed = 1;
+    int elapsed = 1;
     char data;
-//    int len = _demoWaveData[id].sampleRate * elapsed + _demoWaveData[id].error;
+    int len = _demoWaveData[id].sampleRate * elapsed + _demoWaveData[id].error;
+    Q_UNUSED(len)
     QPolygon polyline;
 
     for (int x = 0; x < (width() / 6 * 4 * 2); x++)
