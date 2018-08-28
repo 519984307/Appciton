@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/27
+ **/
+
 #pragma once
 #include <QPalette>
 #include "Param.h"
@@ -41,7 +51,7 @@ public:
 
     // 获取可得的波形控件集。
     virtual void getAvailableWaveforms(QStringList &waveforms,
-            QStringList &waveformShowName, int);
+                                       QStringList &waveformShowName, int);
 
     // 获取当前的单位。
     virtual UnitType getCurrentUnit(SubParamID id);
@@ -83,7 +93,7 @@ public:
 
     // 校零校准信息
     void calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int calibinfo);
-    
+
     // 导联状态
     void leadStatus(bool staIBP1, bool staIBP2);
 
@@ -96,6 +106,7 @@ public:
 
     // get pressure name
     IBPPressureName getEntitle(IBPSignalInput signal) const;
+    IBPPressureName getEntitle(IBPLimitAlarmType alarmType) const;
 
     // 设置滤波
     void setFilter(IBPFilterMode filter);
@@ -115,11 +126,9 @@ public:
 
     // 参数名获取标名
     IBPPressureName getPressureName(SubParamID id);
+    IBPPressureName getPressureName(WaveformID id);
     SubParamID getSubParamID(IBPPressureName name);
-
-public:
-
-
+    WaveformID getWaveformID(IBPPressureName name);
 private:
     IBPParam();
     static IBPParam *_selfObj;

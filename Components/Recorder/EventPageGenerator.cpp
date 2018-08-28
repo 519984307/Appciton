@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/28
+ **/
+
 #include "EventPageGenerator.h"
 #include "PatientManager.h"
 #include <EventDataDefine.h>
@@ -23,25 +33,24 @@
 class EventPageGeneratorPrivate
 {
 public:
-    EventPageGeneratorPrivate(EventPageGenerator * const q_ptr)
+    explicit EventPageGeneratorPrivate(EventPageGenerator *const q_ptr)
         : q_ptr(q_ptr),
           curPageType(RecordPageGenerator::TitlePage),
-          curDrawWaveSegment(0),
+          curDrawWaveSegment(0), backend(NULL), eventIndex(0),
           hasParseData(false)
     {
-
     }
 
     // parse the event data
     bool parseData()
     {
-        if(!ctx.parse(backend, eventIndex))
+        if (!ctx.parse(backend, eventIndex))
         {
-            qWarning()<<"Parse event data failed";
+            qWarning() << "Parse event data failed";
             return false;
         }
 
-        switch(ctx.infoSegment->type)
+        switch (ctx.infoSegment->type)
         {
         case EventPhysiologicalAlarm:
         {
@@ -67,7 +76,7 @@ public:
             {
                 titleStr = "**";
             }
-            else if(priority == ALARM_PRIO_HIGH)
+            else if (priority == ALARM_PRIO_HIGH)
             {
                 titleStr = "***";
             }
@@ -75,16 +84,17 @@ public:
             ParamID paramId = paramInfo.getParamID(subparamID);
             titleStr += " ";
             titleStr += trs(Alarm::getPhyAlarmMessage(paramId,
-                                                      ctx.almSegment->alarmType,
-                                                      ctx.almSegment->alarmInfo & 0x01));
+                            ctx.almSegment->alarmType,
+                            ctx.almSegment->alarmInfo & 0x01));
 
-            if(!(ctx.almSegment->alarmInfo & 0x01))
+            if (!(ctx.almSegment->alarmInfo & 0x01))
             {
-                if(ctx.almSegment->alarmInfo & 0x02)
+                if (ctx.almSegment->alarmInfo & 0x02)
                 {
                     titleStr += " > ";
                 }
-                else {
+                else
+                {
                     titleStr += " < ";
                 }
 
@@ -96,27 +106,27 @@ public:
 
             eventTitle = titleStr;
         }
-            break;
+        break;
         case EventCodeMarker:
         {
             eventTitle = trs(QString(ctx.codeMarkerSegment->codeName));
         }
-            break;
+        break;
         case EventRealtimePrint:
         {
             eventTitle = trs("RealtimePrintSegment");
         }
-            break;
+        break;
         case EventNIBPMeasurement:
         {
             eventTitle = trs("NibpMeasurement");
         }
-            break;
+        break;
         case EventWaveFreeze:
         {
             eventTitle = trs("WaveFreeze");
         }
-            break;
+        break;
         default:
             break;
         }
@@ -133,7 +143,8 @@ public:
     {
         QList<RecordWaveSegmentInfo> infos;
 
-        foreach (WaveformDataSegment *waveSeg, waveSegments) {
+        foreach(WaveformDataSegment *waveSeg, waveSegments)
+        {
             WaveformID id = waveSeg->waveID;
             QString caption = trs(paramInfo.getParamName(paramInfo.getParamID(id)));
             int captionLength = 0;
@@ -142,7 +153,7 @@ public:
             info.sampleRate = waveSeg->sampleRate;
             waveformCache.getRange(id, info.minWaveValue, info.maxWaveValue);
             waveformCache.getBaseline(id, info.waveBaseLine);
-            switch(id)
+            switch (id)
             {
             case WAVE_ECG_I:
             case WAVE_ECG_II:
@@ -158,8 +169,8 @@ public:
             case WAVE_ECG_V6:
                 info.waveInfo.ecg.gain = ecgParam.getGain(ecgParam.waveIDToLeadID(id));
                 caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
-                                                                    ecgParam.getLeadConvention()))
-                        .arg(ECGSymbol::convert(ecgParam.getFilterMode()));
+                                                 ecgParam.getLeadConvention()))
+                          .arg(ECGSymbol::convert(ecgParam.getFilterMode()));
                 info.waveInfo.ecg.in12LeadMode = windowManager.getUFaceType() == UFACE_MONITOR_12LEAD;
                 info.waveInfo.ecg._12LeadDisplayFormat = ecgParam.get12LDisplayFormat();
                 captionLength = fontManager.textWidthInPixels(caption, q_ptr->font());
@@ -180,19 +191,16 @@ public:
             case WAVE_O2:
                 info.waveInfo.ag.zoom = agParam.getDisplayZoom();
                 break;
-            case WAVE_IBP1:
+            case WAVE_ART:
+            case WAVE_PA:
+            case WAVE_CVP:
+            case WAVE_LAP:
+            case WAVE_RAP:
+            case WAVE_ICP:
+            case WAVE_AUXP1:
+            case WAVE_AUXP2:
             {
-                info.waveInfo.ibp.pressureName = ibpParam.getEntitle(IBP_INPUT_1);
-                IBPScaleInfo scaleInfo = ibpParam.getIBPScale(info.waveInfo.ibp.pressureName);
-                info.waveInfo.ibp.high = scaleInfo.high;
-                info.waveInfo.ibp.low = scaleInfo.low;
-                info.waveInfo.ibp.isAuto = scaleInfo.isAuto;
-                info.waveInfo.ibp.unit = paramManager.getSubParamUnit(PARAM_IBP, SUB_PARAM_ART_SYS);
-            }
-                break;
-            case WAVE_IBP2:
-            {
-                info.waveInfo.ibp.pressureName = ibpParam.getEntitle(IBP_INPUT_2);
+                info.waveInfo.ibp.pressureName = ibpParam.getPressureName(id);
                 IBPScaleInfo scaleInfo = ibpParam.getIBPScale(info.waveInfo.ibp.pressureName);
                 info.waveInfo.ibp.high = scaleInfo.high;
                 info.waveInfo.ibp.low = scaleInfo.low;
@@ -217,25 +225,25 @@ public:
         }
 
 
-        if(infos.size() == 0)
+        if (infos.size() == 0)
         {
             return infos;
         }
 
-        //calculate the wave region in the print page
+        // calculate the wave region in the print page
         int waveRegionHeight = (RECORDER_PAGE_HEIGHT - RECORDER_WAVE_UPPER_MARGIN - RECORDER_WAVE_LOWER_MARGIN)
-                / infos.size();
+                               / infos.size();
 
         // wave heights when has 3 waves
         int waveHeights[] = {120, 120, 80};
 
         QList<RecordWaveSegmentInfo>::iterator iter;
         int yOffset = RECORDER_WAVE_UPPER_MARGIN;
-        int j=0;
-        for(iter = infos.begin(); iter != infos.end(); iter++)
+        int j = 0;
+        for (iter = infos.begin(); iter != infos.end(); ++iter)
         {
             iter->startYOffset = yOffset;
-            if(infos.size() == 3)
+            if (infos.size() == 3)
             {
                 yOffset += waveHeights[j++];
             }
@@ -248,7 +256,6 @@ public:
         }
 
         return infos;
-
     }
 
     /**
@@ -258,21 +265,21 @@ public:
      */
     bool loadWaveData(int waveSegmentIndex)
     {
-        if(waveInfos.isEmpty() || ctx.waveSegments.isEmpty() || waveInfos.size() != ctx.waveSegments.size())
+        if (waveInfos.isEmpty() || ctx.waveSegments.isEmpty() || waveInfos.size() != ctx.waveSegments.size())
         {
             return false;
         }
 
-        for(int i = 0; i< waveInfos.size(); i++)
+        for (int i = 0; i < waveInfos.size(); i++)
         {
-            if((waveSegmentIndex + 1) * waveInfos.at(i).sampleRate > ctx.waveSegments.at(i)->waveNum)
+            if ((waveSegmentIndex + 1) * waveInfos.at(i).sampleRate > ctx.waveSegments.at(i)->waveNum)
             {
                 return false;
             }
 
-            //copy one second wavedata
+            // copy one second wavedata
             int startIndex = waveSegmentIndex * waveInfos.at(i).sampleRate;
-            for(int j = 0; j < waveInfos.at(i).sampleRate; j++)
+            for (int j = 0; j < waveInfos.at(i).sampleRate; j++)
             {
                 waveInfos[i].secondWaveBuff[j] = ctx.waveSegments.at(i)->waveData[startIndex++];
             }
@@ -282,7 +289,7 @@ public:
     }
 
 
-    EventPageGenerator * const q_ptr;
+    EventPageGenerator *const q_ptr;
     RecordPageGenerator::PageType curPageType;
     QString eventTitle;
     TrendDataPackage trendData;
@@ -295,7 +302,7 @@ public:
 };
 
 EventPageGenerator::EventPageGenerator(IStorageBackend *backend, int eventIndex, QObject *parent)
-    :RecordPageGenerator(parent), d_ptr(new EventPageGeneratorPrivate(this))
+    : RecordPageGenerator(parent), d_ptr(new EventPageGeneratorPrivate(this))
 {
 
     d_ptr->backend = backend;
@@ -304,7 +311,6 @@ EventPageGenerator::EventPageGenerator(IStorageBackend *backend, int eventIndex,
 
 EventPageGenerator::~EventPageGenerator()
 {
-
 }
 
 int EventPageGenerator::type() const
@@ -314,22 +320,23 @@ int EventPageGenerator::type() const
 
 RecordPage *EventPageGenerator::createPage()
 {
-    if(!d_ptr->hasParseData)
+    if (!d_ptr->hasParseData)
     {
         d_ptr->hasParseData = true;
-        if(!d_ptr->parseData())
+        if (!d_ptr->parseData())
         {
             return NULL;
         }
     }
 
-    if(d_ptr->ctx.eventDataBuf == NULL)
+    if (d_ptr->ctx.eventDataBuf == NULL)
     {
-        //no event data
+        // no event data
         return NULL;
     }
 
-    switch (d_ptr->curPageType) {
+    switch (d_ptr->curPageType)
+    {
     case TitlePage:
         d_ptr->curPageType = TrendPage;
         // BUG: patient info of the event might not be the current session patient
@@ -337,23 +344,23 @@ RecordPage *EventPageGenerator::createPage()
 
     case TrendPage:
         d_ptr->curPageType = WaveScalePage;
-        if(d_ptr->ctx.trendSegment)
+        if (d_ptr->ctx.trendSegment)
         {
             d_ptr->trendData = parseTrendSegment(d_ptr->ctx.trendSegment);
             return createTrendPage(d_ptr->trendData, true);
         }
-        //fall through
+    // fall through
     case WaveScalePage:
         d_ptr->curPageType = WaveSegmentPage;
-        if(!d_ptr->ctx.waveSegments.isEmpty())
+        if (!d_ptr->ctx.waveSegments.isEmpty())
         {
             d_ptr->waveInfos = d_ptr->getPrintWaveInfos(d_ptr->ctx.waveSegments);
             return createWaveScalePage(d_ptr->waveInfos, recorderManager.getPrintSpeed());
         }
-        //fall through
+    // fall through
     case WaveSegmentPage:
     {
-        if(!d_ptr->ctx.waveSegments.isEmpty()
+        if (!d_ptr->ctx.waveSegments.isEmpty()
                 && d_ptr->loadWaveData(d_ptr->curDrawWaveSegment)
                 && !recorderManager.isAbort())
         {
@@ -364,7 +371,7 @@ RecordPage *EventPageGenerator::createPage()
             return page;
         }
     }
-        //fall through
+    // fall through
     case EndPage:
         d_ptr->curPageType = NullPage;
         return createEndPage();

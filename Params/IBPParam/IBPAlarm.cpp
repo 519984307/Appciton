@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/28
+ **/
+
 #include "IBPAlarm.h"
 #include "ParamInfo.h"
 #include "AlarmConfig.h"
@@ -28,24 +38,62 @@ WaveformID IBPLimitAlarm::getWaveformID(int id)
 {
     switch (id)
     {
-    case IBP1_LIMIT_ALARM_SYS_LOW:
-    case IBP1_LIMIT_ALARM_SYS_HIGH:
-    case IBP1_LIMIT_ALARM_DIA_LOW:
-    case IBP1_LIMIT_ALARM_DIA_HIGH:
-    case IBP1_LIMIT_ALARM_MEAN_LOW:
-    case IBP1_LIMIT_ALARM_MEAN_HIGH:
-    case IBP1_LIMIT_ALARM_PR_LOW:
-    case IBP1_LIMIT_ALARM_PR_HIGH:
-        return WAVE_IBP1;
-    case IBP2_LIMIT_ALARM_SYS_LOW:
-    case IBP2_LIMIT_ALARM_SYS_HIGH:
-    case IBP2_LIMIT_ALARM_DIA_LOW:
-    case IBP2_LIMIT_ALARM_DIA_HIGH:
-    case IBP2_LIMIT_ALARM_MEAN_LOW:
-    case IBP2_LIMIT_ALARM_MEAN_HIGH:
-    case IBP2_LIMIT_ALARM_PR_LOW:
-    case IBP2_LIMIT_ALARM_PR_HIGH:
-        return WAVE_IBP2;
+    case ART_LIMIT_ALARM_SYS_LOW:
+    case ART_LIMIT_ALARM_SYS_HIGH:
+    case ART_LIMIT_ALARM_DIA_LOW:
+    case ART_LIMIT_ALARM_DIA_HIGH:
+    case ART_LIMIT_ALARM_MEAN_LOW:
+    case ART_LIMIT_ALARM_MEAN_HIGH:
+    case ART_LIMIT_ALARM_PR_LOW:
+    case ART_LIMIT_ALARM_PR_HIGH:
+        return WAVE_ART;
+    case PA_LIMIT_ALARM_SYS_LOW:
+    case PA_LIMIT_ALARM_SYS_HIGH:
+    case PA_LIMIT_ALARM_DIA_LOW:
+    case PA_LIMIT_ALARM_DIA_HIGH:
+    case PA_LIMIT_ALARM_MEAN_LOW:
+    case PA_LIMIT_ALARM_MEAN_HIGH:
+    case PA_LIMIT_ALARM_PR_LOW:
+    case PA_LIMIT_ALARM_PR_HIGH:
+        return WAVE_PA;
+    case CVP_LIMIT_ALARM_MEAN_LOW:
+    case CVP_LIMIT_ALARM_MEAN_HIGH:
+    case CVP_LIMIT_ALARM_PR_LOW:
+    case CVP_LIMIT_ALARM_PR_HIGH:
+        return WAVE_CVP;
+    case LAP_LIMIT_ALARM_MEAN_LOW:
+    case LAP_LIMIT_ALARM_MEAN_HIGH:
+    case LAP_LIMIT_ALARM_PR_LOW:
+    case LAP_LIMIT_ALARM_PR_HIGH:
+        return WAVE_LAP;
+    case RAP_LIMIT_ALARM_MEAN_LOW:
+    case RAP_LIMIT_ALARM_MEAN_HIGH:
+    case RAP_LIMIT_ALARM_PR_LOW:
+    case RAP_LIMIT_ALARM_PR_HIGH:
+        return WAVE_RAP;
+    case ICP_LIMIT_ALARM_MEAN_LOW:
+    case ICP_LIMIT_ALARM_MEAN_HIGH:
+    case ICP_LIMIT_ALARM_PR_LOW:
+    case ICP_LIMIT_ALARM_PR_HIGH:
+        return WAVE_ICP;
+    case AUXP1_LIMIT_ALARM_SYS_LOW:
+    case AUXP1_LIMIT_ALARM_SYS_HIGH:
+    case AUXP1_LIMIT_ALARM_DIA_LOW:
+    case AUXP1_LIMIT_ALARM_DIA_HIGH:
+    case AUXP1_LIMIT_ALARM_MEAN_LOW:
+    case AUXP1_LIMIT_ALARM_MEAN_HIGH:
+    case AUXP1_LIMIT_ALARM_PR_LOW:
+    case AUXP1_LIMIT_ALARM_PR_HIGH:
+        return WAVE_AUXP1;
+    case AUXP2_LIMIT_ALARM_SYS_LOW:
+    case AUXP2_LIMIT_ALARM_SYS_HIGH:
+    case AUXP2_LIMIT_ALARM_DIA_LOW:
+    case AUXP2_LIMIT_ALARM_DIA_HIGH:
+    case AUXP2_LIMIT_ALARM_MEAN_LOW:
+    case AUXP2_LIMIT_ALARM_MEAN_HIGH:
+    case AUXP2_LIMIT_ALARM_PR_LOW:
+    case AUXP2_LIMIT_ALARM_PR_HIGH:
+        return WAVE_AUXP2;
     default:
         return WAVE_NONE;
     }
@@ -56,179 +104,81 @@ WaveformID IBPLimitAlarm::getWaveformID(int id)
  *************************************************************************************************/
 SubParamID IBPLimitAlarm::getSubParamID(int id)
 {
-    IBPPressureName ibp1 = ibpParam.getParamData(IBP_INPUT_1).pressureName;
-    IBPPressureName ibp2 = ibpParam.getParamData(IBP_INPUT_2).pressureName;
-    IBPLimitAlarmType alarmID = (IBPLimitAlarmType)id;
+    IBPLimitAlarmType alarmID = static_cast<IBPLimitAlarmType>(id);
     switch (alarmID)
     {
-    case IBP1_LIMIT_ALARM_SYS_LOW:
-    case IBP1_LIMIT_ALARM_SYS_HIGH:
-    {
-        switch (ibp1)
-        {
-        case IBP_PRESSURE_ART:
-            return SUB_PARAM_ART_SYS;
-        case IBP_PRESSURE_PA:
-            return SUB_PARAM_PA_SYS;
-        case IBP_PRESSURE_AUXP1:
-            return SUB_PARAM_AUXP1_SYS;
-        case IBP_PRESSURE_AUXP2:
-            return SUB_PARAM_AUXP2_SYS;
-        default:
-            return SUB_PARAM_NONE;
-        }
-    }
-    case IBP1_LIMIT_ALARM_DIA_LOW:
-    case IBP1_LIMIT_ALARM_DIA_HIGH:
-    {
-        switch (ibp1)
-        {
-        case IBP_PRESSURE_ART:
-            return SUB_PARAM_ART_DIA;
-        case IBP_PRESSURE_PA:
-            return SUB_PARAM_PA_DIA;
-        case IBP_PRESSURE_AUXP1:
-            return SUB_PARAM_AUXP1_DIA;
-        case IBP_PRESSURE_AUXP2:
-            return SUB_PARAM_AUXP2_DIA;
-        default:
-            return SUB_PARAM_NONE;
-        }
-    }
-    case IBP1_LIMIT_ALARM_MEAN_LOW:
-    case IBP1_LIMIT_ALARM_MEAN_HIGH:
-    {
-        switch (ibp1)
-        {
-        case IBP_PRESSURE_ART:
-            return SUB_PARAM_ART_MAP;
-        case IBP_PRESSURE_PA:
-            return SUB_PARAM_PA_MAP;
-        case IBP_PRESSURE_CVP:
-            return SUB_PARAM_CVP_MAP;
-        case IBP_PRESSURE_LAP:
-            return SUB_PARAM_LAP_MAP;
-        case IBP_PRESSURE_RAP:
-            return SUB_PARAM_RAP_MAP;
-        case IBP_PRESSURE_ICP:
-            return SUB_PARAM_ICP_MAP;
-        case IBP_PRESSURE_AUXP1:
-            return SUB_PARAM_AUXP1_MAP;
-        case IBP_PRESSURE_AUXP2:
-            return SUB_PARAM_AUXP2_MAP;
-        default:
-            return SUB_PARAM_NONE;
-        }
-    }
-    case IBP1_LIMIT_ALARM_PR_LOW:
-    case IBP1_LIMIT_ALARM_PR_HIGH:
-    {
-        switch (ibp1)
-        {
-        case IBP_PRESSURE_ART:
-            return SUB_PARAM_ART_PR;
-        case IBP_PRESSURE_PA:
-            return SUB_PARAM_PA_PR;
-        case IBP_PRESSURE_CVP:
-            return SUB_PARAM_CVP_PR;
-        case IBP_PRESSURE_LAP:
-            return SUB_PARAM_LAP_PR;
-        case IBP_PRESSURE_RAP:
-            return SUB_PARAM_RAP_PR;
-        case IBP_PRESSURE_ICP:
-            return SUB_PARAM_ICP_PR;
-        case IBP_PRESSURE_AUXP1:
-            return SUB_PARAM_AUXP1_PR;
-        case IBP_PRESSURE_AUXP2:
-            return SUB_PARAM_AUXP2_PR;
-        default:
-            return SUB_PARAM_NONE;
-        }
-    }
-    case IBP2_LIMIT_ALARM_SYS_LOW:
-    case IBP2_LIMIT_ALARM_SYS_HIGH:
-    {
-        switch (ibp2)
-        {
-        case IBP_PRESSURE_ART:
-            return SUB_PARAM_ART_SYS;
-        case IBP_PRESSURE_PA:
-            return SUB_PARAM_PA_SYS;
-        case IBP_PRESSURE_AUXP1:
-            return SUB_PARAM_AUXP1_SYS;
-        case IBP_PRESSURE_AUXP2:
-            return SUB_PARAM_AUXP2_SYS;
-        default:
-            return SUB_PARAM_NONE;
-        }
-    }
-    case IBP2_LIMIT_ALARM_DIA_LOW:
-    case IBP2_LIMIT_ALARM_DIA_HIGH:
-    {
-        switch (ibp2)
-        {
-        case IBP_PRESSURE_ART:
-            return SUB_PARAM_ART_DIA;
-        case IBP_PRESSURE_PA:
-            return SUB_PARAM_PA_DIA;
-        case IBP_PRESSURE_AUXP1:
-            return SUB_PARAM_AUXP1_DIA;
-        case IBP_PRESSURE_AUXP2:
-            return SUB_PARAM_AUXP2_DIA;
-        default:
-            return SUB_PARAM_NONE;
-        }
-    }
-    case IBP2_LIMIT_ALARM_MEAN_LOW:
-    case IBP2_LIMIT_ALARM_MEAN_HIGH:
-    {
-        switch (ibp2)
-        {
-        case IBP_PRESSURE_ART:
-            return SUB_PARAM_ART_MAP;
-        case IBP_PRESSURE_PA:
-            return SUB_PARAM_PA_MAP;
-        case IBP_PRESSURE_CVP:
-            return SUB_PARAM_CVP_MAP;
-        case IBP_PRESSURE_LAP:
-            return SUB_PARAM_LAP_MAP;
-        case IBP_PRESSURE_RAP:
-            return SUB_PARAM_RAP_MAP;
-        case IBP_PRESSURE_ICP:
-            return SUB_PARAM_ICP_MAP;
-        case IBP_PRESSURE_AUXP1:
-            return SUB_PARAM_AUXP1_MAP;
-        case IBP_PRESSURE_AUXP2:
-            return SUB_PARAM_AUXP2_MAP;
-        default:
-            return SUB_PARAM_NONE;
-        }
-    }
-    case IBP2_LIMIT_ALARM_PR_LOW:
-    case IBP2_LIMIT_ALARM_PR_HIGH:
-    {
-        switch (ibp2)
-        {
-        case IBP_PRESSURE_ART:
-            return SUB_PARAM_ART_PR;
-        case IBP_PRESSURE_PA:
-            return SUB_PARAM_PA_PR;
-        case IBP_PRESSURE_CVP:
-            return SUB_PARAM_CVP_PR;
-        case IBP_PRESSURE_LAP:
-            return SUB_PARAM_LAP_PR;
-        case IBP_PRESSURE_RAP:
-            return SUB_PARAM_RAP_PR;
-        case IBP_PRESSURE_ICP:
-            return SUB_PARAM_ICP_PR;
-        case IBP_PRESSURE_AUXP1:
-            return SUB_PARAM_AUXP1_PR;
-        case IBP_PRESSURE_AUXP2:
-            return SUB_PARAM_AUXP2_PR;
-        default:
-            return SUB_PARAM_NONE;
-        }
-    }
+    case ART_LIMIT_ALARM_SYS_LOW:
+    case ART_LIMIT_ALARM_SYS_HIGH:
+        return SUB_PARAM_ART_SYS;
+    case PA_LIMIT_ALARM_SYS_LOW:
+    case PA_LIMIT_ALARM_SYS_HIGH:
+        return SUB_PARAM_PA_SYS;
+    case AUXP1_LIMIT_ALARM_SYS_LOW:
+    case AUXP1_LIMIT_ALARM_SYS_HIGH:
+        return SUB_PARAM_AUXP1_SYS;
+    case AUXP2_LIMIT_ALARM_SYS_LOW:
+    case AUXP2_LIMIT_ALARM_SYS_HIGH:
+        return SUB_PARAM_AUXP2_SYS;
+    case ART_LIMIT_ALARM_DIA_LOW:
+    case ART_LIMIT_ALARM_DIA_HIGH:
+        return SUB_PARAM_ART_DIA;
+    case PA_LIMIT_ALARM_DIA_LOW:
+    case PA_LIMIT_ALARM_DIA_HIGH:
+        return SUB_PARAM_PA_DIA;
+    case AUXP1_LIMIT_ALARM_DIA_LOW:
+    case AUXP1_LIMIT_ALARM_DIA_HIGH:
+        return SUB_PARAM_AUXP1_DIA;
+    case AUXP2_LIMIT_ALARM_DIA_LOW:
+    case AUXP2_LIMIT_ALARM_DIA_HIGH:
+        return SUB_PARAM_AUXP2_DIA;
+    case ART_LIMIT_ALARM_MEAN_LOW:
+    case ART_LIMIT_ALARM_MEAN_HIGH:
+        return SUB_PARAM_ART_MAP;
+    case PA_LIMIT_ALARM_MEAN_LOW:
+    case PA_LIMIT_ALARM_MEAN_HIGH:
+        return SUB_PARAM_PA_MAP;
+    case CVP_LIMIT_ALARM_MEAN_LOW:
+    case CVP_LIMIT_ALARM_MEAN_HIGH:
+        return SUB_PARAM_CVP_MAP;
+    case LAP_LIMIT_ALARM_MEAN_LOW:
+    case LAP_LIMIT_ALARM_MEAN_HIGH:
+        return SUB_PARAM_LAP_MAP;
+    case RAP_LIMIT_ALARM_MEAN_LOW:
+    case RAP_LIMIT_ALARM_MEAN_HIGH:
+        return SUB_PARAM_RAP_MAP;
+    case ICP_LIMIT_ALARM_MEAN_LOW:
+    case ICP_LIMIT_ALARM_MEAN_HIGH:
+        return SUB_PARAM_ICP_MAP;
+    case AUXP1_LIMIT_ALARM_MEAN_LOW:
+    case AUXP1_LIMIT_ALARM_MEAN_HIGH:
+        return SUB_PARAM_AUXP1_MAP;
+    case AUXP2_LIMIT_ALARM_MEAN_LOW:
+    case AUXP2_LIMIT_ALARM_MEAN_HIGH:
+        return SUB_PARAM_AUXP2_MAP;
+    case ART_LIMIT_ALARM_PR_LOW:
+    case ART_LIMIT_ALARM_PR_HIGH:
+        return SUB_PARAM_ART_PR;
+    case PA_LIMIT_ALARM_PR_LOW:
+    case PA_LIMIT_ALARM_PR_HIGH:
+        return SUB_PARAM_PA_PR;
+    case CVP_LIMIT_ALARM_PR_LOW:
+    case CVP_LIMIT_ALARM_PR_HIGH:
+        return SUB_PARAM_CVP_PR;
+    case LAP_LIMIT_ALARM_PR_LOW:
+    case LAP_LIMIT_ALARM_PR_HIGH:
+        return SUB_PARAM_LAP_PR;
+    case RAP_LIMIT_ALARM_PR_LOW:
+    case RAP_LIMIT_ALARM_PR_HIGH:
+        return SUB_PARAM_RAP_PR;
+    case ICP_LIMIT_ALARM_PR_LOW:
+    case ICP_LIMIT_ALARM_PR_HIGH:
+        return SUB_PARAM_ICP_PR;
+    case AUXP1_LIMIT_ALARM_PR_LOW:
+    case AUXP1_LIMIT_ALARM_PR_HIGH:
+        return SUB_PARAM_AUXP1_PR;
+    case AUXP2_LIMIT_ALARM_PR_LOW:
+    case AUXP2_LIMIT_ALARM_PR_HIGH:
+        return SUB_PARAM_AUXP2_PR;
     default:
         return SUB_PARAM_NONE;
     }
@@ -247,32 +197,91 @@ AlarmPriority IBPLimitAlarm::getAlarmPriority(int id)
  *************************************************************************************************/
 int IBPLimitAlarm::getValue(int id)
 {
+    IBPPressureName ibp1 = ibpParam.getEntitle(IBP_INPUT_1);
+    IBPPressureName ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
+    IBPPressureName idName = ibpParam.getEntitle(static_cast<IBPLimitAlarmType>(id));
     switch (id)
     {
-    case IBP1_LIMIT_ALARM_SYS_LOW:
-    case IBP1_LIMIT_ALARM_SYS_HIGH:
-        return ibpParam.getParamData(IBP_INPUT_1).sys;
-    case IBP1_LIMIT_ALARM_DIA_LOW:
-    case IBP1_LIMIT_ALARM_DIA_HIGH:
-        return ibpParam.getParamData(IBP_INPUT_1).dia;
-    case IBP1_LIMIT_ALARM_MEAN_LOW:
-    case IBP1_LIMIT_ALARM_MEAN_HIGH:
-        return ibpParam.getParamData(IBP_INPUT_1).mean;
-    case IBP1_LIMIT_ALARM_PR_LOW:
-    case IBP1_LIMIT_ALARM_PR_HIGH:
-        return ibpParam.getParamData(IBP_INPUT_1).pr;
-    case IBP2_LIMIT_ALARM_SYS_LOW:
-    case IBP2_LIMIT_ALARM_SYS_HIGH:
-        return ibpParam.getParamData(IBP_INPUT_2).sys;
-    case IBP2_LIMIT_ALARM_DIA_LOW:
-    case IBP2_LIMIT_ALARM_DIA_HIGH:
-        return ibpParam.getParamData(IBP_INPUT_2).dia;
-    case IBP2_LIMIT_ALARM_MEAN_LOW:
-    case IBP2_LIMIT_ALARM_MEAN_HIGH:
-        return ibpParam.getParamData(IBP_INPUT_2).mean;
-    case IBP2_LIMIT_ALARM_PR_LOW:
-    case IBP2_LIMIT_ALARM_PR_HIGH:
-        return ibpParam.getParamData(IBP_INPUT_2).pr;
+    case ART_LIMIT_ALARM_SYS_LOW:
+    case ART_LIMIT_ALARM_SYS_HIGH:
+    case PA_LIMIT_ALARM_SYS_LOW:
+    case PA_LIMIT_ALARM_SYS_HIGH:
+    case AUXP1_LIMIT_ALARM_SYS_LOW:
+    case AUXP1_LIMIT_ALARM_SYS_HIGH:
+    case AUXP2_LIMIT_ALARM_SYS_LOW:
+    case AUXP2_LIMIT_ALARM_SYS_HIGH:
+        if (idName == ibp1)
+        {
+            return ibpParam.getParamData(IBP_INPUT_1).sys;
+        }
+        else if (idName == ibp2)
+        {
+            return ibpParam.getParamData(IBP_INPUT_2).sys;
+        }
+    case ART_LIMIT_ALARM_DIA_LOW:
+    case ART_LIMIT_ALARM_DIA_HIGH:
+    case PA_LIMIT_ALARM_DIA_LOW:
+    case PA_LIMIT_ALARM_DIA_HIGH:
+    case AUXP1_LIMIT_ALARM_DIA_LOW:
+    case AUXP1_LIMIT_ALARM_DIA_HIGH:
+    case AUXP2_LIMIT_ALARM_DIA_LOW:
+    case AUXP2_LIMIT_ALARM_DIA_HIGH:
+        if (idName == ibp1)
+        {
+            return ibpParam.getParamData(IBP_INPUT_1).dia;
+        }
+        else if (idName == ibp2)
+        {
+            return ibpParam.getParamData(IBP_INPUT_2).dia;
+        }
+    case ART_LIMIT_ALARM_MEAN_LOW:
+    case ART_LIMIT_ALARM_MEAN_HIGH:
+    case PA_LIMIT_ALARM_MEAN_LOW:
+    case PA_LIMIT_ALARM_MEAN_HIGH:
+    case CVP_LIMIT_ALARM_MEAN_LOW:
+    case CVP_LIMIT_ALARM_MEAN_HIGH:
+    case LAP_LIMIT_ALARM_MEAN_LOW:
+    case LAP_LIMIT_ALARM_MEAN_HIGH:
+    case RAP_LIMIT_ALARM_MEAN_LOW:
+    case RAP_LIMIT_ALARM_MEAN_HIGH:
+    case ICP_LIMIT_ALARM_MEAN_LOW:
+    case ICP_LIMIT_ALARM_MEAN_HIGH:
+    case AUXP1_LIMIT_ALARM_MEAN_LOW:
+    case AUXP1_LIMIT_ALARM_MEAN_HIGH:
+    case AUXP2_LIMIT_ALARM_MEAN_LOW:
+    case AUXP2_LIMIT_ALARM_MEAN_HIGH:
+        if (idName == ibp1)
+        {
+            return ibpParam.getParamData(IBP_INPUT_1).mean;
+        }
+        else if (idName == ibp2)
+        {
+            return ibpParam.getParamData(IBP_INPUT_2).mean;
+        }
+    case ART_LIMIT_ALARM_PR_LOW:
+    case ART_LIMIT_ALARM_PR_HIGH:
+    case PA_LIMIT_ALARM_PR_LOW:
+    case PA_LIMIT_ALARM_PR_HIGH:
+    case CVP_LIMIT_ALARM_PR_LOW:
+    case CVP_LIMIT_ALARM_PR_HIGH:
+    case LAP_LIMIT_ALARM_PR_LOW:
+    case LAP_LIMIT_ALARM_PR_HIGH:
+    case RAP_LIMIT_ALARM_PR_LOW:
+    case RAP_LIMIT_ALARM_PR_HIGH:
+    case ICP_LIMIT_ALARM_PR_LOW:
+    case ICP_LIMIT_ALARM_PR_HIGH:
+    case AUXP1_LIMIT_ALARM_PR_LOW:
+    case AUXP1_LIMIT_ALARM_PR_HIGH:
+    case AUXP2_LIMIT_ALARM_PR_LOW:
+    case AUXP2_LIMIT_ALARM_PR_HIGH:
+        if (idName == ibp1)
+        {
+            return ibpParam.getParamData(IBP_INPUT_1).pr;
+        }
+        else if (idName == ibp2)
+        {
+            return ibpParam.getParamData(IBP_INPUT_2).pr;
+        }
     default:
         return -1;
     }
@@ -293,8 +302,10 @@ int IBPLimitAlarm::getUpper(int id)
 {
     SubParamID subID = getSubParamID(id);
     UnitType unit;
-    if (id == IBP1_LIMIT_ALARM_PR_LOW || id == IBP1_LIMIT_ALARM_PR_HIGH ||
-            id == IBP2_LIMIT_ALARM_PR_LOW || id == IBP2_LIMIT_ALARM_PR_HIGH)
+    if (id == ART_LIMIT_ALARM_PR_LOW || id == PA_LIMIT_ALARM_PR_HIGH ||
+            id == CVP_LIMIT_ALARM_PR_LOW || id == LAP_LIMIT_ALARM_PR_HIGH ||
+            id == RAP_LIMIT_ALARM_PR_LOW || id == ICP_LIMIT_ALARM_PR_HIGH ||
+            id == AUXP1_LIMIT_ALARM_PR_LOW || id == AUXP2_LIMIT_ALARM_PR_HIGH)
     {
         unit = UNIT_BPM;
     }
@@ -312,8 +323,10 @@ int IBPLimitAlarm::getLower(int id)
 {
     SubParamID subID = getSubParamID(id);
     UnitType unit;
-    if (id == IBP1_LIMIT_ALARM_PR_LOW || id == IBP1_LIMIT_ALARM_PR_HIGH ||
-            id == IBP2_LIMIT_ALARM_PR_LOW || id == IBP2_LIMIT_ALARM_PR_HIGH)
+    if (id == ART_LIMIT_ALARM_PR_LOW || id == PA_LIMIT_ALARM_PR_HIGH ||
+            id == CVP_LIMIT_ALARM_PR_LOW || id == LAP_LIMIT_ALARM_PR_HIGH ||
+            id == RAP_LIMIT_ALARM_PR_LOW || id == ICP_LIMIT_ALARM_PR_HIGH ||
+            id == AUXP1_LIMIT_ALARM_PR_LOW || id == AUXP2_LIMIT_ALARM_PR_HIGH)
     {
         unit = UNIT_BPM;
     }
@@ -329,6 +342,27 @@ int IBPLimitAlarm::getLower(int id)
  *************************************************************************************************/
 int IBPLimitAlarm::getCompare(int value, int id)
 {
+    IBPPressureName ibp1 = ibpParam.getEntitle(IBP_INPUT_1);
+    IBPPressureName ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
+    IBPLimitAlarmType type = static_cast<IBPLimitAlarmType>(id);
+    IBPPressureName idName = ibpParam.getEntitle(type);
+    if (idName != ibp1 && idName != ibp2)
+    {
+        return 0;
+    }
+
+    if (type == ART_LIMIT_ALARM_PR_HIGH || type == ART_LIMIT_ALARM_PR_LOW ||
+            type == PA_LIMIT_ALARM_PR_HIGH || type == PA_LIMIT_ALARM_PR_LOW ||
+            type == CVP_LIMIT_ALARM_PR_HIGH || type == CVP_LIMIT_ALARM_PR_LOW ||
+            type == LAP_LIMIT_ALARM_PR_HIGH || type == LAP_LIMIT_ALARM_PR_LOW ||
+            type == RAP_LIMIT_ALARM_PR_HIGH || type == RAP_LIMIT_ALARM_PR_LOW ||
+            type == ICP_LIMIT_ALARM_PR_HIGH || type == ICP_LIMIT_ALARM_PR_LOW ||
+            type == AUXP1_LIMIT_ALARM_PR_HIGH || type == AUXP1_LIMIT_ALARM_PR_LOW ||
+            type == AUXP2_LIMIT_ALARM_PR_HIGH || type == AUXP2_LIMIT_ALARM_PR_LOW)
+    {
+        return 0;
+    }
+
     if (0 == id % 2)
     {
         if (value < getLower(id))
@@ -366,73 +400,18 @@ const char *IBPLimitAlarm::toString(int id)
  *************************************************************************************************/
 void IBPLimitAlarm::notifyAlarm(int id, bool isAlarm)
 {
-    IBPLimitAlarmType alarmID = (IBPLimitAlarmType)id;
     SubParamID subID = getSubParamID(id);
+    IBPPressureName ibp1 = ibpParam.getEntitle(IBP_INPUT_1);
+    IBPPressureName ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
+    IBPPressureName idName = ibpParam.getEntitle(static_cast<IBPLimitAlarmType>(id));
 
-    IBPSignalInput ibp;
-    switch (alarmID)
+    if (idName == ibp1)
     {
-    case IBP1_LIMIT_ALARM_SYS_LOW:
-        _isSysAlarm |= isAlarm;
-        break;
-    case IBP1_LIMIT_ALARM_SYS_HIGH:
-        _isSysAlarm |= isAlarm;
-        ibp = IBP_INPUT_1;
-        ibpParam.noticeLimitAlarm(subID, _isSysAlarm, ibp);
-        _isSysAlarm = false;
-        break;
-
-    case IBP1_LIMIT_ALARM_DIA_LOW:
-        _isDiaAlarm |= isAlarm;
-        break;
-    case IBP1_LIMIT_ALARM_DIA_HIGH:
-        _isDiaAlarm |= isAlarm;
-        ibp = IBP_INPUT_1;
-        ibpParam.noticeLimitAlarm(subID, _isDiaAlarm, ibp);
-        _isDiaAlarm = false;
-        break;
-
-    case IBP1_LIMIT_ALARM_MEAN_LOW:
-        _isMapAlarm |= isAlarm;
-        break;
-    case IBP1_LIMIT_ALARM_MEAN_HIGH:
-        _isMapAlarm |= isAlarm;
-        ibp = IBP_INPUT_1;
-        ibpParam.noticeLimitAlarm(subID, _isMapAlarm, ibp);
-        _isMapAlarm = false;
-        break;
-
-    case IBP2_LIMIT_ALARM_SYS_LOW:
-        _isSysAlarm |= isAlarm;
-        break;
-    case IBP2_LIMIT_ALARM_SYS_HIGH:
-        _isSysAlarm |= isAlarm;
-        ibp = IBP_INPUT_2;
-        ibpParam.noticeLimitAlarm(subID, _isSysAlarm, ibp);
-        _isSysAlarm = false;
-        break;
-
-    case IBP2_LIMIT_ALARM_DIA_LOW:
-        _isDiaAlarm |= isAlarm;
-        break;
-    case IBP2_LIMIT_ALARM_DIA_HIGH:
-        _isDiaAlarm |= isAlarm;
-        ibp = IBP_INPUT_2;
-        ibpParam.noticeLimitAlarm(subID, _isDiaAlarm, ibp);
-        _isDiaAlarm = false;
-        break;
-
-    case IBP2_LIMIT_ALARM_MEAN_LOW:
-        _isMapAlarm |= isAlarm;
-        break;
-    case IBP2_LIMIT_ALARM_MEAN_HIGH:
-        _isMapAlarm |= isAlarm;
-        ibp = IBP_INPUT_2;
-        ibpParam.noticeLimitAlarm(subID, _isMapAlarm, ibp);
-        _isMapAlarm = false;
-        break;
-    default:
-        break;
+        ibpParam.noticeLimitAlarm(subID, isAlarm, IBP_INPUT_1);
+    }
+    else if (idName == ibp2)
+    {
+        ibpParam.noticeLimitAlarm(subID, isAlarm, IBP_INPUT_2);
     }
 }
 
@@ -441,15 +420,13 @@ void IBPLimitAlarm::notifyAlarm(int id, bool isAlarm)
  *************************************************************************************************/
 IBPLimitAlarm::~IBPLimitAlarm()
 {
-
 }
 
 /**************************************************************************************************
  * constructor
  *************************************************************************************************/
-IBPLimitAlarm::IBPLimitAlarm() : _isSysAlarm(false), _isDiaAlarm(false), _isMapAlarm(false)
+IBPLimitAlarm::IBPLimitAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -477,32 +454,36 @@ int IBPOneShotAlarm::getAlarmSourceNR()
 /**************************************************************************************************
  * one shot alarm id corresponding to waveform ID
  *************************************************************************************************/
-WaveformID IBPOneShotAlarm::getWaveformID(int /*id*/)
+WaveformID IBPOneShotAlarm::getWaveformID(int id)
 {
+    Q_UNUSED(id)
     return WAVE_NONE;
 }
 
 /**************************************************************************************************
  * one shot alarm id corresponding to param ID
  *************************************************************************************************/
-SubParamID IBPOneShotAlarm::getSubParamID(int /*id*/)
+SubParamID IBPOneShotAlarm::getSubParamID(int id)
 {
+    Q_UNUSED(id)
     return SUB_PARAM_NONE;
 }
 
 /**************************************************************************************************
  * one shot alarm priority.
  *************************************************************************************************/
-AlarmPriority IBPOneShotAlarm::getAlarmPriority(int /*id*/)
+AlarmPriority IBPOneShotAlarm::getAlarmPriority(int id)
 {
+    Q_UNUSED(id)
     return ALARM_PRIO_LOW;
 }
 
 /**************************************************************************************************
  * one shot alarm type.
  *************************************************************************************************/
-AlarmType IBPOneShotAlarm::getAlarmType(int /*id*/)
+AlarmType IBPOneShotAlarm::getAlarmType(int id)
 {
+    Q_UNUSED(id)
     return ALARM_TYPE_TECH;
 }
 
@@ -519,7 +500,6 @@ bool IBPOneShotAlarm::isAlarmed(int id)
  *************************************************************************************************/
 void IBPOneShotAlarm::notifyAlarm(int /*id*/, bool /*isAlarm*/)
 {
-
 }
 
 /**************************************************************************************************
@@ -533,16 +513,18 @@ const char *IBPOneShotAlarm::toString(int id)
 /**************************************************************************************************
  * enable one shot alarm.
  *************************************************************************************************/
-bool IBPOneShotAlarm::isAlarmEnable(int /*id*/)
+bool IBPOneShotAlarm::isAlarmEnable(int id)
 {
+    Q_UNUSED(id)
     return true;
 }
 
 /**************************************************************************************************
  *  remove alarm display information later latch.
  *************************************************************************************************/
-bool IBPOneShotAlarm::isRemoveAfterLatch(int /*id*/)
+bool IBPOneShotAlarm::isRemoveAfterLatch(int id)
 {
+    Q_UNUSED(id)
     return false;
 }
 
@@ -551,7 +533,6 @@ bool IBPOneShotAlarm::isRemoveAfterLatch(int /*id*/)
  *************************************************************************************************/
 IBPOneShotAlarm::~IBPOneShotAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -559,5 +540,4 @@ IBPOneShotAlarm::~IBPOneShotAlarm()
  *************************************************************************************************/
 IBPOneShotAlarm::IBPOneShotAlarm()
 {
-
 }

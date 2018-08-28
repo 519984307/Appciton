@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/28
+ **/
+
 #pragma once
 #include <QMap>
 #include <QVector>
@@ -15,7 +25,6 @@ enum ParamID
     PARAM_TEMP,
     PARAM_DUP_ECG,
     PARAM_DUP_RESP,
-	
     PARAM_IBP,
     PARAM_AG,
     PARAM_CO,
@@ -37,7 +46,7 @@ enum SubParamID
     SUB_PARAM_NIBP_DIA,
     SUB_PARAM_NIBP_MAP,
 
-    //IBP
+    // IBP
     SUB_PARAM_ART_SYS,
     SUB_PARAM_ART_DIA,
     SUB_PARAM_ART_MAP,
@@ -63,12 +72,12 @@ enum SubParamID
     SUB_PARAM_AUXP2_MAP,
     SUB_PARAM_AUXP2_PR,
 
-    //CO
+    // CO
     SUB_PARAM_CO_CO,
     SUB_PARAM_CO_CI,
     SUB_PARAM_CO_TB,
 
-    //AG
+    // AG
     SUB_PARAM_ETCO2,
     SUB_PARAM_FICO2,
     SUB_PARAM_ETN2O,
@@ -140,8 +149,14 @@ enum WaveformID
     WAVE_AA2,
     WAVE_O2,
 
-    WAVE_IBP1,
-    WAVE_IBP2,
+    WAVE_ART,
+    WAVE_PA,
+    WAVE_CVP,
+    WAVE_LAP,
+    WAVE_RAP,
+    WAVE_ICP,
+    WAVE_AUXP1,
+    WAVE_AUXP2,
 
     WAVE_ECG_CALC,
 

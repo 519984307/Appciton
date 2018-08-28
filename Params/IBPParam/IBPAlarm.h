@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/27
+ **/
+
 #pragma once
 #include "AlarmParamIFace.h"
 #include "IBPSymbol.h"
@@ -56,9 +66,6 @@ public:
     IBPLimitAlarm();
     virtual ~IBPLimitAlarm();
 private:
-    bool _isSysAlarm;
-    bool _isDiaAlarm;
-    bool _isMapAlarm;
 };
 #define ibpLimitAlarm (IBPLimitAlarm::construction())
 

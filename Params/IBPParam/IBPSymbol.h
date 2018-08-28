@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/27
+ **/
+
 #pragma once
 #include <QString>
 #include "IBPDefine.h"
@@ -56,16 +66,37 @@ public:
     {
         static const char *symbol[IBP_LIMIT_ALARM_NR] =
         {
-            "IBP1SYSLow", "IBP1SYSHigh",
-            "IBP1DIALow", "IBP1DIAHigh",
-            "IBP1MEANLow", "IBP1MEANHigh",
-            "IBP1PRLow", "IBP1PRHigh",
+            "ARTSYSLow", "ARTSYSHigh",
+            "ARTDIALow", "ARTDIAHigh",
+            "ARTMEANLow", "ARTMEANHigh",
+            "ARTPRLow", "ARTPRHigh",
 
-            "IBP2SYSLow", "IBP2SYSHigh",
-            "IBP2DIALow", "IBP2DIAHigh",
-            "IBP2MEANLow", "IBP2MEANHigh",
-            "IBP2PRLow", "IBP2PRHigh",
+            "PASYSLow", "PASYSHigh",
+            "PADIALow", "PADIAHigh",
+            "PAMEANLow", "PAMEANHigh",
+            "PAPRLow", "PAPRHigh",
 
+            "CVPMEANLow", "CVPMEANHigh",
+            "CVPPRLow", "CVPPRHigh",
+
+            "LAPMEANLow", "LAPMEANHigh",
+            "LAPPRLow", "LAPPRHigh",
+
+            "RAPMEANLow", "RAPMEANHigh",
+            "RAPPRLow", "RAPPRHigh",
+
+            "ICPMEANLow", "ICPMEANHigh",
+            "ICPPRLow", "ICPPRHigh",
+
+            "AUXP1SYSLow", "AUXP1SYSHigh",
+            "AUXP1DIALow", "AUXP1DIAHigh",
+            "AUXP1MEANLow", "AUXP1MEANHigh",
+            "AUXP1PRLow", "AUXP1PRHigh",
+
+            "AUXP2SYSLow", "AUXP2SYSHigh",
+            "AUXP2DIALow", "AUXP2DIAHigh",
+            "AUXP2MEANLow", "AUXP2MEANHigh",
+            "AUXP2PRLow", "AUXP2PRHigh",
         };
         return symbol[index];
     }

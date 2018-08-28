@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/28
+ **/
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QStylePainter>
@@ -20,8 +30,8 @@ struct DemoWaveDataDesc
     const char *waveformName;       // 对应的波形名称。
     const WaveformID waveID;        // 波形标识。
     Param *param;                   // 处理数据的Param对象。
-    short sampleRate;               // 采样率。
-    int error;                      // 数据产生时的误差记录。
+//    short sampleRate;               // 采样率。
+//    int error;                      // 数据产生时的误差记录。
 };
 
 static DemoWaveDataDesc _demoWaveData[WAVE_NR] =
@@ -45,8 +55,14 @@ static DemoWaveDataDesc _demoWaveData[WAVE_NR] =
     {"AA1",       WAVE_AA1,       NULL, 50, 0},
     {"AA2",       WAVE_AA2,       NULL, 50, 0},
     {"O2",        WAVE_O2,        NULL, 50, 0},
-    {"IBP1",      WAVE_IBP1,      NULL, 50, 0},
-    {"IBP2",      WAVE_IBP2,      NULL, 50, 0},
+    {"ART" ,      WAVE_ART,       NULL, 50, 0},
+    {"PA",        WAVE_PA,        NULL, 50, 0},
+    {"CVP",       WAVE_CVP,       NULL, 50, 0},
+    {"LAP",       WAVE_LAP,       NULL, 50, 0},
+    {"RAP",       WAVE_RAP,       NULL, 50, 0},
+    {"ICP",       WAVE_ICP,       NULL, 50, 0},
+    {"AUXP1",     WAVE_AUXP1,     NULL, 50, 0},
+    {"AUXP2",     WAVE_AUXP2,     NULL, 50, 0},
 };
 
 /**************************************************************************************************
@@ -56,33 +72,33 @@ void WindowWidget::layoutExec()
 {
     for (int i = 0; i < 48; i++)
     {
-        _pixmap[i] = new QPixmap(QSize(width()/6-5, height()/8-5));
+        _pixmap[i] = new QPixmap(QSize(width() / 6 - 5, height() / 8 - 5));
         _pixmap[i]->fill(Qt::red);
     }
 
     // ECG_I
-    _wavePixmap[WAVE_ECG_I] = new QPixmap(QSize(width()/6*4-5, height()/8-5));
+    _wavePixmap[WAVE_ECG_I] = new QPixmap(QSize(width() / 6 * 4 - 5, height() / 8 - 5));
     _wavePixmap[WAVE_ECG_I]->fill(Qt::black);
     _painter = new QPainter(_wavePixmap[WAVE_ECG_I]);
-    _drawCurves(WAVE_ECG_I,_painter,255);
+    _drawCurves(WAVE_ECG_I, _painter, 255);
 
     // WAVE_RESP
-    _wavePixmap[WAVE_RESP] = new QPixmap(QSize(width()/6*4-5, height()/8-5));
+    _wavePixmap[WAVE_RESP] = new QPixmap(QSize(width() / 6 * 4 - 5, height() / 8 - 5));
     _wavePixmap[WAVE_RESP]->fill(Qt::black);
     _painter = new QPainter(_wavePixmap[WAVE_RESP]);
-    _drawCurves(WAVE_RESP,_painter,255);
+    _drawCurves(WAVE_RESP, _painter, 255);
 
     // SPO2
-    _wavePixmap[WAVE_SPO2] = new QPixmap(QSize(width()/6*4-5, height()/8-5));
+    _wavePixmap[WAVE_SPO2] = new QPixmap(QSize(width() / 6 * 4 - 5, height() / 8 - 5));
     _wavePixmap[WAVE_SPO2]->fill(Qt::black);
     _painter = new QPainter(_wavePixmap[WAVE_SPO2]);
-    _drawCurves(WAVE_SPO2,_painter,255);
+    _drawCurves(WAVE_SPO2, _painter, 255);
 
     // WAVE_CO2
-    _wavePixmap[WAVE_CO2] = new QPixmap(QSize(width()/6*4-5, height()/8-5));
+    _wavePixmap[WAVE_CO2] = new QPixmap(QSize(width() / 6 * 4 - 5, height() / 8 - 5));
     _wavePixmap[WAVE_CO2]->fill(Qt::black);
     _painter = new QPainter(_wavePixmap[WAVE_CO2]);
-    _drawCurves(WAVE_CO2,_painter,50);
+    _drawCurves(WAVE_CO2, _painter, 50);
 
 
 //    int wi = windowManager.getPopMenuWidth() * 0.8;
@@ -107,21 +123,22 @@ void WindowWidget::keyPressEvent(QKeyEvent *e)
 {
     switch (e->key())
     {
-        case Qt::Key_Up:
-        case Qt::Key_Left:
-            focusPreviousChild();
-            break;
-        case Qt::Key_Down:
-        case Qt::Key_Right:
-            focusNextChild();
-            break;
-        default:
-            break;
+    case Qt::Key_Up:
+    case Qt::Key_Left:
+        focusPreviousChild();
+        break;
+    case Qt::Key_Down:
+    case Qt::Key_Right:
+        focusNextChild();
+        break;
+    default:
+        break;
     }
 }
 
-void WindowWidget::paintEvent(QPaintEvent */*event*/)
+void WindowWidget::paintEvent(QPaintEvent *event)
 {
+    Q_UNUSED(event)
     QStylePainter painter(this);
 
     QPainter combinepainter(resultImage);
@@ -134,10 +151,10 @@ void WindowWidget::paintEvent(QPaintEvent */*event*/)
 //            combinepainter.drawImage(((width() - 4) / 6) * x + 2, ((height() - 4) / 8) * y + 2, _pixmap[(y * 6) + x]->toImage());
 //        }
 //    }
-    combinepainter.drawImage(2, ((height() - 4) / 8)* 0 + 2, _wavePixmap[WAVE_ECG_I]->toImage());
-    combinepainter.drawImage(2, ((height() - 4) / 8)* 1 + 2, _wavePixmap[WAVE_SPO2]->toImage());
-    combinepainter.drawImage(2, ((height() - 4) / 8)* 2 + 2, _wavePixmap[WAVE_RESP]->toImage());
-    combinepainter.drawImage(2, ((height() - 4) / 8)* 3 + 2, _wavePixmap[WAVE_CO2]->toImage());
+    combinepainter.drawImage(2, ((height() - 4) / 8) * 0 + 2, _wavePixmap[WAVE_ECG_I]->toImage());
+    combinepainter.drawImage(2, ((height() - 4) / 8) * 1 + 2, _wavePixmap[WAVE_SPO2]->toImage());
+    combinepainter.drawImage(2, ((height() - 4) / 8) * 2 + 2, _wavePixmap[WAVE_RESP]->toImage());
+    combinepainter.drawImage(2, ((height() - 4) / 8) * 3 + 2, _wavePixmap[WAVE_CO2]->toImage());
 
     combinepainter.setCompositionMode(QPainter::CompositionMode_SourceOver);
     _drawGrid(&combinepainter);
@@ -145,12 +162,12 @@ void WindowWidget::paintEvent(QPaintEvent */*event*/)
     combinepainter.fillRect(resultImage->rect(), Qt::black);
     combinepainter.end();
 
-    painter.drawImage(0,0,*resultImage);
-
+    painter.drawImage(0, 0, *resultImage);
 }
 
-void WindowWidget::focusInEvent(QFocusEvent */*e*/)
+void WindowWidget::focusInEvent(QFocusEvent *e)
 {
+    Q_UNUSED(e)
     if (hasFocus())
     {
         if (_focusNum >= 0 && _focusNum <= 47)
@@ -174,7 +191,7 @@ bool WindowWidget::focusPreviousChild()
     painterPre.setRenderHint(QPainter::Antialiasing, true);
     QRect painterPreR = _pixmap[_focusNum]->rect();
     painterPreR.adjust(_focusedBorderWidth / 2, _focusedBorderWidth / 2,
-             -_focusedBorderWidth / 2, -_focusedBorderWidth / 2);
+                       -_focusedBorderWidth / 2, -_focusedBorderWidth / 2);
     painterPre.drawRoundedRect(painterPreR, _focusedBorderWidth, _focusedBorderWidth);
     update();
 
@@ -190,7 +207,7 @@ bool WindowWidget::focusPreviousChild()
         painterNext.setRenderHint(QPainter::Antialiasing, true);
         QRect painterNextR = _pixmap[_focusNum]->rect();
         painterNextR.adjust(_focusedBorderWidth / 2, _focusedBorderWidth / 2,
-                 -_focusedBorderWidth / 2, -_focusedBorderWidth / 2);
+                            -_focusedBorderWidth / 2, -_focusedBorderWidth / 2);
         painterNext.drawRoundedRect(painterNextR, _focusedBorderWidth, _focusedBorderWidth);
         update();
         return false;
@@ -204,7 +221,7 @@ bool WindowWidget::focusNextChild()
     painterPre.setRenderHint(QPainter::Antialiasing, true);
     QRect painterPreR = _pixmap[_focusNum]->rect();
     painterPreR.adjust(_focusedBorderWidth / 2, _focusedBorderWidth / 2,
-             -_focusedBorderWidth / 2, -_focusedBorderWidth / 2);
+                       -_focusedBorderWidth / 2, -_focusedBorderWidth / 2);
     painterPre.drawRoundedRect(painterPreR, _focusedBorderWidth, _focusedBorderWidth);
     update();
 
@@ -221,7 +238,7 @@ bool WindowWidget::focusNextChild()
         painterNext.setRenderHint(QPainter::Antialiasing, true);
         QRect painterNextR = _pixmap[_focusNum]->rect();
         painterNextR.adjust(_focusedBorderWidth / 2, _focusedBorderWidth / 2,
-                 -_focusedBorderWidth / 2, -_focusedBorderWidth / 2);
+                            -_focusedBorderWidth / 2, -_focusedBorderWidth / 2);
         painterNext.drawRoundedRect(painterNextR, _focusedBorderWidth, _focusedBorderWidth);
         update();
         return false;
@@ -230,8 +247,6 @@ bool WindowWidget::focusNextChild()
 
 void WindowWidget::_drawCurves(WaveformID id, QPainter *painter, int maxWaveform)
 {
-    int y;
-
     QString path("/usr/local/nPM/demodata/");
 
     _demoFile[id].setFileName(path + _demoWaveData[id].waveformName);
@@ -242,15 +257,16 @@ void WindowWidget::_drawCurves(WaveformID id, QPainter *painter, int maxWaveform
         return;
     }
 
-    int ret = 0;
-    int elapsed = 1;
+//    int elapsed = 1;
     char data;
-    short d;
-    int len = _demoWaveData[id].sampleRate * elapsed + _demoWaveData[id].error;
+//    int len = _demoWaveData[id].sampleRate * elapsed + _demoWaveData[id].error;
     QPolygon polyline;
 
-    for (int x = 0; x < (width()/6*4*2); x++)
+    for (int x = 0; x < (width() / 6 * 4 * 2); x++)
     {
+        int y;
+        int ret = 0;
+        short d;
         ret = _demoFile[id].read(&data, 1);
         if (ret <= 0)
         {
@@ -265,7 +281,7 @@ void WindowWidget::_drawCurves(WaveformID id, QPainter *painter, int maxWaveform
             y = 0;
         }
 
-        polyline.append(QPoint(x/2,y));
+        polyline.append(QPoint(x / 2, y));
     }
 
 //    QPen linePen(colorManager.getColor(paramInfo.getParamName(PARAM_ECG)),1);
@@ -273,7 +289,7 @@ void WindowWidget::_drawCurves(WaveformID id, QPainter *painter, int maxWaveform
     painter->setPen(linePen);
     painter->drawPolyline(polyline);
 
-    painter->drawText(0, 0, 50, 25, Qt::AlignTop | Qt::AlignLeft,_demoWaveData[id].waveformName);
+    painter->drawText(0, 0, 50, 25, Qt::AlignTop | Qt::AlignLeft, _demoWaveData[id].waveformName);
 }
 
 void WindowWidget::_drawGrid(QPainter *painter)
@@ -285,15 +301,15 @@ void WindowWidget::_drawGrid(QPainter *painter)
     painter->setPen(gridPen);
     double cur_row_pos = 2 + row;
     double cur_col_pos = 2 + col;
-    while (cur_row_pos < height()-2)
+    while (cur_row_pos < height() - 2)
     {
-        painter->drawLine(2,cur_row_pos,width()-2,cur_row_pos);
+        painter->drawLine(2, cur_row_pos, width() - 2, cur_row_pos);
         cur_row_pos += row;
     }
 
-    while (cur_col_pos < width()-2)
+    while (cur_col_pos < width() - 2)
     {
-        painter->drawLine(cur_col_pos,2,cur_col_pos,height()-2);
+        painter->drawLine(cur_col_pos, 2, cur_col_pos, height() - 2);
         cur_col_pos += col;
     }
 }
@@ -315,5 +331,4 @@ WindowWidget::WindowWidget() : QWidget()
  *************************************************************************************************/
 WindowWidget::~WindowWidget()
 {
-
 }
