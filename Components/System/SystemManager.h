@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
+ **/
+
 #pragma once
 #include <QObject>
 #include <QBitArray>
@@ -78,6 +88,13 @@ enum ModulePoweronTestStatus
     SELFTEST_STATUS_NR
 };
 
+enum WorkMode
+{
+    WORK_MODE_NORMAL = 0,
+    WORK_MODE_DEMO,
+    WORK_MODE_NR,
+};
+
 class QTimer;
 class SystemSelftestMenu;
 class SystemManager : public QObject
@@ -146,8 +163,31 @@ public:
     bool isGoingToTrunOff() const {return _isTurnOff;}
     void turnOff(bool flag);
 
+    /**
+     * @brief getCurWorkMode get the current work mode
+     * @return the current work mode
+     */
+    WorkMode getCurWorkMode() const;
+
+    /**
+     * @brief setWorkMode set the work mode
+     * @param workmode
+     */
+    void setWorkMode(WorkMode workmode);
+
+
 private:
     bool _isTestModuleSupport(ModulePoweronTestResult module);
+
+    /**
+     * @brief enterDemoMode enter the demo mode
+     */
+    void enterDemoMode();
+
+    /**
+     * @brief enterNormalMode enter normal mode
+     */
+    void enterNormalMode();
 
 #ifdef Q_WS_X11
 public:
@@ -179,6 +219,7 @@ private:
     QTimer *_publishTestTimer;
     QThread *_workerThread;
     SystemSelftestMenu *_selfTestResult;
+    WorkMode _workMode;
     bool _selfTestFinish;
     bool _isTurnOff;
 };

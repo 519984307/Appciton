@@ -76,7 +76,7 @@ void ECGWaveWidget::_autoGainHandle(int data)
 
     if (gain != static_cast<int>(ecgParam.getGain(ecgParam.waveIDToLeadID((WaveformID)getID()))))
     {
-        ecgParam.setGain((ECGGain)gain, getID());
+        ecgParam.setGain(static_cast<ECGGain>(gain), getID());
     }
 }
 
@@ -147,21 +147,6 @@ double ECGWaveWidget::_calcRulerHeight(ECGGain gain)
 }
 
 /**************************************************************************************************
- * 根据波形增益初始化标尺。
- * 参数:
- *      gain: 波形增益。
- *************************************************************************************************/
-// void ECGWaveWidget::_initRuler(ECGGain gain)
-// {
-//    if (!_ruler)
-//    {
-//        return;
-//    }
-
-//    _ruler->setRulerHeight(_calcRulerHeight(gain));
-// }
-
-/**************************************************************************************************
  * 根据校准信息初始化波形数值范围。
  *************************************************************************************************/
 void ECGWaveWidget::_initValueRange(ECGGain gain)
@@ -189,9 +174,10 @@ void ECGWaveWidget::_initValueRange(ECGGain gain)
 /**************************************************************************************************
  * 鼠标释放事件，弹出菜单。
  *************************************************************************************************/
-void ECGWaveWidget::_releaseHandle(IWidget *iWidget)
+void ECGWaveWidget::_releaseHandle(IWidget * w)
 {
-    QWidget *p = static_cast<QWidget *>(parent());
+    Q_UNUSED(w)
+    QWidget *p = qobject_cast<QWidget *>(parent());
     if (p == NULL)
     {
         return;
@@ -604,6 +590,11 @@ void ECGWaveWidget::updateLeadDisplayName(const QString &name)
     setTitle(name);
 }
 
+void ECGWaveWidget::updateWaveConfig()
+{
+    _loadConfig();
+}
+
 /**************************************************************************************************
  * set wave notify message
  *************************************************************************************************/
@@ -692,7 +683,7 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
             for (int i = beginIndex; i <= endIndex; i++)
             {
                 // if (flagBuf(i) & ECG_INTERNAL_FLAG_BIT)//ipace
-                if ((flagBuf(i) & ECG_INTERNAL_FLAG_BIT) && !(flagBuf(i) & INVALID_WAVE_FALG_BIT))// ipace
+                if ((flagBuf(i) & ECG_INTERNAL_FLAG_BIT) && !(flagBuf(i) & INVALID_WAVE_FALG_BIT))  // ipace
                 {
                     QPoint start(xBuf(i), margin.top());
                     QPoint end(xBuf(i), this->rect().height() - 10);
@@ -700,7 +691,7 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
                 }
 
 //                if (flagBuf(i) & (ECG_EXTERNAL_DOT_FLAG_BIT|ECG_EXTERNAL_SOLD_FLAG_BIT))//epace
-                if (flagBuf(i) & ECG_EXTERNAL_SOLD_FLAG_BIT)// epace
+                if (flagBuf(i) & ECG_EXTERNAL_SOLD_FLAG_BIT)  // epace
                 {
                     QPoint start = getWavePoint(i);
                     QPoint end(xBuf(i), this->rect().height() - 10 - fontH);
@@ -724,15 +715,15 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
             for (int i = beginIndex; i <= endIndex; i++)
             {
                 // if (flagBuf(i) & ECG_INTERNAL_FLAG_BIT)//ipace
-                if ((flagBuf(i) & ECG_INTERNAL_FLAG_BIT) && !(flagBuf(i) & INVALID_WAVE_FALG_BIT))// ipace
+                if ((flagBuf(i) & ECG_INTERNAL_FLAG_BIT) && !(flagBuf(i) & INVALID_WAVE_FALG_BIT))  // ipace
                 {
                     QPoint start(xBuf(i), margin.top());
                     QPoint end(xBuf(i), this->rect().height() - 10);
                     drawIPaceMark(painter, start, end);
                 }
 
-//                if (flagBuf(i) & (ECG_EXTERNAL_DOT_FLAG_BIT|ECG_EXTERNAL_SOLD_FLAG_BIT))// epace
-                if (flagBuf(i) & ECG_EXTERNAL_SOLD_FLAG_BIT)// epace
+//                if (flagBuf(i) & (ECG_EXTERNAL_DOT_FLAG_BIT|ECG_EXTERNAL_SOLD_FLAG_BIT))//epace
+                if (flagBuf(i) & ECG_EXTERNAL_SOLD_FLAG_BIT)  // epace
                 {
                     QPoint start = getWavePoint(i);
                     QPoint end(xBuf(i), this->rect().height() - 10 - fontH);
@@ -753,7 +744,7 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
             for (int i = beginIndex; i <= endIndex; i++)
             {
                 // if (flagBuf(i) & ECG_INTERNAL_FLAG_BIT)//ipace
-                if ((flagBuf(i) & ECG_INTERNAL_FLAG_BIT) && !(flagBuf(i) & INVALID_WAVE_FALG_BIT))// ipace
+                if ((flagBuf(i) & ECG_INTERNAL_FLAG_BIT) && !(flagBuf(i) & INVALID_WAVE_FALG_BIT))  // ipace
                 {
                     QPoint start(xBuf(i), margin.top());
                     QPoint end(xBuf(i), this->rect().height() - 10);
@@ -761,7 +752,7 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
                 }
 
 //                if (flagBuf(i) & (ECG_EXTERNAL_DOT_FLAG_BIT|ECG_EXTERNAL_SOLD_FLAG_BIT))//epace
-                if (flagBuf(i) & ECG_EXTERNAL_SOLD_FLAG_BIT)// epace
+                if (flagBuf(i) & ECG_EXTERNAL_SOLD_FLAG_BIT)  // epace
                 {
                     QPoint start = getWavePoint(i);
                     QPoint end(xBuf(i), this->rect().height() - 10 - fontH);
@@ -841,6 +832,7 @@ void ECGWaveWidget::resizeEvent(QResizeEvent *e)
 ////////////////////////////////////////////////////////////////////////////////
 void ECGWaveWidget::focusInEvent(QFocusEvent *e)
 {
+    Q_UNUSED(e)
     _name->setFocus();
 }
 

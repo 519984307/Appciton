@@ -44,7 +44,7 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     _pixelHPitch = systemManager.getScreenPixelHPitch();
 
     QPalette palette;
-    palette.setColor(QPalette::WindowText, QColor(255, 255, 0));
+    palette.setColor(QPalette::WindowText, QColor(152, 245, 255));
     palette.setColor(QPalette::Window, Qt::black);
 //    palette.setColor(QPalette::Foreground, Qt::black);
     setPalette(palette);
@@ -71,28 +71,35 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     bottomLayout = new QHBoxLayout();
     bottomLayout->setMargin(2);
     bottomLayout->setSpacing(1);
+    int labelWidth = 80;
 
-    _interval = new OxyCRGWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+    _interval = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
     _interval->setFont(fontManager.textFont(fontSize));
-    _interval->setFixedSize(80, _labelHeight);
+    _interval->setFixedSize(labelWidth, _labelHeight);
     _interval->setText("");
     connect(_interval, SIGNAL(released(IWidget *)), this, SLOT(_intervalSlot(IWidget *)));
 
-    _changeTrend = new OxyCRGWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+    _changeTrend = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
     _changeTrend->setFont(fontManager.textFont(fontSize));
-    _changeTrend->setFixedSize(80, _labelHeight);
+    _changeTrend->setFixedSize(labelWidth, _labelHeight);
     _changeTrend->setText("");
     connect(_changeTrend, SIGNAL(released(IWidget *)), this, SLOT(_changeTrendSlot(IWidget *)));
 
-    _setUp = new OxyCRGWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+    _setUp = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
     _setUp->setFont(fontManager.textFont(fontSize));
-    _setUp->setFixedSize(80, _labelHeight);
+    _setUp->setFixedSize(labelWidth, _labelHeight);
     _setUp->setText("SetUp");
     connect(_setUp, SIGNAL(released(IWidget *)), this, SLOT(_onSetupUpdated(IWidget *)));
 
+    int rWidth = rect().width() / 4;
+    int addWidth = (rWidth - labelWidth) / 2;
+    bottomLayout->addSpacing(addWidth);
     bottomLayout->addWidget(_interval);
+    bottomLayout->addSpacing(addWidth);
     bottomLayout->addWidget(_changeTrend);
+    bottomLayout->addSpacing(addWidth);
     bottomLayout->addWidget(_setUp);
+    bottomLayout->addSpacing(rWidth + addWidth);
 
     _mainLayout->addWidget(_titleLabel, 0, Qt::AlignCenter);
     _mainLayout->addLayout(_hLayoutWave);
@@ -357,6 +364,14 @@ void OxyCRGWidget::paintEvent(QPaintEvent *event)
     QRect r = rect();
     r.setBottom(_titleBarHeight);
     barPainter.fillRect(r, QColor(152, 245, 255));
+
+    int rWidth = rect().width() / 4;
+    int addWidth = (rWidth - _interval->width()) / 2;
+    int rHeight = rect().bottom() - _labelHeight;
+
+    _interval->move(addWidth, rHeight);
+    _changeTrend->move((addWidth + rWidth), rHeight);
+    _setUp->move((addWidth + rWidth * 2), rHeight);
 }
 
 /**************************************************************************************************
@@ -365,10 +380,6 @@ void OxyCRGWidget::paintEvent(QPaintEvent *event)
 void OxyCRGWidget::resizeEvent(QResizeEvent *e)
 {
     IWidget::resizeEvent(e);
-
-    int l = ((rect().width() / 4) - _interval->width()) / 2;
-    _interval->move(rect().left() + l, rect().bottom() - _labelHeight - 2);
-    _changeTrend->move(rect().left() + (rect().width() / 4) + l, rect().bottom() - _labelHeight - 2);
 }
 
 void OxyCRGWidget::setOxyCrgRespWidget(OxyCRGRESPWidget *p)

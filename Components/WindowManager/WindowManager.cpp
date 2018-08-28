@@ -34,6 +34,7 @@
 #include "NIBPRepairMenuWindow.h"
 #include <QApplication>
 #include "Window.h"
+#include "FontManager.h"
 
 struct NodeDesc
 {
@@ -1267,6 +1268,11 @@ void WindowManager::_setUFaceType(UserFaceType type)
         SystemModeBarWidget *widget = qobject_cast<SystemModeBarWidget *>(iter.value());
         widget->setMode(_currenUserFaceType);
     }
+
+    if (_demoWidget && _demoWidget->isVisible())
+    {
+        _demoWidget->raise();
+    }
 }
 
 /***************************************************************************************************
@@ -2343,18 +2349,13 @@ IWidget *WindowManager::getWidget(const QString &name)
 #if defined(Q_WS_QWS)
 WindowManager::WindowManager() : QWidget(NULL, Qt::FramelessWindowHint)
 #else
-WindowManager::WindowManager() : QWidget(), _activeWindow(NULL)
+WindowManager::WindowManager() : QWidget(), _demoWidget(NULL)
 #endif
 {
-    _winMap.clear();
-    _waveformMap.clear();
-    _bigformMap.clear();
-    _trendWave.clear();
+    _demoWidget = NULL;
 
     _doesFixedLayout = false;
     _currenUserFaceType = UFACE_MONITOR_UNKNOW;
-
-    _activeWindow = NULL;
 
     // 设置调色
     QPalette p;
@@ -2498,6 +2499,35 @@ Window *WindowManager::topWindow()
         }
     }
     return top.data();
+}
+
+void WindowManager::showDemoWidget(bool flag)
+{
+    if (_demoWidget == NULL)
+    {
+        // demo widget no exist yet, create one
+        QLabel *l = new QLabel(trs("DEMO"), this);
+        l->setAutoFillBackground(true);
+        QPalette pal = l->palette();
+        pal.setColor(QPalette::Window, Qt::gray);
+        pal.setColor(QPalette::WindowText, Qt::white);
+        l->setPalette(pal);
+        l->setFont(fontManager.textFont(64));
+        _demoWidget = l;
+        _demoWidget->move(430, 100);
+        _demoWidget->setFixedSize(l->sizeHint());
+    }
+
+    if (flag)
+    {
+        _demoWidget->show();
+        _demoWidget->raise();
+    }
+    else
+    {
+        _demoWidget->lower();
+        _demoWidget->hide();
+    }
 }
 
 void WindowManager::closeAllWidows()

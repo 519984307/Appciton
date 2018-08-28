@@ -66,11 +66,23 @@ public:
      */
     Window *topWindow();
 
+    /**
+     * @brief showDemoWidget show or hide the demo widget
+     * @param flag true if need to show the widget
+     *             or false to hide the demo widget
+     */
+    void showDemoWidget(bool flag);
+
 public slots:
     /**
      * @brief closeAllWidows close all the windows
      */
     void closeAllWidows();
+
+    /**
+     * @brief onWindowHide handle the windows hide signal in the window stack
+     * @param w
+     */
     void onWindowHide(Window *w);
 
 public:
@@ -257,7 +269,7 @@ private:
 
     QList<QPointer<Window> > windowStacks;
 
-    QWidget *_activeWindow;
+    QWidget * _demoWidget;
 };
 #define windowManager (WindowManager::construction())
 #define deleteWindowManager() (delete WindowManager::_selfObj)

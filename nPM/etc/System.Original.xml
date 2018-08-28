@@ -803,7 +803,7 @@
                 <ScreenVLayoutStretch>
                     <topBarRow>30</topBarRow>
                     <alarmRow>40</alarmRow>
-                    <paramLayout>600</paramLayout>
+                    <paramLayout>680</paramLayout>
                     <softkeyRow>80</softkeyRow>
                 </ScreenVLayoutStretch>
                 <!-- 波形区与趋势区的比列 -->

@@ -36,6 +36,8 @@ public:
     // 处理DEMO数据。
     virtual void handDemoWaveform(WaveformID id, int16_t data);
     virtual void handDemoTrendData(void);
+    /* reimplement */
+    virtual void exitDemo();
 
     // 获取子参数值
     virtual int16_t getSubParamValue(SubParamID id);

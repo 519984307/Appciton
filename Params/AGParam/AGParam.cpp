@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
+ **/
+
 #include "AGParam.h"
 #include "AGWaveWidget.h"
 #include "AGTrendWidget.h"
@@ -15,7 +25,6 @@ AGParam *AGParam::_selfObj = NULL;
  *************************************************************************************************/
 AGParam::~AGParam()
 {
-
 }
 
 /**************************************************************************************************
@@ -59,28 +68,38 @@ void AGParam::handDemoTrendData()
     }
 }
 
+void AGParam::exitDemo()
+{
+    _etn2o.value = InvData();
+    _fin2o.value = InvData();
+    if (NULL != _trendWidgetN2O)
+    {
+        _trendWidgetN2O->setEtData(InvData());
+        _trendWidgetN2O->setFiData(InvData());
+    }
+}
+
 void AGParam::showSubParamValue()
 {
-    if(NULL != _trendWidgetN2O)
+    if (NULL != _trendWidgetN2O)
     {
         _trendWidgetN2O->showValue();
     }
 
-    if(NULL != _trendWidgetAA1)
+    if (NULL != _trendWidgetAA1)
     {
         _trendWidgetAA1->showValue();
     }
 
-    if(NULL != _trendWidgetAA2)
+    if (NULL != _trendWidgetAA2)
     {
         _trendWidgetAA2->showValue();
     }
 
-    if(NULL != _trendWidgetO2)
+    if (NULL != _trendWidgetO2)
     {
         _trendWidgetO2->showValue();
     }
-
 }
 
 void AGParam::noticeLimitAlarm(int id, bool flag)
@@ -212,7 +231,7 @@ bool AGParam::isSubParamAvaliable(SubParamID id)
     case SUB_PARAM_ETAA2:
     case SUB_PARAM_FIAA2:
         return _config.halConfig || _config.enfConfig || _config.isoConfig ||
-                _config.sevConfig || _config.desConfig;
+               _config.sevConfig || _config.desConfig;
     case SUB_PARAM_ETO2:
     case SUB_PARAM_FIO2:
         return _config.o2Config;
@@ -256,7 +275,6 @@ void AGParam::setProvider(AGProviderIFace *provider)
     QString titleO2 = _waveWidgetO2->getTitle();
     waveformCache.registerSource(WAVE_O2, _provider->getO2WaveformSample(), 0,
                                  _provider->getO2MaxWaveform(), titleO2, _provider->getO2BaseLine());
-
 }
 
 /**************************************************************************************************
@@ -446,7 +464,7 @@ void AGParam::addWaveformData(short wave, bool invalid, AGTypeGas gasType)
         if (n2o < DEMO_DATA_NUM)
         {
             _n2oBuf[n2o] = wave / 10;
-            n2o ++;
+            n2o++;
         }
         if (n2o == DEMO_DATA_NUM)
         {
@@ -685,7 +703,7 @@ void AGParam::setAnestheticType(AGAnaestheticType primary, AGAnaestheticType sec
  *************************************************************************************************/
 void AGParam::setSweepSpeed(AGSweepSpeed speed)
 {
-    currentConfig.setNumValue("AG|SweepSpeed", (int)speed);
+    currentConfig.setNumValue("AG|SweepSpeed", static_cast<int>(speed));
     _setWaveformSpeed(speed);
 }
 
@@ -731,7 +749,7 @@ bool AGParam::getDemoWaveformFile(const char *buf, int len, AGTypeGas type)
     }
     int num;
 
-    num = file.write((char *)buf, len);
+    num = file.write(buf, len);
 
     if (num != len)
     {
@@ -750,7 +768,7 @@ AGParam::AGParam() : Param(PARAM_AG)
     _waveWidgetN2O = NULL;
     _waveWidgetAA1 = NULL;
     _waveWidgetAA2 = NULL;
-    _waveWidgetO2 = NULL ;
+    _waveWidgetO2 = NULL;
 
     _trendWidgetN2O = NULL;
     _trendWidgetAA1 = NULL;
@@ -759,7 +777,6 @@ AGParam::AGParam() : Param(PARAM_AG)
 
     _n2oBuf = new char[DEMO_DATA_NUM];
     n2o = 0;
-
 }
 
 /**************************************************************************************************
@@ -809,7 +826,7 @@ void AGParam::_setWaveformSpeed(AGSweepSpeed speed)
     windowManager.getCurrentWaveforms(currentWaveforms);
     int i = 0;
     int size = currentWaveforms.size();
-    for (;i < size; i++)
+    for (; i < size; i++)
     {
         if (currentWaveforms[i] == "N2OWaveWidget" || currentWaveforms[i] == "AA1WaveWidget" ||
                 currentWaveforms[i] == "AA2WaveWidget" || currentWaveforms[i] == "O2WaveWidget")

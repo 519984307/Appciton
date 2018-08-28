@@ -113,6 +113,15 @@ void NIBPParam::handDemoTrendData(void)
     setMeasureResult(NIBP_MEASURE_SUCCESS);
 }
 
+void NIBPParam::exitDemo()
+{
+    _sysValue = InvData();
+    _diaValue = InvData();
+    _mapVaule = InvData();
+    _prVaule = InvData();
+    setResult(InvData(), InvData(), InvData(), InvData(), NIBP_ONESHOT_NONE);
+}
+
 /**************************************************************************************************
  * 功能： 获取子参数值。
  *************************************************************************************************/

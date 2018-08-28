@@ -80,6 +80,11 @@ public:
     // update the lead display name
     void updateLeadDisplayName(const QString &name);
 
+    /**
+     * @brief updateWaveConfig update the wave config
+     */
+    void updateWaveConfig();
+
     // 画ECG波形标记
     static void drawIPaceMark(QPainter &painter, QPoint &start, QPoint &end);
 

@@ -34,7 +34,7 @@ void ScreenMenuContentPrivate::loadOptions()
 }
 
 ScreenMenuContent::ScreenMenuContent()
-    : MenuContent(trs("ScreenLayout"), trs("ScreenLayoutDesc")),
+    : MenuContent(trs("ScreenConfig"), trs("ScreenConfigDesc")),
       d_ptr(new ScreenMenuContentPrivate)
 {
 }
@@ -58,16 +58,15 @@ void ScreenMenuContent::layoutExec()
     int count = 0;
 
     // screen select
-    label = new QLabel(trs("Screen"));
+    label = new QLabel(trs("CurrentScreen"));
     layout->addWidget(label, count, 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("Standard")
-                       << trs("12Lead")
+                       << trs("_12Lead")
                        << trs("OxyCRG")
                        << trs("Trend")
                        << trs("BigFont")
-                       << trs("Custom")
                       );
     layout->addWidget(comboBox, count++, 1);
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboxIndexChanged(int)));
