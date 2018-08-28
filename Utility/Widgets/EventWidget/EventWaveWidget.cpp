@@ -666,13 +666,9 @@ double EventWaveWidget::_mapWaveValue(WaveformDesc &waveDesc, int wave)
         waveDesc.isECG = true;
         break;
     }
-    case WAVE_IBP1:
-    case WAVE_IBP2:
-    case WAVE_SPO2:
+    default:
         dpos = (max - wave) * ((endY - startY) / (max - min)) + startY;
         break;
-    default:
-        return 0;
     }
 
     if (dpos < waveDesc.startY)

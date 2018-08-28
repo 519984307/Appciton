@@ -50,8 +50,14 @@ static DemoWaveDataDesc _demoWaveData[WAVE_NR] =
     {"AA1",       WAVE_AA1,       NULL, 125, 0},
     {"AA2",       WAVE_AA2,       NULL, 125, 0},
     {"O2",        WAVE_O2,        NULL, 125, 0},
-    {"IBP1",      WAVE_IBP1,      NULL, 125, 0},
-    {"IBP2",      WAVE_IBP2,      NULL, 125, 0},
+    {"ART",       WAVE_ART,       NULL, 125, 0},
+    {"PA",        WAVE_PA,        NULL, 125, 0},
+    {"CVP",       WAVE_CVP,       NULL, 125, 0},
+    {"LAP",       WAVE_LAP,       NULL, 125, 0},
+    {"RAP",       WAVE_RAP,       NULL, 125, 0},
+    {"ICP",       WAVE_ICP,       NULL, 125, 0},
+    {"AUXP1",     WAVE_AUXP1,     NULL, 125, 0},
+    {"AUXP2",     WAVE_AUXP2,     NULL, 125, 0},
 };
 
 struct DemoTrendDesc
@@ -182,8 +188,14 @@ bool DemoProvider::attachParam(Param &param)
     }
     else if (name == paramInfo.getParamName(PARAM_IBP))
     {
-        _demoWaveData[WAVE_IBP1].param = &param;
-        _demoWaveData[WAVE_IBP2].param = &param;
+        _demoWaveData[WAVE_ART].param = &param;
+        _demoWaveData[WAVE_PA].param = &param;
+        _demoWaveData[WAVE_CVP].param = &param;
+        _demoWaveData[WAVE_LAP].param = &param;
+        _demoWaveData[WAVE_RAP].param = &param;
+        _demoWaveData[WAVE_ICP].param = &param;
+        _demoWaveData[WAVE_AUXP1].param = &param;
+        _demoWaveData[WAVE_AUXP2].param = &param;
         ibpParam.setProvider(this);
     }
     else if (name == paramInfo.getParamName(PARAM_CO))
@@ -238,8 +250,14 @@ void DemoProvider::detachParam(Param &param)
     }
     else if (id == PARAM_IBP)
     {
-        _demoWaveData[WAVE_IBP1].param = NULL;
-        _demoWaveData[WAVE_IBP2].param = NULL;
+        _demoWaveData[WAVE_ART].param = NULL;
+        _demoWaveData[WAVE_PA].param = NULL;
+        _demoWaveData[WAVE_CVP].param = NULL;
+        _demoWaveData[WAVE_LAP].param = NULL;
+        _demoWaveData[WAVE_RAP].param = NULL;
+        _demoWaveData[WAVE_ICP].param = NULL;
+        _demoWaveData[WAVE_AUXP1].param = NULL;
+        _demoWaveData[WAVE_AUXP2].param = NULL;
     }
     else if (id == PARAM_AG)
     {

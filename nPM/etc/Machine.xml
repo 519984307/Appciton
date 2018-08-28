@@ -4,8 +4,8 @@
     <!--屏幕分辨率-->
     <ScreenWidth>1280</ScreenWidth>
     <ScreenHeight>800</ScreenHeight>
-    <ScreenPixelWPitch>0.264</ScreenPixelWPitch>
-    <ScreenPixelHPitch>0.264</ScreenPixelHPitch>
+    <ScreenPixelWPitch>0.1695</ScreenPixelWPitch>
+    <ScreenPixelHPitch>0.1695</ScreenPixelHPitch>
     <!--功能机型的使能配置-->
     <ConfiguredFunctions>ECG12LEADS,SPO2,NIBP,CO2,IBP,AG,CO,TEMP,WIFI</ConfiguredFunctions>
     <ECG12LEADEnable>1</ECG12LEADEnable>

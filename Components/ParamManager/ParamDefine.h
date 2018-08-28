@@ -150,8 +150,14 @@ enum WaveformID
     WAVE_AA2,
     WAVE_O2,
 
-    WAVE_IBP1,
-    WAVE_IBP2,
+    WAVE_ART,
+    WAVE_PA,
+    WAVE_CVP,
+    WAVE_LAP,
+    WAVE_RAP,
+    WAVE_ICP,
+    WAVE_AUXP1,
+    WAVE_AUXP2,
 
     WAVE_NR
 };

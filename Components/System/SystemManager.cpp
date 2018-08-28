@@ -525,7 +525,7 @@ void SystemManager::onCtrlSocketReadReady()
             // not a info type
             continue;
         }
-        char infoData = _socketInfoData.takeFirst();
+//        char infoData = _socketInfoData.takeFirst();
         switch ((ControlInfo)infoType)
         {
 
