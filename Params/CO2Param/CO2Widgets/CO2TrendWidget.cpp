@@ -273,21 +273,25 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
     _etco2Value->setPalette(palette);
     _etco2Value->setText(InvStr());
 
-    _fico2Label = new QLabel(trs("FICO2"));
+    _fico2Label = new QLabel(trs("FICO2"), this);
     _fico2Label->setPalette(palette);
     _fico2Label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
-    _fico2Value = new QLabel();
+    _fico2Value = new QLabel(this);
     _fico2Value->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     _fico2Value->setPalette(palette);
     _fico2Value->setText(InvStr());
 
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->addStretch();
-    hLayout->addWidget(_etco2Value);
+    hLayout->addWidget(_fico2Label);
+    hLayout->addStretch();
+    hLayout->addWidget(_fico2Value);
     hLayout->addStretch();
 
     QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->addStretch();
+    vLayout->addWidget(_etco2Value);
     vLayout->addStretch();
     vLayout->addLayout(hLayout);
     vLayout->addStretch();
