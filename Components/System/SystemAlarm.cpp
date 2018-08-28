@@ -75,10 +75,7 @@ bool SystemAlarm::isAlarmed(int id)
         return AlarmOneShotIFace::isAlarmed(id);
     }
 
-    bool bret = false;
-
-    bret = keyPressed;
-
+    bool bret = keyPressed;
     return bret;
 }
 
