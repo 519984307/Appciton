@@ -605,15 +605,31 @@ void IBPParam::setProvider(IBPProviderIFace *provider)
 
     _provider = provider;
 
-    QString titleIBP1 = _waveWidgetIBP1->getTitle();
-    QString titleIBP2 = _waveWidgetIBP2->getTitle();
-    WaveformID ibp1WaveID = getWaveformID(getEntitle(IBP_INPUT_1));
-    WaveformID ibp2WaveID = getWaveformID(getEntitle(IBP_INPUT_2));
     // 注册波形缓存
-    waveformCache.registerSource(ibp1WaveID, _provider->getIBPWaveformSample(),
-                                 0, _provider->getIBPMaxWaveform(), titleIBP1, _provider->getIBPBaseLine());
-    waveformCache.registerSource(ibp2WaveID, _provider->getIBPWaveformSample(),
-                                 0, _provider->getIBPMaxWaveform(), titleIBP2, _provider->getIBPBaseLine());
+    QString title = IBPSymbol::convert(IBP_PRESSURE_ART);
+    waveformCache.registerSource(WAVE_ART, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
+    title = IBPSymbol::convert(IBP_PRESSURE_PA);
+    waveformCache.registerSource(WAVE_PA, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
+    title = IBPSymbol::convert(IBP_PRESSURE_CVP);
+    waveformCache.registerSource(WAVE_CVP, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
+    title = IBPSymbol::convert(IBP_PRESSURE_RAP);
+    waveformCache.registerSource(WAVE_RAP, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
+    title = IBPSymbol::convert(IBP_PRESSURE_LAP);
+    waveformCache.registerSource(WAVE_LAP, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
+    title = IBPSymbol::convert(IBP_PRESSURE_ICP);
+    waveformCache.registerSource(WAVE_ICP, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
+    title = IBPSymbol::convert(IBP_PRESSURE_AUXP1);
+    waveformCache.registerSource(WAVE_AUXP1, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
+    title = IBPSymbol::convert(IBP_PRESSURE_AUXP2);
+    waveformCache.registerSource(WAVE_AUXP2, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
 }
 
 /**************************************************************************************************

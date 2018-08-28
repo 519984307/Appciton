@@ -66,6 +66,22 @@ public:
     IBPLimitAlarm();
     virtual ~IBPLimitAlarm();
 private:
+    bool _isARTSYSAlarm;
+    bool _isARTDIAAlarm;
+    bool _isARTMAPAlarm;
+    bool _isPASYSAlarm;
+    bool _isPADIAAlarm;
+    bool _isPAMAPAlarm;
+    bool _isCVPMAPAlarm;
+    bool _isLAPMAPAlarm;
+    bool _isRAPMAPAlarm;
+    bool _isICPMAPAlarm;
+    bool _isAUXP1SYSAlarm;
+    bool _isAUXP1DIAAlarm;
+    bool _isAUXP1MAPAlarm;
+    bool _isAUXP2SYSAlarm;
+    bool _isAUXP2DIAAlarm;
+    bool _isAUXP2MAPAlarm;
 };
 #define ibpLimitAlarm (IBPLimitAlarm::construction())
 

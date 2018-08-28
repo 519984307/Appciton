@@ -398,13 +398,155 @@ const char *IBPLimitAlarm::toString(int id)
 /**************************************************************************************************
  * alarm notify.
  *************************************************************************************************/
-void IBPLimitAlarm::notifyAlarm(int id, bool isAlarm)
+void IBPLimitAlarm::notifyAlarm(int id, bool flag)
 {
     SubParamID subID = getSubParamID(id);
     IBPPressureName ibp1 = ibpParam.getEntitle(IBP_INPUT_1);
     IBPPressureName ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
-    IBPPressureName idName = ibpParam.getEntitle(static_cast<IBPLimitAlarmType>(id));
+    IBPLimitAlarmType type = static_cast<IBPLimitAlarmType>(id);
+    IBPPressureName idName = ibpParam.getEntitle(type);
 
+    bool isAlarm;
+    switch (type)
+    {
+    case ART_LIMIT_ALARM_SYS_LOW:
+        _isARTSYSAlarm |= flag;
+        break;
+    case ART_LIMIT_ALARM_SYS_HIGH:
+        _isARTSYSAlarm |= flag;
+        isAlarm = _isARTSYSAlarm;
+        _isARTSYSAlarm = false;
+        break;
+    case ART_LIMIT_ALARM_DIA_LOW:
+        _isARTDIAAlarm |= flag;
+        break;
+    case ART_LIMIT_ALARM_DIA_HIGH:
+        _isARTDIAAlarm |= flag;
+        isAlarm = _isARTDIAAlarm;
+        _isARTDIAAlarm = false;
+        break;
+    case ART_LIMIT_ALARM_MEAN_LOW:
+        _isARTMAPAlarm |= flag;
+        break;
+    case ART_LIMIT_ALARM_MEAN_HIGH:
+        _isARTMAPAlarm |= flag;
+        isAlarm = _isARTMAPAlarm;
+        _isARTMAPAlarm = false;
+        break;
+
+    case PA_LIMIT_ALARM_SYS_LOW:
+        _isPASYSAlarm |= flag;
+        break;
+    case PA_LIMIT_ALARM_SYS_HIGH:
+        _isPASYSAlarm |= flag;
+        isAlarm = _isPASYSAlarm;
+        _isPASYSAlarm = false;
+        break;
+    case PA_LIMIT_ALARM_DIA_LOW:
+        _isPADIAAlarm |= flag;
+        break;
+    case PA_LIMIT_ALARM_DIA_HIGH:
+        _isPADIAAlarm |= flag;
+        isAlarm = _isPADIAAlarm;
+        _isPADIAAlarm = false;
+        break;
+    case PA_LIMIT_ALARM_MEAN_LOW:
+        _isPAMAPAlarm |= flag;
+        break;
+    case PA_LIMIT_ALARM_MEAN_HIGH:
+        _isPAMAPAlarm |= flag;
+        isAlarm = _isPAMAPAlarm;
+        _isPAMAPAlarm = false;
+        break;
+
+    case CVP_LIMIT_ALARM_MEAN_LOW:
+        _isCVPMAPAlarm |= flag;
+        break;
+    case CVP_LIMIT_ALARM_MEAN_HIGH:
+        _isCVPMAPAlarm |= flag;
+        isAlarm = _isCVPMAPAlarm;
+        _isCVPMAPAlarm = false;
+        break;
+
+    case LAP_LIMIT_ALARM_MEAN_LOW:
+        _isLAPMAPAlarm |= flag;
+        break;
+    case LAP_LIMIT_ALARM_MEAN_HIGH:
+        _isLAPMAPAlarm |= flag;
+        isAlarm = _isLAPMAPAlarm;
+        _isLAPMAPAlarm = false;
+        break;
+
+    case RAP_LIMIT_ALARM_MEAN_LOW:
+        _isRAPMAPAlarm |= flag;
+        break;
+    case RAP_LIMIT_ALARM_MEAN_HIGH:
+        _isRAPMAPAlarm |= flag;
+        isAlarm = _isRAPMAPAlarm;
+        _isRAPMAPAlarm = false;
+        break;
+
+    case ICP_LIMIT_ALARM_MEAN_LOW:
+        _isICPMAPAlarm |= flag;
+        break;
+    case ICP_LIMIT_ALARM_MEAN_HIGH:
+        _isICPMAPAlarm |= flag;
+        isAlarm = _isICPMAPAlarm;
+        _isICPMAPAlarm = false;
+        break;
+
+    case AUXP1_LIMIT_ALARM_SYS_LOW:
+        _isAUXP1SYSAlarm |= flag;
+        break;
+    case AUXP1_LIMIT_ALARM_SYS_HIGH:
+        _isAUXP1SYSAlarm |= flag;
+        isAlarm = _isAUXP1SYSAlarm;
+        _isAUXP1SYSAlarm = false;
+        break;
+    case AUXP1_LIMIT_ALARM_DIA_LOW:
+        _isAUXP1DIAAlarm |= flag;
+        break;
+    case AUXP1_LIMIT_ALARM_DIA_HIGH:
+        _isAUXP1DIAAlarm |= flag;
+        isAlarm = _isAUXP1DIAAlarm;
+        _isAUXP1DIAAlarm = false;
+        break;
+    case AUXP1_LIMIT_ALARM_MEAN_LOW:
+        _isAUXP1MAPAlarm |= flag;
+        break;
+    case AUXP1_LIMIT_ALARM_MEAN_HIGH:
+        _isAUXP1MAPAlarm |= flag;
+        isAlarm = _isAUXP1MAPAlarm;
+        _isAUXP1MAPAlarm = false;
+        break;
+
+    case AUXP2_LIMIT_ALARM_SYS_LOW:
+        _isAUXP2SYSAlarm |= flag;
+        break;
+    case AUXP2_LIMIT_ALARM_SYS_HIGH:
+        _isAUXP2SYSAlarm |= flag;
+        isAlarm = _isAUXP2SYSAlarm;
+        _isAUXP2SYSAlarm = false;
+        break;
+    case AUXP2_LIMIT_ALARM_DIA_LOW:
+        _isAUXP2DIAAlarm |= flag;
+        break;
+    case AUXP2_LIMIT_ALARM_DIA_HIGH:
+        _isAUXP2DIAAlarm |= flag;
+        isAlarm = _isAUXP2DIAAlarm;
+        _isAUXP2DIAAlarm = false;
+        break;
+    case AUXP2_LIMIT_ALARM_MEAN_LOW:
+        _isAUXP2MAPAlarm |= flag;
+        break;
+    case AUXP2_LIMIT_ALARM_MEAN_HIGH:
+        _isAUXP2MAPAlarm |= flag;
+        isAlarm = _isAUXP2MAPAlarm;
+        _isAUXP2MAPAlarm = false;
+        break;
+    default:
+        break;
+    }
     if (idName == ibp1)
     {
         ibpParam.noticeLimitAlarm(subID, isAlarm, IBP_INPUT_1);
@@ -425,7 +567,13 @@ IBPLimitAlarm::~IBPLimitAlarm()
 /**************************************************************************************************
  * constructor
  *************************************************************************************************/
-IBPLimitAlarm::IBPLimitAlarm()
+IBPLimitAlarm::IBPLimitAlarm() :
+    _isARTSYSAlarm(false), _isARTDIAAlarm(false), _isARTMAPAlarm(false),
+    _isPASYSAlarm(false), _isPADIAAlarm(false), _isPAMAPAlarm(false),
+    _isCVPMAPAlarm(false), _isLAPMAPAlarm(false), _isRAPMAPAlarm(false),
+    _isICPMAPAlarm(false), _isAUXP1SYSAlarm(false), _isAUXP1DIAAlarm(false),
+    _isAUXP1MAPAlarm(false), _isAUXP2SYSAlarm(false), _isAUXP2DIAAlarm(false),
+    _isAUXP2MAPAlarm(false)
 {
 }
 

@@ -68,34 +68,34 @@ public:
         {
             "ARTSYSLow", "ARTSYSHigh",
             "ARTDIALow", "ARTDIAHigh",
-            "ARTMEANLow", "ARTMEANHigh",
+            "ARTMAPLow", "ARTMAPHigh",
             "ARTPRLow", "ARTPRHigh",
 
             "PASYSLow", "PASYSHigh",
             "PADIALow", "PADIAHigh",
-            "PAMEANLow", "PAMEANHigh",
+            "PAMAPLow", "PAMAPHigh",
             "PAPRLow", "PAPRHigh",
 
-            "CVPMEANLow", "CVPMEANHigh",
+            "CVPMAPLow", "CVPMAPHigh",
             "CVPPRLow", "CVPPRHigh",
 
-            "LAPMEANLow", "LAPMEANHigh",
+            "LAPMAPLow", "LAPMAPHigh",
             "LAPPRLow", "LAPPRHigh",
 
-            "RAPMEANLow", "RAPMEANHigh",
+            "RAPMAPLow", "RAPMAPHigh",
             "RAPPRLow", "RAPPRHigh",
 
-            "ICPMEANLow", "ICPMEANHigh",
+            "ICPMAPLow", "ICPMAPHigh",
             "ICPPRLow", "ICPPRHigh",
 
             "AUXP1SYSLow", "AUXP1SYSHigh",
             "AUXP1DIALow", "AUXP1DIAHigh",
-            "AUXP1MEANLow", "AUXP1MEANHigh",
+            "AUXP1MAPLow", "AUXP1MAPHigh",
             "AUXP1PRLow", "AUXP1PRHigh",
 
             "AUXP2SYSLow", "AUXP2SYSHigh",
             "AUXP2DIALow", "AUXP2DIAHigh",
-            "AUXP2MEANLow", "AUXP2MEANHigh",
+            "AUXP2MAPLow", "AUXP2MAPHigh",
             "AUXP2PRLow", "AUXP2PRHigh",
         };
         return symbol[index];
