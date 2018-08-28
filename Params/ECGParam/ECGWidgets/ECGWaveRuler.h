@@ -5,8 +5,9 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
  **/
+
 
 #pragma once
 #include <QPoint>

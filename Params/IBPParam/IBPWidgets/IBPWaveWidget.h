@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
+ **/
+
+
 #pragma once
 #include "WaveWidget.h"
 #include "IBPDefine.h"
@@ -5,7 +16,7 @@
 
 
 class IBPWaveRuler;
-class ComboListPopup;
+class PopupList;
 class IBPWaveWidget: public WaveWidget
 {
     Q_OBJECT
@@ -52,6 +63,7 @@ private slots:
     void _releaseHandle(IWidget *);
     void _IBPZoom(IWidget *widget);
     void _popupDestroyed();
+    void _getItemIndex(int);
 
 private:
     // 自动标尺计算
@@ -65,10 +77,10 @@ private:
     WaveWidgetLabel *_leadSta;          // 导联状态
     WaveWidgetLabel *_zoom;             // 标尺
     IBPWaveRuler *_ruler;               // 标尺对象
-    ComboListPopup *_zoomList;          // 标尺列表    
+    PopupList *_zoomList;               // 标尺列表
     IBPPressureName _entitle;           // 标名
     int _lowLimit;                      // 下标尺
     int _highLimit;                     // 上标尺
     bool _isAutoRuler;
-
+    int _currentItemIndex;
 };

@@ -5,7 +5,7 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
  **/
 
 
@@ -15,7 +15,8 @@
 #include "ECGDefine.h"
 
 // 记录R波标记,用于重画，防止R波标记被刷新后只显示一半
-struct rMark_record{
+struct rMark_record
+{
     rMark_record()
     {
         ellipse_x = 0;
@@ -32,7 +33,7 @@ struct rMark_record{
 
 class WaveWidgetLabel;
 class ECGWaveRuler;
-class ComboListPopup;
+class PopupList;
 /**************************************************************************************************
  * ECG 波形显示控件
  *************************************************************************************************/
@@ -116,6 +117,7 @@ private slots:
     void _ecgGain(IWidget *);
     void _popupDestroyed();
     void _onCalcLeadChanged();
+    void _getItemIndex(int);
 
 private:
     double _calcRulerHeight(ECGGain gain);
@@ -129,11 +131,13 @@ private:
     WaveWidgetLabel *_gain;         // 增益标签
     WaveWidgetLabel *_filter;       // 滤波标签
     WaveWidgetLabel *_notify;       // 提示标签
-    ComboListPopup *_gainList;      // 增益列表
+    PopupList *_gainList;           // 增益列表
     static int _paceHeight;         // 起搏标记高度, 单位像素
     int _p05mV;                     // +0.5mV对应的波形数值
     int _n05mV;                     // -0.5mV对应的波形数值
     ECGGain _12LGain;               // 12L界面下的显示带宽
+
+    int _currentItemIndex;
 
 private:
     void _autoGainHandle(int data);

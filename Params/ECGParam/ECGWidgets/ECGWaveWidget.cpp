@@ -5,8 +5,9 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
  **/
+
 
 #include <QResizeEvent>
 #include <QPainter>
@@ -20,10 +21,10 @@
 #include "ParamInfo.h"
 #include "IConfig.h"
 #include "WaveWidgetSelectMenu.h"
-#include "ComboListPopup.h"
 #include "TimeDate.h"
 #include "WindowManager.h"
 #include "SystemManager.h"
+#include "PopupList.h"
 
 int ECGWaveWidget::_paceHeight = 5;
 /**************************************************************************************************
@@ -241,18 +242,16 @@ void ECGWaveWidget::_ecgGain(IWidget *widget)
                 gain = ECG_GAIN_AUTO;
             }
         }
-
-        _gainList = new ComboListPopup(widget, POPUP_TYPE_USER, maxGain, gain);
-        _gainList->setBorderColor(colorManager.getBarBkColor());
-        _gainList->setBorderWidth(5);
-        _gainList->popupUp(true);
+        _gainList = new PopupList(_gain, false);
         for (int i = 0; i < maxGain; i++)
         {
             _gainList->addItemText(ECGSymbol::convert((ECGGain)i));
         }
-        _gainList->setItemDrawMark(false);
-        _gainList->setFont(fontManager.textFont(14));
+
+        int fontSize = fontManager.getFontSize(3);
+        _gainList->setFont(fontManager.textFont(fontSize));
         connect(_gainList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
+        connect(_gainList, SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
     }
 
     _gainList->show();
@@ -272,15 +271,13 @@ void ECGWaveWidget::_ecgGain(IWidget *widget)
  *************************************************************************************************/
 void ECGWaveWidget::_popupDestroyed(void)
 {
-    int index = _gainList->getCurIndex();
-
-    if (index == -1)
+    if (_currentItemIndex == -1)
     {
         _gainList = NULL;
         return;
     }
 
-    if (index == ECG_GAIN_AUTO)
+    if (_currentItemIndex == ECG_GAIN_AUTO)
     {
         _isAutoGain = true;
     }
@@ -293,7 +290,7 @@ void ECGWaveWidget::_popupDestroyed(void)
     {
         for (int i = ECG_LEAD_I; i <= ECG_LEAD_V6; i++)
         {
-            ecgParam.set12LGain((ECGGain)index, (ECGLead)i);
+            ecgParam.set12LGain((ECGGain)_currentItemIndex, (ECGLead)i);
         }
     }
     else
@@ -305,7 +302,7 @@ void ECGWaveWidget::_popupDestroyed(void)
             // 修改增益后清空R波重绘标记记录
             rMarkList.clear();
 
-            ecgParam.setGain((ECGGain)index, getID());
+            ecgParam.setGain((ECGGain)_currentItemIndex, getID());
         }
         else
         {
@@ -335,6 +332,11 @@ void ECGWaveWidget::_onCalcLeadChanged()
             _filter->setVisible(false);
         }
     }
+}
+
+void ECGWaveWidget::_getItemIndex(int index)
+{
+    _currentItemIndex = index;
 }
 
 /**************************************************************************************************
@@ -501,7 +503,6 @@ void ECGWaveWidget::setGain(ECGGain gain)
 void ECGWaveWidget::set12LGain(ECGGain gain)
 {
     _12LGain = gain;
-    return;
 }
 
 /**************************************************************************************************
@@ -919,6 +920,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     , _gainList(NULL)
     , _p05mV(3185)
     , _n05mV(-3185)
+    , _currentItemIndex(-1)
 {
     _autoGainTracePeek = -100000000;
     _autoGainTraveVally = 100000000;
