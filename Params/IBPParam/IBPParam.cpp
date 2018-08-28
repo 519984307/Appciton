@@ -20,6 +20,7 @@
 #include "TrendGraphSetWidget.h"
 #include "WaveformCache.h"
 #include "IConfig.h"
+#include "IBPDefine.h"
 
 IBPParam *IBPParam::_selfObj = NULL;
 
@@ -121,26 +122,22 @@ IBPParam::~IBPParam()
 void IBPParam::handDemoWaveform(WaveformID id, short data)
 {
     data = data * 10 + 1000;
-    if (id != WAVE_IBP1 && id != WAVE_IBP2)
+    WaveformID ibp1WaveID = getWaveformID(getEntitle(IBP_INPUT_1));
+    WaveformID ibp2WaveID = getWaveformID(getEntitle(IBP_INPUT_2));
+
+    if (id == ibp1WaveID)
     {
-        return;
-    }
-    switch (id)
-    {
-    case WAVE_IBP1:
         if (NULL != _waveWidgetIBP1)
         {
             _waveWidgetIBP1->addData(data);
         }
-        break;
-    case WAVE_IBP2:
+    }
+    else if (id == ibp2WaveID)
+    {
         if (NULL != _waveWidgetIBP2)
         {
             _waveWidgetIBP2->addData(data);
         }
-        break;
-    default:
-        break;
     }
     waveformCache.addData(id, data);
 }
@@ -625,13 +622,31 @@ void IBPParam::setProvider(IBPProviderIFace *provider)
 
     _provider = provider;
 
-    QString titleIBP1 = _waveWidgetIBP1->getTitle();
-    QString titleIBP2 = _waveWidgetIBP2->getTitle();
     // 注册波形缓存
-    waveformCache.registerSource(WAVE_IBP1, _provider->getIBPWaveformSample(),
-                                 0, _provider->getIBPMaxWaveform(), titleIBP1, _provider->getIBPBaseLine());
-    waveformCache.registerSource(WAVE_IBP2, _provider->getIBPWaveformSample(),
-                                 0, _provider->getIBPMaxWaveform(), titleIBP2, _provider->getIBPBaseLine());
+    QString title = IBPSymbol::convert(IBP_PRESSURE_ART);
+    waveformCache.registerSource(WAVE_ART, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
+    title = IBPSymbol::convert(IBP_PRESSURE_PA);
+    waveformCache.registerSource(WAVE_PA, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
+    title = IBPSymbol::convert(IBP_PRESSURE_CVP);
+    waveformCache.registerSource(WAVE_CVP, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
+    title = IBPSymbol::convert(IBP_PRESSURE_RAP);
+    waveformCache.registerSource(WAVE_RAP, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
+    title = IBPSymbol::convert(IBP_PRESSURE_LAP);
+    waveformCache.registerSource(WAVE_LAP, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
+    title = IBPSymbol::convert(IBP_PRESSURE_ICP);
+    waveformCache.registerSource(WAVE_ICP, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
+    title = IBPSymbol::convert(IBP_PRESSURE_AUXP1);
+    waveformCache.registerSource(WAVE_AUXP1, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
+    title = IBPSymbol::convert(IBP_PRESSURE_AUXP2);
+    waveformCache.registerSource(WAVE_AUXP2, _provider->getIBPWaveformSample(),
+                                 0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
 }
 
 /**************************************************************************************************
@@ -676,19 +691,21 @@ void IBPParam::addWaveformData(short wave, bool invalid, IBPSignalInput IBP)
 
     if (IBP == IBP_INPUT_1)
     {
+        WaveformID ibp1WaveID = getWaveformID(getEntitle(IBP_INPUT_1));
         if (_waveWidgetIBP1 != NULL)
         {
             _waveWidgetIBP1->addWaveformData(wave, flag);
         }
-        waveformCache.addData(WAVE_IBP1, (flag << 16) | wave);
+        waveformCache.addData(ibp1WaveID, (flag << 16) | wave);
     }
     else if (IBP == IBP_INPUT_2)
     {
+        WaveformID ibp2WaveID = getWaveformID(getEntitle(IBP_INPUT_2));
         if (_waveWidgetIBP2 != NULL)
         {
             _waveWidgetIBP2->addWaveformData(wave, flag);
         }
-        waveformCache.addData(WAVE_IBP2, (flag << 16) | wave);
+        waveformCache.addData(ibp2WaveID, (flag << 16) | wave);
     }
 }
 
@@ -1095,6 +1112,71 @@ IBPPressureName IBPParam::getEntitle(IBPSignalInput signal) const
     }
 }
 
+IBPPressureName IBPParam::getEntitle(IBPLimitAlarmType alarmType) const
+{
+    switch (alarmType)
+    {
+    case ART_LIMIT_ALARM_SYS_LOW:
+    case ART_LIMIT_ALARM_SYS_HIGH:
+    case ART_LIMIT_ALARM_DIA_LOW:
+    case ART_LIMIT_ALARM_DIA_HIGH:
+    case ART_LIMIT_ALARM_MEAN_LOW:
+    case ART_LIMIT_ALARM_MEAN_HIGH:
+    case ART_LIMIT_ALARM_PR_LOW:
+    case ART_LIMIT_ALARM_PR_HIGH:
+        return IBP_PRESSURE_ART;
+    case PA_LIMIT_ALARM_SYS_LOW:
+    case PA_LIMIT_ALARM_SYS_HIGH:
+    case PA_LIMIT_ALARM_DIA_LOW:
+    case PA_LIMIT_ALARM_DIA_HIGH:
+    case PA_LIMIT_ALARM_MEAN_LOW:
+    case PA_LIMIT_ALARM_MEAN_HIGH:
+    case PA_LIMIT_ALARM_PR_LOW:
+    case PA_LIMIT_ALARM_PR_HIGH:
+        return IBP_PRESSURE_PA;
+    case CVP_LIMIT_ALARM_MEAN_LOW:
+    case CVP_LIMIT_ALARM_MEAN_HIGH:
+    case CVP_LIMIT_ALARM_PR_LOW:
+    case CVP_LIMIT_ALARM_PR_HIGH:
+        return IBP_PRESSURE_CVP;
+    case LAP_LIMIT_ALARM_MEAN_LOW:
+    case LAP_LIMIT_ALARM_MEAN_HIGH:
+    case LAP_LIMIT_ALARM_PR_LOW:
+    case LAP_LIMIT_ALARM_PR_HIGH:
+        return IBP_PRESSURE_LAP;
+    case RAP_LIMIT_ALARM_MEAN_LOW:
+    case RAP_LIMIT_ALARM_MEAN_HIGH:
+    case RAP_LIMIT_ALARM_PR_LOW:
+    case RAP_LIMIT_ALARM_PR_HIGH:
+        return IBP_PRESSURE_RAP;
+    case ICP_LIMIT_ALARM_MEAN_LOW:
+    case ICP_LIMIT_ALARM_MEAN_HIGH:
+    case ICP_LIMIT_ALARM_PR_LOW:
+    case ICP_LIMIT_ALARM_PR_HIGH:
+        return IBP_PRESSURE_ICP;
+    case AUXP1_LIMIT_ALARM_SYS_LOW:
+    case AUXP1_LIMIT_ALARM_SYS_HIGH:
+    case AUXP1_LIMIT_ALARM_DIA_LOW:
+    case AUXP1_LIMIT_ALARM_DIA_HIGH:
+    case AUXP1_LIMIT_ALARM_MEAN_LOW:
+    case AUXP1_LIMIT_ALARM_MEAN_HIGH:
+    case AUXP1_LIMIT_ALARM_PR_LOW:
+    case AUXP1_LIMIT_ALARM_PR_HIGH:
+        return IBP_PRESSURE_AUXP1;
+    case AUXP2_LIMIT_ALARM_SYS_LOW:
+    case AUXP2_LIMIT_ALARM_SYS_HIGH:
+    case AUXP2_LIMIT_ALARM_DIA_LOW:
+    case AUXP2_LIMIT_ALARM_DIA_HIGH:
+    case AUXP2_LIMIT_ALARM_MEAN_LOW:
+    case AUXP2_LIMIT_ALARM_MEAN_HIGH:
+    case AUXP2_LIMIT_ALARM_PR_LOW:
+    case AUXP2_LIMIT_ALARM_PR_HIGH:
+        return IBP_PRESSURE_AUXP2;
+    default:
+        return IBP_PRESSURE_NR;
+    }
+}
+
 /**************************************************************************************************
  * 设置滤波。
  *************************************************************************************************/
@@ -1230,6 +1312,41 @@ IBPPressureName IBPParam::getPressureName(SubParamID id)
     return name;
 }
 
+IBPPressureName IBPParam::getPressureName(WaveformID id)
+{
+    IBPPressureName name;
+    switch (id)
+    {
+    case WAVE_ART:
+        name = IBP_PRESSURE_ART;
+        break;
+    case WAVE_PA:
+        name = IBP_PRESSURE_PA;
+        break;
+    case WAVE_CVP:
+        name = IBP_PRESSURE_CVP;
+        break;
+    case WAVE_LAP:
+        name = IBP_PRESSURE_LAP;
+        break;
+    case WAVE_RAP:
+        name = IBP_PRESSURE_RAP;
+        break;
+    case WAVE_ICP:
+        name = IBP_PRESSURE_ICP;
+        break;
+    case WAVE_AUXP1:
+        name = IBP_PRESSURE_AUXP1;
+        break;
+    case WAVE_AUXP2:
+        name = IBP_PRESSURE_AUXP2;
+        break;
+    default:
+        break;
+    }
+    return name;
+}
+
 /**************************************************************************************************
  * 根据压力标名获取参数ID
  *************************************************************************************************/
@@ -1266,4 +1383,39 @@ SubParamID IBPParam::getSubParamID(IBPPressureName name)
         break;
     }
     return id;
+}
+
+WaveformID IBPParam::getWaveformID(IBPPressureName name)
+{
+    WaveformID waveID;
+    switch (name)
+    {
+    case IBP_PRESSURE_ART:
+        waveID = WAVE_ART;
+        break;
+    case IBP_PRESSURE_PA:
+        waveID = WAVE_PA;
+        break;
+    case IBP_PRESSURE_CVP:
+        waveID = WAVE_CVP;
+        break;
+    case IBP_PRESSURE_LAP:
+        waveID = WAVE_LAP;
+        break;
+    case IBP_PRESSURE_RAP:
+        waveID = WAVE_RAP;
+        break;
+    case IBP_PRESSURE_ICP:
+        waveID = WAVE_ICP;
+        break;
+    case IBP_PRESSURE_AUXP1:
+        waveID = WAVE_AUXP1;
+        break;
+    case IBP_PRESSURE_AUXP2:
+        waveID = WAVE_AUXP2;
+        break;
+    default:
+        break;
+    }
+    return waveID;
 }

@@ -682,12 +682,6 @@ void EventWindowPrivate::loadEventData()
 
                 ParamID paramId = paramInfo.getParamID(subId);
                 infoStr += " ";
-
-                if (paramId == PARAM_IBP)
-                {
-                    infoStr += IBPSymbol::convert(ibpParam.getPressureName(subId));
-                    infoStr += " ";
-                }
                 infoStr += trs(Alarm::getPhyAlarmMessage(paramId, alarmId, alarmInfo & 0x1));
 
                 if (!(alarmInfo & 0x1))
@@ -802,12 +796,6 @@ void EventWindowPrivate::eventInfoUpdate(int curRow)
 
         ParamID paramId = paramInfo.getParamID(subId);
         infoStr += " ";
-
-        if (paramId == PARAM_IBP)
-        {
-            infoStr += IBPSymbol::convert(ibpParam.getPressureName(subId));
-            infoStr += " ";
-        }
         infoStr += trs(Alarm::getPhyAlarmMessage(paramId,
                        alarmId,
                        alarmInfo & 0x1));

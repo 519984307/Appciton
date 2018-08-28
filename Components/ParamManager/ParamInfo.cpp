@@ -229,8 +229,14 @@ static const char *_paramWaveformNames[WAVE_NR] =
     "AA1_WAVEFORM",
     "AA2_WAVEFORM",
     "O2_WAVEFORM",
-    "IBP1_WAVEFORM",
-    "IBP2_WAVEFORM",
+    "ART_WAVEFORM",
+    "PA_WAVEFORM",
+    "CVP_WAVEFORM",
+    "LAP_WAVEFORM",
+    "RAP_WAVEFORM",
+    "ICP_WAVEFORM",
+    "AUXP1_WAVEFORM",
+    "AUXP2_WAVEFORM",
 };
 
 /**************************************************************************************************
@@ -531,8 +537,14 @@ ParamID ParamInfo::getParamID(WaveformID id)
     case WAVE_O2:
         paramID = PARAM_AG;
         break;
-    case WAVE_IBP1:
-    case WAVE_IBP2:
+    case WAVE_ART:
+    case WAVE_PA:
+    case WAVE_CVP:
+    case WAVE_LAP:
+    case WAVE_RAP:
+    case WAVE_ICP:
+    case WAVE_AUXP1:
+    case WAVE_AUXP2:
         paramID = PARAM_IBP;
         break;
     default:

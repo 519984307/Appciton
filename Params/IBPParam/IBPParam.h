@@ -53,7 +53,7 @@ public:
 
     // 获取可得的波形控件集。
     virtual void getAvailableWaveforms(QStringList &waveforms,
-            QStringList &waveformShowName, int);
+                                       QStringList &waveformShowName, int);
 
     // 获取当前的单位。
     virtual UnitType getCurrentUnit(SubParamID id);
@@ -108,6 +108,7 @@ public:
 
     // get pressure name
     IBPPressureName getEntitle(IBPSignalInput signal) const;
+    IBPPressureName getEntitle(IBPLimitAlarmType alarmType) const;
 
     // 设置滤波
     void setFilter(IBPFilterMode filter);
@@ -127,8 +128,9 @@ public:
 
     // 参数名获取标名
     IBPPressureName getPressureName(SubParamID id);
+    IBPPressureName getPressureName(WaveformID id);
     SubParamID getSubParamID(IBPPressureName name);
-
+    WaveformID getWaveformID(IBPPressureName name);
 private:
     IBPParam();
     static IBPParam *_selfObj;
