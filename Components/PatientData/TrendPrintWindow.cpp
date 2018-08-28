@@ -60,7 +60,7 @@ public:
 TrendPrintWindow::TrendPrintWindow()
     : Window(), d_ptr(new TrendPrintWindowPrivate())
 {
-    setWindowTitle(trs("PrintSet"));
+    setWindowTitle(trs("PrintSetup"));
 
     QPalette pal = palette();
     d_ptr->startBox = new QGroupBox();

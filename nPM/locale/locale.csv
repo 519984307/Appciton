@@ -222,7 +222,7 @@ PrintNumOfTraces,打印波形数量,Number Of Print Traces
 PrintAlarmTriger,报警触发,Alarm Trigger
 PrintDefibTriger,除颤触发,Defib Trigger
 Print12LeadFormat,12导格式,12-Lead Format
-PrintSetup,打印,Print
+PrintSetup,打印设置,Print Setup
 SystemAlarmVolume,报警音量,Alarm Audio Volume
 MinimumALarmVolume,最低报警音量,Minimum Alarm Volume
 DefaultAlarmVolume,默认报警音量,Default Alarm Volume
@@ -724,9 +724,9 @@ SupervisorHour,时,Hour
 SupervisorMinute,分,Minute
 SupervisorSecond,秒,Second
 SupervisorDateFormat,日期格式,Date Format
-YMD,年/月/日,YYYY/MM/DD
-MDY,月/日/年,MM/DD/YYYY
-DMY,日/月/年,DD/MM/YYYY
+YearMonthDay,年/月/日,YYYY/MM/DD
+MonthDayYear,月/日/年,MM/DD/YYYY
+DayMonthYear,日/月/年,DD/MM/YYYY
 SupervisorTimeFormat,时间格式,Time Format
 SupervisorDisplaySec,显示秒,Display Second
 SupervisorCodeMarker,代码标记,Code Marker
@@ -1370,3 +1370,14 @@ BigFont,大字体,Big Font
 DEMO,演示,DEMO
 DemoMode,演示模式,Demo Mode
 DemoConfigDesc,演示设置,Demo Configuration
+BatteryCalibrationRequired,电池校准请求,Battery Calibration Required
+StartTime,开始时间,Start Time
+EndTime,结束时间,End Time
+HourSystem,时钟系统,Hour System
+PrintLength,打印长度,Print Length
+Hour,时,Hour
+Minute,分,Minute
+Second,秒,Second
+ComfirmClearErrorLog,确认是否清理错误日志,Comfirm Clear Error Log
+Speed,速度,Speed
+Gain,增益,Gain

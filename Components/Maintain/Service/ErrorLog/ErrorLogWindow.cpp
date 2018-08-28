@@ -235,7 +235,7 @@ void ErrorLogWindow::exportReleased()
 
 void ErrorLogWindow::eraseReleased()
 {
-    MessageBox messageBox(trs("ClearErrorLog"), trs("ComfirmClearErrorLog"));
+    MessageBox messageBox(trs("ErrorLogErase"), trs("ComfirmClearErrorLog"));
     if (1 == messageBox.exec())
     {
         errorLog.clear();
