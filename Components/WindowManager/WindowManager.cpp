@@ -35,6 +35,7 @@
 #include <QApplication>
 #include "Window.h"
 #include "FontManager.h"
+#include <QTimer>
 
 struct NodeDesc
 {
@@ -2347,9 +2348,9 @@ IWidget *WindowManager::getWidget(const QString &name)
  * 功能：构造函数
  **************************************************************************************************/
 #if defined(Q_WS_QWS)
-WindowManager::WindowManager() : QWidget(NULL, Qt::FramelessWindowHint)
+WindowManager::WindowManager() : QWidget(NULL, Qt::FramelessWindowHint), timer(NULL)
 #else
-WindowManager::WindowManager() : QWidget(), _demoWidget(NULL)
+WindowManager::WindowManager() : QWidget(), _demoWidget(NULL), timer(NULL)
 #endif
 {
     _demoWidget = NULL;
@@ -2384,6 +2385,13 @@ WindowManager::WindowManager() : QWidget(), _demoWidget(NULL)
 
     _newLayoutStyle();
     setVisible(true);
+
+    timer = new QTimer(this);
+    timer->setSingleShot(true);
+    timer->setInterval(10 * 1000);    // 10s
+    connect(timer, SIGNAL(timeout()), this, SLOT(closeAllWidows()));
+
+    qApp->installEventFilter(this);
 }
 
 /***************************************************************************************************
@@ -2461,6 +2469,11 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
         }
     }
 
+    if (!(behaviors & ShowBehaviorNoAutoClose))
+    {
+        timer->start();
+    }
+
     QPointer<Window> newP = w;
     windowStacks.append(newP);
     connect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)), Qt::DirectConnection);
@@ -2530,6 +2543,26 @@ void WindowManager::showDemoWidget(bool flag)
     }
 }
 
+bool WindowManager::eventFilter(QObject *obj, QEvent *ev)
+{
+    Q_UNUSED(obj)
+    if (windowStacks.isEmpty())
+    {
+        return false;
+    }
+
+    if ((ev->type() == QEvent::KeyPress) || (ev->type() == QEvent::MouseButtonPress))
+    {
+        // reactive the timer
+        if (timer->isActive())
+        {
+            timer->start();
+        }
+    }
+
+    return false;
+}
+
 void WindowManager::closeAllWidows()
 {
     QWidget *activeWindow = NULL;
@@ -2541,6 +2574,7 @@ void WindowManager::closeAllWidows()
         }
         activeWindow->close();
     }
+    timer->stop();
 }
 
 void WindowManager::onWindowHide(Window *w)
@@ -2561,9 +2595,14 @@ void WindowManager::onWindowHide(Window *w)
             top->showMask(false);
             top->show();
         }
+        else
+        {
+            timer->stop();
+        }
     }
     else if (windowStacks.isEmpty())
     {
         disconnect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)));
+        timer->stop();
     }
 }

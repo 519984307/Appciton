@@ -324,7 +324,8 @@ SOURCES +=                                                                      
     Components/WindowManager/ConfigManagerMenuWindow.cpp                        \
     Components/WindowManager/UserMaintainMenuWindow.cpp                         \
     Components/WindowManager/ArrhythmiaMenuWindow.cpp                           \
-    Components/WindowManager/ScreenMenuContent.cpp                        \
+    Components/WindowManager/ScreenMenuContent.cpp                              \
+    Components/WindowManager/ScreenLayoutWindow.cpp                             \
     Components/USBManager/DataExporterBase.cpp                                  \
     Components/USBManager/ErrorLogExporter.cpp                                  \
     Components/USBManager/UDiskInspector.cpp                                    \
@@ -890,7 +891,8 @@ HEADERS +=                                                                      
     Components/WindowManager/ConfigManagerMenuWindow.h                          \
     Components/WindowManager/UserMaintainMenuWindow.h                           \
     Components/WindowManager/ArrhythmiaMenuWindow.h                             \
-    Components/WindowManager/ScreenMenuContent.h                          \
+    Components/WindowManager/ScreenMenuContent.h                                \
+    Components/WindowManager/ScreenLayoutWindow.h                               \
     Components/PrintManager/PrintTypeDefine.h                                   \
     Components/PrintManager/PrintDefine.h                                       \
     Components/PrintManager/PrintProviderIFace.h                                \

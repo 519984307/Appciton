@@ -50,6 +50,7 @@ public:
         ShowBehaviorModal = 0x02,           // Show the window as modal window
         ShowBehaviorHideOthers = 0x04,      // show the window and hide others window, the other windows still in the window stack
         ShowBehaviorCloseOthers = 0x08,     // show the window and close others window, the other windows will remove from the window stack
+        ShowBehaviorNoAutoClose = 0x10,     // don't automatically close this window when there isn't any user action
     };
     Q_DECLARE_FLAGS(ShowBehavior, ShowBehaviorFlags)
 
@@ -72,6 +73,16 @@ public:
      *             or false to hide the demo widget
      */
     void showDemoWidget(bool flag);
+
+    /**
+     * @brief eventFilter event filer to filter the user input event,
+     *                    this filer is use to setup on the qApp and
+     *                    reset the auto close timer when not any user action
+     * @param obj
+     * @param ev
+     * @return always false
+     */
+    bool eventFilter(QObject *obj, QEvent *ev);
 
 public slots:
     /**
@@ -268,6 +279,7 @@ private:
     QMultiMap<IWidget *, IWidget *> _trendWave;            // 参数列表
 
     QList<QPointer<Window> > windowStacks;
+    QTimer * timer;				// timer to auto close the windows
 
     QWidget * _demoWidget;
 };
