@@ -1,13 +1,13 @@
 /**
  ** This file is part of the nPM project.
  ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
  ** All Rights Reserved.
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/28
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
  **/
-
 
 
 #include <QResizeEvent>
@@ -22,10 +22,10 @@
 #include "ParamInfo.h"
 #include "WaveWidgetSelectMenu.h"
 #include "WindowManager.h"
-#include "ComboListPopup.h"
 #include "Debug.h"
 #include "IBPManualRuler.h"
 #include "TimeDate.h"
+#include "PopupList.h"
 
 /**************************************************************************************************
  * 添加波形数据。
@@ -124,7 +124,10 @@ IBPPressureName IBPWaveWidget::getEntitle()
  * 构造。
  *************************************************************************************************/
 IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPressureName &entitle)
-    : WaveWidget(waveName, IBPSymbol::convert(entitle)), _zoomList(NULL), _entitle(entitle)
+    : WaveWidget(waveName, IBPSymbol::convert(entitle)),
+      _zoomList(NULL),
+      _entitle(entitle),
+      _currentItemIndex(-1)
 {
     _autoRulerTracePeek = -10000;
     _autoRulerTraveVally = 10000;
@@ -234,7 +237,7 @@ void IBPWaveWidget::_IBPZoom(IWidget *widget)
 {
     if (NULL == _zoomList)
     {
-        _zoomList = new ComboListPopup(widget, POPUP_TYPE_USER, ibpParam.ibpScaleList.count());
+        _zoomList = new PopupList(_zoom, false);
         for (int i = 0; i < ibpParam.ibpScaleList.count(); i++)
         {
             if (i == 0)
@@ -251,11 +254,10 @@ void IBPWaveWidget::_IBPZoom(IWidget *widget)
                                        QString::number(ibpParam.ibpScaleList.at(i).high));
             }
         }
-        _zoomList->setItemDrawMark(false);
-        _zoomList->setFont(fontManager.textFont(fontManager.getFontSize(1)));
+        _zoomList->setFont(fontManager.textFont(fontManager.getFontSize(3)));
         connect(_zoomList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
+        connect(_zoomList, SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
     }
-
     _zoomList->show();
 }
 
@@ -264,19 +266,18 @@ void IBPWaveWidget::_IBPZoom(IWidget *widget)
  *************************************************************************************************/
 void IBPWaveWidget::_popupDestroyed()
 {
-    int index = _zoomList->getCurIndex();
-    if (index == -1)
+    if (_currentItemIndex == -1)
     {
         _zoomList = NULL;
         return;
     }
 
-    setRuler(index);
-    if (index == IBP_AUTO_SCALE_INDEX)
+    setRuler(_currentItemIndex);
+    if (_currentItemIndex == IBP_AUTO_SCALE_INDEX)
     {
         _isAutoRuler = true;
     }
-    else if (index == IBP_MANUAL_SCALE_INDEX)
+    else if (_currentItemIndex == IBP_MANUAL_SCALE_INDEX)
     {
         _isAutoRuler = false;
         displayManualRuler();
@@ -284,10 +285,15 @@ void IBPWaveWidget::_popupDestroyed()
     else
     {
         _isAutoRuler = false;
-        setLimit(ibpParam.ibpScaleList.at(index).low, ibpParam.ibpScaleList.at(index).high);
+        setLimit(ibpParam.ibpScaleList.at(_currentItemIndex).low, ibpParam.ibpScaleList.at(_currentItemIndex).high);
     }
 
     _zoomList = NULL;
+}
+
+void IBPWaveWidget::_getItemIndex(int index)
+{
+    _currentItemIndex = index;
 }
 
 /**************************************************************************************************

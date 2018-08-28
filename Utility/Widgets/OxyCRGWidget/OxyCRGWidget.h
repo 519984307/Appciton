@@ -23,7 +23,7 @@ class QLabel;
 class QHBoxLayout;
 class QVBoxLayout;
 class OxyCRGWidgetLabel;
-class ComboListPopup;
+class PopupList;
 class OxyCRGWidget : public IWidget
 {
     Q_OBJECT
@@ -49,11 +49,13 @@ private slots:
     void _onSetupUpdated(IWidget *widget);
     void _intervalDestroyed();
     void _changeTrendDestroyed();
+    void _getIntervalIndex(int);
+    void _getChangeTrendIndex(int);
 signals:
     void _intervalChanged(int index);
 private:
     static const int _titleBarHeight = 15;
-    static const int _labelHeight = 20;
+    static const int _labelHeight = 40;
     QVBoxLayout *_mainLayout;
     QVBoxLayout *_hLayoutWave;
     QLabel *_titleLabel;
@@ -61,8 +63,10 @@ private:
     OxyCRGWidgetLabel *_setUp;
     OxyCRGWidgetLabel *_interval;         // 时间间隔
     OxyCRGWidgetLabel *_changeTrend;      // 呼吸波与CO2
-    ComboListPopup *_intervalList;      // 时间间隔
-    ComboListPopup *_changeTrendList;   // 呼吸波与CO2列表
+//    ComboListPopup *_intervalList;      // 时间间隔
+//    ComboListPopup *_changeTrendList;   // 呼吸波与CO2列表
+    PopupList *_intervalList;
+    PopupList *_changeTrendList;
     OxyCRGRESPWidget *_oxycrgWidget;
     OxyCRGHRWidget *_oxycrgHrWidget;
     OxyCRGSPO2Widget *_oxycrgSpo2Widget;
@@ -87,4 +91,7 @@ private:
     bool _isShowFrame;                         // 是否显示边框
     bool _isShowScale;                         // 是否显示刻度
     int  _waveType;                    // 波形类型
+
+    int _intervalItemIndex;
+    int _changeTrendItemIndex;
 };

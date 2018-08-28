@@ -1,13 +1,13 @@
 /**
  ** This file is part of the nPM project.
  ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
  ** All Rights Reserved.
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/28
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
  **/
-
 
 
 #include <QResizeEvent>
@@ -19,9 +19,10 @@
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "WaveWidgetSelectMenu.h"
-#include "ComboListPopup.h"
+#include "PopupList.h"
 #include "CO2Param.h"
 #include "WindowManager.h"
+#include "ThemeManager.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -167,7 +168,8 @@ bool CO2WaveWidget::waveEnable()
  * 构造。
  *************************************************************************************************/
 CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
-    : WaveWidget(waveName, title), _gainList(NULL)
+    : WaveWidget(waveName, title), _gainList(NULL),
+      _currentItemIndex(-1)
 {
     setFocusPolicy(Qt::NoFocus);
     setID(WAVE_CO2);
@@ -212,14 +214,12 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
  *************************************************************************************************/
 void CO2WaveWidget::_zoomChangeSlot(IWidget *widget)
 {
+    Q_UNUSED(widget)
     if (NULL == _gainList)
     {
         CO2DisplayZoom zoom = co2Param.getDisplayZoom();
         int maxZoom = CO2_DISPLAY_ZOOM_NR;
-        _gainList = new ComboListPopup(widget, POPUP_TYPE_USER, maxZoom, zoom);
-        _gainList->setBorderColor(colorManager.getBarBkColor());
-        _gainList->setBorderWidth(5);
-        _gainList->popupUp(true);
+        _gainList = new PopupList(_zoom, false);
         float zoomArray[] = {4.0, 8.0, 12.0, 20.0};
         QString str;
         UnitType unit = co2Param.getUnit();
@@ -242,16 +242,16 @@ void CO2WaveWidget::_zoomChangeSlot(IWidget *widget)
             }
             else
             {
-//                str.sprintf("0.0~%.1f", zoomArray[i]);
                 str = QString("0.0~%1").arg(QString::number(zoomArray[i], 'f', 1));
             }
             str += " ";
             str += Unit::localeSymbol(unit);
             _gainList->addItemText(str);
         }
-        _gainList->setItemDrawMark(false);
-        _gainList->setFont(fontManager.textFont(14));
+        int fontSize = fontManager.getFontSize(3);
+        _gainList->setFont(fontManager.textFont(fontSize));
         connect(_gainList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
+        connect(_gainList, SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
     }
 
     _gainList->show();
@@ -262,15 +262,19 @@ void CO2WaveWidget::_zoomChangeSlot(IWidget *widget)
  *************************************************************************************************/
 void CO2WaveWidget::_popupDestroyed(void)
 {
-    int index = _gainList->getCurIndex();
-    if (index == -1)
+    if (_currentItemIndex == -1)
     {
         _gainList = NULL;
         return;
     }
 
-    co2Param.setDisplayZoom((CO2DisplayZoom)index);
+    co2Param.setDisplayZoom((CO2DisplayZoom)_currentItemIndex);
     _gainList = NULL;
+}
+
+void CO2WaveWidget::_getItemIndex(int index)
+{
+    _currentItemIndex = index;
 }
 
 /**************************************************************************************************

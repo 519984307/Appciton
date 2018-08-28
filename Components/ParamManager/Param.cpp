@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
+ **/
+
 #include "Param.h"
 
 /**************************************************************************************************
@@ -52,7 +62,6 @@ bool Param::isConnected()
  *************************************************************************************************/
 void Param::initParam(void)
 {
-
 }
 
 /**************************************************************************************************
@@ -63,7 +72,6 @@ void Param::initParam(void)
  *************************************************************************************************/
 void Param::handDemoWaveform(WaveformID /*id*/, short /*data*/)
 {
-
 }
 
 /**************************************************************************************************
@@ -71,7 +79,10 @@ void Param::handDemoWaveform(WaveformID /*id*/, short /*data*/)
  *************************************************************************************************/
 void Param::handDemoTrendData(void)
 {
+}
 
+void Param::exitDemo()
+{
 }
 
 /**************************************************************************************************
@@ -81,7 +92,6 @@ void Param::getAvailableWaveforms(QStringList &waveforms, QStringList &waveformS
 {
     waveforms.clear();
     waveformShowName.clear();
-    flag = flag;
 }
 
 /**************************************************************************************************
@@ -135,10 +145,10 @@ UnitType Param::getCurrentUnit(SubParamID /*id*/)
  * 功能： 构造。
  *************************************************************************************************/
 Param::Param(ParamID id)
+    : _paramID(id),
+      _paramName(paramInfo.getParamName(id)),
+      _isEnable(true)
 {
-    _paramID = id;
-    _paramName = paramInfo.getParamName(_paramID);
-    _isEnable = true;
 }
 
 /**************************************************************************************************
@@ -146,5 +156,4 @@ Param::Param(ParamID id)
  *************************************************************************************************/
 Param::~Param()
 {
-
 }

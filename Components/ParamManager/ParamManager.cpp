@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
+ **/
+
 #include "ParamManager.h"
 #include "SystemManager.h"
 #include "WindowManager.h"
@@ -9,35 +19,6 @@
 #include <iostream>
 
 ParamManager *ParamManager::_selfObj = NULL;
-
-/**************************************************************************************************
- * 功能： 从配置文件中读取Provider和Param的对应关系。
- *************************************************************************************************/
-//void ParamManager::_load_param_provider_info(void)
-//{
-//    // 读取数据到_provider_param_table表中。
-//    QString str;
-//    machine_config.ReadStringValue("AllProviders", str);
-//    QStringList provider_list = str.split(',');
-//    QStringList param_list;
-//    for (int i = 0; i < provider_list.size(); i++)
-//    {
-//        machine_config.ReadStringValue(provider_list[i], str);
-//        param_list = str.split(',');
-//        for (int j = 0; j < param_list.size(); j++)
-//        {
-//            _provider_param_table.insert(provider_list[i], param_list[j]);
-//        }
-//    }
-//    // 读取数据到_param_provider_table表中。
-//    machine_config.ReadStringValue("AllParams", str);
-//    param_list = str.split(',');
-//    for (int i = 0; i < param_list.size(); i++)
-//    {
-//        machine_config.ReadStringValue(param_list[i], str);
-//        _param_provider_table.insert(param_list[i], str);
-//    }
-//}
 
 /**************************************************************************************************
  * 功能： 将数据生产者对象加入进来。
@@ -65,7 +46,7 @@ void ParamManager::addParam(Param &param)
  * 参数：
  *      params： 带回参数对象。
  *************************************************************************************************/
-void ParamManager::getParams(QList<Param*> &params)
+void ParamManager::getParams(QList<Param *> &params)
 {
     params.clear();
     ParamMap::Iterator it = _params.begin();
@@ -102,53 +83,101 @@ void ParamManager::connectParamProvider(void)
 {
     // 从配置文件获取机器支持的参数。
     QString str;
+    Provider *demoProvider = NULL;
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        demoProvider = _providers.value("DemoProvider", NULL);
+    }
     machineConfig.getStrValue("AllParams", str);
     QStringList param_list = str.split(',');
-    //trim text
-    for(QStringList::iterator iter = param_list.begin(); iter != param_list.end(); iter++)
+    // trim text
+    for (QStringList::iterator iter = param_list.begin(); iter != param_list.end(); ++iter)
     {
         *iter = (*iter).trimmed();
     }
+
     Provider *provider = NULL;
-    Param *param = NULL;
 
     for (int i = 0; i < param_list.size(); i++)
     {
         // 查找Param对象。
-        param = _params.value(param_list[i], NULL);
+        Param *param = _params.value(param_list[i], NULL);
         if (param == NULL)
         {
             continue;
         }
+
+        // deattach the demo provider if the param is return from the demo mode
+        if (demoProvider)
+        {
+            demoProvider->detachParam(*param);
+            param->exitDemo();
+        }
+
 
         // 获取参数当前的Provider。
         machineConfig.getStrValue(param_list[i], str);
 
         QStringList provider_list = str.split(',');
         bool providerHasSet = false;
-        for(QStringList::iterator iter = provider_list.begin(); iter != provider_list.end(); iter++)
+        for (QStringList::iterator iter = provider_list.begin(); iter != provider_list.end(); ++iter)
         {
             *iter = (*iter).trimmed();
             // 查找Provider对象。
             provider = _providers.value(*iter, NULL);
-            if(provider)
+            if (provider)
             {
                 // 将Provider对象与Param对象连接起来。
                 provider->attachParam(*param);
                 providerHasSet = true;
             }
 
-            BLMProvider *blmProvider = static_cast<BLMProvider*>(provider);
-            if(blmProvider)
+            BLMProvider *blmProvider = static_cast<BLMProvider *>(provider);
+            if (blmProvider)
             {
                 _blmProviders.insert(param->getParamID(), blmProvider);
             }
         }
 
-        if(providerHasSet)
+        if (providerHasSet)
         {
             param->initParam();
         }
+    }
+}
+
+void ParamManager::connectDemoParamProvider()
+{
+    Provider *provider = NULL;
+    provider = _providers.value("DemoProvider", NULL);
+    if (provider)
+    {
+        // 从配置文件获取机器支持的参数。
+        QString str;
+        machineConfig.getStrValue("AllParams", str);
+        QStringList param_list = str.split(',');
+        // trim text
+        for (QStringList::iterator iter = param_list.begin(); iter != param_list.end(); ++iter)
+        {
+            *iter = (*iter).trimmed();
+        }
+
+        for (int i = 0; i < param_list.size(); i++)
+        {
+            // 查找Param对象。
+            Param *param = _params.value(param_list[i], NULL);
+            if (param == NULL)
+            {
+                continue;
+            }
+
+            provider->attachParam(*param);
+            param->initParam();
+        }
+    }
+    else
+    {
+        qdebug("Demo provider not found");
     }
 }
 
@@ -233,7 +262,7 @@ UnitType ParamManager::getSubParamUnit(ParamID paramID, SubParamID id)
     ParamWithIDMap::Iterator it = _paramWithID.find(paramID);
     if (it == _paramWithID.end())
     {
-        //no such param, return the default unit
+        // no such param, return the default unit
         return paramInfo.getUnitOfSubParam(id);
     }
 
@@ -274,10 +303,9 @@ bool ParamManager::isParamStopped(ParamID id)
  *************************************************************************************************/
 void ParamManager::checkProviderConnection(void)
 {
-    foreach (Provider *provider, _providers)
+    foreach(Provider *provider, _providers)
     {
         provider->checkConnection();
-
     }
 }
 
@@ -286,7 +314,7 @@ void ParamManager::checkProviderConnection(void)
  *************************************************************************************************/
 void ParamManager::getVersion(void)
 {
-    foreach (Provider *provider, _providers)
+    foreach(Provider *provider, _providers)
     {
         provider->sendVersion();
     }
@@ -305,7 +333,6 @@ BLMProvider *ParamManager::getBLMProvider(ParamID paramId)
  *************************************************************************************************/
 ParamManager::ParamManager()
 {
-
 }
 
 /**************************************************************************************************

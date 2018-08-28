@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
+ **/
+
 #include "SPO2Param.h"
 #include "SPO2Alarm.h"
 #include "SPO2TrendWidget.h"
@@ -25,7 +35,7 @@ void SPO2Param::sendCmdData(unsigned char cmdId, const unsigned char *data, unsi
 {
     if (NULL != _provider)
     {
-        _provider->sendCmdData(cmdId,data,len);
+        _provider->sendCmdData(cmdId, data, len);
     }
 }
 
@@ -95,7 +105,7 @@ void SPO2Param::handDemoTrendData(void)
     {
         _trendWidget->setSPO2Value(_spo2Value);
     }
-    if(NULL != _waveOxyCRGWidget)
+    if (NULL != _waveOxyCRGWidget)
     {
         _waveOxyCRGWidget->addDataBuf(_spo2Value, 0);
         _waveOxyCRGWidget->addData(_spo2Value);
@@ -104,11 +114,22 @@ void SPO2Param::handDemoTrendData(void)
     setPR(prValue);
 }
 
+void SPO2Param::exitDemo()
+{
+    _spo2Value = InvData();
+    if (NULL != _trendWidget)
+    {
+        _trendWidget->setSPO2Value(InvData());
+    }
+
+    setPR(InvData());
+}
+
 /**************************************************************************************************
  * 获取可得的波形控件集。
  *************************************************************************************************/
 void SPO2Param::getAvailableWaveforms(QStringList &waveforms,
-        QStringList &waveformShowName, int /*flag*/)
+                                      QStringList &waveformShowName, int /*flag*/)
 {
     waveforms.clear();
     waveformShowName.clear();
@@ -127,11 +148,11 @@ short SPO2Param::getSubParamValue(SubParamID id)
 {
     switch (id)
     {
-        case SUB_PARAM_SPO2:
-            return getSPO2();
+    case SUB_PARAM_SPO2:
+        return getSPO2();
 
-        default:
-            return InvData();
+    default:
+        return InvData();
     }
 }
 
@@ -181,7 +202,7 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider)
     }
     else if (str == "MASIMO_SPO2")
     {
-        _provider->setSensitivityFastSat(SPO2_MASIMO_SENS_NORMAL,false);
+        _provider->setSensitivityFastSat(SPO2_MASIMO_SENS_NORMAL, false);
         _provider->setAverageTime(SPO2_AVER_TIME_8SEC);
         _provider->setSmartTone(false);
     }
@@ -192,7 +213,7 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider)
     QString tile = _waveWidget->getTitle();
     // 请求波形缓冲区。
     waveformCache.registerSource(WAVE_SPO2, _provider->getSPO2WaveformSample(), 0, _provider->getSPO2MaxValue(),
-            tile, _provider->getSPO2BaseLine());
+                                 tile, _provider->getSPO2BaseLine());
 }
 
 /**************************************************************************************************
@@ -217,7 +238,7 @@ void SPO2Param::reset()
  *************************************************************************************************/
 void SPO2Param::setGain(SPO2Gain gain)
 {
-    systemConfig.setNumValue("PrimaryCfg|SPO2|Gain", (int)gain);
+    systemConfig.setNumValue("PrimaryCfg|SPO2|Gain", static_cast<int>(gain));
 
     if (NULL != _waveWidget)
     {
@@ -315,7 +336,7 @@ SoundManager::VolumeLevel SPO2Param::getPluseToneVolume(void)
  *************************************************************************************************/
 void SPO2Param::setSPO2(short spo2Value)
 {
-    if(_spo2Value == spo2Value)
+    if (_spo2Value == spo2Value)
     {
         return;
     }
@@ -324,11 +345,10 @@ void SPO2Param::setSPO2(short spo2Value)
     {
         _trendWidget->setSPO2Value(_spo2Value);
     }
-    if(NULL != _waveOxyCRGWidget)
+    if (NULL != _waveOxyCRGWidget)
     {
         _waveOxyCRGWidget->addDataBuf(_spo2Value, 0);
     }
-
 }
 
 /**************************************************************************************************
@@ -376,7 +396,7 @@ void SPO2Param::addWaveformData(short wave)
  *************************************************************************************************/
 void SPO2Param::addBarData(short data)
 {
-    if(_barValue == data)
+    if (_barValue == data)
     {
         return;
     }
@@ -395,8 +415,8 @@ void SPO2Param::setPulseAudio(bool pulse)
     if (pulse && ecgParam.getHR() == InvData())
     {
         soundManager.pulseTone(getSmartPulseTone() == SPO2_SMART_PLUSE_TONE_ON
-                           ? getSPO2()
-                           : -1);
+                               ? getSPO2()
+                               : -1);
         ecgDupParam.updatePRBeatIcon();
     }
 }
@@ -407,7 +427,7 @@ void SPO2Param::setNotify(bool enable, QString str)
     {
         if (_isEverCheckFinger)
         {
-            _waveWidget->setNotify(enable,str);
+            _waveWidget->setNotify(enable, str);
         }
     }
 }
@@ -417,10 +437,10 @@ void SPO2Param::setNotify(bool enable, QString str)
  *************************************************************************************************/
 void SPO2Param::setSearchForPulse(bool isSearching)
 {
-    //_trendWidget->setSearchForPulse(isSearching);
+    // _trendWidget->setSearchForPulse(isSearching);
     if (NULL != _waveWidget)
     {
-        _waveWidget->setNotify(isSearching,trs("SPO2PulseSearch"));
+        _waveWidget->setNotify(isSearching, trs("SPO2PulseSearch"));
     }
 
     if (isSearching && !_isEverCheckFinger)
@@ -470,7 +490,7 @@ bool SPO2Param::isValid()
  *************************************************************************************************/
 bool SPO2Param::isConnected()
 {
-    Provider *provider = dynamic_cast<Provider*>(_provider);
+    Provider *provider = dynamic_cast<Provider *>(_provider);
     if (NULL == provider)
     {
         return false;
@@ -500,7 +520,7 @@ int SPO2Param::setSensorOff(bool flag)
         QStringList curWaveList;
         windowManager.getDisplayedWaveform(curWaveList);
         int waveCount = curWaveList.count();
-        if(waveCount == 0)
+        if (waveCount == 0)
         {
             return 0;
         }
@@ -570,7 +590,7 @@ void SPO2Param::checkSelftest()
  *************************************************************************************************/
 void SPO2Param::setSensitivity(SPO2Sensitive sens)
 {
-    systemConfig.setNumValue("PrimaryCfg|SPO2|Sensitivity", (int)sens);
+    systemConfig.setNumValue("PrimaryCfg|SPO2|Sensitivity", static_cast<int>(sens));
     if (NULL != _provider)
     {
         _provider->setSensitive(sens);
@@ -592,7 +612,7 @@ SPO2Sensitive SPO2Param::getSensitivity(void)
  *************************************************************************************************/
 void SPO2Param::setSmartPulseTone(SPO2SMARTPLUSETONE sens)
 {
-    currentConfig.setNumValue("SPO2|SmartPluseTone", (int)sens);
+    currentConfig.setNumValue("SPO2|SmartPluseTone", static_cast<int>(sens));
 }
 
 /**************************************************************************************************
@@ -650,5 +670,4 @@ SPO2Param::SPO2Param() : Param(PARAM_SPO2)
  *************************************************************************************************/
 SPO2Param::~SPO2Param()
 {
-
 }

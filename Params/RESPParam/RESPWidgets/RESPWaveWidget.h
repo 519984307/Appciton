@@ -1,9 +1,20 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
+ **/
+
+
 #pragma once
 #include "WaveWidget.h"
 #include "RESPDefine.h"
 
 class WaveWidgetLabel;
-class ComboListPopup;
+class PopupList;
 class RESPWaveWidget: public WaveWidget
 {
     Q_OBJECT
@@ -29,11 +40,13 @@ private slots:
     void _releaseHandle(IWidget *);
     void _respZoom(IWidget *widget);
     void _popupDestroyed();
+    void _getItemIndex(int);
 
 private:
     void _loadConfig();
 //    WaveWidgetLabel *_name;
     WaveWidgetLabel *_notify;
     WaveWidgetLabel *_gain;
-    ComboListPopup *_gainList;
+    PopupList *_gainList;
+    int _currentItemIndex;
 };

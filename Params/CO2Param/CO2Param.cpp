@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
+ **/
+
 #include "CO2Param.h"
 #include "CO2Alarm.h"
 #include "PatientManager.h"
@@ -49,7 +59,7 @@ void CO2Param::_setWaveformSpeed(CO2SweepSpeed speed)
     windowManager.getCurrentWaveforms(currentWaveforms);
     int i = 0;
     int size = currentWaveforms.size();
-    for (;i < size; i++)
+    for (; i < size; i++)
     {
         if (currentWaveforms[i] == "CO2WaveWidget")
         {
@@ -103,7 +113,7 @@ void CO2Param::_setWaveformZoom(CO2DisplayZoom zoom)
  * 获取CO2和RESP的窗体名称。
  *************************************************************************************************/
 void CO2Param::_getCO2RESPWins(QString &co2Trend, QString &co2Wave,
-        QString &respTrend, QString &respWave)
+                               QString &respTrend, QString &respWave)
 {
     // 获取它们的窗体信息。
     getTrendWindow(co2Trend);
@@ -162,6 +172,20 @@ void CO2Param::handDemoTrendData(void)
     setBR(_brVaule);
 }
 
+void CO2Param::exitDemo()
+{
+    _etco2Value = InvData();
+    _fico2Value = InvData();
+    _brVaule = InvData();
+
+    if (NULL != _trendWidget)
+    {
+        _trendWidget->setEtCO2Value(InvData());
+        _trendWidget->setFiCO2Value(InvData());
+    }
+    setBR(InvData());
+}
+
 /**************************************************************************************************
  * 获取可得的波形控件集。
  *************************************************************************************************/
@@ -206,14 +230,14 @@ short CO2Param::getSubParamValue(SubParamID id)
 {
     switch (id)
     {
-        case SUB_PARAM_ETCO2:
-            return getEtCO2();
+    case SUB_PARAM_ETCO2:
+        return getEtCO2();
 
-        case SUB_PARAM_FICO2:
-            return getFiCO2();
+    case SUB_PARAM_FICO2:
+        return getFiCO2();
 
-        default:
-            return InvData();
+    default:
+        return InvData();
     }
 }
 
@@ -256,7 +280,7 @@ void CO2Param::setProvider(CO2ProviderIFace *provider)
 
     // 请求波形缓冲区。
     waveformCache.registerSource(WAVE_CO2, _provider->getCO2WaveformSample(),
-        0, _provider->getCO2MaxWaveform(), tile, _provider->getCO2BaseLine());
+                                 0, _provider->getCO2MaxWaveform(), tile, _provider->getCO2BaseLine());
 
     // 界面显示部分。
     _waveWidget->setDataRate(_provider->getCO2WaveformSample());
@@ -575,7 +599,7 @@ void CO2Param::setOneShotAlarm(CO2OneShotType t, bool status)
 /**************************************************************************************************
  * 设置呼吸氧和中的CO2窗口波形。
  *************************************************************************************************/
-void CO2Param::setOxyCRGCO2Widget(OxyCRGCO2Widget* p)
+void CO2Param::setOxyCRGCO2Widget(OxyCRGCO2Widget *p)
 {
     if (p)
     {
@@ -645,7 +669,7 @@ bool CO2Param::getAwRRSwitch(void)
  *************************************************************************************************/
 void CO2Param::setSweepSpeed(CO2SweepSpeed speed)
 {
-    currentConfig.setNumValue("CO2|SweepSpeed", (int)speed);
+    currentConfig.setNumValue("CO2|SweepSpeed", static_cast<int>(speed));
     _setWaveformSpeed(speed);
 }
 
@@ -719,7 +743,7 @@ int CO2Param::getCompensation(CO2Compensation which)
  *************************************************************************************************/
 void CO2Param::setDisplayZoom(CO2DisplayZoom zoom)
 {
-    systemConfig.setNumValue("PrimaryCfg|CO2|DisplayZoom", (int)zoom);
+    systemConfig.setNumValue("PrimaryCfg|CO2|DisplayZoom", static_cast<int>(zoom));
     _setWaveformZoom(zoom);
 }
 
@@ -738,7 +762,7 @@ CO2DisplayZoom CO2Param::getDisplayZoom(void)
  *************************************************************************************************/
 void CO2Param::setFiCO2Display(CO2FICO2Display disp)
 {
-    systemConfig.setNumValue("PrimaryCfg|CO2|FiCO2Display", (int)disp);
+    systemConfig.setNumValue("PrimaryCfg|CO2|FiCO2Display", static_cast<int>(disp));
     if (NULL != _trendWidget)
     {
         _trendWidget->setFiCO2Display(disp);
@@ -873,7 +897,7 @@ bool CO2Param::getCO2Switch()
  *************************************************************************************************/
 short CO2Param::getEtCO2MaxValue()
 {
-   return _etco2MaxVal;
+    return _etco2MaxVal;
 }
 
 /**************************************************************************************************
@@ -926,7 +950,6 @@ CO2Param::CO2Param() : Param(PARAM_CO2)
     QString highPath = path + "High";
     currentConfig.getNumAttr(lowPath, "Min", _etco2MinVal);
     currentConfig.getNumAttr(highPath, "Max", _etco2MaxVal);
-
 }
 
 /**************************************************************************************************
@@ -934,5 +957,4 @@ CO2Param::CO2Param() : Param(PARAM_CO2)
  *************************************************************************************************/
 CO2Param::~CO2Param()
 {
-
 }

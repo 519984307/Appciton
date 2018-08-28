@@ -327,6 +327,7 @@ ResetLayout,重置,Reset
 SaveLayout,保存,Save
 Enter,确定,Enter
 Cancel,取消,Cancel
+Exit,退出,Exit
 ECGNormal,常规,Normal
 ECG5-Lead-Full,5导全屏,5-Lead Full
 ECG12-Lead-Full,12导全屏,12-Lead Full
@@ -845,7 +846,7 @@ TrendGraph,趋势图,Trend Graph
 PreviousEvent,上个事件,Prv Event
 NextEvent,下个事件,Next Event
 EventReview,事件回顾,Event Review
-OxyCRGEventReview,呼吸氧合事件回顾,OxyCRG Event Review
+OxyCRGEventReview,呼吸氧合回顾,OxyCRG Review
 TrendTableSet,趋势表设置,Trend Table Set
 TrendGraphSet,趋势图设置,Trend Graph Set
 ResolutionRatio,分辨率,Resolution Ratio
@@ -1362,7 +1363,10 @@ ScreenConfigDesc,界面设置,Screen Configuration
 CurrentScreen,当前界面,Current Screen
 ScreenLayout,界面布局,Screen Layout
 Standard,标准,Standard
-12Lead,12 导联,12 Lead
+_12Lead,12 导联,12 Lead
 OxyCRG,呼吸氧合,OxyCRG
 Trend,趋势,Trend
 BigFont,大字体,Big Font
+DEMO,演示,DEMO
+DemoMode,演示模式,Demo Mode
+DemoConfigDesc,演示设置,Demo Configuration

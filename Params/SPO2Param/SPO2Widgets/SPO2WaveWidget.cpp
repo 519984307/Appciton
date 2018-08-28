@@ -1,13 +1,13 @@
 /**
  ** This file is part of the nPM project.
  ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
  ** All Rights Reserved.
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/28
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
  **/
-
 
 
 #include "SPO2WaveWidget.h"
@@ -18,7 +18,7 @@
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "WaveWidgetSelectMenu.h"
-#include "ComboListPopup.h"
+#include "PopupList.h"
 #include "IConfig.h"
 #include "Debug.h"
 #include "WindowManager.h"
@@ -80,17 +80,15 @@ void SPO2WaveWidget::_spo2Gain(IWidget *widget)
 {
     if (NULL == _gainList)
     {
-        _gainList = new ComboListPopup(widget, POPUP_TYPE_USER, SPO2_GAIN_NR, spo2Param.getGain());
-        _gainList->setBorderColor(colorManager.getBarBkColor());
-        _gainList->setBorderWidth(5);
-        _gainList->popupUp(true);
+        _gainList = new PopupList(_gain, false);
         for (int i = 0; i < SPO2_GAIN_NR; i++)
         {
             _gainList->addItemText(SPO2Symbol::convert(SPO2Gain(i)));
         }
-        _gainList->setItemDrawMark(false);
-        _gainList->setFont(fontManager.textFont(14));
+        int fontSize = fontManager.getFontSize(3);
+        _gainList->setFont(fontManager.textFont(fontSize));
         connect(_gainList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
+        connect(_gainList, SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
     }
 
     _gainList->show();
@@ -101,16 +99,20 @@ void SPO2WaveWidget::_spo2Gain(IWidget *widget)
  *************************************************************************************************/
 void SPO2WaveWidget::_popupDestroyed()
 {
-    int index = _gainList->getCurIndex();
-    if (index == -1)
+    if (_currentItemIndex == -1)
     {
         _gainList = NULL;
         return;
     }
 
-    spo2Param.setGain((SPO2Gain)index);
+    spo2Param.setGain((SPO2Gain)_currentItemIndex);
 
     _gainList = NULL;
+}
+
+void SPO2WaveWidget::_getItemIndex(int index)
+{
+    _currentItemIndex = index;
 }
 
 /**************************************************************************************************

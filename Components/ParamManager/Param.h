@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
+ **/
+
 #pragma once
 #include <QString>
 #include <QStringList>
@@ -26,10 +36,15 @@ public:
     // 处理DEMO数据。
     virtual void handDemoWaveform(WaveformID id, short data);
     virtual void handDemoTrendData(void);
+    /**
+     * @brief exitDemo exit the demo mode, the subclass should inherit this interface to do
+     *                 the clear stuff when exit the demo mode. The default implement do nothing
+     */
+    virtual void exitDemo(void);
 
     // 获取当前的波形控件名称。
     virtual void getAvailableWaveforms(QStringList &waveforms, QStringList &waveformShowName,
-            int flag = 0);
+                                       int flag = 0);
     virtual void getTrendWindow(QString &trendWin);
     virtual void getWaveWindow(QString &waveWin);
 
@@ -46,7 +61,7 @@ public:
     virtual UnitType getCurrentUnit(SubParamID id);
 
     // 构造与析构。
-    Param(ParamID id);
+    explicit Param(ParamID id);
     virtual ~Param();
 
 private:

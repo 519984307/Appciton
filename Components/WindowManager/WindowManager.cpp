@@ -34,6 +34,8 @@
 #include "NIBPRepairMenuWindow.h"
 #include <QApplication>
 #include "Window.h"
+#include "FontManager.h"
+#include <QTimer>
 
 struct NodeDesc
 {
@@ -1267,6 +1269,11 @@ void WindowManager::_setUFaceType(UserFaceType type)
         SystemModeBarWidget *widget = qobject_cast<SystemModeBarWidget *>(iter.value());
         widget->setMode(_currenUserFaceType);
     }
+
+    if (_demoWidget && _demoWidget->isVisible())
+    {
+        _demoWidget->raise();
+    }
 }
 
 /***************************************************************************************************
@@ -2341,20 +2348,15 @@ IWidget *WindowManager::getWidget(const QString &name)
  * 功能：构造函数
  **************************************************************************************************/
 #if defined(Q_WS_QWS)
-WindowManager::WindowManager() : QWidget(NULL, Qt::FramelessWindowHint)
+WindowManager::WindowManager() : QWidget(NULL, Qt::FramelessWindowHint), timer(NULL)
 #else
-WindowManager::WindowManager() : QWidget(), _activeWindow(NULL)
+WindowManager::WindowManager() : QWidget(), _demoWidget(NULL), timer(NULL)
 #endif
 {
-    _winMap.clear();
-    _waveformMap.clear();
-    _bigformMap.clear();
-    _trendWave.clear();
+    _demoWidget = NULL;
 
     _doesFixedLayout = false;
     _currenUserFaceType = UFACE_MONITOR_UNKNOW;
-
-    _activeWindow = NULL;
 
     // 设置调色
     QPalette p;
@@ -2383,6 +2385,13 @@ WindowManager::WindowManager() : QWidget(), _activeWindow(NULL)
 
     _newLayoutStyle();
     setVisible(true);
+
+    timer = new QTimer(this);
+    timer->setSingleShot(true);
+    timer->setInterval(10 * 1000);    // 10s
+    connect(timer, SIGNAL(timeout()), this, SLOT(closeAllWidows()));
+
+    qApp->installEventFilter(this);
 }
 
 /***************************************************************************************************
@@ -2460,6 +2469,11 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
         }
     }
 
+    if (!(behaviors & ShowBehaviorNoAutoClose))
+    {
+        timer->start();
+    }
+
     QPointer<Window> newP = w;
     windowStacks.append(newP);
     connect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)), Qt::DirectConnection);
@@ -2500,6 +2514,55 @@ Window *WindowManager::topWindow()
     return top.data();
 }
 
+void WindowManager::showDemoWidget(bool flag)
+{
+    if (_demoWidget == NULL)
+    {
+        // demo widget no exist yet, create one
+        QLabel *l = new QLabel(trs("DEMO"), this);
+        l->setAutoFillBackground(true);
+        QPalette pal = l->palette();
+        pal.setColor(QPalette::Window, Qt::gray);
+        pal.setColor(QPalette::WindowText, Qt::white);
+        l->setPalette(pal);
+        l->setFont(fontManager.textFont(64));
+        _demoWidget = l;
+        _demoWidget->move(430, 100);
+        _demoWidget->setFixedSize(l->sizeHint());
+    }
+
+    if (flag)
+    {
+        _demoWidget->show();
+        _demoWidget->raise();
+    }
+    else
+    {
+        _demoWidget->lower();
+        _demoWidget->hide();
+    }
+}
+
+bool WindowManager::eventFilter(QObject *obj, QEvent *ev)
+{
+    Q_UNUSED(obj)
+    if (windowStacks.isEmpty())
+    {
+        return false;
+    }
+
+    if ((ev->type() == QEvent::KeyPress) || (ev->type() == QEvent::MouseButtonPress))
+    {
+        // reactive the timer
+        if (timer->isActive())
+        {
+            timer->start();
+        }
+    }
+
+    return false;
+}
+
 void WindowManager::closeAllWidows()
 {
     QWidget *activeWindow = NULL;
@@ -2511,6 +2574,7 @@ void WindowManager::closeAllWidows()
         }
         activeWindow->close();
     }
+    timer->stop();
 }
 
 void WindowManager::onWindowHide(Window *w)
@@ -2531,9 +2595,14 @@ void WindowManager::onWindowHide(Window *w)
             top->showMask(false);
             top->show();
         }
+        else
+        {
+            timer->stop();
+        }
     }
     else if (windowStacks.isEmpty())
     {
         disconnect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)));
+        timer->stop();
     }
 }

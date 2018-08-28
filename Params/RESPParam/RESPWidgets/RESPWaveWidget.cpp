@@ -1,13 +1,13 @@
 /**
  ** This file is part of the nPM project.
  ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
  ** All Rights Reserved.
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/28
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
  **/
-
 
 
 #include "RESPWaveWidget.h"
@@ -20,6 +20,7 @@
 #include "WaveWidgetSelectMenu.h"
 #include "ComboListPopup.h"
 #include "WindowManager.h"
+#include "PopupList.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -47,21 +48,19 @@ void RESPWaveWidget::_releaseHandle(IWidget *w)
  *************************************************************************************************/
 void RESPWaveWidget::_respZoom(IWidget *widget)
 {
+    Q_UNUSED(widget);
     if (NULL == _gainList)
     {
-        _gainList = new ComboListPopup(widget, POPUP_TYPE_USER, RESP_ZOOM_NR, respParam.getZoom());
-        _gainList->setBorderColor(colorManager.getBarBkColor());
-        _gainList->setBorderWidth(5);
-        _gainList->popupUp(true);
+        _gainList = new PopupList(_gain, false);
         for (int i = 0; i < RESP_ZOOM_NR; i++)
         {
             _gainList->addItemText(RESPSymbol::convert(RESPZoom(i)));
         }
-        _gainList->setItemDrawMark(false);
-        _gainList->setFont(fontManager.textFont(14));
+        int fontSize = fontManager.getFontSize(3);
+        _gainList->setFont(fontManager.textFont(fontSize));
         connect(_gainList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
+        connect(_gainList , SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
     }
-
     _gainList->show();
 }
 
@@ -70,16 +69,20 @@ void RESPWaveWidget::_respZoom(IWidget *widget)
  *************************************************************************************************/
 void RESPWaveWidget::_popupDestroyed(void)
 {
-    int index = _gainList->getCurIndex();
-    if (index == -1)
+    if (_currentItemIndex == -1)
     {
         _gainList = NULL;
         return;
     }
 
-    respParam.setZoom((RESPZoom)index);
+    respParam.setZoom((RESPZoom)_currentItemIndex);
 
     _gainList = NULL;
+}
+
+void RESPWaveWidget::_getItemIndex(int index)
+{
+    _currentItemIndex = index;
 }
 
 /**************************************************************************************************
@@ -87,6 +90,7 @@ void RESPWaveWidget::_popupDestroyed(void)
  *************************************************************************************************/
 RESPWaveWidget::RESPWaveWidget(const QString &waveName, const QString &title)
     : WaveWidget(waveName, title), _notify(NULL), _gain(NULL), _gainList(NULL)
+    , _currentItemIndex(-1)
 {
     setFocusPolicy(Qt::NoFocus);
     setID(WAVE_RESP);

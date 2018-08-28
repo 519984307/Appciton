@@ -15,7 +15,6 @@
 #include "SPO2Param.h"
 #include "TEMPParam.h"
 #include "LightManager.h"
-#include "TE3Provider.h"
 #include "md5.h"
 #include "IMessageBox.h"
 #include "MergeConfig.h"
