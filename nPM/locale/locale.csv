@@ -724,9 +724,9 @@ SupervisorHour,时,Hour
 SupervisorMinute,分,Minute
 SupervisorSecond,秒,Second
 SupervisorDateFormat,日期格式,Date Format
-YMD,年/月/日,YYYY/MM/DD
-MDY,月/日/年,MM/DD/YYYY
-DMY,日/月/年,DD/MM/YYYY
+YearMonthDay,年/月/日,YYYY/MM/DD
+MonthDayYear,月/日/年,MM/DD/YYYY
+DayMonthYear,日/月/年,DD/MM/YYYY
 SupervisorTimeFormat,时间格式,Time Format
 SupervisorDisplaySec,显示秒,Display Second
 SupervisorCodeMarker,代码标记,Code Marker

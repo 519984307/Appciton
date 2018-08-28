@@ -236,7 +236,7 @@ void TrendPrintWindow::printReleased()
 
 void TrendPrintWindowPrivate::initGroupBox(QGroupBox *groupBox, TrendPrintWindowPrivate::SubGroupBox *subBox)
 {
-    subBox->dateLbl = new QLabel(trs("YMD"));
+    subBox->dateLbl = new QLabel(trs("YearMonthDay"));
     subBox->timeLbl = new QLabel(trs("HourSystem"));
     subBox->yearSbx = new SpinBox();
     subBox->monthSbx = new SpinBox();
