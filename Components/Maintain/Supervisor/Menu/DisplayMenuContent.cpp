@@ -83,12 +83,6 @@ void DisplayMenuContent::readyShow()
 
 void DisplayMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        // already install layout
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
 
     ComboBox *comboBox;

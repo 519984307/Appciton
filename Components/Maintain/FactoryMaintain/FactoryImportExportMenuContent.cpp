@@ -110,12 +110,6 @@ void FactoryImportExportMenuContent::readyShow()
 
 void FactoryImportExportMenuContent::layoutExec()
 {
-    //  already install layout
-    if (layout())
-    {
-        return;
-    }
-
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(10);
     layout->setAlignment(Qt::AlignTop);

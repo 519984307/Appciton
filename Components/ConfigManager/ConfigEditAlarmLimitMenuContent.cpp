@@ -144,11 +144,6 @@ void ConfigEditAlarmLimitMenuContent::readyShow()
 
 void ConfigEditAlarmLimitMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QBoxLayout *layout = new QVBoxLayout(this);
 
     TableView *table = new TableView();

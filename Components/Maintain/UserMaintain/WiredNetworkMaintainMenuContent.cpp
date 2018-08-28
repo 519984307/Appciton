@@ -111,11 +111,6 @@ void WiredNetworkMaintainMenuContent::readyShow()
 
 void WiredNetworkMaintainMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
 
     QLabel *label;

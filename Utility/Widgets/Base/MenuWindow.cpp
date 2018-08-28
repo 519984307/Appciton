@@ -77,7 +77,7 @@ MenuWindow::~MenuWindow()
 void MenuWindow::addMenuContent(MenuContent *menu)
 {
     d_ptr->sidebar->addItem(menu->name());
-    menu->layoutExec();
+    menu->doLayout();
 
     ScrollArea *scrollArea = new ScrollArea;
     scrollArea->setWidget(menu);

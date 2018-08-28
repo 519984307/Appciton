@@ -86,11 +86,6 @@ void ConfigEditIBPMenuContent::readyShow()
 
 void ConfigEditIBPMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
 

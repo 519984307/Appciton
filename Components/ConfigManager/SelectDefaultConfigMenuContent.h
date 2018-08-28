@@ -19,6 +19,7 @@ public:
     SelectDefaultConfigMenuContent();
     ~SelectDefaultConfigMenuContent();
 
+protected:
     /**
      * @brief readyShow
      */

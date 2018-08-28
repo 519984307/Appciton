@@ -5,7 +5,7 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/27
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
  **/
 
 #pragma once
@@ -120,12 +120,13 @@ enum IBPSweepSpeed
  *************************************************************************************************/
 struct IBPParamInfo
 {
-    IBPParamInfo(){
-        pressureName = IBP_PRESSURE_ART;
-        sys = InvData();
-        dia = InvData();
-        mean = InvData();
-        pr = InvData();
+    IBPParamInfo()
+        : pressureName(IBP_PRESSURE_ART),
+        sys(InvData()),
+        dia(InvData()),
+        mean(InvData()),
+        pr(InvData())
+    {
     }
     IBPPressureName pressureName;
     unsigned short sys;

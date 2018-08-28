@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/27
+ **/
+
+
 #include <QResizeEvent>
 #include "IBPWaveWidget.h"
 #include "IBPParam.h"
@@ -10,10 +21,10 @@
 #include "ParamInfo.h"
 #include "WaveWidgetSelectMenu.h"
 #include "WindowManager.h"
-#include "ComboListPopup.h"
 #include "Debug.h"
 #include "IBPManualRuler.h"
 #include "TimeDate.h"
+#include "PopupList.h"
 
 /**************************************************************************************************
  * 添加波形数据。
@@ -26,7 +37,6 @@ void IBPWaveWidget::addWaveformData(short wave, int flag)
     {
         _autoRulerHandle(wave);
     }
-
 }
 
 /**************************************************************************************************
@@ -95,7 +105,7 @@ void IBPWaveWidget::setEntitle(IBPPressureName entitle)
 {
     _name->setText(IBPSymbol::convert(entitle));
     QString zoomStr = QString::number(ibpParam.getIBPScale(entitle).low) + "-" +
-            QString::number(ibpParam.getIBPScale(entitle).high) + "mmHg";
+                      QString::number(ibpParam.getIBPScale(entitle).high) + "mmHg";
     _zoom->setText(zoomStr);
     _entitle = entitle;
     setLimit(ibpParam.getIBPScale(getEntitle()).low, ibpParam.getIBPScale(getEntitle()).high);
@@ -113,7 +123,10 @@ IBPPressureName IBPWaveWidget::getEntitle()
  * 构造。
  *************************************************************************************************/
 IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPressureName &entitle)
-    : WaveWidget(waveName, IBPSymbol::convert(entitle)), _zoomList(NULL), _entitle(entitle)
+    : WaveWidget(waveName, IBPSymbol::convert(entitle)),
+      _zoomList(NULL),
+      _entitle(entitle),
+      _currentItemIndex(-1)
 {
     _autoRulerTracePeek = -10000;
     _autoRulerTraveVally = 10000;
@@ -132,7 +145,7 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPr
     _name->setFont(fontManager.textFont(infoFont));
     _name->setFixedSize(130, fontH);
     _name->setText(getTitle());
-    connect(_name, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(_name, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
     _ruler = new IBPWaveRuler(this);
     _ruler->setPalette(palette);
@@ -145,7 +158,7 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPr
     _zoom->setText(QString::number(ibpParam.getIBPScale(entitle).low) + "~" +
                    QString::number(ibpParam.getIBPScale(entitle).high) + "mmHg");
     addItem(_zoom);
-    connect(_zoom, SIGNAL(released(IWidget*)), this, SLOT(_IBPZoom(IWidget*)));
+    connect(_zoom, SIGNAL(released(IWidget *)), this, SLOT(_IBPZoom(IWidget *)));
 
     _leadSta = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
     _leadSta->setFont(fontManager.textFont(infoFont));
@@ -165,7 +178,6 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPr
  *************************************************************************************************/
 IBPWaveWidget::~IBPWaveWidget()
 {
-
 }
 
 void IBPWaveWidget::paintEvent(QPaintEvent *e)
@@ -193,7 +205,7 @@ void IBPWaveWidget::showEvent(QShowEvent *e)
     WaveWidget::showEvent(e);
 }
 
-void IBPWaveWidget::focusInEvent(QFocusEvent *)
+void IBPWaveWidget::focusInEvent(QFocusEvent *e)
 {
     if (Qt::NoFocus != _name->focusPolicy())
     {
@@ -201,9 +213,9 @@ void IBPWaveWidget::focusInEvent(QFocusEvent *)
     }
 }
 
-void IBPWaveWidget::_releaseHandle(IWidget *)
+void IBPWaveWidget::_releaseHandle(IWidget *iWidget)
 {
-    QWidget *p = (QWidget*)parent();
+    QWidget *p = static_cast<QWidget *>(parent());
     if (p == NULL)
     {
         return;
@@ -222,7 +234,7 @@ void IBPWaveWidget::_IBPZoom(IWidget *widget)
 {
     if (NULL == _zoomList)
     {
-        _zoomList = new ComboListPopup(widget, POPUP_TYPE_USER, ibpParam.ibpScaleList.count());
+        _zoomList = new PopupList(_zoom, false);
         for (int i = 0; i < ibpParam.ibpScaleList.count(); i++)
         {
             if (i == 0)
@@ -239,11 +251,10 @@ void IBPWaveWidget::_IBPZoom(IWidget *widget)
                                        QString::number(ibpParam.ibpScaleList.at(i).high));
             }
         }
-        _zoomList->setItemDrawMark(false);
-        _zoomList->setFont(fontManager.textFont(fontManager.getFontSize(1)));
+        _zoomList->setFont(fontManager.textFont(fontManager.getFontSize(3)));
         connect(_zoomList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
+        connect(_zoomList, SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
     }
-
     _zoomList->show();
 }
 
@@ -252,19 +263,18 @@ void IBPWaveWidget::_IBPZoom(IWidget *widget)
  *************************************************************************************************/
 void IBPWaveWidget::_popupDestroyed()
 {
-    int index = _zoomList->getCurIndex();
-    if (index == -1)
+    if (_currentItemIndex == -1)
     {
         _zoomList = NULL;
         return;
     }
 
-    setRuler(index);
-    if (index == IBP_AUTO_SCALE_INDEX)
+    setRuler(_currentItemIndex);
+    if (_currentItemIndex == IBP_AUTO_SCALE_INDEX)
     {
         _isAutoRuler = true;
     }
-    else if (index == IBP_MANUAL_SCALE_INDEX)
+    else if (_currentItemIndex == IBP_MANUAL_SCALE_INDEX)
     {
         _isAutoRuler = false;
         displayManualRuler();
@@ -272,10 +282,15 @@ void IBPWaveWidget::_popupDestroyed()
     else
     {
         _isAutoRuler = false;
-        setLimit(ibpParam.ibpScaleList.at(index).low, ibpParam.ibpScaleList.at(index).high);
+        setLimit(ibpParam.ibpScaleList.at(_currentItemIndex).low, ibpParam.ibpScaleList.at(_currentItemIndex).high);
     }
 
     _zoomList = NULL;
+}
+
+void IBPWaveWidget::_getItemIndex(int index)
+{
+    _currentItemIndex = index;
 }
 
 /**************************************************************************************************
@@ -325,7 +340,6 @@ void IBPWaveWidget::_autoRulerHandle(short data)
                 break;
             }
         }
-
     }
 
     // ruler为新的增益。

@@ -21,6 +21,8 @@ public:
      */
     LoadConfigMenuContent();
     ~LoadConfigMenuContent();
+
+protected:
     /**
      * @brief readyShow
      */

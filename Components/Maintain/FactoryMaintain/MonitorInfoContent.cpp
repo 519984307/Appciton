@@ -122,11 +122,6 @@ void MonitorInfoContent::onBtnReleasedChanged()
 
 void MonitorInfoContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
 

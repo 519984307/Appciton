@@ -103,11 +103,6 @@ void AlarmLimitMenuContent::readyShow()
 
 void AlarmLimitMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QBoxLayout *layout = new QVBoxLayout(this);
 
     TableView *table = new TableView();

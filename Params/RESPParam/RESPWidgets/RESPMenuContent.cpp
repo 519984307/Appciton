@@ -70,12 +70,6 @@ void RESPMenuContent::readyShow()
 
 void RESPMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        // alreay install layout
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
 
     ComboBox *comboBox;

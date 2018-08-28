@@ -38,6 +38,8 @@
 #include <QDir>
 #include <QKeyEvent>
 #include "WindowManager.h"
+#include "ParamManager.h"
+#include "AlarmIndicator.h"
 #include <QTimer>
 #ifdef Q_WS_QWS
 #include <QWSServer>
@@ -433,6 +435,33 @@ void SystemManager::turnOff(bool flag)
     }
 }
 
+WorkMode SystemManager::getCurWorkMode() const
+{
+    return _workMode;
+}
+
+void SystemManager::setWorkMode(WorkMode workmode)
+{
+    if (_workMode == workmode)
+    {
+        return;
+    }
+
+    switch (workmode)
+    {
+    case WORK_MODE_NORMAL:
+        enterNormalMode();
+        break;
+    case WORK_MODE_DEMO:
+        enterDemoMode();
+        break;
+    default:
+        break;
+    }
+
+    _workMode = workmode;
+}
+
 /***************************************************************************************************
  * system is support the test module
  **************************************************************************************************/
@@ -443,6 +472,20 @@ bool SystemManager::_isTestModuleSupport(ModulePoweronTestResult module)
     default:
         return true;
     }
+}
+
+void SystemManager::enterDemoMode()
+{
+    alarmIndicator.delAllPhyAlarm();
+    windowManager.showDemoWidget(true);
+    paramManager.connectDemoParamProvider();
+}
+
+void SystemManager::enterNormalMode()
+{
+    alarmIndicator.delAllPhyAlarm();
+    windowManager.showDemoWidget(false);
+    paramManager.connectParamProvider();
 }
 
 #ifdef Q_WS_X11
@@ -482,7 +525,7 @@ void SystemManager::onCtrlSocketReadReady()
             // not a info type
             continue;
         }
-        char infoData = _socketInfoData.takeFirst();
+//        char infoData = _socketInfoData.takeFirst();
         switch ((ControlInfo)infoType)
         {
 
@@ -744,7 +787,8 @@ void SystemManager::_publishTestResult(void)
  * 析构。
  **************************************************************************************************/
 SystemManager::SystemManager() ://申请一个动态的模块加载结果数组
-    _modulePostResult(MODULE_POWERON_TEST_RESULT_NR, SELFTEST_UNKNOWN)
+    _modulePostResult(MODULE_POWERON_TEST_RESULT_NR, SELFTEST_UNKNOWN),
+    _workMode(WORK_MODE_NORMAL)
 {
     // 打开背光灯文件描述符
     _backlightFd = open(BACKLIGHT_DEV, O_WRONLY | O_NONBLOCK);

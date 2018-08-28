@@ -72,11 +72,6 @@ void AGMenuContent::readyShow()
 
 void AGMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
 
     ComboBox *comboBox;

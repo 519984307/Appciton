@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
+ **/
+
 #include "RESPParam.h"
 #include "RESPAlarm.h"
 #include "RESPWaveWidget.h"
@@ -42,7 +52,7 @@ void RESPParam::_setWaveformSpeed(RESPSweepSpeed speed)
     windowManager.getCurrentWaveforms(currentWaveforms);
     int i = 0;
     int size = currentWaveforms.size();
-    for (;i < size; i++)
+    for (; i < size; i++)
     {
         if (currentWaveforms[i] == "RESPWaveWidget")
         {
@@ -57,7 +67,6 @@ void RESPParam::_setWaveformSpeed(RESPSweepSpeed speed)
  *************************************************************************************************/
 void RESPParam::initParam(void)
 {
-
 }
 
 /**************************************************************************************************
@@ -73,10 +82,10 @@ void RESPParam::handDemoWaveform(WaveformID id, short data)
     {
         _waveWidget->addData(data);
     }
-    if(NULL != _waveOxyCRGWidget)
+    if (NULL != _waveOxyCRGWidget)
     {
         _waveOxyCRGWidget->addDataBuf(data, 0);
-        _waveOxyCRGWidget->addData(data,0,false);
+        _waveOxyCRGWidget->addData(data, 0, false);
     }
     waveformCache.addData((WaveformID)id, data);
 }
@@ -90,11 +99,16 @@ void RESPParam::handDemoTrendData(void)
     respDupParam.updateRR(rrValue);
 }
 
+void RESPParam::exitDemo()
+{
+    respDupParam.updateRR(InvData());
+}
+
 /**************************************************************************************************
  * 获取可得的波形控件集。
  *************************************************************************************************/
 void RESPParam::getAvailableWaveforms(QStringList &waveforms,
-        QStringList &waveformShowName, int /*flag*/)
+                                      QStringList &waveformShowName, int /*flag*/)
 {
     waveforms.clear();
     waveformShowName.clear();
@@ -171,8 +185,8 @@ void RESPParam::setProvider(RESPProviderIFace *provider)
     QString tile = _waveWidget->getTitle();
     // 请求波形缓冲区。
     waveformCache.registerSource(WAVE_RESP, _provider->getRESPWaveformSample(),
-        _provider->minRESPWaveValue(), _provider->maxRESPWaveValue(), tile,
-            _provider->getRESPBaseLine());
+                                 _provider->minRESPWaveValue(), _provider->maxRESPWaveValue(), tile,
+                                 _provider->getRESPBaseLine());
 }
 
 /**************************************************************************************************
@@ -262,7 +276,7 @@ void RESPParam::reset()
  *************************************************************************************************/
 void RESPParam::setSweepSpeed(RESPSweepSpeed speed)
 {
-    currentConfig.setNumValue("RESP|SweepSpeed", (int)speed);
+    currentConfig.setNumValue("RESP|SweepSpeed", static_cast<int>(speed));
     _setWaveformSpeed(speed);
 }
 
@@ -305,7 +319,7 @@ ApneaAlarmTime RESPParam::getApneaTime(void)
  *************************************************************************************************/
 void RESPParam::setZoom(RESPZoom zoom)
 {
-    systemConfig.setNumValue("PrimaryCfg|RESP|Zoom", (int)zoom);
+    systemConfig.setNumValue("PrimaryCfg|RESP|Zoom", static_cast<int>(zoom));
     if (NULL != _provider)
     {
         _provider->setWaveformZoom(zoom);
@@ -313,7 +327,7 @@ void RESPParam::setZoom(RESPZoom zoom)
 
     if (NULL != _waveWidget)
     {
-        _waveWidget->setZoom((int)zoom);
+        _waveWidget->setZoom(static_cast<int>(zoom));
     }
 }
 
@@ -374,7 +388,7 @@ void RESPParam::setRespMonitoring(int enable)
                 if (waveList.count() < 4)
                 {
                     windowManager.insertWaveform(waveList.at(waveList.count() - 1),
-                            name, false);
+                                                 name, false);
                 }
                 windowManager.replaceTrendWindow(co2TrendName, trendName);
             }
@@ -397,7 +411,7 @@ void RESPParam::setRespMonitoring(int enable)
             if (waveList.count() < 4)
             {
                 windowManager.insertWaveform(waveList.at(waveList.count() - 1),
-                        name, false);
+                                             name, false);
             }
             windowManager.insertTrendWindow(trendName);
         }
@@ -413,7 +427,7 @@ void RESPParam::setRespMonitoring(int enable)
  *************************************************************************************************/
 void RESPParam::setCalcLead(RESPLead lead)
 {
-    systemConfig.setNumValue("PrimaryCfg|RESP|RespLead", (int)lead);
+    systemConfig.setNumValue("PrimaryCfg|RESP|RespLead", static_cast<int>(lead));
     if (NULL != _provider)
     {
         _provider->setRESPCalcLead(lead);

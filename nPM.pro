@@ -324,6 +324,8 @@ SOURCES +=                                                                      
     Components/WindowManager/ConfigManagerMenuWindow.cpp                        \
     Components/WindowManager/UserMaintainMenuWindow.cpp                         \
     Components/WindowManager/ArrhythmiaMenuWindow.cpp                           \
+    Components/WindowManager/ScreenMenuContent.cpp                              \
+    Components/WindowManager/ScreenLayoutWindow.cpp                             \
     Components/USBManager/DataExporterBase.cpp                                  \
     Components/USBManager/ErrorLogExporter.cpp                                  \
     Components/USBManager/UDiskInspector.cpp                                    \
@@ -416,6 +418,7 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/OthersMaintainMenuContent.cpp              \
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.cpp        \
     Components/Maintain/UserMaintain/ErrorLogEntranceContent.cpp                \
+    Components/Maintain/UserMaintain/DemoMenuContent.cpp                        \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.cpp        \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftWareVersion.cpp                     \
@@ -455,6 +458,7 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditGeneralMenu.cpp                          \
     Components/ConfigManager/ConfigEditGeneralMenuContent.cpp                   \
     Components/ConfigManager/ConfigEditEcgMenu.cpp                              \
+    Components/ConfigManager/ConfigEditTEMPMenu.cpp                             \
     Components/ConfigManager/ConfigEditEcgMenuContent.cpp                       \
     Components/ConfigManager/ConfigEditRespMenu.cpp                             \
     Components/ConfigManager/ConfigEditRespMenuContent.cpp                      \
@@ -556,6 +560,7 @@ SOURCES +=                                                                      
     Params/TEMPParam/TEMPParam.cpp                                              \
     Params/TEMPParam/TEMPAlarm.cpp                                              \
     Params/TEMPParam/TEMPWidgets/TEMPTrendWidget.cpp                            \
+    Params/TEMPParam/TEMPWidgets/TEMPMenu.cpp                                   \
     Params/RESPParam/RESPAlarm.cpp                                              \
     Params/RESPParam/RESPDupAlarm.cpp                                           \
     Params/RESPParam/RESPDupParam.cpp                                           \
@@ -575,7 +580,6 @@ SOURCES +=                                                                      
     Providers/WitleafProvider/WitleafProvider.cpp                               \
     Providers/MasimoProvider/MasimoProvider.cpp                                 \
     Providers/NellcorProvider/NellcorProvider.cpp                               \
-    Providers/TE3Provider/TE3Provider.cpp                                       \
     Providers/E5Provider/E5Provider.cpp                                         \
     Providers/T5Provider/T5Provider.cpp                                         \
     Providers/TN3Provider/TN3Provider.cpp                                       \
@@ -887,6 +891,8 @@ HEADERS +=                                                                      
     Components/WindowManager/ConfigManagerMenuWindow.h                          \
     Components/WindowManager/UserMaintainMenuWindow.h                           \
     Components/WindowManager/ArrhythmiaMenuWindow.h                             \
+    Components/WindowManager/ScreenMenuContent.h                                \
+    Components/WindowManager/ScreenLayoutWindow.h                               \
     Components/PrintManager/PrintTypeDefine.h                                   \
     Components/PrintManager/PrintDefine.h                                       \
     Components/PrintManager/PrintProviderIFace.h                                \
@@ -983,6 +989,7 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/OthersMaintainMenuContent.h                \
     Components/Maintain/UserMaintain/WiredNetworkMaintainMenuContent.h          \
     Components/Maintain/UserMaintain/ErrorLogEntranceContent.h                  \
+    Components/Maintain/UserMaintain/DemoMenuContent.h                          \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.h          \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersion.h                       \
@@ -1022,6 +1029,7 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditGeneralMenu.h                            \
     Components/ConfigManager/ConfigEditGeneralMenuContent.h                     \
     Components/ConfigManager/ConfigEditEcgMenu.h                                \
+    Components/ConfigManager/ConfigEditTEMPMenu.h                               \
     Components/ConfigManager/ConfigEditEcgMenuContent.h                         \
     Components/ConfigManager/ConfigEditRespMenu.h                               \
     Components/ConfigManager/ConfigEditRespMenuContent.h                        \
@@ -1150,6 +1158,7 @@ HEADERS +=                                                                      
     Params/TEMPParam/TEMPParam.h                                                \
     Params/TEMPParam/TEMPAlarm.h                                                \
     Params/TEMPParam/TEMPWidgets/TEMPTrendWidget.h                              \
+    Params/TEMPParam/TEMPWidgets/TEMPMenu.h                                     \
     Params/TEMPParam/TEMPProviderIFace.h                                        \
     Params/RESPParam/RESPAlarm.h                                                \
     Params/RESPParam/RESPDefine.h                                               \
@@ -1174,7 +1183,6 @@ HEADERS +=                                                                      
     Providers/WitleafProvider/WitleafProvider.h                                 \
     Providers/MasimoProvider/MasimoProvider.h                                   \
     Providers/NellcorProvider/NellcorProvider.h                                 \
-    Providers/TE3Provider/TE3Provider.h                                         \
     Providers/E5Provider/E5Provider.h                                           \
     Providers/T5Provider/T5Provider.h                                           \
     Providers/TN3Provider/TN3Provider.h                                         \
@@ -1292,8 +1300,6 @@ DEPENDPATH +=                                                                   
     Providers/TN3Provider                                                       \
     Providers/TS3Provider                                                       \
     Providers/TT3Provider                                                       \
-    Providers/TE3Provider                                                       \
-    Providers/TE3Provider/ECGAlgo                                               \
     Providers/E5Provider                                                        \
     Providers/DemoProvider                                                      \
     Providers/PRT48Provider                                                     \
@@ -1423,8 +1429,6 @@ INCLUDEPATH +=                                                                  
     Providers/TN3Provider                                                       \
     Providers/TS3Provider                                                       \
     Providers/TT3Provider                                                       \
-    Providers/TE3Provider                                                       \
-    Providers/TE3Provider/ECGAlgo                                               \
     Providers/E5Provider                                                        \
     Providers/DemoProvider                                                      \
     Providers/PRT48Provider                                                     \

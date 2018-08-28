@@ -48,6 +48,17 @@ void TEMPParam::handDemoTrendData(void)
     }
 }
 
+void TEMPParam::exitDemo()
+{
+    _t1Value = InvData();
+    _t2Value = InvData();
+    _tdValue = InvData();
+    if (NULL != _trendWidget)
+    {
+        _trendWidget->setTEMPValue(InvData(), InvData(), InvData());
+    }
+}
+
 /**************************************************************************************************
  * 功能： 获取子参数值。
  *************************************************************************************************/
@@ -131,6 +142,11 @@ bool TEMPParam::getDisconnected()
 void TEMPParam::setErrorDisable()
 {
     _isTEMPDisable = true;
+}
+
+void TEMPParam::setModuleEnable()
+{
+    _isTEMPDisable = false;
 }
 
 /**************************************************************************************************

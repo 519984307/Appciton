@@ -165,6 +165,23 @@ void IBPParam::handDemoTrendData()
     }
 }
 
+void IBPParam::exitDemo()
+{
+    _ibp1.sys = InvData();
+    _ibp1.dia = InvData();
+    _ibp1.mean = InvData();
+    _ibp1.pr = InvData();
+    _ibp2.sys = InvData();
+    _ibp2.dia = InvData();
+    _ibp2.mean = InvData();
+    _ibp2.pr = InvData();
+    if (NULL != _trendWidgetIBP1 && NULL != _trendWidgetIBP2)
+    {
+        _trendWidgetIBP1->setData(InvData(), InvData(), InvData());
+        _trendWidgetIBP2->setData(InvData(), InvData(), InvData());
+    }
+}
+
 void IBPParam::showSubParamValue()
 {
     if (NULL != _trendWidgetIBP1)

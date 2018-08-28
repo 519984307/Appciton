@@ -19,6 +19,7 @@ public:
     SupervisorTimeMenuContent();
     ~SupervisorTimeMenuContent();
 
+protected:
     void readyShow();
 
     void layoutExec();

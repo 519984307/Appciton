@@ -23,6 +23,7 @@ public:
     WiFiProfileMenuContent();
     WiFiProfileInfo getCurrentWifiProfile() const;
 
+protected:
     virtual void readyShow();
     virtual void layoutExec();
 signals:

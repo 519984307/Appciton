@@ -130,11 +130,6 @@ void ConfigEditCodeMarkerMenuContent::readyShow()
 
 void ConfigEditCodeMarkerMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
 

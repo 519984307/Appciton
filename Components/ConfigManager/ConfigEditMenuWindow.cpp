@@ -31,6 +31,7 @@
 #include "ConfigEditCodeMarkerMenuContent.h"
 #include "ConfigEditAlarmLimitMenuContent.h"
 #include "UserConfigEditMenuContent.h"
+#include "ConfigEditTEMPMenu.h"
 
 class ConfigEditMenuWindowPrivate
 {
@@ -86,6 +87,10 @@ void ConfigEditMenuWindow::initializeSubMenu()
     subMenu = new ConfigEditRespMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditRespMenu"] = subMenu;
+
+    subMenu = new ConfigEditTEMPMenu(config);
+    addMenuContent(subMenu);
+    d_ptr->subMenuMap["ConfigEditTEMPMenu"] = subMenu;
 
     subMenu = new ConfigEditSpO2MenuContent(config);
     addMenuContent(subMenu);

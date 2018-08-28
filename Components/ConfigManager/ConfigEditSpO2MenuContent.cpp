@@ -85,10 +85,6 @@ void ConfigEditSpO2MenuContent::readyShow()
 
 void ConfigEditSpO2MenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
 

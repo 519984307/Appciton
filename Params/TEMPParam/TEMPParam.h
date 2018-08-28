@@ -36,6 +36,8 @@ public:
     // 处理DEMO数据。
     virtual void handDemoWaveform(WaveformID id, int16_t data);
     virtual void handDemoTrendData(void);
+    /* reimplement */
+    virtual void exitDemo();
 
     // 获取子参数值
     virtual int16_t getSubParamValue(SubParamID id);
@@ -54,6 +56,7 @@ public:
 
     // 模块错误,模块禁用
     void setErrorDisable(void);
+    void setModuleEnable(void);
     bool getErrorDisable(void) { return _isTEMPDisable;}
 
     // 通信中断

@@ -19,6 +19,7 @@ public:
     Supervisor12LMenuContent();
     ~Supervisor12LMenuContent();
 
+protected:
     /* reimplement */
     virtual void readyShow();
 

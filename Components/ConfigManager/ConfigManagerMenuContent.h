@@ -19,6 +19,7 @@ public:
     ConfigManagerMenuContent();
     ~ConfigManagerMenuContent();
 
+protected:
     /* reimplment */
     void readyShow();
 

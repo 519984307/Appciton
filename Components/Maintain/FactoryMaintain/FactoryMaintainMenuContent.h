@@ -19,6 +19,7 @@ public:
     FactoryMaintainMenuContent();
     ~FactoryMaintainMenuContent();
 
+protected:
     /* reimplment */
     void readyShow();
 

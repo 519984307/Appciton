@@ -231,31 +231,49 @@ void DemoProvider::detachParam(Param &param)
 
     if (id == PARAM_ECG)
     {
-        _demoTrendData[PARAM_ECG].param = NULL;
         for (int i = WAVE_ECG_I; i <= WAVE_ECG_V6; i++)
         {
             _demoWaveData[i].param = NULL;
         }
     }
+    else if (id == PARAM_RESP)
+    {
+        _demoWaveData[PARAM_RESP].param = NULL;
+    }
     else if (id == PARAM_SPO2)
     {
-        _demoTrendData[PARAM_SPO2].param = NULL;
-        _demoWaveData[WAVE_SPO2].param = &param;
-    }
-    else if (id == PARAM_NIBP)
-    {
-        _demoTrendData[PARAM_NIBP].param = NULL;
+        _demoWaveData[WAVE_SPO2].param = NULL;
     }
     else if (id == PARAM_CO2)
     {
-        _demoTrendData[PARAM_CO2].param = NULL;
-        _demoWaveData[WAVE_CO2].param = &param;
+        _demoWaveData[WAVE_CO2].param = NULL;
     }
+    else if (id == PARAM_IBP)
+    {
+        _demoWaveData[WAVE_ART].param = NULL;
+        _demoWaveData[WAVE_PA].param = NULL;
+        _demoWaveData[WAVE_CVP].param = NULL;
+        _demoWaveData[WAVE_LAP].param = NULL;
+        _demoWaveData[WAVE_RAP].param = NULL;
+        _demoWaveData[WAVE_ICP].param = NULL;
+        _demoWaveData[WAVE_AUXP1].param = NULL;
+        _demoWaveData[WAVE_AUXP2].param = NULL;
+    }
+    else if (id == PARAM_AG)
+    {
+        _demoWaveData[WAVE_N2O].param = NULL;
+        _demoWaveData[WAVE_AA1].param = NULL;
+        _demoWaveData[WAVE_AA2].param = NULL;
+        _demoWaveData[WAVE_O2].param = NULL;
+    }
+
+    _demoTrendData[id].param = NULL;
 
     // 删除定时器。
     if (_timerID != 0)
     {
         killTimer(_timerID);
+        _timerID = 0;
     }
 }
 

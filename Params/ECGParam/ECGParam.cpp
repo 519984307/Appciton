@@ -147,6 +147,17 @@ void ECGParam::handDemoTrendData(void)
     }
 }
 
+void ECGParam::exitDemo()
+{
+    ecgDupParam.updateHR(InvData());
+    updatePVCS(InvData());
+    for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
+    {
+        updateST((ECGST)i, InvData());
+    }
+}
+
+
 /**************************************************************************************************
  * 功能： 获取子参数值。
  *************************************************************************************************/
@@ -299,12 +310,12 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
         // 注册波形缓存。
         waveformCache.registerSource((WaveformID)i, _provider->getWaveformSample(), n05, p05,
                                      tile, _provider->getBaseLine());
-    }
 
-    // register ECG calculation lead
-    QString diagCalcTitle("CALC.ECG");
-    waveformCache.registerSource(WAVE_ECG_CALC, _provider->getWaveformSample(), n05, p05,
-                                 diagCalcTitle, _provider->getBaseLine());
+        if (_waveWidget[i]->isVisible())
+        {
+            _waveWidget[i]->updateWaveConfig();
+        }
+    }
 
     // 申请完波形缓存后重新设置波形速率，因为进入监控页面波形是以250移动
     _provider->setWaveformSample(250);
@@ -489,16 +500,7 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
         }
         // 当前带宽
         flag |= bandwidth;
-        if (i == ECG_LEAD_V6 + 1) // TE3 CalCulation lead data, not MFC
-        {
-            // store the TE3 Calculation lead data
-            waveformCache.addData(WAVE_ECG_CALC, ((flag & 0xFFFF) << 16) | (waveform[i] & 0xFFFF));
-            break;
-        }
-        else
-        {
-            waveformCache.addData((WaveformID)i, ((flag & 0xFFFF) << 16) | (waveform[i] & 0xFFFF));
-        }
+        waveformCache.addData((WaveformID)i, ((flag & 0xFFFF) << 16) | (waveform[i] & 0xFFFF));
 
         static int flagUnsaved[ECG_LEAD_NR] = {0};
         // 在普通模式中，在监控模式下所有的波形数据要扔掉一半，以250显示

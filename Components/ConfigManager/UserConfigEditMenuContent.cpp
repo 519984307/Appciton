@@ -271,12 +271,6 @@ void UserConfigEditMenuContent::onEditFinished()
 
 void UserConfigEditMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        //  already install layout
-        return;
-    }
-
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(10);
     layout->setAlignment(Qt::AlignTop);

@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
+ **/
+
+
 #pragma once
 #include <QPalette>
 #include "Param.h"
@@ -29,6 +40,8 @@ public:
     // 处理DEMO数据。
     virtual void handDemoWaveform(WaveformID id, short data);
     virtual void handDemoTrendData(void);
+    /* reimplement */
+    virtual void exitDemo();
 
     // 获取可得的波形控件集。
     virtual void getAvailableWaveforms(QStringList &waveforms,

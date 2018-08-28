@@ -190,6 +190,8 @@ TEMP,体温,TEMP
 T1,T1,T1
 T2,T2,T2
 TD,ΔT,ΔT
+ConfigEditTEMPMenu,体温,TEMP
+ConfigEditTEMPMenuDesc,体温设置,TEMP Desc
 TEMPMenu,体温,TEMP
 TEMPUnit,单位,Unit
 TEMP1Low,体温1低,TEMP1 Low
@@ -325,6 +327,7 @@ ResetLayout,重置,Reset
 SaveLayout,保存,Save
 Enter,确定,Enter
 Cancel,取消,Cancel
+Exit,退出,Exit
 ECGNormal,常规,Normal
 ECG5-Lead-Full,5导全屏,5-Lead Full
 ECG12-Lead-Full,12导全屏,12-Lead Full
@@ -607,6 +610,9 @@ NIBPPressureControlModel,压力控制模式,NIBP Pressure Control Model
 ServicePatientType,病人类型,Patient Type
 ServiceChargePressure,预充气压力,Charge Pressure
 TEMPModuleDisConnect,温度模块未连接,TEMP Module DisConnected
+TEMPChannelOne,体温通道1,TEMP Channel One
+TEMPChannelTwo,体温通道2,TEMP Channel Two 
+TEMPChannelDisable,体温通道失能,TEMP Channel Disable 
 ServiceInflate,充气,Inflate
 ServiceDeflate,放气,Deflate
 ServiceCalibrateZero,校零,Calibrate Zero
@@ -771,7 +777,6 @@ Supervisor12LMenu,12导,12-Lead
 Supervisor12LMenuDesc,12导设置,12-Lead Setting
 Print12LSnapshotFormat,12导快照打印格式,12-Lead Snapshot Print Format
 PDFReportFormat,12导PDF报告格式,12-Lead PDF Report Format
-Standard,标准,Standard
 Cabrera,卡布瑞拉,Cabrera
 ECG12LDisplayFormat,显示格式,12-Lead Display Format
 SupervisorTimeWindow2x6PDF,2x6PDF格式时间窗口,2x6 12-Lead Report Time Interval
@@ -873,7 +878,7 @@ TrendGraph,趋势图,Trend Graph
 PreviousEvent,上个事件,Prv Event
 NextEvent,下个事件,Next Event
 EventReview,事件回顾,Event Review
-OxyCRGEventReview,呼吸氧合事件回顾,OxyCRG Event Review
+OxyCRGEventReview,呼吸氧合回顾,OxyCRG Review
 TrendTableSet,趋势表设置,Trend Table Set
 TrendGraphSet,趋势图设置,Trend Graph Set
 ResolutionRatio,分辨率,Resolution Ratio
@@ -1166,6 +1171,21 @@ open,打开,open
 openAgain,再次打开,Open Again
 ReminderToneIntervals,提醒音间隔,Reminder Tone Intervals
 H1min,1分钟,1min
+T1,T1,T1
+T2,T2,T2
+Tskin,体表,T skin
+Tcore,核心,T core
+Taxil,腋下,T axil
+Tnaso,鼻咽,T naso
+Teso,食道,T eso
+Trect,直肠,T rect
+Tamb,环境,T amb
+Tairw,气道,T airw
+Tvesic,膀胱,T vesic
+Tblood,血液,T blood
+Tmyo,心肌,T myo
+Ttymp,鼓膜,T tymp
+Tbrain,大脑,T brain
 H2min,2分钟,2min
 H3min,3分钟,3min
 _alarmLightOnAlarmReset,报警灯复位,Alarm Light On Alarm Reset
@@ -1370,3 +1390,15 @@ Opened,已开,Opened
 Closed,已关,Closed
 AlarmType,报警类型,Alarm Type
 EraseData,擦除数据,EraseData
+ScreenConfig,界面设置,Screen
+ScreenConfigDesc,界面设置,Screen Configuration
+CurrentScreen,当前界面,Current Screen
+ScreenLayout,界面布局,Screen Layout
+Standard,标准,Standard
+_12Lead,12 导联,12 Lead
+OxyCRG,呼吸氧合,OxyCRG
+Trend,趋势,Trend
+BigFont,大字体,Big Font
+DEMO,演示,DEMO
+DemoMode,演示模式,Demo Mode
+DemoConfigDesc,演示设置,Demo Configuration

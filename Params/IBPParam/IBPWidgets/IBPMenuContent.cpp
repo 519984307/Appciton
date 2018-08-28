@@ -74,11 +74,6 @@ void IBPMenuContent::readyShow()
 
 void IBPMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *layout = new QGridLayout(this);
 
     ComboBox *comboBox;

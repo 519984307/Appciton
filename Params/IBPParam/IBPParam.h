@@ -5,7 +5,7 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/27
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
  **/
 
 #pragma once
@@ -42,6 +42,8 @@ public:
     // 处理demo数据
     virtual void handDemoWaveform(WaveformID id, short data);
     virtual void handDemoTrendData(void);
+    /* reimplement */
+    virtual void exitDemo();
 
     // 显示
     virtual void showSubParamValue();

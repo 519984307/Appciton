@@ -5,7 +5,7 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/28
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/27
  **/
 
 #pragma once
@@ -25,6 +25,7 @@ enum ParamID
     PARAM_TEMP,
     PARAM_DUP_ECG,
     PARAM_DUP_RESP,
+
     PARAM_IBP,
     PARAM_AG,
     PARAM_CO,
@@ -157,8 +158,6 @@ enum WaveformID
     WAVE_ICP,
     WAVE_AUXP1,
     WAVE_AUXP2,
-
-    WAVE_ECG_CALC,
 
     WAVE_NR
 };

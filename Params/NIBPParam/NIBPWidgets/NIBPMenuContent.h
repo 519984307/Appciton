@@ -20,6 +20,8 @@ class NIBPMenuContent : public MenuContent
 public:
     NIBPMenuContent();
     ~NIBPMenuContent();
+
+protected:
     /**
      * @brief readyShow  //reimplment load settings
      */

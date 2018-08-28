@@ -21,7 +21,7 @@
 #include "IWidget.h"
 #include "IConfig.h"
 #include <QPainter>
-#include "ComboListPopup.h"
+#include "PopupList.h"
 #include "ParamInfo.h"
 #include "SystemManager.h"
 #include "OxyCRGSetupWidget.h"
@@ -37,13 +37,14 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     _changeTrendList(NULL),
     _isShowGrid(true),
     _isShowFrame(true),
-    _isShowScale(true)
+    _isShowScale(true),
+    _intervalItemIndex(-1)
 {
     _pixelWPitch = systemManager.getScreenPixelWPitch();
     _pixelHPitch = systemManager.getScreenPixelHPitch();
 
     QPalette palette;
-    palette.setColor(QPalette::WindowText, QColor(255, 255, 0));
+    palette.setColor(QPalette::WindowText, QColor(152, 245, 255));
     palette.setColor(QPalette::Window, Qt::black);
 //    palette.setColor(QPalette::Foreground, Qt::black);
     setPalette(palette);
@@ -70,28 +71,35 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     bottomLayout = new QHBoxLayout();
     bottomLayout->setMargin(2);
     bottomLayout->setSpacing(1);
+    int labelWidth = 80;
 
-    _interval = new OxyCRGWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+    _interval = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
     _interval->setFont(fontManager.textFont(fontSize));
-    _interval->setFixedSize(80, _labelHeight);
+    _interval->setFixedSize(labelWidth, _labelHeight);
     _interval->setText("");
     connect(_interval, SIGNAL(released(IWidget *)), this, SLOT(_intervalSlot(IWidget *)));
 
-    _changeTrend = new OxyCRGWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+    _changeTrend = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
     _changeTrend->setFont(fontManager.textFont(fontSize));
-    _changeTrend->setFixedSize(80, _labelHeight);
+    _changeTrend->setFixedSize(labelWidth, _labelHeight);
     _changeTrend->setText("");
     connect(_changeTrend, SIGNAL(released(IWidget *)), this, SLOT(_changeTrendSlot(IWidget *)));
 
-    _setUp = new OxyCRGWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+    _setUp = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
     _setUp->setFont(fontManager.textFont(fontSize));
-    _setUp->setFixedSize(80, _labelHeight);
+    _setUp->setFixedSize(labelWidth, _labelHeight);
     _setUp->setText("SetUp");
     connect(_setUp, SIGNAL(released(IWidget *)), this, SLOT(_onSetupUpdated(IWidget *)));
 
+    int rWidth = rect().width() / 4;
+    int addWidth = (rWidth - labelWidth) / 2;
+    bottomLayout->addSpacing(addWidth);
     bottomLayout->addWidget(_interval);
+    bottomLayout->addSpacing(addWidth);
     bottomLayout->addWidget(_changeTrend);
+    bottomLayout->addSpacing(addWidth);
     bottomLayout->addWidget(_setUp);
+    bottomLayout->addSpacing(rWidth + addWidth);
 
     _mainLayout->addWidget(_titleLabel, 0, Qt::AlignCenter);
     _mainLayout->addLayout(_hLayoutWave);
@@ -356,6 +364,14 @@ void OxyCRGWidget::paintEvent(QPaintEvent *event)
     QRect r = rect();
     r.setBottom(_titleBarHeight);
     barPainter.fillRect(r, QColor(152, 245, 255));
+
+    int rWidth = rect().width() / 4;
+    int addWidth = (rWidth - _interval->width()) / 2;
+    int rHeight = rect().bottom() - _labelHeight;
+
+    _interval->move(addWidth, rHeight);
+    _changeTrend->move((addWidth + rWidth), rHeight);
+    _setUp->move((addWidth + rWidth * 2), rHeight);
 }
 
 /**************************************************************************************************
@@ -364,10 +380,6 @@ void OxyCRGWidget::paintEvent(QPaintEvent *event)
 void OxyCRGWidget::resizeEvent(QResizeEvent *e)
 {
     IWidget::resizeEvent(e);
-
-    int l = ((rect().width() / 4) - _interval->width()) / 2;
-    _interval->move(rect().left() + l, rect().bottom() - _labelHeight - 2);
-    _changeTrend->move(rect().left() + (rect().width() / 4) + l, rect().bottom() - _labelHeight - 2);
 }
 
 void OxyCRGWidget::setOxyCrgRespWidget(OxyCRGRESPWidget *p)
@@ -422,14 +434,14 @@ void OxyCRGWidget::_intervalSlot(IWidget *widget)
 {
     if (NULL == _intervalList)
     {
-        _intervalList = new ComboListPopup(widget, POPUP_TYPE_USER, OxyCRG_Interval_NR, _getInterval());
+        _intervalList = new PopupList(_interval, false);
         for (int i = 0; i < OxyCRG_Interval_NR; i++)
         {
             _intervalList->addItemText(OxyCRGSymbol::convert(OxyCRGInterval(i)));
         }
-        _intervalList->setItemDrawMark(false);
-        _intervalList->setFont(fontManager.textFont(fontManager.getFontSize(1)));
+        _intervalList->setFont(fontManager.textFont(fontManager.getFontSize(3)));
         connect(_intervalList, SIGNAL(destroyed()), this, SLOT(_intervalDestroyed()));
+        connect(_intervalList, SIGNAL(selectItemChanged(int)), this , SLOT(_getIntervalIndex(int)));
     }
 
     _intervalList->show();
@@ -442,14 +454,14 @@ void OxyCRGWidget::_changeTrendSlot(IWidget *widget)
 {
     if (NULL == _changeTrendList)
     {
-        _changeTrendList = new ComboListPopup(widget, POPUP_TYPE_USER, OxyCRG_Trend_NR, _getTrend());
+        _changeTrendList = new PopupList(_changeTrend, false);
         for (int i = 0; i < OxyCRG_Trend_NR; i++)
         {
             _changeTrendList->addItemText(OxyCRGSymbol::convert(OxyCRGTrend(i)));
         }
-        _changeTrendList->setItemDrawMark(false);
-        _changeTrendList->setFont(fontManager.textFont(fontManager.getFontSize(1)));
+        _changeTrendList->setFont(fontManager.textFont(fontManager.getFontSize(3)));
         connect(_changeTrendList, SIGNAL(destroyed()), this, SLOT(_changeTrendDestroyed()));
+        connect(_changeTrendList, SIGNAL(selectItemChanged(int)), this , SLOT(_getChangeTrendIndex(int)));
     }
 
     _changeTrendList->show();
@@ -516,14 +528,13 @@ void OxyCRGWidget::_onSetupUpdated(IWidget *widget)
 
 void OxyCRGWidget::_intervalDestroyed()
 {
-    int index = _intervalList->getCurIndex();
-    if (index == -1)
+    if (_intervalItemIndex == -1)
     {
         _intervalList = NULL;
         return;
     }
 
-    _setInterval((OxyCRGInterval)index);
+    _setInterval((OxyCRGInterval)_intervalItemIndex);
 
     _intervalList = NULL;
 }
@@ -533,8 +544,7 @@ void OxyCRGWidget::_intervalDestroyed()
  *************************************************************************************************/
 void OxyCRGWidget::_changeTrendDestroyed()
 {
-    int index = _changeTrendList->getCurIndex();
-    if (index == -1)
+    if (_changeTrendItemIndex == -1)
     {
         _changeTrendList = NULL;
         return;
@@ -542,11 +552,21 @@ void OxyCRGWidget::_changeTrendDestroyed()
 
     ecgParam.clearOxyCRGWaveNum();
 
-    setWaveType(index);
+    setWaveType(_changeTrendItemIndex);
 
-    _setTrend((OxyCRGTrend)index);
+    _setTrend((OxyCRGTrend)_changeTrendItemIndex);
     _clearLayout();
     _trendLayout();
 
     _changeTrendList = NULL;
+}
+
+void OxyCRGWidget::_getIntervalIndex(int index)
+{
+    _intervalItemIndex = index;
+}
+
+void OxyCRGWidget::_getChangeTrendIndex(int index)
+{
+    _changeTrendItemIndex = index;
 }

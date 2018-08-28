@@ -19,6 +19,7 @@ public:
     SPO2MenuContent();
     ~SPO2MenuContent();
 
+protected:
     /* reimplment */
     void readyShow();
 

@@ -21,6 +21,7 @@ public:
     explicit ConfigEditAlarmLimitMenuContent(Config *const config);
     ~ConfigEditAlarmLimitMenuContent();
 
+protected:
     /* reimplement */
     void readyShow();
 
