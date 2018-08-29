@@ -257,7 +257,7 @@ void AGParam::setProvider(AGProviderIFace *provider)
     }
     _provider = provider;
 
-    _setWaveformZoom(AG_DISPLAY_ZOOM_4);
+    _setWaveformZoom(getDisplayZoom());
 
     // 注册波形缓存
     QString titleN2O = _waveWidgetN2O->getTitle();
@@ -358,6 +358,7 @@ void AGParam::setWaveWidget(AGWaveWidget *waveWidget, AGTypeGas gasType)
         break;
     }
     waveWidget->setLimit(0, 1500);
+    _setWaveformSpeed(getSweepSpeed());
 }
 
 /**************************************************************************************************
@@ -515,7 +516,9 @@ void AGParam::setDisplayZoom(AGDisplayZoom zoom)
  *************************************************************************************************/
 AGDisplayZoom AGParam::getDisplayZoom()
 {
-    return AG_DISPLAY_ZOOM_4;
+    int zoom = AG_DISPLAY_ZOOM_4;
+    currentConfig.getNumValue("AG|DisplayZoom", zoom);
+    return (AGDisplayZoom)zoom;
 }
 
 /**************************************************************************************************

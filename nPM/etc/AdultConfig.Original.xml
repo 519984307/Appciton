@@ -87,22 +87,23 @@
         <SmartLeadOff>0</SmartLeadOff>
     </ECG>
     <AG>
-         <AGModule>0</AGModule>
-         <SweepSpeed>1</SweepSpeed>
-         <OperationMode>0</OperationMode>
-         <UnitSetUp>7</UnitSetUp>
-         <ApneaAlarm>0</ApneaAlarm>
-         <O2Compensation>1</O2Compensation>
-         <N2OCompensation>0</N2OCompensation>
-		 <Anesthetic>0</Anesthetic>
+	<AGModule>0</AGModule>
+        <SweepSpeed>1</SweepSpeed>
+	<DisplayZoom>2</DisplayZoom>
+        <OperationMode>0</OperationMode>
+        <UnitSetUp>7</UnitSetUp>
+        <ApneaAlarm>0</ApneaAlarm>
+        <O2Compensation>1</O2Compensation>
+        <N2OCompensation>0</N2OCompensation>
+	<Anesthetic>0</Anesthetic>
     </AG>
     <TEMP>
-         <ChannelOne>0</ChannelOne>
-         <ChannelTwo>0</ChannelTwo>
-         <ChannelDisable>0</ChannelDisable>
+	<ChannelOne>0</ChannelOne>
+        <ChannelTwo>0</ChannelTwo>
+        <ChannelDisable>0</ChannelDisable>
     </TEMP>
     <IBP>
-        <ChannelPressureEntitle1>0</ChannelPressureEntitle1>
+	<ChannelPressureEntitle1>0</ChannelPressureEntitle1>
         <ChannelPressureEntitle2>5</ChannelPressureEntitle2>
         <SweepSpeed>1</SweepSpeed>
         <FilterMode>0</FilterMode>
