@@ -104,7 +104,7 @@
     <IBP>
         <ChannelPressureEntitle1>0</ChannelPressureEntitle1>
         <ChannelPressureEntitle2>5</ChannelPressureEntitle2>
-        <IBPSweepSpeed>1</IBPSweepSpeed>
+        <SweepSpeed>1</SweepSpeed>
         <FilterMode>0</FilterMode>
         <Sensitivity>2</Sensitivity>
         <Calibration>84</Calibration>
@@ -130,6 +130,7 @@
         <CO2SweepMode>0</CO2SweepMode>
         <SweepSpeed>1</SweepSpeed>
         <FICO2Display>0</FICO2Display>
+	<DisplayZoom>3</DisplayZoom>
         <Compensation>
             <O2>1</O2>
             <NO2>0</NO2>

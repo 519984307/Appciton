@@ -83,7 +83,6 @@ void CO2MenuContent::onComboBoxIndexChanged(int index)
     {
     case CO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED:
         co2Param.setSweepSpeed((CO2SweepSpeed)index);
-        currentConfig.setNumValue("CO2|SweepSpeed", index);
         break;
     case CO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY:
         co2Param.setFiCO2Display((CO2FICO2Display)index);
@@ -162,6 +161,7 @@ void CO2MenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
+                       << CO2Symbol::convert(CO2_SWEEP_SPEED_30)
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_62_5)
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_125)
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_250)
