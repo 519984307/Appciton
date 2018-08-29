@@ -161,7 +161,6 @@ void CO2MenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << CO2Symbol::convert(CO2_SWEEP_SPEED_30)
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_62_5)
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_125)
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_250)

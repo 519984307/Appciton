@@ -39,9 +39,6 @@ void CO2Param::_setWaveformSpeed(CO2SweepSpeed speed)
     }
     switch (speed)
     {
-    case CO2_SWEEP_SPEED_30:
-        _waveWidget->setWaveSpeed(3);
-        break;
     case CO2_SWEEP_SPEED_62_5:
         _waveWidget->setWaveSpeed(6.25);
         break;
