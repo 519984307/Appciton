@@ -21,10 +21,10 @@ public:
     ~AlarmLimitMenuContent();
 
     /**
-     * @brief addAlarmSettingLink
+     * @brief setItemFocus
      * @param param
      */
-    void addAlarmSettingLink(const QVariant &param);
+    void setItemFocus(const QString &param);
 
 protected:
     /* reimplement */

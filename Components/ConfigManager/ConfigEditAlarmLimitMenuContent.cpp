@@ -141,11 +141,11 @@ ConfigEditAlarmLimitMenuContent::~ConfigEditAlarmLimitMenuContent()
     delete d_ptr;
 }
 
-void ConfigEditAlarmLimitMenuContent::addAlarmSettingLink(const QVariant &param)
+void ConfigEditAlarmLimitMenuContent::setItemFocus(const QString &param)
 {
     // 增加报警设置链接功能代码
     int focusIndex = 0;
-    QString focusName = param.toString();
+    QString focusName = param;
 
     if (!focusName.isEmpty())
     {
@@ -231,7 +231,7 @@ void ConfigEditAlarmLimitMenuContent::layoutExec()
 
 void ConfigEditAlarmLimitMenuContent::setShowParam(const QVariant &param)
 {
-    addAlarmSettingLink(param);
+    setItemFocus(param.toString());
 }
 
 void ConfigEditAlarmLimitMenuContent::onbtnClick()
