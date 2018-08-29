@@ -813,13 +813,13 @@
                 </ScreenHLayoutStretch>
                 <!-- 顶部信息栏比列 -->
                 <topBarRowOrder>
-                    <PromptInfoBarWidget>300</PromptInfoBarWidget>
-                    <PatientInfoWidget>100</PatientInfoWidget>
+                    <PatientInfoWidget>400</PatientInfoWidget>
+		    <PatientStatusBarWidget>20</PatientStatusBarWidget>
                     <AlarmMuteBarWidget>50</AlarmMuteBarWidget>
                     <SystemModeBarWidget>100</SystemModeBarWidget>
                     <SystemStatusBarWidget>50</SystemStatusBarWidget>
-                    <DateTimeWidget>100</DateTimeWidget>
                     <BatteryBarWidget>50</BatteryBarWidget>
+                    <DateTimeWidget>100</DateTimeWidget>
                 </topBarRowOrder>
                 <!-- 报警栏比列 -->
                 <alarmRowOrder>
