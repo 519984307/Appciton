@@ -49,13 +49,7 @@ public:
      *                       the param can be read only once by the takeShowParam interface
      * @param param the param
      */
-    void setShowParam(const QVariant &param);
-
-    /**
-     * @brief takeShowParam take the show param and reset internal param to invalid
-     * @return the show param
-     */
-    QVariant takeShowParam();
+    virtual void setShowParam(const QVariant &param);
 
 protected:
     /* reimplement */
