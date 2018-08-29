@@ -332,7 +332,7 @@ void ConfigEditCOMenuContent::onAlarmBtnReleased()
 {
     MenuWindow *w = this->getMenuWindow();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_CO_CO, true);
-    if (!w)
+    if (w)
     {
         w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
     }

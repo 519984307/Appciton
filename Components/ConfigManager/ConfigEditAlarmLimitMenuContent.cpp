@@ -141,11 +141,11 @@ ConfigEditAlarmLimitMenuContent::~ConfigEditAlarmLimitMenuContent()
     delete d_ptr;
 }
 
-void ConfigEditAlarmLimitMenuContent::addAlarmSettingLink()
+void ConfigEditAlarmLimitMenuContent::addAlarmSettingLink(const QVariant &param)
 {
     // 增加报警设置链接功能代码
     int focusIndex = 0;
-    QString focusName = takeShowParam().toString();
+    QString focusName = param.toString();
 
     if (!focusName.isEmpty())
     {
@@ -169,7 +169,6 @@ void ConfigEditAlarmLimitMenuContent::addAlarmSettingLink()
 void ConfigEditAlarmLimitMenuContent::readyShow()
 {
     d_ptr->loadoptions();
-    QTimer::singleShot(10, this, SLOT(onTimeOutExec()));
 }
 
 void ConfigEditAlarmLimitMenuContent::layoutExec()
@@ -230,6 +229,11 @@ void ConfigEditAlarmLimitMenuContent::layoutExec()
     layout->addStretch(1);
 }
 
+void ConfigEditAlarmLimitMenuContent::setShowParam(const QVariant &param)
+{
+    addAlarmSettingLink(param);
+}
+
 void ConfigEditAlarmLimitMenuContent::onbtnClick()
 {
     bool focusPrevBtn = false;
@@ -270,7 +274,3 @@ void ConfigEditAlarmLimitMenuContent::onSelectRowChanged(int row)
     }
 }
 
-void ConfigEditAlarmLimitMenuContent::onTimeOutExec()
-{
-    addAlarmSettingLink();
-}

@@ -306,7 +306,7 @@ void IBPMenuContent::onAlarmBtnReleased()
 {
     MenuWindow *w = this->getMenuWindow();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_ART_SYS, true);
-    if (!w)
+    if (w)
     {
         w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
     }

@@ -34,7 +34,6 @@ public:
         : model(NULL), table(NULL),
           prevBtn(NULL), nextBtn(NULL)
     {
-        infos.clear();
     }
 
     void loadoptions();
@@ -99,11 +98,11 @@ AlarmLimitMenuContent::~AlarmLimitMenuContent()
     delete d_ptr;
 }
 
-void AlarmLimitMenuContent::addAlarmSettingLink()
+void AlarmLimitMenuContent::addAlarmSettingLink(const QVariant &param)
 {
     // 增加报警设置链接功能代码
     int focusIndex = 0;
-    QString focusName = takeShowParam().toString();
+    QString focusName = param.toString();
 
     if (!focusName.isEmpty())
     {
@@ -128,7 +127,6 @@ void AlarmLimitMenuContent::addAlarmSettingLink()
 void AlarmLimitMenuContent::readyShow()
 {
     d_ptr->loadoptions();
-    QTimer::singleShot(10, this, SLOT(onTimeOutExec()));
 }
 
 void AlarmLimitMenuContent::layoutExec()
@@ -188,6 +186,11 @@ void AlarmLimitMenuContent::layoutExec()
     layout->addStretch(1);
 }
 
+void AlarmLimitMenuContent::setShowParam(const QVariant &param)
+{
+    addAlarmSettingLink(param);
+}
+
 void AlarmLimitMenuContent::onbtnClick()
 {
     bool focusPrevBtn = false;
@@ -226,9 +229,4 @@ void AlarmLimitMenuContent::onSelectRowChanged(int row)
     {
         d_ptr->model->stopEditRow();
     }
-}
-
-void AlarmLimitMenuContent::onTimeOutExec()
-{
-    addAlarmSettingLink();
 }

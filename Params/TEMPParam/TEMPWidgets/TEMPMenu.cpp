@@ -169,7 +169,7 @@ void TEMPMenu::onAlarmBtnReleased()
 {
     MenuWindow *w = this->getMenuWindow();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_T1, true);
-    if (!w)
+    if (w)
     {
         w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
     }

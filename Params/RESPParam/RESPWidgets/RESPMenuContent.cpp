@@ -186,7 +186,7 @@ void RESPMenuContent::onAlarmBtnReleased()
 {
     MenuWindow *w = this->getMenuWindow();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_RR_BR, true);
-    if (!w)
+    if (w)
     {
         w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
     }

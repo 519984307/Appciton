@@ -22,8 +22,9 @@ public:
     ~ConfigEditAlarmLimitMenuContent();
     /**
      * @brief addAlarmSettingLink
+     * @param param
      */
-    void addAlarmSettingLink(void);
+    void addAlarmSettingLink(const QVariant &param);
 
 protected:
     /* reimplement */
@@ -32,14 +33,13 @@ protected:
     /* reimplement */
     void layoutExec();
 
+    /* reimplement */
+    void setShowParam(const QVariant &param);
+
 private slots:
     void onbtnClick();
     void onRowClicked(int row);
     void onSelectRowChanged(int row);
-    /**
-     * @brief onTimeOutExec
-     */
-    void onTimeOutExec(void);
 
 private:
     ConfigEditAlarmLimitMenuContentPrivate *const d_ptr;

@@ -153,7 +153,7 @@ void CO2MenuContent::onAlarmBtnReleased()
 {
     MenuWindow *w = this->getMenuWindow();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_ETCO2, true);
-    if (!w)
+    if (w)
     {
         w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
     }
