@@ -42,15 +42,12 @@ void CO2Param::_setWaveformSpeed(CO2SweepSpeed speed)
     case CO2_SWEEP_SPEED_62_5:
         _waveWidget->setWaveSpeed(6.25);
         break;
-
     case CO2_SWEEP_SPEED_125:
         _waveWidget->setWaveSpeed(12.5);
         break;
-
     case CO2_SWEEP_SPEED_250:
         _waveWidget->setWaveSpeed(25);
         break;
-
     default:
         break;
     }
@@ -753,7 +750,7 @@ void CO2Param::setDisplayZoom(CO2DisplayZoom zoom)
 CO2DisplayZoom CO2Param::getDisplayZoom(void)
 {
     int zoom = CO2_DISPLAY_ZOOM_4;
-    systemConfig.getNumValue("PrimaryCfg|CO2|DisplayZoom", zoom);
+    currentConfig.getNumValue("CO2|DisplayZoom", zoom);
     return (CO2DisplayZoom)zoom;
 }
 

@@ -1,11 +1,19 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/28
+ **/
+
 #pragma once
 #include "AlarmParamIFace.h"
 
 enum SystemOneShotAlarm
 {
     SOME_LIMIT_ALARM_DISABLED,
-
-    POWERUP_PANEL_SYNC_PRESSED,
     POWERUP_PANEL_RECORD_PRESSED,
     SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP,
     SYSTEM_ONE_SHOT_ALARM_NR

@@ -1,8 +1,18 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/28
+ **/
+
 #include "SystemAlarm.h"
 #include "SystemManager.h"
 #include "KeyActionManager.h"
 
-SystemAlarm * SystemAlarm::_selfObj = NULL;
+SystemAlarm *SystemAlarm::_selfObj = NULL;
 
 /**************************************************************************************************
  * 构造。
@@ -16,7 +26,6 @@ SystemAlarm::SystemAlarm()
  *************************************************************************************************/
 SystemAlarm::~SystemAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -37,7 +46,6 @@ AlarmPriority SystemAlarm::getAlarmPriority(int id)
     case SYSTEM_ONE_SHOT_ALARM_COMMUNICATION_STOP:
         return ALARM_PRIO_MED;
 
-    case POWERUP_PANEL_SYNC_PRESSED:
     case POWERUP_PANEL_RECORD_PRESSED:
         return ALARM_PRIO_LOW;
 
@@ -59,52 +67,38 @@ bool SystemAlarm::isAlarmed(int id)
 
     switch (id)
     {
-        case POWERUP_PANEL_SYNC_PRESSED:
-//            if (systemManager.getWorkMode() == WORK_MODE_MDEFIB)
-//            {
-//                keyPressed = keyActionManager.checkKeyPressed(KEY_F2_PRESSED);
-//            }
-            break;
+    case POWERUP_PANEL_RECORD_PRESSED:
+        keyPressed = keyActionManager.checkKeyPressed(KEY_F9_PRESSED);
+        break;
 
-        case POWERUP_PANEL_RECORD_PRESSED:
-            keyPressed = keyActionManager.checkKeyPressed(KEY_F9_PRESSED);
-            break;
-
-        default:
-            return AlarmOneShotIFace::isAlarmed(id);
+    default:
+        return AlarmOneShotIFace::isAlarmed(id);
     }
 
-    bool bret = false;
-
-        bret = keyPressed;
-
+    bool bret = keyPressed;
     return bret;
 }
 
 /**************************************************************************************************
  * 获取报警类型。
  *************************************************************************************************/
-AlarmType SystemAlarm::getAlarmType(int /*id*/)
+AlarmType SystemAlarm::getAlarmType(int id)
 {
+    Q_UNUSED(id)
     return ALARM_TYPE_TECH;
 }
 
-const static char* alarmLimitOneshotStr[] =
+static const char *alarmLimitOneshotStr[] =
 {
     "SomeLimitAlarmDisabled",
-    "PowerupSyncPressed",
-    "PowerupChargePressed",
-    "PowerupShockPressed",
     "PowerupRecorderPressed",
-    "PowerupEnergyUpPressed",
-    "PowerupEnergyDnPressed",
     "PowerupCommunicationStop"
 };
 
 /**************************************************************************************************
  * 获取报警字串。
  *************************************************************************************************/
-const char* SystemAlarm::toString(int id)
+const char *SystemAlarm::toString(int id)
 {
     if (id >= SYSTEM_ONE_SHOT_ALARM_NR)
     {
@@ -113,4 +107,3 @@ const char* SystemAlarm::toString(int id)
 
     return alarmLimitOneshotStr[id];
 }
-

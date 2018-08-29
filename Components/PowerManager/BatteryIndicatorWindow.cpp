@@ -36,23 +36,24 @@ BatteryIndicatorWindow::BatteryIndicatorWindow()
 {
     int fontSize = fontManager.getFontSize(3);
     setWindowTitle(trs("BatteryInfo"));
-    setFixedWidth(windowManager.getPopMenuWidth());
+    resize(800, 580);
 
     QVBoxLayout *layoutV = new QVBoxLayout();
-    layoutV->setMargin(5);
+    layoutV->setMargin(10);
     layoutV->setSpacing(10);
 
     // first row.
+    QHBoxLayout *layoutH = new QHBoxLayout();
+    QVBoxLayout *batteryV = new QVBoxLayout();
+    batteryV->setSpacing(10);
+    batteryV->setMargin(0);
     QLabel *iconLabel = new QLabel();
     iconLabel->setAlignment(Qt::AlignHCenter);
     iconLabel->setFont(fontManager.textFont(fontSize));
     iconLabel->setWordWrap(true);
     iconLabel->setText(trs("BatteryCapacityIcons"));
+    batteryV->addWidget(iconLabel);
 
-    layoutV->addWidget(iconLabel);
-
-    // second row.
-    QHBoxLayout *layoutH = new QHBoxLayout();
     layoutH->setMargin(0);
     layoutH->setSpacing(10);
 
@@ -92,11 +93,12 @@ BatteryIndicatorWindow::BatteryIndicatorWindow()
     batteryImag->setFillColor(Qt::yellow);
     batteryImag->setStatus(BATTERY_NORMAL);
     layoutH->addWidget(batteryImag, 1);
+    batteryV->addLayout(layoutH);
 
-    layoutV->addLayout(layoutH);
-    layoutV->addStretch(1);
+    layoutV->addLayout(batteryV);
+    layoutV->addStretch();
 
-    // third row.
+    // second row.
     layoutH = new QHBoxLayout();
     layoutH->setMargin(0);
     layoutH->setSpacing(0);
@@ -113,8 +115,8 @@ BatteryIndicatorWindow::BatteryIndicatorWindow()
     QVBoxLayout *disconnectV = new QVBoxLayout();
     disconnectV->setSpacing(10);
     disconnectV->setMargin(0);
-    disconnectV->addWidget(iconLabel, 1, Qt::AlignHCenter);
-    disconnectV->addWidget(batteryImag, 1, Qt::AlignHCenter);
+    disconnectV->addWidget(iconLabel, 0, Qt::AlignHCenter);
+    disconnectV->addWidget(batteryImag, 0, Qt::AlignHCenter);
 
     iconLabel = new QLabel();
     iconLabel->setFont(fontManager.textFont(fontSize));
@@ -128,8 +130,8 @@ BatteryIndicatorWindow::BatteryIndicatorWindow()
     QVBoxLayout *comfaultV = new QVBoxLayout();
     comfaultV->setSpacing(10);
     comfaultV->setMargin(0);
-    comfaultV->addWidget(iconLabel, 1, Qt::AlignHCenter);
-    comfaultV->addWidget(batteryImag, 1, Qt::AlignHCenter);
+    comfaultV->addWidget(iconLabel, 0, Qt::AlignHCenter);
+    comfaultV->addWidget(batteryImag, 0, Qt::AlignHCenter);
 
     layoutH->addStretch();
     layoutH->addLayout(disconnectV);
@@ -138,9 +140,9 @@ BatteryIndicatorWindow::BatteryIndicatorWindow()
     layoutH->addStretch();
 
     layoutV->addLayout(layoutH);
-    layoutV->addStretch(1);
+    layoutV->addStretch();
 
-    // fourth row.
+    // third row.
     layoutH = new QHBoxLayout();
     layoutH->setMargin(0);
     layoutH->setSpacing(0);
@@ -157,8 +159,8 @@ BatteryIndicatorWindow::BatteryIndicatorWindow()
     QVBoxLayout *errorV = new QVBoxLayout();
     errorV->setSpacing(10);
     errorV->setMargin(0);
-    errorV->addWidget(iconLabel, 1, Qt::AlignHCenter);
-    errorV->addWidget(batteryImag, 1, Qt::AlignHCenter);
+    errorV->addWidget(iconLabel, 0, Qt::AlignHCenter);
+    errorV->addWidget(batteryImag, 0, Qt::AlignHCenter);
 
     iconLabel = new QLabel();
     iconLabel->setFont(fontManager.textFont(fontSize));
@@ -172,8 +174,8 @@ BatteryIndicatorWindow::BatteryIndicatorWindow()
     QVBoxLayout *calibrateV = new QVBoxLayout();
     calibrateV->setSpacing(10);
     calibrateV->setMargin(0);
-    calibrateV->addWidget(iconLabel, 1, Qt::AlignHCenter);
-    calibrateV->addWidget(batteryImag, 1, Qt::AlignHCenter);
+    calibrateV->addWidget(iconLabel, 0, Qt::AlignHCenter);
+    calibrateV->addWidget(batteryImag, 0, Qt::AlignHCenter);
 
     layoutH->addStretch();
     layoutH->addLayout(errorV);
@@ -182,7 +184,7 @@ BatteryIndicatorWindow::BatteryIndicatorWindow()
     layoutH->addStretch();
 
     layoutV->addLayout(layoutH);
-    layoutV->addStretch(1);
+    layoutV->addStretch();
 
 
     QVBoxLayout *layoutValue = new QVBoxLayout();
