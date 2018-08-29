@@ -638,8 +638,9 @@ void ECGParam::setLeadOff(ECGLead lead, bool status)
 
     if (!_isEverLeadOn[lead] && !status)
     {
-        QString everLeadOnStr = "ECG|EverLeadOn|";
-        everLeadOnStr += ECGSymbol::convert(lead, ECG_CONVENTION_AAMI);
+        QString everLeadOnStr = "ECG|EverLeadOn";
+        int leadOnoff = 0;
+        currentConfig.getNumValue(everLeadOnStr, leadOnoff);
         switch (_curLeadMode)
         {
         case ECG_LEAD_MODE_3:
@@ -665,7 +666,8 @@ void ECGParam::setLeadOff(ECGLead lead, bool status)
         }
 
         _isEverLeadOn[lead] = true;
-        currentConfig.setNumValue(everLeadOnStr, true);
+        leadOnoff  = leadOnoff | (true >> lead)
+        currentConfig.setNumValue(everLeadOnStr, leadOnoff);
     }
 }
 
@@ -2423,9 +2425,10 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
 
     for (int i = 0; i < ECG_LEAD_NR; ++i)
     {
-        QString everLeadOnStr = "ECG|EverLeadOn|";
-        everLeadOnStr += ECGSymbol::convert((ECGLead)i, ECG_CONVENTION_AAMI);
-        currentConfig.getNumValue(everLeadOnStr, _isEverLeadOn[i]);
+        QString everLeadOnStr = "ECG|EverLeadOn";
+        int leadOnOff;
+        currentConfig.getNumValue(everLeadOnStr, leadOnOff);
+        _isEverLeadOn[i] = (leadOnOff << i) & 0x01;
     }
 
     _lastDiagModeTimestamp = 0;

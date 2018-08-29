@@ -83,34 +83,15 @@
         <Ecg2Gain>0</Ecg2Gain>
         <SweepSpeed>1</SweepSpeed>
         <Filter>0</Filter>
-	<DisplayMode>0</DisplayMode>
+		<DisplayMode>0</DisplayMode>
         <LeadMode>1</LeadMode>
         <NotchFilter>0</NotchFilter>
         <SmartLeadOff>0</SmartLeadOff>
         <FilterMode>0</FilterMode>
         <SelfLearn>0</SelfLearn>
-	<ECG12LeadPacerMaker>0</ECG12LeadPacerMaker>	
-	<PacerMaker>0</PacerMaker>
-	<EverLeadOn>
-            <I>0</I>
-            <II>0</II>                
-	    <III>0</III>                
-	    <aVR>0</aVR>                
-	    <aVL>0</aVL>                
-	    <aVF>0</aVF>                
-	    <V1>0</V1>                
-	    <V2>0</V2>                
-	    <V3>0</V3>                
-	    <V4>0</V4>                
-	    <V5>0</V5>                
-	    <V6>0</V6>                
-	    <C1>0</C1>                
-	    <C2>0</C2>                
-	    <C3>0</C3>                
-	    <C4>0</C4>                
-	    <C5>0</C5>                
-	    <C6>0</C6>                                
-	</EverLeadOn>
+		<ECG12LeadPacerMaker>0</ECG12LeadPacerMaker>	
+		<PacerMaker>0</PacerMaker>
+		<EverLeadOn>0</EverLeadOn>
     </ECG>
     <AG>
 	<AGModule>0</AGModule>
