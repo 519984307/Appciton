@@ -173,14 +173,12 @@ void ConfigEditTEMPMenu::onComboIndexUpdated(int index)
 
 void ConfigEditTEMPMenu::onAlarmBtnReleased()
 {
-    Button *btn = qobject_cast<Button*>(sender());
-    if (!btn)
-    {
-        return;
-    }
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+    MenuWindow *w = this->getMenuWindow();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_T1, true);
-    w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
+    if (!w)
+    {
+        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
+    }
 }
 
 void ConfigEditTEMPMenuPrivate::loadOption()

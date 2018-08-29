@@ -152,14 +152,12 @@ void CO2MenuContent::onBtnReleasedChanged()
 
 void CO2MenuContent::onAlarmBtnReleased()
 {
-    Button *btn = qobject_cast<Button*>(sender());
-    if (!btn)
-    {
-        return;
-    }
-    MainMenuWindow *w = MainMenuWindow::getInstance();
+    MenuWindow *w = this->getMenuWindow();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_ETCO2, true);
-    w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
+    if (!w)
+    {
+        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
+    }
 }
 
 void CO2MenuContent::layoutExec()

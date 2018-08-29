@@ -223,14 +223,12 @@ void ConfigEditSpO2MenuContent::onComboBoxIndexChanged(int index)
 
 void ConfigEditSpO2MenuContent::onAlarmBtnReleased()
 {
-    Button *btn = qobject_cast<Button*>(sender());
-    if (!btn)
-    {
-        return;
-    }
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+    MenuWindow *w = this->getMenuWindow();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_SPO2, true);
-    w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
+    if (!w)
+    {
+        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
+    }
 }
 
 

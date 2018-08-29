@@ -412,14 +412,12 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
 
 void ConfigEditECGMenuContent::onAlarmBtnReleased()
 {
-    Button *btn = qobject_cast<Button*>(sender());
-    if (!btn)
-    {
-        return;
-    }
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+    MenuWindow *w = this->getMenuWindow();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_HR_PR, true);
-    w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
+    if (!w)
+    {
+        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
+    }
 }
 
 

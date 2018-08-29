@@ -301,12 +301,10 @@ void COMenuContent::onButtonReleased()
 
 void COMenuContent::onAlarmBtnReleased()
 {
-    Button *btn = qobject_cast<Button*>(sender());
-    if (!btn)
-    {
-        return;
-    }
-    MainMenuWindow *w = MainMenuWindow::getInstance();
+    MenuWindow *w = this->getMenuWindow();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_CO_CO, true);
-    w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
+    if (!w)
+    {
+        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
+    }
 }
