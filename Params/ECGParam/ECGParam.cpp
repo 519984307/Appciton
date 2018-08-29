@@ -1850,6 +1850,7 @@ ECGBandwidth ECGParam::getDisplayBandWidth(void)
  *************************************************************************************************/
 void ECGParam::setFilterMode(int mode)
 {
+    systemConfig.setNumValue("PrimaryCfg|ECG|FilterMode", static_cast<int>(mode));
     if (mode == _filterMode)
     {
         return;
