@@ -15,6 +15,10 @@
 #include <QMap>
 #include "RESPDefine.h"
 #include "RESPSymbol.h"
+#include "MainMenuWindow.h"
+#include "Button.h"
+#include "ParamInfo.h"
+#include "ParamDefine.h"
 
 class ConfigEditRespMenuContentPrivate
 {
@@ -106,6 +110,18 @@ void ConfigEditRespMenuContent::onComboIndexChanged(int index)
     }
 }
 
+void ConfigEditRespMenuContent::onAlarmBtnReleased()
+{
+    Button *btn = qobject_cast<Button*>(sender());
+    if (!btn)
+    {
+        return;
+    }
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_RR_BR, true);
+    w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
+}
+
 void ConfigEditRespMenuContent::layoutExec()
 {
     QGridLayout *layout = new QGridLayout(this);
@@ -184,7 +200,15 @@ void ConfigEditRespMenuContent::layoutExec()
     itemID = ConfigEditRespMenuContentPrivate::ITEM_CBO_SWEEP_SPEED;
     comboBox->setProperty("Item", qVariantFromValue(itemID));
 
-    layout->setRowStretch(d_ptr->combos.count(), 1);
+    // 添加报警设置链接
+    Button *btn = new Button(QString("%1%2").
+                             arg(trs("AlarmSettingUp")).
+                             arg(" >>"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(btn, d_ptr->combos.count(), 1);
+    connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
+
+    layout->setRowStretch(d_ptr->combos.count() + 1, 1);
 }
 
 

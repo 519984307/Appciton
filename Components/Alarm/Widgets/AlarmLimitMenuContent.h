@@ -20,6 +20,11 @@ public:
     AlarmLimitMenuContent();
     ~AlarmLimitMenuContent();
 
+    /**
+     * @brief addAlarmSettingLink
+     */
+    void addAlarmSettingLink(void);
+
 protected:
     /* reimplement */
     void readyShow();
@@ -31,6 +36,10 @@ private slots:
     void onbtnClick();
     void onRowClicked(int row);
     void onSelectRowChanged(int row);
+    /**
+     * @brief onTimeOutExec
+     */
+    void onTimeOutExec(void);
 
 private:
     AlarmLimitMenuContentPrivate *const d_ptr;

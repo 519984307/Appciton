@@ -17,6 +17,8 @@
 #include "ConfigManager.h"
 #include "IBPSymbol.h"
 #include "Button.h"
+#include "ParamInfo.h"
+#include "ParamDefine.h"
 
 class ConfigEditIBPMenuContentPrivate
 {
@@ -188,7 +190,15 @@ void ConfigEditIBPMenuContent::layoutExec()
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
-    layout->setRowStretch(d_ptr->combos.count(), 1);
+    // 添加报警设置链接
+    Button *btn = new Button(QString("%1%2").
+                             arg(trs("AlarmSettingUp")).
+                             arg(" >>"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(btn, d_ptr->combos.count(), 1);
+    connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
+
+    layout->setRowStretch(d_ptr->combos.count() + 1, 1);
 }
 
 void ConfigEditIBPMenuContent::onComboBoxIndexChanged(int index)
@@ -218,6 +228,18 @@ void ConfigEditIBPMenuContent::onComboBoxIndexChanged(int index)
         break;
     }
     d_ptr->config->setNumValue(QString("IBP|%1").arg(str), index);
+}
+
+void ConfigEditIBPMenuContent::onAlarmBtnReleased()
+{
+    Button *btn = qobject_cast<Button*>(sender());
+    if (!btn)
+    {
+        return;
+    }
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_ART_SYS, true);
+    w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
 }
 
 

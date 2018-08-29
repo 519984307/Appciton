@@ -20,6 +20,7 @@
 #include "ConfigManager.h"
 #include "KeyInputPanel.h"
 #include "MessageBox.h"
+#include "MainMenuWindow.h"
 
 class CO2MenuContentPrivate
 {
@@ -149,6 +150,18 @@ void CO2MenuContent::onBtnReleasedChanged()
     }
 }
 
+void CO2MenuContent::onAlarmBtnReleased()
+{
+    Button *btn = qobject_cast<Button*>(sender());
+    if (!btn)
+    {
+        return;
+    }
+    MainMenuWindow *w = MainMenuWindow::getInstance();
+    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_ETCO2, true);
+    w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
+}
+
 void CO2MenuContent::layoutExec()
 {
     QGridLayout *layout = new QGridLayout(this);
@@ -224,6 +237,14 @@ void CO2MenuContent::layoutExec()
     button->setProperty("Btn", itemID);
     d_ptr->btns.insert(CO2MenuContentPrivate::ITEM_BTN_ZERO_CALIB, button);
 
-    layout->setRowStretch((row + d_ptr->btns.count()), 1);
+    // 添加报警设置链接
+    Button *btn = new Button(QString("%1%2").
+                             arg(trs("AlarmSettingUp")).
+                             arg(" >>"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(btn, (row + d_ptr->btns.count()), 1);
+    connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
+
+    layout->setRowStretch((row + d_ptr->btns.count() + 1), 1);
 }
 

@@ -30,6 +30,10 @@ protected:
 private slots:
     void onComboBoxIndexChanged(int index);
     void onButtonReleased(void);
+    /**
+     * @brief onAlarmBtnReleased
+     */
+    void onAlarmBtnReleased(void);
 
 private:
     ConfigEditCOMenuContentPrivate *const d_ptr;

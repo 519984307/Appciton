@@ -20,6 +20,10 @@ class ConfigEditAlarmLimitMenuContent : public MenuContent
 public:
     explicit ConfigEditAlarmLimitMenuContent(Config *const config);
     ~ConfigEditAlarmLimitMenuContent();
+    /**
+     * @brief addAlarmSettingLink
+     */
+    void addAlarmSettingLink(void);
 
 protected:
     /* reimplement */
@@ -32,6 +36,10 @@ private slots:
     void onbtnClick();
     void onRowClicked(int row);
     void onSelectRowChanged(int row);
+    /**
+     * @brief onTimeOutExec
+     */
+    void onTimeOutExec(void);
 
 private:
     ConfigEditAlarmLimitMenuContentPrivate *const d_ptr;

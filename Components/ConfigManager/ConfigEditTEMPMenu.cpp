@@ -14,6 +14,10 @@
 #include "LanguageManager.h"
 #include "TEMPSymbol.h"
 #include "Config.h"
+#include "ConfigEditMenuWindow.h"
+#include "Button.h"
+#include "ParamInfo.h"
+#include "ParamDefine.h"
 
 class ConfigEditTEMPMenuPrivate
 {
@@ -123,6 +127,15 @@ void ConfigEditTEMPMenu::layoutExec()
     d_ptr->tempChannelDisable = combo;
     layoutIndex++;
 
+    // 添加报警设置链接
+    Button *btn = new Button(QString("%1%2").
+                             arg(trs("AlarmSettingUp")).
+                             arg(" >>"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    glayout->addWidget(btn, layoutIndex, 1);
+    connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
+    layoutIndex++;
+
     glayout->setRowStretch(layoutIndex , 1);
 }
 
@@ -156,6 +169,18 @@ void ConfigEditTEMPMenu::onComboIndexUpdated(int index)
         break;
     }
     d_ptr->config->setNumValue(strPath, index);
+}
+
+void ConfigEditTEMPMenu::onAlarmBtnReleased()
+{
+    Button *btn = qobject_cast<Button*>(sender());
+    if (!btn)
+    {
+        return;
+    }
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_T1, true);
+    w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
 }
 
 void ConfigEditTEMPMenuPrivate::loadOption()

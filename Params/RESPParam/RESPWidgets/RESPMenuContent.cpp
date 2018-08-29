@@ -17,6 +17,8 @@
 #include <QMap>
 #include "ConfigManager.h"
 #include "SystemManager.h"
+#include "MainMenuWindow.h"
+#include "Button.h"
 
 class RESPMenuContentPrivate
 {
@@ -140,8 +142,15 @@ void RESPMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(RESPMenuContentPrivate::ITEM_CBO_AUTO_ACTIVATION, comboBox);
 
+    // 添加报警设置链接
+    Button *btn = new Button(QString("%1%2").
+                             arg(trs("AlarmSettingUp")).
+                             arg(" >>"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(btn, d_ptr->combos.count() + 1, 1);
+    connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
 
-    layout->setRowStretch(d_ptr->combos.count(), 1);
+    layout->setRowStretch(d_ptr->combos.count() + 2, 1);
 }
 
 void RESPMenuContent::onComboBoxIndexChanged(int index)
@@ -171,4 +180,16 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
             break;
         }
     }
+}
+
+void RESPMenuContent::onAlarmBtnReleased()
+{
+    Button *btn = qobject_cast<Button*>(sender());
+    if (!btn)
+    {
+        return;
+    }
+    MainMenuWindow *w = MainMenuWindow::getInstance();
+    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_RR_BR, true);
+    w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
 }

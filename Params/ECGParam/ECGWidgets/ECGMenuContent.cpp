@@ -22,6 +22,7 @@
 #include "Button.h"
 #include "ArrhythmiaMenuWindow.h"
 #include "WindowManager.h"
+#include "MainMenuWindow.h"
 
 class ECGMenuContentPrivate
 {
@@ -230,7 +231,15 @@ void ECGMenuContent::layoutExec()
     layout->addWidget(d_ptr->arrhythmiaBtn, d_ptr->combos.count() + 1, 1);
     connect(d_ptr->arrhythmiaBtn, SIGNAL(released()), this, SLOT(arrhythmiaBtnReleased()));
 
-    layout->setRowStretch(d_ptr->combos.count() + 2, 1);
+    // 添加报警设置链接
+    Button *btn = new Button(QString("%1%2").
+                             arg(trs("AlarmSettingUp")).
+                             arg(" >>"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(btn, d_ptr->combos.count() + 2, 1);
+    connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
+
+    layout->setRowStretch(d_ptr->combos.count() + 3, 1);
 }
 
 void ECGMenuContent::onComboBoxIndexChanged(int index)
@@ -317,5 +326,17 @@ void ECGMenuContent::arrhythmiaBtnReleased()
 void ECGMenuContent::selfLearnBtnReleased()
 {
     ecgParam.setSelfLearn(1);
+}
+
+void ECGMenuContent::onAlarmBtnReleased()
+{
+    Button *btn = qobject_cast<Button*>(sender());
+    if (!btn)
+    {
+        return;
+    }
+    MainMenuWindow *w = MainMenuWindow::getInstance();
+    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_HR_PR, true);
+    w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
 }
 

@@ -19,6 +19,8 @@
 #include "SystemManager.h"
 #include "SPO2Param.h"
 #include "IConfig.h"
+#include "MainMenuWindow.h"
+#include "Button.h"
 
 class SPO2MenuContentPrivate
 {
@@ -79,7 +81,15 @@ void SPO2MenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SMART_TONE, comboBox);
 
-    layout->setRowStretch(d_ptr->combos.count(), 1);
+    // 添加报警设置链接
+    Button *btn = new Button(QString("%1%2").
+                             arg(trs("AlarmSettingUp")).
+                             arg(" >>"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(btn, d_ptr->combos.count(), 1);
+    connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
+
+    layout->setRowStretch(d_ptr->combos.count() + 1, 1);
 }
 
 void SPO2MenuContent::onComboBoxIndexChanged(int index)
@@ -98,4 +108,16 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
             break;
         }
     }
+}
+
+void SPO2MenuContent::onAlarmBtnReleased()
+{
+    Button *btn = qobject_cast<Button*>(sender());
+    if (!btn)
+    {
+        return;
+    }
+    MainMenuWindow *w = MainMenuWindow::getInstance();
+    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_SPO2, true);
+    w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
 }

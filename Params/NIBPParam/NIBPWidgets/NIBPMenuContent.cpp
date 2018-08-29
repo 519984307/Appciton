@@ -20,6 +20,7 @@
 #include "NIBPParam.h"
 #include "ConfigManager.h"
 #include "NIBPMonitorStateDefine.h"
+#include "MainMenuWindow.h"
 
 class NIBPMenuContentPrivate
 {
@@ -137,7 +138,15 @@ void NIBPMenuContent::layoutExec()
     layout->addWidget(button, row + d_ptr->btns.count(), 1);
     d_ptr->btns.insert(NIBPMenuContentPrivate::ITEM_BTN_START_STAT, button);
 
-    layout->setRowStretch((row + d_ptr->btns.count()), 1);
+    // 添加报警设置链接
+    Button *btn = new Button(QString("%1%2").
+                             arg(trs("AlarmSettingUp")).
+                             arg(" >>"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(btn, row + d_ptr->btns.count(), 1);
+    connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
+
+    layout->setRowStretch((row + d_ptr->btns.count() + 1), 1);
 }
 
 void NIBPMenuContentPrivate::loadOptions()
@@ -249,6 +258,18 @@ void NIBPMenuContent::onBtnReleasedChanged()
         nibpParam.setMeasurMode(NIBP_MODE_STAT);
         break;
     }
+}
+
+void NIBPMenuContent::onAlarmBtnReleased()
+{
+    Button *btn = qobject_cast<Button*>(sender());
+    if (!btn)
+    {
+        return;
+    }
+    MainMenuWindow *w = MainMenuWindow::getInstance();
+    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_NIBP_SYS, true);
+    w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
 }
 
 void NIBPMenuContent::onComboBoxIndexChanged(int index)

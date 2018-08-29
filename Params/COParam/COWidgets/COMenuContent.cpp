@@ -22,6 +22,7 @@
 #include "IConfig.h"
 #include "KeyInputPanel.h"
 #include "MessageBox.h"
+#include "MainMenuWindow.h"
 
 class COMenuContentPrivate
 {
@@ -145,7 +146,15 @@ void COMenuContent::layoutExec()
     layout->addWidget(button, d_ptr->buttons.count() + d_ptr->combos.count(), 1);
     d_ptr->buttons.insert(COMenuContentPrivate::ITEM_CBO_MEASURE_CONTROL, button);
 
-    layout->setRowStretch(d_ptr->combos.count() + d_ptr->buttons.count(), 1);
+    // 添加报警设置链接
+    Button *btn = new Button(QString("%1%2").
+                             arg(trs("AlarmSettingUp")).
+                             arg(" >>"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(btn, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
+    connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
+
+    layout->setRowStretch(d_ptr->combos.count() + d_ptr->buttons.count() + 1, 1);
 }
 
 void COMenuContent::onComboBoxIndexChanged(int index)
@@ -288,4 +297,16 @@ void COMenuContent::onButtonReleased()
             break;
         }
     }
+}
+
+void COMenuContent::onAlarmBtnReleased()
+{
+    Button *btn = qobject_cast<Button*>(sender());
+    if (!btn)
+    {
+        return;
+    }
+    MainMenuWindow *w = MainMenuWindow::getInstance();
+    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_CO_CO, true);
+    w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
 }

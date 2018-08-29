@@ -16,6 +16,10 @@
 #include "NIBPDefine.h"
 #include <QGridLayout>
 #include "PatientManager.h"
+#include "MainMenuWindow.h"
+#include "Button.h"
+#include "ParamInfo.h"
+#include "ParamDefine.h"
 
 class ConfigEditNIBPMenuContentPrivate
 {
@@ -174,6 +178,18 @@ void ConfigEditNIBPMenuContent::onComboIndexChanged(int index)
     }
 }
 
+void ConfigEditNIBPMenuContent::onAlarmBtnReleased()
+{
+    Button *btn = qobject_cast<Button*>(sender());
+    if (!btn)
+    {
+        return;
+    }
+    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
+    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_NIBP_SYS, true);
+    w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
+}
+
 void ConfigEditNIBPMenuContent::layoutExec()
 {
     QGridLayout *layout = new QGridLayout(this);
@@ -233,7 +249,16 @@ void ConfigEditNIBPMenuContent::layoutExec()
     comboBox->setProperty("Item", itemID);
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged(int)));
 
-    layout->setRowStretch(d_ptr->combos.count(), 1);
+    // 添加报警设置链接
+    Button *btn = new Button(QString("%1%2").
+                             arg(trs("AlarmSettingUp")).
+                             arg(" >>"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(btn, d_ptr->combos.count(), 1);
+    connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
+
+
+    layout->setRowStretch(d_ptr->combos.count() + 1, 1);
 }
 
 
