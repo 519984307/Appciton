@@ -83,7 +83,6 @@ void CO2MenuContent::onComboBoxIndexChanged(int index)
     {
     case CO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED:
         co2Param.setSweepSpeed((CO2SweepSpeed)index);
-        currentConfig.setNumValue("CO2|SweepSpeed", index);
         break;
     case CO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY:
         co2Param.setFiCO2Display((CO2FICO2Display)index);

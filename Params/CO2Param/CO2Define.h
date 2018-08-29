@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/29
+ **/
+
 #pragma once
 
 /**************************************************************************************************
@@ -33,11 +43,9 @@ enum CO2ApneaTime
  *************************************************************************************************/
 enum CO2SweepSpeed
 {
-    CO2_SWEEP_SPEED_30,
     CO2_SWEEP_SPEED_62_5,
     CO2_SWEEP_SPEED_125,
     CO2_SWEEP_SPEED_250,
-    CO2_SWEEP_SPEED_500,
     CO2_SWEEP_SPEED_NR
 };
 
