@@ -666,7 +666,7 @@ void ECGParam::setLeadOff(ECGLead lead, bool status)
         }
 
         _isEverLeadOn[lead] = true;
-        leadOnoff  = leadOnoff | (true >> lead)
+        leadOnoff  = leadOnoff | (true >> lead);
         currentConfig.setNumValue(everLeadOnStr, leadOnoff);
     }
 }

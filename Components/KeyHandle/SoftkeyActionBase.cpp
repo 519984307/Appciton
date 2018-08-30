@@ -38,6 +38,7 @@
 #include "PatientInfoWindow.h"
 #include "MainMenuWindow.h"
 #include "CodeMarkerWindow.h"
+#include "ScreenLayoutWindow.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -166,12 +167,9 @@ void SoftkeyActionBase::WindowLayout(bool isPressed)
         return;
     }
 
-//    QRect r = windowManager.getMenuArea();
-//    int x = r.x() + (r.width() - patientMenu.width()) / 2;
-//    int y = r.y() + (r.height() - patientMenu.height());
-//    patientMenu.autoShow(x, y);
-    //    patientMenu.autoShow();
-    windowLayout.autoShow();
+    // windowLayout.autoShow();
+    windowManager.showWindow(ScreenLayoutWindow::getInstance(),
+                             WindowManager::ShowBehaviorCloseIfVisiable | WindowManager::ShowBehaviorCloseOthers);
 }
 
 /***************************************************************************************************

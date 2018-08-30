@@ -14,6 +14,8 @@
 #include "LanguageManager.h"
 #include <QLabel>
 #include <QGridLayout>
+#include <ScreenLayoutWindow.h>
+#include <WindowManager.h>
 
 class ScreenMenuContentPrivate
 {
@@ -86,4 +88,5 @@ void ScreenMenuContent::onComboxIndexChanged(int index)
 
 void ScreenMenuContent::settingLayout()
 {
+    windowManager.showWindow(ScreenLayoutWindow::getInstance(), WindowManager::ShowBehaviorCloseOthers);
 }

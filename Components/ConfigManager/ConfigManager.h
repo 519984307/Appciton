@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/30
+ **/
+
 #pragma once
 
 #include <QObject>
@@ -11,10 +21,9 @@ class ConfigManager : public QObject
 {
     Q_OBJECT
 public:
-
     struct UserDefineConfigInfo {
-      QString name;         //name of the this config
-      QString fileName;     //xml filename
+      QString name;         // name of the this config
+      QString fileName;     // xml filename
     };
 
     ~ConfigManager();
@@ -84,6 +93,7 @@ public:
      * @param status 1, 0
      */
     void setWidgetStatus(bool status);
+
 signals:
     /**
      * @brief configChange
@@ -92,7 +102,7 @@ signals:
      *
      */
     void configChanged();
-    
+
     /**
      * @brief userDefineConfigChanged
      * @note 
@@ -109,11 +119,9 @@ private slots:
 
 private:
     ConfigManager();
-    //智能指针
+    // 智能指针
     QScopedPointer<ConfigManagerPrivate> d_ptr;
 };
 
 #define configManager (ConfigManager::getInstance())
-#define currentConfig (configManager.getCurConfig())
-
-
+#define currentConfig (ConfigManager::getInstance().getCurConfig())
