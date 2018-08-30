@@ -28,6 +28,7 @@
 #include "FactoryMaintainMenuContent.h"
 #include "TEMPMenu.h"
 #include "ScreenMenuContent.h"
+#include "SystemNightModeMenuContent.h"
 
 MainMenuWindow *MainMenuWindow::getInstance()
 {
@@ -70,6 +71,7 @@ MainMenuWindow *MainMenuWindow::getInstance()
             instance->addMenuContent(new WiFiProfileMenuContent);
         }
         instance->addMenuContent(new DisplayMenuContent);
+        instance->addMenuContent(new SystemNightModeMenuContent);
         instance->addMenuContent(new ScreenMenuContent);
         instance->addMenuContent(new LoadConfigMenuContent);
         instance->addMenuContent(new SystemMenuContent);

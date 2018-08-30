@@ -12,6 +12,13 @@ iDMBoard,iDMBoard,iDMBoard
 Adult,成人,Adult
 PED,小儿,Pediatric
 NEO,新生儿,Neonate
+SystemHeartBeat,心跳音量,Heart Beat Volume
+NightModeMenu,夜间模式,Night Mode
+NightModeMenuDesc,夜间模式设置,Night Mode Desc
+NIBPCompletedTips,NIBP完成音,NIBP Completed Tips
+StopNIBPMeasure,停止NIBP测量,Stop NIBP Measure
+EnterNightMode,进入夜间模式,Enter Night Mode
+ExitNightMode,退出夜间模式,Exit Night Mode
 UserFaceStandard,标准,Standard
 UserFace12Lead,12导,12 Lead
 UserFaceOxyCRG,呼吸氧合图,OxyCRG
@@ -83,8 +90,8 @@ PR,脉率,PR
 PLETH,血氧波,Pleth
 NIBP,血压,NIBP
 RESP,呼吸,RESP
-ParamColor,参数颜色,Parameter
-NightMode,夜间模式,Night Mode
+ParameterColor,参数颜色,Parameter Color
+ParameterColorDesc,参数颜色设置,Parameter Color Desc
 RR,呼吸率,RR
 BR,呼吸率,BR
 RR_BR,呼吸率,RR/BR

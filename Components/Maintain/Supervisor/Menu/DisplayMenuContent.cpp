@@ -28,9 +28,7 @@ public:
         ITEM_CBO_NIBP_COLOR,
         ITEM_CBO_CO2_COLOR,
         ITEM_CBO_RESP_COLOR,
-        ITEM_CBO_TEMP_COLOR,
-        ITEM_CBO_PARAM_COLOR,
-        ITEM_CBO_NIGHT_MODE
+        ITEM_CBO_TEMP_COLOR
     };
 
     DisplayMenuContentPrivate() {}
@@ -62,16 +60,10 @@ void DisplayMenuContentPrivate::loadOptions()
 
     currentConfig.getStrValue("Display|TEMPColor", color);
     combos[ITEM_CBO_TEMP_COLOR]->setCurrentIndex(colorList.indexOf(color));
-
-    currentConfig.getStrValue("Display|ParamColor", color);
-    combos[ITEM_CBO_PARAM_COLOR]->setCurrentIndex(colorList.indexOf(color));
-
-    currentConfig.getStrValue("Display|NightMode", color);
-    combos[ITEM_CBO_NIGHT_MODE]->setCurrentIndex(colorList.indexOf(color));
 }
 
 DisplayMenuContent::DisplayMenuContent()
-    : MenuContent(trs("SupervisorDisplayMenu"), trs("SupervisorDisplayMenuDesc")),
+    : MenuContent(trs("ParameterColor"), trs("ParameterColorDesc")),
       d_ptr(new DisplayMenuContentPrivate)
 {
     QString color;
@@ -187,36 +179,6 @@ void DisplayMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(DisplayMenuContentPrivate::ITEM_CBO_TEMP_COLOR, comboBox);
 
-    // parameter color
-    label = new QLabel(trs("ParamColor"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    for (int i = 0; i < d_ptr->colorList.count(); i ++)
-    {
-        comboBox->addItem(trs(d_ptr->colorList.at(i)));
-    }
-    itemID = static_cast<int>(DisplayMenuContentPrivate::ITEM_CBO_PARAM_COLOR);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(DisplayMenuContentPrivate::ITEM_CBO_PARAM_COLOR, comboBox);
-
-    // night mode color
-    label = new QLabel(trs("NightMode"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    for (int i = 0; i < d_ptr->colorList.count(); i ++)
-    {
-        comboBox->addItem(trs(d_ptr->colorList.at(i)));
-    }
-    itemID = static_cast<int>(DisplayMenuContentPrivate::ITEM_CBO_NIGHT_MODE);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(DisplayMenuContentPrivate::ITEM_CBO_NIGHT_MODE, comboBox);
-
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
 
@@ -250,12 +212,6 @@ void DisplayMenuContent::onComboBoxIndexChanged(int index)
             break;
         case DisplayMenuContentPrivate::ITEM_CBO_TEMP_COLOR:
             strPath = "Display|TEMPColor";
-            break;
-        case DisplayMenuContentPrivate::ITEM_CBO_PARAM_COLOR:
-            strPath = "Display|ParamColor";
-            break;
-        case DisplayMenuContentPrivate::ITEM_CBO_NIGHT_MODE:
-            strPath = "Display|NightMode";
             break;
         }
         currentConfig.setStrValue(strPath, d_ptr->colorList.at(index));

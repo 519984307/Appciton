@@ -38,6 +38,15 @@
 	<ReminderTone>1</ReminderTone>
         <PhyParAlarmLatchlockOn>1</PhyParAlarmLatchlockOn>
     </Alarms>
+   <NightMode>
+		<ScreenBrightness>2</ScreenBrightness>
+		<AlarmVolume>2</AlarmVolume>
+		<HeartBeatVolume>2</HeartBeatVolume>
+		<HeartBeatVolume>2</HeartBeatVolume>
+		<NIBPCompletedTips>1</NIBPCompletedTips>
+		<StopNIBPMeasure>1</StopNIBPMeasure>
+		<EnterNightMode>0</EnterNightMode>
+   </NightMode>
     <Unit>
         <HightUnit>14</HightUnit>
         <WeightUnit>12</WeightUnit>
