@@ -584,8 +584,12 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     {
         return;
     }
-    RecordPageGenerator *gen = new TrendTablePageGenerator(backend, startIndex, endIndex,
-            TrendDataSymbol::convertValue(d_ptr->timeInterval));
+    TrendTablePrintInfo printInfo;
+    printInfo.startIndex = startIndex;
+    printInfo.stopIndex = endIndex;
+    printInfo.interval = TrendDataSymbol::convertValue(d_ptr->timeInterval);
+    printInfo.list = d_ptr->displayList;
+    RecordPageGenerator *gen = new TrendTablePageGenerator(backend, printInfo);
     recorderManager.addPageGenerator(gen);
 }
 

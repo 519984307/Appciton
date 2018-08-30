@@ -268,7 +268,6 @@ SOURCES +=                                                                      
     Components/PatientData/RescueDataExportWidget.cpp                           \
     Components/PatientData/TrendCache.cpp                                       \
     Components/PatientData/TrendGraphWidget.cpp                                 \
-    Components/PatientData/TrendDataWidget.cpp                                  \
     Components/PatientData/TrendDataUtil.cpp                                    \
     Components/PatientData/TrendDataSetWidget.cpp                               \
     Components/PatientData/RescueDataDeleteWidget.cpp                           \
@@ -825,7 +824,6 @@ HEADERS +=                                                                      
     Components/PatientData/RescueDataExportWidget.h                             \
     Components/PatientData/TrendCache.h                                         \
     Components/PatientData/TrendGraphWidget.h                                   \
-    Components/PatientData/TrendDataWidget.h                                    \
     Components/PatientData/TrendDataSetWidget.h                                 \
     Components/PatientData/TrendDataSymbol.h                                    \
     Components/PatientData/TrendDataDefine.h                                    \
