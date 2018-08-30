@@ -19,7 +19,7 @@
 #include "SystemManager.h"
 #include "ECGParam.h"
 #include "IConfig.h"
-
+#include "Button.h"
 
 class ConfigEditECGMenuContentPrivate
 {
@@ -350,7 +350,15 @@ void ConfigEditECGMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER, comboBox);
 
-    layout->setRowStretch(d_ptr->combos.count(), 1);
+    // 添加报警设置链接
+    Button *btn = new Button(QString("%1%2").
+                             arg(trs("AlarmSettingUp")).
+                             arg(" >>"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(btn, d_ptr->combos.count(), 1);
+    connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
+
+    layout->setRowStretch(d_ptr->combos.count() + 1, 1);
 }
 
 void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
@@ -398,6 +406,16 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
         default:
             break;
         }
+    }
+}
+
+void ConfigEditECGMenuContent::onAlarmBtnReleased()
+{
+    MenuWindow *w = this->getMenuWindow();
+    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_HR_PR, true);
+    if (w)
+    {
+        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
     }
 }
 

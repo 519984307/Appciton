@@ -40,6 +40,11 @@ private slots:
      * @brief onBtnReleasedChanged
      */
     void onBtnReleasedChanged();
+    /**
+     * @brief onAlarmBtnReleased
+     */
+    void onAlarmBtnReleased(void);
+
 private:
     ConfigEditCO2MenuContentPrivate *const d_ptr;
 };

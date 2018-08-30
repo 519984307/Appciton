@@ -14,6 +14,8 @@
 #include "LanguageManager.h"
 #include "TEMPSymbol.h"
 #include "TEMPParam.h"
+#include "MenuWindow.h"
+#include "Button.h"
 
 class TEMPMenuPrivate
 {
@@ -116,6 +118,15 @@ void TEMPMenu::layoutExec()
     d_ptr->tempChannelDisable = combo;
     layoutIndex++;
 
+    // 添加报警设置链接
+    Button *btn = new Button(QString("%1%2").
+                             arg(trs("AlarmSettingUp")).
+                             arg(" >>"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    glayout->addWidget(btn, layoutIndex, 1);
+    connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
+    layoutIndex++;
+
     glayout->setRowStretch(layoutIndex , 1);
 }
 
@@ -151,6 +162,16 @@ void TEMPMenu::onComboIndexUpdated(int index)
             tempParam.setModuleEnable();
         }
         break;
+    }
+}
+
+void TEMPMenu::onAlarmBtnReleased()
+{
+    MenuWindow *w = this->getMenuWindow();
+    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_T1, true);
+    if (w)
+    {
+        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
     }
 }
 

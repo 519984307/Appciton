@@ -152,6 +152,16 @@ void ConfigEditCO2MenuContent::onBtnReleasedChanged()
     }
 }
 
+void ConfigEditCO2MenuContent::onAlarmBtnReleased()
+{
+    MenuWindow *w = this->getMenuWindow();
+    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_ETCO2, true);
+    if (w)
+    {
+        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
+    }
+}
+
 void ConfigEditCO2MenuContent::layoutExec()
 {
     QGridLayout *layout = new QGridLayout(this);
@@ -215,6 +225,14 @@ void ConfigEditCO2MenuContent::layoutExec()
     button->setProperty("Btn", itemID);
     d_ptr->btns.insert(ConfigEditCO2MenuContentPrivate::ITEM_BTN_N2O_COMPEN, button);
 
-    layout->setRowStretch((row + d_ptr->btns.count()), 1);
+    // 添加报警设置链接
+    Button *btn = new Button(QString("%1%2").
+                             arg(trs("AlarmSettingUp")).
+                             arg(" >>"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(btn, (row + d_ptr->btns.count()), 1);
+    connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
+
+    layout->setRowStretch((row + d_ptr->btns.count() + 1), 1);
 }
 

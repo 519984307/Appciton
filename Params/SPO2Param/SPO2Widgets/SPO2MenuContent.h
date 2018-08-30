@@ -28,6 +28,10 @@ protected:
 
 private slots:
     void onComboBoxIndexChanged(int index);
+    /**
+     * @brief onAlarmBtnReleased
+     */
+    void onAlarmBtnReleased(void);
 
 private:
     SPO2MenuContentPrivate * const d_ptr;

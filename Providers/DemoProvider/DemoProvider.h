@@ -114,10 +114,10 @@ public:
     virtual int getAA1BaseLine(void) {return 0;}
     virtual int getAA2BaseLine(void) {return 0;}
     virtual int getO2BaseLine(void) {return 0;}
-    virtual int getN2OMaxWaveform(void) {return 200;}
-    virtual int getAA1MaxWaveform(void) {return 200;}
-    virtual int getAA2MaxWaveform(void) {return 200;}
-    virtual int getO2MaxWaveform(void) {return 200;}
+    virtual int getN2OMaxWaveform(void) {return 2500;}
+    virtual int getAA1MaxWaveform(void) {return 2500;}
+    virtual int getAA2MaxWaveform(void) {return 2500;}
+    virtual int getO2MaxWaveform(void) {return 2500;}
 
     // 实现IBP的接口
     virtual int getIBPWaveformSample(void) {return 128;}

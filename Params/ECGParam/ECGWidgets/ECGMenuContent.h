@@ -30,6 +30,10 @@ private slots:
     void onComboBoxIndexChanged(int index);
     void arrhythmiaBtnReleased(void);
     void selfLearnBtnReleased(void);
+    /**
+     * @brief onAlarmBtnReleased
+     */
+    void onAlarmBtnReleased(void);
 
 private:
     ECGMenuContentPrivate * const d_ptr;

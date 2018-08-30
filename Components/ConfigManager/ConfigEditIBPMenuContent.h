@@ -29,6 +29,10 @@ private slots:
      * @param index
      */
     void onComboBoxIndexChanged(int index);
+    /**
+     * @brief onAlarmBtnReleased
+     */
+    void onAlarmBtnReleased(void);
 
 private:
     ConfigEditIBPMenuContentPrivate *const d_ptr;

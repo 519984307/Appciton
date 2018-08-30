@@ -20,12 +20,21 @@ public:
     AlarmLimitMenuContent();
     ~AlarmLimitMenuContent();
 
+    /**
+     * @brief setItemFocus
+     * @param param
+     */
+    void setItemFocus(const QString &param);
+
 protected:
     /* reimplement */
     void readyShow();
 
     /* reimplement */
     void layoutExec();
+
+    /* reimplement */
+    void setShowParam(const QVariant &param);
 
 private slots:
     void onbtnClick();

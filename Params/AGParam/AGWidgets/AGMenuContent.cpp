@@ -19,6 +19,7 @@
 #include "CO2SetAGMenu.h"
 #include "N2OSetAGMenu.h"
 #include "HalSetAGMenu.h"
+#include "Button.h"
 
 class AGMenuContentPrivate
 {
@@ -34,7 +35,9 @@ public:
         ITEM_CBO_SWEEP_SPEED
     };
 
-    AGMenuContentPrivate() : isEnable(true) {}
+    AGMenuContentPrivate()
+        : isEnable(true)
+    {}
 
     // load settings
     void loadOptions();
@@ -180,7 +183,15 @@ void AGMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED, comboBox);
 
-    layout->setRowStretch(d_ptr->combos.count(), 1);
+    // 添加报警设置链接
+    Button *btn = new Button(QString("%1%2").
+                             arg(trs("AlarmSettingUp")).
+                             arg(" >>"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(btn, d_ptr->combos.count(), 1);
+    connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
+
+    layout->setRowStretch((d_ptr->combos.count() + 1), 1);
 }
 
 void AGMenuContent::onComboBoxIndexChanged(int index)
@@ -227,5 +238,15 @@ void AGMenuContent::onComboBoxIndexChanged(int index)
         default:
             break;
         }
+    }
+}
+
+void AGMenuContent::onAlarmBtnReleased()
+{
+    MenuWindow *w = this->getMenuWindow();
+    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_ETCO2, true);
+    if (w)
+    {
+        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
     }
 }

@@ -28,7 +28,10 @@ protected:
 
 private slots:
     void onComboBoxIndexChanged(int index);
-
+    /**
+     * @brief onAlarmBtnReleased
+     */
+    void onAlarmBtnReleased(void);
 private:
     AGMenuContentPrivate * const d_ptr;
 };

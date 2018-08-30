@@ -34,7 +34,8 @@ public:
         : model(NULL), table(NULL),
           prevBtn(NULL), nextBtn(NULL),
           config(config)
-    {}
+    {
+    }
 
     void loadoptions();
 
@@ -43,6 +44,7 @@ public:
     Button *prevBtn;
     Button *nextBtn;
     Config *config;
+    QList<AlarmDataInfo> infos;
 };
 
 void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
@@ -123,6 +125,7 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
             infos.append(info);
         }
     }
+    this->infos = infos;
     model->setupAlarmDataInfos(infos);
 }
 
@@ -135,6 +138,31 @@ ConfigEditAlarmLimitMenuContent::ConfigEditAlarmLimitMenuContent(Config *const c
 ConfigEditAlarmLimitMenuContent::~ConfigEditAlarmLimitMenuContent()
 {
     delete d_ptr;
+}
+
+void ConfigEditAlarmLimitMenuContent::setItemFocus(const QString &param)
+{
+    // 增加报警设置链接功能代码
+    int focusIndex = 0;
+    QString focusName = param;
+
+    if (!focusName.isEmpty())
+    {
+        for (int i = 0; i < d_ptr->infos.count(); i++)
+        {
+            SubParamID subId = d_ptr->infos.at(i).subParamID;
+            if (focusName == paramInfo.getSubParamName(subId, true))
+            {
+                focusIndex = i;
+                break;
+            }
+        }
+    }
+
+    QModelIndex index = d_ptr->table->model()->index(focusIndex, 0);
+    d_ptr->table->scrollTo(index, QAbstractItemView::PositionAtCenter);
+
+    d_ptr->table->selectRow(focusIndex);
 }
 
 void ConfigEditAlarmLimitMenuContent::readyShow()
@@ -200,6 +228,11 @@ void ConfigEditAlarmLimitMenuContent::layoutExec()
     layout->addStretch(1);
 }
 
+void ConfigEditAlarmLimitMenuContent::setShowParam(const QVariant &param)
+{
+    setItemFocus(param.toString());
+}
+
 void ConfigEditAlarmLimitMenuContent::onbtnClick()
 {
     bool focusPrevBtn = false;
@@ -239,3 +272,4 @@ void ConfigEditAlarmLimitMenuContent::onSelectRowChanged(int row)
         d_ptr->model->stopEditRow();
     }
 }
+

@@ -40,6 +40,11 @@ private slots:
      * @brief onBtnReleasedChanged
      */
     void onBtnReleasedChanged(void);
+    /**
+     * @brief onAlarmBtnReleased
+     */
+    void onAlarmBtnReleased(void);
+
 private:
     NIBPMenuContentPrivate * const d_ptr;
 };
