@@ -29,7 +29,8 @@
 #define MAX_IP_STRING_LENGTH 15
 #define DEFAULT_WIDGET_WIDTH 540
 
-#define WINDOW_WIDTH            400
+#define WINDOW_WIDTH            800
+#define WINDOW_HEIGHT           580
 
 /***************************************************************************************************
  * constructor
@@ -140,26 +141,31 @@ void WiFiProfileEditorWindowPrivate::init(const WiFiProfileWindowInfo &profile)
 {
     Q_Q(WiFiProfileEditorWindow);
 
-    q->setFixedWidth(WINDOW_WIDTH);
+    q->resize(WINDOW_WIDTH, WINDOW_HEIGHT);
     q->setToolTip(trs("WiFiProfileEdit"));
 
     QGridLayout *layout = new QGridLayout;
+    QVBoxLayout *vLayout = new QVBoxLayout;
+    QHBoxLayout *hLayout = new QHBoxLayout;
+
     QLabel *label;
 
     label = new QLabel(trs("ProfileName"));
+    label->setFixedWidth(150);
     layout->addWidget(label, 0, 0);
     profileNameBtn = new Button(profile.profileName);
     profileNameBtn->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(profileNameBtn, 0, 1);
 
     label = new QLabel(trs("WiFiAP"));
-    layout->addWidget(label, 1, 0, 1, 1);
+    label->setFixedWidth(150);
+    layout->addWidget(label, 0, 2);
     ssidBtn = new Button(profile.ssid);
     ssidBtn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(ssidBtn, 1, 1);
+    layout->addWidget(ssidBtn, 0, 3);
 
     label = new QLabel(trs("EncryptType"));
-    layout->addWidget(label, 2, 0);
+    layout->addWidget(label, 1, 0);
     authTypeComboL = new ComboBox;
     authTypeComboL->addItems(QStringList()
                              << "None"
@@ -167,67 +173,73 @@ void WiFiProfileEditorWindowPrivate::init(const WiFiProfileWindowInfo &profile)
                              << "WPA2 PSK"
                             );
     authTypeComboL->setCurrentIndex(profile.authType);
-    layout->addWidget(authTypeComboL, 2, 1);
+    layout->addWidget(authTypeComboL, 1, 1);
 
     label = new QLabel(trs("PassWord"));
-    layout->addWidget(label, 3, 0);
+    layout->addWidget(label, 1, 2);
     securityKeyBtn = new Button(profile.securityKey);
     securityKeyBtn->setButtonStyle(Button::ButtonTextOnly);
     if (profile.authType == WiFiProfileWindowInfo::Open)
     {
         securityKeyBtn->setEnabled(false);
     }
-    layout->addWidget(securityKeyBtn, 3, 1);
+    layout->addWidget(securityKeyBtn, 1, 3);
 
     label = new QLabel(trs("NetworkSetting"));
-    layout->addWidget(label, 4, 0);
+    layout->addWidget(label, 2, 0);
     networkSettingComboL = new ComboBox;
     networkSettingComboL->addItems(QStringList()
                                    << trs("DHCP")
                                    << trs("StaticIp")
                                   );
     networkSettingComboL->setCurrentIndex(profile.isStatic);
-    layout->addWidget(networkSettingComboL, 4, 1);
+    layout->addWidget(networkSettingComboL, 2, 1);
 
     label = new QLabel(trs("StaticIp"));
-    layout->addWidget(label, 5, 0);
+    layout->addWidget(label, 2, 2);
     staticIpBtn = new Button(profile.staticIp);
     staticIpBtn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(staticIpBtn, 5, 1);
+    layout->addWidget(staticIpBtn, 2, 3);
 
     label = new QLabel(trs("GateWay"));
-    layout->addWidget(label, 6, 0);
+    layout->addWidget(label, 3, 0);
     defaultGatewayBtn = new Button(profile.defaultGateway);
     defaultGatewayBtn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(defaultGatewayBtn, 6, 1);
+    layout->addWidget(defaultGatewayBtn, 3, 1);
 
     label = new QLabel(trs("SubnetMask"));
-    layout->addWidget(label, 7, 0);
+    layout->addWidget(label, 3, 2);
     subnetMaskBtn = new Button(profile.subnetMask);
     subnetMaskBtn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(subnetMaskBtn, 7, 1);
+    layout->addWidget(subnetMaskBtn, 3, 3);
 
     label = new QLabel(trs("PreferrendDNS"));
-    layout->addWidget(label, 8, 0);
+    layout->addWidget(label, 4, 0);
     preferedDNSBtn = new Button(profile.preferedDNS);
     preferedDNSBtn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(preferedDNSBtn, 8, 1);
+    layout->addWidget(preferedDNSBtn, 4, 1);
 
     label = new QLabel(trs("AlternateDNS"));
-    layout->addWidget(label, 9, 0);
+    layout->addWidget(label, 4, 2);
     alternateDNSBtn = new Button(profile.alternateDNS);
     alternateDNSBtn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(alternateDNSBtn, 9, 1);
+    layout->addWidget(alternateDNSBtn, 4, 3);
 
     commitBtn = new Button(trs("Enter"));
     commitBtn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(commitBtn, 10, 0);
+    commitBtn->setFixedWidth(200);
+    hLayout->addWidget(commitBtn);
     cancelBtn = new Button(trs("Cancel"));
     cancelBtn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(cancelBtn, 10, 1);
+    cancelBtn->setFixedWidth(200);
+    hLayout->addWidget(cancelBtn);
 
-    layout->setRowStretch(11, 1);
-    q->setWindowLayout(layout);
+    layout->setMargin(2);
+    layout->setSpacing(10);
+    vLayout->addLayout(layout);
+    vLayout->addStretch();
+    vLayout->addLayout(hLayout);
+    q->setWindowLayout(vLayout);
 
     staticIpBtn->setEnabled(profile.isStatic);
     defaultGatewayBtn->setEnabled(profile.isStatic);

@@ -20,11 +20,12 @@
 #include "PatientManager.h"
 #include "MessageBox.h"
 #include "MenuManager.h"
-#include "ConfigEditMenuGrp.h"
 #include <QHBoxLayout>
 #include "ListView.h"
 #include "ListDataModel.h"
 #include "ListViewItemDelegate.h"
+#include "ConfigEditMenuWindow.h"
+#include "WindowManager.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -228,11 +229,12 @@ void LoadConfigMenuContent::onBtnClick()
             d_ptr->curConfig = new Config(QString("%1/%2")
                                           .arg(CONFIG_DIR)
                                           .arg(d_ptr->configs.at(index).fileName));
-            configEditMenuGrp.setCurrentEditConfigName(d_ptr->configs.at(index).name);
-            configEditMenuGrp.setCurrentEditConfig(d_ptr->curConfig);
+            ConfigEditMenuWindow *cmWnd = new ConfigEditMenuWindow;
+            cmWnd->setCurrentEditConfigName(d_ptr->configs.at(index).name);
+            cmWnd->setCurrentEditConfig(d_ptr->curConfig);
+            cmWnd->initializeSubMenu();
+            windowManager.showWindow(cmWnd, WindowManager::ShowBehaviorModal);
             configManager.setWidgetStatus(true);
-            configEditMenuGrp.initializeSubMenu();
-            configEditMenuGrp.popup();
         }
     }
     else
