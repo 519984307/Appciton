@@ -27,6 +27,8 @@ public:
         ITEM_CBO_RESP_COLOR,
         ITEM_CBO_TEMP_COLOR,
         ITEM_CBO_AG_COLOR,
+        ITEM_CBO_PARAM_COLOR,
+        ITEM_CBO_NIGHT_MODE,
         ITEM_CBO_MAX,
     };
 
@@ -66,11 +68,13 @@ void ConfigEditDisplayMenuContentPrivate::loadOptions()
     QStringList strList = QStringList()
                           << "ECGColor"
                           << "SPO2Color"
-                          << "AGColor"
+                          << "CO2Color"
                           << "NIBPColor"
                           << "RESPColor"
-                          << "CO2Color"
-                          << "TEMPColor";
+                          << "TEMPColor"
+                          << "ParamColor"
+                          << "NightMode"
+                          << "AGColor";
     QString color;
     for (int i = 0; i < strList.count(); i++)
     {
@@ -101,7 +105,7 @@ void ConfigEditDisplayMenuContent::layoutExec()
     comboBox = new ComboBox;
     for (int i = 0; i < d_ptr->colorList.count(); i++)
     {
-        comboBox->addItem(d_ptr->colorList.at(i));
+        comboBox->addItem(trs(d_ptr->colorList.at(i)));
     }
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditDisplayMenuContentPrivate
@@ -117,7 +121,7 @@ void ConfigEditDisplayMenuContent::layoutExec()
     comboBox = new ComboBox;
     for (int i = 0; i < d_ptr->colorList.count(); i++)
     {
-        comboBox->addItem(d_ptr->colorList.at(i));
+        comboBox->addItem(trs(d_ptr->colorList.at(i)));
     }
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditDisplayMenuContentPrivate
@@ -133,7 +137,7 @@ void ConfigEditDisplayMenuContent::layoutExec()
     comboBox = new ComboBox;
     for (int i = 0; i < d_ptr->colorList.count(); i++)
     {
-        comboBox->addItem(d_ptr->colorList.at(i));
+        comboBox->addItem(trs(d_ptr->colorList.at(i)));
     }
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditDisplayMenuContentPrivate
@@ -149,7 +153,7 @@ void ConfigEditDisplayMenuContent::layoutExec()
     comboBox = new ComboBox;
     for (int i = 0; i < d_ptr->colorList.count(); i++)
     {
-        comboBox->addItem(d_ptr->colorList.at(i));
+        comboBox->addItem(trs(d_ptr->colorList.at(i)));
     }
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditDisplayMenuContentPrivate
@@ -165,7 +169,7 @@ void ConfigEditDisplayMenuContent::layoutExec()
     comboBox = new ComboBox;
     for (int i = 0; i < d_ptr->colorList.count(); i++)
     {
-        comboBox->addItem(d_ptr->colorList.at(i));
+        comboBox->addItem(trs(d_ptr->colorList.at(i)));
     }
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditDisplayMenuContentPrivate
@@ -181,7 +185,7 @@ void ConfigEditDisplayMenuContent::layoutExec()
     comboBox = new ComboBox;
     for (int i = 0; i < d_ptr->colorList.count(); i++)
     {
-        comboBox->addItem(d_ptr->colorList.at(i));
+        comboBox->addItem(trs(d_ptr->colorList.at(i)));
     }
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditDisplayMenuContentPrivate
@@ -197,7 +201,7 @@ void ConfigEditDisplayMenuContent::layoutExec()
     comboBox = new ComboBox;
     for (int i = 0; i < d_ptr->colorList.count(); i++)
     {
-        comboBox->addItem(d_ptr->colorList.at(i));
+        comboBox->addItem(trs(d_ptr->colorList.at(i)));
     }
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditDisplayMenuContentPrivate
@@ -207,11 +211,45 @@ void ConfigEditDisplayMenuContent::layoutExec()
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox , SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
+    // parameter color
+    label = new QLabel(trs("ParamColor"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    for (int i = 0; i < d_ptr->colorList.count(); i ++)
+    {
+        comboBox->addItem(trs(d_ptr->colorList.at(i)));
+    }
+    itemID = static_cast<int>(ConfigEditDisplayMenuContentPrivate::ITEM_CBO_PARAM_COLOR);
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(ConfigEditDisplayMenuContentPrivate::ITEM_CBO_PARAM_COLOR, comboBox);
+
+    // night mode color
+    label = new QLabel(trs("NightMode"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    for (int i = 0; i < d_ptr->colorList.count(); i ++)
+    {
+        comboBox->addItem(trs(d_ptr->colorList.at(i)));
+    }
+    itemID = static_cast<int>(ConfigEditDisplayMenuContentPrivate::ITEM_CBO_NIGHT_MODE);
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(ConfigEditDisplayMenuContentPrivate::ITEM_CBO_NIGHT_MODE, comboBox);
+
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
 
 void ConfigEditDisplayMenuContent::onComboBoxIndexChanged(int index)
 {
+    if (index < 0)
+    {
+        return;
+    }
     ComboBox *combo = qobject_cast<ComboBox *>(sender());
     int indexType = combo->property("Item").toInt();
     QString str;
@@ -238,8 +276,11 @@ void ConfigEditDisplayMenuContent::onComboBoxIndexChanged(int index)
     case ConfigEditDisplayMenuContentPrivate::ITEM_CBO_TEMP_COLOR:
         str = "TEMPColor";
         break;
-    default :
-        str = "Color";
+    case ConfigEditDisplayMenuContentPrivate::ITEM_CBO_PARAM_COLOR:
+        str = "ParamColor";
+        break;
+    case ConfigEditDisplayMenuContentPrivate::ITEM_CBO_NIGHT_MODE:
+        str = "NightMode";
         break;
     }
     d_ptr->config->setStrValue(QString("Display|%1").arg(str), d_ptr->colorList.at(index));
