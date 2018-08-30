@@ -35,7 +35,6 @@ public:
           prevBtn(NULL), nextBtn(NULL),
           config(config)
     {
-        infos.clear();
     }
 
     void loadoptions();
