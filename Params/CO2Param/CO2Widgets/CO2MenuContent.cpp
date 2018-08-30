@@ -20,7 +20,7 @@
 #include "ConfigManager.h"
 #include "KeyInputPanel.h"
 #include "MessageBox.h"
-#include "MainMenuWindow.h"
+#include "MenuWindow.h"
 
 class CO2MenuContentPrivate
 {

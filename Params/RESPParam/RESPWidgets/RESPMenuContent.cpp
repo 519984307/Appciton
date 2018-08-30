@@ -17,8 +17,8 @@
 #include <QMap>
 #include "ConfigManager.h"
 #include "SystemManager.h"
-#include "MainMenuWindow.h"
 #include "Button.h"
+#include "MenuWindow.h"
 
 class RESPMenuContentPrivate
 {

@@ -14,7 +14,7 @@
 #include "LanguageManager.h"
 #include "TEMPSymbol.h"
 #include "TEMPParam.h"
-#include "MainMenuWindow.h"
+#include "MenuWindow.h"
 #include "Button.h"
 
 class TEMPMenuPrivate

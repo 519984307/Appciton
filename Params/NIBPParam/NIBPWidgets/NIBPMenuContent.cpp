@@ -20,7 +20,7 @@
 #include "NIBPParam.h"
 #include "ConfigManager.h"
 #include "NIBPMonitorStateDefine.h"
-#include "MainMenuWindow.h"
+#include "MenuWindow.h"
 
 class NIBPMenuContentPrivate
 {

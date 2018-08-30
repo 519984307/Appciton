@@ -22,7 +22,7 @@
 #include "IConfig.h"
 #include "KeyInputPanel.h"
 #include "MessageBox.h"
-#include "MainMenuWindow.h"
+#include "MenuWindow.h"
 
 class COMenuContentPrivate
 {
