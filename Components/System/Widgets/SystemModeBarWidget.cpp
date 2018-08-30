@@ -76,17 +76,15 @@ SystemModeBarWidget::SystemModeBarWidget(QWidget *parent)
     , _popupListIndex(-1)
     , _systemModeList(NULL)
 {
-    setFocusPolicy(Qt::NoFocus);
-
+    setFocusPolicy(Qt::StrongFocus);
     _modeLabel = new QLabel("", this);
     _modeLabel->setFont(fontManager.textFont(fontManager.getFontSize(2)));
     _modeLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    _modeLabel->setFixedWidth(150);
     _modeLabel->setStyleSheet("color:lightGray;background:rgb(48,48,48);"
                               "border:1px groove black;border-radius:4px;");
 
     QHBoxLayout *layout = new QHBoxLayout();
-    layout->setContentsMargins(0, 0, 5, 0);
+    layout->setMargin(3);
     layout->addWidget(_modeLabel);
     setLayout(layout);
 
