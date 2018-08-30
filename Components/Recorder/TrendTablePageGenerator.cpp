@@ -32,7 +32,7 @@ public:
     bool loadStringList();
 
     // add sub param value to the string list
-    void addSubParamValueToStringList(const TrendDataPackage &datapack, const QList<SubParamID> &subParamIDs);
+    void addSubParamValueToStringList(const TrendDataPackage &datapack, const QList<SubParamID> &subParamIDs, const bool isEvent);
 
     RecordPageGenerator::PageType curPageType;
     IStorageBackend *backend;
@@ -41,6 +41,7 @@ public:
     int stopIndex;
     int interval;
     QList<SubParamID> subParamList;
+    QList<bool> eventList;
 };
 
 bool  dataPacketLessThan(const TrendDataPackage &d1, const TrendDataPackage &d2)
@@ -89,7 +90,8 @@ bool TrendTablePageGeneratorPrivate::loadStringList()
 
         TrendDataPackage dataPackage = parseTrendSegment(dataSeg);
 
-        addSubParamValueToStringList(dataPackage, subParamList);
+        bool isEvent = eventList.at(eventList.count() - 1 - count);
+        addSubParamValueToStringList(dataPackage, subParamList, isEvent);
 
         count++;
     }
@@ -304,7 +306,7 @@ static QString constructNormalValueString(SubParamID subParamId, TrendDataType d
 }
 
 void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDataPackage &datapack,
-        const QList<SubParamID> &subParamIDs)
+        const QList<SubParamID> &subParamIDs, const bool isEvent)
 {
     bool needAddCaption = stringLists.isEmpty(); // if the stringLists is empty, we need to add caption;
 
@@ -313,10 +315,20 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
     if (needAddCaption)
     {
         stringLists.append(QStringList() << trs("Time"));
+        stringLists.append(QStringList() << trs("Event"));
     }
 
     QDateTime dt = QDateTime::fromTime_t(datapack.time);
     stringLists[index++].append(dt.toString("MM-dd hh:mm:ss"));
+
+    if (isEvent)
+    {
+        stringLists[index++].append("A");
+    }
+    else
+    {
+        stringLists[index++].append("");
+    }
 
     foreach(SubParamID subParamID, subParamIDs)
     {
@@ -502,6 +514,7 @@ TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, Trend
     d_ptr->backend = backend;
     d_ptr->interval = printInfo.interval;
     d_ptr->subParamList = printInfo.list;
+    d_ptr->eventList = printInfo.eventList;
 }
 
 TrendTablePageGenerator::~TrendTablePageGenerator()

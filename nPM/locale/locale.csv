@@ -740,6 +740,7 @@ AlarmOffAtPowerOn,开机时报警关闭,Alarm Off At Power On
 SupervisorLocalPort,本地端口,Local Port
 SupervisorServerIP,服务器IP,Server IP
 SupervisorServerPort,服务器端口,Server Port
+Event,事件,Event
 Time,时间,Time
 Date,日期,Date
 SupervisorTimeAndDataMenu,时间和日期,Date Time
