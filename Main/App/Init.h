@@ -79,7 +79,6 @@
 #include "TrendCache.h"
 #include "ParamDataStorageManager.h"
 #include "TrendDataStorageManager.h"
-#include "TrendDataWidget.h"
 #include "TrendRescueRangePrint.h"
 #include "RescueDataExportWidget.h"
 #include "RescueDataDeleteWidget.h"
