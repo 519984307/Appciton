@@ -30,6 +30,10 @@ private slots:
      * @param index
      */
     void onComboIndexChanged(int index);
+    /**
+     * @brief onAlarmBtnReleased
+     */
+    void onAlarmBtnReleased(void);
 
 private:
     ConfigEditRespMenuContentPrivate *const d_ptr;

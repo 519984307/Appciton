@@ -40,6 +40,11 @@ private slots:
      * @brief onBtnReleasedChanged
      */
     void onBtnReleasedChanged();
+    /**
+     * @brief onAlarmBtnReleased
+     */
+    void onAlarmBtnReleased(void);
+
 private:
     CO2MenuContentPrivate * const d_ptr;
 };

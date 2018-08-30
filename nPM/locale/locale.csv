@@ -213,6 +213,7 @@ celsius,℃,℃
 fahrenheit,℉,℉
 percent,%,%
 AlarmSettingMenu,报警,Alarm
+AlarmSettingUp,报警设置,Alarm Setting Up
 LatchLockSwitch,报警栓锁,Alarm Latch Lock
 AlarmLimitMenu,报警限,Alarm Limit
 AlarmLimitMenuDesc,报警限设置,Alarm Limit Setting

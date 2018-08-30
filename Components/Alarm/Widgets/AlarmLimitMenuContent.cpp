@@ -33,7 +33,8 @@ public:
     AlarmLimitMenuContentPrivate()
         : model(NULL), table(NULL),
           prevBtn(NULL), nextBtn(NULL)
-    {}
+    {
+    }
 
     void loadoptions();
 
@@ -41,6 +42,7 @@ public:
     TableView *table;
     Button *prevBtn;
     Button *nextBtn;
+    QList<AlarmDataInfo> infos;
 };
 
 void AlarmLimitMenuContentPrivate::loadoptions()
@@ -81,7 +83,7 @@ void AlarmLimitMenuContentPrivate::loadoptions()
             infos.append(info);
         }
     }
-
+    this->infos = infos;
     model->setupAlarmDataInfos(infos);
 }
 
@@ -95,6 +97,32 @@ AlarmLimitMenuContent::~AlarmLimitMenuContent()
 {
     delete d_ptr;
 }
+
+void AlarmLimitMenuContent::setItemFocus(const QString &param)
+{
+    // 增加报警设置链接功能代码
+    int focusIndex = 0;
+    QString focusName = param;
+
+    if (!focusName.isEmpty())
+    {
+        for (int i = 0; i < d_ptr->infos.count(); i++)
+        {
+            SubParamID subId = d_ptr->infos.at(i).subParamID;
+            if (focusName == paramInfo.getSubParamName(subId, true))
+            {
+                focusIndex = i;
+                break;
+            }
+        }
+    }
+
+    QModelIndex index = d_ptr->table->model()->index(focusIndex, 0);
+    d_ptr->table->scrollTo(index, QAbstractItemView::PositionAtCenter);
+
+    d_ptr->table->selectRow(focusIndex);
+}
+
 
 void AlarmLimitMenuContent::readyShow()
 {
@@ -156,6 +184,11 @@ void AlarmLimitMenuContent::layoutExec()
     layout->addLayout(hlayout);
 
     layout->addStretch(1);
+}
+
+void AlarmLimitMenuContent::setShowParam(const QVariant &param)
+{
+    setItemFocus(param.toString());
 }
 
 void AlarmLimitMenuContent::onbtnClick()

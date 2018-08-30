@@ -17,6 +17,9 @@
 #include "SPO2Symbol.h"
 #include "SPO2Define.h"
 #include "ConfigManager.h"
+#include "Button.h"
+#include "ParamInfo.h"
+#include "ParamDefine.h"
 
 class ConfigEditSpO2MenuContentPrivate
 {
@@ -177,7 +180,15 @@ void ConfigEditSpO2MenuContent::layoutExec()
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
-    layout->setRowStretch(d_ptr->combos.count(), 1);
+    // 添加报警设置链接
+    Button *btn = new Button(QString("%1%2").
+                             arg(trs("AlarmSettingUp")).
+                             arg(" >>"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(btn, d_ptr->combos.count(), 1);
+    connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
+
+    layout->setRowStretch(d_ptr->combos.count() + 1, 1);
 }
 
 void ConfigEditSpO2MenuContent::onComboBoxIndexChanged(int index)
@@ -207,6 +218,16 @@ void ConfigEditSpO2MenuContent::onComboBoxIndexChanged(int index)
         break;
     }
     d_ptr->config->setNumValue(QString("SPO2|%1").arg(str), index);
+}
+
+void ConfigEditSpO2MenuContent::onAlarmBtnReleased()
+{
+    MenuWindow *w = this->getMenuWindow();
+    QString subParamName = paramInfo.getSubParamName(SUB_PARAM_SPO2, true);
+    if (w)
+    {
+        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
+    }
 }
 
 

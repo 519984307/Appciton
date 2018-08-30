@@ -29,6 +29,10 @@ protected:
 private slots:
     void onComboBoxIndexChanged(int index);
     void onButtonReleased(void);
+    /**
+     * @brief onAlarmBtnReleased
+     */
+    void onAlarmBtnReleased(void);
 
 private:
     COMenuContentPrivate * const d_ptr;

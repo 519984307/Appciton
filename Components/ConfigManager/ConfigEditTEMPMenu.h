@@ -32,6 +32,10 @@ private slots:
      * @param index
      */
     void onComboIndexUpdated(int index);
+    /**
+     * @brief onAlarmBtnReleased
+     */
+    void onAlarmBtnReleased(void);
 
 private:
     ConfigEditTEMPMenuPrivate *const d_ptr;
