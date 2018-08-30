@@ -395,6 +395,19 @@ PatientInfoWindow::PatientInfoWindow()
     backgroundLayout->addLayout(buttonLayout);
     setWindowLayout(backgroundLayout);
 }
+
+void PatientInfoWindow::_setPatientInfo()
+{
+    patientManager.setAge(d_ptr->age->text().toInt());
+    patientManager.setBlood(static_cast<PatientBloodType>(d_ptr->blood->currentIndex()));
+    patientManager.setHeight(d_ptr->height->text().toShort());
+    patientManager.setName(d_ptr->name->text());
+    patientManager.setPatID(d_ptr->id->text());
+    patientManager.setSex(static_cast<PatientSex>(d_ptr->sex->currentIndex()));
+    patientManager.setType(static_cast<PatientType>(d_ptr->type->currentIndex()));
+    patientManager.setWeight(d_ptr->weight->text().toInt());
+    patientManager.setPacermaker(static_cast<PatientPacer>(d_ptr->pacer->currentIndex()));
+}
 void PatientInfoWindow::readyShow()
 {
     d_ptr->loadOptions();
@@ -588,6 +601,7 @@ void PatientInfoWindow::_saveInfoReleased()
         {
             relieveStatus(true);
             dataStorageDirManager.createDir(true);
+            _setPatientInfo();
         }
     }
     else if (d_ptr->patientNew == false && d_ptr->relieveFlag == true)
@@ -599,6 +613,7 @@ void PatientInfoWindow::_saveInfoReleased()
         if (messageBox.exec() == 1)
         {
             dataStorageDirManager.createDir(true);
+            _setPatientInfo();
         }
     }
 }

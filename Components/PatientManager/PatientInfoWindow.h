@@ -42,6 +42,7 @@ private slots:
 private:
     PatientInfoWindow();
     PatientInfoWindowPrivate * const d_ptr;
+    void _setPatientInfo(void);
 };
 
 #define patientInfoWindow (PatientInfoWindow::construction())
