@@ -17,7 +17,6 @@
 #include "SPO2Symbol.h"
 #include "SPO2Define.h"
 #include "ConfigManager.h"
-#include "MainMenuWindow.h"
 #include "Button.h"
 #include "ParamInfo.h"
 #include "ParamDefine.h"

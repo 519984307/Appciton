@@ -22,7 +22,6 @@
 #include "Button.h"
 #include "ArrhythmiaMenuWindow.h"
 #include "WindowManager.h"
-#include "MainMenuWindow.h"
 
 class ECGMenuContentPrivate
 {

@@ -16,7 +16,6 @@
 #include "NIBPDefine.h"
 #include <QGridLayout>
 #include "PatientManager.h"
-#include "MainMenuWindow.h"
 #include "Button.h"
 #include "ParamInfo.h"
 #include "ParamDefine.h"

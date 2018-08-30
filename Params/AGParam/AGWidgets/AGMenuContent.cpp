@@ -20,7 +20,6 @@
 #include "N2OSetAGMenu.h"
 #include "HalSetAGMenu.h"
 #include "Button.h"
-#include "MainMenuWindow.h"
 
 class AGMenuContentPrivate
 {

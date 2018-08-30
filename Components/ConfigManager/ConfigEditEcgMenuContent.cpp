@@ -19,7 +19,6 @@
 #include "SystemManager.h"
 #include "ECGParam.h"
 #include "IConfig.h"
-#include "MainMenuWindow.h"
 #include "Button.h"
 
 class ConfigEditECGMenuContentPrivate
