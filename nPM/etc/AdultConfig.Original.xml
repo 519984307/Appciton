@@ -70,6 +70,7 @@
         <FixedRatePacing>1</FixedRatePacing>
     </PACER>
     <ECG>
+	<PresentRhythm>0</PresentRhythm>
         <PadsECGBandwidth>0</PadsECGBandwidth>
         <ChestLeadsECGBandwidth>0</ChestLeadsECGBandwidth>
         <DefaultECGLeadInMonitorMode>1</DefaultECGLeadInMonitorMode>
@@ -82,9 +83,15 @@
         <Ecg2Gain>0</Ecg2Gain>
         <SweepSpeed>1</SweepSpeed>
         <Filter>0</Filter>
-        <LeadMode>2</LeadMode>
+		<DisplayMode>0</DisplayMode>
+        <LeadMode>1</LeadMode>
         <NotchFilter>0</NotchFilter>
         <SmartLeadOff>0</SmartLeadOff>
+        <FilterMode>0</FilterMode>
+        <SelfLearn>0</SelfLearn>
+		<ECG12LeadPacerMaker>0</ECG12LeadPacerMaker>	
+		<PacerMaker>0</PacerMaker>
+		<EverLeadOn>0</EverLeadOn>
     </ECG>
     <AG>
 	<AGModule>0</AGModule>

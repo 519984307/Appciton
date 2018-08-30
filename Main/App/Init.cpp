@@ -74,6 +74,7 @@ static void _initSystem(void)
             QString strNew = systemConfig.getCurConfigName();
             QFile::remove(strNew);
             QFile::copy(strOld, strNew);
+            currentConfig.reload();
         }
     }
 
