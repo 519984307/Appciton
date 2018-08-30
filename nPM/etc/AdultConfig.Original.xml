@@ -524,22 +524,22 @@
                     <Scale>1</Scale>
                 </bpm>
             </AUXP2_PR>
-            <C.O. Enable="1" Prio="2">
+            <CO_CO Enable="1" Prio="2">
                 <lpm>
                     <Low Min="20" Max="1999">400</Low>
                     <High Min="21" Max="2000">700</High>
                     <Step>1</Step>
                     <Scale>100</Scale>
                 </lpm>
-            </C.O.>
-            <C.I. Enable="1" Prio="2">
+            </CO_CO>
+            <CO_CI Enable="1" Prio="2">
                 <lpmpsqm>
                     <Low Min="22" Max="39">30</Low>
                     <High Min="23" Max="40">35</High>
                     <Step>1</Step>
                     <Scale>10</Scale>
                 </lpmpsqm>
-            </C.I.>
+            </CO_CI>
             <TB Enable="0" Prio="2">
                 <celsius>
                     <Low Min="230" Max="449">360</Low>
@@ -920,7 +920,7 @@
                     <Scale>10</Scale>
                 </kPa>
             </IBP_PR>
-            <C.O. Enable="1" Prio="2">
+            <CO_CO Enable="1" Prio="2">
                 <mmHg>
                     <Low Min="20" Max="224">50</Low>
                     <High Min="21" Max="225">120</High>
@@ -933,8 +933,8 @@
                     <Step>1</Step>
                     <Scale>10</Scale>
                 </kPa>
-            </C.O.>
-            <C.I. Enable="1" Prio="2">
+            </CO_CO>
+            <CO_CI Enable="1" Prio="2">
                 <mmHg>
                     <Low Min="20" Max="224">50</Low>
                     <High Min="21" Max="225">120</High>
@@ -947,7 +947,7 @@
                     <Step>1</Step>
                     <Scale>10</Scale>
                 </kPa>
-            </C.I.>
+            </CO_CI>
             <TB Enable="0" Prio="2">
                 <celsius>
                     <Low Min="150" Max="499">350</Low>
