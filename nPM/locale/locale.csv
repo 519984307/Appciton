@@ -83,6 +83,8 @@ PR,脉率,PR
 PLETH,血氧波,Pleth
 NIBP,血压,NIBP
 RESP,呼吸,RESP
+ParamColor,参数颜色,Parameter
+NightMode,夜间模式,Night Mode
 RR,呼吸率,RR
 BR,呼吸率,BR
 RR_BR,呼吸率,RR/BR

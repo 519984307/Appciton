@@ -1283,6 +1283,8 @@
         <AGColor>Orange</AGColor>
         <IBPColor>Purple</IBPColor>
         <TEMPColor>Brown</TEMPColor>
+        <ParamColor>Brown</ParamColor>
+        <NightMode>Brown</NightMode>
         <CPRBarGraphColor>Purple</CPRBarGraphColor>
         <!--do not modify-->
     </Display>
