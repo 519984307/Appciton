@@ -222,6 +222,7 @@ SOURCES +=                                                                      
     Components/System/Widgets/SystemSelftestMenu.cpp                            \
     Components/System/Widgets/SystemStatusBarWidget.cpp                         \
     Components/System/Widgets/SystemMenuContent.cpp                             \
+    Components/System/Widgets/SystemNightModeMenuContent.cpp                    \
     Components/SoundManager/SoundManager.cpp                                    \
     Components/SoundManager/WavFile.cpp                                         \
     Components/SoundManager/WavPlayer.cpp                                       \
@@ -765,6 +766,7 @@ HEADERS +=                                                                      
     Components/System/Widgets/SystemSelftestMenu.h                              \
     Components/System/Widgets/SystemModeBarWidget.h                             \
     Components/System/Widgets/SystemMenuContent.h                               \
+    Components/System/Widgets/SystemNightModeMenuContent.h                      \
     Components/SoundManager/SoundManager.h                                      \
     Components/SoundManager/WavFile.h                                           \
     Components/SoundManager/WavPlayer.h                                         \
