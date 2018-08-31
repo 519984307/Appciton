@@ -11,7 +11,6 @@
 #include <QApplication>
 #include "RescueDataSoftKeyAction.h"
 #include "WindowManager.h"
-#include "TrendDataWidget.h"
 #include "TrendTableWindow.h"
 #include "TrendGraphWidget.h"
 #include "RescueDataExportWidget.h"
@@ -24,7 +23,6 @@
 #include "EventWindow.h"
 #include "OxyCRGEventWidget.h"
 #include "OxyCRGEventWindow.h"
-#include "HistoryDataReviewWidget.h"
 #include "TrendGraphWindow.h"
 #include "HistoryDataReviewWindow.h"
 

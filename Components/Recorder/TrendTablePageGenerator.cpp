@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/8/30
+ **/
+
 #include "TrendTablePageGenerator.h"
 #include "PatientManager.h"
 #include <QList>
@@ -11,7 +21,7 @@ class TrendTablePageGeneratorPrivate
 {
 public:
     TrendTablePageGeneratorPrivate()
-        :curPageType(RecordPageGenerator::TitlePage),
+        : curPageType(RecordPageGenerator::TitlePage),
           backend(NULL),
           curIndex(-1),
           stopIndex(-1),
@@ -22,7 +32,7 @@ public:
     bool loadStringList();
 
     // add sub param value to the string list
-    void addSubParamValueToStringList(const TrendDataPackage & datapack, const QList<SubParamID> &subParamIDs);
+    void addSubParamValueToStringList(const TrendDataPackage &datapack, const QList<SubParamID> &subParamIDs, const bool isEvent);
 
     RecordPageGenerator::PageType curPageType;
     IStorageBackend *backend;
@@ -30,29 +40,29 @@ public:
     int curIndex;
     int stopIndex;
     int interval;
+    QList<SubParamID> subParamList;
+    QList<bool> eventList;
 };
 
-bool  dataPacketLessThan(const TrendDataPackage& d1, const TrendDataPackage& d2)
+bool  dataPacketLessThan(const TrendDataPackage &d1, const TrendDataPackage &d2)
 {
     return d1.time > d2.time;
 }
 
 bool TrendTablePageGeneratorPrivate::loadStringList()
 {
-    if(backend == NULL || curIndex < 0 || stopIndex < 0)
+    if (backend == NULL || curIndex < 0 || stopIndex < 0)
     {
         return false;
     }
 
-    if(curIndex < stopIndex)
+    if (curIndex < stopIndex)
     {
-        //reach the stop index
+        // reach the stop index
         return false;
     }
 
     stringLists.clear();
-
-    QList<SubParamID> printSubParams;
 
     int count = 0;
     /* 1. get $RECORD_PER_PAGE trend data at most
@@ -60,51 +70,28 @@ bool TrendTablePageGeneratorPrivate::loadStringList()
      * 3. the trend data must have  save sub param id.
      * 4. when the sub param id is different, we need to print it in next round
      */
-    for(; curIndex >= stopIndex && count < RECORD_PER_PAGE; curIndex--)
+    for (; curIndex >= stopIndex && count < RECORD_PER_PAGE; curIndex--)
     {
         quint32 dataLength = backend->getBlockDataLen(curIndex);
 
         QByteArray data(dataLength, 0);
 
-        if(backend->readBlockData(curIndex, data.data(), dataLength) != dataLength)
+        if (backend->readBlockData(curIndex, data.data(), dataLength) != dataLength)
         {
             continue;
         }
 
-        TrendDataSegment *dataSeg = reinterpret_cast<TrendDataSegment*> (data.data());
+        TrendDataSegment *dataSeg = reinterpret_cast<TrendDataSegment *>(data.data());
 
-        if(dataSeg->timestamp % interval != 0)
+        if (dataSeg->timestamp % interval != 0)
         {
             continue;
         }
 
         TrendDataPackage dataPackage = parseTrendSegment(dataSeg);
 
-        if(printSubParams.isEmpty())
-        {
-            printSubParams.append(dataPackage.subparamValue.keys());
-            qSort(printSubParams);
-        }
-        else
-        {
-            //check consistance of the sub param id
-            QList<SubParamID> curParams = dataPackage.subparamValue.keys();
-            if(curParams.size() != printSubParams.size())
-            {
-                return true;
-            }
-            else
-            {
-                foreach (SubParamID id, curParams) {
-                    if(!printSubParams.contains(id))
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        addSubParamValueToStringList(dataPackage, printSubParams);
+        bool isEvent = eventList.at(eventList.count() - 1 - count);
+        addSubParamValueToStringList(dataPackage, subParamList, isEvent);
 
         count++;
     }
@@ -112,9 +99,11 @@ bool TrendTablePageGeneratorPrivate::loadStringList()
     return count > 0;
 }
 
-static void preparePressSubParamInfos(SubParamID subParamID, const TrendDataPackage &datapack, TrendDataType data[], bool alarms[])
+static void preparePressSubParamInfos(SubParamID subParamID, const TrendDataPackage &datapack, TrendDataType data[],
+                                      bool alarms[])
 {
-    switch (subParamID) {
+    switch (subParamID)
+    {
     case SUB_PARAM_NIBP_SYS:
         data[0] = datapack.subparamValue.value(SUB_PARAM_NIBP_SYS, InvData());
         data[1] = datapack.subparamValue.value(SUB_PARAM_NIBP_DIA, InvData());
@@ -177,20 +166,20 @@ static void preparePressSubParamInfos(SubParamID subParamID, const TrendDataPack
 }
 
 static QString contructPressTrendStringItem(SubParamID subParamId, TrendDataType *data, bool *almFlag,
-                                            UnitType unit, UnitType defaultUnit)
+        UnitType unit, UnitType defaultUnit)
 {
     QString valueStr;
     Q_ASSERT(data != NULL);
     Q_ASSERT(almFlag != NULL);
 
-    //get value
+    // get value
     TrendDataType sys = InvData();
     TrendDataType dia = InvData();
     TrendDataType map = InvData();
-    //have 3 press value by default
+    // have 3 press value by default
     int valueNum = 1;
 
-    switch(subParamId)
+    switch (subParamId)
     {
     case SUB_PARAM_ART_SYS:
     case SUB_PARAM_PA_SYS:
@@ -207,24 +196,24 @@ static QString contructPressTrendStringItem(SubParamID subParamId, TrendDataType
         break;
     }
 
-    if(valueNum == 1)
+    if (valueNum == 1)
     {
-        if(almFlag[0])
+        if (almFlag[0])
         {
-            valueStr="(*%1)";
+            valueStr = "(*%1)";
         }
         else
         {
-            valueStr="(%1)";
+            valueStr = "(%1)";
         }
-        if(map == InvData())
+        if (map == InvData())
         {
-            valueStr = valueStr.arg(InvData());
+            valueStr = valueStr.arg(InvStr());
         }
         else
         {
             int mul = paramInfo.getMultiOfSubParam(subParamId);
-            if(mul == 1)
+            if (mul == 1)
             {
                 valueStr = valueStr.arg(Unit::convert(unit, defaultUnit, map));
             }
@@ -236,7 +225,7 @@ static QString contructPressTrendStringItem(SubParamID subParamId, TrendDataType
     }
     else
     {
-        if(almFlag[0])
+        if (almFlag[0])
         {
             valueStr = "*%1";
         }
@@ -245,7 +234,7 @@ static QString contructPressTrendStringItem(SubParamID subParamId, TrendDataType
             valueStr = "%1";
         }
 
-        if(almFlag[1])
+        if (almFlag[1])
         {
             valueStr += "/*%2";
         }
@@ -254,7 +243,7 @@ static QString contructPressTrendStringItem(SubParamID subParamId, TrendDataType
             valueStr += "/%2";
         }
 
-        if(almFlag[2])
+        if (almFlag[2])
         {
             valueStr += "(*%3)";
         }
@@ -263,24 +252,24 @@ static QString contructPressTrendStringItem(SubParamID subParamId, TrendDataType
             valueStr += "(%3)";
         }
 
-        if(sys == InvData())
+        if (sys == InvData())
         {
             valueStr = valueStr.arg(InvStr()).arg(InvStr()).arg(InvStr());
         }
         else
         {
             int mul = paramInfo.getMultiOfSubParam(subParamId);
-            if(mul == 1)
+            if (mul == 1)
             {
                 valueStr = valueStr.arg(Unit::convert(unit, defaultUnit, sys))
-                        .arg(Unit::convert(unit, defaultUnit, dia))
-                        .arg(Unit::convert(unit, defaultUnit, map));
+                           .arg(Unit::convert(unit, defaultUnit, dia))
+                           .arg(Unit::convert(unit, defaultUnit, map));
             }
             else
             {
                 valueStr = valueStr.arg(Unit::convert(unit, defaultUnit, sys * 1.0 / mul))
-                        .arg(Unit::convert(unit, defaultUnit, dia * 1.0 / mul))
-                        .arg(Unit::convert(unit, defaultUnit, map * 1.0 / mul));
+                           .arg(Unit::convert(unit, defaultUnit, dia * 1.0 / mul))
+                           .arg(Unit::convert(unit, defaultUnit, map * 1.0 / mul));
             }
         }
     }
@@ -288,22 +277,22 @@ static QString contructPressTrendStringItem(SubParamID subParamId, TrendDataType
     return valueStr;
 }
 static QString constructNormalValueString(SubParamID subParamId, TrendDataType data, bool almFlag,
-                                          UnitType unit, UnitType defaultUnit, short co2Bro)
+        UnitType unit, UnitType defaultUnit, short co2Bro)
 {
     QString valueStr;
-    //value
+    // value
     int mul = paramInfo.getMultiOfSubParam(subParamId);
-    if(almFlag)
+    if (almFlag)
     {
         valueStr += "*";
     }
-    if(data == InvData())
+    if (data == InvData())
     {
         valueStr += InvStr();
     }
     else
     {
-        if(1 == mul)
+        if (1 == mul)
         {
             valueStr += Unit::convert(unit, defaultUnit, data, co2Bro);
         }
@@ -316,26 +305,39 @@ static QString constructNormalValueString(SubParamID subParamId, TrendDataType d
     return valueStr;
 }
 
-void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDataPackage &datapack, const QList<SubParamID> &subParamIDs)
+void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDataPackage &datapack,
+        const QList<SubParamID> &subParamIDs, const bool isEvent)
 {
     bool needAddCaption = stringLists.isEmpty(); // if the stringLists is empty, we need to add caption;
 
     int index = 0;
 
-    if(needAddCaption)
+    if (needAddCaption)
     {
-        stringLists.append(QStringList()<<trs("Time"));
+        stringLists.append(QStringList() << trs("Time"));
+        stringLists.append(QStringList() << trs("Event"));
     }
 
     QDateTime dt = QDateTime::fromTime_t(datapack.time);
     stringLists[index++].append(dt.toString("MM-dd hh:mm:ss"));
 
-    foreach (SubParamID subParamID, subParamIDs) {
+    if (isEvent)
+    {
+        stringLists[index++].append("A");
+    }
+    else
+    {
+        stringLists[index++].append("");
+    }
+
+    foreach(SubParamID subParamID, subParamIDs)
+    {
         bool display = true;
         QString caption;
         QString valueStr;
         ParamID paramID = paramInfo.getParamID(subParamID);
-        switch (subParamID) {
+        switch (subParamID)
+        {
         case SUB_PARAM_NIBP_DIA:
         case SUB_PARAM_NIBP_MAP:
         case SUB_PARAM_ART_DIA:
@@ -353,13 +355,13 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
         case SUB_PARAM_FIO2:
         case SUB_PARAM_T2:
         case SUB_PARAM_TD:
-            //Note: ignore this subparamid, because it will display with other subparam togethor
+            // Note: ignore this subparamid, because it will display with other subparam togethor
             // for example, nibp_dia and nibp_map will display with nibp_sys
             display = false;
             break;
         case SUB_PARAM_NIBP_SYS:
         {
-            if(needAddCaption)
+            if (needAddCaption)
             {
                 caption = paramInfo.getParamName(paramID);
             }
@@ -368,10 +370,10 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
             bool alarms[3];
             preparePressSubParamInfos(subParamID, datapack, datas, alarms);
             valueStr = contructPressTrendStringItem(subParamID,
-                                                        datas,
-                                                        alarms,
-                                                        paramManager.getSubParamUnit(paramID, subParamID),
-                                                        paramInfo.getUnitOfSubParam(subParamID));
+                                                    datas,
+                                                    alarms,
+                                                    paramManager.getSubParamUnit(paramID, subParamID),
+                                                    paramInfo.getUnitOfSubParam(subParamID));
         }
         break;
         case SUB_PARAM_ART_SYS:
@@ -382,7 +384,7 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
         case SUB_PARAM_AUXP1_SYS:
         case SUB_PARAM_AUXP2_SYS:
         {
-            if(needAddCaption)
+            if (needAddCaption)
             {
                 caption = paramInfo.getIBPPressName(subParamID);
             }
@@ -391,75 +393,75 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
             bool alarms[3];
             preparePressSubParamInfos(subParamID, datapack, datas, alarms);
             valueStr = contructPressTrendStringItem(subParamID,
-                                                        datas,
-                                                        alarms,
-                                                        paramManager.getSubParamUnit(paramID, subParamID),
-                                                        paramInfo.getUnitOfSubParam(subParamID));
+                                                    datas,
+                                                    alarms,
+                                                    paramManager.getSubParamUnit(paramID, subParamID),
+                                                    paramInfo.getUnitOfSubParam(subParamID));
         }
-            break;
+        break;
         case SUB_PARAM_ETCO2:
         case SUB_PARAM_ETN2O:
         case SUB_PARAM_ETAA1:
         case SUB_PARAM_ETAA2:
         case SUB_PARAM_ETO2:
         {
-            //ET and FI display together
-            if(needAddCaption)
+            // ET and FI display together
+            if (needAddCaption)
             {
                 caption = QString("%1/%2").arg(trs(paramInfo.getSubParamName(subParamID)))
-                        .arg(trs(paramInfo.getSubParamName((SubParamID)(subParamID + 1))));
+                          .arg(trs(paramInfo.getSubParamName((SubParamID)(subParamID + 1))));
             }
 
             QString valueEt = constructNormalValueString(subParamID,
-                                                           datapack.subparamValue[subParamID],
-                                                           datapack.subparamAlarm[subParamID],
-                                                           paramManager.getSubParamUnit(paramID, subParamID),
-                                                           paramInfo.getUnitOfSubParam(subParamID),
-                                                           datapack.co2Baro);
+                              datapack.subparamValue[subParamID],
+                              datapack.subparamAlarm[subParamID],
+                              paramManager.getSubParamUnit(paramID, subParamID),
+                              paramInfo.getUnitOfSubParam(subParamID),
+                              datapack.co2Baro);
             SubParamID nextSubParamID = (SubParamID)(subParamID + 1);
             QString valueFi = constructNormalValueString(nextSubParamID,
-                                                           datapack.subparamValue[nextSubParamID],
-                                                           datapack.subparamAlarm[nextSubParamID],
-                                                           paramManager.getSubParamUnit(paramID, nextSubParamID),
-                                                           paramInfo.getUnitOfSubParam(nextSubParamID),
-                                                           datapack.co2Baro);
+                              datapack.subparamValue[nextSubParamID],
+                              datapack.subparamAlarm[nextSubParamID],
+                              paramManager.getSubParamUnit(paramID, nextSubParamID),
+                              paramInfo.getUnitOfSubParam(nextSubParamID),
+                              datapack.co2Baro);
             valueStr = QString("%1/%2").arg(valueEt).arg(valueFi);
         }
-            break;
+        break;
         case SUB_PARAM_T1:
         {
-            if(needAddCaption)
+            if (needAddCaption)
             {
                 caption = QString("%1/%2/%3").arg(trs(paramInfo.getSubParamName(SUB_PARAM_T1)))
-                        .arg(trs(paramInfo.getSubParamName(SUB_PARAM_T2)))
-                        .arg(trs(paramInfo.getSubParamName(SUB_PARAM_TD)));
+                          .arg(trs(paramInfo.getSubParamName(SUB_PARAM_T2)))
+                          .arg(trs(paramInfo.getSubParamName(SUB_PARAM_TD)));
             }
 
             QString valueT1 = constructNormalValueString(SUB_PARAM_T1,
-                                                  datapack.subparamValue[SUB_PARAM_T1],
-                                                  datapack.subparamAlarm[SUB_PARAM_T1],
-                                                  paramManager.getSubParamUnit(paramID, SUB_PARAM_T1),
-                                                  paramInfo.getUnitOfSubParam(SUB_PARAM_T1),
-                                                  datapack.co2Baro);
+                              datapack.subparamValue[SUB_PARAM_T1],
+                              datapack.subparamAlarm[SUB_PARAM_T1],
+                              paramManager.getSubParamUnit(paramID, SUB_PARAM_T1),
+                              paramInfo.getUnitOfSubParam(SUB_PARAM_T1),
+                              datapack.co2Baro);
             QString valueT2 = constructNormalValueString(SUB_PARAM_T2,
-                                                  datapack.subparamValue[SUB_PARAM_T2],
-                                                  datapack.subparamAlarm[SUB_PARAM_T2],
-                                                  paramManager.getSubParamUnit(paramID, SUB_PARAM_T2),
-                                                  paramInfo.getUnitOfSubParam(SUB_PARAM_T2),
-                                                  datapack.co2Baro);
+                              datapack.subparamValue[SUB_PARAM_T2],
+                              datapack.subparamAlarm[SUB_PARAM_T2],
+                              paramManager.getSubParamUnit(paramID, SUB_PARAM_T2),
+                              paramInfo.getUnitOfSubParam(SUB_PARAM_T2),
+                              datapack.co2Baro);
             QString valueTD = constructNormalValueString(SUB_PARAM_TD,
-                                                  datapack.subparamValue[SUB_PARAM_TD],
-                                                  datapack.subparamAlarm[SUB_PARAM_TD],
-                                                  paramManager.getSubParamUnit(paramID, SUB_PARAM_TD),
-                                                  paramInfo.getUnitOfSubParam(SUB_PARAM_TD),
-                                                  datapack.co2Baro);
+                              datapack.subparamValue[SUB_PARAM_TD],
+                              datapack.subparamAlarm[SUB_PARAM_TD],
+                              paramManager.getSubParamUnit(paramID, SUB_PARAM_TD),
+                              paramInfo.getUnitOfSubParam(SUB_PARAM_TD),
+                              datapack.co2Baro);
 
             valueStr = QString("%1/%2/%3").arg(valueT1).arg(valueT2).arg(valueTD);
         }
-            break;
+        break;
         default:
         {
-            if(needAddCaption)
+            if (needAddCaption)
             {
                 caption = trs(paramInfo.getSubParamName(subParamID));
             }
@@ -471,50 +473,52 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
                                                   paramInfo.getUnitOfSubParam(subParamID),
                                                   datapack.co2Baro);
         }
-            break;
+        break;
         }
 
-        if(display)
+        if (display)
         {
-            if(needAddCaption)
+            if (needAddCaption)
             {
                 UnitType unit = paramManager.getSubParamUnit(paramID, subParamID);
                 QString s = QString("%1(%2)").arg(caption)
-                        .arg(trs(Unit::getSymbol(unit)));
+                            .arg(trs(Unit::getSymbol(unit)));
 
-                stringLists.append(QStringList()<<s);
+                stringLists.append(QStringList() << s);
             }
             stringLists[index++].append(valueStr);
         }
     }
 }
 
-TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, int startIndex, int stopIndex, int interval, QObject *parent)
-    :RecordPageGenerator(parent), d_ptr(new TrendTablePageGeneratorPrivate)
+TrendTablePageGenerator::TrendTablePageGenerator(IStorageBackend *backend, TrendTablePrintInfo &printInfo,
+        QObject *parent)
+    : RecordPageGenerator(parent), d_ptr(new TrendTablePageGeneratorPrivate)
 {
-    if(startIndex < stopIndex)
+    if (printInfo.startIndex < printInfo.stopIndex)
     {
-        d_ptr->curIndex = stopIndex;
-        d_ptr->stopIndex = startIndex;
+        d_ptr->curIndex = printInfo.stopIndex;
+        d_ptr->stopIndex = printInfo.startIndex;
     }
     else
     {
-        d_ptr->curIndex = startIndex;
-        d_ptr->stopIndex = stopIndex;
+        d_ptr->curIndex = printInfo.startIndex;
+        d_ptr->stopIndex = printInfo.stopIndex;
     }
 
-    if(backend && d_ptr->curIndex >= (int)backend->getBlockNR())
+    if (backend && d_ptr->curIndex >= static_cast<int>(backend->getBlockNR()))
     {
         d_ptr->curIndex = backend->getBlockNR() - 1;
     }
 
     d_ptr->backend = backend;
-    d_ptr->interval = interval;
+    d_ptr->interval = printInfo.interval;
+    d_ptr->subParamList = printInfo.list;
+    d_ptr->eventList = printInfo.eventList;
 }
 
 TrendTablePageGenerator::~TrendTablePageGenerator()
 {
-
 }
 
 int TrendTablePageGenerator::type() const
@@ -531,12 +535,12 @@ RecordPage *TrendTablePageGenerator::createPage()
         d_ptr->curPageType = TrendTablePage;
         return createTitlePage(QString(trs("TabularTrendRecording")), patientManager.getPatientInfo());
     case TrendTablePage:
-        if(!d_ptr->stringLists.isEmpty() || d_ptr->loadStringList())
+        if (!d_ptr->stringLists.isEmpty() || d_ptr->loadStringList())
         {
             QStringList strList = d_ptr->stringLists.takeFirst();
             return createStringListSegemnt(strList);
         }
-        //fall through when the stringLists is empty and can't load any more data
+    // fall through when the stringLists is empty and can't load any more data
     case EndPage:
         d_ptr->curPageType = NullPage;
         return createEndPage();
@@ -545,4 +549,3 @@ RecordPage *TrendTablePageGenerator::createPage()
     }
     return NULL;
 }
-

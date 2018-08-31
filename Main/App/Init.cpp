@@ -632,7 +632,6 @@ static void _initMenu(void)
     //其它弹出菜单初始化
     patientManager.construction();
 
-    trendDataWidget.construction();
     codeMarkerWidget.construction();
 }
 
@@ -688,7 +687,6 @@ void deleteObjects(void)
     deleteWaveformCache();
     deleteTrendCache();
     deleteParamDataStorageManager();
-    deleteTrendDataWidget();
     deleteRescueDataExportWidget();
     deleteRescueDataDeleteWidget();
 

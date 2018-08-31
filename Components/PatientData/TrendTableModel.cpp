@@ -584,8 +584,23 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     {
         return;
     }
-    RecordPageGenerator *gen = new TrendTablePageGenerator(backend, startIndex, endIndex,
-            TrendDataSymbol::convertValue(d_ptr->timeInterval));
+    TrendTablePrintInfo printInfo;
+    printInfo.startIndex = startIndex;
+    printInfo.stopIndex = endIndex;
+    printInfo.interval = TrendDataSymbol::convertValue(d_ptr->timeInterval);
+    printInfo.list = d_ptr->displayList;
+    for (int i = 0; i < d_ptr->colHeadList.count(); i ++)
+    {
+        if (d_ptr->colHeadList.at(i).dataColor == Qt::yellow)
+        {
+            printInfo.eventList.append(true);
+        }
+        else
+        {
+            printInfo.eventList.append(false);
+        }
+    }
+    RecordPageGenerator *gen = new TrendTablePageGenerator(backend, printInfo);
     recorderManager.addPageGenerator(gen);
 }
 
@@ -897,7 +912,7 @@ void TrendTableModelPrivate::loadTrendData()
             return;
         }
         // 列头不为空时才显示报警标识
-        int col = indexList.at(i);
+        int col = indexList.value(i, 0);
         if (colHeadList.at(col).dataStr != "")
         {
             colHeadList[col].dataColor = Qt::yellow;

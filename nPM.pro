@@ -268,9 +268,7 @@ SOURCES +=                                                                      
     Components/PatientData/RescueDataExportWidget.cpp                           \
     Components/PatientData/TrendCache.cpp                                       \
     Components/PatientData/TrendGraphWidget.cpp                                 \
-    Components/PatientData/TrendDataWidget.cpp                                  \
     Components/PatientData/TrendDataUtil.cpp                                    \
-    Components/PatientData/TrendDataSetWidget.cpp                               \
     Components/PatientData/RescueDataDeleteWidget.cpp                           \
     Components/PatientData/RescueDataDeleteWindow.cpp                           \
     Components/PatientData/TrendDataStorageManager.cpp                          \
@@ -281,9 +279,6 @@ SOURCES +=                                                                      
     Components/PatientData/TrendSubWaveWidget.cpp                               \
     Components/PatientData/IMoveButton.cpp                                      \
     Components/PatientData/TrendGraphSetWidget.cpp                              \
-    Components/PatientData/TrendPrintWidget.cpp                                 \
-    Components/PatientData/HistoryDataReviewWidget.cpp                          \
-    Components/PatientData/HistoryDataSelWidget.cpp                             \
     Components/PatientData/TrendTableWindow.cpp                                 \
     Components/PatientData/TrendTableModel.cpp                                  \
     Components/PatientData/TrendTableSetWindow.cpp                              \
@@ -826,8 +821,6 @@ HEADERS +=                                                                      
     Components/PatientData/RescueDataExportWidget.h                             \
     Components/PatientData/TrendCache.h                                         \
     Components/PatientData/TrendGraphWidget.h                                   \
-    Components/PatientData/TrendDataWidget.h                                    \
-    Components/PatientData/TrendDataSetWidget.h                                 \
     Components/PatientData/TrendDataSymbol.h                                    \
     Components/PatientData/TrendDataDefine.h                                    \
     Components/PatientData/RescueDataDeleteWidget.h                             \
@@ -842,9 +835,6 @@ HEADERS +=                                                                      
     Components/PatientData/IMoveButton.h                                        \
     Components/PatientData/TrendGraphSetWidget.h                                \
     Components/PatientData/EventDataSymbol.h                                    \
-    Components/PatientData/TrendPrintWidget.h                                   \
-    Components/PatientData/HistoryDataReviewWidget.h                            \
-    Components/PatientData/HistoryDataSelWidget.h                               \
     Components/PatientData/TrendTableWindow.h                                   \
     Components/PatientData/TrendTableModel.h                                    \
     Components/PatientData/TrendTableSetWindow.h                                \

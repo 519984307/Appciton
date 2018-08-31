@@ -33,8 +33,8 @@ void COParam::handDemoWaveform(WaveformID /*id*/, short /*data*/)
  *************************************************************************************************/
 void COParam::handDemoTrendData()
 {
-    _coData = qrand() % 200 + 600;
-    _ciData = qrand() % 10 + 30;
+    _coData = qrand() % 300 + 400;
+    _ciData = qrand() % 5 + 30;
     _tbData = qrand() % 100 + 3800;
 
     if (NULL != _trendWidget)

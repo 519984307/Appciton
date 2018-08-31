@@ -13,7 +13,6 @@
 #include <QApplication>
 #include "DelRescueDataSoftkeyAction.h"
 #include "WindowManager.h"
-#include "TrendDataWidget.h"
 #include "RescueDataExportWidget.h"
 #include "MessageBox.h"
 #include "DataStorageDirManager.h"
@@ -21,6 +20,7 @@
 #include "MenuGroup.h"
 #include "MenuManager.h"
 #include "RescueDataDeleteWindow.h"
+#include "LanguageManager.h"
 
 MessageBox *DelRescueDataSoftkeyAction::_messageBox = NULL;
 /***************************************************************************************************
