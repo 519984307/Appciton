@@ -41,6 +41,7 @@ class DemoProvider: public Provider,
         public COProviderIFace,
         public AGProviderIFace
 {
+    Q_OBJECT
 public:
     void setOxyCRGRESPWidget(OxyCRGRESPWidget *p);
     void setOxyCRGCO2Widget(OxyCRGCO2Widget *p);
@@ -123,6 +124,15 @@ public:
     virtual int getIBPWaveformSample(void) {return 128;}
     virtual int getIBPMaxWaveform(void){return 2600;}
     virtual int getIBPBaseLine(void){return 0;}
+
+
+    /**
+     * @brief getDemoWaveData get the demo waveform data
+     * @param waveid the waveform id
+     * @return the data of the waveform, each byte present one wave value
+     */
+    QByteArray getDemoWaveData(WaveformID waveid);
+
 
     DemoProvider();
     virtual ~DemoProvider();

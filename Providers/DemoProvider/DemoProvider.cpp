@@ -20,6 +20,8 @@
 #include "COParam.h"
 #include "AGParam.h"
 
+#define DEMO_DATA_DIR  "/usr/local/nPM/demodata/"
+
 struct DemoWaveDataDesc
 {
     const char *waveformName;       // 对应的波形名称。
@@ -145,7 +147,7 @@ void DemoProvider::timerEvent(QTimerEvent *event)
 
             if (_demoWaveData[i].param != NULL)
             {
-                d = (unsigned char)(data);
+                d = static_cast<unsigned char>(data);
                 _demoWaveData[i].param->handDemoWaveform(_demoWaveData[i].waveID, d);
             }
         }
@@ -284,6 +286,21 @@ void DemoProvider::dataArrived(void)
 {
 }
 
+QByteArray DemoProvider::getDemoWaveData(WaveformID waveid)
+{
+    QByteArray content;
+    if (waveid > WAVE_NONE && waveid < WAVE_NR)
+    {
+        QString path(DEMO_DATA_DIR);
+        QFile f(path + _demoWaveData[waveid].waveformName);
+        if (f.open(QIODevice::ReadOnly))
+        {
+            content = f.readAll();
+        }
+    }
+    return content;
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -295,7 +312,7 @@ DemoProvider::DemoProvider() : Provider("DemoProvider"),
 
     _waveSampleRate = 250;
 
-    QString path("/usr/local/nPM/demodata/");
+    QString path(DEMO_DATA_DIR);
 
     for (int i = 0; i < WAVE_NR; i++)
     {

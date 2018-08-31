@@ -115,6 +115,7 @@ void TableViewItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem 
  *   drawBackground (non virtual)
  *   drawCheck (virtual)
  *   drawDecoraion (virtual)
+ *   drawDisplay (virtual)
  *   drawFocus (virtual)
  *
  * when the item is editable, we use the drawcheck to draw the background and border. when the item is editable,

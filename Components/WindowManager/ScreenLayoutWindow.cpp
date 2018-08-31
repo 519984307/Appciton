@@ -13,14 +13,20 @@
 #include <QBoxLayout>
 #include <QHeaderView>
 #include "ScreenLayoutModel.h"
+#include "Button.h"
+#include "LanguageManager.h"
 
 class ScreenLayoutWindowPrivate
 {
 public:
     ScreenLayoutWindowPrivate()
-        : view(NULL)
+        : view(NULL),
+          resetBtn(NULL),
+          saveBtn(NULL)
     {}
     TableView *view;
+    Button *resetBtn;
+    Button *saveBtn;
 };
 
 ScreenLayoutWindow *ScreenLayoutWindow::getInstance()
@@ -32,7 +38,6 @@ ScreenLayoutWindow *ScreenLayoutWindow::getInstance()
     }
     return instance;
 }
-
 
 ScreenLayoutWindow::ScreenLayoutWindow()
     : Window(), d_ptr(new ScreenLayoutWindowPrivate())
@@ -47,6 +52,24 @@ ScreenLayoutWindow::ScreenLayoutWindow()
     d_ptr->view->setSelectionMode(QAbstractItemView::SingleSelection);
     d_ptr->view->setSelectionBehavior(QAbstractItemView::SelectItems);
     layout->addWidget(d_ptr->view, 1);
+
+    QHBoxLayout *hlayout = new QHBoxLayout();
+    hlayout->addStretch(1);
+    d_ptr->resetBtn = new Button(trs("ResetLayout"));
+    d_ptr->resetBtn->setButtonStyle(Button::ButtonTextOnly);
+    d_ptr->resetBtn->setMinimumWidth(120);
+    connect(d_ptr->resetBtn, SIGNAL(clicked(bool)), this, SLOT(onButtonClicked()));
+    hlayout->addWidget(d_ptr->resetBtn);
+
+    d_ptr->saveBtn = new Button(trs("SaveLayout"));
+    d_ptr->saveBtn->setButtonStyle(Button::ButtonTextOnly);
+    d_ptr->saveBtn->setMinimumWidth(120);
+    connect(d_ptr->saveBtn, SIGNAL(clicked(bool)), this, SLOT(onButtonClicked()));
+    hlayout->addWidget(d_ptr->saveBtn);
+    hlayout->addStretch(1);
+
+    layout->addLayout(hlayout);
+
 
     QAbstractTableModel *model = new ScreenLayoutModel(this);
     d_ptr->view->setModel(model);
@@ -67,4 +90,18 @@ ScreenLayoutWindow::ScreenLayoutWindow()
 ScreenLayoutWindow::~ScreenLayoutWindow()
 {
     delete d_ptr;
+}
+
+void ScreenLayoutWindow::onButtonClicked()
+{
+    Button *btn = qobject_cast<Button *>(sender());
+
+    if (btn == d_ptr->resetBtn)
+    {
+        // TODO
+    }
+    else if (btn == d_ptr->saveBtn)
+    {
+        // TODO
+    }
 }

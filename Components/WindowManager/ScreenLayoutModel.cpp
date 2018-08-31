@@ -10,15 +10,42 @@
 
 #include "ScreenLayoutModel.h"
 #include "WindowManager.h"
+#include "DemoProvider.h"
+#include "ParamManager.h"
+#include "ScreenLayoutDefine.h"
+#include <QLinkedList>
+#include <QVector>
+#include <QByteArray>
 
 #define WAVE_SPAN 4
 #define PARAm_SPAN 2
 #define COLUMN_COUNT 6
 #define ROW_COUNT 8
+
+enum ItemType {
+    ITEM_NONE,
+    ITEM_PARAM,
+    ITEM_WAVE,
+};
+
+struct Item {
+    Item(): span(1), type(ITEM_NONE) {}
+    int span;
+    ItemType type;
+};
+
 class ScreenLayoutModelPrivate
 {
 public:
-    ScreenLayoutModelPrivate() {}
+    ScreenLayoutModelPrivate()
+        :demoProvider(NULL)
+    {
+        demoProvider = qobject_cast<DemoProvider *>(paramManager.getProvider("DemoProvider"));
+    }
+
+    DemoProvider *demoProvider;
+    QMap<WaveformID, QByteArray> waveCaches;
+    QVector<QLinkedList<ItemType> > itemList;
 };
 
 ScreenLayoutModel::ScreenLayoutModel(QObject *parent)
@@ -47,7 +74,6 @@ QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole:
         return QString("(%1, %2)").arg(index.row()).arg(index.column());
     default:
-
         break;
     }
     return QVariant();

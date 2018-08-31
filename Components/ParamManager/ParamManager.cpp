@@ -41,6 +41,11 @@ void ParamManager::addParam(Param &param)
     _paramWithID.insert(param.getParamID(), &param);
 }
 
+Provider *ParamManager::getProvider(const QString &name)
+{
+    return _providers.value(name, NULL);
+}
+
 /**************************************************************************************************
  * 功能： 获取系统的Params。
  * 参数：

@@ -33,6 +33,12 @@ public:
     // 将Provider和参数对象加入进来。
     void addProvider(Provider &provider);
     void addParam(Param &param);
+    /**
+     * @brief getProvider get a provider base on the provider name
+     * @param name provider name
+     * @return pointer to the provider or NULL if not found
+     */
+    Provider *getProvider(const QString &name);
 
     // 获取系统的Params。
     void getParams(QList<Param*> &params);

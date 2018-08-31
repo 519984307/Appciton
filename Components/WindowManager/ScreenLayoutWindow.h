@@ -23,6 +23,12 @@ public:
     static ScreenLayoutWindow *getInstance();
     ~ScreenLayoutWindow();
 
+private slots:
+    /**
+     * @brief onButtonClicked handle the button click signal
+     */
+    void onButtonClicked();
+
 private:
     ScreenLayoutWindow();
     ScreenLayoutWindowPrivate * const d_ptr;
