@@ -93,7 +93,16 @@ void BatteryIconWidget::paintEvent(QPaintEvent *e)
     QPainter painter(this);
     QPainterPath rectFramePath;
     QRect r = this->rect();
-    painter.eraseRect(r);
+    if (_iconBlackGroundColor.isValid())
+    {
+        if (_iconBlackGroundColor.isValid())
+            painter.fillRect(r , _iconBlackGroundColor);
+        else
+            painter.fillRect(r, Qt::black);
+    }
+    else
+        painter.eraseRect(r);
+
     painter.setRenderHint(QPainter::Antialiasing, true);
 
     // 上电池底色
@@ -233,7 +242,11 @@ QPainterPath BatteryIconWidget::_drawBatteryFrame(QPainter &painter, QRect &rect
     mypath.quadTo(bottomleft, bottomleft - QPoint(0, _radius));
 
     // 用黑色作为路径填充色
-    painter.fillPath(mypath, QBrush(Qt::black));
+    if (_iconBlackGroundColor.isValid())
+        painter.fillPath(mypath, QBrush(_iconBlackGroundColor));
+    else
+        painter.fillPath(mypath, QBrush(Qt::black));
+
 
     // 返回该路径
     return mypath;
@@ -479,11 +492,11 @@ void BatteryIconWidget::_drawBatteryFillRect(QPainter &painter, QRect &rect)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-BatteryIconWidget::BatteryIconWidget() : QWidget(NULL)
+BatteryIconWidget::BatteryIconWidget(QColor iconColor) : QWidget(NULL)
 {
     // 固定电池框大小
-    setFixedSize(64, 32);
-
+    if (!iconColor.isValid())    // if draw battery info window's icon
+        setFixedSize(64, 32);
     _printString = "";
     _batteryVolume = 0;             // 当前电量等级
     _lastBatteryVolume = 0;
@@ -493,6 +506,7 @@ BatteryIconWidget::BatteryIconWidget() : QWidget(NULL)
     _lastFillColor = QColor(0, 128, 0);
     _batteryStatus = BATTERY_NORMAL;
     _lastBatteryStatus = BATTERY_NONE;
+    _iconBlackGroundColor = iconColor;
 }
 
 /**************************************************************************************************

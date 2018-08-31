@@ -140,8 +140,12 @@ static void _initComponents(void)
     // 时间管理功能初始化。
     DateTimeWidget *widget0 = new DateTimeWidget();
     ElapseTimeWidget *widget1 = new ElapseTimeWidget();
-    windowManager.addWidget(widget0);
-    windowManager.addWidget(widget1);
+
+//    windowManager.addWidget(widget0);
+//    windowManager.addWidget(widget1);
+
+    topBarWidget.addWidget(widget0);
+    topBarWidget.addWidget(widget1);
     timeManager.registerWidgets(*widget0, *widget1);
 
     // 基础时间日期管理。
@@ -153,23 +157,30 @@ static void _initComponents(void)
     ibpParam.setInfobarWidget(promptInfo);
 
     // 系统状态栏
-    windowManager.addWidget(&sysStatusBar.construction());
-    windowManager.addWidget(new SystemModeBarWidget());
+//    windowManager.addWidget(&sysStatusBar.construction());
+//    windowManager.addWidget(new SystemModeBarWidget());
+    topBarWidget.addWidget(&sysStatusBar.construction());
+    topBarWidget.addWidget(new SystemModeBarWidget());
 
     // 电源
-    BatteryBarWidget *bar = &batteryBarWidget.construction();
+    BatteryBarWidget *bar = &batteryBarWidget;
     powerManager.construction();
     alertor.addOneShotSource(batteryOneShotAlarm.construction());
-    windowManager.addWidget(bar);
+//    windowManager.addWidget(bar);
+    topBarWidget.addWidget(bar);
 
     // 病人管理初始化。
     PatientInfoWidget *patientInfoWidget = new PatientInfoWidget();
-    windowManager.addWidget(patientInfoWidget);
+//    windowManager.addWidget(patientInfoWidget);
+    topBarWidget.addWidget(patientInfoWidget);
     patientManager.setPatientInfoWidget(*patientInfoWidget);
     PatientBarWidget *patientTypeWidget = new PatientBarWidget();
-    windowManager.addWidget(patientTypeWidget);
+//    windowManager.addWidget(patientTypeWidget);
+    topBarWidget.addWidget(patientTypeWidget);
     patientManager.setPatientTypeWidget(*patientTypeWidget);
-    windowManager.addWidget(&patientStatusBar.construction());
+//    windowManager.addWidget(&patientStatusBar.construction());
+    topBarWidget.addWidget(&patientStatusBar.construction());
+    windowManager.addWidget(&topBarWidget);
 
     // 初始化报警。
     alertor.construction();
@@ -183,7 +194,9 @@ static void _initComponents(void)
 //    windowManager.addWidget(new AlarmInfoBarIndicator());
     windowManager.addWidget(alarmPhyInfo);
     windowManager.addWidget(alarmTechInfo);
-    windowManager.addWidget(alarmPhyMuteBar);
+//    windowManager.addWidget(alarmPhyMuteBar);
+    topBarWidget.addWidget(alarmPhyMuteBar);
+    topBarWidget.refreshLayout();
 
     //报警状态
     alarmStateMachine.Construction();
