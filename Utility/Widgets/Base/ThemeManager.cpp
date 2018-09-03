@@ -78,7 +78,7 @@ void ThemeManagerPrivate::loadColorScheme()
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlPopupListItem, ThemeManager::ElementBackgound,
                                  ThemeManager::StateActive), QColor("#BCD2FD"));
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlPopupListItem, ThemeManager::ElementBackgound,
-                                 ThemeManager::StateInactive), QColor("#9AFF9A"));
+                                 ThemeManager::StateInactive), QColor("#EEEE00"));
 
     // SpinBox
     colorScheme.insert(COLOR_KEY(ThemeManager::ControlSpinBox, ThemeManager::ElementBackgound,
