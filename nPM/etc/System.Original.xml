@@ -810,9 +810,8 @@
                 <FocusOrder>PatientBarWidget,AlarmPhyInfoBarWidget,AlarmTechInfoBarWidget,TrendGroup,SystemStatusBarWidget,BatteryBarWidget,SoftKeyManager,PromptInfoBarWidget,WaveGroup</FocusOrder>
                 <!-- 界面顶层布局器 -->
                 <ScreenVLayoutStretch>
-                    <topBarRow>30</topBarRow>
-                    <alarmRow>40</alarmRow>
-                    <paramLayout>680</paramLayout>
+                    <topBarRow>40</topBarRow>
+                    <paramLayout>710</paramLayout>
                     <softkeyRow>80</softkeyRow>
                 </ScreenVLayoutStretch>
                 <!-- 波形区与趋势区的比列 -->
@@ -822,12 +821,12 @@
                 </ScreenHLayoutStretch>
                 <!-- 顶部信息栏比列 -->
                 <topBarRowOrder>
-                    <PatientInfoWidget>400</PatientInfoWidget>
-		    <PatientStatusBarWidget>20</PatientStatusBarWidget>
-                    <AlarmMuteBarWidget>50</AlarmMuteBarWidget>
-                    <SystemModeBarWidget>100</SystemModeBarWidget>
+                    <PatientInfoWidget>250</PatientInfoWidget>
+                    <AlarmPhyInfoBarWidget>150</AlarmPhyInfoBarWidget>
+                    <AlarmTechInfoBarWidget>200</AlarmTechInfoBarWidget>
+                    <AlarmMuteBarWidget>30</AlarmMuteBarWidget>
                     <SystemStatusBarWidget>50</SystemStatusBarWidget>
-                    <BatteryBarWidget>50</BatteryBarWidget>
+                    <BatteryBarWidget>60</BatteryBarWidget>
                     <DateTimeWidget>80</DateTimeWidget>
                 </topBarRowOrder>
                 <!-- 报警栏比列 -->
