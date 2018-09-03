@@ -15,7 +15,6 @@
 #include <QColor>
 #define ICON_FILE_LEFT              "left.png"
 #define ICON_FILE_RIGHT             "right.png"
-#define SYSTEM_MODE_COUNT           6
 
 enum SoftKeyActionType
 {
@@ -43,6 +42,18 @@ enum SoftBaseKeyType
     SOFT_BASE_KEY_NEXT_PAGE,
     SOFT_BASE_KEY_MAIN_SETUP,
     SOFT_BASE_KEY_NR
+};
+
+enum SystemMode
+{
+    SYSTEM_MODE_STANDARD,
+    SYSTEM_MODE_12_LEAD,
+    SYSTEM_MODE_OXYCRG,
+    SYSTEM_MODE_TREND,
+    SYSTEM_MODE_BIGFONT,
+    SYSTEM_MODE_CUSTOM,
+    SYSTEM_MODE_UNKNOW,
+    SYSTEM_MODE_NR
 };
 
 typedef void (*SoftkeyHook)(bool);  // 参数为bool值，按下为1，弹起为0。

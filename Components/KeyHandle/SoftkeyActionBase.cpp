@@ -69,7 +69,7 @@ static KeyActionDesc _baseKeys[] =
                     , SOFT_BASE_KEY_NR, true, QColor(255, 200, 0)),
 };
 
-static int _currentSystemMode = 0;
+static int _currentSystemMode = SYSTEM_MODE_STANDARD;
 
 /***************************************************************************************************
  * 导联改变回调。
@@ -273,9 +273,9 @@ void SoftkeyActionBase::switchSystemMode(bool isPressed)
     {
         return;
     }
-    if (_currentSystemMode > SYSTEM_MODE_COUNT - 1)
+    if (_currentSystemMode > SYSTEM_MODE_NR - 2)
     {
-        _currentSystemMode = 0;
+        _currentSystemMode = SYSTEM_MODE_STANDARD;
     }
     else
     {
@@ -335,31 +335,31 @@ KeyActionDesc *SoftkeyActionBase::getActionDesc(int index)
     {
         switch (_currentSystemMode)
         {
-        case 0:
+        case SYSTEM_MODE_STANDARD:
             _baseKeys[index].iconPath = "standard.png";
             _baseKeys[index].hint = trs("UserFaceStandard");
             break;
-        case 1:
+        case SYSTEM_MODE_12_LEAD:
             _baseKeys[index].iconPath = "12_Lead.png";
             _baseKeys[index].hint = trs("UserFace12Lead");
             break;
-        case 2:
+        case SYSTEM_MODE_OXYCRG:
             _baseKeys[index].iconPath = "OxyCRG.png";
             _baseKeys[index].hint = trs("UserFaceOxyCRG");
             break;
-        case 3:
+        case SYSTEM_MODE_TREND:
             _baseKeys[index].iconPath = "trend.png";
             _baseKeys[index].hint = trs("UserFaceTrend");
             break;
-        case 4:
+        case SYSTEM_MODE_BIGFONT:
             _baseKeys[index].iconPath = "bigFont.png";
             _baseKeys[index].hint = trs("UserFaceBigFont");
             break;
-        case 5:
+        case SYSTEM_MODE_CUSTOM:
             _baseKeys[index].iconPath = "custom.png";
             _baseKeys[index].hint = trs("UserFaceCustom");
             break;
-        case 6:
+        case SYSTEM_MODE_UNKNOW:
             _baseKeys[index].iconPath = "unknow.png";
             _baseKeys[index].hint = trs("UserFaceUnknow");
             break;
