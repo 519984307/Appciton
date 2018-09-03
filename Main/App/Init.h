@@ -200,6 +200,8 @@
 #include "OxyCRGRRWidget.h"
 #include "OxyCRGSPO2Widget.h"
 
+#include "TopBarWidget.h"
+
 // 构造所有的对象。
 extern void newObjects(void);
 

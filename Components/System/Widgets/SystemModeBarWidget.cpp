@@ -78,10 +78,10 @@ SystemModeBarWidget::SystemModeBarWidget(QWidget *parent)
 {
     setFocusPolicy(Qt::StrongFocus);
     _modeLabel = new QLabel("", this);
-    _modeLabel->setFont(fontManager.textFont(fontManager.getFontSize(2)));
+    _modeLabel->setFont(fontManager.textFont(fontManager.getFontSize(3)));
     _modeLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    _modeLabel->setStyleSheet("color:lightGray;background:rgb(48,48,48);"
-                              "border:1px groove black;border-radius:4px;");
+//    _modeLabel->setStyleSheet("color:lightGray;background:rgb(48,48,48);"
+//                              "border:1px groove black;border-radius:4px;");
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(3);

@@ -36,6 +36,7 @@
 #include "Window.h"
 #include "FontManager.h"
 #include <QTimer>
+#include "TopBarWidget.h"
 
 struct NodeDesc
 {
@@ -641,43 +642,42 @@ void WindowManager::_fixedLayout(void)
     }
     _doesFixedLayout = true;
 
-    IWidget *w = NULL;
     QMap<QString, IWidget *>::iterator it;
     QString prefix;
 
-    // 顶部信息栏。
-    QHBoxLayout *hLayoutTopBarRow = new QHBoxLayout();
-    hLayoutTopBarRow->setMargin(0);
-    hLayoutTopBarRow->setSpacing(0);
+//    // 顶部信息栏。
+//    QHBoxLayout *hLayoutTopBarRow = new QHBoxLayout();
+//    hLayoutTopBarRow->setMargin(0);
+//    hLayoutTopBarRow->setSpacing(0);
 
-    QStringList topBarRow;
-    prefix = "PrimaryCfg|UILayout|WidgetsOrder|topBarRowOrder";
-    topBarRow = systemConfig.getChildNodeNameList(prefix);
+//    QStringList topBarRow;
+//    prefix = "PrimaryCfg|UILayout|WidgetsOrder|topBarRowOrder";
+//    topBarRow = systemConfig.getChildNodeNameList(prefix);
 
-    if (topBarRow.size() > 0)
-    {
-        for (int i = 0; i < topBarRow.size(); i++)
-        {
-            it = _winMap.find(topBarRow[i]);
-            if (it == _winMap.end())
-            {
-                continue;
-            }
+//    if (topBarRow.size() > 0)
+//    {
+//        for (int i = 0; i < topBarRow.size(); i++)
+//        {
+//            it = _winMap.find(topBarRow[i]);
+//            if (it == _winMap.end())
+//            {
+//                continue;
+//            }
 
-            w = it.value();
-            w->setParent(this);            // 设置父窗体。
-            w->setVisible(true);           // 可见。
-            QString string = prefix + "|" + topBarRow[i];
-            int index = 1;
-            systemConfig.getNumValue(string, index);
-            hLayoutTopBarRow->addWidget(w, index);
-        }
-    }
-    else
-    {
-        debug("topBarRow is null \n");
-        return;
-    }
+//            w = it.value();
+//            w->setParent(this);            // 设置父窗体。
+//            w->setVisible(true);           // 可见。
+//            QString string = prefix + "|" + topBarRow[i];
+//            int index = 1;
+//            systemConfig.getNumValue(string, index);
+//            hLayoutTopBarRow->addWidget(w, index);
+//        }
+//    }
+//    else
+//    {
+//        debug("topBarRow is null \n");
+//        return;
+//    }
 
     // 报警信息栏。
     QHBoxLayout *hLayoutAlarmRow = new QHBoxLayout();
@@ -689,6 +689,7 @@ void WindowManager::_fixedLayout(void)
     alarmRow = systemConfig.getChildNodeNameList(prefix);
     if (alarmRow.size() > 0)
     {
+        IWidget *w = NULL;
         for (int i = 0; i < alarmRow.size(); i++)
         {
             it = _winMap.find(alarmRow[i]);
@@ -711,7 +712,8 @@ void WindowManager::_fixedLayout(void)
         debug("topBarRow is null \n");
         return;
     }
-    _topBarRow->addLayout(hLayoutTopBarRow);
+//    _topBarRow->addLayout(hLayoutTopBarRow);
+    _topBarRow->addWidget(&topBarWidget);
     _alarmRow->addLayout(hLayoutAlarmRow);
 
     // 软按键区。
@@ -1263,11 +1265,12 @@ void WindowManager::_setUFaceType(UserFaceType type)
     softkeyManager.setContent(softkeyManager.uFaceTypeToSoftKeyType(type));
 
     //界面模式显示修改
-    QMap<QString, IWidget *>::Iterator iter = _winMap.find("SystemModeBarWidget");
-    if (iter != _winMap.end())
+    IWidget* widget =  topBarWidget.findWidget("SystemModeBarWidget");
+    if (widget)
     {
-        SystemModeBarWidget *widget = qobject_cast<SystemModeBarWidget *>(iter.value());
-        widget->setMode(_currenUserFaceType);
+
+        SystemModeBarWidget *modeWidget = qobject_cast<SystemModeBarWidget *>(widget);
+        modeWidget->setMode(_currenUserFaceType);
     }
 
     if (_demoWidget && _demoWidget->isVisible())

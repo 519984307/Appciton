@@ -828,7 +828,7 @@
                     <SystemModeBarWidget>100</SystemModeBarWidget>
                     <SystemStatusBarWidget>50</SystemStatusBarWidget>
                     <BatteryBarWidget>50</BatteryBarWidget>
-                    <DateTimeWidget>100</DateTimeWidget>
+                    <DateTimeWidget>80</DateTimeWidget>
                 </topBarRowOrder>
                 <!-- 报警栏比列 -->
                 <alarmRowOrder>

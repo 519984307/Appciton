@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/31
+ **/
+
+
 #include "AlarmMuteBarWidget.h"
 #include "LanguageManager.h"
 #include "FontManager.h"
@@ -6,6 +17,7 @@
 #include <QPainter>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include "TopBarWidget.h"
 
 /**************************************************************************************************
  * 重绘制。
@@ -18,7 +30,7 @@ void AlarmMuteBarWidget::paintEvent(QPaintEvent *e)
     // 显示正常报警。
     if (_audioStatus == ALARM_AUDIO_NORMAL)
     {
-        painter.fillRect(rect(), Qt::SolidPattern);
+        painter.fillRect(rect(), topBarWidget.getTopBarBlackGroundColor());
         return;
     }
 
@@ -102,5 +114,4 @@ AlarmMuteBarWidget::AlarmMuteBarWidget() : IWidget("AlarmMuteBarWidget")
  *************************************************************************************************/
 AlarmMuteBarWidget::~AlarmMuteBarWidget()
 {
-
 }

@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/8/31
+ **/
+
+
 #pragma once
 #include <QWidget>
 #include <QMap>
@@ -20,7 +31,7 @@ class BatteryIconWidget : public QWidget
     Q_OBJECT
 
 public:
-    BatteryIconWidget();
+    explicit BatteryIconWidget(QColor iconBackGround = QColor());
     ~BatteryIconWidget();
 
     // 设置电池状态
@@ -62,4 +73,5 @@ private:
     QColor _lastFillColor;
     BatteryIconStatus _batteryStatus;            // 电池状态
     BatteryIconStatus _lastBatteryStatus;
+    QColor _iconBlackGroundColor;
 };

@@ -14,6 +14,8 @@
 #include "FontManager.h"
 #include "WindowManager.h"
 #include "MenuManager.h"
+#include "TopBarWidget.h"
+#include "IConfig.h"
 
 BatteryBarWidget *BatteryBarWidget::_selfObj = NULL;
 
@@ -108,8 +110,12 @@ void BatteryBarWidget::_batRealsed(IWidget * iWidget)
  *************************************************************************************************/
 BatteryBarWidget::BatteryBarWidget() : IWidget("BatteryBarWidget")
 {
-    setFixedSize(76, 45);
-    _batteryIconWidget = new BatteryIconWidget();
+    int topBarHeight;
+    systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|topBarRow", topBarHeight);
+    int batteryWidth = topBarHeight * 2;
+    setFixedWidth(batteryWidth);
+
+    _batteryIconWidget = new BatteryIconWidget(topBarWidget.getTopBarBlackGroundColor());
     _batteryStatus = BATTERY_NORMAL;
 
     QHBoxLayout *layout = new QHBoxLayout();
