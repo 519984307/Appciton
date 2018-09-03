@@ -500,6 +500,7 @@ SOURCES +=                                                                      
     Params/ECGParam/ECGDupParam.cpp                                             \
     Params/ECGParam/ECGParam.cpp                                                \
     Params/ECGParam/ECGWidgets/ECGWaveWidget.cpp                                \
+    Params/ECGParam/ECGWidgets/ECGWaveRuler.cpp                                 \
     Params/ECGParam/ECGWidgets/ECGTrendWidget.cpp                               \
     Params/ECGParam/ECGWidgets/ECGPVCSTrendWidget.cpp                           \
     Params/ECGParam/ECGWidgets/ECGSTTrendWidget.cpp                             \
@@ -1076,6 +1077,7 @@ HEADERS +=                                                                      
     Params/ECGParam/ECGProviderIFace.h                                          \
     Params/ECGParam/ECGSymbol.h                                                 \
     Params/ECGParam/ECGWidgets/ECGWaveWidget.h                                  \
+    Params/ECGParam/ECGWidgets/ECGWaveRuler.h                                   \
     Params/ECGParam/ECGWidgets/ECGTrendWidget.h                                 \
     Params/ECGParam/ECGWidgets/ECGPVCSTrendWidget.h                             \
     Params/ECGParam/ECGWidgets/ECGSTTrendWidget.h                               \

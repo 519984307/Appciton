@@ -122,7 +122,7 @@ WaveWidget::WaveWidget(const QString &widgetName, const QString &title) : IWidge
     _background(NULL), _isUpdateBackgroundPending(true), _model(NULL),
     _reviewTime(), _isUpdateBufferPending(true), _waveBuf(NULL), _dataBuf(NULL), _xBuf(NULL),
     _dyBuf(NULL), _flagBuf(NULL), _size(0), _head(0), _tail(0), _margin(QMargins(2, 2, 2, 2)), _spacing(2),
-    _waveSpeed(12.5), _dataRate(125), _sampleCount(0), _timeLostFlag(false), _lineWidth(3), _minValue(-32768),
+    _waveSpeed(12.5), _dataRate(125), _sampleCount(0), _timeLostFlag(false), _lineWidth(1), _minValue(-32768),
     _maxValue(32767),
     _isFill(false), _isAntialias(false), _isShowGrid(false), _id(-1),
     _queuedDataBuf(NULL), _queuedDataRate(0), _dequeueTimer(), _dequeueSizeEachTime(0), _isFreeze(false)

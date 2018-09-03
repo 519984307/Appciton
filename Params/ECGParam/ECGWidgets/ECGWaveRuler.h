@@ -12,6 +12,7 @@
 #pragma once
 #include <QPoint>
 #include "WaveWidgetItem.h"
+#include "ECGDefine.h"
 
 class ECGWaveWidget;
 /***************************************************************************************************
@@ -24,12 +25,10 @@ public:
     ~ECGWaveRuler();
 
     void paintItem(QPainter &painter);
-    void setRulerHeight(int rulerHeight);
-    int rulerHeight()
-    {
-        return _rulerHeight;
-    }
+    void setGain(ECGGain g);
 
 private:
-    int _rulerHeight;            // 标尺高度, 单位像素
+    ECGGain _gain;
+    float _pixelHPitch;
+    QWidget *_waveWidget;
 };

@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/3
+ **/
+
 ////////////////////////////////////////////////////////////////////////////////
 // 说明：
 // 波形控件绘图元素基类
@@ -17,10 +27,10 @@
 // 无
 ////////////////////////////////////////////////////////////////////////////////
 WaveWidgetItem::WaveWidgetItem(WaveWidget *wave, bool isBackground)
-        : _wave(wave), _geometry(), _font(), _color(), _isVisible(true),
-        _isBackground(isBackground)
+    : _wave(wave), _geometry(), _font(), _color(), _isVisible(true),
+      _isBackground(isBackground)
 {
-    if(!_wave)
+    if (!_wave)
     {
         return;
     }
@@ -159,12 +169,10 @@ void WaveWidgetItem::setVisible(bool isVisible)
 ////////////////////////////////////////////////////////////////////////////////
 void WaveWidgetItem::setBackground(bool isBackground)
 {
-    if (isBackground == _isBackground)
+    if (!isBackground)
     {
         return;
     }
-
-    _isBackground = isBackground;
 
     if (_wave)
     {

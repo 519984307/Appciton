@@ -26,6 +26,7 @@
 #include "WindowManager.h"
 #include "SystemManager.h"
 #include "PopupList.h"
+#include "ECGWaveRuler.h"
 
 int ECGWaveWidget::_paceHeight = 5;
 /**************************************************************************************************
@@ -315,6 +316,7 @@ void ECGWaveWidget::_popupDestroyed(void)
     _autoGainTime = 0;
     _autoGainTracePeek = -100000000;
     _autoGainTraveVally = 100000000;
+    _ruler->setGain(static_cast<ECGGain>(_currentItemIndex));
 }
 
 /***************************************************************************************************
@@ -920,6 +922,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     , _gain(NULL)
     , _notify(NULL)
     , _gainList(NULL)
+    , _ruler(NULL)
     , _p05mV(3185)
     , _n05mV(-3185)
     , _currentItemIndex(-1)
@@ -966,6 +969,11 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     _notify->setFont(fontManager.textFont(fontSize));
     _notify->setFixedHeight(fontH);
     addItem(_notify);
+
+    _ruler = new ECGWaveRuler(this);
+    _ruler->setPalette(palette);
+    _ruler->setFont(fontManager.textFont(fontManager.getFontSize(0)));
+    addItem(_ruler);
 
     _12LGain = ECG_GAIN_X10;
 
