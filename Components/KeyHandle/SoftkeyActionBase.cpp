@@ -63,10 +63,13 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", trs("Interface"), "interface.png",   SoftkeyActionBase::WindowLayout),
     KeyActionDesc("", trs("Calculation"), "dosecalculation.png", SoftkeyActionBase::calculation),
     KeyActionDesc("", trs("LockScreen"), "LockScreen.png", SoftkeyActionBase::lockScreen),
+    KeyActionDesc("", trs("Standard"), "standard.png", SoftkeyActionBase::switchSystemMode),
     KeyActionDesc("", "", ICON_FILE_RIGHT,  SoftkeyActionBase::nextPage),
     KeyActionDesc("", "", "main.png",  SoftkeyActionBase::mainsetup
                     , SOFT_BASE_KEY_NR, true, QColor(255, 200, 0)),
 };
+
+static int _currentSystemMode = 0;
 
 /***************************************************************************************************
  * 导联改变回调。
@@ -264,6 +267,26 @@ void SoftkeyActionBase::lockScreen(bool isPressed)
     // TODO : lockScreen
 }
 
+void SoftkeyActionBase::switchSystemMode(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+    if (_currentSystemMode > SYSTEM_MODE_COUNT - 1)
+    {
+        _currentSystemMode = 0;
+    }
+    else
+    {
+        _currentSystemMode++;
+    }
+
+    softkeyManager.refresh();
+    UserFaceType type = static_cast<UserFaceType>(_currentSystemMode);
+    windowManager.setUFaceType(type);
+}
+
 /***************************************************************************************************
  * 获取动作描述总个数。
  **************************************************************************************************/
@@ -306,6 +329,44 @@ KeyActionDesc *SoftkeyActionBase::getActionDesc(int index)
         {
             _baseKeys[index].iconPath = "";
             _baseKeys[index].focus = false;
+        }
+    }
+    else if (index == SOFT_BASE_KEY_SYSTEM_MODE)
+    {
+        switch (_currentSystemMode)
+        {
+        case 0:
+            _baseKeys[index].iconPath = "standard.png";
+            _baseKeys[index].hint = trs("UserFaceStandard");
+            break;
+        case 1:
+            _baseKeys[index].iconPath = "12_Lead.png";
+            _baseKeys[index].hint = trs("UserFace12Lead");
+            break;
+        case 2:
+            _baseKeys[index].iconPath = "OxyCRG.png";
+            _baseKeys[index].hint = trs("UserFaceOxyCRG");
+            break;
+        case 3:
+            _baseKeys[index].iconPath = "trend.png";
+            _baseKeys[index].hint = trs("UserFaceTrend");
+            break;
+        case 4:
+            _baseKeys[index].iconPath = "bigFont.png";
+            _baseKeys[index].hint = trs("UserFaceBigFont");
+            break;
+        case 5:
+            _baseKeys[index].iconPath = "custom.png";
+            _baseKeys[index].hint = trs("UserFaceCustom");
+            break;
+        case 6:
+            _baseKeys[index].iconPath = "unknow.png";
+            _baseKeys[index].hint = trs("UserFaceUnknow");
+            break;
+        default:
+            _baseKeys[index].iconPath = "standard.png";
+            _baseKeys[index].hint = trs("UserFaceStandard");
+            break;
         }
     }
 

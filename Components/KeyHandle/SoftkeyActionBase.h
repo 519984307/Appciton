@@ -15,6 +15,7 @@
 #include <QColor>
 #define ICON_FILE_LEFT              "left.png"
 #define ICON_FILE_RIGHT             "right.png"
+#define SYSTEM_MODE_COUNT           6
 
 enum SoftKeyActionType
 {
@@ -38,6 +39,7 @@ enum SoftBaseKeyType
     SOFT_BASE_KEY_WINDOWLAYOUT,
     SOFT_BASE_KEY_CALCULATION,
     SOFT_BASE_KEY_LOCK_SCREEN,
+    SOFT_BASE_KEY_SYSTEM_MODE,
     SOFT_BASE_KEY_NEXT_PAGE,
     SOFT_BASE_KEY_MAIN_SETUP,
     SOFT_BASE_KEY_NR
@@ -101,6 +103,7 @@ public:    // 一些共有的功能处理。
 
     static void mainsetup(bool isPressed);
     static void lockScreen(bool isPressed);
+    static void switchSystemMode(bool isPressed);
 
 public:
     // 获取动作描述总个数。
