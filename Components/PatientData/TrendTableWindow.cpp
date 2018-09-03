@@ -158,7 +158,9 @@ bool TrendTableWindow::eventFilter(QObject *o, QEvent *e)
             QPalette pal = palette();
             QColor textColor = themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementText,
                                                     ThemeManager::StateInactive);
-            pal.setColor(QPalette::Background, Qt::white);
+            pal.setColor(QPalette::Background,
+                         themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+                                                                    ThemeManager::StateDisabled));
             painter.fillRect(opt.rect, pal.background());
             painter.setPen(QPen(textColor, 1, Qt::SolidLine));
             painter.drawText(opt.rect, Qt::AlignCenter, btn->text());
