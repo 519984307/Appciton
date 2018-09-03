@@ -31,9 +31,6 @@ void PatientInfoWidget::loadPatientInfo()
         typeStr = typeStr.left(10);
         typeStr += "...";
     }
-    nameStr = QString("%1: %2").arg(trs("PatientName"), nameStr);
-    typeStr = QString("%1: %2").arg(trs("PatientType"),
-                                    trs(patientManager.getTypeStr()));
     _patientName->setText(nameStr);
     _patientType->setText(typeStr);
 }
@@ -50,22 +47,20 @@ PatientInfoWidget::PatientInfoWidget(QWidget *parent) : IWidget("PatientInfoWidg
     _bed->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     QString bedNum = "";
     systemConfig.getStrValue("General|BedNumber", bedNum);
-    QString bedStr = QString("%1: %2").arg(trs("BedNumber"), bedNum);
+    QString bedStr = bedNum;
     _bed->setText(bedStr);
 
     _patientName = new QLabel(this);
     _patientName->setFont(fontManager.textFont(fontSize));
     _patientName->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    QString nameStr = QString("%1: %2").arg(trs("PatientName"),
-                                            patientManager.getName());
+    QString nameStr = patientManager.getName();
     _patientName->setText(nameStr);
 
 
     _patientType = new QLabel(this);
     _patientType->setFont(fontManager.textFont(fontSize));
     _patientType->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    QString typeStr = QString("%1: %2").arg(trs("PatientType"),
-                                            trs(patientManager.getTypeStr()));
+    QString typeStr = trs(patientManager.getTypeStr());
     _patientType->setText(typeStr);
 
     QHBoxLayout *hLayout = new QHBoxLayout();

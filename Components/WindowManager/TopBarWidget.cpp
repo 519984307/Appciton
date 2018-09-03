@@ -57,7 +57,7 @@ void TopBarWidget::refreshLayout()
 
 QColor TopBarWidget::getTopBarBlackGroundColor()
 {
-    return QColor(48, 48, 48);
+    return QColor(30, 30, 30);
 }
 
 IWidget *TopBarWidget::findWidget(QString str)

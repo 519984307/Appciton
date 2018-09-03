@@ -112,7 +112,7 @@ BatteryBarWidget::BatteryBarWidget() : IWidget("BatteryBarWidget")
 {
     int topBarHeight;
     systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|topBarRow", topBarHeight);
-    int batteryWidth = topBarHeight * 2;
+    int batteryWidth = topBarHeight * 1.5;
     setFixedWidth(batteryWidth);
 
     _batteryIconWidget = new BatteryIconWidget(topBarWidget.getTopBarBlackGroundColor());
