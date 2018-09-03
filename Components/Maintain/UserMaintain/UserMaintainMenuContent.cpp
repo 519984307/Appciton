@@ -10,12 +10,6 @@
 
 #include "UserMaintainMenuContent.h"
 #include "LanguageManager.h"
-#include <QLabel>
-#include "ComboBox.h"
-#include <QGridLayout>
-#include <QList>
-#include "SoundManager.h"
-#include "SystemManager.h"
 #include "IConfig.h"
 #include "PasswordWidget.h"
 #include <QVBoxLayout>
@@ -33,9 +27,10 @@ public:
 };
 
 UserMaintainMenuContent::UserMaintainMenuContent()
-    : MenuContent(trs("UserMaintainSystem"), trs("UserMaintainSystem")),
+    : Window(),
       d_ptr(new UserMaintainMenuContentPrivate)
 {
+    layoutExec();
 }
 
 UserMaintainMenuContent::~UserMaintainMenuContent()
@@ -43,12 +38,10 @@ UserMaintainMenuContent::~UserMaintainMenuContent()
     delete d_ptr;
 }
 
-void UserMaintainMenuContent::readyShow()
-{
-}
-
 void UserMaintainMenuContent::layoutExec()
 {
+    setWindowTitle(trs("UserMaintainSystem"));
+
     QVBoxLayout *layout = new QVBoxLayout(this);
 
     QString password;
@@ -56,6 +49,8 @@ void UserMaintainMenuContent::layoutExec()
     d_ptr->passwordWidget = new PasswordWidget(trs("UserMaintainPassword"), password);
     layout->addWidget(d_ptr->passwordWidget, Qt::AlignCenter);
     connect(d_ptr->passwordWidget, SIGNAL(correctPassword()), this, SLOT(userInputCorrect()));
+    setWindowLayout(layout);
+    setFixedSize(480, 480);
 }
 
 void UserMaintainMenuContent::userInputCorrect()

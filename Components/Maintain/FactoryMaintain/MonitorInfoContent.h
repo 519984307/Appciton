@@ -8,25 +8,52 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/20
  **/
 
-#include "MenuContent.h"
+#include "Window.h"
 
 class MonitorInfoContentPrivate;
-class MonitorInfoContent : public MenuContent
+class MonitorInfoContent : public Window
 {
     Q_OBJECT
 public:
+    /**
+     * @brief MonitorInfoContent  构造函数
+     */
     MonitorInfoContent();
+    /**
+     * @brief ~MonitorInfoContent  析构函数
+     */
     ~MonitorInfoContent();
 
-protected:
-    virtual void readyShow();
-    virtual void layoutExec();
+    /**
+     * @brief readyShow  加载显示参数
+     */
+    void readyShow();
+    /**
+     * @brief layoutExec  显示布局
+     */
+    void layoutExec();
+    /**
+     * @brief getRunTime  获取系统运行时间
+     * @return 系统运行时间
+     */
+    QString getRunTime(void);
+
+private slots:
+    /* reimpelment */
+    void showEvent(QShowEvent *e);
+
+    /* reimpelment */
+    void hideEvent(QHideEvent *e);
 
 private slots:
     /**
-     * @brief onBtnReleasedChanged
+     * @brief onBtnReleasedChanged  按钮释放槽函数
      */
     void onBtnReleasedChanged();
+    /**
+     * @brief onTimeOutExec 定时器执行接口
+     */
+    void onTimeOutExec(void);
 
 private:
     MonitorInfoContentPrivate *const d_ptr;

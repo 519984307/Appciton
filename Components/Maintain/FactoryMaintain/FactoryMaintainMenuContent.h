@@ -9,21 +9,18 @@
  **/
 
 #pragma once
-#include "MenuContent.h"
+#include "Window.h"
 
 class FactoryMaintainMenuContentPrivate;
-class FactoryMaintainMenuContent : public MenuContent
+class FactoryMaintainMenuContent : public Window
 {
     Q_OBJECT
 public:
     FactoryMaintainMenuContent();
     ~FactoryMaintainMenuContent();
-
-protected:
-    /* reimplment */
-    void readyShow();
-
-    /* reimplement */
+    /**
+     * @brief layoutExec
+     */
     void layoutExec();
 
 private slots:

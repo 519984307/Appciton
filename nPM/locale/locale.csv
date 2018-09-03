@@ -8,7 +8,10 @@ TN3,TN3,TN3
 TS3,TS3,TS3
 TT3,TT3,TT3
 PRT72,PRT72,PRT72
+SystemMaintenance,维护,Maintenance
+SystemMaintenanceDesc,维护设置,Maintenance Desc
 iDMBoard,iDMBoard,iDMBoard
+BuildTime,编译时间,Build Time
 Adult,成人,Adult
 PED,小儿,Pediatric
 NEO,新生儿,Neonate

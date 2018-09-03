@@ -10,12 +10,6 @@
 
 #include "ConfigManagerMenuContent.h"
 #include "LanguageManager.h"
-#include <QLabel>
-#include "ComboBox.h"
-#include <QGridLayout>
-#include <QList>
-#include "SoundManager.h"
-#include "SystemManager.h"
 #include "IConfig.h"
 #include "PasswordWidget.h"
 #include <QVBoxLayout>
@@ -33,9 +27,10 @@ public:
 };
 
 ConfigManagerMenuContent::ConfigManagerMenuContent()
-    : MenuContent(trs("ConfigManager"), trs("ConfigManagerDesc")),
+    : Window(),
       d_ptr(new ConfigManagerMenuContentPrivate)
 {
+    layoutExec();
 }
 
 ConfigManagerMenuContent::~ConfigManagerMenuContent()
@@ -43,12 +38,10 @@ ConfigManagerMenuContent::~ConfigManagerMenuContent()
     delete d_ptr;
 }
 
-void ConfigManagerMenuContent::readyShow()
-{
-}
-
 void ConfigManagerMenuContent::layoutExec()
 {
+    setWindowTitle(trs("ConfigManager"));
+
     QVBoxLayout *layout = new QVBoxLayout(this);
 
     QString password;
@@ -56,6 +49,8 @@ void ConfigManagerMenuContent::layoutExec()
     d_ptr->passwordWidget = new PasswordWidget(trs("ConfigManagerPassword"), password);
     layout->addWidget(d_ptr->passwordWidget, Qt::AlignCenter);
     connect(d_ptr->passwordWidget, SIGNAL(correctPassword()), this, SLOT(userInputCorrect()));
+    setWindowLayout(layout);
+    setFixedSize(480, 480);
 }
 
 void ConfigManagerMenuContent::userInputCorrect()

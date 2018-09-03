@@ -14,12 +14,11 @@
 #include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
-#include "NumberInput.h"
-#include "IMessageBox.h"
 #include "SpinBox.h"
 #include "TimeSymbol.h"
 #include "TimeDate.h"
 #include <QProcess>
+#include <QVBoxLayout>
 
 class SupervisorTimeMenuContentPrivate
 {
@@ -39,8 +38,20 @@ public:
 
     SupervisorTimeMenuContentPrivate() {}
 
+    /**
+     * @brief loadOptions
+     */
     void loadOptions();
+    /**
+     * @brief getMaxDay
+     * @param year
+     * @param month
+     * @return
+     */
     int getMaxDay(int year, int month);
+    /**
+     * @brief setSysTime
+     */
     void setSysTime();
 
     QMap<MenuItem, ComboBox *> combos;
@@ -140,9 +151,11 @@ void SupervisorTimeMenuContentPrivate::setSysTime()
 }
 
 SupervisorTimeMenuContent::SupervisorTimeMenuContent()
-    : MenuContent(trs("SupervisorTimeAndDataMenu"), trs("SupervisorTimeAndDataMenuDesc")),
+    : Window(),
       d_ptr(new SupervisorTimeMenuContentPrivate)
 {
+    layoutExec();
+    readyShow();
 }
 
 SupervisorTimeMenuContent::~SupervisorTimeMenuContent()
@@ -157,7 +170,16 @@ void SupervisorTimeMenuContent::readyShow()
 
 void SupervisorTimeMenuContent::layoutExec()
 {
-    QGridLayout *layout = new QGridLayout(this);
+    setWindowTitle(trs("SupervisorTimeAndDataMenu"));
+
+    QVBoxLayout *vlayout = new QVBoxLayout(this);
+    vlayout->setMargin(10);
+
+    QGridLayout *layout = new QGridLayout;
+
+    vlayout->addStretch();
+    vlayout->addLayout(layout);
+    vlayout->addStretch();
 
     ComboBox *comboBox;
     QLabel *label;
@@ -288,6 +310,10 @@ void SupervisorTimeMenuContent::layoutExec()
     d_ptr->combos.insert(SupervisorTimeMenuContentPrivate::ITEM_CBO_DISPLAY_SEC, comboBox);
 
     layout->setRowStretch(d_ptr->combos.count() + d_ptr->spinBoxs.count(), 1);
+
+    setWindowLayout(vlayout);
+
+    setFixedSize(580, 580);
 }
 
 void SupervisorTimeMenuContent::onComboBoxIndexChanged(int index)

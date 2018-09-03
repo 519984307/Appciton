@@ -10,19 +10,23 @@
 
 #define pragma once
 
-#include "MenuContent.h"
+#include "Window.h"
 
 class SoftWareVersionContentPrivate;
-class SoftWareVersionContent : public MenuContent
+class SoftWareVersionContent : public Window
 {
     Q_OBJECT
 public:
     SoftWareVersionContent();
     ~SoftWareVersionContent();
-
-protected:
-    virtual void readyShow();
-    virtual void layoutExec();
+    /**
+     * @brief readyShow
+     */
+    void readyShow();
+    /**
+     * @brief layoutExec
+     */
+    void layoutExec();
 
 private:
     SoftWareVersionContentPrivate *const d_ptr;

@@ -13,6 +13,7 @@
 #include <QMap>
 #include "IConfig.h"
 #include <QProcess>
+#include <QVBoxLayout>
 
 class SoftWareVersionContentPrivate
 {
@@ -31,7 +32,7 @@ public:
         ITEM_LAB_MAX,
     };
 
-    SoftWareVersionContentPrivate();
+    SoftWareVersionContentPrivate() {}
     /**
      * @brief loadOptions
      */
@@ -40,10 +41,6 @@ public:
     QMap <MenuItem, QLabel *> labs;
 };
 
-SoftWareVersionContentPrivate::SoftWareVersionContentPrivate()
-{
-    labs.clear();
-}
 
 void SoftWareVersionContentPrivate::loadOptions()
 {
@@ -96,10 +93,11 @@ void SoftWareVersionContentPrivate::loadOptions()
 }
 
 SoftWareVersionContent::SoftWareVersionContent():
-    MenuContent(trs("SoftWareVersionMenu"),
-                trs("SoftWareVersionMenuDesc")),
+    Window(),
     d_ptr(new SoftWareVersionContentPrivate)
 {
+    layoutExec();
+    readyShow();
 }
 
 SoftWareVersionContent::~SoftWareVersionContent()
@@ -114,8 +112,18 @@ void SoftWareVersionContent::readyShow()
 
 void SoftWareVersionContent::layoutExec()
 {
-    QGridLayout *layout = new QGridLayout(this);
-    layout->setMargin(10);
+    setWindowTitle(trs("SoftWareVersionMenu"));
+
+    QVBoxLayout *vlayout = new QVBoxLayout(this);
+    vlayout->setMargin(10);
+
+    QGridLayout *layout = new QGridLayout;
+    layout->setVerticalSpacing(20);
+    vlayout->addStretch();
+    vlayout->addLayout(layout);
+    vlayout->addStretch();
+    setFixedSize(580, 580);
+
 
     QLabel *labelLeft;
     QLabel *labelRight;
@@ -193,6 +201,8 @@ void SoftWareVersionContent::layoutExec()
                        ::ITEM_LAB_BOOTSTD_LOGOVER, labelRight);
 
     layout->setRowStretch(d_ptr->labs.count(), 1);
+
+    setWindowLayout(vlayout);
 }
 
 

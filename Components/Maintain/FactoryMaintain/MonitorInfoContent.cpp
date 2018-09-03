@@ -18,6 +18,9 @@
 #include "Button.h"
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QVBoxLayout>
+#include "TimeManager.h"
+#include <QTimer>
 
 class MonitorInfoContentPrivate
 {
@@ -33,20 +36,19 @@ public:
         ITEM_LAB_SCR_RESOLASIZE,
         ITEM_BTN_ELEC_SERIALNUM,
     };
-    MonitorInfoContentPrivate();
+    MonitorInfoContentPrivate()
+            : button(NULL),
+              timer(NULL)
+    {
+    }
     /**
-     * @brief loadOptions
+     * @brief loadOptions  加载显示参数
      */
     void loadOptions();
     QMap <MenuItem, QLabel *> labs;
     Button *button;
+    QTimer *timer;
 };
-
-MonitorInfoContentPrivate::MonitorInfoContentPrivate():
-    button(NULL)
-{
-    labs.clear();
-}
 
 MonitorInfoContent::~MonitorInfoContent()
 {
@@ -54,15 +56,15 @@ MonitorInfoContent::~MonitorInfoContent()
 }
 
 MonitorInfoContent::MonitorInfoContent()
-    : MenuContent(trs("MonitorInfoMenu"),
-                  trs("MonitorInfoMenuDesc")),
+    : Window(),
       d_ptr(new MonitorInfoContentPrivate)
 {
+    layoutExec();
+    readyShow();
 }
 
 void MonitorInfoContentPrivate::loadOptions()
 {
-
     QDesktopWidget *w = QApplication::desktop();
     QString temStr;
 
@@ -102,6 +104,7 @@ void MonitorInfoContentPrivate::loadOptions()
 void MonitorInfoContent::readyShow()
 {
     d_ptr->loadOptions();
+    onTimeOutExec();
 }
 
 void MonitorInfoContent::onBtnReleasedChanged()
@@ -120,10 +123,26 @@ void MonitorInfoContent::onBtnReleasedChanged()
     }
 }
 
+void MonitorInfoContent::onTimeOutExec()
+{
+    QString showtime = getRunTime();
+    d_ptr->labs[MonitorInfoContentPrivate
+            ::ITEM_LAB_CMLV_WORKTIME]->setText(showtime);
+}
+
 void MonitorInfoContent::layoutExec()
 {
+    setWindowTitle(trs("MonitorInfoMenu"));
+
+    QVBoxLayout *vlayout = new QVBoxLayout(this);
+    vlayout->setMargin(10);
+
     QGridLayout *layout = new QGridLayout(this);
-    layout->setMargin(10);
+    layout->setVerticalSpacing(20);
+    vlayout->addStretch();
+    vlayout->addLayout(layout);
+    vlayout->addStretch();
+    setFixedSize(580, 580);
 
     QLabel *labelLeft;
     QLabel *labelRight;
@@ -131,6 +150,7 @@ void MonitorInfoContent::layoutExec()
     labelLeft = new QLabel(trs("CumulativeWorkingTime"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoContentPrivate
                        ::ITEM_LAB_CMLV_WORKTIME, labelRight);
@@ -138,6 +158,7 @@ void MonitorInfoContent::layoutExec()
     labelLeft = new QLabel(trs("TemperatureInsideCase"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoContentPrivate
                        ::ITEM_LAB_TEM_INSIDECASE, labelRight);
@@ -145,6 +166,7 @@ void MonitorInfoContent::layoutExec()
     labelLeft = new QLabel(trs("BatteryLevel"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoContentPrivate
                        ::ITEM_LAB_BAT_LEV, labelRight);
@@ -152,6 +174,7 @@ void MonitorInfoContent::layoutExec()
     labelLeft = new QLabel(trs("BatteryVoltage"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoContentPrivate
                        ::ITEM_LAB_BAT_VOLT, labelRight);
@@ -159,6 +182,7 @@ void MonitorInfoContent::layoutExec()
     labelLeft = new QLabel(trs("MachineType"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoContentPrivate
                        ::ITEM_LAB_MACHINE_TYPE, labelRight);
@@ -166,6 +190,7 @@ void MonitorInfoContent::layoutExec()
     labelLeft = new QLabel(trs("MACAddress"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoContentPrivate
                        ::ITEM_LAB_MAC_ADDR, labelRight);
@@ -173,6 +198,7 @@ void MonitorInfoContent::layoutExec()
     labelLeft = new QLabel(trs("ScreenResolationSize"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoContentPrivate
                        ::ITEM_LAB_SCR_RESOLASIZE, labelRight);
@@ -180,25 +206,50 @@ void MonitorInfoContent::layoutExec()
     labelLeft = new QLabel(trs("ElectronicSerialNumber"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     d_ptr->button = new Button("");
-    d_ptr->button->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(d_ptr->button, d_ptr->labs.count(), 1);
+    d_ptr->button->setBorderWidth(0);
+    d_ptr->button->setButtonStyle(Button::ButtonTextBesideIcon);
+    layout->addWidget(d_ptr->button, d_ptr->labs.count(), 1,
+                      Qt::AlignCenter|Qt::AlignRight);
     connect(d_ptr->button, SIGNAL(released()), this, SLOT(onBtnReleasedChanged()));
 
     layout->setRowStretch((d_ptr->labs.count() + 1), 1);
+    setWindowLayout(vlayout);
 }
 
+QString MonitorInfoContent::getRunTime()
+{
+    QString t;
+    unsigned diffTime = timeManager.getElapsedTime();
+    int hour = diffTime / 3600;
+    int min = (diffTime - hour * 3600) / 60;
+    int sec = diffTime % 60;
+    t = QString("%1:%2:%3").
+            arg(QString::number(hour, 'g', 2)).
+            arg(QString::number(min, 'g', 2)).
+            arg(QString::number(sec, 'g', 2));
+    return t;
+}
 
+void MonitorInfoContent::showEvent(QShowEvent *e)
+{
+    Window::showEvent(e);
+    if (d_ptr->timer)
+    {
+        delete d_ptr->timer;
+        d_ptr->timer = NULL;
+    }
+    d_ptr->timer = new QTimer;
+    d_ptr->timer->setSingleShot(false);
+    connect(d_ptr->timer, SIGNAL(timeout()), SLOT(onTimeOutExec()));
+    d_ptr->timer->start(1000);
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+void MonitorInfoContent::hideEvent(QHideEvent *e)
+{
+    Window::hideEvent(e);
+    if (d_ptr->timer)
+    {
+        delete d_ptr->timer;
+        d_ptr->timer = NULL;
+    }
+}

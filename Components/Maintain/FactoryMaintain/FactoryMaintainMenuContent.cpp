@@ -10,12 +10,6 @@
 
 #include "FactoryMaintainMenuContent.h"
 #include "LanguageManager.h"
-#include <QLabel>
-#include "ComboBox.h"
-#include <QGridLayout>
-#include <QList>
-#include "SoundManager.h"
-#include "SystemManager.h"
 #include "IConfig.h"
 #include "PasswordWidget.h"
 #include <QVBoxLayout>
@@ -33,9 +27,10 @@ public:
 };
 
 FactoryMaintainMenuContent::FactoryMaintainMenuContent()
-    : MenuContent(trs("FactoryMaintainSystem"), trs("FactoryMaintainSystem")),
+    : Window(),
       d_ptr(new FactoryMaintainMenuContentPrivate)
 {
+    layoutExec();
 }
 
 FactoryMaintainMenuContent::~FactoryMaintainMenuContent()
@@ -43,12 +38,10 @@ FactoryMaintainMenuContent::~FactoryMaintainMenuContent()
     delete d_ptr;
 }
 
-void FactoryMaintainMenuContent::readyShow()
-{
-}
-
 void FactoryMaintainMenuContent::layoutExec()
 {
+    setWindowTitle(trs("FactoryMaintainSystem"));
+
     QVBoxLayout *layout = new QVBoxLayout(this);
 
     QString password;
@@ -56,6 +49,8 @@ void FactoryMaintainMenuContent::layoutExec()
     d_ptr->passwordWidget = new PasswordWidget(trs("FactoryMaintainPassword"), password);
     layout->addWidget(d_ptr->passwordWidget, Qt::AlignCenter);
     connect(d_ptr->passwordWidget, SIGNAL(correctPassword()), this, SLOT(userInputCorrect()));
+    setWindowLayout(layout);
+    setFixedSize(480, 480);
 }
 
 void FactoryMaintainMenuContent::userInputCorrect()

@@ -9,22 +9,20 @@
  **/
 
 #pragma once
-#include "MenuContent.h"
+#include "Window.h"
 
 class ConfigManagerMenuContentPrivate;
-class ConfigManagerMenuContent : public MenuContent
+class ConfigManagerMenuContent : public Window
 {
     Q_OBJECT
 public:
     ConfigManagerMenuContent();
     ~ConfigManagerMenuContent();
 
-protected:
-    /* reimplment */
-    void readyShow();
-
-    /* reimplement */
-    void layoutExec();
+    /**
+    * @brief layoutExec
+    */
+   void layoutExec();
 
 private slots:
     void userInputCorrect(void);
