@@ -11,6 +11,7 @@
 #include <QByteArray>
 #include <QVariant>
 #include <QModelIndex>
+#include "ParamDefine.h"
 
 
 struct ScreenLayoutItemInfo
@@ -20,17 +21,16 @@ struct ScreenLayoutItemInfo
           waveMinValue(0),
           baseLine(128),
           sampleRate(250),
-          isWave(false)
+          waveid(WAVE_NONE)
     {}
 
-    QModelIndex index;
     QString name;
     QByteArray waveContent;
-    unsigned char baseLine;
-    unsigned char waveMinValue;
-    unsigned char waveMaxValue;
+    int baseLine;
+    int waveMinValue;
+    int waveMaxValue;
     int sampleRate;
-    bool isWave;
+    WaveformID waveid;
 };
 
 Q_DECLARE_METATYPE(ScreenLayoutItemInfo)

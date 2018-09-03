@@ -660,6 +660,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/TableView.h                                            \
     Utility/Widgets/Base/TableHeaderView.h                                      \
     Utility/Widgets/Base/TableViewItemDelegate.h                                \
+    Utility/Widgets/Base/TableViewItemDelegate_p.h                              \
     Utility/Widgets/Base/ListView.h                                             \
     Utility/Widgets/Base/ListDataModel.h                                        \
     Utility/Widgets/Base/ListViewItemDelegate.h                                 \

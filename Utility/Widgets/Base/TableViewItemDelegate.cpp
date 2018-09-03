@@ -8,7 +8,7 @@
  ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/7/11
  **/
 
-#include "TableViewItemDelegate.h"
+#include "TableViewItemDelegate_p.h"
 #include "PopupList.h"
 #include <QPainter>
 #include "ThemeManager.h"
@@ -22,78 +22,67 @@
 
 #define MARGIN 2
 
-class TableViewItemDelegatePrivate
+const QWidget *TableViewItemDelegatePrivate::widget(const QStyleOptionViewItem &option) const
 {
-public:
-    explicit TableViewItemDelegatePrivate(TableViewItemDelegate *const q_ptr)
-        : q_ptr(q_ptr),
-          curEditingModel(NULL)
+    if (const QStyleOptionViewItemV3 *v3 = qstyleoption_cast<const QStyleOptionViewItemV3 *>(&option))
     {
+        return v3->widget;
     }
 
-    const QWidget *widget(const QStyleOptionViewItem &option) const
+    return 0;
+}
+
+bool TableViewItemDelegatePrivate::showEditor(const QTableView *view, QAbstractItemModel *model, QModelIndex index)
+{
+    model->setData(index, QVariant(Qt::Checked), Qt::CheckStateRole);
+    QVariant value = model->data(index, Qt::EditRole);
+    if (value.canConvert<ItemEditInfo>())
     {
-        if (const QStyleOptionViewItemV3 *v3 = qstyleoption_cast<const QStyleOptionViewItemV3 *>(&option))
+
+        ItemEditInfo info = qvariant_cast<ItemEditInfo>(value);
+
+        QRect vrect = view->visualRect(index);
+        QRect rect(view->viewport()->mapToGlobal(vrect.topLeft()),
+                   view->viewport()->mapToGlobal(vrect.bottomRight()));
+
+        rect.adjust(MARGIN, 0, -MARGIN, 0);
+        if (info.type == ItemEditInfo::LIST)
         {
-            return v3->widget;
+            PopupList *popup = new PopupList();
+            popup->setFixedWidth(rect.width());
+            popup->additemList(info.list);
+            popup->setCurrentIndex(info.curValue);
+            popup->move(rect.bottomLeft());
+            QObject::connect(popup, SIGNAL(selectItemChanged(int)), q_ptr, SLOT(onEditValueUpdate(int)));
+            QObject::connect(popup, SIGNAL(destroyed(QObject *)), q_ptr, SLOT(onPopupDestroy()));
+            popup->show();
+            return true;
         }
-
-        return 0;
-    }
-
-    bool showEditor(const QTableView *view, QAbstractItemModel *model, QModelIndex index)
-    {
-        model->setData(index, QVariant(Qt::Checked), Qt::CheckStateRole);
-        QVariant value = model->data(index, Qt::EditRole);
-        if (value.canConvert<ItemEditInfo>())
+        else if (info.type == ItemEditInfo::VALUE)
         {
-
-            ItemEditInfo info = qvariant_cast<ItemEditInfo>(value);
-
-            QRect vrect = view->visualRect(index);
-            QRect rect(view->viewport()->mapToGlobal(vrect.topLeft()),
-                       view->viewport()->mapToGlobal(vrect.bottomRight()));
-
-            rect.adjust(MARGIN, 0, -MARGIN, 0);
-            if (info.type == ItemEditInfo::LIST)
-            {
-                PopupList *popup = new PopupList();
-                popup->setFixedWidth(rect.width());
-                popup->additemList(info.list);
-                popup->setCurrentIndex(info.curValue);
-                popup->move(rect.bottomLeft());
-                QObject::connect(popup, SIGNAL(selectItemChanged(int)), q_ptr, SLOT(onEditValueUpdate(int)));
-                QObject::connect(popup, SIGNAL(destroyed(QObject *)), q_ptr, SLOT(onPopupDestroy()));
-                popup->show();
-                return true;
-            }
-            else if (info.type == ItemEditInfo::VALUE)
-            {
-                PopupNumEditor *editor = new PopupNumEditor();
-                editor->setEditInfo(info);
-                editor->setFont(fontManager.textFont(view->font().pixelSize()));
-                editor->setPalette(pal);
-                editor->setEditValueGeometry(rect);
-                QObject::connect(editor, SIGNAL(valueChanged(int)), q_ptr, SLOT(onEditValueUpdate(int)));
-                QObject::connect(editor, SIGNAL(destroyed(QObject *)), q_ptr, SLOT(onPopupDestroy()));
-                editor->show();
-                return true;
-            }
+            PopupNumEditor *editor = new PopupNumEditor();
+            editor->setEditInfo(info);
+            editor->setFont(fontManager.textFont(view->font().pixelSize()));
+            editor->setPalette(pal);
+            editor->setEditValueGeometry(rect);
+            QObject::connect(editor, SIGNAL(valueChanged(int)), q_ptr, SLOT(onEditValueUpdate(int)));
+            QObject::connect(editor, SIGNAL(destroyed(QObject *)), q_ptr, SLOT(onPopupDestroy()));
+            editor->show();
+            return true;
         }
-
-        return false;
     }
 
-    TableViewItemDelegate *const q_ptr;
-    QModelIndex curPaintingIndex;   // record current painting item's index
-    QModelIndex curEditingIndex;    // record current painting item's index
-    QAbstractItemModel *curEditingModel; // current editing model
-    Qt::CheckState checkState;  // record current item's check state
-    QPalette pal;   // palette to used when draw check state
-};
+    return false;
+}
 
 TableViewItemDelegate::TableViewItemDelegate(QObject *parent)
     : QItemDelegate(parent), d_ptr(new TableViewItemDelegatePrivate(this))
+{
+    themeManger.setupPalette(ThemeManager::ControlComboBox, d_ptr->pal);
+}
+
+TableViewItemDelegate::TableViewItemDelegate(TableViewItemDelegatePrivate * const d_ptr, QObject *parent)
+    : QItemDelegate(parent), d_ptr(d_ptr)
 {
     themeManger.setupPalette(ThemeManager::ControlComboBox, d_ptr->pal);
 }
@@ -109,6 +98,7 @@ void TableViewItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem 
     d_ptr->curPaintingIndex = index;
     QItemDelegate::paint(painter, option, index);
 }
+
 
 /**
  * In the QItemDelegate::paint, the api is call int the folllowing order:
@@ -280,3 +270,4 @@ void TableViewItemDelegate::onEditValueUpdate(int value)
         d_ptr->curEditingModel->setData(d_ptr->curEditingIndex, qVariantFromValue(value), Qt::EditRole);
     }
 }
+

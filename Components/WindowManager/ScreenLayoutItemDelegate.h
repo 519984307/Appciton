@@ -9,23 +9,19 @@
  **/
 
 #pragma once
-#include <QItemDelegate>
+#include "TableViewItemDelegate.h"
 
 class ScreenLayoutItemDelegatePrivate;
-class ScreenLayoutItemDelegate : public QItemDelegate
+class ScreenLayoutItemDelegate : public TableViewItemDelegate
 {
     Q_OBJECT
 public:
     explicit ScreenLayoutItemDelegate(QObject *parent = NULL);
-    ~ScreenLayoutItemDelegate();
 
 protected:
-    /* reimplement */
-    void drawFocus(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect) const;
-
     /* reimplement */
     void drawDisplay(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QString &text) const;
 
 private:
-    ScreenLayoutItemDelegatePrivate * const d_ptr;
+    Q_DECLARE_PRIVATE(ScreenLayoutItemDelegate)
 };

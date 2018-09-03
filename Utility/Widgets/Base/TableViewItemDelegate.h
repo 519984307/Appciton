@@ -24,6 +24,8 @@ public:
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 protected:
+    explicit TableViewItemDelegate(TableViewItemDelegatePrivate * const d_ptr, QObject *parent = NULL);
+
     /* reimplement */
     void drawCheck(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, Qt::CheckState state) const;
     /* reimplement */
@@ -33,10 +35,10 @@ protected:
     /* reimplement */
     bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
 
+protected:
+    TableViewItemDelegatePrivate *const d_ptr;
+
 private slots:
     void onPopupDestroy();
     void onEditValueUpdate(int value);
-
-private:
-    TableViewItemDelegatePrivate *const d_ptr;
 };

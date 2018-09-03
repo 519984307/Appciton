@@ -13,6 +13,7 @@
 #include <QBoxLayout>
 #include <QHeaderView>
 #include "ScreenLayoutModel.h"
+#include "ScreenLayoutItemDelegate.h"
 #include "Button.h"
 #include "LanguageManager.h"
 
@@ -51,6 +52,7 @@ ScreenLayoutWindow::ScreenLayoutWindow()
     d_ptr->view->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
     d_ptr->view->setSelectionMode(QAbstractItemView::SingleSelection);
     d_ptr->view->setSelectionBehavior(QAbstractItemView::SelectItems);
+    d_ptr->view->setItemDelegate(new ScreenLayoutItemDelegate(d_ptr->view));
     layout->addWidget(d_ptr->view, 1);
 
     QHBoxLayout *hlayout = new QHBoxLayout();
@@ -85,6 +87,9 @@ ScreenLayoutWindow::ScreenLayoutWindow()
             d_ptr->view->setSpan(i, j, span.height(), span.width());
         }
     }
+
+
+    setWindowTitle(trs("ScreenLayout"));
 }
 
 ScreenLayoutWindow::~ScreenLayoutWindow()
