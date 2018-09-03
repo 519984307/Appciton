@@ -334,7 +334,7 @@ bool WaveWidget::isFocus()
 
     for (int i = 0; i < count; ++i)
     {
-        QWidget *widget = qObject_cast<QWidget *>(_labelItems.at(i));
+        QWidget *widget = qobject_cast<QWidget *>(_labelItems.at(i));
         if (NULL != widget && widget->hasFocus())
         {
             bret = true;
