@@ -42,8 +42,12 @@ private slots:
 private:
     void _alarmIndicate(bool isAlarm);
 
-    int16_t _showWhich;     // 显示的值。
-    QLabel *_tValue;
+    QLabel *_t1Value;
+    QLabel *_t2Value;
+    QLabel *_tdValue;
+    QLabel *_t1Name;
+    QLabel *_t2Name;
+    QLabel *_tdName;
 
     QString _t1Str;
     QString _t2Str;

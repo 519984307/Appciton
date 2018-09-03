@@ -43,12 +43,16 @@ void TEMPTrendWidget::_alarmIndicate(bool isAlarm)
         p.setColor(QPalette::Window, Qt::white);
         p.setColor(QPalette::WindowText, Qt::red);
         setPalette(p);
-        _tValue->setPalette(p);
+        _t1Value->setPalette(p);
+        _t2Value->setPalette(p);
+        _tdValue->setPalette(p);
     }
     else
     {
         setPalette(psrc);
-        _tValue->setPalette(psrc);
+        _t1Value->setPalette(psrc);
+        _t2Value->setPalette(psrc);
+        _tdValue->setPalette(psrc);
     }
 
     updateAlarm(isAlarm);
@@ -221,44 +225,21 @@ void TEMPTrendWidget::isAlarm(int id, bool flag)
  *************************************************************************************************/
 void TEMPTrendWidget::showValue(void)
 {
-    if (_t1Str != InvStr() && _t2Str == InvStr())
+    if (_t1Str != InvStr())
     {
-        setName(trs("T1"));
         _alarmIndicate(_t1Alarm);
-        _tValue->setText(_t1Str);
-        _showWhich = 1;
+        _t1Value->setText(_t1Str);
     }
-    else if (_t2Str != InvStr() && _t1Str == InvStr())
+    if (_t2Str != InvStr())
     {
-        setName(trs("T2"));
         _alarmIndicate(_t2Alarm);
-        _tValue->setText(_t2Str);
-        _showWhich = 1;
+        _t2Value->setText(_t2Str);
     }
-    else
+    if (_tdStr != InvStr())
     {
-        if (_showWhich == 0)
-        {
-            setName(trs("T2"));
-            _alarmIndicate(_t2Alarm);
-            _tValue->setText(_t2Str);
-        }
-        else if (_showWhich == 1)
-        {
-            setName(trs("TD"));
-            _alarmIndicate(_tdAlarm);
-            _tValue->setText(_tdStr);
-        }
-        else
-        {
-            setName(trs("T1"));
-            _alarmIndicate(_t1Alarm);
-            _tValue->setText(_t1Str);
-        }
+        _alarmIndicate(_tdAlarm);
+        _tdValue->setText(_tdStr);
     }
-
-    _showWhich++;
-    _showWhich = (_showWhich > 2) ? 0 : _showWhich;
 }
 
 /**************************************************************************************************
@@ -267,16 +248,23 @@ void TEMPTrendWidget::showValue(void)
 void TEMPTrendWidget::setTextSize()
 {
     QRect r;
-    r.setSize(QSize((width() - (nameLabel->width() * 1.5)), height()));
+    int widgetWidth = width();
+    int nameLabelWidth = nameLabel->width() * 1.5;
+    r.setSize(QSize((widgetWidth- nameLabelWidth), height()/3));
     // 字体。
-//    int fontsize = fontManager.adjustNumFontSizeXML(r,"3888");
-//    fontsize = fontManager.getFontSize(fontsize);
     int fontsize = fontManager.adjustNumFontSize(r, true, "3888");
+    int nameFontSize = fontsize / 2;
     QFont font = fontManager.numFont(fontsize, true);
-//    font.setStretch(105); // 横向放大。
+    QFont nameFont = fontManager.numFont(nameFontSize);
     font.setWeight(QFont::Black);
 
-    _tValue->setFont(font);
+    _t1Value->setFont(font);
+    _t2Value->setFont(font);
+    _tdValue->setFont(font);
+
+    _t1Name->setFont(nameFont);
+    _t2Name->setFont(nameFont);
+    _tdName->setFont(nameFont);
 }
 
 /**************************************************************************************************
@@ -284,7 +272,6 @@ void TEMPTrendWidget::setTextSize()
  *************************************************************************************************/
 TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
 {
-    _showWhich = -4;
     _t1Alarm = false;
     _t2Alarm = false;
     _tdAlarm = false;
@@ -297,7 +284,7 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     setPalette(palette);
 
     // 标签设定。
-    setName(trs("T1"));
+    setName(trs("TEMP"));
 
     // 设置单位。
     UnitType u = tempParam.getUnit();
@@ -310,17 +297,56 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
         setUnit(Unit::localeSymbol(UNIT_TF));
     }
 
-    _tValue = new QLabel();
-    _tValue->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    _tValue->setPalette(palette);
-    _tValue->setText(InvStr());
+    QHBoxLayout *temperature = new QHBoxLayout;
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->setMargin(1);
+    vLayout->setSpacing(1);
+
+    _t1Name = new QLabel();
+    _t1Name->setAlignment(Qt::AlignBottom | Qt::AlignRight);
+    _t1Name->setPalette(palette);
+    _t1Name->setText(trs("T1"));
+    _t1Value = new QLabel();
+    _t1Value->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    _t1Value->setPalette(palette);
+    _t1Value->setText(InvStr());
+    temperature->addWidget(_t1Name);
+    temperature->addWidget(_t1Value);
+    vLayout->addLayout(temperature);
+
+    _t2Name = new QLabel();
+    _t2Name->setAlignment(Qt::AlignBottom | Qt::AlignRight);
+    _t2Name->setPalette(palette);
+    _t2Name->setText(trs("T2"));
+    _t2Value = new QLabel();
+    _t2Value->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    _t2Value->setPalette(palette);
+    _t2Value->setText(InvStr());
+    temperature = new QHBoxLayout;
+    temperature->addWidget(_t2Name);
+    temperature->addWidget(_t2Value);
+    vLayout->addLayout(temperature);
+
+    _tdName = new QLabel();
+    _tdName->setAlignment(Qt::AlignBottom | Qt::AlignRight);
+    _tdName->setPalette(palette);
+    _tdName->setText(trs("TD"));
+    _tdValue = new QLabel();
+    _tdValue->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    _tdValue->setPalette(palette);
+    _tdValue->setText(InvStr());
+    temperature = new QHBoxLayout;
+    temperature->addWidget(_tdName);
+    temperature->addWidget(_tdValue);
+    vLayout->addLayout(temperature);
 
     // 布局。
     QHBoxLayout *mainLayout = new QHBoxLayout();
     mainLayout->setMargin(1);
     mainLayout->setSpacing(1);
     mainLayout->addStretch(1);
-    mainLayout->addWidget(_tValue);
+    mainLayout->addLayout(vLayout);
+
     mainLayout->addStretch(1);
 
     contentLayout->addLayout(mainLayout);
