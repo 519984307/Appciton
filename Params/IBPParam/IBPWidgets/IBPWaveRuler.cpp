@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/3
+ **/
+
 #include "IBPParam.h"
 #include "IBPWaveRuler.h"
 #include "IBPWaveWidget.h"
@@ -20,7 +30,7 @@ void IBPWaveRuler::paintItem(QPainter &painter)
     int yMid = (_mid - _low) * (yUp - yLow) / (_up - _low) + yLow;
 
     painter.setFont(font());
-    painter.setPen(QPen(palette().windowText(), 1, Qt::DotLine));
+    painter.setPen(QPen(palette().windowText(), 1, Qt::DashLine));
 
     // 上标尺
     painter.drawLine(xLeft, yUp, xRight, yUp);
