@@ -25,7 +25,7 @@
 #include <QDebug>
 #include "ConfigEditAlarmLimitModel.h"
 
-#define TABLE_ROW_NUM 6
+#define TABLE_ROW_NUM 7
 
 class ConfigEditAlarmLimitMenuContentPrivate
 {

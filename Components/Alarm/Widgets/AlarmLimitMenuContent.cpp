@@ -25,7 +25,7 @@
 #include <Button.h>
 #include <QDebug>
 
-#define TABLE_ROW_NUM 6
+#define TABLE_ROW_NUM 7
 
 class AlarmLimitMenuContentPrivate
 {
