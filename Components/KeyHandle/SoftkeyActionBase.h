@@ -38,9 +38,22 @@ enum SoftBaseKeyType
     SOFT_BASE_KEY_WINDOWLAYOUT,
     SOFT_BASE_KEY_CALCULATION,
     SOFT_BASE_KEY_LOCK_SCREEN,
+    SOFT_BASE_KEY_SYSTEM_MODE,
     SOFT_BASE_KEY_NEXT_PAGE,
     SOFT_BASE_KEY_MAIN_SETUP,
     SOFT_BASE_KEY_NR
+};
+
+enum SystemMode
+{
+    SYSTEM_MODE_STANDARD,
+    SYSTEM_MODE_12_LEAD,
+    SYSTEM_MODE_OXYCRG,
+    SYSTEM_MODE_TREND,
+    SYSTEM_MODE_BIGFONT,
+    SYSTEM_MODE_CUSTOM,
+    SYSTEM_MODE_UNKNOW,
+    SYSTEM_MODE_NR
 };
 
 typedef void (*SoftkeyHook)(bool);  // 参数为bool值，按下为1，弹起为0。
@@ -101,6 +114,7 @@ public:    // 一些共有的功能处理。
 
     static void mainsetup(bool isPressed);
     static void lockScreen(bool isPressed);
+    static void switchSystemMode(bool isPressed);
 
 public:
     // 获取动作描述总个数。
