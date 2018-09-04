@@ -42,7 +42,7 @@ DateTimeWidget::DateTimeWidget(QWidget *parent)
     palette.setColor(QPalette::WindowText, Qt::lightGray);
 
     _datetimeLabel = new QLabel("", this);
-    _datetimeLabel->setFont(fontManager.textFont(fontManager.getFontSize(1)));
+    _datetimeLabel->setFont(fontManager.textFont(fontManager.getFontSize(2)));
     _datetimeLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     _datetimeLabel->setPalette(palette);
 

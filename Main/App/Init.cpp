@@ -180,7 +180,6 @@ static void _initComponents(void)
     patientManager.setPatientTypeWidget(*patientTypeWidget);
 //    windowManager.addWidget(&patientStatusBar.construction());
     topBarWidget.addWidget(&patientStatusBar.construction());
-    windowManager.addWidget(&topBarWidget);
 
     // 初始化报警。
     alertor.construction();
@@ -192,8 +191,10 @@ static void _initComponents(void)
     alarmIndicator.setAlarmPhyWidgets(alarmPhyInfo, alarmPhyMuteBar);
     alarmIndicator.setAlarmTechWidgets(alarmTechInfo);
 //    windowManager.addWidget(new AlarmInfoBarIndicator());
-    windowManager.addWidget(alarmPhyInfo);
-    windowManager.addWidget(alarmTechInfo);
+//    windowManager.addWidget(alarmPhyInfo);
+//    windowManager.addWidget(alarmTechInfo);
+    topBarWidget.addWidget(alarmPhyInfo);
+    topBarWidget.addWidget(alarmTechInfo);
 //    windowManager.addWidget(alarmPhyMuteBar);
     topBarWidget.addWidget(alarmPhyMuteBar);
     topBarWidget.refreshLayout();
@@ -212,6 +213,8 @@ static void _initComponents(void)
     // U盘数据储存
     rawDataCollection.construction();
     rawDataCollectionTxt.construction();
+
+    windowManager.addWidget(&topBarWidget);
 }
 /**************************************************************************************************
  * 功能： 初始化参数和提供者对象。

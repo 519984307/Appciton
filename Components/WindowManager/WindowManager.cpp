@@ -596,7 +596,7 @@ void WindowManager::_newLayoutStyle(void)
     // 界面顶层布局器。
     QStringList factors;
     factors = systemConfig.getChildNodeNameList("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch");
-    if (factors.size() < 4)
+    if (factors.size() < 3)
     {
         debug("size of ScreenVLayoutStretch is wrong \n");
         return;
@@ -611,8 +611,8 @@ void WindowManager::_newLayoutStyle(void)
     systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|topBarRow", index);
     _mainLayout->addLayout(_topBarRow, index);
 
-    systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|alarmRow", index);
-    _mainLayout->addLayout(_alarmRow, index);
+//    systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|alarmRow", index);
+//    _mainLayout->addLayout(_alarmRow, index);
 
     systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|paramLayout", index);
     _mainLayout->addLayout(_paramLayout, index);
@@ -680,41 +680,41 @@ void WindowManager::_fixedLayout(void)
 //    }
 
     // 报警信息栏。
-    QHBoxLayout *hLayoutAlarmRow = new QHBoxLayout();
-    hLayoutAlarmRow->setMargin(0);
-    hLayoutAlarmRow->setSpacing(0);
+//    QHBoxLayout *hLayoutAlarmRow = new QHBoxLayout();
+//    hLayoutAlarmRow->setMargin(0);
+//    hLayoutAlarmRow->setSpacing(0);
 
-    QStringList alarmRow;
-    prefix = "PrimaryCfg|UILayout|WidgetsOrder|alarmRowOrder";
-    alarmRow = systemConfig.getChildNodeNameList(prefix);
-    if (alarmRow.size() > 0)
-    {
-        IWidget *w = NULL;
-        for (int i = 0; i < alarmRow.size(); i++)
-        {
-            it = _winMap.find(alarmRow[i]);
-            if (it == _winMap.end())
-            {
-                continue;
-            }
+//    QStringList alarmRow;
+//    prefix = "PrimaryCfg|UILayout|WidgetsOrder|alarmRowOrder";
+//    alarmRow = systemConfig.getChildNodeNameList(prefix);
+//    if (alarmRow.size() > 0)
+//    {
+//        IWidget *w = NULL;
+//        for (int i = 0; i < alarmRow.size(); i++)
+//        {
+//            it = _winMap.find(alarmRow[i]);
+//            if (it == _winMap.end())
+//            {
+//                continue;
+//            }
 
-            w = it.value();
-            w->setParent(this); // 设置父窗体
-            w->setVisible(true);
-            QString string = prefix + "|" + alarmRow[i];
-            int index = 1;
-            systemConfig.getNumValue(string, index);
-            hLayoutAlarmRow->addWidget(w, index);
-        }
-    }
-    else
-    {
-        debug("topBarRow is null \n");
-        return;
-    }
+//            w = it.value();
+//            w->setParent(this); // 设置父窗体
+//            w->setVisible(true);
+//            QString string = prefix + "|" + alarmRow[i];
+//            int index = 1;
+//            systemConfig.getNumValue(string, index);
+//            hLayoutAlarmRow->addWidget(w, index);
+//        }
+//    }
+//    else
+//    {
+//        debug("topBarRow is null \n");
+//        return;
+//    }
 //    _topBarRow->addLayout(hLayoutTopBarRow);
     _topBarRow->addWidget(&topBarWidget);
-    _alarmRow->addLayout(hLayoutAlarmRow);
+//    _alarmRow->addLayout(hLayoutAlarmRow);
 
     // 软按键区。
     _softkeyRow->addWidget(&softkeyManager);
