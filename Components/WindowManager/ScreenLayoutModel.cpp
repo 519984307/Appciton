@@ -17,39 +17,34 @@
 #include <QVector>
 #include <QByteArray>
 
-#define WAVE_SPAN 4
-#define PARAM_SPAN 2
 #define COLUMN_COUNT 6
 #define ROW_COUNT 8
 
 enum ItemType
 {
-    ITEM_NONE,
+    ITEM_PLACE_HOLDER,
     ITEM_PARAM,
     ITEM_WAVE,
 };
 
 struct LayoutNode
 {
-    LayoutNode(): span(1),
-        type(ITEM_NONE),
-        waveId(WAVE_NONE)
+    LayoutNode(int pos, int span)
+        : pos(pos), span(span), type(ITEM_PLACE_HOLDER), waveId(WAVE_NONE)
     {}
 
-    LayoutNode(const QString &name, WaveformID waveId, int span)
-        : name(name), span(span), waveId(waveId),
-          type(ITEM_WAVE)
+    LayoutNode(const QString &name, WaveformID waveId, int pos, int span)
+        : name(name), pos(pos), span(span), waveId(waveId), type(ITEM_WAVE)
     {
     }
 
-    LayoutNode(const QString &name, int span)
-        : name(name), span(span),
-          type(ITEM_NONE),
-          waveId(WAVE_NONE)
+    LayoutNode(const QString &name, int pos, int span)
+        : name(name), pos(pos), span(span), type(ITEM_PLACE_HOLDER), waveId(WAVE_NONE)
     {
     }
 
     QString name;
+    int pos;
     int span;
     ItemType type;
     WaveformID waveId;
@@ -153,37 +148,49 @@ public:
         }
     }
 
+
     void loadLayoutNodes()
     {
         LayoutRow *row = new LayoutRow();
-        row->append(new LayoutNode("ECG", WAVE_ECG_II, 4));
-        row->append(new LayoutNode("ECG", 2));
+        row->append(new LayoutNode("ECG", WAVE_ECG_II, 0, 4));
+        row->append(new LayoutNode("ECG", 4, 2));
         layoutNodes.append(row);
 
         row = new LayoutRow();
-        row->append(new LayoutNode("Pleth", WAVE_SPO2, 4));
-        row->append(new LayoutNode("Spo2", 2));
+        row->append(new LayoutNode("Pleth", WAVE_SPO2, 0, 4));
+        row->append(new LayoutNode("Spo2", 4, 2));
         layoutNodes.append(row);
 
         row = new LayoutRow();
-        row->append(new LayoutNode("Resp", WAVE_RESP, 4));
-        row->append(new LayoutNode("Resp", 2));
+        row->append(new LayoutNode("Resp", WAVE_RESP, 0, 4));
+        row->append(new LayoutNode("Resp", 4, 2));
         layoutNodes.append(row);
 
         row = new LayoutRow();
-        row->append(new LayoutNode("ART", WAVE_ART, 4));
-        row->append(new LayoutNode("ART", 2));
+        row->append(new LayoutNode("ART", WAVE_ART, 0, 4));
+        row->append(new LayoutNode("ART", 4, 2));
         layoutNodes.append(row);
 
         row = new LayoutRow();
-        row->append(new LayoutNode("Co2", WAVE_CO2, 4));
-        row->append(new LayoutNode("Co2", 2));
+        row->append(new LayoutNode("PA", WAVE_ART, 0, 4));
+        row->append(new LayoutNode("PA", 4, 2));
         layoutNodes.append(row);
 
         row = new LayoutRow();
-        row->append(new LayoutNode("NIBP", 2));
-        row->append(new LayoutNode("NIBPList", 2));
-        row->append(new LayoutNode("TEMP", 2));
+        row->append(new LayoutNode("Co2", WAVE_CO2, 0, 4));
+        row->append(new LayoutNode("Co2", 4, 2));
+        layoutNodes.append(row);
+
+        row = new LayoutRow();
+        row->append(new LayoutNode("NIBP", 0, 2));
+        row->append(new LayoutNode("NIBPList", 2, 2));
+        row->append(new LayoutNode("TEMP", 4, 2));
+        layoutNodes.append(row);
+
+        row = new LayoutRow();
+        row->append(new LayoutNode(trs("Off"), 0, 2));
+        row->append(new LayoutNode(trs("Off"), 2, 2));
+        row->append(new LayoutNode(trs("Off"), 4, 2));
         layoutNodes.append(row);
     }
 
@@ -201,22 +208,23 @@ public:
 
         LayoutRow *r = layoutNodes[index.row()];
         LayoutRow::ConstIterator iter = r->constBegin();
-        int nodeStart = 0;
         for (; iter != r->end(); ++iter)
         {
-            if (nodeStart == index.column())
+            if ((*iter)->pos == index.column())
             {
                 return *iter;
             }
-            nodeStart += (*iter)->span;
         }
 
         return NULL;
     }
 
+
     DemoProvider *demoProvider;
     QMap<WaveformID, QByteArray> waveCaches;
     QVector<LayoutRow *> layoutNodes;
+    QList<QString> supportWaveforms;
+    QList<QString> supportParams;
 };
 
 ScreenLayoutModel::ScreenLayoutModel(QObject *parent)
@@ -256,6 +264,10 @@ QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
         }
     }
     break;
+    case ScreenLayoutItemInfo::AvaliableWaveRole:
+        break;
+    case ScreenLayoutItemInfo::AvaliableParamRole:
+        break;
     default:
         break;
     }
@@ -283,7 +295,21 @@ QSize ScreenLayoutModel::span(const QModelIndex &index) const
             return QSize(node->span, 1);
         }
     }
-    return QAbstractTableModel::span(index);
+
+    return QSize();
+}
+
+void ScreenLayoutModel::saveLayoutInfo()
+{
+}
+
+void ScreenLayoutModel::loadLayoutInfo()
+{
+}
+
+void ScreenLayoutModel::updateWaveAndParamInfo()
+{
+    // TODO: find the support waveform and params
 }
 
 ScreenLayoutModel::~ScreenLayoutModel()

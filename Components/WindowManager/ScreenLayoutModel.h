@@ -17,6 +17,7 @@ class ScreenLayoutModel : public QAbstractTableModel
     Q_OBJECT
 public:
     explicit ScreenLayoutModel(QObject *parent = NULL);
+    ~ScreenLayoutModel();
 
     /* reimplement */
     int columnCount(const QModelIndex &parent) const;
@@ -26,11 +27,23 @@ public:
     QVariant data(const QModelIndex &index, int role) const;
     /* reimplement */
     Qt::ItemFlags flags(const QModelIndex &index) const;
-
     /* reimplement */
     QSize span(const QModelIndex &index) const;
 
-    ~ScreenLayoutModel();
+    /**
+     * @brief saveLayoutInfo save the layout info to the config file
+     */
+    void saveLayoutInfo();
+
+    /**
+     * @brief loadLayoutInfo load the layout info from the config file
+     */
+    void loadLayoutInfo();
+
+    /**
+     * @brief updateInfo update the param and wave info
+     */
+    void updateWaveAndParamInfo();
 
 private:
     ScreenLayoutModelPrivate * const d_ptr;

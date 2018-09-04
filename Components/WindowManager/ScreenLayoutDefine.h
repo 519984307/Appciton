@@ -16,6 +16,12 @@
 
 struct ScreenLayoutItemInfo
 {
+    enum LayoutInfoRole
+    {
+        AvaliableWaveRole = Qt::UserRole + 1,
+        AvaliableParamRole,
+    };
+
     ScreenLayoutItemInfo()
         :  baseLine(128),
           waveMinValue(0),
@@ -34,5 +40,6 @@ struct ScreenLayoutItemInfo
     float drawSpeed;
     WaveformID waveid;
 };
+
 
 Q_DECLARE_METATYPE(ScreenLayoutItemInfo)
