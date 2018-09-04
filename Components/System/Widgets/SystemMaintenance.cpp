@@ -161,6 +161,10 @@ void SystemMaintenance::layoutExec()
 
     // demo mode
     btn = new Button(trs("DemoMode"));
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        btn->setText(trs("ExitDemoMode"));
+    }
     btn->setButtonStyle(Button::ButtonTextOnly);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     btn->setProperty("Item", qVariantFromValue(itemBtn));
@@ -240,10 +244,14 @@ void SystemMaintenance::onBtnReleased()
             if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
             {
                 systemManager.setWorkMode(WORK_MODE_NORMAL);
+                d_ptr->btns[SystemMaintenancePrivate
+                        ::ITEM_BTN_DEMO_MODE]->setText(trs("DemoMode"));
             }
             else
             {
                 systemManager.setWorkMode(WORK_MODE_DEMO);
+                d_ptr->btns[SystemMaintenancePrivate
+                        ::ITEM_BTN_DEMO_MODE]->setText(trs("ExitDemoMode"));
             }
             windowManager.closeAllWidows();
         }
