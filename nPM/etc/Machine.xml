@@ -35,13 +35,13 @@
     <!--参数与Provider的关系-->
     <ECG SptProvider="DemoProvider,BLM_E5">BLM_E5</ECG>
     <RESP SptProvider="DemoProvider,BLM_E5">BLM_E5</RESP>
-    <SPO2 SptProvider="DemoProvider,BLM_SPO2,BLM_TS3,BLM_S5,MASIMO_SPO2,NELLCOR_SPO2">NELLCOR_SPO2</SPO2>
+    <SPO2 SptProvider="DemoProvider,BLM_SPO2,BLM_TS3,BLM_S5,MASIMO_SPO2,NELLCOR_SPO2,DataDispatcher">DataDispatcher</SPO2>
     <NIBP SptProvider="DemoProvider,BLM_NIBP,BLM_TN3,SUNTECH_NIBP">DemoProvider</NIBP>
     <CO2 SptProvider="DemoProvider,BLM_CO2">DemoProvider</CO2>
     <IBP SptProvider="DemoProvider,WITLEAF_IBP">DemoProvider</IBP>
     <AG SptProvider="DemoProvider,PHASEIN_AG">DemoProvider</AG>
     <CO SptProvider="DemoProvider,WITLEAF_IBP">DemoProvider</CO>
-    <TEMP SptProvider="DemoProvider,BLM_TT3,BLM_T5">DemoProvider</TEMP>
+    <TEMP SptProvider="DemoProvider,BLM_TT3,BLM_T5,DataDispatcher">DataDispatcher</TEMP>
     <!--Provider端口信息-->
     <PRT72Port>/dev/null</PRT72Port>
     <BLM_E5Port>/dev/ttyS1</BLM_E5Port>
@@ -53,5 +53,6 @@
     <BLM_T5Port>/dev/ttyS5</BLM_T5Port>
     <WITLEAF_IBPPort>/dev/ttyWK2</WITLEAF_IBPPort>
     <BLM_CO2Port>/dev/ttyWK3</BLM_CO2Port>
+    <DataDispatcherPort>/dev/ttyPM3</DataDispatcherPort>
     <!--    <PHASEIN_AGPort>/dev/ttyWK3</PHASEIN_AGPort>-->
 </Machine>

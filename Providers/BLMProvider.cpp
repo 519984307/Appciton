@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/4
+ **/
+
 #include "Debug.h"
 #include "crc8.h"
 #include "BLMProvider.h"
@@ -21,7 +31,6 @@ BLMProvider::BLMProvider(const QString &name)
  **************************************************************************************************/
 BLMProvider::~BLMProvider()
 {
-
 }
 
 #if 0
@@ -29,9 +38,11 @@ void BLMProvider::dataArrived()
 {
     readData(); // 读取数据到RingBuff中
 
-    while (!ringBuff.isEmpty()) {
+    while (!ringBuff.isEmpty())
+    {
         if (ringBuff.at(0) != SOH)
-        { // 协议数据以SOH字节开始
+        {
+            // 协议数据以SOH字节开始
             debug("Invalid packet header!\n");
             ringBuff.pop(1);
             continue;
@@ -39,13 +50,15 @@ void BLMProvider::dataArrived()
 
         unsigned int dataSize = ringBuff.dataSize();
         if (dataSize < minPacketLen)
-        { // 数据不够
+        {
+            // 数据不够
             break;
         }
 
         unsigned int len = ringBuff.at(1);
         if (SOH == len)
-        { // 协议数据长度值不可能等于SOH
+        {
+            // 协议数据长度值不可能等于SOH
             debug("Invalid packet len: SOH!\n");
             ringBuff.pop(1);
             continue;
@@ -67,7 +80,8 @@ void BLMProvider::dataArrived()
         for (; (i < dataSize) && (index < len); i++)
         {
             if (ringBuff.at(i) == SOH)
-            { // 移除多余的SOH转义字节
+            {
+                // 移除多余的SOH转义字节
                 i++;
             }
 
@@ -75,7 +89,8 @@ void BLMProvider::dataArrived()
         }
 
         if (index < len)
-        { // 数据不够
+        {
+            // 数据不够
             break;
         }
 
@@ -102,7 +117,7 @@ void BLMProvider::dataArrived()
     {
         if (ringBuff.at(0) != SOH)
         {
-            //debug("discard (%s:%x)\n", qPrintable(getName()), ringBuff.at(0));
+            // debug("discard (%s:%x)\n", qPrintable(getName()), ringBuff.at(0));
             ringBuff.pop(1);
             continue;
         }
@@ -119,7 +134,7 @@ void BLMProvider::dataArrived()
         }
 
         // 数据包不会超过packet长度，当出现这种情况说明发生了不可预料的错误，直接丢弃该段数据。
-        if (len > (int)sizeof(packet))
+        if (len > static_cast<int>(sizeof(packet)))
         {
             ringBuff.pop(1);
             continue;
@@ -138,7 +153,7 @@ void BLMProvider::dataArrived()
         }
         else
         {
-            //outHex(packet, len);
+            // outHex(packet, len);
             debug("FCS error (%s)\n", qPrintable(getName()));
             ringBuff.pop(1);
         }
@@ -151,7 +166,7 @@ void BLMProvider::dataArrived()
  **************************************************************************************************/
 void BLMProvider::handlePacket(unsigned char *data, int len)
 {
-    if(data[0] == 0x11 && len > 1) //version data, all BLMProvidor share the same version respond code
+    if (data[0] == 0x11 && len > 1) // version data, all BLMProvidor share the same version respond code
     {
         versionInfoData.setRawData((const char *)(data + 1), len - 1);
     }
@@ -168,7 +183,8 @@ bool BLMProvider::_sendData(const unsigned char *data, unsigned int len)
     }
 
     if (SOH != data[0])
-    { // 协议数据以SOH字节开始
+    {
+        // 协议数据以SOH字节开始
         debug("Invalid command!");
         return false;
     }
@@ -180,7 +196,8 @@ bool BLMProvider::_sendData(const unsigned char *data, unsigned int len)
     for (unsigned int i = 1; i < len; i++)
     {
         if (SOH == data[i])
-        { // 对SOH字节进行转义
+        {
+            // 对SOH字节进行转义
             sendBuf[index++] = SOH;
         }
 
@@ -195,6 +212,59 @@ bool BLMProvider::_sendData(const unsigned char *data, unsigned int len)
 QByteArray BLMProvider::getVersionInfoData()
 {
     return versionInfoData;
+}
+
+void BLMProvider::dataArrived(unsigned char *buff, unsigned int length)
+{
+    _readData(buff, length); // 读取数据到RingBuff中
+
+    unsigned char packet[570];
+
+    while (ringBuff.dataSize() >= minPacketLen)
+    {
+        if (ringBuff.at(0) != SOH)
+        {
+            // debug("discard (%s:%x)\n", qPrintable(getName()), ringBuff.at(0));
+            ringBuff.pop(1);
+            continue;
+        }
+
+        int len = (ringBuff.at(1) + (ringBuff.at(2) << 8));
+        if ((len <= 0) || (len > 570))
+        {
+            ringBuff.pop(1);
+            break;
+        }
+        if (len > ringBuff.dataSize()) // 数据还不够，继续等待。
+        {
+            break;
+        }
+
+        // 数据包不会超过packet长度，当出现这种情况说明发生了不可预料的错误，直接丢弃该段数据。
+        if (len > static_cast<int>(sizeof(packet)))
+        {
+            ringBuff.pop(1);
+            continue;
+        }
+
+        // 将数据包读到buff中。
+        for (int i = 0; i < len; i++)
+        {
+            packet[i] = ringBuff.at(0);
+            ringBuff.pop(1);
+        }
+
+        if (_checkPacketValid(packet, len))
+        {
+            handlePacket(&packet[3], len - 4);
+        }
+        else
+        {
+            // outHex(packet, len);
+            debug("FCS error (%s)\n", qPrintable(getName()));
+            ringBuff.pop(1);
+        }
+    }
 }
 
 /***************************************************************************************************
@@ -243,7 +313,7 @@ bool BLMProvider::_checkPacketValid(const unsigned char *data, unsigned int len)
     }
 
     unsigned char crc = calcCRC(data, (len - 1));
-    if (data[len-1] != crc)
+    if (data[len - 1] != crc)
     {
 //        outHex(data, (int)len);
 //        debug("%s: FCS not match : %x!\n", qPrintable(getName()), crc);
@@ -283,8 +353,54 @@ void BLMProvider::_readData(void)
         ringBuff.push(buff[i]);
         if (buff[i] != SOH)
         {
-           _isLastSOHPaired = false;
-           continue;
+            _isLastSOHPaired = false;
+            continue;
+        }
+
+        _isLastSOHPaired = false;
+        i++;
+        if (i >= len)
+        {
+            break;
+        }
+
+        if (buff[i] == SOH)                    // 剔除。
+        {
+            _isLastSOHPaired = true;
+            continue;
+        }
+
+        ringBuff.push(buff[i]);
+    }
+}
+
+void BLMProvider::_readData(unsigned char *buff, unsigned int len)
+{
+    if (!buff)
+    {
+        return;
+    }
+
+    int startIndex = 0;
+    bool isok;
+    unsigned char v = ringBuff.head(isok);
+
+    if (isok && len > 0)
+    {
+        if ((!_isLastSOHPaired) && (v == SOH) && (buff[0] == SOH))  // SOH为数据包起始数据。
+        {
+            _isLastSOHPaired = true;
+            startIndex = 1;                  // 说明有连续两个SOH出现，需要丢弃一个。
+        }
+    }
+
+    for (int i = startIndex; i < len; i++)
+    {
+        ringBuff.push(buff[i]);
+        if (buff[i] != SOH)
+        {
+            _isLastSOHPaired = false;
+            continue;
         }
 
         _isLastSOHPaired = false;

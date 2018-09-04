@@ -371,6 +371,10 @@ static void _initProviderParam(void)
         {
             paramManager.addProvider(*new NellcorSetProvider());
         }
+        else if (str == "DataDispatcher")
+        {
+            paramManager.addProvider(*new DataDispatcher());
+        }
         paramManager.addParam(spo2Param.construction());
         alertor.addLimtSource(spo2LimitAlarm.construction());
         alertor.addOneShotSource(spo2OneShotAlarm.construction());
@@ -534,6 +538,10 @@ static void _initProviderParam(void)
         {
             paramManager.addProvider(*new T5Provider());
         }
+//        else if (str == "DataDispatcher")
+//        {
+//            paramManager.addProvider(*new DataDispatcher());
+//        }
 
         paramManager.addParam(tempParam.construction());
         alertor.addLimtSource(tempLimitAlarm.construction());

@@ -592,6 +592,7 @@ SOURCES +=                                                                      
     Providers/RawData/RawDataCollection.cpp                                     \
     Providers/RawData/RawDataCollectionTxt.cpp                                  \
     Providers/S5Provider/S5Provider.cpp                                         \
+    Providers/DataDispatcher.cpp                                                \
 #################################################################################
     Main/App/AppMain.cpp                                                        \
     Main/App/Init.cpp                                                           \
@@ -1197,6 +1198,7 @@ HEADERS +=                                                                      
     Providers/RawData/RawDataCollection.h                                       \
     Providers/RawData/RawDataCollectionTxt.h                                    \
     Providers/S5Provider/S5Provider.h                                           \
+    Providers/DataDispatcher.h                                                  \
 #################################################################################
     Main/App/Init.h                                                             \
     Main/IApplication.h                                                         \
