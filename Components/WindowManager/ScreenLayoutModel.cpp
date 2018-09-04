@@ -132,6 +132,7 @@ public:
         else if (info.waveid == WAVE_CO2)
         {
             info.waveMaxValue = demoProvider->getCO2MaxWaveform();
+            info.drawSpeed = 6.25;
             info.waveMinValue = 0;
             info.baseLine = demoProvider->getCO2BaseLine();
             info.sampleRate = demoProvider->getSPO2WaveformSample();

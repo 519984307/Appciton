@@ -18,7 +18,6 @@
 
 #define WAVE_LEFT_RIGHT_MARGIN 4
 #define WAVE_TOP_BOTTOM_MARGIN 2
-#define DEFAULT_WAVE_SPEED 12.5
 
 class ScreenLayoutItemDelegatePrivate : public TableViewItemDelegatePrivate
 {
@@ -44,24 +43,29 @@ void ScreenLayoutItemDelegatePrivate::drawWave(QPainter *painter, const QRect &r
     QPainterPath path;
 
     painter->save();
-    float xGap = DEFAULT_WAVE_SPEED / systemManager.getScreenPixelWPitch() /
+    float xGap = info.drawSpeed / systemManager.getScreenPixelWPitch() /
                  info.sampleRate; // for the x axis distance betwwen each data point
     float x, y;
-    int middleValue = rect.center().y();
+    int baseYValue = rect.center().y();
+    if (info.waveMinValue == info.baseLine)
+    {
+        baseYValue = rect.bottom() - WAVE_TOP_BOTTOM_MARGIN;
+    }
+
     int index = 0;
     float factor = 1.0 * (rect.height() - 2 * WAVE_TOP_BOTTOM_MARGIN) / (info.waveMaxValue - info.waveMinValue);
     float maxXvalue = rect.right() - WAVE_LEFT_RIGHT_MARGIN;
 
     // move to start point
     x = WAVE_LEFT_RIGHT_MARGIN;
-    y = middleValue - (data[index] - info.baseLine) * factor;
+    y = baseYValue - (data[index] - info.baseLine) * factor;
     path.moveTo(x, y);
     index = (index + 1) % len;
 
     while (x < maxXvalue)
     {
         x += xGap;
-        y = middleValue - (data[index] - info.baseLine) * factor;
+        y = baseYValue - (data[index] - info.baseLine) * factor;
         path.lineTo(x, y);
         index = (index + 1) % len;
     };
@@ -69,6 +73,7 @@ void ScreenLayoutItemDelegatePrivate::drawWave(QPainter *painter, const QRect &r
     QPen pen = painter->pen();
     pen.setWidth(1);
     painter->setPen(pen);
+    painter->setRenderHint(QPainter::Antialiasing);
     painter->drawPath(path);
     painter->restore();
 }

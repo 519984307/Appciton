@@ -17,10 +17,11 @@
 struct ScreenLayoutItemInfo
 {
     ScreenLayoutItemInfo()
-        : waveMaxValue(255),
+        :  baseLine(128),
           waveMinValue(0),
-          baseLine(128),
+          waveMaxValue(255),
           sampleRate(250),
+          drawSpeed(12.5),
           waveid(WAVE_NONE)
     {}
 
@@ -30,6 +31,7 @@ struct ScreenLayoutItemInfo
     int waveMinValue;
     int waveMaxValue;
     int sampleRate;
+    float drawSpeed;
     WaveformID waveid;
 };
 
