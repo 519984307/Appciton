@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/3
+ **/
+
 ////////////////////////////////////////////////////////////////////////////////
 // 说明：
 // WaveWidget是一个波形控件，支持扫描模式，滚动模式，回顾模式及三者对应的级联模式
@@ -34,7 +44,7 @@ bool WaveWidget::resetWaveFlag = false;
 /***************************************************************************************************
  * find the minimum sample rate of the display wave that has same speed
  **************************************************************************************************/
-//static float minSampleRateOfDispalyWaveSpeed(float speed)
+// static float minSampleRateOfDispalyWaveSpeed(float speed)
 //{
 //    QStringList wavenameList;
 //    windowManager.getDisplayedWaveform(wavenameList);
@@ -63,10 +73,10 @@ static float maxSampleRateOfDispalyWaveSpeed(float speed)
     float maxSampleRate = 0;
     foreach(QString str, wavenameList)
     {
-        WaveWidget *wave = qobject_cast<WaveWidget*>(windowManager.getWidget(str));
-        if(wave && isEqual(speed, wave->waveSpeed()))
+        WaveWidget *wave = qobject_cast<WaveWidget *>(windowManager.getWidget(str));
+        if (wave && isEqual(speed, wave->waveSpeed()))
         {
-            if(maxSampleRate < wave->dataRate() || maxSampleRate == 0)
+            if (maxSampleRate < wave->dataRate() || maxSampleRate == 0)
             {
                 maxSampleRate = wave->dataRate();
             }
@@ -84,16 +94,16 @@ static double timeforEachScanLoop(float speed, WaveWidget *curWave, int curBufSi
     windowManager.getDisplayedWaveform(wavenameList);
     foreach(QString str, wavenameList)
     {
-        WaveWidget *wave = qobject_cast<WaveWidget*>(windowManager.getWidget(str));
-        if(wave && isEqual(speed, wave->waveSpeed()))
+        WaveWidget *wave = qobject_cast<WaveWidget *>(windowManager.getWidget(str));
+        if (wave && isEqual(speed, wave->waveSpeed()))
         {
             if (wave == curWave)
             {
-                return (double)curBufSize / wave->dataRate();
+                return static_cast<double>(curBufSize) / wave->dataRate();
             }
             else
             {
-                return (double)wave->bufSize() / wave->dataRate();
+                return static_cast<double>(wave->bufSize()) / wave->dataRate();
             }
         }
     }
@@ -108,13 +118,14 @@ static double timeforEachScanLoop(float speed, WaveWidget *curWave, int curBufSi
 // type: 波形参数ID
 ////////////////////////////////////////////////////////////////////////////////
 WaveWidget::WaveWidget(const QString &widgetName, const QString &title) : IWidget(widgetName),
-        _modes(), _mode(NULL), _modeFlag(SCAN_MODE), _isCascade(false), _items(), _labelItems(), _title(title),
-        _background(NULL), _isUpdateBackgroundPending(true), _model(NULL),
-        _reviewTime(), _isUpdateBufferPending(true), _waveBuf(NULL), _dataBuf(NULL), _xBuf(NULL),
-        _dyBuf(NULL), _flagBuf(NULL), _size(0), _head(0), _tail(0), _margin(QMargins(2,2,2,2)), _spacing(2),
-        _waveSpeed(12.5), _dataRate(125), _sampleCount(0), _timeLostFlag(false), _lineWidth(1), _minValue(-32768), _maxValue(32767),
-        _isFill(false), _isAntialias(false), _isShowGrid(false), _id(-1),
-        _queuedDataBuf(NULL), _queuedDataRate(0), _dequeueTimer(), _dequeueSizeEachTime(0), _isFreeze(false)
+    _modes(), _mode(NULL), _modeFlag(SCAN_MODE), _isCascade(false), _items(), _labelItems(), _title(title),
+    _background(NULL), _isUpdateBackgroundPending(true), _model(NULL),
+    _reviewTime(), _isUpdateBufferPending(true), _waveBuf(NULL), _dataBuf(NULL), _xBuf(NULL),
+    _dyBuf(NULL), _flagBuf(NULL), _size(0), _head(0), _tail(0), _margin(QMargins(2, 2, 2, 2)), _spacing(2),
+    _waveSpeed(12.5), _dataRate(125), _sampleCount(0), _timeLostFlag(false), _lineWidth(1), _minValue(-32768),
+    _maxValue(32767),
+    _isFill(false), _isAntialias(false), _isShowGrid(false), _id(-1),
+    _queuedDataBuf(NULL), _queuedDataRate(0), _dequeueTimer(), _dequeueSizeEachTime(0), _isFreeze(false)
 {
     _spaceFlag = NULL;
     _pixelWPitch = systemManager.getScreenPixelWPitch();
@@ -126,7 +137,7 @@ WaveWidget::WaveWidget(const QString &widgetName, const QString &title) : IWidge
     // 初始化工作模式对象列表
     _modes.append(new WaveScanMode(this));
     _modes.append(new WaveScrollMode(this));
-    //_modes.append(new WaveReviewMode(this));
+    // _modes.append(new WaveReviewMode(this));
     _modes.append(new FreezeWaveReviewMode(this));
 
     // 选择默认工作模式
@@ -150,8 +161,8 @@ WaveWidget::WaveWidget(const QString &widgetName, const QString &title) : IWidge
     setPalette(palette);
 
 
-   connect(&freezeManager, SIGNAL(freeze(bool)), this, SLOT(freeze(bool)));
-   connect(&freezeManager, SIGNAL(freezeReview()), this, SLOT(enterFreezeReviewMode()));
+    connect(&freezeManager, SIGNAL(freeze(bool)), this, SLOT(freeze(bool)));
+    connect(&freezeManager, SIGNAL(freezeReview()), this, SLOT(enterFreezeReviewMode()));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -270,7 +281,7 @@ void WaveWidget::removeItem(WaveWidgetItem *item)
 {
     if (item)
     {
-        if(_items.removeOne(item))
+        if (_items.removeOne(item))
         {
             item->update();
         }
@@ -323,7 +334,7 @@ bool WaveWidget::isFocus()
 
     for (int i = 0; i < count; ++i)
     {
-        QWidget *widget = (QWidget *)_labelItems.at(i);
+        QWidget *widget = qobject_cast<QWidget *>(_labelItems.at(i));
         if (NULL != widget && widget->hasFocus())
         {
             bret = true;
@@ -337,7 +348,7 @@ bool WaveWidget::isFocus()
 ////////////////////////////////////////////////////////////////////////////////
 // 功能:获取子菜单控件
 ////////////////////////////////////////////////////////////////////////////////
-void WaveWidget::getSubFocusWidget(QList<QWidget*> &subWidget) const
+void WaveWidget::getSubFocusWidget(QList<QWidget *> &subWidget) const
 {
     subWidget.clear();
 
@@ -349,7 +360,7 @@ void WaveWidget::getSubFocusWidget(QList<QWidget*> &subWidget) const
 
     for (int i = count - 1; i >= 0; --i)
     {
-        QWidget *widget = (QWidget *)_labelItems.at(i);
+        QWidget *widget = qobject_cast<QWidget *>(_labelItems.at(i));
         if (NULL != widget && (Qt::NoFocus != _labelItems.at(i)->focusPolicy()))
         {
             subWidget.append(widget);
@@ -406,7 +417,7 @@ void WaveWidget::_bufPush(int x, int y, int value, int flag, bool isUpdated)
         _tail = _bufNext(_tail);
     }
 
-    if(!_waveBuf || !_dataBuf || !_flagBuf)
+    if (!_waveBuf || !_dataBuf || !_flagBuf)
     {
         return;
     }
@@ -451,7 +462,7 @@ void WaveWidget::_bufPush(int x, int y, int value, int flag, bool isUpdated)
 
     _setDyBuf(i);
 
-    if(isUpdated==false)
+    if (isUpdated == false)
     {
         return;
     }
@@ -475,7 +486,7 @@ void WaveWidget::_bufPush(int x, int y, int value, int flag, bool isUpdated)
 ////////////////////////////////////////////////////////////////////////////////
 void WaveWidget::_bufPop(int n)
 {
-    if(0 == _size)
+    if (0 == _size)
     {
         return;
     }
@@ -495,7 +506,7 @@ void WaveWidget::_bufPop(int n)
 ////////////////////////////////////////////////////////////////////////////////
 void WaveWidget::_setDyBuf(int i)
 {
-    if(!_waveBuf || !_dyBuf)
+    if (!_waveBuf || !_dyBuf)
     {
         return;
     }
@@ -541,7 +552,7 @@ void WaveWidget::updateBackground()
 ////////////////////////////////////////////////////////////////////////////////
 void WaveWidget::_resetBuffer()
 {
-    if(!_mode)
+    if (!_mode)
     {
         return;
     }
@@ -560,15 +571,15 @@ void WaveWidget::_resetBuffer()
         curTraceScanTime = n / _dataRate;
     }
 
-    if(!isEqual(topTraceScanTime, 0.0) && !isEqual(curTraceScanTime, topTraceScanTime))
+    if (!isEqual(topTraceScanTime, 0.0) && !isEqual(curTraceScanTime, topTraceScanTime))
     {
         _timeLostFlag = true;
         _totalTimeLost = 0.0;
         _timeLostForEachLoop = curTraceScanTime - topTraceScanTime;
-        _timeForEachSample = (double) 1.0 / dataRate();
-        qDebug()<<"Time lost for trace "<<_title
-               <<", time lost: "<<_timeLostForEachLoop
-              <<", time for one sample: "<< _timeForEachSample;
+        _timeForEachSample = static_cast<double>(1.0) / dataRate();
+        qDebug() << "Time lost for trace " << _title
+                 << ", time lost: " << _timeLostForEachLoop
+                 << ", time for one sample: " << _timeForEachSample;
     }
     else
     {
@@ -704,9 +715,9 @@ void WaveWidget::_resetBackground()
         int xstep = qRound(5 / _pixelWPitch);       // 网格间隔固定5mm
         int ystep = qRound(5 / _pixelHPitch);
         QPoint gridLeftTop = mapFromParent(QPoint(_roundUp(geometry().left(), xstep),
-                _roundUp(geometry().top(), ystep)));
+                                           _roundUp(geometry().top(), ystep)));
         QPoint gridRightBottom = mapFromParent(QPoint(_roundDown(geometry().right(), xstep),
-                _roundDown(geometry().bottom(), ystep)));
+                                               _roundDown(geometry().bottom(), ystep)));
         QPoint parentLeftTop = mapFromParent(QPoint(0, 0));
 
         for (int x = gridLeftTop.x(); x <= gridRightBottom.x(); x += xstep)
@@ -761,7 +772,7 @@ void WaveWidget::resetWave()
 
 int WaveWidget::xToIndex(int x)
 {
-    if(!_mode)
+    if (!_mode)
     {
         return 0;
     }
@@ -863,7 +874,7 @@ void WaveWidget::setLineWidth(int lineWidth)
 ////////////////////////////////////////////////////////////////////////////////
 void WaveWidget::setValueRange(int min, int max)
 {
-    if(!_mode)
+    if (!_mode)
     {
         return;
     }
@@ -1027,17 +1038,17 @@ void WaveWidget::enableGrid(bool isEnable)
 ////////////////////////////////////////////////////////////////////////////////
 void WaveWidget::addData(int value, int flag, bool isUpdated)
 {
-    if(!isVisible())
+    if (!isVisible())
     {
         return;
     }
 
-    if(_isFreeze)
+    if (_isFreeze)
     {
         return;
     }
 
-    if(!_mode)
+    if (!_mode)
     {
         return;
     }
@@ -1053,20 +1064,20 @@ void WaveWidget::addData(int value, int flag, bool isUpdated)
     }
 
     _mode->addData(value, flag, isUpdated);
-    if(_timeLostFlag)
+    if (_timeLostFlag)
     {
-        _sampleCount ++;
-        if(_sampleCount % bufSize() == 0)
+        _sampleCount++;
+        if (_sampleCount % bufSize() == 0)
         {
-            //one loop
+            // one loop
             _totalTimeLost += _timeLostForEachLoop;
 
-            if(_totalTimeLost > _timeForEachSample)
+            if (_totalTimeLost > _timeForEachSample)
             {
                 _totalTimeLost -= _timeForEachSample;
                 _mode->addData(value, flag, isUpdated);
-                _sampleCount ++;
-                qDebug()<<"Because of time lost, add one more sample for "<<_title;
+                _sampleCount++;
+                qDebug() << "Because of time lost, add one more sample for " << _title;
             }
         }
     }
@@ -1168,28 +1179,28 @@ int WaveWidget::getID(void) const
  */
 void WaveWidget::freeze(bool flag)
 {
-   if(_isFreeze == flag || !isVisible())
-   {
-       return;
-   }
+    if (_isFreeze == flag || !isVisible())
+    {
+        return;
+    }
 
-   _isFreeze = flag;
+    _isFreeze = flag;
 
-   if(_isFreeze)
-   {
-       _freezeDataModel = freezeManager.getWaveDataModel(this->getID());
-   }
-   else
-   {
-       //free the data model
-       selectMode(SCAN_MODE);
-       resetWave();
-   }
+    if (_isFreeze)
+    {
+        _freezeDataModel = freezeManager.getWaveDataModel(this->getID());
+    }
+    else
+    {
+        // free the data model
+        selectMode(SCAN_MODE);
+        resetWave();
+    }
 }
 
 void WaveWidget::enterFreezeReviewMode()
 {
-    if(_isFreeze && isVisible())
+    if (_isFreeze && isVisible())
     {
         selectMode(FREEZE_REVIEW_MODE);
     }
@@ -1207,7 +1218,7 @@ void WaveWidget::enterFreezeReviewMode()
 ////////////////////////////////////////////////////////////////////////////////
 void WaveWidget::reviewWave(const QDateTime &time)
 {
-    if(!_mode)
+    if (!_mode)
     {
         return;
     }
@@ -1227,7 +1238,7 @@ void WaveWidget::reviewWave(const QDateTime &time)
 ////////////////////////////////////////////////////////////////////////////////
 void WaveWidget::paintEvent(QPaintEvent *e)
 {
-    if(!_mode)
+    if (!_mode)
     {
         return;
     }
@@ -1265,7 +1276,7 @@ void WaveWidget::paintEvent(QPaintEvent *e)
         {
             WaveWidgetItem *item = _items[i];
 
-            if(!item)
+            if (!item)
             {
                 continue;
             }
@@ -1297,7 +1308,7 @@ void WaveWidget::paintEvent(QPaintEvent *e)
             for (int i = 0; i < n; i++)
             {
                 WaveWidgetItem *item = _items[i];
-                if(!item)
+                if (!item)
                 {
                     continue;
                 }
@@ -1348,7 +1359,7 @@ void WaveWidget::resizeEvent(QResizeEvent *e)
         _model->update();
     }
 
-    if(_freezeIndicator)
+    if (_freezeIndicator)
     {
         _freezeIndicator->resize(this->rect());
     }
@@ -1366,7 +1377,7 @@ void WaveWidget::resizeEvent(QResizeEvent *e)
 ////////////////////////////////////////////////////////////////////////////////
 void WaveWidget::timerEvent(QTimerEvent *e)
 {
-    if(!e || !_mode)
+    if (!e || !_mode)
     {
         return;
     }
@@ -1395,9 +1406,10 @@ void WaveWidget::timerEvent(QTimerEvent *e)
 // 返回值:
 // 无
 ////////////////////////////////////////////////////////////////////////////////
-void WaveWidget::showEvent(QShowEvent */*e*/)
+void WaveWidget::showEvent(QShowEvent *e)
 {
-    if(!_mode)
+    Q_UNUSED(e)
+    if (!_mode)
     {
         return;
     }
@@ -1438,8 +1450,9 @@ void WaveWidget::showEvent(QShowEvent */*e*/)
 // 返回值:
 // 无
 ////////////////////////////////////////////////////////////////////////////////
-void WaveWidget::hideEvent(QHideEvent */*e*/)
+void WaveWidget::hideEvent(QHideEvent *e)
 {
+    Q_UNUSED(e)
     _dequeueTimer.stop();
 }
 
@@ -1459,7 +1472,7 @@ WaveMode *WaveWidget::_findMode(WaveModeFlag modeFlag, bool isCascade)
     int n = _modes.size();
     for (int i = 0; i < n; i++)
     {
-        if(!_modes.at(i))
+        if (!_modes.at(i))
         {
             continue;
         }
@@ -1470,7 +1483,7 @@ WaveMode *WaveWidget::_findMode(WaveModeFlag modeFlag, bool isCascade)
         }
     }
 
-    qDebug("Wave mode (%d, %d) not supported yet!", (int) modeFlag, isCascade);
+    qDebug("Wave mode (%d, %d) not supported yet!", static_cast<int>(modeFlag), isCascade);
     return _modes.at(0);
 }
 

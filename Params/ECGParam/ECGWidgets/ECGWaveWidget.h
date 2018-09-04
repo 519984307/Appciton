@@ -34,6 +34,7 @@ struct rMark_record
 class WaveWidgetLabel;
 class ECGWaveRuler;
 class PopupList;
+class ECGWaveRuler;
 /**************************************************************************************************
  * ECG 波形显示控件
  *************************************************************************************************/
@@ -132,6 +133,7 @@ private:
     WaveWidgetLabel *_filter;       // 滤波标签
     WaveWidgetLabel *_notify;       // 提示标签
     PopupList *_gainList;           // 增益列表
+    ECGWaveRuler *_ruler;           // 标尺
     static int _paceHeight;         // 起搏标记高度, 单位像素
     int _p05mV;                     // +0.5mV对应的波形数值
     int _n05mV;                     // -0.5mV对应的波形数值
