@@ -30,6 +30,10 @@ protected:
 private slots:
     void onComboBoxIndexChanged(int index);
     /**
+     * @brief onSTSwitchBtnReleased  ST开关触发槽函数
+     */
+    void onSTSwitchBtnReleased(void);
+    /**
      * @brief onAlarmBtnReleased
      */
     void onAlarmBtnReleased(void);

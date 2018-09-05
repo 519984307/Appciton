@@ -31,6 +31,10 @@ private slots:
     void arrhythmiaBtnReleased(void);
     void selfLearnBtnReleased(void);
     /**
+     * @brief onSTSwitchBtnReleased  ST开关触发槽函数
+     */
+    void onSTSwitchBtnReleased(void);
+    /**
      * @brief onAlarmBtnReleased
      */
     void onAlarmBtnReleased(void);

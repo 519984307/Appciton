@@ -41,7 +41,8 @@ public:
     };
 
     explicit ConfigEditECGMenuContentPrivate(Config * const config)
-        :config(config)
+        :config(config),
+          sTSwitchBtn(NULL)
     {}
 
     // load settings
@@ -50,6 +51,7 @@ public:
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, QLabel *> comboLabels;
     Config *const config;
+    Button *sTSwitchBtn;
 };
 
 void ConfigEditECGMenuContentPrivate::loadOptions()
@@ -350,15 +352,22 @@ void ConfigEditECGMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_NOTCH_FILTER, comboBox);
 
+    // ST 段开关
+    d_ptr->sTSwitchBtn = new Button;
+    d_ptr->sTSwitchBtn->setText(QString("%1 >>").arg(trs("STAnalysize")));
+    d_ptr->sTSwitchBtn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(d_ptr->sTSwitchBtn, d_ptr->combos.count(), 1);
+    connect(d_ptr->sTSwitchBtn, SIGNAL(released()), this, SLOT(onSTSwitchBtnReleased()));
+
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
                              arg(" >>"));
     btn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(btn, d_ptr->combos.count(), 1);
+    layout->addWidget(btn, d_ptr->combos.count() + 1, 1);
     connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
 
-    layout->setRowStretch(d_ptr->combos.count() + 1, 1);
+    layout->setRowStretch(d_ptr->combos.count() + 2, 1);
 }
 
 void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
@@ -407,6 +416,10 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
             break;
         }
     }
+}
+
+void ConfigEditECGMenuContent::onSTSwitchBtnReleased()
+{
 }
 
 void ConfigEditECGMenuContent::onAlarmBtnReleased()

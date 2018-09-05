@@ -72,7 +72,7 @@ void FloatScrollBar::paintEvent(QPaintEvent *ev)
 
     QRect rect = this->contentsRect();
     QColor c = palette().color(QPalette::Highlight);
-    c.setAlpha(80);
+    c.setAlpha(250);
     painter.setBrush(c);
     painter.drawRoundedRect(rect, rect.width() / 2, rect.width() / 2, Qt::AbsoluteSize);
 }

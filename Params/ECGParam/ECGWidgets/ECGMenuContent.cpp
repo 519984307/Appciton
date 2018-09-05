@@ -37,7 +37,8 @@ public:
     };
 
     ECGMenuContentPrivate()
-        : selfLearnBtn(NULL), arrhythmiaBtn(NULL)
+        : selfLearnBtn(NULL), arrhythmiaBtn(NULL),
+          sTSwitchBtn(NULL)
     {}
 
     // load settings
@@ -46,6 +47,7 @@ public:
     QMap<MenuItem, ComboBox *> combos;
     Button *selfLearnBtn;
     Button *arrhythmiaBtn;
+    Button *sTSwitchBtn;
 };
 
 void ECGMenuContentPrivate::loadOptions()
@@ -230,15 +232,22 @@ void ECGMenuContent::layoutExec()
     layout->addWidget(d_ptr->arrhythmiaBtn, d_ptr->combos.count() + 1, 1);
     connect(d_ptr->arrhythmiaBtn, SIGNAL(released()), this, SLOT(arrhythmiaBtnReleased()));
 
+    // ST 段开关
+    d_ptr->sTSwitchBtn = new Button;
+    d_ptr->sTSwitchBtn->setText(QString("%1 >>").arg(trs("STAnalysize")));
+    d_ptr->sTSwitchBtn->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(d_ptr->sTSwitchBtn, d_ptr->combos.count() + 2, 1);
+    connect(d_ptr->sTSwitchBtn, SIGNAL(released()), this, SLOT(onSTSwitchBtnReleased()));
+
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
                              arg(" >>"));
     btn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(btn, d_ptr->combos.count() + 2, 1);
+    layout->addWidget(btn, d_ptr->combos.count() + 3, 1);
     connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
 
-    layout->setRowStretch(d_ptr->combos.count() + 3, 1);
+    layout->setRowStretch(d_ptr->combos.count() + 4, 1);
 }
 
 void ECGMenuContent::onComboBoxIndexChanged(int index)
@@ -325,6 +334,10 @@ void ECGMenuContent::arrhythmiaBtnReleased()
 void ECGMenuContent::selfLearnBtnReleased()
 {
     ecgParam.setSelfLearn(1);
+}
+
+void ECGMenuContent::onSTSwitchBtnReleased()
+{
 }
 
 void ECGMenuContent::onAlarmBtnReleased()
