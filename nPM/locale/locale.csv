@@ -405,6 +405,8 @@ _210sec,210 秒,210 sec
 _240sec,240 秒,240 sec
 sec,秒,second
 PatientData,病人数据,Patient Data
+DataReviewMenu,数据回顾,Data Review
+DataReviewMenuDesc,数据回顾设置,Data Review Desc
 NIBPData,血压数据,NIBP Data
 Interval,间隔,Interval
 Print,打印,Print
