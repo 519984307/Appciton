@@ -50,7 +50,7 @@ ST,ST,ST
 Input,输入,Input
 Output,输出,Output
 ReviewWindow,回顾窗口,Review Window
-CO2,二氧化碳,CO2
+CO2,CO2,CO2
 ETCO2,呼末CO2,EtCO2
 FICO2,FiCO2,FiCO2
 ETN2O,呼末N2O,EtN2O
@@ -116,7 +116,7 @@ ECGGain,增益,Gain
 ECGPacemaker,起搏器,Pacemaker
 ECGSweepSpeed,波形速度,Sweep Speed
 ECGQRSToneVolume,QRS/PR 音量,QRS/PR Volume
-ECGMenu,心电,ECG
+ECGMenu,ECG,ECG
 ECGSTSWitch,ST开关,ST SWitch
 ECGSTPoint,ST点,ST Point
 ECGISOPoint,ISO点,ISO Point
@@ -148,22 +148,22 @@ ConfigEditIBPMenu,有创血压,IBP
 SPO2SweepSpeed,波形速度,Sweep Speed
 SPO2PRDisplay,脉率显示,PR Display
 SPO2SmartPluseTone,智能脉搏音,Smart Pulse Tone
-SPO2Menu,血氧,SPO2
+SPO2Menu,SPO2,SPO2
 RESPSweepSpeed,波形速度,Sweep Speed
 RESPApneaTime,窒息时间,Apnea Time
 RESPZoom,缩放,Zoom
 RESPLead,呼吸导联,RESP Lead
-RESPMenu,呼吸,RESP
+RESPMenu,RESP,RESP
 RRLow,RR低,RR Low
 RRHigh,RR高,RR High
 RESPApnea,呼吸窒息,RESP Apnea
 RESPAutoActivation,呼吸激活,RESP Automatic Activation
 NIBPMeasurement,无创血压测量,NIBP Measurement
-NIBPMeasureMode,测量摸式,Measure Mode
+NIBPMeasureMode,测量模式,Measure Mode
 NIBPIntervalTime,间隔时间,NIBP Interval Time
 NIBPAutoInterval,自动间隔,Auto Interval
-NIBPMenu,无创血压,NIBP
-NIBPMenuDesc,无创血压设置,NIBP Desc
+NIBPMenu,NIBP,NIBP
+NIBPMenuDesc,NIBP设置,NIBP Desc
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
 CO2SweepMode,CO2波形模式,CO2 Sweep Mode
@@ -171,15 +171,15 @@ CO2Curve,曲线,Curve
 CO2Filled,填充,Filled
 CO2Zoom,缩放,Zoom
 CO2FiCO2Display,FiCO2显示,FiCO2 Display
-O2Compensation,氧气补偿,O2 Compensation
-N2OCompensation,氮气补偿,N2O Compensation
+O2Compensation,O2补偿,O2 Compensation
+N2OCompensation,N2O补偿,N2O Compensation
 CO2ZeroCalib,校零,Zero
 CO2ZeroStart,开始,Start
-CO2Menu,二氧化碳,CO2
+CO2Menu,CO2,CO2
 CO2Switch,二氧化碳开关,CO2 Switch
-AGMenu,麻醉,AG
+AGMenu,AG,AG
 AGSweepSpeed,波形速度,Sweep Speed
-IBPMenu,有创血压,IBP
+IBPMenu,IBP,IBP
 IBPSweepSpeed,波形速度,Sweep Speed
 ChannelPressureEntitle1,通道１压力标名,Pressure Entitle Channel 1
 ChannelPressureEntitle2,通道２压力标名,Pressure Entitle Channel 2
@@ -203,7 +203,7 @@ T2,T2,T2
 TD,ΔT,ΔT
 ConfigEditTEMPMenu,体温,TEMP
 ConfigEditTEMPMenuDesc,体温设置,TEMP Desc
-TEMPMenu,体温,TEMP
+TEMPMenu,TEMP,TEMP
 TEMPUnit,单位,Unit
 TEMP1Low,体温1低,TEMP1 Low
 TEMP1High,体温1高,TEMP1 High
@@ -243,18 +243,18 @@ SystemBrightness,屏幕亮度,Brightness
 LTAAlarm,生命报警,LTA Alarm
 SystemMenu,系统,System
 PatientMenuDesc,病人设置,Patient Setting
-ECGMenuDesc,心电设置,ECG Desc
+ECGMenuDesc,ECG设置,ECG Desc
 STMenuDesc,ST设置,ST Setting
-SPO2MenuDesc,血氧设置,SPO2 Setting
-RESPMenuDesc,呼吸设置,RESP Setting
-CO2MenuDesc,二氧化碳设置,CO2 Desc
-IBPMenuDesc,有创血压设置,IBP Desc
-COMenuDesc,心排量设置,C.O. Desc
+SPO2MenuDesc,SPO2设置,SPO2 Setting
+RESPMenuDesc,RESP设置,RESP Setting
+CO2MenuDesc,CO2设置,CO2 Desc
+IBPMenuDesc,IBP设置,IBP Desc
+COMenuDesc,C.O.设置,C.O. Desc
 RESPAndCO2Menu,RESP和CO2,RESP & CO2
 RESPAndCO2MenuDesc,RESP和CO2设置,RESP & CO2 Setting
 CPRMenuDesc,CPR设置,CPR Setting
-TEMPMenuDesc,体温设置,TEMP Setting
-AGMenuDesc,麻醉设置,AG Setting
+TEMPMenuDesc,TEMP设置,TEMP Setting
+AGMenuDesc,AG设置,AG Setting
 AlarmSettingMenuDesc,报警设置,Alarm Setting
 PrintSetupDesc,打印设置,Print Setting
 SystemMenuDesc,系统设置,System Setting
@@ -1351,10 +1351,10 @@ TEMPModuleDisable,温度模块失能,TEMP Module Disable
 TEMPCommunicationStop,温度通信停止,TEMP Communication Stop
 TEMPChannel,温度通道,TEMP Channel
 TEMPCalibrate,温度校准 ,TEMP Calibrate 
-N2O,一氧化二氮,N2O
+N2O,N2O,N2O
 AA1,自动识别麻醉气体1,AA1
 AA2,自动识别麻醉气体2,AA2
-O2,氧气,O2
+O2,O2,O2
 SetUp,设置,SetUp
 AGModule,麻醉模块,AGModule
 AG,麻醉,AG
