@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/5
+ **/
+
 #pragma once
 #include "BLMProvider.h"
 #include "Provider.h"
@@ -6,8 +16,8 @@
 // 收到的数据帧类型。
 enum S5PacketType
 {
-    S5_RESPONSE_NACK                            = 0x00,       //NACK应答
-    S5_RESPONSE_ACK                             = 0x01,       //ACK应答
+    S5_RESPONSE_NACK                            = 0x00,       // NACK应答
+    S5_RESPONSE_ACK                             = 0x01,       // ACK应答
 
     S5_CMD_GET_VERSION                          = 0x10,       // 获取版本信息。
     S5_RSP_GET_VERSION                          = 0x11,       //
@@ -56,11 +66,20 @@ public: // SPO2ProviderIFace 的接口。
     //获取版本号
     virtual void sendVersion(void);
 
-    virtual int getSPO2WaveformSample(void) {return 250;}
+    virtual int getSPO2WaveformSample(void)
+    {
+        return 250;
+    }
 
-    virtual int getSPO2BaseLine(void) {return 0x80;}
+    virtual int getSPO2BaseLine(void)
+    {
+        return 0x80;
+    }
 
-    virtual int getSPO2MaxValue(void) {return 256;}
+    virtual int getSPO2MaxValue(void)
+    {
+        return 256;
+    }
 
     // SPO2值与PR值。
     virtual bool isResultSPO2PR(unsigned char *packet);

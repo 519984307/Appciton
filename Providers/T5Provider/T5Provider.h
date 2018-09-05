@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/5
+ **/
+
 #pragma once
 #include "BLMProvider.h"
 #include "Provider.h"
@@ -6,8 +16,8 @@
 // 收到的数据帧类型。
 enum T5PacketType
 {
-    T5_RESPONSE_NACK                            = 0x00,       //NACK应答
-    T5_RESPONSE_ACK                             = 0x01,       //ACK应答
+    T5_RESPONSE_NACK                            = 0x00,       // NACK应答
+    T5_RESPONSE_ACK                             = 0x01,       // ACK应答
 
     T5_CMD_GET_VERSION                          = 0x10,       // 获取版本信息。
     T5_RSP_GET_VERSION                          = 0x11,       //
@@ -59,7 +69,10 @@ public: // TEMPProviderIFace 的接口。
     virtual void sendCalibrateData(int channel, int value);
 
     //通信中断
-    virtual bool isDisconnected(void) {return _disconnected;}
+    virtual bool isDisconnected(void)
+    {
+        return _disconnected;
+    }
 
 protected:
     virtual void handlePacket(unsigned char *data, int len);

@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/4
+ **/
+
 #pragma once
 #include "Provider.h"
 
@@ -8,7 +18,7 @@ class BLMProvider : public Provider
 {
     Q_OBJECT
 public:
-    BLMProvider(const QString &name);
+    explicit BLMProvider(const QString &name);
     virtual ~BLMProvider();
 
     // 发送协议命令
@@ -17,8 +27,11 @@ public:
     // 发送数据
     bool _sendData(const unsigned char *data, unsigned int len);
 
-    //get the version data
+    // get the version data
     QByteArray getVersionInfoData();
+
+    // 接收数据
+    void dataArrived(unsigned char *buff, unsigned int length);
 
 #ifdef CONFIG_UNIT_TEST
     friend class TestECGParam;
@@ -39,6 +52,8 @@ private:
 
     // 读取数据导RingBuff中
     void _readData(void);
+
+    void _readData(unsigned char *buff, unsigned int len);
 
     bool _isLastSOHPaired; // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH。
 

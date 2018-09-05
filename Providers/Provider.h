@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/5
+ **/
+
 #pragma once
 #include <QObject>
 #include <QString>
@@ -5,6 +15,7 @@
 #include "Param.h"
 #include "Uart.h"
 #include "RingBuff.h"
+#include "DataDispatcher.h"
 
 class Provider: public QObject
 {
@@ -23,10 +34,10 @@ public:
     // 检查连接状态。
     virtual void checkConnection(void);
 
-    //获取版本号
+    // 获取版本号
     virtual void sendVersion(void) = 0;
 
-     //关闭串口
+    // 关闭串口
     void closePort(void);
 
     // 是否连接
@@ -35,6 +46,13 @@ public:
     // 构造与析构。
     explicit Provider(const QString &name);
     virtual ~Provider();
+
+    // 当DataDispatcher 端口有数据时调用此方法，派生类实现。
+    virtual void dataArrived(unsigned char *data, unsigned int length)
+    {
+        Q_UNUSED(data)
+        Q_UNUSED(length)
+    }
 
 protected:
     // 初始化端口。
@@ -50,6 +68,7 @@ protected:
     RingBuff<unsigned char> ringBuff;
     static const int ringBuffLen = 4096;
     Uart *uart;
+    DataDispatcher::DispatchInfo disPatchInfo;
 
 protected slots:
     // 当端口有数据时调用此方法，派生类实现。

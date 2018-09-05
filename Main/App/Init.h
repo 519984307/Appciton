@@ -150,6 +150,8 @@
 #include "TEMPAlarm.h"
 #include "TEMPTrendWidget.h"
 
+#include "DataDispatcher.h"
+
 #include "RESPDupParam.h"
 #include "RESPDupAlarm.h"
 #include "RESPParam.h"

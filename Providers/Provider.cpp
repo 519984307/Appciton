@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/5
+ **/
+
 #include <unistd.h>
 #include <errno.h>
 #include <termios.h>
@@ -22,6 +32,18 @@ bool Provider::initPort(const UartAttrDesc &desc, bool needNotify)
 {
     QString port;
     machineConfig.getStrValue(_name + "Port", port);
+
+    disPatchInfo.dispatcher = DataDispatcher::getDataDispatcher(port);
+    if (disPatchInfo.dispatcher)
+    {
+        debug("%s connect to data dispatcher(%s), datatype %d",
+              qPrintable(_name),
+              qPrintable(port),
+              disPatchInfo.packetType);
+        disPatchInfo.dispatcher->connectProvider(disPatchInfo.packetType, this);
+        return true;
+    }
+
     debug("%s", qPrintable(_name));
     debug("%s", qPrintable(port));
     return uart->initPort(port, desc, needNotify);
@@ -32,6 +54,12 @@ bool Provider::initPort(const UartAttrDesc &desc, bool needNotify)
  *************************************************************************************************/
 int Provider::writeData(const unsigned char buff[], int len)
 {
+    // send through the dispatcher
+    if (disPatchInfo.packetType != DataDispatcher::PACKET_TYPE_INVALID)
+    {
+        return disPatchInfo.dispatcher->sendData(disPatchInfo.packetType, buff, len);
+    }
+
     return uart->write(buff, len);
 }
 
@@ -155,11 +183,11 @@ Provider::Provider(const QString &name) : QObject(), ringBuff(ringBuffLen), _nam
     _disconnectThreshold = 5;
     isConnected = false;
     _firstCheck = true;
-//#ifdef Q_WS_X11
+// #ifdef Q_WS_X11
 //    uart = new UartSocket();
-//#else
-  uart = new Uart();
-//#endif
+// #else
+    uart = new Uart();
+// #endif
     connect(uart, SIGNAL(activated(int)), this, SLOT(dataArrived()));
     uart->setParent(this);
 }

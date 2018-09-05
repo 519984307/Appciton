@@ -232,6 +232,8 @@ static void _initProviderParam(void)
     E5Provider *e5 = new E5Provider();
     paramManager.addProvider(*e5);
 
+    DataDispatcher::addDataDispatcher(new DataDispatcher("DataDispatcher"));
+
 
     // ECG部分。
     paramManager.addParam(ecgDupParam.construction());
