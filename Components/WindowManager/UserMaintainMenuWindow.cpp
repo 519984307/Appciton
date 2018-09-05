@@ -18,7 +18,6 @@
 #include "UnitSetupMenuContent.h"
 #include "Supervisor12LMenuContent.h"
 #include "SupervisorPrintMenuContent.h"
-#include "SupervisorTimeMenuContent.h"
 #include "ErrorLogEntranceContent.h"
 #include "DemoMenuContent.h"
 #include "LanguageManager.h"
@@ -40,7 +39,7 @@ UserMaintainMenuWindow *UserMaintainMenuWindow::getInstance()
         instance->addMenuContent(new ErrorLogEntranceContent);
         instance->addMenuContent(new Supervisor12LMenuContent);
         instance->addMenuContent(new SupervisorPrintMenuContent);
-        instance->addMenuContent(new DemoMenuContent);
+//        instance->addMenuContent(new DemoMenuContent);
         instance->setWindowTitle(trs("UserMaintainGeneralMenuDesc"));
     }
 

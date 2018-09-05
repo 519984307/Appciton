@@ -5,27 +5,28 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/13
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/12
  **/
 
 #pragma once
 #include "Window.h"
 
-class FactoryMaintainMenuContentPrivate;
-class FactoryMaintainMenuContent : public Window
+class ConfigManagerWindowPrivate;
+class ConfigManagerWindow : public Window
 {
     Q_OBJECT
 public:
-    FactoryMaintainMenuContent();
-    ~FactoryMaintainMenuContent();
+    ConfigManagerWindow();
+    ~ConfigManagerWindow();
+
     /**
-     * @brief layoutExec
-     */
-    void layoutExec();
+    * @brief layoutExec
+    */
+   void layoutExec();
 
 private slots:
     void userInputCorrect(void);
 
 private:
-    FactoryMaintainMenuContentPrivate * const d_ptr;
+    ConfigManagerWindowPrivate * const d_ptr;
 };

@@ -11,13 +11,13 @@
 #pragma once
 #include "Window.h"
 
-class UserMaintainMenuContentPrivate;
-class UserMaintainMenuContent : public Window
+class UserMaintainWindowPrivate;
+class UserMaintainWindow : public Window
 {
     Q_OBJECT
 public:
-    UserMaintainMenuContent();
-    ~UserMaintainMenuContent();
+    UserMaintainWindow();
+    ~UserMaintainWindow();
 
     /**
     * @brief layoutExec
@@ -28,5 +28,5 @@ private slots:
     void userInputCorrect(void);
 
 private:
-    UserMaintainMenuContentPrivate * const d_ptr;
+    UserMaintainWindowPrivate * const d_ptr;
 };

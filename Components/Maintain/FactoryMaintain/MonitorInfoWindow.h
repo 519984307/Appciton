@@ -10,19 +10,19 @@
 
 #include "Window.h"
 
-class MonitorInfoContentPrivate;
-class MonitorInfoContent : public Window
+class MonitorInfoWindowPrivate;
+class MonitorInfoWindow : public Window
 {
     Q_OBJECT
 public:
     /**
-     * @brief MonitorInfoContent  构造函数
+     * @brief MonitorInfoWindow  构造函数
      */
-    MonitorInfoContent();
+    MonitorInfoWindow();
     /**
-     * @brief ~MonitorInfoContent  析构函数
+     * @brief ~MonitorInfoWindow  析构函数
      */
-    ~MonitorInfoContent();
+    ~MonitorInfoWindow();
 
     /**
      * @brief readyShow  加载显示参数
@@ -56,7 +56,7 @@ private slots:
     void onTimeOutExec(void);
 
 private:
-    MonitorInfoContentPrivate *const d_ptr;
+    MonitorInfoWindowPrivate *const d_ptr;
 };
 
 

@@ -8,7 +8,7 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/20
  **/
 
-#include "MonitorInfoContent.h"
+#include "MonitorInfoWindow.h"
 #include <QMap>
 #include <QGridLayout>
 #include <QLabel>
@@ -22,7 +22,7 @@
 #include "TimeManager.h"
 #include <QTimer>
 
-class MonitorInfoContentPrivate
+class MonitorInfoWindowPrivate
 {
 public:
     enum MenuItem
@@ -36,7 +36,7 @@ public:
         ITEM_LAB_SCR_RESOLASIZE,
         ITEM_BTN_ELEC_SERIALNUM,
     };
-    MonitorInfoContentPrivate()
+    MonitorInfoWindowPrivate()
             : button(NULL),
               timer(NULL)
     {
@@ -50,20 +50,20 @@ public:
     QTimer *timer;
 };
 
-MonitorInfoContent::~MonitorInfoContent()
+MonitorInfoWindow::~MonitorInfoWindow()
 {
     delete d_ptr;
 }
 
-MonitorInfoContent::MonitorInfoContent()
+MonitorInfoWindow::MonitorInfoWindow()
     : Window(),
-      d_ptr(new MonitorInfoContentPrivate)
+      d_ptr(new MonitorInfoWindowPrivate)
 {
     layoutExec();
     readyShow();
 }
 
-void MonitorInfoContentPrivate::loadOptions()
+void MonitorInfoWindowPrivate::loadOptions()
 {
     QDesktopWidget *w = QApplication::desktop();
     QString temStr;
@@ -101,13 +101,13 @@ void MonitorInfoContentPrivate::loadOptions()
     button->setText(trs(temStr));
 }
 
-void MonitorInfoContent::readyShow()
+void MonitorInfoWindow::readyShow()
 {
     d_ptr->loadOptions();
     onTimeOutExec();
 }
 
-void MonitorInfoContent::onBtnReleasedChanged()
+void MonitorInfoWindow::onBtnReleasedChanged()
 {
     KeyInputPanel setSerialNumber;
     setSerialNumber.setMaxInputLength(16);
@@ -123,14 +123,14 @@ void MonitorInfoContent::onBtnReleasedChanged()
     }
 }
 
-void MonitorInfoContent::onTimeOutExec()
+void MonitorInfoWindow::onTimeOutExec()
 {
     QString showtime = getRunTime();
-    d_ptr->labs[MonitorInfoContentPrivate
+    d_ptr->labs[MonitorInfoWindowPrivate
             ::ITEM_LAB_CMLV_WORKTIME]->setText(showtime);
 }
 
-void MonitorInfoContent::layoutExec()
+void MonitorInfoWindow::layoutExec()
 {
     setWindowTitle(trs("MonitorInfoMenu"));
 
@@ -152,7 +152,7 @@ void MonitorInfoContent::layoutExec()
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(MonitorInfoContentPrivate
+    d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_CMLV_WORKTIME, labelRight);
 
     labelLeft = new QLabel(trs("TemperatureInsideCase"));
@@ -160,7 +160,7 @@ void MonitorInfoContent::layoutExec()
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(MonitorInfoContentPrivate
+    d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_TEM_INSIDECASE, labelRight);
 
     labelLeft = new QLabel(trs("BatteryLevel"));
@@ -168,7 +168,7 @@ void MonitorInfoContent::layoutExec()
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(MonitorInfoContentPrivate
+    d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_BAT_LEV, labelRight);
 
     labelLeft = new QLabel(trs("BatteryVoltage"));
@@ -176,7 +176,7 @@ void MonitorInfoContent::layoutExec()
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(MonitorInfoContentPrivate
+    d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_BAT_VOLT, labelRight);
 
     labelLeft = new QLabel(trs("MachineType"));
@@ -184,7 +184,7 @@ void MonitorInfoContent::layoutExec()
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(MonitorInfoContentPrivate
+    d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_MACHINE_TYPE, labelRight);
 
     labelLeft = new QLabel(trs("MACAddress"));
@@ -192,7 +192,7 @@ void MonitorInfoContent::layoutExec()
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(MonitorInfoContentPrivate
+    d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_MAC_ADDR, labelRight);
 
     labelLeft = new QLabel(trs("ScreenResolationSize"));
@@ -200,7 +200,7 @@ void MonitorInfoContent::layoutExec()
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(MonitorInfoContentPrivate
+    d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_SCR_RESOLASIZE, labelRight);
 
     labelLeft = new QLabel(trs("ElectronicSerialNumber"));
@@ -216,7 +216,7 @@ void MonitorInfoContent::layoutExec()
     setWindowLayout(vlayout);
 }
 
-QString MonitorInfoContent::getRunTime()
+QString MonitorInfoWindow::getRunTime()
 {
     QString t;
     unsigned diffTime = timeManager.getElapsedTime();
@@ -230,7 +230,7 @@ QString MonitorInfoContent::getRunTime()
     return t;
 }
 
-void MonitorInfoContent::showEvent(QShowEvent *e)
+void MonitorInfoWindow::showEvent(QShowEvent *e)
 {
     Window::showEvent(e);
     if (d_ptr->timer)
@@ -244,7 +244,7 @@ void MonitorInfoContent::showEvent(QShowEvent *e)
     d_ptr->timer->start(1000);
 }
 
-void MonitorInfoContent::hideEvent(QHideEvent *e)
+void MonitorInfoWindow::hideEvent(QHideEvent *e)
 {
     Window::hideEvent(e);
     if (d_ptr->timer)

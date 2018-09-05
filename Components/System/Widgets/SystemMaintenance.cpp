@@ -15,13 +15,14 @@
 #include <QGridLayout>
 #include <QVariant>
 #include "WindowManager.h"
-#include "ConfigManagerMenuContent.h"
-#include "FactoryMaintainMenuContent.h"
-#include "UserMaintainMenuContent.h"
-#include "SupervisorTimeMenuContent.h"
-#include "SoftWareVersionContent.h"
-#include "MonitorInfoContent.h"
+#include "ConfigManagerWindow.h"
+#include "FactoryMaintainWindow.h"
+#include "SupervisorTimeWindow.h"
+#include "UserMaintainWindow.h"
+#include "SoftWareVersionWindow.h"
+#include "MonitorInfoWindow.h"
 #include "SystemManager.h"
+#include "DemoModeWindow.h"
 
 class SystemMaintenancePrivate
 {
@@ -39,10 +40,6 @@ public:
     };
 
     SystemMaintenancePrivate() {}
-    /**
-     * @brief loadOptions
-     */
-    void loadOptions(void);
 
     QMap<MenuItem, Button*> btns;
 };
@@ -57,11 +54,6 @@ SystemMaintenance::SystemMaintenance()
 SystemMaintenance::~SystemMaintenance()
 {
     delete d_ptr;
-}
-
-void SystemMaintenance::readyShow()
-{
-    d_ptr->loadOptions();
 }
 
 void SystemMaintenance::layoutExec()
@@ -185,7 +177,7 @@ void SystemMaintenance::onBtnReleased()
     switch (indexType) {
         case SystemMaintenancePrivate::ITEM_BTN_CONFIG_MANAGERMENT:
         {
-            ConfigManagerMenuContent w;
+            ConfigManagerWindow w;
             windowManager.showWindow(&w,
                                      WindowManager::ShowBehaviorModal);
         }
@@ -193,7 +185,7 @@ void SystemMaintenance::onBtnReleased()
 
         case SystemMaintenancePrivate::ITEM_BTN_USER_MAINTENANCE:
         {
-            UserMaintainMenuContent w;
+            UserMaintainWindow w;
             windowManager.showWindow(&w,
                                      WindowManager::ShowBehaviorModal);
         }
@@ -201,7 +193,7 @@ void SystemMaintenance::onBtnReleased()
 
         case SystemMaintenancePrivate::ITEM_BTN_FACTORY_MAINTENANCE:
         {
-            FactoryMaintainMenuContent w;
+            FactoryMaintainWindow w;
             windowManager.showWindow(&w,
                                      WindowManager::ShowBehaviorModal);
         }
@@ -209,15 +201,15 @@ void SystemMaintenance::onBtnReleased()
 
         case SystemMaintenancePrivate::ITEM_BTN_TOUCH_CALIBRATION:
         {
-
-//            TSCalibrationWindow w;  // 待加入
-//            w.exec();
+            windowManager.closeAllWidows();
+            TSCalibrationWindow w;
+            w.exec();
         }
         break;
 
         case SystemMaintenancePrivate::ITEM_BTN_SYSTEM_TIME:
         {
-            SupervisorTimeMenuContent w;
+            SupervisorTimeWindow w;
             windowManager.showWindow(&w,
                                      WindowManager::ShowBehaviorModal);
         }
@@ -225,7 +217,7 @@ void SystemMaintenance::onBtnReleased()
 
         case SystemMaintenancePrivate::ITEM_BTN_MONITOR_INFO:
         {
-            MonitorInfoContent w;
+            MonitorInfoWindow w;
             windowManager.showWindow(&w,
                                      WindowManager::ShowBehaviorModal);
         }
@@ -233,7 +225,7 @@ void SystemMaintenance::onBtnReleased()
 
         case SystemMaintenancePrivate::ITEM_BTN_SOFTWARE_VERSION:
         {
-            SoftWareVersionContent w;
+            SoftWareVersionWindow w;
             windowManager.showWindow(&w,
                                      WindowManager::ShowBehaviorModal);
         }
@@ -246,19 +238,24 @@ void SystemMaintenance::onBtnReleased()
                 systemManager.setWorkMode(WORK_MODE_NORMAL);
                 d_ptr->btns[SystemMaintenancePrivate
                         ::ITEM_BTN_DEMO_MODE]->setText(trs("DemoMode"));
+                windowManager.closeAllWidows();
+                break;
             }
-            else
+
+            DemoModeWindow w;
+            windowManager.showWindow(&w,
+                                     WindowManager::ShowBehaviorModal);
+            if (!w.isUserInputCorrect())
             {
-                systemManager.setWorkMode(WORK_MODE_DEMO);
-                d_ptr->btns[SystemMaintenancePrivate
-                        ::ITEM_BTN_DEMO_MODE]->setText(trs("ExitDemoMode"));
+                break;
             }
+
+            systemManager.setWorkMode(WORK_MODE_DEMO);
+            d_ptr->btns[SystemMaintenancePrivate
+                    ::ITEM_BTN_DEMO_MODE]->setText(trs("ExitDemoMode"));
+
             windowManager.closeAllWidows();
         }
         break;
     }
-}
-
-void SystemMaintenancePrivate::loadOptions()
-{
 }

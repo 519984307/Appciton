@@ -8,7 +8,7 @@
  ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/12
  **/
 
-#include "ConfigManagerMenuContent.h"
+#include "ConfigManagerWindow.h"
 #include "LanguageManager.h"
 #include "IConfig.h"
 #include "PasswordWidget.h"
@@ -16,29 +16,29 @@
 #include "WindowManager.h"
 #include "ConfigManagerMenuWindow.h"
 
-class ConfigManagerMenuContentPrivate
+class ConfigManagerWindowPrivate
 {
 public:
-    ConfigManagerMenuContentPrivate() : passwordWidget(NULL)
+    ConfigManagerWindowPrivate() : passwordWidget(NULL)
     {
     }
 
     PasswordWidget *passwordWidget;
 };
 
-ConfigManagerMenuContent::ConfigManagerMenuContent()
+ConfigManagerWindow::ConfigManagerWindow()
     : Window(),
-      d_ptr(new ConfigManagerMenuContentPrivate)
+      d_ptr(new ConfigManagerWindowPrivate)
 {
     layoutExec();
 }
 
-ConfigManagerMenuContent::~ConfigManagerMenuContent()
+ConfigManagerWindow::~ConfigManagerWindow()
 {
     delete d_ptr;
 }
 
-void ConfigManagerMenuContent::layoutExec()
+void ConfigManagerWindow::layoutExec()
 {
     setWindowTitle(trs("ConfigManager"));
 
@@ -53,7 +53,7 @@ void ConfigManagerMenuContent::layoutExec()
     setFixedSize(480, 480);
 }
 
-void ConfigManagerMenuContent::userInputCorrect()
+void ConfigManagerWindow::userInputCorrect()
 {
     ConfigManagerMenuWindow *w = ConfigManagerMenuWindow::getInstance();
     windowManager.showWindow(w, WindowManager::ShowBehaviorCloseOthers);

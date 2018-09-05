@@ -8,7 +8,7 @@
  ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/13
  **/
 
-#include "UserMaintainMenuContent.h"
+#include "UserMaintainWindow.h"
 #include "LanguageManager.h"
 #include "IConfig.h"
 #include "PasswordWidget.h"
@@ -16,29 +16,29 @@
 #include "WindowManager.h"
 #include "UserMaintainMenuWindow.h"
 
-class UserMaintainMenuContentPrivate
+class UserMaintainWindowPrivate
 {
 public:
-    UserMaintainMenuContentPrivate() : passwordWidget(NULL)
+    UserMaintainWindowPrivate() : passwordWidget(NULL)
     {
     }
 
     PasswordWidget *passwordWidget;
 };
 
-UserMaintainMenuContent::UserMaintainMenuContent()
+UserMaintainWindow::UserMaintainWindow()
     : Window(),
-      d_ptr(new UserMaintainMenuContentPrivate)
+      d_ptr(new UserMaintainWindowPrivate)
 {
     layoutExec();
 }
 
-UserMaintainMenuContent::~UserMaintainMenuContent()
+UserMaintainWindow::~UserMaintainWindow()
 {
     delete d_ptr;
 }
 
-void UserMaintainMenuContent::layoutExec()
+void UserMaintainWindow::layoutExec()
 {
     setWindowTitle(trs("UserMaintainSystem"));
 
@@ -53,7 +53,7 @@ void UserMaintainMenuContent::layoutExec()
     setFixedSize(480, 480);
 }
 
-void UserMaintainMenuContent::userInputCorrect()
+void UserMaintainWindow::userInputCorrect()
 {
     UserMaintainMenuWindow *w = UserMaintainMenuWindow::getInstance();
     windowManager.showWindow(w, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorCloseOthers);

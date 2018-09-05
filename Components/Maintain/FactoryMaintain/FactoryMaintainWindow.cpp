@@ -8,7 +8,7 @@
  ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/13
  **/
 
-#include "FactoryMaintainMenuContent.h"
+#include "FactoryMaintainWindow.h"
 #include "LanguageManager.h"
 #include "IConfig.h"
 #include "PasswordWidget.h"
@@ -16,29 +16,29 @@
 #include "WindowManager.h"
 #include "FactoryMaintainMenuWindow.h"
 
-class FactoryMaintainMenuContentPrivate
+class FactoryMaintainWindowPrivate
 {
 public:
-    FactoryMaintainMenuContentPrivate() : passwordWidget(NULL)
+    FactoryMaintainWindowPrivate() : passwordWidget(NULL)
     {
     }
 
     PasswordWidget *passwordWidget;
 };
 
-FactoryMaintainMenuContent::FactoryMaintainMenuContent()
+FactoryMaintainWindow::FactoryMaintainWindow()
     : Window(),
-      d_ptr(new FactoryMaintainMenuContentPrivate)
+      d_ptr(new FactoryMaintainWindowPrivate)
 {
     layoutExec();
 }
 
-FactoryMaintainMenuContent::~FactoryMaintainMenuContent()
+FactoryMaintainWindow::~FactoryMaintainWindow()
 {
     delete d_ptr;
 }
 
-void FactoryMaintainMenuContent::layoutExec()
+void FactoryMaintainWindow::layoutExec()
 {
     setWindowTitle(trs("FactoryMaintainSystem"));
 
@@ -53,7 +53,7 @@ void FactoryMaintainMenuContent::layoutExec()
     setFixedSize(480, 480);
 }
 
-void FactoryMaintainMenuContent::userInputCorrect()
+void FactoryMaintainWindow::userInputCorrect()
 {
     FactoryMaintainMenuWindow *w = FactoryMaintainMenuWindow::getInstance();
     windowManager.showWindow(w, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorCloseOthers);

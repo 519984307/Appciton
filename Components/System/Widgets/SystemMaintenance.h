@@ -21,8 +21,6 @@ public:
 
 protected:
     /* reimplement */
-    void readyShow();
-    /* reimplement */
     void layoutExec();
 
 private slots:

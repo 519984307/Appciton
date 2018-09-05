@@ -1409,6 +1409,8 @@ Trend,趋势,Trend
 BigFont,大字体,Big Font
 DEMO,演示,DEMO
 DemoMode,演示模式,Demo Mode
+DemoModeMenu,演示模式,Demo Modea Menu
+DemoModePassword,演示模式密码,Demo Mode Password
 ExitDemoMode,退出演示模式,Exit Demo Mode
 DemoConfigDesc,演示设置,Demo Configuration
 BatteryCalibrationRequired,电池校准请求,Battery Calibration Required

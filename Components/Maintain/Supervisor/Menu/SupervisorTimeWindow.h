@@ -11,13 +11,13 @@
 #pragma once
 #include "Window.h"
 
-class SupervisorTimeMenuContentPrivate;
-class SupervisorTimeMenuContent : public Window
+class SupervisorTimeWindowPrivate;
+class SupervisorTimeWindow : public Window
 {
     Q_OBJECT
 public:
-    SupervisorTimeMenuContent();
-    ~SupervisorTimeMenuContent();
+    SupervisorTimeWindow();
+    ~SupervisorTimeWindow();
 
     /**
      * @brief readyShow
@@ -42,5 +42,5 @@ private slots:
     void onSpinBoxValueChanged(int value, int scale);
 
 private:
-    SupervisorTimeMenuContentPrivate * const d_ptr;
+    SupervisorTimeWindowPrivate * const d_ptr;
 };

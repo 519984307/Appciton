@@ -2565,6 +2565,15 @@ bool WindowManager::eventFilter(QObject *obj, QEvent *ev)
 
 void WindowManager::closeAllWidows()
 {
+    while (!windowStacks.isEmpty())
+    {
+        Window *p = windowStacks.last();
+        if (p)
+        {
+            p->close();
+        }
+    }
+
     QWidget *activeWindow = NULL;
     while ((activeWindow = QApplication::activeWindow()))
     {

@@ -12,13 +12,13 @@
 
 #include "Window.h"
 
-class SoftWareVersionContentPrivate;
-class SoftWareVersionContent : public Window
+class SoftWareVersionWindowPrivate;
+class SoftWareVersionWindow : public Window
 {
     Q_OBJECT
 public:
-    SoftWareVersionContent();
-    ~SoftWareVersionContent();
+    SoftWareVersionWindow();
+    ~SoftWareVersionWindow();
     /**
      * @brief readyShow
      */
@@ -29,5 +29,5 @@ public:
     void layoutExec();
 
 private:
-    SoftWareVersionContentPrivate *const d_ptr;
+    SoftWareVersionWindowPrivate *const d_ptr;
 };
