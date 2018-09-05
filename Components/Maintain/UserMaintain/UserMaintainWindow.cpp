@@ -8,47 +8,40 @@
  ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/13
  **/
 
-#include "UserMaintainMenuContent.h"
+#include "UserMaintainWindow.h"
 #include "LanguageManager.h"
-#include <QLabel>
-#include "ComboBox.h"
-#include <QGridLayout>
-#include <QList>
-#include "SoundManager.h"
-#include "SystemManager.h"
 #include "IConfig.h"
 #include "PasswordWidget.h"
 #include <QVBoxLayout>
 #include "WindowManager.h"
 #include "UserMaintainMenuWindow.h"
 
-class UserMaintainMenuContentPrivate
+class UserMaintainWindowPrivate
 {
 public:
-    UserMaintainMenuContentPrivate() : passwordWidget(NULL)
+    UserMaintainWindowPrivate() : passwordWidget(NULL)
     {
     }
 
     PasswordWidget *passwordWidget;
 };
 
-UserMaintainMenuContent::UserMaintainMenuContent()
-    : MenuContent(trs("UserMaintainSystem"), trs("UserMaintainSystem")),
-      d_ptr(new UserMaintainMenuContentPrivate)
+UserMaintainWindow::UserMaintainWindow()
+    : Window(),
+      d_ptr(new UserMaintainWindowPrivate)
 {
+    layoutExec();
 }
 
-UserMaintainMenuContent::~UserMaintainMenuContent()
+UserMaintainWindow::~UserMaintainWindow()
 {
     delete d_ptr;
 }
 
-void UserMaintainMenuContent::readyShow()
+void UserMaintainWindow::layoutExec()
 {
-}
+    setWindowTitle(trs("UserMaintainSystem"));
 
-void UserMaintainMenuContent::layoutExec()
-{
     QVBoxLayout *layout = new QVBoxLayout(this);
 
     QString password;
@@ -56,9 +49,11 @@ void UserMaintainMenuContent::layoutExec()
     d_ptr->passwordWidget = new PasswordWidget(trs("UserMaintainPassword"), password);
     layout->addWidget(d_ptr->passwordWidget, Qt::AlignCenter);
     connect(d_ptr->passwordWidget, SIGNAL(correctPassword()), this, SLOT(userInputCorrect()));
+    setWindowLayout(layout);
+    setFixedSize(480, 480);
 }
 
-void UserMaintainMenuContent::userInputCorrect()
+void UserMaintainWindow::userInputCorrect()
 {
     UserMaintainMenuWindow *w = UserMaintainMenuWindow::getInstance();
     windowManager.showWindow(w, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorCloseOthers);

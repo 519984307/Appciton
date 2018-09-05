@@ -9,8 +9,6 @@
  **/
 
 #include "FactoryMaintainMenuWindow.h"
-#include "SoftWareVersionContent.h"
-#include "MonitorInfoContent.h"
 #include "MachineConfigModuleContent.h"
 #include "FactoryDataRecordContent.h"
 #include "SelectStarterLogoContent.h"
@@ -28,8 +26,6 @@ FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
     if (instance == NULL)
     {
         instance = new FactoryMaintainMenuWindow;
-        instance->addMenuContent(new SoftWareVersionContent);
-        instance->addMenuContent(new MonitorInfoContent);
         instance->addMenuContent(new MachineConfigModuleContent);
         instance->addMenuContent(new FactoryDataRecordContent);
         instance->addMenuContent(new SelectStarterLogoContent);

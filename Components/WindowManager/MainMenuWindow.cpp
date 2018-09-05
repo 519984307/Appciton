@@ -23,12 +23,10 @@
 #include "WiFiProfileMenuContent.h"
 #include "SystemMenuContent.h"
 #include "LoadConfigMenuContent.h"
-#include "ConfigManagerMenuContent.h"
-#include "UserMaintainMenuContent.h"
-#include "FactoryMaintainMenuContent.h"
 #include "TEMPMenu.h"
 #include "ScreenMenuContent.h"
 #include "SystemNightModeMenuContent.h"
+#include "SystemMaintenance.h"
 
 MainMenuWindow *MainMenuWindow::getInstance()
 {
@@ -74,10 +72,8 @@ MainMenuWindow *MainMenuWindow::getInstance()
         instance->addMenuContent(new SystemNightModeMenuContent);
         instance->addMenuContent(new ScreenMenuContent);
         instance->addMenuContent(new LoadConfigMenuContent);
+        instance->addMenuContent(new SystemMaintenance);
         instance->addMenuContent(new SystemMenuContent);
-        instance->addMenuContent(new ConfigManagerMenuContent);
-        instance->addMenuContent(new UserMaintainMenuContent);
-        instance->addMenuContent(new FactoryMaintainMenuContent);
         instance->setWindowTitle(trs("ECGMenuDesc"));
     }
 

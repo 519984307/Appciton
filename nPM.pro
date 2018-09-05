@@ -222,6 +222,8 @@ SOURCES +=                                                                      
     Components/System/Widgets/SystemSelftestMenu.cpp                            \
     Components/System/Widgets/SystemStatusBarWidget.cpp                         \
     Components/System/Widgets/SystemMenuContent.cpp                             \
+    Components/System/Widgets/SystemMaintenance.cpp                             \
+    Components/System/Widgets/DemoModeWindow.cpp                                  \
     Components/System/Widgets/SystemNightModeMenuContent.cpp                    \
     Components/SoundManager/SoundManager.cpp                                    \
     Components/SoundManager/WavFile.cpp                                         \
@@ -377,7 +379,7 @@ SOURCES +=                                                                      
     Components/Maintain/Supervisor/Menu/DisplayMenuContent.cpp                  \
     Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.cpp            \
     Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.cpp          \
-    Components/Maintain/Supervisor/Menu/SupervisorTimeMenuContent.cpp           \
+    Components/Maintain/Supervisor/Menu/SupervisorTimeWindow.cpp                \
     Components/Maintain/Supervisor/SupervisorConfigManager.cpp                  \
     Components/Maintain/Supervisor/SupervisorEntrance.cpp                       \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.cpp                \
@@ -409,7 +411,7 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/WiredWorkMaintainMenu.cpp                  \
     Components/Maintain/UserMaintain/OthersMaintainMenu.cpp                     \
     Components/Maintain/UserMaintain/NurseCallSettingWindow.cpp                 \
-    Components/Maintain/UserMaintain/UserMaintainMenuContent.cpp                \
+    Components/Maintain/UserMaintain/UserMaintainWindow.cpp                     \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.cpp         \
     Components/Maintain/UserMaintain/ModuleMaintainMenuContent.cpp              \
     Components/Maintain/UserMaintain/AlarmMaintainMenuContent.cpp               \
@@ -421,9 +423,9 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.cpp        \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
     Components/Maintain/FactoryMaintain/SoftWareVersion.cpp                     \
-    Components/Maintain/FactoryMaintain/SoftWareVersionContent.cpp              \
+    Components/Maintain/FactoryMaintain/SoftWareVersionWindow.cpp               \
     Components/Maintain/FactoryMaintain/MonitorInfo.cpp                         \
-    Components/Maintain/FactoryMaintain/MonitorInfoContent.cpp                  \
+    Components/Maintain/FactoryMaintain/MonitorInfoWindow.cpp                   \
     Components/Maintain/FactoryMaintain/ServiceErrorLogEntrance.cpp             \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntrance.cpp               \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.cpp        \
@@ -441,7 +443,7 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/ServiceUpgradeWindow.cpp                \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.cpp             \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
-    Components/Maintain/FactoryMaintain/FactoryMaintainMenuContent.cpp          \
+    Components/Maintain/FactoryMaintain/FactoryMaintainWindow.cpp               \
     Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
     Components/CodeMarker/Widgets/CodeMarkerWindow.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
@@ -479,7 +481,7 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditDisplayMenu.cpp                          \
     Components/ConfigManager/ConfigEditDisplayMenuContent.cpp                   \
     Components/ConfigManager/LoadConfigMenu.cpp                                 \
-    Components/ConfigManager/ConfigManagerMenuContent.cpp                       \
+    Components/ConfigManager/ConfigManagerWindow.cpp                            \
     Components/ConfigManager/LoadConfigMenuContent.cpp                          \
     Components/ConfigManager/UnitSetupMenuContent.cpp                           \
     Components/Freeze/FreezeManager.cpp                                         \
@@ -770,6 +772,8 @@ HEADERS +=                                                                      
     Components/System/Widgets/SystemSelftestMenu.h                              \
     Components/System/Widgets/SystemModeBarWidget.h                             \
     Components/System/Widgets/SystemMenuContent.h                               \
+    Components/System/Widgets/SystemMaintenance.h                               \
+    Components/System/Widgets/DemoModeWindow.h                                  \
     Components/System/Widgets/SystemNightModeMenuContent.h                      \
     Components/SoundManager/SoundManager.h                                      \
     Components/SoundManager/WavFile.h                                           \
@@ -947,7 +951,7 @@ HEADERS +=                                                                      
     Components/Maintain/Supervisor/Menu/DisplayMenuContent.h                    \
     Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.h              \
     Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.h            \
-    Components/Maintain/Supervisor/Menu/SupervisorTimeMenuContent.h             \
+    Components/Maintain/Supervisor/Menu/SupervisorTimeWindow.h                  \
     Components/Maintain/Supervisor/SupervisorConfigManager.h                    \
     Components/Maintain/Supervisor/SupervisorEntrance.h                         \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.h                  \
@@ -982,7 +986,7 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/WiredWorkMaintainMenu.h                    \
     Components/Maintain/UserMaintain/OthersMaintainMenu.h                       \
     Components/Maintain/UserMaintain/NurseCallSettingWindow.h                   \
-    Components/Maintain/UserMaintain/UserMaintainMenuContent.h                  \
+    Components/Maintain/UserMaintain/UserMaintainWindow.h                       \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.h           \
     Components/Maintain/UserMaintain/ModuleMaintainMenuContent.h                \
     Components/Maintain/UserMaintain/AlarmMaintainMenuContent.h                 \
@@ -994,9 +998,9 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.h          \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersion.h                       \
-    Components/Maintain/FactoryMaintain/SoftWareVersionContent.h                \
+    Components/Maintain/FactoryMaintain/SoftWareVersionWindow.h                 \
     Components/Maintain/FactoryMaintain/MonitorInfo.h                           \
-    Components/Maintain/FactoryMaintain/MonitorInfoContent.h                    \
+    Components/Maintain/FactoryMaintain/MonitorInfoWindow.h                     \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.h                     \
     Components/Maintain/FactoryMaintain/SelectStarterLogoContent.h              \
     Components/Maintain/FactoryMaintain/ServiceUpgradeWindow.h                 \
@@ -1013,7 +1017,7 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/NIBPPressureControlContent.h            \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.h               \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.h        \
-    Components/Maintain/FactoryMaintain/FactoryMaintainMenuContent.h            \
+    Components/Maintain/FactoryMaintain/FactoryMaintainWindow.h                 \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWidget.h                            \
     Components/CodeMarker/Widgets/CodeMarkerWindow.h                            \
@@ -1052,7 +1056,7 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditDisplayMenuContent.h                     \
     Components/ConfigManager/ConfigEditCodeMarkerMenuContent.h                  \
     Components/ConfigManager/LoadConfigMenu.h                                   \
-    Components/ConfigManager/ConfigManagerMenuContent.h                         \
+    Components/ConfigManager/ConfigManagerWindow.h                              \
     Components/ConfigManager/LoadConfigMenuContent.h                            \
     Components/ConfigManager/UnitSetupMenuContent.h                             \
     Components/Freeze/FreezeManager.h                                           \

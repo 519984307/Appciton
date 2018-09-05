@@ -9,25 +9,38 @@
  **/
 
 #pragma once
-#include "MenuContent.h"
+#include "Window.h"
 
-class SupervisorTimeMenuContentPrivate;
-class SupervisorTimeMenuContent : public MenuContent
+class SupervisorTimeWindowPrivate;
+class SupervisorTimeWindow : public Window
 {
     Q_OBJECT
 public:
-    SupervisorTimeMenuContent();
-    ~SupervisorTimeMenuContent();
+    SupervisorTimeWindow();
+    ~SupervisorTimeWindow();
 
-protected:
+    /**
+     * @brief readyShow
+     */
     void readyShow();
-
+    /**
+     * @brief layoutExec
+     */
     void layoutExec();
 
 private slots:
+    /**
+     * @brief onComboBoxIndexChanged
+     * @param index
+     */
     void onComboBoxIndexChanged(int index);
+    /**
+     * @brief onSpinBoxValueChanged
+     * @param value
+     * @param scale
+     */
     void onSpinBoxValueChanged(int value, int scale);
 
 private:
-    SupervisorTimeMenuContentPrivate * const d_ptr;
+    SupervisorTimeWindowPrivate * const d_ptr;
 };
