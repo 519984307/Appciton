@@ -42,7 +42,13 @@ static KeyActionDesc _monitorKeys[] =
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_WINDOWLAYOUT),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_CALCULATION),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_LOCK_SCREEN),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SYSTEM_MODE),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SYS_MODE_STANDARD),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SYS_MODE_12LEAD),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SYS_MODE_OXYCRG),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SYS_MODE_TREND),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SYS_MODE_BIGFONT),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SYS_MODE_CUSTOM),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SYS_MODE_UNKNOW),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NEXT_PAGE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_MAIN_SETUP)
 };
