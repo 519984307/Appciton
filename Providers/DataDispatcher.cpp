@@ -257,8 +257,6 @@ void DataDispatcher::dataArrived()
 
         if (d_ptr->checkPacketValid(packet, len))
         {
-            static int i = 0;
-            qDebug() << "count: " << i++ << " length: " << len - 4 << " type:" << packet[3];
             d_ptr->handlePacket(&packet[3], len - 4);
         }
         else
