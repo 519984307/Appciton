@@ -205,8 +205,9 @@ void MenuWindow::showEvent(QShowEvent *ev)
         bottomLayout->setContentsMargins(4, 4, 8, 4);
         bottomLayout->addStretch(1);
 
-        d_ptr->retBtn = new Button(trs("Return"));
-        d_ptr->retBtn->setButtonStyle(Button::ButtonTextOnly);
+        d_ptr->retBtn = new Button("", QIcon("/usr/local/nPM/icons/BackLeft.png"));
+        d_ptr->retBtn->setButtonStyle(Button::ButtonIconOnly);
+        d_ptr->retBtn->setIconSize(QSize(48, 48));
         d_ptr->retBtn->setMinimumWidth(100);
         bottomLayout->addWidget(d_ptr->retBtn);
         d_ptr->rightLayout->addLayout(bottomLayout);
