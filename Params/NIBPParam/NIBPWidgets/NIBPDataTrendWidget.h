@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/9/4
+ **/
+
+
 #pragma once
 #include "TrendWidget.h"
 #include <QHBoxLayout>
@@ -14,10 +25,12 @@ struct NIBPTrendCacheData
         sysvalue = InvData();
         diavalue = InvData();
         mapvalue = InvData();
+        prvalue = InvData();
         valueIsDisplay = false;
         sysAlarm = false;
         diaAlarm = false;
         mapAlarm = false;
+        prAlarm = false;
         errorCode = NIBP_ONESHOT_NONE;
     }
 
@@ -25,10 +38,12 @@ struct NIBPTrendCacheData
     TrendDataType sysvalue;
     TrendDataType diavalue;
     TrendDataType mapvalue;
+    TrendDataType prvalue;
     bool valueIsDisplay;
     bool sysAlarm;
     bool diaAlarm;
     bool mapAlarm;
+    bool prAlarm;
     NIBPOneShotType errorCode;
 };
 
