@@ -25,7 +25,6 @@ protected:
     void keyPressEvent(QKeyEvent *ev);
     void keyReleaseEvent(QKeyEvent *ev);
 
-
 private:
     QScopedPointer<MoveButtonPrivate> d_ptr;
 };

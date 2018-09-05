@@ -112,9 +112,10 @@ void MoveButton::keyReleaseEvent(QKeyEvent *ev)
     case Qt::Key_Enter:
     case Qt::Key_Return:
     {
-//        PopupMoveEditor *editor = new PopupMoveEditor();
-//        editor->setPalette(palette());
-//        editor->show();
+        PopupMoveEditor *editor = new PopupMoveEditor();
+        editor->setEditorGeometry(rect());
+        editor->setPalette(palette());
+        editor->show();
         break;
     }
     default:

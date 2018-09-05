@@ -18,12 +18,15 @@ class PopupMoveEditorPrivate
 public:
     PopupMoveEditorPrivate()
         : isLeftPressed(false),
-          isRightPressed(false)
+          isRightPressed(false),
+          prvRect(0, 0, 100, 40),
+          name("Paging")
     {}
 
     bool isLeftPressed;
     bool isRightPressed;
     QRect prvRect;
+    QString name;
 };
 
 PopupMoveEditor::PopupMoveEditor()
@@ -59,7 +62,7 @@ void PopupMoveEditor::paintEvent(QPaintEvent *ev)
     painter.setRenderHint(QPainter::Antialiasing);
 
     const QPalette &pal = palette();
-    QRect r = rect();
+    QRect r = d_ptr->prvRect.adjusted(width() / 2, height() / 2, 0, 0);
     int bw = themeManger.getBorderWidth();
     int br = themeManger.getBorderRadius();
     QPen pen(pal.color(QPalette::Inactive, QPalette::Shadow), bw);
@@ -67,7 +70,7 @@ void PopupMoveEditor::paintEvent(QPaintEvent *ev)
 
     painter.setPen(pen);
     QRect leftRegion = r;
-    leftRegion.setLeft(r.width() / 3);
+    leftRegion.setRight(r.width() / 4);
     painter.setClipRect(leftRegion);
     if (d_ptr->isLeftPressed)
     {
@@ -75,15 +78,15 @@ void PopupMoveEditor::paintEvent(QPaintEvent *ev)
     }
     else
     {
-        painter.setBrush(bgColor);
+        painter.setBrush(pal.color(QPalette::Disabled, QPalette::Window));
     }
-    painter.drawRoundedRect(leftRegion.adjusted(bw / 2, bw / 2, - bw / 2, br + bw), br, br);
+    painter.drawRoundedRect(leftRegion.adjusted(bw / 2, bw / 2, br + bw, - bw / 2), br, br);
 
     const QIcon &leftIcon = themeManger.getIcon(ThemeManager::IconLeft);
     leftIcon.paint(&painter, leftRegion);
 
     QRect rightRegion = r;
-    rightRegion.setRight(r.width() * 2 / 3);
+    rightRegion.setLeft(r.width() * 3 / 4);
     painter.setClipRect(rightRegion);
     if (d_ptr->isRightPressed)
     {
@@ -91,23 +94,23 @@ void PopupMoveEditor::paintEvent(QPaintEvent *ev)
     }
     else
     {
-        painter.setBrush(bgColor);
+        painter.setBrush(pal.color(QPalette::Disabled, QPalette::Window));
     }
-    painter.drawRoundedRect(rightRegion.adjusted(bw / 2, - br - bw, -bw / 2, - bw / 2), br, br);
+    painter.drawRoundedRect(rightRegion.adjusted(-br - bw, bw / 2,  -bw / 2, -bw / 2), br, br);
 
     const QIcon &rightIcon = themeManger.getIcon(ThemeManager::IconRight);
     rightIcon.paint(&painter, rightRegion);
 
     painter.setBrush(pal.color(QPalette::Active, QPalette::Window));
 
-    QRect valueRegion = r;
-    valueRegion.setLeft(r.width() / 3 + 1);
-    valueRegion.setRight(r.width() * 2 / 3 - 1);
-    painter.setClipRect(valueRegion);
-    painter.setPen(pen);
-    painter.drawRect(valueRegion.adjusted(bw / 2, - bw, - bw / 2, bw));
+    QRect textRegion = r;
+    textRegion.setLeft(r.width() / 4 + 1);
+    textRegion.setRight(r.width() * 3 / 4 - 1);
+    painter.setClipRect(textRegion);
+    painter.drawRect(textRegion.adjusted(- bw, bw / 2, bw, -bw / 2));
 
     painter.setPen(pal.color(QPalette::Inactive, QPalette::WindowText));
+    painter.drawText(textRegion, Qt::AlignCenter, d_ptr->name);
 }
 
 QSize PopupMoveEditor::sizeHint() const
@@ -132,4 +135,8 @@ void PopupMoveEditor::mouseReleaseEvent(QMouseEvent *ev)
 
 void PopupMoveEditor::showEvent(QShowEvent *ev)
 {
+    QRect r(QPoint(0, 0), d_ptr->prvRect.size());
+    QRect rr = this->rect();
+    move(r.center() - rr.center() + d_ptr->prvRect.topLeft());
+    QWidget::showEvent(ev);
 }
