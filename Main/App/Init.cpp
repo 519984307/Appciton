@@ -232,6 +232,8 @@ static void _initProviderParam(void)
     E5Provider *e5 = new E5Provider();
     paramManager.addProvider(*e5);
 
+    DataDispatcher::addDataDispatcher(new DataDispatcher("DataDispatcher"));
+
 
     // ECG部分。
     paramManager.addParam(ecgDupParam.construction());
@@ -370,10 +372,6 @@ static void _initProviderParam(void)
         else if (str == "NELLCOR_SPO2")
         {
             paramManager.addProvider(*new NellcorSetProvider());
-        }
-        else if (str == "DataDispatcher")
-        {
-            paramManager.addProvider(*new DataDispatcher());
         }
         paramManager.addParam(spo2Param.construction());
         alertor.addLimtSource(spo2LimitAlarm.construction());
@@ -538,10 +536,6 @@ static void _initProviderParam(void)
         {
             paramManager.addProvider(*new T5Provider());
         }
-//        else if (str == "DataDispatcher")
-//        {
-//            paramManager.addProvider(*new DataDispatcher());
-//        }
 
         paramManager.addParam(tempParam.construction());
         alertor.addLimtSource(tempLimitAlarm.construction());

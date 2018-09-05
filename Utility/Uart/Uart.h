@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/5
+ **/
+
 #pragma once
 #include <QObject>
 #include <QMutex>
@@ -15,14 +25,8 @@ struct UartAttrDesc
 {
     UartAttrDesc(int b = 9600, char d = 8, char p = 'N', char s = 1,
                  unsigned char v = 0, FlowControl f = FlOW_CTRL_NONE, bool nonblk = true)
+        :baud(b), dataLen(d), stopLen(s), parity(p), vmin(v), flowCtrl(f), nonBlocking(nonblk)
     {
-        baud = b;
-        dataLen = d;
-        stopLen = s;
-        parity = p;
-        vmin = v;
-        flowCtrl = f;
-        nonBlocking = nonblk;
     }
 
     int baud;      // 波特率。
@@ -31,7 +35,7 @@ struct UartAttrDesc
     char parity;   // 奇偶校验, 'O'奇校验，‘E’偶校验，‘N’无校验。
     unsigned char vmin;    // 数据端口有效的最小数据个数。
     FlowControl flowCtrl;  // 数据流控制
-    bool nonBlocking;      //is non-blocking or not
+    bool nonBlocking;      // is non-blocking or not
 };
 
 class Uart : public QObject
@@ -51,13 +55,16 @@ public:
     // wait until all output data is send
     virtual void sync();
 
-    //get the file descriptor
-    virtual int fd() {return _fd;}
+    // get the file descriptor
+    virtual int fd()
+    {
+        return _fd;
+    }
 
     //关闭串口
     virtual void closePort(void);
 
-    Uart();
+    explicit Uart(QObject *parent = NULL);
     virtual ~Uart();
 
 signals:

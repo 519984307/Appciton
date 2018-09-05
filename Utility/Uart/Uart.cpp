@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/5
+ **/
+
 #include "Uart.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
@@ -19,28 +29,68 @@ static int _getBaud(int baud)
 {
     int ret = B9600;
 
-    switch(baud)
+    switch (baud)
     {
-        case 4800: ret = B4800; break;
-        case 9600: ret = B9600; break;
-        case 19200: ret = B19200; break;
-        case 38400: ret = B38400; break;
-        case 57600: ret = B57600; break;
-        case 115200: ret = B115200; break;
-        case 230400: ret = B230400; break;
-        case 460800: ret = B460800; break;
-        case 500000: ret = B500000; break;
-        case 576000: ret = B576000; break;
-        case 921600: ret = B921600; break;
-        case 1000000: ret = B1000000; break;
-        case 1152000: ret = B1152000; break;
-        case 1500000: ret = B1500000; break;
-        case 2000000: ret = B2000000; break;
-        case 2500000: ret = B2500000; break;
-        case 3000000: ret = B3000000; break;
-        case 3500000: ret = B3500000; break;
-        case 4000000: ret = B4000000; break;
-        default: ret = B9600; break;
+    case 4800:
+        ret = B4800;
+        break;
+    case 9600:
+        ret = B9600;
+        break;
+    case 19200:
+        ret = B19200;
+        break;
+    case 38400:
+        ret = B38400;
+        break;
+    case 57600:
+        ret = B57600;
+        break;
+    case 115200:
+        ret = B115200;
+        break;
+    case 230400:
+        ret = B230400;
+        break;
+    case 460800:
+        ret = B460800;
+        break;
+    case 500000:
+        ret = B500000;
+        break;
+    case 576000:
+        ret = B576000;
+        break;
+    case 921600:
+        ret = B921600;
+        break;
+    case 1000000:
+        ret = B1000000;
+        break;
+    case 1152000:
+        ret = B1152000;
+        break;
+    case 1500000:
+        ret = B1500000;
+        break;
+    case 2000000:
+        ret = B2000000;
+        break;
+    case 2500000:
+        ret = B2500000;
+        break;
+    case 3000000:
+        ret = B3000000;
+        break;
+    case 3500000:
+        ret = B3500000;
+        break;
+    case 4000000:
+        ret = B4000000;
+        break;
+    default:
+        ret = B9600;
+        break;
     }
 
     return ret;
@@ -57,13 +107,23 @@ static int _getDataLen(int len)
 {
     int ret = CS8;
 
-    switch(len)
+    switch (len)
     {
-        case 5: ret = CS5; break;
-        case 6: ret = CS6; break;
-        case 7: ret = CS7; break;
-        case 8: ret = CS8; break;
-        default: ret = CS8; break;
+    case 5:
+        ret = CS5;
+        break;
+    case 6:
+        ret = CS6;
+        break;
+    case 7:
+        ret = CS7;
+        break;
+    case 8:
+        ret = CS8;
+        break;
+    default:
+        ret = CS8;
+        break;
     }
 
     return ret;
@@ -80,14 +140,14 @@ static int _getDataLen(int len)
 static bool _settingFD(int fd, const UartAttrDesc &attr)
 {
     int ret;
-    //定义终端端口属性变量
+    // 定义终端端口属性变量
     struct termios term;
-    //读取fd的属性状态到term
+    // 读取fd的属性状态到term
     ret = tcgetattr(fd, &term);
     if (ret != 0)
     {
         close(fd);
-         debug("tcgetattr failed.");
+        debug("tcgetattr failed.");
         return false;
     }
 
@@ -117,54 +177,56 @@ static bool _settingFD(int fd, const UartAttrDesc &attr)
     term.c_cflag |= _getDataLen(attr.dataLen);
 
     // Setting length of stop bit
-    switch (attr.stopLen) {
-        case 1:
-            term.c_cflag &= ~CSTOPB;
-            break;
-        case 2:
-            term.c_cflag |= CSTOPB;
-            break;
-        default:
-            break;
+    switch (attr.stopLen)
+    {
+    case 1:
+        term.c_cflag &= ~CSTOPB;
+        break;
+    case 2:
+        term.c_cflag |= CSTOPB;
+        break;
+    default:
+        break;
     }
 
     // Setting Parity
     term.c_iflag &= ~(PARMRK | INPCK);
     term.c_iflag |= IGNPAR;
-    switch(attr.parity)
+    switch (attr.parity)
     {
-        case 'o':
-        case 'O': // Odd
-            term.c_cflag |= (PARENB | PARODD);
-            break;
-        case 'e':
-        case 'E': // Even
-            term.c_cflag &= ~PARODD;
-            term.c_cflag |= PARENB;
-            break;
-        case 'n':
-        case 'N': // None
-            term.c_cflag &= ~PARENB;
-            break;
-        default:
-            break;
+    case 'o':
+    case 'O': // Odd
+        term.c_cflag |= (PARENB | PARODD);
+        break;
+    case 'e':
+    case 'E': // Even
+        term.c_cflag &= ~PARODD;
+        term.c_cflag |= PARENB;
+        break;
+    case 'n':
+    case 'N': // None
+        term.c_cflag &= ~PARENB;
+        break;
+    default:
+        break;
     }
 
     // Flow control
-    switch (attr.flowCtrl) {
-        case FlOW_CTRL_HARD:
-            term.c_cflag |= CRTSCTS;
-            term.c_iflag &= ~(IXON | IXOFF | IXANY);
-            break;
-        case FlOW_CTRL_SOFT:
-            term.c_cflag &= ~CRTSCTS;
-            term.c_iflag |= IXON | IXOFF | IXANY;
-            break;
-        case FlOW_CTRL_NONE:
-        default:
-            term.c_cflag &= ~CRTSCTS;
-            term.c_iflag &= ~(IXON | IXOFF | IXANY);
-            break;
+    switch (attr.flowCtrl)
+    {
+    case FlOW_CTRL_HARD:
+        term.c_cflag |= CRTSCTS;
+        term.c_iflag &= ~(IXON | IXOFF | IXANY);
+        break;
+    case FlOW_CTRL_SOFT:
+        term.c_cflag &= ~CRTSCTS;
+        term.c_iflag |= IXON | IXOFF | IXANY;
+        break;
+    case FlOW_CTRL_NONE:
+    default:
+        term.c_cflag &= ~CRTSCTS;
+        term.c_iflag &= ~(IXON | IXOFF | IXANY);
+        break;
     }
 
     // Flush data
@@ -206,7 +268,6 @@ int Uart::write(const unsigned char buff[], int len)
     }
 
     QMutexLocker locker(&_mutex);
-    int ret = 0;
     int remain = len;
     int retry = 0;
     const unsigned char *current = buff;
@@ -214,13 +275,15 @@ int Uart::write(const unsigned char buff[], int len)
     // 确保数据能够全部写往端口。
     while (remain > 0)
     {
-        ret = TEMP_FAILURE_RETRY(::write(_fd, current, remain));
+        int ret = TEMP_FAILURE_RETRY(::write(_fd, current, remain));
         if (ret == -1)
         {
             if (errno == EAGAIN)
             {
-                if(++retry <= FAIL_RETRY_LIMIT)
+                if (++retry <= FAIL_RETRY_LIMIT)
+                {
                     continue;
+                }
             }
 
             QString errorStr = strerror(errno);
@@ -234,14 +297,14 @@ int Uart::write(const unsigned char buff[], int len)
             errorLog.append(item);
             return (len - remain);
         }
-::fsync(_fd);
+        ::fsync(_fd);
         current += ret;
         remain -= ret;
         retry = 0;
     }
-//outHex(buff,len);
-//debug("%d",len);
-//debug("%s(%d)", qPrintable(_port), _fd);
+// outHex(buff,len);
+// debug("%d",len);
+// debug("%s(%d)", qPrintable(_port), _fd);
     return len;
 }
 
@@ -299,7 +362,7 @@ bool Uart::initPort(const QString &port, const UartAttrDesc &desc, bool needNoti
 {
     _port = port;
     int flags = O_RDWR | O_NOCTTY | O_CLOEXEC;
-    if(desc.nonBlocking)
+    if (desc.nonBlocking)
     {
         flags |= O_NONBLOCK;
     }
@@ -332,7 +395,8 @@ bool Uart::initPort(const QString &port, const UartAttrDesc &desc, bool needNoti
 /**************************************************************************************************
  * 功能： 构造。
  *************************************************************************************************/
-Uart::Uart()
+Uart::Uart(QObject *parent)
+    : QObject(parent)
 {
     _fd = -1;
     _notifier = NULL;

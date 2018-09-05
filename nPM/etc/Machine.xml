@@ -35,22 +35,22 @@
     <!--参数与Provider的关系-->
     <ECG SptProvider="DemoProvider,BLM_E5">BLM_E5</ECG>
     <RESP SptProvider="DemoProvider,BLM_E5">BLM_E5</RESP>
-    <SPO2 SptProvider="DemoProvider,BLM_SPO2,BLM_TS3,BLM_S5,MASIMO_SPO2,NELLCOR_SPO2,DataDispatcher">DataDispatcher</SPO2>
+    <SPO2 SptProvider="DemoProvider,BLM_SPO2,BLM_TS3,BLM_S5,MASIMO_SPO2,NELLCOR_SPO2">BLM_S5</SPO2>
     <NIBP SptProvider="DemoProvider,BLM_NIBP,BLM_TN3,SUNTECH_NIBP">DemoProvider</NIBP>
     <CO2 SptProvider="DemoProvider,BLM_CO2">DemoProvider</CO2>
     <IBP SptProvider="DemoProvider,WITLEAF_IBP">DemoProvider</IBP>
     <AG SptProvider="DemoProvider,PHASEIN_AG">DemoProvider</AG>
     <CO SptProvider="DemoProvider,WITLEAF_IBP">DemoProvider</CO>
-    <TEMP SptProvider="DemoProvider,BLM_TT3,BLM_T5,DataDispatcher">DataDispatcher</TEMP>
+    <TEMP SptProvider="DemoProvider,BLM_TT3,BLM_T5">BLM_T5</TEMP>
     <!--Provider端口信息-->
     <PRT72Port>/dev/null</PRT72Port>
     <BLM_E5Port>/dev/ttyS1</BLM_E5Port>
     <BLM_TN3Port>/dev/ttyS2</BLM_TN3Port>
     <!--    <SUNTECH_NIBPPort>/dev/ttyS2</SUNTECH_NIBPPort>-->
-    <BLM_S5Port>/dev/ttyS3</BLM_S5Port>
+    <BLM_S5Port>DataDispatcher</BLM_S5Port>
     <!--    <MASIMO_SPO2Port>/dev/ttyS3</MASIMO_SPO2Port>-->
     <SystemBoardPort>/dev/ttyPM0</SystemBoardPort>
-    <BLM_T5Port>/dev/ttyS5</BLM_T5Port>
+    <BLM_T5Port>DataDispatcher</BLM_T5Port>
     <WITLEAF_IBPPort>/dev/ttyWK2</WITLEAF_IBPPort>
     <BLM_CO2Port>/dev/ttyWK3</BLM_CO2Port>
     <DataDispatcherPort>/dev/ttyPM3</DataDispatcherPort>

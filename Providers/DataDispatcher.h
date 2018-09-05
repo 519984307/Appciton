@@ -9,46 +9,72 @@
  **/
 
 #pragma once
-#include "BLMProvider.h"
+#include <QObject>
 
-class DataDispatcher : public Provider
+
+class DataDispatcherPrivate;
+class Provider;
+class DataDispatcher : public QObject
 {
     Q_OBJECT
 public:
     enum PacketType
     {
-        REV_TYPE_TEMP = 0xF1,       // 温度
-        REV_TYPE_SPO2 = 0xF2        // 血氧
+        PACKET_TYPE_INVALID = -1,    // invalid packet type
+        PACKET_TYPE_T5 = 0xF1,       // 温度
+        PACKET_TYPE_S5 = 0xF2        // 血氧
     };
 
-public: // Provider的接口。
-    virtual bool attachParam(Param &param);
+    struct DispatchInfo
+    {
+        DispatchInfo(): dispatcher(NULL), packetType(PACKET_TYPE_INVALID) {}
+        DataDispatcher *dispatcher;
+        PacketType packetType;
+    };
+
 
 public:
-    DataDispatcher();
+    explicit DataDispatcher(const QString &name, QObject *parent = NULL);
     virtual ~DataDispatcher();
 
-    //获取版本号
-    virtual void sendVersion(void);
+    /**
+     * @brief getName get the dispatcher name
+     * @return  the name
+     */
+    QString getName() const;
 
-protected:
+    /**
+     * @brief connectProvider connect data dispatcher to the provider
+     * @param type
+     * @param provider
+     */
+    void connectProvider(PacketType type, Provider *provider);
+
+    /**
+     * @brief sendData send data through the data dispatcher
+     * @param buff ther data buffer
+     * @param len the buffer length
+     * @return the length of data have beed send
+     */
+    int sendData(PacketType type, const unsigned char *buff, int len);
+
+    /**
+     * @brief addDataDispatcher add a data dispatcher to the system
+     * @param dispatcher the new added dispatcher
+     */
+    static void addDataDispatcher(DataDispatcher *dispatcher);
+
+    /**
+     * @brief getDataDispatcher get a data dispathcer from the system base on the name
+     * @param name the dispatcher name
+     * @return  the dispatcher object or null is not exist
+     */
+    static DataDispatcher *getDataDispatcher(const QString &name);
+
+private slots:
     // 接收数据
     void dataArrived();
 
-    virtual void handlePacket(unsigned char *data, int len);
-    virtual void disconnected(void);
-    virtual void reconnected(void);
-
 private:
-    // 读取数据导RingBuff中
-    void _readData(void);
-
-    // 协议数据校验
-    bool _checkPacketValid(const unsigned char *data, unsigned int len);
-
-    bool _isLastSOHPaired; // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH。
-
-private:
-    QMap<PacketType, BLMProvider *> providers;
-    static const int minPacketLen = 5;          // 最小数据包长度: Head,Length,Type,FCS
+    DataDispatcherPrivate *const d_ptr;
 };
