@@ -8,7 +8,9 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/3
  **/
 #include "SystemMaintenance.h"
+#ifdef Q_WS_QWS
 #include "TSCalibrationWindow.h"
+#endif
 #include <QMap>
 #include "Button.h"
 #include "LanguageManager.h"
@@ -32,7 +34,9 @@ public:
         ITEM_BTN_CONFIG_MANAGERMENT = 0,
         ITEM_BTN_USER_MAINTENANCE,
         ITEM_BTN_FACTORY_MAINTENANCE,
+#ifdef Q_WS_QWS
         ITEM_BTN_TOUCH_CALIBRATION,
+#endif
         ITEM_BTN_SYSTEM_TIME,
         ITEM_BTN_MONITOR_INFO,
         ITEM_BTN_SOFTWARE_VERSION,
@@ -106,7 +110,7 @@ void SystemMaintenance::layoutExec()
     glayout->addWidget(btn, row, 0);
     d_ptr->btns.insert(SystemMaintenancePrivate
                        ::ITEM_BTN_FACTORY_MAINTENANCE, btn);
-
+#ifdef Q_WS_QWS
     // touch calibration
     btn = new Button(trs("TouchScreenCalibration"));
     btn->setButtonStyle(Button::ButtonTextOnly);
@@ -117,6 +121,7 @@ void SystemMaintenance::layoutExec()
     d_ptr->btns.insert(SystemMaintenancePrivate
                        ::ITEM_BTN_TOUCH_CALIBRATION, btn);
 
+#endif
     row++;
 
     // system time
@@ -198,7 +203,7 @@ void SystemMaintenance::onBtnReleased()
                                      WindowManager::ShowBehaviorModal);
         }
         break;
-
+#ifdef Q_WS_QWS
         case SystemMaintenancePrivate::ITEM_BTN_TOUCH_CALIBRATION:
         {
             windowManager.closeAllWidows();
@@ -206,7 +211,7 @@ void SystemMaintenance::onBtnReleased()
             w.exec();
         }
         break;
-
+#endif
         case SystemMaintenancePrivate::ITEM_BTN_SYSTEM_TIME:
         {
             SupervisorTimeWindow w;
