@@ -26,6 +26,7 @@
  *************************************************************************************************/
 void CO2TrendWidget::_releaseHandle(IWidget *iWidget)
 {
+    Q_UNUSED(iWidget)
     MainMenuWindow *p = MainMenuWindow::getInstance();
     p->popup(trs("CO2Menu"));
 }
@@ -104,12 +105,14 @@ void CO2TrendWidget::setFiCO2Display(CO2FICO2Display disp)
         _fico2Label->hide();
         _fico2Value->hide();
         _fico2Value->setText(InvStr());
+        setTextSize();
     }
     else if (disp == CO2_FICO2_DISPLAY_ON)
     {
         _fico2Label->show();
         _fico2Value->show();
         _fico2Value->setText(_fico2Str);
+        setTextSize();
     }
 }
 
@@ -214,31 +217,23 @@ void CO2TrendWidget::showValue()
 void CO2TrendWidget::setTextSize()
 {
     QRect r;
-    int h = ((height() - nameLabel->height()) / 3);
-    int w = (width() - unitLabel->width());
-    r.setSize(QSize(w, (h * 2)));
+    int h = height();
+    int w = (width() - nameLabel->width())/2;
+    r.setSize(QSize(w, h));
     // 字体。
-//    int fontsize = fontManager.adjustNumFontSizeXML(r,"2222");
-//    fontsize = fontManager.getFontSize(fontsize);
     int fontsize = fontManager.adjustNumFontSize(r, true, "2222");
     QFont font = fontManager.numFont(fontsize, true);
-//    font.setStretch(105); // 横向放大。
     font.setWeight(QFont::Black);
 
     _etco2Value->setFont(font);
 
-    r.setSize(QSize(w, h));
-//    fontsize = fontManager.adjustNumFontSizeXML(r,"2222");
-//    fontsize = fontManager.getFontSize(fontsize);
     fontsize = fontManager.adjustNumFontSize(r, true, "2222");
-
-    font = fontManager.numFont(fontsize - 5);
-    font.setWeight(QFont::Black);
-    _fico2Label->setFont(font);
-
     font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
     _fico2Value->setFont(font);
+
+    QFont fico2Font = fontManager.textFont(fontManager.getFontSize(7));
+    _fico2Label->setFont(fico2Font);
 }
 
 // 立刻显示数据。
@@ -268,35 +263,30 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
 
 //    // 构造资源。
     _etco2Value = new QLabel();
-    _etco2Value->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    _etco2Value->setAlignment(Qt::AlignHCenter | Qt::AlignTop|Qt::AlignVCenter);
 
     _etco2Value->setPalette(palette);
     _etco2Value->setText(InvStr());
 
     _fico2Label = new QLabel(trs("FICO2"), this);
     _fico2Label->setPalette(palette);
-    _fico2Label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    _fico2Label->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
     _fico2Value = new QLabel(this);
     _fico2Value->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     _fico2Value->setPalette(palette);
     _fico2Value->setText(InvStr());
 
-    QHBoxLayout *hLayout = new QHBoxLayout();
-    hLayout->addStretch();
-    hLayout->addWidget(_fico2Label);
-    hLayout->addStretch();
-    hLayout->addWidget(_fico2Value);
-    hLayout->addStretch();
+    QHBoxLayout *mainLayout = new QHBoxLayout();
+    mainLayout->addStretch();
+    mainLayout->addWidget(_etco2Value);
+    mainLayout->addStretch();
+    mainLayout->addWidget(_fico2Label);
+    mainLayout->addStretch();
+    mainLayout->addWidget(_fico2Value);
+    mainLayout->addStretch();
 
-    QVBoxLayout *vLayout = new QVBoxLayout();
-    vLayout->addStretch();
-    vLayout->addWidget(_etco2Value);
-    vLayout->addStretch();
-    vLayout->addLayout(hLayout);
-    vLayout->addStretch();
-
-    contentLayout->addLayout(vLayout);
+    contentLayout->addLayout(mainLayout);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
