@@ -4,5 +4,7 @@
         <file>up.svg</file>
         <file>down.svg</file>
         <file>checked.svg</file>
+        <file>left.svg</file>
+        <file>right.svg</file>
     </qresource>
 </RCC>
