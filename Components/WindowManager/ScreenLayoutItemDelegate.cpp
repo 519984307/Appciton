@@ -15,6 +15,8 @@
 #include <QPainter>
 #include <QDebug>
 #include <QPainterPath>
+#include <QTableView>
+#include "PopupList.h"
 
 #define WAVE_LEFT_RIGHT_MARGIN 4
 #define WAVE_TOP_BOTTOM_MARGIN 2
@@ -22,12 +24,16 @@
 class ScreenLayoutItemDelegatePrivate : public TableViewItemDelegatePrivate
 {
 public:
+    Q_DECLARE_PUBLIC(ScreenLayoutItemDelegate)
+
     explicit ScreenLayoutItemDelegatePrivate(ScreenLayoutItemDelegate *const q_ptr)
         : TableViewItemDelegatePrivate(q_ptr)
     {
     }
 
     void drawWave(QPainter *painter, const QRect &rect, const ScreenLayoutItemInfo &info) const;
+
+    virtual bool showEditor(const QTableView *view, QAbstractItemModel *model, QModelIndex index);
 };
 
 void ScreenLayoutItemDelegatePrivate::drawWave(QPainter *painter, const QRect &rect,
@@ -78,6 +84,36 @@ void ScreenLayoutItemDelegatePrivate::drawWave(QPainter *painter, const QRect &r
     painter->restore();
 }
 
+bool ScreenLayoutItemDelegatePrivate::showEditor(const QTableView *view, QAbstractItemModel *model, QModelIndex index)
+{
+    Q_Q(ScreenLayoutItemDelegate);
+
+    QVariant value = model->data(index, Qt::EditRole);
+
+    if (value.isValid() && value.canConvert<QStringList>())
+    {
+        QStringList list = qvariant_cast<QStringList>(value);
+
+        QRect vrect = view->visualRect(index);
+        QRect rect(view->viewport()->mapToGlobal(vrect.topLeft()),
+                   view->viewport()->mapToGlobal(vrect.bottomRight()));
+
+        PopupList *popup = new PopupList();
+        popup->setFixedWidth(rect.width());
+        popup->additemList(list);
+        popup->setMaximumDisplayItem(8);
+        QString currentText = model->data(index, Qt::DisplayRole).toString();
+        popup->setCurrentText(currentText);
+        popup->setPopAroundRect(rect);
+        QObject::connect(popup, SIGNAL(selectItemChanged(QString)), q, SLOT(onSelectChanged(QString)));
+        QObject::connect(popup, SIGNAL(destroyed(QObject*)), q, SLOT(onPopupDestroy()));
+        popup->show();
+        return true;
+    }
+
+    return false;
+}
+
 ScreenLayoutItemDelegate::ScreenLayoutItemDelegate(QObject *parent)
     : TableViewItemDelegate(new ScreenLayoutItemDelegatePrivate(this), parent)
 {
@@ -105,3 +141,10 @@ void ScreenLayoutItemDelegate::drawDisplay(QPainter *painter, const QStyleOption
     }
 }
 
+void ScreenLayoutItemDelegate::onSelectChanged(const QString &text)
+{
+    if (d_ptr->curEditingIndex.isValid())
+    {
+        d_ptr->curEditingModel->setData(d_ptr->curEditingIndex, qVariantFromValue(text), Qt::EditRole);
+    }
+}

@@ -85,8 +85,6 @@ void AlarmLimitModel::alarmDataUpdate(const AlarmDataInfo &info, int type)
 
 bool AlarmLimitModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    Q_UNUSED(value)
-
     if (role == Qt::EditRole)
     {
         if (value.type() == QVariant::Int)

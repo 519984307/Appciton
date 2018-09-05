@@ -22,6 +22,9 @@ protected:
     /* reimplement */
     void drawDisplay(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QString &text) const;
 
+private slots:
+    void onSelectChanged(const QString &text);
+
 private:
     Q_DECLARE_PRIVATE(ScreenLayoutItemDelegate)
 };

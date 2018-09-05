@@ -19,6 +19,8 @@
 
 #define COLUMN_COUNT 6
 #define ROW_COUNT 8
+#define MAX_WAVE_ROW 6
+#define WAVE_START_COLUMN 4
 
 enum ItemType
 {
@@ -34,7 +36,7 @@ struct LayoutNode
     {}
 
     LayoutNode(const QString &name, WaveformID waveId, int pos, int span)
-        : name(name), pos(pos), span(span), waveId(waveId), type(ITEM_WAVE)
+        : name(name), pos(pos), span(span), type(ITEM_WAVE), waveId(waveId)
     {
     }
 
@@ -245,6 +247,26 @@ int ScreenLayoutModel::rowCount(const QModelIndex &parent) const
     return ROW_COUNT;
 }
 
+bool ScreenLayoutModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if (role == Qt::EditRole)
+    {
+        if (value.type() == QVariant::String)
+        {
+            LayoutNode *node = d_ptr->findNode(index);
+            if (node)
+            {
+                QString text = value.toString();
+                node->name = text;
+            }
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
 QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
 {
     switch (role)
@@ -264,10 +286,16 @@ QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
         }
     }
     break;
-    case ScreenLayoutItemInfo::AvaliableWaveRole:
-        break;
-    case ScreenLayoutItemInfo::AvaliableParamRole:
-        break;
+    case Qt::EditRole:
+    {
+        if (index.column() >= WAVE_START_COLUMN && index.row() < MAX_WAVE_ROW)
+        {
+            return QVariant(d_ptr->supportWaveforms);
+        }
+
+        return QVariant(d_ptr->supportParams);
+    }
+    break;
     default:
         break;
     }
@@ -281,7 +309,13 @@ Qt::ItemFlags ScreenLayoutModel::flags(const QModelIndex &index) const
         return QAbstractTableModel::flags(index);
     }
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    if (index.row() < MAX_WAVE_ROW && index.column() < WAVE_START_COLUMN)
+    {
+        // the waveform area is not selectable or editable
+        return Qt::ItemIsEnabled;
+    }
+
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
 QSize ScreenLayoutModel::span(const QModelIndex &index) const
@@ -309,7 +343,13 @@ void ScreenLayoutModel::loadLayoutInfo()
 
 void ScreenLayoutModel::updateWaveAndParamInfo()
 {
-    // TODO: find the support waveform and params
+    QStringList waveList;
+    waveList << "ECG" << "RESP" << "SPO2" << "CO2" << "ART" << "PA" << trs("Off");
+    d_ptr->supportWaveforms = waveList;
+
+    QStringList paramList;
+    paramList << "SPO2" << "C.O." << "CO2" << "RESP" << "NIBP" << "NIBPList" << trs("Off");
+    d_ptr->supportParams = paramList;
 }
 
 ScreenLayoutModel::~ScreenLayoutModel()

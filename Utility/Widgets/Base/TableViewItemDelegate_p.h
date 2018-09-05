@@ -26,7 +26,7 @@ public:
 
     const QWidget *widget(const QStyleOptionViewItem &option) const;
 
-    bool showEditor(const QTableView *view, QAbstractItemModel *model, QModelIndex index);
+    virtual bool showEditor(const QTableView *view, QAbstractItemModel *model, QModelIndex index);
 
     TableViewItemDelegate *const q_ptr;
     QModelIndex curPaintingIndex;   // record current painting item's index

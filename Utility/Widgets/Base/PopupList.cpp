@@ -36,7 +36,8 @@ public:
           scrollArea(NULL),
           curSelectIndex(-1),
           concatToParent(concat),
-          popAbove(false)
+          popAbove(false),
+          maximumDisplayItemNum(MAXIMUM_DISPLAY_ITEM)
     {}
 
     /**
@@ -52,15 +53,17 @@ public:
     int curSelectIndex;
     bool concatToParent;
     bool popAbove;
+    QRect globalRect; // A global rect this popup should pop around
+    int maximumDisplayItemNum;
 };
 
 int PopupListPrivate::properItemsHeight() const
 {
     int height = DEFAULT_HEIGHT;
     int itemCount = items.count();
-    if (itemCount > MAXIMUM_DISPLAY_ITEM)
+    if (itemCount > maximumDisplayItemNum)
     {
-        itemCount = MAXIMUM_DISPLAY_ITEM;
+        itemCount = maximumDisplayItemNum;
     }
 
     if (itemCount > 0)
@@ -74,7 +77,7 @@ int PopupListPrivate::properItemsHeight() const
 
 PopupList::PopupList(QWidget *parent, bool concatToParent)
     : QWidget(parent, Qt::Popup | Qt::FramelessWindowHint),
-      d_ptr(new PopupListPrivate(concatToParent))
+      d_ptr(new PopupListPrivate(concatToParent && parent != NULL))
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setAttribute(Qt::WA_TranslucentBackground);
@@ -153,9 +156,34 @@ void PopupList::setCurrentIndex(int index)
     d_ptr->curSelectIndex = index;
 }
 
+void PopupList::setCurrentText(const QString &text)
+{
+    int index = -1;
+    for (int i = 0; i < d_ptr->items.size(); ++i)
+    {
+        if (d_ptr->items.at(i)->text() == text)
+        {
+            index = i;
+            break;
+        }
+    }
+
+    setCurrentIndex(index);
+}
+
 int PopupList::getCurrentIndex() const
 {
     return d_ptr->curSelectIndex;
+}
+
+void PopupList::setPopAroundRect(const QRect &rect)
+{
+    d_ptr->globalRect = rect;
+}
+
+void PopupList::setMaximumDisplayItem(int num)
+{
+    d_ptr->maximumDisplayItemNum = num;
 }
 
 int PopupList::count() const
@@ -232,6 +260,32 @@ void PopupList::showEvent(QShowEvent *e)
                 pos.ry() = pos.ry() - d_ptr->properItemsHeight()
                            - DEFAULT_GAP;
             }
+
+            move(pos);
+            d_ptr->popAbove = true;
+        }
+    }
+    else if (!d_ptr->globalRect.isNull())
+    {
+        QDesktopWidget *desktop = QApplication::desktop();
+        QPoint pos =  d_ptr->globalRect.bottomLeft();
+        int borderRadius = themeManger.getBorderRadius();
+
+        int screenHeight = desktop->height();
+        // need gap between when not cancat to the parent widget
+        int lowestHeight = pos.y() + d_ptr->properItemsHeight() + borderRadius * 2;
+
+        if (lowestHeight < screenHeight)
+        {
+            // pop under the globalRect
+            move(pos);
+            d_ptr->popAbove = false;
+        }
+        else
+        {
+            // pop above the gloablRect
+            pos = d_ptr->globalRect.topLeft();
+            pos.ry() = pos.ry() - d_ptr->properItemsHeight();
 
             move(pos);
             d_ptr->popAbove = true;
@@ -363,6 +417,7 @@ void PopupList::onItemSelected()
         // get the item index
         int index = d_ptr->items.indexOf(item);
         emit selectItemChanged(index);
+        emit selectItemChanged(item->text());
         this->close();
     }
 }

@@ -73,7 +73,8 @@ ScreenLayoutWindow::ScreenLayoutWindow()
     layout->addLayout(hlayout);
 
 
-    QAbstractTableModel *model = new ScreenLayoutModel(this);
+    ScreenLayoutModel *model = new ScreenLayoutModel(this);
+    model->updateWaveAndParamInfo();
     d_ptr->view->setModel(model);
     resize(800, 600);
 

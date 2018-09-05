@@ -96,7 +96,17 @@ void TableViewItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem 
 {
     // get the model index
     d_ptr->curPaintingIndex = index;
-    QItemDelegate::paint(painter, option, index);
+    if (d_ptr->curEditingIndex == d_ptr->curPaintingIndex)
+    {
+        // the item should keep a selected style option
+        QStyleOptionViewItem opt = option;
+        opt.state |= QStyle::State_Selected;
+        QItemDelegate::paint(painter, opt, index);
+    }
+    else
+    {
+        QItemDelegate::paint(painter, option, index);
+    }
 }
 
 
@@ -196,7 +206,6 @@ void TableViewItemDelegate::drawDisplay(QPainter *painter, const QStyleOptionVie
 bool TableViewItemDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option,
                                         const QModelIndex &index)
 {
-
     Q_ASSERT(event);
     Q_ASSERT(model);
 
@@ -209,12 +218,14 @@ bool TableViewItemDelegate::editorEvent(QEvent *event, QAbstractItemModel *model
         return false;
     }
 
+#if 0
     // make sure we have a check state
     QVariant value = index.data(Qt::CheckStateRole);
     if (!value.isValid())
     {
         return false;
     }
+#endif
 
     const QTableView *view = qobject_cast<const QTableView *>(d_ptr->widget(option));
     if (!view)
@@ -224,8 +235,7 @@ bool TableViewItemDelegate::editorEvent(QEvent *event, QAbstractItemModel *model
     }
 
     // make sure that we have the right event type
-    if ((event->type() == QEvent::MouseButtonRelease)
-            || (event->type() == QEvent::MouseButtonDblClick)
+    if ((event->type() == QEvent::MouseButtonDblClick)
             || (event->type() == QEvent::MouseButtonPress))
     {
 

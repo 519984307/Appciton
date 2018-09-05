@@ -44,10 +44,29 @@ public:
     void setCurrentIndex(int index);
 
     /**
+     * @brief setCurrentText set the current item to the item that has the @text
+     * @param text the text of the item that need to set as current item
+     */
+    void setCurrentText(const QString &text);
+
+    /**
      * @brief getCurrentIndex get he current selected item
      * @return get the selected items, negative value means no selected item
      */
     int getCurrentIndex() const;
+
+    /**
+     * @brief setPopAroundRect set a gloable rect that the popup should pop around with
+     * @note It's better to set this property when the popup list has not parent
+     * @param rect
+     */
+    void setPopAroundRect(const QRect &rect);
+
+    /**
+     * @brief setMaximumDisplayItem set the maximum display item number in one page
+     * @param num the maximum number
+     */
+    void setMaximumDisplayItem(int num);
 
     int count() const;
 
@@ -72,6 +91,7 @@ protected:
 
 signals:
     void selectItemChanged(int index);
+    void selectItemChanged(const QString &text);
 
 private slots:
     void onItemSelected();

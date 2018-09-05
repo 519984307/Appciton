@@ -20,9 +20,11 @@ public:
     ~ScreenLayoutModel();
 
     /* reimplement */
-    int columnCount(const QModelIndex &parent) const;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const;
     /* reimplement */
-    int rowCount(const QModelIndex &parent) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    /* reimplement */
+    bool setData(const QModelIndex &index, const QVariant &value, int role);
     /* reimplement */
     QVariant data(const QModelIndex &index, int role) const;
     /* reimplement */
