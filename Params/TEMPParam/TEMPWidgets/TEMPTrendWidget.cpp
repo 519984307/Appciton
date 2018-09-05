@@ -26,6 +26,7 @@
  *************************************************************************************************/
 void TEMPTrendWidget::_releaseHandle(IWidget *iWidget)
 {
+    Q_UNUSED(iWidget)
     MainMenuWindow *p = MainMenuWindow::getInstance();
     p->popup(trs("AlarmLimitMenu"));
 }
@@ -249,8 +250,8 @@ void TEMPTrendWidget::setTextSize()
 {
     QRect r;
     int widgetWidth = width();
-    int nameLabelWidth = nameLabel->width() * 1.5;
-    r.setSize(QSize((widgetWidth- nameLabelWidth), height()/3));
+    int nameLabelWidth = nameLabel->width();
+    r.setSize(QSize((widgetWidth- nameLabelWidth)/2, height()/2));
     // 字体。
     int fontsize = fontManager.adjustNumFontSize(r, true, "3888");
     int nameFontSize = fontsize / 2;
@@ -299,54 +300,57 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
 
     QHBoxLayout *temperature = new QHBoxLayout;
     QVBoxLayout *vLayout = new QVBoxLayout();
-    vLayout->setMargin(1);
-    vLayout->setSpacing(1);
+    QHBoxLayout *mainLayout = new QHBoxLayout();
+    mainLayout->setMargin(1);
+    mainLayout->setSpacing(1);
 
     _t1Name = new QLabel();
     _t1Name->setAlignment(Qt::AlignBottom | Qt::AlignRight);
     _t1Name->setPalette(palette);
     _t1Name->setText(trs("T1"));
     _t1Value = new QLabel();
-    _t1Value->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    _t1Value->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
     _t1Value->setPalette(palette);
     _t1Value->setText(InvStr());
     temperature->addWidget(_t1Name);
     temperature->addWidget(_t1Value);
+    vLayout->addStretch(1);
     vLayout->addLayout(temperature);
+    vLayout->addStretch(1);
 
     _t2Name = new QLabel();
     _t2Name->setAlignment(Qt::AlignBottom | Qt::AlignRight);
     _t2Name->setPalette(palette);
     _t2Name->setText(trs("T2"));
     _t2Value = new QLabel();
-    _t2Value->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    _t2Value->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
     _t2Value->setPalette(palette);
     _t2Value->setText(InvStr());
     temperature = new QHBoxLayout;
     temperature->addWidget(_t2Name);
     temperature->addWidget(_t2Value);
     vLayout->addLayout(temperature);
+    vLayout->addStretch(1);
+    mainLayout->addStretch(1);
+    mainLayout->addLayout(vLayout);
+    mainLayout->addStretch(1);
 
     _tdName = new QLabel();
     _tdName->setAlignment(Qt::AlignBottom | Qt::AlignRight);
     _tdName->setPalette(palette);
     _tdName->setText(trs("TD"));
     _tdValue = new QLabel();
-    _tdValue->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    _tdValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
     _tdValue->setPalette(palette);
     _tdValue->setText(InvStr());
     temperature = new QHBoxLayout;
     temperature->addWidget(_tdName);
     temperature->addWidget(_tdValue);
+    vLayout = new QVBoxLayout;
+    vLayout->addStretch(1);
     vLayout->addLayout(temperature);
-
-    // 布局。
-    QHBoxLayout *mainLayout = new QHBoxLayout();
-    mainLayout->setMargin(1);
-    mainLayout->setSpacing(1);
-    mainLayout->addStretch(1);
+    vLayout->addStretch(1);
     mainLayout->addLayout(vLayout);
-
     mainLayout->addStretch(1);
 
     contentLayout->addLayout(mainLayout);
