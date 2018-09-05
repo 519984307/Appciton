@@ -9,6 +9,7 @@
         <PatientType>0</PatientType><!--0:adult  1:ped  2:neo-->
 	<MonitorName>dd-89</MonitorName>
 	<ConfigManagerPassword>12345678</ConfigManagerPassword>
+	<DemoModePassword>11111111</DemoModePassword>
 	<UserMaintainPassword>66666666</UserMaintainPassword>
 	<FactoryMaintainPassword>382425</FactoryMaintainPassword>
 	<SuperPassword>672401</SuperPassword>

@@ -8,47 +8,40 @@
  ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/13
  **/
 
-#include "FactoryMaintainMenuContent.h"
+#include "FactoryMaintainWindow.h"
 #include "LanguageManager.h"
-#include <QLabel>
-#include "ComboBox.h"
-#include <QGridLayout>
-#include <QList>
-#include "SoundManager.h"
-#include "SystemManager.h"
 #include "IConfig.h"
 #include "PasswordWidget.h"
 #include <QVBoxLayout>
 #include "WindowManager.h"
 #include "FactoryMaintainMenuWindow.h"
 
-class FactoryMaintainMenuContentPrivate
+class FactoryMaintainWindowPrivate
 {
 public:
-    FactoryMaintainMenuContentPrivate() : passwordWidget(NULL)
+    FactoryMaintainWindowPrivate() : passwordWidget(NULL)
     {
     }
 
     PasswordWidget *passwordWidget;
 };
 
-FactoryMaintainMenuContent::FactoryMaintainMenuContent()
-    : MenuContent(trs("FactoryMaintainSystem"), trs("FactoryMaintainSystem")),
-      d_ptr(new FactoryMaintainMenuContentPrivate)
+FactoryMaintainWindow::FactoryMaintainWindow()
+    : Window(),
+      d_ptr(new FactoryMaintainWindowPrivate)
 {
+    layoutExec();
 }
 
-FactoryMaintainMenuContent::~FactoryMaintainMenuContent()
+FactoryMaintainWindow::~FactoryMaintainWindow()
 {
     delete d_ptr;
 }
 
-void FactoryMaintainMenuContent::readyShow()
+void FactoryMaintainWindow::layoutExec()
 {
-}
+    setWindowTitle(trs("FactoryMaintainSystem"));
 
-void FactoryMaintainMenuContent::layoutExec()
-{
     QVBoxLayout *layout = new QVBoxLayout(this);
 
     QString password;
@@ -56,9 +49,11 @@ void FactoryMaintainMenuContent::layoutExec()
     d_ptr->passwordWidget = new PasswordWidget(trs("FactoryMaintainPassword"), password);
     layout->addWidget(d_ptr->passwordWidget, Qt::AlignCenter);
     connect(d_ptr->passwordWidget, SIGNAL(correctPassword()), this, SLOT(userInputCorrect()));
+    setWindowLayout(layout);
+    setFixedSize(480, 480);
 }
 
-void FactoryMaintainMenuContent::userInputCorrect()
+void FactoryMaintainWindow::userInputCorrect()
 {
     FactoryMaintainMenuWindow *w = FactoryMaintainMenuWindow::getInstance();
     windowManager.showWindow(w, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorCloseOthers);

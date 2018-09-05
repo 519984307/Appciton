@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/5
+ **/
+
 #include "S5Provider.h"
 #include "SPO2Param.h"
 #include "SPO2Alarm.h"
@@ -41,13 +51,13 @@ void S5Provider::handlePacket(unsigned char *data, int len)
 
     spo2Param.receivePackage();
     int enable = 0;
-    switch(data[0])
+    switch (data[0])
     {
-    //灵敏度0x13
+    // 灵敏度0x13
     case S5_RSP_SENSITIVITY:
         break;
 
-        //启动帧0x40
+    // 启动帧0x40
     case S5_NOTIFY_START_UP:
     {
         ErrorLogItem *item = new CriticalFaultLogItem();
@@ -57,35 +67,35 @@ void S5Provider::handlePacket(unsigned char *data, int len)
         spo2Param.reset();
         break;
     }
-        //状态0x42
+    // 状态0x42
     case S5_NOTIFY_STATUS:
         isStatus(data);
         break;
-        //描记波、棒图0x5C
+    // 描记波、棒图0x5C
     case S5_NOTIFY_WAVE:
         isResult_BAR(data);
         break;
 
-        //SPO2值与PR值0x5F
+    // SPO2值与PR值0x5F
     case S5_NOTIFY_RESULT:
         isResultSPO2PR(data);
         break;
 
-        //保活帧0x5B
+    // 保活帧0x5B
     case S5_NOTIFY_ALIVE:
         feed();
         break;
 
-        //原始数据0x5D
+    // 原始数据0x5D
     case S5_NOTIFY_DATA:
         machineConfig.getNumValue("Record|SPO2", enable);
         if (enable)
         {
-            rawDataCollection.pushData("BLM_S5", data,len);
+            rawDataCollection.pushData("BLM_S5", data, len);
         }
         break;
 
-        //错误警告帧0x76
+    // 错误警告帧0x76
     case S5_DATA_ERROR:
     {
         _sendACK(data[0]);
@@ -183,7 +193,7 @@ bool S5Provider::isResultSPO2PR(unsigned char *packet)
     }
 
     // 脉率值。
-    short pr = (packet[2]<<8)+packet[3];
+    short pr = (packet[2] << 8) + packet[3];
     pr = (pr == -100) ? InvData() : pr;
     spo2Param.setPR(pr);
 
@@ -201,21 +211,11 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
         return false;
     }
 
-    for(int i = 0; i < 10; i++)
+    for (int i = 0; i < 10; i++)
     {
         // 波形。
-#if 0 //TODO: reenable in future
-        if(i == 2 && dataSync.needDrop(WAVE_SPO2))
-        {
-            qDebug("drop one spo2 sample.");
-            break;
-        }
-        else
-#endif
-        {
-            spo2Param.addWaveformData(packet[i + 5]);
-            _isValuePR = (packet[i + 5] == 0x80) ? false : true;
-        }
+        spo2Param.addWaveformData(packet[i + 5]);
+        _isValuePR = (packet[i + 5] == 0x80) ? false : true;
     }
     // 棒图。
     spo2Param.addBarData((packet[15] == 127) ? 50 : packet[15]);
@@ -321,7 +321,7 @@ bool S5Provider::isStatus(unsigned char *packet)
 
     bool isValid = false;
     bool isError = false;
-    switch(packet[1])
+    switch (packet[1])
     {
     case 0x00:
         if (packet[2] == 0x01)
@@ -410,7 +410,7 @@ bool S5Provider::isStatus(unsigned char *packet)
         // 初始化
         if (_logicStatus == S5_LOGIC_INIT)
         {
-            spo2Param.setNotify(true,trs("SPO2Initializing"));
+            spo2Param.setNotify(true, trs("SPO2Initializing"));
         }
         // 脉搏搜索
         else if (_logicStatus == S5_LOGIC_SEARCHING)
@@ -420,7 +420,7 @@ bool S5Provider::isStatus(unsigned char *packet)
         //搜索时间过长
         else if (_logicStatus == S5_LOGIC_SEARCH_TOO_LONG)
         {
-            spo2Param.setNotify(true,trs("SPO2PulseSearch"));
+            spo2Param.setNotify(true, trs("SPO2PulseSearch"));
         }
         else
         {
@@ -439,7 +439,7 @@ bool S5Provider::isStatus(unsigned char *packet)
         }
         if (_isCableOff || _isFingerOff || _ledFault)
         {
-            spo2Param.setNotify(true,trs("SPO2CheckSensor"));
+            spo2Param.setNotify(true, trs("SPO2CheckSensor"));
             if (_ledFault)
             {
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LED_FAULT, true);
@@ -448,7 +448,7 @@ bool S5Provider::isStatus(unsigned char *packet)
             {
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
             }
-            isValid |= true;
+            isValid = true;
         }
         else
         {
@@ -457,13 +457,13 @@ bool S5Provider::isStatus(unsigned char *packet)
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
             if (_gainError == S5_GAIN_SATURATION)
             {
-                isValid |= true;
+                isValid = true;
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, true);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, false);
             }
             else if (_gainError == S5_GAIN_WEAK)
             {
-                isValid |= true;
+                isValid = true;
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, true);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, false);
             }
@@ -509,6 +509,8 @@ void S5Provider::sendCmdData(unsigned char cmdId, const unsigned char *data, uns
  *************************************************************************************************/
 S5Provider::S5Provider() : BLMProvider("BLM_S5"), SPO2ProviderIFace()
 {
+    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_S5;
+
     UartAttrDesc portAttr(115200, 8, 'N', 1);
     initPort(portAttr);
 
@@ -517,6 +519,7 @@ S5Provider::S5Provider() : BLMProvider("BLM_S5"), SPO2ProviderIFace()
     _gainError = S5_GAIN_NC;
     _ledFault = false;
     _logicStatus = S5_LOGIC_NC;
+    _isValuePR = false;
 }
 
 /**************************************************************************************************
@@ -524,6 +527,5 @@ S5Provider::S5Provider() : BLMProvider("BLM_S5"), SPO2ProviderIFace()
  *************************************************************************************************/
 S5Provider::~S5Provider()
 {
-
 }
 

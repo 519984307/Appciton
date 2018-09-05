@@ -84,10 +84,12 @@ ScreenLayoutWindow::ScreenLayoutWindow()
         for (int j = 0; j < column; j++)
         {
             QSize span = model->span(model->index(i, j));
-            d_ptr->view->setSpan(i, j, span.height(), span.width());
+            if (span.isValid())
+            {
+                d_ptr->view->setSpan(i, j, span.height(), span.width());
+            }
         }
     }
-
 
     setWindowTitle(trs("ScreenLayout"));
 }

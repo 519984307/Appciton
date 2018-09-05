@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/5
+ **/
+
 #include "T5Provider.h"
 #include "TEMPParam.h"
 #include "Debug.h"
@@ -11,7 +21,8 @@
 #include "RawDataCollection.h"
 #include "IConfig.h"
 
-static const char *tempErrorCode[] = {
+static const char *tempErrorCode[] =
+{
     "Unknown mistake.\r\n",
     "The data saved in Flash is reset to the default value.\r\n",
     "\n",
@@ -47,11 +58,11 @@ void T5Provider::handlePacket(unsigned char *data, int len)
     BLMProvider::handlePacket(data, len);
 
     int enable = 0;
-    switch(data[0])
+    switch (data[0])
     {
     // 自检状态
     case T5_RSP_SELF_STATE:
-        _selfTest(data,len);
+        _selfTest(data, len);
         break;
 
     // 获取测量状态
@@ -103,13 +114,13 @@ void T5Provider::handlePacket(unsigned char *data, int len)
         machineConfig.getNumValue("Record|NIBP", enable);
         if (enable)
         {
-            rawDataCollection.pushData("BLM_T5", data,len);
+            rawDataCollection.pushData("BLM_T5", data, len);
         }
         break;
 
     case T5_DATA_ERROR:
         _sendACK(data[0]);
-        _errorWarm(data,len);
+        _errorWarm(data, len);
         break;
 
     default:
@@ -195,19 +206,19 @@ void T5Provider::_selfTest(unsigned char *packet, int len)
     int num = packet[1];
     if (num > 0)
     {
-        systemManager.setPoweronTestResult(T5_MODULE_SELFTEST_RESULT,SELFTEST_FAILED);
+        systemManager.setPoweronTestResult(T5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
         tempParam.setErrorDisable();
         tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE, true);
 
         QString errorStr("");
         errorStr = "error code = ";
-        for(int i = 1; i < len; i++)
+        for (int i = 1; i < len; i++)
         {
-            errorStr += QString().sprintf("0x%02x, ", packet[i]);
+            errorStr += QString("0x%1, ").arg(QString::number(packet[i], 16));
         }
         errorStr += "\r\n";
 
-        for(int i = 2; i < len; i++)
+        for (int i = 2; i < len; i++)
         {
             switch (packet[i])
             {
@@ -236,7 +247,7 @@ void T5Provider::_selfTest(unsigned char *packet, int len)
     }
     else if (num == 0)
     {
-        systemManager.setPoweronTestResult(T5_MODULE_SELFTEST_RESULT,SELFTEST_SUCCESS);
+        systemManager.setPoweronTestResult(T5_MODULE_SELFTEST_RESULT, SELFTEST_SUCCESS);
     }
 }
 
@@ -247,13 +258,13 @@ void T5Provider::_errorWarm(unsigned char *packet, int len)
 
     QString errorStr("");
     errorStr = "error code = ";
-    for(int i = 1; i < len; i++)
+    for (int i = 1; i < len; i++)
     {
-        errorStr += QString().sprintf("0x%02x, ", packet[i]);
+        errorStr += QString("0x%1, ").arg(QString::number(packet[i]));
     }
     errorStr += "\r\n";
 
-    for(int i = 1; i < len; i++)
+    for (int i = 1; i < len; i++)
     {
         switch (packet[i])
         {
@@ -339,20 +350,20 @@ void T5Provider::_result(unsigned char *packet)
 
     if (!(0xFF == packet[2] && 0xFF == packet[1]))
     {
-        _temp1 = (int)((packet[2]<<8) + packet[1]);
+        _temp1 = static_cast<int>((packet[2] << 8) + packet[1]);
 
         sensorOff1 = false;
     }
 
     if (!(0xFF == packet[4] && 0xFF == packet[3]))
     {
-        _temp2 = (int)((packet[4]<<8) + packet[3]);
+        _temp2 = static_cast<int>((packet[4] << 8) + packet[3]);
 
         sensorOff2 = false;
     }
 
 //    if (_temp1 != InvData() && _temp2 != InvData())
-    if (_temp1 >=0 && _temp1 <= 500 && _temp2 >= 0 && _temp2 <= 500)
+    if (_temp1 >= 0 && _temp1 <= 500 && _temp2 >= 0 && _temp2 <= 500)
     {
         _tempd = abs(_temp1 - _temp2);
     }
@@ -484,8 +495,6 @@ void T5Provider::_shotAlarm()
                 // 取消探头1、探头2超界
                 tempParam.setOneShotAlarm(TEMP_OVER_RANGR_1, false);
                 tempParam.setOneShotAlarm(TEMP_OVER_RANGR_2, false);
-
-
             }
             else
             {
@@ -582,6 +591,8 @@ void T5Provider::_shotAlarm()
  *************************************************************************************************/
 T5Provider::T5Provider() : BLMProvider("BLM_T5"), TEMPProviderIFace()
 {
+    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_T5;
+
     UartAttrDesc portAttr(115200, 8, 'N', 1);
     if (!initPort(portAttr))
     {
@@ -606,6 +617,5 @@ T5Provider::T5Provider() : BLMProvider("BLM_T5"), TEMPProviderIFace()
  *************************************************************************************************/
 T5Provider::~T5Provider()
 {
-
 }
 

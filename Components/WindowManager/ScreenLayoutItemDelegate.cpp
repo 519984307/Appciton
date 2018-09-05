@@ -91,7 +91,6 @@ void ScreenLayoutItemDelegate::drawDisplay(QPainter *painter, const QStyleOption
 
     Q_D(const ScreenLayoutItemDelegate);
     QVariant val = d->curPaintingIndex.data(Qt::DisplayRole);
-    qDebug() << val.type();
     if (val.canConvert<ScreenLayoutItemInfo>())
     {
         ScreenLayoutItemInfo info = qvariant_cast<ScreenLayoutItemInfo>(val);

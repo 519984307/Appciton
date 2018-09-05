@@ -8,28 +8,26 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/20
  **/
 
-#include "MenuContent.h"
+#define pragma once
 
-class MonitorInfoContentPrivate;
-class MonitorInfoContent : public MenuContent
+#include "Window.h"
+
+class SoftWareVersionWindowPrivate;
+class SoftWareVersionWindow : public Window
 {
     Q_OBJECT
 public:
-    MonitorInfoContent();
-    ~MonitorInfoContent();
-
-protected:
-    virtual void readyShow();
-    virtual void layoutExec();
-
-private slots:
+    SoftWareVersionWindow();
+    ~SoftWareVersionWindow();
     /**
-     * @brief onBtnReleasedChanged
+     * @brief readyShow
      */
-    void onBtnReleasedChanged();
+    void readyShow();
+    /**
+     * @brief layoutExec
+     */
+    void layoutExec();
 
 private:
-    MonitorInfoContentPrivate *const d_ptr;
+    SoftWareVersionWindowPrivate *const d_ptr;
 };
-
-

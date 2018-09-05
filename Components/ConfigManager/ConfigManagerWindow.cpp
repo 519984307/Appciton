@@ -8,47 +8,40 @@
  ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/12
  **/
 
-#include "ConfigManagerMenuContent.h"
+#include "ConfigManagerWindow.h"
 #include "LanguageManager.h"
-#include <QLabel>
-#include "ComboBox.h"
-#include <QGridLayout>
-#include <QList>
-#include "SoundManager.h"
-#include "SystemManager.h"
 #include "IConfig.h"
 #include "PasswordWidget.h"
 #include <QVBoxLayout>
 #include "WindowManager.h"
 #include "ConfigManagerMenuWindow.h"
 
-class ConfigManagerMenuContentPrivate
+class ConfigManagerWindowPrivate
 {
 public:
-    ConfigManagerMenuContentPrivate() : passwordWidget(NULL)
+    ConfigManagerWindowPrivate() : passwordWidget(NULL)
     {
     }
 
     PasswordWidget *passwordWidget;
 };
 
-ConfigManagerMenuContent::ConfigManagerMenuContent()
-    : MenuContent(trs("ConfigManager"), trs("ConfigManagerDesc")),
-      d_ptr(new ConfigManagerMenuContentPrivate)
+ConfigManagerWindow::ConfigManagerWindow()
+    : Window(),
+      d_ptr(new ConfigManagerWindowPrivate)
 {
+    layoutExec();
 }
 
-ConfigManagerMenuContent::~ConfigManagerMenuContent()
+ConfigManagerWindow::~ConfigManagerWindow()
 {
     delete d_ptr;
 }
 
-void ConfigManagerMenuContent::readyShow()
+void ConfigManagerWindow::layoutExec()
 {
-}
+    setWindowTitle(trs("ConfigManager"));
 
-void ConfigManagerMenuContent::layoutExec()
-{
     QVBoxLayout *layout = new QVBoxLayout(this);
 
     QString password;
@@ -56,9 +49,11 @@ void ConfigManagerMenuContent::layoutExec()
     d_ptr->passwordWidget = new PasswordWidget(trs("ConfigManagerPassword"), password);
     layout->addWidget(d_ptr->passwordWidget, Qt::AlignCenter);
     connect(d_ptr->passwordWidget, SIGNAL(correctPassword()), this, SLOT(userInputCorrect()));
+    setWindowLayout(layout);
+    setFixedSize(480, 480);
 }
 
-void ConfigManagerMenuContent::userInputCorrect()
+void ConfigManagerWindow::userInputCorrect()
 {
     ConfigManagerMenuWindow *w = ConfigManagerMenuWindow::getInstance();
     windowManager.showWindow(w, WindowManager::ShowBehaviorCloseOthers);
