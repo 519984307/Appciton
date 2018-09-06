@@ -132,6 +132,8 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/PasswordWidget.cpp                                     \
     Utility/Widgets/Base/SpinBox.cpp                                            \
     Utility/Widgets/Base/DropList.cpp                                           \
+    Utility/Widgets/Base/PopupMoveEditor.cpp                                    \
+    Utility/Widgets/Base/MoveButton.cpp                                         \
     Utility/Widgets/IComboList/ComboList.cpp                                    \
     Utility/Widgets/IComboList/ComboListPopup.cpp                               \
     Utility/Widgets/IComboList/ComboListItem.cpp                                \
@@ -599,8 +601,6 @@ SOURCES +=                                                                      
     Main/IThread.cpp                                                            \
     Main/MergeConfig.cpp                                                        \
     Main/Starter.cpp \
-    Utility/Widgets/Base/PopupMoveEditor.cpp \
-    Utility/Widgets/Base/MoveButton.cpp
 
 HEADERS +=                                                                      \
     SOUP/Json/FlexLexer.h                                                       \
@@ -677,6 +677,8 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/PasswordWidget.h                                       \
     Utility/Widgets/Base/SpinBox.h                                              \
     Utility/Widgets/Base/DropList.h                                             \
+    Utility/Widgets/Base/PopupMoveEditor.h                                      \
+    Utility/Widgets/Base/MoveButton.h                                           \
     Utility/Widgets/IComboList/ComboList.h                                      \
     Utility/Widgets/IComboList/ComboListPopup.h                                 \
     Utility/Widgets/IComboList/ComboListItem.h                                  \
@@ -1206,8 +1208,6 @@ HEADERS +=                                                                      
     Main/Starter.h                                                              \
     Main/Version.h \
     Utility/Widgets/ImportFileSubWidget.h \
-    Utility/Widgets/Base/PopupMoveEditor.h \
-    Utility/Widgets/Base/MoveButton.h
 
 #头文件修改后，重新编译依赖的源文件
 DEPENDPATH +=                                                                   \
