@@ -18,13 +18,13 @@
 class PopupMoveEditorPrivate
 {
 public:
-    explicit PopupMoveEditorPrivate(PopupMoveEditor *const q_ptr)
+    PopupMoveEditorPrivate(PopupMoveEditor *const q_ptr, const QString &text)
         : q_ptr(q_ptr),
           isLeftPressed(false),
           isRightPressed(false),
           hasBeenPressed(false),
           prvRect(0, 0, 40, 100),
-          name("Paging"),
+          name(text),
           timer(NULL)
     {}
 
@@ -45,9 +45,9 @@ public:
     QTimer *timer;
 };
 
-PopupMoveEditor::PopupMoveEditor()
+PopupMoveEditor::PopupMoveEditor(QString &text)
     : QWidget(NULL, Qt::Popup | Qt::FramelessWindowHint),
-      d_ptr(new PopupMoveEditorPrivate(this))
+      d_ptr(new PopupMoveEditorPrivate(this, text))
 {
     setAttribute(Qt::WA_DeleteOnClose);
     setAttribute(Qt::WA_TranslucentBackground);
@@ -88,7 +88,15 @@ void PopupMoveEditor::paintEvent(QPaintEvent *ev)
     QRect leftRegion = r;
     leftRegion.setRight(r.width() / 3);
     painter.setClipRect(leftRegion);
-    painter.setBrush(bgColor.darker());
+    if (d_ptr->isLeftPressed)
+    {
+        bgColor = pal.color(QPalette::Active, QPalette::Highlight);
+        painter.setBrush(bgColor);
+    }
+    else
+    {
+        painter.setBrush(pal.color(QPalette::Disabled, QPalette::Window));
+    }
     painter.drawRoundedRect(leftRegion.adjusted(bw / 2, bw / 2, br + bw, - bw / 2), br, br);
 
     const QIcon &leftIcon = themeManger.getIcon(ThemeManager::IconLeft);
@@ -97,7 +105,15 @@ void PopupMoveEditor::paintEvent(QPaintEvent *ev)
     QRect rightRegion = r;
     rightRegion.setLeft(r.width() * 2 / 3);
     painter.setClipRect(rightRegion);
-    painter.setBrush(bgColor.darker());
+    if (d_ptr->isRightPressed)
+    {
+        bgColor = pal.color(QPalette::Active, QPalette::Highlight);
+        painter.setBrush(bgColor);
+    }
+    else
+    {
+        painter.setBrush(pal.color(QPalette::Disabled, QPalette::Window));
+    }
     painter.drawRoundedRect(rightRegion.adjusted(-br - bw, bw / 2,  -bw / 2, -bw / 2), br, br);
 
     const QIcon &rightIcon = themeManger.getIcon(ThemeManager::IconRight);
@@ -124,6 +140,26 @@ QSize PopupMoveEditor::sizeHint() const
 
 void PopupMoveEditor::keyPressEvent(QKeyEvent *ev)
 {
+    d_ptr->hasBeenPressed = true;
+    switch (ev->key())
+    {
+    case Qt::Key_Up:
+    case Qt::Key_Left:
+        d_ptr->isLeftPressed = true;
+        update();
+        break;
+    case Qt::Key_Right:
+    case Qt::Key_Down:
+        d_ptr->isRightPressed = true;
+        update();
+        break;
+    case Qt::Key_Return:
+    case Qt::Key_Enter:
+        break;
+    default:
+        QWidget::keyReleaseEvent(ev);
+        break;
+    }
 }
 
 void PopupMoveEditor::keyReleaseEvent(QKeyEvent *ev)
@@ -132,11 +168,15 @@ void PopupMoveEditor::keyReleaseEvent(QKeyEvent *ev)
     {
     case Qt::Key_Up:
     case Qt::Key_Left:
+        d_ptr->isLeftPressed = false;
         emit leftMove();
+        update();
         break;
     case Qt::Key_Right:
     case Qt::Key_Down:
+        d_ptr->isRightPressed = false;
         emit rightMove();
+        update();
         break;
     case Qt::Key_Return:
     case Qt::Key_Enter:
@@ -154,6 +194,7 @@ void PopupMoveEditor::mousePressEvent(QMouseEvent *ev)
     d_ptr->isLeftPressed = d_ptr->mouseInLeftRegion(ev->pos());
     d_ptr->isRightPressed = d_ptr->mouseInRightRegion(ev->pos());
 
+    update();
     ev->accept();
 
     if (!d_ptr->isLeftPressed && !d_ptr->isRightPressed)
@@ -205,13 +246,12 @@ void PopupMoveEditor::mouseReleaseEvent(QMouseEvent *ev)
     d_ptr->isRightPressed = false;
     d_ptr->isLeftPressed = false;
     d_ptr->hasBeenPressed = false;
+    update();
     ev->accept();
 }
 
 void PopupMoveEditor::showEvent(QShowEvent *ev)
 {
-    QRect r(QPoint(0, 0), d_ptr->prvRect.size());
-    QRect rr = this->rect();
     move(d_ptr->prvRect.topLeft());
     QWidget::showEvent(ev);
 }

@@ -17,7 +17,7 @@ class PopupMoveEditor : public QWidget
 {
     Q_OBJECT
 public:
-    PopupMoveEditor();
+    explicit PopupMoveEditor(QString &text);
     ~PopupMoveEditor();
 
     /* set the editor Area global geometry */

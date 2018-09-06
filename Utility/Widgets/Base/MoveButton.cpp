@@ -46,16 +46,26 @@ void MoveButton::paintEvent(QPaintEvent *ev)
     QRect r = rect();
     int bw = themeManger.getBorderWidth();
     int br = themeManger.getBorderRadius();
-    QPen pen(pal.color(QPalette::Inactive, QPalette::Shadow), bw);
     QColor bgColor = pal.color(QPalette::Inactive, QPalette::Window);
-
+    QPen pen(pal.color(QPalette::Inactive, QPalette::Shadow), bw);
+    if (hasFocus())
+    {
+        pen.setColor(pal.color(QPalette::Active, QPalette::Shadow));
+    }
+    else if (!isEnabled())
+    {
+        pen.setColor(pal.color(QPalette::Disabled, QPalette::Shadow));
+    }
     painter.setPen(pen);
     QRect leftRegion = r;
     leftRegion.setRight(r.width() / 4);
     painter.setClipRect(leftRegion);
     if (hasFocus())
     {
-        painter.setBrush(bgColor.darker());
+        bgColor = pal.color(QPalette::Active, QPalette::Highlight);
+        painter.setBrush(bgColor);
+        //        textColor = pal.color(QPalette::Active, QPalette::HighlightedText);
+//        icoMode = QIcon::Active;
     }
     else
     {
@@ -71,7 +81,8 @@ void MoveButton::paintEvent(QPaintEvent *ev)
     painter.setClipRect(rightRegion);
     if (hasFocus())
     {
-        painter.setBrush(bgColor.darker());
+        bgColor = pal.color(QPalette::Active, QPalette::Highlight);
+        painter.setBrush(bgColor);
     }
     else
     {
@@ -116,7 +127,7 @@ void MoveButton::keyReleaseEvent(QKeyEvent *ev)
         QRect vrect = rect();
         QRect rect(this->mapToGlobal(vrect.topLeft()),
                     this->mapToGlobal(vrect.bottomRight()));
-        PopupMoveEditor *editor = new PopupMoveEditor();
+        PopupMoveEditor *editor = new PopupMoveEditor(d_ptr->name);
         editor->setEditorGeometry(rect);
         editor->setFont(fontManager.textFont(this->font().pixelSize()));
         editor->setPalette(palette());
@@ -137,7 +148,7 @@ void MoveButton::mousePressEvent(QMouseEvent *ev)
     QRect vrect = rect();
     QRect rect(this->mapToGlobal(vrect.topLeft()),
                 this->mapToGlobal(vrect.bottomRight()));
-    PopupMoveEditor *editor = new PopupMoveEditor();
+    PopupMoveEditor *editor = new PopupMoveEditor(d_ptr->name);
     editor->setEditorGeometry(rect);
     editor->setFont(fontManager.textFont(this->font().pixelSize()));
     editor->setPalette(palette());

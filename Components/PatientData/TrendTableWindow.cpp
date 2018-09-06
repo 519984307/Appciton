@@ -56,7 +56,7 @@ class TrendTableWindowPrivate
 public:
     TrendTableWindowPrivate()
         : model(NULL), table(NULL), upBtn(NULL), downBtn(NULL),
-          leftBtn(NULL), rightBtn(NULL), pagingBtn(NULL), previousEventBtn(NULL), nextEventBtn(NULL),
+           pagingBtn(NULL), eventBtn(NULL),
           printParamBtn(NULL), setBtn(NULL), timeInterval(RESOLUTION_RATIO_5_SECOND),
           curSecCol(0)
     {}
@@ -68,11 +68,8 @@ public:
     TableView *table;
     Button *upBtn;
     Button *downBtn;
-    Button *leftBtn;
-    Button *rightBtn;
     MoveButton *pagingBtn;
-    Button *previousEventBtn;
-    Button *nextEventBtn;
+    MoveButton *eventBtn;
     Button *printParamBtn;
     Button *setBtn;
     ResolutionRatio timeInterval;          // 时间间隔
@@ -205,26 +202,15 @@ TrendTableWindow::TrendTableWindow()
     d_ptr->downBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->downBtn, SIGNAL(released()), this, SLOT(downReleased()));
 
-//    d_ptr->leftBtn = new Button("", QIcon("/usr/local/nPM/icons/left.png"));
-//    d_ptr->leftBtn->setButtonStyle(Button::ButtonIconOnly);
-//    connect(d_ptr->leftBtn, SIGNAL(released()), this, SLOT(leftReleased()));
-
-//    d_ptr->rightBtn = new Button("", QIcon("/usr/local/nPM/icons/right.png"));
-//    d_ptr->rightBtn->setButtonStyle(Button::ButtonIconOnly);
-//    connect(d_ptr->rightBtn, SIGNAL(released()), this, SLOT(rightReleased()));
-
-    d_ptr->pagingBtn = new MoveButton(trs("Paging"));
+    d_ptr->pagingBtn = new MoveButton(trs("Page"));
     d_ptr->pagingBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->pagingBtn, SIGNAL(leftMove()), this, SLOT(leftReleased()));
     connect(d_ptr->pagingBtn, SIGNAL(rightMove()), this, SLOT(rightReleased()));
 
-    d_ptr->previousEventBtn = new Button(trs("PreviousEvent"));
-    d_ptr->previousEventBtn->setButtonStyle(Button::ButtonTextOnly);
-    connect(d_ptr->previousEventBtn, SIGNAL(released()), this, SLOT(leftMoveEvent()));
-
-    d_ptr->nextEventBtn = new Button(trs("NextEvent"));
-    d_ptr->nextEventBtn->setButtonStyle(Button::ButtonTextOnly);
-    connect(d_ptr->nextEventBtn, SIGNAL(released()), this, SLOT(rightMoveEvent()));
+    d_ptr->eventBtn = new MoveButton(trs("Event"));
+    d_ptr->eventBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->eventBtn, SIGNAL(leftMove()), this, SLOT(leftMoveEvent()));
+    connect(d_ptr->eventBtn, SIGNAL(rightMove()), this, SLOT(rightMoveEvent()));
 
     d_ptr->printParamBtn = new Button(trs("Print"));
     d_ptr->printParamBtn->setButtonStyle(Button::ButtonTextOnly);
@@ -237,11 +223,8 @@ TrendTableWindow::TrendTableWindow()
     QHBoxLayout *hLayout = new QHBoxLayout(this);
     hLayout->addWidget(d_ptr->upBtn, 1);
     hLayout->addWidget(d_ptr->downBtn, 1);
-//    hLayout->addWidget(d_ptr->leftBtn, 1);
-//    hLayout->addWidget(d_ptr->rightBtn, 1);
     hLayout->addWidget(d_ptr->pagingBtn, 2);
-    hLayout->addWidget(d_ptr->previousEventBtn, 2);
-    hLayout->addWidget(d_ptr->nextEventBtn, 2);
+    hLayout->addWidget(d_ptr->eventBtn, 2);
     hLayout->addWidget(d_ptr->printParamBtn, 2);
     hLayout->addWidget(d_ptr->setBtn, 2);
 
