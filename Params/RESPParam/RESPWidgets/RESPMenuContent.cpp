@@ -25,10 +25,9 @@ class RESPMenuContentPrivate
 public:
     enum MenuItem
     {
-        ITEM_CBO_SWEEP_SPEED = 1,
-        ITEM_CBO_ZOOM,
-        ITEM_CBO_LEAD,
-        ITEM_CBO_AUTO_ACTIVATION,
+        ITEM_CBO_APNEA_DELAY = 0,
+        ITEM_CBO_BREATH_LEAD,
+        ITEM_CBO_SWEEP_SPEED,
     };
 
     RESPMenuContentPrivate() {}
@@ -44,14 +43,11 @@ void RESPMenuContentPrivate::loadOptions()
     // sweep speed
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(respParam.getSweepSpeed());
 
-    // zoom
-    combos[ITEM_CBO_ZOOM]->setCurrentIndex(respParam.getZoom());
+    // apnea delay
+    combos[ITEM_CBO_APNEA_DELAY]->setCurrentIndex(respParam.getApneaTime());
 
     // lead
-    combos[ITEM_CBO_LEAD]->setCurrentIndex(respParam.getCalcLead());
-
-    // activation
-    combos[ITEM_CBO_AUTO_ACTIVATION]->setCurrentIndex(respParam.getRespMonitoring());
+    combos[ITEM_CBO_BREATH_LEAD]->setCurrentIndex(respParam.getCalcLead());
 }
 
 RESPMenuContent::RESPMenuContent()
@@ -73,84 +69,72 @@ void RESPMenuContent::readyShow()
 void RESPMenuContent::layoutExec()
 {
     QGridLayout *layout = new QGridLayout(this);
+    layout->setMargin(10);
 
-    ComboBox *comboBox;
     QLabel *label;
+    ComboBox *comboBox;
     int itemID;
+
+    // apena delay
+    label = new QLabel(trs("ApneaDelay"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox;
+    comboBox->addItems(QStringList()
+                       << trs("Off")
+                       << QString::number(RESP_APNEA_TIME_20_SEC * 5 + 15)
+                       << QString::number(RESP_APNEA_TIME_25_SEC * 5 + 15)
+                       << QString::number(RESP_APNEA_TIME_30_SEC * 5 + 15)
+                       << QString::number(RESP_APNEA_TIME_35_SEC * 5 + 15)
+                       << QString::number(RESP_APNEA_TIME_40_SEC * 5 + 15)
+                       << QString::number(RESP_APNEA_TIME_45_SEC * 5 + 15)
+                       << QString::number(RESP_APNEA_TIME_50_SEC * 5 + 15)
+                       << QString::number(RESP_APNEA_TIME_55_SEC * 5 + 15)
+                       << QString::number(RESP_APNEA_TIME_60_SEC * 5 + 15));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(RESPMenuContentPrivate
+                         ::ITEM_CBO_APNEA_DELAY, comboBox);
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged()));
+    itemID = RESPMenuContentPrivate::ITEM_CBO_APNEA_DELAY;
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+
+    // breath lead
+    label = new QLabel(trs("BreathLead"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox;
+    comboBox->addItems(QStringList()
+                       << trs(RESPSymbol::convert(RESP_LEAD_II))
+                       << trs(RESPSymbol::convert(RESP_LEAD_I)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(RESPMenuContentPrivate
+                         ::ITEM_CBO_BREATH_LEAD, comboBox);
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged()));
+    itemID = RESPMenuContentPrivate::ITEM_CBO_BREATH_LEAD;
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
 
     // sweep speed
     label = new QLabel(trs("RESPSweepSpeed"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
+    comboBox = new ComboBox;
     comboBox->addItems(QStringList()
                        << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_6_25))
                        << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_12_5))
-                       << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_25_0))
-                      );
-    itemID = static_cast<int>(RESPMenuContentPrivate::ITEM_CBO_SWEEP_SPEED);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+                       << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_25_0)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(RESPMenuContentPrivate::ITEM_CBO_SWEEP_SPEED, comboBox);
-
-    // zoom
-    label = new QLabel(trs("RESPZoom"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-
-    for (int i = 0; i < RESP_ZOOM_NR; ++i)
-    {
-        comboBox->addItem(trs(RESPSymbol::convert(
-                                  static_cast<RESPZoom>(i)
-                              )));
-    }
-    itemID = static_cast<int>(RESPMenuContentPrivate::ITEM_CBO_ZOOM);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(RESPMenuContentPrivate::ITEM_CBO_ZOOM, comboBox);
-
-    // Lead
-    label = new QLabel(trs("RESPLead"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs(RESPSymbol::convert(RESP_LEAD_I))
-                       << trs(RESPSymbol::convert(RESP_LEAD_II))
-                      );
-    itemID = static_cast<int>(RESPMenuContentPrivate::ITEM_CBO_LEAD);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(RESPMenuContentPrivate::ITEM_CBO_LEAD, comboBox);
-
-    // auto activation
-    label = new QLabel(trs("RESPAutoActivation"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("Disable")
-                       << trs("Enable")
-                      );
-    itemID = static_cast<int>(RESPMenuContentPrivate::ITEM_CBO_AUTO_ACTIVATION);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(RESPMenuContentPrivate::ITEM_CBO_AUTO_ACTIVATION, comboBox);
+    d_ptr->combos.insert(RESPMenuContentPrivate
+                         ::ITEM_CBO_SWEEP_SPEED, comboBox);
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged()));
+    itemID = RESPMenuContentPrivate::ITEM_CBO_SWEEP_SPEED;
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
 
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
                              arg(" >>"));
     btn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(btn, d_ptr->combos.count() + 1, 1);
+    layout->addWidget(btn, d_ptr->combos.count(), 1);
     connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
 
-    layout->setRowStretch(d_ptr->combos.count() + 2, 1);
+    layout->setRowStretch(d_ptr->combos.count() + 1, 1);
 }
 
 void RESPMenuContent::onComboBoxIndexChanged(int index)
@@ -167,14 +151,11 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
             respParam.setSweepSpeed(static_cast<RESPSweepSpeed>(index));
             currentConfig.setNumValue("RESP|SweepSpeed", index);
             break;
-        case RESPMenuContentPrivate::ITEM_CBO_ZOOM:
-            respParam.setZoom(static_cast<RESPZoom>(index));
+        case RESPMenuContentPrivate::ITEM_CBO_APNEA_DELAY:
+            respParam.setApneaTime(static_cast<ApneaAlarmTime>(index));
             break;
-        case RESPMenuContentPrivate::ITEM_CBO_LEAD:
+        case RESPMenuContentPrivate::ITEM_CBO_BREATH_LEAD:
             respParam.setCalcLead(static_cast<RESPLead>(index));
-            break;
-        case RESPMenuContentPrivate::ITEM_CBO_AUTO_ACTIVATION:
-            respParam.setRespMonitoring(index);
             break;
         default:
             break;

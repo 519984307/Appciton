@@ -45,7 +45,7 @@
 #include <QWSServer>
 #endif
 
-#define BACKLIGHT_DEV   "/etc/brightness"       // 背光控制文件接口
+#define BACKLIGHT_DEV   "/sys/class/backlight/backlight/brightness"       // 背光控制文件接口
 
 const char *systemSelftestMessage[SELFTEST_STATUS_NR][MODULE_POWERON_TEST_RESULT_NR] =
 {
@@ -349,7 +349,7 @@ void SystemManager::enableBrightness(BrightnessLevel br)
         return;
     }
 
-    int brValue = 255 * (br + 1) / BRT_LEVEL_NR;
+    int brValue = 70 * (BRT_LEVEL_NR - br) / BRT_LEVEL_NR;
     char str[8];
     snprintf(str, sizeof(str), "%d", brValue);
     int ret = write(_backlightFd, str, sizeof(str));
