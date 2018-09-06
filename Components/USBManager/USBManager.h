@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/6
+ **/
+
 #pragma once
 #include <QObject>
 #include <UDiskInspector.h>
@@ -15,22 +25,21 @@ class USBManager : public QObject
 
     Q_OBJECT
 public:
-
     static USBManager &getInstance();
 
     ~USBManager();
 
-    //check whether a usb disk is connected, not realtime
+    // check whether a usb disk is connected, not realtime
     bool isUSBExist() const;
 
-    //check the usb connect status, realtime
+    // check the usb connect status, realtime
     bool checkStatus() const;
 
-    //get the free space of the usb disk, in unit of KB
+    // get the free space of the usb disk, in unit of KB
     int getUSBFreeSize() const;
 
 
-    //export error Log
+    // export error Log
     bool exportErrorLog();
 
     // get the last export status, should call when export stop
@@ -44,28 +53,28 @@ public:
     // call after write data to the udisk, remount the udisk as ro
     bool stopWriteUSBDisk();
 
-    //USB export finish
+    // USB export finish
     bool isUSBExportFinish();
 
 signals:
-    //report the process, 0~100
+    // report the process, 0~100
     void exportProcessChanged(unsigned char process);
-    //report the export error
+    // report the export error
     void exportError();
     void usbExportFileFinish(int status);
 
 public slots:
-    //cancel export
+    // cancel export
     void cancelExport();
 
 private slots:
-    //update usb connection status
+    // update usb connection status
     void updateConnectStatus(bool status);
-    //handle export status
+    // handle export status
     void onExportFinished(DataExporterBase::ExportStatus status);
-    //reset export status
+    // reset export status
     void onExportBegin();
-    //handle export process
+    // handle export process
     void onExportProcessUpdate(unsigned char progress);
 
 private:
@@ -77,10 +86,7 @@ private:
     DataExporterBase *_curExporter;
     QMutex _pendingMutex;
     bool _usbExist;
-
 };
-
 
 #define usbManager (USBManager::getInstance())
 #define deleteUsbManager() (delete &usbManager)
-

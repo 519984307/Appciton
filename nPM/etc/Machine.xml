@@ -26,11 +26,10 @@
     <!--数据记录使能选择-->
     <Record>
         <ECG>0</ECG>
-        <SPO2>1</SPO2>
-        <Battery>1</Battery>
-        <NIBP>1</NIBP>
-        <TEMP>1</TEMP>
-        <PDCommLog>1</PDCommLog>
+        <SPO2>0</SPO2>
+        <Battery>0</Battery>
+        <NIBP>0</NIBP>
+        <TEMP>0</TEMP>
     </Record>
     <!--参数与Provider的关系-->
     <ECG SptProvider="DemoProvider,BLM_E5">BLM_E5</ECG>

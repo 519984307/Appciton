@@ -111,7 +111,7 @@ void T5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case T5_CYCLE_DATA:
-        machineConfig.getNumValue("Record|NIBP", enable);
+        machineConfig.getNumValue("Record|TEMP", enable);
         if (enable)
         {
             rawDataCollection.pushData("BLM_T5", data, len);
