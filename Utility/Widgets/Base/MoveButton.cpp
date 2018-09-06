@@ -14,6 +14,7 @@
 #include <QIcon>
 #include <QKeyEvent>
 #include "PopupMoveEditor.h"
+#include "FontManager.h"
 
 class MoveButtonPrivate
 {
@@ -112,9 +113,15 @@ void MoveButton::keyReleaseEvent(QKeyEvent *ev)
     case Qt::Key_Enter:
     case Qt::Key_Return:
     {
+        QRect vrect = rect();
+        QRect rect(this->mapToGlobal(vrect.topLeft()),
+                    this->mapToGlobal(vrect.bottomRight()));
         PopupMoveEditor *editor = new PopupMoveEditor();
-        editor->setEditorGeometry(rect());
+        editor->setEditorGeometry(rect);
+        editor->setFont(fontManager.textFont(this->font().pixelSize()));
         editor->setPalette(palette());
+        connect(editor, SIGNAL(leftMove()), this, SIGNAL(leftMove()));
+        connect(editor, SIGNAL(rightMove()), this, SIGNAL(rightMove()));
         editor->show();
         break;
     }
@@ -122,4 +129,19 @@ void MoveButton::keyReleaseEvent(QKeyEvent *ev)
         Button::keyReleaseEvent(ev);
         break;
     }
+}
+
+void MoveButton::mousePressEvent(QMouseEvent *ev)
+{
+    Q_UNUSED(ev)
+    QRect vrect = rect();
+    QRect rect(this->mapToGlobal(vrect.topLeft()),
+                this->mapToGlobal(vrect.bottomRight()));
+    PopupMoveEditor *editor = new PopupMoveEditor();
+    editor->setEditorGeometry(rect);
+    editor->setFont(fontManager.textFont(this->font().pixelSize()));
+    editor->setPalette(palette());
+    connect(editor, SIGNAL(leftMove()), this, SIGNAL(leftMove()));
+    connect(editor, SIGNAL(rightMove()), this, SIGNAL(rightMove()));
+    editor->show();
 }

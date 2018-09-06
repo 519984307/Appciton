@@ -29,12 +29,21 @@ public:
     /* reimplement */
     QSize sizeHint() const;
 
+signals:
+    void leftMove(void);
+    void rightMove(void);
+
 protected:
     void keyPressEvent(QKeyEvent *ev);
     void keyReleaseEvent(QKeyEvent *ev);
     void mousePressEvent(QMouseEvent *ev);
     void mouseReleaseEvent(QMouseEvent *ev);
     void showEvent(QShowEvent *ev);
+private slots:
+    /**
+     * @brief timeOutExec
+     */
+    void timeOutExec();
 
 private:
     QScopedPointer<PopupMoveEditorPrivate> d_ptr;

@@ -20,10 +20,15 @@ public:
     explicit MoveButton(const QString &text = QString());
     ~MoveButton();
 
+signals:
+    void leftMove(void);
+    void rightMove(void);
+
 protected:
     void paintEvent(QPaintEvent *ev);
     void keyPressEvent(QKeyEvent *ev);
     void keyReleaseEvent(QKeyEvent *ev);
+    void mousePressEvent(QMouseEvent *ev);
 
 private:
     QScopedPointer<MoveButtonPrivate> d_ptr;

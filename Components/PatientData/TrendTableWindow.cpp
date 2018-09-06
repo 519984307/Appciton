@@ -215,6 +215,8 @@ TrendTableWindow::TrendTableWindow()
 
     d_ptr->pagingBtn = new MoveButton(trs("Paging"));
     d_ptr->pagingBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->pagingBtn, SIGNAL(leftMove()), this, SLOT(leftReleased()));
+    connect(d_ptr->pagingBtn, SIGNAL(rightMove()), this, SLOT(rightReleased()));
 
     d_ptr->previousEventBtn = new Button(trs("PreviousEvent"));
     d_ptr->previousEventBtn->setButtonStyle(Button::ButtonTextOnly);
