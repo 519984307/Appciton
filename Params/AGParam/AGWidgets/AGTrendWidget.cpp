@@ -199,13 +199,13 @@ AGTrendWidget::AGTrendWidget(const QString &trendName, const AGTypeGas gasType)
 
     // 构造资源。
     _etValue = new QLabel();
-    _etValue->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    _etValue->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     _etValue->setPalette(palette);
     _etValue->setText(InvStr());
 
     _fiName = new QLabel();
     _fiName->setPalette(palette);
-    _fiName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    _fiName->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     _fiName->setText("Fi" + (QString)AGSymbol::convert(gasType));
 
     _fiValue = new QLabel();
@@ -213,21 +213,16 @@ AGTrendWidget::AGTrendWidget(const QString &trendName, const AGTypeGas gasType)
     _fiValue->setPalette(palette);
     _fiValue->setText(InvStr());
 
-    QHBoxLayout *fiLayout = new QHBoxLayout();
-    fiLayout->addStretch();
-    fiLayout->addWidget(_fiName);
-    fiLayout->addStretch();
-    fiLayout->addWidget(_fiValue);
-    fiLayout->addStretch();
+    QHBoxLayout *mainLayout = new QHBoxLayout();
+    mainLayout->addStretch();
+    mainLayout->addWidget(_etValue);
+    mainLayout->addStretch();
+    mainLayout->addWidget(_fiName);
+    mainLayout->addStretch();
+    mainLayout->addWidget(_fiValue);
+    mainLayout->addStretch();
 
-    QVBoxLayout *vLayout = new QVBoxLayout();
-    vLayout->addStretch();
-    vLayout->addWidget(_etValue);
-    vLayout->addStretch();
-    vLayout->addLayout(fiLayout);
-    vLayout->addStretch();
-
-    contentLayout->addLayout(vLayout);
+    contentLayout->addLayout(mainLayout);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
@@ -246,25 +241,19 @@ AGTrendWidget::~AGTrendWidget()
 void AGTrendWidget::setTextSize()
 {
     QRect r;
-    int h = ((height() - nameLabel->height()) / 3);
-    int w = (width() - unitLabel->width());
-    r.setSize(QSize(w, (h * 2)));
+    int h = height();
+    int w = (width() - nameLabel->width()) / 2;
+    r.setSize(QSize(w, h));
 
     int fontsize = fontManager.adjustNumFontSize(r, true, "2222");
     QFont font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
-
     _etValue->setFont(font);
-
-    r.setSize(QSize(w, h));
-    fontsize = fontManager.adjustNumFontSize(r, true, "2222");
-    font = fontManager.numFont(fontsize - 5);
-    font.setWeight(QFont::Black);
-    _fiName->setFont(font);
-
-    font = fontManager.numFont(fontsize, true);
-    font.setWeight(QFont::Black);
     _fiValue->setFont(font);
+
+    int fontSize = fontManager.getFontSize(7);
+    font = fontManager.textFont(fontSize);
+    _fiName->setFont(font);
 }
 
 
@@ -273,6 +262,7 @@ void AGTrendWidget::setTextSize()
  *************************************************************************************************/
 void AGTrendWidget::_releaseHandle(IWidget *iWidget)
 {
+    Q_UNUSED(iWidget)
     MainMenuWindow *mainMenu =  MainMenuWindow::getInstance();
     mainMenu->popup(trs("AGMenu"));
 }

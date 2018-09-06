@@ -49,6 +49,7 @@ static KeyActionDesc _monitorKeys[] =
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SYS_MODE_BIGFONT),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SYS_MODE_CUSTOM),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SYS_MODE_UNKNOW),
+    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NEXT_PAGE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_MAIN_SETUP)
 };
