@@ -39,6 +39,7 @@
 #include "MainMenuWindow.h"
 #include "CodeMarkerWindow.h"
 #include "ScreenLayoutWindow.h"
+#include "MainMenuWindow.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -191,7 +192,9 @@ void SoftkeyActionBase::rescueData(bool isPressed)
         return;
     }
 
-    softkeyManager.setContent(SOFTKEY_ACTION_RESCUE_DATA);
+//    softkeyManager.setContent(SOFTKEY_ACTION_RESCUE_DATA);
+    MainMenuWindow *p = MainMenuWindow::getInstance();
+    p->popup(trs("DataReviewMenu"));
 }
 
 void SoftkeyActionBase::calculation(bool isPressed)
@@ -201,7 +204,9 @@ void SoftkeyActionBase::calculation(bool isPressed)
         return;
     }
 
-    softkeyManager.setContent(SOFTKEY_ACTION_CALCULATE);
+//    softkeyManager.setContent(SOFTKEY_ACTION_CALCULATE);
+    MainMenuWindow *p = MainMenuWindow::getInstance();
+    p->popup(trs("CalculateMenu"));
 }
 
 /***************************************************************************************************
