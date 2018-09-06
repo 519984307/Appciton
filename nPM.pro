@@ -222,6 +222,7 @@ SOURCES +=                                                                      
     Components/System/Widgets/SystemSelftestMenu.cpp                            \
     Components/System/Widgets/SystemStatusBarWidget.cpp                         \
     Components/System/Widgets/SystemMenuContent.cpp                             \
+    Components/System/Widgets/DataReviewMenuContent.cpp                         \
     Components/System/Widgets/SystemMaintenance.cpp                             \
     Components/System/Widgets/DemoModeWindow.cpp                                  \
     Components/System/Widgets/SystemNightModeMenuContent.cpp                    \
@@ -773,6 +774,7 @@ HEADERS +=                                                                      
     Components/System/Widgets/SystemSelftestMenu.h                              \
     Components/System/Widgets/SystemModeBarWidget.h                             \
     Components/System/Widgets/SystemMenuContent.h                               \
+    Components/System/Widgets/DataReviewMenuContent.h                           \
     Components/System/Widgets/SystemMaintenance.h                               \
     Components/System/Widgets/DemoModeWindow.h                                  \
     Components/System/Widgets/SystemNightModeMenuContent.h                      \

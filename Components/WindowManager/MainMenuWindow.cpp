@@ -26,6 +26,7 @@
 #include "TEMPMenu.h"
 #include "ScreenMenuContent.h"
 #include "SystemNightModeMenuContent.h"
+#include "DataReviewMenuContent.h"
 #include "SystemMaintenance.h"
 
 MainMenuWindow *MainMenuWindow::getInstance()
@@ -72,6 +73,7 @@ MainMenuWindow *MainMenuWindow::getInstance()
         instance->addMenuContent(new SystemNightModeMenuContent);
         instance->addMenuContent(new ScreenMenuContent);
         instance->addMenuContent(new LoadConfigMenuContent);
+        instance->addMenuContent(new DataReviewMenuContent);
         instance->addMenuContent(new SystemMaintenance);
         instance->addMenuContent(new SystemMenuContent);
         instance->setWindowTitle(trs("ECGMenuDesc"));
