@@ -16,10 +16,10 @@
 #include "KeyActionManager.h"
 #include "Debug.h"
 #include "USBManager.h"
-#if defined(CONFIG_CAPTURE_SCREEN) && defined(Q_WS_QWS)
+
+#if defined(CONFIG_CAPTURE_SCREEN)
 #include <QDateTime>
 #include "Utility.h"
-#include "IMessageBox.h"
 #endif
 
 /**************************************************************************************************
@@ -33,6 +33,28 @@ bool IApplication::x11EventFilter(XEvent *e)
 {
     // 关闭键盘事件重复发送特性。
 //    ::XAutoRepeatOff(e->xany.display);
+
+#if defined(CONFIG_CAPTURE_SCREEN)
+    if (e->type == KeyPress || e->type == KeyRelease)
+    {
+        Qt::Key key = Qt::Key_unknown;
+        if (e->xkey.keycode == 67)
+        {
+            key = Qt::Key_F1;
+        }
+        else if (e->xkey.keycode == 36)
+        {
+            key = Qt::Key_Return;
+        }
+
+        if (handleScreenCaptureKeyEvent(key, e->type == KeyPress))
+        {
+            // screen capture key is pressed and handle
+            return true;
+        }
+    }
+#endif
+
     if (e->type == KeyRelease)
     {
         switch (e->xkey.keycode)
@@ -146,11 +168,6 @@ bool IApplication::x11EventFilter(XEvent *e)
 }
 #endif
 
-
-#include "Debug.h"
-#if defined(Q_WS_QWS)
-#include <QWSEvent>
-
 #ifdef CONFIG_CAPTURE_SCREEN
 static long capture(const QVariant &para)
 {
@@ -177,19 +194,83 @@ void IApplication::handleScreenCaptureResult(long result)
 {
     if (result)
     {
-        QImage *image = reinterpret_cast<QImage *> (result);
-        IMessageBox msgbox("Screen capture", QPixmap::fromImage(*image).scaled(
-                               150, 90, Qt::IgnoreAspectRatio, Qt::SmoothTransformation), "Capture screen Success.", false);
-        msgbox.exec();
+        QImage *image = reinterpret_cast<QImage *>(result);
+        Util::popupMsgBox("Screen Capture", QPixmap::fromImage(*image).scaled(
+                              150, 90, Qt::IgnoreAspectRatio, Qt::SmoothTransformation), "Capture screen Success.");
         delete image;
     }
     else
     {
-        IMessageBox msgbox("Screen capture", "Capture screen failed.", QStringList(trs("EnglishYESChineseSURE")));
-        msgbox.exec();
+        Util::popupMsgBox("Screen capture", QPixmap(), "Capture screen failed.");
     }
 }
+
+bool IApplication::handleScreenCaptureKeyEvent(Qt::Key key, bool isPressed)
+{
+    // To peform a screen caputure, must meet the following conditions:
+    // 1. Menu Key and Enter key Press at the same time
+    // 2. USB disk is connected
+    // 3. only one capture action during one second
+    static bool returnKeyPress = false;
+    static bool menuKeyPress = false;
+    static QDateTime lastDatetime;
+    static bool isCaptureProcess = false;
+    if (key == Qt::Key_F1)
+    {
+        menuKeyPress = isPressed;
+        if (isCaptureProcess && (!menuKeyPress && returnKeyPress))
+        {
+            // filter this event
+            return true;
+        }
+    }
+    if (key == Qt::Key_Return)
+    {
+        returnKeyPress = isPressed;
+        if (isCaptureProcess && (!returnKeyPress && menuKeyPress))
+        {
+            // filter this event
+            return true;
+        }
+    }
+    if (returnKeyPress && menuKeyPress && usbManager.isUSBExist())
+    {
+        QDateTime curDt = QDateTime::currentDateTime();
+        if (curDt != lastDatetime)
+        {
+            QString imageFilename = QString("%1/%2.png")
+                                    .arg(usbManager.getUdiskMountPoint())
+                                    .arg(curDt.toString("yyyyMMddhhmmss"));
+
+#ifdef Q_WS_X11
+            isCaptureProcess = true;
+            handleScreenCaptureResult(capture(imageFilename));
+#else
+            Util::WorkerThread *workerThread = new Util::WorkerThread(capture, imageFilename);
+            connect(workerThread, SIGNAL(resultReady(long)), this, SLOT(handleScreenCaptureResult(long)));
+            lastDatetime = curDt;
+            workerThread->start();
+            isCaptureProcess = true;
 #endif
+            return true;
+        }
+    }
+    else if (isCaptureProcess && (!returnKeyPress && !menuKeyPress))
+    {
+        // return_key and menu_key is released, exit capture process
+        // still need to filter this key event
+        isCaptureProcess = false;
+        keyActionManager.reset();
+        return true;
+    }
+
+    return false;
+}
+#endif
+
+#if defined(Q_WS_QWS)
+#include <QWSEvent>
+
 
 /**************************************************************************************************
  * 功能：筛选事件，在嵌入式Linux环境中，必须要通过qwsEventFilter()来获取全局的事件
@@ -203,6 +284,7 @@ bool IApplication::qwsEventFilter(QWSEvent *e)
         QWSKeyEvent *keyEvent = static_cast<QWSKeyEvent *>(e);
 
 #ifdef CONFIG_CAPTURE_SCREEN
+#if 0
         // To peform a screen caputure, must meet the following conditions:
         // 1. Menu Key and Enter key Press at the same time
         // 2. USB disk is connected
@@ -211,7 +293,7 @@ bool IApplication::qwsEventFilter(QWSEvent *e)
         static bool menuKeyPress = false;
         static QDateTime lastDatetime;
         static bool isCaptureProcess = false;
-        if (keyEvent->simpleData.keycode == Qt::Key_F7)
+        if (keyEvent->simpleData.keycode == Qt::Key_F1)
         {
             menuKeyPress = keyEvent->simpleData.is_press;
             if (isCaptureProcess && (!menuKeyPress && returnKeyPress))
@@ -229,7 +311,7 @@ bool IApplication::qwsEventFilter(QWSEvent *e)
                 return true;
             }
         }
-        if (returnKeyPress && menuKeyPress && usbManager.checkStatus())
+        if (returnKeyPress && menuKeyPress && usbManager.isUSBExist())
         {
             QDateTime curDt = QDateTime::currentDateTime();
             if (curDt != lastDatetime)
@@ -252,6 +334,13 @@ bool IApplication::qwsEventFilter(QWSEvent *e)
             // still need to filter this key event
             isCaptureProcess = false;
             keyActionManager.reset();
+            return true;
+        }
+#endif
+        if (handleScreenCaptureKeyEvent(static_cast<Qt::Key>(keyEvent->simpleData.keycode),
+                                        keyEvent->simpleData.is_press))
+        {
+            // screen capture key is pressed and handle
             return true;
         }
 #endif
