@@ -18,7 +18,7 @@
 #include <ThemeManager.h>
 #include <QDebug>
 
-#define PREFER_ITEM_HEIGHT (themeManger.getAcceptableControlHeight())
+#define PREFER_ITEM_HEIGHT (68)
 #define DEFAULT_ITEM_NUM 8
 
 class MenuSidebarPrivate : public ScrollAreaPrivate

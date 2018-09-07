@@ -194,7 +194,6 @@ void SystemMenuContent::onComboBoxIndexChanged(int index)
         {
             int brightness = box->itemText(index).toInt();
             systemManager.setBrightness((BrightnessLevel)brightness);
-            qDebug() << "index = " << index << endl;
             break;
         }
         case SystemMenuContentPrivate::ITEM_CBO_PRINT_SPEED:
