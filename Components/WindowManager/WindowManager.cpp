@@ -2483,9 +2483,19 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
 
     // move the proper position
     QRect r = _volatileLayout->geometry();
-    QPoint globalTopLeft = mapToGlobal(r.topLeft());
-    r.moveTo(0, 0);
-    w->move(globalTopLeft + r.center() - w->rect().center());
+    if (r.width() < w->width())         // 如果波形区无完全显示窗口，则居中处理
+    {
+        QRect mainR = _mainLayout->geometry();
+        QPoint globalCenter = mapToGlobal(mainR.center());
+        mainR.moveTo(0, 0);
+        w->move(globalCenter.x()-w->width()/2 , globalCenter.y()-w->height()/2);
+    }
+    else
+    {
+        QPoint globalTopLeft = mapToGlobal(r.topLeft());
+        r.moveTo(0, 0);
+        w->move(globalTopLeft + r.center() - w->rect().center());
+    }
 
     if (behaviors & ShowBehaviorModal)
     {
