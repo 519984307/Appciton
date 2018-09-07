@@ -885,6 +885,7 @@ HistoryTrend,历史回顾,History Review
 HistoryDataList,历史数据,History Data
 SelectHistoryData,选择历史数据,Select Data
 TrendTable,趋势表,Trend Table
+Page,翻页,Page
 TrendGraph,趋势图,Trend Graph
 PreviousEvent,上个事件,Prv Event
 NextEvent,下个事件,Next Event

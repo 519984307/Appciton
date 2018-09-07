@@ -134,7 +134,21 @@ QVariant TrendTableModel::data(const QModelIndex &index, int role) const
     case Qt::BackgroundColorRole:
     {
         QColor color = d_ptr->tableDataList.at(column).at(row).dataColor;
-        return color;
+        if (color == Qt::yellow)
+        {
+            return color;
+        }
+
+        if (row % 2)
+        {
+            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+                                        ThemeManager::StateDisabled);
+        }
+        else
+        {
+            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+                                        ThemeManager::StateActive);
+        }
     }
     case Qt::ForegroundRole:
         return QBrush(QColor("#2C405A"));
@@ -206,7 +220,26 @@ QVariant TrendTableModel::headerData(int section, Qt::Orientation orientation, i
     case Qt::BackgroundColorRole:
         if (orientation == Qt::Horizontal)
         {
-            return d_ptr->colHeadList.at(section).dataColor;
+            QColor color = d_ptr->colHeadList.at(section).dataColor;
+            if (color != Qt::yellow)
+            {
+                color = themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+                                             ThemeManager::StateDisabled);
+            }
+            return color;
+        }
+        else
+        {
+            if (section % 2)
+            {
+                return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+                                            ThemeManager::StateDisabled);
+            }
+            else
+            {
+                return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+                                            ThemeManager::StateActive);
+            }
         }
         break;
     case Qt::ForegroundRole:
