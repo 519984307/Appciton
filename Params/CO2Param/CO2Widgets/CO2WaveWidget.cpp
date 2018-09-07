@@ -51,7 +51,7 @@ void CO2WaveWidget::_releaseHandle(IWidget *w)
 void CO2WaveWidget::resizeEvent(QResizeEvent *e)
 {
     _name->move(0, 0);
-    _zoom->move(_name->rect().width(), 0);
+//    _zoom->move(_name->rect().width(), 0);
 
     _ruler->resize(qmargins().left(), qmargins().top(),
                    width() - qmargins().left() - qmargins().right(),
@@ -153,7 +153,7 @@ void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
     }
     str += " ";
     str += Unit::localeSymbol(unit);
-    _zoom->setText(str);
+//    _zoom->setText(str);
 }
 
 /**************************************************************************************************
@@ -199,12 +199,12 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
     _ruler->setFont(fontManager.textFont(infoFont));
     addItem(_ruler);
 
-    _zoom = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
-    _zoom->setFont(fontManager.textFont(infoFont));
-    _zoom->setFixedSize(120, fontH);
-    _zoom->setText(title);
-    addItem(_zoom);
-    connect(_zoom, SIGNAL(released(IWidget *)), this, SLOT(_zoomChangeSlot(IWidget *)));
+//    _zoom = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
+//    _zoom->setFont(fontManager.textFont(infoFont));
+//    _zoom->setFixedSize(120, fontH);
+//    _zoom->setText(title);
+//    addItem(_zoom);
+//    connect(_zoom, SIGNAL(released(IWidget *)), this, SLOT(_zoomChangeSlot(IWidget *)));
 
     setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
 }
