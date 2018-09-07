@@ -238,7 +238,7 @@ void SPO2Param::reset()
  *************************************************************************************************/
 void SPO2Param::setGain(SPO2Gain gain)
 {
-    systemConfig.setNumValue("PrimaryCfg|SPO2|Gain", static_cast<int>(gain));
+    currentConfig.setNumValue("SPO2|Gain", static_cast<int>(gain));
 
     if (NULL != _waveWidget)
     {
@@ -252,7 +252,7 @@ void SPO2Param::setGain(SPO2Gain gain)
 SPO2Gain SPO2Param::getGain(void)
 {
     int gain = SPO2_GAIN_X10;
-    systemConfig.getNumValue("PrimaryCfg|SPO2|Gain", gain);
+    currentConfig.getNumValue("SPO2|Gain", gain);
 
     return (SPO2Gain)gain;
 }
