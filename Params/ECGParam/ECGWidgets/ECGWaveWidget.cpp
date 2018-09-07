@@ -352,8 +352,8 @@ void ECGWaveWidget::_loadConfig(void)
     if (windowManager.getUFaceType() == UFACE_MONITOR_12LEAD)
     {
         _name->setFocusPolicy(Qt::NoFocus);
-        _gain->setFocusPolicy(Qt::StrongFocus);
-        _gain->setVisible(false);
+//        _gain->setFocusPolicy(Qt::StrongFocus);
+//        _gain->setVisible(false);
 
         _isAutoGain = false;
 
@@ -370,7 +370,7 @@ void ECGWaveWidget::_loadConfig(void)
                                           ecgParam.getLeadConvention(), true, ecgParam.get12LDisplayFormat()));
 
         _name->setFixedWidth(70);
-        _gain->setFixedWidth(120);
+//        _gain->setFixedWidth(120);
         _notify->setVisible(false);
     }
     else
@@ -378,8 +378,8 @@ void ECGWaveWidget::_loadConfig(void)
         _name->setText(ECGSymbol::convert(ecgParam.waveIDToLeadID((WaveformID)getID()),
                                           ecgParam.getLeadConvention(), false, false));
         _name->setFocusPolicy(Qt::StrongFocus);
-        _gain->setFocusPolicy(Qt::StrongFocus);
-        _gain->setVisible(true);
+//        _gain->setFocusPolicy(Qt::StrongFocus);
+//        _gain->setVisible(true);
 
         _filter->setVisible(false);
 
@@ -400,7 +400,7 @@ void ECGWaveWidget::_loadConfig(void)
         ecgParam.updateECGNotifyMesg(lead, false);
 
         _name->setFixedWidth(130);
-        _gain->setFixedWidth(160);
+//        _gain->setFixedWidth(160);
         _notify->setVisible(true);
     }
 }
@@ -451,10 +451,10 @@ void ECGWaveWidget::addWaveformData(int waveData, int pace)
  *************************************************************************************************/
 void ECGWaveWidget::setGain(ECGGain gain)
 {
-    if (!_gain)
-    {
-        return;
-    }
+//    if (!_gain)
+//    {
+//        return;
+//    }
 
     _initValueRange(gain);
     QString text;
@@ -494,7 +494,8 @@ void ECGWaveWidget::setGain(ECGGain gain)
         break;
     }
 
-    _gain->setText(text);
+//    _gain->setText(text);
+    _ruler->setGain(gain);
 }
 
 /**************************************************************************************************
@@ -807,9 +808,10 @@ void ECGWaveWidget::resizeEvent(QResizeEvent *e)
     }
 
     _name->move(0, 0);
-    _gain->move(_name->rect().width(), 0);
-    _filter->move(_name->rect().x() + _name->rect().width() +
-                  _gain->rect().x() + _gain->rect().width(), 0);
+//    _gain->move(_name->rect().width(), 0);
+//    _filter->move(_name->rect().x() + _name->rect().width() +
+//                  _gain->rect().x() + _gain->rect().width(), 0);
+    _filter->move(_name->rect().x() + _name->rect().width(), 0);
 
     _notify->setFixedWidth(width() / 2);
     _notify->move((width() - _notify->width()) / 2,
@@ -877,12 +879,12 @@ void ECGWaveWidget::showEvent(QShowEvent *e)
         if ((!currentWaveforms.empty()) && (currentWaveforms[0] == name()))
         {
             _filter->setVisible(true);
-            _gain->setVisible(true);
+//            _gain->setVisible(true);
         }
         else
         {
             _filter->setVisible(false);
-            _gain->setVisible(false);
+//            _gain->setVisible(false);
         }
 
         if ((!currentWaveforms.empty()) && (currentWaveforms[0] == name() ||
@@ -919,7 +921,7 @@ void ECGWaveWidget::hideEvent(QHideEvent *e)
  *************************************************************************************************/
 ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QString &leadName)
     : WaveWidget(widgetName, leadName)
-    , _gain(NULL)
+//    , _gain(NULL)
     , _notify(NULL)
     , _gainList(NULL)
     , _ruler(NULL)
@@ -950,12 +952,12 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     connect(_name, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 //    addItem(_name);
 
-    _gain = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
-    _gain->setFont(fontManager.textFont(fontSize));
-    _gain->setFixedSize(150, fontH);
-    _gain->setText("");
-    connect(_gain, SIGNAL(released(IWidget *)), this, SLOT(_ecgGain(IWidget *)));
-    addItem(_gain);
+//    _gain = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+//    _gain->setFont(fontManager.textFont(fontSize));
+//    _gain->setFixedSize(150, fontH);
+//    _gain->setText("");
+//    connect(_gain, SIGNAL(released(IWidget *)), this, SLOT(_ecgGain(IWidget *)));
+//    addItem(_gain);
 
     _filter = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _filter->setFont(fontManager.textFont(fontSize));
