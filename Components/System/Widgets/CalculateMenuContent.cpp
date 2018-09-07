@@ -55,7 +55,7 @@ void CalculateMenuContent::layoutExec()
     // Blood Calculate Button
     btn = new Button;
     btn->setButtonStyle(Button::ButtonTextOnly);
-    btn->setText(trs("BloodCalculation"));
+    btn->setText(trs("HemodynamicCalculation"));
     btn->setProperty("id", CalculateMenuContentPrivate::ITEM_BTN_BLOOD_CALCULATION);
     connect(btn, SIGNAL(released()), this, SLOT(_btnReleased()));
     d_ptr->btnMap.insert(CalculateMenuContentPrivate::ITEM_BTN_BLOOD_CALCULATION,
