@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/7
+ **/
+
 #include "RecorderManager.h"
 #include "IConfig.h"
 #include "Debug.h"
@@ -17,7 +27,7 @@ class RecorderManagerPrivate
 {
 public:
     RecorderManagerPrivate()
-        :connected(false),
+        : connected(false),
           isAborted(false),
           status(PRINTER_STAT_NORMAL),
           curSpeed(PRINT_SPEED_250),
@@ -26,7 +36,6 @@ public:
           iface(NULL),
           generator(NULL)
     {
-
     }
 
     bool connected;
@@ -37,13 +46,12 @@ public:
     QThread *procThread;
     PrintProviderIFace *iface;
     QPointer<RecordPageGenerator> generator;
-
 };
 
 RecorderManager &RecorderManager::getInstance()
 {
     static RecorderManager *instance = NULL;
-    if(instance == NULL)
+    if (instance == NULL)
     {
         instance = new RecorderManager;
     }
@@ -52,12 +60,12 @@ RecorderManager &RecorderManager::getInstance()
 
 RecorderManager::~RecorderManager()
 {
-    if(d_ptr->procThread)
+    if (d_ptr->procThread)
     {
         d_ptr->procThread->quit();
-        qDebug()<<"recorder thread exit wait";
+        qDebug() << "recorder thread exit wait";
         d_ptr->procThread->wait();
-        qDebug()<<"recorder thread exit";
+        qDebug() << "recorder thread exit";
     }
 }
 
@@ -69,9 +77,9 @@ PrintSpeed RecorderManager::getPrintSpeed() const
     {
         speed = PRINT_SPEED_250;
     }
-    //speed = PRINT_SPEED_500;
+    // speed = PRINT_SPEED_500;
 //    speed = PRINT_SPEED_250;
-    //speed = PRINT_SPEED_125;
+    // speed = PRINT_SPEED_125;
     return (PrintSpeed)speed;
 }
 
@@ -82,7 +90,7 @@ void RecorderManager::setPrintSpeed(PrintSpeed speed)
         return;
     }
 
-    currentConfig.setNumValue("Print|PrintSpeed", (int)speed);
+    currentConfig.setNumValue("Print|PrintSpeed", static_cast<int>(speed));
 
     emit speedChanged(speed);
 }
@@ -108,9 +116,9 @@ void RecorderManager::setPrintWaveNum(int num)
 
 void RecorderManager::setPrintPrividerIFace(PrintProviderIFace *iface)
 {
-    if(d_ptr->iface)
+    if (d_ptr->iface)
     {
-        qDebug()<<"PrintProviderIFace is already set.";
+        qDebug() << "PrintProviderIFace is already set.";
         return;
     }
 
@@ -121,7 +129,7 @@ void RecorderManager::setPrintPrividerIFace(PrintProviderIFace *iface)
     connect(this, SIGNAL(speedChanged(PrintSpeed)), d_ptr->processor, SLOT(updatePrintSpeed(PrintSpeed)));
 
     PrinterProviderSignalSender *sigSender = iface->signalSender();
-    if(sigSender)
+    if (sigSender)
     {
         connect(sigSender, SIGNAL(bufferFull(bool)), this, SLOT(providerBufferStatusChanged(bool)));
         connect(sigSender, SIGNAL(connectionChanged(bool)), this, SLOT(providerConnectionChanged(bool)));
@@ -151,13 +159,13 @@ bool RecorderManager::isPrinting() const
 
 void RecorderManager::abort()
 {
-    if(d_ptr->iface)
+    if (d_ptr->iface)
     {
-        if(d_ptr->generator)
+        if (d_ptr->generator)
         {
             QMetaObject::invokeMethod(d_ptr->generator, "stop");
         }
-        QMetaObject::invokeMethod(d_ptr->processor, "flushPages");
+        QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
         d_ptr->isAborted = true;
     }
 }
@@ -174,7 +182,7 @@ PrinterStatus RecorderManager::getPrintStatus() const
 
 void RecorderManager::selfTest()
 {
-    if(!d_ptr->processor)
+    if (!d_ptr->processor)
     {
         return;
     }
@@ -196,7 +204,7 @@ void RecorderManager::selfTest()
     painter.drawLine(QPoint(penWidth, 0), QPoint(penWidth, testPage->height() - 1));
     painter.drawLine(QPoint(x, 0), QPoint(x, testPage->height() - 1));
 
-    QMetaObject::invokeMethod(d_ptr->processor, "addPage", Q_ARG(RecordPage*, testPage));
+    QMetaObject::invokeMethod(d_ptr->processor, "addPage", Q_ARG(RecordPage *, testPage));
 
     QTimer::singleShot(5000, this, SLOT(testSlot()));
 }
@@ -204,9 +212,9 @@ void RecorderManager::selfTest()
 bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
 {
     bool startImmediately = false;
-    if(!d_ptr->generator)
+    if (!d_ptr->generator)
     {
-        //no generator currently
+        // no generator currently
         d_ptr->generator = generator;
         generator->moveToThread(d_ptr->procThread);
         startImmediately = true;
@@ -214,18 +222,20 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
     else
     {
 
-        if(generator->getPriority() == RecordPageGenerator::PriorityContinuous)
+        if (generator->getPriority() == RecordPageGenerator::PriorityContinuous)
         {
             // don't add the generator
             generator->deleteLater();
 
             // stop current generator
             QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
+            // stop page processor
+            QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
             return false;
         }
         else if (generator->getPriority() <= d_ptr->generator->getPriority())
         {
-            //the priority is lower or equal to current generator
+            // the priority is lower or equal to current generator
             // don't add the generator
             generator->deleteLater();
             return false;
@@ -234,15 +244,18 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
         {
             // stop current generator
             QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
+            // stop page processor
+            QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
             d_ptr->generator = generator;
             generator->moveToThread(d_ptr->procThread);
         }
     }
 
     connect(generator, SIGNAL(stopped()), this, SLOT(onGeneratorStopped()), Qt::QueuedConnection);
-    connect(generator, SIGNAL(generatePage(RecordPage*)), d_ptr->processor, SLOT(addPage(RecordPage*)), Qt::QueuedConnection);
+    connect(generator, SIGNAL(generatePage(RecordPage *)), d_ptr->processor, SLOT(addPage(RecordPage *)),
+            Qt::QueuedConnection);
     connect(d_ptr->processor, SIGNAL(pageQueueFull(bool)), generator, SLOT(pageControl(bool)), Qt::QueuedConnection);
-    if(startImmediately)
+    if (startImmediately)
     {
         QMetaObject::invokeMethod(generator, "start");
     }
@@ -251,13 +264,13 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
 
 void RecorderManager::testSlot()
 {
-    //addPageGenerator(new ContinuousPageGenerator());
-    //addPageGenerator(new RecordPageGenerator());
+    // addPageGenerator(new ContinuousPageGenerator());
+    // addPageGenerator(new RecordPageGenerator());
 }
 
 void RecorderManager::providerRestarted()
 {
-    if(d_ptr->iface)
+    if (d_ptr->iface)
     {
         d_ptr->iface->startSelfTest();
         d_ptr->iface->getStatusInfo();
@@ -266,24 +279,24 @@ void RecorderManager::providerRestarted()
 
 void RecorderManager::providerConnectionChanged(bool isConnected)
 {
-    if(d_ptr->connected == isConnected)
+    if (d_ptr->connected == isConnected)
     {
         return;
     }
 
     d_ptr->connected = isConnected;
-    if(d_ptr->connected)
+    if (d_ptr->connected)
     {
-        //connected
+        // connected
         printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, false);
     }
     else
     {
-        //disconected
+        // disconected
         printOneShotAlarm.clear();
         printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, true);
 
-        QMetaObject::invokeMethod(d_ptr->processor, "flushPages");
+        QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
     }
 }
 
@@ -337,14 +350,14 @@ void RecorderManager::providerStatusChanged(PrinterStatus status)
         break;
     }
 
-    if(needStop)
+    if (needStop)
     {
         // stop page processing
-        QMetaObject::invokeMethod(d_ptr->processor, "flushPages");
+        QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
     }
 
     // 解除报警
-    switch(d_ptr->status)
+    switch (d_ptr->status)
     {
     case PRINTER_STAT_NORMAL:            // 正常
         break;
@@ -417,13 +430,13 @@ void RecorderManager::providerBufferStatusChanged(bool full)
 
 void RecorderManager::providerReportError(unsigned char err)
 {
-    qDebug()<<"Provider error: 0x"<<hex<<err;
+    qDebug() << "Provider error: 0x" << hex << err;
 }
 
 void RecorderManager::onGeneratorStopped()
 {
     sender()->deleteLater();
-    if(d_ptr->generator && d_ptr->generator.data() != sender())
+    if (d_ptr->generator && d_ptr->generator.data() != sender())
     {
         QMetaObject::invokeMethod(d_ptr->generator.data(), "start");
     }
@@ -431,9 +444,9 @@ void RecorderManager::onGeneratorStopped()
 }
 
 RecorderManager::RecorderManager()
-    :QObject(), d_ptr(new RecorderManagerPrivate())
+    : QObject(), d_ptr(new RecorderManagerPrivate())
 {
-    qRegisterMetaType<RecordPage*>("RecordPage*");
+    qRegisterMetaType<RecordPage *>("RecordPage*");
     qRegisterMetaType<PrintSpeed>("PrintSpeed");
 
 

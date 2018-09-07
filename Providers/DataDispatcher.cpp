@@ -247,7 +247,6 @@ void DataDispatcher::dataArrived()
             continue;
         }
 
-        memset(packet, 0, sizeof(packet));
         // 将数据包读到buff中。
         for (int i = 0; i < len; i++)
         {

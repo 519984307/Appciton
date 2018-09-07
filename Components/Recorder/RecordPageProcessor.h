@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/7
+ **/
+
 #pragma once
 #include <QObject>
 #include <RecordPage.h>
@@ -9,7 +19,7 @@ class RecordPageProcessor: public QObject
 {
     Q_OBJECT
 public:
-    RecordPageProcessor(PrintProviderIFace *iface, QObject *parent = 0);
+    explicit RecordPageProcessor(PrintProviderIFace *iface, QObject *parent = 0);
     ~RecordPageProcessor();
 
     /**
@@ -40,12 +50,12 @@ public slots:
      * @brief addPage add page to print
      * @param page
      */
-    void addPage(RecordPage* page);
+    void addPage(RecordPage *page);
 
     /**
-     * @brief flushPages flush all the pages, the pages haven't been print will be dropped
+     * @brief stopProcess stop processing pages, the pages haven't been printed will be dropped
      */
-    void flushPages();
+    void stopProcess();
 
     /**
      * @brief pauseProcessing pause the processing or not
