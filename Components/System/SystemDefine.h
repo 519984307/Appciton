@@ -81,7 +81,7 @@ public:
         static const int symbol[BRT_LEVEL_NR] =
         {
 //            1, 10, 16, 22, 28, 34, 40, 46, 52, 60
-            60, 52, 46, 40, 34, 28, 22, 16, 10, 1
+            64, 52, 47, 41, 36, 31, 26, 21, 15, 1
         };
         return symbol[index];
     }

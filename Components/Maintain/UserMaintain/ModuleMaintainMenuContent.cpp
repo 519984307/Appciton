@@ -180,11 +180,13 @@ void ModuleMaintainMenuContent::onButtonReleased()
 
             break;
         case ModuleMaintainMenuContentPrivate::ITEM_BTN_TOUCH_SCREEN_CALIBRATION:
+        {
 #ifdef  Q_WS_QWS
             windowManager.closeAllWidows();
             TSCalibrationWindow w;
             w.exec();
 #endif
+        }
             break;
         default:
             break;
