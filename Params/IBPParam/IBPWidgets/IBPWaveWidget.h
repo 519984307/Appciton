@@ -41,6 +41,8 @@ public:
     void setEntitle(IBPPressureName entitle);
     IBPPressureName getEntitle(void);
 
+    void setRulerLimit(IBPRulerLimit ruler);
+
     // 构造与析构。
     IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPressureName &entitle);
     ~IBPWaveWidget();
