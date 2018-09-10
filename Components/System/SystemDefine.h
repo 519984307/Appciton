@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/10
+ **/
+
+
+
 #pragma once
 
 // 交直流模式
@@ -28,8 +40,8 @@ enum UserFaceType
 // 背光亮度等级。
 enum BrightnessLevel
 {
-    BRT_LEVEL_0,
-    BRT_LEVEL_1,
+    BRT_LEVEL_0 = 0,
+    BRT_LEVEL_1 = 0,
     BRT_LEVEL_2,
     BRT_LEVEL_3,
     BRT_LEVEL_4,
@@ -38,6 +50,7 @@ enum BrightnessLevel
     BRT_LEVEL_7,
     BRT_LEVEL_8,
     BRT_LEVEL_9,
+    BRT_LEVEL_10,
     BRT_LEVEL_NR
 };
 
@@ -57,8 +70,18 @@ public:
     {
         static const char *symbol[UFACE_NR] =
         {
-            "UserFaceStandard", "UserFace12Lead","UserFaceOxyCRG",
+            "UserFaceStandard", "UserFace12Lead", "UserFaceOxyCRG",
             "UserFaceTrend", "UserFaceBigFont", "UserFaceCustom", "UserFaceUnknow"
+        };
+        return symbol[index];
+    }
+
+    static int intConvert(BrightnessLevel index)
+    {
+        static const int symbol[BRT_LEVEL_NR] =
+        {
+//            1, 10, 16, 22, 28, 34, 40, 46, 52, 60
+            60, 52, 46, 40, 34, 28, 22, 16, 10, 1
         };
         return symbol[index];
     }

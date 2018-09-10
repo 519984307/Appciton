@@ -349,7 +349,7 @@ void SystemManager::enableBrightness(BrightnessLevel br)
         return;
     }
 
-    int brValue = 70 * (BRT_LEVEL_NR - br) / BRT_LEVEL_NR;
+    int brValue = SystemSymbol::intConvert(br);
     char str[8];
     snprintf(str, sizeof(str), "%d", brValue);
     int ret = write(_backlightFd, str, sizeof(str));

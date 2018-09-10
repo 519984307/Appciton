@@ -10,6 +10,9 @@
 
 #include "ModuleMaintainMenuContent.h"
 #include "LanguageManager.h"
+#ifdef Q_WS_QWS
+#include "TSCalibrationWindow.h"
+#endif
 #include <QLabel>
 #include "ComboBox.h"
 #include <QGridLayout>
@@ -133,6 +136,8 @@ void ModuleMaintainMenuContent::layoutExec()
     layout->addWidget(button, d_ptr->buttons.count(), 1);
     d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_ECG_MODULE_CALIBRATION, button);
 
+
+#ifdef Q_WS_QWS
     // Touch Screen Module Calibration
     label = new QLabel(trs("TouchScreenCalibration"));
     layout->addWidget(label, d_ptr->buttons.count(), 0);
@@ -143,6 +148,7 @@ void ModuleMaintainMenuContent::layoutExec()
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
     layout->addWidget(button, d_ptr->buttons.count(), 1);
     d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_TOUCH_SCREEN_CALIBRATION, button);
+#endif
 
     layout->setRowStretch(d_ptr->buttons.count(), 1);
 }
@@ -174,7 +180,11 @@ void ModuleMaintainMenuContent::onButtonReleased()
 
             break;
         case ModuleMaintainMenuContentPrivate::ITEM_BTN_TOUCH_SCREEN_CALIBRATION:
-
+#ifdef  Q_WS_QWS
+            windowManager.closeAllWidows();
+            TSCalibrationWindow w;
+            w.exec();
+#endif
             break;
         default:
             break;

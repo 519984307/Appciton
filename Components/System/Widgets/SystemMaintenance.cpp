@@ -8,9 +8,6 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/3
  **/
 #include "SystemMaintenance.h"
-#ifdef Q_WS_QWS
-#include "TSCalibrationWindow.h"
-#endif
 #include <QMap>
 #include "Button.h"
 #include "LanguageManager.h"
@@ -34,9 +31,6 @@ public:
         ITEM_BTN_CONFIG_MANAGERMENT = 0,
         ITEM_BTN_USER_MAINTENANCE,
         ITEM_BTN_FACTORY_MAINTENANCE,
-#ifdef Q_WS_QWS
-        ITEM_BTN_TOUCH_CALIBRATION,
-#endif
         ITEM_BTN_SYSTEM_TIME,
         ITEM_BTN_MONITOR_INFO,
         ITEM_BTN_SOFTWARE_VERSION,
@@ -110,19 +104,6 @@ void SystemMaintenance::layoutExec()
     glayout->addWidget(btn, row, 0);
     d_ptr->btns.insert(SystemMaintenancePrivate
                        ::ITEM_BTN_FACTORY_MAINTENANCE, btn);
-#ifdef Q_WS_QWS
-    // touch calibration
-    btn = new Button(trs("TouchScreenCalibration"));
-    btn->setButtonStyle(Button::ButtonTextOnly);
-    connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
-    btn->setProperty("Item", qVariantFromValue(itemBtn));
-    itemBtn++;
-    glayout->addWidget(btn, row, cloumnLast);
-    d_ptr->btns.insert(SystemMaintenancePrivate
-                       ::ITEM_BTN_TOUCH_CALIBRATION, btn);
-
-#endif
-    row++;
 
     // system time
     btn = new Button(trs("SupervisorTimeAndDataMenu"));
@@ -130,21 +111,21 @@ void SystemMaintenance::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     btn->setProperty("Item", qVariantFromValue(itemBtn));
     itemBtn++;
-    glayout->addWidget(btn, row, 0);
+    glayout->addWidget(btn, row, cloumnLast);
     d_ptr->btns.insert(SystemMaintenancePrivate
                        ::ITEM_BTN_SYSTEM_TIME, btn);
 
-    // monitor info
+   row++;
+
+   // monitor info
     btn = new Button(trs("MonitorInfoMenu"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     btn->setProperty("Item", qVariantFromValue(itemBtn));
     itemBtn++;
-    glayout->addWidget(btn, row, cloumnLast);
+    glayout->addWidget(btn, row, 0);
     d_ptr->btns.insert(SystemMaintenancePrivate
                        ::ITEM_BTN_MONITOR_INFO, btn);
-
-    row++;
 
     // software version
     btn = new Button(trs("SystemSoftwareVersion"));
@@ -152,9 +133,12 @@ void SystemMaintenance::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     btn->setProperty("Item", qVariantFromValue(itemBtn));
     itemBtn++;
-    glayout->addWidget(btn, row, 0);
+    glayout->addWidget(btn, row, cloumnLast);
     d_ptr->btns.insert(SystemMaintenancePrivate
                        ::ITEM_BTN_SOFTWARE_VERSION, btn);
+
+
+    row++;
 
     // demo mode
     btn = new Button(trs("DemoMode"));
@@ -165,7 +149,7 @@ void SystemMaintenance::layoutExec()
     btn->setButtonStyle(Button::ButtonTextOnly);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     btn->setProperty("Item", qVariantFromValue(itemBtn));
-    glayout->addWidget(btn, row, cloumnLast);
+    glayout->addWidget(btn, row, 0);
     d_ptr->btns.insert(SystemMaintenancePrivate
                        ::ITEM_BTN_DEMO_MODE, btn);
 
@@ -203,16 +187,7 @@ void SystemMaintenance::onBtnReleased()
                                      WindowManager::ShowBehaviorModal);
         }
         break;
-#ifdef Q_WS_QWS
-        case SystemMaintenancePrivate::ITEM_BTN_TOUCH_CALIBRATION:
-        {
-            windowManager.closeAllWidows();
-            TSCalibrationWindow w;
-            w.exec();
-        }
-        break;
-#endif
-        case SystemMaintenancePrivate::ITEM_BTN_SYSTEM_TIME:
+       case SystemMaintenancePrivate::ITEM_BTN_SYSTEM_TIME:
         {
             SupervisorTimeWindow w;
             windowManager.showWindow(&w,
