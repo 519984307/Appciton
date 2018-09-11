@@ -103,9 +103,9 @@ void SystemMenuContent::layoutExec()
     label = new QLabel(trs("SystemBrightness"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    for (int i = 0; i < BRT_LEVEL_NR; i++)
+    for (int i = BRT_LEVEL_0; i < BRT_LEVEL_NR; i++)
     {
-        comboBox->addItem(QString::number(i + 1));
+        comboBox->addItem(QString::number(i));
     }
     itemID = static_cast<int>(SystemMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS);
     comboBox->setProperty("Item",

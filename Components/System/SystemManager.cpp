@@ -351,10 +351,12 @@ void SystemManager::enableBrightness(BrightnessLevel br)
         return;
     }
 
-    int brValue = lightValue[static_cast<char>(br)];
-    char str[8];
-    snprintf(str, sizeof(str), "%d", brValue);
-    int ret = write(_backlightFd, str, sizeof(str));
+    int brValue = lightValue[br];
+
+    QString str = QString::number(brValue);
+
+    int ret = write(_backlightFd, qPrintable(str), str.length());
+
     if (ret < 0)
     {
         debug("Set brightness failed!");
