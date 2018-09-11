@@ -81,7 +81,6 @@ void AGWaveWidget::setRuler(AGDisplayZoom zoom)
 //    str = QString("0.0~%1").number(zoomValue, 'f', 1);
     str += " ";
     str += trs("percent");
-    _zoom->setText(str);
 }
 
 /**************************************************************************************************
@@ -109,12 +108,6 @@ AGWaveWidget::AGWaveWidget(WaveformID id, const QString &waveName, const AGTypeG
     _ruler->setFont(fontManager.textFont(fontManager.getFontSize(0)));
     addItem(_ruler);
 
-    _zoom = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
-    _zoom->setFont(fontManager.textFont(infoFont));
-    _zoom->setFixedSize(120, fontH);
-    addItem(_zoom);
-    connect(_zoom, SIGNAL(released(IWidget *)), this, SLOT(_zoomChangeSlot(IWidget *)));
-
     setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
 }
 
@@ -131,7 +124,6 @@ AGWaveWidget::~AGWaveWidget()
 void AGWaveWidget::resizeEvent(QResizeEvent *e)
 {
     _name->move(0, 0);
-    _zoom->move(_name->rect().width(), 0);
     _ruler->resize(qmargins().left(), qmargins().top(),
                    width() - qmargins().left() - qmargins().right(),
                    height() - qmargins().top() - qmargins().bottom());
@@ -208,7 +200,7 @@ void AGWaveWidget::_popupDestroyed()
         return;
     }
 
-    agParam.setDisplayZoom((AGDisplayZoom)_currentItemIndex);
+//    agParam.setDisplayZoom((AGDisplayZoom)_currentItemIndex);
     _gainList = NULL;
 }
 

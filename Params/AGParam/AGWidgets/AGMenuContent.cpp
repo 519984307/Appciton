@@ -27,11 +27,10 @@ public:
     enum MenuItem
     {
         ITEM_CBO_MODULE_SWITCH = 1,
-        ITEM_CBO_CO2_SET,
-        ITEM_CBO_N2O_SET,
-        ITEM_CBO_AA1_SET,
-        ITEM_CBO_AA2_SET,
-        ITEM_CBO_O2_SET,
+        ITEM_CBO_N2O_RULER,
+        ITEM_CBO_AA1_RULER,
+        ITEM_CBO_AA2_RULER,
+        ITEM_CBO_O2_RULER,
         ITEM_CBO_SWEEP_SPEED
     };
 
@@ -49,11 +48,12 @@ public:
 void AGMenuContentPrivate::loadOptions()
 {
     combos[ITEM_CBO_MODULE_SWITCH]->setCurrentIndex(0);
-    combos[ITEM_CBO_CO2_SET]->setCurrentIndex(0);
-    combos[ITEM_CBO_N2O_SET]->setCurrentIndex(0);
-    combos[ITEM_CBO_AA1_SET]->setCurrentIndex(0);
-    combos[ITEM_CBO_AA2_SET]->setCurrentIndex(0);
-    combos[ITEM_CBO_O2_SET]->setCurrentIndex(0);
+
+    combos[ITEM_CBO_N2O_RULER]->setCurrentIndex(agParam.getDisplayZoom(AG_TYPE_N2O));
+    combos[ITEM_CBO_AA1_RULER]->setCurrentIndex(agParam.getDisplayZoom(AG_TYPE_AA1));
+    combos[ITEM_CBO_AA2_RULER]->setCurrentIndex(agParam.getDisplayZoom(AG_TYPE_AA2));
+    combos[ITEM_CBO_O2_RULER]->setCurrentIndex(agParam.getDisplayZoom(AG_TYPE_O2));
+
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(agParam.getSweepSpeed());
 }
 
@@ -96,75 +96,84 @@ void AGMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AGMenuContentPrivate::ITEM_CBO_MODULE_SWITCH, comboBox);
 
-    // CO2 Set
-    label = new QLabel(trs("CO2"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                      << trs(AGSymbol::convert(AG_MODULE_CO2_OPTION_SET))
-                      );
-    itemID = static_cast<int>(AGMenuContentPrivate::ITEM_CBO_CO2_SET);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(AGMenuContentPrivate::ITEM_CBO_CO2_SET, comboBox);
-
     // N2O Set
     label = new QLabel(trs("N2O"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                      << trs(AGSymbol::convert(AG_MODULE_N2O_OPTION_SET))
-                      );
-    itemID = static_cast<int>(AGMenuContentPrivate::ITEM_CBO_N2O_SET);
+    int maxZoom = AG_DISPLAY_ZOOM_NR;
+    float zoomArray[] = {4.0, 8.0, 15.0};
+    QString str;
+    for (int i = 0; i < maxZoom; i ++)
+    {
+        str.clear();
+        str = QString("0.0~%1").arg(QString::number(zoomArray[i], 'f', 1));
+        str += " ";
+        str += trs("percent");
+        comboBox->addItem(str);
+    }
+    itemID = static_cast<int>(AGMenuContentPrivate::ITEM_CBO_N2O_RULER);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(AGMenuContentPrivate::ITEM_CBO_N2O_SET, comboBox);
+    d_ptr->combos.insert(AGMenuContentPrivate::ITEM_CBO_N2O_RULER, comboBox);
 
-    // AA1 Set
+    // AA1 Ruler
     label = new QLabel(trs("AA1"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                      << trs(AGSymbol::convert(AG_MODULE_AA1_OPTION_SET))
-                      );
-    itemID = static_cast<int>(AGMenuContentPrivate::ITEM_CBO_AA1_SET);
+    for (int i = 0; i < maxZoom; i ++)
+    {
+        str.clear();
+        str = QString("0.0~%1").arg(QString::number(zoomArray[i], 'f', 1));
+        str += " ";
+        str += trs("percent");
+        comboBox->addItem(str);
+    }
+    itemID = static_cast<int>(AGMenuContentPrivate::ITEM_CBO_AA1_RULER);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(AGMenuContentPrivate::ITEM_CBO_AA1_SET, comboBox);
+    d_ptr->combos.insert(AGMenuContentPrivate::ITEM_CBO_AA1_RULER, comboBox);
 
     // AA2 Set
     label = new QLabel(trs("AA2"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                      << trs(AGSymbol::convert(AG_MODULE_AA2_OPTION_SET))
-                      );
-    itemID = static_cast<int>(AGMenuContentPrivate::ITEM_CBO_AA2_SET);
+    for (int i = 0; i < maxZoom; i ++)
+    {
+        str.clear();
+        str = QString("0.0~%1").arg(QString::number(zoomArray[i], 'f', 1));
+        str += " ";
+        str += trs("percent");
+        comboBox->addItem(str);
+    }
+    itemID = static_cast<int>(AGMenuContentPrivate::ITEM_CBO_AA2_RULER);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(AGMenuContentPrivate::ITEM_CBO_AA2_SET, comboBox);
+    d_ptr->combos.insert(AGMenuContentPrivate::ITEM_CBO_AA2_RULER, comboBox);
 
     // O2 Set
     label = new QLabel(trs("O2"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                      << trs(AGSymbol::convert(AG_MODULE_O2_OPTION_SET))
-                      );
-    itemID = static_cast<int>(AGMenuContentPrivate::ITEM_CBO_O2_SET);
+    for (int i = 0; i < maxZoom; i ++)
+    {
+        str.clear();
+        str = QString("0.0~%1").arg(QString::number(zoomArray[i], 'f', 1));
+        str += " ";
+        str += trs("percent");
+        comboBox->addItem(str);
+    }
+    itemID = static_cast<int>(AGMenuContentPrivate::ITEM_CBO_O2_RULER);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(AGMenuContentPrivate::ITEM_CBO_O2_SET, comboBox);
+    d_ptr->combos.insert(AGMenuContentPrivate::ITEM_CBO_O2_RULER, comboBox);
 
     // Sweep Speed
     label = new QLabel(trs("AGSweepSpeed"));
@@ -210,27 +219,21 @@ void AGMenuContent::onComboBoxIndexChanged(int index)
             if ((!index) != d_ptr->isEnable)
             {
                 d_ptr->combos.value(AGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED)->setEnabled(!index);
-                d_ptr->combos.value(AGMenuContentPrivate::ITEM_CBO_CO2_SET)->setEnabled(!index);
-                d_ptr->combos.value(AGMenuContentPrivate::ITEM_CBO_N2O_SET)->setEnabled(!index);
-                d_ptr->combos.value(AGMenuContentPrivate::ITEM_CBO_AA1_SET)->setEnabled(!index);
-                d_ptr->combos.value(AGMenuContentPrivate::ITEM_CBO_AA2_SET)->setEnabled(!index);
-                d_ptr->combos.value(AGMenuContentPrivate::ITEM_CBO_O2_SET)->setEnabled(!index);
                 d_ptr->isEnable = (!index);
             }
             systemConfig.setNumValue("PrimaryCfg|AG|AGModule", index);
             break;
-        case AGMenuContentPrivate::ITEM_CBO_CO2_SET:
-            co2SetAGMenu.exec();
+        case AGMenuContentPrivate::ITEM_CBO_N2O_RULER:
+            agParam.setDisplayZoom(AG_TYPE_N2O, static_cast<AGDisplayZoom>(index));
             break;
-        case AGMenuContentPrivate::ITEM_CBO_N2O_SET:
-            n2oSetAGMenu.exec();
+        case AGMenuContentPrivate::ITEM_CBO_AA1_RULER:
+            agParam.setDisplayZoom(AG_TYPE_AA1, static_cast<AGDisplayZoom>(index));
             break;
-        case AGMenuContentPrivate::ITEM_CBO_AA1_SET:
-            halSetAGMenu.exec();
+        case AGMenuContentPrivate::ITEM_CBO_AA2_RULER:
+            agParam.setDisplayZoom(AG_TYPE_AA2, static_cast<AGDisplayZoom>(index));
             break;
-        case AGMenuContentPrivate::ITEM_CBO_AA2_SET:
-            break;
-        case AGMenuContentPrivate::ITEM_CBO_O2_SET:
+        case AGMenuContentPrivate::ITEM_CBO_O2_RULER:
+            agParam.setDisplayZoom(AG_TYPE_O2, static_cast<AGDisplayZoom>(index));
             break;
         case AGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED:
             agParam.setSweepSpeed((AGSweepSpeed)index);
