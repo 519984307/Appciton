@@ -41,7 +41,7 @@ enum UserFaceType
 enum BrightnessLevel
 {
     BRT_LEVEL_0 = 0,
-    BRT_LEVEL_1 = 0,
+    BRT_LEVEL_1,
     BRT_LEVEL_2,
     BRT_LEVEL_3,
     BRT_LEVEL_4,
@@ -50,7 +50,6 @@ enum BrightnessLevel
     BRT_LEVEL_7,
     BRT_LEVEL_8,
     BRT_LEVEL_9,
-    BRT_LEVEL_10,
     BRT_LEVEL_NR
 };
 
@@ -72,16 +71,6 @@ public:
         {
             "UserFaceStandard", "UserFace12Lead", "UserFaceOxyCRG",
             "UserFaceTrend", "UserFaceBigFont", "UserFaceCustom", "UserFaceUnknow"
-        };
-        return symbol[index];
-    }
-
-    static int intConvert(BrightnessLevel index)
-    {
-        static const int symbol[BRT_LEVEL_NR] =
-        {
-//            1, 10, 16, 22, 28, 34, 40, 46, 52, 60
-            64, 52, 47, 41, 36, 31, 26, 21, 15, 1
         };
         return symbol[index];
     }

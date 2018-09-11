@@ -338,6 +338,8 @@ void SystemManager::enableBrightness(BrightnessLevel br)
     data.append(static_cast<char>(br));
     sendCommand(data);
 #else
+    char lightValue[10] = {64, 52, 47, 41, 36, 31, 26, 21, 15, 1};
+
     if (_backlightFd < 0)
     {
         return;
@@ -349,7 +351,7 @@ void SystemManager::enableBrightness(BrightnessLevel br)
         return;
     }
 
-    int brValue = SystemSymbol::intConvert(br);
+    int brValue = lightValue[static_cast<char>(br)];
     char str[8];
     snprintf(str, sizeof(str), "%d", brValue);
     int ret = write(_backlightFd, str, sizeof(str));
