@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/11
+ **/
+
 #include "NIBPMonitorSafeWaitTimeState.h"
 #include "NIBPParam.h"
 #include "IConfig.h"
@@ -13,7 +23,7 @@ void NIBPMonitorSafeWaitTimeState::run(void)
         {
             resetTimeOut(5 * 1000);
         }
-        //STAT 5min倒计时。
+        // STAT 5min倒计时。
         if (nibpParam.getMeasurMode() == NIBP_MODE_STAT)
         {
             if (!nibpParam.isSTATOpenTemp())
@@ -57,7 +67,7 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
         }
         else
         {
-            //停止额外测量
+            // 停止额外测量
             if (nibpParam.isAdditionalMeasure())
             {
                 nibpParam.setAdditionalMeasure(false);
@@ -82,7 +92,7 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
         {
             nibpParam.setText(trs("NIBPWAITING"));
         }
-        //停止额外测量
+        // 停止额外测量
         else
         {
             nibpParam.setAdditionalMeasure(false);
@@ -116,7 +126,7 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
         }
         else
         {
-            //停止额外测量
+            // 停止额外测量
             if (nibpParam.isAdditionalMeasure())
             {
                 nibpParam.setAdditionalMeasure(false);
@@ -150,7 +160,7 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
             }
             break;
         }
-        //停止额外测量
+        // 停止额外测量
         if (nibpParam.isAdditionalMeasure())
         {
             nibpParam.setAdditionalMeasure(false);
@@ -168,20 +178,20 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
         break;
 
     case NIBP_EVENT_TIMEOUT:
-        //防止在安全间隔时间内，产生的倒计时测量触发
+        // 防止在安全间隔时间内，产生的倒计时测量触发
         nibpCountdownTime.setAutoMeasureTimeout(false);
         nibpParam.setText(InvStr());
 
-        //STAT5s间隔期内，STAT被关闭
-        //(先判断STAT是否被关闭，否则存在STAT在安全间隔内被关闭后，
-        //再临时打开的情况，会存在状态为STAT，但安全间隔只有5s的情况)
+        // STAT5s间隔期内，STAT被关闭
+        // (先判断STAT是否被关闭，否则存在STAT在安全间隔内被关闭后，
+        // 再临时打开的情况，会存在状态为STAT，但安全间隔只有5s的情况)
         nibpParam.setSTATClose(false);
-        //安全间隔结束，临时状态被关闭
+        // 安全间隔结束，临时状态被关闭
         nibpParam.setSTATOpenTemp(false);
 
         if (nibpParam.getMeasurMode() == NIBP_MODE_STAT)
         {
-            //判断STAT倒计时是否在使用中
+            // 判断STAT倒计时是否在使用中
             if (nibpCountdownTime.isSTATMeasureTimeout())
             {
                 nibpCountdownTime.STATMeasureStart(); // 只测量5分钟。
@@ -190,7 +200,7 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
         }
         else
         {
-            //额外一次测量
+            // 额外一次测量
             if (nibpParam.isAdditionalMeasure())
             {
                 switchState(NIBP_MONITOR_STARTING_STATE);
@@ -204,29 +214,32 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
         break;
     case NIBP_EVENT_CURRENT_PRESSURE:
     {
-        short pressure = 0;
-        pressure = (args[1]<<8)+args[0];
-        if (pressure != -1)
+        if (!_safeFlag)
         {
-            if (patientManager.getType() == PATIENT_TYPE_NEO)
+            short pressure = 0;
+            pressure = (args[1] << 8) + args[0];
+            if (pressure != -1)
             {
-                if (pressure >= 0 && pressure < 5)
+                if (patientManager.getType() == PATIENT_TYPE_NEO)
                 {
-                    setTimeOut(_safeTime);
-                    _safeFlag = true;
+                    if (pressure >= 0 && pressure < 5)
+                    {
+                        setTimeOut(_safeTime);
+                        _safeFlag = true;
+                    }
                 }
-            }
-            else
-            {
-                if (pressure >= 0 && pressure < 15)
+                else
                 {
-                    setTimeOut(_safeTime);
-                    _safeFlag = true;
+                    if (pressure >= 0 && pressure < 15)
+                    {
+                        setTimeOut(_safeTime);
+                        _safeFlag = true;
+                    }
                 }
             }
         }
     }
-        break;
+    break;
     default:
         break;
     }
@@ -238,7 +251,7 @@ void NIBPMonitorSafeWaitTimeState::handleNIBPEvent(NIBPEvent event, const unsign
  *************************************************************************************************/
 int NIBPMonitorSafeWaitTimeState::_safeWaitTime()
 {
-    //额外一次测量
+    // 额外一次测量
     if (nibpParam.isAdditionalMeasure())
     {
         nibpParam.setText(trs("NIBPADDITIONAL") + "\n" + trs("NIBPMEASURE"));
@@ -263,7 +276,7 @@ int NIBPMonitorSafeWaitTimeState::_safeWaitTime()
     // 自动测量的等待时间为30秒。
     if (nibpParam.getMeasurMode() == NIBP_MODE_AUTO)
     {
-        //STAT手动退出后进入AUTO模式的安全间隔时间
+        // STAT手动退出后进入AUTO模式的安全间隔时间
         if (nibpParam.isSTATClose())
         {
 //            _safeWaitTiming = 30;
@@ -271,7 +284,7 @@ int NIBPMonitorSafeWaitTimeState::_safeWaitTime()
 //            nibpParam.setSTATClose(false);
             return _safeWaitTiming;
         }
-        //AUTO模式中手动测量的安全间隔时间
+        // AUTO模式中手动测量的安全间隔时间
         if (nibpParam.isAutoMeasure())
         {
             if (!nibpParam.isSwitchType())
@@ -281,7 +294,7 @@ int NIBPMonitorSafeWaitTimeState::_safeWaitTime()
             _safeWaitTiming = 5;
             nibpParam.setAutoMeasure(false);
         }
-        //AUTO模式中自动触发的安全间隔时间
+        // AUTO模式中自动触发的安全间隔时间
         else
         {
             _safeWaitTiming = 30;
@@ -290,7 +303,7 @@ int NIBPMonitorSafeWaitTimeState::_safeWaitTime()
     // 连续测量的等待时间为5秒。
     else if (nibpParam.getMeasurMode() == NIBP_MODE_STAT)
     {
-        //STAT模式5min时间到后的安全间隔时间，且STAT不再测量。
+        // STAT模式5min时间到后的安全间隔时间，且STAT不再测量。
         if (nibpCountdownTime.isSTATMeasureTimeout() && !nibpParam.isSTATOpenTemp())
         {
             nibpParam.setModelText(trs("STATDONE"));
@@ -301,14 +314,14 @@ int NIBPMonitorSafeWaitTimeState::_safeWaitTime()
             return _safeWaitTiming;
         }
 
-        //STAT模式中正常测量的安全间隔时间
+        // STAT模式中正常测量的安全间隔时间
         _safeWaitTiming = 5;
     }
 
     // 手动测量的等待时间为5秒。
     else
     {
-        //STAT手动退出后进入手动模式的安全间隔时间
+        // STAT手动退出后进入手动模式的安全间隔时间
         if (nibpParam.isSTATClose())
         {
 //            _safeWaitTiming = 30;
@@ -326,7 +339,8 @@ int NIBPMonitorSafeWaitTimeState::_safeWaitTime()
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-NIBPMonitorSafeWaitTimeState::NIBPMonitorSafeWaitTimeState() : NIBPState(NIBP_MONITOR_SAFEWAITTIME_STATE)
+NIBPMonitorSafeWaitTimeState::NIBPMonitorSafeWaitTimeState() : NIBPState(NIBP_MONITOR_SAFEWAITTIME_STATE),
+    _safeWaitTiming(0), _autoCountdownTiming(0), _safeFlag(0), _safeTime(0)
 {
     _safeWaitTiming = 0;
     _safeTime = 5;
@@ -337,5 +351,4 @@ NIBPMonitorSafeWaitTimeState::NIBPMonitorSafeWaitTimeState() : NIBPState(NIBP_MO
  *************************************************************************************************/
 NIBPMonitorSafeWaitTimeState::~NIBPMonitorSafeWaitTimeState()
 {
-
 }
