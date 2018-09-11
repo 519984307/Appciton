@@ -14,6 +14,9 @@
 #include "IConfig.h"
 #include <QProcess>
 #include <QVBoxLayout>
+#include <ECGParam.h>
+#include "ParamManager.h"
+#include "Provider.h"
 
 class SoftWareVersionWindowPrivate
 {
@@ -22,13 +25,15 @@ public:
     {
         ITEM_LAB_SYS_VER = 0,
         ITEM_LAB_BIULD_TIME,
-        ITEM_LAB_PMG_VER,
         ITEM_LAB_U_BOOT,
         ITEM_LAB_KERNEL,
         ITEM_LAB_KEYBD_MOD,
-        ITEM_LAB_RECOD_MOD,
         ITEM_LAB_ECG_ALGHTP,
-        ITEM_LAB_BOOTSTD_LOGOVER,
+        ITEM_LAB_ECG_VERSION,
+        ITEM_LAB_NIBP_VERSION,
+        ITEM_LAB_SPO2_VERSION,
+        ITEM_LAB_TEMP_VERSION,
+        ITEM_LAB_PRT72_VERSION,
         ITEM_LAB_MAX,
     };
 
@@ -68,10 +73,6 @@ void SoftWareVersionWindowPrivate::loadOptions()
     labs[ITEM_LAB_BIULD_TIME]->setText(QString("%1 %2").arg(__TIME__).arg(__DATE__));
 
     tmpStr.clear();
-    systemConfig.getStrValue("SoftWareVersion|PowerManagerSoftwareVersion", tmpStr);
-    labs[ITEM_LAB_PMG_VER]->setText(trs(tmpStr));
-
-    tmpStr.clear();
     systemConfig.getStrValue("SoftWareVersion|Uboot", tmpStr);
     labs[ITEM_LAB_U_BOOT]->setText(trs(tmpStr));
 
@@ -80,16 +81,8 @@ void SoftWareVersionWindowPrivate::loadOptions()
     labs[ITEM_LAB_KEYBD_MOD]->setText(trs(tmpStr));
 
     tmpStr.clear();
-    systemConfig.getStrValue("SoftWareVersion|RecorderModule", tmpStr);
-    labs[ITEM_LAB_RECOD_MOD]->setText(trs(tmpStr));
-
-    tmpStr.clear();
     systemConfig.getStrValue("SoftWareVersion|ECGAlgorithmType", tmpStr);
     labs[ITEM_LAB_ECG_ALGHTP]->setText(trs(tmpStr));
-
-    tmpStr.clear();
-    systemConfig.getStrValue("SoftWareVersion|BootAndStandbyLogoVersion", tmpStr);
-    labs[ITEM_LAB_BOOTSTD_LOGOVER]->setText(trs(tmpStr));
 }
 
 SoftWareVersionWindow::SoftWareVersionWindow():
@@ -118,12 +111,11 @@ void SoftWareVersionWindow::layoutExec()
     vlayout->setMargin(10);
 
     QGridLayout *layout = new QGridLayout;
-    layout->setVerticalSpacing(20);
+    layout->setVerticalSpacing(10);
     vlayout->addStretch();
     vlayout->addLayout(layout);
     vlayout->addStretch();
-    setFixedSize(580, 580);
-
+    setFixedSize(480, 480);
 
     QLabel *labelLeft;
     QLabel *labelRight;
@@ -144,14 +136,6 @@ void SoftWareVersionWindow::layoutExec()
     d_ptr->labs.insert(SoftWareVersionWindowPrivate
                        ::ITEM_LAB_BIULD_TIME, labelRight);
 
-    labelLeft = new QLabel(trs("PowerManagerSoftwareVersion"));
-    layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
-    labelRight = new QLabel("");
-    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
-    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(SoftWareVersionWindowPrivate
-                       ::ITEM_LAB_PMG_VER, labelRight);
-
     labelLeft = new QLabel(trs("Uboot"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
@@ -168,21 +152,13 @@ void SoftWareVersionWindow::layoutExec()
     d_ptr->labs.insert(SoftWareVersionWindowPrivate
                        ::ITEM_LAB_KERNEL, labelRight);
 
-    labelLeft = new QLabel(trs("KeyboardModule"));
+    labelLeft = new QLabel(trs("SystemboardModule"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(SoftWareVersionWindowPrivate
                        ::ITEM_LAB_KEYBD_MOD, labelRight);
-
-    labelLeft = new QLabel(trs("RecorderModule"));
-    layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
-    labelRight = new QLabel("");
-    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
-    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(SoftWareVersionWindowPrivate
-                       ::ITEM_LAB_RECOD_MOD, labelRight);
 
     labelLeft = new QLabel(trs("ECGAlgorithmType"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
@@ -192,13 +168,91 @@ void SoftWareVersionWindow::layoutExec()
     d_ptr->labs.insert(SoftWareVersionWindowPrivate
                        ::ITEM_LAB_ECG_ALGHTP, labelRight);
 
-    labelLeft = new QLabel(trs("BootAndStandbyLogoVersion"));
+    labelLeft = new QLabel(trs("ECGVersion") + ":   ");
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
-    labelRight = new QLabel("");
+    Provider *p = paramManager.getProvider("BLM_E5");
+    QString version;
+    if (p)
+    {
+        version = p->getVersionString();
+    }
+
+    labelRight = new QLabel(version);
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(SoftWareVersionWindowPrivate
-                       ::ITEM_LAB_BOOTSTD_LOGOVER, labelRight);
+                       ::ITEM_LAB_ECG_VERSION, labelRight);
+
+    if (systemManager.isSupport(CONFIG_NIBP))
+    {
+        labelLeft = new QLabel(trs("NIBPVersion") + ":   ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
+        Provider *p = paramManager.getProvider("BLM_TN3");
+        QString version;
+        if (p)
+        {
+            version = p->getVersionString();
+        }
+
+        labelRight = new QLabel(version);
+        labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1);
+        d_ptr->labs.insert(SoftWareVersionWindowPrivate
+                           ::ITEM_LAB_NIBP_VERSION, labelRight);
+    }
+
+    if (systemManager.isSupport(CONFIG_SPO2))
+    {
+        labelLeft = new QLabel(trs("SPO2Version") + ":   ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
+        Provider *p = paramManager.getProvider("BLM_S5");
+        QString version;
+        if (p)
+        {
+            version = p->getVersionString();
+        }
+
+        labelRight = new QLabel(version);
+        labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1);
+        d_ptr->labs.insert(SoftWareVersionWindowPrivate
+                           ::ITEM_LAB_SPO2_VERSION, labelRight);
+    }
+
+    if (systemManager.isSupport(CONFIG_TEMP))
+    {
+        labelLeft = new QLabel(trs("TEMPVersion") + ":   ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
+        Provider *p = paramManager.getProvider("BLM_T5");
+        QString version;
+        if (p)
+        {
+            version = p->getVersionString();
+        }
+
+
+        labelRight = new QLabel(version);
+        labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1);
+        d_ptr->labs.insert(SoftWareVersionWindowPrivate
+                           ::ITEM_LAB_TEMP_VERSION, labelRight);
+    }
+
+    labelLeft = new QLabel(trs("PRT72Version") + ":   ");
+    layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
+    p = paramManager.getProvider("PRT72");
+    if (p)
+    {
+        version = p->getVersionString();
+    }
+
+
+    labelRight = new QLabel(version);
+
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
+    d_ptr->labs.insert(SoftWareVersionWindowPrivate
+                       ::ITEM_LAB_PRT72_VERSION, labelRight);
 
     layout->setRowStretch(d_ptr->labs.count(), 1);
 

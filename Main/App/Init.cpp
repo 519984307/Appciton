@@ -535,8 +535,11 @@ static void _initProviderParam(void)
         windowManager.addWidget(tempTrendWidget);
     }
 
+    paramManager.getVersion();
+
     // 关联设备和参数对象。
     paramManager.connectParamProvider();
+
 
     alertor.addOneShotSource(systemAlarm.Construction());
 }
