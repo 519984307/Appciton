@@ -304,7 +304,7 @@ SOURCES +=                                                                      
     Components/PatientManager/PatientInfoMenu.cpp                               \
     Components/PatientManager/RelievePatientWidget.cpp                          \
     Components/PatientManager/PatientInfoWindow.cpp                             \
-    Components/PatientManager/RelievePatientWindow.cpp                          \
+    Components/PatientManager/DischargePatientWindow.cpp                        \
     Components/PowerManager/BatteryMessage.cpp                                  \
     Components/PowerManager/BatteryAlarm.cpp                                    \
     Components/PowerManager/BatteryIndicatorWidget.cpp                          \
@@ -868,7 +868,7 @@ HEADERS +=                                                                      
     Components/PatientManager/PatientInfoMenu.h                                 \
     Components/PatientManager/PatientInfoWindow.h                               \
     Components/PatientManager/RelievePatientWidget.h                            \
-    Components/PatientManager/RelievePatientWindow.h                            \
+    Components/PatientManager/DischargePatientWindow.h                          \
     Components/PowerManager/BatteryAlarm.h                                      \
     Components/PowerManager/BatteryMessage.h                                    \
     Components/PowerManager/BatteryDefine.h                                     \
