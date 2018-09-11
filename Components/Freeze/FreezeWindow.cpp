@@ -20,6 +20,7 @@
 #include "FreezeManager.h"
 #include "FreezePageGenerator.h"
 #include "RecorderManager.h"
+#include "MoveButton.h"
 
 #define RECORD_FREEZE_WAVE_NUM 3
 class FreezeWindowPrivate
@@ -27,15 +28,13 @@ class FreezeWindowPrivate
 public:
     FreezeWindowPrivate();
     ComboBox *combos[RECORD_FREEZE_WAVE_NUM];
-    Button *leftBtn;
-    Button *rightBtn;
+    MoveButton *waveMoveBtn;
     Button *printBtn;
     QList<int> waveIDs;
 };
 
 FreezeWindowPrivate::FreezeWindowPrivate()
-    : leftBtn(NULL),
-      rightBtn(NULL),
+    : waveMoveBtn(NULL),
       printBtn(NULL)
 {
     for (int i = 0; i < RECORD_FREEZE_WAVE_NUM; i++)
@@ -87,19 +86,11 @@ FreezeWindow::FreezeWindow()
     layout->addLayout(hl, 0, 0);
 
     hl = new QHBoxLayout;
-    d_ptr->leftBtn = new Button;
-    d_ptr->leftBtn->setButtonStyle(Button::ButtonIconOnly);
-    // d_ptr->leftBtn->setIconSize(QSize(50, 50));
-    d_ptr->leftBtn->setIcon(QIcon("/usr/local/nPM/icons/ArrowLeft.png"));
-    hl->addWidget(d_ptr->leftBtn, 1);
-    connect(d_ptr->leftBtn, SIGNAL(released()), this, SLOT(onBtnClick()));
-
-    d_ptr->rightBtn = new Button;
-    d_ptr->rightBtn->setButtonStyle(Button::ButtonIconOnly);
-    // d_ptr->rightBtn->setIconSize(QSize(50, 50));
-    d_ptr->rightBtn->setIcon(QIcon("/usr/local/nPM/icons/ArrowRight.png"));
-    hl->addWidget(d_ptr->rightBtn, 1);
-    connect(d_ptr->rightBtn, SIGNAL(released()), this, SLOT(onBtnClick()));
+    d_ptr->waveMoveBtn = new MoveButton(trs("WaveformMove"));
+    d_ptr->waveMoveBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->waveMoveBtn, SIGNAL(leftMove()), this, SLOT(leftMoveWaveformSlot()));
+    connect(d_ptr->waveMoveBtn, SIGNAL(rightMove()), this, SLOT(rightMoveWaveformSlot()));
+    hl->addWidget(d_ptr->waveMoveBtn, 2);
 
     d_ptr->printBtn = new Button(trs("Print"));
     d_ptr->printBtn->setButtonStyle(Button::ButtonTextOnly);
@@ -192,37 +183,7 @@ void FreezeWindow::onSelectWaveChanged(const QString &waveName)
 void FreezeWindow::onBtnClick()
 {
     Button *btn = qobject_cast<Button *>(sender());
-    if (btn == d_ptr->leftBtn)
-    {
-        if (!freezeManager.isInReviewMode())
-        {
-            freezeManager.enterReviewMode();
-            return;
-        }
-
-        int reviewSecond = freezeManager.getCurReviewSecond() - 1;
-        if (reviewSecond < 0)
-        {
-            reviewSecond = 0;
-        }
-        freezeManager.setCurReviewSecond(reviewSecond);
-    }
-    else if (btn == d_ptr->rightBtn)
-    {
-        if (!freezeManager.isInReviewMode())
-        {
-            freezeManager.enterReviewMode();
-            return;
-        }
-
-        int reviewSecond = freezeManager.getCurReviewSecond() + 1;
-        if (reviewSecond > FreezeManager::MAX_REVIEW_SECOND)
-        {
-            reviewSecond = FreezeManager::MAX_REVIEW_SECOND;
-        }
-        freezeManager.setCurReviewSecond(reviewSecond);
-    }
-    else if (btn == d_ptr->printBtn)
+    if (btn == d_ptr->printBtn)
     {
         QList<FreezePageGenerator::FreezeWaveInfo> waveinfos;
 
@@ -259,6 +220,38 @@ void FreezeWindow::onBtnClick()
 
         recorderManager.addPageGenerator(generator);
     }
+}
+
+void FreezeWindow::leftMoveWaveformSlot()
+{
+    if (!freezeManager.isInReviewMode())
+    {
+        freezeManager.enterReviewMode();
+        return;
+    }
+
+    int reviewSecond = freezeManager.getCurReviewSecond() - 1;
+    if (reviewSecond < 0)
+    {
+        reviewSecond = 0;
+    }
+    freezeManager.setCurReviewSecond(reviewSecond);
+}
+
+void FreezeWindow::rightMoveWaveformSlot()
+{
+    if (!freezeManager.isInReviewMode())
+    {
+        freezeManager.enterReviewMode();
+        return;
+    }
+
+    int reviewSecond = freezeManager.getCurReviewSecond() + 1;
+    if (reviewSecond > FreezeManager::MAX_REVIEW_SECOND)
+    {
+        reviewSecond = FreezeManager::MAX_REVIEW_SECOND;
+    }
+    freezeManager.setCurReviewSecond(reviewSecond);
 }
 
 

@@ -854,6 +854,7 @@ Lower,过低,Lower
 EventList,事件列表,Event List
 RealTimePrint,实时打印,RealTIme Print
 WaveFreeze,波形冻结,Wave Freeze
+WaveformMove,波形移动,Waveform Move
 All ,全部,All
 Hint ,提示,Hint
 Interval,间隔,Interval
