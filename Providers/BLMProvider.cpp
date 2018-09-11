@@ -168,7 +168,17 @@ void BLMProvider::handlePacket(unsigned char *data, int len)
 {
     if (data[0] == 0x11 && len > 1) // version data, all BLMProvidor share the same version respond code
     {
-        versionInfoData.setRawData((const char *)(data + 1), len - 1);
+        const char *p = reinterpret_cast<char *>(&data[1]);
+        versionInfo.append(p); // software version
+        versionInfo.append(" ");
+        p += 16;
+        versionInfo.append(p); // svn version
+        versionInfo.append(" ");
+        p += 16;
+        versionInfo.append(p); // build time
+        versionInfo.append(" ");
+        p += 32;
+        versionInfo.append(p); // hardware version
     }
 }
 
@@ -206,13 +216,7 @@ bool BLMProvider::_sendData(const unsigned char *data, unsigned int len)
     return writeData(sendBuf, index) == index;
 }
 
-/***************************************************************************************************
- * getVersionInfoData: get the version info data
- **************************************************************************************************/
-QByteArray BLMProvider::getVersionInfoData()
-{
-    return versionInfoData;
-}
+
 
 void BLMProvider::dataArrived(unsigned char *buff, unsigned int length)
 {

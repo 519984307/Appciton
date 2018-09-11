@@ -14,6 +14,9 @@
 #include "IConfig.h"
 #include <QProcess>
 #include <QVBoxLayout>
+#include <ECGParam.h>
+#include "ParamManager.h"
+#include "Provider.h"
 
 class SoftWareVersionWindowPrivate
 {
@@ -29,6 +32,11 @@ public:
         ITEM_LAB_RECOD_MOD,
         ITEM_LAB_ECG_ALGHTP,
         ITEM_LAB_BOOTSTD_LOGOVER,
+        ITEM_LAB_ECG_VERSION,
+        ITEM_LAB_NIBP_VERSION,
+        ITEM_LAB_SPO2_VERSION,
+        ITEM_LAB_TEMP_VERSION,
+        ITEM_LAB_PRT72_VERSION,
         ITEM_LAB_MAX,
     };
 
@@ -122,8 +130,10 @@ void SoftWareVersionWindow::layoutExec()
     vlayout->addStretch();
     vlayout->addLayout(layout);
     vlayout->addStretch();
-    setFixedSize(580, 580);
+    setFixedSize(600, 580);
 
+    int fontSize = fontManager.getFontSize(1);
+    setFont(fontManager.textFont(fontSize));
 
     QLabel *labelLeft;
     QLabel *labelRight;
@@ -199,6 +209,92 @@ void SoftWareVersionWindow::layoutExec()
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(SoftWareVersionWindowPrivate
                        ::ITEM_LAB_BOOTSTD_LOGOVER, labelRight);
+
+    labelLeft = new QLabel(trs("ECGVersion") + ":   ");
+    layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
+    Provider *p = paramManager.getProvider("BLM_E5");
+    QString version;
+    if (p)
+    {
+        version = p->getVersionString();
+    }
+
+    labelRight = new QLabel(version);
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
+    d_ptr->labs.insert(SoftWareVersionWindowPrivate
+                       ::ITEM_LAB_ECG_VERSION, labelRight);
+
+    if (systemManager.isSupport(CONFIG_NIBP))
+    {
+        labelLeft = new QLabel(trs("NIBPVersion") + ":   ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
+        Provider *p = paramManager.getProvider("BLM_TN3");
+        QString version;
+        if (p)
+        {
+            version = p->getVersionString();
+        }
+
+        labelRight = new QLabel(version);
+        labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1);
+        d_ptr->labs.insert(SoftWareVersionWindowPrivate
+                           ::ITEM_LAB_NIBP_VERSION, labelRight);
+    }
+
+    if (systemManager.isSupport(CONFIG_SPO2))
+    {
+        labelLeft = new QLabel(trs("SPO2Version") + ":   ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
+        Provider *p = paramManager.getProvider("BLM_S5");
+        QString version;
+        if (p)
+        {
+            version = p->getVersionString();
+        }
+
+        labelRight = new QLabel(version);
+        labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1);
+        d_ptr->labs.insert(SoftWareVersionWindowPrivate
+                           ::ITEM_LAB_SPO2_VERSION, labelRight);
+    }
+
+    if (systemManager.isSupport(CONFIG_TEMP))
+    {
+        labelLeft = new QLabel(trs("TEMPVersion") + ":   ");
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
+        Provider *p = paramManager.getProvider("BLM_T5");
+        QString version;
+        if (p)
+        {
+            version = p->getVersionString();
+        }
+
+
+        labelRight = new QLabel(version);
+        labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1);
+        d_ptr->labs.insert(SoftWareVersionWindowPrivate
+                           ::ITEM_LAB_TEMP_VERSION, labelRight);
+    }
+
+    labelLeft = new QLabel(trs("PRT72Version") + ":   ");
+    layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
+    p = paramManager.getProvider("PRT72");
+    if (p)
+    {
+        version = p->getVersionString();
+    }
+
+
+    labelRight = new QLabel(version);
+
+    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
+    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
+    d_ptr->labs.insert(SoftWareVersionWindowPrivate
+                       ::ITEM_LAB_PRT72_VERSION, labelRight);
 
     layout->setRowStretch(d_ptr->labs.count(), 1);
 
