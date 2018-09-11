@@ -183,6 +183,7 @@ TrendTableWindow::TrendTableWindow()
     verticalHeader->setResizeMode(QHeaderView::ResizeToContents);
     d_ptr->table->setSelectionMode(QAbstractItemView::SingleSelection);
     d_ptr->table->setSelectionBehavior(QAbstractItemView::SelectColumns);
+    d_ptr->table->setAttribute(Qt::WA_TransparentForMouseEvents, true);
     d_ptr->table->setFocusPolicy(Qt::ClickFocus);
     d_ptr->table->setShowGrid(false);
     d_ptr->table->setCornerButtonEnabled(false);
@@ -250,13 +251,11 @@ TrendTableWindow::TrendTableWindow()
 void TrendTableWindow::leftReleased()
 {
     d_ptr->model->leftPage(d_ptr->curSecCol);
-    d_ptr->table->selectColumn(d_ptr->curSecCol);
 }
 
 void TrendTableWindow::rightReleased()
 {
     d_ptr->model->rightPage(d_ptr->curSecCol);
-    d_ptr->table->selectColumn(d_ptr->curSecCol);
 }
 
 void TrendTableWindow::upReleased()
@@ -272,13 +271,11 @@ void TrendTableWindow::downReleased()
 void TrendTableWindow::leftMoveEvent()
 {
     d_ptr->model->leftMoveEvent(d_ptr->curSecCol);
-    d_ptr->table->selectColumn(d_ptr->curSecCol);
 }
 
 void TrendTableWindow::rightMoveEvent()
 {
     d_ptr->model->rightMoveEvent(d_ptr->curSecCol);
-    d_ptr->table->selectColumn(d_ptr->curSecCol);
 }
 
 void TrendTableWindow::printWidgetRelease()
@@ -305,9 +302,4 @@ void TrendTableWindow::trendDataSetReleased()
 void TrendTableWindowPrivate::updateTable()
 {
     model->updateData();
-
-    // 重新打开窗口时总是选择最后一列
-    int totalCol = model->columnCount(QModelIndex());
-    curSecCol = totalCol - 1;
-    table->selectColumn(curSecCol);
 }
