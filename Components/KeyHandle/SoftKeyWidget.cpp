@@ -53,7 +53,7 @@ void SoftkeyWidget::paintEvent(QPaintEvent *e)
         int height = r.height();
         int width = r.width();
         QRect PixmapR = r;
-        if (width < 1.58 * height / 2)   // thin button
+        if (width <= 1.35 * height / 2)   // 翻页的软按键
         {
             PixmapR.setWidth(width * 3 / 4);
             PixmapR.setHeight(height * 3 / 4);
@@ -71,7 +71,7 @@ void SoftkeyWidget::paintEvent(QPaintEvent *e)
             }
             else
             {
-                PixmapR.adjust(width, 0, -width, -width / 2);
+                PixmapR.adjust(width * 1.5, width/5, -width * 1.5, -width * 1.5);
             }
             painter.drawPixmap(PixmapR, _pixmap);
         }

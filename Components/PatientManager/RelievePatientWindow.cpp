@@ -60,7 +60,7 @@ void RelievePatientWindow::layoutExec()
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
 
-    d_ptr->standby = new QLabel(trs("Standby"));
+    d_ptr->standby = new QLabel(trs("WhetherStandby"));
     d_ptr->yes = new Button(trs("Yes"));
     d_ptr->yes->setButtonStyle(Button::ButtonTextOnly);
     d_ptr->no = new Button(trs("No"));

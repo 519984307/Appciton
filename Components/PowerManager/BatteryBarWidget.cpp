@@ -16,6 +16,9 @@
 #include "MenuManager.h"
 #include "TopBarWidget.h"
 #include "IConfig.h"
+#include <QPainter>
+
+#define blackgroundColor QColor(20 , 20 , 20)
 
 BatteryBarWidget *BatteryBarWidget::_selfObj = NULL;
 
@@ -97,11 +100,19 @@ void BatteryBarWidget::setIconLow()
     _batteryIconWidget->setFillColor(Qt::yellow);
 }
 
+void BatteryBarWidget::paintEvent(QPaintEvent *e)
+{
+    IWidget::paintEvent(e);
+    QPainter painter(this);
+    painter.fillRect(this->rect(), blackgroundColor);
+}
+
 /**************************************************************************************************
  * 释放事件回调函数
  *************************************************************************************************/
 void BatteryBarWidget::_batRealsed(IWidget * iWidget)
 {
+    Q_UNUSED(iWidget)
     windowManager.showWindow(&_batteryIndicatorWindow , WindowManager::ShowBehaviorModal);
 }
 
@@ -110,16 +121,11 @@ void BatteryBarWidget::_batRealsed(IWidget * iWidget)
  *************************************************************************************************/
 BatteryBarWidget::BatteryBarWidget() : IWidget("BatteryBarWidget")
 {
-    int topBarHeight;
-    systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|topBarRow", topBarHeight);
-    int batteryWidth = topBarHeight * 1.5;
-    setFixedWidth(batteryWidth);
-
-    _batteryIconWidget = new BatteryIconWidget(topBarWidget.getTopBarBlackGroundColor());
+    _batteryIconWidget = new BatteryIconWidget(blackgroundColor);
     _batteryStatus = BATTERY_NORMAL;
 
     QHBoxLayout *layout = new QHBoxLayout();
-    layout->setMargin(6);
+    layout->setMargin(0);
     layout->addWidget(_batteryIconWidget);
     setLayout(layout);
 

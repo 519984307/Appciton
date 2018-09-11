@@ -26,8 +26,8 @@
 SoftKeyManager *SoftKeyManager::_selfObj = NULL;
 
 #define SOFTKEY_WIDGET_NR  12      // 按钮显示的数量
-#define SOFTKEY_HEAD_NR 3          // 开头固定软按键个数
-#define SOFTKEY_TAIL_NR 2          // 结尾固定软按键个数
+#define SOFTKEY_HEAD_NR 2          // 开头固定软按键个数
+#define SOFTKEY_TAIL_NR 1          // 结尾固定软按键个数
 
 /***************************************************************************************************
  * 功能：前面板按键处理。
@@ -430,13 +430,13 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager")
     for (int i = 0; i < SOFTKEY_WIDGET_NR; i++)
     {
         SoftkeyWidget *widget = new SoftkeyWidget(this);
-        if (2 == i || i == SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR)
+        if (SOFTKEY_HEAD_NR - 1 == i || i == SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR)
         {
-            widget->setFixedSize(1.58 * _KEY_SIZE_H / 2, _KEY_SIZE_H);
+            widget->setFixedSize(1.35 * _KEY_SIZE_H / 2, _KEY_SIZE_H);
         }
         else
         {
-            widget->setFixedSize(1.58 * _KEY_SIZE_H, _KEY_SIZE_H);
+            widget->setFixedSize(1.35 * _KEY_SIZE_H, _KEY_SIZE_H);
         }
         connect(widget, SIGNAL(released(IWidget *)), this, SLOT(_clickKey(IWidget *)));
         if (i < SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR)
@@ -460,14 +460,14 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager")
     SoftkeyActionBase *action = new MonitorSoftkeyAction();
     _actions.insert(action->getType(), action);
 
-    action = new RescueDataSoftKeyAction();
-    _actions.insert(action->getType(), action);
+//    action = new RescueDataSoftKeyAction();
+//    _actions.insert(action->getType(), action);
 
-    action = new DelRescueDataSoftkeyAction();
-    _actions.insert(action->getType(), action);
+//    action = new DelRescueDataSoftkeyAction();
+//    _actions.insert(action->getType(), action);
 
-    action = new CalculateSoftkeyAction();
-    _actions.insert(action->getType(), action);
+//    action = new CalculateSoftkeyAction();
+//    _actions.insert(action->getType(), action);
 }
 
 /***************************************************************************************************

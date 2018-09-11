@@ -141,9 +141,6 @@ static void _initComponents(void)
     DateTimeWidget *widget0 = new DateTimeWidget();
     ElapseTimeWidget *widget1 = new ElapseTimeWidget();
 
-//    windowManager.addWidget(widget0);
-//    windowManager.addWidget(widget1);
-
     topBarWidget.addWidget(widget0);
     topBarWidget.addWidget(widget1);
     timeManager.registerWidgets(*widget0, *widget1);
@@ -157,17 +154,14 @@ static void _initComponents(void)
     ibpParam.setInfobarWidget(promptInfo);
 
     // 系统状态栏
-//    windowManager.addWidget(&sysStatusBar.construction());
-//    windowManager.addWidget(new SystemModeBarWidget());
-    topBarWidget.addWidget(&sysStatusBar.construction());
+    windowManager.addWidget(&sysStatusBar.construction());
     topBarWidget.addWidget(new SystemModeBarWidget());
 
     // 电源
     BatteryBarWidget *bar = &batteryBarWidget;
     powerManager.construction();
     alertor.addOneShotSource(batteryOneShotAlarm.construction());
-//    windowManager.addWidget(bar);
-    topBarWidget.addWidget(bar);
+    windowManager.addWidget(bar);
 
     // 病人管理初始化。
     PatientInfoWidget *patientInfoWidget = new PatientInfoWidget();
@@ -178,7 +172,6 @@ static void _initComponents(void)
 //    windowManager.addWidget(patientTypeWidget);
     topBarWidget.addWidget(patientTypeWidget);
     patientManager.setPatientTypeWidget(*patientTypeWidget);
-//    windowManager.addWidget(&patientStatusBar.construction());
     topBarWidget.addWidget(&patientStatusBar.construction());
 
     // 初始化报警。
@@ -191,11 +184,8 @@ static void _initComponents(void)
     alarmIndicator.setAlarmPhyWidgets(alarmPhyInfo, alarmPhyMuteBar);
     alarmIndicator.setAlarmTechWidgets(alarmTechInfo);
 //    windowManager.addWidget(new AlarmInfoBarIndicator());
-//    windowManager.addWidget(alarmPhyInfo);
-//    windowManager.addWidget(alarmTechInfo);
     topBarWidget.addWidget(alarmPhyInfo);
     topBarWidget.addWidget(alarmTechInfo);
-//    windowManager.addWidget(alarmPhyMuteBar);
     topBarWidget.addWidget(alarmPhyMuteBar);
     topBarWidget.refreshLayout();
 

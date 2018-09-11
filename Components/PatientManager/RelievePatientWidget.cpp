@@ -48,7 +48,7 @@ void RelievePatientWidget::layoutExec()
 //    int labelWidth = btnWidth;
 
     _standby = new QLabel();
-    _standby->setText(trs("Standby"));
+    _standby->setText(trs("WhetherStandby"));
     _standby->setFont(fontManager.textFont(fontSize));
     _standby->setFixedSize(btnWidth, _itemH);
 
