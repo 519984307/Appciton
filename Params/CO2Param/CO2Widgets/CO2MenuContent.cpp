@@ -193,7 +193,7 @@ void CO2MenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     int maxZoom = CO2_DISPLAY_ZOOM_NR;
-    float zoomArray[] = {4.0, 8.0, 12.0, 20.0};
+    float zoomArray[CO2_DISPLAY_ZOOM_NR] = {4.0, 8.0, 12.0, 20.0};
     QString str;
     UnitType unit = co2Param.getUnit();
     for (int i = 0; i < maxZoom; i++)
@@ -202,9 +202,7 @@ void CO2MenuContent::layoutExec()
         if (unit == UNIT_KPA)
         {
             float tempVal = Unit::convert(UNIT_KPA, UNIT_PERCENT, zoomArray[i]).toFloat();
-            str = QString("0.0~%1").arg(QString::number(
-                            static_cast<float>(
-                                static_cast<int>(tempVal + 0.5)), 'f', 1));
+            str = QString("0.0~%1").arg(QString::number(tempVal, 'f', 1));
         }
         else if (unit == UNIT_MMHG)
         {

@@ -203,79 +203,12 @@ void ECGWaveWidget::_releaseHandle(IWidget * w)
 }
 
 /**************************************************************************************************
- * 增益改变。
- *************************************************************************************************/
-void ECGWaveWidget::_ecgGain(IWidget *widget)
-{
-    WaveWidgetLabel *tempGain = NULL;
-
-    if (NULL == _gainList)
-    {
-        ECGGain gain = ECG_GAIN_X10;
-        if (windowManager.getUFaceType() == UFACE_MONITOR_12LEAD)
-        {
-            gain = get12LGain();
-
-            //这里创建一个临时的增益，属性和监控界面一样，主要是为了弹出增益列表时能够和监控模式下的一致，
-            //因为监控列表是根据父控件的属性来设置的
-            tempGain = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
-            tempGain->setFont(fontManager.textFont(14));
-            tempGain->setFixedHeight(30);
-            tempGain->setFixedWidth(150);
-            tempGain->move(_name->rect().width(), 0);
-
-            widget = tempGain;
-        }
-        else
-        {
-            gain = ecgParam.getGain(ecgParam.waveIDToLeadID((WaveformID)getID()));
-        }
-
-        int maxGain = ecgParam.getMaxGain();
-        // 12导模式下增益不需要AUTO
-        if (ECG_DISPLAY_12_LEAD_FULL == ecgParam.getDisplayMode())
-        {
-            maxGain = maxGain - 1;
-        }
-        if (maxGain > ECG_GAIN_AUTO)
-        {
-            if (_isAutoGain)
-            {
-                gain = ECG_GAIN_AUTO;
-            }
-        }
-        _gainList = new PopupList(_gain, false);
-        for (int i = 0; i < maxGain; i++)
-        {
-            _gainList->addItemText(ECGSymbol::convert((ECGGain)i));
-        }
-
-        int fontSize = fontManager.getFontSize(3);
-        _gainList->setFont(fontManager.textFont(fontSize));
-        connect(_gainList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
-        connect(_gainList, SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
-    }
-
-    _gainList->show();
-
-    if (windowManager.getUFaceType() == UFACE_MONITOR_12LEAD)
-    {
-        if (NULL != tempGain)
-        {
-            delete tempGain;
-            tempGain = NULL;
-        }
-    }
-}
-
-/**************************************************************************************************
  * 弹出菜单销毁。
  *************************************************************************************************/
 void ECGWaveWidget::_popupDestroyed(void)
 {
     if (_currentItemIndex == -1)
     {
-        _gainList = NULL;
         return;
     }
 
@@ -311,8 +244,6 @@ void ECGWaveWidget::_popupDestroyed(void)
             setGain(ecgParam.getGain(ecgParam.waveIDToLeadID((WaveformID)getID())));
         }
     }
-
-    _gainList = NULL;
     _autoGainTime = 0;
     _autoGainTracePeek = -100000000;
     _autoGainTraveVally = 100000000;
@@ -451,11 +382,6 @@ void ECGWaveWidget::addWaveformData(int waveData, int pace)
  *************************************************************************************************/
 void ECGWaveWidget::setGain(ECGGain gain)
 {
-//    if (!_gain)
-//    {
-//        return;
-//    }
-
     _initValueRange(gain);
     QString text;
     if (_isAutoGain)
@@ -819,11 +745,6 @@ void ECGWaveWidget::resizeEvent(QResizeEvent *e)
 
     _initValueRange(ecgParam.getGain(ecgParam.waveIDToLeadID((WaveformID)getID())));
     _calcGainRange();
-
-    if (NULL != _gainList)
-    {
-        _gainList->close();
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -905,11 +826,6 @@ void ECGWaveWidget::showEvent(QShowEvent *e)
 void ECGWaveWidget::hideEvent(QHideEvent *e)
 {
     WaveWidget::hideEvent(e);
-
-    if (NULL != _gainList)
-    {
-        _gainList->close();
-    }
 }
 
 /**************************************************************************************************
@@ -923,7 +839,6 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     : WaveWidget(widgetName, leadName)
 //    , _gain(NULL)
     , _notify(NULL)
-    , _gainList(NULL)
     , _ruler(NULL)
     , _p05mV(3185)
     , _n05mV(-3185)

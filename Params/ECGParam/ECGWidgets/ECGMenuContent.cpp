@@ -153,7 +153,7 @@ void ECGMenuContent::layoutExec()
                        << trs(ECGSymbol::convert(ECG_LEAD_MODE_5))
                        << trs(ECGSymbol::convert(ECG_LEAD_MODE_12))
                       );
-    itemID = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE);
+    itemID = ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -164,7 +164,7 @@ void ECGMenuContent::layoutExec()
     label = new QLabel("ECG");
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    itemID = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_ECG);
+    itemID = ECGMenuContentPrivate::ITEM_CBO_ECG;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -179,7 +179,7 @@ void ECGMenuContent::layoutExec()
     {
         comboBox->addItem(ECGSymbol::convert(static_cast<ECGGain>(i)));
     }
-    itemID  = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN);
+    itemID  = ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -196,7 +196,7 @@ void ECGMenuContent::layoutExec()
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_ST))
                       );
-    itemID = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_FILTER_MODE);
+    itemID = ECGMenuContentPrivate::ITEM_CBO_FILTER_MODE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -207,7 +207,7 @@ void ECGMenuContent::layoutExec()
     label = new QLabel(trs("NotchFilter"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    itemID = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER);
+    itemID = ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -222,7 +222,7 @@ void ECGMenuContent::layoutExec()
                        << trs(ECGSymbol::convert(ECG_PACE_OFF))
                        << trs(ECGSymbol::convert(ECG_PACE_ON))
                       );
-    itemID = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_PACER_MARK);
+    itemID = ECGMenuContentPrivate::ITEM_CBO_PACER_MARK;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -238,7 +238,7 @@ void ECGMenuContent::layoutExec()
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_250))
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_500))
                       );
-    itemID = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED);
+    itemID = ECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -261,7 +261,7 @@ void ECGMenuContent::layoutExec()
     {
         comboBox->addItem(QString::number(i));
     }
-    itemID = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_QRS_TONE);
+    itemID = ECGMenuContentPrivate::ITEM_CBO_QRS_TONE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));

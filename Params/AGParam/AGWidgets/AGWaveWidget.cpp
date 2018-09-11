@@ -160,50 +160,6 @@ void AGWaveWidget::_releaseHandle(IWidget *w)
     windowManager.showWindow(&waveWidgetSelectMenu, WindowManager::ShowBehaviorModal);
 }
 
-/**************************************************************************************************
- * 标尺改变。
- *************************************************************************************************/
-void AGWaveWidget::_zoomChangeSlot(IWidget *widget)
-{
-    Q_UNUSED(widget);
-    if (NULL == _gainList)
-    {
-        AGDisplayZoom zoom = AG_DISPLAY_ZOOM_4;
-        int maxZoom = AG_DISPLAY_ZOOM_NR;
-        _gainList = new PopupList(_zoom , false);
-        float zoomArray[] = {4.0, 8.0, 15.0};
-        QString str;
-        for (int i = 0; i < maxZoom; i ++)
-        {
-            str.clear();
-            str = QString("0.0~%1").arg(QString::number(zoomArray[i], 'f', 1));
-            str += " ";
-            str += trs("percent");
-            _gainList->addItemText(str);
-        }
-        int fontSize = fontManager.getFontSize(3);
-        _gainList->setFont(fontManager.textFont(fontSize));
-        connect(_gainList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
-        connect(_gainList , SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
-    }
-    _gainList->show();
-}
-
-/**************************************************************************************************
- * 弹出菜单销毁。
- *************************************************************************************************/
-void AGWaveWidget::_popupDestroyed()
-{
-    if (_currentItemIndex == -1)
-    {
-        _gainList = NULL;
-        return;
-    }
-
-//    agParam.setDisplayZoom((AGDisplayZoom)_currentItemIndex);
-    _gainList = NULL;
-}
-
 void AGWaveWidget::_getItemIndex(int index)
 {
     _currentItemIndex = index;

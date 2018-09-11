@@ -89,7 +89,7 @@ void AGMenuContent::layoutExec()
                       << trs(AGSymbol::convert(AG_MODULE_SWITCH_ENABLE))
                       << trs(AGSymbol::convert(AG_MODULE_SWITCH_DISABLE))
                       );
-    itemID = static_cast<int>(AGMenuContentPrivate::ITEM_CBO_MODULE_SWITCH);
+    itemID = AGMenuContentPrivate::ITEM_CBO_MODULE_SWITCH;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -101,7 +101,7 @@ void AGMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     int maxZoom = AG_DISPLAY_ZOOM_NR;
-    float zoomArray[] = {4.0, 8.0, 15.0};
+    float zoomArray[AG_DISPLAY_ZOOM_NR] = {4.0, 8.0, 15.0};
     QString str;
     for (int i = 0; i < maxZoom; i ++)
     {
@@ -111,7 +111,7 @@ void AGMenuContent::layoutExec()
         str += trs("percent");
         comboBox->addItem(str);
     }
-    itemID = static_cast<int>(AGMenuContentPrivate::ITEM_CBO_N2O_RULER);
+    itemID = AGMenuContentPrivate::ITEM_CBO_N2O_RULER;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -130,7 +130,7 @@ void AGMenuContent::layoutExec()
         str += trs("percent");
         comboBox->addItem(str);
     }
-    itemID = static_cast<int>(AGMenuContentPrivate::ITEM_CBO_AA1_RULER);
+    itemID = AGMenuContentPrivate::ITEM_CBO_AA1_RULER;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -149,7 +149,7 @@ void AGMenuContent::layoutExec()
         str += trs("percent");
         comboBox->addItem(str);
     }
-    itemID = static_cast<int>(AGMenuContentPrivate::ITEM_CBO_AA2_RULER);
+    itemID = AGMenuContentPrivate::ITEM_CBO_AA2_RULER;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -168,7 +168,7 @@ void AGMenuContent::layoutExec()
         str += trs("percent");
         comboBox->addItem(str);
     }
-    itemID = static_cast<int>(AGMenuContentPrivate::ITEM_CBO_O2_RULER);
+    itemID = AGMenuContentPrivate::ITEM_CBO_O2_RULER;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -185,7 +185,7 @@ void AGMenuContent::layoutExec()
                       << trs(AGSymbol::convert(AG_SWEEP_SPEED_250))
                       << trs(AGSymbol::convert(AG_SWEEP_SPEED_500))
                       );
-    itemID = static_cast<int>(AGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED);
+    itemID = AGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));

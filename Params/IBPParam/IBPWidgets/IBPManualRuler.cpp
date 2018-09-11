@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/11
+ **/
+
 #include "IBPManualRuler.h"
 #include "LabelButton.h"
 #include "IButton.h"
@@ -66,7 +76,6 @@ IBPManualRuler::IBPManualRuler()
  *************************************************************************************************/
 IBPManualRuler::~IBPManualRuler()
 {
-
 }
 
 /**************************************************************************************************
@@ -164,6 +173,5 @@ void IBPManualRuler::_lowRulerReleased()
 void IBPManualRuler::_yesReleased()
 {
     _waveWidget->setLimit(_low, _high);
-    _waveWidget->setRuler(IBP_MANUAL_SCALE_INDEX);
     done(1);
 }

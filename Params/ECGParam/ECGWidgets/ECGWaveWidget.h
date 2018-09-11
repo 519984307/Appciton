@@ -115,7 +115,6 @@ protected:
 private slots:
     // 鼠标释放事件
     void _releaseHandle(IWidget *);
-    void _ecgGain(IWidget *);
     void _popupDestroyed();
     void _onCalcLeadChanged();
     void _getItemIndex(int);
@@ -129,10 +128,8 @@ private:
 
 private:
 //    WaveWidgetLabel *_name;         // 名称
-    WaveWidgetLabel *_gain;         // 增益标签
     WaveWidgetLabel *_filter;       // 滤波标签
     WaveWidgetLabel *_notify;       // 提示标签
-    PopupList *_gainList;           // 增益列表
     ECGWaveRuler *_ruler;           // 标尺
     static int _paceHeight;         // 起搏标记高度, 单位像素
     int _p05mV;                     // +0.5mV对应的波形数值

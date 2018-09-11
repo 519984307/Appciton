@@ -41,13 +41,6 @@ void IBPWaveWidget::addWaveformData(short wave, int flag)
 }
 
 /**************************************************************************************************
- * 设置标尺的标签值。
- *************************************************************************************************/
-void IBPWaveWidget::setRuler(int index)
-{
-}
-
-/**************************************************************************************************
  * 设置导联状态信息。
  *************************************************************************************************/
 void IBPWaveWidget::setLeadSta(int info)
@@ -112,7 +105,6 @@ void IBPWaveWidget::setRulerLimit(IBPRulerLimit ruler)
         return;
     }
 
-    setRuler(ruler);
     if (ruler == IBP_RULER_LIMIT_AOTU)
     {
         _isAutoRuler = true;
@@ -134,9 +126,7 @@ void IBPWaveWidget::setRulerLimit(IBPRulerLimit ruler)
  *************************************************************************************************/
 IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPressureName &entitle)
     : WaveWidget(waveName, IBPSymbol::convert(entitle)),
-      _zoomList(NULL),
-      _entitle(entitle),
-      _currentItemIndex(-1)
+      _entitle(entitle)
 {
     _autoRulerTracePeek = -10000;
     _autoRulerTraveVally = 10000;
@@ -232,45 +222,6 @@ void IBPWaveWidget::_releaseHandle(IWidget *w)
     windowManager.showWindow(&waveWidgetSelectMenu, WindowManager::ShowBehaviorModal);
 }
 
-void IBPWaveWidget::_IBPZoom(IWidget *widget)
-{
-}
-
-/**************************************************************************************************
- * 弹出菜单销毁。
- *************************************************************************************************/
-void IBPWaveWidget::_popupDestroyed()
-{
-    if (_currentItemIndex == -1)
-    {
-        _zoomList = NULL;
-        return;
-    }
-
-    setRuler(_currentItemIndex);
-    if (_currentItemIndex == IBP_AUTO_SCALE_INDEX)
-    {
-        _isAutoRuler = true;
-    }
-    else if (_currentItemIndex == IBP_MANUAL_SCALE_INDEX)
-    {
-        _isAutoRuler = false;
-        displayManualRuler();
-    }
-    else
-    {
-        _isAutoRuler = false;
-        setLimit(ibpParam.ibpScaleList.at(_currentItemIndex).low, ibpParam.ibpScaleList.at(_currentItemIndex).high);
-    }
-
-    _zoomList = NULL;
-}
-
-void IBPWaveWidget::_getItemIndex(int index)
-{
-    _currentItemIndex = index;
-}
-
 /**************************************************************************************************
  * 自动标尺计算。
  * 参数:
@@ -330,5 +281,4 @@ void IBPWaveWidget::_autoRulerHandle(short data)
     _autoRulerTraveVally = 10000;
 
     setLimit(ibpParam.ibpScaleList.at(ruler).low, ibpParam.ibpScaleList.at(ruler).high);
-    setRuler(IBP_AUTO_SCALE_INDEX);
 }
