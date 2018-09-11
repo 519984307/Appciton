@@ -740,7 +740,7 @@ int CO2Param::getCompensation(CO2Compensation which)
  *************************************************************************************************/
 void CO2Param::setDisplayZoom(CO2DisplayZoom zoom)
 {
-    systemConfig.setNumValue("PrimaryCfg|CO2|DisplayZoom", static_cast<int>(zoom));
+    currentConfig.setNumValue("CO2|DisplayZoom", static_cast<int>(zoom));
     _setWaveformZoom(zoom);
 }
 

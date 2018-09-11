@@ -39,7 +39,7 @@
     <CO2 SptProvider="DemoProvider,BLM_CO2">BLM_CO2</CO2>
     <IBP SptProvider="DemoProvider,WITLEAF_IBP">WITLEAF_IBP</IBP>
     <AG SptProvider="DemoProvider,PHASEIN_AG">DemoProvider</AG>
-    <CO SptProvider="DemoProvider,WITLEAF_IBP">DemoProvider</CO>
+    <CO SptProvider="DemoProvider,WITLEAF_IBP">WITLEAF_IBP</CO>
     <TEMP SptProvider="DemoProvider,BLM_TT3,BLM_T5">BLM_T5</TEMP>
     <!--Provider端口信息-->
     <PRT72Port>/dev/ttyS3</PRT72Port>

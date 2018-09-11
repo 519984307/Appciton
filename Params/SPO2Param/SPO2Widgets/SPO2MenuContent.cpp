@@ -27,7 +27,8 @@ class SPO2MenuContentPrivate
 public:
     enum MenuItem
     {
-        ITEM_CBO_SMART_TONE
+        ITEM_CBO_SMART_TONE,
+        ITEM_CBO_GAIN
     };
 
     SPO2MenuContentPrivate() {}
@@ -41,6 +42,7 @@ public:
 void SPO2MenuContentPrivate::loadOptions()
 {
     combos[ITEM_CBO_SMART_TONE]->setCurrentIndex(spo2Param.getSmartPulseTone());
+    combos[ITEM_CBO_GAIN]->setCurrentIndex(spo2Param.getGain());
 }
 
 SPO2MenuContent::SPO2MenuContent()
@@ -81,6 +83,20 @@ void SPO2MenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SMART_TONE, comboBox);
 
+    label = new QLabel(trs("Gain"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    for (int i = 0; i < SPO2_GAIN_NR; i ++)
+    {
+        comboBox->addItem(SPO2Symbol::convert(static_cast<SPO2Gain>(i)));
+    }
+    itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_GAIN);
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_GAIN, comboBox);
+
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
@@ -103,6 +119,9 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
         {
         case SPO2MenuContentPrivate::ITEM_CBO_SMART_TONE:
             spo2Param.setSmartPulseTone((SPO2SMARTPLUSETONE)index);
+            break;
+        case SPO2MenuContentPrivate::ITEM_CBO_GAIN:
+            spo2Param.setGain(static_cast<SPO2Gain>(index));
             break;
         default:
             break;

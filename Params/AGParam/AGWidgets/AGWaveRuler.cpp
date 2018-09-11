@@ -33,12 +33,14 @@ void AGWaveRuler::paintItem(QPainter &painter)
     painter.setPen(QPen(palette().windowText(), 1, Qt::DashLine));
 
     // 上标尺
+    painter.drawText(QRectF(xLeft, yUp, xRight, yLow), Qt::AlignLeft | Qt::AlignTop, QString::number(_up) + "%");
     painter.drawLine(xLeft, yUp, xRight, yUp);
 
     // 中标尺
     painter.drawLine(xLeft, yMid, xRight, yMid);
 
     // 下标尺
+    painter.drawText(QRectF(xLeft, yUp, xRight, yLow - yMid/ 3 - 5), Qt::AlignLeft | Qt::AlignBottom, QString::number(_low) + "%");
     painter.drawLine(xLeft, yLow, xRight, yLow);
 }
 

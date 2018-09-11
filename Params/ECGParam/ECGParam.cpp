@@ -1516,10 +1516,10 @@ void ECGParam::setCalcLead(ECGLead lead)
     }
 
     ECGLead preCalcLead = getCalcLead();
-    leads.clear();
-    leads.append(ECG_LEAD_I);
-    leads.append(ECG_LEAD_II);
-    leads.append(ECG_LEAD_III);
+//    leads.clear();
+//    leads.append(ECG_LEAD_I);
+//    leads.append(ECG_LEAD_II);
+//    leads.append(ECG_LEAD_III);
 
     if (-1 == leads.indexOf(lead))
     {

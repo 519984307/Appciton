@@ -33,19 +33,21 @@ void IBPWaveRuler::paintItem(QPainter &painter)
     painter.setPen(QPen(palette().windowText(), 1, Qt::DashLine));
 
     // 上标尺
+    painter.drawText(QRectF(xLeft, yUp, xRight, yLow), Qt::AlignLeft | Qt::AlignTop, QString::number(_up) + "mmHg");
     painter.drawLine(xLeft, yUp, xRight, yUp);
 
     // 中标尺
     painter.drawLine(xLeft, yMid, xRight, yMid);
 
     // 下标尺
+    painter.drawText(QRectF(xLeft, yUp, xRight, yLow - yMid/ 3 - 5), Qt::AlignLeft | Qt::AlignBottom, QString::number(_low) + "mmHg");
     painter.drawLine(xLeft, yLow, xRight, yLow);
 }
 
 /**************************************************************************************************
  * 设置标尺的刻度。
  *************************************************************************************************/
-void IBPWaveRuler::setRuler(double up, double mid, double low)
+void IBPWaveRuler::setRuler(int up, int mid, int low)
 {
     _up = up;
     _mid = mid;
@@ -57,11 +59,9 @@ void IBPWaveRuler::setRuler(double up, double mid, double low)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-IBPWaveRuler::IBPWaveRuler(IBPWaveWidget *wave) : WaveWidgetItem(wave, true)
+IBPWaveRuler::IBPWaveRuler(IBPWaveWidget *wave) : WaveWidgetItem(wave, true),
+    _up(30), _mid(15), _low(0)
 {
-    _up = 15.0;
-    _mid = 7.5;
-    _low = 0;
 }
 
 /**************************************************************************************************

@@ -1072,6 +1072,7 @@ NoSetCalibrationTime,没有设置校准时间,
 ManualRulerSet,手动标尺设置,Manual Ruler Set
 PressureHighRuler,压力上标尺,Pressure High Ruler
 PressureLowRuler,压力下标尺,Pressure Low Ruler
+Ruler,标尺,Ruler
 LessThan,小于,Less Than
 GreaterThan,大于,Greater Than
 ZeroRequired,需要校零,Zero Required

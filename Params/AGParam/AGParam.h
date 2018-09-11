@@ -82,8 +82,8 @@ public:
     void addWaveformData(short wave, bool invalid, AGTypeGas gasType);
 
     // 设置/获取波形放大标尺。
-    void setDisplayZoom(AGDisplayZoom zoom);
-    AGDisplayZoom getDisplayZoom(void);
+    void setDisplayZoom(AGTypeGas type, AGDisplayZoom zoom);
+    AGDisplayZoom getDisplayZoom(AGTypeGas type);
 
     // 设置获取et值
     short getEtData(AGTypeGas gasType);
@@ -109,7 +109,7 @@ private:
     AGParam();
     static AGParam *_selfObj;
     void _setWaveformSpeed(AGSweepSpeed speed);
-    void _setWaveformZoom(AGDisplayZoom zoom);
+    void _setWaveformZoom(AGTypeGas type, AGDisplayZoom zoom);
 
     AGProviderIFace *_provider;
 

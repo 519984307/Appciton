@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/11
+ **/
+
 #include "NIBPCountdownTime.h"
 #include "NIBPParam.h"
 #include "NIBPMonitorStateDefine.h"
@@ -8,13 +18,13 @@ NIBPCountdownTime *NIBPCountdownTime::_selfObj = NULL;
 
 void NIBPCountdownTime::run()
 {
-//debug("%d\n",(_countdownTime - countdownElapseTime()) / 1000);
+// debug("%d\n",(_countdownTime - countdownElapseTime()) / 1000);
     if (nibpParam.getMeasurMode() == NIBP_MODE_AUTO && !nibpParam.isAdditionalMeasure())
     {
         // 更新倒计时。
         nibpParam.setCountdown((_autoTime - autoMeasureElapseTime()) / 1000);
         // 倒计时是否完成(在STANDBY状态才能启动)
-        if ((nibpParam.curStatusType()== NIBP_MONITOR_STANDBY_STATE) && isAutoMeasureTimeout())
+        if ((nibpParam.curStatusType() == NIBP_MONITOR_STANDBY_STATE) && isAutoMeasureTimeout())
         {
             // 转换到测量状态。
             nibpParam.switchState(NIBP_MONITOR_STARTING_STATE);
@@ -41,8 +51,7 @@ void NIBPCountdownTime::run()
             {
                 int min = t / 60;
                 int sec = t % 60;
-                QString str;
-                str.sprintf("%.2d:%.2d", min, sec);
+                QString str = QString("%1:%2").arg(min, 2, 10, QChar('0')).arg(sec, 2, 10, QChar('0'));
                 nibpParam.setModelText(trs("STAT") + " " + str);
             }
         }
@@ -145,7 +154,7 @@ int NIBPCountdownTime::STATMeasureElapseTime(void)
     _STATElapseTime = _STATTime - _STATMeasureElapseTimer.elapsed();
     if (_STATElapseTime > 0)
     {
-        return (_STATElapseTime/1000);
+        return (_STATElapseTime / 1000);
     }
     else
     {
