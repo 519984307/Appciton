@@ -15,7 +15,7 @@
 #include "TableHeaderView.h"
 #include "TrendTableModel.h"
 #include "Button.h"
-#include "IMoveButton.h"
+#include "MoveButton.h"
 #include "ComboBox.h"
 #include "WindowManager.h"
 #include "FontManager.h"
@@ -56,7 +56,7 @@ class TrendTableWindowPrivate
 public:
     TrendTableWindowPrivate()
         : model(NULL), table(NULL), upBtn(NULL), downBtn(NULL),
-          leftBtn(NULL), rightBtn(NULL), previousEventBtn(NULL), nextEventBtn(NULL),
+           pagingBtn(NULL), eventBtn(NULL),
           printParamBtn(NULL), setBtn(NULL), timeInterval(RESOLUTION_RATIO_5_SECOND),
           curSecCol(0)
     {}
@@ -68,10 +68,8 @@ public:
     TableView *table;
     Button *upBtn;
     Button *downBtn;
-    Button *leftBtn;
-    Button *rightBtn;
-    Button *previousEventBtn;
-    Button *nextEventBtn;
+    MoveButton *pagingBtn;
+    MoveButton *eventBtn;
     Button *printParamBtn;
     Button *setBtn;
     ResolutionRatio timeInterval;          // 时间间隔
@@ -158,7 +156,9 @@ bool TrendTableWindow::eventFilter(QObject *o, QEvent *e)
             QPalette pal = palette();
             QColor textColor = themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementText,
                                                     ThemeManager::StateInactive);
-            pal.setColor(QPalette::Background, Qt::white);
+            pal.setColor(QPalette::Background,
+                         themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+                                                                    ThemeManager::StateDisabled));
             painter.fillRect(opt.rect, pal.background());
             painter.setPen(QPen(textColor, 1, Qt::SolidLine));
             painter.drawText(opt.rect, Qt::AlignCenter, btn->text());
@@ -183,6 +183,7 @@ TrendTableWindow::TrendTableWindow()
     verticalHeader->setResizeMode(QHeaderView::ResizeToContents);
     d_ptr->table->setSelectionMode(QAbstractItemView::SingleSelection);
     d_ptr->table->setSelectionBehavior(QAbstractItemView::SelectColumns);
+    d_ptr->table->setAttribute(Qt::WA_TransparentForMouseEvents, true);
     d_ptr->table->setFocusPolicy(Qt::ClickFocus);
     d_ptr->table->setShowGrid(false);
     d_ptr->table->setCornerButtonEnabled(false);
@@ -202,21 +203,15 @@ TrendTableWindow::TrendTableWindow()
     d_ptr->downBtn->setButtonStyle(Button::ButtonIconOnly);
     connect(d_ptr->downBtn, SIGNAL(released()), this, SLOT(downReleased()));
 
-    d_ptr->leftBtn = new Button("", QIcon("/usr/local/nPM/icons/left.png"));
-    d_ptr->leftBtn->setButtonStyle(Button::ButtonIconOnly);
-    connect(d_ptr->leftBtn, SIGNAL(released()), this, SLOT(leftReleased()));
+    d_ptr->pagingBtn = new MoveButton(trs("Page"));
+    d_ptr->pagingBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->pagingBtn, SIGNAL(leftMove()), this, SLOT(leftReleased()));
+    connect(d_ptr->pagingBtn, SIGNAL(rightMove()), this, SLOT(rightReleased()));
 
-    d_ptr->rightBtn = new Button("", QIcon("/usr/local/nPM/icons/right.png"));
-    d_ptr->rightBtn->setButtonStyle(Button::ButtonIconOnly);
-    connect(d_ptr->rightBtn, SIGNAL(released()), this, SLOT(rightReleased()));
-
-    d_ptr->previousEventBtn = new Button(trs("PreviousEvent"));
-    d_ptr->previousEventBtn->setButtonStyle(Button::ButtonTextOnly);
-    connect(d_ptr->previousEventBtn, SIGNAL(released()), this, SLOT(leftMoveEvent()));
-
-    d_ptr->nextEventBtn = new Button(trs("NextEvent"));
-    d_ptr->nextEventBtn->setButtonStyle(Button::ButtonTextOnly);
-    connect(d_ptr->nextEventBtn, SIGNAL(released()), this, SLOT(rightMoveEvent()));
+    d_ptr->eventBtn = new MoveButton(trs("Event"));
+    d_ptr->eventBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->eventBtn, SIGNAL(leftMove()), this, SLOT(leftMoveEvent()));
+    connect(d_ptr->eventBtn, SIGNAL(rightMove()), this, SLOT(rightMoveEvent()));
 
     d_ptr->printParamBtn = new Button(trs("Print"));
     d_ptr->printParamBtn->setButtonStyle(Button::ButtonTextOnly);
@@ -229,10 +224,8 @@ TrendTableWindow::TrendTableWindow()
     QHBoxLayout *hLayout = new QHBoxLayout(this);
     hLayout->addWidget(d_ptr->upBtn, 1);
     hLayout->addWidget(d_ptr->downBtn, 1);
-    hLayout->addWidget(d_ptr->leftBtn, 1);
-    hLayout->addWidget(d_ptr->rightBtn, 1);
-    hLayout->addWidget(d_ptr->previousEventBtn, 2);
-    hLayout->addWidget(d_ptr->nextEventBtn, 2);
+    hLayout->addWidget(d_ptr->pagingBtn, 2);
+    hLayout->addWidget(d_ptr->eventBtn, 2);
     hLayout->addWidget(d_ptr->printParamBtn, 2);
     hLayout->addWidget(d_ptr->setBtn, 2);
 
@@ -258,13 +251,11 @@ TrendTableWindow::TrendTableWindow()
 void TrendTableWindow::leftReleased()
 {
     d_ptr->model->leftPage(d_ptr->curSecCol);
-    d_ptr->table->selectColumn(d_ptr->curSecCol);
 }
 
 void TrendTableWindow::rightReleased()
 {
     d_ptr->model->rightPage(d_ptr->curSecCol);
-    d_ptr->table->selectColumn(d_ptr->curSecCol);
 }
 
 void TrendTableWindow::upReleased()
@@ -280,13 +271,11 @@ void TrendTableWindow::downReleased()
 void TrendTableWindow::leftMoveEvent()
 {
     d_ptr->model->leftMoveEvent(d_ptr->curSecCol);
-    d_ptr->table->selectColumn(d_ptr->curSecCol);
 }
 
 void TrendTableWindow::rightMoveEvent()
 {
     d_ptr->model->rightMoveEvent(d_ptr->curSecCol);
-    d_ptr->table->selectColumn(d_ptr->curSecCol);
 }
 
 void TrendTableWindow::printWidgetRelease()
@@ -313,9 +302,4 @@ void TrendTableWindow::trendDataSetReleased()
 void TrendTableWindowPrivate::updateTable()
 {
     model->updateData();
-
-    // 重新打开窗口时总是选择最后一列
-    int totalCol = model->columnCount(QModelIndex());
-    curSecCol = totalCol - 1;
-    table->selectColumn(curSecCol);
 }

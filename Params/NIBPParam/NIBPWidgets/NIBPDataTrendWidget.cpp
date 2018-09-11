@@ -269,10 +269,10 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
     TrendWidget::resizeEvent(e);
     _rowNR = _table->height() / _tableItemHeight - 1;
     _table->setRowCount(_rowNR);
-    for (int i = 0; i < COLUMN_COUNT; i++)
-    {
-        _table->setColumnWidth(i, _table->width() / COLUMN_COUNT);
-    }
+    int eachColumnWidth = _table->width() / COLUMN_COUNT;
+    _table->setColumnWidth(0, eachColumnWidth);
+    _table->setColumnWidth(1, eachColumnWidth * 4/3);
+    _table->setColumnWidth(2, eachColumnWidth * 2/3);
 
     for (int i = 0; i < _rowNR; i++)
     {

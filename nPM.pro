@@ -132,6 +132,8 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/PasswordWidget.cpp                                     \
     Utility/Widgets/Base/SpinBox.cpp                                            \
     Utility/Widgets/Base/DropList.cpp                                           \
+    Utility/Widgets/Base/PopupMoveEditor.cpp                                    \
+    Utility/Widgets/Base/MoveButton.cpp                                         \
     Utility/Widgets/IComboList/ComboList.cpp                                    \
     Utility/Widgets/IComboList/ComboListPopup.cpp                               \
     Utility/Widgets/IComboList/ComboListItem.cpp                                \
@@ -682,6 +684,8 @@ HEADERS +=                                                                      
     Utility/Widgets/Base/PasswordWidget.h                                       \
     Utility/Widgets/Base/SpinBox.h                                              \
     Utility/Widgets/Base/DropList.h                                             \
+    Utility/Widgets/Base/PopupMoveEditor.h                                      \
+    Utility/Widgets/Base/MoveButton.h                                           \
     Utility/Widgets/IComboList/ComboList.h                                      \
     Utility/Widgets/IComboList/ComboListPopup.h                                 \
     Utility/Widgets/IComboList/ComboListItem.h                                  \

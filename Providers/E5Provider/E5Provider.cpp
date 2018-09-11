@@ -342,6 +342,16 @@ void E5Provider::handlePacket(unsigned char *data, int len)
     case E5_RSP_LEAD_MODE:
         d_ptr->ecgAlgInterface->setLeadMode((ECGAlg::ECGLeadMode) data[1]);
         break;
+    case E5_RSP_CALC_MODE:
+        break;
+    case E5_RSP_CALC_LEAD:
+        break;
+    case E5_RSP_NOTCH_TYPE:
+        break;
+    case E5_RSP_PATIENT_TYPE:
+        break;
+    case E5_RSP_PACE_ONOFF:
+        break;
     case E5_RSP_12LEAD_SUPPORT:
         d_ptr->support12Lead = data[2];
         break;

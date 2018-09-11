@@ -16,40 +16,25 @@
 #include <QLinkedList>
 #include <QVector>
 #include <QByteArray>
+#include "IConfig.h"
+#include "ParamInfo.h"
 
 #define COLUMN_COUNT 6
 #define ROW_COUNT 8
 #define MAX_WAVE_ROW 6
 #define WAVE_START_COLUMN 4
 
-enum ItemType
-{
-    ITEM_PLACE_HOLDER,
-    ITEM_PARAM,
-    ITEM_WAVE,
-};
-
 struct LayoutNode
 {
-    LayoutNode(int pos, int span)
-        : pos(pos), span(span), type(ITEM_PLACE_HOLDER), waveId(WAVE_NONE)
+    LayoutNode()
+        : pos(0), span(1), waveId(WAVE_NONE), editable(true)
     {}
-
-    LayoutNode(const QString &name, WaveformID waveId, int pos, int span)
-        : name(name), pos(pos), span(span), type(ITEM_WAVE), waveId(waveId)
-    {
-    }
-
-    LayoutNode(const QString &name, int pos, int span)
-        : name(name), pos(pos), span(span), type(ITEM_PLACE_HOLDER), waveId(WAVE_NONE)
-    {
-    }
 
     QString name;
     int pos;
     int span;
-    ItemType type;
     WaveformID waveId;
+    bool editable;
 };
 
 typedef QLinkedList<LayoutNode *> LayoutRow;
@@ -65,12 +50,145 @@ public:
 
     ~ScreenLayoutModelPrivate()
     {
+        clearAllLayoutNodes();
+    }
+
+    /**
+     * @brief clearAllLayoutNodes clear all the layout nodes
+     */
+    void clearAllLayoutNodes()
+    {
         QVector<LayoutRow *>::iterator iter;
         for (iter = layoutNodes.begin(); iter != layoutNodes.end(); ++iter)
         {
             qDeleteAll(**iter);
+            (*iter)->clear();
         }
         qDeleteAll(layoutNodes);
+        layoutNodes.clear();
+    }
+
+    static bool layoutNodeLessThan(const LayoutNode *n1, const LayoutNode *n2)
+    {
+        return n1->pos < n2->pos;
+    }
+
+    /**
+     * @brief loadLayoutFromConfig load layout config
+     * @param config
+     */
+    void loadLayoutFromConfig(const QVariantMap &config)
+    {
+        // clear all the node first
+        clearAllLayoutNodes();
+
+
+        QVariantList layoutRows = config["LayoutRow"].toList();
+        if (layoutRows.isEmpty())
+        {
+            // might has only one element
+            QVariant tmp = config["LayoutRow"];
+            if (tmp.isValid())
+            {
+                layoutRows.append(tmp.toMap());
+            }
+            else
+            {
+                return;
+            }
+        }
+        QVariantList::ConstIterator iter;
+        for (iter = layoutRows.constBegin(); iter != layoutRows.constEnd(); ++iter)
+        {
+            QVariantList nodes = iter->toMap().value("LayoutNode").toList();
+
+            if (nodes.isEmpty())
+            {
+                // might has only one element
+                QVariantMap nm = iter->toMap().value("LayoutNode").toMap();
+                if (nm.isEmpty())
+                {
+                    continue;
+                }
+                nodes.append(nm);
+            }
+
+            LayoutRow *row = new LayoutRow();
+
+            QVariantList::ConstIterator nodeIter;
+            for (nodeIter = nodes.constBegin(); nodeIter != nodes.constEnd(); ++nodeIter)
+            {
+                QVariantMap nodeMap = nodeIter->toMap();
+                int span = nodeMap["@span"].toInt();
+                if (span == 0)
+                {
+                    span = 1;
+                }
+                int pos = nodeMap["@pos"].toInt();
+                bool editable = nodeMap["@editable"].toBool();
+                LayoutNode *node = new LayoutNode();
+                node->name = nodeMap["@text"].toString();
+                node->editable = editable;
+                node->pos = pos;
+                node->span = span;
+                node->waveId = waveIDMaps.value(node->name, WAVE_NONE);
+
+                if (row->isEmpty())
+                {
+                    row->append(node);
+                }
+                else
+                {
+                    // the layout should be sorted by the pos
+                    LayoutRow::Iterator iter = row->begin();
+                    for (; iter != row->end(); ++iter)
+                    {
+                        if ((*iter)->pos > node->pos)
+                        {
+                            break;
+                        }
+                    }
+
+                    row->insert(iter, node);
+                }
+            }
+            layoutNodes.append(row);
+        }
+    }
+
+    /**
+     * @brief getLayoutMap get the layout map from the current layout info
+     * @return
+     */
+    QVariantMap getLayoutMap() const
+    {
+        QVariantList layoutRows;
+        QVector<LayoutRow *>::ConstIterator iter = layoutNodes.constBegin();
+        for (; iter != layoutNodes.constEnd(); ++iter)
+        {
+            QVariantList nodes;
+
+            LayoutRow::ConstIterator nodeIter = (*iter)->constBegin();
+            for (; nodeIter != (*iter)->constEnd(); ++nodeIter)
+            {
+                LayoutNode *n = *nodeIter;
+                QVariantMap m;
+                m["@span"] = n->span;
+                m["@pos"] = n->pos;
+                m["@editable"] = n->editable ? 1 : 0;
+                m["@text"] = n->name;
+                nodes.append(m);
+            }
+
+            QVariantMap nm;
+            nm["LayoutNode"] = nodes;
+            layoutRows.append(nm);
+        }
+
+        QVariantMap rm;
+        rm["LayoutRow"] = layoutRows;
+
+        return rm;
     }
 
     /**
@@ -153,47 +271,11 @@ public:
 
     void loadLayoutNodes()
     {
-        LayoutRow *row = new LayoutRow();
-        row->append(new LayoutNode("ECG", WAVE_ECG_II, 0, 4));
-        row->append(new LayoutNode("ECG", 4, 2));
-        layoutNodes.append(row);
-
-        row = new LayoutRow();
-        row->append(new LayoutNode("Pleth", WAVE_SPO2, 0, 4));
-        row->append(new LayoutNode("Spo2", 4, 2));
-        layoutNodes.append(row);
-
-        row = new LayoutRow();
-        row->append(new LayoutNode("Resp", WAVE_RESP, 0, 4));
-        row->append(new LayoutNode("Resp", 4, 2));
-        layoutNodes.append(row);
-
-        row = new LayoutRow();
-        row->append(new LayoutNode("ART", WAVE_ART, 0, 4));
-        row->append(new LayoutNode("ART", 4, 2));
-        layoutNodes.append(row);
-
-        row = new LayoutRow();
-        row->append(new LayoutNode("PA", WAVE_ART, 0, 4));
-        row->append(new LayoutNode("PA", 4, 2));
-        layoutNodes.append(row);
-
-        row = new LayoutRow();
-        row->append(new LayoutNode("Co2", WAVE_CO2, 0, 4));
-        row->append(new LayoutNode("Co2", 4, 2));
-        layoutNodes.append(row);
-
-        row = new LayoutRow();
-        row->append(new LayoutNode("NIBP", 0, 2));
-        row->append(new LayoutNode("NIBPList", 2, 2));
-        row->append(new LayoutNode("TEMP", 4, 2));
-        layoutNodes.append(row);
-
-        row = new LayoutRow();
-        row->append(new LayoutNode(trs("Off"), 0, 2));
-        row->append(new LayoutNode(trs("Off"), 2, 2));
-        row->append(new LayoutNode(trs("Off"), 4, 2));
-        layoutNodes.append(row);
+        for (int i = WAVE_ECG_I; i < WAVE_NR; i++)
+        {
+            WaveformID id = static_cast<WaveformID>(i);
+            waveIDMaps.insert(paramInfo.getParamWaveformName(id), id);
+        }
     }
 
     /**
@@ -221,12 +303,12 @@ public:
         return NULL;
     }
 
-
     DemoProvider *demoProvider;
     QMap<WaveformID, QByteArray> waveCaches;
     QVector<LayoutRow *> layoutNodes;
     QList<QString> supportWaveforms;
     QList<QString> supportParams;
+    QMap<QString, WaveformID> waveIDMaps;
 };
 
 ScreenLayoutModel::ScreenLayoutModel(QObject *parent)
@@ -257,7 +339,36 @@ bool ScreenLayoutModel::setData(const QModelIndex &index, const QVariant &value,
             if (node)
             {
                 QString text = value.toString();
+                // check the exists node
+                if (text != trs("Off"))
+                {
+                    for (int i = 0; i < d_ptr->layoutNodes.count(); i++)
+                    {
+                        LayoutRow *r = d_ptr->layoutNodes.at(i);
+                        LayoutRow::Iterator iter;
+                        bool found = false;
+                        int column = 0;
+                        for (iter = r->begin(); iter != r->end(); ++iter)
+                        {
+                            if ((*iter)->name == text)
+                            {
+                                 (*iter)->name = trs("Off");
+                                 found = true;
+                                 QModelIndex changeIndex = this->index(i, column);
+                                 emit dataChanged(changeIndex, changeIndex);
+                                 break;
+                            }
+                            column += (*iter)->span;
+                        }
+
+                        if (found)
+                        {
+                            break;
+                        }
+                    }
+                }
                 node->name = text;
+                emit dataChanged(index, index);
             }
         }
 
@@ -335,10 +446,15 @@ QSize ScreenLayoutModel::span(const QModelIndex &index) const
 
 void ScreenLayoutModel::saveLayoutInfo()
 {
+    systemConfig.setConfig("PrimaryCfg|UILayout|ScreenLayout|Normal", d_ptr->getLayoutMap());
 }
 
 void ScreenLayoutModel::loadLayoutInfo()
 {
+    const QVariantMap config = systemConfig.getConfig("PrimaryCfg|UILayout|ScreenLayout|Normal");
+    beginResetModel();
+    d_ptr->loadLayoutFromConfig(config);
+    endResetModel();
 }
 
 void ScreenLayoutModel::updateWaveAndParamInfo()

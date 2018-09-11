@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/6
+ **/
+
 #pragma once
 #include <QObject>
 
@@ -11,11 +21,11 @@ public:
     UDiskInspector();
     ~UDiskInspector();
 
-    //function to check the existance of the USB disk
+    // function to check the existance of the USB disk
     static bool checkUsbConnectStatus();
 
 signals:
-    //status update signal, emit periodly
+    // status update signal, emit periodly
     void statusUpdate(bool isUSBConnected);
 
 protected:

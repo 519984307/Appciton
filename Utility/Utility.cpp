@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/6
+ **/
+
 #include "Utility.h"
 #include <time.h>
 #include "Debug.h"
@@ -8,6 +18,8 @@
 #include <syslog.h>
 #include <qglobal.h>
 #include <QCoreApplication>
+#include "MessageBox.h"
+#include "LanguageManager.h"
 
 namespace Util
 {
@@ -15,7 +27,7 @@ char *strlcpy(char *dest, const char *src, size_t n)
 {
     size_t i;
 
-    if(n == 0)
+    if (n == 0)
     {
         return NULL;
     }
@@ -25,7 +37,7 @@ char *strlcpy(char *dest, const char *src, size_t n)
         dest[i] = src[i];
     }
 
-    for ( ; i < n; i++)
+    for (; i < n; i++)
     {
         dest[i] = '\0';
     }
@@ -37,7 +49,7 @@ quint64 systemBootTime()
 {
     struct timespec tp;
     quint64 msec;
-    if(clock_gettime(CLOCK_BOOTTIME, &tp))
+    if (clock_gettime(CLOCK_BOOTTIME, &tp))
     {
         debug("Failed to get boottime");
     }
@@ -60,7 +72,8 @@ void deleteDir(const QString &path)
         return;
     }
 
-    foreach(QFileInfo fileinfo, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Hidden | QDir::NoSymLinks | QDir::Files))
+    foreach(QFileInfo fileinfo, dir.entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Hidden | QDir::NoSymLinks |
+             QDir::Files))
     {
         if (fileinfo.isDir())
         {
@@ -78,30 +91,31 @@ void deleteDir(const QString &path)
 
 static void syslogMessageHandler(QtMsgType type, const char *msg)
 {
-     switch (type) {
-     case QtDebugMsg:
-         syslog(LOG_DEBUG, "%s",msg);
-         break;
-     case QtWarningMsg:
-         syslog(LOG_WARNING, "%s",msg);
-         break;
-     case QtCriticalMsg:
-         syslog(LOG_CRIT, "%s",msg);
-         break;
-     case QtFatalMsg:
-         syslog(LOG_EMERG, "%s",msg);
-     }
+    switch (type)
+    {
+    case QtDebugMsg:
+        syslog(LOG_DEBUG, "%s", msg);
+        break;
+    case QtWarningMsg:
+        syslog(LOG_WARNING, "%s", msg);
+        break;
+    case QtCriticalMsg:
+        syslog(LOG_CRIT, "%s", msg);
+        break;
+    case QtFatalMsg:
+        syslog(LOG_EMERG, "%s", msg);
+    }
 }
 
 void setupSysLog()
 {
-    openlog("nPM", LOG_CONS|LOG_PID, 0);
+    openlog("nPM", LOG_CONS | LOG_PID, 0);
     qInstallMsgHandler(syslogMessageHandler);
 }
 
 QString convertToString(int value, int scale)
 {
-    if(scale == 1)
+    if (scale == 1)
     {
         return QString::number(value);
     }
@@ -109,15 +123,29 @@ QString convertToString(int value, int scale)
     {
         int prec = 0;
         int tmp = scale;
-        while(tmp / 10 >= 1)
+        while (tmp / 10 >= 1)
         {
-            prec +=1;
+            prec += 1;
             tmp = tmp / 10;
         }
 
-        return QString::number((double)value / scale, 'f', prec);
+        return QString::number(static_cast<double>(value) / scale, 'f', prec);
+    }
+}
+
+void popupMsgBox(const QString &title, const QPixmap &icon, const QString &text)
+{
+    if (icon.isNull())
+    {
+        MessageBox msgBox(title, text, false);
+        msgBox.exec();
+    }
+    else
+    {
+        MessageBox msgBox(title, icon, text, false);
+        msgBox.exec();
     }
 }
 
 
-}
+}   // namespace Util

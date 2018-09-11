@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/6
+ **/
+
 #include "USBManager.h"
 #include <QThread>
 #include <Debug.h>
@@ -13,7 +23,7 @@
 USBManager &USBManager::getInstance()
 {
     static USBManager *instance = NULL;
-    if(instance == NULL)
+    if (instance == NULL)
     {
         instance = new USBManager();
     }
@@ -58,7 +68,7 @@ int USBManager::getUSBFreeSize() const
 
 bool USBManager::exportErrorLog()
 {
-    if(_addDataExporter(new ErrorLogExporter()))
+    if (_addDataExporter(new ErrorLogExporter()))
     {
         return true;
     }
@@ -78,28 +88,27 @@ QString USBManager::getUdiskMountPoint() const
 
 bool USBManager::startWriteUSBDisk()
 {
-    if(!_usbExist)
+    if (!_usbExist)
     {
         return false;
     }
 
     QString cmdStr = QString("mount -o rw,remount %1").arg(USB_MOUNT_PATH);
 
-    qDebug()<<"remount usb to readwrite";
+    qDebug() << "remount usb to readwrite";
 
     return QProcess::NormalExit == QProcess::execute(cmdStr);
-
 }
 
 bool USBManager::stopWriteUSBDisk()
 {
-    if(!_usbExist)
+    if (!_usbExist)
     {
         return false;
     }
 
     QString cmdStr = QString("mount -o ro,remount %1").arg(USB_MOUNT_PATH);
-    qDebug()<<"remount usb to readonly";
+    qDebug() << "remount usb to readonly";
 
     return QProcess::NormalExit == QProcess::execute(cmdStr);
 }
@@ -119,7 +128,7 @@ bool USBManager::isUSBExportFinish()
 void USBManager::cancelExport()
 {
     _pendingMutex.lock();
-    if(_curExporter)
+    if (_curExporter)
     {
         _curExporter->cancelExport();
     }
@@ -139,9 +148,9 @@ void USBManager::onExportFinished(DataExporterBase::ExportStatus status)
 
     _lastExportStatus = status;
 
-    emit usbExportFileFinish((int)status);
+    emit usbExportFileFinish(static_cast<int>(status));
 
-    if(status == DataExporterBase::Success)
+    if (status == DataExporterBase::Success)
     {
         emit exportProcessChanged(100);
     }
@@ -160,9 +169,9 @@ void USBManager::onExportBegin()
 
 void USBManager::onExportProcessUpdate(unsigned char progress)
 {
-    if(progress == 100)
+    if (progress == 100)
     {
-        //100 % only emit when receive the exportfinished signal and export successfully
+        // 100 % only emit when receive the exportfinished signal and export successfully
         progress = 99;
     }
 
@@ -170,7 +179,7 @@ void USBManager::onExportProcessUpdate(unsigned char progress)
 }
 
 USBManager::USBManager()
-    :_workerThread(new QThread()),
+    : _workerThread(new QThread()),
       _udiskInspector(new UDiskInspector()),
       _lastExportStatus(DataExporterBase::Success),
       _curExporter(NULL)
@@ -178,9 +187,7 @@ USBManager::USBManager()
 
     qRegisterMetaType<DataExporterBase::ExportStatus>();
 
-#ifndef CONFIG_UNIT_TEST
     _udiskInspector->moveToThread(_workerThread);
-#endif
     connect(_workerThread, SIGNAL(finished()), _udiskInspector, SLOT(deleteLater()));
     connect(_udiskInspector, SIGNAL(statusUpdate(bool)), this, SLOT(updateConnectStatus(bool)));
     _workerThread->start();
@@ -197,10 +204,9 @@ bool USBManager::_addDataExporter(DataExporterBase *dataExporter)
         return false;
     }
 
-#ifndef CONFIG_UNIT_TEST
     dataExporter->moveToThread(_workerThread);
-#endif
-    connect(dataExporter, SIGNAL(exportFinished(DataExporterBase::ExportStatus)), this, SLOT(onExportFinished(DataExporterBase::ExportStatus)));
+    connect(dataExporter, SIGNAL(exportFinished(DataExporterBase::ExportStatus)), this,
+            SLOT(onExportFinished(DataExporterBase::ExportStatus)));
     connect(dataExporter, SIGNAL(progressChanged(unsigned char)), this, SLOT(onExportProcessUpdate(unsigned char)));
     connect(dataExporter, SIGNAL(exportBegin()), this, SLOT(onExportBegin()));
 

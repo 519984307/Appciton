@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/7
+ **/
+
 #include "RecordPageProcessor.h"
 #include <QList>
 #include <QApplication>
@@ -12,16 +22,17 @@
 class RecordPageProcessorPrivate
 {
 public:
-    RecordPageProcessorPrivate(PrintProviderIFace *iface)
-        :iface(iface), flush(false), processing(false), pause(false),
+    RecordPageProcessorPrivate(RecordPageProcessor *const q_ptr, PrintProviderIFace *iface)
+        : q_ptr(q_ptr), iface(iface), processing(false), pause(false),
           updateSpeed(false), queueIsFull(false), curSpeed(PRINT_SPEED_NR),
           timerID(-1), curProcessingPage(NULL), curPageXPos(0)
     {}
 
+    void stopProcessing();
 
+    RecordPageProcessor *const q_ptr;
     PrintProviderIFace *iface;
     QList<RecordPage *> pages;
-    bool flush;
     bool processing;
     bool pause;
     bool updateSpeed;
@@ -33,9 +44,8 @@ public:
 };
 
 RecordPageProcessor::RecordPageProcessor(PrintProviderIFace *iface, QObject *parent)
-    :QObject(parent), d_ptr(new RecordPageProcessorPrivate(iface))
+    : QObject(parent), d_ptr(new RecordPageProcessorPrivate(this, iface))
 {
-
 }
 
 RecordPageProcessor::~RecordPageProcessor()
@@ -50,27 +60,27 @@ bool RecordPageProcessor::isProcessing() const
 
 void RecordPageProcessor::updatePrintSpeed(PrintSpeed speed)
 {
-    if(d_ptr->curSpeed == speed || speed > PRINT_SPEED_NR)
+    if (d_ptr->curSpeed == speed || speed > PRINT_SPEED_NR)
     {
         return;
     }
 
     d_ptr->curSpeed = speed;
-    if(d_ptr->processing)
+    if (d_ptr->processing)
     {
         d_ptr->updateSpeed = true;
     }
     else
     {
-        //set speed imediately
+        // set speed imediately
         d_ptr->iface->setPrintSpeed(d_ptr->curSpeed);
-        qDebug()<<"Set Print Speed "<<speed;
+        qDebug() << "Set Print Speed " << speed;
     }
 }
 
 void RecordPageProcessor::addPage(RecordPage *page)
 {
-    if(!page)
+    if (!page)
     {
         return;
     }
@@ -81,7 +91,7 @@ void RecordPageProcessor::addPage(RecordPage *page)
 #else
     QString path("/srv/nfs/tmp/");
 #endif
-    //QString path("/usr/local/nPM/bin/");
+    // QString path("/usr/local/nPM/bin/");
     path += page->getID();
     path += ".png";
     page->save(path);
@@ -89,43 +99,41 @@ void RecordPageProcessor::addPage(RecordPage *page)
 
     d_ptr->pages.append(page);
 
-    if(d_ptr->pages.size() >= PAGE_QUEUE_SIZE)
+    if (d_ptr->pages.size() >= PAGE_QUEUE_SIZE)
     {
         d_ptr->queueIsFull = true;
         emit pageQueueFull(d_ptr->queueIsFull);
     }
 
-    if(!d_ptr->processing)
+    if (!d_ptr->processing)
     {
-        //process the page in the next event loop
+        // process the page in the next event loop
         d_ptr->processing = true;
         d_ptr->timerID = startTimer(2);
     }
 }
 
-void RecordPageProcessor::flushPages()
+void RecordPageProcessor::stopProcess()
 {
     qDeleteAll(d_ptr->pages);
     d_ptr->pages.clear();
 
 
-    if(d_ptr->queueIsFull)
+    if (d_ptr->queueIsFull)
     {
         d_ptr->queueIsFull = false;
         emit pageQueueFull(d_ptr->queueIsFull);
     }
 
-    if(d_ptr->processing)
-    {
-        d_ptr->flush = true;
-    }
+    d_ptr->stopProcessing();
+    emit processFinished();
 }
 
 void RecordPageProcessor::pauseProcessing(bool pause)
 {
-    if(!d_ptr->processing)
+    if (!d_ptr->processing)
     {
-        qDebug()<<"Not start yet, not need to pause";
+        qDebug() << "Not start yet, not need to pause";
     }
 
     d_ptr->pause = pause;
@@ -133,10 +141,10 @@ void RecordPageProcessor::pauseProcessing(bool pause)
 
 void RecordPageProcessor::timerEvent(QTimerEvent *ev)
 {
-    if(d_ptr->timerID == ev->timerId())
+    if (d_ptr->timerID == ev->timerId())
     {
-        //check whether speed need to update
-        if(d_ptr->updateSpeed)
+        // check whether speed need to update
+        if (d_ptr->updateSpeed)
         {
             d_ptr->updateSpeed = false;
             d_ptr->iface->setPrintSpeed(d_ptr->curSpeed);
@@ -150,39 +158,23 @@ void RecordPageProcessor::timerEvent(QTimerEvent *ev)
         }
 
         // try to fetch a page from the page list
-        if(d_ptr->curProcessingPage == NULL)
+        if (d_ptr->curProcessingPage == NULL)
         {
-            if(!d_ptr->pages.isEmpty())
+            if (!d_ptr->pages.isEmpty())
             {
                 d_ptr->curProcessingPage = d_ptr->pages.takeFirst();
             }
         }
 
-        if(d_ptr->curProcessingPage == NULL || d_ptr->flush)
+        if (d_ptr->curProcessingPage == NULL)
         {
-            //no more page to process or flush to stop
-            d_ptr->processing = false;
-
-            if(d_ptr->curProcessingPage)
-            {
-                delete d_ptr->curProcessingPage;
-                d_ptr->curProcessingPage = NULL;
-                d_ptr->curPageXPos = 0;
-            }
-
-            if(d_ptr->flush)
-            {
-                d_ptr->iface->flush();
-                d_ptr->iface->stop();
-                d_ptr->flush = false;
-            }
+            // no more page to process
+            d_ptr->stopProcessing();
             emit processFinished();
-            killTimer(d_ptr->timerID);
-            d_ptr->timerID = -1;
             return;
         }
 
-        if(d_ptr->pause)
+        if (d_ptr->pause)
         {
             // already pause, do nothing
             return;
@@ -192,26 +184,47 @@ void RecordPageProcessor::timerEvent(QTimerEvent *ev)
         int dataLen = d_ptr->curProcessingPage->height() / 8;
         unsigned char data[dataLen] = {0};
         d_ptr->curProcessingPage->getColumnData(d_ptr->curPageXPos++, data);
-        if(!d_ptr->iface->sendBitmapData(data, dataLen))
+        if (!d_ptr->iface->sendBitmapData(data, dataLen))
         {
 #if 0
-                //send failed, uart buffer might be full
-                qdebug("send bitmap data failed, send again after 20 ms.");
-                ::usleep(20*1000);
+            // send failed, uart buffer might be full
+            qdebug("send bitmap data failed, send again after 20 ms.");
+            ::usleep(20 * 1000);
 
-                //send again, and don't care the result
-                d_ptr->iface->sendBitmapData(data, dataLen);
+            // send again, and don't care the result
+            d_ptr->iface->sendBitmapData(data, dataLen);
 #endif
         }
 
-        if(d_ptr->curPageXPos >= d_ptr->curProcessingPage->width())
+        if (d_ptr->curPageXPos >= d_ptr->curProcessingPage->width())
         {
-            qDebug()<<"Process Page"<<d_ptr->curProcessingPage->getID()
-                   <<"left pages:"<<d_ptr->pages.size();
-            //finished processing this page
+            qDebug() << "Process Page" << d_ptr->curProcessingPage->getID()
+                     << "left pages:" << d_ptr->pages.size();
+            // finished processing this page
             delete d_ptr->curProcessingPage;
             d_ptr->curProcessingPage = NULL;
             d_ptr->curPageXPos = 0;
         }
     }
+}
+
+void RecordPageProcessorPrivate::stopProcessing()
+{
+    processing = false;
+
+    if (curProcessingPage)
+    {
+        delete curProcessingPage;
+        curProcessingPage = NULL;
+        curPageXPos = 0;
+    }
+
+    iface->flush();
+    iface->stop();
+
+    if (timerID != -1)
+    {
+        q_ptr->killTimer(timerID);
+    }
+    timerID = -1;
 }

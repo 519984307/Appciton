@@ -58,7 +58,7 @@ MessageBox::MessageBox(const QString &title, const QString &text, bool btn)
 {
     setWindowTitle(title);
 
-    QGridLayout *layout = new QGridLayout(this);
+    QGridLayout *layout = new QGridLayout();
     layout->setMargin(10);
 
     d_ptr->index++;
@@ -97,7 +97,7 @@ MessageBox::MessageBox(const QString &title, const QPixmap &icon, const QString 
 {
     setWindowTitle(title);
 
-    QGridLayout *layout = new QGridLayout(this);
+    QGridLayout *layout = new QGridLayout();
     layout->setMargin(10);
 
     d_ptr->index++;
@@ -108,7 +108,7 @@ MessageBox::MessageBox(const QString &title, const QPixmap &icon, const QString 
     d_ptr->index++;
 
     label = new QLabel(trs(text));
-    layout->addWidget(label, 2, 0,  Qt::AlignCenter);
+    layout->addWidget(label, 1, 1,  Qt::AlignCenter);
     d_ptr->index++;
 
     QHBoxLayout *hl = new QHBoxLayout;
@@ -129,8 +129,7 @@ MessageBox::MessageBox(const QString &title, const QPixmap &icon, const QString 
         d_ptr->noKey = button;
     }
 
-    layout->addLayout(hl, 4, 0);
-    layout->setRowStretch(5, 0);
+    layout->addLayout(hl, 2, 0, 1, 2);
     d_ptr->layout = layout;
     setWindowLayout(layout);
 
@@ -142,7 +141,7 @@ MessageBox::MessageBox(const QString &title, const QString &text, const QStringL
 {
     setWindowTitle(title);
 
-    QGridLayout *layout = new QGridLayout(this);
+    QGridLayout *layout = new QGridLayout();
     layout->setMargin(10);
 
     d_ptr->index++;

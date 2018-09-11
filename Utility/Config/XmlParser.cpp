@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/11
+ **/
+
 #include <QFile>
 #include <QTextStream>
 #include <QStringList>
@@ -25,28 +35,28 @@ bool XmlParser::saveToFile()
         return false;
     }
 
-    //Constructs a QTextStream（writer） that operates on device（file）
+    // Constructs a QTextStream（writer） that operates on device（file）
     QTextStream writer(&file);
-    //编码方式
+    // 编码方式
     writer.setCodec("UTF-8");
-    //加锁
+    // 加锁
     QMutexLocker locker(&_lock);
-    //把_filename字符串保存为XML文件
+    // 把_filename字符串保存为XML文件
     _xml.save(writer, 4, QDomNode::EncodingFromTextStream);
-    //关闭文件
+    // 关闭文件
     file.close();
     return true;
 }
 
 bool XmlParser::saveToFile(const QString &filename)
 {
-    if(_xml.isNull())
+    if (_xml.isNull())
     {
         return false;
     }
 
     QFile file(filename);
-    if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         qdebug("save failed : %s", qPrintable(file.errorString()));
         return false;
@@ -60,7 +70,6 @@ bool XmlParser::saveToFile(const QString &filename)
 
     file.close();
     return true;
-
 }
 
 /*******************************************************************************
@@ -73,18 +82,19 @@ bool XmlParser::saveToFile(const QString &filename)
 bool XmlParser::open(const QString &fileName)
 {
     QMutexLocker locker(&_lock);
-    //将filename包装成一个File格式的文件
+    // 将filename包装成一个File格式的文件
     QFile file(fileName);
-    //以文本方式打开只读
+    // 以文本方式打开只读
     if (!file.open(QFile::ReadOnly | QFile::Text))
     {
         return false;
     }
-    //初始化_xml对象
+    // 初始化_xml对象
     _xml.clear();
-    //判断是否读取XML文件成功
+    // 判断是否读取XML文件成功
     if (!_xml.setContent(&file))
-    {//读取失败则进入...记录错误日志
+    {
+        // 读取失败则进入...记录错误日志
         ErrorLogItem *item = new CriticalFaultLogItem();
         item->setName("Prase config file fail");
         int lastindex = fileName.indexOf('/', -1);
@@ -102,7 +112,7 @@ bool XmlParser::open(const QString &fileName)
         file.close();
         return false;
     }
-    //更新XML文件路径
+    // 更新XML文件路径
     _fileName = fileName;
     return true;
 }
@@ -143,7 +153,8 @@ bool XmlParser::reload(void)
  * 返回：
  *      true，成功；false，标签元素不存在。
  ******************************************************************************/
-bool XmlParser::addNode(const QString &indexStr, const QString &tagName, const QString &value, const QMap<QString, QString> &attrs)
+bool XmlParser::addNode(const QString &indexStr, const QString &tagName, const QString &value,
+                        const QMap<QString, QString> &attrs)
 {
     QMutexLocker rlocker(&_lock);
 
@@ -159,7 +170,7 @@ bool XmlParser::addNode(const QString &indexStr, const QString &tagName, const Q
     QDomElement newTag = _xml.createElement(tagName);
 
     QMap<QString, QString>::ConstIterator iter;
-    for(iter = attrs.constBegin(); iter != attrs.constEnd(); iter++)
+    for (iter = attrs.constBegin(); iter != attrs.constEnd(); iter++)
     {
         newTag.setAttribute(iter.key(), iter.value());
     }
@@ -185,7 +196,7 @@ bool XmlParser::removeNode(const QString &indexStr)
 {
     QMutexLocker locker(&_lock);
     QDomElement tag = _findElement(indexStr);
-    if(!tag.isNull() && !tag.parentNode().isNull())
+    if (!tag.isNull() && !tag.parentNode().isNull())
     {
         QDomNode node = tag.parentNode().removeChild(tag);
         return !node.isNull();
@@ -216,12 +227,12 @@ QStringList XmlParser::childElementNameList(const QString &indexStr)
 {
     QStringList namelist;
     QDomElement tag = _findElement(indexStr);
-    if(!tag.isNull())
+    if (!tag.isNull())
     {
         QDomNodeList nodelist = tag.childNodes();
-        for(int i = 0; i< nodelist.size(); i++)
+        for (int i = 0; i < nodelist.size(); i++)
         {
-            if(nodelist.at(i).nodeType() == QDomNode::ElementNode)
+            if (nodelist.at(i).nodeType() == QDomNode::ElementNode)
             {
                 namelist.append(nodelist.at(i).nodeName());
             }
@@ -238,7 +249,7 @@ QStringList XmlParser::childElementNameList(const QString &indexStr)
  * 返回：
  *      true，成功；false，标签元素不存在。
  ******************************************************************************/
-//获取XML文件中的指定路径的值
+// 获取XML文件中的指定路径的值
 bool XmlParser::getValue(const QString &indexStr, QString &value)
 {
     QMutexLocker locker(&_lock);
@@ -265,7 +276,7 @@ bool XmlParser::setValue(const QString &indexStr, const QString &value)
 {
     QMutexLocker locker(&_lock);
 
-    if(_lastSettingIndexStr != indexStr)
+    if (_lastSettingIndexStr != indexStr)
     {
         _lastSettingIndexStr = indexStr;
         _lastSettingElement = _findElement(indexStr);
@@ -299,7 +310,7 @@ bool XmlParser::setValue(const QString &indexStr, const QString &value)
  *      true，成功；false，标签元素不存在。
  ******************************************************************************/
 bool XmlParser::getAttr(const QString &indexStr, const QString &attr,
-        QString &value)
+                        QString &value)
 {
     QMutexLocker locker(&_lock);
     QDomElement tag = _findElement(indexStr);
@@ -326,7 +337,7 @@ bool XmlParser::getAttr(const QString &indexStr, const QString &attr,
  *      true，成功；false，标签元素不存在。
  ******************************************************************************/
 bool XmlParser::setAttr(const QString &indexStr, const QString &attr,
-        const QString &value)
+                        const QString &value)
 {
     QMutexLocker locker(&_lock);
     QDomElement tag = _findElement(indexStr);
@@ -391,7 +402,7 @@ bool XmlParser::setNode(const QString &indexStr, QDomElement &srctag)
  *      读取正常返回true，读取失败返回false。
  ******************************************************************************/
 bool XmlParser::getFirstValue(const QString &indexStr, QString &index,
-        QString &value)
+                              QString &value)
 {
     QMutexLocker locker(&_lock);
     _iterateElement = _findElement(indexStr);
@@ -425,6 +436,161 @@ bool XmlParser::getNextValue(QString &index, QString &value)
     index = _iterateElement.tagName();
     value = _iterateElement.text();
     return true;
+}
+
+static QVariantMap parseDomElement(const QDomElement &ele)
+{
+    QVariantMap varMap;
+
+    QDomNamedNodeMap attrNodes = ele.attributes();
+    for (int i = 0; i < attrNodes.count(); i++)
+    {
+        QDomAttr attr = attrNodes.item(i).toAttr();
+        varMap[QString("@%1").arg(attr.name())] = qVariantFromValue(attr.value());
+    }
+
+    if (ele.firstChild().isText())
+    {
+        varMap["@text"] = qVariantFromValue(ele.text());
+    }
+    else if (ele.firstChild().isElement())
+    {
+        QDomNodeList list = ele.childNodes();
+        for (int i = 0; i < list.count(); i++)
+        {
+            QDomNode::NodeType type = list.at(i).nodeType();
+            if (type == QDomNode::ElementNode)  // Element Node only
+            {
+                QDomElement childEle = list.at(i).toElement();
+                QVariantMap childMap = parseDomElement(childEle);
+                if (varMap.contains(childEle.tagName()))
+                {
+                    QVariantList l;
+                    if (varMap[childEle.tagName()].type() != QVariant::List)
+                    {
+                        l.append(varMap[childEle.tagName()]);
+                    }
+                    else
+                    {
+                        l = varMap[childEle.tagName()].toList();
+                    }
+
+                    l.append(childMap);
+                    varMap[childEle.tagName()] = l;
+                }
+                else
+                {
+                    varMap[childEle.tagName()] = childMap;
+                }
+            }
+        }
+    }
+    return varMap;
+}
+
+/*******************************************************************************
+ * 功能： get a QVariantMap object from the specific xml node
+ * 参数：
+ *      index：XML的元素名；
+ * 返回：
+ *      QVariantMap represent xml dom tree
+ ******************************************************************************/
+QVariantMap XmlParser::getConfig(const QString &indexStr)
+{
+    QMutexLocker locker(&_lock);
+    QDomElement ele = _findElement(indexStr);
+    QVariantMap map;
+    if (!ele.isNull())
+    {
+        map = parseDomElement(ele);
+    }
+    return map;
+}
+
+static QDomElement createDomElement(const QString &tagName, const QVariantMap &map, QDomDocument &doc)
+{
+    QDomElement ele = doc.createElement(tagName);
+
+    QVariantMap::ConstIterator iter = map.constBegin();
+    for (; iter != map.constEnd(); ++iter)
+    {
+        if (iter.key().at(0) == '@')
+        {
+            if (iter.key().midRef(1) == "text")
+            {
+                ele.appendChild(doc.createTextNode(iter.value().toString()));
+            }
+            else
+            {
+                ele.setAttribute(iter.key().midRef(1).toString(), iter.value().toString());
+            }
+        }
+        else
+        {
+            QVariant var = iter.value();
+            if (var.type() == QVariant::List)
+            {
+                QVariantList list = var.toList();
+                QVariantList::ConstIterator listIter;
+                for (listIter = list.constBegin(); listIter != list.constEnd(); ++listIter)
+                {
+                    ele.appendChild(createDomElement(iter.key(), (*listIter).toMap(), doc));
+                }
+            }
+            else if (var.type() == QVariant::Map)
+            {
+                ele.appendChild(createDomElement(iter.key(), iter.value().toMap(), doc));
+            }
+        }
+    }
+    return ele;
+}
+
+/*******************************************************************************
+ * 功能： Create a QVariantMap object from the specific xml node
+ * 参数：
+ *      index：XML的元素名；
+ *      map: QVariantMap represent xml dom tree
+ ******************************************************************************/
+void XmlParser::setConfig(const QString &indexStr, const QVariantMap &map)
+{
+    if (indexStr.isEmpty())
+    {
+        return;
+    }
+    QMutexLocker locker(&_lock);
+
+    QDomElement ele = _findElement(indexStr);
+    QString tagName;
+    QDomNode parent;
+    // remove the element first
+    if (!ele.isNull())
+    {
+        parent = ele.parentNode();
+        parent.removeChild(ele);
+    }
+
+    int index = indexStr.lastIndexOf('|');
+    QString parentIndex;
+    if (index > 0)
+    {
+        parentIndex = indexStr.left(index);
+        tagName = indexStr.right(indexStr.size() - index - 1);
+        parent = _findElement(parentIndex);
+    }
+    else
+    {
+        tagName = indexStr.trimmed();
+        parent = _xml.firstChildElement();
+    }
+
+    if (parent.isNull())
+    {
+        // the parent not exist
+        return;
+    }
+
+    parent.appendChild(createDomElement(tagName, map, _xml));
 }
 
 /*******************************************************************************

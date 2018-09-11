@@ -480,9 +480,6 @@ void DoseCalculationWindow::durationHandle(float duration)
 void DoseCalculationWindow::showEvent(QShowEvent *e)
 {
     Window::showEvent(e);
-    // 居中显示。
-    QRect r = windowManager.getMenuArea();
-    move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 }
 
 

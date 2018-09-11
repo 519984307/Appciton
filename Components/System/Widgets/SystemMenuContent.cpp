@@ -103,17 +103,10 @@ void SystemMenuContent::layoutExec()
     label = new QLabel(trs("SystemBrightness"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << QString::number(BRT_LEVEL_1)
-                       << QString::number(BRT_LEVEL_2)
-                       << QString::number(BRT_LEVEL_3)
-                       << QString::number(BRT_LEVEL_4)
-                       << QString::number(BRT_LEVEL_5)
-                       << QString::number(BRT_LEVEL_6)
-                       << QString::number(BRT_LEVEL_7)
-                       << QString::number(BRT_LEVEL_8)
-                       << QString::number(BRT_LEVEL_9)
-                      );
+    for (int i = BRT_LEVEL_0; i < BRT_LEVEL_NR; i++)
+    {
+        comboBox->addItem(QString::number(i));
+    }
     itemID = static_cast<int>(SystemMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -194,7 +187,6 @@ void SystemMenuContent::onComboBoxIndexChanged(int index)
         {
             int brightness = box->itemText(index).toInt();
             systemManager.setBrightness((BrightnessLevel)brightness);
-            qDebug() << "index = " << index << endl;
             break;
         }
         case SystemMenuContentPrivate::ITEM_CBO_PRINT_SPEED:
