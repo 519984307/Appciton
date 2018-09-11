@@ -174,7 +174,7 @@ CO2Zoom,缩放,Zoom
 CO2FiCO2Display,FiCO2显示,FiCO2 Display
 O2Compensation,O2补偿,O2 Compensation
 N2OCompensation,N2O补偿,N2O Compensation
-CO2ZeroCalib,校零,Zero
+CO2ZeroCalib,CO2校零,CO2 Zero
 CO2ZeroStart,开始,Start
 CO2Menu,CO2,CO2
 CO2Switch,二氧化碳开关,CO2 Switch
@@ -186,7 +186,7 @@ ChannelPressureEntitle1,通道１压力标名,Pressure Entitle Channel 1
 ChannelPressureEntitle2,通道２压力标名,Pressure Entitle Channel 2
 Sensitivity,灵敏度,Sensitivity
 FilterMode,滤波模式,Filter Mode
-IBPZeroCalib,校零,Zero
+IBPZeroCalib,IBP校零,IBP Zero
 IBPZeroStart,开始,Start
 COMenu,C.O.,C.O.
 Auto,自动,Auto
@@ -326,7 +326,7 @@ FastReceivingPatients,快速接收病人,Fast Receiving Patients
 ReceivingPatients,接收病人,Receiving Patients
 RelievePatient,解除病人,Relieve Patient
 CleanPatientData,清除病人数据,Clean Patient Data
-Standby,是否进入待机？,Whether to enter the standby machine？
+WhetherStandby,是否进入待机？,Whether to enter the standby machine？
 RemoveAndRecePatient,"解除当前病人,接收新病人?",Relieving the current patient and receiving new patients?
 ApplicationDataToReceivingPatients,将监护仪中已有数据应用于将被接收的病人？,Application data to receiving patients?
 PatientManagement,病人管理,Patient Management
@@ -1431,3 +1431,14 @@ ComfirmClearErrorLog,确认是否清理错误日志,Comfirm Clear Error Log
 Speed,速度,Speed
 Gain,增益,Gain
 NIBPList,NIBP列表,NIBP List
+CalculateMenu,计算,Calculate
+HemodynamicCalculation,血液动力学计算,Hemodynamic Calculation
+CalculateMenuDesc,计算设置,Calculation Desc
+KeyBoardVolumn,按键音量,Key Volumn
+Standby,待机,Standby
+NIBPReview,NIBP回顾,NIBP Review
+HRAbnormalReview,心率失常回顾,HR Review
+CO2Standby,CO2待机,CO2 Standby
+CO2Measure,CO2测量,CO2 Measure
+WindowSelect,界面选择,Window Select
+ManualTirgger,手动触发,Manual Tirgger

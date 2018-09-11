@@ -39,43 +39,45 @@
 #include "MainMenuWindow.h"
 #include "CodeMarkerWindow.h"
 #include "ScreenLayoutWindow.h"
+#include "MainMenuWindow.h"
+#include "TrendGraphWindow.h"
+#include "EventWindow.h"
+#include "IBPParam.h"
+#include "IConfig.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
  **************************************************************************************************/
 static KeyActionDesc _baseKeys[] =
 {
-//    KeyActionDesc("", "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
-//    KeyActionDesc("", "CodeMarker.png",    SoftkeyActionBase::codeMarker),
-//    KeyActionDesc("", "Bell.png",          SoftkeyActionBase::limitMenu),
-//    KeyActionDesc("", "Data.png",          SoftkeyActionBase::rescueData),
-//    KeyActionDesc("", "PatientInfo.png",   SoftkeyActionBase::patientInfo),
-//    KeyActionDesc("", "CO2Disable.png",    SoftkeyActionBase::co2OnOff),
-//    KeyActionDesc("", "SoftkeyArrow.png",  SoftkeyActionBase::nextPage),
-    KeyActionDesc("", trs("SoftKeyPatientInfo"), "PatientInfo.png",   SoftkeyActionBase::patientInfo,
-    SOFT_BASE_KEY_NR, true, QColor(143, 31, 132)),
-    KeyActionDesc("", trs("PatientNew"), "PatientNew.png"
-                    , SoftkeyActionBase::patientNew, SOFT_BASE_KEY_NR, true, QColor(143, 31, 132)),
-    KeyActionDesc("", "", ICON_FILE_LEFT,  SoftkeyActionBase::previousPage),
-    KeyActionDesc("", trs("AlarmSettingMenu"), "limitSet.png", SoftkeyActionBase::limitMenu),
-    KeyActionDesc("", trs("CodeMarker"), "CodeMarker.png", SoftkeyActionBase::codeMarker),
-    KeyActionDesc("", trs("RescueData"), "Data.png",       SoftkeyActionBase::rescueData),
-    KeyActionDesc("", trs("Interface"), "interface.png",   SoftkeyActionBase::WindowLayout),
-    KeyActionDesc("", trs("Calculation"), "dosecalculation.png", SoftkeyActionBase::calculation),
-    KeyActionDesc("", trs("LockScreen"), "LockScreen.png", SoftkeyActionBase::lockScreen),
-    KeyActionDesc("", trs("UserFaceStandard"), "standard.png", SoftkeyActionBase::switchSystemMode),
-    KeyActionDesc("", trs("UserFace12Lead"), "12_Lead.png", SoftkeyActionBase::switchSystemMode),
-    KeyActionDesc("", trs("UserFaceOxyCRG"), "OxyCRG.png", SoftkeyActionBase::switchSystemMode),
-    KeyActionDesc("", trs("UserFaceTrend"), "trend.png", SoftkeyActionBase::switchSystemMode),
-    KeyActionDesc("", trs("UserFaceBigFont"), "bigFont.png", SoftkeyActionBase::switchSystemMode),
-    KeyActionDesc("", trs("UserFaceCustom"), "custom.png", SoftkeyActionBase::switchSystemMode),
-    KeyActionDesc("", trs("UserFaceUnknow"), "unknow.png", SoftkeyActionBase::switchSystemMode),
-    KeyActionDesc("", "", ICON_FILE_RIGHT,  SoftkeyActionBase::nextPage),
     KeyActionDesc("", "", "main.png",  SoftkeyActionBase::mainsetup
                     , SOFT_BASE_KEY_NR, true, QColor(255, 200, 0)),
+    KeyActionDesc("", "", ICON_FILE_LEFT,  SoftkeyActionBase::previousPage),
+    KeyActionDesc("", trs("SoftKeyPatientInfo"), "PatientInfo.png", SoftkeyActionBase::patientInfo),
+    KeyActionDesc("", trs("PatientNew"), "PatientNew.png", SoftkeyActionBase::patientNew),
+    KeyActionDesc("", trs("ECGLeadMode"), "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
+    KeyActionDesc("", trs("AlarmSettingMenu"), "limitSet.png", SoftkeyActionBase::limitMenu),
+    KeyActionDesc("", trs("CodeMarker"), "CodeMarker.png", SoftkeyActionBase::codeMarker),
+    KeyActionDesc("", trs("TrendGraph"), "Summary.png", SoftkeyActionBase::summaryReview),
+    KeyActionDesc("", trs("EventReview"), "Summary.png", SoftkeyActionBase::eventReview),
+    KeyActionDesc("", trs("NIBPReview"), "Summary.png", SoftkeyActionBase::eventReview),
+    KeyActionDesc("", trs("HRAbnormalReview"), "Summary.png", SoftkeyActionBase::eventReview),
+    KeyActionDesc("", trs("WindowSelect"), "screenSwitch.png", SoftkeyActionBase::switchSystemMode),
+    KeyActionDesc("", trs("Interface"), "interface.png",   SoftkeyActionBase::WindowLayout),
+    KeyActionDesc("", trs("ParaSwitch"), "paraSwitch.png"),
+    KeyActionDesc("", trs("LockScreen"), "lockScreen.png", SoftkeyActionBase::lockScreen),
+    KeyActionDesc("", trs("Standby"), "standby.png", SoftkeyActionBase::standby),
+    KeyActionDesc("", trs("CO2ZeroCalib"), "calib.png", SoftkeyActionBase::CO2Zero),
+    KeyActionDesc("", trs("CO2Standby"), "standby.png", SoftkeyActionBase::CO2Standby),
+    KeyActionDesc("", trs("CO2Measure"), "measure.png", SoftkeyActionBase::CO2Measure),
+    KeyActionDesc("", trs("IBPZeroCalib"), "calib.png", SoftkeyActionBase::IBPZero),
+    KeyActionDesc("", trs("Calculation"), "dosecalculation.png", SoftkeyActionBase::calculation),
+    KeyActionDesc("", trs("KeyBoardVolumn"), "keyBoard.png", SoftkeyActionBase::sysSetup),
+    KeyActionDesc("", trs("SystemBrightness"), "Brightness.png", SoftkeyActionBase::sysSetup),
+    KeyActionDesc("", trs("NightModeMenu"), "nightMode.png", SoftkeyActionBase::nightMode),
+    KeyActionDesc("", trs("PrintSetup"), "printSetup.png", SoftkeyActionBase::sysSetup),
+    KeyActionDesc("", "", ICON_FILE_RIGHT,  SoftkeyActionBase::nextPage),
 };
-
-static int _currentSystemMode = 0;
 
 /***************************************************************************************************
  * 导联改变回调。
@@ -86,9 +88,6 @@ void SoftkeyActionBase::ecgLeadChange(bool isPressed)
     {
         return;
     }
-
-// co2Param.setConnected(false);
-// return;
     ecgParam.autoSetCalcLead();
 }
 
@@ -101,9 +100,6 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     {
         return;
     }
-
-// co 2Param.setConnected(true);
-// return;
 
     bool isVisible = codeMarkerWindow.isVisible();
     while (NULL != QApplication::activeModalWidget())
@@ -175,8 +171,6 @@ void SoftkeyActionBase::WindowLayout(bool isPressed)
     {
         return;
     }
-
-    // windowLayout.autoShow();
     windowManager.showWindow(ScreenLayoutWindow::getInstance(),
                              WindowManager::ShowBehaviorCloseIfVisiable | WindowManager::ShowBehaviorCloseOthers);
 }
@@ -190,8 +184,8 @@ void SoftkeyActionBase::rescueData(bool isPressed)
     {
         return;
     }
-
-    softkeyManager.setContent(SOFTKEY_ACTION_RESCUE_DATA);
+    MainMenuWindow *p = MainMenuWindow::getInstance();
+    p->popup(trs("DataReviewMenu"));
 }
 
 void SoftkeyActionBase::calculation(bool isPressed)
@@ -200,8 +194,8 @@ void SoftkeyActionBase::calculation(bool isPressed)
     {
         return;
     }
-
-    softkeyManager.setContent(SOFTKEY_ACTION_CALCULATE);
+    MainMenuWindow *p = MainMenuWindow::getInstance();
+    p->popup(trs("CalculateMenu"));
 }
 
 /***************************************************************************************************
@@ -279,8 +273,103 @@ void SoftkeyActionBase::switchSystemMode(bool isPressed)
     {
         return;
     }
-    UserFaceType type = static_cast<UserFaceType>(_currentSystemMode);
-    windowManager.setUFaceType(type);
+    MainMenuWindow *w = MainMenuWindow::getInstance();
+    w->popup(trs("ScreenConfig"));
+}
+
+/***************************************************************************************************
+ * summary回顾回调。
+ **************************************************************************************************/
+void SoftkeyActionBase::summaryReview(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+
+    TrendGraphWindow::getInstance()->setHistoryData(false);
+    windowManager.showWindow(TrendGraphWindow::getInstance(),
+                             WindowManager::ShowBehaviorCloseIfVisiable | WindowManager::ShowBehaviorCloseOthers);
+}
+
+void SoftkeyActionBase::eventReview(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+
+    EventWindow::getInstance()->setHistoryData(false);
+    windowManager.showWindow(EventWindow::getInstance(), WindowManager::ShowBehaviorCloseIfVisiable
+                             | WindowManager::ShowBehaviorCloseOthers);
+}
+
+void SoftkeyActionBase::standby(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+    // TODO: 待机功能实现
+}
+
+void SoftkeyActionBase::CO2Zero(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+    co2Param.zeroCalibration();
+}
+
+void SoftkeyActionBase::CO2Standby(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+    // TODO: CO2待机
+}
+
+void SoftkeyActionBase::CO2Measure(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+    // TODO: CO2测量
+}
+
+void SoftkeyActionBase::IBPZero(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+    ibpParam.zeroCalibration(IBP_INPUT_1);
+}
+
+void SoftkeyActionBase::sysSetup(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+    MainMenuWindow *w = MainMenuWindow::getInstance();
+    w->popup(trs("SystemMenu"));
+}
+
+void SoftkeyActionBase::nightMode(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+
+    int index = 0;
+    systemConfig.getNumValue("NightMode|EnterNightMode", index);
+    systemConfig.setNumValue("NightMode|EnterNightMode",
+                             static_cast<int>(!index));
 }
 
 /***************************************************************************************************
@@ -326,12 +415,6 @@ KeyActionDesc *SoftkeyActionBase::getActionDesc(int index)
             _baseKeys[index].iconPath = "";
             _baseKeys[index].focus = false;
         }
-    }
-
-    else if (index >= SOFT_BASE_KEY_SYS_MODE_STANDARD
-             && index <= SOFT_BASE_KEY_SYS_MODE_UNKNOW)
-    {
-        _currentSystemMode = index - SOFT_BASE_KEY_SYS_MODE_STANDARD;
     }
     return &_baseKeys[index];
 }

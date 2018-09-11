@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/9/11
+ **/
+
+
 #pragma once
 #include "IWidget.h"
 #include <QMap>
@@ -8,7 +19,7 @@ enum SystemIconLabel
 {
     SYSTEM_ICON_LABEL_NONE = -1,
     SYSTEM_ICON_LABEL_WIFI,      // wifi图标
-    SYSTEM_ICON_LABEL_PACER,     // 起搏图标
+//    SYSTEM_ICON_LABEL_PACER,     // 起搏图标
     SYSTEM_ICON_LABEL_USB,       // usb图标
     SYSTEM_ICON_LABEL_NR,
 };

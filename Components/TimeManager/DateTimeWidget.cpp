@@ -21,13 +21,7 @@
  *************************************************************************************************/
 void DateTimeWidget::setText(const QString &str)
 {
-    QStringList strList = str.split(" ", QString::SkipEmptyParts);
-    QString myString;
-    myString.append("<p style='line-height:10%'>");
-    myString.append(strList[0]);
-    myString.append("</p>");
-    myString.append(strList[1]);
-    _datetimeLabel->setText(myString);
+    _datetimeLabel->setText(str);
 }
 
 /**************************************************************************************************

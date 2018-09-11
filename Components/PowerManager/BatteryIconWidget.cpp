@@ -495,8 +495,7 @@ void BatteryIconWidget::_drawBatteryFillRect(QPainter &painter, QRect &rect)
 BatteryIconWidget::BatteryIconWidget(QColor iconColor) : QWidget(NULL)
 {
     // 固定电池框大小
-    if (!iconColor.isValid())    // if draw battery info window's icon
-        setFixedSize(64, 32);
+    setFixedSize(64, 32);
     _printString = "";
     _batteryVolume = 0;             // 当前电量等级
     _lastBatteryVolume = 0;
