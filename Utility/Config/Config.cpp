@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/11
+ **/
+
 #include <QFile>
 #include "Config.h"
 #include "unistd.h"
@@ -51,7 +61,7 @@ void Config::_newBackupFile(const QString &fileName)
         QFile::remove(backupFileName);
     }
 
-   QFile::copy(fileName, backupFileName);
+    QFile::copy(fileName, backupFileName);
 }
 
 /**************************************************************************************************
@@ -77,7 +87,7 @@ void Config::_checkBKFile(const QString &fileName)
     {
         if (_xmlParser.open(backupFileName))
         {
-            //merge backup file
+            // merge backup file
             QFile::remove(fileName);
             QFile::copy(backupFileName, fileName);
             QFile::remove(backupFileName);
@@ -237,10 +247,10 @@ bool Config::load(const QString &configPath)
     return _xmlParser.reload();
 }
 
-//save the config to file
+// save the config to file
 bool Config::saveToFile(const QString &filepath)
 {
-    if(_xmlParser.saveToFile(filepath))
+    if (_xmlParser.saveToFile(filepath))
     {
         return true;
     }
@@ -248,6 +258,17 @@ bool Config::saveToFile(const QString &filepath)
     {
         return false;
     }
+}
+
+QVariantMap Config::getConfig(const QString &indexStr)
+{
+    return _xmlParser.getConfig(indexStr);
+}
+
+void Config::setConfig(const QString &indexStr, const QVariantMap &config)
+{
+    _xmlParser.setConfig(indexStr, config);
+    save();
 }
 
 /**************************************************************************************************
@@ -264,10 +285,10 @@ bool Config::getStrValue(const QString &indexStr, QString &value)
     _cacheLock.lock();
     QString cacheValue = _configCache.value(indexStr);
     _cacheLock.unlock();
-    if(cacheValue.isNull())
+    if (cacheValue.isNull())
     {
         bool flag = _xmlParser.getValue(indexStr, value);
-        if(flag)
+        if (flag)
         {
             _cacheLock.lock();
             _configCache.insert(indexStr, value);
@@ -332,7 +353,8 @@ bool Config::getNodeValue(const QString &indexStr, QDomElement &element)
  * 返回：
  *      创建是否成功
  *********************************************************************************************/
-bool Config::addNode(const QString &indexStr, const QString &tagName, const QString &value, const QMap<QString, QString> &attrs)
+bool Config::addNode(const QString &indexStr, const QString &tagName, const QString &value,
+                     const QMap<QString, QString> &attrs)
 {
     return _xmlParser.addNode(indexStr, tagName, value, attrs);
 }
