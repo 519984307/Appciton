@@ -423,20 +423,23 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager")
     int w = 1;
     systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|softkeyRow", w);
     //获取配置文件中软按键栏的高度
-    _KEY_SIZE_H = (w * screenHeight) / sum;
-    _KEY_SIZE_H = _KEY_SIZE_H - 4;
-
+    int keySizeH = (w * screenHeight) / sum;
+    keySizeH = keySizeH - 4;
+    systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|softkeyAreaRowOrder|SoftkeyArea", w);
+    int keySizeW = w / SOFTKEY_WIDGET_NR;
 
     for (int i = 0; i < SOFTKEY_WIDGET_NR; i++)
     {
-        SoftkeyWidget *widget = new SoftkeyWidget(this);
-        if (SOFTKEY_HEAD_NR - 1 == i || i == SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR)
+        SoftkeyWidget *widget;
+        if (SOFTKEY_HEAD_NR - 1 == i || i == SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR) // 设置翻页按键大小
         {
-            widget->setFixedSize(1.35 * _KEY_SIZE_H / 2, _KEY_SIZE_H);
+            widget = new SoftkeyWidget(this);
+            widget->setFixedSize(keySizeW / 2, keySizeH);
         }
         else
         {
-            widget->setFixedSize(1.35 * _KEY_SIZE_H, _KEY_SIZE_H);
+            widget = new SoftkeyWidget(this);
+            widget->setFixedSize(keySizeW, keySizeH);
         }
         connect(widget, SIGNAL(released(IWidget *)), this, SLOT(_clickKey(IWidget *)));
         if (i < SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR)
@@ -459,15 +462,6 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager")
     // new出SoftkeyAction对象。
     SoftkeyActionBase *action = new MonitorSoftkeyAction();
     _actions.insert(action->getType(), action);
-
-//    action = new RescueDataSoftKeyAction();
-//    _actions.insert(action->getType(), action);
-
-//    action = new DelRescueDataSoftkeyAction();
-//    _actions.insert(action->getType(), action);
-
-//    action = new CalculateSoftkeyAction();
-//    _actions.insert(action->getType(), action);
 }
 
 /***************************************************************************************************

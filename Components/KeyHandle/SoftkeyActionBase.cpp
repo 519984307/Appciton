@@ -50,13 +50,6 @@
  **************************************************************************************************/
 static KeyActionDesc _baseKeys[] =
 {
-//    KeyActionDesc("", "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
-//    KeyActionDesc("", "CodeMarker.png",    SoftkeyActionBase::codeMarker),
-//    KeyActionDesc("", "Bell.png",          SoftkeyActionBase::limitMenu),
-//    KeyActionDesc("", "Data.png",          SoftkeyActionBase::rescueData),
-//    KeyActionDesc("", "PatientInfo.png",   SoftkeyActionBase::patientInfo),
-//    KeyActionDesc("", "CO2Disable.png",    SoftkeyActionBase::co2OnOff),
-//    KeyActionDesc("", "SoftkeyArrow.png",  SoftkeyActionBase::nextPage),
     KeyActionDesc("", "", "main.png",  SoftkeyActionBase::mainsetup
                     , SOFT_BASE_KEY_NR, true, QColor(255, 200, 0)),
     KeyActionDesc("", "", ICON_FILE_LEFT,  SoftkeyActionBase::previousPage),
@@ -95,9 +88,6 @@ void SoftkeyActionBase::ecgLeadChange(bool isPressed)
     {
         return;
     }
-
-// co2Param.setConnected(false);
-// return;
     ecgParam.autoSetCalcLead();
 }
 
@@ -110,9 +100,6 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     {
         return;
     }
-
-// co 2Param.setConnected(true);
-// return;
 
     bool isVisible = codeMarkerWindow.isVisible();
     while (NULL != QApplication::activeModalWidget())
@@ -184,8 +171,6 @@ void SoftkeyActionBase::WindowLayout(bool isPressed)
     {
         return;
     }
-
-    // windowLayout.autoShow();
     windowManager.showWindow(ScreenLayoutWindow::getInstance(),
                              WindowManager::ShowBehaviorCloseIfVisiable | WindowManager::ShowBehaviorCloseOthers);
 }
@@ -199,8 +184,6 @@ void SoftkeyActionBase::rescueData(bool isPressed)
     {
         return;
     }
-
-//    softkeyManager.setContent(SOFTKEY_ACTION_RESCUE_DATA);
     MainMenuWindow *p = MainMenuWindow::getInstance();
     p->popup(trs("DataReviewMenu"));
 }
@@ -211,8 +194,6 @@ void SoftkeyActionBase::calculation(bool isPressed)
     {
         return;
     }
-
-//    softkeyManager.setContent(SOFTKEY_ACTION_CALCULATE);
     MainMenuWindow *p = MainMenuWindow::getInstance();
     p->popup(trs("CalculateMenu"));
 }

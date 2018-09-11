@@ -822,12 +822,12 @@
                 </ScreenHLayoutStretch>
                 <!-- 顶部信息栏比列 -->
                 <topBarRowOrder>
-                    <PatientInfoWidget>256</PatientInfoWidget>
-		    <PatientStatusBarWidget>30</PatientStatusBarWidget>
+                    <PatientInfoWidget>350</PatientInfoWidget>
+		    <PatientStatusBarWidget>50</PatientStatusBarWidget>
                     <DateTimeWidget>100</DateTimeWidget>
-                    <AlarmMuteBarWidget>30</AlarmMuteBarWidget>
-                    <AlarmPhyInfoBarWidget>300</AlarmPhyInfoBarWidget>
-                    <AlarmTechInfoBarWidget>300</AlarmTechInfoBarWidget>
+                    <AlarmMuteBarWidget>80</AlarmMuteBarWidget>
+                    <AlarmPhyInfoBarWidget>350</AlarmPhyInfoBarWidget>
+                    <AlarmTechInfoBarWidget>350</AlarmTechInfoBarWidget>
                 </topBarRowOrder>
                 <!-- 报警栏比列 -->
                 <alarmRowOrder>
@@ -839,6 +839,7 @@
                 <OxyCRGWidget>OxyCRGHRWidget,OxyCRGSPO2Widget,OxyCRGRESPWidget</OxyCRGWidget>
 		<!--软按键区比例-->
 		<softkeyAreaRowOrder>
+		    <SoftkeyArea>1170</SoftkeyArea>
                     <SystemStatusBarWidget>50</SystemStatusBarWidget>
                     <BatteryBarWidget>60</BatteryBarWidget>
 		</softkeyAreaRowOrder>

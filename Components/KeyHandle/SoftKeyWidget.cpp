@@ -48,35 +48,6 @@ void SoftkeyWidget::paintEvent(QPaintEvent *e)
         painter.setBrush(backgroundColor());
     }
 
-    if (_isPixmapValid)
-    {
-        int height = r.height();
-        int width = r.width();
-        QRect PixmapR = r;
-        if (width <= 1.35 * height / 2)   // 翻页的软按键
-        {
-            PixmapR.setWidth(width * 3 / 4);
-            PixmapR.setHeight(height * 3 / 4);
-            int top = height / 8;
-            int left = width / 8;
-            PixmapR.adjust(left , top , left , top);
-            painter.drawPixmap(PixmapR, _pixmap);
-        }
-        else
-        {
-            width = (width - height) / 1.5;
-            if (_hint.isEmpty())
-            {
-                PixmapR.adjust(width, width / 3, -width, -width / 3);
-            }
-            else
-            {
-                PixmapR.adjust(width * 1.5, width/5, -width * 1.5, -width * 1.5);
-            }
-            painter.drawPixmap(PixmapR, _pixmap);
-        }
-    }
-
     if (!_text.isEmpty())
     {
         QString txt = _text;
@@ -94,6 +65,32 @@ void SoftkeyWidget::paintEvent(QPaintEvent *e)
         painter.setFont(fontManager.textFont(fontSize));
         painter.drawText(r, Qt::AlignBottom | Qt::AlignCenter , hint);
     }
+
+    if (_isPixmapValid)
+    {
+        int height = r.height();
+        int width = r.width();
+        QRect PixmapR = r;
+        QRect pngR = _pixmap.rect();
+        if (!_hint.isEmpty())
+        {
+            PixmapR = PixmapR.adjusted(0, 0, 0, -fontManager.textHeightInPixels(_hint));
+        }
+        if (width <= height)    // 宽小于高时
+        {
+            int h = width * pngR.height() / pngR.width();      // 等比例压缩图像
+            PixmapR.setHeight(h);
+            PixmapR.adjust(0, (height-h)/2, 0, (height-h)/2);  // 居中调整绘画区
+        }
+        else
+        {
+            int w = height * pngR.width() / pngR.height();     // 等比例压缩图像
+            PixmapR.setWidth(w);
+            PixmapR.adjust((width-w)/2, 0, (width-w)/2, 0);    // 居中调整绘画区
+        }
+        painter.drawPixmap(PixmapR, _pixmap);
+    }
+
     IWidget::paintEvent(e);
 }
 
