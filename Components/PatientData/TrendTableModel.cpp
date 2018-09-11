@@ -137,10 +137,8 @@ QVariant TrendTableModel::data(const QModelIndex &index, int role) const
 
         QColor colorHead = d_ptr->colHeadList.at(column).dataColor;
         int curSecIndex = d_ptr->curSecIndex % COLUMN_COUNT;
-            qDebug("data(): curSecIndex = %d\n", curSecIndex);
         if (curSecIndex == column && colorHead == Qt::yellow)
         {
-            qDebug("data(): column = %d\n", column);
             return QBrush(QColor("#98BFE7"));
         }
 
@@ -167,7 +165,6 @@ QVariant TrendTableModel::data(const QModelIndex &index, int role) const
         QColor colorHead = d_ptr->colHeadList.at(column).dataColor;
 
         int curSecIndex = d_ptr->curSecIndex % COLUMN_COUNT;
-            qDebug("data(): curSecIndex = %d\n", curSecIndex);
         if (curSecIndex == column && colorHead == Qt::yellow)
         {
             if (color == Qt::yellow)
@@ -497,7 +494,6 @@ void TrendTableModel::leftMoveEvent(int &curSecCol)
             beginResetModel();
             d_ptr->loadTrendData();
             endResetModel();
-            qDebug("leftMoveEvent: curSecCol = %d\n", curSecCol);
             return;
         }
     }
@@ -529,12 +525,10 @@ void TrendTableModel::rightMoveEvent(int &curSecCol)
             }
 
             d_ptr->curSecIndex = eventIndex;
-            qDebug("rightMoveEvent: eventIndex = %d\n", eventIndex);
 
             beginResetModel();
             d_ptr->loadTrendData();
             endResetModel();
-            qDebug("rightMoveEvent: curSecCol = %d\n", curSecCol);
             return;
         }
     }
