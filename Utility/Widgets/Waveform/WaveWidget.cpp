@@ -128,7 +128,7 @@ WaveWidget::WaveWidget(const QString &widgetName, const QString &title) : IWidge
     _queuedDataBuf(NULL), _queuedDataRate(0), _dequeueTimer(), _dequeueSizeEachTime(0), _isFreeze(false)
 {
     // 波形区不能被选中
-//    setEnabled(false);
+    setEnabled(false);
 
     _spaceFlag = NULL;
     _pixelWPitch = systemManager.getScreenPixelWPitch();

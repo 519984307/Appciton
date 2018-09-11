@@ -802,7 +802,7 @@ void ECGWaveWidget::resizeEvent(QResizeEvent *e)
 {
     WaveWidget::resizeEvent(e);
 
-    if (!_name || !_gain || !_notify)
+    if (!_name || !_notify)
     {
         return;
     }
