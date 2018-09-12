@@ -285,7 +285,7 @@ void PopupList::showEvent(QShowEvent *e)
         {
             // pop above the gloablRect
             pos = d_ptr->globalRect.topLeft();
-            pos.ry() = pos.ry() - d_ptr->properItemsHeight();
+            pos.ry() = pos.ry() - d_ptr->properItemsHeight() - borderRadius * 2;
 
             move(pos);
             d_ptr->popAbove = true;

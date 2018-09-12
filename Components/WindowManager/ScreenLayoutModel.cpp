@@ -331,48 +331,71 @@ int ScreenLayoutModel::rowCount(const QModelIndex &parent) const
 
 bool ScreenLayoutModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (role == Qt::EditRole)
+    // if (role == Qt::EditRole)
+    // {
+    //     if (value.type() == QVariant::String)
+    //     {
+    //         LayoutNode *node = d_ptr->findNode(index);
+    //         if (node)
+    //         {
+    //             QString text = value.toString();
+    //             // check the exists node
+    //             if (text != trs("Off"))
+    //             {
+    //                 for (int i = 0; i < d_ptr->layoutNodes.count(); i++)
+    //                 {
+    //                     LayoutRow *r = d_ptr->layoutNodes.at(i);
+    //                     LayoutRow::Iterator iter;
+    //                     bool found = false;
+    //                     int column = 0;
+    //                     for (iter = r->begin(); iter != r->end(); ++iter)
+    //                     {
+    //                         if ((*iter)->name == text)
+    //                         {
+    //                              (*iter)->name = trs("Off");
+    //                              found = true;
+    //                              QModelIndex changeIndex = this->index(i, column);
+    //                              emit dataChanged(changeIndex, changeIndex);
+    //                              break;
+    //                         }
+    //                         column += (*iter)->span;
+    //                     }
+
+    //                     if (found)
+    //                     {
+    //                         break;
+    //                     }
+    //                 }
+    //             }
+    //             node->name = text;
+    //             emit dataChanged(index, index);
+    //         }
+    //     }
+
+    //     return true;
+    // }
+
+    switch (role) {
+    case Qt::EditRole:
+        break;
+    case ReplaceRole:
+        break;
+    case InsertRole:
+        break;
+    case RemoveRole:
     {
-        if (value.type() == QVariant::String)
+        // remove the current node
+        LayoutNode * node = d_ptr->findNode(index);
+        if (node)
         {
-            LayoutNode *node = d_ptr->findNode(index);
-            if (node)
-            {
-                QString text = value.toString();
-                // check the exists node
-                if (text != trs("Off"))
-                {
-                    for (int i = 0; i < d_ptr->layoutNodes.count(); i++)
-                    {
-                        LayoutRow *r = d_ptr->layoutNodes.at(i);
-                        LayoutRow::Iterator iter;
-                        bool found = false;
-                        int column = 0;
-                        for (iter = r->begin(); iter != r->end(); ++iter)
-                        {
-                            if ((*iter)->name == text)
-                            {
-                                 (*iter)->name = trs("Off");
-                                 found = true;
-                                 QModelIndex changeIndex = this->index(i, column);
-                                 emit dataChanged(changeIndex, changeIndex);
-                                 break;
-                            }
-                            column += (*iter)->span;
-                        }
-
-                        if (found)
-                        {
-                            break;
-                        }
-                    }
-                }
-                node->name = text;
-                emit dataChanged(index, index);
-            }
+            node->waveId = WAVE_NONE;
+            node->name = QString();
+            emit dataChanged(index, index);
         }
-
-        return true;
+    }
+        break;
+    default:
+        break;
     }
 
     return false;
@@ -407,6 +430,12 @@ QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
         return QVariant(d_ptr->supportParams);
     }
     break;
+    case ReplaceRole:
+        break;
+    case InsertRole:
+        break;
+    case RemoveRole:
+        break;
     default:
         break;
     }
@@ -420,13 +449,21 @@ Qt::ItemFlags ScreenLayoutModel::flags(const QModelIndex &index) const
         return QAbstractTableModel::flags(index);
     }
 
-    if (index.row() < MAX_WAVE_ROW && index.column() < WAVE_START_COLUMN)
+    LayoutNode *node = d_ptr->findNode(index);
+    bool editable = true;
+    if (node)
     {
-        // the waveform area is not selectable or editable
-        return Qt::ItemIsEnabled;
+        editable = node->editable;
     }
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+    if (editable)
+    {
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+    }
+    else
+    {
+        return Qt::NoItemFlags;
+    }
 }
 
 QSize ScreenLayoutModel::span(const QModelIndex &index) const

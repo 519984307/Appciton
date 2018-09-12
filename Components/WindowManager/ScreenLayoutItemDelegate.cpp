@@ -17,6 +17,7 @@
 #include <QPainterPath>
 #include <QTableView>
 #include "PopupList.h"
+#include "ScreenLayoutEditor.h"
 
 #define WAVE_LEFT_RIGHT_MARGIN 4
 #define WAVE_TOP_BOTTOM_MARGIN 2
@@ -89,14 +90,38 @@ bool ScreenLayoutItemDelegatePrivate::showEditor(const QTableView *view, QAbstra
     Q_Q(ScreenLayoutItemDelegate);
 
     QVariant value = model->data(index, Qt::EditRole);
+    QRect vrect = view->visualRect(index);
+    QRect rect(view->viewport()->mapToGlobal(vrect.topLeft()),
+               view->viewport()->mapToGlobal(vrect.bottomRight()));
+
+    QString title;
+    ScreenLayoutItemInfo info = qvariant_cast<ScreenLayoutItemInfo>(model->data(index, Qt::DisplayRole));
+    if (info.waveid != WAVE_NONE)
+    {
+        title = trs("WaveformSources");
+    }
+    else
+    {
+        title = trs("ParamaterSource");
+    }
+
+    ScreenLayoutEditor *editor = new ScreenLayoutEditor(title);
+    editor->setAttribute(Qt::WA_DeleteOnClose, true);
+    editor->setWindowModality(Qt::ApplicationModal);
+    editor->setDisplayPosition(rect.topRight());
+    editor->setRemoveable(!info.name.isEmpty());
+    editor->setReplaceList(qvariant_cast<QStringList>(model->data(index, ReplaceRole)));
+    editor->setInsertList(qvariant_cast<QStringList>(model->data(index, InsertRole)));
+    QObject::connect(editor, SIGNAL(commitChanged(int, QString)), q, SLOT(onCommitChanged(int, QString)));
+    QObject::connect(editor, SIGNAL(destroyed(QObject *)), q, SLOT(onEditorDestroy()));
+    editor->show();
+
+    return true;
 
     if (value.isValid() && value.canConvert<QStringList>())
     {
         QStringList list = qvariant_cast<QStringList>(value);
 
-        QRect vrect = view->visualRect(index);
-        QRect rect(view->viewport()->mapToGlobal(vrect.topLeft()),
-                   view->viewport()->mapToGlobal(vrect.bottomRight()));
 
         PopupList *popup = new PopupList();
         popup->setFixedWidth(rect.width());
@@ -106,7 +131,7 @@ bool ScreenLayoutItemDelegatePrivate::showEditor(const QTableView *view, QAbstra
         popup->setCurrentText(currentText);
         popup->setPopAroundRect(rect);
         QObject::connect(popup, SIGNAL(selectItemChanged(QString)), q, SLOT(onSelectChanged(QString)));
-        QObject::connect(popup, SIGNAL(destroyed(QObject*)), q, SLOT(onPopupDestroy()));
+        QObject::connect(popup, SIGNAL(destroyed(QObject *)), q, SLOT(onPopupDestroy()));
         popup->show();
         return true;
     }
@@ -143,8 +168,28 @@ void ScreenLayoutItemDelegate::drawDisplay(QPainter *painter, const QStyleOption
 
 void ScreenLayoutItemDelegate::onSelectChanged(const QString &text)
 {
-    if (d_ptr->curEditingIndex.isValid())
+    Q_D(ScreenLayoutItemDelegate);
+    if (d->curEditingIndex.isValid())
     {
-        d_ptr->curEditingModel->setData(d_ptr->curEditingIndex, qVariantFromValue(text), Qt::EditRole);
+        d->curEditingModel->setData(d_ptr->curEditingIndex, qVariantFromValue(text), Qt::EditRole);
+    }
+}
+
+void ScreenLayoutItemDelegate::onCommitChanged(int role, const QString &value)
+{
+    Q_D(ScreenLayoutItemDelegate);
+    if (d->curEditingIndex.isValid())
+    {
+        d->curEditingModel->setData(d_ptr->curEditingIndex, qVariantFromValue(value), role);
+    }
+}
+
+void ScreenLayoutItemDelegate::onEditorDestroy()
+{
+    Q_D(ScreenLayoutItemDelegate);
+    if (d->curEditingIndex.isValid())
+    {
+        d->curEditingIndex = QModelIndex();
+        d->curEditingModel = NULL;
     }
 }

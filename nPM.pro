@@ -331,6 +331,7 @@ SOURCES +=                                                                      
     Components/WindowManager/ScreenLayoutWindow.cpp                             \
     Components/WindowManager/ScreenLayoutModel.cpp                              \
     Components/WindowManager/ScreenLayoutItemDelegate.cpp                       \
+    Components/WindowManager/ScreenLayoutEditor.cpp                             \
     Components/USBManager/DataExporterBase.cpp                                  \
     Components/USBManager/ErrorLogExporter.cpp                                  \
     Components/USBManager/UDiskInspector.cpp                                    \
@@ -906,6 +907,7 @@ HEADERS +=                                                                      
     Components/WindowManager/ScreenLayoutModel.h                                \
     Components/WindowManager/ScreenLayoutItemDelegate.h                         \
     Components/WindowManager/ScreenLayoutDefine.h                               \
+    Components/WindowManager/ScreenLayoutEditor.h                               \
     Components/PrintManager/PrintTypeDefine.h                                   \
     Components/PrintManager/PrintDefine.h                                       \
     Components/PrintManager/PrintProviderIFace.h                                \

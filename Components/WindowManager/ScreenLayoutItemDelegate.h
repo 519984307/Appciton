@@ -24,6 +24,8 @@ protected:
 
 private slots:
     void onSelectChanged(const QString &text);
+    void onCommitChanged(int role, const QString &value);
+    void onEditorDestroy();
 
 private:
     Q_DECLARE_PRIVATE(ScreenLayoutItemDelegate)

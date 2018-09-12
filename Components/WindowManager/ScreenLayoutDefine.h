@@ -8,11 +8,19 @@
  ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/8/30
  **/
 
+#pragma once
 #include <QByteArray>
 #include <QVariant>
 #include <QModelIndex>
 #include "ParamDefine.h"
 
+
+enum ScreenLayoutRole
+{
+    ReplaceRole = Qt::UserRole + 1,
+    InsertRole,
+    RemoveRole,
+};
 
 struct ScreenLayoutItemInfo
 {
