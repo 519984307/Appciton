@@ -81,7 +81,6 @@ void AGWaveWidget::setRuler(AGDisplayZoom zoom)
 //    str = QString("0.0~%1").number(zoomValue, 'f', 1);
     str += " ";
     str += trs("percent");
-    _zoom->setText(str);
 }
 
 /**************************************************************************************************
@@ -109,12 +108,6 @@ AGWaveWidget::AGWaveWidget(WaveformID id, const QString &waveName, const AGTypeG
     _ruler->setFont(fontManager.textFont(fontManager.getFontSize(0)));
     addItem(_ruler);
 
-    _zoom = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
-    _zoom->setFont(fontManager.textFont(infoFont));
-    _zoom->setFixedSize(120, fontH);
-    addItem(_zoom);
-    connect(_zoom, SIGNAL(released(IWidget *)), this, SLOT(_zoomChangeSlot(IWidget *)));
-
     setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
 }
 
@@ -131,7 +124,6 @@ AGWaveWidget::~AGWaveWidget()
 void AGWaveWidget::resizeEvent(QResizeEvent *e)
 {
     _name->move(0, 0);
-    _zoom->move(_name->rect().width(), 0);
     _ruler->resize(qmargins().left(), qmargins().top(),
                    width() - qmargins().left() - qmargins().right(),
                    height() - qmargins().top() - qmargins().bottom());
@@ -166,50 +158,6 @@ void AGWaveWidget::_releaseHandle(IWidget *w)
     waveWidgetSelectMenu.setWaveformName(name());
     waveWidgetSelectMenu.setShowPoint(prect.x() + r.x() + 50, prect.y() + r.y());
     windowManager.showWindow(&waveWidgetSelectMenu, WindowManager::ShowBehaviorModal);
-}
-
-/**************************************************************************************************
- * 标尺改变。
- *************************************************************************************************/
-void AGWaveWidget::_zoomChangeSlot(IWidget *widget)
-{
-    Q_UNUSED(widget);
-    if (NULL == _gainList)
-    {
-        AGDisplayZoom zoom = AG_DISPLAY_ZOOM_4;
-        int maxZoom = AG_DISPLAY_ZOOM_NR;
-        _gainList = new PopupList(_zoom , false);
-        float zoomArray[] = {4.0, 8.0, 15.0};
-        QString str;
-        for (int i = 0; i < maxZoom; i ++)
-        {
-            str.clear();
-            str = QString("0.0~%1").arg(QString::number(zoomArray[i], 'f', 1));
-            str += " ";
-            str += trs("percent");
-            _gainList->addItemText(str);
-        }
-        int fontSize = fontManager.getFontSize(3);
-        _gainList->setFont(fontManager.textFont(fontSize));
-        connect(_gainList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
-        connect(_gainList , SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
-    }
-    _gainList->show();
-}
-
-/**************************************************************************************************
- * 弹出菜单销毁。
- *************************************************************************************************/
-void AGWaveWidget::_popupDestroyed()
-{
-    if (_currentItemIndex == -1)
-    {
-        _gainList = NULL;
-        return;
-    }
-
-    agParam.setDisplayZoom((AGDisplayZoom)_currentItemIndex);
-    _gainList = NULL;
 }
 
 void AGWaveWidget::_getItemIndex(int index)

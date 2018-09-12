@@ -20,7 +20,7 @@
 #include "EnglishInputPanel.h"
 #include "KeyInputPanel.h"
 #include "PatientManager.h"
-#include "RelievePatientWindow.h"
+#include "DischargePatientWindow.h"
 #include "DataStorageDirManager.h"
 #include <QMap>
 #include "Button.h"
@@ -565,15 +565,15 @@ void PatientInfoWindow::_relieveReleased()
     this->hide();
     if (d_ptr->relieveFlag == true)
     {
-        RelievePatientWindow::getInstance()->setWindowTitle(trs("RelievePatient"));
-        int ret = RelievePatientWindow::getInstance()->exec();
+        DischargePatientWindow::getInstance()->setWindowTitle(trs("RelievePatient"));
+        int ret = DischargePatientWindow::getInstance()->exec();
         if (ret)
             relieveStatus(false);
     }
     else
     {
-        RelievePatientWindow::getInstance()->setWindowTitle(trs("CleanPatientData"));
-        RelievePatientWindow::getInstance()->exec();
+        DischargePatientWindow::getInstance()->setWindowTitle(trs("CleanPatientData"));
+        DischargePatientWindow::getInstance()->exec();
     }
 }
 

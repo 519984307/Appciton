@@ -35,6 +35,16 @@ private slots:
      */
     void onBtnClick();
 
+    /**
+     * @brief leftMoveWaveformSlot
+     */
+    void leftMoveWaveformSlot(void);
+
+    /**
+     * @brief rightMoveWaveformSlot
+     */
+    void rightMoveWaveformSlot(void);
+
 private:
     FreezeWindowPrivate *const d_ptr;
 };

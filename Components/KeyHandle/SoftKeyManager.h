@@ -86,8 +86,6 @@ private:
 
     int _totalPages;      // 总共的页数。
     int _currentPage;     // 当前页。
-
-    int _KEY_SIZE_H;                              // 按钮的高度
     QList<SoftkeyWidget*> _keyWidgets;
 };
 #define softkeyManager (SoftKeyManager::construction())

@@ -33,13 +33,13 @@ public:
         ITEM_BTN_HISTORY_REVIEW,
     };
 
-    QMap <MenuItem, Button*> btns;
+    QMap <MenuItem, Button *> btns;
 };
 
 DataReviewMenuContent::DataReviewMenuContent()
-                     : MenuContent(trs("DataReviewMenu"),
-                                   trs("DataReviewMenuDesc")),
-                       d_ptr(new DataReviewMenuContentPrivate)
+    : MenuContent(trs("DataReviewMenu"),
+                  trs("DataReviewMenuDesc")),
+      d_ptr(new DataReviewMenuContentPrivate)
 {
 }
 
@@ -97,9 +97,7 @@ void DataReviewMenuContent::layoutExec()
     item++;
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     glayout->addWidget(btn, row, 0);
-    d_ptr->btns.insert(DataReviewMenuContentPrivate
-                       ::ITEM_BTN_EVENT_REVIEW, btn);
-
+    d_ptr->btns.insert(DataReviewMenuContentPrivate::ITEM_BTN_EVENT_REVIEW, btn);
     // oxycrg review
     btn = new Button(trs("OxyCRGEventReview"));
     btn->setButtonStyle(Button::ButtonTextOnly);
@@ -112,7 +110,7 @@ void DataReviewMenuContent::layoutExec()
 
     row++;
 
-    //  history  review
+    // history  review
     btn = new Button(trs("HistoryTrend"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     btn->setProperty("Item", qVariantFromValue(item));
@@ -129,7 +127,7 @@ void DataReviewMenuContent::layoutExec()
 
 void DataReviewMenuContent::onBtnReleased()
 {
-    Button *btn = qobject_cast<Button*>(sender());
+    Button *btn = qobject_cast<Button *>(sender());
     if (!btn)
     {
         return;
@@ -138,58 +136,58 @@ void DataReviewMenuContent::onBtnReleased()
 
     switch (index)
     {
-        case DataReviewMenuContentPrivate::ITEM_BTN_TREND_TABLE:
-        {
-            TrendTableWindow::getInstance()->setHistoryData(false);
-            windowManager.showWindow(TrendTableWindow::getInstance(),
-                                     WindowManager::
-                                     ShowBehaviorCloseIfVisiable |
-                                     WindowManager::
-                                     ShowBehaviorCloseOthers);
-        }
-        break;
+    case DataReviewMenuContentPrivate::ITEM_BTN_TREND_TABLE:
+    {
+        TrendTableWindow::getInstance()->setHistoryData(false);
+        windowManager.showWindow(TrendTableWindow::getInstance(),
+                                 WindowManager::
+                                 ShowBehaviorCloseIfVisiable |
+                                 WindowManager::
+                                 ShowBehaviorCloseOthers);
+    }
+    break;
 
-        case DataReviewMenuContentPrivate::ITEM_BTN_TREND_GRAPH:
-        {
-            TrendGraphWindow::getInstance()->setHistoryData(false);
-            windowManager.showWindow(TrendGraphWindow::getInstance(),
-                                     WindowManager::
-                                     ShowBehaviorCloseIfVisiable |
-                                     WindowManager::
-                                     ShowBehaviorCloseOthers);
-        }
-        break;
+    case DataReviewMenuContentPrivate::ITEM_BTN_TREND_GRAPH:
+    {
+        TrendGraphWindow::getInstance()->setHistoryData(false);
+        windowManager.showWindow(TrendGraphWindow::getInstance(),
+                                 WindowManager::
+                                 ShowBehaviorCloseIfVisiable |
+                                 WindowManager::
+                                 ShowBehaviorCloseOthers);
+    }
+    break;
 
-        case DataReviewMenuContentPrivate::ITEM_BTN_EVENT_REVIEW:
-        {
-            EventWindow::getInstance()->setHistoryData(false);
-            windowManager.showWindow(EventWindow::getInstance(),
-                                     WindowManager::
-                                     ShowBehaviorCloseIfVisiable |
-                                     WindowManager::
-                                     ShowBehaviorCloseOthers);
-        }
-        break;
+    case DataReviewMenuContentPrivate::ITEM_BTN_EVENT_REVIEW:
+    {
+        EventWindow::getInstance()->setHistoryData(false);
+        windowManager.showWindow(EventWindow::getInstance(),
+                                 WindowManager::
+                                 ShowBehaviorCloseIfVisiable |
+                                 WindowManager::
+                                 ShowBehaviorCloseOthers);
+    }
+    break;
 
-        case DataReviewMenuContentPrivate::ITEM_BTN_OXYCRG_REVIEW:
-        {
-            OxyCRGEventWindow::getInstance()->setHistoryData(false);
-            windowManager.showWindow(OxyCRGEventWindow::getInstance(),
-                                     WindowManager::
-                                     ShowBehaviorCloseIfVisiable |
-                                     WindowManager::
-                                     ShowBehaviorCloseOthers);
-        }
-        break;
+    case DataReviewMenuContentPrivate::ITEM_BTN_OXYCRG_REVIEW:
+    {
+        OxyCRGEventWindow::getInstance()->setHistoryData(false);
+        windowManager.showWindow(OxyCRGEventWindow::getInstance(),
+                                 WindowManager::
+                                 ShowBehaviorCloseIfVisiable |
+                                 WindowManager::
+                                 ShowBehaviorCloseOthers);
+    }
+    break;
 
-        case DataReviewMenuContentPrivate::ITEM_BTN_HISTORY_REVIEW:
-        {
-            windowManager.showWindow(HistoryDataReviewWindow::getInstance(),
-                                     WindowManager::
-                                     ShowBehaviorCloseIfVisiable |
-                                     WindowManager::
-                                     ShowBehaviorCloseOthers);
-        }
-        break;
+    case DataReviewMenuContentPrivate::ITEM_BTN_HISTORY_REVIEW:
+    {
+        windowManager.showWindow(HistoryDataReviewWindow::getInstance(),
+                                 WindowManager::
+                                 ShowBehaviorCloseIfVisiable |
+                                 WindowManager::
+                                 ShowBehaviorCloseOthers);
+    }
+    break;
     }
 }

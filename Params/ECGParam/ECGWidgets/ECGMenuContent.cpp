@@ -22,6 +22,7 @@
 #include "Button.h"
 #include "ArrhythmiaMenuWindow.h"
 #include "WindowManager.h"
+#include <QTimer>
 
 class ECGMenuContentPrivate
 {
@@ -29,6 +30,8 @@ public:
     enum MenuItem
     {
         ITEM_CBO_LEAD_MODE = 1,
+        ITEM_CBO_ECG,
+        ITEM_CBO_ECG_GAIN,
         ITEM_CBO_FILTER_MODE,
         ITEM_CBO_NOTCH_FITER,
         ITEM_CBO_PACER_MARK,
@@ -48,11 +51,30 @@ public:
     Button *selfLearnBtn;
     Button *arrhythmiaBtn;
     Button *sTSwitchBtn;
+    QStringList ecgWaveforms;
+    QStringList ecgWaveformTitles;
 };
 
 void ECGMenuContentPrivate::loadOptions()
 {
-    combos[ITEM_CBO_LEAD_MODE]->setCurrentIndex(ecgParam.getLeadMode());
+    ECGLeadMode leadMode = ecgParam.getLeadMode();
+    combos[ITEM_CBO_LEAD_MODE]->setCurrentIndex(leadMode);
+
+    combos[ITEM_CBO_ECG]->blockSignals(true);
+    ecgParam.getAvailableWaveforms(ecgWaveforms, ecgWaveformTitles, true);
+    combos[ITEM_CBO_ECG]->clear();
+    combos[ITEM_CBO_ECG]->addItems(ecgWaveformTitles);
+    QString ecgTopWaveform = ecgParam.getCalcLeadWaveformName();
+    int index = ecgWaveforms.indexOf(ecgTopWaveform);
+    if (index)
+    {
+        combos[ITEM_CBO_ECG_GAIN]->blockSignals(true);
+        ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
+        combos[ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
+        combos[ITEM_CBO_ECG_GAIN]->blockSignals(false);
+        combos[ITEM_CBO_ECG]->setCurrentIndex(index);
+    }
+    combos[ITEM_CBO_ECG]->blockSignals(false);
 
     ECGFilterMode filterMode = ecgParam.getFilterMode();
     ECGNotchFilter notchFilter = ecgParam.getNotchFilter();
@@ -131,12 +153,38 @@ void ECGMenuContent::layoutExec()
                        << trs(ECGSymbol::convert(ECG_LEAD_MODE_5))
                        << trs(ECGSymbol::convert(ECG_LEAD_MODE_12))
                       );
-    itemID = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE);
+    itemID = ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE, comboBox);
+
+    // ECG
+    label = new QLabel("ECG");
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    itemID = ECGMenuContentPrivate::ITEM_CBO_ECG;
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_ECG, comboBox);
+
+    // ECG 增益
+    label = new QLabel(trs("ECGGain"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    for (int i = 0; i < ECG_GAIN_NR; i++)
+    {
+        comboBox->addItem(ECGSymbol::convert(static_cast<ECGGain>(i)));
+    }
+    itemID  = ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN;
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN, comboBox);
 
     // filter
     label = new QLabel(trs("FilterMode"));
@@ -148,7 +196,7 @@ void ECGMenuContent::layoutExec()
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_ST))
                       );
-    itemID = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_FILTER_MODE);
+    itemID = ECGMenuContentPrivate::ITEM_CBO_FILTER_MODE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -159,7 +207,7 @@ void ECGMenuContent::layoutExec()
     label = new QLabel(trs("NotchFilter"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    itemID = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER);
+    itemID = ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -174,7 +222,7 @@ void ECGMenuContent::layoutExec()
                        << trs(ECGSymbol::convert(ECG_PACE_OFF))
                        << trs(ECGSymbol::convert(ECG_PACE_ON))
                       );
-    itemID = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_PACER_MARK);
+    itemID = ECGMenuContentPrivate::ITEM_CBO_PACER_MARK;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -190,7 +238,7 @@ void ECGMenuContent::layoutExec()
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_250))
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_500))
                       );
-    itemID = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED);
+    itemID = ECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -213,7 +261,7 @@ void ECGMenuContent::layoutExec()
     {
         comboBox->addItem(QString::number(i));
     }
-    itemID = static_cast<int>(ECGMenuContentPrivate::ITEM_CBO_QRS_TONE);
+    itemID = ECGMenuContentPrivate::ITEM_CBO_QRS_TONE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
@@ -267,6 +315,20 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             ecgParam.setLeadMode(static_cast<ECGLeadMode>(index));
             d_ptr->loadOptions();
             break;
+        case ECGMenuContentPrivate::ITEM_CBO_ECG:
+        {
+            QString waveName = ecgParam.getCalcLeadWaveformName();
+            ecgParam.setCalcLead(d_ptr->ecgWaveforms[index]);
+            ecgParam.setLeadMode3DisplayLead(d_ptr->ecgWaveforms[index]);
+            windowManager.replaceWaveform(waveName, d_ptr->ecgWaveforms[index]);
+            break;
+        }
+        case ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN:
+        {
+            ECGLead ecg = static_cast<ECGLead>(d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG]->currentIndex());
+            ecgParam.setGain(static_cast<ECGGain>(index), ecg);
+            break;
+        }
         case ECGMenuContentPrivate::ITEM_CBO_FILTER_MODE:
         {
             ecgParam.setFilterMode(index);

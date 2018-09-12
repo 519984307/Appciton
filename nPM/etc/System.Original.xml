@@ -790,6 +790,46 @@
         </AG>
         <UILayout>
         <!-- 控件的顺序与上面的布局节点对应 -->
+            <ScreenLayout>
+                <Normal>
+                    <LayoutRow>
+                        <LayoutNode pos="0" span="4" editable="0">ECG_II_WAVEFORM</LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="1">ECG</LayoutNode>
+                    </LayoutRow>
+                    <LayoutRow>
+                        <LayoutNode pos="0" span="4" editable="0">SPO2_WAVEFORM</LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="1">SPO2</LayoutNode>
+                    </LayoutRow>
+                    <LayoutRow>
+                        <LayoutNode pos="0" span="4" editable="0">RESP_WAVEFORM</LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="1">RESP</LayoutNode>
+                    </LayoutRow>
+                    <LayoutRow>
+                        <LayoutNode pos="0" span="4" editable="0">ART_WAVEFORM</LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="1">ART</LayoutNode>
+                    </LayoutRow>
+                    <LayoutRow>
+                        <LayoutNode pos="0" span="4" editable="0">PA_WAVEFORM</LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="1">PA</LayoutNode>
+                    </LayoutRow>
+                    <LayoutRow>
+                        <LayoutNode pos="0" span="4" editable="0">CO2_WAVEFORM</LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="1">CO2</LayoutNode>
+                    </LayoutRow>
+                    <LayoutRow>
+                        <LayoutNode pos="0" span="2" editable="1">NIBP</LayoutNode>
+                        <LayoutNode pos="2" span="2" editable="1">NIBPList</LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="1">TEMP</LayoutNode>
+                    </LayoutRow>
+                    <LayoutRow>
+                        <LayoutNode pos="0" span="2" editable="1">Off</LayoutNode>
+                        <LayoutNode pos="2" span="2" editable="1">Off</LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="1">Off</LayoutNode>
+                    </LayoutRow>
+                </Normal>
+                <BigFont>
+                </BigFont>
+            </ScreenLayout>
             <WidgetsOrder>
                 <FontSize>
                     <!--800*600-->
@@ -822,24 +862,27 @@
                 </ScreenHLayoutStretch>
                 <!-- 顶部信息栏比列 -->
                 <topBarRowOrder>
-                    <PatientInfoWidget>250</PatientInfoWidget>
-                    <AlarmPhyInfoBarWidget>150</AlarmPhyInfoBarWidget>
-                    <AlarmTechInfoBarWidget>200</AlarmTechInfoBarWidget>
-                    <AlarmMuteBarWidget>30</AlarmMuteBarWidget>
-                    <SystemStatusBarWidget>50</SystemStatusBarWidget>
-                    <BatteryBarWidget>60</BatteryBarWidget>
-                    <DateTimeWidget>80</DateTimeWidget>
+                    <PatientInfoWidget>350</PatientInfoWidget>
+		    <PatientStatusBarWidget>50</PatientStatusBarWidget>
+                    <DateTimeWidget>100</DateTimeWidget>
+                    <AlarmMuteBarWidget>80</AlarmMuteBarWidget>
+                    <AlarmPhyInfoBarWidget>350</AlarmPhyInfoBarWidget>
+                    <AlarmTechInfoBarWidget>350</AlarmTechInfoBarWidget>
                 </topBarRowOrder>
                 <!-- 报警栏比列 -->
                 <alarmRowOrder>
-                    <AlarmPhyInfoBarWidget>1</AlarmPhyInfoBarWidget>
-                    <AlarmTechInfoBarWidget>1</AlarmTechInfoBarWidget>
                 </alarmRowOrder>
                 <!-- 底部信息栏比列 -->
                 <bottomBarRowOrder>                                    
                 </bottomBarRowOrder>
                 <WaveTrendOrder>NIBPTrendWidget,NIBPDataTrendWidget</WaveTrendOrder>
                 <OxyCRGWidget>OxyCRGHRWidget,OxyCRGSPO2Widget,OxyCRGRESPWidget</OxyCRGWidget>
+		<!--软按键区比例-->
+		<softkeyAreaRowOrder>
+		    <SoftkeyArea>1170</SoftkeyArea>
+                    <SystemStatusBarWidget>50</SystemStatusBarWidget>
+                    <BatteryBarWidget>60</BatteryBarWidget>
+		</softkeyAreaRowOrder>
                 <!-- 监护模式下的三个界面 -->
                 <MonitorStandard>
                     <TrendOrder>ECGTrendWidget,ECGPVCSTrendWidget,SPO2TrendWidget,SPO2TrendWidget,N2OTrendWidget,N2OTrendWidget,IBP1TrendWidget,IBP1TrendWidget,CO2TrendWidget,CO2TrendWidget,TEMPTrendWidget,RESPTrendWidget</TrendOrder>

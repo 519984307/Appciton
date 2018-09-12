@@ -717,7 +717,34 @@ void WindowManager::_fixedLayout(void)
 //    _alarmRow->addLayout(hLayoutAlarmRow);
 
     // 软按键区。
+    QHBoxLayout *softkeyLayout = new QHBoxLayout;
+    softkeyLayout->setSpacing(0);
+    softkeyLayout->setMargin(0);
+    QStringList softkeyRow;
+    prefix = "PrimaryCfg|UILayout|WidgetsOrder|softkeyAreaRowOrder";
+    softkeyRow = systemConfig.getChildNodeNameList(prefix);
+    if (softkeyRow.size() > 0)
+    {
+        IWidget *w = NULL;
+        for (int i = 0; i < softkeyRow.size(); i++)
+        {
+            it = _winMap.find(softkeyRow[i]);
+            if (it == _winMap.end())
+            {
+                continue;
+            }
+            w = it.value();
+            w->setParent(this); // 设置父窗体
+            w->setVisible(true);
+            QString string = prefix + "|" + softkeyRow[i];
+            int index = 1;
+            systemConfig.getNumValue(string, index);
+            softkeyLayout->addWidget(w, index);
+        }
+    }
+
     _softkeyRow->addWidget(&softkeyManager);
+    _softkeyRow->addLayout(softkeyLayout);
     softkeyManager.setParent(this);
     softkeyManager.setVisible(true);
 }

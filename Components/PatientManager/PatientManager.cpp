@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/9/12
+ **/
+
+
 #include "PatientManager.h"
 #include "PatientBarWidget.h"
 #include "PatientInfoWidget.h"
@@ -31,7 +42,7 @@ void PatientManager::setType(PatientType type)
     PatientType oldType = _patientInfo.type;
 
     _patientInfo.type = type;
-    systemConfig.setNumValue("General|PatientType", (int)type);
+    systemConfig.setNumValue("General|PatientType", static_cast<int>(type));
 
     if (_patientInfo.type == oldType)
     {
@@ -39,9 +50,9 @@ void PatientManager::setType(PatientType type)
     }
 
     // 病人类型被修改了，重新加载配置后，通知需要关注次事件的对象。
-    _patientTypeWidget->setPatientType(_patientInfo.type);
+    _patientInfoWidget->loadPatientInfo();
 
-    //报警限修改
+    // 报警限修改
     QString str = "AlarmSource|";
     str += PatientSymbol::convert(_patientInfo.type);
     currentConfig.setNodeValue(str, currentConfig);
@@ -75,7 +86,7 @@ QString PatientManager::getTypeStr(void)
 void PatientManager::setPacermaker(PatientPacer type)
 {
     _patientInfo.pacer = type;
-    currentConfig.setNumValue("General|PatientPacer", (int)type);
+    currentConfig.setNumValue("General|PatientPacer", static_cast<int>(type));
 //    ecgParam.setPacermaker(type);
 }
 
@@ -93,7 +104,7 @@ PatientPacer PatientManager::getPacermaker()
 void PatientManager::setSex(PatientSex sex)
 {
     _patientInfo.sex = sex;
-    systemConfig.setNumValue("PrimaryCfg|PatientInfo|Sex", (int)sex);
+    systemConfig.setNumValue("PrimaryCfg|PatientInfo|Sex", static_cast<int>(sex));
 }
 
 /**************************************************************************************************
@@ -101,7 +112,7 @@ void PatientManager::setSex(PatientSex sex)
  *************************************************************************************************/
 PatientSex PatientManager::getSex(void)
 {
-     return _patientInfo.sex;
+    return _patientInfo.sex;
 }
 
 /**************************************************************************************************
@@ -124,7 +135,7 @@ int PatientManager::getAge(void)
 void PatientManager::setBlood(PatientBloodType blood)
 {
     _patientInfo.blood = blood;
-    systemConfig.setNumValue("PrimaryCfg|PatientInfo|Blood", (int)blood);
+    systemConfig.setNumValue("PrimaryCfg|PatientInfo|Blood", static_cast<int>(blood));
 }
 
 int PatientManager::getBlood()
@@ -293,5 +304,4 @@ PatientManager::PatientManager()
  *************************************************************************************************/
 PatientManager::~PatientManager()
 {
-
 }

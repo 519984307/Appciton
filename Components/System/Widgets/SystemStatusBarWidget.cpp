@@ -124,7 +124,9 @@ void SystemStatusBarWidget::onIconClicked(int iconLabel)
  *************************************************************************************************/
 void SystemStatusBarWidget::paintEvent(QPaintEvent *e)
 {
-    // do nothing
+    IWidget::paintEvent(e);
+    QPainter painter(this);
+    painter.fillRect(this->rect(), QColor(20, 20, 20));
 }
 
 /***************************************************************************************************
@@ -152,19 +154,20 @@ void SystemStatusBarWidget::timerEvent(QTimerEvent *e)
  *************************************************************************************************/
 void SystemStatusBarWidget::showEvent(QShowEvent *e)
 {
+    IWidget::showEvent(e);
     // pacer icon
-    QLabel *l = qobject_cast<QLabel *> (_iconMap.value(SYSTEM_ICON_LABEL_PACER)->children().at(1));
-    if (l)
-    {
-        if (patientManager.getPacermaker())
-        {
-            l->setPixmap(_icons[SYSTEM_ICON_PACER_ON]);
-        }
-        else
-        {
-            l->setPixmap(_icons[SYSTEM_ICON_PACER_OFF]);
-        }
-    }
+//    QLabel *l = qobject_cast<QLabel *> (_iconMap.value(SYSTEM_ICON_LABEL_PACER)->children().at(1));
+//    if (l)
+//    {
+//        if (patientManager.getPacermaker())
+//        {
+//            l->setPixmap(_icons[SYSTEM_ICON_PACER_ON]);
+//        }
+//        else
+//        {
+//            l->setPixmap(_icons[SYSTEM_ICON_PACER_OFF]);
+//        }
+//    }
 }
 
 /**************************************************************************************************

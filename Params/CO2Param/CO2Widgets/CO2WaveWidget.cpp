@@ -51,17 +51,12 @@ void CO2WaveWidget::_releaseHandle(IWidget *w)
 void CO2WaveWidget::resizeEvent(QResizeEvent *e)
 {
     _name->move(0, 0);
-    _zoom->move(_name->rect().width(), 0);
+//    _zoom->move(_name->rect().width(), 0);
 
     _ruler->resize(qmargins().left(), qmargins().top(),
                    width() - qmargins().left() - qmargins().right(),
                    height() - qmargins().top() - qmargins().bottom());
     WaveWidget::resizeEvent(e);
-
-    if (NULL != _gainList)
-    {
-        _gainList->close();
-    }
 }
 
 /**************************************************************************************************
@@ -81,11 +76,6 @@ void CO2WaveWidget::focusInEvent(QFocusEvent *e)
 void CO2WaveWidget::hideEvent(QHideEvent *e)
 {
     WaveWidget::hideEvent(e);
-
-    if (NULL != _gainList)
-    {
-        _gainList->close();
-    }
 }
 
 /**************************************************************************************************
@@ -153,7 +143,7 @@ void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
     }
     str += " ";
     str += Unit::localeSymbol(unit);
-    _zoom->setText(str);
+//    _zoom->setText(str);
 }
 
 /**************************************************************************************************
@@ -168,7 +158,7 @@ bool CO2WaveWidget::waveEnable()
  * 构造。
  *************************************************************************************************/
 CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
-    : WaveWidget(waveName, title), _gainList(NULL),
+    : WaveWidget(waveName, title),
       _currentItemIndex(-1)
 {
     setFocusPolicy(Qt::NoFocus);
@@ -199,77 +189,7 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
     _ruler->setFont(fontManager.textFont(infoFont));
     addItem(_ruler);
 
-    _zoom = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
-    _zoom->setFont(fontManager.textFont(infoFont));
-    _zoom->setFixedSize(120, fontH);
-    _zoom->setText(title);
-    addItem(_zoom);
-    connect(_zoom, SIGNAL(released(IWidget *)), this, SLOT(_zoomChangeSlot(IWidget *)));
-
     setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
-}
-
-/**************************************************************************************************
- * 增益改变。
- *************************************************************************************************/
-void CO2WaveWidget::_zoomChangeSlot(IWidget *widget)
-{
-    Q_UNUSED(widget)
-    if (NULL == _gainList)
-    {
-        CO2DisplayZoom zoom = co2Param.getDisplayZoom();
-        int maxZoom = CO2_DISPLAY_ZOOM_NR;
-        _gainList = new PopupList(_zoom, false);
-        float zoomArray[] = {4.0, 8.0, 12.0, 20.0};
-        QString str;
-        UnitType unit = co2Param.getUnit();
-        for (int i = 0; i < maxZoom; i++)
-        {
-            str.clear();
-            if (unit == UNIT_KPA)
-            {
-                float tempVal = Unit::convert(UNIT_KPA, UNIT_PERCENT, zoomArray[i]).toFloat();
-                str = QString("0.0~%1").arg(QString::number(
-                                static_cast<float>(
-                                    static_cast<int>(tempVal + 0.5)), 'f', 1));
-            }
-            else if (unit == UNIT_MMHG)
-            {
-                str = "0~";
-                int tempVal = Unit::convert(UNIT_MMHG, UNIT_PERCENT, zoomArray[i]).toInt();
-                tempVal = (tempVal + 5) / 10 * 10;
-                str += QString::number(tempVal);
-            }
-            else
-            {
-                str = QString("0.0~%1").arg(QString::number(zoomArray[i], 'f', 1));
-            }
-            str += " ";
-            str += Unit::localeSymbol(unit);
-            _gainList->addItemText(str);
-        }
-        int fontSize = fontManager.getFontSize(3);
-        _gainList->setFont(fontManager.textFont(fontSize));
-        connect(_gainList, SIGNAL(destroyed()), this, SLOT(_popupDestroyed()));
-        connect(_gainList, SIGNAL(selectItemChanged(int)), this , SLOT(_getItemIndex(int)));
-    }
-
-    _gainList->show();
-}
-
-/**************************************************************************************************
- * 弹出菜单销毁。
- *************************************************************************************************/
-void CO2WaveWidget::_popupDestroyed(void)
-{
-    if (_currentItemIndex == -1)
-    {
-        _gainList = NULL;
-        return;
-    }
-
-    co2Param.setDisplayZoom((CO2DisplayZoom)_currentItemIndex);
-    _gainList = NULL;
 }
 
 void CO2WaveWidget::_getItemIndex(int index)

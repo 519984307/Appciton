@@ -25,9 +25,6 @@ public:
     // 添加波形数据。
     void addWaveformData(short data, int flag = 0);
 
-    // 设置标尺。
-    void setRuler(int index);
-
     // 设置导联状态
     void setLeadSta(int info);
 
@@ -40,6 +37,8 @@ public:
     // 设置获取标名。
     void setEntitle(IBPPressureName entitle);
     IBPPressureName getEntitle(void);
+
+    void setRulerLimit(IBPRulerLimit ruler);
 
     // 构造与析构。
     IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPressureName &entitle);
@@ -61,9 +60,6 @@ protected:
 
 private slots:
     void _releaseHandle(IWidget *);
-    void _IBPZoom(IWidget *widget);
-    void _popupDestroyed();
-    void _getItemIndex(int);
 
 private:
     // 自动标尺计算
@@ -75,12 +71,9 @@ private:
 
 //    WaveWidgetLabel *_name;         // 名称
     WaveWidgetLabel *_leadSta;          // 导联状态
-    WaveWidgetLabel *_zoom;             // 标尺
     IBPWaveRuler *_ruler;               // 标尺对象
-    PopupList *_zoomList;               // 标尺列表
     IBPPressureName _entitle;           // 标名
     int _lowLimit;                      // 下标尺
     int _highLimit;                     // 上标尺
     bool _isAutoRuler;
-    int _currentItemIndex;
 };

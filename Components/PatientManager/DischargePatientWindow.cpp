@@ -7,7 +7,7 @@
  **
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/27
  **/
-#include "RelievePatientWindow.h"
+#include "DischargePatientWindow.h"
 #include <QHBoxLayout>
 #include "Button.h"
 #include "WindowManager.h"
@@ -16,28 +16,28 @@
 #include "PatientInfoWindow.h"
 #include <QGridLayout>
 
-class RelievePatientWindowPrivate
+class DischaregePatientWindowPrivate
 {
 public:
-    RelievePatientWindowPrivate();
+    DischaregePatientWindowPrivate();
     QLabel *standby;                 // 进入待机。
     Button *yes;                    // 确定按键
     Button *no;                    // 确定按键
 };
 
-RelievePatientWindowPrivate::RelievePatientWindowPrivate()
+DischaregePatientWindowPrivate::DischaregePatientWindowPrivate()
     : standby(NULL),
       yes(NULL),
       no(NULL)
 {
 }
 
-RelievePatientWindow* RelievePatientWindow::getInstance()
+DischargePatientWindow* DischargePatientWindow::getInstance()
 {
-    static RelievePatientWindow* instance = NULL;
+    static DischargePatientWindow* instance = NULL;
     if (!instance)
     {
-        instance = new RelievePatientWindow;
+        instance = new DischargePatientWindow;
     }
     return instance;
 }
@@ -45,7 +45,7 @@ RelievePatientWindow* RelievePatientWindow::getInstance()
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
-RelievePatientWindow::~RelievePatientWindow()
+DischargePatientWindow::~DischargePatientWindow()
 {
     delete d_ptr;
 }
@@ -53,14 +53,14 @@ RelievePatientWindow::~RelievePatientWindow()
 /**************************************************************************************************
  * 布局。
  *************************************************************************************************/
-void RelievePatientWindow::layoutExec()
+void DischargePatientWindow::layoutExec()
 {
     setWindowTitle(trs("RelievePatient"));
 
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
 
-    d_ptr->standby = new QLabel(trs("Standby"));
+    d_ptr->standby = new QLabel(trs("WhetherStandby"));
     d_ptr->yes = new Button(trs("Yes"));
     d_ptr->yes->setButtonStyle(Button::ButtonTextOnly);
     d_ptr->no = new Button(trs("No"));
@@ -84,7 +84,7 @@ void RelievePatientWindow::layoutExec()
 /***************************************************************************************************
  * 显示事件
  **************************************************************************************************/
-void RelievePatientWindow::showEvent(QShowEvent *e)
+void DischargePatientWindow::showEvent(QShowEvent *e)
 {
     Window::showEvent(e);
     QRect r = windowManager.getMenuArea();
@@ -94,7 +94,7 @@ void RelievePatientWindow::showEvent(QShowEvent *e)
 /**************************************************************************************************
  * 重写X退出槽函数。
  *************************************************************************************************/
-void RelievePatientWindow::exit()
+void DischargePatientWindow::exit()
 {
     hide();
 }
@@ -102,7 +102,7 @@ void RelievePatientWindow::exit()
 /***************************************************************************************************
  * 进入待机模式槽函数
  **************************************************************************************************/
-void RelievePatientWindow::onYesReleased()
+void DischargePatientWindow::onYesReleased()
 {
     hide();
     dataStorageDirManager.createDir(true);
@@ -111,7 +111,7 @@ void RelievePatientWindow::onYesReleased()
 /***************************************************************************************************
  * 不进入待机模式槽函数
  **************************************************************************************************/
-void RelievePatientWindow::onNoReleased()
+void DischargePatientWindow::onNoReleased()
 {
     hide();
     dataStorageDirManager.createDir(true);
@@ -120,9 +120,9 @@ void RelievePatientWindow::onNoReleased()
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-RelievePatientWindow::RelievePatientWindow()
+DischargePatientWindow::DischargePatientWindow()
     : Window(),
-      d_ptr(new RelievePatientWindowPrivate)
+      d_ptr(new DischaregePatientWindowPrivate)
 {
     layoutExec();
 }

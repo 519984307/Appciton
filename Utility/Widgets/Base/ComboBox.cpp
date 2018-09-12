@@ -140,7 +140,7 @@ void ComboBox::paintEvent(QPaintEvent *ev)
     {
         borderColor = pal.color(QPalette::Active, QPalette::Shadow);
         textColor = pal.color(QPalette::Inactive, QPalette::WindowText);
-        bgColor = pal.color(QPalette::Inactive, QPalette::Window);
+        bgColor = pal.color(QPalette::Active, QPalette::Highlight);
     }
     else if (d_ptr->popupList)
     {

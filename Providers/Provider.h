@@ -37,6 +37,8 @@ public:
     // 获取版本号
     virtual void sendVersion(void) = 0;
 
+    virtual QString getVersionString() const { return versionInfo;}
+
     // 关闭串口
     void closePort(void);
 
@@ -82,6 +84,7 @@ protected:
     virtual void disconnected(void) = 0;          // 模块连接恢复时回调，之类实现。
     virtual void reconnected(void) = 0;          // 模块连接恢复时回调，之类实现。
     bool isConnected;
+    QString versionInfo;
 
 private:
     QString _name;

@@ -37,6 +37,7 @@
 #include <QTimer>
 #include "ErrorLogItem.h"
 #include "ErrorLog.h"
+#include "PatientStatusBarWidget.h"
 
 #define ECG_TIMER_INTERVAL (100)
 #define GET_DIA_DATA_PERIOD (12000)
@@ -1516,10 +1517,10 @@ void ECGParam::setCalcLead(ECGLead lead)
     }
 
     ECGLead preCalcLead = getCalcLead();
-    leads.clear();
-    leads.append(ECG_LEAD_I);
-    leads.append(ECG_LEAD_II);
-    leads.append(ECG_LEAD_III);
+//    leads.clear();
+//    leads.append(ECG_LEAD_I);
+//    leads.append(ECG_LEAD_II);
+//    leads.append(ECG_LEAD_III);
 
     if (-1 == leads.indexOf(lead))
     {
@@ -1921,8 +1922,8 @@ void ECGParam::setPacermaker(ECGPaceMode onoff)
     {
         _provider->enablePacermaker(onoff);
     }
-    sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_PACER, static_cast<int>(onoff));
-
+//    sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_PACER, static_cast<int>(onoff));
+    patientStatusBar.changeIcon(PATIENT_ICON_LABEL_PACER, static_cast<int>(onoff));
     return;
 }
 
@@ -1950,7 +1951,8 @@ void ECGParam::set12LPacermaker(ECGPaceMode onoff)
         {
             _provider->enablePacermaker(onoff);
         }
-        sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_PACER, static_cast<int>(onoff));
+//        sysStatusBar.changeIcon(SYSTEM_ICON_LABEL_PACER, static_cast<int>(onoff));
+        patientStatusBar.changeIcon(PATIENT_ICON_LABEL_PACER, static_cast<int>(onoff));
     }
 
     return;

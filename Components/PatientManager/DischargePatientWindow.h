@@ -11,14 +11,14 @@
 
 #include "Window.h"
 
-class RelievePatientWindowPrivate;
-class RelievePatientWindow : public Window
+class DischaregePatientWindowPrivate;
+class DischargePatientWindow : public Window
 {
     Q_OBJECT
 
 public:
-    static RelievePatientWindow *getInstance();
-    ~RelievePatientWindow();
+    static DischargePatientWindow *getInstance();
+    ~DischargePatientWindow();
 
     void layoutExec(void);
 
@@ -31,7 +31,7 @@ private slots:
     void onNoReleased(void);
 
 private:
-    RelievePatientWindow();
+    DischargePatientWindow();
 
-    RelievePatientWindowPrivate *const d_ptr;
+    DischaregePatientWindowPrivate *const d_ptr;
 };

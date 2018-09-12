@@ -86,6 +86,11 @@ public:
      */
     IBPScaleInfo getIBPScale(IBPPressureName name);
 
+    // 设置/获取波形标尺限。
+    void setRulerLimit(IBPRulerLimit ruler, IBPSignalInput ibp);
+    IBPRulerLimit getRulerLimit(IBPSignalInput ibp);
+    IBPRulerLimit getRulerLimit(IBPPressureName name);
+
 public:
     // 校零。
     void zeroCalibration(IBPSignalInput IBP);

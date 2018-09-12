@@ -58,6 +58,9 @@ public:
     void setIconFull(void);
     void setIconLow(void);
 
+protected:
+    void paintEvent(QPaintEvent *e);
+
 private slots:
     void _batRealsed(IWidget *);
 

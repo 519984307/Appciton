@@ -41,9 +41,6 @@ protected:
 
 private slots:
     void _releaseHandle(IWidget *);
-    void _spo2Gain(IWidget *widget);
-    void _popupDestroyed();
-    void _getItemIndex(int);
 
 private:
     void _initValueRange(SPO2Gain gain);
@@ -52,6 +49,4 @@ private:
 //    WaveWidgetLabel *_name;
     WaveWidgetLabel *_gain;         // 增益标签
     WaveWidgetLabel *_notify;
-    PopupList *_gainList;           // 增益列表
-    int _currentItemIndex;
 };

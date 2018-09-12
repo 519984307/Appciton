@@ -29,24 +29,32 @@ enum SoftKeyActionType
 
 enum SoftBaseKeyType
 {
+    SOFT_BASE_KEY_MAIN_SETUP,
+    SOFT_BASE_KEY_PREVIOUS_PAGE,
     SOFT_BASE_KEY_PAT_INFO,
     SOFT_BASE_KEY_PAT_NEW,
-    SOFT_BASE_KEY_PREVIOUS_PAGE,
+    SOFT_BASE_KEY_ECG_LEAD_MODE,
     SOFT_BASE_KEY_ALARM_LIMIT,
     SOFT_BASE_KEY_CODE_MARKER,
-    SOFT_BASE_KEY_RESCUE_DATA,
+    SOFT_BASE_KEY_TREND_GRAPH,
+    SOFT_BASE_KEY_EVENT_REVIEW,
+    SOFT_BASE_KEY_NIBP_REVIEW,
+    SOFT_BASE_KEY_HR_ABNORMAL_REVIEW,
+    SOFT_BASE_KEY_SYS_MODE,
     SOFT_BASE_KEY_WINDOWLAYOUT,
+    SOFT_BASE_KEY_PARA_SWITCH,
+    SOFT_BASE_KEY_SCREEN_BAN,
+    SOFT_BASE_KEY_STANDBY,
+    SOFT_BASE_KEY_CO2_CALIBRATION,
+    SOFT_BASE_KEY_CO2_STANDBY,
+    SOFT_BASE_KEY_CO2_MEASURE,
+    SOFT_BASE_KEY_IBP_CALIBRATION,
     SOFT_BASE_KEY_CALCULATION,
-    SOFT_BASE_KEY_LOCK_SCREEN,
-    SOFT_BASE_KEY_SYS_MODE_STANDARD,
-    SOFT_BASE_KEY_SYS_MODE_12LEAD,
-    SOFT_BASE_KEY_SYS_MODE_OXYCRG,
-    SOFT_BASE_KEY_SYS_MODE_TREND,
-    SOFT_BASE_KEY_SYS_MODE_BIGFONT,
-    SOFT_BASE_KEY_SYS_MODE_CUSTOM,
-    SOFT_BASE_KEY_SYS_MODE_UNKNOW,
+    SOFT_BASE_KEY_KEYBOARD_VOLUMN,
+    SOFT_BASE_KEY_SCREEN_BRIGHTNESS,
+    SOFT_BASE_KEY_NIGHT_MODE,
+    SOFT_BASE_KEY_PRINTER_SET,
     SOFT_BASE_KEY_NEXT_PAGE,
-    SOFT_BASE_KEY_MAIN_SETUP,
     SOFT_BASE_KEY_NR
 };
 
@@ -105,10 +113,18 @@ public:    // 一些共有的功能处理。
     static void WindowLayout(bool isPressed);
     static void rescueData(bool isPressed);
     static void calculation(bool isPressed);
-
     static void mainsetup(bool isPressed);
     static void lockScreen(bool isPressed);
     static void switchSystemMode(bool isPressed);
+    static void summaryReview(bool isPressed);
+    static void eventReview(bool isPressed);
+    static void standby(bool isPressed);
+    static void CO2Zero(bool isPressed);
+    static void CO2Standby(bool isPressed);
+    static void CO2Measure(bool isPressed);
+    static void IBPZero(bool isPressed);
+    static void sysSetup(bool isPressed);
+    static void nightMode(bool isPressed);
 
 public:
     // 获取动作描述总个数。

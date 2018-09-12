@@ -28,6 +28,8 @@ public:
     {
         ITEM_CBO_ENTITLE_1 = 1,
         ITEM_CBO_ENTITLE_2,
+        ITEM_CBO_RULER_1,
+        ITEM_CBO_RULER_2,
         ITEM_CBO_SWEEP_SPEED,
         ITEM_CBO_FILTER_MODE,
         ITEM_CBO_SENSITIVITY,
@@ -52,6 +54,8 @@ void IBPMenuContentPrivate::loadOptions()
     ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
     combos[ITEM_CBO_ENTITLE_1]->setCurrentIndex(ibp1);
     combos[ITEM_CBO_ENTITLE_2]->setCurrentIndex(ibp2);
+    combos[ITEM_CBO_RULER_1]->setCurrentIndex(ibpParam.getRulerLimit(IBP_INPUT_1));
+    combos[ITEM_CBO_RULER_2]->setCurrentIndex(ibpParam.getRulerLimit(IBP_INPUT_2));
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(ibpParam.getSweepSpeed());
     combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(ibpParam.getFilter());
     combos[ITEM_CBO_SENSITIVITY]->setCurrentIndex(ibpParam.getSensitivity());
@@ -123,6 +127,60 @@ void IBPMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2, comboBox);
+
+    // 通道一标尺
+    label = new QLabel(trs("Ruler") + "1");
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    for (int i = 0; i < ibpParam.ibpScaleList.count(); i++)
+    {
+        if (i == 0)
+        {
+            comboBox->addItem("auto");
+        }
+        else if (i == ibpParam.ibpScaleList.count() - 1)
+        {
+            comboBox->addItem("m");
+        }
+        else
+        {
+            comboBox->addItem(QString::number(ibpParam.ibpScaleList.at(i).low) + "~" +
+                                   QString::number(ibpParam.ibpScaleList.at(i).high));
+        }
+    }
+    itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_RULER_1);
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_RULER_1, comboBox);
+
+    // 通道二标尺
+    label = new QLabel(trs("Ruler") + "2");
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    for (int i = 0; i < ibpParam.ibpScaleList.count(); i++)
+    {
+        if (i == 0)
+        {
+            comboBox->addItem("auto");
+        }
+        else if (i == ibpParam.ibpScaleList.count() - 1)
+        {
+            comboBox->addItem("m");
+        }
+        else
+        {
+            comboBox->addItem(QString::number(ibpParam.ibpScaleList.at(i).low) + "~" +
+                                   QString::number(ibpParam.ibpScaleList.at(i).high));
+        }
+    }
+    itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_RULER_2);
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_RULER_2, comboBox);
 
     // 波形速度
     label = new QLabel(trs("IBPSweepSpeed"));
@@ -224,8 +282,11 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
                 box->setCurrentIndex(static_cast<int>(d_ptr->ibp2));
                 box->blockSignals(false);
             }
-            d_ptr->ibp1 = (IBPPressureName)index;
-            ibpParam.setEntitle((IBPPressureName)index, IBP_INPUT_1);
+            d_ptr->ibp1 = static_cast<IBPPressureName>(index);
+            ibpParam.setEntitle(d_ptr->ibp1, IBP_INPUT_1);
+            d_ptr->combos[IBPMenuContentPrivate::ITEM_CBO_RULER_1]->setCurrentIndex(
+                        ibpParam.getRulerLimit(d_ptr->ibp1)
+                        );
             break;
         }
         case IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2:
@@ -238,10 +299,19 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
                 box->setCurrentIndex(static_cast<int>(d_ptr->ibp1));
                 box->blockSignals(false);
             }
-            d_ptr->ibp2 = (IBPPressureName)index;
-            ibpParam.setEntitle((IBPPressureName)index, IBP_INPUT_2);
+            d_ptr->ibp2 = static_cast<IBPPressureName>(index);
+            ibpParam.setEntitle(d_ptr->ibp2, IBP_INPUT_2);
+            d_ptr->combos[IBPMenuContentPrivate::ITEM_CBO_RULER_2]->setCurrentIndex(
+                        ibpParam.getRulerLimit(d_ptr->ibp2)
+                        );
             break;
         }
+        case IBPMenuContentPrivate::ITEM_CBO_RULER_1:
+            ibpParam.setRulerLimit(static_cast<IBPRulerLimit>(index), IBP_INPUT_1);
+            break;
+        case IBPMenuContentPrivate::ITEM_CBO_RULER_2:
+            ibpParam.setRulerLimit(static_cast<IBPRulerLimit>(index), IBP_INPUT_2);
+            break;
         case IBPMenuContentPrivate::ITEM_CBO_SWEEP_SPEED:
             ibpParam.setSweepSpeed((IBPSweepSpeed)index);
             break;

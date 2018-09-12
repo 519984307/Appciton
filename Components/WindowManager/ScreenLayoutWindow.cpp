@@ -74,6 +74,7 @@ ScreenLayoutWindow::ScreenLayoutWindow()
 
 
     ScreenLayoutModel *model = new ScreenLayoutModel(this);
+    model->loadLayoutInfo();
     model->updateWaveAndParamInfo();
     d_ptr->view->setModel(model);
     resize(800, 600);
@@ -104,12 +105,19 @@ void ScreenLayoutWindow::onButtonClicked()
 {
     Button *btn = qobject_cast<Button *>(sender());
 
+    ScreenLayoutModel *model = qobject_cast<ScreenLayoutModel*>(d_ptr->view->model());
+    if (!model)
+    {
+        return;
+    }
     if (btn == d_ptr->resetBtn)
     {
-        // TODO
+        model->loadLayoutInfo();
     }
     else if (btn == d_ptr->saveBtn)
     {
-        // TODO
+        model->saveLayoutInfo();
+
+        // TODO: window manager restart layout
     }
 }

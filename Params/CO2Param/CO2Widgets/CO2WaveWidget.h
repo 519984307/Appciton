@@ -42,14 +42,10 @@ protected:
 
 private slots:
     void _releaseHandle(IWidget *);
-    void _zoomChangeSlot(IWidget *);
-    void _popupDestroyed(void);
     void _getItemIndex(int);
 
 private:
 //    WaveWidgetLabel *_name;        // 名称
-    WaveWidgetLabel *_zoom;        // 标尺
-    PopupList *_gainList;          // 增益列表
     CO2WaveRuler *_ruler;          // 标尺对象
     int _currentItemIndex;
 };

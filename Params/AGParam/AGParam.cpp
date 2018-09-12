@@ -257,7 +257,10 @@ void AGParam::setProvider(AGProviderIFace *provider)
     }
     _provider = provider;
 
-    _setWaveformZoom(getDisplayZoom());
+    _setWaveformZoom(AG_TYPE_N2O, getDisplayZoom(AG_TYPE_N2O));
+    _setWaveformZoom(AG_TYPE_AA1, getDisplayZoom(AG_TYPE_AA1));
+    _setWaveformZoom(AG_TYPE_AA2, getDisplayZoom(AG_TYPE_AA2));
+    _setWaveformZoom(AG_TYPE_O2, getDisplayZoom(AG_TYPE_O2));
 
     // 注册波形缓存
     QString titleN2O = _waveWidgetN2O->getTitle();
@@ -506,19 +509,37 @@ void AGParam::addWaveformData(short wave, bool invalid, AGTypeGas gasType)
 /**************************************************************************************************
  * 设置波形放大标尺。
  *************************************************************************************************/
-void AGParam::setDisplayZoom(AGDisplayZoom zoom)
+void AGParam::setDisplayZoom(AGTypeGas type, AGDisplayZoom zoom)
 {
-    _setWaveformZoom(zoom);
+    _setWaveformZoom(type, zoom);
 }
 
 /**************************************************************************************************
  * 获取波形放大标尺。
  *************************************************************************************************/
-AGDisplayZoom AGParam::getDisplayZoom()
+AGDisplayZoom AGParam::getDisplayZoom(AGTypeGas type)
 {
-    int zoom = AG_DISPLAY_ZOOM_4;
-    currentConfig.getNumValue("AG|DisplayZoom", zoom);
-    return (AGDisplayZoom)zoom;
+    int value = 0;
+    currentConfig.getNumValue("AG|DisplayZoom", value);
+    int zoom = 0;
+    switch (type)
+    {
+    case AG_TYPE_N2O:
+        zoom  = (value >> 2) & 0x3;
+        break;
+    case AG_TYPE_AA1:
+        zoom  = (value >> 4) & 0x3;
+        break;
+    case AG_TYPE_AA2:
+        zoom  = (value >> 6) & 0x3;
+        break;
+    case AG_TYPE_O2:
+        zoom  = (value >> 8) & 0x3;
+        break;
+    default:
+        break;
+    }
+    return static_cast<AGDisplayZoom>(zoom);
 }
 
 /**************************************************************************************************
@@ -843,7 +864,7 @@ void AGParam::_setWaveformSpeed(AGSweepSpeed speed)
 /**************************************************************************************************
  * 初始化参数。
  *************************************************************************************************/
-void AGParam::_setWaveformZoom(AGDisplayZoom zoom)
+void AGParam::_setWaveformZoom(AGTypeGas type, AGDisplayZoom zoom)
 {
     if (_provider == NULL)
     {
@@ -855,31 +876,55 @@ void AGParam::_setWaveformZoom(AGDisplayZoom zoom)
         return;
     }
 
+    int upLimit = 0;
     switch (zoom)
     {
     case AG_DISPLAY_ZOOM_4:
-        _waveWidgetN2O->setValueRange(0, 400);
-        _waveWidgetAA1->setValueRange(0, 400);
-        _waveWidgetAA2->setValueRange(0, 400);
-        _waveWidgetO2->setValueRange(0, 400);
+        upLimit = 400;
         break;
     case AG_DISPLAY_ZOOM_8:
-        _waveWidgetN2O->setValueRange(0, 800);
-        _waveWidgetAA1->setValueRange(0, 800);
-        _waveWidgetAA2->setValueRange(0, 800);
-        _waveWidgetO2->setValueRange(0, 800);
+        upLimit = 800;
         break;
     case AG_DISPLAY_ZOOM_15:
-        _waveWidgetN2O->setValueRange(0, 1500);
-        _waveWidgetAA1->setValueRange(0, 1500);
-        _waveWidgetAA2->setValueRange(0, 1500);
-        _waveWidgetO2->setValueRange(0, 1500);
+        upLimit = 1500;
         break;
     default:
         break;
     }
-    _waveWidgetN2O->setRuler(zoom);
-    _waveWidgetAA1->setRuler(zoom);
-    _waveWidgetAA2->setRuler(zoom);
-    _waveWidgetO2->setRuler(zoom);
+
+    int value = 0;
+    currentConfig.getNumValue("AG|DisplayZoom", value);
+    int n2o = (value >> 2) & 0x3;
+    int aa1 = (value >> 4) & 0x3;
+    int aa2 = (value >> 6) & 0x3;
+    int o2 = (value >> 8) & 0x3;
+
+    switch (type)
+    {
+    case AG_TYPE_N2O:
+        n2o = zoom;
+        _waveWidgetN2O->setValueRange(0, upLimit);
+        _waveWidgetN2O->setRuler(zoom);
+        break;
+    case AG_TYPE_AA1:
+        aa1 = zoom;
+        _waveWidgetAA1->setValueRange(0, upLimit);
+        _waveWidgetAA1->setRuler(zoom);
+        break;
+    case AG_TYPE_AA2:
+        aa2 = zoom;
+        _waveWidgetAA2->setValueRange(0, upLimit);
+        _waveWidgetAA2->setRuler(zoom);
+        break;
+    case AG_TYPE_O2:
+        o2 = zoom;
+        _waveWidgetO2->setValueRange(0, upLimit);
+        _waveWidgetO2->setRuler(zoom);
+        break;
+    default:
+        break;
+    }
+    value = (n2o << 2) | (aa1 << 4) | (aa2 << 6) | (o2 << 8);
+    qDebug() << n2o << aa1 << aa2 << o2 << value;
+    currentConfig.setNumValue("AG|DisplayZoom", value);
 }

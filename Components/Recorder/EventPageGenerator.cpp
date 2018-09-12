@@ -186,10 +186,16 @@ public:
                 info.waveInfo.co2.zoom = co2Param.getDisplayZoom();
                 break;
             case WAVE_N2O:
+                info.waveInfo.ag.zoom = agParam.getDisplayZoom(AG_TYPE_N2O);
+                break;
             case WAVE_AA1:
+                info.waveInfo.ag.zoom = agParam.getDisplayZoom(AG_TYPE_AA1);
+                break;
             case WAVE_AA2:
+                info.waveInfo.ag.zoom = agParam.getDisplayZoom(AG_TYPE_AA2);
+                break;
             case WAVE_O2:
-                info.waveInfo.ag.zoom = agParam.getDisplayZoom();
+                info.waveInfo.ag.zoom = agParam.getDisplayZoom(AG_TYPE_O2);
                 break;
             case WAVE_ART:
             case WAVE_PA:

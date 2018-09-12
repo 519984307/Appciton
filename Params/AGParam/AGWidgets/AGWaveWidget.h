@@ -46,13 +46,9 @@ protected:
 
 private slots:
     void _releaseHandle(IWidget *);
-    void _zoomChangeSlot(IWidget *);
-    void _popupDestroyed(void);
     void _getItemIndex(int);
 
 private:
     AGWaveRuler *_ruler;               // 标尺对象
-    WaveWidgetLabel *_zoom;             // 标尺
-    PopupList *_gainList;
     int _currentItemIndex;
 };

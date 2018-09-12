@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/11
+ **/
+
 #pragma once
 #include <QString>
 #include <typeinfo>
@@ -12,7 +22,7 @@
 class Config
 {
 public:
-    Config(const QString &configPath);
+    explicit Config(const QString &configPath);
 
     /***************************************************************************
      * 功能： 读取数字值, 支持数据类型int, bool和float。
@@ -25,22 +35,22 @@ public:
     template<typename T>
     bool getNumValue(const QString &indexStr, T &value)
     {
-        //访问共享缓冲区时进行加锁操作
+        // 访问共享缓冲区时进行加锁操作
         _cacheLock.lock();
-        //访问共享缓冲区
+        // 访问共享缓冲区
         QString strText = _configCache.value(indexStr);
-        //访问结束时进行解锁操作
+        // 访问结束时进行解锁操作
         _cacheLock.unlock();
-        //当访问的缓冲区为空时，开始读取.xml文件
-        if(strText.isNull())
+        // 当访问的缓冲区为空时，开始读取.xml文件
+        if (strText.isNull())
         {
-            //no found in cache
+            // no found in cache
             if (_xmlParser.getValue(indexStr, strText))
             {
-                //add to cache
+                // add to cache
                 _cacheLock.lock();
-                //缓冲区数据倒入操作
-                _configCache.insert(indexStr,strText);
+                // 缓冲区数据倒入操作
+                _configCache.insert(indexStr, strText);
                 _cacheLock.unlock();
             }
             else
@@ -49,7 +59,7 @@ public:
             }
         }
 
-        //访问共享缓冲区或.xml文件成功找到指定元素时，开始进行下列逻辑操作
+        // 访问共享缓冲区或.xml文件成功找到指定元素时，开始进行下列逻辑操作
         bool ok = false;
         if (typeid(value) == typeid(int))
         {
@@ -92,7 +102,7 @@ public:
     bool setNumValue(const QString &indexStr, T value)
     {
         T curValue = 0;
-        //如果.xml文件指定位置读取值时失败，则退出该函数接口
+        // 如果.xml文件指定位置读取值时失败，则退出该函数接口
         if (!getNumValue(indexStr, curValue))
         {
             return false;
@@ -146,15 +156,15 @@ public:
     // 设置字符串值
     bool setStrValue(const QString &indexStr, const QString &value);
     bool setStrValues(const QVector<QString> &paths,
-            const QVector<QString> &values);
+                      const QVector<QString> &values);
 
     // 获取属性字串
     bool getStrAttr(const QString &indexStr, const QString &attr,
-            QString &value);
+                    QString &value);
 
     // 设置属性字串
     bool setStrAttr(const QString &indexStr, const QString &attr,
-            const QString &value);
+                    const QString &value);
 
     // 设置字段
     bool setNodeValue(const QString &indexStr, Config &config);
@@ -213,7 +223,7 @@ public:
      **************************************************************************/
     template<typename T>
     bool setNumAttr(const QString &indexStr, const QString &attr,
-            const T &value)
+                    const T &value)
     {
         T curValue = 0;
         if (!getNumAttr(indexStr, attr, curValue))
@@ -267,16 +277,31 @@ public:
     bool load(const QString &configPath);
 
     // 重新加载文件的内容。
-    void reload(){_xmlParser.reload();}
+    void reload()
+    {
+        _xmlParser.reload();
+    }
 
-    //获取保存状态
-    bool getSaveStatus() {return _requestToSave;}
+    // 获取保存状态
+    bool getSaveStatus()
+    {
+        return _requestToSave;
+    }
 
-    //get current file name
-    QString getFileName() {return _xmlParser.currentFileName();}
+    // get current file name
+    QString getFileName()
+    {
+        return _xmlParser.currentFileName();
+    }
 
-    //save the config to file
+    // save the config to file
     bool saveToFile(const QString &filepath);
+
+    // get the config by return a QVariant object
+    QVariantMap getConfig(const QString &indexStr);
+
+    // set the config with the config object
+    void setConfig(const QString &indexStr, const QVariantMap &config);
 
 private:
     QString _getBackupFileName(const QString &fileName);

@@ -27,8 +27,6 @@ public:
     // 发送数据
     bool _sendData(const unsigned char *data, unsigned int len);
 
-    // get the version data
-    QByteArray getVersionInfoData();
 
     // 接收数据
     void dataArrived(unsigned char *buff, unsigned int length);
@@ -57,7 +55,6 @@ private:
 
     bool _isLastSOHPaired; // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH。
 
-    QByteArray versionInfoData;
 
 protected:
     static const int HeadLen = 4;               // 包头长度: Head,Length,FCS

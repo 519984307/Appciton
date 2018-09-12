@@ -797,6 +797,65 @@ IBPScaleInfo IBPParam::getIBPScale(IBPPressureName name)
     return info;
 }
 
+void IBPParam::setRulerLimit(IBPRulerLimit ruler, IBPSignalInput ibp)
+{
+    if (ibp == IBP_INPUT_1)
+    {
+        currentConfig.setNumValue("IBP|RulerLimit1", static_cast<int>(ruler));
+        if (_waveWidgetIBP1 != NULL)
+        {
+            _waveWidgetIBP1->setRulerLimit(ruler);
+        }
+    }
+    else if (ibp == IBP_INPUT_2)
+    {
+        currentConfig.setNumValue("IBP|RulerLimit2", static_cast<int>(ruler));
+        if (_waveWidgetIBP2 != NULL)
+        {
+            _waveWidgetIBP2->setRulerLimit(ruler);
+        }
+    }
+}
+
+IBPRulerLimit IBPParam::getRulerLimit(IBPSignalInput ibp)
+{
+    int ruler = IBP_RULER_LIMIT_0_160;
+    if (ibp == IBP_INPUT_1)
+    {
+        currentConfig.getNumValue("IBP|RulerLimit1", ruler);
+    }
+    else if (ibp == IBP_INPUT_2)
+    {
+        currentConfig.getNumValue("IBP|RulerLimit2", ruler);
+    }
+    return static_cast<IBPRulerLimit>(ruler);
+}
+
+IBPRulerLimit IBPParam::getRulerLimit(IBPPressureName name)
+{
+    IBPRulerLimit ruler = IBP_RULER_LIMIT_0_160;
+    switch (name)
+    {
+    case IBP_PRESSURE_ART:
+    case IBP_PRESSURE_AUXP1:
+    case IBP_PRESSURE_AUXP2:
+        ruler = IBP_RULER_LIMIT_0_160;
+        break;
+    case IBP_PRESSURE_PA:
+    case IBP_PRESSURE_CVP:
+        ruler = IBP_RULER_LIMIT_0_30;
+        break;
+    case IBP_PRESSURE_LAP:
+    case IBP_PRESSURE_RAP:
+    case IBP_PRESSURE_ICP:
+        ruler = IBP_RULER_LIMIT_0_20;
+        break;
+    default:
+        break;
+    }
+    return ruler;
+}
+
 /**************************************************************************************************
  * 设置校零。
  *************************************************************************************************/
@@ -1053,20 +1112,12 @@ void IBPParam::setEntitle(IBPPressureName entitle, IBPSignalInput IBP)
 {
     if (IBP == IBP_INPUT_1)
     {
-        if (entitle == _ibp2.pressureName)
-        {
-            ibpMenu.comboListChangeIBP2(_ibp1.pressureName);
-        }
         _waveWidgetIBP1->setEntitle(entitle);
         _trendWidgetIBP1->setEntitle(entitle);
         _ibp1.pressureName = entitle;
     }
     else if (IBP == IBP_INPUT_2)
     {
-        if (entitle == _ibp1.pressureName)
-        {
-            ibpMenu.comboListChangeIBP1(_ibp2.pressureName);
-        }
         _ibp2.pressureName = entitle;
         _waveWidgetIBP2->setEntitle(entitle);
         _trendWidgetIBP2->setEntitle(entitle);
