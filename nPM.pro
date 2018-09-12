@@ -592,7 +592,6 @@ SOURCES +=                                                                      
     Providers/TT3Provider/TT3Provider.cpp                                       \
     Providers/DemoProvider/DemoProvider.cpp                                     \
     Providers/PRT48Provider/PRT48Provider.cpp                                   \
-    Providers/PRT72Provider/PRT72Provider.cpp                                   \
     Providers/SuntechProvider/SuntechProvider.cpp                               \
     Providers/SystemBoardProvider/SystemBoardProvider.cpp                       \
     Providers/RawData/RawDataCollection.cpp                                     \
@@ -1203,7 +1202,6 @@ HEADERS +=                                                                      
     Providers/TT3Provider/TT3Provider.h                                         \
     Providers/DemoProvider/DemoProvider.h                                       \
     Providers/PRT48Provider/PRT48Provider.h                                     \
-    Providers/PRT72Provider/PRT72Provider.h                                     \
     Providers/SuntechProvider/SuntechProvider.h                                 \
     Providers/SystemBoardProvider/SystemBoardProvider.h                         \
     Providers/SystemBoardProvider/SystemBoardProviderDefine.h                   \

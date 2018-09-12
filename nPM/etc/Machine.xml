@@ -42,7 +42,7 @@
     <CO SptProvider="DemoProvider,WITLEAF_IBP">DemoProvider</CO>
     <TEMP SptProvider="DemoProvider,BLM_TT3,BLM_T5">BLM_T5</TEMP>
     <!--Provider端口信息-->
-    <PRT72Port>/dev/ttyS3</PRT72Port>
+    <PRT48Port>/dev/ttyS3</PRT48Port>
     <BLM_E5Port>/dev/ttyS1</BLM_E5Port>
     <BLM_TN3Port>/dev/ttyPM1</BLM_TN3Port>
     <!--    <SUNTECH_NIBPPort>/dev/ttyS2</SUNTECH_NIBPPort>-->

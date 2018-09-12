@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/12
+ **/
+
 #pragma once
 #include <QBasicTimer>
 #include "BLMProvider.h"
@@ -60,6 +70,8 @@ public:
 
     virtual void flush(void);
 
+    virtual PrinterProviderSignalSender *signalSender() const;
+
     PRT48Provider();
     ~PRT48Provider();
 
@@ -68,7 +80,7 @@ protected:
     virtual void disconnected(void);
     virtual void reconnected(void);
 
-//#if defined(Q_WS_QWS)
+// #if defined(Q_WS_QWS)
 #if 1
     // 数据包解析
     void handlePacket(unsigned char *data, int len);
