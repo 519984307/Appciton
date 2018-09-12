@@ -187,6 +187,11 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
         }
         int nextRow = index.row() + 1;
         int lastRow = rowAt(viewport()->height() - 1);
+        if (lastRow == -1)
+        {
+            // items are not filled the viewport
+            lastRow = model()->rowCount() - 1;
+        }
         if (nextRow <= lastRow)
         {
             QModelIndex nextIndex = model()->index(nextRow, index.column());
@@ -202,7 +207,7 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
     }
     break;
     case Qt::Key_Return:
-    case Qt::Key_End:
+    case Qt::Key_Enter:
     {
         QModelIndex index = currentIndex();
         if (index.isValid())
