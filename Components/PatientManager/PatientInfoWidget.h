@@ -23,6 +23,9 @@ public:
 
     void loadPatientInfo(void);
 
+private slots:
+    void _releaseHandle(IWidget *);
+
 private:
     QLabel *_bed;
     QLabel *_patientName;

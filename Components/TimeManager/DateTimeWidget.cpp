@@ -13,6 +13,8 @@
 #include "FontManager.h"
 #include <QHBoxLayout>
 #include <QLabel>
+#include "WindowManager.h"
+#include "SupervisorTimeWindow.h"
 
 /**************************************************************************************************
  * 功能： 设置显示的内容。
@@ -24,14 +26,22 @@ void DateTimeWidget::setText(const QString &str)
     _datetimeLabel->setText(str);
 }
 
+void DateTimeWidget::_release(IWidget *iWidget)
+{
+    if (iWidget == NULL)
+    {
+        return;
+    }
+    SupervisorTimeWindow w;
+    windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
+}
+
 /**************************************************************************************************
  * 功能： 构造。
  *************************************************************************************************/
 DateTimeWidget::DateTimeWidget(QWidget *parent)
     : IWidget("DateTimeWidget", parent)
 {
-    setFocusPolicy(Qt::NoFocus);
-
     QPalette palette;
     palette.setColor(QPalette::WindowText, Qt::lightGray);
 
@@ -44,4 +54,6 @@ DateTimeWidget::DateTimeWidget(QWidget *parent)
     hLayout->addWidget(_datetimeLabel);
     hLayout->setContentsMargins(0, 0, 0, 0);
     setLayout(hLayout);
+
+    connect(this , SIGNAL(released(IWidget*)), this , SLOT(_release(IWidget*)));
 }

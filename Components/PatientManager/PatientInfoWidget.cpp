@@ -16,6 +16,8 @@
 #include "PatientManager.h"
 #include <QLabel>
 #include "IConfig.h"
+#include "WindowManager.h"
+#include "PatientInfoWindow.h"
 
 void PatientInfoWidget::loadPatientInfo()
 {
@@ -33,6 +35,17 @@ void PatientInfoWidget::loadPatientInfo()
     }
     _patientName->setText(nameStr);
     _patientType->setText(typeStr);
+}
+
+void PatientInfoWidget::_releaseHandle(IWidget *iWidget)
+{
+    if (iWidget == NULL)
+    {
+        return;
+    }
+    windowManager.showWindow(&patientInfoWindow,
+                             WindowManager::ShowBehaviorCloseIfVisiable|
+                             WindowManager::ShowBehaviorCloseOthers);
 }
 
 /**************************************************************************************************
@@ -73,8 +86,6 @@ PatientInfoWidget::PatientInfoWidget(QWidget *parent) : IWidget("PatientInfoWidg
     hLayout->addWidget(_patientType);
     hLayout->addStretch();
     setLayout(hLayout);
-
-    setFocusPolicy(Qt::NoFocus);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
