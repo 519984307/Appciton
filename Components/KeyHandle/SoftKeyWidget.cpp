@@ -84,7 +84,7 @@ void SoftkeyWidget::paintEvent(QPaintEvent *e)
         }
         else
         {
-            int w = height * pngR.width() / pngR.height();     // 等比例压缩图像
+            int w = PixmapR.height() * pngR.width() / pngR.height();     // 等比例压缩图像
             PixmapR.setWidth(w);
             PixmapR.adjust((width-w)/2, 0, (width-w)/2, 0);    // 居中调整绘画区
         }
