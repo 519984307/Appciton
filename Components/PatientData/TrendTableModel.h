@@ -67,6 +67,16 @@ public:
     void displayDataTimeRange(unsigned &start, unsigned &end);
 
     void printTrendData(unsigned startTime, unsigned endTime);
+
+    /**
+     * @brief getColumnCount  每次显示的最大固定列数
+     */
+    unsigned getColumnCount(void) const;
+    /**
+     * @brief getLeftTime  获取当前趋势表左侧时间
+     */
+    unsigned getLeftTime(void) const;
+
 private:
     TrendTableModelPrivate * const d_ptr;
 };
