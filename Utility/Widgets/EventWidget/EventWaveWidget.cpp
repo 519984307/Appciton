@@ -102,7 +102,8 @@ public:
           currentWaveMedSecond(0), durationBefore(0),
           durationAfter(0), startX(0), endX(0), waveRagWidth(0)
     {
-        pixelWPicth = systemManager.getScreenPixelWPitch();
+        // 事件波形宽带按照合适的像素大小,高度按照实际的像素大小;
+        pixelWPicth = 0.25;
         pixelHPitch = systemManager.getScreenPixelHPitch();
         Config &conf =  configManager.getCurConfig();
         conf.getNumValue("Event|WaveLengthBefore", durationBefore);

@@ -12,6 +12,7 @@
 #include "TableView.h"
 #include "Button.h"
 #include "DropList.h"
+#include "MoveButton.h"
 #include "EventInfoWidget.h"
 #include <QListWidget>
 #include "EventWaveWidget.h"
@@ -51,8 +52,8 @@ public:
         : eventTable(NULL), model(NULL), upPageBtn(NULL),
           downPageBtn(NULL), typeDpt(NULL), levelDpt(NULL),
           infoWidget(NULL), trendListWidget(NULL), waveWidget(NULL),
-          eventListBtn(NULL), leftCoordinateBtn(NULL), rightCoordinateBtn(NULL),
-          prvEventBtn(NULL), nextEventBtn(NULL), printBtn(NULL),
+          eventListBtn(NULL), coordinateMoveBtn(NULL), eventMoveBtn(NULL),
+          printBtn(NULL),
           setBtn(NULL), upParamBtn(NULL), downParamBtn(NULL),
           tableWidget(NULL), chartWidget(NULL), stackLayout(NULL),
           backend(NULL), curParseIndex(0), eventNum(0), curDisplayEventNum(0),
@@ -110,10 +111,8 @@ public:
     QListWidget *trendListWidget;
     EventWaveWidget *waveWidget;
     Button *eventListBtn;
-    Button *leftCoordinateBtn;
-    Button *rightCoordinateBtn;
-    Button *prvEventBtn;
-    Button *nextEventBtn;
+    MoveButton *coordinateMoveBtn;
+    MoveButton *eventMoveBtn;
     Button *printBtn;
     Button *setBtn;
     Button *upParamBtn;
@@ -191,9 +190,22 @@ void EventWindow::showEvent(QShowEvent *ev)
 
     d_ptr->stackLayout->setCurrentIndex(0);
     d_ptr->loadEventData();
+    if (d_ptr->eventTable->model()->rowCount() == 0)
+    {
+        d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
+    }
+    else
+    {
+        d_ptr->eventTable->setFocusPolicy(Qt::StrongFocus);
+    }
 }
 
 void EventWindow::waveInfoReleased(QModelIndex index)
+{
+    waveInfoReleased(index.row());
+}
+
+void EventWindow::waveInfoReleased(int index)
 {
     d_ptr->stackLayout->setCurrentIndex(1);
     if (!d_ptr->backend->getBlockNR())
@@ -201,8 +213,9 @@ void EventWindow::waveInfoReleased(QModelIndex index)
         return;
     }
 
-    d_ptr->parseEventData(d_ptr->dataIndex.at(index.row()));
-    d_ptr->eventInfoUpdate(index.row());
+    d_ptr->eventTable->selectRow(index);
+    d_ptr->parseEventData(d_ptr->dataIndex.at(index));
+    d_ptr->eventInfoUpdate(index);
     d_ptr->eventTrendUpdate();
     d_ptr->eventWaveUpdate();
     d_ptr->eventListBtn->setFocus();
@@ -372,6 +385,11 @@ void EventWindow::leftMoveEvent()
         return;
     }
 
+    if (curIndex >= d_ptr->dataIndex.count())
+    {
+        return;
+    }
+
     d_ptr->parseEventData(d_ptr->dataIndex.at(curIndex));
     d_ptr->eventInfoUpdate(curIndex);
     d_ptr->eventTrendUpdate();
@@ -471,11 +489,11 @@ EventWindow::EventWindow()
     d_ptr->eventTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     d_ptr->eventTable->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     d_ptr->eventTable->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
     d_ptr->eventTable->setShowGrid(false);
     d_ptr->model = new EventReviewModel();
     d_ptr->eventTable->setModel(d_ptr->model);
     connect(d_ptr->eventTable, SIGNAL(clicked(QModelIndex)), this, SLOT(waveInfoReleased(QModelIndex)));
+    connect(d_ptr->eventTable, SIGNAL(rowClicked(int)), this, SLOT(waveInfoReleased(int)));
 
     d_ptr->typeDpt = new DropList(trs("Type"));
     for (int i = 0; i < EventTypeMax; i ++)
@@ -540,21 +558,15 @@ EventWindow::EventWindow()
     d_ptr->eventListBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->eventListBtn, SIGNAL(released()), this, SLOT(eventListReleased()));
 
-    d_ptr->leftCoordinateBtn = new Button("", QIcon("/usr/local/nPM/icons/doubleleft.png"));
-    d_ptr->leftCoordinateBtn->setButtonStyle(Button::ButtonIconOnly);
-    connect(d_ptr->leftCoordinateBtn, SIGNAL(released()), this, SLOT(leftMoveCoordinate()));
+    d_ptr->coordinateMoveBtn = new MoveButton(trs("Time"));
+    d_ptr->coordinateMoveBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->coordinateMoveBtn, SIGNAL(leftMove()), this, SLOT(leftMoveCoordinate()));
+    connect(d_ptr->coordinateMoveBtn, SIGNAL(rightMove()), this, SLOT(rightMoveCoordinate()));
 
-    d_ptr->rightCoordinateBtn = new Button("", QIcon("/usr/local/nPM/icons/doubleright.png"));
-    d_ptr->rightCoordinateBtn->setButtonStyle(Button::ButtonIconOnly);
-    connect(d_ptr->rightCoordinateBtn, SIGNAL(released()), this, SLOT(rightMoveCoordinate()));
-
-    d_ptr->prvEventBtn = new Button(trs("PreviousEvent"));
-    d_ptr->prvEventBtn->setButtonStyle(Button::ButtonTextOnly);
-    connect(d_ptr->prvEventBtn, SIGNAL(released()), this, SLOT(leftMoveEvent()));
-
-    d_ptr->nextEventBtn = new Button(trs("NextEvent"));
-    d_ptr->nextEventBtn->setButtonStyle(Button::ButtonTextOnly);
-    connect(d_ptr->nextEventBtn, SIGNAL(released()), this, SLOT(rightMoveEvent()));
+    d_ptr->eventMoveBtn = new MoveButton(trs("Event"));
+    d_ptr->eventMoveBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->eventMoveBtn, SIGNAL(leftMove()), this, SLOT(leftMoveEvent()));
+    connect(d_ptr->eventMoveBtn, SIGNAL(rightMove()), this, SLOT(rightMoveEvent()));
 
     d_ptr->printBtn = new Button(trs("Print"));
     d_ptr->printBtn->setButtonStyle(Button::ButtonTextOnly);
@@ -574,10 +586,8 @@ EventWindow::EventWindow()
 
     QHBoxLayout *btnLayout = new QHBoxLayout();
     btnLayout->addWidget(d_ptr->eventListBtn, 2);
-    btnLayout->addWidget(d_ptr->leftCoordinateBtn, 1);
-    btnLayout->addWidget(d_ptr->rightCoordinateBtn, 1);
-    btnLayout->addWidget(d_ptr->prvEventBtn, 2);
-    btnLayout->addWidget(d_ptr->nextEventBtn, 2);
+    btnLayout->addWidget(d_ptr->coordinateMoveBtn, 2);
+    btnLayout->addWidget(d_ptr->eventMoveBtn, 2);
     btnLayout->addWidget(d_ptr->printBtn, 2);
     btnLayout->addWidget(d_ptr->setBtn, 2);
     btnLayout->addWidget(d_ptr->upParamBtn, 1);

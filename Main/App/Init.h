@@ -86,7 +86,7 @@
 
 #include "EventStorageManager.h"
 
-#include "PRT72Provider.h"
+#include "PRT48Provider.h"
 #include "PrintAlarm.h"
 
 #include "RecorderManager.h"

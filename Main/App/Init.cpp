@@ -565,7 +565,7 @@ static void _initPrint(void)
     // printManager.selftest();
     // paramManager.addProvider(*prtProvider);
 
-    PRT72Provider *prtProvider = new PRT72Provider();
+    PRT48Provider *prtProvider = new PRT48Provider();
     recorderManager.setPrintPrividerIFace(prtProvider);
     recorderManager.selfTest();
 }

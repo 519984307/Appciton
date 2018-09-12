@@ -1,7 +1,16 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/12
+ **/
+
 #include <QTimerEvent>
 #include "Debug.h"
 #include "PRT48Provider.h"
-#include "RecorderManager.h"
 #include "SystemManager.h"
 #include "BLMEDUpgradeParam.h"
 #include "ServiceVersion.h"
@@ -73,7 +82,7 @@ enum PrinterCommand
 
 #define MAX_TIMEOUT     (30)    // 单位:秒
 
-//#if defined(Q_WS_QWS)
+// #if defined(Q_WS_QWS)
 #if 1
 
 /***************************************************************************************************
@@ -93,11 +102,6 @@ int PRT48Provider::_rllc(unsigned char *src, int len, unsigned char *dest, int d
 
     // 保证数据空间的大小至少两倍。
     if ((destLen / len) < 2)
-    {
-        return index;
-    }
-
-    if (len <= 0)
     {
         return index;
     }
@@ -211,17 +215,17 @@ void PRT48Provider::_parseVersionInfo(const unsigned char *data, unsigned int le
     }
 
     _hwVer = QString("%1.%2.%3")
-            .arg(QString::number(data[1]))
-            .arg(QString::number(data[2]))
-            .arg(QString::number(data[3]));
+             .arg(QString::number(data[1]))
+             .arg(QString::number(data[2]))
+             .arg(QString::number(data[3]));
     _swVer = QString("%1.%2.%3")
-            .arg(QString::number(data[4]))
-            .arg(QString::number(data[5]))
-            .arg(QString::number(data[6]));
+             .arg(QString::number(data[4]))
+             .arg(QString::number(data[5]))
+             .arg(QString::number(data[6]));
     _protoVer = QString("%1.%2.%3")
-            .arg(QString::number(data[7]))
-            .arg(QString::number(data[8]))
-            .arg(QString::number(data[9]));
+                .arg(QString::number(data[7]))
+                .arg(QString::number(data[8]))
+                .arg(QString::number(data[9]));
 }
 
 /***************************************************************************************************
@@ -244,7 +248,7 @@ void PRT48Provider::_parseSelfTestResult(const unsigned char *data, unsigned int
 
     if (0 == _selfTestResult)
     {
-        systemManager.setPoweronTestResult(PRINTER48_SELFTEST_RESULT, SELFTEST_SUCCESS);
+        systemManager.setPoweronTestResult(PRINTER72_SELFTEST_RESULT, SELFTEST_SUCCESS);
     }
     else
     {
@@ -286,7 +290,7 @@ void PRT48Provider::_parseSelfTestResult(const unsigned char *data, unsigned int
         }
         errorLog.append(item);
 
-        systemManager.setPoweronTestResult(PRINTER48_SELFTEST_RESULT, SELFTEST_FAILED);
+        systemManager.setPoweronTestResult(PRINTER72_SELFTEST_RESULT, SELFTEST_FAILED);
     }
 }
 
@@ -371,7 +375,7 @@ void PRT48Provider::_parseBitmapDataAck(const unsigned char *data, unsigned int 
 void PRT48Provider::disconnected()
 {
     QMetaObject::invokeMethod(_sigSender, "connectionChanged", Q_ARG(bool, false));
-    systemManager.setPoweronTestResult(PRINTER48_SELFTEST_RESULT, SELFTEST_FAILED);
+    systemManager.setPoweronTestResult(PRINTER72_SELFTEST_RESULT, SELFTEST_FAILED);
 }
 
 /***************************************************************************************************
@@ -392,65 +396,65 @@ void PRT48Provider::handlePacket(unsigned char *data, int len)
     unsigned char type = data[0];
     switch (type)
     {
-        case PRINTER_CMD_GET_STATUS_ACK:
-        case PRINTER_CMD_STATUS_INFO:
-            _parseStatusInfo(data, len);
-            break;
+    case PRINTER_CMD_GET_STATUS_ACK:
+    case PRINTER_CMD_STATUS_INFO:
+        _parseStatusInfo(data, len);
+        break;
 
-        case PRINTER_CMD_VERSION_INFO:
-            _parseVersionInfo(data, len);
-            break;
+    case PRINTER_CMD_VERSION_INFO:
+        _parseVersionInfo(data, len);
+        break;
 
-        case PRINTER_CMD_SELF_TEST_RESULT:
-            _parseSelfTestResult(data, len);
-            break;
+    case PRINTER_CMD_SELF_TEST_RESULT:
+        _parseSelfTestResult(data, len);
+        break;
 
-        case PRINTER_CMD_ERROR_INFO:
-            _parseErrorReport(data, len);
-            break;
+    case PRINTER_CMD_ERROR_INFO:
+        _parseErrorReport(data, len);
+        break;
 
-        case PRINTER_NOTIFY_START:
+    case PRINTER_NOTIFY_START:
+    {
+        _ack(type);
+        QMetaObject::invokeMethod(_sigSender, "restart");
+
+        systemManager.setPoweronTestResult(PRINTER72_SELFTEST_RESULT, SELFTEST_MODULE_RESET);
+        ErrorLogItem *item = new CriticalFaultLogItem();
+        item->setName(QString("Printer Start"));
+        errorLog.append(item);
+        break;
+    }
+
+    case PRINTER_CMD_KEEP_ALIVE:
+    {
+        feed();
+        if (_selfTestResult == PRINTER_SELF_TEST_NOT_PERFORMED)
         {
-            _ack(type);
-            QMetaObject::invokeMethod(_sigSender, "restart");
-
-            systemManager.setPoweronTestResult(PRINTER48_SELFTEST_RESULT, SELFTEST_MODULE_RESET);
-            ErrorLogItem *item = new CriticalFaultLogItem();
-            item->setName(QString("Printer Start"));
-            errorLog.append(item);
-            break;
+            startSelfTest();
         }
+        break;
+    }
 
-        case PRINTER_CMD_KEEP_ALIVE:
-        {
-            feed();
-            if (_selfTestResult == PRINTER_SELF_TEST_NOT_PERFORMED)
-            {
-                startSelfTest();
-            }
-            break;
-        }
+    case PRINTER_CMD_BUF_STAT:
+        _parseBufStat(data, len);
+        break;
 
-        case PRINTER_CMD_BUF_STAT:
-            _parseBufStat(data, len);
-            break;
+    case PRINTER_CMD_SEND_BITMAP_DATA_ACK:
+        _parseBitmapDataAck(data, len);
+        break;
 
-        case PRINTER_CMD_SEND_BITMAP_DATA_ACK:
-            _parseBitmapDataAck(data, len);
-            break;
+    case PRINTER_CMD_SET_SPEED_ACK:
+    case PRINTER_CMD_STOP_ACK:
+    case PRINTER_CMD_RUN_PAPER_ACK:
+    case PRINTER_CMD_ALIGN_MARKER_ACK:
+    case PRINTER_CMD_PRINT_TEST_PAGE_ACK:
+        // TODO
+        break;
 
-        case PRINTER_CMD_SET_SPEED_ACK:
-        case PRINTER_CMD_STOP_ACK:
-        case PRINTER_CMD_RUN_PAPER_ACK:
-        case PRINTER_CMD_ALIGN_MARKER_ACK:
-        case PRINTER_CMD_PRINT_TEST_PAGE_ACK:
-            // TODO
-            break;
-
-        default:
+    default:
 //                debug("Unknown message type!");
 //                outHex(data, (int)len);
-            break;
+        break;
     }
 }
 
@@ -510,7 +514,7 @@ bool PRT48Provider::sendBitmapData(unsigned char *data, unsigned int len)
 {
     static unsigned char _packetNum = 0;
 
-    unsigned char packet[2 * len + 1 + 1]; //RLE worst case data len (2n+1), plus a packet number
+    unsigned char packet[2 * len + 1 + 1]; // RLE worst case data len (2n+1), plus a packet number
     ::memset(packet, 0, sizeof(packet));
     int retLen;
 
@@ -519,7 +523,7 @@ bool PRT48Provider::sendBitmapData(unsigned char *data, unsigned int len)
 #if 0
     retLen = _rllc(data, len, &packet[1], sizeof(packet) - 1);
 #else
-    Util::RunLengthEncode((char*)data, len, (char*)&packet[1], &retLen);
+    Util::RunLengthEncode(reinterpret_cast<char *>(data), len, reinterpret_cast<char *>(&packet[1]), &retLen);
 #endif
 
     return sendCmd(PRINTER_CMD_SEND_BITMAP_DATA, packet, retLen + 1);
@@ -600,17 +604,28 @@ void PRT48Provider::flush(void)
     uart->sync();
 }
 
+
+/**
+ * @brief PRT72Provider::signalSender get the signal sender
+ * @return
+ */
+PrinterProviderSignalSender *PRT48Provider::signalSender() const
+{
+    return _sigSender;
+}
+
 /***************************************************************************************************
  * 构造函数
  **************************************************************************************************/
 PRT48Provider::PRT48Provider()
-        : BLMProvider("PRT48")
-        , _errorCount(0)
-        , _prePacketNum(0)
-        , _selfTestResult(PRINTER_SELF_TEST_NOT_PERFORMED)
-        , _sigSender(new PrinterProviderSignalSender(this))
+    : BLMProvider("PRT48")
+    , _errorCount(0)
+    , _prePacketNum(0)
+    , _selfTestResult(PRINTER_SELF_TEST_NOT_PERFORMED)
+    , _sigSender(new PrinterProviderSignalSender(this))
 {
-    UartAttrDesc portAttr(460800, 8, 'N', 1, 0, FlOW_CTRL_HARD, false);  //new mainboard support flow control, use block io
+    // UartAttrDesc portAttr(460800, 8, 'N', 1, 0, FlOW_CTRL_HARD, false);  //new mainboard support flow control, use block io
+    UartAttrDesc portAttr(115200, 8, 'N', 1, 0);
     initPort(portAttr);
 }
 
@@ -619,37 +634,42 @@ PRT48Provider::PRT48Provider()
  **************************************************************************************************/
 PRT48Provider::~PRT48Provider()
 {
-
 }
 
 #elif defined(Q_WS_X11)
-void PRT48Provider::disconnected(bool /*flag*/){}
-void PRT48Provider::sendVersion(void) {}
-void PRT48Provider::stop(void) {}
-void PRT48Provider::getVersionInfo(void) {}
-void PRT48Provider::getStatusInfo(void) {}
-void PRT48Provider::setPrintSpeed(PrintSpeed /*speed*/) {}
-void PRT48Provider::runPaper(unsigned char /*len*/) {}
-bool PRT48Provider::sendBitmapData(unsigned char */*data*/, unsigned int /*len*/) {return true;}
-void PRT48Provider::alignMarker(void) {}
-void PRT48Provider::printTestPage(void) {}
-void PRT48Provider::startSelfTest(void) {}
-void PRT48Provider::reset(void) {}
-void PRT48Provider::flush(void) {}
-PrinterSelfTestResult PRT48Provider::selfTestResult(void)
+void PRT72Provider::disconnected(bool /*flag*/) {}
+void PRT72Provider::sendVersion(void) {}
+void PRT72Provider::stop(void) {}
+void PRT72Provider::getVersionInfo(void) {}
+void PRT72Provider::getStatusInfo(void) {}
+void PRT72Provider::setPrintSpeed(PrintSpeed /*speed*/) {}
+void PRT72Provider::runPaper(unsigned char /*len*/) {}
+bool PRT72Provider::sendBitmapData(unsigned char */*data*/, unsigned int /*len*/)
+{
+    return true;
+}
+void PRT72Provider::alignMarker(void) {}
+void PRT72Provider::printTestPage(void) {}
+void PRT72Provider::startSelfTest(void) {}
+void PRT72Provider::reset(void) {}
+void PRT72Provider::flush(void) {}
+PrinterSelfTestResult PRT72Provider::selfTestResult(void)
 {
     return PRINTER_SELF_TEST_OK;
 }
-void PRT48Provider::versionInfo(QString &hwVer, QString &swVer, QString &protoVer)
+void PRT72Provider::versionInfo(QString &hwVer, QString &swVer, QString &protoVer)
 {
     hwVer = "1.0";
     swVer = "1.0";
     protoVer = "1.0";
 }
-unsigned PRT48Provider::errorCount(void){return 0;}
-void PRT48Provider::sendCmdData(unsigned char /*cmdId*/, const unsigned char */*data*/, unsigned int /*len*/) { }
-void PRT48Provider::sendUART(unsigned int /*rate*/) { }
-PRT48Provider::PRT48Provider() : BLMProvider("PRT48Provider"){}
-PRT48Provider::~PRT48Provider(){}
+unsigned PRT72Provider::errorCount(void)
+{
+    return 0;
+}
+void PRT72Provider::sendCmdData(unsigned char /*cmdId*/, const unsigned char */*data*/, unsigned int /*len*/) { }
+void PRT72Provider::sendUART(unsigned int /*rate*/) { }
+PRT72Provider::PRT72Provider() : BLMProvider("PRT72Provider") {}
+PRT72Provider::~PRT72Provider() {}
 
 #endif

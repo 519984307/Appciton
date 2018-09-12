@@ -2418,7 +2418,7 @@ WindowManager::WindowManager() : QWidget(), _demoWidget(NULL), timer(NULL)
 
     timer = new QTimer(this);
     timer->setSingleShot(true);
-    timer->setInterval(10 * 1000);    // 10s
+    timer->setInterval(60 * 1000);    // 60s
     connect(timer, SIGNAL(timeout()), this, SLOT(closeAllWidows()));
 
     qApp->installEventFilter(this);
