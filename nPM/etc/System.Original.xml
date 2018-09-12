@@ -772,6 +772,7 @@
 		<CO2>
 			<O2Compensation>55</O2Compensation>
 			<N2OCompensation>66</N2OCompensation>
+			<FiCO2Display>0</FiCO2Display>
 		</CO2>
         <ECG12Lead>
             <EmailOffset>0</EmailOffset>

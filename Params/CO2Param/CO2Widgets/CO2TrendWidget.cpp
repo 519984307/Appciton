@@ -277,16 +277,9 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
     _fico2Value->setPalette(palette);
     _fico2Value->setText(InvStr());
 
-    QHBoxLayout *mainLayout = new QHBoxLayout();
-    mainLayout->addStretch();
-    mainLayout->addWidget(_etco2Value);
-    mainLayout->addStretch();
-    mainLayout->addWidget(_fico2Label);
-    mainLayout->addStretch();
-    mainLayout->addWidget(_fico2Value);
-    mainLayout->addStretch();
-
-    contentLayout->addLayout(mainLayout);
+    contentLayout->addWidget(_etco2Value, 3);
+    contentLayout->addWidget(_fico2Label, 1);
+    contentLayout->addWidget(_fico2Value, 3);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));

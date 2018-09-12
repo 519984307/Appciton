@@ -213,16 +213,10 @@ AGTrendWidget::AGTrendWidget(const QString &trendName, const AGTypeGas gasType)
     _fiValue->setPalette(palette);
     _fiValue->setText(InvStr());
 
-    QHBoxLayout *mainLayout = new QHBoxLayout();
-    mainLayout->addStretch();
-    mainLayout->addWidget(_etValue);
-    mainLayout->addStretch();
-    mainLayout->addWidget(_fiName);
-    mainLayout->addStretch();
-    mainLayout->addWidget(_fiValue);
-    mainLayout->addStretch();
-
-    contentLayout->addLayout(mainLayout);
+    contentLayout->addStretch();
+    contentLayout->addWidget(_etValue, 3);
+    contentLayout->addWidget(_fiName, 1);
+    contentLayout->addWidget(_fiValue, 3);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));

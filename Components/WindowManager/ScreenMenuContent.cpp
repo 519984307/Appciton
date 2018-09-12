@@ -84,6 +84,12 @@ void ScreenMenuContent::layoutExec()
 
 void ScreenMenuContent::onComboxIndexChanged(int index)
 {
+    UserFaceType type = static_cast<UserFaceType>(index);
+    if (type > UFACE_NR)
+    {
+        return;
+    }
+    windowManager.setUFaceType(type);
 }
 
 void ScreenMenuContent::settingLayout()

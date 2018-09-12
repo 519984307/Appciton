@@ -324,12 +324,13 @@ PatientSave,保存病人,Save Patient
 PatientCreate,新建病人,Create Patient
 FastReceivingPatients,快速接收病人,Fast Receiving Patients
 ReceivingPatients,接收病人,Receiving Patients
-RelievePatient,解除病人,Relieve Patient
+RelievePatient,解除病人,Discharge Patient
 CleanPatientData,清除病人数据,Clean Patient Data
 WhetherStandby,是否进入待机？,Whether to enter the standby machine？
 RemoveAndRecePatient,"解除当前病人,接收新病人?",Relieving the current patient and receiving new patients?
 ApplicationDataToReceivingPatients,将监护仪中已有数据应用于将被接收的病人？,Application data to receiving patients?
 PatientManagement,病人管理,Patient Management
+ScreenSetup,界面布局,Layout
 WindowLayout,界面布局,Window Layout
 ResetLayout,重置,Reset
 SaveLayout,保存,Save
@@ -1393,7 +1394,7 @@ Blood,血液,Blood
 DeleteAll,删除全部,Delete All
 DeleteCase,删除事件,Delete Case
 Freeze,冻结,Freeze
-LockScreen,锁屏,LockScreen
+LockScreen,锁屏,Lock Screen
 Open,开放,Open
 Start,开始,Start
 AlarmLightOnAlarmReset,警示复位灯,Alarm Light On Alarm Reset
@@ -1436,9 +1437,11 @@ HemodynamicCalculation,血液动力学计算,Hemodynamic Calculation
 CalculateMenuDesc,计算设置,Calculation Desc
 KeyBoardVolumn,按键音量,Key Volumn
 Standby,待机,Standby
-NIBPReview,NIBP回顾,NIBP Review
-HRAbnormalReview,心率失常回顾,HR Review
 CO2Standby,CO2待机,CO2 Standby
 CO2Measure,CO2测量,CO2 Measure
-WindowSelect,界面选择,Window Select
+ChooseScreen,界面选择,Screen
 ManualTirgger,手动触发,Manual Tirgger
+ParameterSwitch,参数开关,Para Switch
+eventReview,事件回顾,Event
+NightMode,夜间模式,NightMode
+Patient,病人信息,Patient
