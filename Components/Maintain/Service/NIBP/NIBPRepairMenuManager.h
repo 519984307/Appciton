@@ -1,9 +1,22 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/12
+ **/
+
+
+
 #pragma once
 #include "MenuGroup.h"
 #include "NIBPProviderIFace.h"
 #include "NIBPServiceStateDefine.h"
 #include "NIBPState.h"
 #include "IMessageBox.h"
+#include "MessageBox.h"
 
 #define InvStr() ("---")
 
@@ -67,8 +80,8 @@ private:
     static const int _listItemHeight = 26;
     static const int _borderWidth = 4;
 
-    IMessageBox *messageBoxWait;
-    IMessageBox *messageBoxError;
+    MessageBox *messageBoxWait;
+    MessageBox *messageBoxError;
 
     bool _replyFlag;                     //进入维护模式标志
     bool _repairError;                   //维护模式错误

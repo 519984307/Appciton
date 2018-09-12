@@ -142,7 +142,7 @@ void MonitorInfoWindow::layoutExec()
     vlayout->addStretch();
     vlayout->addLayout(layout);
     vlayout->addStretch();
-    setFixedSize(580, 580);
+    setFixedSize(580, 480);
 
     QLabel *labelLeft;
     QLabel *labelRight;

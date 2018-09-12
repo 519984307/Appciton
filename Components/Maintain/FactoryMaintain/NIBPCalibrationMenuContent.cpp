@@ -55,5 +55,5 @@ void NIBPCalibrationMenuContent::onBtnSlot()
 {
     NIBPRepairMenuWindow *w = NIBPRepairMenuWindow::getInstance();
     w->init();
-    windowManager.showWindow(w, WindowManager::ShowBehaviorNone);
+    windowManager.showWindow(w, WindowManager::ShowBehaviorModal);
 }
