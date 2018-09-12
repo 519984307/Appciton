@@ -94,6 +94,7 @@ TrendTableWindow::~TrendTableWindow()
 void TrendTableWindow::setTimeInterval(int t)
 {
     d_ptr->model->setTimeInterval(t);
+    d_ptr->timeInterval = (ResolutionRatio)t;
     d_ptr->updateTable();
 }
 
@@ -116,6 +117,38 @@ void TrendTableWindow::setHistoryData(bool flag)
 void TrendTableWindow::printTrendData(unsigned startTime, unsigned endTime)
 {
     d_ptr->model->printTrendData(startTime, endTime);
+}
+
+void TrendTableWindow::updatePages()
+{
+    unsigned startTime = 0;
+    unsigned endTime = 0;
+    unsigned leftTime = 0;
+
+    d_ptr->model->getDataTimeRange(startTime, endTime);
+
+    unsigned timeInterval = TrendDataSymbol::convertValue(d_ptr->timeInterval);
+
+    if (startTime % timeInterval != 0)
+    {
+        startTime = startTime + (timeInterval - startTime % timeInterval);
+    }
+    endTime = endTime - endTime % timeInterval;
+    leftTime = d_ptr->model->getLeftTime();
+
+    unsigned allPagesNum = 1 + (endTime - startTime) * 1.0 / timeInterval / d_ptr->model->getColumnCount();
+    unsigned curPageNum = 1 + (leftTime - startTime) * 1.0 / (endTime - startTime) * allPagesNum;
+
+    if (endTime == 0 && startTime == 0)
+    {
+        allPagesNum = 1;
+        curPageNum = 1;
+    }
+    setWindowTitle(QString("%1 ( %2 / %3 %4 )")
+                   .arg(trs("TrendTable"))
+                   .arg(curPageNum)
+                   .arg(allPagesNum)
+                   .arg(trs("Page")));
 }
 
 void TrendTableWindow::showEvent(QShowEvent *ev)
@@ -171,7 +204,6 @@ bool TrendTableWindow::eventFilter(QObject *o, QEvent *e)
 TrendTableWindow::TrendTableWindow()
     : Window(), d_ptr(new TrendTableWindowPrivate())
 {
-    setWindowTitle(trs("TrendTable"));
     resize(800, 580);
 
     d_ptr->table = new TableView();
@@ -246,16 +278,20 @@ TrendTableWindow::TrendTableWindow()
     index = 0;
     QString groupPrefix = prefix + "TrendGroup";
     systemConfig.getNumValue(groupPrefix, index);
+
+    updatePages();
 }
 
 void TrendTableWindow::leftReleased()
 {
     d_ptr->model->leftPage(d_ptr->curSecCol);
+    updatePages();
 }
 
 void TrendTableWindow::rightReleased()
 {
     d_ptr->model->rightPage(d_ptr->curSecCol);
+    updatePages();
 }
 
 void TrendTableWindow::upReleased()
@@ -271,11 +307,13 @@ void TrendTableWindow::downReleased()
 void TrendTableWindow::leftMoveEvent()
 {
     d_ptr->model->leftMoveEvent(d_ptr->curSecCol);
+    updatePages();
 }
 
 void TrendTableWindow::rightMoveEvent()
 {
     d_ptr->model->rightMoveEvent(d_ptr->curSecCol);
+    updatePages();
 }
 
 void TrendTableWindow::printWidgetRelease()
@@ -297,6 +335,7 @@ void TrendTableWindow::printWidgetRelease()
 void TrendTableWindow::trendDataSetReleased()
 {
     windowManager.showWindow(&trendTableSetWindow, WindowManager::ShowBehaviorModal);
+    updatePages();
 }
 
 void TrendTableWindowPrivate::updateTable()

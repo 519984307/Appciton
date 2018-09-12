@@ -52,6 +52,12 @@ public:
      * @param endTime 打印的结束时间
      */
     void printTrendData(unsigned startTime, unsigned endTime);
+
+    /**
+     * @brief updatePages  更新页数
+     */
+    void updatePages(void);
+
 protected:
     void showEvent(QShowEvent *ev);
     bool eventFilter(QObject *, QEvent *);

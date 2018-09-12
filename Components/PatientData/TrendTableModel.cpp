@@ -629,6 +629,16 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     recorderManager.addPageGenerator(gen);
 }
 
+unsigned TrendTableModel::getColumnCount() const
+{
+    return COLUMN_COUNT;
+}
+
+unsigned TrendTableModel::getLeftTime() const
+{
+   return d_ptr->leftTime;
+}
+
 TrendTableModelPrivate::TrendTableModelPrivate()
     : rowCount(0), startIndex(0), endIndex(0),
       isHistory(false), historyDataPath(""),
