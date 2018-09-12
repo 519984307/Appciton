@@ -36,7 +36,9 @@ public:
         ITEM_CBO_DISPLAY_SEC
     };
 
-    SupervisorTimeWindowPrivate() {}
+    SupervisorTimeWindowPrivate()
+        : isChangeTime(false)
+    {}
 
     /**
      * @brief loadOptions
@@ -56,6 +58,7 @@ public:
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, SpinBox *> spinBoxs;
+    bool isChangeTime;
 };
 
 void SupervisorTimeWindowPrivate::loadOptions()
@@ -316,6 +319,15 @@ void SupervisorTimeWindow::layoutExec()
     setFixedSize(580, 580);
 }
 
+void SupervisorTimeWindow::hideEvent(QHideEvent *ev)
+{
+    if (d_ptr->isChangeTime)
+    {
+        d_ptr->setSysTime();
+    }
+    Window::hideEvent(ev);
+}
+
 void SupervisorTimeWindow::onComboBoxIndexChanged(int index)
 {
     ComboBox *box = qobject_cast<ComboBox *>(sender());
@@ -369,7 +381,7 @@ void SupervisorTimeWindow::onSpinBoxValueChanged(int value, int scale)
                     d_ptr->spinBoxs[SupervisorTimeWindowPrivate::ITEM_SPB_DAY]->setValue(curMax);
                 }
             }
-            d_ptr->setSysTime();
+            d_ptr->isChangeTime = true;
             break;
         }
         case SupervisorTimeWindowPrivate::ITEM_SPB_MONTH:
@@ -388,14 +400,14 @@ void SupervisorTimeWindow::onSpinBoxValueChanged(int value, int scale)
             {
                 d_ptr->spinBoxs[SupervisorTimeWindowPrivate::ITEM_SPB_DAY]->setValue(curMax);
             }
-            d_ptr->setSysTime();
+            d_ptr->isChangeTime = true;
             break;
         }
         case SupervisorTimeWindowPrivate::ITEM_SPB_DAY:
         case SupervisorTimeWindowPrivate::ITEM_SPB_HOUR:
         case SupervisorTimeWindowPrivate::ITEM_SPB_MINUTE:
         case SupervisorTimeWindowPrivate::ITEM_SPB_SECOND:
-            d_ptr->setSysTime();
+            d_ptr->isChangeTime = true;
             break;
         default:
             break;

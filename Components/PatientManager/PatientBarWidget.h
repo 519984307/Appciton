@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/9/12
+ **/
+
+
 #pragma once
 #include <QLabel>
 #include "IWidget.h"
@@ -9,7 +20,7 @@ class PatientBarWidget : public IWidget
     Q_OBJECT
 
 public:
-    PatientBarWidget(QWidget *parent = 0);
+    explicit PatientBarWidget(QWidget *parent = 0);
     ~PatientBarWidget();
 
     // 设置病人类型。

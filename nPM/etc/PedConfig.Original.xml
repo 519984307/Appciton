@@ -1285,6 +1285,7 @@
         <DiagnosticECG>1</DiagnosticECG>
         <SummaryReportSnapshotPrintingInAED>0</SummaryReportSnapshotPrintingInAED>
         <Print30JSelfTestReport>0</Print30JSelfTestReport>
+	<PrintSpeed>0</PrintSpeed>
     </Print>
     <ECG12L>
         <NotchFilter>0</NotchFilter>
