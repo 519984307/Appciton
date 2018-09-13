@@ -426,6 +426,8 @@ void TrendTableModel::leftPage(int &curSecCol)
     {
         startTime = startTime + (timeInterval - startTime % timeInterval);
     }
+    unsigned endTime = d_ptr->trendDataPack.last()->time;
+    endTime = endTime - endTime % timeInterval;
 
     if (d_ptr->leftTime < startTime)
     {
@@ -433,6 +435,11 @@ void TrendTableModel::leftPage(int &curSecCol)
     }
 
     d_ptr->rightTime = d_ptr->leftTime + timeInterval * (COLUMN_COUNT - 1);
+
+    if (d_ptr->rightTime > endTime)
+    {
+        d_ptr->rightTime = endTime;
+    }
 
     beginResetModel();
     d_ptr->loadTrendData();
@@ -448,15 +455,23 @@ void TrendTableModel::rightPage(int &curSecCol)
     }
 
     unsigned timeInterval = TrendDataSymbol::convertValue(d_ptr->timeInterval);
-    d_ptr->rightTime = d_ptr->rightTime + timeInterval * COLUMN_COUNT;
+    unsigned lastleftTime = d_ptr->leftTime;
+    d_ptr->leftTime = d_ptr->leftTime + timeInterval * COLUMN_COUNT;
     unsigned endTime = d_ptr->trendDataPack.last()->time;
     endTime = endTime - endTime % timeInterval;
 
-    if (d_ptr->rightTime > endTime)
+    if (d_ptr->leftTime > endTime)
     {
-        d_ptr->rightTime = endTime;
+        d_ptr->leftTime = lastleftTime;
     }
-    d_ptr->leftTime = d_ptr->rightTime - timeInterval * (COLUMN_COUNT - 1);
+    else
+    {
+        d_ptr->rightTime = d_ptr->leftTime + timeInterval * (COLUMN_COUNT - 1);
+        if (d_ptr->rightTime > endTime)
+        {
+            d_ptr->rightTime = endTime;
+        }
+    }
 
     beginResetModel();
     d_ptr->loadTrendData();
@@ -469,7 +484,8 @@ void TrendTableModel::leftMoveEvent(int &curSecCol)
     {
         unsigned timeInterval = TrendDataSymbol::convertValue(d_ptr->timeInterval);
         int eventIndex = d_ptr->eventList.at(i);
-
+        qDebug()<< "leftMoveEvent: eventIndex" << eventIndex;
+        qDebug()<< "leftMoveEvent: d_ptr->curSecIndex" << d_ptr->curSecIndex;
         if (eventIndex < d_ptr->curSecIndex)
         {
            unsigned startTime = d_ptr->trendDataPack.first()->time;
@@ -479,7 +495,7 @@ void TrendTableModel::leftMoveEvent(int &curSecCol)
             }
             d_ptr->leftTime = startTime + eventIndex /
                     COLUMN_COUNT * COLUMN_COUNT * timeInterval;
-            d_ptr->rightTime = d_ptr->leftTime + COLUMN_COUNT * timeInterval;
+            d_ptr->rightTime = d_ptr->leftTime + (COLUMN_COUNT - 1) * timeInterval;
 
             unsigned endTime = d_ptr->trendDataPack.last()->time;
             endTime = endTime - endTime % timeInterval;
@@ -514,7 +530,7 @@ void TrendTableModel::rightMoveEvent(int &curSecCol)
             }
             d_ptr->leftTime = startTime + eventIndex /
                     COLUMN_COUNT * COLUMN_COUNT * timeInterval;
-            d_ptr->rightTime = d_ptr->leftTime + COLUMN_COUNT * timeInterval;
+            d_ptr->rightTime = d_ptr->leftTime + (COLUMN_COUNT - 1) * timeInterval;
 
             unsigned endTime = d_ptr->trendDataPack.last()->time;
             endTime = endTime - endTime % timeInterval;
@@ -634,9 +650,9 @@ unsigned TrendTableModel::getColumnCount() const
     return COLUMN_COUNT;
 }
 
-unsigned TrendTableModel::getLeftTime() const
+unsigned TrendTableModel::getRightTime() const
 {
-   return d_ptr->leftTime;
+   return d_ptr->rightTime;
 }
 
 TrendTableModelPrivate::TrendTableModelPrivate()
@@ -756,11 +772,20 @@ void TrendTableModelPrivate::updateDisplayTime()
     if (trendDataPack.count() != 0)
     {
         unsigned interval = TrendDataSymbol::convertValue(timeInterval);
-        unsigned t;
+        unsigned startTime = trendDataPack.first()->time;
+
+        if (startTime % interval != 0)
+        {
+            startTime = startTime + (interval - startTime % interval);
+        }
         unsigned lastTime = trendDataPack.last()->time;
-        t = lastTime - lastTime % interval;
-        rightTime = t;
-        leftTime = t - interval * (COLUMN_COUNT - 1);
+        lastTime = lastTime - lastTime % interval;
+
+        leftTime = (lastTime - startTime) * 1.0 / interval / COLUMN_COUNT;
+        leftTime = leftTime * interval * COLUMN_COUNT;
+        leftTime += startTime;
+
+        rightTime = lastTime;
     }
 }
 
@@ -948,6 +973,10 @@ void TrendTableModelPrivate::loadTrendData()
         }
         // 列头不为空时才显示报警标识
         int col = indexList.value(i, 0);
+        if (colHeadList.count() < col + 1)
+        {
+            continue;
+        }
         if (colHeadList.at(col).dataStr != "")
         {
             colHeadList[col].dataColor = Qt::yellow;

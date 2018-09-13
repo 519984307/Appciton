@@ -1241,6 +1241,8 @@ ConfImpactItemSettings,受配置影响项设置,Configuration-influenced Setting
 ParaSwitch,参数开关,Parameters Switch
 NurseCallSetting,护士呼叫设置,Nurse Call Setting
 Setting,设置,Setting
+RealtimePrintSegment,实时打印,Real Time Print
+NibpMeasurement,NIBP测量,Nibp Measurement
 StopSetting,停止设置,Stop Setting
 SignalType,信号类型,Signal Type
 Continuity,连续,Continuity

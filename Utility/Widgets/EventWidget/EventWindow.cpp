@@ -496,7 +496,7 @@ EventWindow::EventWindow()
     connect(d_ptr->eventTable, SIGNAL(rowClicked(int)), this, SLOT(waveInfoReleased(int)));
 
     d_ptr->typeDpt = new DropList(trs("Type"));
-    for (int i = 0; i < EventTypeMax; i ++)
+    for (int i = 0; i < EventTypeMax - 1; i ++)
     {
         d_ptr->typeDpt->addItem(trs(EventDataSymbol::convert((EventType)i)));
     }
@@ -640,6 +640,10 @@ void EventWindowPrivate::loadEventData()
                 continue;
             }
 
+            if (ctx.infoSegment->type != curEventType && curEventType != EventAll)
+            {
+                continue;
+            }
             t = ctx.infoSegment->timestamp;
             // 事件时间
             timeDate.getDate(t, dateStr, true);
@@ -721,14 +725,26 @@ void EventWindowPrivate::loadEventData()
                 break;
             }
             case EventRealtimePrint:
-                // TODO
+            {
+                infoStr = trs("RealtimePrintSegment");
+                timeList.append(timeItemStr);
+                eventList.append(infoStr);
                 break;
+            }
             case EventNIBPMeasurement:
-                // TODO
+            {
+                infoStr = trs("NibpMeasurement");
+                timeList.append(timeItemStr);
+                eventList.append(infoStr);
                 break;
+            }
             case EventWaveFreeze:
-                // TODO
+            {
+                infoStr = trs("WaveFreeze");
+                timeList.append(timeItemStr);
+                eventList.append(infoStr);
                 break;
+            }
             default:
                 break;
             }

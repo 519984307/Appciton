@@ -27,6 +27,7 @@
 #include "NIBPState.h"
 #include "NIBPMonitorStopState.h"
 #include "NIBPMonitorStartingState.h"
+#include "EventStorageManager.h"
 
 NIBPParam *NIBPParam::_selfObj = NULL;
 

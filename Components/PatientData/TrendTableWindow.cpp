@@ -54,11 +54,11 @@
 class TrendTableWindowPrivate
 {
 public:
-    TrendTableWindowPrivate()
+    explicit TrendTableWindowPrivate(TrendTableWindow *parent)
         : model(NULL), table(NULL), upBtn(NULL), downBtn(NULL),
            pagingBtn(NULL), eventBtn(NULL),
           printParamBtn(NULL), setBtn(NULL), timeInterval(RESOLUTION_RATIO_5_SECOND),
-          curSecCol(0)
+          curSecCol(0), q_ptr(parent)
     {}
 
     void updateTable(void);
@@ -75,6 +75,7 @@ public:
     ResolutionRatio timeInterval;          // 时间间隔
 
     int curSecCol;                         // 当前选中列
+    TrendTableWindow *q_ptr;
 };
 
 TrendTableWindow *TrendTableWindow::getInstance()
@@ -123,7 +124,7 @@ void TrendTableWindow::updatePages()
 {
     unsigned startTime = 0;
     unsigned endTime = 0;
-    unsigned leftTime = 0;
+    unsigned rightTime = 0;
 
     d_ptr->model->getDataTimeRange(startTime, endTime);
 
@@ -134,15 +135,14 @@ void TrendTableWindow::updatePages()
         startTime = startTime + (timeInterval - startTime % timeInterval);
     }
     endTime = endTime - endTime % timeInterval;
-    leftTime = d_ptr->model->getLeftTime();
+    rightTime = d_ptr->model->getRightTime();
 
     unsigned allPagesNum = 1 + (endTime - startTime) * 1.0 / timeInterval / d_ptr->model->getColumnCount();
-    unsigned curPageNum = 1 + (leftTime - startTime) * 1.0 / (endTime - startTime) * allPagesNum;
+    unsigned curPageNum = 1 + (rightTime - startTime) * 1.0 / ((endTime - startTime) * 1.0) * (allPagesNum - 1);
 
-    if (endTime == 0 && startTime == 0)
+    if (endTime == startTime)
     {
-        allPagesNum = 1;
-        curPageNum = 1;
+        allPagesNum = curPageNum = 1;
     }
     setWindowTitle(QString("%1 ( %2 / %3 %4 )")
                    .arg(trs("TrendTable"))
@@ -202,7 +202,7 @@ bool TrendTableWindow::eventFilter(QObject *o, QEvent *e)
 }
 
 TrendTableWindow::TrendTableWindow()
-    : Window(), d_ptr(new TrendTableWindowPrivate())
+    : Window(), d_ptr(new TrendTableWindowPrivate(this))
 {
     resize(800, 580);
 
@@ -341,4 +341,5 @@ void TrendTableWindow::trendDataSetReleased()
 void TrendTableWindowPrivate::updateTable()
 {
     model->updateData();
+    q_ptr->updatePages();
 }

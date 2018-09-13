@@ -36,6 +36,7 @@
 #include "FreezeWindow.h"
 #include "AlarmStateMachine.h"
 #include "MainMenuWindow.h"
+#include "EventStorageManager.h"
 
 /**************************************************************************************************
  * 构造。
@@ -110,6 +111,7 @@ void NormalModeKeyAction::keyF4Pressed(bool multiBtnPress)
     if (systemManager.isSupport(CONFIG_NIBP))
     {
         nibpParam.keyPressed();
+        eventStorageManager.triggerNIBPMeasurementEvent();
     }
 }
 
