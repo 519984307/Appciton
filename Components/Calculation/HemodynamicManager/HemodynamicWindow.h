@@ -39,6 +39,9 @@ signals:
     void checkOutputSignal(int);
     void checkInputSignal(int);
 
+protected:
+    void resizeEvent(QResizeEvent *ev);
+
 private slots:
     /**
      * @brief onBtnParamReleased

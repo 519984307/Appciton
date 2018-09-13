@@ -1494,7 +1494,7 @@ void WindowManager::setUFaceType(void)
 QRect WindowManager::getMenuArea(void)
 {
     QRect r = _volatileLayout->geometry();
-    r.adjust(x(), y(), x(), y());
+//    r.adjust(x(), y(), x(), y());
     return r;
 }
 
