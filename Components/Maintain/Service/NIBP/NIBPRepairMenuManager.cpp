@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/12
+ **/
+
+
+
 #include "NIBPRepairMenuManager.h"
 #include <QWidget>
 #include <QVBoxLayout>
@@ -87,7 +99,7 @@ void NIBPRepairMenuManager::warnShow(bool enable)
     else
     {
         warn->setText(trs("NIBPServiceModuleErrorQuitTryAgain"));
-        if(enable)
+        if (enable)
         {
             if (messageBoxWait != NULL && messageBoxWait->isVisible())
             {
@@ -117,14 +129,14 @@ void NIBPRepairMenuManager::warnShow(bool enable)
  *************************************************************************************************/
 void NIBPRepairMenuManager::returnMenuList()
 {
-    nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_REPAIR_RETURN,NULL,0);
+    nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_REPAIR_RETURN, NULL, 0);
     MenuGroup::returnMenuList();
 }
 
 void NIBPRepairMenuManager::_closeSlot()
 {
     // 转换到状态，发送退出服务模式
-    nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_REPAIR_RETURN,NULL,0);
+    nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_REPAIR_RETURN, NULL, 0);
 
     menuManager.returnPrevious();
 }
@@ -151,8 +163,9 @@ NIBPRepairMenuManager::NIBPRepairMenuManager() : MenuGroup("SupervisorMenuManage
 {
     _repairError = false;
     _replyFlag = false;
-    messageBoxWait = new IMessageBox(trs("Warn"), trs("NIBPServiceWaitAgain"), QStringList(trs("EnglishYESChineseSURE")));
-    messageBoxError = new IMessageBox(trs("Warn"), trs("NIBPServiceModuleErrorQuitTryAgain"), QStringList(trs("EnglishYESChineseSURE")));
+    messageBoxWait = new  MessageBox(trs("Warn"), trs("NIBPServiceWaitAgain"), QStringList(trs("EnglishYESChineseSURE")));
+    messageBoxError = new MessageBox(trs("Warn"), trs("NIBPServiceModuleErrorQuitTryAgain"),
+                                     QStringList(trs("EnglishYESChineseSURE")));
 }
 
 /**************************************************************************************************

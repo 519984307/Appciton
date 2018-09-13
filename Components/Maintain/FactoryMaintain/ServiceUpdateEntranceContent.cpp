@@ -14,6 +14,7 @@
 #include "Button.h"
 #include "ServiceUpgradeWindow.h"
 #include "LanguageManager.h"
+#include "WindowManager.h"
 
 /**************************************************************************************************
  * 构造。
@@ -46,5 +47,6 @@ void ServiceUpdateEntranceContent ::layoutExec()
 void ServiceUpdateEntranceContent ::onBtnReleased()
 {
     ServiceUpgradeWindow *w = ServiceUpgradeWindow::getInstance();
-    w->exec();
+    windowManager.showWindow(w,
+                             WindowManager::ShowBehaviorModal);
 }

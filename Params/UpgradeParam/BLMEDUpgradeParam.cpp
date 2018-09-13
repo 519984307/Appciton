@@ -17,6 +17,7 @@
 #include "LightManager.h"
 #include "md5.h"
 #include "IMessageBox.h"
+#include "MessageBox.h"
 #include "MergeConfig.h"
 #include <QTimer>
 #include <sys/time.h>
@@ -135,7 +136,7 @@ void BLMEDUpgradeParam::_USBExist()
         _isUSBExist = false;
         ServiceUpgradeWindow::getInstance()->infoShow(true);
         // 警告没插U盘
-        IMessageBox messageBox(trs("Warn"), trs("WarningNoUSB"), QStringList(trs("EnglishYESChineseSURE")));
+        MessageBox messageBox(trs("Warn"), trs("WarningNoUSB"), QStringList(trs("EnglishYESChineseSURE")));
         messageBox.exec();
     }
     else

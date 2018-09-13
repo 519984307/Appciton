@@ -247,6 +247,7 @@ void OthersMaintainMenuContent::onComboBoxIndexChanged(int index)
 
 void OthersMaintainMenuContent::onBtnReleased()
 {
-    NurseCallSettingWindow nurseCall;
-    nurseCall.exec();
+    NurseCallSettingWindow w;
+    windowManager.showWindow(&w,
+                             WindowManager::ShowBehaviorModal);
 }
