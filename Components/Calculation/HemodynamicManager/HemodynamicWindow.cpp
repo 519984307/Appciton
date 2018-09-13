@@ -397,6 +397,16 @@ void HemodynamicWindow::defaultInput()
     d_ptr->calcParam[8]->setText("65");
 }
 
+void HemodynamicWindow::resizeEvent(QResizeEvent *ev)
+{
+    QRect waveRect = windowManager.getMenuArea();
+    QPoint waveRectLeft = windowManager.mapToGlobal(waveRect.topLeft());
+    waveRect.moveTo(0, 0);
+    QPoint winRectLeft = waveRectLeft + waveRect.center() - rect().center();
+    move(winRectLeft);
+    Window::resizeEvent(ev);
+}
+
 
 void HemodynamicWindow::onBtnParamReleased()
 {
