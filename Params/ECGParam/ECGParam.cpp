@@ -546,6 +546,11 @@ void ECGParam::updateHR(short hr)
         return;
     }
 
+    if (hr < 0)
+    {
+        hr = InvData();
+    }
+
     _hrValue = hr;
     ecgDupParam.updateHR(hr);
 
