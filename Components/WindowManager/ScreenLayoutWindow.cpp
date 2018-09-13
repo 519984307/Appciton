@@ -23,10 +23,12 @@ public:
     ScreenLayoutWindowPrivate()
         : view(NULL),
           resetBtn(NULL),
+          defaultBtn(NULL),
           saveBtn(NULL)
     {}
     TableView *view;
     Button *resetBtn;
+    Button *defaultBtn;
     Button *saveBtn;
 };
 
@@ -56,16 +58,23 @@ ScreenLayoutWindow::ScreenLayoutWindow()
     layout->addWidget(d_ptr->view, 1);
 
     QHBoxLayout *hlayout = new QHBoxLayout();
+    hlayout->setSpacing(20);
     hlayout->addStretch(1);
     d_ptr->resetBtn = new Button(trs("ResetLayout"));
     d_ptr->resetBtn->setButtonStyle(Button::ButtonTextOnly);
-    d_ptr->resetBtn->setMinimumWidth(120);
+    d_ptr->resetBtn->setMinimumWidth(140);
     connect(d_ptr->resetBtn, SIGNAL(clicked(bool)), this, SLOT(onButtonClicked()));
     hlayout->addWidget(d_ptr->resetBtn);
 
+    d_ptr->defaultBtn = new Button(trs("DefaultLayout"));
+    d_ptr->defaultBtn->setButtonStyle(Button::ButtonTextOnly);
+    d_ptr->defaultBtn->setMinimumWidth(140);
+    connect(d_ptr->defaultBtn, SIGNAL(clicked(bool)), this, SLOT(onButtonClicked()));
+    hlayout->addWidget(d_ptr->defaultBtn);
+
     d_ptr->saveBtn = new Button(trs("SaveLayout"));
     d_ptr->saveBtn->setButtonStyle(Button::ButtonTextOnly);
-    d_ptr->saveBtn->setMinimumWidth(120);
+    d_ptr->saveBtn->setMinimumWidth(140);
     connect(d_ptr->saveBtn, SIGNAL(clicked(bool)), this, SLOT(onButtonClicked()));
     hlayout->addWidget(d_ptr->saveBtn);
     hlayout->addStretch(1);

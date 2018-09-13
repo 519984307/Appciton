@@ -6,5 +6,6 @@
         <file>checked.svg</file>
         <file>left.svg</file>
         <file>right.svg</file>
+        <file>shadow.svg</file>
     </qresource>
 </RCC>

@@ -11,16 +11,26 @@
 #include "ThemeManager.h"
 #include <QMap>
 #include <QIcon>
+#include <QPixmapCache>
+#include <QSvgRenderer>
+#include <QPainter>
+#include <QDebug>
 
 #define COLOR_KEY(type, elem, state) (((type) << 16) | (elem) << 8 | (state))
+
+typedef QMap<int, QPixmapCache::Key> CacheKeyMap;
 
 class ThemeManagerPrivate
 {
 public:
-    ThemeManagerPrivate() {}
+    ThemeManagerPrivate()
+        :shadowRenderer(NULL)
+    {}
     void loadColorScheme();
     QMap<int, QColor> colorScheme;
     QMap<ThemeManager::IconType, QIcon> iconMap;
+    QMap<ThemeManager::ShadowElementType, CacheKeyMap> cacheKeyMaps;
+    QSvgRenderer *shadowRenderer;
 };
 
 static const char *iconPaths[ThemeManager::IconNR] =
@@ -207,9 +217,50 @@ const QIcon &ThemeManager::getIcon(ThemeManager::IconType icon)
     return *d_ptr->iconMap.insert(icon, ico);
 }
 
+QPixmap ThemeManager::getShadowElement(ThemeManager::ShadowElementType type, const QSize &size)
+{
+    QPixmap pm;
+    int key = (size.width() << 16) + size.height();
+    if (!d_ptr->cacheKeyMaps.contains(type))
+    {
+        d_ptr->cacheKeyMaps[type] = CacheKeyMap();
+    }
+    CacheKeyMap &map = d_ptr->cacheKeyMaps[type];
+
+    CacheKeyMap::ConstIterator iter = map.find(key);
+    if (iter != map.constEnd())
+    {
+        if (QPixmapCache::find(iter.value(), &pm))
+        {
+            return pm;
+        }
+    }
+
+    // create the pixmap
+    static const char *elementNameMap[ThemeManager::ShadowElementNR] = {
+        "left", "lefttop", "top", "righttop", "right", "rightbottom", "bottom", "leftbottom"
+    };
+
+    if (!d_ptr->shadowRenderer->elementExists(elementNameMap[type]))
+    {
+        qDebug() << "element " << elementNameMap[type] << " not exist";
+    }
+
+    pm = QPixmap(size);
+    pm.fill(Qt::transparent);
+    QPainter p(&pm);
+    d_ptr->shadowRenderer->render(&p, elementNameMap[type]);
+
+    map[key] = QPixmapCache::insert(pm);
+
+    return pm;
+}
+
 ThemeManager::ThemeManager()
     : QObject(), d_ptr(new ThemeManagerPrivate)
 {
+    d_ptr->shadowRenderer = new QSvgRenderer(QString(":/ui/shadow.svg"), this);
     d_ptr->loadColorScheme();
+    QPixmapCache::setCacheLimit(10*1024*1024); // 10M
 }
 

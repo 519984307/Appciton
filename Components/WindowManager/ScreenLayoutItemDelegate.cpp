@@ -111,7 +111,13 @@ bool ScreenLayoutItemDelegatePrivate::showEditor(const QTableView *view, QAbstra
     editor->setDisplayPosition(rect.topRight());
     editor->setRemoveable(!info.name.isEmpty());
     editor->setReplaceList(qvariant_cast<QStringList>(model->data(index, ReplaceRole)));
-    editor->setInsertList(qvariant_cast<QStringList>(model->data(index, InsertRole)));
+    QStringList insertWaveforms = qvariant_cast<QStringList>(model->data(index, InsertRole));
+    if (!insertWaveforms.isEmpty())
+    {
+        // add a empty string to select nothing
+        insertWaveforms.prepend(QString());
+    }
+    editor->setInsertList(insertWaveforms);
     QObject::connect(editor, SIGNAL(commitChanged(int, QString)), q, SLOT(onCommitChanged(int, QString)));
     QObject::connect(editor, SIGNAL(destroyed(QObject *)), q, SLOT(onEditorDestroy()));
     editor->show();

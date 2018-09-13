@@ -18,6 +18,8 @@
 #include "FontManager.h"
 #include "ThemeManager.h"
 #include "WindowManager.h"
+#include <QPaintEvent>
+#include <QPainter>
 
 #define TITLE_BAR_HEIGHT 48
 
@@ -64,6 +66,13 @@ Window::Window(QWidget *parent)
     line->setLineWidth(0);
     line->setMidLineWidth(1);
     vLayout->addWidget(line);
+
+
+#ifdef Q_WS_QWS
+    this->setContentsMargins(8, 8, 8, 8);
+    setAutoFillBackground(false);
+    setAttribute(Qt::WA_TranslucentBackground);
+#endif
 
     d_ptr->m_widget = new QWidget();
     vLayout->addWidget(d_ptr->m_widget, 1);
@@ -185,4 +194,65 @@ void Window::hideEvent(QHideEvent *ev)
 {
     QDialog::hideEvent(ev);
     emit windowHide(this);
+}
+
+void Window::paintEvent(QPaintEvent *ev)
+{
+#ifdef Q_WS_QWS
+    Q_UNUSED(ev);
+    QRect r = contentsRect();
+    QMargins m = contentsMargins();
+    QPainter p(this);
+    p.fillRect(r, palette().background());
+    if (!m.isNull())
+    {
+        QRect shadowRect(0, 0, m.left(), m.top()); // left top
+        QPixmap pm = themeManger.getShadowElement(ThemeManager::ShadowElementLeftTop, shadowRect.size());
+        p.drawPixmap(shadowRect, pm);
+
+        // top
+        shadowRect.setLeft(r.left());
+        shadowRect.setRight(r.right());
+        pm = themeManger.getShadowElement(ThemeManager::ShadowElementTop, shadowRect.size());
+        p.drawPixmap(shadowRect, pm);
+
+        // right top
+        shadowRect.setLeft(r.right() + 1);
+        shadowRect.setWidth(m.right());
+        pm = themeManger.getShadowElement(ThemeManager::ShadowElementRightTop, shadowRect.size());
+        p.drawPixmap(shadowRect, pm);
+
+        // right
+        shadowRect.setTop(r.top());
+        shadowRect.setBottom(r.bottom());
+        pm = themeManger.getShadowElement(ThemeManager::ShadowElementRight, shadowRect.size());
+        p.drawPixmap(shadowRect, pm);
+
+        // right bottom
+        shadowRect.setTop(r.bottom() + 1);
+        shadowRect.setHeight(m.bottom());
+        pm = themeManger.getShadowElement(ThemeManager::ShadowElementRightBottom, shadowRect.size());
+        p.drawPixmap(shadowRect, pm);
+
+        // bottom
+        shadowRect.setLeft(r.left());
+        shadowRect.setRight(r.right());
+        pm = themeManger.getShadowElement(ThemeManager::ShadowElementBottom, shadowRect.size());
+        p.drawPixmap(shadowRect, pm);
+
+        // left bottom
+        shadowRect.setLeft(0);
+        shadowRect.setWidth(m.left());
+        pm = themeManger.getShadowElement(ThemeManager::ShadowElementLeftBottom, shadowRect.size());
+        p.drawPixmap(shadowRect, pm);
+
+        // left
+        shadowRect.setTop(r.top());
+        shadowRect.setBottom(r.bottom());
+        pm = themeManger.getShadowElement(ThemeManager::ShadowElementLeft, shadowRect.size());
+        p.drawPixmap(shadowRect, pm);
+    }
+#else
+    QDialog::paintEvent(ev);
+#endif
 }

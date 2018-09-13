@@ -56,6 +56,8 @@ protected:
     void keyReleaseEvent(QKeyEvent *ev);
     /* reimplement */
     void hideEvent(QHideEvent *ev);
+    /* reimplement */
+    void paintEvent(QPaintEvent *ev);
 
 
 private:

@@ -58,6 +58,19 @@ public:
         IconNR
     };
 
+    enum ShadowElementType
+    {
+        ShadowElementLeft,
+        ShadowElementLeftTop,
+        ShadowElementTop,
+        ShadowElementRightTop,
+        ShadowElementRight,
+        ShadowElementRightBottom,
+        ShadowElementBottom,
+        ShadowElementLeftBottom,
+        ShadowElementNR,
+    };
+
     static ThemeManager &getInstance();
 
     ~ThemeManager();
@@ -121,6 +134,14 @@ public:
     {
         return 20;
     }
+
+    /**
+     * @brief getShadownPixmapElement get the shadow element
+     * @type the type of the shadow element
+     * @size size of the shadow element
+     * @return the pixmap
+     */
+    QPixmap getShadowElement(ShadowElementType type, const QSize &size);
 
 private:
     ThemeManager();

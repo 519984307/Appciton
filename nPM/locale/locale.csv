@@ -331,8 +331,9 @@ RemoveAndRecePatient,"解除当前病人,接收新病人?",Relieving the current
 ApplicationDataToReceivingPatients,将监护仪中已有数据应用于将被接收的病人？,Application data to receiving patients?
 PatientManagement,病人管理,Patient Management
 WindowLayout,界面布局,Window Layout
-ResetLayout,重置,Reset
-SaveLayout,保存,Save
+ResetLayout,重置布局,Reset Layout
+DefaultLayout,默认布局,Default Layout
+SaveLayout,保存布局,Save Layout
 Enter,确定,Enter
 Cancel,取消,Cancel
 Exit,退出,Exit

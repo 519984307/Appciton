@@ -269,13 +269,24 @@ public:
     }
 
 
-    void loadLayoutNodes()
+    void loadWaveInfos()
     {
-        for (int i = WAVE_ECG_I; i < WAVE_NR; i++)
-        {
-            WaveformID id = static_cast<WaveformID>(i);
-            waveIDMaps.insert(paramInfo.getParamWaveformName(id), id);
-        }
+        // two ecg wave at most
+        waveIDMaps.insert("ECG1Wave", WAVE_ECG_II);
+        waveIDMaps.insert("ECG2Wave", WAVE_ECG_I);
+
+        waveIDMaps.insert("RESPWave", WAVE_RESP);
+        waveIDMaps.insert("SPO2Wave", WAVE_SPO2);
+        waveIDMaps.insert("CO2Wave", WAVE_SPO2);
+
+        // TODO: find proper IBPWave base of the wave name
+        waveIDMaps.insert("IBP1Wave", WAVE_ART);
+        waveIDMaps.insert("IBP2Wave", WAVE_PA);
+
+        waveIDMaps.insert("N2OWave", WAVE_N2O);
+        waveIDMaps.insert("AA1Wave", WAVE_AA1);
+        waveIDMaps.insert("AA2Wave", WAVE_AA2);
+        waveIDMaps.insert("O2Wave", WAVE_O2);
     }
 
     /**
@@ -303,6 +314,50 @@ public:
         return NULL;
     }
 
+    /**
+     * @brief getLayoutedWaveforms the the layouted waveforms that has beed layout on the screen
+     * @return the waveform name list
+     */
+    QStringList getLayoutedWaveforms() const
+    {
+        QStringList list;
+        QVector<LayoutRow *>::ConstIterator riter;
+        for (riter = layoutNodes.constBegin(); riter != layoutNodes.end(); ++riter)
+        {
+            LayoutRow::ConstIterator iter = (*riter)->constBegin();
+            for (; iter != (*riter)->end(); ++iter)
+            {
+                if ((*iter)->waveId != WAVE_NONE)
+                {
+                    list.append((*iter)->name);
+                }
+            }
+        }
+        return list;
+    }
+
+    /**
+     * @brief getUnlayoutedWaveforms get the waveforms haven't been layouted
+     * @return a list of unlayouted waveforms
+     */
+    QStringList getUnlayoutedWaveforms() const
+    {
+        QStringList existWaveforms = getLayoutedWaveforms();
+        QStringList avaliablesWaveforms = waveIDMaps.keys();
+        QStringList unlayoutedWaveforms;
+        QStringList::ConstIterator iter;
+        for (iter = avaliablesWaveforms.constBegin(); iter != avaliablesWaveforms.constEnd(); ++iter)
+        {
+            if (existWaveforms.contains(*iter))
+            {
+                continue;
+            }
+
+            unlayoutedWaveforms.append(*iter);
+        }
+        return unlayoutedWaveforms;
+    }
+
     DemoProvider *demoProvider;
     QMap<WaveformID, QByteArray> waveCaches;
     QVector<LayoutRow *> layoutNodes;
@@ -314,7 +369,7 @@ public:
 ScreenLayoutModel::ScreenLayoutModel(QObject *parent)
     : QAbstractTableModel(parent), d_ptr(new ScreenLayoutModelPrivate)
 {
-    d_ptr->loadLayoutNodes();
+    d_ptr->loadWaveInfos();
 }
 
 int ScreenLayoutModel::columnCount(const QModelIndex &parent) const
@@ -431,10 +486,30 @@ QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
     }
     break;
     case ReplaceRole:
+    {
+        QStringList replaceWaveforms = d_ptr->getUnlayoutedWaveforms();
+
+        // no avaliable waveforms, so no replaceable waveforms
+        if (replaceWaveforms.isEmpty())
+        {
+            break;
+        }
+
+        LayoutNode *node = d_ptr->findNode(index);
+        if (node)
+        {
+            // also add the current edit wave
+            replaceWaveforms.append(node->name);
+        }
+
+        return qVariantFromValue(replaceWaveforms);
+    }
         break;
+
     case InsertRole:
-        break;
-    case RemoveRole:
+    {
+        return qVariantFromValue(d_ptr->getUnlayoutedWaveforms());
+    }
         break;
     default:
         break;

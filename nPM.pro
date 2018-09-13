@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml network
+QT       += core gui xml network svg
 DEFINES += QT_NO_EXCEPTIONS
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
