@@ -176,22 +176,20 @@ void SupervisorTimeWindow::layoutExec()
     setWindowTitle(trs("SupervisorTimeAndDataMenu"));
 
     QVBoxLayout *vlayout = new QVBoxLayout(this);
-    vlayout->setMargin(10);
-
     QGridLayout *layout = new QGridLayout;
 
-    vlayout->addStretch();
     vlayout->addLayout(layout);
-    vlayout->addStretch();
 
     ComboBox *comboBox;
     QLabel *label;
     SpinBox *spinBox;
     int itemID;
 
+    // date
+    label = new QLabel(trs("Date"));
+    layout->addWidget(label, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 0);
+
     // year
-    label = new QLabel(trs("SupervisorYear"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 0);
     spinBox = new SpinBox;
     spinBox->setRange(1970, 2037);
     spinBox->setScale(1);
@@ -199,12 +197,10 @@ void SupervisorTimeWindow::layoutExec()
     itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_YEAR);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
-    layout->addWidget(spinBox, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 1);
+    layout->addWidget(spinBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 1);
     d_ptr->spinBoxs.insert(SupervisorTimeWindowPrivate::ITEM_SPB_YEAR, spinBox);
 
     // month
-    label = new QLabel(trs("SupervisorMonth"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 0);
     spinBox = new SpinBox;
     spinBox->setRange(1, 12);
     spinBox->setScale(1);
@@ -212,12 +208,10 @@ void SupervisorTimeWindow::layoutExec()
     itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_MONTH);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
-    layout->addWidget(spinBox, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 1);
+    layout->addWidget(spinBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 2);
     d_ptr->spinBoxs.insert(SupervisorTimeWindowPrivate::ITEM_SPB_MONTH, spinBox);
 
     // day
-    label = new QLabel(trs("SupervisorDay"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 0);
     spinBox = new SpinBox;
     spinBox->setRange(1, 30);
     spinBox->setScale(1);
@@ -225,24 +219,24 @@ void SupervisorTimeWindow::layoutExec()
     itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_DAY);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
-    layout->addWidget(spinBox, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 1);
+    layout->addWidget(spinBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 3);
     d_ptr->spinBoxs.insert(SupervisorTimeWindowPrivate::ITEM_SPB_DAY, spinBox);
 
+    // time
+    label = new QLabel(trs("Time"));
+    layout->addWidget(label, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 0);
+
     // hour
-    label = new QLabel(trs("SupervisorHour"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 0);
     spinBox = new SpinBox;
     spinBox->setScale(1);
     spinBox->setStep(1);
     itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_HOUR);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
-    layout->addWidget(spinBox, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 1);
+    layout->addWidget(spinBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 1);
     d_ptr->spinBoxs.insert(SupervisorTimeWindowPrivate::ITEM_SPB_HOUR, spinBox);
 
     // minute
-    label = new QLabel(trs("SupervisorMinute"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 0);
     spinBox = new SpinBox;
     spinBox->setRange(0, 59);
     spinBox->setScale(1);
@@ -250,12 +244,10 @@ void SupervisorTimeWindow::layoutExec()
     itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_MINUTE);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
-    layout->addWidget(spinBox, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 1);
+    layout->addWidget(spinBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 2);
     d_ptr->spinBoxs.insert(SupervisorTimeWindowPrivate::ITEM_SPB_MINUTE, spinBox);
 
     // second
-    label = new QLabel(trs("SupervisorSecond"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 0);
     spinBox = new SpinBox;
     spinBox->setRange(0, 59);
     spinBox->setScale(1);
@@ -263,12 +255,15 @@ void SupervisorTimeWindow::layoutExec()
     itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_SECOND);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
-    layout->addWidget(spinBox, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 1);
+    layout->addWidget(spinBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 3);
     d_ptr->spinBoxs.insert(SupervisorTimeWindowPrivate::ITEM_SPB_SECOND, spinBox);
 
+    layout->setRowStretch(d_ptr->combos.count() + d_ptr->spinBoxs.count(), 1);
+
     // date format
+    layout = new QGridLayout;
     label = new QLabel(trs("SupervisorDateFormat"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 0);
+    layout->addWidget(label, 0, 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs(TimeSymbol::convert(DATE_FORMAT_Y_M_D))
@@ -279,12 +274,12 @@ void SupervisorTimeWindow::layoutExec()
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 1);
+    layout->addWidget(comboBox, 0, 1);
     d_ptr->combos.insert(SupervisorTimeWindowPrivate::ITEM_CBO_DATE_FORMAT, comboBox);
 
     // time format
     label = new QLabel(trs("SupervisorTimeFormat"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 0);
+    layout->addWidget(label, 1, 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs(TimeSymbol::convert(TIME_FORMAT_12))
@@ -294,12 +289,12 @@ void SupervisorTimeWindow::layoutExec()
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 1);
+    layout->addWidget(comboBox, 1, 1);
     d_ptr->combos.insert(SupervisorTimeWindowPrivate::ITEM_CBO_TIME_FORMAT, comboBox);
 
     // is display second
     label = new QLabel(trs("SupervisorDisplaySec"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 0);
+    layout->addWidget(label, 2, 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs("No")
@@ -309,14 +304,14 @@ void SupervisorTimeWindow::layoutExec()
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count() + d_ptr->spinBoxs.count(), 1);
+    layout->addWidget(comboBox, 2, 1);
     d_ptr->combos.insert(SupervisorTimeWindowPrivate::ITEM_CBO_DISPLAY_SEC, comboBox);
-
-    layout->setRowStretch(d_ptr->combos.count() + d_ptr->spinBoxs.count(), 1);
+    vlayout->addLayout(layout);
+    vlayout->addStretch();
 
     setWindowLayout(vlayout);
 
-    setFixedSize(580, 580);
+    setFixedSize(580, 350);
 }
 
 void SupervisorTimeWindow::hideEvent(QHideEvent *ev)

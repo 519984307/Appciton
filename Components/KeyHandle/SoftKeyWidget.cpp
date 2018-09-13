@@ -274,17 +274,22 @@ int SoftkeyWidget::_adjustHintFontSize(const QRect &r, QString &hint)
     int fontSize = fontManager.getFontSize(2);
     int width = r.width() - 6;
     QFont font = fontManager.textFont(fontSize, true);
-    int txtLen = fontManager.textWidthInPixels(_hint, font);
+    int txtLen = fontManager.textWidthInPixels(hint, font);
     if (txtLen <= width)
     {
-        hint = _hint;
         return fontSize;
+    }
+    // 如果字符长度过长，去掉空格显示
+    QStringList hintTxtList = hint.split(' ', QString::SkipEmptyParts);
+    hint.clear();
+    foreach(QString hintTxt, hintTxtList)
+    {
+        hint = hint + hintTxt;
     }
     QString text;
     int maxLen = 0;
-    hint = _hint;
-    text = _hint;
-    maxLen = txtLen;
+    text = hint;
+    maxLen = fontManager.textWidthInPixels(hint, font);
     while (maxLen > width && fontSize > 0)
     {
         font = fontManager.textFont(fontSize, true);

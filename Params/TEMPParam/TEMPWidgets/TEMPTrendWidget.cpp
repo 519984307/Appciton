@@ -28,7 +28,7 @@ void TEMPTrendWidget::_releaseHandle(IWidget *iWidget)
 {
     Q_UNUSED(iWidget)
     MainMenuWindow *p = MainMenuWindow::getInstance();
-    p->popup(trs("AlarmLimitMenu"));
+    p->popup(trs("TEMPMenu"));
 }
 
 /**************************************************************************************************
