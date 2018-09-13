@@ -22,6 +22,9 @@ enum ScreenLayoutRole
     RemoveRole,
 };
 
+/**
+ * @brief The ScreenLayoutItemInfo struct mainly use to draw the item
+ */
 struct ScreenLayoutItemInfo
 {
     ScreenLayoutItemInfo()
@@ -33,7 +36,9 @@ struct ScreenLayoutItemInfo
           waveid(WAVE_NONE)
     {}
 
-    QString name;
+    QString name;           // the item's name, this name is saved in the config file. a empyty value
+                            // means the item is not used yet
+    QString displayName;    // the item's display name, this is used to draw in the screen
     QByteArray waveContent;
     int baseLine;
     int waveMinValue;
@@ -42,6 +47,5 @@ struct ScreenLayoutItemInfo
     float drawSpeed;
     WaveformID waveid;
 };
-
 
 Q_DECLARE_METATYPE(ScreenLayoutItemInfo)

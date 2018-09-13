@@ -26,6 +26,8 @@ public:
     ComboBox *insertCbo;
     Button *removeBtn;
     QPoint displayPos;
+    QVariantList replaceList;
+    QVariantList insertList;
 };
 
 ScreenLayoutEditor::ScreenLayoutEditor(const QString &title)
@@ -59,8 +61,8 @@ ScreenLayoutEditor::ScreenLayoutEditor(const QString &title)
     d_ptr->replaceCbo->setEnabled(false);
     d_ptr->insertCbo->setEnabled(false);
 
-    connect(d_ptr->replaceCbo, SIGNAL(currentIndexChanged(QString)), this, SLOT(onComboIndexChanged(QString)));
-    connect(d_ptr->insertCbo, SIGNAL(currentIndexChanged(QString)), this, SLOT(onComboIndexChanged(QString)));
+    connect(d_ptr->replaceCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged(int)));
+    connect(d_ptr->insertCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged(int)));
     connect(d_ptr->removeBtn, SIGNAL(clicked(bool)), this, SLOT(onRemoveBtnClicked()));
 }
 
@@ -69,11 +71,22 @@ ScreenLayoutEditor::~ScreenLayoutEditor()
     delete d_ptr;
 }
 
-void ScreenLayoutEditor::setReplaceList(const QStringList &list)
+void ScreenLayoutEditor::setReplaceList(const QVariantList &list)
 {
+    d_ptr->replaceList = list;
+
+    QStringList displayList;
+
+    QVariantList::ConstIterator iter;
+    for (iter = list.constBegin(); iter != list.end(); iter++)
+    {
+        QVariantMap m = iter->toMap();
+        displayList.append(m["displayName"].toString());
+    }
+
     d_ptr->replaceCbo->blockSignals(true);
     d_ptr->replaceCbo->clear();
-    d_ptr->replaceCbo->addItems(list);
+    d_ptr->replaceCbo->addItems(displayList);
     d_ptr->replaceCbo->blockSignals(false);
     // if the combox has not item, set to disable
     if (list.isEmpty())
@@ -86,11 +99,28 @@ void ScreenLayoutEditor::setReplaceList(const QStringList &list)
     }
 }
 
-void ScreenLayoutEditor::setInsertList(const QStringList &list)
+void ScreenLayoutEditor::setInsertList(const QVariantList &list)
 {
+    d_ptr->insertList = list;
+
+    QStringList displayList;
+
+    QVariantList::ConstIterator iter;
+    for (iter = list.constBegin(); iter != list.end(); iter++)
+    {
+        QVariantMap m = iter->toMap();
+        displayList.append(m["displayName"].toString());
+    }
+
+    if (!displayList.isEmpty())
+    {
+        // add one more empty item to help exit the combo and do nothing
+        displayList.append(QString());
+    }
+
     d_ptr->insertCbo->blockSignals(true);
     d_ptr->insertCbo->clear();
-    d_ptr->insertCbo->addItems(list);
+    d_ptr->insertCbo->addItems(displayList);
     d_ptr->insertCbo->blockSignals(false);
     // if the combox has not item, set to disable
     if (list.isEmpty())
@@ -113,16 +143,18 @@ void ScreenLayoutEditor::setRemoveable(bool flag)
     d_ptr->removeBtn->setEnabled(flag);
 }
 
-void ScreenLayoutEditor::onComboIndexChanged(const QString &text)
+void ScreenLayoutEditor::onComboIndexChanged(int index)
 {
     ComboBox *cbo = qobject_cast<ComboBox *>(sender());
     if (d_ptr->replaceCbo == cbo)
     {
-        emit commitChanged(ReplaceRole, text);
+        QVariantMap m = d_ptr->replaceList.at(index).toMap();
+        emit commitChanged(ReplaceRole, m["name"].toString());
     }
-    else if (d_ptr->insertCbo == cbo && !text.isEmpty()) // do nothing if the text is empty
+    else if (d_ptr->insertCbo == cbo && !d_ptr->insertCbo->itemText(index).isEmpty()) // do nothing if the text is empty
     {
-        emit commitChanged(InsertRole, text);
+        QVariantMap m = d_ptr->insertList.at(index).toMap();
+        emit commitChanged(InsertRole, m["name"].toString());
 
         // close after changed
         close();

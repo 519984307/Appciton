@@ -142,30 +142,59 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
     case Qt::Key_Up:
     {
         QModelIndex index = currentIndex();
-        int column = index.column();
-        if (column > 0)
+        if (selectionBehavior() == QAbstractItemView::SelectRows)
         {
-            column -= 1;
-            QModelIndex itemIndex = model()->index(index.row(), column);
-            Qt::ItemFlags itemFlags = model()->flags(itemIndex);
-            if (itemFlags & Qt::ItemIsEditable)
+            int column = index.column();
+            if (column > 0)
             {
-                setCurrentIndex(itemIndex);
-                break;
+                column -= 1;
+                QModelIndex itemIndex = model()->index(index.row(), column);
+                Qt::ItemFlags itemFlags = model()->flags(itemIndex);
+                if (itemFlags & Qt::ItemIsEditable)
+                {
+                    setCurrentIndex(itemIndex);
+                    break;
+                }
+            }
+            int nextRow = index.row() - 1;
+            QModelIndex nextIndex = model()->index(nextRow, index.column());
+            if (index.isValid())
+            {
+                QRect r = visualRect(nextIndex);
+                if (rect().contains(r))
+                {
+                    selectRow(nextRow);
+                    emit selectRowChanged(nextRow);
+                    break;
+                }
             }
         }
-        int nextRow = index.row() - 1;
-        QModelIndex nextIndex = model()->index(nextRow, index.column());
-        if (index.isValid())
+        else if (selectionBehavior() == QAbstractItemView::SelectItems)
         {
-            QRect r = visualRect(nextIndex);
-            if (rect().contains(r))
+            QAbstractItemModel *m = model();
+            if (m)
             {
-                selectRow(nextRow);
-                emit selectRowChanged(nextRow);
-                break;
+                int newRow = index.row();
+                int newColumn = index.column();
+                QModelIndex newIndex;
+                if ( newColumn > 0)
+                {
+                    newColumn -= 1;
+                    newIndex = m->index(newRow, newColumn);
+                    setCurrentIndex(newIndex);
+                    break;
+                }
+                else if (newRow > 0)
+                {
+                    newColumn = m->columnCount() - 1;
+                    newRow -= 1;
+                    newIndex = m->index(newRow, newColumn);
+                    setCurrentIndex(newIndex);
+                    break;
+                }
             }
         }
+
         focusPreviousChild();
     }
     break;
@@ -173,34 +202,62 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
     case Qt::Key_Down:
     {
         QModelIndex index = currentIndex();
-        int column = index.column();
-        if (column < model()->columnCount() - 1)
+        if (selectionBehavior() == QAbstractItemView::SelectRows)
         {
-            column += 1;
-            QModelIndex itemIndex = model()->index(index.row(), column);
-            Qt::ItemFlags itemFlags = model()->flags(itemIndex);
-            if (itemFlags & Qt::ItemIsEditable)
+            int column = index.column();
+            if (column < model()->columnCount() - 1)
             {
-                setCurrentIndex(itemIndex);
-                break;
+                column += 1;
+                QModelIndex itemIndex = model()->index(index.row(), column);
+                Qt::ItemFlags itemFlags = model()->flags(itemIndex);
+                if (itemFlags & Qt::ItemIsEditable)
+                {
+                    setCurrentIndex(itemIndex);
+                    break;
+                }
+            }
+            int nextRow = index.row() + 1;
+            int lastRow = rowAt(viewport()->height() - 1);
+            if (lastRow == -1)
+            {
+                // items are not filled the viewport
+                lastRow = model()->rowCount() - 1;
+            }
+            if (nextRow <= lastRow)
+            {
+                QModelIndex nextIndex = model()->index(nextRow, index.column());
+                QRect r = visualRect(nextIndex);
+                if (rect().contains(r))
+                {
+                    selectRow(nextRow);
+                    emit selectRowChanged(nextRow);
+                    break;
+                }
             }
         }
-        int nextRow = index.row() + 1;
-        int lastRow = rowAt(viewport()->height() - 1);
-        if (lastRow == -1)
+        else if (selectionBehavior() == QAbstractItemView::SelectItems)
         {
-            // items are not filled the viewport
-            lastRow = model()->rowCount() - 1;
-        }
-        if (nextRow <= lastRow)
-        {
-            QModelIndex nextIndex = model()->index(nextRow, index.column());
-            QRect r = visualRect(nextIndex);
-            if (rect().contains(r))
+            QAbstractItemModel *m = model();
+            if (m)
             {
-                selectRow(nextRow);
-                emit selectRowChanged(nextRow);
-                break;
+                int newRow = index.row();
+                int newColumn = index.column();
+                QModelIndex newIndex;
+                if ( newColumn < m->columnCount() - 1)
+                {
+                    newColumn += 1;
+                    newIndex = m->index(newRow, newColumn);
+                    setCurrentIndex(newIndex);
+                    break;
+                }
+                else if (newRow < m->rowCount() - 1)
+                {
+                    newColumn = 0;
+                    newRow += 1;
+                    newIndex = m->index(newRow, newColumn);
+                    setCurrentIndex(newIndex);
+                    break;
+                }
             }
         }
         focusNextChild();
@@ -285,22 +342,46 @@ void TableView::focusInEvent(QFocusEvent *ev)
 {
     if (ev->reason() == Qt::TabFocusReason || ev->reason() == Qt::ActiveWindowFocusReason)
     {
-        int row = rowAt(1);
-        if (row >= 0)
+        if (this->selectionBehavior() == QAbstractItemView::SelectRows)
         {
-            selectRow(row);
+            int row = rowAt(1);
+            if (row >= 0)
+            {
+                selectRow(row);
+            }
+        }
+        else if (this->selectionBehavior() == QAbstractItemView::SelectItems)
+        {
+            QModelIndex index = currentIndex();
+            if (!index.isValid())
+            {
+                index = model()->index(0, 0);
+            }
+            setCurrentIndex(index);
         }
     }
     else if (ev->reason() == Qt::BacktabFocusReason)
     {
-        int row = rowAt(viewport()->rect().height() - 1);
-        if (row >= 0)
+        if (this->selectionBehavior() == QAbstractItemView::SelectRows)
         {
-            selectRow(row);
+            int row = rowAt(viewport()->rect().height() - 1);
+            if (row >= 0)
+            {
+                selectRow(row);
+            }
+            else if (model() && model()->rowCount() > 0)
+            {
+                selectRow(model()->rowCount() - 1);
+            }
         }
-        else if (model() && model()->rowCount() > 0)
+        else if (this->selectionBehavior() == QAbstractItemView::SelectItems)
         {
-            selectRow(model()->rowCount() - 1);
+            QModelIndex index = currentIndex();
+            if (!index.isValid())
+            {
+                index = model()->index(model()->rowCount() - 1, model()->columnCount() - 1);
+            }
+            setCurrentIndex(index);
         }
     }
     else if (ev->reason() == Qt::PopupFocusReason || ev->reason() == Qt::MouseFocusReason)

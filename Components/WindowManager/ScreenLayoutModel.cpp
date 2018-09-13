@@ -18,11 +18,12 @@
 #include <QByteArray>
 #include "IConfig.h"
 #include "ParamInfo.h"
+#include "IBPParam.h"
 
 #define COLUMN_COUNT 6
 #define ROW_COUNT 8
 #define MAX_WAVE_ROW 6
-#define WAVE_START_COLUMN 4
+#define WAVE_END_COLUMN 4
 
 struct LayoutNode
 {
@@ -269,24 +270,41 @@ public:
     }
 
 
-    void loadWaveInfos()
+    void loadItemInfos()
     {
         // two ecg wave at most
+        // TODO: find the proper ECG Wave
         waveIDMaps.insert("ECG1Wave", WAVE_ECG_II);
         waveIDMaps.insert("ECG2Wave", WAVE_ECG_I);
 
         waveIDMaps.insert("RESPWave", WAVE_RESP);
         waveIDMaps.insert("SPO2Wave", WAVE_SPO2);
-        waveIDMaps.insert("CO2Wave", WAVE_SPO2);
+        waveIDMaps.insert("CO2Wave", WAVE_CO2);
 
-        // TODO: find proper IBPWave base of the wave name
-        waveIDMaps.insert("IBP1Wave", WAVE_ART);
-        waveIDMaps.insert("IBP2Wave", WAVE_PA);
+        // find proper IBP Wave base of the wave name
+        waveIDMaps.insert("IBP1Wave", ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_1)));
+        waveIDMaps.insert("IBP2Wave", ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_2)));
 
         waveIDMaps.insert("N2OWave", WAVE_N2O);
         waveIDMaps.insert("AA1Wave", WAVE_AA1);
         waveIDMaps.insert("AA2Wave", WAVE_AA2);
         waveIDMaps.insert("O2Wave", WAVE_O2);
+
+        paramNameMap["ECG"] = "ECG";
+        paramNameMap["SPO2"] = "SPO2";
+        paramNameMap["RESP"] = "RESP";
+        // IBP's pressure name is identical to it's wave name
+        paramNameMap["IBP1"] = paramInfo.getParamWaveformName(waveIDMaps["IBP1Wave"]);
+        paramNameMap["IBP2"] = paramInfo.getParamWaveformName(waveIDMaps["IBP2Wave"]);
+        paramNameMap["CO2"] = "CO2";
+        paramNameMap["NIBP"] = "NIBP";
+        paramNameMap["NIBPList"] = trs("NIBPList");
+        paramNameMap["TEMP"] = "TEMP";
+        paramNameMap["AA1"] = "AA1";
+        paramNameMap["AA2"] = "AA2";
+        paramNameMap["N2O"] = "N2O";
+        paramNameMap["O2"] = "O2";
+        paramNameMap["ST"] = "ST";
     }
 
     /**
@@ -315,7 +333,7 @@ public:
     }
 
     /**
-     * @brief getLayoutedWaveforms the the layouted waveforms that has beed layout on the screen
+     * @brief getLayoutedWaveforms the the layouted waveforms that has been layout on the screen
      * @return the waveform name list
      */
     QStringList getLayoutedWaveforms() const
@@ -358,18 +376,77 @@ public:
         return unlayoutedWaveforms;
     }
 
+    /**
+     * @brief getLayoutedParams get the layouted parameters
+     * @return
+     */
+    QStringList getLayoutedParams() const
+    {
+        QStringList list;
+        QVector<LayoutRow *>::ConstIterator riter;
+        int row = 0;
+        for (riter = layoutNodes.constBegin(); riter != layoutNodes.end(); ++riter)
+        {
+            int column = 0;
+            LayoutRow::ConstIterator iter = (*riter)->constBegin();
+            for (; iter != (*riter)->end(); ++iter)
+            {
+                if ((*iter)->waveId == WAVE_NONE && (row >= MAX_WAVE_ROW || column >= WAVE_END_COLUMN))
+                {
+                    list.append((*iter)->name);
+                }
+                column += (*iter)->span;
+            }
+            row += 1;
+        }
+        return list;
+    }
+
+    /**
+     * @brief getUnlayoutedParams get a list of params that haven't been layouted
+     * @return the parameter's name list
+     */
+    QStringList getUnlayoutedParams() const
+    {
+        QStringList existParams = getLayoutedParams();
+        QStringList avaliableParams = paramNameMap.keys();
+        QStringList unlayoutedParams;
+        QStringList::ConstIterator iter;
+        for (iter = avaliableParams.constBegin(); iter != avaliableParams.constEnd(); ++iter)
+        {
+            if (existParams.contains(*iter))
+            {
+                continue;
+            }
+            unlayoutedParams.append(*iter);
+        }
+        return unlayoutedParams;
+    }
+
+    /**
+     * @brief itemInWaveRegion check wether the item is item the wave region
+     * @param index
+     * @return true if in the wave region, otherwise, return false
+     */
+    bool itemInWaveRegion(const QModelIndex &index)
+    {
+        if ((index.row() < MAX_WAVE_ROW) && (index.column() < WAVE_END_COLUMN))
+        {
+            return true;
+        }
+        return false;
+    }
+
     DemoProvider *demoProvider;
     QMap<WaveformID, QByteArray> waveCaches;
     QVector<LayoutRow *> layoutNodes;
-    QList<QString> supportWaveforms;
-    QList<QString> supportParams;
     QMap<QString, WaveformID> waveIDMaps;
+    QMap<QString, QString> paramNameMap;    // store all the param name and the corresponed display name
 };
 
 ScreenLayoutModel::ScreenLayoutModel(QObject *parent)
     : QAbstractTableModel(parent), d_ptr(new ScreenLayoutModelPrivate)
 {
-    d_ptr->loadWaveInfos();
 }
 
 int ScreenLayoutModel::columnCount(const QModelIndex &parent) const
@@ -386,56 +463,23 @@ int ScreenLayoutModel::rowCount(const QModelIndex &parent) const
 
 bool ScreenLayoutModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    // if (role == Qt::EditRole)
-    // {
-    //     if (value.type() == QVariant::String)
-    //     {
-    //         LayoutNode *node = d_ptr->findNode(index);
-    //         if (node)
-    //         {
-    //             QString text = value.toString();
-    //             // check the exists node
-    //             if (text != trs("Off"))
-    //             {
-    //                 for (int i = 0; i < d_ptr->layoutNodes.count(); i++)
-    //                 {
-    //                     LayoutRow *r = d_ptr->layoutNodes.at(i);
-    //                     LayoutRow::Iterator iter;
-    //                     bool found = false;
-    //                     int column = 0;
-    //                     for (iter = r->begin(); iter != r->end(); ++iter)
-    //                     {
-    //                         if ((*iter)->name == text)
-    //                         {
-    //                              (*iter)->name = trs("Off");
-    //                              found = true;
-    //                              QModelIndex changeIndex = this->index(i, column);
-    //                              emit dataChanged(changeIndex, changeIndex);
-    //                              break;
-    //                         }
-    //                         column += (*iter)->span;
-    //                     }
-
-    //                     if (found)
-    //                     {
-    //                         break;
-    //                     }
-    //                 }
-    //             }
-    //             node->name = text;
-    //             emit dataChanged(index, index);
-    //         }
-    //     }
-
-    //     return true;
-    // }
-
     switch (role) {
-    case Qt::EditRole:
-        break;
     case ReplaceRole:
-        break;
     case InsertRole:
+    {
+        // replace the wave
+        QString waveName = value.toString();
+        if (!waveName.isEmpty())
+        {
+            LayoutNode * node = d_ptr->findNode(index);
+            if (node)
+            {
+                node->name = waveName;
+                node->waveId = d_ptr->waveIDMaps.value(waveName, WAVE_NONE);
+            }
+            emit dataChanged(index, index);
+        }
+    }
         break;
     case RemoveRole:
     {
@@ -470,47 +514,133 @@ QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
             ScreenLayoutItemInfo info;
             info.waveid = node->waveId;
             info.name = node->name;
+            if (node->waveId != WAVE_NONE)
+            {
+                info.displayName = paramInfo.getParamWaveformName(node->waveId);
+            }
+            else
+            {
+                // use the mapped name or use the layout node name
+                info.displayName = d_ptr->paramNameMap.value(info.name, info.name);
+            }
+
             d_ptr->fillWaveData(info);
             return qVariantFromValue(info);
         }
     }
     break;
-    case Qt::EditRole:
-    {
-        if (index.column() >= WAVE_START_COLUMN && index.row() < MAX_WAVE_ROW)
-        {
-            return QVariant(d_ptr->supportWaveforms);
-        }
-
-        return QVariant(d_ptr->supportParams);
-    }
-    break;
     case ReplaceRole:
     {
-        QStringList replaceWaveforms = d_ptr->getUnlayoutedWaveforms();
-
-        // no avaliable waveforms, so no replaceable waveforms
-        if (replaceWaveforms.isEmpty())
+        LayoutNode *node = d_ptr->findNode(index);
+        if (node)
+        {
+            if (node->name.isEmpty())
+            {
+                // can't replace, the node is already empty
+                break;
+            }
+        }
+        else
         {
             break;
         }
 
-        LayoutNode *node = d_ptr->findNode(index);
-        if (node)
+        if (d_ptr->itemInWaveRegion(index))
         {
+            QStringList replaceWaveforms = d_ptr->getUnlayoutedWaveforms();
+
+            // no avaliable waveforms, so no replaceable waveforms
+            if (replaceWaveforms.isEmpty())
+            {
+                break;
+            }
+
             // also add the current edit wave
             replaceWaveforms.append(node->name);
-        }
 
-        return qVariantFromValue(replaceWaveforms);
+            QVariantList list;
+            QStringList::ConstIterator iter = replaceWaveforms.constBegin();
+            for (; iter != replaceWaveforms.constEnd(); ++iter)
+            {
+                QVariantMap m;
+                m["name"] = *iter;
+                m["displayName"] = paramInfo.getParamWaveformName(d_ptr->waveIDMaps.value(*iter, WAVE_NONE));
+                list.append(m);
+            }
+
+            return list;
+        }
+        else
+        {
+            QStringList replaceParams = d_ptr->getUnlayoutedParams();
+
+            // no avaliable params, so no replaceable waveforms
+            if (replaceParams.isEmpty())
+            {
+                break;
+            }
+
+            // also add the current edit param
+            replaceParams.append(node->name);
+
+
+            QVariantList list;
+            QStringList::ConstIterator iter = replaceParams.constBegin();
+            for (; iter != replaceParams.constEnd(); ++iter)
+            {
+                QVariantMap m;
+                m["name"] = *iter;
+                m["displayName"] = d_ptr->paramNameMap[*iter];
+                list.append(m);
+            }
+
+            return list;
+        }
     }
-        break;
 
     case InsertRole:
     {
-        return qVariantFromValue(d_ptr->getUnlayoutedWaveforms());
+        LayoutNode *node = d_ptr->findNode(index);
+        if (node)
+        {
+            if (!node->name.isEmpty())
+            {
+                // can't insert, the node is not empty
+                break;
+            }
+        }
+
+        if (d_ptr->itemInWaveRegion(index))
+        {
+
+            QVariantList list;
+            QStringList unlayoutWaves = d_ptr->getUnlayoutedWaveforms();
+            QStringList::ConstIterator iter = unlayoutWaves.constBegin();
+            for (; iter != unlayoutWaves.constEnd(); ++iter)
+            {
+                QVariantMap m;
+                m["name"] = *iter;
+                m["displayName"] = paramInfo.getParamWaveformName(d_ptr->waveIDMaps.value(*iter, WAVE_NONE));
+                list.append(m);
+            }
+
+            return list;
+        }
+        else
+        {
+            QVariantList list;
+            QStringList unlayoutParams = d_ptr->getUnlayoutedParams();
+            QStringList::ConstIterator iter = unlayoutParams.constBegin();
+            for (; iter != unlayoutParams.constEnd(); ++iter)
+            {
+                QVariantMap m;
+                m["name"] = *iter;
+                m["displayName"] = d_ptr->paramNameMap[*iter];
+                list.append(m);
+            }
+            return list;
+        }
     }
-        break;
     default:
         break;
     }
@@ -571,13 +701,7 @@ void ScreenLayoutModel::loadLayoutInfo()
 
 void ScreenLayoutModel::updateWaveAndParamInfo()
 {
-    QStringList waveList;
-    waveList << "ECG" << "RESP" << "SPO2" << "CO2" << "ART" << "PA" << trs("Off");
-    d_ptr->supportWaveforms = waveList;
-
-    QStringList paramList;
-    paramList << "SPO2" << "C.O." << "CO2" << "RESP" << "NIBP" << "NIBPList" << trs("Off");
-    d_ptr->supportParams = paramList;
+    d_ptr->loadItemInfos();
 }
 
 ScreenLayoutModel::~ScreenLayoutModel()

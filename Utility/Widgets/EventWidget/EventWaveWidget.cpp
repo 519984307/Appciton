@@ -603,8 +603,7 @@ void EventWaveWidget::_drawWaveLabel(QPainter &painter, const WaveformDesc &wave
         return;
     }
 
-    QString title = (QString)paramInfo.getParamWaveformName(waveDesc.waveID);
-    title = title.left(title.length() - 9);
+    QString title = paramInfo.getParamWaveformName(waveDesc.waveID);
     QRect rectLabel(0, waveDesc.startY, 100, 100);
     painter.drawText(rectLabel, Qt::AlignCenter, title);
 }

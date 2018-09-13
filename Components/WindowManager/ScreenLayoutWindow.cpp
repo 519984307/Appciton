@@ -83,8 +83,8 @@ ScreenLayoutWindow::ScreenLayoutWindow()
 
 
     ScreenLayoutModel *model = new ScreenLayoutModel(this);
-    model->loadLayoutInfo();
     model->updateWaveAndParamInfo();
+    model->loadLayoutInfo();
     d_ptr->view->setModel(model);
     resize(800, 600);
 

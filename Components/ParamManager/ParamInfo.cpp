@@ -12,6 +12,8 @@
 #include <QString>
 #include "Debug.h"
 #include "SystemManager.h"
+#include "ECGSymbol.h"
+#include "ECGParam.h"
 
 
 ParamInfo *ParamInfo::_selfObj = NULL;
@@ -203,40 +205,6 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
 static const char *_subDupParamNames[SUB_DUP_PARAM_NR] =
 {
     "HR", "PR", "RR", "BR"
-};
-
-/**************************************************************************************************
- * 功能： 波形ID与名字的映射表。
- *************************************************************************************************/
-static const char *_paramWaveformNames[WAVE_NR] =
-{
-    "ECG_I_WAVEFORM",
-    "ECG_II_WAVEFORM",
-    "ECG_III_WAVEFORM",
-    "ECG_aVR_WAVEFORM",
-    "ECG_aVL_WAVEFORM",
-    "ECG_aVF_WAVEFORM",
-    "ECG_V1_WAVEFORM",
-    "ECG_V2_WAVEFORM",
-    "ECG_V3_WAVEFORM",
-    "ECG_V4_WAVEFORM",
-    "ECG_V5_WAVEFORM",
-    "ECG_V6_WAVEFORM",
-    "RESP_WAVEFORM",
-    "SPO2_WAVEFORM",
-    "CO2_WAVEFORM",
-    "N2O_WAVEFORM",
-    "AA1_WAVEFORM",
-    "AA2_WAVEFORM",
-    "O2_WAVEFORM",
-    "ART_WAVEFORM",
-    "PA_WAVEFORM",
-    "CVP_WAVEFORM",
-    "LAP_WAVEFORM",
-    "RAP_WAVEFORM",
-    "ICP_WAVEFORM",
-    "AUXP1_WAVEFORM",
-    "AUXP2_WAVEFORM",
 };
 
 /**************************************************************************************************
@@ -497,7 +465,55 @@ const char *ParamInfo::getIBPPressName(SubParamID id)
  *************************************************************************************************/
 const char *ParamInfo::getParamWaveformName(WaveformID id)
 {
-    return _paramWaveformNames[id];
+    switch (id)
+    {
+    case WAVE_ECG_I:
+    case WAVE_ECG_II:
+    case WAVE_ECG_III:
+    case WAVE_ECG_aVR:
+    case WAVE_ECG_aVL:
+    case WAVE_ECG_aVF:
+    case WAVE_ECG_V1:
+    case WAVE_ECG_V2:
+    case WAVE_ECG_V3:
+    case WAVE_ECG_V4:
+    case WAVE_ECG_V5:
+    case WAVE_ECG_V6:
+        return ECGSymbol::convert(static_cast<ECGLead>(id), ecgParam.getLeadConvention());
+    case WAVE_SPO2:
+        return "PLETH";
+    case WAVE_RESP:
+    case WAVE_CO2:
+        return getParamName(getParamID(id));
+    case WAVE_N2O:
+        return "N2O";
+    case WAVE_AA1:
+        return "AA1";
+    case WAVE_AA2:
+        return "AA2";
+    case WAVE_O2:
+        return "O2";
+    case WAVE_ART:
+        return "ART";
+    case WAVE_PA:
+        return "PA";
+    case WAVE_CVP:
+        return "CVP";
+    case WAVE_LAP:
+        return "LAP";
+    case WAVE_RAP:
+        return "RAP";
+    case WAVE_ICP:
+        return "ICP";
+    case WAVE_AUXP1:
+        return "AUXP1";
+    case WAVE_AUXP2:
+        return "AUXP2";
+    default:
+        break;
+    }
+
+    return "";
 }
 
 /**************************************************************************************************

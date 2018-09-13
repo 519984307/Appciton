@@ -24,13 +24,13 @@ public:
      * @brief setReplacelist set the avaliable replacable list
      * @param list the list
      */
-    void setReplaceList(const QStringList  &list);
+    void setReplaceList(const QVariantList &list);
 
     /**
      * @brief setInsertList set the replace list
      * @param list
      */
-    void setInsertList(const QStringList &list);
+    void setInsertList(const QVariantList &list);
 
     /**
      * @brief setDisplayPosition
@@ -49,7 +49,7 @@ signals:
 
 
 private slots:
-    void onComboIndexChanged(const QString &text);
+    void onComboIndexChanged(int index);
     void onRemoveBtnClicked();
 
 protected:

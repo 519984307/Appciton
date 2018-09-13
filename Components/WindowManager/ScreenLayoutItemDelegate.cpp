@@ -18,6 +18,7 @@
 #include <QTableView>
 #include "PopupList.h"
 #include "ScreenLayoutEditor.h"
+#include "FontManager.h"
 
 #define WAVE_LEFT_RIGHT_MARGIN 4
 #define WAVE_TOP_BOTTOM_MARGIN 2
@@ -44,6 +45,9 @@ void ScreenLayoutItemDelegatePrivate::drawWave(QPainter *painter, const QRect &r
     int len = info.waveContent.length();
     if (len <= 0)
     {
+        // draw display name only
+        painter->setFont(fontManager.textFont(16));
+        painter->drawText(rect.topLeft() + QPoint(4, 20), info.displayName);
         return;
     }
 
@@ -82,6 +86,10 @@ void ScreenLayoutItemDelegatePrivate::drawWave(QPainter *painter, const QRect &r
     painter->setPen(pen);
     painter->setRenderHint(QPainter::Antialiasing);
     painter->drawPath(path);
+
+    painter->setFont(fontManager.textFont(16));
+    painter->drawText(rect.topLeft() + QPoint(4, 20), info.displayName);
+
     painter->restore();
 }
 
@@ -110,14 +118,8 @@ bool ScreenLayoutItemDelegatePrivate::showEditor(const QTableView *view, QAbstra
     editor->setWindowModality(Qt::ApplicationModal);
     editor->setDisplayPosition(rect.topRight());
     editor->setRemoveable(!info.name.isEmpty());
-    editor->setReplaceList(qvariant_cast<QStringList>(model->data(index, ReplaceRole)));
-    QStringList insertWaveforms = qvariant_cast<QStringList>(model->data(index, InsertRole));
-    if (!insertWaveforms.isEmpty())
-    {
-        // add a empty string to select nothing
-        insertWaveforms.prepend(QString());
-    }
-    editor->setInsertList(insertWaveforms);
+    editor->setReplaceList(model->data(index, ReplaceRole).toList());
+    editor->setInsertList(model->data(index, InsertRole).toList());
     QObject::connect(editor, SIGNAL(commitChanged(int, QString)), q, SLOT(onCommitChanged(int, QString)));
     QObject::connect(editor, SIGNAL(destroyed(QObject *)), q, SLOT(onEditorDestroy()));
     editor->show();
@@ -167,7 +169,7 @@ void ScreenLayoutItemDelegate::drawDisplay(QPainter *painter, const QStyleOption
         }
         else
         {
-            painter->drawText(option.rect, Qt::AlignCenter, info.name);
+            painter->drawText(option.rect, Qt::AlignCenter, info.displayName);
         }
     }
 }
