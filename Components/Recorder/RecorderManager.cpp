@@ -21,6 +21,7 @@
 #include "ContinuousPageGenerator.h"
 #include <QTimer>
 #include "FontManager.h"
+#include "EventStorageManager.h"
 
 
 class RecorderManagerPrivate
@@ -259,6 +260,7 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
     {
         QMetaObject::invokeMethod(generator, "start");
     }
+    eventStorageManager.triggerRealtimePrintEvent();
     return true;
 }
 

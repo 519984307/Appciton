@@ -419,6 +419,7 @@ void TrendTableModel::leftPage(int &curSecCol)
     }
 
     unsigned timeInterval = TrendDataSymbol::convertValue(d_ptr->timeInterval);
+    // 将趋势表左侧时间往左移动一页的时间
     d_ptr->leftTime = d_ptr->leftTime - timeInterval * COLUMN_COUNT;
 
     unsigned startTime = d_ptr->trendDataPack.first()->time;
@@ -434,6 +435,7 @@ void TrendTableModel::leftPage(int &curSecCol)
         d_ptr->leftTime = startTime;
     }
 
+    // 更新趋势表右侧时间
     d_ptr->rightTime = d_ptr->leftTime + timeInterval * (COLUMN_COUNT - 1);
 
     if (d_ptr->rightTime > endTime)
@@ -493,6 +495,7 @@ void TrendTableModel::leftMoveEvent(int &curSecCol)
             {
                 startTime = startTime + (timeInterval - startTime % timeInterval);
             }
+            // 将趋势表的时间数据移到有事件发生的那页
             d_ptr->leftTime = startTime + eventIndex /
                     COLUMN_COUNT * COLUMN_COUNT * timeInterval;
             d_ptr->rightTime = d_ptr->leftTime + (COLUMN_COUNT - 1) * timeInterval;
@@ -504,9 +507,10 @@ void TrendTableModel::leftMoveEvent(int &curSecCol)
             {
                 d_ptr->rightTime = endTime;
             }
-
+            // 更新当前事件选中号，用于给该事件所在列标记颜色
             d_ptr->curSecIndex = eventIndex;
 
+            // 装载数据
             beginResetModel();
             d_ptr->loadTrendData();
             endResetModel();

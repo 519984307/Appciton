@@ -28,7 +28,6 @@
 #include "IBPParam.h"
 #include "ParamManager.h"
 #include "Utility.h"
-#include "EventStorageManager.h"
 
 class ContinuousPageGeneratorPrivate
 {
@@ -170,8 +169,6 @@ ContinuousPageGenerator::ContinuousPageGenerator(QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new ContinuousPageGeneratorPrivate(this))
 {
     d_ptr->waveInfos = d_ptr->getPrintWaveInfos();
-
-    eventStorageManager.triggerRealtimePrintEvent();
 }
 
 ContinuousPageGenerator::~ContinuousPageGenerator()

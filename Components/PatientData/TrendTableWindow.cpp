@@ -137,7 +137,9 @@ void TrendTableWindow::updatePages()
     endTime = endTime - endTime % timeInterval;
     rightTime = d_ptr->model->getRightTime();
 
+    // 获取数据的总页数
     unsigned allPagesNum = 1 + (endTime - startTime) * 1.0 / timeInterval / d_ptr->model->getColumnCount();
+    // 获取数据的当前页数
     unsigned curPageNum = 1 + (rightTime - startTime) * 1.0 / ((endTime - startTime) * 1.0) * (allPagesNum - 1);
 
     if (endTime == startTime)
