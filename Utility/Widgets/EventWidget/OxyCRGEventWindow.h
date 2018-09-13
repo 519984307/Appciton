@@ -51,6 +51,7 @@ protected:
 
 private slots:
     void waveInfoReleased(QModelIndex index);
+    void waveInfoReleased(int index);
     void eventListReleased(void);
     void leftMoveEvent(void);
     void rightMoveEvent(void);

@@ -19,29 +19,28 @@
 #include "TrendGraphPageGenerator.h"
 #include "RecorderManager.h"
 #include "TrendGraphSetWindow.h"
+#include "MoveButton.h"
 
 class TrendGraphWindowPrivate
 {
 public:
     enum KeyAction
     {
-        ACTION_BTN_LEFT_COORDINATE,
-        ACTION_BTN_RIGHT_COORDINATE,
-        ACTION_BTN_LEFT_CURSOR,
-        ACTION_BTN_RIGHT_CURSOR,
-        ACTION_BTN_PREVIOUS_EVENT,
-        ACTION_BTN_NEXT_EVENT,
         ACTION_BTN_PRINT,
         ACTION_BTN_SET_WIDGET,
         ACTION_BTN_UP_PAGE,
         ACTION_BTN_DOWN_PAGE
     };
-    TrendGraphWindowPrivate() : waveWidget(NULL)
+    TrendGraphWindowPrivate() : waveWidget(NULL), coordinateMoveBtn(NULL),
+        cursorMoveBtn(NULL), eventMoveBtn(NULL)
     {}
 
     TrendWaveWidget *waveWidget;
 
     QMap<KeyAction, Button *> buttons;
+    MoveButton *coordinateMoveBtn;
+    MoveButton *cursorMoveBtn;
+    MoveButton *eventMoveBtn;
 };
 TrendGraphWindow *TrendGraphWindow::getInstance()
 {
@@ -162,68 +161,28 @@ TrendGraphWindow::TrendGraphWindow()
     Button *button;
     int buttonID;
 
-    // 左移坐标
-    button = new Button();
-    button->setIcon(QIcon("/usr/local/nPM/icons/doubleleft.png"));
-    button->setButtonStyle(Button::ButtonIconOnly);
-    buttonID = static_cast<int>(TrendGraphWindowPrivate::ACTION_BTN_LEFT_COORDINATE);
-    button->setProperty("Button", qVariantFromValue(buttonID));
-    connect(button, SIGNAL(released()), d_ptr->waveWidget, SLOT(leftMoveCoordinate()));
-    hLayout->addWidget(button, 1);
-    d_ptr->buttons.insert(TrendGraphWindowPrivate::ACTION_BTN_LEFT_COORDINATE, button);
+    d_ptr->coordinateMoveBtn = new MoveButton(trs("Time"));
+    d_ptr->coordinateMoveBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->coordinateMoveBtn, SIGNAL(leftMove()), d_ptr->waveWidget, SLOT(leftMoveCoordinate()));
+    connect(d_ptr->coordinateMoveBtn, SIGNAL(rightMove()), d_ptr->waveWidget, SLOT(rightMoveCoordinate()));
+    hLayout->addWidget(d_ptr->coordinateMoveBtn, 2);
 
-    // 左移游标
-    button = new Button();
-    button->setIcon(QIcon("/usr/local/nPM/icons/left.png"));
-    button->setButtonStyle(Button::ButtonIconOnly);
-    buttonID = static_cast<int>(TrendGraphWindowPrivate::ACTION_BTN_LEFT_CURSOR);
-    button->setProperty("Button", qVariantFromValue(buttonID));
-    connect(button, SIGNAL(released()), d_ptr->waveWidget, SLOT(leftMoveCursor()));
-    hLayout->addWidget(button, 1);
-    d_ptr->buttons.insert(TrendGraphWindowPrivate::ACTION_BTN_LEFT_CURSOR, button);
+    d_ptr->cursorMoveBtn = new MoveButton(trs("Scroll"));
+    d_ptr->cursorMoveBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->cursorMoveBtn, SIGNAL(leftMove()), d_ptr->waveWidget, SLOT(leftMoveCursor()));
+    connect(d_ptr->cursorMoveBtn, SIGNAL(rightMove()), d_ptr->waveWidget, SLOT(rightMoveCursor()));
+    hLayout->addWidget(d_ptr->cursorMoveBtn, 2);
 
-    // 右移游标
-    button = new Button();
-    button->setIcon(QIcon("/usr/local/nPM/icons/right.png"));
-    button->setButtonStyle(Button::ButtonIconOnly);
-    buttonID = static_cast<int>(TrendGraphWindowPrivate::ACTION_BTN_RIGHT_CURSOR);
-    button->setProperty("Button", qVariantFromValue(buttonID));
-    connect(button, SIGNAL(released()), d_ptr->waveWidget, SLOT(rightMoveCursor()));
-    hLayout->addWidget(button, 1);
-    d_ptr->buttons.insert(TrendGraphWindowPrivate::ACTION_BTN_RIGHT_CURSOR, button);
-
-    // 右移坐标
-    button = new Button();
-    button->setIcon(QIcon("/usr/local/nPM/icons/doubleright.png"));
-    button->setButtonStyle(Button::ButtonIconOnly);
-    buttonID = static_cast<int>(TrendGraphWindowPrivate::ACTION_BTN_RIGHT_COORDINATE);
-    button->setProperty("Button", qVariantFromValue(buttonID));
-    connect(button, SIGNAL(released()), d_ptr->waveWidget, SLOT(rightMoveCoordinate()));
-    hLayout->addWidget(button, 1);
-    d_ptr->buttons.insert(TrendGraphWindowPrivate::ACTION_BTN_RIGHT_COORDINATE, button);
-
-    // 上个事件
-    button = new Button(trs("PreviousEvent"));
-    button->setButtonStyle(Button::ButtonTextOnly);
-    buttonID = static_cast<int>(TrendGraphWindowPrivate::ACTION_BTN_PREVIOUS_EVENT);
-    button->setProperty("Button", qVariantFromValue(buttonID));
-    connect(button, SIGNAL(released()), d_ptr->waveWidget, SLOT(leftMoveEvent()));
-    hLayout->addWidget(button, 2);
-    d_ptr->buttons.insert(TrendGraphWindowPrivate::ACTION_BTN_PREVIOUS_EVENT, button);
-
-    // 下个事件
-    button = new Button(trs("NextEvent"));
-    button->setButtonStyle(Button::ButtonTextOnly);
-    buttonID = static_cast<int>(TrendGraphWindowPrivate::ACTION_BTN_NEXT_EVENT);
-    button->setProperty("Button", qVariantFromValue(buttonID));
-    connect(button, SIGNAL(released()), d_ptr->waveWidget, SLOT(rightMoveEvent()));
-    hLayout->addWidget(button, 2);
-    d_ptr->buttons.insert(TrendGraphWindowPrivate::ACTION_BTN_NEXT_EVENT, button);
+    d_ptr->eventMoveBtn = new MoveButton(trs("Event"));
+    d_ptr->eventMoveBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->eventMoveBtn, SIGNAL(leftMove()), d_ptr->waveWidget, SLOT(leftMoveEvent()));
+    connect(d_ptr->eventMoveBtn, SIGNAL(rightMove()), d_ptr->waveWidget, SLOT(rightMoveEvent()));
+    hLayout->addWidget(d_ptr->eventMoveBtn, 2);
 
     // 打印
     button = new Button(trs("Print"));
     button->setButtonStyle(Button::ButtonTextOnly);
-    buttonID = static_cast<int>(TrendGraphWindowPrivate::ACTION_BTN_PRINT);
+    buttonID = TrendGraphWindowPrivate::ACTION_BTN_PRINT;
     button->setProperty("Button", qVariantFromValue(buttonID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
     hLayout->addWidget(button, 2);
@@ -232,7 +191,7 @@ TrendGraphWindow::TrendGraphWindow()
     // 设置窗口
     button = new Button(trs("Set"));
     button->setButtonStyle(Button::ButtonTextOnly);
-    buttonID = static_cast<int>(TrendGraphWindowPrivate::ACTION_BTN_SET_WIDGET);
+    buttonID = TrendGraphWindowPrivate::ACTION_BTN_SET_WIDGET;
     button->setProperty("Button", qVariantFromValue(buttonID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
     hLayout->addWidget(button, 2);
@@ -242,7 +201,7 @@ TrendGraphWindow::TrendGraphWindow()
     button = new Button();
     button->setIcon(QIcon("/usr/local/nPM/icons/up.png"));
     button->setButtonStyle(Button::ButtonIconOnly);
-    buttonID = static_cast<int>(TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE);
+    buttonID = TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE;
     button->setProperty("Button", qVariantFromValue(buttonID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
     hLayout->addWidget(button, 1);
@@ -252,7 +211,7 @@ TrendGraphWindow::TrendGraphWindow()
     button = new Button();
     button->setIcon(QIcon("/usr/local/nPM/icons/down.png"));
     button->setButtonStyle(Button::ButtonIconOnly);
-    buttonID = static_cast<int>(TrendGraphWindowPrivate::ACTION_BTN_DOWN_PAGE);
+    buttonID = TrendGraphWindowPrivate::ACTION_BTN_DOWN_PAGE;
     button->setProperty("Button", qVariantFromValue(buttonID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
     hLayout->addWidget(button, 1);
