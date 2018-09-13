@@ -32,6 +32,7 @@
 #include "OxyCRGEventSetWindow.h"
 #include "WindowManager.h"
 #include "DataStorageDefine.h"
+#include "MoveButton.h"
 
 struct OxyCRGEventContex
 {
@@ -78,9 +79,8 @@ public:
     OxyCRGEventWindowPrivate()
         : table(NULL), model(NULL), typeDpl(NULL),
           upPageBtn(NULL), downPageBtn(NULL), infoWidget(NULL),
-          waveWidget(NULL), eventListBtn(NULL), leftCoordinateBtn(NULL),
-          leftCursorBtn(NULL), rightCursorBtn(NULL), rightCoordinateBtn(NULL),
-          prvEventBtn(NULL), nextEventBtn(NULL), printBtn(NULL),
+          waveWidget(NULL), eventListBtn(NULL), coordinateMoveBtn(NULL),
+          cursorMoveBtn(NULL), eventMoveBtn(NULL), printBtn(NULL),
           setBtn(NULL), tableWidget(NULL), chartWidget(NULL),
           stackLayout(NULL), backend(NULL), eventNum(0),
           curDisplayEventNum(0), isHistory(false)
@@ -184,12 +184,9 @@ public:
     EventInfoWidget *infoWidget;
     OxyCRGEventWaveWidget *waveWidget;
     Button *eventListBtn;
-    Button *leftCoordinateBtn;
-    Button *leftCursorBtn;
-    Button *rightCursorBtn;
-    Button *rightCoordinateBtn;
-    Button *prvEventBtn;
-    Button *nextEventBtn;
+    MoveButton *coordinateMoveBtn;
+    MoveButton *cursorMoveBtn;
+    MoveButton *eventMoveBtn;
     Button *printBtn;
     Button *setBtn;
 
@@ -266,19 +263,34 @@ void OxyCRGEventWindow::showEvent(QShowEvent *ev)
 
     d_ptr->stackLayout->setCurrentIndex(0);
     d_ptr->loadOxyCRGEventData();
+
+    if (d_ptr->table->model()->rowCount() == 0)
+    {
+        d_ptr->table->setFocusPolicy(Qt::NoFocus);
+    }
+    else
+    {
+        d_ptr->table->setFocusPolicy(Qt::StrongFocus);
+    }
 }
 
 void OxyCRGEventWindow::waveInfoReleased(QModelIndex index)
+{
+    waveInfoReleased(index.row());
+}
+
+void OxyCRGEventWindow::waveInfoReleased(int index)
 {
     d_ptr->stackLayout->setCurrentIndex(1);
     if (d_ptr->dataIndex.count() == 0)
     {
         return;
     }
-    d_ptr->parseEventData(d_ptr->dataIndex.at(index.row()));
+    d_ptr->table->selectRow(index);
+    d_ptr->parseEventData(d_ptr->dataIndex.at(index));
     d_ptr->loadTrendData();
     d_ptr->loadWaveformData();
-    d_ptr->eventInfoUpdate(index.row());
+    d_ptr->eventInfoUpdate(index);
     d_ptr->eventWaveUpdate();
     d_ptr->eventListBtn->setFocus();
 }
@@ -346,11 +358,11 @@ OxyCRGEventWindow::OxyCRGEventWindow()
     d_ptr->table->setSelectionBehavior(QAbstractItemView::SelectRows);
     d_ptr->table->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     d_ptr->table->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    d_ptr->table->setFocusPolicy(Qt::NoFocus);
     d_ptr->table->setShowGrid(false);
     d_ptr->model = new EventReviewModel();
     d_ptr->table->setModel(d_ptr->model);
     connect(d_ptr->table, SIGNAL(clicked(QModelIndex)), this, SLOT(waveInfoReleased(QModelIndex)));
+    connect(d_ptr->table, SIGNAL(rowClicked(int)), this, SLOT(waveInfoReleased(int)));
 
     d_ptr->typeDpl = new DropList(trs("Type"));
 
@@ -386,29 +398,20 @@ OxyCRGEventWindow::OxyCRGEventWindow()
     d_ptr->eventListBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->eventListBtn, SIGNAL(released()), this, SLOT(eventListReleased()));
 
-    d_ptr->leftCoordinateBtn = new Button("", QIcon("/usr/local/nPM/icons/doubleleft.png"));
-    d_ptr->leftCoordinateBtn->setButtonStyle(Button::ButtonIconOnly);
-    connect(d_ptr->leftCoordinateBtn, SIGNAL(released()), d_ptr->waveWidget, SLOT(leftMoveCoordinate()));
+    d_ptr->coordinateMoveBtn = new MoveButton(trs("Time"));
+    d_ptr->coordinateMoveBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->coordinateMoveBtn, SIGNAL(leftMove()), d_ptr->waveWidget, SLOT(leftMoveCoordinate()));
+    connect(d_ptr->coordinateMoveBtn, SIGNAL(rightMove()), d_ptr->waveWidget, SLOT(rightMoveCoordinate()));
 
-    d_ptr->leftCursorBtn = new Button("", QIcon("/usr/local/nPM/icons/left.png"));
-    d_ptr->leftCursorBtn->setButtonStyle(Button::ButtonIconOnly);
-    connect(d_ptr->leftCursorBtn, SIGNAL(released()), d_ptr->waveWidget, SLOT(leftMoveCursor()));
+    d_ptr->cursorMoveBtn = new MoveButton(trs("Scroll"));
+    d_ptr->cursorMoveBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->cursorMoveBtn, SIGNAL(leftMove()), d_ptr->waveWidget, SLOT(leftMoveCursor()));
+    connect(d_ptr->cursorMoveBtn, SIGNAL(rightMove()), d_ptr->waveWidget, SLOT(rightMoveCursor()));
 
-    d_ptr->rightCursorBtn = new Button("", QIcon("/usr/local/nPM/icons/right.png"));
-    d_ptr->rightCursorBtn->setButtonStyle(Button::ButtonIconOnly);
-    connect(d_ptr->rightCursorBtn, SIGNAL(released()), d_ptr->waveWidget, SLOT(rightMoveCursor()));
-
-    d_ptr->rightCoordinateBtn = new Button("", QIcon("/usr/local/nPM/icons/doubleright.png"));
-    d_ptr->rightCoordinateBtn->setButtonStyle(Button::ButtonIconOnly);
-    connect(d_ptr->rightCoordinateBtn, SIGNAL(released()), d_ptr->waveWidget, SLOT(rightMoveCoordinate()));
-
-    d_ptr->prvEventBtn = new Button(trs("PreviousEvent"));
-    d_ptr->prvEventBtn->setButtonStyle(Button::ButtonTextOnly);
-    connect(d_ptr->prvEventBtn, SIGNAL(released()), this, SLOT(leftMoveEvent()));
-
-    d_ptr->nextEventBtn = new Button(trs("NextEvent"));
-    d_ptr->nextEventBtn->setButtonStyle(Button::ButtonTextOnly);
-    connect(d_ptr->nextEventBtn, SIGNAL(released()), this, SLOT(rightMoveEvent()));
+    d_ptr->eventMoveBtn = new MoveButton(trs("Event"));
+    d_ptr->eventMoveBtn->setButtonStyle(Button::ButtonTextOnly);
+    connect(d_ptr->eventMoveBtn, SIGNAL(leftMove()), this, SLOT(leftMoveEvent()));
+    connect(d_ptr->eventMoveBtn, SIGNAL(rightMove()), this, SLOT(rightMoveEvent()));
 
     d_ptr->printBtn = new Button(trs("Print"));
     d_ptr->printBtn->setButtonStyle(Button::ButtonTextOnly);
@@ -420,12 +423,9 @@ OxyCRGEventWindow::OxyCRGEventWindow()
 
     QHBoxLayout *hWaveLayout = new QHBoxLayout();
     hWaveLayout->addWidget(d_ptr->eventListBtn, 2);
-    hWaveLayout->addWidget(d_ptr->leftCursorBtn, 1);
-    hWaveLayout->addWidget(d_ptr->leftCoordinateBtn, 1);
-    hWaveLayout->addWidget(d_ptr->rightCoordinateBtn, 1);
-    hWaveLayout->addWidget(d_ptr->rightCursorBtn, 1);
-    hWaveLayout->addWidget(d_ptr->prvEventBtn, 2);
-    hWaveLayout->addWidget(d_ptr->nextEventBtn, 2);
+    hWaveLayout->addWidget(d_ptr->coordinateMoveBtn, 2);
+    hWaveLayout->addWidget(d_ptr->cursorMoveBtn, 2);
+    hWaveLayout->addWidget(d_ptr->eventMoveBtn, 2);
     hWaveLayout->addWidget(d_ptr->printBtn, 2);
     hWaveLayout->addWidget(d_ptr->setBtn, 2);
 
