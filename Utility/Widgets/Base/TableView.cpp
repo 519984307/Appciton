@@ -215,6 +215,12 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
             emit rowClicked(index.row());
             d_ptr->focusTheEditableItem(index.row());
         }
+        else
+        {
+            int row = rowAt(viewport()->height()) - 1;
+            selectRow(row);
+            emit selectRowChanged(row);
+        }
     }
     break;
     default:
