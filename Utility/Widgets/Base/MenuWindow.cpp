@@ -160,7 +160,7 @@ bool MenuWindow::focusNextPrevChild(bool next)
 
         if (w)
         {
-            w->setFocus();
+            w->setFocus(Qt::TabFocusReason);
             return true;;
         }
     }
@@ -184,7 +184,7 @@ bool MenuWindow::focusNextPrevChild(bool next)
 
         if (w)
         {
-            w->setFocus();
+            w->setFocus(Qt::BacktabFocusReason);
             return true;;
         }
     }
