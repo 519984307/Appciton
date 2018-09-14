@@ -20,7 +20,7 @@ class MachineConfigModuleContentPrivte
 public:
     enum MenuItem
     {
-        ITEM_CBO_IBP = 0,
+        ITEM_CBO_IBP_CO = 0,
         ITEM_CBO_CO2,
         ITEM_CBO_ECG12,
         ITEM_CBO_PRINTER,
@@ -53,7 +53,7 @@ void MachineConfigModuleContentPrivte::loadOptions()
 
     index = 0;
     systemConfig.getNumValue("MachineConfigModule|IBPModule", index);
-    combos[ITEM_CBO_IBP]->setCurrentIndex(index);
+    combos[ITEM_CBO_IBP_CO]->setCurrentIndex(index);
 
     index = 0;
     systemConfig.getNumValue("MachineConfigModule|CO2Module", index);
@@ -99,10 +99,6 @@ void MachineConfigModuleContentPrivte::loadOptions()
         combos[ITEM_CBO_SYNC]->setEnabled(true);
     }
     combos[ITEM_CBO_SYNC]->setCurrentIndex(index);
-
-    index = 0;
-    systemConfig.getNumValue("MachineConfigModule|COModule", index);
-    combos[ITEM_CBO_CO]->setCurrentIndex(index);
 }
 
 MachineConfigModuleContent::MachineConfigModuleContent()
@@ -131,17 +127,17 @@ void MachineConfigModuleContent::layoutExec()
     ComboBox *combo;
     int itemId;
 
-    label = new QLabel(trs("IBPModule"));
+    label = new QLabel(trs("IBPCOModule"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Disable")
-                    << trs("Enable")
+                    << trs("M601")
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
-                         ::ITEM_CBO_IBP, combo);
-    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_IBP;
+                         ::ITEM_CBO_IBP_CO, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_IBP_CO;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
@@ -271,20 +267,6 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
-    label = new QLabel(trs("COModule"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    combo = new ComboBox;
-    combo->addItems(QStringList()
-                    << trs("Disable")
-                    << trs("M601")
-                   );
-    layout->addWidget(combo, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(MachineConfigModuleContentPrivte
-                         ::ITEM_CBO_CO, combo);
-    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_CO;
-    combo->setProperty("Item", qVariantFromValue(itemId));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
 
@@ -295,9 +277,10 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
     QString str;
     switch (indexType)
     {
-    case MachineConfigModuleContentPrivte::ITEM_CBO_IBP:
-        str = "IBPModule";
-        break;
+    case MachineConfigModuleContentPrivte::ITEM_CBO_IBP_CO:     // IBP和CO为模块一同设置
+        systemConfig.setNumValue(QString("MachineConfigModule|IBPModule"), index);
+        systemConfig.setNumValue(QString("MachineConfigModule|COModule"), index);
+        return;
     case MachineConfigModuleContentPrivte::ITEM_CBO_CO2:
         str = "CO2Module";
         break;
@@ -327,9 +310,8 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         str = "SYNCDefibrillationModule";
         d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_ANANLOG]->setEnabled(!index);
         break;
-    case MachineConfigModuleContentPrivte::ITEM_CBO_CO:
-        str = "COModule";
-        break;
+    default:
+        return;
     }
     systemConfig.setNumValue(QString("MachineConfigModule|%1").arg(str), index);
 }
