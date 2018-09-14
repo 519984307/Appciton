@@ -656,7 +656,7 @@ Qt::ItemFlags ScreenLayoutModel::flags(const QModelIndex &index) const
     }
 
     LayoutNode *node = d_ptr->findNode(index);
-    bool editable = true;
+    bool editable = false;
     if (node)
     {
         editable = node->editable;

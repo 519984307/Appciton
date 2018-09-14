@@ -817,6 +817,7 @@ PromptImportOK,"配置已导入, 可在修改配置中查看!","Config Imported,
 PromptLoadDefaultCfgOK,"默认配置已加载, 可在修改配置中查看!","Defaults Restored, Press Modify Config to View!"
 ComfirmLoadDefaultCfg,确定恢复默认配置？,Do you Comfirm that restore default config?
 WaveformSources,波形资源,Waveform Sources
+ParameterSources,参数资源,Parameter Sources
 Replace,替换,Replace
 Insert,插入,Insert
 Remove,移除,Remove

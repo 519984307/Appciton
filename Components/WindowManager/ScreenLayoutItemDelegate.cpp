@@ -110,7 +110,7 @@ bool ScreenLayoutItemDelegatePrivate::showEditor(const QTableView *view, QAbstra
     }
     else
     {
-        title = trs("ParamaterSource");
+        title = trs("ParameterSources");
     }
 
     ScreenLayoutEditor *editor = new ScreenLayoutEditor(title);

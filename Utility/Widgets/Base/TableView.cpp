@@ -27,6 +27,66 @@ public:
     // focus the editable item in the row
     void focusTheEditableItem(int row);
 
+    /**
+     * @brief findNextPreviousSelectableItem find the next or previous selectable item
+     * @param curIndex the current item index
+     * @param next  true for next, false for previous
+     * @return the next or previous item index, it will return invalid index if the not found any item
+     */
+    QModelIndex findNextPreviousSelectableItem(QModelIndex curIndex, bool next)
+    {
+        QModelIndex index;
+        if (curIndex.isValid())
+        {
+            const QAbstractItemModel *m = curIndex.model();
+            int rowCount = m->rowCount();
+            int columnCount =  m->columnCount();
+            int itemCount = rowCount * columnCount;
+            int i = curIndex.row() * columnCount + curIndex.column();
+            int delta = next ? 1 : -1;
+
+            i += delta;
+            while (i >=0 && i < itemCount)
+            {
+                curIndex = m->index(i / columnCount, i % columnCount);
+                if (m->flags(curIndex) & Qt::ItemIsSelectable)
+                {
+                    index = curIndex;
+                    break;
+                }
+                i += delta;
+            }
+        }
+        return index;
+    }
+
+    /**
+     * @brief findFirstLastSelectableItem find the first or the last
+     * @model the model
+     * @param first true for first, false for last
+     * @return the first or last selectable item' index, return invalid index if not found
+     */
+    QModelIndex findFirstLastSelectableItem(QAbstractItemModel *model, bool first)
+    {
+        QModelIndex index;
+        if (first)
+        {
+            index = model->index(0, 0);
+        }
+        else
+        {
+
+            index = model->index(model->rowCount() - 1, model->columnCount() - 1);
+        }
+
+        if (!(model->flags(index) & Qt::ItemIsSelectable))
+        {
+            index = findNextPreviousSelectableItem(index, first);
+        }
+        return index;
+    }
+
+
     TableView *const q_ptr;
     int mouseClickRow;
     QModelIndex lastIndex;  // the last index that has been mouse press or key press
@@ -171,27 +231,11 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
         }
         else if (selectionBehavior() == QAbstractItemView::SelectItems)
         {
-            QAbstractItemModel *m = model();
-            if (m)
+            QModelIndex preIndex = d_ptr->findNextPreviousSelectableItem(index, false);
+            if (preIndex.isValid())
             {
-                int newRow = index.row();
-                int newColumn = index.column();
-                QModelIndex newIndex;
-                if ( newColumn > 0)
-                {
-                    newColumn -= 1;
-                    newIndex = m->index(newRow, newColumn);
-                    setCurrentIndex(newIndex);
-                    break;
-                }
-                else if (newRow > 0)
-                {
-                    newColumn = m->columnCount() - 1;
-                    newRow -= 1;
-                    newIndex = m->index(newRow, newColumn);
-                    setCurrentIndex(newIndex);
-                    break;
-                }
+                setCurrentIndex(preIndex);
+                break;
             }
         }
 
@@ -237,27 +281,11 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
         }
         else if (selectionBehavior() == QAbstractItemView::SelectItems)
         {
-            QAbstractItemModel *m = model();
-            if (m)
+            QModelIndex nextIndex = d_ptr->findNextPreviousSelectableItem(index, true);
+            if (nextIndex.isValid())
             {
-                int newRow = index.row();
-                int newColumn = index.column();
-                QModelIndex newIndex;
-                if ( newColumn < m->columnCount() - 1)
-                {
-                    newColumn += 1;
-                    newIndex = m->index(newRow, newColumn);
-                    setCurrentIndex(newIndex);
-                    break;
-                }
-                else if (newRow < m->rowCount() - 1)
-                {
-                    newColumn = 0;
-                    newRow += 1;
-                    newIndex = m->index(newRow, newColumn);
-                    setCurrentIndex(newIndex);
-                    break;
-                }
+                setCurrentIndex(nextIndex);
+                break;
             }
         }
         focusNextChild();
@@ -340,7 +368,7 @@ void TableView::mouseReleaseEvent(QMouseEvent *ev)
 
 void TableView::focusInEvent(QFocusEvent *ev)
 {
-    if (ev->reason() == Qt::TabFocusReason || ev->reason() == Qt::ActiveWindowFocusReason)
+    if (ev->reason() == Qt::TabFocusReason)
     {
         if (this->selectionBehavior() == QAbstractItemView::SelectRows)
         {
@@ -352,12 +380,7 @@ void TableView::focusInEvent(QFocusEvent *ev)
         }
         else if (this->selectionBehavior() == QAbstractItemView::SelectItems)
         {
-            QModelIndex index = currentIndex();
-            if (!index.isValid())
-            {
-                index = model()->index(0, 0);
-            }
-            setCurrentIndex(index);
+            setCurrentIndex(d_ptr->findFirstLastSelectableItem(model(), true));
         }
     }
     else if (ev->reason() == Qt::BacktabFocusReason)
@@ -376,17 +399,32 @@ void TableView::focusInEvent(QFocusEvent *ev)
         }
         else if (this->selectionBehavior() == QAbstractItemView::SelectItems)
         {
-            QModelIndex index = currentIndex();
-            if (!index.isValid())
-            {
-                index = model()->index(model()->rowCount() - 1, model()->columnCount() - 1);
-            }
-            setCurrentIndex(index);
+            setCurrentIndex(d_ptr->findFirstLastSelectableItem(model(), false));
         }
     }
-    else if (ev->reason() == Qt::PopupFocusReason || ev->reason() == Qt::MouseFocusReason)
+    else if (ev->reason() == Qt::PopupFocusReason || ev->reason() == Qt::MouseFocusReason
+             || ev->reason() == Qt::ActiveWindowFocusReason)
     {
-        setCurrentIndex(d_ptr->lastIndex);
+        if (d_ptr->lastIndex.isValid())
+        {
+            setCurrentIndex(d_ptr->lastIndex);
+        }
+        else
+        {
+            // focus the first item or the first row
+            if (this->selectionBehavior() == QAbstractItemView::SelectRows)
+            {
+                int row = rowAt(1);
+                if (row >= 0)
+                {
+                    selectRow(row);
+                }
+            }
+            else if (this->selectionBehavior() == QAbstractItemView::SelectItems)
+            {
+                setCurrentIndex(d_ptr->findFirstLastSelectableItem(model(), true));
+            }
+        }
     }
 }
 
