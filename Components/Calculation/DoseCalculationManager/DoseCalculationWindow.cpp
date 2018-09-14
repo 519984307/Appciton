@@ -17,7 +17,6 @@
 #include "LanguageManager.h"
 #include "DoseCalculationDefine.h"
 #include "DoseCalculationManager.h"
-#include "TitrateTableWidget.h"
 #include "WindowManager.h"
 #include "MessageBox.h"
 #include "KeyInputPanel.h"

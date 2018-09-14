@@ -254,13 +254,10 @@ SOURCES +=                                                                      
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.cpp                         \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.cpp                          \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.cpp    \
-    Components/Calculation/DoseCalculationManager/DoseCalculationWidget.cpp     \
     Components/Calculation/DoseCalculationManager/DoseCalculationWindow.cpp     \
-    Components/Calculation/DoseCalculationManager/TitrateTableWidget.cpp        \
     Components/Calculation/DoseCalculationManager/TitrateTableModel.cpp         \
     Components/Calculation/DoseCalculationManager/TitrateTableWindow.cpp        \
     Components/Calculation/DoseCalculationManager/TitrateTableManager.cpp       \
-    Components/Calculation/DoseCalculationManager/TitrateTableSetWidget.cpp     \
     Components/Calculation/DoseCalculationManager/TitrateTableSetWindow.cpp     \
     Components/Calculation/HemodynamicManager/HemodynamicWidget.cpp             \
     Components/Calculation/HemodynamicManager/HemodynamicWindow.cpp             \
@@ -816,14 +813,11 @@ HEADERS +=                                                                      
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.h                            \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.h      \
     Components/Calculation/DoseCalculationManager/DoseCalculationDefine.h       \
-    Components/Calculation/DoseCalculationManager/DoseCalculationWidget.h       \
     Components/Calculation/DoseCalculationManager/DoseCalculationWindow.h       \
-    Components/Calculation/DoseCalculationManager/TitrateTableWidget.h          \
     Components/Calculation/DoseCalculationManager/TitrateTableModel.h           \
     Components/Calculation/DoseCalculationManager/TitrateTableWindow.h          \
     Components/Calculation/DoseCalculationManager/TitrateTableDefine.h          \
     Components/Calculation/DoseCalculationManager/TitrateTableManager.h         \
-    Components/Calculation/DoseCalculationManager/TitrateTableSetWidget.h       \
     Components/Calculation/DoseCalculationManager/TitrateTableSetWindow.h       \
     Components/Calculation/HemodynamicManager/HemodynamicWidget.h               \
     Components/Calculation/HemodynamicManager/HemodynamicWindow.h               \

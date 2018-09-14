@@ -61,8 +61,8 @@ ScreenLayoutEditor::ScreenLayoutEditor(const QString &title)
     d_ptr->replaceCbo->setEnabled(false);
     d_ptr->insertCbo->setEnabled(false);
 
-    connect(d_ptr->replaceCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged(int)));
-    connect(d_ptr->insertCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged(int)));
+    connect(d_ptr->replaceCbo, SIGNAL(activated(int)), this, SLOT(onComboIndexChanged(int)));
+    connect(d_ptr->insertCbo, SIGNAL(activated(int)), this, SLOT(onComboIndexChanged(int)));
     connect(d_ptr->removeBtn, SIGNAL(clicked(bool)), this, SLOT(onRemoveBtnClicked()));
 }
 

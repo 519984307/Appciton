@@ -26,7 +26,6 @@
 #include "CO2Param.h"
 #include "SystemManager.h"
 #include "DataStorageDirManager.h"
-#include "DoseCalculationWidget.h"
 #include "DoseCalculationManager.h"
 #include "HemodynamicWidget.h"
 #include "Window.h"

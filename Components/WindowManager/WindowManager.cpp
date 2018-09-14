@@ -38,25 +38,6 @@
 #include <QTimer>
 #include "TopBarWidget.h"
 
-struct NodeDesc
-{
-    NodeDesc(int xx, int yy, int ww, int hh)
-    {
-        x = xx;
-        y = yy;
-        w = ww;
-        h = hh;
-    }
-
-    int x;
-    int y;
-    int w;
-    int h;
-};
-
-typedef QMap<QString, QList<NodeDesc> > LayoutStyleMap;
-static LayoutStyleMap _layoutStyle;
-
 WindowManager *WindowManager::_selfObj = NULL;
 
 /***************************************************************************************************

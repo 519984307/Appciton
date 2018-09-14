@@ -81,10 +81,10 @@ struct DrugInfo
 struct DoseCalculationInfo
 {
     DoseCalculationInfo()
+        : name(DRUG_NAME_DRUGA),
+          type(PATIENT_TYPE_ADULT),
+          unit(DRUG_UNIT_GRAM)
     {
-        name = DRUG_NAME_DRUGA;
-        type = PATIENT_TYPE_ADULT;
-        unit = DRUG_UNIT_GRAM;
         for (int i = 0; i < CALCULATION_PARAM_NR; i++)
         {
             drugParam[i].unit = "";

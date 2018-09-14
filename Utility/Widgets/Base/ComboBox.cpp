@@ -177,4 +177,9 @@ void ComboBox::paintEvent(QPaintEvent *ev)
 void ComboBox::onPopupDestroyed()
 {
     hidePopup();
+    if (count())
+    {
+        emit activated(currentIndex());
+        emit activated(currentText());
+    }
 }

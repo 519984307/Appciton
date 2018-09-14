@@ -47,6 +47,13 @@ public:
      */
     void updateWaveAndParamInfo();
 
+signals:
+    /**
+     * @brief spanChanged emit when the span changed
+     * @param index the item's index
+     */
+    void spanChanged(const QModelIndex &index);
+
 private:
     ScreenLayoutModelPrivate * const d_ptr;
 };

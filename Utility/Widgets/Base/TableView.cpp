@@ -162,6 +162,26 @@ bool TableView::hasNextPage()
     return row >= 0;
 }
 
+void TableView::setModel(QAbstractItemModel *model)
+{
+    QTableView::setModel(model);
+
+    // load the item's row span
+    int row = model->rowCount();
+    int column = model->columnCount();
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < column; j++)
+        {
+            QSize span = model->span(model->index(i, j));
+            if (span.isValid())
+            {
+                setSpan(i, j, span.height(), span.width());
+            }
+        }
+    }
+}
+
 // void TableView::mouseMoveEvent(QMouseEvent *ev)
 // {
 //     Q_UNUSED(ev)
@@ -448,5 +468,14 @@ void TableView::checkAfterFocusOut()
     {
         // don't have focus and not any popup widget (popup widget might be the editor)
         emit selectRowChanged(-1);
+    }
+}
+
+void TableView::onSpanChanged(const QModelIndex &index)
+{
+    QSize span = this->model()->span(index);
+    if (span.isValid())
+    {
+        setSpan(index.row(), index.column(), span.height(), span.width());
     }
 }

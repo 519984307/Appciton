@@ -39,6 +39,22 @@ struct LayoutNode
     bool editable;
 };
 
+enum ParamNodeSpan
+{
+    PARAM_SPAN_ONE = 1,
+    PARAM_SPAN_TWO = 2,
+};
+
+struct ParamNodeDescription
+{
+    ParamNodeDescription() : paramSpan(PARAM_SPAN_ONE) {}
+    ParamNodeDescription(const QString &displayName, ParamNodeSpan span)
+        : displayName(displayName), paramSpan(span) {}
+
+    QString displayName;
+    ParamNodeSpan paramSpan;
+};
+
 typedef QLinkedList<LayoutNode *> LayoutRow;
 
 class ScreenLayoutModelPrivate
@@ -68,11 +84,6 @@ public:
         }
         qDeleteAll(layoutNodes);
         layoutNodes.clear();
-    }
-
-    static bool layoutNodeLessThan(const LayoutNode *n1, const LayoutNode *n2)
-    {
-        return n1->pos < n2->pos;
     }
 
     /**
@@ -156,6 +167,27 @@ public:
             }
             layoutNodes.append(row);
         }
+    }
+
+    /**
+     * @brief insertNode insert one node into the row
+     * @param r layout row
+     * @param n layout node
+     */
+    void insertNode(LayoutRow *r, LayoutNode *n)
+    {
+        Q_ASSERT(r != NULL);
+        Q_ASSERT(n != NULL);
+        LayoutRow::Iterator iter = r->begin();
+        for (; iter != r->end(); ++iter)
+        {
+            if ((*iter)->pos > n->pos)
+            {
+                break;
+            }
+        }
+
+        r->insert(iter, n);
     }
 
     /**
@@ -291,21 +323,21 @@ public:
         waveIDMaps.insert("AA2Wave", WAVE_AA2);
         waveIDMaps.insert("O2Wave", WAVE_O2);
 
-        paramNameMap["ECG"] = "ECG";
-        paramNameMap["SPO2"] = "SPO2";
-        paramNameMap["RESP"] = "RESP";
+        paramNodeDescriptions["ECG"] = ParamNodeDescription("ECG", PARAM_SPAN_TWO);
+        paramNodeDescriptions["SPO2"] = ParamNodeDescription("SPO2", PARAM_SPAN_TWO);
+        paramNodeDescriptions["RESP"] = ParamNodeDescription("RESP", PARAM_SPAN_TWO);
         // IBP's pressure name is identical to it's wave name
-        paramNameMap["IBP1"] = paramInfo.getParamWaveformName(waveIDMaps["IBP1Wave"]);
-        paramNameMap["IBP2"] = paramInfo.getParamWaveformName(waveIDMaps["IBP2Wave"]);
-        paramNameMap["CO2"] = "CO2";
-        paramNameMap["NIBP"] = "NIBP";
-        paramNameMap["NIBPList"] = trs("NIBPList");
-        paramNameMap["TEMP"] = "TEMP";
-        paramNameMap["AA1"] = "AA1";
-        paramNameMap["AA2"] = "AA2";
-        paramNameMap["N2O"] = "N2O";
-        paramNameMap["O2"] = "O2";
-        paramNameMap["ST"] = "ST";
+        paramNodeDescriptions["IBP1"] = ParamNodeDescription(paramInfo.getParamWaveformName(waveIDMaps["IBP1Wave"]), PARAM_SPAN_TWO);
+        paramNodeDescriptions["IBP2"] = ParamNodeDescription(paramInfo.getParamWaveformName(waveIDMaps["IBP2Wave"]), PARAM_SPAN_TWO);
+        paramNodeDescriptions["CO2"] = ParamNodeDescription("CO2", PARAM_SPAN_TWO);
+        paramNodeDescriptions["NIBP"] = ParamNodeDescription("NIBP", PARAM_SPAN_TWO);
+        paramNodeDescriptions["NIBPList"] = ParamNodeDescription(trs("NIBPList"), PARAM_SPAN_TWO);
+        paramNodeDescriptions["TEMP"] = ParamNodeDescription("TEMP", PARAM_SPAN_TWO);
+        paramNodeDescriptions["AA1"] = ParamNodeDescription("AA1",  PARAM_SPAN_TWO);
+        paramNodeDescriptions["AA2"] = ParamNodeDescription("AA2", PARAM_SPAN_TWO);
+        paramNodeDescriptions["N2O"] = ParamNodeDescription("N2O", PARAM_SPAN_TWO);
+        paramNodeDescriptions["O2"] = ParamNodeDescription("O2", PARAM_SPAN_TWO);
+        paramNodeDescriptions["ST"] = ParamNodeDescription("ST", PARAM_SPAN_TWO);
     }
 
     /**
@@ -410,7 +442,7 @@ public:
     QStringList getUnlayoutedParams() const
     {
         QStringList existParams = getLayoutedParams();
-        QStringList avaliableParams = paramNameMap.keys();
+        QStringList avaliableParams = paramNodeDescriptions.keys();
         QStringList unlayoutedParams;
         QStringList::ConstIterator iter;
         for (iter = avaliableParams.constBegin(); iter != avaliableParams.constEnd(); ++iter)
@@ -442,7 +474,7 @@ public:
     QMap<WaveformID, QByteArray> waveCaches;
     QVector<LayoutRow *> layoutNodes;
     OrderedMap<QString, WaveformID> waveIDMaps;
-    OrderedMap<QString, QString> paramNameMap;    // store all the param name and the corresponed display name
+    OrderedMap<QString, ParamNodeDescription> paramNodeDescriptions;    // store data to describe param node
 };
 
 ScreenLayoutModel::ScreenLayoutModel(QObject *parent)
@@ -468,17 +500,56 @@ bool ScreenLayoutModel::setData(const QModelIndex &index, const QVariant &value,
     case ReplaceRole:
     case InsertRole:
     {
-        // replace the wave
-        QString waveName = value.toString();
-        if (!waveName.isEmpty())
+        // replace the node, wave and param node
+        QString nodeName = value.toString();
+        if (!nodeName.isEmpty())
         {
             LayoutNode * node = d_ptr->findNode(index);
             if (node)
             {
-                node->name = waveName;
-                node->waveId = d_ptr->waveIDMaps.value(waveName, WAVE_NONE);
+                node->name = nodeName;
+                node->waveId = d_ptr->waveIDMaps.value(nodeName, WAVE_NONE); // for param node or empty node name, the id will always be None
             }
-            emit dataChanged(index, index);
+
+            QModelIndex anotherChangeIndex = index;
+
+            // handle the row span for param node region
+            if (!d_ptr->itemInWaveRegion(index))
+            {
+                ParamNodeDescription desc =  d_ptr->paramNodeDescriptions[nodeName];
+                LayoutRow *r = d_ptr->layoutNodes.at(index.row());
+                if (desc.paramSpan > node->span)
+                {
+                    // when we get here, we need more space to hold the param node
+                    QModelIndex nextNodeIndex = this->index(index.row(), index.column() + node->span);
+                    LayoutNode * nextNode = d_ptr->findNode(nextNodeIndex);
+                    if (nextNode)
+                    {
+                        // just remove the node and the take the removed node's space
+                        r->removeOne(nextNode);
+                        node->span += nextNode->span;
+                        delete nextNode;
+                        emit spanChanged(index);
+                    }
+                    anotherChangeIndex = nextNodeIndex;
+                }
+                else if (desc.paramSpan < node->span)
+                {
+                    // too more space to hold the param node
+                    int left = node->span - desc.paramSpan;
+                    node->span = desc.paramSpan;
+
+                    // create one more node to hold the space
+                    LayoutNode *newNode  = new LayoutNode;
+                    newNode->span = left;
+                    newNode->pos = node->pos + node->span;
+                    d_ptr->insertNode(r, newNode);
+                    emit spanChanged(index);
+                    anotherChangeIndex = this->index(index.row(), index.column() + node->span);
+                }
+            }
+
+            emit dataChanged(index, anotherChangeIndex);
         }
     }
         break;
@@ -490,7 +561,25 @@ bool ScreenLayoutModel::setData(const QModelIndex &index, const QVariant &value,
         {
             node->waveId = WAVE_NONE;
             node->name = QString();
-            emit dataChanged(index, index);
+            QModelIndex anotherIndex = index;
+
+            // handle the row span for param node region
+            if (!d_ptr->itemInWaveRegion(index))
+            {
+                if (node->span == PARAM_SPAN_TWO)
+                {
+                    node->span = PARAM_SPAN_ONE;
+                    // sperate all the node space into span of one
+                    LayoutRow *r = d_ptr->layoutNodes.at(index.row());
+                    // just add a node with span of one
+                    LayoutNode *newNode = new LayoutNode();
+                    newNode->pos = node->pos + node->span;
+                    d_ptr->insertNode(r, newNode);
+                    anotherIndex = this->index(index.row(), newNode->pos);
+                    emit spanChanged(index);
+                }
+            }
+            emit dataChanged(index, anotherIndex);
         }
     }
         break;
@@ -521,8 +610,16 @@ QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
             }
             else
             {
-                // use the mapped name or use the layout node name
-                info.displayName = d_ptr->paramNameMap.value(info.name, info.name);
+                // param node
+                ParamNodeDescription desc = d_ptr->paramNodeDescriptions.value(info.name);
+                if (!desc.displayName.isEmpty())
+                {
+                    info.displayName = desc.displayName;
+                }
+                else
+                {
+                    info.displayName = info.name;
+                }
             }
 
             d_ptr->fillWaveData(info);
@@ -587,11 +684,18 @@ QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
 
             QVariantList list;
             QStringList::ConstIterator iter = replaceParams.constBegin();
+            bool oddColumn = index.column() % 2;  // this column can only hold param node with span of 1
             for (; iter != replaceParams.constEnd(); ++iter)
             {
+                if (oddColumn && d_ptr->paramNodeDescriptions[*iter].paramSpan == PARAM_SPAN_TWO)
+                {
+                    // the node can't hold the param node
+                    continue;
+                }
+
                 QVariantMap m;
                 m["name"] = *iter;
-                m["displayName"] = d_ptr->paramNameMap[*iter];
+                m["displayName"] = d_ptr->paramNodeDescriptions[*iter].displayName;
                 list.append(m);
             }
 
@@ -632,11 +736,18 @@ QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
             QVariantList list;
             QStringList unlayoutParams = d_ptr->getUnlayoutedParams();
             QStringList::ConstIterator iter = unlayoutParams.constBegin();
+            bool oddColumn = index.column() % 2; // this column can only hold param node with span of 1
             for (; iter != unlayoutParams.constEnd(); ++iter)
             {
+                if (oddColumn && d_ptr->paramNodeDescriptions[*iter].paramSpan == PARAM_SPAN_TWO)
+                {
+                    // the node can't hold the param node
+                    continue;
+                }
+
                 QVariantMap m;
                 m["name"] = *iter;
-                m["displayName"] = d_ptr->paramNameMap[*iter];
+                m["displayName"] = d_ptr->paramNodeDescriptions[*iter].displayName;
                 list.append(m);
             }
             return list;
@@ -698,6 +809,21 @@ void ScreenLayoutModel::loadLayoutInfo()
     beginResetModel();
     d_ptr->loadLayoutFromConfig(config);
     endResetModel();
+
+    // load the item's row span
+    int row = rowCount();
+    int column = columnCount();
+    for (int i = 0; i < row; i++)
+    {
+        for (int j = 0; j < column; j++)
+        {
+            QModelIndex idx = index(i, j);
+            if (d_ptr->findNode(idx))
+            {
+                emit spanChanged(idx);
+            }
+        }
+    }
 }
 
 void ScreenLayoutModel::updateWaveAndParamInfo()

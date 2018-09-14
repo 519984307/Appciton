@@ -86,21 +86,9 @@ ScreenLayoutWindow::ScreenLayoutWindow()
     model->updateWaveAndParamInfo();
     model->loadLayoutInfo();
     d_ptr->view->setModel(model);
-    resize(800, 600);
+    connect(model, SIGNAL(spanChanged(QModelIndex)), d_ptr->view, SLOT(onSpanChanged(QModelIndex)));
 
-    int row = model->rowCount();
-    int column = model->columnCount();
-    for (int i = 0; i < row; i++)
-    {
-        for (int j = 0; j < column; j++)
-        {
-            QSize span = model->span(model->index(i, j));
-            if (span.isValid())
-            {
-                d_ptr->view->setSpan(i, j, span.height(), span.width());
-            }
-        }
-    }
+    resize(800, 600);
 
     setWindowTitle(trs("ScreenLayout"));
 }

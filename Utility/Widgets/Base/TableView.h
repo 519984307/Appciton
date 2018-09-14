@@ -43,6 +43,9 @@ public:
      */
     bool hasNextPage();
 
+    /* reimplement */
+    void setModel(QAbstractItemModel *model);
+
 signals:
     /* emit when the row is clicked */
     void rowClicked(int row);
@@ -77,6 +80,12 @@ private slots:
      * it would update the selection and select nothing
      */
     void checkAfterFocusOut();
+
+    /**
+     * @brief onSpanChanged handle the row span changed event
+     * @param index the item's index
+     */
+    void onSpanChanged(const QModelIndex &index);
 
 private:
     TableViewPrivate *const d_ptr;
