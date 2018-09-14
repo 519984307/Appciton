@@ -71,16 +71,16 @@
 	</MonitorInfo>
 	<MachineConfigModule>
 		<IBPModule>0</IBPModule>
-		<CO2Module>1</CO2Module>
-		<ECG12LeadsModule>1</ECG12LeadsModule>
-		<PrinterModule>1</PrinterModule>
-		<HDMIModule>1</HDMIModule>
-		<WifiModule>1</WifiModule>
-		<ScreenModule>1</ScreenModule>
-		<NurseCallingModule>1</NurseCallingModule>
-		<AnalogOutputModule>1</AnalogOutputModule>
-		<SYNCDefibrillationModule>1</SYNCDefibrillationModule>
-		<COModule>1</COModule>
+		<CO2Module>0</CO2Module>
+		<ECG12LeadsModule>0</ECG12LeadsModule>
+		<PrinterModule>0</PrinterModule>
+		<HDMIModule>0</HDMIModule>
+		<WifiModule>0</WifiModule>
+		<ScreenModule>0</ScreenModule>
+		<NurseCallingModule>0</NurseCallingModule>
+		<AnalogOutputModule>0</AnalogOutputModule>
+		<SYNCDefibrillationModule>0</SYNCDefibrillationModule>
+		<COModule>0</COModule>
 	</MachineConfigModule>
 	<SoftWareVersion>
 		<SystemSoftwareVersion>05.35.00.154-01</SystemSoftwareVersion>
