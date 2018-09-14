@@ -19,6 +19,7 @@
 #include "IConfig.h"
 #include "ParamInfo.h"
 #include "IBPParam.h"
+#include "OrderedMap.h"
 
 #define COLUMN_COUNT 6
 #define ROW_COUNT 8
@@ -440,8 +441,8 @@ public:
     DemoProvider *demoProvider;
     QMap<WaveformID, QByteArray> waveCaches;
     QVector<LayoutRow *> layoutNodes;
-    QMap<QString, WaveformID> waveIDMaps;
-    QMap<QString, QString> paramNameMap;    // store all the param name and the corresponed display name
+    OrderedMap<QString, WaveformID> waveIDMaps;
+    OrderedMap<QString, QString> paramNameMap;    // store all the param name and the corresponed display name
 };
 
 ScreenLayoutModel::ScreenLayoutModel(QObject *parent)
