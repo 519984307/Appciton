@@ -1375,6 +1375,8 @@ View,查看,View
 LoadConfigDesc,加载配置设置,Load Config Desc
 Trend1,趋势图1 ,Trend 1
 Trend2,趋势图2,Trend 2
+RulerAdjust,标尺调整,Ruler Adjust
+TrendWaveSelect,趋势波形设置,Trend Wave Select
 OxyCRGWidgetSetup,呼吸氧和设置,OxyCRGWidget Setup
 Wave,波形,Wave
 CO2Low,二氧化碳低,CO2 Low
