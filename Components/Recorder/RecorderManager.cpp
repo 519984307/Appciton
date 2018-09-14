@@ -21,6 +21,7 @@
 #include "ContinuousPageGenerator.h"
 #include <QTimer>
 #include "FontManager.h"
+#include "EventStorageManager.h"
 
 
 class RecorderManagerPrivate
@@ -231,6 +232,7 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
             QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
             // stop page processor
             QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
+
             return false;
         }
         else if (generator->getPriority() <= d_ptr->generator->getPriority())
@@ -258,6 +260,12 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
     if (startImmediately)
     {
         QMetaObject::invokeMethod(generator, "start");
+    }
+
+    if (generator->getPriority() == RecordPageGenerator::PriorityContinuous)
+    {
+        // 触发实时打印
+        eventStorageManager.triggerRealtimePrintEvent();
     }
     return true;
 }

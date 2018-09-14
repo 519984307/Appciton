@@ -73,9 +73,9 @@ public:
      */
     unsigned getColumnCount(void) const;
     /**
-     * @brief getLeftTime  获取当前趋势表左侧时间
+     * @brief getRightTime  获取当前趋势表右侧时间
      */
-    unsigned getLeftTime(void) const;
+    unsigned getRightTime(void) const;
 
 private:
     TrendTableModelPrivate * const d_ptr;

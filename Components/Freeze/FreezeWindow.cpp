@@ -21,6 +21,7 @@
 #include "FreezePageGenerator.h"
 #include "RecorderManager.h"
 #include "MoveButton.h"
+#include "EventStorageManager.h"
 
 #define RECORD_FREEZE_WAVE_NUM 3
 class FreezeWindowPrivate
@@ -116,6 +117,8 @@ void FreezeWindow::showEvent(QShowEvent *ev)
     move(rect.x() + (rect.width() - width()) / 2, rect.y() + rect.height() - height());
 
     freezeManager.startFreeze();
+
+    eventStorageManager.triggerWaveFreezeEvent();
 }
 
 void FreezeWindow::hideEvent(QHideEvent *ev)

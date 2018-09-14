@@ -11,6 +11,7 @@
 
 #include "NIBPMonitorGetResultState.h"
 #include "NIBPParam.h"
+#include "EventStorageManager.h"
 
 /**************************************************************************************************
  * 进入该状态。
@@ -89,6 +90,8 @@ void NIBPMonitorGetResultState::handleNIBPEvent(NIBPEvent event, const unsigned 
         nibpParam.setResult(sys, dia, map, pr, err);
 
         debug("0x%02x, %d", args[1], err);
+
+        eventStorageManager.triggerNIBPMeasurementEvent();
 
         switchState(NIBP_MONITOR_SAFEWAITTIME_STATE);
         break;
