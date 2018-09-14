@@ -28,7 +28,20 @@
 #include "OxyCRGSetupWindow.h"
 #include "IMessageBox.h"
 #include "ECGParam.h"
+#include "OxyCRGRRWidget.h"
 
+class OxyCRGWidgetPrivate
+{
+public:
+    OxyCRGWidgetPrivate()
+            : setRulerAuto(NULL),
+              oxycrgRrWidget(NULL)
+    {
+    }
+
+    OxyCRGWidgetLabel *setRulerAuto;
+    OxyCRGRRWidget *oxycrgRrWidget;
+};
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
@@ -38,7 +51,8 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     _isShowGrid(true),
     _isShowFrame(true),
     _isShowScale(true),
-    _intervalItemIndex(-1)
+    _intervalItemIndex(-1),
+    d_ptr(new OxyCRGWidgetPrivate)
 {
     _pixelWPitch = systemManager.getScreenPixelWPitch();
     _pixelHPitch = systemManager.getScreenPixelHPitch();
@@ -85,10 +99,17 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     _changeTrend->setText("");
     connect(_changeTrend, SIGNAL(released(IWidget *)), this, SLOT(_changeTrendSlot(IWidget *)));
 
+    OxyCRGWidgetLabel *setRulerAuto = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
+    setRulerAuto->setFont(fontManager.textFont(fontSize));
+    setRulerAuto->setFixedSize(labelWidth, _labelHeight);
+    setRulerAuto->setText(trs("Auto"));
+    connect(setRulerAuto, SIGNAL(released(IWidget *)), this, SLOT(_autoSetRuler()));
+    d_ptr->setRulerAuto = setRulerAuto;
+
     _setUp = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
     _setUp->setFont(fontManager.textFont(fontSize));
     _setUp->setFixedSize(labelWidth, _labelHeight);
-    _setUp->setText("SetUp");
+    _setUp->setText(trs("SetUp"));
     connect(_setUp, SIGNAL(released(IWidget *)), this, SLOT(_onSetupUpdated(IWidget *)));
 
     int rWidth = rect().width() / 4;
@@ -98,8 +119,10 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     bottomLayout->addSpacing(addWidth);
     bottomLayout->addWidget(_changeTrend);
     bottomLayout->addSpacing(addWidth);
+    bottomLayout->addWidget(setRulerAuto);
+    bottomLayout->addSpacing(addWidth);
     bottomLayout->addWidget(_setUp);
-    bottomLayout->addSpacing(rWidth + addWidth);
+    bottomLayout->addSpacing(addWidth);
 
     _mainLayout->addWidget(_titleLabel, 0, Qt::AlignCenter);
     _mainLayout->addLayout(_hLayoutWave);
@@ -371,7 +394,8 @@ void OxyCRGWidget::paintEvent(QPaintEvent *event)
 
     _interval->move(addWidth, rHeight);
     _changeTrend->move((addWidth + rWidth), rHeight);
-    _setUp->move((addWidth + rWidth * 2), rHeight);
+    d_ptr->setRulerAuto->move((addWidth + rWidth * 2), rHeight);
+    _setUp->move((addWidth + rWidth * 3), rHeight);
 }
 
 /**************************************************************************************************
@@ -569,4 +593,63 @@ void OxyCRGWidget::_getIntervalIndex(int index)
 void OxyCRGWidget::_getChangeTrendIndex(int index)
 {
     _changeTrendItemIndex = index;
+}
+
+void OxyCRGWidget::_autoSetRuler()
+{
+    if (_oxycrgHrWidget)
+    {
+        QString strValueHigh = OxyCRGSymbol::convert(HR_HIGH_200);
+        int valueHigh = strValueHigh.toInt();
+        QString strValueLow = OxyCRGSymbol::convert(HR_LOW_40);
+        int valueLow = strValueLow.toInt();
+
+        _oxycrgHrWidget->setRuler(valueHigh,
+                                  (valueHigh + valueLow) / 2, valueLow);
+        _oxycrgHrWidget->setValueRange(valueLow, valueHigh);
+        currentConfig.setNumValue("OxyCRG|Ruler|HRLow", static_cast<int>(HR_LOW_40));
+        currentConfig.setNumValue("OxyCRG|Ruler|HRHigh", static_cast<int>(HR_HIGH_200));
+    }
+
+    if (d_ptr->oxycrgRrWidget)
+    {
+        QString strValueHigh = OxyCRGSymbol::convert(RR_HIGH_40);
+        int valueHigh = strValueHigh.toInt();
+        QString strValueLow = OxyCRGSymbol::convert(RR_LOW_0);
+        int valueLow = strValueLow.toInt();
+
+        d_ptr->oxycrgRrWidget->setRuler(valueHigh,
+                                  (valueHigh + valueLow) / 2, valueLow);
+        d_ptr->oxycrgRrWidget->setValueRange(valueLow, valueHigh);
+        currentConfig.setNumValue("OxyCRG|Ruler|RRLow", static_cast<int>(RR_LOW_0));
+        currentConfig.setNumValue("OxyCRG|Ruler|RRHigh", static_cast<int>(RR_HIGH_40));
+    }
+
+    if (_oxycrgSpo2Widget)
+    {
+        QString strValueHigh = OxyCRGSymbol::convert(SPO2_HIGH_100);
+        int valueHigh = strValueHigh.toInt();
+        QString strValueLow = OxyCRGSymbol::convert(SPO2_LOW_92);
+        int valueLow = strValueLow.toInt();
+
+        _oxycrgSpo2Widget->setRuler(valueHigh,
+                                  (valueHigh + valueLow) / 2, valueLow);
+        _oxycrgSpo2Widget->setValueRange(valueLow, valueHigh);
+        currentConfig.setNumValue("OxyCRG|Ruler|SPO2Low", static_cast<int>(SPO2_LOW_92));
+        currentConfig.setNumValue("OxyCRG|Ruler|SPO2High", static_cast<int>(SPO2_HIGH_100));
+    }
+
+    if (_oxycrgCo2Widget)
+    {
+        QString strValueHigh = OxyCRGSymbol::convert(CO2_HIGH_15);
+        int valueHigh = strValueHigh.toInt();
+        QString strValueLow = OxyCRGSymbol::convert(CO2_LOW_0);
+        int valueLow = strValueLow.toInt();
+
+        _oxycrgCo2Widget->setRuler(valueHigh,
+                                  (valueHigh + valueLow) / 2, valueLow);
+        _oxycrgCo2Widget->setValueRange(valueLow, valueHigh);
+        currentConfig.setNumValue("OxyCRG|Ruler|CO2Low", static_cast<int>(CO2_LOW_0));
+        currentConfig.setNumValue("OxyCRG|Ruler|CO2High", static_cast<int>(CO2_HIGH_15));
+    }
 }

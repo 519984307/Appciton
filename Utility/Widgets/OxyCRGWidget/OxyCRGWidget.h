@@ -24,6 +24,7 @@ class QHBoxLayout;
 class QVBoxLayout;
 class OxyCRGWidgetLabel;
 class PopupList;
+class OxyCRGWidgetPrivate;
 class OxyCRGWidget : public IWidget
 {
     Q_OBJECT
@@ -51,6 +52,11 @@ private slots:
     void _changeTrendDestroyed();
     void _getIntervalIndex(int);
     void _getChangeTrendIndex(int);
+    /**
+     * @brief _autoSetRuler  自动设置标尺槽函数
+     */
+    void _autoSetRuler(void);
+
 signals:
     void _intervalChanged(int index);
 private:
@@ -94,4 +100,7 @@ private:
 
     int _intervalItemIndex;
     int _changeTrendItemIndex;
+
+private:
+    OxyCRGWidgetPrivate *const d_ptr;
 };
