@@ -232,8 +232,6 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
             QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
             // stop page processor
             QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
-            // 触发实时打印
-            eventStorageManager.triggerRealtimePrintEvent();
 
             return false;
         }
@@ -262,6 +260,12 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
     if (startImmediately)
     {
         QMetaObject::invokeMethod(generator, "start");
+    }
+
+    if (generator->getPriority() == RecordPageGenerator::PriorityContinuous)
+    {
+        // 触发实时打印
+        eventStorageManager.triggerRealtimePrintEvent();
     }
     return true;
 }
