@@ -90,7 +90,7 @@
         <FilterMode>0</FilterMode>
         <SelfLearn>0</SelfLearn>
 		<ECG12LeadPacerMaker>0</ECG12LeadPacerMaker>	
-		<PacerMaker>0</PacerMaker>
+		<PacerMaker>1</PacerMaker>
 		<EverLeadOn>0</EverLeadOn>
     </ECG>
     <AG>

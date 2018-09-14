@@ -81,9 +81,13 @@
 		<Ecg2Gain>0</Ecg2Gain>
 		<SweepSpeed>1</SweepSpeed>
 		<Filter>0</Filter>
+		<DisplayMode>0</DisplayMode>
 		<LeadMode>2</LeadMode>
 		<NotchFilter>0</NotchFilter>
 		<SmartLeadOff>0</SmartLeadOff>
+		<ECG12LeadPacerMaker>0</ECG12LeadPacerMaker>
+		<PacerMaker>1</PacerMaker>
+		<EverLeadOn>0</EverLeadOn>
     </ECG>
     <AG>
          <AGModule>0</AGModule>
