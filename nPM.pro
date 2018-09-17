@@ -228,6 +228,7 @@ SOURCES +=                                                                      
     Components/System/Widgets/CalculateMenuContent.cpp                          \
     Components/System/Widgets/SystemMaintenance.cpp                             \
     Components/System/Widgets/DemoModeWindow.cpp                                \
+    Components/System/Widgets/PowerOffWindow.cpp                                \
     Components/System/Widgets/SystemNightModeMenuContent.cpp                    \
     Components/SoundManager/SoundManager.cpp                                    \
     Components/SoundManager/WavFile.cpp                                         \
@@ -780,6 +781,7 @@ HEADERS +=                                                                      
     Components/System/Widgets/CalculateMenuContent.h                            \
     Components/System/Widgets/SystemMaintenance.h                               \
     Components/System/Widgets/DemoModeWindow.h                                  \
+    Components/System/Widgets/PowerOffWindow.h                                  \
     Components/System/Widgets/SystemNightModeMenuContent.h                      \
     Components/SoundManager/SoundManager.h                                      \
     Components/SoundManager/WavFile.h                                           \

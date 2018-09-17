@@ -23,6 +23,7 @@
 #include "ErrorLogItem.h"
 #include "IConfig.h"
 #include "RawDataCollectionTxt.h"
+#include "PowerOffWindow.h"
 
 enum SystemBoardMessageType
 {
@@ -161,9 +162,10 @@ void SystemBoardProvider::_parseOperateMode(unsigned char *data, int len)
         return;
     }
 
-    _notifyAck(&data[0], len);
+    powerOffWindow.exec();
 
     // TODO: handle power off
+    //    _notifyAck(&data[0], len);    //　暂时不应答
 }
 
 /***************************************************************************************************
