@@ -18,8 +18,15 @@
 #include "IBPParam.h"
 #include "MessageBox.h"
 #include "Button.h"
+#include "SpinBox.h"
 #include "KeyInputPanel.h"
 #include "MainMenuWindow.h"
+#include <QGroupBox>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QTimerEvent>
+
+#define AUTO_SCALE_UPDATE_TIME          (2 * 1000)
 
 class IBPMenuContentPrivate
 {
@@ -27,9 +34,13 @@ public:
     enum MenuItem
     {
         ITEM_CBO_ENTITLE_1 = 1,
-        ITEM_CBO_ENTITLE_2,
         ITEM_CBO_RULER_1,
+        ITEM_SBO_UP_SCALE_1,
+        ITEM_SBO_DOWN_SCALE_1,
+        ITEM_CBO_ENTITLE_2,
         ITEM_CBO_RULER_2,
+        ITEM_SBO_UP_SCALE_2,
+        ITEM_SBO_DOWN_SCALE_2,
         ITEM_CBO_SWEEP_SPEED,
         ITEM_CBO_FILTER_MODE,
         ITEM_CBO_SENSITIVITY,
@@ -37,15 +48,26 @@ public:
         ITEM_CBO_CALIBRATION
     };
 
-    IBPMenuContentPrivate() {}
+    explicit IBPMenuContentPrivate(IBPMenuContent *const q_ptr) :
+        q_ptr(q_ptr),
+        oneGBox(NULL), twoGBox(NULL),
+        autoTimerId(-1)
+    {}
 
     // load settings
     void loadOptions();
 
+    IBPMenuContent *const q_ptr;
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> buttons;
+    QMap<MenuItem, SpinBox *> spinBoxs;
+    QGroupBox *oneGBox;
+    QGroupBox *twoGBox;
     IBPPressureName ibp1;
     IBPPressureName ibp2;
+    int autoTimerId;
+    IBPRulerLimit rulerLimit1;
+    IBPRulerLimit rulerLimit2;
 };
 
 void IBPMenuContentPrivate::loadOptions()
@@ -54,8 +76,48 @@ void IBPMenuContentPrivate::loadOptions()
     ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
     combos[ITEM_CBO_ENTITLE_1]->setCurrentIndex(ibp1);
     combos[ITEM_CBO_ENTITLE_2]->setCurrentIndex(ibp2);
-    combos[ITEM_CBO_RULER_1]->setCurrentIndex(ibpParam.getRulerLimit(IBP_INPUT_1));
-    combos[ITEM_CBO_RULER_2]->setCurrentIndex(ibpParam.getRulerLimit(IBP_INPUT_2));
+    rulerLimit1 = ibpParam.getRulerLimit(IBP_INPUT_1);
+    rulerLimit2 = ibpParam.getRulerLimit(IBP_INPUT_2);
+    if (rulerLimit1 == IBP_RULER_LIMIT_MANUAL)
+    {
+        spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->setEnabled(true);
+        spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->setEnabled(true);
+    }
+    else
+    {
+        spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->setEnabled(false);
+        spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->setEnabled(false);
+    }
+
+    if (rulerLimit2 == IBP_RULER_LIMIT_MANUAL)
+    {
+        spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->setEnabled(true);
+        spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setEnabled(true);
+    }
+    else
+    {
+        spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->setEnabled(false);
+        spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setEnabled(false);
+    }
+
+    if (rulerLimit1 == IBP_RULER_LIMIT_AOTU || rulerLimit2 == IBP_RULER_LIMIT_AOTU)
+    {
+        if (autoTimerId == -1)
+        {
+            autoTimerId = q_ptr->startTimer(AUTO_SCALE_UPDATE_TIME); // 2s
+        }
+    }
+    else
+    {
+        if (autoTimerId != -1)
+        {
+            q_ptr->killTimer(autoTimerId);
+            autoTimerId = -1;
+        }
+    }
+
+    combos[ITEM_CBO_RULER_1]->setCurrentIndex(rulerLimit1);
+    combos[ITEM_CBO_RULER_2]->setCurrentIndex(rulerLimit2);
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(ibpParam.getSweepSpeed());
     combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(ibpParam.getFilter());
     combos[ITEM_CBO_SENSITIVITY]->setCurrentIndex(ibpParam.getSensitivity());
@@ -63,7 +125,7 @@ void IBPMenuContentPrivate::loadOptions()
 
 IBPMenuContent::IBPMenuContent()
     : MenuContent(trs("IBPMenu"), trs("IBPMenuDesc")),
-      d_ptr(new IBPMenuContentPrivate)
+      d_ptr(new IBPMenuContentPrivate(this))
 {
 }
 
@@ -79,16 +141,24 @@ void IBPMenuContent::readyShow()
 
 void IBPMenuContent::layoutExec()
 {
-    QGridLayout *layout = new QGridLayout(this);
+    QVBoxLayout *layout = new QVBoxLayout(this);
+
 
     ComboBox *comboBox;
     QLabel *label;
     Button *button;
+    SpinBox *spinBox;
     int itemID;
 
+    // 通道1 QGroupBox
+    QGridLayout *gLayout = new QGridLayout();
+    d_ptr->oneGBox = new QGroupBox("IBP1");
+    d_ptr->oneGBox->setLayout(gLayout);
+    layout->addWidget(d_ptr->oneGBox);
+
     // 标名选择1
-    label = new QLabel(trs("ChannelPressureEntitle1"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
+    label = new QLabel(trs("PressureEntitle"));
+    gLayout->addWidget(label, 0, 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << IBPSymbol::convert(IBP_PRESSURE_ART)
@@ -104,12 +174,69 @@ void IBPMenuContent::layoutExec()
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    gLayout->addWidget(comboBox, 0, 1);
     d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_ENTITLE_1, comboBox);
 
+    // 通道一标尺
+    label = new QLabel(trs("Ruler"));
+    gLayout->addWidget(label, 1, 0);
+    comboBox = new ComboBox();
+    for (int i = 0; i < ibpParam.ibpScaleList.count(); i++)
+    {
+        if (i == 0)
+        {
+            comboBox->addItem(trs("Auto"));
+        }
+        else if (i == ibpParam.ibpScaleList.count() - 1)
+        {
+            comboBox->addItem(trs("Manual"));
+        }
+        else
+        {
+            comboBox->addItem(QString::number(ibpParam.ibpScaleList.at(i).low) + "~" +
+                              QString::number(ibpParam.ibpScaleList.at(i).high));
+        }
+    }
+    itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_RULER_1);
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    gLayout->addWidget(comboBox, 1, 1);
+    d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_RULER_1, comboBox);
+
+    // 通道1上标尺
+    label = new QLabel(trs("UpperScale"));
+    gLayout->addWidget(label, 2, 0);
+    spinBox = new SpinBox();
+    spinBox->setStep(5);
+    spinBox->setArrow(false);
+    itemID = IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1;
+    spinBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
+    gLayout->addWidget(spinBox, 2, 1);
+    d_ptr->spinBoxs.insert(IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1, spinBox);
+
+    // 通道1下标尺
+    label = new QLabel(trs("LowerScale"));
+    gLayout->addWidget(label, 3, 0);
+    spinBox = new SpinBox();
+    spinBox->setStep(5);
+    spinBox->setArrow(false);
+    itemID = IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1;
+    spinBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
+    gLayout->addWidget(spinBox, 3, 1);
+    d_ptr->spinBoxs.insert(IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1, spinBox);
+
+    // 通道2 QGroupBoxd
+    gLayout = new QGridLayout();
+    d_ptr->twoGBox = new QGroupBox("IBP2");
+    d_ptr->twoGBox->setLayout(gLayout);
+    layout->addWidget(d_ptr->twoGBox);
+
     // 标名选择2
-    label = new QLabel(trs("ChannelPressureEntitle2"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
+    label = new QLabel(trs("PressureEntitle"));
+    gLayout->addWidget(label, 0, 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << IBPSymbol::convert(IBP_PRESSURE_ART)
@@ -125,66 +252,64 @@ void IBPMenuContent::layoutExec()
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    gLayout->addWidget(comboBox, 0, 1);
     d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2, comboBox);
 
-    // 通道一标尺
-    label = new QLabel(trs("Ruler") + "1");
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    for (int i = 0; i < ibpParam.ibpScaleList.count(); i++)
-    {
-        if (i == 0)
-        {
-            comboBox->addItem("auto");
-        }
-        else if (i == ibpParam.ibpScaleList.count() - 1)
-        {
-            comboBox->addItem("m");
-        }
-        else
-        {
-            comboBox->addItem(QString::number(ibpParam.ibpScaleList.at(i).low) + "~" +
-                                   QString::number(ibpParam.ibpScaleList.at(i).high));
-        }
-    }
-    itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_RULER_1);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_RULER_1, comboBox);
-
     // 通道二标尺
-    label = new QLabel(trs("Ruler") + "2");
-    layout->addWidget(label, d_ptr->combos.count(), 0);
+    label = new QLabel(trs("Ruler"));
+    gLayout->addWidget(label, 1, 0);
     comboBox = new ComboBox();
     for (int i = 0; i < ibpParam.ibpScaleList.count(); i++)
     {
         if (i == 0)
         {
-            comboBox->addItem("auto");
+            comboBox->addItem(trs("Auto"));
         }
         else if (i == ibpParam.ibpScaleList.count() - 1)
         {
-            comboBox->addItem("m");
+            comboBox->addItem(trs("Manual"));
         }
         else
         {
             comboBox->addItem(QString::number(ibpParam.ibpScaleList.at(i).low) + "~" +
-                                   QString::number(ibpParam.ibpScaleList.at(i).high));
+                              QString::number(ibpParam.ibpScaleList.at(i).high));
         }
     }
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_RULER_2);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    gLayout->addWidget(comboBox, 1, 1);
     d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_RULER_2, comboBox);
 
+    // 通道2上标尺
+    label = new QLabel(trs("UpperScale"));
+    gLayout->addWidget(label, 2, 0);
+    spinBox = new SpinBox();
+    spinBox->setStep(5);
+    spinBox->setArrow(false);
+    itemID = IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2;
+    spinBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
+    gLayout->addWidget(spinBox, 2, 1);
+    d_ptr->spinBoxs.insert(IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2, spinBox);
+
+    // 通道2下标尺
+    label = new QLabel(trs("LowerScale"));
+    gLayout->addWidget(label, 3, 0);
+    spinBox = new SpinBox();
+    spinBox->setStep(5);
+    spinBox->setArrow(false);
+    itemID = IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2;
+    spinBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
+    gLayout->addWidget(spinBox, 3, 1);
+    d_ptr->spinBoxs.insert(IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2, spinBox);
+
     // 波形速度
+    gLayout = new QGridLayout();
     label = new QLabel(trs("IBPSweepSpeed"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
+    gLayout->addWidget(label, 0, 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << IBPSymbol::convert(IBP_SWEEP_SPEED_62_5)
@@ -196,12 +321,12 @@ void IBPMenuContent::layoutExec()
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    gLayout->addWidget(comboBox, 0, 1);
     d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_SWEEP_SPEED, comboBox);
 
     // 滤波模式
     label = new QLabel(trs("FilterMode"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
+    gLayout->addWidget(label, 1, 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << IBPSymbol::convert(IBP_FILTER_MODE_0)
@@ -211,12 +336,12 @@ void IBPMenuContent::layoutExec()
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    gLayout->addWidget(comboBox, 1, 1);
     d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_FILTER_MODE, comboBox);
 
     // 灵敏度
     label = new QLabel(trs("Sensitivity"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
+    gLayout->addWidget(label, 2, 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
                        << trs(IBPSymbol::convert(IBP_SENSITIVITY_HIGH))
@@ -227,29 +352,29 @@ void IBPMenuContent::layoutExec()
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    gLayout->addWidget(comboBox, 2, 1);
     d_ptr->combos.insert(IBPMenuContentPrivate::ITEM_CBO_SENSITIVITY, comboBox);
 
     // 校零
     label = new QLabel(trs("IBPZeroCalib"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count(), 0);
+    gLayout->addWidget(label, 3, 0);
     button = new Button(trs("IBPZeroStart"));
     button->setButtonStyle(Button::ButtonTextOnly);
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_CALIB_ZERO);
     button->setProperty("Item", qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
+    gLayout->addWidget(button, 3, 1);
     d_ptr->buttons.insert(IBPMenuContentPrivate::ITEM_CBO_CALIB_ZERO, button);
 
     // 校准
     label = new QLabel(trs("ServiceCalibrate"));
-    layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count(), 0);
+    gLayout->addWidget(label, 4, 0);
     button = new Button(trs("80"));
     button->setButtonStyle(Button::ButtonTextOnly);
     itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_CALIBRATION);
     button->setProperty("Item", qVariantFromValue(itemID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    layout->addWidget(button, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
+    gLayout->addWidget(button, 4, 1);
     d_ptr->buttons.insert(IBPMenuContentPrivate::ITEM_CBO_CALIBRATION, button);
 
     // 添加报警设置链接
@@ -257,10 +382,80 @@ void IBPMenuContent::layoutExec()
                              arg(trs("AlarmSettingUp")).
                              arg(" >>"));
     btn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(btn, d_ptr->combos.count() + d_ptr->buttons.count(), 1);
+    gLayout->addWidget(btn, 5, 1);
     connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
 
-    layout->setRowStretch(d_ptr->combos.count() + d_ptr->buttons.count() + 1, 1);
+    gLayout->setRowStretch(d_ptr->combos.count() + d_ptr->buttons.count() + 1, 1);
+
+    layout->addLayout(gLayout);
+}
+
+void IBPMenuContent::timerEvent(QTimerEvent *ev)
+{
+    if (d_ptr->autoTimerId == ev->timerId())
+    {
+        if (!this->isVisible())
+        {
+            killTimer(d_ptr->autoTimerId);
+            d_ptr->autoTimerId = -1;
+        }
+        else
+        {
+            IBPScaleInfo info;
+            if (d_ptr->rulerLimit1 == IBP_RULER_LIMIT_AOTU)
+            {
+                info = ibpParam.getScaleInfo(IBP_INPUT_1);
+                d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->setValue(info.low);
+                d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->setValue(info.high);
+            }
+
+            if (d_ptr->rulerLimit1 == IBP_RULER_LIMIT_AOTU)
+            {
+                info = ibpParam.getScaleInfo(IBP_INPUT_2);
+                d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setValue(info.low);
+                d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->setValue(info.high);
+            }
+        }
+    }
+}
+
+void IBPMenuContent::onSpinBoxValueChanged(int value, int scale)
+{
+    SpinBox *box = qobject_cast<SpinBox *>(sender());
+    if (box)
+    {
+        IBPMenuContentPrivate::MenuItem item
+            = (IBPMenuContentPrivate::MenuItem)box->property("Item").toInt();
+        switch (item)
+        {
+        case IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1:
+        {
+            int low = d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->getValue();
+            ibpParam.setRulerLimit(low, value * scale, IBP_INPUT_1);
+            break;
+        }
+        case IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1:
+        {
+            int high = d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->getValue();
+            ibpParam.setRulerLimit(value * scale, high, IBP_INPUT_1);
+            break;
+        }
+        case IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2:
+        {
+            int low = d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->getValue();
+            ibpParam.setRulerLimit(low, value * scale, IBP_INPUT_2);
+            break;
+        }
+        case IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2:
+        {
+            int high = d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->getValue();
+            ibpParam.setRulerLimit(value * scale, high, IBP_INPUT_2);
+            break;
+        }
+        default:
+            break;
+        }
+    }
 }
 
 void IBPMenuContent::onComboBoxIndexChanged(int index)
@@ -285,8 +480,8 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
             d_ptr->ibp1 = static_cast<IBPPressureName>(index);
             ibpParam.setEntitle(d_ptr->ibp1, IBP_INPUT_1);
             d_ptr->combos[IBPMenuContentPrivate::ITEM_CBO_RULER_1]->setCurrentIndex(
-                        ibpParam.getRulerLimit(d_ptr->ibp1)
-                        );
+                ibpParam.getRulerLimit(d_ptr->ibp1)
+            );
             break;
         }
         case IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2:
@@ -302,16 +497,78 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
             d_ptr->ibp2 = static_cast<IBPPressureName>(index);
             ibpParam.setEntitle(d_ptr->ibp2, IBP_INPUT_2);
             d_ptr->combos[IBPMenuContentPrivate::ITEM_CBO_RULER_2]->setCurrentIndex(
-                        ibpParam.getRulerLimit(d_ptr->ibp2)
-                        );
+                ibpParam.getRulerLimit(d_ptr->ibp2)
+            );
             break;
         }
         case IBPMenuContentPrivate::ITEM_CBO_RULER_1:
+        {
+            d_ptr->rulerLimit1 = (IBPRulerLimit)index;
             ibpParam.setRulerLimit(static_cast<IBPRulerLimit>(index), IBP_INPUT_1);
+            if (index == IBP_RULER_LIMIT_MANUAL)
+            {
+                d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->setEnabled(true);
+                d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->setEnabled(true);
+            }
+            else
+            {
+                d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->setEnabled(false);
+                d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->setEnabled(false);
+            }
+            if (index == IBP_RULER_LIMIT_AOTU)
+            {
+                if (d_ptr->autoTimerId == -1)
+                {
+                    d_ptr->autoTimerId = startTimer(AUTO_SCALE_UPDATE_TIME);
+                }
+            }
+            else
+            {
+                if (d_ptr->rulerLimit2 != IBP_RULER_LIMIT_AOTU && d_ptr->autoTimerId != -1)
+                {
+                    killTimer(d_ptr->autoTimerId);
+                    d_ptr->autoTimerId = -1;
+                }
+            }
+            IBPScaleInfo scale = ibpParam.getScaleInfo(IBP_INPUT_1);
+            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_1]->setValue(scale.high);
+            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_1]->setValue(scale.low);
             break;
+        }
         case IBPMenuContentPrivate::ITEM_CBO_RULER_2:
+        {
+            d_ptr->rulerLimit2 = (IBPRulerLimit)index;
             ibpParam.setRulerLimit(static_cast<IBPRulerLimit>(index), IBP_INPUT_2);
+            if (index == IBP_RULER_LIMIT_MANUAL)
+            {
+                d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->setEnabled(true);
+                d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setEnabled(true);
+            }
+            else
+            {
+                d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->setEnabled(false);
+                d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setEnabled(false);
+            }
+            if (index == IBP_RULER_LIMIT_AOTU)
+            {
+                if (d_ptr->autoTimerId == -1)
+                {
+                    d_ptr->autoTimerId = startTimer(AUTO_SCALE_UPDATE_TIME);
+                }
+            }
+            else
+            {
+                if (d_ptr->rulerLimit1 != IBP_RULER_LIMIT_AOTU && d_ptr->autoTimerId != -1)
+                {
+                    killTimer(d_ptr->autoTimerId);
+                    d_ptr->autoTimerId = -1;
+                }
+            }
+            IBPScaleInfo scale = ibpParam.getScaleInfo(IBP_INPUT_2);
+            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->setValue(scale.high);
+            d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setValue(scale.low);
             break;
+        }
         case IBPMenuContentPrivate::ITEM_CBO_SWEEP_SPEED:
             ibpParam.setSweepSpeed((IBPSweepSpeed)index);
             break;

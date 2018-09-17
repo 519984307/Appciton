@@ -925,6 +925,5 @@ void AGParam::_setWaveformZoom(AGTypeGas type, AGDisplayZoom zoom)
         break;
     }
     value = (n2o << 2) | (aa1 << 4) | (aa2 << 6) | (o2 << 8);
-    qDebug() << n2o << aa1 << aa2 << o2 << value;
     currentConfig.setNumValue("AG|DisplayZoom", value);
 }

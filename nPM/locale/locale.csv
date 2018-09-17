@@ -182,8 +182,7 @@ AGMenu,AG,AG
 AGSweepSpeed,波形速度,Sweep Speed
 IBPMenu,IBP,IBP
 IBPSweepSpeed,波形速度,Sweep Speed
-ChannelPressureEntitle1,通道１压力标名,Pressure Entitle Channel 1
-ChannelPressureEntitle2,通道２压力标名,Pressure Entitle Channel 2
+PressureEntitle,压力标名,Label
 Sensitivity,灵敏度,Sensitivity
 FilterMode,滤波模式,Filter Mode
 IBPZeroCalib,IBP校零,IBP Zero
@@ -1073,8 +1072,8 @@ LeadOffCalibrationFail,导联脱落（校准失败）,
 NoSetZeroCalibTime,没有设置校零时间,
 NoSetCalibrationTime,没有设置校准时间,
 ManualRulerSet,手动标尺设置,Manual Ruler Set
-PressureHighRuler,压力上标尺,Pressure High Ruler
-PressureLowRuler,压力下标尺,Pressure Low Ruler
+UpperScale,压力上标尺,Upper Scale
+LowerScale,压力下标尺,Lower Scale
 Ruler,标尺,Ruler
 LessThan,小于,Less Than
 GreaterThan,大于,Greater Than
@@ -1211,7 +1210,7 @@ RecoverDefaults,默认覆盖,Recover Defaults
 ModuleMaintainMenu,模块维护菜单,Module Maintain
 ModuleMaintainMenuDesc,模块维护菜单,Module Maintain Menu Desc
 AnaesthesiaModuleCalibration,麻醉模块化校准,Anaesthesia Module Calibration
-IBPPressureCalibration,IBP压力校准,IBP Pressure Calibration
+IBPPressureCalibration,IBP压力校准,Pressure Calibration
 CO2ModuleMaintenance,二氧化碳模块维护,CO2 Module Maintenance
 NIBPPressureTest,NIBP压力测试,NIBP Pressure Test
 NIBPLeakageDetection,NIBP泄露检测,NIBP Leakage Detection

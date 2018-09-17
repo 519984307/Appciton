@@ -28,9 +28,6 @@ public:
     // 设置导联状态
     void setLeadSta(int info);
 
-    // 自动设置标尺弹出；
-    void displayManualRuler();
-
     // 设置波形上下限
     void setLimit(int low, int high);
 

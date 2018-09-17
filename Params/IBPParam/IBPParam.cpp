@@ -817,6 +817,24 @@ void IBPParam::setRulerLimit(IBPRulerLimit ruler, IBPSignalInput ibp)
     }
 }
 
+void IBPParam::setRulerLimit(int low, int high, IBPSignalInput ibp)
+{
+    if (ibp == IBP_INPUT_1)
+    {
+        if (_waveWidgetIBP1 != NULL)
+        {
+            _waveWidgetIBP1->setLimit(low, high);
+        }
+    }
+    else if (ibp == IBP_INPUT_2)
+    {
+        if (_waveWidgetIBP2 != NULL)
+        {
+            _waveWidgetIBP2->setLimit(low, high);
+        }
+    }
+}
+
 IBPRulerLimit IBPParam::getRulerLimit(IBPSignalInput ibp)
 {
     int ruler = IBP_RULER_LIMIT_0_160;
@@ -854,6 +872,30 @@ IBPRulerLimit IBPParam::getRulerLimit(IBPPressureName name)
         break;
     }
     return ruler;
+}
+
+void IBPParam::setScaleInfo(IBPScaleInfo &info, IBPPressureName name)
+{
+    if (_ibp1.pressureName == name)
+    {
+        _scale1 = info;
+    }
+    else if (_ibp2.pressureName == name)
+    {
+        _scale2 = info;
+    }
+}
+
+IBPScaleInfo &IBPParam::getScaleInfo(IBPSignalInput ibp)
+{
+    if (ibp == IBP_INPUT_1)
+    {
+        return _scale1;
+    }
+    else if (ibp == IBP_INPUT_2)
+    {
+        return _scale2;
+    }
 }
 
 /**************************************************************************************************
