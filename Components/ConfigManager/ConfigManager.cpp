@@ -125,6 +125,7 @@ QList<ConfigManager::UserDefineConfigInfo> ConfigManager::getUserDefineConfigInf
         ConfigManager::UserDefineConfigInfo conf;
         systemConfig.getStrAttr(index, "name", conf.name);
         systemConfig.getStrValue(index, conf.fileName);
+        systemConfig.getStrAttr(index, "patType", conf.patType);
         infos.append(conf);
     }
     return infos;
@@ -148,7 +149,11 @@ void ConfigManager::saveUserConfigInfo(const QList<ConfigManager::UserDefineConf
     {
         QString index = QString("ConfigManager|UserDefine");
         attrs["name"] = infos.at(i).name;
-        systemConfig.addNode(index,  QString("Config%1").arg(i + 1), infos.at(i).fileName, attrs);
+        attrs["patType"] = infos.at(i).patType;
+        systemConfig.addNode(index,
+                             QString("Config%1").arg(i + 1),
+                             infos.at(i).fileName,
+                             attrs);
     }
     systemConfig.setNumAttr("ConfigManager|UserDefine", "count", count);
 
@@ -236,6 +241,7 @@ bool ConfigManager::saveUserDefineConfig(const QString &configName, Config *conf
     ConfigManager::UserDefineConfigInfo info;
     info.fileName = filename;
     info.name = configName;
+    info.patType = patientManager.getTypeStr();        // 保存病人类型信息
     infos.append(info);
     saveUserConfigInfo(infos);
     return true;

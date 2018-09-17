@@ -24,6 +24,7 @@ public:
     struct UserDefineConfigInfo {
       QString name;         // name of the this config
       QString fileName;     // xml filename
+      QString patType;         // patient type
     };
 
     ~ConfigManager();

@@ -22,7 +22,7 @@
 void PatientInfoWidget::loadPatientInfo()
 {
     QString nameStr = patientManager.getName();
-    QString typeStr = patientManager.getTypeStr();
+    QString typeStr = trs(patientManager.getTypeStr());
     if (nameStr.length() > 12)
     {
         nameStr = nameStr.left(10);
