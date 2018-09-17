@@ -26,7 +26,6 @@ public:
     }
     static PatientInfoWindow *_selfObj;
     ~PatientInfoWindow();
-    void readyShow();
     void widgetChange(void);
     void relieveStatus(bool);
     void newPatientStatus(bool);
@@ -38,6 +37,10 @@ private slots:
     void _weightReleased(void);
     void _relieveReleased(void);
     void _saveInfoReleased(void);
+    void _pacerMakerReleased(int);
+
+protected:
+    void showEvent(QShowEvent *);
 
 private:
     PatientInfoWindow();

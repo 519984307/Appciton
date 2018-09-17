@@ -27,6 +27,7 @@
 #include "WindowManager.h"
 #include "IConfig.h"
 #include "UnitManager.h"
+#include "ECGParam.h"
 
 PatientInfoWindow *PatientInfoWindow::_selfObj = NULL;
 class PatientInfoWindowPrivate
@@ -184,11 +185,18 @@ static bool checkWeightValue(const QString &value)
 }
 void PatientInfoWindowPrivate::loadOptions()
 {
-    combos[ITEM_CBO_PATIENT_TYPE]->setCurrentIndex(0);
-    combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(0);
+    combos[ITEM_CBO_PATIENT_TYPE]->setCurrentIndex(patientManager.getType());
+    if (patientNew)         // 新建病人时默认打开起博
+    {
+        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(ECG_PACE_ON);
+    }
+    else
+    {
+        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(ecgParam.getPacermaker());
+    }
     buttons[ITEM_BTN_PATIENT_ID]->setEnabled(true);
-    combos[ITEM_CBO_PATIENT_SEX]->setCurrentIndex(0);
-    combos[ITEM_CBO_BLOOD_TYPE]->setCurrentIndex(0);
+    combos[ITEM_CBO_PATIENT_SEX]->setCurrentIndex(patientManager.getSex());
+    combos[ITEM_CBO_BLOOD_TYPE]->setCurrentIndex(patientManager.getBlood());
     buttons[ITEM_BTN_PATIENT_NAME]->setEnabled(true);
     buttons[ITEM_BTN_PATIENT_AGE]->setEnabled(true);
     buttons[ITEM_BTN_PATIENT_HEIGHT]->setEnabled(true);
@@ -245,6 +253,8 @@ PatientInfoWindow::PatientInfoWindow()
                       , 3);
     d_ptr->combos.insert(PatientInfoWindowPrivate::ITEM_CBO_PACER_MARKER
                          , d_ptr->pacer);
+
+    connect(d_ptr->pacer, SIGNAL(currentIndexChanged(int)), this , SLOT(_pacerMakerReleased(int)));
 
     // patient id
     label = new QLabel(trs("PatientID"));
@@ -407,10 +417,6 @@ void PatientInfoWindow::_setPatientInfo()
     patientManager.setType(static_cast<PatientType>(d_ptr->type->currentIndex()));
     patientManager.setWeight(d_ptr->weight->text().toInt());
     patientManager.setPacermaker(static_cast<PatientPacer>(d_ptr->pacer->currentIndex()));
-}
-void PatientInfoWindow::readyShow()
-{
-    d_ptr->loadOptions();
 }
 
 void PatientInfoWindow::widgetChange()
@@ -616,6 +622,17 @@ void PatientInfoWindow::_saveInfoReleased()
             _setPatientInfo();
         }
     }
+}
+
+void PatientInfoWindow::_pacerMakerReleased(int index)
+{
+    ecgParam.setPacermaker(static_cast<ECGPaceMode>(index));
+}
+
+void PatientInfoWindow::showEvent(QShowEvent *ev)
+{
+    d_ptr->loadOptions();
+    Window::showEvent(ev);
 }
 
 PatientInfoWindow::~PatientInfoWindow()
