@@ -316,8 +316,6 @@ SOURCES +=                                                                      
     Components/WindowManager/WindowManager.cpp                                  \
     Components/WindowManager/WaveTrendWidget.cpp                                \
     Components/WindowManager/WidgetSelectMenu.cpp                               \
-    Components/WindowManager/WindowLayout.cpp                                   \
-    Components/WindowManager/WindowWidget.cpp                                   \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
     Components/WindowManager/MainMenuWindow.cpp                                 \
     Components/WindowManager/FactoryMaintainMenuWindow.cpp                      \
@@ -326,6 +324,7 @@ SOURCES +=                                                                      
     Components/WindowManager/ArrhythmiaMenuWindow.cpp                           \
     Components/WindowManager/ScreenMenuContent.cpp                              \
     Components/WindowManager/TopBarWidget.cpp                                   \
+    Components/WindowManager/LayoutManager.cpp                                  \
     Components/WindowManager/ScreenLayoutWindow.cpp                             \
     Components/WindowManager/ScreenLayoutModel.cpp                              \
     Components/WindowManager/ScreenLayoutItemDelegate.cpp                       \
@@ -889,8 +888,6 @@ HEADERS +=                                                                      
     Components/WindowManager/WindowManager.h                                    \
     Components/WindowManager/WaveTrendWidget.h                                  \
     Components/WindowManager/WidgetSelectMenu.h                                 \
-    Components/WindowManager/WindowLayout.h                                     \
-    Components/WindowManager/WindowWidget.h                                     \
     Components/WindowManager/PromptInfoBarWidget.h                              \
     Components/WindowManager/MainMenuWindow.h                                   \
     Components/WindowManager/FactoryMaintainMenuWindow.h                        \
@@ -899,6 +896,7 @@ HEADERS +=                                                                      
     Components/WindowManager/ArrhythmiaMenuWindow.h                             \
     Components/WindowManager/ScreenMenuContent.h                                \
     Components/WindowManager/TopBarWidget.h                                     \
+    Components/WindowManager/LayoutManager.h                                    \
     Components/WindowManager/ScreenLayoutWindow.h                               \
     Components/WindowManager/ScreenLayoutModel.h                                \
     Components/WindowManager/ScreenLayoutItemDelegate.h                         \

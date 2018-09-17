@@ -14,6 +14,48 @@
 #include <QModelIndex>
 #include "ParamDefine.h"
 
+#define LAYOUT_COLUMN_COUNT 6
+#define LAYOUT_ROW_COUNT 8
+#define LAYOUT_MAX_WAVE_ROW_NUM 6
+#define LAYOUT_WAVE_END_COLUMN 4
+
+enum LayoutWaveNodeType
+{
+    LAYOUT_WAVE_NODE_ECG1,
+    LAYOUT_WAVE_NODE_ECG2,
+    LAYOUT_WAVE_NODE_RESP,
+    LAYOUT_WAVE_NODE_SPO2,
+    LAYOUT_WAVE_NODE_CO2,
+    LAYOUT_WAVE_NODE_IBP1,
+    LAYOUT_WAVE_NODE_IBP2,
+    LAYOUT_WAVE_NODE_N2O,
+    LAYOUT_WAVE_NODE_AA1,
+    LAYOUT_WAVE_NODE_AA2,
+    LAYOUT_WAVE_NODE_O2,
+    LAYOUT_WAVE_NODE_NR,
+};
+
+enum LayoutParamNodeType
+{
+    LAYOUT_PARAM_NODE_ECG,
+    LAYOUT_PARAM_NODE_SPO2,
+    LAYOUT_PARAM_NODE_RESP,
+    LAYOUT_PARAM_NODE_IBP1,
+    LAYOUT_PARAM_NODE_IBP2,
+    LAYOUT_PARAM_NODE_CO2,
+    LAYOUT_PARAM_NODE_NIBP,
+    LAYOUT_PARAM_NODE_NIBPLIST,
+    LAYOUT_PARAM_NODE_TEMP,
+    LAYOUT_PARAM_NODE_AA1,
+    LAYOUT_PARAM_NODE_AA2,
+    LAYOUT_PARAM_NODE_N2O,
+    LAYOUT_PARAM_NODE_O2,
+    LAYOUT_PARAM_NODE_ST,
+    LAYOUT_PARAM_NODE_NR,
+};
+
+const char *layoutNodeName(LayoutWaveNodeType waveNode);
+const char *layoutNodeName(LayoutParamNodeType paramNode);
 
 enum ScreenLayoutRole
 {
@@ -49,3 +91,4 @@ struct ScreenLayoutItemInfo
 };
 
 Q_DECLARE_METATYPE(ScreenLayoutItemInfo)
+

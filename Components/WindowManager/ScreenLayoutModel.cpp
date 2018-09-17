@@ -13,18 +13,56 @@
 #include "DemoProvider.h"
 #include "ParamManager.h"
 #include "ScreenLayoutDefine.h"
-#include <QLinkedList>
 #include <QVector>
+#include <QList>
 #include <QByteArray>
 #include "IConfig.h"
 #include "ParamInfo.h"
 #include "IBPParam.h"
 #include "OrderedMap.h"
 
-#define COLUMN_COUNT 6
-#define ROW_COUNT 8
-#define MAX_WAVE_ROW 6
-#define WAVE_END_COLUMN 4
+
+const char *layoutNodeName(LayoutParamNodeType paramNode)
+{
+    static const char * paramNodeName[LAYOUT_PARAM_NODE_NR] = {
+        "ECG",
+        "SPO2",
+        "RESP",
+        "IBP1",
+        "IBP2",
+        "CO2",
+        "NIBP",
+        "NIBPList",
+        "TEMP",
+        "AA1",
+        "AA2",
+        "N2O",
+        "O2",
+        "ST",
+    };
+
+    return paramNodeName[paramNode];
+}
+
+const char *layoutNodeName(LayoutWaveNodeType waveNode)
+{
+    static const char * waveNodeName[LAYOUT_WAVE_NODE_NR] = {
+        "ECG1Wave",
+        "ECG2Wave",
+        "RESPWave",
+        "SPO2Wave",
+        "CO2Wave",
+        "IBP1Wave",
+        "IBP2Wave",
+        "N2OWave",
+        "AA1Wave",
+        "AA2Wave",
+        "O2Wave",
+    };
+
+    return waveNodeName[waveNode];
+}
+
 
 struct LayoutNode
 {
@@ -55,7 +93,7 @@ struct ParamNodeDescription
     ParamNodeSpan paramSpan;
 };
 
-typedef QLinkedList<LayoutNode *> LayoutRow;
+typedef QList<LayoutNode *> LayoutRow;
 
 class ScreenLayoutModelPrivate
 {
@@ -307,37 +345,47 @@ public:
     {
         // two ecg wave at most
         // TODO: find the proper ECG Wave
-        waveIDMaps.insert("ECG1Wave", WAVE_ECG_II);
-        waveIDMaps.insert("ECG2Wave", WAVE_ECG_I);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_ECG1), WAVE_ECG_II);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_ECG2), WAVE_ECG_I);
 
-        waveIDMaps.insert("RESPWave", WAVE_RESP);
-        waveIDMaps.insert("SPO2Wave", WAVE_SPO2);
-        waveIDMaps.insert("CO2Wave", WAVE_CO2);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_RESP), WAVE_RESP);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_SPO2), WAVE_SPO2);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_CO2), WAVE_CO2);
 
         // find proper IBP Wave base of the wave name
-        waveIDMaps.insert("IBP1Wave", ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_1)));
-        waveIDMaps.insert("IBP2Wave", ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_2)));
+        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_IBP1),
+                          ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_1)));
+        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_IBP2),
+                          ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_2)));
 
-        waveIDMaps.insert("N2OWave", WAVE_N2O);
-        waveIDMaps.insert("AA1Wave", WAVE_AA1);
-        waveIDMaps.insert("AA2Wave", WAVE_AA2);
-        waveIDMaps.insert("O2Wave", WAVE_O2);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_N2O), WAVE_N2O);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_AA1), WAVE_AA1);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_AA2), WAVE_AA2);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_O2), WAVE_O2);
 
-        paramNodeDescriptions["ECG"] = ParamNodeDescription("ECG", PARAM_SPAN_TWO);
-        paramNodeDescriptions["SPO2"] = ParamNodeDescription("SPO2", PARAM_SPAN_TWO);
-        paramNodeDescriptions["RESP"] = ParamNodeDescription("RESP", PARAM_SPAN_TWO);
+
+        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_ECG)] = ParamNodeDescription(paramInfo.getParamName(PARAM_ECG),
+                                                                                            PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_SPO2)] = ParamNodeDescription(paramInfo.getParamName(PARAM_SPO2),
+                                                                                             PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_RESP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_RESP),
+                                                                                             PARAM_SPAN_TWO);
         // IBP's pressure name is identical to it's wave name
-        paramNodeDescriptions["IBP1"] = ParamNodeDescription(paramInfo.getParamWaveformName(waveIDMaps["IBP1Wave"]), PARAM_SPAN_TWO);
-        paramNodeDescriptions["IBP2"] = ParamNodeDescription(paramInfo.getParamWaveformName(waveIDMaps["IBP2Wave"]), PARAM_SPAN_TWO);
-        paramNodeDescriptions["CO2"] = ParamNodeDescription("CO2", PARAM_SPAN_TWO);
-        paramNodeDescriptions["NIBP"] = ParamNodeDescription("NIBP", PARAM_SPAN_TWO);
-        paramNodeDescriptions["NIBPList"] = ParamNodeDescription(trs("NIBPList"), PARAM_SPAN_TWO);
-        paramNodeDescriptions["TEMP"] = ParamNodeDescription("TEMP", PARAM_SPAN_TWO);
-        paramNodeDescriptions["AA1"] = ParamNodeDescription("AA1",  PARAM_SPAN_TWO);
-        paramNodeDescriptions["AA2"] = ParamNodeDescription("AA2", PARAM_SPAN_TWO);
-        paramNodeDescriptions["N2O"] = ParamNodeDescription("N2O", PARAM_SPAN_TWO);
-        paramNodeDescriptions["O2"] = ParamNodeDescription("O2", PARAM_SPAN_TWO);
-        paramNodeDescriptions["ST"] = ParamNodeDescription("ST", PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_IBP1)] = ParamNodeDescription(
+                    paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_WAVE_NODE_IBP1)]),  PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_IBP2)] = ParamNodeDescription(
+                    paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_WAVE_NODE_IBP2)]), PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_CO2)] = ParamNodeDescription(paramInfo.getParamName(PARAM_CO2), PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_NIBP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_NIBP), PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_NIBPLIST)] = ParamNodeDescription(trs("NIBPList"), PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_TEMP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_TEMP), PARAM_SPAN_TWO);
+
+        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_AA1)] = ParamNodeDescription("AA1",  PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_AA2)] = ParamNodeDescription("AA2", PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_N2O)] = ParamNodeDescription("N2O", PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_O2)] = ParamNodeDescription("O2", PARAM_SPAN_TWO);
+
+        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_ST)] = ParamNodeDescription("ST", PARAM_SPAN_TWO);
     }
 
     /**
@@ -347,7 +395,7 @@ public:
      */
     LayoutNode *findNode(const QModelIndex &index)
     {
-        if (!index.isValid() || index.row() >= layoutNodes.count() || index.column() >= COLUMN_COUNT)
+        if (!index.isValid() || index.row() >= layoutNodes.count() || index.column() >= LAYOUT_COLUMN_COUNT)
         {
             return NULL;
         }
@@ -424,7 +472,7 @@ public:
             LayoutRow::ConstIterator iter = (*riter)->constBegin();
             for (; iter != (*riter)->end(); ++iter)
             {
-                if ((*iter)->waveId == WAVE_NONE && (row >= MAX_WAVE_ROW || column >= WAVE_END_COLUMN))
+                if ((*iter)->waveId == WAVE_NONE && (row >= LAYOUT_MAX_WAVE_ROW_NUM || column >= LAYOUT_WAVE_END_COLUMN))
                 {
                     list.append((*iter)->name);
                 }
@@ -463,7 +511,7 @@ public:
      */
     bool itemInWaveRegion(const QModelIndex &index)
     {
-        if ((index.row() < MAX_WAVE_ROW) && (index.column() < WAVE_END_COLUMN))
+        if ((index.row() < LAYOUT_MAX_WAVE_ROW_NUM) && (index.column() < LAYOUT_WAVE_END_COLUMN))
         {
             return true;
         }
@@ -485,13 +533,13 @@ ScreenLayoutModel::ScreenLayoutModel(QObject *parent)
 int ScreenLayoutModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return COLUMN_COUNT;
+    return LAYOUT_COLUMN_COUNT;
 }
 
 int ScreenLayoutModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return ROW_COUNT;
+    return LAYOUT_ROW_COUNT;
 }
 
 bool ScreenLayoutModel::setData(const QModelIndex &index, const QVariant &value, int role)

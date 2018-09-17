@@ -20,7 +20,6 @@
 #include "CodeMarkerWidget.h"
 #include "SystemBoardProvider.h"
 #include "WindowManager.h"
-#include "WindowLayout.h"
 #include "PatientInfoWindow.h"
 #include "MessageBox.h"
 #include "CO2Param.h"
@@ -156,17 +155,6 @@ void SoftkeyActionBase::WindowLayout(bool isPressed)
         return;
     }
 
-    bool isVisible = windowLayout.isVisible();
-    while (NULL != QApplication::activeModalWidget())
-    {
-        QApplication::activeModalWidget()->hide();
-        menuManager.close();
-    }
-
-    if (isVisible)
-    {
-        return;
-    }
     windowManager.showWindow(ScreenLayoutWindow::getInstance(),
                              WindowManager::ShowBehaviorCloseIfVisiable | WindowManager::ShowBehaviorCloseOthers);
 }
