@@ -65,15 +65,19 @@ LoadConfigMenuContentPrivate::LoadConfigMenuContentPrivate():
 void LoadConfigMenuContentPrivate::loadConfigs()
 {
     configs.clear();
-    ConfigManager::UserDefineConfigInfo userConfig[] =
+    QString defaultStr = trs("DefaultConfig");
+    ConfigManager::UserDefineConfigInfo defaultConfig[] =
     {
-        {"AdultConfig.Original", "AdultConfig.Original.xml"},
-        {"PedConfig.Original", "PedConfig.Original.xml"},
-        {"NeoConfig.Original", "NeoConfig.Original.xml"}
+        {QString("%1(%2)").arg(defaultStr).arg(trs(PatientSymbol::convert(PATIENT_TYPE_ADULT))),
+            "AdultConfig.Original.xml", ""},
+        {QString("%1(%2)").arg(defaultStr).arg(trs(PatientSymbol::convert(PATIENT_TYPE_PED))),
+            "PedConfig.Original.xml", ""},
+        {QString("%1(%2)").arg(defaultStr).arg(trs(PatientSymbol::convert(PATIENT_TYPE_NEO))),
+            "NeoConfig.Original.xml", ""}
     };
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < CONFIG_MAX_NUM; i++)
     {
-        configs.append(userConfig[i]);
+        configs.append(defaultConfig[i]);
     }
     configs = configs + configManager.getUserDefineConfigInfos();
 }
@@ -84,9 +88,18 @@ void LoadConfigMenuContentPrivate::loadConfigs()
 void LoadConfigMenuContentPrivate::updateConfigList()
 {
     QStringList configNameList;
-    for (int i = 0; i < configs.count(); i++)
+    for (int i = 0; i < CONFIG_MAX_NUM; i++)
     {
         configNameList.append(configs.at(i).name);
+    }
+    QList<ConfigManager::UserDefineConfigInfo> userConfig
+            = configManager.getUserDefineConfigInfos();
+    for (int i = 0; i < userConfig.count(); i++)
+    {
+        // 重组用户配置字符串
+        configNameList.append(QString("%1(%2)")
+                              .arg(userConfig[i].name)
+                              .arg(trs(userConfig[i].patType)));
     }
     configDataModel->setStringList(configNameList);
 
