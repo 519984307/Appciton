@@ -195,6 +195,13 @@ void UserConfigEditMenuContent::onBtnClick()
             d_ptr->editWindow->setCurrentEditConfigName(d_ptr->generateDefaultConfigName());
             d_ptr->editWindow->setCurrentEditConfig(d_ptr->curConfig);
             d_ptr->editWindow->initializeSubMenu();
+
+            QString name = d_ptr->editWindow->getCurrentEditConfigName();
+            QString pathName;
+            pathName = "Add-";
+            pathName += name;
+            d_ptr->editWindow->setMenuPath(pathName);
+
             windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorNone);
             connect(d_ptr->editWindow , SIGNAL(finished(int)) , this , SLOT(onEditFinished()));
         }
@@ -214,6 +221,21 @@ void UserConfigEditMenuContent::onBtnClick()
         d_ptr->editWindow->setCurrentEditConfigName(d_ptr->configs.at(index).name);
         d_ptr->editWindow->setCurrentEditConfig(d_ptr->curConfig);
         d_ptr->editWindow->initializeSubMenu();
+
+        QString fileName = d_ptr->curConfig->getFileName();
+        QString name = d_ptr->editWindow->getCurrentEditConfigName();
+        QString pathName;
+        if (fileName.indexOf("User") >= 0)
+        {
+            pathName = "Edit-";
+            pathName += name;
+        }
+        else
+        {
+            pathName = "Edit-DefaultSetting";
+        }
+        d_ptr->editWindow->setMenuPath(pathName);
+
         windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorNone);
         connect(d_ptr->editWindow , SIGNAL(finished(int)) , this , SLOT(onEditFinished()));
     }

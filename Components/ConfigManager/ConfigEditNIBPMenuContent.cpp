@@ -19,6 +19,7 @@
 #include "Button.h"
 #include "ParamInfo.h"
 #include "ParamDefine.h"
+#include "ConfigManager.h"
 
 class ConfigEditNIBPMenuContentPrivate
 {
@@ -28,6 +29,7 @@ public:
         ITEM_CBO_MEASURE_MODE = 0,
         ITEM_CBO_INTERVAL_TIME,
         ITEM_CBO_INIT_CUFF,
+        ITEM_CBO_MAX
     };
 
     explicit ConfigEditNIBPMenuContentPrivate(Config *const config);
@@ -150,6 +152,13 @@ void ConfigEditNIBPMenuContentPrivate::setInitPressure(int index)
 void ConfigEditNIBPMenuContent::readyShow()
 {
     d_ptr->loadOptions();
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    for (int i = 0; i < ConfigEditNIBPMenuContentPrivate::ITEM_CBO_MAX; i++)
+    {
+        d_ptr->combos[ConfigEditNIBPMenuContentPrivate
+                ::MenuItem(i)]->setEnabled(preStatusBool);
+    }
 }
 
 void ConfigEditNIBPMenuContent::onComboIndexChanged(int index)

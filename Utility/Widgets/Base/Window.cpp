@@ -139,6 +139,11 @@ int Window::exec()
     }
 }
 
+int Window::getTitleHight() const
+{
+    return TITLE_BAR_HEIGHT;
+}
+
 
 void Window::changeEvent(QEvent *ev)
 {

@@ -18,6 +18,7 @@
 #include "Button.h"
 #include "ParamInfo.h"
 #include "ParamDefine.h"
+#include "ConfigManager.h"
 
 class ConfigEditRespMenuContentPrivate
 {
@@ -49,8 +50,8 @@ ConfigEditRespMenuContentPrivate
 }
 
 ConfigEditRespMenuContent::ConfigEditRespMenuContent(Config *const config):
-    MenuContent(trs("RespMenu"),
-                trs("RespMenuDesc")),
+    MenuContent(trs("RESPMenu"),
+                trs("RESPMenuDesc")),
     d_ptr(new ConfigEditRespMenuContentPrivate(config))
 {
 }
@@ -79,6 +80,13 @@ void ConfigEditRespMenuContentPrivate::loadOptions()
 void ConfigEditRespMenuContent::readyShow()
 {
     d_ptr->loadOptions();
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    for (int i = 0; i < ConfigEditRespMenuContentPrivate::ITEM_CBO_MAX; i++)
+    {
+        d_ptr->combos[ConfigEditRespMenuContentPrivate
+                ::MenuItem(i)]->setEnabled(preStatusBool);
+    }
 }
 
 void ConfigEditRespMenuContent::onComboIndexChanged(int index)

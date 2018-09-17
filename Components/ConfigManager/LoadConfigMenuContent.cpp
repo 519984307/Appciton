@@ -225,16 +225,36 @@ void LoadConfigMenuContent::onBtnClick()
         int index = d_ptr->configListView->curCheckedRow();
         if (index != -1)
         {
+            QString fileName = d_ptr->configs.at(index).fileName;
+            QString name = d_ptr->configs.at(index).name;
             d_ptr->curEditIndex = index;
             d_ptr->curConfig = new Config(QString("%1/%2")
                                           .arg(CONFIG_DIR)
-                                          .arg(d_ptr->configs.at(index).fileName));
+                                          .arg(fileName));
             ConfigEditMenuWindow *cmWnd = new ConfigEditMenuWindow;
-            cmWnd->setCurrentEditConfigName(d_ptr->configs.at(index).name);
+            cmWnd->setCurrentEditConfigName(name);
             cmWnd->setCurrentEditConfig(d_ptr->curConfig);
             cmWnd->initializeSubMenu();
-            windowManager.showWindow(cmWnd, WindowManager::ShowBehaviorModal);
+
+            QString pathName;
+            if (fileName.indexOf("User") >= 0)
+            {
+                pathName = "View-";
+                pathName += name;
+            }
+            else
+            {
+                pathName = "View-DefaultSetting";
+            }
+            cmWnd->setMenuPath(pathName);
+
             configManager.setWidgetStatus(true);
+            windowManager.showWindow(cmWnd, WindowManager::ShowBehaviorModal);
+            configManager.setWidgetStatus(false);
+            if (cmWnd)
+            {
+                delete cmWnd;
+            }
         }
     }
     else

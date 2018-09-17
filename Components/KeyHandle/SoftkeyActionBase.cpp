@@ -35,7 +35,6 @@
 #include "FrameItem.h"
 #include "ComboBox.h"
 #include "PatientInfoWindow.h"
-#include "MainMenuWindow.h"
 #include "CodeMarkerWindow.h"
 #include "ScreenLayoutWindow.h"
 #include "MainMenuWindow.h"
@@ -252,6 +251,7 @@ void SoftkeyActionBase::mainsetup(bool isPressed)
     }
 
     MainMenuWindow *w = MainMenuWindow::getInstance();
+    w->popup(trs("ECGMenu"));
     windowManager.showWindow(w, WindowManager::ShowBehaviorCloseOthers);
 }
 

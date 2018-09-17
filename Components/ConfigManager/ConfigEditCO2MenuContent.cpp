@@ -60,6 +60,15 @@ ConfigEditCO2MenuContent::~ConfigEditCO2MenuContent()
 void ConfigEditCO2MenuContent::readyShow()
 {
     d_ptr->loadOptions();
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+    d_ptr->combos[ConfigEditCO2MenuContentPrivate
+            ::ITEM_CBO_WAVE_SPEED]->setEnabled(preStatusBool);
+    d_ptr->combos[ConfigEditCO2MenuContentPrivate
+            ::ITEM_CBO_FICO2_DISPLAY]->setEnabled(preStatusBool);
+    d_ptr->btns[ConfigEditCO2MenuContentPrivate
+            ::ITEM_BTN_O2_COMPEN]->setEnabled(preStatusBool);
+    d_ptr->btns[ConfigEditCO2MenuContentPrivate
+            ::ITEM_BTN_N2O_COMPEN]->setEnabled(preStatusBool);
 }
 
 

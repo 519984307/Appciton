@@ -18,6 +18,7 @@
 #include "Button.h"
 #include "ParamInfo.h"
 #include "ParamDefine.h"
+#include "ConfigManager.h"
 
 class ConfigEditTEMPMenuPrivate
 {
@@ -142,6 +143,10 @@ void ConfigEditTEMPMenu::layoutExec()
 void ConfigEditTEMPMenu::readyShow()
 {
     d_ptr->loadOption();
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+    d_ptr->tempChannelOne->setEnabled(preStatusBool);
+    d_ptr->tempChannelTwo->setEnabled(preStatusBool);
+    d_ptr->tempChannelDisable->setEnabled(preStatusBool);
 }
 
 void ConfigEditTEMPMenu::onComboIndexUpdated(int index)

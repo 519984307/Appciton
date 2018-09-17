@@ -103,6 +103,17 @@ ConfigEditCOMenuContent::~ConfigEditCOMenuContent()
 void ConfigEditCOMenuContent::readyShow()
 {
     d_ptr->loadOptions();
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+    d_ptr->combos[ConfigEditCOMenuContentPrivate::
+            ITEM_CBO_INJECT_TEMP_SOURCE]->setEnabled(preStatusBool);
+    d_ptr->buttons[ConfigEditCOMenuContentPrivate::
+            ITEM_CBO_CO_RATIO]->setEnabled(preStatusBool);
+    d_ptr->buttons[ConfigEditCOMenuContentPrivate::
+            ITEM_CBO_INJECTION_TEMP]->setEnabled(preStatusBool);
+    d_ptr->buttons[ConfigEditCOMenuContentPrivate::
+            ITEM_CBO_INJECTION_VOLUMN]->setEnabled(preStatusBool);
+    d_ptr->buttons[ConfigEditCOMenuContentPrivate::
+            ITEM_CBO_MEASURE_CONTROL]->setEnabled(preStatusBool);
 }
 
 void ConfigEditCOMenuContent::layoutExec()

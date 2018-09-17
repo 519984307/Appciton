@@ -19,6 +19,7 @@
 #include "Button.h"
 #include "LanguageManager.h"
 #include <QList>
+#include <QPainter>
 
 class MenuWindowPrivate
 {
@@ -27,7 +28,8 @@ public:
         : sidebar(NULL),
           stackWidget(NULL),
           retBtn(NULL),
-          rightLayout(NULL)
+          rightLayout(NULL),
+          menuPath("")
     {
     }
 
@@ -35,6 +37,7 @@ public:
     QStackedWidget *stackWidget;
     Button *retBtn;
     QBoxLayout *rightLayout;
+    QString menuPath;
 };
 
 MenuWindow::MenuWindow()
@@ -65,7 +68,6 @@ MenuWindow::MenuWindow()
     line->setLineWidth(0);
     line->setMidLineWidth(1);
     d_ptr->rightLayout->addWidget(line);
-
 
     connect(d_ptr->sidebar, SIGNAL(selectItemChanged(int)), this, SLOT(onSelectItemChanged(int)));
 }
@@ -107,6 +109,23 @@ void MenuWindow::popup(const QString &menuName, const QVariant &param)
     }
 
     windowManager.showWindow(this, WindowManager::ShowBehaviorCloseOthers);
+}
+
+void MenuWindow::setMenuPath(const QString &path)
+{
+    QString strPath = path;
+    QStringList pathList = strPath.split('-');
+
+    d_ptr->menuPath.clear();
+    if (pathList.count() < 2)
+    {
+        return;
+    }
+    d_ptr->menuPath  = trs(pathList.at(0));
+    d_ptr->menuPath += "-";
+    d_ptr->menuPath += trs(pathList.at(1));
+
+    update();
 }
 
 bool MenuWindow::focusNextPrevChild(bool next)
@@ -214,6 +233,24 @@ void MenuWindow::showEvent(QShowEvent *ev)
         connect(d_ptr->retBtn, SIGNAL(clicked()), this, SLOT(onReturnBtnClick()));
     }
     Window::showEvent(ev);
+}
+
+void MenuWindow::paintEvent(QPaintEvent *ev)
+{
+    Window::paintEvent(ev);
+
+    // 画二级菜单的路径
+    QPainter painter(this);
+    QPalette pal = palette();
+    QColor color = pal.color(QPalette::WindowText);
+    painter.setPen(QPen(color, 1, Qt::SolidLine));
+    int fontHight = fontMetrics().height();
+    int tiTleHight = getTitleHight();
+    int xLeft = contentsRect().x();
+    int yTop = contentsRect().y() + (tiTleHight - fontHight) / 2;
+
+    painter.drawText(xLeft, yTop, 200,
+                     tiTleHight, Qt::AlignLeft , d_ptr->menuPath);
 }
 
 void MenuWindow::onSelectItemChanged(int index)

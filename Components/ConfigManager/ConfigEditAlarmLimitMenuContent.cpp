@@ -162,12 +162,28 @@ void ConfigEditAlarmLimitMenuContent::setItemFocus(const QString &param)
     QModelIndex index = d_ptr->table->model()->index(focusIndex, 0);
     d_ptr->table->scrollTo(index, QAbstractItemView::PositionAtCenter);
 
-    d_ptr->table->selectRow(focusIndex);
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+    if (preStatusBool)
+    {
+        d_ptr->table->selectRow(focusIndex);
+    }
 }
 
 void ConfigEditAlarmLimitMenuContent::readyShow()
 {
     d_ptr->loadoptions();
+
+    // 获取控件是否失能标志位
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+    d_ptr->table->setEnabled(preStatusBool);
+    if (!preStatusBool)
+    {
+        d_ptr->model->setTextRole(QColor("#C8CCD0"));
+    }
+    else
+    {
+        d_ptr->model->setTextRole(QColor("#2C405A"));
+    }
 }
 
 void ConfigEditAlarmLimitMenuContent::layoutExec()

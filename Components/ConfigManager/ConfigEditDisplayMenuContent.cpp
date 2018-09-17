@@ -84,6 +84,21 @@ void ConfigEditDisplayMenuContentPrivate::loadOptions()
 void ConfigEditDisplayMenuContent::readyShow()
 {
     d_ptr->loadOptions();
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+    d_ptr->combos[ConfigEditDisplayMenuContentPrivate
+            ::ITEM_CBO_TEMP_COLOR]->setEnabled(preStatusBool);
+    d_ptr->combos[ConfigEditDisplayMenuContentPrivate
+            ::ITEM_CBO_AG_COLOR]->setEnabled(preStatusBool);
+    d_ptr->combos[ConfigEditDisplayMenuContentPrivate
+            ::ITEM_CBO_RESP_COLOR]->setEnabled(preStatusBool);
+    d_ptr->combos[ConfigEditDisplayMenuContentPrivate
+            ::ITEM_CBO_NIBP_COLOR]->setEnabled(preStatusBool);
+    d_ptr->combos[ConfigEditDisplayMenuContentPrivate
+            ::ITEM_CBO_CO2_COLOR]->setEnabled(preStatusBool);
+    d_ptr->combos[ConfigEditDisplayMenuContentPrivate
+            ::ITEM_CBO_SPO2_COLOR]->setEnabled(preStatusBool);
+    d_ptr->combos[ConfigEditDisplayMenuContentPrivate
+            ::ITEM_CBO_ECG_COLOR]->setEnabled(preStatusBool);
 }
 
 void ConfigEditDisplayMenuContent::layoutExec()

@@ -15,6 +15,7 @@
 #include <QGridLayout>
 #include "IConfig.h"
 #include "Button.h"
+#include "ConfigManager.h"
 
 class UnitSetupMenuContentPrivate
 {
@@ -28,7 +29,8 @@ public:
         ITEM_CBO_TEMP_UNIT,
         ITEM_CBO_CVP_UNIT,
         ITEM_CBO_ICP_UNIT,
-        ITEM_CBO_CO2_UNIT
+        ITEM_CBO_CO2_UNIT,
+        ITEM_CBO_MAX
     };
 
     UnitSetupMenuContentPrivate() {}
@@ -164,6 +166,12 @@ UnitSetupMenuContent::~UnitSetupMenuContent()
 void UnitSetupMenuContent::readyShow()
 {
     d_ptr->loadOptions();
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+    for (int i = 0; i < UnitSetupMenuContentPrivate::ITEM_CBO_MAX; i++)
+    {
+        d_ptr->combos[UnitSetupMenuContentPrivate
+                ::MenuItem(i)]->setEnabled(preStatusBool);
+    }
 }
 
 void UnitSetupMenuContent::layoutExec()

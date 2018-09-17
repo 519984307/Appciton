@@ -52,8 +52,8 @@ ConfigEditSpO2MenuContentPrivate
 }
 
 ConfigEditSpO2MenuContent::ConfigEditSpO2MenuContent(Config * const config):
-    MenuContent(trs("ConfigEditSpO2Menu"),
-                trs("ConfigEditSpO2MenuDesc")),
+    MenuContent(trs("SPO2Menu"),
+                trs("SPO2MenuDesc")),
     d_ptr(new ConfigEditSpO2MenuContentPrivate(config))
 {
 }
@@ -84,6 +84,13 @@ void ConfigEditSpO2MenuContentPrivate::loadOptions()
 void ConfigEditSpO2MenuContent::readyShow()
 {
     d_ptr->loadOptions();
+    bool preStatusBool = !configManager.getWidgetsPreStatus();
+
+    for (int i = 0; i < ConfigEditSpO2MenuContentPrivate::ITEM_CBO_MAX; i++)
+    {
+        d_ptr->combos[ConfigEditSpO2MenuContentPrivate
+                ::MenuItem(i)]->setEnabled(preStatusBool);
+    }
 }
 
 void ConfigEditSpO2MenuContent::layoutExec()
