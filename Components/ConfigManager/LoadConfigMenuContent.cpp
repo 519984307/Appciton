@@ -246,11 +246,11 @@ void LoadConfigMenuContent::onBtnClick()
             {
                 pathName = "View-DefaultSetting";
             }
-            cmWnd->setMenuPath(pathName);
+            cmWnd->setWindowTitlePrefix(pathName);
 
-            configManager.setWidgetStatus(true);
+            configManager.setWidgetIfOnlyShown(true);
             windowManager.showWindow(cmWnd, WindowManager::ShowBehaviorModal);
-            configManager.setWidgetStatus(false);
+            configManager.setWidgetIfOnlyShown(false);
             if (cmWnd)
             {
                 delete cmWnd;

@@ -143,10 +143,10 @@ void ConfigEditTEMPMenu::layoutExec()
 void ConfigEditTEMPMenu::readyShow()
 {
     d_ptr->loadOption();
-    bool preStatusBool = !configManager.getWidgetsPreStatus();
-    d_ptr->tempChannelOne->setEnabled(preStatusBool);
-    d_ptr->tempChannelTwo->setEnabled(preStatusBool);
-    d_ptr->tempChannelDisable->setEnabled(preStatusBool);
+    bool isOnlyToShow = !configManager.isOnlyShown();
+    d_ptr->tempChannelOne->setEnabled(isOnlyToShow);
+    d_ptr->tempChannelTwo->setEnabled(isOnlyToShow);
+    d_ptr->tempChannelDisable->setEnabled(isOnlyToShow);
 }
 
 void ConfigEditTEMPMenu::onComboIndexUpdated(int index)

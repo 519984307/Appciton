@@ -80,12 +80,12 @@ void ConfigEditRespMenuContentPrivate::loadOptions()
 void ConfigEditRespMenuContent::readyShow()
 {
     d_ptr->loadOptions();
-    bool preStatusBool = !configManager.getWidgetsPreStatus();
+    bool isOnlyToShow = !configManager.isOnlyShown();
 
     for (int i = 0; i < ConfigEditRespMenuContentPrivate::ITEM_CBO_MAX; i++)
     {
         d_ptr->combos[ConfigEditRespMenuContentPrivate
-                ::MenuItem(i)]->setEnabled(preStatusBool);
+                ::MenuItem(i)]->setEnabled(isOnlyToShow);
     }
 }
 

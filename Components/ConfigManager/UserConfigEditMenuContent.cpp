@@ -200,7 +200,7 @@ void UserConfigEditMenuContent::onBtnClick()
             QString pathName;
             pathName = "Add-";
             pathName += name;
-            d_ptr->editWindow->setMenuPath(pathName);
+            d_ptr->editWindow->setWindowTitlePrefix(pathName);
 
             windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorNone);
             connect(d_ptr->editWindow , SIGNAL(finished(int)) , this , SLOT(onEditFinished()));
@@ -234,7 +234,7 @@ void UserConfigEditMenuContent::onBtnClick()
         {
             pathName = "Edit-DefaultSetting";
         }
-        d_ptr->editWindow->setMenuPath(pathName);
+        d_ptr->editWindow->setWindowTitlePrefix(pathName);
 
         windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorNone);
         connect(d_ptr->editWindow , SIGNAL(finished(int)) , this , SLOT(onEditFinished()));

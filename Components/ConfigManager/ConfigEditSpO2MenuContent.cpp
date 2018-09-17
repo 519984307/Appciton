@@ -84,12 +84,12 @@ void ConfigEditSpO2MenuContentPrivate::loadOptions()
 void ConfigEditSpO2MenuContent::readyShow()
 {
     d_ptr->loadOptions();
-    bool preStatusBool = !configManager.getWidgetsPreStatus();
+    bool isOnlyToShow = !configManager.isOnlyShown();
 
     for (int i = 0; i < ConfigEditSpO2MenuContentPrivate::ITEM_CBO_MAX; i++)
     {
         d_ptr->combos[ConfigEditSpO2MenuContentPrivate
-                ::MenuItem(i)]->setEnabled(preStatusBool);
+                ::MenuItem(i)]->setEnabled(isOnlyToShow);
     }
 }
 

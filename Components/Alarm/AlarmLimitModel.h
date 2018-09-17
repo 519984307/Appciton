@@ -98,10 +98,10 @@ public:
     int curEditRow() const;
 
     /**
-     * @brief setTextRole  set cloumn one`s text role
+     * @brief setForegroundColor  set cloumn one`s text role
      * @param color
      */
-    void setTextRole(const QColor &color);
+    void setForegroundColor(const QColor &color);
 
 protected:
     /**

@@ -84,12 +84,12 @@ void ConfigEditIBPMenuContentPrivate::loadOptions()
 void ConfigEditIBPMenuContent::readyShow()
 {
     d_ptr->loadOptions();
-    bool preStatusBool = !configManager.getWidgetsPreStatus();
+    bool isOnlyToShow = !configManager.isOnlyShown();
 
     for (int i = 0; i < ConfigEditIBPMenuContentPrivate::ITEM_CBO_MAX; i++)
     {
         d_ptr->combos[ConfigEditIBPMenuContentPrivate
-                ::MenuItem(i)]->setEnabled(preStatusBool);
+                ::MenuItem(i)]->setEnabled(isOnlyToShow);
     }
 }
 

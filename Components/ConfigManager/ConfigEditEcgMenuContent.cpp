@@ -190,14 +190,14 @@ ConfigEditECGMenuContent::~ConfigEditECGMenuContent()
 void ConfigEditECGMenuContent::readyShow()
 {
     d_ptr->loadOptions();
-    bool preStatusBool = !configManager.getWidgetsPreStatus();
+    bool isOnlyToShow = !configManager.isOnlyShown();
 
     for (int i = 0; i < ConfigEditECGMenuContentPrivate::ITEM_CBO_MAX; i++)
     {
         d_ptr->combos[ConfigEditECGMenuContentPrivate
-                ::MenuItem(i)]->setEnabled(preStatusBool);
+                ::MenuItem(i)]->setEnabled(isOnlyToShow);
     }
-    d_ptr->sTSwitchBtn->setEnabled(preStatusBool);
+    d_ptr->sTSwitchBtn->setEnabled(isOnlyToShow);
 }
 
 void ConfigEditECGMenuContent::layoutExec()

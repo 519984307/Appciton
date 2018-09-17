@@ -59,9 +59,9 @@ ConfigEditGeneralMenuContent::~ConfigEditGeneralMenuContent()
 void ConfigEditGeneralMenuContent::readyShow()
 {
     d_ptr->loadOptions();
-    bool preStatusBool = !configManager.getWidgetsPreStatus();
+    bool isOnlyToShow = !configManager.isOnlyShown();
     d_ptr->btns[ConfigEditGeneralMenuContentPrivate
-            ::ITEM_BTN_CONFIG_NAME]->setEnabled(preStatusBool);
+            ::ITEM_BTN_CONFIG_NAME]->setEnabled(isOnlyToShow);
 }
 
 void ConfigEditGeneralMenuContentPrivate::loadOptions()

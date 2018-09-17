@@ -144,11 +144,11 @@ void UnitSetupMenuContentPrivate::loadOptions()
     }
     combos[ITEM_CBO_CO2_UNIT]->setCurrentIndex(index);
 
-    bool preStatusBool = !configManager.getWidgetsPreStatus();
+    bool isOnlyToShow = !configManager.isOnlyShown();
     QMap<MenuItem, ComboBox *>::iterator it =  combos.begin();
     for (; it != combos.end(); ++it)
     {
-        it.value()->setEnabled(preStatusBool);
+        it.value()->setEnabled(isOnlyToShow);
     }
 }
 
@@ -166,11 +166,11 @@ UnitSetupMenuContent::~UnitSetupMenuContent()
 void UnitSetupMenuContent::readyShow()
 {
     d_ptr->loadOptions();
-    bool preStatusBool = !configManager.getWidgetsPreStatus();
+    bool isOnlyToShow = !configManager.isOnlyShown();
     for (int i = 0; i < UnitSetupMenuContentPrivate::ITEM_CBO_MAX; i++)
     {
         d_ptr->combos[UnitSetupMenuContentPrivate
-                ::MenuItem(i)]->setEnabled(preStatusBool);
+                ::MenuItem(i)]->setEnabled(isOnlyToShow);
     }
 }
 

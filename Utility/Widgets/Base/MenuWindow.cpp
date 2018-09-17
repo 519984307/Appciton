@@ -111,9 +111,9 @@ void MenuWindow::popup(const QString &menuName, const QVariant &param)
     windowManager.showWindow(this, WindowManager::ShowBehaviorCloseOthers);
 }
 
-void MenuWindow::setMenuPath(const QString &path)
+void MenuWindow::setWindowTitlePrefix(const QString &prefix)
 {
-    QString strPath = path;
+    QString strPath = prefix;
     QStringList pathList = strPath.split('-');
 
     d_ptr->menuPath.clear();
@@ -235,24 +235,6 @@ void MenuWindow::showEvent(QShowEvent *ev)
     Window::showEvent(ev);
 }
 
-void MenuWindow::paintEvent(QPaintEvent *ev)
-{
-    Window::paintEvent(ev);
-
-    // 画二级菜单的路径
-    QPainter painter(this);
-    QPalette pal = palette();
-    QColor color = pal.color(QPalette::WindowText);
-    painter.setPen(QPen(color, 1, Qt::SolidLine));
-    int fontHight = fontMetrics().height();
-    int tiTleHight = getTitleHight();
-    int xLeft = contentsRect().x();
-    int yTop = contentsRect().y() + (tiTleHight - fontHight) / 2;
-
-    painter.drawText(xLeft, yTop, 200,
-                     tiTleHight, Qt::AlignLeft , d_ptr->menuPath);
-}
-
 void MenuWindow::onSelectItemChanged(int index)
 {
     Q_ASSERT(index < d_ptr->stackWidget->count());
@@ -266,7 +248,17 @@ void MenuWindow::onSelectItemChanged(int index)
         MenuContent *content = qobject_cast<MenuContent *>(area->widget());
         if (content)
         {
-            setWindowTitle(content->description());
+            if (d_ptr->menuPath.isEmpty())
+            {
+                setWindowTitle(content->description());
+            }
+            else
+            {
+                QString windowTitle = d_ptr->menuPath;
+                windowTitle += "-";
+                windowTitle += content->description();
+                setWindowTitle(windowTitle);
+            }
             content->setFocus();
         }
     }

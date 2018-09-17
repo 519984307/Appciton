@@ -216,10 +216,18 @@ QString ConfigManager::runningConfigFilename(PatientType patType)
 
 bool ConfigManager::getWidgetsPreStatus()const
 {
-    return d_ptr->isDisableWidgets;
 }
 
 void ConfigManager::setWidgetStatus(bool status)
+{
+}
+
+bool ConfigManager::isOnlyShown()const
+{
+    return d_ptr->isDisableWidgets;
+}
+
+void ConfigManager::setWidgetIfOnlyShown(bool status)
 {
     d_ptr->isDisableWidgets = status;
 }

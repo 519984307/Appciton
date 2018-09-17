@@ -127,12 +127,12 @@ void ConfigEditCodeMarkerMenuContentPrivate::loadOptions()
 void ConfigEditCodeMarkerMenuContent::readyShow()
 {
     d_ptr->loadOptions();
-    bool preStatusBool = !configManager.getWidgetsPreStatus();
+    bool isOnlyToShow = !configManager.isOnlyShown();
     for (int i = 0; i < ConfigEditCodeMarkerMenuContentPrivate::
          ITEM_CBO_MAX; i++)
     {
         d_ptr->combos[ConfigEditCodeMarkerMenuContentPrivate
-                ::MenuItem(i)]->setEnabled(preStatusBool);
+                ::MenuItem(i)]->setEnabled(isOnlyToShow);
     }
 }
 

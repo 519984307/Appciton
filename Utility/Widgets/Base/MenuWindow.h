@@ -31,17 +31,14 @@ public:
     void popup(const QString &menuName, const QVariant &param = QVariant());
 
     /**
-     * @brief setMenuPath  设置当前菜单路径
-     * @param path
+     * @brief setWindowTitlePrefix
+     * @param prefix  窗口标题前缀
      */
-    void setMenuPath(const QString &path);
+    void setWindowTitlePrefix(const QString &prefix);
 
 protected:
     bool focusNextPrevChild(bool next);
     void showEvent(QShowEvent *ev);
-
-    /* reimpelment */
-    void paintEvent(QPaintEvent *ev);
 
 private slots:
     void onSelectItemChanged(int index);
