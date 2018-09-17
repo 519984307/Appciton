@@ -67,9 +67,12 @@ void LoadConfigMenuContentPrivate::loadConfigs()
     configs.clear();
     ConfigManager::UserDefineConfigInfo defaultConfig[] =
     {
-        {trs("DefaultConfig")+"("+trs("Adult")+")", "AdultConfig.Original.xml", ""},
-        {trs("DefaultConfig")+"("+trs("PED")+")", "PedConfig.Original.xml", ""},
-        {trs("DefaultConfig")+"("+trs("NEO")+")", "NeoConfig.Original.xml", ""}
+        {QString("%1(%2)").arg(trs("DefaultConfig")).arg(trs(PatientSymbol::convert(PATIENT_TYPE_ADULT))),
+            "AdultConfig.Original.xml", ""},
+        {QString("%1(%2)").arg(trs("DefaultConfig")).arg(trs(PatientSymbol::convert(PATIENT_TYPE_PED))),
+            "PedConfig.Original.xml", ""},
+        {QString("%1(%2)").arg(trs("DefaultConfig")).arg(trs(PatientSymbol::convert(PATIENT_TYPE_NEO))),
+            "NeoConfig.Original.xml", ""}
     };
     for (int i = 0; i < CONFIG_MAX_NUM; i++)
     {
@@ -93,7 +96,9 @@ void LoadConfigMenuContentPrivate::updateConfigList()
     for (int i = 0; i < userConfig.count(); i++)
     {
         // 重组用户配置字符串
-        configNameList.append(userConfig[i].name+"("+trs(userConfig[i].patType)+")");
+        configNameList.append(QString("%1(%2)")
+                              .arg(userConfig[i].name)
+                              .arg(trs(userConfig[i].patType)));
     }
     configDataModel->setStringList(configNameList);
 
