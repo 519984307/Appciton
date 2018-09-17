@@ -23,7 +23,6 @@
 #include "WaveWidgetSelectMenu.h"
 #include "WindowManager.h"
 #include "Debug.h"
-#include "IBPManualRuler.h"
 #include "TimeDate.h"
 #include "PopupList.h"
 
@@ -56,20 +55,15 @@ void IBPWaveWidget::setLeadSta(int info)
 }
 
 /**************************************************************************************************
- * 自动设置标尺弹出。
- *************************************************************************************************/
-void IBPWaveWidget::displayManualRuler()
-{
-    ibpManualRuler.setWaveWidget(this);
-    ibpManualRuler.setHighLowRuler(_highLimit, _lowLimit);
-    ibpManualRuler.autoShow();
-}
-
-/**************************************************************************************************
  * 设置波形上下限。
  *************************************************************************************************/
 void IBPWaveWidget::setLimit(int low, int high)
 {
+    IBPScaleInfo scale;
+    scale.low = low;
+    scale.high = high;
+    ibpParam.setScaleInfo(scale, _entitle);
+
     _lowLimit = low;
     _highLimit = high;
     _ruler->setRuler(high, (high + low) / 2, low);
@@ -112,7 +106,6 @@ void IBPWaveWidget::setRulerLimit(IBPRulerLimit ruler)
     else if (ruler == IBP_RULER_LIMIT_MANUAL)
     {
         _isAutoRuler = false;
-        displayManualRuler();
     }
     else
     {

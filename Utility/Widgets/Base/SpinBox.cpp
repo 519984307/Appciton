@@ -155,7 +155,7 @@ void SpinBox::paintEvent(QPaintEvent *ev)
         }
         else
         {
-            bgColor = pal.color(QPalette::Active, QPalette::Window);
+            bgColor = pal.color(QPalette::Active, QPalette::Highlight);
             textColor = pal.color(QPalette::Active, QPalette::WindowText);
         }
     }
@@ -271,17 +271,21 @@ void SpinBox::keyReleaseEvent(QKeyEvent *ev)
         break;
     case Qt::Key_Enter:
     case Qt::Key_Return:
-        if (d_ptr->status == SPIN_BOX_EDITABLE)
-        {
-            d_ptr->status = SPIN_BOX_FOCUS_IN;
-            emit valueChange(d_ptr->info.curValue, d_ptr->info.scale);
-        }
-        else if (d_ptr->status == SPIN_BOX_FOCUS_IN)
-        {
-            d_ptr->status = SPIN_BOX_EDITABLE;
-        }
-        update();
+    {
+        QRect vrect = rect();
+        QRect rect(mapToGlobal(vrect.topLeft()),
+                   mapToGlobal(vrect.bottomRight()));
+        QPalette pal = palette();
+        PopupNumEditor *editor = new PopupNumEditor();
+        editor->setEditInfo(d_ptr->info);
+        editor->setFont(fontManager.textFont(font().pixelSize()));
+        editor->setPalette(pal);
+        editor->setEditValueGeometry(rect);
+        QObject::connect(editor, SIGNAL(valueChanged(int)), this, SLOT(onEditValueUpdate(int)));
+        QObject::connect(editor, SIGNAL(destroyed(QObject *)), this, SLOT(onPopupDestroy()));
+        editor->show();
         break;
+    }
     default:
         QAbstractButton::keyReleaseEvent(ev);
         break;
