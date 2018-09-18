@@ -213,61 +213,43 @@ void NIBPTrendWidget::isAlarm(int id, bool flag)
  *************************************************************************************************/
 void NIBPTrendWidget::showValue(void)
 {
-    QPalette p = palette();
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
-    QColor fgColor = (psrc.windowText().color() == Qt::white) ? Qt::black :
-            psrc.windowText().color();
+    psrc = normalPalette(psrc);
     if (_sysAlarm || _diaAlarm || _mapAlarm)
     {
-        if (p.window().color() != Qt::white)
-        {
-            p.setColor(QPalette::Window, Qt::white);
-            p.setColor(QPalette::WindowText, Qt::red);
-            setPalette(p);
-        }
-
         if (_sysAlarm)
         {
-            p.setColor(QPalette::WindowText, Qt::red);
-            _sysValue->setPalette(p);
+            showAlarmStatus(_sysValue, psrc);
         }
         else
         {
-            p.setColor(QPalette::WindowText, fgColor);
-            _sysValue->setPalette(p);
+            showNormalStatus(_sysValue, psrc);
         }
 
         if (_diaAlarm)
         {
-            p.setColor(QPalette::WindowText, Qt::red);
-            _diaValue->setPalette(p);
+            showAlarmStatus(_diaValue, psrc);
         }
         else
         {
-            p.setColor(QPalette::WindowText, fgColor);
-            _diaValue->setPalette(p);
+            showNormalStatus(_diaValue, psrc);
         }
 
         if (_mapAlarm)
         {
-            p.setColor(QPalette::WindowText, Qt::red);
-            _mapValue->setPalette(p);
+            showAlarmStatus(_mapValue, psrc);
         }
         else
         {
-            p.setColor(QPalette::WindowText, fgColor);
-            _mapValue->setPalette(p);
+            showNormalStatus(_mapValue, psrc);
         }
     }
     else
     {
-        if (p.window().color() != Qt::black)
-        {
-            setPalette(psrc);
-            _sysValue->setPalette(psrc);
-            _diaValue->setPalette(psrc);
-            _mapValue->setPalette(psrc);
-        }
+        setPalette(psrc);
+        showNormalStatus(_sysValue, psrc);
+        showNormalStatus(_diaValue, psrc);
+        showNormalStatus(_mapValue, psrc);
     }
     _sysValue->setText(_sysString);
     _diaValue->setText(_diaString);

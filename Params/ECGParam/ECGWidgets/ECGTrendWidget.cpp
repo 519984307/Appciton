@@ -113,31 +113,16 @@ void ECGTrendWidget::isAlarm(bool isAlarm)
  *************************************************************************************************/
 void ECGTrendWidget::showValue(void)
 {
-    QPalette p = palette();
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
+    psrc = normalPalette(psrc);
     if (_isAlarm)
     {
-        if (p.window().color() != Qt::white)
-        {
-            p.setColor(QPalette::Window, Qt::white);
-            p.setColor(QPalette::WindowText, Qt::red);
-            setPalette(p);
-        }
-
-        p = _hrValue->palette();
-        if (p.windowText().color() != Qt::red)
-        {
-            p.setColor(QPalette::WindowText, Qt::red);
-            _hrValue->setPalette(p);
-        }
+        showAlarmStatus(_hrValue, psrc);
     }
     else
     {
-        if (p.window().color() != Qt::black)
-        {
-            p = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-            setPalette(p);
-            _hrValue->setPalette(p);
-        }
+        setPalette(psrc);
+        showNormalStatus(_hrValue, psrc);
     }
 
     _hrValue->setText(_hrString);

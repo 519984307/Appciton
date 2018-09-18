@@ -60,31 +60,16 @@ void ECGPVCSTrendWidget::isAlarm(bool isAlarm)
  *************************************************************************************************/
 void ECGPVCSTrendWidget::showValue(void)
 {
-    QPalette p = palette();
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
+    psrc = normalPalette(psrc);
     if (_isAlarm)
     {
-//        if (p.window().color() != Qt::white)
-//        {
-//            p.setColor(QPalette::Window, Qt::white);
-//            p.setColor(QPalette::WindowText, Qt::red);
-//            setPalette(p);
-//        }
-
-        p = _pvcsValue->palette();
-        if (p.windowText().color() != Qt::red)
-        {
-            p.setColor(QPalette::WindowText, Qt::red);
-            _pvcsValue->setPalette(p);
-        }
+        showAlarmStatus(_pvcsValue, psrc);
     }
     else
     {
-        if (p.window().color() != Qt::black)
-        {
-            p = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-            setPalette(p);
-            _pvcsValue->setPalette(p);
-        }
+        setPalette(psrc);
+        showNormalStatus(_pvcsValue, psrc);
     }
 
     _pvcsValue->setText(_pvcsString);

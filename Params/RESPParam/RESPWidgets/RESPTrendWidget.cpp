@@ -75,36 +75,15 @@ void RESPTrendWidget::isAlarm(bool flag)
  *************************************************************************************************/
 void RESPTrendWidget::showValue(void)
 {
-    QPalette p;
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
     QPalette fgColor = normalPalette(psrc);
-    QPalette alaColor = alarmPalette(psrc);
     if (_isAlarm)
     {
-//        if (p.window().color() != Qt::white)
-//        {
-//            p.setColor(QPalette::Window, Qt::white);
-//            p.setColor(QPalette::WindowText, Qt::red);
-//            setPalette(p);
-//        }
-
-        p = _rrValue->palette();
-        if (p.windowText().color() != alaColor.windowText().color())
-        {
-            _rrValue->setPalette(alaColor);
-        }
-        else
-        {
-            _rrValue->setPalette(fgColor);
-        }
+        showAlarmStatus(_rrValue, fgColor);
     }
     else
     {
-        p = _rrValue->palette();
-        if (p.windowText().color() != fgColor.windowText().color())
-        {
-            _rrValue->setPalette(fgColor);
-        }
+        showNormalStatus(_rrValue, fgColor);
     }
 
     _rrValue->setText(_rrString);

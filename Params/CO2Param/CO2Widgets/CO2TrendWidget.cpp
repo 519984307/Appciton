@@ -144,63 +144,34 @@ void CO2TrendWidget::showValue()
     QPalette p;
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
     QPalette fgColor = normalPalette(psrc);
-    QPalette alaColor = alarmPalette(psrc);
     if (_fico2Alarm || _etco2Alarm)
     {
-//        if (p.window().color() != Qt::white)
-//        {
-//            p.setColor(QPalette::Window, Qt::white);
-//            p.setColor(QPalette::WindowText, Qt::red);
-//            setPalette(p);
-//        }
-
-        p = _etco2Value->palette();
         if (_etco2Alarm)
         {
-            if (p.windowText().color() != alaColor.windowText().color())
-            {
-                _etco2Value->setPalette(alaColor);
-            }
-            else
-            {
-                _etco2Value->setPalette(fgColor);
-            }
+            showAlarmStatus(_etco2Value, fgColor);
         }
         else
         {
-            _etco2Value->setPalette(fgColor);
+            showNormalStatus(_etco2Value, fgColor);
         }
 
-        p = _fico2Value->palette();
         if (_fico2Alarm)
         {
-            if (p.windowText().color() != alaColor.windowText().color())
-            {
-                _fico2Value->setPalette(alaColor);
-            }
-            else
-            {
-                _fico2Value->setPalette(fgColor);
-            }
+            showAlarmStatus(_fico2Value, fgColor, false);
+            showAlarmStatus(_fico2Label, fgColor, false);
         }
         else
         {
-            _fico2Value->setPalette(fgColor);
+            showNormalStatus(_fico2Value, fgColor);
+            showNormalStatus(_fico2Label, fgColor);
         }
     }
     else
     {
-        p = _etco2Value->palette();
-        if (p.windowText().color() != fgColor.windowText().color())
-        {
-            _etco2Value->setPalette(fgColor);
-        }
-
-        p = _fico2Value->palette();
-        if (p.windowText().color() != fgColor.windowText().color())
-        {
-            _fico2Value->setPalette(fgColor);
-        }
+        setPalette(fgColor);
+        showNormalStatus(_etco2Value, fgColor);
+        showNormalStatus(_fico2Value, fgColor);
+        showNormalStatus(_fico2Label, fgColor);
     }
 
     _etco2Value->setText(_etco2Str);

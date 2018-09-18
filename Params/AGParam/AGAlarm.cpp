@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/9/18
+ **/
+
+
 #include "AGAlarm.h"
 #include "ParamInfo.h"
 #include "AlarmConfig.h"
@@ -282,7 +293,6 @@ void AGLimitAlarm::notifyAlarm(int id, bool flag)
     default:
         break;
     }
-
 }
 
 /**************************************************************************************************
@@ -290,7 +300,6 @@ void AGLimitAlarm::notifyAlarm(int id, bool flag)
  *************************************************************************************************/
 AGLimitAlarm::~AGLimitAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -298,7 +307,14 @@ AGLimitAlarm::~AGLimitAlarm()
  *************************************************************************************************/
 AGLimitAlarm::AGLimitAlarm()
 {
-
+    _isEtN2OAlarm = false;
+    _isFiN2OAlarm = false;
+    _isEtO2Alarm = false;
+    _isFiO2Alarm = false;
+    _isEtAA1Alarm = false;
+    _isFiAA1Alarm = false;
+    _isEtAA2Alarm = false;
+    _isFiAA2Alarm = false;
 }
 
 /**************************************************************************************************
@@ -326,32 +342,36 @@ int AGOneShotAlarm::getAlarmSourceNR()
 /**************************************************************************************************
  * one shot alarm id corresponding to waveform ID
  *************************************************************************************************/
-WaveformID AGOneShotAlarm::getWaveformID(int /*id*/)
+WaveformID AGOneShotAlarm::getWaveformID(int id)
 {
+    Q_UNUSED(id)
     return WAVE_NONE;
 }
 
 /**************************************************************************************************
  * one shot alarm id corresponding to param ID
  *************************************************************************************************/
-SubParamID AGOneShotAlarm::getSubParamID(int /*id*/)
+SubParamID AGOneShotAlarm::getSubParamID(int id)
 {
+    Q_UNUSED(id)
     return SUB_PARAM_NONE;
 }
 
 /**************************************************************************************************
  * one shot alarm priority.
  *************************************************************************************************/
-AlarmPriority AGOneShotAlarm::getAlarmPriority(int /*id*/)
+AlarmPriority AGOneShotAlarm::getAlarmPriority(int id)
 {
+    Q_UNUSED(id)
     return ALARM_PRIO_LOW;
 }
 
 /**************************************************************************************************
  * one shot alarm type.
  *************************************************************************************************/
-AlarmType AGOneShotAlarm::getAlarmType(int /*id*/)
+AlarmType AGOneShotAlarm::getAlarmType(int id)
 {
+    Q_UNUSED(id)
     return ALARM_TYPE_TECH;
 }
 
@@ -368,7 +388,6 @@ bool AGOneShotAlarm::isAlarmed(int id)
  *************************************************************************************************/
 void AGOneShotAlarm::notifyAlarm(int /*id*/, bool /*isAlarm*/)
 {
-
 }
 
 /**************************************************************************************************
@@ -382,16 +401,18 @@ const char *AGOneShotAlarm::toString(int id)
 /**************************************************************************************************
  * enable one shot alarm.
  *************************************************************************************************/
-bool AGOneShotAlarm::isAlarmEnable(int /*id*/)
+bool AGOneShotAlarm::isAlarmEnable(int id)
 {
+    Q_UNUSED(id)
     return true;
 }
 
 /**************************************************************************************************
  *  remove alarm display information later latch.
  *************************************************************************************************/
-bool AGOneShotAlarm::isRemoveAfterLatch(int /*id*/)
+bool AGOneShotAlarm::isRemoveAfterLatch(int id)
 {
+    Q_UNUSED(id)
     return false;
 }
 
@@ -400,7 +421,6 @@ bool AGOneShotAlarm::isRemoveAfterLatch(int /*id*/)
  *************************************************************************************************/
 AGOneShotAlarm::~AGOneShotAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -408,5 +428,4 @@ AGOneShotAlarm::~AGOneShotAlarm()
  *************************************************************************************************/
 AGOneShotAlarm::AGOneShotAlarm()
 {
-
 }

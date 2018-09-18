@@ -119,59 +119,36 @@ void AGTrendWidget::isAlarm(int id, bool flag)
  *************************************************************************************************/
 void AGTrendWidget::showValue()
 {
-    QPalette p;
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
-    QPalette fgColor = normalPalette(psrc);
-    QPalette alaColor = alarmPalette(psrc);
+    psrc = normalPalette(psrc);
     if (_fiAlarm || _etAlarm)
     {
-        p = _etValue->palette();
         if (_etAlarm)
         {
-            if (p.windowText().color() != alaColor.windowText().color())
-            {
-                _etValue->setPalette(alaColor);
-            }
-            else
-            {
-                _etValue->setPalette(fgColor);
-            }
+            showAlarmStatus(_etValue, psrc);
         }
         else
         {
-            _etValue->setPalette(fgColor);
+            showNormalStatus(_etValue, psrc);
         }
 
-        p = _fiValue->palette();
         if (_fiAlarm)
         {
-            if (p.windowText().color() != alaColor.windowText().color())
-            {
-                _fiValue->setPalette(alaColor);
-            }
-            else
-            {
-                _fiValue->setPalette(fgColor);
-            }
+            showAlarmStatus(_fiName, psrc, false);
+            showAlarmStatus(_fiValue, psrc, false);
         }
         else
         {
-            _fiValue->setPalette(fgColor);
+            showNormalStatus(_fiName, psrc);
+            showNormalStatus(_fiValue, psrc);
         }
     }
     else
     {
-        p = _etValue->palette();
-        if (p.windowText().color() != fgColor.windowText().color())
-        {
-            _etValue->setPalette(fgColor);
-        }
-
-        p = _fiValue->palette();
-        if (p.windowText().color() != fgColor.windowText().color())
-        {
-            _fiValue->setPalette(fgColor);
-        }
+        setPalette(psrc);
+        showNormalStatus(_etValue, psrc);
+        showNormalStatus(_fiName, psrc);
+        showNormalStatus(_fiValue, psrc);
     }
 
     _etValue->setText(_etStr);
