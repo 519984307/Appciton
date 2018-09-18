@@ -1,0 +1,64 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/18
+ **/
+
+#include "MeasureSettingWindow.h"
+#include "ECGMenuContent.h"
+#include "RESPMenuContent.h"
+#include "AGMenuContent.h"
+#include "IBPMenuContent.h"
+#include "COMenuContent.h"
+#include "SPO2MenuContent.h"
+#include "NIBPMenuContent.h"
+#include "CO2MenuContent.h"
+#include "TEMPMenu.h"
+#include "SystemManager.h"
+
+MeasureSettingWindow *MeasureSettingWindow::getInstance()
+{
+    static MeasureSettingWindow *instance = NULL;
+    if (!instance)
+    {
+        instance = new MeasureSettingWindow();
+        // initialize the window content
+        instance->addMenuContent(new ECGMenuContent);
+        instance->addMenuContent(new RESPMenuContent);
+        instance->addMenuContent(new TEMPMenu);
+        if (systemManager.isSupport(CONFIG_AG))
+        {
+            instance->addMenuContent(new AGMenuContent);
+        }
+        if (systemManager.isSupport(CONFIG_IBP))
+        {
+            instance->addMenuContent(new IBPMenuContent);
+        }
+        if (systemManager.isSupport(CONFIG_CO))
+        {
+            instance->addMenuContent(new COMenuContent);
+        }
+        if (systemManager.isSupport(CONFIG_SPO2))
+        {
+            instance->addMenuContent(new SPO2MenuContent);
+        }
+        if (systemManager.isSupport(CONFIG_NIBP))
+        {
+            instance->addMenuContent(new NIBPMenuContent);
+        }
+        if (systemManager.isSupport(CONFIG_CO2))
+        {
+            instance->addMenuContent(new CO2MenuContent);
+        }
+    }
+    return instance;
+}
+
+MeasureSettingWindow::MeasureSettingWindow()
+    : MenuWindow()
+{
+}

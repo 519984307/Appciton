@@ -131,7 +131,7 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
 
 void SPO2MenuContent::onAlarmBtnReleased()
 {
-    MenuWindow *w = this->getMenuWindow();
+    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_SPO2, true);
     if (w)
     {

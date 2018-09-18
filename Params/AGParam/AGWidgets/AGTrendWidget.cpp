@@ -19,7 +19,7 @@
 #include "WindowManager.h"
 #include "PublicMenuManager.h"
 #include <QDebug>
-#include "MainMenuWindow.h"
+#include "MeasureSettingWindow.h"
 
 /**************************************************************************************************
  * 设置麻醉剂类型。
@@ -257,6 +257,6 @@ void AGTrendWidget::setTextSize()
 void AGTrendWidget::_releaseHandle(IWidget *iWidget)
 {
     Q_UNUSED(iWidget)
-    MainMenuWindow *mainMenu =  MainMenuWindow::getInstance();
-    mainMenu->popup(trs("AGMenu"));
+    MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
+    p->popup(trs("AGMenu"));
 }

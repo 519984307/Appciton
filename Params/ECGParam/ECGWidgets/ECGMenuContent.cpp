@@ -23,6 +23,7 @@
 #include "ArrhythmiaMenuWindow.h"
 #include "WindowManager.h"
 #include <QTimer>
+#include "MainMenuWindow.h"
 
 class ECGMenuContentPrivate
 {
@@ -404,7 +405,7 @@ void ECGMenuContent::onSTSwitchBtnReleased()
 
 void ECGMenuContent::onAlarmBtnReleased()
 {
-    MenuWindow *w = this->getMenuWindow();
+    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_HR_PR, true);
     if (w)
     {
