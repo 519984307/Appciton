@@ -103,17 +103,17 @@ ConfigEditCOMenuContent::~ConfigEditCOMenuContent()
 void ConfigEditCOMenuContent::readyShow()
 {
     d_ptr->loadOptions();
-    bool isOnlyToShow = !configManager.isOnlyShown();
+    bool isOnlyToRead = configManager.isReadOnly();
     d_ptr->combos[ConfigEditCOMenuContentPrivate::
-            ITEM_CBO_INJECT_TEMP_SOURCE]->setEnabled(isOnlyToShow);
+            ITEM_CBO_INJECT_TEMP_SOURCE]->setEnabled(!isOnlyToRead);
     d_ptr->buttons[ConfigEditCOMenuContentPrivate::
-            ITEM_CBO_CO_RATIO]->setEnabled(isOnlyToShow);
+            ITEM_CBO_CO_RATIO]->setEnabled(!isOnlyToRead);
     d_ptr->buttons[ConfigEditCOMenuContentPrivate::
-            ITEM_CBO_INJECTION_TEMP]->setEnabled(isOnlyToShow);
+            ITEM_CBO_INJECTION_TEMP]->setEnabled(!isOnlyToRead);
     d_ptr->buttons[ConfigEditCOMenuContentPrivate::
-            ITEM_CBO_INJECTION_VOLUMN]->setEnabled(isOnlyToShow);
+            ITEM_CBO_INJECTION_VOLUMN]->setEnabled(!isOnlyToRead);
     d_ptr->buttons[ConfigEditCOMenuContentPrivate::
-            ITEM_CBO_MEASURE_CONTROL]->setEnabled(isOnlyToShow);
+            ITEM_CBO_MEASURE_CONTROL]->setEnabled(!isOnlyToRead);
 }
 
 void ConfigEditCOMenuContent::layoutExec()

@@ -254,6 +254,7 @@ void LoadConfigMenuContent::onBtnClick()
             if (cmWnd)
             {
                 delete cmWnd;
+                cmWnd = NULL;
             }
         }
     }

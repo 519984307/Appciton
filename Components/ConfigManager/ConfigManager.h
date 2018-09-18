@@ -83,10 +83,10 @@ public:
     QString runningConfigFilename(PatientType patType);
 
     /**
-     * @brief isOnlyShown 获取控件的预备失能
+     * @brief isReadOnly 获取控件的预备失能
      * @return 1:预备失能
      */
-    bool isOnlyShown()const;
+    bool isReadOnly()const;
 
     /**
      * @brief setWidgetIfOnlyShown 设置控件状态 失能或使能

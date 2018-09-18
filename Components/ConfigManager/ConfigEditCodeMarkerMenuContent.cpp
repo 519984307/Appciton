@@ -127,12 +127,12 @@ void ConfigEditCodeMarkerMenuContentPrivate::loadOptions()
 void ConfigEditCodeMarkerMenuContent::readyShow()
 {
     d_ptr->loadOptions();
-    bool isOnlyToShow = !configManager.isOnlyShown();
+    bool isOnlyToRead = configManager.isReadOnly();
     for (int i = 0; i < ConfigEditCodeMarkerMenuContentPrivate::
          ITEM_CBO_MAX; i++)
     {
         d_ptr->combos[ConfigEditCodeMarkerMenuContentPrivate
-                ::MenuItem(i)]->setEnabled(isOnlyToShow);
+                ::MenuItem(i)]->setEnabled(!isOnlyToRead);
     }
 }
 

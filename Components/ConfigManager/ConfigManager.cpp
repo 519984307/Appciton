@@ -222,7 +222,7 @@ void ConfigManager::setWidgetStatus(bool status)
 {
 }
 
-bool ConfigManager::isOnlyShown()const
+bool ConfigManager::isReadOnly()const
 {
     return d_ptr->isDisableWidgets;
 }

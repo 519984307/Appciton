@@ -143,10 +143,10 @@ void ConfigEditTEMPMenu::layoutExec()
 void ConfigEditTEMPMenu::readyShow()
 {
     d_ptr->loadOption();
-    bool isOnlyToShow = !configManager.isOnlyShown();
-    d_ptr->tempChannelOne->setEnabled(isOnlyToShow);
-    d_ptr->tempChannelTwo->setEnabled(isOnlyToShow);
-    d_ptr->tempChannelDisable->setEnabled(isOnlyToShow);
+    bool isOnlyToRead = configManager.isReadOnly();
+    d_ptr->tempChannelOne->setEnabled(!isOnlyToRead);
+    d_ptr->tempChannelTwo->setEnabled(!isOnlyToRead);
+    d_ptr->tempChannelDisable->setEnabled(!isOnlyToRead);
 }
 
 void ConfigEditTEMPMenu::onComboIndexUpdated(int index)

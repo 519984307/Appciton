@@ -84,12 +84,12 @@ void ConfigEditIBPMenuContentPrivate::loadOptions()
 void ConfigEditIBPMenuContent::readyShow()
 {
     d_ptr->loadOptions();
-    bool isOnlyToShow = !configManager.isOnlyShown();
+    bool isOnlyToRead = configManager.isReadOnly();
 
     for (int i = 0; i < ConfigEditIBPMenuContentPrivate::ITEM_CBO_MAX; i++)
     {
         d_ptr->combos[ConfigEditIBPMenuContentPrivate
-                ::MenuItem(i)]->setEnabled(isOnlyToShow);
+                ::MenuItem(i)]->setEnabled(!isOnlyToRead);
     }
 }
 

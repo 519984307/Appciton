@@ -97,12 +97,6 @@ public:
      */
     int curEditRow() const;
 
-    /**
-     * @brief setForegroundColor  set cloumn one`s text role
-     * @param color
-     */
-    void setForegroundColor(const QColor &color);
-
 protected:
     /**
      * @brief alarmDataUpdate callback when specific alarm config changed

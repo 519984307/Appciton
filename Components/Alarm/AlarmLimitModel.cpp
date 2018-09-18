@@ -30,14 +30,12 @@ public:
         : viewWidth(400),  // set default value to 400
           editRow(-1)
     {
-        color = QColor("#2C405A");
     }
 
     QList<AlarmDataInfo> alarmDataInfos;
     int viewWidth;
     int editRow;
     QModelIndex editIndex;
-    QColor color;
 };
 
 AlarmLimitModel::AlarmLimitModel(QObject *parent)
@@ -255,9 +253,7 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
         break;
 
     case Qt::ForegroundRole:
-        if (column)
-            return QBrush(QColor("#2C405A"));
-        return QBrush(d_ptr->color);
+        return QBrush(QColor("#2C405A"));
         break;
 
     case Qt::BackgroundRole:

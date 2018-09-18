@@ -59,9 +59,9 @@ ConfigEditGeneralMenuContent::~ConfigEditGeneralMenuContent()
 void ConfigEditGeneralMenuContent::readyShow()
 {
     d_ptr->loadOptions();
-    bool isOnlyToShow = !configManager.isOnlyShown();
+    bool isOnlyToRead = configManager.isReadOnly();
     d_ptr->btns[ConfigEditGeneralMenuContentPrivate
-            ::ITEM_BTN_CONFIG_NAME]->setEnabled(isOnlyToShow);
+            ::ITEM_BTN_CONFIG_NAME]->setEnabled(!isOnlyToRead);
 }
 
 void ConfigEditGeneralMenuContentPrivate::loadOptions()
