@@ -14,6 +14,7 @@
 #include "LanguageManager.h"
 #include "MeasureSettingWindow.h"
 #include "SystemManager.h"
+#include "WindowManager.h"
 
 class MeasureSettingMenuContentPrivate
 {
@@ -168,35 +169,42 @@ void MeasureSettingMenuContent::onBtnReleasd()
     int item = btn->property("Item").toInt();
     MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
 
+    if (item < 0)
+    {
+        return;
+    }
+    QString strName = "";
     switch (item)
     {
     case MeasureSettingMenuContentPrivate::ITEM_BTN_ECG:
-        p->popup(trs("ECGMenu"));
+        strName = trs("ECGMenu");
         break;
     case MeasureSettingMenuContentPrivate::ITEM_BTN_RESP:
-        p->popup(trs("RESPMenu"));
+        strName = trs("RESPMenu");
         break;
     case MeasureSettingMenuContentPrivate::ITEM_BTN_TEMP:
-        p->popup(trs("TEMPMenu"));
+        strName = trs("TEMPMenu");
         break;
     case MeasureSettingMenuContentPrivate::ITEM_BTN_AG:
-        p->popup(trs("AGMenu"));
+        strName = trs("AGMenu");
         break;
     case MeasureSettingMenuContentPrivate::ITEM_BTN_IBP:
-        p->popup(trs("IBPMenu"));
+        strName = trs("IBPMenu");
         break;
     case MeasureSettingMenuContentPrivate::ITEM_BTN_CO:
-        p->popup(trs("COMenu"));
+        strName = trs("COMenu");
         break;
     case MeasureSettingMenuContentPrivate::ITEM_BTN_SPO2:
-        p->popup(trs("SPO2Menu"));
+        strName = trs("SPO2Menu");
         break;
     case MeasureSettingMenuContentPrivate::ITEM_BTN_NIBP:
-        p->popup(trs("NIBPMenu"));
+        strName = trs("NIBPMenu");
         break;
     case MeasureSettingMenuContentPrivate::ITEM_BTN_CO2:
-        p->popup(trs("CO2Menu"));
+        p->popup(trs("NIBPMenu"));
         break;
     }
+    windowManager.closeAllWidows();
+    p->popup(strName);
 }
 

@@ -2486,6 +2486,16 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
     }
 
     QPointer<Window> newP = w;
+    // remove the window in the stack if it's already exist.
+    QList<QPointer<Window> >::Iterator iter = windowStacks.begin();
+    for (; iter != windowStacks.end(); ++iter)
+    {
+        if (iter->data() == w)
+        {
+            windowStacks.erase(iter);
+            break;
+        }
+    }
     windowStacks.append(newP);
     connect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)), Qt::DirectConnection);
 
