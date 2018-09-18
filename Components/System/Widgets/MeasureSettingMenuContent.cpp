@@ -62,7 +62,7 @@ void MeasureSettingMenuContent::layoutExec()
     int maxWidth = 200;
 
     // ecg
-    btn = new Button(trs("ECGSetting"));
+    btn = new Button(QString("%1 >>").arg(trs("ECGSetting")));
     btn->setMinimumWidth(maxWidth);
     btn->setButtonStyle(Button::ButtonTextOnly);
     vlayout->addWidget(btn, 1, Qt::AlignRight);
@@ -71,7 +71,7 @@ void MeasureSettingMenuContent::layoutExec()
     item++;
 
     // resp
-    btn = new Button(trs("RESPSetting"));
+    btn = new Button(QString("%1 >>").arg(trs("RESPSetting")));
     btn->setMinimumWidth(maxWidth);
     btn->setButtonStyle(Button::ButtonTextOnly);
     vlayout->addWidget(btn, Qt::AlignRight);
@@ -81,7 +81,7 @@ void MeasureSettingMenuContent::layoutExec()
     item++;
 
     // temp
-    btn = new Button(trs("TEMPSetting"));
+    btn = new Button(QString("%1 >>").arg(trs("TEMPSetting")));
     btn->setMinimumWidth(maxWidth);
     btn->setButtonStyle(Button::ButtonTextOnly);
     vlayout->addWidget(btn, 1, Qt::AlignRight);
@@ -92,7 +92,7 @@ void MeasureSettingMenuContent::layoutExec()
     // ag
     if (systemManager.isSupport(CONFIG_AG))
     {
-        btn = new Button(trs("AGSetting"));
+        btn = new Button(QString("%1 >>").arg(trs("AGSetting")));
         btn->setMinimumWidth(maxWidth);
         btn->setButtonStyle(Button::ButtonTextOnly);
         vlayout->addWidget(btn, 1, Qt::AlignRight);
@@ -104,7 +104,7 @@ void MeasureSettingMenuContent::layoutExec()
     // ibp
     if (systemManager.isSupport(CONFIG_IBP))
     {
-        btn = new Button(trs("IBPSetting"));
+        btn = new Button(QString("%1 >>").arg(trs("IBPSetting")));
         btn->setMinimumWidth(maxWidth);
         btn->setButtonStyle(Button::ButtonTextOnly);
         vlayout->addWidget(btn, 1, Qt::AlignRight);
@@ -116,7 +116,7 @@ void MeasureSettingMenuContent::layoutExec()
     // co
     if (systemManager.isSupport(CONFIG_CO))
     {
-        btn = new Button(trs("COSetting"));
+        btn = new Button(QString("%1 >>").arg(trs("COSetting")));
         btn->setMinimumWidth(maxWidth);
         btn->setButtonStyle(Button::ButtonTextOnly);
         vlayout->addWidget(btn, 1, Qt::AlignRight);
@@ -128,7 +128,7 @@ void MeasureSettingMenuContent::layoutExec()
     // spo2
     if (systemManager.isSupport(CONFIG_SPO2))
     {
-        btn = new Button(trs("SPO2Setting"));
+        btn = new Button(QString("%1 >>").arg(trs("SPO2Setting")));
         btn->setMinimumWidth(maxWidth);
         btn->setButtonStyle(Button::ButtonTextOnly);
         vlayout->addWidget(btn, 1, Qt::AlignRight);
@@ -140,7 +140,7 @@ void MeasureSettingMenuContent::layoutExec()
     // nibp
     if (systemManager.isSupport(CONFIG_NIBP))
     {
-        btn = new Button(trs("NIBPSetting"));
+        btn = new Button(QString("%1 >>").arg(trs("NIBPSetting")));
         btn->setMinimumWidth(maxWidth);
         btn->setButtonStyle(Button::ButtonTextOnly);
         vlayout->addWidget(btn, 1, Qt::AlignRight);
@@ -152,7 +152,7 @@ void MeasureSettingMenuContent::layoutExec()
     // CO2
     if (systemManager.isSupport(CONFIG_CO2))
     {
-        btn = new Button(trs("CO2Setting"));
+        btn = new Button(QString("%1 >>").arg(trs("CO2Setting")));
         btn->setMinimumWidth(maxWidth);
         btn->setButtonStyle(Button::ButtonTextOnly);
         vlayout->addWidget(btn, 1, Qt::AlignRight);
