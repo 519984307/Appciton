@@ -19,6 +19,7 @@
 #include "Button.h"
 #include "LanguageManager.h"
 #include <QList>
+#include <QPainter>
 
 class MenuWindowPrivate
 {
@@ -27,7 +28,8 @@ public:
         : sidebar(NULL),
           stackWidget(NULL),
           retBtn(NULL),
-          rightLayout(NULL)
+          rightLayout(NULL),
+          menuPath("")
     {
     }
 
@@ -35,6 +37,7 @@ public:
     QStackedWidget *stackWidget;
     Button *retBtn;
     QBoxLayout *rightLayout;
+    QString menuPath;
 };
 
 MenuWindow::MenuWindow()
@@ -65,7 +68,6 @@ MenuWindow::MenuWindow()
     line->setLineWidth(0);
     line->setMidLineWidth(1);
     d_ptr->rightLayout->addWidget(line);
-
 
     connect(d_ptr->sidebar, SIGNAL(selectItemChanged(int)), this, SLOT(onSelectItemChanged(int)));
 }
@@ -107,6 +109,23 @@ void MenuWindow::popup(const QString &menuName, const QVariant &param)
     }
 
     windowManager.showWindow(this, WindowManager::ShowBehaviorCloseOthers);
+}
+
+void MenuWindow::setWindowTitlePrefix(const QString &prefix)
+{
+    QString strPath = prefix;
+    QStringList pathList = strPath.split('-');
+
+    d_ptr->menuPath.clear();
+    if (pathList.count() < 2)
+    {
+        return;
+    }
+    d_ptr->menuPath  = trs(pathList.at(0));
+    d_ptr->menuPath += "-";
+    d_ptr->menuPath += trs(pathList.at(1));
+
+    update();
 }
 
 bool MenuWindow::focusNextPrevChild(bool next)
@@ -229,7 +248,17 @@ void MenuWindow::onSelectItemChanged(int index)
         MenuContent *content = qobject_cast<MenuContent *>(area->widget());
         if (content)
         {
-            setWindowTitle(content->description());
+            if (d_ptr->menuPath.isEmpty())
+            {
+                setWindowTitle(content->description());
+            }
+            else
+            {
+                QString windowTitle = d_ptr->menuPath;
+                windowTitle += "-";
+                windowTitle += content->description();
+                setWindowTitle(windowTitle);
+            }
             content->setFocus();
         }
     }

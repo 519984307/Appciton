@@ -18,6 +18,7 @@
 #include "Button.h"
 #include "ParamInfo.h"
 #include "ParamDefine.h"
+#include "ConfigManager.h"
 
 class ConfigEditTEMPMenuPrivate
 {
@@ -142,6 +143,10 @@ void ConfigEditTEMPMenu::layoutExec()
 void ConfigEditTEMPMenu::readyShow()
 {
     d_ptr->loadOption();
+    bool isOnlyToRead = configManager.isReadOnly();
+    d_ptr->tempChannelOne->setEnabled(!isOnlyToRead);
+    d_ptr->tempChannelTwo->setEnabled(!isOnlyToRead);
+    d_ptr->tempChannelDisable->setEnabled(!isOnlyToRead);
 }
 
 void ConfigEditTEMPMenu::onComboIndexUpdated(int index)

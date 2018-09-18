@@ -201,8 +201,8 @@ TEMP,体温,TEMP
 T1,T1,T1
 T2,T2,T2
 TD,ΔT,ΔT
-ConfigEditTEMPMenu,体温,TEMP
-ConfigEditTEMPMenuDesc,体温设置,TEMP Desc
+ConfigEditTEMPMenu,TEMP,TEMP
+ConfigEditTEMPMenuDesc,TEMP设置,TEMP Desc
 TEMPMenu,TEMP,TEMP
 TEMPUnit,单位,Unit
 TEMP1Low,体温1低,TEMP1 Low
@@ -1380,6 +1380,7 @@ RulerAdjust,标尺调整,Ruler Adjust
 TrendWaveSelect,趋势波形设置,Trend Wave Select
 OxyCRGWidgetSetup,呼吸氧和设置,OxyCRGWidget Setup
 Wave,波形,Wave
+DefaultSetting,缺省设置,Default Setting
 CO2Low,二氧化碳低,CO2 Low
 CO2High,二氧化碳高,CO2 High
 RESPLow,呼吸低,RESP Low

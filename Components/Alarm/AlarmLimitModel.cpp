@@ -29,7 +29,8 @@ public:
     AlarmLimitModelPrivate()
         : viewWidth(400),  // set default value to 400
           editRow(-1)
-    {}
+    {
+    }
 
     QList<AlarmDataInfo> alarmDataInfos;
     int viewWidth;

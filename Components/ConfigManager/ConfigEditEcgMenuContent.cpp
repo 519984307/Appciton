@@ -190,6 +190,14 @@ ConfigEditECGMenuContent::~ConfigEditECGMenuContent()
 void ConfigEditECGMenuContent::readyShow()
 {
     d_ptr->loadOptions();
+    bool isOnlyToRead = configManager.isReadOnly();
+
+    for (int i = 0; i < ConfigEditECGMenuContentPrivate::ITEM_CBO_MAX; i++)
+    {
+        d_ptr->combos[ConfigEditECGMenuContentPrivate
+                ::MenuItem(i)]->setEnabled(!isOnlyToRead);
+    }
+    d_ptr->sTSwitchBtn->setEnabled(!isOnlyToRead);
 }
 
 void ConfigEditECGMenuContent::layoutExec()
