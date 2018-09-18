@@ -151,8 +151,6 @@ public:
     void replaceWaveform(const QStringList &oldWaveform, const QStringList &newWaveform);
     void replacebigWidgetform(const QString &oldWidget, const QString &newWidget,
                               bool setFocus = true, bool order = true);
-    void replacebigWaveform(const QString &oldWidget, const QString &newWidget,
-                            bool setFocus = true, bool order = true);
 
     // 插入波形。
     void insertWaveform(const QString &frontWaveform, const QString &insertedWaveform,

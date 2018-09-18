@@ -19,7 +19,6 @@
 #include "ECGMenu.h"
 #include "Debug.h"
 #include "WindowManager.h"
-#include "WaveWidgetSelectMenu.h"
 #include "ECGProviderIFace.h"
 #include "WaveformCache.h"
 #include "SystemManager.h"
@@ -1247,8 +1246,6 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
         return;
     }
 
-    waveWidgetSelectMenu.close();
-
     ECGLeadMode oldMode = _curLeadMode;
 
     // 将新模式保存到配置文件中。
@@ -1644,9 +1641,6 @@ void ECGParam::autoSetCalcLead(void)
     {
         ComboListPopup::current()->close();
     }
-
-    // 关闭波形菜单
-    waveWidgetSelectMenu.close();
 }
 
 /**************************************************************************************************

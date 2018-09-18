@@ -20,7 +20,6 @@
 #include "TS3Provider.h"
 #include "SystemManager.h"
 #include "WindowManager.h"
-#include "WaveWidgetSelectMenu.h"
 #include "ComboListPopup.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"

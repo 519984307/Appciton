@@ -39,9 +39,6 @@ protected:
     virtual void resizeEvent(QResizeEvent *e);
     virtual void focusInEvent(QFocusEvent */*e*/);
 
-private slots:
-    void _releaseHandle(IWidget *);
-
 private:
     void _initValueRange(SPO2Gain gain);
 

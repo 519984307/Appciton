@@ -41,7 +41,6 @@ protected:
     void hideEvent(QHideEvent *e);
 
 private slots:
-    void _releaseHandle(IWidget *);
     void _getItemIndex(int);
 
 private:

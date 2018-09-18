@@ -18,7 +18,6 @@
 #include "LanguageManager.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
-#include "WaveWidgetSelectMenu.h"
 
 /**************************************************************************************************
  * 构造。

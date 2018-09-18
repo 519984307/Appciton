@@ -115,7 +115,6 @@ static void _initSystem(void)
 static void _initWindowManager(void)
 {
     windowManager.construction();
-    waveWidgetSelectMenu.getInstance();
 
     // Set window size
     int screenWidth = 0;

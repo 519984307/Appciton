@@ -20,7 +20,6 @@
 #include "LanguageManager.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
-#include "WaveWidgetSelectMenu.h"
 #include "WindowManager.h"
 #include "Debug.h"
 #include "TimeDate.h"
@@ -125,6 +124,8 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPr
     _autoRulerTraveVally = 10000;
     _autoRulerTime = 0;
     _isAutoRuler = false;
+    _lowLimit = 0;
+    _highLimit = 300;
 
     setFocusPolicy(Qt::NoFocus);
     setID(id);
@@ -138,7 +139,6 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPr
     _name->setFont(fontManager.textFont(infoFont));
     _name->setFixedSize(130, fontH);
     _name->setText(getTitle());
-    connect(_name, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
     _ruler = new IBPWaveRuler(this);
     _ruler->setPalette(palette);
@@ -195,24 +195,6 @@ void IBPWaveWidget::focusInEvent(QFocusEvent *e)
     {
         _name->setFocus();
     }
-}
-
-void IBPWaveWidget::_releaseHandle(IWidget *w)
-{
-    Q_UNUSED(w);
-    QWidget *p = qobject_cast<QWidget *>(parent());
-    if (p == NULL)
-    {
-        return;
-    }
-
-    QRect prect = p->geometry();
-    QRect r = geometry();
-
-    waveWidgetSelectMenu.setTopWaveform(false);
-    waveWidgetSelectMenu.setWaveformName(name());
-    waveWidgetSelectMenu.setShowPoint(prect.x() + r.x() + 50, prect.y() + r.y());
-    windowManager.showWindow(&waveWidgetSelectMenu, WindowManager::ShowBehaviorModal);
 }
 
 /**************************************************************************************************

@@ -25,7 +25,6 @@
 #include "ECGParam.h"
 #include "ECGSymbol.h"
 #include "PatientBarWidget.h"
-#include "WaveWidgetSelectMenu.h"
 #include "MainMenuWindow.h"
 #include "ConfigManagerMenuWindow.h"
 #include "UserMaintainMenuWindow.h"
@@ -1943,81 +1942,6 @@ void WindowManager::replacebigWidgetform(const QString &oldWidget, const QString
     }
 }
 
-void WindowManager::replacebigWaveform(const QString &oldWidget, const QString &newWidget,
-                                       bool setFocus, bool order)
-{
-    QStringList currentWidget;
-    QStringList currentTrend;
-    _getCurrentDisplayTrendWindow(currentTrend);
-    getCurrentWaveforms(currentWidget);
-
-    int i = 0;
-    for (; i < currentTrend.size(); i++)
-    {
-        if (currentTrend[i] == "ECGTrendWidget")
-        {
-            break;
-        }
-    }
-
-    if (i == currentTrend.size())
-    {
-        return;
-    }
-
-    QMap<QString, QVBoxLayout *>::iterator bigform = _bigformMap.find("ECGTrendWidget");
-    if (bigform != _bigformMap.end())
-    {
-        QBoxLayout *lable = qobject_cast<QBoxLayout *>(bigform.value()->layout());
-        if (lable != NULL)
-        {
-            int lablecount = lable->count();
-            for (int j = 0; j < lablecount; j++)
-            {
-                QLayoutItem *item = lable->itemAt(j);
-                IWidget *widget = qobject_cast<IWidget *>(item->widget());
-                if (widget != NULL)
-                {
-                    if (widget->name() == oldWidget)
-                    {
-                        widget->setVisible(false);
-                        widget->setParent(NULL);
-                        lable->removeWidget(widget);
-
-                        QMap<QString, IWidget *>::iterator waveMap = _winMap.find(newWidget);
-                        if (waveMap != _winMap.end())
-                        {
-                            waveMap.value()->setVisible(true);
-                            waveMap.value()->setParent(this);
-
-                            currentWidget[i] = waveMap.value()->name();
-                            _setCurrentWaveforms(currentWidget);
-                            lable->addWidget(waveMap.value(), 1);
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    resetWave();
-
-    bool isFocus = false;
-
-
-    if (isFocus || setFocus)
-    {
-        _focusWaveformWidget(newWidget);
-    }
-
-    // 更新聚焦顺序。
-    if (order)
-    {
-        setFocusOrder();
-    }
-}
-
 /***************************************************************************************************
  * 功能：插入波形。
  * 参数：
@@ -2128,8 +2052,6 @@ void WindowManager::insertWaveform(const QString &frontWaveform, const QString &
     {
         _focusWaveformWidget(frontWaveform);
     }
-
-    waveWidgetSelectMenu.close();
 }
 
 /***************************************************************************************************
@@ -2252,8 +2174,6 @@ void WindowManager::removeWaveform(const QString &waveform, bool setFocus)
 
     // 更新聚焦顺序。
     setFocusOrder();
-
-    waveWidgetSelectMenu.close();
 }
 
 /***************************************************************************************************
