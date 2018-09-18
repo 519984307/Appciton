@@ -204,7 +204,7 @@ void MeasureSettingMenuContent::onBtnReleasd()
         p->popup(trs("NIBPMenu"));
         break;
     }
-    windowManager.closeAllWidows();
+
     p->popup(strName);
 }
 

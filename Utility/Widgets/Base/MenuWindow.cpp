@@ -106,7 +106,7 @@ void MenuWindow::popup(const QString &menuName, const QVariant &param)
         }
     }
 
-    windowManager.showWindow(this, WindowManager::ShowBehaviorHideOthers);
+    windowManager.showWindow(this, WindowManager::ShowBehaviorCloseOthers);
 }
 
 bool MenuWindow::focusNextPrevChild(bool next)
