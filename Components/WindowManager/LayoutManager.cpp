@@ -124,20 +124,21 @@ void LayoutManagerPrivate::performStandardLayout()
             {
                 continue;
             }
+            w->setVisible(true);
             if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN)
             {
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM)
                 {
-                    waveLayout->addWidget(w, row, nodeIter->pos, nodeIter->span, 1);
+                    waveLayout->addWidget(w, row, nodeIter->pos, 1, nodeIter->span);
                 }
                 else
                 {
-                    leftParamLayout->addWidget(w, row - LAYOUT_MAX_WAVE_ROW_NUM, nodeIter->pos, nodeIter->span, 1);
+                    leftParamLayout->addWidget(w, row - LAYOUT_MAX_WAVE_ROW_NUM, nodeIter->pos, 1, nodeIter->span);
                 }
             }
             else
             {
-                rightParamLayout->addWidget(w, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, nodeIter->span, 1);
+                rightParamLayout->addWidget(w, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
             }
         }
     }
@@ -196,8 +197,6 @@ LayoutManager::~LayoutManager()
 void LayoutManager::reloadLayoutConfig()
 {
     d_ptr->layoutMap = systemConfig.getConfig("PrimaryCfg|UILayout|ScreenLayout|Normal");
-    updateLayout();
-    d_ptr->doLayout();
 }
 
 QLayout *LayoutManager::getContentLayout()
@@ -239,10 +238,16 @@ IWidget *LayoutManager::getLayoutWidget(const QString &name)
 
 void LayoutManager::setUFaceType(UserFaceType type)
 {
-    if (d_ptr->curUserFace == type)
+    if (!d_ptr->contentLayout->isEmpty() && d_ptr->curUserFace == type)
     {
         return;
     }
+
+    if (d_ptr->layoutInfos.isEmpty())
+    {
+        updateLayout();
+    }
+    d_ptr->doLayout();
 }
 
 void LayoutManager::updateLayout()
@@ -326,4 +331,5 @@ LayoutManager::LayoutManager()
     :d_ptr(new LayoutManagerPrivate())
 {
     // TODO: load the store uface info
+    reloadLayoutConfig();
 }

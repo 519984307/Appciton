@@ -25,21 +25,10 @@ class QHBoxLayout;
 class QVBoxLayout;
 class QGridLayout;
 class Window;
+class WindowManagerPrivate;
 class WindowManager : public QWidget
 {
     Q_OBJECT
-public:
-    static WindowManager &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new WindowManager();
-        }
-        return *_selfObj;
-    }
-    static WindowManager *_selfObj;
-    ~WindowManager();
-
 public:
     enum ShowBehaviorFlags
     {
@@ -53,6 +42,10 @@ public:
         ShowBehaviorNoAutoClose = 0x10,     // don't automatically close this window when there isn't any user action
     };
     Q_DECLARE_FLAGS(ShowBehavior, ShowBehaviorFlags)
+
+    static WindowManager &getInstance(void);
+    ~WindowManager();
+
 
     /**
      * @brief showWindow show a window and push the window to the window stack
@@ -276,11 +269,7 @@ private:
     QMap<QString, QVBoxLayout *> _bigformMap; // 保存当前大字体区的窗体。
     QMultiMap<IWidget *, IWidget *> _trendWave;            // 参数列表
 
-    QList<QPointer<Window> > windowStacks;
-    QTimer * timer;				// timer to auto close the windows
-
-    QWidget * _demoWidget;
+    WindowManagerPrivate * const d_ptr;
 };
-#define windowManager (WindowManager::construction())
-#define deleteWindowManager() (delete WindowManager::_selfObj)
+#define windowManager (WindowManager::getInstance())
 Q_DECLARE_OPERATORS_FOR_FLAGS(WindowManager::ShowBehavior)

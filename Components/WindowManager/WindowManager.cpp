@@ -38,7 +38,22 @@
 #include "TopBarWidget.h"
 #include "LayoutManager.h"
 
-WindowManager *WindowManager::_selfObj = NULL;
+
+class WindowManagerPrivate
+{
+public:
+    explicit WindowManagerPrivate(WindowManager * const q_ptr)
+        :q_ptr(q_ptr),
+          timer(NULL),
+          demoWidget(NULL)
+    {}
+
+    WindowManager * const q_ptr;
+    QList<QPointer<Window> > windowStacks;
+    QTimer *timer;              // timer to auto close the windows
+    QWidget *demoWidget;
+};
+
 
 /***************************************************************************************************
  * 功能：获取当前显示的波形窗体内容。
@@ -1282,9 +1297,9 @@ void WindowManager::_setUFaceType(UserFaceType type)
         modeWidget->setMode(_currenUserFaceType);
     }
 
-    if (_demoWidget && _demoWidget->isVisible())
+    if (d_ptr->demoWidget && d_ptr->demoWidget->isVisible())
     {
-        _demoWidget->raise();
+        d_ptr->demoWidget->raise();
     }
 }
 
@@ -2281,13 +2296,11 @@ IWidget *WindowManager::getWidget(const QString &name)
  * 功能：构造函数
  **************************************************************************************************/
 #if defined(Q_WS_QWS)
-WindowManager::WindowManager() : QWidget(NULL, Qt::FramelessWindowHint), timer(NULL)
+WindowManager::WindowManager() : QWidget(NULL, Qt::FramelessWindowHint), d_ptr(new WindowManagerPrivate(this))
 #else
-WindowManager::WindowManager() : QWidget(), _demoWidget(NULL), timer(NULL)
+WindowManager::WindowManager() : QWidget(), d_ptr(new WindowManagerPrivate(this))
 #endif
 {
-    _demoWidget = NULL;
-
     _doesFixedLayout = false;
     _currenUserFaceType = UFACE_MONITOR_UNKNOW;
 
@@ -2319,10 +2332,10 @@ WindowManager::WindowManager() : QWidget(), _demoWidget(NULL), timer(NULL)
     _newLayoutStyle();
     setVisible(true);
 
-    timer = new QTimer(this);
-    timer->setSingleShot(true);
-    timer->setInterval(60 * 1000);    // 60s
-    connect(timer, SIGNAL(timeout()), this, SLOT(closeAllWidows()));
+    d_ptr->timer = new QTimer(this);
+    d_ptr->timer->setSingleShot(true);
+    d_ptr->timer->setInterval(60 * 1000);    // 60s
+    connect(d_ptr->timer, SIGNAL(timeout()), this, SLOT(closeAllWidows()));
 
     qApp->installEventFilter(this);
 }
@@ -2330,6 +2343,16 @@ WindowManager::WindowManager() : QWidget(), _demoWidget(NULL), timer(NULL)
 /***************************************************************************************************
  * 功能：析构函数
  **************************************************************************************************/
+WindowManager &WindowManager::getInstance()
+{
+    static WindowManager *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new WindowManager();
+    }
+    return *instance;
+}
+
 WindowManager::~WindowManager()
 {
     // 清除窗体
@@ -2374,9 +2397,9 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
 
     if (behaviors & ShowBehaviorCloseOthers)
     {
-        while (!windowStacks.isEmpty())
+        while (!d_ptr->windowStacks.isEmpty())
         {
-            Window *p = windowStacks.last();
+            Window *p = d_ptr->windowStacks.last();
             if (p)
             {
                 p->close();
@@ -2404,21 +2427,21 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
 
     if (!(behaviors & ShowBehaviorNoAutoClose))
     {
-        timer->start();
+        d_ptr->timer->start();
     }
 
     QPointer<Window> newP = w;
     // remove the window in the stack if it's already exist.
-    QList<QPointer<Window> >::Iterator iter = windowStacks.begin();
-    for (; iter != windowStacks.end(); ++iter)
+    QList<QPointer<Window> >::Iterator iter = d_ptr->windowStacks.begin();
+    for (; iter != d_ptr->windowStacks.end(); ++iter)
     {
         if (iter->data() == w)
         {
-            windowStacks.erase(iter);
+            d_ptr->windowStacks.erase(iter);
             break;
         }
     }
-    windowStacks.append(newP);
+    d_ptr->windowStacks.append(newP);
     connect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)), Qt::DirectConnection);
 
     // move the proper position
@@ -2452,16 +2475,16 @@ Window *WindowManager::topWindow()
 {
     // find top window
     QPointer<Window> top;
-    while (!windowStacks.isEmpty())
+    while (!d_ptr->windowStacks.isEmpty())
     {
-        top = windowStacks.last();
+        top = d_ptr->windowStacks.last();
         if (top)
         {
             break;
         }
         else
         {
-            windowStacks.takeLast();
+            d_ptr->windowStacks.takeLast();
         }
     }
     return top.data();
@@ -2469,7 +2492,7 @@ Window *WindowManager::topWindow()
 
 void WindowManager::showDemoWidget(bool flag)
 {
-    if (_demoWidget == NULL)
+    if (d_ptr->demoWidget == NULL)
     {
         // demo widget no exist yet, create one
         QLabel *l = new QLabel(trs("DEMO"), this);
@@ -2479,27 +2502,27 @@ void WindowManager::showDemoWidget(bool flag)
         pal.setColor(QPalette::WindowText, Qt::white);
         l->setPalette(pal);
         l->setFont(fontManager.textFont(64));
-        _demoWidget = l;
-        _demoWidget->move(430, 100);
-        _demoWidget->setFixedSize(l->sizeHint());
+        d_ptr->demoWidget = l;
+        d_ptr->demoWidget->move(430, 100);
+        d_ptr->demoWidget->setFixedSize(l->sizeHint());
     }
 
     if (flag)
     {
-        _demoWidget->show();
-        _demoWidget->raise();
+        d_ptr->demoWidget->show();
+        d_ptr->demoWidget->raise();
     }
     else
     {
-        _demoWidget->lower();
-        _demoWidget->hide();
+        d_ptr->demoWidget->lower();
+        d_ptr->demoWidget->hide();
     }
 }
 
 bool WindowManager::eventFilter(QObject *obj, QEvent *ev)
 {
     Q_UNUSED(obj)
-    if (windowStacks.isEmpty())
+    if (d_ptr->windowStacks.isEmpty())
     {
         return false;
     }
@@ -2507,9 +2530,9 @@ bool WindowManager::eventFilter(QObject *obj, QEvent *ev)
     if ((ev->type() == QEvent::KeyPress) || (ev->type() == QEvent::MouseButtonPress))
     {
         // reactive the timer
-        if (timer->isActive())
+        if (d_ptr->timer->isActive())
         {
-            timer->start();
+            d_ptr->timer->start();
         }
     }
 
@@ -2518,9 +2541,9 @@ bool WindowManager::eventFilter(QObject *obj, QEvent *ev)
 
 void WindowManager::closeAllWidows()
 {
-    while (!windowStacks.isEmpty())
+    while (!d_ptr->windowStacks.isEmpty())
     {
-        Window *p = windowStacks.last();
+        Window *p = d_ptr->windowStacks.last();
         if (p)
         {
             p->close();
@@ -2536,7 +2559,7 @@ void WindowManager::closeAllWidows()
         }
         activeWindow->close();
     }
-    timer->stop();
+    d_ptr->timer->stop();
 }
 
 void WindowManager::onWindowHide(Window *w)
@@ -2547,7 +2570,7 @@ void WindowManager::onWindowHide(Window *w)
     if (top == w)
     {
         // remove the window,
-        windowStacks.takeLast();
+        d_ptr->windowStacks.takeLast();
         disconnect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)));
 
         // show the previous window
@@ -2559,12 +2582,12 @@ void WindowManager::onWindowHide(Window *w)
         }
         else
         {
-            timer->stop();
+            d_ptr->timer->stop();
         }
     }
-    else if (windowStacks.isEmpty())
+    else if (d_ptr->windowStacks.isEmpty())
     {
         disconnect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)));
-        timer->stop();
+        d_ptr->timer->stop();
     }
 }
