@@ -435,11 +435,3 @@ int AlarmLimitModel::curEditRow() const
 {
     return d_ptr->editRow;
 }
-
-void AlarmLimitModel::setForegroundColor(const QColor &color)
-{
-    d_ptr->color = color;
-    QModelIndex  topLeft = index(1, 0);
-    QModelIndex  rightBottom = index(d_ptr->alarmDataInfos.count() - 1, 0);
-    emit dataChanged(topLeft, rightBottom);
-}

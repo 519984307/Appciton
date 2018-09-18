@@ -39,12 +39,6 @@ public:
     /* reimpelment */
     int exec();
 
-    /**
-     * @brief getTitleHight  获得标题栏高度
-     * @return
-     */
-    int getTitleHight(void) const;
-
 signals:
     /**
      * @brief windowHide emit when the window going to hide
