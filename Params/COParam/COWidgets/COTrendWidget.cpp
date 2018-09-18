@@ -18,7 +18,7 @@
 #include "PublicMenuManager.h"
 #include "WindowManager.h"
 #include <QDebug>
-#include "MainMenuWindow.h"
+#include "MeasureSettingWindow.h"
 
 #define     INVALDATA     0xffff
 
@@ -161,6 +161,6 @@ void COTrendWidget::setTextSize()
  *************************************************************************************************/
 void COTrendWidget::_releaseHandle(IWidget *iWidget)
 {
-    MainMenuWindow *p = MainMenuWindow::getInstance();
+    MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
     p->popup(trs("COMenu"));
 }

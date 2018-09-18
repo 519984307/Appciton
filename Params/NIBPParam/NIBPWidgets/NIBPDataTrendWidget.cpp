@@ -24,7 +24,7 @@
 #include "TimeDate.h"
 #include "Alarm.h"
 #include "TrendWidgetLabel.h"
-#include "MainMenuWindow.h"
+#include "MeasureSettingWindow.h"
 
 #define COLUMN_COUNT    3
 
@@ -34,7 +34,7 @@
 void NIBPDataTrendWidget::_releaseHandle(IWidget *iWidget)
 {
     Q_UNUSED(iWidget)
-    MainMenuWindow *p = MainMenuWindow::getInstance();
+    MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
     p->popup(trs("NIBPMenu"));
 }
 

@@ -631,7 +631,7 @@ void IBPMenuContent::onButtonReleased()
 
 void IBPMenuContent::onAlarmBtnReleased()
 {
-    MenuWindow *w = this->getMenuWindow();
+    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_ART_SYS, true);
     if (w)
     {

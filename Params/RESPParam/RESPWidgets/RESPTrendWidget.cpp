@@ -16,15 +16,15 @@
 #include "PublicMenuManager.h"
 #include "RESPParam.h"
 #include "TrendWidgetLabel.h"
-#include "MainMenuWindow.h"
+#include "MeasureSettingWindow.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
 void RESPTrendWidget::_releaseHandle(IWidget *iWidget)
 {
-    MainMenuWindow *mainMenu = MainMenuWindow::getInstance();
-    mainMenu->popup(trs("RESPMenu"));
+    MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
+    p->popup(trs("RESPMenu"));
 }
 
 /**************************************************************************************************
