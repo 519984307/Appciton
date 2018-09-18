@@ -107,7 +107,6 @@ public:
 
     // 设置界面类型。
     void setUFaceType(UserFaceType type);
-    void setUFaceType(void);
     UserFaceType getUFaceType() const
     {
         return _currenUserFaceType;
@@ -246,7 +245,6 @@ private:
 
     QVBoxLayout *_mainLayout;               // 顶层布局器。
     QHBoxLayout *_topBarRow;                // 顶部信息栏。
-    QHBoxLayout *_alarmRow;                 // 报警状态栏。
     QHBoxLayout *_paramLayout;              // 参数区
     QVBoxLayout *_volatileLayout;           // 放置波形窗体。
     QVBoxLayout *_trendRowLayout;           // 放置趋势窗体。

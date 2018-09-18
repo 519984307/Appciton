@@ -346,11 +346,11 @@ public:
 
 
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ECG)] = ParamNodeDescription(paramInfo.getParamName(PARAM_ECG),
-                                                                                            PARAM_SPAN_TWO);
+                                                                                            PARAM_SPAN_ONE);
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_SPO2)] = ParamNodeDescription(paramInfo.getParamName(PARAM_SPO2),
                                                                                              PARAM_SPAN_TWO);
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_RESP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_RESP),
-                                                                                             PARAM_SPAN_TWO);
+                                                                                             PARAM_SPAN_ONE);
         // IBP's pressure name is identical to it's wave name
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_IBP1)] = ParamNodeDescription(
                     paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP1)]),  PARAM_SPAN_TWO);
@@ -359,7 +359,7 @@ public:
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_CO2)] = ParamNodeDescription(paramInfo.getParamName(PARAM_CO2), PARAM_SPAN_TWO);
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_NIBP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_NIBP), PARAM_SPAN_TWO);
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_NIBPLIST)] = ParamNodeDescription(trs("NIBPList"), PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_TEMP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_TEMP), PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_TEMP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_TEMP), PARAM_SPAN_ONE);
 
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA1)] = ParamNodeDescription("AA1",  PARAM_SPAN_TWO);
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA2)] = ParamNodeDescription("AA2", PARAM_SPAN_TWO);
@@ -367,6 +367,7 @@ public:
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_O2)] = ParamNodeDescription("O2", PARAM_SPAN_TWO);
 
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = ParamNodeDescription("ST", PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_PVCS)] = ParamNodeDescription("PVCs", PARAM_SPAN_ONE);
     }
 
     /**
@@ -829,12 +830,12 @@ QSize ScreenLayoutModel::span(const QModelIndex &index) const
 
 void ScreenLayoutModel::saveLayoutInfo()
 {
-    systemConfig.setConfig("PrimaryCfg|UILayout|ScreenLayout|Normal", d_ptr->getLayoutMap());
+    systemConfig.setConfig("PrimaryCfg|UILayout|ContentLayout|Normal", d_ptr->getLayoutMap());
 }
 
 void ScreenLayoutModel::loadLayoutInfo()
 {
-    const QVariantMap config = systemConfig.getConfig("PrimaryCfg|UILayout|ScreenLayout|Normal");
+    const QVariantMap config = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|Normal");
     beginResetModel();
     d_ptr->loadLayoutFromConfig(config);
     endResetModel();

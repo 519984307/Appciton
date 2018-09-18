@@ -556,10 +556,6 @@ void WindowManager::_newLayoutStyle(void)
     _topBarRow->setMargin(0);
     _topBarRow->setSpacing(3);
 
-    _alarmRow = new QHBoxLayout();
-    _alarmRow->setMargin(0);
-    _alarmRow->setSpacing(3);
-
     // 构造波形易变区。
     _waveformBox = new QVBoxLayout();
     _waveformBox->setMargin(0);
@@ -606,9 +602,6 @@ void WindowManager::_newLayoutStyle(void)
     int index = 0;
     systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|topBarRow", index);
     _mainLayout->addLayout(_topBarRow, index);
-
-//    systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|alarmRow", index);
-//    _mainLayout->addLayout(_alarmRow, index);
 
 
     systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|paramLayout", index);
@@ -711,7 +704,6 @@ void WindowManager::_fixedLayout(void)
 //    }
 //    _topBarRow->addLayout(hLayoutTopBarRow);
     _topBarRow->addWidget(&topBarWidget);
-//    _alarmRow->addLayout(hLayoutAlarmRow);
 
     // 软按键区。
     QHBoxLayout *softkeyLayout = new QHBoxLayout;
@@ -1463,24 +1455,6 @@ void WindowManager::setUFaceType(UserFaceType type)
         return;
     }
     _currenUserFaceType = type;
-    _setUFaceType(_currenUserFaceType);
-}
-
-/***************************************************************************************************
- * 功能：设置界面布局样式,轮询切换
- **************************************************************************************************/
-void WindowManager::setUFaceType(void)
-{
-    int currenType = _currenUserFaceType;
-    currenType++;
-    if ((UserFaceType)currenType > UFACE_MONITOR_CUSTOM)
-    {
-        _currenUserFaceType = UFACE_MONITOR_STANDARD;
-    }
-    else
-    {
-        _currenUserFaceType = (UserFaceType)currenType;
-    }
     _setUFaceType(_currenUserFaceType);
 }
 
@@ -2309,11 +2283,6 @@ WindowManager::WindowManager() : QWidget(), d_ptr(new WindowManagerPrivate(this)
     p.setColor(QPalette::Background, Qt::black);
     p.setColor(QPalette::Foreground, Qt::white);
     setPalette(p);
-
-
-//    _firstColumnFactor = 30;
-//    _secondColumnFactor = 270;
-//    _thirdColumnFactor = 55;//102;
 
     //波形区与趋势区的比列
     QStringList factors;
