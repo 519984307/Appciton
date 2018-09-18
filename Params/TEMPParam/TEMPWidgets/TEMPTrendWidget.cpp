@@ -38,22 +38,25 @@ void TEMPTrendWidget::_alarmIndicate(bool isAlarm)
 {
     QPalette p = palette();
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
-
+    psrc = normalPalette(psrc);
     if (isAlarm)
     {
-        p.setColor(QPalette::Window, Qt::white);
-        p.setColor(QPalette::WindowText, Qt::red);
-        setPalette(p);
-        _t1Value->setPalette(p);
-        _t2Value->setPalette(p);
-        _tdValue->setPalette(p);
+        showAlarmStatus(_t1Value, psrc);
+        showAlarmStatus(_t2Value, psrc);
+        showAlarmStatus(_tdValue, psrc);
+        showAlarmStatus(_t1Name, psrc);
+        showAlarmStatus(_t2Name, psrc);
+        showAlarmStatus(_tdName, psrc);
     }
     else
     {
         setPalette(psrc);
-        _t1Value->setPalette(psrc);
-        _t2Value->setPalette(psrc);
-        _tdValue->setPalette(psrc);
+        showNormalStatus(_t1Value, psrc);
+        showNormalStatus(_t2Value, psrc);
+        showNormalStatus(_tdValue, psrc);
+        showNormalStatus(_t1Name, psrc);
+        showNormalStatus(_t2Name, psrc);
+        showNormalStatus(_tdName, psrc);
     }
 
     updateAlarm(isAlarm);

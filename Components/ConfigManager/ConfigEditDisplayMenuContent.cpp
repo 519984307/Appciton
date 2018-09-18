@@ -27,6 +27,7 @@ public:
         ITEM_CBO_RESP_COLOR,
         ITEM_CBO_TEMP_COLOR,
         ITEM_CBO_AG_COLOR,
+        ITEM_CBO_IBP_COLOR,
         ITEM_CBO_MAX,
     };
 
@@ -70,7 +71,8 @@ void ConfigEditDisplayMenuContentPrivate::loadOptions()
                           << "NIBPColor"
                           << "RESPColor"
                           << "TEMPColor"
-                          << "AGColor";
+                          << "AGColor"
+                          << "IBPColor";
     QString color;
     for (int i = 0; i < strList.count(); i++)
     {
@@ -207,6 +209,22 @@ void ConfigEditDisplayMenuContent::layoutExec()
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox , SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
+    // IBP color
+    label = new QLabel(trs("IBP"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox;
+    for (int i = 0; i < d_ptr->colorList.count(); i++)
+    {
+        comboBox->addItem(trs(d_ptr->colorList.at(i)));
+    }
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(ConfigEditDisplayMenuContentPrivate
+                         ::ITEM_CBO_IBP_COLOR, comboBox);
+    itemID = ConfigEditDisplayMenuContentPrivate
+            ::ITEM_CBO_IBP_COLOR;
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
 
@@ -241,6 +259,9 @@ void ConfigEditDisplayMenuContent::onComboBoxIndexChanged(int index)
         break;
     case ConfigEditDisplayMenuContentPrivate::ITEM_CBO_TEMP_COLOR:
         str = "TEMPColor";
+        break;
+    case ConfigEditDisplayMenuContentPrivate::ITEM_CBO_IBP_COLOR:
+        str = "IBPColor";
         break;
     }
     d_ptr->config->setStrValue(QString("Display|%1").arg(str), d_ptr->colorList.at(index));
