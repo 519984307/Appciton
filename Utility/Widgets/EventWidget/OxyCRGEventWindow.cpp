@@ -202,6 +202,7 @@ public:
     QList<int> dataIndex;                       // 当前选中事件项对应的数据所在索引
     QList<TrendGraphInfo> trendInfoList;        // 呼吸氧合数据链表
     OxyCRGWaveInfo waveInfo;                    // 波形数据
+    QString eventTitle;                         // 事件标题
 
     bool isHistory;                             // 历史回顾标志
     QString historyDataPath;                    // 历史数据路径
@@ -333,7 +334,7 @@ void OxyCRGEventWindow::printReleased()
     QList<TrendGraphInfo> trendInfos;
     trendInfos.append(d_ptr->trendInfoList.at(0));
     trendInfos.append(d_ptr->trendInfoList.at(1));
-    RecordPageGenerator *generator = new OxyCRGPageGenerator(trendInfos, d_ptr->waveInfo);
+    RecordPageGenerator *generator = new OxyCRGPageGenerator(trendInfos, d_ptr->waveInfo, d_ptr->eventTitle);
     recorderManager.addPageGenerator(generator);
 }
 
@@ -655,6 +656,7 @@ void OxyCRGEventWindowPrivate::eventInfoUpdate(int curRow)
 
     indexStr = QString::number(curRow + 1) + "/" + QString::number(curDisplayEventNum);
 
+    eventTitle = infoStr;
     infoWidget->loadDataInfo(infoStr, timeInfoStr, indexStr);
 }
 
