@@ -530,15 +530,15 @@ void OxyCRGEventWindowPrivate::loadTrendData()
     trendInfoSPO2.unit = paramManager.getSubParamUnit(paramInfo.getParamID(SUB_PARAM_SPO2), SUB_PARAM_SPO2);
     trendInfoRR.unit = paramManager.getSubParamUnit(paramInfo.getParamID(SUB_PARAM_RR_BR), SUB_PARAM_RR_BR);
 
-    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_HR_PR, trendInfoHR.unit);
-    trendInfoHR.scale.min = static_cast<double>(config.lowLimit / config.scale);
-    trendInfoHR.scale.max = static_cast<double>(config.highLimit / config.scale);
-    config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_SPO2, trendInfoSPO2.unit);
-    trendInfoSPO2.scale.min = static_cast<double>(config.lowLimit / config.scale);
-    trendInfoSPO2.scale.max = static_cast<double>(config.highLimit / config.scale);
-    config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_RR_BR, trendInfoRR.unit);
-    trendInfoRR.scale.min = static_cast<double>(config.lowLimit / config.scale);
-    trendInfoRR.scale.max = static_cast<double>(config.highLimit / config.scale);
+    ParamRulerConfig config = alarmConfig.getParamRulerConfig(SUB_PARAM_HR_PR, trendInfoHR.unit);
+    trendInfoHR.scale.min = static_cast<double>(config.downRuler / config.scale);
+    trendInfoHR.scale.max = static_cast<double>(config.upRuler / config.scale);
+    config = alarmConfig.getParamRulerConfig(SUB_PARAM_SPO2, trendInfoSPO2.unit);
+    trendInfoSPO2.scale.min = static_cast<double>(config.downRuler / config.scale);
+    trendInfoSPO2.scale.max = static_cast<double>(config.upRuler / config.scale);
+    config = alarmConfig.getParamRulerConfig(SUB_PARAM_RR_BR, trendInfoRR.unit);
+    trendInfoRR.scale.min = static_cast<double>(config.downRuler / config.scale);
+    trendInfoRR.scale.max = static_cast<double>(config.upRuler / config.scale);
 
     TrendGraphData dataHR;
     TrendGraphData dataSPO2;
