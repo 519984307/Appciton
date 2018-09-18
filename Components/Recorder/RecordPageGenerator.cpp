@@ -1596,7 +1596,11 @@ void RecordPageGenerator::drawGraphAxis(QPainter *painter, const GraphAxisInfo &
     }
 
     // draw caption
-    int  captionHeigth = -(sectionHeight - axisInfo.ySectionHeight) - fontH / 2;
+    int  captionHeigth = -108;
+    if (axisInfo.yLabels.size() != 0)
+    {
+        captionHeigth = -(sectionHeight - axisInfo.ySectionHeight) - fontH / 2;
+    }
     QRectF captionRect;
     captionRect.setLeft(pixSize + pixSize / 2);
     captionRect.setWidth(axisInfo.xSectionWidth * 2); // should be enough

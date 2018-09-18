@@ -200,6 +200,7 @@ void RESPParam::setWaveWidget(RESPWaveWidget *waveWidget)
     }
     _waveWidget = waveWidget;
     _setWaveformSpeed(getSweepSpeed());
+    setZoom(getZoom());
 }
 
 void RESPParam::setOxyWaveWidget(OxyCRGRESPWidget *waveWidget)

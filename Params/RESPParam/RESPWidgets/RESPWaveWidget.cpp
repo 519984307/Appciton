@@ -172,7 +172,7 @@ void RESPWaveWidget::setZoom(int zoom)
         zoom = RESP_ZOOM_X100;
         break;
     }
-
+    setValueRange(0, 255);
     _gain->setText(RESPSymbol::convert((RESPZoom)zoom));
 }
 
