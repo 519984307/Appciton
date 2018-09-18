@@ -11,6 +11,7 @@
 
 #include "Init.h"
 #include "ErrorLogItem.h"
+#include "LayoutManager.h"
 
 /**************************************************************************************************
  * 功能： 初始化系统。
@@ -224,7 +225,6 @@ static void _initProviderParam(void)
 
     DataDispatcher::addDataDispatcher(new DataDispatcher("DataDispatcher"));
 
-
     // ECG部分。
     paramManager.addParam(ecgDupParam.construction());
     alertor.addLimtSource(ecgDupLimitAlarm.construction());
@@ -234,80 +234,97 @@ static void _initProviderParam(void)
     ECGTrendWidget *ecgTrendWidget = new ECGTrendWidget();
     ecgDupParam.setTrendWidget(ecgTrendWidget);
     windowManager.addWidget(ecgTrendWidget);
+    layoutManger.addLayoutWidget(ecgTrendWidget, LAYOUT_NODE_PARAM_ECG);
     ECGPVCSTrendWidget *ecgPVCSTrendWidget = new ECGPVCSTrendWidget();
     ecgParam.setECGPVCSTrendWidget(ecgPVCSTrendWidget);
     windowManager.addWidget(ecgPVCSTrendWidget);
+    layoutManger.addLayoutWidget(ecgPVCSTrendWidget, LAYOUT_NODE_PARAM_PVCS);
     ECGSTTrendWidget *ecgSTTrendWidget = new ECGSTTrendWidget();
     ecgParam.setECGSTTrendWidget(ecgSTTrendWidget);
     windowManager.addWidget(ecgSTTrendWidget);
+    layoutManger.addLayoutWidget(ecgSTTrendWidget, LAYOUT_NODE_PARAM_ST);
 
     ECGWaveWidget *ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_I, "ECGIWaveWidget",
             ECGSymbol::convert(ECG_LEAD_I, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_I);
     windowManager.addWidget(ecgWaveWidget);
+    layoutManger.addLayoutWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_II, "ECGIIWaveWidget",
                                       ECGSymbol::convert(ECG_LEAD_II, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_II);
     windowManager.addWidget(ecgWaveWidget);
+    layoutManger.addLayoutWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_III, "ECGIIIWaveWidget",
                                       ECGSymbol::convert(ECG_LEAD_III, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_III);
     windowManager.addWidget(ecgWaveWidget);
+    layoutManger.addLayoutWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_aVR, "ECGaVRWaveWidget",
                                       ECGSymbol::convert(ECG_LEAD_AVR, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_AVR);
     windowManager.addWidget(ecgWaveWidget);
+    layoutManger.addLayoutWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_aVL, "ECGaVLWaveWidget",
                                       ECGSymbol::convert(ECG_LEAD_AVL, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_AVL);
     windowManager.addWidget(ecgWaveWidget);
+    layoutManger.addLayoutWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_aVF, "ECGaVFWaveWidget",
                                       ECGSymbol::convert(ECG_LEAD_AVF, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_AVF);
     windowManager.addWidget(ecgWaveWidget);
+    layoutManger.addLayoutWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_V1, "ECGV1WaveWidget",
                                       ECGSymbol::convert(ECG_LEAD_V1, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_V1);
     windowManager.addWidget(ecgWaveWidget);
+    layoutManger.addLayoutWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_V2, "ECGV2WaveWidget",
                                       ECGSymbol::convert(ECG_LEAD_V2, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_V2);
     windowManager.addWidget(ecgWaveWidget);
+    layoutManger.addLayoutWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_V3, "ECGV3WaveWidget",
                                       ECGSymbol::convert(ECG_LEAD_V3, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_V3);
     windowManager.addWidget(ecgWaveWidget);
+    layoutManger.addLayoutWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_V4, "ECGV4WaveWidget",
                                       ECGSymbol::convert(ECG_LEAD_V4, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_V4);
     windowManager.addWidget(ecgWaveWidget);
+    layoutManger.addLayoutWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_V5, "ECGV5WaveWidget",
                                       ECGSymbol::convert(ECG_LEAD_V5, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_V5);
     windowManager.addWidget(ecgWaveWidget);
+    layoutManger.addLayoutWidget(ecgWaveWidget);
 
     ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_V6, "ECGV6WaveWidget",
                                       ECGSymbol::convert(ECG_LEAD_V6, ecgParam.getLeadConvention()));
     ecgParam.setWaveWidget(ecgWaveWidget, ECG_LEAD_V6);
     windowManager.addWidget(ecgWaveWidget);
+    layoutManger.addLayoutWidget(ecgWaveWidget);
 
     OxyCRGWidget *oxyCRGWidget = new OxyCRGWidget();
     windowManager.addWidget(oxyCRGWidget);
+    layoutManger.addLayoutWidget(oxyCRGWidget);
 
     OxyCRGHRWidget *hrOxyCRGWidget = new OxyCRGHRWidget("OxyCRGHRWidget",
             paramInfo.getSubParamName(SUB_PARAM_HR_PR));
     ecgParam.setOxyCRGWaveWidget(hrOxyCRGWidget);
     windowManager.addWidget(hrOxyCRGWidget);
+    layoutManger.addLayoutWidget(hrOxyCRGWidget);
     oxyCRGWidget->setOxyCrgHrWidget(hrOxyCRGWidget);
 
     // RESP部分。
@@ -326,12 +343,15 @@ static void _initProviderParam(void)
             respDupParam.setTrendWidget(respTrendWidget);
             respParam.setWaveWidget(respWaveWidget);
             windowManager.addWidget(respWaveWidget);
+            layoutManger.addLayoutWidget(respWaveWidget, LAYOUT_NODE_WAVE_RESP);
             windowManager.addWidget(respTrendWidget);
+            layoutManger.addLayoutWidget(respTrendWidget, LAYOUT_NODE_PARAM_RESP);
 
             OxyCRGRESPWidget *respOxyCRGWidget = new OxyCRGRESPWidget("OxyCRGRESPWidget",
                     "RESP");
             respParam.setOxyWaveWidget(respOxyCRGWidget);
             windowManager.addWidget(respOxyCRGWidget);
+            layoutManger.addLayoutWidget(respOxyCRGWidget);
             oxyCRGWidget->setOxyCrgRespWidget(respOxyCRGWidget);
             demo->setOxyCRGRESPWidget(respOxyCRGWidget);
             ecgParam.setOxyCRGRESPWidget(respOxyCRGWidget);
@@ -371,12 +391,15 @@ static void _initProviderParam(void)
         spo2Param.setTrendWidget(spo2TrendWidget);
         spo2Param.setWaveWidget(spo2WaveWidget);
         windowManager.addWidget(spo2WaveWidget);
+        layoutManger.addLayoutWidget(spo2WaveWidget, LAYOUT_NODE_WAVE_SPO2);
         windowManager.addWidget(spo2TrendWidget);
+        layoutManger.addLayoutWidget(spo2TrendWidget, LAYOUT_NODE_PARAM_SPO2);
 
         OxyCRGSPO2Widget *spo2OxyCRGWidget = new OxyCRGSPO2Widget("OxyCRGSPO2Widget",
                 paramInfo.getSubParamName(SUB_PARAM_SPO2));
         spo2Param.setOxyCRGWaveWidget(spo2OxyCRGWidget);
         windowManager.addWidget(spo2OxyCRGWidget);
+        layoutManger.addLayoutWidget(spo2OxyCRGWidget);
         oxyCRGWidget->setOxyCrgSpo2Widget(spo2OxyCRGWidget);
     }
 
@@ -400,11 +423,14 @@ static void _initProviderParam(void)
         NIBPTrendWidget *nibpTrenWidget = new NIBPTrendWidget();
         nibpParam.setNIBPTrendWidget(nibpTrenWidget);
         windowManager.addWidget(nibpTrenWidget);
+        layoutManger.addLayoutWidget(nibpTrenWidget, LAYOUT_NODE_PARAM_NIBP);
         NIBPDataTrendWidget *nibpDataTrenWidget = new NIBPDataTrendWidget();
         nibpParam.setNIBPDataTrendWidget(nibpDataTrenWidget);
         windowManager.addWidget(nibpDataTrenWidget);
+        layoutManger.addLayoutWidget(nibpDataTrenWidget, LAYOUT_NODE_PARAM_NIBPLIST);
         WaveTrendWidget *waveTrendWidget = new WaveTrendWidget();
         windowManager.addWidget(waveTrendWidget);
+        layoutManger.addLayoutWidget(waveTrendWidget);
     }
 
     // CO2部分。
@@ -421,12 +447,15 @@ static void _initProviderParam(void)
         co2Param.setTrendWidget(co2TrendWidget);
         co2Param.setWaveWidget(co2WaveWidget);
         windowManager.addWidget(co2WaveWidget);
+        layoutManger.addLayoutWidget(co2WaveWidget, LAYOUT_NODE_WAVE_CO2);
         windowManager.addWidget(co2TrendWidget);
+        layoutManger.addLayoutWidget(co2TrendWidget, LAYOUT_NODE_PARAM_CO2);
 
         OxyCRGCO2Widget *co2OxyCRGWidget = new OxyCRGCO2Widget("OxyCRGCO2Widget",
                 "CO2");
         co2Param.setOxyCRGCO2Widget(co2OxyCRGWidget);
         windowManager.addWidget(co2OxyCRGWidget);
+        layoutManger.addLayoutWidget(co2OxyCRGWidget);
         oxyCRGWidget->setOxyCrgCo2Widget(co2OxyCRGWidget);
         demo->setOxyCRGCO2Widget(co2OxyCRGWidget);
         ecgParam.setOxyCRGCO2Widget(co2OxyCRGWidget);
@@ -444,21 +473,25 @@ static void _initProviderParam(void)
                 IBP_PRESSURE_ART);
         ibpParam.setIBPTrendWidget(ibp1TrendWidget, IBP_INPUT_1);
         windowManager.addWidget(ibp1TrendWidget);
+        layoutManger.addLayoutWidget(ibp1TrendWidget, LAYOUT_NODE_PARAM_IBP1);
 
         IBPTrendWidget *ibp2TrendWidget = new IBPTrendWidget("IBP2TrendWidget",
                 IBP_PRESSURE_PA);
         ibpParam.setIBPTrendWidget(ibp2TrendWidget, IBP_INPUT_2);
         windowManager.addWidget(ibp2TrendWidget);
+        layoutManger.addLayoutWidget(ibp2TrendWidget, LAYOUT_NODE_PARAM_IBP2);
 
         IBPWaveWidget *ibp1WaveWidget = new IBPWaveWidget(WAVE_ART, "IBP1WaveWidget",
                 IBP_PRESSURE_ART);
         ibpParam.setWaveWidget(ibp1WaveWidget, IBP_INPUT_1);
         windowManager.addWidget(ibp1WaveWidget, ibp1TrendWidget);
+        layoutManger.addLayoutWidget(ibp1WaveWidget, LAYOUT_NODE_WAVE_IBP1);
 
         IBPWaveWidget *ibp2WaveWidget = new IBPWaveWidget(WAVE_PA, "IBP2WaveWidget",
                 IBP_PRESSURE_PA);
         ibpParam.setWaveWidget(ibp2WaveWidget, IBP_INPUT_2);
         windowManager.addWidget(ibp2WaveWidget, ibp2TrendWidget);
+        layoutManger.addLayoutWidget(ibp2WaveWidget, LAYOUT_NODE_WAVE_IBP2);
     }
 
     // CO
@@ -470,6 +503,7 @@ static void _initProviderParam(void)
         COTrendWidget *coTrendWidget = new COTrendWidget("COTrendWidget");
         coParam.setCOTrendWidget(coTrendWidget);
         windowManager.addWidget(coTrendWidget);
+        layoutManger.addLayoutWidget(coTrendWidget, LAYOUT_NODE_PARAM_CO);
     }
 
     // AG
@@ -484,34 +518,42 @@ static void _initProviderParam(void)
     AGTrendWidget *trendWidgetN2O = new AGTrendWidget("N2OTrendWidget", AG_TYPE_N2O);
     agParam.setTrendWidget(trendWidgetN2O, AG_TYPE_N2O);
     windowManager.addWidget(trendWidgetN2O);
+    layoutManger.addLayoutWidget(trendWidgetN2O, LAYOUT_NODE_PARAM_N2O);
 
     AGTrendWidget *trendWidgetAA1 = new AGTrendWidget("AA1TrendWidget", AG_TYPE_AA1);
     agParam.setTrendWidget(trendWidgetAA1, AG_TYPE_AA1);
     windowManager.addWidget(trendWidgetAA1);
+    layoutManger.addLayoutWidget(trendWidgetAA1, LAYOUT_NODE_PARAM_AA1);
 
     AGTrendWidget *trendWidgetAA2 = new AGTrendWidget("AA2TrendWidget", AG_TYPE_AA2);
     agParam.setTrendWidget(trendWidgetAA2, AG_TYPE_AA2);
     windowManager.addWidget(trendWidgetAA2);
+    layoutManger.addLayoutWidget(trendWidgetAA2, LAYOUT_NODE_PARAM_AA2);
 
     AGTrendWidget *trendWidgetO2 = new AGTrendWidget("O2TrendWidget", AG_TYPE_O2);
     agParam.setTrendWidget(trendWidgetO2, AG_TYPE_O2);
     windowManager.addWidget(trendWidgetO2);
+    layoutManger.addLayoutWidget(trendWidgetO2, LAYOUT_NODE_PARAM_O2);
 
     AGWaveWidget *waveWidgetN2O = new AGWaveWidget(WAVE_N2O, "N2OWaveWidget", AG_TYPE_N2O);
     agParam.setWaveWidget(waveWidgetN2O, AG_TYPE_N2O);
     windowManager.addWidget(waveWidgetN2O, trendWidgetN2O);
+    layoutManger.addLayoutWidget(waveWidgetN2O, LAYOUT_NODE_WAVE_N2O);
 
     AGWaveWidget *waveWidgetAA1 = new AGWaveWidget(WAVE_AA1, "AA1WaveWidget", AG_TYPE_AA1);
     agParam.setWaveWidget(waveWidgetAA1, AG_TYPE_AA1);
     windowManager.addWidget(waveWidgetAA1, trendWidgetAA1);
+    layoutManger.addLayoutWidget(waveWidgetAA1, LAYOUT_NODE_WAVE_AA1);
 
     AGWaveWidget *waveWidgetAA2 = new AGWaveWidget(WAVE_AA2, "AA2WaveWidget", AG_TYPE_AA2);
     agParam.setWaveWidget(waveWidgetAA2, AG_TYPE_AA2);
     windowManager.addWidget(waveWidgetAA2, trendWidgetAA2);
+    layoutManger.addLayoutWidget(waveWidgetAA2, LAYOUT_NODE_WAVE_AA2);
 
     AGWaveWidget *waveWidgetO2 = new AGWaveWidget(WAVE_O2, "O2WaveWidget", AG_TYPE_O2);
     agParam.setWaveWidget(waveWidgetO2, AG_TYPE_O2);
     windowManager.addWidget(waveWidgetO2, trendWidgetO2);
+    layoutManger.addLayoutWidget(waveWidgetO2, LAYOUT_NODE_WAVE_O2);
 
     // TEMP部分。
     if (systemManager.isSupport(CONFIG_TEMP))
@@ -533,6 +575,7 @@ static void _initProviderParam(void)
         TEMPTrendWidget *tempTrendWidget = new TEMPTrendWidget();
         tempParam.setTrendWidget(tempTrendWidget);
         windowManager.addWidget(tempTrendWidget);
+        layoutManger.addLayoutWidget(tempTrendWidget, LAYOUT_NODE_PARAM_TEMP);
     }
 
     paramManager.getVersion();

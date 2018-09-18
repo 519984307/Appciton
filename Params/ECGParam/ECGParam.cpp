@@ -1515,12 +1515,6 @@ void ECGParam::setCalcLead(ECGLead lead)
         leads.append(ECG_LEAD_V6);
     }
 
-    if (windowManager.getUFaceType() != UFACE_MONITOR_12LEAD)
-    {
-        // 切换计算导联的时候先退出诊断在切换，原因是因为诊断会改变波形采样和速率
-        restoreDiagBandwidth();
-    }
-
     ECGLead preCalcLead = getCalcLead();
 //    leads.clear();
 //    leads.append(ECG_LEAD_I);
@@ -1715,87 +1709,6 @@ void ECGParam::setBandwidth(int band)
     }
 }
 
-/**************************************************************************************************
- * 设置诊断带宽。
- *************************************************************************************************/
-void ECGParam::setDiagBandwidth()
-{
-    if (_isDisableDiaSoftKey)
-    {
-        return;
-    }
-
-    _isDisableDiaSoftKey = true;
-    if (NULL != _provider)
-    {
-        _provider->setBandwidth(ECG_BANDWIDTH_0525_40HZ);
-
-        int filter = 0;
-        currentConfig.getNumValue("ECG|NotchFilter", filter);
-        _provider->setNotchFilter((ECGNotchFilter)filter);
-
-        // 重新设置波形速率
-        _provider->setWaveformSample(WAVE_SAMPLE_RATE_500);
-        for (int i = 0; i < ECG_LEAD_NR; ++i)
-        {
-            if (_waveWidget[i] == NULL)
-            {
-                continue;
-            }
-            _waveWidget[i]->setDataRate(_provider->getWaveformSample());
-        }
-
-        unsigned ts = timeManager.getCurTime();
-        // summaryStorageManager.addDiagnosticECG(ts, ECG_BANDWIDTH_0525_40HZ);
-        _lastDiagModeTimestamp = ts;
-    }
-
-    for (int i = 0; i < ECG_LEAD_NR; ++i)
-    {
-        if (_waveWidget[i] == NULL)
-        {
-            continue;
-        }
-        _waveWidget[i]->setBandWidth(ECG_BANDWIDTH_0525_40HZ);
-    }
-}
-
-/**************************************************************************************************
- * 设置诊断带宽, if restore after diagnostic complete, no need to stop trigger print
- *************************************************************************************************/
-void ECGParam::restoreDiagBandwidth(int isCompleted)
-{
-    _isDisableDiaSoftKey = false;
-    int band = 0;
-    band = _chestFreqBand;
-
-    if (NULL != _provider)
-    {
-        _provider->setBandwidth((ECGBandwidth)band);
-        _provider->setNotchFilter(getNotchFilter());
-
-        // 重新设置波形速率
-        _provider->setWaveformSample(WAVE_SAMPLE_RATE_250);
-        for (int i = 0; i < ECG_LEAD_NR; ++i)
-        {
-            if (_waveWidget[i] == NULL)
-            {
-                continue;
-            }
-            _waveWidget[i]->setDataRate(_provider->getWaveformSample());
-        }
-    }
-
-    for (int i = 0; i < ECG_LEAD_NR; ++i)
-    {
-        if (_waveWidget[i] == NULL)
-        {
-            continue;
-        }
-        _waveWidget[i]->setBandWidth((ECGBandwidth)band);
-    }
-}
-
 /***************************************************************************************************
  * get the bandwidth of the calc lead
  **************************************************************************************************/
@@ -1824,17 +1737,6 @@ ECGBandwidth ECGParam::getBandwidth(void)
 }
 
 /**************************************************************************************************
- * 获取带宽。
- *************************************************************************************************/
-ECGBandwidth ECGParam::getMFCBandwidth(void)
-{
-    int band = 0;
-    currentConfig.getNumValue("ECG|PadsECGBandwidth", band);
-
-    return static_cast<ECGBandwidth>(band);
-}
-
-/**************************************************************************************************
  * 获取显示带宽。
  *************************************************************************************************/
 ECGBandwidth ECGParam::getDisplayBandWidth(void)
@@ -1844,10 +1746,6 @@ ECGBandwidth ECGParam::getDisplayBandWidth(void)
     if (_displayMode == ECG_DISPLAY_12_LEAD_FULL)
     {
         band = _12LeadFreqBand;
-    }
-    else
-    {
-        band = getDiagBandwidth();
     }
 
     return static_cast<ECGBandwidth>(band);
@@ -2437,8 +2335,6 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
         currentConfig.getNumValue(everLeadOnStr, leadOnOff);
         _isEverLeadOn[i] = (leadOnOff << i) & 0x01;
     }
-
-    _lastDiagModeTimestamp = 0;
 
 //    _lastCabelType = 0x00;
     _isPowerOnNewSession = true;

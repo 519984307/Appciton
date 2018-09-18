@@ -37,6 +37,7 @@
 #include "FontManager.h"
 #include <QTimer>
 #include "TopBarWidget.h"
+#include "LayoutManager.h"
 
 WindowManager *WindowManager::_selfObj = NULL;
 
@@ -594,6 +595,7 @@ void WindowManager::_newLayoutStyle(void)
 
 //    systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|alarmRow", index);
 //    _mainLayout->addLayout(_alarmRow, index);
+
 
     systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|paramLayout", index);
     _mainLayout->addLayout(_paramLayout, index);

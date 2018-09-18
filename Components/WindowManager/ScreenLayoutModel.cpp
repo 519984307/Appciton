@@ -22,31 +22,10 @@
 #include "OrderedMap.h"
 
 
-const char *layoutNodeName(LayoutParamNodeType paramNode)
+const char *layoutNodeName(LayoutNodeType nodeType)
 {
-    static const char * paramNodeName[LAYOUT_PARAM_NODE_NR] = {
-        "ECG",
-        "SPO2",
-        "RESP",
-        "IBP1",
-        "IBP2",
-        "CO2",
-        "NIBP",
-        "NIBPList",
-        "TEMP",
-        "AA1",
-        "AA2",
-        "N2O",
-        "O2",
-        "ST",
-    };
-
-    return paramNodeName[paramNode];
-}
-
-const char *layoutNodeName(LayoutWaveNodeType waveNode)
-{
-    static const char * waveNodeName[LAYOUT_WAVE_NODE_NR] = {
+    static const char * nodeName[LAYOUT_NODE_NR] = {
+        NULL,
         "ECG1Wave",
         "ECG2Wave",
         "RESPWave",
@@ -58,24 +37,27 @@ const char *layoutNodeName(LayoutWaveNodeType waveNode)
         "AA1Wave",
         "AA2Wave",
         "O2Wave",
+
+        "ECG",
+        "SPO2",
+        "RESP",
+        "IBP1",
+        "IBP2",
+        "CO2",
+        "NIBP",
+        "NIBPList",
+        "TEMP",
+        "C.O.",
+        "AA1",
+        "AA2",
+        "N2O",
+        "O2",
+        "ST",
+        "PVCs",
     };
 
-    return waveNodeName[waveNode];
+    return nodeName[nodeType];
 }
-
-
-struct LayoutNode
-{
-    LayoutNode()
-        : pos(0), span(1), waveId(WAVE_NONE), editable(true)
-    {}
-
-    QString name;
-    int pos;
-    int span;
-    WaveformID waveId;
-    bool editable;
-};
 
 enum ParamNodeSpan
 {
@@ -182,7 +164,6 @@ public:
                 node->editable = editable;
                 node->pos = pos;
                 node->span = span;
-                node->waveId = waveIDMaps.value(node->name, WAVE_NONE);
 
                 if (row->isEmpty())
                 {
@@ -345,47 +326,47 @@ public:
     {
         // two ecg wave at most
         // TODO: find the proper ECG Wave
-        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_ECG1), WAVE_ECG_II);
-        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_ECG2), WAVE_ECG_I);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_ECG1), WAVE_ECG_II);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_ECG2), WAVE_ECG_I);
 
-        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_RESP), WAVE_RESP);
-        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_SPO2), WAVE_SPO2);
-        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_CO2), WAVE_CO2);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_RESP), WAVE_RESP);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_SPO2), WAVE_SPO2);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_CO2), WAVE_CO2);
 
         // find proper IBP Wave base of the wave name
-        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_IBP1),
+        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_IBP1),
                           ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_1)));
-        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_IBP2),
+        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_IBP2),
                           ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_2)));
 
-        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_N2O), WAVE_N2O);
-        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_AA1), WAVE_AA1);
-        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_AA2), WAVE_AA2);
-        waveIDMaps.insert(layoutNodeName(LAYOUT_WAVE_NODE_O2), WAVE_O2);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_N2O), WAVE_N2O);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_AA1), WAVE_AA1);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_AA2), WAVE_AA2);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_O2), WAVE_O2);
 
 
-        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_ECG)] = ParamNodeDescription(paramInfo.getParamName(PARAM_ECG),
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ECG)] = ParamNodeDescription(paramInfo.getParamName(PARAM_ECG),
                                                                                             PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_SPO2)] = ParamNodeDescription(paramInfo.getParamName(PARAM_SPO2),
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_SPO2)] = ParamNodeDescription(paramInfo.getParamName(PARAM_SPO2),
                                                                                              PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_RESP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_RESP),
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_RESP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_RESP),
                                                                                              PARAM_SPAN_TWO);
         // IBP's pressure name is identical to it's wave name
-        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_IBP1)] = ParamNodeDescription(
-                    paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_WAVE_NODE_IBP1)]),  PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_IBP2)] = ParamNodeDescription(
-                    paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_WAVE_NODE_IBP2)]), PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_CO2)] = ParamNodeDescription(paramInfo.getParamName(PARAM_CO2), PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_NIBP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_NIBP), PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_NIBPLIST)] = ParamNodeDescription(trs("NIBPList"), PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_TEMP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_TEMP), PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_IBP1)] = ParamNodeDescription(
+                    paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP1)]),  PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_IBP2)] = ParamNodeDescription(
+                    paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP2)]), PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_CO2)] = ParamNodeDescription(paramInfo.getParamName(PARAM_CO2), PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_NIBP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_NIBP), PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_NIBPLIST)] = ParamNodeDescription(trs("NIBPList"), PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_TEMP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_TEMP), PARAM_SPAN_TWO);
 
-        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_AA1)] = ParamNodeDescription("AA1",  PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_AA2)] = ParamNodeDescription("AA2", PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_N2O)] = ParamNodeDescription("N2O", PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_O2)] = ParamNodeDescription("O2", PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA1)] = ParamNodeDescription("AA1",  PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA2)] = ParamNodeDescription("AA2", PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_N2O)] = ParamNodeDescription("N2O", PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_O2)] = ParamNodeDescription("O2", PARAM_SPAN_TWO);
 
-        paramNodeDescriptions[layoutNodeName(LAYOUT_PARAM_NODE_ST)] = ParamNodeDescription("ST", PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = ParamNodeDescription("ST", PARAM_SPAN_TWO);
     }
 
     /**
@@ -426,7 +407,8 @@ public:
             LayoutRow::ConstIterator iter = (*riter)->constBegin();
             for (; iter != (*riter)->end(); ++iter)
             {
-                if ((*iter)->waveId != WAVE_NONE)
+                WaveformID waveId = waveIDMaps.value((*iter)->name, WAVE_NONE);
+                if (waveId != WAVE_NONE)
                 {
                     list.append((*iter)->name);
                 }
@@ -472,7 +454,8 @@ public:
             LayoutRow::ConstIterator iter = (*riter)->constBegin();
             for (; iter != (*riter)->end(); ++iter)
             {
-                if ((*iter)->waveId == WAVE_NONE && (row >= LAYOUT_MAX_WAVE_ROW_NUM || column >= LAYOUT_WAVE_END_COLUMN))
+                WaveformID waveId = waveIDMaps.value((*iter)->name, WAVE_NONE);
+                if (waveId == WAVE_NONE && (row >= LAYOUT_MAX_WAVE_ROW_NUM || column >= LAYOUT_WAVE_END_COLUMN))
                 {
                     list.append((*iter)->name);
                 }
@@ -556,7 +539,6 @@ bool ScreenLayoutModel::setData(const QModelIndex &index, const QVariant &value,
             if (node)
             {
                 node->name = nodeName;
-                node->waveId = d_ptr->waveIDMaps.value(nodeName, WAVE_NONE); // for param node or empty node name, the id will always be None
             }
 
             QModelIndex anotherChangeIndex = index;
@@ -607,7 +589,6 @@ bool ScreenLayoutModel::setData(const QModelIndex &index, const QVariant &value,
         LayoutNode * node = d_ptr->findNode(index);
         if (node)
         {
-            node->waveId = WAVE_NONE;
             node->name = QString();
             QModelIndex anotherIndex = index;
 
@@ -650,11 +631,11 @@ QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
         if (node)
         {
             ScreenLayoutItemInfo info;
-            info.waveid = node->waveId;
+            info.waveid = d_ptr->waveIDMaps.value(node->name, WAVE_NONE);
             info.name = node->name;
-            if (node->waveId != WAVE_NONE)
+            if (info.waveid != WAVE_NONE)
             {
-                info.displayName = paramInfo.getParamWaveformName(node->waveId);
+                info.displayName = paramInfo.getParamWaveformName(info.waveid);
             }
             else
             {
