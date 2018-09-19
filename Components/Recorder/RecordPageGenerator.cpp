@@ -2113,16 +2113,7 @@ RecordPage *RecordPageGenerator::createOxyCRGGraph(const QList<TrendGraphInfo> &
     {
         axisInfo.yLabels.clear();
     }
-//    if (waveInfo.waveData.size() / waveInfo.sampleRate <= 2 * 120)
-//    {
-//        // print from OxyCRG window
-//        axisInfo.xLabels = QStringList() << "-2min" << "-90s" << "-1min" << "-30s" << "0";
-//    }
-//    else
-//    {
-        // print from the OxyCRG event
-        axisInfo.xLabels = QStringList() << "-2min" << "-1min" << "0" << "1min" << "2min";
-//    }
+    axisInfo.xLabels = QStringList() << "-2min" << "-1min" << "0" << "1min" << "2min";
     axisInfo.origin = QPointF(axisInfo.marginLeft, heightOffset + axisInfo.height);
 
     // draw axis

@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/19
+ **/
+
 #include "OxyCRGEventWaveWidget.h"
 #include "FontManager.h"
 #include "WaveformCache.h"
@@ -15,17 +25,17 @@
 #define isEqual(a, b) (qAbs((a)-(b)) < 0.000001)
 
 class OxyCRGEventWaveWidgetPrivate
-{    
+{
 public:
-    OxyCRGEventWaveWidgetPrivate()
+    OxyCRGEventWaveWidgetPrivate() :
+        startTime(-60), durationBefore(-120),
+        waveRegWidth(0), currentWaveID(WAVE_RESP),
+        singleParamHigh(0),
+        isRR(false), eventInfo(NULL), cursorTime(0)
     {
-        startTime = -60;
-        durationBefore = -120;
-        currentWaveID = WAVE_RESP;
-        isRR = false;
         reset();
     }
-    ~OxyCRGEventWaveWidgetPrivate(){}
+    ~OxyCRGEventWaveWidgetPrivate() {}
 
     void reset()
     {
@@ -58,11 +68,10 @@ public:
     EventInfoSegment *eventInfo;
     TrendConvertDesc timeDesc;
     unsigned cursorTime;
-
 };
 
 OxyCRGEventWaveWidget::OxyCRGEventWaveWidget()
-    :d_ptr(new OxyCRGEventWaveWidgetPrivate())
+    : d_ptr(new OxyCRGEventWaveWidgetPrivate())
 {
     QPalette pal = this->palette();
     pal.setBrush(QPalette::Window, Qt::black);
@@ -72,7 +81,6 @@ OxyCRGEventWaveWidget::OxyCRGEventWaveWidget()
 
 OxyCRGEventWaveWidget::~OxyCRGEventWaveWidget()
 {
-
 }
 
 void OxyCRGEventWaveWidget::setWaveWidgetCompressed(WaveformID id)
@@ -87,7 +95,8 @@ void OxyCRGEventWaveWidget::setWaveWidgetTrend1(bool isRR)
     update();
 }
 
-void OxyCRGEventWaveWidget::loadOxyCRGEventData(const QList<TrendGraphInfo> &trendInfos, const OxyCRGWaveInfo &waveInfo, EventInfoSegment *const eventInfo)
+void OxyCRGEventWaveWidget::loadOxyCRGEventData(const QList<TrendGraphInfo> &trendInfos, const OxyCRGWaveInfo &waveInfo,
+        EventInfoSegment *const eventInfo)
 {
     d_ptr->trendInfos = trendInfos;
     d_ptr->waveInfo = waveInfo;
@@ -96,12 +105,13 @@ void OxyCRGEventWaveWidget::loadOxyCRGEventData(const QList<TrendGraphInfo> &tre
     update();
 }
 
-QMap<SubParamID, QPainterPath> OxyCRGEventWaveWidget::generatorPainterPath(const QList<TrendGraphInfo> &graphInfo, QPainter &painter, int curDataIndex)
+QMap<SubParamID, QPainterPath> OxyCRGEventWaveWidget::generatorPainterPath(const QList<TrendGraphInfo> &graphInfo,
+        QPainter &painter, int curDataIndex)
 {
     QMap<SubParamID, QPainterPath> paths;
     float trendHigh = 0;
     for (int i = 0; i < graphInfo.count(); i ++)
-    {        
+    {
         TrendGraphInfo trendInfo = graphInfo.at(i);
 
         // 趋势数据
@@ -109,7 +119,7 @@ QMap<SubParamID, QPainterPath> OxyCRGEventWaveWidget::generatorPainterPath(const
         font.setPixelSize(20);
         painter.setFont(font);
         QColor color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(trendInfo.subParamID)));
-        if (color != QColor(0,0,0))
+        if (color != QColor(0, 0, 0))
         {
             painter.setPen(color);
         }
@@ -133,20 +143,21 @@ QMap<SubParamID, QPainterPath> OxyCRGEventWaveWidget::generatorPainterPath(const
         {
             trendData = trendInfo.trendData.at(curDataIndex).data;
         }
-        QRect trendRect(d_ptr->waveRegWidth + 5, trendHigh + 5, width()/4 - 10, 30);
+        QRect trendRect(d_ptr->waveRegWidth + 5, trendHigh + 5, width() / 4 - 10, 30);
         painter.drawText(trendRect, Qt::AlignLeft | Qt::AlignTop, paramInfo.getSubParamName(trendInfo.subParamID));
-        painter.drawText(trendRect, Qt::AlignRight | Qt::AlignTop, Unit::getSymbol(paramInfo.getUnitOfSubParam(trendInfo.subParamID)));
+        painter.drawText(trendRect, Qt::AlignRight | Qt::AlignTop,
+                         Unit::getSymbol(paramInfo.getUnitOfSubParam(trendInfo.subParamID)));
 
         font.setPixelSize(60);
         painter.setFont(font);
-        QRect valueRect(d_ptr->waveRegWidth + width()/4/3, trendHigh + 35, width()/3, 50);
+        QRect valueRect(d_ptr->waveRegWidth + width() / 4 / 3, trendHigh + 35, width() / 3, 50);
         if (trendData == InvData())
         {
-            painter.drawText(valueRect,Qt::AlignVCenter | Qt::AlignTop, "-.-");
+            painter.drawText(valueRect, Qt::AlignVCenter | Qt::AlignTop, "-.-");
         }
         else
         {
-            painter.drawText(valueRect,Qt::AlignVCenter | Qt::AlignTop, QString::number(trendData));
+            painter.drawText(valueRect, Qt::AlignVCenter | Qt::AlignTop, QString::number(trendData));
         }
         trendHigh += d_ptr->singleParamHigh;
         if (!d_ptr->isRR && trendInfo.subParamID == SUB_PARAM_RR_BR)
@@ -164,7 +175,7 @@ QMap<SubParamID, QPainterPath> OxyCRGEventWaveWidget::generatorPainterPath(const
         ParamRulerConfig config = alarmConfig.getParamRulerConfig(trendInfo.subParamID, unitType);
         waveDesc.max = config.upRuler;
         waveDesc.min = config.downRuler;
-        switch(trendInfo.subParamID)
+        switch (trendInfo.subParamID)
         {
         case SUB_PARAM_HR_PR:
             waveDesc.start = d_ptr->singleParamHigh / 6;
@@ -211,7 +222,7 @@ QMap<SubParamID, QPainterPath> OxyCRGEventWaveWidget::generatorPainterPath(const
                 if (!isEqual(lastPoint.y(), y))
                 {
                     path.lineTo(lastPoint);
-                    path.lineTo(x,y);
+                    path.lineTo(x, y);
                 }
             }
             lastPoint.rx() = x;
@@ -233,8 +244,8 @@ QMap<SubParamID, QPainterPath> OxyCRGEventWaveWidget::generatorPainterPath(const
             path.lineTo(d_ptr->timeDesc.start / 4, waveDesc.end);
             path.lineTo(d_ptr->timeDesc.start / 4 + 5, waveDesc.end);
 
-            path.addText(d_ptr->timeDesc.start /4 + 7, waveDesc.start, font, QString::number(waveDesc.max));
-            path.addText(d_ptr->timeDesc.start /4 + 7, waveDesc.end, font, QString::number(waveDesc.min));
+            path.addText(d_ptr->timeDesc.start / 4 + 7, waveDesc.start, font, QString::number(waveDesc.max));
+            path.addText(d_ptr->timeDesc.start / 4 + 7, waveDesc.end, font, QString::number(waveDesc.min));
         }
         else
         {
@@ -243,11 +254,11 @@ QMap<SubParamID, QPainterPath> OxyCRGEventWaveWidget::generatorPainterPath(const
             path.lineTo(d_ptr->waveRegWidth - (d_ptr->timeDesc.start / 4), waveDesc.end);
             path.lineTo(d_ptr->waveRegWidth - (d_ptr->timeDesc.start / 4) - 5, waveDesc.end);
 
-            path.addText(d_ptr->waveRegWidth - (d_ptr->timeDesc.start / 4) - 30, waveDesc.start, font, QString::number(waveDesc.max));
+            path.addText(d_ptr->waveRegWidth - (d_ptr->timeDesc.start / 4) - 30, waveDesc.start, font,
+                         QString::number(waveDesc.max));
             path.addText(d_ptr->waveRegWidth - (d_ptr->timeDesc.start / 4) - 30, waveDesc.end, font, QString::number(waveDesc.min));
         }
         paths.insert(trendInfo.subParamID, path);
-
     }
     return paths;
 }
@@ -261,9 +272,10 @@ QPainterPath OxyCRGEventWaveWidget::generatorWaveformPath(const OxyCRGWaveInfo &
     waveDesc.endY = waveDesc.startY + d_ptr->singleParamHigh / 3 * 2;
     waveDesc.waveID = waveInfo.id;
     waveformCache.getRange(waveDesc.waveID, waveDesc.waveRangeMin, waveDesc.waveRangeMax);
+    int pixelPoint = d_ptr->timeDesc.end - d_ptr->timeDesc.start;
     if (waveInfo.sampleRate)
     {
-        waveDesc.offsetX = (double)d_ptr->waveRegWidth / 4 / 30 / waveInfo.sampleRate;
+        waveDesc.offsetX = static_cast<double>(pixelPoint / 4 / 30 / waveInfo.sampleRate);
     }
     else
     {
@@ -272,7 +284,7 @@ QPainterPath OxyCRGEventWaveWidget::generatorWaveformPath(const OxyCRGWaveInfo &
 
     bool start = true;
     int startIndex = (d_ptr->startTime - d_ptr->durationBefore) * waveInfo.sampleRate;
-    for (int i = startIndex; (x2 - d_ptr->timeDesc.start) < (d_ptr->timeDesc.end - d_ptr->timeDesc.start); i ++)
+    for (int i = startIndex; (x2 - d_ptr->timeDesc.start) < pixelPoint; i ++)
     {
         short wave = waveInfo.waveData.at(i);
         double waveValue = _mapWaveValue(waveDesc, wave);
@@ -305,7 +317,8 @@ QPainterPath OxyCRGEventWaveWidget::generatorWaveformPath(const OxyCRGWaveInfo &
 
     QFont font;
     font.setPixelSize(20);
-    wavePath.addText(d_ptr->timeDesc.start / 4, (waveDesc.startY + waveDesc.endY) / 2, font, paramInfo.getParamName(paramInfo.getParamID(waveDesc.waveID)));
+    wavePath.addText(d_ptr->timeDesc.start / 4, (waveDesc.startY + waveDesc.endY) / 2, font,
+                     paramInfo.getParamName(paramInfo.getParamID(waveDesc.waveID)));
 
     font.setPixelSize(15);
     painter.setFont(font);
@@ -324,7 +337,6 @@ QPainterPath OxyCRGEventWaveWidget::generatorWaveformPath(const OxyCRGWaveInfo &
     }
     painter.setPen(QPen(color, 2, Qt::SolidLine));
     return wavePath;
-
 }
 
 void OxyCRGEventWaveWidget::leftMoveCursor()
@@ -333,7 +345,7 @@ void OxyCRGEventWaveWidget::leftMoveCursor()
     {
         return;
     }
-    d_ptr->cursorTime --;
+    d_ptr->cursorTime--;
     update();
 }
 
@@ -343,7 +355,7 @@ void OxyCRGEventWaveWidget::rightMoveCursor()
     {
         return;
     }
-    d_ptr->cursorTime ++;
+    d_ptr->cursorTime++;
     update();
 }
 
@@ -373,7 +385,7 @@ void OxyCRGEventWaveWidget::paintEvent(QPaintEvent *e)
 {
     IWidget::paintEvent(e);
 
-    d_ptr->waveRegWidth = width()/4*3;
+    d_ptr->waveRegWidth = width() / 4 * 3;
     d_ptr->timeDesc.start = d_ptr->waveRegWidth / 10;
     d_ptr->timeDesc.end = d_ptr->waveRegWidth - d_ptr->timeDesc.start;
     d_ptr->singleParamHigh = (height() - WAVEFORM_SCALE_HIGH) / 3;
@@ -388,14 +400,14 @@ void OxyCRGEventWaveWidget::paintEvent(QPaintEvent *e)
     painter.drawLine(0, d_ptr->singleParamHigh, width(), d_ptr->singleParamHigh);
     painter.drawLine(0, d_ptr->singleParamHigh * 2, width(), d_ptr->singleParamHigh * 2);
     painter.drawLine(0, height() - WAVEFORM_SCALE_HIGH, width(), height() - WAVEFORM_SCALE_HIGH);
-    painter.drawLine(width()/4*3, 0, width()/4*3, d_ptr->singleParamHigh * 3);
+    painter.drawLine(width() / 4 * 3, 0, width() / 4 * 3, d_ptr->singleParamHigh * 3);
 
     // 横坐标标尺刻度
-    float t;
     QString scaleStr;
-    double singleWidth = (double)((d_ptr->timeDesc.end - d_ptr->timeDesc.start) / 4.0);
+    double singleWidth = static_cast<double>(((d_ptr->timeDesc.end - d_ptr->timeDesc.start) / 4.0));
     for (int i = 0; i < SCALELINE_NUM; i ++)
     {
+        float t;
         double scalePos = d_ptr->timeDesc.start + singleWidth * i;
         painter.drawLine(scalePos, height() - WAVEFORM_SCALE_HIGH,
                          scalePos, height() - WAVEFORM_SCALE_HIGH - 5);
@@ -408,8 +420,8 @@ void OxyCRGEventWaveWidget::paintEvent(QPaintEvent *e)
         {
             scaleStr = QString::number(t / 60) + "min";
         }
-        painter.drawText(d_ptr->timeDesc.start + (d_ptr->timeDesc.end - d_ptr->timeDesc.start) / 4 * i - 10, height() - WAVEFORM_SCALE_HIGH + 20, scaleStr);
-
+        painter.drawText(d_ptr->timeDesc.start + (d_ptr->timeDesc.end - d_ptr->timeDesc.start) / 4 * i - 10,
+                         height() - WAVEFORM_SCALE_HIGH + 20, scaleStr);
     }
 
     // 游标线
@@ -424,9 +436,9 @@ void OxyCRGEventWaveWidget::paintEvent(QPaintEvent *e)
     int lowPos = 0;
     int highPos = d_ptr->trendInfos.at(0).trendData.count() - 1;
     int dataIndex = InvData();
-    while(lowPos <= highPos)
+    while (lowPos <= highPos)
     {
-        int midPos = (lowPos + highPos)/2;
+        int midPos = (lowPos + highPos) / 2;
         unsigned t = d_ptr->trendInfos.at(0).trendData.at(midPos).timestamp;
         if (d_ptr->cursorTime < t)
         {
@@ -450,7 +462,7 @@ void OxyCRGEventWaveWidget::paintEvent(QPaintEvent *e)
     for (iter = paths.constBegin(); iter != paths.constEnd(); iter ++)
     {
         color = colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(iter.key())));
-        if (color != QColor(0,0,0))
+        if (color != QColor(0, 0, 0))
         {
             painter.setPen(color);
         }
@@ -478,7 +490,6 @@ void OxyCRGEventWaveWidget::paintEvent(QPaintEvent *e)
     painter.save();
     painter.drawPath(wavePath);
     painter.restore();
-
 }
 
 void OxyCRGEventWaveWidget::mousePressEvent(QMouseEvent *e)
@@ -491,7 +502,6 @@ void OxyCRGEventWaveWidget::mousePressEvent(QMouseEvent *e)
         d_ptr->cursorTime = _getCursorTime(d_ptr->timeDesc, pos);
         update();
     }
-
 }
 
 double OxyCRGEventWaveWidget::_mapWaveValue(WaveformDesc &waveDesc, int wave)
