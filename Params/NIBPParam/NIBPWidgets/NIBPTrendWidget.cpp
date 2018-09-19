@@ -250,6 +250,7 @@ void NIBPTrendWidget::showValue(void)
         showNormalStatus(_sysValue, psrc);
         showNormalStatus(_diaValue, psrc);
         showNormalStatus(_mapValue, psrc);
+        showNormalStatus(_nibpValue, psrc);
     }
     _sysValue->setText(_sysString);
     _diaValue->setText(_diaString);
