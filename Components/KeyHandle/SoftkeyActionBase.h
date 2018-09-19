@@ -131,6 +131,13 @@ public:
     // 获取动作描述句柄。
     virtual KeyActionDesc *getActionDesc(int index);
 
+    /**
+     * @brief getBaseActionDesc get the base key action description
+     * @param baseType the base key action
+     * @return  the key action
+     */
+    static KeyActionDesc *getBaseActionDesc(SoftBaseKeyType baseType);
+
     // 获取类型。
     SoftKeyActionType getType(void);
 

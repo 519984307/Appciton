@@ -134,7 +134,7 @@ static void _initComponents(void)
     keyActionManager.registerKetAction(new NormalModeKeyAction());
 
     // Softkeys
-    softkeyManager.construction();
+    softkeyManager.getInstance();
     windowManager.addWidget(&softkeyManager);
     layoutManager.addLayoutWidget(&softkeyManager);
 
