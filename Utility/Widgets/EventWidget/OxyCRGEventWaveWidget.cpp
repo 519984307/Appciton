@@ -272,10 +272,10 @@ QPainterPath OxyCRGEventWaveWidget::generatorWaveformPath(const OxyCRGWaveInfo &
     waveDesc.endY = waveDesc.startY + d_ptr->singleParamHigh / 3 * 2;
     waveDesc.waveID = waveInfo.id;
     waveformCache.getRange(waveDesc.waveID, waveDesc.waveRangeMin, waveDesc.waveRangeMax);
-    int pixelPoint = d_ptr->timeDesc.end - d_ptr->timeDesc.start;
+    double pixelPoint = d_ptr->timeDesc.end - d_ptr->timeDesc.start;
     if (waveInfo.sampleRate)
     {
-        waveDesc.offsetX = static_cast<double>(pixelPoint / 4 / 30 / waveInfo.sampleRate);
+        waveDesc.offsetX = pixelPoint / 4 / 30 / waveInfo.sampleRate;
     }
     else
     {
@@ -404,7 +404,7 @@ void OxyCRGEventWaveWidget::paintEvent(QPaintEvent *e)
 
     // 横坐标标尺刻度
     QString scaleStr;
-    double singleWidth = static_cast<double>(((d_ptr->timeDesc.end - d_ptr->timeDesc.start) / 4.0));
+    double singleWidth = static_cast<double>(d_ptr->timeDesc.end - d_ptr->timeDesc.start) / 4.0;
     for (int i = 0; i < SCALELINE_NUM; i ++)
     {
         float t;
