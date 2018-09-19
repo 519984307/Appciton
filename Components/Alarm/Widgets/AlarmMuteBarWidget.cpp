@@ -30,7 +30,7 @@ void AlarmMuteBarWidget::paintEvent(QPaintEvent *e)
     // 显示正常报警。
     if (_audioStatus == ALARM_AUDIO_NORMAL)
     {
-        painter.fillRect(rect(), topBarWidget.getTopBarBlackGroundColor());
+        // painter.fillRect(rect(), topBarWidget.getTopBarBlackGroundColor());
         return;
     }
 

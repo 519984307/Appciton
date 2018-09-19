@@ -32,16 +32,23 @@ public:
      */
     void reloadLayoutConfig();
 
+
     /**
-     * @brief getContentLayout get the content's layout
+     * @brief mainLayout get the application's main layout
      * @return
      */
-    QLayout *getContentLayout();
+    QLayout *mainLayout();
+
+    /**
+     * @brief getContentView the contentView
+     * @return the Contenet View widget
+     */
+    IWidget *getContentView() const;
 
     /**
      * @brief addLayoutWidget add widget that need layout
      * @param w the widget
-     * @param nodeType the correspond param node type in the layout system
+     * @param nodeType the correspond node type in the content layout system
      */
     void addLayoutWidget(IWidget *w, LayoutNodeType nodeType = LAYOUT_NODE_NONE);
 
@@ -71,4 +78,4 @@ private:
     LayoutManager();
 };
 
-#define layoutManger (LayoutManager::getInstance())
+#define layoutManager (LayoutManager::getInstance())

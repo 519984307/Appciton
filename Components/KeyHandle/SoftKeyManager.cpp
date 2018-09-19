@@ -282,10 +282,10 @@ void SoftKeyManager::_layoutKeys(void)
     if (_currentPage)
     {
         startIndex = startIndex +
-                (SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR - SOFTKEY_HEAD_NR)* _currentPage;
+                     (SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR - SOFTKEY_HEAD_NR) * _currentPage;
     }
     for (int i = SOFTKEY_HEAD_NR;
-         i < SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR; i++)
+            i < SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR; i++)
     {
         KeyActionDesc *desc = _currentAction->getActionDesc(startIndex++);
         if (desc != NULL)
@@ -317,6 +317,10 @@ void SoftKeyManager::paintEvent(QPaintEvent *e)
 
     QPainter painter(this);
     painter.fillRect(this->rect(), SoftkeyWidget::backgroundColor());
+}
+
+void SoftKeyManager::resizeEvent(QResizeEvent *e)
+{
 }
 
 /***************************************************************************************************
@@ -385,12 +389,11 @@ void SoftKeyManager::setContent(SoftKeyActionType type, bool reload)
 /***************************************************************************************************
  * 构造。
  **************************************************************************************************/
-SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager")
+SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager"), _curSoftKeyType(SOFTKEY_ACTION_NONE)
 {
     _currentAction = NULL;
     _totalPages = 0;
     _currentPage = 0;
-    _curSoftKeyType = SOFTKEY_ACTION_NONE;
 
     setFocusPolicy(Qt::NoFocus);
     QHBoxLayout *hbox = new QHBoxLayout();

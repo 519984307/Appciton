@@ -25,8 +25,10 @@ class LayoutManagerPrivate
 {
 public:
     LayoutManagerPrivate()
-        : contentLayout(new QHBoxLayout()),
-          curUserFace(UFACE_MONITOR_STANDARD)
+        : contentView(new IWidget("ContentView")),
+          contentLayout(new QHBoxLayout(contentView)),
+          curUserFace(UFACE_MONITOR_STANDARD),
+          mainLayout(NULL)
     {
         contentLayout->setSpacing(0);
         contentLayout->setContentsMargins(0, 0, 0, 0);
@@ -46,6 +48,27 @@ public:
         return w;
     }
 
+
+    /**
+     * @brief parseMargin parse the margin from a string, support string format as follow:
+     *        "1": set all the margin to 1
+     *        "1,2,3,4": left:1, top: 2, right: 3, bottom: 4
+     * @param marginStr
+     * @return
+     */
+    QMargins parseMargin(const QString& marginStr);
+
+    /**
+     * @brief doParseMainLayout parse the main layout
+     * @note the support attribute as follow:
+     * "direction": the box layout direction, the a layout item has this attribute, it's means it's a box layout
+     * "margin": the layout's content margin
+     * "height": the widget's fix height, if the item is a layout, we will create a container widget to hold the layout and set fix height
+     * "width: the widget's fix widget, if the item is a layout, we will create a container widget to hold the layout and set fix height
+     * "stretch" the stretch value
+     */
+    void doParseMainLayout(const QVariantMap &map, QBoxLayout *parentLayout);
+
     /**
      * @brief doLayout do the layout stuff
      */
@@ -63,6 +86,7 @@ public:
     void clearLayout(QLayout *layout);
 
     QVariantMap layoutMap;
+    IWidget *contentView;
     QHBoxLayout *contentLayout;
     QMap<QString, IWidget *> layoutWidgets;
     UserFaceType curUserFace;
@@ -71,9 +95,144 @@ public:
 
     QMap<QString, QString> layoutNodeMap;
 
+    QBoxLayout *mainLayout;
+
 private:
     LayoutManagerPrivate(const LayoutManagerPrivate &);
 };
+
+QMargins LayoutManagerPrivate::parseMargin(const QString &marginStr)
+{
+    if (marginStr.isEmpty())
+    {
+        return QMargins();
+    }
+
+    bool ok;
+    // parse the margin string
+    if (marginStr.contains(','))
+    {
+        QStringList list = marginStr.split(',');
+        if (list.count() == 4)
+        {
+            int okCount = 0;
+            int left = list[0].toInt(&ok);
+            okCount += ok;
+            int top = list[1].toInt(&ok);
+            okCount += ok;
+            int right = list[2].toInt(&ok);
+            okCount += ok;
+            int bottom = list[3].toInt(&ok);
+            okCount += ok;
+            if (okCount == 4)
+            {
+                return QMargins(left, top, right, bottom);
+            }
+        }
+    }
+    else
+    {
+        int m = marginStr.toInt(&ok);
+        if (ok)
+        {
+            return QMargins(m, m, m, m);
+        }
+    }
+
+    qDebug() << Q_FUNC_INFO << "Invalid margin string " << marginStr;
+    return QMargins();
+}
+
+void LayoutManagerPrivate::doParseMainLayout(const QVariantMap &map, QBoxLayout *parentLayout)
+{
+    QVariantList layoutItemList = map["LayoutItem"].toList();
+    if (layoutItemList.isEmpty())
+    {
+        // might has only item
+        QVariant item = map["LayoutItem"];
+        if (item.isValid())
+        {
+            layoutItemList.append(item);
+        }
+    }
+    QVariantList::ConstIterator iter = layoutItemList.constBegin();
+
+    for (; iter != layoutItemList.constEnd(); ++iter)
+    {
+        QVariantMap itemMap = iter->toMap();
+        if (itemMap.isEmpty())
+        {
+            continue;
+        }
+
+        QString direction = itemMap["@direction"].toString();
+        int height = itemMap["@height"].toInt();
+        int width = itemMap["@width"].toInt();
+        int stretch = itemMap["@stretch"].toInt();
+
+        if (!direction.isEmpty())
+        {
+            // need to create a layout
+            QBoxLayout *subLayout;
+            if (direction == "horizontal")
+            {
+                subLayout = new QHBoxLayout();
+            }
+            else
+            {
+                subLayout = new QVBoxLayout();
+            }
+
+            QWidget *w = createContainter();
+            QString bgColor = itemMap["@bgcolor"].toString();
+            if (!bgColor.isEmpty())
+            {
+                w->setAutoFillBackground(true);
+                w->setAttribute(Qt::WA_NoSystemBackground, false);
+                QPalette pal = w->palette();
+                pal.setBrush(QPalette::Window, QColor(bgColor));
+                w->setPalette(pal);
+            }
+            w->setLayout(subLayout);
+            subLayout->setContentsMargins(parseMargin(itemMap["@margin"].toString()));
+            subLayout->setSpacing(itemMap["@spacing"].toInt());
+
+            if (height)
+            {
+                w->setFixedHeight(height);
+            }
+
+            if (width)
+            {
+                w->setFixedWidth(width);
+            }
+
+            parentLayout->addWidget(w, stretch);
+
+            doParseMainLayout(itemMap, subLayout);
+        }
+        else
+        {
+            // just add widget
+            IWidget *w = layoutWidgets.value(itemMap["@text"].toString(), NULL);
+            if (w != NULL)
+            {
+                if (height)
+                {
+                    w->setFixedHeight(height);
+                }
+
+                if (width)
+                {
+                    w->setFixedWidth(width);
+                }
+
+                parentLayout->addWidget(w, stretch);
+                w->setVisible(true);
+            }
+        }
+    }
+}
 
 void LayoutManagerPrivate::doLayout()
 {
@@ -196,12 +355,37 @@ LayoutManager::~LayoutManager()
 
 void LayoutManager::reloadLayoutConfig()
 {
-    d_ptr->layoutMap = systemConfig.getConfig("PrimaryCfg|UILayout|ScreenLayout|Normal");
+    d_ptr->layoutMap = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|Normal");
 }
 
-QLayout *LayoutManager::getContentLayout()
+QLayout *LayoutManager::mainLayout()
 {
-    return d_ptr->contentLayout;
+    if (!d_ptr->mainLayout)
+    {
+        // start parse the main layout
+        QVariantMap mainLayout = systemConfig.getConfig("PrimaryCfg|UILayout|MainLayout");
+        if (mainLayout["@direction"] == "horizontal")
+        {
+            d_ptr->mainLayout = new QHBoxLayout();
+        }
+        else
+        {
+            d_ptr->mainLayout = new QVBoxLayout();
+        }
+
+        QString marginStr = mainLayout["@margin"].toString();
+        d_ptr->mainLayout->setContentsMargins(d_ptr->parseMargin(marginStr));
+        d_ptr->mainLayout->setSpacing(mainLayout["@spacing"].toInt());
+
+        d_ptr->doParseMainLayout(mainLayout, d_ptr->mainLayout);
+    }
+
+    return d_ptr->mainLayout;
+}
+
+IWidget *LayoutManager::getContentView() const
+{
+    return d_ptr->contentView;
 }
 
 void LayoutManager::addLayoutWidget(IWidget *w, LayoutNodeType nodeType)
@@ -330,6 +514,7 @@ void LayoutManager::updateLayout()
 LayoutManager::LayoutManager()
     :d_ptr(new LayoutManagerPrivate())
 {
-    // TODO: load the store uface info
     reloadLayoutConfig();
+
+    addLayoutWidget(d_ptr->contentView);
 }

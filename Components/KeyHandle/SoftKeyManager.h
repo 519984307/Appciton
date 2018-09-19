@@ -71,6 +71,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *e);
+    void resizeEvent(QResizeEvent *e);
 
 private slots:
     void _clickKey(IWidget *w);

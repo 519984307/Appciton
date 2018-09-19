@@ -752,15 +752,6 @@ void IBPParam::setWaveWidget(IBPWaveWidget *waveWidget, IBPSignalInput IBP)
     _setWaveformSpeed(getSweepSpeed());
 }
 
-/**************************************************************************************************
- * 设置提示信息对象。
- *************************************************************************************************/
-void IBPParam::setInfobarWidget(PromptInfoBarWidget *infoBarWidget)
-{
-    _infoBarWidget = infoBarWidget;
-}
-
-
 IBPScaleInfo IBPParam::getIBPScale(IBPPressureName name)
 {
     // TODO implement this function
@@ -1102,7 +1093,6 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
         return;
     }
     ibpMenu.displayZeroRev(info);
-    _infoBarWidget->display(info);
 }
 
 /**************************************************************************************************

@@ -372,6 +372,6 @@ SoftkeyWidget::SoftkeyWidget(QWidget *parent)
       _borderColor(QColor(100, 100, 100)),
       _pressed(false),
       _enableBorder(false),
-      _isPixmapValid(true)
+      _isPixmapValid(false)
 {
 }

@@ -704,6 +704,7 @@ void WindowManager::_fixedLayout(void)
 //    }
 //    _topBarRow->addLayout(hLayoutTopBarRow);
     _topBarRow->addWidget(&topBarWidget);
+    topBarWidget.setVisible(true);
 
     // 软按键区。
     QHBoxLayout *softkeyLayout = new QHBoxLayout;
@@ -2275,6 +2276,7 @@ WindowManager::WindowManager() : QWidget(NULL, Qt::FramelessWindowHint), d_ptr(n
 WindowManager::WindowManager() : QWidget(), d_ptr(new WindowManagerPrivate(this))
 #endif
 {
+    _volatileLayout = NULL;
     _doesFixedLayout = false;
     _currenUserFaceType = UFACE_MONITOR_UNKNOW;
 
@@ -2284,21 +2286,23 @@ WindowManager::WindowManager() : QWidget(), d_ptr(new WindowManagerPrivate(this)
     p.setColor(QPalette::Foreground, Qt::white);
     setPalette(p);
 
-    //波形区与趋势区的比列
-    QStringList factors;
-    factors = systemConfig.getChildNodeNameList("PrimaryCfg|UILayout|WidgetsOrder|ScreenHLayoutStretch");
-    if (factors.size() < 2)
-    {
-        debug("size of ScreenHLayoutStretch is wrong \n");
-        return;
-    }
-    int index = 1;
-    systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenHLayoutStretch|volatileLayout", index);
-    _volatileLayoutStretch = index;
-    systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenHLayoutStretch|trendRowLayout", index);
-    _trendRowLayoutStretch = index;
+#if 0
+     //波形区与趋势区的比列
+     QStringList factors;
+     factors = systemConfig.getChildNodeNameList("PrimaryCfg|UILayout|WidgetsOrder|ScreenHLayoutStretch");
+     if (factors.size() < 2)
+     {
+         debug("size of ScreenHLayoutStretch is wrong \n");
+         return;
+     }
+     int index = 1;
+     systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenHLayoutStretch|volatileLayout", index);
+     _volatileLayoutStretch = index;
+     systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenHLayoutStretch|trendRowLayout", index);
+     _trendRowLayoutStretch = index;
 
-    _newLayoutStyle();
+     _newLayoutStyle();
+#endif
     setVisible(true);
 
     d_ptr->timer = new QTimer(this);
@@ -2414,10 +2418,14 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
     connect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)), Qt::DirectConnection);
 
     // move the proper position
-    QRect r = _volatileLayout->geometry();
+    QRect r;
+    if (_volatileLayout)
+    {
+        r =  _volatileLayout->geometry();
+    }
     if (r.width() < w->width())         // 如果波形区无完全显示窗口，则居中处理
     {
-        QRect mainR = _mainLayout->geometry();
+        QRect mainR = this->geometry();
         QPoint globalCenter = mapToGlobal(mainR.center());
         mainR.moveTo(0, 0);
         w->move(globalCenter.x()-w->width()/2 , globalCenter.y()-w->height()/2);
