@@ -34,32 +34,46 @@ void TEMPTrendWidget::_releaseHandle(IWidget *iWidget)
 /**************************************************************************************************
  * 报警指示处理。
  *************************************************************************************************/
-void TEMPTrendWidget::_alarmIndicate(bool isAlarm)
+void TEMPTrendWidget::_alarmIndicate(bool isAlarms, tempGrp grp)
 {
-    QPalette p = palette();
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
     psrc = normalPalette(psrc);
-    if (isAlarm)
+    QLabel *value = NULL;
+    QLabel *name = NULL;
+    switch (grp)
     {
-        showAlarmStatus(_t1Value, psrc);
-        showAlarmStatus(_t2Value, psrc);
-        showAlarmStatus(_tdValue, psrc);
-        showAlarmStatus(_t1Name, psrc);
-        showAlarmStatus(_t2Name, psrc);
-        showAlarmStatus(_tdName, psrc);
+    case TEMP_GRP_T1:
+        value = _t1Value;
+        name = _t1Name;
+        break;
+    case TEMP_GRP_T2:
+        value = _t2Value;
+        name = _t2Name;
+        break;
+    case TEMP_GRP_TD:
+        value = _tdValue;
+        name = _tdName;
+        break;
+    default:
+        value = NULL;
+        name = NULL;
+        break;
+    }
+    if (value == NULL || name == NULL)
+    {
+        return;
+    }
+    if (isAlarms)
+    {
+        showAlarmStatus(value, psrc);
+        showAlarmStatus(name, psrc);
     }
     else
     {
         setPalette(psrc);
-        showNormalStatus(_t1Value, psrc);
-        showNormalStatus(_t2Value, psrc);
-        showNormalStatus(_tdValue, psrc);
-        showNormalStatus(_t1Name, psrc);
-        showNormalStatus(_t2Name, psrc);
-        showNormalStatus(_tdName, psrc);
+        showNormalStatus(value, psrc);
+        showNormalStatus(name, psrc);
     }
-
-    updateAlarm(isAlarm);
 }
 
 /**************************************************************************************************
@@ -231,17 +245,17 @@ void TEMPTrendWidget::showValue(void)
 {
     if (_t1Str != InvStr())
     {
-        _alarmIndicate(_t1Alarm);
+        _alarmIndicate(_t1Alarm, TEMP_GRP_T1);
         _t1Value->setText(_t1Str);
     }
     if (_t2Str != InvStr())
     {
-        _alarmIndicate(_t2Alarm);
+        _alarmIndicate(_t1Alarm, TEMP_GRP_T2);
         _t2Value->setText(_t2Str);
     }
     if (_tdStr != InvStr())
     {
-        _alarmIndicate(_tdAlarm);
+        _alarmIndicate(_t1Alarm, TEMP_GRP_TD);
         _tdValue->setText(_tdStr);
     }
 }

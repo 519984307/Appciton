@@ -44,6 +44,8 @@ protected:
     // 焦点进入
     virtual void focusInEvent(QFocusEvent */*e*/);
 
+    virtual void paintEvent(QPaintEvent *e);
+
 private slots:
     void _releaseHandle(IWidget *);
     void _getItemIndex(int);

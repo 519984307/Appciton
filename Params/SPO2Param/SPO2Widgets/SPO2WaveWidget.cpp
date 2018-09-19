@@ -163,6 +163,13 @@ void SPO2WaveWidget::focusInEvent(QFocusEvent *e)
     _name->setFocus();
 }
 
+void SPO2WaveWidget::paintEvent(QPaintEvent *e)
+{
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
+    setPalette(palette);
+    WaveWidget::paintEvent(e);
+}
+
 /**************************************************************************************************
  * 载入配置。
  *************************************************************************************************/

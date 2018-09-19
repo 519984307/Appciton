@@ -38,6 +38,7 @@ protected:
     // 窗体大小调整事件
     virtual void resizeEvent(QResizeEvent *e);
     virtual void focusInEvent(QFocusEvent */*e*/);
+    virtual void paintEvent(QPaintEvent *e);
 
 private slots:
     void _releaseHandle(IWidget *);
