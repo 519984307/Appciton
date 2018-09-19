@@ -94,6 +94,11 @@ QFont RecordPageGenerator::font()
     return fontManager.recordFont(24);
 }
 
+void RecordPageGenerator::setPrintTime(PrintTime timeSec)
+{
+   Q_UNUSED(timeSec)
+}
+
 RecordPage *RecordPageGenerator::createPage()
 {
     RecordPage *p = new RecordPage(DEFAULT_PAGE_WIDTH);

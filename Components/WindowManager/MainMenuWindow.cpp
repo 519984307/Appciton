@@ -29,6 +29,7 @@
 #include "DataReviewMenuContent.h"
 #include "SystemMaintenance.h"
 #include "CalculateMenuContent.h"
+#include "PrintSettingMenuContent.h"
 
 MainMenuWindow *MainMenuWindow::getInstance()
 {
@@ -76,6 +77,7 @@ MainMenuWindow *MainMenuWindow::getInstance()
         instance->addMenuContent(new LoadConfigMenuContent);
         instance->addMenuContent(new DataReviewMenuContent);
         instance->addMenuContent(new CalculateMenuContent);
+        instance->addMenuContent(new PrintSettingMenuContent);
         instance->addMenuContent(new SystemMaintenance);
         instance->addMenuContent(new SystemMenuContent);
         instance->setWindowTitle(trs("ECGMenuDesc"));
