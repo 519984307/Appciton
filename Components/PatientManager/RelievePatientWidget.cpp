@@ -20,6 +20,7 @@
 #include "LanguageManager.h"
 #include "DataStorageDirManager.h"
 #include "PatientInfoWindow.h"
+#include "LayoutManager.h"
 
 RelievePatientWidget *RelievePatientWidget::_selfObj = NULL;
 
@@ -86,7 +87,7 @@ void RelievePatientWidget::showEvent(QShowEvent *e)
     PopupWidget::showEvent(e);
 
     // 居中显示。
-    QRect r = windowManager.getMenuArea();
+    QRect r = layoutManager.getMenuArea();
 //    move(r.x() + (r.width() - width()) / 2, r.y() + (2 * r.height() / 3 - height()));
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 }

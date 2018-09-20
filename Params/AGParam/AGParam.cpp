@@ -12,9 +12,9 @@
 #include "AGWaveWidget.h"
 #include "AGTrendWidget.h"
 #include "AGAlarm.h"
-#include "WindowManager.h"
 #include "WaveformCache.h"
 #include "IConfig.h"
+#include "LayoutManager.h"
 
 #define DEMO_DATA_NUM       180
 
@@ -846,18 +846,11 @@ void AGParam::_setWaveformSpeed(AGSweepSpeed speed)
         break;
     }
 
-    QStringList currentWaveforms;
-    windowManager.getCurrentWaveforms(currentWaveforms);
-    int i = 0;
-    int size = currentWaveforms.size();
-    for (; i < size; i++)
+    QStringList currentWaveforms = layoutManager.getDisplayedWaveforms();
+    if (currentWaveforms.contains(_waveWidgetAA1->name()) || currentWaveforms.contains(_waveWidgetAA2->name())
+            || currentWaveforms.contains(_waveWidgetN2O->name()) || currentWaveforms.contains(_waveWidgetO2->name()))
     {
-        if (currentWaveforms[i] == "N2OWaveWidget" || currentWaveforms[i] == "AA1WaveWidget" ||
-                currentWaveforms[i] == "AA2WaveWidget" || currentWaveforms[i] == "O2WaveWidget")
-        {
-            windowManager.resetWave();
-            break;
-        }
+        layoutManager.resetWave();
     }
 }
 

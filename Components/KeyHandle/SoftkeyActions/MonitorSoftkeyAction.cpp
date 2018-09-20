@@ -21,20 +21,6 @@
  **************************************************************************************************/
 static KeyActionDesc _monitorKeys[] =
 {
-//    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_ECG_LEAD_CHANGE),
-//    KeyActionDesc("", "DiagECG.png", MonitorSoftkeyAction::diagECG), //12L
-//    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_CODE_MARKER),
-//    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_CO2_ONOFF),
-//    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NEXT_PAGE),
-
-//    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_ALARM_LIMIT),
-//    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_PAT_INFO),
-//    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_RESCUE_DATA),
-//    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NR, Qt::black, Qt::black, Qt::black, false),
-//    KeyActionDesc("", "", NULL, SOFT_BASE_KEY_NEXT_PAGE),
-
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_MAIN_SETUP),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PREVIOUS_PAGE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_INFO),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_NEW),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_ECG_LEAD_MODE),
@@ -56,13 +42,6 @@ static KeyActionDesc _monitorKeys[] =
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SCREEN_BRIGHTNESS),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NIGHT_MODE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PRINTER_SET),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NEXT_PAGE)
 };
 
 /***************************************************************************************************

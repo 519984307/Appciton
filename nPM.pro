@@ -164,7 +164,6 @@ SOURCES +=                                                                      
     Utility/Widgets/Trendform/ShortTrendManager.cpp                             \
     Utility/Widgets/TrendWidget/TrendWidget.cpp                                 \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.cpp                            \
-    Utility/Widgets/TrendWidget/TrendWidgetSelectMenu.cpp                       \
     Utility/Widgets/Waveform/BarGraphScanMode.cpp                               \
     Utility/Widgets/Waveform/FreezeWaveReviewMode.cpp                           \
     Utility/Widgets/Waveform/FreezeTimeIndicator.cpp                            \
@@ -488,7 +487,6 @@ SOURCES +=                                                                      
     Components/ConfigManager/LoadConfigMenuContent.cpp                          \
     Components/ConfigManager/UnitSetupMenuContent.cpp                           \
     Components/Freeze/FreezeManager.cpp                                         \
-    Components/Freeze/FreezeWidget.cpp                                          \
     Components/Freeze/FreezeWindow.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
 #################################################################################
@@ -715,7 +713,6 @@ HEADERS +=                                                                      
     Utility/Widgets/Trendform/ShortTrendWidgetSelectMenu.h                      \
     Utility/Widgets/Trendform/ShortTrendManager.h                               \
     Utility/Widgets/TrendWidget/TrendWidget.h                                   \
-    Utility/Widgets/TrendWidget/TrendWidgetSelectMenu.h                         \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.h                              \
     Utility/Widgets/Waveform/BarGraphScanMode.h                                 \
     Utility/Widgets/Waveform/FreezeWaveReviewMode.h                             \
@@ -1066,7 +1063,6 @@ HEADERS +=                                                                      
     Components/ConfigManager/LoadConfigMenuContent.h                            \
     Components/ConfigManager/UnitSetupMenuContent.h                             \
     Components/Freeze/FreezeManager.h                                           \
-    Components/Freeze/FreezeWidget.h                                            \
     Components/Freeze/FreezeWindow.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \
 #################################################################################

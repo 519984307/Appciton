@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/20
+ **/
+
 #include "FreezeWaveReviewMode.h"
 #include "WaveDefine.h"
 #include "WaveWidget.h"
@@ -5,18 +15,16 @@
 #include <QPointer>
 #include <QPainter>
 #include <QTimer>
-#include "WindowManager.h"
 #include "FreezeTimeIndicator.h"
+#include "LayoutManager.h"
 
 FreezeWaveReviewMode::FreezeWaveReviewMode(WaveWidget *wave)
-    :QObject(), WaveNormalMode(wave)
+    : QObject(), WaveNormalMode(wave), _paintWaveFunc(NULL)
 {
-
 }
 
 FreezeWaveReviewMode::~FreezeWaveReviewMode()
 {
-
 }
 
 bool FreezeWaveReviewMode::match(int mode, bool isCascade)
@@ -27,12 +35,12 @@ bool FreezeWaveReviewMode::match(int mode, bool isCascade)
 void FreezeWaveReviewMode::prepareTransformFactor()
 {
     WaveNormalMode::prepareTransformFactor();
-    if(!_wave)
+    if (!_wave)
     {
         return;
     }
 
-    if(dataSize() >= _wave->width())
+    if (dataSize() >= _wave->width())
     {
         _paintWaveFunc = _wave->isFill() ? _fillDenseCurve : _drawDenseCurve;
     }
@@ -44,7 +52,7 @@ void FreezeWaveReviewMode::prepareTransformFactor()
 
 void FreezeWaveReviewMode::paintWave(QPainter &painter, const QRect &rect)
 {
-    if(!_wave || !_paintWaveFunc)
+    if (!_wave || !_paintWaveFunc)
     {
         return;
     }
@@ -54,7 +62,7 @@ void FreezeWaveReviewMode::paintWave(QPainter &painter, const QRect &rect)
     // 把绘制区域的左右边界换算为波形坐标序列索引
     int leftIndex = qMax(0, xToIndex(rect.left() - _wave->lineWidth()) - 1);
     int rightIndex = qMin((_wave->_size - 1),
-            xToIndex(rect.right() + _wave->lineWidth()) + 1);
+                          xToIndex(rect.right() + _wave->lineWidth()) + 1);
     int beginIndex = qMax(leftIndex, _wave->_tail);
     int endIndex = qMin(rightIndex, _wave->_head - 1);
     if (endIndex > beginIndex)
@@ -65,15 +73,15 @@ void FreezeWaveReviewMode::paintWave(QPainter &painter, const QRect &rect)
 
 void FreezeWaveReviewMode::enter()
 {
-    if(!_wave || !_wave->_freezeDataModel)
+    if (!_wave || !_wave->_freezeDataModel)
     {
         return;
     }
 
     connect(_wave->_freezeDataModel.data(), SIGNAL(dataChanged()), this, SLOT(_onModelChanged()));
-    //load data later, after the wave buffer reset
+    // load data later, after the wave buffer reset
     QTimer::singleShot(10, this, SLOT(_onModelChanged()));
-    if(windowManager.isLastWaveForm(_wave) && _wave->_freezeIndicator)
+    if (layoutManager.isLastWaveWidget(_wave) && _wave->_freezeIndicator)
     {
         _wave->_freezeIndicator->setVisible(true);
         _wave->_freezeIndicator->setPalette(_wave->palette());
@@ -82,12 +90,12 @@ void FreezeWaveReviewMode::enter()
 
 void FreezeWaveReviewMode::exit()
 {
-    if(!_wave || !_wave->_freezeDataModel)
+    if (!_wave || !_wave->_freezeDataModel)
     {
         return;
     }
     disconnect(_wave->_freezeDataModel.data(), SIGNAL(dataChanged()), this, SLOT(_onModelChanged()));
-    if(windowManager.isLastWaveForm(_wave) && _wave->_freezeIndicator)
+    if (layoutManager.isLastWaveWidget(_wave) && _wave->_freezeIndicator)
     {
         _wave->_freezeIndicator->setVisible(false);
     }
@@ -95,15 +103,15 @@ void FreezeWaveReviewMode::exit()
 
 void FreezeWaveReviewMode::_onModelChanged()
 {
-    if(!_wave || !_wave->_freezeDataModel)
+    if (!_wave || !_wave->_freezeDataModel)
     {
         return;
     }
 
-    //load the wave data
+    // load the wave data
     _loadWaveData();
 
-    if(_wave->_freezeIndicator)
+    if (_wave->_freezeIndicator)
     {
         _wave->_freezeIndicator->setReviewTime(_wave->_freezeDataModel->getReviewStartSecond());
     }
@@ -113,37 +121,35 @@ void FreezeWaveReviewMode::_onModelChanged()
 
 void FreezeWaveReviewMode::_loadWaveData()
 {
-    if(!_wave || !_wave->_waveBuf || !_wave->_dataBuf || !_wave->_flagBuf
+    if (!_wave || !_wave->_waveBuf || !_wave->_dataBuf || !_wave->_flagBuf
             || !_wave->_freezeDataModel)
     {
         return;
     }
 
-    //clear the wave
+    // clear the wave
     _wave->_head = 0;
     _wave->_tail = 0;
 
-    //load data
-    _wave->_freezeDataModel->getWaveData((WaveDataType*)_wave->_dataBuf, _wave->_size);
+    // load data
+    _wave->_freezeDataModel->getWaveData(static_cast<WaveDataType *>(_wave->_dataBuf), _wave->_size);
     _wave->_head = _wave->_size - 1;
 
-    //fill the buffer
-    for (int i = _wave->_tail; i != _wave->_head; i= _wave->_bufNext(i))
+    // fill the buffer
+    for (int i = _wave->_tail; i != _wave->_head; i = _wave->_bufNext(i))
     {
         _wave->_waveBuf[i].setX(_wave->_xBuf[i]);
         _wave->_waveBuf[i].setY(valueToY(_wave->_dataBuf[i] & 0xFFFF));
         _wave->_flagBuf[i] = (_wave->_dataBuf[i] & 0xFFFF0000) >> 16;
         _wave->_setDyBuf(i);
     }
-
 }
 
 void FreezeWaveReviewMode::_drawWave(QPainter &painter, int beginIndex, int endIndex)
 {
-    int j = 0;
     while (beginIndex <= endIndex)
     {
-        j = beginIndex + 1;
+        int j = beginIndex + 1;
         if (_wave->_flagBuf[beginIndex] & 0x4000)
         {
             while ((j <= endIndex) && (_wave->_flagBuf[j] & 0x4000))
@@ -171,7 +177,7 @@ void FreezeWaveReviewMode::_drawDotLine(QPainter &painter, int beginIndex, int e
     QPen p = QPen(_wave->palette().windowText(), _wave->lineWidth());
     qreal dashWidth =  6.5 / _wave->lineWidth();
     QVector<qreal> pat;
-    pat << dashWidth<<dashWidth;
+    pat << dashWidth << dashWidth;
     p.setDashPattern(pat);
     p.setCapStyle(Qt::FlatCap);
     painter.setPen(p);
@@ -182,19 +188,19 @@ void FreezeWaveReviewMode::_drawDotLine(QPainter &painter, int beginIndex, int e
 
 void FreezeWaveReviewMode::_drawSparseCurve(FreezeWaveReviewMode *self, QPainter &painter, int beginIndex, int endIndex)
 {
-    if(!self || !self->_wave)
+    if (!self || !self->_wave)
     {
         return;
     }
     painter.setPen(
-            QPen(self->_wave->palette().windowText(),
-                    self->_wave->lineWidth()));
+        QPen(self->_wave->palette().windowText(),
+             self->_wave->lineWidth()));
     painter.setRenderHint(QPainter::Antialiasing, self->_wave->isAntialias());
 
     if (beginIndex < endIndex)
     {
         painter.drawPolyline(&self->_wave->_waveBuf[beginIndex],
-                endIndex - beginIndex + 1);
+                             endIndex - beginIndex + 1);
     }
     else if (beginIndex == endIndex)
     {
@@ -204,14 +210,14 @@ void FreezeWaveReviewMode::_drawSparseCurve(FreezeWaveReviewMode *self, QPainter
 
 void FreezeWaveReviewMode::_drawDenseCurve(FreezeWaveReviewMode *self, QPainter &painter, int beginIndex, int endIndex)
 {
-    if(!self || !self->_wave)
+    if (!self || !self->_wave)
     {
         return;
     }
 
     painter.setPen(
-            QPen(self->_wave->palette().windowText(),
-                    self->_wave->lineWidth()));
+        QPen(self->_wave->palette().windowText(),
+             self->_wave->lineWidth()));
     painter.setRenderHint(QPainter::Antialiasing, self->_wave->isAntialias());
 
     int i = beginIndex;
@@ -246,7 +252,7 @@ void FreezeWaveReviewMode::_drawDenseCurve(FreezeWaveReviewMode *self, QPainter 
 
 void FreezeWaveReviewMode::_fillSparseCurve(FreezeWaveReviewMode *self, QPainter &painter, int beginIndex, int endIndex)
 {
-    if(!self || !self->_wave)
+    if (!self || !self->_wave)
     {
         return;
     }
@@ -263,7 +269,7 @@ void FreezeWaveReviewMode::_fillSparseCurve(FreezeWaveReviewMode *self, QPainter
         {
             // 单数据点
             painter.drawLine(self->_wave->_waveBuf[i],
-                    QPoint(self->_wave->_xBuf[i], yBottom));
+                             QPoint(self->_wave->_xBuf[i], yBottom));
             break;
         }
         else if (self->_wave->_waveBuf[i].y() == self->_wave->_waveBuf[j].y())
@@ -271,7 +277,7 @@ void FreezeWaveReviewMode::_fillSparseCurve(FreezeWaveReviewMode *self, QPainter
             // 矩形
             while (((j + 1) <= endIndex)
                     && (self->_wave->_waveBuf[i].y()
-                            == self->_wave->_waveBuf[j + 1].y()))
+                        == self->_wave->_waveBuf[j + 1].y()))
             {
                 j++;
             }
@@ -280,7 +286,7 @@ void FreezeWaveReviewMode::_fillSparseCurve(FreezeWaveReviewMode *self, QPainter
             rect.setWidth(self->_wave->_xBuf[j] - self->_wave->_xBuf[i] + 1);
             rect.setBottom(yBottom);
             painter.fillRect(rect,
-                    self->_wave->palette().color(QPalette::WindowText));
+                             self->_wave->palette().color(QPalette::WindowText));
             i = j;
         }
         else if (self->_wave->_waveBuf[i].y() > self->_wave->_waveBuf[j].y())
@@ -298,7 +304,7 @@ void FreezeWaveReviewMode::_fillSparseCurve(FreezeWaveReviewMode *self, QPainter
             rect.setWidth(tri[1].x() - tri[0].x() + 1);
             rect.setBottom(yBottom);
             painter.fillRect(rect,
-                    self->_wave->palette().color(QPalette::WindowText));
+                             self->_wave->palette().color(QPalette::WindowText));
             i = j;
         }
         else
@@ -316,7 +322,7 @@ void FreezeWaveReviewMode::_fillSparseCurve(FreezeWaveReviewMode *self, QPainter
             rect.setWidth(tri[1].x() - tri[0].x() + 1);
             rect.setBottom(yBottom);
             painter.fillRect(rect,
-                    self->_wave->palette().color(QPalette::WindowText));
+                             self->_wave->palette().color(QPalette::WindowText));
             i = j;
         }
     }
@@ -324,7 +330,7 @@ void FreezeWaveReviewMode::_fillSparseCurve(FreezeWaveReviewMode *self, QPainter
 
 void FreezeWaveReviewMode::_fillDenseCurve(FreezeWaveReviewMode *self, QPainter &painter, int beginIndex, int endIndex)
 {
-    if(!self || !self->_wave)
+    if (!self || !self->_wave)
     {
         return;
     }
@@ -336,7 +342,7 @@ void FreezeWaveReviewMode::_fillDenseCurve(FreezeWaveReviewMode *self, QPainter 
     for (int i = beginIndex; i <= endIndex; i++)
     {
         painter.drawLine(self->_wave->_waveBuf[i],
-                QPoint(self->_wave->_xBuf[i], yBottom));
+                         QPoint(self->_wave->_xBuf[i], yBottom));
     }
 
     _drawDenseCurve(self, painter, beginIndex, endIndex);

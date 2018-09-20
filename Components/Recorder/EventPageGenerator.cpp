@@ -21,13 +21,13 @@
 #include "Utility.h"
 #include "WaveformCache.h"
 #include "ECGParam.h"
-#include "WindowManager.h"
 #include "FontManager.h"
 #include "RESPParam.h"
 #include "SPO2Param.h"
 #include "AGParam.h"
 #include "IBPParam.h"
 #include "CO2Param.h"
+#include "LayoutManager.h"
 
 
 class EventPageGeneratorPrivate
@@ -171,7 +171,7 @@ public:
                 caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
                                                  ecgParam.getLeadConvention()))
                           .arg(ECGSymbol::convert(ecgParam.getFilterMode()));
-                info.waveInfo.ecg.in12LeadMode = windowManager.getUFaceType() == UFACE_MONITOR_12LEAD;
+                info.waveInfo.ecg.in12LeadMode = layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD;
                 info.waveInfo.ecg._12LeadDisplayFormat = ecgParam.get12LDisplayFormat();
                 captionLength = fontManager.textWidthInPixels(caption, q_ptr->font());
                 break;
