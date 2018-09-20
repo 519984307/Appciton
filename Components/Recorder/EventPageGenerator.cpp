@@ -180,7 +180,7 @@ public:
                 break;
             case WAVE_SPO2:
                 info.waveInfo.spo2.gain = spo2Param.getGain();
-                caption = trs("PLETH");
+                caption = "Pleth";
                 break;
             case WAVE_CO2:
                 info.waveInfo.co2.zoom = co2Param.getDisplayZoom();
@@ -207,6 +207,7 @@ public:
             case WAVE_AUXP2:
             {
                 info.waveInfo.ibp.pressureName = ibpParam.getPressureName(id);
+                caption = IBPSymbol::convert(ibpParam.getPressureName(id));
                 IBPScaleInfo scaleInfo = ibpParam.getIBPScale(info.waveInfo.ibp.pressureName);
                 info.waveInfo.ibp.high = scaleInfo.high;
                 info.waveInfo.ibp.low = scaleInfo.low;

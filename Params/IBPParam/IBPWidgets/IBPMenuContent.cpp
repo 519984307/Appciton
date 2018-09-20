@@ -475,6 +475,7 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
                 d_ptr->ibp2 = d_ptr->ibp1;
                 box->blockSignals(true);
                 box->setCurrentIndex(static_cast<int>(d_ptr->ibp2));
+                ibpParam.setEntitle(d_ptr->ibp2, IBP_INPUT_2);
                 box->blockSignals(false);
             }
             d_ptr->ibp1 = static_cast<IBPPressureName>(index);
@@ -492,6 +493,7 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
                 d_ptr->ibp1 = d_ptr->ibp2;
                 box->blockSignals(true);
                 box->setCurrentIndex(static_cast<int>(d_ptr->ibp1));
+                ibpParam.setEntitle(d_ptr->ibp1, IBP_INPUT_1);
                 box->blockSignals(false);
             }
             d_ptr->ibp2 = static_cast<IBPPressureName>(index);

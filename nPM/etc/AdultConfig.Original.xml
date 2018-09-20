@@ -92,6 +92,20 @@
 		<ECG12LeadPacerMaker>0</ECG12LeadPacerMaker>	
 		<PacerMaker>1</PacerMaker>
 		<EverLeadOn>0</EverLeadOn>
+        <Gain>
+            <ECGIWaveWidget>3</ECGIWaveWidget>
+            <ECGIIWaveWidget>3</ECGIIWaveWidget>
+            <ECGIIIWaveWidget>3</ECGIIIWaveWidget>
+            <ECGaVRWaveWidget>3</ECGaVRWaveWidget>
+            <ECGaVLWaveWidget>3</ECGaVLWaveWidget>
+            <ECGaVFWaveWidget>3</ECGaVFWaveWidget>
+            <ECGV1WaveWidget>3</ECGV1WaveWidget>
+            <ECGV2WaveWidget>3</ECGV2WaveWidget>
+            <ECGV3WaveWidget>3</ECGV3WaveWidget>
+            <ECGV4WaveWidget>3</ECGV4WaveWidget>
+            <ECGV5WaveWidget>3</ECGV5WaveWidget>
+            <ECGV6WaveWidget>3</ECGV6WaveWidget>
+        </Gain>
     </ECG>
     <AG>
 	<AGModule>0</AGModule>
