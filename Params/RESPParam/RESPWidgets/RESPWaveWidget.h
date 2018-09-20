@@ -37,7 +37,6 @@ protected:
     void hideEvent(QHideEvent *e);
 
 private slots:
-    void _releaseHandle(IWidget *);
     void _respZoom(IWidget *widget);
     void _popupDestroyed();
     void _getItemIndex(int);

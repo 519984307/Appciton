@@ -19,14 +19,14 @@
 #include <QHBoxLayout>
 #include "TrendWidgetLabel.h"
 #include "WindowManager.h"
-#include "MainMenuWindow.h"
+#include "MeasureSettingWindow.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
 void ECGPVCSTrendWidget::_releaseHandle(IWidget * iWidget)
 {
-    MainMenuWindow *p = MainMenuWindow::getInstance();
+    MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
     p->popup(trs("ECGMenu"));
 }
 

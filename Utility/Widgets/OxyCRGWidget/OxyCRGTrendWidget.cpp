@@ -17,7 +17,6 @@
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include <QPainter>
-#include "WaveWidgetSelectMenu.h"
 #include <QTimer>
 
 /**************************************************************************************************

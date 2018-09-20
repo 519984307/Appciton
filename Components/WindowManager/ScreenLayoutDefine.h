@@ -14,7 +14,65 @@
 #include <QModelIndex>
 #include "ParamDefine.h"
 
+#define LAYOUT_COLUMN_COUNT 6
+#define LAYOUT_ROW_COUNT 8
+#define LAYOUT_MAX_WAVE_ROW_NUM 6
+#define LAYOUT_WAVE_END_COLUMN 4
 
+enum LayoutNodeType
+{
+    LAYOUT_NODE_NONE,
+    LAYOUT_NODE_WAVE_ECG1,
+    LAYOUT_NODE_WAVE_ECG2,
+    LAYOUT_NODE_WAVE_RESP,
+    LAYOUT_NODE_WAVE_SPO2,
+    LAYOUT_NODE_WAVE_CO2,
+    LAYOUT_NODE_WAVE_IBP1,
+    LAYOUT_NODE_WAVE_IBP2,
+    LAYOUT_NODE_WAVE_N2O,
+    LAYOUT_NODE_WAVE_AA1,
+    LAYOUT_NODE_WAVE_AA2,
+    LAYOUT_NODE_WAVE_O2,
+
+    LAYOUT_NODE_PARAM_ECG,
+    LAYOUT_NODE_PARAM_SPO2,
+    LAYOUT_NODE_PARAM_RESP,
+    LAYOUT_NODE_PARAM_IBP1,
+    LAYOUT_NODE_PARAM_IBP2,
+    LAYOUT_NODE_PARAM_CO2,
+    LAYOUT_NODE_PARAM_NIBP,
+    LAYOUT_NODE_PARAM_NIBPLIST,
+    LAYOUT_NODE_PARAM_TEMP,
+    LAYOUT_NODE_PARAM_CO,
+    LAYOUT_NODE_PARAM_AA1,
+    LAYOUT_NODE_PARAM_AA2,
+    LAYOUT_NODE_PARAM_N2O,
+    LAYOUT_NODE_PARAM_O2,
+    LAYOUT_NODE_PARAM_ST,
+    LAYOUT_NODE_PARAM_PVCS,
+    LAYOUT_NODE_NR,
+};
+
+const char *layoutNodeName(LayoutNodeType nodeType);
+
+/**
+ * @brief The LayoutNode struct layout node info
+ */
+struct LayoutNode
+{
+    LayoutNode()
+        : pos(0), span(1), editable(true)
+    {}
+
+    QString name;       // the node name
+    int pos;            // the node pos
+    int span;           // the node span
+    bool editable;      // the node is editable or not
+};
+
+/**
+ * @brief The ScreenLayoutRole enum screen layout model data role
+ */
 enum ScreenLayoutRole
 {
     ReplaceRole = Qt::UserRole + 1,
@@ -49,3 +107,4 @@ struct ScreenLayoutItemInfo
 };
 
 Q_DECLARE_METATYPE(ScreenLayoutItemInfo)
+

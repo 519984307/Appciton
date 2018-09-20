@@ -19,7 +19,6 @@
 #include "KeyActionManager.h"
 #include "NormalModeKeyAction.h"
 #include "WindowManager.h"
-#include "WaveWidgetSelectMenu.h"
 #include "MenuManager.h"
 #include "PublicMenuManager.h"
 #include "SelectStarterLogo.h"

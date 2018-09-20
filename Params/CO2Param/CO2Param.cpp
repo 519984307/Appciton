@@ -24,7 +24,6 @@
 #include "SoftKeyManager.h"
 #include "QApplication"
 #include "ComboListPopup.h"
-#include "WaveWidgetSelectMenu.h"
 
 CO2Param *CO2Param::_selfObj = NULL;
 
@@ -548,9 +547,6 @@ void CO2Param::setConnected(bool isConnected)
     curWaveList.clear();
 
     softkeyManager.refresh();
-
-    // 关闭波形菜单
-    waveWidgetSelectMenu.close();
 }
 
 /**************************************************************************************************
@@ -874,9 +870,6 @@ void CO2Param::setCO2Switch(int onoff)
     {
         ComboListPopup::current()->close();
     }
-
-    // 关闭波形菜单
-    waveWidgetSelectMenu.close();
 
     curWaveList.clear();
 }

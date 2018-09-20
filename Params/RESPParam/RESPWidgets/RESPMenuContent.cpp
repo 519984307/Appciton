@@ -18,7 +18,7 @@
 #include "ConfigManager.h"
 #include "SystemManager.h"
 #include "Button.h"
-#include "MenuWindow.h"
+#include "MainMenuWindow.h"
 
 class RESPMenuContentPrivate
 {
@@ -165,7 +165,7 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
 
 void RESPMenuContent::onAlarmBtnReleased()
 {
-    MenuWindow *w = this->getMenuWindow();
+    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_RR_BR, true);
     if (w)
     {

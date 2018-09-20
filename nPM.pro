@@ -179,7 +179,6 @@ SOURCES +=                                                                      
     Utility/Widgets/Waveform/WaveReviewCascadeMode.cpp                          \
     Utility/Widgets/Waveform/WaveScanMode.cpp                                   \
     Utility/Widgets/Waveform/WaveWidget.cpp                                     \
-    Utility/Widgets/Waveform/WaveWidgetSelectMenu.cpp                           \
     Utility/Widgets/BarWidget.cpp                                               \
     Utility/Widgets/MessageBox.cpp                                              \
     Utility/Widgets/ExportDataWidget.cpp                                        \
@@ -225,6 +224,8 @@ SOURCES +=                                                                      
     Components/System/Widgets/SystemStatusBarWidget.cpp                         \
     Components/System/Widgets/SystemMenuContent.cpp                             \
     Components/System/Widgets/PrintSettingMenuContent.cpp                       \
+    Components/System/Widgets/MeasureSettingMenuContent.cpp                     \
+    Components/System/Widgets/MeasureSettingWindow.cpp                          \
     Components/System/Widgets/DataReviewMenuContent.cpp                         \
     Components/System/Widgets/CalculateMenuContent.cpp                          \
     Components/System/Widgets/SystemMaintenance.cpp                             \
@@ -317,8 +318,6 @@ SOURCES +=                                                                      
     Components/WindowManager/WindowManager.cpp                                  \
     Components/WindowManager/WaveTrendWidget.cpp                                \
     Components/WindowManager/WidgetSelectMenu.cpp                               \
-    Components/WindowManager/WindowLayout.cpp                                   \
-    Components/WindowManager/WindowWidget.cpp                                   \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
     Components/WindowManager/MainMenuWindow.cpp                                 \
     Components/WindowManager/FactoryMaintainMenuWindow.cpp                      \
@@ -327,6 +326,7 @@ SOURCES +=                                                                      
     Components/WindowManager/ArrhythmiaMenuWindow.cpp                           \
     Components/WindowManager/ScreenMenuContent.cpp                              \
     Components/WindowManager/TopBarWidget.cpp                                   \
+    Components/WindowManager/LayoutManager.cpp                                  \
     Components/WindowManager/ScreenLayoutWindow.cpp                             \
     Components/WindowManager/ScreenLayoutModel.cpp                              \
     Components/WindowManager/ScreenLayoutItemDelegate.cpp                       \
@@ -735,7 +735,6 @@ HEADERS +=                                                                      
     Utility/Widgets/Waveform/WaveReviewCascadeMode.h                            \
     Utility/Widgets/Waveform/WaveScanMode.h                                     \
     Utility/Widgets/Waveform/WaveWidget.h                                       \
-    Utility/Widgets/Waveform/WaveWidgetSelectMenu.h                             \
     Utility/Widgets/BarWidget.h                                                 \
     Utility/Widgets/ExportDataWidget.h                                          \
     Utility/Widgets/FreezeTableWidget.h                                         \
@@ -779,6 +778,8 @@ HEADERS +=                                                                      
     Components/System/Widgets/SystemModeBarWidget.h                             \
     Components/System/Widgets/SystemMenuContent.h                               \
     Components/System/Widgets/PrintSettingMenuContent.h                         \
+    Components/System/Widgets/MeasureSettingMenuContent.h                       \
+    Components/System/Widgets/MeasureSettingWindow.h                           \
     Components/System/Widgets/DataReviewMenuContent.h                           \
     Components/System/Widgets/CalculateMenuContent.h                            \
     Components/System/Widgets/SystemMaintenance.h                               \
@@ -891,8 +892,6 @@ HEADERS +=                                                                      
     Components/WindowManager/WindowManager.h                                    \
     Components/WindowManager/WaveTrendWidget.h                                  \
     Components/WindowManager/WidgetSelectMenu.h                                 \
-    Components/WindowManager/WindowLayout.h                                     \
-    Components/WindowManager/WindowWidget.h                                     \
     Components/WindowManager/PromptInfoBarWidget.h                              \
     Components/WindowManager/MainMenuWindow.h                                   \
     Components/WindowManager/FactoryMaintainMenuWindow.h                        \
@@ -901,6 +900,7 @@ HEADERS +=                                                                      
     Components/WindowManager/ArrhythmiaMenuWindow.h                             \
     Components/WindowManager/ScreenMenuContent.h                                \
     Components/WindowManager/TopBarWidget.h                                     \
+    Components/WindowManager/LayoutManager.h                                    \
     Components/WindowManager/ScreenLayoutWindow.h                               \
     Components/WindowManager/ScreenLayoutModel.h                                \
     Components/WindowManager/ScreenLayoutItemDelegate.h                         \
