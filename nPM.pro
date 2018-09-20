@@ -105,6 +105,8 @@ SOURCES +=                                                                      
     Utility/LanguageManager/LanguageManager.cpp                                 \
     Utility/FontManager/FontManager.cpp                                         \
     Utility/ColorManager/ColorManager.cpp                                       \
+    Utility/NightModeManager/NightModeManager.cpp                               \
+    Utility/NightModeManager/NightStatusBar.cpp                                 \
     Utility/Widgets/Base/ShadowEffect.cpp                                       \
     Utility/Widgets/Base/ThemeManager.cpp                                       \
     Utility/Widgets/Base/Button.cpp                                             \
@@ -652,6 +654,8 @@ HEADERS +=                                                                      
     Utility/LanguageManager/LanguageManager.h                                   \
     Utility/FontManager/FontManager.h                                           \
     Utility/ColorManager/ColorManager.h                                         \
+    Utility/NightModeManager/NightModeManager.h                                 \
+    Utility/NightModeManager/NightStatusBar.h                                   \
     Utility/Widgets/Base/ShadowEffect.h                                         \
     Utility/Widgets/Base/ThemeManager.h                                         \
     Utility/Widgets/Base/Button.h                                               \
@@ -1363,6 +1367,7 @@ INCLUDEPATH +=                                                                  
     Utility/Config                                                              \
     Utility/DataStorage                                                         \
     Utility/ColorManager                                                        \
+    Utility/NightModeManager                                                    \
     Utility/FontManager                                                         \
     Utility/LanguageManager                                                     \
     Utility/Widgets                                                             \

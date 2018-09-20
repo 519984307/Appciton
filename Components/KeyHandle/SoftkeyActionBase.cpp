@@ -41,6 +41,7 @@
 #include "EventWindow.h"
 #include "IBPParam.h"
 #include "IConfig.h"
+#include "NightModeManager.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -350,11 +351,7 @@ void SoftkeyActionBase::nightMode(bool isPressed)
     {
         return;
     }
-
-    int index = 0;
-    systemConfig.getNumValue("NightMode|EnterNightMode", index);
-    systemConfig.setNumValue("NightMode|EnterNightMode",
-                             static_cast<int>(!index));
+    nightModeManager.setNightMode();
 }
 
 /***************************************************************************************************

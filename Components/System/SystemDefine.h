@@ -40,8 +40,7 @@ enum UserFaceType
 // 背光亮度等级。
 enum BrightnessLevel
 {
-    BRT_LEVEL_0 = 1,
-    BRT_LEVEL_1,
+    BRT_LEVEL_1 = 1,
     BRT_LEVEL_2,
     BRT_LEVEL_3,
     BRT_LEVEL_4,
@@ -50,6 +49,7 @@ enum BrightnessLevel
     BRT_LEVEL_7,
     BRT_LEVEL_8,
     BRT_LEVEL_9,
+    BRT_LEVEL_10,
     BRT_LEVEL_NR
 };
 

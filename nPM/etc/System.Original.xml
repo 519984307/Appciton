@@ -40,10 +40,10 @@
         <PhyParAlarmLatchlockOn>1</PhyParAlarmLatchlockOn>
     </Alarms>
    <NightMode>
-		<ScreenBrightness>2</ScreenBrightness>
+		<ScreenBrightness>0</ScreenBrightness>
 		<AlarmVolume>2</AlarmVolume>
 		<HeartBeatVolume>2</HeartBeatVolume>
-		<HeartBeatVolume>2</HeartBeatVolume>
+		<KeyPressVolume>2</KeyPressVolume>
 		<NIBPCompletedTips>1</NIBPCompletedTips>
 		<StopNIBPMeasure>1</StopNIBPMeasure>
 		<EnterNightMode>0</EnterNightMode>
@@ -867,10 +867,11 @@
                 </ScreenHLayoutStretch>
                 <!-- 顶部信息栏比列 -->
                 <topBarRowOrder>
-                    <PatientInfoWidget>350</PatientInfoWidget>
+                    <PatientInfoWidget>330</PatientInfoWidget>
+		    <NightStatusBar>50</NightStatusBar>
 		    <PatientStatusBarWidget>50</PatientStatusBarWidget>
                     <DateTimeWidget>100</DateTimeWidget>
-                    <AlarmMuteBarWidget>80</AlarmMuteBarWidget>
+                    <AlarmMuteBarWidget>50</AlarmMuteBarWidget>
                     <AlarmPhyInfoBarWidget>350</AlarmPhyInfoBarWidget>
                     <AlarmTechInfoBarWidget>350</AlarmTechInfoBarWidget>
                 </topBarRowOrder>

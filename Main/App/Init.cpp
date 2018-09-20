@@ -187,7 +187,9 @@ static void _initComponents(void)
     topBarWidget.addWidget(alarmPhyInfo);
     topBarWidget.addWidget(alarmTechInfo);
     topBarWidget.addWidget(alarmPhyMuteBar);
-    topBarWidget.refreshLayout();
+
+    //　夜间模式
+    topBarWidget.addWidget(&nightStatusBar);
 
     //报警状态
     alarmStateMachine.Construction();
@@ -204,6 +206,7 @@ static void _initComponents(void)
     rawDataCollection.construction();
     rawDataCollectionTxt.construction();
 
+    topBarWidget.refreshLayout();
     windowManager.addWidget(&topBarWidget);
 }
 /**************************************************************************************************
