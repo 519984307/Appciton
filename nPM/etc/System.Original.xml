@@ -734,8 +734,10 @@
 	    <ECGLeadConvention>0</ECGLeadConvention>
 	    <AlarmSource>0</AlarmSource>
 	    <Ecg1Wave>0</Ecg1Wave>
-	    <Ecg2Wave>1</Ecg2Wave>
-	    <Ecg1Gain>0</Ecg1Gain>
+            <Ecg2Wave>1</Ecg2Wave>
+            <Ecg1WaveWidget>ECGIWaveWidget</Ecg1WaveWidget>
+            <Ecg2WaveWidget>ECGIIWaveWidget</Ecg2WaveWidget>
+            <Ecg1Gain>0</Ecg1Gain>
 	    <Ecg2Gain>0</Ecg2Gain>
 	    <SweepSpeed>1</SweepSpeed>
 	    <Filter>0</Filter>
@@ -767,7 +769,6 @@
 		<C5>0</C5>                
 		<C6>0</C6>                                
 	    </EverLeadOn>
-
         </ECG>
 		<CO2>
 			<O2Compensation>55</O2Compensation>

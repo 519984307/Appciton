@@ -18,6 +18,7 @@
 #include "IWidget.h"
 #include <QList>
 #include "OrderedMap.h"
+#include "ECGSymbol.h"
 
 typedef QList<LayoutNode> LayoutRow;
 
@@ -239,7 +240,26 @@ void LayoutManagerPrivate::doParseMainLayout(const QVariantMap &map, QBoxLayout 
 
 void LayoutManagerPrivate::doContentLayout()
 {
+    // clear the exist layout
     clearLayout(contentLayout);
+
+    // find the ECG correspond wave
+    int leadMode = ECG_LEAD_MODE_3;
+    systemConfig.getNumValue("PrimaryCfg|ECG|LeadMode", leadMode);
+    QString ecg1Wave;
+    QString ecg2Wave;
+    systemConfig.getStrValue("PrimaryCfg|ECG|Ecg1WaveWidget", ecg1Wave);
+    systemConfig.getStrValue("PrimaryCfg|ECG|Ecg2WaveWidget", ecg2Wave);
+    if (leadMode == ECG_LEAD_MODE_3)
+    {
+        layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG1)] = ecg1Wave;
+        layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG2)] = QString();
+    }
+    else
+    {
+        layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG1)] = ecg1Wave;
+        layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG2)] = ecg2Wave;
+    }
 
     switch (curUserFace) {
     case UFACE_MONITOR_STANDARD:
@@ -257,11 +277,14 @@ void LayoutManagerPrivate::doContentLayout()
         qdebug("Unsupport screen layout!");
         break;
     }
+
+    contentLayout->activate();
 }
 
 void LayoutManagerPrivate::performStandardLayout()
 {
     QVBoxLayout *leftLayout = new QVBoxLayout();
+    leftLayout->setContentsMargins(0, 0, 0, 0);
     QWidget *waveContainer = createContainter();
     QWidget *leftParamContainer = createContainter();
     leftLayout->addWidget(waveContainer);
@@ -271,8 +294,11 @@ void LayoutManagerPrivate::performStandardLayout()
     contentLayout->addWidget(rightParamContainer, 2);
 
     QGridLayout *waveLayout = new QGridLayout(waveContainer);
+    waveLayout->setMargin(0);
     QGridLayout *leftParamLayout = new QGridLayout(leftParamContainer);
+    leftParamLayout->setMargin(0);
     QGridLayout *rightParamLayout = new QGridLayout(rightParamContainer);
+    rightParamLayout->setMargin(0);
 
     OrderedMap<int, LayoutRow>::ConstIterator iter = layoutInfos.begin();
     for (; iter != layoutInfos.end(); ++iter)
@@ -318,7 +344,7 @@ void LayoutManagerPrivate::clearLayout(QLayout *layout)
         return;
     }
     QLayoutItem *item;
-    while ((item = contentLayout->takeAt(0)) != 0)
+    while ((item = layout->takeAt(0)) != 0)
     {
         QLayout *childLayout = item->layout();
         if (childLayout)
@@ -363,7 +389,18 @@ LayoutManager::~LayoutManager()
 
 void LayoutManager::reloadLayoutConfig()
 {
-    d_ptr->layoutMap = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|Normal");
+    QVariantMap layoutMap = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|Normal");
+    if (layoutMap == d_ptr->layoutMap)
+    {
+        return;
+    }
+
+    d_ptr->layoutMap = layoutMap;
+
+    // reparse the layout info
+    updateLayout();
+    // perform layout
+    d_ptr->doContentLayout();
 }
 
 QLayout *LayoutManager::mainLayout()
@@ -439,6 +476,7 @@ void LayoutManager::setUFaceType(UserFaceType type)
     {
         updateLayout();
     }
+
     d_ptr->doContentLayout();
 }
 
@@ -522,7 +560,7 @@ void LayoutManager::updateLayout()
 LayoutManager::LayoutManager()
     :d_ptr(new LayoutManagerPrivate())
 {
-    reloadLayoutConfig();
+    d_ptr->layoutMap = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|Normal");
 
     addLayoutWidget(d_ptr->contentView);
 }

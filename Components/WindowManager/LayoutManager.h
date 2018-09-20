@@ -32,7 +32,6 @@ public:
      */
     void reloadLayoutConfig();
 
-
     /**
      * @brief mainLayout get the application's main layout
      * @return
@@ -51,7 +50,6 @@ public:
      * @param nodeType the correspond node type in the content layout system
      */
     void addLayoutWidget(IWidget *w, LayoutNodeType nodeType = LAYOUT_NODE_NONE);
-
 
     /**
      * @brief getLayoutWidget get the layout widget base on the widget's name
