@@ -36,6 +36,7 @@
 #include "FreezeManager.h"
 #include "FreezeWaveReviewMode.h"
 #include "FreezeTimeIndicator.h"
+#include "LayoutManager.h"
 
 float WaveWidget::_pixelWPitch = 0.248;
 float WaveWidget::_pixelHPitch = 0.248;
@@ -1320,8 +1321,8 @@ void WaveWidget::showEvent(QShowEvent *e)
         _model->update();
     }
 
-    if (windowManager.getUFaceType() == UFACE_MONITOR_BIGFONT ||
-            windowManager.getUFaceType() == UFACE_MONITOR_OXYCRG)
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_BIGFONT ||
+            layoutManager.getUFaceType() == UFACE_MONITOR_OXYCRG)
     {
         _name->setFocusPolicy(Qt::NoFocus);
     }

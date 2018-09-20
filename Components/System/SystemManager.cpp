@@ -867,8 +867,6 @@ void SystemManager::_handleBMode(void)
     // 处理CO2和RESP的使能。
 //    _handleCO2RESP();//因调试需要，临时关闭
 
-    windowManager.setUFaceType(type);
-
     // 立即刷新界面，防止界面残留
     QApplication::processEvents(QEventLoop::ExcludeSocketNotifiers |
                                 QEventLoop::ExcludeUserInputEvents);

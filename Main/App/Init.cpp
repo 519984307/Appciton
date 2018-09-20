@@ -122,7 +122,6 @@ static void _initWindowManager(void)
     machineConfig.getNumValue("ScreenWidth", screenWidth);
     machineConfig.getNumValue("ScreenHeight", screenHeight);
     windowManager.setFixedSize(screenWidth, screenHeight);
-    windowManager.setPopMenuSize(screenWidth, screenHeight);
 }
 
 /**************************************************************************************************

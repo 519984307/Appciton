@@ -15,8 +15,8 @@
 #include <QLabel>
 #include <QPainter>
 #include "PopupList.h"
-#include "WindowManager.h"
 #include "FontManager.h"
+#include "LayoutManager.h"
 
 /**************************************************************************************************
  * 功能： 设置显示的内容。
@@ -50,7 +50,7 @@ void SystemModeBarWidget::_popupListDestroy()
         return;
     }
     UserFaceType type = static_cast<UserFaceType>(_popupListIndex);
-    windowManager.setUFaceType(type);
+    layoutManager.setUFaceType(type);
 
     _systemModeList = NULL;
 }

@@ -19,6 +19,7 @@ class IWidget;
 class WaveWidget;
 class LayoutManager : public QObject
 {
+    Q_OBJECT
 public:
     /**
      * @brief ScreenLayoutManager::getInstance get the instance
@@ -128,6 +129,10 @@ public:
      * @return the proper menu area
      */
     QRect getMenuArea() const;
+
+signals:
+    /* emit when the content layout changed */
+    void layoutChanged();
 
 private:
     LayoutManagerPrivate * const d_ptr;

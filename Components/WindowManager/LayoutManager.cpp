@@ -583,6 +583,8 @@ void LayoutManager::updateLayout()
 
     // perform layout
     d_ptr->doContentLayout();
+
+    emit layoutChanged();
 }
 
 QStringList LayoutManager::getDisplayedWaveforms() const

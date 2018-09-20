@@ -11,7 +11,6 @@
 #include "IBPParam.h"
 #include "IBPWaveWidget.h"
 #include "IBPTrendWidget.h"
-#include "WindowManager.h"
 #include "IBPMenu.h"
 #include "TimeDate.h"
 #include "AlarmLimitMenu.h"
@@ -21,6 +20,7 @@
 #include "WaveformCache.h"
 #include "IConfig.h"
 #include "IBPDefine.h"
+#include "LayoutManager.h"
 
 IBPParam *IBPParam::_selfObj = NULL;
 
@@ -95,17 +95,10 @@ void IBPParam::_setWaveformSpeed(IBPSweepSpeed speed)
         break;
     }
 
-    QStringList currentWaveforms;
-    windowManager.getCurrentWaveforms(currentWaveforms);
-    int i = 0;
-    int size = currentWaveforms.size();
-    for (; i < size; i++)
+    QStringList currentWaveforms = layoutManager.getDisplayedWaveforms();
+    if (currentWaveforms.contains(_waveWidgetIBP1->name()) || currentWaveforms.contains(_waveWidgetIBP2->name()))
     {
-        if (currentWaveforms[i] == "IBP1WaveWidget" || currentWaveforms[i] == "IBP2WaveWidget")
-        {
-            windowManager.resetWave();
-            break;
-        }
+        layoutManager.resetWave();
     }
 }
 

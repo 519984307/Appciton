@@ -164,7 +164,6 @@ SOURCES +=                                                                      
     Utility/Widgets/Trendform/ShortTrendManager.cpp                             \
     Utility/Widgets/TrendWidget/TrendWidget.cpp                                 \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.cpp                            \
-    Utility/Widgets/TrendWidget/TrendWidgetSelectMenu.cpp                       \
     Utility/Widgets/Waveform/BarGraphScanMode.cpp                               \
     Utility/Widgets/Waveform/FreezeWaveReviewMode.cpp                           \
     Utility/Widgets/Waveform/FreezeTimeIndicator.cpp                            \
@@ -714,7 +713,6 @@ HEADERS +=                                                                      
     Utility/Widgets/Trendform/ShortTrendWidgetSelectMenu.h                      \
     Utility/Widgets/Trendform/ShortTrendManager.h                               \
     Utility/Widgets/TrendWidget/TrendWidget.h                                   \
-    Utility/Widgets/TrendWidget/TrendWidgetSelectMenu.h                         \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.h                              \
     Utility/Widgets/Waveform/BarGraphScanMode.h                                 \
     Utility/Widgets/Waveform/FreezeWaveReviewMode.h                             \

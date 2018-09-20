@@ -24,6 +24,7 @@
 #include "WindowManager.h"
 #include <QTimer>
 #include "MainMenuWindow.h"
+#include "LayoutManager.h"
 
 class ECGMenuContentPrivate
 {
@@ -318,10 +319,10 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             break;
         case ECGMenuContentPrivate::ITEM_CBO_ECG:
         {
-            QString waveName = ecgParam.getCalcLeadWaveformName();
             ecgParam.setCalcLead(d_ptr->ecgWaveforms[index]);
             ecgParam.setLeadMode3DisplayLead(d_ptr->ecgWaveforms[index]);
-            windowManager.replaceWaveform(waveName, d_ptr->ecgWaveforms[index]);
+            systemConfig.setStrValue("PrimaryCfg|ECG|Ecg1WaveWidget", d_ptr->ecgWaveforms[index]);
+            layoutManager.updateLayout();
             break;
         }
         case ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN:

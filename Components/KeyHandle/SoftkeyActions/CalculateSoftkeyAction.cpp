@@ -22,6 +22,7 @@
 #include "HemodynamicWidget.h"
 #include "HemodynamicWindow.h"
 #include "LanguageManager.h"
+#include "LayoutManager.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -117,7 +118,7 @@ void CalculateSoftkeyAction::exit(bool isPressed)
         return;
     }
 
-    SoftKeyActionType type = softkeyManager.uFaceTypeToSoftKeyType(windowManager.getUFaceType());
+    SoftKeyActionType type = softkeyManager.uFaceTypeToSoftKeyType(layoutManager.getUFaceType());
     softkeyManager.setContent(type);
 }
 

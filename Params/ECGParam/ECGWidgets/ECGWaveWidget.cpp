@@ -22,10 +22,10 @@
 #include "ParamInfo.h"
 #include "IConfig.h"
 #include "TimeDate.h"
-#include "WindowManager.h"
 #include "SystemManager.h"
 #include "PopupList.h"
 #include "ECGWaveRuler.h"
+#include "LayoutManager.h"
 
 int ECGWaveWidget::_paceHeight = 5;
 /**************************************************************************************************
@@ -191,7 +191,7 @@ void ECGWaveWidget::_popupDestroyed(void)
         _isAutoGain = false;
     }
 
-    if (windowManager.getUFaceType() == UFACE_MONITOR_12LEAD)
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD)
     {
         for (int i = ECG_LEAD_I; i <= ECG_LEAD_V6; i++)
         {
@@ -225,7 +225,7 @@ void ECGWaveWidget::_popupDestroyed(void)
  **************************************************************************************************/
 void ECGWaveWidget::_onCalcLeadChanged()
 {
-    if (UFACE_MONITOR_12LEAD != windowManager.getUFaceType())
+    if (UFACE_MONITOR_12LEAD != layoutManager.getUFaceType())
     {
         if (ecgParam.getCalcLead() == getID())
         {
@@ -250,7 +250,7 @@ void ECGWaveWidget::_loadConfig(void)
 {
     setSpeed(ecgParam.getSweepSpeed());
 
-    if (windowManager.getUFaceType() == UFACE_MONITOR_12LEAD)
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD)
     {
         _name->setFocusPolicy(Qt::NoFocus);
 
@@ -436,7 +436,7 @@ void ECGWaveWidget::setSpeed(ECGSweepSpeed speed)
         break;
     }
 
-    windowManager.resetWave();
+    layoutManager.resetWave();
 }
 
 /**************************************************************************************************
@@ -530,8 +530,7 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
     }
     else if (ECG_DISPLAY_12_LEAD_FULL == ecgParam.getDisplayMode())
     {
-        QStringList currentWaveforms;
-        windowManager.getCurrentWaveforms(currentWaveforms);
+        QStringList currentWaveforms = layoutManager.getDisplayedWaveforms();
         if (!((ECG_PACE_ON == (ECGPaceMode)ecgParam.get12LPacermaker()) && (!currentWaveforms.empty())
                 && (currentWaveforms[0] == name())))
         {
@@ -747,8 +746,7 @@ void ECGWaveWidget::showEvent(QShowEvent *e)
     }
     else if (ECG_DISPLAY_12_LEAD_FULL == ecgParam.getDisplayMode())
     {
-        QStringList currentWaveforms;
-        windowManager.getCurrentWaveforms(currentWaveforms);
+        QStringList currentWaveforms = layoutManager.getDisplayedWaveforms();
 
         if ((!currentWaveforms.empty()) && (currentWaveforms[0] == name()))
         {
