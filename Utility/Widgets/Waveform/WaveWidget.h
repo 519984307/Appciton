@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/20
+ **/
+
 ////////////////////////////////////////////////////////////////////////////////
 // 说明：
 // 波形控件，支持扫描模式，滚动模式，回顾模式及三者对应的级联模式
@@ -57,7 +67,10 @@ public:
 
 
     // 窗口是否使能
-    virtual bool waveEnable() {return true;}
+    virtual bool waveEnable()
+    {
+        return true;
+    }
 
     // 获取工作模式标志
     inline int modeFlag() const
@@ -115,10 +128,10 @@ public:
     }
 
     // 修改波形控件的空白边距
-    //Note: set the margin to the same value
+    // Note: set the margin to the same value
     void setMargin(int margin);
 
-    //set wave margin
+    // set wave margin
     void setMargin(const QMargins &margin);
 
     // 获取级联模式下, 上下波形的间距
@@ -227,11 +240,14 @@ public:
     void resetWave();
     int xToIndex(int x);
 
-    //重新刷新波形
+    // 重新刷新波形
     void resetWaveWidget();
 
-    //set reset flag
-    static void setWaveReset(bool flag) {resetWaveFlag = flag;}
+    // set reset flag
+    static void setWaveReset(bool flag)
+    {
+        resetWaveFlag = flag;
+    }
 
 public slots:
     void setWaveSpeed(float waveSpeed);
@@ -243,7 +259,7 @@ public slots:
     void enableFill(bool isEnable);
     void enableAntialias(bool isEnable);
     void enableGrid(bool isEnable);
-    void addData(int value, int flag = 0, bool isUpdated=true);
+    void addData(int value, int flag = 0, bool isUpdated = true);
     void reviewWave(const QDateTime &time);
     void queueData(const int *buf, int size);
     void queueData(const QVector<short> &data);
@@ -269,7 +285,7 @@ protected:
     inline int _bufSpace() const
     {
         return (_head >= _tail) ?
-                (_tail + _size - _head - 1) : (_tail - _head - 1);
+               (_tail + _size - _head - 1) : (_tail - _head - 1);
     }
 
     // 返回缓冲区中地址连续的数据量
@@ -308,13 +324,13 @@ protected:
         return _waveBuf[(_tail + i) % _size];
     }
 
-    void _bufPush(int x, int y, int value, int flag, bool isUpdated=true);
+    void _bufPush(int x, int y, int value, int flag, bool isUpdated = true);
     void _bufPop(int n = 1);
     void _setDyBuf(int i);
 
 protected:
     WaveWidgetLabel *_name;
-    QList<WaveMode*> _modes;                  // 支持的工作模式对象列表
+    QList<WaveMode *> _modes;                 // 支持的工作模式对象列表
     /**
      * @brief _resetBuffer 复位波形
      */
@@ -330,8 +346,8 @@ private:
     WaveMode *_mode;                          // 当前使用的工作模式
     WaveModeFlag _modeFlag;                   // 工作模式标志
     bool _isCascade;                          // 是否级联
-    QList<WaveWidgetItem*> _items;            // 绘图元素对象列表
-    QList<WaveWidgetLabel*> _labelItems;
+    QList<WaveWidgetItem *> _items;           // 绘图元素对象列表
+    QList<WaveWidgetLabel *> _labelItems;
     QString _title;                           // 波形控制标名
     QPixmap *_background;                     // 背景位图
     bool _isUpdateBackgroundPending;          // 是否等待更新背景位图
@@ -351,11 +367,6 @@ private:
     int _spacing;                             // 级联模式时上下道波形的间距
     float _waveSpeed;                         // 波形前进的速率, 单位mm/s
     float _dataRate;                          // 原始波形数据的速率, 单位点/s
-    int _sampleCount;                         // sample counter;
-    bool _timeLostFlag;                       // mark whether exists time lost when draw one scan loop
-    double _totalTimeLost;                   // total time lost
-    double _timeLostForEachLoop;            // time lost for each scan loop
-    double _timeForEachSample;              // sample time for one sample
     int _lineWidth;                           // 波形曲线宽度
     static float _pixelWPitch;                // 屏幕像素点距, 单位mm
     static float _pixelHPitch;                // 屏幕像素点距, 单位mm

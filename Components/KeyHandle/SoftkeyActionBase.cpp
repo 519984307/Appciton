@@ -350,32 +350,6 @@ KeyActionDesc *SoftkeyActionBase::getActionDesc(int index)
         return NULL;
     }
 
-    // if (index == SOFT_BASE_KEY_PREVIOUS_PAGE)
-    // {
-    //     if (softkeyManager.hasPreviousPage())
-    //     {
-    //         _baseKeys[index].iconPath = ICON_FILE_LEFT;
-    //         _baseKeys[index].focus = true;
-    //     }
-    //     else
-    //     {
-    //         _baseKeys[index].iconPath = "";
-    //         _baseKeys[index].focus = false;
-    //     }
-    // }
-    // else if (index == SOFT_BASE_KEY_NEXT_PAGE)
-    // {
-    //     if (softkeyManager.hasNextPage())
-    //     {
-    //         _baseKeys[index].iconPath = ICON_FILE_RIGHT;
-    //         _baseKeys[index].focus = true;
-    //     }
-    //     else
-    //     {
-    //         _baseKeys[index].iconPath = "";
-    //         _baseKeys[index].focus = false;
-    //     }
-    // }
     return &_baseKeys[index];
 }
 

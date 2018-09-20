@@ -41,75 +41,6 @@ float WaveWidget::_pixelWPitch = 0.248;
 float WaveWidget::_pixelHPitch = 0.248;
 bool WaveWidget::resetWaveFlag = false;
 
-/***************************************************************************************************
- * find the minimum sample rate of the display wave that has same speed
- **************************************************************************************************/
-// static float minSampleRateOfDispalyWaveSpeed(float speed)
-//{
-//    QStringList wavenameList;
-//    windowManager.getDisplayedWaveform(wavenameList);
-//    float minSampleRate = 0;
-//    foreach(QString str, wavenameList)
-//    {
-//        WaveWidget *wave = qobject_cast<WaveWidget*>(windowManager.getWidget(str));
-//        if(wave && isEqual(speed, wave->waveSpeed()))
-//        {
-//            if(minSampleRate > wave->dataRate() || minSampleRate == 0)
-//            {
-//                minSampleRate = wave->dataRate();
-//            }
-//        }
-//    }
-//    return minSampleRate;
-//}
-
-/***************************************************************************************************
- * find the maximum sample rate of the display wave that has same speed
- **************************************************************************************************/
-static float maxSampleRateOfDispalyWaveSpeed(float speed)
-{
-    QStringList wavenameList;
-    windowManager.getDisplayedWaveform(wavenameList);
-    float maxSampleRate = 0;
-    foreach(QString str, wavenameList)
-    {
-        WaveWidget *wave = qobject_cast<WaveWidget *>(windowManager.getWidget(str));
-        if (wave && isEqual(speed, wave->waveSpeed()))
-        {
-            if (maxSampleRate < wave->dataRate() || maxSampleRate == 0)
-            {
-                maxSampleRate = wave->dataRate();
-            }
-        }
-    }
-    return maxSampleRate;
-}
-
-/***************************************************************************************************
- * find the top wave scan time for each loop of the same speed
- **************************************************************************************************/
-static double timeforEachScanLoop(float speed, WaveWidget *curWave, int curBufSize)
-{
-    QStringList wavenameList;
-    windowManager.getDisplayedWaveform(wavenameList);
-    foreach(QString str, wavenameList)
-    {
-        WaveWidget *wave = qobject_cast<WaveWidget *>(windowManager.getWidget(str));
-        if (wave && isEqual(speed, wave->waveSpeed()))
-        {
-            if (wave == curWave)
-            {
-                return static_cast<double>(curBufSize) / wave->dataRate();
-            }
-            else
-            {
-                return static_cast<double>(wave->bufSize()) / wave->dataRate();
-            }
-        }
-    }
-    return 0.0;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // 说明:
 // 构造函数
@@ -122,7 +53,7 @@ WaveWidget::WaveWidget(const QString &widgetName, const QString &title) : IWidge
     _background(NULL), _isUpdateBackgroundPending(true), _model(NULL),
     _reviewTime(), _isUpdateBufferPending(true), _waveBuf(NULL), _dataBuf(NULL), _xBuf(NULL),
     _dyBuf(NULL), _flagBuf(NULL), _size(0), _head(0), _tail(0), _margin(QMargins(2, 2, 2, 2)), _spacing(2),
-    _waveSpeed(12.5), _dataRate(125), _sampleCount(0), _timeLostFlag(false), _lineWidth(1), _minValue(-32768),
+    _waveSpeed(12.5), _dataRate(125), _lineWidth(1), _minValue(-32768),
     _maxValue(32767),
     _isFill(false), _isAntialias(false), _isShowGrid(false), _id(-1),
     _queuedDataBuf(NULL), _queuedDataRate(0), _dequeueTimer(), _dequeueSizeEachTime(0), _isFreeze(false)
@@ -561,33 +492,7 @@ void WaveWidget::_resetBuffer()
     }
 
 
-//    int n = _mode->dataSize(minSampleRateOfDispalyWaveSpeed(waveSpeed()));
-    float maxSpeed = maxSampleRateOfDispalyWaveSpeed(waveSpeed());
-    int n = _mode->dataSize(maxSpeed);
-    _sampleCount = 0;
-    double topTraceScanTime = timeforEachScanLoop(waveSpeed(), this, n);
-    double curTraceScanTime = n / _dataRate;
-
-    if (isUpper(topTraceScanTime, curTraceScanTime))
-    {
-        n = ceilf(topTraceScanTime * _dataRate);
-        curTraceScanTime = n / _dataRate;
-    }
-
-    if (!isEqual(topTraceScanTime, 0.0) && !isEqual(curTraceScanTime, topTraceScanTime))
-    {
-        _timeLostFlag = true;
-        _totalTimeLost = 0.0;
-        _timeLostForEachLoop = curTraceScanTime - topTraceScanTime;
-        _timeForEachSample = static_cast<double>(1.0) / dataRate();
-        qDebug() << "Time lost for trace " << _title
-                 << ", time lost: " << _timeLostForEachLoop
-                 << ", time for one sample: " << _timeForEachSample;
-    }
-    else
-    {
-        _timeLostFlag = false;
-    }
+    int n = _mode->dataSize();
     if ((n > 0) && (_size != n))
     {
         _size = n;
@@ -1067,23 +972,6 @@ void WaveWidget::addData(int value, int flag, bool isUpdated)
     }
 
     _mode->addData(value, flag, isUpdated);
-    if (_timeLostFlag)
-    {
-        _sampleCount++;
-        if (_sampleCount % bufSize() == 0)
-        {
-            // one loop
-            _totalTimeLost += _timeLostForEachLoop;
-
-            if (_totalTimeLost > _timeForEachSample)
-            {
-                _totalTimeLost -= _timeForEachSample;
-                _mode->addData(value, flag, isUpdated);
-                _sampleCount++;
-                qDebug() << "Because of time lost, add one more sample for " << _title;
-            }
-        }
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -32,6 +32,9 @@ public:
     {
         contentLayout->setSpacing(0);
         contentLayout->setContentsMargins(0, 0, 0, 0);
+        this->contentView->setFocusPolicy(Qt::NoFocus);
+        this->contentView->setAttribute(Qt::WA_NoSystemBackground);
+        this->contentView->setContentsMargins(0, 0, 0, 0);
     }
 
 
@@ -70,9 +73,9 @@ public:
     void doParseMainLayout(const QVariantMap &map, QBoxLayout *parentLayout);
 
     /**
-     * @brief doLayout do the layout stuff
+     * @brief doContentLayout do the layout stuff
      */
-    void doLayout();
+    void doContentLayout();
 
     /**
      * @brief performStandardLayout perform standard layout
@@ -234,7 +237,7 @@ void LayoutManagerPrivate::doParseMainLayout(const QVariantMap &map, QBoxLayout 
     }
 }
 
-void LayoutManagerPrivate::doLayout()
+void LayoutManagerPrivate::doContentLayout()
 {
     clearLayout(contentLayout);
 
@@ -301,6 +304,11 @@ void LayoutManagerPrivate::performStandardLayout()
             }
         }
     }
+
+    // the wave container stretch
+    leftLayout->setStretch(0, waveLayout->rowCount());
+    // the let param container stretch
+    leftLayout->setStretch(1, leftParamLayout->rowCount());
 }
 
 void LayoutManagerPrivate::clearLayout(QLayout *layout)
@@ -431,7 +439,7 @@ void LayoutManager::setUFaceType(UserFaceType type)
     {
         updateLayout();
     }
-    d_ptr->doLayout();
+    d_ptr->doContentLayout();
 }
 
 void LayoutManager::updateLayout()

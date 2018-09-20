@@ -215,6 +215,9 @@ static void _start(void)
     QDesktopWidget *pDesk = QApplication::desktop();
     windowManager.move((pDesk->width() - windowManager.width()) / 2,
                        (pDesk->height() - windowManager.height()) / 2);
+
+    layoutManager.setUFaceType(UFACE_MONITOR_STANDARD);
+
 #else
     systemManager.loadInitBMode();
 #endif
