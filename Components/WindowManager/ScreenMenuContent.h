@@ -27,7 +27,7 @@ protected:
 
 private slots:
     void onComboxIndexChanged(int index);
-    void settingLayout();
+    void onBtnClick();
 
 private:
     ScreenMenuContentPrivate * const d_ptr;

@@ -11,7 +11,6 @@
 #include "MainMenuWindow.h"
 #include "SystemManager.h"
 #include "AlarmLimitMenuContent.h"
-#include "DisplayMenuContent.h"
 #include "WiFiProfileMenuContent.h"
 #include "SystemMenuContent.h"
 #include "LoadConfigMenuContent.h"
@@ -35,7 +34,6 @@ MainMenuWindow *MainMenuWindow::getInstance()
         {
             instance->addMenuContent(new WiFiProfileMenuContent);
         }
-        instance->addMenuContent(new DisplayMenuContent);
         instance->addMenuContent(new SystemNightModeMenuContent);
         instance->addMenuContent(new ScreenMenuContent);
         instance->addMenuContent(new LoadConfigMenuContent);

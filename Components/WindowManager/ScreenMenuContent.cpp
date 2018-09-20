@@ -16,19 +16,25 @@
 #include <QGridLayout>
 #include <ScreenLayoutWindow.h>
 #include <WindowManager.h>
+#include "ParaColorWindow.h"
 
 class ScreenMenuContentPrivate
 {
 public:
     ScreenMenuContentPrivate()
-        :layoutCbo(NULL),
-          configBtn(NULL)
+        :layoutCbo(NULL)
     {}
 
     void loadOptions();
 
     ComboBox *layoutCbo;
-    Button *configBtn;
+
+    enum ButtonItem
+    {
+        BUTTON_SCREEN_LAYOUT,
+        BUTTON_PARA_COLOR,
+        BUTTON_NR
+    };
 };
 
 void ScreenMenuContentPrivate::loadOptions()
@@ -74,10 +80,20 @@ void ScreenMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboxIndexChanged(int)));
     d_ptr->layoutCbo = comboBox;
 
-    d_ptr->configBtn = new Button(trs("ScreenLayout"));
-    d_ptr->configBtn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(d_ptr->configBtn, count++, 1);
-    connect(d_ptr->configBtn, SIGNAL(clicked()), this, SLOT(settingLayout()));
+    Button *button;
+    button = new Button(trs("ScreenLayout"));
+    button->setButtonStyle(Button::ButtonTextOnly);
+    int item = static_cast<int>(ScreenMenuContentPrivate::BUTTON_SCREEN_LAYOUT);
+    button->setProperty("Item", qVariantFromValue(item));
+    layout->addWidget(button, count++, 1);
+    connect(button, SIGNAL(clicked()), this, SLOT(onBtnClick()));
+
+    button = new Button(trs("ParameterColor"));
+    button->setButtonStyle(Button::ButtonTextOnly);
+    item = static_cast<int>(ScreenMenuContentPrivate::BUTTON_PARA_COLOR);
+    button->setProperty("Item", qVariantFromValue(item));
+    layout->addWidget(button, count++, 1);
+    connect(button, SIGNAL(clicked()), this, SLOT(onBtnClick()));
 
     layout->setRowStretch(count, 1);
 }
@@ -92,7 +108,20 @@ void ScreenMenuContent::onComboxIndexChanged(int index)
     windowManager.setUFaceType(type);
 }
 
-void ScreenMenuContent::settingLayout()
+void ScreenMenuContent::onBtnClick()
 {
-    windowManager.showWindow(ScreenLayoutWindow::getInstance(), WindowManager::ShowBehaviorCloseOthers);
+    Button *btn = static_cast<Button *>(sender());
+    ScreenMenuContentPrivate::ButtonItem item =
+            static_cast<ScreenMenuContentPrivate::ButtonItem>(btn->property("Item").toInt());
+    switch (item)
+    {
+    case ScreenMenuContentPrivate::BUTTON_SCREEN_LAYOUT:
+        windowManager.showWindow(ScreenLayoutWindow::getInstance(), WindowManager::ShowBehaviorCloseOthers);
+        break;
+    case ScreenMenuContentPrivate::BUTTON_PARA_COLOR:
+        windowManager.showWindow(new ParaColorWindow, WindowManager::ShowBehaviorCloseIfVisiable);
+        break;
+    default:
+        break;
+    }
 }

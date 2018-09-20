@@ -8,7 +8,7 @@
  ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/11
  **/
 
-#include "DisplayMenuContent.h"
+#include "ParaColorWindow.h"
 #include "LanguageManager.h"
 #include <QLabel>
 #include "ComboBox.h"
@@ -18,7 +18,7 @@
 #include "SystemManager.h"
 #include "IConfig.h"
 
-class DisplayMenuContentPrivate
+class ParaColorWindowPrivate
 {
 public:
     enum MenuItem
@@ -31,7 +31,7 @@ public:
         ITEM_CBO_TEMP_COLOR
     };
 
-    DisplayMenuContentPrivate() {}
+    ParaColorWindowPrivate() {}
 
     // load settings
     void loadOptions();
@@ -40,7 +40,7 @@ public:
     QStringList colorList;
 };
 
-void DisplayMenuContentPrivate::loadOptions()
+void ParaColorWindowPrivate::loadOptions()
 {
     QString color;
     currentConfig.getStrValue("Display|ECGColor", color);
@@ -62,47 +62,52 @@ void DisplayMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_TEMP_COLOR]->setCurrentIndex(colorList.indexOf(color));
 }
 
-DisplayMenuContent::DisplayMenuContent()
-    : MenuContent(trs("ParameterColor"), trs("ParameterColorDesc")),
-      d_ptr(new DisplayMenuContentPrivate)
+ParaColorWindow::ParaColorWindow()
+    : Window(),
+      d_ptr(new ParaColorWindowPrivate)
 {
     QString color;
     currentConfig.getStrValue("Display|AllColors", color);
     d_ptr->colorList = color.split(',', QString::KeepEmptyParts);
+    setWindowTitle(trs("ParameterColorDesc"));
+    setFixedSize(480, 450);
+    layoutExec();
 }
 
-DisplayMenuContent::~DisplayMenuContent()
+ParaColorWindow::~ParaColorWindow()
 {
     delete d_ptr;
 }
 
-void DisplayMenuContent::readyShow()
+void ParaColorWindow::showEvent(QShowEvent *ev)
 {
     d_ptr->loadOptions();
 }
 
-void DisplayMenuContent::layoutExec()
+void ParaColorWindow::layoutExec()
 {
-    QGridLayout *layout = new QGridLayout(this);
-
+    QGridLayout *layout = new QGridLayout();
+    layout->setSpacing(10);
+    layout->setMargin(10);
     ComboBox *comboBox;
     QLabel *label;
     int itemID;
 
     // ECG
     label = new QLabel(trs("ECG"));
+    label->setFixedWidth(120);
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     for (int i = 0; i < d_ptr->colorList.count(); i ++)
     {
         comboBox->addItem(trs(d_ptr->colorList.at(i)));
     }
-    itemID = static_cast<int>(DisplayMenuContentPrivate::ITEM_CBO_ECG_COLOR);
+    itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_ECG_COLOR);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(DisplayMenuContentPrivate::ITEM_CBO_ECG_COLOR, comboBox);
+    d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_ECG_COLOR, comboBox);
 
     // SPO2
     label = new QLabel(trs("SPO2"));
@@ -112,12 +117,12 @@ void DisplayMenuContent::layoutExec()
     {
         comboBox->addItem(trs(d_ptr->colorList.at(i)));
     }
-    itemID = static_cast<int>(DisplayMenuContentPrivate::ITEM_CBO_SPO2_COLOR);
+    itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_SPO2_COLOR);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(DisplayMenuContentPrivate::ITEM_CBO_SPO2_COLOR, comboBox);
+    d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_SPO2_COLOR, comboBox);
 
     // NIBP
     label = new QLabel(trs("NIBP"));
@@ -127,12 +132,12 @@ void DisplayMenuContent::layoutExec()
     {
         comboBox->addItem(trs(d_ptr->colorList.at(i)));
     }
-    itemID = static_cast<int>(DisplayMenuContentPrivate::ITEM_CBO_NIBP_COLOR);
+    itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_NIBP_COLOR);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(DisplayMenuContentPrivate::ITEM_CBO_NIBP_COLOR, comboBox);
+    d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_NIBP_COLOR, comboBox);
 
     // CO2
     label = new QLabel(trs("CO2"));
@@ -142,12 +147,12 @@ void DisplayMenuContent::layoutExec()
     {
         comboBox->addItem(trs(d_ptr->colorList.at(i)));
     }
-    itemID = static_cast<int>(DisplayMenuContentPrivate::ITEM_CBO_CO2_COLOR);
+    itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_CO2_COLOR);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(DisplayMenuContentPrivate::ITEM_CBO_CO2_COLOR, comboBox);
+    d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_CO2_COLOR, comboBox);
 
     // RESP
     label = new QLabel(trs("RESP"));
@@ -157,12 +162,12 @@ void DisplayMenuContent::layoutExec()
     {
         comboBox->addItem(trs(d_ptr->colorList.at(i)));
     }
-    itemID = static_cast<int>(DisplayMenuContentPrivate::ITEM_CBO_RESP_COLOR);
+    itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_RESP_COLOR);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(DisplayMenuContentPrivate::ITEM_CBO_RESP_COLOR, comboBox);
+    d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_RESP_COLOR, comboBox);
 
     // TEMP
     label = new QLabel(trs("TEMP"));
@@ -172,17 +177,19 @@ void DisplayMenuContent::layoutExec()
     {
         comboBox->addItem(trs(d_ptr->colorList.at(i)));
     }
-    itemID = static_cast<int>(DisplayMenuContentPrivate::ITEM_CBO_TEMP_COLOR);
+    itemID = static_cast<int>(ParaColorWindowPrivate::ITEM_CBO_TEMP_COLOR);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(DisplayMenuContentPrivate::ITEM_CBO_TEMP_COLOR, comboBox);
+    d_ptr->combos.insert(ParaColorWindowPrivate::ITEM_CBO_TEMP_COLOR, comboBox);
 
     layout->setRowStretch(d_ptr->combos.count(), 1);
+
+    setWindowLayout(layout);
 }
 
-void DisplayMenuContent::onComboBoxIndexChanged(int index)
+void ParaColorWindow::onComboBoxIndexChanged(int index)
 {
     if (index < 0)
     {
@@ -192,25 +199,25 @@ void DisplayMenuContent::onComboBoxIndexChanged(int index)
     QString strPath;
     if (box)
     {
-        DisplayMenuContentPrivate::MenuItem item
-                = (DisplayMenuContentPrivate::MenuItem)box->property("Item").toInt();
+        ParaColorWindowPrivate::MenuItem item
+                = (ParaColorWindowPrivate::MenuItem)box->property("Item").toInt();
         switch (item) {
-        case DisplayMenuContentPrivate::ITEM_CBO_ECG_COLOR:
+        case ParaColorWindowPrivate::ITEM_CBO_ECG_COLOR:
             strPath = "Display|ECGColor";
             break;
-        case DisplayMenuContentPrivate::ITEM_CBO_SPO2_COLOR:
+        case ParaColorWindowPrivate::ITEM_CBO_SPO2_COLOR:
             strPath = "Display|SPO2Color";
             break;
-        case DisplayMenuContentPrivate::ITEM_CBO_NIBP_COLOR:
+        case ParaColorWindowPrivate::ITEM_CBO_NIBP_COLOR:
             strPath = "Display|NIBPColor";
             break;
-        case DisplayMenuContentPrivate::ITEM_CBO_CO2_COLOR:
+        case ParaColorWindowPrivate::ITEM_CBO_CO2_COLOR:
             strPath = "Display|CO2Color";
             break;
-        case DisplayMenuContentPrivate::ITEM_CBO_RESP_COLOR:
+        case ParaColorWindowPrivate::ITEM_CBO_RESP_COLOR:
             strPath = "Display|RESPColor";
             break;
-        case DisplayMenuContentPrivate::ITEM_CBO_TEMP_COLOR:
+        case ParaColorWindowPrivate::ITEM_CBO_TEMP_COLOR:
             strPath = "Display|TEMPColor";
             break;
         }
