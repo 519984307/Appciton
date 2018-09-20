@@ -30,7 +30,9 @@ public:
         : contentView(new IWidget("ContentView")),
           contentLayout(new QHBoxLayout(contentView)),
           curUserFace(UFACE_MONITOR_STANDARD),
-          mainLayout(NULL)
+          mainLayout(NULL),
+          waveAreaStretch(4),
+          paramAreaStretch(2)
     {
         contentLayout->setSpacing(0);
         contentLayout->setContentsMargins(0, 0, 0, 0);
@@ -106,6 +108,9 @@ public:
     QStringList displayParams;      /* current visiable param widget's name list */
 
     QMap<QString, bool> widgetLayoutable;   /* record whether the widget is layoutable */
+
+    int waveAreaStretch;
+    int paramAreaStretch;
 
 private:
     LayoutManagerPrivate(const LayoutManagerPrivate &);
@@ -282,9 +287,9 @@ void LayoutManagerPrivate::performStandardLayout()
     QWidget *leftParamContainer = createContainter();
     leftLayout->addWidget(waveContainer);
     leftLayout->addWidget(leftParamContainer);
-    contentLayout->addLayout(leftLayout, 4);
+    contentLayout->addLayout(leftLayout, waveAreaStretch);
     QWidget *rightParamContainer = createContainter();
-    contentLayout->addWidget(rightParamContainer, 2);
+    contentLayout->addWidget(rightParamContainer, paramAreaStretch);
 
     QGridLayout *waveLayout = new QGridLayout(waveContainer);
     waveLayout->setMargin(0);
@@ -580,12 +585,12 @@ void LayoutManager::updateLayout()
     d_ptr->doContentLayout();
 }
 
-QStringList LayoutManager::getDisplayedWaveforms()
+QStringList LayoutManager::getDisplayedWaveforms() const
 {
     return d_ptr->displayWaveforms;
 }
 
-QList<int> LayoutManager::getDisplayedWaveformIDs()
+QList<int> LayoutManager::getDisplayedWaveformIDs() const
 {
     QList<int> waveIDs;
     QStringList::ConstIterator iter;
@@ -599,6 +604,54 @@ QList<int> LayoutManager::getDisplayedWaveformIDs()
     }
 
     return waveIDs;
+}
+
+QStringList LayoutManager::getDisplayedWaveformLabels() const
+{
+    QStringList waveLabels;
+    QStringList::ConstIterator iter;
+    for (iter = d_ptr->displayWaveforms.constBegin(); iter != d_ptr->displayWaveforms.constEnd(); ++iter)
+    {
+        WaveWidget *w = qobject_cast<WaveWidget *>(d_ptr->layoutWidgets[*iter]);
+        if (w)
+        {
+            waveLabels.append(w->waveLabel());
+        }
+    }
+
+    return waveLabels;
+}
+
+WaveWidget *LayoutManager::getDisplayedWaveWidget(WaveformID id)
+{
+    QStringList::ConstIterator iter;
+    for (iter = d_ptr->displayWaveforms.constBegin(); iter != d_ptr->displayWaveforms.constEnd(); ++iter)
+    {
+        WaveWidget *w = qobject_cast<WaveWidget *>(d_ptr->layoutWidgets[*iter]);
+        if (w && w->getID() == id)
+        {
+            return w;
+        }
+    }
+
+    return NULL;
+}
+
+bool LayoutManager::isLastWaveWidget(const WaveWidget *w) const
+{
+    if (d_ptr->displayWaveforms.isEmpty() || !w)
+    {
+        return false;
+    }
+
+    QString name = d_ptr->displayWaveforms.last();
+    WaveWidget *lastW = qobject_cast<WaveWidget *>(d_ptr->layoutWidgets[name]);
+    if (lastW == w)
+    {
+        return true;
+    }
+
+    return false;
 }
 
 void LayoutManager::resetWave()
@@ -626,6 +679,16 @@ bool LayoutManager::setWidgetLayoutable(const QString &name, bool enable)
     {
         return d_ptr->displayWaveforms.contains(name) || d_ptr->displayParams.contains(name);
     }
+}
+
+QRect LayoutManager::getMenuArea() const
+{
+    QRect r = d_ptr->contentView->geometry();
+    QRect gr(d_ptr->contentView->mapToGlobal(r.topLeft()),
+             d_ptr->contentView->mapToGlobal(r.bottomRight()));
+
+    gr.setWidth(gr.width() * d_ptr->waveAreaStretch / (d_ptr->waveAreaStretch + d_ptr->paramAreaStretch));
+    return gr;
 }
 
 LayoutManager::LayoutManager()

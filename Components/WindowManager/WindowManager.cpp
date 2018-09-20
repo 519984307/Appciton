@@ -95,46 +95,6 @@ void WindowManager::getCurrentWaveforms(QStringList &waveformNames)
     }
 }
 
-bool WindowManager::isLastWaveForm(WaveWidget *w)
-{
-    int count = _waveformBox->count();
-    for (int i = count - 1; i >= 0; i--)
-    {
-        WaveWidget *lastW = qobject_cast<WaveWidget *>(_waveformBox->itemAt(i)->widget());
-        if (!lastW)
-        {
-            continue;
-        }
-
-        return lastW == w;
-    }
-
-    return false;
-}
-
-WaveWidget *WindowManager::getWaveWidget(int id)
-{
-    int count = _waveformBox->count();
-    for (int i = count - 1; i >= 0; i--)
-    {
-        WaveWidget *wave = qobject_cast<WaveWidget *>(_waveformBox->itemAt(i)->widget());
-
-        if (wave && wave->getID() == id)
-        {
-            if (wave->isVisible())
-            {
-                return wave;
-            }
-            else
-            {
-                return NULL;
-            }
-        }
-    }
-
-    return NULL;
-}
-
 /***************************************************************************************************
  * 功能：设置当前显示的波形窗体内容。
  **************************************************************************************************/

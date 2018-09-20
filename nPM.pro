@@ -488,7 +488,6 @@ SOURCES +=                                                                      
     Components/ConfigManager/LoadConfigMenuContent.cpp                          \
     Components/ConfigManager/UnitSetupMenuContent.cpp                           \
     Components/Freeze/FreezeManager.cpp                                         \
-    Components/Freeze/FreezeWidget.cpp                                          \
     Components/Freeze/FreezeWindow.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
 #################################################################################
@@ -1066,7 +1065,6 @@ HEADERS +=                                                                      
     Components/ConfigManager/LoadConfigMenuContent.h                            \
     Components/ConfigManager/UnitSetupMenuContent.h                             \
     Components/Freeze/FreezeManager.h                                           \
-    Components/Freeze/FreezeWidget.h                                            \
     Components/Freeze/FreezeWindow.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \
 #################################################################################

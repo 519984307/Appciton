@@ -160,16 +160,6 @@ public:
     // 获取当前显示的波形窗体内容。
     void getCurrentWaveforms(QStringList &waveformNames);
 
-    // check whether the wave form is the last waveform
-    bool isLastWaveForm(WaveWidget *w);
-
-    /**
-     * @brief getWaveWidget get the wave widget base on the wave id
-     * @param id waveid
-     * @return return wavewidget or null if the wavewidget is neither visiable nor existed.
-     */
-    WaveWidget *getWaveWidget(int id);
-
 private:
     WindowManager();
 

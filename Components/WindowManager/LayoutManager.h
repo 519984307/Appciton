@@ -16,6 +16,7 @@
 class LayoutManagerPrivate;
 class QLayout;
 class IWidget;
+class WaveWidget;
 class LayoutManager : public QObject
 {
 public:
@@ -79,13 +80,32 @@ public:
      * @brief getDisplayedWaveform get the current displayed waveforms
      * @return a list of display wavewidget's name
      */
-    QStringList getDisplayedWaveforms();
+    QStringList getDisplayedWaveforms() const;
 
     /**
      * @brief getTheDisplayWaveformIDs get the current displayed waveforms id
      * @return a list of display waveform's id
      */
-    QList<int> getDisplayedWaveformIDs();
+    QList<int> getDisplayedWaveformIDs() const;
+
+    /**
+     * @brief getDisplayedWaveformLabels get the display waveforms labels
+     * @return a list of display waveform's label
+     */
+    QStringList getDisplayedWaveformLabels() const;
+
+    /**
+     * @brief getDisplayedWaveWidget get the display wave widget
+     * @param id the waveform id
+     * @return pointer to the waveWidget if the wave is displayed, otherwise, return NULL
+     */
+    WaveWidget *getDisplayedWaveWidget(WaveformID id);
+
+    /**
+     * @brief isLastWaveWidget check whether a wave widget is the last display widget
+     * @return true if the widget if the last display wave widget
+     */
+    bool isLastWaveWidget(const WaveWidget * w) const;
 
     /**
      * @brief resetWave reset the displayed wave widget
@@ -101,6 +121,13 @@ public:
      * @return true if the layout need to update
      */
     bool setWidgetLayoutable(const QString &name, bool enable);
+
+    /**
+     * @brief getMenuArea get the menu arae in global coordinate
+     * @note    menu arae is a place where the popup window/menu show show at
+     * @return the proper menu area
+     */
+    QRect getMenuArea() const;
 
 private:
     LayoutManagerPrivate * const d_ptr;
