@@ -39,7 +39,6 @@ static KeyActionDesc _rescueDataKeys[] =
 
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_INFO),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_NEW),
-    KeyActionDesc("", "", ICON_FILE_LEFT , NULL, SOFT_BASE_KEY_PREVIOUS_PAGE),
     KeyActionDesc("", trs("TrendTable"), "Summary.png",   RescueDataSoftKeyAction::trendReview),
     KeyActionDesc("", trs("TrendGraph"), "Summary.png", RescueDataSoftKeyAction::summaryReview),
     KeyActionDesc("", trs("ExportImport"), "Export.png",  RescueDataSoftKeyAction::exportData),
@@ -54,7 +53,6 @@ static KeyActionDesc _rescueDataKeys[] =
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", ICON_FILE_RIGHT , NULL , SOFT_BASE_KEY_NEXT_PAGE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_MAIN_SETUP)
 };
 
@@ -123,7 +121,7 @@ void RescueDataSoftKeyAction::exit(bool isPressed)
     }
 
     SoftKeyActionType type = softkeyManager.uFaceTypeToSoftKeyType(windowManager.getUFaceType());
-    softkeyManager.setContent(type, true);
+    softkeyManager.setContent(type);
 }
 
 void RescueDataSoftKeyAction::eventReview(bool isPressed)

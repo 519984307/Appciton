@@ -1536,9 +1536,6 @@ void ECGParam::setCalcLead(ECGLead lead)
         _provider->setCalcLead(lead);
     }
 
-    // need to refresh to hide or show the Diag.ECG soft key
-    softkeyManager.refresh();
-
     emit calcLeadChanged();
 }
 

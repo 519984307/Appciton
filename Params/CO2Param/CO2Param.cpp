@@ -545,8 +545,6 @@ void CO2Param::setConnected(bool isConnected)
     }
 
     curWaveList.clear();
-
-    softkeyManager.refresh();
 }
 
 /**************************************************************************************************

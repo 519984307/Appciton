@@ -49,7 +49,6 @@ static KeyActionDesc _baseKeys[] =
 {
     KeyActionDesc("", "", "main.png",  SoftkeyActionBase::mainsetup
                     , SOFT_BASE_KEY_NR, true, QColor(255, 200, 0)),
-    KeyActionDesc("", "", ICON_FILE_LEFT,  SoftkeyActionBase::previousPage),
     KeyActionDesc("", trs("Patient"), "PatientInfo.png", SoftkeyActionBase::patientInfo),
     KeyActionDesc("", trs("PatientNew"), "PatientNew.png", SoftkeyActionBase::patientNew),
     KeyActionDesc("", trs("ECGLeadMode"), "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
@@ -71,7 +70,6 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", trs("SystemBrightness"), "Brightness.png", SoftkeyActionBase::sysSetup),
     KeyActionDesc("", trs("NightMode"), "nightMode.png", SoftkeyActionBase::nightMode),
     KeyActionDesc("", trs("PrintSetup"), "printSetup.png", SoftkeyActionBase::sysSetup),
-    KeyActionDesc("", "", ICON_FILE_RIGHT,  SoftkeyActionBase::nextPage),
 };
 
 /***************************************************************************************************
@@ -109,29 +107,6 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     }
     windowManager.showWindow(&codeMarkerWindow , WindowManager::ShowBehaviorCloseIfVisiable |
                              WindowManager::ShowBehaviorCloseOthers);
-}
-
-void SoftkeyActionBase::previousPage(bool isPressed)
-{
-    if (isPressed)
-    {
-        return;
-    }
-
-    softkeyManager.previousPage();
-}
-
-/***************************************************************************************************
- * 下一页面回调。
- **************************************************************************************************/
-void SoftkeyActionBase::nextPage(bool isPressed)
-{
-    if (isPressed)
-    {
-        return;
-    }
-
-    softkeyManager.nextPage();
 }
 
 /***************************************************************************************************

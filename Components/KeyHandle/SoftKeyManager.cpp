@@ -28,7 +28,7 @@
 
 
 
-#define PREFER_SOFTKEY_WIDTH 100
+#define PREFER_SOFTKEY_WIDTH 98
 #define SOFTKEY_SPACING 2
 #define SOFTKEY_MARGIN 2
 
@@ -109,6 +109,7 @@ public:
                     dynamicKeyWidgets.at(keyIndex)->setContent(&emptyKeyDesc);
                 }
                 keyIndex++;
+                startDescIndex++;
             }
         }
     }
@@ -127,122 +128,6 @@ public:
     QHBoxLayout *dynamicKeyLayout;
 };
 
-#define SOFTKEY_WIDGET_NR  12      // 按钮显示的数量
-#define SOFTKEY_HEAD_NR 2          // 开头固定软按键个数
-#define SOFTKEY_TAIL_NR 1          // 结尾固定软按键个数
-
-/***************************************************************************************************
- * 功能：切换到指定的动作组。
- **************************************************************************************************/
-void SoftKeyManager::switchTo(SoftKeyActionType type)
-{
-    ActionMap::iterator it = _actions.find(type);
-    if (it == _actions.end())
-    {
-        return;
-    }
-
-    if (type == _curSoftKeyType)
-    {
-        return;
-    }
-
-    _curSoftKeyType = type;
-    _currentAction = it.value();
-    _totalPages = _currentAction->getActionDescNR() / SOFTKEY_WIDGET_NR;
-    _totalPages += (_currentAction->getActionDescNR() % SOFTKEY_WIDGET_NR) ? 1 : 0;
-    _currentPage = 0;
-    _layoutKeys();
-}
-
-/***************************************************************************************************
- * 功能：切换到上一个page。
- **************************************************************************************************/
-void SoftKeyManager::previousPage()
-{
-    if (_currentAction == NULL)
-    {
-        return;
-    }
-
-    _currentPage--;
-    _currentPage = (_currentPage <= 0) ? 0 : _currentPage;
-    _layoutKeys();
-}
-
-/***************************************************************************************************
- * 功能：切换到下一个page。
- **************************************************************************************************/
-void SoftKeyManager::nextPage(void)
-{
-    if (_currentAction == NULL)
-    {
-        return;
-    }
-
-    _currentPage++;
-    _currentPage = (_currentPage >= _totalPages) ? (_totalPages - 1) : _currentPage;
-    _layoutKeys();
-}
-
-bool SoftKeyManager::hasPreviousPage()
-{
-    return _currentPage > 0;
-}
-
-bool SoftKeyManager::hasNextPage()
-{
-    return _currentPage < _totalPages - 1;
-}
-
-/***************************************************************************************************
- * 功能：切换到首页。
- **************************************************************************************************/
-bool SoftKeyManager::returnRootPage()
-{
-    switch (_curSoftKeyType)
-    {
-    case SOFTKEY_ACTION_RESCUE_DATA:
-    case SOFTKEY_ACTION_DEL_RESCUE_DATA:
-        switch (windowManager.getUFaceType())
-        {
-        case UFACE_MONITOR_STANDARD:
-            switchTo(SOFTKEY_ACTION_STANDARD);
-            break;
-        default:
-            break;
-        }
-        return true;
-    default:
-        break;
-    }
-
-    bool ret = false;
-    if (0  != _currentPage)
-    {
-        _currentPage = 0;
-        ret = true;
-    }
-
-    _layoutKeys();
-    return ret;
-}
-
-/***************************************************************************************************
- * 功能：刷新当前页。
- **************************************************************************************************/
-void SoftKeyManager::refresh(bool toFirstPage)
-{
-    if (toFirstPage)
-    {
-        returnRootPage();
-    }
-    else
-    {
-        _layoutKeys();
-    }
-}
-
 /***************************************************************************************************
  * 功能：获取软按键动作对象。
  * 参数：
@@ -250,8 +135,8 @@ void SoftKeyManager::refresh(bool toFirstPage)
  **************************************************************************************************/
 SoftkeyActionBase *SoftKeyManager::getAction(SoftKeyActionType t)
 {
-    ActionMap::iterator it = _actions.find(t);
-    if (it == _actions.end())
+    SoftKeyActionMap::iterator it = d_ptr->actionMaps.find(t);
+    if (it == d_ptr->actionMaps.end())
     {
         return NULL;
     }
@@ -266,51 +151,13 @@ SoftkeyActionBase *SoftKeyManager::getAction(SoftKeyActionType t)
 void SoftKeyManager::getSubFocusWidget(QList<QWidget *> &subWidgets) const
 {
     subWidgets.clear();
-
-    for (int i = (SOFTKEY_WIDGET_NR - 1); i >= 0; i--)
+    subWidgets.append(d_ptr->mainMenuKeyWidget);
+    subWidgets.append(d_ptr->leftPageKeyWidget);
+    for (int i = 0; i < d_ptr->dynamicKeyWidgets.count(); i++ )
     {
-        IWidget *subWidget = _keyWidgets[i];
-        if (NULL != subWidget)
-        {
-            subWidgets.append(subWidget);
-        }
+        subWidgets.append(d_ptr->dynamicKeyWidgets.at(i));
     }
-}
-
-/***************************************************************************************************
- * 功能：子控件点击回调。
- **************************************************************************************************/
-void SoftKeyManager::_clickKey(IWidget *w)
-{
-    int index = 0;
-    int actionSize = _currentAction->getActionDescNR();
-    for (; index < _keyWidgets.size() ; index++)
-    {
-        if (_keyWidgets[index] == w)
-        {
-            break;
-        }
-    }
-    // menu tail
-    if (index >= SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR)
-    {
-        index = actionSize - (SOFTKEY_WIDGET_NR - index);
-    }
-    // menu body
-    else if (index < SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR && index > SOFTKEY_HEAD_NR - 1)
-    {
-        index = index +
-                (SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR - SOFTKEY_HEAD_NR) * _currentPage;
-    }
-
-    if (_currentAction != NULL)
-    {
-        KeyActionDesc *desc = _currentAction->getActionDesc(index);
-        if ((desc != NULL) && (desc->hook != NULL))
-        {
-            desc->hook(0);
-        }
-    }
+    subWidgets.append(d_ptr->rightPageKeyWidget);
 }
 
 void SoftKeyManager::_dynamicKeyClicked(int index)
@@ -356,55 +203,6 @@ void SoftKeyManager::_fixedKeyClicked()
 }
 
 /***************************************************************************************************
- * 功能：将当前页的图标布局出来。
- **************************************************************************************************/
-void SoftKeyManager::_layoutKeys(void)
-{
-    if (_currentAction == NULL)
-    {
-        return;
-    }
-
-    int startIndex = 0;
-    // menu head
-    for (int i = 0; i <= SOFTKEY_HEAD_NR - 1; i++)
-    {
-        KeyActionDesc *desc = _currentAction->getActionDesc(startIndex++);
-        if (desc != NULL)
-        {
-            _keyWidgets[i]->setContent(desc);
-        }
-    }
-
-    // menu body
-    if (_currentPage)
-    {
-        startIndex = startIndex +
-                     (SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR - SOFTKEY_HEAD_NR) * _currentPage;
-    }
-    for (int i = SOFTKEY_HEAD_NR;
-            i < SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR; i++)
-    {
-        KeyActionDesc *desc = _currentAction->getActionDesc(startIndex++);
-        if (desc != NULL)
-        {
-            _keyWidgets[i]->setContent(desc);
-        }
-    }
-
-    // menu tail
-    int actionSize = _currentAction->getActionDescNR() - SOFTKEY_TAIL_NR;
-    for (int i = SOFTKEY_WIDGET_NR - SOFTKEY_TAIL_NR; i < SOFTKEY_WIDGET_NR; i++)
-    {
-        KeyActionDesc *desc = _currentAction->getActionDesc(actionSize++);
-        if (desc != NULL)
-        {
-            _keyWidgets[i]->setContent(desc);
-        }
-    }
-}
-
-/***************************************************************************************************
  * 功能：重绘事件。
  * 参数：
  *      e：事件。
@@ -419,7 +217,7 @@ void SoftKeyManager::paintEvent(QPaintEvent *e)
 
 void SoftKeyManager::resizeEvent(QResizeEvent *e)
 {
-    // find a proper softkey width
+    // calculate the avaliable dynamic softkey number
 
     int w = e->size().width();
     // minus main menu width , left/right page key width, spacing and margin
@@ -517,8 +315,9 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager"),
     // left page
     d_ptr->leftPageKeyWidget = new SoftkeyWidget();
     d_ptr->leftPageKeyWidget->setMinimumWidth(PREFER_SOFTKEY_WIDTH / 2);
+    d_ptr->leftPageKeyWidget->setMaximumWidth(PREFER_SOFTKEY_WIDTH);
     connect(d_ptr->leftPageKeyWidget, SIGNAL(released()), this, SLOT(_fixedKeyClicked()));
-    hbox->addWidget(d_ptr->leftPageKeyWidget);
+    hbox->addWidget(d_ptr->leftPageKeyWidget, 1);
 
     // dynamic layout
     QWidget *placeHolder =  new QWidget();
@@ -531,8 +330,9 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager"),
     // right page
     d_ptr->rightPageKeyWidget = new SoftkeyWidget();
     d_ptr->rightPageKeyWidget->setMinimumWidth(PREFER_SOFTKEY_WIDTH / 2);
+    d_ptr->rightPageKeyWidget->setMaximumWidth(PREFER_SOFTKEY_WIDTH);
     connect(d_ptr->rightPageKeyWidget, SIGNAL(released()), this, SLOT(_fixedKeyClicked()));
-    hbox->addWidget(d_ptr->rightPageKeyWidget);
+    hbox->addWidget(d_ptr->rightPageKeyWidget, 1);
 
     d_ptr->signalMapper = new QSignalMapper(this);
     connect(d_ptr->signalMapper, SIGNAL(mapped(int)), this, SLOT(_dynamicKeyClicked(int)));
@@ -541,7 +341,7 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager"),
 
     // new出SoftkeyAction对象。
     SoftkeyActionBase *action = new MonitorSoftkeyAction();
-    _actions.insert(action->getType(), action);
+    d_ptr->actionMaps.insert(action->getType(), action);
 }
 
 /***************************************************************************************************

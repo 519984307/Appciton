@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/20
+ **/
+
 #include <QPainter>
 #include <QKeyEvent>
 #include <QPaintEvent>
@@ -24,16 +34,18 @@ IWidget::IWidget(const QString &name, QWidget *parent)
 /***************************************************************************************************
  * 功能：大小调整事件，更新聚焦边框区域
  **************************************************************************************************/
-void IWidget::resizeEvent(QResizeEvent */*e*/)
+void IWidget::resizeEvent(QResizeEvent *e)
 {
+    Q_UNUSED(e);
     _updateFocusRegion();
 }
 
 /***************************************************************************************************
  * 功能：响应聚焦事件
  **************************************************************************************************/
-void IWidget::focusInEvent(QFocusEvent */*e*/)
+void IWidget::focusInEvent(QFocusEvent *e)
 {
+    Q_UNUSED(e);
     if (_focusRegion.isEmpty())
     {
         _updateFocusRegion();
@@ -45,8 +57,9 @@ void IWidget::focusInEvent(QFocusEvent */*e*/)
 /***************************************************************************************************
  * 功能：响应失焦事件
  **************************************************************************************************/
-void IWidget::focusOutEvent(QFocusEvent */*e*/)
+void IWidget::focusOutEvent(QFocusEvent *e)
 {
+    Q_UNUSED(e);
     if (_focusRegion.isEmpty())
     {
         _updateFocusRegion();
@@ -82,27 +95,27 @@ void IWidget::keyPressEvent(QKeyEvent *e)
 {
     switch (e->key())
     {
-        case Qt::Key_Left:
-        case Qt::Key_Up:
-            focusPreviousChild();
-            break;
+    case Qt::Key_Left:
+    case Qt::Key_Up:
+        focusPreviousChild();
+        break;
 
-        case Qt::Key_Right:
-        case Qt::Key_Down:
-            focusNextChild();
-            break;
+    case Qt::Key_Right:
+    case Qt::Key_Down:
+        focusNextChild();
+        break;
 
-        case Qt::Key_Enter:
-        case Qt::Key_Return:
-            if (!e->isAutoRepeat())
-            {
-                emit clicked(this); // 发送按键单击信号
-            }
-            break;
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        if (!e->isAutoRepeat())
+        {
+            emit clicked(this); // 发送按键单击信号
+        }
+        break;
 
-        default:
-            e->ignore();
-            return;
+    default:
+        e->ignore();
+        return;
     }
 }
 
@@ -113,18 +126,18 @@ void IWidget::keyReleaseEvent(QKeyEvent *e)
 {
     switch (e->key())
     {
-        case Qt::Key_Enter:
-        case Qt::Key_Return:
-            if (!e->isAutoRepeat())
-            {
-                emit released();
-                emit released(this); // 发送按键释放信号
-            }
-            break;
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        if (!e->isAutoRepeat())
+        {
+            emit released();
+            emit released(this); // 发送按键释放信号
+        }
+        break;
 
-        default:
-            e->ignore();
-            return;
+    default:
+        e->ignore();
+        return;
     }
 }
 
@@ -150,6 +163,7 @@ void IWidget::mouseReleaseEvent(QMouseEvent *e)
 {
     if (e->button() == Qt::LeftButton)
     {
+        emit released();
         emit released(this); // 发送鼠标释放信号
     }
     else
@@ -165,8 +179,8 @@ void IWidget::_updateFocusRegion()
 {
     _focusRegion = QRegion(0, 0, width(), _focusedBorderWidth);
     _focusRegion += QRegion(0, _focusedBorderWidth, _focusedBorderWidth,
-            (height() - 2 * _focusedBorderWidth));
+                            (height() - 2 * _focusedBorderWidth));
     _focusRegion += QRegion((width() - _focusedBorderWidth), _focusedBorderWidth,
-            _focusedBorderWidth, (height() - 2 * _focusedBorderWidth));
+                            _focusedBorderWidth, (height() - 2 * _focusedBorderWidth));
     _focusRegion += QRegion(0, (height() - _focusedBorderWidth), width(), _focusedBorderWidth);
 }

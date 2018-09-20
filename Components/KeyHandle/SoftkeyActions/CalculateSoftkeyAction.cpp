@@ -36,7 +36,6 @@ static KeyActionDesc _calculationDataKeys[] =
 
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_INFO),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_NEW),
-    KeyActionDesc("", "", ICON_FILE_LEFT, NULL, SOFT_BASE_KEY_PREVIOUS_PAGE),
     KeyActionDesc("", trs("Dose"), "dosecalculation.png", CalculateSoftkeyAction::doseCalculation),
     KeyActionDesc("", trs("Blood"), "blood.png", CalculateSoftkeyAction::Hemodynamic),
     KeyActionDesc("", "", "SoftkeyArrow.png", CalculateSoftkeyAction::exit),
@@ -44,7 +43,6 @@ static KeyActionDesc _calculationDataKeys[] =
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", ICON_FILE_RIGHT, NULL, SOFT_BASE_KEY_NEXT_PAGE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_MAIN_SETUP)
 };
 
@@ -120,7 +118,7 @@ void CalculateSoftkeyAction::exit(bool isPressed)
     }
 
     SoftKeyActionType type = softkeyManager.uFaceTypeToSoftKeyType(windowManager.getUFaceType());
-    softkeyManager.setContent(type, true);
+    softkeyManager.setContent(type);
 }
 
 int CalculateSoftkeyAction::getActionDescNR(void)
