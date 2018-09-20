@@ -286,17 +286,6 @@ int SoftkeyWidget::_adjustHintFontSize(const QRect &r, QString &hint)
     {
         hint = hint + hintTxt;
     }
-    QString text;
-    int maxLen = 0;
-    text = hint;
-    maxLen = fontManager.textWidthInPixels(hint, font);
-    while (maxLen > width && fontSize > 0)
-    {
-        font = fontManager.textFont(fontSize, true);
-        maxLen = fontManager.textWidthInPixels(text, font);
-        --fontSize;
-    }
-
     return fontSize;
 }
 
