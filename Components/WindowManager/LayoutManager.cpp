@@ -19,6 +19,7 @@
 #include <QList>
 #include "OrderedMap.h"
 #include "ECGSymbol.h"
+#include "WaveWidget.h"
 
 typedef QList<LayoutNode> LayoutRow;
 
@@ -100,6 +101,11 @@ public:
     QMap<QString, QString> layoutNodeMap;
 
     QBoxLayout *mainLayout;
+
+    QStringList displayWaveforms;   /* current visiable wave widget's name list */
+    QStringList displayParams;      /* current visiable param widget's name list */
+
+    QMap<QString, bool> widgetLayoutable;   /* record whether the widget is layoutable */
 
 private:
     LayoutManagerPrivate(const LayoutManagerPrivate &);
@@ -243,23 +249,10 @@ void LayoutManagerPrivate::doContentLayout()
     // clear the exist layout
     clearLayout(contentLayout);
 
-    // find the ECG correspond wave
-    int leadMode = ECG_LEAD_MODE_3;
-    systemConfig.getNumValue("PrimaryCfg|ECG|LeadMode", leadMode);
-    QString ecg1Wave;
-    QString ecg2Wave;
-    systemConfig.getStrValue("PrimaryCfg|ECG|Ecg1WaveWidget", ecg1Wave);
-    systemConfig.getStrValue("PrimaryCfg|ECG|Ecg2WaveWidget", ecg2Wave);
-    if (leadMode == ECG_LEAD_MODE_3)
-    {
-        layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG1)] = ecg1Wave;
-        layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG2)] = QString();
-    }
-    else
-    {
-        layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG1)] = ecg1Wave;
-        layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG2)] = ecg2Wave;
-    }
+    // clear the display wave form list first, the displayed waveforms should be updated
+    // in each layout funciton
+    displayWaveforms.clear();
+    displayParams.clear();
 
     switch (curUserFace) {
     case UFACE_MONITOR_STANDARD:
@@ -308,7 +301,7 @@ void LayoutManagerPrivate::performStandardLayout()
         {
             int row = iter.key();
             IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
-            if (!w)
+            if (!w || !widgetLayoutable[w->name()])
             {
                 continue;
             }
@@ -318,15 +311,21 @@ void LayoutManagerPrivate::performStandardLayout()
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM)
                 {
                     waveLayout->addWidget(w, row, nodeIter->pos, 1, nodeIter->span);
+                    if (qobject_cast<WaveWidget *>(w))
+                    {
+                        displayWaveforms.append(w->name());
+                    }
                 }
                 else
                 {
                     leftParamLayout->addWidget(w, row - LAYOUT_MAX_WAVE_ROW_NUM, nodeIter->pos, 1, nodeIter->span);
+                    displayParams.append(w->name());
                 }
             }
             else
             {
                 rightParamLayout->addWidget(w, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
+                displayParams.append(w->name());
             }
         }
     }
@@ -397,10 +396,8 @@ void LayoutManager::reloadLayoutConfig()
 
     d_ptr->layoutMap = layoutMap;
 
-    // reparse the layout info
+    // reparse the layout info and perform layout
     updateLayout();
-    // perform layout
-    d_ptr->doContentLayout();
 }
 
 QLayout *LayoutManager::mainLayout()
@@ -446,6 +443,7 @@ void LayoutManager::addLayoutWidget(IWidget *w, LayoutNodeType nodeType)
     }
 
     d_ptr->layoutWidgets.insert(w->name(), w);
+    d_ptr->widgetLayoutable.insert(w->name(), true);
 
     w->setVisible(false);
 
@@ -472,16 +470,38 @@ void LayoutManager::setUFaceType(UserFaceType type)
         return;
     }
 
-    if (d_ptr->layoutInfos.isEmpty())
-    {
-        updateLayout();
-    }
+    d_ptr->curUserFace = type;
 
-    d_ptr->doContentLayout();
+    updateLayout();
+}
+
+UserFaceType LayoutManager::getUFaceType() const
+{
+    return d_ptr->curUserFace;
 }
 
 void LayoutManager::updateLayout()
 {
+    // TODO: 1. check co2 is connect or not to decide whether show co2 wave or trend
+
+    // find the ECG correspond wave
+    int leadMode = ECG_LEAD_MODE_3;
+    systemConfig.getNumValue("PrimaryCfg|ECG|LeadMode", leadMode);
+    QString ecg1Wave;
+    QString ecg2Wave;
+    systemConfig.getStrValue("PrimaryCfg|ECG|Ecg1WaveWidget", ecg1Wave);
+    systemConfig.getStrValue("PrimaryCfg|ECG|Ecg2WaveWidget", ecg2Wave);
+    if (leadMode == ECG_LEAD_MODE_3)
+    {
+        d_ptr->layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG1)] = ecg1Wave;
+        d_ptr->layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG2)] = QString();
+    }
+    else
+    {
+        d_ptr->layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG1)] = ecg1Wave;
+        d_ptr->layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG2)] = ecg2Wave;
+    }
+
     d_ptr->layoutInfos.clear();
     QVariantList layoutRows = d_ptr->layoutMap["LayoutRow"].toList();
     if (layoutRows.isEmpty())
@@ -554,6 +574,57 @@ void LayoutManager::updateLayout()
         }
 
         curRow++;
+    }
+
+    // perform layout
+    d_ptr->doContentLayout();
+}
+
+QStringList LayoutManager::getDisplayedWaveforms()
+{
+    return d_ptr->displayWaveforms;
+}
+
+QList<int> LayoutManager::getDisplayedWaveformIDs()
+{
+    QList<int> waveIDs;
+    QStringList::ConstIterator iter;
+    for (iter = d_ptr->displayWaveforms.constBegin(); iter != d_ptr->displayWaveforms.constEnd(); ++iter)
+    {
+        WaveWidget *w = qobject_cast<WaveWidget *>(d_ptr->layoutWidgets[*iter]);
+        if (w)
+        {
+            waveIDs.append(w->getID());
+        }
+    }
+
+    return waveIDs;
+}
+
+void LayoutManager::resetWave()
+{
+    QStringList::ConstIterator iter;
+    for (iter = d_ptr->displayWaveforms.constBegin(); iter != d_ptr->displayWaveforms.constEnd(); ++iter)
+    {
+        WaveWidget *w = qobject_cast<WaveWidget *>(d_ptr->layoutWidgets[*iter]);
+        if (w)
+        {
+            w->resetWave();
+        }
+    }
+}
+
+bool LayoutManager::setWidgetLayoutable(const QString &name, bool enable)
+{
+    d_ptr->widgetLayoutable[name] = enable;
+
+    if (enable)
+    {
+        return !d_ptr->displayWaveforms.contains(name) && !d_ptr->displayParams.contains(name);
+    }
+    else
+    {
+        return d_ptr->displayWaveforms.contains(name) || d_ptr->displayParams.contains(name);
     }
 }
 

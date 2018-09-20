@@ -65,11 +65,42 @@ public:
     void setUFaceType(UserFaceType type);
 
     /**
-     * @brief updateLayout update the layout info, if the internal layout info changed,
-     *        the layout manager will re-perform layout stuff
-     *
+     * @brief getUFaceType get the current user interface layout type
+     * @return
+     */
+    UserFaceType getUFaceType() const;
+
+    /**
+     * @brief updateLayout update the layout info and re-perform layout stuff
      */
     void updateLayout();
+
+    /**
+     * @brief getDisplayedWaveform get the current displayed waveforms
+     * @return a list of display wavewidget's name
+     */
+    QStringList getDisplayedWaveforms();
+
+    /**
+     * @brief getTheDisplayWaveformIDs get the current displayed waveforms id
+     * @return a list of display waveform's id
+     */
+    QList<int> getDisplayedWaveformIDs();
+
+    /**
+     * @brief resetWave reset the displayed wave widget
+     */
+    void resetWave();
+
+    /**
+     * @brief setWidgetLayoutable set whether the widget is layoutable in the layout manager
+     * @node  all widget is layoutable by default
+     *        you should call @updateLayout to fresh the layout if yout want the setting take effect
+     * @param name the widget's name
+     * @param enable true if layoutable, otherwise, false
+     * @return true if the layout need to update
+     */
+    bool setWidgetLayoutable(const QString &name, bool enable);
 
 private:
     LayoutManagerPrivate * const d_ptr;

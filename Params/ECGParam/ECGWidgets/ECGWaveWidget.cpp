@@ -445,14 +445,6 @@ void ECGWaveWidget::setSpeed(ECGSweepSpeed speed)
 void ECGWaveWidget::setBandWidth(ECGBandwidth bandwidth)
 {
     QString filter;
-    QStringList waveName;
-    windowManager.getDisplayedWaveform(waveName);
-
-    if (waveName.isEmpty())
-    {
-        return;
-    }
-
     filter = ECGSymbol::convert(bandwidth);
     _filter->setText(filter);
 }

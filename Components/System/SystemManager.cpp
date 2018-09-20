@@ -861,11 +861,6 @@ void SystemManager::_handleBMode(void)
     windowManager.move((pDesk->width() - windowManager.width()) / 2,
                        (pDesk->height() - windowManager.height()) / 2);
 
-    if (ecgParam.getDisplayMode() == ECG_DISPLAY_12_LEAD_FULL)
-    {
-        ecgParam.setDisplayMode(ECG_DISPLAY_NORMAL, false);
-    }
-
     // 显示界面界面。
     UserFaceType type = UFACE_MONITOR_STANDARD;
 

@@ -1499,40 +1499,6 @@ void WindowManager::setPopMenuSize(int w, int h)
     _subMenuHeight = (h - 40) * 3 / 4;
 }
 
-/***************************************************************************************************
- * 功能： 获取已显示的波形窗体名称。
- * 参数：
- *      waveformName：带回波形控件的名称。
- **************************************************************************************************/
-void WindowManager::getDisplayedWaveform(QStringList &waveformName)
-{
-    waveformName.clear();
-
-    QList<WaveWidget *> waves;
-    _getDisplayedWaveform(waves);
-    for (int i = 0; i < waves.size(); i++)
-    {
-        waveformName += waves[i]->name();
-    }
-}
-
-/***************************************************************************************************
- * 功能： 获取已显示的波形窗体ID。
- * 参数：
- *      waveformID：带回波形控件的ID。
- **************************************************************************************************/
-void WindowManager::getDisplayedWaveform(QList<int> &id)
-{
-    id.clear();
-
-    QList<WaveWidget *> waves;
-    _getDisplayedWaveform(waves);
-    for (int i = 0; i < waves.size(); i++)
-    {
-        id += waves[i]->getID();
-    }
-}
-
 /**
  * @brief WindowManager::getDisplayedWaveformLabels get the display waves labels
  * @param waveLabels string list of the wave labels
