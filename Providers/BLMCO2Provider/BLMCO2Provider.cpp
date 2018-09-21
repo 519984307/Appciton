@@ -577,7 +577,7 @@ void BLMCO2Provider::setWorkMode(CO2WorkMode mode)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-BLMCO2Provider::BLMCO2Provider() : Provider("BLM_CO2"), CO2ProviderIFace(), _status(0)
+BLMCO2Provider::BLMCO2Provider() : Provider("BLM_CO2"), CO2ProviderIFace(), _status(CO2ProviderStatus())
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1, _packetLen);
     if (!initPort(portAttr))
