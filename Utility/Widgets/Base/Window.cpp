@@ -139,7 +139,6 @@ int Window::exec()
     }
 }
 
-
 void Window::changeEvent(QEvent *ev)
 {
     QDialog::changeEvent(ev);

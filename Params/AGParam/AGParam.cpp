@@ -12,9 +12,9 @@
 #include "AGWaveWidget.h"
 #include "AGTrendWidget.h"
 #include "AGAlarm.h"
-#include "WindowManager.h"
 #include "WaveformCache.h"
 #include "IConfig.h"
+#include "LayoutManager.h"
 
 #define DEMO_DATA_NUM       180
 
@@ -846,18 +846,11 @@ void AGParam::_setWaveformSpeed(AGSweepSpeed speed)
         break;
     }
 
-    QStringList currentWaveforms;
-    windowManager.getCurrentWaveforms(currentWaveforms);
-    int i = 0;
-    int size = currentWaveforms.size();
-    for (; i < size; i++)
+    QStringList currentWaveforms = layoutManager.getDisplayedWaveforms();
+    if (currentWaveforms.contains(_waveWidgetAA1->name()) || currentWaveforms.contains(_waveWidgetAA2->name())
+            || currentWaveforms.contains(_waveWidgetN2O->name()) || currentWaveforms.contains(_waveWidgetO2->name()))
     {
-        if (currentWaveforms[i] == "N2OWaveWidget" || currentWaveforms[i] == "AA1WaveWidget" ||
-                currentWaveforms[i] == "AA2WaveWidget" || currentWaveforms[i] == "O2WaveWidget")
-        {
-            windowManager.resetWave();
-            break;
-        }
+        layoutManager.resetWave();
     }
 }
 
@@ -925,6 +918,5 @@ void AGParam::_setWaveformZoom(AGTypeGas type, AGDisplayZoom zoom)
         break;
     }
     value = (n2o << 2) | (aa1 << 4) | (aa2 << 6) | (o2 << 8);
-    qDebug() << n2o << aa1 << aa2 << o2 << value;
     currentConfig.setNumValue("AG|DisplayZoom", value);
 }

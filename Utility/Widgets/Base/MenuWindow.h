@@ -30,6 +30,12 @@ public:
 
     void popup(const QString &menuName, const QVariant &param = QVariant());
 
+    /**
+     * @brief setWindowTitlePrefix
+     * @param prefix  窗口标题前缀
+     */
+    void setWindowTitlePrefix(const QString &prefix);
+
 protected:
     bool focusNextPrevChild(bool next);
     void showEvent(QShowEvent *ev);

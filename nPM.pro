@@ -164,7 +164,6 @@ SOURCES +=                                                                      
     Utility/Widgets/Trendform/ShortTrendManager.cpp                             \
     Utility/Widgets/TrendWidget/TrendWidget.cpp                                 \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.cpp                            \
-    Utility/Widgets/TrendWidget/TrendWidgetSelectMenu.cpp                       \
     Utility/Widgets/Waveform/BarGraphScanMode.cpp                               \
     Utility/Widgets/Waveform/FreezeWaveReviewMode.cpp                           \
     Utility/Widgets/Waveform/FreezeTimeIndicator.cpp                            \
@@ -179,7 +178,6 @@ SOURCES +=                                                                      
     Utility/Widgets/Waveform/WaveReviewCascadeMode.cpp                          \
     Utility/Widgets/Waveform/WaveScanMode.cpp                                   \
     Utility/Widgets/Waveform/WaveWidget.cpp                                     \
-    Utility/Widgets/Waveform/WaveWidgetSelectMenu.cpp                           \
     Utility/Widgets/BarWidget.cpp                                               \
     Utility/Widgets/MessageBox.cpp                                              \
     Utility/Widgets/ExportDataWidget.cpp                                        \
@@ -224,6 +222,8 @@ SOURCES +=                                                                      
     Components/System/Widgets/SystemSelftestMenu.cpp                            \
     Components/System/Widgets/SystemStatusBarWidget.cpp                         \
     Components/System/Widgets/SystemMenuContent.cpp                             \
+    Components/System/Widgets/MeasureSettingMenuContent.cpp                     \
+    Components/System/Widgets/MeasureSettingWindow.cpp                          \
     Components/System/Widgets/DataReviewMenuContent.cpp                         \
     Components/System/Widgets/CalculateMenuContent.cpp                          \
     Components/System/Widgets/SystemMaintenance.cpp                             \
@@ -316,8 +316,6 @@ SOURCES +=                                                                      
     Components/WindowManager/WindowManager.cpp                                  \
     Components/WindowManager/WaveTrendWidget.cpp                                \
     Components/WindowManager/WidgetSelectMenu.cpp                               \
-    Components/WindowManager/WindowLayout.cpp                                   \
-    Components/WindowManager/WindowWidget.cpp                                   \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
     Components/WindowManager/MainMenuWindow.cpp                                 \
     Components/WindowManager/FactoryMaintainMenuWindow.cpp                      \
@@ -326,6 +324,7 @@ SOURCES +=                                                                      
     Components/WindowManager/ArrhythmiaMenuWindow.cpp                           \
     Components/WindowManager/ScreenMenuContent.cpp                              \
     Components/WindowManager/TopBarWidget.cpp                                   \
+    Components/WindowManager/LayoutManager.cpp                                  \
     Components/WindowManager/ScreenLayoutWindow.cpp                             \
     Components/WindowManager/ScreenLayoutModel.cpp                              \
     Components/WindowManager/ScreenLayoutItemDelegate.cpp                       \
@@ -488,7 +487,6 @@ SOURCES +=                                                                      
     Components/ConfigManager/LoadConfigMenuContent.cpp                          \
     Components/ConfigManager/UnitSetupMenuContent.cpp                           \
     Components/Freeze/FreezeManager.cpp                                         \
-    Components/Freeze/FreezeWidget.cpp                                          \
     Components/Freeze/FreezeWindow.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
 #################################################################################
@@ -525,7 +523,6 @@ SOURCES +=                                                                      
     Params/IBPParam/IBPWidgets/IBPWaveWidget.cpp                                \
     Params/IBPParam/IBPWidgets/IBPTrendWidget.cpp                               \
     Params/IBPParam/IBPWidgets/IBPWaveRuler.cpp                                 \
-    Params/IBPParam/IBPWidgets/IBPManualRuler.cpp                               \
     Params/IBPParam/IBPWidgets/IBPMenuContent.cpp                               \
     Params/IBPParam/IBPAlarm.cpp                                                \
     Params/COParam/COAlarm.cpp                                                  \
@@ -716,7 +713,6 @@ HEADERS +=                                                                      
     Utility/Widgets/Trendform/ShortTrendWidgetSelectMenu.h                      \
     Utility/Widgets/Trendform/ShortTrendManager.h                               \
     Utility/Widgets/TrendWidget/TrendWidget.h                                   \
-    Utility/Widgets/TrendWidget/TrendWidgetSelectMenu.h                         \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.h                              \
     Utility/Widgets/Waveform/BarGraphScanMode.h                                 \
     Utility/Widgets/Waveform/FreezeWaveReviewMode.h                             \
@@ -735,7 +731,6 @@ HEADERS +=                                                                      
     Utility/Widgets/Waveform/WaveReviewCascadeMode.h                            \
     Utility/Widgets/Waveform/WaveScanMode.h                                     \
     Utility/Widgets/Waveform/WaveWidget.h                                       \
-    Utility/Widgets/Waveform/WaveWidgetSelectMenu.h                             \
     Utility/Widgets/BarWidget.h                                                 \
     Utility/Widgets/ExportDataWidget.h                                          \
     Utility/Widgets/FreezeTableWidget.h                                         \
@@ -778,6 +773,8 @@ HEADERS +=                                                                      
     Components/System/Widgets/SystemSelftestMenu.h                              \
     Components/System/Widgets/SystemModeBarWidget.h                             \
     Components/System/Widgets/SystemMenuContent.h                               \
+    Components/System/Widgets/MeasureSettingMenuContent.h                       \
+    Components/System/Widgets/MeasureSettingWindow.h                           \
     Components/System/Widgets/DataReviewMenuContent.h                           \
     Components/System/Widgets/CalculateMenuContent.h                            \
     Components/System/Widgets/SystemMaintenance.h                               \
@@ -890,8 +887,6 @@ HEADERS +=                                                                      
     Components/WindowManager/WindowManager.h                                    \
     Components/WindowManager/WaveTrendWidget.h                                  \
     Components/WindowManager/WidgetSelectMenu.h                                 \
-    Components/WindowManager/WindowLayout.h                                     \
-    Components/WindowManager/WindowWidget.h                                     \
     Components/WindowManager/PromptInfoBarWidget.h                              \
     Components/WindowManager/MainMenuWindow.h                                   \
     Components/WindowManager/FactoryMaintainMenuWindow.h                        \
@@ -900,6 +895,7 @@ HEADERS +=                                                                      
     Components/WindowManager/ArrhythmiaMenuWindow.h                             \
     Components/WindowManager/ScreenMenuContent.h                                \
     Components/WindowManager/TopBarWidget.h                                     \
+    Components/WindowManager/LayoutManager.h                                    \
     Components/WindowManager/ScreenLayoutWindow.h                               \
     Components/WindowManager/ScreenLayoutModel.h                                \
     Components/WindowManager/ScreenLayoutItemDelegate.h                         \
@@ -1067,7 +1063,6 @@ HEADERS +=                                                                      
     Components/ConfigManager/LoadConfigMenuContent.h                            \
     Components/ConfigManager/UnitSetupMenuContent.h                             \
     Components/Freeze/FreezeManager.h                                           \
-    Components/Freeze/FreezeWidget.h                                            \
     Components/Freeze/FreezeWindow.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \
 #################################################################################
@@ -1116,7 +1111,6 @@ HEADERS +=                                                                      
     Params/IBPParam/IBPWidgets/IBPTrendWidget.h                                 \
     Params/IBPParam/IBPSymbol.h                                                 \
     Params/IBPParam/IBPWidgets/IBPWaveRuler.h                                   \
-    Params/IBPParam/IBPWidgets/IBPManualRuler.h                                 \
     Params/IBPParam/IBPWidgets/IBPMenuContent.h                                 \
     Params/IBPParam/IBPAlarm.h                                                  \
     Params/COParam/COAlarm.h                                                    \

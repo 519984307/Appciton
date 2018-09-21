@@ -12,6 +12,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QKeyEvent>
+#include "LayoutManager.h"
 
 /**************************************************************************************************
  * 重绘制。
@@ -52,7 +53,7 @@ void PopupWidget::showEvent(QShowEvent *event)
     if (!_fixedDimension)
     {
         // 移到窗口管理器指定的位置。
-        QRect r = windowManager.getMenuArea();
+        QRect r = layoutManager.getMenuArea();
         QWidget *activateModalWidget = QApplication::activeModalWidget();
         if(activateModalWidget && activateModalWidget->height() >= r.height() / 2)
         {

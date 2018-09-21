@@ -41,9 +41,6 @@ public:
         return _title;
     }
 
-private slots:
-    void _releaseHandle(IWidget *widget);
-
 protected:
     void setName(const QString &name);
     void setUnit(const QString &unit);

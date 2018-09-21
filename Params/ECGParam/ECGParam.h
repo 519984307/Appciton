@@ -213,21 +213,9 @@ public: // 用于访问配置相关信息。
 
     // 设置/获取带宽。
     void setBandwidth(int band);
-    void setDiagBandwidth();
-    void restoreDiagBandwidth(int isCompleted = false);
-    ECGBandwidth getDiagBandwidth()
-    {
-        return ECG_BANDWIDTH_0525_40HZ;
-    }
     ECGBandwidth getCalcLeadBandWidth(void);
     ECGBandwidth getBandwidth(void);
-    ECGBandwidth getMFCBandwidth(void);
     ECGBandwidth getDisplayBandWidth(void);
-    // get the last diag mode timestamp
-    unsigned lastDiagModeTimestamp() const
-    {
-        return _lastDiagModeTimestamp;
-    }
 
     // filter mode
     void setFilterMode(int mode);
@@ -349,8 +337,6 @@ private:
 
     OxyCRGCO2Widget *_oxyCRGCO2Widget;
     OxyCRGRESPWidget *_oxyCRGRESPWidget;
-
-    unsigned _lastDiagModeTimestamp;
 
     char _leadOff[ECG_LEAD_NR];
     MonitorSoftkeyAction *_monitorSoftkey;

@@ -17,14 +17,14 @@
 #include "WindowManager.h"
 #include "SPO2Param.h"
 #include "TrendWidgetLabel.h"
-#include "MainMenuWindow.h"
+#include "MeasureSettingWindow.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
  *************************************************************************************************/
 void SPO2TrendWidget::_releaseHandle(IWidget *iWidget)
 {
-    MainMenuWindow *p = MainMenuWindow::getInstance();
+    MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
     p->popup(trs("SPO2Menu"));
 }
 

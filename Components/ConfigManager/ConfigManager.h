@@ -84,14 +84,26 @@ public:
     QString runningConfigFilename(PatientType patType);
 
     /**
-     * @brief getWidgetsPreStatus 获取控件的预备失能
+     * @brief isReadOnly 获取控件的预备失能
      * @return 1:预备失能
      */
-    bool getWidgetsPreStatus()const;
+    bool isReadOnly()const;
 
     /**
-     * @brief setWidgetStatus 设置控件状态 失能或使能
+     * @brief setWidgetIfOnlyShown 设置控件状态 失能或使能
      * @param status 1, 0
+     */
+    void setWidgetIfOnlyShown(bool status);
+
+    /**
+     * @brief getWidgetStatus
+     * @return
+     */
+    bool getWidgetsPreStatus() const;
+
+    /**
+     * @brief setWidgetStatus
+     * @param status
      */
     void setWidgetStatus(bool status);
 

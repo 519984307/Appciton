@@ -11,7 +11,6 @@
 #include "IBPParam.h"
 #include "IBPWaveWidget.h"
 #include "IBPTrendWidget.h"
-#include "WindowManager.h"
 #include "IBPMenu.h"
 #include "TimeDate.h"
 #include "AlarmLimitMenu.h"
@@ -21,6 +20,7 @@
 #include "WaveformCache.h"
 #include "IConfig.h"
 #include "IBPDefine.h"
+#include "LayoutManager.h"
 
 IBPParam *IBPParam::_selfObj = NULL;
 
@@ -95,17 +95,10 @@ void IBPParam::_setWaveformSpeed(IBPSweepSpeed speed)
         break;
     }
 
-    QStringList currentWaveforms;
-    windowManager.getCurrentWaveforms(currentWaveforms);
-    int i = 0;
-    int size = currentWaveforms.size();
-    for (; i < size; i++)
+    QStringList currentWaveforms = layoutManager.getDisplayedWaveforms();
+    if (currentWaveforms.contains(_waveWidgetIBP1->name()) || currentWaveforms.contains(_waveWidgetIBP2->name()))
     {
-        if (currentWaveforms[i] == "IBP1WaveWidget" || currentWaveforms[i] == "IBP2WaveWidget")
-        {
-            windowManager.resetWave();
-            break;
-        }
+        layoutManager.resetWave();
     }
 }
 
@@ -752,15 +745,6 @@ void IBPParam::setWaveWidget(IBPWaveWidget *waveWidget, IBPSignalInput IBP)
     _setWaveformSpeed(getSweepSpeed());
 }
 
-/**************************************************************************************************
- * 设置提示信息对象。
- *************************************************************************************************/
-void IBPParam::setInfobarWidget(PromptInfoBarWidget *infoBarWidget)
-{
-    _infoBarWidget = infoBarWidget;
-}
-
-
 IBPScaleInfo IBPParam::getIBPScale(IBPPressureName name)
 {
     // TODO implement this function
@@ -817,6 +801,24 @@ void IBPParam::setRulerLimit(IBPRulerLimit ruler, IBPSignalInput ibp)
     }
 }
 
+void IBPParam::setRulerLimit(int low, int high, IBPSignalInput ibp)
+{
+    if (ibp == IBP_INPUT_1)
+    {
+        if (_waveWidgetIBP1 != NULL)
+        {
+            _waveWidgetIBP1->setLimit(low, high);
+        }
+    }
+    else if (ibp == IBP_INPUT_2)
+    {
+        if (_waveWidgetIBP2 != NULL)
+        {
+            _waveWidgetIBP2->setLimit(low, high);
+        }
+    }
+}
+
 IBPRulerLimit IBPParam::getRulerLimit(IBPSignalInput ibp)
 {
     int ruler = IBP_RULER_LIMIT_0_160;
@@ -854,6 +856,30 @@ IBPRulerLimit IBPParam::getRulerLimit(IBPPressureName name)
         break;
     }
     return ruler;
+}
+
+void IBPParam::setScaleInfo(IBPScaleInfo &info, IBPPressureName name)
+{
+    if (_ibp1.pressureName == name)
+    {
+        _scale1 = info;
+    }
+    else if (_ibp2.pressureName == name)
+    {
+        _scale2 = info;
+    }
+}
+
+IBPScaleInfo &IBPParam::getScaleInfo(IBPSignalInput ibp)
+{
+    if (ibp == IBP_INPUT_1)
+    {
+        return _scale1;
+    }
+    else if (ibp == IBP_INPUT_2)
+    {
+        return _scale2;
+    }
 }
 
 /**************************************************************************************************
@@ -1060,7 +1086,6 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
         return;
     }
     ibpMenu.displayZeroRev(info);
-    _infoBarWidget->display(info);
 }
 
 /**************************************************************************************************

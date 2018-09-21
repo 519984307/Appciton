@@ -8,6 +8,8 @@
 #include <QVBoxLayout>
 #include "EventDataSymbol.h"
 #include "EventReviewWindow.h"
+#include "LayoutManager.h"
+
 
 #define ITEM_HEIGHT         30
 
@@ -29,7 +31,7 @@ void EventWaveSetWidget::showEvent(QShowEvent *e)
     PopupWidget::showEvent(e);
 
     // 居中显示。
-    QRect r = windowManager.getMenuArea();
+    QRect r = layoutManager.getMenuArea();
 //    move(r.x() + (r.width() - width()) / 2, r.y() + (2 * r.height() / 3 - height()));
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 }

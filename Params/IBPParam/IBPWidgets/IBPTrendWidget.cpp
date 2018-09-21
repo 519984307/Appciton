@@ -20,7 +20,7 @@
 #include "IBPMenu.h"
 #include <QDebug>
 #include <QGroupBox>
-#include "MainMenuWindow.h"
+#include "MeasureSettingWindow.h"
 
 /**************************************************************************************************
  * 设置测量结果的数据。
@@ -331,6 +331,6 @@ void IBPTrendWidget::setTextSize()
 
 void IBPTrendWidget::_releaseHandle(IWidget *iWidget)
 {
-    MainMenuWindow *p = MainMenuWindow::getInstance();
+    MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
     p->popup(trs("IBPMenu"));
 }

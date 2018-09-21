@@ -17,8 +17,7 @@
 #include "Debug.h"
 #include "BaseDefine.h"
 #include "TrendWidgetLabel.h"
-#include "WindowManager.h"
-#include "TrendWidgetSelectMenu.h"
+#include "LayoutManager.h"
 
 /**************************************************************************************************
  * 重绘。
@@ -50,7 +49,7 @@ void TrendWidget::showEvent(QShowEvent *e)
 {
     IWidget::showEvent(e);
 
-    if (windowManager.getUFaceType() == UFACE_MONITOR_BIGFONT)
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_BIGFONT)
     {
         nameLabel->setFocusPolicy(Qt::StrongFocus);
     }
@@ -151,16 +150,6 @@ void TrendWidget::updateAlarm(bool alarmFlag)
     Q_UNUSED(alarmFlag)
 }
 
-void TrendWidget::_releaseHandle(IWidget *widget)
-{
-    QPoint prect = widget->mapToGlobal(widget->rect().bottomLeft());
-    QRect r = geometry();
-
-    trendWidgetSelectMenu.setWidgetName(name());
-    trendWidgetSelectMenu.setShowPoint(prect.x() + r.x() + 50, prect.y() + r.y());
-    trendWidgetSelectMenu.autoShow();
-}
-
 /**************************************************************************************************
  * 功能： 设置显示的名称。
  * 参数：
@@ -230,7 +219,6 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical) : IWidget(wid
 {
     _title = "";
     nameLabel = new TrendWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
-    connect(nameLabel, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
 
     calcLeadLabel = new QLabel("", this);
     calcLeadLabel->setAlignment(Qt::AlignCenter);

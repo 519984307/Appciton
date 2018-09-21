@@ -49,12 +49,6 @@ void MenuSidebarPrivate::onItemClicked()
     MenuSidebarItem *item = qobject_cast<MenuSidebarItem *>(q->sender());
     if (item)
     {
-        if (item->isChecked())
-        {
-            // current item, do nothing
-            return;
-        }
-
         if (curSelectIndex >= 0)
         {
             // uncheck the previous item

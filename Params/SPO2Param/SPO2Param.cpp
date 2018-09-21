@@ -19,8 +19,6 @@
 #include "ECGDupParam.h"
 #include "TS3Provider.h"
 #include "SystemManager.h"
-#include "WindowManager.h"
-#include "WaveWidgetSelectMenu.h"
 #include "ComboListPopup.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
@@ -369,6 +367,11 @@ void SPO2Param::setPR(short prValue)
         return;
     }
 
+    if (prValue < 0)
+    {
+        prValue = InvData();
+    }
+
     _prValue = prValue;
     ecgDupParam.updatePR(prValue);
 }
@@ -514,20 +517,6 @@ int SPO2Param::setSensorOff(bool flag)
     {
         _isEverSensorOn = true;
         systemConfig.setNumValue("PrimaryCfg|SPO2|EverSensorOn", _isEverSensorOn);
-
-        // 插入波形
-        QString spo2Wave = _waveWidget->name();
-        QStringList curWaveList;
-        windowManager.getDisplayedWaveform(curWaveList);
-        int waveCount = curWaveList.count();
-        if (waveCount == 0)
-        {
-            return 0;
-        }
-        if (waveCount < 4)
-        {
-            windowManager.insertWaveform(curWaveList.at(waveCount - 1), spo2Wave);
-        }
     }
     return 0;
 }

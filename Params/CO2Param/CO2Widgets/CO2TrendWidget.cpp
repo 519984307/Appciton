@@ -19,7 +19,7 @@
 #include <QVBoxLayout>
 #include "PublicMenuManager.h"
 #include "TrendWidgetLabel.h"
-#include "MainMenuWindow.h"
+#include "MeasureSettingWindow.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -27,7 +27,7 @@
 void CO2TrendWidget::_releaseHandle(IWidget *iWidget)
 {
     Q_UNUSED(iWidget)
-    MainMenuWindow *p = MainMenuWindow::getInstance();
+    MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
     p->popup(trs("CO2Menu"));
 }
 

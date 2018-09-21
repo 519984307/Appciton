@@ -47,7 +47,6 @@ protected:
     virtual void paintEvent(QPaintEvent *e);
 
 private slots:
-    void _releaseHandle(IWidget *);
     void _getItemIndex(int);
 
 private:

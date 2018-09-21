@@ -26,6 +26,7 @@
 #include "IMessageBox.h"
 #include "DataStorageDirManager.h"
 #include "EnglishInputPanel.h"
+#include "LayoutManager.h"
 
 PatientInfoMenu *PatientInfoMenu::_selfObj = NULL;
 
@@ -228,7 +229,7 @@ void PatientInfoMenu::showEvent(QShowEvent *e)
     PopupWidget::showEvent(e);
 
     // 居中显示。
-    QRect r = windowManager.getMenuArea();
+    QRect r = layoutManager.getMenuArea();
 //    move(r.x() + (r.width() - width()) / 2, r.y() + (2 * r.height() / 3 - height()));
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 }

@@ -20,7 +20,7 @@
 #include "ConfigManager.h"
 #include "KeyInputPanel.h"
 #include "MessageBox.h"
-#include "MenuWindow.h"
+#include "MainMenuWindow.h"
 
 class CO2MenuContentPrivate
 {
@@ -157,7 +157,7 @@ void CO2MenuContent::onBtnReleasedChanged()
 
 void CO2MenuContent::onAlarmBtnReleased()
 {
-    MenuWindow *w = this->getMenuWindow();
+    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_ETCO2, true);
     if (w)
     {

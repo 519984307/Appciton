@@ -20,7 +20,7 @@
 #include "NIBPParam.h"
 #include "ConfigManager.h"
 #include "NIBPMonitorStateDefine.h"
-#include "MenuWindow.h"
+#include "MainMenuWindow.h"
 
 class NIBPMenuContentPrivate
 {
@@ -262,7 +262,7 @@ void NIBPMenuContent::onBtnReleasedChanged()
 
 void NIBPMenuContent::onAlarmBtnReleased()
 {
-    MenuWindow *w = this->getMenuWindow();
+    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_NIBP_SYS, true);
     if (w)
     {

@@ -77,7 +77,6 @@ public:
     // 设置界面对象
     void setIBPTrendWidget(IBPTrendWidget *trendWidget, IBPSignalInput IBP = IBP_INPUT_1);
     void setWaveWidget(IBPWaveWidget *waveWidget, IBPSignalInput IBP = IBP_INPUT_1);
-    void setInfobarWidget(PromptInfoBarWidget *infoBarWidget);
 
     /**
      * @brief getIBPScale get the IBP scale info
@@ -88,8 +87,13 @@ public:
 
     // 设置/获取波形标尺限。
     void setRulerLimit(IBPRulerLimit ruler, IBPSignalInput ibp);
+    void setRulerLimit(int low, int high, IBPSignalInput ibp);
     IBPRulerLimit getRulerLimit(IBPSignalInput ibp);
     IBPRulerLimit getRulerLimit(IBPPressureName name);
+
+    // 设置/获取标尺信息
+    void setScaleInfo(IBPScaleInfo &info, IBPPressureName name);
+    IBPScaleInfo &getScaleInfo(IBPSignalInput ibp);
 
 public:
     // 校零。
@@ -149,10 +153,11 @@ private:
     IBPTrendWidget *_trendWidgetIBP1;
     IBPTrendWidget *_trendWidgetIBP2;
 
-    PromptInfoBarWidget *_infoBarWidget;
-
     IBPParamInfo _ibp1;
     IBPParamInfo _ibp2;
+
+    IBPScaleInfo _scale1;
+    IBPScaleInfo _scale2;
 
     bool _staIBP1;                        // 导联状态
     bool _staIBP2;

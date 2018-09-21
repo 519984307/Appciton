@@ -20,6 +20,7 @@
 #include "N2OSetAGMenu.h"
 #include "HalSetAGMenu.h"
 #include "Button.h"
+#include "MainMenuWindow.h"
 
 class AGMenuContentPrivate
 {
@@ -246,7 +247,7 @@ void AGMenuContent::onComboBoxIndexChanged(int index)
 
 void AGMenuContent::onAlarmBtnReleased()
 {
-    MenuWindow *w = this->getMenuWindow();
+    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_ETCO2, true);
     if (w)
     {

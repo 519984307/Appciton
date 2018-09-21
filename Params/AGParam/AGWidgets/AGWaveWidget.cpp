@@ -16,7 +16,6 @@
 #include "WaveWidgetLabel.h"
 #include "AGWaveRuler.h"
 #include "AGSymbol.h"
-#include "WaveWidgetSelectMenu.h"
 #include "AGParam.h"
 #include "WindowManager.h"
 #include "PopupList.h"
@@ -101,7 +100,6 @@ AGWaveWidget::AGWaveWidget(WaveformID id, const QString &waveName, const AGTypeG
     _name->setFont(fontManager.textFont(infoFont));
     _name->setFixedSize(130, fontH);
     _name->setText(getTitle());
-    connect(_name, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
     _ruler = new AGWaveRuler(this);
     _ruler->setPalette(palette);
@@ -149,24 +147,6 @@ void AGWaveWidget::paintEvent(QPaintEvent *e)
     _ruler->setPalette(palette);
     _ruler->setBackground(true);
     WaveWidget::paintEvent(e);
-}
-
-void AGWaveWidget::_releaseHandle(IWidget *w)
-{
-    Q_UNUSED(w);
-    QWidget *p = static_cast<QWidget*>(parent());
-    if (p == NULL)
-    {
-        return;
-    }
-
-    QRect prect = p->geometry();
-    QRect r = geometry();
-
-    waveWidgetSelectMenu.setTopWaveform(false);
-    waveWidgetSelectMenu.setWaveformName(name());
-    waveWidgetSelectMenu.setShowPoint(prect.x() + r.x() + 50, prect.y() + r.y());
-    windowManager.showWindow(&waveWidgetSelectMenu, WindowManager::ShowBehaviorModal);
 }
 
 void AGWaveWidget::_getItemIndex(int index)

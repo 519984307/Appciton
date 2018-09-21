@@ -19,12 +19,11 @@
 #include "RESPParam.h"
 #include "ParamManager.h"
 #include "SystemManager.h"
-#include "WindowManager.h"
 #include "RESPDupParam.h"
 #include "SoftKeyManager.h"
 #include "QApplication"
 #include "ComboListPopup.h"
-#include "WaveWidgetSelectMenu.h"
+#include "LayoutManager.h"
 
 CO2Param *CO2Param::_selfObj = NULL;
 
@@ -52,15 +51,14 @@ void CO2Param::_setWaveformSpeed(CO2SweepSpeed speed)
         break;
     }
 
-    QStringList currentWaveforms;
-    windowManager.getCurrentWaveforms(currentWaveforms);
+    QStringList currentWaveforms = layoutManager.getDisplayedWaveforms();
     int i = 0;
     int size = currentWaveforms.size();
     for (; i < size; i++)
     {
         if (currentWaveforms[i] == "CO2WaveWidget")
         {
-            windowManager.resetWave();
+            layoutManager.resetWave();
             break;
         }
     }
@@ -478,37 +476,24 @@ void CO2Param::setConnected(bool isConnected)
     }
 
     _connectedProvider = isConnected;
-    QStringList curWaveList;
-    windowManager.getDisplayedWaveform(curWaveList);
 
     QString co2Trend, co2Wave, respTrend, respWave;
     _getCO2RESPWins(co2Trend, co2Wave, respTrend, respWave);
-    int waveCount = curWaveList.count();
 
-    // 关闭下拉弹出框
-    bool hasZoomDialog = false;
-    if (ComboListPopup::current())
-    {
-        hasZoomDialog = true;
-    }
-
-
+    int needUpdate = 0;
     if (isConnected)
     {
         if (_co2Switch)
         {
             this->enable();
-            respParam.disable();
-            if (-1 != curWaveList.indexOf(respWave))
-            {
-                windowManager.replaceWaveform(respWave, co2Wave, false, false);
-            }
-            else if (waveCount < 4)
-            {
-                windowManager.insertWaveform(curWaveList.at(waveCount - 1), co2Wave, false);
-            }
 
-            windowManager.replaceTrendWindow(respTrend, co2Trend);
+            // update to show CO2 info
+            needUpdate |= layoutManager.setWidgetLayoutable(co2Trend, true);
+            needUpdate |= layoutManager.setWidgetLayoutable(co2Wave, true);
+            if (needUpdate)
+            {
+                layoutManager.updateLayout();
+            }
         }
     }
     else
@@ -518,39 +503,15 @@ void CO2Param::setConnected(bool isConnected)
         setEtCO2(InvData());
         setFiCO2(InvData());
         setBR(InvData());
-        if (respParam.getRespMonitoring())
-        {
-            respParam.enableRespCalc(true);
-            respParam.enable();
-            if (-1 != curWaveList.indexOf(co2Wave))
-            {
-                windowManager.replaceWaveform(co2Wave, respWave, false, false);
-            }
-            else if (waveCount < 4)
-            {
-                windowManager.insertWaveform(curWaveList.at(waveCount - 1), respWave, false);
-            }
-            windowManager.replaceTrendWindow(co2Trend, respTrend);
-        }
-        else
-        {
-            respParam.disable();
-            if (-1 != curWaveList.indexOf(co2Wave))
-            {
-                windowManager.removeWaveform(co2Wave, hasZoomDialog);
-            }
-            windowManager.removeTrendWindow(co2Trend);
-        }
-
         co2OneShotAlarm.clear();
+        // update to show CO2 info
+        needUpdate |= layoutManager.setWidgetLayoutable(co2Trend, false);
+        needUpdate |= layoutManager.setWidgetLayoutable(co2Wave, false);
+        if (needUpdate)
+        {
+            layoutManager.updateLayout();
+        }
     }
-
-    curWaveList.clear();
-
-    softkeyManager.refresh();
-
-    // 关闭波形菜单
-    waveWidgetSelectMenu.close();
 }
 
 /**************************************************************************************************
@@ -782,103 +743,6 @@ CO2FICO2Display CO2Param::getFICO2Display(void)
 UnitType CO2Param::getUnit(void)
 {
     return _curUnit;
-}
-
-/**************************************************************************************************
- * 设置CO2开关。
- *************************************************************************************************/
-void CO2Param::setCO2Switch(int onoff)
-{
-    if (!onoff)
-    {
-        setEtCO2(InvData());
-        setFiCO2(InvData());
-        setBR(InvData());
-        setBaro(InvData());
-        co2OneShotAlarm.clear();
-    }
-
-    currentConfig.setNumValue("CO2|CO2ModeDefault", onoff);
-    QStringList curWaveList;
-    windowManager.getDisplayedWaveform(curWaveList);
-    QString co2Trend, co2Wave, respTrend, respWave;
-    _getCO2RESPWins(co2Trend, co2Wave, respTrend, respWave);
-    int waveCount = curWaveList.count();
-
-    bool hasZoomDialog = false;
-    if (ComboListPopup::current())
-    {
-        hasZoomDialog = true;
-    }
-
-    if (isConnected())
-    {
-        if (0 == onoff)
-        {
-            disable();
-            if (!respParam.getRespMonitoring())
-            {
-                respParam.disable();
-                if (-1 != curWaveList.indexOf(co2Wave))
-                {
-                    windowManager.removeWaveform(co2Wave, hasZoomDialog);
-                }
-                windowManager.removeTrendWindow(co2Trend);
-            }
-            else
-            {
-                respParam.enableRespCalc(true);
-                respParam.enable();
-                if (-1 != curWaveList.indexOf(co2Wave))
-                {
-                    windowManager.replaceWaveform(co2Wave, respWave, false, false);
-                }
-                windowManager.replaceTrendWindow(co2Trend, respTrend);
-            }
-        }
-        else
-        {
-            this->enable();
-            respParam.disable();
-            if (-1 != curWaveList.indexOf(respWave))
-            {
-                windowManager.replaceWaveform(respWave, co2Wave, false, false);
-            }
-            else if (waveCount < 4)
-            {
-                windowManager.insertWaveform(curWaveList.at(waveCount - 1), co2Wave, false);
-            }
-            windowManager.replaceTrendWindow(respTrend, co2Trend);
-        }
-    }
-
-    if (1 == onoff)
-    {
-        _co2Switch = true;
-        if (NULL != _provider)
-        {
-            _provider->setWorkMode(CO2_WORK_MEASUREMENT);
-        }
-    }
-    else
-    {
-        _co2Switch = false;
-        if (NULL != _provider)
-        {
-            _provider->setWorkMode(C02_WORK_SLEEP);
-        }
-    }
-
-    // 关闭下拉弹出框
-    if (ComboListPopup::current())
-    {
-        ComboListPopup::current()->close();
-    }
-
-    // 关闭波形菜单
-    waveWidgetSelectMenu.close();
-
-    curWaveList.clear();
 }
 
 /**************************************************************************************************

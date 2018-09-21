@@ -40,9 +40,6 @@ protected:
     virtual void focusInEvent(QFocusEvent */*e*/);
     virtual void paintEvent(QPaintEvent *e);
 
-private slots:
-    void _releaseHandle(IWidget *);
-
 private:
     void _initValueRange(SPO2Gain gain);
 

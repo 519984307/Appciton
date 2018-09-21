@@ -162,12 +162,20 @@ void ConfigEditAlarmLimitMenuContent::setItemFocus(const QString &param)
     QModelIndex index = d_ptr->table->model()->index(focusIndex, 0);
     d_ptr->table->scrollTo(index, QAbstractItemView::PositionAtCenter);
 
-    d_ptr->table->selectRow(focusIndex);
+    bool isOnlyToRead = configManager.isReadOnly();
+    if (!isOnlyToRead)
+    {
+        d_ptr->table->selectRow(focusIndex);
+    }
 }
 
 void ConfigEditAlarmLimitMenuContent::readyShow()
 {
     d_ptr->loadoptions();
+
+    // 获取控件是否失能标志位
+    bool isOnlyToRead = configManager.isReadOnly();
+    d_ptr->table->setEnabled(!isOnlyToRead);
 }
 
 void ConfigEditAlarmLimitMenuContent::layoutExec()

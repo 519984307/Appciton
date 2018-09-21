@@ -27,6 +27,7 @@
 #include "CO2Param.h"
 #include "RecorderManager.h"
 #include "DataStorageDefine.h"
+#include "LayoutManager.h"
 
 #define ITEM_HEIGHT     30
 #define ITEM_WIDTH      100
@@ -399,7 +400,7 @@ void OxyCRGEventWidget::showEvent(QShowEvent *e)
     PopupWidget::showEvent(e);
 
     // 居中显示。
-    QRect r = windowManager.getMenuArea();
+    QRect r = layoutManager.getMenuArea();
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 
     d_ptr->stackLayout->setCurrentIndex(0);

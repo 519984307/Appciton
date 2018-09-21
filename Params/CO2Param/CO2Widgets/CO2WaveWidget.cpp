@@ -18,32 +18,10 @@
 #include "LanguageManager.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
-#include "WaveWidgetSelectMenu.h"
 #include "PopupList.h"
 #include "CO2Param.h"
 #include "WindowManager.h"
 #include "ThemeManager.h"
-
-/**************************************************************************************************
- * 释放事件，弹出菜单。
- *************************************************************************************************/
-void CO2WaveWidget::_releaseHandle(IWidget *w)
-{
-    Q_UNUSED(w);
-    QWidget *p = qobject_cast<QWidget *>(parent());
-    if (p == NULL)
-    {
-        return;
-    }
-
-    QRect prect = p->geometry();
-    QRect r = geometry();
-
-    waveWidgetSelectMenu.setTopWaveform(false);
-    waveWidgetSelectMenu.setWaveformName(name());
-    waveWidgetSelectMenu.setShowPoint(prect.x() + r.x() + 50, prect.y() + r.y());
-    windowManager.showWindow(&waveWidgetSelectMenu, WindowManager::ShowBehaviorModal);
-}
 
 /**************************************************************************************************
  * 尺寸变化。
@@ -191,7 +169,6 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
     _name->setFixedSize(130, fontH);
     _name->setText(title);
 //    addItem(_name);
-    connect(_name, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
     _ruler = new CO2WaveRuler(this);
     _ruler->setPalette(palette);

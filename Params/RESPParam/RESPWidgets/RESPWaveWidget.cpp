@@ -17,31 +17,9 @@
 #include "LanguageManager.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
-#include "WaveWidgetSelectMenu.h"
 #include "ComboListPopup.h"
 #include "WindowManager.h"
 #include "PopupList.h"
-
-/**************************************************************************************************
- * 释放事件，弹出菜单。
- *************************************************************************************************/
-void RESPWaveWidget::_releaseHandle(IWidget *w)
-{
-    Q_UNUSED(w);
-    QWidget *p = qobject_cast<QWidget *>(parent());
-    if (p == NULL)
-    {
-        return;
-    }
-
-    QRect prect = p->geometry();
-    QRect r = geometry();
-
-    waveWidgetSelectMenu.setTopWaveform(false);
-    waveWidgetSelectMenu.setWaveformName(name());
-    waveWidgetSelectMenu.setShowPoint(prect.x() + r.x() + 50, prect.y() + r.y());
-    windowManager.showWindow(&waveWidgetSelectMenu, WindowManager::ShowBehaviorModal);
-}
 
 /**************************************************************************************************
  * 增益改变。
@@ -100,12 +78,9 @@ RESPWaveWidget::RESPWaveWidget(const QString &waveName, const QString &title)
 
     int infoFont = 14;
     int fontH = fontManager.textHeightInPixels(fontManager.textFont(infoFont)) + 4;
-//    _name = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _name->setFixedSize(130, fontH);
     _name->setFont(fontManager.textFont(infoFont));
     _name->setText(title);
-//    addItem(_name);
-    connect(_name, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
     _gain = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _gain->setFont(fontManager.textFont(infoFont));
