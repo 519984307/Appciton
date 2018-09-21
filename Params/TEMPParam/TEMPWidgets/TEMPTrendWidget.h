@@ -40,7 +40,16 @@ private slots:
     void _releaseHandle(IWidget *);
 
 private:
-    void _alarmIndicate(bool isAlarm);
+    // 温度组
+    enum tempGrp
+    {
+        TEMP_GRP_T1 = 0,
+        TEMP_GRP_T2,
+        TEMP_GRP_TD,
+        TEMP_GRP_NR
+    };
+
+    void _alarmIndicate(bool isAlarms, tempGrp grp);
 
     QLabel *_t1Value;
     QLabel *_t2Value;

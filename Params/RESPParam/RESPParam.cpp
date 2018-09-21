@@ -16,12 +16,10 @@
 #include "WaveformCache.h"
 #include "RESPDupParam.h"
 #include "SystemManager.h"
-<<<<<<< Updated upstream
 #include "LayoutManager.h"
-=======
 #include "WindowManager.h"
 #include "OxyCRGRRHRWaveWidget.h"
->>>>>>> Stashed changes
+#include "LayoutManager.h"
 
 RESPParam *RESPParam::_selfObj = NULL;
 
@@ -199,6 +197,7 @@ void RESPParam::setWaveWidget(RESPWaveWidget *waveWidget)
     }
     _waveWidget = waveWidget;
     _setWaveformSpeed(getSweepSpeed());
+    setZoom(getZoom());
 }
 
 void RESPParam::setOxyWaveWidget(OxyCRGRESPWidget *waveWidget)

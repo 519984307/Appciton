@@ -202,6 +202,7 @@ public:
     QList<int> dataIndex;                       // 当前选中事件项对应的数据所在索引
     QList<TrendGraphInfo> trendInfoList;        // 呼吸氧合数据链表
     OxyCRGWaveInfo waveInfo;                    // 波形数据
+    QString eventTitle;                         // 事件标题
 
     bool isHistory;                             // 历史回顾标志
     QString historyDataPath;                    // 历史数据路径
@@ -333,7 +334,7 @@ void OxyCRGEventWindow::printReleased()
     QList<TrendGraphInfo> trendInfos;
     trendInfos.append(d_ptr->trendInfoList.at(0));
     trendInfos.append(d_ptr->trendInfoList.at(1));
-    RecordPageGenerator *generator = new OxyCRGPageGenerator(trendInfos, d_ptr->waveInfo);
+    RecordPageGenerator *generator = new OxyCRGPageGenerator(trendInfos, d_ptr->waveInfo, d_ptr->eventTitle);
     recorderManager.addPageGenerator(generator);
 }
 
@@ -529,15 +530,15 @@ void OxyCRGEventWindowPrivate::loadTrendData()
     trendInfoSPO2.unit = paramManager.getSubParamUnit(paramInfo.getParamID(SUB_PARAM_SPO2), SUB_PARAM_SPO2);
     trendInfoRR.unit = paramManager.getSubParamUnit(paramInfo.getParamID(SUB_PARAM_RR_BR), SUB_PARAM_RR_BR);
 
-    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_HR_PR, trendInfoHR.unit);
-    trendInfoHR.scale.min = static_cast<double>(config.lowLimit / config.scale);
-    trendInfoHR.scale.max = static_cast<double>(config.highLimit / config.scale);
-    config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_SPO2, trendInfoSPO2.unit);
-    trendInfoSPO2.scale.min = static_cast<double>(config.lowLimit / config.scale);
-    trendInfoSPO2.scale.max = static_cast<double>(config.highLimit / config.scale);
-    config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_RR_BR, trendInfoRR.unit);
-    trendInfoRR.scale.min = static_cast<double>(config.lowLimit / config.scale);
-    trendInfoRR.scale.max = static_cast<double>(config.highLimit / config.scale);
+    ParamRulerConfig config = alarmConfig.getParamRulerConfig(SUB_PARAM_HR_PR, trendInfoHR.unit);
+    trendInfoHR.scale.min = static_cast<double>(config.downRuler / config.scale);
+    trendInfoHR.scale.max = static_cast<double>(config.upRuler / config.scale);
+    config = alarmConfig.getParamRulerConfig(SUB_PARAM_SPO2, trendInfoSPO2.unit);
+    trendInfoSPO2.scale.min = static_cast<double>(config.downRuler / config.scale);
+    trendInfoSPO2.scale.max = static_cast<double>(config.upRuler / config.scale);
+    config = alarmConfig.getParamRulerConfig(SUB_PARAM_RR_BR, trendInfoRR.unit);
+    trendInfoRR.scale.min = static_cast<double>(config.downRuler / config.scale);
+    trendInfoRR.scale.max = static_cast<double>(config.upRuler / config.scale);
 
     TrendGraphData dataHR;
     TrendGraphData dataSPO2;
@@ -655,6 +656,7 @@ void OxyCRGEventWindowPrivate::eventInfoUpdate(int curRow)
 
     indexStr = QString::number(curRow + 1) + "/" + QString::number(curDisplayEventNum);
 
+    eventTitle = infoStr;
     infoWidget->loadDataInfo(infoStr, timeInfoStr, indexStr);
 }
 

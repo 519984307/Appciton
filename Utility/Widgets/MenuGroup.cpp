@@ -47,7 +47,7 @@ void MenuGroup::returnMenuList()
  *************************************************************************************************/
 void MenuGroup::_titleChanged(void)
 {
-    SubMenu *m = (SubMenu*)_subMenus->currentWidget();
+    SubMenu *m = (SubMenu *)_subMenus->currentWidget();
     titleLabel->setText(m->desc());
 }
 
@@ -56,7 +56,7 @@ void MenuGroup::_titleChanged(void)
  *************************************************************************************************/
 void MenuGroup::itemClicked()
 {
-    SubMenu *m = (SubMenu*)_scorllArea->widget();
+    SubMenu *m = qobject_cast<SubMenu *>(_scorllArea->widget());
 
     setFocusOrder(false);
     m->focusFirstItem();
@@ -158,7 +158,7 @@ void MenuGroup::_changePage(QListWidgetItem *current, QListWidgetItem *previous)
         current = previous;
     }
 
-    //重新添加submenu，滚动区域设置新的widget时，原来的会被删除
+    // 重新添加submenu，滚动区域设置新的widget时，原来的会被删除
     QWidget *win = _scorllArea->takeWidget();
     if (NULL != win)
     {
@@ -167,7 +167,7 @@ void MenuGroup::_changePage(QListWidgetItem *current, QListWidgetItem *previous)
     }
 
     _subMenus->setCurrentIndex(_listTable->row(current));
-    SubMenu *m = (SubMenu*)_subMenus->currentWidget();
+    SubMenu *m = qobject_cast<SubMenu *>(_subMenus->currentWidget());
 
     _scorllArea->setWidget(m);
     titleLabel->setText(m->desc());
@@ -180,13 +180,13 @@ void MenuGroup::_changePage(QListWidgetItem *current, QListWidgetItem *previous)
  *************************************************************************************************/
 void MenuGroup::changePage(SubMenu *current, SubMenu *previous)
 {
-    if(current==previous)
+    if (current == previous)
     {
         return;
     }
-    for(int i=0; i<_listTable->count();i++)
+    for (int i = 0; i < _listTable->count(); i++)
     {
-        if(current->name()==_listTable->item(i)->text())
+        if (current->name() == _listTable->item(i)->text())
         {
             _listTable->setCurrentRow(i);
             break;
@@ -221,7 +221,7 @@ void MenuGroup::popup(int x, int y)
  *************************************************************************************************/
 void MenuGroup::setCurrentSubmenu(QWidget *widget)
 {
-    if(widget)
+    if (widget)
     {
         _subMenus->setCurrentIndex(2);
     }
@@ -240,8 +240,8 @@ void MenuGroup::popup(SubMenu *menu, int x, int y)
     }
 
     int index = -1;
-    //重新添加submenu，滚动区域设置新的widget时，原来的会被删除
-    SubMenu *win = (SubMenu *)_scorllArea->widget();
+    // 重新添加submenu，滚动区域设置新的widget时，原来的会被删除
+    SubMenu *win = qobject_cast<SubMenu *>(_scorllArea->widget());
     if (NULL != win)
     {
         if (menu != win)
@@ -392,7 +392,7 @@ MenuGroup::MenuGroup(const QString &name) : MenuWidget(name)
     // 创建资源。
     QPalette p;
     p.setColor(QPalette::Foreground, Qt::black);
-    setAttribute(Qt::WA_NoSystemBackground); //draw background in paintEvent
+    setAttribute(Qt::WA_NoSystemBackground);  // draw background in paintEvent
 
     int fontSize = fontManager.getFontSize(1);
 
@@ -414,8 +414,8 @@ MenuGroup::MenuGroup(const QString &name) : MenuWidget(name)
     _listTable->setMovement(QListView::Static);
     _listTable->setSpacing(0);
     _listTable->setFrameStyle(0);
-    connect(_listTable, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
-            this, SLOT(_changePage(QListWidgetItem*, QListWidgetItem*)));
+    connect(_listTable, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
+            this, SLOT(_changePage(QListWidgetItem *, QListWidgetItem *)));
     connect(_listTable, SIGNAL(realRelease()), this, SLOT(itemClicked()));
     connect(_listTable, SIGNAL(exitList()), this, SLOT(_closeBtnSetFoucs()));
     _listTable->setCurrentRow(0);

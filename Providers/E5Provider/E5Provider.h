@@ -101,13 +101,15 @@ public:
     // max wave value
     virtual int maxRESPWaveValue()
     {
-        return 0x3FFF;
+//        return 0x3FFF;
+        return 255;
     }
 
     // min wave value
     virtual int minRESPWaveValue()
     {
-        return -0x4000;
+//        return -0x4000;
+        return 0;
     }
 
     // get wave sample rate

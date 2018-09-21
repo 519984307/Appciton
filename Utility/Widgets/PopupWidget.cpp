@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/21
+ **/
+
+
+
 #include "PopupWidget.h"
 #include "FontManager.h"
 #include "WindowManager.h"
@@ -17,8 +29,9 @@
 /**************************************************************************************************
  * 重绘制。
  *************************************************************************************************/
-void PopupWidget::paintEvent(QPaintEvent */*event*/)
+void PopupWidget::paintEvent(QPaintEvent *e)
 {
+    Q_UNUSED(e)
     QPainterPath clipPath;
     clipPath.addRoundedRect(this->rect(), 5, 5);
 
@@ -55,9 +68,9 @@ void PopupWidget::showEvent(QShowEvent *event)
         // 移到窗口管理器指定的位置。
         QRect r = layoutManager.getMenuArea();
         QWidget *activateModalWidget = QApplication::activeModalWidget();
-        if(activateModalWidget && activateModalWidget->height() >= r.height() / 2)
+        if (activateModalWidget && activateModalWidget->height() >= r.height() / 2)
         {
-            //avoid the popup widget's title bar overlap with other modal widget's title bar
+            // avoid the popup widget's title bar overlap with other modal widget's title bar
             move(r.x() + (r.width() - width()) / 2, r.y() + (5 * r.height() / 7 - height()));
         }
         else
@@ -84,20 +97,20 @@ void PopupWidget::exit(void)
 }
 void PopupWidget::keyPressEvent(QKeyEvent *e)
 {
-   switch (e->key())
-   {
-       case Qt::Key_Up:
-       case Qt::Key_Left:
-           focusPreviousChild();
-           break;
-       case Qt::Key_Down:
-       case Qt::Key_Right:
-           focusNextChild();
-           break;
-       default:
-           break;
-   }
-   QWidget::keyPressEvent(e);
+    switch (e->key())
+    {
+    case Qt::Key_Up:
+    case Qt::Key_Left:
+        focusPreviousChild();
+        break;
+    case Qt::Key_Down:
+    case Qt::Key_Right:
+        focusNextChild();
+        break;
+    default:
+        break;
+    }
+    QWidget::keyPressEvent(e);
 }
 
 /**************************************************************************************************
@@ -141,7 +154,7 @@ void PopupWidget::setTitleBarText(const QString &str)
 /**************************************************************************************************
  * 获取标题栏高度。
  *************************************************************************************************/
- int PopupWidget::getTitleBarhight()const
+int PopupWidget::getTitleBarhight()const
 {
     int tempHight = _titleBarHeight;
     return tempHight;
@@ -230,7 +243,6 @@ void PopupWidget::setCloseBtnTxt(const QString &txt)
     {
         _exitButton->setText(txt);
     }
-
 }
 
 /**************************************************************************************************
@@ -267,7 +279,7 @@ PopupWidget::PopupWidget(bool isBlank) : QDialog(0, Qt::FramelessWindowHint)
     QPalette p;
     p.setColor(QPalette::Foreground, Qt::black);
     setPalette(p);
-    setAttribute(Qt::WA_NoSystemBackground); //draw background in paintEvent
+    setAttribute(Qt::WA_NoSystemBackground);  // draw background in paintEvent
 
     QHBoxLayout *headLayout = NULL;
     _titleLabel = NULL;
@@ -297,7 +309,7 @@ PopupWidget::PopupWidget(bool isBlank) : QDialog(0, Qt::FramelessWindowHint)
         headLayout->setContentsMargins(0, 1, 0, 0);
         headLayout->setSpacing(0);
         headLayout->addWidget(_titleLabel, 1);
-        headLayout->addWidget(_exitButton, 1,Qt::AlignVCenter);
+        headLayout->addWidget(_exitButton, 1, Qt::AlignVCenter);
         headLayout->addStretch();
     }
 
@@ -316,6 +328,5 @@ PopupWidget::PopupWidget(bool isBlank) : QDialog(0, Qt::FramelessWindowHint)
  *************************************************************************************************/
 PopupWidget::~PopupWidget()
 {
-
 }
 

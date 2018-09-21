@@ -30,7 +30,7 @@ UserFaceTrend,趋势,Trend
 UserFaceBigFont,大字体,Big Font
 UserFaceCustom,自定义,Custom
 UserFaceUnknow,未知,Unknow
-ECG,心电,ECG
+ECG,ECG,ECG
 HR,心率,HR
 HR_PR,心率/脉率,HR/PR
 ST-I,ST-I,ST-I
@@ -89,11 +89,11 @@ AUXP2_PR,AUXP2脉率,AUXP2-PR
 CO_CO,心排量,C.O.
 CO_CI,心指数,C.I.
 TB,血温,TB
-SPO2,血氧,SPO2
+SPO2,SPO2,SPO2
 PR,脉率,PR
 PLETH,血氧波,Pleth
-NIBP,血压,NIBP
-RESP,呼吸,RESP
+NIBP,NIBP,NIBP
+RESP,RESP,RESP
 ParameterColor,参数颜色,Parameter Color
 ParameterColorDesc,参数颜色设置,Parameter Color Desc
 RR,呼吸率,RR
@@ -197,7 +197,7 @@ InjectionTempSource,注射液温度来源,Injection Temp Source
 InjectionTemp,注射液温度,Injection Temp
 InjectionVolumn,注射液体积,Injection Volumn
 MeasureMode,测量模式,Measure Mode
-TEMP,体温,TEMP
+TEMP,TEMP,TEMP
 T1,T1,T1
 T2,T2,T2
 TD,ΔT,ΔT
@@ -223,6 +223,11 @@ TEMP2High,体温2高,TEMP2 High
 TEMPTDLow,体温差低,ΔT Low
 TEMPTDHigh,体温差高,ΔT High
 TEMP1SensorOff,体温1探头脱落,TEMP1 Sensor Off
+PrintSettingMenu,打印设置,PrintSettingMenu
+PrintSettingMenuDesc,打印设置,PrintSettingMenuDesc
+PrintTime,实时打印时间,PrintTime
+ClearPrintTask,清除打印任务,ClearPrintTask
+Continous,连续,Continous
 TEMP2SensorOff,体温2探头脱落,TEMP2 Sensor Off
 TEMPSensorOffAll,体温探头全部脱落,TEMP Sensor Off All
 TEMP1OverRange,体温1超界,TEMP1 Over Range
@@ -1379,7 +1384,7 @@ AA2,自动识别麻醉气体2,AA2
 O2,O2,O2
 SetUp,设置,SetUp
 AGModule,麻醉模块,AGModule
-AG,麻醉,AG
+AG,AG,AG
 LoadConfig,加载配置,Load Config
 SuccessToLoad,加载成功,Success ToLoad
 Load,加载,Load
@@ -1453,7 +1458,7 @@ NIBPList,NIBP列表,NIBP List
 CalculateMenu,计算,Calculate
 HemodynamicCalculation,血液动力学计算,Hemodynamic Calculation
 CalculateMenuDesc,计算设置,Calculation Desc
-KeyBoardVolumn,按键音量,Key Volumn
+KeyBoardVolumn,按键音量,Volume
 Standby,待机,Standby
 CO2Standby,CO2待机,CO2 Standby
 CO2Measure,CO2测量,CO2 Measure
@@ -1461,7 +1466,7 @@ ChooseScreen,界面选择,Screen
 ManualTirgger,手动触发,Manual Tirgger
 ParameterSwitch,参数开关,Para Switch
 eventReview,事件回顾,Event
-NightMode,夜间模式,NightMode
+NightMode,夜间模式,Night
 Patient,病人信息,Patient
 IBPCOModule,IBP+CO模块,IBP+CO Module
 ShuttingDown,正在关机,Shutting Down
