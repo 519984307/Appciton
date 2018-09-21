@@ -105,6 +105,8 @@ SOURCES +=                                                                      
     Utility/LanguageManager/LanguageManager.cpp                                 \
     Utility/FontManager/FontManager.cpp                                         \
     Utility/ColorManager/ColorManager.cpp                                       \
+    Utility/NightModeManager/NightModeManager.cpp                               \
+    Utility/NightModeManager/NightStatusBar.cpp                                 \
     Utility/Widgets/Base/ShadowEffect.cpp                                       \
     Utility/Widgets/Base/ThemeManager.cpp                                       \
     Utility/Widgets/Base/Button.cpp                                             \
@@ -328,6 +330,7 @@ SOURCES +=                                                                      
     Components/WindowManager/ScreenLayoutModel.cpp                              \
     Components/WindowManager/ScreenLayoutItemDelegate.cpp                       \
     Components/WindowManager/ScreenLayoutEditor.cpp                             \
+    Components/WindowManager/ParaColorWindow.cpp                                \
     Components/USBManager/DataExporterBase.cpp                                  \
     Components/USBManager/ErrorLogExporter.cpp                                  \
     Components/USBManager/UDiskInspector.cpp                                    \
@@ -377,7 +380,6 @@ SOURCES +=                                                                      
     Components/Maintain/Supervisor/Menu/SupervisorAlarmLimitMenu.cpp            \
     Components/Maintain/Supervisor/Menu/SupervisorAlarmMenu.cpp                 \
     Components/Maintain/Supervisor/Menu/SupervisorWifiMenu.cpp                  \
-    Components/Maintain/Supervisor/Menu/DisplayMenuContent.cpp                  \
     Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.cpp            \
     Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.cpp          \
     Components/Maintain/Supervisor/Menu/SupervisorTimeWindow.cpp                \
@@ -649,6 +651,8 @@ HEADERS +=                                                                      
     Utility/LanguageManager/LanguageManager.h                                   \
     Utility/FontManager/FontManager.h                                           \
     Utility/ColorManager/ColorManager.h                                         \
+    Utility/NightModeManager/NightModeManager.h                                 \
+    Utility/NightModeManager/NightStatusBar.h                                   \
     Utility/Widgets/Base/ShadowEffect.h                                         \
     Utility/Widgets/Base/ThemeManager.h                                         \
     Utility/Widgets/Base/Button.h                                               \
@@ -899,6 +903,7 @@ HEADERS +=                                                                      
     Components/WindowManager/ScreenLayoutItemDelegate.h                         \
     Components/WindowManager/ScreenLayoutDefine.h                               \
     Components/WindowManager/ScreenLayoutEditor.h                               \
+    Components/WindowManager/ParaColorWindow.h                                  \
     Components/PrintManager/PrintTypeDefine.h                                   \
     Components/PrintManager/PrintDefine.h                                       \
     Components/PrintManager/PrintProviderIFace.h                                \
@@ -949,7 +954,6 @@ HEADERS +=                                                                      
     Components/Maintain/Supervisor/Menu/SupervisorAlarmLimitMenu.h              \
     Components/Maintain/Supervisor/Menu/SupervisorAlarmMenu.h                   \
     Components/Maintain/Supervisor/Menu/SupervisorWifiMenu.h                    \
-    Components/Maintain/Supervisor/Menu/DisplayMenuContent.h                    \
     Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.h              \
     Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.h            \
     Components/Maintain/Supervisor/Menu/SupervisorTimeWindow.h                  \
@@ -1357,6 +1361,7 @@ INCLUDEPATH +=                                                                  
     Utility/Config                                                              \
     Utility/DataStorage                                                         \
     Utility/ColorManager                                                        \
+    Utility/NightModeManager                                                    \
     Utility/FontManager                                                         \
     Utility/LanguageManager                                                     \
     Utility/Widgets                                                             \

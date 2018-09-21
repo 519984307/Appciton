@@ -9,19 +9,18 @@
  **/
 
 #pragma once
-#include "MenuContent.h"
+#include "Window.h"
 
-class DisplayMenuContentPrivate;
-class DisplayMenuContent : public MenuContent
+class ParaColorWindowPrivate;
+class ParaColorWindow : public Window
 {
     Q_OBJECT
 public:
-    DisplayMenuContent();
-    ~DisplayMenuContent();
+    ParaColorWindow();
+    ~ParaColorWindow();
 
 protected:
-    /* reimplment */
-    void readyShow();
+    void showEvent(QShowEvent *ev);
 
     /* reimplement */
     void layoutExec();
@@ -32,5 +31,5 @@ private slots:
     void onComboBoxIndexChanged(int index);
 
 private:
-    DisplayMenuContentPrivate * const d_ptr;
+    ParaColorWindowPrivate * const d_ptr;
 };
