@@ -14,6 +14,9 @@
 #include "IThread.h"
 #include "ErrorLog.h"
 
+#include "OxyCRGRRHRWaveWidget.h"
+#include "OxyCRGTrendWaveWidget.h"
+
 #include "IConfig.h"
 #include "SoftKeyManager.h"
 #include "KeyActionManager.h"

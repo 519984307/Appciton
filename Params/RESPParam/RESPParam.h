@@ -19,6 +19,7 @@
 class RESPWaveWidget;
 class RESPProviderIFace;
 class RESPFullDisclosure;
+class OxyCRGRRHRWaveWidget;
 class RESPParam: public Param
 {
 public:
@@ -79,6 +80,18 @@ public:
     // 模块复位
     void reset();
 
+    /**
+     * @brief getWaveDataRate  获取波形速率
+     * @return
+     */
+    int getWaveDataRate(void) const;
+
+    /**
+     * @brief setOxyWaveRrHrWidget
+     * @param w
+     */
+    void setOxyWaveRrHrWidget(OxyCRGRRHRWaveWidget *w);
+
 public:
     // 设置/获取波形速度。
     void setSweepSpeed(RESPSweepSpeed speed);
@@ -110,6 +123,7 @@ private:
     RESPProviderIFace *_provider;
     RESPWaveWidget *_waveWidget;
     OxyCRGRESPWidget *_waveOxyCRGWidget;
+    OxyCRGRRHRWaveWidget *waveRrHrWidget;
     bool _respMonitoring;
 };
 #define respParam (RESPParam::construction())

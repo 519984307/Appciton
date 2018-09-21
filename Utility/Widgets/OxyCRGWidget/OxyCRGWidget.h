@@ -25,6 +25,7 @@ class QVBoxLayout;
 class OxyCRGWidgetLabel;
 class PopupList;
 class OxyCRGWidgetPrivate;
+class OxyCRGTrendWaveWidget;
 class OxyCRGWidget : public IWidget
 {
     Q_OBJECT
@@ -39,6 +40,7 @@ public:
     void setOxyCrgCo2Widget(OxyCRGCO2Widget *p);
     void setWaveType(int index);
     int  getWaveType(void)const;
+    void setOxyCrgWaveTrendWidget(OxyCRGTrendWaveWidget *p);
 protected:
     void paintEvent(QPaintEvent *event);
     // 窗体大小调整事件
@@ -77,6 +79,7 @@ private:
     OxyCRGHRWidget *_oxycrgHrWidget;
     OxyCRGSPO2Widget *_oxycrgSpo2Widget;
     OxyCRGCO2Widget  *_oxycrgCo2Widget;
+    OxyCRGTrendWaveWidget *_oxycrgTrendWaveWidget;
     void _trendLayout(void);
     void _clearLayout(void);
 

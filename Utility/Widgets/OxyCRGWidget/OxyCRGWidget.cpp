@@ -29,6 +29,7 @@
 #include "IMessageBox.h"
 #include "ECGParam.h"
 #include "OxyCRGRRWidget.h"
+#include "OxyCRGTrendWaveWidget.h"
 
 class OxyCRGWidgetPrivate
 {
@@ -164,6 +165,10 @@ void OxyCRGWidget::_trendLayout(void)
         w->setVisible(true);           // 可见。
 
         _hLayoutWave->addWidget(w, 1);
+    }
+    if (_oxycrgTrendWaveWidget)
+    {
+        _hLayoutWave->addWidget(_oxycrgTrendWaveWidget,1);
     }
 }
 
@@ -449,6 +454,14 @@ void OxyCRGWidget::setWaveType(int index)
 int OxyCRGWidget::getWaveType()const
 {
     return _waveType;
+}
+
+void OxyCRGWidget::setOxyCrgWaveTrendWidget(OxyCRGTrendWaveWidget *p)
+{
+    if (p != NULL)
+    {
+        _oxycrgTrendWaveWidget = p;
+    }
 }
 
 /**************************************************************************************************

@@ -147,12 +147,14 @@ SOURCES +=                                                                      
     Utility/Widgets/InputMethod/NumberPanel.cpp                                 \
     Utility/Widgets/InputMethod/NumberInput.cpp                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.cpp                          \
+    Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.cpp                      \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidgetRuler.cpp                     \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidget.cpp                               \
     Utility/Widgets/OxyCRGWidget/OxyCRGHRWidget.cpp                             \
     Utility/Widgets/OxyCRGWidget/OxyCRGRESPWidget.cpp                           \
     Utility/Widgets/OxyCRGWidget/OxyCRGCO2Widget.cpp                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGRRWidget.cpp                             \
+    Utility/Widgets/OxyCRGWidget/OxyCRGRRHRWaveWidget.cpp                             \
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2Widget.cpp                           \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWidget.cpp                          \
@@ -164,7 +166,6 @@ SOURCES +=                                                                      
     Utility/Widgets/Trendform/ShortTrendManager.cpp                             \
     Utility/Widgets/TrendWidget/TrendWidget.cpp                                 \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.cpp                            \
-    Utility/Widgets/TrendWidget/TrendWidgetSelectMenu.cpp                       \
     Utility/Widgets/Waveform/BarGraphScanMode.cpp                               \
     Utility/Widgets/Waveform/FreezeWaveReviewMode.cpp                           \
     Utility/Widgets/Waveform/FreezeTimeIndicator.cpp                            \
@@ -488,7 +489,6 @@ SOURCES +=                                                                      
     Components/ConfigManager/LoadConfigMenuContent.cpp                          \
     Components/ConfigManager/UnitSetupMenuContent.cpp                           \
     Components/Freeze/FreezeManager.cpp                                         \
-    Components/Freeze/FreezeWidget.cpp                                          \
     Components/Freeze/FreezeWindow.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
 #################################################################################
@@ -697,11 +697,13 @@ HEADERS +=                                                                      
     Utility/Widgets/InputMethod/NumberPanel.h                                   \
     Utility/Widgets/InputMethod/NumberInput.h                                   \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.h                            \
+    Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.h                        \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidgetRuler.h                       \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidget.h                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGHRWidget.h                               \
     Utility/Widgets/OxyCRGWidget/OxyCRGRESPWidget.h                             \
     Utility/Widgets/OxyCRGWidget/OxyCRGRRWidget.h                               \
+    Utility/Widgets/OxyCRGWidget/OxyCRGRRHRWaveWidget.h                         \
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2Widget.h                             \
     Utility/Widgets/OxyCRGWidget/OxyCRGCO2Widget.h                              \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWidget.h                            \
@@ -715,7 +717,6 @@ HEADERS +=                                                                      
     Utility/Widgets/Trendform/ShortTrendWidgetSelectMenu.h                      \
     Utility/Widgets/Trendform/ShortTrendManager.h                               \
     Utility/Widgets/TrendWidget/TrendWidget.h                                   \
-    Utility/Widgets/TrendWidget/TrendWidgetSelectMenu.h                         \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.h                              \
     Utility/Widgets/Waveform/BarGraphScanMode.h                                 \
     Utility/Widgets/Waveform/FreezeWaveReviewMode.h                             \
@@ -1066,7 +1067,6 @@ HEADERS +=                                                                      
     Components/ConfigManager/LoadConfigMenuContent.h                            \
     Components/ConfigManager/UnitSetupMenuContent.h                             \
     Components/Freeze/FreezeManager.h                                           \
-    Components/Freeze/FreezeWidget.h                                            \
     Components/Freeze/FreezeWindow.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \
 #################################################################################

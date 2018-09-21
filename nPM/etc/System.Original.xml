@@ -734,8 +734,10 @@
 	    <ECGLeadConvention>0</ECGLeadConvention>
 	    <AlarmSource>0</AlarmSource>
 	    <Ecg1Wave>0</Ecg1Wave>
-	    <Ecg2Wave>1</Ecg2Wave>
-	    <Ecg1Gain>0</Ecg1Gain>
+            <Ecg2Wave>1</Ecg2Wave>
+            <Ecg1WaveWidget>ECGIWaveWidget</Ecg1WaveWidget>
+            <Ecg2WaveWidget>ECGIIWaveWidget</Ecg2WaveWidget>
+            <Ecg1Gain>0</Ecg1Gain>
 	    <Ecg2Gain>0</Ecg2Gain>
 	    <SweepSpeed>1</SweepSpeed>
 	    <Filter>0</Filter>
@@ -767,7 +769,6 @@
 		<C5>0</C5>                
 		<C6>0</C6>                                
 	    </EverLeadOn>
-
         </ECG>
 		<CO2>
 			<O2Compensation>55</O2Compensation>
@@ -791,7 +792,21 @@
         </AG>
         <UILayout>
         <!-- 控件的顺序与上面的布局节点对应 -->
-            <MainLayout>
+            <MainLayout direction="vertical" margin="0" spacing="0">
+                <LayoutItem height="40" direction="horizontal" spacing="0" bgcolor="#1e1e1e">
+                    <LayoutItem stretch="1">PatientInfoWidget</LayoutItem>
+                    <LayoutItem width="50">PatientStatusBarWidget</LayoutItem>
+                    <LayoutItem width="150">DateTimeWidget</LayoutItem>
+                    <LayoutItem width="50">AlarmMuteBarWidget</LayoutItem>
+                    <LayoutItem width="350">AlarmPhyInfoBarWidget</LayoutItem>
+                    <LayoutItem width="350">AlarmTechInfoBarWidget</LayoutItem>
+                </LayoutItem>
+                <LayoutItem stretch="1">ContentView</LayoutItem>
+                <LayoutItem height="80" direction="horizontal" spacing="0">
+                    <LayoutItem stretch="1">SoftKeyManager</LayoutItem>
+                    <LayoutItem width="80">SystemStatusBarWidget</LayoutItem>
+                    <LayoutItem width="80">BatteryBarWidget</LayoutItem>
+                </LayoutItem>
             </MainLayout>
             <ContentLayout>
                 <Normal>

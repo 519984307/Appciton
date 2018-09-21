@@ -17,6 +17,7 @@
 #include <QGridLayout>
 #include "TitrateTableDefine.h"
 #include "LanguageManager.h"
+#include "LayoutManager.h"
 
 class TitrateTableSetWindowPrivate
 {
@@ -78,7 +79,7 @@ void TitrateTableSetWindow::showEvent(QShowEvent *e)
 {
     Window::showEvent(e);
 
-    QRect r = windowManager.getMenuArea();
+    QRect r = layoutManager.getMenuArea();
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 }
 

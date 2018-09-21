@@ -1,16 +1,16 @@
 #include "SystemModeSelectWidget.h"
 #include "FontManager.h"
 #include "LanguageManager.h"
-#include "WindowManager.h"
 #include <QBoxLayout>
 #include "Debug.h"
+#include "LayoutManager.h"
 
 /**************************************************************************************************
  * 处理新病人类型。
  *************************************************************************************************/
 void SystemModeSelectWidget::_typeChanged(UserFaceType t)
 {
-    windowManager.setUFaceType(t);
+    layoutManager.setUFaceType(t);
 }
 
 /**************************************************************************************************
@@ -37,7 +37,7 @@ void SystemModeSelectWidget::_listReleased()
 void SystemModeSelectWidget::showEvent(QShowEvent *event)
 {
     PopupWidget::showEvent(event);
-    _list->setCurrentRow(windowManager.getUFaceType());
+    _list->setCurrentRow(layoutManager.getUFaceType());
     QListWidgetItem *item = _list->item(UFACE_MONITOR_STANDARD);
     item->setFlags(item->flags() | Qt::ItemIsEnabled);
 }

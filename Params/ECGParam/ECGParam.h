@@ -35,6 +35,7 @@ class MonitorSoftkeyAction;
 class ECGWaveWidget;
 class ECGProviderIFace;
 class PDProviderIFace;
+class OxyCRGRRHRWaveWidget;
 class ECGParam: public Param
 {
     Q_OBJECT
@@ -106,6 +107,12 @@ public:
     void setECGSTTrendWidget(ECGSTTrendWidget *trendWidget);
     void setWaveWidget(ECGWaveWidget *waveWidget, ECGLead whichLead);
     void setOxyCRGWaveWidget(OxyCRGHRWidget *waveWidget);
+
+    /**
+     * @brief setOxyCRGHrWaveWidget
+     * @param waveWidget
+     */
+    void setOxyCRGHrWaveWidget(OxyCRGRRHRWaveWidget *waveWidget);
 
     // 更新波形数据。
     void updateWaveform(int waveform[], bool *leadoff, bool ipaceMark = false,
@@ -243,6 +250,12 @@ public: // 用于访问配置相关信息。
     void setSweepSpeed(ECGSweepSpeed onoff);
     ECGSweepSpeed getSweepSpeed(void);
 
+    /**
+     * @brief getWaveDataRate  获取波形速率
+     * @return
+     */
+    int getWaveDataRate(void) const;
+
     // 设置/获取增益。
     void setGain(ECGGain gain, ECGLead lead);
     void setGain(ECGGain gain, int waveID);
@@ -322,6 +335,7 @@ private:
     ECGSTTrendWidget *_ecgSTTrendWidget;
     ECGWaveWidget *_waveWidget[ECG_LEAD_NR];
     OxyCRGHRWidget *_waveOxyCRGWidget;
+    OxyCRGRRHRWaveWidget *waveRrHrWidget;
     QBasicTimer _timer;
     short _hrValue;
     short _pvcsValue;
