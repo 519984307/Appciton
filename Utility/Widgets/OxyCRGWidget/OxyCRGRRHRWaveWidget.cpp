@@ -26,10 +26,18 @@ class OxyCRGRRHRWaveWidgetPrivate
 {
 public:
     OxyCRGRRHRWaveWidgetPrivate()
-            : rrFlagBuf(NULL),
-              rrDataBuf(NULL),
-              rrDataBufIndex(0),
-              rrDataBufLen(0)
+        : rrFlagBuf(NULL),
+          rrDataBuf(NULL),
+          rrDataBufIndex(0),
+          rrDataBufLen(0),
+          rrName(""),
+          rrRulerHigh(InvData()),
+          rrRulerLow(InvData()),
+          rrWaveColor(Qt::green),
+          rrWavePath(NULL),
+          curX(0),
+          curY(0),
+          isReStart(false)
     {
     }
     RingBuff<int> *rrFlagBuf;            // 波形标记缓存， 值为1则表示该数据有误
@@ -43,7 +51,7 @@ public:
 
     QColor rrWaveColor;                  // 波形颜色
 
-    QPainterPath* rrWavePath;    // rr波形路径
+    QPainterPath *rrWavePath;    // rr波形路径
     QPainterPath hrWavePath;             // hr波形路径
 
     float curX;
@@ -52,8 +60,8 @@ public:
 };
 
 OxyCRGRRHRWaveWidget::OxyCRGRRHRWaveWidget(const QString &waveName)
-                    : OxyCRGTrendWaveWidget(waveName),
-                      d_ptr(new OxyCRGRRHRWaveWidgetPrivate)
+    : OxyCRGTrendWaveWidget(waveName),
+      d_ptr(new OxyCRGRRHRWaveWidgetPrivate)
 {
     init();
 }
@@ -140,7 +148,7 @@ void OxyCRGRRHRWaveWidget::paintEvent(QPaintEvent *e)
     int rulerLow = getRulerLowValue();
     double curX = rect().width() + rect().x() - getWxShift();
     double dataH = (getHrWaveBuf()->at(0) - rulerLow) * 1.0 /
-            (rulerHigh - rulerLow) * h;
+                   (rulerHigh - rulerLow) * h;
     pathHr.moveTo(curX, dataH);
     int dataSize = getHrWaveBuf()->dataSize();
     for (int i = 0; i < dataSize; i++)
@@ -181,7 +189,6 @@ void OxyCRGRRHRWaveWidget::paintEvent(QPaintEvent *e)
         pathResp.lineTo(curX, dataH);
     }
     painter.drawPath(pathResp);
-
 }
 
 void OxyCRGRRHRWaveWidget::onTimeOutExec()
@@ -192,8 +199,8 @@ void OxyCRGRRHRWaveWidget::onTimeOutExec()
 void OxyCRGRRHRWaveWidget::init()
 {
     // rr标尺的颜色更深。
-    QPalette palette =colorManager.getPalette(
-                paramInfo.getParamName(PARAM_RESP));
+    QPalette palette = colorManager.getPalette(
+                           paramInfo.getParamName(PARAM_RESP));
     QColor color = palette.color(QPalette::WindowText);
     palette.setColor(QPalette::Highlight, color);
     color = palette.color(QPalette::WindowText);
@@ -214,7 +221,7 @@ void OxyCRGRRHRWaveWidget::init()
     d_ptr->rrRulerLow = valueLow;
     // 申请存储rr波形数据堆空间
     d_ptr->rrDataBufIndex = 0;
-    d_ptr->rrDataBufLen = 65; // 最大8分钟数据
+    d_ptr->rrDataBufLen = 65; // 最大8分钟数据  测试1分钟左右的数据
     d_ptr->rrDataBuf = new RingBuff<int>(d_ptr->rrDataBufLen);
     d_ptr->rrFlagBuf = new RingBuff<int>(d_ptr->rrDataBufLen);
 
@@ -222,8 +229,8 @@ void OxyCRGRRHRWaveWidget::init()
     d_ptr->rrWavePath = new QPainterPath;
 
     // hr标尺的颜色更深。
-    palette =colorManager.getPalette(
-                paramInfo.getParamName(PARAM_ECG));
+    palette = colorManager.getPalette(
+                  paramInfo.getParamName(PARAM_ECG));
     color = palette.color(QPalette::WindowText);
     palette.setColor(QPalette::Highlight, color);
     color = palette.color(QPalette::WindowText);
