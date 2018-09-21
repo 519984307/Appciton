@@ -218,6 +218,7 @@ SOURCES +=                                                                      
     Components/System/Widgets/SystemSelftestMenu.cpp                            \
     Components/System/Widgets/SystemStatusBarWidget.cpp                         \
     Components/System/Widgets/SystemMenuContent.cpp                             \
+    Components/System/Widgets/PrintSettingMenuContent.cpp                       \
     Components/System/Widgets/MeasureSettingMenuContent.cpp                     \
     Components/System/Widgets/MeasureSettingWindow.cpp                          \
     Components/System/Widgets/DataReviewMenuContent.cpp                         \
@@ -765,6 +766,7 @@ HEADERS +=                                                                      
     Components/System/Widgets/SystemSelftestMenu.h                              \
     Components/System/Widgets/SystemModeBarWidget.h                             \
     Components/System/Widgets/SystemMenuContent.h                               \
+    Components/System/Widgets/PrintSettingMenuContent.h                         \
     Components/System/Widgets/MeasureSettingMenuContent.h                       \
     Components/System/Widgets/MeasureSettingWindow.h                           \
     Components/System/Widgets/DataReviewMenuContent.h                           \

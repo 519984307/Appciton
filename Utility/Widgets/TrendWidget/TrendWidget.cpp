@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/21
+ **/
+
+
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPainter>
@@ -108,8 +120,9 @@ QPalette TrendWidget::alarmPalette(QPalette psrc)
  * 参数：
  *      name:名称。
  *************************************************************************************************/
-void TrendWidget::updateAlarm(bool /*alarmFlag*/)
+void TrendWidget::updateAlarm(bool alarmFlag)
 {
+    Q_UNUSED(alarmFlag)
 //    QPalette p = nameLabel->palette();
 //    if (alarmFlag)
 //    {
@@ -196,7 +209,7 @@ void TrendWidget::setUnitFont(int size, bool isBold)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-TrendWidget::TrendWidget(const QString &widgetName,bool vertical) : IWidget(widgetName)
+TrendWidget::TrendWidget(const QString &widgetName, bool vertical) : IWidget(widgetName)
 {
     _title = "";
     nameLabel = new TrendWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
@@ -214,7 +227,7 @@ TrendWidget::TrendWidget(const QString &widgetName,bool vertical) : IWidget(widg
         QVBoxLayout *vLayout = new QVBoxLayout();
         vLayout->addWidget(nameLabel);
         vLayout->addWidget(unitLabel);
-        vLayout->addLayout(mLayout,1);
+        vLayout->addLayout(mLayout, 1);
         vLayout->addStretch();
         vLayout->setSpacing(0);
         vLayout->setContentsMargins(5, 1, 0, 0);

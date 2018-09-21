@@ -223,6 +223,11 @@ TEMP2High,体温2高,TEMP2 High
 TEMPTDLow,体温差低,ΔT Low
 TEMPTDHigh,体温差高,ΔT High
 TEMP1SensorOff,体温1探头脱落,TEMP1 Sensor Off
+PrintSettingMenu,打印设置,PrintSettingMenu
+PrintSettingMenuDesc,打印设置,PrintSettingMenuDesc
+PrintTime,实时打印时间,PrintTime
+ClearPrintTask,清除打印任务,ClearPrintTask
+Continous,连续,Continous
 TEMP2SensorOff,体温2探头脱落,TEMP2 Sensor Off
 TEMPSensorOffAll,体温探头全部脱落,TEMP Sensor Off All
 TEMP1OverRange,体温1超界,TEMP1 Over Range

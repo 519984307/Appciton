@@ -27,6 +27,8 @@
 #include "IBPParam.h"
 #include "ParamManager.h"
 #include "Utility.h"
+#include "IConfig.h"
+#include "PrintSettingMenuContent.h"
 #include "LayoutManager.h"
 
 class ContinuousPageGeneratorPrivate
@@ -81,15 +83,19 @@ QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfos()
 {
     QList<int> waveID = layoutManager.getDisplayedWaveformIDs();
 
-    int printWaveNum = recorderManager.getPrintWaveNum();
-
     QList<WaveformID> waves;
 
-    // FIXME: Currently, we print the the first @printWaveNum waves in the window manager,
-    //       but we should dispay the waveform form the configuration
-    for (int i = 0; i < waveID.length() && i < printWaveNum; i++)
+    // 打印波形信息更新为从配置文件中选择型的方式
+    int index[PRINT_WAVE_NUM] = {0};
+    for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
-        waves.append((WaveformID)waveID.at(i));
+        QString path;
+        path = QString("Print|SelectWave%1").arg(i + 1);
+        systemConfig.getNumValue(path, index[i]);
+        if (index[i] > 0)
+        {
+            waves.append((WaveformID)waveID.at(index[i] - 1));
+        }
     }
 
     return RecordPageGenerator::getWaveInfos(waves);
@@ -181,6 +187,24 @@ int ContinuousPageGenerator::type() const
 RecordPageGenerator::PrintPriority ContinuousPageGenerator::getPriority() const
 {
     return PriorityContinuous;
+}
+
+void ContinuousPageGenerator::setPrintTime(PrintTime timeSec)
+{
+    int time;
+    if (timeSec == PRINT_TIME_CONTINOUS)
+    {
+        time = -1;
+    }
+    else if (timeSec == PRINT_TIME_EIGHT_SEC)
+    {
+        time = 8;
+    }
+    else
+    {
+        time = -1;
+    }
+    d_ptr->totalDrawWaveSegment = time;
 }
 
 RecordPage *ContinuousPageGenerator::createPage()
