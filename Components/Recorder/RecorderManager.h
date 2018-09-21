@@ -113,6 +113,18 @@ public:
      */
     bool addPageGenerator(RecordPageGenerator *generator);
 
+    /**
+     * @brief setPrintTime
+     * @param timeSec
+     */
+    void setPrintTime(PrintTime timeSec);
+
+    /**
+     * @brief getPrintTime
+     * @return
+     */
+    PrintTime getPrintTime(void) const;
+
 private slots:
 
     void testSlot();

@@ -20,6 +20,7 @@
 #include "SystemDefine.h"
 #include "PrintDefine.h"
 #include "RecorderManager.h"
+#include "NightModeManager.h"
 
 class SystemMenuContentPrivate
 {
@@ -30,7 +31,7 @@ public:
         ITEM_CBO_SCREEN_BRIGHTNESS,
         ITEM_CBO_PRINT_SPEED,
         ITEM_CBO_PRINT_WAVEFORM_NUM,
-        ITEM_CBO_KEYPRESS_VOLUME_NUM
+        ITEM_CBO_KEYPRESS_VOLUME
     };
 
     SystemMenuContentPrivate() {}
@@ -44,11 +45,27 @@ public:
 void SystemMenuContentPrivate::loadOptions()
 {
     int index = 0;
-    index = soundManager.getVolume(SoundManager::SOUND_TYPE_ALARM) - 1;
-    combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(index);
+    if (nightModeManager.isNightMode())
+    {
+        combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(false);
+        combos[ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(false);
+        combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(false);
+    }
+    else
+    {
+        combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(true);
+        combos[ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(true);
+        combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
 
-    index = systemManager.getBrightness() - 1;
-    combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setCurrentIndex(index);
+        index = soundManager.getVolume(SoundManager::SOUND_TYPE_ALARM) - 1;
+        combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(index);
+
+        index = systemManager.getBrightness() - 1;
+        combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setCurrentIndex(index);
+
+        index = soundManager.getVolume(SoundManager::SOUND_TYPE_KEY_PRESS)-1;
+        combos[ITEM_CBO_KEYPRESS_VOLUME]->setCurrentIndex(index);
+    }
 
     index = recorderManager.getPrintSpeed();
     combos[ITEM_CBO_PRINT_SPEED]->setCurrentIndex(index);
@@ -103,7 +120,7 @@ void SystemMenuContent::layoutExec()
     label = new QLabel(trs("SystemBrightness"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    for (int i = BRT_LEVEL_0; i < BRT_LEVEL_NR; i++)
+    for (int i = BRT_LEVEL_1; i < BRT_LEVEL_NR; i++)
     {
         comboBox->addItem(QString::number(i));
     }
@@ -113,39 +130,6 @@ void SystemMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SystemMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS, comboBox);
-
-    // print speed
-    label = new QLabel(trs("PrintSpeed"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << PrintSymbol::convert(PRINT_SPEED_125)
-                       << PrintSymbol::convert(PRINT_SPEED_250)
-                       << PrintSymbol::convert(PRINT_SPEED_500)
-                      );
-    itemID = static_cast<int>(SystemMenuContentPrivate::ITEM_CBO_PRINT_SPEED);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(SystemMenuContentPrivate::ITEM_CBO_PRINT_SPEED, comboBox);
-
-    // print waveform num
-    label = new QLabel(trs("PrintNumOfTraces"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << QString::number(PRINT_WAVEFORM_NUM_1)
-                       << QString::number(PRINT_WAVEFORM_NUM_2)
-                       << QString::number(PRINT_WAVEFORM_NUM_3)
-                       << QString::number(PRINT_WAVEFORM_NUM_4)
-                      );
-    itemID = static_cast<int>(SystemMenuContentPrivate::ITEM_CBO_PRINT_WAVEFORM_NUM);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(SystemMenuContentPrivate::ITEM_CBO_PRINT_WAVEFORM_NUM, comboBox);
 
     // key press volume
     label = new QLabel(trs("KeyPressVolume"));
@@ -160,10 +144,10 @@ void SystemMenuContent::layoutExec()
                        <<QString::number(SoundManager::VOLUME_LEV_5)
                        );
     layout->addWidget(comboBox , d_ptr->combos.count() , 1);
-    itemID = static_cast<int>(SystemMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME_NUM);
+    itemID = static_cast<int>(SystemMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME);
     comboBox->setProperty("Item" , qVariantFromValue(itemID));
     connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
-    d_ptr->combos.insert(SystemMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME_NUM , comboBox);
+    d_ptr->combos.insert(SystemMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME , comboBox);
 
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
@@ -200,7 +184,7 @@ void SystemMenuContent::onComboBoxIndexChanged(int index)
             recorderManager.setPrintWaveNum(waveformNum);
             break;
         }
-        case SystemMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME_NUM:
+        case SystemMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME:
         {
             int volume = box->itemText(index).toInt();
             soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , (SoundManager::VolumeLevel)volume);

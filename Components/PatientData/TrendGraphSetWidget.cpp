@@ -10,6 +10,7 @@
 #include "AlarmConfig.h"
 #include "IConfig.h"
 #include <QScrollBar>
+#include "LayoutManager.h"
 
 #define ITEM_HEIGHT     30
 #define ITEM_WIDTH      80
@@ -195,7 +196,7 @@ void TrendGraphSetWidget::showEvent(QShowEvent *e)
     PopupWidget::showEvent(e);
 
     // 居中显示。
-    QRect r = windowManager.getMenuArea();
+    QRect r = layoutManager.getMenuArea();
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 
 }

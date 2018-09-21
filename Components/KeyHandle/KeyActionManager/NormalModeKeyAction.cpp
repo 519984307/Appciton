@@ -29,7 +29,6 @@
 #include "SoundManager.h"
 #include "SystemAlarm.h"
 #include "MenuManager.h"
-#include "FreezeWidget.h"
 #include <QPointer>
 #include "RecorderManager.h"
 #include "ContinuousPageGenerator.h"

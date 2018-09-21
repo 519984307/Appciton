@@ -16,6 +16,7 @@
 #include "Button.h"
 #include "IConfig.h"
 #include "SoundManager.h"
+#include "NightModeManager.h"
 
 class SystemNightModeMenuContentPrivate
 {
@@ -128,6 +129,7 @@ void SystemNightModeMenuContent::layoutExec()
                        << QString::number(BRT_LEVEL_7)
                        << QString::number(BRT_LEVEL_8)
                        << QString::number(BRT_LEVEL_9)
+                       << QString::number(BRT_LEVEL_10)
                       );
     comboIndex = static_cast<int>(SystemNightModeMenuContentPrivate::
                                   ITEM_CBO_SCREEN_BRIGHTNESS);
@@ -260,6 +262,7 @@ void SystemNightModeMenuContent::onComboBoxIndexChanged(int index)
     {
         case SystemNightModeMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS:
         node = "ScreenBrightness";
+        index = combo->itemText(index).toInt();
         break;
         case SystemNightModeMenuContentPrivate::ITEM_CBO_ALARM_VOLUME:
         node = "AlarmVolume";
@@ -294,6 +297,5 @@ void SystemNightModeMenuContent::OnBtnReleased()
         name = trs("ExitNightMode");
     }
     d_ptr->enterNightMode->setText(name);
-    systemConfig.setNumValue("NightMode|EnterNightMode",
-                             static_cast<int>(!index));
+    nightModeManager.setNightMode();
 }

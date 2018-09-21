@@ -12,6 +12,7 @@
 #include <QDesktopWidget>
 #include <QApplication>
 #include <QPainterPath>
+#include "LayoutManager.h"
 
 
 /**************************************************************************************************
@@ -164,7 +165,7 @@ void ExportDataWidget::showEvent(QShowEvent *e)
     QDialog::showEvent(e);
 
     QRect r;
-    r = windowManager.getMenuArea();
+    r = layoutManager.getMenuArea();
     //Y轴多往下移动20个像素，主要是为了不遮挡后面的界面
     move(r.x() + (r.width() - width()) / 2 , r.y() + (r.height() - height()) / 2 + 20);
 }

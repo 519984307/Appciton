@@ -35,7 +35,8 @@ public:
           processor(NULL),
           procThread(NULL),
           iface(NULL),
-          generator(NULL)
+          generator(NULL),
+          timeSec(PRINT_TIME_CONTINOUS)
     {
     }
 
@@ -47,6 +48,7 @@ public:
     QThread *procThread;
     PrintProviderIFace *iface;
     QPointer<RecordPageGenerator> generator;
+    PrintTime timeSec;
 };
 
 RecorderManager &RecorderManager::getInstance()
@@ -217,6 +219,7 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
     {
         // no generator currently
         d_ptr->generator = generator;
+        d_ptr->generator->setPrintTime(d_ptr->timeSec);
         generator->moveToThread(d_ptr->procThread);
         startImmediately = true;
     }
@@ -249,6 +252,7 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
             // stop page processor
             QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
             d_ptr->generator = generator;
+            d_ptr->generator->setPrintTime(d_ptr->timeSec);
             generator->moveToThread(d_ptr->procThread);
         }
     }
@@ -268,6 +272,20 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
         eventStorageManager.triggerRealtimePrintEvent();
     }
     return true;
+}
+
+void RecorderManager::setPrintTime(PrintTime timeSec)
+{
+    if (timeSec == PRINT_TIME_NR)
+    {
+        return;
+    }
+    d_ptr->timeSec = timeSec;
+}
+
+PrintTime RecorderManager::getPrintTime() const
+{
+    return d_ptr->timeSec;
 }
 
 void RecorderManager::testSlot()

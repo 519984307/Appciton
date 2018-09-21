@@ -23,7 +23,7 @@ public:
 };
 
 TopBarWidget::TopBarWidget()
-    : IWidget()
+    : IWidget("TopBarWidget")
     , d_ptr(new TopBarWidgetPrivate)
 {
 }

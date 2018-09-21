@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/18
+ **/
+
 #include "TrendGraphWidget.h"
 #include "WindowManager.h"
 #include "FontManager.h"
@@ -8,10 +18,9 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-#include "EventReviewWindow.h"
-#include "OxyCRGEventWidget.h"
 #include "TrendGraphPageGenerator.h"
 #include "RecorderManager.h"
+#include "LayoutManager.h"
 
 #define ITEM_HEIGHT             30
 #define ITEM_WIDTH              100
@@ -67,7 +76,7 @@ void TrendGraphWidget::showEvent(QShowEvent *event)
     PopupWidget::showEvent(event);
 
     // 居中显示。
-    QRect r = windowManager.getMenuArea();
+    QRect r = layoutManager.getMenuArea();
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 }
 

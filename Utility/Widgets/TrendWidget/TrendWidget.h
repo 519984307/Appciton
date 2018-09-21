@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/21
+ **/
+
+
 #pragma once
 #include "IWidget.h"
 #include "LanguageManager.h"
@@ -15,7 +26,7 @@ class TrendWidget: public IWidget
 {
     Q_OBJECT
 public:
-    TrendWidget(const QString &widgetName, bool vertical = false);
+    explicit TrendWidget(const QString &widgetName, bool vertical = false);
     virtual ~TrendWidget();
 
     // 窗口是否使能
@@ -29,9 +40,6 @@ public:
     {
         return _title;
     }
-
-private slots:
-    void _releaseHandle(IWidget *widget);
 
 protected:
     void setName(const QString &name);
@@ -62,5 +70,19 @@ protected:
     QString _title;                           // 趋势控制标名
 
     QPalette normalPalette(QPalette psrc);
-    QPalette alarmPalette(QPalette psrc);
+    QPalette alarmPalette(QPalette psrc, bool isSetName = true);   // isSetName: 是否设置标题颜色
+    /**
+     * @brief showAlarmStatus   设置报警时状态：闪烁＋白底红字
+     * @param value             趋势值
+     * @param psrc              对应字体调色板
+     * @param isSetName         是否设置标题颜色
+     */
+    void showAlarmStatus(QWidget *value, QPalette psrc, bool isSetName = true);
+
+    /**
+     * @brief showNormalStatus  设置正常时状态：黑底＋对应颜色字体
+     * @param value             趋势值
+     * @param psrc              对应字体调色板
+     */
+    void showNormalStatus(QWidget *value, QPalette psrc);
 };
