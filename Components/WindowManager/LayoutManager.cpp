@@ -107,7 +107,7 @@ public:
     void performTrendLayout();
 
     /**
-     * @brief clearLayout clear the layout info
+     * @brief clearLayout clear the layout item and the layout container
      * @param layout the top layout
      */
     void clearLayout(QLayout *layout);
@@ -290,8 +290,10 @@ void LayoutManagerPrivate::doContentLayout()
         performOxyCRGLayout();
         break;
     case UFACE_MONITOR_TREND:
+        performTrendLayout();
         break;
     case UFACE_MONITOR_BIGFONT:
+        performBigFontLayout();
         break;
     default:
         qdebug("Unsupport screen layout!");
@@ -497,7 +499,80 @@ void LayoutManagerPrivate::performOxyCRGLayout()
 
 void LayoutManagerPrivate::performBigFontLayout()
 {
-    // TODO
+    QGridLayout *gridLayout = new QGridLayout;
+    gridLayout->setMargin(0);
+    contentLayout->addLayout(gridLayout);
+
+    QVariantMap bigFontLayout = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|BigFont");
+    QVariantList  layoutRows = bigFontLayout["LayoutRow"].toList();
+    if (layoutRows.isEmpty())
+    {
+        // might has only one item
+        QVariant row = bigFontLayout["LayoutRow"];
+        if (row.isValid())
+        {
+            layoutRows.append(row);
+        }
+    }
+
+    QVariantList::ConstIterator rowIter;
+    int row = 0;
+    for (rowIter = layoutRows.constBegin(); rowIter != layoutRows.constEnd(); ++rowIter)
+    {
+        QVariantMap rowMap = rowIter->toMap();
+        QVariantList nodes = rowMap["LayoutNode"].toList();
+        if (nodes.isEmpty())
+        {
+            // might has only one item
+            QVariant n = rowMap["LayoutNode"];
+            if (n.isValid())
+            {
+                nodes.append(n);
+            }
+        }
+
+        QVariantList::ConstIterator nodeIter;
+        int column = 0;;
+        for (nodeIter = nodes.constBegin(); nodeIter != nodes.constEnd(); ++nodeIter)
+        {
+            QVariantMap node = nodeIter->toMap();
+            QString paramName = node["Param"].toMap()["@text"].toString();
+            QString waveName = node["Wave"].toMap()["@text"].toString();
+
+            QWidget *nodeContainer = createContainter();
+            gridLayout->addWidget(nodeContainer, row, column);
+
+            QVBoxLayout *vLayout = new QVBoxLayout(nodeContainer);
+            vLayout->setMargin(0);
+
+            IWidget *w = layoutWidgets.value(layoutNodeMap[paramName], NULL);
+            if (w && widgetLayoutable[w->name()])
+            {
+                w->setVisible(true);
+                vLayout->addWidget(w, 2);
+                displayParams.append(w->name());
+            }
+            else
+            {
+                vLayout->addWidget(createContainter(), 2);
+            }
+
+            w = layoutWidgets.value(layoutNodeMap[waveName], NULL);
+            if (w && widgetLayoutable[w->name()])
+            {
+                w->setVisible(true);
+                vLayout->addWidget(w, 1);
+                displayWaveforms.append(w->name());
+            }
+            else
+            {
+                vLayout->addWidget(createContainter(), 1);
+            }
+            column++;
+        }
+
+        row++;
+    }
 }
 
 void LayoutManagerPrivate::performTrendLayout()

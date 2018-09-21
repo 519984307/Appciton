@@ -852,6 +852,30 @@
                     </LayoutRow>
                 </Normal>
                 <BigFont>
+                    <LayoutRow>
+                        <LayoutNode>
+                            <Param>ECG</Param>
+                            <Wave>ECG1Wave</Wave>
+                        </LayoutNode>
+                        <LayoutNode>
+                            <Param>NIBP</Param>
+                            <Wave></Wave>
+                        </LayoutNode>
+                    </LayoutRow>
+                    <LayoutRow>
+                        <LayoutNode>
+                            <Param>SPO2</Param>
+                            <Wave>SPO2Wave</Wave>
+                        </LayoutNode>
+                        <LayoutNode>
+                            <Param>RESP</Param>
+                            <Wave>RESPWave</Wave>
+                        </LayoutNode>
+                    </LayoutRow>
+                <MonitorBigFont>
+                    <TrendOrder>ECGTrendWidget,NIBPTrendWidget,SPO2TrendWidget,RESPTrendWidget</TrendOrder>
+                    <WaveOrder>ECGIIWaveWidget,NULL,SPO2WaveWidget,RESPWaveWidget</WaveOrder>
+                </MonitorBigFont>
                 </BigFont>
                 <ECG12Lead>
                     <Standard>ECGIWaveWidget,ECGV1WaveWidget,ECGIIWaveWidget,ECGV2WaveWidget,ECGIIIWaveWidget,ECGV3WaveWidget,ECGaVRWaveWidget,ECGV4WaveWidget,ECGaVLWaveWidget,ECGV5WaveWidget,ECGaVFWaveWidget,ECGV6WaveWidget</Standard>
