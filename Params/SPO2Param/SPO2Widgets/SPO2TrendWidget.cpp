@@ -86,33 +86,18 @@ void SPO2TrendWidget::isAlarm(bool flag)
  *************************************************************************************************/
 void SPO2TrendWidget::showValue(void)
 {
-    QPalette p = palette();
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
+    psrc = normalPalette(psrc);
     if (_isAlarm)
     {
-        if (p.window().color() != Qt::white)
-        {
-            p.setColor(QPalette::Window, Qt::white);
-            p.setColor(QPalette::WindowText, Qt::red);
-            setPalette(p);
-            _spo2Bar->setPalette(p);
-        }
-
-        p = _spo2Value->palette();
-        if (p.windowText().color() != Qt::red)
-        {
-            p.setColor(QPalette::WindowText, Qt::red);
-            _spo2Value->setPalette(p);
-        }
+        showAlarmStatus(_spo2Bar, psrc);
+        showAlarmStatus(_spo2Value, psrc);
     }
     else
     {
-        if (p.window().color() != Qt::black)
-        {
-            p = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
-            setPalette(p);
-            _spo2Value->setPalette(p);
-            _spo2Bar->setPalette(p);
-        }
+        setPalette(psrc);
+        showNormalStatus(_spo2Bar, psrc);
+        showNormalStatus(_spo2Value, psrc);
     }
 
     _spo2Value->setText(_spo2String);

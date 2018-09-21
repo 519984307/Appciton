@@ -134,19 +134,19 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPr
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
     setPalette(palette);
 
-    int infoFont = 14;
-    int fontH = fontManager.textHeightInPixels(fontManager.textFont(infoFont)) + 4;
-    _name->setFont(fontManager.textFont(infoFont));
+    int fontSize = fontManager.getFontSize(4);
+    int fontH = fontManager.textHeightInPixels(fontManager.textFont(fontSize)) + 4;
+    _name->setFont(fontManager.textFont(fontSize));
     _name->setFixedSize(130, fontH);
     _name->setText(getTitle());
 
     _ruler = new IBPWaveRuler(this);
     _ruler->setPalette(palette);
-    _ruler->setFont(fontManager.textFont(fontManager.getFontSize(0)));
+    _ruler->setFont(fontManager.textFont(fontSize - 2));
     addItem(_ruler);
 
     _leadSta = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
-    _leadSta->setFont(fontManager.textFont(infoFont));
+    _leadSta->setFont(fontManager.textFont(fontSize));
     _leadSta->setFixedSize(120, fontH);
     _leadSta->setText(trs("LeadOff"));
     _leadSta->setFocusPolicy(Qt::NoFocus);
@@ -167,6 +167,10 @@ IBPWaveWidget::~IBPWaveWidget()
 
 void IBPWaveWidget::paintEvent(QPaintEvent *e)
 {
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
+    setPalette(palette);
+    _ruler->setPalette(palette);
+    _ruler->setBackground(true);
     WaveWidget::paintEvent(e);
 }
 

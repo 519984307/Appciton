@@ -131,39 +131,6 @@ void SystemMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SystemMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS, comboBox);
 
-    // print speed
-    label = new QLabel(trs("PrintSpeed"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << PrintSymbol::convert(PRINT_SPEED_125)
-                       << PrintSymbol::convert(PRINT_SPEED_250)
-                       << PrintSymbol::convert(PRINT_SPEED_500)
-                      );
-    itemID = static_cast<int>(SystemMenuContentPrivate::ITEM_CBO_PRINT_SPEED);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(SystemMenuContentPrivate::ITEM_CBO_PRINT_SPEED, comboBox);
-
-    // print waveform num
-    label = new QLabel(trs("PrintNumOfTraces"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << QString::number(PRINT_WAVEFORM_NUM_1)
-                       << QString::number(PRINT_WAVEFORM_NUM_2)
-                       << QString::number(PRINT_WAVEFORM_NUM_3)
-                       << QString::number(PRINT_WAVEFORM_NUM_4)
-                      );
-    itemID = static_cast<int>(SystemMenuContentPrivate::ITEM_CBO_PRINT_WAVEFORM_NUM);
-    comboBox->setProperty("Item",
-                          qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(SystemMenuContentPrivate::ITEM_CBO_PRINT_WAVEFORM_NUM, comboBox);
-
     // key press volume
     label = new QLabel(trs("KeyPressVolume"));
     layout->addWidget(label , d_ptr->combos.count() , 0);

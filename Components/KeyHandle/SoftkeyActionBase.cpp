@@ -50,7 +50,6 @@ static KeyActionDesc _baseKeys[] =
 {
     KeyActionDesc("", "", "main.png",  SoftkeyActionBase::mainsetup
                     , SOFT_BASE_KEY_NR, true, QColor(255, 200, 0)),
-    KeyActionDesc("", "", ICON_FILE_LEFT,  SoftkeyActionBase::previousPage),
     KeyActionDesc("", trs("Patient"), "PatientInfo.png", SoftkeyActionBase::patientInfo),
     KeyActionDesc("", trs("PatientNew"), "PatientNew.png", SoftkeyActionBase::patientNew),
     KeyActionDesc("", trs("ECGLeadMode"), "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
@@ -72,7 +71,6 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", trs("SystemBrightness"), "Brightness.png", SoftkeyActionBase::sysSetup),
     KeyActionDesc("", trs("NightMode"), "nightMode.png", SoftkeyActionBase::nightMode),
     KeyActionDesc("", trs("PrintSetup"), "printSetup.png", SoftkeyActionBase::sysSetup),
-    KeyActionDesc("", "", ICON_FILE_RIGHT,  SoftkeyActionBase::nextPage),
 };
 
 /***************************************************************************************************
@@ -110,29 +108,6 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     }
     windowManager.showWindow(&codeMarkerWindow , WindowManager::ShowBehaviorCloseIfVisiable |
                              WindowManager::ShowBehaviorCloseOthers);
-}
-
-void SoftkeyActionBase::previousPage(bool isPressed)
-{
-    if (isPressed)
-    {
-        return;
-    }
-
-    softkeyManager.previousPage();
-}
-
-/***************************************************************************************************
- * 下一页面回调。
- **************************************************************************************************/
-void SoftkeyActionBase::nextPage(bool isPressed)
-{
-    if (isPressed)
-    {
-        return;
-    }
-
-    softkeyManager.nextPage();
 }
 
 /***************************************************************************************************
@@ -372,33 +347,12 @@ KeyActionDesc *SoftkeyActionBase::getActionDesc(int index)
         return NULL;
     }
 
-    if (index == SOFT_BASE_KEY_PREVIOUS_PAGE)
-    {
-        if (softkeyManager.hasPreviousPage())
-        {
-            _baseKeys[index].iconPath = ICON_FILE_LEFT;
-            _baseKeys[index].focus = true;
-        }
-        else
-        {
-            _baseKeys[index].iconPath = "";
-            _baseKeys[index].focus = false;
-        }
-    }
-    else if (index == SOFT_BASE_KEY_NEXT_PAGE)
-    {
-        if (softkeyManager.hasNextPage())
-        {
-            _baseKeys[index].iconPath = ICON_FILE_RIGHT;
-            _baseKeys[index].focus = true;
-        }
-        else
-        {
-            _baseKeys[index].iconPath = "";
-            _baseKeys[index].focus = false;
-        }
-    }
     return &_baseKeys[index];
+}
+
+KeyActionDesc *SoftkeyActionBase::getBaseActionDesc(SoftBaseKeyType baseType)
+{
+    return &_baseKeys[baseType];
 }
 
 /***************************************************************************************************

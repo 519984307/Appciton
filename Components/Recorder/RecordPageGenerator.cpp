@@ -28,8 +28,8 @@
 #include "AGParam.h"
 #include "ECGParam.h"
 #include "CO2Param.h"
-#include "WindowManager.h"
 #include "Utility.h"
+#include "LayoutManager.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
@@ -92,6 +92,11 @@ void RecordPageGenerator::pageControl(bool pause)
 QFont RecordPageGenerator::font()
 {
     return fontManager.recordFont(24);
+}
+
+void RecordPageGenerator::setPrintTime(PrintTime timeSec)
+{
+   Q_UNUSED(timeSec)
 }
 
 RecordPage *RecordPageGenerator::createPage()
@@ -1596,7 +1601,11 @@ void RecordPageGenerator::drawGraphAxis(QPainter *painter, const GraphAxisInfo &
     }
 
     // draw caption
-    int  captionHeigth = -(sectionHeight - axisInfo.ySectionHeight) - fontH / 2;
+    int  captionHeigth = -108;
+    if (axisInfo.yLabels.size() != 0)
+    {
+        captionHeigth = -(sectionHeight - axisInfo.ySectionHeight) - fontH / 2;
+    }
     QRectF captionRect;
     captionRect.setLeft(pixSize + pixSize / 2);
     captionRect.setWidth(axisInfo.xSectionWidth * 2); // should be enough
@@ -1859,7 +1868,7 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
             caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
                                              ecgParam.getLeadConvention()))
                       .arg(ECGSymbol::convert(ecgParam.getFilterMode()));
-            info.waveInfo.ecg.in12LeadMode = windowManager.getUFaceType() == UFACE_MONITOR_12LEAD;
+            info.waveInfo.ecg.in12LeadMode = layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD;
             info.waveInfo.ecg._12LeadDisplayFormat = ecgParam.get12LDisplayFormat();
             captionLength = fontManager.textWidthInPixels(caption, font());
             break;
@@ -2109,16 +2118,7 @@ RecordPage *RecordPageGenerator::createOxyCRGGraph(const QList<TrendGraphInfo> &
     {
         axisInfo.yLabels.clear();
     }
-    if (waveInfo.waveData.size() / waveInfo.sampleRate <= 2 * 120)
-    {
-        // print from OxyCRG window
-        axisInfo.xLabels = QStringList() << "-2min" << "-90s" << "-1min" << "-30s" << "0";
-    }
-    else
-    {
-        // print from the OxyCRG event
-        axisInfo.xLabels = QStringList() << "-2min" << "-1min" << "0" << "1min" << "2min";
-    }
+    axisInfo.xLabels = QStringList() << "-2min" << "-1min" << "0" << "1min" << "2min";
     axisInfo.origin = QPointF(axisInfo.marginLeft, heightOffset + axisInfo.height);
 
     // draw axis

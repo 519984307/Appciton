@@ -22,10 +22,10 @@
 #include "ParamInfo.h"
 #include "IConfig.h"
 #include "TimeDate.h"
-#include "WindowManager.h"
 #include "SystemManager.h"
 #include "PopupList.h"
 #include "ECGWaveRuler.h"
+#include "LayoutManager.h"
 
 int ECGWaveWidget::_paceHeight = 5;
 /**************************************************************************************************
@@ -191,7 +191,7 @@ void ECGWaveWidget::_popupDestroyed(void)
         _isAutoGain = false;
     }
 
-    if (windowManager.getUFaceType() == UFACE_MONITOR_12LEAD)
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD)
     {
         for (int i = ECG_LEAD_I; i <= ECG_LEAD_V6; i++)
         {
@@ -225,7 +225,7 @@ void ECGWaveWidget::_popupDestroyed(void)
  **************************************************************************************************/
 void ECGWaveWidget::_onCalcLeadChanged()
 {
-    if (UFACE_MONITOR_12LEAD != windowManager.getUFaceType())
+    if (UFACE_MONITOR_12LEAD != layoutManager.getUFaceType())
     {
         if (ecgParam.getCalcLead() == getID())
         {
@@ -250,7 +250,7 @@ void ECGWaveWidget::_loadConfig(void)
 {
     setSpeed(ecgParam.getSweepSpeed());
 
-    if (windowManager.getUFaceType() == UFACE_MONITOR_12LEAD)
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD)
     {
         _name->setFocusPolicy(Qt::NoFocus);
 
@@ -436,7 +436,7 @@ void ECGWaveWidget::setSpeed(ECGSweepSpeed speed)
         break;
     }
 
-    windowManager.resetWave();
+    layoutManager.resetWave();
 }
 
 /**************************************************************************************************
@@ -445,14 +445,6 @@ void ECGWaveWidget::setSpeed(ECGSweepSpeed speed)
 void ECGWaveWidget::setBandWidth(ECGBandwidth bandwidth)
 {
     QString filter;
-    QStringList waveName;
-    windowManager.getDisplayedWaveform(waveName);
-
-    if (waveName.isEmpty())
-    {
-        return;
-    }
-
     filter = ECGSymbol::convert(bandwidth);
     _filter->setText(filter);
 }
@@ -527,6 +519,11 @@ void ECGWaveWidget::setNotifyMesg(ECGWaveNotify mesg)
  *************************************************************************************************/
 void ECGWaveWidget::paintEvent(QPaintEvent *e)
 {
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
+    setPalette(palette);
+    _ruler->setPalette(palette);
+    _ruler->setBackground(true);
+
     WaveWidget::paintEvent(e);
 
     if (ECG_DISPLAY_NORMAL == ecgParam.getDisplayMode())
@@ -538,8 +535,7 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
     }
     else if (ECG_DISPLAY_12_LEAD_FULL == ecgParam.getDisplayMode())
     {
-        QStringList currentWaveforms;
-        windowManager.getCurrentWaveforms(currentWaveforms);
+        QStringList currentWaveforms = layoutManager.getDisplayedWaveforms();
         if (!((ECG_PACE_ON == (ECGPaceMode)ecgParam.get12LPacermaker()) && (!currentWaveforms.empty())
                 && (currentWaveforms[0] == name())))
         {
@@ -755,8 +751,7 @@ void ECGWaveWidget::showEvent(QShowEvent *e)
     }
     else if (ECG_DISPLAY_12_LEAD_FULL == ecgParam.getDisplayMode())
     {
-        QStringList currentWaveforms;
-        windowManager.getCurrentWaveforms(currentWaveforms);
+        QStringList currentWaveforms = layoutManager.getDisplayedWaveforms();
 
         if ((!currentWaveforms.empty()) && (currentWaveforms[0] == name()))
         {
@@ -819,7 +814,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     setPalette(palette);
 
-    int fontSize = fontManager.getFontSize(1);
+    int fontSize = fontManager.getFontSize(4);
     int fontH = fontManager.textHeightInPixels(fontManager.textFont(fontSize)) + 4;
     _name->setFont(fontManager.textFont(fontSize));
     _name->setFixedSize(70, fontH);
@@ -827,7 +822,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
 
     _filter = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _filter->setFont(fontManager.textFont(fontSize));
-    _filter->setFixedSize(130, fontH);
+    _filter->setFixedSize(180, fontH);
     _filter->setText("");
     _filter->setFocusPolicy(Qt::NoFocus);
     addItem(_filter);
@@ -840,7 +835,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
 
     _ruler = new ECGWaveRuler(this);
     _ruler->setPalette(palette);
-    _ruler->setFont(fontManager.textFont(fontManager.getFontSize(0)));
+    _ruler->setFont(fontManager.textFont(fontSize));
     addItem(_ruler);
 
     _12LGain = ECG_GAIN_X10;

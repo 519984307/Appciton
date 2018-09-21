@@ -286,17 +286,6 @@ int SoftkeyWidget::_adjustHintFontSize(const QRect &r, QString &hint)
     {
         hint = hint + hintTxt;
     }
-    QString text;
-    int maxLen = 0;
-    text = hint;
-    maxLen = fontManager.textWidthInPixels(hint, font);
-    while (maxLen > width && fontSize > 0)
-    {
-        font = fontManager.textFont(fontSize, true);
-        maxLen = fontManager.textWidthInPixels(text, font);
-        --fontSize;
-    }
-
     return fontSize;
 }
 
@@ -305,11 +294,11 @@ int SoftkeyWidget::_adjustHintFontSize(const QRect &r, QString &hint)
  * 参数：
  *      desc:信息结构体
  **************************************************************************************************/
-void SoftkeyWidget::setContent(const KeyActionDesc &desc)
+void SoftkeyWidget::setContent(const KeyActionDesc *desc)
 {
-    QString path = ICON_PATH + desc.iconPath;
+    QString path = ICON_PATH + desc->iconPath;
 
-    if (!desc.iconPath.isEmpty())
+    if (!desc->iconPath.isEmpty())
     {
         _pixmap.load(path);
         _isPixmapValid = true;
@@ -319,7 +308,7 @@ void SoftkeyWidget::setContent(const KeyActionDesc &desc)
         _isPixmapValid = false;
     }
 
-    if (!desc.focus)
+    if (!desc->focus)
     {
         setFocusPolicy(Qt::NoFocus);
     }
@@ -327,12 +316,12 @@ void SoftkeyWidget::setContent(const KeyActionDesc &desc)
     {
         setFocusPolicy(Qt::StrongFocus);
     }
-    _text = desc.text;
-    _color = desc.color;
-    _enableBorder = desc.border;
-    _pressColor = desc.pressColor;
-    _releaseColor = desc.releaseColor;
-    _hint = desc.hint;
+    _text = desc->text;
+    _color = desc->color;
+    _enableBorder = desc->border;
+    _pressColor = desc->pressColor;
+    _releaseColor = desc->releaseColor;
+    _hint = desc->hint;
     update();
 }
 
@@ -372,6 +361,6 @@ SoftkeyWidget::SoftkeyWidget(QWidget *parent)
       _borderColor(QColor(100, 100, 100)),
       _pressed(false),
       _enableBorder(false),
-      _isPixmapValid(true)
+      _isPixmapValid(false)
 {
 }

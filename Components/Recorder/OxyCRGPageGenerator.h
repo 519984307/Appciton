@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/18
+ **/
+
 #pragma once
 #include "RecordPageGenerator.h"
 #include <QScopedPointer>
@@ -11,7 +21,7 @@ public:
       Type = 6
     };
 
-    OxyCRGPageGenerator(const QList<TrendGraphInfo> &trendInfos, const OxyCRGWaveInfo &waveInfo, QObject *parent = 0);
+    OxyCRGPageGenerator(const QList<TrendGraphInfo> &trendInfos, const OxyCRGWaveInfo &waveInfo, QString &eventTitle, QObject *parent = 0);
     ~OxyCRGPageGenerator();
 
     /* override */

@@ -147,7 +147,7 @@ void RESPWaveWidget::setZoom(int zoom)
         zoom = RESP_ZOOM_X100;
         break;
     }
-
+    setValueRange(0, 255);
     _gain->setText(RESPSymbol::convert((RESPZoom)zoom));
 }
 
@@ -241,4 +241,11 @@ void RESPWaveWidget::hideEvent(QHideEvent *e)
     {
         _gainList->close();
     }
+}
+
+void RESPWaveWidget::paintEvent(QPaintEvent *e)
+{
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
+    setPalette(palette);
+    WaveWidget::paintEvent(e);
 }
