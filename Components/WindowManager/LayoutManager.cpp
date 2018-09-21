@@ -87,6 +87,11 @@ public:
     void performStandardLayout();
 
     /**
+     * @brief performStandardLayout perform standard layout
+     */
+    void performOxyCRGLayout();
+
+    /**
      * @brief clearLayout clear the layout info
      * @param layout the top layout
      */
@@ -266,6 +271,7 @@ void LayoutManagerPrivate::doContentLayout()
     case UFACE_MONITOR_12LEAD:
         break;
     case UFACE_MONITOR_OXYCRG:
+        performOxyCRGLayout();
         break;
     case UFACE_MONITOR_TREND:
         break;
@@ -339,6 +345,77 @@ void LayoutManagerPrivate::performStandardLayout()
     leftLayout->setStretch(0, waveLayout->rowCount());
     // the let param container stretch
     leftLayout->setStretch(1, leftParamLayout->rowCount());
+}
+
+#define MAX_WAVEWIDGET_ROW_IN_OXYCRG_LAYOUT 3       // the maximum wavewidget row can be displayed in the wave area while in the oxycrg layout
+void LayoutManagerPrivate::performOxyCRGLayout()
+{
+    QVBoxLayout *leftLayout = new QVBoxLayout();
+    leftLayout->setContentsMargins(0, 0, 0, 0);
+    QWidget *waveContainer = createContainter();
+    IWidget *oxyCRGWidget = layoutWidgets["OxyCRGWidget"];
+    leftLayout->addWidget(waveContainer, 1);
+    if (oxyCRGWidget)
+    {
+        oxyCRGWidget->setVisible(true);
+        leftLayout->addWidget(oxyCRGWidget, 1);
+    }
+    contentLayout->addLayout(leftLayout, waveAreaStretch);
+    QWidget *rightParamContainer = createContainter();
+    contentLayout->addWidget(rightParamContainer, paramAreaStretch);
+
+    QGridLayout *waveLayout = new QGridLayout(waveContainer);
+    waveLayout->setMargin(0);
+    QGridLayout *rightParamLayout = new QGridLayout(rightParamContainer);
+    rightParamLayout->setMargin(0);
+
+    int waveWidgetCounter = 0;
+    int currentRow = -1;
+    OrderedMap<int, LayoutRow>::ConstIterator iter = layoutInfos.begin();
+    for (; iter != layoutInfos.end(); ++iter)
+    {
+        LayoutRow::ConstIterator nodeIter = iter.value().constBegin();
+        for (; nodeIter != iter.value().constEnd(); ++nodeIter)
+        {
+            int row = iter.key();
+            IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
+            if (!w || !widgetLayoutable[w->name()])
+            {
+                continue;
+            }
+            if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN) // in the left part, contain wave or param
+            {
+                if (row < LAYOUT_MAX_WAVE_ROW_NUM) // wave widgets
+                {
+                    if (waveWidgetCounter < MAX_WAVEWIDGET_ROW_IN_OXYCRG_LAYOUT || currentRow == row)
+                    {
+                        w->setVisible(true);
+                        waveLayout->addWidget(w, row, nodeIter->pos, 1, nodeIter->span);
+                        if (qobject_cast<WaveWidget *>(w))
+                        {
+                            displayWaveforms.append(w->name());
+                        }
+
+                        if (currentRow != row)
+                        {
+                            waveWidgetCounter++;
+                            currentRow = row;
+                        }
+                    }
+                }
+                else    // param widgets
+                {
+                    // don't add the params in the left part
+                }
+            }
+            else  // the right part are all param
+            {
+                w->setVisible(true);
+                rightParamLayout->addWidget(w, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
+                displayParams.append(w->name());
+            }
+        }
+    }
 }
 
 void LayoutManagerPrivate::clearLayout(QLayout *layout)

@@ -238,6 +238,7 @@ void SoftKeyManager::resizeEvent(QResizeEvent *e)
 
     d_ptr->resetPageInfo();
     d_ptr->layoutKeyDesc();
+    this->layout()->activate();
 }
 
 /***************************************************************************************************
