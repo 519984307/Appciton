@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/21
+ **/
+
+
+
 #pragma once
 #include "IWidget.h"
 #include "LanguageManager.h"
@@ -15,7 +27,7 @@ class TrendWidget: public IWidget
 {
     Q_OBJECT
 public:
-    TrendWidget(const QString &widgetName, bool vertical = false);
+    explicit TrendWidget(const QString &widgetName, bool vertical = false);
     virtual ~TrendWidget();
 
     // 窗口是否使能
@@ -29,9 +41,6 @@ public:
     {
         return _title;
     }
-
-private slots:
-    void _releaseHandle(IWidget *widget);
 
 protected:
     void setName(const QString &name);

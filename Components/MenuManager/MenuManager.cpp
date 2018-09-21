@@ -21,6 +21,7 @@
 #include "SupervisorMenuManager.h"
 #include "MenuGroup.h"
 #include "NIBPRepairMenuManager.h"
+#include "LayoutManager.h"
 
 MenuManager *MenuManager::_selfObj = NULL;
 
@@ -37,7 +38,7 @@ void MenuManager::popupWidegt(QWidget *widget, int x, int y)
 
     if (x == 0 && y == 0)
     {
-        QRect r = windowManager.getMenuArea();
+        QRect r = layoutManager.getMenuArea();
         x = r.x() + (r.width() - widget->width()) / 2;
         y = r.y() + (r.height() - widget->height());
     }

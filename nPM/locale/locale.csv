@@ -223,6 +223,11 @@ TEMP2High,体温2高,TEMP2 High
 TEMPTDLow,体温差低,ΔT Low
 TEMPTDHigh,体温差高,ΔT High
 TEMP1SensorOff,体温1探头脱落,TEMP1 Sensor Off
+PrintSettingMenu,打印设置,PrintSettingMenu
+PrintSettingMenuDesc,打印设置,PrintSettingMenuDesc
+PrintTime,实时打印时间,PrintTime
+ClearPrintTask,清除打印任务,ClearPrintTask
+Continous,连续,Continous
 TEMP2SensorOff,体温2探头脱落,TEMP2 Sensor Off
 TEMPSensorOffAll,体温探头全部脱落,TEMP Sensor Off All
 TEMP1OverRange,体温1超界,TEMP1 Over Range
@@ -1453,7 +1458,7 @@ NIBPList,NIBP列表,NIBP List
 CalculateMenu,计算,Calculate
 HemodynamicCalculation,血液动力学计算,Hemodynamic Calculation
 CalculateMenuDesc,计算设置,Calculation Desc
-KeyBoardVolumn,按键音量,Key Volumn
+KeyBoardVolumn,按键音量,Volume
 Standby,待机,Standby
 CO2Standby,CO2待机,CO2 Standby
 CO2Measure,CO2测量,CO2 Measure
@@ -1461,7 +1466,7 @@ ChooseScreen,界面选择,Screen
 ManualTirgger,手动触发,Manual Tirgger
 ParameterSwitch,参数开关,Para Switch
 eventReview,事件回顾,Event
-NightMode,夜间模式,NightMode
+NightMode,夜间模式,Night
 Patient,病人信息,Patient
 IBPCOModule,IBP+CO模块,IBP+CO Module
 ShuttingDown,正在关机,Shutting Down

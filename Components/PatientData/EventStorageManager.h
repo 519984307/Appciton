@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/20
+ **/
+
 #pragma once
 #include "StorageManager.h"
 #include "EventDataDefine.h"
@@ -18,25 +28,25 @@ public:
      */
     void triggerAlarmEvent(const AlarmInfoSegment &almInfo, WaveformID paramWave);
 
-    //trigger an codemarker event
+    // trigger an codemarker event
     void triggerCodeMarkerEvent(const char * codeName);
 
-    //trigger and realtime print event
+    // trigger and realtime print event
     void triggerRealtimePrintEvent();
 
-    //trigger a nibp measurement event
+    // trigger a nibp measurement event
     void triggerNIBPMeasurementEvent();
 
-    //trigger a wave freeze event
+    // trigger a wave freeze event
     void triggerWaveFreezeEvent();
 
-    //trigger alarm oxyCRG event
+    // trigger alarm oxyCRG event
     void triggerAlarmOxyCRGEvent(const AlarmInfoSegment &almInfo, OxyCRGEventType type);
 
-    //trigger oxyCRG event
+    // trigger oxyCRG event
     void triggerOxyCRGEvent(OxyCRGEventType type);
 
-    //call periodically to clear completed event
+    // call periodically to clear completed event
     void checkCompletedEvent(void);
 
     void run();

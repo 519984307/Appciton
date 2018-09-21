@@ -12,6 +12,7 @@
 #include "SystemManager.h"
 #include "IConfig.h"
 #include "EventStorageManager.h"
+#include "LayoutManager.h"
 
 CodeMarkerWidget *CodeMarkerWidget::_selfObj = NULL;
 
@@ -252,7 +253,7 @@ void CodeMarkerWidget::showEvent(QShowEvent *e)
     PopupWidget::showEvent(e);
 
     // 居中显示。
-    QRect r = windowManager.getMenuArea();
+    QRect r = layoutManager.getMenuArea();
     move(r.x() + (r.width() - width()) / 2, r.y() + (2 * r.height() / 3 - height()));
 }
 

@@ -77,7 +77,6 @@ public:
     // 设置界面对象
     void setIBPTrendWidget(IBPTrendWidget *trendWidget, IBPSignalInput IBP = IBP_INPUT_1);
     void setWaveWidget(IBPWaveWidget *waveWidget, IBPSignalInput IBP = IBP_INPUT_1);
-    void setInfobarWidget(PromptInfoBarWidget *infoBarWidget);
 
     /**
      * @brief getIBPScale get the IBP scale info
@@ -153,8 +152,6 @@ private:
 
     IBPTrendWidget *_trendWidgetIBP1;
     IBPTrendWidget *_trendWidgetIBP2;
-
-    PromptInfoBarWidget *_infoBarWidget;
 
     IBPParamInfo _ibp1;
     IBPParamInfo _ibp2;

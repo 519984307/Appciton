@@ -22,11 +22,11 @@
 #include "ECGMenu.h"
 #include "PublicMenuManager.h"
 #include "TrendWidgetLabel.h"
-#include "WindowManager.h"
 #include "ECGParam.h"
 #include "ECGDupParam.h"
 #include "qpainter.h"
 #include "MeasureSettingWindow.h"
+#include "LayoutManager.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -55,7 +55,7 @@ void ECGTrendWidget::setHRValue(int16_t hr, bool isHR)
     {
         setName(trs(paramInfo.getSubParamName(SUB_DUP_PARAM_HR)));
 
-        if (windowManager.getUFaceType() == UFACE_MONITOR_12LEAD)
+        if (layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD)
         {
             int index = ecgParam.getCalcLead();
             ECGLeadNameConvention convention = ecgParam.getLeadConvention();
@@ -78,7 +78,7 @@ void ECGTrendWidget::setHRValue(int16_t hr, bool isHR)
         }
         setName(trs(paramInfo.getSubParamName(SUB_DUP_PARAM_PR)));
 
-        if (windowManager.getUFaceType() == UFACE_MONITOR_12LEAD)
+        if (layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD)
         {
             setCalcLeadName("");
         }
@@ -150,7 +150,7 @@ void ECGTrendWidget::showEvent(QShowEvent *e)
 {
     TrendWidget::showEvent(e);
 
-    if (windowManager.getUFaceType() != UFACE_MONITOR_12LEAD)
+    if (layoutManager.getUFaceType() != UFACE_MONITOR_12LEAD)
     {
         setCalcLeadName("");
     }
@@ -209,7 +209,7 @@ void ECGTrendWidget::blinkBeatPixmap()
  *************************************************************************************************/
 void ECGTrendWidget::setTrendWidgetCalcName(ECGLead calLead)
 {
-    if (windowManager.getUFaceType() != UFACE_MONITOR_12LEAD)
+    if (layoutManager.getUFaceType() != UFACE_MONITOR_12LEAD)
     {
         setCalcLeadName("");
     }

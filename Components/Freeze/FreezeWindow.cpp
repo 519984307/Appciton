@@ -16,12 +16,13 @@
 #include "ComboBox.h"
 #include <QKeyEvent>
 #include "LanguageManager.h"
-#include "WindowManager.h"
 #include "FreezeManager.h"
 #include "FreezePageGenerator.h"
 #include "RecorderManager.h"
 #include "MoveButton.h"
 #include "EventStorageManager.h"
+#include "LayoutManager.h"
+#include "WaveWidget.h"
 
 #define RECORD_FREEZE_WAVE_NUM 3
 class FreezeWindowPrivate
@@ -52,8 +53,8 @@ FreezeWindow::FreezeWindow()
     setWindowTitle(trs("Freeze"));
 
     QStringList waveNames;
-    windowManager.getDisplayedWaveformIDsAndLabels(
-        d_ptr->waveIDs, waveNames);
+    d_ptr->waveIDs = layoutManager.getDisplayedWaveformIDs();
+    waveNames = layoutManager.getDisplayedWaveformLabels();
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
 
@@ -112,7 +113,7 @@ FreezeWindow::~FreezeWindow()
 void FreezeWindow::showEvent(QShowEvent *ev)
 {
     Window::showEvent(ev);
-    QRect rect = windowManager.getMenuArea();
+    QRect rect = layoutManager.getMenuArea();
 
     move(rect.x() + (rect.width() - width()) / 2, rect.y() + rect.height() - height());
 
@@ -202,7 +203,7 @@ void FreezeWindow::onBtnClick()
             waveinfo.id = static_cast<WaveformID>(d_ptr->waveIDs.at(curIndex));
             FreezeDataModel *model = freezeManager.getWaveDataModel(waveinfo.id);
             waveinfo.timestampOfLastSecond = model->timestamp() - model->getReviewStartSecond();
-            WaveWidget *w = windowManager.getWaveWidget(waveinfo.id);
+            WaveWidget *w = layoutManager.getDisplayedWaveWidget(waveinfo.id);
             if (w)
             {
                 int datasize = w->bufSize();

@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/19
+ **/
+
 #include <QDesktopWidget>
 #include "IApplication.h"
 #include "FloatHandle.h"
@@ -6,6 +16,7 @@
 #include "Init.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
+#include "LayoutManager.h"
 
 static IThread *_storageThread = NULL;
 static QThread *_networkThread = NULL;
@@ -24,7 +35,7 @@ static void _taskOneSec1(void)
  *************************************************************************************************/
 static void _taskOneSec2(void)
 {
-    //summaryStorageManager.checkCompletedItem();
+    // summaryStorageManager.checkCompletedItem();
     eventStorageManager.checkCompletedEvent();
     powerManager.run();
 
@@ -48,7 +59,7 @@ static void _task500MSec0(void)
     if (0 != t)
     {
         double diff_t = timeDate.difftime(timeDate.time(), t);
-        t += (int)diff_t;
+        t += static_cast<int>(diff_t);
         if (isZero(diff_t))
         {
             return;
@@ -77,7 +88,7 @@ static void _task500MSec1(void)
 static void _task50MSec(void)
 {
     static unsigned t = 0;
-    if(t == 0)
+    if (t == 0)
     {
         t = timeManager.getCurTime();
     }
@@ -100,7 +111,7 @@ static void _task50MSec(void)
     // 报警处理
     alertor.mainRun(t);
 
-    //collect alarm status
+    // collect alarm status
     trendCache.collectTrendAlarmStatus(t);
 
     trendDataStorageManager.periodRun(t);
@@ -119,58 +130,38 @@ static void _storageThreadEntry(void)
     currentConfig.saveToDisk();
 
     static int loopCounter = 0;
-    loopCounter ++;
+    loopCounter++;
 
     // 数据存储
     static bool cleanup = true;
-    if(cleanup)
+    if (cleanup)
     {
         DataStorageDirManager::cleanUpLastIncidentDir();
         cleanup = false;
     }
 
-    if(!systemManager.isGoingToTrunOff())
+    if (!systemManager.isGoingToTrunOff())
     {
         trendDataStorageManager.run();
     }
 
 
-    if(!systemManager.isGoingToTrunOff())
+    if (!systemManager.isGoingToTrunOff())
     {
         eventStorageManager.run();
     }
 
 
-    if(!systemManager.isGoingToTrunOff())
+    if (!systemManager.isGoingToTrunOff())
     {
         rawDataCollection.run();
         rawDataCollectionTxt.run();
     }
 
-    if(!systemManager.isGoingToTrunOff())
+    if (!systemManager.isGoingToTrunOff())
     {
         errorLog.run();
     }
-
-
-    //DisclosureItem::testPatienData();
-    //DisclosureItem::testDeviceConfiguration();
-    //DisclosureItem::testModuleConfig();
-    //DisclosureItem::testAlarmStatus();
-    //DisclosureItem::testAlarmEvent();
-    //DisclosureItem::testTimestampMessage();
-    //DisclosureItem::testDataChange();
-    //DisclosureItem::testContinuousWave();
-    //DisclosureItem::testSystemStatus();
-    //DisclosureItem::testDefibState();
-    //DisclosureItem::testDefibFireEvent();
-    //DisclosureItem::testPaceEvent();
-    //DisclosureItem::testCprCompression();
-    //DisclosureItem::testCprAccelWaveform();
-    //DisclosureItem::testForegroundAnalysis();
-    //DisclosureItem::testBackgroundAnalysis();
-    //DisclosureItem::testCodeMarker();
-    //DisclosureItem::test12LeadEcgSnapshot();
 
     IThread::msleep(300);
 }
@@ -205,15 +196,31 @@ static void _initTasks(void)
  *************************************************************************************************/
 static void _start(void)
 {
-    //开启系统定时器运行（50ms）
+    // 开启系统定时器运行（50ms）
     systemTick.startTick();
 
     _storageThread->start();
 
     _networkThread->start();
     _networkThread->setPriority(QThread::IdlePriority);
-    systemManager.loadInitBMode();
 
+
+#if 1
+    // perform window layout
+    windowManager.setLayout(layoutManager.mainLayout());
+    // load softkey
+    softkeyManager.setContent(SOFTKEY_ACTION_STANDARD);
+
+    // move window to the center
+    QDesktopWidget *pDesk = QApplication::desktop();
+    windowManager.move((pDesk->width() - windowManager.width()) / 2,
+                       (pDesk->height() - windowManager.height()) / 2);
+
+    layoutManager.setUFaceType(UFACE_MONITOR_STANDARD);
+
+#else
+    systemManager.loadInitBMode();
+#endif
 }
 
 /**************************************************************************************************
@@ -229,7 +236,7 @@ static void _stop(void)
 
     // 删除线程对象。
     delete _storageThread;
-    //network thread might be still running, need to delete later
+    // network thread might be still running, need to delete later
     _networkThread->deleteLater();
 }
 

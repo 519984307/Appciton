@@ -164,7 +164,6 @@ SOURCES +=                                                                      
     Utility/Widgets/Trendform/ShortTrendManager.cpp                             \
     Utility/Widgets/TrendWidget/TrendWidget.cpp                                 \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.cpp                            \
-    Utility/Widgets/TrendWidget/TrendWidgetSelectMenu.cpp                       \
     Utility/Widgets/Waveform/BarGraphScanMode.cpp                               \
     Utility/Widgets/Waveform/FreezeWaveReviewMode.cpp                           \
     Utility/Widgets/Waveform/FreezeTimeIndicator.cpp                            \
@@ -199,13 +198,9 @@ SOURCES +=                                                                      
     Utility/Widgets/ImportFileSubWidget.cpp                                     \
     Utility/Widgets/TableItemDelegate.cpp                                       \
     Utility/Widgets/EventWidget/EventWaveWidget.cpp                             \
-    Utility/Widgets/EventWidget/EventReviewWindow.cpp                           \
     Utility/Widgets/EventWidget/EventTrendItemDelegate.cpp                      \
     Utility/Widgets/EventWidget/EventInfoWidget.cpp                             \
-    Utility/Widgets/EventWidget/EventWaveSetWidget.cpp                          \
-    Utility/Widgets/EventWidget/OxyCRGEventWidget.cpp                           \
     Utility/Widgets/EventWidget/OxyCRGEventWaveWidget.cpp                       \
-    Utility/Widgets/EventWidget/OxyCRGEventSetWidget.cpp                        \
     Utility/Widgets/EventWidget/EventWindow.cpp                                 \
     Utility/Widgets/EventWidget/EventReviewModel.cpp                            \
     Utility/Widgets/EventWidget/EventWaveSetWindow.cpp                          \
@@ -223,6 +218,7 @@ SOURCES +=                                                                      
     Components/System/Widgets/SystemSelftestMenu.cpp                            \
     Components/System/Widgets/SystemStatusBarWidget.cpp                         \
     Components/System/Widgets/SystemMenuContent.cpp                             \
+    Components/System/Widgets/PrintSettingMenuContent.cpp                       \
     Components/System/Widgets/MeasureSettingMenuContent.cpp                     \
     Components/System/Widgets/MeasureSettingWindow.cpp                          \
     Components/System/Widgets/DataReviewMenuContent.cpp                         \
@@ -488,7 +484,6 @@ SOURCES +=                                                                      
     Components/ConfigManager/LoadConfigMenuContent.cpp                          \
     Components/ConfigManager/UnitSetupMenuContent.cpp                           \
     Components/Freeze/FreezeManager.cpp                                         \
-    Components/Freeze/FreezeWidget.cpp                                          \
     Components/Freeze/FreezeWindow.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
 #################################################################################
@@ -715,7 +710,6 @@ HEADERS +=                                                                      
     Utility/Widgets/Trendform/ShortTrendWidgetSelectMenu.h                      \
     Utility/Widgets/Trendform/ShortTrendManager.h                               \
     Utility/Widgets/TrendWidget/TrendWidget.h                                   \
-    Utility/Widgets/TrendWidget/TrendWidgetSelectMenu.h                         \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.h                              \
     Utility/Widgets/Waveform/BarGraphScanMode.h                                 \
     Utility/Widgets/Waveform/FreezeWaveReviewMode.h                             \
@@ -754,13 +748,9 @@ HEADERS +=                                                                      
     Utility/Widgets/SubMenu.h                                                   \
     Utility/Widgets/TableItemDelegate.h                                         \
     Utility/Widgets/EventWidget/EventWaveWidget.h                               \
-    Utility/Widgets/EventWidget/EventReviewWindow.h                             \
     Utility/Widgets/EventWidget/EventTrendItemDelegate.h                        \
     Utility/Widgets/EventWidget/EventInfoWidget.h                               \
-    Utility/Widgets/EventWidget/EventWaveSetWidget.h                            \
-    Utility/Widgets/EventWidget/OxyCRGEventWidget.h                             \
     Utility/Widgets/EventWidget/OxyCRGEventWaveWidget.h                         \
-    Utility/Widgets/EventWidget/OxyCRGEventSetWidget.h                          \
     Utility/Widgets/EventWidget/EventWindow.h                                   \
     Utility/Widgets/EventWidget/EventReviewModel.h                              \
     Utility/Widgets/EventWidget/EventWaveSetWindow.h                            \
@@ -776,6 +766,7 @@ HEADERS +=                                                                      
     Components/System/Widgets/SystemSelftestMenu.h                              \
     Components/System/Widgets/SystemModeBarWidget.h                             \
     Components/System/Widgets/SystemMenuContent.h                               \
+    Components/System/Widgets/PrintSettingMenuContent.h                         \
     Components/System/Widgets/MeasureSettingMenuContent.h                       \
     Components/System/Widgets/MeasureSettingWindow.h                           \
     Components/System/Widgets/DataReviewMenuContent.h                           \
@@ -1066,7 +1057,6 @@ HEADERS +=                                                                      
     Components/ConfigManager/LoadConfigMenuContent.h                            \
     Components/ConfigManager/UnitSetupMenuContent.h                             \
     Components/Freeze/FreezeManager.h                                           \
-    Components/Freeze/FreezeWidget.h                                            \
     Components/Freeze/FreezeWindow.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \
 #################################################################################

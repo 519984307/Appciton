@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/19
+ **/
+
 #pragma once
 #include <stddef.h>
 
@@ -24,21 +34,30 @@ public:
     static TimeManager *_selfObj;
 
     // 注册窗体界面。
-    void registerWidgets(DateTimeWidget &widget, ElapseTimeWidget &elapseWidget);
+    void registerWidgets(DateTimeWidget *widget, ElapseTimeWidget *elapseWidget);
 
     // 主运行。
     void mainRun(unsigned t);
 
     // 获取开机时的状态。
-    PowerOnSession getPowerOnSession(void) const {return _powerOnSession;}
+    PowerOnSession getPowerOnSession(void) const
+    {
+        return _powerOnSession;
+    }
 
     // 获取开始时间。
-    unsigned getStartTime(void) const {return _elapseStartTime;}
+    unsigned getStartTime(void) const
+    {
+        return _elapseStartTime;
+    }
 
     // 获取系统当前时间
-    unsigned getCurTime() const {return _curTime;}
+    unsigned getCurTime() const
+    {
+        return _curTime;
+    }
 
-    //get elapsed time
+    // get elapsed time
     unsigned getElapsedTime() const
     {
         return _curTime - _elapseStartTime; // 多线程访问。

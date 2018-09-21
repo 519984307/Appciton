@@ -16,6 +16,7 @@
 #include "ScreenLayoutItemDelegate.h"
 #include "Button.h"
 #include "LanguageManager.h"
+#include "LayoutManager.h"
 
 class ScreenLayoutWindowPrivate
 {
@@ -114,7 +115,7 @@ void ScreenLayoutWindow::onButtonClicked()
     else if (btn == d_ptr->saveBtn)
     {
         model->saveLayoutInfo();
-
-        // TODO: window manager restart layout
+        layoutManager.reloadLayoutConfig();
+        this->close();
     }
 }

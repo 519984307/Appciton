@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/21
+ **/
+
+
+
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPainter>
@@ -6,8 +18,7 @@
 #include "Debug.h"
 #include "BaseDefine.h"
 #include "TrendWidgetLabel.h"
-#include "WindowManager.h"
-#include "TrendWidgetSelectMenu.h"
+#include "LayoutManager.h"
 
 /**************************************************************************************************
  * 重绘。
@@ -39,7 +50,7 @@ void TrendWidget::showEvent(QShowEvent *e)
 {
     IWidget::showEvent(e);
 
-    if (windowManager.getUFaceType() == UFACE_MONITOR_BIGFONT)
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_BIGFONT)
     {
         nameLabel->setFocusPolicy(Qt::StrongFocus);
     }
@@ -109,8 +120,9 @@ QPalette TrendWidget::alarmPalette(QPalette psrc)
  * 参数：
  *      name:名称。
  *************************************************************************************************/
-void TrendWidget::updateAlarm(bool /*alarmFlag*/)
+void TrendWidget::updateAlarm(bool alarmFlag)
 {
+    Q_UNUSED(alarmFlag)
 //    QPalette p = nameLabel->palette();
 //    if (alarmFlag)
 //    {
@@ -130,16 +142,6 @@ void TrendWidget::updateAlarm(bool /*alarmFlag*/)
 //            unitLabel->setPalette(p);
 //        }
     //    }
-}
-
-void TrendWidget::_releaseHandle(IWidget *widget)
-{
-    QPoint prect = widget->mapToGlobal(widget->rect().bottomLeft());
-    QRect r = geometry();
-
-    trendWidgetSelectMenu.setWidgetName(name());
-    trendWidgetSelectMenu.setShowPoint(prect.x() + r.x() + 50, prect.y() + r.y());
-    trendWidgetSelectMenu.autoShow();
 }
 
 /**************************************************************************************************
@@ -207,11 +209,10 @@ void TrendWidget::setUnitFont(int size, bool isBold)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-TrendWidget::TrendWidget(const QString &widgetName,bool vertical) : IWidget(widgetName)
+TrendWidget::TrendWidget(const QString &widgetName, bool vertical) : IWidget(widgetName)
 {
     _title = "";
     nameLabel = new TrendWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
-    connect(nameLabel, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
 
     calcLeadLabel = new QLabel("", this);
     calcLeadLabel->setAlignment(Qt::AlignCenter);
@@ -226,7 +227,7 @@ TrendWidget::TrendWidget(const QString &widgetName,bool vertical) : IWidget(widg
         QVBoxLayout *vLayout = new QVBoxLayout();
         vLayout->addWidget(nameLabel);
         vLayout->addWidget(unitLabel);
-        vLayout->addLayout(mLayout,1);
+        vLayout->addLayout(mLayout, 1);
         vLayout->addStretch();
         vLayout->setSpacing(0);
         vLayout->setContentsMargins(5, 1, 0, 0);

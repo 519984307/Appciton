@@ -1,5 +1,27 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/19
+ **/
+
+
+
 #pragma once
 #include <QString>
+
+/**
+ * @brief The PrintTime enum
+ */
+enum PrintTime
+{
+    PRINT_TIME_CONTINOUS = 0,
+    PRINT_TIME_EIGHT_SEC,
+    PRINT_TIME_NR
+};
 
 // 打印速度设置
 enum PrintSpeed
@@ -105,7 +127,7 @@ public:
     {
         static const QString symbol[PRINT_12LEAD_PDF_NR] =
         {
-            "4X3 Standard","2X6 Standard","4X3 Cabrera", "2X6 Cabrera",
+            "4X3 Standard", "2X6 Standard", "4X3 Cabrera", "2X6 Cabrera",
         };
 
         return symbol[index];
@@ -119,6 +141,16 @@ public:
             "PrinterOutOfPaper",   // 打印机缺纸
             "PrinterFault",        // 打印机故障
         };
+        return symbol[index];
+    }
+
+    static const QString &convert(PrintTime index)
+    {
+        static const QString symbol[PRINT_TIME_NR] =
+        {
+            "Continous", "8s"
+        };
+
         return symbol[index];
     }
 };
