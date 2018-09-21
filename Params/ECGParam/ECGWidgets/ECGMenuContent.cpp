@@ -321,6 +321,10 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
         {
             ecgParam.setCalcLead(d_ptr->ecgWaveforms[index]);
             ecgParam.setLeadMode3DisplayLead(d_ptr->ecgWaveforms[index]);
+            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(true);
+            ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
+            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
+            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
             systemConfig.setStrValue("PrimaryCfg|ECG|Ecg1WaveWidget", d_ptr->ecgWaveforms[index]);
             layoutManager.updateLayout();
             break;

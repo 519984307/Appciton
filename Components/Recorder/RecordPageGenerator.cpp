@@ -1178,8 +1178,8 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
     case WAVE_AUXP1:
     case WAVE_AUXP2:
     {
-        int max = waveInfo.waveInfo.ibp.high * 10;
-        int min = waveInfo.waveInfo.ibp.low * 10;
+        int max = waveInfo.waveInfo.ibp.high * 10 + 1000;
+        int min = waveInfo.waveInfo.ibp.low * 10 + 1000;
         waveData = (max - wave) * (endY -  startY) / (max -  min) + startY;
         break;
     }
@@ -1877,7 +1877,7 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
             break;
         case WAVE_SPO2:
             info.waveInfo.spo2.gain = spo2Param.getGain();
-            caption = trs("PLETH");
+            caption = "Pleth";
             break;
         case WAVE_CO2:
             info.waveInfo.co2.zoom = co2Param.getDisplayZoom();
@@ -1904,6 +1904,7 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
         case WAVE_AUXP2:
         {
             info.waveInfo.ibp.pressureName = ibpParam.getPressureName(id);
+            caption = IBPSymbol::convert(ibpParam.getPressureName(id));
             IBPScaleInfo scaleInfo = ibpParam.getIBPScale(info.waveInfo.ibp.pressureName);
             info.waveInfo.ibp.high = scaleInfo.high;
             info.waveInfo.ibp.low = scaleInfo.low;
