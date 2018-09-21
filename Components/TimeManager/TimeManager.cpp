@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/19
+ **/
+
 #include "TimeManager.h"
 #include "DateTimeWidget.h"
 #include "ElapseTimeWidget.h"
@@ -7,7 +17,7 @@
 #include "SupervisorTimeMenu.h"
 
 TimeManager *TimeManager::_selfObj = NULL;
-#define MAXDATETIMEVALUE  2145916800  //2037-12-31 23:59:59秒对应的时间戳
+#define MAXDATETIMEVALUE  2145916800  // 2037-12-31 23:59:59秒对应的时间戳
 
 /**************************************************************************************************
  * 功能： 刷新界面。
@@ -22,7 +32,10 @@ void TimeManager::_refreshWidgets()
     t += "    ";
     t += text;
     t += "  ";
-    _dateTimeWidget->setText(t);
+    if (_dateTimeWidget)
+    {
+        _dateTimeWidget->setText(t);
+    }
 
     // 刷新系统运行的时间。
     unsigned diffTime = _curTime - _elapseStartTime;
@@ -33,10 +46,9 @@ void TimeManager::_refreshWidgets()
     int min = (diffTime - hour * 3600) / 60;
     int sec = diffTime % 60;
 
-    //99小时59分59妙后还原
+    // 99小时59分59妙后还原
     if (hour < 99)
     {
-        ;
     }
     else if (hour > 99)
     {
@@ -52,8 +64,11 @@ void TimeManager::_refreshWidgets()
         systemConfig.setNumValue("ElapseStartTime", _elapseStartTime);
     }
 
-    t.sprintf("%.2d:%.2d:%.2d", hour, min, sec);
-    _elapsedWidget->setText(t);
+    t.sprintf("%.2d:%.2d:%.2d", hour, min, sec); // NOLINT
+    if (_elapsedWidget)
+    {
+        _elapsedWidget->setText(t);
+    }
 }
 
 /**************************************************************************************************
@@ -62,13 +77,13 @@ void TimeManager::_refreshWidgets()
  *      widget: 日期时间显示控件。
  *      elapseWidget: 运行计时控件。
  *************************************************************************************************/
-void TimeManager::registerWidgets(DateTimeWidget &widget, ElapseTimeWidget &elapseWidget)
+void TimeManager::registerWidgets(DateTimeWidget *widget, ElapseTimeWidget *elapseWidget)
 {
-    _dateTimeWidget = &widget;
-    _elapsedWidget = &elapseWidget;
+    _dateTimeWidget = widget;
+    _elapsedWidget = elapseWidget;
 
     // 初始设置。
-   _refreshWidgets();
+    _refreshWidgets();
 }
 
 /**************************************************************************************************
@@ -138,5 +153,4 @@ TimeManager::TimeManager()
  *************************************************************************************************/
 TimeManager::~TimeManager()
 {
-
 }

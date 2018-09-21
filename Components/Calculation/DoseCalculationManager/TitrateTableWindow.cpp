@@ -27,6 +27,7 @@
 #include <QHBoxLayout>
 #include "LanguageManager.h"
 #include "TitrateTableSetWindow.h"
+#include "LayoutManager.h"
 
 #define MAX_DOSE                10000
 #define MAX_INFUSIONRATE        1000
@@ -575,7 +576,7 @@ void TitrateTableWindow::showEvent(QShowEvent *e)
     Window::showEvent(e);
 
     // 居中显示。
-    QRect r = windowManager.getMenuArea();
+    QRect r = layoutManager.getMenuArea();
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 }
 

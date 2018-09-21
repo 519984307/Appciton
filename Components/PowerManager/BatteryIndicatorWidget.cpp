@@ -8,6 +8,7 @@
 #include "PowerManager.h"
 #include "IConfig.h"
 #include <QTimer>
+#include "LayoutManager.h"
 
 /***************************************************************************************************
  * 构造。
@@ -317,7 +318,7 @@ void BatteryIndicatorWidget::showEvent(QShowEvent *e)
     }
     else
     {
-        QRect r = windowManager.getMenuArea();
+        QRect r = layoutManager.getMenuArea();
         move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
     }
     _timer->start();

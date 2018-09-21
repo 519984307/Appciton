@@ -17,6 +17,7 @@
 #include "RecorderManager.h"
 #include "WindowManager.h"
 #include "IConfig.h"
+#include "LayoutManager.h"
 
 class PrintSettingMenuContentPrivate
 {
@@ -119,8 +120,8 @@ void PrintSettingMenuContent::layoutExec()
 
     // select wave
     QStringList waveNames;
-    windowManager.getDisplayedWaveformIDsAndLabels(
-        d_ptr->waveIDs, waveNames);
+    d_ptr->waveIDs = layoutManager.getDisplayedWaveformIDs();
+    waveNames = layoutManager.getDisplayedWaveformLabels();
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
         QString comboName = QString("%1%2").arg(trs("Wave")).arg(i + 1);

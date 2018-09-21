@@ -74,7 +74,7 @@ void SystemStatusBarWidget::changeIcon(SystemIconLabel iconlabel, int status, bo
                 if (w->focusPolicy() == Qt::NoFocus)
                 {
                     w->setFocusPolicy(Qt::StrongFocus);
-                    windowManager.setFocusOrder();
+                    // windowManager.setFocusOrder();
                 }
             }
             else
@@ -82,7 +82,7 @@ void SystemStatusBarWidget::changeIcon(SystemIconLabel iconlabel, int status, bo
                 if (w->focusPolicy() == Qt::StrongFocus)
                 {
                     w->setFocusPolicy(Qt::NoFocus);
-                    windowManager.setFocusOrder();
+                    // windowManager.setFocusOrder();
                 }
             }
         }

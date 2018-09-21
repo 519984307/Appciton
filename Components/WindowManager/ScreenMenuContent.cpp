@@ -16,6 +16,7 @@
 #include <QGridLayout>
 #include <ScreenLayoutWindow.h>
 #include <WindowManager.h>
+#include "LayoutManager.h"
 
 class ScreenMenuContentPrivate
 {
@@ -89,7 +90,7 @@ void ScreenMenuContent::onComboxIndexChanged(int index)
     {
         return;
     }
-    windowManager.setUFaceType(type);
+    layoutManager.setUFaceType(type);
 }
 
 void ScreenMenuContent::settingLayout()

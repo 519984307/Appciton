@@ -22,7 +22,7 @@ public:
     explicit SoftkeyWidget(QWidget *parent = 0);
 
     // 设置显示内容。
-    void setContent(const KeyActionDesc &desc);
+    void setContent(const KeyActionDesc *desc);
 
     // 外观效果控制。
     void pressedEffect();

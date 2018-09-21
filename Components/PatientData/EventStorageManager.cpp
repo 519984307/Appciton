@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/20
+ **/
+
 #include "EventStorageManager.h"
 #include "StorageManager_p.h"
 #include "StorageFile.h"
@@ -7,9 +17,9 @@
 #include <QList>
 #include <QMutex>
 #include "Debug.h"
-#include "WindowManager.h"
 #include "RecorderManager.h"
 #include "TriggerPageGenerator.h"
+#include "LayoutManager.h"
 
 #define MAX_STORE_WAVE_NUM 3
 
@@ -18,10 +28,9 @@ class EventStorageManagerPrivate: public StorageManagerPrivate
 public:
     Q_DECLARE_PUBLIC(EventStorageManager)
 
-    EventStorageManagerPrivate(EventStorageManager *q_ptr)
-        :StorageManagerPrivate(q_ptr), _eventTriggerFlag(false)
+    explicit EventStorageManagerPrivate(EventStorageManager *q_ptr)
+        : StorageManagerPrivate(q_ptr), _eventTriggerFlag(false)
     {
-
     }
 
 
@@ -34,31 +43,32 @@ public:
 
 QList<WaveformID> EventStorageManagerPrivate::getStoreWaveList(WaveformID paramWave)
 {
-    QList<int> displaywaves;
+    QList<int> displaywaves = layoutManager.getDisplayedWaveformIDs();
 
-    windowManager.getDisplayedWaveform(displaywaves);
 
     WaveformID calcLeadWave = (WaveformID)ecgParam.getCalcLead();
 
 
     QList<WaveformID> storeWaves;
 
-    if(paramWave != WAVE_NONE)
+    if (paramWave != WAVE_NONE)
     {
         storeWaves.append(paramWave);
     }
 
-    if(paramWave != calcLeadWave)
+    if (paramWave != calcLeadWave)
     {
         storeWaves.append(calcLeadWave);
     }
 
     foreach(int id, displaywaves)
     {
-        if(storeWaves.count() >= MAX_STORE_WAVE_NUM)
+        if (storeWaves.count() >= MAX_STORE_WAVE_NUM)
+        {
             break;
+        }
 
-        if(id <= WAVE_ECG_V6 || id == paramWave)
+        if (id <= WAVE_ECG_V6 || id == paramWave)
         {
             continue;
         }
@@ -72,7 +82,7 @@ QList<WaveformID> EventStorageManagerPrivate::getStoreWaveList(WaveformID paramW
 EventStorageManager &EventStorageManager::getInstance()
 {
     static EventStorageManager *instance = NULL;
-    if(instance == NULL)
+    if (instance == NULL)
     {
         instance = new EventStorageManager();
     }
@@ -81,14 +91,13 @@ EventStorageManager &EventStorageManager::getInstance()
 
 EventStorageManager::~EventStorageManager()
 {
-
 }
 
 void EventStorageManager::triggerEvent(EventType type)
 {
     Q_D(EventStorageManager);
     EventStorageItem *eventItem = NULL;
-    switch(type)
+    switch (type)
     {
     case EventPhysiologicalAlarm:
         break;
@@ -105,7 +114,7 @@ void EventStorageManager::triggerEvent(EventType type)
         return;
     }
 
-    if(eventItem)
+    if (eventItem)
     {
         d->mutex.lock();
         d->eventItemList.append(eventItem);
@@ -119,17 +128,17 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
     d->_eventTriggerFlag = true;
 
     EventStorageItem *item = new EventStorageItem(EventPhysiologicalAlarm,
-                                                  d->getStoreWaveList(paramWave),
-                                                  almInfo);
+            d->getStoreWaveList(paramWave),
+            almInfo);
     item->startCollectTrendAndWaveformData();
 
-    //TODO: check whether support trigger print
-    if(recorderManager.addPageGenerator(new TriggerPageGenerator(item)))
+    // TODO: check whether support trigger print
+    if (recorderManager.addPageGenerator(new TriggerPageGenerator(item)))
     {
         item->setWaitForTriggerPrintFlag(true);
     }
 
-    if(item)
+    if (item)
     {
         d->mutex.lock();
         d->eventItemList.append(item);
@@ -142,10 +151,10 @@ void EventStorageManager::triggerCodeMarkerEvent(const char *codeName)
     Q_D(EventStorageManager);
 
     EventStorageItem *item = new EventStorageItem(EventCodeMarker,
-                                                  d->getStoreWaveList(WAVE_NONE),
-                                                  codeName);
+            d->getStoreWaveList(WAVE_NONE),
+            codeName);
     item->startCollectTrendAndWaveformData();
-    if(item)
+    if (item)
     {
         d->mutex.lock();
         d->eventItemList.append(item);
@@ -158,9 +167,9 @@ void EventStorageManager::triggerRealtimePrintEvent()
     Q_D(EventStorageManager);
 
     EventStorageItem *item = new EventStorageItem(EventRealtimePrint,
-                                                  d->getStoreWaveList(WAVE_NONE));
+            d->getStoreWaveList(WAVE_NONE));
     item->startCollectTrendAndWaveformData();
-    if(item)
+    if (item)
     {
         d->mutex.lock();
         d->eventItemList.append(item);
@@ -173,9 +182,9 @@ void EventStorageManager::triggerNIBPMeasurementEvent()
     Q_D(EventStorageManager);
 
     EventStorageItem *item = new EventStorageItem(EventNIBPMeasurement,
-                                                  d->getStoreWaveList(WAVE_NONE));
+            d->getStoreWaveList(WAVE_NONE));
     item->startCollectTrendAndWaveformData();
-    if(item)
+    if (item)
     {
         d->mutex.lock();
         d->eventItemList.append(item);
@@ -188,9 +197,9 @@ void EventStorageManager::triggerWaveFreezeEvent()
     Q_D(EventStorageManager);
 
     EventStorageItem *item = new EventStorageItem(EventWaveFreeze,
-                                                  d->getStoreWaveList(WAVE_NONE));
+            d->getStoreWaveList(WAVE_NONE));
     item->startCollectTrendAndWaveformData();
-    if(item)
+    if (item)
     {
         d->mutex.lock();
         d->eventItemList.append(item);
@@ -234,11 +243,11 @@ void EventStorageManager::checkCompletedEvent()
 {
     Q_D(EventStorageManager);
     QMutexLocker locker(&d->mutex);
-    while(!d->eventItemList.isEmpty())
+    while (!d->eventItemList.isEmpty())
     {
         EventStorageItem *item = d->eventItemList.first();
 
-        if(item->checkCompleted())
+        if (item->checkCompleted())
         {
             d->eventItemList.takeFirst();
 
@@ -255,7 +264,7 @@ void EventStorageManager::checkCompletedEvent()
 
 void EventStorageManager::run()
 {
-    if(dataStorageDirManager.isCurRescueFolderFull())
+    if (dataStorageDirManager.isCurRescueFolderFull())
     {
         discardData();
         return;
@@ -277,7 +286,7 @@ void EventStorageManager::clearEventTriggerFlag()
 }
 
 EventStorageManager::EventStorageManager()
-    :StorageManager(new EventStorageManagerPrivate(this), new StorageFile())
+    : StorageManager(new EventStorageManagerPrivate(this), new StorageFile())
 {
     Q_D(EventStorageManager);
     d->backend->reload(dataStorageDirManager.getCurFolder() + EVENT_DATA_FILE_NAME, QIODevice::ReadWrite);
