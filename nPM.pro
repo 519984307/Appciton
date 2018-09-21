@@ -1474,3 +1474,6 @@ linux-arm-g++ {
 
 RESOURCES += \
     Utility/Widgets/Base/res/ui.qrc
+
+DISTFILES += \
+    nPM/etc/AdultConfig.Original.xml
