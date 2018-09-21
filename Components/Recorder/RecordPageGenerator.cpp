@@ -94,6 +94,11 @@ QFont RecordPageGenerator::font()
     return fontManager.recordFont(24);
 }
 
+void RecordPageGenerator::setPrintTime(PrintTime timeSec)
+{
+   Q_UNUSED(timeSec)
+}
+
 RecordPage *RecordPageGenerator::createPage()
 {
     RecordPage *p = new RecordPage(DEFAULT_PAGE_WIDTH);
@@ -1596,7 +1601,11 @@ void RecordPageGenerator::drawGraphAxis(QPainter *painter, const GraphAxisInfo &
     }
 
     // draw caption
-    int  captionHeigth = -(sectionHeight - axisInfo.ySectionHeight) - fontH / 2;
+    int  captionHeigth = -108;
+    if (axisInfo.yLabels.size() != 0)
+    {
+        captionHeigth = -(sectionHeight - axisInfo.ySectionHeight) - fontH / 2;
+    }
     QRectF captionRect;
     captionRect.setLeft(pixSize + pixSize / 2);
     captionRect.setWidth(axisInfo.xSectionWidth * 2); // should be enough
@@ -2109,16 +2118,7 @@ RecordPage *RecordPageGenerator::createOxyCRGGraph(const QList<TrendGraphInfo> &
     {
         axisInfo.yLabels.clear();
     }
-    if (waveInfo.waveData.size() / waveInfo.sampleRate <= 2 * 120)
-    {
-        // print from OxyCRG window
-        axisInfo.xLabels = QStringList() << "-2min" << "-90s" << "-1min" << "-30s" << "0";
-    }
-    else
-    {
-        // print from the OxyCRG event
-        axisInfo.xLabels = QStringList() << "-2min" << "-1min" << "0" << "1min" << "2min";
-    }
+    axisInfo.xLabels = QStringList() << "-2min" << "-1min" << "0" << "1min" << "2min";
     axisInfo.origin = QPointF(axisInfo.marginLeft, heightOffset + axisInfo.height);
 
     // draw axis

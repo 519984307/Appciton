@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/18
+ **/
+
 #include "OxyCRGPageGenerator.h"
 #include "PatientManager.h"
 #include "TrendCache.h"
@@ -7,7 +17,7 @@ class OxyCRGPageGeneratorPrivate
 {
 public:
     OxyCRGPageGeneratorPrivate()
-        :curPageType(RecordPageGenerator::TitlePage)
+        : curPageType(RecordPageGenerator::TitlePage)
     {
         TrendCacheData data;
         TrendAlarmStatus almStatus;
@@ -15,8 +25,9 @@ public:
         trendCache.getTendData(t, data);
         trendCache.getTrendAlarmStatus(t, almStatus);
         bool alarm = false;
-        foreach (bool st, almStatus.alarms) {
-            if(st)
+        foreach(bool st, almStatus.alarms)
+        {
+            if (st)
             {
                 alarm = true;
                 break;
@@ -33,20 +44,21 @@ public:
     RecordPageGenerator::PageType curPageType;
     QList<TrendGraphInfo> trendInfos;
     OxyCRGWaveInfo oxyCRGWaveInfo;
+    QString eventTitle;
 };
 
 OxyCRGPageGenerator::OxyCRGPageGenerator(const QList<TrendGraphInfo> &trendInfos,
-                                         const OxyCRGWaveInfo &waveInfo,
-                                         QObject *parent)
-    :RecordPageGenerator(parent), d_ptr(new OxyCRGPageGeneratorPrivate)
+        const OxyCRGWaveInfo &waveInfo, QString &eventTitle,
+        QObject *parent)
+    : RecordPageGenerator(parent), d_ptr(new OxyCRGPageGeneratorPrivate)
 {
     d_ptr->trendInfos = trendInfos;
     d_ptr->oxyCRGWaveInfo = waveInfo;
+    d_ptr->eventTitle = eventTitle;
 }
 
 OxyCRGPageGenerator::~OxyCRGPageGenerator()
 {
-
 }
 
 int OxyCRGPageGenerator::type() const
@@ -56,12 +68,12 @@ int OxyCRGPageGenerator::type() const
 
 RecordPage *OxyCRGPageGenerator::createPage()
 {
-    switch(d_ptr->curPageType)
+    switch (d_ptr->curPageType)
     {
     case TitlePage:
         // BUG: patient info of the event might not be the current session patient
         d_ptr->curPageType = TrendPage;
-        return createTitlePage(QString(trs("OxyCRGRecording")), patientManager.getPatientInfo());
+        return createTitlePage(d_ptr->eventTitle, patientManager.getPatientInfo());
     case TrendPage:
         d_ptr->curPageType = TrendOxyCRGPage;
         return createTrendPage(d_ptr->trendData, true);

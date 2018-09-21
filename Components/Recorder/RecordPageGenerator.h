@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/19
+ **/
+
+
+
 #pragma once
 #include <QObject>
 #include <QBasicTimer>
@@ -66,7 +78,6 @@ struct RecordWaveSegmentInfo
         struct {
             AGDisplayZoom zoom;
         } ag;
-
     } waveInfo;
 };
 
@@ -153,6 +164,11 @@ public:
      */
     static QFont font();
 
+    /**
+     * @brief setPrintTime
+     * @param timeSec
+     */
+    virtual void setPrintTime(PrintTime timeSec);
 
 public slots:
 
@@ -310,5 +326,5 @@ private:
     bool _generate;     // generate page or not
     bool _trigger;      // store the trigger flag
     QBasicTimer _timer; // timer to provide timer event
-    int _timerInterval; //timer interval
+    int _timerInterval; // timer interval
 };

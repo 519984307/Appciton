@@ -814,7 +814,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     setPalette(palette);
 
-    int fontSize = fontManager.getFontSize(1);
+    int fontSize = fontManager.getFontSize(4);
     int fontH = fontManager.textHeightInPixels(fontManager.textFont(fontSize)) + 4;
     _name->setFont(fontManager.textFont(fontSize));
     _name->setFixedSize(70, fontH);
@@ -822,7 +822,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
 
     _filter = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _filter->setFont(fontManager.textFont(fontSize));
-    _filter->setFixedSize(130, fontH);
+    _filter->setFixedSize(180, fontH);
     _filter->setText("");
     _filter->setFocusPolicy(Qt::NoFocus);
     addItem(_filter);
@@ -835,7 +835,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
 
     _ruler = new ECGWaveRuler(this);
     _ruler->setPalette(palette);
-    _ruler->setFont(fontManager.textFont(fontManager.getFontSize(0)));
+    _ruler->setFont(fontManager.textFont(fontSize));
     addItem(_ruler);
 
     _12LGain = ECG_GAIN_X10;

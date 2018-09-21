@@ -162,7 +162,7 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
     color.setBlue(color.blue() * 2 / 3);
     palette.setColor(QPalette::WindowText, color);
 
-    int infoFont = 14;
+    int infoFont = fontManager.getFontSize(4);
     int fontH = fontManager.textHeightInPixels(fontManager.textFont(infoFont)) + 4;
 //    _name = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
     _name->setFont(fontManager.textFont(infoFont));
@@ -172,7 +172,7 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
 
     _ruler = new CO2WaveRuler(this);
     _ruler->setPalette(palette);
-    _ruler->setFont(fontManager.textFont(infoFont));
+    _ruler->setFont(fontManager.textFont(infoFont - 2));
     addItem(_ruler);
 
     setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));

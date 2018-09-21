@@ -201,20 +201,20 @@ SPO2WaveWidget::SPO2WaveWidget(const QString &waveName, const QString &title)
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
     setPalette(palette);
 
-    int infoFont = 14;
-    int fontH = fontManager.textHeightInPixels(fontManager.textFont(infoFont)) + 4;
-    _name->setFont(fontManager.textFont(infoFont));
+    int fontSize = fontManager.getFontSize(4);
+    int fontH = fontManager.textHeightInPixels(fontManager.textFont(fontSize)) + 4;
+    _name->setFont(fontManager.textFont(fontSize));
     _name->setFixedSize(130, fontH);
     _name->setText(title);
 
     _gain = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
-    _gain->setFont(fontManager.textFont(infoFont));
+    _gain->setFont(fontManager.textFont(fontSize));
     _gain->setFixedSize(120, fontH);
     _gain->setText("");
     addItem(_gain);
 
     _notify = new WaveWidgetLabel(" ", Qt::AlignCenter, this);
-    _notify->setFont(fontManager.textFont(infoFont));
+    _notify->setFont(fontManager.textFont(fontSize));
     _notify->setFocusPolicy(Qt::NoFocus);
     _notify->setFixedSize(200, fontH);
     _notify->setText("");
