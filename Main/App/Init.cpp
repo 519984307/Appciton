@@ -172,10 +172,10 @@ static void _initComponents(void)
     AlarmMuteBarWidget *alarmPhyMuteBar = new AlarmMuteBarWidget();
     alarmIndicator.setAlarmPhyWidgets(alarmPhyInfo, alarmPhyMuteBar);
     alarmIndicator.setAlarmTechWidgets(alarmTechInfo);
-//    windowManager.addWidget(new AlarmInfoBarIndicator());
     layoutManager.addLayoutWidget(alarmPhyInfo);
     layoutManager.addLayoutWidget(alarmTechInfo);
     layoutManager.addLayoutWidget(alarmPhyMuteBar);
+    layoutManager.addLayoutWidget(&nightStatusBar);
 
     //报警状态
     alarmStateMachine.Construction();

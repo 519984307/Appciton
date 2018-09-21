@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/9/20
+ **/
+
+
 #include <QVBoxLayout>
 #include <QRegExp>
 #include "FontManager.h"
@@ -65,7 +76,7 @@ void SupervisorGeneralSetMenu::layoutExec()
     int btnWidth = itemW / 2;
     int labelWidth = itemW - btnWidth;
 
-    //ID
+    // ID
     _deviceID = new LabelButton(trs("SupervisorDeviceIdentifier"));
     _deviceID->setFont(fontManager.textFont(fontSize));
     _deviceID->label->setFixedSize(labelWidth, ITEM_H);
@@ -73,7 +84,7 @@ void SupervisorGeneralSetMenu::layoutExec()
     connect(_deviceID->button, SIGNAL(released(int)), this, SLOT(_idReleased()));
     mainLayout->addWidget(_deviceID);
 
-    //密码
+    // 密码
     _password = new LabelButton(trs("PassWord"));
     _password->label->setFixedSize(labelWidth, ITEM_H);
     _password->button->setFixedSize(btnWidth, ITEM_H);
@@ -81,7 +92,7 @@ void SupervisorGeneralSetMenu::layoutExec()
     connect(_password->button, SIGNAL(released(int)), this, SLOT(_passwordReleased()));
     mainLayout->addWidget(_password);
 
-    //病人类型
+    // 病人类型
     _patType = new IComboList(trs("SupervisorDefaultPatType"));
     _patType->label->setFixedSize(labelWidth, ITEM_H);
     _patType->combolist->setFixedSize(btnWidth, ITEM_H);
@@ -96,7 +107,7 @@ void SupervisorGeneralSetMenu::layoutExec()
     // 屏幕亮度。
     _displayBrightness = new IComboList(trs("DefaultSystemBrightness"));
     _displayBrightness->setFont(fontManager.textFont(fontSize));
-    for (int i = BRT_LEVEL_0; i <= BRT_LEVEL_9; i++)
+    for (int i = BRT_LEVEL_1; i < BRT_LEVEL_NR; i++)
     {
         _displayBrightness->addItem(QString::number(i + 1));
     }
@@ -197,5 +208,4 @@ void SupervisorGeneralSetMenu::_recordingFDChange(int index)
  *************************************************************************************************/
 SupervisorGeneralSetMenu::~SupervisorGeneralSetMenu()
 {
-
 }
