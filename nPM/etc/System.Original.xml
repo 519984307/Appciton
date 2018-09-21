@@ -137,9 +137,9 @@
 
     <Print>
         <PrintWaveformsNum>1</PrintWaveformsNum>
-		<SelectWave1></SelectWave1>
-		<SelectWave2></SelectWave2>
-		<SelectWave3></SelectWave3>
+		<SelectWave1>1</SelectWave1>
+		<SelectWave2>2</SelectWave2>
+		<SelectWave3>3</SelectWave3>
     </Print>
 
     <ConfigManager>
