@@ -54,10 +54,6 @@ protected:
     // 焦点进入
     virtual void focusInEvent(QFocusEvent */*e*/);
 
-
-private slots:
-    void _releaseHandle(IWidget *);
-
 private:
     // 自动标尺计算
     void _autoRulerHandle(short data);

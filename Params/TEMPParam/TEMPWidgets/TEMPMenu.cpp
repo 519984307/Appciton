@@ -14,7 +14,7 @@
 #include "LanguageManager.h"
 #include "TEMPSymbol.h"
 #include "TEMPParam.h"
-#include "MenuWindow.h"
+#include "MainMenuWindow.h"
 #include "Button.h"
 
 class TEMPMenuPrivate
@@ -167,7 +167,7 @@ void TEMPMenu::onComboIndexUpdated(int index)
 
 void TEMPMenu::onAlarmBtnReleased()
 {
-    MenuWindow *w = this->getMenuWindow();
+    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_T1, true);
     if (w)
     {

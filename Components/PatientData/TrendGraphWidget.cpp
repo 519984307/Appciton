@@ -20,6 +20,7 @@
 
 #include "TrendGraphPageGenerator.h"
 #include "RecorderManager.h"
+#include "LayoutManager.h"
 
 #define ITEM_HEIGHT             30
 #define ITEM_WIDTH              100
@@ -75,7 +76,7 @@ void TrendGraphWidget::showEvent(QShowEvent *event)
     PopupWidget::showEvent(event);
 
     // 居中显示。
-    QRect r = windowManager.getMenuArea();
+    QRect r = layoutManager.getMenuArea();
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 }
 

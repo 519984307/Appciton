@@ -19,7 +19,6 @@
 #include "ParamInfo.h"
 #include "WaveformCache.h"
 #include "RecorderManager.h"
-#include "WindowManager.h"
 #include "ECGParam.h"
 #include "RESPParam.h"
 #include "SPO2Param.h"
@@ -28,6 +27,7 @@
 #include "IBPParam.h"
 #include "ParamManager.h"
 #include "Utility.h"
+#include "LayoutManager.h"
 
 class ContinuousPageGeneratorPrivate
 {
@@ -79,11 +79,9 @@ public:
  */
 QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfos()
 {
-    QList<int> waveID;
+    QList<int> waveID = layoutManager.getDisplayedWaveformIDs();
 
     int printWaveNum = recorderManager.getPrintWaveNum();
-
-    windowManager.getDisplayedWaveform(waveID);
 
     QList<WaveformID> waves;
 

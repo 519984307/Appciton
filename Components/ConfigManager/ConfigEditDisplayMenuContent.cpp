@@ -84,6 +84,21 @@ void ConfigEditDisplayMenuContentPrivate::loadOptions()
 void ConfigEditDisplayMenuContent::readyShow()
 {
     d_ptr->loadOptions();
+    bool isOnlyToRead = configManager.isReadOnly();
+    d_ptr->combos[ConfigEditDisplayMenuContentPrivate
+            ::ITEM_CBO_TEMP_COLOR]->setEnabled(!isOnlyToRead);
+    d_ptr->combos[ConfigEditDisplayMenuContentPrivate
+            ::ITEM_CBO_AG_COLOR]->setEnabled(!isOnlyToRead);
+    d_ptr->combos[ConfigEditDisplayMenuContentPrivate
+            ::ITEM_CBO_RESP_COLOR]->setEnabled(!isOnlyToRead);
+    d_ptr->combos[ConfigEditDisplayMenuContentPrivate
+            ::ITEM_CBO_NIBP_COLOR]->setEnabled(!isOnlyToRead);
+    d_ptr->combos[ConfigEditDisplayMenuContentPrivate
+            ::ITEM_CBO_CO2_COLOR]->setEnabled(!isOnlyToRead);
+    d_ptr->combos[ConfigEditDisplayMenuContentPrivate
+            ::ITEM_CBO_SPO2_COLOR]->setEnabled(!isOnlyToRead);
+    d_ptr->combos[ConfigEditDisplayMenuContentPrivate
+            ::ITEM_CBO_ECG_COLOR]->setEnabled(!isOnlyToRead);
 }
 
 void ConfigEditDisplayMenuContent::layoutExec()

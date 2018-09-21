@@ -15,6 +15,7 @@
 #include "DataStorageDirManager.h"
 #include "PatientInfoWindow.h"
 #include <QGridLayout>
+#include "LayoutManager.h"
 
 class DischaregePatientWindowPrivate
 {
@@ -87,7 +88,7 @@ void DischargePatientWindow::layoutExec()
 void DischargePatientWindow::showEvent(QShowEvent *e)
 {
     Window::showEvent(e);
-    QRect r = windowManager.getMenuArea();
+    QRect r = layoutManager.getMenuArea();
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 }
 

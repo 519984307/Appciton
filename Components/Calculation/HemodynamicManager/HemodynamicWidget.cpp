@@ -13,6 +13,7 @@
 #include "IMessageBox.h"
 #include "HemodynamicManager.h"
 #include "HemodynamicReviewWidget.h"
+#include "LayoutManager.h"
 
 HemodynamicWidget *HemodynamicWidget::_selfObj = NULL;
 
@@ -344,7 +345,7 @@ void HemodynamicWidget::showEvent(QShowEvent *e)
     PopupWidget::showEvent(e);
 
     // 居中显示。
-    QRect r = windowManager.getMenuArea();
+    QRect r = layoutManager.getMenuArea();
     //    move(r.x() + (r.width() - width()) / 2, r.y() + (2 * r.height() / 3 - height()));
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
 }

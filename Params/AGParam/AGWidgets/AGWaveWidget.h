@@ -45,7 +45,6 @@ protected:
     virtual void focusInEvent(QFocusEvent */*e*/);
 
 private slots:
-    void _releaseHandle(IWidget *);
     void _getItemIndex(int);
 
 private:

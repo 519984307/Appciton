@@ -30,7 +30,6 @@ enum SoftKeyActionType
 enum SoftBaseKeyType
 {
     SOFT_BASE_KEY_MAIN_SETUP,
-    SOFT_BASE_KEY_PREVIOUS_PAGE,
     SOFT_BASE_KEY_PAT_INFO,
     SOFT_BASE_KEY_PAT_NEW,
     SOFT_BASE_KEY_ECG_LEAD_MODE,
@@ -52,7 +51,6 @@ enum SoftBaseKeyType
     SOFT_BASE_KEY_SCREEN_BRIGHTNESS,
     SOFT_BASE_KEY_NIGHT_MODE,
     SOFT_BASE_KEY_PRINTER_SET,
-    SOFT_BASE_KEY_NEXT_PAGE,
     SOFT_BASE_KEY_NR
 };
 
@@ -101,8 +99,6 @@ struct KeyActionDesc
 class SoftkeyActionBase
 {
 public:    // 一些共有的功能处理。
-    static void previousPage(bool isPressed);
-    static void nextPage(bool isPressed);
     static void patientInfo(bool isPressed);
     static void patientNew(bool isPressed);
     static void ecgLeadChange(bool isPressed);
@@ -130,6 +126,13 @@ public:
 
     // 获取动作描述句柄。
     virtual KeyActionDesc *getActionDesc(int index);
+
+    /**
+     * @brief getBaseActionDesc get the base key action description
+     * @param baseType the base key action
+     * @return  the key action
+     */
+    static KeyActionDesc *getBaseActionDesc(SoftBaseKeyType baseType);
 
     // 获取类型。
     SoftKeyActionType getType(void);

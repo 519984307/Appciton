@@ -18,8 +18,7 @@
 #include "ECGSTTrendWidget.h"
 #include "ECGMenu.h"
 #include "Debug.h"
-#include "WindowManager.h"
-#include "WaveWidgetSelectMenu.h"
+#include "LayoutManager.h"
 #include "ECGProviderIFace.h"
 #include "WaveformCache.h"
 #include "SystemManager.h"
@@ -30,7 +29,6 @@
 #include "SystemStatusBarWidget.h"
 #include "ECGAlarm.h"
 #include "QApplication"
-#include "ComboListPopup.h"
 #include "TimeManager.h"
 #include <QTimer>
 #include "Debug.h"
@@ -405,7 +403,7 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
 {
     int displaymode = ecgParam.getDisplayMode();
     int rate = _provider->getWaveformSample();
-    UserFaceType faceType = windowManager.getUFaceType();
+    UserFaceType faceType = layoutManager.getUFaceType();
 
     _waveDataInvalid = !_waveDataInvalid;
 
@@ -906,8 +904,7 @@ void ECGParam::getAvailableLeads(QList<ECGLead> &leads)
     }
 
     // 剔除界面上显示心电导联波形。
-    QList<int> waveforms;
-    windowManager.getDisplayedWaveform(waveforms);
+    QList<int> waveforms = layoutManager.getDisplayedWaveformIDs();
     for (int i = 0; i < waveforms.size(); i++)
     {
         switch ((WaveformID)waveforms[i])
@@ -1003,8 +1000,7 @@ void ECGParam::getAvailableLeads(QList<ECGLead> &leads)
     if (ECG_LEAD_MODE_3 == _curLeadMode)
     {
         // 保留一道ecg波形
-        QStringList waveList;
-        windowManager.getDisplayedWaveform(waveList);
+        // TODO
     }
 }
 
@@ -1247,8 +1243,6 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
         return;
     }
 
-    waveWidgetSelectMenu.close();
-
     ECGLeadMode oldMode = _curLeadMode;
 
     // 将新模式保存到配置文件中。
@@ -1296,12 +1290,14 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
         }
     }
 
+    int needUpdateLayout = 0;
     if (calcLead != newCaclLead)
     {
         setCalcLead(newCaclLead);
-        if (windowManager.getUFaceType() != UFACE_MONITOR_12LEAD)
+        if (layoutManager.getUFaceType() != UFACE_MONITOR_12LEAD)
         {
-            windowManager.replaceWaveform(_waveWidget[calcLead]->name(), _waveWidget[newCaclLead]->name());
+            systemConfig.setStrValue("PrimaryCfg|ECG|Ecg1WaveWidget", _waveWidget[calcLead]->name());
+            needUpdateLayout = 1;
         }
         else
         {
@@ -1309,24 +1305,34 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
         }
     }
 
-    if (windowManager.getUFaceType() != UFACE_MONITOR_12LEAD)
+    // update visiable or invisiable waves
+    QStringList disabledWaveforms;
+    _getDisabledWaveforms(disabledWaveforms);  // 不会被显示的波形集合。
+    foreach(const QString &n, disabledWaveforms) {
+        needUpdateLayout += layoutManager.setWidgetLayoutable(n, false);
+    }
+    QStringList visiableWaveforms;
+    QStringList visiableWaveformsTitle;
+    getAvailableWaveforms(visiableWaveforms, visiableWaveformsTitle, 0);
+    foreach(const QString &n, visiableWaveforms)
     {
-        QStringList disabledWaveforms;
-        _getDisabledWaveforms(disabledWaveforms);  // 不会被显示的波形集合。
+        needUpdateLayout += layoutManager.setWidgetLayoutable(n, true);
+    }
+
+    if (needUpdateLayout)
+    {
+        layoutManager.updateLayout();
+    }
+
+    if (layoutManager.getUFaceType() != UFACE_MONITOR_12LEAD)
+    {
         if (newMode == ECG_LEAD_MODE_3)
         {
-            windowManager.changeToECGLead3(disabledWaveforms);
-
-            QStringList waveName;
-            windowManager.getDisplayedWaveform(waveName);
+            QStringList waveName = layoutManager.getDisplayedWaveforms();
             for (int i = 0; i < waveName.size(); ++i)
             {
                 setLeadMode3DisplayLead(waveName.at(i));
             }
-        }
-        else
-        {
-            windowManager.setExcludeWaveforms(disabledWaveforms);
         }
     }
 }
@@ -1401,64 +1407,13 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
         // 更新波形速率
         _waveWidget[i]->setDataRate(_provider->getWaveformSample());
     }
-    ecgMenu.refresh();
 
     if (!refresh)
     {
         return;
     }
 
-    windowManager.setUFaceType(type);
-
-    // 立即刷新界面，防止界面残留
-    QApplication::processEvents(QEventLoop::ExcludeSocketNotifiers |
-                                QEventLoop::ExcludeUserInputEvents);
-
-    // 关闭下拉弹出框
-    if (ComboListPopup::current())
-    {
-        ComboListPopup::current()->close();
-    }
-
-    // 清除上个模式留下的弹出框
-    if (systemManager.isAcknownledgeSystemTestResult())
-    {
-        while (NULL != QApplication::activeModalWidget())
-        {
-            QApplication::activeModalWidget()->hide();
-            menuManager.close();
-        }
-    }
-
-    // 由12L界面退出至普通界面由于可能存在导联切换问题，因此需要对波形的显示做相关处理
-    if (mode != ECG_DISPLAY_12_LEAD_FULL)
-    {
-        ECGLead calLead = getCalcLead();
-        QStringList currentWaveforms;
-        windowManager.getCurrentWaveforms(currentWaveforms);
-        if ((!currentWaveforms.isEmpty()) && (currentWaveforms.at(0) != _waveWidget[calLead]->name()))
-        {
-            windowManager.replaceWaveform(currentWaveforms.at(0), _waveWidget[calLead]->name());
-        }
-
-        QStringList disabledWaveforms;
-        _getDisabledWaveforms(disabledWaveforms);  // 不会被显示的波形集合。
-        if (_curLeadMode == ECG_LEAD_MODE_3)
-        {
-            windowManager.changeToECGLead3(disabledWaveforms);
-
-            QStringList waveName;
-            windowManager.getDisplayedWaveform(waveName);
-            for (int i = 0; i < waveName.size(); ++i)
-            {
-                setLeadMode3DisplayLead(waveName.at(i));
-            }
-        }
-        else
-        {
-            windowManager.setExcludeWaveforms(disabledWaveforms);
-        }
-    }
+    // TODO: check whether need to refresh layout
 }
 
 /**************************************************************************************************
@@ -1515,12 +1470,6 @@ void ECGParam::setCalcLead(ECGLead lead)
         leads.append(ECG_LEAD_V6);
     }
 
-    if (windowManager.getUFaceType() != UFACE_MONITOR_12LEAD)
-    {
-        // 切换计算导联的时候先退出诊断在切换，原因是因为诊断会改变波形采样和速率
-        restoreDiagBandwidth();
-    }
-
     ECGLead preCalcLead = getCalcLead();
 //    leads.clear();
 //    leads.append(ECG_LEAD_I);
@@ -1544,9 +1493,6 @@ void ECGParam::setCalcLead(ECGLead lead)
     {
         _provider->setCalcLead(lead);
     }
-
-    // need to refresh to hide or show the Diag.ECG soft key
-    softkeyManager.refresh();
 
     emit calcLeadChanged();
 }
@@ -1640,19 +1586,9 @@ void ECGParam::autoSetCalcLead(void)
     setCalcLead(leads[index]);
     if (NULL != _waveWidget[calcLead] && NULL != _waveWidget[leads[index]])
     {
-        windowManager.replaceWaveform(_waveWidget[calcLead]->name(),
-                                      _waveWidget[leads[index]]->name(), false);
+        systemConfig.setStrValue("PrimaryCfg|ECG|Ecg1WaveWidget", _waveWidget[calcLead]->name());
+        layoutManager.updateLayout();
     }
-    ecgMenu.refresh();
-
-    // 关闭下拉弹出框
-    if (ComboListPopup::current())
-    {
-        ComboListPopup::current()->close();
-    }
-
-    // 关闭波形菜单
-    waveWidgetSelectMenu.close();
 }
 
 /**************************************************************************************************
@@ -1715,87 +1651,6 @@ void ECGParam::setBandwidth(int band)
     }
 }
 
-/**************************************************************************************************
- * 设置诊断带宽。
- *************************************************************************************************/
-void ECGParam::setDiagBandwidth()
-{
-    if (_isDisableDiaSoftKey)
-    {
-        return;
-    }
-
-    _isDisableDiaSoftKey = true;
-    if (NULL != _provider)
-    {
-        _provider->setBandwidth(ECG_BANDWIDTH_0525_40HZ);
-
-        int filter = 0;
-        currentConfig.getNumValue("ECG|NotchFilter", filter);
-        _provider->setNotchFilter((ECGNotchFilter)filter);
-
-        // 重新设置波形速率
-        _provider->setWaveformSample(WAVE_SAMPLE_RATE_500);
-        for (int i = 0; i < ECG_LEAD_NR; ++i)
-        {
-            if (_waveWidget[i] == NULL)
-            {
-                continue;
-            }
-            _waveWidget[i]->setDataRate(_provider->getWaveformSample());
-        }
-
-        unsigned ts = timeManager.getCurTime();
-        // summaryStorageManager.addDiagnosticECG(ts, ECG_BANDWIDTH_0525_40HZ);
-        _lastDiagModeTimestamp = ts;
-    }
-
-    for (int i = 0; i < ECG_LEAD_NR; ++i)
-    {
-        if (_waveWidget[i] == NULL)
-        {
-            continue;
-        }
-        _waveWidget[i]->setBandWidth(ECG_BANDWIDTH_0525_40HZ);
-    }
-}
-
-/**************************************************************************************************
- * 设置诊断带宽, if restore after diagnostic complete, no need to stop trigger print
- *************************************************************************************************/
-void ECGParam::restoreDiagBandwidth(int isCompleted)
-{
-    _isDisableDiaSoftKey = false;
-    int band = 0;
-    band = _chestFreqBand;
-
-    if (NULL != _provider)
-    {
-        _provider->setBandwidth((ECGBandwidth)band);
-        _provider->setNotchFilter(getNotchFilter());
-
-        // 重新设置波形速率
-        _provider->setWaveformSample(WAVE_SAMPLE_RATE_250);
-        for (int i = 0; i < ECG_LEAD_NR; ++i)
-        {
-            if (_waveWidget[i] == NULL)
-            {
-                continue;
-            }
-            _waveWidget[i]->setDataRate(_provider->getWaveformSample());
-        }
-    }
-
-    for (int i = 0; i < ECG_LEAD_NR; ++i)
-    {
-        if (_waveWidget[i] == NULL)
-        {
-            continue;
-        }
-        _waveWidget[i]->setBandWidth((ECGBandwidth)band);
-    }
-}
-
 /***************************************************************************************************
  * get the bandwidth of the calc lead
  **************************************************************************************************/
@@ -1824,17 +1679,6 @@ ECGBandwidth ECGParam::getBandwidth(void)
 }
 
 /**************************************************************************************************
- * 获取带宽。
- *************************************************************************************************/
-ECGBandwidth ECGParam::getMFCBandwidth(void)
-{
-    int band = 0;
-    currentConfig.getNumValue("ECG|PadsECGBandwidth", band);
-
-    return static_cast<ECGBandwidth>(band);
-}
-
-/**************************************************************************************************
  * 获取显示带宽。
  *************************************************************************************************/
 ECGBandwidth ECGParam::getDisplayBandWidth(void)
@@ -1844,10 +1688,6 @@ ECGBandwidth ECGParam::getDisplayBandWidth(void)
     if (_displayMode == ECG_DISPLAY_12_LEAD_FULL)
     {
         band = _12LeadFreqBand;
-    }
-    else
-    {
-        band = getDiagBandwidth();
     }
 
     return static_cast<ECGBandwidth>(band);
@@ -1991,7 +1831,7 @@ void ECGParam::setSweepSpeed(ECGSweepSpeed speed)
         spo2Param.setSweepSpeed(speed);
     }
 
-    windowManager.resetWave();
+    layoutManager.resetWave();
 }
 
 /**************************************************************************************************
@@ -2437,8 +2277,6 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
         currentConfig.getNumValue(everLeadOnStr, leadOnOff);
         _isEverLeadOn[i] = (leadOnOff << i) & 0x01;
     }
-
-    _lastDiagModeTimestamp = 0;
 
 //    _lastCabelType = 0x00;
     _isPowerOnNewSession = true;

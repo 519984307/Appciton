@@ -21,6 +21,7 @@
 #include "Debug.h"
 #include "MenuWidget.h"
 #include "MenuManager.h"
+#include "LayoutManager.h"
 
 /**************************************************************************************************
  * 初始化菜单列表项。
@@ -204,7 +205,7 @@ void MenuGroup::popup(int x, int y)
 
     if (x == 0 && y == 0)
     {
-        QRect r = windowManager.getMenuArea();
+        QRect r = layoutManager.getMenuArea();
         x = r.x() + (r.width() - width()) / 2;
         y = r.y() + (r.height() - height());
     }
@@ -266,7 +267,7 @@ void MenuGroup::popup(SubMenu *menu, int x, int y)
 
     if (x == 0 && y == 0)
     {
-        QRect r = windowManager.getMenuArea();
+        QRect r = layoutManager.getMenuArea();
         x = r.x() + (r.width() - width()) / 2;
         y = r.y() + (r.height() - height());
     }

@@ -22,7 +22,7 @@
 #include "IConfig.h"
 #include "KeyInputPanel.h"
 #include "MessageBox.h"
-#include "MenuWindow.h"
+#include "MainMenuWindow.h"
 
 class COMenuContentPrivate
 {
@@ -301,7 +301,7 @@ void COMenuContent::onButtonReleased()
 
 void COMenuContent::onAlarmBtnReleased()
 {
-    MenuWindow *w = this->getMenuWindow();
+    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_CO_CO, true);
     if (w)
     {

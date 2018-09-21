@@ -50,8 +50,8 @@ ConfigEditIBPMenuContentPrivate::ConfigEditIBPMenuContentPrivate(Config *const c
 }
 
 ConfigEditIBPMenuContent::ConfigEditIBPMenuContent(Config * const config):
-    MenuContent(trs("ConfigEditIBPMenu"),
-                trs("ConfigEditIBPMenuDesc")),
+    MenuContent(trs("IBPMenu"),
+                trs("IBPMenuDesc")),
     d_ptr(new ConfigEditIBPMenuContentPrivate(config))
 {
 }
@@ -84,6 +84,13 @@ void ConfigEditIBPMenuContentPrivate::loadOptions()
 void ConfigEditIBPMenuContent::readyShow()
 {
     d_ptr->loadOptions();
+    bool isOnlyToRead = configManager.isReadOnly();
+
+    for (int i = 0; i < ConfigEditIBPMenuContentPrivate::ITEM_CBO_MAX; i++)
+    {
+        d_ptr->combos[ConfigEditIBPMenuContentPrivate
+                ::MenuItem(i)]->setEnabled(!isOnlyToRead);
+    }
 }
 
 void ConfigEditIBPMenuContent::layoutExec()

@@ -18,7 +18,6 @@
 #include "LanguageManager.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
-#include "WaveWidgetSelectMenu.h"
 #include "ConfigManager.h"
 #include "OxyCRGSymbol.h"
 

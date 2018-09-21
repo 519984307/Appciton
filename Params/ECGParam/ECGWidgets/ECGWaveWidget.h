@@ -114,7 +114,6 @@ protected:
 
 private slots:
     // 鼠标释放事件
-    void _releaseHandle(IWidget *);
     void _popupDestroyed();
     void _onCalcLeadChanged();
     void _getItemIndex(int);

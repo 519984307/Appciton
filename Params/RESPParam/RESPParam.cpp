@@ -14,10 +14,9 @@
 #include "RESPProviderIFace.h"
 #include "IConfig.h"
 #include "WaveformCache.h"
-#include "CO2Param.h"
 #include "RESPDupParam.h"
 #include "SystemManager.h"
-#include "WindowManager.h"
+#include "LayoutManager.h"
 
 RESPParam *RESPParam::_selfObj = NULL;
 
@@ -48,17 +47,10 @@ void RESPParam::_setWaveformSpeed(RESPSweepSpeed speed)
         break;
     }
 
-    QStringList currentWaveforms;
-    windowManager.getCurrentWaveforms(currentWaveforms);
-    int i = 0;
-    int size = currentWaveforms.size();
-    for (; i < size; i++)
+    QStringList currentWaveforms = layoutManager.getDisplayedWaveforms();
+    if (currentWaveforms.contains(_waveWidget->name()))
     {
-        if (currentWaveforms[i] == "RESPWaveWidget")
-        {
-            windowManager.resetWave();
-            break;
-        }
+        layoutManager.resetWave();
     }
 }
 
@@ -362,63 +354,30 @@ void RESPParam::setRespMonitoring(int enable)
     getWaveWindow(name);
     getTrendWindow(trendName);
 
-    QStringList waveList;
-    windowManager.getDisplayedWaveform(waveList);
-    QString co2WaveName, co2TrendName;
-    co2Param.getWaveWindow(co2WaveName);
-    co2Param.getTrendWindow(co2TrendName);
 
+    int needUpdate = 0;
     currentConfig.setNumValue("RESP|AutoActivation", enable);
     _respMonitoring = enable;
-    if (co2Param.isConnected())
+    if (0 == enable)
     {
-        if (0 == co2Param.getCO2Switch())
+        this->disable();
+        needUpdate |= layoutManager.setWidgetLayoutable(name, false);
+        needUpdate |= layoutManager.setWidgetLayoutable(trendName, false);
+        if (needUpdate)
         {
-            if (0 == enable)
-            {
-                disable();
-                if (-1 != waveList.indexOf(name))
-                {
-                    windowManager.removeWaveform(name, false);
-                }
-                windowManager.removeTrendWindow(trendName);
-            }
-            else
-            {
-                this->enable();
-                if (waveList.count() < 4)
-                {
-                    windowManager.insertWaveform(waveList.at(waveList.count() - 1),
-                                                 name, false);
-                }
-                windowManager.replaceTrendWindow(co2TrendName, trendName);
-            }
+            layoutManager.updateLayout();
         }
     }
     else
     {
-        if (0 == enable)
+        this->enable();
+        needUpdate |= layoutManager.setWidgetLayoutable(name, false);
+        needUpdate |= layoutManager.setWidgetLayoutable(trendName, false);
+        if (needUpdate)
         {
-            this->disable();
-            if (-1 != waveList.indexOf(name))
-            {
-                windowManager.removeWaveform(name, false);
-            }
-            windowManager.removeTrendWindow(trendName);
-        }
-        else
-        {
-            this->enable();
-            if (waveList.count() < 4)
-            {
-                windowManager.insertWaveform(waveList.at(waveList.count() - 1),
-                                             name, false);
-            }
-            windowManager.insertTrendWindow(trendName);
+            layoutManager.updateLayout();
         }
     }
-
-    waveList.clear();
 
     enableRespCalc(enable);
 }

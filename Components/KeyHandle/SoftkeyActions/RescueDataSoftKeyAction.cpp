@@ -23,6 +23,7 @@
 #include "OxyCRGEventWindow.h"
 #include "TrendGraphWindow.h"
 #include "HistoryDataReviewWindow.h"
+#include "LayoutManager.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -37,7 +38,6 @@ static KeyActionDesc _rescueDataKeys[] =
 
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_INFO),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PAT_NEW),
-    KeyActionDesc("", "", ICON_FILE_LEFT , NULL, SOFT_BASE_KEY_PREVIOUS_PAGE),
     KeyActionDesc("", trs("TrendTable"), "Summary.png",   RescueDataSoftKeyAction::trendReview),
     KeyActionDesc("", trs("TrendGraph"), "Summary.png", RescueDataSoftKeyAction::summaryReview),
     KeyActionDesc("", trs("ExportImport"), "Export.png",  RescueDataSoftKeyAction::exportData),
@@ -52,7 +52,6 @@ static KeyActionDesc _rescueDataKeys[] =
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
-    KeyActionDesc("", "", ICON_FILE_RIGHT , NULL , SOFT_BASE_KEY_NEXT_PAGE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_MAIN_SETUP)
 };
 
@@ -120,8 +119,8 @@ void RescueDataSoftKeyAction::exit(bool isPressed)
         return;
     }
 
-    SoftKeyActionType type = softkeyManager.uFaceTypeToSoftKeyType(windowManager.getUFaceType());
-    softkeyManager.setContent(type, true);
+    SoftKeyActionType type = softkeyManager.uFaceTypeToSoftKeyType(layoutManager.getUFaceType());
+    softkeyManager.setContent(type);
 }
 
 void RescueDataSoftKeyAction::eventReview(bool isPressed)

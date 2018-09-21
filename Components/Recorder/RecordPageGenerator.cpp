@@ -28,8 +28,8 @@
 #include "AGParam.h"
 #include "ECGParam.h"
 #include "CO2Param.h"
-#include "WindowManager.h"
 #include "Utility.h"
+#include "LayoutManager.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
@@ -1863,7 +1863,7 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
             caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
                                              ecgParam.getLeadConvention()))
                       .arg(ECGSymbol::convert(ecgParam.getFilterMode()));
-            info.waveInfo.ecg.in12LeadMode = windowManager.getUFaceType() == UFACE_MONITOR_12LEAD;
+            info.waveInfo.ecg.in12LeadMode = layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD;
             info.waveInfo.ecg._12LeadDisplayFormat = ecgParam.get12LDisplayFormat();
             captionLength = fontManager.textWidthInPixels(caption, font());
             break;

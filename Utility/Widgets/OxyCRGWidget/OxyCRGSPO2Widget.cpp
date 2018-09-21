@@ -18,7 +18,6 @@
 #include "LanguageManager.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
-#include "WaveWidgetSelectMenu.h"
 #include "SPO2Define.h"
 #include "SPO2Param.h"
 #include "ConfigManager.h"

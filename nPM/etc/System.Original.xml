@@ -734,8 +734,10 @@
 	    <ECGLeadConvention>0</ECGLeadConvention>
 	    <AlarmSource>0</AlarmSource>
 	    <Ecg1Wave>0</Ecg1Wave>
-	    <Ecg2Wave>1</Ecg2Wave>
-	    <Ecg1Gain>0</Ecg1Gain>
+            <Ecg2Wave>1</Ecg2Wave>
+            <Ecg1WaveWidget>ECGIWaveWidget</Ecg1WaveWidget>
+            <Ecg2WaveWidget>ECGIIWaveWidget</Ecg2WaveWidget>
+            <Ecg1Gain>0</Ecg1Gain>
 	    <Ecg2Gain>0</Ecg2Gain>
 	    <SweepSpeed>1</SweepSpeed>
 	    <Filter>0</Filter>
@@ -767,7 +769,6 @@
 		<C5>0</C5>                
 		<C6>0</C6>                                
 	    </EverLeadOn>
-
         </ECG>
 		<CO2>
 			<O2Compensation>55</O2Compensation>
@@ -791,19 +792,36 @@
         </AG>
         <UILayout>
         <!-- 控件的顺序与上面的布局节点对应 -->
-            <ScreenLayout>
+            <MainLayout direction="vertical" margin="0" spacing="0">
+                <LayoutItem height="40" direction="horizontal" spacing="0" bgcolor="#1e1e1e">
+                    <LayoutItem stretch="1">PatientInfoWidget</LayoutItem>
+                    <LayoutItem width="50">PatientStatusBarWidget</LayoutItem>
+                    <LayoutItem width="150">DateTimeWidget</LayoutItem>
+                    <LayoutItem width="50">AlarmMuteBarWidget</LayoutItem>
+                    <LayoutItem width="350">AlarmPhyInfoBarWidget</LayoutItem>
+                    <LayoutItem width="350">AlarmTechInfoBarWidget</LayoutItem>
+                </LayoutItem>
+                <LayoutItem stretch="1">ContentView</LayoutItem>
+                <LayoutItem height="80" direction="horizontal" spacing="0">
+                    <LayoutItem stretch="1">SoftKeyManager</LayoutItem>
+                    <LayoutItem width="80">SystemStatusBarWidget</LayoutItem>
+                    <LayoutItem width="80">BatteryBarWidget</LayoutItem>
+                </LayoutItem>
+            </MainLayout>
+            <ContentLayout>
                 <Normal>
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="1">ECG1Wave</LayoutNode>
-                        <LayoutNode pos="4" span="2" editable="1">ECG</LayoutNode>
+                        <LayoutNode pos="4" span="1" editable="1">ECG</LayoutNode>
+                        <LayoutNode pos="5" span="1" editable="1">PVCs</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="1">SPO2Wave</LayoutNode>
                         <LayoutNode pos="4" span="2" editable="1">SPO2</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
-                        <LayoutNode pos="0" span="4" editable="1">RESPWave</LayoutNode>
-                        <LayoutNode pos="4" span="2" editable="1">RESP</LayoutNode>
+                        <LayoutNode pos="0" span="4" editable="1">ECG2Wave</LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="1">N2O</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="1">IBP1Wave</LayoutNode>
@@ -820,7 +838,8 @@
                     <LayoutRow>
                         <LayoutNode pos="0" span="2" editable="1">NIBP</LayoutNode>
                         <LayoutNode pos="2" span="2" editable="1">NIBPList</LayoutNode>
-                        <LayoutNode pos="4" span="2" editable="1">TEMP</LayoutNode>
+                        <LayoutNode pos="4" span="1" editable="1">TEMP</LayoutNode>
+                        <LayoutNode pos="5" span="1" editable="1">RESP</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="2" editable="1"></LayoutNode>
@@ -830,7 +849,7 @@
                 </Normal>
                 <BigFont>
                 </BigFont>
-            </ScreenLayout>
+            </ContentLayout>
             <WidgetsOrder>
                 <FontSize>
                     <!--800*600-->
