@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/19
+ **/
+
 #include "WaveformCache.h"
 #include "RescueDataDefine.h"
 #include "Debug.h"
@@ -16,20 +26,14 @@ WaveformCache *WaveformCache::_selfObj = NULL;
  *      true - 成功; false - 失败。
  *************************************************************************************************/
 void WaveformCache::registerSource(WaveformID id, int rate, int minValue,
-        int maxValue, QString &waveTitle, int baseline)
+                                   int maxValue, QString &waveTitle, int baseline)
 {
     SourceMap::iterator it = _source.find(id);
 
-    // 已经存在。
-    if (it != _source.end())
-    {
-        return;
-    }
-
     _source.insert(id, WaveformAttr(rate, minValue, maxValue, waveTitle, baseline));
 
-    //add source to channels
-    //TODO: no need to specific channel name, remove the name member in ChnanelDesc later
+    // add source to channels
+    // TODO: no need to specific channel name, remove the name member in ChnanelDesc later
     _storageChannel[id] = new ChannelDesc(QString(), rate * DATA_STORAGE_WAVE_TIME);
     _realtimeChannel[id] = new ChannelDesc(QString(), rate * CONTINUOUS_PRINT_WAVE_CHANNEL_TIME);
 }
@@ -42,15 +46,15 @@ void WaveformCache::registerSource(WaveformID id, int rate, int minValue,
  *************************************************************************************************/
 void WaveformCache::addData(WaveformID id, WaveDataType data)
 {
-    //add data to sync cache
+    // add data to sync cache
     _syncCacheMutex.lock();
     WaveSyncCacheMap::iterator listIter = _syncCache.find(id);
-    if(listIter != _syncCache.end())
+    if (listIter != _syncCache.end())
     {
         QList<WaveSyncCache>::iterator  iter;
-        for(iter = listIter->begin(); iter != listIter->end(); iter ++)
+        for (iter = listIter->begin(); iter != listIter->end(); ++iter)
         {
-            if(iter->curCacheLen < iter->bufflen)
+            if (iter->curCacheLen < iter->bufflen)
             {
                 iter->buff[iter->curCacheLen++] = data;
                 if (iter->cb)
@@ -62,27 +66,27 @@ void WaveformCache::addData(WaveformID id, WaveDataType data)
     }
     _syncCacheMutex.unlock();
 
-    //recorder record wavedata
+    // recorder record wavedata
     _recorderMutex.lock();
     WaveformRecorderMap::Iterator recorderListIter = _waveRecorders.find(id);
-    if(recorderListIter != _waveRecorders.end())
+    if (recorderListIter != _waveRecorders.end())
     {
         QList<WaveformRecorder>::Iterator iter;
-        for(iter = recorderListIter->begin(); iter != recorderListIter->end(); iter ++)
+        for (iter = recorderListIter->begin(); iter != recorderListIter->end(); iter ++)
         {
-            if(iter->curRecWaveNum < iter->totalRecWaveNum)
+            if (iter->curRecWaveNum < iter->totalRecWaveNum)
             {
                 iter->buf[iter->curRecWaveNum++] = data;
-                if(iter->curRecWaveNum % iter->sampleRate == 0)
+                if (iter->curRecWaveNum % iter->sampleRate == 0)
                 {
                     iter->recordDurationIncreaseCallback(id, iter->recObj);
                 }
 
-                if(iter->curRecWaveNum == iter->totalRecWaveNum && iter->recordCompleteCallback)
+                if (iter->curRecWaveNum == iter->totalRecWaveNum && iter->recordCompleteCallback)
                 {
                     iter->recordCompleteCallback(id, iter->recObj);
                     iter = recorderListIter->erase(iter);
-                    if(iter == recorderListIter->end())
+                    if (iter == recorderListIter->end())
                     {
                         break;
                     }
@@ -93,17 +97,17 @@ void WaveformCache::addData(WaveformID id, WaveDataType data)
     _recorderMutex.unlock();
 
     ChannelDesc  *chn = _storageChannel[id];
-    if(chn)
+    if (chn)
     {
         chn->_mutex.lock();
         chn->buff.push(data);
         chn->_mutex.unlock();
     }
 
-    if(_enableRealtimeChannel)
+    if (_enableRealtimeChannel)
     {
         chn = _realtimeChannel[id];
-        if(chn)
+        if (chn)
         {
             chn->_mutex.lock();
             chn->buff.push(data);
@@ -192,7 +196,7 @@ unsigned WaveformCache::channelDuration() const
  */
 void WaveformCache::startRealtimeChannel()
 {
-    if(!_enableRealtimeChannel)
+    if (!_enableRealtimeChannel)
     {
         _enableRealtimeChannel = true;
     }
@@ -211,7 +215,8 @@ void WaveformCache::startRealtimeChannel()
  * 返回：
  *      读到的数据个数。
  *************************************************************************************************/
-int WaveformCache::readStorageChannel(WaveformID id, WaveDataType *buff, int time, bool alignToSecond, bool startRealtimeChannel)
+int WaveformCache::readStorageChannel(WaveformID id, WaveDataType *buff, int time, bool alignToSecond,
+                                      bool startRealtimeChannel)
 {
     if ((buff == NULL) || (time <= 0))
     {
@@ -219,7 +224,7 @@ int WaveformCache::readStorageChannel(WaveformID id, WaveDataType *buff, int tim
     }
 
     ChannelDesc *channel = _storageChannel[id];
-    if(channel == NULL)
+    if (channel == NULL)
     {
         qdebug("channel is empty.\n");
         return 0;
@@ -250,14 +255,14 @@ int WaveformCache::readStorageChannel(WaveformID id, WaveDataType *buff, int tim
     }
     else
     {
-        //no enough data, fill the head of the the buff with invalid data
+        // no enough data, fill the head of the the buff with invalid data
         int baseLine = 0;
         getBaseline(id, baseLine);
         qFill(buff, buff + len - size, 0x40000000 | baseLine);
         pool.copy(0, &buff[len - size], size);
     }
 
-    if(startRealtimeChannel)
+    if (startRealtimeChannel)
     {
         _enableRealtimeChannel = true;
     }
@@ -280,7 +285,7 @@ int WaveformCache::readRealtimeChannel(WaveformID id, WaveDataType *buff, int ti
     }
 
     ChannelDesc *channel = _realtimeChannel[id];
-    if(channel == NULL)
+    if (channel == NULL)
     {
         qdebug("channel is empty.\n");
         return 0;
@@ -294,13 +299,13 @@ int WaveformCache::readRealtimeChannel(WaveformID id, WaveDataType *buff, int ti
     RingBuff<WaveDataType> &pool = channel->buff;
     size = pool.dataSize();
 
-    if(len <= size)
+    if (len <= size)
     {
         size = len;
     }
     pool.copy(0, &buff[0], size);
 
-    //remove the read data
+    // remove the read data
     pool.pop(size);
     channel->_mutex.unlock();
 
@@ -318,7 +323,7 @@ int WaveformCache::readRealtimeChannel(WaveformID id, int num, WaveDataType *buf
     }
 
     ChannelDesc *channel = _realtimeChannel[id];
-    if(channel == NULL)
+    if (channel == NULL)
     {
         qdebug("channel is empty.\n");
         return 0;
@@ -330,13 +335,13 @@ int WaveformCache::readRealtimeChannel(WaveformID id, int num, WaveDataType *buf
     RingBuff<WaveDataType> &pool = channel->buff;
     size = pool.dataSize();
 
-    if(num <= size)
+    if (num <= size)
     {
         size = num;
     }
     pool.copy(0, &buff[0], size);
 
-    //remove the read data
+    // remove the read data
     pool.pop(size);
     channel->_mutex.unlock();
 
@@ -348,19 +353,19 @@ int WaveformCache::readRealtimeChannel(WaveformID id, int num, WaveDataType *buf
  **************************************************************************************************/
 void WaveformCache::stopRealtimeChannel()
 {
-    if(!_enableRealtimeChannel)
+    if (!_enableRealtimeChannel)
     {
         return;
     }
 
     _enableRealtimeChannel = false;
 
-    //clear the channel
-    ChannelDesc *chn = NULL;
+    // clear the channel
     for (int i = 0; i < WAVE_NR; i++)
     {
+        ChannelDesc *chn = NULL;
         chn = _realtimeChannel[i];
-        if(chn)
+        if (chn)
         {
             chn->_mutex.lock();
             chn->buff.clear();
@@ -378,7 +383,7 @@ void WaveformCache::stopRealtimeChannel()
  **************************************************************************************************/
 bool WaveformCache::registerSyncCache(WaveformID id, long cacheID, WaveDataType *buff, int buflen, SyncCacheCallback cb)
 {
-    if(buff == NULL || buflen <= 0)
+    if (buff == NULL || buflen <= 0)
     {
         return false;
     }
@@ -386,16 +391,18 @@ bool WaveformCache::registerSyncCache(WaveformID id, long cacheID, WaveDataType 
     QMutexLocker locker(&_syncCacheMutex);
 
     WaveSyncCacheMap::iterator listIter = _syncCache.find(id);
-    if(listIter == _syncCache.end())
+    if (listIter == _syncCache.end())
     {
         listIter = _syncCache.insert(id, QList<WaveSyncCache>());
     }
 
     QList<WaveSyncCache>::const_iterator iter;
-    for(iter = listIter->constBegin(); iter != listIter->constEnd(); iter++)
+    for (iter = listIter->constBegin(); iter != listIter->constEnd(); ++iter)
     {
-        if( iter->id == cacheID)
+        if (iter->id == cacheID)
+        {
             return false;
+        }
     }
 
     listIter->append(WaveSyncCache(cacheID, buff, buflen, cb));
@@ -409,15 +416,15 @@ void WaveformCache::unRegisterSyncCache(WaveformID id, long cacheID)
 {
     QMutexLocker locker(&_syncCacheMutex);
     WaveSyncCacheMap::iterator listIter = _syncCache.find(id);
-    if(listIter == _syncCache.end())
+    if (listIter == _syncCache.end())
     {
         return;
     }
 
     QList<WaveSyncCache>::iterator iter;
-    for(iter = listIter->begin(); iter != listIter->end(); iter++)
+    for (iter = listIter->begin(); iter != listIter->end(); ++iter)
     {
-        if(iter->id == cacheID)
+        if (iter->id == cacheID)
         {
             listIter->erase(iter);
             return;
@@ -432,15 +439,15 @@ bool WaveformCache::isSyncCacheCompleted(WaveformID id, long cacheID)
 {
     QMutexLocker locker(&_syncCacheMutex);
     WaveSyncCacheMap::iterator listIter = _syncCache.find(id);
-    if(listIter == _syncCache.end())
+    if (listIter == _syncCache.end())
     {
         return false;
     }
 
     QList<WaveSyncCache>::const_iterator iter;
-    for(iter = listIter->constBegin(); iter != listIter->constEnd(); iter++)
+    for (iter = listIter->constBegin(); iter != listIter->constEnd(); ++iter)
     {
-        if( iter->id == cacheID)
+        if (iter->id == cacheID)
         {
             return iter->curCacheLen == iter->bufflen;
         }
@@ -453,17 +460,19 @@ bool WaveformCache::registerWaveformRecorder(WaveformID id, const WaveformRecord
     QMutexLocker locker(&_recorderMutex);
 
     WaveformRecorderMap::Iterator listIter = _waveRecorders.find(id);
-    if(listIter == _waveRecorders.end())
+    if (listIter == _waveRecorders.end())
     {
         listIter = _waveRecorders.insert(id, QList<WaveformRecorder>());
     }
 
     QList<WaveformRecorder>::ConstIterator iter;
-    for(iter = listIter->constBegin(); iter != listIter->constEnd(); iter++)
+    for (iter = listIter->constBegin(); iter != listIter->constEnd(); iter++)
     {
         // if the record object for the waveform already exist, return false
         if (iter->recObj == recorder.recObj)
+        {
             return false;
+        }
     }
     listIter->append(recorder);
 
@@ -475,23 +484,23 @@ void WaveformCache::unRegisterWaveformRecorder(WaveformID id, void *recObj)
     QMutexLocker locker(&_recorderMutex);
 
     WaveformRecorderMap::iterator listIter = _waveRecorders.find(id);
-    if(listIter == _waveRecorders.end())
+    if (listIter == _waveRecorders.end())
     {
-        //no recorder regiser in the waveform
+        // no recorder regiser in the waveform
         return;
     }
 
     QList<WaveformRecorder>::iterator iter;
-    for(iter = listIter->begin(); iter != listIter->end(); iter++)
+    for (iter = listIter->begin(); iter != listIter->end(); ++iter)
     {
-        if(iter->recObj == recObj)
+        if (iter->recObj == recObj)
         {
-            //fill the left space with invalid wave data
+            // fill the left space with invalid wave data
             int baseline = 0;
             getBaseline(id, baseline);
             qFill(iter->buf + iter->curRecWaveNum, iter->buf + iter->totalRecWaveNum, 0x40000000 | baseline);
 
-            //remove
+            // remove
             listIter->erase(iter);
             return;
         }
@@ -513,25 +522,25 @@ WaveformCache::WaveformCache()
  *************************************************************************************************/
 WaveformCache::~WaveformCache()
 {
-    for(int i = 0; i < WAVE_NR; i++)
+    for (int i = 0; i < WAVE_NR; i++)
     {
         ChannelDesc *chn = _storageChannel[i];
-        if(chn)
+        if (chn)
         {
             delete chn;
         }
         chn = _realtimeChannel[i];
-        if(chn)
+        if (chn)
         {
             delete chn;
         }
     }
 
-#if 0  //TODO:remove
+#if 0  // TODO:remove
     SourceMap::iterator it = _source.begin();
     for (; it != _source.end(); ++it)
     {
-        QList<ChannelDesc*> channel = _channel.values(it.key());
+        QList<ChannelDesc *> channel = _channel.values(it.key());
         for (int i = 0; i < channel.size(); i++)
         {
             delete channel[i];

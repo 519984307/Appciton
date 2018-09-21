@@ -198,13 +198,9 @@ SOURCES +=                                                                      
     Utility/Widgets/ImportFileSubWidget.cpp                                     \
     Utility/Widgets/TableItemDelegate.cpp                                       \
     Utility/Widgets/EventWidget/EventWaveWidget.cpp                             \
-    Utility/Widgets/EventWidget/EventReviewWindow.cpp                           \
     Utility/Widgets/EventWidget/EventTrendItemDelegate.cpp                      \
     Utility/Widgets/EventWidget/EventInfoWidget.cpp                             \
-    Utility/Widgets/EventWidget/EventWaveSetWidget.cpp                          \
-    Utility/Widgets/EventWidget/OxyCRGEventWidget.cpp                           \
     Utility/Widgets/EventWidget/OxyCRGEventWaveWidget.cpp                       \
-    Utility/Widgets/EventWidget/OxyCRGEventSetWidget.cpp                        \
     Utility/Widgets/EventWidget/EventWindow.cpp                                 \
     Utility/Widgets/EventWidget/EventReviewModel.cpp                            \
     Utility/Widgets/EventWidget/EventWaveSetWindow.cpp                          \
@@ -751,13 +747,9 @@ HEADERS +=                                                                      
     Utility/Widgets/SubMenu.h                                                   \
     Utility/Widgets/TableItemDelegate.h                                         \
     Utility/Widgets/EventWidget/EventWaveWidget.h                               \
-    Utility/Widgets/EventWidget/EventReviewWindow.h                             \
     Utility/Widgets/EventWidget/EventTrendItemDelegate.h                        \
     Utility/Widgets/EventWidget/EventInfoWidget.h                               \
-    Utility/Widgets/EventWidget/EventWaveSetWidget.h                            \
-    Utility/Widgets/EventWidget/OxyCRGEventWidget.h                             \
     Utility/Widgets/EventWidget/OxyCRGEventWaveWidget.h                         \
-    Utility/Widgets/EventWidget/OxyCRGEventSetWidget.h                          \
     Utility/Widgets/EventWidget/EventWindow.h                                   \
     Utility/Widgets/EventWidget/EventReviewModel.h                              \
     Utility/Widgets/EventWidget/EventWaveSetWindow.h                            \
