@@ -30,7 +30,7 @@ UserFaceTrend,趋势,Trend
 UserFaceBigFont,大字体,Big Font
 UserFaceCustom,自定义,Custom
 UserFaceUnknow,未知,Unknow
-ECG,心电,ECG
+ECG,ECG,ECG
 HR,心率,HR
 HR_PR,心率/脉率,HR/PR
 ST-I,ST-I,ST-I
@@ -89,11 +89,11 @@ AUXP2_PR,AUXP2脉率,AUXP2-PR
 CO_CO,心排量,C.O.
 CO_CI,心指数,C.I.
 TB,血温,TB
-SPO2,血氧,SPO2
+SPO2,SPO2,SPO2
 PR,脉率,PR
 PLETH,血氧波,Pleth
-NIBP,血压,NIBP
-RESP,呼吸,RESP
+NIBP,NIBP,NIBP
+RESP,RESP,RESP
 ParameterColor,参数颜色,Parameter Color
 ParameterColorDesc,参数颜色设置,Parameter Color Desc
 RR,呼吸率,RR
@@ -197,7 +197,7 @@ InjectionTempSource,注射液温度来源,Injection Temp Source
 InjectionTemp,注射液温度,Injection Temp
 InjectionVolumn,注射液体积,Injection Volumn
 MeasureMode,测量模式,Measure Mode
-TEMP,体温,TEMP
+TEMP,TEMP,TEMP
 T1,T1,T1
 T2,T2,T2
 TD,ΔT,ΔT
@@ -1384,7 +1384,7 @@ AA2,自动识别麻醉气体2,AA2
 O2,O2,O2
 SetUp,设置,SetUp
 AGModule,麻醉模块,AGModule
-AG,麻醉,AG
+AG,AG,AG
 LoadConfig,加载配置,Load Config
 SuccessToLoad,加载成功,Success ToLoad
 Load,加载,Load

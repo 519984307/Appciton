@@ -47,6 +47,13 @@ static QPalette *_newPalette(const QColor &color)
     return palette;
 }
 
+// 修改palette颜色
+static void _changePalette(QPalette &palette, const QColor &color)
+{
+    palette.setColor(QPalette::WindowText, color);
+    palette.setColor(QPalette::Window, Qt::black);
+}
+
 /**************************************************************************************************
  * 功能：获取调色板。
  * 参数：
@@ -61,9 +68,11 @@ QPalette &ColorManager::getPalette(const QString &param)
     {
         QPalette *palette = _newPalette(_loadColor(param));
         it = _colorMap.insert(param, palette);
-//        debug("palette = %p, it.value = %p\n", palette, it.value());
     }
-
+    else
+    {
+        _changePalette(*(it.value()), _loadColor(param));
+    }
     return *it.value();
 }
 

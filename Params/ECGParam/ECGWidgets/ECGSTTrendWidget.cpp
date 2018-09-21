@@ -66,54 +66,34 @@ void ECGSTTrendWidget::isAlarm(int id, bool flag)
  *************************************************************************************************/
 void ECGSTTrendWidget::showValue(void)
 {
-    QPalette p = palette();
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
+    psrc = normalPalette(psrc);
     if (_isAlarm[ECG_ST_I] || _isAlarm[ECG_ST_II] || _isAlarm[ECG_ST_III] ||
             _isAlarm[ECG_ST_aVR] || _isAlarm[ECG_ST_aVL] || _isAlarm[ECG_ST_aVF] ||
             _isAlarm[ECG_ST_V1] || _isAlarm[ECG_ST_V2] || _isAlarm[ECG_ST_V3] ||
             _isAlarm[ECG_ST_V4] || _isAlarm[ECG_ST_V5] || _isAlarm[ECG_ST_V6])
     {
-//        if (p.window().color() != Qt::white)
-//        {
-//            p.setColor(QPalette::Window, Qt::white);
-//            p.setColor(QPalette::WindowText, Qt::red);
-//            setPalette(p);
-//        }
-
         for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
         {
-            p = _stLabel[i]->palette();
             if (_isAlarm[i])
             {
-                if (p.windowText().color() != Qt::red)
-                {
-                    p.setColor(QPalette::WindowText, Qt::red);
-                    _stLabel[i]->setPalette(p);
-                    _stValue[i]->setPalette(p);
-                }
+                showAlarmStatus(_stLabel[i], psrc);
+                showAlarmStatus(_stValue[i], psrc);
             }
             else
             {
-                if (p.window().color() != Qt::black)
-                {
-                    p = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-                    setPalette(p);
-                    _stLabel[i]->setPalette(p);
-                    _stValue[i]->setPalette(p);
-                }
+                showNormalStatus(_stLabel[i], psrc);
+                showNormalStatus(_stValue[i], psrc);
             }
         }
     }
     else
     {
+        setPalette(psrc);
         for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
         {
-            if (p.window().color() != Qt::black)
-            {
-                p = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-                setPalette(p);
-                _stLabel[i]->setPalette(p);
-                _stValue[i]->setPalette(p);
-            }
+            showNormalStatus(_stLabel[i], psrc);
+            showNormalStatus(_stValue[i], psrc);
         }
     }
     for (int i = ECG_ST_I; i < ECG_ST_NR; i++)

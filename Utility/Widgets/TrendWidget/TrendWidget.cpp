@@ -9,7 +9,6 @@
  **/
 
 
-
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPainter>
@@ -90,9 +89,9 @@ void TrendWidget::resizeEvent(QResizeEvent *e)
  *************************************************************************************************/
 QPalette TrendWidget::normalPalette(QPalette psrc)
 {
-    if (psrc.windowText().color() == Qt::black)
+    if (psrc.window().color() != Qt::black)     // 趋势数据正常情况下，背景为黑色
     {
-        psrc.setColor(QPalette::WindowText, Qt::white);
+        psrc.setColor(QPalette::Window, Qt::black);
     }
     return psrc;
 }
@@ -102,17 +101,43 @@ QPalette TrendWidget::normalPalette(QPalette psrc)
  * 参数：
  *      psrc:趋势数据设置颜色。
  *************************************************************************************************/
-QPalette TrendWidget::alarmPalette(QPalette psrc)
+QPalette TrendWidget::alarmPalette(QPalette psrc, bool isSetName)
 {
-    if (psrc.windowText().color() == Qt::white)
+    if (psrc.window().color() != Qt::white)
+    {
+        psrc.setColor(QPalette::Window, Qt::white);
+    }
+    if (isSetName && psrc.windowText().color() != Qt::red)
     {
         psrc.setColor(QPalette::WindowText, Qt::red);
     }
+    return psrc;
+}
+
+//　报警时状态闪烁＋白底红字
+void TrendWidget::showAlarmStatus(QWidget *value, QPalette psrc, bool isSetName)
+{
+    QPalette alaColor = alarmPalette(palette(), isSetName);
+    setPalette(alaColor);
+    QPalette p = value->palette();
+    alaColor = alarmPalette(p);
+    if (p.windowText().color() != alaColor.windowText().color())
+    {
+        value->setPalette(alaColor);
+    }
     else
     {
-        psrc.setColor(QPalette::WindowText, Qt::white);
+        value->setPalette(psrc);
     }
-    return psrc;
+}
+
+void TrendWidget::showNormalStatus(QWidget *value, QPalette psrc)
+{
+    QPalette p = value->palette();
+    if (p.windowText().color() != psrc.windowText().color())
+    {
+        value->setPalette(psrc);
+    }
 }
 
 /**************************************************************************************************
@@ -123,25 +148,6 @@ QPalette TrendWidget::alarmPalette(QPalette psrc)
 void TrendWidget::updateAlarm(bool alarmFlag)
 {
     Q_UNUSED(alarmFlag)
-//    QPalette p = nameLabel->palette();
-//    if (alarmFlag)
-//    {
-//        if (p.windowText().color() != Qt::white)
-//        {
-//            p.setColor(QPalette::WindowText, Qt::white);
-//            nameLabel->setPalette(p);
-//            unitLabel->setPalette(p);
-//        }
-//    }
-//    else
-//    {
-//        if (p.windowText().color() != Qt::black)
-//        {
-//            p.setColor(QPalette::WindowText, Qt::black);
-//            nameLabel->setPalette(p);
-//            unitLabel->setPalette(p);
-//        }
-    //    }
 }
 
 /**************************************************************************************************

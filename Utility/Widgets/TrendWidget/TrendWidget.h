@@ -9,7 +9,6 @@
  **/
 
 
-
 #pragma once
 #include "IWidget.h"
 #include "LanguageManager.h"
@@ -71,5 +70,19 @@ protected:
     QString _title;                           // 趋势控制标名
 
     QPalette normalPalette(QPalette psrc);
-    QPalette alarmPalette(QPalette psrc);
+    QPalette alarmPalette(QPalette psrc, bool isSetName = true);   // isSetName: 是否设置标题颜色
+    /**
+     * @brief showAlarmStatus   设置报警时状态：闪烁＋白底红字
+     * @param value             趋势值
+     * @param psrc              对应字体调色板
+     * @param isSetName         是否设置标题颜色
+     */
+    void showAlarmStatus(QWidget *value, QPalette psrc, bool isSetName = true);
+
+    /**
+     * @brief showNormalStatus  设置正常时状态：黑底＋对应颜色字体
+     * @param value             趋势值
+     * @param psrc              对应字体调色板
+     */
+    void showNormalStatus(QWidget *value, QPalette psrc);
 };
