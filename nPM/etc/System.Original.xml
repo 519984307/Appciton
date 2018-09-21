@@ -853,6 +853,10 @@
                 </Normal>
                 <BigFont>
                 </BigFont>
+                <ECG12Lead>
+                    <Standard>ECGIWaveWidget,ECGV1WaveWidget,ECGIIWaveWidget,ECGV2WaveWidget,ECGIIIWaveWidget,ECGV3WaveWidget,ECGaVRWaveWidget,ECGV4WaveWidget,ECGaVLWaveWidget,ECGV5WaveWidget,ECGaVFWaveWidget,ECGV6WaveWidget</Standard>
+                    <Cabrera>ECGaVLWaveWidget,ECGV1WaveWidget,ECGIWaveWidget,ECGV2WaveWidget,ECGaVRWaveWidget,ECGV3WaveWidget,ECGIIWaveWidget,ECGV4WaveWidget,ECGaVFWaveWidget,ECGV5WaveWidget,ECGIIIWaveWidget,ECGV6WaveWidget</Cabrera>
+                </ECG12Lead>
             </ContentLayout>
             <WidgetsOrder>
                 <FontSize>
