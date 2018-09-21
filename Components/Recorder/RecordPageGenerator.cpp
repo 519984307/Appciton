@@ -878,7 +878,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
     int fontH = fontManager.textHeightInPixels(font);
 
     // draw the print speed
-    QRect rect(0, fontH / 2, page->width(), fontH);
+    QRect rect(fontH * 2, fontH / 2, page->width(), fontH);
     painter.drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, PrintSymbol::convert(speed));
 
     int waveNum = waveInfos.size();
@@ -927,7 +927,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
                 break;
             }
 
-            drawPercentRuler(page, &painter, *iter, QString::number(high, 'g', 1), "0");
+            drawPercentRuler(page, &painter, *iter, QString::number(high, 'g', 2), "0");
         }
         break;
         case WAVE_N2O:
@@ -950,7 +950,7 @@ RecordPage *RecordPageGenerator::createWaveScalePage(const QList<RecordWaveSegme
                 high = 15;
                 break;
             }
-            drawPercentRuler(page, &painter, *iter, QString::number(high, 'g', 1), "0");
+            drawPercentRuler(page, &painter, *iter, QString::number(high, 'g', 2), "0");
         }
         break;
 
@@ -1102,23 +1102,6 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
     case WAVE_SPO2:
     {
         qreal spo2Zoom = 1.0;
-        switch (waveInfo.waveInfo.spo2.gain)
-        {
-        case SPO2_GAIN_X10:
-            spo2Zoom = 1.0;
-            break;
-        case SPO2_GAIN_X20:
-            spo2Zoom = 2.0;
-            break;
-        case SPO2_GAIN_X40:
-            spo2Zoom = 4.0;
-            break;
-        case SPO2_GAIN_X80:
-            spo2Zoom = 8.0;
-            break;
-        default:
-            break;
-        }
 
         short zoomWave = (wave - waveInfo.waveBaseLine) * spo2Zoom + waveInfo.waveBaseLine;
         waveData = (waveInfo.maxWaveValue -  zoomWave) * ((endY -  startY) / (waveInfo.maxWaveValue -  waveInfo.minWaveValue)) +

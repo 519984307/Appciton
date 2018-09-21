@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/21
+ **/
+
 #pragma once
 #include "Provider.h"
 #include "CO2ProviderIFace.h"
@@ -158,7 +168,7 @@ public: // CO2ProviderIFace 的接口。
 
 protected:
     virtual void disconnected(void);
-    virtual void reconnected(void) { }
+    virtual void reconnected(void);
 
 private:
     void _unpacket(const unsigned char packet[]);
