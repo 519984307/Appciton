@@ -20,7 +20,7 @@
 
 #define PATH_ICON_UP "/usr/local/nPM/icons/ArrowUp.png"
 #define PATH_ICON_DOWN "/usr/local/nPM/icons/ArrowDown.png"
-#define LISTVIEW_MAX_VISIABLE_TIME 6    // 一页最大显示数
+#define LISTVIEW_MAX_VISIABLE_SIZE 6    // 一页最大显示数
 
 class AlarmInfoWindowPrivate
 {
@@ -103,8 +103,8 @@ void AlarmInfoWindow::layout()
     listView->setItemDelegate(new ListViewItemDelegate);
     ListDataModel *model = new ListDataModel(this);
     listView->setModel(model);
-    listView->setFixedHeight(model->getRowHeightHint() * LISTVIEW_MAX_VISIABLE_TIME
-                             + listView->spacing() * (LISTVIEW_MAX_VISIABLE_TIME * 2));
+    listView->setFixedHeight(model->getRowHeightHint() * LISTVIEW_MAX_VISIABLE_SIZE
+                             + listView->spacing() * (LISTVIEW_MAX_VISIABLE_SIZE * 2));
     listView->setDrawIcon(false);
     d_ptr->dataModel = model;
     d_ptr->listView = listView;
@@ -144,7 +144,7 @@ void AlarmInfoWindow::showEvent(QShowEvent *ev)
 
 void AlarmInfoWindow::_onBtnRelease()
 {
-    Button *btn = static_cast<Button *>(sender());
+    Button *btn = qobject_cast<Button *>(sender());
     AlarmInfoWindowPrivate::pageButton index =
             static_cast<AlarmInfoWindowPrivate::pageButton>(btn->property("Item").toInt());
     switch (index)
@@ -213,8 +213,8 @@ void AlarmInfoWindowPrivate::loadOption()
     int count = highnode.count();
 
     // 计算当前页码和总页数
-    int pageTemp = (0 == count % LISTVIEW_MAX_VISIABLE_TIME) ? (count / LISTVIEW_MAX_VISIABLE_TIME)
-                                                              : (count / LISTVIEW_MAX_VISIABLE_TIME + 1);
+    int pageTemp = (0 == count % LISTVIEW_MAX_VISIABLE_SIZE) ? (count / LISTVIEW_MAX_VISIABLE_SIZE)
+                                                              : (count / LISTVIEW_MAX_VISIABLE_SIZE + 1);
     if (totalPage != pageTemp)
     {
         totalPage = pageTemp;
@@ -228,19 +228,19 @@ void AlarmInfoWindowPrivate::loadOption()
     {
         return;
     }
-    start = (curPage - 1) * LISTVIEW_MAX_VISIABLE_TIME;
-    if (count > LISTVIEW_MAX_VISIABLE_TIME)
+    start = (curPage - 1) * LISTVIEW_MAX_VISIABLE_SIZE;
+    if (count > LISTVIEW_MAX_VISIABLE_SIZE)
     {
-        end = start + LISTVIEW_MAX_VISIABLE_TIME;
+        end = start + LISTVIEW_MAX_VISIABLE_SIZE;
         if (end > count)
         {
             end = count;
-            start = count - LISTVIEW_MAX_VISIABLE_TIME;
+            start = count - LISTVIEW_MAX_VISIABLE_SIZE;
         }
     }
     else
     {
-        end = LISTVIEW_MAX_VISIABLE_TIME;
+        end = LISTVIEW_MAX_VISIABLE_SIZE;
     }
 
     QStringList alarmList;
