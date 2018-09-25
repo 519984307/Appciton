@@ -203,9 +203,9 @@ AlarmTechInfoBarWidget::~AlarmTechInfoBarWidget()
 
 void AlarmTechInfoBarWidget::updateList()
 {
-    if (NULL != _alarmWindow && !_alarmWindow->isHidden())
+    // 窗口显示时不做数据更新
+    if (NULL != _alarmWindow && _alarmWindow->isHidden())
     {
         _alarmWindow->updateData();
-        _alarmWindow->update();
     }
 }
