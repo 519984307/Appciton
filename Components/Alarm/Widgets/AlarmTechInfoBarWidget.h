@@ -1,6 +1,17 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/9/25
+ **/
+
+
 #pragma once
 #include "IWidget.h"
-#include "AlarmDefine.h"
+#include "AlarmInfoWindow.h"
 
 class AlarmInfoPopListVIew;
 class AlarmTechInfoBarWidget : public IWidget
@@ -18,7 +29,7 @@ public:
     static AlarmTechInfoBarWidget &getSelf();
 
     // 构造与析构。
-    AlarmTechInfoBarWidget(const QString &name);
+    explicit AlarmTechInfoBarWidget(const QString &name);
     ~AlarmTechInfoBarWidget();
 
     void updateList();
@@ -41,7 +52,7 @@ private:
     bool _latch;
     bool _acknowledge;
 
-    AlarmInfoPopListVIew *_alarmList;
+    AlarmInfoWindow *_alarmWindow;
     AlarmType _alarmType;
 };
 #define alarmTechInfoBarWin (AlarmTechInfoBarWidget::getSelf())

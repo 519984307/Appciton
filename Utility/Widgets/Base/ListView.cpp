@@ -19,7 +19,8 @@ class ListsViewPrivate
 public:
     explicit ListsViewPrivate(ListView *const q_ptr)
         : q_ptr(q_ptr),
-          isMultiSelectMode(false)
+          isMultiSelectMode(false),
+          isDrawIcon(true)
     {}
 
     int findCheckedRow() const;
@@ -33,6 +34,8 @@ public:
     bool isMultiSelectMode;
 
     QMap <int, bool> rowsSelectedMap;
+
+    bool isDrawIcon;
 };
 
 int ListsViewPrivate::findCheckedRow() const
@@ -138,6 +141,11 @@ void ListView::setModel(QAbstractItemModel *model)
     QListView::setModel(model);
 }
 
+void ListView::setDrawIcon(bool isDrawIcon)
+{
+    d_ptr->isDrawIcon = isDrawIcon;
+}
+
 void ListView::keyPressEvent(QKeyEvent *ev)
 {
     switch (ev->key())
@@ -219,7 +227,14 @@ void ListView::keyReleaseEvent(QKeyEvent *ev)
         }
         icon = themeManger.getIcon(ThemeManager::IconChecked);
         // set current checked row
-        model()->setData(index, icon, Qt::DecorationRole);
+        if (d_ptr->isDrawIcon)
+        {
+            model()->setData(index, icon, Qt::DecorationRole);
+        }
+        else
+        {
+            model()->setData(index, QVariant(QIcon()), Qt::DecorationRole);
+        }
         emit enterSignal();
     }
     break;
@@ -306,7 +321,17 @@ void ListView::onRowClicked(QModelIndex index)
         d_ptr->rowsSelectedMap[index.row()] = true;
     }
     icon = themeManger.getIcon(ThemeManager::IconChecked);
+
     // set current checked row
-    model()->setData(index, icon, Qt::DecorationRole);
+
+    if (d_ptr->isDrawIcon)
+    {
+        model()->setData(index, icon, Qt::DecorationRole);
+    }
+    else
+    {
+        model()->setData(index, QVariant(QIcon()), Qt::DecorationRole);
+    }
+
     emit enterSignal();
 }
