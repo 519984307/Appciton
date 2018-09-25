@@ -182,7 +182,6 @@ static void _initComponents(void)
     alarmStateMachine.start();
 
     // 数据管理。
-    paramDataStorageManager.construction();
     rescueDataExportWidget.construction();
     rescueDataDeleteWidget.construction();
 
@@ -724,7 +723,6 @@ void deleteObjects(void)
 
     deleteWaveformCache();
     deleteTrendCache();
-    deleteParamDataStorageManager();
     deleteRescueDataExportWidget();
     deleteRescueDataDeleteWidget();
 
