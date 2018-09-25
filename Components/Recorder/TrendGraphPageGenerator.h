@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/25
+ **/
+
 #pragma once
 #include "RecordPageGenerator.h"
 #include <QScopedPointer>
@@ -12,7 +22,7 @@ public:
         Type = 5
     };
 
-    TrendGraphPageGenerator(const QList<TrendGraphInfo>& trendInfos, QObject *parent = NULL);
+    TrendGraphPageGenerator(const QList<TrendGraphInfo>& trendInfos, const QList<unsigned>& eventList, QObject *parent = NULL);
 
     ~TrendGraphPageGenerator();
 

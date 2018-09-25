@@ -29,6 +29,7 @@
 #define GRAPH_POINT_NUMBER                  120                     // 一屏数据量
 #define DATA_INTERVAL_PIXEL                 5                       // 两数据之间的像素点个数
 #define GRAPH_DATA_WIDTH                    480                     // 一屏数据所占像素点
+#define SCALE_REGION_HEIGHT                 34                      // 时间刻度区域高度
 
 TrendWaveWidget::TrendWaveWidget() :
     _timeInterval(RESOLUTION_RATIO_5_SECOND),
@@ -606,13 +607,19 @@ const QList<TrendGraphInfo> TrendWaveWidget::getTrendGraphPrint()
 {
     QList<TrendGraphInfo> printList;
     int j = 0;
-    for (int i = _pagingNum * _displayGraphNum; j < _displayGraphNum && _infosList.count() > i; i ++)
+    int i = _subWidgetScrollArea->verticalScrollBar()->value() / ((height() - 34) / _displayGraphNum);
+    for (; j < _displayGraphNum && _infosList.count() > i; i ++)
     {
         TrendGraphInfo info = _infosList.at(i);
         printList.append(info);
         j++;
     }
     return printList;
+}
+
+const QList<unsigned> TrendWaveWidget::getEventList()
+{
+    return _alarmTimeList;
 }
 
 void TrendWaveWidget::setHistoryDataPath(QString path)
@@ -632,7 +639,7 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     QPainter barPainter(this);
 
     barPainter.setPen(QPen(Qt::white, 1, Qt::SolidLine));
-    QRect rectAdjust = rect().adjusted(0, 34, 0, 0);
+    QRect rectAdjust = rect().adjusted(0, SCALE_REGION_HEIGHT, 0, 0);
     barPainter.drawLine(rectAdjust.topLeft(), rectAdjust.topRight());
 
     double cursorPos;
@@ -749,7 +756,7 @@ void TrendWaveWidget::mousePressEvent(QMouseEvent *e)
 void TrendWaveWidget::_trendLayout()
 {
     _infosList.clear();
-    int subWidgetHeight = (height() - 34) / _displayGraphNum;
+    int subWidgetHeight = (height() - SCALE_REGION_HEIGHT) / _displayGraphNum;
     TrendSubWidgetInfo info;
     info.xHead = (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2;
     info.xTail = (_waveRegionWidth + GRAPH_DATA_WIDTH) / 2;

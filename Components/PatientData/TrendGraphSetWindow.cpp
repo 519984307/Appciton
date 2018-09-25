@@ -103,7 +103,6 @@ void TrendGraphSetWindow::trendGroupReleased(int g)
     QString prefix = "TrendGraph|TrendGroup";
     systemConfig.setNumValue(prefix, g);
     d_ptr->trendGroup = (TrendGroup)g;
-    qDebug() << "trend group = " << g << endl;
     upDateTrendGroup();
     TrendGraphWindow::getInstance()->updateTrendGraph();
 }

@@ -15,8 +15,6 @@
 #include "TimeDate.h"
 #include "AlarmLimitMenu.h"
 #include "TrendTableWindow.h"
-#include "TrendGraphWidget.h"
-#include "TrendGraphSetWidget.h"
 #include "WaveformCache.h"
 #include "IConfig.h"
 #include "IBPDefine.h"
@@ -1153,8 +1151,6 @@ void IBPParam::setEntitle(IBPPressureName entitle, IBPSignalInput IBP)
     }
 
     alarmLimitMenu.setIBPAlarmItem(_ibp1.pressureName, _ibp2.pressureName);
-    trendGraphSetWidget.upDateTrendGroup();
-    trendGraphWidget.updateTrendGraph();
 
     if (((_ibp1.pressureName >= IBP_PRESSURE_CVP) && (_ibp1.pressureName <= IBP_PRESSURE_ICP))
             && ((_ibp2.pressureName >= IBP_PRESSURE_CVP) && (_ibp2.pressureName <= IBP_PRESSURE_ICP)))
