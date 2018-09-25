@@ -156,10 +156,7 @@ void AlarmInfoWindow::_onBtnRelease()
 void AlarmInfoWindowPrivate::loadOption()
 {
     AlarmInfoNode node;
-    QList<AlarmInfoNode> highnode;
-    QList<AlarmInfoNode> midnode;
-    QList<AlarmInfoNode> lownode;
-    QList<AlarmInfoNode> promptnode;
+    QList<AlarmInfoNode> nodeList;
 
     for (int i = totalList - 1; i >= 0; --i)
     {
@@ -168,30 +165,11 @@ void AlarmInfoWindowPrivate::loadOption()
         {
             continue;
         }
-
-        switch (node.alarmPriority)
-        {
-            case ALARM_PRIO_HIGH:
-                highnode.append(node);
-                break;
-            case ALARM_PRIO_MED:
-                midnode.append(node);
-                break;
-            case ALARM_PRIO_LOW:
-                lownode.append(node);
-                break;
-            default:
-                promptnode.append(node);
-                break;
-        }
+        nodeList.append(node);
     }
 
-    highnode.append(midnode);
-    highnode.append(lownode);
-    highnode.append(promptnode);
-
     int start = 0, end = 0;
-    int count = highnode.count();
+    int count = nodeList.count();
 
     // 计算当前页码和总页数
     int pageTemp = (0 == count % LISTVIEW_MAX_VISIABLE_SIZE) ? (count / LISTVIEW_MAX_VISIABLE_SIZE)
@@ -229,16 +207,13 @@ void AlarmInfoWindowPrivate::loadOption()
     {
         if (i < count)
         {
-            node = highnode.at(i);
+            node = nodeList.at(i);
             alarmList.append(trs(node.alarmMessage));
         }
     }
 
     dataModel->setStringList(alarmList);
-    highnode.clear();
-    midnode.clear();
-    lownode.clear();
-    promptnode.clear();
+    nodeList.clear();
 
     if (hasNextPage())
     {
