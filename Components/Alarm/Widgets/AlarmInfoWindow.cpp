@@ -54,12 +54,6 @@ public:
 
     bool hasPrevPage();
     bool hasNextPage();
-
-    enum pageButton
-    {
-        PAGE_BUTTON_PREV,
-        PAGE_BUTTON_NEXT
-    };
 };
 
 AlarmInfoWindow::AlarmInfoWindow(const QString &title, AlarmType type)
@@ -118,8 +112,6 @@ void AlarmInfoWindow::layout()
     d_ptr->prevBtn = new Button();
     d_ptr->prevBtn->setButtonStyle(Button::ButtonTextOnly);
     d_ptr->prevBtn->setText(trs("Prev"));
-    int index = static_cast<int>(AlarmInfoWindowPrivate::PAGE_BUTTON_PREV);
-    d_ptr->prevBtn->setProperty("Item", qVariantFromValue(index));
     connect(d_ptr->prevBtn, SIGNAL(released()), this, SLOT(_onBtnRelease()));
     hLayout->addWidget(d_ptr->prevBtn);
 
@@ -127,8 +119,6 @@ void AlarmInfoWindow::layout()
     d_ptr->nextBtn = new Button();
     d_ptr->nextBtn->setButtonStyle(Button::ButtonTextOnly);
     d_ptr->nextBtn->setText(trs("Next"));
-    index = static_cast<int>(AlarmInfoWindowPrivate::PAGE_BUTTON_NEXT);
-    d_ptr->nextBtn->setProperty("Item", qVariantFromValue(index));
     connect(d_ptr->nextBtn, SIGNAL(released()), this, SLOT(_onBtnRelease()));
     hLayout->addWidget(d_ptr->nextBtn);
 
@@ -145,30 +135,21 @@ void AlarmInfoWindow::showEvent(QShowEvent *ev)
 void AlarmInfoWindow::_onBtnRelease()
 {
     Button *btn = qobject_cast<Button *>(sender());
-    AlarmInfoWindowPrivate::pageButton index =
-            static_cast<AlarmInfoWindowPrivate::pageButton>(btn->property("Item").toInt());
-    switch (index)
-    {
-    case AlarmInfoWindowPrivate::PAGE_BUTTON_PREV:
+    if (btn == d_ptr->prevBtn)
     {
         if (d_ptr->hasPrevPage())
         {
             d_ptr->curPage--;
             d_ptr->loadOption();
         }
-        break;
     }
-    case AlarmInfoWindowPrivate::PAGE_BUTTON_NEXT:
+    else if (btn == d_ptr->nextBtn)
     {
         if (d_ptr->hasNextPage())
         {
             d_ptr->curPage++;
             d_ptr->loadOption();
         }
-        break;
-    }
-    default:
-        break;
     }
 }
 
