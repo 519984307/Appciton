@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/25
+ **/
+
 #include "TrendSubWaveWidget.h"
 #include "IWidget.h"
 #include <QPainter>
@@ -29,8 +39,8 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id
         }
         else
         {
-            _valueY.min = (double)config.downRuler / config.scale;
-            _valueY.max = (double)config.upRuler / config.scale;
+            _valueY.min = static_cast<double>(config.downRuler) / config.scale;
+            _valueY.max = static_cast<double>(config.upRuler) / config.scale;
         }
         _paramName = paramInfo.getSubParamName(id);
     }
@@ -45,16 +55,15 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id
         }
         else
         {
-            _valueY.min = (double)configDown.downRuler / configDown.scale;
-            _valueY.max = (double)configUp.upRuler / configUp.scale;
+            _valueY.min = static_cast<double>(configDown.downRuler) / configDown.scale;
+            _valueY.max = static_cast<double>(configUp.upRuler) / configUp.scale;
         }
         QString str = paramInfo.getSubParamName(id);
         _paramName = str.left(str.length() - 4);
     }
     _paramUnit = Unit::getSymbol(paramInfo.getUnitOfSubParam(id));
 
-    setAttribute(Qt::WA_TransparentForMouseEvents,true);
-
+    setAttribute(Qt::WA_TransparentForMouseEvents, true);
 }
 
 TrendSubWaveWidget::~TrendSubWaveWidget()
@@ -158,7 +167,7 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
         }
         paths.append(path);
     }
-        break;
+    break;
     case TREND_GRAPH_TYPE_AG_TEMP:
     {
         QPainterPath fristPath;
@@ -169,7 +178,7 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
         QPointF secondPoint;
 
         QVector<TrendGraphDataV2>::ConstIterator iter = graphInfo.trendDataV2.constBegin();
-        for(; iter != graphInfo.trendDataV2.constEnd(); iter++)
+        for (; iter != graphInfo.trendDataV2.constEnd(); iter++)
         {
             if (iter->data[0] == InvData())
             {
@@ -222,7 +231,7 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
         paths.append(fristPath);
         paths.append(secondPath);
     }
-        break;
+    break;
     case TREND_GRAPH_TYPE_ART_IBP:
     {
         QPainterPath sysPath;
@@ -235,7 +244,7 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
         QPointF mapLastPoint;
 
         QVector<TrendGraphDataV3>::ConstIterator iter = graphInfo.trendDataV3.constBegin();
-        for(; iter != graphInfo.trendDataV3.constEnd(); iter++)
+        for (; iter != graphInfo.trendDataV3.constEnd(); iter++)
         {
             if (iter->data[0] == InvData())
             {
@@ -301,7 +310,7 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
         paths.append(diaPath);
         paths.append(mapPath);
     }
-        break;
+    break;
     case TREND_GRAPH_TYPE_NORMAL:
     {
         QPainterPath path;
@@ -349,7 +358,7 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
 
         paths.append(path);
     }
-        break;
+    break;
     }
     return paths;
 }
@@ -361,20 +370,20 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     QPainter barPainter(this);
     barPainter.setPen(QPen(_color, 1, Qt::SolidLine));
 
-    barPainter.drawLine(_info.xHead/3, _info.yTop, _info.xHead/3 + 5, _info.yTop);
-    barPainter.drawLine(_info.xHead/3, _info.yTop, _info.xHead/3, _info.yBottom);
-    barPainter.drawLine(_info.xHead/3, _info.yBottom, _info.xHead/3 + 5, _info.yBottom);
+    barPainter.drawLine(_info.xHead / 3, _info.yTop, _info.xHead / 3 + 5, _info.yTop);
+    barPainter.drawLine(_info.xHead / 3, _info.yTop, _info.xHead / 3, _info.yBottom);
+    barPainter.drawLine(_info.xHead / 3, _info.yBottom, _info.xHead / 3 + 5, _info.yBottom);
 
     // 趋势标尺上限
-    QRect upRulerRect(_info.xHead/3 + 7, _info.yTop - 10, _info.xHead, 30);
+    QRect upRulerRect(_info.xHead / 3 + 7, _info.yTop - 10, _info.xHead, 30);
     barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.max));
 
     // 趋势标尺下限
-    QRect downRulerRect(_info.xHead/3 + 7, _info.yBottom - 10, _info.xHead, 30);
+    QRect downRulerRect(_info.xHead / 3 + 7, _info.yBottom - 10, _info.xHead, 30);
     barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.min));
 
     // 边框线
-    barPainter.setPen(QPen(Qt::gray, 1, Qt::DotLine));
+    barPainter.setPen(QPen(Qt::gray, 1, Qt::DashLine));
     barPainter.drawLine(rect().bottomLeft(), rect().bottomRight());
 
     // 趋势波形图
@@ -386,7 +395,7 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     barPainter.save();
     QList<QPainterPath> paths = generatorPainterPath(_trendInfo);
     QList<QPainterPath>::ConstIterator iter;
-    for(iter = paths.constBegin(); iter != paths.constEnd(); iter++)
+    for (iter = paths.constBegin(); iter != paths.constEnd(); iter++)
     {
         barPainter.save();
         barPainter.drawPath(*iter);
@@ -399,7 +408,7 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     font.setPixelSize(15);
     barPainter.setFont(font);
     // 趋势参数名称
-    QRect nameRect(_trendDataHead + 5, 5, width() - _trendDataHead -10, 30);
+    QRect nameRect(_trendDataHead + 5, 5, width() - _trendDataHead - 10, 30);
     barPainter.drawText(nameRect, Qt::AlignLeft | Qt::AlignTop, _paramName);
 
     // 趋势参数单位
@@ -409,7 +418,7 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     barPainter.setFont(font);
 
     // 趋势参数数据
-    QRect dataRect(_trendDataHead, height()/4, width() - _trendDataHead, height() / 4 * 3);
+    QRect dataRect(_trendDataHead, height() / 5, width() - _trendDataHead, height() / 5 * 4);
     if (_type == TREND_GRAPH_TYPE_NORMAL)
     {
         if (_trendInfo.trendData.at(_cursorPosIndex).isAlarm)
@@ -423,11 +432,11 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         TrendDataType value = _trendInfo.trendData.at(_cursorPosIndex).data;
         if (value != InvData())
         {
-            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height()/3*2, QString::number(value));
+            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height() / 3 * 2, QString::number(value));
         }
         else
         {
-            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height()/3*2, "---");
+            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height() / 3 * 2, "---");
         }
     }
     else if (_type == TREND_GRAPH_TYPE_NIBP || _type == TREND_GRAPH_TYPE_ART_IBP)
@@ -450,13 +459,13 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         if (map != InvData() && dia != InvData() && sys != InvData())
         {
             QString trendStr = QString::number(sys) + "/" + QString::number(dia);
-            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height()/2, trendStr);
-            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET + 10, height()/3*2, QString::number(map));
+            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height() / 2, trendStr);
+            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET + 10, height() / 3 * 2, QString::number(map));
         }
         else
         {
-            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height()/2, "---/---");
-            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET + 10, height()/3*2, "(---)");
+            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height() / 2, "---/---");
+            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET + 10, height() / 3 * 2, "(---)");
         }
     }
     else if (_type == TREND_GRAPH_TYPE_AG_TEMP)
@@ -480,14 +489,13 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
             value1 /= 10;
             value2 /= 10;
             QString trendStr = QString::number(value1, 'g', 2) + "/" + QString::number(value2, 'g', 2);
-            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height()/2, trendStr);
+            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height() / 2, trendStr);
         }
         else
         {
-            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height()/2, "---/---");
+            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height() / 2, "---/---");
         }
     }
-
 }
 
 double TrendSubWaveWidget::_mapValue(TrendConvertDesc desc, int data)

@@ -606,9 +606,9 @@ const QList<TrendGraphInfo> TrendWaveWidget::getTrendGraphPrint()
 {
     QList<TrendGraphInfo> printList;
     int j = 0;
-    for (int i = _pagingNum * _displayGraphNum; j < _displayGraphNum; i ++)
+    for (int i = _pagingNum * _displayGraphNum; j < _displayGraphNum && _infosList.count() > i; i ++)
     {
-            TrendGraphInfo info = _infosList.at(i);
+        TrendGraphInfo info = _infosList.at(i);
         printList.append(info);
         j++;
     }
@@ -632,7 +632,7 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     QPainter barPainter(this);
 
     barPainter.setPen(QPen(Qt::white, 1, Qt::SolidLine));
-    QRect rectAdjust = rect().adjusted(0, 30, 0, 0);
+    QRect rectAdjust = rect().adjusted(0, 34, 0, 0);
     barPainter.drawLine(rectAdjust.topLeft(), rectAdjust.topRight());
 
     double cursorPos;
@@ -662,7 +662,7 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
                         cursorPos, rectAdjust.bottomLeft().y());
 
     // 当前趋势记录的时间
-    QRect timeRect = rect().adjusted(_waveRegionWidth + 5, 5, -5, 0);
+    QRect timeRect = rect().adjusted(_waveRegionWidth + 5, 9, -5, 0);
     if (_cursorPosIndex < _trendGraphInfo.alarmInfo.count())
     {
         timeDate.getDate(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp, tStr);
@@ -671,7 +671,7 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
         barPainter.drawText(timeRect, Qt::AlignRight, tStr);
     }
 
-    barPainter.setPen(QPen(Qt::white, 1, Qt::DotLine));
+    barPainter.setPen(QPen(Qt::white, 1, Qt::DashLine));
     barPainter.drawLine(_waveRegionWidth, 0, _waveRegionWidth, height());
 
     // 报警事件的标志
@@ -749,7 +749,7 @@ void TrendWaveWidget::mousePressEvent(QMouseEvent *e)
 void TrendWaveWidget::_trendLayout()
 {
     _infosList.clear();
-    int subWidgetHeight = (height() - 30) / _displayGraphNum;
+    int subWidgetHeight = (height() - 34) / _displayGraphNum;
     TrendSubWidgetInfo info;
     info.xHead = (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2;
     info.xTail = (_waveRegionWidth + GRAPH_DATA_WIDTH) / 2;
