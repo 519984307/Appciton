@@ -137,6 +137,9 @@ public:
     // update ecg notify message
     void updateECGNotifyMesg(ECGLead lead, bool isAlarm);
 
+    // 设置连接,供给对象调用
+    void setConnected(bool isConnected);
+
     // 是否连接
     bool isConnected();
 
@@ -351,5 +354,6 @@ private:
     bool _isCheckPatient;               // VF signal
 
     int _updateNum;            // 呼吸氧和波形更新标志计数
+    bool _connectedProvider;    // 连接Provider标识
 };
 #define ecgParam (ECGParam::construction())

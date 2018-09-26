@@ -330,6 +330,11 @@ void E5Provider::handlePacket(unsigned char *data, int len)
 {
     BLMProvider::handlePacket(data, len);
 
+    if (!isConnected)
+    {
+        ecgParam.setConnected(true);
+    }
+
     switch (data[0])
     {
     case E5_RSP_ACK:
@@ -445,6 +450,7 @@ void E5Provider::disconnected()
     respParam.setLeadoff(true);
 
     systemManager.setPoweronTestResult(E5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
+    ecgParam.setConnected(false);
 }
 
 
@@ -452,6 +458,7 @@ void E5Provider::reconnected()
 {
     ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    ecgParam.setConnected(true);
 }
 
 int E5Provider::getWaveformSample()

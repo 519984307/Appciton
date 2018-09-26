@@ -168,6 +168,7 @@ bool DemoProvider::attachParam(Param &param)
             _demoWaveData[i].param = &param;
         }
         ecgParam.setProvider(this);
+        ecgParam.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_SPO2))
     {
