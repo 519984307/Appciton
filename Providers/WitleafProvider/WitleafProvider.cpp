@@ -110,6 +110,7 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
     if (!isConnected)
     {
         coParam.setConnected(true);
+        ibpParam.setConnected(true);
     }
 
     if (data[0] == PARAM_TYPE_IBP)
@@ -374,11 +375,13 @@ unsigned char WitleafProvider::calcCheckSum(const unsigned char *data, unsigned 
 void WitleafProvider::disconnected()
 {
     coParam.setConnected(false);
+    ibpParam.setConnected(false);
 }
 
 void WitleafProvider::reconnected()
 {
     coParam.setConnected(true);
+    ibpParam.setConnected(true);
 }
 
 /**************************************************************************************************

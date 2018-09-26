@@ -201,6 +201,7 @@ bool DemoProvider::attachParam(Param &param)
         _demoWaveData[WAVE_AUXP1].param = &param;
         _demoWaveData[WAVE_AUXP2].param = &param;
         ibpParam.setProvider(this);
+        ibpParam.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_CO))
     {

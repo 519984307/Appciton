@@ -29,7 +29,8 @@ IBPParam *IBPParam::_selfObj = NULL;
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-IBPParam::IBPParam() : Param(PARAM_IBP), _staIBP1(true), _staIBP2(true)
+IBPParam::IBPParam() : Param(PARAM_IBP), _staIBP1(true), _staIBP2(true),
+    _connectedProvider(false)
 {
 
     _provider = NULL;
@@ -640,6 +641,20 @@ void IBPParam::setProvider(IBPProviderIFace *provider)
     title = IBPSymbol::convert(IBP_PRESSURE_AUXP2);
     waveformCache.registerSource(WAVE_AUXP2, _provider->getIBPWaveformSample(),
                                  0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
+}
+
+void IBPParam::setConnected(bool isConnected)
+{
+    if (_connectedProvider == isConnected)
+    {
+        return;
+    }
+    _connectedProvider = isConnected;
+}
+
+bool IBPParam::isConnected()
+{
+    return _connectedProvider;
 }
 
 /**************************************************************************************************
