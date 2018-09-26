@@ -32,14 +32,6 @@ public:
 
     Q_DECLARE_FLAGS(TrendDataFlags, TrendDataFlag)
 
-    enum ShortTrendInterval {
-        SHORT_TREND_INTERVAL_10S,
-        SHORT_TREND_INTERVAL_20S,
-        SHORT_TREND_INTERVAL_30S,
-        SHORT_TREND_INTERVAL_60S,
-        SHORT_TREND_INTERVAL_NR
-    };
-
     static TrendDataStorageManager &getInstance();
     ~TrendDataStorageManager();
 

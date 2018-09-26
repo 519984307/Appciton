@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/26
+ **/
+
+
 #pragma once
 #include "BaseDefine.h"
 #include "ParamDefine.h"
@@ -94,6 +105,15 @@ enum TrendGraphType
     TREND_GRAPH_TYPE_AG_TEMP,
 };
 
+/* short trend time interval */
+enum ShortTrendInterval
+{
+    SHORT_TREND_INTERVAL_10S,
+    SHORT_TREND_INTERVAL_20S,
+    SHORT_TREND_INTERVAL_30S,
+    SHORT_TREND_INTERVAL_60S,
+    SHORT_TREND_INTERVAL_NR
+};
 
 struct TrendGraphData
 {
@@ -105,7 +125,7 @@ struct TrendGraphData
     TrendDataType data;
 };
 
-struct TrendGraphDataV2     //trend graph draw 2 values
+struct TrendGraphDataV2     // trend graph draw 2 values
 {
     TrendGraphDataV2() : isAlarm(false), timestamp(0)
     {
@@ -115,7 +135,7 @@ struct TrendGraphDataV2     //trend graph draw 2 values
     TrendDataType data[2];
 };
 
-struct TrendGraphDataV3     //trend graph draw 3 values
+struct TrendGraphDataV3     // trend graph draw 3 values
 {
     TrendGraphDataV3() : isAlarm(false), timestamp(0)
     {
@@ -125,7 +145,7 @@ struct TrendGraphDataV3     //trend graph draw 3 values
     TrendDataType data[3];
 };
 
-struct AlarmEventInfo       //alarm event and time
+struct AlarmEventInfo       // alarm event and time
 {
     AlarmEventInfo() : isAlarmEvent(false), timestamp(0)
     {
@@ -137,10 +157,11 @@ struct AlarmEventInfo       //alarm event and time
 struct TrendGraphInfo
 {
     SubParamID subParamID;
-    unsigned startTime;    //trend graph startTime
-    unsigned endTime;      //trend graph endTime
+    unsigned startTime;    // trend graph startTime
+    unsigned endTime;      // trend graph endTime
     UnitType unit;
-    struct {
+    struct
+    {
         int max;
         int min;
     } scale;
@@ -166,12 +187,15 @@ struct OxyCRGWaveInfo
     int minWaveValue;
     int waveBaseLine;
     QVector<WaveDataType> waveData;
-    union {
-        struct {
+    union
+    {
+        struct
+        {
             RESPZoom zoom;
         } resp;
 
-        struct {
+        struct
+        {
             CO2DisplayZoom zoom;
         } co2;
     } waveInfo;
