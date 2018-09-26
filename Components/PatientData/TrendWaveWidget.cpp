@@ -13,7 +13,6 @@
 #include "TimeDate.h"
 #include "ColorManager.h"
 #include "ParamInfo.h"
-#include "TrendGraphSetWidget.h"
 #include "TrendGraphSetWindow.h"
 #include "IBPParam.h"
 #include "TrendDataStorageManager.h"
@@ -24,6 +23,7 @@
 #include <QVBoxLayout>
 #include <QScrollBar>
 #include "DataStorageDefine.h"
+#include <QMouseEvent>
 
 #define GRAPH_DISPLAY_DATA_NUMBER           4
 #define GRAPH_POINT_NUMBER                  120                     // 一屏数据量
