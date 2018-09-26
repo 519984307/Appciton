@@ -1378,7 +1378,7 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
     _displayMode = mode;
 
     // 布局界面。
-    UserFaceType type = UFACE_MONITOR_STANDARD;
+//    UserFaceType type = UFACE_MONITOR_STANDARD;
     if (mode == ECG_DISPLAY_NORMAL)
     {
         // 设置波形采样率
@@ -1389,7 +1389,7 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
     }
     else if (mode == ECG_DISPLAY_12_LEAD_FULL)
     {
-        type = UFACE_MONITOR_12LEAD;
+//        type = UFACE_MONITOR_12LEAD;
 
         // 设置波形采样率
         _provider->setWaveformSample(WAVE_SAMPLE_RATE_500);

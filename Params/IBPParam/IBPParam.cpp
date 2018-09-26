@@ -876,7 +876,7 @@ IBPScaleInfo &IBPParam::getScaleInfo(IBPSignalInput ibp)
     {
         return _scale1;
     }
-    else if (ibp == IBP_INPUT_2)
+    else
     {
         return _scale2;
     }

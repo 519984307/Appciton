@@ -79,6 +79,7 @@ void MenuManager::close()
 
 void MenuManager::_currentMenuGroup(int index)
 {
+    Q_UNUSED(index)
 //    _menuGroup = (MenuGroup*)_subMenus->currentWidget();
     _menuGroup = dynamic_cast<MenuGroup *>(_subMenus->currentWidget());
 }

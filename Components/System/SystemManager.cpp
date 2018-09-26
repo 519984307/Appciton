@@ -266,6 +266,8 @@ void SystemManager::setPoweronTestResult(ModulePoweronTestResult module,
  **************************************************************************************************/
 void SystemManager::parseKeyValue(const unsigned char *data, unsigned int len)
 {
+    Q_UNUSED(data)
+    Q_UNUSED(len)
 #ifdef Q_WS_QWS
     if ((NULL == data) || (len != 2))
     {
@@ -862,7 +864,7 @@ void SystemManager::_handleBMode(void)
                        (pDesk->height() - windowManager.height()) / 2);
 
     // 显示界面界面。
-    UserFaceType type = UFACE_MONITOR_STANDARD;
+//    UserFaceType type = UFACE_MONITOR_STANDARD;
 
     // 处理CO2和RESP的使能。
 //    _handleCO2RESP();//因调试需要，临时关闭

@@ -28,8 +28,6 @@ WaveformCache *WaveformCache::_selfObj = NULL;
 void WaveformCache::registerSource(WaveformID id, int rate, int minValue,
                                    int maxValue, QString &waveTitle, int baseline)
 {
-    SourceMap::iterator it = _source.find(id);
-
     _source.insert(id, WaveformAttr(rate, minValue, maxValue, waveTitle, baseline));
 
     // add source to channels

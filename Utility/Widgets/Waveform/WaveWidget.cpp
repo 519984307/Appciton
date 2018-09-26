@@ -56,8 +56,8 @@ WaveWidget::WaveWidget(const QString &widgetName, const QString &title) : IWidge
     _dyBuf(NULL), _flagBuf(NULL), _size(0), _head(0), _tail(0), _margin(QMargins(2, 2, 2, 2)), _spacing(2),
     _waveSpeed(12.5), _dataRate(125), _lineWidth(1), _minValue(-32768),
     _maxValue(32767),
-    _isFill(false), _isAntialias(false), _isShowGrid(false), _id(-1),
-    _queuedDataBuf(NULL), _queuedDataRate(0), _dequeueTimer(), _dequeueSizeEachTime(0), _isFreeze(false)
+    _isFill(false), _isAntialias(false), _isShowGrid(false), _id(-1), _isFreeze(false),
+    _queuedDataBuf(NULL), _queuedDataRate(0), _dequeueTimer(), _dequeueSizeEachTime(0)
 {
     // 波形区不能被选中
     setEnabled(false);

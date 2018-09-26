@@ -456,6 +456,7 @@ int OxyCRGWidget::getWaveType()const
  *************************************************************************************************/
 void OxyCRGWidget::_intervalSlot(IWidget *widget)
 {
+    Q_UNUSED(widget)
     if (NULL == _intervalList)
     {
         _intervalList = new PopupList(_interval, false);
@@ -476,6 +477,7 @@ void OxyCRGWidget::_intervalSlot(IWidget *widget)
  *************************************************************************************************/
 void OxyCRGWidget::_changeTrendSlot(IWidget *widget)
 {
+    Q_UNUSED(widget)
     if (NULL == _changeTrendList)
     {
         _changeTrendList = new PopupList(_changeTrend, false);

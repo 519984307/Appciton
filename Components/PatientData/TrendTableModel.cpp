@@ -482,6 +482,7 @@ void TrendTableModel::rightPage(int &curSecCol)
 
 void TrendTableModel::leftMoveEvent(int &curSecCol)
 {
+    Q_UNUSED(curSecCol)
     for (int i = d_ptr->eventList.count() - 1; i >= 0; i --)
     {
         unsigned timeInterval = TrendDataSymbol::convertValue(d_ptr->timeInterval);
@@ -521,6 +522,7 @@ void TrendTableModel::leftMoveEvent(int &curSecCol)
 
 void TrendTableModel::rightMoveEvent(int &curSecCol)
 {
+    Q_UNUSED(curSecCol)
     for (int i = 0; i < d_ptr->eventList.count(); i ++)
     {
         unsigned timeInterval = TrendDataSymbol::convertValue(d_ptr->timeInterval);
