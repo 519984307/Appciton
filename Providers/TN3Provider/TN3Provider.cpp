@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/26
+ **/
+
 #include "TN3Provider.h"
 #include "NIBPParam.h"
 #include "Debug.h"
@@ -14,7 +24,8 @@
 #include "RawDataCollection.h"
 #include "IConfig.h"
 
-static const char *nibpSelfErrorCode[] = {
+static const char *nibpSelfErrorCode[] =
+{
     "Unknown mistake.\r\n",                                   // 0
     "6V self-test failed.\r\n",                               // 1
     "5V self-test failed.\r\n",                               // 2
@@ -30,7 +41,8 @@ static const char *nibpSelfErrorCode[] = {
     "The air pump is unusual.\r\n",                           // 12
 };
 
-static const char *nibpErrorCode[] = {
+static const char *nibpErrorCode[] =
+{
     "Flash wrong.\r\n",                                       // 128
     "Data sample exception.\r\n",                             // 129
     "The Big gas valve is unusual for running.\r\n",          // 130
@@ -56,24 +68,24 @@ void TN3Provider::sendSelfTest()
 
 void TN3Provider::_selfTest(unsigned char *packet, int len)
 {
-    int error = 0;
     int num = packet[1];
-    outHex(packet,len);
+    outHex(packet, len);
     if (num > 0)
     {
+        int error = 0;
         QString errorStr("");
         errorStr = "error code = ";
-        for(int i = 2; i < len; i++)
+        for (int i = 2; i < len; i++)
         {
             if (packet[i] == 0x85 || packet[i] == 0x09)
             {
                 error++;
             }
-            errorStr += QString().sprintf("0x%02x, ", packet[i]);
+            errorStr += QString("0x%1, ").arg(packet[1]);
         }
         errorStr += "\n";
 
-        for(int i = 2; i < len; i++)
+        for (int i = 2; i < len; i++)
         {
             switch (packet[i])
             {
@@ -117,21 +129,21 @@ void TN3Provider::_selfTest(unsigned char *packet, int len)
         errorLog.append(item);
 
         nibpParam.errorDisable();
-        systemManager.setPoweronTestResult(TN3_MODULE_SELFTEST_RESULT,SELFTEST_FAILED);
+        systemManager.setPoweronTestResult(TN3_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
     }
     else if (num == 0)
     {
-        systemManager.setPoweronTestResult(TN3_MODULE_SELFTEST_RESULT,SELFTEST_SUCCESS);
+        systemManager.setPoweronTestResult(TN3_MODULE_SELFTEST_RESULT, SELFTEST_SUCCESS);
     }
 }
 
 void TN3Provider::_errorWarm(unsigned char *packet, int len)
 {
-    outHex(packet,len);
+    outHex(packet, len);
     nibpParam.errorDisable();
     QString errorStr("");
     errorStr = "error code = ";
-    errorStr += QString().sprintf("0x%02x, ", packet[1]);
+    errorStr += QString("0x%1, ").arg(packet[1]);
     errorStr += "\r\n";
 
     switch (packet[1])
@@ -179,31 +191,36 @@ void TN3Provider::_errorWarm(unsigned char *packet, int len)
  *************************************************************************************************/
 void TN3Provider::handlePacket(unsigned char *data, int len)
 {
-    if(NULL == data ||  0 >= len)
+    if (NULL == data ||  0 >= len)
     {
         return;
+    }
+
+    if (!isConnected)
+    {
+        nibpParam.setConnected(true);
     }
     BLMProvider::handlePacket(data, len);
 
     int enable = 0;
-    switch(data[0])
+    switch (data[0])
     {
     // 启动测量
     case TN3_RSP_START_MEASURE:
         if (data[1] == 0x00)
         {
-            nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_START_MEASURE,NULL,0);
+            nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_START_MEASURE, NULL, 0);
         }
         break;
 
     // 停止测量。
     case TN3_RSP_STOP_MEASURE:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_STOP,NULL,0);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_STOP, NULL, 0);
         break;
 
     // 获取测量结果
     case TN3_RSP_GET_MEASUREMENT:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_GET_RESULT,data,len);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_GET_RESULT, data, len);
         break;
 
     // 开机自检
@@ -213,12 +230,12 @@ void TN3Provider::handlePacket(unsigned char *data, int len)
 
     // <15mmHg压力值周期性数据帧
     case TN3_NOTIFY_LOW_PRESSURE:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE,&data[1],2);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE, &data[1], 2);
         break;
 
     // 测试压力帧
     case TN3_NOTIFY_PRESSURE:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE,&data[1],2);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE, &data[1], 2);
         break;
 
     // 错误警告帧
@@ -230,7 +247,7 @@ void TN3Provider::handlePacket(unsigned char *data, int len)
     // 测量结束帧
     case TN3_NOTIFY_END:
         _sendACK(data[0]);
-        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_MEASURE_DONE,NULL,0);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_MEASURE_DONE, NULL, 0);
         break;
 
     // 启动帧
@@ -242,7 +259,7 @@ void TN3Provider::handlePacket(unsigned char *data, int len)
         errorLog.append(item);
         nibpParam.reset();
     }
-        break;
+    break;
 
     // 保活帧
     case TN3_NOTIFY_ALIVE:
@@ -254,7 +271,7 @@ void TN3Provider::handlePacket(unsigned char *data, int len)
         machineConfig.getNumValue("Record|NIBP", enable);
         if (enable)
         {
-            rawDataCollection.pushData("BLM_TN3", data,len);
+            rawDataCollection.pushData("BLM_TN3", data, len);
         }
         break;
 
@@ -262,62 +279,62 @@ void TN3Provider::handlePacket(unsigned char *data, int len)
     case TN3_RSP_ENTER_SERVICE:
         if (data[1] != 0x00)
         {
-            nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_REPAIR_ENTER_FAIL,NULL,0);
+            nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_REPAIR_ENTER_FAIL, NULL, 0);
         }
         else
         {
-            nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_REPAIR_ENTER_SUCCESS,NULL,0);
+            nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_REPAIR_ENTER_SUCCESS, NULL, 0);
         }
         break;
 
     // 校准模式控制
     case TN3_RSP_CALIBRATE:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_ENTER,&data[1],1);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_ENTER, &data[1], 1);
         break;
 
     // 校准点压力值反馈
     case TN3_RSP_PRESSURE_POINT:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_RSP_PRESSURE_POINT,&data[1],1);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_RSP_PRESSURE_POINT, &data[1], 1);
         break;
 
     // 压力计模式控制
     case TN3_RSP_MANOMETER:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_MANOMETER_ENTER,&data[1],1);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_MANOMETER_ENTER, &data[1], 1);
         break;
 
     // 压力操控模式控制
     case TN3_RSP_PRESSURE_CONTROL:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_ENTER,&data[1],1);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_ENTER, &data[1], 1);
         break;
 
     // 压力控制（充气）
     case TN3_RSP_PRESSURE_INFLATE:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_INFLATE,NULL,0);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_INFLATE, NULL, 0);
         break;
 
     // 放气控制
     case TN3_RSP_PRESSURE_DEFLATE:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_DEFLATE,NULL,0);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_DEFLATE, NULL, 0);
         break;
 
     // 气阀控制
     case TN3_RSP_VALVE:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_VALVE,NULL,0);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_VALVE, NULL, 0);
         break;
 
     // 进入校零模式
     case TN3_RSP_CALIBRATE_ZERO:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_ZERO_ENTER,&data[1],1);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_ZERO_ENTER, &data[1], 1);
         break;
 
     // 状态改变
     case TN3_STATE_CHANGE:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_STATE_CHANGE,&data[1],1);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_STATE_CHANGE, &data[1], 1);
         break;
 
     // 服务模式压力帧
     case TN3_SERVICE_PRESSURE:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE,&data[1],2);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE, &data[1], 2);
         break;
 
     default:
@@ -331,6 +348,7 @@ void TN3Provider::handlePacket(unsigned char *data, int len)
 void TN3Provider::disconnected(void)
 {
     nibpParam.connectedFlag(false);
+    nibpParam.setConnected(false);
 }
 
 /**************************************************************************************************
@@ -339,6 +357,7 @@ void TN3Provider::disconnected(void)
 void TN3Provider::reconnected(void)
 {
     nibpParam.connectedFlag(true);
+    nibpParam.setConnected(true);
 }
 
 /**************************************************************************************************
@@ -431,7 +450,7 @@ void TN3Provider::setInitPressure(short pressure)
 void TN3Provider::enableSmartPressure(bool enable)
 {
     unsigned char cmd;
-    if(enable)
+    if (enable)
     {
         cmd = 0x01;
     }
@@ -607,7 +626,7 @@ int TN3Provider::serviceCuffPressure(unsigned char *packet)
         return -1;
     }
 
-    return ((int)((packet[2] << 8) + packet[1]));
+    return (static_cast<int>((packet[2] << 8) + packet[1]));
 }
 
 /**************************************************************************************************

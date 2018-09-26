@@ -183,6 +183,7 @@ bool DemoProvider::attachParam(Param &param)
     else if (name == paramInfo.getParamName(PARAM_NIBP))
     {
         nibpParam.setProvider(this);
+        nibpParam.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_CO2))
     {
