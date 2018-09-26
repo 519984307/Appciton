@@ -1819,6 +1819,36 @@ void RecordPageGenerator::drawTrendGraph(QPainter *painter, const GraphAxisInfo 
     painter->restore();
 }
 
+void RecordPageGenerator::drawTrendGraphEventSymbol(QPainter *painter, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo, const QList<unsigned> &eventList)
+{
+    painter->save();
+    painter->translate(axisInfo.origin);
+    QPen pen(Qt::white, 1);
+    painter->setPen(pen);
+    painter->setBrush(Qt::NoBrush);
+    QFont font = fontManager.recordFont(18);
+    painter->setFont(font);
+    qreal fontH = fontManager.textHeightInPixels(font);
+
+    int  symbolHeigth = -140;
+    for (int i = 0; i < eventList.count(); ++i)
+    {
+        QRectF eventRect;
+        qreal timeX = timestampToX(eventList.at(i), axisInfo, graphInfo);
+        if (timeX > axisInfo.width - 10)
+        {
+            timeX =  axisInfo.width - 10;
+        }
+        eventRect.setLeft(timeX);
+        eventRect.setWidth(axisInfo.xSectionWidth); // should be enough
+        eventRect.setTop(symbolHeigth);
+        eventRect.setHeight(fontH);
+        painter->drawText(eventRect, Qt::AlignLeft | Qt::AlignVCenter, "A");
+    }
+
+    painter->restore();
+}
+
 QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<WaveformID> &waves)
 {
     QList<RecordWaveSegmentInfo> infos;
