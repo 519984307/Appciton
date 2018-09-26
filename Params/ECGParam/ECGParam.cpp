@@ -124,18 +124,7 @@ void ECGParam::handDemoTrendData(void)
 {
     int hrValue = qrand() % 10 + 60;
     ecgDupParam.updateHR(hrValue);
-    if (NULL != _waveOxyCRGWidget)
-    {
-        _waveOxyCRGWidget->addDataBuf(hrValue, 0);
-        _waveOxyCRGWidget->addData(hrValue);
 
-        _updateNum++;
-        if (_updateNum >= 2)
-        {
-            _updateNum = 0;
-            emit oxyCRGWaveUpdated();//呼吸氧和波形更新信号
-        }
-    }
     if (waveRrHrWidget)
     {
         waveRrHrWidget->addHrDataBuf(hrValue, 0);
@@ -331,7 +320,6 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
         }
         _waveWidget[i]->setDataRate(_provider->getWaveformSample());
     }
-    _waveOxyCRGWidget->setDataRate(1);
 
 //    <Gain>1</Gain>
     // todo：其他设置。
@@ -2342,11 +2330,11 @@ void ECGParam::onOxyCRGWaveUpdated()
 {
     if (_oxyCRGCO2Widget)
     {
-        _oxyCRGCO2Widget->update();
+//        _oxyCRGCO2Widget->update();
     }
     if (_oxyCRGRESPWidget)
     {
-        _oxyCRGRESPWidget->update();
+//        _oxyCRGRESPWidget->update();
     }
 }
 /**************************************************************************************************

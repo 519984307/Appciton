@@ -20,9 +20,19 @@
 #include "WindowManager.h"
 #include "OxyCRGRRHRWaveWidget.h"
 #include "LayoutManager.h"
+#include "OxyCRGRESPWaveWidget.h"
 
 RESPParam *RESPParam::_selfObj = NULL;
 
+class RESPParamPrivate
+{
+public:
+    RESPParamPrivate()
+        : respWave(NULL)
+    {
+    }
+    OxyCRGRESPWaveWidget *respWave;
+};
 /**************************************************************************************************
  * 设置波形速度。
  *************************************************************************************************/
@@ -77,10 +87,10 @@ void RESPParam::handDemoWaveform(WaveformID id, short data)
     {
         _waveWidget->addData(data);
     }
-    if (NULL != _waveOxyCRGWidget)
+
+    if (d_ptr->respWave)
     {
-        _waveOxyCRGWidget->addDataBuf(data, 0);
-        _waveOxyCRGWidget->addData(data, 0, false);
+        d_ptr->respWave->addDataBuf(data, 0);
     }
     waveformCache.addData((WaveformID)id, data);
 }
@@ -168,7 +178,7 @@ void RESPParam::setProvider(RESPProviderIFace *provider)
 
     _provider = provider;
     _waveWidget->setDataRate(_provider->getRESPWaveformSample());
-    _waveOxyCRGWidget->setDataRate(_provider->getRESPWaveformSample());
+    d_ptr->respWave->setDataRate(_provider->getRESPWaveformSample());
 
     // 设置窒息时间
     _provider->setApneaTime(getApneaTime());
@@ -200,13 +210,13 @@ void RESPParam::setWaveWidget(RESPWaveWidget *waveWidget)
     setZoom(getZoom());
 }
 
-void RESPParam::setOxyWaveWidget(OxyCRGRESPWidget *waveWidget)
+void RESPParam::setOxyWaveWidget(OxyCRGRESPWaveWidget *waveWidget)
 {
     if (waveWidget == NULL)
     {
         return;
     }
-    _waveOxyCRGWidget = waveWidget;
+    d_ptr->respWave = waveWidget;
 }
 
 /**************************************************************************************************
@@ -216,8 +226,11 @@ void RESPParam::addWaveformData(int wave, int flag)
 {
     if (NULL != _waveWidget)
     {
-        _waveOxyCRGWidget->addDataBuf(wave, flag);
         _waveWidget->addData(wave, flag);
+    }
+    if (d_ptr->respWave)
+    {
+        d_ptr->respWave->addDataBuf(wave, flag);
     }
     waveformCache.addData(WAVE_RESP, (flag << 16) | (wave & 0xFFFF));
 }
@@ -449,7 +462,8 @@ void RESPParam::enableRespCalc(bool enable)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-RESPParam::RESPParam() : Param(PARAM_RESP)
+RESPParam::RESPParam() : Param(PARAM_RESP),
+                         d_ptr(new RESPParamPrivate)
 {
 //    disable();
     _provider = NULL;

@@ -12,76 +12,16 @@
 #include "IWidget.h"
 #include "OxyCRGDefine.h"
 #include "RingBuff.h"
+#include "OxyCRGTrendWaveWidget_p.h"
 
-class OxyCRGTrendWaveWidgetPrivate;
 class OxyCRGTrendWaveWidget : public IWidget
 {
     Q_OBJECT
 public:
-    explicit OxyCRGTrendWaveWidget(const QString &waveName);
+    explicit OxyCRGTrendWaveWidget(const QString &waveName,
+                                   OxyCRGTrendWaveWidgetPrivate * p);
     ~OxyCRGTrendWaveWidget();
 
-    /**
-     * @brief getXShift
-     * @return
-     */
-    int getXShift(void) const;
-
-    /**
-     * @brief getYShift
-     * @return
-     */
-    int getYShift(void) const;
-
-    /**
-     * @brief getWxShift
-     * @return
-     */
-    int getWxShift(void) const;
-
-    /**
-     * @brief getBufLen
-     * @return
-     */
-    int getBufLen(void) const;
-
-    /**
-     * @brief getBufIndex
-     * @return
-     */
-    int getBufIndex(void) const;
-
-    /**
-     * @brief getWaveColor
-     * @return
-     */
-    QColor &getWaveColor(void) const;
-
-    /**
-     * @brief getRulerHighValue
-     * @return
-     */
-    int getRulerHighValue(void) const;
-
-    /**
-     * @brief getRulerLowValue
-     * @return
-     */
-    int getRulerLowValue(void) const;
-
-    /**
-     * @brief getWaveBuf
-     * @return
-     */
-    RingBuff<int> *getWaveBuf(void) const;
-
-    /**
-     * @brief getFlagBuf
-     * @return
-     */
-    RingBuff<int> *getFlagBuf(void) const;
-
-protected:
     /**
      * @brief addDataBuf
      * @param value
@@ -90,10 +30,16 @@ protected:
     void addDataBuf(int value, int flag);
 
     /**
-     * @brief setWaveColor
-     * @param color
+     * @brief getIntervalTime
+     * @return
      */
-    void setWaveColor(const QColor &color);
+    static OxyCRGInterval getIntervalTime(void);
+
+    /**
+     * @brief setClearWaveDataStatus
+     * @param clearStatus
+     */
+    void setClearWaveDataStatus(bool clearStatus);
 
     /**
      * @brief setRulerValue
@@ -102,22 +48,30 @@ protected:
      */
     void setRulerValue(int valueHigh, int valueLow);
 
+private slots:
     /**
-     * @brief setBufSize
-     * @param bufSize
+     * @brief onTimeOutExec
      */
-    void setBufSize(int bufSize);
-
-    /**
-     * @brief getIntervalTime
-     * @return
-     */
-    static OxyCRGInterval getIntervalTime(void);
+    void onTimeOutExec(void);
 
 protected:
     /* reimpelment */
     void paintEvent(QPaintEvent *e);
 
+    /* reimplment */
+    void showEvent(QShowEvent *e);
+
+    /* reimplment */
+    void hideEvent(QHideEvent *e);
+
+    /**
+     * @brief setDataRate
+     * @param rate
+     */
+    virtual void setDataRate(int rate);
+
+    QScopedPointer<OxyCRGTrendWaveWidgetPrivate> d_ptr;
+
 private:
-    OxyCRGTrendWaveWidgetPrivate *const d_ptr;
+    Q_DECLARE_PRIVATE(OxyCRGTrendWaveWidget)
 };

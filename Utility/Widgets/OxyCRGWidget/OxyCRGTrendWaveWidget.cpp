@@ -15,48 +15,25 @@
 #include "FontManager.h"
 #include "ThemeManager.h"
 #include "IConfig.h"
+#include "WaveWidgetLabel.h"
+#include <QTimer>
+#include <QScopedPointer>
 
-class OxyCRGTrendWaveWidgetPrivate
-{
-public:
-    OxyCRGTrendWaveWidgetPrivate()
-                : flagBuf(NULL),
-                  dataBuf(NULL),
-                  dataBufIndex(0),
-                  dataBufLen(0),
-                  name(""),
-                  rulerHigh(InvData()),
-                  rulerLow(InvData()),
-                  waveColor(Qt::green)
-    {
-    }
-    RingBuff<int> *flagBuf;      // 波形标记缓存， 值为1则表示该数据有误
-    RingBuff<int> *dataBuf;      // 波形数据缓存
-    int dataBufIndex;            // 波形数据缓存下标
-    int dataBufLen;              // 波形数据长度
-
-    QString name;                // 波形名称
-    int rulerHigh;               // 标尺高值
-    int rulerLow;                // 标尺低值
-
-    QColor waveColor;            // 波形颜色
-
-    static const int xShift = 2;
-    static const int yShift = 2;
-    static const int wxShift = 50;
-};
-
-
-OxyCRGTrendWaveWidget::OxyCRGTrendWaveWidget(const QString &waveName)
+OxyCRGTrendWaveWidget::OxyCRGTrendWaveWidget(const QString &waveName,
+                                             OxyCRGTrendWaveWidgetPrivate *p)
                      : IWidget(waveName),
-                       d_ptr(new OxyCRGTrendWaveWidgetPrivate)
+                       d_ptr(p)
 {
    setFocusPolicy(Qt::NoFocus);
+
+    QTimer *timer = new QTimer;
+    timer->setInterval(1000);
+    connect(timer, SIGNAL(timeout()), this, SLOT(onTimeOutExec()));
+    d_ptr->timer = timer;
 }
 
 OxyCRGTrendWaveWidget::~OxyCRGTrendWaveWidget()
 {
-    delete d_ptr;
 }
 
 void OxyCRGTrendWaveWidget::addDataBuf(int value, int flag)
@@ -66,91 +43,33 @@ void OxyCRGTrendWaveWidget::addDataBuf(int value, int flag)
     d_ptr->flagBuf->push(flag);
 }
 
-int OxyCRGTrendWaveWidget::getXShift() const
-{
-    return d_ptr->xShift;
-}
-
-int OxyCRGTrendWaveWidget::getYShift() const
-{
-    return d_ptr->yShift;
-}
-
-int OxyCRGTrendWaveWidget::getWxShift() const
-{
-    return d_ptr->wxShift;
-}
-
-int OxyCRGTrendWaveWidget::getBufLen() const
-{
-    return d_ptr->dataBufLen;
-}
-
-int OxyCRGTrendWaveWidget::getBufIndex() const
-{
-    return d_ptr->dataBufIndex;
-}
-
-QColor &OxyCRGTrendWaveWidget::getWaveColor() const
-{
-    return d_ptr->waveColor;
-}
-
-int OxyCRGTrendWaveWidget::getRulerHighValue() const
-{
-    return d_ptr->rulerHigh;
-}
-
-int OxyCRGTrendWaveWidget::getRulerLowValue() const
-{
-    return d_ptr->rulerLow;
-}
-
-RingBuff<int> *OxyCRGTrendWaveWidget::getWaveBuf() const
-{
-    return d_ptr->dataBuf;
-}
-
-RingBuff<int> *OxyCRGTrendWaveWidget::getFlagBuf() const
-{
-    return d_ptr->flagBuf;
-}
-
-void OxyCRGTrendWaveWidget::setWaveColor(const QColor &color)
-{
-    d_ptr->waveColor = color;
-}
-
 void OxyCRGTrendWaveWidget::setRulerValue(int valueHigh, int valueLow)
 {
     d_ptr->rulerHigh = valueHigh;
     d_ptr->rulerLow = valueLow;
 }
 
-void OxyCRGTrendWaveWidget::setBufSize(int bufSize)
-{
-    if (d_ptr->flagBuf)
-    {
-        delete d_ptr->flagBuf;
-        d_ptr->flagBuf = NULL;
-    }
-    if (d_ptr->dataBuf)
-    {
-        delete d_ptr->dataBuf;
-        d_ptr->dataBuf = NULL;
-    }
-    d_ptr->flagBuf = new RingBuff<int>(bufSize);
-    d_ptr->dataBuf = new RingBuff<int>(bufSize);
-    d_ptr->dataBufIndex = 0;
-    d_ptr->dataBufLen = bufSize;
-}
-
 OxyCRGInterval OxyCRGTrendWaveWidget::getIntervalTime()
 {
     int index = OxyCRG_Interval_1;
-    currentConfig.getNumValue("RESP|Interval", index);
+    currentConfig.getNumValue("OxyCRG|Interval", index);
 
     return (OxyCRGInterval)index;
+}
+
+void OxyCRGTrendWaveWidget::setClearWaveDataStatus(bool clearStatus)
+{
+    d_ptr->isClearWaveData = clearStatus;
+}
+
+void OxyCRGTrendWaveWidget::setDataRate(int rate)
+{
+    d_ptr->waveDataRate = rate;
+}
+
+void OxyCRGTrendWaveWidget::onTimeOutExec()
+{
+    update();
 }
 
 
@@ -162,9 +81,9 @@ void OxyCRGTrendWaveWidget::paintEvent(QPaintEvent *e)
     int y1 = rect().y();
     int w = rect().width();
     int h = rect().height();
-    int xShift = d_ptr->xShift;
-    int yShift = d_ptr->yShift;
-    int wxShift = d_ptr->wxShift;
+    int xShift = X_SHIFT;
+    int yShift = Y_SHIFT;
+    int wxShift = WX_SHIFT;
 
     QPainterPath pathRect;
     QPainter painter(this);
@@ -172,6 +91,14 @@ void OxyCRGTrendWaveWidget::paintEvent(QPaintEvent *e)
     pathRect.addRect(x1, y1, w, h);
     painter.setPen(QPen(Qt::white, 1, Qt::SolidLine));
     painter.drawPath(pathRect);
+
+    // 添加波形名字
+    painter.setPen(QPen(d_ptr->waveColor, 1, Qt::SolidLine));
+    painter.setFont(fontManager.textFont(16));
+    painter.drawText(x1 + xShift, y1 + yShift,
+                     wxShift, h / 3,
+                     Qt::AlignLeft|Qt::AlignTop,
+                     d_ptr->name);
 
     // 添加标尺高低值
     if (d_ptr->rulerHigh != InvData())
@@ -191,7 +118,6 @@ void OxyCRGTrendWaveWidget::paintEvent(QPaintEvent *e)
                          QString::number(d_ptr->rulerLow));
     }
 
-
     QPainterPath pathBackRuler;
     // 添加背景标尺虚线
     int xStep = qRound((w - wxShift * 2) * 1.0 / 4);
@@ -210,11 +136,20 @@ void OxyCRGTrendWaveWidget::paintEvent(QPaintEvent *e)
     painter.drawPath(pathBackRuler);
 }
 
+void OxyCRGTrendWaveWidget::showEvent(QShowEvent *e)
+{
+    IWidget::showEvent(e);
+    if (d_ptr->timer)
+    {
+        d_ptr->timer->start();
+    }
+}
 
-
-
-
-
-
-
-
+void OxyCRGTrendWaveWidget::hideEvent(QHideEvent *e)
+{
+    IWidget::hideEvent(e);
+    if (d_ptr->timer)
+    {
+        d_ptr->timer->stop();
+    }
+}

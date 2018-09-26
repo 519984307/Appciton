@@ -25,6 +25,11 @@ class QVBoxLayout;
 class OxyCRGWidgetLabel;
 class PopupList;
 class OxyCRGWidgetPrivate;
+
+class OxyCRGCO2WaveWidget;
+class OxyCRGRESPWaveWidget;
+class OxyCRGSPO2TrendWidget;
+class OxyCRGRRHRWaveWidget;
 class OxyCRGTrendWaveWidget;
 class OxyCRGWidget : public IWidget
 {
@@ -34,17 +39,44 @@ public:
     ~OxyCRGWidget();
 
     virtual void setVisible(bool visible);
-    void setOxyCrgRespWidget(OxyCRGRESPWidget *p);
-    void setOxyCrgHrWidget(OxyCRGHRWidget *p);
-    void setOxyCrgSpo2Widget(OxyCRGSPO2Widget *p);
-    void setOxyCrgCo2Widget(OxyCRGCO2Widget *p);
+
+    /**
+     * @brief setOxyCrgRespWidget
+     * @param p
+     */
+    void setOxyCrgRespWidget(OxyCRGRESPWaveWidget *p);
+
+    /**
+     * @brief setOxyCrgSpo2Widget
+     * @param p
+     */
+    void setOxyCrgSpo2Widget(OxyCRGSPO2TrendWidget *p);
+
+    /**
+     * @brief setOxyCrgCo2Widget
+     * @param p
+     */
+    void setOxyCrgCo2Widget(OxyCRGCO2WaveWidget *p);
+
+    /**
+     * @brief setOxyCrgRrHrWidget
+     * @param p
+     */
+    void setOxyCrgRrHrWidget(OxyCRGRRHRWaveWidget *p);
+
     void setWaveType(int index);
     int  getWaveType(void)const;
-    void setOxyCrgWaveTrendWidget(OxyCRGTrendWaveWidget *p);
+
 protected:
     void paintEvent(QPaintEvent *event);
     // 窗体大小调整事件
     void resizeEvent(QResizeEvent *e);
+
+    /* reimplment */
+    void showEvent(QShowEvent *e);
+
+    /* reimplment */
+    void hideEvent(QHideEvent *e);
 
 private slots:
     void _intervalSlot(IWidget *widget);
@@ -68,11 +100,8 @@ private:
     QVBoxLayout *_hLayoutWave;
     QLabel *_titleLabel;
     QHBoxLayout *bottomLayout;
-    OxyCRGWidgetLabel *_setUp;
     OxyCRGWidgetLabel *_interval;         // 时间间隔
     OxyCRGWidgetLabel *_changeTrend;      // 呼吸波与CO2
-//    ComboListPopup *_intervalList;      // 时间间隔
-//    ComboListPopup *_changeTrendList;   // 呼吸波与CO2列表
     PopupList *_intervalList;
     PopupList *_changeTrendList;
     OxyCRGRESPWidget *_oxycrgWidget;

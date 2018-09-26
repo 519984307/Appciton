@@ -35,44 +35,34 @@ public:
     void addHrDataBuf(int value, int flag);
 
     /**
-     * @brief getHrWaveColor
-     * @return
+     * @brief setRrRulerValue
+     * @param valueHigh
+     * @param valueLow
      */
-    QColor &getHrWaveColor(void);
+    void setRrRulerValue(int valueHigh, int valueLow);
 
     /**
-     * @brief getHrRulerHighValue
-     * @return
+     * @brief setHrRulerValue
+     * @param valueHigh
+     * @param valueLow
      */
-    int getHrRulerHighValue(void) const;
+    void setHrRulerValue(int valueHigh, int valueLow);
 
     /**
-     * @brief getHrRulerLowValue
-     * @return
+     * @brief setRrTrendShowStatus
+     * @param isShow
      */
-    int getHrRulerLowValue(void) const;
-
-    /**
-     * @brief getWaveBuf
-     * @return
-     */
-    RingBuff<int> *getHrWaveBuf(void) const;
-
-    /**
-     * @brief getFlagBuf
-     * @return
-     */
-    RingBuff<int> *getHrFlagBuf(void) const;
+    void setRrTrendShowStatus(bool isShow);
 
 protected:
     /* reimplment */
     void paintEvent(QPaintEvent *e);
 
-private slots:
-    /**
-     * @brief onTimeOutExec
-     */
-    void onTimeOutExec(void);
+    /* reimplment */
+    void showEvent(QShowEvent *e);
+
+    /* reimplment */
+    void hideEvent(QHideEvent *e);
 
 private:
     /**
@@ -80,5 +70,5 @@ private:
      */
     void init(void);
 
-    OxyCRGRRHRWaveWidgetPrivate *const d_ptr;
+    Q_DECLARE_PRIVATE(OxyCRGRRHRWaveWidget)
 };

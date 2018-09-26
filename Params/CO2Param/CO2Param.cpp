@@ -24,9 +24,16 @@
 #include "QApplication"
 #include "ComboListPopup.h"
 #include "LayoutManager.h"
+#include "OxyCRGCO2WaveWidget.h"
 
 CO2Param *CO2Param::_selfObj = NULL;
 
+
+class CO2ParamPrivate
+{
+public:
+    OxyCRGCO2WaveWidget *co2Wave;
+};
 /**************************************************************************************************
  * 设置波形速度。
  *************************************************************************************************/
@@ -140,10 +147,10 @@ void CO2Param::handDemoWaveform(WaveformID id, short data)
     {
         _waveWidget->addData(data);
     }
-    if (NULL != _oxyCRGCo2Widget)
+
+    if (d_ptr->co2Wave)
     {
-        _oxyCRGCo2Widget->addDataBuf(data, 0);
-        _oxyCRGCo2Widget->addData(data, 0, false);
+        d_ptr->co2Wave->addDataBuf(data, 0);
     }
     waveformCache.addData((WaveformID)id, data);
 }
@@ -280,7 +287,7 @@ void CO2Param::setProvider(CO2ProviderIFace *provider)
     // 界面显示部分。
     _waveWidget->setDataRate(_provider->getCO2WaveformSample());
     _setWaveformZoom(getDisplayZoom());
-    _oxyCRGCo2Widget->setDataRate(_provider->getCO2WaveformSample());
+    d_ptr->co2Wave->setDataRate(_provider->getCO2WaveformSample());
     // 窒息时间。
     _provider->setApneaTimeout(getApneaTime());
 
@@ -536,9 +543,14 @@ void CO2Param::addWaveformData(short wave, bool invalid)
 
     if (_waveWidget != NULL)
     {
-        _oxyCRGCo2Widget->addDataBuf(wave, flag);
         _waveWidget->addData(wave, flag);
     }
+
+    if (d_ptr->co2Wave)
+    {
+        d_ptr->co2Wave->addDataBuf(wave, flag);
+    }
+
     waveformCache.addData(WAVE_CO2, (flag << 16) | (wave & 0xFFFF));
 }
 
@@ -557,11 +569,11 @@ void CO2Param::setOneShotAlarm(CO2OneShotType t, bool status)
 /**************************************************************************************************
  * 设置呼吸氧和中的CO2窗口波形。
  *************************************************************************************************/
-void CO2Param::setOxyCRGCO2Widget(OxyCRGCO2Widget *p)
+void CO2Param::setOxyCRGCO2Widget(OxyCRGCO2WaveWidget *p)
 {
     if (p)
     {
-        _oxyCRGCo2Widget = p;
+        d_ptr->co2Wave = p;
     }
 }
 
@@ -772,7 +784,9 @@ short CO2Param::getEtCO2MinValue()
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-CO2Param::CO2Param() : Param(PARAM_CO2)
+CO2Param::CO2Param()
+        : Param(PARAM_CO2),
+          d_ptr(new CO2ParamPrivate)
 {
 //    disable();
     _provider = NULL;

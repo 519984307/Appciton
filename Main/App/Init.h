@@ -16,6 +16,10 @@
 
 #include "OxyCRGRRHRWaveWidget.h"
 #include "OxyCRGTrendWaveWidget.h"
+#include "OxyCRGSPO2TrendWidget.h"
+#include "OxyCRGCO2WaveWidget.h"
+#include "OxyCRGRESPWaveWidget.h"
+
 
 #include "IConfig.h"
 #include "SoftKeyManager.h"

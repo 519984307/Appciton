@@ -23,9 +23,15 @@
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
 #include <QTimer>
+#include "OxyCRGSPO2TrendWidget.h"
 
 SPO2Param *SPO2Param::_selfObj = NULL;
 
+class SPO2ParamPrivate
+{
+public:
+    OxyCRGSPO2TrendWidget *spo2Trend;
+};
 /**************************************************************************************************
  * 发送协议命令。
  *************************************************************************************************/
@@ -103,11 +109,12 @@ void SPO2Param::handDemoTrendData(void)
     {
         _trendWidget->setSPO2Value(_spo2Value);
     }
-    if (NULL != _waveOxyCRGWidget)
+
+    if (NULL != d_ptr->spo2Trend)
     {
-        _waveOxyCRGWidget->addDataBuf(_spo2Value, 0);
-        _waveOxyCRGWidget->addData(_spo2Value);
+        d_ptr->spo2Trend->addDataBuf(_spo2Value, 0);
     }
+
     int prValue = qrand() % 55 + 45;
     setPR(prValue);
 }
@@ -316,7 +323,15 @@ void SPO2Param::setOxyCRGWaveWidget(OxyCRGSPO2Widget *waveWidget)
     {
         return;
     }
-    _waveOxyCRGWidget = waveWidget;
+}
+
+void SPO2Param::setOxyCRGTrendWidget(OxyCRGSPO2TrendWidget *trendWidget)
+{
+    if (trendWidget == NULL)
+    {
+        return;
+    }
+    d_ptr->spo2Trend = trendWidget;
 }
 
 /**************************************************************************************************
@@ -343,9 +358,10 @@ void SPO2Param::setSPO2(short spo2Value)
     {
         _trendWidget->setSPO2Value(_spo2Value);
     }
-    if (NULL != _waveOxyCRGWidget)
+
+    if (NULL != d_ptr->spo2Trend)
     {
-        _waveOxyCRGWidget->addDataBuf(_spo2Value, 0);
+        d_ptr->spo2Trend->addDataBuf(_spo2Value, 0);
     }
 }
 
@@ -635,7 +651,8 @@ int SPO2Param::getSweepSpeed(void)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-SPO2Param::SPO2Param() : Param(PARAM_SPO2)
+SPO2Param::SPO2Param() : Param(PARAM_SPO2),
+                         d_ptr(new SPO2ParamPrivate)
 {
     _provider = NULL;
     _trendWidget = NULL;
