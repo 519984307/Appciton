@@ -213,6 +213,7 @@ bool DemoProvider::attachParam(Param &param)
         _demoWaveData[WAVE_AA2].param = &param;
         _demoWaveData[WAVE_O2].param = &param;
         agParam.setProvider(this);
+        agParam.setConnected(true);
     }
 
     _demoTrendData[param.getParamID()].param = &param;
