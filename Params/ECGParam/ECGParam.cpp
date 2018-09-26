@@ -125,9 +125,9 @@ void ECGParam::handDemoTrendData(void)
     int hrValue = qrand() % 10 + 60;
     ecgDupParam.updateHR(hrValue);
 
-    if (waveRrHrWidget)
+    if (oxyCRGRrHrTrend)
     {
-        waveRrHrWidget->addHrDataBuf(hrValue, 0);
+        oxyCRGRrHrTrend->addHrTrendData(hrValue);
     }
     int pvcs = qrand() % 30 + 30;
     updatePVCS(pvcs);
@@ -389,7 +389,7 @@ void ECGParam::setOxyCRGHrWaveWidget(OxyCRGRRHRWaveWidget *waveWidget)
     {
         return;
     }
-    waveRrHrWidget = waveWidget;
+    oxyCRGRrHrTrend = waveWidget;
 }
 
 /**************************************************************************************************
@@ -566,9 +566,9 @@ void ECGParam::updateHR(short hr)
         }
     }
 
-    if (waveRrHrWidget)
+    if (oxyCRGRrHrTrend)
     {
-        waveRrHrWidget->addHrDataBuf(hr, 0);
+        oxyCRGRrHrTrend->addHrTrendData(hr);
     }
 }
 

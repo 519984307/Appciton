@@ -63,8 +63,11 @@ public:
     // 设置界面对象。
     void setWaveWidget(RESPWaveWidget *waveWidget);
 
-    // 设置血氧界面对象。
-    void setOxyWaveWidget(OxyCRGRESPWaveWidget *waveWidget);
+    /**
+     * @brief setOxyCRGWaveRESPWidget
+     * @param waveWidget
+     */
+    void setOxyCRGWaveRESPWidget(OxyCRGRESPWaveWidget *waveWidget);
 
     // 设置波形值。
     void addWaveformData(int wave, int flag);
@@ -88,10 +91,10 @@ public:
     int getWaveDataRate(void) const;
 
     /**
-     * @brief setOxyWaveRrHrWidget
+     * @brief setOxyCRGRrHrTrend
      * @param w
      */
-    void setOxyWaveRrHrWidget(OxyCRGRRHRWaveWidget *w);
+    void setOxyCRGRrHrTrend(OxyCRGRRHRWaveWidget *w);
 
 public:
     // 设置/获取波形速度。
@@ -108,7 +111,12 @@ public:
 
     // 设置/获取RESP监护功能
     void setRespMonitoring(int enable);
-    int getRespMonitoring() { return _respMonitoring; }
+
+    /**
+     * @brief getRespMonitoring
+     * @return
+     */
+    int getRespMonitoring();
 
     // 设置/获取呼吸导联。
     void setCalcLead(RESPLead lead);
@@ -119,12 +127,6 @@ public:
 
 private:
     RESPParam();
-    void _setWaveformSpeed(RESPSweepSpeed speed);
-
-    RESPProviderIFace *_provider;
-    RESPWaveWidget *_waveWidget;
-    OxyCRGRRHRWaveWidget *waveRrHrWidget;
-    bool _respMonitoring;
 
     RESPParamPrivate *const d_ptr;
 };

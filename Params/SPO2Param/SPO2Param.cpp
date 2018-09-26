@@ -30,7 +30,6 @@ SPO2Param *SPO2Param::_selfObj = NULL;
 class SPO2ParamPrivate
 {
 public:
-    OxyCRGSPO2TrendWidget *spo2Trend;
 };
 /**************************************************************************************************
  * 发送协议命令。
@@ -110,9 +109,9 @@ void SPO2Param::handDemoTrendData(void)
         _trendWidget->setSPO2Value(_spo2Value);
     }
 
-    if (NULL != d_ptr->spo2Trend)
+    if (NULL != _oxyCRGSPO2Trend)
     {
-        d_ptr->spo2Trend->addDataBuf(_spo2Value, 0);
+        _oxyCRGSPO2Trend->addTrendData(_spo2Value);
     }
 
     int prValue = qrand() % 55 + 45;
@@ -325,13 +324,13 @@ void SPO2Param::setOxyCRGWaveWidget(OxyCRGSPO2Widget *waveWidget)
     }
 }
 
-void SPO2Param::setOxyCRGTrendWidget(OxyCRGSPO2TrendWidget *trendWidget)
+void SPO2Param::setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *trendWidget)
 {
     if (trendWidget == NULL)
     {
         return;
     }
-    d_ptr->spo2Trend = trendWidget;
+    _oxyCRGSPO2Trend = trendWidget;
 }
 
 /**************************************************************************************************
@@ -359,9 +358,9 @@ void SPO2Param::setSPO2(short spo2Value)
         _trendWidget->setSPO2Value(_spo2Value);
     }
 
-    if (NULL != d_ptr->spo2Trend)
+    if (NULL != _oxyCRGSPO2Trend)
     {
-        d_ptr->spo2Trend->addDataBuf(_spo2Value, 0);
+        _oxyCRGSPO2Trend->addTrendData(_spo2Value);
     }
 }
 
@@ -652,7 +651,7 @@ int SPO2Param::getSweepSpeed(void)
  * 构造。
  *************************************************************************************************/
 SPO2Param::SPO2Param() : Param(PARAM_SPO2),
-                         d_ptr(new SPO2ParamPrivate)
+                         _oxyCRGSPO2Trend(NULL)
 {
     _provider = NULL;
     _trendWidget = NULL;

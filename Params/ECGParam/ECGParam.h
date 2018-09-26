@@ -335,7 +335,7 @@ private:
     ECGSTTrendWidget *_ecgSTTrendWidget;
     ECGWaveWidget *_waveWidget[ECG_LEAD_NR];
     OxyCRGHRWidget *_waveOxyCRGWidget;
-    OxyCRGRRHRWaveWidget *waveRrHrWidget;
+    OxyCRGRRHRWaveWidget *oxyCRGRrHrTrend;
     QBasicTimer _timer;
     short _hrValue;
     short _pvcsValue;

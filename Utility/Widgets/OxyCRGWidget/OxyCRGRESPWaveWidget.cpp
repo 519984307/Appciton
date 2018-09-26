@@ -35,6 +35,11 @@ OxyCRGRESPWaveWidget::OxyCRGRESPWaveWidget(const QString &waveName)
 
 OxyCRGRESPWaveWidget::~OxyCRGRESPWaveWidget()
 {
+    Q_D(OxyCRGRESPWaveWidget);
+    delete d->dataBuf;
+    d->dataBuf = NULL;
+    delete d->flagBuf;
+    d->flagBuf = NULL;
 }
 
 void OxyCRGRESPWaveWidget::paintEvent(QPaintEvent *e)

@@ -41,28 +41,28 @@ public:
     virtual void setVisible(bool visible);
 
     /**
-     * @brief setOxyCrgRespWidget
+     * @brief setOxyCRGRespWidget
      * @param p
      */
-    void setOxyCrgRespWidget(OxyCRGRESPWaveWidget *p);
+    void setOxyCRGRespWidget(OxyCRGRESPWaveWidget *p);
 
     /**
-     * @brief setOxyCrgSpo2Widget
+     * @brief setOxyCRGSpo2Trend
      * @param p
      */
-    void setOxyCrgSpo2Widget(OxyCRGSPO2TrendWidget *p);
+    void setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *p);
 
     /**
-     * @brief setOxyCrgCo2Widget
+     * @brief setOxyCRGCo2Widget
      * @param p
      */
-    void setOxyCrgCo2Widget(OxyCRGCO2WaveWidget *p);
+    void setOxyCRGCO2Widget(OxyCRGCO2WaveWidget *p);
 
     /**
-     * @brief setOxyCrgRrHrWidget
+     * @brief setOxyCRGRrHrWidget
      * @param p
      */
-    void setOxyCrgRrHrWidget(OxyCRGRRHRWaveWidget *p);
+    void setOxyCRGRrHrWidget(OxyCRGRRHRWaveWidget *p);
 
     void setWaveType(int index);
     int  getWaveType(void)const;

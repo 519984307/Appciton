@@ -35,6 +35,11 @@ OxyCRGCO2WaveWidget::OxyCRGCO2WaveWidget(const QString &waveName)
 
 OxyCRGCO2WaveWidget::~OxyCRGCO2WaveWidget()
 {
+    Q_D(OxyCRGCO2WaveWidget);
+    delete d->dataBuf;
+    d->dataBuf = NULL;
+    delete d->flagBuf;
+    d->flagBuf = NULL;
 }
 
 void OxyCRGCO2WaveWidget::paintEvent(QPaintEvent *e)

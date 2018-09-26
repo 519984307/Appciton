@@ -80,7 +80,7 @@ public:
     void setTrendWidget(SPO2TrendWidget *trendWidget);
     void setWaveWidget(SPO2WaveWidget *waveWidget);
     void setOxyCRGWaveWidget(OxyCRGSPO2Widget *waveWidget);
-    void setOxyCRGTrendWidget(OxyCRGSPO2TrendWidget *trendWidget);
+    void setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *trendWidget);
 
     // PR音量
     SoundManager::VolumeLevel getPluseToneVolume(void);
@@ -176,6 +176,6 @@ private:
 
     int _recPackageInPowerOn2sec;  // if receve 5 packages, selftest success, or selftest failed
 
-    SPO2ParamPrivate *const d_ptr;
+    OxyCRGSPO2TrendWidget *_oxyCRGSPO2Trend;
 };
 #define spo2Param (SPO2Param::construction())

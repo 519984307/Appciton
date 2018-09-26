@@ -13,6 +13,7 @@
 #include <QColor>
 #include <QTimer>
 #include "BaseDefine.h"
+#include <QPainterPath>
 
 #define X_SHIFT     (2)
 #define Y_SHIFT     (2)
@@ -32,7 +33,8 @@ public:
                   waveColor(Qt::green),
                   waveDataRate(1),
                   timer(NULL),
-                  isClearWaveData(true)
+                  isClearWaveData(true),
+                  x1(0), y1(0), w(0), h(0)
     {
     }
     RingBuff<bool> *flagBuf;     // 波形标记缓存， 值为1则表示该数据有误
@@ -51,5 +53,12 @@ public:
     QTimer *timer;               // 定时器用来更新波形刷新
 
     bool isClearWaveData;        // 是否清除波形数据
+
+    QPainterPath pathBackRuler;  // 背景标尺
+
+    int x1;                      // 边框的左上角坐标x
+    int y1;                      // 边框的左下角坐标y
+    int w;                       // 边框的宽度
+    int h;                       // 边框的高度
 };
 

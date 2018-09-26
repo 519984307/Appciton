@@ -71,16 +71,16 @@ OxyCRGRRHRWaveWidget::~OxyCRGRRHRWaveWidget()
 {
 }
 
-void OxyCRGRRHRWaveWidget::addRrDataBuf(int value, int flag)
+void OxyCRGRRHRWaveWidget::addRrTrendData(int value)
 {
     Q_D(OxyCRGRRHRWaveWidget);
     d->rrDataBuf->push(value);
-    d->rrFlagBuf->push(flag);
 }
 
-void OxyCRGRRHRWaveWidget::addHrDataBuf(int value, int flag)
+void OxyCRGRRHRWaveWidget::addHrTrendData(int value)
 {
-    addDataBuf(value, flag);
+    Q_D(OxyCRGRRHRWaveWidget);
+    d->dataBuf->push(value);
 }
 
 void OxyCRGRRHRWaveWidget::setRrRulerValue(int valueHigh, int valueLow)

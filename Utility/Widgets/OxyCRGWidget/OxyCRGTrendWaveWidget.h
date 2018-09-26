@@ -23,11 +23,11 @@ public:
     ~OxyCRGTrendWaveWidget();
 
     /**
-     * @brief addDataBuf
+     * @brief addWaveData
      * @param value
      * @param flag
      */
-    void addDataBuf(int value, int flag);
+    void addWaveData(int value, int flag);
 
     /**
      * @brief getIntervalTime
@@ -70,8 +70,5 @@ protected:
      */
     virtual void setDataRate(int rate);
 
-    QScopedPointer<OxyCRGTrendWaveWidgetPrivate> d_ptr;
-
-private:
-    Q_DECLARE_PRIVATE(OxyCRGTrendWaveWidget)
+    OxyCRGTrendWaveWidgetPrivate *const d_ptr;
 };

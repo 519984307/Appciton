@@ -26,7 +26,7 @@ OxyCRGTrendWaveWidget::OxyCRGTrendWaveWidget(const QString &waveName,
 {
    setFocusPolicy(Qt::NoFocus);
 
-    QTimer *timer = new QTimer;
+    QTimer *timer = new QTimer(this);
     timer->setInterval(1000);
     connect(timer, SIGNAL(timeout()), this, SLOT(onTimeOutExec()));
     d_ptr->timer = timer;
@@ -34,9 +34,10 @@ OxyCRGTrendWaveWidget::OxyCRGTrendWaveWidget(const QString &waveName,
 
 OxyCRGTrendWaveWidget::~OxyCRGTrendWaveWidget()
 {
+    delete d_ptr;
 }
 
-void OxyCRGTrendWaveWidget::addDataBuf(int value, int flag)
+void OxyCRGTrendWaveWidget::addWaveData(int value, int flag)
 {
     d_ptr->dataBuf->push(value);
 
@@ -119,19 +120,36 @@ void OxyCRGTrendWaveWidget::paintEvent(QPaintEvent *e)
     }
 
     QPainterPath pathBackRuler;
-    // 添加背景标尺虚线
-    int xStep = qRound((w - wxShift * 2) * 1.0 / 4);
-    for (int i = 1; i < 4; i++)
+
+    if (x1 != d_ptr->x1 ||
+        y1 != d_ptr->y1 ||
+        w  != d_ptr->w  ||
+        h  != d_ptr->h)
     {
-        pathBackRuler.moveTo(x1 + wxShift + xStep * i, y1);
-        pathBackRuler.lineTo(x1 + wxShift + xStep * i, y1 + h);
+        // 添加背景标尺虚线
+        int xStep = qRound((w - wxShift * 2) * 1.0 / 4);
+        for (int i = 1; i < 4; i++)
+        {
+            pathBackRuler.moveTo(x1 + wxShift + xStep * i, y1);
+            pathBackRuler.lineTo(x1 + wxShift + xStep * i, y1 + h);
+        }
+        int yStep = qRound(h * 1.0 / 3);
+        for (int i = 1; i < 3; i++)
+        {
+            pathBackRuler.moveTo(x1 + wxShift, y1 + yStep * i);
+            pathBackRuler.lineTo(x1 + w - wxShift, y1 + yStep * i);
+        }
+        d_ptr->pathBackRuler = pathBackRuler;
+        d_ptr->x1 = x1;
+        d_ptr->y1 = y1;
+        d_ptr->w  = w;
+        d_ptr->h  = h;
     }
-    int yStep = qRound(h * 1.0 / 3);
-    for (int i = 1; i < 3; i++)
+    else
     {
-        pathBackRuler.moveTo(x1 + wxShift, y1 + yStep * i);
-        pathBackRuler.lineTo(x1 + w - wxShift, y1 + yStep * i);
+        pathBackRuler = d_ptr->pathBackRuler;
     }
+
     painter.setPen(QPen(Qt::white, 1, Qt::DotLine));
     painter.drawPath(pathBackRuler);
 }

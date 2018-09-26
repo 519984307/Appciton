@@ -10,8 +10,7 @@
 
 #include "RESPParam.h"
 #include "RESPAlarm.h"
-#include "RESPWaveWidget.h"
-#include "RESPProviderIFace.h"
+#include "OxyCRGRESPWaveWidget.h"
 #include "IConfig.h"
 #include "WaveformCache.h"
 #include "RESPDupParam.h"
@@ -21,6 +20,8 @@
 #include "OxyCRGRRHRWaveWidget.h"
 #include "LayoutManager.h"
 #include "OxyCRGRESPWaveWidget.h"
+#include "RESPWaveWidget.h"
+#include "RESPProviderIFace.h"
 
 RESPParam *RESPParam::_selfObj = NULL;
 
@@ -28,32 +29,46 @@ class RESPParamPrivate
 {
 public:
     RESPParamPrivate()
-        : respWave(NULL)
+        : oxyCRGRESPWave(NULL),
+          provider(NULL),
+          waveWidget(NULL),
+          oxyCRGRrHrTrend(NULL),
+          respMonitoring(false)
     {
     }
-    OxyCRGRESPWaveWidget *respWave;
+    /**
+     * @brief setWaveformSpeed
+     * @param speed
+     */
+    void setWaveformSpeed(RESPSweepSpeed speed);
+
+    OxyCRGRESPWaveWidget *oxyCRGRESPWave;
+    RESPProviderIFace *provider;
+    RESPWaveWidget *waveWidget;
+    OxyCRGRRHRWaveWidget *oxyCRGRrHrTrend;
+    bool respMonitoring;
 };
 /**************************************************************************************************
  * 设置波形速度。
  *************************************************************************************************/
-void RESPParam::_setWaveformSpeed(RESPSweepSpeed speed)
+void RESPParamPrivate::setWaveformSpeed(RESPSweepSpeed speed)
 {
-    if (_waveWidget == NULL)
+    if (waveWidget == NULL)
     {
         return;
     }
     switch (speed)
     {
     case RESP_SWEEP_SPEED_6_25:
-        _waveWidget->setWaveSpeed(6.25);
+        waveWidget->setWaveSpeed(6.25);
         break;
 
     case RESP_SWEEP_SPEED_12_5:
-        _waveWidget->setWaveSpeed(12.5);
+        waveWidget->setWaveSpeed(12.5);
         break;
 
     case RESP_SWEEP_SPEED_25_0:
-        _waveWidget->setWaveSpeed(25.0);
+        waveWidget->setWaveSpeed(25.0);
         break;
 
     default:
@@ -61,7 +76,7 @@ void RESPParam::_setWaveformSpeed(RESPSweepSpeed speed)
     }
 
     QStringList currentWaveforms = layoutManager.getDisplayedWaveforms();
-    if (currentWaveforms.contains(_waveWidget->name()))
+    if (currentWaveforms.contains(waveWidget->name()))
     {
         layoutManager.resetWave();
     }
@@ -83,14 +98,14 @@ void RESPParam::handDemoWaveform(WaveformID id, short data)
     {
         return;
     }
-    if (NULL != _waveWidget)
+    if (NULL != d_ptr->waveWidget)
     {
-        _waveWidget->addData(data);
+        d_ptr->waveWidget->addData(data);
     }
 
-    if (d_ptr->respWave)
+    if (d_ptr->oxyCRGRESPWave)
     {
-        d_ptr->respWave->addDataBuf(data, 0);
+        d_ptr->oxyCRGRESPWave->addWaveData(data, 0);
     }
     waveformCache.addData((WaveformID)id, data);
 }
@@ -103,7 +118,7 @@ void RESPParam::handDemoTrendData(void)
     int rrValue = qrand() % 10 + 20;
     respDupParam.updateRR(rrValue);
 
-    waveRrHrWidget->addRrDataBuf(rrValue, 0);
+    d_ptr->oxyCRGRrHrTrend->addRrTrendData(rrValue);
 }
 
 void RESPParam::exitDemo()
@@ -120,10 +135,10 @@ void RESPParam::getAvailableWaveforms(QStringList &waveforms,
     waveforms.clear();
     waveformShowName.clear();
 
-    if (NULL != _waveWidget)
+    if (NULL != d_ptr->waveWidget)
     {
-        waveforms.append(_waveWidget->name());
-        waveformShowName.append(_waveWidget->getTitle());
+        waveforms.append(d_ptr->waveWidget->name());
+        waveformShowName.append(d_ptr->waveWidget->getTitle());
     }
 }
 
@@ -140,9 +155,9 @@ void RESPParam::getTrendWindow(QString &trendWin)
  *************************************************************************************************/
 void RESPParam::getWaveWindow(QString &waveWin)
 {
-    if (NULL != _waveWidget)
+    if (NULL != d_ptr->waveWidget)
     {
-        waveWin = _waveWidget->name();
+        waveWin = d_ptr->waveWidget->name();
     }
 }
 
@@ -171,29 +186,29 @@ void RESPParam::setProvider(RESPProviderIFace *provider)
     {
         return;
     }
-    if (_waveWidget == NULL)
+    if (d_ptr->waveWidget == NULL)
     {
         return;
     }
 
-    _provider = provider;
-    _waveWidget->setDataRate(_provider->getRESPWaveformSample());
-    d_ptr->respWave->setDataRate(_provider->getRESPWaveformSample());
+    d_ptr->provider = provider;
+    d_ptr->waveWidget->setDataRate(d_ptr->provider->getRESPWaveformSample());
+    d_ptr->oxyCRGRESPWave->setDataRate(d_ptr->provider->getRESPWaveformSample());
 
     // 设置窒息时间
-    _provider->setApneaTime(getApneaTime());
+    d_ptr->provider->setApneaTime(getApneaTime());
 
     // 设置呼吸导联
-//    _provider->setRESPCalcLead(getCalcLead());
+//    d_ptr->provider->setRESPCalcLead(getCalcLead());
 
     // 是否开启RESP功能
-    _provider->enableRESPCalc(getRespMonitoring());
+    d_ptr->provider->enableRESPCalc(getRespMonitoring());
 
-    QString tile = _waveWidget->getTitle();
+    QString tile = d_ptr->waveWidget->getTitle();
     // 请求波形缓冲区。
-    waveformCache.registerSource(WAVE_RESP, _provider->getRESPWaveformSample(),
-                                 _provider->minRESPWaveValue(), _provider->maxRESPWaveValue(), tile,
-                                 _provider->getRESPBaseLine());
+    waveformCache.registerSource(WAVE_RESP, d_ptr->provider->getRESPWaveformSample(),
+                                 d_ptr->provider->minRESPWaveValue(), d_ptr->provider->maxRESPWaveValue(), tile,
+                                 d_ptr->provider->getRESPBaseLine());
 }
 
 /**************************************************************************************************
@@ -205,18 +220,18 @@ void RESPParam::setWaveWidget(RESPWaveWidget *waveWidget)
     {
         return;
     }
-    _waveWidget = waveWidget;
-    _setWaveformSpeed(getSweepSpeed());
+    d_ptr->waveWidget = waveWidget;
+    d_ptr->setWaveformSpeed(getSweepSpeed());
     setZoom(getZoom());
 }
 
-void RESPParam::setOxyWaveWidget(OxyCRGRESPWaveWidget *waveWidget)
+void RESPParam::setOxyCRGWaveRESPWidget(OxyCRGRESPWaveWidget *waveWidget)
 {
     if (waveWidget == NULL)
     {
         return;
     }
-    d_ptr->respWave = waveWidget;
+    d_ptr->oxyCRGRESPWave = waveWidget;
 }
 
 /**************************************************************************************************
@@ -224,13 +239,13 @@ void RESPParam::setOxyWaveWidget(OxyCRGRESPWaveWidget *waveWidget)
  *************************************************************************************************/
 void RESPParam::addWaveformData(int wave, int flag)
 {
-    if (NULL != _waveWidget)
+    if (NULL != d_ptr->waveWidget)
     {
-        _waveWidget->addData(wave, flag);
+        d_ptr->waveWidget->addData(wave, flag);
     }
-    if (d_ptr->respWave)
+    if (d_ptr->oxyCRGRESPWave)
     {
-        d_ptr->respWave->addDataBuf(wave, flag);
+        d_ptr->oxyCRGRESPWave->addWaveData(wave, flag);
     }
     waveformCache.addData(WAVE_RESP, (flag << 16) | (wave & 0xFFFF));
 }
@@ -241,7 +256,7 @@ void RESPParam::addWaveformData(int wave, int flag)
 void RESPParam::setRR(short rrValue)
 {
     respDupParam.updateRR(rrValue);
-     waveRrHrWidget->addRrDataBuf(rrValue, 0);
+     d_ptr->oxyCRGRrHrTrend->addRrTrendData(rrValue);
 }
 
 /**************************************************************************************************
@@ -249,9 +264,9 @@ void RESPParam::setRR(short rrValue)
  *************************************************************************************************/
 void RESPParam::setLeadoff(bool flag)
 {
-    if (NULL != _waveWidget)
+    if (NULL != d_ptr->waveWidget)
     {
-        _waveWidget->leadoff(flag);
+        d_ptr->waveWidget->leadoff(flag);
     }
 }
 
@@ -268,38 +283,38 @@ void RESPParam::setOneShotAlarm(RESPOneShotType t, bool f)
  *************************************************************************************************/
 void RESPParam::reset()
 {
-    if (NULL == _provider)
+    if (NULL == d_ptr->provider)
     {
         return;
     }
 
     // 设置窒息时间
-    _provider->setApneaTime(getApneaTime());
+    d_ptr->provider->setApneaTime(getApneaTime());
 
     // 设置呼吸导联
-//    _provider->setRESPCalcLead(getCalcLead());
+//    d_ptr->provider->setRESPCalcLead(getCalcLead());
 
     // 是否开启RESP功能
-    _provider->enableRESPCalc(getRespMonitoring());
+    d_ptr->provider->enableRESPCalc(getRespMonitoring());
 }
 
 int RESPParam::getWaveDataRate() const
 {
-    if (!_provider)
+    if (!d_ptr->provider)
     {
         return 0;
     }
 
-    return _provider->getRESPWaveformSample();
+    return d_ptr->provider->getRESPWaveformSample();
 }
 
-void RESPParam::setOxyWaveRrHrWidget(OxyCRGRRHRWaveWidget *w)
+void RESPParam::setOxyCRGRrHrTrend(OxyCRGRRHRWaveWidget *w)
 {
     if (!w)
     {
         return;
     }
-    waveRrHrWidget = w;
+    d_ptr->oxyCRGRrHrTrend = w;
 }
 
 /**************************************************************************************************
@@ -308,7 +323,7 @@ void RESPParam::setOxyWaveRrHrWidget(OxyCRGRRHRWaveWidget *w)
 void RESPParam::setSweepSpeed(RESPSweepSpeed speed)
 {
     currentConfig.setNumValue("RESP|SweepSpeed", static_cast<int>(speed));
-    _setWaveformSpeed(speed);
+    d_ptr->setWaveformSpeed(speed);
 }
 
 /**************************************************************************************************
@@ -326,12 +341,12 @@ RESPSweepSpeed RESPParam::getSweepSpeed(void)
  *************************************************************************************************/
 void RESPParam::setApneaTime(ApneaAlarmTime t)
 {
-    if (NULL == _provider)
+    if (NULL == d_ptr->provider)
     {
         return;
     }
 
-    _provider->setApneaTime(t);
+    d_ptr->provider->setApneaTime(t);
 }
 
 /**************************************************************************************************
@@ -351,14 +366,14 @@ ApneaAlarmTime RESPParam::getApneaTime(void)
 void RESPParam::setZoom(RESPZoom zoom)
 {
     systemConfig.setNumValue("PrimaryCfg|RESP|Zoom", static_cast<int>(zoom));
-    if (NULL != _provider)
+    if (NULL != d_ptr->provider)
     {
-        _provider->setWaveformZoom(zoom);
+        d_ptr->provider->setWaveformZoom(zoom);
     }
 
-    if (NULL != _waveWidget)
+    if (NULL != d_ptr->waveWidget)
     {
-        _waveWidget->setZoom(static_cast<int>(zoom));
+        d_ptr->waveWidget->setZoom(static_cast<int>(zoom));
     }
 }
 
@@ -395,7 +410,7 @@ void RESPParam::setRespMonitoring(int enable)
 
     int needUpdate = 0;
     currentConfig.setNumValue("RESP|AutoActivation", enable);
-    _respMonitoring = enable;
+    d_ptr->respMonitoring = enable;
     if (0 == enable)
     {
         this->disable();
@@ -420,15 +435,20 @@ void RESPParam::setRespMonitoring(int enable)
     enableRespCalc(enable);
 }
 
+int RESPParam::getRespMonitoring()
+{
+    return d_ptr->respMonitoring;
+}
+
 /**************************************************************************************************
  * 设置呼吸导联。
  *************************************************************************************************/
 void RESPParam::setCalcLead(RESPLead lead)
 {
     systemConfig.setNumValue("PrimaryCfg|RESP|RespLead", static_cast<int>(lead));
-    if (NULL != _provider)
+    if (NULL != d_ptr->provider)
     {
-        _provider->setRESPCalcLead(lead);
+        d_ptr->provider->setRESPCalcLead(lead);
     }
 }
 
@@ -453,9 +473,9 @@ void RESPParam::enableRespCalc(bool enable)
         setRR(InvData());
     }
 
-    if (NULL != _provider)
+    if (NULL != d_ptr->provider)
     {
-        _provider->enableRESPCalc(enable);
+        d_ptr->provider->enableRESPCalc(enable);
     }
 }
 
@@ -466,11 +486,11 @@ RESPParam::RESPParam() : Param(PARAM_RESP),
                          d_ptr(new RESPParamPrivate)
 {
 //    disable();
-    _provider = NULL;
-    _waveWidget = NULL;
+    d_ptr->provider = NULL;
+    d_ptr->waveWidget = NULL;
     int enable = 1;
     currentConfig.getNumValue("RESP|AutoActivation", enable);
-    _respMonitoring = enable;
+    d_ptr->respMonitoring = enable;
 }
 
 /**************************************************************************************************
@@ -478,4 +498,5 @@ RESPParam::RESPParam() : Param(PARAM_RESP),
  *************************************************************************************************/
 RESPParam::~RESPParam()
 {
+    delete d_ptr;
 }

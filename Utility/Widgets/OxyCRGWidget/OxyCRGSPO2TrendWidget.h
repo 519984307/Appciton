@@ -18,6 +18,12 @@ public:
     explicit OxyCRGSPO2TrendWidget(const QString &waveName);
     ~OxyCRGSPO2TrendWidget();
 
+    /**
+     * @brief addTrendData
+     * @param data
+     */
+    void addTrendData(int data);
+
 protected:
     /* reimplment */
     void paintEvent(QPaintEvent *e);

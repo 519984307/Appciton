@@ -21,18 +21,16 @@ public:
     ~OxyCRGRRHRWaveWidget();
 
     /**
-     * @brief addRrDataBuf
+     * @brief addRrTrendData
      * @param value
-     * @param flag
      */
-    void addRrDataBuf(int value, int flag);
+    void addRrTrendData(int value);
 
     /**
      * @brief addHrDataBuf
      * @param value
-     * @param flag
      */
-    void addHrDataBuf(int value, int flag);
+    void addHrTrendData(int value);
 
     /**
      * @brief setRrRulerValue

@@ -147,6 +147,11 @@ void OxyCRGSPO2TrendWidget::hideEvent(QHideEvent *e)
     }
 }
 
+void OxyCRGSPO2TrendWidget::addTrendData(int data)
+{
+    addWaveData(data, 0);
+}
+
 void OxyCRGSPO2TrendWidget::init()
 {
     Q_D(OxyCRGSPO2TrendWidget);

@@ -440,7 +440,7 @@ void OxyCRGWidget::hideEvent(QHideEvent *e)
     }
 }
 
-void OxyCRGWidget::setOxyCrgRespWidget(OxyCRGRESPWaveWidget *p)
+void OxyCRGWidget::setOxyCRGRespWidget(OxyCRGRESPWaveWidget *p)
 {
     if (p != NULL)
     {
@@ -449,7 +449,7 @@ void OxyCRGWidget::setOxyCrgRespWidget(OxyCRGRESPWaveWidget *p)
 }
 
 
-void OxyCRGWidget::setOxyCrgSpo2Widget(OxyCRGSPO2TrendWidget *p)
+void OxyCRGWidget::setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *p)
 {
     if (p != NULL)
     {
@@ -457,7 +457,7 @@ void OxyCRGWidget::setOxyCrgSpo2Widget(OxyCRGSPO2TrendWidget *p)
     }
 }
 
-void OxyCRGWidget::setOxyCrgCo2Widget(OxyCRGCO2WaveWidget *p)
+void OxyCRGWidget::setOxyCRGCO2Widget(OxyCRGCO2WaveWidget *p)
 {
     if (p != NULL)
     {
@@ -478,7 +478,7 @@ int OxyCRGWidget::getWaveType()const
     return _waveType;
 }
 
-void OxyCRGWidget::setOxyCrgRrHrWidget(OxyCRGRRHRWaveWidget *p)
+void OxyCRGWidget::setOxyCRGRrHrWidget(OxyCRGRRHRWaveWidget *p)
 {
     if (p)
     {
