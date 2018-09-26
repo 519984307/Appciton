@@ -179,6 +179,7 @@ bool DemoProvider::attachParam(Param &param)
     {
         _demoWaveData[WAVE_RESP].param = &param;
         respParam.setProvider(this);
+        respParam.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_NIBP))
     {

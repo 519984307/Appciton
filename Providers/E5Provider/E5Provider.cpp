@@ -333,6 +333,7 @@ void E5Provider::handlePacket(unsigned char *data, int len)
     if (!isConnected)
     {
         ecgParam.setConnected(true);
+        respParam.setConnected(true);
     }
 
     switch (data[0])
@@ -451,6 +452,7 @@ void E5Provider::disconnected()
 
     systemManager.setPoweronTestResult(E5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
     ecgParam.setConnected(false);
+    respParam.setConnected(false);
 }
 
 
@@ -459,6 +461,7 @@ void E5Provider::reconnected()
     ecgOneShotAlarm.setOneShotAlarm(ECG_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     ecgParam.setConnected(true);
+    respParam.setConnected(true);
 }
 
 int E5Provider::getWaveformSample()
