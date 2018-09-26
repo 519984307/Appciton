@@ -493,13 +493,16 @@ bool SPO2Param::isValid()
  *************************************************************************************************/
 bool SPO2Param::isConnected()
 {
-    Provider *provider = dynamic_cast<Provider *>(_provider);
-    if (NULL == provider)
-    {
-        return false;
-    }
+    return _connectedProvider;
+}
 
-    return provider->connected();
+void SPO2Param::setConnected(bool isConnected)
+{
+    if (_connectedProvider == isConnected)
+    {
+        return;
+    }
+    _connectedProvider = isConnected;
 }
 
 /**************************************************************************************************
@@ -635,7 +638,7 @@ int SPO2Param::getSweepSpeed(void)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-SPO2Param::SPO2Param() : Param(PARAM_SPO2)
+SPO2Param::SPO2Param() : Param(PARAM_SPO2), _connectedProvider(false)
 {
     _provider = NULL;
     _trendWidget = NULL;

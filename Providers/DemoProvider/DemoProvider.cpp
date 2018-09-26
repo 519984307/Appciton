@@ -174,6 +174,7 @@ bool DemoProvider::attachParam(Param &param)
     {
         _demoWaveData[WAVE_SPO2].param = &param;
         spo2Param.setProvider(this);
+        spo2Param.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_RESP))
     {

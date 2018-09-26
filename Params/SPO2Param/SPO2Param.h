@@ -115,6 +115,9 @@ public:
     bool isValid();
     bool isConnected();
 
+    // 设置连接，供给对象调用。
+    void setConnected(bool isConnected);
+
     // set Sensor off
     int setSensorOff(bool flag);
 
@@ -172,5 +175,6 @@ private:
     bool _sensorOff;
 
     int _recPackageInPowerOn2sec;  // if receve 5 packages, selftest success, or selftest failed
+    bool _connectedProvider;
 };
 #define spo2Param (SPO2Param::construction())
