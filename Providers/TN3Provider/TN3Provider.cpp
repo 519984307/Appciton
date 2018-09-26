@@ -81,7 +81,7 @@ void TN3Provider::_selfTest(unsigned char *packet, int len)
             {
                 error++;
             }
-            errorStr += QString("0x%1, ").arg(packet[1]);
+            errorStr += "0x" + QString::number(packet[1], 16) + ", ";
         }
         errorStr += "\n";
 
@@ -143,7 +143,7 @@ void TN3Provider::_errorWarm(unsigned char *packet, int len)
     nibpParam.errorDisable();
     QString errorStr("");
     errorStr = "error code = ";
-    errorStr += QString("0x%1, ").arg(packet[1]);
+    errorStr += "0x" + QString::number(packet[1], 16) + ", ";
     errorStr += "\r\n";
 
     switch (packet[1])
