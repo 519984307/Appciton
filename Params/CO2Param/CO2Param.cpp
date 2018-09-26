@@ -42,6 +42,7 @@ public:
               etco2MaxVal(0),
               etco2MinVal(0),
               brVaule(0),
+              baro(0),
               connectedProvider(false),
               co2Switch(false),
               curUnit(UNIT_NONE),
