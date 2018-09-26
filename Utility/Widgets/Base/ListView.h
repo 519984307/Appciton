@@ -51,6 +51,12 @@ public:
     /* reimplement */
     void setModel(QAbstractItemModel *model);
 
+    /**
+     * @brief setDrawIcon   设置是否绘画选择图标
+     * @param isDrawIcon
+     */
+    void setDrawIcon(bool isDrawIcon);
+
 protected:
     /* reimplement */
     void keyPressEvent(QKeyEvent *ev);

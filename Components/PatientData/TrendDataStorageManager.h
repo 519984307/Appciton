@@ -1,6 +1,18 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/25
+ **/
+
 #pragma once
 #include "StorageManager.h"
 #include "TrendDataDefine.h"
+
+#define SHORT_TREND_DATA_NUM  512   // the short trend data number for each time interval
 
 class TrendDataStorageManagerPrivate;
 class TrendDataStorageManager : public StorageManager
@@ -20,6 +32,14 @@ public:
 
     Q_DECLARE_FLAGS(TrendDataFlags, TrendDataFlag)
 
+    enum ShortTrendInterval {
+        SHORT_TREND_INTERVAL_10S,
+        SHORT_TREND_INTERVAL_20S,
+        SHORT_TREND_INTERVAL_30S,
+        SHORT_TREND_INTERVAL_60S,
+        SHORT_TREND_INTERVAL_NR
+    };
+
     static TrendDataStorageManager &getInstance();
     ~TrendDataStorageManager();
 
@@ -29,9 +49,30 @@ public:
     /* store data, need to know what cause the data to storage */
     void storeData(unsigned t, TrendDataFlags dataStatus);
 
-
     /* storage function, move the data from memory to flash */
     void run();
+
+    /**
+     * @brief registerShortTrend register a short trend storage in the memory
+     * @param subParamID the sub param id
+     */
+    void registerShortTrend(SubParamID subParamID);
+
+    /**
+     * @brief unRegisterShortTrend unRegister a short trend in the memory
+     * @param SubParamID the sub param id
+     */
+    void unRegisterShortTrend(SubParamID subParamID);
+
+    /**
+     * @brief getShortTrendData get a short period of trend data, the trend data is store in the memory,
+     *        so it would be very fast to fetch.
+     * @param subParamID the subparam id
+     * @param dataBuf the buffer to store the trend data
+     * @param count the number of trend data should be fetched. the value should be less than SHORT_TREND_DATA_NUM
+     * @param interval the trend data interval
+     */
+    void getShortTrendData(SubParamID subParam, TrendDataType *dataBuf, int count, ShortTrendInterval interval) const;
 
 private:
     Q_DECLARE_PRIVATE(TrendDataStorageManager)

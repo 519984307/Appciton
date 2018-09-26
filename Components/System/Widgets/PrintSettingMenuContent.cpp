@@ -62,7 +62,7 @@ void PrintSettingMenuContentPrivate::loadOptions()
         QString path;
         path = QString("Print|SelectWave%1").arg(i + 1);
         systemConfig.getNumValue(path, index[i]);
-        if (index[i] >= size)
+        if (index[i] > size)
         {
             index[i] = size - 1;
         }

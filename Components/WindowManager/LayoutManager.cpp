@@ -87,12 +87,27 @@ public:
     void performStandardLayout();
 
     /**
-     * @brief performStandardLayout perform standard layout
+     * @brief perform12LeadLayout perform 12 lead layout
+     */
+    void perform12LeadLayout();
+
+    /**
+     * @brief performOxyCRGLayout perform OxyCRG interface layout
      */
     void performOxyCRGLayout();
 
     /**
-     * @brief clearLayout clear the layout info
+     * @brief performBigFontLayout perform Bigfont layout
+     */
+    void performBigFontLayout();
+
+    /**
+     * @brief performTrendLayout perform trend layout
+     */
+    void performTrendLayout();
+
+    /**
+     * @brief clearLayout clear the layout item and the layout container
      * @param layout the top layout
      */
     void clearLayout(QLayout *layout);
@@ -259,7 +274,7 @@ void LayoutManagerPrivate::doContentLayout()
     // clear the exist layout
     clearLayout(contentLayout);
 
-    // clear the display wave form list first, the displayed waveforms should be updated
+    // clear the display wave form list and param first, the displayed waveforms and params should be updated
     // in each layout funciton
     displayWaveforms.clear();
     displayParams.clear();
@@ -269,13 +284,16 @@ void LayoutManagerPrivate::doContentLayout()
         performStandardLayout();
         break;
     case UFACE_MONITOR_12LEAD:
+        perform12LeadLayout();
         break;
     case UFACE_MONITOR_OXYCRG:
         performOxyCRGLayout();
         break;
     case UFACE_MONITOR_TREND:
+        performTrendLayout();
         break;
     case UFACE_MONITOR_BIGFONT:
+        performBigFontLayout();
         break;
     default:
         qdebug("Unsupport screen layout!");
@@ -347,13 +365,74 @@ void LayoutManagerPrivate::performStandardLayout()
     leftLayout->setStretch(1, leftParamLayout->rowCount());
 }
 
+void LayoutManagerPrivate::perform12LeadLayout()
+{
+    QWidget *waveContainer = createContainter();
+    contentLayout->addWidget(waveContainer, waveAreaStretch);
+    QWidget *rightParamContainer = createContainter();
+    contentLayout->addWidget(rightParamContainer, paramAreaStretch);
+
+    QGridLayout *waveLayout = new QGridLayout(waveContainer);
+    waveLayout->setMargin(0);
+    QGridLayout *rightParamLayout = new QGridLayout(rightParamContainer);
+    rightParamLayout->setMargin(0);
+
+    // add the 12 lead waveforms
+    QString path("PrimaryCfg|UILayout|ContentLayout|ECG12Lead|");
+    // get the display format
+    int mode = DISPLAY_12LEAD_STAND;
+    currentConfig.getNumValue("PrimaryCfg|ECG12L|DisplayFormat", mode);
+    path += ECGSymbol::convert(static_cast<Display12LeadFormat>(mode));
+
+    QString waveOrder;
+    systemConfig.getStrValue(path, waveOrder);
+
+    QStringList ecgWaveList = waveOrder.split(',');
+
+    for (int i = 0;  i < ecgWaveList.count(); ++i)
+    {
+        int row = i / 2;
+        int column = i % 2;
+        IWidget *w = layoutWidgets[ecgWaveList.at(i)];
+        if (w)
+        {
+            w->setVisible(true);
+            waveLayout->addWidget(layoutWidgets[ecgWaveList.at(i)], row, column);
+            displayWaveforms.append(w->name());
+        }
+    }
+
+    OrderedMap<int, LayoutRow>::ConstIterator iter = layoutInfos.begin();
+    for (; iter != layoutInfos.end(); ++iter)
+    {
+        LayoutRow::ConstIterator nodeIter = iter.value().constBegin();
+        for (; nodeIter != iter.value().constEnd(); ++nodeIter)
+        {
+            int row = iter.key();
+            IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
+            if (!w || !widgetLayoutable[w->name()])
+            {
+                continue;
+            }
+
+            // only add the param on the right in the standard layout
+            if (nodeIter->pos >= LAYOUT_WAVE_END_COLUMN)
+            {
+                w->setVisible(true);
+                rightParamLayout->addWidget(w, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
+                displayParams.append(w->name());
+            }
+        }
+    }
+}
+
 #define MAX_WAVEWIDGET_ROW_IN_OXYCRG_LAYOUT 3       // the maximum wavewidget row can be displayed in the wave area while in the oxycrg layout
 void LayoutManagerPrivate::performOxyCRGLayout()
 {
     QVBoxLayout *leftLayout = new QVBoxLayout();
     leftLayout->setContentsMargins(0, 0, 0, 0);
     QWidget *waveContainer = createContainter();
-    IWidget *oxyCRGWidget = layoutWidgets["OxyCRGWidget"];
+    IWidget *oxyCRGWidget = layoutWidgets["OxyCRGWidget"];  // get the oxycrg widget
     leftLayout->addWidget(waveContainer, 1);
     if (oxyCRGWidget)
     {
@@ -416,6 +495,89 @@ void LayoutManagerPrivate::performOxyCRGLayout()
             }
         }
     }
+}
+
+void LayoutManagerPrivate::performBigFontLayout()
+{
+    QGridLayout *gridLayout = new QGridLayout;
+    gridLayout->setMargin(0);
+    contentLayout->addLayout(gridLayout);
+
+    QVariantMap bigFontLayout = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|BigFont");
+    QVariantList  layoutRows = bigFontLayout["LayoutRow"].toList();
+    if (layoutRows.isEmpty())
+    {
+        // might has only one item
+        QVariant row = bigFontLayout["LayoutRow"];
+        if (row.isValid())
+        {
+            layoutRows.append(row);
+        }
+    }
+
+    QVariantList::ConstIterator rowIter;
+    int row = 0;
+    for (rowIter = layoutRows.constBegin(); rowIter != layoutRows.constEnd(); ++rowIter)
+    {
+        QVariantMap rowMap = rowIter->toMap();
+        QVariantList nodes = rowMap["LayoutNode"].toList();
+        if (nodes.isEmpty())
+        {
+            // might has only one item
+            QVariant n = rowMap["LayoutNode"];
+            if (n.isValid())
+            {
+                nodes.append(n);
+            }
+        }
+
+        QVariantList::ConstIterator nodeIter;
+        int column = 0;;
+        for (nodeIter = nodes.constBegin(); nodeIter != nodes.constEnd(); ++nodeIter)
+        {
+            QVariantMap node = nodeIter->toMap();
+            QString paramName = node["Param"].toMap()["@text"].toString();
+            QString waveName = node["Wave"].toMap()["@text"].toString();
+
+            QWidget *nodeContainer = createContainter();
+            gridLayout->addWidget(nodeContainer, row, column);
+
+            QVBoxLayout *vLayout = new QVBoxLayout(nodeContainer);
+            vLayout->setMargin(0);
+
+            IWidget *w = layoutWidgets.value(layoutNodeMap[paramName], NULL);
+            if (w && widgetLayoutable[w->name()])
+            {
+                w->setVisible(true);
+                vLayout->addWidget(w, 2);
+                displayParams.append(w->name());
+            }
+            else
+            {
+                vLayout->addWidget(createContainter(), 2);
+            }
+
+            w = layoutWidgets.value(layoutNodeMap[waveName], NULL);
+            if (w && widgetLayoutable[w->name()])
+            {
+                w->setVisible(true);
+                vLayout->addWidget(w, 1);
+                displayWaveforms.append(w->name());
+            }
+            else
+            {
+                vLayout->addWidget(createContainter(), 1);
+            }
+            column++;
+        }
+
+        row++;
+    }
+}
+
+void LayoutManagerPrivate::performTrendLayout()
+{
+    // TODO
 }
 
 void LayoutManagerPrivate::clearLayout(QLayout *layout)
@@ -564,8 +726,6 @@ UserFaceType LayoutManager::getUFaceType() const
 
 void LayoutManager::updateLayout()
 {
-    // TODO: 1. check co2 is connect or not to decide whether show co2 wave or trend
-
     // find the ECG correspond wave
     int leadMode = ECG_LEAD_MODE_3;
     systemConfig.getNumValue("PrimaryCfg|ECG|LeadMode", leadMode);

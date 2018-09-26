@@ -1,4 +1,14 @@
-﻿#pragma once
+﻿/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/25
+ **/
+
+#pragma once
 #include <QString>
 #include "ParamInfo.h"
 #include "UnitManager.h"
@@ -17,7 +27,7 @@ struct TrendCacheData
         co2baro = 0;
     }
 
-    const TrendCacheData &operator=(const TrendCacheData &data)
+    TrendCacheData &operator=(const TrendCacheData &data)
     {
         lastNibpMeasureTime = data.lastNibpMeasureTime;
         lastNibpMeasureSuccessTime = data.lastNibpMeasureSuccessTime;
@@ -42,7 +52,7 @@ struct TrendRecorder
     void *obj;              /* object that the trend data record to */
 
     /* call when trend data ready*/
-    void (*completeCallback) (unsigned timestamp, const TrendCacheData &data, const TrendAlarmStatus &almStatus, void *obj);
+    void (*completeCallback)(unsigned timestamp, const TrendCacheData &data, const TrendAlarmStatus &almStatus, void *obj);
 };
 
 // 子参数ID、数值映射。
@@ -68,7 +78,6 @@ public:
     ~TrendCache();
 
 public:
-
     // 收集趋势数据
     void collectTrendData(unsigned t, bool overwrite = false);
     void collectTrendAlarmStatus(unsigned t);
@@ -94,8 +103,14 @@ public:
     bool getTendData(unsigned t, TrendCacheData &data);
     bool getTrendAlarmStatus(unsigned t, TrendAlarmStatus &alarmStatus);
 
-    unsigned getLastNibpMeasureTime() const { return _nibpMeasureTime;}
-    unsigned getLastNibpSuccessMeasureTime() const { return _nibpMeasureSuccessTime;}
+    unsigned getLastNibpMeasureTime() const
+    {
+        return _nibpMeasureTime;
+    }
+    unsigned getLastNibpSuccessMeasureTime() const
+    {
+        return _nibpMeasureSuccessTime;
+    }
 
     /* register a recorder to record the trend data, it will deleted when timestamp expired */
     void registerTrendRecorder(const TrendRecorder &recorder);

@@ -187,6 +187,7 @@ bool DemoProvider::attachParam(Param &param)
     {
         _demoWaveData[WAVE_CO2].param = &param;
         co2Param.setProvider(this);
+        co2Param.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_IBP))
     {

@@ -258,6 +258,7 @@ SOURCES +=                                                                      
     Components/Alarm/Widgets/AlarmMuteBarWidget.cpp                             \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.cpp                         \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.cpp                          \
+    Components/Alarm/Widgets/AlarmInfoWindow.cpp                                \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.cpp    \
     Components/Calculation/DoseCalculationManager/DoseCalculationWindow.cpp     \
     Components/Calculation/DoseCalculationManager/TitrateTableModel.cpp         \
@@ -276,7 +277,6 @@ SOURCES +=                                                                      
     Components/PatientData/RescueDataListNewWidget.cpp                          \
     Components/PatientData/RescueDataExportWidget.cpp                           \
     Components/PatientData/TrendCache.cpp                                       \
-    Components/PatientData/TrendGraphWidget.cpp                                 \
     Components/PatientData/TrendDataUtil.cpp                                    \
     Components/PatientData/RescueDataDeleteWidget.cpp                           \
     Components/PatientData/RescueDataDeleteWindow.cpp                           \
@@ -287,7 +287,6 @@ SOURCES +=                                                                      
     Components/PatientData/TrendWaveWidget.cpp                                  \
     Components/PatientData/TrendSubWaveWidget.cpp                               \
     Components/PatientData/IMoveButton.cpp                                      \
-    Components/PatientData/TrendGraphSetWidget.cpp                              \
     Components/PatientData/TrendTableWindow.cpp                                 \
     Components/PatientData/TrendTableModel.cpp                                  \
     Components/PatientData/TrendTableSetWindow.cpp                              \
@@ -783,7 +782,7 @@ HEADERS +=                                                                      
     Components/System/Widgets/SystemMenuContent.h                               \
     Components/System/Widgets/PrintSettingMenuContent.h                         \
     Components/System/Widgets/MeasureSettingMenuContent.h                       \
-    Components/System/Widgets/MeasureSettingWindow.h                           \
+    Components/System/Widgets/MeasureSettingWindow.h                            \
     Components/System/Widgets/DataReviewMenuContent.h                           \
     Components/System/Widgets/CalculateMenuContent.h                            \
     Components/System/Widgets/SystemMaintenance.h                               \
@@ -819,6 +818,7 @@ HEADERS +=                                                                      
     Components/Alarm/Widgets/AlarmMuteBarWidget.h                               \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.h                           \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.h                            \
+    Components/Alarm/Widgets/AlarmInfoWindow.h                                  \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.h      \
     Components/Calculation/DoseCalculationManager/DoseCalculationDefine.h       \
     Components/Calculation/DoseCalculationManager/DoseCalculationWindow.h       \
@@ -842,7 +842,6 @@ HEADERS +=                                                                      
     Components/PatientData/RescueDataDefine.h                                   \
     Components/PatientData/RescueDataExportWidget.h                             \
     Components/PatientData/TrendCache.h                                         \
-    Components/PatientData/TrendGraphWidget.h                                   \
     Components/PatientData/TrendDataSymbol.h                                    \
     Components/PatientData/TrendDataDefine.h                                    \
     Components/PatientData/RescueDataDeleteWidget.h                             \
@@ -855,7 +854,6 @@ HEADERS +=                                                                      
     Components/PatientData/TrendWaveWidget.h                                    \
     Components/PatientData/TrendSubWaveWidget.h                                 \
     Components/PatientData/IMoveButton.h                                        \
-    Components/PatientData/TrendGraphSetWidget.h                                \
     Components/PatientData/EventDataSymbol.h                                    \
     Components/PatientData/TrendTableWindow.h                                   \
     Components/PatientData/TrendTableModel.h                                    \

@@ -1,9 +1,21 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/9/25
+ **/
+
+
 #include "AlarmTechInfoBarWidget.h"
 #include "LanguageManager.h"
 #include "FontManager.h"
 #include "AlarmIndicator.h"
 #include "AlarmInfoPopListView.h"
 #include <QPainter>
+#include "WindowManager.h"
 
 static AlarmTechInfoBarWidget *_selfObj = NULL;
 
@@ -96,8 +108,9 @@ void AlarmTechInfoBarWidget::paintEvent(QPaintEvent *e)
     _drawText();
 }
 
-void AlarmTechInfoBarWidget::_releaseHandle(IWidget *)
+void AlarmTechInfoBarWidget::_releaseHandle(IWidget *iWidget)
 {
+    Q_UNUSED(iWidget)
     //报警少于一个时，不显示。
     int total = alarmIndicator.getAlarmCount(_alarmType);
     if (total < 2)
@@ -105,15 +118,17 @@ void AlarmTechInfoBarWidget::_releaseHandle(IWidget *)
         return;
     }
 
-    if (NULL == _alarmList)
+    if (NULL == _alarmWindow)
     {
-        _alarmList = new AlarmInfoPopListVIew(&alarmTechInfoBarWin.getSelf(),_alarmType);
-        connect(_alarmList, SIGNAL(listHide()), this, SLOT(_alarmListHide()));
-        _alarmList->show();
+        _alarmWindow = new AlarmInfoWindow(trs("TechAlarmList"), _alarmType);
+        connect(_alarmWindow, SIGNAL(listHide()), this, SLOT(_alarmListHide()));
+        windowManager.showWindow(_alarmWindow, WindowManager::ShowBehaviorCloseOthers
+                                 | WindowManager::ShowBehaviorCloseIfVisiable);
     }
-    else if (_alarmList->isHidden())
+    else if (_alarmWindow->isHidden())
     {
-        _alarmList->show();
+        windowManager.showWindow(_alarmWindow, WindowManager::ShowBehaviorCloseOthers
+                                 | WindowManager::ShowBehaviorCloseIfVisiable);
     }
     else
     {
@@ -175,8 +190,8 @@ AlarmTechInfoBarWidget::AlarmTechInfoBarWidget(const QString &name) :
     _selfObj = this;
 //    setFocusPolicy(Qt::NoFocus);
 
-    _alarmList = NULL;
-    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    _alarmWindow = NULL;
+    connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 }
 
 /**************************************************************************************************
@@ -184,13 +199,13 @@ AlarmTechInfoBarWidget::AlarmTechInfoBarWidget(const QString &name) :
  *************************************************************************************************/
 AlarmTechInfoBarWidget::~AlarmTechInfoBarWidget()
 {
-
 }
 
 void AlarmTechInfoBarWidget::updateList()
 {
-    if (NULL != _alarmList && !_alarmList->isHidden())
+    // 窗口显示时不做数据更新
+    if (NULL != _alarmWindow && _alarmWindow->isHidden())
     {
-        _alarmList->loadData();
+        _alarmWindow->updateData();
     }
 }

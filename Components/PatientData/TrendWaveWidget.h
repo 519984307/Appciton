@@ -97,7 +97,11 @@ public:
      */
     void trendWaveReset(void);
 
+    /**
+     * @brief 获取趋势图打印的数据及其事件发生时刻列表
+     */
     const QList<TrendGraphInfo> getTrendGraphPrint();
+    const QList<unsigned> getEventList();
 
     /**
      * @brief setHistoryDataPath 设置历史回顾数据的文件路径
