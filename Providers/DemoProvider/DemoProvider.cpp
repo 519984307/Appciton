@@ -205,6 +205,7 @@ bool DemoProvider::attachParam(Param &param)
     else if (name == paramInfo.getParamName(PARAM_CO))
     {
         coParam.setProvider(this);
+        coParam.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_AG))
     {
