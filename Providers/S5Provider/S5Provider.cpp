@@ -44,6 +44,11 @@ void S5Provider::handlePacket(unsigned char *data, int len)
 {
     BLMProvider::handlePacket(data, len);
 
+    if (!isConnected)
+    {
+        spo2Param.setConnected(true);
+    }
+
     if ((data[0] == S5_NOTIFY_START_UP) || (data[0] == S5_NOTIFY_STATUS))
     {
         _sendACK(data[0]);
@@ -131,6 +136,7 @@ void S5Provider::disconnected(void)
 {
     spo2OneShotAlarm.clear();
     spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    spo2Param.setConnected(false);
 }
 
 /**************************************************************************************************
@@ -139,6 +145,7 @@ void S5Provider::disconnected(void)
 void S5Provider::reconnected(void)
 {
     spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    spo2Param.setConnected(true);
 }
 
 /**************************************************************************************************

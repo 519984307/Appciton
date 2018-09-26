@@ -31,6 +31,7 @@ void SystemModeBarWidget::setMode(UserFaceType mode)
 
 void SystemModeBarWidget::_releaseHandle(IWidget *iWidget)
 {
+    Q_UNUSED(iWidget)
     if (_systemModeList == NULL)
     {
         _systemModeList = new PopupList(this , false);
@@ -73,8 +74,8 @@ void SystemModeBarWidget::_popupListAddItem()
  *************************************************************************************************/
 SystemModeBarWidget::SystemModeBarWidget(QWidget *parent)
     : IWidget("SystemModeBarWidget", parent)
-    , _popupListIndex(-1)
     , _systemModeList(NULL)
+    , _popupListIndex(-1)
 {
     setFocusPolicy(Qt::StrongFocus);
     _modeLabel = new QLabel("", this);

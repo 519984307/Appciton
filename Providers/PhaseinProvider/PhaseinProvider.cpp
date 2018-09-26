@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/26
+ **/
+
 #include "PhaseinProvider.h"
 #include "Debug.h"
 #include "AGParam.h"
@@ -27,7 +37,6 @@ bool PhaseinProvider::attachParam(Param &param)
     }
 
     return false;
-
 }
 
 /**************************************************************************************************
@@ -59,7 +68,6 @@ void PhaseinProvider::dataArrived()
             ringBuff.pop(1);
         }
     }
-
 }
 
 /**************************************************************************************************
@@ -78,6 +86,16 @@ void PhaseinProvider::sendCmd(unsigned char dataId, const unsigned char data)
     writeData(cmdBuf, _maxPacketLen);
 }
 
+void PhaseinProvider::disconnected()
+{
+    agParam.setConnected(false);
+}
+
+void PhaseinProvider::reconnected()
+{
+    agParam.setConnected(true);
+}
+
 /**************************************************************************************************
  * set work mode.
  *************************************************************************************************/
@@ -94,15 +112,33 @@ void PhaseinProvider::setApneaTimeout(ApneaAlarmTime t)
     unsigned char time;
     switch (t)
     {
-    case APNEA_ALARM_TIME_20_SEC: time = 20; break;
-    case APNEA_ALARM_TIME_25_SEC: time = 25; break;
-    case APNEA_ALARM_TIME_30_SEC: time = 30; break;
-    case APNEA_ALARM_TIME_35_SEC: time = 35; break;
-    case APNEA_ALARM_TIME_40_SEC: time = 40; break;
-    case APNEA_ALARM_TIME_45_SEC: time = 45; break;
-    case APNEA_ALARM_TIME_50_SEC: time = 50; break;
-    case APNEA_ALARM_TIME_55_SEC: time = 55; break;
-    case APNEA_ALARM_TIME_60_SEC: time = 60; break;
+    case APNEA_ALARM_TIME_20_SEC:
+        time = 20;
+        break;
+    case APNEA_ALARM_TIME_25_SEC:
+        time = 25;
+        break;
+    case APNEA_ALARM_TIME_30_SEC:
+        time = 30;
+        break;
+    case APNEA_ALARM_TIME_35_SEC:
+        time = 35;
+        break;
+    case APNEA_ALARM_TIME_40_SEC:
+        time = 40;
+        break;
+    case APNEA_ALARM_TIME_45_SEC:
+        time = 45;
+        break;
+    case APNEA_ALARM_TIME_50_SEC:
+        time = 50;
+        break;
+    case APNEA_ALARM_TIME_55_SEC:
+        time = 55;
+        break;
+    case APNEA_ALARM_TIME_60_SEC:
+        time = 60;
+        break;
     default:
         return;
     }
@@ -144,7 +180,7 @@ void PhaseinProvider::zeroCalibration()
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-PhaseinProvider::PhaseinProvider():Provider("PHASEIN_AG")
+PhaseinProvider::PhaseinProvider(): Provider("PHASEIN_AG"), _status(AGProviderStatus())
 {
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     initPort(portAttr);
@@ -155,7 +191,6 @@ PhaseinProvider::PhaseinProvider():Provider("PHASEIN_AG")
  *************************************************************************************************/
 PhaseinProvider::~PhaseinProvider()
 {
-
 }
 
 /**************************************************************************************************
@@ -175,6 +210,11 @@ void PhaseinProvider::_unpacket(const unsigned char packet[])
         return;
     }
 
+    if (!isConnected)
+    {
+        agParam.setConnected(true);
+    }
+
     // STS FIELD
     // 基本信息解包
     unsigned char sts    = packet[3];
@@ -188,9 +228,9 @@ void PhaseinProvider::_unpacket(const unsigned char packet[])
     agParam.setOneShotAlarm(AG_ONESHOT_ALARM_APNEA, _status.noBreath);
 
     // CO2波形数据
-    unsigned short co2WaveValue = packet[4];
-    co2WaveValue <<= 8;
-    co2WaveValue |= packet[5];
+//    unsigned short co2WaveValue = packet[4];
+//    co2WaveValue <<= 8;
+//    co2WaveValue |= packet[5];
 //    bool co2Invalid = false;
 //    if (co2WaveValue == 0xFFFF)
 //    {
@@ -369,26 +409,26 @@ void PhaseinProvider::_unpacket(const unsigned char packet[])
         unsigned short softwareVersion = packet[16] | (packet[17] << 8);
         // software version BCD code.
         _status.softwareVersion = (softwareVersion & 0xf) + ((softwareVersion & 0xf0) >> 4) * 10
-                + ((softwareVersion & 0xf00) >> 8) * 100 + ((softwareVersion & 0xf000) >> 12) * 1000;
+                                  + ((softwareVersion & 0xf00) >> 8) * 100 + ((softwareVersion & 0xf000) >> 12) * 1000;
 
         unsigned char configReg1 = packet[18];
         // sensor configuration register1
         _status.axIDConfig      = (configReg1 & BIT0) ? true : false;
         _status.n2oCompensationAvaiable = (configReg1 & BIT1) ? true : false;
         _status.o2SensorType    = (configReg1 & 0x0C) >> 2;
-        _status.scientificConfig= (configReg1 & BIT6) ? true : false;
-        _status.sidestreamConfig= (configReg1 & BIT7) ? true : false;
+        _status.scientificConfig = (configReg1 & BIT6) ? true : false;
+        _status.sidestreamConfig = (configReg1 & BIT7) ? true : false;
 
-        //ID=0x04中的报警，因为CO2模块类型要在这里获取到所以报警也放在这里
+        // ID=0x04中的报警，因为CO2模块类型要在这里获取到所以报警也放在这里
         if (_status.sidestreamConfig)
         {
-            //旁流CO2模块报警
+            // 旁流CO2模块报警
             agParam.setOneShotAlarm(AG_ONESHOT_ALARM_SAMPLING_LINE_CLOGGED, _status.replaceAdapt);
             agParam.setOneShotAlarm(AG_ONESHOT_ALARM_NO_SAMPLING_LINE, _status.noAdapt);
         }
         else
         {
-            //主流CO2模块报警
+            // 主流CO2模块报警
             agParam.setOneShotAlarm(AG_ONESHOT_ALARM_REPLACE_ADAPTER, _status.replaceAdapt);
             agParam.setOneShotAlarm(AG_ONESHOT_ALARM_NO_ADAPTER, _status.noAdapt);
             agParam.setOneShotAlarm(AG_ONESHOT_ALARM_O2_PORT_FAILURE, _status.o2Clogged);
@@ -415,11 +455,11 @@ void PhaseinProvider::_unpacket(const unsigned char packet[])
         _status.irO2Delay = ((staRegister & 0xf0) >> 4);
         if (_status.sidestreamConfig)
         {
-            //旁流CO2模块报警
+            // 旁流CO2模块报警
             agParam.setOneShotAlarm(AG_ONESHOT_ALARM_SPAN_CALIB_FAILED, _status.spanError);
             agParam.setOneShotAlarm(AG_ONESHOT_ALARM_SPAN_CALIB_IN_PROGRESS, _status.spanCalibInProgress);
         }
-            agParam.setOneShotAlarm(AG_ONESHOT_ALARM_IR_O2_DELAY, _status.irO2Delay);
+        agParam.setOneShotAlarm(AG_ONESHOT_ALARM_IR_O2_DELAY, _status.irO2Delay);
 
         _status.n2oCompensationConc = packet[17];
 

@@ -181,6 +181,20 @@ void RESPParam::setProvider(RESPProviderIFace *provider)
                                  _provider->getRESPBaseLine());
 }
 
+void RESPParam::setConnected(bool isConnected)
+{
+    if (_connectedProvider == isConnected)
+    {
+        return;
+    }
+    _connectedProvider = isConnected;
+}
+
+bool RESPParam::isConnected()
+{
+    return _connectedProvider;
+}
+
 /**************************************************************************************************
  * 设置界面对象。
  *************************************************************************************************/
@@ -424,7 +438,7 @@ void RESPParam::enableRespCalc(bool enable)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-RESPParam::RESPParam() : Param(PARAM_RESP)
+RESPParam::RESPParam() : Param(PARAM_RESP), _connectedProvider(false)
 {
 //    disable();
     _provider = NULL;

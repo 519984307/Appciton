@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/26
+ **/
+
 #include "Debug.h"
 #include "WitleafProvider.h"
 #include "IBPParam.h"
@@ -26,7 +36,7 @@ bool WitleafProvider::attachParam(Param &param)
     const QString &name = param.getName();
     if (name == paramInfo.getParamName(PARAM_IBP))
     {
-       ibpParam.setProvider(this);
+        ibpParam.setProvider(this);
     }
     else if (name == paramInfo.getParamName(PARAM_CO))
     {
@@ -34,7 +44,6 @@ bool WitleafProvider::attachParam(Param &param)
     }
 
     return true;
-
 }
 
 /**************************************************************************************************
@@ -50,7 +59,7 @@ void WitleafProvider::dataArrived()
     {
         if (ringBuff.at(0) != _STX)
         {
-            //debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));
+            // debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));
             ringBuff.pop(1);
             continue;
         }
@@ -68,7 +77,7 @@ void WitleafProvider::dataArrived()
         }
 
         // 数据包不会超过packet长度，当出现这种情况说明发生了不可预料的错误，直接丢弃该段数据。
-        if (len > (int)sizeof(buff))
+        if (len > static_cast<int>(sizeof(buff)))
         {
             ringBuff.pop(1);
             continue;
@@ -98,6 +107,12 @@ void WitleafProvider::dataArrived()
  *************************************************************************************************/
 void WitleafProvider::handlePacket(unsigned char *data, int len)
 {
+    if (!isConnected)
+    {
+        coParam.setConnected(true);
+        ibpParam.setConnected(true);
+    }
+
     if (data[0] == PARAM_TYPE_IBP)
     {
         switch (data[2])
@@ -275,7 +290,7 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
         {
             break;
         }
-        case CO_RSP_MEASURE_INFO:            
+        case CO_RSP_MEASURE_INFO:
         {
             unsigned char coMeasureInfo = data[3];
             _status.coMeasureStatus = (coMeasureInfo & BIT0) ? true : false;
@@ -306,8 +321,8 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
  *      dataSN:     不是所有帧都需要,有的数据包存在序列号,有的数据包不存在序列号
  **************************************************************************************************/
 void WitleafProvider::sendCmd(unsigned char len, unsigned char paramType,
-                          unsigned char dataType, unsigned char dataId,
-                          const unsigned char *data, const unsigned char *dataSN)
+                              unsigned char dataType, unsigned char dataId,
+                              const unsigned char *data, const unsigned char *dataSN)
 {
     unsigned int cmdLen;
     if (NULL != dataSN)
@@ -355,6 +370,18 @@ unsigned char WitleafProvider::calcCheckSum(const unsigned char *data, unsigned 
     }
 
     return sum;
+}
+
+void WitleafProvider::disconnected()
+{
+    coParam.setConnected(false);
+    ibpParam.setConnected(false);
+}
+
+void WitleafProvider::reconnected()
+{
+    coParam.setConnected(true);
+    ibpParam.setConnected(true);
 }
 
 /**************************************************************************************************
@@ -407,11 +434,11 @@ void WitleafProvider::setFilter(IBPSignalInput IBP, IBPFilterMode filter)
  * IBP表明设置
  *************************************************************************************************/
 void WitleafProvider::setIndicate(IBPPressureName pressurenameIBP1, IBPPressureName pressurenameIBP2,
-                              IBPAuxiliarySet auxiliarysetIBP1, IBPAuxiliarySet auxiliarysetIBP2)
+                                  IBPAuxiliarySet auxiliarysetIBP1, IBPAuxiliarySet auxiliarysetIBP2)
 {
     unsigned char indicate = 0;
     indicate = (pressurenameIBP1 & 0x07) | ((pressurenameIBP2 & 0x07) << 3) |
-            ((auxiliarysetIBP1 & 0x01) << 6) | ((auxiliarysetIBP2 & 0x01) << 7);
+               ((auxiliarysetIBP1 & 0x01) << 6) | ((auxiliarysetIBP2 & 0x01) << 7);
     unsigned char data[3] = {0x00, indicate, 0x00};
     sendCmd(3, PARAM_TYPE_IBP, IBP_DATA_DC, IBP_CMD_SET_INDICATE, data, NULL);
 }
@@ -467,15 +494,15 @@ void WitleafProvider::setDuctRatio(unsigned short ratio)
 /**************************************************************************************************
  * 血液动力计算参数设置
  *************************************************************************************************/
-void WitleafProvider::setHemodymicParam(){}
+void WitleafProvider::setHemodymicParam() {}
 
 /**************************************************************************************************
  * IBP 校零/校准时间设定
  *************************************************************************************************/
 void WitleafProvider::setTimeZero(IBPSignalInput IBP, IBPCalibration calibration,
-                              unsigned char second, unsigned char minute,
-                              unsigned char hour, unsigned char day,
-                              unsigned char month, unsigned char year)
+                                  unsigned char second, unsigned char minute,
+                                  unsigned char hour, unsigned char day,
+                                  unsigned char month, unsigned char year)
 {
     unsigned char onechar = (second & 0x3f) | ((calibration & 0x01) << 6) | ((IBP & 0x01) << 7);
     unsigned char data[6] = {onechar, minute, hour, day, month, year};
@@ -485,12 +512,13 @@ void WitleafProvider::setTimeZero(IBPSignalInput IBP, IBPCalibration calibration
 /**************************************************************************************************
  * 血液动力学计算
  *************************************************************************************************/
-void WitleafProvider::hemodymicCalc(){}
+void WitleafProvider::hemodymicCalc() {}
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-WitleafProvider::WitleafProvider(): Provider("WITLEAF_IBP"), IBPProviderIFace()
+WitleafProvider::WitleafProvider(): Provider("WITLEAF_IBP"), IBPProviderIFace(),
+    _status(WitleafProviderStatus())
 {
     UartAttrDesc portAttr(115200, 8, 'O', 1);
     initPort(portAttr);
@@ -501,7 +529,6 @@ WitleafProvider::WitleafProvider(): Provider("WITLEAF_IBP"), IBPProviderIFace()
  *************************************************************************************************/
 WitleafProvider::~WitleafProvider()
 {
-
 }
 
 /***************************************************************************************************

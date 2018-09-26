@@ -44,6 +44,12 @@ public:
     // 设置数据提供对象。
     void setProvider(COProviderIFace *provider);
 
+    // 设置连接，供给对象调用。
+    void setConnected(bool isConnected);
+
+    // 是否连接了真实的Provider，是指Provider有数据产生。
+    bool isConnected(void);
+
     // 设置界面对象
     void setCOTrendWidget(COTrendWidget *trendWidget);
 
@@ -94,5 +100,6 @@ private:
     u_int16_t _coData;
     u_int16_t _ciData;
     u_int16_t _tbData;
+    bool _connectedProvider;
 };
 #define coParam (COParam::construction())

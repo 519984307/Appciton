@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/26
+ **/
+
 #pragma once
 #include "Provider.h"
 #include "AGProviderIFace.h"
@@ -27,9 +37,6 @@ enum  // 设置命令。
 
 struct  AGProviderStatus
 {
-    AGProviderStatus() : o2Config(true), co2Config(true), n2oConfig(true)
-    {
-    }
     // --------------------------------------------------------------------------------------------
     // ------------------------------ STS (Status summary) ----------------------------------------
     // ---------------------------------- 未使用 ---------------------------------------------------
@@ -37,13 +44,13 @@ struct  AGProviderStatus
     bool noBreath;              // NO_BREATHS, 1 = No breaths detected within selected time.
     bool o2Replace;             // O2_REPL,    1 = Replace O2 sensor.
     bool checkAdapt;            // CHK_ADAPT,  1 = Mainstream: Check adapter.
-                                //             1 = Sidestream: Check sampling line.
+    //             1 = Sidestream: Check sampling line.
     bool unspecAcc;             // UNSPEC_ACC, 1 = At least one parameter is out of range,
-                                //             or zero calibration of IR measurement is required.
-                                //             Validity of data may be questionable.
+    //             or zero calibration of IR measurement is required.
+    //             Validity of data may be questionable.
     bool sensorErr;             // SENS_ERR,   sensor err.
     bool o2Calib;               // O2_CALIB,   1 = Mainstream: Room air O2 calibration required
-                                //             1 = Sidestream: O2 span calibration required
+    //             1 = Sidestream: O2 span calibration required
 
     // --------------------------------------------------------------------------------------------
     // -------------------------------- GenVals (ID 0x03) -----------------------------------------
@@ -69,15 +76,15 @@ struct  AGProviderStatus
     bool motorSpeedOut;        // MFAIL, Motor speed out of bounds.
     bool uncalibrated;         // UNCAL, Factory calibration lost/missing.
     bool o2Error;              // O2_ERR, 1 = Mainstream: N/A
-                               //         1 = Sidestream: O2 sensor error
+    //         1 = Sidestream: O2 sensor error
 
     // Adapter status register (byte 3)
     bool replaceAdapt;          // REPL_ADAPT, 1 = Mainstream: Replace adapter (IR signal low).
-                                //             1 = Sidestream: Sampling line clogged.
+    //             1 = Sidestream: Sampling line clogged.
     bool noAdapt;               // NO_ADAPT,   1 = Mainstream: No adapter. Connect adapter(IR signal high).
-                                //             1 = Sidestream: No sampling line.
+    //             1 = Sidestream: No sampling line.
     bool o2Clogged;             // O2_CLG,     1 = Mainstream: O 2 port failure (clogged or plugged)
-                                //             1 = Sidestream: N/A
+    //             1 = Sidestream: N/A
 
     // Data valid register (byte 4)
     bool co2OR;                // CO2_OR,  1 = CO2 outside specified accuracy range.
@@ -114,10 +121,10 @@ struct  AGProviderStatus
     // Sensor configuration register 1 (byte 4)
     bool axIDConfig;            // ID_CFG, agent id option fitted, auto agent id transmit
     bool n2oCompensationAvaiable;// N2O_COMP, 1 = Host N2O compensation available.
-                                // When this bit is set, it is possible to set the N2O concentration
-                                // from host using the command SetN2O.
+    // When this bit is set, it is possible to set the N2O concentration
+    // from host using the command SetN2O.
     int o2SensorType;           // O2_SENSOR_TYPE, 0:galvanic o2, 1:servomex pm1116(isa only),
-                                // 2,3:reserved
+    // 2,3:reserved
     bool scientificConfig;      // SCIENTIFIC_CFG, Always scientific mode
     bool sidestreamConfig;      // SS_CFG, Sidestream model
 
@@ -134,10 +141,10 @@ struct  AGProviderStatus
     bool zeroDisable;           // ZERO_DISAB
     bool zeroInProgress;        // ZERO_IN_PROGRESS
     bool spanError;             // SPAN_ERR, 1 = Mainstream: N/A
-                                //           1 = Sidestream: Latest span calibration command failed
+    //           1 = Sidestream: Latest span calibration command failed
     bool spanCalibInProgress;   // SPAN_CALB_IN_PROGRESS, 1 = Mainstream: N/A
-                                //                        1 = Sidestream: Span calibration and
-                                //                            validation in progress
+    //                        1 = Sidestream: Span calibration and
+    //                            validation in progress
     char irO2Delay;             // 0--15
 
     // (byte 3)
@@ -157,8 +164,8 @@ public:    // Provider interface
     void sendCmd(unsigned char dataId, const unsigned char data);
 
     virtual void sendVersion(void) {}
-    virtual void disconnected(void) {}          // 模块连接断开时回调，之类实现。
-    virtual void reconnected(void) {}          // 模块连接恢复时回调，之类实现。
+    virtual void disconnected(void);          // 模块连接断开时回调，之类实现。
+    virtual void reconnected(void);          // 模块连接恢复时回调，之类实现。
 
 public:    // AGProviderIFace interface
     // set work mode.
@@ -180,22 +187,58 @@ public:    // AGProviderIFace interface
     virtual void zeroCalibration(void);
 
     // get waveform sample
-    virtual int getN2OWaveformSample(void) {return 50;}
-    virtual int getAA1WaveformSample(void) {return 50;}
-    virtual int getAA2WaveformSample(void) {return 50;}
-    virtual int getO2WaveformSample(void) {return 50;}
+    virtual int getN2OWaveformSample(void)
+    {
+        return 50;
+    }
+    virtual int getAA1WaveformSample(void)
+    {
+        return 50;
+    }
+    virtual int getAA2WaveformSample(void)
+    {
+        return 50;
+    }
+    virtual int getO2WaveformSample(void)
+    {
+        return 50;
+    }
 
     // get base line.
-    virtual int getN2OBaseLine(void) {return 0;}
-    virtual int getAA1BaseLine(void) {return 0;}
-    virtual int getAA2BaseLine(void) {return 0;}
-    virtual int getO2BaseLine(void) {return 0;}
+    virtual int getN2OBaseLine(void)
+    {
+        return 0;
+    }
+    virtual int getAA1BaseLine(void)
+    {
+        return 0;
+    }
+    virtual int getAA2BaseLine(void)
+    {
+        return 0;
+    }
+    virtual int getO2BaseLine(void)
+    {
+        return 0;
+    }
 
     // get max waveform value.
-    virtual int getN2OMaxWaveform(void) {return 11500;}
-    virtual int getAA1MaxWaveform(void) {return 2500;}
-    virtual int getAA2MaxWaveform(void) {return 2500;}
-    virtual int getO2MaxWaveform(void) {return 11500;}
+    virtual int getN2OMaxWaveform(void)
+    {
+        return 11500;
+    }
+    virtual int getAA1MaxWaveform(void)
+    {
+        return 2500;
+    }
+    virtual int getAA2MaxWaveform(void)
+    {
+        return 2500;
+    }
+    virtual int getO2MaxWaveform(void)
+    {
+        return 11500;
+    }
 
 public:
     PhaseinProvider();

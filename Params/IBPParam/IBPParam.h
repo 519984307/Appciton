@@ -67,6 +67,12 @@ public:
     // 设置数据提供对象。
     void setProvider(IBPProviderIFace *provider);
 
+    // 设置连接，供给对象调用。
+    void setConnected(bool isConnected);
+
+    // 是否连接了真实的Provider，是指Provider有数据产生。
+    bool isConnected(void);
+
     // 设置测量实时数据。
     void setRealTimeData(unsigned short sys, unsigned short dia, unsigned short map,
                          unsigned short pr, IBPSignalInput IBP);
@@ -161,5 +167,6 @@ private:
 
     bool _staIBP1;                        // 导联状态
     bool _staIBP2;
+    bool _connectedProvider;
 };
 #define ibpParam (IBPParam::construction())

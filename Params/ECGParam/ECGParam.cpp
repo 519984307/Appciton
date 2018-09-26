@@ -723,6 +723,16 @@ void ECGParam::updateECGNotifyMesg(ECGLead lead, bool isAlarm)
     }
 }
 
+void ECGParam::setConnected(bool isConnected)
+{
+    if (_connectedProvider == isConnected)
+    {
+        return;
+    }
+
+    _connectedProvider = isConnected;
+}
+
 /**************************************************************************************************
  * 获取导联脱落状态。
  *************************************************************************************************/
@@ -747,17 +757,7 @@ char ECGParam::doesLeadOff(int lead)
  *************************************************************************************************/
 bool ECGParam::isConnected()
 {
-    if (_provider == NULL)
-    {
-        return false;
-    }
-    Provider *provider = dynamic_cast<Provider *>(_provider);
-    if (NULL == provider)
-    {
-        return false;
-    }
-
-    return provider->connected();
+    return _connectedProvider;
 }
 
 /**************************************************************************************************
@@ -1378,7 +1378,7 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
     _displayMode = mode;
 
     // 布局界面。
-    UserFaceType type = UFACE_MONITOR_STANDARD;
+//    UserFaceType type = UFACE_MONITOR_STANDARD;
     if (mode == ECG_DISPLAY_NORMAL)
     {
         // 设置波形采样率
@@ -1389,7 +1389,7 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
     }
     else if (mode == ECG_DISPLAY_12_LEAD_FULL)
     {
-        type = UFACE_MONITOR_12LEAD;
+//        type = UFACE_MONITOR_12LEAD;
 
         // 设置波形采样率
         _provider->setWaveformSample(WAVE_SAMPLE_RATE_500);
@@ -2203,7 +2203,7 @@ void ECGParam::presentRhythm()
  * 构造。
  *************************************************************************************************/
 ECGParam::ECGParam() : Param(PARAM_ECG),
-    _updateNum(0)
+    _updateNum(0), _connectedProvider(false)
 {
     // 初始化成员。
     _provider = NULL;
