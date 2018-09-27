@@ -193,14 +193,6 @@ void IBPWaveWidget::resizeEvent(QResizeEvent *e)
 void IBPWaveWidget::showEvent(QShowEvent *e)
 {
     WaveWidget::showEvent(e);
-    if (ibpParam.isConnected())
-    {
-        _leadSta->setText(trs("LeadOff"));
-    }
-    else
-    {
-        _leadSta->setText("");
-    }
 }
 
 void IBPWaveWidget::focusInEvent(QFocusEvent *e)

@@ -827,7 +827,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     _filter->setFocusPolicy(Qt::NoFocus);
     addItem(_filter);
 
-    _notify = new WaveWidgetLabel("", Qt::AlignCenter, this);
+    _notify = new WaveWidgetLabel(trs("LeadOff"), Qt::AlignCenter, this);
     _notify->setFocusPolicy(Qt::NoFocus);
     _notify->setFont(fontManager.textFont(fontSize));
     _notify->setFixedHeight(fontH);
