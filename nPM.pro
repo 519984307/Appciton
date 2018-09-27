@@ -149,13 +149,18 @@ SOURCES +=                                                                      
     Utility/Widgets/InputMethod/NumberPanel.cpp                                 \
     Utility/Widgets/InputMethod/NumberInput.cpp                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.cpp                          \
+    Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.cpp                      \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidgetRuler.cpp                     \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidget.cpp                               \
     Utility/Widgets/OxyCRGWidget/OxyCRGHRWidget.cpp                             \
     Utility/Widgets/OxyCRGWidget/OxyCRGRESPWidget.cpp                           \
+    Utility/Widgets/OxyCRGWidget/OxyCRGRESPWaveWidget.cpp                       \
     Utility/Widgets/OxyCRGWidget/OxyCRGCO2Widget.cpp                            \
+    Utility/Widgets/OxyCRGWidget/OxyCRGCO2WaveWidget.cpp                        \
     Utility/Widgets/OxyCRGWidget/OxyCRGRRWidget.cpp                             \
+    Utility/Widgets/OxyCRGWidget/OxyCRGRRHRWaveWidget.cpp                       \
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2Widget.cpp                           \
+    Utility/Widgets/OxyCRGWidget/OxyCRGSPO2TrendWidget.cpp                      \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWidget.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWindow.cpp                          \
@@ -696,13 +701,19 @@ HEADERS +=                                                                      
     Utility/Widgets/InputMethod/NumberPanel.h                                   \
     Utility/Widgets/InputMethod/NumberInput.h                                   \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.h                            \
+    Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.h                        \
+    Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget_p.h                      \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidgetRuler.h                       \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidget.h                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGHRWidget.h                               \
     Utility/Widgets/OxyCRGWidget/OxyCRGRESPWidget.h                             \
     Utility/Widgets/OxyCRGWidget/OxyCRGRRWidget.h                               \
+    Utility/Widgets/OxyCRGWidget/OxyCRGRESPWaveWidget.h                        \
+    Utility/Widgets/OxyCRGWidget/OxyCRGRRHRWaveWidget.h                         \
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2Widget.h                             \
+    Utility/Widgets/OxyCRGWidget/OxyCRGSPO2TrendWidget.h                           \
     Utility/Widgets/OxyCRGWidget/OxyCRGCO2Widget.h                              \
+    Utility/Widgets/OxyCRGWidget/OxyCRGCO2WaveWidget.h                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWidget.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWindow.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.h                            \

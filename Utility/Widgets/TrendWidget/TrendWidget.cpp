@@ -147,6 +147,25 @@ void TrendWidget::showNormalStatus(QWidget *value, QPalette psrc)
  *************************************************************************************************/
 void TrendWidget::updateAlarm(bool alarmFlag)
 {
+//    QPalette p = nameLabel->palette();
+//    if (alarmFlag)
+//    {
+//        if (p.windowText().color() != Qt::white)
+//        {
+//            p.setColor(QPalette::WindowText, Qt::white);
+//            nameLabel->setPalette(p);
+//            unitLabel->setPalette(p);
+//        }
+//    }
+//    else
+//    {
+//        if (p.windowText().color() != Qt::black)
+//        {
+//            p.setColor(QPalette::WindowText, Qt::black);
+//            nameLabel->setPalette(p);
+//            unitLabel->setPalette(p);
+//        }
+    //    }
     Q_UNUSED(alarmFlag)
 }
 

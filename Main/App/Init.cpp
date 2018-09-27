@@ -304,12 +304,11 @@ static void _initProviderParam(void)
     windowManager.addWidget(oxyCRGWidget);
     layoutManager.addLayoutWidget(oxyCRGWidget);
 
-    OxyCRGHRWidget *hrOxyCRGWidget = new OxyCRGHRWidget("OxyCRGHRWidget",
-            paramInfo.getSubParamName(SUB_PARAM_HR_PR));
-    ecgParam.setOxyCRGWaveWidget(hrOxyCRGWidget);
+    OxyCRGRRHRWaveWidget *hrOxyCRGWidget = new OxyCRGRRHRWaveWidget("OxyCRGHRWidget");
+    ecgParam.setOxyCRGHrWaveWidget(hrOxyCRGWidget);
     windowManager.addWidget(hrOxyCRGWidget);
     layoutManager.addLayoutWidget(hrOxyCRGWidget);
-    oxyCRGWidget->setOxyCrgHrWidget(hrOxyCRGWidget);
+    oxyCRGWidget->setOxyCRGRrHrWidget(hrOxyCRGWidget);
 
     // RESP部分。
     if (systemManager.isSupport(CONFIG_RESP) || systemManager.isSupport(CONFIG_CO2))
@@ -331,14 +330,12 @@ static void _initProviderParam(void)
             windowManager.addWidget(respTrendWidget);
             layoutManager.addLayoutWidget(respTrendWidget, LAYOUT_NODE_PARAM_RESP);
 
-            OxyCRGRESPWidget *respOxyCRGWidget = new OxyCRGRESPWidget("OxyCRGRESPWidget",
-                    "RESP");
-            respParam.setOxyWaveWidget(respOxyCRGWidget);
+            OxyCRGRESPWaveWidget *respOxyCRGWidget = new OxyCRGRESPWaveWidget("OxyCRGRESPWidget");
+            respParam.setOxyCRGWaveRESPWidget(respOxyCRGWidget);
             windowManager.addWidget(respOxyCRGWidget);
             layoutManager.addLayoutWidget(respOxyCRGWidget);
-            oxyCRGWidget->setOxyCrgRespWidget(respOxyCRGWidget);
-            demo->setOxyCRGRESPWidget(respOxyCRGWidget);
-            ecgParam.setOxyCRGRESPWidget(respOxyCRGWidget);
+            oxyCRGWidget->setOxyCRGRespWidget(respOxyCRGWidget);
+            respParam.setOxyCRGRrHrTrend(hrOxyCRGWidget);
         }
     }
 
@@ -379,12 +376,11 @@ static void _initProviderParam(void)
         windowManager.addWidget(spo2TrendWidget);
         layoutManager.addLayoutWidget(spo2TrendWidget, LAYOUT_NODE_PARAM_SPO2);
 
-        OxyCRGSPO2Widget *spo2OxyCRGWidget = new OxyCRGSPO2Widget("OxyCRGSPO2Widget",
-                paramInfo.getSubParamName(SUB_PARAM_SPO2));
-        spo2Param.setOxyCRGWaveWidget(spo2OxyCRGWidget);
+        OxyCRGSPO2TrendWidget *spo2OxyCRGWidget = new OxyCRGSPO2TrendWidget("OxyCRGSPO2Widget");
+        spo2Param.setOxyCRGSPO2Trend(spo2OxyCRGWidget);
         windowManager.addWidget(spo2OxyCRGWidget);
         layoutManager.addLayoutWidget(spo2OxyCRGWidget);
-        oxyCRGWidget->setOxyCrgSpo2Widget(spo2OxyCRGWidget);
+        oxyCRGWidget->setOxyCRGSPO2Trend(spo2OxyCRGWidget);
     }
 
     // NIBP部分。
@@ -435,14 +431,11 @@ static void _initProviderParam(void)
         windowManager.addWidget(co2TrendWidget);
         layoutManager.addLayoutWidget(co2TrendWidget, LAYOUT_NODE_PARAM_CO2);
 
-        OxyCRGCO2Widget *co2OxyCRGWidget = new OxyCRGCO2Widget("OxyCRGCO2Widget",
-                "CO2");
+        OxyCRGCO2WaveWidget *co2OxyCRGWidget = new OxyCRGCO2WaveWidget("OxyCRGCO2Widget");
         co2Param.setOxyCRGCO2Widget(co2OxyCRGWidget);
         windowManager.addWidget(co2OxyCRGWidget);
         layoutManager.addLayoutWidget(co2OxyCRGWidget);
-        oxyCRGWidget->setOxyCrgCo2Widget(co2OxyCRGWidget);
-        demo->setOxyCRGCO2Widget(co2OxyCRGWidget);
-        ecgParam.setOxyCRGCO2Widget(co2OxyCRGWidget);
+        oxyCRGWidget->setOxyCRGCO2Widget(co2OxyCRGWidget);
     }
 
     // IBP test

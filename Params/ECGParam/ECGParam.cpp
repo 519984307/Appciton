@@ -36,6 +36,7 @@
 #include "ErrorLogItem.h"
 #include "ErrorLog.h"
 #include "PatientStatusBarWidget.h"
+#include "OxyCRGRRHRWaveWidget.h"
 
 #define ECG_TIMER_INTERVAL (100)
 #define GET_DIA_DATA_PERIOD (12000)
@@ -123,17 +124,10 @@ void ECGParam::handDemoTrendData(void)
 {
     int hrValue = qrand() % 10 + 60;
     ecgDupParam.updateHR(hrValue);
-    if (NULL != _waveOxyCRGWidget)
-    {
-        _waveOxyCRGWidget->addDataBuf(hrValue, 0);
-        _waveOxyCRGWidget->addData(hrValue);
 
-        _updateNum++;
-        if (_updateNum >= 2)
-        {
-            _updateNum = 0;
-            emit oxyCRGWaveUpdated();//呼吸氧和波形更新信号
-        }
+    if (oxyCRGRrHrTrend)
+    {
+        oxyCRGRrHrTrend->addHrTrendData(hrValue);
     }
     int pvcs = qrand() % 30 + 30;
     updatePVCS(pvcs);
@@ -326,7 +320,6 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
         }
         _waveWidget[i]->setDataRate(_provider->getWaveformSample());
     }
-    _waveOxyCRGWidget->setDataRate(1);
 
 //    <Gain>1</Gain>
     // todo：其他设置。
@@ -388,6 +381,15 @@ void ECGParam::setOxyCRGWaveWidget(OxyCRGHRWidget *waveWidget)
         return;
     }
     _waveOxyCRGWidget = waveWidget;
+}
+
+void ECGParam::setOxyCRGHrWaveWidget(OxyCRGRRHRWaveWidget *waveWidget)
+{
+    if (waveWidget == NULL)
+    {
+        return;
+    }
+    oxyCRGRrHrTrend = waveWidget;
 }
 
 /**************************************************************************************************
@@ -562,6 +564,11 @@ void ECGParam::updateHR(short hr)
             _updateNum = 0;
             emit oxyCRGWaveUpdated();//呼吸氧和波形更新信号
         }
+    }
+
+    if (oxyCRGRrHrTrend)
+    {
+        oxyCRGRrHrTrend->addHrTrendData(hr);
     }
 }
 
@@ -1844,6 +1851,17 @@ ECGSweepSpeed ECGParam::getSweepSpeed(void)
     return static_cast<ECGSweepSpeed>(speed);
 }
 
+int ECGParam::getWaveDataRate() const
+{
+    if (!_provider)
+    {
+        return 0;
+    }
+
+    return _provider->getWaveformSample();
+}
+
+
 /**************************************************************************************************
  * 设置增益。
  *************************************************************************************************/
@@ -2312,11 +2330,11 @@ void ECGParam::onOxyCRGWaveUpdated()
 {
     if (_oxyCRGCO2Widget)
     {
-        _oxyCRGCO2Widget->update();
+//        _oxyCRGCO2Widget->update();
     }
     if (_oxyCRGRESPWidget)
     {
-        _oxyCRGRESPWidget->update();
+//        _oxyCRGRESPWidget->update();
     }
 }
 /**************************************************************************************************

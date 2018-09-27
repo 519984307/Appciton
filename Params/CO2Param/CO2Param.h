@@ -19,6 +19,8 @@
 class CO2TrendWidget;
 class CO2WaveWidget;
 class CO2ProviderIFace;
+class CO2ParamPrivate;
+class OxyCRGCO2WaveWidget;
 class CO2Param: public Param
 {
     Q_OBJECT
@@ -102,7 +104,7 @@ public:
     void setOneShotAlarm(CO2OneShotType t, bool status);
 
     // 设置呼吸氧和中的CO2窗口波形
-    void setOxyCRGCO2Widget(OxyCRGCO2Widget* p);
+    void setOxyCRGCO2Widget(OxyCRGCO2WaveWidget* p);
 
     // 超限报警通知
     void noticeLimitAlarm(int id, bool flag);
@@ -150,24 +152,7 @@ public:
 
 private:
     CO2Param();
-    void _setWaveformSpeed(CO2SweepSpeed speed);
-    void _setWaveformZoom(CO2DisplayZoom zoom);
 
-    void _getCO2RESPWins(QString &co2Trend, QString &co2Wave, QString &respTrend, QString &respWave);
-
-    CO2ProviderIFace *_provider;
-    CO2TrendWidget *_trendWidget;
-    CO2WaveWidget *_waveWidget;
-    OxyCRGCO2Widget *_oxyCRGCo2Widget;
-
-    short _etco2Value;
-    short _fico2Value;
-    short _etco2MaxVal;
-    short _etco2MinVal;
-    short _brVaule;
-    short _baro;
-    bool _connectedProvider;
-    bool _co2Switch;
-    UnitType _curUnit;
+    CO2ParamPrivate *const d_ptr;
 };
 #define co2Param (CO2Param::construction())

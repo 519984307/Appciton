@@ -31,54 +31,47 @@ public :
      * @return
      */
     int getWaveTypeIndex(void)const;
+
     /**
      * @brief getHRLow
-     * @param status
      * @return
      */
-    int getHRLow(bool &status)const;
+    int getHRLow()const;
     /**
      * @brief getHRHigh
-     * @param status
      * @return
      */
-    int getHRHigh(bool &status)const;
+    int getHRHigh()const;
     /**
      * @brief getSPO2Low
-     * @param status
      * @return
      */
-    int getSPO2Low(bool &status)const;
+    int getSPO2Low()const;
     /**
      * @brief getSPO2High
-     * @param status
      * @return
      */
-    int getSPO2High(bool &status)const;
+    int getSPO2High()const;
     /**
      * @brief getCO2Low
-     * @param status
      * @return
      */
-    int getCO2Low(bool &status)const;
+    int getCO2Low()const;
     /**
      * @brief getCO2High
-     * @param status
      * @return
      */
-    int getCO2High(bool &status)const;
+    int getCO2High()const;
     /**
      * @brief getRRLow
-     * @param status
      * @return
      */
-    int getRRLow(bool &status)const;
+    int getRRLow()const;
     /**
      * @brief getRRHigh
-     * @param status
      * @return
      */
-    int getRRHigh(bool &status)const;
+    int getRRHigh()const;
 
 protected:
     /**

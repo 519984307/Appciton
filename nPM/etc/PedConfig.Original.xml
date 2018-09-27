@@ -42,6 +42,7 @@
 		<Trend1>1</Trend1>
 		<Trend2>0</Trend2>
 		<Wave>0</Wave>
+		<Interval>1</Interval>
 		<Ruler>
 			<HRLow>0</HRLow>	
 			<HRHigh>0</HRHigh>	
