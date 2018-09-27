@@ -90,6 +90,9 @@ public:
 protected:
     void showEvent(QShowEvent *ev);
 
+    /* reimplment */
+    bool focusNextPrevChild(bool next);
+
 private slots:
     /**
      * @brief _allAutoReleased all ruler auto slot funtion
