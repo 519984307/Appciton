@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/26
+ **/
+
 ////////////////////////////////////////////////////////////////////////////////
 // 说明：
 // 波形控件的扫描模式
@@ -6,7 +16,7 @@
 #include "WaveScanMode.h"
 #include "WaveWidget.h"
 #include "Debug.h"
-//#include "CommonApplication.h"
+// #include "CommonApplication.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // 说明:
@@ -19,8 +29,8 @@
 // 无
 ////////////////////////////////////////////////////////////////////////////////
 WaveScanMode::WaveScanMode(WaveWidget *wave)
-        : WaveNormalMode(wave), _paintWaveFunc(_drawSparseCurve), _pendingCount(
-                0), _scanLineSpace(0)
+    : WaveNormalMode(wave), _paintWaveFunc(_drawSparseCurve), _pendingCount(
+          0), _scanLineSpace(0)
 {
 }
 
@@ -30,7 +40,7 @@ WaveScanMode::WaveScanMode(WaveWidget *wave)
 //
 // 参数:
 // 无
-//_pending_count
+// _pending_count
 // 返回值:
 // 无
 ////////////////////////////////////////////////////////////////////////////////
@@ -86,7 +96,7 @@ bool WaveScanMode::updateRegion(QRegion &region)
         return false;
     }
 
-    if(!_wave)
+    if (!_wave)
     {
         return false;
     }
@@ -104,7 +114,7 @@ bool WaveScanMode::updateRegion(QRegion &region)
     rect.setBottom(_wave->height() - 1);
 
     // 计算波头更新区域
-	//预留画标记长度
+    //预留画标记长度
     int startX = _wave->_waveBufHead(_pendingCount + 1).x() - 4;
     int endX = _wave->_waveBufHead(0).x();
     if (startX <= endX)
@@ -169,7 +179,7 @@ void WaveScanMode::prepareTransformFactor()
 {
     WaveNormalMode::prepareTransformFactor();
 
-    if(!_wave)
+    if (!_wave)
     {
         return;
     }
@@ -188,19 +198,19 @@ void WaveScanMode::prepareTransformFactor()
     if (_wave->waveSpeed() != 0)
     {
 //        _scanLineSpace = 2 * _wave->dataRate() / _wave->waveSpeed();
-        if(_wave->dataRate() <= 50)
+        if (_wave->dataRate() <= 50)
         {
-            //if the sample rate is too small, the use floor function to avoid large scan line space
+            // if the sample rate is too small, the use floor function to avoid large scan line space
             _scanLineSpace = floor(_wave->scanLineSpace * 1.0 * (_wave->_pixelWPitch * _wave->dataRate() /
-                                                                 _wave->waveSpeed()));
+                                   _wave->waveSpeed()));
         }
         else
         {
             _scanLineSpace = ceilf(_wave->scanLineSpace * 1.0 * (_wave->_pixelWPitch * _wave->dataRate() /
-                                                                 _wave->waveSpeed()));
+                                   _wave->waveSpeed()));
         }
         _wave->_spaceDataNum = ceilf(6.5  * (_wave->_pixelWPitch * _wave->dataRate() /
-                                   _wave->waveSpeed()));
+                                             _wave->waveSpeed()));
     }
 }
 
@@ -217,7 +227,7 @@ void WaveScanMode::prepareTransformFactor()
 ////////////////////////////////////////////////////////////////////////////////
 void WaveScanMode::valueRangeChanged()
 {
-    if(!_wave)
+    if (!_wave)
     {
         return;
     }
@@ -266,7 +276,8 @@ void WaveScanMode::valueRangeChanged()
 ////////////////////////////////////////////////////////////////////////////////
 void WaveScanMode::addData(int value, int flag, bool isUpdated)
 {
-    if(!_wave)
+    Q_UNUSED(isUpdated)
+    if (!_wave)
     {
         return;
     }
@@ -289,7 +300,7 @@ void WaveScanMode::addData(int value, int flag, bool isUpdated)
 ////////////////////////////////////////////////////////////////////////////////
 void WaveScanMode::paintWave(QPainter &painter, const QRect &rect)
 {
-    if(!_wave)
+    if (!_wave)
     {
         return;
     }
@@ -401,8 +412,8 @@ void WaveScanMode::_drawWave(QPainter &painter, int beginIndex, int endIndex)
 void WaveScanMode::_drawDotLine(QPainter &painter, int beginIndex, int endIndex)
 {
     painter.setPen(
-            QPen(_wave->palette().windowText(),
-                    _wave->lineWidth()));
+        QPen(_wave->palette().windowText(),
+             _wave->lineWidth()));
     painter.setRenderHint(QPainter::Antialiasing, _wave->isAntialias());
     int x = beginIndex;
     for (int i = x + 1; i <= endIndex; ++i)
@@ -428,21 +439,21 @@ void WaveScanMode::_drawDotLine(QPainter &painter, int beginIndex, int endIndex)
 // 无
 ////////////////////////////////////////////////////////////////////////////////
 void WaveScanMode::_drawSparseCurve(WaveScanMode *self, QPainter &painter,
-        int beginIndex, int endIndex)
+                                    int beginIndex, int endIndex)
 {
-    if(!self || !self->_wave)
+    if (!self || !self->_wave)
     {
         return;
     }
     painter.setPen(
-            QPen(self->_wave->palette().windowText(),
-                    self->_wave->lineWidth()));
+        QPen(self->_wave->palette().windowText(),
+             self->_wave->lineWidth()));
     painter.setRenderHint(QPainter::Antialiasing, self->_wave->isAntialias());
 
     if (beginIndex < endIndex)
     {
         painter.drawPolyline(&self->_wave->_waveBuf[beginIndex],
-                endIndex - beginIndex + 1);
+                             endIndex - beginIndex + 1);
     }
     else if (beginIndex == endIndex)
     {
@@ -463,16 +474,16 @@ void WaveScanMode::_drawSparseCurve(WaveScanMode *self, QPainter &painter,
 // 无
 ////////////////////////////////////////////////////////////////////////////////
 void WaveScanMode::_drawDenseCurve(WaveScanMode *self, QPainter &painter,
-        int beginIndex, int endIndex)
+                                   int beginIndex, int endIndex)
 {
-    if(!self || !self->_wave)
+    if (!self || !self->_wave)
     {
         return;
     }
 
     painter.setPen(
-            QPen(self->_wave->palette().windowText(),
-                    self->_wave->lineWidth()));
+        QPen(self->_wave->palette().windowText(),
+             self->_wave->lineWidth()));
     painter.setRenderHint(QPainter::Antialiasing, self->_wave->isAntialias());
 
     int i = beginIndex;
@@ -518,9 +529,9 @@ void WaveScanMode::_drawDenseCurve(WaveScanMode *self, QPainter &painter,
 // 无
 ////////////////////////////////////////////////////////////////////////////////
 void WaveScanMode::_fillSparseCurve(WaveScanMode *self, QPainter &painter,
-        int beginIndex, int endIndex)
+                                    int beginIndex, int endIndex)
 {
-    if(!self || !self->_wave)
+    if (!self || !self->_wave)
     {
         return;
     }
@@ -537,7 +548,7 @@ void WaveScanMode::_fillSparseCurve(WaveScanMode *self, QPainter &painter,
         {
             // 单数据点
             painter.drawLine(self->_wave->_waveBuf[i],
-                    QPoint(self->_wave->_xBuf[i], yBottom));
+                             QPoint(self->_wave->_xBuf[i], yBottom));
             break;
         }
         else if (self->_wave->_waveBuf[i].y() == self->_wave->_waveBuf[j].y())
@@ -545,7 +556,7 @@ void WaveScanMode::_fillSparseCurve(WaveScanMode *self, QPainter &painter,
             // 矩形
             while (((j + 1) <= endIndex)
                     && (self->_wave->_waveBuf[i].y()
-                            == self->_wave->_waveBuf[j + 1].y()))
+                        == self->_wave->_waveBuf[j + 1].y()))
             {
                 j++;
             }
@@ -554,7 +565,7 @@ void WaveScanMode::_fillSparseCurve(WaveScanMode *self, QPainter &painter,
             rect.setWidth(self->_wave->_xBuf[j] - self->_wave->_xBuf[i] + 1);
             rect.setBottom(yBottom);
             painter.fillRect(rect,
-                    self->_wave->palette().color(QPalette::WindowText));
+                             self->_wave->palette().color(QPalette::WindowText));
             i = j;
         }
         else if (self->_wave->_waveBuf[i].y() > self->_wave->_waveBuf[j].y())
@@ -572,7 +583,7 @@ void WaveScanMode::_fillSparseCurve(WaveScanMode *self, QPainter &painter,
             rect.setWidth(tri[1].x() - tri[0].x() + 1);
             rect.setBottom(yBottom);
             painter.fillRect(rect,
-                    self->_wave->palette().color(QPalette::WindowText));
+                             self->_wave->palette().color(QPalette::WindowText));
             i = j;
         }
         else
@@ -590,7 +601,7 @@ void WaveScanMode::_fillSparseCurve(WaveScanMode *self, QPainter &painter,
             rect.setWidth(tri[1].x() - tri[0].x() + 1);
             rect.setBottom(yBottom);
             painter.fillRect(rect,
-                    self->_wave->palette().color(QPalette::WindowText));
+                             self->_wave->palette().color(QPalette::WindowText));
             i = j;
         }
     }
@@ -609,9 +620,9 @@ void WaveScanMode::_fillSparseCurve(WaveScanMode *self, QPainter &painter,
 // 无
 ////////////////////////////////////////////////////////////////////////////////
 void WaveScanMode::_fillDenseCurve(WaveScanMode *self, QPainter &painter,
-        int beginIndex, int endIndex)
+                                   int beginIndex, int endIndex)
 {
-    if(!self || !self->_wave)
+    if (!self || !self->_wave)
     {
         return;
     }
@@ -623,7 +634,7 @@ void WaveScanMode::_fillDenseCurve(WaveScanMode *self, QPainter &painter,
     for (int i = beginIndex; i <= endIndex; i++)
     {
         painter.drawLine(self->_wave->_waveBuf[i],
-                QPoint(self->_wave->_xBuf[i], yBottom));
+                         QPoint(self->_wave->_xBuf[i], yBottom));
     }
 
     _drawDenseCurve(self, painter, beginIndex, endIndex);

@@ -230,6 +230,7 @@ void PasswordMenuManage::_numBtnSlot(int index)
 **************************************************************************************************/
 void PasswordMenuManage::_backspaceBtnSlot(int index)
 {
+    Q_UNUSED(index)
     if (_passwordStr.size() == 0)
     {
         return;
@@ -246,6 +247,7 @@ void PasswordMenuManage::_backspaceBtnSlot(int index)
 **************************************************************************************************/
 void PasswordMenuManage::_okBtnSlot(int index)
 {
+    Q_UNUSED(index)
 //    //超级密码
 //    if (_passwordStr == _superPassword)
 //    {

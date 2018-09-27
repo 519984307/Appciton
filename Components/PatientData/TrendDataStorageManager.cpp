@@ -33,7 +33,7 @@ class ShortTrendStorage
 public:
     explicit ShortTrendStorage(int dataSize)
     {
-        for (int i = 0; i < TrendDataStorageManager::SHORT_TREND_INTERVAL_NR; i++)
+        for (int i = 0; i < SHORT_TREND_INTERVAL_NR; i++)
         {
             trendBuffer[i] = new RingBuff<TrendDataType>(dataSize);
         }
@@ -41,13 +41,13 @@ public:
 
     ~ShortTrendStorage()
     {
-        for (int i = 0; i < TrendDataStorageManager::SHORT_TREND_INTERVAL_NR; i++)
+        for (int i = 0; i < SHORT_TREND_INTERVAL_NR; i++)
         {
             delete trendBuffer[i];
         }
     }
 
-    RingBuff<TrendDataType> *trendBuffer[TrendDataStorageManager::SHORT_TREND_INTERVAL_NR];
+    RingBuff<TrendDataType> *trendBuffer[SHORT_TREND_INTERVAL_NR];
 };
 
 class TrendDataStorageManagerPrivate: public StorageManagerPrivate
@@ -132,22 +132,22 @@ void TrendDataStorageManagerPrivate::storeShortTrendData(SubParamID subParamID, 
     {
         if (timeStamp % 10 == 0)
         {
-            (*iter)->trendBuffer[TrendDataStorageManager::SHORT_TREND_INTERVAL_10S]->push(data);
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_10S]->push(data);
         }
 
         if (timeStamp % 20 == 0)
         {
-            (*iter)->trendBuffer[TrendDataStorageManager::SHORT_TREND_INTERVAL_20S]->push(data);
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_20S]->push(data);
         }
 
         if (timeStamp % 30 == 0)
         {
-            (*iter)->trendBuffer[TrendDataStorageManager::SHORT_TREND_INTERVAL_30S]->push(data);
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_30S]->push(data);
         }
 
         if (timeStamp % 60 == 0)
         {
-            (*iter)->trendBuffer[TrendDataStorageManager::SHORT_TREND_INTERVAL_60S]->push(data);
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_60S]->push(data);
         }
     }
 }
@@ -309,7 +309,7 @@ void TrendDataStorageManager::unRegisterShortTrend(SubParamID subParamID)
 }
 
 void TrendDataStorageManager::getShortTrendData(SubParamID subParam, TrendDataType *dataBuf, int count,
-        TrendDataStorageManager::ShortTrendInterval interval) const
+        ShortTrendInterval interval) const
 {
     Q_D(const TrendDataStorageManager);
     if (dataBuf == NULL)

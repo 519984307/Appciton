@@ -20,7 +20,6 @@ class SPO2WaveWidget;
 class OxyCRGSPO2Widget;
 class OxyCRGSPO2TrendWidget;
 class SPO2ProviderIFace;
-class SPO2ParamPrivate;
 class SPO2Param: public Param
 {
     Q_OBJECT
@@ -118,6 +117,9 @@ public:
     bool isValid();
     bool isConnected();
 
+    // 设置连接，供给对象调用。
+    void setConnected(bool isConnected);
+
     // set Sensor off
     int setSensorOff(bool flag);
 
@@ -177,5 +179,6 @@ private:
     int _recPackageInPowerOn2sec;  // if receve 5 packages, selftest success, or selftest failed
 
     OxyCRGSPO2TrendWidget *_oxyCRGSPO2Trend;
+    bool _connectedProvider;
 };
 #define spo2Param (SPO2Param::construction())

@@ -94,6 +94,9 @@ public:
         return _isNIBPDisable;
     }
 
+    // 设置连接，供给对象调用。
+    void setConnected(bool isConnected);
+
     // 是否连接
     bool isConnected();
 
@@ -275,6 +278,7 @@ private:
     bool _isNIBPDisable;                    // 模块禁用；
     bool _isManualMeasure;                  // 手动测量标志
     bool _connectedFlag;                    // NIBP通信是否正常标志
+    bool _connectedProvider;                // 是否连接Provider
     QString _text;
 
 private:

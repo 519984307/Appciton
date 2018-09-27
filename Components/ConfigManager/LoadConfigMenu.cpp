@@ -64,9 +64,9 @@ void LoadConfigMenuPrivate::loadConfigs()
     configs.clear();
     ConfigManager::UserDefineConfigInfo userConfig[] =
     {
-        {"AdultConfig.Original", "AdultConfig.Original.xml"},
-        {"PedConfig.Original", "PedConfig.Original.xml"},
-        {"NeoConfig.Original", "NeoConfig.Original.xml"}
+        {"AdultConfig.Original", "AdultConfig.Original.xml", "Adult"},
+        {"PedConfig.Original", "PedConfig.Original.xml", "Adult"},
+        {"NeoConfig.Original", "NeoConfig.Original.xml", "Adult"}
     };
     for (int i = 0; i < 3; i++)
     {

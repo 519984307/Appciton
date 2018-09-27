@@ -280,6 +280,20 @@ void AGParam::setProvider(AGProviderIFace *provider)
                                  _provider->getO2MaxWaveform(), titleO2, _provider->getO2BaseLine());
 }
 
+void AGParam::setConnected(bool isConnected)
+{
+    if (_connectedProvider == isConnected)
+    {
+        return;
+    }
+    _connectedProvider = isConnected;
+}
+
+bool AGParam::isConnected()
+{
+    return _connectedProvider;
+}
+
 /**************************************************************************************************
  * 设置趋势对象。
  *************************************************************************************************/
@@ -785,7 +799,7 @@ bool AGParam::getDemoWaveformFile(const char *buf, int len, AGTypeGas type)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-AGParam::AGParam() : Param(PARAM_AG)
+AGParam::AGParam() : Param(PARAM_AG), _connectedProvider(false)
 {
     _provider = NULL;
 

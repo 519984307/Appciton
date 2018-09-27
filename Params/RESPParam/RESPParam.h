@@ -60,6 +60,12 @@ public:
     // 设置数据提供对象。
     void setProvider(RESPProviderIFace *provider);
 
+    // 设置连接，供给对象调用。
+    void setConnected(bool isConnected);
+
+    // 是否连接了真实的Provider，是指Provider有数据产生。
+    bool isConnected(void);
+
     // 设置界面对象。
     void setWaveWidget(RESPWaveWidget *waveWidget);
 

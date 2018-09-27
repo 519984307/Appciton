@@ -491,6 +491,7 @@ void OxyCRGWidget::setOxyCRGRrHrWidget(OxyCRGRRHRWaveWidget *p)
  *************************************************************************************************/
 void OxyCRGWidget::_intervalSlot(IWidget *widget)
 {
+    Q_UNUSED(widget)
     if (NULL == _intervalList)
     {
         _intervalList = new PopupList(_interval, false);

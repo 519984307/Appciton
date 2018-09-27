@@ -33,6 +33,7 @@
  *************************************************************************************************/
 void ECGTrendWidget::_releaseHandle(IWidget *iWidget)
 {
+    Q_UNUSED(iWidget)
     MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
     p->popup(trs("ECGMenu"));
 }

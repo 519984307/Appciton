@@ -221,10 +221,12 @@ QString ConfigManager::runningConfigFilename(PatientType patType)
 
 bool ConfigManager::getWidgetsPreStatus()const
 {
+    return false;
 }
 
 void ConfigManager::setWidgetStatus(bool status)
 {
+    Q_UNUSED(status)
 }
 
 bool ConfigManager::isReadOnly()const

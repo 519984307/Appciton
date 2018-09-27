@@ -398,7 +398,7 @@ void BLMProvider::_readData(unsigned char *buff, unsigned int len)
         }
     }
 
-    for (int i = startIndex; i < len; i++)
+    for (unsigned int i = startIndex; i < len; i++)
     {
         ringBuff.push(buff[i]);
         if (buff[i] != SOH)

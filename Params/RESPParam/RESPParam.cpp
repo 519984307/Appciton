@@ -33,7 +33,8 @@ public:
           provider(NULL),
           waveWidget(NULL),
           oxyCRGRrHrTrend(NULL),
-          respMonitoring(false)
+          respMonitoring(false),
+          connectedProvider(false)
     {
     }
     /**
@@ -47,6 +48,7 @@ public:
     RESPWaveWidget *waveWidget;
     OxyCRGRRHRWaveWidget *oxyCRGRrHrTrend;
     bool respMonitoring;
+    bool connectedProvider;
 };
 /**************************************************************************************************
  * 设置波形速度。
@@ -209,6 +211,20 @@ void RESPParam::setProvider(RESPProviderIFace *provider)
     waveformCache.registerSource(WAVE_RESP, d_ptr->provider->getRESPWaveformSample(),
                                  d_ptr->provider->minRESPWaveValue(), d_ptr->provider->maxRESPWaveValue(), tile,
                                  d_ptr->provider->getRESPBaseLine());
+}
+
+void RESPParam::setConnected(bool isConnected)
+{
+    if (d_ptr->connectedProvider == isConnected)
+    {
+        return;
+    }
+    d_ptr->connectedProvider = isConnected;
+}
+
+bool RESPParam::isConnected()
+{
+    return d_ptr->connectedProvider;
 }
 
 /**************************************************************************************************

@@ -27,10 +27,6 @@
 
 SPO2Param *SPO2Param::_selfObj = NULL;
 
-class SPO2ParamPrivate
-{
-public:
-};
 /**************************************************************************************************
  * 发送协议命令。
  *************************************************************************************************/
@@ -508,13 +504,16 @@ bool SPO2Param::isValid()
  *************************************************************************************************/
 bool SPO2Param::isConnected()
 {
-    Provider *provider = dynamic_cast<Provider *>(_provider);
-    if (NULL == provider)
-    {
-        return false;
-    }
+    return _connectedProvider;
+}
 
-    return provider->connected();
+void SPO2Param::setConnected(bool isConnected)
+{
+    if (_connectedProvider == isConnected)
+    {
+        return;
+    }
+    _connectedProvider = isConnected;
 }
 
 /**************************************************************************************************
