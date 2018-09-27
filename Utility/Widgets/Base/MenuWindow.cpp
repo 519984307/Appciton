@@ -159,6 +159,7 @@ bool MenuWindow::focusNextPrevChild(bool next)
         return true;
     }
 
+    ScrollArea *area = qobject_cast<ScrollArea *>(d_ptr->stackWidget->currentWidget());
     QWidget *w = NULL;
     if (next)
     {
@@ -180,6 +181,10 @@ bool MenuWindow::focusNextPrevChild(bool next)
         if (w)
         {
             w->setFocus(Qt::TabFocusReason);
+            if (area && area->isAncestorOf(w))
+            {
+                area->ensureWidgetVisible(w);
+            }
             return true;;
         }
     }
@@ -204,6 +209,10 @@ bool MenuWindow::focusNextPrevChild(bool next)
         if (w)
         {
             w->setFocus(Qt::BacktabFocusReason);
+            if (area && area->isAncestorOf(w))
+            {
+                area->ensureWidgetVisible(w);
+            }
             return true;;
         }
     }
@@ -260,6 +269,10 @@ void MenuWindow::onSelectItemChanged(int index)
                 setWindowTitle(windowTitle);
             }
             content->setFocus();
+            if (area->isAncestorOf(content->focusWidget()))
+            {
+                area->ensureWidgetVisible(content->focusWidget());
+            }
         }
     }
 }
