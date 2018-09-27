@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/27
+ **/
+
 #pragma once
 #include "Provider.h"
 #include "SPO2ProviderIFace.h"
@@ -28,6 +38,7 @@ class MasimoSetProvider : public Provider, public SPO2ProviderIFace
 public:
     virtual bool attachParam(Param &param);
     virtual void dataArrived(void);
+    virtual void dataArrived(unsigned char *buf, unsigned int length);
 
     virtual void setSensitive(SPO2Sensitive /*sens*/) { }
 
@@ -60,6 +71,9 @@ private:
     void handlePacket(unsigned char *data, int len);
 
     void _sendCmd(const unsigned char *data, unsigned int len);
+
+    // 读取数据导RingBuff中
+    void _readData(unsigned char *buff, unsigned int len);
 
     // 协议数据校验
     unsigned char _calcCheckSum(const unsigned char *data, int len);

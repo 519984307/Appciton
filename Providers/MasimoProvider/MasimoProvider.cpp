@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/9/27
+ **/
+
 #include "MasimoProvider.h"
 #include "SPO2Param.h"
 #include "SPO2Alarm.h"
@@ -36,14 +46,14 @@ void MasimoSetProvider::dataArrived(void)
     {
         if (ringBuff.at(0) != SOM)
         {
-            //debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));
+            // debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));
             ringBuff.pop(1);
             continue;
         }
 
         if (ringBuff.at(13) != EOM)
         {
-            //debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));
+            // debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));
             ringBuff.pop(1);
             continue;
         }
@@ -55,15 +65,63 @@ void MasimoSetProvider::dataArrived(void)
             ringBuff.pop(1);
         }
 
-        unsigned char sum = _calcCheckSum(&buff[1],_minPacketLen-3);
-        if (buff[_minPacketLen-2] == sum)
+        unsigned char sum = _calcCheckSum(&buff[1], _minPacketLen - 3);
+        if (buff[_minPacketLen - 2] == sum)
         {
             handlePacket(&buff[1], _minPacketLen - 3);
         }
         else
         {
             outHex(buff, _minPacketLen);
-            debug("0x%02x",sum);
+            debug("0x%02x", sum);
+            debug("FCS error (%s)\n", qPrintable(getName()));
+            ringBuff.pop(1);
+        }
+    }
+}
+
+void MasimoSetProvider::dataArrived(unsigned char *buf, unsigned int length)
+{
+    _readData(buf, length);
+
+    if (ringBuff.dataSize() < _minPacketLen)
+    {
+        return;
+    }
+
+    unsigned char buff[64];
+    while (ringBuff.dataSize() >= _minPacketLen)
+    {
+        if (ringBuff.at(0) != SOM)
+        {
+            // debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));
+            ringBuff.pop(1);
+            continue;
+        }
+
+        if (ringBuff.at(13) != EOM)
+        {
+            // debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));
+            ringBuff.pop(1);
+            continue;
+        }
+
+        // 将数据包读到buff中。
+        for (int i = 0; i < _minPacketLen; i++)
+        {
+            buff[i] = ringBuff.at(0);
+            ringBuff.pop(1);
+        }
+
+        unsigned char sum = _calcCheckSum(&buff[1], _minPacketLen - 3);
+        if (buff[_minPacketLen - 2] == sum)
+        {
+            handlePacket(&buff[1], _minPacketLen - 3);
+        }
+        else
+        {
+            outHex(buff, _minPacketLen);
+            debug("0x%02x", sum);
             debug("FCS error (%s)\n", qPrintable(getName()));
             ringBuff.pop(1);
         }
@@ -84,10 +142,15 @@ void MasimoSetProvider::_sendCmd(const unsigned char *data, unsigned int len)
         sendBuf[index++] = data[i];
     }
 
-    sendBuf[index++] = _calcCheckSum(data,len);
+    sendBuf[index++] = _calcCheckSum(data, len);
     sendBuf[index++] = EOM;
 
     writeData(sendBuf, len + 3);
+}
+
+void MasimoSetProvider::_readData(unsigned char *buff, unsigned int len)
+{
+    ringBuff.push(buff, len);
 }
 
 /**************************************************************************************************
@@ -114,7 +177,7 @@ void MasimoSetProvider::setSensitivityFastSat(SensitivityMode mode, bool fastSat
     cmd[1] = 0x00;
     cmd[2] = 0x00;
     // bit0 for SensitivityMode, 1-normal, 0-max
-    if (mode == (int)SPO2_MASIMO_SENS_NORMAL)
+    if (mode == SPO2_MASIMO_SENS_NORMAL)
     {
         cmd[2] |= 0x01;
     }
@@ -186,6 +249,8 @@ void MasimoSetProvider::setSmartTone(bool enable)
  *************************************************************************************************/
 MasimoSetProvider::MasimoSetProvider() : Provider("MASIMO_SPO2"), SPO2ProviderIFace()
 {
+    disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_S5;
+
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     initPort(portAttr);
 
@@ -199,7 +264,6 @@ MasimoSetProvider::MasimoSetProvider() : Provider("MASIMO_SPO2"), SPO2ProviderIF
  *************************************************************************************************/
 MasimoSetProvider::~MasimoSetProvider()
 {
-
 }
 
 /**************************************************************************************************
@@ -209,6 +273,7 @@ void MasimoSetProvider::disconnected()
 {
     spo2OneShotAlarm.clear();
     spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    spo2Param.setConnected(false);
 }
 
 /**************************************************************************************************
@@ -217,16 +282,22 @@ void MasimoSetProvider::disconnected()
 void MasimoSetProvider::reconnected()
 {
     spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    spo2Param.setConnected(true);
 }
 
 void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
 {
+    if (!isConnected)
+    {
+        spo2Param.setConnected(true);
+    }
+
     feed();
     short temp;
     switch (data[0])
     {
     case 0x00:          // 解包获取SpO2参数值，定义状态标记。
-        temp = (data[1]<<8) + data[2];
+        temp = (data[1] << 8) + data[2];
         temp = ((temp % 10) < 5) ? (temp / 10) : (temp / 10 + 1);
         if (_isLowPerfusionFlag)
         {
@@ -252,9 +323,9 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
 
     case 0x02:          // 解包获取PI参数值，定义状态标记
     {
-        temp = (data[1]<<8) + data[2];
-        float v = temp;
-        v = (v / 1000 + 0.05);
+        temp = (data[1] << 8) + data[2];
+//        float v = temp;
+//        v = (v / 1000 + 0.05);
 //        short piValue = (int)(v * 10);
 
 //        spo2Param.updatePIValue(piValue);     // 更新PI值。
@@ -263,7 +334,7 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
 
     case 0x07:          // 获取传感器探头状态
     {
-        temp = (data[1]<<8) + data[2];
+        temp = (data[1] << 8) + data[2];
         // 总的探头脱落
         bool isCableOff = (temp & 0xF3F3) ? true : false;
         spo2Param.setSensorOff(isCableOff);
@@ -279,11 +350,10 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
 
         if (isCableOff)  // 存在报警则不显示searching for pulse。
         {
-            spo2Param.setNotify(true,trs("SPO2CheckSensor"));
+            spo2Param.setNotify(true, trs("SPO2CheckSensor"));
             spo2Param.setValidStatus(false);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PERFUSION, false);
-
         }
         else
         {
@@ -306,15 +376,15 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
             spo2Param.setPR(UnknownData());
         }
     }
-        break;
+    break;
 
     case 61:
-        temp = (data[1]<<8) + data[2];
+//        temp = (data[1] << 8) + data[2];
 //        spo2Param.diagnosticError(temp);
         break;
 
     case 62:
-        temp = (data[1]<<8) + data[2];
+//        temp = (data[1] << 8) + data[2];
 //        spo2Param.boardError(temp);
         break;
 
