@@ -12,6 +12,7 @@
 #include <QWidget>
 #include <ParamDefine.h>
 #include <QList>
+#include <TrendDataDefine.h>
 
 class ShortTrendItemPrivate;
 class ShortTrendItem : public QWidget
@@ -82,6 +83,44 @@ public:
      */
     TrendDuration getTrendDuration() const;
 
+    /**
+     * @brief setWaveColor set the wave color
+     * @param color the wave's color
+     */
+    void setWaveColor(const QColor &color);
+
+    /**
+     * @brief getWaveColor get the wave color
+     * @return the wave color
+     */
+    QColor getWaveColor() const;
+
+    /**
+     * @brief enableDrawingTimeLabel enable draw the time label on the bottom of the trend graph
+     * @param enable
+     */
+    void enableDrawingTimeLabel(bool enable);
+
+    /**
+     * @brief isDrawingTimeLabel check whether is drawing the time label or not
+     * @return  true if enable, otherwise, return false
+     */
+    bool isDrawingTimeLabel() const;
+
+    /**
+     * @brief setNibpTrend need to set to true if current trend is NIBP trend
+     * @param enable
+     */
+    void setNibpTrend(bool enable);
+
+    /**
+     * @brief isNibpTrend check wheter current trend is nibp trend
+     * @return  true if current trend is nibp trend, otherwise, return false
+     */
+    bool isNibpTrend() const;
+
+public slots:
+    void onNewTrendDataArrived(ShortTrendInterval intreval);
 
 protected:
     /* reimplement */

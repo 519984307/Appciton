@@ -53,6 +53,7 @@ public:
 class TrendDataStorageManagerPrivate: public StorageManagerPrivate
 {
 public:
+    Q_DECLARE_PUBLIC(TrendDataStorageManager)
     explicit TrendDataStorageManagerPrivate(TrendDataStorageManager *q_ptr)
         : StorageManagerPrivate(q_ptr), firstSave(false), lastStoreTimestamp(0)
     {
@@ -64,6 +65,8 @@ public:
     void updateAdditionInfo();
 
     void storeShortTrendData(SubParamID subParamID, unsigned timestamp, TrendDataType data);
+
+    void emitShortTrendSingals(unsigned timestamp);
 
     TrendDataDescription dataDesc;
     bool firstSave;  // first time save after initialize
@@ -152,6 +155,30 @@ void TrendDataStorageManagerPrivate::storeShortTrendData(SubParamID subParamID, 
     }
 }
 
+void TrendDataStorageManagerPrivate::emitShortTrendSingals(unsigned timestamp)
+{
+    Q_Q(TrendDataStorageManager);
+    if (timestamp % 10 == 0)
+    {
+        emit q->newTrendDataArrived(SHORT_TREND_INTERVAL_10S);
+    }
+
+    if (timestamp % 20 == 0)
+    {
+        emit q->newTrendDataArrived(SHORT_TREND_INTERVAL_20S);
+    }
+
+    if (timestamp % 30 == 0)
+    {
+        emit q->newTrendDataArrived(SHORT_TREND_INTERVAL_30S);
+    }
+
+    if (timestamp % 60 == 0)
+    {
+        emit q->newTrendDataArrived(SHORT_TREND_INTERVAL_60S);
+    }
+}
+
 TrendDataStorageManager &TrendDataStorageManager::getInstance()
 {
     static TrendDataStorageManager *instance = NULL;
@@ -233,6 +260,9 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
 
         d->storeShortTrendData(subParamID, t, valueSegment.value);
     }
+
+    // emit signals
+    d->emitShortTrendSingals(t);
 
     int dataSize = sizeof(TrendDataSegment) + valueSegments.size() * sizeof(TrendValueSegment);
     QByteArray content(dataSize, 0);
@@ -345,6 +375,18 @@ void TrendDataStorageManager::getShortTrendData(SubParamID subParam, TrendDataTy
             dataBuf[i] = InvData();
         }
     }
+}
+
+TrendDataType TrendDataStorageManager::getLatestShortTrendData(SubParamID subParam, ShortTrendInterval interval)
+{
+    Q_D(const TrendDataStorageManager);
+    ShortTrendStorage *s = d->shortTrends.value(subParam, NULL);
+    if (s)
+    {
+        return s->trendBuffer[interval]->at(0);
+    }
+
+    return InvData();
 }
 
 TrendDataStorageManager::TrendDataStorageManager()
