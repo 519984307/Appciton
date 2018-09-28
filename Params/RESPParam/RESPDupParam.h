@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/28
+ **/
+
+
+
 #pragma once
 #include "Param.h"
 #include "RESPSymbol.h"
@@ -11,6 +23,11 @@ public:
     enum BrSourceType {
         BR_SOURCE_CO2,
         BR_SOURCE_RESP,
+    };
+
+    enum ParamSourceType {
+        BR,
+        RR,
     };
 
     static RESPDupParam &construction(void)
@@ -64,8 +81,32 @@ public:
     void updateBR(short br);
     short getRR(void);
 
-    //get br source type
+    // get br source type
     BrSourceType getBrSource() const;
+
+    /**
+     * @brief setBrSource  set br source
+     * @param type
+     */
+    void setBrSource(BrSourceType type);
+
+    /**
+     * @brief getParamSourceType 获取参数来源类型 br或者rr
+     * @return
+     */
+    ParamSourceType getParamSourceType() const;
+
+    /**
+     * @brief setAutoBrSourceStatue
+     * @param isEnabled
+     */
+    void setAutoBrSourceStatue(bool isEnabled);
+
+    /**
+     * @brief isAutoBrSourceEnabled
+     * @return
+     */
+    bool isAutoBrSourceEnabled() const;
 
 private:
     // 构造。
@@ -76,6 +117,9 @@ private:
     short _rrValue;
     short _brValue;
     bool _isAlarm;
+
+    bool _isAutoBrSource;
+    BrSourceType _manualBrSourceType;
 };
 #define respDupParam (RESPDupParam::construction())
 

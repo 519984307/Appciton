@@ -106,7 +106,6 @@ public:
     void setECGPVCSTrendWidget(ECGPVCSTrendWidget *trendWidget);
     void setECGSTTrendWidget(ECGSTTrendWidget *trendWidget);
     void setWaveWidget(ECGWaveWidget *waveWidget, ECGLead whichLead);
-    void setOxyCRGWaveWidget(OxyCRGHRWidget *waveWidget);
 
     /**
      * @brief setOxyCRGHrWaveWidget
@@ -337,7 +336,6 @@ private:
     ECGPVCSTrendWidget *_pvcsTrendWidget;
     ECGSTTrendWidget *_ecgSTTrendWidget;
     ECGWaveWidget *_waveWidget[ECG_LEAD_NR];
-    OxyCRGHRWidget *_waveOxyCRGWidget;
     OxyCRGRRHRWaveWidget *oxyCRGRrHrTrend;
     QBasicTimer _timer;
     short _hrValue;

@@ -76,4 +76,15 @@ public:
         };
         return symbol[index];
     }
+
+    static const char *convert(BRRRSourceType index)
+    {
+        static const char *symbol[BR_RR_NR] =
+        {
+            "Auto",
+            "CO2",
+            "RESP"
+        };
+        return symbol[index];
+    }
 };
