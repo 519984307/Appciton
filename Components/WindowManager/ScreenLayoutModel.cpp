@@ -26,6 +26,25 @@ const char *layoutNodeName(LayoutNodeType nodeType)
 {
     static const char * nodeName[LAYOUT_NODE_NR] = {
         NULL,
+        "ECG",
+        "ECG",
+        "RESP",
+        "SPO2",
+        "CO2",
+        "IBP1",
+        "IBP2",
+        "N2O",
+        "AA1",
+        "AA2",
+        "O2",
+
+        "NIBP",
+        "NIBPList",
+        "TEMP",
+        "C.O.",
+        "ST",
+        "PVCs",
+
         "ECG1Wave",
         "ECG2Wave",
         "RESPWave",
@@ -37,23 +56,6 @@ const char *layoutNodeName(LayoutNodeType nodeType)
         "AA1Wave",
         "AA2Wave",
         "O2Wave",
-
-        "ECG",
-        "SPO2",
-        "RESP",
-        "IBP1",
-        "IBP2",
-        "CO2",
-        "NIBP",
-        "NIBPList",
-        "TEMP",
-        "C.O.",
-        "AA1",
-        "AA2",
-        "N2O",
-        "O2",
-        "ST",
-        "PVCs",
     };
 
     return nodeName[nodeType];
@@ -326,8 +328,8 @@ public:
     {
         // two ecg wave at most
         // TODO: find the proper ECG Wave
-        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_ECG1), WAVE_ECG_II);
-        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_ECG2), WAVE_ECG_I);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_ECG1), WAVE_ECG_I);
+        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_ECG2), WAVE_ECG_II);
 
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_RESP), WAVE_RESP);
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_SPO2), WAVE_SPO2);

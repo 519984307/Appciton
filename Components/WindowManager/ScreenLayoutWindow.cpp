@@ -91,7 +91,7 @@ ScreenLayoutWindow::ScreenLayoutWindow()
 
     resize(800, 600);
 
-    setWindowTitle(trs("ScreenLayout"));
+    setWindowTitle(trs("StandardScreenLayout"));
 }
 
 ScreenLayoutWindow::~ScreenLayoutWindow()
