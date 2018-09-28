@@ -138,26 +138,23 @@ bool MenuWindow::focusNextPrevChild(bool next)
      */
 
     QWidget *cur = focusWidget();
-    ScrollArea *area = qobject_cast<ScrollArea *>(d_ptr->stackWidget->currentWidget());
-    QWidget *w = NULL;
 
     bool isBelongToSideBar = d_ptr->sidebar->isAncestorOf(cur);
+    Button *clostBtn = getCloseBtn();
+
     // 判断当前聚焦菜单是属于左侧还是右侧
     if (isBelongToSideBar)
     {
         d_ptr->isBelongToLeftWidget = true;
     }
-    else if (area->isAncestorOf(cur) ||
-             cur == d_ptr->retBtn)
+    else if (clostBtn != cur)
     {
         d_ptr->isBelongToLeftWidget = false;
     }
 
     // 判断当前聚焦在关闭按钮的位置是否属于左侧聚焦区域
     bool isFocusCloseWidgetBelongToLeft = false;
-    if (cur != d_ptr->retBtn &&
-        !isBelongToSideBar &&
-        !area->widget()->isAncestorOf(cur))
+    if (cur == clostBtn)
     {
         if (d_ptr->isBelongToLeftWidget)
         {
@@ -165,6 +162,7 @@ bool MenuWindow::focusNextPrevChild(bool next)
         }
     }
 
+    // 强制从左侧区域聚焦
     if (isFocusCloseWidgetBelongToLeft)
     {
         int count = d_ptr->sidebar->itemCount();
@@ -181,52 +179,19 @@ bool MenuWindow::focusNextPrevChild(bool next)
 
     if (d_ptr->isBelongToLeftWidget)
     {
-        // keep the focus inside the menu sidebar
         int index = d_ptr->sidebar->indexOf(qobject_cast<MenuSidebarItem *>(cur));
         int count = d_ptr->sidebar->itemCount();
 
+        // 当聚焦在左侧首个聚焦点，且飞梭向前移动聚焦点时，强制进入关闭按钮聚焦区域
         if (index == 0 && !next)
         {
-            w = cur->previousInFocusChain();
-            // find previous focus widget in the focus chain
-            while (w && cur != w)
-            {
-                if (w->isEnabled()
-                        && (w->focusPolicy() & Qt::TabFocus)
-                        && w->isVisibleTo(this)
-                        && w->isEnabled()
-                        && !d_ptr->sidebar->isAncestorOf(w)
-                        && !area->isAncestorOf(w)
-                        && d_ptr->retBtn != w)
-                {
-                    break;
-                }
-                w = w->previousInFocusChain();
-            }
-            w->setFocus();
-
+            clostBtn->setFocus();
             return true;
         }
+        // 当聚焦在左侧末尾那个聚焦点，且飞梭向后移动聚焦点时，强制进入关闭按钮聚焦区域
         else if (index == count - 1 && next)
         {
-            w = cur->nextInFocusChain();
-            // find next focus widget in the focus chain
-            while (w && cur != w)
-            {
-                if (w->isEnabled()
-                        && (w->focusPolicy() & Qt::TabFocus)
-                        && w->isVisibleTo(this)
-                        && w->isEnabled()
-                        && !d_ptr->sidebar->isAncestorOf(w)
-                        && !area->isAncestorOf(w)
-                        && d_ptr->retBtn != w)
-                {
-                    break;
-                }
-                w = w->nextInFocusChain();
-            }
-            w->setFocus();
-
+            clostBtn->setFocus();
             return true;
         }
 
@@ -248,6 +213,8 @@ bool MenuWindow::focusNextPrevChild(bool next)
         return true;
     }
 
+    ScrollArea *area = qobject_cast<ScrollArea *>(d_ptr->stackWidget->currentWidget());
+    QWidget *w = NULL;
     if (next)
     {
         w = cur->nextInFocusChain();

@@ -14,6 +14,7 @@
 #include <QScopedPointer>
 
 class WindowPrivate;
+class Button;
 class Window : public QDialog
 {
     Q_OBJECT
@@ -35,6 +36,12 @@ public:
      * @return
      */
     bool isShowingMask() const;
+
+    /**
+     * @brief getCloseBtn  获取关闭按钮的指针
+     * @return
+     */
+    Button *getCloseBtn(void) const;
 
     /* reimpelment */
     int exec();
