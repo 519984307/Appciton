@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/28
+ **/
+
+
+
 #pragma once
 #include "RESPDefine.h"
 
@@ -5,6 +17,17 @@
 class RESPSymbol
 {
 public:
+    static const char *convert(RESPApneaTime index)
+    {
+        static const char *symbol[RESP_APNEA_TIME_NR] =
+        {
+            "Off", "_20sec", "_25sec", "_30sec",
+            "_35sec", "_40sec", "_45sec",
+            "_50sec", "_55sec", "_60sec"
+        };
+        return symbol[index];
+    }
+
     static const char *convert(RESPSweepSpeed index)
     {
         static const char *symbol[RESP_SWEEP_SPEED_NR] =

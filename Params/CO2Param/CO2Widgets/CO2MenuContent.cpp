@@ -21,6 +21,8 @@
 #include "KeyInputPanel.h"
 #include "MessageBox.h"
 #include "MainMenuWindow.h"
+#include "RESPParam.h"
+#include "IConfig.h"
 
 class CO2MenuContentPrivate
 {
@@ -30,6 +32,7 @@ public:
         ITEM_CBO_WAVE_SPEED = 0,
         ITEM_CBO_WAVE_RULER,
         ITEM_CBO_FICO2_DISPLAY,
+        ITEM_CBO_APNEA_TIME,
 
         ITEM_BTN_O2_COMPEN = 0,
         ITEM_BTN_N2O_COMPEN,
@@ -76,6 +79,10 @@ void CO2MenuContentPrivate::loadOptions()
 
     // 显示控制。
     combos[ITEM_CBO_FICO2_DISPLAY]->setCurrentIndex(co2Param.getFICO2Display());
+
+    ApneaAlarmTime index = co2Param.getApneaTime();
+
+    combos[ITEM_CBO_APNEA_TIME]->setCurrentIndex(index);
 }
 
 void CO2MenuContent::onComboBoxIndexChanged(int index)
@@ -93,6 +100,11 @@ void CO2MenuContent::onComboBoxIndexChanged(int index)
         break;
     case CO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY:
         co2Param.setFiCO2Display((CO2FICO2Display)index);
+        break;
+    case CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME:
+        currentConfig.setNumValue("PrimaryCfg|Alarm|ApneaTime", index);
+        respParam.setApneaTime((ApneaAlarmTime)index);
+        co2Param.setApneaTime((ApneaAlarmTime)index);
         break;
     };
 }
@@ -239,6 +251,28 @@ void CO2MenuContent::layoutExec()
     itemID = CO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY;
     comboBox->setProperty("Item", itemID);
     d_ptr->combos.insert(CO2MenuContentPrivate::ITEM_CBO_FICO2_DISPLAY, comboBox);
+
+    // apnea time
+    label = new QLabel(trs("ApneaDelay"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_OFF))
+                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_20_SEC))
+                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_25_SEC))
+                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_30_SEC))
+                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_35_SEC))
+                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_40_SEC))
+                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_45_SEC))
+                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_50_SEC))
+                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_55_SEC))
+                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_60_SEC))
+                      );
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    itemID = CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME;
+    comboBox->setProperty("Item", itemID);
+    d_ptr->combos.insert(CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME, comboBox);
 
     int row = d_ptr->combos.count();
 

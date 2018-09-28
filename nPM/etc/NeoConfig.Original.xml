@@ -171,6 +171,11 @@
         <AlarmOffAtPowerOn>0</AlarmOffAtPowerOn>
         <NonAlertsBeepsInNonAED>1</NonAlertsBeepsInNonAED>
     </Alarm>
+	<PrimaryCfg>
+		<Alarm>
+			<ApneaTime>2</ApneaTime>
+		</Alarm>
+	</PrimaryCfg>
     <AlarmSource>
         <Adult>
             <HR_PR Enable="1" Prio="2">
