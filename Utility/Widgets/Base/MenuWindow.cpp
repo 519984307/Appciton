@@ -141,8 +141,9 @@ bool MenuWindow::focusNextPrevChild(bool next)
     ScrollArea *area = qobject_cast<ScrollArea *>(d_ptr->stackWidget->currentWidget());
     QWidget *w = NULL;
 
+    bool isBelongToSideBar = d_ptr->sidebar->isAncestorOf(cur);
     // 判断当前聚焦菜单是属于左侧还是右侧
-    if (d_ptr->sidebar->isAncestorOf(cur))
+    if (isBelongToSideBar)
     {
         d_ptr->isBelongToLeftWidget = true;
     }
@@ -155,7 +156,7 @@ bool MenuWindow::focusNextPrevChild(bool next)
     // 判断当前聚焦在关闭按钮的位置是否属于左侧聚焦区域
     bool isFocusCloseWidgetBelongToLeft = false;
     if (cur != d_ptr->retBtn &&
-        !d_ptr->sidebar->isAncestorOf(cur) &&
+        !isBelongToSideBar &&
         !area->widget()->isAncestorOf(cur))
     {
         if (d_ptr->isBelongToLeftWidget)
