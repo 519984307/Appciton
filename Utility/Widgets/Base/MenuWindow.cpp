@@ -29,7 +29,8 @@ public:
           stackWidget(NULL),
           retBtn(NULL),
           rightLayout(NULL),
-          menuPath("")
+          menuPath(""),
+          isBelongToLeftWidget(false)
     {
     }
 
@@ -38,6 +39,7 @@ public:
     Button *retBtn;
     QBoxLayout *rightLayout;
     QString menuPath;
+    bool isBelongToLeftWidget;  // 聚焦点否属于左边菜单
 };
 
 MenuWindow::MenuWindow()
@@ -136,12 +138,97 @@ bool MenuWindow::focusNextPrevChild(bool next)
      */
 
     QWidget *cur = focusWidget();
+    ScrollArea *area = qobject_cast<ScrollArea *>(d_ptr->stackWidget->currentWidget());
+    QWidget *w = NULL;
 
+    // 判断当前聚焦菜单是属于左侧还是右侧
     if (d_ptr->sidebar->isAncestorOf(cur))
+    {
+        d_ptr->isBelongToLeftWidget = true;
+    }
+    else if (area->isAncestorOf(cur) ||
+             cur == d_ptr->retBtn)
+    {
+        d_ptr->isBelongToLeftWidget = false;
+    }
+
+    // 判断当前聚焦在关闭按钮的位置是否属于左侧聚焦区域
+    bool isFocusCloseWidgetBelongToLeft = false;
+    if (cur != d_ptr->retBtn &&
+        !d_ptr->sidebar->isAncestorOf(cur) &&
+        !area->widget()->isAncestorOf(cur))
+    {
+        if (d_ptr->isBelongToLeftWidget)
+        {
+            isFocusCloseWidgetBelongToLeft = true;
+        }
+    }
+
+    if (isFocusCloseWidgetBelongToLeft)
+    {
+        int count = d_ptr->sidebar->itemCount();
+        int newIndex = 0;
+        if (!next)
+        {
+            newIndex =  count - 1;
+        }
+        MenuSidebarItem *item = d_ptr->sidebar->itemAt(newIndex);
+        item->setFocus();
+
+        return true;
+    }
+
+    if (d_ptr->isBelongToLeftWidget)
     {
         // keep the focus inside the menu sidebar
         int index = d_ptr->sidebar->indexOf(qobject_cast<MenuSidebarItem *>(cur));
         int count = d_ptr->sidebar->itemCount();
+
+        if (index == 0 && !next)
+        {
+            w = cur->previousInFocusChain();
+            // find previous focus widget in the focus chain
+            while (w && cur != w)
+            {
+                if (w->isEnabled()
+                        && (w->focusPolicy() & Qt::TabFocus)
+                        && w->isVisibleTo(this)
+                        && w->isEnabled()
+                        && !d_ptr->sidebar->isAncestorOf(w)
+                        && !area->isAncestorOf(w)
+                        && d_ptr->retBtn != w)
+                {
+                    break;
+                }
+                w = w->previousInFocusChain();
+            }
+            w->setFocus();
+
+            return true;
+        }
+        else if (index == count - 1 && next)
+        {
+            w = cur->nextInFocusChain();
+            // find next focus widget in the focus chain
+            while (w && cur != w)
+            {
+                if (w->isEnabled()
+                        && (w->focusPolicy() & Qt::TabFocus)
+                        && w->isVisibleTo(this)
+                        && w->isEnabled()
+                        && !d_ptr->sidebar->isAncestorOf(w)
+                        && !area->isAncestorOf(w)
+                        && d_ptr->retBtn != w)
+                {
+                    break;
+                }
+                w = w->nextInFocusChain();
+            }
+            w->setFocus();
+
+            return true;
+        }
+
         if (index >= 0)
         {
             int newIndex = 0;
@@ -156,11 +243,10 @@ bool MenuWindow::focusNextPrevChild(bool next)
             MenuSidebarItem *item = d_ptr->sidebar->itemAt(newIndex);
             item->setFocus();
         }
+
         return true;
     }
 
-    ScrollArea *area = qobject_cast<ScrollArea *>(d_ptr->stackWidget->currentWidget());
-    QWidget *w = NULL;
     if (next)
     {
         w = cur->nextInFocusChain();
@@ -185,7 +271,7 @@ bool MenuWindow::focusNextPrevChild(bool next)
             {
                 area->ensureWidgetVisible(w);
             }
-            return true;;
+            return true;
         }
     }
     else
@@ -213,7 +299,7 @@ bool MenuWindow::focusNextPrevChild(bool next)
             {
                 area->ensureWidgetVisible(w);
             }
-            return true;;
+            return true;
         }
     }
 
