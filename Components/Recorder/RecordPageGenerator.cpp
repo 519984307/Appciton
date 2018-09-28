@@ -30,6 +30,7 @@
 #include "CO2Param.h"
 #include "Utility.h"
 #include "LayoutManager.h"
+#include <QDebug>
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2

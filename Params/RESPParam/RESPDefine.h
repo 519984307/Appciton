@@ -1,5 +1,25 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/28
+ **/
+
+
+
 #pragma once
 
+
+enum BRRRSourceType
+{
+    BR_RR_AUTO,
+    BR_RR_SOURCE_CO2,
+    BR_RR_SOURCE_RESP,
+    BR_RR_NR,
+};
 /**************************************************************************************************
  * 血氧波形速度。
  *************************************************************************************************/
