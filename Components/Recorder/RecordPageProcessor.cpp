@@ -19,6 +19,9 @@
 
 #define PAGE_QUEUE_SIZE 32
 
+#define BATCH_LINE_NUM 25
+#define SEND_LINE_PERIOD 50
+
 class RecordPageProcessorPrivate
 {
 public:
@@ -85,7 +88,7 @@ void RecordPageProcessor::addPage(RecordPage *page)
         return;
     }
 
-#if 1
+#if 0
 #ifdef Q_WS_QWS
     QString path("/mnt/nfs/tmp/");
 #else
@@ -109,7 +112,7 @@ void RecordPageProcessor::addPage(RecordPage *page)
     {
         // process the page in the next event loop
         d_ptr->processing = true;
-        d_ptr->timerID = startTimer(2);
+        d_ptr->timerID = startTimer(SEND_LINE_PERIOD);
     }
 }
 
@@ -183,20 +186,23 @@ void RecordPageProcessor::timerEvent(QTimerEvent *ev)
         // send page data
         int dataLen = d_ptr->curProcessingPage->height() / 8;
         unsigned char data[dataLen] = {0};
-        d_ptr->curProcessingPage->getColumnData(d_ptr->curPageXPos++, data);
-        if (!d_ptr->iface->sendBitmapData(data, dataLen))
-        {
-#if 0
-            // send failed, uart buffer might be full
-            qdebug("send bitmap data failed, send again after 20 ms.");
-            ::usleep(20 * 1000);
+        int pageWidth = d_ptr->curProcessingPage->width();
 
-            // send again, and don't care the result
+        // send data
+        int count = 0;
+        while (count < BATCH_LINE_NUM)
+        {
+            d_ptr->curProcessingPage->getColumnData(d_ptr->curPageXPos++, data);
             d_ptr->iface->sendBitmapData(data, dataLen);
-#endif
+            count++;
+
+            if (d_ptr->curPageXPos >= pageWidth)
+            {
+                break;
+            }
         }
 
-        if (d_ptr->curPageXPos >= d_ptr->curProcessingPage->width())
+        if (d_ptr->curPageXPos >= pageWidth)
         {
             qDebug() << "Process Page" << d_ptr->curProcessingPage->getID()
                      << "left pages:" << d_ptr->pages.size();

@@ -102,7 +102,7 @@ bool WaveScanMode::updateRegion(QRegion &region)
     }
 
     int count = _wave->_bufCount();
-    if (count < 3)
+    if (count < 3 || (_pendingCount < 4 && _wave->dataRate() > 200))
     {
         return false;
     }
