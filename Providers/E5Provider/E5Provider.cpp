@@ -25,55 +25,64 @@
 
 enum E5RecvPacketType
 {
-    E5_RSP_ACK                  = 0x01,         // ack for command
-
     E5_RSP_VERSION              = 0x11,         // version response
-    E5_RSP_SELFTEST_RESULT      = 0x13,         // selftest result
 
-    E5_RSP_WORK_MODE            = 0x15,         // get work mode
-    E5_RSP_CALC_MODE            = 0x17,         // get calculation mode
-    E5_RSP_LEAD_MODE            = 0x19,         // get lead mode
-    E5_RSP_CALC_LEAD            = 0x1B,         // get calculation lead
-    E5_RSP_NOTCH_TYPE           = 0x1D,         // get notch type
-    E5_RSP_PATIENT_TYPE         = 0x1F,         // get patient type
+    E5_RSP_SELFLEARN_ONOFF      = 0x13,         // get selflearn onoff
+    E5_RSP_LEAD_MODE            = 0x17,         // get lead mode
+    E5_RSP_CALC_MODE            = 0x19,         // get calculation mode
+    E5_RSP_NOTCH_TYPE           = 0x1B,         // get notch type
+    E5_RSP_CALC_LEAD            = 0x1F,         // get calculation lead
     E5_RSP_PACE_ONOFF           = 0x21,         // get pace onoff
-    E5_RSP_SELFLEARN_ONOFF      = 0x23,         // get selflearn onoff
+    E5_RSP_PATIENT_TYPE         = 0x23,         // get patient type
 
-    E5_RSP_12LEAD_SUPPORT       = 0x33,         // response of get version
+    E5_RSP_ST_TEST              = 0x33,         // get ST test
+    E5_RSP_ST_ISO_POS           = 0x35,         // get ST ISO position
+    E5_RSP_ST_J_POS             = 0x37,         // get ST J position
+    E5_RSP_ST_STANDJ_POS        = 0x39,         // get ST ST and J position
+
+    E5_RSP_RESP_APNEA_TIME      = 0x4F,         // response of set resp apnea time
     E5_RSP_RESP_CALC_LEAD       = 0x51,         // response of set resp calculate lead
-    E5_RSP_RESP_APNEA_TIME      = 0x53,         // response of set resp apnea time
-    E5_RSP_ENABLE_RESP_CALC     = 0x55,         // response of enable resp calculate
+    E5_RSP_RESP_CALC_SWITCH     = 0x61,         // response of set resp calculate switch
+
+    E5_RSP_SELFTEST_RESULT      = 0x7F,         // selftest result
 
     E5_NOTIFY_SYSTEM_START      = 0x80,         // module start notification
-    E5_NOTIFY_RESP_ALARM        = 0x81,         // notify resp alarm status
-
+    E5_NOTIFY_ST_RESULT         = 0x90,         // ST result
+    E5_NOTIFY_ST_WAVE_RESULT    = 0x91,         // ST wave result
+    E5_NOTIFY_ASYS_ALARM        = 0xA1,         // notify asys alarm status
     E5_PERIODIC_ALIVE           = 0xB0,         // module alive packet, receive frequency will be 1Hz
+    E5_PERIODIC_TXT_DATA        = 0xB9,         // store TXT data
     E5_PERIODIC_ECG_DATA        = 0xBA,         // ecg data
     E5_PERIODIC_HR              = 0xBB,         // HR, -1 means invalid
     E5_PERIODIC_RESP_DATA       = 0xD0,         // resp data
     E5_PERIODIC_RR              = 0xD1,         // respiration rate
-
+    E5_NOTIFY_RESP_ALARM        = 0xD2,         // notify resp alarm status
+    E5_PERIODIC_TEMP_DATA       = 0xE0,         // temp data
     E5_STATUS_ERROR_OR_WARN     = 0xF0,         // error or warning
 };
 
 enum E5SendPacketType
 {
     E5_CMD_GET_VERSION          = 0x10,         // get version
-    E5_CMD_GET_SELFTEST_RESULT  = 0x12,         // get system test result
 
-    E5_CMD_SET_WORK_MODE        = 0x14,         // set work mode
-    E5_CMD_SET_CALC_MODE        = 0x16,         // set calculation mode
-    E5_CMD_SET_LEAD_MODE        = 0x18,         // set lead mode
-    E5_CMD_SET_CALC_LEAD        = 0x1A,         // set calculation lead
-    E5_CMD_SET_NOTCH_TYPE       = 0x1C,         // set notch type
-    E5_CMD_SET_PATIENT_TYPE     = 0x1E,         // set patient type
+    E5_CMD_SET_SELFLEARN_ONOFF  = 0x12,         // set selflearn onoff
+    E5_CMD_SET_LEAD_MODE        = 0x16,         // set lead mode
+    E5_CMD_SET_CALC_MODE        = 0x18,         // set calculation mode
+    E5_CMD_SET_NOTCH_TYPE       = 0x1A,         // set notch type
+    E5_CMD_SET_CALC_LEAD        = 0x1E,         // set calculation lead
     E5_CMD_SET_PACE_ONOFF       = 0x20,         // set pace onoff
-    E5_CMD_SET_SELFLEARN_ONOFF  = 0x22,         // set selflearn onoff
+    E5_CMD_SET_PATIENT_TYPE     = 0x22,         // set patient type
 
-    E5_CMD_CHECK_12LEAD_SUPPORT = 0x32,         // check 12 lead support
+    E5_CMD_SET_ST_TEST          = 0x32,         // set ST test
+    E5_CMD_SET_ST_ISO_POS       = 0x34,         // set ST ISO position
+    E5_CMD_SET_ST_J_POS         = 0x36,         // set ST J position
+    E5_CMD_SET_ST_STANDJ_POS    = 0x38,         // set ST ST and J position
+
+    E5_CMD_SET_RESP_APNEA_TIME  = 0x4E,         // set resp apnea time
     E5_CMD_SET_RESP_CALC_LEAD   = 0x50,         // set resp calculate lead
-    E5_CMD_SET_RESP_APNEA_TIME  = 0x52,         // set resp apnea time
-    E5_CMD_ENABLE_RESP_CALC     = 0x54,         // enable resp calculation
+    E5_CMD_SET_RESP_CALC_SWITCH = 0x60,         // set resp calculate switch
+
+    E5_CMD_GET_SELFTEST_RESULT  = 0x7E,         // get system test result
 
     E5_CMD_UPGRADE              = 0xF6,         // enter upgrade mode
 };
@@ -273,7 +282,7 @@ E5Provider::E5Provider()
       d_ptr(new E5ProviderPrivate(this))
 {
     // UartAttrDesc portAttr(460800, 8, 'N', 1, 0, FlOW_CTRL_HARD);
-    UartAttrDesc portAttr(460800, 8, 'N', 1);
+    UartAttrDesc portAttr(230400, 8, 'N', 1);
     initPort(portAttr);
     d_ptr->ecgAlgInterface->reset();
     d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_MONITOR);
@@ -293,9 +302,6 @@ E5Provider::E5Provider()
 
     // get selftest result
     sendCmd(E5_CMD_GET_SELFTEST_RESULT, NULL, 0);
-
-    // get 12 Lead support status
-    sendCmd(E5_CMD_CHECK_12LEAD_SUPPORT, NULL, 0);
 }
 
 E5Provider::~E5Provider()
@@ -338,8 +344,6 @@ void E5Provider::handlePacket(unsigned char *data, int len)
 
     switch (data[0])
     {
-    case E5_RSP_ACK:
-        break;
     case E5_RSP_VERSION:
         break;
     case E5_RSP_SELFTEST_RESULT:
@@ -358,14 +362,11 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         break;
     case E5_RSP_PACE_ONOFF:
         break;
-    case E5_RSP_12LEAD_SUPPORT:
-        d_ptr->support12Lead = data[2];
-        break;
     case E5_RSP_RESP_CALC_LEAD:
         break;
     case E5_RSP_RESP_APNEA_TIME:
         break;
-    case E5_RSP_ENABLE_RESP_CALC:
+    case E5_RSP_RESP_CALC_SWITCH:
         break;
     case E5_NOTIFY_SYSTEM_START:
     {
@@ -373,9 +374,6 @@ void E5Provider::handlePacket(unsigned char *data, int len)
 
         // get selftest result
         sendCmd(E5_CMD_GET_SELFTEST_RESULT, NULL, 0);
-
-        // get 12 Lead support status
-        sendCmd(E5_CMD_CHECK_12LEAD_SUPPORT, NULL, 0);
 
         // set lead mode again
 //        setLeadSystem(d_ptr->ecgLeadMode);
@@ -719,7 +717,7 @@ void E5Provider::setRESPCalcLead(RESPLead lead)
 void E5Provider::enableRESPCalc(bool enable)
 {
     d_ptr->enableRespCalc = enable;
-    unsigned char onOff = enable ? 1 : 0;
-    sendCmd(E5_CMD_ENABLE_RESP_CALC, &onOff, 1);
+//    unsigned char onOff = enable ? 1 : 0;
+//    sendCmd(E5_CMD_ENABLE_RESP_CALC, &onOff, 1);
 }
 
