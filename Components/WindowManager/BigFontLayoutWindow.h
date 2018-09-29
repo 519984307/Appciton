@@ -16,15 +16,11 @@ class BigFontLayoutWindow :public Window
 {
     Q_OBJECT
 public:
-    static BigFontLayoutWindow &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new BigFontLayoutWindow();
-        }
-        return *_selfObj;
-    }
-    static BigFontLayoutWindow *_selfObj;
+    /**
+     * @brief getInstance 获取窗口实例入口
+     * @return
+     */
+    static BigFontLayoutWindow *getInstance();
     ~BigFontLayoutWindow();
 
 private slots:
@@ -33,5 +29,3 @@ private:
     BigFontLayoutWindow();
     BigFontLayoutWindowPrivate *const d_ptr;
 };
-
-#define bigFontLayoutWindow (BigFontLayoutWindow::construction())

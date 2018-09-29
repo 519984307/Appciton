@@ -111,6 +111,7 @@ void PatientStatusBarWidget::getSubFocusWidget(QList<QWidget *> &subWidgets) con
  *************************************************************************************************/
 void PatientStatusBarWidget::onIconClicked(int iconLabel)
 {
+    Q_UNUSED(iconLabel)
 }
 
 /**************************************************************************************************
@@ -119,6 +120,7 @@ void PatientStatusBarWidget::onIconClicked(int iconLabel)
 void PatientStatusBarWidget::paintEvent(QPaintEvent *e)
 {
     // do nothing
+    Q_UNUSED(e)
 }
 
 /**************************************************************************************************
@@ -126,6 +128,8 @@ void PatientStatusBarWidget::paintEvent(QPaintEvent *e)
  *************************************************************************************************/
 void PatientStatusBarWidget::showEvent(QShowEvent *e)
 {
+    Q_UNUSED(e)
+
     // pacer icon
     QLabel *l = qobject_cast<QLabel *> (_iconMap.value(PATIENT_ICON_LABEL_PACER)->children().at(1));
     if (l)

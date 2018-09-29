@@ -18,8 +18,6 @@
 #include "LanguageManager.h"
 #include "LayoutManager.h"
 
-BigFontLayoutWindow *BigFontLayoutWindow::_selfObj = NULL;
-
 class BigFontLayoutWindowPrivate
 {
 public:
@@ -37,6 +35,16 @@ public:
     Button *saveBtn;
 };
 
+
+BigFontLayoutWindow *BigFontLayoutWindow::getInstance()
+{
+    static BigFontLayoutWindow *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new BigFontLayoutWindow();
+    }
+    return instance;
+}
 
 BigFontLayoutWindow::~BigFontLayoutWindow()
 {

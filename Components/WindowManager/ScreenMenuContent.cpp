@@ -129,8 +129,11 @@ void ScreenMenuContent::onBtnClick()
         windowManager.showWindow(ScreenLayoutWindow::getInstance(), WindowManager::ShowBehaviorCloseOthers);
         break;
     case ScreenMenuContentPrivate::BUTTON_SCREEN_BIG_FONT_LAYOUT:
-        windowManager.showWindow(&bigFontLayoutWindow, WindowManager::ShowBehaviorCloseOthers);
+    {
+        BigFontLayoutWindow *instance = BigFontLayoutWindow::getInstance();
+        windowManager.showWindow(instance, WindowManager::ShowBehaviorCloseOthers);
         break;
+    }
     case ScreenMenuContentPrivate::BUTTON_PARA_COLOR:
         windowManager.showWindow(new ParaColorWindow, WindowManager::ShowBehaviorCloseIfVisiable);
         break;
