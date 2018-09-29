@@ -57,27 +57,43 @@ void PrintSettingMenuContentPrivate::loadOptions()
 
     int index[PRINT_WAVE_NUM] = {0};
     QSet<int> waveCboIds;
+    int offCount = 0;
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
         QString path;
         path = QString("Print|SelectWave%1").arg(i + 1);
         systemConfig.getNumValue(path, index[i]);
-        if (index[i] > WAVE_NONE && index[i] < WAVE_NR)
+        if (index[i] < WAVE_NR)
         {
             waveCboIds.insert(index[i]);
         }
-    }
-    if (waveCboIds.size() < PRINT_WAVE_NUM)
-    {
-        for (int i = 0; i < PRINT_WAVE_NUM; i++)
+        if (index[i] == WAVE_NONE)
         {
-            QString path;
-            path = QString("Print|SelectWave%1").arg(i + 1);
-            systemConfig.setNumValue(path, waveIDs.at(i));
+            offCount++;
         }
     }
+
+    if (offCount < PRINT_WAVE_NUM - 1)
+    {
+        if ((waveCboIds.size()) < PRINT_WAVE_NUM )
+        {
+            for (int i = 0; i < PRINT_WAVE_NUM; i++)
+            {
+                QString path;
+                path = QString("Print|SelectWave%1").arg(i + 1);
+                systemConfig.setNumValue(path, waveIDs.at(i));
+            }
+        }
+    }
+
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
+        if (index[i] == WAVE_NONE)
+        {
+            selectWaves[i]->setCurrentIndex(0);
+            continue;
+        }
+
         int count = 1;
         foreach(int id, waveIDs)
         {
@@ -244,6 +260,12 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
 
     QString path;
     path = QString("Print|SelectWave%1").arg(item + 1);
+
+    if (cmbList->currentIndex() == 0)
+    {
+        systemConfig.setNumValue(path, static_cast<int>(WAVE_NONE));
+        return;
+    }
 
     // 寻找打印波形对应的波形ID号
     QString curWaveName = cmbList->currentText();
