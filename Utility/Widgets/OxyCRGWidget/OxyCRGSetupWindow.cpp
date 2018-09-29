@@ -51,19 +51,7 @@ public:
           co2Low(NULL),
           co2High(NULL)
     {
-        rulerUpdated.hrUpdatedStatus = false;
-        rulerUpdated.spo2UpdatedStatus = false;
-        rulerUpdated.co2UpdatedStatus = false;
-        rulerUpdated.rrUpdatedStatus = false;
     }
-
-    struct RulerUpdated
-    {
-        bool hrUpdatedStatus;
-        bool spo2UpdatedStatus;
-        bool co2UpdatedStatus;
-        bool rrUpdatedStatus;
-    } rulerUpdated;
 
     int waveTypeIndex;
 
@@ -400,51 +388,43 @@ int OxyCRGSetupWindow::getWaveTypeIndex() const
     return d_ptr->waveTypeIndex;
 }
 
-int OxyCRGSetupWindow::getHRLow(bool &status) const
+int OxyCRGSetupWindow::getHRLow() const
 {
-    status = d_ptr->rulerUpdated.hrUpdatedStatus;
     return d_ptr->hrLow->currentText().toInt();
 }
 
-int OxyCRGSetupWindow::getHRHigh(bool &status) const
+int OxyCRGSetupWindow::getHRHigh() const
 {
-    status = d_ptr->rulerUpdated.hrUpdatedStatus;
     return d_ptr->hrHigh->currentText().toInt();
 }
 
-int OxyCRGSetupWindow::getSPO2Low(bool &status) const
+int OxyCRGSetupWindow::getSPO2Low() const
 {
-    status = d_ptr->rulerUpdated.spo2UpdatedStatus;
     return d_ptr->spo2Low->currentText().toInt();
 }
 
-int OxyCRGSetupWindow::getSPO2High(bool &status) const
+int OxyCRGSetupWindow::getSPO2High() const
 {
-    status = d_ptr->rulerUpdated.spo2UpdatedStatus;
     return d_ptr->spo2High->text().toInt();
 }
 
-int OxyCRGSetupWindow::getCO2Low(bool &status) const
+int OxyCRGSetupWindow::getCO2Low() const
 {
-    status = d_ptr->rulerUpdated.co2UpdatedStatus;
     return d_ptr->co2Low->text().toInt();
 }
 
-int OxyCRGSetupWindow::getCO2High(bool &status) const
+int OxyCRGSetupWindow::getCO2High() const
 {
-    status = d_ptr->rulerUpdated.co2UpdatedStatus;
     return d_ptr->co2High->currentText().toInt();
 }
 
-int OxyCRGSetupWindow::getRRLow(bool &status) const
+int OxyCRGSetupWindow::getRRLow() const
 {
-    status = d_ptr->rulerUpdated.rrUpdatedStatus;
     return d_ptr->rrLow->currentText().toInt();
 }
 
-int OxyCRGSetupWindow::getRRHigh(bool &status) const
+int OxyCRGSetupWindow::getRRHigh() const
 {
-    status = d_ptr->rulerUpdated.rrUpdatedStatus;
     return d_ptr->rrHigh->currentText().toInt();
 }
 
@@ -478,37 +458,31 @@ void OxyCRGSetupWindow::onComboUpdated(int index)
     case OxyCRGSetupWindowPrivate::ITEM_CBO_HR_LOW:
     {
         currentConfig.setNumValue("OxyCRG|Ruler|HRLow", index);
-        d_ptr->rulerUpdated.hrUpdatedStatus = true;
      }
         break;
     case OxyCRGSetupWindowPrivate::ITEM_CBO_HR_HIGH:
     {
         currentConfig.setNumValue("OxyCRG|Ruler|HRHigh", index);
-        d_ptr->rulerUpdated.hrUpdatedStatus = true;
      }
         break;
     case OxyCRGSetupWindowPrivate::ITEM_CBO_SPO2_LOW:
     {
         currentConfig.setNumValue("OxyCRG|Ruler|SPO2Low", index);
-        d_ptr->rulerUpdated.spo2UpdatedStatus = true;
      }
         break;
     case OxyCRGSetupWindowPrivate::ITEM_CBO_CO2_HIGH:
      {
         currentConfig.setNumValue("OxyCRG|Ruler|CO2High", index);
-        d_ptr->rulerUpdated.co2UpdatedStatus = true;
       }
         break;
     case OxyCRGSetupWindowPrivate::ITEM_CBO_RR_LOW:
     {
         currentConfig.setNumValue("OxyCRG|Ruler|RRLow", index);
-        d_ptr->rulerUpdated.rrUpdatedStatus = true;
     }
         break;
     case OxyCRGSetupWindowPrivate::ITEM_CBO_RR_HIGH:
     {
         currentConfig.setNumValue("OxyCRG|Ruler|RRHigh", index);
-        d_ptr->rulerUpdated.rrUpdatedStatus = true;
         d_ptr->rrLow->setEnabled(true);
         if (index != 0)
         {

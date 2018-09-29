@@ -36,6 +36,7 @@
 #include "ErrorLogItem.h"
 #include "ErrorLog.h"
 #include "PatientStatusBarWidget.h"
+#include "OxyCRGRRHRWaveWidget.h"
 
 #define ECG_TIMER_INTERVAL (100)
 #define GET_DIA_DATA_PERIOD (12000)
@@ -123,17 +124,10 @@ void ECGParam::handDemoTrendData(void)
 {
     int hrValue = qrand() % 10 + 60;
     ecgDupParam.updateHR(hrValue);
-    if (NULL != _waveOxyCRGWidget)
-    {
-        _waveOxyCRGWidget->addDataBuf(hrValue, 0);
-        _waveOxyCRGWidget->addData(hrValue);
 
-        _updateNum++;
-        if (_updateNum >= 2)
-        {
-            _updateNum = 0;
-            emit oxyCRGWaveUpdated();//呼吸氧和波形更新信号
-        }
+    if (oxyCRGRrHrTrend)
+    {
+        oxyCRGRrHrTrend->addHrTrendData(hrValue);
     }
     int pvcs = qrand() % 30 + 30;
     updatePVCS(pvcs);
@@ -326,7 +320,6 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
         }
         _waveWidget[i]->setDataRate(_provider->getWaveformSample());
     }
-    _waveOxyCRGWidget->setDataRate(1);
 
 //    <Gain>1</Gain>
     // todo：其他设置。
@@ -381,13 +374,13 @@ void ECGParam::setWaveWidget(ECGWaveWidget *waveWidget, ECGLead whichLead)
     }
 }
 
-void ECGParam::setOxyCRGWaveWidget(OxyCRGHRWidget *waveWidget)
+void ECGParam::setOxyCRGHrWaveWidget(OxyCRGRRHRWaveWidget *waveWidget)
 {
     if (waveWidget == NULL)
     {
         return;
     }
-    _waveOxyCRGWidget = waveWidget;
+    oxyCRGRrHrTrend = waveWidget;
 }
 
 /**************************************************************************************************
@@ -552,16 +545,9 @@ void ECGParam::updateHR(short hr)
     _hrValue = hr;
     ecgDupParam.updateHR(hr);
 
-    if (NULL != _waveOxyCRGWidget)
+    if (oxyCRGRrHrTrend)
     {
-        _waveOxyCRGWidget->addDataBuf(hr, 0);
-
-        _updateNum++;
-        if (_updateNum >= 2)
-        {
-            _updateNum = 0;
-            emit oxyCRGWaveUpdated();//呼吸氧和波形更新信号
-        }
+        oxyCRGRrHrTrend->addHrTrendData(hr);
     }
 }
 
@@ -723,6 +709,16 @@ void ECGParam::updateECGNotifyMesg(ECGLead lead, bool isAlarm)
     }
 }
 
+void ECGParam::setConnected(bool isConnected)
+{
+    if (_connectedProvider == isConnected)
+    {
+        return;
+    }
+
+    _connectedProvider = isConnected;
+}
+
 /**************************************************************************************************
  * 获取导联脱落状态。
  *************************************************************************************************/
@@ -747,17 +743,7 @@ char ECGParam::doesLeadOff(int lead)
  *************************************************************************************************/
 bool ECGParam::isConnected()
 {
-    if (_provider == NULL)
-    {
-        return false;
-    }
-    Provider *provider = dynamic_cast<Provider *>(_provider);
-    if (NULL == provider)
-    {
-        return false;
-    }
-
-    return provider->connected();
+    return _connectedProvider;
 }
 
 /**************************************************************************************************
@@ -1378,7 +1364,7 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
     _displayMode = mode;
 
     // 布局界面。
-    UserFaceType type = UFACE_MONITOR_STANDARD;
+//    UserFaceType type = UFACE_MONITOR_STANDARD;
     if (mode == ECG_DISPLAY_NORMAL)
     {
         // 设置波形采样率
@@ -1389,7 +1375,7 @@ void ECGParam::setDisplayMode(ECGDisplayMode mode, bool refresh)
     }
     else if (mode == ECG_DISPLAY_12_LEAD_FULL)
     {
-        type = UFACE_MONITOR_12LEAD;
+//        type = UFACE_MONITOR_12LEAD;
 
         // 设置波形采样率
         _provider->setWaveformSample(WAVE_SAMPLE_RATE_500);
@@ -1844,6 +1830,17 @@ ECGSweepSpeed ECGParam::getSweepSpeed(void)
     return static_cast<ECGSweepSpeed>(speed);
 }
 
+int ECGParam::getWaveDataRate() const
+{
+    if (!_provider)
+    {
+        return 0;
+    }
+
+    return _provider->getWaveformSample();
+}
+
+
 /**************************************************************************************************
  * 设置增益。
  *************************************************************************************************/
@@ -2203,7 +2200,7 @@ void ECGParam::presentRhythm()
  * 构造。
  *************************************************************************************************/
 ECGParam::ECGParam() : Param(PARAM_ECG),
-    _updateNum(0)
+    _updateNum(0), _connectedProvider(false)
 {
     // 初始化成员。
     _provider = NULL;
@@ -2312,11 +2309,11 @@ void ECGParam::onOxyCRGWaveUpdated()
 {
     if (_oxyCRGCO2Widget)
     {
-        _oxyCRGCO2Widget->update();
+//        _oxyCRGCO2Widget->update();
     }
     if (_oxyCRGRESPWidget)
     {
-        _oxyCRGRESPWidget->update();
+//        _oxyCRGRESPWidget->update();
     }
 }
 /**************************************************************************************************

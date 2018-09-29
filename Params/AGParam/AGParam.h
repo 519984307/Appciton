@@ -62,6 +62,12 @@ public:
     // 设置数据提供对象。
     void setProvider(AGProviderIFace *provider);
 
+    // 设置连接，供给对象调用。
+    void setConnected(bool isConnected);
+
+    // 是否连接了真实的Provider，是指Provider有数据产生。
+    bool isConnected(void);
+
     // 设置界面对象
     void setTrendWidget(AGTrendWidget *trendWidget, AGTypeGas gasType);
     void setWaveWidget(AGWaveWidget *waveWidget, AGTypeGas gasType);
@@ -137,5 +143,7 @@ private:
     char *_n2oBuf;
 
     int n2o;
+
+    bool _connectedProvider;
 };
 #define agParam (AGParam::construction())

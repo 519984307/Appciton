@@ -29,8 +29,6 @@ public:
     {
         ITEM_CBO_ALARM_VOLUME,
         ITEM_CBO_SCREEN_BRIGHTNESS,
-        ITEM_CBO_PRINT_SPEED,
-        ITEM_CBO_PRINT_WAVEFORM_NUM,
         ITEM_CBO_KEYPRESS_VOLUME
     };
 
@@ -44,7 +42,6 @@ public:
 
 void SystemMenuContentPrivate::loadOptions()
 {
-    int index = 0;
     if (nightModeManager.isNightMode())
     {
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(false);
@@ -57,6 +54,8 @@ void SystemMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(true);
         combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
 
+        int index = 0;
+
         index = soundManager.getVolume(SoundManager::SOUND_TYPE_ALARM) - 1;
         combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(index);
 
@@ -66,12 +65,6 @@ void SystemMenuContentPrivate::loadOptions()
         index = soundManager.getVolume(SoundManager::SOUND_TYPE_KEY_PRESS)-1;
         combos[ITEM_CBO_KEYPRESS_VOLUME]->setCurrentIndex(index);
     }
-
-    index = recorderManager.getPrintSpeed();
-    combos[ITEM_CBO_PRINT_SPEED]->setCurrentIndex(index);
-
-    index = recorderManager.getPrintWaveNum() - 1;
-    combos[ITEM_CBO_PRINT_WAVEFORM_NUM]->setCurrentIndex(index);
 }
 
 SystemMenuContent::SystemMenuContent()
@@ -171,17 +164,6 @@ void SystemMenuContent::onComboBoxIndexChanged(int index)
         {
             int brightness = box->itemText(index).toInt();
             systemManager.setBrightness((BrightnessLevel)brightness);
-            break;
-        }
-        case SystemMenuContentPrivate::ITEM_CBO_PRINT_SPEED:
-        {
-            recorderManager.setPrintSpeed((PrintSpeed)index);
-            break;
-        }
-        case SystemMenuContentPrivate::ITEM_CBO_PRINT_WAVEFORM_NUM:
-        {
-            int waveformNum = box->itemText(index).toInt();
-            recorderManager.setPrintWaveNum(waveformNum);
             break;
         }
         case SystemMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME:

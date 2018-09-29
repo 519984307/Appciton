@@ -18,6 +18,7 @@
 class SPO2TrendWidget;
 class SPO2WaveWidget;
 class OxyCRGSPO2Widget;
+class OxyCRGSPO2TrendWidget;
 class SPO2ProviderIFace;
 class SPO2Param: public Param
 {
@@ -78,6 +79,7 @@ public:
     void setTrendWidget(SPO2TrendWidget *trendWidget);
     void setWaveWidget(SPO2WaveWidget *waveWidget);
     void setOxyCRGWaveWidget(OxyCRGSPO2Widget *waveWidget);
+    void setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *trendWidget);
 
     // PR音量
     SoundManager::VolumeLevel getPluseToneVolume(void);
@@ -114,6 +116,9 @@ public:
     void setValidStatus(bool isValid);
     bool isValid();
     bool isConnected();
+
+    // 设置连接，供给对象调用。
+    void setConnected(bool isConnected);
 
     // set Sensor off
     int setSensorOff(bool flag);
@@ -172,5 +177,8 @@ private:
     bool _sensorOff;
 
     int _recPackageInPowerOn2sec;  // if receve 5 packages, selftest success, or selftest failed
+
+    OxyCRGSPO2TrendWidget *_oxyCRGSPO2Trend;
+    bool _connectedProvider;
 };
 #define spo2Param (SPO2Param::construction())

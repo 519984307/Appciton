@@ -15,8 +15,6 @@
 #include "TimeDate.h"
 #include "AlarmLimitMenu.h"
 #include "TrendTableWindow.h"
-#include "TrendGraphWidget.h"
-#include "TrendGraphSetWidget.h"
 #include "WaveformCache.h"
 #include "IConfig.h"
 #include "IBPDefine.h"
@@ -29,7 +27,8 @@ IBPParam *IBPParam::_selfObj = NULL;
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-IBPParam::IBPParam() : Param(PARAM_IBP), _staIBP1(true), _staIBP2(true)
+IBPParam::IBPParam() : Param(PARAM_IBP), _staIBP1(true), _staIBP2(true),
+    _connectedProvider(false)
 {
 
     _provider = NULL;
@@ -642,6 +641,20 @@ void IBPParam::setProvider(IBPProviderIFace *provider)
                                  0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
 }
 
+void IBPParam::setConnected(bool isConnected)
+{
+    if (_connectedProvider == isConnected)
+    {
+        return;
+    }
+    _connectedProvider = isConnected;
+}
+
+bool IBPParam::isConnected()
+{
+    return _connectedProvider;
+}
+
 /**************************************************************************************************
  * 设置实时数据。
  *************************************************************************************************/
@@ -876,7 +889,7 @@ IBPScaleInfo &IBPParam::getScaleInfo(IBPSignalInput ibp)
     {
         return _scale1;
     }
-    else if (ibp == IBP_INPUT_2)
+    else
     {
         return _scale2;
     }
@@ -1153,8 +1166,6 @@ void IBPParam::setEntitle(IBPPressureName entitle, IBPSignalInput IBP)
     }
 
     alarmLimitMenu.setIBPAlarmItem(_ibp1.pressureName, _ibp2.pressureName);
-    trendGraphSetWidget.upDateTrendGroup();
-    trendGraphWidget.updateTrendGraph();
 
     if (((_ibp1.pressureName >= IBP_PRESSURE_CVP) && (_ibp1.pressureName <= IBP_PRESSURE_ICP))
             && ((_ibp2.pressureName >= IBP_PRESSURE_CVP) && (_ibp2.pressureName <= IBP_PRESSURE_ICP)))

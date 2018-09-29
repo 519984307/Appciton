@@ -23,6 +23,7 @@
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
 #include <QTimer>
+#include "OxyCRGSPO2TrendWidget.h"
 
 SPO2Param *SPO2Param::_selfObj = NULL;
 
@@ -103,11 +104,12 @@ void SPO2Param::handDemoTrendData(void)
     {
         _trendWidget->setSPO2Value(_spo2Value);
     }
-    if (NULL != _waveOxyCRGWidget)
+
+    if (NULL != _oxyCRGSPO2Trend)
     {
-        _waveOxyCRGWidget->addDataBuf(_spo2Value, 0);
-        _waveOxyCRGWidget->addData(_spo2Value);
+        _oxyCRGSPO2Trend->addTrendData(_spo2Value);
     }
+
     int prValue = qrand() % 55 + 45;
     setPR(prValue);
 }
@@ -316,7 +318,15 @@ void SPO2Param::setOxyCRGWaveWidget(OxyCRGSPO2Widget *waveWidget)
     {
         return;
     }
-    _waveOxyCRGWidget = waveWidget;
+}
+
+void SPO2Param::setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *trendWidget)
+{
+    if (trendWidget == NULL)
+    {
+        return;
+    }
+    _oxyCRGSPO2Trend = trendWidget;
 }
 
 /**************************************************************************************************
@@ -343,9 +353,10 @@ void SPO2Param::setSPO2(short spo2Value)
     {
         _trendWidget->setSPO2Value(_spo2Value);
     }
-    if (NULL != _waveOxyCRGWidget)
+
+    if (NULL != _oxyCRGSPO2Trend)
     {
-        _waveOxyCRGWidget->addDataBuf(_spo2Value, 0);
+        _oxyCRGSPO2Trend->addTrendData(_spo2Value);
     }
 }
 
@@ -493,13 +504,16 @@ bool SPO2Param::isValid()
  *************************************************************************************************/
 bool SPO2Param::isConnected()
 {
-    Provider *provider = dynamic_cast<Provider *>(_provider);
-    if (NULL == provider)
-    {
-        return false;
-    }
+    return _connectedProvider;
+}
 
-    return provider->connected();
+void SPO2Param::setConnected(bool isConnected)
+{
+    if (_connectedProvider == isConnected)
+    {
+        return;
+    }
+    _connectedProvider = isConnected;
 }
 
 /**************************************************************************************************
@@ -635,7 +649,8 @@ int SPO2Param::getSweepSpeed(void)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-SPO2Param::SPO2Param() : Param(PARAM_SPO2)
+SPO2Param::SPO2Param() : Param(PARAM_SPO2),
+                         _oxyCRGSPO2Trend(NULL)
 {
     _provider = NULL;
     _trendWidget = NULL;

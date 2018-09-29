@@ -92,6 +92,15 @@ void NIBPParam::errorDisable(void)
     nibpOneShotAlarm.setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, true);
 }
 
+void NIBPParam::setConnected(bool isConnected)
+{
+    if (_connectedProvider == isConnected)
+    {
+        return;
+    }
+    _connectedProvider = isConnected;
+}
+
 /**************************************************************************************************
  * 处理DEMO数据。
  *************************************************************************************************/
@@ -557,13 +566,7 @@ void NIBPParam::invResultData(void)
  *************************************************************************************************/
 bool NIBPParam::isConnected(void)
 {
-    Provider *provider = dynamic_cast<Provider *>(_provider);
-    if (NULL == provider)
-    {
-        return false;
-    }
-
-    return provider->connected();
+    return _connectedProvider;
 }
 
 void NIBPParam::connectedFlag(bool flag)
@@ -1338,7 +1341,7 @@ void NIBPParam::switchState(unsigned char newStateID)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-NIBPParam::NIBPParam() : Param(PARAM_NIBP)
+NIBPParam::NIBPParam() : Param(PARAM_NIBP), _connectedProvider(false)
 {
     _provider = NULL;
     _trendWidget = NULL;

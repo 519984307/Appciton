@@ -12,7 +12,6 @@
 #include "RescueDataSoftKeyAction.h"
 #include "WindowManager.h"
 #include "TrendTableWindow.h"
-#include "TrendGraphWidget.h"
 #include "RescueDataExportWidget.h"
 #include "IMessageBox.h"
 #include "DataStorageDirManager.h"

@@ -13,7 +13,6 @@
 #include "TimeDate.h"
 #include "IConfig.h"
 #include <QMap>
-#include "ParamDataStorageManager.h"
 #include "TrendCache.h"
 #include "AlarmStateMachine.h"
 #include "SystemManager.h"
@@ -29,6 +28,7 @@
 #include "AGSymbol.h"
 #include "TEMPSymbol.h"
 #include "NIBPSymbol.h"
+#include "TrendDataStorageManager.h"
 
 #define ALARM_LIMIT_TIMES (3)   // 超限3次后，发生报警
 static int curSecondAlarmNum = 0; // record the number of alarms happend in the save seconds
@@ -471,13 +471,13 @@ void Alarm::_handleAlarm(void)
     if (-1 != paramID.indexOf(PARAM_NIBP))
     {
         // nibp alarm add after check sys, dia, map
-        paramDataStorageManager.addAlarmData(_timestamp, PARAM_NIBP);
+        trendDataStorageManager.storeData(_timestamp, TrendDataStorageManager::CollectStatusAlarm);
         paramID.removeAll(PARAM_NIBP);
     }
 
     if (!paramID.isEmpty())
     {
-        paramDataStorageManager.addAlarmData(_timestamp, paramID.takeFirst());
+        trendDataStorageManager.storeData(_timestamp, TrendDataStorageManager::CollectStatusAlarm);
     }
 
     // 处理生理、技术和生命报警。

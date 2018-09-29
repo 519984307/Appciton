@@ -106,7 +106,7 @@ static void _task50MSec(void)
      * store nibp measurement, handle alarm, handle 30 seconds trend
      */
 
-    paramDataStorageManager.addNIBPData(t);
+    // paramDataStorageManager.addNIBPData(t);
 
     // 报警处理
     alertor.mainRun(t);

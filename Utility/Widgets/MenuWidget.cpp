@@ -58,6 +58,7 @@ void MenuWidget::popup(int x, int y)
  *************************************************************************************************/
 void MenuWidget::paintEvent(QPaintEvent *event)
 {
+    Q_UNUSED(event)
     QPainterPath clipPath;
     clipPath.addRoundedRect(this->rect(), 5, 5);
 

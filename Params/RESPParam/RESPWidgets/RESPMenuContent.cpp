@@ -19,6 +19,7 @@
 #include "SystemManager.h"
 #include "Button.h"
 #include "MainMenuWindow.h"
+#include "RESPDupParam.h"
 
 class RESPMenuContentPrivate
 {
@@ -27,13 +28,18 @@ public:
     {
         ITEM_CBO_APNEA_DELAY = 0,
         ITEM_CBO_BREATH_LEAD,
+        ITEM_CBO_RR_SOURCE,
         ITEM_CBO_SWEEP_SPEED,
     };
 
-    RESPMenuContentPrivate() {}
+    RESPMenuContentPrivate()
+                : brRRSouce(NULL)
+    {}
 
     // load settings
     void loadOptions();
+
+    QLabel *brRRSouce;
 
     QMap<MenuItem, ComboBox *> combos;
 };
@@ -45,6 +51,30 @@ void RESPMenuContentPrivate::loadOptions()
 
     // apnea delay
     combos[ITEM_CBO_APNEA_DELAY]->setCurrentIndex(respParam.getApneaTime());
+
+    // rr source
+    int index = 0;
+    if (respDupParam.isAutoBrSourceEnabled())
+    {
+        index = BR_RR_AUTO;
+    }
+    else if (respDupParam.getBrSource() == RESPDupParam::BR_SOURCE_CO2)
+    {
+        index = BR_RR_SOURCE_CO2;
+    }
+    else
+    {
+        index = BR_RR_SOURCE_RESP;
+    }
+    combos[ITEM_CBO_RR_SOURCE]->setCurrentIndex(index);
+    if (respDupParam.getParamSourceType() == RESPDupParam::BR)
+    {
+        brRRSouce->setText(trs("BRSource"));
+    }
+    else
+    {
+        brRRSouce->setText(trs("RRSource"));
+    }
 
     // lead
     combos[ITEM_CBO_BREATH_LEAD]->setCurrentIndex(respParam.getCalcLead());
@@ -93,7 +123,7 @@ void RESPMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(RESPMenuContentPrivate
                          ::ITEM_CBO_APNEA_DELAY, comboBox);
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged()));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     itemID = RESPMenuContentPrivate::ITEM_CBO_APNEA_DELAY;
     comboBox->setProperty("Item", qVariantFromValue(itemID));
 
@@ -107,8 +137,24 @@ void RESPMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(RESPMenuContentPrivate
                          ::ITEM_CBO_BREATH_LEAD, comboBox);
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged()));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     itemID = RESPMenuContentPrivate::ITEM_CBO_BREATH_LEAD;
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+
+    // rr source
+    label = new QLabel(trs("RRSource"));
+    d_ptr->brRRSouce = label;
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox;
+    comboBox->addItems(QStringList()
+                       << trs(RESPSymbol::convert(BR_RR_AUTO))
+                       << trs(RESPSymbol::convert(BR_RR_SOURCE_CO2))
+                       << trs(RESPSymbol::convert(BR_RR_SOURCE_RESP)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(RESPMenuContentPrivate
+                         ::ITEM_CBO_RR_SOURCE, comboBox);
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    itemID = RESPMenuContentPrivate::ITEM_CBO_RR_SOURCE;
     comboBox->setProperty("Item", qVariantFromValue(itemID));
 
     // sweep speed
@@ -122,7 +168,7 @@ void RESPMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(RESPMenuContentPrivate
                          ::ITEM_CBO_SWEEP_SPEED, comboBox);
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged()));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     itemID = RESPMenuContentPrivate::ITEM_CBO_SWEEP_SPEED;
     comboBox->setProperty("Item", qVariantFromValue(itemID));
 
@@ -153,6 +199,27 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
             break;
         case RESPMenuContentPrivate::ITEM_CBO_APNEA_DELAY:
             respParam.setApneaTime(static_cast<ApneaAlarmTime>(index));
+            break;
+        case RESPMenuContentPrivate::ITEM_CBO_RR_SOURCE:
+        {
+            if (index == 0)
+            {
+                respDupParam.setAutoBrSourceStatue(true);
+                break;
+            }
+            else
+            {
+                respDupParam.setAutoBrSourceStatue(false);
+            }
+            if (BR_RR_SOURCE_CO2 == index)
+            {
+                respDupParam.setBrSource(RESPDupParam::BR_SOURCE_CO2);
+            }
+            else if (BR_RR_SOURCE_RESP == index)
+            {
+                respDupParam.setBrSource(RESPDupParam::BR_SOURCE_RESP);
+            }
+        }
             break;
         case RESPMenuContentPrivate::ITEM_CBO_BREATH_LEAD:
             respParam.setCalcLead(static_cast<RESPLead>(index));

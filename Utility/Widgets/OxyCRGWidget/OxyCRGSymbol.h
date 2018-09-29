@@ -19,6 +19,10 @@ class OxyCRGSymbol
 public:
     static const char *convert(OxyCRGInterval index)
     {
+        if (index > OxyCRG_Interval_8)
+        {
+            index = OxyCRG_Interval_8;
+        }
         static const char *symbol[OxyCRG_Interval_NR] =
         {
             "_1min", "_2min", "_4min", "_8min"

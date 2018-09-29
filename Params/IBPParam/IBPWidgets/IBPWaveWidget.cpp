@@ -145,7 +145,7 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPr
     _ruler->setFont(fontManager.textFont(fontSize - 2));
     addItem(_ruler);
 
-    _leadSta = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
+    _leadSta = new WaveWidgetLabel(" ", Qt::AlignCenter, this);
     _leadSta->setFont(fontManager.textFont(fontSize));
     _leadSta->setFixedSize(120, fontH);
     _leadSta->setText(trs("LeadOff"));
@@ -179,17 +179,28 @@ void IBPWaveWidget::paintEvent(QPaintEvent *e)
  *************************************************************************************************/
 void IBPWaveWidget::resizeEvent(QResizeEvent *e)
 {
+    WaveWidget::resizeEvent(e);
     _name->move(0, 0);
-    _leadSta->move(_name->rect().x() + _name->rect().width(), 0);
+    _leadSta->setFixedWidth(width() / 2);
+    _leadSta->move((width() - _leadSta->width()) / 2,
+                  qmargins().top() + (height() - qmargins().top()) / 2 - _leadSta->height() - 1);
+
     _ruler->resize(qmargins().left(), qmargins().top(),
                    width() - qmargins().left() - qmargins().right(),
                    height() - qmargins().top() - qmargins().bottom());
-    WaveWidget::resizeEvent(e);
 }
 
 void IBPWaveWidget::showEvent(QShowEvent *e)
 {
     WaveWidget::showEvent(e);
+    if (ibpParam.isConnected())
+    {
+        _leadSta->setText(trs("LeadOff"));
+    }
+    else
+    {
+        _leadSta->setText("");
+    }
 }
 
 void IBPWaveWidget::focusInEvent(QFocusEvent *e)

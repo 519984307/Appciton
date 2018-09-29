@@ -45,6 +45,7 @@ public:
     DropList *timeIntervalList;
     DropList *waveNumList;
     QVBoxLayout *rulerLayout;
+    ScrollArea *mScrollArea;
 };
 TrendGraphSetWindow::~TrendGraphSetWindow()
 {
@@ -66,6 +67,17 @@ void TrendGraphSetWindow::showEvent(QShowEvent *ev)
     Window::showEvent(ev);
 
     upDateTrendGroup();
+}
+
+bool TrendGraphSetWindow::focusNextPrevChild(bool next)
+{
+    bool status = QDialog::focusNextPrevChild(next);
+    QWidget *cur = focusWidget();
+    if (d_ptr->mScrollArea->isAncestorOf(cur))
+    {
+        d_ptr->mScrollArea->ensureWidgetVisible(cur);
+    }
+   return  status;
 }
 
 void TrendGraphSetWindow::allAutoReleased()
@@ -103,7 +115,6 @@ void TrendGraphSetWindow::trendGroupReleased(int g)
     QString prefix = "TrendGraph|TrendGroup";
     systemConfig.setNumValue(prefix, g);
     d_ptr->trendGroup = (TrendGroup)g;
-    qDebug() << "trend group = " << g << endl;
     upDateTrendGroup();
     TrendGraphWindow::getInstance()->updateTrendGraph();
 }
@@ -198,6 +209,7 @@ TrendGraphSetWindow::TrendGraphSetWindow()
     mScrollArea->setWidgetResizable(true);
     mScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     mScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    mScrollArea->setFloatbarPolicy(ScrollArea::FloatBarNotShow);
     mScrollArea->setFocusPolicy(Qt::NoFocus);
     mScrollArea->setFrameShape(QFrame::NoFrame);
     mScrollArea->setFixedHeight(300);
@@ -233,6 +245,7 @@ TrendGraphSetWindow::TrendGraphSetWindow()
     }
     d_ptr->loadOptions();
     mScrollArea->setWidget(rulerWidget);
+    d_ptr->mScrollArea = mScrollArea;
 
     d_ptr->allAutoBtn = new Button(trs("AllAuto"));
     d_ptr->allAutoBtn->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
@@ -298,7 +311,7 @@ TrendGraphSetWindow::TrendGraphSetWindow()
 TrendGraphSetWindowPrivate::TrendGraphSetWindowPrivate()
     : trendGroup(TREND_GROUP_RESP), allAutoBtn(NULL),
       trendGroupList(NULL), timeIntervalList(NULL),
-      waveNumList(NULL), rulerLayout(NULL)
+      waveNumList(NULL), rulerLayout(NULL), mScrollArea(NULL)
 {
     int value = 0;
     QString prefix = "TrendGraph|TrendGroup";

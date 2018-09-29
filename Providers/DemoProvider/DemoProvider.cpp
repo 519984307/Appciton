@@ -168,20 +168,24 @@ bool DemoProvider::attachParam(Param &param)
             _demoWaveData[i].param = &param;
         }
         ecgParam.setProvider(this);
+        ecgParam.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_SPO2))
     {
         _demoWaveData[WAVE_SPO2].param = &param;
         spo2Param.setProvider(this);
+        spo2Param.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_RESP))
     {
         _demoWaveData[WAVE_RESP].param = &param;
         respParam.setProvider(this);
+        respParam.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_NIBP))
     {
         nibpParam.setProvider(this);
+        nibpParam.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_CO2))
     {
@@ -200,10 +204,12 @@ bool DemoProvider::attachParam(Param &param)
         _demoWaveData[WAVE_AUXP1].param = &param;
         _demoWaveData[WAVE_AUXP2].param = &param;
         ibpParam.setProvider(this);
+        ibpParam.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_CO))
     {
         coParam.setProvider(this);
+        coParam.setConnected(true);
     }
     else if (name == paramInfo.getParamName(PARAM_AG))
     {
@@ -212,6 +218,7 @@ bool DemoProvider::attachParam(Param &param)
         _demoWaveData[WAVE_AA2].param = &param;
         _demoWaveData[WAVE_O2].param = &param;
         agParam.setProvider(this);
+        agParam.setConnected(true);
     }
 
     _demoTrendData[param.getParamID()].param = &param;

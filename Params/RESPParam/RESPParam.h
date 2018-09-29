@@ -14,11 +14,13 @@
 #include "Param.h"
 #include "RESPSymbol.h"
 #include "AlarmDefine.h"
-#include "OxyCRGRESPWidget.h"
 
+class OxyCRGRESPWaveWidget;
+class RESPParamPrivate;
 class RESPWaveWidget;
 class RESPProviderIFace;
 class RESPFullDisclosure;
+class OxyCRGRRHRWaveWidget;
 class RESPParam: public Param
 {
 public:
@@ -58,11 +60,20 @@ public:
     // 设置数据提供对象。
     void setProvider(RESPProviderIFace *provider);
 
+    // 设置连接，供给对象调用。
+    void setConnected(bool isConnected);
+
+    // 是否连接了真实的Provider，是指Provider有数据产生。
+    bool isConnected(void);
+
     // 设置界面对象。
     void setWaveWidget(RESPWaveWidget *waveWidget);
 
-    // 设置血氧界面对象。
-    void setOxyWaveWidget(OxyCRGRESPWidget *waveWidget);
+    /**
+     * @brief setOxyCRGWaveRESPWidget
+     * @param waveWidget
+     */
+    void setOxyCRGWaveRESPWidget(OxyCRGRESPWaveWidget *waveWidget);
 
     // 设置波形值。
     void addWaveformData(int wave, int flag);
@@ -79,6 +90,18 @@ public:
     // 模块复位
     void reset();
 
+    /**
+     * @brief getWaveDataRate  获取波形速率
+     * @return
+     */
+    int getWaveDataRate(void) const;
+
+    /**
+     * @brief setOxyCRGRrHrTrend
+     * @param w
+     */
+    void setOxyCRGRrHrTrend(OxyCRGRRHRWaveWidget *w);
+
 public:
     // 设置/获取波形速度。
     void setSweepSpeed(RESPSweepSpeed speed);
@@ -94,7 +117,12 @@ public:
 
     // 设置/获取RESP监护功能
     void setRespMonitoring(int enable);
-    int getRespMonitoring() { return _respMonitoring; }
+
+    /**
+     * @brief getRespMonitoring
+     * @return
+     */
+    int getRespMonitoring();
 
     // 设置/获取呼吸导联。
     void setCalcLead(RESPLead lead);
@@ -105,11 +133,7 @@ public:
 
 private:
     RESPParam();
-    void _setWaveformSpeed(RESPSweepSpeed speed);
 
-    RESPProviderIFace *_provider;
-    RESPWaveWidget *_waveWidget;
-    OxyCRGRESPWidget *_waveOxyCRGWidget;
-    bool _respMonitoring;
+    RESPParamPrivate *const d_ptr;
 };
 #define respParam (RESPParam::construction())

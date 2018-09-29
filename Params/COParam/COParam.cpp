@@ -114,6 +114,20 @@ void COParam::setProvider(COProviderIFace *provider)
     _provider = provider;
 }
 
+void COParam::setConnected(bool isConnected)
+{
+    if (_connectedProvider == isConnected)
+    {
+        return;
+    }
+    _connectedProvider = isConnected;
+}
+
+bool COParam::isConnected()
+{
+    return _connectedProvider;
+}
+
 /**************************************************************************************************
  * 设置趋势对象。
  *************************************************************************************************/
@@ -257,7 +271,7 @@ unsigned short COParam::getTBData()
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-COParam::COParam() : Param(PARAM_CO)
+COParam::COParam() : Param(PARAM_CO), _connectedProvider(false)
 {
     _provider = NULL;
     _trendWidget = NULL;

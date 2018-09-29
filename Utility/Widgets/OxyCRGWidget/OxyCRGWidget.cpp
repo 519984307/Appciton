@@ -29,18 +29,31 @@
 #include "IMessageBox.h"
 #include "ECGParam.h"
 #include "OxyCRGRRWidget.h"
+#include "OxyCRGTrendWaveWidget.h"
+#include "OxyCRGCO2WaveWidget.h"
+#include "OxyCRGSPO2TrendWidget.h"
+#include "OxyCRGRESPWaveWidget.h"
+#include "OxyCRGRRHRWaveWidget.h"
 
 class OxyCRGWidgetPrivate
 {
 public:
     OxyCRGWidgetPrivate()
             : setRulerAuto(NULL),
-              oxycrgRrWidget(NULL)
+              rrHrTrend(NULL),
+              spo2Trend(NULL),
+              co2Wave(NULL),
+              respWave(NULL),
+              setUp(NULL)
     {
     }
 
     OxyCRGWidgetLabel *setRulerAuto;
-    OxyCRGRRWidget *oxycrgRrWidget;
+    OxyCRGRRHRWaveWidget *rrHrTrend;
+    OxyCRGSPO2TrendWidget *spo2Trend;
+    OxyCRGCO2WaveWidget *co2Wave;
+    OxyCRGRESPWaveWidget *respWave;
+    OxyCRGWidgetLabel *setUp;
 };
 /**************************************************************************************************
  * 析构。
@@ -106,11 +119,11 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     connect(setRulerAuto, SIGNAL(released(IWidget *)), this, SLOT(_autoSetRuler()));
     d_ptr->setRulerAuto = setRulerAuto;
 
-    _setUp = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
-    _setUp->setFont(fontManager.textFont(fontSize));
-    _setUp->setFixedSize(labelWidth, _labelHeight);
-    _setUp->setText(trs("SetUp"));
-    connect(_setUp, SIGNAL(released(IWidget *)), this, SLOT(_onSetupUpdated(IWidget *)));
+    d_ptr->setUp = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
+    d_ptr->setUp->setFont(fontManager.textFont(fontSize));
+    d_ptr->setUp->setFixedSize(labelWidth, _labelHeight);
+    d_ptr->setUp->setText(trs("SetUp"));
+    connect(d_ptr->setUp, SIGNAL(released(IWidget *)), this, SLOT(_onSetupUpdated(IWidget *)));
 
     int rWidth = rect().width() / 4;
     int addWidth = (rWidth - labelWidth) / 2;
@@ -121,7 +134,7 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     bottomLayout->addSpacing(addWidth);
     bottomLayout->addWidget(setRulerAuto);
     bottomLayout->addSpacing(addWidth);
-    bottomLayout->addWidget(_setUp);
+    bottomLayout->addWidget(d_ptr->setUp);
     bottomLayout->addSpacing(addWidth);
 
     _mainLayout->addWidget(_titleLabel, 0, Qt::AlignCenter);
@@ -152,7 +165,6 @@ void OxyCRGWidget::_trendLayout(void)
     systemConfig.getStrValue("PrimaryCfg|UILayout|WidgetsOrder|OxyCRGWidget", widgets);
     nodeWidgets = widgets.split(",");
 
-//    IWidget *w = NULL;
     for (int i = 0; i < nodeWidgets.size(); i++)
     {
         IWidget *w = windowManager.getWidget(nodeWidgets[i]);
@@ -161,8 +173,9 @@ void OxyCRGWidget::_trendLayout(void)
             continue;
         }
         w->setParent(this);            // 设置父窗体。
+        OxyCRGTrendWaveWidget *p = qobject_cast<OxyCRGTrendWaveWidget*>(w);
+        p->setClearWaveDataStatus(false);
         w->setVisible(true);           // 可见。
-
         _hLayoutWave->addWidget(w, 1);
     }
 }
@@ -180,6 +193,8 @@ void OxyCRGWidget::_clearLayout()
         IWidget *widget = qobject_cast<IWidget *>(item->widget());
         if (widget != NULL)
         {
+            OxyCRGTrendWaveWidget *w = qobject_cast<OxyCRGTrendWaveWidget*>(widget);
+            w->setClearWaveDataStatus(false);
             widget->setVisible(false);
             widget->setParent(NULL);
         }
@@ -191,52 +206,26 @@ void OxyCRGWidget::_clearLayout()
  *************************************************************************************************/
 void OxyCRGWidget::_setInterval(OxyCRGInterval index)
 {
-    currentConfig.setNumValue("RESP|Interval", static_cast<int>(index));
+    currentConfig.setNumValue("OxyCRG|Interval", static_cast<int>(index));
 
     _interval->setText(OxyCRGSymbol::convert(OxyCRGInterval(index)));
 
-    int len = _oxycrgHrWidget->getRulerWidth();
-    float pixel = _oxycrgHrWidget->getRulerPixWidth();
-    int speedPara;
-    switch (index)
+    if (d_ptr->rrHrTrend)
     {
-    case OxyCRG_Interval_1:
-        speedPara = 1;
-        break;
-    case OxyCRG_Interval_2:
-        speedPara = 2;
-        break;
-    case OxyCRG_Interval_4:
-        speedPara = 4;
-        break;
-    case OxyCRG_Interval_8:
-        speedPara = 8;
-        break;
-    default:
-        speedPara = 1;
-        break;
-    };
-    float speed = len * pixel / (60 * speedPara);
-
-    if (_oxycrgWidget != NULL)
-    {
-        _oxycrgWidget->setWaveSpeed(speed);
+        d_ptr->rrHrTrend->update();
     }
-    if (_oxycrgCo2Widget != NULL)
+    if (d_ptr->spo2Trend)
     {
-        _oxycrgCo2Widget->setWaveSpeed(speed);
+        d_ptr->spo2Trend->update();
     }
-    if (_oxycrgHrWidget != NULL)
+    if (d_ptr->respWave)
     {
-        _oxycrgHrWidget->setWaveSpeed(speed);
+        d_ptr->respWave->update();
     }
-
-    if (_oxycrgSpo2Widget != NULL)
+    if (d_ptr->co2Wave)
     {
-        _oxycrgSpo2Widget->setWaveSpeed(speed);
+        d_ptr->co2Wave->update();
     }
-
-    ecgParam.clearOxyCRGWaveNum();
 }
 
 /**************************************************************************************************
@@ -245,7 +234,7 @@ void OxyCRGWidget::_setInterval(OxyCRGInterval index)
 OxyCRGInterval OxyCRGWidget::_getInterval()
 {
     int index = OxyCRG_Interval_1;
-    currentConfig.getNumValue("RESP|Interval", index);
+    currentConfig.getNumValue("OxyCRG|Interval", index);
 
     return (OxyCRGInterval)index;
 }
@@ -255,6 +244,10 @@ OxyCRGInterval OxyCRGWidget::_getInterval()
  *************************************************************************************************/
 void OxyCRGWidget::_setTrend(OxyCRGTrend index)
 {
+    if (index >= OxyCRG_Trend_NR)
+    {
+        return;
+    }
     currentConfig.setNumValue("OxyCRG|Wave", static_cast<int>(index));
 
     _changeTrend->setText(OxyCRGSymbol::convert(OxyCRGTrend(index)));
@@ -335,6 +328,8 @@ int OxyCRGWidget::_roundDown(int value, int step)
  *************************************************************************************************/
 void OxyCRGWidget::setVisible(bool visible)
 {
+    QWidget::setVisible(visible);
+
     if (!visible)
     {
         _clearLayout();
@@ -346,8 +341,6 @@ void OxyCRGWidget::setVisible(bool visible)
 
         _trendLayout();
     }
-
-    QWidget::setVisible(visible);
 }
 
 /**************************************************************************************************
@@ -372,17 +365,16 @@ void OxyCRGWidget::paintEvent(QPaintEvent *event)
 
     // 画上x轴刻度线
     barPainter.setPen(QPen(Qt::white, 1, Qt::SolidLine));
-    for (int i = 0; i < 4; i++) // 分成10份
-    {
-        barPainter.setFont(fontManager.textFont(fontManager.getFontSize(0)));
-        // 选取合适的坐标，绘制一段长度为4的直线，用于表示刻度
-//        barPainter.drawLine(rectAdjust.bottomRight().x() - (i * (rectAdjust.bottomRight().x() / 4)),rectAdjust.bottomRight().y(),
-//                         rectAdjust.bottomRight().x() - (i * (rectAdjust.bottomRight().x() / 4)),(rectAdjust.bottomRight().y() + 4));
 
-        barPainter.drawText((rectAdjust.bottomRight().x() - (i * (rectAdjust.bottomRight().x() / 4))) + 2,
-                            (rectAdjust.bottomRight().y() + 12)
-                            , QString::number(i));
+    int xStep = (rect().width() - WX_SHIFT - WX_SHIFT) / 4;
+    barPainter.setFont(fontManager.textFont(fontManager.getFontSize(0)));
+    for (int i = 1; i < 4; i++)
+    {
+        barPainter.drawText(rect().bottomRight().x() - WX_SHIFT - i * xStep,
+                            rectAdjust.bottomRight().y() + 12,
+                            QString::number(i));
     }
+
 
     QRect r = rect();
     r.setBottom(_titleBarHeight);
@@ -395,7 +387,7 @@ void OxyCRGWidget::paintEvent(QPaintEvent *event)
     _interval->move(addWidth, rHeight);
     _changeTrend->move((addWidth + rWidth), rHeight);
     d_ptr->setRulerAuto->move((addWidth + rWidth * 2), rHeight);
-    _setUp->move((addWidth + rWidth * 3), rHeight);
+    d_ptr->setUp->move((addWidth + rWidth * 3), rHeight);
 }
 
 /**************************************************************************************************
@@ -406,35 +398,70 @@ void OxyCRGWidget::resizeEvent(QResizeEvent *e)
     IWidget::resizeEvent(e);
 }
 
-void OxyCRGWidget::setOxyCrgRespWidget(OxyCRGRESPWidget *p)
+void OxyCRGWidget::showEvent(QShowEvent *e)
 {
-    if (p != NULL)
+    IWidget::showEvent(e);
+    if (d_ptr->rrHrTrend)
     {
-        _oxycrgWidget = p;
+        d_ptr->rrHrTrend->setClearWaveDataStatus(true);
+    }
+    if (d_ptr->spo2Trend)
+    {
+        d_ptr->spo2Trend->setClearWaveDataStatus(true);
+    }
+    if (d_ptr->respWave)
+    {
+        d_ptr->respWave->setClearWaveDataStatus(true);
+    }
+    if (d_ptr->co2Wave)
+    {
+        d_ptr->co2Wave->setClearWaveDataStatus(true);
     }
 }
 
-void OxyCRGWidget::setOxyCrgHrWidget(OxyCRGHRWidget *p)
+void OxyCRGWidget::hideEvent(QHideEvent *e)
 {
-    if (p != NULL)
+    IWidget::hideEvent(e);
+    if (d_ptr->rrHrTrend)
     {
-        _oxycrgHrWidget = p;
+        d_ptr->rrHrTrend->setClearWaveDataStatus(true);
+    }
+    if (d_ptr->spo2Trend)
+    {
+        d_ptr->spo2Trend->setClearWaveDataStatus(true);
+    }
+    if (d_ptr->respWave)
+    {
+        d_ptr->respWave->setClearWaveDataStatus(true);
+    }
+    if (d_ptr->co2Wave)
+    {
+        d_ptr->co2Wave->setClearWaveDataStatus(true);
     }
 }
 
-void OxyCRGWidget::setOxyCrgSpo2Widget(OxyCRGSPO2Widget *p)
+void OxyCRGWidget::setOxyCRGRespWidget(OxyCRGRESPWaveWidget *p)
 {
     if (p != NULL)
     {
-        _oxycrgSpo2Widget = p;
+        d_ptr->respWave = p;
     }
 }
 
-void OxyCRGWidget::setOxyCrgCo2Widget(OxyCRGCO2Widget *p)
+
+void OxyCRGWidget::setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *p)
 {
     if (p != NULL)
     {
-        _oxycrgCo2Widget = p;
+        d_ptr->spo2Trend = p;
+    }
+}
+
+void OxyCRGWidget::setOxyCRGCO2Widget(OxyCRGCO2WaveWidget *p)
+{
+    if (p != NULL)
+    {
+        d_ptr->co2Wave = p;
     }
 }
 
@@ -451,11 +478,20 @@ int OxyCRGWidget::getWaveType()const
     return _waveType;
 }
 
+void OxyCRGWidget::setOxyCRGRrHrWidget(OxyCRGRRHRWaveWidget *p)
+{
+    if (p)
+    {
+        d_ptr->rrHrTrend = p;
+   }
+}
+
 /**************************************************************************************************
  * 时间时间触发。
  *************************************************************************************************/
 void OxyCRGWidget::_intervalSlot(IWidget *widget)
 {
+    Q_UNUSED(widget)
     if (NULL == _intervalList)
     {
         _intervalList = new PopupList(_interval, false);
@@ -476,6 +512,7 @@ void OxyCRGWidget::_intervalSlot(IWidget *widget)
  *************************************************************************************************/
 void OxyCRGWidget::_changeTrendSlot(IWidget *widget)
 {
+    Q_UNUSED(widget)
     if (NULL == _changeTrendList)
     {
         _changeTrendList = new PopupList(_changeTrend, false);
@@ -496,58 +533,45 @@ void OxyCRGWidget::_changeTrendSlot(IWidget *widget)
  *************************************************************************************************/
 void OxyCRGWidget::_onSetupUpdated(IWidget *widget)
 {
-    if (widget == _setUp)
+    if (widget != d_ptr->setUp)
     {
-        OxyCRGSetupWindow setupWidget;
-
-        windowManager.showWindow(&setupWidget, WindowManager::ShowBehaviorModal);
-
-        int index = setupWidget.getWaveTypeIndex();
-        if (index != (getWaveType()) && (index == 0 || index == 1))
-        {
-            ecgParam.clearOxyCRGWaveNum();
-
-            setWaveType(index);
-
-            _setTrend((OxyCRGTrend)index);
-            _clearLayout();
-            _trendLayout();
-        }
-
-        bool status = false;
-        int valueLow = 0;
-        int valueHight = 0;
-        int valueMid = 0;
-
-        valueLow = setupWidget.getCO2Low(status);
-        valueHight = setupWidget.getCO2High(status);
-        valueMid = (valueHight + valueLow) / 2;
-        if (status)
-        {
-            status = false;
-            _oxycrgCo2Widget->setRuler(valueHight, valueMid, valueLow);
-            _oxycrgCo2Widget->setValueRange(valueLow, valueHight);
-        }
-
-        valueLow = setupWidget.getHRLow(status);
-        valueHight = setupWidget.getHRHigh(status);
-        valueMid = (valueHight + valueLow) / 2;
-        if (status)
-        {
-            status = false;
-            _oxycrgHrWidget->setRuler(valueHight, valueMid, valueLow);
-            _oxycrgHrWidget->setValueRange(valueLow, valueHight);
-        }
-
-        valueLow = setupWidget.getSPO2Low(status);
-        valueHight = setupWidget.getSPO2High(status);
-        valueMid = (valueHight + valueLow) / 2;
-        if (status)
-        {
-            _oxycrgSpo2Widget->setRuler(valueHight, valueMid, valueLow);
-            _oxycrgSpo2Widget->setValueRange(valueLow, valueHight);
-        }
+        return;
     }
+
+    OxyCRGSetupWindow setupWidget;
+
+    windowManager.showWindow(&setupWidget, WindowManager::ShowBehaviorModal);
+
+    int index = setupWidget.getWaveTypeIndex();
+    if (index != (getWaveType()) && (index == 0 || index == 1))
+    {
+        setWaveType(index);
+        _setTrend((OxyCRGTrend)index);
+        _clearLayout();
+        _trendLayout();
+    }
+    index = 0;
+    currentConfig.getNumValue("OxyCRG|Trend1", index);
+    d_ptr->rrHrTrend->setRrTrendShowStatus(!!index);
+
+    int valueLow;
+    int valueHight;
+
+    valueLow = setupWidget.getCO2Low();
+    valueHight = setupWidget.getCO2High();
+    d_ptr->co2Wave->setRulerValue(valueHight, valueLow);
+
+    valueLow = setupWidget.getHRLow();
+    valueHight = setupWidget.getHRHigh();
+    d_ptr->rrHrTrend->setHrRulerValue(valueHight, valueLow);
+
+    valueLow = setupWidget.getRRLow();
+    valueHight = setupWidget.getRRHigh();
+    d_ptr->rrHrTrend->setRrRulerValue(valueHight, valueLow);
+
+    valueLow = setupWidget.getSPO2Low();
+    valueHight = setupWidget.getSPO2High();
+    d_ptr->spo2Trend->setRulerValue(valueHight, valueLow);
 }
 
 void OxyCRGWidget::_intervalDestroyed()
@@ -574,12 +598,10 @@ void OxyCRGWidget::_changeTrendDestroyed()
         return;
     }
 
-    ecgParam.clearOxyCRGWaveNum();
-
-    setWaveType(_changeTrendItemIndex);
-
     _setTrend((OxyCRGTrend)_changeTrendItemIndex);
+
     _clearLayout();
+
     _trendLayout();
 
     _changeTrendList = NULL;
@@ -597,58 +619,51 @@ void OxyCRGWidget::_getChangeTrendIndex(int index)
 
 void OxyCRGWidget::_autoSetRuler()
 {
-    if (_oxycrgHrWidget)
-    {
-        QString strValueHigh = OxyCRGSymbol::convert(HR_HIGH_200);
-        int valueHigh = strValueHigh.toInt();
-        QString strValueLow = OxyCRGSymbol::convert(HR_LOW_40);
-        int valueLow = strValueLow.toInt();
-
-        _oxycrgHrWidget->setRuler(valueHigh,
-                                  (valueHigh + valueLow) / 2, valueLow);
-        _oxycrgHrWidget->setValueRange(valueLow, valueHigh);
-        currentConfig.setNumValue("OxyCRG|Ruler|HRLow", static_cast<int>(HR_LOW_40));
-        currentConfig.setNumValue("OxyCRG|Ruler|HRHigh", static_cast<int>(HR_HIGH_200));
-    }
-
-    if (d_ptr->oxycrgRrWidget)
+    if (d_ptr->rrHrTrend)
     {
         QString strValueHigh = OxyCRGSymbol::convert(RR_HIGH_40);
         int valueHigh = strValueHigh.toInt();
         QString strValueLow = OxyCRGSymbol::convert(RR_LOW_0);
         int valueLow = strValueLow.toInt();
 
-        d_ptr->oxycrgRrWidget->setRuler(valueHigh,
-                                  (valueHigh + valueLow) / 2, valueLow);
-        d_ptr->oxycrgRrWidget->setValueRange(valueLow, valueHigh);
+        d_ptr->rrHrTrend->setRrRulerValue(valueHigh, valueLow);
         currentConfig.setNumValue("OxyCRG|Ruler|RRLow", static_cast<int>(RR_LOW_0));
         currentConfig.setNumValue("OxyCRG|Ruler|RRHigh", static_cast<int>(RR_HIGH_40));
     }
 
-    if (_oxycrgSpo2Widget)
+    if (d_ptr->rrHrTrend)
+    {
+        QString strValueHigh = OxyCRGSymbol::convert(HR_HIGH_200);
+        int valueHigh = strValueHigh.toInt();
+        QString strValueLow = OxyCRGSymbol::convert(HR_LOW_40);
+        int valueLow = strValueLow.toInt();
+
+        d_ptr->rrHrTrend->setHrRulerValue(valueHigh, valueLow);
+        currentConfig.setNumValue("OxyCRG|Ruler|HRLow", static_cast<int>(HR_LOW_40));
+        currentConfig.setNumValue("OxyCRG|Ruler|HRHigh", static_cast<int>(HR_HIGH_200));
+    }
+
+    if (d_ptr->spo2Trend)
     {
         QString strValueHigh = OxyCRGSymbol::convert(SPO2_HIGH_100);
         int valueHigh = strValueHigh.toInt();
         QString strValueLow = OxyCRGSymbol::convert(SPO2_LOW_92);
         int valueLow = strValueLow.toInt();
 
-        _oxycrgSpo2Widget->setRuler(valueHigh,
-                                  (valueHigh + valueLow) / 2, valueLow);
-        _oxycrgSpo2Widget->setValueRange(valueLow, valueHigh);
+        d_ptr->spo2Trend->setRulerValue(valueHigh, valueLow);
         currentConfig.setNumValue("OxyCRG|Ruler|SPO2Low", static_cast<int>(SPO2_LOW_92));
         currentConfig.setNumValue("OxyCRG|Ruler|SPO2High", static_cast<int>(SPO2_HIGH_100));
     }
 
-    if (_oxycrgCo2Widget)
+    if (d_ptr->co2Wave)
     {
         QString strValueHigh = OxyCRGSymbol::convert(CO2_HIGH_15);
         int valueHigh = strValueHigh.toInt();
         QString strValueLow = OxyCRGSymbol::convert(CO2_LOW_0);
         int valueLow = strValueLow.toInt();
 
-        _oxycrgCo2Widget->setRuler(valueHigh,
-                                  (valueHigh + valueLow) / 2, valueLow);
-        _oxycrgCo2Widget->setValueRange(valueLow, valueHigh);
+        d_ptr->co2Wave->setRulerValue(valueHigh, valueLow);
+
         currentConfig.setNumValue("OxyCRG|Ruler|CO2Low", static_cast<int>(CO2_LOW_0));
         currentConfig.setNumValue("OxyCRG|Ruler|CO2High", static_cast<int>(CO2_HIGH_15));
     }

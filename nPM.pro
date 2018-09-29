@@ -149,13 +149,18 @@ SOURCES +=                                                                      
     Utility/Widgets/InputMethod/NumberPanel.cpp                                 \
     Utility/Widgets/InputMethod/NumberInput.cpp                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.cpp                          \
+    Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.cpp                      \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidgetRuler.cpp                     \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidget.cpp                               \
     Utility/Widgets/OxyCRGWidget/OxyCRGHRWidget.cpp                             \
     Utility/Widgets/OxyCRGWidget/OxyCRGRESPWidget.cpp                           \
+    Utility/Widgets/OxyCRGWidget/OxyCRGRESPWaveWidget.cpp                       \
     Utility/Widgets/OxyCRGWidget/OxyCRGCO2Widget.cpp                            \
+    Utility/Widgets/OxyCRGWidget/OxyCRGCO2WaveWidget.cpp                        \
     Utility/Widgets/OxyCRGWidget/OxyCRGRRWidget.cpp                             \
+    Utility/Widgets/OxyCRGWidget/OxyCRGRRHRWaveWidget.cpp                       \
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2Widget.cpp                           \
+    Utility/Widgets/OxyCRGWidget/OxyCRGSPO2TrendWidget.cpp                      \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWidget.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWindow.cpp                          \
@@ -164,6 +169,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Trendform/ShortTrendWidgetLabel.cpp                         \
     Utility/Widgets/Trendform/ShortTrendWidgetSelectMenu.cpp                    \
     Utility/Widgets/Trendform/ShortTrendManager.cpp                             \
+    Utility/Widgets/Trendform/ShortTrendItem.cpp                                \
     Utility/Widgets/TrendWidget/TrendWidget.cpp                                 \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.cpp                            \
     Utility/Widgets/Waveform/BarGraphScanMode.cpp                               \
@@ -253,6 +259,7 @@ SOURCES +=                                                                      
     Components/Alarm/Widgets/AlarmMuteBarWidget.cpp                             \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.cpp                         \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.cpp                          \
+    Components/Alarm/Widgets/AlarmInfoWindow.cpp                                \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.cpp    \
     Components/Calculation/DoseCalculationManager/DoseCalculationWindow.cpp     \
     Components/Calculation/DoseCalculationManager/TitrateTableModel.cpp         \
@@ -271,7 +278,6 @@ SOURCES +=                                                                      
     Components/PatientData/RescueDataListNewWidget.cpp                          \
     Components/PatientData/RescueDataExportWidget.cpp                           \
     Components/PatientData/TrendCache.cpp                                       \
-    Components/PatientData/TrendGraphWidget.cpp                                 \
     Components/PatientData/TrendDataUtil.cpp                                    \
     Components/PatientData/RescueDataDeleteWidget.cpp                           \
     Components/PatientData/RescueDataDeleteWindow.cpp                           \
@@ -282,7 +288,6 @@ SOURCES +=                                                                      
     Components/PatientData/TrendWaveWidget.cpp                                  \
     Components/PatientData/TrendSubWaveWidget.cpp                               \
     Components/PatientData/IMoveButton.cpp                                      \
-    Components/PatientData/TrendGraphSetWidget.cpp                              \
     Components/PatientData/TrendTableWindow.cpp                                 \
     Components/PatientData/TrendTableModel.cpp                                  \
     Components/PatientData/TrendTableSetWindow.cpp                              \
@@ -698,13 +703,19 @@ HEADERS +=                                                                      
     Utility/Widgets/InputMethod/NumberPanel.h                                   \
     Utility/Widgets/InputMethod/NumberInput.h                                   \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.h                            \
+    Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.h                        \
+    Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget_p.h                      \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidgetRuler.h                       \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidget.h                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGHRWidget.h                               \
     Utility/Widgets/OxyCRGWidget/OxyCRGRESPWidget.h                             \
     Utility/Widgets/OxyCRGWidget/OxyCRGRRWidget.h                               \
+    Utility/Widgets/OxyCRGWidget/OxyCRGRESPWaveWidget.h                        \
+    Utility/Widgets/OxyCRGWidget/OxyCRGRRHRWaveWidget.h                         \
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2Widget.h                             \
+    Utility/Widgets/OxyCRGWidget/OxyCRGSPO2TrendWidget.h                           \
     Utility/Widgets/OxyCRGWidget/OxyCRGCO2Widget.h                              \
+    Utility/Widgets/OxyCRGWidget/OxyCRGCO2WaveWidget.h                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWidget.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWindow.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.h                            \
@@ -715,6 +726,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Trendform/ShortTrendWidgetLabel.h                           \
     Utility/Widgets/Trendform/ShortTrendWidgetSelectMenu.h                      \
     Utility/Widgets/Trendform/ShortTrendManager.h                               \
+    Utility/Widgets/Trendform/ShortTrendItem.h                                  \
     Utility/Widgets/TrendWidget/TrendWidget.h                                   \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.h                              \
     Utility/Widgets/Waveform/BarGraphScanMode.h                                 \
@@ -774,7 +786,7 @@ HEADERS +=                                                                      
     Components/System/Widgets/SystemMenuContent.h                               \
     Components/System/Widgets/PrintSettingMenuContent.h                         \
     Components/System/Widgets/MeasureSettingMenuContent.h                       \
-    Components/System/Widgets/MeasureSettingWindow.h                           \
+    Components/System/Widgets/MeasureSettingWindow.h                            \
     Components/System/Widgets/DataReviewMenuContent.h                           \
     Components/System/Widgets/CalculateMenuContent.h                            \
     Components/System/Widgets/SystemMaintenance.h                               \
@@ -810,6 +822,7 @@ HEADERS +=                                                                      
     Components/Alarm/Widgets/AlarmMuteBarWidget.h                               \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.h                           \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.h                            \
+    Components/Alarm/Widgets/AlarmInfoWindow.h                                  \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.h      \
     Components/Calculation/DoseCalculationManager/DoseCalculationDefine.h       \
     Components/Calculation/DoseCalculationManager/DoseCalculationWindow.h       \
@@ -833,7 +846,6 @@ HEADERS +=                                                                      
     Components/PatientData/RescueDataDefine.h                                   \
     Components/PatientData/RescueDataExportWidget.h                             \
     Components/PatientData/TrendCache.h                                         \
-    Components/PatientData/TrendGraphWidget.h                                   \
     Components/PatientData/TrendDataSymbol.h                                    \
     Components/PatientData/TrendDataDefine.h                                    \
     Components/PatientData/RescueDataDeleteWidget.h                             \
@@ -846,7 +858,6 @@ HEADERS +=                                                                      
     Components/PatientData/TrendWaveWidget.h                                    \
     Components/PatientData/TrendSubWaveWidget.h                                 \
     Components/PatientData/IMoveButton.h                                        \
-    Components/PatientData/TrendGraphSetWidget.h                                \
     Components/PatientData/EventDataSymbol.h                                    \
     Components/PatientData/TrendTableWindow.h                                   \
     Components/PatientData/TrendTableModel.h                                    \

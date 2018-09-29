@@ -90,6 +90,7 @@ void Param::exitDemo()
  *************************************************************************************************/
 void Param::getAvailableWaveforms(QStringList &waveforms, QStringList &waveformShowName, int flag)
 {
+    Q_UNUSED(flag)
     waveforms.clear();
     waveformShowName.clear();
 }

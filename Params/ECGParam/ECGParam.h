@@ -35,6 +35,7 @@ class MonitorSoftkeyAction;
 class ECGWaveWidget;
 class ECGProviderIFace;
 class PDProviderIFace;
+class OxyCRGRRHRWaveWidget;
 class ECGParam: public Param
 {
     Q_OBJECT
@@ -105,7 +106,12 @@ public:
     void setECGPVCSTrendWidget(ECGPVCSTrendWidget *trendWidget);
     void setECGSTTrendWidget(ECGSTTrendWidget *trendWidget);
     void setWaveWidget(ECGWaveWidget *waveWidget, ECGLead whichLead);
-    void setOxyCRGWaveWidget(OxyCRGHRWidget *waveWidget);
+
+    /**
+     * @brief setOxyCRGHrWaveWidget
+     * @param waveWidget
+     */
+    void setOxyCRGHrWaveWidget(OxyCRGRRHRWaveWidget *waveWidget);
 
     // 更新波形数据。
     void updateWaveform(int waveform[], bool *leadoff, bool ipaceMark = false,
@@ -136,6 +142,9 @@ public:
 
     // update ecg notify message
     void updateECGNotifyMesg(ECGLead lead, bool isAlarm);
+
+    // 设置连接,供给对象调用
+    void setConnected(bool isConnected);
 
     // 是否连接
     bool isConnected();
@@ -243,6 +252,12 @@ public: // 用于访问配置相关信息。
     void setSweepSpeed(ECGSweepSpeed onoff);
     ECGSweepSpeed getSweepSpeed(void);
 
+    /**
+     * @brief getWaveDataRate  获取波形速率
+     * @return
+     */
+    int getWaveDataRate(void) const;
+
     // 设置/获取增益。
     void setGain(ECGGain gain, ECGLead lead);
     void setGain(ECGGain gain, int waveID);
@@ -321,7 +336,7 @@ private:
     ECGPVCSTrendWidget *_pvcsTrendWidget;
     ECGSTTrendWidget *_ecgSTTrendWidget;
     ECGWaveWidget *_waveWidget[ECG_LEAD_NR];
-    OxyCRGHRWidget *_waveOxyCRGWidget;
+    OxyCRGRRHRWaveWidget *oxyCRGRrHrTrend;
     QBasicTimer _timer;
     short _hrValue;
     short _pvcsValue;
@@ -351,5 +366,6 @@ private:
     bool _isCheckPatient;               // VF signal
 
     int _updateNum;            // 呼吸氧和波形更新标志计数
+    bool _connectedProvider;    // 连接Provider标识
 };
 #define ecgParam (ECGParam::construction())
