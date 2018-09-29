@@ -35,7 +35,6 @@ protected:
     void resizeEvent(QResizeEvent *e);
     void focusInEvent(QFocusEvent */*e*/);
     void hideEvent(QHideEvent *e);
-    void paintEvent(QPaintEvent *e);
 
 private slots:
     void _respZoom(IWidget *widget);

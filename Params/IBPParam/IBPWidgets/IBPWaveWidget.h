@@ -42,9 +42,6 @@ public:
     ~IBPWaveWidget();
 
 protected:
-    // 重绘事件。
-    virtual void paintEvent(QPaintEvent *e);
-
     // 窗体大小调整事件
     virtual void resizeEvent(QResizeEvent *e);
 

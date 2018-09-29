@@ -479,6 +479,7 @@ RecorderManager::RecorderManager()
     d_ptr->curSpeed = getPrintSpeed();
 
     d_ptr->procThread = new QThread(this);
+    d_ptr->procThread->setObjectName("Record");
 
     d_ptr->procThread->start();
 }

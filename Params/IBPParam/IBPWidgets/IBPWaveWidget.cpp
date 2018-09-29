@@ -165,15 +165,6 @@ IBPWaveWidget::~IBPWaveWidget()
 {
 }
 
-void IBPWaveWidget::paintEvent(QPaintEvent *e)
-{
-    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
-    setPalette(palette);
-    _ruler->setPalette(palette);
-    _ruler->setBackground(true);
-    WaveWidget::paintEvent(e);
-}
-
 /**************************************************************************************************
  * 尺寸变化。
  *************************************************************************************************/
