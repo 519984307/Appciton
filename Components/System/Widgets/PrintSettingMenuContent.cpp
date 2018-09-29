@@ -42,6 +42,7 @@ public:
     Button *clearPrintTask;
     QList<ComboBox *> selectWaves;
     QList<int> waveIDs;
+    QStringList waveNames;
     ComboBox *printTime;
     ComboBox *printSpeed;
 };
@@ -54,33 +55,43 @@ void PrintSettingMenuContentPrivate::loadOptions()
     PrintSpeed speed = recorderManager.getPrintSpeed();
     printSpeed->setCurrentIndex(speed);
 
-    int size = waveIDs.count();
     int index[PRINT_WAVE_NUM] = {0};
-    QSet<int> waveIds;
+    QSet<int> waveCboIds;
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
         QString path;
         path = QString("Print|SelectWave%1").arg(i + 1);
         systemConfig.getNumValue(path, index[i]);
-        if (index[i] > size)
+        if (index[i] > WAVE_NONE && index[i] < WAVE_NR)
         {
-            index[i] = size - 1;
+            waveCboIds.insert(index[i]);
         }
-        waveIds.insert(index[i]);
     }
-    if (waveIds.size() < PRINT_WAVE_NUM)
+    if (waveCboIds.size() < PRINT_WAVE_NUM)
     {
         for (int i = 0; i < PRINT_WAVE_NUM; i++)
         {
-            index[i] = i;
             QString path;
             path = QString("Print|SelectWave%1").arg(i + 1);
-            systemConfig.setNumValue(path, index[i]);
+            systemConfig.setNumValue(path, waveIDs.at(i));
         }
     }
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
-        selectWaves[i]->setCurrentIndex(index[i]);
+        int count = 1;
+        foreach(int id, waveIDs)
+        {
+            if (index[i] == id)
+            {
+                break;
+            }
+            count++;
+        }
+
+        if (count < selectWaves[i]->count())
+        {
+            selectWaves[i]->setCurrentIndex(count);
+        }
     }
 }
 
@@ -122,6 +133,7 @@ void PrintSettingMenuContent::layoutExec()
     QStringList waveNames;
     d_ptr->waveIDs = layoutManager.getDisplayedWaveformIDs();
     waveNames = layoutManager.getDisplayedWaveformLabels();
+    d_ptr->waveNames = waveNames;
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
         QString comboName = QString("%1%2").arg(trs("Wave")).arg(i + 1);
@@ -232,7 +244,19 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
 
     QString path;
     path = QString("Print|SelectWave%1").arg(item + 1);
-    systemConfig.setNumValue(path, cmbList->currentIndex());
+
+    // 寻找打印波形对应的波形ID号
+    QString curWaveName = cmbList->currentText();
+    int waveIndex = 0;
+    foreach(QString waveName, d_ptr->waveNames)
+    {
+        if (curWaveName == waveName)
+        {
+            break;
+        }
+        waveIndex++;
+    }
+    systemConfig.setNumValue(path, d_ptr->waveIDs.at(waveIndex));
 
     if (wavenames.size() == count)
     {
@@ -256,13 +280,26 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
                     continue;
                 }
 
-                if (!wavenames.contains(curCmbList->itemText(j)))
+                QString curWaveName = curCmbList->itemText(j);
+                if (!wavenames.contains(curWaveName))
                 {
                     curCmbList->blockSignals(true);
                     curCmbList->setCurrentIndex(j);
                     QString path;
                     path = QString("Print|SelectWave%1").arg(i + 1);
-                    systemConfig.setNumValue(path, j);
+
+                    // 寻找打印波形对应的波形ID号
+                    int waveIndex = 0;
+                    foreach(QString waveName, d_ptr->waveNames)
+                    {
+                        if (curWaveName == waveName)
+                        {
+                            break;
+                        }
+                        waveIndex++;
+                    }
+                    systemConfig.setNumValue(path, d_ptr->waveIDs.at(waveIndex));
+
                     curCmbList->blockSignals(false);
                     return;
                 }
