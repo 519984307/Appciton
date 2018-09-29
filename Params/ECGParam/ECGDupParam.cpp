@@ -310,16 +310,16 @@ void ECGDupParam::setECGTrendWidgetCalcName(ECGLead calLead)
     _trendWidget->setTrendWidgetCalcName(calLead);
 }
 
-void ECGDupParam::setAutoHrSourceStatus(bool isEnabled)
-{
-    _isAutoHrSource = isEnabled;
-}
-
 void ECGDupParam::manualSetHrSource(ECGDupParam::HrSourceType type)
 {
-    if (_isAutoHrSource)
+    if (type == HR_SOURCE_AUTO)
     {
+        _isAutoHrSource = true;
         return;
+    }
+    else
+    {
+        _isAutoHrSource = false;
     }
     _manualHrSource = type;
 }

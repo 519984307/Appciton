@@ -25,6 +25,7 @@ class ECGDupParam: public Param
 {
 public:
     enum HrSourceType{
+        HR_SOURCE_AUTO,
         HR_SOURCE_ECG,
         HR_SOURCE_SPO2,
     };
@@ -93,12 +94,6 @@ public:
 
     //设置计算导联字串。
     void setECGTrendWidgetCalcName(ECGLead calLead);
-
-    /**
-     * @brief setAutoHrSourceStatus  设置hr来源是否为自动模式
-     * @param isEnabled
-     */
-    void setAutoHrSourceStatus(bool isEnabled);
 
     /**
      * @brief manualSetHrSource  手动设置hr来源

@@ -348,23 +348,22 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
         switch (item)
         {
         case ECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE:
-            if (index == 0)
+        {
+            ECGDupParam::HrSourceType  sourceType;
+            switch (index)
             {
-                ecgDupParam.setAutoHrSourceStatus(true);
+                case HR_PR_SOURCE_AUTO:
+                sourceType = ECGDupParam::HR_SOURCE_AUTO;
+                break;
+                case HR_PR_SOURCE_ECG:
+                sourceType = ECGDupParam::HR_SOURCE_ECG;
+                break;
+                case HR_PR_SOURCE_SPO2:
+                sourceType = ECGDupParam::HR_SOURCE_SPO2;
                 break;
             }
-            else
-            {
-                ecgDupParam.setAutoHrSourceStatus(false);
-            }
-            if (HR_PR_SOURCE_ECG == index)
-            {
-                ecgDupParam.manualSetHrSource(ECGDupParam::HR_SOURCE_ECG);
-            }
-            else if (HR_PR_SOURCE_SPO2 == index)
-            {
-                ecgDupParam.manualSetHrSource(ECGDupParam::HR_SOURCE_SPO2);
-            }
+            ecgDupParam.manualSetHrSource(sourceType);
+        }
             break;
         case ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE:
             ecgParam.setLeadMode(static_cast<ECGLeadMode>(index));
