@@ -17,6 +17,17 @@
 class RESPSymbol
 {
 public:
+    static const char *convert(RESPApneaTime index)
+    {
+        static const char *symbol[RESP_APNEA_TIME_NR] =
+        {
+            "Off", "_20sec", "_25sec", "_30sec",
+            "_35sec", "_40sec", "_45sec",
+            "_50sec", "_55sec", "_60sec"
+        };
+        return symbol[index];
+    }
+
     static const char *convert(RESPSweepSpeed index)
     {
         static const char *symbol[RESP_SWEEP_SPEED_NR] =

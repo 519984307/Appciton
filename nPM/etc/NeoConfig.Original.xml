@@ -169,7 +169,7 @@
         <EnableAlarmAudioOff>1</EnableAlarmAudioOff>
         <EnableAlarmOff>1</EnableAlarmOff>
         <AlarmOffAtPowerOn>0</AlarmOffAtPowerOn>
-        <NonAlertsBeepsInNonAED>1</NonAlertsBeepsInNonAED>
+		<ApneaTime>2</ApneaTime>
     </Alarm>
     <AlarmSource>
         <Adult>
