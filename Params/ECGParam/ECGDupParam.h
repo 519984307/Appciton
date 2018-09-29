@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/29
+ **/
+
+
+
 #pragma once
 #include "Param.h"
 #include "ECGSymbol.h"
@@ -61,7 +73,7 @@ public:
     // 更新/读取HR的值。
     void updatePR(short pr);
     void updateHR(short hr);
-    //could return pr if hr is unvalid
+    // could return pr if hr is unvalid
     short getHR(void) const;
     // 是否为HR有效。
     bool isHRValid(void);
@@ -82,6 +94,24 @@ public:
     //设置计算导联字串。
     void setECGTrendWidgetCalcName(ECGLead calLead);
 
+    /**
+     * @brief setAutoHrSourceStatus  设置hr来源是否为自动模式
+     * @param isEnabled
+     */
+    void setAutoHrSourceStatus(bool isEnabled);
+
+    /**
+     * @brief manualSetHrSource  手动设置hr来源
+     * @param type
+     */
+    void manualSetHrSource(HrSourceType type);
+
+    /**
+     * @brief isAutoTypeHrSouce
+     * @return
+     */
+    bool isAutoTypeHrSouce(void) const;
+
 private:
     // 构造。
     ECGDupParam();
@@ -93,5 +123,7 @@ private:
     short _prValue;
     bool _hrBeatFlag;
     bool _isAlarm;
+    bool _isAutoHrSource;
+    HrSourceType _manualHrSource;
 };
 #define ecgDupParam (ECGDupParam::construction())
