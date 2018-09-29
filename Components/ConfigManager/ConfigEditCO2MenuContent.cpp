@@ -94,7 +94,7 @@ void ConfigEditCO2MenuContentPrivate::loadOptions()
     config->getNumValue("CO2|FICO2Display", index);
     combos[ITEM_CBO_FICO2_DISPLAY]->setCurrentIndex(index);
 
-    config->getNumValue("PrimaryCfg|Alarm|ApneaTime", index);
+    config->getNumValue("Alarm|ApneaTime", index);
     combos[ITEM_CBO_APNEA_TIME]->setCurrentIndex(index);
 }
 
@@ -111,7 +111,7 @@ void ConfigEditCO2MenuContent::onComboBoxIndexChanged(int index)
         d_ptr->config->setNumValue("CO2|FICO2Display", index);
         break;
     case ConfigEditCO2MenuContentPrivate::ITEM_CBO_APNEA_TIME:
-        d_ptr->config->setNumValue("PrimaryCfg|Alarm|ApneaTime", index);
+        d_ptr->config->setNumValue("Alarm|ApneaTime", index);
         break;
     };
 }

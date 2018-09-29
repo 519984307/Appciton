@@ -102,7 +102,7 @@ void CO2MenuContent::onComboBoxIndexChanged(int index)
         co2Param.setFiCO2Display((CO2FICO2Display)index);
         break;
     case CO2MenuContentPrivate::ITEM_CBO_APNEA_TIME:
-        currentConfig.setNumValue("PrimaryCfg|Alarm|ApneaTime", index);
+        currentConfig.setNumValue("Alarm|ApneaTime", index);
         respParam.setApneaTime((ApneaAlarmTime)index);
         co2Param.setApneaTime((ApneaAlarmTime)index);
         break;
