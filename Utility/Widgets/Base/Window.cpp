@@ -29,12 +29,14 @@ public:
     WindowPrivate()
         : m_widget(NULL),
           m_titleLbl(NULL),
-          m_mask(NULL)
+          m_mask(NULL),
+          closeBtn(NULL)
     {}
 
     QWidget *m_widget;
     QLabel *m_titleLbl;
     QWidget *m_mask;
+    Button *closeBtn;
 };
 
 Window::Window(QWidget *parent)
@@ -47,6 +49,7 @@ Window::Window(QWidget *parent)
     titleLbl->setAlignment(Qt::AlignCenter);
     d_ptr->m_titleLbl = titleLbl;
     Button *closeBtn = new Button();
+    d_ptr->closeBtn = closeBtn;
     closeBtn->setIconSize(QSize(24, 24));
     closeBtn->setBorderWidth(0);
     closeBtn->setFixedSize(TITLE_BAR_HEIGHT, TITLE_BAR_HEIGHT);
@@ -123,6 +126,11 @@ void Window::showMask(bool flag)
 bool Window::isShowingMask() const
 {
     return d_ptr->m_mask->isVisible();
+}
+
+Button *Window::getCloseBtn() const
+{
+    return d_ptr->closeBtn;
 }
 
 int Window::exec()
