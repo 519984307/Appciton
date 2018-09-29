@@ -170,6 +170,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Trendform/ShortTrendWidgetSelectMenu.cpp                    \
     Utility/Widgets/Trendform/ShortTrendManager.cpp                             \
     Utility/Widgets/Trendform/ShortTrendItem.cpp                                \
+    Utility/Widgets/Trendform/ShortTrendContainer.cpp                           \
     Utility/Widgets/TrendWidget/TrendWidget.cpp                                 \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.cpp                            \
     Utility/Widgets/Waveform/BarGraphScanMode.cpp                               \
@@ -725,6 +726,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Trendform/ShortTrendWidgetSelectMenu.h                      \
     Utility/Widgets/Trendform/ShortTrendManager.h                               \
     Utility/Widgets/Trendform/ShortTrendItem.h                                  \
+    Utility/Widgets/Trendform/ShortTrendContainer.h                             \
     Utility/Widgets/TrendWidget/TrendWidget.h                                   \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.h                              \
     Utility/Widgets/Waveform/BarGraphScanMode.h                                 \

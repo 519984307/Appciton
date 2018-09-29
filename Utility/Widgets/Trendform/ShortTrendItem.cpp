@@ -23,13 +23,13 @@
 #define FONT_HEIGHT 12
 
 
-typedef QVector<QPointF> PointBufType;
+typedef QVector<float> YAxisValueBufType;
 
 class ShortTrendItemPrivate
 {
 public:
     ShortTrendItemPrivate(const QString &name, ShortTrendItem *const q_ptr)
-        : q_ptr(q_ptr), name(name), startPos(0), duration(ShortTrendItem::TREND_DURATION_60M),
+        : q_ptr(q_ptr), name(name), startPos(0), duration(SHORT_TREND_DURATION_60M),
           maxValue(100), minValue(0), scale(1), waveRegion(), waveMargin(40, 8, 2, 8), waveColor(Qt::white),
           updateBGFlag(true), resetPointBufFlag(true), drawTimeLabelFlag(false), isNibp(false)
     {
@@ -50,19 +50,19 @@ public:
         QStringList list;
         switch (duration)
         {
-        case ShortTrendItem::TREND_DURATION_30M:
+        case SHORT_TREND_DURATION_30M:
             list << "-30M" << "-15M" << "0";
             break;
-        case ShortTrendItem::TREND_DURATION_60M:
+        case SHORT_TREND_DURATION_60M:
             list << "-60M" << "-30M" << "0";
             break;
-        case ShortTrendItem::TREND_DURATION_120M:
+        case SHORT_TREND_DURATION_120M:
             list << "-2H" << "-1H" << "0";
             break;
-        case ShortTrendItem::TREND_DURATION_240M:
+        case SHORT_TREND_DURATION_240M:
             list << "-4H" << "-2H" << "0";
             break;
-        case ShortTrendItem::TREND_DURATION_480M:
+        case SHORT_TREND_DURATION_480M:
             list << "-8H" << "-4H" << "0";
             break;
         default:
@@ -83,14 +83,14 @@ public:
     {
         switch (duration)
         {
-        case ShortTrendItem::TREND_DURATION_120M:
+        case SHORT_TREND_DURATION_120M:
             return SHORT_TREND_INTERVAL_20S;
-        case ShortTrendItem::TREND_DURATION_240M:
+        case SHORT_TREND_DURATION_240M:
             return  SHORT_TREND_INTERVAL_30S;
-        case ShortTrendItem::TREND_DURATION_480M:
+        case SHORT_TREND_DURATION_480M:
             return SHORT_TREND_INTERVAL_60S;
-        case ShortTrendItem::TREND_DURATION_30M:
-        case ShortTrendItem::TREND_DURATION_60M:
+        case SHORT_TREND_DURATION_30M:
+        case SHORT_TREND_DURATION_60M:
         default:
             break;
         }
@@ -101,15 +101,15 @@ public:
     {
         switch (duration)
         {
-        case ShortTrendItem::TREND_DURATION_30M:
+        case SHORT_TREND_DURATION_30M:
             return 30 * 60 / 10;
-        case ShortTrendItem::TREND_DURATION_60M:
+        case SHORT_TREND_DURATION_60M:
             return 60 * 60 / 10;
-        case ShortTrendItem::TREND_DURATION_120M:
+        case SHORT_TREND_DURATION_120M:
             return 120 * 60 / 20;
-        case ShortTrendItem::TREND_DURATION_240M:
+        case SHORT_TREND_DURATION_240M:
             return 240 * 60 / 30;
-        case ShortTrendItem::TREND_DURATION_480M:
+        case SHORT_TREND_DURATION_480M:
             return 480 * 60 / 60;
         default:
             break;
@@ -121,9 +121,9 @@ public:
     QString name;
     QPixmap background;
     QList<SubParamID> subParams;
-    QList<PointBufType> pointBufs;
+    QList<YAxisValueBufType> yAxisValueBufs;
     int startPos;
-    ShortTrendItem::TrendDuration duration;
+    ShortTrendDuration duration;
     int maxValue;
     int minValue;
     int scale;
@@ -218,26 +218,24 @@ void ShortTrendItemPrivate::resetPointBuffer()
     ShortTrendInterval interval = getShortTrendInterval();
 
     TrendDataType values[SHORT_TREND_DATA_NUM];
-    float deltaX = waveRegion.width() * 1.0 / pointNum;
     for (int i = 0; i < subParams.count(); ++i)
     {
         trendDataStorageManager.getShortTrendData(subParams.at(i), values, pointNum, interval);
-        if (pointBufs.at(i).size() != pointNum)
+        if (yAxisValueBufs.at(i).size() != pointNum)
         {
-            pointBufs[i].resize(pointNum);
+            yAxisValueBufs[i].resize(pointNum);
         }
 
         for (int j = 0; j < pointNum; ++j)
         {
             if (values[j] != InvData())
             {
-                float xValue = deltaX * j + waveRegion.left();
                 float yValue = waveRegion.bottom() - (values[j] - minValue) * waveRegion.height() / (maxValue - minValue);
-                pointBufs[i][j] = QPointF(xValue, yValue);
+                yAxisValueBufs[i][j] = yValue;
             }
             else
             {
-                pointBufs[i][j] = QPointF();
+                yAxisValueBufs[i][j] = 0;
             }
         }
     }
@@ -248,14 +246,14 @@ void ShortTrendItemPrivate::resetPointBuffer()
 
 void ShortTrendItemPrivate::drawWave(QPainter *painter, const QRect &r)
 {
-    if (pointBufs.isEmpty() || pointBufs.at(0).size() == 0)
+    if (yAxisValueBufs.isEmpty() || yAxisValueBufs.at(0).size() == 0)
     {
         return;
     }
 
     QRect interRect = r.intersect(waveRegion);
 
-    int pointNum = pointBufs.at(0).size();
+    int pointNum = yAxisValueBufs.at(0).size();
     float deltaX = waveRegion.width() * 1.0 / pointNum;
     int start = (interRect.left() - waveRegion.left()) / deltaX;
     if (start < 0)
@@ -272,7 +270,7 @@ void ShortTrendItemPrivate::drawWave(QPainter *painter, const QRect &r)
     int startIndex = (startPos + start) % pointNum;
     int endIndex  =(startPos + end) % pointNum;
 
-    for (int i = 0; i < pointBufs.count(); ++i)
+    for (int i = 0; i < yAxisValueBufs.count(); ++i)
     {
         QPainterPath path;
         int index = startIndex;
@@ -280,8 +278,8 @@ void ShortTrendItemPrivate::drawWave(QPainter *painter, const QRect &r)
         bool moveTo = true;
         while (index != endIndex)
         {
-            const QPointF &curPoint = pointBufs.at(i).at(index);
-            if (curPoint.isNull())
+            const float &curYAxisValue = yAxisValueBufs.at(i).at(index);
+            if (curYAxisValue <= 0)
             {
                 if (!moveTo)
                 {
@@ -290,6 +288,8 @@ void ShortTrendItemPrivate::drawWave(QPainter *painter, const QRect &r)
                 }
                 continue;
             }
+
+            QPointF curPoint(waveRegion.left() + deltaX * index, curYAxisValue);
 
             if (moveTo)
             {
@@ -315,13 +315,13 @@ void ShortTrendItemPrivate::drawWave(QPainter *painter, const QRect &r)
 
 void ShortTrendItemPrivate::drawNibpMark(QPainter *painter, const QRect &r)
 {
-    if (pointBufs.isEmpty() || pointBufs.size() != 3)
+    if (yAxisValueBufs.isEmpty() || yAxisValueBufs.size() != 3)
     {
         return;
     }
 
     QRect interRect = r.intersect(waveRegion);
-    int pointNum = pointBufs.at(0).size();
+    int pointNum = yAxisValueBufs.at(0).size();
     float deltaX = waveRegion.width() * 1.0 / pointNum;
     int start = (interRect.left() - waveRegion.left()) / deltaX;
     if (start < 0)
@@ -348,13 +348,13 @@ void ShortTrendItemPrivate::drawNibpMark(QPainter *painter, const QRect &r)
     int tickLen = systemManager.getScreenPixelHPitch();
     while (index != endIndex)
     {
-        const QPointF &curPoint = pointBufs.at(0).at(index);
-        if (!curPoint.isNull())
+        const float &curYAxisValue = yAxisValueBufs.at(0).at(index);
+        if (curYAxisValue > 0)
         {
-            qreal x = curPoint.x();
-            qreal sys = curPoint.y();
-            qreal dia = pointBufs.at(1).at(index).y();
-            qreal map = pointBufs.at(2).at(index).y();
+            qreal x = waveMargin.left() + deltaX * index;
+            qreal sys = curYAxisValue;
+            qreal dia = yAxisValueBufs.at(1).at(index);
+            qreal map = yAxisValueBufs.at(2).at(index);
 
             // draw nibp symbol
             path.moveTo(x - tickLen / 2, sys - 0.866 * tickLen);
@@ -418,10 +418,10 @@ void ShortTrendItem::setSubParamList(const QList<SubParamID> subParams)
 {
     d_ptr->subParams = subParams;
     d_ptr->resetPointBufFlag = true;
-    d_ptr->pointBufs.clear();
+    d_ptr->yAxisValueBufs.clear();
     for (int i = 0; i < subParams.count(); ++i)
     {
-        d_ptr->pointBufs.append(PointBufType());
+        d_ptr->yAxisValueBufs.append(YAxisValueBufType());
     }
     update();
 }
@@ -443,7 +443,7 @@ void ShortTrendItem::getValueRange(short &max, short &min, short &scale) const
     scale = d_ptr->scale;
 }
 
-void ShortTrendItem::setTrendDuration(ShortTrendItem::TrendDuration duration)
+void ShortTrendItem::setTrendDuration(ShortTrendDuration duration)
 {
     if (d_ptr->duration == duration)
     {
@@ -455,7 +455,7 @@ void ShortTrendItem::setTrendDuration(ShortTrendItem::TrendDuration duration)
     d_ptr->resetPointBufFlag = true;
 }
 
-ShortTrendItem::TrendDuration ShortTrendItem::getTrendDuration() const
+ShortTrendDuration ShortTrendItem::getTrendDuration() const
 {
     return d_ptr->duration;
 }
@@ -525,6 +525,11 @@ bool ShortTrendItem::isNibpTrend() const
 
 void ShortTrendItem::onNewTrendDataArrived(ShortTrendInterval interval)
 {
+    if (!this->isVisible())
+    {
+        return;
+    }
+
     if (d_ptr->getShortTrendInterval() == interval || d_ptr->subParams.count())
     {
         for (int i = 0; i < d_ptr->subParams.count(); ++i)
@@ -533,10 +538,10 @@ void ShortTrendItem::onNewTrendDataArrived(ShortTrendInterval interval)
             float yValue = d_ptr->waveRegion.bottom()
                     - (data - d_ptr->minValue) * d_ptr->waveRegion.height()
                     / (d_ptr->maxValue - d_ptr->minValue);
-            d_ptr->pointBufs[i][d_ptr->startPos].ry() = yValue;
+            d_ptr->yAxisValueBufs[i][d_ptr->startPos] = yValue;
         }
 
-        d_ptr->startPos = (d_ptr->startPos + 1) % d_ptr->pointBufs.at(0).count();
+        d_ptr->startPos = (d_ptr->startPos + 1) % d_ptr->yAxisValueBufs.at(0).count();
 
         update(d_ptr->waveRegion);
     }

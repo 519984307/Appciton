@@ -1,0 +1,69 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/9/29
+ **/
+
+#pragma once
+#include "IWidget.h"
+#include "ParamDefine.h"
+#include "TrendDataDefine.h"
+
+class ShortTrendContainerPrivate;
+class ShortTrendContainer : public IWidget
+{
+    Q_OBJECT
+public:
+    static ShortTrendContainer &getInstance();
+
+    ~ShortTrendContainer();
+
+    /**
+     * @brief setTrendItemNum set the trend number this short trend container can hold
+     * @param num the short trend number
+     */
+    void setTrendItemNum(int num);
+
+    /**
+     * @brief getTrendItemNum get the trend number
+     * @return
+     */
+    int getTrendNum() const;
+
+    /**
+     * @brief addSubParamToTrendItem add subpraram to the short trend
+     * @param trendindex the trend index
+     * @param subParamID the new subParamID which will be show trend in the trend item
+     */
+    void addSubParamToTrendItem(int trendindex, SubParamID subParamID);
+
+    /**
+     * @brief clearTrendItemSubParam clear subParam in the short trend item
+     * @note After clear the subParam, the trend item will no draww any trend graph
+     * @param trendindex the trend index
+     */
+    void clearTrendItemSubParam(int trendindex);
+
+    /**
+     * @brief setTrendDuration set the trend duration
+     * @note all the trend item will be configureated to the same duration
+     * @param duration the duration
+     */
+    void setTrendDuration(ShortTrendDuration duration);
+
+    /**
+     * @brief getTrendDuration the the trend duration
+     * @return the duration of all the short trend item
+     */
+    ShortTrendDuration getTrendDuration() const;
+
+private:
+    ShortTrendContainer();
+    ShortTrendContainerPrivate *const d_ptr;
+};
+
+

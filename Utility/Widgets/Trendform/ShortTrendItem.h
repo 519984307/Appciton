@@ -19,16 +19,7 @@ class ShortTrendItem : public QWidget
 {
     Q_OBJECT
 public:
-    enum TrendDuration
-    {
-        TREND_DURATION_30M,
-        TREND_DURATION_60M,
-        TREND_DURATION_120M,
-        TREND_DURATION_240M,
-        TREND_DURATION_480M,
-    };
-
-    explicit ShortTrendItem(const QString &name, QWidget *parent = NULL);
+    explicit ShortTrendItem(const QString &name = QString(), QWidget *parent = NULL);
     ~ShortTrendItem();
 
     /**
@@ -75,13 +66,13 @@ public:
      * @brief setTrendDuration set the trend duration
      * @param duration the duration
      */
-    void setTrendDuration(TrendDuration duration);
+    void setTrendDuration(ShortTrendDuration duration);
 
     /**
      * @brief getTrendDuration get the trend duration
      * @return the trend duration
      */
-    TrendDuration getTrendDuration() const;
+    ShortTrendDuration getTrendDuration() const;
 
     /**
      * @brief setWaveColor set the wave color
