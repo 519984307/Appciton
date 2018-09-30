@@ -94,17 +94,14 @@ void PrintSettingMenuContentPrivate::loadOptions()
             continue;
         }
 
-        int count = 1;
-        foreach(int id, waveIDs)
+        int count;
+        count = waveIDs.indexOf(index[i]);
+        if (count >= 0)
         {
-            if (index[i] == id)
-            {
-                break;
-            }
             count++;
         }
 
-        if (count < selectWaves[i]->count())
+        if (count < selectWaves[i]->count() && count >= 0)
         {
             selectWaves[i]->setCurrentIndex(count);
         }
@@ -267,18 +264,14 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
         return;
     }
 
-    // 寻找打印波形对应的波形ID号
+    // 保存当前选择的波形ID
+    int waveIndex;
     QString curWaveName = cmbList->currentText();
-    int waveIndex = 0;
-    foreach(QString waveName, d_ptr->waveNames)
+    waveIndex = d_ptr->waveNames.indexOf(curWaveName);
+    if (waveIndex >= 0 && waveIndex < d_ptr->waveNames.count())
     {
-        if (curWaveName == waveName)
-        {
-            break;
-        }
-        waveIndex++;
+        systemConfig.setNumValue(path, d_ptr->waveIDs.at(waveIndex));
     }
-    systemConfig.setNumValue(path, d_ptr->waveIDs.at(waveIndex));
 
     if (wavenames.size() == count)
     {
@@ -310,17 +303,13 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
                     QString path;
                     path = QString("Print|SelectWave%1").arg(i + 1);
 
-                    // 寻找打印波形对应的波形ID号
-                    int waveIndex = 0;
-                    foreach(QString waveName, d_ptr->waveNames)
+                    // 保存当前选择的波形ID
+                    int waveIndex;
+                    waveIndex = d_ptr->waveNames.indexOf(curWaveName);
+                    if (waveIndex >= 0 && waveIndex < d_ptr->waveNames.count())
                     {
-                        if (curWaveName == waveName)
-                        {
-                            break;
-                        }
-                        waveIndex++;
+                        systemConfig.setNumValue(path, d_ptr->waveIDs.at(waveIndex));
                     }
-                    systemConfig.setNumValue(path, d_ptr->waveIDs.at(waveIndex));
 
                     curCmbList->blockSignals(false);
                     return;
