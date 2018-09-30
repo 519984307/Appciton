@@ -92,7 +92,6 @@ class E5ProviderPrivate
 public:
     explicit E5ProviderPrivate(E5Provider *const q_ptr)
         : q_ptr(q_ptr),
-          ecgAlgInterface(getECGInterface()),
           lastLeadOff(0),
           support12Lead(false),
           ecgLeadMode(ECG_LEAD_MODE_5),
@@ -107,7 +106,6 @@ public:
     void handleRESPRawData(unsigned char *data, int len);
 
     E5Provider *const q_ptr;
-    ECGInterfaceIFace *ecgAlgInterface;
     short lastLeadOff;
     bool support12Lead;
     char selftestResult[8];
@@ -121,46 +119,18 @@ public:
 void E5ProviderPrivate::handleEcgRawData(unsigned char *data, int len)
 {
     Q_ASSERT(len >= 41);
-    int ecgDisp[9];
-    int ecgCalc[9];
-    int qrsdelay;
     short leadoff;
     bool qrsflag;
     bool paceflag;
     bool overload;
-    bool pdblank = false;
 
-    int offset = 0;
-
-    for (int i = 0; i < 9; i++)
-    {
-        short tmp = 0;
-        tmp = data[offset] | (data[offset + 1] << 8);
-        ecgDisp[i] = tmp;
-
-        tmp = data[18 + offset] | (data[18 + offset + 1] << 8);
-        ecgCalc[i] = tmp;
-        offset += 2;
-    }
-
-    qrsdelay = data[36] | (data[37] << 8);
     leadoff = data[38] | (data[39] << 8);
     paceflag = data[40] & 0x01;
     qrsflag = data[40] & 0x02;
     overload = data[40] & 0x04;
 
-    ecgAlgInterface->setHandleData(ecgDisp, ecgCalc, qrsdelay, leadoff, qrsflag, paceflag, overload, pdblank);
-
     int leadData[ECG_LEAD_NR] = {0};
     bool leadOFFStatus[ECG_LEAD_NR] = {0};
-
-    ecgAlgInterface->getDispData(leadData, leadoff, qrsflag, paceflag, overload, pdblank);
-
-    short pvcRate = ecgAlgInterface->getPVCRate();
-    ecgParam.updatePVCS(pvcRate);
-
-//    ECGAlg::ARRCODE ARRcode = ecgAlgInterface->getARR();
-
 #if 0
     static bool initFlag = false;
     static QFile *f[ECG_LEAD_NR];
@@ -284,11 +254,6 @@ E5Provider::E5Provider()
     // UartAttrDesc portAttr(460800, 8, 'N', 1, 0, FlOW_CTRL_HARD);
     UartAttrDesc portAttr(230400, 8, 'N', 1);
     initPort(portAttr);
-    d_ptr->ecgAlgInterface->reset();
-    d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_MONITOR);
-    d_ptr->ecgAlgInterface->setNotchType(ECGAlg::ECG_NOTCH_60HZ);
-    d_ptr->ecgAlgInterface->setPatientType(ECGAlg::PATIENT_ADULT);
-    d_ptr->ecgAlgInterface->setPaceOnOff(true);
 
     // set lead mode
     int leadMode;
@@ -352,7 +317,6 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         qMemCopy(d_ptr->selftestResult, data + 1, sizeof(d_ptr->selftestResult));
         break;
     case E5_RSP_LEAD_MODE:
-        d_ptr->ecgAlgInterface->setLeadMode((ECGAlg::ECGLeadMode) data[1]);
         break;
     case E5_RSP_CALC_MODE:
         break;
@@ -489,90 +453,18 @@ void E5Provider::getLeadCabelType()
 void E5Provider::setLeadSystem(ECGLeadMode leadSystem)
 {
     d_ptr->ecgLeadMode = leadSystem;
-
-    switch (leadSystem)
-    {
-    case ECG_LEAD_MODE_3:
-        d_ptr->ecgAlgInterface->setLeadMode(ECGAlg::ECG_MODE_3_LEAD);
-        break;
-    case ECG_LEAD_MODE_12:
-        d_ptr->ecgAlgInterface->setLeadMode(ECGAlg::ECG_MODE_12_LEAD);
-        break;
-    case ECG_LEAD_MODE_5:
-    default:
-        d_ptr->ecgAlgInterface->setLeadMode(ECGAlg::ECG_MODE_5_LEAD);
-        break;
-    }
-
     unsigned char dataPayload = (unsigned char) leadSystem;
     sendCmd(E5_CMD_SET_LEAD_MODE, &dataPayload, 1);
 }
 
 void E5Provider::setCalcLead(ECGLead lead)
 {
-    switch (lead)
-    {
-    case ECG_LEAD_I:
-        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::I);
-        break;
-    case ECG_LEAD_II:
-        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::II);
-        break;
-    case ECG_LEAD_III:
-        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::III);
-        break;
-    case ECG_LEAD_AVR:
-        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::aVR);
-        break;
-    case ECG_LEAD_AVL:
-        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::aVL);
-        break;
-    case ECG_LEAD_AVF:
-        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::aVF);
-        break;
-    case ECG_LEAD_V1:
-        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::V1);
-        break;
-    case ECG_LEAD_V2:
-        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::V2);
-        break;
-    case ECG_LEAD_V3:
-        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::V3);
-        break;
-    case ECG_LEAD_V4:
-        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::V4);
-        break;
-    case ECG_LEAD_V5:
-        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::V5);
-        break;
-    case ECG_LEAD_V6:
-        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::V6);
-        break;
-    default:
-        d_ptr->ecgAlgInterface->setCalcLead(ECGAlg::II);
-        break;
-    }
-
     unsigned char calcLead = lead;
     sendCmd(E5_CMD_SET_CALC_LEAD, &calcLead, 1);
 }
 
 void E5Provider::setPatientType(unsigned char type)
 {
-    switch (type)
-    {
-    case PATIENT_TYPE_PED:
-        d_ptr->ecgAlgInterface->setPatientType(ECGAlg::PATIENT_PEDIATRIC);
-        break;
-    case PATIENT_TYPE_NEO:
-        d_ptr->ecgAlgInterface->setPatientType(ECGAlg::PATIENT_NEONATE);
-        break;
-    case PATIENT_TYPE_ADULT:
-    default:
-        d_ptr->ecgAlgInterface->setPatientType(ECGAlg::PATIENT_ADULT);
-        break;
-    }
-
     unsigned char patientType = type;
     sendCmd(E5_CMD_SET_PATIENT_TYPE, &patientType, 1);
 }
@@ -584,22 +476,18 @@ void E5Provider::setBandwidth(ECGBandwidth bandwidth)
     {
     case ECG_BANDWIDTH_067_20HZ:
         mode = ECG_FILTERMODE_SURGERY;
-        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_SURGERY);
         break;
     case ECG_BANDWIDTH_067_40HZ:
         mode = ECG_FILTERMODE_MONITOR;
-        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_MONITOR);
         break;
     case ECG_BANDWIDTH_0525_40HZ:
         mode = ECG_FILTERMODE_ST;
-        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_ST);
         break;
     case ECG_BANDWIDTH_0525_150HZ:
         mode = ECG_FILTERMODE_DIAGNOSTIC;
-        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_DIAGNOSIS);
+        break;
     default:
         mode = ECG_FILTERMODE_MONITOR;
-        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_MONITOR);
         break;
     }
 
@@ -609,55 +497,18 @@ void E5Provider::setBandwidth(ECGBandwidth bandwidth)
 
 void E5Provider::setFilterMode(ECGFilterMode mode)
 {
-    switch (mode)
-    {
-    case ECG_FILTERMODE_MONITOR:
-        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_MONITOR);
-        break;
-    case ECG_FILTERMODE_DIAGNOSTIC:
-        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_DIAGNOSIS);
-        break;
-    case ECG_FILTERMODE_SURGERY:
-        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_SURGERY);
-        break;
-    case ECG_FILTERMODE_ST:
-        d_ptr->ecgAlgInterface->setCalcMode(ECGAlg::ECG_CALC_ST);
-        break;
-    default:
-        qdebug("Unknown filter mode.");
-        break;
-    }
-
     unsigned char filterMode = mode;
     sendCmd(E5_CMD_SET_CALC_MODE, &filterMode, 1);
 }
 
 void E5Provider::enablePacermaker(ECGPaceMode onoff)
 {
-    d_ptr->ecgAlgInterface->setPaceOnOff(onoff == ECG_PACE_ON);
     unsigned char pacemaker = onoff;
     sendCmd(E5_CMD_SET_PACE_ONOFF, &pacemaker, 1);
 }
 
 void E5Provider::setNotchFilter(ECGNotchFilter notch)
 {
-    switch (notch)
-    {
-    case ECG_NOTCH_50HZ:
-        d_ptr->ecgAlgInterface->setNotchType(ECGAlg::ECG_NOTCH_50HZ);
-        break;
-    case ECG_NOTCH_60HZ:
-        d_ptr->ecgAlgInterface->setNotchType(ECGAlg::ECG_NOTCH_60HZ);
-        break;
-    case ECG_NOTCH_50_AND_60HZ:
-        d_ptr->ecgAlgInterface->setNotchType(ECGAlg::ECG_NOTCH_5060HZ);
-        break;
-    case ECG_NOTCH_OFF1:
-    default:
-        d_ptr->ecgAlgInterface->setNotchType(ECGAlg::ECG_NOTCH_OFF);
-        break;
-    }
-
     unsigned char notchChar = notch;
     sendCmd(E5_CMD_SET_NOTCH_TYPE, &notchChar, 1);
 }
@@ -675,14 +526,14 @@ void E5Provider::setSTPoints(int /*iso*/, int /*st*/)
 
 void E5Provider::setSelfLearn(bool onOff)
 {
-    d_ptr->ecgAlgInterface->setSelfLearn(onOff);
     unsigned char learn = onOff;
     sendCmd(E5_CMD_SET_SELFLEARN_ONOFF, &learn, 1);
 }
 
 void E5Provider::setARRThreshold(ECGAlg::ARRPara parameter, short value)
 {
-    d_ptr->ecgAlgInterface->setARRThreshold(parameter, value);
+    Q_UNUSED(parameter)
+    Q_UNUSED(value)
 }
 
 int E5Provider::getRESPWaveformSample()
