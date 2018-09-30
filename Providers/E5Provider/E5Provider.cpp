@@ -346,6 +346,8 @@ void E5Provider::handlePacket(unsigned char *data, int len)
     {
     case E5_RSP_VERSION:
         break;
+    case E5_RSP_SELFLEARN_ONOFF:
+        break;
     case E5_RSP_SELFTEST_RESULT:
         qMemCopy(d_ptr->selftestResult, data + 1, sizeof(d_ptr->selftestResult));
         break;
