@@ -66,6 +66,10 @@ public:
     // set elapsed time
     void setElapsedTime(void);
 
+    /**
+     * @brief setShowSecStatus 设置是否显示秒数
+     */
+    void setShowSecStatus();
     ~TimeManager();
 
 private:

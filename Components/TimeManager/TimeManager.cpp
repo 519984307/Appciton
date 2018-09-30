@@ -103,9 +103,6 @@ void TimeManager::mainRun(unsigned t)
         _curTime = t;
     }
 
-    // 读配置是否显示秒
-    currentConfig.getNumValue("DateTime|DisplaySecond", _showSecond);
-
     _refreshWidgets();
 
     // 更新时间戳。
@@ -116,6 +113,12 @@ void TimeManager::setElapsedTime()
 {
     _elapseStartTime = _curTime;
     systemConfig.setNumValue("ElapseStartTime", _elapseStartTime);
+}
+
+void TimeManager::setShowSecStatus()
+{
+    // 读配置是否显示秒
+    currentConfig.getNumValue("DateTime|DisplaySecond", _showSecond);
 }
 
 /**************************************************************************************************
