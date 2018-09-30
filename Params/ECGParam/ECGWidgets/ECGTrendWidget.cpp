@@ -278,3 +278,10 @@ ECGTrendWidget::~ECGTrendWidget()
         _timer = NULL;
     }
 }
+
+QList<SubParamID> ECGTrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    list.append(SUB_PARAM_HR_PR);
+    return list;
+}

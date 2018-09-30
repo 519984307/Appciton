@@ -302,6 +302,37 @@ IBPTrendWidget::~IBPTrendWidget()
 {
 }
 
+QList<SubParamID> IBPTrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    switch (_entitle) {
+    case IBP_PRESSURE_ART:
+        list << SUB_PARAM_ART_SYS << SUB_PARAM_ART_DIA << SUB_PARAM_ART_MAP;
+        break;
+    case IBP_PRESSURE_PA:
+        list << SUB_PARAM_PA_SYS << SUB_PARAM_PA_DIA << SUB_PARAM_PA_MAP;
+        break;
+    case IBP_PRESSURE_CVP:
+        list << SUB_PARAM_CVP_MAP;
+        break;
+    case IBP_PRESSURE_LAP:
+        list << SUB_PARAM_LAP_MAP;
+        break;
+    case IBP_PRESSURE_RAP:
+        list << SUB_PARAM_RAP_MAP;
+        break;
+    case IBP_PRESSURE_AUXP1:
+        list << SUB_PARAM_AUXP1_SYS << SUB_PARAM_AUXP1_DIA << SUB_PARAM_AUXP1_MAP;
+        break;
+    case IBP_PRESSURE_AUXP2:
+        list << SUB_PARAM_AUXP2_SYS << SUB_PARAM_AUXP2_DIA << SUB_PARAM_AUXP2_MAP;
+        break;
+    default:
+        break;
+    }
+    return list;
+}
+
 /**************************************************************************************************
  * 根据布局大小自动调整字体大小。
  *************************************************************************************************/

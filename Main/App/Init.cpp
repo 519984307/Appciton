@@ -12,6 +12,7 @@
 #include "Init.h"
 #include "ErrorLogItem.h"
 #include "LayoutManager.h"
+#include "ShortTrendContainer.h"
 
 /**************************************************************************************************
  * 功能： 初始化系统。
@@ -554,6 +555,11 @@ static void _initProviderParam(void)
         windowManager.addWidget(tempTrendWidget);
         layoutManager.addLayoutWidget(tempTrendWidget, LAYOUT_NODE_PARAM_TEMP);
     }
+
+    // short trend container
+    ShortTrendContainer *trendContainer = new ShortTrendContainer;
+    windowManager.addWidget(trendContainer);
+    layoutManager.addLayoutWidget(trendContainer);
 
     paramManager.getVersion();
 

@@ -16,6 +16,7 @@
 #include "ColorManager.h"
 #include "ParamManager.h"
 #include "AlarmConfig.h"
+#include "TrendDataStorageManager.h"
 
 class ShortTrendContainerPrivate
 {
@@ -33,25 +34,24 @@ public:
 ShortTrendContainer::ShortTrendContainer()
     : IWidget("ShortTrendContainer"), d_ptr(new ShortTrendContainerPrivate())
 {
-    setAttribute(Qt::WA_NoSystemBackground);
+    setAttribute(Qt::WA_OpaquePaintEvent);
     d_ptr->layout = new QVBoxLayout(this);
     d_ptr->layout->setContentsMargins(0, 0, 0, 0);
     d_ptr->layout->setSpacing(0);
-}
 
-ShortTrendContainer &ShortTrendContainer::getInstance()
-{
-    static ShortTrendContainer *instance = NULL;
-    if (instance == NULL)
+    for (int i = SUB_PARAM_HR_PR; i < SUB_PARAM_NR; ++i)
     {
-        instance = new ShortTrendContainer();
+        trendDataStorageManager.registerShortTrend(static_cast<SubParamID>(i));
     }
-    return *instance;
 }
 
 ShortTrendContainer::~ShortTrendContainer()
 {
     delete d_ptr;
+    for (int i = SUB_PARAM_HR_PR; i < SUB_PARAM_NR; ++i)
+    {
+        trendDataStorageManager.unRegisterShortTrend(static_cast<SubParamID>(i));
+    }
 }
 
 void ShortTrendContainer::setTrendItemNum(int num)
@@ -77,20 +77,25 @@ int ShortTrendContainer::getTrendNum() const
     return d_ptr->trendItems.count();
 }
 
-void ShortTrendContainer::addSubParamToTrendItem(int trendindex, SubParamID subParamID)
+void ShortTrendContainer::addSubParamToTrendItem(int trendindex, QList<SubParamID> subParamIDs)
 {
     if (trendindex >= d_ptr->trendItems.count() || trendindex < 0)
     {
         return;
     }
 
-    ShortTrendItem *item = d_ptr->trendItems.at(trendindex);
-    QList<SubParamID> subParams = item->getSubParamList();
-    subParams.append(subParamID);
+    if (subParamIDs.isEmpty())
+    {
+        clearTrendItemSubParam(trendindex);
+        return;
+    }
 
-    if (subParamID == SUB_PARAM_NIBP_SYS
-            || subParamID == SUB_PARAM_NIBP_DIA
-            || subParamID == SUB_PARAM_NIBP_MAP)
+    ShortTrendItem *item = d_ptr->trendItems.at(trendindex);
+    item->setSubParamList(subParamIDs);
+
+    if (subParamIDs[0] == SUB_PARAM_NIBP_SYS
+            || subParamIDs[0] == SUB_PARAM_NIBP_DIA
+            || subParamIDs[0] == SUB_PARAM_NIBP_MAP)
     {
         item->setNibpTrend(true);
     }
@@ -99,15 +104,15 @@ void ShortTrendContainer::addSubParamToTrendItem(int trendindex, SubParamID subP
         item->setNibpTrend(false);
     }
 
-    ParamID parmID = paramInfo.getParamID(subParamID);
-    if (subParams.count() == 1)
+    ParamID parmID = paramInfo.getParamID(subParamIDs[0]);
+    if (subParamIDs.count() == 1)
     {
         // this is the first subparam, use the first param's data range and color
         item->setWaveColor(colorManager.getColor(paramInfo.getParamName(parmID)));
-        item->setTrendName(paramInfo.getSubParamName(subParamID));
+        item->setTrendName(paramInfo.getSubParamName(subParamIDs[0]));
         // use the limit alarm range as the data range
-        UnitType unit = paramManager.getSubParamUnit(parmID, subParamID);
-        LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subParamID, unit);
+        UnitType unit = paramManager.getSubParamUnit(parmID, subParamIDs[0]);
+        LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subParamIDs[0], unit);
         item->setValueRange(config.maxHighLimit, config.minLowLimit, config.scale);
     }
     else
@@ -116,15 +121,13 @@ void ShortTrendContainer::addSubParamToTrendItem(int trendindex, SubParamID subP
         // as trend name
         if (parmID == PARAM_IBP)
         {
-            item->setTrendName(paramInfo.getIBPPressName(subParamID));
+            item->setTrendName(paramInfo.getIBPPressName(subParamIDs[0]));
         }
         else
         {
             item->setTrendName(paramInfo.getParamName(parmID));
         }
     }
-
-    item->setSubParamList(subParams);
 }
 
 void ShortTrendContainer::clearTrendItemSubParam(int trendindex)

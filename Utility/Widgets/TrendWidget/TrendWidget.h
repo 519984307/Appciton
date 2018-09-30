@@ -18,6 +18,8 @@
 #include <QString>
 #include <QLabel>
 #include <QPalette>
+#include "ParamDefine.h"
+
 
 class QHBoxLayout;
 class QVBoxLayout;
@@ -40,6 +42,12 @@ public:
     {
         return _title;
     }
+
+    /**
+     * @brief getShortTrendSubParams get the avaliable short trend subparam IDs
+     * @return a list of avaliable short trend params
+     */
+    virtual QList<SubParamID> getShortTrendSubParams() const {return QList<SubParamID>();}
 
 protected:
     void setName(const QString &name);

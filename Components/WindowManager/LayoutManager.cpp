@@ -20,6 +20,8 @@
 #include "OrderedMap.h"
 #include "ECGSymbol.h"
 #include "WaveWidget.h"
+#include "ShortTrendContainer.h"
+#include "TrendWidget.h"
 
 typedef QList<LayoutNode> LayoutRow;
 
@@ -577,7 +579,114 @@ void LayoutManagerPrivate::performBigFontLayout()
 
 void LayoutManagerPrivate::performTrendLayout()
 {
-    // TODO
+    QVBoxLayout *leftLayout = new QVBoxLayout();
+    leftLayout->setContentsMargins(0, 0, 0, 0);
+    QWidget *waveContainer = createContainter();
+    QWidget *leftParamContainer = createContainter();
+    leftLayout->addWidget(waveContainer);
+    leftLayout->addWidget(leftParamContainer);
+
+    ShortTrendContainer *trendContainer = qobject_cast<ShortTrendContainer*> (layoutWidgets["ShortTrendContainer"]);
+    bool updateTrendItem = false;
+    if (trendContainer)
+    {
+        if (trendContainer->getTrendNum() == 0)
+        {
+            updateTrendItem = true;
+        }
+        contentLayout->addWidget(trendContainer, 3);
+        contentLayout->addLayout(leftLayout, 5);
+        trendContainer->setVisible(true);
+    }
+    else
+    {
+        contentLayout->addLayout(leftLayout, 8);
+    }
+    QWidget *rightParamContainer = createContainter();
+    contentLayout->addWidget(rightParamContainer, 4);
+
+    QGridLayout *waveLayout = new QGridLayout(waveContainer);
+    waveLayout->setMargin(0);
+    QGridLayout *leftParamLayout = new QGridLayout(leftParamContainer);
+    leftParamLayout->setMargin(0);
+    QGridLayout *rightParamLayout = new QGridLayout(rightParamContainer);
+    rightParamLayout->setMargin(0);
+
+    QList<TrendWidget *> rightTrendWidgets;
+
+    OrderedMap<int, LayoutRow>::ConstIterator iter = layoutInfos.begin();
+    for (; iter != layoutInfos.end(); ++iter)
+    {
+        LayoutRow::ConstIterator nodeIter = iter.value().constBegin();
+        for (; nodeIter != iter.value().constEnd(); ++nodeIter)
+        {
+            int row = iter.key();
+            IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
+            if (!w || !widgetLayoutable[w->name()])
+            {
+                continue;
+            }
+            w->setVisible(true);
+            if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN)
+            {
+                if (row < LAYOUT_MAX_WAVE_ROW_NUM)
+                {
+                    waveLayout->addWidget(w, row, nodeIter->pos, 1, nodeIter->span);
+                    if (qobject_cast<WaveWidget *>(w))
+                    {
+                        displayWaveforms.append(w->name());
+                    }
+                }
+                else
+                {
+                    leftParamLayout->addWidget(w, row - LAYOUT_MAX_WAVE_ROW_NUM, nodeIter->pos, 1, nodeIter->span);
+                    displayParams.append(w->name());
+                }
+            }
+            else
+            {
+                rightParamLayout->addWidget(w, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
+                displayParams.append(w->name());
+                if (updateTrendItem)
+                {
+                    TrendWidget *trendWidget = qobject_cast<TrendWidget *>(w);
+                    if (trendWidget)
+                    {
+                        rightTrendWidgets.append(trendWidget);
+                    }
+                }
+            }
+        }
+    }
+
+    // the wave container stretch
+    leftLayout->setStretch(0, waveLayout->rowCount());
+    // the let param container stretch
+    leftLayout->setStretch(1, leftParamLayout->rowCount());
+
+    if (updateTrendItem)
+    {
+        typedef QList<SubParamID> SubParamIDListType;
+
+        QList<SubParamIDListType> list;
+
+        // update the trend item
+        foreach(const TrendWidget *trend, rightTrendWidgets) {
+            QList<SubParamID> subParams = trend->getShortTrendSubParams();
+            if (subParams.count())
+            {
+                list.append(subParams);
+            }
+        }
+
+        // create trend items
+        trendContainer->setTrendItemNum(list.count());
+
+        for (int i = 0; i < list.count(); ++i)
+        {
+            trendContainer->addSubParamToTrendItem(i, list.at(i));
+        }
+    }
 }
 
 void LayoutManagerPrivate::clearLayout(QLayout *layout)

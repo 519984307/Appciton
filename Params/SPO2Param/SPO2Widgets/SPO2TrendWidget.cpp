@@ -168,3 +168,10 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
 SPO2TrendWidget::~SPO2TrendWidget()
 {
 }
+
+QList<SubParamID> SPO2TrendWidget::getShortTrendSubParams() const
+{
+   QList<SubParamID> list;
+   list.append(SUB_PARAM_SPO2);
+   return list;
+}

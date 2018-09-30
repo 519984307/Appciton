@@ -149,14 +149,15 @@ void ShortTrendItemPrivate::updateBackground()
     int rowNum = waveRegion.height() / perferheight;
     float rowHeight = waveRegion.height() * 1.0 / rowNum;
 
-    QPen pen(pal.color(QPalette::Window));
+    QPen pen(Qt::gray);
     pen.setStyle(Qt::DashLine);
+    p.setPen(pen);
     p.drawRect(waveRegion);
 
     // draw row
     for (int i = 1; i < rowNum; ++i)
     {
-        float height = rowHeight * i;
+        float height = waveRegion.top() + rowHeight * i;
         p.drawLine(QPointF(waveRegion.left(), height),
                    QPointF(waveRegion.right(), height));
     }
@@ -165,14 +166,14 @@ void ShortTrendItemPrivate::updateBackground()
     float columnWidth = waveRegion.width() * 1.0 / COLUMN_COUNT;
     for (int i = 1; i < COLUMN_COUNT; ++i)
     {
-        float width = columnWidth * i;
+        float width = waveRegion.left() + columnWidth * i;
         p.drawLine(QPointF(width, waveRegion.top()),
                    QPointF(width, waveRegion.bottom()));
     }
 
     p.setFont(font);
 
-    QRect textRect(0, 0, waveMargin.left(), FONT_HEIGHT);
+    QRect textRect(0, 0, waveMargin.left() - 2, FONT_HEIGHT);
     QPoint center = textRect.center();
 
     // draw the y axis label
@@ -192,6 +193,7 @@ void ShortTrendItemPrivate::updateBackground()
         QStringList labels = getTimeLabels();
         Q_ASSERT(labels.length() == 3);
         textRect.moveTo(waveRegion.bottomLeft());
+        textRect.moveTop(textRect.top() + 2); // left some space between the grid
         p.drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, labels.at(0));
         textRect.moveLeft(waveRegion.center().x() - textRect.width() / 2);
         p.drawText(textRect, Qt::AlignCenter, labels.at(1));
@@ -252,6 +254,10 @@ void ShortTrendItemPrivate::drawWave(QPainter *painter, const QRect &r)
     }
 
     QRect interRect = r.intersect(waveRegion);
+    if (interRect.isNull())
+    {
+        return;
+    }
 
     int pointNum = yAxisValueBufs.at(0).size();
     float deltaX = waveRegion.width() * 1.0 / pointNum;
@@ -286,6 +292,8 @@ void ShortTrendItemPrivate::drawWave(QPainter *painter, const QRect &r)
                     path.lineTo(lastPoint);
                     moveTo = true;
                 }
+
+                index = (index + 1) % pointNum;
                 continue;
             }
 

@@ -18,7 +18,7 @@ class ShortTrendContainer : public IWidget
 {
     Q_OBJECT
 public:
-    static ShortTrendContainer &getInstance();
+    ShortTrendContainer();
 
     ~ShortTrendContainer();
 
@@ -37,9 +37,9 @@ public:
     /**
      * @brief addSubParamToTrendItem add subpraram to the short trend
      * @param trendindex the trend index
-     * @param subParamID the new subParamID which will be show trend in the trend item
+     * @param subParamIDs the new subParamIDs which will be show trend in the trend item
      */
-    void addSubParamToTrendItem(int trendindex, SubParamID subParamID);
+    void addSubParamToTrendItem(int trendindex, QList<SubParamID> subParamIDs);
 
     /**
      * @brief clearTrendItemSubParam clear subParam in the short trend item
@@ -62,8 +62,5 @@ public:
     ShortTrendDuration getTrendDuration() const;
 
 private:
-    ShortTrendContainer();
     ShortTrendContainerPrivate *const d_ptr;
 };
-
-

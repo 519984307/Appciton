@@ -130,6 +130,13 @@ void COTrendWidget::setTBData(u_int16_t tbData)
     return;
 }
 
+QList<SubParamID> COTrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    list << SUB_PARAM_CO_CO;
+    return list;
+}
+
 /**************************************************************************************************
  * 根据布局大小自动调整字体大小。
  *************************************************************************************************/
