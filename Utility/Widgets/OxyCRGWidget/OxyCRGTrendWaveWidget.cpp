@@ -61,6 +61,19 @@ OxyCRGInterval OxyCRGTrendWaveWidget::getIntervalTime()
 void OxyCRGTrendWaveWidget::setClearWaveDataStatus(bool clearStatus)
 {
     d_ptr->isClearWaveData = clearStatus;
+
+    if (clearStatus)
+    {
+        if (d_ptr->dataBuf)
+        {
+            d_ptr->dataBuf->clear();
+        }
+
+        if (d_ptr->flagBuf)
+        {
+            d_ptr->flagBuf->clear();
+        }
+    }
 }
 
 void OxyCRGTrendWaveWidget::setDataRate(int rate)
