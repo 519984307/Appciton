@@ -335,6 +335,8 @@ SOURCES +=                                                                      
     Components/WindowManager/ScreenLayoutItemDelegate.cpp                       \
     Components/WindowManager/ScreenLayoutEditor.cpp                             \
     Components/WindowManager/ParaColorWindow.cpp                                \
+    Components/WindowManager/BigFontLayoutWindow.cpp                            \
+    Components/WindowManager/BigFontLayoutModel.cpp                             \
     Components/USBManager/DataExporterBase.cpp                                  \
     Components/USBManager/ErrorLogExporter.cpp                                  \
     Components/USBManager/UDiskInspector.cpp                                    \
@@ -913,6 +915,8 @@ HEADERS +=                                                                      
     Components/WindowManager/ScreenLayoutDefine.h                               \
     Components/WindowManager/ScreenLayoutEditor.h                               \
     Components/WindowManager/ParaColorWindow.h                                  \
+    Components/WindowManager/BigFontLayoutWindow.h                              \
+    Components/WindowManager/BigFontLayoutModel.h                               \
     Components/PrintManager/PrintTypeDefine.h                                   \
     Components/PrintManager/PrintDefine.h                                       \
     Components/PrintManager/PrintProviderIFace.h                                \
