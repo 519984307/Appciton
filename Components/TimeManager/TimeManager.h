@@ -67,9 +67,9 @@ public:
     void setElapsedTime(void);
 
     /**
-     * @brief setShowSecStatus 设置是否显示秒数
+     * @brief roloadConfig 重新加载配置文件
      */
-    void setShowSecStatus();
+    void roloadConfig();
     ~TimeManager();
 
 private:

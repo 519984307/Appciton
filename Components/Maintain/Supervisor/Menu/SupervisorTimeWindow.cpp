@@ -321,7 +321,7 @@ void SupervisorTimeWindow::hideEvent(QHideEvent *ev)
     {
         d_ptr->setSysTime();
     }
-    timeManager.setShowSecStatus();
+    timeManager.roloadConfig();
     Window::hideEvent(ev);
 }
 

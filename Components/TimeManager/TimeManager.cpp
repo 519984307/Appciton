@@ -115,7 +115,7 @@ void TimeManager::setElapsedTime()
     systemConfig.setNumValue("ElapseStartTime", _elapseStartTime);
 }
 
-void TimeManager::setShowSecStatus()
+void TimeManager::roloadConfig()
 {
     // 读配置是否显示秒
     currentConfig.getNumValue("DateTime|DisplaySecond", _showSecond);
