@@ -362,7 +362,7 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
                 sourceType = ECGDupParam::HR_SOURCE_SPO2;
                 break;
             }
-            ecgDupParam.manualSetHrSource(sourceType);
+            ecgDupParam.setHrSource(sourceType);
         }
             break;
         case ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE:

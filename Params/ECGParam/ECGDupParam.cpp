@@ -284,7 +284,7 @@ void ECGDupParam::isAlarm(bool isAlarm, bool isLimit)
  **************************************************************************************************/
 ECGDupParam::HrSourceType ECGDupParam::getHrSource() const
 {
-    if (_isAutoHrSource)
+    if (_hrSource == HR_SOURCE_AUTO)
     {
         HrSourceType type;
         if (_hrValue == InvData() && _prValue != InvData())
@@ -298,7 +298,7 @@ ECGDupParam::HrSourceType ECGDupParam::getHrSource() const
         return type;
     }
 
-    return _manualHrSource;
+    return _hrSource;
 }
 
 
@@ -310,23 +310,21 @@ void ECGDupParam::setECGTrendWidgetCalcName(ECGLead calLead)
     _trendWidget->setTrendWidgetCalcName(calLead);
 }
 
-void ECGDupParam::manualSetHrSource(ECGDupParam::HrSourceType type)
+void ECGDupParam::setHrSource(ECGDupParam::HrSourceType type)
 {
-    if (type == HR_SOURCE_AUTO)
-    {
-        _isAutoHrSource = true;
-        return;
-    }
-    else
-    {
-        _isAutoHrSource = false;
-    }
-    _manualHrSource = type;
+    _hrSource = type;
 }
 
 bool ECGDupParam::isAutoTypeHrSouce() const
 {
-    return _isAutoHrSource;
+    if (_hrSource == HR_SOURCE_AUTO)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }
 
 /**************************************************************************************************
@@ -340,8 +338,7 @@ ECGDupParam::ECGDupParam()
       _prValue(InvData()),
       _hrBeatFlag(true),
       _isAlarm(false),
-      _isAutoHrSource(true),
-      _manualHrSource(HR_SOURCE_ECG)
+      _hrSource(HR_SOURCE_ECG)
 {
 }
 

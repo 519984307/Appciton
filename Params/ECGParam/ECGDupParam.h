@@ -96,10 +96,10 @@ public:
     void setECGTrendWidgetCalcName(ECGLead calLead);
 
     /**
-     * @brief manualSetHrSource  手动设置hr来源
+     * @brief setHrSource  设置hr来源
      * @param type
      */
-    void manualSetHrSource(HrSourceType type);
+    void setHrSource(HrSourceType type);
 
     /**
      * @brief isAutoTypeHrSouce
@@ -119,6 +119,6 @@ private:
     bool _hrBeatFlag;
     bool _isAlarm;
     bool _isAutoHrSource;
-    HrSourceType _manualHrSource;
+    HrSourceType _hrSource;
 };
 #define ecgDupParam (ECGDupParam::construction())
