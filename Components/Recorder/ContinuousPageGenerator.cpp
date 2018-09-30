@@ -90,7 +90,7 @@ QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfos()
         QString path;
         path = QString("Print|SelectWave%1").arg(i + 1);
         systemConfig.getNumValue(path, index[i]);
-        waves.append((WaveformID)(index[i]));
+        waves.append(static_cast<WaveformID>(index[i]));
     }
 
     return RecordPageGenerator::getWaveInfos(waves);
