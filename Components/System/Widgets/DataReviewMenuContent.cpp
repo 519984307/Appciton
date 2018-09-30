@@ -141,9 +141,7 @@ void DataReviewMenuContent::onBtnReleased()
         TrendTableWindow::getInstance()->setHistoryData(false);
         windowManager.showWindow(TrendTableWindow::getInstance(),
                                  WindowManager::
-                                 ShowBehaviorCloseIfVisiable |
-                                 WindowManager::
-                                 ShowBehaviorCloseOthers);
+                                 ShowBehaviorHideOthers);
     }
     break;
 
@@ -152,9 +150,7 @@ void DataReviewMenuContent::onBtnReleased()
         TrendGraphWindow::getInstance()->setHistoryData(false);
         windowManager.showWindow(TrendGraphWindow::getInstance(),
                                  WindowManager::
-                                 ShowBehaviorCloseIfVisiable |
-                                 WindowManager::
-                                 ShowBehaviorCloseOthers);
+                                 ShowBehaviorHideOthers);
     }
     break;
 
@@ -163,9 +159,7 @@ void DataReviewMenuContent::onBtnReleased()
         EventWindow::getInstance()->setHistoryData(false);
         windowManager.showWindow(EventWindow::getInstance(),
                                  WindowManager::
-                                 ShowBehaviorCloseIfVisiable |
-                                 WindowManager::
-                                 ShowBehaviorCloseOthers);
+                                 ShowBehaviorHideOthers);
     }
     break;
 
@@ -174,9 +168,7 @@ void DataReviewMenuContent::onBtnReleased()
         OxyCRGEventWindow::getInstance()->setHistoryData(false);
         windowManager.showWindow(OxyCRGEventWindow::getInstance(),
                                  WindowManager::
-                                 ShowBehaviorCloseIfVisiable |
-                                 WindowManager::
-                                 ShowBehaviorCloseOthers);
+                                 ShowBehaviorHideOthers);
     }
     break;
 
@@ -184,9 +176,7 @@ void DataReviewMenuContent::onBtnReleased()
     {
         windowManager.showWindow(HistoryDataReviewWindow::getInstance(),
                                  WindowManager::
-                                 ShowBehaviorCloseIfVisiable |
-                                 WindowManager::
-                                 ShowBehaviorCloseOthers);
+                                 ShowBehaviorHideOthers);
     }
     break;
     }
