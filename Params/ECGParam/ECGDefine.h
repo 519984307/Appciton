@@ -11,6 +11,17 @@
 
 #pragma once
 
+/**
+ * @brief The ECGHRPRSourceType enum  ECG 心率来源
+ */
+enum ECGHRPRSourceType
+{
+    HR_PR_SOURCE_AUTO,
+    HR_PR_SOURCE_ECG,
+    HR_PR_SOURCE_SPO2,
+    HR_PR_SOURCE_NR
+};
+
 /**************************************************************************************************
  * ECG导联系统。
  *************************************************************************************************/

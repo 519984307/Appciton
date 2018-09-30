@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/29
+ **/
+
+
+
 #include "ECGDupParam.h"
 #include "BaseDefine.h"
 #include "IConfig.h"
@@ -27,16 +39,14 @@ void ECGDupParam::handDemoWaveform(WaveformID /*id*/, short /*data*/)
  *************************************************************************************************/
 void ECGDupParam::handDemoTrendData(void)
 {
-
 }
 
 /**************************************************************************************************
  * 功能： 获取子参数值。
  *************************************************************************************************/
 void ECGDupParam::getAvailableWaveforms(QStringList &/*waveforms*/,
-                                         QStringList &/*waveformShowName*/, int /*flag*/)
+                                        QStringList &/*waveformShowName*/, int /*flag*/)
 {
-
 }
 
 /**************************************************************************************************
@@ -46,11 +56,11 @@ short ECGDupParam::getSubParamValue(SubParamID id)
 {
     switch (id)
     {
-        case SUB_PARAM_HR_PR:
-            return getHR();
+    case SUB_PARAM_HR_PR:
+        return getHR();
 
-        default:
-            return InvData();
+    default:
+        return InvData();
     }
 }
 
@@ -83,7 +93,7 @@ void ECGDupParam::setProvider(ECGProviderIFace *provider)
  *************************************************************************************************/
 UnitType ECGDupParam::getCurrentUnit(SubParamID id)
 {
-    switch(id)
+    switch (id)
     {
     case SUB_PARAM_ST_I:
     case SUB_PARAM_ST_II:
@@ -141,7 +151,7 @@ void ECGDupParam::updatePR(short pr)
         _hrBeatFlag = false;
         _trendWidget->setHRValue(_prValue, false);
     }
-    else //HR & PR all invalid
+    else // HR & PR all invalid
     {
         _hrBeatFlag = false;
         _trendWidget->setHRValue(_prValue, true);
@@ -151,8 +161,9 @@ void ECGDupParam::updatePR(short pr)
 /**************************************************************************************************
  * 更新VFVT数值。
  *************************************************************************************************/
-void ECGDupParam::updateVFVT(bool /*onoff*/)
+void ECGDupParam::updateVFVT(bool onoff)
 {
+    Q_UNUSED(onoff)
     return;
 }
 
@@ -273,14 +284,21 @@ void ECGDupParam::isAlarm(bool isAlarm, bool isLimit)
  **************************************************************************************************/
 ECGDupParam::HrSourceType ECGDupParam::getHrSource() const
 {
-    if (_hrValue == InvData() && _prValue != InvData())
+    if (_hrSource == HR_SOURCE_AUTO)
     {
-        return HR_SOURCE_SPO2;
+        HrSourceType type;
+        if (_hrValue == InvData() && _prValue != InvData())
+        {
+            type = HR_SOURCE_SPO2;
+        }
+        else
+        {
+            type = HR_SOURCE_ECG;
+        }
+        return type;
     }
-    else
-    {
-        return HR_SOURCE_ECG;
-    }
+
+    return _hrSource;
 }
 
 
@@ -292,18 +310,36 @@ void ECGDupParam::setECGTrendWidgetCalcName(ECGLead calLead)
     _trendWidget->setTrendWidgetCalcName(calLead);
 }
 
+void ECGDupParam::setHrSource(ECGDupParam::HrSourceType type)
+{
+    _hrSource = type;
+}
+
+bool ECGDupParam::isAutoTypeHrSouce() const
+{
+    if (_hrSource == HR_SOURCE_AUTO)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ECGDupParam::ECGDupParam() : Param(PARAM_DUP_ECG)
+ECGDupParam::ECGDupParam()
+    : Param(PARAM_DUP_ECG),
+      _provider(NULL),
+      _trendWidget(NULL),
+      _hrValue(InvData()),
+      _prValue(InvData()),
+      _hrBeatFlag(true),
+      _isAlarm(false),
+      _hrSource(HR_SOURCE_ECG)
 {
-    // 初始化成员。
-    _trendWidget = NULL;
-    _provider = NULL;
-    _hrValue = InvData();
-    _prValue = InvData();
-    _hrBeatFlag = true;
-    _isAlarm = false;
 }
 
 /**************************************************************************************************
@@ -311,5 +347,4 @@ ECGDupParam::ECGDupParam() : Param(PARAM_DUP_ECG)
  *************************************************************************************************/
 ECGDupParam::~ECGDupParam()
 {
-
 }
