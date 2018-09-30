@@ -140,15 +140,6 @@ void AGWaveWidget::focusInEvent(QFocusEvent *e)
     }
 }
 
-void AGWaveWidget::paintEvent(QPaintEvent *e)
-{
-    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
-    setPalette(palette);
-    _ruler->setPalette(palette);
-    _ruler->setBackground(true);
-    WaveWidget::paintEvent(e);
-}
-
 void AGWaveWidget::_getItemIndex(int index)
 {
     _currentItemIndex = index;

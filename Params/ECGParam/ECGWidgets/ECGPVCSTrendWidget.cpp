@@ -106,7 +106,6 @@ ECGPVCSTrendWidget::ECGPVCSTrendWidget() : TrendWidget("ECGPVCSTrendWidget")
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     setPalette(palette);
     setName(trs(paramInfo.getSubParamName(SUB_PARAM_ECG_PVCS)));
-    setUnit(Unit::getSymbol(UNIT_BPM));
 
     _pvcsValue = new QLabel();
     _pvcsValue->setPalette(palette);

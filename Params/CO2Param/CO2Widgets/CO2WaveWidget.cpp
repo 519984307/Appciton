@@ -56,15 +56,6 @@ void CO2WaveWidget::hideEvent(QHideEvent *e)
     WaveWidget::hideEvent(e);
 }
 
-void CO2WaveWidget::paintEvent(QPaintEvent *e)
-{
-    QPalette palette = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
-    setPalette(palette);
-    _ruler->setPalette(palette);
-    _ruler->setBackground(true);
-    WaveWidget::paintEvent(e);
-}
-
 /**************************************************************************************************
  * 设置波形模式。
  *************************************************************************************************/

@@ -216,7 +216,13 @@ AGSetting,AG设置,AG Setting
 IBPSetting,IBP设置,IBP Setting
 COSetting,CO设置,CO Setting
 SPO2Setting,SPO2设置,SPO2 Setting
+RRSource,RR来源,RR Source
+BRSource,BR来源,BR Source
 NIBPSetting,NIBP设置,NIBP Setting
+ECGHRPRSourceAuto,自动,Auto
+ECGHRPRSourceECG,ECG,ECG
+ECGHRPRSourceSPO2,SPO2,SPO2
+HR_PRSource,HR_PR来源,HR_PR Source
 CO2Setting,CO2设置,CO2 Setting
 TEMP2Low,体温2低,TEMP2 Low
 TEMP2High,体温2高,TEMP2 High
@@ -1470,3 +1476,5 @@ NightMode,夜间模式,Night
 Patient,病人信息,Patient
 IBPCOModule,IBP+CO模块,IBP+CO Module
 ShuttingDown,正在关机,Shutting Down
+StandardScreenLayout,标准界面界面布局,Standard Screen Layout
+BigFontScreenLayout,大字体界面界面布局,Big Font Screen Layout

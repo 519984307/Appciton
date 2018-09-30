@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/28
+ **/
+
+
+
 #include "RESPDupParam.h"
 #include "BaseDefine.h"
 #include "IConfig.h"
@@ -28,16 +40,14 @@ void RESPDupParam::handDemoWaveform(WaveformID /*id*/, short /*data*/)
  *************************************************************************************************/
 void RESPDupParam::handDemoTrendData(void)
 {
-
 }
 
 /**************************************************************************************************
  * 功能： 获取子参数值。
  *************************************************************************************************/
 void RESPDupParam::getAvailableWaveforms(QStringList &/*waveforms*/,
-                                         QStringList &/*waveformShowName*/, int /*flag*/)
+        QStringList &/*waveformShowName*/, int /*flag*/)
 {
-
 }
 
 /**************************************************************************************************
@@ -47,11 +57,11 @@ short RESPDupParam::getSubParamValue(SubParamID id)
 {
     switch (id)
     {
-        case SUB_PARAM_RR_BR:
-            return getRR();
+    case SUB_PARAM_RR_BR:
+        return getRR();
 
-        default:
-            return InvData();
+    default:
+        return InvData();
     }
 }
 
@@ -199,25 +209,65 @@ short RESPDupParam::getRR(void)
  **************************************************************************************************/
 RESPDupParam::BrSourceType RESPDupParam::getBrSource() const
 {
-    if(_brValue == InvData() && _rrValue != InvData())
+    // 自动选择
+    if (_isAutoBrSource)
     {
-        return BR_SOURCE_RESP;
+        BrSourceType sourceType;
+        if (_brValue == InvData() && _rrValue != InvData())
+        {
+            sourceType = BR_SOURCE_RESP;
+        }
+        else
+        {
+            sourceType = BR_SOURCE_CO2;
+        }
+        return sourceType;
+    }
+    // 手动选择
+    return _manualBrSourceType;
+}
+
+void RESPDupParam::setBrSource(RESPDupParam::BrSourceType type)
+{
+    _manualBrSourceType = type;
+}
+
+RESPDupParam::ParamSourceType RESPDupParam::getParamSourceType() const
+{
+    ParamSourceType type;
+    if (_brValue != InvData())
+    {
+        type = BR;
     }
     else
     {
-        return BR_SOURCE_CO2;
+        type = RR;
     }
+    return type;
+}
+
+void RESPDupParam::setAutoBrSourceStatue(bool isEnabled)
+{
+    _isAutoBrSource = isEnabled;
+}
+
+bool RESPDupParam::isAutoBrSourceEnabled() const
+{
+    return _isAutoBrSource;
 }
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-RESPDupParam::RESPDupParam() : Param(PARAM_DUP_RESP)
+RESPDupParam::RESPDupParam()
+    : Param(PARAM_DUP_RESP),
+      _trendWidget(NULL),
+      _rrValue(InvData()),
+      _brValue(InvData()),
+      _isAlarm(false),
+      _isAutoBrSource(true),
+      _manualBrSourceType(BR_SOURCE_RESP)
 {
-    // 初始化成员。
-    _trendWidget = NULL;
-    _rrValue = InvData();
-    _brValue = InvData();
 }
 
 /**************************************************************************************************
@@ -225,7 +275,6 @@ RESPDupParam::RESPDupParam() : Param(PARAM_DUP_RESP)
  *************************************************************************************************/
 RESPDupParam::~RESPDupParam()
 {
-
 }
 
 

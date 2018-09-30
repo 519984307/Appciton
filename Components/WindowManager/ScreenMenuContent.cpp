@@ -18,6 +18,7 @@
 #include <WindowManager.h>
 #include "ParaColorWindow.h"
 #include "LayoutManager.h"
+#include "BigFontLayoutWindow.h"
 
 class ScreenMenuContentPrivate
 {
@@ -32,7 +33,8 @@ public:
 
     enum ButtonItem
     {
-        BUTTON_SCREEN_LAYOUT,
+        BUTTON_SCREEN_STANDARD_LAYOUT,
+        BUTTON_SCREEN_BIG_FONT_LAYOUT,
         BUTTON_PARA_COLOR,
         BUTTON_NR
     };
@@ -82,9 +84,16 @@ void ScreenMenuContent::layoutExec()
     d_ptr->layoutCbo = comboBox;
 
     Button *button;
-    button = new Button(trs("ScreenLayout"));
+    button = new Button(trs("StandardScreenLayout"));
     button->setButtonStyle(Button::ButtonTextOnly);
-    int item = static_cast<int>(ScreenMenuContentPrivate::BUTTON_SCREEN_LAYOUT);
+    int item = static_cast<int>(ScreenMenuContentPrivate::BUTTON_SCREEN_STANDARD_LAYOUT);
+    button->setProperty("Item", qVariantFromValue(item));
+    layout->addWidget(button, count++, 1);
+    connect(button, SIGNAL(clicked()), this, SLOT(onBtnClick()));
+
+    button = new Button(trs("BigFontScreenLayout"));
+    button->setButtonStyle(Button::ButtonTextOnly);
+    item = static_cast<int>(ScreenMenuContentPrivate::BUTTON_SCREEN_BIG_FONT_LAYOUT );
     button->setProperty("Item", qVariantFromValue(item));
     layout->addWidget(button, count++, 1);
     connect(button, SIGNAL(clicked()), this, SLOT(onBtnClick()));
@@ -116,9 +125,15 @@ void ScreenMenuContent::onBtnClick()
             static_cast<ScreenMenuContentPrivate::ButtonItem>(btn->property("Item").toInt());
     switch (item)
     {
-    case ScreenMenuContentPrivate::BUTTON_SCREEN_LAYOUT:
+    case ScreenMenuContentPrivate::BUTTON_SCREEN_STANDARD_LAYOUT:
         windowManager.showWindow(ScreenLayoutWindow::getInstance(), WindowManager::ShowBehaviorCloseOthers);
         break;
+    case ScreenMenuContentPrivate::BUTTON_SCREEN_BIG_FONT_LAYOUT:
+    {
+        BigFontLayoutWindow *instance = BigFontLayoutWindow::getInstance();
+        windowManager.showWindow(instance, WindowManager::ShowBehaviorCloseOthers);
+        break;
+    }
     case ScreenMenuContentPrivate::BUTTON_PARA_COLOR:
         windowManager.showWindow(new ParaColorWindow, WindowManager::ShowBehaviorCloseIfVisiable);
         break;

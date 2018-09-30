@@ -170,6 +170,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Trendform/ShortTrendWidgetSelectMenu.cpp                    \
     Utility/Widgets/Trendform/ShortTrendManager.cpp                             \
     Utility/Widgets/Trendform/ShortTrendItem.cpp                                \
+    Utility/Widgets/Trendform/ShortTrendContainer.cpp                           \
     Utility/Widgets/TrendWidget/TrendWidget.cpp                                 \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.cpp                            \
     Utility/Widgets/Waveform/BarGraphScanMode.cpp                               \
@@ -334,6 +335,8 @@ SOURCES +=                                                                      
     Components/WindowManager/ScreenLayoutItemDelegate.cpp                       \
     Components/WindowManager/ScreenLayoutEditor.cpp                             \
     Components/WindowManager/ParaColorWindow.cpp                                \
+    Components/WindowManager/BigFontLayoutWindow.cpp                            \
+    Components/WindowManager/BigFontLayoutModel.cpp                             \
     Components/USBManager/DataExporterBase.cpp                                  \
     Components/USBManager/ErrorLogExporter.cpp                                  \
     Components/USBManager/UDiskInspector.cpp                                    \
@@ -725,6 +728,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Trendform/ShortTrendWidgetSelectMenu.h                      \
     Utility/Widgets/Trendform/ShortTrendManager.h                               \
     Utility/Widgets/Trendform/ShortTrendItem.h                                  \
+    Utility/Widgets/Trendform/ShortTrendContainer.h                             \
     Utility/Widgets/TrendWidget/TrendWidget.h                                   \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.h                              \
     Utility/Widgets/Waveform/BarGraphScanMode.h                                 \
@@ -911,6 +915,8 @@ HEADERS +=                                                                      
     Components/WindowManager/ScreenLayoutDefine.h                               \
     Components/WindowManager/ScreenLayoutEditor.h                               \
     Components/WindowManager/ParaColorWindow.h                                  \
+    Components/WindowManager/BigFontLayoutWindow.h                              \
+    Components/WindowManager/BigFontLayoutModel.h                               \
     Components/PrintManager/PrintTypeDefine.h                                   \
     Components/PrintManager/PrintDefine.h                                       \
     Components/PrintManager/PrintProviderIFace.h                                \

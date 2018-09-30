@@ -29,7 +29,8 @@ public:
           stackWidget(NULL),
           retBtn(NULL),
           rightLayout(NULL),
-          menuPath("")
+          menuPath(""),
+          isBelongToLeftWidget(false)
     {
     }
 
@@ -38,6 +39,7 @@ public:
     Button *retBtn;
     QBoxLayout *rightLayout;
     QString menuPath;
+    bool isBelongToLeftWidget;  // 聚焦点否属于左边菜单
 };
 
 MenuWindow::MenuWindow()
@@ -137,11 +139,62 @@ bool MenuWindow::focusNextPrevChild(bool next)
 
     QWidget *cur = focusWidget();
 
-    if (d_ptr->sidebar->isAncestorOf(cur))
+    bool isBelongToSideBar = d_ptr->sidebar->isAncestorOf(cur);
+    Button *clostBtn = getCloseBtn();
+
+    // 判断当前聚焦菜单是属于左侧还是右侧
+    if (isBelongToSideBar)
     {
-        // keep the focus inside the menu sidebar
+        d_ptr->isBelongToLeftWidget = true;
+    }
+    else if (clostBtn != cur)
+    {
+        d_ptr->isBelongToLeftWidget = false;
+    }
+
+    // 判断当前聚焦在关闭按钮的位置是否属于左侧聚焦区域
+    bool isFocusCloseWidgetBelongToLeft = false;
+    if (cur == clostBtn)
+    {
+        if (d_ptr->isBelongToLeftWidget)
+        {
+            isFocusCloseWidgetBelongToLeft = true;
+        }
+    }
+
+    // 强制从左侧区域聚焦
+    if (isFocusCloseWidgetBelongToLeft)
+    {
+        int count = d_ptr->sidebar->itemCount();
+        int newIndex = 0;
+        if (!next)
+        {
+            newIndex =  count - 1;
+        }
+        MenuSidebarItem *item = d_ptr->sidebar->itemAt(newIndex);
+        item->setFocus();
+
+        return true;
+    }
+
+    if (d_ptr->isBelongToLeftWidget)
+    {
         int index = d_ptr->sidebar->indexOf(qobject_cast<MenuSidebarItem *>(cur));
         int count = d_ptr->sidebar->itemCount();
+
+        // 当聚焦在左侧首个聚焦点，且飞梭向前移动聚焦点时，强制进入关闭按钮聚焦区域
+        if (index == 0 && !next)
+        {
+            clostBtn->setFocus();
+            return true;
+        }
+        // 当聚焦在左侧末尾那个聚焦点，且飞梭向后移动聚焦点时，强制进入关闭按钮聚焦区域
+        else if (index == count - 1 && next)
+        {
+            clostBtn->setFocus();
+            return true;
+        }
+
         if (index >= 0)
         {
             int newIndex = 0;
@@ -156,6 +209,7 @@ bool MenuWindow::focusNextPrevChild(bool next)
             MenuSidebarItem *item = d_ptr->sidebar->itemAt(newIndex);
             item->setFocus();
         }
+
         return true;
     }
 
@@ -185,7 +239,7 @@ bool MenuWindow::focusNextPrevChild(bool next)
             {
                 area->ensureWidgetVisible(w);
             }
-            return true;;
+            return true;
         }
     }
     else
@@ -213,7 +267,7 @@ bool MenuWindow::focusNextPrevChild(bool next)
             {
                 area->ensureWidgetVisible(w);
             }
-            return true;;
+            return true;
         }
     }
 

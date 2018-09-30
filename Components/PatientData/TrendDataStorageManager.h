@@ -17,6 +17,7 @@
 class TrendDataStorageManagerPrivate;
 class TrendDataStorageManager : public StorageManager
 {
+    Q_OBJECT
 public:
     enum TrendDataFlag {
         CollectStatusPeriod = (1<<1),       /* Collect in time period*/
@@ -65,6 +66,17 @@ public:
      * @param interval the trend data interval
      */
     void getShortTrendData(SubParamID subParam, TrendDataType *dataBuf, int count, ShortTrendInterval interval) const;
+
+    /**
+     * @brief getLatestShortTrendData get the latest short trend data
+     * @param subParam sub param id
+     * @param interval the intreval
+     * @return the trend data
+     */
+    TrendDataType getLatestShortTrendData(SubParamID subParam, ShortTrendInterval interval);
+
+signals:
+    void newTrendDataArrived(ShortTrendInterval interval);
 
 private:
     Q_DECLARE_PRIVATE(TrendDataStorageManager)
