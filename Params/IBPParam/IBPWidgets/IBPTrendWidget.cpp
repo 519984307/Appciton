@@ -204,8 +204,9 @@ void IBPTrendWidget::showValue()
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPPressureName &entitle) : TrendWidget(trendName),
-    _isZero(false), _sysAlarm(false), _diaAlarm(false), _mapAlarm(false)
+IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPPressureName &entitle)
+    : TrendWidget(trendName),  _entitle(entitle), _isZero(false), _sysAlarm(false),
+      _diaAlarm(false), _mapAlarm(false)
 {
     _sysString = InvStr();
     _diaString = InvStr();

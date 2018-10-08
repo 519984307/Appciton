@@ -647,7 +647,8 @@ void LayoutManagerPrivate::performTrendLayout()
             {
                 rightParamLayout->addWidget(w, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
                 displayParams.append(w->name());
-                if (updateTrendItem)
+                if (updateTrendItem
+                        && nodeIter->pos == LAYOUT_WAVE_END_COLUMN) // the first trend node on each row
                 {
                     TrendWidget *trendWidget = qobject_cast<TrendWidget *>(w);
                     if (trendWidget)

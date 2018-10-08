@@ -17,6 +17,7 @@
 #include "ParamManager.h"
 #include "AlarmConfig.h"
 #include "TrendDataStorageManager.h"
+#include "LanguageManager.h"
 
 class ShortTrendContainerPrivate
 {
@@ -36,7 +37,7 @@ ShortTrendContainer::ShortTrendContainer()
 {
     setAttribute(Qt::WA_OpaquePaintEvent);
     d_ptr->layout = new QVBoxLayout(this);
-    d_ptr->layout->setContentsMargins(0, 0, 0, 0);
+    d_ptr->layout->setContentsMargins(4, 4, 4, 4);
     d_ptr->layout->setSpacing(0);
 
     for (int i = SUB_PARAM_HR_PR; i < SUB_PARAM_NR; ++i)
@@ -63,6 +64,8 @@ void ShortTrendContainer::setTrendItemNum(int num)
         d_ptr->trendItems.append(item);
         d_ptr->layout->addWidget(item, 1);
         item->setTrendDuration(d_ptr->duration);
+        connect(&trendDataStorageManager, SIGNAL(newTrendDataArrived(ShortTrendInterval)),
+                item, SLOT(onNewTrendDataArrived(ShortTrendInterval)));
     }
 
     if (num > 0)
@@ -109,7 +112,7 @@ void ShortTrendContainer::addSubParamToTrendItem(int trendindex, QList<SubParamI
     {
         // this is the first subparam, use the first param's data range and color
         item->setWaveColor(colorManager.getColor(paramInfo.getParamName(parmID)));
-        item->setTrendName(paramInfo.getSubParamName(subParamIDs[0]));
+        item->setTrendName(trs(paramInfo.getSubParamName(subParamIDs[0])));
         // use the limit alarm range as the data range
         UnitType unit = paramManager.getSubParamUnit(parmID, subParamIDs[0]);
         LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subParamIDs[0], unit);

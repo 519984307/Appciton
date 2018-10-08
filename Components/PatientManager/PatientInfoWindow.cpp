@@ -209,9 +209,9 @@ PatientInfoWindow::PatientInfoWindow()
 {
     setWindowTitle(trs("PatientInformation"));
     resize(800, 580);
-    QGridLayout *layout = new QGridLayout(this);
-    QVBoxLayout *backgroundLayout = new QVBoxLayout(this);
-    QHBoxLayout *buttonLayout = new QHBoxLayout(this);
+    QGridLayout *layout = new QGridLayout();
+    QVBoxLayout *backgroundLayout = new QVBoxLayout();
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
     QLabel *label;
     int itemId;
 

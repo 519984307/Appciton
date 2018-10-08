@@ -265,7 +265,7 @@ CO2TrendWidget::~CO2TrendWidget()
 QList<SubParamID> CO2TrendWidget::getShortTrendSubParams() const
 {
     QList<SubParamID> list;
-    list.append(SUB_PARAM_ETO2);
+    list.append(SUB_PARAM_ETCO2);
     list.append(SUB_PARAM_FICO2);
     return list;
 }
