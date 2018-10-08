@@ -165,14 +165,31 @@ void NIBPDataTrendWidget::showValue(void)
     QString prStr;
     UnitType defUnitType;
     UnitType unit;
+    // 刷新背景
+    if (refreshBackgroundFlag)
+    {
+        QColor color = colorManager.getColor(paramInfo.getParamName(PARAM_NIBP));
+        QString headStyle = QString("QHeaderView::section{color:rgb(%1,%2,%3);"
+                                    "border:0px solid black;"
+                                    "background-color:black;}")
+                        .arg(color.red()).arg(color.green()).arg(color.blue());
+        _table->horizontalHeader()->setStyleSheet(headStyle);
+        for (int i = 0; i< _rowNR; i++)
+        {
+            for (int j = 0; j< COLUMN_COUNT; j++)
+            {
+                _table->item(i, j)->setTextColor(color);
+            }
+        }
+        refreshBackgroundFlag = false;
+    }
 
     for (int i = 0; i < _rowNR; i++)
     {
-        _table->item(i, 0)->setText("");
-        QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
-        l->setText("");
-        QLabel *prLbl = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
-        prLbl->setText("");
+        for (int j = 0; j< COLUMN_COUNT; j++)
+        {
+            _table->item(i, j)->setText("");
+        }
     }
 
     for (int i = 0; i < _rowNR; i++)
@@ -184,16 +201,14 @@ void NIBPDataTrendWidget::showValue(void)
         if (providerBuff.sysvalue == InvData() || providerBuff.diavalue == InvData() ||
                 providerBuff.mapvalue == InvData())
         {
-//            textStr.s ("<center>%s/%s/%s</center>", InvStr(), InvStr(), InvStr());
-            textStr = QString("<center>%1/%2/%3</center>").
-                    arg(InvStr()).arg(InvStr()).arg(InvStr());
+            textStr = QString("%1/%2/%3").arg(InvStr()).arg(InvStr()).arg(InvStr());
         }
         else
         {
             QString valStr;
             QString boldwrap = "<b>%1</b>";
             QString colorwrap = "<font color=red>%1</font>";
-            textStr = QString("<center>%1/%2/%3</center>");
+            textStr = QString("%1/%2/%3");
 
             defUnitType = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
             unit = paramManager.getSubParamUnit(PARAM_NIBP, SUB_PARAM_NIBP_SYS);
@@ -240,15 +255,8 @@ void NIBPDataTrendWidget::showValue(void)
                           .arg(Unit::convert(unit, defUnitType, providerBuff.mapvalue));
             }
         }
-        QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
-        l->setAlignment(Qt::AlignHCenter);
-        l->setText(textStr);
-        l->setTextInteractionFlags(Qt::NoTextInteraction);
-
-        QLabel *prLbl = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
-        prLbl->setAlignment(Qt::AlignHCenter);
-        prLbl->setText(prStr);
-        prLbl->setTextInteractionFlags(Qt::NoTextInteraction);
+        _table->item(i, 1)->setText(textStr);
+        _table->item(i, 2)->setText(prStr);
 
         if (t != _nibpNrendCacheMap.begin())
         {
@@ -276,20 +284,23 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
 
     for (int i = 0; i < _rowNR; i++)
     {
+        QColor textColor = colorManager.getColor(paramInfo.getParamName(PARAM_NIBP));
         _table->setRowHeight(i, _tableItemHeight);
         QTableWidgetItem *item = new QTableWidgetItem();
         item->setTextAlignment(Qt::AlignCenter);
-        item->setTextColor(colorManager.getColor(paramInfo.getParamName(PARAM_NIBP)));
+        item->setTextColor(textColor);
         _table->setItem(i, 0, item);
 
 
-        QLabel *l = new QLabel();
-        _table->setCellWidget(i, 1, l);
-        l->setText("");
+        item = new QTableWidgetItem();
+        item->setTextAlignment(Qt::AlignCenter);
+        item->setTextColor(textColor);
+        _table->setItem(i, 1, item);
 
-        QLabel *prLbl = new QLabel();
-        _table->setCellWidget(i, 2, prLbl);
-        prLbl->setText("");
+        item = new QTableWidgetItem();
+        item->setTextAlignment(Qt::AlignCenter);
+        item->setTextColor(textColor);
+        _table->setItem(i, 2, item);
     }
 }
 
@@ -298,11 +309,8 @@ void NIBPDataTrendWidget::setTextSize()
     QRect r;
     r.setWidth((width() - nameLabel->width()) / 2.1);
     // 字体。
-//    int fontsize = fontManager.adjustNumFontSizeXML(r,"220/150/100");
-//    fontsize = fontManager.getFontSize(fontsize);
     int fontsize = fontManager.adjustNumFontSize(r, true, "220/150/100");
     QFont font = fontManager.numFont(fontsize, true);
-//    font.setStretch(105); // 横向放大。
     font.setWeight(QFont::Black);
 
     _table->setFont(font);
@@ -313,13 +321,13 @@ void NIBPDataTrendWidget::setTextSize()
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-NIBPDataTrendWidget::NIBPDataTrendWidget() : TrendWidget("NIBPDataTrendWidget")
+NIBPDataTrendWidget::NIBPDataTrendWidget()
+    : TrendWidget("NIBPDataTrendWidget"),
+      _isAlarm(false),
+      _hrString(InvStr()),
+      _tableItemHeight(20)
 {
-    _isAlarm = false;
-    _hrString = InvStr();
     _nibpNrendCacheMap.clear();
-    _tableItemHeight = 20;
-
     // 设置标题栏的相关信息。
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
     setPalette(palette);
@@ -354,19 +362,12 @@ NIBPDataTrendWidget::NIBPDataTrendWidget() : TrendWidget("NIBPDataTrendWidget")
 
     // 布局。
     QHBoxLayout *mainLayout = new QHBoxLayout();
-    mainLayout->setMargin(4);
-    mainLayout->setSpacing(0);
+    mainLayout->setContentsMargins(10, 0, 10, 0);
     mainLayout->addWidget(_table);
-    mainLayout->addStretch(1);
-
-    contentLayout->addStretch(1);
     contentLayout->addLayout(mainLayout);
-    contentLayout->addStretch(1);
 
     // 释放事件。
 //    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
-
-    _isAlarm = false;
 
     setFocusPolicy(Qt::NoFocus);
 }

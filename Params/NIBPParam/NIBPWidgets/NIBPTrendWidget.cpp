@@ -252,6 +252,10 @@ void NIBPTrendWidget::showValue(void)
         showNormalStatus(_diaValue, psrc);
         showNormalStatus(_mapValue, psrc);
         showNormalStatus(_nibpValue, psrc);
+        showNormalStatus(_pressureValue, psrc);
+        showNormalStatus(_lastMeasureCount, psrc);
+        showNormalStatus(_model, psrc);
+        showNormalStatus(_message, psrc);
         refreshBackgroundFlag = false;
     }
     _sysValue->setText(_sysString);
@@ -358,20 +362,6 @@ void NIBPTrendWidget::setTextSize()
     font.setWeight(QFont::Black);
 
     _mapValue->setFont(font);
-
-//    r.setHeight(height() / 4);
-//    // 字体。
-////    fontsize = fontManager.adjustNumFontSizeXML(r);
-////    size = fontManager.getFontSize(fontsize);
-////    font = fontManager.numFont(size, true);
-//    fontsize = fontManager.adjustTextFontSize(r);
-//    font = fontManager.textFont(fontsize);
-////    font.setStretch(105); // 横向放大。
-//    font.setWeight(QFont::Black);
-//    _countDown->setFont(font);
-//    _lastMeasureCount->setFont(font);
-//    _model->setFont(font);
-//    _message->setFont(font);
 }
 
 /**************************************************************************************************
@@ -395,7 +385,7 @@ NIBPTrendWidget::NIBPTrendWidget() : TrendWidget("NIBPTrendWidget")
 
     // 构造出所有控件。
     _nibpValue = new QLabel();
-    _nibpValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    _nibpValue->setAlignment(Qt::AlignHCenter | Qt::AlignCenter);
     _nibpValue->setPalette(palette);
     _nibpValue->setText("/");
 
