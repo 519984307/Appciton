@@ -42,6 +42,7 @@ public:
     Button *clearPrintTask;
     QList<ComboBox *> selectWaves;
     QList<int> waveIDs;
+    QStringList waveNames;
     ComboBox *printTime;
     ComboBox *printSpeed;
 };
@@ -54,33 +55,65 @@ void PrintSettingMenuContentPrivate::loadOptions()
     PrintSpeed speed = recorderManager.getPrintSpeed();
     printSpeed->setCurrentIndex(speed);
 
-    int size = waveIDs.count();
-    int index[PRINT_WAVE_NUM] = {0};
-    QSet<int> waveIds;
+    // 加载配置文件中选择的波形id
+    int offCount = 0;
+    QSet<int> waveCboIds;
+    int savedWaveIds[PRINT_WAVE_NUM] = {0};
+
+    // 搜集当前波形菜单中所有选择的波形id
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
         QString path;
         path = QString("Print|SelectWave%1").arg(i + 1);
-        systemConfig.getNumValue(path, index[i]);
-        if (index[i] > size)
+        systemConfig.getNumValue(path, savedWaveIds[i]);
+        if (savedWaveIds[i] < WAVE_NR)
         {
-            index[i] = size - 1;
+            waveCboIds.insert(savedWaveIds[i]);
         }
-        waveIds.insert(index[i]);
+
+        if (savedWaveIds[i] == WAVE_NONE)
+        {
+            offCount++;
+        }
     }
-    if (waveIds.size() < PRINT_WAVE_NUM)
+
+    // 如果出现重复选择项，重新按照当前显示波形序列更新打印波形id
+    if (offCount < PRINT_WAVE_NUM - 1)
     {
-        for (int i = 0; i < PRINT_WAVE_NUM; i++)
+        if ((waveCboIds.size()) < PRINT_WAVE_NUM )
         {
-            index[i] = i;
-            QString path;
-            path = QString("Print|SelectWave%1").arg(i + 1);
-            systemConfig.setNumValue(path, index[i]);
+            for (int i = 0; i < PRINT_WAVE_NUM; i++)
+            {
+                QString path;
+                path = QString("Print|SelectWave%1").arg(i + 1);
+                systemConfig.setNumValue(path, waveIDs.at(i));
+                savedWaveIds[i] = i + 1;
+            }
         }
     }
+
+    // 选择波形id对应的菜单索引
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
-        selectWaves[i]->setCurrentIndex(index[i]);
+        // 选择空波形的索引
+        if (savedWaveIds[i] == WAVE_NONE)
+        {
+            selectWaves[i]->setCurrentIndex(0);
+            continue;
+        }
+
+        // 由于波形选择框中第一个选择项是空波形item，所以如果找到waveId的
+        // 索引，需要在其基础上加1成为当前波形选择框的索引
+        int cboIndex = waveIDs.indexOf(savedWaveIds[i]);
+        if (cboIndex >= 0)
+        {
+            cboIndex++;
+        }
+
+        if (cboIndex < selectWaves[i]->count() && cboIndex >= 0)
+        {
+            selectWaves[i]->setCurrentIndex(cboIndex);
+        }
     }
 }
 
@@ -122,6 +155,7 @@ void PrintSettingMenuContent::layoutExec()
     QStringList waveNames;
     d_ptr->waveIDs = layoutManager.getDisplayedWaveformIDs();
     waveNames = layoutManager.getDisplayedWaveformLabels();
+    d_ptr->waveNames = waveNames;
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
         QString comboName = QString("%1%2").arg(trs("Wave")).arg(i + 1);
@@ -211,63 +245,72 @@ void PrintSettingMenuContent::onComboxIndexChanged(int index)
 
 void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
 {
-    ComboBox *cmbList = qobject_cast<ComboBox *>(sender());
-    if (!cmbList)
+    ComboBox *curWaveCbo = qobject_cast<ComboBox *>(sender());
+    if (!curWaveCbo)
     {
         return;
     }
 
-    int item = cmbList->property("comboItem").toInt();
-    QSet<QString> wavenames;
+    // 如果选择的是关闭item，则保存完配置数据直接退出
+    int item = curWaveCbo->property("comboItem").toInt();
+    QString path = QString("Print|SelectWave%1").arg(item + 1);
+    if (curWaveCbo->currentIndex() == 0)
+    {
+        systemConfig.setNumValue(path, static_cast<int>(WAVE_NONE));
+        return;
+    }
+
+    // 保存当前选择的波形ID
+    int waveIndex;
+    QString curWaveName = curWaveCbo->currentText();
+    waveIndex = d_ptr->waveNames.indexOf(curWaveName);
+    if (waveIndex >= 0 && waveIndex < d_ptr->waveNames.count())
+    {
+        systemConfig.setNumValue(path, d_ptr->waveIDs.at(waveIndex));
+    }
+
+    // 收集当前所有选择菜单选择的波形id
+    // 选择的波形id互不匹配时，直接退出该代码块
     int count = 0;
+    QSet<QString> wavenames;
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
-        ComboBox *curCmbList = d_ptr->selectWaves[i];
-        if (curCmbList->currentIndex() != 0) // not in off state
+        ComboBox *curcurWaveCbo = d_ptr->selectWaves[i];
+        if (curcurWaveCbo->currentIndex() != 0)
         {
-            wavenames.insert(curCmbList->currentText());
+            wavenames.insert(curcurWaveCbo->currentText());
             count++;
         }
     }
-
-    QString path;
-    path = QString("Print|SelectWave%1").arg(item + 1);
-    systemConfig.setNumValue(path, cmbList->currentIndex());
-
     if (wavenames.size() == count)
     {
-        // no duplicated wavenames
         return;
     }
 
-    // have duplicated wavenames, select another wavename for the duplicate combolist
+    // 当选择了相同波形id时，将旧的选择的波形id替换为空
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
-        ComboBox *curCmbList = d_ptr->selectWaves[i];
-        if (curCmbList != cmbList
-                && curCmbList->currentIndex() != 0
-                && curCmbList->currentText() == waveName)
+        ComboBox *selectWaveCbo = d_ptr->selectWaves[i];
+        // 剔除当前item为0的选项
+        if (selectWaveCbo->currentIndex() == 0)
         {
-            int curIndex = curCmbList->currentIndex();
-            for (int j = 1; j < curCmbList->count(); j++)
-            {
-                if (j == curIndex)
-                {
-                    continue;
-                }
+            continue;
+        }
 
-                if (!wavenames.contains(curCmbList->itemText(j)))
-                {
-                    curCmbList->blockSignals(true);
-                    curCmbList->setCurrentIndex(j);
-                    QString path;
-                    path = QString("Print|SelectWave%1").arg(i + 1);
-                    systemConfig.setNumValue(path, j);
-                    curCmbList->blockSignals(false);
-                    return;
-                }
-            }
+        // 剔除当前波形控件与选择波形控件相同的选项
+        if (selectWaveCbo == curWaveCbo)
+        {
+            continue;
+        }
 
+        // 匹配到相同波形id时，将旧的选择项替换为空，并退出轮询
+        if (selectWaveCbo->currentText() == waveName)
+        {
+            selectWaveCbo->blockSignals(true);
+            selectWaveCbo->setCurrentIndex(0);
+            selectWaveCbo->blockSignals(false);
+            QString path = QString("Print|SelectWave%1").arg(i + 1);
+            systemConfig.setNumValue(path, static_cast<int>(WAVE_NONE));
             break;
         }
     }
