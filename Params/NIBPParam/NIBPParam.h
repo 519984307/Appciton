@@ -19,6 +19,23 @@
 #include "NIBPCountdownTime.h"
 #include <QMap>
 
+struct NIBPMeasureResultInfo
+{
+    NIBPMeasureResultInfo()
+    {
+        sys = InvData();
+        dia = InvData();
+        map = InvData();
+        pr = InvData();
+        errCode = 0;
+    }
+    int16_t sys;
+    int16_t dia;
+    int16_t map;
+    int16_t pr;
+    int16_t errCode;
+};
+
 class NIBPProviderIFace;
 class NIBPTrendWidget;
 class NIBPDataTrendWidget;

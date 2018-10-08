@@ -305,12 +305,13 @@ void NIBPParam::setNIBPDataTrendWidget(NIBPDataTrendWidget *trendWidget)
 bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, int16_t &sys,
                                int16_t &dia, int16_t &map, int16_t &pr, NIBPOneShotType &err)
 {
+    NIBPMeasureResultInfo info = *reinterpret_cast<NIBPMeasureResultInfo *>(const_cast<unsigned char *>(packet));
     err = NIBP_ONESHOT_NONE;
 
     // 测量有错误，获取错误码。
-    if (packet[1] != 0x00)
+    if (info.errCode != 0x00)
     {
-        switch (packet[1])
+        switch (info.errCode)
         {
         case 0x02:
             err = NIBP_ONESHOT_ALARM_CUFF_ERROR;
@@ -337,45 +338,10 @@ bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, int16_t
         return true;
     }
     // 测量无错，获取测量结果。
-    int t = static_cast<int>((packet[3] << 8) + packet[2]);
-    if (t == 65535)
-    {
-        sys = InvData();
-    }
-    else
-    {
-        sys = t;
-    }
-
-    t = static_cast<int>((packet[5] << 8) + packet[4]);
-    if (t == 65535)
-    {
-        dia = InvData();
-    }
-    else
-    {
-        dia = t;
-    }
-
-    t = static_cast<int>((packet[7] << 8) + packet[6]);
-    if (t == 65535)
-    {
-        map = InvData();
-    }
-    else
-    {
-        map = t;
-    }
-
-    t = static_cast<int>((packet[9] << 8) + packet[8]);
-    if (t == 65535)
-    {
-        pr = InvData();
-    }
-    else
-    {
-        pr = t;
-    }
+    sys = info.sys;
+    dia = info.dia;
+    map = info.map;
+    pr = info.pr;
 
     if (sys == InvData() || dia == InvData() || map == InvData())
     {
