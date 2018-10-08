@@ -19,6 +19,7 @@
 #include "TimeDate.h"
 #include <QProcess>
 #include <QVBoxLayout>
+#include "TimeManager.h"
 
 class SupervisorTimeWindowPrivate
 {
@@ -320,6 +321,7 @@ void SupervisorTimeWindow::hideEvent(QHideEvent *ev)
     {
         d_ptr->setSysTime();
     }
+    timeManager.roloadConfig();
     Window::hideEvent(ev);
 }
 
