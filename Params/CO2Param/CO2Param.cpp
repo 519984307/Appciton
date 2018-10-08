@@ -834,6 +834,15 @@ short CO2Param::getEtCO2MinValue()
     return d_ptr->etco2MinVal;
 }
 
+void CO2Param::onPaletteChanged()
+{
+    QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
+    d_ptr->trendWidget->setPalette(pal);
+    d_ptr->trendWidget->setBackground(true);
+    d_ptr->waveWidget->setPalette(pal);
+    d_ptr->waveWidget->resetBackground(pal);
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -878,6 +887,7 @@ CO2Param::CO2Param()
     QString highPath = path + "High";
     currentConfig.getNumAttr(lowPath, "Min", d_ptr->etco2MinVal);
     currentConfig.getNumAttr(highPath, "Max", d_ptr->etco2MaxVal);
+    connect(&colorManager, SIGNAL(co2PaletteChanged()), this, SLOT(onPaletteChanged()));
 }
 
 /**************************************************************************************************

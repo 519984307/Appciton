@@ -33,6 +33,11 @@ public:
     // 设置标尺。
     void setRuler(AGDisplayZoom zoom);
 
+    /**
+     * @brief resetBackground reset background
+     */
+    void resetBackground(QPalette pal);
+
     // 构造与析构。
     AGWaveWidget(WaveformID id, const QString &waveName, const AGTypeGas gasType);
     ~AGWaveWidget();

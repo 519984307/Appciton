@@ -169,6 +169,11 @@ void TrendWidget::updateAlarm(bool alarmFlag)
     Q_UNUSED(alarmFlag)
 }
 
+void TrendWidget::setBackground(bool flag)
+{
+    refreshBackgroundFlag = flag;
+}
+
 /**************************************************************************************************
  * 功能： 设置显示的名称。
  * 参数：
@@ -234,7 +239,9 @@ void TrendWidget::setUnitFont(int size, bool isBold)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-TrendWidget::TrendWidget(const QString &widgetName, bool vertical) : IWidget(widgetName)
+TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
+    : IWidget(widgetName),
+      refreshBackgroundFlag(true)
 {
     _title = "";
     nameLabel = new TrendWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);

@@ -44,6 +44,7 @@ public:
 
     // key: 路径    value: 颜色索引
     QMap<QString, QString>colorSetList;
+    QList<ParamID> paramIdList;
 };
 
 void ParaColorWindowPrivate::loadOptions()
@@ -240,6 +241,7 @@ void ParaColorWindow::hideEvent(QHideEvent *ev)
                                   iter.value());
         iter++;
     }
+    colorManager.updateColorPalatte(d_ptr->paramIdList);
     Window::hideEvent(ev);
 }
 
@@ -257,29 +259,77 @@ void ParaColorWindow::onComboBoxIndexChanged(int index)
                 = (ParaColorWindowPrivate::MenuItem)box->property("Item").toInt();
         switch (item) {
         case ParaColorWindowPrivate::ITEM_CBO_ECG_COLOR:
+        {
             strPath = "Display|ECGColor";
+            if (!d_ptr->paramIdList.contains(PARAM_ECG))
+            {
+                d_ptr->paramIdList.append(PARAM_ECG);
+            }
             break;
+        }
         case ParaColorWindowPrivate::ITEM_CBO_SPO2_COLOR:
+        {
             strPath = "Display|SPO2Color";
+            if (!d_ptr->paramIdList.contains(PARAM_SPO2))
+            {
+                d_ptr->paramIdList.append(PARAM_SPO2);
+            }
             break;
+        }
         case ParaColorWindowPrivate::ITEM_CBO_NIBP_COLOR:
+        {
             strPath = "Display|NIBPColor";
+            if (!d_ptr->paramIdList.contains(PARAM_NIBP))
+            {
+                d_ptr->paramIdList.append(PARAM_NIBP);
+            }
             break;
+        }
         case ParaColorWindowPrivate::ITEM_CBO_CO2_COLOR:
+        {
             strPath = "Display|CO2Color";
+            if (!d_ptr->paramIdList.contains(PARAM_CO2))
+            {
+                d_ptr->paramIdList.append(PARAM_CO2);
+            }
             break;
+        }
         case ParaColorWindowPrivate::ITEM_CBO_RESP_COLOR:
+        {
             strPath = "Display|RESPColor";
+            if (!d_ptr->paramIdList.contains(PARAM_RESP))
+            {
+                d_ptr->paramIdList.append(PARAM_RESP);
+            }
             break;
+        }
         case ParaColorWindowPrivate::ITEM_CBO_TEMP_COLOR:
+        {
             strPath = "Display|TEMPColor";
+            if (!d_ptr->paramIdList.contains(PARAM_TEMP))
+            {
+                d_ptr->paramIdList.append(PARAM_TEMP);
+            }
             break;
+        }
         case ParaColorWindowPrivate::ITEM_CBO_AG_COLOR:
+        {
             strPath = "Display|AGColor";
+            if (!d_ptr->paramIdList.contains(PARAM_AG))
+            {
+                d_ptr->paramIdList.append(PARAM_AG);
+            }
             break;
+        }
         case ParaColorWindowPrivate::ITEM_CBO_IBP_COLOR:
+        {
             strPath = "Display|IBPColor";
+            if (!d_ptr->paramIdList.contains(PARAM_IBP))
+            {
+                d_ptr->paramIdList.append(PARAM_IBP);
+            }
             break;
+        }
         }
         QMap<QString, QString>::Iterator iter = d_ptr->colorSetList.find(strPath);
         if (iter != d_ptr->colorSetList.end())

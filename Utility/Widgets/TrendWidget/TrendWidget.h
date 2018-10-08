@@ -41,6 +41,12 @@ public:
         return _title;
     }
 
+    /**
+     * @brief setBackground 刷新背景
+     * @param flag true:刷新 　false:不刷新
+     */
+    void setBackground(bool flag);
+
 protected:
     void setName(const QString &name);
     void setUnit(const QString &unit);
@@ -68,6 +74,8 @@ protected:
     QLabel *unitLabel;
 
     QString _title;                           // 趋势控制标名
+
+    bool refreshBackgroundFlag;    // 刷新背景标志
 
     QPalette normalPalette(QPalette psrc);
     QPalette alarmPalette(QPalette psrc, bool isSetName = true);   // isSetName: 是否设置标题颜色

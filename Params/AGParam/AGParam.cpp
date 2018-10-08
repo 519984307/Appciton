@@ -796,6 +796,28 @@ bool AGParam::getDemoWaveformFile(const char *buf, int len, AGTypeGas type)
     return true;
 }
 
+void AGParam::onPaletteChanged()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
+    _waveWidgetAA1->setPalette(psrc);
+    _waveWidgetAA2->setPalette(psrc);
+    _waveWidgetN2O->setPalette(psrc);
+    _waveWidgetO2->setPalette(psrc);
+    _waveWidgetAA1->resetBackground(psrc);
+    _waveWidgetAA2->resetBackground(psrc);
+    _waveWidgetN2O->resetBackground(psrc);
+    _waveWidgetO2->resetBackground(psrc);
+    _waveWidgetN2O->resetBackground(psrc);
+    _trendWidgetAA1->setPalette(psrc);
+    _trendWidgetAA2->setPalette(psrc);
+    _trendWidgetN2O->setPalette(psrc);
+    _trendWidgetO2->setPalette(psrc);
+    _trendWidgetAA1->setBackground(true);
+    _trendWidgetAA2->setBackground(true);
+    _trendWidgetN2O->setBackground(true);
+    _trendWidgetO2->setBackground(true);
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -815,6 +837,8 @@ AGParam::AGParam() : Param(PARAM_AG), _connectedProvider(false)
 
     _n2oBuf = new char[DEMO_DATA_NUM];
     n2o = 0;
+
+    connect(&colorManager, SIGNAL(agPaletteChanged()), this, SLOT(onPaletteChanged()));
 }
 
 /**************************************************************************************************

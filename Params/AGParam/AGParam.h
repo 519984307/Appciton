@@ -111,6 +111,13 @@ public:
 
     // demo文件的生成
     bool getDemoWaveformFile(const char *buf, int len, AGTypeGas);
+
+private slots:
+    /**
+     * @brief onPaletteChanged change palette
+     */
+    void onPaletteChanged();
+
 private:
     AGParam();
     static AGParam *_selfObj;

@@ -325,6 +325,11 @@ private slots:
      * @brief onOxyCRGWaveUpdated 呼吸氧和波形更新槽函数
      */
     void onOxyCRGWaveUpdated(void);
+
+    /**
+     * @brief onPaletteChanged change palette
+     */
+    void onPaletteChanged();
 private:
     // 构造。
     ECGParam();

@@ -57,6 +57,7 @@ IBPParam::IBPParam() : Param(PARAM_IBP), _staIBP1(true), _staIBP2(true),
     IBPScaleInfo autoScale;
     autoScale.isAuto = true;
     ibpScaleList.append(autoScale);
+    connect(&colorManager, SIGNAL(ibpPaletteChanged()), this, SLOT(onPaletteChanged()));
 }
 
 /**************************************************************************************************
@@ -1506,4 +1507,17 @@ WaveformID IBPParam::getWaveformID(IBPPressureName name)
         break;
     }
     return waveID;
+}
+
+void IBPParam::onPaletteChanged()
+{
+    QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
+    _waveWidgetIBP1->setPalette(pal);
+    _waveWidgetIBP1->resetBackground(pal);
+    _waveWidgetIBP2->setPalette(pal);
+    _waveWidgetIBP2->resetBackground(pal);
+    _trendWidgetIBP1->setPalette(pal);
+    _trendWidgetIBP2->setPalette(pal);
+    _trendWidgetIBP1->setBackground(true);
+    _trendWidgetIBP2->setBackground(true);
 }

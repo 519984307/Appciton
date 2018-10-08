@@ -1035,3 +1035,9 @@ void ECGWaveWidget::drawRMark(QPainter &painter, QPoint &p, QRect &r, ECGWaveWid
     painter.setPen(oldPen);
 }
 
+void ECGWaveWidget::resetBackground(QPalette pal)
+{
+    _ruler->setPalette(pal);
+    _ruler->setBackground(true);
+}
+

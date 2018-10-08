@@ -2279,6 +2279,7 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     _isPowerOnNewSession = true;
 
     connect(this, SIGNAL(oxyCRGWaveUpdated()), this, SLOT(onOxyCRGWaveUpdated()));
+    connect(&colorManager, SIGNAL(ecgPaletteChanged()), this , SLOT(onPaletteChanged()));
 }
 
 /**************************************************************************************************
@@ -2315,6 +2316,20 @@ void ECGParam::onOxyCRGWaveUpdated()
     {
 //        _oxyCRGRESPWidget->update();
     }
+}
+
+void ECGParam::onPaletteChanged()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
+    for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
+    {
+        _waveWidget[i]->setPalette(psrc);
+        _waveWidget[i]->resetBackground(psrc);
+    }
+    _pvcsTrendWidget->setPalette(psrc);
+    _pvcsTrendWidget->setBackground(true);
+    _ecgSTTrendWidget->setPalette(psrc);
+    _ecgSTTrendWidget->setBackground(true);
 }
 /**************************************************************************************************
  * 发送协议命令。

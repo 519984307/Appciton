@@ -22,6 +22,7 @@
 #include "OxyCRGRESPWaveWidget.h"
 #include "RESPWaveWidget.h"
 #include "RESPProviderIFace.h"
+#include "ColorManager.h"
 
 RESPParam *RESPParam::_selfObj = NULL;
 
@@ -495,6 +496,12 @@ void RESPParam::enableRespCalc(bool enable)
     }
 }
 
+void RESPParam::onPaletteChanged()
+{
+    QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
+    d_ptr->waveWidget->setPalette(pal);
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -507,6 +514,7 @@ RESPParam::RESPParam() : Param(PARAM_RESP),
     int enable = 1;
     currentConfig.getNumValue("RESP|AutoActivation", enable);
     d_ptr->respMonitoring = enable;
+    connect(&colorManager, SIGNAL(respPaletteChanged()), this, SLOT(onPaletteChanged()));
 }
 
 /**************************************************************************************************

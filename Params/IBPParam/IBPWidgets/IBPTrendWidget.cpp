@@ -156,8 +156,7 @@ void IBPTrendWidget::isAlarm(int id, bool flag)
  *************************************************************************************************/
 void IBPTrendWidget::showValue()
 {
-    QPalette p = palette();
-    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
+    QPalette psrc = palette();
     psrc = normalPalette(psrc);
     if (_sysAlarm || _diaAlarm || _mapAlarm)
     {
@@ -190,7 +189,7 @@ void IBPTrendWidget::showValue()
             showNormalStatus(_veinValue, psrc);
         }
     }
-    else
+    else if (refreshBackgroundFlag)
     {
         setPalette(psrc);
         showNormalStatus(_sysValue, psrc);
@@ -198,6 +197,7 @@ void IBPTrendWidget::showValue()
         showNormalStatus(_mapValue, psrc);
         showNormalStatus(_veinValue, psrc);
         showNormalStatus(_ibpValue, psrc);
+        refreshBackgroundFlag = false;
     }
 }
 

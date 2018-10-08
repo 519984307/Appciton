@@ -120,10 +120,11 @@ void ECGTrendWidget::showValue(void)
     {
         showAlarmStatus(_hrValue, psrc);
     }
-    else
+    else if (refreshBackgroundFlag)
     {
         setPalette(psrc);
         showNormalStatus(_hrValue, psrc);
+        refreshBackgroundFlag = false;
     }
 
     _hrValue->setText(_hrString);
@@ -217,9 +218,10 @@ void ECGTrendWidget::setTrendWidgetCalcName(ECGLead calLead)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget")
+ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
+    _isAlarm(false),
+    _hrString(InvStr())
 {
-    _isAlarm = false;
     _hrString = InvStr();
 
     // 设置标题栏的相关信息。
@@ -259,8 +261,6 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget")
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
-
-    _isAlarm = false;
 
     _timer = new QTimer();
     _timer->setInterval(190);

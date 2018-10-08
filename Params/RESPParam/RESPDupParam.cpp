@@ -256,6 +256,13 @@ bool RESPDupParam::isAutoBrSourceEnabled() const
     return _isAutoBrSource;
 }
 
+void RESPDupParam::onPaletteChanged()
+{
+    QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
+    _trendWidget->setPalette(pal);
+    _trendWidget->setBackground(true);
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -268,6 +275,7 @@ RESPDupParam::RESPDupParam()
       _isAutoBrSource(true),
       _manualBrSourceType(BR_SOURCE_RESP)
 {
+    connect(&colorManager, SIGNAL(respPaletteChanged()), this, SLOT(onPaletteChanged()));
 }
 
 /**************************************************************************************************

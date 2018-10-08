@@ -588,6 +588,14 @@ void SPO2Param::checkSelftest()
     }
 }
 
+void SPO2Param::onPaletteChanged()
+{
+    QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
+    _waveWidget->setPalette(pal);
+    _trendWidget->setPalette(pal);
+    _trendWidget->setBackground(true);
+}
+
 /**************************************************************************************************
  * 设置灵敏度。
  *************************************************************************************************/
@@ -667,6 +675,7 @@ SPO2Param::SPO2Param() : Param(PARAM_SPO2),
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverSensorOn", _isEverSensorOn);
 
     QTimer::singleShot(2000, this, SLOT(checkSelftest()));
+    connect(&colorManager, SIGNAL(spo2PaletteChanged()), this , SLOT(onPaletteChanged()));
 }
 
 /**************************************************************************************************

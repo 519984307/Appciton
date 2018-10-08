@@ -68,11 +68,12 @@ void TEMPTrendWidget::_alarmIndicate(bool isAlarms, tempGrp grp)
         showAlarmStatus(value, psrc);
         showAlarmStatus(name, psrc);
     }
-    else
+    else if (refreshBackgroundFlag)
     {
         setPalette(psrc);
         showNormalStatus(value, psrc);
         showNormalStatus(name, psrc);
+        refreshBackgroundFlag = false;
     }
 }
 

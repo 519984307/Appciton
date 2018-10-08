@@ -96,6 +96,11 @@ public:
     // 记录R波标记,用于重画，防止R波标记被刷新后只显示一半
     QList<rMark_record> rMarkList;
 
+    /**
+     * @brief resetBackground 刷新背景
+     */
+    void resetBackground(QPalette pal);
+
 protected:
     // 重绘事件。
     virtual void paintEvent(QPaintEvent *e);

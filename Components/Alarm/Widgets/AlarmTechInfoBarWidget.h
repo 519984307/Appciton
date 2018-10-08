@@ -13,7 +13,7 @@
 #include "IWidget.h"
 #include "AlarmInfoWindow.h"
 
-class AlarmInfoPopListVIew;
+class AlarmInfoPopListView;
 class AlarmTechInfoBarWidget : public IWidget
 {
     Q_OBJECT

@@ -214,7 +214,7 @@ void NIBPTrendWidget::isAlarm(int id, bool flag)
  *************************************************************************************************/
 void NIBPTrendWidget::showValue(void)
 {
-    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
+    QPalette psrc = palette();
     psrc = normalPalette(psrc);
     if (_sysAlarm || _diaAlarm || _mapAlarm)
     {
@@ -245,13 +245,14 @@ void NIBPTrendWidget::showValue(void)
             showNormalStatus(_mapValue, psrc);
         }
     }
-    else
+    else if (refreshBackgroundFlag)
     {
         setPalette(psrc);
         showNormalStatus(_sysValue, psrc);
         showNormalStatus(_diaValue, psrc);
         showNormalStatus(_mapValue, psrc);
         showNormalStatus(_nibpValue, psrc);
+        refreshBackgroundFlag = false;
     }
     _sysValue->setText(_sysString);
     _diaValue->setText(_diaString);

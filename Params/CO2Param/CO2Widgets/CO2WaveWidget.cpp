@@ -121,7 +121,13 @@ void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
     }
     str += " ";
     str += Unit::localeSymbol(unit);
-//    _zoom->setText(str);
+    //    _zoom->setText(str);
+}
+
+void CO2WaveWidget::resetBackground(QPalette pal)
+{
+    _ruler->setPalette(pal);
+    _ruler->setBackground(true);
 }
 
 /**************************************************************************************************

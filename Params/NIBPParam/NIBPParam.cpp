@@ -1195,6 +1195,15 @@ void NIBPParam::_btnTimeOut()
     toggleMeasureLong();
 }
 
+void NIBPParam::_onPaletteChanged()
+{
+    QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
+    _trendWidget->setPalette(pal);
+    _trendWidget->setBackground(true);
+    _nibpDataTrendWidget->setPalette(pal);
+    _nibpDataTrendWidget->setBackground(true);
+}
+
 /**************************************************************************************************
  * 短按NIBP按钮触发测量控制。
  *************************************************************************************************/
@@ -1376,6 +1385,7 @@ NIBPParam::NIBPParam() : Param(PARAM_NIBP), _connectedProvider(false)
 
     _btnTimer = new QTimer();
     connect(_btnTimer, SIGNAL(timeout()), this, SLOT(_btnTimeOut()));
+    connect(&colorManager , SIGNAL(nibpPaletteChanged()), this, SLOT(_onPaletteChanged()));
 }
 
 /**************************************************************************************************

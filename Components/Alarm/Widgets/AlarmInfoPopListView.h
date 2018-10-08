@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/10/8
+ **/
+
+
 #pragma once
 #include <QDialog>
 #include <QLabel>
@@ -66,13 +77,13 @@ class QVBoxLayout;
 class ISpinBox;
 class IButton;
 class QTimer;
-class AlarmInfoPopListVIew : public QDialog
+class AlarmInfoPopListView : public QDialog
 {
     Q_OBJECT
 
 public:
-    AlarmInfoPopListVIew(QWidget *parent, AlarmType alarmType);
-    ~AlarmInfoPopListVIew();
+    AlarmInfoPopListView(QWidget *parent, AlarmType alarmType);
+    ~AlarmInfoPopListView();
 
     void loadData();
 
