@@ -120,7 +120,6 @@
 #include "NIBPAlarm.h"
 #include "NIBPTrendWidget.h"
 #include "NIBPDataTrendWidget.h"
-#include "WaveTrendWidget.h"
 
 #include "CO2Param.h"
 #include "CO2Alarm.h"

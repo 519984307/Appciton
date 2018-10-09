@@ -90,13 +90,6 @@ public slots:
     void onWindowHide(Window *w);
 
 public:
-    // 注册窗体。
-    bool addWidget(IWidget *win, IWidget *trend = NULL);
-
-    // 获取指定窗体。
-    IWidget *getWidget(const QString &name);
-
-
     // 获取弹出菜单宽度, TODO: remove
     int getPopMenuWidth();
 
@@ -111,7 +104,6 @@ private slots:
 
 private:
     QMap<QString, IWidget *> _winMap;      // 保存所有的窗体。
-    QMultiMap<IWidget *, IWidget *> _trendWave;            // 参数列表
 
     WindowManagerPrivate * const d_ptr;
 };

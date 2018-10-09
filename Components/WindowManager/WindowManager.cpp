@@ -79,57 +79,6 @@ int WindowManager::getPopMenuHeight()
 }
 
 /***************************************************************************************************
- * 功能：注册窗体
- * 参数：
- *      win：待注册窗体的指针
- * 返回：
- *      true，注册成功；false，注册失败。
- **************************************************************************************************/
-bool WindowManager::addWidget(IWidget *win, IWidget *trend)
-{
-    if (!win)
-    {
-        return false;
-    }
-
-    if (_winMap.find(win->name()) != _winMap.end())
-    {
-        debug("Win %s is already registered!\n", qPrintable(win->name()));
-        return false;
-    }
-
-    _winMap.insert(win->name(), win);
-
-    if (trend != NULL)
-    {
-        QMap<QString, IWidget *>::iterator it = _winMap.find(trend->name());
-        if (it != _winMap.end())
-        {
-            _trendWave.insert(trend, win);
-        }
-    }
-
-    return true;
-}
-
-/***************************************************************************************************
- * 功能：获取窗体
- * 参数：
- *      name：窗体名字。
- * 返回：
- *      窗体指针。
- **************************************************************************************************/
-IWidget *WindowManager::getWidget(const QString &name)
-{
-    QMap<QString, IWidget *>::Iterator iter = _winMap.find(name);
-    if (iter != _winMap.end())
-    {
-        return iter.value();
-    }
-    return NULL;
-}
-
-/***************************************************************************************************
  * 功能：构造函数
  **************************************************************************************************/
 #if defined(Q_WS_QWS)

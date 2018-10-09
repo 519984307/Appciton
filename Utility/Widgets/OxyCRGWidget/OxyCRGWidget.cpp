@@ -34,6 +34,7 @@
 #include "OxyCRGSPO2TrendWidget.h"
 #include "OxyCRGRESPWaveWidget.h"
 #include "OxyCRGRRHRWaveWidget.h"
+#include "LayoutManager.h"
 
 class OxyCRGWidgetPrivate
 {
@@ -167,7 +168,7 @@ void OxyCRGWidget::_trendLayout(void)
 
     for (int i = 0; i < nodeWidgets.size(); i++)
     {
-        IWidget *w = windowManager.getWidget(nodeWidgets[i]);
+        IWidget *w = layoutManager.getLayoutWidget(nodeWidgets[i]);
         if (w == NULL)
         {
             continue;
