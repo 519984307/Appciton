@@ -64,8 +64,9 @@ public:
      * @param dataBuf the buffer to store the trend data
      * @param count the number of trend data should be fetched. the value should be less than SHORT_TREND_DATA_NUM
      * @param interval the trend data interval
+     * @return the number of read trend data
      */
-    void getShortTrendData(SubParamID subParam, TrendDataType *dataBuf, int count, ShortTrendInterval interval) const;
+    int getShortTrendData(SubParamID subParam, TrendDataType *dataBuf, int count, ShortTrendInterval interval) const;
 
     /**
      * @brief getLatestShortTrendData get the latest short trend data

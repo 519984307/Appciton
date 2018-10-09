@@ -1,12 +1,13 @@
 /**
  ** This file is part of the nPM project.
- ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
  ** All Rights Reserved.
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/10/8
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/29
  **/
+
 
 
 #include "ECGDupParam.h"
@@ -283,14 +284,21 @@ void ECGDupParam::isAlarm(bool isAlarm, bool isLimit)
  **************************************************************************************************/
 ECGDupParam::HrSourceType ECGDupParam::getHrSource() const
 {
-    if (_hrValue == InvData() && _prValue != InvData())
+    if (_hrSource == HR_SOURCE_AUTO)
     {
-        return HR_SOURCE_SPO2;
+        HrSourceType type;
+        if (_hrValue == InvData() && _prValue != InvData())
+        {
+            type = HR_SOURCE_SPO2;
+        }
+        else
+        {
+            type = HR_SOURCE_ECG;
+        }
+        return type;
     }
-    else
-    {
-        return HR_SOURCE_ECG;
-    }
+
+    return _hrSource;
 }
 
 
@@ -311,18 +319,35 @@ void ECGDupParam::onPaletteChanged(ParamID id)
     QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     _trendWidget->updatePalette(pal);
 }
+void ECGDupParam::setHrSource(ECGDupParam::HrSourceType type)
+{
+    _hrSource = type;
+}
+
+bool ECGDupParam::isAutoTypeHrSouce() const
+{
+    if (_hrSource == HR_SOURCE_AUTO)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 ECGDupParam::ECGDupParam()
     : Param(PARAM_DUP_ECG),
-      _trendWidget(NULL),
       _provider(NULL),
+      _trendWidget(NULL),
       _hrValue(InvData()),
       _prValue(InvData()),
       _hrBeatFlag(true),
-      _isAlarm(false)
+      _isAlarm(false),
+      _hrSource(HR_SOURCE_ECG)
 {
     connect(&colorManager, SIGNAL(paletteChanged(ParamID)),
             this, SLOT(onPaletteChanged(ParamID)));

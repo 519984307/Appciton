@@ -29,6 +29,7 @@ public:
     // display temp blood data.
     void setTBData(u_int16_t tbData);
 
+    QList<SubParamID> getShortTrendSubParams() const;
 protected:
     virtual void setTextSize(void);
 

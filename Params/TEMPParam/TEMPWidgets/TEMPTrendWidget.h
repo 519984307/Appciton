@@ -33,6 +33,8 @@ public:
     TEMPTrendWidget();
     ~TEMPTrendWidget();
 
+    QList<SubParamID> getShortTrendSubParams() const;
+
 protected:
     virtual void setTextSize(void);
 

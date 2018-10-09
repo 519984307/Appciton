@@ -43,6 +43,8 @@ public:
     IBPTrendWidget(const QString &trendName, const IBPPressureName &entitle);
     ~IBPTrendWidget();
 
+    QList<SubParamID> getShortTrendSubParams() const;
+
 protected:
     virtual void setTextSize(void);
 

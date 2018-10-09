@@ -144,6 +144,7 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     _spo2Bar = new SPO2BarWidget(0, 15);
     _spo2Bar->setFixedWidth(10);
     mLayout->addWidget(_spo2Bar);
+    mLayout->setMargin(5);
 
     // 布局。
     QHBoxLayout *mainLayout = new QHBoxLayout();
@@ -166,4 +167,11 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
  *************************************************************************************************/
 SPO2TrendWidget::~SPO2TrendWidget()
 {
+}
+
+QList<SubParamID> SPO2TrendWidget::getShortTrendSubParams() const
+{
+   QList<SubParamID> list;
+   list.append(SUB_PARAM_SPO2);
+   return list;
 }

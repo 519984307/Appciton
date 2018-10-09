@@ -66,6 +66,10 @@ public:
     // set elapsed time
     void setElapsedTime(void);
 
+    /**
+     * @brief roloadConfig 重新加载配置文件
+     */
+    void roloadConfig();
     ~TimeManager();
 
 private:

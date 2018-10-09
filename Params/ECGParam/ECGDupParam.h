@@ -1,12 +1,13 @@
 /**
  ** This file is part of the nPM project.
- ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
  ** All Rights Reserved.
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/10/8
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/29
  **/
+
 
 
 #pragma once
@@ -24,8 +25,8 @@ class ECGDupParam: public Param
 {
     Q_OBJECT
 public:
-    enum HrSourceType
-    {
+    enum HrSourceType{
+        HR_SOURCE_AUTO,
         HR_SOURCE_ECG,
         HR_SOURCE_SPO2,
     };
@@ -95,6 +96,18 @@ public:
     // 设置计算导联字串。
     void setECGTrendWidgetCalcName(ECGLead calLead);
 
+    /**
+     * @brief setHrSource  设置hr来源
+     * @param type
+     */
+    void setHrSource(HrSourceType type);
+
+    /**
+     * @brief isAutoTypeHrSouce
+     * @return
+     */
+    bool isAutoTypeHrSouce(void) const;
+
 private slots:
     void onPaletteChanged(ParamID id);
 
@@ -109,5 +122,7 @@ private:
     short _prValue;
     bool _hrBeatFlag;
     bool _isAlarm;
+    bool _isAutoHrSource;
+    HrSourceType _hrSource;
 };
 #define ecgDupParam (ECGDupParam::construction())

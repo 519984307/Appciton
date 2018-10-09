@@ -514,3 +514,10 @@ NIBPTrendWidget::NIBPTrendWidget() : TrendWidget("NIBPTrendWidget")
 NIBPTrendWidget::~NIBPTrendWidget()
 {
 }
+
+QList<SubParamID> NIBPTrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    list << SUB_PARAM_NIBP_SYS << SUB_PARAM_NIBP_DIA << SUB_PARAM_NIBP_MAP;
+    return list;
+}

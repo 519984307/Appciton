@@ -62,6 +62,8 @@ public:
     NIBPTrendWidget();
     ~NIBPTrendWidget();
 
+    QList<SubParamID> getShortTrendSubParams() const;
+
 protected:
     virtual void setTextSize(void);
 

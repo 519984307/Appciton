@@ -217,11 +217,8 @@ void ECGTrendWidget::setTrendWidgetCalcName(ECGLead calLead)
  * 构造。
  *************************************************************************************************/
 ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
-    _isAlarm(false),
-    _hrString(InvStr())
+    _hrString(InvStr()), _isAlarm(false)
 {
-    _hrString = InvStr();
-
     // 设置标题栏的相关信息。
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     setPalette(palette);
@@ -275,4 +272,11 @@ ECGTrendWidget::~ECGTrendWidget()
         delete _timer;
         _timer = NULL;
     }
+}
+
+QList<SubParamID> ECGTrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    list.append(SUB_PARAM_HR_PR);
+    return list;
 }

@@ -338,43 +338,31 @@ void TrendDataStorageManager::unRegisterShortTrend(SubParamID subParamID)
     }
 }
 
-void TrendDataStorageManager::getShortTrendData(SubParamID subParam, TrendDataType *dataBuf, int count,
+int TrendDataStorageManager::getShortTrendData(SubParamID subParam, TrendDataType *dataBuf, int count,
         ShortTrendInterval interval) const
 {
     Q_D(const TrendDataStorageManager);
     if (dataBuf == NULL)
     {
-        return;
+        return 0;
     }
 
     ShortTrendStorage *s = d->shortTrends.value(subParam, NULL);
     if (s == NULL)
     {
-        // fill with invalid data and return
-        for (int i = 0; i < count; ++i)
-        {
-            dataBuf[i] = InvData();
-        }
-
-        return;
+        return 0;
     }
 
     RingBuff<TrendDataType> *ringBuf = s->trendBuffer[interval];
 
+    int index = 0;
     int bufSize = ringBuf->dataSize();
-    if (bufSize >= count)
+    if (bufSize > count)
     {
-        int index = bufSize - count;
-        ringBuf->copy(index, dataBuf, count);
+        index  = bufSize - count;
     }
-    else
-    {
-        ringBuf->copy(0, dataBuf, count);
-        for (int i = bufSize; i < count; ++i)
-        {
-            dataBuf[i] = InvData();
-        }
-    }
+
+    return ringBuf->copy(index, dataBuf, count);
 }
 
 TrendDataType TrendDataStorageManager::getLatestShortTrendData(SubParamID subParam, ShortTrendInterval interval)
@@ -383,7 +371,12 @@ TrendDataType TrendDataStorageManager::getLatestShortTrendData(SubParamID subPar
     ShortTrendStorage *s = d->shortTrends.value(subParam, NULL);
     if (s)
     {
-        return s->trendBuffer[interval]->at(0);
+        bool ok = false;
+        TrendDataType d = s->trendBuffer[interval]->head(ok);
+        if (ok)
+        {
+            return d;
+        }
     }
 
     return InvData();

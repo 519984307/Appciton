@@ -205,6 +205,31 @@ AGTrendWidget::~AGTrendWidget()
 {
 }
 
+QList<SubParamID> AGTrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    switch (_gasType) {
+    case AG_TYPE_CO2:
+        list << SUB_PARAM_ETCO2 << SUB_PARAM_FICO2;
+        break;
+    case AG_TYPE_N2O:
+        list << SUB_PARAM_ETN2O << SUB_PARAM_FIN2O;
+        break;
+    case AG_TYPE_AA1:
+        list << SUB_PARAM_ETAA1 << SUB_PARAM_FIAA1;
+        break;
+    case AG_TYPE_AA2:
+        list << SUB_PARAM_ETAA2 << SUB_PARAM_FIAA2;
+        break;
+    case AG_TYPE_O2:
+        list << SUB_PARAM_ETO2 << SUB_PARAM_FIO2;
+        break;
+    default:
+        break;
+    }
+    return list;
+}
+
 /**************************************************************************************************
  * 根据布局大小自动调整字体大小。
  *************************************************************************************************/

@@ -38,9 +38,8 @@ public:
     ECGTrendWidget();
     ~ECGTrendWidget();
 
-#ifdef CONFIG_UNIT_TEST
-    friend class TestECGParam;
-#endif
+    QList<SubParamID> getShortTrendSubParams() const;
+
 protected:
     void showEvent(QShowEvent *e);
     virtual void setTextSize(void);

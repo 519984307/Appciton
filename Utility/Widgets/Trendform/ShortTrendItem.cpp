@@ -29,8 +29,8 @@ class ShortTrendItemPrivate
 {
 public:
     ShortTrendItemPrivate(const QString &name, ShortTrendItem *const q_ptr)
-        : q_ptr(q_ptr), name(name), startPos(0), duration(SHORT_TREND_DURATION_60M),
-          maxValue(100), minValue(0), scale(1), waveRegion(), waveMargin(40, 8, 2, 8), waveColor(Qt::white),
+        : q_ptr(q_ptr), name(name), bufferStartPos(0), duration(SHORT_TREND_DURATION_60M),
+          maxValue(100), minValue(0), scale(1), waveRegion(), waveMargin(28, 8, 2, 8), waveColor(Qt::white),
           updateBGFlag(true), resetPointBufFlag(true), drawTimeLabelFlag(false), isNibp(false)
     {
     }
@@ -122,7 +122,7 @@ public:
     QPixmap background;
     QList<SubParamID> subParams;
     QList<YAxisValueBufType> yAxisValueBufs;
-    int startPos;
+    int bufferStartPos;
     ShortTrendDuration duration;
     int maxValue;
     int minValue;
@@ -149,14 +149,15 @@ void ShortTrendItemPrivate::updateBackground()
     int rowNum = waveRegion.height() / perferheight;
     float rowHeight = waveRegion.height() * 1.0 / rowNum;
 
-    QPen pen(pal.color(QPalette::Window));
+    QPen pen(Qt::gray);
     pen.setStyle(Qt::DashLine);
+    p.setPen(pen);
     p.drawRect(waveRegion);
 
     // draw row
     for (int i = 1; i < rowNum; ++i)
     {
-        float height = rowHeight * i;
+        float height = waveRegion.top() + rowHeight * i;
         p.drawLine(QPointF(waveRegion.left(), height),
                    QPointF(waveRegion.right(), height));
     }
@@ -165,14 +166,14 @@ void ShortTrendItemPrivate::updateBackground()
     float columnWidth = waveRegion.width() * 1.0 / COLUMN_COUNT;
     for (int i = 1; i < COLUMN_COUNT; ++i)
     {
-        float width = columnWidth * i;
+        float width = waveRegion.left() + columnWidth * i;
         p.drawLine(QPointF(width, waveRegion.top()),
                    QPointF(width, waveRegion.bottom()));
     }
 
     p.setFont(font);
 
-    QRect textRect(0, 0, waveMargin.left(), FONT_HEIGHT);
+    QRect textRect(0, 0, waveMargin.left() - 2, FONT_HEIGHT);
     QPoint center = textRect.center();
 
     // draw the y axis label
@@ -191,7 +192,9 @@ void ShortTrendItemPrivate::updateBackground()
     {
         QStringList labels = getTimeLabels();
         Q_ASSERT(labels.length() == 3);
+        textRect.setWidth(columnWidth / 2);
         textRect.moveTo(waveRegion.bottomLeft());
+        textRect.moveTop(textRect.top() + 2); // left some space between the grid
         p.drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, labels.at(0));
         textRect.moveLeft(waveRegion.center().x() - textRect.width() / 2);
         p.drawText(textRect, Qt::AlignCenter, labels.at(1));
@@ -220,17 +223,24 @@ void ShortTrendItemPrivate::resetPointBuffer()
     TrendDataType values[SHORT_TREND_DATA_NUM];
     for (int i = 0; i < subParams.count(); ++i)
     {
-        trendDataStorageManager.getShortTrendData(subParams.at(i), values, pointNum, interval);
+        int readNum = trendDataStorageManager.getShortTrendData(subParams.at(i), values, pointNum, interval);
         if (yAxisValueBufs.at(i).size() != pointNum)
         {
             yAxisValueBufs[i].resize(pointNum);
         }
 
-        for (int j = 0; j < pointNum; ++j)
+        int invalidPointNum = pointNum - readNum;
+        for (int k = 0; k < invalidPointNum; k++)
         {
-            if (values[j] != InvData())
+            yAxisValueBufs[i][k] = 0;
+        }
+
+        for (int j = invalidPointNum; j < pointNum; ++j)
+        {
+            TrendDataType value = values[j - invalidPointNum];
+            if (value != InvData())
             {
-                float yValue = waveRegion.bottom() - (values[j] - minValue) * waveRegion.height() / (maxValue - minValue);
+                float yValue = waveRegion.bottom() - (value - minValue) * waveRegion.height() / (maxValue - minValue);
                 yAxisValueBufs[i][j] = yValue;
             }
             else
@@ -241,7 +251,7 @@ void ShortTrendItemPrivate::resetPointBuffer()
     }
 
     // reset start position
-    startPos = 0;
+    bufferStartPos = 0;
 }
 
 void ShortTrendItemPrivate::drawWave(QPainter *painter, const QRect &r)
@@ -252,6 +262,10 @@ void ShortTrendItemPrivate::drawWave(QPainter *painter, const QRect &r)
     }
 
     QRect interRect = r.intersect(waveRegion);
+    if (interRect.isNull())
+    {
+        return;
+    }
 
     int pointNum = yAxisValueBufs.at(0).size();
     float deltaX = waveRegion.width() * 1.0 / pointNum;
@@ -267,8 +281,8 @@ void ShortTrendItemPrivate::drawWave(QPainter *painter, const QRect &r)
         end = pointNum - 1;
     }
 
-    int startIndex = (startPos + start) % pointNum;
-    int endIndex  =(startPos + end) % pointNum;
+    int startIndex = (bufferStartPos + start) % pointNum;
+    int endIndex  =(bufferStartPos + end) % pointNum;
 
     for (int i = 0; i < yAxisValueBufs.count(); ++i)
     {
@@ -276,6 +290,7 @@ void ShortTrendItemPrivate::drawWave(QPainter *painter, const QRect &r)
         int index = startIndex;
         QPointF lastPoint;
         bool moveTo = true;
+        float xPos = waveRegion.left() + start * deltaX;
         while (index != endIndex)
         {
             const float &curYAxisValue = yAxisValueBufs.at(i).at(index);
@@ -286,10 +301,13 @@ void ShortTrendItemPrivate::drawWave(QPainter *painter, const QRect &r)
                     path.lineTo(lastPoint);
                     moveTo = true;
                 }
+
+                index = (index + 1) % pointNum;
+                xPos += deltaX;
                 continue;
             }
 
-            QPointF curPoint(waveRegion.left() + deltaX * index, curYAxisValue);
+            QPointF curPoint(xPos, curYAxisValue);
 
             if (moveTo)
             {
@@ -308,6 +326,7 @@ void ShortTrendItemPrivate::drawWave(QPainter *painter, const QRect &r)
             lastPoint = curPoint;
 
             index = (index + 1) % pointNum;
+            xPos += deltaX;
         }
         painter->drawPath(path);
     }
@@ -335,8 +354,8 @@ void ShortTrendItemPrivate::drawNibpMark(QPainter *painter, const QRect &r)
         end = pointNum - 1;
     }
 
-    int startIndex = (startPos + start) % pointNum;
-    int endIndex  =(startPos + end) % pointNum;
+    int startIndex = (bufferStartPos + start) % pointNum;
+    int endIndex  =(bufferStartPos + end) % pointNum;
 
     painter->save();
 
@@ -346,33 +365,34 @@ void ShortTrendItemPrivate::drawNibpMark(QPainter *painter, const QRect &r)
     int index = startIndex;
     QPainterPath path;
     int tickLen = systemManager.getScreenPixelHPitch();
+    float xPos = waveMargin.left() + start * deltaX;
     while (index != endIndex)
     {
         const float &curYAxisValue = yAxisValueBufs.at(0).at(index);
         if (curYAxisValue > 0)
         {
-            qreal x = waveMargin.left() + deltaX * index;
             qreal sys = curYAxisValue;
             qreal dia = yAxisValueBufs.at(1).at(index);
             qreal map = yAxisValueBufs.at(2).at(index);
 
             // draw nibp symbol
-            path.moveTo(x - tickLen / 2, sys - 0.866 * tickLen);
-            path.lineTo(x, sys);
-            path.lineTo(x + tickLen / 2, sys - 0.866 * tickLen);
+            path.moveTo(xPos - tickLen / 2, sys - 0.866 * tickLen);
+            path.lineTo(xPos, sys);
+            path.lineTo(xPos + tickLen / 2, sys - 0.866 * tickLen);
 
-            path.moveTo(x - tickLen / 2, dia + 0.866 * tickLen);
-            path.lineTo(x, dia);
-            path.lineTo(x + tickLen / 2, dia + 0.866 * tickLen);
+            path.moveTo(xPos - tickLen / 2, dia + 0.866 * tickLen);
+            path.lineTo(xPos, dia);
+            path.lineTo(xPos + tickLen / 2, dia + 0.866 * tickLen);
 
-            path.moveTo(x, sys);
-            path.lineTo(x, dia);
+            path.moveTo(xPos, sys);
+            path.lineTo(xPos, dia);
 
-            path.moveTo(x - tickLen / 2, map);
-            path.lineTo(x + tickLen / 2, map);
+            path.moveTo(xPos - tickLen / 2, map);
+            path.lineTo(xPos + tickLen / 2, map);
         }
 
         index = (index + 1) % pointNum;
+        xPos += deltaX;
     }
 
     if (!path.isEmpty())
@@ -386,6 +406,7 @@ void ShortTrendItemPrivate::drawNibpMark(QPainter *painter, const QRect &r)
 ShortTrendItem::ShortTrendItem(const QString &name, QWidget *parent)
     : QWidget(parent), d_ptr(new ShortTrendItemPrivate(name, this))
 {
+    setFocusPolicy(Qt::NoFocus);
 }
 
 ShortTrendItem::~ShortTrendItem()
@@ -530,18 +551,25 @@ void ShortTrendItem::onNewTrendDataArrived(ShortTrendInterval interval)
         return;
     }
 
-    if (d_ptr->getShortTrendInterval() == interval || d_ptr->subParams.count())
+    if (d_ptr->getShortTrendInterval() == interval && d_ptr->subParams.count())
     {
         for (int i = 0; i < d_ptr->subParams.count(); ++i)
         {
             TrendDataType data = trendDataStorageManager.getLatestShortTrendData(d_ptr->subParams.at(i), interval);
-            float yValue = d_ptr->waveRegion.bottom()
-                    - (data - d_ptr->minValue) * d_ptr->waveRegion.height()
-                    / (d_ptr->maxValue - d_ptr->minValue);
-            d_ptr->yAxisValueBufs[i][d_ptr->startPos] = yValue;
+            if (data != InvData())
+            {
+                float yValue = d_ptr->waveRegion.bottom()
+                        - (data - d_ptr->minValue) * d_ptr->waveRegion.height()
+                        / (d_ptr->maxValue - d_ptr->minValue);
+                d_ptr->yAxisValueBufs[i][d_ptr->bufferStartPos] = yValue;
+            }
+            else
+            {
+                d_ptr->yAxisValueBufs[i][d_ptr->bufferStartPos] = 0;
+            }
         }
 
-        d_ptr->startPos = (d_ptr->startPos + 1) % d_ptr->yAxisValueBufs.at(0).count();
+        d_ptr->bufferStartPos = (d_ptr->bufferStartPos + 1) % d_ptr->yAxisValueBufs.at(0).count();
 
         update(d_ptr->waveRegion);
     }
@@ -552,13 +580,13 @@ void ShortTrendItem::paintEvent(QPaintEvent *ev)
     if (d_ptr->resetPointBufFlag)
     {
         d_ptr->resetPointBuffer();
-        d_ptr->resetPointBufFlag = true;
+        d_ptr->resetPointBufFlag = false;
     }
 
     if (d_ptr->updateBGFlag)
     {
         d_ptr->updateBackground();
-        d_ptr->updateBGFlag = true;
+        d_ptr->updateBGFlag = false;
     }
 
     QVector<QRect> rects = ev->region().rects();
