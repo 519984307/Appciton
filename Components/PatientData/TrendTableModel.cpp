@@ -22,6 +22,7 @@
 #include "RecorderManager.h"
 #include "TrendTablePageGenerator.h"
 #include <QDebug>
+#include "AlarmConfig.h"
 
 #define COLUMN_COUNT        7
 #define MAX_ROW_COUNT       9
@@ -29,6 +30,10 @@
 #define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
 #define HEADER_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
 
+#define HIGH_PRIO_ALARM_COLOR (QColor(Qt::red))
+#define MED_PRIO_ALARM_COLOR (QColor(Qt::yellow))
+#define NORMAL_PRIO_ALARM_COLOR (QColor(Qt::white))
+#define EVENT_SELECTED_BACKGROUND_COLOR (QColor("#98BFE7"))
 class TrendTableModelPrivate
 {
 public:
@@ -137,12 +142,15 @@ QVariant TrendTableModel::data(const QModelIndex &index, int role) const
 
         QColor colorHead = d_ptr->colHeadList.at(column).dataColor;
         int curSecIndex = d_ptr->curSecIndex % COLUMN_COUNT;
-        if (curSecIndex == column && colorHead == Qt::yellow)
+        if (curSecIndex == column &&
+            (colorHead == HIGH_PRIO_ALARM_COLOR ||
+             colorHead == MED_PRIO_ALARM_COLOR))
         {
-            return QBrush(QColor("#98BFE7"));
+            return QBrush(EVENT_SELECTED_BACKGROUND_COLOR);
         }
 
-        if (color == Qt::yellow)
+        if (color == HIGH_PRIO_ALARM_COLOR ||
+            color == MED_PRIO_ALARM_COLOR)
         {
             return color;
         }
@@ -165,9 +173,12 @@ QVariant TrendTableModel::data(const QModelIndex &index, int role) const
         QColor colorHead = d_ptr->colHeadList.at(column).dataColor;
 
         int curSecIndex = d_ptr->curSecIndex % COLUMN_COUNT;
-        if (curSecIndex == column && colorHead == Qt::yellow)
+        if (curSecIndex == column &&
+            (colorHead == HIGH_PRIO_ALARM_COLOR ||
+             colorHead == MED_PRIO_ALARM_COLOR))
         {
-            if (color == Qt::yellow)
+            if (color == HIGH_PRIO_ALARM_COLOR ||
+                color == MED_PRIO_ALARM_COLOR)
             {
                 return color;
             }
@@ -243,7 +254,8 @@ QVariant TrendTableModel::headerData(int section, Qt::Orientation orientation, i
         if (orientation == Qt::Horizontal)
         {
             QColor color = d_ptr->colHeadList.at(section).dataColor;
-            if (color != Qt::yellow)
+            if (color != HIGH_PRIO_ALARM_COLOR &&
+                color != MED_PRIO_ALARM_COLOR)
             {
                 color = themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
                                              ThemeManager::StateDisabled);
@@ -487,8 +499,6 @@ void TrendTableModel::leftMoveEvent(int &curSecCol)
     {
         unsigned timeInterval = TrendDataSymbol::convertValue(d_ptr->timeInterval);
         int eventIndex = d_ptr->eventList.at(i);
-        qDebug()<< "leftMoveEvent: eventIndex" << eventIndex;
-        qDebug()<< "leftMoveEvent: d_ptr->curSecIndex" << d_ptr->curSecIndex;
         if (eventIndex < d_ptr->curSecIndex)
         {
            unsigned startTime = d_ptr->trendDataPack.first()->time;
@@ -856,7 +866,8 @@ void TrendTableModelPrivate::loadTrendData()
     QString time;
     int  interval = TrendDataSymbol::convertValue(timeInterval);
     int col = 0;
-    QList<int> indexList;
+    QMap<int, AlarmPriority> indexMap;
+
     dataIndex();
     if (startIndex != InvData() && endIndex != InvData())
     {
@@ -874,10 +885,22 @@ void TrendTableModelPrivate::loadTrendData()
             pack = trendDataPack.at(i);
             unsigned t = pack->time;
 
-            // 判断是否有事件报警触发
+            // 判断每个固定的时间间隔点是否有报警事件发生
+            // 并获取报警事件的优先级
             if (pack->alarmFlag)
             {
-                indexList.append(col);
+                AlarmPriority alarmPriority = ALARM_PRIO_PROMPT;
+                int count = displayList.count();
+                for (int i = count - 1; i < count; i--)
+                {
+                    bool isAlarm = pack->subparamAlarm.value(displayList.at(i), false);
+                    alarmPriority = alarmConfig.getLimitAlarmPriority(displayList.at(i));
+                    if (isAlarm)
+                    {
+                        break;
+                    }
+                }
+                indexMap.insert(col, alarmPriority);
             }
 
             if (t != lastTime)
@@ -940,14 +963,25 @@ void TrendTableModelPrivate::loadTrendData()
                 }
 
                 bool isAlarm = pack->subparamAlarm.value(displayList.at(j), false);
+                AlarmPriority alarmPriority = alarmConfig.getLimitAlarmPriority(displayList.at(j));
+                QColor color;
+
                 if (isAlarm)
                 {
-                    dataContent.dataColor = Qt::yellow;
+                    if (alarmPriority == ALARM_PRIO_HIGH)
+                    {
+                        color = HIGH_PRIO_ALARM_COLOR;
+                    }
+                    else
+                    {
+                        color = MED_PRIO_ALARM_COLOR;
+                    }
                 }
                 else
                 {
-                    dataContent.dataColor = Qt::white;
+                    color = NORMAL_PRIO_ALARM_COLOR;
                 }
+                dataContent.dataColor = color;
                 colList.append(dataContent);
             }
             tableDataList.append(colList);
@@ -971,21 +1005,34 @@ void TrendTableModelPrivate::loadTrendData()
 //        }
 //    }
 
-    for (int i = 0; i < indexList.count(); i ++)
+    // 趋势表头添加背景色
+    for (QMap<int, AlarmPriority>::const_iterator it = indexMap.begin();
+         it != indexMap.end(); ++it)
     {
-        if (colHeadList.isEmpty())
-        {
-            return;
-        }
-        // 列头不为空时才显示报警标识
-        int col = indexList.value(i, 0);
+        int col = it.key();
         if (colHeadList.count() < col + 1)
         {
             continue;
         }
+        AlarmPriority alarmPrio = it.value();
+        QColor color;
+        switch (alarmPrio)
+        {
+            case ALARM_PRIO_HIGH:
+            color = HIGH_PRIO_ALARM_COLOR;
+            break;
+            case ALARM_PRIO_MED:
+            case ALARM_PRIO_LOW:
+            color = MED_PRIO_ALARM_COLOR;
+            break;
+            case ALARM_PRIO_PROMPT:
+            color = NORMAL_PRIO_ALARM_COLOR;
+            break;
+        }
+
         if (colHeadList.at(col).dataStr != "")
         {
-            colHeadList[col].dataColor = Qt::yellow;
+            colHeadList[col].dataColor = color;
         }
     }
 }
