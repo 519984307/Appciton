@@ -99,7 +99,7 @@ public:
     /**
      * @brief resetBackground 刷新背景
      */
-    void updatePalette(QPalette pal);
+    void updatePalette(const QPalette &pal);
 
 protected:
     // 重绘事件。

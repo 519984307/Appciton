@@ -64,6 +64,12 @@ public:
     explicit Param(ParamID id);
     virtual ~Param();
 
+private slots:
+    virtual void onPaletteChanged(ParamID id)
+    {
+        Q_UNUSED(id)
+    }
+
 private:
     ParamID _paramID;
     QString _paramName;

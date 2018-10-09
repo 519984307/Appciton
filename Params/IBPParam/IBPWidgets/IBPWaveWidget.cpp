@@ -165,7 +165,7 @@ IBPWaveWidget::~IBPWaveWidget()
 {
 }
 
-void IBPWaveWidget::updatePalette(QPalette pal)
+void IBPWaveWidget::updatePalette(const QPalette &pal)
 {
     _ruler->setPalette(pal);
     setPalette(pal);

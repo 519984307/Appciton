@@ -65,7 +65,7 @@ public:
     // 显示参数值
     void showValue(void);
 
-    virtual void updatePalette(const QPalette pal);
+    virtual void updatePalette(const QPalette &pal);
 
     NIBPDataTrendWidget();
     ~NIBPDataTrendWidget();

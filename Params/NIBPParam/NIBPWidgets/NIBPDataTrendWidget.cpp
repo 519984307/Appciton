@@ -300,7 +300,7 @@ void NIBPDataTrendWidget::setTextSize()
     _tableItemHeight = fontManager.textHeightInPixels(font);
 }
 
-void NIBPDataTrendWidget::updatePalette(const QPalette pal)
+void NIBPDataTrendWidget::updatePalette(const QPalette &pal)
 {
     setPalette(pal);
     // 刷新背景
@@ -324,8 +324,9 @@ void NIBPDataTrendWidget::updatePalette(const QPalette pal)
  *************************************************************************************************/
 NIBPDataTrendWidget::NIBPDataTrendWidget()
     : TrendWidget("NIBPDataTrendWidget"),
-      _isAlarm(false),
       _hrString(InvStr()),
+      _isAlarm(false),
+      _rowNR(0),
       _tableItemHeight(20)
 {
     _nibpNrendCacheMap.clear();

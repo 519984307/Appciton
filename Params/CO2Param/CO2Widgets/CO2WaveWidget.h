@@ -35,7 +35,7 @@ public:
      * @brief resetBackground 刷新背景
      * @param pal
      */
-    void updatePalette(QPalette pal);
+    void updatePalette(const QPalette &pal);
 
     // 构造与析构。
     CO2WaveWidget(const QString &waveName, const QString &title);

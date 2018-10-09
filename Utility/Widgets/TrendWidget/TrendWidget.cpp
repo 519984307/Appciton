@@ -169,7 +169,7 @@ void TrendWidget::updateAlarm(bool alarmFlag)
     Q_UNUSED(alarmFlag)
 }
 
-void TrendWidget::updatePalette(const QPalette pal)
+void TrendWidget::updatePalette(const QPalette &pal)
 {
     setPalette(pal);
 }

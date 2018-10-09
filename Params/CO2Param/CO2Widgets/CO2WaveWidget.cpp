@@ -124,7 +124,7 @@ void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
     //    _zoom->setText(str);
 }
 
-void CO2WaveWidget::updatePalette(QPalette pal)
+void CO2WaveWidget::updatePalette(const QPalette &pal)
 {
     _ruler->setPalette(pal);
     setPalette(pal);

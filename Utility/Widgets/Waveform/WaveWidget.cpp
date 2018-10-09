@@ -475,7 +475,7 @@ void WaveWidget::updateBackground()
     update();
 }
 
-void WaveWidget::updatePalette(const QPalette pal)
+void WaveWidget::updatePalette(const QPalette &pal)
 {
     setPalette(pal);
     updateBackground();

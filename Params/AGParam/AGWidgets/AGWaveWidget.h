@@ -36,7 +36,7 @@ public:
     /**
      * @brief resetBackground reset background
      */
-    void updatePalette(QPalette pal);
+    void updatePalette(const QPalette &pal);
 
     // 构造与析构。
     AGWaveWidget(WaveformID id, const QString &waveName, const AGTypeGas gasType);
