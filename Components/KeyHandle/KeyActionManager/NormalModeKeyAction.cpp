@@ -57,9 +57,11 @@ void NormalModeKeyAction::keyF1Pressed(bool multiBtnPress)
     {
         return;
     }
-
-    // menu
-    // handle event when release
+    // nibp
+    if (systemManager.isSupport(CONFIG_NIBP))
+    {
+        nibpParam.keyPressed();
+    }
 }
 
 void NormalModeKeyAction::keyF2Pressed(bool multiBtnPress)
@@ -106,11 +108,9 @@ void NormalModeKeyAction::keyF4Pressed(bool multiBtnPress)
     {
         return;
     }
-    // nibp
-    if (systemManager.isSupport(CONFIG_NIBP))
-    {
-        nibpParam.keyPressed();
-    }
+
+    // menu
+    // handle event when release
 }
 
 void NormalModeKeyAction::keyF5Pressed(bool multiBtnPress)
@@ -134,6 +134,39 @@ void NormalModeKeyAction::keyF6Pressed(bool multiBtnPress)
 }
 
 void NormalModeKeyAction::keyF1Released(bool multiBtnPress)
+{
+    if (multiBtnPress)
+    {
+        return;
+    }
+
+    if (systemManager.isSupport(CONFIG_NIBP))
+    {
+        nibpParam.keyReleased();
+    }
+}
+
+void NormalModeKeyAction::keyF2Released(bool multiBtnPress)
+{
+
+    if (multiBtnPress)
+    {
+        return;
+    }
+
+    // TODO: freeze
+}
+
+void NormalModeKeyAction::keyF3Released(bool multiBtnPress)
+{
+    if (multiBtnPress)
+    {
+        return;
+    }
+    // print button release
+}
+
+void NormalModeKeyAction::keyF4Released(bool multiBtnPress)
 {
     if (multiBtnPress)
     {
@@ -167,39 +200,6 @@ void NormalModeKeyAction::keyF1Released(bool multiBtnPress)
             QApplication::activeModalWidget()->close();
         }
         QTimer::singleShot(0, &windowManager, SLOT(closeAllWidows()));
-    }
-}
-
-void NormalModeKeyAction::keyF2Released(bool multiBtnPress)
-{
-
-    if (multiBtnPress)
-    {
-        return;
-    }
-
-    // TODO: freeze
-}
-
-void NormalModeKeyAction::keyF3Released(bool multiBtnPress)
-{
-    if (multiBtnPress)
-    {
-        return;
-    }
-    // print button release
-}
-
-void NormalModeKeyAction::keyF4Released(bool multiBtnPress)
-{
-    if (multiBtnPress)
-    {
-        return;
-    }
-
-    if (systemManager.isSupport(CONFIG_NIBP))
-    {
-        nibpParam.keyReleased();
     }
 }
 
