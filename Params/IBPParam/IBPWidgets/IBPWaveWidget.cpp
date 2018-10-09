@@ -152,7 +152,7 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPr
     _leadSta->setFocusPolicy(Qt::NoFocus);
     addItem(_leadSta);
 
-    setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
+    setMargin(QMargins(WAVE_X_OFFSET, 0, 0, 0));
 
     // 加载配置
 //    _loadConfig();
@@ -176,9 +176,9 @@ void IBPWaveWidget::resizeEvent(QResizeEvent *e)
     _leadSta->move((width() - _leadSta->width()) / 2,
                   qmargins().top() + (height() - qmargins().top()) / 2 - _leadSta->height() - 1);
 
-    _ruler->resize(qmargins().left(), qmargins().top(),
-                   width() - qmargins().left() - qmargins().right(),
-                   height() - qmargins().top() - qmargins().bottom());
+    _ruler->resize(RULER_X_OFFSET, 0,
+                   width() - RULER_X_OFFSET,
+                   height());
 }
 
 void IBPWaveWidget::showEvent(QShowEvent *e)
