@@ -165,24 +165,6 @@ void NIBPDataTrendWidget::showValue(void)
     QString prStr;
     UnitType defUnitType;
     UnitType unit;
-    // 刷新背景
-    if (refreshBackgroundFlag)
-    {
-        QColor color = colorManager.getColor(paramInfo.getParamName(PARAM_NIBP));
-        QString headStyle = QString("QHeaderView::section{color:rgb(%1,%2,%3);"
-                                    "border:0px solid black;"
-                                    "background-color:black;}")
-                        .arg(color.red()).arg(color.green()).arg(color.blue());
-        _table->horizontalHeader()->setStyleSheet(headStyle);
-        for (int i = 0; i< _rowNR; i++)
-        {
-            for (int j = 0; j< COLUMN_COUNT; j++)
-            {
-                _table->item(i, j)->setTextColor(color);
-            }
-        }
-        refreshBackgroundFlag = false;
-    }
 
     for (int i = 0; i < _rowNR; i++)
     {
@@ -316,6 +298,25 @@ void NIBPDataTrendWidget::setTextSize()
     _table->setFont(font);
 
     _tableItemHeight = fontManager.textHeightInPixels(font);
+}
+
+void NIBPDataTrendWidget::updatePalette(const QPalette pal)
+{
+    setPalette(pal);
+    // 刷新背景
+    QColor color = colorManager.getColor(paramInfo.getParamName(PARAM_NIBP));
+    QString headStyle = QString("QHeaderView::section{color:rgb(%1,%2,%3);"
+                                "border:0px solid black;"
+                                "background-color:black;}")
+                        .arg(color.red()).arg(color.green()).arg(color.blue());
+    _table->horizontalHeader()->setStyleSheet(headStyle);
+    for (int i = 0; i< _rowNR; i++)
+    {
+        for (int j = 0; j< COLUMN_COUNT; j++)
+        {
+            _table->item(i, j)->setTextColor(color);
+        }
+    }
 }
 
 /**************************************************************************************************

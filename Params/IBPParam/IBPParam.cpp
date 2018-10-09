@@ -27,17 +27,10 @@ IBPParam *IBPParam::_selfObj = NULL;
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-IBPParam::IBPParam() : Param(PARAM_IBP), _staIBP1(true), _staIBP2(true),
-    _connectedProvider(false)
+IBPParam::IBPParam() : Param(PARAM_IBP),  _provider(NULL), _waveWidgetIBP1(NULL),
+    _waveWidgetIBP2(NULL), _trendWidgetIBP1(NULL), _trendWidgetIBP2(NULL),
+    _staIBP1(true), _staIBP2(true), _connectedProvider(false)
 {
-
-    _provider = NULL;
-    _waveWidgetIBP1 = NULL;
-    _waveWidgetIBP2 = NULL;
-
-    _trendWidgetIBP1 = NULL;
-    _trendWidgetIBP2 = NULL;
-
     _ibp1.pressureName = IBP_PRESSURE_ART;
     _ibp2.pressureName = IBP_PRESSURE_PA;
 
@@ -57,7 +50,8 @@ IBPParam::IBPParam() : Param(PARAM_IBP), _staIBP1(true), _staIBP2(true),
     IBPScaleInfo autoScale;
     autoScale.isAuto = true;
     ibpScaleList.append(autoScale);
-    connect(&colorManager, SIGNAL(ibpPaletteChanged()), this, SLOT(onPaletteChanged()));
+    connect(&colorManager, SIGNAL(paletteChanged(ParamID)),
+            this, SLOT(onPaletteChanged(ParamID)));
 }
 
 /**************************************************************************************************
@@ -1509,15 +1503,15 @@ WaveformID IBPParam::getWaveformID(IBPPressureName name)
     return waveID;
 }
 
-void IBPParam::onPaletteChanged()
+void IBPParam::onPaletteChanged(ParamID id)
 {
+    if (id != PARAM_IBP)
+    {
+        return;
+    }
     QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
-    _waveWidgetIBP1->setPalette(pal);
-    _waveWidgetIBP1->resetBackground(pal);
-    _waveWidgetIBP2->setPalette(pal);
-    _waveWidgetIBP2->resetBackground(pal);
-    _trendWidgetIBP1->setPalette(pal);
-    _trendWidgetIBP2->setPalette(pal);
-    _trendWidgetIBP1->setBackground(true);
-    _trendWidgetIBP2->setBackground(true);
+    _waveWidgetIBP1->updatePalette(pal);
+    _waveWidgetIBP2->updatePalette(pal);
+    _trendWidgetIBP1->updatePalette(pal);
+    _trendWidgetIBP2->updatePalette(pal);
 }

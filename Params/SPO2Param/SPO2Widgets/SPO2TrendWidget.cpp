@@ -94,12 +94,10 @@ void SPO2TrendWidget::showValue(void)
         showAlarmStatus(_spo2Bar, psrc);
         showAlarmStatus(_spo2Value, psrc);
     }
-    else if (refreshBackgroundFlag)
+    else
     {
-        setPalette(psrc);
         showNormalStatus(_spo2Bar, psrc);
         showNormalStatus(_spo2Value, psrc);
-        refreshBackgroundFlag = false;
     }
 
     _spo2Value->setText(_spo2String);

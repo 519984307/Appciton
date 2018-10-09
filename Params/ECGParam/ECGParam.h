@@ -329,7 +329,7 @@ private slots:
     /**
      * @brief onPaletteChanged change palette
      */
-    void onPaletteChanged();
+    void onPaletteChanged(ParamID id);
 private:
     // 构造。
     ECGParam();

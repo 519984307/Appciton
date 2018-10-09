@@ -42,10 +42,10 @@ public:
     }
 
     /**
-     * @brief setBackground 刷新背景
-     * @param flag true:刷新 　false:不刷新
+     * @brief updateBackground 更新背景
+     * @param pal
      */
-    void setBackground(bool flag);
+    virtual void updatePalette(const QPalette pal);
 
 protected:
     void setName(const QString &name);
@@ -74,8 +74,6 @@ protected:
     QLabel *unitLabel;
 
     QString _title;                           // 趋势控制标名
-
-    bool refreshBackgroundFlag;    // 刷新背景标志
 
     QPalette normalPalette(QPalette psrc);
     QPalette alarmPalette(QPalette psrc, bool isSetName = true);   // isSetName: 是否设置标题颜色

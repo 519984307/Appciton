@@ -96,7 +96,7 @@ public:
     void setECGTrendWidgetCalcName(ECGLead calLead);
 
 private slots:
-    void onPaletteChanged();
+    void onPaletteChanged(ParamID id);
 
 private:
     // 构造。

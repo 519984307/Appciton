@@ -165,10 +165,11 @@ IBPWaveWidget::~IBPWaveWidget()
 {
 }
 
-void IBPWaveWidget::resetBackground(QPalette pal)
+void IBPWaveWidget::updatePalette(QPalette pal)
 {
     _ruler->setPalette(pal);
-    _ruler->setBackground(true);
+    setPalette(pal);
+    updateBackground();
 }
 
 /**************************************************************************************************

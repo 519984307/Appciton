@@ -116,7 +116,7 @@ private slots:
     /**
      * @brief onPaletteChanged change palette
      */
-    void onPaletteChanged();
+    void onPaletteChanged(ParamID id);
 
 private:
     AGParam();

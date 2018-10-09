@@ -37,12 +37,12 @@ public:
               provider(NULL),
               trendWidget(NULL),
               waveWidget(NULL),
-              etco2Value(0),
-              fico2Value(0),
+              etco2Value(InvData()),
+              fico2Value(InvData()),
               etco2MaxVal(0),
               etco2MinVal(0),
-              brVaule(0),
-              baro(0),
+              brVaule(InvData()),
+              baro(750),
               connectedProvider(false),
               co2Switch(false),
               curUnit(UNIT_NONE),
@@ -834,13 +834,15 @@ short CO2Param::getEtCO2MinValue()
     return d_ptr->etco2MinVal;
 }
 
-void CO2Param::onPaletteChanged()
+void CO2Param::onPaletteChanged(ParamID id)
 {
+    if (id != PARAM_CO2)
+    {
+        return;
+    }
     QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
-    d_ptr->trendWidget->setPalette(pal);
-    d_ptr->trendWidget->setBackground(true);
-    d_ptr->waveWidget->setPalette(pal);
-    d_ptr->waveWidget->resetBackground(pal);
+    d_ptr->trendWidget->updatePalette(pal);
+    d_ptr->waveWidget->updatePalette(pal);
 }
 
 /**************************************************************************************************
@@ -850,18 +852,6 @@ CO2Param::CO2Param()
         : Param(PARAM_CO2),
           d_ptr(new CO2ParamPrivate(this))
 {
-//    disable();
-    d_ptr->provider = NULL;
-    d_ptr->trendWidget = NULL;
-    d_ptr->waveWidget = NULL;
-
-    d_ptr->etco2Value = InvData();
-    d_ptr->fico2Value = InvData();
-    d_ptr->brVaule = InvData();
-    d_ptr->baro = 750;
-    d_ptr->connectedProvider = false;
-    d_ptr->co2Switch = false;
-
     int t = UNIT_PERCENT;
     currentConfig.getNumValue("Local|CO2Unit", t);
     d_ptr->curUnit = (UnitType)t;
@@ -887,7 +877,8 @@ CO2Param::CO2Param()
     QString highPath = path + "High";
     currentConfig.getNumAttr(lowPath, "Min", d_ptr->etco2MinVal);
     currentConfig.getNumAttr(highPath, "Max", d_ptr->etco2MaxVal);
-    connect(&colorManager, SIGNAL(co2PaletteChanged()), this, SLOT(onPaletteChanged()));
+    connect(&colorManager, SIGNAL(paletteChanged(ParamID)),
+            this, SLOT(onPaletteChanged(ParamID)));
 }
 
 /**************************************************************************************************

@@ -302,11 +302,14 @@ void ECGDupParam::setECGTrendWidgetCalcName(ECGLead calLead)
     _trendWidget->setTrendWidgetCalcName(calLead);
 }
 
-void ECGDupParam::onPaletteChanged()
+void ECGDupParam::onPaletteChanged(ParamID id)
 {
+    if (id != PARAM_ECG)
+    {
+        return;
+    }
     QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-    _trendWidget->setPalette(pal);
-    _trendWidget->setBackground(true);
+    _trendWidget->updatePalette(pal);
 }
 
 /**************************************************************************************************
@@ -321,7 +324,8 @@ ECGDupParam::ECGDupParam()
       _hrBeatFlag(true),
       _isAlarm(false)
 {
-    connect(&colorManager, SIGNAL(ecgPaletteChanged()), this, SLOT(onPaletteChanged()));
+    connect(&colorManager, SIGNAL(paletteChanged(ParamID)),
+            this, SLOT(onPaletteChanged(ParamID)));
 }
 
 /**************************************************************************************************

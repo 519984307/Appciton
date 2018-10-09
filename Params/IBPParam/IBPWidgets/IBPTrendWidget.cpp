@@ -189,15 +189,13 @@ void IBPTrendWidget::showValue()
             showNormalStatus(_veinValue, psrc);
         }
     }
-    else if (refreshBackgroundFlag)
+    else
     {
-        setPalette(psrc);
         showNormalStatus(_sysValue, psrc);
         showNormalStatus(_diaValue, psrc);
         showNormalStatus(_mapValue, psrc);
         showNormalStatus(_veinValue, psrc);
         showNormalStatus(_ibpValue, psrc);
-        refreshBackgroundFlag = false;
     }
 }
 

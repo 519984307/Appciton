@@ -133,7 +133,7 @@ public:
     void enableRespCalc(bool enable);
 
 private slots:
-    void onPaletteChanged();
+    void onPaletteChanged(ParamID id);
 
 private:
     RESPParam();

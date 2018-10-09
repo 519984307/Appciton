@@ -475,6 +475,12 @@ void WaveWidget::updateBackground()
     update();
 }
 
+void WaveWidget::updatePalette(const QPalette pal)
+{
+    setPalette(pal);
+    updateBackground();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // 说明:
 // 调整波形缓存, 确保可以存放足够控件显示的波形数据

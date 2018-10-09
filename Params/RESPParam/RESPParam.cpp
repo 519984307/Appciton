@@ -496,8 +496,12 @@ void RESPParam::enableRespCalc(bool enable)
     }
 }
 
-void RESPParam::onPaletteChanged()
+void RESPParam::onPaletteChanged(ParamID id)
 {
+    if (id != PARAM_RESP)
+    {
+        return;
+    }
     QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
     d_ptr->waveWidget->setPalette(pal);
 }
@@ -508,13 +512,11 @@ void RESPParam::onPaletteChanged()
 RESPParam::RESPParam() : Param(PARAM_RESP),
                          d_ptr(new RESPParamPrivate)
 {
-//    disable();
-    d_ptr->provider = NULL;
-    d_ptr->waveWidget = NULL;
     int enable = 1;
     currentConfig.getNumValue("RESP|AutoActivation", enable);
     d_ptr->respMonitoring = enable;
-    connect(&colorManager, SIGNAL(respPaletteChanged()), this, SLOT(onPaletteChanged()));
+    connect(&colorManager, SIGNAL(paletteChanged(ParamID)),
+            this, SLOT(onPaletteChanged(ParamID)));
 }
 
 /**************************************************************************************************

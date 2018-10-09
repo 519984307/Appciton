@@ -169,9 +169,9 @@ void TrendWidget::updateAlarm(bool alarmFlag)
     Q_UNUSED(alarmFlag)
 }
 
-void TrendWidget::setBackground(bool flag)
+void TrendWidget::updatePalette(const QPalette pal)
 {
-    refreshBackgroundFlag = flag;
+    setPalette(pal);
 }
 
 /**************************************************************************************************
@@ -240,8 +240,7 @@ void TrendWidget::setUnitFont(int size, bool isBold)
  * 构造。
  *************************************************************************************************/
 TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
-    : IWidget(widgetName),
-      refreshBackgroundFlag(true)
+    : IWidget(widgetName)
 {
     _title = "";
     nameLabel = new TrendWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);

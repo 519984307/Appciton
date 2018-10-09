@@ -301,27 +301,26 @@ UnitType TEMPParam::getUnit(void)
     return (UnitType)u;
 }
 
-void TEMPParam::onPaletteChanged()
+void TEMPParam::onPaletteChanged(ParamID id)
 {
+    if (id != PARAM_TEMP)
+    {
+        return;
+    }
     QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
-    _trendWidget->setPalette(pal);
-    _trendWidget->setBackground(true);
+    _trendWidget->updatePalette(pal);
 }
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-TEMPParam::TEMPParam() : Param(PARAM_TEMP)
+TEMPParam::TEMPParam() : Param(PARAM_TEMP),
+    _provider(NULL), _trendWidget(NULL),
+    _t1Value(InvData()), _t2Value(InvData()),
+    _tdValue(InvData()), _isTEMPDisable(false)
 {
-    _provider = NULL;
-    _trendWidget = NULL;
-
-    _t1Value = InvData();
-    _t2Value = InvData();
-    _tdValue = InvData();
-
-    _isTEMPDisable = false;
-    connect(&colorManager, SIGNAL(tempPaletteChanged()), this, SLOT(onPaletteChanged()));
+    connect(&colorManager, SIGNAL(paletteChanged(ParamID)),
+            this, SLOT(onPaletteChanged(ParamID)));
 }
 
 /**************************************************************************************************

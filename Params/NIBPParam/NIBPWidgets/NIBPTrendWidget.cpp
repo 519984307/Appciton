@@ -245,9 +245,8 @@ void NIBPTrendWidget::showValue(void)
             showNormalStatus(_mapValue, psrc);
         }
     }
-    else if (refreshBackgroundFlag)
+    else
     {
-        setPalette(psrc);
         showNormalStatus(_sysValue, psrc);
         showNormalStatus(_diaValue, psrc);
         showNormalStatus(_mapValue, psrc);
@@ -256,7 +255,6 @@ void NIBPTrendWidget::showValue(void)
         showNormalStatus(_lastMeasureCount, psrc);
         showNormalStatus(_model, psrc);
         showNormalStatus(_message, psrc);
-        refreshBackgroundFlag = false;
     }
     _sysValue->setText(_sysString);
     _diaValue->setText(_diaString);

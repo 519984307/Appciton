@@ -56,6 +56,12 @@ public:
     void updateBuffer();
     void updateBackground();
 
+    /**
+     * @brief updatePalette 更新调色板
+     * @param pal
+     */
+    virtual void updatePalette(const QPalette pal);
+
     bool isFocus();
     void getSubFocusWidget(QList<QWidget *> &subWidget) const;
 

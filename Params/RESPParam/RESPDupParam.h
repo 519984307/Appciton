@@ -110,7 +110,7 @@ public:
     bool isAutoBrSourceEnabled() const;
 
 private slots:
-    void onPaletteChanged();
+    void onPaletteChanged(ParamID id);
 
 private:
     // 构造。

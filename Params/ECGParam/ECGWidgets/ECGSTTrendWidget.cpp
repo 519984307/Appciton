@@ -88,15 +88,13 @@ void ECGSTTrendWidget::showValue(void)
             }
         }
     }
-    else if (refreshBackgroundFlag)
+    else
     {
-        setPalette(psrc);
         for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
         {
             showNormalStatus(_stLabel[i], psrc);
             showNormalStatus(_stValue[i], psrc);
         }
-        refreshBackgroundFlag = false;
     }
     for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
     {

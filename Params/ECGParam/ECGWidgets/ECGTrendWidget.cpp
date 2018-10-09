@@ -120,11 +120,9 @@ void ECGTrendWidget::showValue(void)
     {
         showAlarmStatus(_hrValue, psrc);
     }
-    else if (refreshBackgroundFlag)
+    else
     {
-        setPalette(psrc);
         showNormalStatus(_hrValue, psrc);
-        refreshBackgroundFlag = false;
     }
 
     _hrValue->setText(_hrString);

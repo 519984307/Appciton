@@ -67,11 +67,9 @@ void ECGPVCSTrendWidget::showValue(void)
     {
         showAlarmStatus(_pvcsValue, psrc);
     }
-    else if (refreshBackgroundFlag)
+    else
     {
-        setPalette(psrc);
         showNormalStatus(_pvcsValue, psrc);
-        refreshBackgroundFlag = false;
     }
 
     _pvcsValue->setText(_pvcsString);

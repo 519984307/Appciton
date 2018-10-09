@@ -82,11 +82,9 @@ void RESPTrendWidget::showValue(void)
     {
         showAlarmStatus(_rrValue, fgColor);
     }
-    else if (refreshBackgroundFlag)
+    else
     {
-        setPalette(psrc);
         showNormalStatus(_rrValue, fgColor);
-        refreshBackgroundFlag = false;
     }
 
     _rrValue->setText(_rrString);

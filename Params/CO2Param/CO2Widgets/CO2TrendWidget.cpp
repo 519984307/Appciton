@@ -165,13 +165,11 @@ void CO2TrendWidget::showValue()
             showNormalStatus(_fico2Label, fgColor);
         }
     }
-    else if (refreshBackgroundFlag)
+    else
     {
-        setPalette(fgColor);
         showNormalStatus(_etco2Value, fgColor);
         showNormalStatus(_fico2Value, fgColor);
         showNormalStatus(_fico2Label, fgColor);
-        refreshBackgroundFlag = false;
     }
 
     _etco2Value->setText(_etco2Str);

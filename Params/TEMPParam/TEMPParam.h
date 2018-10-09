@@ -103,7 +103,7 @@ public:
     UnitType getUnit(void);
 
 private slots:
-    void onPaletteChanged();
+    void onPaletteChanged(ParamID id);
 
 private:
     TEMPParam();

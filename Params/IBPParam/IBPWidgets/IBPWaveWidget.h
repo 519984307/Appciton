@@ -45,7 +45,7 @@ public:
      * @brief resetBackground 刷新背景
      * @param pal
      */
-    void resetBackground(QPalette pal);
+    void updatePalette(QPalette pal);
 
 protected:
     // 窗体大小调整事件

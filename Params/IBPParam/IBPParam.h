@@ -149,7 +149,7 @@ public:
     WaveformID getWaveformID(IBPPressureName name);
 
 private slots:
-    void onPaletteChanged();
+    void onPaletteChanged(ParamID id);
 
 private:
     IBPParam();

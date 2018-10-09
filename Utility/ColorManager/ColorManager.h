@@ -48,14 +48,7 @@ public:
     ~ColorManager();
 
 signals:
-    void ecgPaletteChanged();
-    void agPaletteChanged();
-    void spo2PaletteChanged();
-    void nibpPaletteChanged();
-    void co2PaletteChanged();
-    void respPaletteChanged();
-    void tempPaletteChanged();
-    void ibpPaletteChanged();
+    void paletteChanged(ParamID id);
 
 private:
     ColorManager();

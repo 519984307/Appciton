@@ -156,7 +156,7 @@ public:
 
 private slots:
     void checkSelftest();
-    void onPaletteChanged();
+    void onPaletteChanged(ParamID id);
 
 private:
     SPO2Param();

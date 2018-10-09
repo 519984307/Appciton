@@ -92,28 +92,28 @@ void ColorManager::updateColorPalatte(QList<ParamID> idList)
     {
         switch (*iter) {
         case PARAM_ECG:
-            emit ecgPaletteChanged();
+            emit paletteChanged(PARAM_ECG);
             break;
         case PARAM_AG:
-            emit agPaletteChanged();
+            emit paletteChanged(PARAM_AG);
             break;
         case PARAM_SPO2:
-            emit spo2PaletteChanged();
+            emit paletteChanged(PARAM_SPO2);
             break;
         case PARAM_NIBP:
-            emit nibpPaletteChanged();
+            emit paletteChanged(PARAM_NIBP);
             break;
         case PARAM_CO2:
-            emit co2PaletteChanged();
+            emit paletteChanged(PARAM_CO2);
             break;
         case PARAM_RESP:
-            emit respPaletteChanged();
+            emit paletteChanged(PARAM_RESP);
             break;
         case PARAM_TEMP:
-            emit tempPaletteChanged();
+            emit paletteChanged(PARAM_TEMP);
             break;
         case PARAM_IBP:
-            emit ibpPaletteChanged();
+            emit paletteChanged(PARAM_IBP);
             break;
         default:
             break;

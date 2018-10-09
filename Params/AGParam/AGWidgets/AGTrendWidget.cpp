@@ -143,13 +143,11 @@ void AGTrendWidget::showValue()
             showNormalStatus(_fiValue, psrc);
         }
     }
-    else if (refreshBackgroundFlag)
+    else
     {
-        setPalette(psrc);
         showNormalStatus(_etValue, psrc);
         showNormalStatus(_fiName, psrc);
         showNormalStatus(_fiValue, psrc);
-        refreshBackgroundFlag = false;
     }
 
     _etValue->setText(_etStr);
