@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/10/9
+ **/
+
 #include "ShortTrendManager.h"
 #include "ShortTrendWidgetLabel.h"
 #include <QHBoxLayout>
@@ -14,9 +24,8 @@ ShortTrendManager *ShortTrendManager::_selfObj = NULL;
 /**************************************************************************************************
  * 构造函数。
  *************************************************************************************************/
-ShortTrendManager::ShortTrendManager() : IWidget("ShortTrendManager")
+ShortTrendManager::ShortTrendManager() : IWidget("ShortTrendManager"), _shortTrend(SHORT_TREND_NR)
 {
-    _shortTrend = SHORT_TREND_NR;
     setFocusPolicy(Qt::NoFocus);
 //    setValueRange(64, 192);
 
@@ -53,7 +62,7 @@ ShortTrendManager::~ShortTrendManager()
 
     // 清除窗体
     QList<ShortTrendWidget *> winList = _shortTrendItems.values();
-    foreach (IWidget *w, winList)
+    foreach(IWidget *w, winList)
     {
         if (w)
         {
@@ -101,10 +110,10 @@ void ShortTrendManager::_addItem(void)
     }
 }
 
-void ShortTrendManager::getSubFocusWidget(QList<QWidget*> &subWidget) const
+void ShortTrendManager::getSubFocusWidget(QList<QWidget *> &subWidget) const
 {
     subWidget.clear();
-    QList<QWidget*> widgetItem;
+    QList<QWidget *> widgetItem;
 //    widgetItem.clear();
 //    _shortTrendWidget0->getFocusWidgetItem(widgetItem);
 //    subWidget += widgetItem;
@@ -123,13 +132,13 @@ void ShortTrendManager::getSubFocusWidget(QList<QWidget*> &subWidget) const
 
     for (int i = count - 1; i >= 0; --i)
     {
-        QWidget *widget = (QWidget *)_labelItems.at(i);
+        QWidget *widget = static_cast<QWidget *>(_labelItems.at(i));
         if (NULL != widget && (Qt::NoFocus != _labelItems.at(i)->focusPolicy()))
         {
             subWidget.append(widget);
         }
         if (NULL != _labelItems.at(i))
-            {
+        {
             widgetItem.clear();
             _labelItems.at(i)->getFocusWidgetItem(widgetItem);
             subWidget += widgetItem;
@@ -318,7 +327,7 @@ int ShortTrendManager::getTrendNR(const QString &trendform)
  *      order:设置焦点顺序
  **************************************************************************************************/
 void ShortTrendManager::replaceTrendform(const QString &oldTrendform,
-                                            const QString &newTrendform, bool setFocus, bool /*order*/)
+        const QString &newTrendform, bool setFocus, bool /*order*/)
 {
     _setCurrentshortTrendWidget(oldTrendform);
 
@@ -364,8 +373,6 @@ void ShortTrendManager::replaceTrendform(const QString &oldTrendform,
     {
         _focusTrendformWidget();
     }
-
-    windowManager.setFocusOrder();
 }
 
 /***************************************************************************************************
@@ -375,7 +382,7 @@ void ShortTrendManager::replaceTrendform(const QString &oldTrendform,
  *      insertedTrendform 插入的波形。
  **************************************************************************************************/
 void ShortTrendManager::insertTrendform(const QString &frontTrendform,
-                                           const QString &insertedTrendform, bool setFocus, bool /*order*/)
+                                        const QString &insertedTrendform, bool setFocus, bool /*order*/)
 {
     _setCurrentshortTrendWidget(frontTrendform);
 
@@ -389,7 +396,7 @@ void ShortTrendManager::insertTrendform(const QString &frontTrendform,
 
     int i = 0;
     int size = currentTrend.size();
-    for (;i < size; i++)
+    for (; i < size; i++)
     {
         if (currentTrend[i] == frontTrendform)
         {
@@ -427,8 +434,6 @@ void ShortTrendManager::insertTrendform(const QString &frontTrendform,
     {
         _focusTrendformWidget();
     }
-
-    windowManager.setFocusOrder();
 }
 
 /***************************************************************************************************
@@ -473,8 +478,6 @@ void ShortTrendManager::removeTrendform(const QString &trendform, bool setFocus)
     {
         _focusTrendformWidget();
     }
-
-    windowManager.setFocusOrder();
 }
 
 void ShortTrendManager::hideEvent(QHideEvent *e)

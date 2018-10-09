@@ -35,7 +35,6 @@ public:
 ShortTrendContainer::ShortTrendContainer()
     : IWidget("ShortTrendContainer"), d_ptr(new ShortTrendContainerPrivate())
 {
-    setAttribute(Qt::WA_OpaquePaintEvent);
     d_ptr->layout = new QVBoxLayout(this);
     d_ptr->layout->setContentsMargins(4, 4, 4, 4);
     d_ptr->layout->setSpacing(0);

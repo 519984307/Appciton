@@ -115,8 +115,6 @@ static void _initSystem(void)
  *************************************************************************************************/
 static void _initWindowManager(void)
 {
-    windowManager.getInstance();
-
     // Set window size
     int screenWidth = 0;
     int screenHeight = 0;

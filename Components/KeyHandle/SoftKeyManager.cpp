@@ -11,7 +11,6 @@
 
 #include "SoftKeyManager.h"
 #include <QVBoxLayout>
-#include <QPushButton>
 #include <QPainter>
 #include "IConfig.h"
 #include "SoftKeyWidget.h"
@@ -25,6 +24,7 @@
 #include <QSignalMapper>
 #include <QDebug>
 #include <QResizeEvent>
+#include "LayoutManager.h"
 
 
 
@@ -239,6 +239,8 @@ void SoftKeyManager::resizeEvent(QResizeEvent *e)
     d_ptr->resetPageInfo();
     d_ptr->layoutKeyDesc();
     this->layout()->activate();
+
+    layoutManager.updateTabOrder();
 }
 
 /***************************************************************************************************

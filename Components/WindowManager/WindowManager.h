@@ -103,23 +103,8 @@ public:
     // 获取弹出菜单高度, TODO: remove
     int getPopMenuHeight();
 
-    // 设置聚焦顺序。
-    void setFocusOrder(void);
-
 private:
     WindowManager();
-
-    // TODO: remove
-    void _getDisplayedWaveTrendWidget(QStringList &names);
-
-    // TODO: remove
-    void _getCurrentDisplayTrendWindow(QStringList &names);
-
-    // TODO: remove
-    UserFaceType _currenUserFaceType;
-
-    // TODO: remove
-    QVBoxLayout *_volatileLayout;           // 放置波形窗体。
 
 private slots:
     void onLayoutChanged();
