@@ -81,7 +81,7 @@ QColor ColorManager::getColor(const QString &param)
     return _loadColor(param);
 }
 
-void ColorManager::updateColorPalatte(QList<ParamID> idList)
+void ColorManager::updateColorPalatte(const QList<ParamID> &idList)
 {
     if (idList.isEmpty())
     {

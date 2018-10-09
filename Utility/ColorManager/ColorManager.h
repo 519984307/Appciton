@@ -36,7 +36,7 @@ public:
     /**
      * @brief updatePalatte 更新颜色参数从配置表中
      */
-    void updateColorPalatte(QList<ParamID> idList);
+    void updateColorPalatte(const QList<ParamID> &idList);
 
     // 获取高亮色。
     QColor getHighlight(void);
