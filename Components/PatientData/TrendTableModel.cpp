@@ -891,7 +891,7 @@ void TrendTableModelPrivate::loadTrendData()
             {
                 AlarmPriority alarmPriority = ALARM_PRIO_PROMPT;
                 int count = displayList.count();
-                for (int i = count - 1; i < count; i--)
+                for (int i = count - 1; i >= 0; i--)
                 {
                     bool isAlarm = pack->subparamAlarm.value(displayList.at(i), false);
                     alarmPriority = alarmConfig.getLimitAlarmPriority(displayList.at(i));
