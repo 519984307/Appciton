@@ -515,8 +515,6 @@ RESPParam::RESPParam() : Param(PARAM_RESP),
     int enable = 1;
     currentConfig.getNumValue("RESP|AutoActivation", enable);
     d_ptr->respMonitoring = enable;
-    connect(&colorManager, SIGNAL(paletteChanged(ParamID)),
-            this, SLOT(onPaletteChanged(ParamID)));
 }
 
 /**************************************************************************************************

@@ -50,8 +50,6 @@ IBPParam::IBPParam() : Param(PARAM_IBP),  _provider(NULL), _waveWidgetIBP1(NULL)
     IBPScaleInfo autoScale;
     autoScale.isAuto = true;
     ibpScaleList.append(autoScale);
-    connect(&colorManager, SIGNAL(paletteChanged(ParamID)),
-            this, SLOT(onPaletteChanged(ParamID)));
 }
 
 /**************************************************************************************************

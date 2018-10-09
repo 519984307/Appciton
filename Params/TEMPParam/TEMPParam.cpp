@@ -319,8 +319,6 @@ TEMPParam::TEMPParam() : Param(PARAM_TEMP),
     _t1Value(InvData()), _t2Value(InvData()),
     _tdValue(InvData()), _isTEMPDisable(false)
 {
-    connect(&colorManager, SIGNAL(paletteChanged(ParamID)),
-            this, SLOT(onPaletteChanged(ParamID)));
 }
 
 /**************************************************************************************************

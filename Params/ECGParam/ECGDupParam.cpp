@@ -349,8 +349,6 @@ ECGDupParam::ECGDupParam()
       _isAlarm(false),
       _hrSource(HR_SOURCE_ECG)
 {
-    connect(&colorManager, SIGNAL(paletteChanged(ParamID)),
-            this, SLOT(onPaletteChanged(ParamID)));
 }
 
 /**************************************************************************************************

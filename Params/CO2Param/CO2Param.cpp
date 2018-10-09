@@ -877,8 +877,6 @@ CO2Param::CO2Param()
     QString highPath = path + "High";
     currentConfig.getNumAttr(lowPath, "Min", d_ptr->etco2MinVal);
     currentConfig.getNumAttr(highPath, "Max", d_ptr->etco2MaxVal);
-    connect(&colorManager, SIGNAL(paletteChanged(ParamID)),
-            this, SLOT(onPaletteChanged(ParamID)));
 }
 
 /**************************************************************************************************

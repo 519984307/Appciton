@@ -278,8 +278,6 @@ RESPDupParam::RESPDupParam()
       _isAutoBrSource(true),
       _manualBrSourceType(BR_SOURCE_RESP)
 {
-    connect(&colorManager, SIGNAL(paletteChanged(ParamID)),
-            this, SLOT(onPaletteChanged(ParamID)));
 }
 
 /**************************************************************************************************

@@ -832,9 +832,6 @@ AGParam::AGParam() : Param(PARAM_AG), _connectedProvider(false)
 
     _n2oBuf = new char[DEMO_DATA_NUM];
     n2o = 0;
-
-    connect(&colorManager, SIGNAL(paletteChanged(ParamID)),
-            this, SLOT(onPaletteChanged(ParamID)));
 }
 
 /**************************************************************************************************

@@ -2279,8 +2279,6 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     _isPowerOnNewSession = true;
 
     connect(this, SIGNAL(oxyCRGWaveUpdated()), this, SLOT(onOxyCRGWaveUpdated()));
-    connect(&colorManager, SIGNAL(paletteChanged(ParamID)),
-            this , SLOT(onPaletteChanged(ParamID)));
 }
 
 /**************************************************************************************************

@@ -1374,8 +1374,6 @@ NIBPParam::NIBPParam()
 
     _btnTimer = new QTimer();
     connect(_btnTimer, SIGNAL(timeout()), this, SLOT(_btnTimeOut()));
-    connect(&colorManager , SIGNAL(paletteChanged(ParamID)),
-            this, SLOT(onPaletteChanged(ParamID)));
 }
 
 /**************************************************************************************************
