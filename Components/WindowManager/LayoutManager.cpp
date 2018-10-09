@@ -486,8 +486,6 @@ void LayoutManagerPrivate::performOxyCRGLayout()
                 continue;
             }
 
-            contentWidgets.append(w);
-
             if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN) // in the left part, contain wave or param
             {
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM) // wave widgets
@@ -507,10 +505,15 @@ void LayoutManagerPrivate::performOxyCRGLayout()
                             currentRow = row;
                         }
                     }
+                    else
+                    {
+                        continue;
+                    }
                 }
                 else    // param widgets
                 {
                     // don't add the params in the left part
+                    continue;
                 }
             }
             else  // the right part are all param
@@ -519,6 +522,8 @@ void LayoutManagerPrivate::performOxyCRGLayout()
                 rightParamLayout->addWidget(w, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
                 displayParams.append(w->name());
             }
+
+            contentWidgets.append(w);
         }
     }
 }
