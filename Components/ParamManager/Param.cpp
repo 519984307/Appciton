@@ -9,6 +9,7 @@
  **/
 
 #include "Param.h"
+#include "ColorManager.h"
 
 /**************************************************************************************************
  * 功能： 获取名称。
@@ -150,6 +151,8 @@ Param::Param(ParamID id)
       _paramName(paramInfo.getParamName(id)),
       _isEnable(true)
 {
+    connect(&colorManager, SIGNAL(paletteChanged(ParamID)),
+            this, SLOT(onPaletteChanged(ParamID)));
 }
 
 /**************************************************************************************************

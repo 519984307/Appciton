@@ -44,6 +44,11 @@ public:
     }
 
     /**
+     * @brief updateBackground 更新背景
+     * @param pal
+     */
+    virtual void updatePalette(const QPalette &pal);
+     /*
      * @brief getShortTrendSubParams get the avaliable short trend subparam IDs
      * @return a list of avaliable short trend params
      */

@@ -1195,6 +1195,17 @@ void NIBPParam::_btnTimeOut()
     toggleMeasureLong();
 }
 
+void NIBPParam::onPaletteChanged(ParamID id)
+{
+    if (id != PARAM_NIBP)
+    {
+        return;
+    }
+    QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
+    _trendWidget->updatePalette(pal);
+    _nibpDataTrendWidget->updatePalette(pal);
+}
+
 /**************************************************************************************************
  * 短按NIBP按钮触发测量控制。
  *************************************************************************************************/
@@ -1341,34 +1352,21 @@ void NIBPParam::switchState(unsigned char newStateID)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-NIBPParam::NIBPParam() : Param(PARAM_NIBP), _connectedProvider(false)
+NIBPParam::NIBPParam()
+    : Param(PARAM_NIBP), _provider(NULL),
+      _trendWidget(NULL), _nibpDataTrendWidget(NULL),
+      _sysValue(InvData()), _diaValue(InvData()),
+      _mapVaule(InvData()), _prVaule(InvData()),
+      _lastTime(0), _measureResult(NIBP_MEASURE_RESULT_NONE),
+      _SwitchFlagTime(false), _SwitchFlagType(false),
+      _additionalMeasureFlag(false), _autoMeasureFlag(false),
+      _statModelFlag(false), _statCloseFlag(false),
+      _statFirst(true), _toggleMeasureLongFlag(false),
+      _statOpenTemp(false), _isCreateSnapshotFlag(false),
+      _isNIBPDisable(false), _isManualMeasure(false),
+      _connectedFlag(false), _connectedProvider(false),
+      _text(InvStr()), _activityMachine(NULL)
 {
-    _provider = NULL;
-    _trendWidget = NULL;
-    _activityMachine = NULL;
-
-    _sysValue = InvData();
-    _diaValue = InvData();
-    _mapVaule = InvData();
-    _prVaule = InvData();
-    _lastTime = 0;
-
-    _connectedFlag = false;
-    _measureResult = NIBP_MEASURE_RESULT_NONE;
-    _SwitchFlagTime = false;
-    _SwitchFlagType = false;
-    _additionalMeasureFlag = false;
-    _autoMeasureFlag = false;
-    _statFirst = true;
-    _statModelFlag = false;
-    _statCloseFlag = false;
-    _toggleMeasureLongFlag = false;
-    _statOpenTemp = false;
-    _isCreateSnapshotFlag = false;
-    _isNIBPDisable = false;
-    _isManualMeasure = false;
-    _text = InvStr();
-
     nibpCountdownTime.construction();
 
     connect(&patientManager, SIGNAL(signalPatientType(PatientType)),

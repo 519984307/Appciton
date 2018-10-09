@@ -14,7 +14,7 @@
 #include "AlarmDefine.h"
 #include "AlarmInfoWindow.h"
 
-class AlarmInfoPopListVIew;
+class AlarmInfoPopListView;
 class AlarmPhyWindow;
 class AlarmPhyInfoBarWidget : public IWidget
 {

@@ -41,6 +41,12 @@ public:
     IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPressureName &entitle);
     ~IBPWaveWidget();
 
+    /**
+     * @brief resetBackground 刷新背景
+     * @param pal
+     */
+    void updatePalette(const QPalette &pal);
+
 protected:
     // 窗体大小调整事件
     virtual void resizeEvent(QResizeEvent *e);

@@ -81,6 +81,46 @@ QColor ColorManager::getColor(const QString &param)
     return _loadColor(param);
 }
 
+void ColorManager::updateColorPalatte(const QList<ParamID> &idList)
+{
+    if (idList.isEmpty())
+    {
+        return;
+    }
+    QList<ParamID>::ConstIterator iter = idList.constBegin();
+    for (; iter != idList.constEnd(); iter++)
+    {
+        switch (*iter) {
+        case PARAM_ECG:
+            emit paletteChanged(PARAM_ECG);
+            break;
+        case PARAM_AG:
+            emit paletteChanged(PARAM_AG);
+            break;
+        case PARAM_SPO2:
+            emit paletteChanged(PARAM_SPO2);
+            break;
+        case PARAM_NIBP:
+            emit paletteChanged(PARAM_NIBP);
+            break;
+        case PARAM_CO2:
+            emit paletteChanged(PARAM_CO2);
+            break;
+        case PARAM_RESP:
+            emit paletteChanged(PARAM_RESP);
+            break;
+        case PARAM_TEMP:
+            emit paletteChanged(PARAM_TEMP);
+            break;
+        case PARAM_IBP:
+            emit paletteChanged(PARAM_IBP);
+            break;
+        default:
+            break;
+        }
+    }
+}
+
 /**************************************************************************************************
  * 功能：获取高亮色。
  * 返回：

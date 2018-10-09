@@ -214,7 +214,7 @@ void NIBPTrendWidget::isAlarm(int id, bool flag)
  *************************************************************************************************/
 void NIBPTrendWidget::showValue(void)
 {
-    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
+    QPalette psrc = palette();
     psrc = normalPalette(psrc);
     if (_sysAlarm || _diaAlarm || _mapAlarm)
     {
@@ -247,11 +247,14 @@ void NIBPTrendWidget::showValue(void)
     }
     else
     {
-        setPalette(psrc);
         showNormalStatus(_sysValue, psrc);
         showNormalStatus(_diaValue, psrc);
         showNormalStatus(_mapValue, psrc);
         showNormalStatus(_nibpValue, psrc);
+        showNormalStatus(_pressureValue, psrc);
+        showNormalStatus(_lastMeasureCount, psrc);
+        showNormalStatus(_model, psrc);
+        showNormalStatus(_message, psrc);
     }
     _sysValue->setText(_sysString);
     _diaValue->setText(_diaString);
@@ -357,20 +360,6 @@ void NIBPTrendWidget::setTextSize()
     font.setWeight(QFont::Black);
 
     _mapValue->setFont(font);
-
-//    r.setHeight(height() / 4);
-//    // 字体。
-////    fontsize = fontManager.adjustNumFontSizeXML(r);
-////    size = fontManager.getFontSize(fontsize);
-////    font = fontManager.numFont(size, true);
-//    fontsize = fontManager.adjustTextFontSize(r);
-//    font = fontManager.textFont(fontsize);
-////    font.setStretch(105); // 横向放大。
-//    font.setWeight(QFont::Black);
-//    _countDown->setFont(font);
-//    _lastMeasureCount->setFont(font);
-//    _model->setFont(font);
-//    _message->setFont(font);
 }
 
 /**************************************************************************************************
@@ -394,7 +383,7 @@ NIBPTrendWidget::NIBPTrendWidget() : TrendWidget("NIBPTrendWidget")
 
     // 构造出所有控件。
     _nibpValue = new QLabel();
-    _nibpValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    _nibpValue->setAlignment(Qt::AlignHCenter | Qt::AlignCenter);
     _nibpValue->setPalette(palette);
     _nibpValue->setText("/");
 

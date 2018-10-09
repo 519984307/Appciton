@@ -144,3 +144,10 @@ void AGWaveWidget::_getItemIndex(int index)
 {
     _currentItemIndex = index;
 }
+
+void AGWaveWidget::updatePalette(const QPalette &pal)
+{
+    _ruler->setPalette(pal);
+    setPalette(pal);
+    updateBackground();
+}

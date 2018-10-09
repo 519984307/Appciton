@@ -248,6 +248,7 @@ public:
 private slots:
     void _patientTypeChangeSlot(PatientType type);
     void _btnTimeOut();
+    void onPaletteChanged(ParamID id);
 
 private:
     NIBPParam();

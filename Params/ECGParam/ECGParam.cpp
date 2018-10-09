@@ -2316,6 +2316,21 @@ void ECGParam::onOxyCRGWaveUpdated()
 //        _oxyCRGRESPWidget->update();
     }
 }
+
+void ECGParam::onPaletteChanged(ParamID id)
+{
+    if (id != PARAM_ECG)
+    {
+        return;
+    }
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
+    for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
+    {
+        _waveWidget[i]->updatePalette(psrc);
+    }
+    _pvcsTrendWidget->updatePalette(psrc);
+    _ecgSTTrendWidget->updatePalette(psrc);
+}
 /**************************************************************************************************
  * 发送协议命令。
  *************************************************************************************************/

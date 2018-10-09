@@ -70,7 +70,6 @@ void TEMPTrendWidget::_alarmIndicate(bool isAlarms, tempGrp grp)
     }
     else
     {
-        setPalette(psrc);
         showNormalStatus(value, psrc);
         showNormalStatus(name, psrc);
     }

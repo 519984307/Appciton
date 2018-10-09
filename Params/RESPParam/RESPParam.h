@@ -23,6 +23,7 @@ class RESPFullDisclosure;
 class OxyCRGRRHRWaveWidget;
 class RESPParam: public Param
 {
+    Q_OBJECT
 public:
     static RESPParam &construction(void)
     {
@@ -130,6 +131,9 @@ public:
 
     // 使能呼吸计算
     void enableRespCalc(bool enable);
+
+private slots:
+    void onPaletteChanged(ParamID id);
 
 private:
     RESPParam();
