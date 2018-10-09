@@ -44,7 +44,7 @@ public:
 
     virtual int getSPO2WaveformSample(void) {return 62;}
     virtual int getSPO2BaseLine(void) {return 128;}
-    virtual int getSPO2MaxValue(void) {return 256;}
+    virtual int getSPO2MaxValue(void) {return 128;}
 
     //获取版本号
     virtual void sendVersion(void) { }

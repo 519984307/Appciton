@@ -250,7 +250,6 @@ void MasimoSetProvider::setSmartTone(bool enable)
 MasimoSetProvider::MasimoSetProvider() : Provider("MASIMO_SPO2"), SPO2ProviderIFace()
 {
     disPatchInfo.packetType = DataDispatcher::PACKET_TYPE_S5;
-
     UartAttrDesc portAttr(9600, 8, 'N', 1);
     initPort(portAttr);
 
@@ -406,8 +405,8 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
     // 接收PLE波形。
     char pleWaveformValue = 0;
     pleWaveformValue = data[3];
-//    spo2Param.addWaveformData(100 - (unsigned char)(pleWaveformValue + 128) / 3);
-    spo2Param.addWaveformData(128 - pleWaveformValue);
+    spo2Param.addWaveformData(100 - (unsigned char)(pleWaveformValue + 128) / 3);
+//    spo2Param.addWaveformData(128 - pleWaveformValue);
 
     // 棒图，使用PLETH为原始数据。
     unsigned char barData;
