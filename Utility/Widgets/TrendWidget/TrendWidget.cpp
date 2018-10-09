@@ -17,7 +17,6 @@
 #include "Debug.h"
 #include "BaseDefine.h"
 #include "TrendWidgetLabel.h"
-#include "LayoutManager.h"
 
 /**************************************************************************************************
  * 重绘。
@@ -43,20 +42,6 @@ void TrendWidget::paintEvent(QPaintEvent *e)
 //    r2.setBottom(barHeight);
 //    painter.setBrush(palette().windowText());
     //    painter.drawRoundedRect(r2, 3, 3);
-}
-
-void TrendWidget::showEvent(QShowEvent *e)
-{
-    IWidget::showEvent(e);
-
-    if (layoutManager.getUFaceType() == UFACE_MONITOR_BIGFONT)
-    {
-        nameLabel->setFocusPolicy(Qt::StrongFocus);
-    }
-    else
-    {
-        nameLabel->setFocusPolicy(Qt::NoFocus);
-    }
 }
 
 void TrendWidget::resizeEvent(QResizeEvent *e)
@@ -244,6 +229,7 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
 {
     _title = "";
     nameLabel = new TrendWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+    nameLabel->setFocusPolicy(Qt::NoFocus);
 
     calcLeadLabel = new QLabel("", this);
     calcLeadLabel->setAlignment(Qt::AlignCenter);

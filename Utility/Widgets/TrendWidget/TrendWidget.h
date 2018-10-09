@@ -67,8 +67,7 @@ protected:
 
 protected:
     void paintEvent(QPaintEvent *e);
-    void showEvent(QShowEvent *e);
-    virtual void resizeEvent(QResizeEvent *e);
+    void resizeEvent(QResizeEvent *e);
 
     //字体大小设置
     virtual void setTextSize(void) = 0;
