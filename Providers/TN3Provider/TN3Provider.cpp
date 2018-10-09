@@ -189,15 +189,15 @@ void TN3Provider::_errorWarm(unsigned char *packet, int len)
 static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
 {
     NIBPMeasureResultInfo info;
-    int16_t t = static_cast<int16_t>(data[0]);
+    short t = static_cast<short>(data[0]);
     info.errCode = t;
-    t = static_cast<int16_t>(data[1] + (data[2] << 8));
+    t = static_cast<short>(data[1] + (data[2] << 8));
     info.sys = t;
-    t = static_cast<int16_t>(data[3] + (data[4] << 8));
+    t = static_cast<short>(data[3] + (data[4] << 8));
     info.dia = t;
-    t = static_cast<int16_t>(data[5] + (data[6] << 8));
+    t = static_cast<short>(data[5] + (data[6] << 8));
     info.map = t;
-    t = static_cast<int16_t>(data[7] + (data[8] << 8));
+    t = static_cast<short>(data[7] + (data[8] << 8));
     info.pr = t;
     return info;
 }

@@ -355,14 +355,16 @@ void SuntechProvider::_getCuffPressure()
 static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
 {
     NIBPMeasureResultInfo info;
-    int16_t t = static_cast<int16_t>(data[0] + (data[1] << 8));
+    short t = static_cast<short>(data[0] + (data[1] << 8));
     info.sys = t;
-    t = static_cast<int16_t>(data[2] + (data[3] << 8));
+    t = static_cast<short>(data[2] + (data[3] << 8));
     info.dia = t;
-    t = static_cast<int16_t>(data[16] + (data[17] << 8));
+    t = static_cast<short>(data[16] + (data[17] << 8));
     info.map = t;
-    t = static_cast<int16_t>(data[14] + (data[15] << 8));
+    t = static_cast<short>(data[14] + (data[15] << 8));
     info.pr = t;
+    t = static_cast<short>(data[18]);
+    info.errCode = t;
     return info;
 }
 

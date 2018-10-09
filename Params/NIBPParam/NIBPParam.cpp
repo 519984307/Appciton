@@ -302,8 +302,8 @@ void NIBPParam::setNIBPDataTrendWidget(NIBPDataTrendWidget *trendWidget)
 /**************************************************************************************************
  * 解析测量结果。
  *************************************************************************************************/
-bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, int16_t &sys,
-                               int16_t &dia, int16_t &map, int16_t &pr, NIBPOneShotType &err)
+bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short &sys,
+                               short &dia, short &map, short &pr, NIBPOneShotType &err)
 {
     NIBPMeasureResultInfo info = *reinterpret_cast<NIBPMeasureResultInfo *>(const_cast<unsigned char *>(packet));
     err = NIBP_ONESHOT_NONE;
