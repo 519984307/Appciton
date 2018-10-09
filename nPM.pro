@@ -164,11 +164,7 @@ SOURCES +=                                                                      
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWidget.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWindow.cpp                          \
-    Utility/Widgets/Trendform/ShortTrendWidget.cpp                              \
     Utility/Widgets/Trendform/TrendCanvasWidget.cpp                             \
-    Utility/Widgets/Trendform/ShortTrendWidgetLabel.cpp                         \
-    Utility/Widgets/Trendform/ShortTrendWidgetSelectMenu.cpp                    \
-    Utility/Widgets/Trendform/ShortTrendManager.cpp                             \
     Utility/Widgets/Trendform/ShortTrendItem.cpp                                \
     Utility/Widgets/Trendform/ShortTrendContainer.cpp                           \
     Utility/Widgets/TrendWidget/TrendWidget.cpp                                 \
@@ -722,11 +718,7 @@ HEADERS +=                                                                      
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGSymbol.h                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGDefine.h                                 \
-    Utility/Widgets/Trendform/ShortTrendWidget.h                                \
     Utility/Widgets/Trendform/TrendCanvasWidget.h                               \
-    Utility/Widgets/Trendform/ShortTrendWidgetLabel.h                           \
-    Utility/Widgets/Trendform/ShortTrendWidgetSelectMenu.h                      \
-    Utility/Widgets/Trendform/ShortTrendManager.h                               \
     Utility/Widgets/Trendform/ShortTrendItem.h                                  \
     Utility/Widgets/Trendform/ShortTrendContainer.h                             \
     Utility/Widgets/TrendWidget/TrendWidget.h                                   \
