@@ -323,6 +323,7 @@ SOURCES +=                                                                      
     Components/WindowManager/WidgetSelectMenu.cpp                               \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
     Components/WindowManager/MainMenuWindow.cpp                                 \
+    Components/WindowManager/MiniTrendWindow.cpp                                \
     Components/WindowManager/FactoryMaintainMenuWindow.cpp                      \
     Components/WindowManager/ConfigManagerMenuWindow.cpp                        \
     Components/WindowManager/UserMaintainMenuWindow.cpp                         \
@@ -902,6 +903,7 @@ HEADERS +=                                                                      
     Components/WindowManager/WidgetSelectMenu.h                                 \
     Components/WindowManager/PromptInfoBarWidget.h                              \
     Components/WindowManager/MainMenuWindow.h                                   \
+    Components/WindowManager/MiniTrendWindow.h                                  \
     Components/WindowManager/FactoryMaintainMenuWindow.h                        \
     Components/WindowManager/ConfigManagerMenuWindow.h                          \
     Components/WindowManager/UserMaintainMenuWindow.h                           \

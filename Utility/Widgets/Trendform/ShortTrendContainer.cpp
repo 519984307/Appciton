@@ -18,6 +18,8 @@
 #include "AlarmConfig.h"
 #include "TrendDataStorageManager.h"
 #include "LanguageManager.h"
+#include "MiniTrendWindow.h"
+#include "WindowManager.h"
 
 class ShortTrendContainerPrivate
 {
@@ -44,6 +46,8 @@ ShortTrendContainer::ShortTrendContainer()
     {
         trendDataStorageManager.registerShortTrend(static_cast<SubParamID>(i));
     }
+
+    connect(this, SIGNAL(released()), this, SLOT(onReleased()));
 }
 
 ShortTrendContainer::~ShortTrendContainer()
@@ -162,4 +166,34 @@ void ShortTrendContainer::setTrendDuration(ShortTrendDuration duration)
 ShortTrendDuration ShortTrendContainer::getTrendDuration() const
 {
     return d_ptr->duration;
+}
+
+void ShortTrendContainer::getShortTrendList(QStringList &shortTrendList)
+{
+    shortTrendList.clear();
+    QList<ShortTrendItem *>::ConstIterator iter = d_ptr->trendItems.constBegin();
+    for (; iter!= d_ptr->trendItems.constEnd(); iter++)
+    {
+        shortTrendList.append((*iter)->getTrendName());
+    }
+}
+
+void ShortTrendContainer::getSubParamList(SubParamID id, QList<SubParamID> &paraList)
+{
+    paraList.clear();
+    QList<ShortTrendItem *>::ConstIterator iter = d_ptr->trendItems.constBegin();
+    for (; iter!= d_ptr->trendItems.constEnd(); iter++)
+    {
+        if (id == (*iter)->getSubParamList().at(0))
+        {
+            paraList = (*iter)->getSubParamList();
+            return;
+        }
+    }
+}
+
+void ShortTrendContainer::onReleased()
+{
+    MiniTrendWindow *miniTrendWindow = new MiniTrendWindow(this);
+    windowManager.showWindow(miniTrendWindow, WindowManager::ShowBehaviorCloseOthers);
 }
