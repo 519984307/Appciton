@@ -8,7 +8,7 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/30
  **/
 
-#include "SystemNightModeMenuContent.h"
+#include "NightModeWindow.h"
 #include <QGridLayout>
 #include <QLabel>
 #include "ComboBox.h"
@@ -18,7 +18,7 @@
 #include "SoundManager.h"
 #include "NightModeManager.h"
 
-class SystemNightModeMenuContentPrivate
+class NightModeWindowPrivate
 {
 public:
     enum MenuItem
@@ -30,7 +30,7 @@ public:
         ITEM_CBO_NIBP_COMPLETED_TIPS,
         ITEM_CBO_STOP_NIBP_MEASURE
     };
-    SystemNightModeMenuContentPrivate()
+    NightModeWindowPrivate()
                 : enterNightMode(NULL)
     {
     }
@@ -43,7 +43,7 @@ public:
     Button *enterNightMode;
 };
 
-void SystemNightModeMenuContentPrivate::loadOptions()
+void NightModeWindowPrivate::loadOptions()
 {
     int index = 0;
     systemConfig.getNumValue("NightMode|ScreenBrightness", index);
@@ -83,32 +83,31 @@ void SystemNightModeMenuContentPrivate::loadOptions()
     enterNightMode->setText(path);
 }
 
-SystemNightModeMenuContent::SystemNightModeMenuContent()
-                          : MenuContent(trs("NightModeMenu"),
-                                        trs("NightModeMenuDesc")),
-                            d_ptr(new SystemNightModeMenuContentPrivate)
+NightModeWindow::NightModeWindow()
+                          : Window(),
+                            d_ptr(new NightModeWindowPrivate)
 {
+    layoutExec();
+    readyShow();
 }
 
-SystemNightModeMenuContent::~SystemNightModeMenuContent()
+NightModeWindow::~NightModeWindow()
 {
     delete d_ptr;
 }
 
-void SystemNightModeMenuContent::readyShow()
+void NightModeWindow::readyShow()
 {
     d_ptr->loadOptions();
 }
 
-void SystemNightModeMenuContent::layoutExec()
+void NightModeWindow::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
+    setWindowTitle(trs("NightMode"));
 
     QGridLayout *glayout = new QGridLayout(this);
     glayout->setMargin(10);
+    setFixedWidth(480);
 
     QLabel *label;
     ComboBox *comboBox;
@@ -131,14 +130,14 @@ void SystemNightModeMenuContent::layoutExec()
                        << QString::number(BRT_LEVEL_9)
                        << QString::number(BRT_LEVEL_10)
                       );
-    comboIndex = static_cast<int>(SystemNightModeMenuContentPrivate::
+    comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_SCREEN_BRIGHTNESS);
     comboBox->setProperty("Item",
                           qVariantFromValue(comboIndex));
     connect(comboBox, SIGNAL(currentIndexChanged(int)),
             this, SLOT(onComboBoxIndexChanged(int)));
     glayout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(SystemNightModeMenuContentPrivate::
+    d_ptr->combos.insert(NightModeWindowPrivate::
                          ITEM_CBO_SCREEN_BRIGHTNESS, comboBox);
 
     // alarm volume
@@ -152,14 +151,14 @@ void SystemNightModeMenuContent::layoutExec()
                        << QString::number(SoundManager::VOLUME_LEV_4)
                        << QString::number(SoundManager::VOLUME_LEV_5)
                       );
-    comboIndex = static_cast<int>(SystemNightModeMenuContentPrivate::
+    comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_ALARM_VOLUME);
     comboBox->setProperty("Item",
                           qVariantFromValue(comboIndex));
     connect(comboBox, SIGNAL(currentIndexChanged(int)),
             this, SLOT(onComboBoxIndexChanged(int)));
     glayout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(SystemNightModeMenuContentPrivate::
+    d_ptr->combos.insert(NightModeWindowPrivate::
                          ITEM_CBO_ALARM_VOLUME, comboBox);
 
     // heart beat volume
@@ -177,14 +176,14 @@ void SystemNightModeMenuContent::layoutExec()
                        << QString::number(BRT_LEVEL_8)
                        << QString::number(BRT_LEVEL_9)
                       );
-    comboIndex = static_cast<int>(SystemNightModeMenuContentPrivate::
+    comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_HEART_BEAT_VOLUME);
     comboBox->setProperty("Item",
                           qVariantFromValue(comboIndex));
     connect(comboBox, SIGNAL(currentIndexChanged(int)),
             this, SLOT(onComboBoxIndexChanged(int)));
     glayout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(SystemNightModeMenuContentPrivate::
+    d_ptr->combos.insert(NightModeWindowPrivate::
                          ITEM_CBO_HEART_BEAT_VOLUME, comboBox);
 
     // key press volume
@@ -200,11 +199,11 @@ void SystemNightModeMenuContent::layoutExec()
                        <<QString::number(SoundManager::VOLUME_LEV_5)
                        );
     glayout->addWidget(comboBox , d_ptr->combos.count() , 1);
-    comboIndex = static_cast<int>(SystemNightModeMenuContentPrivate::
+    comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_KEYPRESS_VOLUME_NUM);
     comboBox->setProperty("Item" , qVariantFromValue(comboIndex));
     connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
-    d_ptr->combos.insert(SystemNightModeMenuContentPrivate::
+    d_ptr->combos.insert(NightModeWindowPrivate::
                          ITEM_CBO_KEYPRESS_VOLUME_NUM , comboBox);
 
     // nibp completed tips
@@ -216,11 +215,11 @@ void SystemNightModeMenuContent::layoutExec()
                        << trs("Opened")
                        );
     glayout->addWidget(comboBox , d_ptr->combos.count() , 1);
-    comboIndex = static_cast<int>(SystemNightModeMenuContentPrivate::
+    comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_NIBP_COMPLETED_TIPS);
     comboBox->setProperty("Item" , qVariantFromValue(comboIndex));
     connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
-    d_ptr->combos.insert(SystemNightModeMenuContentPrivate::
+    d_ptr->combos.insert(NightModeWindowPrivate::
                          ITEM_CBO_NIBP_COMPLETED_TIPS , comboBox);
 
     // stop nibp measure
@@ -232,11 +231,11 @@ void SystemNightModeMenuContent::layoutExec()
                        << trs("Yes")
                        );
     glayout->addWidget(comboBox , d_ptr->combos.count() , 1);
-    comboIndex = static_cast<int>(SystemNightModeMenuContentPrivate::
+    comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_STOP_NIBP_MEASURE);
     comboBox->setProperty("Item" , qVariantFromValue(comboIndex));
     connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
-    d_ptr->combos.insert(SystemNightModeMenuContentPrivate::
+    d_ptr->combos.insert(NightModeWindowPrivate::
                          ITEM_CBO_STOP_NIBP_MEASURE , comboBox);
 
     // enter night mode
@@ -247,9 +246,10 @@ void SystemNightModeMenuContent::layoutExec()
     d_ptr->enterNightMode = btn;
 
     glayout->setRowStretch(d_ptr->combos.count() + 1, 1);
+    setWindowLayout(glayout);
 }
 
-void SystemNightModeMenuContent::onComboBoxIndexChanged(int index)
+void NightModeWindow::onComboBoxIndexChanged(int index)
 {
     if (index < 0)
     {
@@ -260,30 +260,30 @@ void SystemNightModeMenuContent::onComboBoxIndexChanged(int index)
     QString node;
     switch (indexType)
     {
-        case SystemNightModeMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS:
+        case NightModeWindowPrivate::ITEM_CBO_SCREEN_BRIGHTNESS:
         node = "ScreenBrightness";
         index = combo->itemText(index).toInt();
         break;
-        case SystemNightModeMenuContentPrivate::ITEM_CBO_ALARM_VOLUME:
+        case NightModeWindowPrivate::ITEM_CBO_ALARM_VOLUME:
         node = "AlarmVolume";
         break;
-        case SystemNightModeMenuContentPrivate::ITEM_CBO_HEART_BEAT_VOLUME:
+        case NightModeWindowPrivate::ITEM_CBO_HEART_BEAT_VOLUME:
         node = "HeartBeatVolume";
         break;
-        case SystemNightModeMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME_NUM:
+        case NightModeWindowPrivate::ITEM_CBO_KEYPRESS_VOLUME_NUM:
         node = "KeyPressVolume";
         break;
-        case SystemNightModeMenuContentPrivate::ITEM_CBO_NIBP_COMPLETED_TIPS:
+        case NightModeWindowPrivate::ITEM_CBO_NIBP_COMPLETED_TIPS:
         node = "NIBPCompletedTips";
         break;
-        case SystemNightModeMenuContentPrivate::ITEM_CBO_STOP_NIBP_MEASURE:
+        case NightModeWindowPrivate::ITEM_CBO_STOP_NIBP_MEASURE:
         node = "StopNIBPMeasure";
         break;
     }
     systemConfig.setNumValue(QString("NightMode|%1").arg(node), index);
 }
 
-void SystemNightModeMenuContent::OnBtnReleased()
+void NightModeWindow::OnBtnReleased()
 {
     int index = 0;
     systemConfig.getNumValue("NightMode|EnterNightMode", index);
