@@ -118,107 +118,93 @@ public:
 /* parse the data from the module and pass it to the algorithm interface */
 void E5ProviderPrivate::handleEcgRawData(unsigned char *data, int len)
 {
-    Q_ASSERT(len >= 41);
-    short leadoff;
-    bool qrsflag;
-    bool paceflag;
-    bool overload;
-
-    leadoff = data[38] | (data[39] << 8);
-    paceflag = data[40] & 0x01;
-    qrsflag = data[40] & 0x02;
-    overload = data[40] & 0x04;
+    Q_ASSERT(len != 529);
 
     int leadData[ECG_LEAD_NR] = {0};
     bool leadOFFStatus[ECG_LEAD_NR] = {0};
-#if 0
-    static bool initFlag = false;
-    static QFile *f[ECG_LEAD_NR];
-    static QTextStream *stream[ECG_LEAD_NR];
-    if (!initFlag)
+    for (int n = 0; n < 20; n++)
     {
-        initFlag = true;
-        for (int i = 0; i < ECG_LEAD_NR; i++)
-        {
-            QString name = "/tmp/WAVE_";
-            name += ECGSymbol::convert((ECGLead)i, ECG_CONVENTION_AAMI);
-            f[i] = new QFile(name);
-            f[i]->open(QIODevice::WriteOnly);
-            stream[i] = new QTextStream(f[i]);
-        }
-    }
+        short leadoff;
+        bool qrsflag;
+        bool paceflag;
+        bool overload;
+        leadoff = ((data[4 + n * 26] & 0x3) << 8) | data[5 + n * 26];
+        paceflag = data[4 + n * 26] & 0x10;
+        qrsflag = data[4 + n * 26] & 0x40;
+        overload = data[4 + n * 26] & 0x20;
 
-    for (int i = 0 ; i < ECG_LEAD_NR; i++)
-    {
-        *stream[i] << leadData[i] << endl;
-    }
-#endif
+        for (int j = 0; j < ECG_LEAD_NR; j++)
+        {
+            short v = data[6 + n * 26 + j * 2] | (data[7 + n * 26 + j * 2] << 8);
+            leadData[j] = v;
+        }
 
-    if (ecgParam.getLeadMode() == ECG_LEAD_MODE_5)
-    {
-        leadoff &= 0xFFE0;
-    }
+        if (ecgParam.getLeadMode() == ECG_LEAD_MODE_5)
+        {
+            leadoff &= 0xFFE0;
+        }
 
-    if (ecgParam.getLeadMode() == ECG_LEAD_MODE_3)
-    {
-        leadoff &= 0xFFC0;
-    }
+        if (ecgParam.getLeadMode() == ECG_LEAD_MODE_3)
+        {
+            leadoff &= 0xFFC0;
+        }
 
-    if (leadoff & 0x3C0) // RL/LA/LL/RA
-    {
-        // all lead will be off if any limb lead is off
-        for (int i = 0; i < ECG_LEAD_NR; i++)
+        if (leadoff & 0x3C0) // RL/LA/LL/RA
         {
-            leadData[i] = 0;
-            leadOFFStatus[i] = true;
+            // all lead will be off if any limb lead is off
+            for (int j = 0; j < ECG_LEAD_NR; j++)
+            {
+                leadData[j] = 0;
+                leadOFFStatus[j] = true;
+            }
         }
-    }
-    else
-    {
-        if (leadoff & 0x20)                // bit5 V1
+        else
         {
-            leadData[ECG_LEAD_V1] = 0;
-            leadOFFStatus[ECG_LEAD_V1] = true;
+            if (leadoff & 0x20)                // bit5 V1
+            {
+                leadData[ECG_LEAD_V1] = 0;
+                leadOFFStatus[ECG_LEAD_V1] = true;
+            }
+            if (leadoff & 0x10)                // bit4 V2
+            {
+                leadData[ECG_LEAD_V2] = 0;
+                leadOFFStatus[ECG_LEAD_V2] = true;
+            }
+            if (leadoff & 0x08)                // bit3 V3
+            {
+                leadData[ECG_LEAD_V3] = 0;
+                leadOFFStatus[ECG_LEAD_V3] = true;
+            }
+            if (leadoff & 0x04)                // bit2 V4
+            {
+                leadData[ECG_LEAD_V4] = 0;
+                leadOFFStatus[ECG_LEAD_V4] = true;
+            }
+            if (leadoff & 0x02)               // bit1 V5
+            {
+                leadData[ECG_LEAD_V5] = 0;
+                leadOFFStatus[ECG_LEAD_V5] = true;
+            }
+            if (leadoff & 0x01)               // bit0 V6
+            {
+                leadData[ECG_LEAD_V6] = 0;
+                leadOFFStatus[ECG_LEAD_V6] = true;
+            }
         }
-        if (leadoff & 0x10)                // bit4 V2
-        {
-            leadData[ECG_LEAD_V2] = 0;
-            leadOFFStatus[ECG_LEAD_V2] = true;
-        }
-        if (leadoff & 0x08)                // bit3 V3
-        {
-            leadData[ECG_LEAD_V3] = 0;
-            leadOFFStatus[ECG_LEAD_V3] = true;
-        }
-        if (leadoff & 0x04)                // bit2 V4
-        {
-            leadData[ECG_LEAD_V4] = 0;
-            leadOFFStatus[ECG_LEAD_V4] = true;
-        }
-        if (leadoff & 0x02)               // bit1 V5
-        {
-            leadData[ECG_LEAD_V5] = 0;
-            leadOFFStatus[ECG_LEAD_V5] = true;
-        }
-        if (leadoff & 0x01)               // bit0 V6
-        {
-            leadData[ECG_LEAD_V6] = 0;
-            leadOFFStatus[ECG_LEAD_V6] = true;
-        }
-    }
 
-    if (lastLeadOff != leadoff)
-    {
-        lastLeadOff = leadoff;
-
-        for (int i = 0; i < ECG_LEAD_NR; i++)
+        if (lastLeadOff != leadoff)
         {
-            ecgParam.setLeadOff((ECGLead)i, leadOFFStatus[i]);
-        }
-    }
+            lastLeadOff = leadoff;
 
-    ecgParam.setOverLoad(overload);
-    ecgParam.updateWaveform(leadData, leadOFFStatus, paceflag, false, qrsflag);
+            for (int i = 0; i < ECG_LEAD_NR; i++)
+            {
+                ecgParam.setLeadOff((ECGLead)i, leadOFFStatus[i]);
+            }
+        }
+
+        ecgParam.setOverLoad(overload);
+        ecgParam.updateWaveform(leadData, leadOFFStatus, paceflag, false, qrsflag);
+    }
 }
 
 void E5ProviderPrivate::handleRESPRawData(unsigned char *data, int /*len*/)
