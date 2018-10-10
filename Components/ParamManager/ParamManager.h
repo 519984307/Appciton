@@ -75,8 +75,12 @@ public:
     // 获取版本号。Notify the providers to get version info
     void getVersion(void);
 
-    // get the BLMProvider by paramID
-    BLMProvider *getBLMProvider(ParamID paramId);
+    /**
+     * @brief getBLMProvider get the BLMProvider
+     * @param name the prover name
+     * @return pointer to the provider or NULL
+     */
+    BLMProvider *getBLMProvider(const QString &name);
 
 
     // 析构。
@@ -92,7 +96,6 @@ private:
     ProviderMap _providers;
     ParamMap _params;
     ParamWithIDMap _paramWithID;
-    BLMProviderMap _blmProviders;
 };
 #define paramManager (ParamManager::construction())
 #define deleteParamManager() (delete ParamManager::_selfObj)

@@ -136,12 +136,6 @@ void ParamManager::connectParamProvider(void)
                 provider->attachParam(*param);
                 providerHasSet = true;
             }
-
-            BLMProvider *blmProvider = static_cast<BLMProvider *>(provider);
-            if (blmProvider)
-            {
-                _blmProviders.insert(param->getParamID(), blmProvider);
-            }
         }
 
         if (providerHasSet)
@@ -325,12 +319,9 @@ void ParamManager::getVersion(void)
     }
 }
 
-/***************************************************************************************************
- * getBLMProvider : get BLMProvider by param id
- **************************************************************************************************/
-BLMProvider *ParamManager::getBLMProvider(ParamID paramId)
+BLMProvider *ParamManager::getBLMProvider(const QString &name)
 {
-    return _blmProviders.value(paramId, NULL);
+    return qobject_cast<BLMProvider*>(_providers.value(name, NULL));
 }
 
 /**************************************************************************************************
@@ -361,5 +352,4 @@ ParamManager::~ParamManager()
     _params.clear();
 
     _paramWithID.clear();
-    _blmProviders.clear();
 }

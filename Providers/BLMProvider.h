@@ -11,6 +11,17 @@
 #pragma once
 #include "Provider.h"
 
+/**
+ * @brief The BLMProviderUpgradeIface class BLMProvider upgrade interface
+ */
+class BLMProviderUpgradeIface
+{
+public:
+    virtual ~BLMProviderUpgradeIface(){}
+
+    virtual void handlePacket(unsigned char * data, int len) = 0;
+};
+
 /***************************************************************************************************
  * BLM 通信协议(数据收发处理)
  **************************************************************************************************/
@@ -24,16 +35,16 @@ public:
     // 发送协议命令
     bool sendCmd(unsigned char cmdId, const unsigned char *data, unsigned int len);
 
-    // 发送数据
-    bool _sendData(const unsigned char *data, unsigned int len);
-
-
     // 接收数据
     void dataArrived(unsigned char *buff, unsigned int length);
 
-#ifdef CONFIG_UNIT_TEST
-    friend class TestECGParam;
-#endif
+    /**
+     * @brief setUpgradeIface set the upgrade iface to handle the upgrade packet
+     * @note set iface to NULL to stop upgrade
+     * @param iface the upgrade iface
+     */
+    void setUpgradeIface(BLMProviderUpgradeIface *iface);
+
 protected:
     // 接收数据
     void dataArrived();
@@ -43,7 +54,7 @@ protected:
 
 private:
     // 发送数据
-//    void _sendData(const unsigned char *data, unsigned int len);
+    bool _sendData(const unsigned char *data, unsigned int len);
 
     // 协议数据校验
     bool _checkPacketValid(const unsigned char *data, unsigned int len);
@@ -55,6 +66,7 @@ private:
 
     bool _isLastSOHPaired; // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH。
 
+    BLMProviderUpgradeIface *upgradeIface;
 
 protected:
     static const int HeadLen = 4;               // 包头长度: Head,Length,FCS

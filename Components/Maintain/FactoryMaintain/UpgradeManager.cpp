@@ -1,0 +1,718 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/10/10
+ **/
+
+#include "UpgradeManager.h"
+#include <QTimer>
+#include <QFile>
+#include <QDir>
+#include <QStringList>
+#include <QCryptographicHash>
+#include <stdio.h>
+#include "USBManager.h"
+#include "ParamManager.h"
+#include "Debug.h"
+#include "Utility.h"
+
+#define UPGRADE_FILES_DIR "/upgrade/"
+#define DEFAULT_HW_VER_STR "1.0A"
+#define DEFAULT_SW_VER_STR "1.0A"
+
+enum UpgradeState
+{
+    STATE_IDLE,
+    STATE_CHECK_UDISK,
+    STATE_CHECK_FILE,
+    STATE_CHECKSUM,
+    STATE_REQUEST_ENTER_UPGRADE_MODE,
+    STATE_REQUEST_SEND_DATA,
+    STATE_WRITE_HARDWARE_ATTRIBUTE,
+    STATE_WRITE_IMAGE_SEGMENT,
+    STATE_WAIT_FOR_COMPLETE_MSG,
+    STATE_REBOOT,
+    STATE_ERROR,
+};
+
+enum UpgradePacketType
+{
+    UPGRADE_RSP_NACK    = 0x00,         // nack response
+    UPGRADE_RSP_ACK     = 0x01,         // ack response
+
+    UPGRADE_NOTIFY_ALIVE = 0x5B,        // module alive packet
+    UPGRADE_E5_NOTIFY_ALIVE = 0xB0,     // E5 module alive packet
+
+    UPGRADE_CMD_REQUEST_ENTER  = 0xF6,  // enter upgrade mode
+    UPGRADE_RSP_ENTER   = 0xF6,         // response of enter upgrade mode
+
+    UPGRADE_CMD_REQUEST_SEND = 0xF7,    // send data;
+    UPGRADE_RSP_SEND    = 0xF7,         // response of send data
+
+    UPGRADE_CMD_HW_ATTR = 0xF8,         // read or write module attritube
+    UPGRADE_RSP_HW_ATTR = 0xF8,         // response
+
+    UPGRADE_CMD_ERASE   = 0xF9,         // Erase flash
+    UPGRADE_RSP_ERASE   = 0xF9,         // response of erase flash
+
+    UPGRADE_CMD_SEGMENT = 0xFB,         // send upgrade segment
+    UPGRADE_RSP_SEGMENT = 0xFC,         // response of upgrade segment
+
+    UPGRADE_NOTIFY_STATE = 0xFD,        // module upgrade state
+
+    UPGRADE_NOTIFY_UPGRADE_ALIVE = 0xFE, // upgrade moudle alive packet
+};
+
+enum ModuleState
+{
+    MODULE_STAT_BOOTLOADER_START = 0,       // bootloader start
+    MODULE_STAT_APPLICANT_START,            // bootloader start the applicantion
+    MODULE_STAT_REQUEST_IMAGE_SEGMENT,      // booloader request receive data segment
+    MODULE_STAT_WRITE_UPGRADE_FLAG_FAIL,    // write upgrade flag failed
+    MODULE_STAT_ERASE_FLASH,                // bootloader is erasing the flash
+    MODULE_STAT_ERASE_FLASH_FAIL,           // bootloader erase the flash failed
+    MODULE_STAT_IMAGE_NAME_UNMATCH,         // the image name is unmatch
+    MODULE_STAT_HARDWARE_VER_UNMATCH,       // hardware version unmatch
+    MODULE_STAT_WRITE_DEVICE_ATTR,          // write device attribute
+    MODULE_STAT_IMAGE_SEQ_ERROR,            // image sequence number error
+    MODULE_STAT_WRITE_IMAGE_SEGMENT_FAIL,   // write image segment failed
+    MODULE_STAT_WRITE_UPGRADE_COMPLETE,     // upgrade complete
+};
+
+class UpgradeManagerPrivate
+{
+    Q_DECLARE_PUBLIC(UpgradeManager)
+public:
+    explicit UpgradeManagerPrivate(UpgradeManager *const q_ptr)
+        : q_ptr(q_ptr),
+          type(UpgradeManager::UPGRADE_MOD_NONE),
+          state(STATE_IDLE),
+          provider(NULL),
+          noResponseTimer(NULL),
+          noResponeCount(0),
+          segmentSeq(0)
+    {}
+
+    /**
+     * @brief checkUpgradeFile check the upgrade file is exist or not
+     * @return true if the upgrade file is exist
+     */
+    bool checkUpgradeFile();
+
+    /**
+     * @brief findUpgradeFile find the upgrade file in the usb disk base on the upgrade module
+     * @return the upgrade file name
+     */
+    QString getUpgradeFile() const;
+
+    /**
+     * @brief calcChecksum calcuate the md5 checksum
+     * @param content the content need to calcualte the md5
+     * @return the md5 reuslt
+     */
+    static QString calcChecksum(const QByteArray &content);
+
+    /**
+     * @brief getProviderName get the provder name base on the upgrade module type
+     * @param type the upgrade module type
+     * @return the name of the provider
+     */
+    static QString getProviderName(UpgradeManager::UpgradeModuleType type);
+
+    /**
+     * @brief upgradeExit exit upgrade stat
+     * @param result the upgrade result
+     * @param error the upgrade error
+     */
+    void upgradeExit(UpgradeManager::UpgradeResult result, UpgradeManager::UpgradeErrorType error);
+
+    /**
+     * @brief handleAck handle the command ack response
+     * @param data the ack packet data field
+     * @param len  the data field length
+     */
+    void handleAck(unsigned char *data, int len);
+
+    /**
+     * @brief hanleNack handle the command nack response
+     * @param data the nack packet data field
+     * @param len the data field length
+     */
+    void hanleNack(unsigned char *data, int len);
+
+    /**
+     * @brief handleSegmentRsp handle the image segment response
+     * @param data the data field of the response packet
+     * @param len the data field length
+     */
+    void handleSegmentRsp(unsigned char *data, int len);
+
+    /**
+     * @brief resetTimer no response timer reset
+     */
+    void resetTimer()
+    {
+        noResponseTimer->stop();
+        noResponeCount = 0;
+    }
+
+    /**
+     * @brief getImageSegment get the image segment base on the sequence number
+     * @note Each segment contains 131 bytes, if the first byte is 1, this segment is the last segment;
+     *       otherwise, the first byte is 0. the second and third byte represent the sequence number.
+     *       the last 128 represent the image data.
+     *       Specially, when the sequence number is 0, the segmnet represent the image infomation, see
+     *       code for detail
+     * @param seqNum the sequence number
+     * @return the image segment
+     */
+    QByteArray getImageSegment(int seqNum);
+
+    UpgradeManager *const q_ptr;
+    UpgradeManager::UpgradeModuleType type;
+    UpgradeState state;
+    QByteArray fileContent;
+    BLMProvider *provider;
+    QTimer *noResponseTimer;
+    int noResponeCount;
+    int segmentSeq;     // the file segment sequence number
+};
+
+bool UpgradeManagerPrivate::checkUpgradeFile()
+{
+    QString dirname = usbManager.getUdiskMountPoint() + UPGRADE_FILES_DIR;
+    if (type == UpgradeManager::UPGRADE_MOD_HOST)
+    {
+        /**
+         * special handling for the host upgrade file
+         * the host upgrade is handling in the uboot, we only check the upgrade
+         * file is exist or not.
+         * the upgrade files' name and checksum info is in the md5sum.txt
+         */
+        QString checksumFileName = dirname + "md5sum.txt";
+        if (!QFile::exists(checksumFileName))
+        {
+            qdebug("Host upgrade checksum file not exist.");
+            return false;
+        }
+
+        QFile checksumFile(checksumFileName);
+        if (!checksumFile.open(QIODevice::ReadOnly))
+        {
+            qdebug("Open host checksum file failed.");
+            return false;
+        }
+
+        QString line;
+        bool foundUpgradeFile = false;
+        do
+        {
+            line = checksumFile.readLine();
+            QStringList l = line.trimmed().split(" ", QString::SkipEmptyParts);
+            if (!l.isEmpty())
+            {
+                if (QFile::exists(dirname + l.last()))
+                {
+                    // exist checksum file and upgrade file, we can perform upgrade
+                    foundUpgradeFile = true;
+                    break;
+                }
+            }
+        } while (!line.isEmpty());
+
+        return foundUpgradeFile;
+    }
+    else if (type >= UpgradeManager::UPGRADE_MOD_E5 && type < UpgradeManager::UPGRADE_MOD_TYPE_NR)
+    {
+        QString filename = getUpgradeFile();
+        if (filename.isEmpty())
+        {
+            qDebug("No upgrade file for %s", qPrintable(q_ptr->getUpgradeModuleName(type)));
+            return false;
+        }
+        return true;
+    }
+
+    return false;
+}
+
+QString UpgradeManagerPrivate::getUpgradeFile() const
+{
+    QString dirname = usbManager.getUdiskMountPoint() + UPGRADE_FILES_DIR;
+    QString moduleName = q_ptr->getUpgradeModuleName(type);
+    QDir dir(dirname);
+    if (!dir.exists())
+    {
+        return QString();
+    }
+
+    QStringList nameFilters;
+    // the upgrade file should end with md5 hex code and .bin suffix
+    nameFilters << moduleName + "*.????????????????????????????????.bin";
+
+    dir.setNameFilters(nameFilters);
+    dir.setFilter(QDir::Files | QDir::NoSymLinks);
+    dir.setSorting(QDir::Name);
+    QFileInfoList fileList = dir.entryInfoList();
+    if (fileList.isEmpty())
+    {
+        return QString();
+    }
+
+    return fileList.first().fileName();
+}
+
+QString UpgradeManagerPrivate::calcChecksum(const QByteArray &content)
+{
+    QCryptographicHash hash(QCryptographicHash::Md5);
+    hash.addData(content);
+    return hash.result().toHex();
+}
+
+QString UpgradeManagerPrivate::getProviderName(UpgradeManager::UpgradeModuleType type)
+{
+    switch (type)
+    {
+    case UpgradeManager::UPGRADE_MOD_E5:
+        return "BLM_E5";
+    case UpgradeManager::UPGRADE_MOD_S5:
+        return "BLM_S5";
+    case UpgradeManager::UPGRADE_MOD_N5:
+        return "BLM_N5";
+    case UpgradeManager::UPGRADE_MOD_T5:
+        return "BLM_T5";
+    case UpgradeManager::UPGRADE_MOD_PRT48:
+        return "PRT48";
+    case UpgradeManager::UPGRADE_MOD_nPMBoard:
+        return "nPMBoard";
+    default:
+        break;
+    }
+
+    return QString();
+}
+
+void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, UpgradeManager::UpgradeErrorType error)
+{
+    type = UpgradeManager::UPGRADE_MOD_NONE;
+    state = STATE_IDLE;
+
+    if (error != UpgradeManager::UPGRADE_ERR_NONE)
+    {
+        emit q_ptr->upgradeError(error);
+    }
+
+    emit q_ptr->upgradeResult(result);
+
+    if (provider)
+    {
+        provider = NULL;
+    }
+
+    resetTimer();
+
+    segmentSeq = 0;
+}
+
+void UpgradeManagerPrivate::handleAck(unsigned char *data, int len)
+{
+    Q_UNUSED(len)
+    switch (state)
+    {
+    case STATE_REQUEST_ENTER_UPGRADE_MODE:
+        if (data[0] == UPGRADE_CMD_REQUEST_ENTER)
+        {
+            state = STATE_REQUEST_SEND_DATA;
+            resetTimer();
+            q_ptr->upgradeProcess();
+        }
+        break;
+    case STATE_REQUEST_SEND_DATA:
+        if (data[0] == UPGRADE_CMD_REQUEST_SEND)
+        {
+            state = STATE_WRITE_IMAGE_SEGMENT;
+            resetTimer();
+            q_ptr->upgradeProcess();
+        }
+        break;
+    case STATE_WRITE_HARDWARE_ATTRIBUTE:
+        if (data[0] == UPGRADE_CMD_HW_ATTR)
+        {
+            state = STATE_WRITE_IMAGE_SEGMENT;
+            resetTimer();
+            q_ptr->upgradeProcess();
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+void UpgradeManagerPrivate::hanleNack(unsigned char *data, int len)
+{
+    Q_UNUSED(len)
+    switch (state)
+    {
+    case STATE_REQUEST_ENTER_UPGRADE_MODE:
+        if (data[0] == UPGRADE_CMD_REQUEST_ENTER)
+        {
+            upgradeExit(UpgradeManager::UPGRADE_FAIL, UpgradeManager::UPGRADE_ERR_COMMUNICATION_FAIL);
+        }
+        break;
+    case STATE_REQUEST_SEND_DATA:
+        if (data[0] == UPGRADE_CMD_REQUEST_SEND)
+        {
+            upgradeExit(UpgradeManager::UPGRADE_FAIL, UpgradeManager::UPGRADE_ERR_COMMUNICATION_FAIL);
+        }
+        break;
+    case STATE_WRITE_HARDWARE_ATTRIBUTE:
+        if (data[0] == UPGRADE_CMD_HW_ATTR)
+        {
+            upgradeExit(UpgradeManager::UPGRADE_FAIL, UpgradeManager::UPGRADE_ERR_COMMUNICATION_FAIL);
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+void UpgradeManagerPrivate::handleSegmentRsp(unsigned char *data, int len)
+{
+    Q_UNUSED(len)
+    if (state == STATE_WRITE_IMAGE_SEGMENT)
+    {
+        if (data[0] == 1)
+        {
+            segmentSeq++;
+            if (segmentSeq * 128 < fileContent.length())
+            {
+                // all segment is sent, not wait for state change
+                state = STATE_WAIT_FOR_COMPLETE_MSG;
+            }
+
+            q_ptr->upgradeProcess();
+        }
+        else
+        {
+            short seq = data[1] | (data[2] << 8);
+            qdebug("segment %d send failed.", seq);
+        }
+    }
+}
+
+QByteArray UpgradeManagerPrivate::getImageSegment(int seqNum)
+{
+    QByteArray segment(131, 0);
+    char *ptr = segment.data();
+    ptr[0] = 0;
+    ptr[1] = seqNum & 0xFF;
+    ptr[2] = (seqNum >> 8) & 0xFF;
+
+    char *content = ptr + 3;
+
+    if (seqNum == 0)
+    {
+        // module name
+        ::snprintf(content, 32, "%s", qPrintable(q_ptr->getUpgradeModuleName(type)));  // NOLINT
+        // minium hardware version
+        ::snprintf(content + 32, 16, DEFAULT_HW_VER_STR); // NOLINT
+        // software version, use the default value
+        ::sprintf(content + 48, 16, DEFAULT_SW_VER_STR); // NOLINT
+    }
+    else
+    {
+        int index = (seqNum - 1) * 128;
+        if (index + 128 < fileContent.length())
+        {
+            ::memcpy(content, fileContent.data() + index, 128);
+        }
+        else if (index < fileContent.length())
+        {
+            ptr[0] = 1;
+            int size = fileContent.length() - index;
+            ::memcpy(content, fileContent.data() + index, size);
+            ::memset(content + size, 0xff, 128 - size);
+        }
+    }
+    return segment;
+}
+
+UpgradeManager *UpgradeManager::getInstance()
+{
+    static UpgradeManager *instance = NULL;
+
+    if (instance == NULL)
+    {
+        instance = new UpgradeManager();
+    }
+
+    return instance;
+}
+
+QString UpgradeManager::getUpgradeModuleName(UpgradeManager::UpgradeModuleType type)
+{
+    switch (type)
+    {
+    case UPGRADE_MOD_HOST:
+        return "Host";
+    case UPGRADE_MOD_E5:
+        return "E5";
+    case UPGRADE_MOD_S5:
+        return "S5";
+    case UPGRADE_MOD_N5:
+        return "N5";
+    case UPGRADE_MOD_T5:
+        return "T5";
+    case UPGRADE_MOD_PRT48:
+        return "PRT48";
+    case UPGRADE_MOD_nPMBoard:
+        return "nPMBoard";
+    default:
+        break;
+    }
+
+    return QString();
+}
+
+void UpgradeManager::startModuleUpgrade(UpgradeManager::UpgradeModuleType type)
+{
+    if (d_ptr->type != UPGRADE_MOD_NONE)
+    {
+        debug("upgarde in process, start failed");
+        return;
+    }
+
+    d_ptr->type = type;
+    d_ptr->state = STATE_CHECK_UDISK;
+
+    QTimer::singleShot(0, this, SLOT(upgradeProcess()));
+}
+
+void UpgradeManager::handlePacket(unsigned char *data, int len)
+{
+    switch (data[0])
+    {
+    case UPGRADE_RSP_NACK:
+        d_ptr->hanleNack(data + 1, len - 1);
+        break;
+    case UPGRADE_RSP_ACK:
+        d_ptr->handleAck(data + 1, len - 1);
+        break;
+    case UPGRADE_RSP_SEGMENT:
+        d_ptr->handleSegmentRsp(data + 1, len - 1);
+        break;
+    default:
+        break;
+    }
+}
+
+void UpgradeManager::upgradeProcess()
+{
+    switch (d_ptr->state)
+    {
+    case STATE_IDLE:
+        d_ptr->type = UPGRADE_MOD_NONE;
+        break;
+
+    case STATE_CHECK_UDISK:
+        if (usbManager.isUSBExist())
+        {
+            d_ptr->state = STATE_CHECK_FILE;
+            QTimer::singleShot(0, this, SLOT(upgradeProcess()));
+        }
+        else
+        {
+            d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_NO_UDISK);
+        }
+        break;
+
+    case STATE_CHECK_FILE:
+        if (d_ptr->checkUpgradeFile())
+        {
+            if (d_ptr->type == UPGRADE_MOD_HOST)
+            {
+                d_ptr->state = STATE_REBOOT;
+            }
+            else
+            {
+                d_ptr->state = STATE_CHECKSUM;
+            }
+
+            QTimer::singleShot(0, this, SLOT(upgradeProcess()));
+        }
+        else
+        {
+            d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_NO_UPGRADE_FILE);
+        }
+        break;
+
+    case STATE_CHECKSUM:
+    {
+        QString filename = d_ptr->getUpgradeFile();
+        QFile f(filename);
+        if (!f.open(QIODevice::ReadOnly))
+        {
+            d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_READ_FILE_FAIL);
+            break;
+        }
+
+        d_ptr->fileContent = f.readAll();
+
+        // get the md5sum from the file name
+        QString md5 = filename.section('.', 1, 1);
+
+        QString calcMd5 = d_ptr->calcChecksum(d_ptr->fileContent);
+
+        if (md5.compare(calcMd5, Qt::CaseInsensitive))
+        {
+            // checksum failed
+            d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_CHECKSUM_FAIL);
+            break;
+        }
+
+        d_ptr->state = STATE_REQUEST_ENTER_UPGRADE_MODE;
+        QTimer::singleShot(0, this, SLOT(upgradeProcess()));
+    }
+    break;
+
+    case STATE_REQUEST_ENTER_UPGRADE_MODE:
+    {
+        d_ptr->provider = paramManager.getBLMProvider(d_ptr->getProviderName(d_ptr->type));
+        if (!d_ptr->provider)
+        {
+            d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_MODULE_NOT_FOUND);
+            break;
+        }
+
+        d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+        d_ptr->noResponseTimer->start(2000);
+    }
+    break;
+
+    case STATE_REQUEST_SEND_DATA:
+    {
+        d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+        d_ptr->noResponseTimer->start(200);
+    }
+    break;
+
+    case STATE_WRITE_HARDWARE_ATTRIBUTE:
+    {
+        char data[49];
+        data[0] = 0x1; // write attr
+        // module name
+        ::snprintf(data + 1, 32, "%s", qPrintable(getUpgradeModuleName(d_ptr->type)));  // NOLINT
+        // module hardware version
+        ::sprintf(data + 33, 16, DEFAULT_HW_VER_STR); // NOLINT
+        d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+        d_ptr->noResponseTimer->start(2000);
+    }
+    break;
+
+    case STATE_WRITE_IMAGE_SEGMENT:
+    {
+        QByteArray segment = d_ptr->getImageSegment(d_ptr->segmentSeq);
+        d_ptr->provider->sendCmd(UPGRADE_CMD_SEGMENT,
+                                 reinterpret_cast<const unsigned char *>(segment.constData()),
+                                 segment.length());
+        d_ptr->noResponseTimer->start(1000);
+    }
+    break;
+
+    case STATE_WAIT_FOR_COMPLETE_MSG:
+    {
+        d_ptr->noResponseTimer->start(1000);
+    }
+    break;
+    case STATE_REBOOT:
+        break;
+
+    case STATE_ERROR:
+        break;
+
+    default:
+        break;
+    }
+}
+
+void UpgradeManager::noResponseTimeout()
+{
+    d_ptr->noResponeCount++;
+    switch (d_ptr->state)
+    {
+    case STATE_REQUEST_ENTER_UPGRADE_MODE:
+        if (d_ptr->noResponeCount < 2)
+        {
+            d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+        }
+        else
+        {
+            d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_COMMUNICATION_FAIL);
+        }
+        break;
+
+    case STATE_REQUEST_SEND_DATA:
+        if (d_ptr->noResponeCount < 5)
+        {
+            d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
+        }
+        else
+        {
+            d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_COMMUNICATION_FAIL);
+        }
+        break;
+
+    case STATE_WRITE_HARDWARE_ATTRIBUTE:
+        if (d_ptr->noResponeCount < 2)
+        {
+            char data[49];
+            data[0] = 0x1; // write attr
+            // module name
+            ::sprintf(data + 1, 32, "%s", qPrintable(getUpgradeModuleName(d_ptr->type))); // NOLINT
+            // module hardware version
+            ::sprintf(data + 33, 16, DEFAULT_HW_VER_STR); // NOLINT
+            d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_ENTER, NULL, 0);
+        }
+        else
+        {
+            d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_COMMUNICATION_FAIL);
+        }
+        break;
+    case STATE_WRITE_IMAGE_SEGMENT:
+        if (d_ptr->noResponeCount < 5)
+        {
+            QByteArray segment = d_ptr->getImageSegment(d_ptr->segmentSeq);
+            d_ptr->provider->sendCmd(UPGRADE_CMD_SEGMENT,
+                                     reinterpret_cast<const unsigned char *>(segment.constData()),
+                                     segment.length());
+        }
+        else
+        {
+            d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_COMMUNICATION_FAIL);
+        }
+    case STATE_WAIT_FOR_COMPLETE_MSG:
+        // too long to receive the complete message
+        d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_COMMUNICATION_FAIL);
+        break;
+    default:
+        break;
+    }
+}
+
+UpgradeManager::UpgradeManager()
+    : QObject(), d_ptr(new UpgradeManagerPrivate(this))
+{
+    d_ptr->noResponseTimer = new QTimer(this);
+
+    connect(d_ptr->noResponseTimer, SIGNAL(timeout()), this, SLOT(noResponseTimeout()));
+}
+
+UpgradeManager::~UpgradeManager()
+{
+    delete d_ptr;
+}
+
