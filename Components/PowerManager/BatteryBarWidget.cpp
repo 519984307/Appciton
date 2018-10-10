@@ -102,9 +102,9 @@ void BatteryBarWidget::setIconLow()
 
 void BatteryBarWidget::paintEvent(QPaintEvent *e)
 {
-    IWidget::paintEvent(e);
     QPainter painter(this);
     painter.fillRect(this->rect(), blackgroundColor);
+    IWidget::paintEvent(e);
 }
 
 /**************************************************************************************************
