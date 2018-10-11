@@ -45,6 +45,13 @@ public:
      */
     void setUpgradeIface(BLMProviderUpgradeIface *iface);
 
+    /**
+     * @brief findProvider find a blmprovider in the system base on the provider name
+     * @param name the provider name
+     * @return pointer to the provider if found, otherwise, NULL
+     */
+    static BLMProvider *findProvider(const QString &name);
+
 protected:
     // 接收数据
     void dataArrived();
@@ -67,6 +74,8 @@ private:
     bool _isLastSOHPaired; // 遗留在ringBuff最后一个数据（该数据为SOH）是否已经剃掉了多余的SOH。
 
     BLMProviderUpgradeIface *upgradeIface;
+
+    static QMap<QString, BLMProvider*> providers;
 
 protected:
     static const int HeadLen = 4;               // 包头长度: Head,Length,FCS

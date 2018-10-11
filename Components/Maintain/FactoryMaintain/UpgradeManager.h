@@ -39,6 +39,12 @@ public:
         UPGRADE_ERR_READ_FILE_FAIL,
         UPGRADE_ERR_CHECKSUM_FAIL,
         UPGRADE_ERR_MODULE_NOT_FOUND,
+        UPGRADE_ERR_MODULE_INITIALIZE_FAIL,
+        UPGRADE_ERR_MODULE_ERASE_FLASH_FAIL,
+        UPGRADE_ERR_IMAGE_NAME_UNMATCH,
+        UPGRADE_ERR_HARDWARE_VERION_UNMATCH,
+        UPGRADE_ERR_WRITE_ATTR_FAIL,
+        UPGRADE_ERR_WRITE_SEGMENT_FAIL,
         UPGRADE_ERR_COMMUNICATION_FAIL,
         UPGRADE_ERR_NR,
     };
@@ -49,6 +55,10 @@ public:
         UPGRADE_FAIL,       // upgrade failed, need to check the error
     };
 
+    /**
+     * @brief getInstance get the upgrade manager instance
+     * @return the point the upgrade manager
+     */
     static UpgradeManager *getInstance();
 
     /**

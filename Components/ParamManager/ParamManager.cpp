@@ -319,11 +319,6 @@ void ParamManager::getVersion(void)
     }
 }
 
-BLMProvider *ParamManager::getBLMProvider(const QString &name)
-{
-    return qobject_cast<BLMProvider*>(_providers.value(name, NULL));
-}
-
 /**************************************************************************************************
  * 功能：构造。
  *************************************************************************************************/

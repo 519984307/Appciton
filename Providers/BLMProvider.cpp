@@ -17,12 +17,15 @@
 
 #define SOH             (0x01)  // packet header
 
+QMap<QString, BLMProvider*> BLMProvider::providers;
+
 /***************************************************************************************************
  * 构造函数
  **************************************************************************************************/
 BLMProvider::BLMProvider(const QString &name)
     : Provider(name), upgradeIface(NULL)
 {
+    providers.insert(name, this);
     _isLastSOHPaired = false;
 }
 
@@ -281,6 +284,11 @@ void BLMProvider::dataArrived(unsigned char *buff, unsigned int length)
 void BLMProvider::setUpgradeIface(BLMProviderUpgradeIface *iface)
 {
     upgradeIface = iface;
+}
+
+BLMProvider *BLMProvider::findProvider(const QString &name)
+{
+    return providers.value(name, NULL);
 }
 
 /***************************************************************************************************

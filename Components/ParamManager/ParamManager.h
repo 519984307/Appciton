@@ -75,14 +75,6 @@ public:
     // 获取版本号。Notify the providers to get version info
     void getVersion(void);
 
-    /**
-     * @brief getBLMProvider get the BLMProvider
-     * @param name the prover name
-     * @return pointer to the provider or NULL
-     */
-    BLMProvider *getBLMProvider(const QString &name);
-
-
     // 析构。
     ~ParamManager();
 
