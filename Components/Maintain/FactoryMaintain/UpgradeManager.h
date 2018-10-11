@@ -79,7 +79,9 @@ public:
 
 signals:
     void upgradeError(UpgradeErrorType error);
-    void upgradeResult(UpgradeResult result);
+    void upgradeResult(UpgradeManager::UpgradeResult result);
+    void upgradeInfoChanged(const QString &info);
+    void upgradeProgressChanged(int value);
 
 private slots:
     /**
