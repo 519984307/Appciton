@@ -64,6 +64,11 @@ public:
     explicit Param(ParamID id);
     virtual ~Param();
 
+    /**
+     * @brief getShortTrendList 获得短趋势参数列表
+     * @return
+     */
+    virtual QList<SubParamID> getShortTrendList(){return QList<SubParamID>();}
 private:
     ParamID _paramID;
     QString _paramName;

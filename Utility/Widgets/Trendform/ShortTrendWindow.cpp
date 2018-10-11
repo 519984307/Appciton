@@ -114,7 +114,7 @@ ShortTrendWindow::ShortTrendWindow(ShortTrendContainer *const trendContainer)
     d_ptr->defaultBtn = new Button;
     d_ptr->defaultBtn->setFixedWidth(300);
     d_ptr->defaultBtn->setButtonStyle(Button::ButtonTextOnly);
-    d_ptr->defaultBtn->setText(trs("Defaults"));
+    d_ptr->defaultBtn->setText(trs("RestoreDefault"));
     connect(d_ptr->defaultBtn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     hLayout->addStretch();
     hLayout->addWidget(d_ptr->defaultBtn);

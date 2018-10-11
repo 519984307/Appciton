@@ -107,9 +107,7 @@ public:
      */
     bool isAutoTypeHrSouce(void) const;
 
-    /**
-     * @brief getShortTrendList 获得短趋势参数列表
-     */
+    /*remiplement*/
     QList<SubParamID> getShortTrendList();
 
 private:
