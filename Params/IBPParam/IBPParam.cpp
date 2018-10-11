@@ -758,6 +758,20 @@ void IBPParam::setWaveWidget(IBPWaveWidget *waveWidget, IBPSignalInput IBP)
     _setWaveformSpeed(getSweepSpeed());
 }
 
+QList<SubParamID> IBPParam::getShortTrendList(IBPSignalInput IBP)
+{
+    QList<SubParamID> paraList;
+    if (IBP == IBP_INPUT_1)
+    {
+        paraList = _trendWidgetIBP1->getShortTrendSubParams();
+    }
+    else if (IBP == IBP_INPUT_2)
+    {
+        paraList = _trendWidgetIBP2->getShortTrendSubParams();
+    }
+    return paraList;
+}
+
 IBPScaleInfo IBPParam::getIBPScale(IBPPressureName name)
 {
     // TODO implement this function

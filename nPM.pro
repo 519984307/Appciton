@@ -171,6 +171,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Trendform/ShortTrendManager.cpp                             \
     Utility/Widgets/Trendform/ShortTrendItem.cpp                                \
     Utility/Widgets/Trendform/ShortTrendContainer.cpp                           \
+    Utility/Widgets/Trendform/ShortTrendWindow.cpp                              \
     Utility/Widgets/TrendWidget/TrendWidget.cpp                                 \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.cpp                            \
     Utility/Widgets/Waveform/BarGraphScanMode.cpp                               \
@@ -323,7 +324,6 @@ SOURCES +=                                                                      
     Components/WindowManager/WidgetSelectMenu.cpp                               \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
     Components/WindowManager/MainMenuWindow.cpp                                 \
-    Components/WindowManager/MiniTrendWindow.cpp                                \
     Components/WindowManager/FactoryMaintainMenuWindow.cpp                      \
     Components/WindowManager/ConfigManagerMenuWindow.cpp                        \
     Components/WindowManager/UserMaintainMenuWindow.cpp                         \
@@ -730,6 +730,7 @@ HEADERS +=                                                                      
     Utility/Widgets/Trendform/ShortTrendManager.h                               \
     Utility/Widgets/Trendform/ShortTrendItem.h                                  \
     Utility/Widgets/Trendform/ShortTrendContainer.h                             \
+    Utility/Widgets/Trendform/ShortTrendWindow.h                                \
     Utility/Widgets/TrendWidget/TrendWidget.h                                   \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.h                              \
     Utility/Widgets/Waveform/BarGraphScanMode.h                                 \
@@ -903,7 +904,6 @@ HEADERS +=                                                                      
     Components/WindowManager/WidgetSelectMenu.h                                 \
     Components/WindowManager/PromptInfoBarWidget.h                              \
     Components/WindowManager/MainMenuWindow.h                                   \
-    Components/WindowManager/MiniTrendWindow.h                                  \
     Components/WindowManager/FactoryMaintainMenuWindow.h                        \
     Components/WindowManager/ConfigManagerMenuWindow.h                          \
     Components/WindowManager/UserMaintainMenuWindow.h                           \

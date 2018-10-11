@@ -11,14 +11,14 @@
 #pragma once
 #include "Window.h"
 
-class MiniTrendWindowPrivate;
+class ShortTrendWindowPrivate;
 class ShortTrendContainer;
-class MiniTrendWindow : public Window
+class ShortTrendWindow : public Window
 {
     Q_OBJECT
 public:
-    explicit MiniTrendWindow(ShortTrendContainer * const trendContainer);
-    ~MiniTrendWindow();
+    explicit ShortTrendWindow(ShortTrendContainer *const trendContainer);
+    ~ShortTrendWindow();
 
 protected:
     /*reimplement*/
@@ -28,5 +28,5 @@ private slots:
     void onBtnReleased();
 
 private:
-    MiniTrendWindowPrivate *const d_ptr;
+    ShortTrendWindowPrivate *const d_ptr;
 };

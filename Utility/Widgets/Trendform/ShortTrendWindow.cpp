@@ -1,14 +1,16 @@
-/**
+﻿/**
  ** This file is part of the nPM project.
- ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
  ** All Rights Reserved.
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/10/9
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/10/11
  **/
 
-#include "MiniTrendWindow.h"
+
+
+#include "ShortTrendWindow.h"
 #include <QGroupBox>
 #include <QLayout>
 #include "LanguageManager.h"
@@ -19,37 +21,34 @@
 #include <QStringList>
 #include "ParamInfo.h"
 #include "IBPParam.h"
+#include "NIBPParam.h"
+#include "AGParam.h"
+#include "ECGDupParam.h"
+#include "IBPTrendWidget.h"
 
-#define PARAM_ROW 2      // 每行ｎ个控件
+#define PARAM_ROW 2      // 每行2组参数
 
-class  MiniTrendWindowPrivate
+class  ShortTrendWindowPrivate
 {
 public:
-    explicit MiniTrendWindowPrivate(ShortTrendContainer *const trendContainer)
+    explicit ShortTrendWindowPrivate(ShortTrendContainer *const trendContainer)
         : lengthCbo(NULL),
-          minitrendContainer(trendContainer),
+          shortTrendContainer(trendContainer),
           defaultBtn(NULL),
           okBtn(NULL),
           cancelBtn(NULL)
     {
-        minitrendContainer->getShortTrendList(defaultParaList);
-
-        durationList[SHORT_TREND_DURATION_30M] = "30 min";
-        durationList[SHORT_TREND_DURATION_60M] = "1 h";
-        durationList[SHORT_TREND_DURATION_120M] = "2 h";
-        durationList[SHORT_TREND_DURATION_240M] = "4 h";
-        durationList[SHORT_TREND_DURATION_480M] = "8 h";
     }
-    ~MiniTrendWindowPrivate() {}
+    ~ShortTrendWindowPrivate() {}
     QList<ComboBox *> comboList;
     ComboBox *lengthCbo;
-    ShortTrendContainer *minitrendContainer;
+    ShortTrendContainer *shortTrendContainer;
     QMap<SubParamID, QString> paraList;
-    QStringList defaultParaList;
+    QList<SubParamID> defaultParaList;
+    QList<SubParamID> latastParaList;
     Button *defaultBtn;
     Button *okBtn;
     Button *cancelBtn;
-    QMap<ShortTrendDuration, QString> durationList;     // 翻译时间
 
     /**
      * @brief loadOption 加载下拉框选项
@@ -64,13 +63,20 @@ public:
     /**
      * @brief setMinitrend 设置短趋势
      */
-    void setMinitrend();
+    void reloadMinitrend();
+
+    /**
+     * @brief getSubParamID
+     * @param id
+     * @return
+     */
+    QList<SubParamID> getSubParamID(SubParamID id);
 };
 
 
-MiniTrendWindow::MiniTrendWindow(ShortTrendContainer *const trendContainer)
+ShortTrendWindow::ShortTrendWindow(ShortTrendContainer *const trendContainer)
     : Window(),
-      d_ptr(new MiniTrendWindowPrivate(trendContainer))
+      d_ptr(new ShortTrendWindowPrivate(trendContainer))
 {
     setFixedSize(800, 580);
     setWindowTitle(trs("MinitrendSetup"));
@@ -87,7 +93,7 @@ MiniTrendWindow::MiniTrendWindow(ShortTrendContainer *const trendContainer)
     QLabel *lbl;
     QString lblStr = QString();
 
-    int paramCount = d_ptr->minitrendContainer->getTrendNum();
+    int paramCount = d_ptr->shortTrendContainer->getTrendNum();
     // groupBox
     int itemCount = 0;
     for (int i = 0; i < paramCount; i++)
@@ -144,18 +150,19 @@ MiniTrendWindow::MiniTrendWindow(ShortTrendContainer *const trendContainer)
     d_ptr->loadParaList();
 }
 
-MiniTrendWindow::~MiniTrendWindow()
+ShortTrendWindow::~ShortTrendWindow()
 {
     delete d_ptr;
 }
 
-void MiniTrendWindow::showEvent(QShowEvent *e)
+void ShortTrendWindow::showEvent(QShowEvent *e)
 {
+    d_ptr->shortTrendContainer->getDefaultTrendList(d_ptr->defaultParaList);
     d_ptr->loadOption();
     Window::showEvent(e);
 }
 
-void MiniTrendWindow::onBtnReleased()
+void ShortTrendWindow::onBtnReleased()
 {
     Button *btn = qobject_cast<Button *>(sender());
     if (btn == d_ptr->defaultBtn)
@@ -163,10 +170,11 @@ void MiniTrendWindow::onBtnReleased()
         for (int i = 0; i < d_ptr->comboList.count(); i++)
         {
             ComboBox *cbo = d_ptr->comboList.at(i);
-            QString para = d_ptr->defaultParaList.at(i);
+            SubParamID para = d_ptr->defaultParaList.at(i);
             for (int j = 0; j < cbo->count(); j++)
             {
-                if (cbo->itemText(j) == para)
+                SubParamID id = d_ptr->paraList.key(cbo->itemText(j));
+                if (id == para)
                 {
                     cbo->setCurrentIndex(j);
                     break;
@@ -176,7 +184,7 @@ void MiniTrendWindow::onBtnReleased()
     }
     else if (btn == d_ptr->okBtn)
     {
-        d_ptr->setMinitrend();
+        d_ptr->reloadMinitrend();
         close();
     }
     else if (btn == d_ptr->cancelBtn)
@@ -185,15 +193,15 @@ void MiniTrendWindow::onBtnReleased()
     }
 }
 
-void MiniTrendWindowPrivate::loadOption()
+void ShortTrendWindowPrivate::loadOption()
 {
-    QStringList latestItemList;
-    minitrendContainer->getShortTrendList(latestItemList);
+    shortTrendContainer->getShortTrendList(latastParaList);
     // 加载参数
     for (int i = 0; i < comboList.count(); i++)
     {
         ComboBox *cbo = comboList.at(i);
         // 加载列表选项
+        cbo->clear();
         QMap<SubParamID, QString>::ConstIterator iter = paraList.constBegin();
         for (; iter != paraList.constEnd(); iter++)
         {
@@ -205,59 +213,113 @@ void MiniTrendWindowPrivate::loadOption()
         // 设置最新值
         for (int j = 0; j < cbo->count(); j++)
         {
-            if (latestItemList.at(i) == cbo->itemText(j))
+            SubParamID index = paraList.key(cbo->itemText(j));
+            if (latastParaList.at(i) == index)
             {
                 cbo->setCurrentIndex(j);
             }
         }
     }
     // 加载时间
+    lengthCbo->clear();
     for (int i = SHORT_TREND_DURATION_30M; i <= SHORT_TREND_DURATION_480M; i++)
     {
         ShortTrendDuration index = static_cast<ShortTrendDuration>(i);
-        lengthCbo->addItem(durationList[index]);
+        lengthCbo->addItem(convert(index));
     }
-    int index = static_cast<int>(minitrendContainer->getTrendDuration());
+    int index = static_cast<int>(shortTrendContainer->getTrendDuration());
     lengthCbo->setCurrentIndex(index);
 }
 
 
-void MiniTrendWindowPrivate::loadParaList()
+void ShortTrendWindowPrivate::loadParaList()
 {
     paraList[SUB_PARAM_HR_PR] = trs(paramInfo.getSubParamName(SUB_PARAM_HR_PR));
     paraList[SUB_PARAM_RR_BR] = trs(paramInfo.getSubParamName(SUB_PARAM_RR_BR));
     paraList[SUB_PARAM_SPO2] = paramInfo.getSubParamName(SUB_PARAM_SPO2);
-    paraList[SUB_PARAM_ART_SYS] = paramInfo.getIBPPressName(SUB_PARAM_ART_SYS);
-    paraList[SUB_PARAM_PA_SYS] = paramInfo.getIBPPressName(SUB_PARAM_PA_SYS);
+    SubParamID ibp1, ibp2;
+    ibpParam.getSubParamID(ibp1, ibp2);
+    paraList[ibp1] = paramInfo.getParamWaveformName(
+                         ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_1)));
+    paraList[ibp2] = paramInfo.getParamWaveformName(
+                         ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_2)));
+
+    paraList[SUB_PARAM_NIBP_SYS] = paramInfo.getParamName(PARAM_NIBP);
+
     paraList[SUB_PARAM_ETCO2] = paramInfo.getParamName(PARAM_CO2);
     paraList[SUB_PARAM_T1] = paramInfo.getParamName(PARAM_TEMP);
-    paraList[SUB_PARAM_ETN2O] = paramInfo.getParamName(PARAM_AG);
+
+    paraList[SUB_PARAM_ETN2O] = paramInfo.getSubParamName(SUB_PARAM_ETN2O);
+    paraList[SUB_PARAM_ETAA1] = paramInfo.getSubParamName(SUB_PARAM_ETAA1);
+    paraList[SUB_PARAM_ETAA2] = paramInfo.getSubParamName(SUB_PARAM_ETAA2);
+    paraList[SUB_PARAM_ETO2] = paramInfo.getSubParamName(SUB_PARAM_ETO2);
 }
 
-void MiniTrendWindowPrivate::setMinitrend()
+void ShortTrendWindowPrivate::reloadMinitrend()
 {
     // 设置短趋势
     for (int i = 0; i < comboList.count(); i++)
     {
         ComboBox *cbo = comboList.at(i);
-        SubParamID id = paraList.key(cbo->currentText(), SUB_PARAM_HR_PR);
-        QList<SubParamID> subParams;
-        minitrendContainer->getSubParamList(id, subParams);
-        if (subParams.isEmpty())
-        {
-            subParams.append(id);
-        }
-        if (cbo->currentText() != defaultParaList.at(i))
+        SubParamID paraIndex = paraList.key(cbo->currentText());
+        if (paraIndex != latastParaList.at(i))
         {
             //　有改变就重设
-            minitrendContainer->clearTrendItemSubParam(i);
-            minitrendContainer->addSubParamToTrendItem(i, subParams);
+            SubParamID id = paraList.key(cbo->currentText(), SUB_PARAM_HR_PR);
+            QList<SubParamID> subParams;
+            subParams = getSubParamID(id);
+            if (subParams.isEmpty())
+            {
+                continue;
+            }
+            shortTrendContainer->clearTrendItemSubParam(i);
+            shortTrendContainer->addSubParamToTrendItem(i, subParams);
         }
     }
 
     // 设置时间
-    QString lengthStr = lengthCbo->currentText();
-    ShortTrendDuration trendDuration =
-        durationList.key(lengthStr, minitrendContainer->getTrendDuration());
-    minitrendContainer->setTrendDuration(trendDuration);
+    ShortTrendDuration trendDuration = static_cast<ShortTrendDuration>(lengthCbo->currentIndex());
+    shortTrendContainer->setTrendDuration(trendDuration);
+}
+
+QList<SubParamID> ShortTrendWindowPrivate::getSubParamID(SubParamID id)
+{
+    ParamID paraID = paramInfo.getParamID(id);
+    QList<SubParamID> subparams;
+    switch (paraID)
+    {
+    case PARAM_DUP_ECG:
+        subparams = ecgDupParam.getShortTrendList();
+        break;
+    case PARAM_IBP:
+    {
+        SubParamID ibp1, ibp2;
+        ibpParam.getSubParamID(ibp1, ibp2);
+        if (id == ibp1)
+        {
+            subparams = ibpParam.getShortTrendList(IBP_INPUT_1);
+        }
+        else if (id == ibp2)
+        {
+            subparams = ibpParam.getShortTrendList(IBP_INPUT_2);
+        }
+        break;
+    }
+    case PARAM_CO2:
+    case PARAM_NIBP:
+    case PARAM_DUP_RESP:
+    case PARAM_SPO2:
+    case PARAM_TEMP:
+        paramInfo.getSubParams(paraID, subparams);
+        break;
+    case PARAM_AG:
+    {
+        subparams = agParam.getShortTrendList(id);
+        break;
+    }
+    default:
+        break;
+    }
+
+    return subparams;
 }

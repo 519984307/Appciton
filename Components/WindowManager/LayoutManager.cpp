@@ -688,6 +688,7 @@ void LayoutManagerPrivate::performTrendLayout()
             trendContainer->addSubParamToTrendItem(i, list.at(i));
         }
     }
+    trendContainer->updateDefautlTrendList();
 }
 
 void LayoutManagerPrivate::clearLayout(QLayout *layout)

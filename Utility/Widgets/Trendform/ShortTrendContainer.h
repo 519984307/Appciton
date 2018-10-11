@@ -63,16 +63,16 @@ public:
 
     /**
      * @brief getShortTrendList 获得当前短趋势列表
-     * @param shortTrendList
+     * @param ids
      */
-    void getShortTrendList(QStringList &shortTrendList);
+    void getShortTrendList(QList<SubParamID> &ids);
 
     /**
-     * @brief getSubParamList 获得对应的子参数列表
-     * @param id
-     * @param paraList
+     * @brief getDefaultTrendList 获得默认的短趋势列表
+     * @param defaultTrendList
      */
-    void getSubParamList(SubParamID id, QList<SubParamID> &paraList);
+    void getDefaultTrendList(QList<SubParamID> &defaultTrendList);
+    void updateDefautlTrendList();
 
 private slots:
     void onReleased();

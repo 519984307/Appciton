@@ -796,6 +796,28 @@ bool AGParam::getDemoWaveformFile(const char *buf, int len, AGTypeGas type)
     return true;
 }
 
+QList<SubParamID> AGParam::getShortTrendList(SubParamID type)
+{
+    QList<SubParamID> subParams;
+    switch (type) {
+    case SUB_PARAM_ETN2O:
+        subParams = _trendWidgetN2O->getShortTrendSubParams();
+        break;
+    case SUB_PARAM_ETAA1:
+        subParams = _trendWidgetAA1->getShortTrendSubParams();
+        break;
+    case SUB_PARAM_ETAA2:
+        subParams = _trendWidgetAA2->getShortTrendSubParams();
+        break;
+    case SUB_PARAM_ETO2:
+        subParams = _trendWidgetO2->getShortTrendSubParams();
+        break;
+    default:
+        break;
+    }
+    return subParams;
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/

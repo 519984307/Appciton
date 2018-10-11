@@ -111,6 +111,12 @@ public:
 
     // demo文件的生成
     bool getDemoWaveformFile(const char *buf, int len, AGTypeGas);
+
+    /**
+     * @brief getShortTrendList 获得短趋势参数列表
+     */
+    QList<SubParamID> getShortTrendList(SubParamID type);
+
 private:
     AGParam();
     static AGParam *_selfObj;

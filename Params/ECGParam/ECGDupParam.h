@@ -107,6 +107,11 @@ public:
      */
     bool isAutoTypeHrSouce(void) const;
 
+    /**
+     * @brief getShortTrendList 获得短趋势参数列表
+     */
+    QList<SubParamID> getShortTrendList();
+
 private:
     // 构造。
     ECGDupParam();

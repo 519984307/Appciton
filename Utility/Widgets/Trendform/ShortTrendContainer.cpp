@@ -18,7 +18,7 @@
 #include "AlarmConfig.h"
 #include "TrendDataStorageManager.h"
 #include "LanguageManager.h"
-#include "MiniTrendWindow.h"
+#include "ShortTrendWindow.h"
 #include "WindowManager.h"
 
 class ShortTrendContainerPrivate
@@ -32,6 +32,7 @@ public:
     QVBoxLayout *layout;
     ShortTrendDuration duration;
     QList<ShortTrendItem *> trendItems;
+    QList<SubParamID> defaultTrendList;
 };
 
 ShortTrendContainer::ShortTrendContainer()
@@ -46,7 +47,6 @@ ShortTrendContainer::ShortTrendContainer()
     {
         trendDataStorageManager.registerShortTrend(static_cast<SubParamID>(i));
     }
-
     connect(this, SIGNAL(released()), this, SLOT(onReleased()));
 }
 
@@ -168,32 +168,29 @@ ShortTrendDuration ShortTrendContainer::getTrendDuration() const
     return d_ptr->duration;
 }
 
-void ShortTrendContainer::getShortTrendList(QStringList &shortTrendList)
+void ShortTrendContainer::getShortTrendList(QList<SubParamID> &ids)
 {
-    shortTrendList.clear();
+    ids.clear();
     QList<ShortTrendItem *>::ConstIterator iter = d_ptr->trendItems.constBegin();
     for (; iter!= d_ptr->trendItems.constEnd(); iter++)
     {
-        shortTrendList.append((*iter)->getTrendName());
+        ids.append((*iter)->getSubParamList().at(0));
     }
 }
 
-void ShortTrendContainer::getSubParamList(SubParamID id, QList<SubParamID> &paraList)
+void ShortTrendContainer::getDefaultTrendList(QList<SubParamID> &defaultTrendList)
 {
-    paraList.clear();
-    QList<ShortTrendItem *>::ConstIterator iter = d_ptr->trendItems.constBegin();
-    for (; iter!= d_ptr->trendItems.constEnd(); iter++)
-    {
-        if (id == (*iter)->getSubParamList().at(0))
-        {
-            paraList = (*iter)->getSubParamList();
-            return;
-        }
-    }
+    defaultTrendList.clear();
+    defaultTrendList = d_ptr->defaultTrendList;
+}
+
+void ShortTrendContainer::updateDefautlTrendList()
+{
+    getShortTrendList(d_ptr->defaultTrendList);
 }
 
 void ShortTrendContainer::onReleased()
 {
-    MiniTrendWindow *miniTrendWindow = new MiniTrendWindow(this);
-    windowManager.showWindow(miniTrendWindow, WindowManager::ShowBehaviorCloseOthers);
+    ShortTrendWindow win(this);
+    windowManager.showWindow(&win, WindowManager::ShowBehaviorModal);
 }
