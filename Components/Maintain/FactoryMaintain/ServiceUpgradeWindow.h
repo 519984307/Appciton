@@ -86,17 +86,6 @@ public:
      */
     bool isUpgrading(void);
 
-    /**
-     * @brief setWaitPDCPLDRunCompletion  PD CPLD完成升级等待标记
-     * @param flag
-     */
-    void setWaitPDCPLDRunCompletion(bool flag);
-    /**
-     * @brief isWaitPDCPLDRunCompletion
-     * @return
-     */
-    bool isWaitPDCPLDRunCompletion();
-
 protected:
     /**
      * @brief exit

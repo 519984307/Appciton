@@ -448,6 +448,7 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.cpp             \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
     Components/Maintain/FactoryMaintain/FactoryMaintainWindow.cpp               \
+    Components/Maintain/FactoryMaintain/UpgradeManager.cpp                      \
     Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
     Components/CodeMarker/Widgets/CodeMarkerWindow.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
@@ -1011,7 +1012,7 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.h                     \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.h                     \
     Components/Maintain/FactoryMaintain/SelectStarterLogoContent.h              \
-    Components/Maintain/FactoryMaintain/ServiceUpgradeWindow.h                 \
+    Components/Maintain/FactoryMaintain/ServiceUpgradeWindow.h                  \
     Components/Maintain/FactoryMaintain/ServiceErrorLogEntrance.h               \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntrance.h                 \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.h          \
@@ -1026,6 +1027,7 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.h               \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.h        \
     Components/Maintain/FactoryMaintain/FactoryMaintainWindow.h                 \
+    Components/Maintain/FactoryMaintain/UpgradeManager.h                        \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWidget.h                            \
     Components/CodeMarker/Widgets/CodeMarkerWindow.h                            \
