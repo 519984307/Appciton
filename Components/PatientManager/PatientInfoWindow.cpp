@@ -346,7 +346,11 @@ PatientInfoWindow::PatientInfoWindow()
     connect(d_ptr->age, SIGNAL(released()), this, SLOT(_ageReleased()));
 
     // Patient Height
-    label = new QLabel(trs("PatientHeight"));
+    int unit;
+    systemConfig.getNumValue("Unit|HightUnit", unit);
+    UnitType unitType = static_cast<UnitType>(unit);
+    label = new QLabel(QString("%1(%2)").arg(trs("PatientHeight"))
+                       .arg(Unit::getSymbol(unitType)));
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 2);
@@ -362,7 +366,10 @@ PatientInfoWindow::PatientInfoWindow()
     connect(d_ptr->height, SIGNAL(released()), this, SLOT(_heightReleased()));
 
     // Patient Weight
-    label = new QLabel(trs("PatientWeight"));
+    systemConfig.getNumValue("Unit|WeightUnit", unit);
+    unitType = static_cast<UnitType>(unit);
+    label = new QLabel(QString("%1(%2)").arg(trs("PatientWeight"))
+                       .arg(Unit::getSymbol(unitType)));
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 0);
@@ -478,7 +485,7 @@ void PatientInfoWindow::_nameReleased()
 
 void PatientInfoWindow::_ageReleased()
 {
-    KeyInputPanel inputPanel;
+    KeyInputPanel inputPanel(KeyInputPanel::KEY_TYPE_NUMBER);
     inputPanel.setWindowTitle(trs("PatientAge"));
     inputPanel.setMaxInputLength(3);
     inputPanel.setInitString(d_ptr->age->text());
@@ -508,18 +515,18 @@ void PatientInfoWindow::_ageReleased()
 
 void PatientInfoWindow::_heightReleased()
 {
-    KeyInputPanel englishPanel;
-    englishPanel.setWindowTitle(trs("PatientHeight"));
-    englishPanel.setMaxInputLength(3);
-    englishPanel.setInitString(d_ptr->height->text());
-    englishPanel.setSpaceEnable(false);
-    englishPanel.setSymbolEnable(false);
-    englishPanel.setKeytypeSwitchEnable(false);
-    englishPanel.setCheckValueHook(checkHeightValue);
+    KeyInputPanel inputPanel(KeyInputPanel::KEY_TYPE_NUMBER);
+    inputPanel.setWindowTitle(trs("PatientHeight"));
+    inputPanel.setMaxInputLength(3);
+    inputPanel.setInitString(d_ptr->height->text());
+    inputPanel.setSpaceEnable(false);
+    inputPanel.setSymbolEnable(false);
+    inputPanel.setKeytypeSwitchEnable(false);
+    inputPanel.setCheckValueHook(checkHeightValue);
 
-    if (englishPanel.exec())
+    if (inputPanel.exec())
     {
-        QString text = englishPanel.getStrValue();
+        QString text = inputPanel.getStrValue();
         bool ok = false;
         float height = text.toFloat(&ok);
         if (ok)
@@ -538,18 +545,18 @@ void PatientInfoWindow::_heightReleased()
 
 void PatientInfoWindow::_weightReleased()
 {
-    KeyInputPanel englishPanel;
-    englishPanel.setWindowTitle(trs("PatientWeight"));
-    englishPanel.setMaxInputLength(3);
-    englishPanel.setInitString(d_ptr->weight->text());
-    englishPanel.setSpaceEnable(false);
-    englishPanel.setSymbolEnable(false);
-    englishPanel.setKeytypeSwitchEnable(false);
-    englishPanel.setCheckValueHook(checkWeightValue);
+    KeyInputPanel inputPanel(KeyInputPanel::KEY_TYPE_NUMBER);
+    inputPanel.setWindowTitle(trs("PatientWeight"));
+    inputPanel.setMaxInputLength(3);
+    inputPanel.setInitString(d_ptr->weight->text());
+    inputPanel.setSpaceEnable(false);
+    inputPanel.setSymbolEnable(false);
+    inputPanel.setKeytypeSwitchEnable(false);
+    inputPanel.setCheckValueHook(checkWeightValue);
 
-    if (englishPanel.exec())
+    if (inputPanel.exec())
     {
-        QString text = englishPanel.getStrValue();
+        QString text = inputPanel.getStrValue();
         bool ok = false;
         float weight = text.toFloat(&ok);
         if (ok)
