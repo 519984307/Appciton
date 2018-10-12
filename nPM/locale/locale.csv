@@ -796,6 +796,9 @@ DayMonthYear,日/月/年,DD/MM/YYYY
 SupervisorTimeFormat,时间格式,Time Format
 SupervisorDisplaySec,显示秒,Display Second
 SupervisorCodeMarker,代码标记,Code Marker
+Monitor,监护,Monitor
+Diagnostic,诊断,Diagnostic
+Surgery,手术,Surgery
 SupervisorCodeMarkerDesc,代码标记设置,Code Marker Setting
 SupervisorMonitorLead,监护模式导联,Default ECG Lead In Monitor Mode
 SupervisorLeadNameConvention,导联命名协议,ECG Lead Convention
