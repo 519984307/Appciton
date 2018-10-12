@@ -396,7 +396,6 @@ SOURCES +=                                                                      
     Components/Maintain/Service/NIBP/NIBPRepairMenuManager.cpp                  \
     Components/Maintain/Service/NIBP/NIBPZeroPoint.cpp                          \
     Components/Maintain/Service/Temp/ServiceCPUTemp.cpp                         \
-    Components/Maintain/Service/Upgrade/ServiceUpgrade.cpp                      \
     Components/Maintain/Service/Version/ServiceVersion.cpp                      \
     Components/Maintain/Factory/FactoryConfigManager.cpp                        \
     Components/Maintain/Factory/Menu/FactoryDataRecord.cpp                      \
@@ -430,8 +429,6 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/SoftWareVersionWindow.cpp               \
     Components/Maintain/FactoryMaintain/MonitorInfo.cpp                         \
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.cpp                   \
-    Components/Maintain/FactoryMaintain/ServiceErrorLogEntrance.cpp             \
-    Components/Maintain/FactoryMaintain/ServiceUpdateEntrance.cpp               \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.cpp        \
     Components/Maintain/FactoryMaintain/MachineConfigModule.cpp                 \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.cpp          \
@@ -444,7 +441,6 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/NIBPPressureControlContent.cpp          \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.cpp                   \
     Components/Maintain/FactoryMaintain/SelectStarterLogoContent.cpp            \
-    Components/Maintain/FactoryMaintain/ServiceUpgradeWindow.cpp                \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.cpp             \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
     Components/Maintain/FactoryMaintain/FactoryMaintainWindow.cpp               \
@@ -574,8 +570,6 @@ SOURCES +=                                                                      
     Params/RESPParam/RESPWidgets/RESPWaveWidget.cpp                             \
     Params/RESPParam/RESPWidgets/RESPTrendWidget.cpp                            \
     Params/RESPParam/RESPWidgets/RESPMenuContent.cpp                            \
-    Params/UpgradeParam/BLMEDUpgradeParam.cpp                                   \
-    Params/UpgradeParam/BLMEDUpgradeTime.cpp                                    \
 #################################################################################
     Providers/Provider.cpp                                                      \
     Providers/BLMProvider.cpp                                                   \
@@ -589,8 +583,6 @@ SOURCES +=                                                                      
     Providers/E5Provider/E5Provider.cpp                                         \
     Providers/T5Provider/T5Provider.cpp                                         \
     Providers/TN3Provider/TN3Provider.cpp                                       \
-    Providers/TS3Provider/TS3Provider.cpp                                       \
-    Providers/TT3Provider/TT3Provider.cpp                                       \
     Providers/DemoProvider/DemoProvider.cpp                                     \
     Providers/PRT48Provider/PRT48Provider.cpp                                   \
     Providers/SuntechProvider/SuntechProvider.cpp                               \
@@ -974,7 +966,6 @@ HEADERS +=                                                                      
     Components/Maintain/Service/NIBP/NIBPRepairMenuManager.h                    \
     Components/Maintain/Service/NIBP/NIBPZeroPoint.h                            \
     Components/Maintain/Service/Temp/ServiceCPUTemp.h                           \
-    Components/Maintain/Service/Upgrade/ServiceUpgrade.h                        \
     Components/Maintain/Service/Version/ServiceVersion.h                        \
     Components/Maintain/Factory/FactoryConfigManager.h                          \
     Components/Maintain/Factory/Menu/FactoryWindowManager.h                     \
@@ -1013,9 +1004,6 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.h                     \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.h                     \
     Components/Maintain/FactoryMaintain/SelectStarterLogoContent.h              \
-    Components/Maintain/FactoryMaintain/ServiceUpgradeWindow.h                  \
-    Components/Maintain/FactoryMaintain/ServiceErrorLogEntrance.h               \
-    Components/Maintain/FactoryMaintain/ServiceUpdateEntrance.h                 \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.h          \
     Components/Maintain/FactoryMaintain/MachineConfigModule.h                   \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.h            \
@@ -1186,8 +1174,6 @@ HEADERS +=                                                                      
     Params/RESPParam/RESPWidgets/RESPWaveWidget.h                               \
     Params/RESPParam/RESPWidgets/RESPTrendWidget.h                              \
     Params/RESPParam/RESPWidgets/RESPMenuContent.h                              \
-    Params/UpgradeParam/BLMEDUpgradeParam.h                                     \
-    Params/UpgradeParam/BLMEDUpgradeTime.h                                      \
     Params/PAParam/PASymbol.h                                                   \
 #################################################################################
     Providers/Provider.h                                                        \
@@ -1202,8 +1188,6 @@ HEADERS +=                                                                      
     Providers/E5Provider/E5Provider.h                                           \
     Providers/T5Provider/T5Provider.h                                           \
     Providers/TN3Provider/TN3Provider.h                                         \
-    Providers/TS3Provider/TS3Provider.h                                         \
-    Providers/TT3Provider/TT3Provider.h                                         \
     Providers/DemoProvider/DemoProvider.h                                       \
     Providers/PRT48Provider/PRT48Provider.h                                     \
     Providers/SuntechProvider/SuntechProvider.h                                 \
@@ -1291,7 +1275,6 @@ DEPENDPATH +=                                                                   
     Components/Maintain/Service/ErrorLog                                        \
     Components/Maintain/Service/NIBP                                            \
     Components/Maintain/Service/Temp                                            \
-    Components/Maintain/Service/Upgrade                                         \
     Components/Maintain/Service/Version                                         \
     Components/Maintain/Factory                                                 \
     Components/Maintain/Factory/Menu                                            \
@@ -1314,8 +1297,6 @@ DEPENDPATH +=                                                                   
     Providers/BLMTEMPProvider                                                   \
     Providers/T5Provider                                                        \
     Providers/TN3Provider                                                       \
-    Providers/TS3Provider                                                       \
-    Providers/TT3Provider                                                       \
     Providers/E5Provider                                                        \
     Providers/DemoProvider                                                      \
     Providers/PRT48Provider                                                     \
@@ -1344,7 +1325,6 @@ DEPENDPATH +=                                                                   
     Params/SPO2Param/SPO2Widgets                                                \
     Params/TEMPParam                                                            \
     Params/TEMPParam/TEMPWidgets                                                \
-    Params/UpgradeParam                                                         \
     Params/RESPParam                                                            \
     Params/RESPParam/RESPWidgets                                                \
 
@@ -1421,7 +1401,6 @@ INCLUDEPATH +=                                                                  
     Components/Maintain/Service/ErrorLog                                        \
     Components/Maintain/Service/NIBP                                            \
     Components/Maintain/Service/Temp                                            \
-    Components/Maintain/Service/Upgrade                                         \
     Components/Maintain/Service/Version                                         \
     Components/Maintain/Factory                                                 \
     Components/Maintain/Factory/Menu                                            \
@@ -1439,13 +1418,11 @@ INCLUDEPATH +=                                                                  
     Providers/BLMCO2Provider                                                    \
     Providers/WitleafProvider                                                   \
     Providers/MasimoProvider                                                    \
-    Providers/NellcorProvider                                                    \
+    Providers/NellcorProvider                                                   \
     Providers/SuntechProvider                                                   \
     Providers/BLMTEMPProvider                                                   \
     Providers/T5Provider                                                        \
     Providers/TN3Provider                                                       \
-    Providers/TS3Provider                                                       \
-    Providers/TT3Provider                                                       \
     Providers/E5Provider                                                        \
     Providers/DemoProvider                                                      \
     Providers/PRT48Provider                                                     \
@@ -1474,7 +1451,6 @@ INCLUDEPATH +=                                                                  
     Params/SPO2Param/SPO2Widgets                                                \
     Params/TEMPParam                                                            \
     Params/TEMPParam/TEMPWidgets                                                \
-    Params/UpgradeParam                                                         \
     Params/RESPParam                                                            \
     Params/RESPParam/RESPWidgets                                                \
 

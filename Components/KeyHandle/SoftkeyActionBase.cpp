@@ -42,7 +42,6 @@
 #include "IBPParam.h"
 #include "IConfig.h"
 #include "NightModeManager.h"
-#include "UpgradeWindow.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -95,10 +94,6 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     {
         return;
     }
-
-    UpgradeWindow upwin;
-    upwin.exec();
-    return;
 
     bool isVisible = codeMarkerWindow.isVisible();
     while (NULL != QApplication::activeModalWidget())

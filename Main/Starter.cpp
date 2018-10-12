@@ -68,6 +68,11 @@ int main(int argc, char *argv[])
     // disable double click
     app.setDoubleClickInterval(0);
 
+#if defined(Q_WS_QWS)
+    // Change qws server background color to back
+    QWSServer::setBackground(Qt::black);
+#endif
+
     // 下面开始分析请求的模式，并决定系统最终的运行模式。
     appMain(app);
 }

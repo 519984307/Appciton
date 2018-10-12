@@ -15,7 +15,6 @@
 #include "Debug.h"
 #include <QString>
 #include "SystemManager.h"
-#include "BLMEDUpgradeParam.h"
 #include "ServiceVersion.h"
 #include <sys/time.h>
 #include "RawDataCollection.h"

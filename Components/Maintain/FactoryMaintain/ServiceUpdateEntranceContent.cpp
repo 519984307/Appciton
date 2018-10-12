@@ -12,8 +12,9 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include "Button.h"
-#include "ServiceUpgradeWindow.h"
 #include "LanguageManager.h"
+#include "WindowManager.h"
+#include "UpgradeWindow.h"
 #include "WindowManager.h"
 
 /**************************************************************************************************
@@ -46,7 +47,6 @@ void ServiceUpdateEntranceContent ::layoutExec()
 
 void ServiceUpdateEntranceContent ::onBtnReleased()
 {
-    ServiceUpgradeWindow *w = ServiceUpgradeWindow::getInstance();
-    windowManager.showWindow(w,
-                             WindowManager::ShowBehaviorModal);
+    UpgradeWindow w;
+    w.exec();
 }

@@ -20,6 +20,8 @@ public:
     UpgradeWindow();
     ~UpgradeWindow();
 
+    /* reimplement */
+    void exec();
 
 protected:
     void timerEvent(QTimerEvent *ev);
@@ -31,7 +33,6 @@ public slots:
 
 private slots:
     void onStartBtnClick();
-
 
 private:
     UpgradeWindowPrivate * const d_ptr;

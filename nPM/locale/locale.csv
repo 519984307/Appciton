@@ -652,51 +652,36 @@ ServiceCalibrateZero,校零,Calibrate Zero
 NIBPCalibrateZeroModel,校零模式,NIBP Calibrate Zero Model
 NIBPCalibrateZero,校零模式,NIBP Calibrate Zero 
 ServiceStart,开始,Start
+Upgrade,升级,Upgrade
 UpgradeModule,升级模块,Upgrade Module
 UpgradeStart,开始,Start
-ModuleUpgradeStart,模块开始升级,Module Upgrade Start
-UpgradeReturn,返回,Return
-UpgradeTimeout,超时,Timeout
-UpgradeCommunicationInterrupt,通信中断,Communication Interrupt
-UpgradeInit,升级初始化中,Upgrade Init
-UpgradeInitFailure,升级初始化失败,Upgrade Init Failure
-UpgradeInitSuccess,升级初始化成功,Upgrade Init Success
-UPGRADECLEARING,清除中,Upgrade Clearing
-UpgradeClearFailure,清除失败,Upgrade Clear Failure
-UpgradeClearSuccess,清除成功,Upgrade Clear Success
 UpgradeSuccess,升级成功,Upgrade Success
 UpgradeFailure,升级失败,Upgrade Failure
-UpgradeInterrupt,升级中断,Upgrade Interrupt
-UpgradeProgressing,升级进行中,Upgrade Progressing
-UpgradeReadFailure,读取失败,Upgrade Read Failure
-UpgradeReadSuccess,读取成功,Upgrade Read Success
-UpgradeFileReadError,文件读取错误,Upgrade File Read Error
-UpgradeFileReadLastError,文件最后片段读取错误,Upgrade File Read Last Error
-UpgradePowerOffReset,请断电重启,Please Power Off and Reset
-UpgradeOpenFail,打开失败,open fail
-UpgradeEntering,进入升级模式中,Enter Upgrade Mode
-UpgradeEnterFailure,进入升级模式失败,Enter Upgrade Mode Failure
-UpgradeEnterSuccess,进入升级模式成功,Enter Upgrade Mode Success
-UpgradeCompilateError,升级文件编译错误,Upgrade File Compilate Error
-UpgradeVersionNumber,版本号,Num
-UpgradeSoftwareNumber,软件版本号,SoftwareNum
-UpgradeHardwareNumber,硬件版本号,HardwareNum
-UpgradeFindImage,升级镜像搜索中……,Find Image …
-UPGRADEBLMLOADERSTART,BLMLoader启动,Upgrade BLMLoader Start
-UPGRADEBLMLOADERLOAD,BLMLoader加载应用程序,Upgrade BLMLoader Load
-UPGRADEIMAGETRANSFERRING,文件传输,Upgrade Image Transferring
-UPGRADESIGNFAIL,升级标志失败,Upgrade Sign Fail
-UPGRADECLEARSTART,开始擦除FLASH,Upgrade Clear Start
-UPGRADECLEARFAIL,FLASH擦除失败,Upgrade Clear Failure
-UPGRADESOFTWARENUMERROR,软件镜像名称不匹配,Upgrade Software Num Error
-UPGRADEHARDWARENUMERROR,硬件版本不匹配,Upgrade Hardware Num Error
-UPGRADEVERSIONWRITEFAIL,写硬件版本到FLASH失败,Upgrade Version Write Fail
-UPGRADEFILENUMBERERROR,文件片段的序号错误,Upgrade File Num Error
-UPGRADEFILEFLASHFAIL,写文件片段到FLASH失败,Upgrade File Write to Flash Error
-UpgradeWarningNoImportFile,没有升级镜像文件,Warning No Import File
-UpgradeWarningNoImportFolder,没有升级镜像文件夹,Warning No Import Folder
-UpgradeiDMWillRestartPleasedonotpoweroff,设备将重启，请勿断电,iDM will restart. Please do not power off.
-SystemWillRestartPleasedonotpoweroff,设备将重启，请勿断电,System will restart. Please do not power off.
+SystemWillRestartPleaseDoNotPowerOff,设备将重启，请勿断电,System will restart. Please do not power off.
+BootloaderStart,Bootloader启动,Bootloader start
+BootloaderStartApplication,Bootloader启动应用程序,Bootloader start application
+RequestSendImageSegment,请求镜像发送文件片段,Request send image segments
+EraseFlash,擦除Flash,Erase Flash
+WriteImageComplete,镜像文件写入完成,Write image complete
+CheckUpgradeFile,检查升级文件,Check upgrade file
+CalculateChecksum,计算检验和,Calculate checksum
+RequestEnterUpgradeMode,请求进入升级模式,Request enter upgrade mode
+RequestSendData,请求发送数据,Request send data
+WriteDeviceAttribute,写入设备属性,Write device attritube
+WriteImageData,写入镜像文件数据,Write image data
+UdiskNotFound,未检测到U盘,USB Disk not found
+UpgradeFileNotFound,未检测到升级文件,Upgrade file not found
+ChecksumFileNotFound,未检测到校验文件,Checksum file not found
+ReadFileFailed,读取文件失败,Read file fail
+ChecksumFailed,检验和错误,Checksum fail
+ModuleNotFound,未检测到模块,Module not found
+ModuleInitializeFail,模块初始化失败,Module initialize fail
+ModuleEraseFlashFail,模块擦除Flash失败,Module erase flash fail
+ImageFileUnmatch,镜像文件不匹配,Image file unmatch
+HardwareVersionUnMatch,硬件版本不匹配,Hardware version unmatch
+WriteDeviceAttritueFail,写设备属性失败,Write device attribute fail
+WriteSegmentFail,写入片段失败,Write segment fail
+CommunicationFail,通讯失败,Communication fail
 ServiceSystem,服务系统,Service System
 ServiceVersion,版本,Version
 ServiceCPUTemp,CPU温度,CPU Temp

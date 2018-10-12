@@ -15,7 +15,6 @@
 #include "SystemBoardProvider.h"
 #include "WindowManager.h"
 #include "PowerManager.h"
-#include "BLMEDUpgradeParam.h"
 #include "ServiceVersion.h"
 #include "SystemAlarm.h"
 #include "KeyActionManager.h"

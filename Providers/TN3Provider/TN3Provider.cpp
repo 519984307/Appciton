@@ -15,7 +15,6 @@
 #include "IConfig.h"
 #include "crc8.h"
 #include "SystemManager.h"
-#include "BLMEDUpgradeParam.h"
 #include "TimeDate.h"
 #include "ServiceVersion.h"
 #include "NIBPAlarm.h"
