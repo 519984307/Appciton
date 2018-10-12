@@ -85,6 +85,9 @@ public:
     void setIBPTrendWidget(IBPTrendWidget *trendWidget, IBPSignalInput IBP = IBP_INPUT_1);
     void setWaveWidget(IBPWaveWidget *waveWidget, IBPSignalInput IBP = IBP_INPUT_1);
 
+
+    /*reimplement*/
+    QList<SubParamID> getShortTrendList(IBPSignalInput IBP);
     /**
      * @brief getIBPScale get the IBP scale info
      * @param name

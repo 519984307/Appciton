@@ -12,7 +12,6 @@
 #include "Debug.h"
 #include "PRT48Provider.h"
 #include "SystemManager.h"
-#include "BLMEDUpgradeParam.h"
 #include "ServiceVersion.h"
 #include "Utility.h"
 #include "ErrorLog.h"

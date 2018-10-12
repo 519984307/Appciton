@@ -88,7 +88,7 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     _titleLabel = new QLabel(trs("UserFaceOxyCRG"));
     _titleLabel->setAlignment(Qt::AlignCenter);
     _titleLabel->setFixedHeight(_titleBarHeight);
-    int fontSize = fontManager.getFontSize(7);
+    int fontSize = 24;
     _titleLabel->setFont(fontManager.textFont(fontSize));
     _titleLabel->setWordWrap(true);
     QPalette p;
@@ -101,6 +101,7 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     bottomLayout->setSpacing(1);
     int labelWidth = 80;
 
+    fontSize = 18;
     _interval = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
     _interval->setFont(fontManager.textFont(fontSize));
     _interval->setFixedSize(labelWidth, _labelHeight);

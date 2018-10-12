@@ -27,6 +27,9 @@ class SPO2MenuContentPrivate
 public:
     enum MenuItem
     {
+        ITEM_CBO_AVERAGE_TIME,
+        ITEM_CBO_SENSITIVITY,
+        ITEM_CBO_FAST_SAT,
         ITEM_CBO_SMART_TONE,
         ITEM_CBO_GAIN
     };
@@ -41,6 +44,9 @@ public:
 
 void SPO2MenuContentPrivate::loadOptions()
 {
+    combos[ITEM_CBO_AVERAGE_TIME]->setCurrentIndex(spo2Param.getAverageTime());
+    combos[ITEM_CBO_SENSITIVITY]->setCurrentIndex(spo2Param.getSensitivity());
+    combos[ITEM_CBO_FAST_SAT]->setCurrentIndex(spo2Param.getFastSat());
     combos[ITEM_CBO_SMART_TONE]->setCurrentIndex(spo2Param.getSmartPulseTone());
     combos[ITEM_CBO_GAIN]->setCurrentIndex(spo2Param.getGain());
 }
@@ -69,6 +75,52 @@ void SPO2MenuContent::layoutExec()
     QLabel *label;
     int itemID;
 
+    // 平均时间
+    label = new QLabel(trs("AverageTime"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    for (int i = 0; i < SPO2_AVER_TIME_NR; i++)
+    {
+        comboBox->addItem(SPO2Symbol::convert((AverageTime)i));
+    }
+    itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_AVERAGE_TIME);
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_AVERAGE_TIME, comboBox);
+
+    // 灵敏度
+    label = new QLabel(trs("Sensitivity"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    for (int i = 0; i < SPO2_MASIMO_SENS_NR; i++)
+    {
+        comboBox->addItem(trs(SPO2Symbol::convert((SensitivityMode)i)));
+    }
+    itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_SENSITIVITY);
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SENSITIVITY, comboBox);
+
+    // 快速血氧
+    label = new QLabel(trs("FastSat"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("Off")
+                       << trs("On")
+                      );
+    itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_FAST_SAT);
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_FAST_SAT, comboBox);
+
+    // 智能脉搏音
     label = new QLabel(trs("SPO2SmartPulseTone"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
@@ -83,6 +135,7 @@ void SPO2MenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SMART_TONE, comboBox);
 
+    // 增益
     label = new QLabel(trs("Gain"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
@@ -117,6 +170,15 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
             = (SPO2MenuContentPrivate::MenuItem) box->property("Item").toInt();
         switch (item)
         {
+        case SPO2MenuContentPrivate::ITEM_CBO_AVERAGE_TIME:
+            spo2Param.setAverageTime((AverageTime)index);
+            break;
+        case SPO2MenuContentPrivate::ITEM_CBO_SENSITIVITY:
+            spo2Param.setSensitivity((SensitivityMode)index);
+            break;
+        case SPO2MenuContentPrivate::ITEM_CBO_FAST_SAT:
+            spo2Param.setFastSat(static_cast<bool>(index));
+            break;
         case SPO2MenuContentPrivate::ITEM_CBO_SMART_TONE:
             spo2Param.setSmartPulseTone((SPO2SMARTPLUSETONE)index);
             break;

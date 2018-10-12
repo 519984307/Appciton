@@ -130,6 +130,12 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
         _getAlarmID(alarmSource, i, traceID);
         AlarmTraceCtrl *traceCtrl = &_getAlarmTraceCtrl(traceID);
 
+        if (_isInStandby)
+        {
+            traceCtrl->lastAlarmed = false;
+            _isLatchLock = false;
+        }
+
         TrendCacheData data;
         trendCache.getTendData(_timestamp, data);
         curValue = data.values[alarmSource->getSubParamID(i)];
@@ -801,6 +807,7 @@ Alarm::Alarm() : _isLatchLock(true)
     }
     _alarmStatusList.clear();
     _curAlarmStatus = ALARM_AUDIO_NORMAL;
+    _isInStandby = false;
 }
 
 /**************************************************************************************************
@@ -949,4 +956,9 @@ QString Alarm::getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot
 void Alarm::setLatchLockSta(bool status)
 {
     _isLatchLock = status;
+}
+
+void Alarm::updateStandbyMode(bool isEnable)
+{
+    _isInStandby = isEnable;
 }

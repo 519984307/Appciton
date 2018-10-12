@@ -328,10 +328,6 @@ static void _initProviderParam(void)
         {
             paramManager.addProvider(*new MasimoSetProvider());
         }
-        else if (str == "BLM_TS3")
-        {
-            paramManager.addProvider(*new TS3Provider());
-        }
         else if (str == "BLM_S5")
         {
             paramManager.addProvider(*new S5Provider());
@@ -489,11 +485,7 @@ static void _initProviderParam(void)
     {
         QString str;
         machineConfig.getStrValue("TEMP", str);
-        if (str == "BLM_TT3")
-        {
-            paramManager.addProvider(*new TT3Provider());
-        }
-        else if (str == "BLM_T5")
+        if (str == "BLM_T5")
         {
             paramManager.addProvider(*new T5Provider());
         }
@@ -560,7 +552,6 @@ static void _initMenu(void)
     wiredWorkMaintainMenu.construction();
     othersMaintainMenu.construction();
     unitSetup.construction();
-    serviceErrorLogEntrance.construction();
 
     userMaintainManager.addSubMenu(&userMaintainGeneralSet);
     userMaintainManager.addSubMenu(&moduleMaintainMenu);
@@ -569,35 +560,6 @@ static void _initMenu(void)
     userMaintainManager.addSubMenu(&wiredWorkMaintainMenu);
     userMaintainManager.addSubMenu(&othersMaintainMenu);
     userMaintainManager.addSubMenu(&unitSetup);
-    userMaintainManager.addSubMenu(&serviceErrorLogEntrance);
-
-
-    factoryMaintainManager.construction();
-    softWareVersion.construction();
-    monitorInfo.construction();
-    machineConfigModule.construction();
-    factoryTestMenu.construction();
-    factoryDataRecord.construction();
-    factoryTempMenu.construction();
-    factorySystemInfoMenu.construction();
-    nibpCalibrationMenu.construction();
-    serviceUpdateEntrance.construction();
-
-    selectStarterLogo.construction();
-    factoryImportExportMenu.construction();
-
-    factoryMaintainManager.addSubMenu(&softWareVersion);
-    factoryMaintainManager.addSubMenu(&monitorInfo);
-    factoryMaintainManager.addSubMenu(&machineConfigModule);
-    factoryMaintainManager.addSubMenu(&factoryTestMenu);
-    factoryMaintainManager.addSubMenu(&factoryDataRecord);
-    factoryMaintainManager.addSubMenu(&factoryTempMenu);
-    factoryMaintainManager.addSubMenu(&factorySystemInfoMenu);
-    factoryMaintainManager.addSubMenu(&nibpCalibrationMenu);
-    factoryMaintainManager.addSubMenu(&serviceUpdateEntrance);
-    factoryMaintainManager.addSubMenu(&selectStarterLogo);
-    factoryMaintainManager.addSubMenu(&factoryImportExportMenu);
-
 
     // supervisorMenuManager
     supervisorMenuManager.construction();

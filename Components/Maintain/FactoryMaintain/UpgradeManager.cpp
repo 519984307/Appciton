@@ -37,7 +37,6 @@ enum UpgradeState
     STATE_WRITE_IMAGE_SEGMENT,
     STATE_WAIT_FOR_COMPLETE_MSG,
     STATE_REBOOT,
-    STATE_ERROR,
 };
 
 enum UpgradePacketType
@@ -67,6 +66,46 @@ enum UpgradePacketType
 
     UPGRADE_NOTIFY_UPGRADE_ALIVE = 0xFE, // upgrade moudle alive packet
 };
+
+enum UpgradeErrorType
+{
+    UPGRADE_ERR_NONE,
+    UPGRADE_ERR_NO_UDISK,
+    UPGRADE_ERR_NO_UPGRADE_FILE,
+    UPGRADE_ERR_NO_CHECKSUM_FILE,
+    UPGRADE_ERR_READ_FILE_FAIL,
+    UPGRADE_ERR_CHECKSUM_FAIL,
+    UPGRADE_ERR_MODULE_NOT_FOUND,
+    UPGRADE_ERR_MODULE_INITIALIZE_FAIL,
+    UPGRADE_ERR_MODULE_ERASE_FLASH_FAIL,
+    UPGRADE_ERR_IMAGE_FILE_UNMATCH,
+    UPGRADE_ERR_HARDWARE_VERION_UNMATCH,
+    UPGRADE_ERR_WRITE_ATTR_FAIL,
+    UPGRADE_ERR_WRITE_SEGMENT_FAIL,
+    UPGRADE_ERR_COMMUNICATION_FAIL,
+    UPGRADE_ERR_NR,
+};
+
+static const char *errorString(UpgradeErrorType errorType)
+{
+    static const char *errors[UPGRADE_ERR_NR] = {
+        "",
+        "UDiskNotFound",
+        "UpgradeFileNotFound",
+        "ChecksumFileNotFound",
+        "ReadFileFailed",
+        "ChecksumFailed",
+        "ModuleNotFound",
+        "ModuleInitializeFail",
+        "ModuleEraseFlashFail",
+        "ImageFileUnmatch",
+        "HardwareVersionUnmatch",
+        "WriteDeviceAttributeFail",
+        "WriteSegmentFail",
+        "CommunicationFail",
+    };
+    return errors[errorType];
+}
 
 enum ModuleState
 {
@@ -129,7 +168,7 @@ public:
      * @param result the upgrade result
      * @param error the upgrade error
      */
-    void upgradeExit(UpgradeManager::UpgradeResult result, UpgradeManager::UpgradeErrorType error);
+    void upgradeExit(UpgradeManager::UpgradeResult result, UpgradeErrorType error);
 
     /**
      * @brief handleAck handle the command ack response
@@ -308,16 +347,16 @@ QString UpgradeManagerPrivate::getProviderName(UpgradeManager::UpgradeModuleType
     return QString();
 }
 
-void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, UpgradeManager::UpgradeErrorType error)
+void UpgradeManagerPrivate::upgradeExit(UpgradeManager::UpgradeResult result, UpgradeErrorType error)
 {
 
     qdebug("Upgrade exit, result:%d, error:%d", result, error);
     type = UpgradeManager::UPGRADE_MOD_NONE;
     state = STATE_IDLE;
 
-    if (error != UpgradeManager::UPGRADE_ERR_NONE)
+    if (error != UPGRADE_ERR_NONE)
     {
-        emit q_ptr->upgradeError(error);
+        emit q_ptr->upgradeInfoChanged(trs(errorString(error)));
     }
 
     emit q_ptr->upgradeResult(result);
@@ -377,19 +416,19 @@ void UpgradeManagerPrivate::hanleNack(unsigned char *data, int len)
     case STATE_REQUEST_ENTER_UPGRADE_MODE:
         if (data[0] == UPGRADE_CMD_REQUEST_ENTER)
         {
-            upgradeExit(UpgradeManager::UPGRADE_FAIL, UpgradeManager::UPGRADE_ERR_COMMUNICATION_FAIL);
+            upgradeExit(UpgradeManager::UPGRADE_FAIL, UPGRADE_ERR_COMMUNICATION_FAIL);
         }
         break;
     case STATE_REQUEST_SEND_DATA:
         if (data[0] == UPGRADE_CMD_REQUEST_SEND)
         {
-            upgradeExit(UpgradeManager::UPGRADE_FAIL, UpgradeManager::UPGRADE_ERR_COMMUNICATION_FAIL);
+            upgradeExit(UpgradeManager::UPGRADE_FAIL, UPGRADE_ERR_COMMUNICATION_FAIL);
         }
         break;
     case STATE_WRITE_HARDWARE_ATTRIBUTE:
         if (data[0] == UPGRADE_CMD_HW_ATTR)
         {
-            upgradeExit(UpgradeManager::UPGRADE_FAIL, UpgradeManager::UPGRADE_ERR_COMMUNICATION_FAIL);
+            upgradeExit(UpgradeManager::UPGRADE_FAIL, UPGRADE_ERR_COMMUNICATION_FAIL);
         }
         break;
     default:
@@ -432,12 +471,15 @@ void UpgradeManagerPrivate::handleStateChanged(ModuleState modState)
     switch (modState)
     {
     case MODULE_STAT_BOOTLOADER_START:
+        emit q_ptr->upgradeInfoChanged(trs("BootloaderStart"));
         qDebug() << q_ptr->getUpgradeModuleName(type) << "bootlaoder start";
         break;
     case MODULE_STAT_APPLICANT_START:
+        emit q_ptr->upgradeInfoChanged(trs("BootloaderStartApplication"));
         qDebug() << q_ptr->getUpgradeModuleName(type) << "application start";
         break;
     case MODULE_STAT_REQUEST_IMAGE_SEGMENT:
+        emit q_ptr->upgradeInfoChanged(trs("RequestSendImageSegment"));
         qDebug() << q_ptr->getUpgradeModuleName(type) << "request image segment";
         if (state == STATE_WAIT_FOR_REQUEST_IMAGE)
         {
@@ -447,40 +489,42 @@ void UpgradeManagerPrivate::handleStateChanged(ModuleState modState)
         }
         break;
     case MODULE_STAT_WRITE_UPGRADE_FLAG_FAIL:
-        upgradeExit(UpgradeManager::UPGRADE_FAIL, UpgradeManager::UPGRADE_ERR_MODULE_INITIALIZE_FAIL);
+        upgradeExit(UpgradeManager::UPGRADE_FAIL, UPGRADE_ERR_MODULE_INITIALIZE_FAIL);
         break;
     case MODULE_STAT_ERASE_FLASH:
+        emit q_ptr->upgradeInfoChanged(trs("EraseFlash"));
         qDebug() << q_ptr->getUpgradeModuleName(type) << "Start earse flash";
         break;
     case MODULE_STAT_ERASE_FLASH_FAIL:
         qDebug() << q_ptr->getUpgradeModuleName(type) << "Erase flash fail";
-        upgradeExit(UpgradeManager::UPGRADE_FAIL, UpgradeManager::UPGRADE_ERR_MODULE_ERASE_FLASH_FAIL);
+        upgradeExit(UpgradeManager::UPGRADE_FAIL, UPGRADE_ERR_MODULE_ERASE_FLASH_FAIL);
         break;
     case MODULE_STAT_IMAGE_NAME_UNMATCH:
         qDebug() << q_ptr->getUpgradeModuleName(type) << "Image name unmatch";
-        upgradeExit(UpgradeManager::UPGRADE_FAIL, UpgradeManager::UPGRADE_ERR_IMAGE_NAME_UNMATCH);
+        upgradeExit(UpgradeManager::UPGRADE_FAIL, UPGRADE_ERR_IMAGE_FILE_UNMATCH);
         break;
     case MODULE_STAT_HARDWARE_VER_UNMATCH:
         qDebug() << q_ptr->getUpgradeModuleName(type) << "hardware version unmatch";
-        upgradeExit(UpgradeManager::UPGRADE_FAIL, UpgradeManager::UPGRADE_ERR_HARDWARE_VERION_UNMATCH);
+        upgradeExit(UpgradeManager::UPGRADE_FAIL, UPGRADE_ERR_HARDWARE_VERION_UNMATCH);
         break;
     case MODULE_STAT_WRITE_DEVICE_ATTR_FAIL:
         qDebug() << q_ptr->getUpgradeModuleName(type) << "write device attritube fail";
-        upgradeExit(UpgradeManager::UPGRADE_FAIL, UpgradeManager::UPGRADE_ERR_WRITE_ATTR_FAIL);
+        upgradeExit(UpgradeManager::UPGRADE_FAIL, UPGRADE_ERR_WRITE_ATTR_FAIL);
         break;
     case MODULE_STAT_IMAGE_SEQ_ERROR:
         qDebug() << q_ptr->getUpgradeModuleName(type) << "image sequence number error";
-        upgradeExit(UpgradeManager::UPGRADE_FAIL, UpgradeManager::UPGRADE_ERR_COMMUNICATION_FAIL);
+        upgradeExit(UpgradeManager::UPGRADE_FAIL, UPGRADE_ERR_COMMUNICATION_FAIL);
         break;
     case MODULE_STAT_WRITE_IMAGE_SEGMENT_FAIL:
         qDebug() << q_ptr->getUpgradeModuleName(type) << "write image segment fail";
-        upgradeExit(UpgradeManager::UPGRADE_FAIL, UpgradeManager::UPGRADE_ERR_WRITE_SEGMENT_FAIL);
+        upgradeExit(UpgradeManager::UPGRADE_FAIL, UPGRADE_ERR_WRITE_SEGMENT_FAIL);
         break;
     case MODULE_STAT_WRITE_UPGRADE_COMPLETE:
         qDebug() << q_ptr->getUpgradeModuleName(type) << "upgrade complete";
         if (state == STATE_WAIT_FOR_COMPLETE_MSG || state == STATE_WRITE_IMAGE_SEGMENT)
         {
-            upgradeExit(UpgradeManager::UPGRADE_SUCCESS, UpgradeManager::UPGRADE_ERR_NONE);
+            emit  q_ptr->upgradeInfoChanged(trs("WriteImageComplete"));
+            upgradeExit(UpgradeManager::UPGRADE_SUCCESS, UPGRADE_ERR_NONE);
         }
         break;
     default:
@@ -624,10 +668,12 @@ void UpgradeManager::upgradeProcess()
         break;
 
     case STATE_CHECK_FILE:
+        emit upgradeInfoChanged(trs("CheckUpgradeFile"));
         if (d_ptr->checkUpgradeFile())
         {
             if (d_ptr->type == UPGRADE_MOD_HOST)
             {
+                system("fw_setenv maspro_user_mode 1 && sync");
                 d_ptr->state = STATE_REBOOT;
             }
             else
@@ -645,6 +691,7 @@ void UpgradeManager::upgradeProcess()
 
     case STATE_CHECKSUM:
     {
+        emit upgradeInfoChanged(trs("CalculateChecksum"));
         QString dirname = usbManager.getUdiskMountPoint() + UPGRADE_FILES_DIR;
         QString filename = dirname + d_ptr->getUpgradeFile();
         QFile f(filename);
@@ -675,6 +722,7 @@ void UpgradeManager::upgradeProcess()
 
     case STATE_REQUEST_ENTER_UPGRADE_MODE:
     {
+        emit upgradeInfoChanged(trs("RequestEnterUpgradeMode"));
         d_ptr->provider = BLMProvider::findProvider(d_ptr->getProviderName(d_ptr->type));
         if (!d_ptr->provider)
         {
@@ -690,6 +738,7 @@ void UpgradeManager::upgradeProcess()
 
     case STATE_REQUEST_SEND_DATA:
     {
+        emit upgradeInfoChanged(trs("RequestSendData"));
         d_ptr->provider->sendCmd(UPGRADE_CMD_REQUEST_SEND, NULL, 0);
         d_ptr->noResponseTimer->start(1000);
     }
@@ -705,6 +754,7 @@ void UpgradeManager::upgradeProcess()
 
     case STATE_WRITE_HARDWARE_ATTRIBUTE:
     {
+        emit upgradeInfoChanged(trs("WriteDeviceAttribute"));
         char data[49];
         data[0] = 0x1; // write attr
         // module name
@@ -718,11 +768,20 @@ void UpgradeManager::upgradeProcess()
 
     case STATE_WRITE_IMAGE_SEGMENT:
     {
+        if (d_ptr->segmentSeq == 0)
+        {
+            emit upgradeInfoChanged(trs("WriteImageData"));
+        }
+
         QByteArray segment = d_ptr->getImageSegment(d_ptr->segmentSeq);
         d_ptr->provider->sendCmd(UPGRADE_CMD_SEGMENT,
                                  reinterpret_cast<const unsigned char *>(segment.constData()),
                                  segment.length());
         d_ptr->noResponseTimer->start(1000);
+
+        int count = (d_ptr->fileContent.size() + 127) / 128;
+        emit upgradeProgressChanged(d_ptr->segmentSeq * 100 / count);
+
         qdebug("write segment %d", d_ptr->segmentSeq);
     }
     break;
@@ -732,10 +791,10 @@ void UpgradeManager::upgradeProcess()
         d_ptr->noResponseTimer->start(1000);
     }
     break;
-    case STATE_REBOOT:
-        break;
 
-    case STATE_ERROR:
+    case STATE_REBOOT:
+        emit upgradeResult(UPGRADE_REBOOT);
+        d_ptr->noResponseTimer->start(3000);
         break;
 
     default:
@@ -806,6 +865,10 @@ void UpgradeManager::noResponseTimeout()
     case STATE_WAIT_FOR_COMPLETE_MSG:
         // too long to receive the complete message
         d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_COMMUNICATION_FAIL);
+        break;
+
+    case STATE_REBOOT:
+        system("reboot");
         break;
     default:
         break;

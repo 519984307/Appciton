@@ -21,7 +21,6 @@
 #include "IConfig.h"
 #include "PatientManager.h"
 #include "SystemManager.h"
-#include "WiFiProfileMenuContent.h"
 
 #define TIMER_INTERVAL     (1000) // 1s
 #define AUTO_START_WIFI_TIME    (5*1000) // auto start wifi after 5s from start up if the wifi is configured on

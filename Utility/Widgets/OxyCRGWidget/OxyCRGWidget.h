@@ -97,7 +97,7 @@ private slots:
 signals:
     void _intervalChanged(int index);
 private:
-    static const int _titleBarHeight = 15;
+    static const int _titleBarHeight = 24;
     static const int _labelHeight = 40;
     QVBoxLayout *_mainLayout;
     QVBoxLayout *_hLayoutWave;

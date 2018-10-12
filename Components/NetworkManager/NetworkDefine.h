@@ -120,13 +120,13 @@ enum ApStatus
 struct ApInfo
 {
     ApInfo()
+        :signalLevel(0),
+          encType(OPEN_AP),
+          status(AP_UNCONNECTED),
+          isSaved(false),
+          netId(-1),
+          updateFlag(-1)
     {
-        signalLevel = 0;
-        encType = OPEN_AP;
-        status = AP_UNCONNECTED;
-        isSaved = false;
-        netId = -1;
-        updateFlag = -1;
     }
 
     QString ssid;           // ssid
@@ -151,7 +151,7 @@ typedef struct
     int netId;            // 当前接入点的网络Id（如果已保存密码）
 } ConnectApInfo;
 
-//连接认证类型
+// 连接认证类型
 enum MailConnectSecurity
 {
     MAIL_CONNECT_SECURITY_NONE,

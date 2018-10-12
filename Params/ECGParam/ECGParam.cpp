@@ -284,6 +284,9 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
     // 设置工频滤波。
     _provider->setNotchFilter(getNotchFilter());
 
+    // 发送获取版本
+    _provider->sendVersion();
+
     // enable data sync
     _provider->enableDataSyncCtrl(true);
 

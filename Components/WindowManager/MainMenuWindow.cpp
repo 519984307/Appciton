@@ -11,16 +11,14 @@
 #include "MainMenuWindow.h"
 #include "SystemManager.h"
 #include "AlarmLimitMenuContent.h"
-#include "WiFiProfileMenuContent.h"
-#include "SystemMenuContent.h"
+#include "RoutineFunctionMenuContent.h"
 #include "LoadConfigMenuContent.h"
 #include "ScreenMenuContent.h"
-#include "SystemNightModeMenuContent.h"
 #include "DataReviewMenuContent.h"
-#include "SystemMaintenance.h"
-#include "CalculateMenuContent.h"
+#include "SystemMaintenanceMenuContent.h"
 #include "PrintSettingMenuContent.h"
 #include "MeasureSettingMenuContent.h"
+#include "PatientManagementMenuContent.h"
 
 MainMenuWindow *MainMenuWindow::getInstance()
 {
@@ -30,20 +28,16 @@ MainMenuWindow *MainMenuWindow::getInstance()
         instance = new MainMenuWindow;
 
         // initialize the window content
+        instance->addMenuContent(new PatientManagementMenuContent);
         instance->addMenuContent(new AlarmLimitMenuContent);
-        if (systemManager.isSupport(CONFIG_WIFI))
-        {
-            instance->addMenuContent(new WiFiProfileMenuContent);
-        }
-        instance->addMenuContent(new SystemNightModeMenuContent);
-        instance->addMenuContent(new ScreenMenuContent);
-        instance->addMenuContent(new LoadConfigMenuContent);
         instance->addMenuContent(new DataReviewMenuContent);
-        instance->addMenuContent(new CalculateMenuContent);
+        instance->addMenuContent(new ScreenMenuContent);
         instance->addMenuContent(new PrintSettingMenuContent);
         instance->addMenuContent(new MeasureSettingMenuContent);
-        instance->addMenuContent(new SystemMaintenance);
-        instance->addMenuContent(new SystemMenuContent);
+        instance->addMenuContent(new SystemMaintenanceMenuContent);
+        instance->addMenuContent(new LoadConfigMenuContent);
+
+        instance->addMenuContent(new RoutineFunctionMenuContent);
     }
 
     return instance;

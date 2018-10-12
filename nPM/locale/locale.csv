@@ -32,7 +32,7 @@ UserFaceCustom,自定义,Custom
 UserFaceUnknow,未知,Unknow
 ECG,ECG,ECG
 HR,心率,HR
-HR_PR,心率/脉率,HR/PR
+HR_PR,HR/PR,HR/PR
 ST-I,ST-I,ST-I
 ST-II,ST-II,ST-II
 ST-III,ST-III,ST-III
@@ -98,7 +98,7 @@ ParameterColor,参数颜色,Parameter Color
 ParameterColorDesc,参数颜色设置,Parameter Color Desc
 RR,呼吸率,RR
 BR,呼吸率,BR
-RR_BR,呼吸率,RR/BR
+RR_BR,RR/BR,RR/BR
 Close,关闭,Close
 Back,后退,Back
 PatientID,病人ID,Patient ID
@@ -111,7 +111,7 @@ PatientHeight,身高,Height
 PatientMenu,病人,Patient
 ECGLeadMode,导联模式,Lead Mode
 ECGDisplayMode,显示模式,Display Mode
-ECGCalcLead,计算导联,Calculation Lead
+ECGCalcLead,计算导联,Calc. Lead
 ECGBandwidth,带宽,Bandwidth
 ECGGain,增益,Gain
 ECGPacemaker,起搏器,Pacemaker
@@ -142,7 +142,11 @@ TachyPVC,室速PVC,Tachy PVC
 BradyPVC,室缓PVC,Brady PVC
 MultifPVC,多形PVC,Multif PVC
 STMenu,ST,ST
+AverageTime,平均时间,Average Time
+Normal,正常,Normal
+MaxSensitivity,高灵敏,High
 SPO2Sensitivity,灵敏度,Sensitivity
+FastSat,快速血氧,Fast SAT
 ConfigEditSpO2Menu,血氧,SPO2
 SPO2SmartPulseTone,智能脉搏音,Smart Pulse Tone
 ConfigEditIBPMenu,有创血压,IBP
@@ -224,13 +228,25 @@ ECGHRPRSourceECG,ECG,ECG
 ECGHRPRSourceSPO2,SPO2,SPO2
 HR_PRSource,HR_PR来源,HR_PR Source
 CO2Setting,CO2设置,CO2 Setting
+PatientManager,病人管理,Patient Manager
+PatientManagerDesc,病人管理,Patient Manager Desc
+PatientInfo,病人信息,Patient Info
+NewPatient,新建病人,New Patient
+RoutineFunctionMenu,常规功能,Routine Function Menu
+RoutineFunctionMenuDesc,常规功能,Routine Function Menu Desc
+Calculate,计算,Calculate
+WiFiProfile,WiFi配置,WiFi Profile
+MachineVersion,机器版本,Machine Version
+Standy,待机,Standy
+CalculateWindow,计算,Calculate Window
+PressAnyKeysToExit,请按压任何按键退出待机模式,Press Any Keys To Exit
 TEMP2Low,体温2低,TEMP2 Low
 TEMP2High,体温2高,TEMP2 High
 TEMPTDLow,体温差低,ΔT Low
 TEMPTDHigh,体温差高,ΔT High
 TEMP1SensorOff,体温1探头脱落,TEMP1 Sensor Off
-PrintSettingMenu,打印设置,PrintSettingMenu
-PrintSettingMenuDesc,打印设置,PrintSettingMenuDesc
+PrintSettingMenu,打印设置,Print Setting
+PrintSettingMenuDesc,打印设置,Print Setting Desc
 PrintTime,实时打印时间,PrintTime
 ClearPrintTask,清除打印任务,ClearPrintTask
 Continous,连续,Continous
@@ -254,7 +270,6 @@ AlarmLimitMenuDesc,报警限设置,Alarm Limit Setting
 PrintSpeed,打印速度,Print Speed
 PrintNumOfTraces,打印波形数量,Number Of Print Traces
 PrintAlarmTriger,报警触发,Alarm Trigger
-PrintDefibTriger,除颤触发,Defib Trigger
 Print12LeadFormat,12导格式,12-Lead Format
 PrintSetup,打印设置,Print Setup
 SystemAlarmVolume,报警音量,Alarm Audio Volume
@@ -274,7 +289,6 @@ IBPMenuDesc,IBP设置,IBP Desc
 COMenuDesc,C.O.设置,C.O. Desc
 RESPAndCO2Menu,RESP和CO2,RESP & CO2
 RESPAndCO2MenuDesc,RESP和CO2设置,RESP & CO2 Setting
-CPRMenuDesc,CPR设置,CPR Setting
 TEMPMenuDesc,TEMP设置,TEMP Setting
 AGMenuDesc,AG设置,AG Setting
 AlarmSettingMenuDesc,报警设置,Alarm Setting
@@ -652,51 +666,36 @@ ServiceCalibrateZero,校零,Calibrate Zero
 NIBPCalibrateZeroModel,校零模式,NIBP Calibrate Zero Model
 NIBPCalibrateZero,校零模式,NIBP Calibrate Zero 
 ServiceStart,开始,Start
+Upgrade,升级,Upgrade
 UpgradeModule,升级模块,Upgrade Module
 UpgradeStart,开始,Start
-ModuleUpgradeStart,模块开始升级,Module Upgrade Start
-UpgradeReturn,返回,Return
-UpgradeTimeout,超时,Timeout
-UpgradeCommunicationInterrupt,通信中断,Communication Interrupt
-UpgradeInit,升级初始化中,Upgrade Init
-UpgradeInitFailure,升级初始化失败,Upgrade Init Failure
-UpgradeInitSuccess,升级初始化成功,Upgrade Init Success
-UPGRADECLEARING,清除中,Upgrade Clearing
-UpgradeClearFailure,清除失败,Upgrade Clear Failure
-UpgradeClearSuccess,清除成功,Upgrade Clear Success
 UpgradeSuccess,升级成功,Upgrade Success
 UpgradeFailure,升级失败,Upgrade Failure
-UpgradeInterrupt,升级中断,Upgrade Interrupt
-UpgradeProgressing,升级进行中,Upgrade Progressing
-UpgradeReadFailure,读取失败,Upgrade Read Failure
-UpgradeReadSuccess,读取成功,Upgrade Read Success
-UpgradeFileReadError,文件读取错误,Upgrade File Read Error
-UpgradeFileReadLastError,文件最后片段读取错误,Upgrade File Read Last Error
-UpgradePowerOffReset,请断电重启,Please Power Off and Reset
-UpgradeOpenFail,打开失败,open fail
-UpgradeEntering,进入升级模式中,Enter Upgrade Mode
-UpgradeEnterFailure,进入升级模式失败,Enter Upgrade Mode Failure
-UpgradeEnterSuccess,进入升级模式成功,Enter Upgrade Mode Success
-UpgradeCompilateError,升级文件编译错误,Upgrade File Compilate Error
-UpgradeVersionNumber,版本号,Num
-UpgradeSoftwareNumber,软件版本号,SoftwareNum
-UpgradeHardwareNumber,硬件版本号,HardwareNum
-UpgradeFindImage,升级镜像搜索中……,Find Image …
-UPGRADEBLMLOADERSTART,BLMLoader启动,Upgrade BLMLoader Start
-UPGRADEBLMLOADERLOAD,BLMLoader加载应用程序,Upgrade BLMLoader Load
-UPGRADEIMAGETRANSFERRING,文件传输,Upgrade Image Transferring
-UPGRADESIGNFAIL,升级标志失败,Upgrade Sign Fail
-UPGRADECLEARSTART,开始擦除FLASH,Upgrade Clear Start
-UPGRADECLEARFAIL,FLASH擦除失败,Upgrade Clear Failure
-UPGRADESOFTWARENUMERROR,软件镜像名称不匹配,Upgrade Software Num Error
-UPGRADEHARDWARENUMERROR,硬件版本不匹配,Upgrade Hardware Num Error
-UPGRADEVERSIONWRITEFAIL,写硬件版本到FLASH失败,Upgrade Version Write Fail
-UPGRADEFILENUMBERERROR,文件片段的序号错误,Upgrade File Num Error
-UPGRADEFILEFLASHFAIL,写文件片段到FLASH失败,Upgrade File Write to Flash Error
-UpgradeWarningNoImportFile,没有升级镜像文件,Warning No Import File
-UpgradeWarningNoImportFolder,没有升级镜像文件夹,Warning No Import Folder
-UpgradeiDMWillRestartPleasedonotpoweroff,设备将重启，请勿断电,iDM will restart. Please do not power off.
-SystemWillRestartPleasedonotpoweroff,设备将重启，请勿断电,System will restart. Please do not power off.
+SystemWillRestartPleaseDoNotPowerOff,设备将重启，请勿断电,System will restart. Please do not power off.
+BootloaderStart,Bootloader启动,Bootloader start
+BootloaderStartApplication,Bootloader启动应用程序,Bootloader start application
+RequestSendImageSegment,请求镜像发送文件片段,Request send image segments
+EraseFlash,擦除Flash,Erase Flash
+WriteImageComplete,镜像文件写入完成,Write image complete
+CheckUpgradeFile,检查升级文件,Check upgrade file
+CalculateChecksum,计算检验和,Calculate checksum
+RequestEnterUpgradeMode,请求进入升级模式,Request enter upgrade mode
+RequestSendData,请求发送数据,Request send data
+WriteDeviceAttribute,写入设备属性,Write device attritube
+WriteImageData,写入镜像文件数据,Write image data
+UdiskNotFound,未检测到U盘,USB Disk not found
+UpgradeFileNotFound,未检测到升级文件,Upgrade file not found
+ChecksumFileNotFound,未检测到校验文件,Checksum file not found
+ReadFileFailed,读取文件失败,Read file fail
+ChecksumFailed,检验和错误,Checksum fail
+ModuleNotFound,未检测到模块,Module not found
+ModuleInitializeFail,模块初始化失败,Module initialize fail
+ModuleEraseFlashFail,模块擦除Flash失败,Module erase flash fail
+ImageFileUnmatch,镜像文件不匹配,Image file unmatch
+HardwareVersionUnMatch,硬件版本不匹配,Hardware version unmatch
+WriteDeviceAttritueFail,写设备属性失败,Write device attribute fail
+WriteSegmentFail,写入片段失败,Write segment fail
+CommunicationFail,通讯失败,Communication fail
 ServiceSystem,服务系统,Service System
 ServiceVersion,版本,Version
 ServiceCPUTemp,CPU温度,CPU Temp
@@ -796,6 +795,9 @@ DayMonthYear,日/月/年,DD/MM/YYYY
 SupervisorTimeFormat,时间格式,Time Format
 SupervisorDisplaySec,显示秒,Display Second
 SupervisorCodeMarker,代码标记,Code Marker
+Monitor,监护,Monitor
+Diagnostic,诊断,Diagnostic
+Surgery,手术,Surgery
 SupervisorCodeMarkerDesc,代码标记设置,Code Marker Setting
 SupervisorMonitorLead,监护模式导联,Default ECG Lead In Monitor Mode
 SupervisorLeadNameConvention,导联命名协议,ECG Lead Convention
@@ -950,7 +952,6 @@ RecorderAction,记录仪,Recorder Action
 PrinterDoorOpened,打印机仓门未关,Printer Door Opened
 PrinterOutOfPaper,打印机缺纸,Printer Out Of Paper
 PrinterFault,打印机故障,Printer Fault
-DefibDisabled,除颤失效,Defib Disabled
 PacerDisabled,起搏失效,Pacer Disabled
 ReplaceBattery,替换电池,Replace Battery
 BatteryDisconnected,电池未连接,Battery Disconnected
@@ -970,7 +971,6 @@ Name,名字,Name
 EmailAddress,邮件地址,E-mail Address
 InvalidEmailAddress,无效邮件地址,Invalid E-mail Address
 Confirm,确认,Confirm
-ConfirmToMDefib,是否进入手动除颤模式?,You are about to Exit AED mode and Enter to Manual mode. Are you sure?
 USB,优盘,USB
 EMAIL,邮件,E-mail
 Transfer,传输,Transfer
@@ -1148,7 +1148,6 @@ ScreenModule,触摸屏模块,Screen Module
 NurseCallingModule,护士呼叫设置模块,Nurse Calling Module
 NurseCallingSettingWindow,护士呼叫设置窗口,Nurse Calling Setting Window
 AnalogOutputModule,模拟输出模块,Analog Output Module
-SYNCDefibrillationModule,同步除颤模块,SYNC Defibrillation Module
 COModule,一氧化碳模块,CO Module
 PHASEIN,PHASEIN,PHASEIN
 M601,M601,M601
@@ -1177,8 +1176,8 @@ ErrorLogExport,导出,Export
 ErrorLogInfo,信息,Info
 ServiceUpdateEntrance,更新模块,Service Update
 ServiceUpdateEntranceDesc,更新模块设置,Service Update Entrance Desc
-SoftWareVersionMenu,软件版本,SoftWare Version
-SoftWareVersionMenuDesc,软件版本设置,SoftWare Version Desc
+SoftWareVersionMenu,机器版本,SoftWare Version
+SoftWareVersionMenuDesc,机器版本,SoftWare Version Desc
 SystemSoftwareVersion,系统软件版本,System Software Version
 PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Version
 Uboot,系统引导文件,Uboot
@@ -1478,3 +1477,8 @@ IBPCOModule,IBP+CO模块,IBP+CO Module
 ShuttingDown,正在关机,Shutting Down
 StandardScreenLayout,标准界面界面布局,Standard Screen Layout
 BigFontScreenLayout,大字体界面界面布局,Big Font Screen Layout
+MinitrendSetup,短趋势设置,Minitrend Setup
+MinitrendLength,动态趋势时间,Minitrend Length
+SelectParameters,参数选择,Select Parameters
+Ok,确定,Ok
+RestoreDefault,恢复默认值,Defaluts

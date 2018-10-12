@@ -49,7 +49,7 @@
 		<EnterNightMode>0</EnterNightMode>
    </NightMode>
     <Unit>
-        <HightUnit>14</HightUnit>
+        <HeightUnit>14</HeightUnit>
         <WeightUnit>12</WeightUnit>
         <STUnit>11</STUnit>
         <PressureUnit>5</PressureUnit>
@@ -79,7 +79,6 @@
 		<ScreenModule>0</ScreenModule>
 		<NurseCallingModule>0</NurseCallingModule>
 		<AnalogOutputModule>0</AnalogOutputModule>
-		<SYNCDefibrillationModule>0</SYNCDefibrillationModule>
 		<COModule>0</COModule>
 	</MachineConfigModule>
 	<SoftWareVersion>
@@ -796,7 +795,7 @@
         <UILayout>
         <!-- 控件的顺序与上面的布局节点对应 -->
             <MainLayout direction="vertical" margin="0" spacing="0">
-                <LayoutItem height="40" direction="horizontal" spacing="0" bgcolor="#1e1e1e">
+                <LayoutItem height="45" direction="horizontal" spacing="0" bgcolor="#1e1e1e">
                     <LayoutItem stretch="1">PatientInfoWidget</LayoutItem>
                     <LayoutItem width="50">NightStatusBar</LayoutItem>
                     <LayoutItem width="50">PatientStatusBarWidget</LayoutItem>

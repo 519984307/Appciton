@@ -10,22 +10,33 @@
 
 #pragma once
 
-#include "MenuContent.h"
+#include "Window.h"
 #include "WiFiProfileEditor.h"
 #include <QScopedPointer>
 
-class WiFiProfileMenuContentPrivate;
-class WiFiProfileMenuContent: public MenuContent
+class WiFiProfileWindowPrivate;
+class WiFiProfileWindow: public Window
 {
     Q_OBJECT
 public:
-    ~WiFiProfileMenuContent();
-    WiFiProfileMenuContent();
+    ~WiFiProfileWindow();
+    WiFiProfileWindow();
+
+    /**
+     * @brief getCurrentWifiProfile  获取当前的wifi配置
+     * @return
+     */
     WiFiProfileInfo getCurrentWifiProfile() const;
 
-protected:
-    virtual void readyShow();
-    virtual void layoutExec();
+    /**
+     * @brief readyShow
+     */
+    void readyShow();
+    /**
+     * @brief layoutExec
+     */
+    void layoutExec();
+
 signals:
     void selectProfile(WiFiProfileInfo profile);
 
@@ -35,14 +46,14 @@ protected:
     void hideEvent(QHideEvent *e);
 
 private:
-    Q_DECLARE_PRIVATE(WiFiProfileMenuContent)
-    Q_DISABLE_COPY(WiFiProfileMenuContent)
+    Q_DECLARE_PRIVATE(WiFiProfileWindow)
+    Q_DISABLE_COPY(WiFiProfileWindow)
 
     Q_PRIVATE_SLOT(d_func(), void onProfileSelect(int))
     Q_PRIVATE_SLOT(d_func(), void onWifiConnected(const QString &ssid))
     Q_PRIVATE_SLOT(d_func(), void updateWifiProfileSlot(bool isEnabled))
     Q_PRIVATE_SLOT(d_func(), void onConfigUpdated(void))
 
-    const QScopedPointer<WiFiProfileMenuContentPrivate> d_ptr;
+    const QScopedPointer<WiFiProfileWindowPrivate> d_ptr;
 };
 

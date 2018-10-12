@@ -30,25 +30,6 @@ public:
         UPGRADE_MOD_TYPE_NR,
     };
 
-    enum UpgradeErrorType
-    {
-        UPGRADE_ERR_NONE,
-        UPGRADE_ERR_NO_UDISK,
-        UPGRADE_ERR_NO_UPGRADE_FILE,
-        UPGRADE_ERR_NO_CHECKSUM_FILE,
-        UPGRADE_ERR_READ_FILE_FAIL,
-        UPGRADE_ERR_CHECKSUM_FAIL,
-        UPGRADE_ERR_MODULE_NOT_FOUND,
-        UPGRADE_ERR_MODULE_INITIALIZE_FAIL,
-        UPGRADE_ERR_MODULE_ERASE_FLASH_FAIL,
-        UPGRADE_ERR_IMAGE_NAME_UNMATCH,
-        UPGRADE_ERR_HARDWARE_VERION_UNMATCH,
-        UPGRADE_ERR_WRITE_ATTR_FAIL,
-        UPGRADE_ERR_WRITE_SEGMENT_FAIL,
-        UPGRADE_ERR_COMMUNICATION_FAIL,
-        UPGRADE_ERR_NR,
-    };
-
     enum UpgradeResult {
         UPGRADE_SUCCESS,
         UPGRADE_REBOOT,     // need reboot to complete upgrade
@@ -78,7 +59,6 @@ public:
     void handlePacket(unsigned char *data, int len);
 
 signals:
-    void upgradeError(UpgradeErrorType error);
     void upgradeResult(UpgradeManager::UpgradeResult result);
     void upgradeInfoChanged(const QString &info);
     void upgradeProgressChanged(int value);

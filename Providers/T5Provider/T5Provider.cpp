@@ -14,7 +14,6 @@
 #include <QString>
 #include "crc8.h"
 #include "SystemManager.h"
-#include "BLMEDUpgradeParam.h"
 #include "ServiceVersion.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"

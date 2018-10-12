@@ -61,6 +61,21 @@ public:
      */
     ShortTrendDuration getTrendDuration() const;
 
+    /**
+     * @brief getShortTrendList 获得当前短趋势列表
+     * @param ids
+     */
+    void getShortTrendList(QList<SubParamID> &ids);
+
+    /**
+     * @brief getDefaultTrendList 获得默认的短趋势列表
+     * @param defaultTrendList
+     */
+    void getDefaultTrendList(QList<SubParamID> &defaultTrendList);
+    void updateDefautlTrendList();
+
+private slots:
+    void onReleased();
 private:
     ShortTrendContainerPrivate *const d_ptr;
 };

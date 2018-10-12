@@ -41,7 +41,7 @@ void ConfigEditUnitSetupMenu::_hightUnitSlot(int index)
     {
         index = UNIT_INCH;
     }
-    systemConfig.setNumValue("Unit|HightUnit", index);
+    systemConfig.setNumValue("Unit|HeightUnit", index);
 }
 
 /**************************************************************************************************
@@ -195,7 +195,7 @@ void ConfigEditUnitSetupMenu::_co2UnitSlot(int index)
 void ConfigEditUnitSetupMenu::_loadOptions(void)
 {
     int index  = 0;
-    systemConfig.getNumValue("Unit|HightUnit", index);
+    systemConfig.getNumValue("Unit|HeightUnit", index);
 
     _hightUnit->setCurrentItem(trs(Unit::getSymbol(UnitType(index))));
 
@@ -260,7 +260,7 @@ void ConfigEditUnitSetupMenu::layoutExec(void)
     int labelWidth = itemW - btnWidth;
 
 
-    _hightUnit = new IComboList(trs("HightUnit"));
+    _hightUnit = new IComboList(trs("HeightUnit"));
     _hightUnit->setFont(defaultFont());
     _hightUnit->addItem(trs(Unit::getSymbol(UnitType(UNIT_CM))));
     _hightUnit->addItem(trs(Unit::getSymbol(UnitType(UNIT_INCH))));

@@ -42,7 +42,6 @@
 #include "IBPParam.h"
 #include "IConfig.h"
 #include "NightModeManager.h"
-#include "UpgradeWindow.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -53,7 +52,7 @@ static KeyActionDesc _baseKeys[] =
                     , SOFT_BASE_KEY_NR, true, QColor(255, 200, 0)),
     KeyActionDesc("", trs("Patient"), "PatientInfo.png", SoftkeyActionBase::patientInfo),
     KeyActionDesc("", trs("PatientNew"), "PatientNew.png", SoftkeyActionBase::patientNew),
-    KeyActionDesc("", trs("ECGLeadMode"), "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
+    KeyActionDesc("", trs("ECGCalcLead"), "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
     KeyActionDesc("", trs("AlarmSettingMenu"), "limitSet.png", SoftkeyActionBase::limitMenu),
     KeyActionDesc("", trs("CodeMarker"), "CodeMarker.png", SoftkeyActionBase::codeMarker),
     KeyActionDesc("", trs("TrendGraph"), "Summary.png", SoftkeyActionBase::summaryReview),
@@ -95,10 +94,6 @@ void SoftkeyActionBase::codeMarker(bool isPressed)
     {
         return;
     }
-
-    UpgradeWindow upwin;
-    upwin.exec();
-    return;
 
     bool isVisible = codeMarkerWindow.isVisible();
     while (NULL != QApplication::activeModalWidget())

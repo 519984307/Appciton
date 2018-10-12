@@ -24,21 +24,6 @@
         <ICPUnit>5</ICPUnit>
         <CO2Unit>5</CO2Unit>
     </Unit>
-    <AED>
-        <StartWithCPR>0</StartWithCPR>
-        <PowerupToStartCPRDuration>1</PowerupToStartCPRDuration>
-        <RestartAnalysisAfterCPR>1</RestartAnalysisAfterCPR>
-        <StartWithCPRDuration>2</StartWithCPRDuration>
-        <StartWithCPRMessage>1</StartWithCPRMessage>
-        <EnableManualModePassword>0</EnableManualModePassword>
-        <ManualModePassword>0000</ManualModePassword>
-        <CPRDurationNoShock>2</CPRDurationNoShock>
-        <CPRMessageNoShock>0</CPRMessageNoShock>
-        <CPRDurationShock>2</CPRDurationShock>
-        <CPRMessageShock>0</CPRMessageShock>
-        <QRSPRTone>0</QRSPRTone>
-        <PhyAlarmVisualIndicator>1</PhyAlarmVisualIndicator>
-    </AED>
 	<OxyCRG>
 		<Trend1>1</Trend1>
 		<Trend2>0</Trend2>
@@ -55,17 +40,6 @@
 			<CO2High>0</CO2High>	
 		</Ruler>
 	</OxyCRG>
-    <CPR>
-        <EnableVoicePrompts>0</EnableVoicePrompts>
-        <EnableTextPrompts>1</EnableTextPrompts>
-        <EnableCPRMetronome>0</EnableCPRMetronome>
-        <AEDMetronome>0</AEDMetronome>
-        <MetronomeRate>105</MetronomeRate>
-        <TargetCompressionDepth>5.0</TargetCompressionDepth>
-        <CompressionDepthUnit>13</CompressionDepthUnit>
-        <EnableCPRMonitoring>1</EnableCPRMonitoring>
-        <CPRWaveformRecording>1</CPRWaveformRecording>
-    </CPR>
     <PACER>
         <DefaultPacerRate>70</DefaultPacerRate>
         <FixedRatePacing>1</FixedRatePacing>
@@ -144,10 +118,12 @@
 		<NeoInitialCuffInflation>3</NeoInitialCuffInflation>
     </NIBP>
     <SPO2>
+	<AverageTime>2</AverageTime>
         <Sensitivity>1</Sensitivity>
+	<FastSat>0</FastSat>
         <SmartPluseTone>1</SmartPluseTone>
         <WaveVelocity>2</WaveVelocity>
-        <Gain>3</Gain>
+        <Gain>0</Gain>
         <ModuleControl>1</ModuleControl>
     </SPO2>
     <CO2>
@@ -1300,7 +1276,6 @@
         <AGColor>Orange</AGColor>
         <IBPColor>Purple</IBPColor>
         <TEMPColor>Brown</TEMPColor>
-        <CPRBarGraphColor>Purple</CPRBarGraphColor>
         <!--do not modify-->
     </Display>
     <Print>
@@ -1313,7 +1288,6 @@
         <CoderMarker>0</CoderMarker>
         <NIBPReading>0</NIBPReading>
         <DiagnosticECG>1</DiagnosticECG>
-        <SummaryReportSnapshotPrintingInAED>0</SummaryReportSnapshotPrintingInAED>
         <Print30JSelfTestReport>0</Print30JSelfTestReport>
 	<PrintSpeed>0</PrintSpeed>
     </Print>

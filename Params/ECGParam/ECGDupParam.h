@@ -108,6 +108,8 @@ public:
      */
     bool isAutoTypeHrSouce(void) const;
 
+    /*remiplement*/
+    QList<SubParamID> getShortTrendList();
 private slots:
     void onPaletteChanged(ParamID id);
 

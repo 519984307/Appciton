@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/12
+ **/
+
+
+
 #include <unistd.h>
 #include <QFile>
 #include <QDir>
@@ -46,12 +58,12 @@ void MergeConfig::backupOldConfig()
 
 bool MergeConfig::checkAndMountConfigPartition()
 {
-    //check /proc/partitions
+    // check /proc/partitions
     QFile file("/proc/partitions");
-    if(file.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QByteArray data = file.readAll();
-        if(!data.contains("mmcblk0p3"))
+        if (!data.contains("mmcblk0p3"))
         {
             qdebug("No exist configuration partition.");
             return false;
@@ -65,23 +77,23 @@ bool MergeConfig::checkAndMountConfigPartition()
 
     file.close();
 
-    //check /proc/mounts
+    // check /proc/mounts
     file.setFileName("/proc/mounts");
-    if(file.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         QByteArray line;
-        while(true)
+        while (true)
         {
             line = file.readLine();
-            if(line.isEmpty())
+            if (line.isEmpty())
             {
                 break;
             }
-            else if(line.contains("mmcblk0p3"))
+            else if (line.contains("mmcblk0p3"))
             {
-                //already mount
-               _configPartitionMountPoint = line.split(' ').at(1);
-               return true;
+                // already mount
+                _configPartitionMountPoint = line.split(' ').at(1);
+                return true;
             }
         }
     }
@@ -92,31 +104,31 @@ bool MergeConfig::checkAndMountConfigPartition()
     }
     file.close();
 
-    //when we get here, we found the configuration partition, but partition haven't mount
+    // when we get here, we found the configuration partition, but partition haven't mount
 
-    //create the mount point
+    // create the mount point
     QDir dir(_configPartitionMountPoint);
-    if(!dir.exists())
+    if (!dir.exists())
     {
         dir.mkpath(_configPartitionMountPoint);
     }
-    //try to mount the partition
+    // try to mount the partition
     QString mountCmdStr = QString("mount /dev/mmcblk0p3 %1").arg(_configPartitionMountPoint);
     qdebug("try to mount configuration partition");
-    if(QProcess::execute(mountCmdStr) == QProcess::NormalExit)
+    if (QProcess::execute(mountCmdStr) == QProcess::NormalExit)
     {
         qdebug("Mount configuration partition success.");
         return true;
     }
     else
     {
-        //try to format the partition
+        // try to format the partition
         qdebug("mount failed, try to format configuration partition.");
         QString formatCmdStr("mkfs.ext4 /dev/mmcblk0p3");
         qdebug("try to mount configuration partition");
-        if(QProcess::execute(formatCmdStr) == QProcess::NormalExit)
+        if (QProcess::execute(formatCmdStr) == QProcess::NormalExit)
         {
-            if(QProcess::execute(mountCmdStr) == QProcess::NormalExit)
+            if (QProcess::execute(mountCmdStr) == QProcess::NormalExit)
             {
                 qdebug("Mount configuration partition success.");
                 return true;
@@ -213,7 +225,7 @@ void MergeConfig::_loadMachineConfig()
         return;
     }
 
-    bool ret = false;
+    bool ret;
     QString strValue;
     QString strOldValue;
     ret = machineConfig.getStrValue("PACEEnable", strValue);
@@ -333,7 +345,7 @@ void MergeConfig::_loadSystemConfig()
         return;
     }
 
-    bool ret = false;
+    bool ret;
     QString strValue;
     QString strOldValue;
     ret = systemConfig.getStrValue("ResetServiceAdvisedMesg", strValue);
@@ -354,7 +366,7 @@ void MergeConfig::_loadSupervisorConfig()
         return;
     }
 
-    //currentConfig.construction();
+    // currentConfig.construction();
     Config config(_bkSuperPath());
     if (config.getFileName() != _bkSuperPath())
     {
@@ -362,7 +374,7 @@ void MergeConfig::_loadSupervisorConfig()
     }
 
     QString str, str1;
-/*************************General****************************/
+    /*************************General****************************/
     bool bret = config.getStrValue("General|Password", str);
     bret &= currentConfig.getStrValue("General|Password", str1);
     if (bret && (str1 != str))
@@ -490,98 +502,6 @@ void MergeConfig::_loadSupervisorConfig()
         currentConfig.setStrValue("BasicDefib|PediatricShock3", str);
     }
 
-    /*************************AED****************************/
-    bret = config.getStrValue("AED|StartWithCPR", str);
-    bret &= currentConfig.getStrValue("AED|StartWithCPR", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("AED|StartWithCPR", str);
-    }
-
-    bret = config.getStrValue("AED|PowerupToStartCPRDuration", str);
-    bret &= currentConfig.getStrValue("AED|PowerupToStartCPRDuration", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("AED|PowerupToStartCPRDuration", str);
-    }
-
-    bret = config.getStrValue("AED|RestartAnalysisAfterCPR", str);
-    bret &= currentConfig.getStrValue("AED|RestartAnalysisAfterCPR", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("AED|RestartAnalysisAfterCPR", str);
-    }
-
-    bret = config.getStrValue("AED|StartWithCPRDuration", str);
-    bret &= currentConfig.getStrValue("AED|StartWithCPRDuration", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("AED|StartWithCPRDuration", str);
-    }
-
-    bret = config.getStrValue("AED|StartWithCPRMessage", str);
-    bret &= currentConfig.getStrValue("AED|StartWithCPRMessage", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("AED|StartWithCPRMessage", str);
-    }
-
-    bret = config.getStrValue("AED|EnableManualModePassword", str);
-    bret &= currentConfig.getStrValue("AED|EnableManualModePassword", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("AED|EnableManualModePassword", str);
-    }
-
-    bret = config.getStrValue("AED|ManualModePassword", str);
-    bret &= currentConfig.getStrValue("AED|ManualModePassword", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("AED|ManualModePassword", str);
-    }
-
-    bret = config.getStrValue("AED|CPRDurationNoShock", str);
-    bret &= currentConfig.getStrValue("AED|CPRDurationNoShock", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("AED|CPRDurationNoShock", str);
-    }
-
-    bret = config.getStrValue("AED|CPRMessageNoShock", str);
-    bret &= currentConfig.getStrValue("AED|CPRMessageNoShock", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("AED|CPRMessageNoShock", str);
-    }
-
-    bret = config.getStrValue("AED|CPRDurationShock", str);
-    bret &= currentConfig.getStrValue("AED|CPRDurationShock", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("AED|CPRDurationShock", str);
-    }
-
-    bret = config.getStrValue("AED|CPRMessageShock", str);
-    bret &= currentConfig.getStrValue("AED|CPRMessageShock", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("AED|CPRMessageShock", str);
-    }
-
-    bret = config.getStrValue("AED|QRSPRTone", str);
-    bret &= currentConfig.getStrValue("AED|QRSPRTone", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("AED|QRSPRTone", str);
-    }
-
-    bret = config.getStrValue("AED|PhyAlarmVisualIndicator", str);
-    bret &= currentConfig.getStrValue("AED|PhyAlarmVisualIndicator", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("AED|PhyAlarmVisualIndicator", str);
-    }
-
     /*************************PACER****************************/
     bret = config.getStrValue("PACER|DefaultPacerRate", str);
     bret &= currentConfig.getStrValue("PACER|DefaultPacerRate", str1);
@@ -595,70 +515,6 @@ void MergeConfig::_loadSupervisorConfig()
     if (bret && (str1 != str))
     {
         currentConfig.setStrValue("PACER|FixedRatePacing", str);
-    }
-
-    /*************************CPR****************************/
-    bret = config.getStrValue("CPR|EnableVoicePrompts", str);
-    bret &= currentConfig.getStrValue("CPR|EnableVoicePrompts", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("CPR|EnableVoicePrompts", str);
-    }
-
-    bret = config.getStrValue("CPR|EnableTextPrompts", str);
-    bret &= currentConfig.getStrValue("CPR|EnableTextPrompts", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("CPR|EnableTextPrompts", str);
-    }
-
-    bret = config.getStrValue("CPR|EnableCPRMetronome", str);
-    bret &= currentConfig.getStrValue("CPR|EnableCPRMetronome", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("CPR|EnableCPRMetronome", str);
-    }
-
-    bret = config.getStrValue("CPR|AEDMetronome", str);
-    bret &= currentConfig.getStrValue("CPR|AEDMetronome", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("CPR|AEDMetronome", str);
-    }
-
-    bret = config.getStrValue("CPR|MetronomeRate", str);
-    bret &= currentConfig.getStrValue("CPR|MetronomeRate", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("CPR|MetronomeRate", str);
-    }
-
-    bret = config.getStrValue("CPR|CompressionDepthUnit", str);
-    bret &= currentConfig.getStrValue("CPR|CompressionDepthUnit", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("CPR|CompressionDepthUnit", str);
-    }
-
-    bret = config.getStrValue("CPR|TargetCompressionDepth", str);
-    bret &= currentConfig.getStrValue("CPR|TargetCompressionDepth", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("CPR|TargetCompressionDepth", str);
-    }
-
-    bret = config.getStrValue("CPR|EnableCPRMonitoring", str);
-    bret &= currentConfig.getStrValue("CPR|EnableCPRMonitoring", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("CPR|EnableCPRMonitoring", str);
-    }
-
-    bret = config.getStrValue("CPR|CPRWaveformRecording", str);
-    bret &= currentConfig.getStrValue("CPR|CPRWaveformRecording", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("CPR|CPRWaveformRecording", str);
     }
 
     /*************************ECG****************************/
@@ -820,13 +676,6 @@ void MergeConfig::_loadSupervisorConfig()
         currentConfig.setStrValue("Alarm|AlarmOffAtPowerOn", str);
     }
 
-    bret = config.getStrValue("Alarm|NonAlertsBeepsInNonAED", str);
-    bret &= currentConfig.getStrValue("Alarm|NonAlertsBeepsInNonAED", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Alarm|NonAlertsBeepsInNonAED", str);
-    }
-
     /**************************报警限*****************************/
     for (int i = 0; i < PATIENT_TYPE_NEO; ++i)
     {
@@ -853,32 +702,32 @@ void MergeConfig::_loadSupervisorConfig()
             QStringList unitList;
             switch (j)
             {
-                case SUB_PARAM_NIBP_DIA:
-                case SUB_PARAM_NIBP_MAP:
-                case SUB_PARAM_NIBP_SYS:
-                {
-                    unitList<<Unit::getSymbol(UNIT_KPA)<<Unit::getSymbol(UNIT_MMHG);
-                    break;
-                }
+            case SUB_PARAM_NIBP_DIA:
+            case SUB_PARAM_NIBP_MAP:
+            case SUB_PARAM_NIBP_SYS:
+            {
+                unitList << Unit::getSymbol(UNIT_KPA) << Unit::getSymbol(UNIT_MMHG);
+                break;
+            }
 
-                case SUB_PARAM_ETCO2:
-                case SUB_PARAM_FICO2:
-                {
-                    unitList<<Unit::getSymbol(UNIT_KPA)<<Unit::getSymbol(UNIT_MMHG)<<Unit::getSymbol(UNIT_PERCENT);
-                    break;
-                }
+            case SUB_PARAM_ETCO2:
+            case SUB_PARAM_FICO2:
+            {
+                unitList << Unit::getSymbol(UNIT_KPA) << Unit::getSymbol(UNIT_MMHG) << Unit::getSymbol(UNIT_PERCENT);
+                break;
+            }
 
-                case SUB_PARAM_T1:
-                case SUB_PARAM_T2:
-                case SUB_PARAM_TD:
-                {
-                    unitList<<Unit::getSymbol(UNIT_TC)<<Unit::getSymbol(UNIT_TF);
-                    break;
-                }
+            case SUB_PARAM_T1:
+            case SUB_PARAM_T2:
+            case SUB_PARAM_TD:
+            {
+                unitList << Unit::getSymbol(UNIT_TC) << Unit::getSymbol(UNIT_TF);
+                break;
+            }
 
-                default:
-                    unitList<<Unit::getSymbol(paramInfo.getUnitOfSubParam((SubParamID)j));
-                    break;
+            default:
+                unitList << Unit::getSymbol(paramInfo.getUnitOfSubParam((SubParamID)j));
+                break;
             }
 
             foreach(QString unitStr, unitList)
@@ -1080,13 +929,6 @@ void MergeConfig::_loadSupervisorConfig()
     if (bret && (str1 != str))
     {
         currentConfig.setStrValue("Print|DiagnosticECG", str);
-    }
-
-    bret = config.getStrValue("Print|SummaryReportSnapshotPrintingInAED", str);
-    bret &= currentConfig.getStrValue("Print|SummaryReportSnapshotPrintingInAED", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("Print|SummaryReportSnapshotPrintingInAED", str);
     }
 
     bret = config.getStrValue("Print|Print30JSelfTestReport", str);

@@ -183,7 +183,6 @@ int DataDispatcher::sendData(DataDispatcher::PacketType type, const unsigned cha
         if (buff[j] == SOH)
         {
             sendBuf[i++] = buff[j];     // duplicated SOH
-            crc = crcDigest(crc, buff[j]);
         }
     }
 
