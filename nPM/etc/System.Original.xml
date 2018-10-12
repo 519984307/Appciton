@@ -49,7 +49,7 @@
 		<EnterNightMode>0</EnterNightMode>
    </NightMode>
     <Unit>
-        <HightUnit>14</HightUnit>
+        <HeightUnit>14</HeightUnit>
         <WeightUnit>12</WeightUnit>
         <STUnit>11</STUnit>
         <PressureUnit>5</PressureUnit>

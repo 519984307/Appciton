@@ -41,6 +41,8 @@ public:
         , infoChange(false)
         , patientNew(false)
         , relieveFlag(true)
+        , heightLbl(NULL)
+        , weightLbl(NULL)
     {}
 
     enum MenuItem
@@ -70,6 +72,8 @@ public:
     Button *weight;                  // 体重。
     Button *relievePatient;          // 病人信息获取
     Button *savePatientInfo;         // 保存病人信息
+    QLabel *heightLbl;
+    QLabel *weightLbl;
 
     bool infoChange;                 // settting has been change
     bool patientNew;                 // 新建病人标志
@@ -201,6 +205,19 @@ void PatientInfoWindowPrivate::loadOptions()
     buttons[ITEM_BTN_PATIENT_AGE]->setEnabled(true);
     buttons[ITEM_BTN_PATIENT_HEIGHT]->setEnabled(true);
     buttons[ITEM_BTN_PATIENT_WEIGHT]->setEnabled(true);
+
+    int unit;
+    systemConfig.getNumValue("Unit|HeightUnit", unit);
+    UnitType unitType = static_cast<UnitType>(unit);
+
+    heightLbl->setText(QString("%1(%2)").arg(trs("PatientHeight"))
+                       .arg(Unit::getSymbol(unitType)));
+
+    systemConfig.getNumValue("Unit|WeightUnit", unit);
+    unitType = static_cast<UnitType>(unit);
+
+    weightLbl->setText(QString("%1(%2)").arg(trs("PatientWeight"))
+                       .arg(Unit::getSymbol(unitType)));
 }
 
 PatientInfoWindow::PatientInfoWindow()
@@ -351,14 +368,11 @@ PatientInfoWindow::PatientInfoWindow()
     connect(d_ptr->age, SIGNAL(released()), this, SLOT(_ageReleased()));
 
     // Patient Height
-    int unit;
-    systemConfig.getNumValue("Unit|HightUnit", unit);
-    UnitType unitType = static_cast<UnitType>(unit);
-    label = new QLabel(QString("%1(%2)").arg(trs("PatientHeight"))
-                       .arg(Unit::getSymbol(unitType)));
+    label = new QLabel();
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 2);
+    d_ptr->heightLbl = label;
     d_ptr->height = new Button();
     d_ptr->height->setFixedWidth(250);
     d_ptr->height->setButtonStyle(Button::ButtonTextOnly);
@@ -372,13 +386,11 @@ PatientInfoWindow::PatientInfoWindow()
     connect(d_ptr->height, SIGNAL(released()), this, SLOT(_heightReleased()));
 
     // Patient Weight
-    systemConfig.getNumValue("Unit|WeightUnit", unit);
-    unitType = static_cast<UnitType>(unit);
-    label = new QLabel(QString("%1(%2)").arg(trs("PatientWeight"))
-                       .arg(Unit::getSymbol(unitType)));
+    label = new QLabel();
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 0);
+    d_ptr->weightLbl = label;
     d_ptr->weight = new Button();
     d_ptr->weight->setFixedWidth(250);
     d_ptr->weight->setButtonStyle(Button::ButtonTextOnly);
