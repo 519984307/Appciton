@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/12
+ **/
+
+
+
 #pragma once
 #include "SubMenu.h"
 #include "AlarmLimitMenu.h"
@@ -37,7 +49,6 @@ private slots:
     void _alarmOffAtPowerOnChangeSlot(int index);
     void _enableAlarmAudioOffChangeSlot(int index);
     void _enableAlarmOffChangeSlot(int index);
-//    void _nonAlertsBeepsInNonAEDSlot(int index);
     /**
      * @brief _pauseMaxAlarm15MinSlot 设置是否允许最大报警暂停15min方法
      * @param index
@@ -81,14 +92,13 @@ private:
     IComboList *_enableAlarmAudioOff;       // 使能报警声音关闭
     IComboList *_enableAlarmOff;            // 使能报警关闭
     IComboList *_alarmOffAtPowerOn;         // 开机报警关闭
-//    IComboList *_nonAlertsBeepsInNonAED;  // Non-alerts beeps in Non-AED modes
 
-    IComboList  *_isPauseMaxAlarm15Min;     //是否允许最大报警暂停15min
-//    IComboList  *_alarmVol;               //报警声音
-    IComboList  *_reminderTone;             //报警提示音
-    IComboList  *_reminderToneIntervals;    //报警提示音间隔时间
-    IComboList  *_alarmLightOnAlarmReset;   //报警复位时报警灯
-    LabelButton *_defaults;                 //恢复默认值
+    IComboList  *_isPauseMaxAlarm15Min;     // 是否允许最大报警暂停15min
+//    IComboList  *_alarmVol;               // 报警声音
+    IComboList  *_reminderTone;             // 报警提示音
+    IComboList  *_reminderToneIntervals;    // 报警提示音间隔时间
+    IComboList  *_alarmLightOnAlarmReset;   // 报警复位时报警灯
+    LabelButton *_defaults;                 // 恢复默认值
     IComboList *_boltLockComboList;         // 报警栓锁开关
 };
 #define alarmMaintainMenu (AlarmMaintainMenu::construction())

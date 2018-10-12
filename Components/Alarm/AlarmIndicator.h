@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/12
+ **/
+
+
+
 #pragma once
 #include "AlarmDefine.h"
 #include <QList>
@@ -106,8 +118,7 @@ private:
 private:
     AlarmAudioStatus _audioStatus;
     int _audioPauseTime;
-    bool _enableNonAlarmBeepsInNonAED;
-    const static int _checkPatientAlarmPauseTime = 12;
+    static const int _checkPatientAlarmPauseTime = 12;
 };
 #define alarmIndicator (AlarmIndicator::construction())
 #define deleteAlarmIndicator() (delete AlarmIndicator::_selfObj)

@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/12
+ **/
+
+
+
 #include <errno.h>
 #include <QFile>
 #include <QProcess>
@@ -64,20 +76,20 @@ bool SupervisorConfigManager::exportConfig()
         }
     }
 
-    //KB
+    // KB
     int fileSize = file.size() >> 10;
     file.close();
-    int usdFreeSize = (int)usbManager.getUSBFreeSize();
+    int usdFreeSize = static_cast<int>(usbManager.getUSBFreeSize());
     if (-1 == usdFreeSize)
     {
-        //警告当前U断开连接
+        // 警告当前U断开连接
         IMessageBox messageBox(trs("Warn"), trs("WarnUSBDisconnected"), false);
         messageBox.exec();
         return false;
     }
     else if (fileSize > usdFreeSize)
     {
-        //警告当前U盘剩余空间不足
+        // 警告当前U盘剩余空间不足
         IMessageBox messageBox(trs("Warn"), trs("WarnLessUSBFreeSpace"), false);
         messageBox.exec();
         return false;
@@ -89,13 +101,15 @@ bool SupervisorConfigManager::exportConfig()
     dstFile += systemManager.getSoftwareVersionNum();
     dstFile += "-";
     QString timeStr("");
-    timeStr.sprintf("%04d%02d%02d-%02d%02d%02d.%03d", timeDate.getDateYear()
-            ,timeDate.getDateMonth()
-            ,timeDate.getDateDay()
-            ,timeDate.getTimeHour()
-            ,timeDate.getTimeMinute()
-            ,timeDate.getTimeSenonds()
-            ,timeDate.getTimeMsec());
+    timeStr = QString("%1%2%3-%4%5%6.%7")
+            .arg(timeDate.getDateYear(), 4)
+            .arg(timeDate.getDateMonth(), 2)
+            .arg(timeDate.getDateDay(), 2)
+            .arg(timeDate.getTimeHour(), 2)
+            .arg(timeDate.getTimeMinute(), 2)
+            .arg(timeDate.getTimeSenonds(), 2)
+            .arg(timeDate.getTimeMsec(), 3);
+
     dstFile += timeStr;
     dstFile += ".xml";
 
@@ -181,9 +195,9 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
     QString SuperCfgStr;
     int value;
     int tmpValue;
-    bool bret = false;
+    bool bret;
 
-/*************************General****************************/
+    /*************************General****************************/
 
     bret = config.getStrValue("General|Password", str);
     bret &= _checkRegexp("[0-9]", str);
@@ -241,7 +255,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
         config.setStrValue("General|SuperPassword", SuperCfgStr);
     }
 
-/*************************Basic Defib****************************/
+    /*************************Basic Defib****************************/
     bret = config.getNumValue("BasicDefib|DefaultVoicePromptTone", value);
     if (value > 5 || !bret)
     {
@@ -274,61 +288,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
         return false;
     }
 
-/*************************AED****************************/
-    bret = config.getNumValue("AED|StartWithCPR", value);
-    if (value > 1 || !bret)
-    {
-        debug("AED StartWithCPR error:%d", value);
-        error = "AED|StartWithCPR";
-        return false;
-    }
-
-    bret = config.getNumValue("AED|RestartAnalysisAfterCPR", value);
-    if (value > 1 || !bret)
-    {
-        debug("AED RestartAnalysisAfterCPR error:%d", value);
-        error = "AED|RestartAnalysisAfterCPR";
-        return false;
-    }
-
-    bret = config.getNumValue("AED|EnableManualModePassword", value);
-    if (value > 1 || !bret)
-    {
-        debug("AED EnableManualModePassword error:%d", value);
-        error = "AED|EnableManualModePassword";
-        return false;
-    }
-
-    bret = config.getStrValue("AED|ManualModePassword", str);
-    if (str.size() == 4)
-    {
-        bret &= _checkRegexp("[0-9]", str);
-    }
-
-    if (str.size() != 4 || !bret)
-    {
-        debug("AED ManualModePassword error:%s", qPrintable(str));
-        error = "AED|ManualModePassword";
-        return false;
-    }
-
-    bret = config.getNumValue("AED|QRSPRTone", value);
-    if (value > 1 || !bret)
-    {
-        debug("AED QRSPRTone error:%d", value);
-        error = "AED|QRSPRTone";
-        return false;
-    }
-
-    bret = config.getNumValue("AED|PhyAlarmVisualIndicator", value);
-    if (value > 1 || !bret)
-    {
-        debug("AED PhyAlarmVisualIndicator error:%d", value);
-        error = "AED|PhyAlarmVisualIndicator";
-        return false;
-    }
-
-/*************************PACER****************************/
+    /*************************PACER****************************/
     bret = config.getNumValue("PACER|DefaultPacerRate", value);
     if (value > 180 || value < 30 || !bret)
     {
@@ -345,77 +305,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
         return false;
     }
 
-/*************************CPR****************************/
-    bret = config.getNumValue("CPR|EnableVoicePrompts", value);
-    if (value > 1 || !bret)
-    {
-        debug("CPR EnableVoicePrompts error:%d", value);
-        error = "CPR|EnableVoicePrompts";
-        return false;
-    }
-
-    bret = config.getNumValue("CPR|EnableTextPrompts", value);
-    if (value > 1 || !bret)
-    {
-        debug("CPR EnableTextPrompts error:%d", value);
-        error = "CPR|EnableTextPrompts";
-        return false;
-    }
-
-    bret = config.getNumValue("CPR|MetronomeRate", value);
-    if (value < 80 || value > 120 || !bret)
-    {
-        debug("CPR MetronomeRate error:%d", value);
-        error = "CPR|MetronomeRate";
-        return false;
-    }
-
-    bret = config.getNumValue("CPR|CompressionDepthUnit", value);
-    if ((value !=  UNIT_CM && value != UNIT_INCH) || !bret)
-    {
-        debug("CPR CompressionDepthUnit error:%d", value);
-        error = "CPR|CompressionDepthUnit";
-        return false;
-    }
-
-    bret = config.getStrValue("CPR|TargetCompressionDepth", str);
-    switch (value)
-    {
-        case UNIT_INCH:
-        {
-            float tempValue = str.toFloat();
-            if (tempValue < 1.0 || tempValue > 3.0  || !bret)
-            {
-                debug("CPR TargetCPRDepth error:%f", tempValue);
-                error = "CPR|TargetCompressionDepth";
-                return false;
-            }
-            break;
-        }
-        case UNIT_CM:
-        {
-            float tempValue = str.toFloat();
-            if (tempValue < 2.5 || tempValue > 7.8 || !bret)
-            {
-                debug("CPR TargetCPRDepth error:%f", tempValue);
-                error = "CPR|TargetCompressionDepth";
-                return false;
-            }
-            break;
-        }
-        default:
-            break;
-    }
-
-    bret = config.getNumValue("CPR|CPRWaveformRecording", value);
-    if (value > 1 || !bret)
-    {
-        debug("CPR CPRWaveformRecording error:%d", value);
-        error = "CPR|CPRWaveformRecording";
-        return false;
-    }
-
-/*************************ECG****************************/
+    /*************************ECG****************************/
     bret = config.getNumValue("ECG|PadsECGBandwidth", value);
     if (value > 1 || !bret)
     {
@@ -456,7 +346,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
         return false;
     }
 
-/*************************NIBP****************************/
+    /*************************NIBP****************************/
 
     bret = config.getNumValue("NIBP|MeasureMode", value);
     if (value > 1 || !bret)
@@ -514,7 +404,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
 //        return false;
 //    }
 
-/**************************RESP & CO2*****************************/
+    /**************************RESP & CO2*****************************/
     bret = config.getNumValue("CO2|CO2ModeDefault", value);
     if (value > 1 || !bret)
     {
@@ -531,7 +421,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
         return false;
     }
 
-/*************************Alarm****************************/
+    /*************************Alarm****************************/
     bret = config.getNumValue("Alarm|MinimumAlarmVolume", value);
     if (value > SoundManager::VOLUME_LEV_4 || !bret)
     {
@@ -588,15 +478,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
         return false;
     }
 
-    bret = config.getNumValue("Alarm|NonAlertsBeepsInNonAED", value);
-    if (value > 1 || !bret)
-    {
-        debug("Alarm NonAlertsBeepsInNonAED error:%d", value);
-        error = "Alarm|NonAlertsBeepsInNonAED";
-        return false;
-    }
-
-/**************************报警限*****************************/
+    /**************************报警限*****************************/
     for (int i = 0; i < PATIENT_TYPE_NEO; ++i)
     {
         QString prefix = "AlarmSource|";
@@ -624,30 +506,30 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
             }
 
             QStringList unitList;
-            switch(j)
+            switch (j)
             {
             case SUB_PARAM_NIBP_DIA:
             case SUB_PARAM_NIBP_MAP:
             case SUB_PARAM_NIBP_SYS:
             {
-                unitList<<Unit::getSymbol(UNIT_KPA)<<Unit::getSymbol(UNIT_MMHG);
+                unitList << Unit::getSymbol(UNIT_KPA) << Unit::getSymbol(UNIT_MMHG);
                 break;
             }
             case SUB_PARAM_ETCO2:
             case SUB_PARAM_FICO2:
             {
-                unitList<<Unit::getSymbol(UNIT_KPA)<<Unit::getSymbol(UNIT_MMHG)<<Unit::getSymbol(UNIT_PERCENT);
+                unitList << Unit::getSymbol(UNIT_KPA) << Unit::getSymbol(UNIT_MMHG) << Unit::getSymbol(UNIT_PERCENT);
                 break;
             }
             case SUB_PARAM_T1:
             case SUB_PARAM_T2:
             case SUB_PARAM_TD:
             {
-                unitList<<Unit::getSymbol(UNIT_TC)<<Unit::getSymbol(UNIT_TF);
+                unitList << Unit::getSymbol(UNIT_TC) << Unit::getSymbol(UNIT_TF);
                 break;
             }
             default:
-                unitList<<Unit::getSymbol(paramInfo.getUnitOfSubParam((SubParamID)j));
+                unitList << Unit::getSymbol(paramInfo.getUnitOfSubParam((SubParamID)j));
             }
 
             foreach(QString unitStr, unitList)
@@ -691,7 +573,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
         }
     }
 
-/**************************Local*****************************/
+    /**************************Local*****************************/
     int languageCount = 0;
     int curLanguage = 0;
     bret = config.getNumAttr("Local|Language", "CurrentOption", curLanguage);
@@ -746,7 +628,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
         return false;
     }
 
-/*************************Display****************************/
+    /*************************Display****************************/
     bret = config.getStrValue("Display|AllColors", str);
     if (!bret)
     {
@@ -832,16 +714,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
         return false;
     }
 
-    bret = config.getStrValue("Display|CPRBarGraphColor", str);
-    currentConfig.getStrValue("Display|CPRBarGraphColor", SuperCfgStr);
-    if (str != SuperCfgStr || !bret)
-    {
-        debug("Display CPRBarGraphColor error:%s", qPrintable(str));
-        error = "Display|CPRBarGraphColor";
-        return false;
-    }
-
-/*************************summary trriger****************************/
+    /*************************summary trriger****************************/
     bret = config.getNumValue("Print|PresentingECG", value);
     if (value > 1 || !bret)
     {
@@ -914,14 +787,6 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
         return false;
     }
 
-    bret = config.getNumValue("Print|SummaryReportSnapshotPrintingInAED", value);
-    if (value > 1 || !bret)
-    {
-        debug("Print SummaryReportSnapshotPrintingInAED error:%d", value);
-        error = "Print|SummaryReportSnapshotPrintingInAED";
-        return false;
-    }
-
     bret = config.getNumValue("Print|Print30JSelfTestReport", value);
     if (value > 1 || !bret)
     {
@@ -930,7 +795,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
         return false;
     }
 
-/*************************ECG 12L****************************/
+    /*************************ECG 12L****************************/
     bret = config.getNumValue("ECG12L|NotchFilter", value);
     if (value >= ECG_NOTCH_50_AND_60HZ || !bret)
     {
@@ -1027,7 +892,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
         return false;
     }
 
-/*************************DateTime****************************/
+    /*************************DateTime****************************/
     bret = config.getNumValue("DateTime|DateFormat", value);
     if (value >= DATE_FORMAT_NR || !bret)
     {
@@ -1052,7 +917,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
         return false;
     }
 
-/*************************CodeMarker****************************/
+    /*************************CodeMarker****************************/
     config.getNumAttr("Local|Language", "OptionCount", value);
 
     QString importStr;
@@ -1090,7 +955,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
         }
     }
 
-/*************************WIFI****************************/
+    /*************************WIFI****************************/
     bret = config.getNumValue("WiFi|EnableWifi", value);
     if (value > 1 || !bret)
     {
@@ -1099,7 +964,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
         return false;
     }
 
-/*************************Sftp****************************/
+    /*************************Sftp****************************/
     bret = config.getNumValue("Sftp|ServerPort", value);
     if (value <= 0 || value >= 65536 || !bret)
     {
@@ -1109,7 +974,7 @@ bool SupervisorConfigManager::_checkImportFile(QString file, QString &error)
     }
 
 
-/*************************Mail****************************/
+    /*************************Mail****************************/
     config.getNumValue("Mail|ConnectionSecurity", value);
     if (value > 2)
     {

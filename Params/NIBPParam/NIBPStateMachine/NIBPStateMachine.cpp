@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/12
+ **/
+
+
+
 #include "NIBPStateMachine.h"
 #include "NIBPMonitorStateDefine.h"
 #include "NIBPServiceStateDefine.h"
@@ -41,7 +53,7 @@ void NIBPStateMachine::registerState(NIBPState *state)
  *************************************************************************************************/
 NIBPState *NIBPStateMachine::getState(unsigned char stateID)
 {
-    QMap<unsigned char, NIBPState*>::ConstIterator it = _nibpStates.find(stateID);
+    QMap<unsigned char, NIBPState *>::ConstIterator it = _nibpStates.find(stateID);
     if (it == _nibpStates.end())
     {
         return NULL;
@@ -55,7 +67,6 @@ NIBPState *NIBPStateMachine::getState(unsigned char stateID)
  *************************************************************************************************/
 void NIBPStateMachine::run(void)
 {
-
 }
 
 /**************************************************************************************************
@@ -78,8 +89,8 @@ void NIBPStateMachine::handleNIBPEvent(NIBPEvent event, const unsigned char *arg
         break;
 
     case NIBP_EVENT_TRIGGER_PATIENT_TYPE:
-        //每个状态需要setText
-        //切换病人类型就清除结果
+        // 每个状态需要setText
+        // 切换病人类型就清除结果
         nibpParam.clearResult();
         nibpParam.setText(InvStr());
         break;
@@ -112,7 +123,7 @@ void NIBPStateMachine::exit(void)
     {
         activateState->exit();
         activateState->stateMachineExit();
-        if(_isExited) //the state might be reentery while waiting in stateMachineExit eventloop
+        if (_isExited)  // the state might be reentery while waiting in stateMachineExit eventloop
         {
             activateState = NULL;
         }
@@ -160,7 +171,6 @@ void NIBPStateMachine::switchToState(unsigned char newStateID, void *arg)
  *************************************************************************************************/
 void NIBPStateMachine::stateExit(unsigned char /*stateID*/, void */*arg*/)
 {
-
 }
 
 /**************************************************************************************************
@@ -168,7 +178,6 @@ void NIBPStateMachine::stateExit(unsigned char /*stateID*/, void */*arg*/)
  *************************************************************************************************/
 void NIBPStateMachine::stateExit(unsigned char /*stateID*/)
 {
-
 }
 
 /**************************************************************************************************
@@ -213,7 +222,7 @@ NIBPStateMachine::NIBPStateMachine(NIBPStateMachineType type)
 NIBPStateMachine::~NIBPStateMachine()
 {
     // 删除注册的对象。
-    QMap<unsigned char, NIBPState*>::ConstIterator it = _nibpStates.begin();
+    QMap<unsigned char, NIBPState *>::ConstIterator it = _nibpStates.begin();
     for (; it != _nibpStates.end(); ++it)
     {
         delete it.value();
