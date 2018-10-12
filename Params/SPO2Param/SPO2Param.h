@@ -130,9 +130,17 @@ public:
     // 发送协议命令
     void sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len);
 
+    // 设置/获取平均时间
+    void setAverageTime(AverageTime index);
+    AverageTime getAverageTime(void);
+
     // 设置/获取灵敏度。
-    void setSensitivity(SPO2Sensitive sens);
-    SPO2Sensitive getSensitivity(void);
+    void setSensitivity(SensitivityMode sens);
+    SensitivityMode getSensitivity(void);
+
+    // 设置/获取快速血氧
+    void setFastSat(bool isFast);
+    bool getFastSat(void);
 
     // 设置/获取智能音。
     void setSmartPulseTone(SPO2SMARTPLUSETONE sens);

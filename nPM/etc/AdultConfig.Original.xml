@@ -118,10 +118,12 @@
 		<NeoInitialCuffInflation>3</NeoInitialCuffInflation>
     </NIBP>
     <SPO2>
+	<AverageTime>2</AverageTime>
         <Sensitivity>1</Sensitivity>
+	<FastSat>0</FastSat>
         <SmartPluseTone>1</SmartPluseTone>
         <WaveVelocity>2</WaveVelocity>
-        <Gain>3</Gain>
+        <Gain>0</Gain>
         <ModuleControl>1</ModuleControl>
     </SPO2>
     <CO2>

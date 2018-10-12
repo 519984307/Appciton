@@ -47,7 +47,7 @@
     <BLM_TN3Port>/dev/ttyPM1</BLM_TN3Port>
     <SUNTECH_NIBPPort>/dev/ttyPM1</SUNTECH_NIBPPort>
     <BLM_S5Port>DataDispatcher</BLM_S5Port>
-    <!--    <MASIMO_SPO2Port>/dev/ttyS3</MASIMO_SPO2Port>-->
+    <MASIMO_SPO2Port>DataDispatcher</MASIMO_SPO2Port>
     <SystemBoardPort>/dev/ttyPM0</SystemBoardPort>
     <BLM_T5Port>DataDispatcher</BLM_T5Port>
     <WITLEAF_IBPPort>/dev/ttyS4</WITLEAF_IBPPort>
