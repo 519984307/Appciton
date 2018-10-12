@@ -796,7 +796,7 @@
         <UILayout>
         <!-- 控件的顺序与上面的布局节点对应 -->
             <MainLayout direction="vertical" margin="0" spacing="0">
-                <LayoutItem height="40" direction="horizontal" spacing="0" bgcolor="#1e1e1e">
+                <LayoutItem height="45" direction="horizontal" spacing="0" bgcolor="#1e1e1e">
                     <LayoutItem stretch="1">PatientInfoWidget</LayoutItem>
                     <LayoutItem width="50">NightStatusBar</LayoutItem>
                     <LayoutItem width="50">PatientStatusBarWidget</LayoutItem>
