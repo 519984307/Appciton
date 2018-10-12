@@ -9,21 +9,24 @@
  **/
 
 #pragma once
-#include "MenuContent.h"
+#include "Window.h"
 
-class SystemNightModeMenuContentPrivate;
-class SystemNightModeMenuContent : public MenuContent
+class NightModeWindowPrivate;
+class NightModeWindow : public Window
 {
     Q_OBJECT
 public:
-    SystemNightModeMenuContent();
-    ~SystemNightModeMenuContent();
+    NightModeWindow();
+    ~NightModeWindow();
 
-protected:
-    /*reimplement*/
+    /**
+     * @brief readyShow
+     */
     void readyShow();
 
-    /*reimplement*/
+    /**
+     * @brief layoutExec
+     */
     void layoutExec();
 
 private slots:
@@ -38,6 +41,6 @@ private slots:
     void OnBtnReleased(void);
 
 private:
-    SystemNightModeMenuContentPrivate *const d_ptr;
+    NightModeWindowPrivate *const d_ptr;
 };
 

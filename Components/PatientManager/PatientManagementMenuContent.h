@@ -5,22 +5,23 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/9/3
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/10
  **/
+
 #pragma once
 
 #include "MenuContent.h"
 
-class SystemMaintenancePrivate;
-class SystemMaintenance : public MenuContent
+class PatientManagementMenuContentPrivate;
+class PatientManagementMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    SystemMaintenance();
-    ~SystemMaintenance();
+    PatientManagementMenuContent();
+    ~PatientManagementMenuContent();
 
 protected:
-    /* reimplement */
+    /* reimplment */
     void layoutExec();
 
 private slots:
@@ -30,7 +31,5 @@ private slots:
     void onBtnReleased(void);
 
 private:
-    SystemMaintenancePrivate *const d_ptr;
+    PatientManagementMenuContentPrivate *const d_ptr;
 };
-
-

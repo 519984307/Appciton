@@ -8,7 +8,7 @@
  ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/13
  **/
 
-#include "WiFiProfileMenuContent.h"
+#include "WiFiProfileWindow.h"
 #include "ComboBox.h"
 #include <QLabel>
 #include "Button.h"
@@ -23,7 +23,7 @@
 #include <QTimerEvent>
 #include "WifiMaintainMenu.h"
 
-class WiFiProfileMenuContentPrivate
+class WiFiProfileWindowPrivate
 {
 public:
     enum MenuItem
@@ -35,14 +35,14 @@ public:
         ITEM_BTN_MAC_ADDRESS,
     };
 
-    Q_DECLARE_PUBLIC(WiFiProfileMenuContent)
-    explicit WiFiProfileMenuContentPrivate(WiFiProfileMenuContent *const q_ptr): q_ptr(q_ptr) {}
+    Q_DECLARE_PUBLIC(WiFiProfileWindow)
+    explicit WiFiProfileWindowPrivate(WiFiProfileWindow *const q_ptr): q_ptr(q_ptr) {}
     void loadProfiles();
     void onProfileSelect(int index);
     void onWifiConnected(const QString &ssid);
     void updateWifiProfileSlot(bool isEnabled);
     void onConfigUpdated(void);
-    WiFiProfileMenuContent *const q_ptr;
+    WiFiProfileWindow *const q_ptr;
     QVector<WiFiProfileInfo> profiles;
     QBasicTimer timer;
     int _wifiProfileInt;
@@ -50,27 +50,32 @@ public:
     QMap <MenuItem, Button *> btns;
 };
 
-WiFiProfileMenuContent::WiFiProfileMenuContent()
-    : MenuContent(trs("WiFiProfileMenuContent"),
-                  trs("WiFiProfileMenuContentDesc")),
-      d_ptr(new WiFiProfileMenuContentPrivate(this))
+WiFiProfileWindow::WiFiProfileWindow()
+    : Window(),
+      d_ptr(new WiFiProfileWindowPrivate(this))
 {
-    Q_D(WiFiProfileMenuContent);
+    Q_D(WiFiProfileWindow);
     d->combos.clear();
     d->btns.clear();
-//    d->loadProfiles();
 
     connect(this, SIGNAL(selectProfile(WiFiProfileInfo)), &networkManager, SLOT(connectWiFiProfile(WiFiProfileInfo)),
             Qt::QueuedConnection);
     connect(&networkManager, SIGNAL(wifiConnectToAp(QString)), this, SLOT(onWifiConnected(QString)), Qt::QueuedConnection);
     connect(&wifiMaintainMenu, SIGNAL(updateWifiProfileSignal(bool)), this, SLOT(updateWifiProfileSlot(bool)));
     connect(&configManager, SIGNAL(configUpdated()), this, SLOT(d->onConfigUpdated()));
+
+    layoutExec();
+    readyShow();
 }
 
 
-void WiFiProfileMenuContent::layoutExec()
+void WiFiProfileWindow::layoutExec()
 {
+    setWindowTitle(trs("WiFiProfile"));
+
     QGridLayout *layout = new QGridLayout(this);
+    layout->setMargin(10);
+    setFixedSize(480, 480);
 
     QLabel *label;
     Button *button;
@@ -82,7 +87,7 @@ void WiFiProfileMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(WiFiProfileMenuContentPrivate::ITEM_CBO_ACCESSPOINT_PROFILE,
+    d_ptr->combos.insert(WiFiProfileWindowPrivate::ITEM_CBO_ACCESSPOINT_PROFILE,
                          comboBox);
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onProfileSelect()));
 
@@ -97,7 +102,7 @@ void WiFiProfileMenuContent::layoutExec()
     button->setButtonStyle(Button::ButtonTextOnly);
     button->setEnabled(false);
     layout->addWidget(button, (row + d_ptr->btns.count()), 1);
-    d_ptr->btns.insert(WiFiProfileMenuContentPrivate::ITEM_BTN_SELECT_ACCESSPOINT,
+    d_ptr->btns.insert(WiFiProfileWindowPrivate::ITEM_BTN_SELECT_ACCESSPOINT,
                        button);
 
     // local ip
@@ -108,7 +113,7 @@ void WiFiProfileMenuContent::layoutExec()
     button->setButtonStyle(Button::ButtonTextOnly);
     button->setEnabled(false);
     layout->addWidget(button, (row + d_ptr->btns.count()), 1);
-    d_ptr->btns.insert(WiFiProfileMenuContentPrivate::ITEM_BTN_LOCAL_IP,
+    d_ptr->btns.insert(WiFiProfileWindowPrivate::ITEM_BTN_LOCAL_IP,
                        button);
 
     // mac
@@ -119,16 +124,17 @@ void WiFiProfileMenuContent::layoutExec()
     button->setButtonStyle(Button::ButtonTextOnly);
     button->setEnabled(false);
     layout->addWidget(button, (row + d_ptr->btns.count()), 1);
-    d_ptr->btns.insert(WiFiProfileMenuContentPrivate::ITEM_BTN_MAC_ADDRESS,
+    d_ptr->btns.insert(WiFiProfileWindowPrivate::ITEM_BTN_MAC_ADDRESS,
                        button);
 
     layout->setRowStretch((row + d_ptr->btns.count()), 1);
+    setWindowLayout(layout);
 }
 
 
 
 
-void WiFiProfileMenuContentPrivate::updateWifiProfileSlot(bool isEnabled)
+void WiFiProfileWindowPrivate::updateWifiProfileSlot(bool isEnabled)
 {
     loadProfiles();
     if (combos[ITEM_CBO_ACCESSPOINT_PROFILE])
@@ -152,19 +158,19 @@ void WiFiProfileMenuContentPrivate::updateWifiProfileSlot(bool isEnabled)
     }
 }
 
-void WiFiProfileMenuContentPrivate::onConfigUpdated()
+void WiFiProfileWindowPrivate::onConfigUpdated()
 {
     loadProfiles();
 }
 
-void WiFiProfileMenuContent::readyShow()
+void WiFiProfileWindow::readyShow()
 {
     d_ptr->loadProfiles();
 }
 /***************************************************************************************************
  * loadProfiels : load the profile info from super config
  **************************************************************************************************/
-void WiFiProfileMenuContentPrivate::loadProfiles()
+void WiFiProfileWindowPrivate::loadProfiles()
 {
     QString tmpStr;
     int tmpValue = 0;
@@ -241,9 +247,9 @@ void WiFiProfileMenuContentPrivate::loadProfiles()
 /***************************************************************************************************
  * onProfileSelect : handle profile select issue
  **************************************************************************************************/
-void WiFiProfileMenuContentPrivate::onProfileSelect(int index)
+void WiFiProfileWindowPrivate::onProfileSelect(int index)
 {
-    Q_Q(WiFiProfileMenuContent);
+    Q_Q(WiFiProfileWindow);
     if (index < 0)
     {
         index = 0;
@@ -269,7 +275,7 @@ void WiFiProfileMenuContentPrivate::onProfileSelect(int index)
 /***************************************************************************************************
  * onWifiConnected : handle wifi connected issue
  **************************************************************************************************/
-void WiFiProfileMenuContentPrivate::onWifiConnected(const QString &ssid)
+void WiFiProfileWindowPrivate::onWifiConnected(const QString &ssid)
 {
     // the wifi will auto connect on startup if the network is not disabled.
     // So we need to check wether the select profile contain the ssid or not
@@ -302,62 +308,62 @@ void WiFiProfileMenuContentPrivate::onWifiConnected(const QString &ssid)
 /***************************************************************************************************
  * destructor
  **************************************************************************************************/
-WiFiProfileMenuContent::~WiFiProfileMenuContent()
+WiFiProfileWindow::~WiFiProfileWindow()
 {
 }
 
 /***************************************************************************************************
  * get the curret select wifi profile
  **************************************************************************************************/
-WiFiProfileInfo WiFiProfileMenuContent::getCurrentWifiProfile() const
+WiFiProfileInfo WiFiProfileWindow::getCurrentWifiProfile() const
 {
-    Q_D(const WiFiProfileMenuContent);
-    if (d->combos[WiFiProfileMenuContentPrivate::ITEM_CBO_ACCESSPOINT_PROFILE]->currentIndex() == 0)
+    Q_D(const WiFiProfileWindow);
+    if (d->combos[WiFiProfileWindowPrivate::ITEM_CBO_ACCESSPOINT_PROFILE]->currentIndex() == 0)
     {
         return WiFiProfileInfo();
     }
     else
     {
-        return d->profiles.at(d->combos[WiFiProfileMenuContentPrivate::ITEM_CBO_ACCESSPOINT_PROFILE]->currentIndex() - 1);
+        return d->profiles.at(d->combos[WiFiProfileWindowPrivate::ITEM_CBO_ACCESSPOINT_PROFILE]->currentIndex() - 1);
     }
 }
 
-void WiFiProfileMenuContent::timerEvent(QTimerEvent *e)
+void WiFiProfileWindow::timerEvent(QTimerEvent *e)
 {
-    Q_D(WiFiProfileMenuContent);
+    Q_D(WiFiProfileWindow);
     if (d->timer.timerId() == e->timerId())
     {
         if (this->isVisible() && networkManager.isWiFiConnected()
-                && d->combos[WiFiProfileMenuContentPrivate::ITEM_CBO_ACCESSPOINT_PROFILE]->currentIndex() != 0)
+                && d->combos[WiFiProfileWindowPrivate::ITEM_CBO_ACCESSPOINT_PROFILE]->currentIndex() != 0)
         {
-            d->btns[WiFiProfileMenuContentPrivate::ITEM_BTN_LOCAL_IP]->setText(networkManager.getIpString(NETWORK_WIFI));
-            d->btns[WiFiProfileMenuContentPrivate::ITEM_BTN_MAC_ADDRESS]->setText(networkManager.getMacAddress(NETWORK_WIFI));
+            d->btns[WiFiProfileWindowPrivate::ITEM_BTN_LOCAL_IP]->setText(networkManager.getIpString(NETWORK_WIFI));
+            d->btns[WiFiProfileWindowPrivate::ITEM_BTN_MAC_ADDRESS]->setText(networkManager.getMacAddress(NETWORK_WIFI));
         }
         else
         {
-            d->btns[WiFiProfileMenuContentPrivate::ITEM_BTN_LOCAL_IP]->setText(QString());
-            d->btns[WiFiProfileMenuContentPrivate::ITEM_BTN_MAC_ADDRESS]->setText(QString());
+            d->btns[WiFiProfileWindowPrivate::ITEM_BTN_LOCAL_IP]->setText(QString());
+            d->btns[WiFiProfileWindowPrivate::ITEM_BTN_MAC_ADDRESS]->setText(QString());
         }
     }
 }
 
-void WiFiProfileMenuContent::showEvent(QShowEvent *e)
+void WiFiProfileWindow::showEvent(QShowEvent *e)
 {
-    Q_D(WiFiProfileMenuContent);
+    Q_D(WiFiProfileWindow);
     d->timer.start(1000, this);
-    connect(d->combos[WiFiProfileMenuContentPrivate::ITEM_CBO_ACCESSPOINT_PROFILE], SIGNAL(currentIndexChanged(int)), this,
+    connect(d->combos[WiFiProfileWindowPrivate::ITEM_CBO_ACCESSPOINT_PROFILE], SIGNAL(currentIndexChanged(int)), this,
             SLOT(onProfileSelect(int)));
-    MenuContent::showEvent(e);
+    Window::showEvent(e);
 }
 
-void WiFiProfileMenuContent::hideEvent(QHideEvent *e)
+void WiFiProfileWindow::hideEvent(QHideEvent *e)
 {
-    Q_D(WiFiProfileMenuContent);
+    Q_D(WiFiProfileWindow);
     d->timer.stop();
-    disconnect(d->combos[WiFiProfileMenuContentPrivate::ITEM_CBO_ACCESSPOINT_PROFILE], SIGNAL(currentIndexChanged(int)),
+    disconnect(d->combos[WiFiProfileWindowPrivate::ITEM_CBO_ACCESSPOINT_PROFILE], SIGNAL(currentIndexChanged(int)),
                this, SLOT(onProfileSelect(int)));
-    MenuContent::hideEvent(e);
+    Window::hideEvent(e);
 }
 
 
-#include "moc_WiFiProfileMenuContent.cpp"
+#include "moc_WiFiProfileWindow.cpp"

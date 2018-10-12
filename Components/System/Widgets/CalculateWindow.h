@@ -9,22 +9,27 @@
  **/
 
 #pragma once
-#include "MenuContent.h"
+#include "Window.h"
 
-class CalculateMenuContentPrivate;
-class CalculateMenuContent : public MenuContent
+class CalculateWindowPrivate;
+class CalculateWindow : public Window
 {
     Q_OBJECT
 public:
-    CalculateMenuContent();
-    ~CalculateMenuContent();
+    CalculateWindow();
+    ~CalculateWindow();
 
-protected:
-    virtual void layoutExec();
+    /**
+     * @brief layoutExec
+     */
+    void layoutExec();
 
 private slots:
-    void _btnReleased(void);
+    /**
+     * @brief onBtnReleased
+     */
+    void onBtnReleased(void);
 
 private:
-    CalculateMenuContentPrivate *d_ptr;
+    CalculateWindowPrivate *d_ptr;
 };

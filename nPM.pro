@@ -222,16 +222,17 @@ SOURCES +=                                                                      
     Components/System/Widgets/SystemModeBarWidget.cpp                           \
     Components/System/Widgets/SystemSelftestMenu.cpp                            \
     Components/System/Widgets/SystemStatusBarWidget.cpp                         \
-    Components/System/Widgets/SystemMenuContent.cpp                             \
+    Components/System/Widgets/RoutineFunctionMenuContent.cpp                    \
     Components/System/Widgets/PrintSettingMenuContent.cpp                       \
     Components/System/Widgets/MeasureSettingMenuContent.cpp                     \
     Components/System/Widgets/MeasureSettingWindow.cpp                          \
     Components/System/Widgets/DataReviewMenuContent.cpp                         \
-    Components/System/Widgets/CalculateMenuContent.cpp                          \
-    Components/System/Widgets/SystemMaintenance.cpp                             \
+    Components/System/Widgets/CalculateWindow.cpp                               \
+    Components/System/Widgets/SystemMaintenanceMenuContent.cpp                  \
     Components/System/Widgets/DemoModeWindow.cpp                                \
+    Components/System/Widgets/StandyWindow.cpp                                  \
     Components/System/Widgets/PowerOffWindow.cpp                                \
-    Components/System/Widgets/SystemNightModeMenuContent.cpp                    \
+    Components/System/Widgets/NightModeWindow.cpp                               \
     Components/SoundManager/SoundManager.cpp                                    \
     Components/SoundManager/WavFile.cpp                                         \
     Components/SoundManager/WavPlayer.cpp                                       \
@@ -303,6 +304,7 @@ SOURCES +=                                                                      
     Components/PatientManager/PatientInfoWidget.cpp                             \
     Components/PatientManager/PatientStatusBarWidget.cpp                        \
     Components/PatientManager/PatientInfoMenu.cpp                               \
+    Components/PatientManager/PatientManagementMenuContent.cpp                  \
     Components/PatientManager/RelievePatientWidget.cpp                          \
     Components/PatientManager/PatientInfoWindow.cpp                             \
     Components/PatientManager/DischargePatientWindow.cpp                        \
@@ -367,7 +369,7 @@ SOURCES +=                                                                      
     Components/NetworkManager/WpaCtrl/WpaCtrl.cpp                               \
     Components/NetworkManager/Widgets/LabeledLabel.cpp                          \
     Components/NetworkManager/Widgets/WiFiProfileEditor.cpp                     \
-    Components/NetworkManager/Widgets/WiFiProfileMenuContent.cpp                \
+    Components/NetworkManager/Widgets/WiFiProfileWindow.cpp                     \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.cpp               \
     Components/ActivityLog/ActivityLogManager.cpp                               \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.cpp            \
@@ -770,16 +772,17 @@ HEADERS +=                                                                      
     Components/System/Widgets/SystemModeSelectWidget.h                          \
     Components/System/Widgets/SystemSelftestMenu.h                              \
     Components/System/Widgets/SystemModeBarWidget.h                             \
-    Components/System/Widgets/SystemMenuContent.h                               \
+    Components/System/Widgets/RoutineFunctionMenuContent.h                      \
     Components/System/Widgets/PrintSettingMenuContent.h                         \
     Components/System/Widgets/MeasureSettingMenuContent.h                       \
     Components/System/Widgets/MeasureSettingWindow.h                            \
     Components/System/Widgets/DataReviewMenuContent.h                           \
-    Components/System/Widgets/CalculateMenuContent.h                            \
-    Components/System/Widgets/SystemMaintenance.h                               \
+    Components/System/Widgets/CalculateWindow.h                                 \
+    Components/System/Widgets/SystemMaintenanceMenuContent.h                    \
     Components/System/Widgets/DemoModeWindow.h                                  \
+    Components/System/Widgets/StandyWindow.h                                    \
     Components/System/Widgets/PowerOffWindow.h                                  \
-    Components/System/Widgets/SystemNightModeMenuContent.h                      \
+    Components/System/Widgets/NightModeWindow.h                                 \
     Components/SoundManager/SoundManager.h                                      \
     Components/SoundManager/WavFile.h                                           \
     Components/SoundManager/WavPlayer.h                                         \
@@ -862,6 +865,7 @@ HEADERS +=                                                                      
     Components/PatientManager/PatientInfoWidget.h                               \
     Components/PatientManager/PatientStatusBarWidget.h                          \
     Components/PatientManager/PatientInfoMenu.h                                 \
+    Components/PatientManager/PatientManagementMenuContent.h                    \
     Components/PatientManager/PatientInfoWindow.h                               \
     Components/PatientManager/RelievePatientWidget.h                            \
     Components/PatientManager/DischargePatientWindow.h                          \
@@ -937,7 +941,7 @@ HEADERS +=                                                                      
     Components/NetworkManager/WpaCtrl/WpaCtrl.h                                 \
     Components/NetworkManager/Widgets/LabeledLabel.h                            \
     Components/NetworkManager/Widgets/WiFiProfileEditor.h                       \
-    Components/NetworkManager/Widgets/WiFiProfileMenuContent.h                  \
+    Components/NetworkManager/Widgets/WiFiProfileWindow.h                       \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.h                 \
     Components/ActivityLog/ActivityLogManager.h                                 \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.h              \

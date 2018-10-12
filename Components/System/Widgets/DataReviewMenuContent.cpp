@@ -50,23 +50,16 @@ DataReviewMenuContent::~DataReviewMenuContent()
 
 void DataReviewMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
     QGridLayout *glayout = new QGridLayout(this);
     glayout->setMargin(10);
-    glayout->setVerticalSpacing(20);
-    glayout->setHorizontalSpacing(20);
 
     Button *btn;
-    int lastHeight = 50;
     int row = 0;
     int item = 0;
+    int column = 1;
 
-    glayout->setRowMinimumHeight(row, lastHeight);
-    row++;
+    glayout->setColumnStretch(0, 1);
+    glayout->setColumnStretch(column, 1);
 
     // trend table
     btn = new Button(trs("TrendTable"));
@@ -74,9 +67,10 @@ void DataReviewMenuContent::layoutExec()
     btn->setProperty("Item", qVariantFromValue(item));
     item++;
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
-    glayout->addWidget(btn, row, 0);
+    glayout->addWidget(btn, row, column);
     d_ptr->btns.insert(DataReviewMenuContentPrivate
                        ::ITEM_BTN_TREND_TABLE, btn);
+    row++;
 
     // trend graph
     btn = new Button(trs("TrendGraph"));
@@ -84,10 +78,9 @@ void DataReviewMenuContent::layoutExec()
     btn->setProperty("Item", qVariantFromValue(item));
     item++;
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
-    glayout->addWidget(btn, row, 2);
+    glayout->addWidget(btn, row, column);
     d_ptr->btns.insert(DataReviewMenuContentPrivate
                        ::ITEM_BTN_TREND_GRAPH, btn);
-
     row++;
 
     // event review
@@ -96,18 +89,19 @@ void DataReviewMenuContent::layoutExec()
     btn->setProperty("Item", qVariantFromValue(item));
     item++;
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
-    glayout->addWidget(btn, row, 0);
+    glayout->addWidget(btn, row, column);
     d_ptr->btns.insert(DataReviewMenuContentPrivate::ITEM_BTN_EVENT_REVIEW, btn);
+    row++;
+
     // oxycrg review
     btn = new Button(trs("OxyCRGEventReview"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     btn->setProperty("Item", qVariantFromValue(item));
     item++;
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
-    glayout->addWidget(btn, row, 2);
+    glayout->addWidget(btn, row, column);
     d_ptr->btns.insert(DataReviewMenuContentPrivate
                        ::ITEM_BTN_OXYCRG_REVIEW, btn);
-
     row++;
 
     // history  review
@@ -116,13 +110,12 @@ void DataReviewMenuContent::layoutExec()
     btn->setProperty("Item", qVariantFromValue(item));
     item++;
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
-    glayout->addWidget(btn, row, 0);
+    glayout->addWidget(btn, row, column);
     d_ptr->btns.insert(DataReviewMenuContentPrivate
                        ::ITEM_BTN_HISTORY_REVIEW, btn);
-
     row++;
 
-    glayout->setRowMinimumHeight(row, lastHeight);
+    glayout->setRowStretch(row, 1);
 }
 
 void DataReviewMenuContent::onBtnReleased()

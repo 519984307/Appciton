@@ -11,13 +11,13 @@
 #pragma once
 #include "MenuContent.h"
 
-class SystemMenuContentPrivate;
-class SystemMenuContent : public MenuContent
+class RoutineFunctionMenuContentPrivate;
+class RoutineFunctionMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    SystemMenuContent();
-    ~SystemMenuContent();
+    RoutineFunctionMenuContent();
+    ~RoutineFunctionMenuContent();
 
 protected:
     /* reimplment */
@@ -27,8 +27,16 @@ protected:
     void layoutExec();
 
 private slots:
+    /**
+     * @brief onComboBoxIndexChanged
+     * @param index
+     */
     void onComboBoxIndexChanged(int index);
+    /**
+     * @brief onBtnReleasd
+     */
+    void onBtnReleasd(void);
 
 private:
-    SystemMenuContentPrivate * const d_ptr;
+    RoutineFunctionMenuContentPrivate * const d_ptr;
 };

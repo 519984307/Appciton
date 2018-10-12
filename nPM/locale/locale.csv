@@ -224,13 +224,25 @@ ECGHRPRSourceECG,ECG,ECG
 ECGHRPRSourceSPO2,SPO2,SPO2
 HR_PRSource,HR_PR来源,HR_PR Source
 CO2Setting,CO2设置,CO2 Setting
+PatientManager,病人管理,Patient Manager
+PatientManagerDesc,病人管理,Patient Manager Desc
+PatientInfo,病人信息,Patient Info
+NewPatient,新建病人,New Patient
+RoutineFunctionMenu,常规功能,Routine Function Menu
+RoutineFunctionMenuDesc,常规功能,Routine Function Menu Desc
+Calculate,计算,Calculate
+WiFiProfile,WiFi配置,WiFi Profile
+MachineVersion,机器版本,Machine Version
+Standy,待机,Standy
+CalculateWindow,计算,Calculate Window
+PressAnyKeysToExit,请按压任何按键退出待机模式,Press Any Keys To Exit
 TEMP2Low,体温2低,TEMP2 Low
 TEMP2High,体温2高,TEMP2 High
 TEMPTDLow,体温差低,ΔT Low
 TEMPTDHigh,体温差高,ΔT High
 TEMP1SensorOff,体温1探头脱落,TEMP1 Sensor Off
-PrintSettingMenu,打印设置,PrintSettingMenu
-PrintSettingMenuDesc,打印设置,PrintSettingMenuDesc
+PrintSettingMenu,打印设置,Print Setting
+PrintSettingMenuDesc,打印设置,Print Setting Desc
 PrintTime,实时打印时间,PrintTime
 ClearPrintTask,清除打印任务,ClearPrintTask
 Continous,连续,Continous
@@ -1160,8 +1172,8 @@ ErrorLogExport,导出,Export
 ErrorLogInfo,信息,Info
 ServiceUpdateEntrance,更新模块,Service Update
 ServiceUpdateEntranceDesc,更新模块设置,Service Update Entrance Desc
-SoftWareVersionMenu,软件版本,SoftWare Version
-SoftWareVersionMenuDesc,软件版本设置,SoftWare Version Desc
+SoftWareVersionMenu,机器版本,SoftWare Version
+SoftWareVersionMenuDesc,机器版本,SoftWare Version Desc
 SystemSoftwareVersion,系统软件版本,System Software Version
 PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Version
 Uboot,系统引导文件,Uboot

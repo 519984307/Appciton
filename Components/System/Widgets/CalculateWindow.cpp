@@ -8,7 +8,7 @@
  ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/9/6
  **/
 
-#include "CalculateMenuContent.h"
+#include "CalculateWindow.h"
 #include "LanguageManager.h"
 #include <QBoxLayout>
 #include "Button.h"
@@ -16,55 +16,54 @@
 #include "HemodynamicWindow.h"
 #include "WindowManager.h"
 
-class CalculateMenuContentPrivate
+class CalculateWindowPrivate
 {
 public:
-    CalculateMenuContentPrivate() {}
-    ~CalculateMenuContentPrivate() {}
+    CalculateWindowPrivate() {}
+    ~CalculateWindowPrivate() {}
 
     enum MenuItem
     {
         ITEM_BTN_DOSE_CALCULATION,
         ITEM_BTN_BLOOD_CALCULATION,
-        ITEM_NR
     };
-    QMap<int, Button *> btnMap;
 };
 
-void CalculateMenuContent::layoutExec()
+void CalculateWindow::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
+    setWindowTitle(trs("CalculateWindow"));
+
     QGridLayout *mainLayout = new QGridLayout(this);
     mainLayout->setMargin(10);
-    mainLayout->setSpacing(20);
+    mainLayout->setColumnStretch(0, 1);
+    mainLayout->setColumnStretch(1, 3);
+    mainLayout->setColumnStretch(2, 1);
+    setFixedWidth(480);
+    int row = 0;
 
     // Dose Calculate button
     Button *btn = new Button;
     btn->setButtonStyle(Button::ButtonTextOnly);
     btn->setText(trs("DoseCalculation"));
-    btn->setProperty("id" , CalculateMenuContentPrivate::ITEM_BTN_DOSE_CALCULATION);
-    connect(btn, SIGNAL(released()), this, SLOT(_btnReleased()));
-    d_ptr->btnMap.insert(CalculateMenuContentPrivate::ITEM_BTN_DOSE_CALCULATION,
-                         btn);
-    int btnCount = d_ptr->btnMap.count() - 1;
-    mainLayout->addWidget(btn, btnCount / 2 , btnCount % 2);
+    btn->setProperty("id" , CalculateWindowPrivate::ITEM_BTN_DOSE_CALCULATION);
+    connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
+    mainLayout->addWidget(btn, row, 1);
+    row++;
 
     // Blood Calculate Button
     btn = new Button;
     btn->setButtonStyle(Button::ButtonTextOnly);
     btn->setText(trs("HemodynamicCalculation"));
-    btn->setProperty("id", CalculateMenuContentPrivate::ITEM_BTN_BLOOD_CALCULATION);
-    connect(btn, SIGNAL(released()), this, SLOT(_btnReleased()));
-    d_ptr->btnMap.insert(CalculateMenuContentPrivate::ITEM_BTN_BLOOD_CALCULATION,
-                         btn);
-    btnCount = d_ptr->btnMap.count() - 1;
-    mainLayout->addWidget(btn, btnCount / 2, btnCount % 2);
+    btn->setProperty("id", CalculateWindowPrivate::ITEM_BTN_BLOOD_CALCULATION);
+    connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
+    mainLayout->addWidget(btn, row, 1);
+    row++;
+
+    mainLayout->setRowStretch(row, 1);
+    setWindowLayout(mainLayout);
 }
 
-void CalculateMenuContent::_btnReleased()
+void CalculateWindow::onBtnReleased()
 {
     Button *btn = qobject_cast<Button *>(sender());
     if (btn == NULL)
@@ -75,14 +74,14 @@ void CalculateMenuContent::_btnReleased()
     int id = btn->property("id").toInt();
     switch (id)
     {
-    case CalculateMenuContentPrivate::ITEM_BTN_DOSE_CALCULATION:
+    case CalculateWindowPrivate::ITEM_BTN_DOSE_CALCULATION:
     {
         DoseCalculationWindow *calWin = DoseCalculationWindow::getInstance();
         windowManager.showWindow(calWin, WindowManager::ShowBehaviorCloseIfVisiable
                                  | WindowManager::ShowBehaviorCloseOthers);
         break;
     }
-    case CalculateMenuContentPrivate::ITEM_BTN_BLOOD_CALCULATION:
+    case CalculateWindowPrivate::ITEM_BTN_BLOOD_CALCULATION:
     {
         HemodynamicWindow *hemWin = HemodynamicWindow::getInstance();
         windowManager.showWindow(hemWin, WindowManager::ShowBehaviorCloseIfVisiable
@@ -94,13 +93,14 @@ void CalculateMenuContent::_btnReleased()
     }
 }
 
-CalculateMenuContent::CalculateMenuContent()
-                        : MenuContent(trs("CalculateMenu"), trs("CalculateMenuDesc")),
-                            d_ptr(new CalculateMenuContentPrivate)
+CalculateWindow::CalculateWindow()
+               : Window(),
+                 d_ptr(new CalculateWindowPrivate)
 {
+    layoutExec();
 }
 
-CalculateMenuContent::~CalculateMenuContent()
+CalculateWindow::~CalculateWindow()
 {
     delete d_ptr;
 }
