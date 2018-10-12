@@ -112,6 +112,8 @@ public:
     // demo文件的生成
     bool getDemoWaveformFile(const char *buf, int len, AGTypeGas);
 
+    /*remiplement*/
+    QList<SubParamID> getShortTrendList(SubParamID type);
 private slots:
     /**
      * @brief onPaletteChanged change palette

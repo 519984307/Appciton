@@ -32,7 +32,7 @@ UserFaceCustom,自定义,Custom
 UserFaceUnknow,未知,Unknow
 ECG,ECG,ECG
 HR,心率,HR
-HR_PR,心率/脉率,HR/PR
+HR_PR,HR/PR,HR/PR
 ST-I,ST-I,ST-I
 ST-II,ST-II,ST-II
 ST-III,ST-III,ST-III
@@ -98,7 +98,7 @@ ParameterColor,参数颜色,Parameter Color
 ParameterColorDesc,参数颜色设置,Parameter Color Desc
 RR,呼吸率,RR
 BR,呼吸率,BR
-RR_BR,呼吸率,RR/BR
+RR_BR,RR/BR,RR/BR
 Close,关闭,Close
 Back,后退,Back
 PatientID,病人ID,Patient ID
@@ -1473,3 +1473,8 @@ IBPCOModule,IBP+CO模块,IBP+CO Module
 ShuttingDown,正在关机,Shutting Down
 StandardScreenLayout,标准界面界面布局,Standard Screen Layout
 BigFontScreenLayout,大字体界面界面布局,Big Font Screen Layout
+MinitrendSetup,短趋势设置,Minitrend Setup
+MinitrendLength,动态趋势时间,Minitrend Length
+SelectParameters,参数选择,Select Parameters
+Ok,确定,Ok
+RestoreDefault,恢复默认值,Defaluts

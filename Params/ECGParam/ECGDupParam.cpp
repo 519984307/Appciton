@@ -336,6 +336,11 @@ bool ECGDupParam::isAutoTypeHrSouce() const
     }
 }
 
+QList<SubParamID> ECGDupParam::getShortTrendList()
+{
+    return _trendWidget->getShortTrendSubParams();
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/

@@ -18,6 +18,8 @@
 #include "AlarmConfig.h"
 #include "TrendDataStorageManager.h"
 #include "LanguageManager.h"
+#include "ShortTrendWindow.h"
+#include "WindowManager.h"
 
 class ShortTrendContainerPrivate
 {
@@ -30,6 +32,7 @@ public:
     QVBoxLayout *layout;
     ShortTrendDuration duration;
     QList<ShortTrendItem *> trendItems;
+    QList<SubParamID> defaultTrendList;
 };
 
 ShortTrendContainer::ShortTrendContainer()
@@ -43,6 +46,7 @@ ShortTrendContainer::ShortTrendContainer()
     {
         trendDataStorageManager.registerShortTrend(static_cast<SubParamID>(i));
     }
+    connect(this, SIGNAL(released()), this, SLOT(onReleased()));
 }
 
 ShortTrendContainer::~ShortTrendContainer()
@@ -161,4 +165,31 @@ void ShortTrendContainer::setTrendDuration(ShortTrendDuration duration)
 ShortTrendDuration ShortTrendContainer::getTrendDuration() const
 {
     return d_ptr->duration;
+}
+
+void ShortTrendContainer::getShortTrendList(QList<SubParamID> &ids)
+{
+    ids.clear();
+    QList<ShortTrendItem *>::ConstIterator iter = d_ptr->trendItems.constBegin();
+    for (; iter!= d_ptr->trendItems.constEnd(); iter++)
+    {
+        ids.append((*iter)->getSubParamList().at(0));
+    }
+}
+
+void ShortTrendContainer::getDefaultTrendList(QList<SubParamID> &defaultTrendList)
+{
+    defaultTrendList.clear();
+    defaultTrendList = d_ptr->defaultTrendList;
+}
+
+void ShortTrendContainer::updateDefautlTrendList()
+{
+    getShortTrendList(d_ptr->defaultTrendList);
+}
+
+void ShortTrendContainer::onReleased()
+{
+    ShortTrendWindow win(this);
+    windowManager.showWindow(&win, WindowManager::ShowBehaviorModal);
 }

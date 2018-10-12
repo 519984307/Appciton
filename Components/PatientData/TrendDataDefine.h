@@ -231,3 +231,10 @@ struct TrendSubWidgetInfo
 
 /* parse the trend data segment */
 TrendDataPackage parseTrendSegment(const TrendDataSegment *dataSegment);
+
+/**
+ * @brief convert 翻译时间
+ * @param index
+ * @return
+ */
+const char *convert(ShortTrendDuration index);
