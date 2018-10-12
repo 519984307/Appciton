@@ -208,7 +208,7 @@ PatientInfoWindow::PatientInfoWindow()
     , d_ptr(new PatientInfoWindowPrivate)
 {
     setWindowTitle(trs("PatientInformation"));
-    resize(800, 580);
+    setFixedSize(800, 580);
     QGridLayout *layout = new QGridLayout();
     QVBoxLayout *backgroundLayout = new QVBoxLayout();
     QHBoxLayout *buttonLayout = new QHBoxLayout();
@@ -217,11 +217,11 @@ PatientInfoWindow::PatientInfoWindow()
 
     // patient type
     label = new QLabel(trs("PatientType"));
-    label->setFixedWidth(120);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 0);
     d_ptr->type = new ComboBox();
+    d_ptr->type->setFixedWidth(250);
     d_ptr->type ->addItems(QStringList()
                             << trs(PatientSymbol::convert(PATIENT_TYPE_ADULT))
                             << trs(PatientSymbol::convert(PATIENT_TYPE_PED))
@@ -236,11 +236,11 @@ PatientInfoWindow::PatientInfoWindow()
 
     // patient pace marker
     label = new QLabel(trs("PatientPacemarker"));
-    label->setFixedWidth(120);
     layout->addWidget(label
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 2);
     d_ptr->pacer = new ComboBox();
+    d_ptr->pacer->setFixedWidth(250);
     d_ptr->pacer->addItems(QStringList()
                             << trs(PatientSymbol::convert(PATIENT_PACER_OFF))
                             << trs(PatientSymbol::convert(PATIENT_PACER_ON))
@@ -262,6 +262,7 @@ PatientInfoWindow::PatientInfoWindow()
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 0);
     d_ptr->id = new Button();
+    d_ptr->id->setFixedWidth(250);
     d_ptr->id->setButtonStyle(Button::ButtonTextOnly);
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_ID);
     d_ptr->id->setProperty("Item" , qVariantFromValue(itemId));
@@ -278,6 +279,7 @@ PatientInfoWindow::PatientInfoWindow()
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 2);
     d_ptr->sex = new ComboBox();
+    d_ptr->sex->setFixedWidth(250);
     d_ptr->sex->addItems(QStringList()
                           << ""
                           << trs(PatientSymbol::convert(PATIENT_SEX_MALE))
@@ -297,6 +299,7 @@ PatientInfoWindow::PatientInfoWindow()
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 0);
     d_ptr->blood = new ComboBox();
+    d_ptr->blood->setFixedWidth(250);
     d_ptr->blood->addItems(QStringList()
                             << ""
                             << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_A))
@@ -318,6 +321,7 @@ PatientInfoWindow::PatientInfoWindow()
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 2);
     d_ptr->name = new Button();
+    d_ptr->name->setFixedWidth(250);
     d_ptr->name->setButtonStyle(Button::ButtonTextOnly);
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_NAME);
     d_ptr->name->setProperty("Item" , qVariantFromValue(itemId));
@@ -334,6 +338,7 @@ PatientInfoWindow::PatientInfoWindow()
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 0);
     d_ptr->age = new Button();
+    d_ptr->age->setFixedWidth(250);
     d_ptr->age->setButtonStyle(Button::ButtonTextOnly);
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_AGE);
     d_ptr->age->setProperty("Item" , qVariantFromValue(itemId));
@@ -351,6 +356,7 @@ PatientInfoWindow::PatientInfoWindow()
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 2);
     d_ptr->height = new Button();
+    d_ptr->height->setFixedWidth(250);
     d_ptr->height->setButtonStyle(Button::ButtonTextOnly);
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_HEIGHT);
     d_ptr->height->setProperty("Item" , qVariantFromValue(itemId));
@@ -367,6 +373,7 @@ PatientInfoWindow::PatientInfoWindow()
                       , (d_ptr->combos.count() + d_ptr->buttons.count()) / 2
                       , 0);
     d_ptr->weight = new Button();
+    d_ptr->weight->setFixedWidth(250);
     d_ptr->weight->setButtonStyle(Button::ButtonTextOnly);
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_WEIGHT);
     d_ptr->weight->setProperty("Item" , qVariantFromValue(itemId));
