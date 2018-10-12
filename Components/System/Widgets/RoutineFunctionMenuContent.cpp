@@ -28,6 +28,7 @@
 #include "SoftWareVersionWindow.h"
 #include "DemoModeWindow.h"
 #include "NightModeWindow.h"
+#include "StandyWindow.h"
 
 class RoutineFunctionMenuContentPrivate
 {
@@ -289,6 +290,8 @@ void RoutineFunctionMenuContent::onBtnReleasd()
         break;
         case RoutineFunctionMenuContentPrivate::ITEM_BTN_ENTER_STANDY:
         {
+            StandyWindow w;
+            w.exec();
         }
         break;
         case RoutineFunctionMenuContentPrivate::ITEM_BTN_NIGHT_MODE:

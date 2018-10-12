@@ -60,22 +60,15 @@ SystemMaintenanceMenuContent::~SystemMaintenanceMenuContent()
 
 void SystemMaintenanceMenuContent::layoutExec()
 {
-    if (layout())
-    {
-        return;
-    }
-
-    int verticalSpace = 50;
     QGridLayout *glayout = new QGridLayout(this);
     glayout->setMargin(10);
-    glayout->setRowMinimumHeight(0, verticalSpace);
-    glayout->setVerticalSpacing(20);
-    glayout->setHorizontalSpacing(20);
 
     Button *btn;
-    int row = 1;
+    int row = 0;
     int itemBtn = 0;
-    int cloumnLast = 2;
+    int cloumn = 1;
+    glayout->setColumnStretch(0, 1);
+    glayout->setColumnStretch(cloumn, 1);
 
     // config mananger
     btn = new Button(trs("ConfigManager"));
@@ -83,9 +76,10 @@ void SystemMaintenanceMenuContent::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     btn->setProperty("Item", qVariantFromValue(itemBtn));
     itemBtn++;
-    glayout->addWidget(btn, row, 0);
+    glayout->addWidget(btn, row, cloumn);
     d_ptr->btns.insert(SystemMaintenanceMenuContentPrivate
                        ::ITEM_BTN_CONFIG_MANAGERMENT, btn);
+    row++;
 
 #ifdef Q_WS_QWS
     // touch screen calibration
@@ -94,11 +88,11 @@ void SystemMaintenanceMenuContent::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     btn->setProperty("Item", qVariantFromValue(itemBtn));
     itemBtn++;
-    glayout->addWidget(btn, row, cloumnLast);
+    glayout->addWidget(btn, row, cloumn);
     d_ptr->btns.insert(SystemMaintenanceMenuContentPrivate
                        ::ITEM_BTN_USER_MAINTENANCE, btn);
-#endif
     row++;
+#endif
 
     // user maintain
     btn = new Button(trs("UserMaintainSystem"));
@@ -106,9 +100,10 @@ void SystemMaintenanceMenuContent::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     btn->setProperty("Item", qVariantFromValue(itemBtn));
     itemBtn++;
-    glayout->addWidget(btn, row, cloumnLast);
+    glayout->addWidget(btn, row, cloumn);
     d_ptr->btns.insert(SystemMaintenanceMenuContentPrivate
                        ::ITEM_BTN_USER_MAINTENANCE, btn);
+    row++;
 
     // factory maintain
     btn = new Button(trs("FactoryMaintainSystem"));
@@ -116,7 +111,7 @@ void SystemMaintenanceMenuContent::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     btn->setProperty("Item", qVariantFromValue(itemBtn));
     itemBtn++;
-    glayout->addWidget(btn, row, 0);
+    glayout->addWidget(btn, row, cloumn);
     d_ptr->btns.insert(SystemMaintenanceMenuContentPrivate
                        ::ITEM_BTN_FACTORY_MAINTENANCE, btn);
 
@@ -128,9 +123,10 @@ void SystemMaintenanceMenuContent::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     btn->setProperty("Item", qVariantFromValue(itemBtn));
     itemBtn++;
-    glayout->addWidget(btn, row, cloumnLast);
+    glayout->addWidget(btn, row, cloumn);
     d_ptr->btns.insert(SystemMaintenanceMenuContentPrivate
                        ::ITEM_BTN_SYSTEM_TIME, btn);
+    row++;
 
    // monitor info
     btn = new Button(trs("MonitorInfoMenu"));
@@ -138,41 +134,12 @@ void SystemMaintenanceMenuContent::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     btn->setProperty("Item", qVariantFromValue(itemBtn));
     itemBtn++;
-    glayout->addWidget(btn, row, 0);
+    glayout->addWidget(btn, row, cloumn);
     d_ptr->btns.insert(SystemMaintenanceMenuContentPrivate
                        ::ITEM_BTN_MONITOR_INFO, btn);
-
     row++;
 
-//    // software version
-//    btn = new Button(trs("SystemSoftwareVersion"));
-//    btn->setButtonStyle(Button::ButtonTextOnly);
-//    connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
-//    btn->setProperty("Item", qVariantFromValue(itemBtn));
-//    itemBtn++;
-//    glayout->addWidget(btn, row, cloumnLast);
-//    d_ptr->btns.insert(SystemMaintenanceMenuContentPrivate
-//                       ::ITEM_BTN_SOFTWARE_VERSION, btn);
-
-
-//    row++;
-
-//    // demo mode
-//    btn = new Button(trs("DemoMode"));
-//    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
-//    {
-//        btn->setText(trs("ExitDemoMode"));
-//    }
-//    btn->setButtonStyle(Button::ButtonTextOnly);
-//    connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
-//    btn->setProperty("Item", qVariantFromValue(itemBtn));
-//    glayout->addWidget(btn, row, 0);
-//    d_ptr->btns.insert(SystemMaintenanceMenuContentPrivate
-//                       ::ITEM_BTN_DEMO_MODE, btn);
-
-//    row++;
-
-    glayout->setRowMinimumHeight(row, verticalSpace);
+    glayout->setRowStretch(row, 1);
 }
 
 void SystemMaintenanceMenuContent::onBtnReleased()
