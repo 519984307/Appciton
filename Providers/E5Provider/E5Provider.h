@@ -136,7 +136,6 @@ public:
     // enable resp
     virtual void enableRESPCalc(bool enable);
 
-
 private:
     QScopedPointer<E5ProviderPrivate> d_ptr;
 };

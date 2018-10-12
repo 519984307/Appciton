@@ -58,15 +58,15 @@ DEFINES += CONFIG_ECG_TEST
 LIBS += -ldl -lasound -lz
 
 linux-cortexa9hf-vfp-neon-gnueabi-g++ {
-    LIBS += -lts -L$$PWD/nPM/lib/ -lECGAlg2SoftInterface
+    LIBS += -lts -L$$PWD/nPM/lib/
 }
 
 linux-arm-g++ {
-    LIBS += -lts -L$$PWD/nPM/lib/ -lECGAlg2SoftInterface
+    LIBS += -lts -L$$PWD/nPM/lib/
 }
 
 linux-g++ {
-    LIBS += -lX11 -L$$PWD/nPM/libamd64/ -lECGAlg2SoftInterface
+    LIBS += -lX11 -L$$PWD/nPM/libamd64/
 }
 
 OTHER_FILES +=                                                                  \
