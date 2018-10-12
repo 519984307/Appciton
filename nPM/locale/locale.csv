@@ -999,37 +999,38 @@ SWVersion,软件版本,Software Version
 CodeMarker,Code Marker,Code Marker
 CodeMarkerSnapshot,CodeMarker Snapshot,CodeMarker Snapshot
 CodeMarkerDefault,Code Marker,Code Marker
-CodeMarker1,EPI,EPI
-CodeMarker2,Atrop,Atrop
-CodeMarker3,DOPA,DOPA
-CodeMarker4,PHEN,Bicarb
-CodeMarker5,Bicarb,Aspirin
-CodeMarker6,Aspirin,Oxygen
-CodeMarker7,Oxygen,IV
-CodeMarker8,IV,Morphine
-CodeMarker9,Morphine,Valium
-CodeMarker10,Valium,B-block
-CodeMarker11,B-block,LIDO
-CodeMarker12,LIDO,Mag Sulf
-CodeMarker13,Mag Sulf,Thrombo
-CodeMarker14,Thrombo,Heparin
-CodeMarker15,Sedation,Procain
-CodeMarker16,Heparin,Cordar
-CodeMarker17,Procain,Thiamine
-CodeMarker18,Amio,Intubate
-CodeMarker19,Thiamine,Narcan
-CodeMarker20,Dilantin,Atrovent
-CodeMarker21,Intubate,Adenosin
-CodeMarker22,Narcan,Fentanyl
-CodeMarker23,Atrovent,Digoxin
-CodeMarker24,Adenosin,Vasopr
-CodeMarker25,Fentanyl,Dextrose
-CodeMarker26,Digoxin,Paralytic
-CodeMarker27,Vasopr,Nitro
-CodeMarker28,Dextrose,Lasix
-CodeMarker29,Paralytic,Calcium
-CodeMarker30,Albuterol,
-CodeMarker31,Nitro,
+CodeMarker1,CPR,CPR
+CodeMarker2,EPI,EPI
+CodeMarker3,Atrop,Atrop
+CodeMarker4,DOPA,DOPA
+CodeMarker5,PHEN,Bicarb
+CodeMarker6,Bicarb,Aspirin
+CodeMarker7,Aspirin,Oxygen
+CodeMarker8,Oxygen,IV
+CodeMarker9,IV,Morphine
+CodeMarker10,Morphine,Valium
+CodeMarker11,Valium,B-block
+CodeMarker12,B-block,LIDO
+CodeMarker13,LIDO,Mag Sulf
+CodeMarker14,Mag Sulf,Thrombo
+CodeMarker15,Thrombo,Heparin
+CodeMarker16,Sedation,Procain
+CodeMarker17,Heparin,Cordar
+CodeMarker18,Procain,Thiamine
+CodeMarker19,Amio,Intubate
+CodeMarker20,Thiamine,Narcan
+CodeMarker21,Dilantin,Atrovent
+CodeMarker22,Intubate,Adenosin
+CodeMarker23,Narcan,Fentanyl
+CodeMarker24,Atrovent,Digoxin
+CodeMarker25,Adenosin,Vasopr
+CodeMarker26,Fentanyl,Dextrose
+CodeMarker27,Digoxin,Paralytic
+CodeMarker28,Vasopr,Nitro
+CodeMarker29,Dextrose,Lasix
+CodeMarker30,Paralytic,Calcium
+CodeMarker31,Albuterol,
+CodeMarker32,Nitro,
 DoseCalculation,剂量计算,Dose Calculation
 DrugName,药物名称,Drug Name
 DrugTotal,药物总量,Drug Total

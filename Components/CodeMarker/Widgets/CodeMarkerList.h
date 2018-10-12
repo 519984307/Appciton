@@ -58,6 +58,7 @@ public:
     {
         static const char *symbol[30] =
         {
+            "CPR",
             "EPI",
             "Atrop",
             "DOPA",
@@ -95,6 +96,7 @@ public:
     {
         static const char *symbol[32] =
         {
+            "CPR",
             "EPI",
             "Atrop",
             "DOPA",
