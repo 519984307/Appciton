@@ -192,6 +192,10 @@ void SoftKeyManager::_fixedKeyClicked()
         {
             d_ptr->curPage--;
         }
+        if (d_ptr->curPage == 0)
+        {
+            d_ptr->rightPageKeyWidget->setFocus();
+        }
         d_ptr->layoutKeyDesc();
     }
     else if (d_ptr->rightPageKeyWidget == w)
@@ -199,6 +203,10 @@ void SoftKeyManager::_fixedKeyClicked()
         if (d_ptr->curPage < d_ptr->totalPages - 1)
         {
             d_ptr->curPage++;
+        }
+        if (d_ptr->curPage == d_ptr->totalPages - 1)
+        {
+            d_ptr->leftPageKeyWidget->setFocus();
         }
         d_ptr->layoutKeyDesc();
     }
