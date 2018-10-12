@@ -38,6 +38,22 @@ void SPO2Param::sendCmdData(unsigned char cmdId, const unsigned char *data, unsi
     }
 }
 
+void SPO2Param::setAverageTime(AverageTime index)
+{
+    currentConfig.setNumValue("SPO2|AverageTime", static_cast<int>(index));
+    if (NULL != _provider)
+    {
+        _provider->setAverageTime(index);
+    }
+}
+
+AverageTime SPO2Param::getAverageTime()
+{
+    int time = SPO2_AVER_TIME_8SEC;
+    currentConfig.getNumValue("SPO2|AverageTime", time);
+    return (AverageTime)time;
+}
+
 /**************************************************************************************************
  * 设置波形速度。
  *************************************************************************************************/
@@ -198,7 +214,7 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider)
     if (str == "BLM_TS3")
     {
         //设置灵敏度
-        _provider->setSensitive(getSensitivity());
+        _provider->setSensitivityFastSat(getSensitivity(), getFastSat());
     }
     else if (str == "MASIMO_SPO2")
     {
@@ -227,7 +243,7 @@ void SPO2Param::reset()
     }
 
     //设置灵敏度
-    _provider->setSensitive(getSensitivity());
+    _provider->setSensitivityFastSat(getSensitivity(), getFastSat());
 
     //查询状态
     _provider->sendStatus();
@@ -591,23 +607,39 @@ void SPO2Param::checkSelftest()
 /**************************************************************************************************
  * 设置灵敏度。
  *************************************************************************************************/
-void SPO2Param::setSensitivity(SPO2Sensitive sens)
+void SPO2Param::setSensitivity(SensitivityMode sens)
 {
-    systemConfig.setNumValue("PrimaryCfg|SPO2|Sensitivity", static_cast<int>(sens));
+    currentConfig.setNumValue("SPO2|Sensitivity", static_cast<int>(sens));
     if (NULL != _provider)
     {
-        _provider->setSensitive(sens);
+        _provider->setSensitivityFastSat(sens, getFastSat());
     }
 }
 
 /**************************************************************************************************
  * 获取灵敏度。
  *************************************************************************************************/
-SPO2Sensitive SPO2Param::getSensitivity(void)
+SensitivityMode SPO2Param::getSensitivity(void)
 {
-    int sens = SPO2_SENS_MED;
-    systemConfig.getNumValue("PrimaryCfg|SPO2|Sensitivity", sens);
-    return (SPO2Sensitive)sens;
+    int sens = SPO2_MASIMO_SENS_NORMAL;
+    currentConfig.getNumValue("SPO2|Sensitivity", sens);
+    return (SensitivityMode)sens;
+}
+
+void SPO2Param::setFastSat(bool isFast)
+{
+    currentConfig.setNumValue("SPO2|FastSat", static_cast<int>(isFast));
+    if (NULL != _provider)
+    {
+        _provider->setSensitivityFastSat(getSensitivity(), isFast);
+    }
+}
+
+bool SPO2Param::getFastSat()
+{
+    int fastSat = false;
+    currentConfig.getNumValue("SPO2|FastSat", fastSat);
+    return static_cast<bool>(fastSat);
 }
 
 /**************************************************************************************************
