@@ -111,7 +111,7 @@ PatientHeight,身高,Height
 PatientMenu,病人,Patient
 ECGLeadMode,导联模式,Lead Mode
 ECGDisplayMode,显示模式,Display Mode
-ECGCalcLead,计算导联,Calculation Lead
+ECGCalcLead,计算导联,Calc. Lead
 ECGBandwidth,带宽,Bandwidth
 ECGGain,增益,Gain
 ECGPacemaker,起搏器,Pacemaker
