@@ -44,7 +44,7 @@ void UnitSetupMenuContentPrivate::loadOptions()
 {
     int unit  = 0;
     int index = 0;
-    systemConfig.getNumValue("Unit|HightUnit", unit);
+    systemConfig.getNumValue("Unit|HeightUnit", unit);
     if (unit == UNIT_CM)
     {
         index = 0;
@@ -183,7 +183,7 @@ void UnitSetupMenuContent::layoutExec()
     int itemID;
 
     // height unit
-    label = new QLabel(trs("HightUnit"));
+    label = new QLabel(trs("HeightUnit"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
@@ -326,7 +326,7 @@ void UnitSetupMenuContent::onComboBoxIndexChanged(int index)
             {
                 index = UNIT_INCH;
             }
-            systemConfig.setNumValue("Unit|HightUnit", index);
+            systemConfig.setNumValue("Unit|HeightUnit", index);
             break;
         case UnitSetupMenuContentPrivate::ITEM_CBO_WEIGHT_UNIT:
             if (index == 0)
