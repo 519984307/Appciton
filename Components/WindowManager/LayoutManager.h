@@ -130,6 +130,11 @@ public:
      */
     QRect getMenuArea() const;
 
+    /**
+     * @brief updateTabOrder update the tab order
+     */
+    void updateTabOrder();
+
 signals:
     /* emit when the content layout changed */
     void layoutChanged();

@@ -67,6 +67,9 @@ public:
     void setWaveType(int index);
     int  getWaveType(void)const;
 
+    /* reimplement */
+    void getSubFocusWidget(QList<QWidget *> &subWidget) const;
+
 protected:
     void paintEvent(QPaintEvent *event);
     // 窗体大小调整事件

@@ -31,6 +31,12 @@ public:
     // 设置标尺。
     void setRuler(CO2DisplayZoom zoom);
 
+    /**
+     * @brief resetBackground 刷新背景
+     * @param pal
+     */
+    void updatePalette(const QPalette &pal);
+
     // 构造与析构。
     CO2WaveWidget(const QString &waveName, const QString &title);
     ~CO2WaveWidget();

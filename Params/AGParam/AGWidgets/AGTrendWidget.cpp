@@ -119,7 +119,7 @@ void AGTrendWidget::isAlarm(int id, bool flag)
  *************************************************************************************************/
 void AGTrendWidget::showValue()
 {
-    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
+    QPalette psrc = palette();
     psrc = normalPalette(psrc);
     if (_fiAlarm || _etAlarm)
     {
@@ -145,7 +145,6 @@ void AGTrendWidget::showValue()
     }
     else
     {
-        setPalette(psrc);
         showNormalStatus(_etValue, psrc);
         showNormalStatus(_fiName, psrc);
         showNormalStatus(_fiValue, psrc);

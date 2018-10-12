@@ -19,6 +19,7 @@ class CO2TrendWidget;
 class RESPProviderIFace;
 class RESPDupParam: public Param
 {
+    Q_OBJECT
 public:
     enum BrSourceType {
         BR_SOURCE_CO2,
@@ -107,6 +108,9 @@ public:
      * @return
      */
     bool isAutoBrSourceEnabled() const;
+
+private slots:
+    void onPaletteChanged(ParamID id);
 
 private:
     // 构造。

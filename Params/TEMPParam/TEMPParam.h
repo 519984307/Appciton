@@ -17,6 +17,7 @@ class TEMPWaveWidget;
 class TEMPProviderIFace;
 class TEMPParam: public Param
 {
+    Q_OBJECT
 public:
     static TEMPParam &construction(void)
     {
@@ -100,6 +101,9 @@ public:
     // 设置/获取单位。
     void setUnit(UnitType u);
     UnitType getUnit(void);
+
+private slots:
+    void onPaletteChanged(ParamID id);
 
 private:
     TEMPParam();

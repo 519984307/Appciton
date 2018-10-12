@@ -69,6 +69,12 @@ public:
      * @return
      */
     virtual QList<SubParamID> getShortTrendList(){return QList<SubParamID>();}
+private slots:
+    virtual void onPaletteChanged(ParamID id)
+    {
+        Q_UNUSED(id)
+    }
+
 private:
     ParamID _paramID;
     QString _paramName;

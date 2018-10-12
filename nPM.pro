@@ -164,11 +164,7 @@ SOURCES +=                                                                      
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWidget.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWindow.cpp                          \
-    Utility/Widgets/Trendform/ShortTrendWidget.cpp                              \
     Utility/Widgets/Trendform/TrendCanvasWidget.cpp                             \
-    Utility/Widgets/Trendform/ShortTrendWidgetLabel.cpp                         \
-    Utility/Widgets/Trendform/ShortTrendWidgetSelectMenu.cpp                    \
-    Utility/Widgets/Trendform/ShortTrendManager.cpp                             \
     Utility/Widgets/Trendform/ShortTrendItem.cpp                                \
     Utility/Widgets/Trendform/ShortTrendContainer.cpp                           \
     Utility/Widgets/Trendform/ShortTrendWindow.cpp                              \
@@ -320,7 +316,6 @@ SOURCES +=                                                                      
     Components/PowerManager/PowerManager.cpp                                    \
     Components/WindowManager/IWidget.cpp                                        \
     Components/WindowManager/WindowManager.cpp                                  \
-    Components/WindowManager/WaveTrendWidget.cpp                                \
     Components/WindowManager/WidgetSelectMenu.cpp                               \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
     Components/WindowManager/MainMenuWindow.cpp                                 \
@@ -454,6 +449,8 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.cpp             \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
     Components/Maintain/FactoryMaintain/FactoryMaintainWindow.cpp               \
+    Components/Maintain/FactoryMaintain/UpgradeManager.cpp                      \
+    Components/Maintain/FactoryMaintain/UpgradeWindow.cpp                       \
     Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
     Components/CodeMarker/Widgets/CodeMarkerWindow.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
@@ -723,11 +720,7 @@ HEADERS +=                                                                      
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGSymbol.h                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGDefine.h                                 \
-    Utility/Widgets/Trendform/ShortTrendWidget.h                                \
     Utility/Widgets/Trendform/TrendCanvasWidget.h                               \
-    Utility/Widgets/Trendform/ShortTrendWidgetLabel.h                           \
-    Utility/Widgets/Trendform/ShortTrendWidgetSelectMenu.h                      \
-    Utility/Widgets/Trendform/ShortTrendManager.h                               \
     Utility/Widgets/Trendform/ShortTrendItem.h                                  \
     Utility/Widgets/Trendform/ShortTrendContainer.h                             \
     Utility/Widgets/Trendform/ShortTrendWindow.h                                \
@@ -900,7 +893,6 @@ HEADERS +=                                                                      
     Components/USBManager/USBManager.h                                          \
     Components/WindowManager/IWidget.h                                          \
     Components/WindowManager/WindowManager.h                                    \
-    Components/WindowManager/WaveTrendWidget.h                                  \
     Components/WindowManager/WidgetSelectMenu.h                                 \
     Components/WindowManager/PromptInfoBarWidget.h                              \
     Components/WindowManager/MainMenuWindow.h                                   \
@@ -1023,7 +1015,7 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.h                     \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.h                     \
     Components/Maintain/FactoryMaintain/SelectStarterLogoContent.h              \
-    Components/Maintain/FactoryMaintain/ServiceUpgradeWindow.h                 \
+    Components/Maintain/FactoryMaintain/ServiceUpgradeWindow.h                  \
     Components/Maintain/FactoryMaintain/ServiceErrorLogEntrance.h               \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntrance.h                 \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.h          \
@@ -1038,6 +1030,8 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.h               \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.h        \
     Components/Maintain/FactoryMaintain/FactoryMaintainWindow.h                 \
+    Components/Maintain/FactoryMaintain/UpgradeManager.h                        \
+    Components/Maintain/FactoryMaintain/UpgradeWindow.h                         \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWidget.h                            \
     Components/CodeMarker/Widgets/CodeMarkerWindow.h                            \

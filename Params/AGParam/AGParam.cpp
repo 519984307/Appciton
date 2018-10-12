@@ -818,6 +818,23 @@ QList<SubParamID> AGParam::getShortTrendList(SubParamID type)
     return subParams;
 }
 
+void AGParam::onPaletteChanged(ParamID id)
+{
+    if (id != PARAM_AG)
+    {
+        return;
+    }
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
+    _waveWidgetAA1->updatePalette(psrc);
+    _waveWidgetAA2->updatePalette(psrc);
+    _waveWidgetN2O->updatePalette(psrc);
+    _waveWidgetO2->updatePalette(psrc);
+    _trendWidgetAA1->updatePalette(psrc);
+    _trendWidgetAA2->updatePalette(psrc);
+    _trendWidgetN2O->updatePalette(psrc);
+    _trendWidgetO2->updatePalette(psrc);
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/

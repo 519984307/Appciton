@@ -114,6 +114,11 @@ public:
 
     /*remiplement*/
     QList<SubParamID> getShortTrendList(SubParamID type);
+private slots:
+    /**
+     * @brief onPaletteChanged change palette
+     */
+    void onPaletteChanged(ParamID id);
 
 private:
     AGParam();

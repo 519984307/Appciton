@@ -206,10 +206,11 @@ static void _start(void)
 
 
 #if 1
-    // perform window layout
-    windowManager.setLayout(layoutManager.mainLayout());
     // load softkey
     softkeyManager.setContent(SOFTKEY_ACTION_STANDARD);
+
+    // perform window layout
+    windowManager.setLayout(layoutManager.mainLayout());
 
     // move window to the center
     QDesktopWidget *pDesk = QApplication::desktop();

@@ -114,6 +114,11 @@ public:
      */
     void clearLayout(QLayout *layout);
 
+    /**
+     * @brief updateTabOrder update the tab focus order
+     */
+    void updateTabOrder();
+
     QVariantMap layoutMap;
     IWidget *contentView;
     QHBoxLayout *contentLayout;
@@ -130,6 +135,8 @@ public:
     QStringList displayParams;      /* current visiable param widget's name list */
 
     QMap<QString, bool> widgetLayoutable;   /* record whether the widget is layoutable */
+    QList<IWidget *> contentWidgets;        /* record the widgets in the content view */
+    QList<IWidget *> mainLayoutWidgets;     /* record the widgets in the main layout */
 
     int waveAreaStretch;
     int paramAreaStretch;
@@ -266,6 +273,7 @@ void LayoutManagerPrivate::doParseMainLayout(const QVariantMap &map, QBoxLayout 
 
                 parentLayout->addWidget(w, stretch);
                 w->setVisible(true);
+                mainLayoutWidgets.append(w);
             }
         }
     }
@@ -280,6 +288,9 @@ void LayoutManagerPrivate::doContentLayout()
     // in each layout funciton
     displayWaveforms.clear();
     displayParams.clear();
+
+    // the content widget should also be update in every layout
+    contentWidgets.clear();
 
     switch (curUserFace) {
     case UFACE_MONITOR_STANDARD:
@@ -303,6 +314,9 @@ void LayoutManagerPrivate::doContentLayout()
     }
 
     contentLayout->activate();
+
+    // update the focus order
+    updateTabOrder();
 }
 
 void LayoutManagerPrivate::performStandardLayout()
@@ -336,6 +350,9 @@ void LayoutManagerPrivate::performStandardLayout()
             {
                 continue;
             }
+
+            contentWidgets.append(w);
+
             w->setVisible(true);
             if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN)
             {
@@ -401,6 +418,7 @@ void LayoutManagerPrivate::perform12LeadLayout()
             w->setVisible(true);
             waveLayout->addWidget(layoutWidgets[ecgWaveList.at(i)], row, column);
             displayWaveforms.append(w->name());
+            contentWidgets.append(w);
         }
     }
 
@@ -416,6 +434,8 @@ void LayoutManagerPrivate::perform12LeadLayout()
             {
                 continue;
             }
+
+            contentWidgets.append(w);
 
             // only add the param on the right in the standard layout
             if (nodeIter->pos >= LAYOUT_WAVE_END_COLUMN)
@@ -438,6 +458,7 @@ void LayoutManagerPrivate::performOxyCRGLayout()
     leftLayout->addWidget(waveContainer, 1);
     if (oxyCRGWidget)
     {
+        contentWidgets.append(oxyCRGWidget);
         oxyCRGWidget->setVisible(true);
         leftLayout->addWidget(oxyCRGWidget, 1);
     }
@@ -464,6 +485,7 @@ void LayoutManagerPrivate::performOxyCRGLayout()
             {
                 continue;
             }
+
             if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN) // in the left part, contain wave or param
             {
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM) // wave widgets
@@ -483,10 +505,15 @@ void LayoutManagerPrivate::performOxyCRGLayout()
                             currentRow = row;
                         }
                     }
+                    else
+                    {
+                        continue;
+                    }
                 }
                 else    // param widgets
                 {
                     // don't add the params in the left part
+                    continue;
                 }
             }
             else  // the right part are all param
@@ -495,6 +522,8 @@ void LayoutManagerPrivate::performOxyCRGLayout()
                 rightParamLayout->addWidget(w, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
                 displayParams.append(w->name());
             }
+
+            contentWidgets.append(w);
         }
     }
 }
@@ -553,6 +582,7 @@ void LayoutManagerPrivate::performBigFontLayout()
                 w->setVisible(true);
                 vLayout->addWidget(w, 2);
                 displayParams.append(w->name());
+                contentWidgets.append(w);
             }
             else
             {
@@ -565,6 +595,7 @@ void LayoutManagerPrivate::performBigFontLayout()
                 w->setVisible(true);
                 vLayout->addWidget(w, 1);
                 displayWaveforms.append(w->name());
+                contentWidgets.append(w);
             }
             else
             {
@@ -586,6 +617,7 @@ void LayoutManagerPrivate::performTrendLayout()
     leftLayout->addWidget(waveContainer);
     leftLayout->addWidget(leftParamContainer);
 
+
     ShortTrendContainer *trendContainer = qobject_cast<ShortTrendContainer*> (layoutWidgets["ShortTrendContainer"]);
     bool updateTrendItem = false;
     if (trendContainer)
@@ -597,6 +629,7 @@ void LayoutManagerPrivate::performTrendLayout()
         contentLayout->addWidget(trendContainer, 3);
         contentLayout->addLayout(leftLayout, 5);
         trendContainer->setVisible(true);
+        contentWidgets.append(trendContainer);
     }
     else
     {
@@ -626,6 +659,7 @@ void LayoutManagerPrivate::performTrendLayout()
             {
                 continue;
             }
+            contentWidgets.append(w);
             w->setVisible(true);
             if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN)
             {
@@ -723,6 +757,61 @@ void LayoutManagerPrivate::clearLayout(QLayout *layout)
         }
 
         delete item;
+    }
+}
+
+void LayoutManagerPrivate::updateTabOrder()
+{
+    QList<QWidget *> widgets;
+    QList<QWidget *> subWidgets;
+    foreach(IWidget *w, mainLayoutWidgets)
+    {
+        if (w->name() == "ContentView")
+        {
+            foreach(IWidget *cw, contentWidgets)
+            {
+                cw->getSubFocusWidget(subWidgets);
+                if (subWidgets.isEmpty())
+                {
+                    widgets.append(cw);
+                }
+                else
+                {
+                    widgets.append(subWidgets);
+                    subWidgets.clear();
+                }
+            }
+        }
+        else
+        {
+            w->getSubFocusWidget(subWidgets);
+            if (subWidgets.isEmpty())
+            {
+                widgets.append(w);
+            }
+            else
+            {
+                widgets.append(subWidgets);
+                subWidgets.clear();
+            }
+        }
+    }
+
+    QWidget *lastFocusableWidget = NULL;
+    for (int i = 0; i < widgets.count(); ++i)
+    {
+        if (widgets.at(i)->focusPolicy() == Qt::NoFocus)
+        {
+            continue;
+        }
+        if (lastFocusableWidget == NULL)
+        {
+            lastFocusableWidget = widgets.at(i);
+            continue;
+        }
+
+        QWidget::setTabOrder(lastFocusableWidget,  widgets.at(i));
+        lastFocusableWidget = widgets.at(i);
     }
 }
 
@@ -1039,6 +1128,11 @@ QRect LayoutManager::getMenuArea() const
 
     gr.setWidth(gr.width() * d_ptr->waveAreaStretch / (d_ptr->waveAreaStretch + d_ptr->paramAreaStretch));
     return gr;
+}
+
+void LayoutManager::updateTabOrder()
+{
+    d_ptr->updateTabOrder();
 }
 
 LayoutManager::LayoutManager()

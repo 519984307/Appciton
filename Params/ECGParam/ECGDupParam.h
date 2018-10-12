@@ -23,6 +23,7 @@ class ECGWaveWidget;
 class ECGProviderIFace;
 class ECGDupParam: public Param
 {
+    Q_OBJECT
 public:
     enum HrSourceType{
         HR_SOURCE_AUTO,
@@ -53,7 +54,7 @@ public:
 
     // 获取可得的波形控件集。
     virtual void getAvailableWaveforms(QStringList &waveforms,
-            QStringList &waveformShowName, int flag = 0);
+                                       QStringList &waveformShowName, int flag = 0);
 
     // 获取子参数值。
     virtual short getSubParamValue(SubParamID id);
@@ -92,7 +93,7 @@ public:
     // get HR souce
     HrSourceType getHrSource() const;
 
-    //设置计算导联字串。
+    // 设置计算导联字串。
     void setECGTrendWidgetCalcName(ECGLead calLead);
 
     /**
@@ -109,6 +110,8 @@ public:
 
     /*remiplement*/
     QList<SubParamID> getShortTrendList();
+private slots:
+    void onPaletteChanged(ParamID id);
 
 private:
     // 构造。

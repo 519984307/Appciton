@@ -23,6 +23,7 @@ class IBPTrendWidget;
 class IBPMenu;
 class IBPParam: public Param
 {
+    Q_OBJECT
 public:
     static IBPParam &construction(void)
     {
@@ -149,6 +150,10 @@ public:
     IBPPressureName getPressureName(WaveformID id);
     SubParamID getSubParamID(IBPPressureName name);
     WaveformID getWaveformID(IBPPressureName name);
+
+private slots:
+    void onPaletteChanged(ParamID id);
+
 private:
     IBPParam();
     static IBPParam *_selfObj;

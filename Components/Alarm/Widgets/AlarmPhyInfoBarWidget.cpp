@@ -184,8 +184,8 @@ AlarmPhyInfoBarWidget &AlarmPhyInfoBarWidget::getSelf()
  *************************************************************************************************/
 AlarmPhyInfoBarWidget::AlarmPhyInfoBarWidget(const QString &name) :
     IWidget(name),
-    _alarmType(ALARM_TYPE_PHY),
-    _alarmWindow(NULL)
+    _alarmWindow(NULL),
+    _alarmType(ALARM_TYPE_PHY)
 {
     _selfObj = this;
 //    setFocusPolicy(Qt::NoFocus);

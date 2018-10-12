@@ -34,17 +34,18 @@
 #include "OxyCRGSPO2TrendWidget.h"
 #include "OxyCRGRESPWaveWidget.h"
 #include "OxyCRGRRHRWaveWidget.h"
+#include "LayoutManager.h"
 
 class OxyCRGWidgetPrivate
 {
 public:
     OxyCRGWidgetPrivate()
-            : setRulerAuto(NULL),
-              rrHrTrend(NULL),
-              spo2Trend(NULL),
-              co2Wave(NULL),
-              respWave(NULL),
-              setUp(NULL)
+        : setRulerAuto(NULL),
+          rrHrTrend(NULL),
+          spo2Trend(NULL),
+          co2Wave(NULL),
+          respWave(NULL),
+          setUp(NULL)
     {
     }
 
@@ -167,13 +168,13 @@ void OxyCRGWidget::_trendLayout(void)
 
     for (int i = 0; i < nodeWidgets.size(); i++)
     {
-        IWidget *w = windowManager.getWidget(nodeWidgets[i]);
+        IWidget *w = layoutManager.getLayoutWidget(nodeWidgets[i]);
         if (w == NULL)
         {
             continue;
         }
         w->setParent(this);            // 设置父窗体。
-        OxyCRGTrendWaveWidget *p = qobject_cast<OxyCRGTrendWaveWidget*>(w);
+        OxyCRGTrendWaveWidget *p = qobject_cast<OxyCRGTrendWaveWidget *>(w);
         p->setClearWaveDataStatus(false);
         w->setVisible(true);           // 可见。
         _hLayoutWave->addWidget(w, 1);
@@ -193,7 +194,7 @@ void OxyCRGWidget::_clearLayout()
         IWidget *widget = qobject_cast<IWidget *>(item->widget());
         if (widget != NULL)
         {
-            OxyCRGTrendWaveWidget *w = qobject_cast<OxyCRGTrendWaveWidget*>(widget);
+            OxyCRGTrendWaveWidget *w = qobject_cast<OxyCRGTrendWaveWidget *>(widget);
             w->setClearWaveDataStatus(false);
             widget->setVisible(false);
             widget->setParent(NULL);
@@ -478,12 +479,18 @@ int OxyCRGWidget::getWaveType()const
     return _waveType;
 }
 
+void OxyCRGWidget::getSubFocusWidget(QList<QWidget *> &subWidget) const
+{
+    subWidget.clear();
+    subWidget << _interval << _changeTrend << d_ptr->setRulerAuto << d_ptr->setUp;
+}
+
 void OxyCRGWidget::setOxyCRGRrHrWidget(OxyCRGRRHRWaveWidget *p)
 {
     if (p)
     {
         d_ptr->rrHrTrend = p;
-   }
+    }
 }
 
 /**************************************************************************************************
@@ -501,7 +508,7 @@ void OxyCRGWidget::_intervalSlot(IWidget *widget)
         }
         _intervalList->setFont(fontManager.textFont(fontManager.getFontSize(3)));
         connect(_intervalList, SIGNAL(destroyed()), this, SLOT(_intervalDestroyed()));
-        connect(_intervalList, SIGNAL(selectItemChanged(int)), this , SLOT(_getIntervalIndex(int)));
+        connect(_intervalList, SIGNAL(selectItemChanged(int)), this, SLOT(_getIntervalIndex(int)));
     }
 
     _intervalList->show();
@@ -522,7 +529,7 @@ void OxyCRGWidget::_changeTrendSlot(IWidget *widget)
         }
         _changeTrendList->setFont(fontManager.textFont(fontManager.getFontSize(3)));
         connect(_changeTrendList, SIGNAL(destroyed()), this, SLOT(_changeTrendDestroyed()));
-        connect(_changeTrendList, SIGNAL(selectItemChanged(int)), this , SLOT(_getChangeTrendIndex(int)));
+        connect(_changeTrendList, SIGNAL(selectItemChanged(int)), this, SLOT(_getChangeTrendIndex(int)));
     }
 
     _changeTrendList->show();

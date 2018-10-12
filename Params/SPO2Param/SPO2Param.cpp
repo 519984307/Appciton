@@ -588,6 +588,17 @@ void SPO2Param::checkSelftest()
     }
 }
 
+void SPO2Param::onPaletteChanged(ParamID id)
+{
+    if (id != PARAM_SPO2)
+    {
+        return;
+    }
+    QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
+    _waveWidget->updatePalette(pal);
+    _trendWidget->updatePalette(pal);
+}
+
 /**************************************************************************************************
  * 设置灵敏度。
  *************************************************************************************************/

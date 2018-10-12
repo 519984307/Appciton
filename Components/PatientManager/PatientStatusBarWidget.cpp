@@ -18,7 +18,7 @@
 #include <QLabel>
 #include "NetworkManager.h"
 #include "MenuManager.h"
-#include "WindowManager.h"
+#include "LayoutManager.h"
 
 PatientStatusBarWidget *PatientStatusBarWidget::_selfObj = NULL;
 #define ICON_WIDTH 32
@@ -73,7 +73,7 @@ void PatientStatusBarWidget::changeIcon(PatientIconLabel iconlabel, int status, 
                 if (w->focusPolicy() == Qt::NoFocus)
                 {
                     w->setFocusPolicy(Qt::StrongFocus);
-                    windowManager.setFocusOrder();
+                    layoutManager.updateTabOrder();
                 }
             }
             else
@@ -81,7 +81,7 @@ void PatientStatusBarWidget::changeIcon(PatientIconLabel iconlabel, int status, 
                 if (w->focusPolicy() == Qt::StrongFocus)
                 {
                     w->setFocusPolicy(Qt::NoFocus);
-                    windowManager.setFocusOrder();
+                    layoutManager.updateTabOrder();
                 }
             }
         }

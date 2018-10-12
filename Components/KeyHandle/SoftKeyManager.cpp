@@ -11,7 +11,6 @@
 
 #include "SoftKeyManager.h"
 #include <QVBoxLayout>
-#include <QPushButton>
 #include <QPainter>
 #include "IConfig.h"
 #include "SoftKeyWidget.h"
@@ -25,6 +24,7 @@
 #include <QSignalMapper>
 #include <QDebug>
 #include <QResizeEvent>
+#include "LayoutManager.h"
 
 
 
@@ -112,6 +112,8 @@ public:
                 startDescIndex++;
             }
         }
+
+        layoutManager.updateTabOrder();
     }
 
     int totalPages;     // total pages

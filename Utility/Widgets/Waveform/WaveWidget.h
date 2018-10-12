@@ -36,7 +36,8 @@ class FreezeTimeIndicator;
 template<typename T> class QVector;
 template<typename T> class RingBuff;
 
-#define WAVE_X_OFFSET (30) //波形起始偏移
+#define WAVE_X_OFFSET       (0)                 // 波形起始偏移
+#define RULER_X_OFFSET      (50)                // 标尺线起始偏移
 ////////////////////////////////////////////////////////////////////////////////
 // 说明：
 // 波形控件，支持扫描模式，滚动模式，回顾模式及三者对应的级联模式
@@ -55,6 +56,12 @@ public:
 
     void updateBuffer();
     void updateBackground();
+
+    /**
+     * @brief updatePalette 更新调色板
+     * @param pal
+     */
+    virtual void updatePalette(const QPalette &pal);
 
     bool isFocus();
     void getSubFocusWidget(QList<QWidget *> &subWidget) const;

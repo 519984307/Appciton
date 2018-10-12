@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/10/8
+ **/
+
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QKeyEvent>
@@ -21,8 +32,8 @@
         parent:关联父控件
         type:报警类型
  *************************************************************************************************/
-AlarmInfoPopListVIew::AlarmInfoPopListVIew(QWidget *parent, AlarmType alarmType) :
-        QDialog(0, Qt::FramelessWindowHint), _parent(parent), _alarmType(alarmType)
+AlarmInfoPopListView::AlarmInfoPopListView(QWidget *parent, AlarmType alarmType) :
+    QDialog(0, Qt::FramelessWindowHint), _parent(parent), _alarmType(alarmType)
 {
     _total = 0;
     _isPressed = false;
@@ -54,7 +65,7 @@ AlarmInfoPopListVIew::AlarmInfoPopListVIew(QWidget *parent, AlarmType alarmType)
     _page->setMode(ISPIN_MODE_INT);
     _page->setStep(1);
     _page->enableArrow(false);
-    connect(_page, SIGNAL(valueChange(QString,int)), this, SLOT(_pageChange(QString)));
+    connect(_page, SIGNAL(valueChange(QString, int)), this, SLOT(_pageChange(QString)));
 
     _close = new IButton("X");
     _close->setVisible(false);
@@ -83,7 +94,7 @@ AlarmInfoPopListVIew::AlarmInfoPopListVIew(QWidget *parent, AlarmType alarmType)
 /**************************************************************************************************
  * 析构函数。
  *************************************************************************************************/
-AlarmInfoPopListVIew::~AlarmInfoPopListVIew()
+AlarmInfoPopListView::~AlarmInfoPopListView()
 {
     if (NULL != _timer)
     {
@@ -95,7 +106,7 @@ AlarmInfoPopListVIew::~AlarmInfoPopListVIew()
 /**************************************************************************************************
  * 处理键盘和飞棱事件, 切换聚集或菜单项翻页。
  *************************************************************************************************/
-void AlarmInfoPopListVIew::keyPressEvent(QKeyEvent *e)
+void AlarmInfoPopListView::keyPressEvent(QKeyEvent *e)
 {
     if (_totalPage > 1)
     {
@@ -104,23 +115,23 @@ void AlarmInfoPopListVIew::keyPressEvent(QKeyEvent *e)
 
     switch (e->key())
     {
-        case Qt::Key_Left:
-        case Qt::Key_Right:
-        case Qt::Key_Up:
-        case Qt::Key_Down:
-        case Qt::Key_Enter:
-        case Qt::Key_Return:
-            _isPressed = true;
-            break;
-        default:
-            break;
+    case Qt::Key_Left:
+    case Qt::Key_Right:
+    case Qt::Key_Up:
+    case Qt::Key_Down:
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        _isPressed = true;
+        break;
+    default:
+        break;
     }
 }
 
 /**************************************************************************************************
  * 处理键盘和飞棱事件, 切换聚集或菜单项翻页。
  *************************************************************************************************/
-void AlarmInfoPopListVIew::keyReleaseEvent(QKeyEvent *e)
+void AlarmInfoPopListView::keyReleaseEvent(QKeyEvent *e)
 {
     if (_totalPage > 1)
     {
@@ -129,28 +140,29 @@ void AlarmInfoPopListVIew::keyReleaseEvent(QKeyEvent *e)
 
     switch (e->key())
     {
-        case Qt::Key_Left:
-        case Qt::Key_Right:
-        case Qt::Key_Up:
-        case Qt::Key_Down:
-        case Qt::Key_Enter:
-        case Qt::Key_Return:
-            if (_isPressed)
-            {
-                setVisible(false);
-                _isPressed = false;
-            }
-            break;
-        default:
-            break;
+    case Qt::Key_Left:
+    case Qt::Key_Right:
+    case Qt::Key_Up:
+    case Qt::Key_Down:
+    case Qt::Key_Enter:
+    case Qt::Key_Return:
+        if (_isPressed)
+        {
+            setVisible(false);
+            _isPressed = false;
+        }
+        break;
+    default:
+        break;
     }
 }
 
 /**************************************************************************************************
  * 显示事件
  *************************************************************************************************/
-void AlarmInfoPopListVIew::showEvent(QShowEvent */*e*/)
+void AlarmInfoPopListView::showEvent(QShowEvent *e)
 {
+    Q_UNUSED(e)
     loadData();
     QPoint pos = _parent->mapToGlobal(_parent->rect().bottomLeft());
     pos.setY(pos.y() - 3);
@@ -167,7 +179,7 @@ void AlarmInfoPopListVIew::showEvent(QShowEvent */*e*/)
 /**************************************************************************************************
  * 显示事件
  *************************************************************************************************/
-void AlarmInfoPopListVIew::hideEvent(QHideEvent *e)
+void AlarmInfoPopListView::hideEvent(QHideEvent *e)
 {
     _timer->stop();
 
@@ -177,7 +189,7 @@ void AlarmInfoPopListVIew::hideEvent(QHideEvent *e)
 /**************************************************************************************************
  * 加载数据
  *************************************************************************************************/
-void AlarmInfoPopListVIew::loadData()
+void AlarmInfoPopListView::loadData()
 {
     int total = alarmIndicator.getAlarmCount();
     if (total <= 1)
@@ -194,7 +206,7 @@ void AlarmInfoPopListVIew::loadData()
 /**************************************************************************************************
  * 加载数据
  *************************************************************************************************/
-void AlarmInfoPopListVIew::_loadData()
+void AlarmInfoPopListView::_loadData()
 {
     if (_total <= 0)
     {
@@ -217,18 +229,18 @@ void AlarmInfoPopListVIew::_loadData()
 
         switch (node.alarmPriority)
         {
-            case ALARM_PRIO_HIGH:
-                highnode.append(node);
-                break;
-            case ALARM_PRIO_MED:
-                midnode.append(node);
-                break;
-            case ALARM_PRIO_LOW:
-                lownode.append(node);
-                break;
-            default:
-                promptnode.append(node);
-                break;
+        case ALARM_PRIO_HIGH:
+            highnode.append(node);
+            break;
+        case ALARM_PRIO_MED:
+            midnode.append(node);
+            break;
+        case ALARM_PRIO_LOW:
+            lownode.append(node);
+            break;
+        default:
+            promptnode.append(node);
+            break;
         }
     }
 
@@ -247,7 +259,6 @@ void AlarmInfoPopListVIew::_loadData()
         {
             _curPage = _totalPage;
         }
-
     }
     _page->setSuffix("/" + QString::number(_totalPage));
     _page->setValue(_curPage);
@@ -288,24 +299,24 @@ void AlarmInfoPopListVIew::_loadData()
             _label[i - start].setAlarmPriority(node.alarmPriority);
             switch (node.alarmPriority)
             {
-                case ALARM_PRIO_HIGH:
-                    _label[i - start].setBgColor(Qt::red);
-                    _label[i - start].setTxtColor(Qt::white);
-                    break;
-                case ALARM_PRIO_MED:
-                    _label[i - start].setBgColor(Qt::yellow);
-                    _label[i - start].setTxtColor(Qt::black);
-                    break;
-                case ALARM_PRIO_LOW:
-                    _label[i - start].setBgColor(QColor(0, 175, 219));
-                    _label[i - start].setTxtColor(Qt::black);
-                    break;
-                case ALARM_PRIO_PROMPT:
-                    _label[i - start].setBgColor(QColor(150, 200, 200));
-                    _label[i - start].setTxtColor(Qt::black);
-                    break;
-                default:
-                    break;
+            case ALARM_PRIO_HIGH:
+                _label[i - start].setBgColor(Qt::red);
+                _label[i - start].setTxtColor(Qt::white);
+                break;
+            case ALARM_PRIO_MED:
+                _label[i - start].setBgColor(Qt::yellow);
+                _label[i - start].setTxtColor(Qt::black);
+                break;
+            case ALARM_PRIO_LOW:
+                _label[i - start].setBgColor(QColor(0, 175, 219));
+                _label[i - start].setTxtColor(Qt::black);
+                break;
+            case ALARM_PRIO_PROMPT:
+                _label[i - start].setBgColor(QColor(150, 200, 200));
+                _label[i - start].setTxtColor(Qt::black);
+                break;
+            default:
+                break;
             }
         }
         else
@@ -327,7 +338,7 @@ void AlarmInfoPopListVIew::_loadData()
 /**************************************************************************************************
  * 页改变
  *************************************************************************************************/
-void AlarmInfoPopListVIew::_pageChange(QString value)
+void AlarmInfoPopListView::_pageChange(QString value)
 {
     _curPage = value.toInt();
 
@@ -337,7 +348,7 @@ void AlarmInfoPopListVIew::_pageChange(QString value)
 /**************************************************************************************************
  * 关闭
  *************************************************************************************************/
-void AlarmInfoPopListVIew::_closeSlot()
+void AlarmInfoPopListView::_closeSlot()
 {
     setVisible(false);
 }
@@ -345,7 +356,7 @@ void AlarmInfoPopListVIew::_closeSlot()
 /**************************************************************************************************
  * 显示/隐藏
  *************************************************************************************************/
-void AlarmInfoPopListVIew::setVisible(bool flag)
+void AlarmInfoPopListView::setVisible(bool flag)
 {
     QDialog::setVisible(flag);
 
@@ -358,7 +369,7 @@ void AlarmInfoPopListVIew::setVisible(bool flag)
 /**************************************************************************************************
  * 构造函数。
  *************************************************************************************************/
-AlarmInfoLabel::AlarmInfoLabel():QLabel()
+AlarmInfoLabel::AlarmInfoLabel(): QLabel()
 {
     _bgColor = Qt::black;
     _txtColor = Qt::white;
@@ -372,8 +383,9 @@ AlarmInfoLabel::AlarmInfoLabel():QLabel()
 /**************************************************************************************************
  * 绘画。
  *************************************************************************************************/
-void AlarmInfoLabel::paintEvent(QPaintEvent */*e*/)
+void AlarmInfoLabel::paintEvent(QPaintEvent *e)
 {
+    Q_UNUSED(e)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setBrush(_bgColor);
@@ -385,24 +397,8 @@ void AlarmInfoLabel::paintEvent(QPaintEvent */*e*/)
 
     QRect r = this->rect();
     r.adjust(1 + 6, 0, 0, 0);
-//    if (_acknowledge)
-//    {
-//        QImage image("/usr/local/nPM/icons/select.png");
-//        painter.drawImage(QRect(1 + 6, (height() - 16) / 2, 16, 16), image);
-//        r.adjust(1 + 6 + 16 + 6, 0, 0, 0);
-//    }
-//    else
-//    {
-//        r.adjust(1 + 6, 0, 0, 0);
-//    }
 
     painter.setFont(fontManager.textFont(fontManager.getFontSize(1)));
     painter.drawText(r, Qt::AlignVCenter | Qt::AlignLeft, text());
-
-//    if (_type != ALARM_TYPE_TECH && 0 != _pauseTime)
-//    {
-//        r.adjust(0, 0, -4, 0);
-//        painter.drawText(r, Qt::AlignVCenter | Qt::AlignRight, QString::number(_pauseTime) + "s");
-//    }
 }
 
