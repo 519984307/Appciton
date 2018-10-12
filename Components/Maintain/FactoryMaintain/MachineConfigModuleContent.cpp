@@ -29,8 +29,6 @@ public:
         ITEM_CBO_SCREEN,
         ITEM_CBO_NUSERCALL,
         ITEM_CBO_ANANLOG,
-        ITEM_CBO_SYNC,
-        ITEM_CBO_CO,
     };
 
     MachineConfigModuleContentPrivte();
@@ -86,8 +84,6 @@ void MachineConfigModuleContentPrivte::loadOptions()
     index = 0;
     systemConfig.getNumValue("MachineConfigModule|AnalogOutputModule", index);
     combos[ITEM_CBO_ANANLOG]->setCurrentIndex(index);
-
-    combos[ITEM_CBO_SYNC]->setCurrentIndex(index);
 }
 
 MachineConfigModuleContent::MachineConfigModuleContent()
@@ -279,7 +275,7 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         break;
     case MachineConfigModuleContentPrivte::ITEM_CBO_ANANLOG:
         str = "AnalogOutputModule";
-        d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_SYNC]->setEnabled(!index);
+        d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_ANANLOG]->setEnabled(!index);
         break;
     default:
         return;
