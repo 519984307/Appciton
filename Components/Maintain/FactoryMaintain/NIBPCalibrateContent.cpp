@@ -152,12 +152,11 @@ void NIBPCalibrateContent::onBtn1Calibrated()
         if (!d_ptr->btnFlag1)
         {
             d_ptr->btnFlag1 = true;
-            unsigned char cmd[3];
+            unsigned char cmd[2];
             cmd[0] = 0x00;
             cmd[1] = 0x00;
-            cmd[2] = 0x00;
 
-            nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_CMD_PRESSURE_POINT, cmd, 3);
+            nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_CMD_PRESSURE_POINT, cmd, 2);
 
             d_ptr->item = d_ptr->itemList.at(0);
             d_ptr->item->btn->setText(trs("ServiceCalibrating"));
@@ -189,11 +188,10 @@ void NIBPCalibrateContent::onBtn2Calibrated()
             int value = d_ptr->item->range->getValue();
             d_ptr->pressurevalue = value;
 
-            unsigned char cmd[3];
-            cmd[0] = 0x01;
-            cmd[1] = d_ptr->pressurevalue & 0xFF;
-            cmd[2] = (d_ptr->pressurevalue & 0xFF00) >> 8;
-            nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_CMD_PRESSURE_POINT, cmd, 3);
+            unsigned char cmd[2];
+            cmd[0] = d_ptr->pressurevalue & 0xFF;
+            cmd[1] = (d_ptr->pressurevalue & 0xFF00) >> 8;
+            nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_CMD_PRESSURE_POINT, cmd, 2);
 
             d_ptr->item = d_ptr->itemList.at(1);
             d_ptr->item->btn->setText(trs("ServiceCalibrating"));

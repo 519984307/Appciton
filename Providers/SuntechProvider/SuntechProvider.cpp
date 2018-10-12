@@ -216,6 +216,23 @@ bool SuntechProvider::needStopACK(void)
     return true;
 }
 
+void SuntechProvider::servicePressurepoint(const unsigned char *data, unsigned int len)
+{
+    unsigned char cmd[2] = {0};
+    cmd[0] = 0x04;
+    int pressure = data[0] | (data[1] << 8);
+    if (pressure)
+    {
+        cmd[1] = 0x01;
+    }
+    else
+    {
+        cmd[1] = 0x00;
+    }
+    len = 2;
+    _sendCmd(cmd, len);
+}
+
 /**************************************************************************************************
  * 是否为错误数据包。
  *************************************************************************************************/

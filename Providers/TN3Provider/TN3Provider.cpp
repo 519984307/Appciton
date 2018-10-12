@@ -561,7 +561,20 @@ void TN3Provider::serviceCalibrate(bool enter)
  *************************************************************************************************/
 void TN3Provider::servicePressurepoint(const unsigned char *data, unsigned int len)
 {
-    sendCmd(TN3_CMD_PRESSURE_POINT, data, len);
+    unsigned char cmd[3] = {0};
+    int pressure = data[0] | (data[1] << 8);
+    if (pressure)
+    {
+        cmd[0] = 0x01;
+    }
+    else
+    {
+        cmd[0] = 0x00;
+    }
+    cmd[1] = pressure & 0xFF;
+    cmd[2] = (pressure >> 8) & 0xFF;
+    len = 0;
+    sendCmd(TN3_CMD_PRESSURE_POINT, cmd, len);
 }
 
 /**************************************************************************************************
