@@ -79,7 +79,6 @@
 		<ScreenModule>0</ScreenModule>
 		<NurseCallingModule>0</NurseCallingModule>
 		<AnalogOutputModule>0</AnalogOutputModule>
-		<SYNCDefibrillationModule>0</SYNCDefibrillationModule>
 		<COModule>0</COModule>
 	</MachineConfigModule>
 	<SoftWareVersion>

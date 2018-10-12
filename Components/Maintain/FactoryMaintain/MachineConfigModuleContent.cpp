@@ -87,17 +87,6 @@ void MachineConfigModuleContentPrivte::loadOptions()
     systemConfig.getNumValue("MachineConfigModule|AnalogOutputModule", index);
     combos[ITEM_CBO_ANANLOG]->setCurrentIndex(index);
 
-    if (index == 1)
-    {
-        combos[ITEM_CBO_SYNC]->setEnabled(false);
-        index = 0;
-        systemConfig.setNumValue("MachineConfigModule|SYNCDefibrillationModule", index);
-    }
-    else
-    {
-        systemConfig.getNumValue("MachineConfigModule|SYNCDefibrillationModule", index);
-        combos[ITEM_CBO_SYNC]->setEnabled(true);
-    }
     combos[ITEM_CBO_SYNC]->setCurrentIndex(index);
 }
 
@@ -253,20 +242,6 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
-    label = new QLabel(trs("SYNCDefibrillationModule"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    combo = new ComboBox;
-    combo->addItems(QStringList()
-                    << trs("Disable")
-                    << trs("Enable")
-                   );
-    layout->addWidget(combo, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(MachineConfigModuleContentPrivte
-                         ::ITEM_CBO_SYNC, combo);
-    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_SYNC;
-    combo->setProperty("Item", qVariantFromValue(itemId));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
 
@@ -305,10 +280,6 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
     case MachineConfigModuleContentPrivte::ITEM_CBO_ANANLOG:
         str = "AnalogOutputModule";
         d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_SYNC]->setEnabled(!index);
-        break;
-    case MachineConfigModuleContentPrivte::ITEM_CBO_SYNC:
-        str = "SYNCDefibrillationModule";
-        d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_ANANLOG]->setEnabled(!index);
         break;
     default:
         return;

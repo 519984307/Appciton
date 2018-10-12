@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/12
+ **/
+
+
+
 #pragma once
 #include "NIBPStateMachineDefine.h"
 #include "NIBPEventDefine.h"
@@ -35,11 +47,12 @@ public:
     virtual void stateExit(unsigned char stateID);
     virtual void stateExit(void);
 
-    // 是否开启了CPR节拍音
-    virtual bool isStartCPRMetronome() {return false;}
 
     // 当前状态类型
-    virtual int curStatusType() {return -1;}
+    virtual int curStatusType()
+    {
+        return -1;
+    }
 
     // check whether the state machine is exited
     bool isExit() const;
@@ -49,7 +62,7 @@ public:
     NIBPStateMachineType type(void) const;
 
     // 构造与析构。
-    NIBPStateMachine(NIBPStateMachineType type);
+    explicit NIBPStateMachine(NIBPStateMachineType type);
     virtual ~NIBPStateMachine();
 
 protected:
@@ -70,5 +83,5 @@ private:
     int _timerID;
     bool _isExited;
     NIBPStateMachineType _type;
-    QMap<unsigned char, NIBPState*> _nibpStates;
+    QMap<unsigned char, NIBPState *> _nibpStates;
 };

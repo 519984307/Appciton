@@ -254,7 +254,6 @@ AlarmLimitMenuDesc,报警限设置,Alarm Limit Setting
 PrintSpeed,打印速度,Print Speed
 PrintNumOfTraces,打印波形数量,Number Of Print Traces
 PrintAlarmTriger,报警触发,Alarm Trigger
-PrintDefibTriger,除颤触发,Defib Trigger
 Print12LeadFormat,12导格式,12-Lead Format
 PrintSetup,打印设置,Print Setup
 SystemAlarmVolume,报警音量,Alarm Audio Volume
@@ -274,7 +273,6 @@ IBPMenuDesc,IBP设置,IBP Desc
 COMenuDesc,C.O.设置,C.O. Desc
 RESPAndCO2Menu,RESP和CO2,RESP & CO2
 RESPAndCO2MenuDesc,RESP和CO2设置,RESP & CO2 Setting
-CPRMenuDesc,CPR设置,CPR Setting
 TEMPMenuDesc,TEMP设置,TEMP Setting
 AGMenuDesc,AG设置,AG Setting
 AlarmSettingMenuDesc,报警设置,Alarm Setting
@@ -938,7 +936,6 @@ RecorderAction,记录仪,Recorder Action
 PrinterDoorOpened,打印机仓门未关,Printer Door Opened
 PrinterOutOfPaper,打印机缺纸,Printer Out Of Paper
 PrinterFault,打印机故障,Printer Fault
-DefibDisabled,除颤失效,Defib Disabled
 PacerDisabled,起搏失效,Pacer Disabled
 ReplaceBattery,替换电池,Replace Battery
 BatteryDisconnected,电池未连接,Battery Disconnected
@@ -958,7 +955,6 @@ Name,名字,Name
 EmailAddress,邮件地址,E-mail Address
 InvalidEmailAddress,无效邮件地址,Invalid E-mail Address
 Confirm,确认,Confirm
-ConfirmToMDefib,是否进入手动除颤模式?,You are about to Exit AED mode and Enter to Manual mode. Are you sure?
 USB,优盘,USB
 EMAIL,邮件,E-mail
 Transfer,传输,Transfer
@@ -1136,7 +1132,6 @@ ScreenModule,触摸屏模块,Screen Module
 NurseCallingModule,护士呼叫设置模块,Nurse Calling Module
 NurseCallingSettingWindow,护士呼叫设置窗口,Nurse Calling Setting Window
 AnalogOutputModule,模拟输出模块,Analog Output Module
-SYNCDefibrillationModule,同步除颤模块,SYNC Defibrillation Module
 COModule,一氧化碳模块,CO Module
 PHASEIN,PHASEIN,PHASEIN
 M601,M601,M601

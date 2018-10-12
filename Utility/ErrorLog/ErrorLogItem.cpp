@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/12
+ **/
+
+
+
 #include "ErrorLogItem.h"
 #include "SystemManager.h"
 #include <QFile>
@@ -10,10 +22,10 @@ void ErrorLogItemBase::setPdCommLogCache(const QVariantList &cachelist)
 void ErrorLogItemBase::setSubSystem(ErrorLogItemBase::SubSystem subSys)
 {
     QString subSysStr = "Unknown";
-    switch(subSys)
+    switch (subSys)
     {
     case SUB_SYS_MAIN_PROCESSOR:
-        subSysStr= "Main Processor";
+        subSysStr = "Main Processor";
         break;
     case SUB_SYS_PD_MODULE:
         subSysStr = "P/D Module";
@@ -58,24 +70,18 @@ void ErrorLogItemBase::setSubSystem(ErrorLogItemBase::SubSystem subSys)
 void ErrorLogItemBase::setSystemState(ErrorLogItemBase::SystemState sysState)
 {
     QString sysStateStr = "Unknown";
-    switch(sysState)
+    switch (sysState)
     {
-        case SYS_STAT_SELFTEST:
+    case SYS_STAT_SELFTEST:
         sysStateStr = "Self-test";
         break;
-        case SYS_STAT_RUNTIME:
+    case SYS_STAT_RUNTIME:
         sysStateStr = "Runtime";
         break;
-        case SYS_STAT_MONITOR_MODE:
+    case SYS_STAT_MONITOR_MODE:
         sysStateStr = "Monitor Mode";
         break;
-        case SYS_STAT_AED_MODE:
-        sysStateStr = "AED Mode";
-        break;
-        case SYS_STAT_MDEFIB_MODE:
-        sysStateStr = "Manual Defib Mode";
-        break;
-        case SYS_STAT_PACER_MODE:
+    case SYS_STAT_PACER_MODE:
         sysStateStr = "Pacer Mode";
         break;
     default:
@@ -88,19 +94,19 @@ void ErrorLogItemBase::setSystemState(ErrorLogItemBase::SystemState sysState)
 void ErrorLogItemBase::setSystemResponse(ErrorLogItemBase::SystemResponeToError sysRsp)
 {
     QString sysRspStr = "Unknown";
-    switch(sysRsp)
+    switch (sysRsp)
     {
-        case SYS_RSP_REPORT:
-            sysRspStr = "Report";
+    case SYS_RSP_REPORT:
+        sysRspStr = "Report";
         break;
-        case SYS_RSP_RETRY:
-            sysRspStr = "Retry";
+    case SYS_RSP_RETRY:
+        sysRspStr = "Retry";
         break;
-        case SYS_RSP_RESET:
-            sysRspStr = "Reset";
+    case SYS_RSP_RESET:
+        sysRspStr = "Reset";
         break;
-        case SYS_RSP_DISABLE:
-            sysRspStr = "Disable";
+    case SYS_RSP_DISABLE:
+        sysRspStr = "Disable";
         break;
     default:
         break;
@@ -123,25 +129,25 @@ int ErrorLogItem::type() const
 void ErrorLogItem::outputInfo(QTextStream &stream) const
 {
     ErrorLogItemBase::outputInfo(stream);
-    if(content.contains("subSys"))
+    if (content.contains("subSys"))
     {
-        stream<<"Subsystem: "<<content["subSys"].toString()<<"\r\n";
+        stream << "Subsystem: " << content["subSys"].toString() << "\r\n";
     }
-    if(content.contains("sysState"))
+    if (content.contains("sysState"))
     {
-        stream<<"System State: "<<content["sysState"].toString()<<"\r\n";
+        stream << "System State: " << content["sysState"].toString() << "\r\n";
     }
-    if(content.contains("sysRsp"))
+    if (content.contains("sysRsp"))
     {
-        stream<<"System Response: "<<content["sysRsp"].toString()<<"\r\n";
+        stream << "System Response: " << content["sysRsp"].toString() << "\r\n";
     }
 
     stream << content["log"].toString();
 
-    if(content.contains("pdCommLog"))
+    if (content.contains("pdCommLog"))
     {
         QVariantList pdCacheLog = content["pdCommLog"].toList();
-        stream <<"PD communication Log:"<<"\r\n";
+        stream << "PD communication Log:" << "\r\n";
         foreach(QVariant v, pdCacheLog)
         {
             QVariantMap m = v.toMap();
@@ -150,29 +156,29 @@ void ErrorLogItem::outputInfo(QTextStream &stream) const
             QByteArray data = QByteArray::fromBase64(m["data"].toByteArray());
 
             stream << QDateTime::fromMSecsSinceEpoch(ts).toString("dd/MM/yyyy HH:mm:ss.zzz");
-            if(dir)
+            if (dir)
             {
-                stream <<" Send: ";
+                stream << " Send: ";
             }
             else
             {
-                stream <<" Recv: ";
+                stream << " Recv: ";
             }
 
-            for(int i = 0; i< data.size(); i++)
+            for (int i = 0; i < data.size(); i++)
             {
-                stream<< QString::number(data[i], 16)<<" ";
+                stream << QString::number(data[i], 16) << " ";
             }
 
-            stream <<"\r\n";
+            stream << "\r\n";
         }
     }
 }
 
 bool ErrorLogItem::isLogEmpty() const
 {
-    if(content.contains("subSys")|| content.contains("sysState")|| content.contains("sysRsp")
-            ||content.contains("pdCommLog"))
+    if (content.contains("subSys") || content.contains("sysState") || content.contains("sysRsp")
+            || content.contains("pdCommLog"))
     {
         return false;
     }
@@ -198,22 +204,22 @@ bool CrashLogItem::isLogEmpty() const
 void CrashLogItem::outputInfo(QTextStream &stream) const
 {
     ErrorLogItemBase::outputInfo(stream);
-    if(content.contains("subSys"))
+    if (content.contains("subSys"))
     {
-        stream<<"Subsystem: "<<content["subSys"].toString()<<"\r\n";
+        stream << "Subsystem: " << content["subSys"].toString() << "\r\n";
     }
-    if(content.contains("sysState"))
+    if (content.contains("sysState"))
     {
-        stream<<"System State: "<<content["sysState"].toString()<<"\r\n";
+        stream << "System State: " << content["sysState"].toString() << "\r\n";
     }
-    if(content.contains("sysRsp"))
+    if (content.contains("sysRsp"))
     {
-        stream<<"System Response: "<<content["sysRsp"].toString()<<"\r\n";
+        stream << "System Response: " << content["sysRsp"].toString() << "\r\n";
     }
 
-    stream<<content["log"].toByteArray();
+    stream << content["log"].toByteArray();
 }
-//将原始日志内容读取到ErrorLogItemBase基类生成的全局对象中
+// 将原始日志内容读取到ErrorLogItemBase基类生成的全局对象中
 void CrashLogItem::collect(const QString &filename)
 {
     QFile logfile(filename);
