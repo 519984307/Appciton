@@ -53,6 +53,7 @@ public:
 class TrendDataStorageManagerPrivate: public StorageManagerPrivate
 {
 public:
+    Q_DECLARE_PUBLIC(TrendDataStorageManager)
     explicit TrendDataStorageManagerPrivate(TrendDataStorageManager *q_ptr)
         : StorageManagerPrivate(q_ptr), firstSave(false), lastStoreTimestamp(0)
     {
@@ -64,6 +65,8 @@ public:
     void updateAdditionInfo();
 
     void storeShortTrendData(SubParamID subParamID, unsigned timestamp, TrendDataType data);
+
+    void emitShortTrendSingals(unsigned timestamp);
 
     TrendDataDescription dataDesc;
     bool firstSave;  // first time save after initialize
@@ -152,6 +155,30 @@ void TrendDataStorageManagerPrivate::storeShortTrendData(SubParamID subParamID, 
     }
 }
 
+void TrendDataStorageManagerPrivate::emitShortTrendSingals(unsigned timestamp)
+{
+    Q_Q(TrendDataStorageManager);
+    if (timestamp % 10 == 0)
+    {
+        emit q->newTrendDataArrived(SHORT_TREND_INTERVAL_10S);
+    }
+
+    if (timestamp % 20 == 0)
+    {
+        emit q->newTrendDataArrived(SHORT_TREND_INTERVAL_20S);
+    }
+
+    if (timestamp % 30 == 0)
+    {
+        emit q->newTrendDataArrived(SHORT_TREND_INTERVAL_30S);
+    }
+
+    if (timestamp % 60 == 0)
+    {
+        emit q->newTrendDataArrived(SHORT_TREND_INTERVAL_60S);
+    }
+}
+
 TrendDataStorageManager &TrendDataStorageManager::getInstance()
 {
     static TrendDataStorageManager *instance = NULL;
@@ -234,6 +261,9 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
         d->storeShortTrendData(subParamID, t, valueSegment.value);
     }
 
+    // emit signals
+    d->emitShortTrendSingals(t);
+
     int dataSize = sizeof(TrendDataSegment) + valueSegments.size() * sizeof(TrendValueSegment);
     QByteArray content(dataSize, 0);
 
@@ -308,43 +338,48 @@ void TrendDataStorageManager::unRegisterShortTrend(SubParamID subParamID)
     }
 }
 
-void TrendDataStorageManager::getShortTrendData(SubParamID subParam, TrendDataType *dataBuf, int count,
+int TrendDataStorageManager::getShortTrendData(SubParamID subParam, TrendDataType *dataBuf, int count,
         ShortTrendInterval interval) const
 {
     Q_D(const TrendDataStorageManager);
     if (dataBuf == NULL)
     {
-        return;
+        return 0;
     }
 
     ShortTrendStorage *s = d->shortTrends.value(subParam, NULL);
     if (s == NULL)
     {
-        // fill with invalid data and return
-        for (int i = 0; i < count; ++i)
-        {
-            dataBuf[i] = InvData();
-        }
-
-        return;
+        return 0;
     }
 
     RingBuff<TrendDataType> *ringBuf = s->trendBuffer[interval];
 
+    int index = 0;
     int bufSize = ringBuf->dataSize();
-    if (bufSize >= count)
+    if (bufSize > count)
     {
-        int index = bufSize - count;
-        ringBuf->copy(index, dataBuf, count);
+        index  = bufSize - count;
     }
-    else
+
+    return ringBuf->copy(index, dataBuf, count);
+}
+
+TrendDataType TrendDataStorageManager::getLatestShortTrendData(SubParamID subParam, ShortTrendInterval interval)
+{
+    Q_D(const TrendDataStorageManager);
+    ShortTrendStorage *s = d->shortTrends.value(subParam, NULL);
+    if (s)
     {
-        ringBuf->copy(0, dataBuf, count);
-        for (int i = bufSize; i < count; ++i)
+        bool ok = false;
+        TrendDataType d = s->trendBuffer[interval]->head(ok);
+        if (ok)
         {
-            dataBuf[i] = InvData();
+            return d;
         }
     }
+
+    return InvData();
 }
 
 TrendDataStorageManager::TrendDataStorageManager()

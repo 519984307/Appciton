@@ -67,6 +67,9 @@ public:
     void setWaveType(int index);
     int  getWaveType(void)const;
 
+    /* reimplement */
+    void getSubFocusWidget(QList<QWidget *> &subWidget) const;
+
 protected:
     void paintEvent(QPaintEvent *event);
     // 窗体大小调整事件
@@ -94,7 +97,7 @@ private slots:
 signals:
     void _intervalChanged(int index);
 private:
-    static const int _titleBarHeight = 15;
+    static const int _titleBarHeight = 24;
     static const int _labelHeight = 40;
     QVBoxLayout *_mainLayout;
     QVBoxLayout *_hLayoutWave;

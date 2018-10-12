@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/10/8
+ **/
+
 #include "SuntechProvider.h"
 #include "NIBPParam.h"
 #include "NIBPAlarm.h"
@@ -5,10 +15,10 @@
 #include <QString>
 #include <QTimer>
 
-#define		HOST_START_BYTE           0x3A     //receive packet header :
-#define		MODULE_START_BYTE         0x3E     //send packet header >
+#define		HOST_START_BYTE           0x3A     // receive packet header :
+#define		MODULE_START_BYTE         0x3E     // send packet header >
 
-//RESPONSES
+// RESPONSES
 
 #define		MODULE_ACK     		      0x04      // 模块应答
 
@@ -26,7 +36,7 @@
 #define     SUNTECH_RSP_GET_MEASUREMENT       0x18      // 测量结果
 
 
-//COMMANDS
+// COMMANDS
 
 #define     SUNTECH_CMD_SEND_START              0x79
 #define     SUNTECH_CMD_SET_INITIAL_INFIAL      0X17      // DATA=I0
@@ -87,7 +97,7 @@ void SuntechProvider::dataArrived(void)
     {
         if (ringBuff.at(0) != MODULE_START_BYTE)
         {
-            //debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));
+            // debug("discard (%s:%d)\n", qPrintable(getName()), ringBuff.at(0));
             ringBuff.pop(1);
             continue;
         }
@@ -105,7 +115,7 @@ void SuntechProvider::dataArrived(void)
         }
 
         // 数据包不会超过packet长度，当出现这种情况说明发生了不可预料的错误，直接丢弃该段数据。
-        if (len > (int)sizeof(buff))
+        if (len > static_cast<int>(sizeof(buff)))
         {
             ringBuff.pop(1);
             continue;
@@ -118,7 +128,7 @@ void SuntechProvider::dataArrived(void)
             ringBuff.pop(1);
         }
 
-        if (buff[len-1] == _calcCheckSum(buff,len-1))
+        if (buff[len - 1] == _calcCheckSum(buff, len - 1))
         {
             _handlePacket(&buff[1], len - 2);
         }
@@ -136,18 +146,18 @@ void SuntechProvider::dataArrived(void)
  *************************************************************************************************/
 void SuntechProvider::startMeasure(PatientType type)
 {
-    unsigned char cmd;
+    unsigned char cmd = 0;
     if (type == PATIENT_TYPE_ADULT)	 //如果是成人模式
     {
-      cmd = SUNTECH_CMD_START_ADU_BP;
+        cmd = SUNTECH_CMD_START_ADU_BP;
     }
-    else if(type == PATIENT_TYPE_PED) //如果是少儿模式
+    else if (type == PATIENT_TYPE_PED) //如果是少儿模式
     {
-      cmd = SUNTECH_CMD_START_PED_BP;
+        cmd = SUNTECH_CMD_START_PED_BP;
     }
-    else if(type == PATIENT_TYPE_NEO) //如果是新生儿模式
+    else if (type == PATIENT_TYPE_NEO) //如果是新生儿模式
     {
-      cmd = SUNTECH_CMD_START_NEO_BP;
+        cmd = SUNTECH_CMD_START_NEO_BP;
     }
 
     _sendCmd(&cmd, 1);
@@ -171,7 +181,7 @@ void SuntechProvider::stopMeasure(void)
     cmd[1] = SUNTECH_CMD_ABORT_BP;
     cmd[2] = 0x00;
 
-    _sendCmd(cmd,3);
+    _sendCmd(cmd, 3);
 
     _flagStartCmdSend = 1;
 }
@@ -206,6 +216,23 @@ bool SuntechProvider::needStopACK(void)
     return true;
 }
 
+void SuntechProvider::servicePressurepoint(const unsigned char *data, unsigned int len)
+{
+    unsigned char cmd[2] = {0};
+    cmd[0] = 0x04;
+    int pressure = data[0] | (data[1] << 8);
+    if (pressure)
+    {
+        cmd[1] = 0x01;
+    }
+    else
+    {
+        cmd[1] = 0x00;
+    }
+    len = 2;
+    _sendCmd(cmd, len);
+}
+
 /**************************************************************************************************
  * 是否为错误数据包。
  *************************************************************************************************/
@@ -232,7 +259,7 @@ void SuntechProvider::getResult(void)
  * 是否为结果包。
  *************************************************************************************************/
 bool SuntechProvider::isResult(unsigned char *packet,
-        short &sys, short &dia, short &map, short &pr, NIBPOneShotType &err)
+                               short &sys, short &dia, short &map, short &pr, NIBPOneShotType &err)
 {
 //    _timer->stop();
 
@@ -248,27 +275,52 @@ bool SuntechProvider::isResult(unsigned char *packet,
     {
         switch (packet[19])
         {
-        case 0x01: err = NIBP_ONESHOT_ALARM_SIGNAL_WEAK; break;
-        case 0x02: err = NIBP_ONESHOT_ALARM_EXCESSIVE_MOVING; break;
-        case 0x03: err = NIBP_ONESHOT_ALARM_MEASURE_OVER_RANGE; break;
-        case 0x04: err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT; break;
-        case 0x85: err = NIBP_ONESHOT_ALARM_PNEUMATIC_BLOCKAGE; break;
-        case 0x87: err = NIBP_ONESHOT_ALARM_CUFF_ERROR; break;
-        case 0x88: err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT; break;
-        case 0x89: err = NIBP_ONESHOT_ALARM_CUFF_OVER_PRESSURE; break;
-        case 0x90: err = NIBP_ONESHOT_ALARM_HARDWARE_ERROR; break;
-        case 0x91: err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT; break;
-        case 0x97: err = NIBP_ONESHOT_ALARM_TRANSDUCER_OVER_RANGE; break;
-        case 0x99: err = NIBP_ONESHOT_ALARM_EEPROM_FAILURE; break;
-        default: break;
+        case 0x01:
+            err = NIBP_ONESHOT_ALARM_SIGNAL_WEAK;
+            break;
+        case 0x02:
+            err = NIBP_ONESHOT_ALARM_EXCESSIVE_MOVING;
+            break;
+        case 0x03:
+            err = NIBP_ONESHOT_ALARM_MEASURE_OVER_RANGE;
+            break;
+        case 0x04:
+            err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT;
+            break;
+        case 0x85:
+            err = NIBP_ONESHOT_ALARM_PNEUMATIC_BLOCKAGE;
+            break;
+        case 0x87:
+            err = NIBP_ONESHOT_ALARM_CUFF_ERROR;
+            break;
+        case 0x88:
+            err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT;
+            break;
+        case 0x89:
+            err = NIBP_ONESHOT_ALARM_CUFF_OVER_PRESSURE;
+            break;
+        case 0x90:
+            err = NIBP_ONESHOT_ALARM_HARDWARE_ERROR;
+            break;
+        case 0x91:
+            err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT;
+            break;
+        case 0x97:
+            err = NIBP_ONESHOT_ALARM_TRANSDUCER_OVER_RANGE;
+            break;
+        case 0x99:
+            err = NIBP_ONESHOT_ALARM_EEPROM_FAILURE;
+            break;
+        default:
+            break;
         }
         return true;
     }
 
-    sys = (int)((packet[2]<<8)+packet[1]);
-    dia = (int)((packet[4]<<8)+packet[3]);
-    map = (int)((packet[18]<<8)+packet[17]);
-    pr = (int)((packet[16]<<8)+packet[15]);
+    sys = static_cast<int>((packet[2] << 8) + packet[1]);
+    dia = static_cast<int>((packet[4] << 8) + packet[3]);
+    map = static_cast<int>((packet[18] << 8) + packet[17]);
+    pr = static_cast<int>((packet[16] << 8) + packet[15]);
 
     return true;
 }
@@ -317,6 +369,22 @@ void SuntechProvider::_getCuffPressure()
     _sendCmd(cmd, 3);
 }
 
+static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
+{
+    NIBPMeasureResultInfo info;
+    short t = static_cast<short>(data[0] + (data[1] << 8));
+    info.sys = t;
+    t = static_cast<short>(data[2] + (data[3] << 8));
+    info.dia = t;
+    t = static_cast<short>(data[16] + (data[17] << 8));
+    info.map = t;
+    t = static_cast<short>(data[14] + (data[15] << 8));
+    info.pr = t;
+    t = static_cast<short>(data[18]);
+    info.errCode = t;
+    return info;
+}
+
 /**************************************************************************************************
  * 数据处理。
  *************************************************************************************************/
@@ -333,7 +401,7 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
                 // 启动测量
                 if (_NIBPStart)
                 {
-                    nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_START_MEASURE,NULL,0);
+                    nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_START_MEASURE, NULL, 0);
                 }
                 _flagStartCmdSend = 2;
             }
@@ -361,13 +429,13 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
                 // 测量完成
                 if (_NIBPStart)
                 {
-                    nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_MEASURE_DONE,NULL,0);
+                    nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_MEASURE_DONE, NULL, 0);
                     _NIBPStart = false;
                 }
                 // 测量停止
                 else
                 {
-                    nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_STOP,NULL,0);
+                    nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_STOP, NULL, 0);
                 }
             }
         }
@@ -375,12 +443,15 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
 
     // 当前压力
     case SUNTECH_RSP_CUFF_PRESSURE:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE,&data[1],2);
-
+        nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE, &data[1], 2);
+        break;
     // 测量结果
     case SUNTECH_RSP_GET_MEASUREMENT:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_GET_RESULT,data,len);
+    {
+        NIBPMeasureResultInfo info = getMeasureResultInfo(&data[1]);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_GET_RESULT, reinterpret_cast<unsigned char *>(&info), sizeof(info));
         break;
+    }
 
     default:
         break;
@@ -398,7 +469,7 @@ void SuntechProvider::_sendCmd(const unsigned char *data, unsigned int len)
         sendBuf[index++] = data[i];
     }
 
-    sendBuf[index++] = _calcCheckSum(sendBuf,len + 1);
+    sendBuf[index++] = _calcCheckSum(sendBuf, len + 1);
 
     writeData(sendBuf, len + 2);
 }

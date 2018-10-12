@@ -27,17 +27,10 @@ IBPParam *IBPParam::_selfObj = NULL;
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-IBPParam::IBPParam() : Param(PARAM_IBP), _staIBP1(true), _staIBP2(true),
-    _connectedProvider(false)
+IBPParam::IBPParam() : Param(PARAM_IBP),  _provider(NULL), _waveWidgetIBP1(NULL),
+    _waveWidgetIBP2(NULL), _trendWidgetIBP1(NULL), _trendWidgetIBP2(NULL),
+    _staIBP1(true), _staIBP2(true), _connectedProvider(false)
 {
-
-    _provider = NULL;
-    _waveWidgetIBP1 = NULL;
-    _waveWidgetIBP2 = NULL;
-
-    _trendWidgetIBP1 = NULL;
-    _trendWidgetIBP2 = NULL;
-
     _ibp1.pressureName = IBP_PRESSURE_ART;
     _ibp2.pressureName = IBP_PRESSURE_PA;
 
@@ -756,6 +749,20 @@ void IBPParam::setWaveWidget(IBPWaveWidget *waveWidget, IBPSignalInput IBP)
 //    waveWidget->setLimit(limit[waveWidget->getEntitle()].low, limit[waveWidget->getEntitle()].high);
     waveWidget->setLimit(getIBPScale(waveWidget->getEntitle()).low, getIBPScale(waveWidget->getEntitle()).high);
     _setWaveformSpeed(getSweepSpeed());
+}
+
+QList<SubParamID> IBPParam::getShortTrendList(IBPSignalInput IBP)
+{
+    QList<SubParamID> paraList;
+    if (IBP == IBP_INPUT_1)
+    {
+        paraList = _trendWidgetIBP1->getShortTrendSubParams();
+    }
+    else if (IBP == IBP_INPUT_2)
+    {
+        paraList = _trendWidgetIBP2->getShortTrendSubParams();
+    }
+    return paraList;
 }
 
 IBPScaleInfo IBPParam::getIBPScale(IBPPressureName name)
@@ -1506,4 +1513,17 @@ WaveformID IBPParam::getWaveformID(IBPPressureName name)
         break;
     }
     return waveID;
+}
+
+void IBPParam::onPaletteChanged(ParamID id)
+{
+    if (id != PARAM_IBP)
+    {
+        return;
+    }
+    QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
+    _waveWidgetIBP1->updatePalette(pal);
+    _waveWidgetIBP2->updatePalette(pal);
+    _trendWidgetIBP1->updatePalette(pal);
+    _trendWidgetIBP2->updatePalette(pal);
 }

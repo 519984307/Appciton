@@ -148,3 +148,10 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
 RESPTrendWidget::~RESPTrendWidget()
 {
 }
+
+QList<SubParamID> RESPTrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    list.append(SUB_PARAM_RR_BR);
+    return list;
+}

@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/12
+ **/
+
+
+
 #include "MachineConfigModule.h"
 #include <QVBoxLayout>
 #include <QRegExp>
@@ -20,19 +32,20 @@ MachineConfigModule *MachineConfigModule::_selfObj = NULL;
  *************************************************************************************************/
 MachineConfigModule::MachineConfigModule() : SubMenu(trs("MachineConfigModuleMenu"))
 {
-    QString stringTemp[]={"IBPModule", "CO2Module", "ECG12LeadsModule",
-                          "PrinterModule", "HDMIModule", "WifiModule",
-                          "ScreenModule", "NurseCallingModule", "AnalogOutputModule",
-                          "SYNCDefibrillationModule", "COModule", "NULL"};
+    QString stringTemp[] = {"IBPModule", "CO2Module", "ECG12LeadsModule",
+                            "PrinterModule", "HDMIModule", "WifiModule",
+                            "ScreenModule", "NurseCallingModule",
+                            "AnalogOutputModule", "COModule", "NULL"
+                           };
 
-    for(int i=MODULE_TYPE_IBP; i<MODULE_TYPE_NR; i++)
+    for (int i = MODULE_TYPE_IBP; i < MODULE_TYPE_NR; i++)
     {
         _stringTypeName[i] = stringTemp[i];
     }
 
-    for(int i=MODULE_TYPE_IBP; i<MODULE_TYPE_NR; i++)
+    for (int i = MODULE_TYPE_IBP; i < MODULE_TYPE_NR; i++)
     {
-        if(i!=MODULE_TYPE_CO2 && i!=MODULE_TYPE_CO)
+        if (i != MODULE_TYPE_CO2 && i != MODULE_TYPE_CO)
         {
             _stringItems[i].append(trs("Disable"));
             _stringItems[i].append(trs("Enable"));
@@ -45,12 +58,12 @@ MachineConfigModule::MachineConfigModule() : SubMenu(trs("MachineConfigModuleMen
     _stringItems[MODULE_TYPE_CO].append(trs("Disable"));
     _stringItems[MODULE_TYPE_CO].append(trs("M601"));
 
-    for(int i=MODULE_TYPE_IBP; i<MODULE_TYPE_NR; i++)
+    for (int i = MODULE_TYPE_IBP; i < MODULE_TYPE_NR; i++)
     {
         _icomboList[i] = new IComboList(trs(QString("%1").arg(trs(_stringTypeName[i]))));
         _icomboList[i]->combolist->addItems(_stringItems[i]);
         connect(_icomboList[i]->combolist, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboListConfigChanged(int)));
-        _icomboList[i]->combolist->setProperty("comboListID",qVariantFromValue(i));
+        _icomboList[i]->combolist->setProperty("comboListID", qVariantFromValue(i));
     }
 
     setDesc(trs("MachineConfigModuleMenuDesc"));
@@ -63,13 +76,12 @@ MachineConfigModule::MachineConfigModule() : SubMenu(trs("MachineConfigModuleMen
  *************************************************************************************************/
 void MachineConfigModule::readyShow()
 {
-    int tmpValue;
 
-    for(int i=MODULE_TYPE_IBP; i<MODULE_TYPE_NR; i++)
+    for (int i = MODULE_TYPE_IBP; i < MODULE_TYPE_NR; i++)
     {
-        tmpValue = 0;
+        int tmpValue = 0;
         systemConfig.getNumValue(QString("MachineConfigModule|%1").arg(_stringTypeName[i]), tmpValue);
-        if(tmpValue<0)
+        if (tmpValue < 0)
         {
             _icomboList[i]->combolist->setCurrentIndex(0);
         }
@@ -94,12 +106,12 @@ void MachineConfigModule::layoutExec()
     int btnWidth = itemW / 2;
     int labelWidth = itemW - btnWidth;
 
-    for(int i=MODULE_TYPE_IBP; i<MODULE_TYPE_NR; i++)
+    for (int i = MODULE_TYPE_IBP; i < MODULE_TYPE_NR; i++)
     {
         _icomboList[i]->setFont(fontManager.textFont(fontSize));
         _icomboList[i]->label->setFixedSize(labelWidth, ITEM_H);
         _icomboList[i]->combolist->setFixedSize(btnWidth, ITEM_H);
-        mainLayout->addWidget(_icomboList[i],0,Qt::AlignRight);
+        mainLayout->addWidget(_icomboList[i], 0, Qt::AlignRight);
         mainLayout->addStretch();
     }
 }
@@ -107,7 +119,7 @@ void MachineConfigModule::layoutExec()
 void MachineConfigModule::onComboListConfigChanged(int index)
 {
     ComboList *combo = qobject_cast<ComboList *>(sender());
-    if(!combo)
+    if (!combo)
     {
         qdebug("Invalid signal sender.");
         return;
@@ -115,10 +127,10 @@ void MachineConfigModule::onComboListConfigChanged(int index)
 
     int comboId = combo->property("comboListID").toInt();
 
-    if(comboId>=MODULE_TYPE_IBP && comboId< MODULE_TYPE_NR)
+    if (comboId >= MODULE_TYPE_IBP && comboId < MODULE_TYPE_NR)
     {
         systemConfig.setNumValue(QString("MachineConfigModule|%1").arg(_stringTypeName[comboId]),
-                                  index);
+                                 index);
     }
 }
 
@@ -127,5 +139,4 @@ void MachineConfigModule::onComboListConfigChanged(int index)
  *************************************************************************************************/
 MachineConfigModule::~MachineConfigModule()
 {
-
 }

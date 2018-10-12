@@ -87,7 +87,7 @@ void SPO2TrendWidget::isAlarm(bool flag)
  *************************************************************************************************/
 void SPO2TrendWidget::showValue(void)
 {
-    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
+    QPalette psrc = palette();
     psrc = normalPalette(psrc);
     if (_isAlarm)
     {
@@ -96,7 +96,6 @@ void SPO2TrendWidget::showValue(void)
     }
     else
     {
-        setPalette(psrc);
         showNormalStatus(_spo2Bar, psrc);
         showNormalStatus(_spo2Value, psrc);
     }
@@ -145,6 +144,7 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     _spo2Bar = new SPO2BarWidget(0, 15);
     _spo2Bar->setFixedWidth(10);
     mLayout->addWidget(_spo2Bar);
+    mLayout->setMargin(5);
 
     // 布局。
     QHBoxLayout *mainLayout = new QHBoxLayout();
@@ -167,4 +167,11 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
  *************************************************************************************************/
 SPO2TrendWidget::~SPO2TrendWidget()
 {
+}
+
+QList<SubParamID> SPO2TrendWidget::getShortTrendSubParams() const
+{
+   QList<SubParamID> list;
+   list.append(SUB_PARAM_SPO2);
+   return list;
 }

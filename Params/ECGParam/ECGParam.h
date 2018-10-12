@@ -106,7 +106,6 @@ public:
     void setECGPVCSTrendWidget(ECGPVCSTrendWidget *trendWidget);
     void setECGSTTrendWidget(ECGSTTrendWidget *trendWidget);
     void setWaveWidget(ECGWaveWidget *waveWidget, ECGLead whichLead);
-    void setOxyCRGWaveWidget(OxyCRGHRWidget *waveWidget);
 
     /**
      * @brief setOxyCRGHrWaveWidget
@@ -326,6 +325,11 @@ private slots:
      * @brief onOxyCRGWaveUpdated 呼吸氧和波形更新槽函数
      */
     void onOxyCRGWaveUpdated(void);
+
+    /**
+     * @brief onPaletteChanged change palette
+     */
+    void onPaletteChanged(ParamID id);
 private:
     // 构造。
     ECGParam();
@@ -337,7 +341,6 @@ private:
     ECGPVCSTrendWidget *_pvcsTrendWidget;
     ECGSTTrendWidget *_ecgSTTrendWidget;
     ECGWaveWidget *_waveWidget[ECG_LEAD_NR];
-    OxyCRGHRWidget *_waveOxyCRGWidget;
     OxyCRGRRHRWaveWidget *oxyCRGRrHrTrend;
     QBasicTimer _timer;
     short _hrValue;

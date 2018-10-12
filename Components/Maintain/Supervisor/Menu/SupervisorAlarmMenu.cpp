@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/12
+ **/
+
+
+
 #include <QVBoxLayout>
 #include "FontManager.h"
 #include "LanguageManager.h"
@@ -54,10 +66,6 @@ void SupervisorAlarmMenu::readyShow()
     }
     systemConfig.getNumValue("Alarms|AlarmOffAtPowerOn", index);
     _alarmOffAtPowerOn->setCurrentIndex(index);
-
-    systemConfig.getNumValue("Alarms|NonAlertsBeepsInNonAED", index);
-    _nonAlertsBeepsInNonAED->setCurrentIndex(index);
-
 }
 
 /**************************************************************************************************
@@ -91,7 +99,7 @@ void SupervisorAlarmMenu::layoutExec()
     _minAlarmVolume->label->setFixedSize(labelWidth, ITEM_H);
     _minAlarmVolume->combolist->setFixedSize(btnWidth, ITEM_H);
 
-    for(unsigned i = SoundManager::VOLUME_LEV_1; i <= SoundManager::VOLUME_LEV_5; ++i)
+    for (unsigned i = SoundManager::VOLUME_LEV_1; i <= SoundManager::VOLUME_LEV_5; ++i)
     {
         _minAlarmVolume->addItem(QString::number(i));
     }
@@ -129,7 +137,7 @@ void SupervisorAlarmMenu::layoutExec()
             SLOT(_alarmClosePromptTimeChangeSlot(int)));
     mainLayout->addWidget(_alarmClosePromptTime);
 
-    //eable alarm audio off
+    // eable alarm audio off
     _enableAlarmAudioOff = new IComboList(trs("EnableAlarmAudioOff"));
     _enableAlarmAudioOff->setFont(fontManager.textFont(fontSize));
     _enableAlarmAudioOff->label->setFixedSize(labelWidth, ITEM_H);
@@ -142,7 +150,7 @@ void SupervisorAlarmMenu::layoutExec()
             SLOT(_enableAlarmAudioOffChangeSlot(int)));
     mainLayout->addWidget(_enableAlarmAudioOff);
 
-    //enable alarm off
+    // enable alarm off
     _enableAlarmOff = new IComboList(trs("EnableAlarmOff"));
     _enableAlarmOff->setFont(fontManager.textFont(fontSize));
     _enableAlarmOff->label->setFixedSize(labelWidth, ITEM_H);
@@ -155,7 +163,7 @@ void SupervisorAlarmMenu::layoutExec()
             SLOT(_enableAlarmOffChangeSlot(int)));
     mainLayout->addWidget(_enableAlarmOff);
 
-    //alarm off at power on
+    // alarm off at power on
     _alarmOffAtPowerOn = new IComboList(trs("AlarmOffAtPowerOn"));
     _alarmOffAtPowerOn->setFont(fontManager.textFont(fontSize));
     _alarmOffAtPowerOn->label->setFixedSize(labelWidth, ITEM_H);
@@ -167,25 +175,7 @@ void SupervisorAlarmMenu::layoutExec()
     connect(_alarmOffAtPowerOn, SIGNAL(currentIndexChanged(int)), this,
             SLOT(_alarmOffAtPowerOnChangeSlot(int)));
     mainLayout->addWidget(_alarmOffAtPowerOn);
-
-    _nonAlertsBeepsInNonAED = new IComboList(trs("NonAlertsBeepsInNonAED"));
-    _nonAlertsBeepsInNonAED->setFont(fontManager.textFont(fontSize));
-    _nonAlertsBeepsInNonAED->label->setFixedSize(labelWidth, ITEM_H);
-    _nonAlertsBeepsInNonAED->combolist->setFixedSize(btnWidth, ITEM_H);
-    _nonAlertsBeepsInNonAED->addItem(trs("Disable"));
-    _nonAlertsBeepsInNonAED->addItem(trs("Enable"));
-    connect(_nonAlertsBeepsInNonAED, SIGNAL(currentIndexChanged(int)), this,
-            SLOT(_nonAlertsBeepsInNonAEDSlot(int)));
-    mainLayout->addWidget(_nonAlertsBeepsInNonAED);
 }
-
-/**************************************************************************************************
- * 生命报警开关。
- *************************************************************************************************/
-//void SupervisorAlarmMenu::_ltaAlarmChangeSlot(int index)
-//{
-//    systemConfig.setNumValue("Alarms|LTAAlarm", index);
-//}
 
 /**************************************************************************************************
  * 最低报警音量。
@@ -245,18 +235,10 @@ void SupervisorAlarmMenu::_alarmOffAtPowerOnChangeSlot(int index)
 }
 
 /**************************************************************************************************
- * Non-alerts beeps in Non-AED modes。
- *************************************************************************************************/
-void SupervisorAlarmMenu::_nonAlertsBeepsInNonAEDSlot(int index)
-{
-    systemConfig.setNumValue("Alarms|NonAlertsBeepsInNonAED", index);
-}
-/**************************************************************************************************
  * 析构。
  *************************************************************************************************/
 SupervisorAlarmMenu::~SupervisorAlarmMenu()
 {
-
 }
 
 

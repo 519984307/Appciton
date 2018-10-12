@@ -119,7 +119,7 @@ void AGTrendWidget::isAlarm(int id, bool flag)
  *************************************************************************************************/
 void AGTrendWidget::showValue()
 {
-    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
+    QPalette psrc = palette();
     psrc = normalPalette(psrc);
     if (_fiAlarm || _etAlarm)
     {
@@ -145,7 +145,6 @@ void AGTrendWidget::showValue()
     }
     else
     {
-        setPalette(psrc);
         showNormalStatus(_etValue, psrc);
         showNormalStatus(_fiName, psrc);
         showNormalStatus(_fiValue, psrc);
@@ -204,6 +203,31 @@ AGTrendWidget::AGTrendWidget(const QString &trendName, const AGTypeGas gasType)
  *************************************************************************************************/
 AGTrendWidget::~AGTrendWidget()
 {
+}
+
+QList<SubParamID> AGTrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    switch (_gasType) {
+    case AG_TYPE_CO2:
+        list << SUB_PARAM_ETCO2 << SUB_PARAM_FICO2;
+        break;
+    case AG_TYPE_N2O:
+        list << SUB_PARAM_ETN2O << SUB_PARAM_FIN2O;
+        break;
+    case AG_TYPE_AA1:
+        list << SUB_PARAM_ETAA1 << SUB_PARAM_FIAA1;
+        break;
+    case AG_TYPE_AA2:
+        list << SUB_PARAM_ETAA2 << SUB_PARAM_FIAA2;
+        break;
+    case AG_TYPE_O2:
+        list << SUB_PARAM_ETO2 << SUB_PARAM_FIO2;
+        break;
+    default:
+        break;
+    }
+    return list;
 }
 
 /**************************************************************************************************

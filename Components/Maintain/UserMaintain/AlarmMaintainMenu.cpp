@@ -86,9 +86,6 @@ void AlarmMaintainMenu::readyShow()
     systemConfig.getNumValue("Alarms|AlarmOffAtPowerOn", index);
     _alarmOffAtPowerOn->setCurrentIndex(index);
 
-//    systemConfig.getNumValue("Alarms|NonAlertsBeepsInNonAED", index);
-//    _nonAlertsBeepsInNonAED->setCurrentIndex(index);
-
     systemConfig.getNumValue("Alarms|PauseMaxAlarm15Min", index);
     _isPauseMaxAlarm15Min->setCurrentIndex(index);
     index = 0;
@@ -206,16 +203,6 @@ void AlarmMaintainMenu::layoutExec()
     connect(_alarmOffAtPowerOn, SIGNAL(currentIndexChanged(int)), this,
             SLOT(_alarmOffAtPowerOnChangeSlot(int)));
     mainLayout->addWidget(_alarmOffAtPowerOn);
-
-//    _nonAlertsBeepsInNonAED = new IComboList(trs("NonAlertsBeepsInNonAED"));
-//    _nonAlertsBeepsInNonAED->setFont(fontManager.textFont(fontSize));
-//    _nonAlertsBeepsInNonAED->label->setFixedSize(labelWidth, ITEM_H);
-//    _nonAlertsBeepsInNonAED->combolist->setFixedSize(btnWidth, ITEM_H);
-//    _nonAlertsBeepsInNonAED->addItem(trs("Disable"));
-//    _nonAlertsBeepsInNonAED->addItem(trs("Enable"));
-//    connect(_nonAlertsBeepsInNonAED, SIGNAL(currentIndexChanged(int)), this,
-//            SLOT(_nonAlertsBeepsInNonAEDSlot(int)));
-//    mainLayout->addWidget(_nonAlertsBeepsInNonAED);
 
     // _isPauseMaxAlarm15Min
     _isPauseMaxAlarm15Min = new IComboList(trs("IsPauseMaxAlarm15Min"));
@@ -375,13 +362,7 @@ void AlarmMaintainMenu::_alarmOffAtPowerOnChangeSlot(int index)
     systemConfig.setNumValue("Alarms|AlarmOffAtPowerOn", index);
 }
 
-/**************************************************************************************************
- * Non-alerts beeps in Non-AED modes。
- *************************************************************************************************/
-// void AlarmMaintainMenu::_nonAlertsBeepsInNonAEDSlot(int index)
-// {
-//     systemConfig.setNumValue("Alarms|NonAlertsBeepsInNonAED", index);
-// }
+
 /**************************************************************************************************
  * PauseMaxAlarm15Min。
  *************************************************************************************************/

@@ -206,17 +206,18 @@ static void _start(void)
 
 
 #if 1
-    // perform window layout
-    windowManager.setLayout(layoutManager.mainLayout());
     // load softkey
     softkeyManager.setContent(SOFTKEY_ACTION_STANDARD);
+
+    // perform window layout
+    windowManager.setLayout(layoutManager.mainLayout());
 
     // move window to the center
     QDesktopWidget *pDesk = QApplication::desktop();
     windowManager.move((pDesk->width() - windowManager.width()) / 2,
                        (pDesk->height() - windowManager.height()) / 2);
 
-    layoutManager.setUFaceType(UFACE_MONITOR_STANDARD);
+    layoutManager.setUFaceType(UFACE_MONITOR_TREND);
 
 #else
     systemManager.loadInitBMode();

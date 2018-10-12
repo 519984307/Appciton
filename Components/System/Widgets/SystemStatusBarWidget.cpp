@@ -18,8 +18,8 @@
 #include <QLabel>
 #include "NetworkManager.h"
 #include "PublicMenuManager.h"
-#include "WindowManager.h"
 #include "MainMenuWindow.h"
+#include "LayoutManager.h"
 
 SystemStatusBarWidget *SystemStatusBarWidget::_selfObj = NULL;
 #define ICON_WIDTH 32
@@ -74,7 +74,7 @@ void SystemStatusBarWidget::changeIcon(SystemIconLabel iconlabel, int status, bo
                 if (w->focusPolicy() == Qt::NoFocus)
                 {
                     w->setFocusPolicy(Qt::StrongFocus);
-                    // windowManager.setFocusOrder();
+                    layoutManager.updateTabOrder();
                 }
             }
             else
@@ -82,7 +82,7 @@ void SystemStatusBarWidget::changeIcon(SystemIconLabel iconlabel, int status, bo
                 if (w->focusPolicy() == Qt::StrongFocus)
                 {
                     w->setFocusPolicy(Qt::NoFocus);
-                    // windowManager.setFocusOrder();
+                    layoutManager.updateTabOrder();
                 }
             }
         }

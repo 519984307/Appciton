@@ -11,7 +11,6 @@
 
 #include "SoftKeyManager.h"
 #include <QVBoxLayout>
-#include <QPushButton>
 #include <QPainter>
 #include "IConfig.h"
 #include "SoftKeyWidget.h"
@@ -25,6 +24,7 @@
 #include <QSignalMapper>
 #include <QDebug>
 #include <QResizeEvent>
+#include "LayoutManager.h"
 
 
 
@@ -112,6 +112,8 @@ public:
                 startDescIndex++;
             }
         }
+
+        layoutManager.updateTabOrder();
     }
 
     int totalPages;     // total pages
@@ -190,6 +192,10 @@ void SoftKeyManager::_fixedKeyClicked()
         {
             d_ptr->curPage--;
         }
+        if (d_ptr->curPage == 0)
+        {
+            d_ptr->rightPageKeyWidget->setFocus();
+        }
         d_ptr->layoutKeyDesc();
     }
     else if (d_ptr->rightPageKeyWidget == w)
@@ -197,6 +203,10 @@ void SoftKeyManager::_fixedKeyClicked()
         if (d_ptr->curPage < d_ptr->totalPages - 1)
         {
             d_ptr->curPage++;
+        }
+        if (d_ptr->curPage == d_ptr->totalPages - 1)
+        {
+            d_ptr->leftPageKeyWidget->setFocus();
         }
         d_ptr->layoutKeyDesc();
     }

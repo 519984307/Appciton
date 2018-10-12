@@ -58,15 +58,15 @@ DEFINES += CONFIG_ECG_TEST
 LIBS += -ldl -lasound -lz
 
 linux-cortexa9hf-vfp-neon-gnueabi-g++ {
-    LIBS += -lts -L$$PWD/nPM/lib/ -lECGAlg2SoftInterface
+    LIBS += -lts -L$$PWD/nPM/lib/
 }
 
 linux-arm-g++ {
-    LIBS += -lts -L$$PWD/nPM/lib/ -lECGAlg2SoftInterface
+    LIBS += -lts -L$$PWD/nPM/lib/
 }
 
 linux-g++ {
-    LIBS += -lX11 -L$$PWD/nPM/libamd64/ -lECGAlg2SoftInterface
+    LIBS += -lX11 -L$$PWD/nPM/libamd64/
 }
 
 OTHER_FILES +=                                                                  \
@@ -164,12 +164,10 @@ SOURCES +=                                                                      
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWidget.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWindow.cpp                          \
-    Utility/Widgets/Trendform/ShortTrendWidget.cpp                              \
     Utility/Widgets/Trendform/TrendCanvasWidget.cpp                             \
-    Utility/Widgets/Trendform/ShortTrendWidgetLabel.cpp                         \
-    Utility/Widgets/Trendform/ShortTrendWidgetSelectMenu.cpp                    \
-    Utility/Widgets/Trendform/ShortTrendManager.cpp                             \
     Utility/Widgets/Trendform/ShortTrendItem.cpp                                \
+    Utility/Widgets/Trendform/ShortTrendContainer.cpp                           \
+    Utility/Widgets/Trendform/ShortTrendWindow.cpp                              \
     Utility/Widgets/TrendWidget/TrendWidget.cpp                                 \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.cpp                            \
     Utility/Widgets/Waveform/BarGraphScanMode.cpp                               \
@@ -225,16 +223,17 @@ SOURCES +=                                                                      
     Components/System/Widgets/SystemModeBarWidget.cpp                           \
     Components/System/Widgets/SystemSelftestMenu.cpp                            \
     Components/System/Widgets/SystemStatusBarWidget.cpp                         \
-    Components/System/Widgets/SystemMenuContent.cpp                             \
+    Components/System/Widgets/RoutineFunctionMenuContent.cpp                    \
     Components/System/Widgets/PrintSettingMenuContent.cpp                       \
     Components/System/Widgets/MeasureSettingMenuContent.cpp                     \
     Components/System/Widgets/MeasureSettingWindow.cpp                          \
     Components/System/Widgets/DataReviewMenuContent.cpp                         \
-    Components/System/Widgets/CalculateMenuContent.cpp                          \
-    Components/System/Widgets/SystemMaintenance.cpp                             \
+    Components/System/Widgets/CalculateWindow.cpp                               \
+    Components/System/Widgets/SystemMaintenanceMenuContent.cpp                  \
     Components/System/Widgets/DemoModeWindow.cpp                                \
+    Components/System/Widgets/StandyWindow.cpp                                  \
     Components/System/Widgets/PowerOffWindow.cpp                                \
-    Components/System/Widgets/SystemNightModeMenuContent.cpp                    \
+    Components/System/Widgets/NightModeWindow.cpp                               \
     Components/SoundManager/SoundManager.cpp                                    \
     Components/SoundManager/WavFile.cpp                                         \
     Components/SoundManager/WavPlayer.cpp                                       \
@@ -306,6 +305,7 @@ SOURCES +=                                                                      
     Components/PatientManager/PatientInfoWidget.cpp                             \
     Components/PatientManager/PatientStatusBarWidget.cpp                        \
     Components/PatientManager/PatientInfoMenu.cpp                               \
+    Components/PatientManager/PatientManagementMenuContent.cpp                  \
     Components/PatientManager/RelievePatientWidget.cpp                          \
     Components/PatientManager/PatientInfoWindow.cpp                             \
     Components/PatientManager/DischargePatientWindow.cpp                        \
@@ -318,7 +318,6 @@ SOURCES +=                                                                      
     Components/PowerManager/PowerManager.cpp                                    \
     Components/WindowManager/IWidget.cpp                                        \
     Components/WindowManager/WindowManager.cpp                                  \
-    Components/WindowManager/WaveTrendWidget.cpp                                \
     Components/WindowManager/WidgetSelectMenu.cpp                               \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
     Components/WindowManager/MainMenuWindow.cpp                                 \
@@ -334,6 +333,8 @@ SOURCES +=                                                                      
     Components/WindowManager/ScreenLayoutItemDelegate.cpp                       \
     Components/WindowManager/ScreenLayoutEditor.cpp                             \
     Components/WindowManager/ParaColorWindow.cpp                                \
+    Components/WindowManager/BigFontLayoutWindow.cpp                            \
+    Components/WindowManager/BigFontLayoutModel.cpp                             \
     Components/USBManager/DataExporterBase.cpp                                  \
     Components/USBManager/ErrorLogExporter.cpp                                  \
     Components/USBManager/UDiskInspector.cpp                                    \
@@ -369,7 +370,7 @@ SOURCES +=                                                                      
     Components/NetworkManager/WpaCtrl/WpaCtrl.cpp                               \
     Components/NetworkManager/Widgets/LabeledLabel.cpp                          \
     Components/NetworkManager/Widgets/WiFiProfileEditor.cpp                     \
-    Components/NetworkManager/Widgets/WiFiProfileMenuContent.cpp                \
+    Components/NetworkManager/Widgets/WiFiProfileWindow.cpp                     \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.cpp               \
     Components/ActivityLog/ActivityLogManager.cpp                               \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.cpp            \
@@ -398,7 +399,6 @@ SOURCES +=                                                                      
     Components/Maintain/Service/NIBP/NIBPRepairMenuManager.cpp                  \
     Components/Maintain/Service/NIBP/NIBPZeroPoint.cpp                          \
     Components/Maintain/Service/Temp/ServiceCPUTemp.cpp                         \
-    Components/Maintain/Service/Upgrade/ServiceUpgrade.cpp                      \
     Components/Maintain/Service/Version/ServiceVersion.cpp                      \
     Components/Maintain/Factory/FactoryConfigManager.cpp                        \
     Components/Maintain/Factory/Menu/FactoryDataRecord.cpp                      \
@@ -432,8 +432,6 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/SoftWareVersionWindow.cpp               \
     Components/Maintain/FactoryMaintain/MonitorInfo.cpp                         \
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.cpp                   \
-    Components/Maintain/FactoryMaintain/ServiceErrorLogEntrance.cpp             \
-    Components/Maintain/FactoryMaintain/ServiceUpdateEntrance.cpp               \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.cpp        \
     Components/Maintain/FactoryMaintain/MachineConfigModule.cpp                 \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.cpp          \
@@ -446,10 +444,11 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/NIBPPressureControlContent.cpp          \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.cpp                   \
     Components/Maintain/FactoryMaintain/SelectStarterLogoContent.cpp            \
-    Components/Maintain/FactoryMaintain/ServiceUpgradeWindow.cpp                \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.cpp             \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
     Components/Maintain/FactoryMaintain/FactoryMaintainWindow.cpp               \
+    Components/Maintain/FactoryMaintain/UpgradeManager.cpp                      \
+    Components/Maintain/FactoryMaintain/UpgradeWindow.cpp                       \
     Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
     Components/CodeMarker/Widgets/CodeMarkerWindow.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
@@ -573,8 +572,6 @@ SOURCES +=                                                                      
     Params/RESPParam/RESPWidgets/RESPWaveWidget.cpp                             \
     Params/RESPParam/RESPWidgets/RESPTrendWidget.cpp                            \
     Params/RESPParam/RESPWidgets/RESPMenuContent.cpp                            \
-    Params/UpgradeParam/BLMEDUpgradeParam.cpp                                   \
-    Params/UpgradeParam/BLMEDUpgradeTime.cpp                                    \
 #################################################################################
     Providers/Provider.cpp                                                      \
     Providers/BLMProvider.cpp                                                   \
@@ -588,8 +585,6 @@ SOURCES +=                                                                      
     Providers/E5Provider/E5Provider.cpp                                         \
     Providers/T5Provider/T5Provider.cpp                                         \
     Providers/TN3Provider/TN3Provider.cpp                                       \
-    Providers/TS3Provider/TS3Provider.cpp                                       \
-    Providers/TT3Provider/TT3Provider.cpp                                       \
     Providers/DemoProvider/DemoProvider.cpp                                     \
     Providers/PRT48Provider/PRT48Provider.cpp                                   \
     Providers/SuntechProvider/SuntechProvider.cpp                               \
@@ -718,12 +713,10 @@ HEADERS +=                                                                      
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGSymbol.h                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGDefine.h                                 \
-    Utility/Widgets/Trendform/ShortTrendWidget.h                                \
     Utility/Widgets/Trendform/TrendCanvasWidget.h                               \
-    Utility/Widgets/Trendform/ShortTrendWidgetLabel.h                           \
-    Utility/Widgets/Trendform/ShortTrendWidgetSelectMenu.h                      \
-    Utility/Widgets/Trendform/ShortTrendManager.h                               \
     Utility/Widgets/Trendform/ShortTrendItem.h                                  \
+    Utility/Widgets/Trendform/ShortTrendContainer.h                             \
+    Utility/Widgets/Trendform/ShortTrendWindow.h                                \
     Utility/Widgets/TrendWidget/TrendWidget.h                                   \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.h                              \
     Utility/Widgets/Waveform/BarGraphScanMode.h                                 \
@@ -780,16 +773,17 @@ HEADERS +=                                                                      
     Components/System/Widgets/SystemModeSelectWidget.h                          \
     Components/System/Widgets/SystemSelftestMenu.h                              \
     Components/System/Widgets/SystemModeBarWidget.h                             \
-    Components/System/Widgets/SystemMenuContent.h                               \
+    Components/System/Widgets/RoutineFunctionMenuContent.h                      \
     Components/System/Widgets/PrintSettingMenuContent.h                         \
     Components/System/Widgets/MeasureSettingMenuContent.h                       \
     Components/System/Widgets/MeasureSettingWindow.h                            \
     Components/System/Widgets/DataReviewMenuContent.h                           \
-    Components/System/Widgets/CalculateMenuContent.h                            \
-    Components/System/Widgets/SystemMaintenance.h                               \
+    Components/System/Widgets/CalculateWindow.h                                 \
+    Components/System/Widgets/SystemMaintenanceMenuContent.h                    \
     Components/System/Widgets/DemoModeWindow.h                                  \
+    Components/System/Widgets/StandyWindow.h                                    \
     Components/System/Widgets/PowerOffWindow.h                                  \
-    Components/System/Widgets/SystemNightModeMenuContent.h                      \
+    Components/System/Widgets/NightModeWindow.h                                 \
     Components/SoundManager/SoundManager.h                                      \
     Components/SoundManager/WavFile.h                                           \
     Components/SoundManager/WavPlayer.h                                         \
@@ -872,6 +866,7 @@ HEADERS +=                                                                      
     Components/PatientManager/PatientInfoWidget.h                               \
     Components/PatientManager/PatientStatusBarWidget.h                          \
     Components/PatientManager/PatientInfoMenu.h                                 \
+    Components/PatientManager/PatientManagementMenuContent.h                    \
     Components/PatientManager/PatientInfoWindow.h                               \
     Components/PatientManager/RelievePatientWidget.h                            \
     Components/PatientManager/DischargePatientWindow.h                          \
@@ -893,7 +888,6 @@ HEADERS +=                                                                      
     Components/USBManager/USBManager.h                                          \
     Components/WindowManager/IWidget.h                                          \
     Components/WindowManager/WindowManager.h                                    \
-    Components/WindowManager/WaveTrendWidget.h                                  \
     Components/WindowManager/WidgetSelectMenu.h                                 \
     Components/WindowManager/PromptInfoBarWidget.h                              \
     Components/WindowManager/MainMenuWindow.h                                   \
@@ -910,6 +904,8 @@ HEADERS +=                                                                      
     Components/WindowManager/ScreenLayoutDefine.h                               \
     Components/WindowManager/ScreenLayoutEditor.h                               \
     Components/WindowManager/ParaColorWindow.h                                  \
+    Components/WindowManager/BigFontLayoutWindow.h                              \
+    Components/WindowManager/BigFontLayoutModel.h                               \
     Components/PrintManager/PrintTypeDefine.h                                   \
     Components/PrintManager/PrintDefine.h                                       \
     Components/PrintManager/PrintProviderIFace.h                                \
@@ -946,7 +942,7 @@ HEADERS +=                                                                      
     Components/NetworkManager/WpaCtrl/WpaCtrl.h                                 \
     Components/NetworkManager/Widgets/LabeledLabel.h                            \
     Components/NetworkManager/Widgets/WiFiProfileEditor.h                       \
-    Components/NetworkManager/Widgets/WiFiProfileMenuContent.h                  \
+    Components/NetworkManager/Widgets/WiFiProfileWindow.h                       \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.h                 \
     Components/ActivityLog/ActivityLogManager.h                                 \
     Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.h              \
@@ -975,7 +971,6 @@ HEADERS +=                                                                      
     Components/Maintain/Service/NIBP/NIBPRepairMenuManager.h                    \
     Components/Maintain/Service/NIBP/NIBPZeroPoint.h                            \
     Components/Maintain/Service/Temp/ServiceCPUTemp.h                           \
-    Components/Maintain/Service/Upgrade/ServiceUpgrade.h                        \
     Components/Maintain/Service/Version/ServiceVersion.h                        \
     Components/Maintain/Factory/FactoryConfigManager.h                          \
     Components/Maintain/Factory/Menu/FactoryWindowManager.h                     \
@@ -1014,9 +1009,6 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.h                     \
     Components/Maintain/FactoryMaintain/SelectStarterLogo.h                     \
     Components/Maintain/FactoryMaintain/SelectStarterLogoContent.h              \
-    Components/Maintain/FactoryMaintain/ServiceUpgradeWindow.h                 \
-    Components/Maintain/FactoryMaintain/ServiceErrorLogEntrance.h               \
-    Components/Maintain/FactoryMaintain/ServiceUpdateEntrance.h                 \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.h          \
     Components/Maintain/FactoryMaintain/MachineConfigModule.h                   \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.h            \
@@ -1029,6 +1021,8 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.h               \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.h        \
     Components/Maintain/FactoryMaintain/FactoryMaintainWindow.h                 \
+    Components/Maintain/FactoryMaintain/UpgradeManager.h                        \
+    Components/Maintain/FactoryMaintain/UpgradeWindow.h                         \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWidget.h                            \
     Components/CodeMarker/Widgets/CodeMarkerWindow.h                            \
@@ -1184,8 +1178,6 @@ HEADERS +=                                                                      
     Params/RESPParam/RESPWidgets/RESPWaveWidget.h                               \
     Params/RESPParam/RESPWidgets/RESPTrendWidget.h                              \
     Params/RESPParam/RESPWidgets/RESPMenuContent.h                              \
-    Params/UpgradeParam/BLMEDUpgradeParam.h                                     \
-    Params/UpgradeParam/BLMEDUpgradeTime.h                                      \
     Params/PAParam/PASymbol.h                                                   \
 #################################################################################
     Providers/Provider.h                                                        \
@@ -1200,8 +1192,6 @@ HEADERS +=                                                                      
     Providers/E5Provider/E5Provider.h                                           \
     Providers/T5Provider/T5Provider.h                                           \
     Providers/TN3Provider/TN3Provider.h                                         \
-    Providers/TS3Provider/TS3Provider.h                                         \
-    Providers/TT3Provider/TT3Provider.h                                         \
     Providers/DemoProvider/DemoProvider.h                                       \
     Providers/PRT48Provider/PRT48Provider.h                                     \
     Providers/SuntechProvider/SuntechProvider.h                                 \
@@ -1289,7 +1279,6 @@ DEPENDPATH +=                                                                   
     Components/Maintain/Service/ErrorLog                                        \
     Components/Maintain/Service/NIBP                                            \
     Components/Maintain/Service/Temp                                            \
-    Components/Maintain/Service/Upgrade                                         \
     Components/Maintain/Service/Version                                         \
     Components/Maintain/Factory                                                 \
     Components/Maintain/Factory/Menu                                            \
@@ -1312,8 +1301,6 @@ DEPENDPATH +=                                                                   
     Providers/BLMTEMPProvider                                                   \
     Providers/T5Provider                                                        \
     Providers/TN3Provider                                                       \
-    Providers/TS3Provider                                                       \
-    Providers/TT3Provider                                                       \
     Providers/E5Provider                                                        \
     Providers/DemoProvider                                                      \
     Providers/PRT48Provider                                                     \
@@ -1342,7 +1329,6 @@ DEPENDPATH +=                                                                   
     Params/SPO2Param/SPO2Widgets                                                \
     Params/TEMPParam                                                            \
     Params/TEMPParam/TEMPWidgets                                                \
-    Params/UpgradeParam                                                         \
     Params/RESPParam                                                            \
     Params/RESPParam/RESPWidgets                                                \
 
@@ -1419,7 +1405,6 @@ INCLUDEPATH +=                                                                  
     Components/Maintain/Service/ErrorLog                                        \
     Components/Maintain/Service/NIBP                                            \
     Components/Maintain/Service/Temp                                            \
-    Components/Maintain/Service/Upgrade                                         \
     Components/Maintain/Service/Version                                         \
     Components/Maintain/Factory                                                 \
     Components/Maintain/Factory/Menu                                            \
@@ -1437,13 +1422,11 @@ INCLUDEPATH +=                                                                  
     Providers/BLMCO2Provider                                                    \
     Providers/WitleafProvider                                                   \
     Providers/MasimoProvider                                                    \
-    Providers/NellcorProvider                                                    \
+    Providers/NellcorProvider                                                   \
     Providers/SuntechProvider                                                   \
     Providers/BLMTEMPProvider                                                   \
     Providers/T5Provider                                                        \
     Providers/TN3Provider                                                       \
-    Providers/TS3Provider                                                       \
-    Providers/TT3Provider                                                       \
     Providers/E5Provider                                                        \
     Providers/DemoProvider                                                      \
     Providers/PRT48Provider                                                     \
@@ -1472,7 +1455,6 @@ INCLUDEPATH +=                                                                  
     Params/SPO2Param/SPO2Widgets                                                \
     Params/TEMPParam                                                            \
     Params/TEMPParam/TEMPWidgets                                                \
-    Params/UpgradeParam                                                         \
     Params/RESPParam                                                            \
     Params/RESPParam/RESPWidgets                                                \
 

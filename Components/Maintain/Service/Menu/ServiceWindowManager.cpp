@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/10/12
+ **/
+
 #include "ServiceWindowManager.h"
 #include <QWidget>
 #include <QVBoxLayout>
@@ -20,7 +30,6 @@
 #include "NIBPManometer.h"
 #include "NIBPZeroPoint.h"
 #include "NIBPPressureControl.h"
-#include "ServiceUpgrade.h"
 #include "ServiceVersion.h"
 #include "ServiceCPUTemp.h"
 #include "ServiceErrorLogMenu.h"
@@ -69,7 +78,6 @@ ServiceWindowManager::ServiceWindowManager() : MenuWidget(trs("ServiceSystem"))
             SLOT(_errorLogButtonSlot()));
 
     QVBoxLayout *vLayout = new QVBoxLayout();
-    vLayout = new QVBoxLayout();
     vLayout->setMargin(10);
     vLayout->setSpacing(20);
 
@@ -122,8 +130,6 @@ void ServiceWindowManager::_nibpButtonSlot()
 
 void ServiceWindowManager::_upgradeButtonSlot()
 {
-    serviceUpgrade.popup();
-    serviceUpgrade.init();
 }
 
 void ServiceWindowManager::_versionButtonSlot()
@@ -147,7 +153,7 @@ void ServiceWindowManager::_errorLogButtonSlot()
 /**************************************************************************************************
  * 重新聚焦菜单列表。
  *************************************************************************************************/
-void ServiceWindowManager::_returnMenuList(SubMenu */*m*/)
+void ServiceWindowManager::_returnMenuList(SubMenu *m)
 {
 }
 
@@ -163,7 +169,7 @@ void ServiceWindowManager::_titleChanged(void)
  *************************************************************************************************/
 void ServiceWindowManager::_itemClicked()
 {
-    SubMenu *m = (SubMenu*)_scorllArea->widget();
+    SubMenu *m = qobject_cast<SubMenu *>(_scorllArea->widget());
     m->focusFirstItem();
 }
 
@@ -175,7 +181,7 @@ void ServiceWindowManager::_changeScrollValue(int value)
     QScrollBar *bar = _scorllArea->verticalScrollBar();
     if (NULL != bar)
     {
-        if (1== value)
+        if (1 == value)
         {
             bar->setValue(bar->maximum());
         }
@@ -191,5 +197,4 @@ void ServiceWindowManager::_changeScrollValue(int value)
  *************************************************************************************************/
 ServiceWindowManager::~ServiceWindowManager()
 {
-
 }

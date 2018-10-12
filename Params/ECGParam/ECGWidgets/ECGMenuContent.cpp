@@ -25,13 +25,15 @@
 #include <QTimer>
 #include "MainMenuWindow.h"
 #include "LayoutManager.h"
+#include "ECGDupParam.h"
 
 class ECGMenuContentPrivate
 {
 public:
     enum MenuItem
     {
-        ITEM_CBO_LEAD_MODE = 1,
+        ITEM_CBO_HRPR_SOURCE = 1,
+        ITEM_CBO_LEAD_MODE,
         ITEM_CBO_ECG,
         ITEM_CBO_ECG_GAIN,
         ITEM_CBO_FILTER_MODE,
@@ -59,6 +61,22 @@ public:
 
 void ECGMenuContentPrivate::loadOptions()
 {
+    int index = 0;
+
+    if (ecgDupParam.isAutoTypeHrSouce())
+    {
+        index = HR_PR_SOURCE_AUTO;
+    }
+    else if (ecgDupParam.getHrSource() == ECGDupParam::HR_SOURCE_ECG)
+    {
+        index = HR_PR_SOURCE_ECG;
+    }
+    else
+    {
+        index = HR_PR_SOURCE_SPO2;
+    }
+    combos[ITEM_CBO_HRPR_SOURCE]->setCurrentIndex(index);
+
     ECGLeadMode leadMode = ecgParam.getLeadMode();
     combos[ITEM_CBO_LEAD_MODE]->setCurrentIndex(leadMode);
 
@@ -67,7 +85,7 @@ void ECGMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_ECG]->clear();
     combos[ITEM_CBO_ECG]->addItems(ecgWaveformTitles);
     QString ecgTopWaveform = ecgParam.getCalcLeadWaveformName();
-    int index = ecgWaveforms.indexOf(ecgTopWaveform);
+    index = ecgWaveforms.indexOf(ecgTopWaveform);
     if (index)
     {
         combos[ITEM_CBO_ECG_GAIN]->blockSignals(true);
@@ -145,6 +163,22 @@ void ECGMenuContent::layoutExec()
     ComboBox *comboBox;
     QLabel *label;
     int itemID;
+
+    // hr/pr 来源
+    label = new QLabel(trs("HR_PRSource"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs(ECGSymbol::convert(HR_PR_SOURCE_AUTO))
+                       << trs(ECGSymbol::convert(HR_PR_SOURCE_ECG))
+                       << trs(ECGSymbol::convert(HR_PR_SOURCE_SPO2))
+                      );
+    itemID = ECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE;
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE, comboBox);
 
     // lead mode
     label = new QLabel(trs("ECGLeadMode"));
@@ -313,6 +347,24 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             = (ECGMenuContentPrivate::MenuItem) box->property("Item").toInt();
         switch (item)
         {
+        case ECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE:
+        {
+            ECGDupParam::HrSourceType  sourceType;
+            switch (index)
+            {
+                case HR_PR_SOURCE_AUTO:
+                sourceType = ECGDupParam::HR_SOURCE_AUTO;
+                break;
+                case HR_PR_SOURCE_ECG:
+                sourceType = ECGDupParam::HR_SOURCE_ECG;
+                break;
+                case HR_PR_SOURCE_SPO2:
+                sourceType = ECGDupParam::HR_SOURCE_SPO2;
+                break;
+            }
+            ecgDupParam.setHrSource(sourceType);
+        }
+            break;
         case ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE:
             ecgParam.setLeadMode(static_cast<ECGLeadMode>(index));
             d_ptr->loadOptions();

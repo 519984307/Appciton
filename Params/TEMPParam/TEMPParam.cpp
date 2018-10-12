@@ -301,19 +301,24 @@ UnitType TEMPParam::getUnit(void)
     return (UnitType)u;
 }
 
+void TEMPParam::onPaletteChanged(ParamID id)
+{
+    if (id != PARAM_TEMP)
+    {
+        return;
+    }
+    QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
+    _trendWidget->updatePalette(pal);
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-TEMPParam::TEMPParam() : Param(PARAM_TEMP)
+TEMPParam::TEMPParam() : Param(PARAM_TEMP),
+    _provider(NULL), _trendWidget(NULL),
+    _t1Value(InvData()), _t2Value(InvData()),
+    _tdValue(InvData()), _isTEMPDisable(false)
 {
-    _provider = NULL;
-    _trendWidget = NULL;
-
-    _t1Value = InvData();
-    _t2Value = InvData();
-    _tdValue = InvData();
-
-    _isTEMPDisable = false;
 }
 
 /**************************************************************************************************

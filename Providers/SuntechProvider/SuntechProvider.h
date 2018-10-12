@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/10/12
+ **/
+
 #pragma once
 #include "Provider.h"
 #include "NIBPProviderIFace.h"
@@ -27,6 +37,9 @@ public:
     // 发送停止指令是否有该指令的应答。
     virtual bool needStopACK(void);
 
+    //校准点压力值输入
+    virtual void servicePressurepoint(const unsigned char *data, unsigned int len);
+
     // 是否为错误数据包。
     virtual NIBPOneShotType isMeasureError(unsigned char *packet);
 
@@ -34,7 +47,7 @@ public:
     virtual void getResult(void);
 
     // 是否为结果包。
-    virtual bool isResult(unsigned char *packet,short &sys,
+    virtual bool isResult(unsigned char *packet, short &sys,
                           short &dia, short &map, short &pr, NIBPOneShotType &err);
 
     // 构造与析构。

@@ -284,6 +284,9 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
     // 设置工频滤波。
     _provider->setNotchFilter(getNotchFilter());
 
+    // 发送获取版本
+    _provider->sendVersion();
+
     // enable data sync
     _provider->enableDataSyncCtrl(true);
 
@@ -372,15 +375,6 @@ void ECGParam::setWaveWidget(ECGWaveWidget *waveWidget, ECGLead whichLead)
         _waveWidget[whichLead] = waveWidget;
         _waveWidget[whichLead]->setSpeed(getSweepSpeed());
     }
-}
-
-void ECGParam::setOxyCRGWaveWidget(OxyCRGHRWidget *waveWidget)
-{
-    if (waveWidget == NULL)
-    {
-        return;
-    }
-    _waveOxyCRGWidget = waveWidget;
 }
 
 void ECGParam::setOxyCRGHrWaveWidget(OxyCRGRRHRWaveWidget *waveWidget)
@@ -553,18 +547,6 @@ void ECGParam::updateHR(short hr)
 
     _hrValue = hr;
     ecgDupParam.updateHR(hr);
-
-    if (NULL != _waveOxyCRGWidget)
-    {
-        _waveOxyCRGWidget->addDataBuf(hr, 0);
-
-        _updateNum++;
-        if (_updateNum >= 2)
-        {
-            _updateNum = 0;
-            emit oxyCRGWaveUpdated();//呼吸氧和波形更新信号
-        }
-    }
 
     if (oxyCRGRrHrTrend)
     {
@@ -2336,6 +2318,21 @@ void ECGParam::onOxyCRGWaveUpdated()
     {
 //        _oxyCRGRESPWidget->update();
     }
+}
+
+void ECGParam::onPaletteChanged(ParamID id)
+{
+    if (id != PARAM_ECG)
+    {
+        return;
+    }
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
+    for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
+    {
+        _waveWidget[i]->updatePalette(psrc);
+    }
+    _pvcsTrendWidget->updatePalette(psrc);
+    _ecgSTTrendWidget->updatePalette(psrc);
 }
 /**************************************************************************************************
  * 发送协议命令。

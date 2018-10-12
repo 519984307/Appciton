@@ -64,7 +64,7 @@ ConfigEditRespMenuContent::~ConfigEditRespMenuContent()
 void ConfigEditRespMenuContentPrivate::loadOptions()
 {
     int index = 0;
-    config->getNumValue("RESP|ApneaDelay", index);
+    config->getNumValue("Alarm|ApneaTime", index);
     combos[ITEM_CBO_APNEA_DELAY]->setCurrentIndex(index);
     index = 0;
     config->getNumValue("RESP|BreathLead", index);
@@ -100,7 +100,7 @@ void ConfigEditRespMenuContent::onComboIndexChanged(int index)
     switch (indexType)
     {
     case ConfigEditRespMenuContentPrivate::ITEM_CBO_APNEA_DELAY:
-        d_ptr->config->setNumValue("RESP|ApneaDelay", index);
+        d_ptr->config->setNumValue("Alarm|ApneaTime", index);
         break;
     case ConfigEditRespMenuContentPrivate::ITEM_CBO_BREATH_LEAD:
         d_ptr->config->setNumValue("RESP|BreathLead", index);
@@ -154,7 +154,7 @@ void ConfigEditRespMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditRespMenuContentPrivate
                          ::ITEM_CBO_APNEA_DELAY, comboBox);
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged()));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged(int)));
     itemID = ConfigEditRespMenuContentPrivate::ITEM_CBO_APNEA_DELAY;
     comboBox->setProperty("Item", qVariantFromValue(itemID));
 
@@ -168,7 +168,7 @@ void ConfigEditRespMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditRespMenuContentPrivate
                          ::ITEM_CBO_BREATH_LEAD, comboBox);
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged()));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged(int)));
     itemID = ConfigEditRespMenuContentPrivate::ITEM_CBO_BREATH_LEAD;
     comboBox->setProperty("Item", qVariantFromValue(itemID));
 
@@ -186,7 +186,7 @@ void ConfigEditRespMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditRespMenuContentPrivate
                          ::ITEM_CBO_RESP_GAIN, comboBox);
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged()));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexChanged(int)));
     itemID = ConfigEditRespMenuContentPrivate::ITEM_CBO_RESP_GAIN;
     comboBox->setProperty("Item", qVariantFromValue(itemID));
 

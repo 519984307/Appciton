@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/12
+ **/
+
+
+
 #include <QVBoxLayout>
 #include "FontManager.h"
 #include "LanguageManager.h"
@@ -37,15 +49,6 @@ void SupervisorPrintMenu::readyShow()
 
     currentConfig.getNumValue("Print|NIBPReading", index);
     _NIBPAutoPrint->setCurrentIndex(index);
-
-//    currentConfig.getNumValue("Print|DiagnosticECG", index);
-//    _diagECGAutoPrint->setCurrentIndex(index);
-
-//    currentConfig.getNumValue("Print|SummaryReportSnapshotPrintingInAED", index);
-//    _autoPrintInAED->setCurrentIndex(index);
-
-//    currentConfig.getNumValue("Print|Print30JSelfTestReport", index);
-//    _30jSelftest->setCurrentIndex(index);
 }
 
 /**************************************************************************************************
@@ -57,12 +60,12 @@ void SupervisorPrintMenu::layoutExec()
     int submenuH = supervisorMenuManager.getSubmenuHeight();
     setMenuSize(submenuW, submenuH);
 
-    int itemW = submenuW- ICOMBOLIST_SPACE;
+    int itemW = submenuW - ICOMBOLIST_SPACE;
     int fontsize = 15;
     int btnWidth = itemW / 3;
     int labelWidth = itemW - btnWidth;
 
-    //ecg rhythm
+    // ecg rhythm
     _ECGRhythmAutoPrint = new IComboList(trs("ECGRhythm"));
     _ECGRhythmAutoPrint->setFont(fontManager.textFont(fontsize));
     _ECGRhythmAutoPrint->label->setFixedSize(labelWidth, ITEM_H);
@@ -73,7 +76,7 @@ void SupervisorPrintMenu::layoutExec()
             SLOT(_ECGRhythmAutoPrintSlot(int)));
     mainLayout->addWidget(_ECGRhythmAutoPrint);
 
-    //check patient
+    // check patient
     _checkPatientAlarmAutoPrint = new IComboList(trs("CheckPatient"));
     _checkPatientAlarmAutoPrint->setFont(fontManager.textFont(fontsize));
     _checkPatientAlarmAutoPrint->label->setFixedSize(labelWidth, ITEM_H);
@@ -85,7 +88,7 @@ void SupervisorPrintMenu::layoutExec()
     mainLayout->addWidget(_checkPatientAlarmAutoPrint);
 
 
-    //phy alarm
+    // phy alarm
     _phyAlarmAutoPrint = new IComboList(trs("PhyAlarm"));
     _phyAlarmAutoPrint->setFont(fontManager.textFont(fontsize));
     _phyAlarmAutoPrint->label->setFixedSize(labelWidth, ITEM_H);
@@ -96,7 +99,7 @@ void SupervisorPrintMenu::layoutExec()
             SLOT(_phyAlarmAutoPrintSlot(int)));
     mainLayout->addWidget(_phyAlarmAutoPrint);
 
-    //code marker
+    // code marker
     _codemarkerAutoPrint = new IComboList(trs("CodeMarker"));
     _codemarkerAutoPrint->setFont(fontManager.textFont(fontsize));
     _codemarkerAutoPrint->label->setFixedSize(labelWidth, ITEM_H);
@@ -107,7 +110,7 @@ void SupervisorPrintMenu::layoutExec()
             SLOT(_codemarkerAutoPrintSlot(int)));
     mainLayout->addWidget(_codemarkerAutoPrint);
 
-    //NIBP Reading
+    // NIBP Reading
     _NIBPAutoPrint = new IComboList(trs("NIBPReading"));
     _NIBPAutoPrint->setFont(fontManager.textFont(fontsize));
     _NIBPAutoPrint->label->setFixedSize(labelWidth, ITEM_H);
@@ -121,7 +124,7 @@ void SupervisorPrintMenu::layoutExec()
         mainLayout->addWidget(_NIBPAutoPrint);
     }
 
-    //Diagnostic ECG
+    // Diagnostic ECG
 //    _diagECGAutoPrint = new IComboList(trs("DiagnosticECG"));
 //    _diagECGAutoPrint->setFont(fontManager.textFont(fontsize));
 //    _diagECGAutoPrint->label->setFixedSize(labelWidth, ITEM_H);
@@ -132,18 +135,7 @@ void SupervisorPrintMenu::layoutExec()
 //            SLOT(_diagECGAutoPrintSlot(int)));
 //    mainLayout->addWidget(_diagECGAutoPrint);
 
-    //auto print in AED
-//    _autoPrintInAED = new IComboList(trs("SupervisorAutoPrintInAED"));
-//    _autoPrintInAED->setFont(fontManager.textFont(fontsize));
-//    _autoPrintInAED->label->setFixedSize(labelWidth, ITEM_H);
-//    _autoPrintInAED->combolist->setFixedSize(btnWidth, ITEM_H);
-//    _autoPrintInAED->addItem(trs("Disable"));
-//    _autoPrintInAED->addItem(trs("Enable"));
-//    connect(_autoPrintInAED, SIGNAL(currentIndexChanged(int)), this,
-//            SLOT(_autoPrintInAEDSlot(int)));
-//    mainLayout->addWidget(_autoPrintInAED);
-
-    //auto print 30J self-test
+    // auto print 30J self-test
 //    _30jSelftest = new IComboList(trs("SupervisorAutoPrint30Jtest"));
 //    _30jSelftest->setFont(fontManager.textFont(fontsize));
 //    _30jSelftest->label->setFixedSize(labelWidth, ITEM_H);
@@ -219,36 +211,11 @@ void SupervisorPrintMenu::_NIBPAutoPrintSlot(int index)
     currentConfig.setNumValue("Print|NIBPReading", index);
 }
 
-/***************************************************************************************************
- * diag ecg
- **************************************************************************************************/
-//void SupervisorPrintMenu::_diagECGAutoPrintSlot(int index)
-//{
-//    currentConfig.setNumValue("Print|DiagnosticECG", index);
-//}
-
-/**************************************************************************************************
- * auto print in AED。
- *************************************************************************************************/
-//void SupervisorPrintMenu::_autoPrintInAEDSlot(int index)
-//{
-//    currentConfig.setNumValue("Print|SummaryReportSnapshotPrintingInAED", index);
-//}
-
-/**************************************************************************************************
- * auto print 30J 自测结果。
- *************************************************************************************************/
-//void SupervisorPrintMenu::_autoPrint30JtestResultSlot(int index)
-//{
-//    currentConfig.setNumValue("Print|Print30JSelfTestReport", index);
-//}
-
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
 SupervisorPrintMenu::~SupervisorPrintMenu()
 {
-
 }
 
 

@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/12
+ **/
+
+
+
 #pragma once
 #include <QString>
 #include <QVariantMap>
@@ -8,8 +20,9 @@
 #include <QFile>
 
 class ErrorLogItemBase;
-typedef ErrorLogItemBase* (*ErrorLogItemCreateFunc)();
-class ErrorLogItemBase {
+typedef ErrorLogItemBase *(*ErrorLogItemCreateFunc)();
+class ErrorLogItemBase
+{
 public:
     enum
     {
@@ -29,8 +42,6 @@ public:
         SYS_STAT_SELFTEST,
         SYS_STAT_RUNTIME,
         SYS_STAT_MONITOR_MODE,
-        SYS_STAT_AED_MODE,
-        SYS_STAT_MDEFIB_MODE,
         SYS_STAT_PACER_MODE,
     };
 
@@ -50,7 +61,8 @@ public:
         SUB_SYS_PRINTER,
     };
 
-    ErrorLogItemBase() {
+    ErrorLogItemBase()
+    {
         content["time"] = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss.zzz");
         content["name"] = QString("");
         content["log"] = QString("");
@@ -58,13 +70,13 @@ public:
 
     virtual ~ErrorLogItemBase() {}
 
-    //get the time this error happend
+    // get the time this error happend
     QString getTime() const
     {
         return content["time"].toString();
     }
 
-    //set datetime;
+    // set datetime;
     void setTime(const QDateTime &dt)
     {
         content["time"] = dt.toString("yyyy-MM-dd HH:mm:ss.zzz");
@@ -88,19 +100,25 @@ public:
 
     void setSystemResponse(SystemResponeToError sysRsp);
 
-    //the log is empty
+    // the log is empty
     virtual bool isLogEmpty() const = 0;
-    //type of this log
-    virtual int type() const {return Type;}
-    //name of this log
-    virtual QString name() const {return content["name"].toString();}
-    //output the log content
+    // type of this log
+    virtual int type() const
+    {
+        return Type;
+    }
+    // name of this log
+    virtual QString name() const
+    {
+        return content["name"].toString();
+    }
+    // output the log content
     virtual void outputInfo(QTextStream &stream) const
     {
-        stream << content["name"].toString() << " log at " << content["time"].toString() <<"\r\n";
+        stream << content["name"].toString() << " log at " << content["time"].toString() << "\r\n";
     }
-    //item creator map
-    static  QMap<int, ErrorLogItemCreateFunc>& getItemCreatorMap();
+    // item creator map
+    static  QMap<int, ErrorLogItemCreateFunc> &getItemCreatorMap();
 
 protected:
     QVariantMap content;
@@ -108,17 +126,21 @@ protected:
 };
 
 template <typename T>
-struct ErrorItemCreator {
-   static ErrorLogItemBase* create() {
-       return new T();
-   }
+struct ErrorItemCreator
+{
+    static ErrorLogItemBase *create()
+    {
+        return new T();
+    }
 };
 
 template <typename T>
-struct ErrorItemRegister {
-   static void register_creator() {
-       ErrorLogItemBase::getItemCreatorMap()[T::Type] = ErrorItemCreator<T>::create;
-   }
+struct ErrorItemRegister
+{
+    static void register_creator()
+    {
+        ErrorLogItemBase::getItemCreatorMap()[T::Type] = ErrorItemCreator<T>::create;
+    }
 };
 
 
@@ -127,47 +149,48 @@ static inline __attribute((constructor)) void register_creator##TYPE() { \
     ErrorItemRegister<TYPE>::register_creator(); \
 }
 
-class ErrorLogItem : public ErrorLogItemBase {
+class ErrorLogItem : public ErrorLogItemBase
+{
 public:
     enum
     {
         Type = 0x01
     };
 
-    //override
+    // override
     int type() const;
-    //override
+    // override
     void outputInfo(QTextStream &stream) const;
-    //the log is empty
+    // the log is empty
     virtual bool isLogEmpty() const;
 };
 
-class CrashLogItem : public ErrorLogItem {
+class CrashLogItem : public ErrorLogItem
+{
 public:
     enum
     {
         Type = 0x02
     };
 
-    //override
+    // override
     int type() const;
-    //override
+    // override
     void outputInfo(QTextStream &stream) const;
-    //override
+    // override
     void collect(const QString &filename);
-    //the log is empty
+    // the log is empty
     bool isLogEmpty() const;
-
 };
 
-class CriticalFaultLogItem : public ErrorLogItem {
+class CriticalFaultLogItem : public ErrorLogItem
+{
 public:
     enum
     {
         Type = 0x03
     };
 
-    //override
+    // override
     int type() const;
-
 };

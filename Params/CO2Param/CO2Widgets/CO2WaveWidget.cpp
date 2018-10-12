@@ -31,9 +31,9 @@ void CO2WaveWidget::resizeEvent(QResizeEvent *e)
     _name->move(0, 0);
 //    _zoom->move(_name->rect().width(), 0);
 
-    _ruler->resize(qmargins().left(), qmargins().top(),
-                   width() - qmargins().left() - qmargins().right(),
-                   height() - qmargins().top() - qmargins().bottom());
+    _ruler->resize(RULER_X_OFFSET, 0,
+                   width() - RULER_X_OFFSET,
+                   height());
     WaveWidget::resizeEvent(e);
 }
 
@@ -54,15 +54,6 @@ void CO2WaveWidget::focusInEvent(QFocusEvent *e)
 void CO2WaveWidget::hideEvent(QHideEvent *e)
 {
     WaveWidget::hideEvent(e);
-}
-
-void CO2WaveWidget::paintEvent(QPaintEvent *e)
-{
-    QPalette palette = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
-    setPalette(palette);
-    _ruler->setPalette(palette);
-    _ruler->setBackground(true);
-    WaveWidget::paintEvent(e);
 }
 
 /**************************************************************************************************
@@ -130,7 +121,14 @@ void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
     }
     str += " ";
     str += Unit::localeSymbol(unit);
-//    _zoom->setText(str);
+    //    _zoom->setText(str);
+}
+
+void CO2WaveWidget::updatePalette(const QPalette &pal)
+{
+    _ruler->setPalette(pal);
+    setPalette(pal);
+    updateBackground();
 }
 
 /**************************************************************************************************
@@ -175,7 +173,7 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
     _ruler->setFont(fontManager.textFont(infoFont - 2));
     addItem(_ruler);
 
-    setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
+    setMargin(QMargins(WAVE_X_OFFSET, 0, 0, 0));
 }
 
 void CO2WaveWidget::_getItemIndex(int index)

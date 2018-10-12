@@ -105,7 +105,7 @@ enum TrendGraphType
     TREND_GRAPH_TYPE_AG_TEMP,
 };
 
-/* short trend time interval */
+/* short trend store interval */
 enum ShortTrendInterval
 {
     SHORT_TREND_INTERVAL_10S,
@@ -113,6 +113,16 @@ enum ShortTrendInterval
     SHORT_TREND_INTERVAL_30S,
     SHORT_TREND_INTERVAL_60S,
     SHORT_TREND_INTERVAL_NR
+};
+
+/* short trend review duration */
+enum ShortTrendDuration
+{
+    SHORT_TREND_DURATION_30M,
+    SHORT_TREND_DURATION_60M,
+    SHORT_TREND_DURATION_120M,
+    SHORT_TREND_DURATION_240M,
+    SHORT_TREND_DURATION_480M,
 };
 
 struct TrendGraphData
@@ -221,3 +231,10 @@ struct TrendSubWidgetInfo
 
 /* parse the trend data segment */
 TrendDataPackage parseTrendSegment(const TrendDataSegment *dataSegment);
+
+/**
+ * @brief convert 翻译时间
+ * @param index
+ * @return
+ */
+const char *convert(ShortTrendDuration index);

@@ -19,6 +19,7 @@
 #include "WindowManager.h"
 #include <QTimer>
 #include "EventStorageManager.h"
+#define WINDOW_WIDTH 850
 
 class CodeMarkerWindowPrivate
 {
@@ -73,10 +74,9 @@ CodeMarkerWindow::CodeMarkerWindow() : Window()
     int borderWidth = 4;
 
     setWindowTitle(trs("CodeMarker"));
-    setFixedWidth(windowManager.getPopMenuWidth());
     QWidget *widget = new QWidget();
-    widget->setFixedWidth(windowManager.getPopMenuWidth() - borderWidth * 2 - barWidth);
-    setFixedWidth(windowManager.getPopMenuWidth());
+    widget->setFixedWidth(WINDOW_WIDTH - borderWidth * 2 - barWidth);
+    setFixedWidth(WINDOW_WIDTH);
     // scroll
     d_ptr->scrollArea = new QScrollArea();
     d_ptr->scrollArea->setFocusPolicy(Qt::NoFocus);

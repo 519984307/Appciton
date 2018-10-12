@@ -150,6 +150,9 @@ public:
     short getEtCO2MaxValue();
     short getEtCO2MinValue();
 
+private slots:
+    void onPaletteChanged(ParamID id);
+
 private:
     CO2Param();
 

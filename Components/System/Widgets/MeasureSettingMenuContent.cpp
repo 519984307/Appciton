@@ -11,6 +11,7 @@
 #include "MeasureSettingMenuContent.h"
 #include "Button.h"
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include "LanguageManager.h"
 #include "MeasureSettingWindow.h"
 #include "SystemManager.h"
@@ -60,32 +61,37 @@ void MeasureSettingMenuContent::layoutExec()
 
     Button *btn;
     int item = 0;
-    int maxWidth = 200;
+    QHBoxLayout *hl;
 
     // ecg
     btn = new Button(QString("%1 >>").arg(trs("ECGSetting")));
-    btn->setMinimumWidth(maxWidth);
+    hl = new QHBoxLayout;
+    hl->addStretch(1);
+    hl->addWidget(btn, 1);
+    vlayout->addLayout(hl);
     btn->setButtonStyle(Button::ButtonTextOnly);
-    vlayout->addWidget(btn, 1, Qt::AlignRight);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
     btn->setProperty("Item", qVariantFromValue(item));
     item++;
 
     // resp
     btn = new Button(QString("%1 >>").arg(trs("RESPSetting")));
-    btn->setMinimumWidth(maxWidth);
+    hl = new QHBoxLayout;
+    hl->addStretch(1);
+    hl->addWidget(btn, 1);
+    vlayout->addLayout(hl);
     btn->setButtonStyle(Button::ButtonTextOnly);
-    vlayout->addWidget(btn, Qt::AlignRight);
-    vlayout->addWidget(btn, 1, Qt::AlignRight);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
     btn->setProperty("Item", qVariantFromValue(item));
     item++;
 
     // temp
     btn = new Button(QString("%1 >>").arg(trs("TEMPSetting")));
-    btn->setMinimumWidth(maxWidth);
+    hl = new QHBoxLayout;
+    hl->addStretch(1);
+    hl->addWidget(btn, 1);
+    vlayout->addLayout(hl);
     btn->setButtonStyle(Button::ButtonTextOnly);
-    vlayout->addWidget(btn, 1, Qt::AlignRight);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
     btn->setProperty("Item", qVariantFromValue(item));
     item++;
@@ -94,9 +100,11 @@ void MeasureSettingMenuContent::layoutExec()
     if (systemManager.isSupport(CONFIG_AG))
     {
         btn = new Button(QString("%1 >>").arg(trs("AGSetting")));
-        btn->setMinimumWidth(maxWidth);
+        hl = new QHBoxLayout;
+        hl->addStretch(1);
+        hl->addWidget(btn, 1);
+        vlayout->addLayout(hl);
         btn->setButtonStyle(Button::ButtonTextOnly);
-        vlayout->addWidget(btn, 1, Qt::AlignRight);
         connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
         btn->setProperty("Item", qVariantFromValue(item));
         item++;
@@ -106,9 +114,11 @@ void MeasureSettingMenuContent::layoutExec()
     if (systemManager.isSupport(CONFIG_IBP))
     {
         btn = new Button(QString("%1 >>").arg(trs("IBPSetting")));
-        btn->setMinimumWidth(maxWidth);
+        hl = new QHBoxLayout;
+        hl->addStretch(1);
+        hl->addWidget(btn, 1);
+        vlayout->addLayout(hl);
         btn->setButtonStyle(Button::ButtonTextOnly);
-        vlayout->addWidget(btn, 1, Qt::AlignRight);
         connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
         btn->setProperty("Item", qVariantFromValue(item));
         item++;
@@ -118,9 +128,11 @@ void MeasureSettingMenuContent::layoutExec()
     if (systemManager.isSupport(CONFIG_CO))
     {
         btn = new Button(QString("%1 >>").arg(trs("COSetting")));
-        btn->setMinimumWidth(maxWidth);
+        hl = new QHBoxLayout;
+        hl->addStretch(1);
+        hl->addWidget(btn, 1);
+        vlayout->addLayout(hl);
         btn->setButtonStyle(Button::ButtonTextOnly);
-        vlayout->addWidget(btn, 1, Qt::AlignRight);
         connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
         btn->setProperty("Item", qVariantFromValue(item));
         item++;
@@ -130,9 +142,11 @@ void MeasureSettingMenuContent::layoutExec()
     if (systemManager.isSupport(CONFIG_SPO2))
     {
         btn = new Button(QString("%1 >>").arg(trs("SPO2Setting")));
-        btn->setMinimumWidth(maxWidth);
+        hl = new QHBoxLayout;
+        hl->addStretch(1);
+        hl->addWidget(btn, 1);
+        vlayout->addLayout(hl);
         btn->setButtonStyle(Button::ButtonTextOnly);
-        vlayout->addWidget(btn, 1, Qt::AlignRight);
         connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
         btn->setProperty("Item", qVariantFromValue(item));
         item++;
@@ -142,9 +156,11 @@ void MeasureSettingMenuContent::layoutExec()
     if (systemManager.isSupport(CONFIG_NIBP))
     {
         btn = new Button(QString("%1 >>").arg(trs("NIBPSetting")));
-        btn->setMinimumWidth(maxWidth);
+        hl = new QHBoxLayout;
+        hl->addStretch(1);
+        hl->addWidget(btn, 1);
+        vlayout->addLayout(hl);
         btn->setButtonStyle(Button::ButtonTextOnly);
-        vlayout->addWidget(btn, 1, Qt::AlignRight);
         connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
         btn->setProperty("Item", qVariantFromValue(item));
         item++;
@@ -154,9 +170,11 @@ void MeasureSettingMenuContent::layoutExec()
     if (systemManager.isSupport(CONFIG_CO2))
     {
         btn = new Button(QString("%1 >>").arg(trs("CO2Setting")));
-        btn->setMinimumWidth(maxWidth);
+        hl = new QHBoxLayout;
+        hl->addStretch(1);
+        hl->addWidget(btn, 1);
+        vlayout->addLayout(hl);
         btn->setButtonStyle(Button::ButtonTextOnly);
-        vlayout->addWidget(btn, 1, Qt::AlignRight);
         connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
         btn->setProperty("Item", qVariantFromValue(item));
     }

@@ -82,6 +82,9 @@ public:
     virtual void sendCmdData(unsigned char /*cmdId*/, const unsigned char */*data*/,
                              unsigned int /*len*/) { }
 
+    // 发送获取版本信息
+    void sendVersion(){}
+
     ECGProviderIFace() { }
     virtual ~ECGProviderIFace() { }
 };

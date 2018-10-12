@@ -70,7 +70,6 @@ void TEMPTrendWidget::_alarmIndicate(bool isAlarms, tempGrp grp)
     }
     else
     {
-        setPalette(psrc);
         showNormalStatus(value, psrc);
         showNormalStatus(name, psrc);
     }
@@ -381,4 +380,12 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
  *************************************************************************************************/
 TEMPTrendWidget::~TEMPTrendWidget()
 {
+}
+
+QList<SubParamID> TEMPTrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    list.append(SUB_PARAM_T1);
+    list.append(SUB_PARAM_T2);
+    return list;
 }

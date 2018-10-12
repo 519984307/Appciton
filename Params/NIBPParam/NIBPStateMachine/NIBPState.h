@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/12
+ **/
+
+
+
 #pragma once
 #include "NIBPStateMachine.h"
 #include "NIBPEventDefine.h"
@@ -26,8 +38,6 @@ public:
     // callback function when machine exit
     virtual void stateMachineExit(void);
 
-    // 是否开启了CPR节拍音
-    virtual bool isStartCPRMetronome() {return false;}
 
     // handle message after disarm/delivered/selftest
     virtual void handleShowBiphasicMesg() {}
@@ -43,7 +53,7 @@ public:
     NIBPStateMachine *getStateMachine(void);
 
     // 构造与析构。
-    NIBPState(unsigned char id);
+    explicit NIBPState(unsigned char id);
     virtual ~NIBPState();
 
 protected:

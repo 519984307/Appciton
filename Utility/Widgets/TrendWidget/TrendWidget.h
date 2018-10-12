@@ -18,6 +18,8 @@
 #include <QString>
 #include <QLabel>
 #include <QPalette>
+#include "ParamDefine.h"
+
 
 class QHBoxLayout;
 class QVBoxLayout;
@@ -41,6 +43,17 @@ public:
         return _title;
     }
 
+    /**
+     * @brief updateBackground 更新背景
+     * @param pal
+     */
+    virtual void updatePalette(const QPalette &pal);
+     /*
+     * @brief getShortTrendSubParams get the avaliable short trend subparam IDs
+     * @return a list of avaliable short trend params
+     */
+    virtual QList<SubParamID> getShortTrendSubParams() const {return QList<SubParamID>();}
+
 protected:
     void setName(const QString &name);
     void setUnit(const QString &unit);
@@ -54,8 +67,7 @@ protected:
 
 protected:
     void paintEvent(QPaintEvent *e);
-    void showEvent(QShowEvent *e);
-    virtual void resizeEvent(QResizeEvent *e);
+    void resizeEvent(QResizeEvent *e);
 
     //字体大小设置
     virtual void setTextSize(void) = 0;

@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/12
+ **/
+
+
+
 #pragma once
 #include "SubMenu.h"
 #include <QLabel>
@@ -44,7 +56,7 @@ private:
 
     enum ModuleType
     {
-        MODULE_TYPE_IBP=0,
+        MODULE_TYPE_IBP = 0,
         MODULE_TYPE_CO2,
         MODULE_TYPE_ECG12LEADS,
         MODULE_TYPE_PRINTER,
@@ -53,7 +65,6 @@ private:
         MODULE_TYPE_SCREEN,
         MODULE_TYPE_NURSECALLING,
         MODULE_TYPE_ANALOGOUTPUT,
-        MODULE_TYPE_SYNC_DEFIBRILLATION,
         MODULE_TYPE_CO,
         MODULE_TYPE_NR
     };

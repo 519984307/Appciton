@@ -19,6 +19,23 @@
 #include "NIBPCountdownTime.h"
 #include <QMap>
 
+struct NIBPMeasureResultInfo
+{
+    NIBPMeasureResultInfo()
+    {
+        sys = InvData();
+        dia = InvData();
+        map = InvData();
+        pr = InvData();
+        errCode = 0;
+    }
+    short sys;
+    short dia;
+    short map;
+    short pr;
+    short errCode;
+};
+
 class NIBPProviderIFace;
 class NIBPTrendWidget;
 class NIBPDataTrendWidget;
@@ -120,8 +137,8 @@ public:
     void setNIBPDataTrendWidget(NIBPDataTrendWidget *trendWidget);
 
     // 解析测量结果。
-    bool analysisResult(const unsigned char *packet, int len, int16_t &sys,
-                        int16_t &dia, int16_t &map, int16_t &pr, NIBPOneShotType &err);
+    bool analysisResult(const unsigned char *packet, int len, short &sys,
+                        short &dia, short &map, short &pr, NIBPOneShotType &err);
 
     // 设置测量结果。
     void setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIBPOneShotType err);
@@ -248,6 +265,7 @@ public:
 private slots:
     void _patientTypeChangeSlot(PatientType type);
     void _btnTimeOut();
+    void onPaletteChanged(ParamID id);
 
 private:
     NIBPParam();

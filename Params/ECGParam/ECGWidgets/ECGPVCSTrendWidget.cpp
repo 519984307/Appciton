@@ -61,7 +61,7 @@ void ECGPVCSTrendWidget::isAlarm(bool isAlarm)
  *************************************************************************************************/
 void ECGPVCSTrendWidget::showValue(void)
 {
-    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
+    QPalette psrc = palette();
     psrc = normalPalette(psrc);
     if (_isAlarm)
     {
@@ -69,7 +69,6 @@ void ECGPVCSTrendWidget::showValue(void)
     }
     else
     {
-        setPalette(psrc);
         showNormalStatus(_pvcsValue, psrc);
     }
 
@@ -106,7 +105,6 @@ ECGPVCSTrendWidget::ECGPVCSTrendWidget() : TrendWidget("ECGPVCSTrendWidget")
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     setPalette(palette);
     setName(trs(paramInfo.getSubParamName(SUB_PARAM_ECG_PVCS)));
-    setUnit(Unit::getSymbol(UNIT_BPM));
 
     _pvcsValue = new QLabel();
     _pvcsValue->setPalette(palette);

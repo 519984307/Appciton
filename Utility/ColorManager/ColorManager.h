@@ -13,9 +13,11 @@
 #include <QString>
 #include <QMap>
 #include <QPalette>
+#include "ParamDefine.h"
 
-class ColorManager
+class ColorManager :public QObject
 {
+    Q_OBJECT
 public:
     static ColorManager &construction(void)
     {
@@ -31,6 +33,11 @@ public:
     QPalette &getPalette(const QString &param);
     QColor getColor(const QString &param);
 
+    /**
+     * @brief updatePalatte 更新颜色参数从配置表中
+     */
+    void updateColorPalatte(const QList<ParamID> &idList);
+
     // 获取高亮色。
     QColor getHighlight(void);
     QColor getShadow(void);
@@ -39,6 +46,9 @@ public:
     QColor getBarBkColor(void);
 
     ~ColorManager();
+
+signals:
+    void paletteChanged(ParamID id);
 
 private:
     ColorManager();

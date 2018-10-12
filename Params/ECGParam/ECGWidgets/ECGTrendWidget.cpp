@@ -122,7 +122,6 @@ void ECGTrendWidget::showValue(void)
     }
     else
     {
-        setPalette(psrc);
         showNormalStatus(_hrValue, psrc);
     }
 
@@ -217,11 +216,9 @@ void ECGTrendWidget::setTrendWidgetCalcName(ECGLead calLead)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget")
+ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
+    _hrString(InvStr()), _isAlarm(false)
 {
-    _isAlarm = false;
-    _hrString = InvStr();
-
     // 设置标题栏的相关信息。
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     setPalette(palette);
@@ -260,8 +257,6 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget")
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
-    _isAlarm = false;
-
     _timer = new QTimer();
     _timer->setInterval(190);
     connect(_timer, SIGNAL(timeout()), this, SLOT(_timeOut()));
@@ -277,4 +272,11 @@ ECGTrendWidget::~ECGTrendWidget()
         delete _timer;
         _timer = NULL;
     }
+}
+
+QList<SubParamID> ECGTrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    list.append(SUB_PARAM_HR_PR);
+    return list;
 }

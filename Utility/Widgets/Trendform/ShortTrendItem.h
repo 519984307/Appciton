@@ -12,22 +12,14 @@
 #include <QWidget>
 #include <ParamDefine.h>
 #include <QList>
+#include <TrendDataDefine.h>
 
 class ShortTrendItemPrivate;
 class ShortTrendItem : public QWidget
 {
     Q_OBJECT
 public:
-    enum TrendDuration
-    {
-        TREND_DURATION_30M,
-        TREND_DURATION_60M,
-        TREND_DURATION_120M,
-        TREND_DURATION_240M,
-        TREND_DURATION_480M,
-    };
-
-    explicit ShortTrendItem(const QString &name, QWidget *parent = NULL);
+    explicit ShortTrendItem(const QString &name = QString(), QWidget *parent = NULL);
     ~ShortTrendItem();
 
     /**
@@ -74,14 +66,52 @@ public:
      * @brief setTrendDuration set the trend duration
      * @param duration the duration
      */
-    void setTrendDuration(TrendDuration duration);
+    void setTrendDuration(ShortTrendDuration duration);
 
     /**
      * @brief getTrendDuration get the trend duration
      * @return the trend duration
      */
-    TrendDuration getTrendDuration() const;
+    ShortTrendDuration getTrendDuration() const;
 
+    /**
+     * @brief setWaveColor set the wave color
+     * @param color the wave's color
+     */
+    void setWaveColor(const QColor &color);
+
+    /**
+     * @brief getWaveColor get the wave color
+     * @return the wave color
+     */
+    QColor getWaveColor() const;
+
+    /**
+     * @brief enableDrawingTimeLabel enable draw the time label on the bottom of the trend graph
+     * @param enable
+     */
+    void enableDrawingTimeLabel(bool enable);
+
+    /**
+     * @brief isDrawingTimeLabel check whether is drawing the time label or not
+     * @return  true if enable, otherwise, return false
+     */
+    bool isDrawingTimeLabel() const;
+
+    /**
+     * @brief setNibpTrend need to set to true if current trend is NIBP trend
+     * @param enable
+     */
+    void setNibpTrend(bool enable);
+
+    /**
+     * @brief isNibpTrend check wheter current trend is nibp trend
+     * @return  true if current trend is nibp trend, otherwise, return false
+     */
+    bool isNibpTrend() const;
+
+public slots:
+    void onNewTrendDataArrived(ShortTrendInterval intreval);
 
 protected:
     /* reimplement */

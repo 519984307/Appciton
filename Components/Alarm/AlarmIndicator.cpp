@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/12
+ **/
+
+
+
 #include "AlarmIndicator.h"
 #include "AlarmMuteBarWidget.h"
 #include "AlarmPhyInfoBarWidget.h"
@@ -53,7 +65,6 @@ void AlarmIndicator::publishAlarm(AlarmAudioStatus status)
     int techAlarmNum = getAlarmCount(ALARM_TYPE_TECH);
     bool hasNonLatchedPhyAlarm = false;
     bool hasPausedPhyAlarm = false;
-    bool hasNewPromptTechAlarm = false;
     AlarmPriority phySoundPriority = ALARM_PRIO_PROMPT;
     AlarmPriority techSoundPriority = ALARM_PRIO_PROMPT;
     AlarmPriority lightPriority = ALARM_PRIO_PROMPT;
@@ -97,7 +108,7 @@ void AlarmIndicator::publishAlarm(AlarmAudioStatus status)
         }
         else if (ALARM_TYPE_TECH == node.alarmType)
         {
-            //技术报警只处理没有被acknowledge
+            // 技术报警只处理没有被acknowledge
             if ((!node.acknowledge || node.latch) && node.alarmPriority != ALARM_PRIO_PROMPT)
             {
                 if (techSoundPriority < node.alarmPriority)
@@ -116,7 +127,6 @@ void AlarmIndicator::publishAlarm(AlarmAudioStatus status)
                 {
                     node.promptAlarmBeep = true;
                     *it = node;
-                    hasNewPromptTechAlarm = true;
                 }
             }
         }
@@ -191,12 +201,6 @@ void AlarmIndicator::publishAlarm(AlarmAudioStatus status)
         soundManager.updateAlarm(false, phySoundPriority);
     }
 
-    //nor-alert beeps in non-aed modes
-    if (hasNewPromptTechAlarm && _enableNonAlarmBeepsInNonAED)
-    {
-        soundManager.errorTone();
-    }
-
     // 更新灯光
     if (lightPriority != ALARM_PRIO_PROMPT)
     {
@@ -216,8 +220,8 @@ void AlarmIndicator::publishAlarm(AlarmAudioStatus status)
         }
         AlarmInfoNode alarmPhyNode;
 
-        _displayInfoNode(alarmPhyNode,_alarmPhyDisplayIndex,
-                         newPhyAlarmIndex,oldPhyAlarmIndex,firstPhyIndex,lastPhyIndex);
+        _displayInfoNode(alarmPhyNode, _alarmPhyDisplayIndex,
+                         newPhyAlarmIndex, oldPhyAlarmIndex, firstPhyIndex, lastPhyIndex);
         if (NULL != alarmPhyNode.alarmMessage)
         {
             _displayPhySet(alarmPhyNode);
@@ -236,8 +240,8 @@ void AlarmIndicator::publishAlarm(AlarmAudioStatus status)
             _alarmTechDisplayIndex = firstTechIndex;
         }
         AlarmInfoNode alarmTechNode;
-        _displayInfoNode(alarmTechNode,_alarmTechDisplayIndex,
-                         newTechAlarmIndex,oldTechAlarmIndex,firstTechIndex,lastTechIndex);
+        _displayInfoNode(alarmTechNode, _alarmTechDisplayIndex,
+                         newTechAlarmIndex, oldTechAlarmIndex, firstTechIndex, lastTechIndex);
 
         if (NULL != alarmTechNode.alarmMessage)
         {
@@ -364,7 +368,7 @@ void AlarmIndicator::setAlarmTechWidgets(AlarmTechInfoBarWidget *alarmWidget)
  *      isRemoveAfterLatch:latch后是否移除报警信息
  *************************************************************************************************/
 bool AlarmIndicator::addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
-        AlarmPriority alarmPriority, const char *alarmMessage, bool isRemoveAfterLatch)
+                                  AlarmPriority alarmPriority, const char *alarmMessage, bool isRemoveAfterLatch)
 {
     //报警存在
     AlarmInfoList *list = &_alarmInfoDisplayPool;
@@ -627,7 +631,7 @@ bool AlarmIndicator::techAlarmPauseStatusHandle()
             if (it->removeAfterLatch)
             {
                 it = list->erase(it);
-                ret |= true;
+                ret = true;
                 continue;
             }
             else
@@ -637,12 +641,12 @@ bool AlarmIndicator::techAlarmPauseStatusHandle()
                 {
                     node.acknowledge = true;
                     *it = node;
-                    ret |= true;
+                    ret = true;
                 }
             }
         }
 
-         ++it;
+        ++it;
     }
 
     return ret;
@@ -698,7 +702,7 @@ bool AlarmIndicator::hasLatchPhyAlarm()
  *      priority:报警级别
  *************************************************************************************************/
 void AlarmIndicator::updataAlarmPriority(AlarmType alarmType, const char *alArmMessage,
-                                         AlarmPriority priority)
+        AlarmPriority priority)
 {
     AlarmInfoList *list = &_alarmInfoDisplayPool;
 
@@ -754,23 +758,23 @@ void AlarmIndicator::setAudioStatus(AlarmAudioStatus status)
 
     switch (status)
     {
-        case ALARM_AUDIO_NORMAL:
-            _muteWidget->setAudioNormal();
-            break;
-        case ALARM_AUDIO_SUSPEND:
-            _muteWidget->setAlarmPause();
-            break;
-        case ALARM_AUDIO_OFF:
-            _muteWidget->setAudioOff();
-            break;
-        default:
-            _muteWidget->setAlarmOff();
-            break;
+    case ALARM_AUDIO_NORMAL:
+        _muteWidget->setAudioNormal();
+        break;
+    case ALARM_AUDIO_SUSPEND:
+        _muteWidget->setAlarmPause();
+        break;
+    case ALARM_AUDIO_OFF:
+        _muteWidget->setAudioOff();
+        break;
+    default:
+        _muteWidget->setAlarmOff();
+        break;
     }
 
     if (status != ALARM_AUDIO_SUSPEND)
     {
-        systemConfig.setNumValue("PrimaryCfg|Alarm|AlarmStatus", (int)(status + 1));
+        systemConfig.setNumValue("PrimaryCfg|Alarm|AlarmStatus", static_cast<int>(status + 1));
     }
 
     _audioStatus = status;
@@ -880,8 +884,6 @@ AlarmIndicator::AlarmIndicator()
         pauseTimeIndex = ALARM_PAUSE_TIME_90S;
     }
     _audioPauseTime = 60 + 30 * pauseTimeIndex;
-
-    currentConfig.getNumValue("Alarm|NonAlertsBeepsInNonAED", _enableNonAlarmBeepsInNonAED);
 }
 
 /**************************************************************************************************

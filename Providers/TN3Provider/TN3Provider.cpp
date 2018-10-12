@@ -15,7 +15,6 @@
 #include "IConfig.h"
 #include "crc8.h"
 #include "SystemManager.h"
-#include "BLMEDUpgradeParam.h"
 #include "TimeDate.h"
 #include "ServiceVersion.h"
 #include "NIBPAlarm.h"
@@ -186,6 +185,22 @@ void TN3Provider::_errorWarm(unsigned char *packet, int len)
     errorLog.append(item);
 }
 
+static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
+{
+    NIBPMeasureResultInfo info;
+    short t = static_cast<short>(data[0]);
+    info.errCode = t;
+    t = static_cast<short>(data[1] + (data[2] << 8));
+    info.sys = t;
+    t = static_cast<short>(data[3] + (data[4] << 8));
+    info.dia = t;
+    t = static_cast<short>(data[5] + (data[6] << 8));
+    info.map = t;
+    t = static_cast<short>(data[7] + (data[8] << 8));
+    info.pr = t;
+    return info;
+}
+
 /**************************************************************************************************
  * 数据处理。
  *************************************************************************************************/
@@ -220,8 +235,11 @@ void TN3Provider::handlePacket(unsigned char *data, int len)
 
     // 获取测量结果
     case TN3_RSP_GET_MEASUREMENT:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_GET_RESULT, data, len);
+    {
+        NIBPMeasureResultInfo info = getMeasureResultInfo(&data[1]);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_GET_RESULT, reinterpret_cast<unsigned char *>(&info), sizeof(info));
         break;
+    }
 
     // 开机自检
     case TN3_RSP_SELFTEST:
@@ -542,7 +560,20 @@ void TN3Provider::serviceCalibrate(bool enter)
  *************************************************************************************************/
 void TN3Provider::servicePressurepoint(const unsigned char *data, unsigned int len)
 {
-    sendCmd(TN3_CMD_PRESSURE_POINT, data, len);
+    unsigned char cmd[3] = {0};
+    int pressure = data[0] | (data[1] << 8);
+    if (pressure)
+    {
+        cmd[0] = 0x01;
+    }
+    else
+    {
+        cmd[0] = 0x00;
+    }
+    cmd[1] = pressure & 0xFF;
+    cmd[2] = (pressure >> 8) & 0xFF;
+    len = 0;
+    sendCmd(TN3_CMD_PRESSURE_POINT, cmd, len);
 }
 
 /**************************************************************************************************

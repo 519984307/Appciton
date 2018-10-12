@@ -115,6 +115,12 @@ void TimeManager::setElapsedTime()
     systemConfig.setNumValue("ElapseStartTime", _elapseStartTime);
 }
 
+void TimeManager::roloadConfig()
+{
+    // 读配置是否显示秒
+    currentConfig.getNumValue("DateTime|DisplaySecond", _showSecond);
+}
+
 /**************************************************************************************************
  * 功能： 构造。
  *************************************************************************************************/

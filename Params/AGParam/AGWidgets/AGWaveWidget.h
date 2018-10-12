@@ -33,6 +33,11 @@ public:
     // 设置标尺。
     void setRuler(AGDisplayZoom zoom);
 
+    /**
+     * @brief resetBackground reset background
+     */
+    void updatePalette(const QPalette &pal);
+
     // 构造与析构。
     AGWaveWidget(WaveformID id, const QString &waveName, const AGTypeGas gasType);
     ~AGWaveWidget();
@@ -43,8 +48,6 @@ protected:
 
     // 焦点进入
     virtual void focusInEvent(QFocusEvent */*e*/);
-
-    virtual void paintEvent(QPaintEvent *e);
 
 private slots:
     void _getItemIndex(int);

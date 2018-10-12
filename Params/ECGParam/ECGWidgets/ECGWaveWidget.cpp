@@ -519,11 +519,6 @@ void ECGWaveWidget::setNotifyMesg(ECGWaveNotify mesg)
  *************************************************************************************************/
 void ECGWaveWidget::paintEvent(QPaintEvent *e)
 {
-    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-    setPalette(palette);
-    _ruler->setPalette(palette);
-    _ruler->setBackground(true);
-
     WaveWidget::paintEvent(e);
 
     if (ECG_DISPLAY_NORMAL == ecgParam.getDisplayMode())
@@ -1038,5 +1033,12 @@ void ECGWaveWidget::drawRMark(QPainter &painter, QPoint &p, QRect &r, ECGWaveWid
     painter.drawText(startX, startY, "S");
 
     painter.setPen(oldPen);
+}
+
+void ECGWaveWidget::updatePalette(const QPalette &pal)
+{
+    _ruler->setPalette(pal);
+    setPalette(pal);
+    updateBackground();
 }
 

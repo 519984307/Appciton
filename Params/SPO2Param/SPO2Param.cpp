@@ -17,7 +17,6 @@
 #include "IConfig.h"
 #include "WaveformCache.h"
 #include "ECGDupParam.h"
-#include "TS3Provider.h"
 #include "SystemManager.h"
 #include "ComboListPopup.h"
 #include "ErrorLog.h"
@@ -602,6 +601,17 @@ void SPO2Param::checkSelftest()
             errorLog.append(item);
         }
     }
+}
+
+void SPO2Param::onPaletteChanged(ParamID id)
+{
+    if (id != PARAM_SPO2)
+    {
+        return;
+    }
+    QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
+    _waveWidget->updatePalette(pal);
+    _trendWidget->updatePalette(pal);
 }
 
 /**************************************************************************************************

@@ -12,6 +12,7 @@
 #include "AGWaveRuler.h"
 #include "AGWaveWidget.h"
 #include <QPainter>
+#include "FontManager.h"
 
 /**************************************************************************************************
  * 绘图函数。
@@ -29,18 +30,20 @@ void AGWaveRuler::paintItem(QPainter &painter)
     int yLow = y() + height() - 2;
     int yMid = (_mid - _low) * (yUp - yLow) / (_up - _low) + yLow;
 
-    painter.setFont(font());
+    int fontSize = fontManager.getFontSize(1);
+    painter.setFont(fontManager.textFont(fontSize));
     painter.setPen(QPen(palette().windowText(), 1, Qt::DashLine));
 
     // 上标尺
-    painter.drawText(QRectF(xLeft, yUp, xRight, yLow), Qt::AlignLeft | Qt::AlignTop, QString::number(_up) + "%");
+    painter.drawText(QRectF(xLeft, yUp, 30, 20), Qt::AlignCenter | Qt::AlignTop, QString::number(_up));
     painter.drawLine(xLeft, yUp, xRight, yUp);
 
     // 中标尺
-    painter.drawLine(xLeft, yMid, xRight, yMid);
+    painter.drawText(QRectF(xLeft, yMid - 10, 30, 20), Qt::AlignCenter | Qt::AlignHCenter, QString::number((_low + _up) / 2));
+    painter.drawLine(xLeft + 30, yMid, xRight, yMid);
 
     // 下标尺
-    painter.drawText(QRectF(xLeft, yUp, xRight, yLow - yMid/ 3 - 5), Qt::AlignLeft | Qt::AlignBottom, QString::number(_low) + "%");
+    painter.drawText(QRectF(xLeft, yLow - 20, 30, 20), Qt::AlignCenter | Qt::AlignBottom, QString::number(_low));
     painter.drawLine(xLeft, yLow, xRight, yLow);
 }
 

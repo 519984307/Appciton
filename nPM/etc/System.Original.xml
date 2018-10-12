@@ -49,7 +49,7 @@
 		<EnterNightMode>0</EnterNightMode>
    </NightMode>
     <Unit>
-        <HightUnit>14</HightUnit>
+        <HeightUnit>14</HeightUnit>
         <WeightUnit>12</WeightUnit>
         <STUnit>11</STUnit>
         <PressureUnit>5</PressureUnit>
@@ -79,7 +79,6 @@
 		<ScreenModule>0</ScreenModule>
 		<NurseCallingModule>0</NurseCallingModule>
 		<AnalogOutputModule>0</AnalogOutputModule>
-		<SYNCDefibrillationModule>0</SYNCDefibrillationModule>
 		<COModule>0</COModule>
 	</MachineConfigModule>
 	<SoftWareVersion>
@@ -796,11 +795,11 @@
         <UILayout>
         <!-- 控件的顺序与上面的布局节点对应 -->
             <MainLayout direction="vertical" margin="0" spacing="0">
-                <LayoutItem height="40" direction="horizontal" spacing="0" bgcolor="#1e1e1e">
+                <LayoutItem height="45" direction="horizontal" spacing="0" bgcolor="#1e1e1e">
                     <LayoutItem stretch="1">PatientInfoWidget</LayoutItem>
                     <LayoutItem width="50">NightStatusBar</LayoutItem>
                     <LayoutItem width="50">PatientStatusBarWidget</LayoutItem>
-                    <LayoutItem width="150">DateTimeWidget</LayoutItem>
+                    <LayoutItem width="200">DateTimeWidget</LayoutItem>
                     <LayoutItem width="50">AlarmMuteBarWidget</LayoutItem>
                     <LayoutItem width="350">AlarmPhyInfoBarWidget</LayoutItem>
                     <LayoutItem width="350">AlarmTechInfoBarWidget</LayoutItem>
@@ -854,22 +853,22 @@
                 <BigFont>
                     <LayoutRow>
                         <LayoutNode>
-                            <Param>ECG</Param>
-                            <Wave>ECG1Wave</Wave>
+                            <Param pos="0" span="1" editable="1">ECG</Param>
+                            <Wave pos="0" span="3" editable="0">ECG1Wave</Wave>
                         </LayoutNode>
                         <LayoutNode>
-                            <Param>NIBP</Param>
-                            <Wave></Wave>
+                            <Param pos="3" span="1" editable="1">NIBP</Param>
+                            <Wave pos="3" span="3" editable="0"></Wave>
                         </LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode>
-                            <Param>SPO2</Param>
-                            <Wave>SPO2Wave</Wave>
+                            <Param pos="0" span="1" editable="1">SPO2</Param>
+                            <Wave pos="0" span="3" editable="0">SPO2Wave</Wave>
                         </LayoutNode>
                         <LayoutNode>
-                            <Param>RESP</Param>
-                            <Wave>RESPWave</Wave>
+                            <Param pos="3" span="1" editable="1">RESP</Param>
+                            <Wave pos="3" span="3" editable="0">RESPWave</Wave>
                         </LayoutNode>
                     </LayoutRow>
                 <MonitorBigFont>

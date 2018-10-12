@@ -102,7 +102,6 @@ void NIBPMenuContent::layoutExec()
                        << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_60))
                        << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_90))
                        << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_120))
-                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_NR))
                       );
     itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_CBO_AUTO_INTERVAL);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
