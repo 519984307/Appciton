@@ -228,8 +228,8 @@ PatientManager,病人管理,Patient Manager
 PatientManagerDesc,病人管理,Patient Manager Desc
 PatientInfo,病人信息,Patient Info
 NewPatient,新建病人,New Patient
-RoutineFunctionMenu,常规功能,Routine Function Menu
-RoutineFunctionMenuDesc,常规功能,Routine Function Menu Desc
+NormalFunctionMenu,常规功能,Normal Function Menu
+NormalFunctionMenuDesc,常规功能,Normal Function Menu Desc
 Calculate,计算,Calculate
 WiFiProfile,WiFi配置,WiFi Profile
 MachineVersion,机器版本,Machine Version

@@ -95,7 +95,8 @@ void MenuWindow::addMenuContent(MenuContent *menu)
     }
 }
 
-void MenuWindow::popup(const QString &menuName, const QVariant &param)
+void MenuWindow::popup(const QString &menuName, const QVariant &param,
+                       const WindowManager::ShowBehaviorFlags &showFlags)
 {
     d_ptr->sidebar->setChecked(menuName);
 
@@ -110,7 +111,7 @@ void MenuWindow::popup(const QString &menuName, const QVariant &param)
         }
     }
 
-    windowManager.showWindow(this, WindowManager::ShowBehaviorCloseOthers);
+    windowManager.showWindow(this, showFlags);
 }
 
 void MenuWindow::setWindowTitlePrefix(const QString &prefix)
@@ -128,6 +129,26 @@ void MenuWindow::setWindowTitlePrefix(const QString &prefix)
     d_ptr->menuPath += trs(pathList.at(1));
 
     update();
+}
+
+void MenuWindow::setFirstMenuSidebarItemFocus()
+{
+    MenuSidebar *bar = d_ptr->sidebar;
+    MenuSidebarItem *barItem = bar->itemAt(0);
+    if (bar && barItem)
+    {
+        bar->setChecked(barItem->text());
+        barItem->setFocus();
+    }
+}
+
+void MenuWindow::ensureWidgetVisiable(QWidget *w)
+{
+    ScrollArea *area = qobject_cast<ScrollArea *>(d_ptr->stackWidget->currentWidget());
+    if (area && area->isAncestorOf(w))
+    {
+        area->ensureWidgetVisible(w);
+    }
 }
 
 bool MenuWindow::focusNextPrevChild(bool next)
@@ -295,7 +316,15 @@ void MenuWindow::showEvent(QShowEvent *ev)
         d_ptr->rightLayout->addLayout(bottomLayout);
         connect(d_ptr->retBtn, SIGNAL(clicked()), this, SLOT(onReturnBtnClick()));
     }
+
     Window::showEvent(ev);
+
+    // 强制保证聚焦在子菜单内部
+    QWidget *cur = focusWidget();
+    if (getCloseBtn() == cur)
+    {
+        focusNextPrevChild(true);
+    }
 }
 
 void MenuWindow::onSelectItemChanged(int index)
@@ -322,7 +351,7 @@ void MenuWindow::onSelectItemChanged(int index)
                 windowTitle += content->description();
                 setWindowTitle(windowTitle);
             }
-            content->setFocus();
+            content->setFocus(Qt::TabFocusReason);
             if (area->isAncestorOf(content->focusWidget()))
             {
                 area->ensureWidgetVisible(content->focusWidget());

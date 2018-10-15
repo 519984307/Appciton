@@ -91,6 +91,7 @@ void MenuContent::showEvent(QShowEvent *ev)
 void MenuContent::focusInEvent(QFocusEvent *ev)
 {
     QObjectList objects = children();
+    QWidget *w = NULL;
     if (ev->reason() == Qt::BacktabFocusReason)
     {
         while (!objects.isEmpty())
@@ -100,11 +101,11 @@ void MenuContent::focusInEvent(QFocusEvent *ev)
             {
                 continue;
             }
-            QWidget *w = qobject_cast<QWidget *>(obj);
+            w = qobject_cast<QWidget *>(obj);
             if (w->focusPolicy() != Qt::NoFocus)
             {
                 w->setFocus();
-                return;
+                break;
             }
         }
     }
@@ -117,12 +118,47 @@ void MenuContent::focusInEvent(QFocusEvent *ev)
             {
                 continue;
             }
-            QWidget *w = qobject_cast<QWidget *>(obj);
+
+            // 再做一层递归查找聚焦点
+            bool isBreak = false;
+            QObjectList objectsListChild = obj->children();
+            while (!objectsListChild.isEmpty())
+            {
+                QObject *objChild = objectsListChild.takeFirst();
+                if (!objChild->isWidgetType())
+                {
+                    continue;
+                }
+
+                w = qobject_cast<QWidget *>(objChild);
+                if (w->focusPolicy() != Qt::NoFocus)
+                {
+                    w->setFocus(Qt::TabFocusReason);
+                    isBreak = true;
+                    break;
+                }
+            }
+            if (isBreak)
+            {
+                break;
+            }
+
+            w = qobject_cast<QWidget *>(obj);
             if (w->focusPolicy() != Qt::NoFocus)
             {
                 w->setFocus(Qt::TabFocusReason);
-                return;
+                break;
             }
+        }
+    }
+
+    // 强制使得聚焦区域视窗可见
+    if (w)
+    {
+        MenuWindow *mw = this->getMenuWindow();
+        if (mw)
+        {
+            mw->ensureWidgetVisiable(w);
         }
     }
 }

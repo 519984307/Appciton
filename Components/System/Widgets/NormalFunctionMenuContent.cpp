@@ -8,7 +8,7 @@
  ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/12
  **/
 
-#include "RoutineFunctionMenuContent.h"
+#include "NormalFunctionMenuContent.h"
 #include "LanguageManager.h"
 #include <QLabel>
 #include "ComboBox.h"
@@ -30,7 +30,7 @@
 #include "NightModeWindow.h"
 #include "StandyWindow.h"
 
-class RoutineFunctionMenuContentPrivate
+class NormalFunctionMenuContentPrivate
 {
 public:
     enum MenuItem
@@ -48,7 +48,7 @@ public:
         ITEM_BTN_DEMO_MODE
     };
 
-    RoutineFunctionMenuContentPrivate()
+    NormalFunctionMenuContentPrivate()
                     : demoBtn(NULL)
     {}
 
@@ -60,7 +60,7 @@ public:
     QMap<MenuItem, ComboBox *> combos;
 };
 
-void RoutineFunctionMenuContentPrivate::loadOptions()
+void NormalFunctionMenuContentPrivate::loadOptions()
 {
     if (nightModeManager.isNightMode())
     {
@@ -87,24 +87,24 @@ void RoutineFunctionMenuContentPrivate::loadOptions()
     }
 }
 
-RoutineFunctionMenuContent::RoutineFunctionMenuContent()
-    : MenuContent(trs("RoutineFunctionMenu"),
-                  trs("RoutineFunctionMenuDesc")),
-      d_ptr(new RoutineFunctionMenuContentPrivate)
+NormalFunctionMenuContent::NormalFunctionMenuContent()
+    : MenuContent(trs("NormalFunctionMenu"),
+                  trs("NormalFunctionMenuDesc")),
+      d_ptr(new NormalFunctionMenuContentPrivate)
 {
 }
 
-RoutineFunctionMenuContent::~RoutineFunctionMenuContent()
+NormalFunctionMenuContent::~NormalFunctionMenuContent()
 {
     delete d_ptr;
 }
 
-void RoutineFunctionMenuContent::readyShow()
+void NormalFunctionMenuContent::readyShow()
 {
     d_ptr->loadOptions();
 }
 
-void RoutineFunctionMenuContent::layoutExec()
+void NormalFunctionMenuContent::layoutExec()
 {
     QGridLayout *layout = new QGridLayout(this);
 
@@ -119,7 +119,7 @@ void RoutineFunctionMenuContent::layoutExec()
     btn = new Button(trs("Calculate"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
-    itemID = static_cast<int>(RoutineFunctionMenuContentPrivate::ITEM_BTN_CALCULATE);
+    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_BTN_CALCULATE);
     btn->setProperty("Item", qVariantFromValue(itemID));
     layout->addWidget(btn, row, 1);
     row++;
@@ -135,13 +135,13 @@ void RoutineFunctionMenuContent::layoutExec()
                        << QString::number(SoundManager::VOLUME_LEV_4)
                        << QString::number(SoundManager::VOLUME_LEV_5)
                       );
-    itemID = static_cast<int>(RoutineFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME);
+    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, row, 1);
     row++;
-    d_ptr->combos.insert(RoutineFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME, comboBox);
+    d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME, comboBox);
 
     // screen brightness
     label = new QLabel(trs("SystemBrightness"));
@@ -151,13 +151,13 @@ void RoutineFunctionMenuContent::layoutExec()
     {
         comboBox->addItem(QString::number(i));
     }
-    itemID = static_cast<int>(RoutineFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS);
+    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, row, 1);
     row++;
-    d_ptr->combos.insert(RoutineFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS, comboBox);
+    d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS, comboBox);
 
     // key press volume
     label = new QLabel(trs("KeyPressVolume"));
@@ -173,10 +173,10 @@ void RoutineFunctionMenuContent::layoutExec()
                        );
     layout->addWidget(comboBox , row , 1);
     row++;
-    itemID = static_cast<int>(RoutineFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME);
+    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME);
     comboBox->setProperty("Item" , qVariantFromValue(itemID));
     connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
-    d_ptr->combos.insert(RoutineFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME , comboBox);
+    d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME , comboBox);
 
     if (systemManager.isSupport(CONFIG_WIFI))
     {
@@ -184,7 +184,7 @@ void RoutineFunctionMenuContent::layoutExec()
         btn = new Button(trs("WiFiProfile"));
         btn->setButtonStyle(Button::ButtonTextOnly);
         connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
-        itemID = static_cast<int>(RoutineFunctionMenuContentPrivate::ITEM_BTN_WIFI_PROFILE);
+        itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_BTN_WIFI_PROFILE);
         btn->setProperty("Item", qVariantFromValue(itemID));
         layout->addWidget(btn, row, 1);
         row++;
@@ -194,7 +194,7 @@ void RoutineFunctionMenuContent::layoutExec()
     btn = new Button(trs("MachineVersion"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
-    itemID = static_cast<int>(RoutineFunctionMenuContentPrivate::ITEM_BTN_MACHINE_VERSION);
+    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_BTN_MACHINE_VERSION);
     btn->setProperty("Item", qVariantFromValue(itemID));
     layout->addWidget(btn, row, 1);
     row++;
@@ -203,7 +203,7 @@ void RoutineFunctionMenuContent::layoutExec()
     btn = new Button(trs("Standy"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
-    itemID = static_cast<int>(RoutineFunctionMenuContentPrivate::ITEM_BTN_ENTER_STANDY);
+    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_BTN_ENTER_STANDY);
     btn->setProperty("Item", qVariantFromValue(itemID));
     layout->addWidget(btn, row, 1);
     row++;
@@ -212,7 +212,7 @@ void RoutineFunctionMenuContent::layoutExec()
     btn = new Button(trs("NightMode"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
-    itemID = static_cast<int>(RoutineFunctionMenuContentPrivate::ITEM_BTN_NIGHT_MODE);
+    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_BTN_NIGHT_MODE);
     btn->setProperty("Item", qVariantFromValue(itemID));
     layout->addWidget(btn, row, 1);
     row++;
@@ -222,7 +222,7 @@ void RoutineFunctionMenuContent::layoutExec()
     d_ptr->demoBtn = btn;
     btn->setButtonStyle(Button::ButtonTextOnly);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
-    itemID = static_cast<int>(RoutineFunctionMenuContentPrivate::ITEM_BTN_DEMO_MODE);
+    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_BTN_DEMO_MODE);
     btn->setProperty("Item", qVariantFromValue(itemID));
     layout->addWidget(btn, row, 1);
     row++;
@@ -230,28 +230,28 @@ void RoutineFunctionMenuContent::layoutExec()
     layout->setRowStretch(row, 1);
 }
 
-void RoutineFunctionMenuContent::onComboBoxIndexChanged(int index)
+void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
 {
     ComboBox *box = qobject_cast<ComboBox *>(sender());
     if (box)
     {
-        RoutineFunctionMenuContentPrivate::MenuItem item
-                = (RoutineFunctionMenuContentPrivate::MenuItem)box->property("Item").toInt();
+        NormalFunctionMenuContentPrivate::MenuItem item
+                = (NormalFunctionMenuContentPrivate::MenuItem)box->property("Item").toInt();
         switch (item)
         {
-        case RoutineFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME:
+        case NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME:
         {
             int volume = box->itemText(index).toInt();
             soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, (SoundManager::VolumeLevel) volume);
             break;
         }
-        case RoutineFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS:
+        case NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS:
         {
             int brightness = box->itemText(index).toInt();
             systemManager.setBrightness((BrightnessLevel)brightness);
             break;
         }
-        case RoutineFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME:
+        case NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME:
         {
             int volume = box->itemText(index).toInt();
             soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , (SoundManager::VolumeLevel)volume);
@@ -263,44 +263,44 @@ void RoutineFunctionMenuContent::onComboBoxIndexChanged(int index)
     }
 }
 
-void RoutineFunctionMenuContent::onBtnReleasd()
+void NormalFunctionMenuContent::onBtnReleasd()
 {
     Button *btn = qobject_cast<Button*>(sender());
     int index = btn->property("Item").toInt();
 
     switch (index)
     {
-        case RoutineFunctionMenuContentPrivate::ITEM_BTN_CALCULATE:
+        case NormalFunctionMenuContentPrivate::ITEM_BTN_CALCULATE:
         {
             CalculateWindow w;
             windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
         }
         break;
-        case RoutineFunctionMenuContentPrivate::ITEM_BTN_WIFI_PROFILE:
+        case NormalFunctionMenuContentPrivate::ITEM_BTN_WIFI_PROFILE:
         {
             WiFiProfileWindow w;
             windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
         }
         break;
-        case RoutineFunctionMenuContentPrivate::ITEM_BTN_MACHINE_VERSION:
+        case NormalFunctionMenuContentPrivate::ITEM_BTN_MACHINE_VERSION:
         {
             SoftWareVersionWindow w;
             windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
         }
         break;
-        case RoutineFunctionMenuContentPrivate::ITEM_BTN_ENTER_STANDY:
+        case NormalFunctionMenuContentPrivate::ITEM_BTN_ENTER_STANDY:
         {
             StandyWindow w;
             w.exec();
         }
         break;
-        case RoutineFunctionMenuContentPrivate::ITEM_BTN_NIGHT_MODE:
+        case NormalFunctionMenuContentPrivate::ITEM_BTN_NIGHT_MODE:
         {
             NightModeWindow w;
             windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
         }
         break;
-        case RoutineFunctionMenuContentPrivate::ITEM_BTN_DEMO_MODE:
+        case NormalFunctionMenuContentPrivate::ITEM_BTN_DEMO_MODE:
         {
             if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
             {
