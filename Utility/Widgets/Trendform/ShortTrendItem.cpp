@@ -200,6 +200,7 @@ void ShortTrendItemPrivate::updateBackground()
         p.drawText(textRect, Qt::AlignCenter, labels.at(1));
         textRect.moveRight(waveRegion.right());
         p.drawText(textRect, Qt::AlignVCenter | Qt::AlignRight, labels.at(2));
+        drawTimeLabelFlag = false;
     }
 
     // draw the name label
