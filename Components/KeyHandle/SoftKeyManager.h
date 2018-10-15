@@ -40,6 +40,11 @@ public:
 
     virtual void getSubFocusWidget(QList<QWidget*> &/*subWidget*/) const;
 
+    /**
+     * @brief resetPage 将软按键恢复到第一页
+     */
+    void resetPage();
+
 protected:
     void paintEvent(QPaintEvent *e);
     void resizeEvent(QResizeEvent *e);

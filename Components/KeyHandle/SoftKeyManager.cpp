@@ -162,6 +162,13 @@ void SoftKeyManager::getSubFocusWidget(QList<QWidget *> &subWidgets) const
     subWidgets.append(d_ptr->rightPageKeyWidget);
 }
 
+void SoftKeyManager::resetPage()
+{
+    d_ptr->mainMenuKeyWidget->setFocus();
+    d_ptr->resetPageInfo();
+    d_ptr->layoutKeyDesc();
+}
+
 void SoftKeyManager::_dynamicKeyClicked(int index)
 {
     int descIndex = d_ptr->curPage * d_ptr->dynamicKeyWidgets.count() + index;

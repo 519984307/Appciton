@@ -55,7 +55,7 @@ bool Provider::initPort(const UartAttrDesc &desc, bool needNotify)
 int Provider::writeData(const unsigned char buff[], int len)
 {
     // send through the dispatcher
-    if (disPatchInfo.packetType != DataDispatcher::PACKET_TYPE_INVALID)
+    if (disPatchInfo.dispatcher)
     {
         return disPatchInfo.dispatcher->sendData(disPatchInfo.packetType, buff, len);
     }

@@ -58,15 +58,15 @@ DEFINES += CONFIG_ECG_TEST
 LIBS += -ldl -lasound -lz
 
 linux-cortexa9hf-vfp-neon-gnueabi-g++ {
-    LIBS += -lts -L$$PWD/nPM/lib/ -lECGAlg2SoftInterface
+    LIBS += -lts -L$$PWD/nPM/lib/
 }
 
 linux-arm-g++ {
-    LIBS += -lts -L$$PWD/nPM/lib/ -lECGAlg2SoftInterface
+    LIBS += -lts -L$$PWD/nPM/lib/
 }
 
 linux-g++ {
-    LIBS += -lX11 -L$$PWD/nPM/libamd64/ -lECGAlg2SoftInterface
+    LIBS += -lX11 -L$$PWD/nPM/libamd64/
 }
 
 OTHER_FILES +=                                                                  \
@@ -560,7 +560,6 @@ SOURCES +=                                                                      
     Params/SPO2Param/SPO2Widgets/SPO2WaveWidget.cpp                             \
     Params/SPO2Param/SPO2Widgets/SPO2TrendWidget.cpp                            \
     Params/SPO2Param/SPO2Widgets/SPO2BarWidget.cpp                              \
-    Params/SPO2Param/SPO2Widgets/SPO2Menu.cpp                                   \
     Params/SPO2Param/SPO2Widgets/SPO2MenuContent.cpp                            \
     Params/TEMPParam/TEMPParam.cpp                                              \
     Params/TEMPParam/TEMPAlarm.cpp                                              \
@@ -1161,7 +1160,6 @@ HEADERS +=                                                                      
     Params/SPO2Param/SPO2Widgets/SPO2WaveWidget.h                               \
     Params/SPO2Param/SPO2Widgets/SPO2TrendWidget.h                              \
     Params/SPO2Param/SPO2Widgets/SPO2BarWidget.h                                \
-    Params/SPO2Param/SPO2Widgets/SPO2Menu.h                                     \
     Params/SPO2Param/SPO2Widgets/SPO2MenuContent.h                              \
     Params/TEMPParam/TEMPDefine.h                                               \
     Params/TEMPParam/TEMPSymbol.h                                               \

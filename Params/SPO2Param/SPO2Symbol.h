@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/10/12
+ **/
+
 #pragma once
 #include "SPO2Define.h"
 #include "LanguageManager.h"
@@ -5,11 +15,29 @@
 class SPO2Symbol
 {
 public:
+    static const char *convert(AverageTime index)
+    {
+        static const char *symbol[SPO2_AVER_TIME_NR] =
+        {
+            "2-4s", "4-6s", "8s", "10s", "12s", "14s", "16s"
+        };
+        return symbol[index];
+    }
+
     static const char *convert(SPO2Sensitive index)
     {
         static const char *symbol[SPO2_SENS_NR] =
         {
             "SPO2SensLow", "SPO2SensMed", "SPO2SensHigh"
+        };
+        return symbol[index];
+    }
+
+    static const char *convert(SensitivityMode index)
+    {
+        static const char *symbol[SPO2_MASIMO_SENS_NR] =
+        {
+            "MaxSensitivity", "Normal", "APOD"
         };
         return symbol[index];
     }

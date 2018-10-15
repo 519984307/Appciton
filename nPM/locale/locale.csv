@@ -111,7 +111,7 @@ PatientHeight,身高,Height
 PatientMenu,病人,Patient
 ECGLeadMode,导联模式,Lead Mode
 ECGDisplayMode,显示模式,Display Mode
-ECGCalcLead,计算导联,Calculation Lead
+ECGCalcLead,计算导联,Calc. Lead
 ECGBandwidth,带宽,Bandwidth
 ECGGain,增益,Gain
 ECGPacemaker,起搏器,Pacemaker
@@ -142,7 +142,11 @@ TachyPVC,室速PVC,Tachy PVC
 BradyPVC,室缓PVC,Brady PVC
 MultifPVC,多形PVC,Multif PVC
 STMenu,ST,ST
+AverageTime,平均时间,Average Time
+Normal,正常,Normal
+MaxSensitivity,高灵敏,High
 SPO2Sensitivity,灵敏度,Sensitivity
+FastSat,快速血氧,Fast SAT
 ConfigEditSpO2Menu,血氧,SPO2
 SPO2SmartPulseTone,智能脉搏音,Smart Pulse Tone
 ConfigEditIBPMenu,有创血压,IBP
