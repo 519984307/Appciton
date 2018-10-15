@@ -354,7 +354,7 @@ void IBPTrendWidget::setTextSize()
     font.setWeight(QFont::Black);
     _mapValue->setFont(font);
 
-    font = fontManager.numFont(fontsize - 20, true);
+    font = fontManager.numFont(fontsize - 20, false);
     font.setWeight(QFont::Normal);
     _zeroWarn->setFont(font);
 }
