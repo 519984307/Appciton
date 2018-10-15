@@ -19,6 +19,7 @@
 #include "ParaColorWindow.h"
 #include "LayoutManager.h"
 #include "BigFontLayoutWindow.h"
+#include "IConfig.h"
 
 class ScreenMenuContentPrivate
 {
@@ -45,6 +46,9 @@ public:
 void ScreenMenuContentPrivate::loadOptions()
 {
     layoutCbo->setCurrentIndex(0);
+    int type = 0;
+    systemConfig.getNumValue("UserFaceType", type);
+    interfaceCbo->setCurrentIndex(type);
 }
 
 ScreenMenuContent::ScreenMenuContent()

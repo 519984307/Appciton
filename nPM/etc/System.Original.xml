@@ -716,6 +716,8 @@
         <WaveNumber>1</WaveNumber>
     </TrendGraph>
 
+    <UserFaceType>0</UserFaceType>
+
     <!--30s后恢复默认选项-->
     <PrimaryCfg>
         <PatientInfo>
