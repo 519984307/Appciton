@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/10/15
+ **/
+
 #pragma once
 
 
@@ -20,6 +30,7 @@ enum SPO2WaveVelocity
     SPO2_WAVE_VELOCITY_62D5,
     SPO2_WAVE_VELOCITY_125,
     SPO2_WAVE_VELOCITY_250,
+    SPO2_WAVE_VELOCITY_500,
     SPO2_WAVE_VELOCITY_NR
 };
 
@@ -113,11 +124,11 @@ enum Spo2SatSecondsType
 
 enum WaveUpdateType
 {
-    WAVE_UPDATE_0 = 0,  //无效值
-    WAVE_UPDATE_76,  //76HZ
-    WAVE_UPDATE_38,  //38HZ
-    WAVE_UPDATE_25,  //25.3HZ
-    WAVE_UPDATE_19,  //19HZ
-    WAVE_UPDATE_NR  //无效值
+    WAVE_UPDATE_0 = 0,  // 无效值
+    WAVE_UPDATE_76,  // 76HZ
+    WAVE_UPDATE_38,  // 38HZ
+    WAVE_UPDATE_25,  // 25.3HZ
+    WAVE_UPDATE_19,  // 19HZ
+    WAVE_UPDATE_NR  // 无效值
 };
 

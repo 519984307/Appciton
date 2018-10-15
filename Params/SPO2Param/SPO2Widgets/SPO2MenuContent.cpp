@@ -27,6 +27,7 @@ class SPO2MenuContentPrivate
 public:
     enum MenuItem
     {
+        ITEM_CBO_WAVE_SPEED,
         ITEM_CBO_AVERAGE_TIME,
         ITEM_CBO_SENSITIVITY,
         ITEM_CBO_FAST_SAT,
@@ -44,6 +45,7 @@ public:
 
 void SPO2MenuContentPrivate::loadOptions()
 {
+    combos[ITEM_CBO_WAVE_SPEED]->setCurrentIndex(spo2Param.getSweepSpeed());
     combos[ITEM_CBO_AVERAGE_TIME]->setCurrentIndex(spo2Param.getAverageTime());
     combos[ITEM_CBO_SENSITIVITY]->setCurrentIndex(spo2Param.getSensitivity());
     combos[ITEM_CBO_FAST_SAT]->setCurrentIndex(spo2Param.getFastSat());
@@ -74,6 +76,22 @@ void SPO2MenuContent::layoutExec()
     ComboBox *comboBox;
     QLabel *label;
     int itemID;
+
+    // wave speed
+    label = new QLabel(trs("SPO2SweepSpeed"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_62D5)
+                       << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_125)
+                       << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_250)
+                       << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_500)
+                      );
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    itemID = SPO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED;
+    comboBox->setProperty("Item", itemID);
+    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED, comboBox);
 
     // 平均时间
     label = new QLabel(trs("AverageTime"));
@@ -170,6 +188,9 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
             = (SPO2MenuContentPrivate::MenuItem) box->property("Item").toInt();
         switch (item)
         {
+        case SPO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED:
+            spo2Param.setSweepSpeed(index);
+            break;
         case SPO2MenuContentPrivate::ITEM_CBO_AVERAGE_TIME:
             spo2Param.setAverageTime((AverageTime)index);
             break;
