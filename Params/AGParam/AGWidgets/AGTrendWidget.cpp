@@ -246,7 +246,7 @@ void AGTrendWidget::setTextSize()
     _etValue->setFont(font);
     _fiValue->setFont(font);
 
-    int fontSize = fontManager.getFontSize(7);
+    int fontSize = fontManager.getFontSize(4);
     font = fontManager.textFont(fontSize);
     _fiName->setFont(font);
 }
