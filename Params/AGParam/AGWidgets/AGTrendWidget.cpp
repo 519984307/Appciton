@@ -181,11 +181,11 @@ AGTrendWidget::AGTrendWidget(const QString &trendName, const AGTypeGas gasType)
 
     _fiName = new QLabel();
     _fiName->setPalette(palette);
-    _fiName->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    _fiName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     _fiName->setText("Fi" + (QString)AGSymbol::convert(gasType));
 
     _fiValue = new QLabel();
-    _fiValue->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    _fiValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
     _fiValue->setPalette(palette);
     _fiValue->setText(InvStr());
 
@@ -244,9 +244,12 @@ void AGTrendWidget::setTextSize()
     QFont font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
     _etValue->setFont(font);
+
+    font = fontManager.numFont(fontsize/1.5, true);
+    font.setWeight(QFont::Black);
     _fiValue->setFont(font);
 
-    int fontSize = fontManager.getFontSize(4);
+    int fontSize = fontManager.getFontSize(9);
     font = fontManager.textFont(fontSize);
     _fiName->setFont(font);
 }

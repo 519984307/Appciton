@@ -917,6 +917,8 @@ void LayoutManager::setUFaceType(UserFaceType type)
     d_ptr->curUserFace = type;
 
     updateLayout();
+
+    systemConfig.setNumValue("UserFaceType", static_cast<int>(type));
 }
 
 UserFaceType LayoutManager::getUFaceType() const

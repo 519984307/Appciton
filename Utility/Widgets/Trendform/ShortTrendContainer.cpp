@@ -160,6 +160,7 @@ void ShortTrendContainer::setTrendDuration(ShortTrendDuration duration)
     {
         (*iter)->setTrendDuration(duration);
     }
+    d_ptr->trendItems.last()->enableDrawingTimeLabel(true);
 }
 
 ShortTrendDuration ShortTrendContainer::getTrendDuration() const
