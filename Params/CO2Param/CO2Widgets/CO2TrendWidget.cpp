@@ -197,11 +197,11 @@ void CO2TrendWidget::setTextSize()
     _etco2Value->setFont(font);
 
     fontsize = fontManager.adjustNumFontSize(r, true, "2222");
-    font = fontManager.numFont(fontsize, true);
+    font = fontManager.numFont(fontsize / 1.5, true);
     font.setWeight(QFont::Black);
     _fico2Value->setFont(font);
 
-    QFont fico2Font = fontManager.textFont(fontManager.getFontSize(7));
+    QFont fico2Font = fontManager.textFont(fontManager.getFontSize(9));
     _fico2Label->setFont(fico2Font);
 }
 
@@ -239,10 +239,10 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
 
     _fico2Label = new QLabel(trs("FICO2"), this);
     _fico2Label->setPalette(palette);
-    _fico2Label->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    _fico2Label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
     _fico2Value = new QLabel(this);
-    _fico2Value->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    _fico2Value->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
     _fico2Value->setPalette(palette);
     _fico2Value->setText(InvStr());
 
