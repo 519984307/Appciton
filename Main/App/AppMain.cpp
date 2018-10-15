@@ -217,7 +217,9 @@ static void _start(void)
     windowManager.move((pDesk->width() - windowManager.width()) / 2,
                        (pDesk->height() - windowManager.height()) / 2);
 
-    layoutManager.setUFaceType(UFACE_MONITOR_TREND);
+    int type = 0;
+    systemConfig.getNumValue("UserFaceType", type);
+    layoutManager.setUFaceType(static_cast<UserFaceType>(type));
 
 #else
     systemManager.loadInitBMode();
