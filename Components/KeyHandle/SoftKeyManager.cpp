@@ -239,7 +239,7 @@ void SoftKeyManager::resizeEvent(QResizeEvent *e)
     int w = e->size().width();
     // minus main menu width , left/right page key width, spacing and margin
     int avaliableWidth = w - (PREFER_SOFTKEY_WIDTH + SOFTKEY_SPACING)
-            - (PREFER_SOFTKEY_WIDTH / 2) - SOFTKEY_SPACING - 2 * SOFTKEY_MARGIN;
+            - (PREFER_SOFTKEY_WIDTH / 2) * 2 - SOFTKEY_SPACING - 2 * SOFTKEY_MARGIN;
 
     int dynamicKeyNum = avaliableWidth / (PREFER_SOFTKEY_WIDTH + SOFTKEY_SPACING);
 
