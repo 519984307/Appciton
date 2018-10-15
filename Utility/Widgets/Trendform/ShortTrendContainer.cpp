@@ -111,10 +111,10 @@ void ShortTrendContainer::addSubParamToTrendItem(int trendindex, QList<SubParamI
     }
 
     ParamID parmID = paramInfo.getParamID(subParamIDs[0]);
+    item->setWaveColor(colorManager.getColor(paramInfo.getParamName(parmID)));
     if (subParamIDs.count() == 1)
     {
         // this is the first subparam, use the first param's data range and color
-        item->setWaveColor(colorManager.getColor(paramInfo.getParamName(parmID)));
         item->setTrendName(trs(paramInfo.getSubParamName(subParamIDs[0])));
         // use the limit alarm range as the data range
         UnitType unit = paramManager.getSubParamUnit(parmID, subParamIDs[0]);
