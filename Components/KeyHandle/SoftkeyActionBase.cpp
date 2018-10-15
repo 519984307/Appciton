@@ -220,7 +220,7 @@ void SoftkeyActionBase::mainsetup(bool isPressed)
 
     // 每次打开主界面时，强制聚焦在首个item
     // 需要放在showWindow下面
-    w->setFirstMenuSidebarItemFocus();
+    w->focusMenuItem();
 }
 
 void SoftkeyActionBase::lockScreen(bool isPressed)

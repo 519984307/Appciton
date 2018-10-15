@@ -101,6 +101,31 @@ void MenuContent::focusInEvent(QFocusEvent *ev)
             {
                 continue;
             }
+
+            // 再做一层for循环查找聚焦点
+            bool isBreak = false;
+            QObjectList objectsListChild = obj->children();
+            while (!objectsListChild.isEmpty())
+            {
+                QObject *objChild = objectsListChild.takeFirst();
+                if (!objChild->isWidgetType())
+                {
+                    continue;
+                }
+
+                w = qobject_cast<QWidget *>(objChild);
+                if (w->focusPolicy() != Qt::NoFocus)
+                {
+                    w->setFocus();
+                    isBreak = true;
+                    break;
+                }
+            }
+            if (isBreak)
+            {
+                break;
+            }
+
             w = qobject_cast<QWidget *>(obj);
             if (w->focusPolicy() != Qt::NoFocus)
             {
@@ -119,7 +144,7 @@ void MenuContent::focusInEvent(QFocusEvent *ev)
                 continue;
             }
 
-            // 再做一层递归查找聚焦点
+            // 再做一层for循环查找聚焦点
             bool isBreak = false;
             QObjectList objectsListChild = obj->children();
             while (!objectsListChild.isEmpty())
