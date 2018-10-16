@@ -58,8 +58,14 @@ void AGParam::handDemoWaveform(WaveformID id, short data)
  *************************************************************************************************/
 void AGParam::handDemoTrendData()
 {
-    _etn2o.value = qrand() % 20;
-    _fin2o.value = qrand() % 10;
+    _etn2o.value = 6;
+    _fin2o.value = 2;
+    _etaa1.value = 3;
+    _fiaa1.value = 3;
+    _etaa2.value = 3;
+    _fiaa2.value = 3;
+    _eto2.value = 6;
+    _fio2.value = 2;
 
     if (NULL != _trendWidgetN2O)
     {
@@ -218,27 +224,27 @@ short AGParam::getSubParamValue(SubParamID id)
  *************************************************************************************************/
 bool AGParam::isSubParamAvaliable(SubParamID id)
 {
-    switch (id)
-    {
-    case SUB_PARAM_ETCO2:
-    case SUB_PARAM_FICO2:
-        return _config.co2Config;
-    case SUB_PARAM_ETN2O:
-    case SUB_PARAM_FIN2O:
-        return _config.n2oConfig;
-    case SUB_PARAM_ETAA1:
-    case SUB_PARAM_FIAA1:
-    case SUB_PARAM_ETAA2:
-    case SUB_PARAM_FIAA2:
-        return _config.halConfig || _config.enfConfig || _config.isoConfig ||
-               _config.sevConfig || _config.desConfig;
-    case SUB_PARAM_ETO2:
-    case SUB_PARAM_FIO2:
-        return _config.o2Config;
-    default:
-        break;
-    }
-    return false;
+//    switch (id)
+//    {
+//    case SUB_PARAM_ETCO2:
+//    case SUB_PARAM_FICO2:
+//        return _config.co2Config;
+//    case SUB_PARAM_ETN2O:
+//    case SUB_PARAM_FIN2O:
+//        return _config.n2oConfig;
+//    case SUB_PARAM_ETAA1:
+//    case SUB_PARAM_FIAA1:
+//    case SUB_PARAM_ETAA2:
+//    case SUB_PARAM_FIAA2:
+//        return _config.halConfig || _config.enfConfig || _config.isoConfig ||
+//               _config.sevConfig || _config.desConfig;
+//    case SUB_PARAM_ETO2:
+//    case SUB_PARAM_FIO2:
+//        return _config.o2Config;
+//    default:
+//        break;
+//    }
+    return true;
 }
 
 /**************************************************************************************************

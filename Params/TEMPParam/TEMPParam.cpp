@@ -39,8 +39,8 @@ void TEMPParam::handDemoWaveform(WaveformID /*id*/, int16_t /*data*/)
  *************************************************************************************************/
 void TEMPParam::handDemoTrendData(void)
 {
-    _t1Value = qrand() % 10 + 90;
-    _t2Value = qrand() % 55 + 45;
+    _t1Value = 370;
+    _t2Value = 372;
     _tdValue = abs(_t1Value - _t2Value);
     if (NULL != _trendWidget)
     {
