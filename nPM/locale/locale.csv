@@ -16,6 +16,10 @@ BuildTime,编译时间,Build Time
 Adult,成人,Adult
 PED,小儿,Pediatric
 NEO,新生儿,Neonate
+RESPModule,RESP模块,RESP Module
+NIBPModule,NIBP模块,NIBP Module
+TEMPModule,TEMP模块,TEMP Module
+SPO2Module,SPO2模块,SPO2 Module
 SystemHeartBeat,心跳音量,Heart Beat Volume
 NightModeMenu,夜间模式,Night Mode
 NightModeMenuDesc,夜间模式设置,Night Mode Desc
@@ -395,7 +399,6 @@ NIBPREADING,测量,Reading
 NIBPFAILED,失败,Failed
 NIBPSTOPPED,停止,Stopped
 NIBPWAITING,请等待,NIBP Waiting
-NIBPModule,血压模块,NIBP Module
 NIBPNoResponse,无响应,No Response
 NIBPTemporarily,临时,Temporarily
 NIBPDisable,禁用,Disable

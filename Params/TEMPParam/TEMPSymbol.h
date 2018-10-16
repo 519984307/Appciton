@@ -14,6 +14,15 @@
 class TEMPSymbol
 {
 public:
+    static const char *convert(TEMPModuleType index)
+    {
+        static const char *symbol[MODULE_TEMP_NR] =
+        {
+            "BLM_TT3", "BLM_T5"
+        };
+        return symbol[index];
+    }
+
     /**********************************************************************************************
      * 以下为报警字串转换。
      ********************************************************************************************/

@@ -1,4 +1,27 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/16
+ **/
+
+
+
 #pragma once
+
+/**
+ * @brief The NIBPModuleType enum  nibp模块类型枚举
+ */
+enum NIBPModuleType
+{
+    MODULE_BLM_NIBP,
+    MODULE_TN3,
+    MODULE_SUNTECH_NIBP,
+    MODULE_NIBP_NR,
+};
 
 /**************************************************************************************************
  * 血压工作模式。
