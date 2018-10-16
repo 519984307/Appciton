@@ -74,11 +74,6 @@ public:
     void getDefaultTrendList(QList<SubParamID> &defaultTrendList);
     void updateDefautlTrendList();
 
-    /**
-     * @brief clearAllTrendItem 清除全部短趋势
-     */
-    void clearAllShortTrendItem();
-
 private slots:
     void onReleased();
 private:

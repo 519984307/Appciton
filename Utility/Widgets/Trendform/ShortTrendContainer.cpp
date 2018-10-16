@@ -61,6 +61,7 @@ ShortTrendContainer::~ShortTrendContainer()
 void ShortTrendContainer::setTrendItemNum(int num)
 {
     qDeleteAll(d_ptr->trendItems);
+    d_ptr->trendItems.clear();
     while (d_ptr->trendItems.count() < num)
     {
         ShortTrendItem *item = new ShortTrendItem();
@@ -186,16 +187,6 @@ void ShortTrendContainer::getDefaultTrendList(QList<SubParamID> &defaultTrendLis
 void ShortTrendContainer::updateDefautlTrendList()
 {
     getShortTrendList(d_ptr->defaultTrendList);
-}
-
-void ShortTrendContainer::clearAllShortTrendItem()
-{
-    QList<ShortTrendItem *>::ConstIterator iter = d_ptr->trendItems.constBegin();
-    for (; iter != d_ptr->trendItems.constEnd(); iter++)
-    {
-        delete *iter;
-    }
-    d_ptr->trendItems.clear();
 }
 
 void ShortTrendContainer::onReleased()

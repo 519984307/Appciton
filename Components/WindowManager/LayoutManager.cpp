@@ -708,7 +708,6 @@ void LayoutManagerPrivate::performTrendLayout()
     }
 
     // create trend items
-    trendContainer->clearAllShortTrendItem();
     trendContainer->setTrendItemNum(list.count());
 
     for (int i = 0; i < list.count(); ++i)
