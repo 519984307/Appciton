@@ -77,6 +77,10 @@ void SPO2Param::_setWaveformSpeed(SPO2WaveVelocity speed)
         _waveWidget->setWaveSpeed(25.0);
         break;
 
+    case SPO2_WAVE_VELOCITY_500:
+        _waveWidget->setWaveSpeed(50.0);
+        break;
+
     default:
         break;
     }
@@ -675,6 +679,7 @@ SPO2SMARTPLUSETONE SPO2Param::getSmartPulseTone(void)
  *************************************************************************************************/
 void SPO2Param::setSweepSpeed(int speed)
 {
+    currentConfig.setNumValue("SPO2|SweepSpeed", speed);
     _setWaveformSpeed((SPO2WaveVelocity)speed);
 }
 
@@ -684,7 +689,7 @@ void SPO2Param::setSweepSpeed(int speed)
 int SPO2Param::getSweepSpeed(void)
 {
     int speed = SPO2_WAVE_VELOCITY_250;
-    systemConfig.getNumValue("PrimaryCfg|ECG|SweepSpeed", speed);
+    currentConfig.getNumValue("SPO2|SweepSpeed", speed);
     return speed;
 }
 

@@ -48,20 +48,10 @@ void TrendWidget::resizeEvent(QResizeEvent *e)
 {
     IWidget::resizeEvent(e);
 
-//    QRect r;
-//    r.setHeight((height() / 4));
-//    // 字体。
-//    int fontsize = fontManager.adjustTextFontSize(r);
-//    QFont font = fontManager.textFont(fontsize);
-//    nameLabel->setFont(font);
-//    font = fontManager.textFont(fontsize - 4);
-//    unitLabel->setFont(font);
-
-    int fontSize = fontManager.getFontSize(7);
+    int fontSize = fontManager.getFontSize(4);
     QFont font = fontManager.textFont(fontSize);
     nameLabel->setFont(font);
     calcLeadLabel->setFont(font);
-    font = fontManager.textFont(fontSize - 4);
     unitLabel->setFont(font);
 
     setTextSize();

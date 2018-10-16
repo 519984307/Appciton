@@ -43,6 +43,8 @@
 #include "IConfig.h"
 #include "NightModeManager.h"
 #include "MenuSidebarItem.h"
+#include "StandyWindow.h"
+#include "CalculateWindow.h"
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -50,7 +52,7 @@
 static KeyActionDesc _baseKeys[] =
 {
     KeyActionDesc("", "", "main.png",  SoftkeyActionBase::mainsetup
-                    , SOFT_BASE_KEY_NR, true, QColor(255, 200, 0)),
+                    , SOFT_BASE_KEY_NR, true, QColor(27, 79, 147)),
     KeyActionDesc("", trs("Patient"), "PatientInfo.png", SoftkeyActionBase::patientInfo),
     KeyActionDesc("", trs("PatientNew"), "PatientNew.png", SoftkeyActionBase::patientNew),
     KeyActionDesc("", trs("ECGCalcLead"), "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
@@ -71,7 +73,7 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", trs("KeyBoardVolumn"), "keyBoard.png", SoftkeyActionBase::sysSetup),
     KeyActionDesc("", trs("SystemBrightness"), "Brightness.png", SoftkeyActionBase::sysSetup),
     KeyActionDesc("", trs("NightMode"), "nightMode.png", SoftkeyActionBase::nightMode),
-    KeyActionDesc("", trs("PrintSetup"), "printSetup.png", SoftkeyActionBase::sysSetup),
+    KeyActionDesc("", trs("PrintSetup"), "printSetup.png", SoftkeyActionBase::printSet),
 };
 
 /***************************************************************************************************
@@ -155,8 +157,8 @@ void SoftkeyActionBase::calculation(bool isPressed)
     {
         return;
     }
-    MainMenuWindow *p = MainMenuWindow::getInstance();
-    p->popup(trs("CalculateMenu"));
+    CalculateWindow w;
+    windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }
 
 /***************************************************************************************************
@@ -275,7 +277,8 @@ void SoftkeyActionBase::standby(bool isPressed)
     {
         return;
     }
-    // TODO: 待机功能实现
+    StandyWindow w;
+    w.exec();
 }
 
 void SoftkeyActionBase::CO2Zero(bool isPressed)
@@ -321,7 +324,7 @@ void SoftkeyActionBase::sysSetup(bool isPressed)
         return;
     }
     MainMenuWindow *w = MainMenuWindow::getInstance();
-    w->popup(trs("SystemMenu"));
+    w->popup(trs("RoutineFunctionMenu"));
 }
 
 void SoftkeyActionBase::nightMode(bool isPressed)
@@ -331,6 +334,16 @@ void SoftkeyActionBase::nightMode(bool isPressed)
         return;
     }
     nightModeManager.setNightMode();
+}
+
+void SoftkeyActionBase::printSet(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+    MainMenuWindow *w = MainMenuWindow::getInstance();
+    w->popup(trs("PrintSettingMenu"));
 }
 
 /***************************************************************************************************
