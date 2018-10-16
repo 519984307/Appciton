@@ -19,6 +19,7 @@
 #include "Button.h"
 #include "SoundManager.h"
 #include "AlarmSymbol.h"
+#include "Alarm.h"
 
 class AlarmMaintainMenuContentPrivate
 {
@@ -35,6 +36,7 @@ public:
         ITEM_CBO_REMINDER_TONE,
         ITEM_CBO_REMINDER_TONE_INTERVAL,
         ITEM_CBO_ALARM_LIGHT_RESET,
+        ITEM_CBO_ALARM_BOLT_LOCK,
         ITEM_CBO_DEFAULT
     };
 
@@ -265,6 +267,20 @@ void AlarmMaintainMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LIGHT_RESET, comboBox);
 
+    // bolt lock
+    label = new QLabel(trs("LatchLockSwitch"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("Off")
+                       << trs("On")
+                      );
+    itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_BOLT_LOCK);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_BOLT_LOCK, comboBox);
+
     // default
     label = new QLabel(trs("Defaults"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -324,6 +340,19 @@ void AlarmMaintainMenuContent::onComboBoxIndexChanged(int index)
         case AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LIGHT_RESET:
             systemConfig.setNumValue("Alarms|AlarmLightOnAlarmReset", index);
             break;
+        case AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_BOLT_LOCK:
+        {
+            systemConfig.setNumValue("Alarms|PhyParAlarmLatchlockOn", index);
+            if (index == 0)
+            {
+                alertor.setLatchLockSta(false);
+            }
+            else
+            {
+                alertor.setLatchLockSta(true);
+            }
+            break;
+        }
         default:
             break;
         }
