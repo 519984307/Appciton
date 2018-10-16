@@ -208,8 +208,6 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs(SPO2Symbol::convert(MODULE_BLM_SPO2))
-                    << trs(SPO2Symbol::convert(MODULE_BLM_TS3))
                     << trs(SPO2Symbol::convert(MODULE_BLM_S5))
                     << trs(SPO2Symbol::convert(MODULE_MASIMO_SPO2))
                     << trs(SPO2Symbol::convert(MODULE_NELLCOR_SPO2))
@@ -227,8 +225,7 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs(NIBPSymbol::convert(MODULE_BLM_NIBP))
-                    << trs(NIBPSymbol::convert(MODULE_TN3))
+                    << trs(NIBPSymbol::convert(MODULE_N5))
                     << trs(NIBPSymbol::convert(MODULE_SUNTECH_NIBP))
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
@@ -244,7 +241,6 @@ void MachineConfigModuleContent::layoutExec()
     combo = new ComboBox;
     combo->addItems(QStringList()
                     << trs("Off")
-                    << trs(TEMPSymbol::convert(MODULE_BLM_TT3))
                     << trs(TEMPSymbol::convert(MODULE_BLM_T5))
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);

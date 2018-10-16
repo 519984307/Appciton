@@ -19,7 +19,7 @@ public:
     {
         static const char *symbol[MODULE_SPO2_NR] =
         {
-            "BLM_SPO2", "BLM_TS3", "BLM_S5", "MASIMO_SPO2", "NELLCOR_SPO2"
+            "BLM_S5", "MASIMO_SPO2", "NELLCOR_SPO2"
         };
         return symbol[index];
     }

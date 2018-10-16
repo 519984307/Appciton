@@ -15,7 +15,6 @@
  */
 enum TEMPModuleType
 {
-    MODULE_BLM_TT3,
     MODULE_BLM_T5,
     MODULE_TEMP_NR,
 };

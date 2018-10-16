@@ -17,8 +17,7 @@
  */
 enum NIBPModuleType
 {
-    MODULE_BLM_NIBP,
-    MODULE_TN3,
+    MODULE_N5,
     MODULE_SUNTECH_NIBP,
     MODULE_NIBP_NR,
 };

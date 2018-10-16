@@ -21,7 +21,7 @@ public:
     {
         static const char *symbol[MODULE_NIBP_NR] =
         {
-            "BLM_NIBP", "BLM_TN3", "SUNTECH_NIBP"
+            "BLM_N5", "SUNTECH_NIBP"
         };
         return symbol[index];
     }

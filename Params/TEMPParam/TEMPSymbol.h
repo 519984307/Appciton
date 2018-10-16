@@ -18,7 +18,7 @@ public:
     {
         static const char *symbol[MODULE_TEMP_NR] =
         {
-            "BLM_TT3", "BLM_T5"
+            "BLM_T5"
         };
         return symbol[index];
     }
