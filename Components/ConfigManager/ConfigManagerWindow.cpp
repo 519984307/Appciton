@@ -56,5 +56,7 @@ void ConfigManagerWindow::layoutExec()
 void ConfigManagerWindow::userInputCorrect()
 {
     ConfigManagerMenuWindow *w = ConfigManagerMenuWindow::getInstance();
-    windowManager.showWindow(w, WindowManager::ShowBehaviorCloseOthers);
+    windowManager.showWindow(w, WindowManager::ShowBehaviorModal |
+                                WindowManager::ShowBehaviorCloseOthers |
+                                WindowManager::ShowBehaviorNoAutoClose);
 }
