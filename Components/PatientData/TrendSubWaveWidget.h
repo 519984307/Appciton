@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/10/17
+ **/
+
 #pragma once
 #include "IWidget.h"
 #include "TrendDataDefine.h"
@@ -11,8 +21,8 @@ struct TrendConvertDesc
         start = 0;
         end = 0;
     }
-    int max;        // 数据范围最大值
-    int min;        // 数据范围最小值
+    double max;        // 数据范围最大值
+    double min;        // 数据范围最小值
     int start;      // 坐标开始像素点
     int end;        // 坐标结束像素点
 };
@@ -50,7 +60,7 @@ public:
      * @param down 下限
      * @param up 上限
      */
-    void setRulerRange(int down, int up);
+    void setRulerRange(int down, int up, int scale);
 
     /**
      * @brief setTimeRange 设置两端时间范围

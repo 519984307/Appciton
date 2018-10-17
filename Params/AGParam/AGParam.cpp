@@ -72,6 +72,21 @@ void AGParam::handDemoTrendData()
         _trendWidgetN2O->setEtData(_etn2o.value);
         _trendWidgetN2O->setFiData(_fin2o.value);
     }
+    if (NULL != _trendWidgetO2)
+    {
+        _trendWidgetO2->setEtData(_eto2.value);
+        _trendWidgetO2->setFiData(_fio2.value);
+    }
+    if (NULL != _trendWidgetAA1)
+    {
+        _trendWidgetAA1->setEtData(_etaa1.value);
+        _trendWidgetAA1->setFiData(_fiaa1.value);
+    }
+    if (NULL != _trendWidgetAA2)
+    {
+        _trendWidgetAA2->setEtData(_etaa2.value);
+        _trendWidgetAA2->setFiData(_fiaa2.value);
+    }
 }
 
 void AGParam::exitDemo()

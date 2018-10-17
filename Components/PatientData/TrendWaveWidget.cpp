@@ -339,7 +339,7 @@ void TrendWaveWidget::setWaveNumber(int num)
     updateTimeRange();
 }
 
-void TrendWaveWidget::setRulerLimit(SubParamID id, int down, int up)
+void TrendWaveWidget::setRulerLimit(SubParamID id, int down, int up, int scale)
 {
     int count = _hLayoutTrend->count();
     for (int i = 0; i < count; i ++)
@@ -348,7 +348,7 @@ void TrendWaveWidget::setRulerLimit(SubParamID id, int down, int up)
         TrendSubWaveWidget *widget = qobject_cast<TrendSubWaveWidget *>(item->widget());
         if (widget->getSubParamID() == id)
         {
-            widget->setRulerRange(down, up);
+            widget->setRulerRange(down, up, scale);
             return;
         }
     }
