@@ -699,6 +699,11 @@ HardwareVersionUnMatch,硬件版本不匹配,Hardware version unmatch
 WriteDeviceAttritueFail,写设备属性失败,Write device attribute fail
 WriteSegmentFail,写入片段失败,Write segment fail
 CommunicationFail,通讯失败,Communication fail
+WriteFail,写入失败,Write Fail
+InvalidImageFormat,无效图片格式,Invalid image format
+ImageTooLarge,图片文件过大,Image too large
+FoundLogoFile,找到Logo文件,Found logo file
+UpdateSystemLogo,更新系统,Update system logo
 ServiceSystem,服务系统,Service System
 ServiceVersion,版本,Version
 ServiceCPUTemp,CPU温度,CPU Temp

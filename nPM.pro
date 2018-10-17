@@ -214,6 +214,7 @@ SOURCES +=                                                                      
     Utility/Widgets/EventWidget/OxyCRGEventSetWindow.cpp                        \
     Utility/ScreenCapture.cpp                                                   \
     Utility/RunLengthEncode.cpp                                                 \
+    Utility/ImageQuant.cpp                                                      \
 #################################################################################
     Components/System/SystemTick.cpp                                            \
     Components/System/SystemManager.cpp                                         \
