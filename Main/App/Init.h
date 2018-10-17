@@ -104,7 +104,7 @@
 
 #include "ParamManager.h"
 #include "DemoProvider.h"
-#include "TN3Provider.h"
+#include "N5Provider.h"
 #include "SuntechProvider.h"
 #include "BLMNIBPProvider.h"
 #include "S5Provider.h"

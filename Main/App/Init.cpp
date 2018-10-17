@@ -363,7 +363,7 @@ static void _initProviderParam(void)
         }
         else
         {
-            paramManager.addProvider(*new TN3Provider());
+            paramManager.addProvider(*new N5Provider());
         }
 
         paramManager.addParam(nibpParam.construction());
