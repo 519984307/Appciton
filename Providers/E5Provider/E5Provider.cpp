@@ -274,17 +274,26 @@ bool E5Provider::attachParam(Param &param)
         respParam.setProvider(this);
         ret = true;
     }
-
+    if (ret)
+    {
+        isHandleModuleData = true;
+    }
     return ret;
 }
 
-void E5Provider::detachParam(Param &/*param*/)
+void E5Provider::detachParam(Param &param)
 {
-    // TODO
+    Q_UNUSED(param);
+    isHandleModuleData = false;
 }
 
 void E5Provider::handlePacket(unsigned char *data, int len)
 {
+    if (!isHandleModuleData)
+    {
+        return;
+    }
+
     BLMProvider::handlePacket(data, len);
 
     if (!isConnected)

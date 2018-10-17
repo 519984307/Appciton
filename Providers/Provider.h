@@ -85,6 +85,7 @@ protected:
     virtual void reconnected(void) = 0;          // 模块连接恢复时回调，之类实现。
     bool isConnected;
     QString versionInfo;
+    bool isHandleModuleData;
 
 private:
     QString _name;
