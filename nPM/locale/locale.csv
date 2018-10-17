@@ -16,6 +16,12 @@ BuildTime,编译时间,Build Time
 Adult,成人,Adult
 PED,小儿,Pediatric
 NEO,新生儿,Neonate
+ConfigManagerPassWordEditMenuContent,修改密码,PassworEdit
+ConfigManagerPassWordEditMenuContentDesc,修改密码,PassworEdit Desc
+EditPassWord,修改密码,Edit Password
+LastPassword,上次密码,Last Password
+EditPasswordNotSuccess,修改密码失败,Edit Password Not Success
+EditPasswordSuccess,修改密码成功,Edit Password Success
 SystemHeartBeat,心跳音量,Heart Beat Volume
 NightModeMenu,夜间模式,Night Mode
 NightModeMenuDesc,夜间模式设置,Night Mode Desc

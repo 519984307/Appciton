@@ -18,10 +18,11 @@ class KeyInputPanel: public Window
 
 public:
     /**
-     * @brief setInitString  // 设置初始字符串。
-     * @param text
+     * @brief setInitString  设置初始字符串
+     * @param text  初始字符串
+     * @param isPlaceHolder  初始文本是否placeholder
      */
-    void setInitString(const QString &text);
+    void setInitString(const QString &text, bool isPlaceHolder = false);
 
     /**
      * @brief setMaxInputLength  // 设置最大输入长度。
