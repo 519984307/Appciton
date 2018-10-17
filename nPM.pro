@@ -456,6 +456,7 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigMaintainMenuGrp.cpp                          \
     Components/ConfigManager/SelectDefaultConfigMenu.cpp                        \
     Components/ConfigManager/SelectDefaultConfigMenuContent.cpp                 \
+    Components/ConfigManager/ConfigManagerPassWordEditMenuContent.cpp           \
     Components/ConfigManager/UserConfigEditMenu.cpp                             \
     Components/ConfigManager/UserConfigEditMenuContent.cpp                      \
     Components/ConfigManager/ConfigExportImportMenu.cpp                         \
@@ -1031,6 +1032,7 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigMaintainMenuGrp.h                            \
     Components/ConfigManager/SelectDefaultConfigMenu.h                          \
     Components/ConfigManager/SelectDefaultConfigMenuContent.h                   \
+    Components/ConfigManager/ConfigManagerPassWordEditMenuContent.h             \
     Components/ConfigManager/UserConfigEditMenu.h                               \
     Components/ConfigManager/UserConfigEditMenuContent.h                        \
     Components/ConfigManager/ConfigExportImportMenu.h                           \
