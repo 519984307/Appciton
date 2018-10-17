@@ -36,7 +36,7 @@ public:
         ITEM_CBO_REMINDER_TONE,
         ITEM_CBO_REMINDER_TONE_INTERVAL,
         ITEM_CBO_ALARM_LIGHT_RESET,
-        ITEM_CBO_ALARM_BOLT_LOCK,
+        ITEM_CBO_ALARM_LATCH_LOCK,
         ITEM_CBO_DEFAULT
     };
 
@@ -89,6 +89,9 @@ void AlarmMaintainMenuContentPrivate::loadOptions()
 
     systemConfig.getNumValue("Alarms|AlarmLightOnAlarmReset", index);
     combos[ITEM_CBO_ALARM_LIGHT_RESET]->setCurrentIndex(index);
+
+    systemConfig.getNumValue("Alarms|PhyParAlarmLatchlockOn", index);
+    combos[ITEM_CBO_ALARM_LATCH_LOCK]->setCurrentIndex(index);
 }
 
 AlarmMaintainMenuContent::AlarmMaintainMenuContent()
@@ -267,7 +270,7 @@ void AlarmMaintainMenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LIGHT_RESET, comboBox);
 
-    // bolt lock
+    // latch lock
     label = new QLabel(trs("LatchLockSwitch"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
@@ -275,11 +278,11 @@ void AlarmMaintainMenuContent::layoutExec()
                        << trs("Off")
                        << trs("On")
                       );
-    itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_BOLT_LOCK);
+    itemID = static_cast<int>(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LATCH_LOCK);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_BOLT_LOCK, comboBox);
+    d_ptr->combos.insert(AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LATCH_LOCK, comboBox);
 
     // default
     label = new QLabel(trs("Defaults"));
@@ -340,7 +343,7 @@ void AlarmMaintainMenuContent::onComboBoxIndexChanged(int index)
         case AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LIGHT_RESET:
             systemConfig.setNumValue("Alarms|AlarmLightOnAlarmReset", index);
             break;
-        case AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_BOLT_LOCK:
+        case AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LATCH_LOCK:
         {
             systemConfig.setNumValue("Alarms|PhyParAlarmLatchlockOn", index);
             if (index == 0)
