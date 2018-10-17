@@ -312,7 +312,6 @@ SOURCES +=                                                                      
     Components/PatientManager/DischargePatientWindow.cpp                        \
     Components/PowerManager/BatteryMessage.cpp                                  \
     Components/PowerManager/BatteryAlarm.cpp                                    \
-    Components/PowerManager/BatteryIndicatorWidget.cpp                          \
     Components/PowerManager/BatteryIndicatorWindow.cpp                          \
     Components/PowerManager/BatteryBarWidget.cpp                                \
     Components/PowerManager/BatteryIconWidget.cpp                               \
@@ -374,22 +373,9 @@ SOURCES +=                                                                      
     Components/NetworkManager/Widgets/WiFiProfileWindow.cpp                     \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.cpp               \
     Components/ActivityLog/ActivityLogManager.cpp                               \
-    Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.cpp            \
-    Components/Maintain/Supervisor/Menu/SupervisorPortMenu.cpp                  \
-    Components/Maintain/Supervisor/Menu/SupervisorTimeMenu.cpp                  \
-    Components/Maintain/Supervisor/Menu/SupervisorNIBPMenu.cpp                  \
-    Components/Maintain/Supervisor/Menu/SupervisorPrintMenu.cpp                 \
-    Components/Maintain/Supervisor/Menu/Supervisor12LMenu.cpp                   \
-    Components/Maintain/Supervisor/Menu/SupervisorCodeMarker.cpp                \
-    Components/Maintain/Supervisor/Menu/SupervisorLocalMenu.cpp                 \
-    Components/Maintain/Supervisor/Menu/SupervisorAlarmLimitMenu.cpp            \
-    Components/Maintain/Supervisor/Menu/SupervisorAlarmMenu.cpp                 \
-    Components/Maintain/Supervisor/Menu/SupervisorWifiMenu.cpp                  \
     Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.cpp            \
     Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.cpp          \
     Components/Maintain/Supervisor/Menu/SupervisorTimeWindow.cpp                \
-    Components/Maintain/Supervisor/SupervisorConfigManager.cpp                  \
-    Components/Maintain/Supervisor/SupervisorEntrance.cpp                       \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.cpp                \
     Components/Maintain/Service/ErrorLog/ErrorLogWindow.cpp                     \
     Components/Maintain/Service/ErrorLog/ErrorLogTableModel.cpp                 \
@@ -411,12 +397,7 @@ SOURCES +=                                                                      
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.cpp                 \
     Components/Maintain/Factory/Menu/FactoryWindowManager.cpp                   \
     Components/Maintain/UserMaintain/UserMaintainManager.cpp                    \
-    Components/Maintain/UserMaintain/UserMaintainGeneralSet.cpp                 \
-    Components/Maintain/UserMaintain/ModuleMaintainMenu.cpp                     \
-    Components/Maintain/UserMaintain/AlarmMaintainMenu.cpp                      \
     Components/Maintain/UserMaintain/WifiMaintainMenu.cpp                       \
-    Components/Maintain/UserMaintain/WiredWorkMaintainMenu.cpp                  \
-    Components/Maintain/UserMaintain/OthersMaintainMenu.cpp                     \
     Components/Maintain/UserMaintain/NurseCallSettingWindow.cpp                 \
     Components/Maintain/UserMaintain/UserMaintainWindow.cpp                     \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.cpp         \
@@ -429,21 +410,16 @@ SOURCES +=                                                                      
     Components/Maintain/UserMaintain/DemoMenuContent.cpp                        \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.cpp        \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.cpp              \
-    Components/Maintain/FactoryMaintain/SoftWareVersion.cpp                     \
     Components/Maintain/FactoryMaintain/SoftWareVersionWindow.cpp               \
-    Components/Maintain/FactoryMaintain/MonitorInfo.cpp                         \
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.cpp                   \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.cpp        \
-    Components/Maintain/FactoryMaintain/MachineConfigModule.cpp                 \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.cpp          \
-    Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.cpp                 \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenuContent.cpp          \
     Components/Maintain/FactoryMaintain/NIBPCalibrateContent.cpp                \
     Components/Maintain/FactoryMaintain/NIBPManometerContent.cpp                \
     Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.cpp                \
     Components/Maintain/FactoryMaintain/NIBPZeroPointContent.cpp                \
     Components/Maintain/FactoryMaintain/NIBPPressureControlContent.cpp          \
-    Components/Maintain/FactoryMaintain/SelectStarterLogo.cpp                   \
     Components/Maintain/FactoryMaintain/SelectStarterLogoContent.cpp            \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenu.cpp             \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
@@ -875,7 +851,6 @@ HEADERS +=                                                                      
     Components/PowerManager/BatteryAlarm.h                                      \
     Components/PowerManager/BatteryMessage.h                                    \
     Components/PowerManager/BatteryDefine.h                                     \
-    Components/PowerManager/BatteryIndicatorWidget.h                            \
     Components/PowerManager/BatteryIndicatorWindow.h                            \
     Components/PowerManager/BatteryBarWidget.h                                  \
     Components/PowerManager/BatteryIconWidget.h                                 \
@@ -947,22 +922,9 @@ HEADERS +=                                                                      
     Components/NetworkManager/Widgets/WiFiProfileWindow.h                       \
     Components/NetworkManager/Widgets/WiFiProfileEditorWindow.h                 \
     Components/ActivityLog/ActivityLogManager.h                                 \
-    Components/Maintain/Supervisor/Menu/SupervisorGeneralSetMenu.h              \
-    Components/Maintain/Supervisor/Menu/SupervisorPortMenu.h                    \
-    Components/Maintain/Supervisor/Menu/SupervisorTimeMenu.h                    \
-    Components/Maintain/Supervisor/Menu/SupervisorNIBPMenu.h                    \
-    Components/Maintain/Supervisor/Menu/SupervisorPrintMenu.h                   \
-    Components/Maintain/Supervisor/Menu/Supervisor12LMenu.h                     \
-    Components/Maintain/Supervisor/Menu/SupervisorCodeMarker.h                  \
-    Components/Maintain/Supervisor/Menu/SupervisorLocalMenu.h                   \
-    Components/Maintain/Supervisor/Menu/SupervisorAlarmLimitMenu.h              \
-    Components/Maintain/Supervisor/Menu/SupervisorAlarmMenu.h                   \
-    Components/Maintain/Supervisor/Menu/SupervisorWifiMenu.h                    \
     Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.h              \
     Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.h            \
     Components/Maintain/Supervisor/Menu/SupervisorTimeWindow.h                  \
-    Components/Maintain/Supervisor/SupervisorConfigManager.h                    \
-    Components/Maintain/Supervisor/SupervisorEntrance.h                         \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.h                  \
     Components/Maintain/Service/ErrorLog/ErrorLogWindow.h                       \
     Components/Maintain/Service/ErrorLog/ErrorLogTableModel.h                   \
@@ -985,14 +947,9 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryDataRecordContent.h              \
     Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.h                  \
     Components/Maintain/UserMaintain/UserMaintainManager.h                      \
-    Components/Maintain/UserMaintain/UserMaintainGeneralSet.h                   \
-    Components/Maintain/UserMaintain/ModuleMaintainMenu.h                       \
-    Components/Maintain/UserMaintain/AlarmMaintainMenu.h                        \
     Components/Maintain/UserMaintain/AlarmMaintainSymbol.h                      \
     Components/Maintain/UserMaintain/AlarmMaintainDefine.h                      \
     Components/Maintain/UserMaintain/WifiMaintainMenu.h                         \
-    Components/Maintain/UserMaintain/WiredWorkMaintainMenu.h                    \
-    Components/Maintain/UserMaintain/OthersMaintainMenu.h                       \
     Components/Maintain/UserMaintain/NurseCallSettingWindow.h                   \
     Components/Maintain/UserMaintain/UserMaintainWindow.h                       \
     Components/Maintain/UserMaintain/UserMaintainGeneralMenuContent.h           \
@@ -1005,16 +962,11 @@ HEADERS +=                                                                      
     Components/Maintain/UserMaintain/DemoMenuContent.h                          \
     Components/Maintain/FactoryMaintain/FactorySystemInfoMenuContent.h          \
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
-    Components/Maintain/FactoryMaintain/SoftWareVersion.h                       \
     Components/Maintain/FactoryMaintain/SoftWareVersionWindow.h                 \
-    Components/Maintain/FactoryMaintain/MonitorInfo.h                           \
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.h                     \
-    Components/Maintain/FactoryMaintain/SelectStarterLogo.h                     \
     Components/Maintain/FactoryMaintain/SelectStarterLogoContent.h              \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.h          \
-    Components/Maintain/FactoryMaintain/MachineConfigModule.h                   \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.h            \
-    Components/Maintain/FactoryMaintain/NIBPCalibrationMenu.h                   \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenuContent.h            \
     Components/Maintain/FactoryMaintain/NIBPCalibrateContent.h                  \
     Components/Maintain/FactoryMaintain/NIBPManometerContent.h                  \
