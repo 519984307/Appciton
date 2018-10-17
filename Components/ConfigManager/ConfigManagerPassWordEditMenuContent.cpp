@@ -25,8 +25,8 @@ class ConfigManagerPassWordEditMenuContentPrivate
 };
 
 ConfigManagerPassWordEditMenuContent::ConfigManagerPassWordEditMenuContent()
-                                    : MenuContent(trs("ConfigManagerPassWordEditMenuContent"),
-                                                  trs("ConfigManagerPassWordEditMenuContentDesc")),
+                                    : MenuContent(trs("EditPassWord"),
+                                                  trs("EditPassWordDesc")),
                                       d_ptr(new ConfigManagerPassWordEditMenuContentPrivate)
 {
 }
