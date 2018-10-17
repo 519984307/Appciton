@@ -10,10 +10,12 @@
 
 #pragma once
 #include <QThread>
-#include <QImage>
 #include <QString>
 #include <QVariant>
 
+class QFile;
+class QPixmap;
+class QImage;
 namespace Util
 {
 #if defined(CONFIG_CAPTURE_SCREEN)
@@ -87,4 +89,8 @@ void setupSysLog();
 
 // popup up a message box
 void popupMsgBox(const QString &title, const QPixmap &icon, const QString &text);
+
+// generate the kernel logo file
+bool generateKernelLogo(QFile &logoFile, const QImage &logoImage);
+
 }   // namespace Util

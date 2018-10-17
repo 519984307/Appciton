@@ -19,10 +19,15 @@
 #include "ParamManager.h"
 #include "Debug.h"
 #include "Utility.h"
+#include <QFile>
+#include <QImage>
+#include <QApplication>
+#include <QDesktopWidget>
 
 #define UPGRADE_FILES_DIR "/upgrade/"
 #define DEFAULT_HW_VER_STR "1.0A"
 #define DEFAULT_SW_VER_STR "1.0A"
+#define LOGO_BIN_FILE "logo.bin"
 
 enum UpgradeState
 {
@@ -37,6 +42,7 @@ enum UpgradeState
     STATE_WRITE_IMAGE_SEGMENT,
     STATE_WAIT_FOR_COMPLETE_MSG,
     STATE_REBOOT,
+    STATE_UPGRADE_LOGO,
 };
 
 enum UpgradePacketType
@@ -83,6 +89,7 @@ enum UpgradeErrorType
     UPGRADE_ERR_WRITE_ATTR_FAIL,
     UPGRADE_ERR_WRITE_SEGMENT_FAIL,
     UPGRADE_ERR_COMMUNICATION_FAIL,
+    UPGRADE_ERR_WRITE_FAIL,
     UPGRADE_ERR_NR,
 };
 
@@ -103,6 +110,7 @@ static const char *errorString(UpgradeErrorType errorType)
         "WriteDeviceAttributeFail",
         "WriteSegmentFail",
         "CommunicationFail",
+        "WriteFail",
     };
     return errors[errorType];
 }
@@ -144,7 +152,7 @@ public:
     bool checkUpgradeFile();
 
     /**
-     * @brief findUpgradeFile find the upgrade file in the usb disk base on the upgrade module
+     * @brief getUpgradeFile find the upgrade file in the usb disk base on the upgrade module name
      * @return the upgrade file name
      */
     QString getUpgradeFile() const;
@@ -302,12 +310,20 @@ QString UpgradeManagerPrivate::getUpgradeFile() const
     }
 
     QStringList nameFilters;
-    // the upgrade file should end with md5 hex code and .bin suffix
-    nameFilters << moduleName + "*.????????????????????????????????.bin";
+    if (type == UpgradeManager::UPGRADE_MOD_LOGO)
+    {
+        nameFilters << moduleName + ".*";
+        dir.setSorting(QDir::Name|QDir::IgnoreCase);
+    }
+    else
+    {
+        // the upgrade file should end with md5 hex code and .bin suffix
+        nameFilters << moduleName + "*.????????????????????????????????.bin";
+        dir.setSorting(QDir::Name);
+    }
 
     dir.setNameFilters(nameFilters);
     dir.setFilter(QDir::Files | QDir::NoSymLinks);
-    dir.setSorting(QDir::Name);
     QFileInfoList fileList = dir.entryInfoList();
     if (fileList.isEmpty())
     {
@@ -603,6 +619,8 @@ QString UpgradeManager::getUpgradeModuleName(UpgradeManager::UpgradeModuleType t
         return "PRT48";
     case UPGRADE_MOD_nPMBoard:
         return "nPMBoard";
+    case UPGRADE_MOD_LOGO:
+        return "Logo";
     default:
         break;
     }
@@ -675,6 +693,10 @@ void UpgradeManager::upgradeProcess()
             {
                 system("fw_setenv maspro_user_mode 1 && sync");
                 d_ptr->state = STATE_REBOOT;
+            }
+            if (d_ptr->type == UPGRADE_MOD_LOGO)
+            {
+                d_ptr->state = STATE_UPGRADE_LOGO;
             }
             else
             {
@@ -797,6 +819,78 @@ void UpgradeManager::upgradeProcess()
         d_ptr->noResponseTimer->start(3000);
         break;
 
+    case STATE_UPGRADE_LOGO:
+    {
+        QString filename = d_ptr->getUpgradeFile();
+        QImage image(usbManager.getUdiskMountPoint() + UPGRADE_FILES_DIR + filename);
+
+        if (image.isNull())
+        {
+            upgradeInfoChanged(trs("InvalidImageFormat"));
+
+            d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_NONE);
+            break;
+        }
+
+
+        emit upgradeInfoChanged(trs("FoundLogoFile") + filename);
+        QApplication::processEvents();
+
+        QRect screenRect = QApplication::desktop()->screenGeometry();
+        if (image.width() > screenRect.width() || image.height() > screenRect.height())
+        {
+            upgradeInfoChanged(trs("ImageTooLarge"));
+
+            d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_NONE);
+            break;
+        }
+
+        QString bootDir = "/mnt/boot/";
+        if (!QFile::exists(bootDir))
+        {
+            if (!QDir().mkpath(bootDir))
+            {
+                qdebug("Fail to create boot directory.");
+                d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_WRITE_FAIL);
+            }
+        }
+
+        qdebug("mount boot partition.");
+        // mount the boot partition
+        if (system("mount /dev/mmcblk0p1 /mnt/boot/") != 0)
+        {
+            qdebug("Fail to mount boot partition.");
+            d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_NONE);
+            break;
+        }
+
+        QFile logoFile(bootDir + LOGO_BIN_FILE);
+        if (!logoFile.open(QIODevice::WriteOnly))
+        {
+            qdebug("Fail to open %s", LOGO_BIN_FILE);
+            d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_WRITE_FAIL);
+            break;
+        }
+
+        emit upgradeInfoChanged(trs("UpdateSystemFile"));
+        QApplication::processEvents();
+        if (!Util::generateKernelLogo(logoFile, image))
+        {
+            qdebug("generate logo fail");
+            d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_WRITE_FAIL);
+        }
+        else
+        {
+            d_ptr->upgradeExit(UPGRADE_SUCCESS, UPGRADE_ERR_NONE);
+        }
+
+        // close the logo file an umount boot partition
+        logoFile.close();
+        system("umount /mnt/boot");
+        qdebug("boot partition umount.");
+    }
+        break;
+
     default:
         break;
     }
@@ -862,11 +956,11 @@ void UpgradeManager::noResponseTimeout()
         {
             d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_COMMUNICATION_FAIL);
         }
+        break;
     case STATE_WAIT_FOR_COMPLETE_MSG:
         // too long to receive the complete message
         d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_COMMUNICATION_FAIL);
         break;
-
     case STATE_REBOOT:
         system("reboot");
         break;

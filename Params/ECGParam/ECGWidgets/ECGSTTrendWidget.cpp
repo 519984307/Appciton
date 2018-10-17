@@ -67,7 +67,7 @@ void ECGSTTrendWidget::isAlarm(int id, bool flag)
  *************************************************************************************************/
 void ECGSTTrendWidget::showValue(void)
 {
-    QPalette psrc = palette();
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     psrc = normalPalette(psrc);
     if (_isAlarm[ECG_ST_I] || _isAlarm[ECG_ST_II] || _isAlarm[ECG_ST_III] ||
             _isAlarm[ECG_ST_aVR] || _isAlarm[ECG_ST_aVL] || _isAlarm[ECG_ST_aVF] ||

@@ -11,7 +11,7 @@
 #include "MainMenuWindow.h"
 #include "SystemManager.h"
 #include "AlarmLimitMenuContent.h"
-#include "RoutineFunctionMenuContent.h"
+#include "NormalFunctionMenuContent.h"
 #include "LoadConfigMenuContent.h"
 #include "ScreenMenuContent.h"
 #include "DataReviewMenuContent.h"
@@ -37,7 +37,7 @@ MainMenuWindow *MainMenuWindow::getInstance()
         instance->addMenuContent(new SystemMaintenanceMenuContent);
         instance->addMenuContent(new LoadConfigMenuContent);
 
-        instance->addMenuContent(new RoutineFunctionMenuContent);
+        instance->addMenuContent(new NormalFunctionMenuContent);
     }
 
     return instance;

@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/10/17
+ **/
+
 #include "SPO2Alarm.h"
 #include "SPO2Param.h"
 #include "IConfig.h"
@@ -26,16 +36,18 @@ int SPO2LimitAlarm::getAlarmSourceNR(void)
 /**************************************************************************************************
  * 获取报警对应的波形ID，该波形将被存储。
  *************************************************************************************************/
-WaveformID SPO2LimitAlarm::getWaveformID(int /*id*/)
+WaveformID SPO2LimitAlarm::getWaveformID(int id)
 {
+    Q_UNUSED(id)
     return WAVE_SPO2;
 }
 
 /**************************************************************************************************
  * 获取id对应的参数ID。
  *************************************************************************************************/
-SubParamID SPO2LimitAlarm::getSubParamID(int /*id*/)
+SubParamID SPO2LimitAlarm::getSubParamID(int id)
 {
+    Q_UNUSED(id)
     return SUB_PARAM_SPO2;
 }
 
@@ -50,8 +62,9 @@ AlarmPriority SPO2LimitAlarm::getAlarmPriority(int id)
 /**************************************************************************************************
  * 获取指定的生理参数测量数据。
  *************************************************************************************************/
-int SPO2LimitAlarm::getValue(int /*id*/)
+int SPO2LimitAlarm::getValue(int id)
 {
+    Q_UNUSED(id)
     return spo2Param.getSPO2();
 }
 
@@ -126,11 +139,18 @@ const char *SPO2LimitAlarm::toString(int id)
  *************************************************************************************************/
 void SPO2LimitAlarm::notifyAlarm(int id, bool isAlarm)
 {
-    _isAlarmLimit |= isAlarm;
-    if (id == SPO2_LIMIT_ALARM_SPO2_HIGH)
+    switch (id)
     {
+    case SPO2_LIMIT_ALARM_SPO2_LOW:
+        _isAlarmLimit |= isAlarm;
+        break;
+    case SPO2_LIMIT_ALARM_SPO2_HIGH:
+        _isAlarmLimit |= isAlarm;
         spo2Param.noticeLimitAlarm(_isAlarmLimit);
         _isAlarmLimit = false;
+        break;
+    default:
+        break;
     }
 }
 
@@ -147,7 +167,6 @@ SPO2LimitAlarm::SPO2LimitAlarm()
  *************************************************************************************************/
 SPO2LimitAlarm::~SPO2LimitAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -175,8 +194,9 @@ int SPO2OneShotAlarm::getAlarmSourceNR(void)
 /**************************************************************************************************
  * 获取报警对应的波形ID，该波形将被存储。
  *************************************************************************************************/
-WaveformID SPO2OneShotAlarm::getWaveformID(int /*id*/)
+WaveformID SPO2OneShotAlarm::getWaveformID(int id)
 {
+    Q_UNUSED(id)
     return WAVE_NONE;
 }
 
@@ -198,8 +218,9 @@ AlarmPriority SPO2OneShotAlarm::getAlarmPriority(int id)
 /**************************************************************************************************
  * 该报警是否为生命报警，技术报警和生理/生命报警分开存放。
  *************************************************************************************************/
-AlarmType SPO2OneShotAlarm::getAlarmType(int /*id*/)
+AlarmType SPO2OneShotAlarm::getAlarmType(int id)
 {
+    Q_UNUSED(id)
     return ALARM_TYPE_TECH;
 }
 
@@ -242,7 +263,6 @@ bool SPO2OneShotAlarm::isRemoveAfterLatch(int id)
  *************************************************************************************************/
 SPO2OneShotAlarm::SPO2OneShotAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -250,5 +270,4 @@ SPO2OneShotAlarm::SPO2OneShotAlarm()
  *************************************************************************************************/
 SPO2OneShotAlarm::~SPO2OneShotAlarm()
 {
-
 }

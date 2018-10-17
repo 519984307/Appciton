@@ -799,7 +799,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     _autoGainTraveVally = 100000000;
     _autoGainTime = 0;
     _isAutoGain = false;
-    _mesg = ECG_WAVE_NOTIFY_NORMAL;
+    _mesg = ECG_WAVE_NOTIFY_LEAD_OFF;
     rMarkList.clear();
 
     setFocusPolicy(Qt::NoFocus);

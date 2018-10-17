@@ -223,6 +223,6 @@ void MeasureSettingMenuContent::onBtnReleasd()
         break;
     }
 
-    p->popup(strName);
+    p->popup(strName, QVariant(), WindowManager::ShowBehaviorHideOthers);
 }
 

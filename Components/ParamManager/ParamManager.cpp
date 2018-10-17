@@ -170,6 +170,14 @@ void ParamManager::connectDemoParamProvider()
                 continue;
             }
 
+            // 使用demo模块数据，暂停接收其他模块数据
+            machineConfig.getStrValue(param_list[i], str);
+            Provider *otherProvider = _providers.value(str, NULL);
+            if (otherProvider)
+            {
+                otherProvider->detachParam(*param);
+            }
+
             provider->attachParam(*param);
             param->initParam();
         }

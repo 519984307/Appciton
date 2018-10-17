@@ -54,6 +54,9 @@ UpgradeWindow::UpgradeWindow()
     d_ptr->upgradeModuleCbo->addItem(
         trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_HOST)));
     d_ptr->upgradeModuleCbo->addItem(
+        trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_LOGO)));
+
+    d_ptr->upgradeModuleCbo->addItem(
         trs(UpgradeManager::getUpgradeModuleName(UpgradeManager::UPGRADE_MOD_E5)));
 
     if (systemManager.isSupport(CONFIG_SPO2))

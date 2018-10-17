@@ -214,6 +214,10 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
     QPoint globalTopLeft = r.topLeft();
     r.moveTo(0, 0);
     w->move(globalTopLeft + r.center() - w->rect().center());
+    if (w->x() < 0)
+    {
+        w->move(this->geometry().x() + 10, w->y());
+    }
 
     if (behaviors & ShowBehaviorModal)
     {

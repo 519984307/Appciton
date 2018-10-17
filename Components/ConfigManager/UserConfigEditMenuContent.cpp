@@ -202,7 +202,8 @@ void UserConfigEditMenuContent::onBtnClick()
             pathName += name;
             d_ptr->editWindow->setWindowTitlePrefix(pathName);
 
-            windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorNone);
+            windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorModal |
+                                                        WindowManager::ShowBehaviorNoAutoClose);
             connect(d_ptr->editWindow , SIGNAL(finished(int)) , this , SLOT(onEditFinished()));
         }
     }
@@ -236,7 +237,8 @@ void UserConfigEditMenuContent::onBtnClick()
         }
         d_ptr->editWindow->setWindowTitlePrefix(pathName);
 
-        windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorNone);
+        windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorModal |
+                                                    WindowManager::ShowBehaviorNoAutoClose);
         connect(d_ptr->editWindow , SIGNAL(finished(int)) , this , SLOT(onEditFinished()));
     }
     else if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG])

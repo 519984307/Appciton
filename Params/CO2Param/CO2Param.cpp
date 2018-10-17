@@ -215,9 +215,9 @@ void CO2Param::handDemoTrendData(void)
 {
 //    d_ptr->etco2Value = qrand() % 80 + 1;
 //    d_ptr->fico2Value = qrand() % 80;
-    d_ptr->etco2Value = 60;
-    d_ptr->fico2Value = 20;
-    d_ptr->brVaule = qrand() % 15 + 15;
+    d_ptr->etco2Value = 50;
+    d_ptr->fico2Value = 3;
+    d_ptr->brVaule = 20;
 
     if (NULL != d_ptr->trendWidget)
     {

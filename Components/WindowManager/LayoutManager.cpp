@@ -619,13 +619,8 @@ void LayoutManagerPrivate::performTrendLayout()
 
 
     ShortTrendContainer *trendContainer = qobject_cast<ShortTrendContainer*> (layoutWidgets["ShortTrendContainer"]);
-    bool updateTrendItem = false;
     if (trendContainer)
     {
-        if (trendContainer->getTrendNum() == 0)
-        {
-            updateTrendItem = true;
-        }
         contentLayout->addWidget(trendContainer, 3);
         contentLayout->addLayout(leftLayout, 5);
         trendContainer->setVisible(true);
@@ -681,8 +676,7 @@ void LayoutManagerPrivate::performTrendLayout()
             {
                 rightParamLayout->addWidget(w, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
                 displayParams.append(w->name());
-                if (updateTrendItem
-                        && nodeIter->pos == LAYOUT_WAVE_END_COLUMN) // the first trend node on each row
+                if (nodeIter->pos == LAYOUT_WAVE_END_COLUMN) // the first trend node on each row
                 {
                     TrendWidget *trendWidget = qobject_cast<TrendWidget *>(w);
                     if (trendWidget)
@@ -699,28 +693,26 @@ void LayoutManagerPrivate::performTrendLayout()
     // the let param container stretch
     leftLayout->setStretch(1, leftParamLayout->rowCount());
 
-    if (updateTrendItem)
+    typedef QList<SubParamID> SubParamIDListType;
+
+    QList<SubParamIDListType> list;
+
+    // update the trend item
+    foreach(const TrendWidget *trend, rightTrendWidgets)
     {
-        typedef QList<SubParamID> SubParamIDListType;
-
-        QList<SubParamIDListType> list;
-
-        // update the trend item
-        foreach(const TrendWidget *trend, rightTrendWidgets) {
-            QList<SubParamID> subParams = trend->getShortTrendSubParams();
-            if (subParams.count())
-            {
-                list.append(subParams);
-            }
-        }
-
-        // create trend items
-        trendContainer->setTrendItemNum(list.count());
-
-        for (int i = 0; i < list.count(); ++i)
+        QList<SubParamID> subParams = trend->getShortTrendSubParams();
+        if (subParams.count())
         {
-            trendContainer->addSubParamToTrendItem(i, list.at(i));
+            list.append(subParams);
         }
+    }
+
+    // create trend items
+    trendContainer->setTrendItemNum(list.count());
+
+    for (int i = 0; i < list.count(); ++i)
+    {
+        trendContainer->addSubParamToTrendItem(i, list.at(i));
     }
     trendContainer->updateDefautlTrendList();
 }

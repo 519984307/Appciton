@@ -30,10 +30,17 @@ bool S5Provider::attachParam(Param &param)
 {
     if (param.getParamID() == PARAM_SPO2)
     {
+        isHandleModuleData = true;
         spo2Param.setProvider(this);
         return true;
     }
     return false;
+}
+
+void S5Provider::detachParam(Param &param)
+{
+    Q_UNUSED(param);
+    isHandleModuleData = false;
 }
 
 /**************************************************************************************************
@@ -41,6 +48,11 @@ bool S5Provider::attachParam(Param &param)
  *************************************************************************************************/
 void S5Provider::handlePacket(unsigned char *data, int len)
 {
+    if (!isHandleModuleData)
+    {
+        return;
+    }
+
     BLMProvider::handlePacket(data, len);
 
     if (!isConnected)

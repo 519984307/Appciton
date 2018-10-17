@@ -106,7 +106,7 @@ void TrendGraphSetWindow::allAutoReleased()
         item->upRuler->setScale(config.scale);
         item->upRuler->setValue(config.upRuler);
         TrendGraphWindow::getInstance()->setSubWidgetRulerLimit(subID, item->downRuler->getValue(),
-                                                item->upRuler->getValue());
+                                                item->upRuler->getValue(), item->downRuler->getScale());
     }
 }
 
@@ -159,7 +159,7 @@ void TrendGraphSetWindow::onComboBoxChanged(int index)
             item->upRuler->setScale(config.scale);
             item->upRuler->setValue(config.upRuler);
             TrendGraphWindow::getInstance()->setSubWidgetRulerLimit(subID, item->downRuler->getValue(),
-                                                    item->upRuler->getValue());
+                                                    item->upRuler->getValue(), item->downRuler->getScale());
         }
     }
 }
@@ -172,7 +172,7 @@ void TrendGraphSetWindow::upDownRulerChange(int, int)
         int id = spb->property("Ruler").toInt();
         RulerItem *item = d_ptr->itemList.at(id / 2);
         TrendGraphWindow::getInstance()->setSubWidgetRulerLimit(item->sid, item->downRuler->getValue(),
-                                                item->upRuler->getValue());
+                                                item->upRuler->getValue(), item->downRuler->getScale());
     }
 }
 

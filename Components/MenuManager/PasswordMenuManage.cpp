@@ -25,7 +25,6 @@
 #include "ServiceWindowManager.h"
 #include "FactoryWindowManager.h"
 #include "UserMaintainManager.h"
-#include "UserMaintainGeneralSet.h"
 #include "ConfigMaintainMenuGrp.h"
 /**************************************************************************************************
  * 功能: 构造函数

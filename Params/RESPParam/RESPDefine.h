@@ -12,6 +12,14 @@
 
 #pragma once
 
+/**
+ * @brief The RESPModuleType enum  RESP模块类型枚举
+ */
+enum RESPModuleType
+{
+    MODULE_BLM_E5,
+    MODULE_NR,
+};
 
 enum BRRRSourceType
 {
