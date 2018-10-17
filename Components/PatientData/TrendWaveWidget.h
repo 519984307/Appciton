@@ -70,7 +70,7 @@ public:
      * @param down 下标尺限
      * @param up 上标尺限
      */
-    void setRulerLimit(SubParamID, int down, int up);
+    void setRulerLimit(SubParamID, int down, int up, int scale);
 
     /**
      * @brief loadTrendData 根据子参数ID将一页趋势数据载入容器

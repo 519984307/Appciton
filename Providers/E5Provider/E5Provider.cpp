@@ -92,7 +92,7 @@ class E5ProviderPrivate
 public:
     explicit E5ProviderPrivate(E5Provider *const q_ptr)
         : q_ptr(q_ptr),
-          lastLeadOff(0),
+          lastLeadOff(1),
           support12Lead(false),
           ecgLeadMode(ECG_LEAD_MODE_5),
           respApneaTime(APNEA_ALARM_TIME_OFF),
@@ -120,10 +120,10 @@ void E5ProviderPrivate::handleEcgRawData(unsigned char *data, int len)
 {
     Q_ASSERT(len != 529);
 
-    int leadData[ECG_LEAD_NR] = {0};
-    bool leadOFFStatus[ECG_LEAD_NR] = {0};
     for (int n = 0; n < 20; n++)
     {
+        int leadData[ECG_LEAD_NR] = {0};
+        bool leadOFFStatus[ECG_LEAD_NR] = {0};
         short leadoff;
         bool qrsflag;
         bool paceflag;

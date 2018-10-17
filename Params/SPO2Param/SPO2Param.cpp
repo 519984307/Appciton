@@ -118,7 +118,7 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
  *************************************************************************************************/
 void SPO2Param::handDemoTrendData(void)
 {
-    _spo2Value = qrand() % 10 + 90;
+    _spo2Value = 98;
     if (NULL != _trendWidget)
     {
         _trendWidget->setSPO2Value(_spo2Value);
@@ -129,7 +129,7 @@ void SPO2Param::handDemoTrendData(void)
         _oxyCRGSPO2Trend->addTrendData(_spo2Value);
     }
 
-    int prValue = qrand() % 55 + 45;
+    int prValue = 60;
     setPR(prValue);
 }
 

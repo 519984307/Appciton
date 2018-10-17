@@ -100,6 +100,11 @@ void SpinBox::setScale(int scale)
     d_ptr->info.scale = scale;
 }
 
+int SpinBox::getScale()
+{
+    return d_ptr->info.scale;
+}
+
 void SpinBox::setStep(int step)
 {
     d_ptr->info.step = step;
