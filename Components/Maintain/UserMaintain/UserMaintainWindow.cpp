@@ -56,5 +56,7 @@ void UserMaintainWindow::layoutExec()
 void UserMaintainWindow::userInputCorrect()
 {
     UserMaintainMenuWindow *w = UserMaintainMenuWindow::getInstance();
-    windowManager.showWindow(w, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorCloseOthers);
+    windowManager.showWindow(w, WindowManager::ShowBehaviorModal |
+                                WindowManager::ShowBehaviorCloseOthers |
+                                WindowManager::ShowBehaviorNoAutoClose);
 }

@@ -42,6 +42,7 @@
 #include "IBPParam.h"
 #include "IConfig.h"
 #include "NightModeManager.h"
+#include "MenuSidebarItem.h"
 #include "StandyWindow.h"
 #include "CalculateWindow.h"
 
@@ -217,8 +218,11 @@ void SoftkeyActionBase::mainsetup(bool isPressed)
     }
 
     MainMenuWindow *w = MainMenuWindow::getInstance();
-    w->popup(trs("ECGMenu"));
     windowManager.showWindow(w, WindowManager::ShowBehaviorCloseOthers);
+
+    // 每次打开主界面时，强制聚焦在首个item
+    // 需要放在showWindow下面
+    w->focusMenuItem();
 }
 
 void SoftkeyActionBase::lockScreen(bool isPressed)

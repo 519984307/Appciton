@@ -43,6 +43,14 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id
             _valueY.max = static_cast<double>(config.upRuler) / config.scale;
         }
         _paramName = paramInfo.getSubParamName(id);
+        if (_type == TREND_GRAPH_TYPE_AG_TEMP)
+        {
+            _paramName = _paramName.right(_paramName.length() - 2) + "(Et/Fi)";
+        }
+        if (_id == SUB_PARAM_T1)
+        {
+            _paramName = "T1/T2";
+        }
     }
     else if (_type == TREND_GRAPH_TYPE_ART_IBP || _type == TREND_GRAPH_TYPE_NIBP)
     {
@@ -61,7 +69,7 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id
         QString str = paramInfo.getSubParamName(id);
         _paramName = str.left(str.length() - 4);
     }
-    _paramUnit = Unit::getSymbol(paramInfo.getUnitOfSubParam(id));
+    _paramUnit = Unit::localeSymbol(paramInfo.getUnitOfSubParam(id));
 
     setAttribute(Qt::WA_TransparentForMouseEvents, true);
 }
@@ -105,10 +113,10 @@ void TrendSubWaveWidget::setThemeColor(QColor color)
     }
 }
 
-void TrendSubWaveWidget::setRulerRange(int down, int up)
+void TrendSubWaveWidget::setRulerRange(int down, int up, int scale)
 {
-    _valueY.max = up;
-    _valueY.min = down;
+    _valueY.max = static_cast<double>(up) / scale;
+    _valueY.min = static_cast<double>(down) / scale;
     update();
 }
 
@@ -374,13 +382,20 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     barPainter.drawLine(_info.xHead / 3, _info.yTop, _info.xHead / 3, _info.yBottom);
     barPainter.drawLine(_info.xHead / 3, _info.yBottom, _info.xHead / 3 + 5, _info.yBottom);
 
-    // 趋势标尺上限
+    // 趋势标尺上下限
     QRect upRulerRect(_info.xHead / 3 + 7, _info.yTop - 10, _info.xHead, 30);
-    barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.max));
-
-    // 趋势标尺下限
     QRect downRulerRect(_info.xHead / 3 + 7, _info.yBottom - 10, _info.xHead, 30);
-    barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.min));
+    if (_type == TREND_GRAPH_TYPE_AG_TEMP)
+    {
+        barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.max, 'f', 1));
+        barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.min, 'f', 1));
+    }
+    else
+    {
+        barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.max));
+        barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.min));
+    }
+
 
     // 边框线
     barPainter.setPen(QPen(Qt::gray, 1, Qt::DashLine));
@@ -488,7 +503,7 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         {
             value1 /= 10;
             value2 /= 10;
-            QString trendStr = QString::number(value1, 'g', 2) + "/" + QString::number(value2, 'g', 2);
+            QString trendStr = QString::number(value1, 'f', 1) + "/" + QString::number(value2, 'f', 1);
             barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height() / 2, trendStr);
         }
         else

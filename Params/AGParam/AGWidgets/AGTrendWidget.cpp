@@ -119,28 +119,30 @@ void AGTrendWidget::isAlarm(int id, bool flag)
  *************************************************************************************************/
 void AGTrendWidget::showValue()
 {
-    QPalette psrc = palette();
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
     psrc = normalPalette(psrc);
     if (_fiAlarm || _etAlarm)
     {
+        if (!_etAlarm)
+        {
+            showNormalStatus(_etValue, psrc);
+        }
+
+        if (!_fiAlarm)
+        {
+            showNormalStatus(_fiName, psrc);
+            showNormalStatus(_fiValue, psrc);
+        }
+
         if (_etAlarm)
         {
             showAlarmStatus(_etValue, psrc);
-        }
-        else
-        {
-            showNormalStatus(_etValue, psrc);
         }
 
         if (_fiAlarm)
         {
             showAlarmStatus(_fiName, psrc, false);
             showAlarmStatus(_fiValue, psrc, false);
-        }
-        else
-        {
-            showNormalStatus(_fiName, psrc);
-            showNormalStatus(_fiValue, psrc);
         }
     }
     else

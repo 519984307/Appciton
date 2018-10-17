@@ -58,9 +58,9 @@ TrendGraphWindow::~TrendGraphWindow()
 {
 }
 
-void TrendGraphWindow::setSubWidgetRulerLimit(SubParamID id, int down, int up)
+void TrendGraphWindow::setSubWidgetRulerLimit(SubParamID id, int down, int up, int scale)
 {
-    d_ptr->waveWidget->setRulerLimit(id, down, up);
+    d_ptr->waveWidget->setRulerLimit(id, down, up, scale);
 }
 
 void TrendGraphWindow::updateTrendGraph()

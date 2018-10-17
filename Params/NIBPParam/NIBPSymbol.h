@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/16
+ **/
+
+
+
 #pragma once
 #include "NIBPDefine.h"
 
@@ -5,6 +17,15 @@
 class NIBPSymbol
 {
 public:
+    static const char *convert(NIBPModuleType index)
+    {
+        static const char *symbol[MODULE_NIBP_NR] =
+        {
+            "BLM_N5", "SUNTECH_NIBP"
+        };
+        return symbol[index];
+    }
+
     static const char *convert(NIBPMode index)
     {
         static const char *symbol[NIBP_MODE_NR] =

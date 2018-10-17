@@ -122,14 +122,14 @@ void ECGParam::handDemoWaveform(WaveformID id, short data)
  *************************************************************************************************/
 void ECGParam::handDemoTrendData(void)
 {
-    int hrValue = qrand() % 10 + 60;
+    int hrValue = 60;
     ecgDupParam.updateHR(hrValue);
 
     if (oxyCRGRrHrTrend)
     {
         oxyCRGRrHrTrend->addHrTrendData(hrValue);
     }
-    int pvcs = qrand() % 30 + 30;
+    int pvcs = 0;
     updatePVCS(pvcs);
 
 //    int st;

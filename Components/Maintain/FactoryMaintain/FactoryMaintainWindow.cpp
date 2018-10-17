@@ -56,5 +56,7 @@ void FactoryMaintainWindow::layoutExec()
 void FactoryMaintainWindow::userInputCorrect()
 {
     FactoryMaintainMenuWindow *w = FactoryMaintainMenuWindow::getInstance();
-    windowManager.showWindow(w, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorCloseOthers);
+    windowManager.showWindow(w, WindowManager::ShowBehaviorModal |
+                                WindowManager::ShowBehaviorCloseOthers |
+                                WindowManager::ShowBehaviorNoAutoClose);
 }

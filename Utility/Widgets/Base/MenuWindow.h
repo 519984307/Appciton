@@ -12,7 +12,9 @@
 #include "Window.h"
 #include "MenuContent.h"
 #include <QVariant>
+#include "WindowManager.h"
 
+class MenuSidebar;
 class MenuWindowPrivate;
 class MenuWindow : public Window
 {
@@ -28,13 +30,31 @@ public:
      */
     void addMenuContent(MenuContent *menu);
 
-    void popup(const QString &menuName, const QVariant &param = QVariant());
+    /**
+     * @brief popup  弹出菜单
+     * @param menuName  弹出菜单的名字
+     * @param param  传递给菜单的参数
+     * @param showFlags 菜单显示行为
+     */
+    void popup(const QString &menuName, const QVariant &param = QVariant(),
+               const WindowManager::ShowBehaviorFlags &showFlags = WindowManager::ShowBehaviorCloseOthers);
 
     /**
      * @brief setWindowTitlePrefix
      * @param prefix  窗口标题前缀
      */
     void setWindowTitlePrefix(const QString &prefix);
+
+    /**
+     * @brief focusMenuItem  设置聚焦点为菜单栏第一个item
+     */
+    void focusMenuItem();
+
+    /**
+     * @brief ensureWidgetVisiable ensure the widget in the window visiable
+     * @param w the pointer to the window
+     */
+    void ensureWidgetVisiable(QWidget *w);
 
 protected:
     bool focusNextPrevChild(bool next);
