@@ -61,7 +61,7 @@ void ECGPVCSTrendWidget::isAlarm(bool isAlarm)
  *************************************************************************************************/
 void ECGPVCSTrendWidget::showValue(void)
 {
-    QPalette psrc = palette();
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     psrc = normalPalette(psrc);
     if (_isAlarm)
     {

@@ -214,35 +214,38 @@ void NIBPTrendWidget::isAlarm(int id, bool flag)
  *************************************************************************************************/
 void NIBPTrendWidget::showValue(void)
 {
-    QPalette psrc = palette();
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
     psrc = normalPalette(psrc);
     if (_sysAlarm || _diaAlarm || _mapAlarm)
     {
+        if (!_sysAlarm)
+        {
+            showNormalStatus(_sysValue, psrc);
+        }
+
+        if (!_diaAlarm)
+        {
+            showNormalStatus(_diaValue, psrc);
+        }
+
+        if (!_mapAlarm)
+        {
+            showNormalStatus(_mapValue, psrc);
+        }
+
         if (_sysAlarm)
         {
             showAlarmStatus(_sysValue, psrc);
-        }
-        else
-        {
-            showNormalStatus(_sysValue, psrc);
         }
 
         if (_diaAlarm)
         {
             showAlarmStatus(_diaValue, psrc);
         }
-        else
-        {
-            showNormalStatus(_diaValue, psrc);
-        }
 
         if (_mapAlarm)
         {
             showAlarmStatus(_mapValue, psrc);
-        }
-        else
-        {
-            showNormalStatus(_mapValue, psrc);
         }
     }
     else

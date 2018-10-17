@@ -141,28 +141,30 @@ void CO2TrendWidget::isAlarm(int id, bool flag)
  *************************************************************************************************/
 void CO2TrendWidget::showValue()
 {
-    QPalette psrc = palette();
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
     QPalette fgColor = normalPalette(psrc);
     if (_fico2Alarm || _etco2Alarm)
     {
+        if (!_etco2Alarm)
+        {
+            showNormalStatus(_etco2Value, fgColor);
+        }
+
+        if (!_fico2Alarm)
+        {
+            showNormalStatus(_fico2Value, fgColor);
+            showNormalStatus(_fico2Label, fgColor);
+        }
+
         if (_etco2Alarm)
         {
             showAlarmStatus(_etco2Value, fgColor);
-        }
-        else
-        {
-            showNormalStatus(_etco2Value, fgColor);
         }
 
         if (_fico2Alarm)
         {
             showAlarmStatus(_fico2Value, fgColor, false);
             showAlarmStatus(_fico2Label, fgColor, false);
-        }
-        else
-        {
-            showNormalStatus(_fico2Value, fgColor);
-            showNormalStatus(_fico2Label, fgColor);
         }
     }
     else
