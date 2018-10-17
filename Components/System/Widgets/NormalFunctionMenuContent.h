@@ -11,13 +11,13 @@
 #pragma once
 #include "MenuContent.h"
 
-class RoutineFunctionMenuContentPrivate;
-class RoutineFunctionMenuContent : public MenuContent
+class NormalFunctionMenuContentPrivate;
+class NormalFunctionMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    RoutineFunctionMenuContent();
-    ~RoutineFunctionMenuContent();
+    NormalFunctionMenuContent();
+    ~NormalFunctionMenuContent();
 
 protected:
     /* reimplment */
@@ -38,5 +38,5 @@ private slots:
     void onBtnReleasd(void);
 
 private:
-    RoutineFunctionMenuContentPrivate * const d_ptr;
+    NormalFunctionMenuContentPrivate * const d_ptr;
 };

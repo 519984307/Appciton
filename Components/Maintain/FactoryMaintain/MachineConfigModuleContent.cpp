@@ -275,7 +275,6 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         break;
     case MachineConfigModuleContentPrivte::ITEM_CBO_ANANLOG:
         str = "AnalogOutputModule";
-        d_ptr->combos[MachineConfigModuleContentPrivte::ITEM_CBO_ANANLOG]->setEnabled(!index);
         break;
     default:
         return;
