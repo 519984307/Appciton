@@ -122,7 +122,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/TableViewItemDelegate.cpp                              \
     Utility/Widgets/Base/ListView.cpp                                           \
     Utility/Widgets/Base/ListDataModel.cpp                                      \
-    Utility/Widgets/Base/ListViewItemDelegate.cpp                                      \
+    Utility/Widgets/Base/ListViewItemDelegate.cpp                               \
     Utility/Widgets/Base/MenuWindow.cpp                                         \
     Utility/Widgets/Base/MenuSidebar.cpp                                        \
     Utility/Widgets/Base/MenuSidebarItem.cpp                                    \
@@ -141,11 +141,10 @@ SOURCES +=                                                                      
     Utility/Widgets/IComboList/ComboListItem.cpp                                \
     Utility/Widgets/IComboList/IComboList.cpp                                   \
     Utility/Widgets/IComboList/CombolistWidget.cpp                              \
-    Utility/Widgets/InputMethod/EnglishPanel.cpp                                \
     Utility/Widgets/InputMethod/EnglishInputPanel.cpp                           \
     Utility/Widgets/InputMethod/Key.cpp                                         \
     Utility/Widgets/InputMethod/KeyBoardPanel.cpp                               \
-    Utility/Widgets/InputMethod/KeyInputPanel.cpp                              \
+    Utility/Widgets/InputMethod/KeyInputPanel.cpp                               \
     Utility/Widgets/InputMethod/NumberPanel.cpp                                 \
     Utility/Widgets/InputMethod/NumberInput.cpp                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.cpp                          \
@@ -661,7 +660,6 @@ HEADERS +=                                                                      
     Utility/Widgets/IComboList/ComboListItem.h                                  \
     Utility/Widgets/IComboList/IComboList.h                                     \
     Utility/Widgets/IComboList/CombolistWidget.h                                \
-    Utility/Widgets/InputMethod/EnglishPanel.h                                  \
     Utility/Widgets/InputMethod/EnglishInputPanel.h                             \
     Utility/Widgets/InputMethod/Key.h                                           \
     Utility/Widgets/InputMethod/KeyBoardPanel.h                                 \

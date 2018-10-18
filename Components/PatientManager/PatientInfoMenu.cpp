@@ -20,7 +20,6 @@
 #include "ISpinBox.h"
 #include "LanguageManager.h"
 #include "IButton.h"
-#include "EnglishPanel.h"
 #include "KeyBoardPanel.h"
 #include "RelievePatientWidget.h"
 #include "IMessageBox.h"
