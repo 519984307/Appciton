@@ -18,8 +18,9 @@
 #include <QLabel>
 #include "NetworkManager.h"
 #include "PublicMenuManager.h"
-#include "MainMenuWindow.h"
+#include "WindowManager.h"
 #include "LayoutManager.h"
+#include "WiFiProfileWindow.h"
 
 SystemStatusBarWidget *SystemStatusBarWidget::_selfObj = NULL;
 #define ICON_WIDTH 32
@@ -114,8 +115,8 @@ void SystemStatusBarWidget::onIconClicked(int iconLabel)
 {
     if (iconLabel == SYSTEM_ICON_LABEL_WIFI)
     {
-        MainMenuWindow *p = MainMenuWindow::getInstance();
-        p->popup(trs("WiFiMenu"));
+        WiFiProfileWindow w;
+        windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
     }
 }
 

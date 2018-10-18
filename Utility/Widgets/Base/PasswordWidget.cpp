@@ -18,6 +18,7 @@
 #include "ThemeManager.h"
 #include "FontManager.h"
 #include <QTimer>
+#include "IConfig.h"
 
 #define PASSWORD_LEN (8)                      //密码长度
 
@@ -44,6 +45,7 @@ public:
         : passwordEdit(NULL), name(name), widgetPassword(password),
           timer(NULL)
     {
+        systemConfig.getStrValue("General|SuperPassword", superPassword);
     }
 
     QMap<KeyItem, Button *> buttons;
@@ -51,6 +53,7 @@ public:
     QString name;
     QString passwordStr;                    // 输入密码
     QString widgetPassword;                 // 窗口密码
+    QString superPassword;                  // 超级密码
     QTimer *timer;                           // 定时器,用于清除警告区信息
 };
 
@@ -202,7 +205,7 @@ void PasswordWidget::onButtonReleased()
         }
         case PasswordWidgetPrivate::KEY_ITEM_ACTION_SURE:
         {
-            if (d_ptr->passwordStr == d_ptr->widgetPassword)
+            if (d_ptr->passwordStr == d_ptr->widgetPassword || d_ptr->passwordStr == d_ptr->superPassword)
             {
                 emit correctPassword();
                 d_ptr->passwordStr.clear();
