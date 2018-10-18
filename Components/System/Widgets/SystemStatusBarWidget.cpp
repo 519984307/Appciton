@@ -140,7 +140,7 @@ void SystemStatusBarWidget::timerEvent(QTimerEvent *e)
     {
         int index = 0;
         systemConfig.getNumValue("MachineConfigModule|WifiModule", index);
-        if (index)
+        if (index  && networkManager.isWifiTurnOn())
         {
             if (networkManager.isWifiWorking())
             {
