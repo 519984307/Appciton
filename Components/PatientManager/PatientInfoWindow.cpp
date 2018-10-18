@@ -661,15 +661,14 @@ void PatientInfoWindow::_relieveReleased()
     this->hide();
     if (d_ptr->relieveFlag == true)
     {
-        DischargePatientWindow::getInstance()->setWindowTitle(trs("RelievePatient"));
         DischargePatientWindow::getInstance()->exec();
         d_ptr->resetPatientInfo();
     }
     else
     {
-        DischargePatientWindow::getInstance()->setWindowTitle(trs("CleanPatientData"));
         DischargePatientWindow::getInstance()->exec();
     }
+    widgetChange();
 }
 
 void PatientInfoWindow::_saveInfoReleased()
