@@ -320,11 +320,7 @@ static void _initProviderParam(void)
     {
         QString str;
         machineConfig.getStrValue("SPO2", str);
-        if (str == "BLM_SPO2")
-        {
-            paramManager.addProvider(*new BLMSPO2Provider());
-        }
-        else if (str == "MASIMO_SPO2")
+        if (str == "MASIMO_SPO2")
         {
             paramManager.addProvider(*new MasimoSetProvider());
         }

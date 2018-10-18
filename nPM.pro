@@ -554,8 +554,6 @@ SOURCES +=                                                                      
     Providers/Provider.cpp                                                      \
     Providers/BLMProvider.cpp                                                   \
     Providers/PhaseinProvider/PhaseinProvider.cpp                               \
-    Providers/BLMNIBPProvider/BLMNIBPProvider.cpp                               \
-    Providers/BLMSPO2Provider/BLMSPO2Provider.cpp                               \
     Providers/BLMCO2Provider/BLMCO2Provider.cpp                                 \
     Providers/WitleafProvider/WitleafProvider.cpp                               \
     Providers/MasimoProvider/MasimoProvider.cpp                                 \
@@ -1138,8 +1136,6 @@ HEADERS +=                                                                      
     Providers/Provider.h                                                        \
     Providers/BLMProvider.h                                                     \
     Providers/PhaseinProvider/PhaseinProvider.h                                 \
-    Providers/BLMNIBPProvider/BLMNIBPProvider.h                                 \
-    Providers/BLMSPO2Provider/BLMSPO2Provider.h                                 \
     Providers/BLMCO2Provider/BLMCO2Provider.h                                   \
     Providers/WitleafProvider/WitleafProvider.h                                 \
     Providers/MasimoProvider/MasimoProvider.h                                   \
@@ -1246,8 +1242,6 @@ DEPENDPATH +=                                                                   
     Components/Freeze                                                           \
     Providers                                                                   \
     Providers/PhaseinProvider                                                   \
-    Providers/BLMNIBPProvider                                                   \
-    Providers/BLMSPO2Provider                                                   \
     Providers/BLMCO2Provider                                                    \
     Providers/WitleafProvider                                                   \
     Providers/MasimoProvider                                                    \
@@ -1372,8 +1366,6 @@ INCLUDEPATH +=                                                                  
     Components/Freeze                                                           \
     Providers                                                                   \
     Providers/PhaseinProvider                                                   \
-    Providers/BLMNIBPProvider                                                   \
-    Providers/BLMSPO2Provider                                                   \
     Providers/BLMCO2Provider                                                    \
     Providers/WitleafProvider                                                   \
     Providers/MasimoProvider                                                    \

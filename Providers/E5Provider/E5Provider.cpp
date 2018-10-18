@@ -276,20 +276,14 @@ bool E5Provider::attachParam(Param &param)
     }
     if (ret)
     {
-        isHandleModuleData = true;
+        Provider::attachParam(param);
     }
     return ret;
 }
 
-void E5Provider::detachParam(Param &param)
-{
-    Q_UNUSED(param);
-    isHandleModuleData = false;
-}
-
 void E5Provider::handlePacket(unsigned char *data, int len)
 {
-    if (!isHandleModuleData)
+    if (!isConnectedToParam)
     {
         return;
     }

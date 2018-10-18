@@ -56,6 +56,11 @@ enum  // 设置命令。
  *************************************************************************************************/
 void BLMCO2Provider::_unpacket(const unsigned char packet[])
 {
+    if (!isConnectedToParam)
+    {
+        return;
+    }
+
     unsigned char sum = 0;
     int i;
     for (i = 2; i < _packetLen; i++)
@@ -414,6 +419,7 @@ bool BLMCO2Provider::attachParam(Param &param)
     if (param.getParamID() == PARAM_CO2)
     {
         co2Param.setProvider(this);
+        Provider::attachParam(param);
         return true;
     }
 
