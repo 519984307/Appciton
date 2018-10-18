@@ -172,6 +172,43 @@ void ScreenLayoutItemDelegate::drawDisplay(QPainter *painter, const QStyleOption
             painter->drawText(option.rect, Qt::AlignCenter, info.displayName);
         }
     }
+
+    /* The table view will mising the span item's left or right grid on the first row or first column of the table
+     * We fix it up here
+     */
+    if (d_ptr->curPaintingIndex.row() == 0 || d_ptr->curPaintingIndex.column() == 0)
+    {
+        QSize span = d_ptr->curPaintingIndex.model()->span(d_ptr->curPaintingIndex);
+        if (span.width() == 1 && span.height() == 1)
+        {
+            return;
+        }
+
+        const QTableView *view = NULL;
+        if (const QStyleOptionViewItemV4 *v4 = qstyleoption_cast<const QStyleOptionViewItemV4 *>(&option))
+        {
+            view = qobject_cast<const QTableView *>(v4->widget);
+        }
+
+        if (!view || !view->showGrid())
+        {
+            return;
+        }
+
+        const int gridHint = view->style()->styleHint(QStyle::SH_Table_GridLineColor, &option, view);
+        const QColor gridColor = static_cast<QRgb>(gridHint);
+        const QPen gridPen(gridColor, 0, view->gridStyle());
+        painter->setPen(gridPen);
+        if (d_ptr->curPaintingIndex.row() == 0)
+        {
+            painter->drawLine(option.rect.topLeft(), option.rect.topRight());
+        }
+
+        if (d_ptr->curPaintingIndex.column() == 0)
+        {
+            painter->drawLine(option.rect.topLeft(), option.rect.bottomLeft());
+        }
+    }
 }
 
 void ScreenLayoutItemDelegate::onSelectChanged(const QString &text)

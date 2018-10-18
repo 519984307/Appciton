@@ -360,7 +360,7 @@ QSize BigFontLayoutModel::span(const QModelIndex &index) const
             }
             else
             {
-                return QSize(node->span, node->span);
+                return QSize(node->span, 1);
             }
         }
     }
