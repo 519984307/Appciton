@@ -565,7 +565,7 @@ void PatientInfoWindow::_heightReleased()
     Range range = Unit::getRange(d_ptr->heightType);
     QString rangeStr = QString("%1 ~ %2").arg(QString::number(range.downLimit, 'f', 1))
                        .arg(QString::number(range.upLimit, 'f', 1));
-    inputPanel.setInvailHint(QString("%1(%2)").arg(trs("InvalidInput"))
+    inputPanel.setInvalidHint(QString("%1(%2)").arg(trs("InvalidInput"))
                              .arg(rangeStr));
 
     if (inputPanel.exec())
@@ -600,7 +600,7 @@ void PatientInfoWindow::_weightReleased()
     Range range = Unit::getRange(d_ptr->weightType);
     QString rangeStr = QString("%1 ~ %2").arg(QString::number(range.downLimit, 'f', 1))
                        .arg(QString::number(range.upLimit, 'f', 1));
-    inputPanel.setInvailHint(QString("%1(%2)").arg(trs("InvalidInput"))
+    inputPanel.setInvalidHint(QString("%1(%2)").arg(trs("InvalidInput"))
                              .arg(rangeStr));
 
     if (inputPanel.exec())

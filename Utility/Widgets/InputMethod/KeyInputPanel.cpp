@@ -525,7 +525,7 @@ void KeyInputPanel::setCheckValueHook(CheckValue hook)
     _checkValue = hook;
 }
 
-void KeyInputPanel::setInvailHint(const QString &str)
+void KeyInputPanel::setInvalidHint(const QString &str)
 {
     d_ptr->invalidStr = str;
 }

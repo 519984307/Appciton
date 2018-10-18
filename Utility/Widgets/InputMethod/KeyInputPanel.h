@@ -75,10 +75,10 @@ public:
     void setCheckValueHook(CheckValue hook);
 
     /**
-     * @brief setInvailHint 设置无效提示信息
+     * @brief setInvalidHint 设置无效提示信息
      * @param str           无效提示字符串
      */
-    void setInvailHint(const QString &str);
+    void setInvalidHint(const QString &str);
 
     enum KeyOrder
     {
