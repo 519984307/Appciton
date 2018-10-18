@@ -375,14 +375,9 @@ SOURCES +=                                                                      
     Components/Maintain/Service/Temp/ServiceCPUTemp.cpp                         \
     Components/Maintain/Service/Version/ServiceVersion.cpp                      \
     Components/Maintain/Factory/FactoryConfigManager.cpp                        \
-    Components/Maintain/Factory/Menu/FactoryDataRecord.cpp                      \
     Components/Maintain/FactoryMaintain/FactoryDataRecordContent.cpp            \
-    Components/Maintain/Factory/Menu/FactorySystemInfoMenu.cpp                  \
-    Components/Maintain/Factory/Menu/FactoryTempMenu.cpp                        \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.cpp                 \
-    Components/Maintain/Factory/Menu/FactoryTestMenu.cpp                        \
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.cpp                 \
-    Components/Maintain/Factory/Menu/FactoryWindowManager.cpp                   \
     Components/Maintain/UserMaintain/UserMaintainManager.cpp                    \
     Components/Maintain/UserMaintain/WifiMaintainMenu.cpp                       \
     Components/Maintain/UserMaintain/NurseCallSettingWindow.cpp                 \
@@ -888,13 +883,8 @@ HEADERS +=                                                                      
     Components/Maintain/Service/Temp/ServiceCPUTemp.h                           \
     Components/Maintain/Service/Version/ServiceVersion.h                        \
     Components/Maintain/Factory/FactoryConfigManager.h                          \
-    Components/Maintain/Factory/Menu/FactoryWindowManager.h                     \
-    Components/Maintain/Factory/Menu/FactoryTempMenu.h                          \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.h                   \
-    Components/Maintain/Factory/Menu/FactoryTestMenu.h                          \
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.h                   \
-    Components/Maintain/Factory/Menu/FactorySystemInfoMenu.h                    \
-    Components/Maintain/Factory/Menu/FactoryDataRecord.h                        \
     Components/Maintain/FactoryMaintain/FactoryDataRecordContent.h              \
     Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.h                  \
     Components/Maintain/UserMaintain/UserMaintainManager.h                      \
