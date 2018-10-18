@@ -44,6 +44,7 @@ public:
     QLineEdit *textDisplay;
 
     QString regExpStr;
+    QString invalidStr;
 };
 
 KeyInputPanelPrivate::KeyInputPanelPrivate()
@@ -53,7 +54,8 @@ KeyInputPanelPrivate::KeyInputPanelPrivate()
       itemHeight(0),
       lastFoucsIndex(0),
       textDisplay(NULL),
-      regExpStr("")
+      regExpStr(""),
+      invalidStr(trs("InvalidInput"))
 {
     helpKeys.clear();
     keys.clear();
@@ -206,7 +208,7 @@ void KeyInputPanel::ClickedEnter(void)
         else
         {
             d_ptr->isInvalid = true;
-            d_ptr->textDisplay->setText(trs("InvalidInput"));
+            d_ptr->textDisplay->setText(d_ptr->invalidStr);
             return;
         }
     }
@@ -521,6 +523,11 @@ void KeyInputPanel::setKeytypeSwitchEnable(bool enable)
 void KeyInputPanel::setCheckValueHook(CheckValue hook)
 {
     _checkValue = hook;
+}
+
+void KeyInputPanel::setInvailHint(const QString &str)
+{
+    d_ptr->invalidStr = str;
 }
 
 /**************************************************************************************************

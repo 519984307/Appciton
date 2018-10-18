@@ -38,11 +38,13 @@ public:
         , blood(NULL) , name(NULL) , pacer(NULL)
         , age(NULL) , height(NULL) , weight(NULL)
         , relievePatient(NULL) , savePatientInfo(NULL)
+        , heightLbl(NULL)
+        , weightLbl(NULL)
         , infoChange(false)
         , patientNew(false)
         , relieveFlag(true)
-        , heightLbl(NULL)
-        , weightLbl(NULL)
+        , heightType(UNIT_NONE)
+        , weightType(UNIT_NONE)
     {}
 
     enum MenuItem
@@ -81,6 +83,9 @@ public:
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem , Button *> buttons;
+
+    UnitType heightType;
+    UnitType weightType;
 };
 
 static bool checkAgeValue(const QString &value)
@@ -117,30 +122,29 @@ static bool checkHeightValue(const QString &value)
         return true;
     }
     int unitHeightIndex = -1;
-    systemConfig.getNumValue("Unit|HightUnit", unitHeightIndex);
+    systemConfig.getNumValue("Unit|HeightUnit", unitHeightIndex);
     bool ok = false;
     float heightValue = value.toFloat(&ok);
     if (!ok)
     {
         return false;
     }
+    Range range;
     switch (unitHeightIndex)
     {
     case UNIT_CM:         // cm: 20.0-300.0(cm)
-        if (heightValue - 300.0 > 0.000001 ||
-                heightValue - 20.0 < 0.000001)
-        {
-            return false;
-        }
+        range = Unit::getRange(UNIT_CM);
         break;
     case UNIT_INCH:         // inch: 8.0-118.0(inch)
-        if (heightValue - 118.0 > 0.000001 ||
-                heightValue - 8.0 < 0.000001)
-        {
-            return false;
-        }
+        range = Unit::getRange(UNIT_INCH);
         break;
     default:
+        return false;
+    }
+
+    if (heightValue - range.upLimit > 0.000001 ||
+            heightValue - range.downLimit < 0.000001)
+    {
         return false;
     }
     return true;
@@ -165,26 +169,25 @@ static bool checkWeightValue(const QString &value)
     {
         return false;
     }
+    Range range;
     switch (unitWeightValue)
     {
     case UNIT_KG:           // 0.1-200.0
-        if (weightValue - 0.1 < 0.000001 ||
-                weightValue - 200.0 > 0.000001)
-        {
-            return false;
-        }
+        range = Unit::getRange(UNIT_KG);
         break;
     case UNIT_LB:           // 0.2-440.9
-        if (weightValue - 0.2 < 0.000001 ||
-                weightValue - 440.9 > 0.000001)
-        {
-            return false;
-        }
+        range = Unit::getRange(UNIT_LB);
         break;
     default:
         return false;
-        break;
     }
+
+    if (weightValue - range.downLimit < 0.000001 ||
+            weightValue - range.upLimit > 0.000001)
+    {
+        return false;
+    }
+
     return true;
 }
 void PatientInfoWindowPrivate::loadOptions()
@@ -207,17 +210,34 @@ void PatientInfoWindowPrivate::loadOptions()
     buttons[ITEM_BTN_PATIENT_WEIGHT]->setEnabled(true);
 
     int unit;
+    UnitType oldHeightType = heightType;
     systemConfig.getNumValue("Unit|HeightUnit", unit);
-    UnitType unitType = static_cast<UnitType>(unit);
+    heightType = static_cast<UnitType>(unit);
 
     heightLbl->setText(QString("%1(%2)").arg(trs("PatientHeight"))
-                       .arg(Unit::getSymbol(unitType)));
+                       .arg(Unit::getSymbol(heightType)));
 
+    UnitType oldWeightType = weightType;
     systemConfig.getNumValue("Unit|WeightUnit", unit);
-    unitType = static_cast<UnitType>(unit);
+    weightType = static_cast<UnitType>(unit);
 
     weightLbl->setText(QString("%1(%2)").arg(trs("PatientWeight"))
-                       .arg(Unit::getSymbol(unitType)));
+                       .arg(Unit::getSymbol(weightType)));
+
+    bool ok;
+    float heightValue = height->text().toFloat(&ok);
+    if (ok)
+    {
+        QString ret = Unit::convert(heightType, oldHeightType, heightValue);
+        height->setText(ret);
+    }
+
+    float weightValue = weight->text().toFloat(&ok);
+    if (ok)
+    {
+        QString ret = Unit::convert(weightType, oldWeightType, weightValue);
+        weight->setText(ret);
+    }
 }
 
 PatientInfoWindow::PatientInfoWindow()
@@ -240,9 +260,9 @@ PatientInfoWindow::PatientInfoWindow()
     d_ptr->type = new ComboBox();
     d_ptr->type->setFixedWidth(250);
     d_ptr->type ->addItems(QStringList()
-                            << trs(PatientSymbol::convert(PATIENT_TYPE_ADULT))
-                            << trs(PatientSymbol::convert(PATIENT_TYPE_PED))
-                            << trs(PatientSymbol::convert(PATIENT_TYPE_NEO)));
+                           << trs(PatientSymbol::convert(PATIENT_TYPE_ADULT))
+                           << trs(PatientSymbol::convert(PATIENT_TYPE_PED))
+                           << trs(PatientSymbol::convert(PATIENT_TYPE_NEO)));
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_CBO_PATIENT_TYPE);
     d_ptr->type ->setProperty("Item" , qVariantFromValue(itemId));
     layout->addWidget(d_ptr->type
@@ -259,9 +279,9 @@ PatientInfoWindow::PatientInfoWindow()
     d_ptr->pacer = new ComboBox();
     d_ptr->pacer->setFixedWidth(250);
     d_ptr->pacer->addItems(QStringList()
-                            << trs(PatientSymbol::convert(PATIENT_PACER_OFF))
-                            << trs(PatientSymbol::convert(PATIENT_PACER_ON))
-                           );
+                           << trs(PatientSymbol::convert(PATIENT_PACER_OFF))
+                           << trs(PatientSymbol::convert(PATIENT_PACER_ON))
+                          );
     itemId = static_cast<int>
              (PatientInfoWindowPrivate::ITEM_CBO_PACER_MARKER);
     d_ptr->pacer->setProperty("Item" , qVariantFromValue(itemId));
@@ -298,10 +318,10 @@ PatientInfoWindow::PatientInfoWindow()
     d_ptr->sex = new ComboBox();
     d_ptr->sex->setFixedWidth(250);
     d_ptr->sex->addItems(QStringList()
-                          << ""
-                          << trs(PatientSymbol::convert(PATIENT_SEX_MALE))
-                          << trs(PatientSymbol::convert(PATIENT_SEX_FEMALE))
-                         );
+                         << ""
+                         << trs(PatientSymbol::convert(PATIENT_SEX_MALE))
+                         << trs(PatientSymbol::convert(PATIENT_SEX_FEMALE))
+                        );
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_CBO_PATIENT_SEX);
     d_ptr->sex->setProperty("Item" , qVariantFromValue(itemId));
     layout->addWidget(d_ptr->sex
@@ -318,12 +338,12 @@ PatientInfoWindow::PatientInfoWindow()
     d_ptr->blood = new ComboBox();
     d_ptr->blood->setFixedWidth(250);
     d_ptr->blood->addItems(QStringList()
-                            << ""
-                            << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_A))
-                            << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_B))
-                            << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_AB))
-                            << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_O))
-                           );
+                           << ""
+                           << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_A))
+                           << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_B))
+                           << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_AB))
+                           << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_O))
+                          );
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_CBO_BLOOD_TYPE);
     d_ptr->blood->setProperty("Item" , qVariantFromValue(itemId));
     layout->addWidget(d_ptr->blood
@@ -542,6 +562,11 @@ void PatientInfoWindow::_heightReleased()
     inputPanel.setSymbolEnable(false);
     inputPanel.setKeytypeSwitchEnable(false);
     inputPanel.setCheckValueHook(checkHeightValue);
+    Range range = Unit::getRange(d_ptr->heightType);
+    QString rangeStr = QString("%1 ~ %2").arg(QString::number(range.downLimit, 'f', 1))
+                       .arg(QString::number(range.upLimit, 'f', 1));
+    inputPanel.setInvailHint(QString("%1(%2)").arg(trs("InvalidInput"))
+                             .arg(rangeStr));
 
     if (inputPanel.exec())
     {
@@ -572,6 +597,11 @@ void PatientInfoWindow::_weightReleased()
     inputPanel.setSymbolEnable(false);
     inputPanel.setKeytypeSwitchEnable(false);
     inputPanel.setCheckValueHook(checkWeightValue);
+    Range range = Unit::getRange(d_ptr->weightType);
+    QString rangeStr = QString("%1 ~ %2").arg(QString::number(range.downLimit, 'f', 1))
+                       .arg(QString::number(range.upLimit, 'f', 1));
+    inputPanel.setInvailHint(QString("%1(%2)").arg(trs("InvalidInput"))
+                             .arg(rangeStr));
 
     if (inputPanel.exec())
     {
@@ -600,7 +630,9 @@ void PatientInfoWindow::_relieveReleased()
         DischargePatientWindow::getInstance()->setWindowTitle(trs("RelievePatient"));
         int ret = DischargePatientWindow::getInstance()->exec();
         if (ret)
+        {
             relieveStatus(false);
+        }
     }
     else
     {

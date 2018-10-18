@@ -73,6 +73,12 @@ public:
      */
     void setCheckValueHook(CheckValue hook);
 
+    /**
+     * @brief setInvailHint 设置无效提示信息
+     * @param str           无效提示字符串
+     */
+    void setInvailHint(const QString &str);
+
     enum KeyOrder
     {
         KEY_ORDER_BACKSPACE = 0X03,
@@ -89,7 +95,6 @@ public:
         KEY_TYPE_SYMBOL,
         KEY_TYPE_LETTER
     };
-
 
     explicit KeyInputPanel(KeyType type = KEY_TYPE_LETTER);
     ~KeyInputPanel();
