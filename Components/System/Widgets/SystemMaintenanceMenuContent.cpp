@@ -83,7 +83,7 @@ void SystemMaintenanceMenuContent::layoutExec()
 
 #ifdef Q_WS_QWS
     // touch screen calibration
-    btn = new Button(trs("UserMaintainSystem"));
+    btn = new Button(trs("TouchScreenCalibration"));
     btn->setButtonStyle(Button::ButtonTextOnly);
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     btn->setProperty("Item", qVariantFromValue(itemBtn));

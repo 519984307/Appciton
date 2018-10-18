@@ -147,5 +147,4 @@ void popupMsgBox(const QString &title, const QPixmap &icon, const QString &text)
     }
 }
 
-
 }   // namespace Util

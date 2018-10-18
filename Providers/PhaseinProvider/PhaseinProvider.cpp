@@ -33,6 +33,7 @@ bool PhaseinProvider::attachParam(Param &param)
     if (param.getParamID() == PARAM_AG)
     {
         agParam.setProvider(this);
+        Provider::attachParam(param);
         return true;
     }
 
@@ -198,6 +199,11 @@ PhaseinProvider::~PhaseinProvider()
  *************************************************************************************************/
 void PhaseinProvider::_unpacket(const unsigned char packet[])
 {
+    if (!isConnectedToParam)
+    {
+        return;
+    }
+
     unsigned char sum = 0;
     int i;
     for (i = 2; i < _packetLen; i++)

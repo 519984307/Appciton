@@ -17,6 +17,15 @@
 class RESPSymbol
 {
 public:
+    static const char *convert(RESPModuleType index)
+    {
+        static const char *symbol[MODULE_NR] =
+        {
+            "BLM_E5"
+        };
+        return symbol[index];
+    }
+
     static const char *convert(RESPApneaTime index)
     {
         static const char *symbol[RESP_APNEA_TIME_NR] =

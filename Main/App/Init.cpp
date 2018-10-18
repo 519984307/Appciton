@@ -320,11 +320,7 @@ static void _initProviderParam(void)
     {
         QString str;
         machineConfig.getStrValue("SPO2", str);
-        if (str == "BLM_SPO2")
-        {
-            paramManager.addProvider(*new BLMSPO2Provider());
-        }
-        else if (str == "MASIMO_SPO2")
+        if (str == "MASIMO_SPO2")
         {
             paramManager.addProvider(*new MasimoSetProvider());
         }
@@ -363,7 +359,7 @@ static void _initProviderParam(void)
         }
         else
         {
-            paramManager.addProvider(*new TN3Provider());
+            paramManager.addProvider(*new N5Provider());
         }
 
         paramManager.addParam(nibpParam.construction());
@@ -545,37 +541,14 @@ static void _initMenu(void)
     menuManager.construction();
     publicMenuManager.construction();
     userMaintainManager.construction();
-    userMaintainGeneralSet.construction();
-    moduleMaintainMenu.construction();
-    alarmMaintainMenu.construction();
     wifiMaintainMenu.construction();
-    wiredWorkMaintainMenu.construction();
-    othersMaintainMenu.construction();
     unitSetup.construction();
 
-    userMaintainManager.addSubMenu(&userMaintainGeneralSet);
-    userMaintainManager.addSubMenu(&moduleMaintainMenu);
-    userMaintainManager.addSubMenu(&alarmMaintainMenu);
     userMaintainManager.addSubMenu(&wifiMaintainMenu);
-    userMaintainManager.addSubMenu(&wiredWorkMaintainMenu);
-    userMaintainManager.addSubMenu(&othersMaintainMenu);
     userMaintainManager.addSubMenu(&unitSetup);
 
     // supervisorMenuManager
     supervisorMenuManager.construction();
-
-    if (systemManager.isSupport(CONFIG_ECG12LEADS))
-    {
-        supervisor12LMenu.construction();
-        userMaintainManager.addSubMenu(&supervisor12LMenu);
-    }
-
-    supervisorPrintMenu.construction();
-    userMaintainManager.addSubMenu(&supervisorPrintMenu);
-
-    supervisorTimeMenu.construction();
-    userMaintainManager.addSubMenu(&supervisorTimeMenu);
-
 
     //其它弹出菜单初始化
     patientManager.construction();
@@ -642,7 +615,6 @@ void deleteObjects(void)
     deleteRecorderManager();
 
 //    deleteNetworkManager();
-    deleteSupervisorConfigManager();
     deleteRawDataCollection();
     deleteRawDataCollectionTxt();
     deleteUsbManager();

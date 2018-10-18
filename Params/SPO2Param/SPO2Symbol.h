@@ -11,10 +11,19 @@
 #pragma once
 #include "SPO2Define.h"
 #include "LanguageManager.h"
-// 将定义的枚举转换成符号。
+
 class SPO2Symbol
 {
 public:
+    static const char *convert(SPO2ModuleType index)
+    {
+        static const char *symbol[MODULE_SPO2_NR] =
+        {
+            "BLM_S5", "MASIMO_SPO2", "NELLCOR_SPO2"
+        };
+        return symbol[index];
+    }
+
     static const char *convert(AverageTime index)
     {
         static const char *symbol[SPO2_AVER_TIME_NR] =

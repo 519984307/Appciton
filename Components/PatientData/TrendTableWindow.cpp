@@ -125,10 +125,24 @@ void TrendTableWindow::updatePages()
     unsigned startTime = 0;
     unsigned endTime = 0;
     unsigned rightTime = 0;
+    unsigned allPagesNum;
+    unsigned curPageNum;
 
     d_ptr->model->getDataTimeRange(startTime, endTime);
 
     unsigned timeInterval = TrendDataSymbol::convertValue(d_ptr->timeInterval);
+
+    // 初始状态下起始时间与结束时间相同时显示页数1/1
+    if (endTime == startTime)
+    {
+        allPagesNum = curPageNum = 1;
+        setWindowTitle(QString("%1 ( %2 / %3 %4 )")
+                       .arg(trs("TrendTable"))
+                       .arg(curPageNum)
+                       .arg(allPagesNum)
+                       .arg(trs("Page")));
+        return;
+    }
 
     if (startTime % timeInterval != 0)
     {
@@ -138,9 +152,9 @@ void TrendTableWindow::updatePages()
     rightTime = d_ptr->model->getRightTime();
 
     // 获取数据的总页数
-    unsigned allPagesNum = 1 + (endTime - startTime) * 1.0 / timeInterval / d_ptr->model->getColumnCount();
+    allPagesNum = 1 + (endTime - startTime) * 1.0 / timeInterval / d_ptr->model->getColumnCount();
     // 获取数据的当前页数
-    unsigned curPageNum = 1 + (rightTime - startTime) * 1.0 / ((endTime - startTime) * 1.0) * (allPagesNum - 1);
+    curPageNum = 1 + (rightTime - startTime) * 1.0 / ((endTime - startTime) * 1.0) * (allPagesNum - 1);
 
     if (endTime == startTime)
     {

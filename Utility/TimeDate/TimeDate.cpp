@@ -1,8 +1,17 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/10/17
+ **/
+
 #include "TimeDate.h"
 #include <QDateTime>
 #include <ctime>
 #include "IConfig.h"
-#include "SupervisorConfigManager.h"
 #include "TimeDefine.h"
 
 TimeDate *TimeDate::_selfObj = NULL;
@@ -18,13 +27,13 @@ static void getDateFormat(QString &format, bool year4Bits)
     int dateFormat = 0;
     currentConfig.getNumValue("DateTime|DateFormat", dateFormat);
 
-    if(year4Bits)
+    if (year4Bits)
     {
-        if(dateFormat == DATE_FORMAT_Y_M_D)
+        if (dateFormat == DATE_FORMAT_Y_M_D)
         {
             format = "yyyy/MM/dd";
         }
-        else if(dateFormat == DATE_FORMAT_M_D_Y)
+        else if (dateFormat == DATE_FORMAT_M_D_Y)
         {
             format = "MM/dd/yyyy";
         }
@@ -35,11 +44,11 @@ static void getDateFormat(QString &format, bool year4Bits)
     }
     else
     {
-        if(dateFormat == DATE_FORMAT_Y_M_D)
+        if (dateFormat == DATE_FORMAT_Y_M_D)
         {
             format = "yy/MM/dd";
         }
-        else if(dateFormat == DATE_FORMAT_M_D_Y)
+        else if (dateFormat == DATE_FORMAT_M_D_Y)
         {
             format = "MM/dd/yy";
         }
@@ -61,7 +70,7 @@ static void getTimeFormat(QString &format, bool showSecond)
     int timeFormat = 0;
 
     currentConfig.getNumValue("DateTime|TimeFormat", timeFormat);
-    if(showSecond)
+    if (showSecond)
     {
         if (TIME_FORMAT_24 == timeFormat)
         {
@@ -330,7 +339,6 @@ unsigned int TimeDate::getTimeMsec(void)
  *************************************************************************************************/
 TimeDate::TimeDate()
 {
-
 }
 
 /**************************************************************************************************
@@ -338,6 +346,5 @@ TimeDate::TimeDate()
  *************************************************************************************************/
 TimeDate::~TimeDate()
 {
-
 }
 

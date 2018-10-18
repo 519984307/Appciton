@@ -27,6 +27,7 @@ public:
         UPGRADE_MOD_T5,
         UPGRADE_MOD_PRT48,
         UPGRADE_MOD_nPMBoard,
+        UPGRADE_MOD_LOGO,
         UPGRADE_MOD_TYPE_NR,
     };
 

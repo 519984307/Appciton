@@ -24,6 +24,7 @@ bool MasimoSetProvider::attachParam(Param &param)
     if (param.getParamID() == PARAM_SPO2)
     {
         spo2Param.setProvider(this);
+        Provider::attachParam(param);
         return true;
     }
 
@@ -286,6 +287,11 @@ void MasimoSetProvider::reconnected()
 
 void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
 {
+    if (!isConnectedToParam)
+    {
+        return;
+    }
+
     if (!isConnected)
     {
         spo2Param.setConnected(true);

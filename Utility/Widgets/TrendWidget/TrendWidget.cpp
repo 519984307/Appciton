@@ -108,6 +108,7 @@ void TrendWidget::showAlarmStatus(QWidget *value, QPalette psrc, bool isSetName)
 
 void TrendWidget::showNormalStatus(QWidget *value, QPalette psrc)
 {
+    setPalette(psrc);
     QPalette p = value->palette();
     if (p.windowText().color() != psrc.windowText().color())
     {

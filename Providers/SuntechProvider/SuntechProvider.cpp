@@ -75,6 +75,7 @@ bool SuntechProvider::attachParam(Param &param)
     if (param.getParamID() == PARAM_NIBP)
     {
         nibpParam.setProvider(this);
+        Provider::attachParam(param);
         return true;
     }
 
@@ -390,7 +391,11 @@ static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
  *************************************************************************************************/
 void SuntechProvider::_handlePacket(unsigned char *data, int len)
 {
-    Q_UNUSED(len)
+    if (!isConnectedToParam)
+    {
+        return;
+    }
+
     switch (data[0])
     {
     case MODULE_ACK:

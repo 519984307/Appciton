@@ -107,7 +107,8 @@ QString &Provider::getName(void)
  *************************************************************************************************/
 bool Provider::attachParam(Param &param)
 {
-    param.getName();  // 预防编译警告。
+    Q_UNUSED(param)
+    isConnectedToParam = true;
     return true;
 }
 
@@ -116,7 +117,8 @@ bool Provider::attachParam(Param &param)
  *************************************************************************************************/
 void Provider::detachParam(Param &param)
 {
-    param.getName();
+    isConnectedToParam = false;
+    Q_UNUSED(param)
 }
 
 /**************************************************************************************************
@@ -183,6 +185,7 @@ Provider::Provider(const QString &name) : QObject(), ringBuff(ringBuffLen), _nam
     _disconnectThreshold = 5;
     isConnected = false;
     _firstCheck = true;
+    isConnectedToParam = true;
 // #ifdef Q_WS_X11
 //    uart = new UartSocket();
 // #else

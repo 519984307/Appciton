@@ -37,10 +37,12 @@ bool WitleafProvider::attachParam(Param &param)
     if (name == paramInfo.getParamName(PARAM_IBP))
     {
         ibpParam.setProvider(this);
+        Provider::attachParam(param);
     }
     else if (name == paramInfo.getParamName(PARAM_CO))
     {
         coParam.setProvider(this);
+        Provider::attachParam(param);
     }
 
     return true;
@@ -51,6 +53,11 @@ bool WitleafProvider::attachParam(Param &param)
  *************************************************************************************************/
 void WitleafProvider::dataArrived()
 {
+    if (!isConnectedToParam)
+    {
+        return;
+    }
+
     readData();     // 读取数据到RingBuff中
 
     unsigned char buff[570];

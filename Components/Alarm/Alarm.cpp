@@ -192,7 +192,6 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 }
                 traceCtrl->Reset();
                 alarmSource->notifyAlarm(i, false);
-                continue;
             }
             else
             {
@@ -200,6 +199,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 traceCtrl->Reset();
                 alarmSource->notifyAlarm(i, false);
             }
+            continue;
         }
 
         if (!traceCtrl->lastAlarmed)

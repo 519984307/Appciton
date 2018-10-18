@@ -599,8 +599,8 @@ void SystemManager::_publishTestResult(void)
                     str += trs("ECG");
                 }
 
-                if (SELFTEST_SUCCESS != _modulePostResult[TN3_MODULE_SELFTEST_RESULT] &&
-                        SELFTEST_NOT_SUPPORT != _modulePostResult[TN3_MODULE_SELFTEST_RESULT])
+                if (SELFTEST_SUCCESS != _modulePostResult[N5_MODULE_SELFTEST_RESULT] &&
+                        SELFTEST_NOT_SUPPORT != _modulePostResult[N5_MODULE_SELFTEST_RESULT])
                 {
                     if (!str.isEmpty())
                     {
@@ -816,7 +816,7 @@ SystemManager::SystemManager() ://申请一个动态的模块加载结果数组
     }
     if (!isSupport(CONFIG_NIBP))
     {
-        _modulePostResult[TN3_MODULE_SELFTEST_RESULT] = SELFTEST_NOT_SUPPORT;
+        _modulePostResult[N5_MODULE_SELFTEST_RESULT] = SELFTEST_NOT_SUPPORT;
     }
 
     if (!isSupport(CONFIG_TEMP))
