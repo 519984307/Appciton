@@ -539,13 +539,10 @@ static void _initPrint(void)
 static void _initMenu(void)
 {
     menuManager.construction();
-    publicMenuManager.construction();
     userMaintainManager.construction();
     wifiMaintainMenu.construction();
-    unitSetup.construction();
 
     userMaintainManager.addSubMenu(&wifiMaintainMenu);
-    userMaintainManager.addSubMenu(&unitSetup);
 
     // supervisorMenuManager
     supervisorMenuManager.construction();
@@ -573,7 +570,6 @@ void newObjects(void)
 void deleteObjects(void)
 {
 //    deleteWaveWidgetSelectMenu();
-    deletePublicMenuManager();
     deleteSupervisorMenuManager();
     deleteMenuManager();
     // deletePatientMenu();

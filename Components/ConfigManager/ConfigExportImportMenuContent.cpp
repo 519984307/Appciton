@@ -7,8 +7,6 @@
  **
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018.07.14
  **/
-#include "ConfigMaintainMenuGrp.h"
-#include "ConfigEditMenuGrp.h"
 #include "ConfigManager.h"
 #include <unistd.h>
 #include <QProcess>

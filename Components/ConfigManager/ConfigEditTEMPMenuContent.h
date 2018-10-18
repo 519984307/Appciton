@@ -10,14 +10,14 @@
 #pragma once
 
 #include "MenuContent.h"
-class ConfigEditTEMPMenuPrivate;
+class ConfigEditTEMPMenuContentPrivate;
 class Config;
-class ConfigEditTEMPMenu : public MenuContent
+class ConfigEditTEMPMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    explicit ConfigEditTEMPMenu(Config *const config);
-    ~ConfigEditTEMPMenu();
+    explicit ConfigEditTEMPMenuContent(Config *const config);
+    ~ConfigEditTEMPMenuContent();
     /**
      * @brief layoutExec
      */
@@ -38,6 +38,6 @@ private slots:
     void onAlarmBtnReleased(void);
 
 private:
-    ConfigEditTEMPMenuPrivate *const d_ptr;
+    ConfigEditTEMPMenuContentPrivate *const d_ptr;
 };
 

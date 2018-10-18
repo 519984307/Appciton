@@ -13,7 +13,6 @@
 #include "PatientInfoWidget.h"
 #include "IConfig.h"
 #include "ECGParam.h"
-#include "AlarmLimitMenu.h"
 
 PatientManager *PatientManager::_selfObj = NULL;
 
@@ -48,8 +47,6 @@ void PatientManager::setType(PatientType type)
     emit signalPatientType(_patientInfo.type);
 
     ecgParam.setPatientType((unsigned char)(_patientInfo.type));
-
-    alarmLimitMenu.checkAlarmEnableStatus();
 }
 
 /**************************************************************************************************

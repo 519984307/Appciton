@@ -14,9 +14,6 @@
 #include <QApplication>
 #include "SoftKeyWidget.h"
 #include "ECGParam.h"
-#include "ECGMenu.h"
-#include "PublicMenuManager.h"
-#include "AlarmLimitMenu.h"
 #include "SystemBoardProvider.h"
 #include "WindowManager.h"
 #include "PatientInfoWindow.h"

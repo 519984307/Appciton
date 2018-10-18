@@ -251,7 +251,6 @@ SOURCES +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmOffState.cpp                        \
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.cpp                   \
     Components/Alarm/Widgets/AlarmInfoPopListView.cpp                           \
-    Components/Alarm/Widgets/AlarmLimitMenu.cpp                                 \
     Components/Alarm/Widgets/AlarmLimitMenuContent.cpp                          \
     Components/Alarm/Widgets/AlarmMuteBarWidget.cpp                             \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.cpp                         \
@@ -350,8 +349,6 @@ SOURCES +=                                                                      
     Components/KeyHandle/KeyActionManager/KeyActionManager.cpp                  \
     Components/KeyHandle/KeyActionManager/NormalModeKeyAction.cpp               \
     Components/MenuManager/MenuManager.cpp                                      \
-    Components/MenuManager/PasswordMenuManage.cpp                               \
-    Components/MenuManager/PublicMenuManager.cpp                                \
     Components/MenuManager/SetWidget.cpp                                        \
     Components/MenuManager/SupervisorMenuManager.cpp                            \
     Components/NetworkManager/NetworkManager.cpp                                \
@@ -411,48 +408,30 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/NIBPZeroPointContent.cpp                \
     Components/Maintain/FactoryMaintain/NIBPPressureControlContent.cpp          \
     Components/Maintain/FactoryMaintain/SelectStarterLogoContent.cpp            \
-    Components/Maintain/FactoryMaintain/FactoryImportExportMenu.cpp             \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
     Components/Maintain/FactoryMaintain/FactoryMaintainWindow.cpp               \
     Components/Maintain/FactoryMaintain/UpgradeManager.cpp                      \
     Components/Maintain/FactoryMaintain/UpgradeWindow.cpp                       \
     Components/CodeMarker/Widgets/CodeMarkerWindow.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
-    Components/ConfigManager/ConfigMaintainMenuGrp.cpp                          \
-    Components/ConfigManager/SelectDefaultConfigMenu.cpp                        \
     Components/ConfigManager/SelectDefaultConfigMenuContent.cpp                 \
     Components/ConfigManager/ConfigManagerPassWordEditMenuContent.cpp           \
-    Components/ConfigManager/UserConfigEditMenu.cpp                             \
     Components/ConfigManager/UserConfigEditMenuContent.cpp                      \
-    Components/ConfigManager/ConfigExportImportMenu.cpp                         \
     Components/ConfigManager/ConfigExportImportMenuContent.cpp                  \
-    Components/ConfigManager/ConfigEditMenuGrp.cpp                              \
     Components/ConfigManager/ConfigEditMenuWindow.cpp                           \
-    Components/ConfigManager/ConfigEditGeneralMenu.cpp                          \
     Components/ConfigManager/ConfigEditGeneralMenuContent.cpp                   \
-    Components/ConfigManager/ConfigEditEcgMenu.cpp                              \
-    Components/ConfigManager/ConfigEditTEMPMenu.cpp                             \
+    Components/ConfigManager/ConfigEditTEMPMenuContent.cpp                      \
     Components/ConfigManager/ConfigEditEcgMenuContent.cpp                       \
-    Components/ConfigManager/ConfigEditRespMenu.cpp                             \
     Components/ConfigManager/ConfigEditRespMenuContent.cpp                      \
-    Components/ConfigManager/ConfigEditAlarmLimitMenu.cpp                       \
-    Components/ConfigManager/ConfigEditNIBPMenu.cpp                             \
     Components/ConfigManager/ConfigEditNIBPMenuContent.cpp                      \
-    Components/ConfigManager/ConfigEditSpO2Menu.cpp                             \
     Components/ConfigManager/ConfigEditSpO2MenuContent.cpp                      \
-    Components/ConfigManager/ConfigEditCO2Menu.cpp                              \
     Components/ConfigManager/ConfigEditCO2MenuContent.cpp                       \
-    Components/ConfigManager/ConfigEditCOMenu.cpp                               \
     Components/ConfigManager/ConfigEditCOMenuContent.cpp                        \
     Components/ConfigManager/ConfigEditCodeMarkerMenuContent.cpp                \
     Components/ConfigManager/ConfigEditAlarmLimitMenuContent.cpp                \
     Components/ConfigManager/ConfigEditAlarmLimitModel.cpp                      \
-    Components/ConfigManager/ConfigEditUnitSetupMenu.cpp                        \
-    Components/ConfigManager/ConfigEditIBPMenu.cpp                              \
     Components/ConfigManager/ConfigEditIBPMenuContent.cpp                       \
-    Components/ConfigManager/ConfigEditDisplayMenu.cpp                          \
     Components/ConfigManager/ConfigEditDisplayMenuContent.cpp                   \
-    Components/ConfigManager/LoadConfigMenu.cpp                                 \
     Components/ConfigManager/ConfigManagerWindow.cpp                            \
     Components/ConfigManager/LoadConfigMenuContent.cpp                          \
     Components/ConfigManager/UnitSetupMenuContent.cpp                           \
@@ -478,7 +457,6 @@ SOURCES +=                                                                      
     Params/ECGParam/ECGWidgets/ECGTrendWidget.cpp                               \
     Params/ECGParam/ECGWidgets/ECGPVCSTrendWidget.cpp                           \
     Params/ECGParam/ECGWidgets/ECGSTTrendWidget.cpp                             \
-    Params/ECGParam/ECGWidgets/ECGMenu.cpp                                      \
     Params/ECGParam/ECGWidgets/ECGMenuContent.cpp                               \
     Params/ECGParam/ECGWidgets/ArrhythmiaAnalysisMenu.cpp                       \
     Params/ECGParam/ECGWidgets/ArrhythmiaThresholdMenu.cpp                      \
@@ -489,7 +467,6 @@ SOURCES +=                                                                      
     Params/CO2Param/CO2Widgets/CO2TrendWidget.cpp                               \
     Params/CO2Param/CO2Widgets/CO2MenuContent.cpp                               \
     Params/IBPParam/IBPParam.cpp                                                \
-    Params/IBPParam/IBPWidgets/IBPMenu.cpp                                      \
     Params/IBPParam/IBPWidgets/IBPWaveWidget.cpp                                \
     Params/IBPParam/IBPWidgets/IBPTrendWidget.cpp                               \
     Params/IBPParam/IBPWidgets/IBPWaveRuler.cpp                                 \
@@ -770,7 +747,6 @@ HEADERS +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmOffState.h                          \
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.h                     \
     Components/Alarm/Widgets/AlarmInfoPopListView.h                             \
-    Components/Alarm/Widgets/AlarmLimitMenu.h                                   \
     Components/Alarm/Widgets/AlarmLimitMenuContent.h                            \
     Components/Alarm/Widgets/AlarmMuteBarWidget.h                               \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.h                           \
@@ -886,8 +862,6 @@ HEADERS +=                                                                      
     Components/KeyHandle/KeyActionManager/KeyActionIFace.h                      \
     Components/KeyHandle/KeyActionManager/NormalModeKeyAction.h                 \
     Components/MenuManager/MenuManager.h                                        \
-    Components/MenuManager/PasswordMenuManage.h                                 \
-    Components/MenuManager/PublicMenuManager.h                                  \
     Components/MenuManager/SetWidget.h                                          \
     Components/MenuManager/SupervisorMenuManager.h                              \
     Components/NetworkManager/NetworkDefine.h                                   \
@@ -949,7 +923,6 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/NIBPManometerContent.h                  \
     Components/Maintain/FactoryMaintain/NIBPZeroPointContent.h                  \
     Components/Maintain/FactoryMaintain/NIBPPressureControlContent.h            \
-    Components/Maintain/FactoryMaintain/FactoryImportExportMenu.h               \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.h        \
     Components/Maintain/FactoryMaintain/FactoryMaintainWindow.h                 \
     Components/Maintain/FactoryMaintain/UpgradeManager.h                        \
@@ -957,41 +930,24 @@ HEADERS +=                                                                      
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWindow.h                            \
     Components/ConfigManager/ConfigManager.h                                    \
-    Components/ConfigManager/ConfigMaintainMenuGrp.h                            \
-    Components/ConfigManager/SelectDefaultConfigMenu.h                          \
     Components/ConfigManager/SelectDefaultConfigMenuContent.h                   \
     Components/ConfigManager/ConfigManagerPassWordEditMenuContent.h             \
-    Components/ConfigManager/UserConfigEditMenu.h                               \
     Components/ConfigManager/UserConfigEditMenuContent.h                        \
-    Components/ConfigManager/ConfigExportImportMenu.h                           \
     Components/ConfigManager/ConfigExportImportMenuContent.h                    \
-    Components/ConfigManager/ConfigEditMenuGrp.h                                \
     Components/ConfigManager/ConfigEditMenuWindow.h                             \
-    Components/ConfigManager/ConfigEditGeneralMenu.h                            \
     Components/ConfigManager/ConfigEditGeneralMenuContent.h                     \
-    Components/ConfigManager/ConfigEditEcgMenu.h                                \
-    Components/ConfigManager/ConfigEditTEMPMenu.h                               \
+    Components/ConfigManager/ConfigEditTEMPMenuContent.h                        \
     Components/ConfigManager/ConfigEditEcgMenuContent.h                         \
-    Components/ConfigManager/ConfigEditRespMenu.h                               \
     Components/ConfigManager/ConfigEditRespMenuContent.h                        \
-    Components/ConfigManager/ConfigEditAlarmLimitMenu.h                         \
-    Components/ConfigManager/ConfigEditNIBPMenu.h                               \
     Components/ConfigManager/ConfigEditNIBPMenuContent.h                        \
-    Components/ConfigManager/ConfigEditSpO2Menu.h                               \
     Components/ConfigManager/ConfigEditSpO2MenuContent.h                        \
-    Components/ConfigManager/ConfigEditCO2Menu.h                                \
     Components/ConfigManager/ConfigEditCO2MenuContent.h                         \
-    Components/ConfigManager/ConfigEditCOMenu.h                                 \
     Components/ConfigManager/ConfigEditCOMenuContent.h                          \
-    Components/ConfigManager/ConfigEditUnitSetupMenu.h                          \
     Components/ConfigManager/ConfigEditAlarmLimitMenuContent.h                  \
     Components/ConfigManager/ConfigEditAlarmLimitModel.h                        \
-    Components/ConfigManager/ConfigEditIBPMenu.h                                \
     Components/ConfigManager/ConfigEditIBPMenuContent.h                         \
-    Components/ConfigManager/ConfigEditDisplayMenu.h                            \
     Components/ConfigManager/ConfigEditDisplayMenuContent.h                     \
     Components/ConfigManager/ConfigEditCodeMarkerMenuContent.h                  \
-    Components/ConfigManager/LoadConfigMenu.h                                   \
     Components/ConfigManager/ConfigManagerWindow.h                              \
     Components/ConfigManager/LoadConfigMenuContent.h                            \
     Components/ConfigManager/UnitSetupMenuContent.h                             \
@@ -1023,7 +979,6 @@ HEADERS +=                                                                      
     Params/ECGParam/ECGWidgets/ECGTrendWidget.h                                 \
     Params/ECGParam/ECGWidgets/ECGPVCSTrendWidget.h                             \
     Params/ECGParam/ECGWidgets/ECGSTTrendWidget.h                               \
-    Params/ECGParam/ECGWidgets/ECGMenu.h                                        \
     Params/ECGParam/ECGWidgets/ECGMenuContent.h                                 \
     Params/ECGParam/ECGWidgets/ArrhythmiaAnalysisMenu.h                         \
     Params/ECGParam/ECGWidgets/ArrhythmiaThresholdMenu.h                        \
@@ -1039,7 +994,6 @@ HEADERS +=                                                                      
     Params/IBPParam/IBPProviderIFace.h                                          \
     Params/IBPParam/IBPDefine.h                                                 \
     Params/IBPParam/IBPParam.h                                                  \
-    Params/IBPParam/IBPWidgets/IBPMenu.h                                        \
     Params/IBPParam/IBPWidgets/IBPWaveWidget.h                                  \
     Params/IBPParam/IBPWidgets/IBPTrendWidget.h                                 \
     Params/IBPParam/IBPSymbol.h                                                 \

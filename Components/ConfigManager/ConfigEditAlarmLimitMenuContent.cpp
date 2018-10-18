@@ -24,6 +24,7 @@
 #include <Button.h>
 #include <QDebug>
 #include "ConfigEditAlarmLimitModel.h"
+#include "SystemManager.h"
 
 #define TABLE_ROW_NUM 7
 

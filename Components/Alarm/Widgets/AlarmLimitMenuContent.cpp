@@ -23,6 +23,7 @@
 #include "IBPParam.h"
 #include "TableViewItemDelegate.h"
 #include <Button.h>
+#include "SystemManager.h"
 #include <QDebug>
 
 #define TABLE_ROW_NUM 7

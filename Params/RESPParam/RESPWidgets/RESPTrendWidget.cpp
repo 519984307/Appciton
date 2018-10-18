@@ -13,7 +13,6 @@
 #include "ParamManager.h"
 #include "ParamInfo.h"
 #include <QHBoxLayout>
-#include "PublicMenuManager.h"
 #include "RESPParam.h"
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"

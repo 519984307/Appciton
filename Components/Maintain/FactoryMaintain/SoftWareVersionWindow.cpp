@@ -17,6 +17,7 @@
 #include <ECGParam.h>
 #include "ParamManager.h"
 #include "Provider.h"
+#include "SystemManager.h"
 
 class SoftWareVersionWindowPrivate
 {

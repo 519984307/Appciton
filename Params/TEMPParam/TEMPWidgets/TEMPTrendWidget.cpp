@@ -14,10 +14,8 @@
 #include "UnitManager.h"
 #include "ParamManager.h"
 #include "ParamInfo.h"
-#include "PublicMenuManager.h"
 #include "TEMPParam.h"
 #include "WindowManager.h"
-#include "AlarmLimitMenu.h"
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"
 

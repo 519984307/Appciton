@@ -11,9 +11,7 @@
 #include "IBPParam.h"
 #include "IBPWaveWidget.h"
 #include "IBPTrendWidget.h"
-#include "IBPMenu.h"
 #include "TimeDate.h"
-#include "AlarmLimitMenu.h"
 #include "TrendTableWindow.h"
 #include "WaveformCache.h"
 #include "IConfig.h"
@@ -1105,7 +1103,6 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
     {
         return;
     }
-    ibpMenu.displayZeroRev(info);
 }
 
 /**************************************************************************************************
@@ -1171,8 +1168,6 @@ void IBPParam::setEntitle(IBPPressureName entitle, IBPSignalInput IBP)
     {
         return;
     }
-
-    alarmLimitMenu.setIBPAlarmItem(_ibp1.pressureName, _ibp2.pressureName);
 
     if (((_ibp1.pressureName >= IBP_PRESSURE_CVP) && (_ibp1.pressureName <= IBP_PRESSURE_ICP))
             && ((_ibp2.pressureName >= IBP_PRESSURE_CVP) && (_ibp2.pressureName <= IBP_PRESSURE_ICP)))
