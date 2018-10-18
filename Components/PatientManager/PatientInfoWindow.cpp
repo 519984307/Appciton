@@ -301,7 +301,7 @@ PatientInfoWindow::PatientInfoWindow()
     d_ptr->combos.insert(PatientInfoWindowPrivate::ITEM_CBO_PACER_MARKER
                          , d_ptr->pacer);
 
-    connect(d_ptr->pacer, SIGNAL(currentIndexChanged(int)), this , SLOT(_pacerMakerReleased(int)));
+    connect(d_ptr->pacer, SIGNAL(currentIndexChanged(int)), this , SLOT(pacerMakerReleased(int)));
 
     // patient id
     label = new QLabel(trs("PatientID"));
@@ -318,7 +318,7 @@ PatientInfoWindow::PatientInfoWindow()
                       , 1);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_ID
                           , d_ptr->id);
-    connect(d_ptr->id, SIGNAL(released()), this, SLOT(_idReleased()));
+    connect(d_ptr->id, SIGNAL(released()), this, SLOT(idReleased()));
 
     // patient sex
     label = new QLabel(trs("PatientSex"));
@@ -377,7 +377,7 @@ PatientInfoWindow::PatientInfoWindow()
                       , 3);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_NAME
                           , d_ptr->name);
-    connect(d_ptr->name, SIGNAL(released()), this, SLOT(_nameReleased()));
+    connect(d_ptr->name, SIGNAL(released()), this, SLOT(nameReleased()));
 
     // patient age
     label = new QLabel(trs("PatientAge"));
@@ -395,7 +395,7 @@ PatientInfoWindow::PatientInfoWindow()
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_AGE
                           , d_ptr->age);
 
-    connect(d_ptr->age, SIGNAL(released()), this, SLOT(_ageReleased()));
+    connect(d_ptr->age, SIGNAL(released()), this, SLOT(ageReleased()));
 
     // Patient Height
     label = new QLabel();
@@ -413,7 +413,7 @@ PatientInfoWindow::PatientInfoWindow()
                       , 3);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_HEIGHT
                           , d_ptr->height);
-    connect(d_ptr->height, SIGNAL(released()), this, SLOT(_heightReleased()));
+    connect(d_ptr->height, SIGNAL(released()), this, SLOT(heightReleased()));
 
     // Patient Weight
     label = new QLabel();
@@ -431,7 +431,7 @@ PatientInfoWindow::PatientInfoWindow()
                       , 1);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_WEIGHT
                           , d_ptr->weight);
-    connect(d_ptr->weight, SIGNAL(released()), this, SLOT(_weightReleased()));
+    connect(d_ptr->weight, SIGNAL(released()), this, SLOT(weightReleased()));
 
     // create patient button
     d_ptr->savePatientInfo = new Button(trs("PatientCreate"));
@@ -442,7 +442,7 @@ PatientInfoWindow::PatientInfoWindow()
     buttonLayout->addWidget(d_ptr->savePatientInfo);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_CREATE_PATIENT
                           , d_ptr->savePatientInfo);
-    connect(d_ptr->savePatientInfo, SIGNAL(released()), this, SLOT(_saveInfoReleased()));
+    connect(d_ptr->savePatientInfo, SIGNAL(released()), this, SLOT(saveInfoReleased()));
 
     // clean patient data
     d_ptr->relievePatient = new Button(trs("CleanPatientData"));
@@ -453,7 +453,7 @@ PatientInfoWindow::PatientInfoWindow()
     buttonLayout->addWidget(d_ptr->relievePatient);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_CLEAR_PATIENT
                           , d_ptr->relievePatient);
-    connect(d_ptr->relievePatient, SIGNAL(released()), this, SLOT(_relieveReleased()));
+    connect(d_ptr->relievePatient, SIGNAL(released()), this, SLOT(relieveReleased()));
     layout->setRowStretch(d_ptr->combos.count() + d_ptr->buttons.count() , 1);
     layout->setSpacing(15);
     layout->setMargin(5);
@@ -462,7 +462,7 @@ PatientInfoWindow::PatientInfoWindow()
     setWindowLayout(backgroundLayout);
 
     connect(DischargePatientWindow::getInstance(), SIGNAL(exitFlag(bool)),
-            this, SLOT(DischargeWinExit(bool)));
+            this, SLOT(dischargeWinExit(bool)));
 }
 
 void PatientInfoWindowPrivate::savePatientInfoToConfig()
@@ -530,7 +530,7 @@ void PatientInfoWindow::newPatientStatus(bool pStatus)
     d_ptr->patientNew = pStatus;
 }
 
-void PatientInfoWindow::_idReleased()
+void PatientInfoWindow::idReleased()
 {
     EnglishInputPanel englishPanel;
     englishPanel.setWindowTitle(trs("PatientID"));
@@ -543,7 +543,7 @@ void PatientInfoWindow::_idReleased()
     }
 }
 
-void PatientInfoWindow::_nameReleased()
+void PatientInfoWindow::nameReleased()
 {
     EnglishInputPanel englishPanel;
     englishPanel.setWindowTitle(trs("PatientName"));
@@ -556,7 +556,7 @@ void PatientInfoWindow::_nameReleased()
     }
 }
 
-void PatientInfoWindow::_ageReleased()
+void PatientInfoWindow::ageReleased()
 {
     KeyInputPanel inputPanel(KeyInputPanel::KEY_TYPE_NUMBER);
     inputPanel.setWindowTitle(trs("PatientAge"));
@@ -586,7 +586,7 @@ void PatientInfoWindow::_ageReleased()
     }
 }
 
-void PatientInfoWindow::_heightReleased()
+void PatientInfoWindow::heightReleased()
 {
     KeyInputPanel inputPanel(KeyInputPanel::KEY_TYPE_NUMBER);
     inputPanel.setWindowTitle(trs("PatientHeight"));
@@ -621,7 +621,7 @@ void PatientInfoWindow::_heightReleased()
     }
 }
 
-void PatientInfoWindow::_weightReleased()
+void PatientInfoWindow::weightReleased()
 {
     KeyInputPanel inputPanel(KeyInputPanel::KEY_TYPE_NUMBER);
     inputPanel.setWindowTitle(trs("PatientWeight"));
@@ -656,7 +656,7 @@ void PatientInfoWindow::_weightReleased()
     }
 }
 
-void PatientInfoWindow::_relieveReleased()
+void PatientInfoWindow::relieveReleased()
 {
     this->hide();
     if (d_ptr->relieveFlag == true)
@@ -671,7 +671,7 @@ void PatientInfoWindow::_relieveReleased()
     widgetChange();
 }
 
-void PatientInfoWindow::_saveInfoReleased()
+void PatientInfoWindow::saveInfoReleased()
 {
     int warnStatus;
 
@@ -712,12 +712,12 @@ void PatientInfoWindow::_saveInfoReleased()
     }
 }
 
-void PatientInfoWindow::_pacerMakerReleased(int index)
+void PatientInfoWindow::pacerMakerReleased(int index)
 {
     ecgParam.setPacermaker(static_cast<ECGPaceMode>(index));
 }
 
-void PatientInfoWindow::DischargeWinExit(bool flag)
+void PatientInfoWindow::dischargeWinExit(bool flag)
 {
     if (d_ptr->relieveFlag == true && flag)
     {

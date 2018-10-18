@@ -30,15 +30,15 @@ public:
     void relieveStatus(bool);
     void newPatientStatus(bool);
 private slots:
-    void _idReleased(void);
-    void _nameReleased(void);
-    void _ageReleased(void);
-    void _heightReleased(void);
-    void _weightReleased(void);
-    void _relieveReleased(void);
-    void _saveInfoReleased(void);
-    void _pacerMakerReleased(int);
-    void DischargeWinExit(bool flag);
+    void idReleased(void);
+    void nameReleased(void);
+    void ageReleased(void);
+    void heightReleased(void);
+    void weightReleased(void);
+    void relieveReleased(void);
+    void saveInfoReleased(void);
+    void pacerMakerReleased(int);
+    void dischargeWinExit(bool flag);
 
 protected:
     void showEvent(QShowEvent *);
