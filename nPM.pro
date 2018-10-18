@@ -161,7 +161,6 @@ SOURCES +=                                                                      
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2Widget.cpp                           \
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2TrendWidget.cpp                      \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.cpp                          \
-    Utility/Widgets/OxyCRGWidget/OxyCRGSetupWidget.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWindow.cpp                          \
     Utility/Widgets/Trendform/TrendCanvasWidget.cpp                             \
     Utility/Widgets/Trendform/ShortTrendItem.cpp                                \
@@ -219,7 +218,6 @@ SOURCES +=                                                                      
     Components/System/SystemManager.cpp                                         \
     Components/System/SystemAlarm.cpp                                           \
     Components/System/TDA19988Ctrl.cpp                                          \
-    Components/System/Widgets/SystemModeSelectWidget.cpp                        \
     Components/System/Widgets/SystemModeBarWidget.cpp                           \
     Components/System/Widgets/SystemSelftestMenu.cpp                            \
     Components/System/Widgets/SystemStatusBarWidget.cpp                         \
@@ -311,7 +309,6 @@ SOURCES +=                                                                      
     Components/PowerManager/PowerManager.cpp                                    \
     Components/WindowManager/IWidget.cpp                                        \
     Components/WindowManager/WindowManager.cpp                                  \
-    Components/WindowManager/WidgetSelectMenu.cpp                               \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
     Components/WindowManager/MainMenuWindow.cpp                                 \
     Components/WindowManager/FactoryMaintainMenuWindow.cpp                      \
@@ -669,13 +666,12 @@ HEADERS +=                                                                      
     Utility/Widgets/OxyCRGWidget/OxyCRGHRWidget.h                               \
     Utility/Widgets/OxyCRGWidget/OxyCRGRESPWidget.h                             \
     Utility/Widgets/OxyCRGWidget/OxyCRGRRWidget.h                               \
-    Utility/Widgets/OxyCRGWidget/OxyCRGRESPWaveWidget.h                        \
+    Utility/Widgets/OxyCRGWidget/OxyCRGRESPWaveWidget.h                         \
     Utility/Widgets/OxyCRGWidget/OxyCRGRRHRWaveWidget.h                         \
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2Widget.h                             \
-    Utility/Widgets/OxyCRGWidget/OxyCRGSPO2TrendWidget.h                           \
+    Utility/Widgets/OxyCRGWidget/OxyCRGSPO2TrendWidget.h                        \
     Utility/Widgets/OxyCRGWidget/OxyCRGCO2Widget.h                              \
     Utility/Widgets/OxyCRGWidget/OxyCRGCO2WaveWidget.h                          \
-    Utility/Widgets/OxyCRGWidget/OxyCRGSetupWidget.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWindow.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGSymbol.h                                 \
@@ -737,7 +733,6 @@ HEADERS +=                                                                      
     Components/System/SystemAlarm.h                                             \
     Components/System/TDA19988Ctrl.h                                            \
     Components/System/Widgets/SystemStatusBarWidget.h                           \
-    Components/System/Widgets/SystemModeSelectWidget.h                          \
     Components/System/Widgets/SystemSelftestMenu.h                              \
     Components/System/Widgets/SystemModeBarWidget.h                             \
     Components/System/Widgets/NormalFunctionMenuContent.h                       \
@@ -848,7 +843,6 @@ HEADERS +=                                                                      
     Components/USBManager/USBManager.h                                          \
     Components/WindowManager/IWidget.h                                          \
     Components/WindowManager/WindowManager.h                                    \
-    Components/WindowManager/WidgetSelectMenu.h                                 \
     Components/WindowManager/PromptInfoBarWidget.h                              \
     Components/WindowManager/MainMenuWindow.h                                   \
     Components/WindowManager/FactoryMaintainMenuWindow.h                        \
