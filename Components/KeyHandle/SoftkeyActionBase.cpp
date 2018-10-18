@@ -26,7 +26,6 @@
 #include "SystemManager.h"
 #include "DataStorageDirManager.h"
 #include "DoseCalculationManager.h"
-#include "HemodynamicWidget.h"
 #include "Window.h"
 #include "MenuSidebar.h"
 #include "MenuWindow.h"

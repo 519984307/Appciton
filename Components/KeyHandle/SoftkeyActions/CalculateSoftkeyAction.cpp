@@ -19,7 +19,6 @@
 #include "DataStorageDirManager.h"
 #include "DoseCalculationWindow.h"
 #include "DoseCalculationManager.h"
-#include "HemodynamicWidget.h"
 #include "HemodynamicWindow.h"
 #include "LanguageManager.h"
 #include "LayoutManager.h"
