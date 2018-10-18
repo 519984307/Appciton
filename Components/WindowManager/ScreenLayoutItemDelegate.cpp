@@ -19,6 +19,8 @@
 #include "PopupList.h"
 #include "ScreenLayoutEditor.h"
 #include "FontManager.h"
+#include "LayoutManager.h"
+#include <QPoint>
 
 #define WAVE_LEFT_RIGHT_MARGIN 4
 #define WAVE_TOP_BOTTOM_MARGIN 2
@@ -116,7 +118,9 @@ bool ScreenLayoutItemDelegatePrivate::showEditor(const QTableView *view, QAbstra
     ScreenLayoutEditor *editor = new ScreenLayoutEditor(title);
     editor->setAttribute(Qt::WA_DeleteOnClose, true);
     editor->setWindowModality(Qt::ApplicationModal);
-    editor->setDisplayPosition(rect.topRight());
+    QPoint pos = rect.topRight();
+    pos.setY(pos.y() - rect.height());
+    editor->setDisplayPosition(pos);
     editor->setRemoveable(!info.name.isEmpty());
     editor->setReplaceList(model->data(index, ReplaceRole).toList());
     editor->setInsertList(model->data(index, InsertRole).toList());
