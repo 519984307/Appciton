@@ -40,6 +40,13 @@ enum UnitType
     UNIT_NR
 };
 
+struct Range
+{
+    Range() : upLimit(0.0), downLimit(0.0){}
+    float upLimit;
+    float downLimit;
+};
+
 class Unit
 {
 public:
@@ -162,5 +169,36 @@ public:
         }
 
         return destVal;
+    }
+
+    /**
+     * @brief getRange 获取相应单位的输入值范围
+     * @param type
+     * @return
+     */
+    static inline Range getRange(UnitType type)
+    {
+        Range range;
+        switch (type) {
+        case UNIT_INCH:
+            range.upLimit = 118.0;
+            range.downLimit = 8.0;
+            break;
+        case UNIT_CM:
+            range.upLimit = 300.0;
+            range.downLimit = 20.0;
+            break;
+        case UNIT_KG:
+            range.upLimit = 200.0;
+            range.downLimit = 0.1;
+            break;
+        case UNIT_LB:
+            range.upLimit = 440.9;
+            range.downLimit = 0.2;
+            break;
+        default:
+            break;
+        }
+        return range;
     }
 };
