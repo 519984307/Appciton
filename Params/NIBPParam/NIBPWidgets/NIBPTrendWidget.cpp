@@ -345,12 +345,9 @@ void NIBPTrendWidget::setTextSize()
 {
     QRect r;
     r.setSize(QSize(((width() - nameLabel->width())/4), ((height() / 4) * 3)));
-//    int fontsize = fontManager.adjustNumFontSizeXML(r);
-//    int size = fontManager.getFontSize(fontsize);
-//    QFont font = fontManager.numFont(size, true);
     int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
-//    font.setStretch(105); // 横向放大。
+    QFont defaultFont = fontManager.numFont(fontsize + 5 , true);
     font.setWeight(QFont::Black);
 
     _nibpValue->setFont(font);
@@ -358,8 +355,16 @@ void NIBPTrendWidget::setTextSize()
     _diaValue->setFont(font);
     _pressureValue->setFont(font);
 
+    if (_message->text() == InvStr())
+    {
+        _message->setFont(defaultFont);
+    }
+    else
+    {
+        _message->setFont(font);
+    }
+
     font = fontManager.numFont(fontsize - 10, true);
-//    font.setStretch(105);
     font.setWeight(QFont::Black);
 
     _mapValue->setFont(font);
