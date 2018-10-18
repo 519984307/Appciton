@@ -21,7 +21,7 @@ public:
     ~TrendGraphWindow();
 
 public:
-    void setSubWidgetRulerLimit(SubParamID id, int down, int up);
+    void setSubWidgetRulerLimit(SubParamID id, int down, int up, int scale);
 
     void updateTrendGraph();
 

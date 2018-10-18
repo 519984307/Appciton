@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/10/18
+ **/
+
 #pragma once
 #include "Provider.h"
 #include "SPO2ProviderIFace.h"
@@ -14,9 +24,18 @@ public:
      */
     virtual void setSensitive(SPO2Sensitive sens);
 
-    virtual int getSPO2WaveformSample(void) {return 76;}
-    virtual int getSPO2BaseLine(void) {return 128;}
-    virtual int getSPO2MaxValue(void) {return 256;}
+    virtual int getSPO2WaveformSample(void)
+    {
+        return 76;
+    }
+    virtual int getSPO2BaseLine(void)
+    {
+        return 128;
+    }
+    virtual int getSPO2MaxValue(void)
+    {
+        return 256;
+    }
 
     /**
      * @brief sendVersion  获取版本号
@@ -63,7 +82,7 @@ public:
      * @brief getSatSeconds  获取高低限值容忍的时间
      * @param pack  数据包
      */
-    virtual void getSatSeconds(unsigned char* pack);
+    virtual void getSatSeconds(unsigned char *pack);
     /**
      * @brief sendCmdData  发送协议指令
      * @param cmdId  指令ID
@@ -181,49 +200,49 @@ private:
 
     static const int _minPacketLen = 5;      // 最小数据包长度。
 
-    unsigned char _spo2ValueLimitStatus;  //血氧高低限报警状态 0：无效 1：高限 2：低限
+    unsigned char _spo2ValueLimitStatus;  // 血氧高低限报警状态 0：无效 1：高限 2：低限
 
-    unsigned char _prValueLimitStatus;  //脉率高低限报警状态 0：无效 1：高限 2：低限
+    unsigned char _prValueLimitStatus;  // 脉率高低限报警状态 0：无效 1：高限 2：低限
 
-    bool _isInterfere;  //是否有干扰
+    bool _isInterfere;  // 是否有干扰
 
     bool _isLowPerfusionFlag;
 
-    unsigned char _volumeWarnPriority;  //声音报警优先级
+    unsigned char _volumeWarnPriority;  // 声音报警优先级
 
-    unsigned char _spo2Low;  //血氧低限
+    unsigned char _spo2Low;  // 血氧低限
 
-    unsigned char _spo2High;  //血氧高限
+    unsigned char _spo2High;  // 血氧高限
 
-    unsigned short _prLow;  //脉率低限
+    unsigned short _prLow;  // 脉率低限
 
-    unsigned short _prHigh;  //脉率高限
+    unsigned short _prHigh;  // 脉率高限
 
-    unsigned char _hostSensorKeyOne;  //主机传感器密钥信息
-    unsigned char _hostSensorKeyTwo;  //主机传感器密钥信息
-    unsigned char _hostSensorKeyThree;  //主机传感器密钥信息
-    unsigned char _hostSensorKeyFour;  //主机传感器密钥信息
+    unsigned char _hostSensorKeyOne;  // 主机传感器密钥信息
+    unsigned char _hostSensorKeyTwo;  // 主机传感器密钥信息
+    unsigned char _hostSensorKeyThree;  // 主机传感器密钥信息
+    unsigned char _hostSensorKeyFour;  // 主机传感器密钥信息
 
-    QString _versionInfo;  //版本信息
+    QString _versionInfo;  // 版本信息
 
-    bool _isreset;  //模块是否复位
+    bool _isreset;  // 模块是否复位
 
     unsigned char _satSeconds;  // 高低限值容忍时间
 
-    unsigned char _irPerModulValue;  //IR百分比调制值
+    unsigned char _irPerModulValue;  // IR百分比调制值
 
-    WaveUpdateType _waveUpdateType;  //波形更新速率
+    WaveUpdateType _waveUpdateType;  // 波形更新速率
 
-    unsigned char _waveSelectType;  //波形选择
+    unsigned char _waveSelectType;  // 波形选择
 
-    bool _isEnableCClock;  //是否使能CCLCOK功能
+    bool _isEnableCClock;  // 是否使能CCLCOK功能
 
-    bool _isEnableSensorEventRecord;  //是否启用传感器事件记录功能
+    bool _isEnableSensorEventRecord;  // 是否启用传感器事件记录功能
 
-    QDateTime _dataTime; //日期时间
+    QDateTime _dataTime; // 日期时间
 
-    //传感器事件状态
-    unsigned char _sensorEventStatus;  //传感器事件状态
-    unsigned char _sensorEventType;  //传感器事件类型
-    unsigned char _sensorType;  //传感器类型
+    // 传感器事件状态
+    unsigned char _sensorEventStatus;  // 传感器事件状态
+    unsigned char _sensorEventType;  // 传感器事件类型
+    unsigned char _sensorType;  // 传感器类型
 };

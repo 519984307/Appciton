@@ -21,7 +21,6 @@
 #include "ConfigEditIBPMenu.h"
 #include "IBPMenu.h"
 #include "ECGMenu.h"
-#include "SupervisorCodeMarker.h"
 #include "ConfigEditDisplayMenu.h"
 
 class ConfigEditMenuGrpPrivate
@@ -104,9 +103,9 @@ void ConfigEditMenuGrp::initializeSubMenu()
     addSubMenu(subMenu);
     d_ptr->subMenuMap["ConfigIBPMenu"] = subMenu;
 
-    subMenu = new SupervisorCodeMarker();
-    addSubMenu(subMenu);
-    d_ptr->subMenuMap["SupervisorCodeMarker"] = subMenu;
+//    subMenu = new SupervisorCodeMarker();
+//    addSubMenu(subMenu);
+//    d_ptr->subMenuMap["SupervisorCodeMarker"] = subMenu;
 
     subMenu = new ConfigEditDisplayMenu();
     addSubMenu(subMenu);

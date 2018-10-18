@@ -167,6 +167,10 @@ void PasswordWidget::onButtonReleased()
     Button *button = qobject_cast<Button *>(sender());
     if (button)
     {
+        if (d_ptr->timer->isActive())
+        {
+            d_ptr->timer->stop();
+        }
         PasswordWidgetPrivate::KeyItem item
                 = (PasswordWidgetPrivate::KeyItem)button->property("Item").toInt();
         switch (item)

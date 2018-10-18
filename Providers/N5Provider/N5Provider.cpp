@@ -206,6 +206,11 @@ static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
  *************************************************************************************************/
 void N5Provider::handlePacket(unsigned char *data, int len)
 {
+    if (!isConnectedToParam)
+    {
+        return;
+    }
+
     if (NULL == data ||  0 >= len)
     {
         return;
@@ -386,6 +391,7 @@ bool N5Provider::attachParam(Param &param)
     if (param.getParamID() == PARAM_NIBP)
     {
         nibpParam.setProvider(this);
+        Provider::attachParam(param);
         return true;
     }
     return false;

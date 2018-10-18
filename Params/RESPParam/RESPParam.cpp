@@ -118,7 +118,7 @@ void RESPParam::handDemoWaveform(WaveformID id, short data)
  *************************************************************************************************/
 void RESPParam::handDemoTrendData(void)
 {
-    int rrValue = qrand() % 10 + 20;
+    int rrValue = 20;
     respDupParam.updateRR(rrValue);
 
     d_ptr->oxyCRGRrHrTrend->addRrTrendData(rrValue);

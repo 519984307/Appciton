@@ -417,13 +417,13 @@ void KeyInputPanel::showEvent(QShowEvent *e)
     }
 }
 
-/**************************************************************************************************
- * 功能：设置初始字符串。
- * 参数：
- *      text：文本信息。
- *************************************************************************************************/
-void KeyInputPanel::setInitString(const QString &text)
+void KeyInputPanel::setInitString(const QString &text, bool isPlaceHolder)
 {
+    if (isPlaceHolder)
+    {
+        d_ptr->textDisplay->setPlaceholderText(text);
+        return;
+    }
     d_ptr->textDisplay->setText(text);
 }
 

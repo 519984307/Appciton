@@ -14,7 +14,6 @@
 #include "TimeDate.h"
 #include "IConfig.h"
 #include "SystemTick.h"
-#include "SupervisorTimeMenu.h"
 
 TimeManager *TimeManager::_selfObj = NULL;
 #define MAXDATETIMEVALUE  2145916800  // 2037-12-31 23:59:59秒对应的时间戳
@@ -95,7 +94,6 @@ void TimeManager::mainRun(unsigned t)
     {
         _curTime = t - 100 * 3600;
         _elapseStartTime = _elapseStartTime - 100 * 3600;
-        supervisorTimeMenu.setSysTimeTo2037_12_27_20();
         systemTick.resetLastTime();
     }
     else

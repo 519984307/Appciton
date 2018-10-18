@@ -56,6 +56,7 @@ public:
      * @param scale
      */
     void setScale(int scale);
+    int getScale(void);
 
     /**
      * @brief setStep set step

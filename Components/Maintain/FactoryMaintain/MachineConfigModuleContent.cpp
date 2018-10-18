@@ -14,6 +14,10 @@
 #include "ComboBox.h"
 #include "LanguageManager.h"
 #include "IConfig.h"
+#include "RESPSymbol.h"
+#include "NIBPSymbol.h"
+#include "TEMPSymbol.h"
+#include "SPO2Symbol.h"
 
 class MachineConfigModuleContentPrivte
 {
@@ -22,6 +26,10 @@ public:
     {
         ITEM_CBO_IBP_CO = 0,
         ITEM_CBO_CO2,
+        ITEM_CBO_RESP,
+        ITEM_CBO_SPO2,
+        ITEM_CBO_NIBP,
+        ITEM_CBO_TEMP,
         ITEM_CBO_ECG12,
         ITEM_CBO_PRINTER,
         ITEM_CBO_HDMI,
@@ -56,6 +64,45 @@ void MachineConfigModuleContentPrivte::loadOptions()
     index = 0;
     systemConfig.getNumValue("MachineConfigModule|CO2Module", index);
     combos[ITEM_CBO_CO2]->setCurrentIndex(index);
+
+    QString moduleName;
+
+    moduleName.clear();
+    machineConfig.getStrValue("RESP", moduleName);
+    index = combos[ITEM_CBO_RESP]->findText(moduleName);
+    if (index <= 0)
+    {
+        index = 0;
+    }
+    combos[ITEM_CBO_RESP]->setCurrentIndex(index);
+
+    moduleName.clear();
+    machineConfig.getStrValue("SPO2", moduleName);
+    index = combos[ITEM_CBO_SPO2]->findText(moduleName);
+    if (index <= 0)
+    {
+        index = 0;
+    }
+    combos[ITEM_CBO_SPO2]->setCurrentIndex(index);
+
+    moduleName.clear();
+    machineConfig.getStrValue("NIBP", moduleName);
+    index = combos[ITEM_CBO_NIBP]->findText(moduleName);
+    if (index <= 0)
+    {
+        index = 0;
+    }
+    combos[ITEM_CBO_NIBP]->setCurrentIndex(index);
+
+
+    moduleName.clear();
+    machineConfig.getStrValue("TEMP", moduleName);
+    index = combos[ITEM_CBO_TEMP]->findText(moduleName);
+    if (index <= 0)
+    {
+        index = 0;
+    }
+    combos[ITEM_CBO_TEMP]->setCurrentIndex(index);
 
     index = 0;
     systemConfig.getNumValue("MachineConfigModule|ECG12LeadsModule", index);
@@ -116,7 +163,7 @@ void MachineConfigModuleContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs("Disable")
+                    << trs("Off")
                     << trs("M601")
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
@@ -130,7 +177,7 @@ void MachineConfigModuleContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs("Disable")
+                    << trs("Off")
                     << trs("PHASEIN")
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
@@ -140,12 +187,75 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
+    // resp module
+    label = new QLabel(trs("RESPModule"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs(RESPSymbol::convert(MODULE_BLM_E5))
+                   );
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_RESP, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_RESP;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
+    // spo2 module
+    label = new QLabel(trs("SPO2Module"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs(SPO2Symbol::convert(MODULE_BLM_S5))
+                    << trs(SPO2Symbol::convert(MODULE_MASIMO_SPO2))
+                    << trs(SPO2Symbol::convert(MODULE_NELLCOR_SPO2))
+                   );
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_SPO2, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_SPO2;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
+    // nibp module
+    label = new QLabel(trs("NIBPModule"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs(NIBPSymbol::convert(MODULE_N5))
+                    << trs(NIBPSymbol::convert(MODULE_SUNTECH_NIBP))
+                   );
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_NIBP, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_NIBP;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
+    // temp module
+    label = new QLabel(trs("TEMPModule"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs(TEMPSymbol::convert(MODULE_BLM_T5))
+                   );
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte
+                         ::ITEM_CBO_TEMP, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_TEMP;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
     label = new QLabel(trs("ECG12LeadsModule"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs("Disable")
-                    << trs("Enable")
+                    << trs("Off")
+                    << trs("On")
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
@@ -158,8 +268,8 @@ void MachineConfigModuleContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs("Disable")
-                    << trs("Enable")
+                    << trs("Off")
+                    << trs("On")
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
@@ -172,8 +282,8 @@ void MachineConfigModuleContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs("Disable")
-                    << trs("Enable")
+                    << trs("Off")
+                    << trs("On")
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
@@ -186,8 +296,8 @@ void MachineConfigModuleContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs("Disable")
-                    << trs("Enable")
+                    << trs("Off")
+                    << trs("On")
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
@@ -200,8 +310,8 @@ void MachineConfigModuleContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs("Disable")
-                    << trs("Enable")
+                    << trs("Off")
+                    << trs("On")
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
@@ -214,8 +324,8 @@ void MachineConfigModuleContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs("Disable")
-                    << trs("Enable")
+                    << trs("Off")
+                    << trs("On")
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
@@ -228,8 +338,8 @@ void MachineConfigModuleContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs("Disable")
-                    << trs("Enable")
+                    << trs("Off")
+                    << trs("On")
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
@@ -255,6 +365,70 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
     case MachineConfigModuleContentPrivte::ITEM_CBO_CO2:
         str = "CO2Module";
         break;
+    case MachineConfigModuleContentPrivte::ITEM_CBO_RESP:
+    {
+        QString moduleName;
+        if (index == 0)
+        {
+            moduleName = "DemoProvider";
+        }
+        else
+        {
+           moduleName = RESPSymbol::convert(static_cast<RESPModuleType>(index - 1));
+        }
+        machineConfig.setStrValue("RESP", moduleName);
+        machineConfig.saveToDisk();
+        return;
+    }
+        break;
+    case MachineConfigModuleContentPrivte::ITEM_CBO_SPO2:
+    {
+        QString moduleName;
+        if (index == 0)
+        {
+            moduleName = "DemoProvider";
+        }
+        else
+        {
+           moduleName = SPO2Symbol::convert(static_cast<SPO2ModuleType>(index - 1));
+        }
+        machineConfig.setStrValue("SPO2", moduleName);
+        machineConfig.saveToDisk();
+        return;
+    }
+        break;
+    case MachineConfigModuleContentPrivte::ITEM_CBO_NIBP:
+    {
+        QString moduleName;
+        if (index == 0)
+        {
+            moduleName = "DemoProvider";
+        }
+        else
+        {
+           moduleName = NIBPSymbol::convert(static_cast<NIBPModuleType>(index - 1));
+        }
+        machineConfig.setStrValue("NIBP", moduleName);
+        machineConfig.saveToDisk();
+        return;
+    }
+        break;
+    case MachineConfigModuleContentPrivte::ITEM_CBO_TEMP:
+    {
+        QString moduleName;
+        if (index == 0)
+        {
+            moduleName = "DemoProvider";
+        }
+        else
+        {
+           moduleName = TEMPSymbol::convert(static_cast<TEMPModuleType>(index - 1));
+        }
+        machineConfig.setStrValue("TEMP", moduleName);
+        machineConfig.saveToDisk();
+        return;
+    }
+        break;
     case MachineConfigModuleContentPrivte::ITEM_CBO_ECG12:
         str = "ECG12LeadsModule";
         break;
@@ -279,32 +453,6 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
     default:
         return;
     }
+
     systemConfig.setNumValue(QString("MachineConfigModule|%1").arg(str), index);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
