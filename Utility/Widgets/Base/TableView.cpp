@@ -429,7 +429,7 @@ void TableView::focusInEvent(QFocusEvent *ev)
         {
             setCurrentIndex(d_ptr->lastIndex);
         }
-        else
+        else if (!currentIndex().isValid())
         {
             // focus the first item or the first row
             if (this->selectionBehavior() == QAbstractItemView::SelectRows)

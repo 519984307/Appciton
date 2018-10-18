@@ -176,7 +176,7 @@ void SupervisorTimeWindow::layoutExec()
 {
     setWindowTitle(trs("SupervisorTimeAndDataMenu"));
 
-    QVBoxLayout *vlayout = new QVBoxLayout(this);
+    QVBoxLayout *vlayout = new QVBoxLayout;
     QGridLayout *layout = new QGridLayout;
 
     vlayout->addLayout(layout);

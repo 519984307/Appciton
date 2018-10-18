@@ -25,6 +25,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QTimerEvent>
+#include "AlarmLimitWindow.h"
 
 #define AUTO_SCALE_UPDATE_TIME          (2 * 1000)
 
@@ -633,10 +634,7 @@ void IBPMenuContent::onButtonReleased()
 
 void IBPMenuContent::onAlarmBtnReleased()
 {
-    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_ART_SYS, true);
-    if (w)
-    {
-        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
-    }
+    AlarmLimitWindow w(subParamName);
+    windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }

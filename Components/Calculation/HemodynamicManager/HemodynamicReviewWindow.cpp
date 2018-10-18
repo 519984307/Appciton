@@ -85,7 +85,7 @@ HemodynaimcReviewWindow::HemodynaimcReviewWindow()
 
 HemodynaimcReviewWindow *HemodynaimcReviewWindow::getInstance()
 {
-    HemodynaimcReviewWindow *instance = NULL;
+    static HemodynaimcReviewWindow *instance = NULL;
     if (!instance)
     {
         instance = new HemodynaimcReviewWindow;
@@ -102,7 +102,7 @@ void HemodynaimcReviewWindow::layoutExec()
 {
     setWindowTitle(trs("ReviewWindow"));
 
-    QVBoxLayout *vlayout = new QVBoxLayout(this);
+    QVBoxLayout *vlayout = new QVBoxLayout;
     vlayout->setMargin(10);
     vlayout->setAlignment(Qt::AlignTop);
 

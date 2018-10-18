@@ -256,6 +256,7 @@ SOURCES +=                                                                      
     Components/Alarm/Widgets/AlarmInfoPopListView.cpp                           \
     Components/Alarm/Widgets/AlarmLimitMenu.cpp                                 \
     Components/Alarm/Widgets/AlarmLimitMenuContent.cpp                          \
+    Components/Alarm/Widgets/AlarmLimitWindow.cpp                               \
     Components/Alarm/Widgets/AlarmMuteBarWidget.cpp                             \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.cpp                         \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.cpp                          \
@@ -788,6 +789,7 @@ HEADERS +=                                                                      
     Components/Alarm/Widgets/AlarmInfoPopListView.h                             \
     Components/Alarm/Widgets/AlarmLimitMenu.h                                   \
     Components/Alarm/Widgets/AlarmLimitMenuContent.h                            \
+    Components/Alarm/Widgets/AlarmLimitWindow.h                                 \
     Components/Alarm/Widgets/AlarmMuteBarWidget.h                               \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.h                           \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.h                            \
