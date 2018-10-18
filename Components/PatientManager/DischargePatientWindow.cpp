@@ -16,6 +16,7 @@
 #include "PatientInfoWindow.h"
 #include <QGridLayout>
 #include "LayoutManager.h"
+#include "StandyWindow.h"
 
 class DischaregePatientWindowPrivate
 {
@@ -97,6 +98,7 @@ void DischargePatientWindow::showEvent(QShowEvent *e)
  *************************************************************************************************/
 void DischargePatientWindow::exit()
 {
+    emit exitFlag(false);
     hide();
 }
 
@@ -105,8 +107,11 @@ void DischargePatientWindow::exit()
  **************************************************************************************************/
 void DischargePatientWindow::onYesReleased()
 {
+    emit exitFlag(true);
     hide();
     dataStorageDirManager.createDir(true);
+    StandyWindow win;
+    win.exec();
 }
 
 /***************************************************************************************************
@@ -114,6 +119,7 @@ void DischargePatientWindow::onYesReleased()
  **************************************************************************************************/
 void DischargePatientWindow::onNoReleased()
 {
+    emit exitFlag(false);
     hide();
     dataStorageDirManager.createDir(true);
 }
