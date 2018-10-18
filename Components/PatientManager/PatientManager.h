@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/10/18
+ **/
+
 #pragma once
 #include "PatientDefine.h"
 #include <QVector>
@@ -5,7 +15,6 @@
 #include "UnitManager.h"
 
 // 病人管理对象。
-class PatientBarWidget;
 class PatientInfoWidget;
 class PatientManager : public QObject
 {
@@ -25,7 +34,6 @@ public:
 
 public:
     // 设置Widget。
-    void setPatientTypeWidget(PatientBarWidget &widget);
     void setPatientInfoWidget(PatientInfoWidget &widget);
 
 public:
@@ -84,7 +92,6 @@ private:
     PatientManager();
 
     PatientInfo _patientInfo;
-    PatientBarWidget *_patientTypeWidget;
     PatientInfoWidget *_patientInfoWidget;
 
     void _loadPatientInfo(PatientInfo &info);

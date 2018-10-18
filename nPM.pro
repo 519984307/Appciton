@@ -298,8 +298,6 @@ SOURCES +=                                                                      
     Components/TimeManager/ElapseTimeWidget.cpp                                 \
     Components/TimeManager/TimeManager.cpp                                      \
     Components/PatientManager/PatientManager.cpp                                \
-    Components/PatientManager/PatientBarWidget.cpp                              \
-    Components/PatientManager/PatientTypeSelectWidget.cpp                       \
     Components/PatientManager/PatientInfoWidget.cpp                             \
     Components/PatientManager/PatientStatusBarWidget.cpp                        \
     Components/PatientManager/PatientInfoMenu.cpp                               \
@@ -829,9 +827,7 @@ HEADERS +=                                                                      
     Components/PatientData/HistoryDataSelWindow.h                               \
     Components/PatientData/HistoryDataSelModel.h                                \
     Components/PatientManager/PatientManager.h                                  \
-    Components/PatientManager/PatientBarWidget.h                                \
     Components/PatientManager/PatientDefine.h                                   \
-    Components/PatientManager/PatientTypeSelectWidget.h                         \
     Components/PatientManager/PatientInfoWidget.h                               \
     Components/PatientManager/PatientStatusBarWidget.h                          \
     Components/PatientManager/PatientInfoMenu.h                                 \

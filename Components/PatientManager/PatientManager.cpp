@@ -10,24 +10,12 @@
 
 
 #include "PatientManager.h"
-#include "PatientBarWidget.h"
 #include "PatientInfoWidget.h"
 #include "IConfig.h"
 #include "ECGParam.h"
 #include "AlarmLimitMenu.h"
 
 PatientManager *PatientManager::_selfObj = NULL;
-
-/**************************************************************************************************
- * 功能：设置窗体控件。
- * 参数：
- *      widget: 窗体控件。
- *************************************************************************************************/
-void PatientManager::setPatientTypeWidget(PatientBarWidget &widget)
-{
-    _patientTypeWidget = &widget;
-    _patientTypeWidget->setPatientInfo(_patientInfo);
-}
 
 void PatientManager::setPatientInfoWidget(PatientInfoWidget &widget)
 {
@@ -295,7 +283,6 @@ void PatientManager::_loadPatientInfo(PatientInfo &info)
 PatientManager::PatientManager()
 {
     _loadPatientInfo(_patientInfo);
-    _patientTypeWidget = NULL;
     _patientInfoWidget = NULL;
 }
 

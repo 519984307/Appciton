@@ -60,7 +60,6 @@
 
 #include "PatientManager.h"
 #include "PatientInfoWidget.h"
-#include "PatientBarWidget.h"
 #include "PatientStatusBarWidget.h"
 
 #include "TimeDate.h"
