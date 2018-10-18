@@ -13,7 +13,7 @@
 #include "NIBPAlarm.h"
 #include "IConfig.h"
 #include "TimeDate.h"
-#include "TN3Provider.h"
+#include "N5Provider.h"
 #include "NIBPTrendWidget.h"
 #include "NIBPDataTrendWidget.h"
 #include "NIBPServiceStateMachine.h"

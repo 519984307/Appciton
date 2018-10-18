@@ -560,8 +560,8 @@ SOURCES +=                                                                      
     Providers/NellcorProvider/NellcorProvider.cpp                               \
     Providers/E5Provider/E5Provider.cpp                                         \
     Providers/T5Provider/T5Provider.cpp                                         \
-    Providers/TN3Provider/TN3Provider.cpp                                       \
     Providers/DemoProvider/DemoProvider.cpp                                     \
+    Providers/N5Provider/N5Provider.cpp                                         \
     Providers/PRT48Provider/PRT48Provider.cpp                                   \
     Providers/SuntechProvider/SuntechProvider.cpp                               \
     Providers/SystemBoardProvider/SystemBoardProvider.cpp                       \
@@ -1142,8 +1142,8 @@ HEADERS +=                                                                      
     Providers/NellcorProvider/NellcorProvider.h                                 \
     Providers/E5Provider/E5Provider.h                                           \
     Providers/T5Provider/T5Provider.h                                           \
-    Providers/TN3Provider/TN3Provider.h                                         \
     Providers/DemoProvider/DemoProvider.h                                       \
+    Providers/N5Provider/N5Provider.h                                           \
     Providers/PRT48Provider/PRT48Provider.h                                     \
     Providers/SuntechProvider/SuntechProvider.h                                 \
     Providers/SystemBoardProvider/SystemBoardProvider.h                         \
@@ -1249,7 +1249,7 @@ DEPENDPATH +=                                                                   
     Providers/SuntechProvider                                                   \
     Providers/BLMTEMPProvider                                                   \
     Providers/T5Provider                                                        \
-    Providers/TN3Provider                                                       \
+    Providers/N5Provider                                                        \
     Providers/E5Provider                                                        \
     Providers/DemoProvider                                                      \
     Providers/PRT48Provider                                                     \
@@ -1373,7 +1373,7 @@ INCLUDEPATH +=                                                                  
     Providers/SuntechProvider                                                   \
     Providers/BLMTEMPProvider                                                   \
     Providers/T5Provider                                                        \
-    Providers/TN3Provider                                                       \
+    Providers/N5Provider                                                       \
     Providers/E5Provider                                                        \
     Providers/DemoProvider                                                      \
     Providers/PRT48Provider                                                     \
