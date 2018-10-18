@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/18
+ **/
+
+
+
 #pragma once
 #include "MenuWidget.h"
 #include <QKeyEvent>
@@ -69,7 +81,7 @@ public:
     void changePage(SubMenu *current, SubMenu *previous);
 
     // 构造与析构。
-    MenuGroup(const QString &name);
+    explicit MenuGroup(const QString &name);
     ~MenuGroup();
 
 signals:

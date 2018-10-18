@@ -14,8 +14,6 @@
 #include "ColorManager.h"
 #include "ParamInfo.h"
 #include "Debug.h"
-#include "ECGMenu.h"
-#include "PublicMenuManager.h"
 #include <QHBoxLayout>
 #include "TrendWidgetLabel.h"
 #include "WindowManager.h"

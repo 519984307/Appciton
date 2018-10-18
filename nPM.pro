@@ -122,7 +122,7 @@ SOURCES +=                                                                      
     Utility/Widgets/Base/TableViewItemDelegate.cpp                              \
     Utility/Widgets/Base/ListView.cpp                                           \
     Utility/Widgets/Base/ListDataModel.cpp                                      \
-    Utility/Widgets/Base/ListViewItemDelegate.cpp                                      \
+    Utility/Widgets/Base/ListViewItemDelegate.cpp                               \
     Utility/Widgets/Base/MenuWindow.cpp                                         \
     Utility/Widgets/Base/MenuSidebar.cpp                                        \
     Utility/Widgets/Base/MenuSidebarItem.cpp                                    \
@@ -141,11 +141,10 @@ SOURCES +=                                                                      
     Utility/Widgets/IComboList/ComboListItem.cpp                                \
     Utility/Widgets/IComboList/IComboList.cpp                                   \
     Utility/Widgets/IComboList/CombolistWidget.cpp                              \
-    Utility/Widgets/InputMethod/EnglishPanel.cpp                                \
     Utility/Widgets/InputMethod/EnglishInputPanel.cpp                           \
     Utility/Widgets/InputMethod/Key.cpp                                         \
     Utility/Widgets/InputMethod/KeyBoardPanel.cpp                               \
-    Utility/Widgets/InputMethod/KeyInputPanel.cpp                              \
+    Utility/Widgets/InputMethod/KeyInputPanel.cpp                               \
     Utility/Widgets/InputMethod/NumberPanel.cpp                                 \
     Utility/Widgets/InputMethod/NumberInput.cpp                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.cpp                          \
@@ -162,7 +161,6 @@ SOURCES +=                                                                      
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2Widget.cpp                           \
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2TrendWidget.cpp                      \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.cpp                          \
-    Utility/Widgets/OxyCRGWidget/OxyCRGSetupWidget.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWindow.cpp                          \
     Utility/Widgets/Trendform/TrendCanvasWidget.cpp                             \
     Utility/Widgets/Trendform/ShortTrendItem.cpp                                \
@@ -220,7 +218,6 @@ SOURCES +=                                                                      
     Components/System/SystemManager.cpp                                         \
     Components/System/SystemAlarm.cpp                                           \
     Components/System/TDA19988Ctrl.cpp                                          \
-    Components/System/Widgets/SystemModeSelectWidget.cpp                        \
     Components/System/Widgets/SystemModeBarWidget.cpp                           \
     Components/System/Widgets/SystemSelftestMenu.cpp                            \
     Components/System/Widgets/SystemStatusBarWidget.cpp                         \
@@ -254,7 +251,6 @@ SOURCES +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmOffState.cpp                        \
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.cpp                   \
     Components/Alarm/Widgets/AlarmInfoPopListView.cpp                           \
-    Components/Alarm/Widgets/AlarmLimitMenu.cpp                                 \
     Components/Alarm/Widgets/AlarmLimitMenuContent.cpp                          \
     Components/Alarm/Widgets/AlarmLimitWindow.cpp                               \
     Components/Alarm/Widgets/AlarmMuteBarWidget.cpp                             \
@@ -267,10 +263,8 @@ SOURCES +=                                                                      
     Components/Calculation/DoseCalculationManager/TitrateTableWindow.cpp        \
     Components/Calculation/DoseCalculationManager/TitrateTableManager.cpp       \
     Components/Calculation/DoseCalculationManager/TitrateTableSetWindow.cpp     \
-    Components/Calculation/HemodynamicManager/HemodynamicWidget.cpp             \
     Components/Calculation/HemodynamicManager/HemodynamicWindow.cpp             \
     Components/Calculation/HemodynamicManager/HemodynamicManager.cpp            \
-    Components/Calculation/HemodynamicManager/HemodynamicReviewWidget.cpp       \
     Components/Calculation/HemodynamicManager/HemodynamicReviewWindow.cpp       \
     Components/Calculation/HemodynamicManager/HemodynamicDataModel.cpp          \
     Components/PatientData/WaveformCache.cpp                                    \
@@ -302,13 +296,9 @@ SOURCES +=                                                                      
     Components/TimeManager/ElapseTimeWidget.cpp                                 \
     Components/TimeManager/TimeManager.cpp                                      \
     Components/PatientManager/PatientManager.cpp                                \
-    Components/PatientManager/PatientBarWidget.cpp                              \
-    Components/PatientManager/PatientTypeSelectWidget.cpp                       \
     Components/PatientManager/PatientInfoWidget.cpp                             \
     Components/PatientManager/PatientStatusBarWidget.cpp                        \
-    Components/PatientManager/PatientInfoMenu.cpp                               \
     Components/PatientManager/PatientManagementMenuContent.cpp                  \
-    Components/PatientManager/RelievePatientWidget.cpp                          \
     Components/PatientManager/PatientInfoWindow.cpp                             \
     Components/PatientManager/DischargePatientWindow.cpp                        \
     Components/PowerManager/BatteryMessage.cpp                                  \
@@ -319,7 +309,6 @@ SOURCES +=                                                                      
     Components/PowerManager/PowerManager.cpp                                    \
     Components/WindowManager/IWidget.cpp                                        \
     Components/WindowManager/WindowManager.cpp                                  \
-    Components/WindowManager/WidgetSelectMenu.cpp                               \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
     Components/WindowManager/MainMenuWindow.cpp                                 \
     Components/WindowManager/FactoryMaintainMenuWindow.cpp                      \
@@ -361,8 +350,6 @@ SOURCES +=                                                                      
     Components/KeyHandle/KeyActionManager/KeyActionManager.cpp                  \
     Components/KeyHandle/KeyActionManager/NormalModeKeyAction.cpp               \
     Components/MenuManager/MenuManager.cpp                                      \
-    Components/MenuManager/PasswordMenuManage.cpp                               \
-    Components/MenuManager/PublicMenuManager.cpp                                \
     Components/MenuManager/SetWidget.cpp                                        \
     Components/MenuManager/SupervisorMenuManager.cpp                            \
     Components/NetworkManager/NetworkManager.cpp                                \
@@ -389,14 +376,9 @@ SOURCES +=                                                                      
     Components/Maintain/Service/Temp/ServiceCPUTemp.cpp                         \
     Components/Maintain/Service/Version/ServiceVersion.cpp                      \
     Components/Maintain/Factory/FactoryConfigManager.cpp                        \
-    Components/Maintain/Factory/Menu/FactoryDataRecord.cpp                      \
     Components/Maintain/FactoryMaintain/FactoryDataRecordContent.cpp            \
-    Components/Maintain/Factory/Menu/FactorySystemInfoMenu.cpp                  \
-    Components/Maintain/Factory/Menu/FactoryTempMenu.cpp                        \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.cpp                 \
-    Components/Maintain/Factory/Menu/FactoryTestMenu.cpp                        \
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.cpp                 \
-    Components/Maintain/Factory/Menu/FactoryWindowManager.cpp                   \
     Components/Maintain/UserMaintain/UserMaintainManager.cpp                    \
     Components/Maintain/UserMaintain/WifiMaintainMenu.cpp                       \
     Components/Maintain/UserMaintain/NurseCallSettingWindow.cpp                 \
@@ -422,49 +404,30 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/NIBPZeroPointContent.cpp                \
     Components/Maintain/FactoryMaintain/NIBPPressureControlContent.cpp          \
     Components/Maintain/FactoryMaintain/SelectStarterLogoContent.cpp            \
-    Components/Maintain/FactoryMaintain/FactoryImportExportMenu.cpp             \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
     Components/Maintain/FactoryMaintain/FactoryMaintainWindow.cpp               \
     Components/Maintain/FactoryMaintain/UpgradeManager.cpp                      \
     Components/Maintain/FactoryMaintain/UpgradeWindow.cpp                       \
-    Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
     Components/CodeMarker/Widgets/CodeMarkerWindow.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
-    Components/ConfigManager/ConfigMaintainMenuGrp.cpp                          \
-    Components/ConfigManager/SelectDefaultConfigMenu.cpp                        \
     Components/ConfigManager/SelectDefaultConfigMenuContent.cpp                 \
     Components/ConfigManager/ConfigManagerPassWordEditMenuContent.cpp           \
-    Components/ConfigManager/UserConfigEditMenu.cpp                             \
     Components/ConfigManager/UserConfigEditMenuContent.cpp                      \
-    Components/ConfigManager/ConfigExportImportMenu.cpp                         \
     Components/ConfigManager/ConfigExportImportMenuContent.cpp                  \
-    Components/ConfigManager/ConfigEditMenuGrp.cpp                              \
     Components/ConfigManager/ConfigEditMenuWindow.cpp                           \
-    Components/ConfigManager/ConfigEditGeneralMenu.cpp                          \
     Components/ConfigManager/ConfigEditGeneralMenuContent.cpp                   \
-    Components/ConfigManager/ConfigEditEcgMenu.cpp                              \
-    Components/ConfigManager/ConfigEditTEMPMenu.cpp                             \
+    Components/ConfigManager/ConfigEditTEMPMenuContent.cpp                      \
     Components/ConfigManager/ConfigEditEcgMenuContent.cpp                       \
-    Components/ConfigManager/ConfigEditRespMenu.cpp                             \
     Components/ConfigManager/ConfigEditRespMenuContent.cpp                      \
-    Components/ConfigManager/ConfigEditAlarmLimitMenu.cpp                       \
-    Components/ConfigManager/ConfigEditNIBPMenu.cpp                             \
     Components/ConfigManager/ConfigEditNIBPMenuContent.cpp                      \
-    Components/ConfigManager/ConfigEditSpO2Menu.cpp                             \
     Components/ConfigManager/ConfigEditSpO2MenuContent.cpp                      \
-    Components/ConfigManager/ConfigEditCO2Menu.cpp                              \
     Components/ConfigManager/ConfigEditCO2MenuContent.cpp                       \
-    Components/ConfigManager/ConfigEditCOMenu.cpp                               \
     Components/ConfigManager/ConfigEditCOMenuContent.cpp                        \
     Components/ConfigManager/ConfigEditCodeMarkerMenuContent.cpp                \
     Components/ConfigManager/ConfigEditAlarmLimitMenuContent.cpp                \
     Components/ConfigManager/ConfigEditAlarmLimitModel.cpp                      \
-    Components/ConfigManager/ConfigEditUnitSetupMenu.cpp                        \
-    Components/ConfigManager/ConfigEditIBPMenu.cpp                              \
     Components/ConfigManager/ConfigEditIBPMenuContent.cpp                       \
-    Components/ConfigManager/ConfigEditDisplayMenu.cpp                          \
     Components/ConfigManager/ConfigEditDisplayMenuContent.cpp                   \
-    Components/ConfigManager/LoadConfigMenu.cpp                                 \
     Components/ConfigManager/ConfigManagerWindow.cpp                            \
     Components/ConfigManager/LoadConfigMenuContent.cpp                          \
     Components/ConfigManager/UnitSetupMenuContent.cpp                           \
@@ -490,7 +453,6 @@ SOURCES +=                                                                      
     Params/ECGParam/ECGWidgets/ECGTrendWidget.cpp                               \
     Params/ECGParam/ECGWidgets/ECGPVCSTrendWidget.cpp                           \
     Params/ECGParam/ECGWidgets/ECGSTTrendWidget.cpp                             \
-    Params/ECGParam/ECGWidgets/ECGMenu.cpp                                      \
     Params/ECGParam/ECGWidgets/ECGMenuContent.cpp                               \
     Params/ECGParam/ECGWidgets/ArrhythmiaAnalysisMenu.cpp                       \
     Params/ECGParam/ECGWidgets/ArrhythmiaThresholdMenu.cpp                      \
@@ -501,7 +463,6 @@ SOURCES +=                                                                      
     Params/CO2Param/CO2Widgets/CO2TrendWidget.cpp                               \
     Params/CO2Param/CO2Widgets/CO2MenuContent.cpp                               \
     Params/IBPParam/IBPParam.cpp                                                \
-    Params/IBPParam/IBPWidgets/IBPMenu.cpp                                      \
     Params/IBPParam/IBPWidgets/IBPWaveWidget.cpp                                \
     Params/IBPParam/IBPWidgets/IBPTrendWidget.cpp                               \
     Params/IBPParam/IBPWidgets/IBPWaveRuler.cpp                                 \
@@ -555,16 +516,14 @@ SOURCES +=                                                                      
     Providers/Provider.cpp                                                      \
     Providers/BLMProvider.cpp                                                   \
     Providers/PhaseinProvider/PhaseinProvider.cpp                               \
-    Providers/BLMNIBPProvider/BLMNIBPProvider.cpp                               \
-    Providers/BLMSPO2Provider/BLMSPO2Provider.cpp                               \
     Providers/BLMCO2Provider/BLMCO2Provider.cpp                                 \
     Providers/WitleafProvider/WitleafProvider.cpp                               \
     Providers/MasimoProvider/MasimoProvider.cpp                                 \
     Providers/NellcorProvider/NellcorProvider.cpp                               \
     Providers/E5Provider/E5Provider.cpp                                         \
     Providers/T5Provider/T5Provider.cpp                                         \
-    Providers/TN3Provider/TN3Provider.cpp                                       \
     Providers/DemoProvider/DemoProvider.cpp                                     \
+    Providers/N5Provider/N5Provider.cpp                                         \
     Providers/PRT48Provider/PRT48Provider.cpp                                   \
     Providers/SuntechProvider/SuntechProvider.cpp                               \
     Providers/SystemBoardProvider/SystemBoardProvider.cpp                       \
@@ -666,7 +625,6 @@ HEADERS +=                                                                      
     Utility/Widgets/IComboList/ComboListItem.h                                  \
     Utility/Widgets/IComboList/IComboList.h                                     \
     Utility/Widgets/IComboList/CombolistWidget.h                                \
-    Utility/Widgets/InputMethod/EnglishPanel.h                                  \
     Utility/Widgets/InputMethod/EnglishInputPanel.h                             \
     Utility/Widgets/InputMethod/Key.h                                           \
     Utility/Widgets/InputMethod/KeyBoardPanel.h                                 \
@@ -681,13 +639,12 @@ HEADERS +=                                                                      
     Utility/Widgets/OxyCRGWidget/OxyCRGHRWidget.h                               \
     Utility/Widgets/OxyCRGWidget/OxyCRGRESPWidget.h                             \
     Utility/Widgets/OxyCRGWidget/OxyCRGRRWidget.h                               \
-    Utility/Widgets/OxyCRGWidget/OxyCRGRESPWaveWidget.h                        \
+    Utility/Widgets/OxyCRGWidget/OxyCRGRESPWaveWidget.h                         \
     Utility/Widgets/OxyCRGWidget/OxyCRGRRHRWaveWidget.h                         \
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2Widget.h                             \
-    Utility/Widgets/OxyCRGWidget/OxyCRGSPO2TrendWidget.h                           \
+    Utility/Widgets/OxyCRGWidget/OxyCRGSPO2TrendWidget.h                        \
     Utility/Widgets/OxyCRGWidget/OxyCRGCO2Widget.h                              \
     Utility/Widgets/OxyCRGWidget/OxyCRGCO2WaveWidget.h                          \
-    Utility/Widgets/OxyCRGWidget/OxyCRGSetupWidget.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWindow.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGSymbol.h                                 \
@@ -749,7 +706,6 @@ HEADERS +=                                                                      
     Components/System/SystemAlarm.h                                             \
     Components/System/TDA19988Ctrl.h                                            \
     Components/System/Widgets/SystemStatusBarWidget.h                           \
-    Components/System/Widgets/SystemModeSelectWidget.h                          \
     Components/System/Widgets/SystemSelftestMenu.h                              \
     Components/System/Widgets/SystemModeBarWidget.h                             \
     Components/System/Widgets/NormalFunctionMenuContent.h                       \
@@ -787,7 +743,6 @@ HEADERS +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmOffState.h                          \
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.h                     \
     Components/Alarm/Widgets/AlarmInfoPopListView.h                             \
-    Components/Alarm/Widgets/AlarmLimitMenu.h                                   \
     Components/Alarm/Widgets/AlarmLimitMenuContent.h                            \
     Components/Alarm/Widgets/AlarmLimitWindow.h                                 \
     Components/Alarm/Widgets/AlarmMuteBarWidget.h                               \
@@ -802,11 +757,9 @@ HEADERS +=                                                                      
     Components/Calculation/DoseCalculationManager/TitrateTableDefine.h          \
     Components/Calculation/DoseCalculationManager/TitrateTableManager.h         \
     Components/Calculation/DoseCalculationManager/TitrateTableSetWindow.h       \
-    Components/Calculation/HemodynamicManager/HemodynamicWidget.h               \
     Components/Calculation/HemodynamicManager/HemodynamicWindow.h               \
     Components/Calculation/HemodynamicManager/HemodynamicDefine.h               \
     Components/Calculation/HemodynamicManager/HemodynamicManager.h              \
-    Components/Calculation/HemodynamicManager/HemodynamicReviewWidget.h         \
     Components/Calculation/HemodynamicManager/HemodynamicReviewWindow.h         \
     Components/Calculation/HemodynamicManager/HemodynamicDataModel.h            \
     Components/PatientData/WaveformCache.h                                      \
@@ -840,15 +793,11 @@ HEADERS +=                                                                      
     Components/PatientData/HistoryDataSelWindow.h                               \
     Components/PatientData/HistoryDataSelModel.h                                \
     Components/PatientManager/PatientManager.h                                  \
-    Components/PatientManager/PatientBarWidget.h                                \
     Components/PatientManager/PatientDefine.h                                   \
-    Components/PatientManager/PatientTypeSelectWidget.h                         \
     Components/PatientManager/PatientInfoWidget.h                               \
     Components/PatientManager/PatientStatusBarWidget.h                          \
-    Components/PatientManager/PatientInfoMenu.h                                 \
     Components/PatientManager/PatientManagementMenuContent.h                    \
     Components/PatientManager/PatientInfoWindow.h                               \
-    Components/PatientManager/RelievePatientWidget.h                            \
     Components/PatientManager/DischargePatientWindow.h                          \
     Components/PowerManager/BatteryAlarm.h                                      \
     Components/PowerManager/BatteryMessage.h                                    \
@@ -867,7 +816,6 @@ HEADERS +=                                                                      
     Components/USBManager/USBManager.h                                          \
     Components/WindowManager/IWidget.h                                          \
     Components/WindowManager/WindowManager.h                                    \
-    Components/WindowManager/WidgetSelectMenu.h                                 \
     Components/WindowManager/PromptInfoBarWidget.h                              \
     Components/WindowManager/MainMenuWindow.h                                   \
     Components/WindowManager/FactoryMaintainMenuWindow.h                        \
@@ -911,8 +859,6 @@ HEADERS +=                                                                      
     Components/KeyHandle/KeyActionManager/KeyActionIFace.h                      \
     Components/KeyHandle/KeyActionManager/NormalModeKeyAction.h                 \
     Components/MenuManager/MenuManager.h                                        \
-    Components/MenuManager/PasswordMenuManage.h                                 \
-    Components/MenuManager/PublicMenuManager.h                                  \
     Components/MenuManager/SetWidget.h                                          \
     Components/MenuManager/SupervisorMenuManager.h                              \
     Components/NetworkManager/NetworkDefine.h                                   \
@@ -939,13 +885,8 @@ HEADERS +=                                                                      
     Components/Maintain/Service/Temp/ServiceCPUTemp.h                           \
     Components/Maintain/Service/Version/ServiceVersion.h                        \
     Components/Maintain/Factory/FactoryConfigManager.h                          \
-    Components/Maintain/Factory/Menu/FactoryWindowManager.h                     \
-    Components/Maintain/Factory/Menu/FactoryTempMenu.h                          \
     Components/Maintain/Factory/Menu/FactoryTempMenuContent.h                   \
-    Components/Maintain/Factory/Menu/FactoryTestMenu.h                          \
     Components/Maintain/Factory/Menu/FactoryTestMenuContent.h                   \
-    Components/Maintain/Factory/Menu/FactorySystemInfoMenu.h                    \
-    Components/Maintain/Factory/Menu/FactoryDataRecord.h                        \
     Components/Maintain/FactoryMaintain/FactoryDataRecordContent.h              \
     Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.h                  \
     Components/Maintain/UserMaintain/UserMaintainManager.h                      \
@@ -974,50 +915,31 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/NIBPManometerContent.h                  \
     Components/Maintain/FactoryMaintain/NIBPZeroPointContent.h                  \
     Components/Maintain/FactoryMaintain/NIBPPressureControlContent.h            \
-    Components/Maintain/FactoryMaintain/FactoryImportExportMenu.h               \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.h        \
     Components/Maintain/FactoryMaintain/FactoryMaintainWindow.h                 \
     Components/Maintain/FactoryMaintain/UpgradeManager.h                        \
     Components/Maintain/FactoryMaintain/UpgradeWindow.h                         \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
-    Components/CodeMarker/Widgets/CodeMarkerWidget.h                            \
     Components/CodeMarker/Widgets/CodeMarkerWindow.h                            \
     Components/ConfigManager/ConfigManager.h                                    \
-    Components/ConfigManager/ConfigMaintainMenuGrp.h                            \
-    Components/ConfigManager/SelectDefaultConfigMenu.h                          \
     Components/ConfigManager/SelectDefaultConfigMenuContent.h                   \
     Components/ConfigManager/ConfigManagerPassWordEditMenuContent.h             \
-    Components/ConfigManager/UserConfigEditMenu.h                               \
     Components/ConfigManager/UserConfigEditMenuContent.h                        \
-    Components/ConfigManager/ConfigExportImportMenu.h                           \
     Components/ConfigManager/ConfigExportImportMenuContent.h                    \
-    Components/ConfigManager/ConfigEditMenuGrp.h                                \
     Components/ConfigManager/ConfigEditMenuWindow.h                             \
-    Components/ConfigManager/ConfigEditGeneralMenu.h                            \
     Components/ConfigManager/ConfigEditGeneralMenuContent.h                     \
-    Components/ConfigManager/ConfigEditEcgMenu.h                                \
-    Components/ConfigManager/ConfigEditTEMPMenu.h                               \
+    Components/ConfigManager/ConfigEditTEMPMenuContent.h                        \
     Components/ConfigManager/ConfigEditEcgMenuContent.h                         \
-    Components/ConfigManager/ConfigEditRespMenu.h                               \
     Components/ConfigManager/ConfigEditRespMenuContent.h                        \
-    Components/ConfigManager/ConfigEditAlarmLimitMenu.h                         \
-    Components/ConfigManager/ConfigEditNIBPMenu.h                               \
     Components/ConfigManager/ConfigEditNIBPMenuContent.h                        \
-    Components/ConfigManager/ConfigEditSpO2Menu.h                               \
     Components/ConfigManager/ConfigEditSpO2MenuContent.h                        \
-    Components/ConfigManager/ConfigEditCO2Menu.h                                \
     Components/ConfigManager/ConfigEditCO2MenuContent.h                         \
-    Components/ConfigManager/ConfigEditCOMenu.h                                 \
     Components/ConfigManager/ConfigEditCOMenuContent.h                          \
-    Components/ConfigManager/ConfigEditUnitSetupMenu.h                          \
     Components/ConfigManager/ConfigEditAlarmLimitMenuContent.h                  \
     Components/ConfigManager/ConfigEditAlarmLimitModel.h                        \
-    Components/ConfigManager/ConfigEditIBPMenu.h                                \
     Components/ConfigManager/ConfigEditIBPMenuContent.h                         \
-    Components/ConfigManager/ConfigEditDisplayMenu.h                            \
     Components/ConfigManager/ConfigEditDisplayMenuContent.h                     \
     Components/ConfigManager/ConfigEditCodeMarkerMenuContent.h                  \
-    Components/ConfigManager/LoadConfigMenu.h                                   \
     Components/ConfigManager/ConfigManagerWindow.h                              \
     Components/ConfigManager/LoadConfigMenuContent.h                            \
     Components/ConfigManager/UnitSetupMenuContent.h                             \
@@ -1049,7 +971,6 @@ HEADERS +=                                                                      
     Params/ECGParam/ECGWidgets/ECGTrendWidget.h                                 \
     Params/ECGParam/ECGWidgets/ECGPVCSTrendWidget.h                             \
     Params/ECGParam/ECGWidgets/ECGSTTrendWidget.h                               \
-    Params/ECGParam/ECGWidgets/ECGMenu.h                                        \
     Params/ECGParam/ECGWidgets/ECGMenuContent.h                                 \
     Params/ECGParam/ECGWidgets/ArrhythmiaAnalysisMenu.h                         \
     Params/ECGParam/ECGWidgets/ArrhythmiaThresholdMenu.h                        \
@@ -1065,7 +986,6 @@ HEADERS +=                                                                      
     Params/IBPParam/IBPProviderIFace.h                                          \
     Params/IBPParam/IBPDefine.h                                                 \
     Params/IBPParam/IBPParam.h                                                  \
-    Params/IBPParam/IBPWidgets/IBPMenu.h                                        \
     Params/IBPParam/IBPWidgets/IBPWaveWidget.h                                  \
     Params/IBPParam/IBPWidgets/IBPTrendWidget.h                                 \
     Params/IBPParam/IBPSymbol.h                                                 \
@@ -1140,16 +1060,14 @@ HEADERS +=                                                                      
     Providers/Provider.h                                                        \
     Providers/BLMProvider.h                                                     \
     Providers/PhaseinProvider/PhaseinProvider.h                                 \
-    Providers/BLMNIBPProvider/BLMNIBPProvider.h                                 \
-    Providers/BLMSPO2Provider/BLMSPO2Provider.h                                 \
     Providers/BLMCO2Provider/BLMCO2Provider.h                                   \
     Providers/WitleafProvider/WitleafProvider.h                                 \
     Providers/MasimoProvider/MasimoProvider.h                                   \
     Providers/NellcorProvider/NellcorProvider.h                                 \
     Providers/E5Provider/E5Provider.h                                           \
     Providers/T5Provider/T5Provider.h                                           \
-    Providers/TN3Provider/TN3Provider.h                                         \
     Providers/DemoProvider/DemoProvider.h                                       \
+    Providers/N5Provider/N5Provider.h                                           \
     Providers/PRT48Provider/PRT48Provider.h                                     \
     Providers/SuntechProvider/SuntechProvider.h                                 \
     Providers/SystemBoardProvider/SystemBoardProvider.h                         \
@@ -1248,8 +1166,6 @@ DEPENDPATH +=                                                                   
     Components/Freeze                                                           \
     Providers                                                                   \
     Providers/PhaseinProvider                                                   \
-    Providers/BLMNIBPProvider                                                   \
-    Providers/BLMSPO2Provider                                                   \
     Providers/BLMCO2Provider                                                    \
     Providers/WitleafProvider                                                   \
     Providers/MasimoProvider                                                    \
@@ -1257,7 +1173,7 @@ DEPENDPATH +=                                                                   
     Providers/SuntechProvider                                                   \
     Providers/BLMTEMPProvider                                                   \
     Providers/T5Provider                                                        \
-    Providers/TN3Provider                                                       \
+    Providers/N5Provider                                                        \
     Providers/E5Provider                                                        \
     Providers/DemoProvider                                                      \
     Providers/PRT48Provider                                                     \
@@ -1374,8 +1290,6 @@ INCLUDEPATH +=                                                                  
     Components/Freeze                                                           \
     Providers                                                                   \
     Providers/PhaseinProvider                                                   \
-    Providers/BLMNIBPProvider                                                   \
-    Providers/BLMSPO2Provider                                                   \
     Providers/BLMCO2Provider                                                    \
     Providers/WitleafProvider                                                   \
     Providers/MasimoProvider                                                    \
@@ -1383,7 +1297,7 @@ INCLUDEPATH +=                                                                  
     Providers/SuntechProvider                                                   \
     Providers/BLMTEMPProvider                                                   \
     Providers/T5Provider                                                        \
-    Providers/TN3Provider                                                       \
+    Providers/N5Provider                                                       \
     Providers/E5Provider                                                        \
     Providers/DemoProvider                                                      \
     Providers/PRT48Provider                                                     \

@@ -16,6 +16,7 @@
 #include "IConfig.h"
 #include "Button.h"
 #include "ConfigManager.h"
+#include "UnitManager.h"
 
 class UnitSetupMenuContentPrivate
 {

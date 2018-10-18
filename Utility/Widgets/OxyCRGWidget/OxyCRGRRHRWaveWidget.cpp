@@ -21,6 +21,8 @@
 #include "RESPParam.h"
 #include <QTimer>
 #include "SystemManager.h"
+#include "FontManager.h"
+#include "LanguageManager.h"
 
 class OxyCRGRRHRWaveWidgetPrivate :
     public OxyCRGTrendWaveWidgetPrivate

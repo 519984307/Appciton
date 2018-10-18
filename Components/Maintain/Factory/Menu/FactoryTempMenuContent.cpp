@@ -15,7 +15,6 @@
 #include "FactoryTempMenuContent.h"
 #include "Button.h"
 #include "ComboBox.h"
-#include "FactoryWindowManager.h"
 #include "TEMPParam.h"
 #include <QTimer>
 #include "FactoryMaintainManager.h"

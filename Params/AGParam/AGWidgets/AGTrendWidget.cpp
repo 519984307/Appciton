@@ -17,7 +17,6 @@
 #include "TrendWidgetLabel.h"
 #include "AGSymbol.h"
 #include "WindowManager.h"
-#include "PublicMenuManager.h"
 #include <QDebug>
 #include "MeasureSettingWindow.h"
 

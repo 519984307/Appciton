@@ -22,6 +22,7 @@
 #include "SupervisorMenuManager.h"
 #include "ComboBox.h"
 #include "Button.h"
+#include "LanguageManager.h"
 
 #define PROFILE_MAX_NUM 5
 #define LISTVIEW_MAX_VISIABLE_TIME 6

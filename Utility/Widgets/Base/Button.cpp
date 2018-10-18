@@ -25,12 +25,14 @@ public:
     ButtonPrivate()
         : m_btnStyle(Button::ButtonTextBesideIcon),
           m_borderWidth(themeManger.getBorderWidth()),
-          m_borderRadius(themeManger.getBorderRadius())
+          m_borderRadius(themeManger.getBorderRadius()),
+          m_press(false)
     {}
 
     Button::ButtonStyle m_btnStyle;
     int m_borderWidth;
     int m_borderRadius;
+    bool m_press;
 };
 
 Button::Button(const QString &text, const QIcon &icon, QWidget *parent)
@@ -268,10 +270,15 @@ void Button::keyPressEvent(QKeyEvent *ev)
         QAbstractButton::keyPressEvent(ev);
         break;
     }
+    d_ptr->m_press = true;
 }
 
 void Button::keyReleaseEvent(QKeyEvent *ev)
 {
+    if (!d_ptr->m_press)
+    {
+        return;
+    }
     switch (ev->key())
     {
     case Qt::Key_Left:
@@ -290,4 +297,5 @@ void Button::keyReleaseEvent(QKeyEvent *ev)
         QAbstractButton::keyReleaseEvent(ev);
         break;
     }
+    d_ptr->m_press = false;
 }

@@ -27,6 +27,7 @@
 #include <QCoreApplication>
 #include <QFocusEvent>
 #include <QTimer>
+#include <SystemManager.h>
 
 #define TABLE_ROW_NUM 7
 

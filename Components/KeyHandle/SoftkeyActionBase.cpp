@@ -14,10 +14,6 @@
 #include <QApplication>
 #include "SoftKeyWidget.h"
 #include "ECGParam.h"
-#include "ECGMenu.h"
-#include "PublicMenuManager.h"
-#include "AlarmLimitMenu.h"
-#include "CodeMarkerWidget.h"
 #include "SystemBoardProvider.h"
 #include "WindowManager.h"
 #include "PatientInfoWindow.h"
@@ -26,7 +22,6 @@
 #include "SystemManager.h"
 #include "DataStorageDirManager.h"
 #include "DoseCalculationManager.h"
-#include "HemodynamicWidget.h"
 #include "Window.h"
 #include "MenuSidebar.h"
 #include "MenuWindow.h"

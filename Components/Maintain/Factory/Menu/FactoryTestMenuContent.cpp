@@ -14,7 +14,6 @@
 #include "FactoryTestMenuContent.h"
 #include "Debug.h"
 #include "Button.h"
-#include "FactoryWindowManager.h"
 #include <QProcess>
 #include "MessageBox.h"
 #include "USBManager.h"

@@ -24,7 +24,6 @@
 #include "PopupList.h"
 #include "ParamInfo.h"
 #include "SystemManager.h"
-#include "OxyCRGSetupWidget.h"
 #include "OxyCRGSetupWindow.h"
 #include "IMessageBox.h"
 #include "ECGParam.h"

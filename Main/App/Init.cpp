@@ -320,11 +320,7 @@ static void _initProviderParam(void)
     {
         QString str;
         machineConfig.getStrValue("SPO2", str);
-        if (str == "BLM_SPO2")
-        {
-            paramManager.addProvider(*new BLMSPO2Provider());
-        }
-        else if (str == "MASIMO_SPO2")
+        if (str == "MASIMO_SPO2")
         {
             paramManager.addProvider(*new MasimoSetProvider());
         }
@@ -363,7 +359,7 @@ static void _initProviderParam(void)
         }
         else
         {
-            paramManager.addProvider(*new TN3Provider());
+            paramManager.addProvider(*new N5Provider());
         }
 
         paramManager.addParam(nibpParam.construction());
@@ -543,21 +539,16 @@ static void _initPrint(void)
 static void _initMenu(void)
 {
     menuManager.construction();
-    publicMenuManager.construction();
     userMaintainManager.construction();
     wifiMaintainMenu.construction();
-    unitSetup.construction();
 
     userMaintainManager.addSubMenu(&wifiMaintainMenu);
-    userMaintainManager.addSubMenu(&unitSetup);
 
     // supervisorMenuManager
     supervisorMenuManager.construction();
 
     //其它弹出菜单初始化
     patientManager.construction();
-
-    codeMarkerWidget.construction();
 }
 
 /**************************************************************************************************
@@ -579,7 +570,6 @@ void newObjects(void)
 void deleteObjects(void)
 {
 //    deleteWaveWidgetSelectMenu();
-    deletePublicMenuManager();
     deleteSupervisorMenuManager();
     deleteMenuManager();
     // deletePatientMenu();
@@ -612,9 +602,6 @@ void deleteObjects(void)
     deleteTrendCache();
     deleteRescueDataExportWidget();
     deleteRescueDataDeleteWidget();
-
-    deleteCodeMarkerWidget();
-
 
     deleteRecorderManager();
 

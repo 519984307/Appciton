@@ -24,7 +24,6 @@
 #include "RESPParam.h"
 #include "ECGParam.h"
 #include "ECGSymbol.h"
-#include "PatientBarWidget.h"
 #include "MainMenuWindow.h"
 #include "ConfigManagerMenuWindow.h"
 #include "UserMaintainMenuWindow.h"

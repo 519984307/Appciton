@@ -15,6 +15,10 @@
 #include <QVariant>
 #include "AlarmLimitWindow.h"
 #include "WindowManager.h"
+#include "SystemManager.h"
+#include <QDebug>
+
+#define TABLE_ROW_NUM 7
 
 class AlarmLimitMenuContentPrivate
 {

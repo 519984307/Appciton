@@ -17,6 +17,8 @@
 #include "IConfig.h"
 #include "SoundManager.h"
 #include "NightModeManager.h"
+#include "SystemManager.h"
+#include "SystemDefine.h"
 
 class NightModeWindowPrivate
 {

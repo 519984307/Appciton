@@ -17,7 +17,6 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include "NetworkManager.h"
-#include "PublicMenuManager.h"
 #include "WindowManager.h"
 #include "LayoutManager.h"
 #include "WiFiProfileWindow.h"
