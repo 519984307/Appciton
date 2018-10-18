@@ -164,9 +164,6 @@
 
 #include "ActivityLogManager.h"
 
-#include "CodeMarkerWidget.h"
-
-
 #include "PMessageBox.h"
 
 #include "OxyCRGWidget.h"

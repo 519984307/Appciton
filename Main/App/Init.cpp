@@ -552,8 +552,6 @@ static void _initMenu(void)
 
     //其它弹出菜单初始化
     patientManager.construction();
-
-    codeMarkerWidget.construction();
 }
 
 /**************************************************************************************************
@@ -608,9 +606,6 @@ void deleteObjects(void)
     deleteTrendCache();
     deleteRescueDataExportWidget();
     deleteRescueDataDeleteWidget();
-
-    deleteCodeMarkerWidget();
-
 
     deleteRecorderManager();
 

@@ -17,7 +17,6 @@
 #include "ECGMenu.h"
 #include "PublicMenuManager.h"
 #include "AlarmLimitMenu.h"
-#include "CodeMarkerWidget.h"
 #include "SystemBoardProvider.h"
 #include "WindowManager.h"
 #include "PatientInfoWindow.h"

@@ -423,7 +423,6 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryMaintainWindow.cpp               \
     Components/Maintain/FactoryMaintain/UpgradeManager.cpp                      \
     Components/Maintain/FactoryMaintain/UpgradeWindow.cpp                       \
-    Components/CodeMarker/Widgets/CodeMarkerWidget.cpp                          \
     Components/CodeMarker/Widgets/CodeMarkerWindow.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
     Components/ConfigManager/ConfigMaintainMenuGrp.cpp                          \
@@ -970,7 +969,6 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/UpgradeManager.h                        \
     Components/Maintain/FactoryMaintain/UpgradeWindow.h                         \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
-    Components/CodeMarker/Widgets/CodeMarkerWidget.h                            \
     Components/CodeMarker/Widgets/CodeMarkerWindow.h                            \
     Components/ConfigManager/ConfigManager.h                                    \
     Components/ConfigManager/ConfigMaintainMenuGrp.h                            \
