@@ -86,6 +86,16 @@ public:
 
     UnitType heightType;
     UnitType weightType;
+
+    /**
+     * @brief savePatientInfoToConfig 保存病人信息到病人配置
+     */
+    void savePatientInfoToConfig(void);
+
+    /**
+     * @brief resetPatientInfo 恢复病人信息默认值
+     */
+    void resetPatientInfo(void);
 };
 
 static bool checkAgeValue(const QString &value)
@@ -450,19 +460,43 @@ PatientInfoWindow::PatientInfoWindow()
     backgroundLayout->addLayout(layout);
     backgroundLayout->addLayout(buttonLayout);
     setWindowLayout(backgroundLayout);
+
+    connect(DischargePatientWindow::getInstance(), SIGNAL(exitFlag(bool)),
+            this, SLOT(DischargeWinExit(bool)));
 }
 
-void PatientInfoWindow::_setPatientInfo()
+void PatientInfoWindowPrivate::savePatientInfoToConfig()
 {
-    patientManager.setAge(d_ptr->age->text().toInt());
-    patientManager.setBlood(static_cast<PatientBloodType>(d_ptr->blood->currentIndex()));
-    patientManager.setHeight(d_ptr->height->text().toShort());
-    patientManager.setName(d_ptr->name->text());
-    patientManager.setPatID(d_ptr->id->text());
-    patientManager.setSex(static_cast<PatientSex>(d_ptr->sex->currentIndex()));
-    patientManager.setType(static_cast<PatientType>(d_ptr->type->currentIndex()));
-    patientManager.setWeight(d_ptr->weight->text().toInt());
-    patientManager.setPacermaker(static_cast<PatientPacer>(d_ptr->pacer->currentIndex()));
+    patientManager.setAge(age->text().toInt());
+    patientManager.setBlood(static_cast<PatientBloodType>(blood->currentIndex()));
+    patientManager.setHeight(height->text().toShort());
+    patientManager.setName(name->text());
+    patientManager.setPatID(id->text());
+    patientManager.setSex(static_cast<PatientSex>(sex->currentIndex()));
+    patientManager.setType(static_cast<PatientType>(type->currentIndex()));
+    patientManager.setWeight(weight->text().toInt());
+    patientManager.setPacermaker(static_cast<PatientPacer>(pacer->currentIndex()));
+}
+
+void PatientInfoWindowPrivate::resetPatientInfo()
+{
+    combos[ITEM_CBO_PATIENT_TYPE]->setCurrentIndex(patientManager.getType());
+    if (patientNew)         // 新建病人时默认打开起博
+    {
+        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(ECG_PACE_ON);
+    }
+    else
+    {
+        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(ecgParam.getPacermaker());
+    }
+    combos[ITEM_CBO_PATIENT_SEX]->setCurrentIndex(0);
+    combos[ITEM_CBO_BLOOD_TYPE]->setCurrentIndex(0);
+    QMap<MenuItem , Button *>::ConstIterator iter = buttons.constBegin();
+    for (; iter != buttons.constEnd(); iter++)
+    {
+        (*iter)->setText("");
+    }
+    savePatientInfoToConfig();
 }
 
 void PatientInfoWindow::widgetChange()
@@ -628,11 +662,8 @@ void PatientInfoWindow::_relieveReleased()
     if (d_ptr->relieveFlag == true)
     {
         DischargePatientWindow::getInstance()->setWindowTitle(trs("RelievePatient"));
-        int ret = DischargePatientWindow::getInstance()->exec();
-        if (ret)
-        {
-            relieveStatus(false);
-        }
+        DischargePatientWindow::getInstance()->exec();
+        d_ptr->resetPatientInfo();
     }
     else
     {
@@ -665,7 +696,7 @@ void PatientInfoWindow::_saveInfoReleased()
         {
             relieveStatus(true);
             dataStorageDirManager.createDir(true);
-            _setPatientInfo();
+            d_ptr->savePatientInfoToConfig();
         }
     }
     else if (d_ptr->patientNew == false && d_ptr->relieveFlag == true)
@@ -677,7 +708,7 @@ void PatientInfoWindow::_saveInfoReleased()
         if (messageBox.exec() == 1)
         {
             dataStorageDirManager.createDir(true);
-            _setPatientInfo();
+            d_ptr->savePatientInfoToConfig();
         }
     }
 }
@@ -685,6 +716,14 @@ void PatientInfoWindow::_saveInfoReleased()
 void PatientInfoWindow::_pacerMakerReleased(int index)
 {
     ecgParam.setPacermaker(static_cast<ECGPaceMode>(index));
+}
+
+void PatientInfoWindow::DischargeWinExit(bool flag)
+{
+    if (d_ptr->relieveFlag == true && flag)
+    {
+        relieveStatus(false);
+    }
 }
 
 void PatientInfoWindow::showEvent(QShowEvent *ev)

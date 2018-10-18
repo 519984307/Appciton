@@ -26,6 +26,8 @@ protected:
     void showEvent(QShowEvent *e);
     void exit(void);
 
+signals:
+    void exitFlag(bool flag);
 private slots:
     void onYesReleased(void);
     void onNoReleased(void);

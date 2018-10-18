@@ -38,6 +38,7 @@ private slots:
     void _relieveReleased(void);
     void _saveInfoReleased(void);
     void _pacerMakerReleased(int);
+    void DischargeWinExit(bool flag);
 
 protected:
     void showEvent(QShowEvent *);
@@ -45,7 +46,6 @@ protected:
 private:
     PatientInfoWindow();
     PatientInfoWindowPrivate * const d_ptr;
-    void _setPatientInfo(void);
 };
 
 #define patientInfoWindow (PatientInfoWindow::construction())
