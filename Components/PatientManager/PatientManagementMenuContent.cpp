@@ -12,10 +12,10 @@
 #include "Button.h"
 #include "LanguageManager.h"
 #include "QGridLayout"
+#include "PatientManager.h"
 #include "PatientInfoWindow.h"
 #include "WindowManager.h"
 #include "MessageBox.h"
-#include "DataStorageDirManager.h"
 #include <QApplication>
 
 class PatientManagementMenuContentPrivate
@@ -92,7 +92,7 @@ void PatientManagementMenuContent::onBtnReleased()
     {
         case PatientManagementMenuContentPrivate::ITEM_BTN_PATIENT_INFO:
         {
-            patientInfoWindow.newPatientStatus(false);
+            patientManager.setPatientNewStatus(false);
             patientInfoWindow.widgetChange();
             windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers
                                      | WindowManager::ShowBehaviorCloseIfVisiable);
@@ -112,8 +112,8 @@ void PatientManagementMenuContent::onBtnReleased()
             MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist);
             if (messageBox.exec() == 1)
             {
-                dataStorageDirManager.createDir(true);
-                patientInfoWindow.newPatientStatus(true);
+                patientManager.createDir();
+                patientManager.setPatientNewStatus(true);
                 patientInfoWindow.widgetChange();
                 windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers);
             }
