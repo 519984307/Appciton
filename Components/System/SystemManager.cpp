@@ -326,7 +326,7 @@ void SystemManager::setBrightness(BrightnessLevel br)
 {
     enableBrightness(br);
 
-    currentConfig.setNumValue("General|DefaultDisplayBrightness", static_cast<int>(br));
+    systemConfig.setNumValue("General|DefaultDisplayBrightness", static_cast<int>(br));
 }
 
 /***************************************************************************************************
@@ -340,7 +340,7 @@ void SystemManager::enableBrightness(BrightnessLevel br)
     data.append(static_cast<char>(br));
     sendCommand(data);
 #else
-    char lightValue[10] = {64, 52, 47, 41, 36, 31, 26, 21, 15, 1};
+    char lightValue[BRT_LEVEL_NR] = {64, 52, 47, 41, 36, 31, 26, 21, 15, 1};
 
     if (_backlightFd < 0)
     {
@@ -372,8 +372,8 @@ void SystemManager::enableBrightness(BrightnessLevel br)
 BrightnessLevel SystemManager::getBrightness(void)
 {
     int b = BRT_LEVEL_4;
-    currentConfig.getNumValue("General|DefaultDisplayBrightness", b);
-    return (BrightnessLevel)b;
+    systemConfig.getNumValue("General|DefaultDisplayBrightness", b);
+    return static_cast<BrightnessLevel>(b);
 }
 
 /***************************************************************************************************

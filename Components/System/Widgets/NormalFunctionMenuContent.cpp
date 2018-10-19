@@ -79,7 +79,7 @@ void NormalFunctionMenuContentPrivate::loadOptions()
         index = soundManager.getVolume(SoundManager::SOUND_TYPE_ALARM) - 1;
         combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(index);
 
-        index = systemManager.getBrightness() - 1;
+        index = systemManager.getBrightness();
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setCurrentIndex(index);
 
         index = soundManager.getVolume(SoundManager::SOUND_TYPE_KEY_PRESS);
@@ -147,9 +147,9 @@ void NormalFunctionMenuContent::layoutExec()
     label = new QLabel(trs("SystemBrightness"));
     layout->addWidget(label, row, 0);
     comboBox = new ComboBox();
-    for (int i = BRT_LEVEL_1; i < BRT_LEVEL_NR; i++)
+    for (int i = BRT_LEVEL_0; i < BRT_LEVEL_NR; i++)
     {
-        comboBox->addItem(QString::number(i));
+        comboBox->addItem(QString::number(i + 1));
     }
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS);
     comboBox->setProperty("Item",
@@ -242,19 +242,18 @@ void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
         case NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME:
         {
             int volume = box->itemText(index).toInt();
-            soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, (SoundManager::VolumeLevel) volume);
+            soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, static_cast<SoundManager::VolumeLevel>(volume));
             break;
         }
         case NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS:
         {
-            int brightness = box->itemText(index).toInt();
-            systemManager.setBrightness((BrightnessLevel)brightness);
+            systemManager.setBrightness(static_cast<BrightnessLevel>(index));
             break;
         }
         case NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME:
         {
             int volume = box->itemText(index).toInt();
-            soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , (SoundManager::VolumeLevel)volume);
+            soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , static_cast<SoundManager::VolumeLevel>(volume));
             break;
         }
         default:

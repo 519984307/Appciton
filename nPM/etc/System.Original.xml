@@ -7,17 +7,18 @@
     <ElapseStartTime>0</ElapseStartTime>
     <General>
         <PatientType>0</PatientType><!--0:adult  1:ped  2:neo-->
-	<MonitorName>dd-89</MonitorName>
-	<ConfigManagerPassword>12345678</ConfigManagerPassword>
-	<DemoModePassword>11111111</DemoModePassword>
-	<UserMaintainPassword>66666666</UserMaintainPassword>
-	<FactoryMaintainPassword>382425</FactoryMaintainPassword>
-	<SuperPassword>672401</SuperPassword>
-	<Department>d12</Department>
-	<BedNumber>b44</BedNumber>
-	<ChangeBedNumberRight>0</ChangeBedNumberRight>
-	<Language>1</Language>
+		<MonitorName>dd-89</MonitorName>
+		<ConfigManagerPassword>12345678</ConfigManagerPassword>
+		<DemoModePassword>11111111</DemoModePassword>
+		<UserMaintainPassword>66666666</UserMaintainPassword>
+		<FactoryMaintainPassword>382425</FactoryMaintainPassword>
+		<SuperPassword>672401</SuperPassword>
+		<Department>d12</Department>
+		<BedNumber>b44</BedNumber>
+		<ChangeBedNumberRight>0</ChangeBedNumberRight>
+		<Language>1</Language>
         <DefaultPatientType>0</DefaultPatientType>
+        <DefaultDisplayBrightness>7</DefaultDisplayBrightness>
     </General>
     <Alarms>
 	<MinimumAlarmVolume>2</MinimumAlarmVolume>

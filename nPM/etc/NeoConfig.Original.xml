@@ -8,7 +8,6 @@
         <DeviceIdentifier>00000000000</DeviceIdentifier>
         <DefaultPatientType>0</DefaultPatientType>
         <!-- 0:adult；1:ped； -->
-        <DefaultDisplayBrightness>7</DefaultDisplayBrightness>
         <FullDisclosureRecording>1</FullDisclosureRecording>
     </General>
     <Unit>
