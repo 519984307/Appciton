@@ -15,8 +15,28 @@
 #include "IConfig.h"
 #include "ECGParam.h"
 #include "AlarmLimitMenu.h"
+#include "DataStorageDirManager.h"
 
 PatientManager *PatientManager::_selfObj = NULL;
+
+class PatientManagerPrivate
+{
+public:
+    PatientManagerPrivate()
+        : patientTypeWidget(NULL),
+          patientInfoWidget(NULL),
+          patientNew(false),
+          relieveFlag(true)
+    {}
+    PatientInfo patientInfo;
+    PatientBarWidget *patientTypeWidget;
+    PatientInfoWidget *patientInfoWidget;
+
+    void loadPatientInfo(PatientInfo &info);
+
+    bool patientNew;                 // 新建病人标志
+    bool relieveFlag;                // 解除病人标志
+};
 
 /**************************************************************************************************
  * 功能：设置窗体控件。
@@ -25,13 +45,13 @@ PatientManager *PatientManager::_selfObj = NULL;
  *************************************************************************************************/
 void PatientManager::setPatientTypeWidget(PatientBarWidget &widget)
 {
-    _patientTypeWidget = &widget;
-    _patientTypeWidget->setPatientInfo(_patientInfo);
+    d_ptr->patientTypeWidget = &widget;
+    d_ptr->patientTypeWidget->setPatientInfo(d_ptr->patientInfo);
 }
 
 void PatientManager::setPatientInfoWidget(PatientInfoWidget &widget)
 {
-    _patientInfoWidget = &widget;
+    d_ptr->patientInfoWidget = &widget;
 }
 
 /**************************************************************************************************
@@ -39,27 +59,27 @@ void PatientManager::setPatientInfoWidget(PatientInfoWidget &widget)
  *************************************************************************************************/
 void PatientManager::setType(PatientType type)
 {
-    PatientType oldType = _patientInfo.type;
+    PatientType oldType = d_ptr->patientInfo.type;
 
-    _patientInfo.type = type;
+    d_ptr->patientInfo.type = type;
     systemConfig.setNumValue("General|PatientType", static_cast<int>(type));
 
-    if (_patientInfo.type == oldType)
+    if (d_ptr->patientInfo.type == oldType)
     {
 //        return;
     }
 
     // 病人类型被修改了，重新加载配置后，通知需要关注次事件的对象。
-    _patientInfoWidget->loadPatientInfo();
+    d_ptr->patientInfoWidget->loadPatientInfo();
 
     // 报警限修改
     QString str = "AlarmSource|";
-    str += PatientSymbol::convert(_patientInfo.type);
+    str += PatientSymbol::convert(d_ptr->patientInfo.type);
     currentConfig.setNodeValue(str, currentConfig);
 
-    emit signalPatientType(_patientInfo.type);
+    emit signalPatientType(d_ptr->patientInfo.type);
 
-    ecgParam.setPatientType((unsigned char)(_patientInfo.type));
+    ecgParam.setPatientType((unsigned char)(d_ptr->patientInfo.type));
 
     alarmLimitMenu.checkAlarmEnableStatus();
 }
@@ -69,7 +89,7 @@ void PatientManager::setType(PatientType type)
  *************************************************************************************************/
 PatientType PatientManager::getType(void)
 {
-    return _patientInfo.type;
+    return d_ptr->patientInfo.type;
 }
 
 /**************************************************************************************************
@@ -77,7 +97,7 @@ PatientType PatientManager::getType(void)
  *************************************************************************************************/
 QString PatientManager::getTypeStr(void)
 {
-    return PatientSymbol::convert(_patientInfo.type);
+    return PatientSymbol::convert(d_ptr->patientInfo.type);
 }
 
 /**************************************************************************************************
@@ -85,7 +105,7 @@ QString PatientManager::getTypeStr(void)
  *************************************************************************************************/
 void PatientManager::setPacermaker(PatientPacer type)
 {
-    _patientInfo.pacer = type;
+    d_ptr->patientInfo.pacer = type;
 //    currentConfig.setNumValue("General|PatientPacer", static_cast<int>(type));
     ecgParam.setPacermaker(static_cast<ECGPaceMode>(type));
 }
@@ -95,7 +115,8 @@ void PatientManager::setPacermaker(PatientPacer type)
  *************************************************************************************************/
 PatientPacer PatientManager::getPacermaker()
 {
-    return _patientInfo.pacer;
+    d_ptr->patientInfo.pacer = static_cast<PatientPacer>(ecgParam.getPacermaker());
+    return d_ptr->patientInfo.pacer;
 }
 
 /**************************************************************************************************
@@ -103,7 +124,7 @@ PatientPacer PatientManager::getPacermaker()
  *************************************************************************************************/
 void PatientManager::setSex(PatientSex sex)
 {
-    _patientInfo.sex = sex;
+    d_ptr->patientInfo.sex = sex;
     systemConfig.setNumValue("PrimaryCfg|PatientInfo|Sex", static_cast<int>(sex));
 }
 
@@ -112,7 +133,7 @@ void PatientManager::setSex(PatientSex sex)
  *************************************************************************************************/
 PatientSex PatientManager::getSex(void)
 {
-    return _patientInfo.sex;
+    return d_ptr->patientInfo.sex;
 }
 
 /**************************************************************************************************
@@ -120,7 +141,7 @@ PatientSex PatientManager::getSex(void)
  *************************************************************************************************/
 void PatientManager::setAge(int age)
 {
-    _patientInfo.age = age;
+    d_ptr->patientInfo.age = age;
     systemConfig.setNumValue("PrimaryCfg|PatientInfo|Age", age);
 }
 
@@ -129,48 +150,40 @@ void PatientManager::setAge(int age)
  *************************************************************************************************/
 int PatientManager::getAge(void)
 {
-    return _patientInfo.age;
+    return d_ptr->patientInfo.age;
 }
 
 void PatientManager::setBlood(PatientBloodType blood)
 {
-    _patientInfo.blood = blood;
+    d_ptr->patientInfo.blood = blood;
     systemConfig.setNumValue("PrimaryCfg|PatientInfo|Blood", static_cast<int>(blood));
 }
 
 int PatientManager::getBlood()
 {
-    return _patientInfo.blood;
+    return d_ptr->patientInfo.blood;
 }
 
-void PatientManager::setWeight(int weight)
+void PatientManager::setWeight(float weight)
 {
-    _patientInfo.weight = weight;
-//    QString prefix = "Patient|Weight|";
-//    prefix += Unit::localeSymbol(getWeightUnit());
-//    currentConfig.setStrValue(prefix + "|Value", weight);
-
+    d_ptr->patientInfo.weight = weight;
     systemConfig.setNumValue("PrimaryCfg|PatientInfo|Weight", weight);
 }
 
-int PatientManager::getWeight()
+float PatientManager::getWeight()
 {
-    return _patientInfo.weight;
+    return d_ptr->patientInfo.weight;
 }
 
-void PatientManager::setHeight(short height)
+void PatientManager::setHeight(float height)
 {
-    _patientInfo.height = height;
-//    QString prefix = "Patient|Height|";
-//    prefix += Unit::localeSymbol(getHeightUnit());
-//    currentConfig.setStrValue(prefix + "|Value", height);
-
+    d_ptr->patientInfo.height = height;
     systemConfig.setNumValue("PrimaryCfg|PatientInfo|Height", height);
 }
 
-short PatientManager::getHeight()
+float PatientManager::getHeight()
 {
-    return _patientInfo.height;
+    return d_ptr->patientInfo.height;
 }
 
 /**************************************************************************************************
@@ -179,9 +192,10 @@ short PatientManager::getHeight()
 void PatientManager::setName(const QString &name)
 {
     systemConfig.setStrValue("PrimaryCfg|PatientInfo|Name", name);
-    ::strncpy(_patientInfo.name, name.toUtf8().constData(), sizeof(_patientInfo.name));
+    ::strncpy(d_ptr->patientInfo.name, name.toUtf8().constData(),
+              sizeof(d_ptr->patientInfo.name));
 
-    _patientInfoWidget->loadPatientInfo();
+    d_ptr->patientInfoWidget->loadPatientInfo();
 }
 
 /**************************************************************************************************
@@ -189,7 +203,7 @@ void PatientManager::setName(const QString &name)
  *************************************************************************************************/
 const char *PatientManager::getName(void)
 {
-    return _patientInfo.name;
+    return d_ptr->patientInfo.name;
 }
 
 /**************************************************************************************************
@@ -198,7 +212,8 @@ const char *PatientManager::getName(void)
 void PatientManager::setPatID(const QString &id)
 {
     systemConfig.setStrValue("PrimaryCfg|PatientInfo|ID", id);
-    ::strncpy(_patientInfo.id, id.toUtf8().constData(), sizeof(_patientInfo.id));
+    ::strncpy(d_ptr->patientInfo.id, id.toUtf8().constData(),
+              sizeof(d_ptr->patientInfo.id));
 }
 
 /**************************************************************************************************
@@ -206,7 +221,7 @@ void PatientManager::setPatID(const QString &id)
  *************************************************************************************************/
 const char *PatientManager::getPatID()
 {
-    return _patientInfo.id;
+    return d_ptr->patientInfo.id;
 }
 
 /**************************************************************************************************
@@ -214,7 +229,7 @@ const char *PatientManager::getPatID()
  *************************************************************************************************/
 int PatientManager::getNameLength(void)
 {
-    return sizeof(_patientInfo.name)  - 1;
+    return sizeof(d_ptr->patientInfo.name)  - 1;
 }
 
 /**************************************************************************************************
@@ -222,7 +237,7 @@ int PatientManager::getNameLength(void)
  *************************************************************************************************/
 int PatientManager::getIDLength(void)
 {
-    return sizeof(_patientInfo.id)  - 1;
+    return sizeof(d_ptr->patientInfo.id)  - 1;
 }
 
 /**************************************************************************************************
@@ -230,7 +245,7 @@ int PatientManager::getIDLength(void)
  *************************************************************************************************/
 const PatientInfo &PatientManager::getPatientInfo(void)
 {
-    return _patientInfo;
+    return d_ptr->patientInfo;
 }
 
 UnitType PatientManager::getWeightUnit()
@@ -247,10 +262,35 @@ UnitType PatientManager::getHeightUnit()
     return (UnitType)unit;
 }
 
+void PatientManager::createDir()
+{
+    dataStorageDirManager.createDir(true);
+}
+
+void PatientManager::setRelieveStatus(bool status)
+{
+    d_ptr->relieveFlag = status;
+}
+
+bool PatientManager::getRelieveStatus()
+{
+    return d_ptr->relieveFlag;
+}
+
+void PatientManager::setPatientNewStatus(bool status)
+{
+    d_ptr->patientNew = status;
+}
+
+bool PatientManager::getPatientNewStatus()
+{
+    return d_ptr->patientNew;
+}
+
 /**************************************************************************************************
  * 载入配置信息。
  *************************************************************************************************/
-void PatientManager::_loadPatientInfo(PatientInfo &info)
+void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
 {
     int numValue = 0;
     QString strValue;
@@ -270,15 +310,9 @@ void PatientManager::_loadPatientInfo(PatientInfo &info)
     systemConfig.getNumValue("PrimaryCfg|PatientInfo|Blood", numValue);
     info.blood = (PatientBloodType)numValue;
 
-//    QString prefix = "Patient|Weight|";
-//    prefix += Unit::localeSymbol(getWeightUnit());
-//    currentConfig.getStrValue(prefix + "|Value", strValue);
     systemConfig.getNumValue("PrimaryCfg|PatientInfo|Weight", numValue);
     info.weight = numValue;
 
-//    prefix = "Patient|Height|";
-//    prefix += Unit::localeSymbol(getHeightUnit());
-//    currentConfig.getStrValue(prefix + "|Value", strValue);
     systemConfig.getNumValue("PrimaryCfg|PatientInfo|Height", numValue);
     info.height = numValue;
 
@@ -293,10 +327,9 @@ void PatientManager::_loadPatientInfo(PatientInfo &info)
  * 构造。
  *************************************************************************************************/
 PatientManager::PatientManager()
+    : d_ptr(new PatientManagerPrivate)
 {
-    _loadPatientInfo(_patientInfo);
-    _patientTypeWidget = NULL;
-    _patientInfoWidget = NULL;
+    d_ptr->loadPatientInfo(d_ptr->patientInfo);
 }
 
 /**************************************************************************************************
@@ -304,4 +337,5 @@ PatientManager::PatientManager()
  *************************************************************************************************/
 PatientManager::~PatientManager()
 {
+    delete d_ptr;
 }

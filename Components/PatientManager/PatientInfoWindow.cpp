@@ -14,20 +14,16 @@
 #include "ComboBox.h"
 #include "LanguageManager.h"
 #include <QStringList>
-#include "PatientDefine.h"
 #include "MessageBox.h"
 #include <QHBoxLayout>
 #include "EnglishInputPanel.h"
 #include "KeyInputPanel.h"
 #include "PatientManager.h"
 #include "DischargePatientWindow.h"
-#include "DataStorageDirManager.h"
 #include <QMap>
 #include "Button.h"
-#include "WindowManager.h"
-#include "IConfig.h"
 #include "UnitManager.h"
-#include "ECGParam.h"
+#include "StandyWindow.h"
 
 PatientInfoWindow *PatientInfoWindow::_selfObj = NULL;
 class PatientInfoWindowPrivate
@@ -40,9 +36,6 @@ public:
         , relievePatient(NULL) , savePatientInfo(NULL)
         , heightLbl(NULL)
         , weightLbl(NULL)
-        , infoChange(false)
-        , patientNew(false)
-        , relieveFlag(true)
         , heightType(UNIT_NONE)
         , weightType(UNIT_NONE)
     {}
@@ -62,6 +55,9 @@ public:
         ITEM_BTN_CLEAR_PATIENT
     };
 
+    /**
+     * @brief loadOptions 加载选项信息
+     */
     void loadOptions();
     Button *id;                      // ID。
     ComboBox *type;                  // 病人类型。
@@ -76,10 +72,6 @@ public:
     Button *savePatientInfo;         // 保存病人信息
     QLabel *heightLbl;
     QLabel *weightLbl;
-
-    bool infoChange;                 // settting has been change
-    bool patientNew;                 // 新建病人标志
-    bool relieveFlag;                // 解除病人标志
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem , Button *> buttons;
@@ -98,6 +90,11 @@ public:
     void resetPatientInfo(void);
 };
 
+/**
+ * @brief checkAgeValue 年龄输入合法性判断
+ * @param value
+ * @return
+ */
 static bool checkAgeValue(const QString &value)
 {
     if (value.isEmpty())
@@ -121,7 +118,7 @@ static bool checkAgeValue(const QString &value)
 }
 
 /**
- * @brief checkHeightValue
+ * @brief checkHeightValue 身高输入合法性判断
  * @param value
  * @return
  */
@@ -131,8 +128,7 @@ static bool checkHeightValue(const QString &value)
     {
         return true;
     }
-    int unitHeightIndex = -1;
-    systemConfig.getNumValue("Unit|HeightUnit", unitHeightIndex);
+    UnitType unitHeightIndex = patientManager.getHeightUnit();
     bool ok = false;
     float heightValue = value.toFloat(&ok);
     if (!ok)
@@ -160,7 +156,7 @@ static bool checkHeightValue(const QString &value)
     return true;
 }
 /**
- * @brief checkWeightValue
+ * @brief checkWeightValue　体重输入合法性判断
  * @param value
  * @return
  */
@@ -171,8 +167,7 @@ static bool checkWeightValue(const QString &value)
         return true;
     }
 
-    int unitWeightValue = -1;
-    systemConfig.getNumValue("Unit|WeightUnit", unitWeightValue);
+    UnitType unitWeightValue = patientManager.getWeightUnit();
     bool ok = false;
     float weightValue = value.toFloat(&ok);
     if (!ok)
@@ -203,33 +198,52 @@ static bool checkWeightValue(const QString &value)
 void PatientInfoWindowPrivate::loadOptions()
 {
     combos[ITEM_CBO_PATIENT_TYPE]->setCurrentIndex(patientManager.getType());
+    bool patientNew = patientManager.getPatientNewStatus();
     if (patientNew)         // 新建病人时默认打开起博
     {
-        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(ECG_PACE_ON);
+        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(PATIENT_PACER_ON);
     }
     else
     {
-        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(ecgParam.getPacermaker());
+        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(patientManager.getPacermaker());
     }
-    buttons[ITEM_BTN_PATIENT_ID]->setEnabled(true);
     combos[ITEM_CBO_PATIENT_SEX]->setCurrentIndex(patientManager.getSex());
     combos[ITEM_CBO_BLOOD_TYPE]->setCurrentIndex(patientManager.getBlood());
-    buttons[ITEM_BTN_PATIENT_NAME]->setEnabled(true);
-    buttons[ITEM_BTN_PATIENT_AGE]->setEnabled(true);
-    buttons[ITEM_BTN_PATIENT_HEIGHT]->setEnabled(true);
-    buttons[ITEM_BTN_PATIENT_WEIGHT]->setEnabled(true);
+    buttons[ITEM_BTN_PATIENT_NAME]->setText(patientManager.getName());
+    if (patientManager.getAge() != 0)
+    {
+        buttons[ITEM_BTN_PATIENT_AGE]->setText(QString::number(patientManager.getAge()));
+    }
+    else
+    {
+        buttons[ITEM_BTN_PATIENT_AGE]->setText("");
+    }
+    if (patientManager.getHeight() != 0)
+    {
+        buttons[ITEM_BTN_PATIENT_HEIGHT]->setText(QString::number(patientManager.getHeight()));
+    }
+    else
+    {
+        buttons[ITEM_BTN_PATIENT_HEIGHT]->setText("");
+    }
+    if (patientManager.getWeight() != 0)
+    {
+        buttons[ITEM_BTN_PATIENT_WEIGHT]->setText(QString::number(patientManager.getWeight()));
+    }
+    else
+    {
+        buttons[ITEM_BTN_PATIENT_WEIGHT]->setText("");
+    }
+    buttons[ITEM_BTN_PATIENT_ID]->setText(patientManager.getPatID());
 
-    int unit;
     UnitType oldHeightType = heightType;
-    systemConfig.getNumValue("Unit|HeightUnit", unit);
-    heightType = static_cast<UnitType>(unit);
+    heightType = patientManager.getHeightUnit();
 
     heightLbl->setText(QString("%1(%2)").arg(trs("PatientHeight"))
                        .arg(Unit::getSymbol(heightType)));
 
     UnitType oldWeightType = weightType;
-    systemConfig.getNumValue("Unit|WeightUnit", unit);
-    weightType = static_cast<UnitType>(unit);
+    weightType = patientManager.getWeightUnit();
 
     weightLbl->setText(QString("%1(%2)").arg(trs("PatientWeight"))
                        .arg(Unit::getSymbol(weightType)));
@@ -460,35 +474,25 @@ PatientInfoWindow::PatientInfoWindow()
     backgroundLayout->addLayout(layout);
     backgroundLayout->addLayout(buttonLayout);
     setWindowLayout(backgroundLayout);
-
-    connect(DischargePatientWindow::getInstance(), SIGNAL(exitFlag(bool)),
-            this, SLOT(dischargeWinExit(bool)));
 }
 
 void PatientInfoWindowPrivate::savePatientInfoToConfig()
 {
     patientManager.setAge(age->text().toInt());
     patientManager.setBlood(static_cast<PatientBloodType>(blood->currentIndex()));
-    patientManager.setHeight(height->text().toShort());
+    patientManager.setHeight(height->text().toFloat());
     patientManager.setName(name->text());
     patientManager.setPatID(id->text());
     patientManager.setSex(static_cast<PatientSex>(sex->currentIndex()));
     patientManager.setType(static_cast<PatientType>(type->currentIndex()));
-    patientManager.setWeight(weight->text().toInt());
+    patientManager.setWeight(weight->text().toFloat());
     patientManager.setPacermaker(static_cast<PatientPacer>(pacer->currentIndex()));
 }
 
 void PatientInfoWindowPrivate::resetPatientInfo()
 {
     combos[ITEM_CBO_PATIENT_TYPE]->setCurrentIndex(patientManager.getType());
-    if (patientNew)         // 新建病人时默认打开起博
-    {
-        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(ECG_PACE_ON);
-    }
-    else
-    {
-        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(ecgParam.getPacermaker());
-    }
+    combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(PATIENT_PACER_ON);
     combos[ITEM_CBO_PATIENT_SEX]->setCurrentIndex(0);
     combos[ITEM_CBO_BLOOD_TYPE]->setCurrentIndex(0);
     QMap<MenuItem , Button *>::ConstIterator iter = buttons.constBegin();
@@ -501,33 +505,25 @@ void PatientInfoWindowPrivate::resetPatientInfo()
 
 void PatientInfoWindow::widgetChange()
 {
-    if (d_ptr->patientNew == false && d_ptr->relieveFlag == false)
+    bool patientNew = patientManager.getPatientNewStatus();
+    bool relieveFlag = patientManager.getRelieveStatus();
+    if (patientNew == false && relieveFlag == false)
     {
         d_ptr->savePatientInfo->setText(trs("PatientCreate"));
         d_ptr->relievePatient->setText(trs("CleanPatientData"));
         d_ptr->relievePatient->setVisible(true);
     }
-    else if (d_ptr->patientNew == true)
+    else if (patientNew == true)
     {
         d_ptr->savePatientInfo->setText(trs("EnglishYESChineseSURE"));
         d_ptr->relievePatient->hide();
     }
-    else if (d_ptr->patientNew == false && d_ptr->relieveFlag == true)
+    else if (patientNew == false && relieveFlag == true)
     {
         d_ptr->savePatientInfo->setText(trs("PatientCreate"));
         d_ptr->relievePatient->setText(trs("RelievePatient"));
         d_ptr->relievePatient->setVisible(true);
     }
-}
-
-void PatientInfoWindow::relieveStatus(bool relStauts)
-{
-    d_ptr->relieveFlag = relStauts;
-}
-
-void PatientInfoWindow::newPatientStatus(bool pStatus)
-{
-    d_ptr->patientNew = pStatus;
 }
 
 void PatientInfoWindow::idReleased()
@@ -566,6 +562,9 @@ void PatientInfoWindow::ageReleased()
     inputPanel.setSymbolEnable(false);
     inputPanel.setKeytypeSwitchEnable(false);
     inputPanel.setCheckValueHook(checkAgeValue);
+    inputPanel.setInvalidHint(QString("%1(%2 ~ %3)").arg(trs("InvalidInput"))
+                             .arg(QString::number(0))
+                             .arg(QString::number(120)));
 
     if (inputPanel.exec())
     {
@@ -574,15 +573,12 @@ void PatientInfoWindow::ageReleased()
         int age = text.toInt(&ok);
         if (ok)
         {
-            patientManager.setAge(age);
             d_ptr->age->setText(QString::number(age));
         }
         else if (text.isEmpty())
         {
-            patientManager.setAge(-1);
             d_ptr->age->setText("");
         }
-        d_ptr->infoChange = true;
     }
 }
 
@@ -609,15 +605,12 @@ void PatientInfoWindow::heightReleased()
         float height = text.toFloat(&ok);
         if (ok)
         {
-            patientManager.setHeight(height);
             d_ptr->height->setText(QString::number(height));
         }
         else if (text.isEmpty())
         {
-            patientManager.setHeight(-1);
             d_ptr->height->setText("");
         }
-        d_ptr->infoChange = true;
     }
 }
 
@@ -644,30 +637,27 @@ void PatientInfoWindow::weightReleased()
         float weight = text.toFloat(&ok);
         if (ok)
         {
-            patientManager.setWeight(weight);
             d_ptr->weight->setText(QString::number(weight));
         }
         else if (text.isEmpty())
         {
-            patientManager.setWeight(-1);
             d_ptr->weight->setText("");
         }
-        d_ptr->infoChange = true;
     }
 }
 
 void PatientInfoWindow::relieveReleased()
 {
     this->hide();
-    if (d_ptr->relieveFlag == true)
+    DischargePatientWindow dischargeWin;
+    connect(&dischargeWin, SIGNAL(finished(int)), this, SLOT(dischargeWinExit(int)));
+
+    bool relieveFlag = patientManager.getRelieveStatus();
+    if (relieveFlag == true)
     {
-        DischargePatientWindow::getInstance()->exec();
         d_ptr->resetPatientInfo();
     }
-    else
-    {
-        DischargePatientWindow::getInstance()->exec();
-    }
+    dischargeWin.exec();
     widgetChange();
 }
 
@@ -675,12 +665,14 @@ void PatientInfoWindow::saveInfoReleased()
 {
     int warnStatus;
 
-    if (d_ptr->patientNew == true)
+    bool patientNew = patientManager.getPatientNewStatus();
+    bool relieveFlag = patientManager.getRelieveStatus();
+    if (patientNew == true)
     {
         this->hide();
-        relieveStatus(true);
+        patientManager.setRelieveStatus(true);
     }
-    else if (d_ptr->patientNew == false && d_ptr->relieveFlag == false)
+    else if (patientNew == false && relieveFlag == false)
     {
         QStringList slist;
         slist << trs("Cancel") << trs("EnglishYESChineseSURE");
@@ -689,16 +681,16 @@ void PatientInfoWindow::saveInfoReleased()
         warnStatus = messageBox.exec();
         if (warnStatus == 0)
         {
-            relieveStatus(false);
+            patientManager.setRelieveStatus(false);
         }
         else if (warnStatus == 1)
         {
-            relieveStatus(true);
-            dataStorageDirManager.createDir(true);
+            patientManager.setRelieveStatus(true);
+            patientManager.createDir();
             d_ptr->savePatientInfoToConfig();
         }
     }
-    else if (d_ptr->patientNew == false && d_ptr->relieveFlag == true)
+    else if (patientNew == false && relieveFlag == true)
     {
         this->hide();
         QStringList slist;
@@ -706,7 +698,7 @@ void PatientInfoWindow::saveInfoReleased()
         MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist);
         if (messageBox.exec() == 1)
         {
-            dataStorageDirManager.createDir(true);
+            patientManager.createDir();
             d_ptr->savePatientInfoToConfig();
         }
     }
@@ -714,15 +706,21 @@ void PatientInfoWindow::saveInfoReleased()
 
 void PatientInfoWindow::pacerMakerReleased(int index)
 {
-    ecgParam.setPacermaker(static_cast<ECGPaceMode>(index));
+    patientManager.setPacermaker(static_cast<PatientPacer>(index));
 }
 
-void PatientInfoWindow::dischargeWinExit(bool flag)
+void PatientInfoWindow::dischargeWinExit(int flag)
 {
-    if (d_ptr->relieveFlag == true && flag)
+    if (flag == QDialog::Accepted)
     {
-        relieveStatus(false);
+        if (patientManager.getRelieveStatus())
+        {
+            patientManager.setRelieveStatus(false);
+        }
+        StandyWindow standyWin;
+        standyWin.exec();
     }
+    patientManager.createDir();
 }
 
 void PatientInfoWindow::showEvent(QShowEvent *ev)

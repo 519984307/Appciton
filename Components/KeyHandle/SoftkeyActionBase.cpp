@@ -24,7 +24,6 @@
 #include "MessageBox.h"
 #include "CO2Param.h"
 #include "SystemManager.h"
-#include "DataStorageDirManager.h"
 #include "DoseCalculationManager.h"
 #include "Window.h"
 #include "MenuSidebar.h"
@@ -32,6 +31,7 @@
 #include "Frame.h"
 #include "FrameItem.h"
 #include "ComboBox.h"
+#include "PatientManager.h"
 #include "PatientInfoWindow.h"
 #include "CodeMarkerWindow.h"
 #include "ScreenLayoutWindow.h"
@@ -170,7 +170,7 @@ void SoftkeyActionBase::patientInfo(bool isPressed)
         return;
     }
 
-    patientInfoWindow.newPatientStatus(false);
+    patientManager.setPatientNewStatus(false);
     patientInfoWindow.widgetChange();
     windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers
                              | WindowManager::ShowBehaviorCloseIfVisiable);
@@ -202,8 +202,8 @@ void SoftkeyActionBase::patientNew(bool isPressed)
     MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist);
     if (messageBox.exec() == 1)
     {
-        dataStorageDirManager.createDir(true);
-        patientInfoWindow.newPatientStatus(true);
+        patientManager.createDir();
+        patientManager.setPatientNewStatus(true);
         patientInfoWindow.widgetChange();
         windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers);
     }
