@@ -157,7 +157,7 @@ void AlarmLimitWindow::readyShow()
 void AlarmLimitWindow::layoutExec()
 {
     setWindowTitle(trs("AlarmLimit"));
-    setFixedSize(580, 580);
+    setFixedSize(580, 520);
     setFocusPolicy(Qt::NoFocus);
 
     QBoxLayout *layout = new QVBoxLayout();
