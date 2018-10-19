@@ -29,13 +29,15 @@ public:
     Q_DECLARE_PUBLIC(ScreenLayoutItemDelegate)
 
     explicit ScreenLayoutItemDelegatePrivate(ScreenLayoutItemDelegate *const q_ptr)
-        : TableViewItemDelegatePrivate(q_ptr)
+        : TableViewItemDelegatePrivate(q_ptr), view(NULL)
     {
     }
 
     void drawWave(QPainter *painter, const QRect &rect, const ScreenLayoutItemInfo &info) const;
 
     virtual bool showEditor(const QTableView *view, QAbstractItemModel *model, QModelIndex index);
+    const QTableView *view;
+    QColor gridColor;
 };
 
 void ScreenLayoutItemDelegatePrivate::drawWave(QPainter *painter, const QRect &rect,
@@ -147,9 +149,12 @@ bool ScreenLayoutItemDelegatePrivate::showEditor(const QTableView *view, QAbstra
     return false;
 }
 
-ScreenLayoutItemDelegate::ScreenLayoutItemDelegate(QObject *parent)
-    : TableViewItemDelegate(new ScreenLayoutItemDelegatePrivate(this), parent)
+ScreenLayoutItemDelegate::ScreenLayoutItemDelegate(QTableView *view)
+    : TableViewItemDelegate(new ScreenLayoutItemDelegatePrivate(this), view)
 {
+    Q_D(ScreenLayoutItemDelegate);
+
+    d->view = view;
 }
 
 void ScreenLayoutItemDelegate::drawDisplay(QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect,
@@ -159,6 +164,7 @@ void ScreenLayoutItemDelegate::drawDisplay(QPainter *painter, const QStyleOption
     Q_UNUSED(text)
 
     Q_D(const ScreenLayoutItemDelegate);
+
     QVariant val = d->curPaintingIndex.data(Qt::DisplayRole);
     if (val.canConvert<ScreenLayoutItemInfo>())
     {
@@ -173,40 +179,74 @@ void ScreenLayoutItemDelegate::drawDisplay(QPainter *painter, const QStyleOption
         }
     }
 
-    /* The table view will mising the span item's left or right grid on the first row or first column of the table
-     * We fix it up here
-     */
-    if (d_ptr->curPaintingIndex.row() == 0 || d_ptr->curPaintingIndex.column() == 0)
+
+    if (!d->view)
     {
-        QSize span = d_ptr->curPaintingIndex.model()->span(d_ptr->curPaintingIndex);
-        if (span.width() == 1 && span.height() == 1)
+        return;
+    }
+
+    // handle the grid stuff
+    if (d->view->showGrid())
+    {
+        /* The table view will mising the span item's left or right grid on the first row or first column of the table
+         * We fix it up here
+         */
+        if (d->curPaintingIndex.row() == 0 || d->curPaintingIndex.column() == 0)
+        {
+            QSize span = d->curPaintingIndex.model()->span(d->curPaintingIndex);
+            if (span.width() == 1 && span.height() == 1)
+            {
+                return;
+            }
+
+            const int gridHint = d->view->style()->styleHint(QStyle::SH_Table_GridLineColor, &option, d->view);
+            QColor gridColor = static_cast<QRgb>(gridHint);
+            const QPen gridPen(gridColor, 0, d->view->gridStyle());
+            painter->setPen(gridPen);
+            if (d->curPaintingIndex.row() == 0)
+            {
+                painter->drawLine(option.rect.topLeft(), option.rect.topRight());
+            }
+
+            if (d->curPaintingIndex.column() == 0)
+            {
+                painter->drawLine(option.rect.topLeft(), option.rect.bottomLeft());
+            }
+        }
+    }
+    else
+    {
+        // manual draw the grid
+        QVariant gridVal = d->curPaintingIndex.data(BorderRole);
+        int border = gridVal.toInt();
+        if (border == 0)
         {
             return;
         }
 
-        const QTableView *view = NULL;
-        if (const QStyleOptionViewItemV4 *v4 = qstyleoption_cast<const QStyleOptionViewItemV4 *>(&option))
-        {
-            view = qobject_cast<const QTableView *>(v4->widget);
-        }
-
-        if (!view || !view->showGrid())
-        {
-            return;
-        }
-
-        const int gridHint = view->style()->styleHint(QStyle::SH_Table_GridLineColor, &option, view);
-        const QColor gridColor = static_cast<QRgb>(gridHint);
-        const QPen gridPen(gridColor, 0, view->gridStyle());
+        const int gridHint = d->view->style()->styleHint(QStyle::SH_Table_GridLineColor, &option, d->view);
+        QColor gridColor = static_cast<QRgb>(gridHint);
+        const QPen gridPen(gridColor, 0, d->view->gridStyle());
         painter->setPen(gridPen);
-        if (d_ptr->curPaintingIndex.row() == 0)
+
+        if (border & BORDER_LEFT)
+        {
+            painter->drawLine(option.rect.topLeft(), option.rect.bottomLeft());
+        }
+
+        if (border & BORDER_TOP)
         {
             painter->drawLine(option.rect.topLeft(), option.rect.topRight());
         }
 
-        if (d_ptr->curPaintingIndex.column() == 0)
+        if (border & BORDER_RIGHT)
         {
-            painter->drawLine(option.rect.topLeft(), option.rect.bottomLeft());
+            painter->drawLine(option.rect.topRight(), option.rect.bottomRight());
+        }
+
+        if (border & BORDER_BOTTOM)
+        {
+            painter->drawLine(option.rect.bottomLeft(), option.rect.bottomRight());
         }
     }
 }

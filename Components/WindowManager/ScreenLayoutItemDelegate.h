@@ -12,11 +12,12 @@
 #include "TableViewItemDelegate.h"
 
 class ScreenLayoutItemDelegatePrivate;
+class QTableView;
 class ScreenLayoutItemDelegate : public TableViewItemDelegate
 {
     Q_OBJECT
 public:
-    explicit ScreenLayoutItemDelegate(QObject *parent = NULL);
+    explicit ScreenLayoutItemDelegate(QTableView *view = NULL);
 
 protected:
     /* reimplement */
