@@ -876,9 +876,9 @@
             <MainLayout direction="vertical" margin="0" spacing="0">
                 <LayoutItem height="45" direction="horizontal" spacing="0" bgcolor="#1e1e1e">
                     <LayoutItem stretch="1">PatientInfoWidget</LayoutItem>
-                    <LayoutItem width="50">NightStatusBar</LayoutItem>
-                    <LayoutItem width="50">PatientStatusBarWidget</LayoutItem>
-                    <LayoutItem width="200">DateTimeWidget</LayoutItem>
+                    <LayoutItem width="40">NightStatusBar</LayoutItem>
+                    <LayoutItem width="40">PatientStatusBarWidget</LayoutItem>
+                    <LayoutItem width="210">DateTimeWidget</LayoutItem>
                     <LayoutItem width="50">AlarmMuteBarWidget</LayoutItem>
                     <LayoutItem width="350">AlarmPhyInfoBarWidget</LayoutItem>
                     <LayoutItem width="350">AlarmTechInfoBarWidget</LayoutItem>
@@ -898,12 +898,12 @@
                         <LayoutNode pos="5" span="1" editable="1">PVCs</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
-                        <LayoutNode pos="0" span="4" editable="1">SPO2Wave</LayoutNode>
-                        <LayoutNode pos="4" span="2" editable="1">SPO2</LayoutNode>
-                    </LayoutRow>
-                    <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="1">ECG2Wave</LayoutNode>
                         <LayoutNode pos="4" span="2" editable="1">N2O</LayoutNode>
+                    </LayoutRow>
+                    <LayoutRow>
+                        <LayoutNode pos="0" span="4" editable="1">SPO2Wave</LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="1">SPO2</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="1">IBP1Wave</LayoutNode>
