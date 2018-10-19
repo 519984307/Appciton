@@ -118,9 +118,7 @@ bool ScreenLayoutItemDelegatePrivate::showEditor(const QTableView *view, QAbstra
     ScreenLayoutEditor *editor = new ScreenLayoutEditor(title);
     editor->setAttribute(Qt::WA_DeleteOnClose, true);
     editor->setWindowModality(Qt::ApplicationModal);
-    QPoint pos = rect.topRight();
-    pos.setY(pos.y() - rect.height());
-    editor->setDisplayPosition(pos);
+    editor->setDisplayPosition(rect.topRight());
     editor->setRemoveable(!info.name.isEmpty());
     editor->setReplaceList(model->data(index, ReplaceRole).toList());
     editor->setInsertList(model->data(index, InsertRole).toList());
