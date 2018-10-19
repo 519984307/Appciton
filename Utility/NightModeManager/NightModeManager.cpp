@@ -71,6 +71,14 @@ void NightModeManager::setNightMode()
     {
         // 屏幕亮度(读取夜间模式)
         systemConfig.getNumValue("NightMode|ScreenBrightness", screenBrightness);
+        if (screenBrightness < 1)
+        {
+            screenBrightness = 0;
+        }
+        else
+        {
+            screenBrightness -= 1;
+        }
 
         // 报警音量
         systemConfig.getNumValue("NightMode|AlarmVolume", alarmVolume);
