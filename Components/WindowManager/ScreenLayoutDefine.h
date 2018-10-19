@@ -19,10 +19,6 @@
 #define LAYOUT_MAX_WAVE_ROW_NUM 6
 #define LAYOUT_WAVE_END_COLUMN 4
 
-#define LAYOUT_PARAM_ROW_SPACING 4      // 参数的行间距
-#define LAYOUT_PARAM_WAVE_SPACING 3     //　参数与波形行间距
-#define LAYOUT_NODE_ITEM_COUNT 2        // 每个节点包含多少个项（para&wave）
-
 enum LayoutNodeType
 {
     LAYOUT_NODE_NONE,
@@ -86,7 +82,13 @@ enum ScreenLayoutRole
     ReplaceRole = Qt::UserRole + 1,
     InsertRole,
     RemoveRole,
+    BorderRole,    // the table cell border role
 };
+
+#define BORDER_LEFT         0x01
+#define BORDER_TOP          0x02
+#define BORDER_RIGHT        0x04
+#define BORDER_BOTTOM       0x08
 
 /**
  * @brief The ScreenLayoutItemInfo struct mainly use to draw the item
