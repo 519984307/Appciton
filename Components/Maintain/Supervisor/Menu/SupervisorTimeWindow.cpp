@@ -195,6 +195,7 @@ void SupervisorTimeWindow::layoutExec()
     spinBox->setRange(1970, 2037);
     spinBox->setScale(1);
     spinBox->setStep(1);
+    spinBox->setArrow(false);
     itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_YEAR);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
@@ -206,6 +207,7 @@ void SupervisorTimeWindow::layoutExec()
     spinBox->setRange(1, 12);
     spinBox->setScale(1);
     spinBox->setStep(1);
+    spinBox->setArrow(false);
     itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_MONTH);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
@@ -217,6 +219,7 @@ void SupervisorTimeWindow::layoutExec()
     spinBox->setRange(1, 30);
     spinBox->setScale(1);
     spinBox->setStep(1);
+    spinBox->setArrow(false);
     itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_DAY);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
@@ -231,6 +234,7 @@ void SupervisorTimeWindow::layoutExec()
     spinBox = new SpinBox;
     spinBox->setScale(1);
     spinBox->setStep(1);
+    spinBox->setArrow(false);
     itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_HOUR);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
@@ -242,6 +246,7 @@ void SupervisorTimeWindow::layoutExec()
     spinBox->setRange(0, 59);
     spinBox->setScale(1);
     spinBox->setStep(1);
+    spinBox->setArrow(false);
     itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_MINUTE);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
@@ -253,6 +258,7 @@ void SupervisorTimeWindow::layoutExec()
     spinBox->setRange(0, 59);
     spinBox->setScale(1);
     spinBox->setStep(1);
+    spinBox->setArrow(false);
     itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_SECOND);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
