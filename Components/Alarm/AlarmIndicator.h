@@ -36,7 +36,8 @@ public:
 
     // 增加/删除报警消息。
     bool addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
-            AlarmPriority alarmPriority, const char *alarmMessage, bool isRemoveAfterLatch = false);
+                      AlarmPriority alarmPriority, const char *alarmMessage,
+                      AlarmParamIFace *alarmSource, int alarmID, bool isRemoveAfterLatch = false);
     void delAlarmInfo(AlarmType alarmType, const char *alarmMessage);
 
     // 报警栓锁
@@ -89,8 +90,6 @@ public:
 
 private:
     AlarmIndicator();
-
-    bool _existAlarm(void);
 
 private: // 报警信息显示。
     void _displayPhyClear(void);     // 清除生理报警界面。

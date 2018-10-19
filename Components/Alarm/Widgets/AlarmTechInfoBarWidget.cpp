@@ -113,7 +113,7 @@ void AlarmTechInfoBarWidget::_releaseHandle(IWidget *iWidget)
     Q_UNUSED(iWidget)
     //报警少于一个时，不显示。
     int total = alarmIndicator.getAlarmCount(_alarmType);
-    if (total < 2)
+    if (total < 1)
     {
         return;
     }

@@ -223,7 +223,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 traceCtrl->timestamp = _timestamp;
                 traceCtrl->order = ++curSecondAlarmNum;
                 alarmIndicator.addAlarmInfo(_timestamp, traceCtrl->type,
-                                            traceCtrl->priority, traceCtrl->alarmMessage);
+                                            traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i);
 
                 alarmParam.append(alarmSource->getParamID());
                 // summaryStorageManager.addPhyAlarm(_timestamp, alarmSource->getParamID(), i,
@@ -241,7 +241,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 traceCtrl->timestamp = _timestamp;
                 traceCtrl->order = ++curSecondAlarmNum;
                 alarmIndicator.addAlarmInfo(_timestamp, traceCtrl->type,
-                                            traceCtrl->priority, traceCtrl->alarmMessage);
+                                            traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i);
 
                 alarmParam.append(alarmSource->getParamID());
                 // summaryStorageManager.addPhyAlarm(_timestamp, alarmSource->getParamID(), i,
@@ -289,7 +289,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 else
                 {
                     alarmIndicator.addAlarmInfo(_timestamp, traceCtrl->type,
-                                                traceCtrl->priority, traceCtrl->alarmMessage);
+                                                traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i);
                 }
             }
         }
@@ -438,7 +438,7 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
 
         // 发布该报警。
         alarmIndicator.addAlarmInfo(_timestamp, traceCtrl->type,
-                                    traceCtrl->priority, traceCtrl->alarmMessage, isRemoveAfterLatch);
+                                    traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i, isRemoveAfterLatch);
 
         if (traceCtrl->type == ALARM_TYPE_LIFE)
         {

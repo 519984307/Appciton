@@ -368,7 +368,8 @@ void AlarmIndicator::setAlarmTechWidgets(AlarmTechInfoBarWidget *alarmWidget)
  *      isRemoveAfterLatch:latch后是否移除报警信息
  *************************************************************************************************/
 bool AlarmIndicator::addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
-                                  AlarmPriority alarmPriority, const char *alarmMessage, bool isRemoveAfterLatch)
+                                  AlarmPriority alarmPriority, const char *alarmMessage,
+                                  AlarmParamIFace *alarmSource, int alarmID, bool isRemoveAfterLatch)
 {
     //报警存在
     AlarmInfoList *list = &_alarmInfoDisplayPool;
@@ -397,7 +398,7 @@ bool AlarmIndicator::addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
         return false;
     }
 
-    AlarmInfoNode node(alarmTime, alarmType, alarmPriority, alarmMessage);
+    AlarmInfoNode node(alarmTime, alarmType, alarmPriority, alarmMessage, alarmSource, alarmID);
     node.removeAfterLatch = isRemoveAfterLatch;
 
     list->append(node);

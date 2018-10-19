@@ -11,7 +11,6 @@
 
 #pragma once
 #include <stddef.h>
-
 #define ALARM_INFO_DISPLAY_TIME (3)//每条报警信息显示时间
 
 enum AlarmType
@@ -35,7 +34,7 @@ enum AlarmPriority
     ALARM_PRIO_MED,        // 中级。
     ALARM_PRIO_HIGH,       // 高级。
 };
-
+class AlarmParamIFace;
 struct AlarmInfoNode
 {
     AlarmInfoNode()
@@ -44,10 +43,10 @@ struct AlarmInfoNode
     }
 
     AlarmInfoNode(unsigned t, AlarmType type, AlarmPriority priority,
-                  const char *message)
+                  const char *message, AlarmParamIFace *source, int id)
         : alarmType(type), alarmPriority(priority), latch(false), acknowledge(false),
           removeAfterLatch(false), promptAlarmBeep(false), pauseTime(0), displayTime(ALARM_INFO_DISPLAY_TIME),
-          alarmTime(t), alarmMessage(message)
+          alarmTime(t), alarmMessage(message), alarmSource(source), alarmID(id)
     {
         //    alarmType = type;
         //    alarmPriority = priority;
@@ -73,6 +72,8 @@ struct AlarmInfoNode
         displayTime = ALARM_INFO_DISPLAY_TIME;
         alarmTime = 0;
         alarmMessage = NULL;
+        alarmSource = NULL;
+        alarmID = id;
     }
 
     AlarmType alarmType;
@@ -85,6 +86,8 @@ struct AlarmInfoNode
     unsigned displayTime;
     unsigned alarmTime;
     const char *alarmMessage;
+    AlarmParamIFace *alarmSource;
+    int alarmID;
 };
 
 enum AlarmAudioStatus

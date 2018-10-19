@@ -15,6 +15,7 @@
 #include "AlarmIndicator.h"
 #include <QPainter>
 #include "WindowManager.h"
+#include "Alarm.h"
 
 static AlarmPhyInfoBarWidget *_selfObj = NULL;
 
@@ -31,11 +32,12 @@ void AlarmPhyInfoBarWidget::_drawBackground(void)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(Qt::black);
-    if (_alarmPriority == ALARM_PRIO_HIGH)
+    AlarmPriority priority = _alarmSource->getAlarmPriority(_alarmID);
+    if (priority == ALARM_PRIO_HIGH)
     {
         painter.setBrush(QColor(255, 0, 0));
     }
-    else if (_alarmPriority == ALARM_PRIO_PROMPT)
+    else if (priority == ALARM_PRIO_PROMPT)
     {
         painter.setBrush(QColor(0, 175, 219));
     }
@@ -60,7 +62,8 @@ void AlarmPhyInfoBarWidget::_drawText(void)
     }
 
     QPainter painter(this);
-    if (_alarmPriority == ALARM_PRIO_HIGH)
+    AlarmPriority priority = _alarmSource->getAlarmPriority(_alarmID);
+    if (priority == ALARM_PRIO_HIGH)
     {
         painter.setPen(Qt::white);
     }
@@ -105,6 +108,13 @@ void AlarmPhyInfoBarWidget::paintEvent(QPaintEvent *e)
     IWidget::paintEvent(e);
     _drawBackground();
     _drawText();
+    if (_alarmSource)
+    {
+        if (!_alarmSource->isAlarmEnable(_alarmID))
+        {
+            alarmIndicator.delAlarmInfo(ALARM_TYPE_PHY, _message);
+        }
+    }
 }
 
 void AlarmPhyInfoBarWidget::_releaseHandle(IWidget *iWidget)
@@ -112,7 +122,7 @@ void AlarmPhyInfoBarWidget::_releaseHandle(IWidget *iWidget)
     Q_UNUSED(iWidget)
     //报警少于一个时，不显示。
     int total = alarmIndicator.getAlarmCount(_alarmType);
-    if (total < 2)
+    if (total < 1)
     {
         return;
     }
@@ -163,10 +173,13 @@ void AlarmPhyInfoBarWidget::display(AlarmInfoNode &node)
 {
     _alarmPriority = node.alarmPriority;
     _text = node.alarmMessage;
+    _message = node.alarmMessage;
     _type = node.alarmType;
     _latch = node.latch;
     _acknowledge = node.acknowledge;
     _pauseTime = node.pauseTime;
+    _alarmSource = node.alarmSource;
+    _alarmID = node.alarmID;
     update();
     updateList();
 }
@@ -184,6 +197,15 @@ AlarmPhyInfoBarWidget &AlarmPhyInfoBarWidget::getSelf()
  *************************************************************************************************/
 AlarmPhyInfoBarWidget::AlarmPhyInfoBarWidget(const QString &name) :
     IWidget(name),
+    _type(ALARM_TYPE_PHY),
+    _alarmPriority(ALARM_PRIO_LOW),
+    _pauseTime(0),
+    _text(QString()),
+    _message(NULL),
+    _latch(false),
+    _acknowledge(false),
+    _alarmSource(NULL),
+    _alarmID(0),
     _alarmWindow(NULL),
     _alarmType(ALARM_TYPE_PHY)
 {

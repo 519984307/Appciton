@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/10/19
+ **/
+
 #pragma once
 #include "AlarmDefine.h"
 #include "ParamDefine.h"
@@ -23,6 +33,9 @@ public:
 
     // 生理参数报警级别。
     virtual AlarmPriority getAlarmPriority(int id) = 0;
+
+    // 生理报警使能
+    virtual bool isAlarmEnable(int id) = 0;
 };
 
 class AlarmLimitIFace: public AlarmParamIFace
@@ -69,8 +82,9 @@ class AlarmOneShotIFace: public AlarmParamIFace
 {
 public:
     // 该报警是否为生命报警，技术报警和生理/命报警分开存放。
-    virtual AlarmType getAlarmType(int)
+    virtual AlarmType getAlarmType(int id)
     {
+        Q_UNUSED(id)
         return ALARM_TYPE_TECH;
     }
 
