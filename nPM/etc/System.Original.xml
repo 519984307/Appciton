@@ -20,7 +20,7 @@
         <DefaultPatientType>0</DefaultPatientType>
     </General>
     <Alarms>
-	<MinAlarmVol>1</MinAlarmVol>
+	<MinimumAlarmVolume>2</MinimumAlarmVolume>
 	<AlarmPauseTime>1</AlarmPauseTime>
 	<STAlarmDraly>1</STAlarmDraly>
 	<PauseMaxAlarm15Min>1</PauseMaxAlarm15Min>
