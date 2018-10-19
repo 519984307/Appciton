@@ -33,16 +33,6 @@ DischaregePatientWindowPrivate::DischaregePatientWindowPrivate()
 {
 }
 
-DischargePatientWindow* DischargePatientWindow::getInstance()
-{
-    static DischargePatientWindow* instance = NULL;
-    if (!instance)
-    {
-        instance = new DischargePatientWindow;
-    }
-    return instance;
-}
-
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
@@ -78,8 +68,8 @@ void DischargePatientWindow::layoutExec()
     layout->setRowStretch(2, 1);
     setWindowLayout(layout);
 
-    connect(d_ptr->yes, SIGNAL(released()), this, SLOT(onYesReleased()));
-    connect(d_ptr->no, SIGNAL(released()), this, SLOT(onNoReleased()));
+    connect(d_ptr->yes, SIGNAL(released()), this, SLOT(accept()));
+    connect(d_ptr->no, SIGNAL(released()), this, SLOT(reject()));
 }
 
 /***************************************************************************************************
@@ -90,32 +80,6 @@ void DischargePatientWindow::showEvent(QShowEvent *e)
     Window::showEvent(e);
     QRect r = layoutManager.getMenuArea();
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
-}
-
-/**************************************************************************************************
- * 重写X退出槽函数。
- *************************************************************************************************/
-void DischargePatientWindow::exit()
-{
-    hide();
-}
-
-/***************************************************************************************************
- * 进入待机模式槽函数
- **************************************************************************************************/
-void DischargePatientWindow::onYesReleased()
-{
-    hide();
-    dataStorageDirManager.createDir(true);
-}
-
-/***************************************************************************************************
- * 不进入待机模式槽函数
- **************************************************************************************************/
-void DischargePatientWindow::onNoReleased()
-{
-    hide();
-    dataStorageDirManager.createDir(true);
 }
 
 /**************************************************************************************************

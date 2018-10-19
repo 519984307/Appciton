@@ -56,7 +56,10 @@ void ConfigManagerWindow::layoutExec()
 void ConfigManagerWindow::userInputCorrect()
 {
     ConfigManagerMenuWindow *w = ConfigManagerMenuWindow::getInstance();
-    windowManager.showWindow(w, WindowManager::ShowBehaviorModal |
-                                WindowManager::ShowBehaviorCloseOthers |
+    windowManager.showWindow(w, WindowManager::ShowBehaviorHideOthers |
                                 WindowManager::ShowBehaviorNoAutoClose);
+
+    // 每次打开主界面时，强制聚焦在首个item
+    // 需要放在showWindow下面
+    w->focusMenuItem();
 }

@@ -17,7 +17,7 @@ class DischargePatientWindow : public Window
     Q_OBJECT
 
 public:
-    static DischargePatientWindow *getInstance();
+    DischargePatientWindow();
     ~DischargePatientWindow();
 
     void layoutExec(void);
@@ -26,12 +26,6 @@ protected:
     void showEvent(QShowEvent *e);
     void exit(void);
 
-private slots:
-    void onYesReleased(void);
-    void onNoReleased(void);
-
 private:
-    DischargePatientWindow();
-
     DischaregePatientWindowPrivate *const d_ptr;
 };

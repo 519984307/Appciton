@@ -391,6 +391,7 @@ static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
  *************************************************************************************************/
 void SuntechProvider::_handlePacket(unsigned char *data, int len)
 {
+    Q_UNUSED(len)
     if (!isConnectedToParam)
     {
         return;

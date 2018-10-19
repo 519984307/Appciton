@@ -18,12 +18,14 @@
 #include "ParamManager.h"
 #include "IBPParam.h"
 
+
 struct ParamNodeDescription
 {
     ParamNodeDescription(){}
-    explicit ParamNodeDescription(const QString &displayName)
-        : displayName(displayName){}
+    explicit ParamNodeDescription(const QString &displayName, LayoutNodeType waveNode = LAYOUT_NODE_NONE)
+        : displayName(displayName), waveNode(waveNode){}
     QString displayName;
+    LayoutNodeType waveNode;
 };
 
 typedef QList<LayoutNode *> LayoutRow;
@@ -43,12 +45,6 @@ public:
 
     LayoutNode * findNode(const QModelIndex &index);
     void fillWaveData(ScreenLayoutItemInfo &info);
-    bool itemInWaveRegion(const QModelIndex &index);
-    /**
-     * @brief getUnlayoutedWaveforms  获得没有被布局的波形
-     * @return  没有被布局波形的列表
-     */
-    QStringList getUnlayoutedWaveforms() const;
 
     /**
      * @brief getUnlayoutedParams  获得没有被布局的参数
@@ -96,19 +92,13 @@ public:
      */
     QStringList getLayoutedParams() const;
 
-    /**
-     * @brief findWaveNameFromParam    从参数名称获得对应的波形名称
-     * @param paramStr
-     * @return
-     */
-    QString findWaveNameFromParam(QString paramStr);
-
     DemoProvider *demoProvider;
     OrderedMap<QString , WaveformID> waveIDMaps;
     OrderedMap<QString, ParamNodeDescription> paramNodeDescriptions;     // store param node's description
     QVector<LayoutRow *> layoutNodes;
     QMap<WaveformID, QByteArray> waveCaches;
 };
+
 BigFontLayoutModel::BigFontLayoutModel(QObject *parent)
     : QAbstractTableModel(parent),
       d_ptr(new BigFontLayoutModelPrivate)
@@ -123,14 +113,12 @@ BigFontLayoutModel::~BigFontLayoutModel()
 int BigFontLayoutModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-//    return LAYOUT_ITEM_ROW_COUNT;
     return LAYOUT_COLUMN_COUNT;
 }
 
 int BigFontLayoutModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-//    return LAYOUT_WAVE_ROW_POS;
     return LAYOUT_ROW_COUNT;
 }
 
@@ -149,13 +137,15 @@ bool BigFontLayoutModel::setData(const QModelIndex &index, const QVariant &value
             {
                 node->name = nodeName;
             }
-            QModelIndex waveIndex = this->index(index.row() + LAYOUT_PARAM_WAVE_SPACING
+
+            // find the node's wave name, there's 1 row between param and wave, need to skip
+            QModelIndex waveIndex = this->index(index.row() + 2
                                                 , index.column());
 
             LayoutNode *waveNode = d_ptr->findNode(waveIndex);
-            if (waveNode && d_ptr->itemInWaveRegion(waveIndex))
+            if (waveNode && waveNode->span > 1)
             {
-                waveNode->name = d_ptr->findWaveNameFromParam(nodeName);
+                waveNode->name = layoutNodeName(d_ptr->paramNodeDescriptions[nodeName].waveNode);
                 anotherIndex = waveIndex;
             }
             emit dataChanged(index, anotherIndex);
@@ -169,10 +159,10 @@ bool BigFontLayoutModel::setData(const QModelIndex &index, const QVariant &value
         if (node)
         {
             node->name = QString();
-            QModelIndex waveIndex = this->index(index.row() + LAYOUT_PARAM_WAVE_SPACING
+            QModelIndex waveIndex = this->index(index.row() + 2
                                                 , index.column());
             LayoutNode *waveNode = d_ptr->findNode(waveIndex);
-            if (waveNode && d_ptr->itemInWaveRegion(waveIndex))
+            if (waveNode && waveNode->span > 1)
             {
                 anotherIndex = waveIndex;
                 waveNode->name = QString();
@@ -225,37 +215,12 @@ QVariant BigFontLayoutModel::data(const QModelIndex &index, int role) const
     case ReplaceRole:
     {
         LayoutNode *node = d_ptr->findNode(index);
-        if (node)
-        {
-            if (node->name.isEmpty())
-            {
-                break;
-            }
-        }
-        else
+        if (node == NULL || node->name.isEmpty())
         {
             break;
         }
-        if (d_ptr->itemInWaveRegion(index))     // 波形
-        {
-            QStringList replaceWaveforms = d_ptr->getUnlayoutedWaveforms();
-            if (replaceWaveforms.isEmpty())
-            {
-                break;
-            }
-            replaceWaveforms.append(node->name);
-            QVariantList list;
-            QStringList::ConstIterator iter = replaceWaveforms.constBegin();
-            for (; iter != replaceWaveforms.end() ; iter++)
-            {
-                QVariantMap m;
-                m["@name"] = *iter;
-                m["@displayName"] = paramInfo.getParamWaveformName(d_ptr->waveIDMaps.value(*iter, WAVE_NONE));
-                list.append(m);
-            }
-            return list;
-        }
-        else    // 参数
+
+        if (node->span == 1)    // param item
         {
             QStringList replaceParams = d_ptr->getUnlayoutedParams();
             if (replaceParams.isEmpty())
@@ -280,30 +245,12 @@ QVariant BigFontLayoutModel::data(const QModelIndex &index, int role) const
     case InsertRole:
     {
         LayoutNode *node = d_ptr->findNode(index);
-        if (node)
+        if (node == NULL || !node->name.isEmpty())
         {
-            if (!node->name.isEmpty())
-            {
-                break;
-            }
+            break;
         }
 
-        if (d_ptr->itemInWaveRegion(index))
-        {
-            QVariantList list;
-            QStringList unlayoutWaves = d_ptr->getUnlayoutedWaveforms();
-            QStringList::ConstIterator iter = unlayoutWaves.constBegin();
-            for (; iter != unlayoutWaves.constEnd(); ++iter)
-            {
-                QVariantMap m;
-                m["name"] = *iter;
-                m["displayName"] = paramInfo.getParamWaveformName(d_ptr->waveIDMaps.value(*iter, WAVE_NONE));
-                list.append(m);
-            }
-            return list;
-        }
-        else
-        {
+        if (node->span == 1) {      // param item
             QVariantList list;
             QStringList unlayoutParams = d_ptr->getUnlayoutedParams();
             QStringList::ConstIterator iter = unlayoutParams.constBegin();
@@ -318,6 +265,48 @@ QVariant BigFontLayoutModel::data(const QModelIndex &index, int role) const
         }
         break;
     }
+    case BorderRole:
+    {
+        int border = 0;
+        LayoutNode *node = d_ptr->findNode(index);
+        if (index.row() == 0)
+        {
+            border |= BORDER_TOP;
+        }
+
+        if (index.row() == rowCount() - 1)
+        {
+            border |= BORDER_BOTTOM;
+        }
+
+        if (index.column() == 0 || index.column() == columnCount() / 2)
+        {
+            border |= BORDER_LEFT;
+        }
+
+        if (index.column() == columnCount() - 1)
+        {
+            border |= BORDER_RIGHT;
+        }
+
+        if (node)
+        {
+            border |= BORDER_LEFT | BORDER_TOP | BORDER_RIGHT | BORDER_BOTTOM;
+            QModelIndex idx = this->index(index.row(),  node->span + index.column());
+            if (index.isValid() && d_ptr->findNode(idx) != NULL)
+            {
+                border &= ~BORDER_RIGHT;
+            }
+
+            if (index.row() == rowCount() / 2)
+            {
+                border &= ~BORDER_TOP;
+            }
+        }
+
+        return border;
+    }
+    break;
     default:
         break;
     }
@@ -354,18 +343,19 @@ QSize BigFontLayoutModel::span(const QModelIndex &index) const
         // if the node exist, use the node's span value, otherwise, use the default value
         if (node)
         {
-            if (d_ptr->itemInWaveRegion(index))
+            if (node->span > 1)
             {
-                return QSize(node->span, 1);
+                // wave item's span is always larger than 1
+                return QSize(node->span, 2);
             }
             else
             {
-                return QSize(node->span, node->span);
+                return QSize(node->span, 1);
             }
         }
     }
 
-    return QSize();
+    return QAbstractTableModel::span(index);
 }
 
 void BigFontLayoutModel::saveLayoutInfo()
@@ -471,33 +461,6 @@ void BigFontLayoutModelPrivate::fillWaveData(ScreenLayoutItemInfo &info)
     }
 }
 
-bool BigFontLayoutModelPrivate::itemInWaveRegion(const QModelIndex &index)
-{
-    if (index.isValid() && ((index.row() + 1) % LAYOUT_PARAM_ROW_SPACING == 0))
-    {
-        return true;
-    }
-    return false;
-}
-
-QStringList BigFontLayoutModelPrivate::getUnlayoutedWaveforms() const
-{
-    QStringList existWaveforms = getLayoutedWaveforms();
-    QStringList avaliablesWaveforms = waveIDMaps.keys();
-    QStringList unlayoutedWaveforms;
-    QStringList::ConstIterator iter;
-    for (iter = avaliablesWaveforms.constBegin(); iter != avaliablesWaveforms.constEnd(); ++iter)
-    {
-        if (existWaveforms.contains(*iter))
-        {
-            continue;
-        }
-
-        unlayoutedWaveforms.append(*iter);
-    }
-    return unlayoutedWaveforms;
-}
-
 QStringList BigFontLayoutModelPrivate::getUnlayoutedParams() const
 {
     QStringList existParams = getLayoutedParams();
@@ -518,45 +481,70 @@ QStringList BigFontLayoutModelPrivate::getUnlayoutedParams() const
 QVariantMap BigFontLayoutModelPrivate::getLayoutMap() const
 {
     QVariantList layoutRows;
-    QVector<LayoutRow *>::ConstIterator iter = layoutNodes.constBegin();
-    QVector<LayoutRow *>::ConstIterator endIter = layoutNodes.constEnd();
-    for (; iter != endIter; iter += LAYOUT_PARAM_ROW_SPACING)
+
+    QVector<LayoutRow *>::ConstIterator riter = layoutNodes.constBegin();
+
+    QVariantList paramList;
+    QVariantList waveList;
+
+    int validRow = 0;
+    for (; riter != layoutNodes.constEnd(); ++riter)
     {
-        QVariantList nodes;
-
-        LayoutRow::ConstIterator paraIter = (*iter)->constBegin();
-        LayoutRow::ConstIterator waveIter = (*(iter+LAYOUT_PARAM_WAVE_SPACING))->constBegin();
-        for (; paraIter != (*iter)->constEnd(); paraIter++, waveIter++)
+        if ((*riter)->isEmpty())
         {
-            LayoutNode *paraNode = *paraIter;
-            LayoutNode *waveNode = *waveIter;
-            QVariantMap pn, wn;
-            QVariantMap node;
-
-            pn["@span"] = paraNode->span;
-            pn["@editable"] = paraNode->editable;
-            pn["@pos"] = paraNode->pos;
-            pn["@text"] = paraNode->name;
-            wn["@span"] = waveNode->span;
-            wn["@editable"] = waveNode->editable;
-            wn["@pos"] = waveNode->pos;
-            wn["@text"] = waveNode->name;
-            node["Param"] = pn;
-            node["Wave"] = wn;
-
-            nodes.append(node);
+            continue;
         }
 
-        QVariantMap nm;
-        nm["LayoutNode"] = nodes;
-        layoutRows.append(nm);
+
+        LayoutRow::ConstIterator iter = (*riter)->constBegin();
+        for (; iter != (*riter)->constEnd(); ++iter)
+        {
+            LayoutNode *n = *iter;
+
+            QVariantMap nm;
+            nm["@span"] = n->span;
+            nm["@editable"] = n->editable ? 1 : 0;
+            nm["@pos"] = n->pos;
+            nm["@text"] = n->name;
+
+            if (validRow % 2 == 0)
+            {
+                // param row
+                paramList.append(nm);
+            }
+            else
+            {
+                // wave row
+                waveList.append(nm);
+            }
+        }
+        validRow += 1;
     }
 
-    QVariantMap rm;
-    rm["LayoutRow"] = layoutRows;
+    Q_ASSERT(paramList.length() == waveList.length());
+    Q_ASSERT(paramList.length() % 2 == 0);
 
-    return rm;
+    for (int i = 0; i< paramList.length(); i += 2)
+    {
+        QVariantMap node1;
+        QVariantList nodeList;
+        node1["Param"] = paramList.at(i);
+        node1["Wave"] = waveList.at(i);
+        nodeList.append(node1);
+        QVariantMap node2;
+        node2["Param"] = paramList.at(i + 1);
+        node2["Wave"] = waveList.at(i + 1);
+        nodeList.append(node2);
+        QVariantMap row;
+        row["LayoutNode"] = nodeList;
+        layoutRows.append(row);
+    }
+
+    QVariantMap m;
+    m["LayoutRow"] = layoutRows;
+    return m;
 }
+
 void BigFontLayoutModelPrivate::clearAllLayoutNodes()
 {
     QVector<LayoutRow *>::iterator iter;
@@ -600,34 +588,24 @@ void BigFontLayoutModelPrivate::loadLayoutFromConfig(const QVariantMap &config)
 
         LayoutRow *paramRow = new LayoutRow();
         LayoutRow *waveRow = new LayoutRow();
-        LayoutRow *blankRow = new LayoutRow();
 
         QVariantList::ConstIterator nodeIter = nodes.constBegin();
-        for (; nodeIter != nodes.constEnd(); nodeIter += LAYOUT_NODE_ITEM_COUNT)
+        for (; nodeIter != nodes.constEnd(); ++nodeIter)
         {
-            QVariantMap node1Map = nodeIter->toMap();
-            QVariantMap node2Map = (nodeIter+1)->toMap();
+            QVariantMap nodeMap = nodeIter->toMap();
+            QVariantMap paramMap = nodeMap["Param"].toMap();
+            QVariantMap waveMap = nodeMap["Wave"].toMap();
 
-            QVariantList nodeParam;
-            nodeParam.append(node1Map["Param"]);
-            nodeParam.append(node2Map["Param"]);
-
-            QVariantList nodeWave;
-            nodeWave.append(node1Map["Wave"]);
-            nodeWave.append(node2Map["Wave"]);
-
-            QVariantList::ConstIterator pIter = nodeParam.constBegin();
-            for (; pIter!= nodeParam.constEnd(); pIter++)
+            LayoutNode *paramNode = new LayoutNode();
+            if (!paramMap.isEmpty())
             {
-                QVariantMap _nodePara = pIter->toMap();
-                LayoutNode *node = new LayoutNode();
-                node->pos = _nodePara["@pos"].toInt();
-                node->span = _nodePara["@span"].toInt();
-                node->editable = _nodePara["@editable"].toBool();
-                node->name = _nodePara["@text"].toString();
+                paramNode->pos = paramMap["@pos"].toInt();
+                paramNode->span = paramMap["@span"].toInt();
+                paramNode->editable = paramMap["@editable"].toInt();
+                paramNode->name = paramMap["@text"].toString();
                 if (paramRow->isEmpty())
                 {
-                    paramRow->append(node);
+                    paramRow->append(paramNode);
                 }
                 else
                 {
@@ -635,28 +613,26 @@ void BigFontLayoutModelPrivate::loadLayoutFromConfig(const QVariantMap &config)
                     LayoutRow::Iterator iter = paramRow->begin();
                     for (; iter != paramRow->end(); ++iter)
                     {
-                        if ((*iter)->pos > node->pos)
+                        if ((*iter)->pos > paramNode->pos)
                         {
                             break;
                         }
                     }
-                    paramRow->insert(iter, node);
+                    paramRow->insert(iter, paramNode);
                 }
             }
 
-            QVariantList::ConstIterator wIter = nodeWave.constBegin();
-            for (; wIter != nodeWave.constEnd(); wIter++)
+            LayoutNode *waveNode = new LayoutNode();
+            if (!waveMap.isEmpty())
             {
-                QVariantMap _nodeWave = wIter->toMap();
-                LayoutNode *node = new LayoutNode();
-                node->pos = _nodeWave["@pos"].toInt();
-                node->span = _nodeWave["@span"].toInt();
-                node->editable = _nodeWave["@editable"].toBool();
-                node->name = _nodeWave["@text"].toString();
+                waveNode->pos = waveMap["@pos"].toInt();
+                waveNode->span = waveMap["@span"].toInt();
+                waveNode->editable = waveMap["@editable"].toInt();
+                waveNode->name = waveMap["@text"].toString();
 
                 if (waveRow->isEmpty())
                 {
-                    waveRow->append(node);
+                    waveRow->append(waveNode);
                 }
                 else
                 {
@@ -664,19 +640,20 @@ void BigFontLayoutModelPrivate::loadLayoutFromConfig(const QVariantMap &config)
                     LayoutRow::Iterator iter = waveRow->begin();
                     for (; iter != waveRow->end(); ++iter)
                     {
-                        if ((*iter)->pos > node->pos)
+                        if ((*iter)->pos > waveNode->pos)
                         {
                             break;
                         }
                     }
-                    waveRow->insert(iter, node);
+                    waveRow->insert(iter, waveNode);
                 }
             }
         }
+
         layoutNodes.append(paramRow);
-        layoutNodes.append(blankRow);
-        layoutNodes.append(blankRow);
+        layoutNodes.append(new LayoutRow());
         layoutNodes.append(waveRow);
+        layoutNodes.append(new LayoutRow());
     }
 }
 
@@ -703,23 +680,23 @@ void BigFontLayoutModelPrivate::loadItemInfos()
     waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_O2), WAVE_O2);
 
 
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ECG)] = ParamNodeDescription(paramInfo.getParamName(PARAM_ECG));
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_SPO2)] = ParamNodeDescription(paramInfo.getParamName(PARAM_SPO2));
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_RESP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_RESP));
+    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ECG)] = ParamNodeDescription(paramInfo.getParamName(PARAM_ECG), LAYOUT_NODE_WAVE_ECG1);
+    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_SPO2)] = ParamNodeDescription(paramInfo.getParamName(PARAM_SPO2), LAYOUT_NODE_WAVE_SPO2);
+    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_RESP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_RESP), LAYOUT_NODE_WAVE_RESP);
     // IBP's pressure name is identical to it's wave name
     paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_IBP1)] = ParamNodeDescription(
-                paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP1)]));
+                paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP1)]), LAYOUT_NODE_WAVE_IBP1);
     paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_IBP2)] = ParamNodeDescription(
-                paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP2)]));
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_CO2)] = ParamNodeDescription(paramInfo.getParamName(PARAM_CO2));
+                paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP2)]), LAYOUT_NODE_WAVE_IBP2);
+    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_CO2)] = ParamNodeDescription(paramInfo.getParamName(PARAM_CO2), LAYOUT_NODE_WAVE_CO2);
     paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_NIBP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_NIBP));
     paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_NIBPLIST)] = ParamNodeDescription(trs("NIBPList"));
     paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_TEMP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_TEMP));
 
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA1)] = ParamNodeDescription("AA1");
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA2)] = ParamNodeDescription("AA2");
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_N2O)] = ParamNodeDescription("N2O");
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_O2)] = ParamNodeDescription("O2");
+    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA1)] = ParamNodeDescription("AA1", LAYOUT_NODE_WAVE_AA1);
+    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA2)] = ParamNodeDescription("AA2", LAYOUT_NODE_WAVE_AA2);
+    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_N2O)] = ParamNodeDescription("N2O", LAYOUT_NODE_WAVE_N2O);
+    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_O2)] = ParamNodeDescription("O2", LAYOUT_NODE_WAVE_O2);
 
     paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = ParamNodeDescription("ST");
     paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_PVCS)] = ParamNodeDescription("PVCs");
@@ -748,8 +725,7 @@ QStringList BigFontLayoutModelPrivate::getLayoutedWaveforms() const
         LayoutRow::ConstIterator iter = (*riter)->constBegin();
         for (; iter != (*riter)->end(); ++iter)
         {
-            WaveformID waveId = waveIDMaps.value((*iter)->name, WAVE_NONE);
-            if (waveId != WAVE_NONE)
+            if (waveIDMaps.contains((*iter)->name))
             {
                 list.append((*iter)->name);
             }
@@ -762,51 +738,16 @@ QStringList BigFontLayoutModelPrivate::getLayoutedParams() const
 {
     QStringList list;
     QVector<LayoutRow *>::ConstIterator riter;
-    int row = 0;
     for (riter = layoutNodes.constBegin(); riter != layoutNodes.constEnd(); ++riter)
     {
-        int column = 0;
         LayoutRow::ConstIterator iter = (*riter)->constBegin();
-        if ((*iter) == NULL)
-        {
-            continue;
-        }
         for (; iter != (*riter)->constEnd(); ++iter)
         {
-            WaveformID waveId = waveIDMaps.value((*iter)->name, WAVE_NONE);
-            if (waveId == WAVE_NONE && ( (row+1)% LAYOUT_PARAM_ROW_SPACING == 1))
+            if ((!waveIDMaps.contains((*iter)->name)) && (!(*iter)->name.isEmpty()))
             {
                 list.append((*iter)->name);
             }
-            column += (*iter)->span;
         }
-        row += LAYOUT_PARAM_ROW_SPACING;
     }
     return list;
-}
-
-QString BigFontLayoutModelPrivate::findWaveNameFromParam(QString paramStr)
-{
-    if (paramStr.isEmpty())
-    {
-        return QString();
-    }
-    LayoutNodeType namePos = LAYOUT_NODE_NONE;
-    for (int i = 0; i < LAYOUT_NODE_NR; i++)
-    {
-        namePos = static_cast<LayoutNodeType>(i);
-        QString str = layoutNodeName(namePos);
-        if (str == paramStr)
-        {
-            break;
-        }
-    }
-    int pos = static_cast<int>(namePos);
-    pos += static_cast<int>(LAYOUT_NODE_WAVE_ECG1) -1;
-    namePos = static_cast<LayoutNodeType>(pos);
-    if (namePos > LAYOUT_NODE_NR)
-    {
-        return layoutNodeName(LAYOUT_NODE_NONE);
-    }
-    return layoutNodeName(namePos);
 }

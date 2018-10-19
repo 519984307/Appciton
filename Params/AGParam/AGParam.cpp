@@ -239,26 +239,7 @@ short AGParam::getSubParamValue(SubParamID id)
  *************************************************************************************************/
 bool AGParam::isSubParamAvaliable(SubParamID id)
 {
-//    switch (id)
-//    {
-//    case SUB_PARAM_ETCO2:
-//    case SUB_PARAM_FICO2:
-//        return _config.co2Config;
-//    case SUB_PARAM_ETN2O:
-//    case SUB_PARAM_FIN2O:
-//        return _config.n2oConfig;
-//    case SUB_PARAM_ETAA1:
-//    case SUB_PARAM_FIAA1:
-//    case SUB_PARAM_ETAA2:
-//    case SUB_PARAM_FIAA2:
-//        return _config.halConfig || _config.enfConfig || _config.isoConfig ||
-//               _config.sevConfig || _config.desConfig;
-//    case SUB_PARAM_ETO2:
-//    case SUB_PARAM_FIO2:
-//        return _config.o2Config;
-//    default:
-//        break;
-//    }
+    Q_UNUSED(id)
     return true;
 }
 
