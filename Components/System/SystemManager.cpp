@@ -326,7 +326,7 @@ void SystemManager::setBrightness(BrightnessLevel br)
 {
     enableBrightness(br);
 
-    systemConfig.setNumValue("General|DefaultDisplayBrightness", static_cast<int>(br + 1));
+    systemConfig.setNumValue("General|DefaultDisplayBrightness", static_cast<int>(br));
 }
 
 /***************************************************************************************************
@@ -373,14 +373,6 @@ BrightnessLevel SystemManager::getBrightness(void)
 {
     int b = BRT_LEVEL_4;
     systemConfig.getNumValue("General|DefaultDisplayBrightness", b);
-    if (b < 1)
-    {
-        b = 0;
-    }
-    else
-    {
-        b = b - 1;
-    }
     return static_cast<BrightnessLevel>(b);
 }
 

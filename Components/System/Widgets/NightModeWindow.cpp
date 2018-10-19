@@ -49,14 +49,6 @@ void NightModeWindowPrivate::loadOptions()
 {
     int index = 0;
     systemConfig.getNumValue("NightMode|ScreenBrightness", index);
-    if (index < 1)
-    {
-        index = 0;
-    }
-    else
-    {
-        index -= 1;
-    }
     combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setCurrentIndex(index);
 
     index = 0;
@@ -264,7 +256,6 @@ void NightModeWindow::onComboBoxIndexChanged(int index)
     {
         case NightModeWindowPrivate::ITEM_CBO_SCREEN_BRIGHTNESS:
         node = "ScreenBrightness";
-        index = combo->itemText(index).toInt();
         break;
         case NightModeWindowPrivate::ITEM_CBO_ALARM_VOLUME:
         node = "AlarmVolume";
