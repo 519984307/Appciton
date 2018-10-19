@@ -26,6 +26,7 @@
 #include "MainMenuWindow.h"
 #include "LayoutManager.h"
 #include "ECGDupParam.h"
+#include "AlarmLimitWindow.h"
 
 class ECGMenuContentPrivate
 {
@@ -462,11 +463,8 @@ void ECGMenuContent::onSTSwitchBtnReleased()
 
 void ECGMenuContent::onAlarmBtnReleased()
 {
-    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_HR_PR, true);
-    if (w)
-    {
-        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
-    }
+    AlarmLimitWindow w(subParamName);
+    windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }
 

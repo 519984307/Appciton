@@ -21,6 +21,7 @@
 #include "IConfig.h"
 #include "MainMenuWindow.h"
 #include "Button.h"
+#include "AlarmLimitWindow.h"
 
 class SPO2MenuContentPrivate
 {
@@ -214,10 +215,7 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
 
 void SPO2MenuContent::onAlarmBtnReleased()
 {
-    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_SPO2, true);
-    if (w)
-    {
-        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
-    }
+    AlarmLimitWindow w(subParamName);
+    windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }

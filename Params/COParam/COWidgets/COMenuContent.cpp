@@ -23,6 +23,7 @@
 #include "KeyInputPanel.h"
 #include "MessageBox.h"
 #include "MainMenuWindow.h"
+#include "AlarmLimitWindow.h"
 
 class COMenuContentPrivate
 {
@@ -301,10 +302,7 @@ void COMenuContent::onButtonReleased()
 
 void COMenuContent::onAlarmBtnReleased()
 {
-    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_CO_CO, true);
-    if (w)
-    {
-        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
-    }
+    AlarmLimitWindow w(subParamName);
+    windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }

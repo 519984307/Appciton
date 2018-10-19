@@ -102,7 +102,7 @@ void HemodynaimcReviewWindow::layoutExec()
 {
     setWindowTitle(trs("ReviewWindow"));
 
-    QVBoxLayout *vlayout = new QVBoxLayout(this);
+    QVBoxLayout *vlayout = new QVBoxLayout;
     vlayout->setMargin(10);
     vlayout->setAlignment(Qt::AlignTop);
 

@@ -16,6 +16,8 @@ BuildTime,编译时间,Build Time
 Adult,成人,Adult
 PED,小儿,Pediatric
 NEO,新生儿,Neonate
+AlarmLimit,报警限设置,Alarm Limit
+Other,其它,Other
 EditPassWordDesc,修改密码,Edit Password Desc
 EditPassWord,修改密码,Edit Password
 LastPassword,上次密码,Last Password

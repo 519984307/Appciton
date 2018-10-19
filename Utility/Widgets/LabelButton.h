@@ -1,12 +1,13 @@
 /**
  ** This file is part of the nPM project.
- ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
  ** All Rights Reserved.
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/10/19
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/18
  **/
+
 
 
 #pragma once
@@ -53,7 +54,7 @@ protected:
     // 响应重绘事件。
     void paintEvent(QPaintEvent *e)
     {
-        Q_UNUSED(e)
+        Q_UNUSED(e);
         QPainter painter(this);
         painter.setPen(Qt::NoPen);
 
@@ -226,7 +227,7 @@ protected:
     // 响应重绘事件。
     void paintEvent(QPaintEvent *e)
     {
-        Q_UNUSED(e)
+        Q_UNUSED(e);
         QPainter painter(this);
         painter.setPen(Qt::NoPen);
 
@@ -338,7 +339,7 @@ protected:
     // 响应重绘事件。
     void paintEvent(QPaintEvent *e)
     {
-        Q_UNUSED(e)
+        Q_UNUSED(e);
         QPainter painter(this);
         painter.setPen(Qt::NoPen);
 

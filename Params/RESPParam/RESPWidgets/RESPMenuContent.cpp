@@ -23,6 +23,7 @@
 #include "CO2Param.h"
 #include "IConfig.h"
 #include "RESPDupParam.h"
+#include "AlarmLimitWindow.h"
 
 class RESPMenuContentPrivate
 {
@@ -237,10 +238,7 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
 
 void RESPMenuContent::onAlarmBtnReleased()
 {
-    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_RR_BR, true);
-    if (w)
-    {
-        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
-    }
+    AlarmLimitWindow w(subParamName);
+    windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }
