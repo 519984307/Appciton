@@ -13,7 +13,6 @@
 #include "MonitorSoftkeyAction.h"
 #include "SoftKeyManager.h"
 #include "ECGParam.h"
-#include "ECGMenu.h"
 #include "WindowManager.h"
 
 /***************************************************************************************************

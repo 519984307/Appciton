@@ -13,6 +13,7 @@
 #include <QLabel>
 #include "IConfig.h"
 #include "ComboBox.h"
+#include "SystemManager.h"
 
 class FactoryDataRecordContentPrivate
 {

@@ -16,7 +16,6 @@
 #include <QLabel>
 #include <QPainter>
 #include "ColorManager.h"
-#include "PublicMenuManager.h"
 #include "SupervisorMenuManager.h"
 #include "MenuGroup.h"
 #include "NIBPRepairMenuManager.h"

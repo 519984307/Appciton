@@ -8,16 +8,6 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/16
  **/
 #include "ConfigEditMenuWindow.h"
-#include "ConfigEditAlarmLimitMenu.h"
-#include "ConfigEditGeneralMenu.h"
-#include "ConfigEditEcgMenu.h"
-#include "ConfigEditRespMenu.h"
-#include "ConfigEditNIBPMenu.h"
-#include "ConfigEditSpO2Menu.h"
-#include "ConfigEditCO2Menu.h"
-#include "ConfigEditCOMenu.h"
-#include "ConfigEditIBPMenu.h"
-#include "ConfigEditDisplayMenu.h"
 #include "ConfigEditCO2MenuContent.h"
 #include "ConfigEditCOMenuContent.h"
 #include "ConfigEditEcgMenuContent.h"
@@ -30,7 +20,7 @@
 #include "ConfigEditCodeMarkerMenuContent.h"
 #include "ConfigEditAlarmLimitMenuContent.h"
 #include "UserConfigEditMenuContent.h"
-#include "ConfigEditTEMPMenu.h"
+#include "ConfigEditTEMPMenuContent.h"
 
 class ConfigEditMenuWindowPrivate
 {
@@ -87,7 +77,7 @@ void ConfigEditMenuWindow::initializeSubMenu()
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditRespMenu"] = subMenu;
 
-    subMenu = new ConfigEditTEMPMenu(config);
+    subMenu = new ConfigEditTEMPMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditTEMPMenu"] = subMenu;
 

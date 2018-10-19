@@ -15,7 +15,6 @@
 #include "ParamInfo.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include "PublicMenuManager.h"
 #include "TimeDate.h"
 #include "TimeManager.h"
 #include "WindowManager.h"

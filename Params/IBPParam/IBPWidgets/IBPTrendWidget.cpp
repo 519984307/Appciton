@@ -11,13 +11,11 @@
 
 #include "IBPTrendWidget.h"
 #include "IBPParam.h"
-#include "PublicMenuManager.h"
 #include "WindowManager.h"
 #include "TrendWidgetLabel.h"
 #include "ParamManager.h"
 #include "ParamInfo.h"
 #include <QHBoxLayout>
-#include "IBPMenu.h"
 #include <QDebug>
 #include <QGroupBox>
 #include "MeasureSettingWindow.h"

@@ -16,7 +16,6 @@
 #include "OxyCRGHRWidget.h"
 #include "ECGPVCSTrendWidget.h"
 #include "ECGSTTrendWidget.h"
-#include "ECGMenu.h"
 #include "Debug.h"
 #include "LayoutManager.h"
 #include "ECGProviderIFace.h"
@@ -2106,8 +2105,6 @@ void ECGParam::handleECGLeadCabelType(unsigned char cabelType)
 
     _isPowerOnNewSession = false;
     setLeadMode(leadMode);
-    QTimer::singleShot(0, &ecgMenu, SLOT(_loadOptionsInSlot()));
-
     return;
 }
 

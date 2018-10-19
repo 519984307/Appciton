@@ -10,11 +10,9 @@
 
 
 #include "PatientManager.h"
-#include "PatientBarWidget.h"
 #include "PatientInfoWidget.h"
 #include "IConfig.h"
 #include "ECGParam.h"
-#include "AlarmLimitMenu.h"
 #include "DataStorageDirManager.h"
 
 PatientManager *PatientManager::_selfObj = NULL;
@@ -23,13 +21,11 @@ class PatientManagerPrivate
 {
 public:
     PatientManagerPrivate()
-        : patientTypeWidget(NULL),
-          patientInfoWidget(NULL),
+        : patientInfoWidget(NULL),
           patientNew(false),
           relieveFlag(true)
     {}
     PatientInfo patientInfo;
-    PatientBarWidget *patientTypeWidget;
     PatientInfoWidget *patientInfoWidget;
 
     void loadPatientInfo(PatientInfo &info);
@@ -43,12 +39,6 @@ public:
  * 参数：
  *      widget: 窗体控件。
  *************************************************************************************************/
-void PatientManager::setPatientTypeWidget(PatientBarWidget &widget)
-{
-    d_ptr->patientTypeWidget = &widget;
-    d_ptr->patientTypeWidget->setPatientInfo(d_ptr->patientInfo);
-}
-
 void PatientManager::setPatientInfoWidget(PatientInfoWidget &widget)
 {
     d_ptr->patientInfoWidget = &widget;
@@ -80,8 +70,6 @@ void PatientManager::setType(PatientType type)
     emit signalPatientType(d_ptr->patientInfo.type);
 
     ecgParam.setPatientType((unsigned char)(d_ptr->patientInfo.type));
-
-    alarmLimitMenu.checkAlarmEnableStatus();
 }
 
 /**************************************************************************************************

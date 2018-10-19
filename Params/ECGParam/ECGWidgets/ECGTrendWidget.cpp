@@ -19,8 +19,6 @@
 #include "ParamInfo.h"
 #include "ECGDupParam.h"
 #include "Debug.h"
-#include "ECGMenu.h"
-#include "PublicMenuManager.h"
 #include "TrendWidgetLabel.h"
 #include "ECGParam.h"
 #include "ECGDupParam.h"

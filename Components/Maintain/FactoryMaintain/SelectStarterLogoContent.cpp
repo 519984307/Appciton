@@ -15,6 +15,7 @@
 #include "IConfig.h"
 #include <QDir>
 #include <QProcess>
+#include "LanguageManager.h"
 
 #define usb0DeviceNode     ("/dev/sda2")
 #define selectLogoPath     ("/mnt/usb0/logo")

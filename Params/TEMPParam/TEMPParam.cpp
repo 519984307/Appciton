@@ -14,7 +14,6 @@
 #include "TEMPProviderIFace.h"
 #include "IConfig.h"
 #include "WaveformCache.h"
-#include "FactoryTempMenu.h"
 #include "SystemManager.h"
 
 TEMPParam *TEMPParam::_selfObj = NULL;
@@ -195,7 +194,7 @@ void TEMPParam::setTEMP(int16_t t1, int16_t t2, int16_t td)
     {
         _trendWidget->setTEMPValue(t1, t2, td);
     }
-    factoryTempMenu.setTEMPValue(t1, t2);
+    // TODO: set temp value to the facotry calibration menu
 }
 
 /**************************************************************************************************
@@ -273,7 +272,7 @@ void TEMPParam::getCalibrateData(unsigned char *packet)
     {
         return;
     }
-    factoryTempMenu.getResult(packet[1], packet[2], packet[3]);
+    // TODO: set result to the factory calibration menu
 }
 
 /**************************************************************************************************

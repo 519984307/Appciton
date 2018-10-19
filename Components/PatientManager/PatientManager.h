@@ -5,9 +5,8 @@
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
  **
- ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/10/18
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/10/18
  **/
-
 
 #pragma once
 #include "PatientDefine.h"
@@ -16,7 +15,6 @@
 #include "UnitManager.h"
 
 // 病人管理对象。
-class PatientBarWidget;
 class PatientInfoWidget;
 class PatientManagerPrivate;
 class PatientManager : public QObject
@@ -37,7 +35,6 @@ public:
 
 public:
     // 设置Widget。
-    void setPatientTypeWidget(PatientBarWidget &widget);
     void setPatientInfoWidget(PatientInfoWidget &widget);
 
 public:

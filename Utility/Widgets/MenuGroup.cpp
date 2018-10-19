@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/10/18
+ **/
+
+
+
 #include "MenuGroup.h"
 #include <QListWidget>
 #include <QStackedWidget>
@@ -12,12 +24,10 @@
 #include <QApplication>
 #include "SubMenu.h"
 #include "SetWidget.h"
-#include "EnglishPanel.h"
 #include "WindowManager.h"
 #include "ColorManager.h"
 #include "LabelButton.h"
 #include "IButton.h"
-#include "PublicMenuManager.h"
 #include "Debug.h"
 #include "MenuWidget.h"
 #include "MenuManager.h"
@@ -47,7 +57,7 @@ void MenuGroup::returnMenuList()
  *************************************************************************************************/
 void MenuGroup::_titleChanged(void)
 {
-    SubMenu *m = (SubMenu *)_subMenus->currentWidget();
+    SubMenu *m = qobject_cast<SubMenu*>(_subMenus->currentWidget());
     titleLabel->setText(m->desc());
 }
 

@@ -7,7 +7,7 @@
  **
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/24
  **/
-#include "ConfigEditTEMPMenu.h"
+#include "ConfigEditTEMPMenuContent.h"
 #include "ComboBox.h"
 #include <QLabel>
 #include <QGridLayout>
@@ -20,7 +20,7 @@
 #include "ParamDefine.h"
 #include "ConfigManager.h"
 
-class ConfigEditTEMPMenuPrivate
+class ConfigEditTEMPMenuContentPrivate
 {
 public:
     enum MenuItem
@@ -30,7 +30,7 @@ public:
         ITEM_CBO_ENABLE,
     };
 
-    explicit ConfigEditTEMPMenuPrivate(Config *const config)
+    explicit ConfigEditTEMPMenuContentPrivate(Config *const config)
         : tempChannelOne(NULL),
           tempChannelTwo(NULL),
           tempChannelDisable(NULL),
@@ -50,19 +50,19 @@ public:
 
 
 
-ConfigEditTEMPMenu::ConfigEditTEMPMenu(Config *const config)
+ConfigEditTEMPMenuContent::ConfigEditTEMPMenuContent(Config *const config)
     : MenuContent(trs("ConfigEditTEMPMenu"),
                   trs("ConfigEditTEMPMenuDesc")),
-      d_ptr(new ConfigEditTEMPMenuPrivate(config))
+      d_ptr(new ConfigEditTEMPMenuContentPrivate(config))
 {
 }
 
-ConfigEditTEMPMenu::~ConfigEditTEMPMenu()
+ConfigEditTEMPMenuContent::~ConfigEditTEMPMenuContent()
 {
     delete d_ptr;
 }
 
-void ConfigEditTEMPMenu::layoutExec()
+void ConfigEditTEMPMenuContent::layoutExec()
 {
     if (layout())
     {
@@ -140,7 +140,7 @@ void ConfigEditTEMPMenu::layoutExec()
     glayout->setRowStretch(layoutIndex , 1);
 }
 
-void ConfigEditTEMPMenu::readyShow()
+void ConfigEditTEMPMenuContent::readyShow()
 {
     d_ptr->loadOption();
     bool isOnlyToRead = configManager.isReadOnly();
@@ -149,7 +149,7 @@ void ConfigEditTEMPMenu::readyShow()
     d_ptr->tempChannelDisable->setEnabled(!isOnlyToRead);
 }
 
-void ConfigEditTEMPMenu::onComboIndexUpdated(int index)
+void ConfigEditTEMPMenuContent::onComboIndexUpdated(int index)
 {
     Q_UNUSED(index)
     ComboBox *combo = qobject_cast<ComboBox *>(sender());
@@ -163,20 +163,20 @@ void ConfigEditTEMPMenu::onComboIndexUpdated(int index)
     QString strPath;
     switch (item)
     {
-    case ConfigEditTEMPMenuPrivate::ITEM_CBO_ONE:
+    case ConfigEditTEMPMenuContentPrivate::ITEM_CBO_ONE:
         strPath = "TEMP|ChannelOne";
         break;
-    case ConfigEditTEMPMenuPrivate::ITEM_CBO_TWO:
+    case ConfigEditTEMPMenuContentPrivate::ITEM_CBO_TWO:
         strPath = "TEMP|ChannelTwo";
         break;
-    case ConfigEditTEMPMenuPrivate::ITEM_CBO_ENABLE:
+    case ConfigEditTEMPMenuContentPrivate::ITEM_CBO_ENABLE:
         strPath = "TEMP|ChannelDisable";
         break;
     }
     d_ptr->config->setNumValue(strPath, index);
 }
 
-void ConfigEditTEMPMenu::onAlarmBtnReleased()
+void ConfigEditTEMPMenuContent::onAlarmBtnReleased()
 {
     MenuWindow *w = this->getMenuWindow();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_T1, true);
@@ -186,7 +186,7 @@ void ConfigEditTEMPMenu::onAlarmBtnReleased()
     }
 }
 
-void ConfigEditTEMPMenuPrivate::loadOption()
+void ConfigEditTEMPMenuContentPrivate::loadOption()
 {
     int index;
 
