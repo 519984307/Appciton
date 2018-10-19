@@ -73,7 +73,7 @@ struct AlarmInfoNode
         alarmTime = 0;
         alarmMessage = NULL;
         alarmSource = NULL;
-        alarmID = id;
+        alarmID = 0;
     }
 
     AlarmType alarmType;

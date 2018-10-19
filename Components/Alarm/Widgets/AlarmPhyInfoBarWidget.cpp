@@ -88,8 +88,24 @@ void AlarmPhyInfoBarWidget::_drawText(void)
     SizeFont.setHeight(height() * 0.66);
     int fontSize = fontManager.adjustTextFontSize(SizeFont);
     painter.setFont(fontManager.textFont(fontSize));
-//    painter.setFont(fontManager.textFont(fontManager.getFontSize(1)));
-    painter.drawText(r, Qt::AlignVCenter | Qt::AlignLeft, trs(_text));
+    QString nameStr;
+    switch (_alarmSource->getAlarmPriority(_alarmID))
+    {
+    case ALARM_PRIO_LOW:
+        nameStr = "*";
+        break;
+    case ALARM_PRIO_MED:
+        nameStr = "**";
+        break;
+    case ALARM_PRIO_HIGH:
+        nameStr = "***";
+        break;
+    default:
+        break;
+    }
+    nameStr += " ";
+    nameStr += trs(_text);
+    painter.drawText(r, Qt::AlignVCenter | Qt::AlignLeft, nameStr);
 
     if (_type != _alarmType && 0 != _pauseTime)
     {

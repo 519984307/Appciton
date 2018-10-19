@@ -258,6 +258,7 @@ void AlarmInfoWindowPrivate::loadOption()
                 default:
                     break;
                 }
+                nameStr += " ";
                 nameStr += trs(node.alarmMessage);
                 alarmList.append(nameStr);
 

@@ -25,19 +25,6 @@
 AlarmIndicator *AlarmIndicator::_selfObj = NULL;
 
 /**************************************************************************************************
- * 功能：判断释放存在报警。
- *************************************************************************************************/
-bool AlarmIndicator::_existAlarm(void)
-{
-    if (_alarmInfoDisplayPool.empty())
-    {
-        return false;
-    }
-
-    return true;
-}
-
-/**************************************************************************************************
  * 功能：发布报警。
  *************************************************************************************************/
 void AlarmIndicator::publishAlarm(AlarmAudioStatus status)
@@ -222,7 +209,7 @@ void AlarmIndicator::publishAlarm(AlarmAudioStatus status)
 
         _displayInfoNode(alarmPhyNode, _alarmPhyDisplayIndex,
                          newPhyAlarmIndex, oldPhyAlarmIndex, firstPhyIndex, lastPhyIndex);
-        if (NULL != alarmPhyNode.alarmMessage)
+        if (NULL != alarmPhyNode.alarmMessage && alarmPhyNode.alarmType == ALARM_TYPE_PHY)
         {
             _displayPhySet(alarmPhyNode);
         }
