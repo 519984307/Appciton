@@ -37,7 +37,7 @@ template<typename T> class QVector;
 template<typename T> class RingBuff;
 
 #define WAVE_X_OFFSET       (0)                 // 波形起始偏移
-#define RULER_X_OFFSET      (50)                // 标尺线起始偏移
+#define RULER_X_OFFSET      (65)                // 标尺线起始偏移
 ////////////////////////////////////////////////////////////////////////////////
 // 说明：
 // 波形控件，支持扫描模式，滚动模式，回顾模式及三者对应的级联模式
