@@ -84,12 +84,12 @@ void ParamManager::getParams(QList<ParamID> &paramID)
 /**************************************************************************************************
  * 功能： 将数据生产者和参数对象关联起来。
  *************************************************************************************************/
-void ParamManager::connectParamProvider(void)
+void ParamManager::connectParamProvider(WorkMode mode)
 {
     // 从配置文件获取机器支持的参数。
     QString str;
     Provider *demoProvider = NULL;
-    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    if (mode == WORK_MODE_DEMO)
     {
         demoProvider = _providers.value("DemoProvider", NULL);
     }

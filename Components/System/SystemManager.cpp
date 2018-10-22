@@ -453,6 +453,8 @@ void SystemManager::setWorkMode(WorkMode workmode)
         return;
     }
 
+    _workMode = workmode;
+
     switch (workmode)
     {
     case WORK_MODE_NORMAL:
@@ -464,8 +466,6 @@ void SystemManager::setWorkMode(WorkMode workmode)
     default:
         break;
     }
-
-    _workMode = workmode;
 }
 
 /***************************************************************************************************
@@ -491,7 +491,7 @@ void SystemManager::enterNormalMode()
 {
     alarmIndicator.delAllPhyAlarm();
     windowManager.showDemoWidget(false);
-    paramManager.connectParamProvider();
+    paramManager.connectParamProvider(WORK_MODE_DEMO);
 }
 
 #ifdef Q_WS_X11

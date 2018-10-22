@@ -77,25 +77,6 @@ int WindowManager::getPopMenuHeight()
     return 500;
 }
 
-bool WindowManager::isDemoWidgetShow() const
-{
-    if (!d_ptr->demoWidget)
-    {
-        return false;
-    }
-
-    bool isShow;
-    if (d_ptr->demoWidget->isHidden())
-    {
-        isShow = false;
-    }
-    else
-    {
-        isShow = true;
-    }
-    return isShow;
-}
-
 /***************************************************************************************************
  * 功能：构造函数
  **************************************************************************************************/

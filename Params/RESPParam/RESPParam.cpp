@@ -390,7 +390,7 @@ void RESPParam::setZoom(RESPZoom zoom)
     }
 
     // demo模式下，resp波形增益为定植
-    if (windowManager.isDemoWidgetShow() == true
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO
         &&  NULL != d_ptr->waveWidget)
     {
         d_ptr->waveWidget->setValueRange(0, 250);
