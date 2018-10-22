@@ -143,8 +143,8 @@ void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCache
         valueSegments.append(valueSegment);
     }
 
-    TrendDataSegment *trendSeg = reinterpret_cast<TrendDataSegment *>(qMalloc(sizeof(TrendDataSegment)) + valueSegments.size() * sizeof(
-                                     TrendValueSegment));
+    TrendDataSegment *trendSeg = reinterpret_cast<TrendDataSegment *>(qMalloc(sizeof(TrendDataSegment) + valueSegments.size() * sizeof(
+                                     TrendValueSegment)));
 
     qMemSet(trendSeg, 0, sizeof(TrendDataSegment));
 
@@ -359,8 +359,8 @@ bool EventStorageItem::startCollectTrendAndWaveformData(unsigned t)
         int sampleRate = waveformCache.getSampleRate(waveid);
         int waveNum = (d_ptr->eventInfo.duration_after + d_ptr->eventInfo.duration_before) * sampleRate;
 
-        WaveformDataSegment *waveSegment = reinterpret_cast<WaveformDataSegment *>(qMalloc(sizeof(WaveformDataSegment)) +
-                                           sizeof(WaveDataType) * waveNum);
+        WaveformDataSegment *waveSegment = reinterpret_cast<WaveformDataSegment *>(qMalloc(sizeof(WaveformDataSegment) +
+                                           sizeof(WaveDataType) * waveNum));
 
         if (waveSegment == NULL)
         {
