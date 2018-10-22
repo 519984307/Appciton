@@ -12,6 +12,7 @@
 #include "LanguageManager.h"
 #ifdef Q_WS_QWS
 #include "TSCalibrationWindow.h"
+#include <QWSServer>
 #endif
 #include <QLabel>
 #include "ComboBox.h"
@@ -148,6 +149,12 @@ void ModuleMaintainMenuContent::layoutExec()
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
     layout->addWidget(button, d_ptr->buttons.count(), 1);
     d_ptr->buttons.insert(ModuleMaintainMenuContentPrivate::ITEM_BTN_TOUCH_SCREEN_CALIBRATION, button);
+
+    if (!systemManager.isSupport(CONFIG_TOUCH))
+    {
+        // touch screen is not support
+        button->setEnabled(false);
+    }
 #endif
 
     layout->setRowStretch(d_ptr->buttons.count(), 1);
@@ -183,8 +190,18 @@ void ModuleMaintainMenuContent::onButtonReleased()
         {
 #ifdef  Q_WS_QWS
             windowManager.closeAllWidows();
+            if (systemManager.isTouchScreenOn())
+            {
+                QWSServer::instance()->closeMouse();
+            }
+
             TSCalibrationWindow w;
             w.exec();
+
+            if (systemManager.isTouchScreenOn())
+            {
+                QWSServer::instance()->openMouse();
+            }
 #endif
         }
             break;

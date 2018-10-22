@@ -24,6 +24,7 @@
 #include "WindowManager.h"
 #ifdef Q_WS_QWS
 #include "TSCalibrationWindow.h"
+#include <QWSServer>
 #endif
 
 class SystemMaintenanceMenuContentPrivate
@@ -92,6 +93,11 @@ void SystemMaintenanceMenuContent::layoutExec()
     d_ptr->btns.insert(SystemMaintenanceMenuContentPrivate
                        ::ITEM_BTN_USER_MAINTENANCE, btn);
     row++;
+    if (!systemManager.isSupport(CONFIG_TOUCH))
+    {
+        // touch screen is not support
+        btn->setEnabled(false);
+    }
 #endif
 
     // user maintain
@@ -159,8 +165,18 @@ void SystemMaintenanceMenuContent::onBtnReleased()
         case SystemMaintenanceMenuContentPrivate::ITEM_BTN_TOUCH_SCREEN_CALIBRATION:
         {
             windowManager.closeAllWidows();
+            if (systemManager.isTouchScreenOn())
+            {
+                QWSServer::instance()->closeMouse();
+            }
+
             TSCalibrationWindow w;
             w.exec();
+
+            if (systemManager.isTouchScreenOn())
+            {
+                QWSServer::instance()->openMouse();
+            }
         }
         break;
 #endif

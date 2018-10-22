@@ -30,10 +30,11 @@ enum ConfiguredFuncs
     CONFIG_NIBP = 0x10,
     CONFIG_CO2 = 0x20,
     CONFIG_TEMP = 0x40,
-    CONFIG_WIFI = 0x80,
-    CONFIG_AG = 0x100,
-    CONFIG_CO = 0x200,
-    CONFIG_IBP = 0x400,
+    CONFIG_AG = 0x80,
+    CONFIG_CO = 0x100,
+    CONFIG_IBP = 0x200,
+    CONFIG_WIFI = 0x400,
+    CONFIG_TOUCH = 0x800,
 };
 
 // 前面板按键状态,与系统板获取按键状态命令回复一致
@@ -95,26 +96,14 @@ enum WorkMode
     WORK_MODE_NR,
 };
 
-class QTimer;
 class SystemSelftestMenu;
+class SystemManagerPrivate;
 class SystemManager : public QObject
 {
     Q_OBJECT
-
-#ifdef CONFIG_UNIT_TEST
-    friend class TestNIBPParam;
-#endif
 public:
-    static SystemManager &construction(void)
-    {
-        if (_selfObj == NULL)
-        {
-            _selfObj = new SystemManager();
-        }
-        return *_selfObj;
-    }
-    static SystemManager *_selfObj;
-    virtual ~SystemManager();
+    static SystemManager &getInstance();
+    ~SystemManager();
 
 public:
     // 获取屏幕像素点之间的距离。
@@ -126,6 +115,18 @@ public:
 
     // check whether param is support
     bool isSupport(ParamID paramID) const;
+
+    /**
+     * @brief isTouchScreenOn check whether current touch screen is on or off
+     * @return
+     */
+    bool isTouchScreenOn() const;
+
+    /**
+     * @brief setTouchScreenOnOff set the touch screen on and off status
+     * @param onOff
+     */
+    void setTouchScreenOnOff(bool onOff);
 
     // get the module config status
     unsigned int getModuleConfig() const;
@@ -153,14 +154,14 @@ public:
     bool isAcknownledgeSystemTestResult();
 
     // system self-test is over
-    bool isSystemSelftestOver() const {return _selfTestFinish;}
-    void systemSelftestOver() {_selfTestFinish = true;}
+    bool isSystemSelftestOver() const;
+    void systemSelftestOver();
 
     // hide system test diag
     void closeSystemTestDialog();
 
     // check whether the system is going to turn off
-    bool isGoingToTrunOff() const {return _isTurnOff;}
+    bool isGoingToTrunOff() const;
     void turnOff(bool flag);
 
     /**
@@ -175,20 +176,6 @@ public:
      */
     void setWorkMode(WorkMode workmode);
 
-
-private:
-    bool _isTestModuleSupport(ModulePoweronTestResult module);
-
-    /**
-     * @brief enterDemoMode enter the demo mode
-     */
-    void enterDemoMode();
-
-    /**
-     * @brief enterNormalMode enter normal mode
-     */
-    void enterNormalMode();
-
 #ifdef Q_WS_X11
 public:
     bool sendCommand(const QByteArray &cmd);
@@ -198,30 +185,16 @@ public slots:
 
 signals:
     void metronomeReceived();
-
-private:
-    QTcpSocket *_ctrlSocket;
-    QQueue<char> _socketInfoData;
 #endif
 
 private slots:
-    void _publishTestResult();
+    void publishTestResult();
 
 private:
     SystemManager();
 
-    void _handleBMode(void);
-
-    int _backlightFd;       // 背光控制文件句柄。
-
 private:
-    QVector<int> _modulePostResult; //模块开机测试结果
-    QTimer *_publishTestTimer;
-    QThread *_workerThread;
-    SystemSelftestMenu *_selfTestResult;
-    WorkMode _workMode;
-    bool _selfTestFinish;
-    bool _isTurnOff;
+    SystemManagerPrivate * d_ptr;
 };
-#define systemManager (SystemManager::construction())
-#define deleteSystemManager() (delete SystemManager::_selfObj);
+
+#define systemManager (SystemManager::getInstance())
