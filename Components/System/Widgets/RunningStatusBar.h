@@ -13,13 +13,6 @@
 
 class RunningStatusBarPrivate;
 
-enum nightMode
-{
-    NIGHT_MODE_OFF = 0,
-    NIGHT_MODE_ON,
-    NIGHT_MODE_NR
-};
-
 class RunningStatusBar : public IWidget
 {
 public:
