@@ -155,7 +155,7 @@ int PatientManager::getBlood()
 void PatientManager::setWeight(float weight)
 {
     d_ptr->patientInfo.weight = weight;
-    systemConfig.setNumValue("PrimaryCfg|PatientInfo|Weight", weight);
+    systemConfig.setStrValue("PrimaryCfg|PatientInfo|Weight", QString::number(weight, 'f', 1));
 }
 
 float PatientManager::getWeight()
@@ -166,7 +166,7 @@ float PatientManager::getWeight()
 void PatientManager::setHeight(float height)
 {
     d_ptr->patientInfo.height = height;
-    systemConfig.setNumValue("PrimaryCfg|PatientInfo|Height", height);
+    systemConfig.setStrValue("PrimaryCfg|PatientInfo|Height", QString::number(height, 'f', 1));
 }
 
 float PatientManager::getHeight()
@@ -250,27 +250,38 @@ UnitType PatientManager::getHeightUnit()
     return (UnitType)unit;
 }
 
-void PatientManager::createDir()
-{
-    dataStorageDirManager.createDir(true);
-}
-
-void PatientManager::setRelieveStatus(bool status)
+void PatientManager::setMonitor(bool status)
 {
     d_ptr->relieveFlag = status;
 }
 
-bool PatientManager::getRelieveStatus()
+bool PatientManager::isMonitoring()
 {
     return d_ptr->relieveFlag;
 }
 
-void PatientManager::setPatientNewStatus(bool status)
+void PatientManager::newPatient()
 {
-    d_ptr->patientNew = status;
+    d_ptr->patientNew = true;
+    patientManager.setAge(-1);
+    patientManager.setBlood(PATIENT_BLOOD_TYPE_NULL);
+    patientManager.setHeight(0.0);
+    patientManager.setName(QString(""));
+    patientManager.setPatID(QString(""));
+    patientManager.setSex(PATIENT_SEX_NULL);
+    patientManager.setType(getType());
+    patientManager.setWeight(0.0);
+    patientManager.setPacermaker(PATIENT_PACER_ON);
+    dataStorageDirManager.createDir(true);
 }
 
-bool PatientManager::getPatientNewStatus()
+void PatientManager::finishPatientInfo()
+{
+    d_ptr->patientNew = false;
+    setMonitor(true);
+}
+
+bool PatientManager::isNewPatient()
 {
     return d_ptr->patientNew;
 }
@@ -298,11 +309,11 @@ void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
     systemConfig.getNumValue("PrimaryCfg|PatientInfo|Blood", numValue);
     info.blood = (PatientBloodType)numValue;
 
-    systemConfig.getNumValue("PrimaryCfg|PatientInfo|Weight", numValue);
-    info.weight = numValue;
+    systemConfig.getStrValue("PrimaryCfg|PatientInfo|Weight", strValue);
+    info.weight = strValue.toFloat();
 
-    systemConfig.getNumValue("PrimaryCfg|PatientInfo|Height", numValue);
-    info.height = numValue;
+    systemConfig.getStrValue("PrimaryCfg|PatientInfo|Height", strValue);
+    info.height = strValue.toFloat();
 
     systemConfig.getStrValue("PrimaryCfg|PatientInfo|Name", strValue);
     ::strncpy(info.name, strValue.toUtf8().constData(), sizeof(info.name));

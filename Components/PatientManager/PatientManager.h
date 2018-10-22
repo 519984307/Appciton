@@ -179,33 +179,32 @@ public:
     UnitType getHeightUnit(void);
 
     /**
-     * @brief createDir 创建病人文件夹
-     */
-    void createDir(void);
-
-    /**
-     * @brief setRelieveStatus 设置解除病人标志
+     * @brief setMonitor 设置监护状态
      * @param status
      */
-    void setRelieveStatus(bool status);
+    void setMonitor(bool status);
 
     /**
-     * @brief getRelieveStatus 获取解除病人标志
+     * @brief isMonitoring 是否正在监护病人
      * @return
      */
-    bool getRelieveStatus();
+    bool isMonitoring();
 
     /**
-     * @brief setPatientNewStatus 设置新建病人状态
-     * @param status
+     * @brief newPatient 新建病人
      */
-    void setPatientNewStatus(bool status);
+    void newPatient();
 
     /**
-     * @brief getPatientNewStatus 获取新建病人标志
+     * @brief finishPatientInfo 完成病人信息处理
+     */
+    void finishPatientInfo();
+
+    /**
+     * @brief isNewPatient 是否新建病人
      * @return
      */
-    bool getPatientNewStatus();
+    bool isNewPatient();
 
 signals:
     void signalPatientType(PatientType type);

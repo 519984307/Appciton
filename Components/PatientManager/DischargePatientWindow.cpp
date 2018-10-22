@@ -16,20 +16,24 @@
 #include "PatientInfoWindow.h"
 #include <QGridLayout>
 #include "LayoutManager.h"
+#include "StandyWindow.h"
+#include "PatientManager.h"
 
 class DischaregePatientWindowPrivate
 {
 public:
     DischaregePatientWindowPrivate();
-    QLabel *standby;                 // 进入待机。
-    Button *yes;                    // 确定按键
-    Button *no;                    // 确定按键
+    Button *standbyChk;                 // 进入待机。
+    Button *yesBtn;                     // 确定按键
+    Button *noBtn;                      // 确定按键
+    bool isStandby;                     // 是否待机
 };
 
 DischaregePatientWindowPrivate::DischaregePatientWindowPrivate()
-    : standby(NULL),
-      yes(NULL),
-      no(NULL)
+    : standbyChk(NULL),
+      yesBtn(NULL),
+      noBtn(NULL),
+      isStandby(false)
 {
 }
 
@@ -47,29 +51,50 @@ DischargePatientWindow::~DischargePatientWindow()
 void DischargePatientWindow::layoutExec()
 {
     setWindowTitle(trs("RelievePatient"));
+    setFixedSize(300, 180);
 
-    QGridLayout *layout = new QGridLayout(this);
+    QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(10);
-
-    d_ptr->standby = new QLabel(trs("WhetherStandby"));
-    d_ptr->yes = new Button(trs("Yes"));
-    d_ptr->yes->setButtonStyle(Button::ButtonTextOnly);
-    d_ptr->no = new Button(trs("No"));
-    d_ptr->no->setButtonStyle(Button::ButtonTextOnly);
-
-
     QHBoxLayout *hlayout = new QHBoxLayout();
-    hlayout->addWidget(d_ptr->yes);
-    hlayout->addWidget(d_ptr->no);
 
-    layout->addWidget(d_ptr->standby, 0, 0);
-    layout->addLayout(hlayout, 1, 0);
+    d_ptr->standbyChk = new Button;
+    d_ptr->standbyChk->setButtonStyle(Button::ButtonIconOnly);
+    d_ptr->standbyChk->setIcon(QIcon("/usr/local/nPM/icons/checkbox_uncheck.png"));
+    d_ptr->standbyChk->setIconSize(QSize(32, 32));
+    d_ptr->standbyChk->setBorderWidth(0);
+    d_ptr->standbyChk->setFixedSize(32, 32);
 
-    layout->setRowStretch(2, 1);
+    QLabel *lbl = new QLabel;
+    lbl->setText(trs("Standby"));
+    lbl->setFixedWidth(100);
+    lbl->setAlignment(Qt::AlignCenter);
+    hlayout->addStretch();
+    hlayout->addWidget(d_ptr->standbyChk);
+    hlayout->addWidget(lbl);
+    hlayout->addStretch();
+    layout->addLayout(hlayout);
+
+    connect(d_ptr->standbyChk, SIGNAL(released()), this, SLOT(onBtnRelease()));
+
+    d_ptr->yesBtn = new Button(trs("Yes"));
+    d_ptr->yesBtn->setButtonStyle(Button::ButtonTextOnly);
+    d_ptr->yesBtn->setFixedWidth(130);
+    connect(d_ptr->yesBtn, SIGNAL(released()), this, SLOT(onBtnRelease()));
+    d_ptr->noBtn = new Button(trs("No"));
+    d_ptr->noBtn->setButtonStyle(Button::ButtonTextOnly);
+    d_ptr->noBtn->setFixedWidth(130);
+    connect(d_ptr->noBtn, SIGNAL(released()), this, SLOT(onBtnRelease()));
+
+
+    hlayout = new QHBoxLayout();
+    hlayout->addStretch();
+    hlayout->addWidget(d_ptr->yesBtn);
+    hlayout->addWidget(d_ptr->noBtn);
+    hlayout->addStretch();
+
+    layout->addLayout(hlayout);
+
     setWindowLayout(layout);
-
-    connect(d_ptr->yes, SIGNAL(released()), this, SLOT(accept()));
-    connect(d_ptr->no, SIGNAL(released()), this, SLOT(reject()));
 }
 
 /***************************************************************************************************
@@ -80,6 +105,45 @@ void DischargePatientWindow::showEvent(QShowEvent *e)
     Window::showEvent(e);
     QRect r = layoutManager.getMenuArea();
     move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
+}
+
+void DischargePatientWindow::onBtnRelease()
+{
+    Button *btn = qobject_cast<Button*>(sender());
+    if (btn == d_ptr->standbyChk)
+    {
+        d_ptr->isStandby = !d_ptr->isStandby;
+        if (d_ptr->isStandby)
+        {
+            d_ptr->standbyChk->setIcon(QIcon("/usr/local/nPM/icons/checkbox_check.png"));
+        }
+        else
+        {
+            d_ptr->standbyChk->setIcon(QIcon("/usr/local/nPM/icons/checkbox_uncheck.png"));
+        }
+    }
+    else if (btn == d_ptr->yesBtn)
+    {
+        windowManager.closeAllWidows();
+        if (patientManager.isMonitoring())
+        {
+            patientManager.setMonitor(false);
+            patientManager.newPatient();
+        }
+        else
+        {
+            // TODO 清除当前病人历史数据
+        }
+        if (d_ptr->isStandby)
+        {
+            StandyWindow standyWin;
+            standyWin.exec();
+        }
+    }
+    else if (btn == d_ptr->noBtn)
+    {
+        this->close();
+    }
 }
 
 /**************************************************************************************************
