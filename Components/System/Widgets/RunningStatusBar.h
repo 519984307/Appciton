@@ -49,7 +49,7 @@ public:
     /**
      * @brief clearTouchStatus clear the touch status, should be called when the touch screen function is disabled
      */
-    void clearTouchStatus() ;
+    void clearTouchStatus();
 
 private:
     RunningStatusBar();
