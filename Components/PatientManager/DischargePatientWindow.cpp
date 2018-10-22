@@ -142,11 +142,6 @@ void DischargePatientWindow::onBtnRelease()
     }
     else if (btn == d_ptr->noBtn)
     {
-        if (d_ptr->isStandby)
-        {
-            StandyWindow standyWin;
-            standyWin.exec();
-        }
         this->close();
     }
 }
