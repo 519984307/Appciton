@@ -9,14 +9,21 @@
  **/
 
 #include "AlarmInfoWindow.h"
+#include "TableView.h"
+#include "AlarmInfoModel.h"
 #include "ListView.h"
 #include "ListDataModel.h"
+#include "TableItemDelegate.h"
 #include "ListViewItemDelegate.h"
 #include "LanguageManager.h"
 #include "Button.h"
 #include <QLayout>
 #include "AlarmIndicator.h"
-
+#include "TimeDate.h"
+#include <QHeaderView>
+#include "Alarm.h"
+#include "EventWindow.h"
+#include "WindowManager.h"
 
 #define PATH_ICON_UP "/usr/local/nPM/icons/ArrowUp.png"
 #define PATH_ICON_DOWN "/usr/local/nPM/icons/ArrowDown.png"
@@ -27,6 +34,8 @@ class AlarmInfoWindowPrivate
 public:
     AlarmInfoWindowPrivate()
         : dataModel(NULL),
+          tableView(NULL),
+          listModel(NULL),
           listView(NULL),
           totalList(0),
           totalPage(1),
@@ -37,7 +46,9 @@ public:
     {}
     ~AlarmInfoWindowPrivate() {}
 
-    ListDataModel *dataModel;
+    AlarmInfoModel *dataModel;
+    TableView *tableView;
+    ListDataModel *listModel;
     ListView *listView;
     int totalList;      // 报警总条数
     int totalPage;      // 总页数
@@ -46,6 +57,7 @@ public:
     Button *prevBtn;
     Button *nextBtn;
     QString title;
+    QList<AlarmInfoNode> nodeList;
 
     /**
      * @brief loadOption　加载列表的值
@@ -87,23 +99,48 @@ void AlarmInfoWindow::updateData()
 void AlarmInfoWindow::layout()
 {
     setWindowTitle(d_ptr->title);
-    setFixedSize(480, 480);
+    setFixedSize(480, 450);
 
     QVBoxLayout *vLayout = new QVBoxLayout();
     setWindowLayout(vLayout);
 
-    ListView *listView = new ListView();
-    vLayout->addWidget(listView);
-    listView->setItemDelegate(new ListViewItemDelegate);
-    ListDataModel *model = new ListDataModel(this);
-    listView->setModel(model);
-    listView->setFixedHeight(model->getRowHeightHint() * LISTVIEW_MAX_VISIABLE_SIZE
-                             + listView->spacing() * (LISTVIEW_MAX_VISIABLE_SIZE * 2));
-    listView->setDrawIcon(false);
-    d_ptr->dataModel = model;
-    d_ptr->listView = listView;
+    if (d_ptr->alarmType == ALARM_TYPE_PHY)
+    {
+        TableView *tableView = new TableView();
+        tableView->verticalHeader()->setVisible(false);
+        tableView->horizontalHeader()->setVisible(false);
+        tableView->setShowGrid(false);
+        tableView->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
+        tableView->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+        tableView->setSelectionMode(QAbstractItemView::SingleSelection);
+        tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+        tableView->setItemDelegate(new TableItemDelegate);
+        AlarmInfoModel *model = new AlarmInfoModel(this);
+        tableView->setModel(model);
+        tableView->setFixedHeight(model->getRowHeightHint() * LISTVIEW_MAX_VISIABLE_SIZE);
+        d_ptr->dataModel = model;
+        d_ptr->tableView = tableView;
 
-    vLayout->addWidget(listView);
+        vLayout->addStretch();
+        vLayout->addWidget(tableView);
+        connect(tableView, SIGNAL(clicked(QModelIndex)), this, SLOT(_accessEventWindow(QModelIndex)));
+        connect(tableView, SIGNAL(rowClicked(int)), this, SLOT(_accessEventWindow(int)));
+    }
+    else if (d_ptr->alarmType == ALARM_TYPE_TECH)
+    {
+        ListView *listView = new ListView();
+        listView->setItemDelegate(new ListViewItemDelegate);
+        ListDataModel *model = new ListDataModel(this);
+        listView->setModel(model);
+        listView->setFixedHeight(model->getRowHeightHint() * LISTVIEW_MAX_VISIABLE_SIZE);
+        listView->setDrawIcon(true);
+        listView->setSpacing(0);
+        d_ptr->listModel = model;
+        d_ptr->listView = listView;
+
+        vLayout->addStretch();
+        vLayout->addWidget(listView);
+    }
 
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->setMargin(2);
@@ -153,11 +190,30 @@ void AlarmInfoWindow::_onBtnRelease()
     }
 }
 
+void AlarmInfoWindow::_accessEventWindow(QModelIndex index)
+{
+    _accessEventWindow(index.row());
+}
+
+void AlarmInfoWindow::_accessEventWindow(int index)
+{
+    if (d_ptr->nodeList.count() == 0)
+    {
+        return;
+    }
+    AlarmInfoNode node = d_ptr->nodeList.at(index);
+    SubParamID id = node.alarmSource->getSubParamID(node.alarmID);
+    unsigned time = node.alarmTime;
+
+    windowManager.showWindow(EventWindow::getInstance(), WindowManager::ShowBehaviorCloseIfVisiable
+                             | WindowManager::ShowBehaviorCloseOthers);
+    EventWindow::getInstance()->findEventIndex(id, time);
+}
+
 void AlarmInfoWindowPrivate::loadOption()
 {
     AlarmInfoNode node;
-    QList<AlarmInfoNode> nodeList;
-
+    nodeList.clear();
     for (int i = totalList - 1; i >= 0; --i)
     {
         alarmIndicator.getAlarmInfo(i, node);
@@ -174,6 +230,10 @@ void AlarmInfoWindowPrivate::loadOption()
     // 计算当前页码和总页数
     int pageTemp = (0 == count % LISTVIEW_MAX_VISIABLE_SIZE) ? (count / LISTVIEW_MAX_VISIABLE_SIZE)
                                                               : (count / LISTVIEW_MAX_VISIABLE_SIZE + 1);
+    if (pageTemp == 0)
+    {
+        return;
+    }
     if (totalPage != pageTemp)
     {
         totalPage = pageTemp;
@@ -202,18 +262,59 @@ void AlarmInfoWindowPrivate::loadOption()
         end = LISTVIEW_MAX_VISIABLE_SIZE;
     }
 
-    QStringList alarmList;
-    for (int i = start; i < end; ++i)
+    if (alarmType == ALARM_TYPE_PHY)
     {
-        if (i < count)
+        QStringList alarmList;
+        QStringList timeList;
+        for (int i = start; i < end; ++i)
         {
-            node = nodeList.at(i);
-            alarmList.append(trs(node.alarmMessage));
-        }
-    }
+            if (i < count)
+            {
+                node = nodeList.at(i);
+                QString nameStr;
+                switch (node.alarmSource->getAlarmPriority(node.alarmID))
+                {
+                case ALARM_PRIO_LOW:
+                    nameStr = "*";
+                    break;
+                case ALARM_PRIO_MED:
+                    nameStr = "**";
+                    break;
+                case ALARM_PRIO_HIGH:
+                    nameStr = "***";
+                    break;
+                default:
+                    break;
+                }
+                nameStr += " ";
+                nameStr += trs(node.alarmMessage);
+                alarmList.append(nameStr);
 
-    dataModel->setStringList(alarmList);
-    nodeList.clear();
+                QString dateStr;
+                QString timeStr;
+                QString str;
+                timeDate.getTime(node.alarmTime, timeStr, true);
+                timeDate.getDate(node.alarmTime, dateStr, true);
+                str = dateStr + " " + timeStr;
+                timeList.append(str);
+            }
+        }
+        dataModel->setStringList(alarmList, timeList);
+    }
+    else if (alarmType == ALARM_TYPE_TECH)
+    {
+        QStringList alarmList;
+        for (int i = start; i < end; ++i)
+        {
+            if (i < count)
+            {
+                node = nodeList.at(i);
+                alarmList.append(trs(node.alarmMessage));
+            }
+        }
+
+        listModel->setStringList(alarmList);
+    }
 
     if (hasNextPage())
     {
@@ -226,6 +327,7 @@ void AlarmInfoWindowPrivate::loadOption()
     if (hasPrevPage())
     {
         prevBtn->setEnabled(true);
+        prevBtn->setFocus();
     }
     else
     {

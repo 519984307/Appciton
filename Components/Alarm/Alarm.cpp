@@ -223,7 +223,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 traceCtrl->timestamp = _timestamp;
                 traceCtrl->order = ++curSecondAlarmNum;
                 alarmIndicator.addAlarmInfo(_timestamp, traceCtrl->type,
-                                            traceCtrl->priority, traceCtrl->alarmMessage);
+                                            traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i);
 
                 alarmParam.append(alarmSource->getParamID());
                 // summaryStorageManager.addPhyAlarm(_timestamp, alarmSource->getParamID(), i,
@@ -241,7 +241,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 traceCtrl->timestamp = _timestamp;
                 traceCtrl->order = ++curSecondAlarmNum;
                 alarmIndicator.addAlarmInfo(_timestamp, traceCtrl->type,
-                                            traceCtrl->priority, traceCtrl->alarmMessage);
+                                            traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i);
 
                 alarmParam.append(alarmSource->getParamID());
                 // summaryStorageManager.addPhyAlarm(_timestamp, alarmSource->getParamID(), i,
@@ -252,17 +252,17 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
 
             infoSegment.subParamID = alarmSource->getSubParamID(i);
             infoSegment.alarmType = i;
-            eventStorageManager.triggerAlarmEvent(infoSegment, alarmSource->getWaveformID(i));
+            eventStorageManager.triggerAlarmEvent(infoSegment, alarmSource->getWaveformID(i), _timestamp);
             switch (infoSegment.subParamID)
             {
             case SUB_PARAM_HR_PR:
-                eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventECG);
+                eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventECG, _timestamp);
                 break;
             case SUB_PARAM_SPO2:
-                eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventSpO2);
+                eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventSpO2, _timestamp);
                 break;
             case SUB_PARAM_RR_BR:
-                eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventResp);
+                eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventResp, _timestamp);
                 break;
             default:
                 break;
@@ -289,7 +289,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
                 else
                 {
                     alarmIndicator.addAlarmInfo(_timestamp, traceCtrl->type,
-                                                traceCtrl->priority, traceCtrl->alarmMessage);
+                                                traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i);
                 }
             }
         }
@@ -438,7 +438,7 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
 
         // 发布该报警。
         alarmIndicator.addAlarmInfo(_timestamp, traceCtrl->type,
-                                    traceCtrl->priority, traceCtrl->alarmMessage, isRemoveAfterLatch);
+                                    traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i, isRemoveAfterLatch);
 
         if (traceCtrl->type == ALARM_TYPE_LIFE)
         {

@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/10/22
+ **/
+
 #include "EventStorageItem.h"
 #include <QList>
 #include "TrendCache.h"
@@ -20,7 +30,7 @@
 class EventStorageItemPrivate
 {
 public:
-    EventStorageItemPrivate(EventStorageItem * const q_ptr, EventType type, const QList<WaveformID> &waveforms) :
+    EventStorageItemPrivate(EventStorageItem *const q_ptr, EventType type, const QList<WaveformID> &waveforms) :
         q_ptr(q_ptr),
         waveforms(waveforms),
         startCollect(false),
@@ -45,14 +55,14 @@ public:
     {
         trendCache.unregisterTrendRecorder(this);
 
-        foreach (TrendDataSegment *trendSeg, trendSegments)
+        foreach(TrendDataSegment *trendSeg, trendSegments)
         {
             qFree(trendSeg);
         }
 
-        foreach (WaveformDataSegment *waveSeg, waveSegments)
+        foreach(WaveformDataSegment *waveSeg, waveSegments)
         {
-            if(!waveComplete[waveSeg->waveID])
+            if (!waveComplete[waveSeg->waveID])
             {
                 waveformCache.unRegisterWaveformRecorder(waveSeg->waveID, this);
             }
@@ -60,12 +70,12 @@ public:
         }
 
 
-        if(almInfo)
+        if (almInfo)
         {
             delete almInfo;
         }
 
-        if(codeMarkerInfo)
+        if (codeMarkerInfo)
         {
             delete codeMarkerInfo;
         }
@@ -77,10 +87,11 @@ public:
 
     static void waveCacheCompleteCallback(WaveformID id, void *obj);
 
-    static void trendCacheCompleteCallback(unsigned timestamp, const TrendCacheData &data, const TrendAlarmStatus &almStatus, void *obj);
+    static void trendCacheCompleteCallback(unsigned timestamp, const TrendCacheData &data,
+                                           const TrendAlarmStatus &almStatus, void *obj);
 
-    EventStorageItem * const q_ptr;
-    QList<TrendDataSegment*> trendSegments;
+    EventStorageItem *const q_ptr;
+    QList<TrendDataSegment *> trendSegments;
     QList<WaveformDataSegment *> waveSegments;
     EventInfoSegment eventInfo;
     QList<WaveformID> waveforms;
@@ -96,7 +107,8 @@ public:
     OxyCRGSegment *oxyCRGInfo;
 };
 
-void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCacheData &data, const TrendAlarmStatus &almStatus)
+void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCacheData &data,
+        const TrendAlarmStatus &almStatus)
 {
     QVector<TrendValueSegment> valueSegments;
 
@@ -106,15 +118,15 @@ void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCache
     bool hasAlarm = false;
     ParamID paramId = PARAM_NONE;
 
-    for(int i = 0; i < SUB_PARAM_NR; i++)
+    for (int i = 0; i < SUB_PARAM_NR; i++)
     {
         paramId = paramInfo.getParamID((SubParamID) i);
-        if(-1 == idList.indexOf(paramId))
+        if (-1 == idList.indexOf(paramId))
         {
             continue;
         }
 
-        if(!data.values.contains((SubParamID)i))
+        if (!data.values.contains((SubParamID)i))
         {
             continue;
         }
@@ -123,7 +135,7 @@ void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCache
         valueSegment.subParamId = i;
         valueSegment.value = data.values.value((SubParamID)i);
         valueSegment.alarmFlag = almStatus.alarms.value((SubParamID)i);
-        if(!hasAlarm)
+        if (!hasAlarm)
         {
             hasAlarm = valueSegment.alarmFlag;
         }
@@ -131,7 +143,8 @@ void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCache
         valueSegments.append(valueSegment);
     }
 
-    TrendDataSegment *trendSeg = (TrendDataSegment *) qMalloc(sizeof(TrendDataSegment) + valueSegments.size() * sizeof(TrendValueSegment));
+    TrendDataSegment *trendSeg = reinterpret_cast<TrendDataSegment *>(qMalloc(sizeof(TrendDataSegment) + valueSegments.size() * sizeof(
+                                     TrendValueSegment)));
 
     qMemSet(trendSeg, 0, sizeof(TrendDataSegment));
 
@@ -140,8 +153,9 @@ void EventStorageItemPrivate::saveTrendData(unsigned timestamp, const TrendCache
 
     trendSeg->trendValueNum = valueSegments.size();
 
-    //copy the trend values
-    qMemCopy((char *)trendSeg+ sizeof(TrendDataSegment), valueSegments.constData(), sizeof(TrendValueSegment) * valueSegments.size());
+    // copy the trend values
+    qMemCopy(reinterpret_cast<char *>(trendSeg) + sizeof(TrendDataSegment), valueSegments.constData(),
+             sizeof(TrendValueSegment) * valueSegments.size());
 
     trendSegments.append(trendSeg);
 }
@@ -160,45 +174,48 @@ void EventStorageItemPrivate::waveCacheCompleteCallback(WaveformID id, void *obj
     p->waveComplete[id] = true;
 }
 
-void EventStorageItemPrivate::trendCacheCompleteCallback(unsigned timestamp, const TrendCacheData &data, const TrendAlarmStatus &almStatus, void *obj)
+void EventStorageItemPrivate::trendCacheCompleteCallback(unsigned timestamp, const TrendCacheData &data,
+        const TrendAlarmStatus &almStatus, void *obj)
 {
     qDebug("timestamp = %d\n", timestamp);
     EventStorageItemPrivate *p = reinterpret_cast<EventStorageItemPrivate *>(obj);
     p->saveTrendData(timestamp, data, almStatus);
     Q_ASSERT(p != NULL);
-    if(p)
+    if (p)
     {
         p->trendCacheComplete = true;
     }
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms)
-    :d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
+    : d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
 {
-    qDebug()<<"Create Event Stroage Item:"<<this<<" type: "<<type;
+    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
-EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, const AlarmInfoSegment &almInfo)
-    :d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
+EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms,
+                                   const AlarmInfoSegment &almInfo)
+    : d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
 {
     d_ptr->almInfo = new AlarmInfoSegment();
     d_ptr->almInfo->alarmLimit = almInfo.alarmLimit;
     d_ptr->almInfo->alarmType = almInfo.alarmType;
     d_ptr->almInfo->alarmInfo = almInfo.alarmInfo;
     d_ptr->almInfo->subParamID = almInfo.subParamID;
-    qDebug()<<"Create Event Stroage Item:"<<this<<" type: "<<type;
+    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, const char *codeName)
-    :d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
+    : d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
 {
     d_ptr->codeMarkerInfo = new CodeMarkerSegment;
     Util::strlcpy(d_ptr->codeMarkerInfo->codeName, codeName, sizeof(d_ptr->codeMarkerInfo->codeName));
-    qDebug()<<"Create Event Stroage Item:"<<this<<" type: "<<type;
+    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
-EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, OxyCRGEventType oxyCRGtype, const AlarmInfoSegment &almInfo)
-    :d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
+EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, OxyCRGEventType oxyCRGtype,
+                                   const AlarmInfoSegment &almInfo)
+    : d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
 {
     d_ptr->almInfo = new AlarmInfoSegment();
     d_ptr->almInfo->alarmLimit = almInfo.alarmLimit;
@@ -234,20 +251,20 @@ EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &stor
         d_ptr->eventInfo.duration_before = 120;
     }
 
-    qDebug()<<"Create Event Stroage Item:"<<this<<" type: "<<type;
+    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
 EventStorageItem::EventStorageItem(EventType type, const QList<WaveformID> &storeWaveforms, OxyCRGEventType oxyCRGtype)
-    :d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
+    : d_ptr(new EventStorageItemPrivate(this, type, storeWaveforms))
 {
     d_ptr->oxyCRGInfo = new OxyCRGSegment;
     d_ptr->oxyCRGInfo->type = oxyCRGtype;
-    qDebug()<<"Create Event Stroage Item:"<<this<<" type: "<<type;
+    qDebug() << "Create Event Stroage Item:" << this << " type: " << type;
 }
 
 EventStorageItem::~EventStorageItem()
 {
-    qDebug()<<"Destroy Event Stroage Item:"<<this;
+    qDebug() << "Destroy Event Stroage Item:" << this;
 }
 
 EventType EventStorageItem::getType() const
@@ -257,19 +274,19 @@ EventType EventStorageItem::getType() const
 
 bool EventStorageItem::checkCompleted()
 {
-    if(d_ptr->waitForTriggerPrintFlag && !d_ptr->triggerPrintStopped)
+    if (d_ptr->waitForTriggerPrintFlag && !d_ptr->triggerPrintStopped)
     {
-        //have to wait until the page generator is stopped
+        // have to wait until the page generator is stopped
         return false;
     }
 
-    if(timeManager.getCurTime() -  d_ptr->eventInfo.timestamp  > (unsigned) (d_ptr->eventInfo.duration_after + 2))
+    if (timeManager.getCurTime() -  d_ptr->eventInfo.timestamp  > (unsigned)(d_ptr->eventInfo.duration_after + 2))
     {
-        //time expired
+        // time expired
         qdebug("cache time expired");
 
-        //unregister recorder
-        foreach (WaveformDataSegment *seg, d_ptr->waveSegments)
+        // unregister recorder
+        foreach(WaveformDataSegment *seg, d_ptr->waveSegments)
         {
             waveformCache.unRegisterWaveformRecorder(seg->waveID, d_ptr.data());
             d_ptr->waveComplete[seg->waveID] = true;
@@ -280,13 +297,13 @@ bool EventStorageItem::checkCompleted()
 
     foreach(WaveformID waveid, d_ptr->waveforms)
     {
-        if(!d_ptr->waveComplete[waveid])
+        if (!d_ptr->waveComplete[waveid])
         {
             return false;
         }
     }
 
-    if(d_ptr->eventInfo.type == EventOxyCRG && !d_ptr->trendCacheComplete)
+    if (d_ptr->eventInfo.type == EventOxyCRG && !d_ptr->trendCacheComplete)
     {
         return false;
     }
@@ -295,58 +312,57 @@ bool EventStorageItem::checkCompleted()
 }
 
 
-bool EventStorageItem::startCollectTrendAndWaveformData()
+bool EventStorageItem::startCollectTrendAndWaveformData(unsigned t)
 {
-    if(d_ptr->startCollect)
+    if (d_ptr->startCollect)
     {
         qdebug("Already start collect data");
         return false;
     }
     d_ptr->startCollect = true;
-    unsigned currentTime = timeManager.getCurTime();
-    d_ptr->eventInfo.timestamp = currentTime;
+    d_ptr->eventInfo.timestamp = t;
 
 
-    //store the trend data before current timestamp
+    // store the trend data before current timestamp
     TrendCacheData trendData;
     TrendAlarmStatus trendAlarmStatus;
-    trendCache.collectTrendData(currentTime);
-    trendCache.collectTrendAlarmStatus(currentTime);
+    trendCache.collectTrendData(t);
+    trendCache.collectTrendAlarmStatus(t);
 
-    if(d_ptr->eventInfo.type == EventOxyCRG)
+    if (d_ptr->eventInfo.type == EventOxyCRG)
     {
-        for (unsigned t = currentTime - d_ptr->eventInfo.duration_before; t <= currentTime; t ++)
+        for (unsigned time = t - d_ptr->eventInfo.duration_before; time <= t; time ++)
         {
             TrendCacheData trendData;
             TrendAlarmStatus trendAlarmStatus;
-            if (trendCache.getTendData(t, trendData) && trendCache.getTrendAlarmStatus(t, trendAlarmStatus))
+            if (trendCache.getTendData(time, trendData) && trendCache.getTrendAlarmStatus(time, trendAlarmStatus))
             {
-                d_ptr->saveTrendData(t, trendData, trendAlarmStatus);
+                d_ptr->saveTrendData(time, trendData, trendAlarmStatus);
             }
         }
 
         TrendRecorder trendRecorder;
-        trendRecorder.toTimestamp =  currentTime + d_ptr->eventInfo.duration_after;
+        trendRecorder.toTimestamp =  t + d_ptr->eventInfo.duration_after;
         trendRecorder.obj = d_ptr.data();
         trendRecorder.completeCallback = EventStorageItemPrivate::trendCacheCompleteCallback;
         trendCache.registerTrendRecorder(trendRecorder);
     }
     else
     {
-        trendCache.getTendData(currentTime, trendData);
-        trendCache.getTrendAlarmStatus(currentTime, trendAlarmStatus);
-        d_ptr->saveTrendData(currentTime, trendData, trendAlarmStatus);
+        trendCache.getTendData(t, trendData);
+        trendCache.getTrendAlarmStatus(t, trendAlarmStatus);
+        d_ptr->saveTrendData(t, trendData, trendAlarmStatus);
     }
 
-    foreach (WaveformID waveid, d_ptr->waveforms)
+    foreach(WaveformID waveid, d_ptr->waveforms)
     {
         int sampleRate = waveformCache.getSampleRate(waveid);
         int waveNum = (d_ptr->eventInfo.duration_after + d_ptr->eventInfo.duration_before) * sampleRate;
 
-        WaveformDataSegment *waveSegment = (WaveformDataSegment *) qMalloc(sizeof(WaveformDataSegment) +
-                                                                           sizeof(WaveDataType) * waveNum);
+        WaveformDataSegment *waveSegment = reinterpret_cast<WaveformDataSegment *>(qMalloc(sizeof(WaveformDataSegment) +
+                                           sizeof(WaveDataType) * waveNum));
 
-        if(waveSegment == NULL)
+        if (waveSegment == NULL)
         {
             qdebug("Out of memory!");
             break;
@@ -384,53 +400,54 @@ QByteArray EventStorageItem::getStorageData() const
 
     EventSegmentType type;
 
-    //write event info
+    // write event info
     type = EVENT_INFO_SEGMENT;
-    buffer.write((char *)&type, sizeof(type));
-    buffer.write((char *)&d_ptr->eventInfo, sizeof(d_ptr->eventInfo));
+    buffer.write(reinterpret_cast<char *>(&type), sizeof(type));
+    buffer.write(reinterpret_cast<char *>(&d_ptr->eventInfo), sizeof(d_ptr->eventInfo));
 
-    if(d_ptr->almInfo)
+    if (d_ptr->almInfo)
     {
-        //store alarm info
+        // store alarm info
         type = EVENT_ALARM_INFO_SEGMENT;
-        buffer.write((char *)&type, sizeof(type));
-        buffer.write((char *)d_ptr->almInfo, sizeof(AlarmInfoSegment));
+        buffer.write(reinterpret_cast<char *>(&type), sizeof(type));
+        buffer.write(reinterpret_cast<char *>(d_ptr->almInfo), sizeof(AlarmInfoSegment));
     }
 
-    if(d_ptr->codeMarkerInfo)
+    if (d_ptr->codeMarkerInfo)
     {
-        //store codemarker info
+        // store codemarker info
         type = EVENT_CODEMARKER_SEGMENT;
-        buffer.write((char *)&type, sizeof(type));
-        buffer.write((char *)d_ptr->codeMarkerInfo, sizeof(CodeMarkerSegment));
+        buffer.write(reinterpret_cast<char *>(&type), sizeof(type));
+        buffer.write(reinterpret_cast<char *>(d_ptr->codeMarkerInfo), sizeof(CodeMarkerSegment));
     }
 
-    if(d_ptr->oxyCRGInfo)
+    if (d_ptr->oxyCRGInfo)
     {
-        //store the oxyCRG info
+        // store the oxyCRG info
         type = EVENT_OXYCRG_SEGMENT;
-        buffer.write((char *)&type, sizeof(type));
-        buffer.write((char *)d_ptr->oxyCRGInfo, sizeof(OxyCRGSegment));
+        buffer.write(reinterpret_cast<char *>(&type), sizeof(type));
+        buffer.write(reinterpret_cast<char *>(d_ptr->oxyCRGInfo), sizeof(OxyCRGSegment));
     }
 
-    //write trend segments
-    if(d_ptr->trendSegments.count())
+    // write trend segments
+    if (d_ptr->trendSegments.count())
     {
         type = EVENT_TRENDDATA_SEGMENT;
         foreach(TrendDataSegment *trendSeg, d_ptr->trendSegments)
         {
-         buffer.write((char *)&type, sizeof(type));
-         buffer.write((char *)trendSeg, sizeof(TrendDataSegment) + sizeof(TrendValueSegment) * trendSeg->trendValueNum);
+            buffer.write(reinterpret_cast<char *>(&type), sizeof(type));
+            buffer.write(reinterpret_cast<char *>(trendSeg), sizeof(TrendDataSegment) + sizeof(TrendValueSegment) * trendSeg->trendValueNum);
         }
     }
 
-    //write wave segments
-    if(d_ptr->waveSegments.count())
+    // write wave segments
+    if (d_ptr->waveSegments.count())
     {
         type = EVENT_WAVEFORM_SEGMENT;
-        foreach (WaveformDataSegment *waveSeg, d_ptr->waveSegments) {
-            buffer.write((char *)&type, sizeof(type));
-            buffer.write((char *)waveSeg, sizeof(WaveformDataSegment) + sizeof(WaveDataType) * waveSeg->waveNum);
+        foreach(WaveformDataSegment *waveSeg, d_ptr->waveSegments)
+        {
+            buffer.write(reinterpret_cast<char *>(&type), sizeof(type));
+            buffer.write(reinterpret_cast<char *>(waveSeg), sizeof(WaveformDataSegment) + sizeof(WaveDataType) * waveSeg->waveNum);
         }
     }
 
@@ -449,7 +466,7 @@ int EventStorageItem::getCurWaveCacheDuration(WaveformID waveId) const
 
 bool EventStorageItem::getOneSecondWaveform(WaveformID waveId, WaveDataType *waveBuf, int startSecond)
 {
-    if(d_ptr->waveCacheDuration.contains(waveId) && d_ptr->waveCacheDuration.value(waveId) > startSecond)
+    if (d_ptr->waveCacheDuration.contains(waveId) && d_ptr->waveCacheDuration.value(waveId) > startSecond)
     {
         int waveIndex = d_ptr->waveforms.indexOf(waveId);
         WaveformDataSegment *waveSegment = d_ptr->waveSegments.at(waveIndex);
@@ -478,7 +495,7 @@ void EventStorageItem::setWaitForTriggerPrintFlag(bool flag)
 QString EventStorageItem::getEventTitle() const
 {
     QString eventTitle;
-    switch(d_ptr->eventInfo.type)
+    switch (d_ptr->eventInfo.type)
     {
     case EventPhysiologicalAlarm:
     {
@@ -504,7 +521,7 @@ QString EventStorageItem::getEventTitle() const
         {
             titleStr = "**";
         }
-        else if(priority == ALARM_PRIO_HIGH)
+        else if (priority == ALARM_PRIO_HIGH)
         {
             titleStr = "***";
         }
@@ -512,16 +529,17 @@ QString EventStorageItem::getEventTitle() const
         ParamID paramId = paramInfo.getParamID(subparamID);
         titleStr += " ";
         titleStr += trs(Alarm::getPhyAlarmMessage(paramId,
-                                                  d_ptr->almInfo->alarmType,
-                                                  d_ptr->almInfo->alarmInfo & 0x01));
+                        d_ptr->almInfo->alarmType,
+                        d_ptr->almInfo->alarmInfo & 0x01));
 
-        if(!(d_ptr->almInfo->alarmInfo & 0x01))
+        if (!(d_ptr->almInfo->alarmInfo & 0x01))
         {
-            if(d_ptr->almInfo->alarmInfo & 0x02)
+            if (d_ptr->almInfo->alarmInfo & 0x02)
             {
                 titleStr += " > ";
             }
-            else {
+            else
+            {
                 titleStr += " < ";
             }
 
@@ -533,27 +551,27 @@ QString EventStorageItem::getEventTitle() const
 
         eventTitle = titleStr;
     }
-        break;
+    break;
     case EventCodeMarker:
     {
         eventTitle = trs(QString(d_ptr->codeMarkerInfo->codeName));
     }
-        break;
+    break;
     case EventRealtimePrint:
     {
         eventTitle = trs("RealtimePrintSegment");
     }
-        break;
+    break;
     case EventNIBPMeasurement:
     {
         eventTitle = trs("NibpMeasurement");
     }
-        break;
+    break;
     case EventWaveFreeze:
     {
         eventTitle = trs("WaveFreeze");
     }
-        break;
+    break;
     default:
         break;
     }

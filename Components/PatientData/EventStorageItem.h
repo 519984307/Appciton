@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/10/22
+ **/
+
 #pragma once
 #include "EventDataDefine.h"
 #include <QScopedPointer>
@@ -53,16 +63,16 @@ public:
 
     virtual ~EventStorageItem();
 
-    //get the event type
+    // get the event type
     virtual EventType getType() const;
 
-    //start collect trend and waveform data, return false if already start
-    virtual bool startCollectTrendAndWaveformData();
+    // start collect trend and waveform data, return false if already start
+    virtual bool startCollectTrendAndWaveformData(unsigned t);
 
-    //check whether collect data complete
+    // check whether collect data complete
     virtual bool checkCompleted();
 
-    //get the storage data of the event storage item
+    // get the storage data of the event storage item
     virtual QByteArray getStorageData() const;
 
     /**

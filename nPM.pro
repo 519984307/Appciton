@@ -257,6 +257,7 @@ SOURCES +=                                                                      
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.cpp                         \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.cpp                          \
     Components/Alarm/Widgets/AlarmInfoWindow.cpp                                \
+    Components/Alarm/Widgets/AlarmInfoModel.cpp                                 \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.cpp    \
     Components/Calculation/DoseCalculationManager/DoseCalculationWindow.cpp     \
     Components/Calculation/DoseCalculationManager/TitrateTableModel.cpp         \
@@ -748,6 +749,7 @@ HEADERS +=                                                                      
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.h                           \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.h                            \
     Components/Alarm/Widgets/AlarmInfoWindow.h                                  \
+    Components/Alarm/Widgets/AlarmInfoModel.h                                   \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.h      \
     Components/Calculation/DoseCalculationManager/DoseCalculationDefine.h       \
     Components/Calculation/DoseCalculationManager/DoseCalculationWindow.h       \
