@@ -33,7 +33,9 @@ public:
         ITEM_BTN_NIBP_PRESSURE_TEST,
         ITEM_BTN_NIBP_LEAKAGE_DETECTION,
         ITEM_BTN_ECG_MODULE_CALIBRATION,
-        ITEM_BTN_TOUCH_SCREEN_CALIBRATION
+#ifdef  Q_WS_QWS
+        ITEM_BTN_TOUCH_SCREEN_CALIBRATION,
+#endif
     };
 
     ModuleMaintainMenuContentPrivate() {}
@@ -186,9 +188,9 @@ void ModuleMaintainMenuContent::onButtonReleased()
         case ModuleMaintainMenuContentPrivate::ITEM_BTN_ECG_MODULE_CALIBRATION:
 
             break;
+#ifdef  Q_WS_QWS
         case ModuleMaintainMenuContentPrivate::ITEM_BTN_TOUCH_SCREEN_CALIBRATION:
         {
-#ifdef  Q_WS_QWS
             windowManager.closeAllWidows();
             if (systemManager.isTouchScreenOn())
             {
@@ -202,9 +204,9 @@ void ModuleMaintainMenuContent::onButtonReleased()
             {
                 QWSServer::instance()->openMouse();
             }
-#endif
         }
-            break;
+        break;
+#endif
         default:
             break;
         }
