@@ -217,12 +217,12 @@ void PopupNumEditor::keyPressEvent(QKeyEvent *ev)
     {
     case Qt::Key_Up:
     case Qt::Key_Left:
-        d_ptr->isUpPressed = true;
+        d_ptr->isDownPressed = true;
         update();
         break;
     case Qt::Key_Right:
     case Qt::Key_Down:
-        d_ptr->isDownPressed = true;
+        d_ptr->isUpPressed = true;
         update();
         break;
     case Qt::Key_Return:
@@ -245,14 +245,14 @@ void PopupNumEditor::keyReleaseEvent(QKeyEvent *ev)
     {
     case Qt::Key_Up:
     case Qt::Key_Left:
-        d_ptr->isUpPressed = false;
-        d_ptr->increaseValue();
+        d_ptr->isDownPressed = false;
+        d_ptr->decreaseValue();
         update();
         break;
     case Qt::Key_Right:
     case Qt::Key_Down:
-        d_ptr->isDownPressed = false;
-        d_ptr->decreaseValue();
+        d_ptr->isUpPressed = false;
+        d_ptr->increaseValue();
         update();
         break;
     case Qt::Key_Return:

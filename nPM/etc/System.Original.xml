@@ -7,17 +7,19 @@
     <ElapseStartTime>0</ElapseStartTime>
     <General>
         <PatientType>0</PatientType><!--0:adult  1:ped  2:neo-->
-	<MonitorName>dd-89</MonitorName>
-	<ConfigManagerPassword>12345678</ConfigManagerPassword>
-	<DemoModePassword>11111111</DemoModePassword>
-	<UserMaintainPassword>66666666</UserMaintainPassword>
-	<FactoryMaintainPassword>382425</FactoryMaintainPassword>
-	<SuperPassword>672401</SuperPassword>
-	<Department>d12</Department>
-	<BedNumber>b44</BedNumber>
-	<ChangeBedNumberRight>0</ChangeBedNumberRight>
-	<Language>1</Language>
+        <MonitorName>dd-89</MonitorName>
+        <ConfigManagerPassword>12345678</ConfigManagerPassword>
+        <DemoModePassword>11111111</DemoModePassword>
+        <UserMaintainPassword>66666666</UserMaintainPassword>
+        <FactoryMaintainPassword>382425</FactoryMaintainPassword>
+        <SuperPassword>672401</SuperPassword>
+        <Department>d12</Department>
+        <BedNumber>b44</BedNumber>
+        <ChangeBedNumberRight>0</ChangeBedNumberRight>
+        <Language>1</Language>
+        <TouchScreen>1</TouchScreen>
         <DefaultPatientType>0</DefaultPatientType>
+        <DefaultDisplayBrightness>7</DefaultDisplayBrightness>
     </General>
     <Alarms>
 	<MinimumAlarmVolume>2</MinimumAlarmVolume>
@@ -878,9 +880,9 @@
             <MainLayout direction="vertical" margin="0" spacing="0">
                 <LayoutItem height="45" direction="horizontal" spacing="0" bgcolor="#1e1e1e">
                     <LayoutItem stretch="1">PatientInfoWidget</LayoutItem>
-                    <LayoutItem width="50">NightStatusBar</LayoutItem>
-                    <LayoutItem width="50">PatientStatusBarWidget</LayoutItem>
-                    <LayoutItem width="200">DateTimeWidget</LayoutItem>
+                    <LayoutItem width="40">NightStatusBar</LayoutItem>
+                    <LayoutItem width="40">PatientStatusBarWidget</LayoutItem>
+                    <LayoutItem width="210">DateTimeWidget</LayoutItem>
                     <LayoutItem width="50">AlarmMuteBarWidget</LayoutItem>
                     <LayoutItem width="350">AlarmPhyInfoBarWidget</LayoutItem>
                     <LayoutItem width="350">AlarmTechInfoBarWidget</LayoutItem>
@@ -895,17 +897,17 @@
             <ContentLayout>
                 <Normal>
                     <LayoutRow>
-                        <LayoutNode pos="0" span="4" editable="1">ECG1Wave</LayoutNode>
-                        <LayoutNode pos="4" span="1" editable="1">ECG</LayoutNode>
-                        <LayoutNode pos="5" span="1" editable="1">PVCs</LayoutNode>
-                    </LayoutRow>
-                    <LayoutRow>
-                        <LayoutNode pos="0" span="4" editable="1">SPO2Wave</LayoutNode>
-                        <LayoutNode pos="4" span="2" editable="1">SPO2</LayoutNode>
+                        <LayoutNode pos="0" span="4" editable="0">ECG1Wave</LayoutNode>
+                        <LayoutNode pos="4" span="1" editable="0">ECG</LayoutNode>
+                        <LayoutNode pos="5" span="1" editable="0">PVCs</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="1">ECG2Wave</LayoutNode>
                         <LayoutNode pos="4" span="2" editable="1">N2O</LayoutNode>
+                    </LayoutRow>
+                    <LayoutRow>
+                        <LayoutNode pos="0" span="4" editable="1">SPO2Wave</LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="1">SPO2</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="1">IBP1Wave</LayoutNode>

@@ -63,7 +63,6 @@ int main(int argc, char *argv[])
     errorLog.append(item);
     // 构造出系统参数对象，用于获取当前面板上开关的位置。
     systemBoardProvider.construction();
-    systemManager.construction();
 
     // disable double click
     app.setDoubleClickInterval(0);

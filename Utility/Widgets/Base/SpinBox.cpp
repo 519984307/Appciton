@@ -251,9 +251,9 @@ void SpinBox::keyReleaseEvent(QKeyEvent *ev)
         }
         else
         {
-            if (d_ptr->info.curValue < d_ptr->info.highLimit)
+            if (d_ptr->info.curValue > d_ptr->info.lowLimit)
             {
-                d_ptr->info.curValue += d_ptr->info.step;
+                d_ptr->info.curValue -= d_ptr->info.step;
                 update();
             }
         }
@@ -267,9 +267,9 @@ void SpinBox::keyReleaseEvent(QKeyEvent *ev)
         }
         else
         {
-            if (d_ptr->info.curValue > d_ptr->info.lowLimit)
+            if (d_ptr->info.curValue < d_ptr->info.highLimit)
             {
-                d_ptr->info.curValue -= d_ptr->info.step;
+                d_ptr->info.curValue += d_ptr->info.step;
                 update();
             }
         }

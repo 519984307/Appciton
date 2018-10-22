@@ -23,6 +23,7 @@
 #include "MainMenuWindow.h"
 #include "RESPParam.h"
 #include "IConfig.h"
+#include "AlarmLimitWindow.h"
 
 class CO2MenuContentPrivate
 {
@@ -169,12 +170,9 @@ void CO2MenuContent::onBtnReleasedChanged()
 
 void CO2MenuContent::onAlarmBtnReleased()
 {
-    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_ETCO2, true);
-    if (w)
-    {
-        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
-    }
+    AlarmLimitWindow w(subParamName);
+    windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }
 
 void CO2MenuContent::layoutExec()

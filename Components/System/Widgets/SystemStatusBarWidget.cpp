@@ -20,6 +20,7 @@
 #include "WindowManager.h"
 #include "LayoutManager.h"
 #include "WiFiProfileWindow.h"
+#include "IConfig.h"
 
 SystemStatusBarWidget *SystemStatusBarWidget::_selfObj = NULL;
 #define ICON_WIDTH 32
@@ -136,11 +137,20 @@ void SystemStatusBarWidget::timerEvent(QTimerEvent *e)
 {
     if (e->timerId() == _timer.timerId())
     {
-        if (networkManager.isWifiWorking())
+        int index = 0;
+        systemConfig.getNumValue("MachineConfigModule|WifiModule", index);
+        if (index  && networkManager.isWifiTurnOn())
         {
-            changeIcon(SYSTEM_ICON_LABEL_WIFI, networkManager.isWiFiConnected()
-                       ? SYSTEM_ICON_WIFI_CONNECTED
-                       : SYSTEM_ICON_WIFI_DISCONNECTED, true);
+            if (networkManager.isWifiWorking())
+            {
+                changeIcon(SYSTEM_ICON_LABEL_WIFI, networkManager.isWiFiConnected()
+                           ? SYSTEM_ICON_WIFI_CONNECTED
+                           : SYSTEM_ICON_WIFI_DISCONNECTED, true);
+            }
+            else
+            {
+                changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_DISCONNECTED);
+            }
         }
         else
         {

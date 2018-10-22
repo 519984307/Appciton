@@ -583,7 +583,6 @@ void deleteObjects(void)
     // deleteSuperConfig();
     deleteSuperRunConfig();
     deleteSystemTick();
-    deleteSystemManager();
     deleteSystemBoardProvider();
     deletePowerManager();
     deleteKeyActionManager();

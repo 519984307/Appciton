@@ -19,6 +19,8 @@
 #include "PopupList.h"
 #include "ScreenLayoutEditor.h"
 #include "FontManager.h"
+#include "LayoutManager.h"
+#include <QPoint>
 
 #define WAVE_LEFT_RIGHT_MARGIN 4
 #define WAVE_TOP_BOTTOM_MARGIN 2

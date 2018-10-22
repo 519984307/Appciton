@@ -120,18 +120,10 @@ void NightModeWindow::layoutExec()
     label = new QLabel(trs("SystemBrightness"));
     glayout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << QString::number(BRT_LEVEL_1)
-                       << QString::number(BRT_LEVEL_2)
-                       << QString::number(BRT_LEVEL_3)
-                       << QString::number(BRT_LEVEL_4)
-                       << QString::number(BRT_LEVEL_5)
-                       << QString::number(BRT_LEVEL_6)
-                       << QString::number(BRT_LEVEL_7)
-                       << QString::number(BRT_LEVEL_8)
-                       << QString::number(BRT_LEVEL_9)
-                       << QString::number(BRT_LEVEL_10)
-                      );
+    for (int i = BRT_LEVEL_0; i < BRT_LEVEL_NR; i++)
+    {
+        comboBox->addItem(QString::number(i + 1));
+    }
     comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_SCREEN_BRIGHTNESS);
     comboBox->setProperty("Item",
@@ -264,7 +256,6 @@ void NightModeWindow::onComboBoxIndexChanged(int index)
     {
         case NightModeWindowPrivate::ITEM_CBO_SCREEN_BRIGHTNESS:
         node = "ScreenBrightness";
-        index = combo->itemText(index).toInt();
         break;
         case NightModeWindowPrivate::ITEM_CBO_ALARM_VOLUME:
         node = "AlarmVolume";
