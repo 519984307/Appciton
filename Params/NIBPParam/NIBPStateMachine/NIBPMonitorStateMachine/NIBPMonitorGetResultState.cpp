@@ -81,6 +81,7 @@ void NIBPMonitorGetResultState::handleNIBPEvent(NIBPEvent event, const unsigned 
         break;
 
     case NIBP_EVENT_MONITOR_GET_RESULT:
+    {
         if (!nibpParam.analysisResult(args, argLen, sys, dia, map, pr, err))  // 不是测量结果。
         {
             return;
@@ -91,10 +92,12 @@ void NIBPMonitorGetResultState::handleNIBPEvent(NIBPEvent event, const unsigned 
 
         debug("0x%02x, %d", args[1], err);
 
-        eventStorageManager.triggerNIBPMeasurementEvent();
+        unsigned currentTime = timeManager.getCurTime();
+        eventStorageManager.triggerNIBPMeasurementEvent(currentTime);
 
         switchState(NIBP_MONITOR_SAFEWAITTIME_STATE);
         break;
+    }
     default:
         break;
     }

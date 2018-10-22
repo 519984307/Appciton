@@ -22,6 +22,8 @@
 #include "TimeDate.h"
 #include <QHeaderView>
 #include "Alarm.h"
+#include "EventWindow.h"
+#include "WindowManager.h"
 
 #define PATH_ICON_UP "/usr/local/nPM/icons/ArrowUp.png"
 #define PATH_ICON_DOWN "/usr/local/nPM/icons/ArrowDown.png"
@@ -55,6 +57,7 @@ public:
     Button *prevBtn;
     Button *nextBtn;
     QString title;
+    QList<AlarmInfoNode> nodeList;
 
     /**
      * @brief loadOption　加载列表的值
@@ -120,6 +123,8 @@ void AlarmInfoWindow::layout()
 
         vLayout->addStretch();
         vLayout->addWidget(tableView);
+        connect(tableView, SIGNAL(clicked(QModelIndex)), this, SLOT(_accessEventWindow(QModelIndex)));
+        connect(tableView, SIGNAL(rowClicked(int)), this, SLOT(_accessEventWindow(int)));
     }
     else if (d_ptr->alarmType == ALARM_TYPE_TECH)
     {
@@ -185,11 +190,30 @@ void AlarmInfoWindow::_onBtnRelease()
     }
 }
 
+void AlarmInfoWindow::_accessEventWindow(QModelIndex index)
+{
+    _accessEventWindow(index.row());
+}
+
+void AlarmInfoWindow::_accessEventWindow(int index)
+{
+    if (d_ptr->nodeList.count() == 0)
+    {
+        return;
+    }
+    AlarmInfoNode node = d_ptr->nodeList.at(index);
+    SubParamID id = node.alarmSource->getSubParamID(node.alarmID);
+    unsigned time = node.alarmTime;
+
+    windowManager.showWindow(EventWindow::getInstance(), WindowManager::ShowBehaviorCloseIfVisiable
+                             | WindowManager::ShowBehaviorCloseOthers);
+    EventWindow::getInstance()->findEventIndex(id, time);
+}
+
 void AlarmInfoWindowPrivate::loadOption()
 {
     AlarmInfoNode node;
-    QList<AlarmInfoNode> nodeList;
-
+    nodeList.clear();
     for (int i = totalList - 1; i >= 0; --i)
     {
         alarmIndicator.getAlarmInfo(i, node);
@@ -206,6 +230,10 @@ void AlarmInfoWindowPrivate::loadOption()
     // 计算当前页码和总页数
     int pageTemp = (0 == count % LISTVIEW_MAX_VISIABLE_SIZE) ? (count / LISTVIEW_MAX_VISIABLE_SIZE)
                                                               : (count / LISTVIEW_MAX_VISIABLE_SIZE + 1);
+    if (pageTemp == 0)
+    {
+        return;
+    }
     if (totalPage != pageTemp)
     {
         totalPage = pageTemp;
@@ -287,9 +315,6 @@ void AlarmInfoWindowPrivate::loadOption()
 
         listModel->setStringList(alarmList);
     }
-
-
-    nodeList.clear();
 
     if (hasNextPage())
     {

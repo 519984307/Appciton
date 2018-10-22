@@ -252,17 +252,17 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
 
             infoSegment.subParamID = alarmSource->getSubParamID(i);
             infoSegment.alarmType = i;
-            eventStorageManager.triggerAlarmEvent(infoSegment, alarmSource->getWaveformID(i));
+            eventStorageManager.triggerAlarmEvent(infoSegment, alarmSource->getWaveformID(i), _timestamp);
             switch (infoSegment.subParamID)
             {
             case SUB_PARAM_HR_PR:
-                eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventECG);
+                eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventECG, _timestamp);
                 break;
             case SUB_PARAM_SPO2:
-                eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventSpO2);
+                eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventSpO2, _timestamp);
                 break;
             case SUB_PARAM_RR_BR:
-                eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventResp);
+                eventStorageManager.triggerAlarmOxyCRGEvent(infoSegment, OxyCRGEventResp, _timestamp);
                 break;
             default:
                 break;

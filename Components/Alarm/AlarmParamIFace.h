@@ -36,6 +36,9 @@ public:
 
     // 生理报警使能
     virtual bool isAlarmEnable(int id) = 0;
+
+    // 获取id对应的子参数ID。
+    virtual SubParamID getSubParamID(int id) = 0;
 };
 
 class AlarmLimitIFace: public AlarmParamIFace

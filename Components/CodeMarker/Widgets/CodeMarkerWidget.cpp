@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/10/22
+ **/
+
 #include "Debug.h"
 #include <QScrollBar>
 #include <QTimer>
@@ -53,8 +63,9 @@ void CodeMarkerButton::focusInEvent(QFocusEvent *e)
 /***************************************************************************************************
  * 响应重绘事件。
  **************************************************************************************************/
-void CodeMarkerButton::paintEvent(QPaintEvent */*e*/)
+void CodeMarkerButton::paintEvent(QPaintEvent *e)
 {
+    Q_UNUSED(e)
     QPainter painter(this);
     painter.setPen(Qt::NoPen);
 
@@ -84,7 +95,7 @@ void CodeMarkerButton::paintEvent(QPaintEvent */*e*/)
 
     // 绘文本。
     painter.setPen(hasFocus() ? palette().color(QPalette::HighlightedText) :
-            palette().color(QPalette::WindowText));
+                   palette().color(QPalette::WindowText));
     painter.drawText(rect(), Qt::AlignCenter, text());
 }
 
@@ -99,25 +110,27 @@ void CodeMarkerButton::keyPressEvent(QKeyEvent *e)
     }
     switch (e->key())
     {
-        case Qt::Key_Return:
-        case Qt::Key_Enter:
-
-            if (!e->isAutoRepeat())
-            {
-                codeMarkerWidget.setPress(true);
-                update();
-            }
-            eventStorageManager.triggerCodeMarkerEvent(text().toLatin1().data());
-            break;
-        case Qt::Key_Left:
-        case Qt::Key_Right:
-        case Qt::Key_Up:
-        case Qt::Key_Down:
-            codeMarkerWidget.startTimer();
+    case Qt::Key_Return:
+    case Qt::Key_Enter:
+    {
+        if (!e->isAutoRepeat())
+        {
+            codeMarkerWidget.setPress(true);
             update();
-            break;
-        default:
-            break;
+        }
+        unsigned currentTime = timeManager.getCurTime();
+        eventStorageManager.triggerCodeMarkerEvent(text().toLatin1().data(), currentTime);
+        break;
+    }
+    case Qt::Key_Left:
+    case Qt::Key_Right:
+    case Qt::Key_Up:
+    case Qt::Key_Down:
+        codeMarkerWidget.startTimer();
+        update();
+        break;
+    default:
+        break;
     }
 
     QPushButton::keyPressEvent(e);
@@ -237,7 +250,7 @@ void CodeMarkerWidget::_timerOut()
 {
     _closeTimer->stop();
     // 存储code marker数据到summary。
-    //summaryStorageManager.addCodeMarker(timeManager.getCurTime(),
+    // summaryStorageManager.addCodeMarker(timeManager.getCurTime(),
     //        _localeCodeMarker[_codeMarkerNum].toLocal8Bit().constData());
     hide();
 }
@@ -263,7 +276,7 @@ void CodeMarkerWidget::hideEvent(QHideEvent *event)
     if (!getPress())
     {
         QString defCodeMarker("CodeMarkerDefault");
-        //summaryStorageManager.addCodeMarker(timeManager.getCurTime(),
+        // summaryStorageManager.addCodeMarker(timeManager.getCurTime(),
         //        defCodeMarker.toLocal8Bit().constData());
     }
     _timer->stop();

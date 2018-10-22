@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/10/22
+ **/
+
 #pragma once
 #include <QList>
 #include "PopupWidget.h"
@@ -10,8 +20,7 @@ class CodeMarkerButton: public LButton
     Q_OBJECT
 
 public:
-
-    CodeMarkerButton(int id = 0);
+    explicit CodeMarkerButton(int id = 0);
     ~CodeMarkerButton();
 
 protected:
@@ -22,7 +31,7 @@ protected:
 //    void mouseReleaseEvent(QMouseEvent *e);
 };
 
-//Code marker数据窗口
+// Code marker数据窗口
 class QTimer;
 class CodeMarkerWidget: public PopupWidget
 {
