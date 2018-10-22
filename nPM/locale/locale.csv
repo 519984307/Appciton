@@ -1254,6 +1254,7 @@ NIBPLeakageDetection,NIBP泄露检测,NIBP Leakage Detection
 NIBPServiceModuleErrorQuitTryAgain,NIBP服务模块错误，请退出重试,NIBP Service Module Error
 ECGModuleCalibration,心电模块校准,ECG Module Calibration
 TouchScreenCalibration,触摸屏校准,Touch Screen Calibration
+TouchScreen,触摸屏,Touch Screen
 StopAnaesthesia,停止麻醉模块,Stop Anaesthesia
 Anaesthesia,麻醉模块,Anaesthesia
 StopNIBPPressureTest,停止无创血压测试,Stop NIBP Pressure Test

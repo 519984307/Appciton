@@ -877,9 +877,8 @@
             <MainLayout direction="vertical" margin="0" spacing="0">
                 <LayoutItem height="45" direction="horizontal" spacing="0" bgcolor="#1e1e1e">
                     <LayoutItem stretch="1">PatientInfoWidget</LayoutItem>
-                    <LayoutItem width="40">NightStatusBar</LayoutItem>
-                    <LayoutItem width="40">PatientStatusBarWidget</LayoutItem>
-                    <LayoutItem width="210">DateTimeWidget</LayoutItem>
+                    <LayoutItem width="96">RunningStatusBar</LayoutItem>
+                    <LayoutItem width="180">DateTimeWidget</LayoutItem>
                     <LayoutItem width="50">AlarmMuteBarWidget</LayoutItem>
                     <LayoutItem width="350">AlarmPhyInfoBarWidget</LayoutItem>
                     <LayoutItem width="350">AlarmTechInfoBarWidget</LayoutItem>

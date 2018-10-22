@@ -18,6 +18,11 @@
 #include "NIBPSymbol.h"
 #include "TEMPSymbol.h"
 #include "SPO2Symbol.h"
+#ifdef Q_WS_QWS
+#include <QWSServer>
+#include "SystemManager.h"
+#endif
+
 
 class MachineConfigModuleContentPrivte
 {
@@ -34,7 +39,9 @@ public:
         ITEM_CBO_PRINTER,
         ITEM_CBO_HDMI,
         ITEM_CBO_WIFI,
-        ITEM_CBO_SCREEN,
+#ifdef Q_WS_QWS
+        ITEM_CBO_TOUCH,
+#endif
         ITEM_CBO_NUSERCALL,
         ITEM_CBO_ANANLOG,
     };
@@ -120,9 +127,12 @@ void MachineConfigModuleContentPrivte::loadOptions()
     systemConfig.getNumValue("MachineConfigModule|WifiModule", index);
     combos[ITEM_CBO_WIFI]->setCurrentIndex(index);
 
+
+#ifdef Q_WS_QWS
     index = 0;
-    systemConfig.getNumValue("MachineConfigModule|ScreenModule", index);
-    combos[ITEM_CBO_SCREEN]->setCurrentIndex(index);
+    machineConfig.getNumValue("TouchEanble", index);
+    combos[ITEM_CBO_TOUCH]->setCurrentIndex(index);
+#endif
 
     index = 0;
     systemConfig.getNumValue("MachineConfigModule|NurseCallingModule", index);
@@ -306,7 +316,8 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
-    label = new QLabel(trs("ScreenModule"));
+#ifdef Q_WS_QWS
+    label = new QLabel(trs("TouchScreen"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
@@ -315,10 +326,11 @@ void MachineConfigModuleContent::layoutExec()
                    );
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
-                         ::ITEM_CBO_SCREEN, combo);
-    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_SCREEN;
+                         ::ITEM_CBO_TOUCH, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_TOUCH;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+#endif
 
     label = new QLabel(trs("NurseCallingModule"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -441,9 +453,13 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
     case MachineConfigModuleContentPrivte::ITEM_CBO_WIFI:
         str = "WifiModule";
         break;
-    case MachineConfigModuleContentPrivte::ITEM_CBO_SCREEN:
-        str = "ScreenModule";
-        break;
+#ifdef Q_WS_QWS
+    case MachineConfigModuleContentPrivte::ITEM_CBO_TOUCH:
+        machineConfig.setNumValue("TouchEnable", index);
+        machineConfig.saveToDisk();
+        systemManager.setTouchScreenOnOff(index);
+        return;
+#endif
     case MachineConfigModuleContentPrivte::ITEM_CBO_NUSERCALL:
         str = "NurseCallingModule";
         break;

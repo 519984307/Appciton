@@ -29,6 +29,9 @@
 #include "DemoModeWindow.h"
 #include "NightModeWindow.h"
 #include "StandyWindow.h"
+#ifdef Q_WS_QWS
+#include <QWSServer>
+#endif
 
 class NormalFunctionMenuContentPrivate
 {
@@ -40,6 +43,9 @@ public:
         ITEM_CBO_ALARM_VOLUME,
         ITEM_CBO_SCREEN_BRIGHTNESS,
         ITEM_CBO_KEYPRESS_VOLUME,
+#ifdef Q_WS_QWS
+        ITEM_CBO_TOUCH_SCREEN,
+#endif
 
         ITEM_BTN_WIFI_PROFILE,
         ITEM_BTN_MACHINE_VERSION,
@@ -85,6 +91,11 @@ void NormalFunctionMenuContentPrivate::loadOptions()
         index = soundManager.getVolume(SoundManager::SOUND_TYPE_KEY_PRESS);
         combos[ITEM_CBO_KEYPRESS_VOLUME]->setCurrentIndex(index);
     }
+
+#ifdef Q_WS_QWS
+    combos[ITEM_CBO_TOUCH_SCREEN]->setCurrentIndex(systemManager.isTouchScreenOn());
+    combos[ITEM_CBO_TOUCH_SCREEN]->setEnabled(systemManager.isSupport(CONFIG_TOUCH));
+#endif
 }
 
 NormalFunctionMenuContent::NormalFunctionMenuContent()
@@ -178,6 +189,22 @@ void NormalFunctionMenuContent::layoutExec()
     connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
     d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME , comboBox);
 
+#ifdef Q_WS_QWS
+    // touch screen function
+    label = new QLabel(trs("TouchScreen"));
+    layout->addWidget(label, row, 0);
+    comboBox = new ComboBox();
+    comboBox->addItem(trs("Off"));
+    comboBox->addItem(trs("On"));
+    layout->addWidget(comboBox, row, 1);
+    row++;
+    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_TOUCH_SCREEN);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_TOUCH_SCREEN, comboBox);
+    comboBox->setEnabled(systemManager.isSupport(CONFIG_TOUCH));
+#endif
+
     if (systemManager.isSupport(CONFIG_WIFI))
     {
         // wifi profile
@@ -256,6 +283,13 @@ void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
             soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , static_cast<SoundManager::VolumeLevel>(volume));
             break;
         }
+#ifdef Q_WS_QWS
+        case NormalFunctionMenuContentPrivate::ITEM_CBO_TOUCH_SCREEN:
+        {
+            systemManager.setTouchScreenOnOff(index);
+            break;
+        }
+#endif
         default:
             break;
         }
