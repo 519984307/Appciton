@@ -121,7 +121,6 @@ void AlarmTechInfoBarWidget::_releaseHandle(IWidget *iWidget)
     if (NULL == _alarmWindow)
     {
         _alarmWindow = new AlarmInfoWindow(trs("TechAlarmList"), _alarmType);
-        connect(_alarmWindow, SIGNAL(listHide()), this, SLOT(_alarmListHide()));
         windowManager.showWindow(_alarmWindow, WindowManager::ShowBehaviorCloseOthers
                                  | WindowManager::ShowBehaviorCloseIfVisiable);
     }
