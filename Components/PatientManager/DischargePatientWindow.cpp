@@ -55,13 +55,25 @@ void DischargePatientWindow::layoutExec()
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(10);
+    QHBoxLayout *hlayout = new QHBoxLayout();
 
-
-    d_ptr->standby = new Button(trs("Standby"));
-    d_ptr->standby->setButtonStyle(Button::ButtonTextBesideIcon);
+    d_ptr->standby = new Button;
+    d_ptr->standby->setButtonStyle(Button::ButtonIconOnly);
     d_ptr->standby->setIcon(QIcon("/usr/local/nPM/icons/checkbox_uncheck.png"));
+    d_ptr->standby->setIconSize(QSize(32, 32));
     d_ptr->standby->setBorderWidth(0);
-    d_ptr->standby->setFixedWidth(280);
+    d_ptr->standby->setFixedSize(32, 32);
+
+    QLabel *lbl = new QLabel;
+    lbl->setText(trs("Standby"));
+    lbl->setFixedWidth(100);
+    lbl->setAlignment(Qt::AlignCenter);
+    hlayout->addStretch();
+    hlayout->addWidget(d_ptr->standby);
+    hlayout->addWidget(lbl);
+    hlayout->addStretch();
+    layout->addLayout(hlayout);
+
     connect(d_ptr->standby, SIGNAL(released()), this, SLOT(onBtnRelease()));
 
     d_ptr->yes = new Button(trs("Yes"));
@@ -74,14 +86,12 @@ void DischargePatientWindow::layoutExec()
     connect(d_ptr->no, SIGNAL(released()), this, SLOT(onBtnRelease()));
 
 
-    QHBoxLayout *hlayout = new QHBoxLayout();
+    hlayout = new QHBoxLayout();
     hlayout->addStretch();
     hlayout->addWidget(d_ptr->yes);
     hlayout->addWidget(d_ptr->no);
     hlayout->addStretch();
 
-    layout->addWidget(d_ptr->standby, 0, Qt::AlignHCenter);
-    layout->addStretch();
     layout->addLayout(hlayout);
 
     setWindowLayout(layout);
