@@ -850,6 +850,9 @@
 		<C6>0</C6>                                
 	    </EverLeadOn>
         </ECG>
+		<RESP>
+			<Zoom>0</Zoom>		
+		</RESP>
 		<CO2>
 			<O2Compensation>55</O2Compensation>
 			<N2OCompensation>66</N2OCompensation>

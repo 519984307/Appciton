@@ -115,14 +115,6 @@ void RESPWaveWidget::setZoom(int zoom)
 {
     switch (zoom)
     {
-    case RESP_ZOOM_X025:
-        setValueRange(-0x4000 * 4, 0x3FFF * 4);
-        break;
-
-    case RESP_ZOOM_X050:
-        setValueRange(-0x4000 * 2, 0x3FFF * 2);
-        break;
-
     case RESP_ZOOM_X100:
         setValueRange(-0x4000, 0x3FFF);
         break;
@@ -147,7 +139,6 @@ void RESPWaveWidget::setZoom(int zoom)
         zoom = RESP_ZOOM_X100;
         break;
     }
-    setValueRange(0, 255);
     _gain->setText(RESPSymbol::convert((RESPZoom)zoom));
 }
 

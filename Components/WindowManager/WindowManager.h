@@ -96,6 +96,12 @@ public:
     // 获取弹出菜单高度, TODO: remove
     int getPopMenuHeight();
 
+    /**
+     * @brief isDemoWidgetShow  demo widget 是否显示
+     * @return  true-demo widget显示  fasle-demo widget 不显示
+     */
+    bool isDemoWidgetShow(void) const;
+
 private:
     WindowManager();
 

@@ -32,6 +32,7 @@ public:
         ITEM_CBO_APNEA_DELAY = 0,
         ITEM_CBO_BREATH_LEAD,
         ITEM_CBO_RR_SOURCE,
+        ITEM_CBO_WAVE_GAIN,
         ITEM_CBO_SWEEP_SPEED,
     };
 
@@ -81,6 +82,9 @@ void RESPMenuContentPrivate::loadOptions()
 
     // lead
     combos[ITEM_CBO_BREATH_LEAD]->setCurrentIndex(respParam.getCalcLead());
+
+    // wave gain
+    combos[ITEM_CBO_WAVE_GAIN]->setCurrentIndex(respParam.getZoom());
 }
 
 RESPMenuContent::RESPMenuContent()
@@ -160,6 +164,23 @@ void RESPMenuContent::layoutExec()
     itemID = RESPMenuContentPrivate::ITEM_CBO_RR_SOURCE;
     comboBox->setProperty("Item", qVariantFromValue(itemID));
 
+    // resp wave gain
+    label = new QLabel(trs("RESPWaveGain"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox;
+    comboBox->addItems(QStringList()
+                   << trs(RESPSymbol::convert(RESP_ZOOM_X100))
+                   << trs(RESPSymbol::convert(RESP_ZOOM_X200))
+                   << trs(RESPSymbol::convert(RESP_ZOOM_X300))
+                   << trs(RESPSymbol::convert(RESP_ZOOM_X400))
+                   << trs(RESPSymbol::convert(RESP_ZOOM_X500)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(RESPMenuContentPrivate
+                         ::ITEM_CBO_WAVE_GAIN, comboBox);
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    itemID = RESPMenuContentPrivate::ITEM_CBO_WAVE_GAIN;
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+
     // sweep speed
     label = new QLabel(trs("RESPSweepSpeed"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -225,6 +246,9 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
                 respDupParam.setBrSource(RESPDupParam::BR_SOURCE_RESP);
             }
         }
+            break;
+        case RESPMenuContentPrivate::ITEM_CBO_WAVE_GAIN:
+            respParam.setZoom(static_cast<RESPZoom>(index));
             break;
         case RESPMenuContentPrivate::ITEM_CBO_BREATH_LEAD:
             respParam.setCalcLead(static_cast<RESPLead>(index));
