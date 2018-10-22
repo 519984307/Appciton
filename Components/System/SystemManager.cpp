@@ -43,6 +43,7 @@
 #include <QTimer>
 #ifdef Q_WS_QWS
 #include <QWSServer>
+#include "RunningStatusBar.h"
 #endif
 
 #define BACKLIGHT_DEV   "/sys/class/backlight/backlight/brightness"       // 背光控制文件接口
@@ -74,8 +75,12 @@ public:
       #ifdef Q_WS_X11
           ctrlSocket(NULL),
       #endif
-          workMode(WORK_MODE_NORMAL), backlightFd(-1), selfTestFinish(false),
-          isTurnOff(false), isTouchScreenOn(false)
+          workMode(WORK_MODE_NORMAL), backlightFd(-1),
+      #ifdef Q_WS_QWS
+          isTouchScreenOn(false),
+      #endif
+          selfTestFinish(false),
+          isTurnOff(false)
     {}
 
     /**
@@ -143,9 +148,11 @@ public:
 #endif
     WorkMode workMode;
     int backlightFd;                    // 背光控制文件句柄。
+#ifdef Q_WS_QWS
+    bool isTouchScreenOn;
+#endif
     bool selfTestFinish;
     bool isTurnOff;
-    bool isTouchScreenOn;
 };
 
 /**************************************************************************************************
@@ -263,6 +270,7 @@ bool SystemManager::isSupport(ParamID paramID) const
     return enable;
 }
 
+#ifdef Q_WS_QWS
 bool SystemManager::isTouchScreenOn() const
 {
     return d_ptr->isTouchScreenOn;
@@ -273,13 +281,26 @@ void SystemManager::setTouchScreenOnOff(bool onOff)
     if (onOff && isSupport(CONFIG_TOUCH))
     {
         d_ptr->isTouchScreenOn = true;
+        QWSServer::instance()->openMouse();
     }
     else
     {
         d_ptr->isTouchScreenOn = false;
+        QWSServer::instance()->closeMouse();
     }
+
+    if (isSupport(CONFIG_TOUCH))
+    {
+        runningStatus.setTouchStatus(d_ptr->isTouchScreenOn);
+    }
+    else
+    {
+        runningStatus.clearTouchStatus();
+    }
+
     return;
 }
+#endif
 
 /***************************************************************************************************
  * get the module config status
@@ -915,9 +936,11 @@ SystemManager::SystemManager() ://申请一个动态的模块加载结果数组
     hdmiCtrl->connect(d_ptr->workerThread, SIGNAL(finished()), hdmiCtrl, SLOT(deleteLater()));
     d_ptr->workerThread->start();
 
+#ifdef Q_WS_QWS
     int val = 0;
     systemConfig.getNumValue("General|TouchScreen", val);
     setTouchScreenOnOff(val);
+#endif
 
 #ifdef Q_WS_X11
     d_ptr->ctrlSocket = new QTcpSocket(this);

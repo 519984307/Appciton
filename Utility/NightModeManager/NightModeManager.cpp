@@ -13,7 +13,7 @@
 #include "IConfig.h"
 #include "SoundManager.h"
 #include "ECGParam.h"
-#include "NightStatusBar.h"
+#include "RunningStatusBar.h"
 
 NightModeManager *NightModeManager::_selfObj = NULL;
 
@@ -83,7 +83,7 @@ void NightModeManager::setNightMode()
 
         d_ptr->loadOption();
 
-        nightStatusBar.changeIcon(NIGHT_MODE_ON);
+        runningStatus.setNightModeStatus(true);
     }
     else
     {
@@ -95,7 +95,7 @@ void NightModeManager::setNightMode()
 
         keyVolume = d_ptr->normalkeyVolume;
 
-        nightStatusBar.changeIcon(NIGHT_MODE_OFF);
+        runningStatus.setNightModeStatus(false);
     }
 
     systemManager.setBrightness(static_cast<BrightnessLevel>(screenBrightness));
