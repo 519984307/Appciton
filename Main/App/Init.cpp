@@ -512,7 +512,7 @@ static void _initProviderParam(void)
     paramManager.getVersion();
 
     // 关联设备和参数对象。
-    paramManager.connectParamProvider();
+    paramManager.connectParamProvider(WORK_MODE_NORMAL);
 
 
     alertor.addOneShotSource(systemAlarm.Construction());

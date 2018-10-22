@@ -100,7 +100,7 @@ public:
     {
         alarmIndicator.delAllPhyAlarm();
         windowManager.showDemoWidget(false);
-        paramManager.connectParamProvider();
+        paramManager.connectParamProvider(WORK_MODE_DEMO);
     }
 
     /**
@@ -579,6 +579,8 @@ void SystemManager::setWorkMode(WorkMode workmode)
         return;
     }
 
+    d_ptr->workMode = workmode;
+
     switch (workmode)
     {
     case WORK_MODE_NORMAL:
@@ -590,9 +592,8 @@ void SystemManager::setWorkMode(WorkMode workmode)
     default:
         break;
     }
-
-    d_ptr->workMode = workmode;
 }
+
 
 #ifdef Q_WS_X11
 bool SystemManager::sendCommand(const QByteArray &cmd)
