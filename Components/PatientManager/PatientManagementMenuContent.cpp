@@ -109,7 +109,7 @@ void PatientManagementMenuContent::onBtnReleased()
     {
         case PatientManagementMenuContentPrivate::ITEM_BTN_PATIENT_INFO:
         {
-            if (!patientManager.isWarding())
+            if (!patientManager.isMonitoring())
             {
                 patientManager.newPatient();
             }
@@ -150,7 +150,7 @@ void PatientManagementMenuContent::onBtnReleased()
 
 void PatientManagementMenuContentPrivate::loadOption()
 {
-    if (patientManager.isWarding())
+    if (patientManager.isMonitoring())
     {
         dischargePatient->setText(trs("RelievePatient"));
     }

@@ -179,16 +179,16 @@ public:
     UnitType getHeightUnit(void);
 
     /**
-     * @brief setWard 设置监护状态
+     * @brief setMonitor 设置监护状态
      * @param status
      */
-    void setWard(bool status);
+    void setMonitor(bool status);
 
     /**
-     * @brief isWarding 是否正在监护病人
+     * @brief isMonitoring 是否正在监护病人
      * @return
      */
-    bool isWarding();
+    bool isMonitoring();
 
     /**
      * @brief newPatient 新建病人

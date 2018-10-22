@@ -166,7 +166,7 @@ void SoftkeyActionBase::patientInfo(bool isPressed)
         return;
     }
 
-    if (!patientManager.isWarding())
+    if (!patientManager.isMonitoring())
     {
         patientManager.newPatient();
     }

@@ -250,12 +250,12 @@ UnitType PatientManager::getHeightUnit()
     return (UnitType)unit;
 }
 
-void PatientManager::setWard(bool status)
+void PatientManager::setMonitor(bool status)
 {
     d_ptr->relieveFlag = status;
 }
 
-bool PatientManager::isWarding()
+bool PatientManager::isMonitoring()
 {
     return d_ptr->relieveFlag;
 }
@@ -278,7 +278,7 @@ void PatientManager::newPatient()
 void PatientManager::finishPatientInfo()
 {
     d_ptr->patientNew = false;
-    setWard(true);
+    setMonitor(true);
 }
 
 bool PatientManager::isNewPatient()
