@@ -16,6 +16,7 @@
 #include "KeyActionManager.h"
 #include "Debug.h"
 #include "USBManager.h"
+#include "SoundManager.h"
 
 #if defined(CONFIG_CAPTURE_SCREEN)
 #include <QDateTime>
@@ -210,6 +211,9 @@ void IApplication::onFocusChanged(QWidget *old, QWidget *now)
     qDebug() << Q_FUNC_INFO << "OLD" << old << "now" << now;
 }
 
+
+#define MENU_KEY Qt::Key_F4
+
 bool IApplication::handleScreenCaptureKeyEvent(Qt::Key key, bool isPressed)
 {
     // To peform a screen caputure, must meet the following conditions:
@@ -220,7 +224,7 @@ bool IApplication::handleScreenCaptureKeyEvent(Qt::Key key, bool isPressed)
     static bool menuKeyPress = false;
     static QDateTime lastDatetime;
     static bool isCaptureProcess = false;
-    if (key == Qt::Key_F1)
+    if (key == MENU_KEY)
     {
         menuKeyPress = isPressed;
         if (isCaptureProcess && (!menuKeyPress && returnKeyPress))
@@ -289,59 +293,6 @@ bool IApplication::qwsEventFilter(QWSEvent *e)
         QWSKeyEvent *keyEvent = static_cast<QWSKeyEvent *>(e);
 
 #ifdef CONFIG_CAPTURE_SCREEN
-#if 0
-        // To peform a screen caputure, must meet the following conditions:
-        // 1. Menu Key and Enter key Press at the same time
-        // 2. USB disk is connected
-        // 3. only one capture action during one second
-        static bool returnKeyPress = false;
-        static bool menuKeyPress = false;
-        static QDateTime lastDatetime;
-        static bool isCaptureProcess = false;
-        if (keyEvent->simpleData.keycode == Qt::Key_F1)
-        {
-            menuKeyPress = keyEvent->simpleData.is_press;
-            if (isCaptureProcess && (!menuKeyPress && returnKeyPress))
-            {
-                // filter this event
-                return true;
-            }
-        }
-        if (keyEvent->simpleData.keycode == Qt::Key_Return)
-        {
-            returnKeyPress = keyEvent->simpleData.is_press;
-            if (isCaptureProcess && (!returnKeyPress && menuKeyPress))
-            {
-                // filter this event
-                return true;
-            }
-        }
-        if (returnKeyPress && menuKeyPress && usbManager.isUSBExist())
-        {
-            QDateTime curDt = QDateTime::currentDateTime();
-            if (curDt != lastDatetime)
-            {
-                QString imageFilename = QString("%1/%2.png")
-                                        .arg(usbManager.getUdiskMountPoint())
-                                        .arg(curDt.toString("yyyyMMddhhmmss"));
-
-                Util::WorkerThread *workerThread = new Util::WorkerThread(capture, imageFilename);
-                connect(workerThread, SIGNAL(resultReady(long)), this, SLOT(handleScreenCaptureResult(long)));
-                lastDatetime = curDt;
-                workerThread->start();
-                isCaptureProcess = true;
-                return true;
-            }
-        }
-        else if (isCaptureProcess && (!returnKeyPress && !menuKeyPress))
-        {
-            // return_key and menu_key is released, exit capture process
-            // still need to filter this key event
-            isCaptureProcess = false;
-            keyActionManager.reset();
-            return true;
-        }
-#endif
         if (handleScreenCaptureKeyEvent(static_cast<Qt::Key>(keyEvent->simpleData.keycode),
                                         keyEvent->simpleData.is_press))
         {
@@ -438,6 +389,8 @@ bool IApplication::qwsEventFilter(QWSEvent *e)
             default:
                 break;
             }
+
+            soundManager.keyPressTone();
         }
     }
 
