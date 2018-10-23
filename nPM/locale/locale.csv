@@ -278,6 +278,7 @@ AlarmSettingUp,报警设置,Alarm Setting Up
 LatchLockSwitch,报警栓锁,Alarm Latch Lock
 AlarmLimitMenu,报警限,Alarm Limit
 AlarmLimitMenuDesc,报警限设置,Alarm Limit Setting
+SelectAlarmNotExist,选择的报警不存在!,The selected alarm does not exist!
 PrintSpeed,打印速度,Print Speed
 PrintNumOfTraces,打印波形数量,Number Of Print Traces
 PrintAlarmTriger,报警触发,Alarm Trigger
@@ -1163,7 +1164,7 @@ TScreenModule,TScreen,TScreen
 NurseCallingModule,护士呼叫设置模块,Nurse Calling Module
 NurseCallingSettingWindow,护士呼叫设置窗口,Nurse Calling Setting Window
 AnalogOutputModule,模拟输出模块,Analog Output Module
-COModule,CO,CO
+COModule,C.O.,C.O.
 PHASEIN,PHASEIN,PHASEIN
 M601,M601,M601
 MachineConfigModuleMenuDesc,机器配置设置,Machine Config  Desc
@@ -1207,6 +1208,7 @@ AlarmMaintainMenu,报警维护菜单,Alarm Maintain
 AlarmMaintainMenuDesc,报警维护菜单,Alarm Maintain
 MinimumALarmVolume,最小报警音量,Minimum Alarm Volume
 AlarmPauseTime,报警暂停时间,Alarm PauseTime
+RESPWaveGain,增益,Gain
 AlarmOffPromptMechanism,报警关闭提示机制,Alarm Off Prompt Mechanism
 EnableAlarmAudioOff,报警音关闭,Enable Alarm Audio Off
 EnableAlarmOff,报警关闭,Enable Alarm Off
@@ -1254,6 +1256,7 @@ NIBPLeakageDetection,NIBP泄露检测,NIBP Leakage Detection
 NIBPServiceModuleErrorQuitTryAgain,NIBP服务模块错误，请退出重试,NIBP Service Module Error
 ECGModuleCalibration,心电模块校准,ECG Module Calibration
 TouchScreenCalibration,触摸屏校准,Touch Screen Calibration
+TouchScreen,触摸屏,Touch Screen
 StopAnaesthesia,停止麻醉模块,Stop Anaesthesia
 Anaesthesia,麻醉模块,Anaesthesia
 StopNIBPPressureTest,停止无创血压测试,Stop NIBP Pressure Test

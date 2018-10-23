@@ -67,7 +67,16 @@ QVariant ListDataModel::data(const QModelIndex &index, int role) const
     }
     break;
     case Qt::BackgroundRole:
-        return QBrush(QColor(247, 247, 247));
+        if (index.row() % 2)
+        {
+            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+                                        ThemeManager::StateDisabled);
+        }
+        else
+        {
+            return themeManger.getColor(ThemeManager::ControlTypeNR, ThemeManager::ElementBackgound,
+                                        ThemeManager::StateActive);
+        }
         break;
     case Qt::ForegroundRole:
         return QBrush(QColor("#2C405A"));

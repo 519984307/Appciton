@@ -166,10 +166,11 @@ void SoftkeyActionBase::patientInfo(bool isPressed)
         return;
     }
 
-    patientManager.setPatientNewStatus(false);
-    patientInfoWindow.widgetChange();
-    windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers
-                             | WindowManager::ShowBehaviorCloseIfVisiable);
+    if (!patientManager.isMonitoring())
+    {
+        patientManager.newPatient();
+    }
+    windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers);
 }
 
 void SoftkeyActionBase::patientNew(bool isPressed)
@@ -198,9 +199,7 @@ void SoftkeyActionBase::patientNew(bool isPressed)
     MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist);
     if (messageBox.exec() == 1)
     {
-        patientManager.createDir();
-        patientManager.setPatientNewStatus(true);
-        patientInfoWindow.widgetChange();
+        patientManager.newPatient();
         windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers);
     }
 }

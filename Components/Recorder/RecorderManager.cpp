@@ -22,7 +22,7 @@
 #include <QTimer>
 #include "FontManager.h"
 #include "EventStorageManager.h"
-
+#include "TimeManager.h"
 
 class RecorderManagerPrivate
 {
@@ -269,7 +269,8 @@ bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
     if (generator->getPriority() == RecordPageGenerator::PriorityContinuous)
     {
         // 触发实时打印
-        eventStorageManager.triggerRealtimePrintEvent();
+        unsigned currentTime = timeManager.getCurTime();
+        eventStorageManager.triggerRealtimePrintEvent(currentTime);
     }
     return true;
 }

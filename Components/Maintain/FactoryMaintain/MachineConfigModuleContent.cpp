@@ -18,6 +18,11 @@
 #include "NIBPSymbol.h"
 #include "TEMPSymbol.h"
 #include "SPO2Symbol.h"
+#ifdef Q_WS_QWS
+#include <QWSServer>
+#include "SystemManager.h"
+#endif
+
 
 class MachineConfigModuleContentPrivte
 {
@@ -34,7 +39,9 @@ public:
         ITEM_CBO_IBP,
         ITEM_CBO_TEMP,
         ITEM_CBO_WIFI,
+#ifdef Q_WS_QWS
         ITEM_CBO_TSCREEN,
+#endif
     };
 
     MachineConfigModuleContentPrivte()
@@ -114,6 +121,12 @@ void MachineConfigModuleContentPrivte::loadOptions()
     machineConfig.getNumValue("IBPEnable", index);
     combos[ITEM_CBO_IBP]->setCurrentIndex(index);
 
+#ifdef Q_WS_QWS
+    index = 0;
+    machineConfig.getNumValue("TouchEanble", index);
+    combos[ITEM_CBO_TSCREEN]->setCurrentIndex(index);
+#endif
+
     index = 0;
     machineConfig.getNumValue("TEMPEnable", index);
     combos[ITEM_CBO_TEMP]->setCurrentIndex(index);
@@ -121,10 +134,6 @@ void MachineConfigModuleContentPrivte::loadOptions()
     index = 0;
     machineConfig.getNumValue("WIFIEnable", index);
     combos[ITEM_CBO_WIFI]->setCurrentIndex(index);
-
-    index = 0;
-    machineConfig.getNumValue("TouchEnable", index);
-    combos[ITEM_CBO_TSCREEN]->setCurrentIndex(index);
 }
 
 MachineConfigModuleContent::MachineConfigModuleContent()
@@ -306,6 +315,7 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
+#ifdef Q_WS_QWS
     // touch screen module
     label = new QLabel(trs("TScreenModule"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -320,12 +330,17 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_TSCREEN;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+#endif
 
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
 
 void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
 {
+    if (index < 0)
+    {
+        return;
+    }
     ComboBox *combo = qobject_cast<ComboBox *>(sender());
     int indexType = combo->property("Item").toInt();
     QString enablePath("");
@@ -342,14 +357,20 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         {
             enablePath = "SPO2Enable";
             modulePath = "SPO2";
-            moduleName = SPO2Symbol::convert(static_cast<SPO2ModuleType>(index - 1));
+            if (index > 0)
+            {
+                moduleName = SPO2Symbol::convert(static_cast<SPO2ModuleType>(index - 1));
+            }
             break;
         }
         case MachineConfigModuleContentPrivte::ITEM_CBO_NIBP:
         {
             enablePath = "NIBPEnable";
             modulePath = "NIBP";
-            moduleName = NIBPSymbol::convert(static_cast<NIBPModuleType>(index - 1));
+            if (index > 0)
+            {
+                moduleName = NIBPSymbol::convert(static_cast<NIBPModuleType>(index - 1));
+            }
             break;
         }
         case MachineConfigModuleContentPrivte::ITEM_CBO_RESP:
@@ -380,8 +401,6 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         case MachineConfigModuleContentPrivte::ITEM_CBO_TEMP:
         {
             enablePath = "TEMPEnable";
-            modulePath = "TEMP";
-            moduleName = TEMPSymbol::convert(static_cast<TEMPModuleType>(index - 1));
             break;
         }
         case MachineConfigModuleContentPrivte::ITEM_CBO_WIFI:
@@ -389,9 +408,13 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             enablePath = "WIFIEnable";
             break;
         }
+#ifdef Q_WS_QWS
         case MachineConfigModuleContentPrivte::ITEM_CBO_TSCREEN:
-            enablePath = "TouchEnable";
-            break;
+            machineConfig.setNumValue("TouchEnable", index);
+            machineConfig.saveToDisk();
+            systemManager.setTouchScreenOnOff(index);
+            return;
+#endif
         default:
             return;
     }
@@ -401,10 +424,16 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         return;
     }
 
-    if (index == 0 || index == 1)
+    int enableIndex;
+    if (index == 0)
     {
-        machineConfig.setNumValue(enablePath, index);
+        enableIndex = 0;
     }
+    else if (index > 0)
+    {
+        enableIndex = 1;
+    }
+    machineConfig.setNumValue(enablePath, enableIndex);
 
     // ibp模块和co模块使能位形成联动
     if (d_ptr->isSyncIBPCO)

@@ -13,6 +13,8 @@
 #include "ErrorLogItem.h"
 #include "LayoutManager.h"
 #include "ShortTrendContainer.h"
+#include "NightModeManager.h"
+#include "RunningStatusBar.h"
 
 /**************************************************************************************************
  * 功能： 初始化系统。
@@ -157,7 +159,6 @@ static void _initComponents(void)
     PatientInfoWidget *patientInfoWidget = new PatientInfoWidget();
     layoutManager.addLayoutWidget(patientInfoWidget);
     patientManager.setPatientInfoWidget(*patientInfoWidget);
-    layoutManager.addLayoutWidget(&patientStatusBar);
 
     // 初始化报警。
     alertor.construction();
@@ -171,7 +172,17 @@ static void _initComponents(void)
     layoutManager.addLayoutWidget(alarmPhyInfo);
     layoutManager.addLayoutWidget(alarmTechInfo);
     layoutManager.addLayoutWidget(alarmPhyMuteBar);
-    layoutManager.addLayoutWidget(&nightStatusBar);
+
+    // running status
+    runningStatus.setPacerStatus(patientManager.getPacermaker());
+    runningStatus.setNightModeStatus(nightModeManager.isNightMode());
+#ifdef Q_WS_QWS
+    if (systemManager.isSupport(CONFIG_TOUCH))
+    {
+        runningStatus.setTouchStatus(systemManager.isTouchScreenOn());
+    }
+#endif
+    layoutManager.addLayoutWidget(&runningStatus);
 
     //报警状态
     alarmStateMachine.Construction();
@@ -501,7 +512,7 @@ static void _initProviderParam(void)
     paramManager.getVersion();
 
     // 关联设备和参数对象。
-    paramManager.connectParamProvider();
+    paramManager.connectParamProvider(WORK_MODE_NORMAL);
 
 
     alertor.addOneShotSource(systemAlarm.Construction());

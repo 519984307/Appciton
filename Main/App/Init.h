@@ -53,7 +53,6 @@
 
 #include "PatientManager.h"
 #include "PatientInfoWidget.h"
-#include "PatientStatusBarWidget.h"
 
 #include "TimeDate.h"
 #include "TimeManager.h"
@@ -162,7 +161,6 @@
 #include "OxyCRGSPO2Widget.h"
 
 #include "TopBarWidget.h"
-#include "NightStatusBar.h"
 
 // 构造所有的对象。
 extern void newObjects(void);

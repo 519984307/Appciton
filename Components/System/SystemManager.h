@@ -116,6 +116,7 @@ public:
     // check whether param is support
     bool isSupport(ParamID paramID) const;
 
+#ifdef Q_WS_QWS
     /**
      * @brief isTouchScreenOn check whether current touch screen is on or off
      * @return
@@ -127,6 +128,7 @@ public:
      * @param onOff
      */
     void setTouchScreenOnOff(bool onOff);
+#endif
 
     // get the module config status
     unsigned int getModuleConfig() const;

@@ -13,6 +13,7 @@
 #include <QString>
 #include "ParamDefine.h"
 #include "UnitManager.h"
+#include "SystemManager.h"
 
 class Provider;
 class BLMProvider;
@@ -44,8 +45,11 @@ public:
     void getParams(QList<Param*> &params);
     void getParams(QList<ParamID> &paramID);
 
-    // 将数据生产者和参数对象关联起来。
-    void connectParamProvider(void);
+    /**
+     * @brief connectParamProvider 将数据生产者和参数对象关联起来
+     * @param mode  当前处于的工作模式
+     */
+    void connectParamProvider(WorkMode mode);
 
     // connect the paramters to the demo provider
     void connectDemoParamProvider(void);

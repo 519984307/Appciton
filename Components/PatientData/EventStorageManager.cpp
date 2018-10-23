@@ -122,7 +122,7 @@ void EventStorageManager::triggerEvent(EventType type)
     }
 }
 
-void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, WaveformID paramWave)
+void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, WaveformID paramWave, unsigned t)
 {
     Q_D(EventStorageManager);
     d->_eventTriggerFlag = true;
@@ -130,7 +130,7 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
     EventStorageItem *item = new EventStorageItem(EventPhysiologicalAlarm,
             d->getStoreWaveList(paramWave),
             almInfo);
-    item->startCollectTrendAndWaveformData();
+    item->startCollectTrendAndWaveformData(t);
 
     // TODO: check whether support trigger print
     if (recorderManager.addPageGenerator(new TriggerPageGenerator(item)))
@@ -146,14 +146,14 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
     }
 }
 
-void EventStorageManager::triggerCodeMarkerEvent(const char *codeName)
+void EventStorageManager::triggerCodeMarkerEvent(const char *codeName, unsigned t)
 {
     Q_D(EventStorageManager);
 
     EventStorageItem *item = new EventStorageItem(EventCodeMarker,
             d->getStoreWaveList(WAVE_NONE),
             codeName);
-    item->startCollectTrendAndWaveformData();
+    item->startCollectTrendAndWaveformData(t);
     if (item)
     {
         d->mutex.lock();
@@ -162,13 +162,13 @@ void EventStorageManager::triggerCodeMarkerEvent(const char *codeName)
     }
 }
 
-void EventStorageManager::triggerRealtimePrintEvent()
+void EventStorageManager::triggerRealtimePrintEvent(unsigned t)
 {
     Q_D(EventStorageManager);
 
     EventStorageItem *item = new EventStorageItem(EventRealtimePrint,
             d->getStoreWaveList(WAVE_NONE));
-    item->startCollectTrendAndWaveformData();
+    item->startCollectTrendAndWaveformData(t);
     if (item)
     {
         d->mutex.lock();
@@ -177,13 +177,13 @@ void EventStorageManager::triggerRealtimePrintEvent()
     }
 }
 
-void EventStorageManager::triggerNIBPMeasurementEvent()
+void EventStorageManager::triggerNIBPMeasurementEvent(unsigned t)
 {
     Q_D(EventStorageManager);
 
     EventStorageItem *item = new EventStorageItem(EventNIBPMeasurement,
             d->getStoreWaveList(WAVE_NONE));
-    item->startCollectTrendAndWaveformData();
+    item->startCollectTrendAndWaveformData(t);
     if (item)
     {
         d->mutex.lock();
@@ -192,13 +192,13 @@ void EventStorageManager::triggerNIBPMeasurementEvent()
     }
 }
 
-void EventStorageManager::triggerWaveFreezeEvent()
+void EventStorageManager::triggerWaveFreezeEvent(unsigned t)
 {
     Q_D(EventStorageManager);
 
     EventStorageItem *item = new EventStorageItem(EventWaveFreeze,
             d->getStoreWaveList(WAVE_NONE));
-    item->startCollectTrendAndWaveformData();
+    item->startCollectTrendAndWaveformData(t);
     if (item)
     {
         d->mutex.lock();
@@ -207,14 +207,14 @@ void EventStorageManager::triggerWaveFreezeEvent()
     }
 }
 
-void EventStorageManager::triggerAlarmOxyCRGEvent(const AlarmInfoSegment &almInfo, OxyCRGEventType type)
+void EventStorageManager::triggerAlarmOxyCRGEvent(const AlarmInfoSegment &almInfo, OxyCRGEventType type, unsigned t)
 {
     Q_D(EventStorageManager);
     QList<WaveformID> waveList;
     waveList.append(WAVE_RESP);
     waveList.append(WAVE_CO2);
     EventStorageItem *item = new EventStorageItem(EventOxyCRG, waveList, type, almInfo);
-    item->startCollectTrendAndWaveformData();
+    item->startCollectTrendAndWaveformData(t);
     if (item)
     {
         d->mutex.lock();
@@ -223,14 +223,14 @@ void EventStorageManager::triggerAlarmOxyCRGEvent(const AlarmInfoSegment &almInf
     }
 }
 
-void EventStorageManager::triggerOxyCRGEvent(OxyCRGEventType type)
+void EventStorageManager::triggerOxyCRGEvent(OxyCRGEventType type, unsigned t)
 {
     Q_D(EventStorageManager);
     QList<WaveformID> waveList;
     waveList.append(WAVE_RESP);
     waveList.append(WAVE_CO2);
     EventStorageItem *item = new EventStorageItem(EventOxyCRG, waveList, type);
-    item->startCollectTrendAndWaveformData();
+    item->startCollectTrendAndWaveformData(t);
     if (item)
     {
         d->mutex.lock();

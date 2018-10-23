@@ -19,6 +19,8 @@
 #include "WindowManager.h"
 #include <QTimer>
 #include "EventStorageManager.h"
+#include "TimeManager.h"
+
 #define WINDOW_WIDTH 850
 
 class CodeMarkerWindowPrivate
@@ -236,25 +238,27 @@ void CodeMarkerWindowButton::keyPressEvent(QKeyEvent *e)
     }
     switch (e->key())
     {
-        case Qt::Key_Return:
-        case Qt::Key_Enter:
-
-            if (!e->isAutoRepeat())
-            {
-                codeMarkerWindow.setPress(true);
-                update();
-            }
-            eventStorageManager.triggerCodeMarkerEvent(text().toLatin1().data());
-            break;
-        case Qt::Key_Left:
-        case Qt::Key_Right:
-        case Qt::Key_Up:
-        case Qt::Key_Down:
-            codeMarkerWindow.startTimer();
+    case Qt::Key_Return:
+    case Qt::Key_Enter:
+    {
+        if (!e->isAutoRepeat())
+        {
+            codeMarkerWindow.setPress(true);
             update();
-            break;
-        default:
-            break;
+        }
+        unsigned currentTime = timeManager.getCurTime();
+        eventStorageManager.triggerCodeMarkerEvent(text().toLatin1().data(), currentTime);
+        break;
+    }
+    case Qt::Key_Left:
+    case Qt::Key_Right:
+    case Qt::Key_Up:
+    case Qt::Key_Down:
+        codeMarkerWindow.startTimer();
+        update();
+        break;
+    default:
+        break;
     }
 
     Button::keyPressEvent(e);

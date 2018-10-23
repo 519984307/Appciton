@@ -11,6 +11,7 @@
 #pragma once
 #include "Window.h"
 #include "AlarmDefine.h"
+#include <QModelIndex>
 
 class AlarmInfoWindowPrivate;
 class AlarmInfoWindow : public Window
@@ -32,6 +33,8 @@ protected:
 
 private slots:
     void _onBtnRelease();
+    void _accessEventWindow(QModelIndex index);
+    void _accessEventWindow(int index);
 
 private:
     AlarmInfoWindowPrivate *const d_ptr;

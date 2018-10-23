@@ -27,11 +27,6 @@ public:
     static PatientInfoWindow *_selfObj;
     ~PatientInfoWindow();
 
-    /**
-     * @brief widgetChange 根据状态修改按钮控件
-     */
-    void widgetChange(void);
-
 private slots:
     /**
      * @brief idReleased id按钮释放
@@ -59,29 +54,21 @@ private slots:
     void weightReleased(void);
 
     /**
-     * @brief relieveReleased 解除病人按钮释放
+     * @brief onBtnReleased 解除病人按钮释放
      */
-    void relieveReleased(void);
-
-    /**
-     * @brief saveInfoReleased 新建病人保存信息按钮释放
-     */
-    void saveInfoReleased(void);
+    void onBtnReleased(void);
 
     /**
      * @brief pacerMakerReleased 起博打开按钮释放
      */
     void pacerMakerReleased(int);
 
-    /**
-     * @brief dischargeWinExit 解除病人待机窗口退出返回标志
-     * @param flag
-     */
-    void dischargeWinExit(int flag);
-
 protected:
     /*reimplement*/
     void showEvent(QShowEvent *);
+
+    /*reimplement*/
+    void hideEvent(QHideEvent *ev);
 
 private:
     PatientInfoWindow();

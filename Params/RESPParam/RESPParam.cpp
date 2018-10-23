@@ -90,6 +90,7 @@ void RESPParamPrivate::setWaveformSpeed(RESPSweepSpeed speed)
  *************************************************************************************************/
 void RESPParam::initParam(void)
 {
+    setZoom(getZoom());
 }
 
 /**************************************************************************************************
@@ -386,6 +387,14 @@ void RESPParam::setZoom(RESPZoom zoom)
     if (NULL != d_ptr->provider)
     {
         d_ptr->provider->setWaveformZoom(zoom);
+    }
+
+    // demo模式下，resp波形增益为定植
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO
+        &&  NULL != d_ptr->waveWidget)
+    {
+        d_ptr->waveWidget->setValueRange(0, 250);
+        return;
     }
 
     if (NULL != d_ptr->waveWidget)

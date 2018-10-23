@@ -23,6 +23,7 @@
 #include "EventStorageManager.h"
 #include "LayoutManager.h"
 #include "WaveWidget.h"
+#include "TimeManager.h"
 
 #define RECORD_FREEZE_WAVE_NUM 3
 class FreezeWindowPrivate
@@ -119,7 +120,8 @@ void FreezeWindow::showEvent(QShowEvent *ev)
 
     freezeManager.startFreeze();
 
-    eventStorageManager.triggerWaveFreezeEvent();
+    unsigned currentTime = timeManager.getCurTime();
+    eventStorageManager.triggerWaveFreezeEvent(currentTime);
 }
 
 void FreezeWindow::hideEvent(QHideEvent *ev)

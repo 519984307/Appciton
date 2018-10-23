@@ -106,7 +106,6 @@ SOURCES +=                                                                      
     Utility/FontManager/FontManager.cpp                                         \
     Utility/ColorManager/ColorManager.cpp                                       \
     Utility/NightModeManager/NightModeManager.cpp                               \
-    Utility/NightModeManager/NightStatusBar.cpp                                 \
     Utility/Widgets/Base/ShadowEffect.cpp                                       \
     Utility/Widgets/Base/ThemeManager.cpp                                       \
     Utility/Widgets/Base/Button.cpp                                             \
@@ -221,6 +220,7 @@ SOURCES +=                                                                      
     Components/System/Widgets/SystemModeBarWidget.cpp                           \
     Components/System/Widgets/SystemSelftestMenu.cpp                            \
     Components/System/Widgets/SystemStatusBarWidget.cpp                         \
+    Components/System/Widgets/RunningStatusBar.cpp                              \
     Components/System/Widgets/NormalFunctionMenuContent.cpp                     \
     Components/System/Widgets/PrintSettingMenuContent.cpp                       \
     Components/System/Widgets/MeasureSettingMenuContent.cpp                     \
@@ -257,6 +257,7 @@ SOURCES +=                                                                      
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.cpp                         \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.cpp                          \
     Components/Alarm/Widgets/AlarmInfoWindow.cpp                                \
+    Components/Alarm/Widgets/AlarmInfoModel.cpp                                 \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.cpp    \
     Components/Calculation/DoseCalculationManager/DoseCalculationWindow.cpp     \
     Components/Calculation/DoseCalculationManager/TitrateTableModel.cpp         \
@@ -297,7 +298,6 @@ SOURCES +=                                                                      
     Components/TimeManager/TimeManager.cpp                                      \
     Components/PatientManager/PatientManager.cpp                                \
     Components/PatientManager/PatientInfoWidget.cpp                             \
-    Components/PatientManager/PatientStatusBarWidget.cpp                        \
     Components/PatientManager/PatientManagementMenuContent.cpp                  \
     Components/PatientManager/PatientInfoWindow.cpp                             \
     Components/PatientManager/DischargePatientWindow.cpp                        \
@@ -587,7 +587,6 @@ HEADERS +=                                                                      
     Utility/FontManager/FontManager.h                                           \
     Utility/ColorManager/ColorManager.h                                         \
     Utility/NightModeManager/NightModeManager.h                                 \
-    Utility/NightModeManager/NightStatusBar.h                                   \
     Utility/Widgets/Base/ShadowEffect.h                                         \
     Utility/Widgets/Base/ThemeManager.h                                         \
     Utility/Widgets/Base/Button.h                                               \
@@ -706,6 +705,7 @@ HEADERS +=                                                                      
     Components/System/SystemAlarm.h                                             \
     Components/System/TDA19988Ctrl.h                                            \
     Components/System/Widgets/SystemStatusBarWidget.h                           \
+    Components/System/Widgets/RunningStatusBar.h                                \
     Components/System/Widgets/SystemSelftestMenu.h                              \
     Components/System/Widgets/SystemModeBarWidget.h                             \
     Components/System/Widgets/NormalFunctionMenuContent.h                       \
@@ -749,6 +749,7 @@ HEADERS +=                                                                      
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.h                           \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.h                            \
     Components/Alarm/Widgets/AlarmInfoWindow.h                                  \
+    Components/Alarm/Widgets/AlarmInfoModel.h                                   \
     Components/Calculation/DoseCalculationManager/DoseCalculationManager.h      \
     Components/Calculation/DoseCalculationManager/DoseCalculationDefine.h       \
     Components/Calculation/DoseCalculationManager/DoseCalculationWindow.h       \
@@ -795,7 +796,6 @@ HEADERS +=                                                                      
     Components/PatientManager/PatientManager.h                                  \
     Components/PatientManager/PatientDefine.h                                   \
     Components/PatientManager/PatientInfoWidget.h                               \
-    Components/PatientManager/PatientStatusBarWidget.h                          \
     Components/PatientManager/PatientManagementMenuContent.h                    \
     Components/PatientManager/PatientInfoWindow.h                               \
     Components/PatientManager/DischargePatientWindow.h                          \

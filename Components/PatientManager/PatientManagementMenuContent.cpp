@@ -17,6 +17,7 @@
 #include "WindowManager.h"
 #include "MessageBox.h"
 #include <QApplication>
+#include "DischargePatientWindow.h"
 
 class PatientManagementMenuContentPrivate
 {
@@ -24,17 +25,18 @@ public:
     enum MenuItem
     {
         ITEM_BTN_PATIENT_INFO,
-        ITEM_BTN_NEW_PATIENT
+        ITEM_BTN_NEW_PATIENT,
+        ITEM_BTN_DISCHARGE_PATIENT
     };
 
     PatientManagementMenuContentPrivate()
-                : patientInfo(NULL),
-                  newPatient(NULL)
+                : dischargePatient(NULL)
     {
     }
 
-    Button *patientInfo;
-    Button *newPatient;
+    Button *dischargePatient;
+
+    void loadOption();
 };
 
 
@@ -81,7 +83,22 @@ void PatientManagementMenuContent::layoutExec()
     index++;
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
 
+    // discharge patient
+    btn = new Button(trs("RelievePatient"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    btn->setProperty("Item", qVariantFromValue(index));
+    glayout->addWidget(btn, index, 1);
+    index++;
+    connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
+    d_ptr->dischargePatient = btn;
+
     glayout->setRowStretch(index, 1);
+}
+
+void PatientManagementMenuContent::showEvent(QShowEvent *ev)
+{
+    d_ptr->loadOption();
+    MenuContent::showEvent(ev);
 }
 
 void PatientManagementMenuContent::onBtnReleased()
@@ -92,8 +109,10 @@ void PatientManagementMenuContent::onBtnReleased()
     {
         case PatientManagementMenuContentPrivate::ITEM_BTN_PATIENT_INFO:
         {
-            patientManager.setPatientNewStatus(false);
-            patientInfoWindow.widgetChange();
+            if (!patientManager.isMonitoring())
+            {
+                patientManager.newPatient();
+            }
             windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers
                                      | WindowManager::ShowBehaviorCloseIfVisiable);
         }
@@ -112,12 +131,31 @@ void PatientManagementMenuContent::onBtnReleased()
             MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist);
             if (messageBox.exec() == 1)
             {
-                patientManager.createDir();
-                patientManager.setPatientNewStatus(true);
-                patientInfoWindow.widgetChange();
+                patientManager.newPatient();
                 windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers);
             }
         }
         break;
+        case PatientManagementMenuContentPrivate::ITEM_BTN_DISCHARGE_PATIENT:
+        {
+            DischargePatientWindow dischargeWin;
+            connect(&dischargeWin, SIGNAL(finished(int)), this, SLOT(dischargeWinExit(int)));
+            dischargeWin.exec();
+        }
+        break;
+        default:
+            break;
+    }
+}
+
+void PatientManagementMenuContentPrivate::loadOption()
+{
+    if (patientManager.isMonitoring())
+    {
+        dischargePatient->setText(trs("RelievePatient"));
+    }
+    else
+    {
+        dischargePatient->setText(trs("CleanPatientData"));
     }
 }
