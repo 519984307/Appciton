@@ -29,6 +29,7 @@
 #include "DemoModeWindow.h"
 #include "NightModeWindow.h"
 #include "StandyWindow.h"
+#include "PatientManager.h"
 #ifdef Q_WS_QWS
 #include <QWSServer>
 #endif
@@ -373,6 +374,7 @@ void NormalFunctionMenuContent::onBtnReleasd()
             d_ptr->demoBtn->setText(trs("ExitDemoMode"));
 
             windowManager.closeAllWidows();
+            patientManager.newPatient();
         }
         break;
     }
