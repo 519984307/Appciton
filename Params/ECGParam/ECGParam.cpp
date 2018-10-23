@@ -865,6 +865,23 @@ const QString &ECGParam::getWaveWidgetName(ECGLead lead)
     }
 }
 
+void ECGParam::updateECGStandard(int standard)
+{
+    systemConfig.setNumValue("Others|ECGStandard", standard);
+    if (_ecgStandard != static_cast<ECGLeadNameConvention>(standard))
+    {
+        _ecgStandard = static_cast<ECGLeadNameConvention>(standard);
+        for (int i = 0; i < ECG_LEAD_NR; i++)
+        {
+            QString name = ECGSymbol::convert((ECGLead)i, _ecgStandard);
+            if (_waveWidget[i])
+            {
+                _waveWidget[i]->updateLeadDisplayName(name);
+            }
+        }
+    }
+}
+
 /**************************************************************************************************
  * 获取可得的导联集。
  *************************************************************************************************/
@@ -2054,14 +2071,14 @@ ECGNotchFilter ECGParam::getCalcLeadNotchFilter()
  *************************************************************************************************/
 ECGLeadNameConvention ECGParam::getLeadConvention(void) const
 {
-    int leadConvention = 0;
-    currentConfig.getNumValue("ECG|ECGLeadConvention", leadConvention);
-    if (leadConvention >= ECG_CONVENTION_NR)
+    int standard = 0;
+    systemConfig.getNumValue("Others|ECGStandard", standard);
+    if (standard >= ECG_CONVENTION_NR)
     {
-        leadConvention = 0;
+        standard = 0;
     }
 
-    return static_cast<ECGLeadNameConvention>(leadConvention);
+    return static_cast<ECGLeadNameConvention>(standard);
 }
 
 /**************************************************************************************************
@@ -2265,6 +2282,8 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     mode = DISPLAY_12LEAD_STAND;
     currentConfig.getNumValue("ECG12L|DisplayFormat", mode);
     _12LeadDispFormat = (Display12LeadFormat)mode;
+
+    _ecgStandard = ECG_CONVENTION_AAMI;
 
     for (int i = 0; i < ECG_LEAD_NR; ++i)
     {
