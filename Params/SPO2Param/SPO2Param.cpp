@@ -119,9 +119,11 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
 void SPO2Param::handDemoTrendData(void)
 {
     _spo2Value = 98;
+    _piValue = 41;
     if (NULL != _trendWidget)
     {
         _trendWidget->setSPO2Value(_spo2Value);
+        _trendWidget->setPIValue(_piValue);
     }
 
     if (NULL != _oxyCRGSPO2Trend)
@@ -404,6 +406,19 @@ void SPO2Param::setPR(short prValue)
 
     _prValue = prValue;
     ecgDupParam.updatePR(prValue);
+}
+
+void SPO2Param::updatePIValue(short piValue)
+{
+    if (_piValue == piValue)
+    {
+        return;
+    }
+    _piValue = piValue;
+    if (NULL != _trendWidget)
+    {
+        _trendWidget->setPIValue(_piValue);
+    }
 }
 
 /**************************************************************************************************
@@ -704,6 +719,7 @@ SPO2Param::SPO2Param() : Param(PARAM_SPO2),
     _waveWidget = NULL;
 
     _spo2Value = InvData();
+    _piValue = InvData();
     _prValue = InvData();
     _barValue = InvData();
     _isValid = false;

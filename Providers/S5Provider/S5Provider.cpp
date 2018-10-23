@@ -232,6 +232,18 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
     // 棒图。
     spo2Param.addBarData((packet[15] == 127) ? 50 : packet[15]);
 
+    // PI;
+    short piValue = packet[15];
+    if (piValue > 15 ||piValue < 0)
+    {
+        piValue = InvData();
+    }
+    else
+    {
+        piValue *= 10;
+    }
+    spo2Param.updatePIValue(piValue);
+
     // 脉搏音。
     spo2Param.setPulseAudio(packet[16]);
 
