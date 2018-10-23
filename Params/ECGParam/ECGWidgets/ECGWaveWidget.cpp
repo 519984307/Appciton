@@ -243,6 +243,89 @@ void ECGWaveWidget::_getItemIndex(int index)
     _currentItemIndex = index;
 }
 
+void ECGWaveWidget::_updateFilterMode()
+{
+    if (!layoutManager.getDisplayedWaveformIDs().count())
+    {
+        return;
+    }
+    if (layoutManager.getDisplayedWaveformIDs().at(0) != getID())
+    {
+        return;
+    }
+    if (!_ecgFirstFilterMode)
+    {
+        return;
+    }
+    ECGFilterMode  filterMode = ecgParam.getFilterMode();
+    _ecgFirstFilterMode->setText(trs(ECGSymbol::convert(filterMode)));
+    if (filterMode != ECG_FILTERMODE_DIAGNOSTIC)
+    {
+        if (_ecgFirstTrapInfo)
+        {
+            _ecgFirstTrapInfo->setVisible(false);
+        }
+    }
+    else
+    {
+        if (_ecgFirstTrapInfo)
+        {
+            _ecgFirstTrapInfo->setVisible(true);
+        }
+    }
+}
+
+void ECGWaveWidget::_updateTrapInfo()
+{
+    if (!layoutManager.getDisplayedWaveformIDs().count())
+    {
+        return;
+    }
+    if (layoutManager.getDisplayedWaveformIDs().at(0) != getID())
+    {
+        return;
+    }
+    if (!_ecgFirstTrapInfo)
+    {
+        return;
+    }
+    ECGNotchFilter notchFilter = ecgParam.getNotchFilter();
+    _ecgFirstTrapInfo->setText(QString("%1%2")
+                               .arg(trs("Trap"))
+                               .arg(trs(ECGSymbol::convert(notchFilter))));
+}
+
+void ECGWaveWidget::_updateFirstWaveParamState()
+{
+    if (!layoutManager.getDisplayedWaveformIDs().count())
+    {
+        return;
+    }
+    bool isVisible;
+    if (layoutManager.getDisplayedWaveformIDs().at(0) != getID())
+    {
+        isVisible = false;
+    }
+    else
+    {
+        isVisible = true;
+    }
+    if (_ecgFirstGain)
+    {
+        _ecgFirstGain->setVisible(isVisible);
+    }
+    if (_ecgFirstFilterMode)
+    {
+        _ecgFirstFilterMode->setVisible(isVisible);
+    }
+    if (_ecgFirstTrapInfo)
+    {
+        _ecgFirstTrapInfo->setVisible(isVisible);
+    }
+    _updateTrapInfo();
+    _updateFilterMode();
+}
+
 /**************************************************************************************************
  * 载入配置。
  *************************************************************************************************/
@@ -534,6 +617,10 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
 {
     WaveWidget::paintEvent(e);
 
+    if (_filter)
+    {
+        _filter->setVisible(false);
+    }
     if (ECG_DISPLAY_NORMAL == ecgParam.getDisplayMode())
     {
         if (getID() != ecgParam.getCalcLead())
@@ -703,28 +790,34 @@ void ECGWaveWidget::resizeEvent(QResizeEvent *e)
 
     _name->move(0, 0);
 
-    int x1 = _name->x() + _name->width();
-    _filter->move(x1, 0);
-
-    int x2;
-    int  x = x1 + _filter->width();
-    _notify->move(x, 0);
-    _notify->setFixedWidth(200);
-    x2 = x + _notify->width();
-
-//    _notify->setFixedWidth(width() / 2);
-//    _notify->move((width() - _notify->width()) / 2,
-//                  qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
+    int x = _name->x() + _name->width();
+    bool isECGFirst;
     if (_ecgFirstGain && _ecgFirstFilterMode && _ecgFirstTrapInfo)
     {
-        _ecgFirstGain->move(x2, 0);
+        _ecgFirstGain->move(x, 0);
 
-        x2 = _ecgFirstGain->x() + _ecgFirstGain->width();
-        _ecgFirstFilterMode->move(x2, 0);
+        x = _ecgFirstGain->x() + _ecgFirstGain->width();
+        _ecgFirstFilterMode->move(x, 0);
 
-        x2 = _ecgFirstFilterMode->x() + _ecgFirstFilterMode->width();
-        _ecgFirstTrapInfo->move(x2, 0);
+        x = _ecgFirstFilterMode->x() + _ecgFirstFilterMode->width();
+        _ecgFirstTrapInfo->move(x, 0);
+        isECGFirst = true;
     }
+    else
+    {
+        isECGFirst = false;
+    }
+
+    if (isECGFirst)
+    {
+        x = _ecgFirstTrapInfo->x() + _ecgFirstTrapInfo->width();
+    }
+
+    _notify->move(x, 0);
+    _notify->setFixedWidth(200);
+
+    x = _notify->x() + _notify->width();
+    _filter->move(x, 0);
 
     _initValueRange(ecgParam.getGain(ecgParam.waveIDToLeadID((WaveformID)getID())));
     _calcGainRange();
@@ -856,30 +949,35 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     _filter->setFocusPolicy(Qt::NoFocus);
     addItem(_filter);
 
-    // ecg第一道波形显示增益、滤波模式、陷波信息 ecg1固定为第一道波形
-    if (id == WAVE_ECG_I)
+    // ecg第一道波形显示增益、滤波模式、陷波信息
+    _ecgFirstGain = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+    _ecgFirstGain->setFont(fontManager.textFont(fontSize));
+    _ecgFirstGain->setFixedSize(80, fontH);
+    _ecgFirstGain->setFocusPolicy(Qt::NoFocus);
+    addItem(_ecgFirstGain);
+    ECGGain gain = ecgParam.getGain(ecgParam.waveIDToLeadID(id));
+    if (_ecgFirstGain)
     {
-        _ecgFirstGain = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
-        _ecgFirstGain->setFont(fontManager.textFont(fontSize));
-        _ecgFirstGain->setFixedSize(80, fontH);
-        _ecgFirstGain->setText("X1");
-        _ecgFirstGain->setFocusPolicy(Qt::NoFocus);
-        addItem(_ecgFirstGain);
-
-        _ecgFirstFilterMode = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
-        _ecgFirstFilterMode->setFont(fontManager.textFont(fontSize));
-        _ecgFirstFilterMode->setFixedSize(100, fontH);
-        _ecgFirstFilterMode->setText("Diagnose");
-        _ecgFirstFilterMode->setFocusPolicy(Qt::NoFocus);
-        addItem(_ecgFirstFilterMode);
-
-        _ecgFirstTrapInfo = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
-        _ecgFirstTrapInfo->setFont(fontManager.textFont(fontSize));
-        _ecgFirstTrapInfo->setFixedSize(200, fontH);
-        _ecgFirstTrapInfo->setText("Trap 50Hz");
-        _ecgFirstTrapInfo->setFocusPolicy(Qt::NoFocus);
-        addItem(_ecgFirstTrapInfo);
+        _ecgFirstGain->setText(trs(ECGSymbol::convert(gain)));
     }
+
+    _ecgFirstFilterMode = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+    _ecgFirstFilterMode->setFont(fontManager.textFont(fontSize));
+    _ecgFirstFilterMode->setFixedSize(100, fontH);
+    _ecgFirstFilterMode->setFocusPolicy(Qt::NoFocus);
+    addItem(_ecgFirstFilterMode);
+    connect(&ecgParam, SIGNAL(updateFilterMode()), this, SLOT(_updateFilterMode()));
+
+    _ecgFirstTrapInfo = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+    _ecgFirstTrapInfo->setFont(fontManager.textFont(fontSize));
+    _ecgFirstTrapInfo->setFixedSize(200, fontH);
+    _ecgFirstTrapInfo->setFocusPolicy(Qt::NoFocus);
+    addItem(_ecgFirstTrapInfo);
+    connect(&ecgParam, SIGNAL(updateNotchFilter()), this, SLOT(_updateTrapInfo()));
+
+    _updateTrapInfo();
+    _updateFilterMode();
+    connect(&layoutManager, SIGNAL(layoutChanged()), this, SLOT(_updateFirstWaveParamState()));
 
     _notify = new WaveWidgetLabel(trs("LeadOff"), Qt::AlignCenter, this);
     _notify->setFocusPolicy(Qt::NoFocus);

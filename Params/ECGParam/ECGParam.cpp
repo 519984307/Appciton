@@ -1696,6 +1696,7 @@ void ECGParam::setFilterMode(int mode)
     {
         _provider->setFilterMode(_filterMode);
     }
+    emit updateFilterMode();
 }
 
 /**************************************************************************************************
@@ -2028,6 +2029,7 @@ void ECGParam::setNotchFilter(ECGNotchFilter filter)
     {
         _provider->setNotchFilter(filter);
     }
+    emit updateNotchFilter();
 }
 
 /**************************************************************************************************

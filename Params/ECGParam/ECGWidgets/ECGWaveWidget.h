@@ -122,6 +122,19 @@ private slots:
     void _popupDestroyed();
     void _onCalcLeadChanged();
     void _getItemIndex(int);
+    /**
+     * @brief _updateFilterMode 更新滤波方式槽函数
+     */
+    void _updateFilterMode(void);
+    /**
+     * @brief _updateTrapInfo 更新陷波信息槽函数
+     */
+    void _updateTrapInfo(void);
+
+    /**
+     * @brief _updateFirstWaveParamState  更新第一道波形相关参数的状态
+     */
+    void _updateFirstWaveParamState(void);
 
 private:
     double _calcRulerHeight(ECGGain gain);

@@ -317,6 +317,15 @@ signals:
      */
     void oxyCRGWaveUpdated(void);
 
+    /**
+     * @brief updateNotchFilter 陷波信息更新信号
+     */
+    void updateNotchFilter(void);
+    /**
+     * @brief updateFilterMode  滤波模式更新信号
+     */
+    void updateFilterMode(void);
+
 private slots:
     // presenting rhythm, 6 seconds before the first primary lead on
     void presentRhythm();

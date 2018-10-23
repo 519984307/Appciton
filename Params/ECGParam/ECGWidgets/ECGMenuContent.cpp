@@ -87,7 +87,7 @@ void ECGMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_ECG]->addItems(ecgWaveformTitles);
     QString ecgTopWaveform = ecgParam.getCalcLeadWaveformName();
     index = ecgWaveforms.indexOf(ecgTopWaveform);
-    if (index)
+    if (index >= 0)
     {
         combos[ITEM_CBO_ECG_GAIN]->blockSignals(true);
         ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
