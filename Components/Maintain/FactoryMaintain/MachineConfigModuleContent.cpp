@@ -317,7 +317,7 @@ void MachineConfigModuleContent::layoutExec()
 
 #ifdef Q_WS_QWS
     // touch screen module
-    label = new QLabel(trs("TScreenModule"));
+    label = new QLabel(trs("TouchScreenModule"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
     combo->addItems(QStringList()

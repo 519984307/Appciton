@@ -1160,7 +1160,7 @@ ECG12LeadsModule,ECG 12Leads,ECG 12Leads
 PrinterModule,打印机模块,Printer Module
 HDMIModule,高清晰度多媒体接口模块,HDMI Module
 WIFIModule,WIFI,WIFI
-TScreenModule,TScreen,TScreen
+TouchScreenModule,触摸屏,Touch Screen
 NurseCallingModule,护士呼叫设置模块,Nurse Calling Module
 NurseCallingSettingWindow,护士呼叫设置窗口,Nurse Calling Setting Window
 AnalogOutputModule,模拟输出模块,Analog Output Module
