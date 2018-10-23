@@ -123,7 +123,7 @@ void MachineConfigModuleContentPrivte::loadOptions()
 
 #ifdef Q_WS_QWS
     index = 0;
-    machineConfig.getNumValue("TouchEanble", index);
+    machineConfig.getNumValue("TouchEnable", index);
     combos[ITEM_CBO_TSCREEN]->setCurrentIndex(index);
 #endif
 
