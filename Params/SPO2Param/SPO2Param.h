@@ -91,6 +91,9 @@ public:
     // 设置/获取PR的值。
     void setPR(short prValue);
 
+    // 设置PI值
+    void updatePIValue(short piValue);
+
     // 设置波形值。
     void addWaveformData(short wave);
 
@@ -181,6 +184,7 @@ private:
     short _spo2Value;
     short _prValue;
     short _barValue;
+    short _piValue;
 
     bool _isValid;
     bool _sensorOff;
