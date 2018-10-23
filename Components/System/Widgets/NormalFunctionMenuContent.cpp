@@ -26,9 +26,10 @@
 #include "WindowManager.h"
 #include "WiFiProfileWindow.h"
 #include "SoftWareVersionWindow.h"
-#include "DemoModeWindow.h"
 #include "NightModeWindow.h"
-#include "StandyWindow.h"
+#include "StandbyWindow.h"
+#include "PatientManager.h"
+#include "PasswordWindow.h"
 #ifdef Q_WS_QWS
 #include <QWSServer>
 #endif
@@ -165,6 +166,7 @@ void NormalFunctionMenuContent::layoutExec()
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
+    comboBox->setObjectName("SystemBrightness");
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, row, 1);
     row++;
@@ -183,6 +185,7 @@ void NormalFunctionMenuContent::layoutExec()
                        <<QString::number(SoundManager::VOLUME_LEV_5)
                        );
     layout->addWidget(comboBox , row , 1);
+    comboBox->setObjectName("KeyPressVolume");
     row++;
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME);
     comboBox->setProperty("Item" , qVariantFromValue(itemID));
@@ -257,6 +260,22 @@ void NormalFunctionMenuContent::layoutExec()
     layout->setRowStretch(row, 1);
 }
 
+void NormalFunctionMenuContent::setShowParam(const QVariant &val)
+{
+    if (val.isValid())
+    {
+        QString objName = val.toString();
+        if (!objName.isEmpty())
+        {
+            ComboBox *obj = findChild<ComboBox*>(objName);
+            if (obj)
+            {
+                obj->setFocus();
+            }
+        }
+    }
+}
+
 void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
 {
     ComboBox *box = qobject_cast<ComboBox *>(sender());
@@ -323,7 +342,7 @@ void NormalFunctionMenuContent::onBtnReleasd()
         break;
         case NormalFunctionMenuContentPrivate::ITEM_BTN_ENTER_STANDY:
         {
-            StandyWindow w;
+            StandbyWindow w;
             w.exec();
         }
         break;
@@ -340,21 +359,25 @@ void NormalFunctionMenuContent::onBtnReleasd()
                 systemManager.setWorkMode(WORK_MODE_NORMAL);
                 d_ptr->demoBtn->setText(trs("DemoMode"));
                 windowManager.closeAllWidows();
+                patientManager.newPatient();
                 break;
             }
 
-            DemoModeWindow w;
-            windowManager.showWindow(&w,
-                                     WindowManager::ShowBehaviorModal);
-            if (!w.isUserInputCorrect())
+            QString password;
+            systemConfig.getStrValue("General|DemoModePassword", password);
+
+            PasswordWindow w(trs("DemoModePassword"), password);
+            w.setWindowTitle(btn->text());
+            if (w.exec() != PasswordWindow::Accepted)
             {
-                break;
+                return;
             }
 
             systemManager.setWorkMode(WORK_MODE_DEMO);
             d_ptr->demoBtn->setText(trs("ExitDemoMode"));
 
             windowManager.closeAllWidows();
+            patientManager.newPatient();
         }
         break;
     }

@@ -13,15 +13,16 @@
 #include "LanguageManager.h"
 #include <QGridLayout>
 #include <QVariant>
-#include "ConfigManagerWindow.h"
-#include "FactoryMaintainWindow.h"
-#include "SupervisorTimeWindow.h"
-#include "UserMaintainWindow.h"
 #include "SoftWareVersionWindow.h"
+#include "TimeEditWindow.h"
 #include "MonitorInfoWindow.h"
 #include "SystemManager.h"
-#include "DemoModeWindow.h"
 #include "WindowManager.h"
+#include "PasswordWindow.h"
+#include "IConfig.h"
+#include "ConfigManagerMenuWindow.h"
+#include "FactoryMaintainMenuWindow.h"
+#include "UserMaintainMenuWindow.h"
 
 class SystemMaintenanceMenuContentPrivate
 {
@@ -123,6 +124,20 @@ void SystemMaintenanceMenuContent::layoutExec()
     glayout->setRowStretch(row, 1);
 }
 
+void SystemMaintenanceMenuContent::readyShow()
+{
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        d_ptr->btns[SystemMaintenanceMenuContentPrivate::ITEM_BTN_FACTORY_MAINTENANCE]->setEnabled(false);
+        d_ptr->btns[SystemMaintenanceMenuContentPrivate::ITEM_BTN_USER_MAINTENANCE]->setEnabled(false);
+    }
+    else
+    {
+        d_ptr->btns[SystemMaintenanceMenuContentPrivate::ITEM_BTN_FACTORY_MAINTENANCE]->setEnabled(true);
+        d_ptr->btns[SystemMaintenanceMenuContentPrivate::ITEM_BTN_USER_MAINTENANCE]->setEnabled(true);
+    }
+}
+
 void SystemMaintenanceMenuContent::onBtnReleased()
 {
     Button *btn = qobject_cast<Button*>(sender());
@@ -131,26 +146,56 @@ void SystemMaintenanceMenuContent::onBtnReleased()
     switch (indexType) {
         case SystemMaintenanceMenuContentPrivate::ITEM_BTN_CONFIG_MANAGERMENT:
         {
-            ConfigManagerWindow w;
-            windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
+            QString password;
+            systemConfig.getStrValue("General|ConfigManagerPassword", password);
+
+            PasswordWindow w(trs("ConfigManagerPassword"), password);
+            w.setWindowTitle(btn->text());
+            if (w.exec() == PasswordWindow::Accepted)
+            {
+                windowManager.showWindow(ConfigManagerMenuWindow::getInstance(),
+                                         WindowManager::ShowBehaviorHideOthers
+                                         | WindowManager::ShowBehaviorNoAutoClose);
+                ConfigManagerMenuWindow::getInstance()->focusFirstMenuItem();
+            }
         }
         break;
         case SystemMaintenanceMenuContentPrivate::ITEM_BTN_USER_MAINTENANCE:
         {
-            UserMaintainWindow w;
-            windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
+            QString password;
+            systemConfig.getStrValue("General|UserMaintainPassword", password);
+
+            PasswordWindow w(trs("UserMaintainPassword"), password);
+            w.setWindowTitle(btn->text());
+            if (w.exec() == PasswordWindow::Accepted)
+            {
+                windowManager.showWindow(UserMaintainMenuWindow::getInstance(),
+                                         WindowManager::ShowBehaviorHideOthers
+                                         | WindowManager::ShowBehaviorNoAutoClose);
+                UserMaintainMenuWindow::getInstance()->focusFirstMenuItem();
+            }
         }
         break;
 
         case SystemMaintenanceMenuContentPrivate::ITEM_BTN_FACTORY_MAINTENANCE:
         {
-            FactoryMaintainWindow w;
-            windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
+            QString password;
+            systemConfig.getStrValue("General|FactoryMaintainPassword", password);
+
+            PasswordWindow w(trs("FactoryMaintainPassword"), password);
+            w.setWindowTitle(btn->text());
+            if (w.exec() == PasswordWindow::Accepted)
+            {
+                windowManager.showWindow(FactoryMaintainMenuWindow::getInstance(),
+                                         WindowManager::ShowBehaviorHideOthers
+                                         | WindowManager::ShowBehaviorNoAutoClose);
+                FactoryMaintainMenuWindow::getInstance()->focusFirstMenuItem();
+            }
         }
         break;
        case SystemMaintenanceMenuContentPrivate::ITEM_BTN_SYSTEM_TIME:
         {
-            SupervisorTimeWindow w;
+            TimeEditWindow w;
             windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
         }
         break;

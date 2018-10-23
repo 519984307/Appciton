@@ -38,7 +38,7 @@
 #include "IConfig.h"
 #include "NightModeManager.h"
 #include "MenuSidebarItem.h"
-#include "StandyWindow.h"
+#include "StandbyWindow.h"
 #include "CalculateWindow.h"
 
 /***************************************************************************************************
@@ -65,8 +65,8 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", trs("CO2Measure"), "measure.png", SoftkeyActionBase::CO2Measure),
     KeyActionDesc("", trs("IBPZeroCalib"), "calib.png", SoftkeyActionBase::IBPZero),
     KeyActionDesc("", trs("Calculation"), "dosecalculation.png", SoftkeyActionBase::calculation),
-    KeyActionDesc("", trs("KeyBoardVolumn"), "keyBoard.png", SoftkeyActionBase::sysSetup),
-    KeyActionDesc("", trs("SystemBrightness"), "Brightness.png", SoftkeyActionBase::sysSetup),
+    KeyActionDesc("", trs("KeyBoardVolumn"), "keyBoard.png", SoftkeyActionBase::keyVolume),
+    KeyActionDesc("", trs("SystemBrightness"), "Brightness.png", SoftkeyActionBase::systemBrightness),
     KeyActionDesc("", trs("NightMode"), "nightMode.png", SoftkeyActionBase::nightMode),
     KeyActionDesc("", trs("PrintSetup"), "printSetup.png", SoftkeyActionBase::printSet),
 };
@@ -216,7 +216,7 @@ void SoftkeyActionBase::mainsetup(bool isPressed)
 
     // 每次打开主界面时，强制聚焦在首个item
     // 需要放在showWindow下面
-    w->focusMenuItem();
+    w->focusFirstMenuItem();
 }
 
 void SoftkeyActionBase::lockScreen(bool isPressed)
@@ -271,7 +271,7 @@ void SoftkeyActionBase::standby(bool isPressed)
     {
         return;
     }
-    StandyWindow w;
+    StandbyWindow w;
     w.exec();
 }
 
@@ -311,14 +311,25 @@ void SoftkeyActionBase::IBPZero(bool isPressed)
     ibpParam.zeroCalibration(IBP_INPUT_1);
 }
 
-void SoftkeyActionBase::sysSetup(bool isPressed)
+void SoftkeyActionBase::systemBrightness(bool isPressed)
 {
     if (isPressed)
     {
         return;
     }
     MainMenuWindow *w = MainMenuWindow::getInstance();
-    w->popup(trs("RoutineFunctionMenu"));
+    w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("SystemBrightness")));
+}
+
+void SoftkeyActionBase::keyVolume(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+
+    MainMenuWindow *w = MainMenuWindow::getInstance();
+    w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("KeyPressVolume")));
 }
 
 void SoftkeyActionBase::nightMode(bool isPressed)

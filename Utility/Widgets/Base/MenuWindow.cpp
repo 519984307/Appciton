@@ -131,7 +131,7 @@ void MenuWindow::setWindowTitlePrefix(const QString &prefix)
     update();
 }
 
-void MenuWindow::focusMenuItem()
+void MenuWindow::focusFirstMenuItem()
 {
     MenuSidebar *bar = d_ptr->sidebar;
     MenuSidebarItem *barItem = bar->itemAt(0);

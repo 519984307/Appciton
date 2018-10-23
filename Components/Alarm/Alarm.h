@@ -98,7 +98,6 @@ private:
     QList<AlarmAudioStatus> _alarmStatusList;
     AlarmAudioStatus _curAlarmStatus;
     bool _isLatchLock;       // 栓锁状态
-    bool _isInStandby;    // 是否处于待机模式中
     // 构造。
     Alarm();
 

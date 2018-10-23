@@ -26,6 +26,9 @@ protected:
     /* reimplement */
     void layoutExec();
 
+    /* reimplement */
+    void setShowParam(const QVariant &val);
+
 private slots:
     /**
      * @brief onComboBoxIndexChanged

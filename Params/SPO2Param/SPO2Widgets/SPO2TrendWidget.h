@@ -25,6 +25,9 @@ public:
     // 设置棒图的值。
     void setBarValue(int16_t bar);
 
+    // 设置PI值
+    void setPIValue(int16_t pi);
+
     // 显示搜索脉搏的提示信息。
     void setSearchForPulse(bool isSearching);
 
@@ -47,7 +50,10 @@ private slots:
 
 private:
     QLabel *_spo2Value;
+    QLabel *_piName;
+    QLabel *_piValue;
     SPO2BarWidget *_spo2Bar;
     QString _spo2String;
+    QString _piString;
     bool _isAlarm;
 };
