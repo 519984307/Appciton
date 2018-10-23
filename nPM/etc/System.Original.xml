@@ -71,18 +71,6 @@
 		<ScreenResolationSize>480*1078</ScreenResolationSize>
 		<ElectronicSerialNumber>1234567888</ElectronicSerialNumber>
 	</MonitorInfo>
-	<MachineConfigModule>
-		<IBPModule>0</IBPModule>
-		<CO2Module>0</CO2Module>
-		<ECG12LeadsModule>0</ECG12LeadsModule>
-		<PrinterModule>0</PrinterModule>
-		<HDMIModule>0</HDMIModule>
-		<WifiModule>0</WifiModule>
-		<ScreenModule>0</ScreenModule>
-		<NurseCallingModule>0</NurseCallingModule>
-		<AnalogOutputModule>0</AnalogOutputModule>
-		<COModule>0</COModule>
-	</MachineConfigModule>
 	<SoftWareVersion>
 		<SystemSoftwareVersion>05.35.00.154-01</SystemSoftwareVersion>
 		<PowerManagerSoftwareVersion>2.3</PowerManagerSoftwareVersion>

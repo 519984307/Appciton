@@ -11,24 +11,6 @@
 #pragma once
 #include "MenuContent.h"
 
-enum ModuleStatus
-{
-    MODULE_DISABLE = 0,
-    MODULE_ENABLE,
-};
-
-enum CO2ModuleStatus
-{
-    CO2MODULE_DISABLE = 0,
-    CO2mODULE_PHASEIN,
-};
-
-enum COModuleStatus
-{
-    COMODULE_DISABLE = 0,
-    COMODULE_M601,
-};
-
 class MachineConfigModuleContentPrivte;
 class MachineConfigModuleContent : public MenuContent
 {
