@@ -1479,6 +1479,7 @@ ComfirmClearErrorLog,确认是否清理错误日志,Comfirm Clear Error Log
 Speed,速度,Speed
 Gain,增益,Gain
 NIBPList,NIBP列表,NIBP List
+AUTO,自动,AUTO
 CalculateMenu,计算,Calculate
 HemodynamicCalculation,血液动力学计算,Hemodynamic Calculation
 CalculateMenuDesc,计算设置,Calculation Desc

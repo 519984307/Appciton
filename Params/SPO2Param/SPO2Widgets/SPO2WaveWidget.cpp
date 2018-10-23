@@ -21,6 +21,7 @@
 #include "IConfig.h"
 #include "Debug.h"
 #include "WindowManager.h"
+#include "SystemManager.h"
 
 /**************************************************************************************************
  * 设置波形增益
@@ -166,6 +167,12 @@ void SPO2WaveWidget::_loadConfig(void)
 
 void SPO2WaveWidget::setNotify(bool enable, QString str)
 {
+    // demo模式notify下强制更新为正常标志
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        enable = false;
+    }
+
     if (enable)
     {
         _notify->setVisible(true);

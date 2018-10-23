@@ -20,6 +20,7 @@
 #include "ComboListPopup.h"
 #include "WindowManager.h"
 #include "PopupList.h"
+#include "SystemManager.h"
 
 /**************************************************************************************************
  * 增益改变。
@@ -147,6 +148,12 @@ void RESPWaveWidget::setZoom(int zoom)
  *************************************************************************************************/
 void RESPWaveWidget::leadoff(bool flag)
 {
+    // demo模式notify下强制更新为正常标志
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        flag = false;
+    }
+
     if (flag)
     {
         _notify->setText(trs("RESPCheckElectrodes"));

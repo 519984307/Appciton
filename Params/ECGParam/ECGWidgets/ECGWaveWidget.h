@@ -134,6 +134,9 @@ private:
 //    WaveWidgetLabel *_name;         // 名称
     WaveWidgetLabel *_filter;       // 滤波标签
     WaveWidgetLabel *_notify;       // 提示标签
+    WaveWidgetLabel *_ecgFirstGain;       // ECG第一道波形增益提示标签
+    WaveWidgetLabel *_ecgFirstFilterMode;   // ECG第一道波形滤波方式提示标签
+    WaveWidgetLabel *_ecgFirstTrapInfo;   // ECG第一道波形陷波信息提示标签
     ECGWaveRuler *_ruler;           // 标尺
     static int _paceHeight;         // 起搏标记高度, 单位像素
     int _p05mV;                     // +0.5mV对应的波形数值

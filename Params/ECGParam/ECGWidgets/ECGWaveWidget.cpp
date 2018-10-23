@@ -384,7 +384,14 @@ void ECGWaveWidget::setGain(ECGGain gain)
         break;
     }
 
-//    _gain->setText(text);
+    if (_ecgFirstGain)
+    {
+        QString gainText;
+        gainText = ECGSymbol::convert(gain);
+        gainText = trs(gainText);
+        _ecgFirstGain->setText(gainText);
+    }
+
     _ruler->setGain(gain);
 }
 
@@ -487,6 +494,12 @@ void ECGWaveWidget::updateWaveConfig()
  *************************************************************************************************/
 void ECGWaveWidget::setNotifyMesg(ECGWaveNotify mesg)
 {
+    // demo模式notify下强制更新为正常标志
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        mesg = ECG_WAVE_NOTIFY_NORMAL;
+    }
+
     if (_mesg == mesg)
     {
         return;
@@ -689,11 +702,29 @@ void ECGWaveWidget::resizeEvent(QResizeEvent *e)
     }
 
     _name->move(0, 0);
-    _filter->move(_name->rect().x() + _name->rect().width(), 0);
 
-    _notify->setFixedWidth(width() / 2);
-    _notify->move((width() - _notify->width()) / 2,
-                  qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
+    int x1 = _name->x() + _name->width();
+    _filter->move(x1, 0);
+
+    int x2;
+    int  x = x1 + _filter->width();
+    _notify->move(x, 0);
+    _notify->setFixedWidth(200);
+    x2 = x + _notify->width();
+
+//    _notify->setFixedWidth(width() / 2);
+//    _notify->move((width() - _notify->width()) / 2,
+//                  qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
+    if (_ecgFirstGain && _ecgFirstFilterMode && _ecgFirstTrapInfo)
+    {
+        _ecgFirstGain->move(x2, 0);
+
+        x2 = _ecgFirstGain->x() + _ecgFirstGain->width();
+        _ecgFirstFilterMode->move(x2, 0);
+
+        x2 = _ecgFirstFilterMode->x() + _ecgFirstFilterMode->width();
+        _ecgFirstTrapInfo->move(x2, 0);
+    }
 
     _initValueRange(ecgParam.getGain(ecgParam.waveIDToLeadID((WaveformID)getID())));
     _calcGainRange();
@@ -790,6 +821,9 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     : WaveWidget(widgetName, leadName)
 //    , _gain(NULL)
     , _notify(NULL)
+    , _ecgFirstGain(NULL)
+    , _ecgFirstFilterMode(NULL)
+    , _ecgFirstTrapInfo(NULL)
     , _ruler(NULL)
     , _p05mV(3185)
     , _n05mV(-3185)
@@ -821,6 +855,31 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     _filter->setText("");
     _filter->setFocusPolicy(Qt::NoFocus);
     addItem(_filter);
+
+    // ecg第一道波形显示增益、滤波模式、陷波信息 ecg1固定为第一道波形
+    if (id == WAVE_ECG_I)
+    {
+        _ecgFirstGain = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+        _ecgFirstGain->setFont(fontManager.textFont(fontSize));
+        _ecgFirstGain->setFixedSize(80, fontH);
+        _ecgFirstGain->setText("X1");
+        _ecgFirstGain->setFocusPolicy(Qt::NoFocus);
+        addItem(_ecgFirstGain);
+
+        _ecgFirstFilterMode = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+        _ecgFirstFilterMode->setFont(fontManager.textFont(fontSize));
+        _ecgFirstFilterMode->setFixedSize(100, fontH);
+        _ecgFirstFilterMode->setText("Diagnose");
+        _ecgFirstFilterMode->setFocusPolicy(Qt::NoFocus);
+        addItem(_ecgFirstFilterMode);
+
+        _ecgFirstTrapInfo = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+        _ecgFirstTrapInfo->setFont(fontManager.textFont(fontSize));
+        _ecgFirstTrapInfo->setFixedSize(200, fontH);
+        _ecgFirstTrapInfo->setText("Trap 50Hz");
+        _ecgFirstTrapInfo->setFocusPolicy(Qt::NoFocus);
+        addItem(_ecgFirstTrapInfo);
+    }
 
     _notify = new WaveWidgetLabel(trs("LeadOff"), Qt::AlignCenter, this);
     _notify->setFocusPolicy(Qt::NoFocus);
