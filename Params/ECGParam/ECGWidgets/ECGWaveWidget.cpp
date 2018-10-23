@@ -475,6 +475,7 @@ void ECGWaveWidget::updateLeadDisplayName(const QString &name)
 {
     _name->setText(name);
     setTitle(name);
+    update();
 }
 
 void ECGWaveWidget::updateWaveConfig()

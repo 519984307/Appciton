@@ -20,6 +20,7 @@
 #include "IMessageBox.h"
 #include "Button.h"
 #include "NurseCallSettingWindow.h"
+#include "ECGParam.h"
 
 class OthersMaintainMenuContentPrivate
 {
@@ -228,20 +229,22 @@ void OthersMaintainMenuContent::onComboBoxIndexChanged(int index)
         {
         case OthersMaintainMenuContentPrivate::ITEM_CBO_WAVE_LINE:
             string = "WaveLine";
+            systemConfig.setNumValue(QString("Others|%1").arg(string), index);
             break;
         case OthersMaintainMenuContentPrivate::ITEM_CBO_ECG_STANDARD:
-            string = "ECGStandard";
+            ecgParam.updateECGStandard(index);
             break;
         case OthersMaintainMenuContentPrivate::ITEM_CBO_FREQUENCY_NOTCH:
             string = "FrequencyNotch";
+            systemConfig.setNumValue(QString("Others|%1").arg(string), index);
             break;
         case OthersMaintainMenuContentPrivate::ITEM_CBO_PARAM_SWITCH_PREM:
             string = "ParaSwitchPrem";
+            systemConfig.setNumValue(QString("Others|%1").arg(string), index);
             break;
         default:
             break;
         }
-        systemConfig.setNumValue(QString("Others|%1").arg(string), index);
     }
 }
 

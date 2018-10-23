@@ -223,7 +223,7 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
     nameLabel->setFocusPolicy(Qt::NoFocus);
 
     calcLeadLabel = new QLabel("", this);
-    calcLeadLabel->setAlignment(Qt::AlignCenter);
+    calcLeadLabel->setAlignment(Qt::AlignRight);
 
     unitLabel = new QLabel("", this);
     unitLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);

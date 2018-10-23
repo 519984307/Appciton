@@ -166,6 +166,9 @@ public:
     const QString &getCalcLeadWaveformName(void);
     const QString &getWaveWidgetName(ECGLead lead);
 
+    // 更新ECG心电标准显示
+    void updateECGStandard(int standard);
+
     // 获取可得的导联集。
     void getAvailableLeads(QList<ECGLead> &leads);
 
@@ -354,6 +357,7 @@ private:
     ECGBandwidth _12LeadFreqBand;
     ECGFilterMode _filterMode;
     Display12LeadFormat _12LeadDispFormat;
+    ECGLeadNameConvention _ecgStandard;
 
     OxyCRGCO2Widget *_oxyCRGCO2Widget;
     OxyCRGRESPWidget *_oxyCRGRESPWidget;
