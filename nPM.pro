@@ -228,7 +228,7 @@ SOURCES +=                                                                      
     Components/System/Widgets/DataReviewMenuContent.cpp                         \
     Components/System/Widgets/CalculateWindow.cpp                               \
     Components/System/Widgets/SystemMaintenanceMenuContent.cpp                  \
-    Components/System/Widgets/StandyWindow.cpp                                  \
+    Components/System/Widgets/StandbyWindow.cpp                                 \
     Components/System/Widgets/PowerOffWindow.cpp                                \
     Components/System/Widgets/NightModeWindow.cpp                               \
     Components/SoundManager/SoundManager.cpp                                    \
@@ -712,7 +712,7 @@ HEADERS +=                                                                      
     Components/System/Widgets/DataReviewMenuContent.h                           \
     Components/System/Widgets/CalculateWindow.h                                 \
     Components/System/Widgets/SystemMaintenanceMenuContent.h                    \
-    Components/System/Widgets/StandyWindow.h                                    \
+    Components/System/Widgets/StandbyWindow.h                                   \
     Components/System/Widgets/PowerOffWindow.h                                  \
     Components/System/Widgets/NightModeWindow.h                                 \
     Components/SoundManager/SoundManager.h                                      \

@@ -16,7 +16,7 @@
 #include "PatientInfoWindow.h"
 #include <QGridLayout>
 #include "LayoutManager.h"
-#include "StandyWindow.h"
+#include "StandbyWindow.h"
 #include "PatientManager.h"
 
 class DischaregePatientWindowPrivate
@@ -136,7 +136,7 @@ void DischargePatientWindow::onBtnRelease()
         }
         if (d_ptr->isStandby)
         {
-            StandyWindow standyWin;
+            StandbyWindow standyWin;
             standyWin.exec();
         }
     }

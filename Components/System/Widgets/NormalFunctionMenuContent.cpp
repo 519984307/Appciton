@@ -27,7 +27,7 @@
 #include "WiFiProfileWindow.h"
 #include "SoftWareVersionWindow.h"
 #include "NightModeWindow.h"
-#include "StandyWindow.h"
+#include "StandbyWindow.h"
 #include "PatientManager.h"
 #include "PasswordWindow.h"
 #ifdef Q_WS_QWS
@@ -342,7 +342,7 @@ void NormalFunctionMenuContent::onBtnReleasd()
         break;
         case NormalFunctionMenuContentPrivate::ITEM_BTN_ENTER_STANDY:
         {
-            StandyWindow w;
+            StandbyWindow w;
             w.exec();
         }
         break;

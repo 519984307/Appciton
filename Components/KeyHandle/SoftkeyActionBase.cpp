@@ -38,7 +38,7 @@
 #include "IConfig.h"
 #include "NightModeManager.h"
 #include "MenuSidebarItem.h"
-#include "StandyWindow.h"
+#include "StandbyWindow.h"
 #include "CalculateWindow.h"
 
 /***************************************************************************************************
@@ -271,7 +271,7 @@ void SoftkeyActionBase::standby(bool isPressed)
     {
         return;
     }
-    StandyWindow w;
+    StandbyWindow w;
     w.exec();
 }
 

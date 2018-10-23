@@ -12,24 +12,26 @@
 
 #include <QDialog>
 
-class StandyWindowPrivate;
-class StandyWindow : public QDialog
+class StandbyWindow : public QDialog
 {
     Q_OBJECT
 public:
-    StandyWindow();
-    ~StandyWindow();
+    StandbyWindow();
+    ~StandbyWindow();
 
 protected:
-    /* reimplment */
+    /* reimplement */
     void paintEvent(QPaintEvent *ev);
 
-    /* reimplment */
-    void keyPressEvent(QKeyEvent *ev);
+    /* reimplement */
+    void keyReleaseEvent(QKeyEvent *ev);
 
-    /* reimplment */
-    void mousePressEvent(QMouseEvent *ev);
+    /* reimplement */
+    void mouseReleaseEvent(QMouseEvent *ev);
 
-private:
-    StandyWindowPrivate *const d_ptr;
+    /* reimplement */
+    void showEvent(QShowEvent *ev);
+
+    /* reimplement */
+    void hideEvent(QHideEvent *ev);
 };
