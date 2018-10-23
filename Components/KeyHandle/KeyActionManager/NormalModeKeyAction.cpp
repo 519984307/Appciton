@@ -32,6 +32,7 @@
 #include "FreezeWindow.h"
 #include "AlarmStateMachine.h"
 #include "MainMenuWindow.h"
+#include "LayoutManager.h"
 
 
 /**************************************************************************************************
@@ -64,16 +65,21 @@ void NormalModeKeyAction::keyF1Pressed(bool multiBtnPress)
 void NormalModeKeyAction::keyF2Pressed(bool multiBtnPress)
 {
 
-//    static QPointer<FreezeWidget> currentFreezeWidget;
-    static QPointer<FreezeWindow> currentFreezeWidget;
+    static QPointer<FreezeWindow> currentFreezeWindow;
     if (multiBtnPress)
     {
         return;
     }
 
-    if (currentFreezeWidget)
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_BIGFONT)
     {
-        currentFreezeWidget->done(0);
+        // should not freeze when in big font interface
+        return;
+    }
+
+    if (currentFreezeWindow)
+    {
+        currentFreezeWindow->done(0);
         return;
     }
 
@@ -82,10 +88,9 @@ void NormalModeKeyAction::keyF2Pressed(bool multiBtnPress)
         QApplication::activeModalWidget()->close();
     }
 
-//    FreezeWidget freezeWidget;
-    FreezeWindow freezeWidget;
-    currentFreezeWidget = &freezeWidget;
-    freezeWidget.exec();
+    FreezeWindow freezeWindow;
+    currentFreezeWindow = &freezeWindow;
+    freezeWindow.exec();
 }
 
 void NormalModeKeyAction::keyF3Pressed(bool multiBtnPress)
