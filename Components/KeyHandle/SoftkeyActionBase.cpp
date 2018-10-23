@@ -65,8 +65,8 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", trs("CO2Measure"), "measure.png", SoftkeyActionBase::CO2Measure),
     KeyActionDesc("", trs("IBPZeroCalib"), "calib.png", SoftkeyActionBase::IBPZero),
     KeyActionDesc("", trs("Calculation"), "dosecalculation.png", SoftkeyActionBase::calculation),
-    KeyActionDesc("", trs("KeyBoardVolumn"), "keyBoard.png", SoftkeyActionBase::sysSetup),
-    KeyActionDesc("", trs("SystemBrightness"), "Brightness.png", SoftkeyActionBase::sysSetup),
+    KeyActionDesc("", trs("KeyBoardVolumn"), "keyBoard.png", SoftkeyActionBase::keyVolume),
+    KeyActionDesc("", trs("SystemBrightness"), "Brightness.png", SoftkeyActionBase::systemBrightness),
     KeyActionDesc("", trs("NightMode"), "nightMode.png", SoftkeyActionBase::nightMode),
     KeyActionDesc("", trs("PrintSetup"), "printSetup.png", SoftkeyActionBase::printSet),
 };
@@ -311,14 +311,25 @@ void SoftkeyActionBase::IBPZero(bool isPressed)
     ibpParam.zeroCalibration(IBP_INPUT_1);
 }
 
-void SoftkeyActionBase::sysSetup(bool isPressed)
+void SoftkeyActionBase::systemBrightness(bool isPressed)
 {
     if (isPressed)
     {
         return;
     }
     MainMenuWindow *w = MainMenuWindow::getInstance();
-    w->popup(trs("RoutineFunctionMenu"));
+    w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("SystemBrightness")));
+}
+
+void SoftkeyActionBase::keyVolume(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+
+    MainMenuWindow *w = MainMenuWindow::getInstance();
+    w->popup(trs("NormalFunctionMenu"), qVariantFromValue(QString("KeyPressVolume")));
 }
 
 void SoftkeyActionBase::nightMode(bool isPressed)

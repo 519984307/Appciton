@@ -165,6 +165,7 @@ void NormalFunctionMenuContent::layoutExec()
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
+    comboBox->setObjectName("SystemBrightness");
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, row, 1);
     row++;
@@ -183,6 +184,7 @@ void NormalFunctionMenuContent::layoutExec()
                        <<QString::number(SoundManager::VOLUME_LEV_5)
                        );
     layout->addWidget(comboBox , row , 1);
+    comboBox->setObjectName("KeyPressVolume");
     row++;
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME);
     comboBox->setProperty("Item" , qVariantFromValue(itemID));
@@ -255,6 +257,22 @@ void NormalFunctionMenuContent::layoutExec()
     row++;
 
     layout->setRowStretch(row, 1);
+}
+
+void NormalFunctionMenuContent::setShowParam(const QVariant &val)
+{
+    if (val.isValid())
+    {
+        QString objName = val.toString();
+        if (!objName.isEmpty())
+        {
+            ComboBox *obj = findChild<ComboBox*>(objName);
+            if (obj)
+            {
+                obj->setFocus();
+            }
+        }
+    }
 }
 
 void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
