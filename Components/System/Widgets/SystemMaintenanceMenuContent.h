@@ -23,6 +23,9 @@ protected:
     /* reimplement */
     void layoutExec();
 
+    /* reimplement */
+    void readyShow();
+
 private slots:
     /**
      * @brief onBtnReleased

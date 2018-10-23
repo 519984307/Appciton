@@ -296,6 +296,7 @@ SOURCES +=                                                                      
     Components/TimeManager/DateTimeWidget.cpp                                   \
     Components/TimeManager/ElapseTimeWidget.cpp                                 \
     Components/TimeManager/TimeManager.cpp                                      \
+    Components/TimeManager/TimeEditWindow.cpp                                   \
     Components/PatientManager/PatientManager.cpp                                \
     Components/PatientManager/PatientInfoWidget.cpp                             \
     Components/PatientManager/PatientManagementMenuContent.cpp                  \
@@ -363,7 +364,6 @@ SOURCES +=                                                                      
     Components/ActivityLog/ActivityLogManager.cpp                               \
     Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.cpp            \
     Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.cpp          \
-    Components/Maintain/Supervisor/Menu/SupervisorTimeWindow.cpp                \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.cpp                \
     Components/Maintain/Service/ErrorLog/ErrorLogWindow.cpp                     \
     Components/Maintain/Service/ErrorLog/ErrorLogTableModel.cpp                 \
@@ -810,6 +810,7 @@ HEADERS +=                                                                      
     Components/TimeManager/DateTimeWidget.h                                     \
     Components/TimeManager/ElapseTimeWidget.h                                   \
     Components/TimeManager/TimeManager.h                                        \
+    Components/TimeManager/TimeEditWindow.h                                     \
     Components/USBManager/DataExporterBase.h                                    \
     Components/USBManager/ErrorLogExporter.h                                    \
     Components/USBManager/UDiskInspector.h                                      \
@@ -872,7 +873,6 @@ HEADERS +=                                                                      
     Components/ActivityLog/ActivityLogManager.h                                 \
     Components/Maintain/Supervisor/Menu/Supervisor12LMenuContent.h              \
     Components/Maintain/Supervisor/Menu/SupervisorPrintMenuContent.h            \
-    Components/Maintain/Supervisor/Menu/SupervisorTimeWindow.h                  \
     Components/Maintain/Service/ErrorLog/ServiceErrorLogMenu.h                  \
     Components/Maintain/Service/ErrorLog/ErrorLogWindow.h                       \
     Components/Maintain/Service/ErrorLog/ErrorLogTableModel.h                   \

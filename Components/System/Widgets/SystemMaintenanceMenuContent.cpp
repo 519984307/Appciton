@@ -15,9 +15,9 @@
 #include <QVariant>
 #include "ConfigManagerWindow.h"
 #include "FactoryMaintainWindow.h"
-#include "SupervisorTimeWindow.h"
 #include "UserMaintainWindow.h"
 #include "SoftWareVersionWindow.h"
+#include "TimeEditWindow.h"
 #include "MonitorInfoWindow.h"
 #include "SystemManager.h"
 #include "DemoModeWindow.h"
@@ -123,6 +123,20 @@ void SystemMaintenanceMenuContent::layoutExec()
     glayout->setRowStretch(row, 1);
 }
 
+void SystemMaintenanceMenuContent::readyShow()
+{
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        d_ptr->btns[SystemMaintenanceMenuContentPrivate::ITEM_BTN_FACTORY_MAINTENANCE]->setEnabled(false);
+        d_ptr->btns[SystemMaintenanceMenuContentPrivate::ITEM_BTN_USER_MAINTENANCE]->setEnabled(false);
+    }
+    else
+    {
+        d_ptr->btns[SystemMaintenanceMenuContentPrivate::ITEM_BTN_FACTORY_MAINTENANCE]->setEnabled(true);
+        d_ptr->btns[SystemMaintenanceMenuContentPrivate::ITEM_BTN_USER_MAINTENANCE]->setEnabled(true);
+    }
+}
+
 void SystemMaintenanceMenuContent::onBtnReleased()
 {
     Button *btn = qobject_cast<Button*>(sender());
@@ -150,7 +164,7 @@ void SystemMaintenanceMenuContent::onBtnReleased()
         break;
        case SystemMaintenanceMenuContentPrivate::ITEM_BTN_SYSTEM_TIME:
         {
-            SupervisorTimeWindow w;
+            TimeEditWindow w;
             windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
         }
         break;

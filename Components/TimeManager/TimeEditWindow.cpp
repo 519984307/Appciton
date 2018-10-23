@@ -8,7 +8,7 @@
  ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/7/18
  **/
 
-#include "SupervisorTimeWindow.h"
+#include "TimeEditWindow.h"
 #include "LanguageManager.h"
 #include <QLabel>
 #include "ComboBox.h"
@@ -20,8 +20,9 @@
 #include <QProcess>
 #include <QVBoxLayout>
 #include "TimeManager.h"
+#include "SystemManager.h"
 
-class SupervisorTimeWindowPrivate
+class TimeEditWindowPrivate
 {
 public:
     enum MenuItem
@@ -37,7 +38,7 @@ public:
         ITEM_CBO_DISPLAY_SEC
     };
 
-    SupervisorTimeWindowPrivate()
+    TimeEditWindowPrivate()
         : isChangeTime(false)
     {}
 
@@ -62,7 +63,7 @@ public:
     bool isChangeTime;
 };
 
-void SupervisorTimeWindowPrivate::loadOptions()
+void TimeEditWindowPrivate::loadOptions()
 {
     spinBoxs[ITEM_SPB_YEAR]->setValue(timeDate.getDateYear());
     spinBoxs[ITEM_SPB_MONTH]->setValue(timeDate.getDateMonth());
@@ -103,7 +104,7 @@ void SupervisorTimeWindowPrivate::loadOptions()
     combos[ITEM_CBO_DISPLAY_SEC]->setCurrentIndex(value);
 }
 
-int SupervisorTimeWindowPrivate::getMaxDay(int year, int month)
+int TimeEditWindowPrivate::getMaxDay(int year, int month)
 {
     int day31[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
@@ -131,7 +132,7 @@ int SupervisorTimeWindowPrivate::getMaxDay(int year, int month)
     return day31[month - 1];
 }
 
-void SupervisorTimeWindowPrivate::setSysTime()
+void TimeEditWindowPrivate::setSysTime()
 {
     QString cmd("date -s ");
     cmd += "\"";
@@ -154,25 +155,31 @@ void SupervisorTimeWindowPrivate::setSysTime()
     QProcess::execute("sync");
 }
 
-SupervisorTimeWindow::SupervisorTimeWindow()
+TimeEditWindow::TimeEditWindow()
     : Window(),
-      d_ptr(new SupervisorTimeWindowPrivate)
+      d_ptr(new TimeEditWindowPrivate)
 {
     layoutExec();
     readyShow();
 }
 
-SupervisorTimeWindow::~SupervisorTimeWindow()
+TimeEditWindow::~TimeEditWindow()
 {
     delete d_ptr;
 }
 
-void SupervisorTimeWindow::readyShow()
+void TimeEditWindow::readyShow()
 {
     d_ptr->loadOptions();
+
+    bool timeEditable = systemManager.getCurWorkMode() != WORK_MODE_DEMO;
+    for (int i = TimeEditWindowPrivate::ITEM_SPB_YEAR; i <= TimeEditWindowPrivate::ITEM_SPB_SECOND; i++ )
+    {
+        d_ptr->spinBoxs[static_cast<TimeEditWindowPrivate::MenuItem>(i)]->setEnabled(timeEditable);
+    }
 }
 
-void SupervisorTimeWindow::layoutExec()
+void TimeEditWindow::layoutExec()
 {
     setWindowTitle(trs("SupervisorTimeAndDataMenu"));
 
@@ -196,11 +203,11 @@ void SupervisorTimeWindow::layoutExec()
     spinBox->setScale(1);
     spinBox->setStep(1);
     spinBox->setArrow(false);
-    itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_YEAR);
+    itemID = static_cast<int>(TimeEditWindowPrivate::ITEM_SPB_YEAR);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
     layout->addWidget(spinBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 1);
-    d_ptr->spinBoxs.insert(SupervisorTimeWindowPrivate::ITEM_SPB_YEAR, spinBox);
+    d_ptr->spinBoxs.insert(TimeEditWindowPrivate::ITEM_SPB_YEAR, spinBox);
 
     // month
     spinBox = new SpinBox;
@@ -208,11 +215,11 @@ void SupervisorTimeWindow::layoutExec()
     spinBox->setScale(1);
     spinBox->setStep(1);
     spinBox->setArrow(false);
-    itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_MONTH);
+    itemID = static_cast<int>(TimeEditWindowPrivate::ITEM_SPB_MONTH);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
     layout->addWidget(spinBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 2);
-    d_ptr->spinBoxs.insert(SupervisorTimeWindowPrivate::ITEM_SPB_MONTH, spinBox);
+    d_ptr->spinBoxs.insert(TimeEditWindowPrivate::ITEM_SPB_MONTH, spinBox);
 
     // day
     spinBox = new SpinBox;
@@ -220,11 +227,11 @@ void SupervisorTimeWindow::layoutExec()
     spinBox->setScale(1);
     spinBox->setStep(1);
     spinBox->setArrow(false);
-    itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_DAY);
+    itemID = static_cast<int>(TimeEditWindowPrivate::ITEM_SPB_DAY);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
     layout->addWidget(spinBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 3);
-    d_ptr->spinBoxs.insert(SupervisorTimeWindowPrivate::ITEM_SPB_DAY, spinBox);
+    d_ptr->spinBoxs.insert(TimeEditWindowPrivate::ITEM_SPB_DAY, spinBox);
 
     // time
     label = new QLabel(trs("Time"));
@@ -235,11 +242,11 @@ void SupervisorTimeWindow::layoutExec()
     spinBox->setScale(1);
     spinBox->setStep(1);
     spinBox->setArrow(false);
-    itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_HOUR);
+    itemID = static_cast<int>(TimeEditWindowPrivate::ITEM_SPB_HOUR);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
     layout->addWidget(spinBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 1);
-    d_ptr->spinBoxs.insert(SupervisorTimeWindowPrivate::ITEM_SPB_HOUR, spinBox);
+    d_ptr->spinBoxs.insert(TimeEditWindowPrivate::ITEM_SPB_HOUR, spinBox);
 
     // minute
     spinBox = new SpinBox;
@@ -247,11 +254,11 @@ void SupervisorTimeWindow::layoutExec()
     spinBox->setScale(1);
     spinBox->setStep(1);
     spinBox->setArrow(false);
-    itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_MINUTE);
+    itemID = static_cast<int>(TimeEditWindowPrivate::ITEM_SPB_MINUTE);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
     layout->addWidget(spinBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 2);
-    d_ptr->spinBoxs.insert(SupervisorTimeWindowPrivate::ITEM_SPB_MINUTE, spinBox);
+    d_ptr->spinBoxs.insert(TimeEditWindowPrivate::ITEM_SPB_MINUTE, spinBox);
 
     // second
     spinBox = new SpinBox;
@@ -259,11 +266,11 @@ void SupervisorTimeWindow::layoutExec()
     spinBox->setScale(1);
     spinBox->setStep(1);
     spinBox->setArrow(false);
-    itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_SPB_SECOND);
+    itemID = static_cast<int>(TimeEditWindowPrivate::ITEM_SPB_SECOND);
     spinBox->setProperty("Item", qVariantFromValue(itemID));
     connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(onSpinBoxValueChanged(int, int)));
     layout->addWidget(spinBox, (d_ptr->combos.count() + d_ptr->spinBoxs.count())/3, 3);
-    d_ptr->spinBoxs.insert(SupervisorTimeWindowPrivate::ITEM_SPB_SECOND, spinBox);
+    d_ptr->spinBoxs.insert(TimeEditWindowPrivate::ITEM_SPB_SECOND, spinBox);
 
     layout->setRowStretch(d_ptr->combos.count() + d_ptr->spinBoxs.count(), 1);
 
@@ -277,12 +284,12 @@ void SupervisorTimeWindow::layoutExec()
                        << trs(TimeSymbol::convert(DATE_FORMAT_M_D_Y))
                        << trs(TimeSymbol::convert(DATE_FORMAT_D_M_Y))
                       );
-    itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_CBO_DATE_FORMAT);
+    itemID = static_cast<int>(TimeEditWindowPrivate::ITEM_CBO_DATE_FORMAT);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, 0, 1);
-    d_ptr->combos.insert(SupervisorTimeWindowPrivate::ITEM_CBO_DATE_FORMAT, comboBox);
+    d_ptr->combos.insert(TimeEditWindowPrivate::ITEM_CBO_DATE_FORMAT, comboBox);
 
     // time format
     label = new QLabel(trs("SupervisorTimeFormat"));
@@ -292,12 +299,12 @@ void SupervisorTimeWindow::layoutExec()
                        << trs(TimeSymbol::convert(TIME_FORMAT_12))
                        << trs(TimeSymbol::convert(TIME_FORMAT_24))
                       );
-    itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_CBO_TIME_FORMAT);
+    itemID = static_cast<int>(TimeEditWindowPrivate::ITEM_CBO_TIME_FORMAT);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, 1, 1);
-    d_ptr->combos.insert(SupervisorTimeWindowPrivate::ITEM_CBO_TIME_FORMAT, comboBox);
+    d_ptr->combos.insert(TimeEditWindowPrivate::ITEM_CBO_TIME_FORMAT, comboBox);
 
     // is display second
     label = new QLabel(trs("SupervisorDisplaySec"));
@@ -307,12 +314,12 @@ void SupervisorTimeWindow::layoutExec()
                        << trs("No")
                        << trs("Yes")
                       );
-    itemID = static_cast<int>(SupervisorTimeWindowPrivate::ITEM_CBO_DISPLAY_SEC);
+    itemID = static_cast<int>(TimeEditWindowPrivate::ITEM_CBO_DISPLAY_SEC);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, 2, 1);
-    d_ptr->combos.insert(SupervisorTimeWindowPrivate::ITEM_CBO_DISPLAY_SEC, comboBox);
+    d_ptr->combos.insert(TimeEditWindowPrivate::ITEM_CBO_DISPLAY_SEC, comboBox);
     vlayout->addLayout(layout);
     vlayout->addStretch();
 
@@ -321,7 +328,7 @@ void SupervisorTimeWindow::layoutExec()
     setFixedSize(580, 350);
 }
 
-void SupervisorTimeWindow::hideEvent(QHideEvent *ev)
+void TimeEditWindow::hideEvent(QHideEvent *ev)
 {
     if (d_ptr->isChangeTime)
     {
@@ -331,22 +338,22 @@ void SupervisorTimeWindow::hideEvent(QHideEvent *ev)
     Window::hideEvent(ev);
 }
 
-void SupervisorTimeWindow::onComboBoxIndexChanged(int index)
+void TimeEditWindow::onComboBoxIndexChanged(int index)
 {
     ComboBox *box = qobject_cast<ComboBox *>(sender());
     if (box)
     {
-        SupervisorTimeWindowPrivate::MenuItem item
-            = (SupervisorTimeWindowPrivate::MenuItem)box->property("Item").toInt();
+        TimeEditWindowPrivate::MenuItem item
+            = (TimeEditWindowPrivate::MenuItem)box->property("Item").toInt();
         switch (item)
         {
-        case SupervisorTimeWindowPrivate::ITEM_CBO_DATE_FORMAT:
+        case TimeEditWindowPrivate::ITEM_CBO_DATE_FORMAT:
             currentConfig.setNumValue("DateTime|DateFormat", index);
             break;
-        case SupervisorTimeWindowPrivate::ITEM_CBO_TIME_FORMAT:
+        case TimeEditWindowPrivate::ITEM_CBO_TIME_FORMAT:
             currentConfig.setNumValue("DateTime|TimeFormat", index);
             break;
-        case SupervisorTimeWindowPrivate::ITEM_CBO_DISPLAY_SEC:
+        case TimeEditWindowPrivate::ITEM_CBO_DISPLAY_SEC:
             currentConfig.setNumValue("DateTime|DisplaySecond", index);
             break;
         default:
@@ -355,61 +362,61 @@ void SupervisorTimeWindow::onComboBoxIndexChanged(int index)
     }
 }
 
-void SupervisorTimeWindow::onSpinBoxValueChanged(int value, int scale)
+void TimeEditWindow::onSpinBoxValueChanged(int value, int scale)
 {
     SpinBox *spinBox = qobject_cast<SpinBox *>(sender());
     if (spinBox)
     {
         int val = value / scale;
-        SupervisorTimeWindowPrivate::MenuItem item
-            = (SupervisorTimeWindowPrivate::MenuItem)spinBox->property("Item").toInt();
+        TimeEditWindowPrivate::MenuItem item
+            = (TimeEditWindowPrivate::MenuItem)spinBox->property("Item").toInt();
         switch (item)
         {
-        case SupervisorTimeWindowPrivate::ITEM_SPB_YEAR:
+        case TimeEditWindowPrivate::ITEM_SPB_YEAR:
         {
-            if (2 == d_ptr->spinBoxs[SupervisorTimeWindowPrivate::ITEM_SPB_MONTH]->getValue())
+            if (2 == d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_MONTH]->getValue())
             {
                 int min = 0;
                 int max = 0;
-                d_ptr->spinBoxs[SupervisorTimeWindowPrivate::ITEM_SPB_DAY]->getRange(min, max);
+                d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getRange(min, max);
                 int curMax = d_ptr->getMaxDay(val, 2);
-                int curVal = d_ptr->spinBoxs[SupervisorTimeWindowPrivate::ITEM_SPB_DAY]->getValue();
+                int curVal = d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue();
                 if (max != curMax)
                 {
-                    d_ptr->spinBoxs[SupervisorTimeWindowPrivate::ITEM_SPB_DAY]->setRange(min, curMax);
+                    d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->setRange(min, curMax);
                 }
 
                 if (curVal > curMax)
                 {
-                    d_ptr->spinBoxs[SupervisorTimeWindowPrivate::ITEM_SPB_DAY]->setValue(curMax);
+                    d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->setValue(curMax);
                 }
             }
             d_ptr->isChangeTime = true;
             break;
         }
-        case SupervisorTimeWindowPrivate::ITEM_SPB_MONTH:
+        case TimeEditWindowPrivate::ITEM_SPB_MONTH:
         {
             int min = 0;
             int max = 0;
-            d_ptr->spinBoxs[SupervisorTimeWindowPrivate::ITEM_SPB_DAY]->getRange(min, max);
-            int curMax = d_ptr->getMaxDay(d_ptr->spinBoxs[SupervisorTimeWindowPrivate::ITEM_SPB_YEAR]->getValue(), val);
-            int curVal = d_ptr->spinBoxs[SupervisorTimeWindowPrivate::ITEM_SPB_DAY]->getValue();
+            d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getRange(min, max);
+            int curMax = d_ptr->getMaxDay(d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_YEAR]->getValue(), val);
+            int curVal = d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->getValue();
             if (max != curMax)
             {
-                d_ptr->spinBoxs[SupervisorTimeWindowPrivate::ITEM_SPB_DAY]->setRange(min, curMax);
+                d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->setRange(min, curMax);
             }
 
             if (curVal > curMax)
             {
-                d_ptr->spinBoxs[SupervisorTimeWindowPrivate::ITEM_SPB_DAY]->setValue(curMax);
+                d_ptr->spinBoxs[TimeEditWindowPrivate::ITEM_SPB_DAY]->setValue(curMax);
             }
             d_ptr->isChangeTime = true;
             break;
         }
-        case SupervisorTimeWindowPrivate::ITEM_SPB_DAY:
-        case SupervisorTimeWindowPrivate::ITEM_SPB_HOUR:
-        case SupervisorTimeWindowPrivate::ITEM_SPB_MINUTE:
-        case SupervisorTimeWindowPrivate::ITEM_SPB_SECOND:
+        case TimeEditWindowPrivate::ITEM_SPB_DAY:
+        case TimeEditWindowPrivate::ITEM_SPB_HOUR:
+        case TimeEditWindowPrivate::ITEM_SPB_MINUTE:
+        case TimeEditWindowPrivate::ITEM_SPB_SECOND:
             d_ptr->isChangeTime = true;
             break;
         default:

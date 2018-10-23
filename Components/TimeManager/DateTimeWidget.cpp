@@ -14,7 +14,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include "WindowManager.h"
-#include "SupervisorTimeWindow.h"
+#include "TimeEditWindow.h"
 
 /**************************************************************************************************
  * 功能： 设置显示的内容。
@@ -32,7 +32,7 @@ void DateTimeWidget::_release(IWidget *iWidget)
     {
         return;
     }
-    SupervisorTimeWindow w;
+    TimeEditWindow w;
     windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }
 
