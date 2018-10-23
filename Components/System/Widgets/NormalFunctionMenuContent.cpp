@@ -26,10 +26,10 @@
 #include "WindowManager.h"
 #include "WiFiProfileWindow.h"
 #include "SoftWareVersionWindow.h"
-#include "DemoModeWindow.h"
 #include "NightModeWindow.h"
 #include "StandyWindow.h"
 #include "PatientManager.h"
+#include "PasswordWindow.h"
 #ifdef Q_WS_QWS
 #include <QWSServer>
 #endif
@@ -363,12 +363,14 @@ void NormalFunctionMenuContent::onBtnReleasd()
                 break;
             }
 
-            DemoModeWindow w;
-            windowManager.showWindow(&w,
-                                     WindowManager::ShowBehaviorModal);
-            if (!w.isUserInputCorrect())
+            QString password;
+            systemConfig.getStrValue("General|DemoModePassword", password);
+
+            PasswordWindow w(trs("DemoModePassword"), password);
+            w.setWindowTitle(btn->text());
+            if (w.exec() != PasswordWindow::Accepted)
             {
-                break;
+                return;
             }
 
             systemManager.setWorkMode(WORK_MODE_DEMO);
