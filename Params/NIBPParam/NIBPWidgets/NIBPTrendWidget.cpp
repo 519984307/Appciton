@@ -192,17 +192,17 @@ void NIBPTrendWidget::isAlarm(int id, bool flag)
 {
     switch (id)
     {
-        case SUB_PARAM_NIBP_SYS:
-            _sysAlarm = flag;
-            break;
-        case SUB_PARAM_NIBP_DIA:
-            _diaAlarm = flag;
-            break;
-        case SUB_PARAM_NIBP_MAP:
-            _mapAlarm = flag;
-            break;
-        default:
-            break;
+    case SUB_PARAM_NIBP_SYS:
+        _sysAlarm = flag;
+        break;
+    case SUB_PARAM_NIBP_DIA:
+        _diaAlarm = flag;
+        break;
+    case SUB_PARAM_NIBP_MAP:
+        _mapAlarm = flag;
+        break;
+    default:
+        break;
     }
 
     updateAlarm(_sysAlarm || _diaAlarm || _mapAlarm);
@@ -255,8 +255,6 @@ void NIBPTrendWidget::showValue(void)
         showNormalStatus(_nibpValue, psrc);
         showNormalStatus(_pressureValue, psrc);
         showNormalStatus(_lastMeasureCount, psrc);
-        showNormalStatus(_model, psrc);
-        showNormalStatus(_message, psrc);
     }
     _sysValue->setText(_sysString);
     _diaValue->setText(_diaString);
@@ -316,13 +314,23 @@ void NIBPTrendWidget::showText(QString text)
             }
             return;
         }
-        QFont font = fontManager.numFont(40, true);
+        QFont font = fontManager.numFont(fontManager.getFontSize(7), true);
         font.setWeight(QFont::Black);
         _message->setFont(font);
     }
     else
     {
-        _message->setFont(fontManager.numFont(15, true));
+        QRect r;
+        r.setSize(QSize(width() - nameLabel->width(), (height() / 3)));
+        int fontSize = fontManager.adjustNumFontSize(r, true);
+        _message->setFont(fontManager.numFont(fontSize, true));
+    }
+
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
+    psrc = normalPalette(psrc);
+    if (!_sysAlarm && !_diaAlarm && !_mapAlarm)
+    {
+        showNormalStatus(_message, psrc);
     }
 
     _message->setText(text);
@@ -334,6 +342,12 @@ void NIBPTrendWidget::showText(QString text)
  *************************************************************************************************/
 void NIBPTrendWidget::showModelText(QString text)
 {
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
+    psrc = normalPalette(psrc);
+    if (!_sysAlarm && !_diaAlarm && !_mapAlarm)
+    {
+        showNormalStatus(_model, psrc);
+    }
     _model->setText(text);
 }
 
@@ -343,25 +357,15 @@ void NIBPTrendWidget::showModelText(QString text)
 void NIBPTrendWidget::setTextSize()
 {
     QRect r;
-    r.setSize(QSize(((width() - nameLabel->width())/4), ((height() / 4) * 3)));
+    r.setSize(QSize(((width() - nameLabel->width()) / 4), ((height() / 4) * 3)));
     int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
-    QFont defaultFont = fontManager.numFont(fontsize + 5 , true);
     font.setWeight(QFont::Black);
 
     _nibpValue->setFont(font);
     _sysValue->setFont(font);
     _diaValue->setFont(font);
     _pressureValue->setFont(font);
-
-    if (_message->text() == InvStr())
-    {
-        _message->setFont(defaultFont);
-    }
-    else
-    {
-        _message->setFont(font);
-    }
 
     font = fontManager.numFont(fontsize - 10, true);
     font.setWeight(QFont::Black);
@@ -442,7 +446,7 @@ NIBPTrendWidget::NIBPTrendWidget() : TrendWidget("NIBPTrendWidget")
     _message = new QLabel();
     _message->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     _message->setPalette(palette);
-    _message->setFont(fontManager.textFont(fontSize));
+    _message->setFont(fontManager.textFont(100));
     _message->setText(InvStr());
 
     // 将数值显示和倒计时放到一起。
@@ -512,7 +516,7 @@ NIBPTrendWidget::NIBPTrendWidget() : TrendWidget("NIBPTrendWidget")
     setFixedHeight(142);
 
     // 释放事件。
-    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 }
 
 /**************************************************************************************************
