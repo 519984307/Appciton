@@ -729,7 +729,6 @@ void ECGWaveWidget::showEvent(QShowEvent *e)
 
     _loadConfig();
 
-    int fontH = fontManager.textHeightInPixels(fontManager.textFont(14)) + 4;
     if (ECG_DISPLAY_NORMAL == ecgParam.getDisplayMode())
     {
         // 设置带宽显示（为计算导联、PADS为计算导联、12导为计算导联但带宽不一致时都显示带宽）
@@ -743,7 +742,7 @@ void ECGWaveWidget::showEvent(QShowEvent *e)
             _filter->setVisible(false);
         }
 
-        setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
+        setMargin(QMargins(WAVE_X_OFFSET, 2, 2, 2));
     }
     else if (ECG_DISPLAY_12_LEAD_FULL == ecgParam.getDisplayMode())
     {
@@ -763,7 +762,7 @@ void ECGWaveWidget::showEvent(QShowEvent *e)
         if ((!currentWaveforms.empty()) && (currentWaveforms[0] == name() ||
                                             currentWaveforms[1] == name()))
         {
-            setMargin(QMargins(WAVE_X_OFFSET + 4, fontH, 2, 2));
+            setMargin(QMargins(WAVE_X_OFFSET + 4, 2, 2, 2));
         }
         else
         {

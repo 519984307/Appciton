@@ -638,6 +638,9 @@ void IBPParam::setProvider(IBPProviderIFace *provider)
     title = IBPSymbol::convert(IBP_PRESSURE_AUXP2);
     waveformCache.registerSource(WAVE_AUXP2, _provider->getIBPWaveformSample(),
                                  0, _provider->getIBPMaxWaveform(), title, _provider->getIBPBaseLine());
+
+    _waveWidgetIBP1->setDataRate(provider->getIBPWaveformSample());
+    _waveWidgetIBP2->setDataRate(provider->getIBPWaveformSample());
 }
 
 void IBPParam::setConnected(bool isConnected)

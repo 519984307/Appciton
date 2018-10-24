@@ -188,6 +188,7 @@ private:
 
     bool _isValid;
     bool _sensorOff;
+    SPO2Gain _gain;
 
     int _recPackageInPowerOn2sec;  // if receve 5 packages, selftest success, or selftest failed
 

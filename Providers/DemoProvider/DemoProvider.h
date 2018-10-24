@@ -55,7 +55,7 @@ public:
 
     // 实现ECG的接口。
     virtual int getWaveformSample(void) {return _waveSampleRate;}
-    virtual void setWaveformSample(int rate) {_waveSampleRate = rate;}
+    virtual void setWaveformSample(int) {}
 
     virtual int getBaseLine(void) {return 128;}
     virtual void get05mV(int &p05mv, int &n05mv){p05mv = 192; n05mv = 64;}
@@ -75,9 +75,9 @@ public:
     // 实现SPO2的接口。
     virtual void setSensitive(SPO2Sensitive /*sens*/) { }
     virtual void sendStatus(void) { }
-    virtual int getSPO2WaveformSample(void) { return 50; }
-    virtual int getSPO2BaseLine(void) {return 0x80;}
-    virtual int getSPO2MaxValue(void) {return 256;}
+    virtual int getSPO2WaveformSample(void) { return 250; }
+    virtual int getSPO2BaseLine(void) {return 0x0;}
+    virtual int getSPO2MaxValue(void) {return 128;}
 
     // 实现RESP的接口。
     virtual int maxRESPWaveValue() {return 255;}
@@ -121,7 +121,7 @@ public:
     virtual int getO2MaxWaveform(void) {return 2500;}
 
     // 实现IBP的接口
-    virtual int getIBPWaveformSample(void) {return 128;}
+    virtual int getIBPWaveformSample(void) {return 250;}
     virtual int getIBPMaxWaveform(void){return 2600;}
     virtual int getIBPBaseLine(void){return 0;}
 

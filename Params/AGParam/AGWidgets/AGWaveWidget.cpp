@@ -106,7 +106,7 @@ AGWaveWidget::AGWaveWidget(WaveformID id, const QString &waveName, const AGTypeG
     _ruler->setFont(fontManager.textFont(fontManager.getFontSize(0)));
     addItem(_ruler);
 
-    setMargin(QMargins(WAVE_X_OFFSET, 0, 0, 0));
+    setMargin(QMargins(WAVE_X_OFFSET, 2, 2, 2));
 }
 
 /**************************************************************************************************
