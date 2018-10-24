@@ -1645,15 +1645,6 @@ void ECGParam::setBandwidth(int band)
     {
         _provider->setBandwidth(static_cast<ECGBandwidth>(band));
     }
-
-    for (int i = 0; i < ECG_LEAD_NR; ++i)
-    {
-        if (_waveWidget[i] == NULL)
-        {
-            continue;
-        }
-        _waveWidget[i]->setBandWidth(static_cast<ECGBandwidth>(band));
-    }
 }
 
 /***************************************************************************************************
@@ -1713,6 +1704,7 @@ void ECGParam::setFilterMode(int mode)
     {
         _provider->setFilterMode(_filterMode);
     }
+    emit updateFilterMode();
 }
 
 /**************************************************************************************************
@@ -1737,28 +1729,6 @@ void ECGParam::setARRThreshold(ECGAlg::ARRPara parameter, short value)
     {
         _provider->setARRThreshold(parameter, value);
     }
-}
-
-/**************************************************************************************************
- * 获取计算导联带宽字符串
- *************************************************************************************************/
-QString ECGParam::getCalBandWidthStr(void)
-{
-    QString band = "";
-
-    for (int i = 0; i < ECG_LEAD_NR; ++i)
-    {
-        if (_waveWidget[i] == NULL)
-        {
-            continue;
-        }
-        if (i == ecgParam.getCalcLead())
-        {
-            band = _waveWidget[i]->getBandWidthStr();
-        }
-    }
-
-    return band;
 }
 
 /**************************************************************************************************
@@ -2045,6 +2015,7 @@ void ECGParam::setNotchFilter(ECGNotchFilter filter)
     {
         _provider->setNotchFilter(filter);
     }
+    emit updateNotchFilter();
 }
 
 /**************************************************************************************************
@@ -2194,6 +2165,37 @@ void ECGParam::setCheckPatient(bool flag)
 void ECGParam::clearOxyCRGWaveNum()
 {
     _updateNum = 0;
+}
+
+void ECGParam::updateWaveWidgetStatus()
+{
+    QList<int> waveIdList = layoutManager.getDisplayedWaveformIDs();
+    if (!waveIdList.count())
+    {
+        return;
+    }
+
+    for (int i = 0; i < ECG_LEAD_NR; i++)
+    {
+        if (!_waveWidget[i])
+        {
+            continue;
+        }
+        if (!_waveWidget[i]->isVisible())
+        {
+            continue;
+        }
+        bool isVisible;
+        if (waveIdList.at(0) != _waveWidget[i]->getID())
+        {
+            isVisible = false;
+        }
+        else
+        {
+            isVisible = true;
+        }
+        _waveWidget[i]->setWaveInfoVisible(isVisible);
+    }
 }
 
 /***************************************************************************************************

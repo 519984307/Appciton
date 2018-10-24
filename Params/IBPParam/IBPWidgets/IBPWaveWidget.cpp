@@ -24,6 +24,7 @@
 #include "Debug.h"
 #include "TimeDate.h"
 #include "PopupList.h"
+#include "SystemManager.h"
 
 /**************************************************************************************************
  * 添加波形数据。
@@ -43,6 +44,12 @@ void IBPWaveWidget::addWaveformData(short wave, int flag)
  *************************************************************************************************/
 void IBPWaveWidget::setLeadSta(int info)
 {
+    // demo模式staIBP1/2下强制更新为false
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        info = 0;
+    }
+
     if (info)
     {
         _leadSta->setText(trs("LeadOff"));
@@ -148,7 +155,6 @@ IBPWaveWidget::IBPWaveWidget(WaveformID id, const QString &waveName, const IBPPr
     _leadSta = new WaveWidgetLabel(" ", Qt::AlignCenter, this);
     _leadSta->setFont(fontManager.textFont(fontSize));
     _leadSta->setFixedSize(120, fontH);
-    _leadSta->setText(trs("LeadOff"));
     _leadSta->setFocusPolicy(Qt::NoFocus);
     addItem(_leadSta);
 

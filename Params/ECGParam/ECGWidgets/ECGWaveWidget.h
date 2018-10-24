@@ -69,9 +69,6 @@ public:
     // 设置带宽
     void setBandWidth(ECGBandwidth bandWidth);
 
-    // 获取导联带宽字符串
-    QString getBandWidthStr();
-
     // 设置自动增益标志
     void setAutoGain(bool flag);
 
@@ -101,6 +98,12 @@ public:
      */
     void updatePalette(const QPalette &pal);
 
+    /**
+     * @brief setWaveInfoVisible  设置波形相关信息是否可视化
+     * @param isVisible
+     */
+    void setWaveInfoVisible(bool isVisible);
+
 protected:
     // 重绘事件。
     virtual void paintEvent(QPaintEvent *e);
@@ -120,8 +123,15 @@ protected:
 private slots:
     // 鼠标释放事件
     void _popupDestroyed();
-    void _onCalcLeadChanged();
     void _getItemIndex(int);
+    /**
+     * @brief _updateFilterMode 更新滤波方式槽函数
+     */
+    void _updateFilterMode(void);
+    /**
+     * @brief _updateNotchInfo 更新陷波信息槽函数
+     */
+    void _updateNotchInfo(void);
 
 private:
     double _calcRulerHeight(ECGGain gain);
@@ -131,9 +141,10 @@ private:
     void _loadConfig(void);
 
 private:
-//    WaveWidgetLabel *_name;         // 名称
-    WaveWidgetLabel *_filter;       // 滤波标签
     WaveWidgetLabel *_notify;       // 提示标签
+    WaveWidgetLabel *_gain;       // ECG第一道波形增益提示标签
+    WaveWidgetLabel *_filterMode;   // ECG第一道波形滤波方式提示标签
+    WaveWidgetLabel *_notchInfo;   // ECG第一道波形陷波信息提示标签
     ECGWaveRuler *_ruler;           // 标尺
     static int _paceHeight;         // 起搏标记高度, 单位像素
     int _p05mV;                     // +0.5mV对应的波形数值
