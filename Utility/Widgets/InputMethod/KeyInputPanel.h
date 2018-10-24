@@ -97,7 +97,7 @@ public:
         KEY_TYPE_LETTER
     };
 
-    explicit KeyInputPanel(KeyType type = KEY_TYPE_LETTER);
+    explicit KeyInputPanel(KeyType type = KEY_TYPE_LETTER, bool isShowDecimalPoint = false);
     ~KeyInputPanel();
 
 protected:

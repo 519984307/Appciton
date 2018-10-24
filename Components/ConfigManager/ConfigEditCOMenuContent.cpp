@@ -20,7 +20,7 @@
 #include "SystemManager.h"
 #include "COParam.h"
 #include "IConfig.h"
-#include "NumberInput.h"
+#include "KeyInputPanel.h"
 #include "MessageBox.h"
 
 class ConfigEditCOMenuContentPrivate
@@ -235,11 +235,21 @@ void ConfigEditCOMenuContent::onButtonReleased()
         {
         case ConfigEditCOMenuContentPrivate::ITEM_CBO_CO_RATIO:
         {
-
-            NumberInput numberPad;
-            numberPad.setTitleBarText(trs("CORatio"));
+            // 调用数字键盘
+            KeyInputPanel numberPad(KeyInputPanel::KEY_TYPE_NUMBER, true);
+            // 使能键盘的有效字符
+            QString rec("[0-9]");
+            numberPad.setBtnEnable(rec);
+            // 设置键盘标题
+            numberPad.setWindowTitle(trs("CORatio"));
+            // 最大输入长度
             numberPad.setMaxInputLength(5);
-            numberPad.setInitString(button->text());
+            // 固定为数字键盘
+            numberPad.setKeytypeSwitchEnable(false);
+            numberPad.setSymbolEnable(false);
+            // 设置初始字符串 placeholder模式
+            numberPad.setInitString(button->text(), true);
+
             if (numberPad.exec())
             {
                 QString text = numberPad.getStrValue();
@@ -264,10 +274,21 @@ void ConfigEditCOMenuContent::onButtonReleased()
         }
         case ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECTION_TEMP:
         {
-            NumberInput numberPad;
-            numberPad.setTitleBarText(trs("InjectionTemp"));
+            // 调用数字键盘
+            KeyInputPanel numberPad(KeyInputPanel::KEY_TYPE_NUMBER, true);
+            // 使能键盘的有效字符
+            QString rec("[0-9]");
+            numberPad.setBtnEnable(rec);
+            // 设置键盘标题
+            numberPad.setWindowTitle(trs("InjectionTemp"));
+            // 最大输入长度
             numberPad.setMaxInputLength(4);
-            numberPad.setInitString(button->text());
+            // 固定为数字键盘
+            numberPad.setKeytypeSwitchEnable(false);
+            numberPad.setSymbolEnable(false);
+            // 设置初始字符串 placeholder模式
+            numberPad.setInitString(button->text(), true);
+
             if (numberPad.exec())
             {
                 QString text = numberPad.getStrValue();
@@ -293,10 +314,21 @@ void ConfigEditCOMenuContent::onButtonReleased()
         }
         case ConfigEditCOMenuContentPrivate::ITEM_CBO_INJECTION_VOLUMN:
         {
-            NumberInput numberPad;
-            numberPad.setTitleBarText(trs("InjectionVolumn"));
+            // 调用数字键盘
+            KeyInputPanel numberPad(KeyInputPanel::KEY_TYPE_NUMBER, true);
+            // 使能键盘的有效字符
+            QString rec("[0-9]");
+            numberPad.setBtnEnable(rec);
+            // 设置键盘标题
+            numberPad.setWindowTitle(trs("InjectionVolumn"));
+            // 最大输入长度
             numberPad.setMaxInputLength(3);
-            numberPad.setInitString(button->text());
+            // 固定为数字键盘
+            numberPad.setKeytypeSwitchEnable(false);
+            numberPad.setSymbolEnable(false);
+            // 设置初始字符串 placeholder模式
+            numberPad.setInitString(button->text(), true);
+
             if (numberPad.exec())
             {
                 QString text = numberPad.getStrValue();

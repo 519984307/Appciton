@@ -17,7 +17,7 @@
 #include "CO2Symbol.h"
 #include "CO2Param.h"
 #include "ConfigManager.h"
-#include "NumberInput.h"
+#include "KeyInputPanel.h"
 #include "MessageBox.h"
 #include "RESPParam.h"
 
@@ -121,14 +121,22 @@ void ConfigEditCO2MenuContent::onBtnReleasedChanged()
     Button *button = qobject_cast<Button *>(sender());
     int index = button->property("Btn").toInt();
 
-    NumberInput numberInput;
+    // 调用数字键盘
+    KeyInputPanel numberInput(KeyInputPanel::KEY_TYPE_NUMBER);
+    // 最大输入长度
+    numberInput.setMaxInputLength(3);
+    // 固定为数字键盘
+    numberInput.setKeytypeSwitchEnable(false);
+    numberInput.setSymbolEnable(false);
+    numberInput.setSpaceEnable(false);
+    // 设置初始字符串 placeholder模式
+    numberInput.setInitString(button->text(), true);
+
     unsigned num = 1000;
     switch (index)
     {
     case ConfigEditCO2MenuContentPrivate::ITEM_BTN_O2_COMPEN:
-        numberInput.setTitleBarText(trs("O2Compensation"));
-        numberInput.setMaxInputLength(3);
-        numberInput.setInitString(button->text());
+        numberInput.setWindowTitle(trs("O2Compensation"));
         if (numberInput.exec())
         {
             QString strValue = numberInput.getStrValue();
@@ -136,7 +144,7 @@ void ConfigEditCO2MenuContent::onBtnReleasedChanged()
             if (num <= 100)
             {
                 d_ptr->config->setNumValue("CO2|Compensation|O2", num);
-                button->setText(strValue);
+                button->setText(QString::number(num));
             }
             else
             {
@@ -146,9 +154,7 @@ void ConfigEditCO2MenuContent::onBtnReleasedChanged()
         }
         break;
     case ConfigEditCO2MenuContentPrivate::ITEM_BTN_N2O_COMPEN:
-        numberInput.setTitleBarText(trs("N2OCompensation"));
-        numberInput.setMaxInputLength(3);
-        numberInput.setInitString(button->text());
+        numberInput.setWindowTitle(trs("N2OCompensation"));
         if (numberInput.exec())
         {
             QString strValue = numberInput.getStrValue();
@@ -156,7 +162,7 @@ void ConfigEditCO2MenuContent::onBtnReleasedChanged()
             if (num <= 100)
             {
                 d_ptr->config->setNumValue("CO2|Compensation|NO2", num);
-                button->setText(strValue);
+                button->setText(QString::number(num));
             }
             else
             {
@@ -209,8 +215,8 @@ void ConfigEditCO2MenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << CO2Symbol::convert(CO2_FICO2_DISPLAY_OFF)
-                       << CO2Symbol::convert(CO2_FICO2_DISPLAY_ON)
+                       << trs(CO2Symbol::convert(CO2_FICO2_DISPLAY_OFF))
+                       << trs(CO2Symbol::convert(CO2_FICO2_DISPLAY_ON))
                       );
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
