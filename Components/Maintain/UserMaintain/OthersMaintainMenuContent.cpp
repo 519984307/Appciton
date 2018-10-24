@@ -16,7 +16,6 @@
 #include "IBPSymbol.h"
 #include "IConfig.h"
 #include "IBPParam.h"
-#include "NumberInput.h"
 #include "IMessageBox.h"
 #include "Button.h"
 #include "NurseCallSettingWindow.h"

@@ -18,7 +18,6 @@
 #include "ComboBox.h"
 #include <QGridLayout>
 #include "IConfig.h"
-#include "NumberInput.h"
 #include "IMessageBox.h"
 #include "Button.h"
 

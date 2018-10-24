@@ -298,6 +298,15 @@ bool WindowManager::eventFilter(QObject *obj, QEvent *ev)
 
 void WindowManager::closeAllWidows()
 {
+
+    // close the popup widget
+    QWidget *popup = NULL;
+    while ((popup = QApplication::activePopupWidget()))
+    {
+        popup->close();
+    }
+
+    // close the window in the window stack
     while (!d_ptr->windowStacks.isEmpty())
     {
         Window *p = d_ptr->windowStacks.last();
@@ -307,6 +316,7 @@ void WindowManager::closeAllWidows()
         }
     }
 
+    // close the active window
     QWidget *activeWindow = NULL;
     while ((activeWindow = QApplication::activeWindow()))
     {
