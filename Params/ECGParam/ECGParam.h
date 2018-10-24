@@ -240,9 +240,6 @@ public: // 用于访问配置相关信息。
     // 阀值设置
     void setARRThreshold(ECGAlg::ARRPara parameter, short value);
 
-    // 获取计算导联带宽字符串
-    QString getCalBandWidthStr();
-
     // 设置/获取起搏标记。
     void setPacermaker(ECGPaceMode onoff);
     ECGPaceMode getPacermaker(void);
@@ -313,12 +310,26 @@ public: // 用于访问配置相关信息。
      */
     void clearOxyCRGWaveNum(void);
 
+    /**
+     * @brief updateWaveWidgetStatus  更新其内部第一个心电波形的状态
+     */
+    void updateWaveWidgetStatus(void);
+
 signals:
     void calcLeadChanged();
     /**
      * @brief oxyCRGWaveUpdated 呼吸氧和波形更新信号
      */
     void oxyCRGWaveUpdated(void);
+
+    /**
+     * @brief updateNotchFilter 陷波信息更新信号
+     */
+    void updateNotchFilter(void);
+    /**
+     * @brief updateFilterMode  滤波模式更新信号
+     */
+    void updateFilterMode(void);
 
 private slots:
     // presenting rhythm, 6 seconds before the first primary lead on

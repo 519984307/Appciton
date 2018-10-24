@@ -220,27 +220,58 @@ void ECGWaveWidget::_popupDestroyed(void)
     _ruler->setGain(static_cast<ECGGain>(_currentItemIndex));
 }
 
-/***************************************************************************************************
- * handle calc lead changed signal
- **************************************************************************************************/
-void ECGWaveWidget::_onCalcLeadChanged()
-{
-    if (UFACE_MONITOR_12LEAD != layoutManager.getUFaceType())
-    {
-        if (ecgParam.getCalcLead() == getID())
-        {
-            _filter->setVisible(true);
-        }
-        else
-        {
-            _filter->setVisible(false);
-        }
-    }
-}
 
 void ECGWaveWidget::_getItemIndex(int index)
 {
     _currentItemIndex = index;
+}
+
+void ECGWaveWidget::_updateFilterMode()
+{
+    if (!this->isVisible())
+    {
+        return;
+    }
+    QList<int> waveIdList = layoutManager.getDisplayedWaveformIDs();
+    if (!waveIdList.count())
+    {
+        return;
+    }
+    if (waveIdList.at(0) != getID())
+    {
+        return;
+    }
+    ECGFilterMode  filterMode = ecgParam.getFilterMode();
+    _filterMode->setText(trs(ECGSymbol::convert(filterMode)));
+    if (filterMode != ECG_FILTERMODE_DIAGNOSTIC)
+    {
+        _notchInfo->setVisible(false);
+    }
+    else
+    {
+        _notchInfo->setVisible(true);
+    }
+}
+
+void ECGWaveWidget::_updateNotchInfo()
+{
+    if (!this->isVisible())
+    {
+        return;
+    }
+    QList<int> waveIdList = layoutManager.getDisplayedWaveformIDs();
+    if (!waveIdList.count())
+    {
+        return;
+    }
+    if (waveIdList.at(0) != getID())
+    {
+        return;
+    }
+    ECGNotchFilter notchFilter = ecgParam.getNotchFilter();
+    _notchInfo->setText(QString("%1%2")
+                               .arg(trs("Notch"))
+                               .arg(trs(ECGSymbol::convert(notchFilter))));
 }
 
 /**************************************************************************************************
@@ -260,11 +291,6 @@ void ECGWaveWidget::_loadConfig(void)
         set12LGain(ECG_GAIN_X10);
         setGain(_12LGain);
 
-        _filter->setVisible(false);
-        // filter.
-        QString filter = ECGSymbol::convert(ecgParam.getBandwidth());
-        _filter->setText(filter);
-
         _name->setText(ECGSymbol::convert(ecgParam.waveIDToLeadID((WaveformID)getID()),
                                           ecgParam.getLeadConvention(), true, ecgParam.get12LDisplayFormat()));
 
@@ -277,8 +303,6 @@ void ECGWaveWidget::_loadConfig(void)
                                           ecgParam.getLeadConvention(), false, false));
         _name->setFocusPolicy(Qt::StrongFocus);
 
-        _filter->setVisible(false);
-
         // 增益。
         ECGLead lead = ecgParam.waveIDToLeadID((WaveformID)getID());
         ECGGain gain = ecgParam.getGain(lead);
@@ -286,11 +310,6 @@ void ECGWaveWidget::_loadConfig(void)
         _isAutoGain = ecgParam.getAutoGain(lead);
 
         setGain(gain);
-
-        // filter.
-        QString filter;
-        filter = ECGSymbol::convert(ecgParam.getBandwidth());
-        _filter->setText(filter);
 
         // notify
         ecgParam.updateECGNotifyMesg(lead, false);
@@ -384,7 +403,8 @@ void ECGWaveWidget::setGain(ECGGain gain)
         break;
     }
 
-//    _gain->setText(text);
+    _gain->setText(trs(ECGSymbol::convert(gain)));
+
     _ruler->setGain(gain);
 }
 
@@ -440,24 +460,6 @@ void ECGWaveWidget::setSpeed(ECGSweepSpeed speed)
 }
 
 /**************************************************************************************************
- * 设置波形速度
- *************************************************************************************************/
-void ECGWaveWidget::setBandWidth(ECGBandwidth bandwidth)
-{
-    QString filter;
-    filter = ECGSymbol::convert(bandwidth);
-    _filter->setText(filter);
-}
-
-/**************************************************************************************************
- * 获取带宽字符串
- *************************************************************************************************/
-QString ECGWaveWidget::getBandWidthStr()
-{
-    return _filter->text();
-}
-
-/**************************************************************************************************
  * 设置自动增益标志
  *************************************************************************************************/
 void ECGWaveWidget::setAutoGain(bool flag)
@@ -488,6 +490,12 @@ void ECGWaveWidget::updateWaveConfig()
  *************************************************************************************************/
 void ECGWaveWidget::setNotifyMesg(ECGWaveNotify mesg)
 {
+    // demo模式notify下强制更新为正常标志
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        mesg = ECG_WAVE_NOTIFY_NORMAL;
+    }
+
     if (_mesg == mesg)
     {
         return;
@@ -690,11 +698,20 @@ void ECGWaveWidget::resizeEvent(QResizeEvent *e)
     }
 
     _name->move(0, 0);
-    _filter->move(_name->rect().x() + _name->rect().width(), 0);
 
-    _notify->setFixedWidth(width() / 2);
-    _notify->move((width() - _notify->width()) / 2,
-                  qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
+    int x = _name->x() + _name->width();
+    _gain->move(x, 0);
+
+    x = _gain->x() + _gain->width();
+    _filterMode->move(x, 0);
+
+    x = _filterMode->x() + _filterMode->width();
+    _notchInfo->move(x, 0);
+
+    x = _notchInfo->x() + _notchInfo->width();
+
+    _notify->move(x, 0);
+    _notify->setFixedWidth(200);
 
     _initValueRange(ecgParam.getGain(ecgParam.waveIDToLeadID((WaveformID)getID())));
     _calcGainRange();
@@ -732,33 +749,12 @@ void ECGWaveWidget::showEvent(QShowEvent *e)
     int fontH = fontManager.textHeightInPixels(fontManager.textFont(14)) + 4;
     if (ECG_DISPLAY_NORMAL == ecgParam.getDisplayMode())
     {
-        // 设置带宽显示（为计算导联、PADS为计算导联、12导为计算导联但带宽不一致时都显示带宽）
-        if (getID() == ecgParam.getCalcLead())
-//                || (this->_filter->text() != ecgParam.getCalBandWidthStr()))
-        {
-            _filter->setVisible(true);
-        }
-        else
-        {
-            _filter->setVisible(false);
-        }
-
         setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
     }
     else if (ECG_DISPLAY_12_LEAD_FULL == ecgParam.getDisplayMode())
     {
         QStringList currentWaveforms = layoutManager.getDisplayedWaveforms();
 
-        if ((!currentWaveforms.empty()) && (currentWaveforms[0] == name()))
-        {
-            _filter->setVisible(true);
-//            _gain->setVisible(true);
-        }
-        else
-        {
-            _filter->setVisible(false);
-//            _gain->setVisible(false);
-        }
 
         if ((!currentWaveforms.empty()) && (currentWaveforms[0] == name() ||
                                             currentWaveforms[1] == name()))
@@ -770,6 +766,23 @@ void ECGWaveWidget::showEvent(QShowEvent *e)
             setMargin(QMargins(WAVE_X_OFFSET + 4, 2, 2, 2));
         }
     }
+
+    // 波形每次显示时需要调用一次
+    QList<int> waveIdList = layoutManager.getDisplayedWaveformIDs();
+    if (!waveIdList.count())
+    {
+        return;
+    }
+    bool isVisible;
+    if (waveIdList.at(0) != getID())
+    {
+        isVisible = false;
+    }
+    else
+    {
+        isVisible = true;
+    }
+    setWaveInfoVisible(isVisible);
 }
 
 /**************************************************************************************************
@@ -789,8 +802,10 @@ void ECGWaveWidget::hideEvent(QHideEvent *e)
  *************************************************************************************************/
 ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QString &leadName)
     : WaveWidget(widgetName, leadName)
-//    , _gain(NULL)
     , _notify(NULL)
+    , _gain(NULL)
+    , _filterMode(NULL)
+    , _notchInfo(NULL)
     , _ruler(NULL)
     , _p05mV(3185)
     , _n05mV(-3185)
@@ -816,12 +831,31 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     _name->setFixedSize(70, fontH);
     _name->setText(leadName);
 
-    _filter = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
-    _filter->setFont(fontManager.textFont(fontSize));
-    _filter->setFixedSize(180, fontH);
-    _filter->setText("");
-    _filter->setFocusPolicy(Qt::NoFocus);
-    addItem(_filter);
+    // ecg第一道波形显示增益、滤波模式、陷波信息
+    _gain = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+    _gain->setFont(fontManager.textFont(fontSize));
+    _gain->setFixedSize(80, fontH);
+    _gain->setFocusPolicy(Qt::NoFocus);
+    addItem(_gain);
+    ECGGain gain = ecgParam.getGain(ecgParam.waveIDToLeadID(id));
+    _gain->setText(trs(ECGSymbol::convert(gain)));
+
+    _filterMode = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+    _filterMode->setFont(fontManager.textFont(fontSize));
+    _filterMode->setFixedSize(100, fontH);
+    _filterMode->setFocusPolicy(Qt::NoFocus);
+    addItem(_filterMode);
+    connect(&ecgParam, SIGNAL(updateFilterMode()), this, SLOT(_updateFilterMode()));
+
+    _notchInfo = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
+    _notchInfo->setFont(fontManager.textFont(fontSize));
+    _notchInfo->setFixedSize(200, fontH);
+    _notchInfo->setFocusPolicy(Qt::NoFocus);
+    addItem(_notchInfo);
+    connect(&ecgParam, SIGNAL(updateNotchFilter()), this, SLOT(_updateNotchInfo()));
+
+    _updateNotchInfo();
+    _updateFilterMode();
 
     _notify = new WaveWidgetLabel(trs("LeadOff"), Qt::AlignCenter, this);
     _notify->setFocusPolicy(Qt::NoFocus);
@@ -835,8 +869,6 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     addItem(_ruler);
 
     _12LGain = ECG_GAIN_X10;
-
-    connect(&ecgParam, SIGNAL(calcLeadChanged()), this, SLOT(_onCalcLeadChanged()));
 }
 
 /**************************************************************************************************
@@ -1041,5 +1073,17 @@ void ECGWaveWidget::updatePalette(const QPalette &pal)
     _ruler->setPalette(pal);
     setPalette(pal);
     updateBackground();
+}
+
+void ECGWaveWidget::setWaveInfoVisible(bool isVisible)
+{
+    _gain->setVisible(isVisible);
+    _filterMode->setVisible(isVisible);
+    _notchInfo->setVisible(isVisible);
+    if (isVisible)
+    {
+        _updateNotchInfo();
+        _updateFilterMode();
+    }
 }
 

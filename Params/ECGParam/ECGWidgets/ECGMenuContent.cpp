@@ -87,7 +87,7 @@ void ECGMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_ECG]->addItems(ecgWaveformTitles);
     QString ecgTopWaveform = ecgParam.getCalcLeadWaveformName();
     index = ecgWaveforms.indexOf(ecgTopWaveform);
-    if (index)
+    if (index >= 0)
     {
         combos[ITEM_CBO_ECG_GAIN]->blockSignals(true);
         ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
@@ -380,6 +380,8 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
             systemConfig.setStrValue("PrimaryCfg|ECG|Ecg1WaveWidget", d_ptr->ecgWaveforms[index]);
             layoutManager.updateLayout();
+	    // 需要在布局更新后调用更新参数接口
+            ecgParam.updateWaveWidgetStatus();
             break;
         }
         case ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN:
