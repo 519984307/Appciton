@@ -380,6 +380,8 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
             systemConfig.setStrValue("PrimaryCfg|ECG|Ecg1WaveWidget", d_ptr->ecgWaveforms[index]);
             layoutManager.updateLayout();
+	    // 需要在布局更新后调用更新参数接口
+            ecgParam.updateParamStatue();
             break;
         }
         case ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN:

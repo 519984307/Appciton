@@ -237,9 +237,6 @@ public: // 用于访问配置相关信息。
     // 阀值设置
     void setARRThreshold(ECGAlg::ARRPara parameter, short value);
 
-    // 获取计算导联带宽字符串
-    QString getCalBandWidthStr();
-
     // 设置/获取起搏标记。
     void setPacermaker(ECGPaceMode onoff);
     ECGPaceMode getPacermaker(void);
@@ -309,6 +306,11 @@ public: // 用于访问配置相关信息。
      * @brief clearOxyCRGWaveNum  //清除呼吸氧和波形更新计数
      */
     void clearOxyCRGWaveNum(void);
+
+    /**
+     * @brief updateParamStatue  更新参数状态
+     */
+    void updateParamStatue(void);
 
 signals:
     void calcLeadChanged();

@@ -1628,15 +1628,6 @@ void ECGParam::setBandwidth(int band)
     {
         _provider->setBandwidth(static_cast<ECGBandwidth>(band));
     }
-
-    for (int i = 0; i < ECG_LEAD_NR; ++i)
-    {
-        if (_waveWidget[i] == NULL)
-        {
-            continue;
-        }
-        _waveWidget[i]->setBandWidth(static_cast<ECGBandwidth>(band));
-    }
 }
 
 /***************************************************************************************************
@@ -1721,28 +1712,6 @@ void ECGParam::setARRThreshold(ECGAlg::ARRPara parameter, short value)
     {
         _provider->setARRThreshold(parameter, value);
     }
-}
-
-/**************************************************************************************************
- * 获取计算导联带宽字符串
- *************************************************************************************************/
-QString ECGParam::getCalBandWidthStr(void)
-{
-    QString band = "";
-
-    for (int i = 0; i < ECG_LEAD_NR; ++i)
-    {
-        if (_waveWidget[i] == NULL)
-        {
-            continue;
-        }
-        if (i == ecgParam.getCalcLead())
-        {
-            band = _waveWidget[i]->getBandWidthStr();
-        }
-    }
-
-    return band;
 }
 
 /**************************************************************************************************
@@ -2179,6 +2148,17 @@ void ECGParam::setCheckPatient(bool flag)
 void ECGParam::clearOxyCRGWaveNum()
 {
     _updateNum = 0;
+}
+
+void ECGParam::updateParamStatue()
+{
+    for (int i = 0; i < ECG_LEAD_NR; i++)
+    {
+        if (_waveWidget[i])
+        {
+            _waveWidget[i]->updateFirstWaveParamState();
+        }
+    }
 }
 
 /***************************************************************************************************
