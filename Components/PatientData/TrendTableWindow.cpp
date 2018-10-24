@@ -162,11 +162,6 @@ void TrendTableWindow::updatePages()
         // 获取数据的当前页数
         curPageNum = 1 + (rightTime - startTime) * 1.0 / ((endTime - startTime) * 1.0) * (allPagesNum - 1);
     }
-
-    if (endTime == startTime)
-    {
-        allPagesNum = curPageNum = 1;
-    }
     setWindowTitle(QString("%1 ( %2 / %3 %4 )")
                    .arg(trs("TrendTable"))
                    .arg(curPageNum)
