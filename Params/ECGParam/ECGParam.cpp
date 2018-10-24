@@ -2150,14 +2150,34 @@ void ECGParam::clearOxyCRGWaveNum()
     _updateNum = 0;
 }
 
-void ECGParam::updateParamStatue()
+void ECGParam::updateWaveWidgetStatus()
 {
+    QList<int> waveIdList = layoutManager.getDisplayedWaveformIDs();
+    if (!waveIdList.count())
+    {
+        return;
+    }
+
     for (int i = 0; i < ECG_LEAD_NR; i++)
     {
-        if (_waveWidget[i])
+        if (!_waveWidget[i])
         {
-            _waveWidget[i]->updateFirstWaveParamState();
+            continue;
         }
+        if (!_waveWidget[i]->isVisible())
+        {
+            continue;
+        }
+        bool isVisible;
+        if (waveIdList.at(0) != _waveWidget[i]->getID())
+        {
+            isVisible = false;
+        }
+        else
+        {
+            isVisible = true;
+        }
+        _waveWidget[i]->setWaveInfoVisible(isVisible);
     }
 }
 

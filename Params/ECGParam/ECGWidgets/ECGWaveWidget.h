@@ -99,9 +99,10 @@ public:
     void updatePalette(const QPalette &pal);
 
     /**
-     * @brief updateFirstWaveParamState  更新第一道波形相关参数的状态
+     * @brief setWaveInfoVisible  设置波形相关信息是否可视化
+     * @param isVisible
      */
-    void updateFirstWaveParamState(void);
+    void setWaveInfoVisible(bool isVisible);
 
 protected:
     // 重绘事件。
@@ -128,9 +129,9 @@ private slots:
      */
     void _updateFilterMode(void);
     /**
-     * @brief _updateTrapInfo 更新陷波信息槽函数
+     * @brief _updateNotchInfo 更新陷波信息槽函数
      */
-    void _updateTrapInfo(void);
+    void _updateNotchInfo(void);
 
 private:
     double _calcRulerHeight(ECGGain gain);

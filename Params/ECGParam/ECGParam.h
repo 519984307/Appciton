@@ -308,9 +308,9 @@ public: // 用于访问配置相关信息。
     void clearOxyCRGWaveNum(void);
 
     /**
-     * @brief updateParamStatue  更新参数状态
+     * @brief updateWaveWidgetStatus  更新其内部第一个心电波形的状态
      */
-    void updateParamStatue(void);
+    void updateWaveWidgetStatus(void);
 
 signals:
     void calcLeadChanged();

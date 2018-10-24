@@ -253,7 +253,7 @@ void ECGWaveWidget::_updateFilterMode()
     }
 }
 
-void ECGWaveWidget::_updateTrapInfo()
+void ECGWaveWidget::_updateNotchInfo()
 {
     if (!this->isVisible())
     {
@@ -272,36 +272,6 @@ void ECGWaveWidget::_updateTrapInfo()
     _notchInfo->setText(QString("%1%2")
                                .arg(trs("Notch"))
                                .arg(trs(ECGSymbol::convert(notchFilter))));
-}
-
-void ECGWaveWidget::updateFirstWaveParamState()
-{
-    if (!this->isVisible())
-    {
-        return;
-    }
-    QList<int> waveIdList = layoutManager.getDisplayedWaveformIDs();
-    if (!waveIdList.count())
-    {
-        return;
-    }
-    bool isVisible;
-    if (waveIdList.at(0) != getID())
-    {
-        isVisible = false;
-    }
-    else
-    {
-        isVisible = true;
-    }
-    _gain->setVisible(isVisible);
-    _filterMode->setVisible(isVisible);
-    _notchInfo->setVisible(isVisible);
-    if (isVisible)
-    {
-        _updateTrapInfo();
-        _updateFilterMode();
-    }
 }
 
 /**************************************************************************************************
@@ -797,7 +767,21 @@ void ECGWaveWidget::showEvent(QShowEvent *e)
     }
 
     // 波形每次显示时需要调用一次
-    updateFirstWaveParamState();
+    QList<int> waveIdList = layoutManager.getDisplayedWaveformIDs();
+    if (!waveIdList.count())
+    {
+        return;
+    }
+    bool isVisible;
+    if (waveIdList.at(0) != getID())
+    {
+        isVisible = false;
+    }
+    else
+    {
+        isVisible = true;
+    }
+    setWaveInfoVisible(isVisible);
 }
 
 /**************************************************************************************************
@@ -867,9 +851,9 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     _notchInfo->setFixedSize(200, fontH);
     _notchInfo->setFocusPolicy(Qt::NoFocus);
     addItem(_notchInfo);
-    connect(&ecgParam, SIGNAL(updateNotchFilter()), this, SLOT(_updateTrapInfo()));
+    connect(&ecgParam, SIGNAL(updateNotchFilter()), this, SLOT(_updateNotchInfo()));
 
-    _updateTrapInfo();
+    _updateNotchInfo();
     _updateFilterMode();
 
     _notify = new WaveWidgetLabel(trs("LeadOff"), Qt::AlignCenter, this);
@@ -1088,5 +1072,17 @@ void ECGWaveWidget::updatePalette(const QPalette &pal)
     _ruler->setPalette(pal);
     setPalette(pal);
     updateBackground();
+}
+
+void ECGWaveWidget::setWaveInfoVisible(bool isVisible)
+{
+    _gain->setVisible(isVisible);
+    _filterMode->setVisible(isVisible);
+    _notchInfo->setVisible(isVisible);
+    if (isVisible)
+    {
+        _updateNotchInfo();
+        _updateFilterMode();
+    }
 }
 
