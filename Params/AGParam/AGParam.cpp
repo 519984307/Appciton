@@ -266,18 +266,22 @@ void AGParam::setProvider(AGProviderIFace *provider)
 
     // 注册波形缓存
     QString titleN2O = _waveWidgetN2O->getTitle();
+    _waveWidgetN2O->setDataRate(provider->getN2OWaveformSample());
     waveformCache.registerSource(WAVE_N2O, _provider->getN2OWaveformSample(), 0,
                                  _provider->getN2OMaxWaveform(), titleN2O, _provider->getN2OBaseLine());
 
     QString titleAA1 = _waveWidgetAA1->getTitle();
+    _waveWidgetAA1->setDataRate(provider->getAA1WaveformSample());
     waveformCache.registerSource(WAVE_AA1, _provider->getAA1WaveformSample(), 0,
                                  _provider->getAA1MaxWaveform(), titleAA1, _provider->getAA1BaseLine());
 
     QString titleAA2 = _waveWidgetAA2->getTitle();
+    _waveWidgetAA2->setDataRate(provider->getAA2WaveformSample());
     waveformCache.registerSource(WAVE_AA2, _provider->getAA2WaveformSample(), 0,
                                  _provider->getAA2MaxWaveform(), titleAA2, _provider->getAA2BaseLine());
 
     QString titleO2 = _waveWidgetO2->getTitle();
+    _waveWidgetO2->setDataRate(provider->getO2WaveformSample());
     waveformCache.registerSource(WAVE_O2, _provider->getO2WaveformSample(), 0,
                                  _provider->getO2MaxWaveform(), titleO2, _provider->getO2BaseLine());
 }

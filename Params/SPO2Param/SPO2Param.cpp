@@ -235,6 +235,8 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider)
     // 请求波形缓冲区。
     waveformCache.registerSource(WAVE_SPO2, _provider->getSPO2WaveformSample(), 0, _provider->getSPO2MaxValue(),
                                  tile, _provider->getSPO2BaseLine());
+
+    _waveWidget->setGain(_gain);
 }
 
 /**************************************************************************************************
@@ -259,6 +261,7 @@ void SPO2Param::reset()
  *************************************************************************************************/
 void SPO2Param::setGain(SPO2Gain gain)
 {
+    _gain = gain;
     currentConfig.setNumValue("SPO2|Gain", static_cast<int>(gain));
 
     if (NULL != _waveWidget)
@@ -272,10 +275,7 @@ void SPO2Param::setGain(SPO2Gain gain)
  *************************************************************************************************/
 SPO2Gain SPO2Param::getGain(void)
 {
-    int gain = SPO2_GAIN_X10;
-    currentConfig.getNumValue("SPO2|Gain", gain);
-
-    return (SPO2Gain)gain;
+    return _gain;
 }
 
 /**************************************************************************************************
@@ -712,6 +712,7 @@ int SPO2Param::getSweepSpeed(void)
  * 构造。
  *************************************************************************************************/
 SPO2Param::SPO2Param() : Param(PARAM_SPO2),
+                         _gain(SPO2_GAIN_X10),
                          _oxyCRGSPO2Trend(NULL)
 {
     _provider = NULL;
@@ -728,6 +729,10 @@ SPO2Param::SPO2Param() : Param(PARAM_SPO2),
 
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverCheckFinger", _isEverCheckFinger);
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverSensorOn", _isEverSensorOn);
+
+    int gain = SPO2_GAIN_X10;
+    currentConfig.getNumValue("SPO2|Gain", gain);
+    _gain = static_cast<SPO2Gain>(gain);
 
     QTimer::singleShot(2000, this, SLOT(checkSelftest()));
 }
