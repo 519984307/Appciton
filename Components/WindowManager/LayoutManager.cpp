@@ -354,6 +354,7 @@ void LayoutManagerPrivate::performStandardLayout()
             contentWidgets.append(w);
 
             w->setVisible(true);
+            w->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
             if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN)
             {
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM)
@@ -416,6 +417,7 @@ void LayoutManagerPrivate::perform12LeadLayout()
         if (w)
         {
             w->setVisible(true);
+            w->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
             waveLayout->addWidget(layoutWidgets[ecgWaveList.at(i)], row, column);
             displayWaveforms.append(w->name());
             contentWidgets.append(w);
@@ -441,6 +443,7 @@ void LayoutManagerPrivate::perform12LeadLayout()
             if (nodeIter->pos >= LAYOUT_WAVE_END_COLUMN)
             {
                 w->setVisible(true);
+                w->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
                 rightParamLayout->addWidget(w, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
                 displayParams.append(w->name());
             }
@@ -460,6 +463,7 @@ void LayoutManagerPrivate::performOxyCRGLayout()
     {
         contentWidgets.append(oxyCRGWidget);
         oxyCRGWidget->setVisible(true);
+        oxyCRGWidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
         leftLayout->addWidget(oxyCRGWidget, 1);
     }
     contentLayout->addLayout(leftLayout, waveAreaStretch);
@@ -493,6 +497,7 @@ void LayoutManagerPrivate::performOxyCRGLayout()
                     if (waveWidgetCounter < MAX_WAVEWIDGET_ROW_IN_OXYCRG_LAYOUT || currentRow == row)
                     {
                         w->setVisible(true);
+                        w->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
                         waveLayout->addWidget(w, row, nodeIter->pos, 1, nodeIter->span);
                         if (qobject_cast<WaveWidget *>(w))
                         {
@@ -519,6 +524,7 @@ void LayoutManagerPrivate::performOxyCRGLayout()
             else  // the right part are all param
             {
                 w->setVisible(true);
+                w->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
                 rightParamLayout->addWidget(w, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
                 displayParams.append(w->name());
             }
@@ -580,6 +586,7 @@ void LayoutManagerPrivate::performBigFontLayout()
             if (w && widgetLayoutable[w->name()])
             {
                 w->setVisible(true);
+                w->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
                 vLayout->addWidget(w, 2);
                 displayParams.append(w->name());
                 contentWidgets.append(w);
@@ -593,6 +600,7 @@ void LayoutManagerPrivate::performBigFontLayout()
             if (w && widgetLayoutable[w->name()])
             {
                 w->setVisible(true);
+                w->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
                 vLayout->addWidget(w, 1);
                 displayWaveforms.append(w->name());
                 contentWidgets.append(w);
@@ -624,6 +632,7 @@ void LayoutManagerPrivate::performTrendLayout()
         contentLayout->addWidget(trendContainer, 3);
         contentLayout->addLayout(leftLayout, 5);
         trendContainer->setVisible(true);
+        trendContainer->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
         contentWidgets.append(trendContainer);
     }
     else
@@ -656,6 +665,7 @@ void LayoutManagerPrivate::performTrendLayout()
             }
             contentWidgets.append(w);
             w->setVisible(true);
+            w->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
             if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN)
             {
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM)

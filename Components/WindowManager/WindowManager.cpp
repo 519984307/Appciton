@@ -92,8 +92,6 @@ WindowManager::WindowManager() : QWidget(), d_ptr(new WindowManagerPrivate(this)
     p.setColor(QPalette::Foreground, Qt::white);
     setPalette(p);
 
-    setVisible(true);
-
     d_ptr->timer = new QTimer(this);
     d_ptr->timer->setSingleShot(true);
     d_ptr->timer->setInterval(60 * 1000);    // 60s
@@ -102,6 +100,7 @@ WindowManager::WindowManager() : QWidget(), d_ptr(new WindowManagerPrivate(this)
     qApp->installEventFilter(this);
 
     connect(&layoutManager, SIGNAL(layoutChanged()), this, SLOT(onLayoutChanged()));
+    QTimer::singleShot(0, this, SLOT(show()));
 }
 
 /***************************************************************************************************

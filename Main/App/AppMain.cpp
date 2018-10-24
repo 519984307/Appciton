@@ -211,6 +211,7 @@ static void _start(void)
 
     // perform window layout
     windowManager.setLayout(layoutManager.mainLayout());
+    layoutManager.mainLayout()->activate();
 
     // move window to the center
     QDesktopWidget *pDesk = QApplication::desktop();
