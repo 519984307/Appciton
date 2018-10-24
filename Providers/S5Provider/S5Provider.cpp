@@ -230,7 +230,7 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
         _isValuePR = (packet[i + 5] == 0x80) ? false : true;
     }
     // 棒图。
-    spo2Param.addBarData((packet[15] == 127) ? 50 : packet[15]);
+//    spo2Param.addBarData((packet[15] == 127) ? 50 : packet[15]);
 
     // PI;
     short piValue = packet[15];
