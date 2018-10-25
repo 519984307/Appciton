@@ -288,7 +288,7 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
 void NIBPDataTrendWidget::setTextSize()
 {
     QRect r;
-    r.setWidth((width() - nameLabel->width()) / 2.1);
+    r.setWidth((width() - nameLabel->width()) / 2.3);
     // 字体。
     int fontsize = fontManager.adjustNumFontSize(r, true, "220/150/100");
     QFont font = fontManager.numFont(fontsize, true);
@@ -366,6 +366,8 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
     mainLayout->setContentsMargins(10, 0, 10, 0);
     mainLayout->addWidget(_table);
     contentLayout->addLayout(mainLayout);
+
+    setFixedHeight(142);
 
     // 释放事件。
 //    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));

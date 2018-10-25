@@ -303,6 +303,8 @@ void NIBPTrendWidget::setShowMeasureCount(bool lastMeasureCountflag)
  *************************************************************************************************/
 void NIBPTrendWidget::showText(QString text)
 {
+    QRect r;
+    int fontSize;
     if (text == InvStr())
     {
         //有效测量数据
@@ -314,17 +316,14 @@ void NIBPTrendWidget::showText(QString text)
             }
             return;
         }
-        QFont font = fontManager.numFont(fontManager.getFontSize(7), true);
-        font.setWeight(QFont::Black);
-        _message->setFont(font);
+        r.setSize(QSize(width() - nameLabel->width(), height()));
     }
     else
     {
-        QRect r;
-        r.setSize(QSize(width() - nameLabel->width(), (height() / 3)));
-        int fontSize = fontManager.adjustNumFontSize(r, true);
-        _message->setFont(fontManager.numFont(fontSize, true));
+        r.setSize(QSize((width() - nameLabel->width()) *3 / 4, (height() / 3)));
     }
+    fontSize = fontManager.adjustNumFontSize(r, true);
+    _message->setFont(fontManager.numFont(fontSize, true));
 
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
     psrc = normalPalette(psrc);
@@ -512,8 +511,6 @@ NIBPTrendWidget::NIBPTrendWidget() : TrendWidget("NIBPTrendWidget")
 //    showValue();
 //    showText(InvStr());
 //    recoverResults();
-
-    setFixedHeight(142);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
