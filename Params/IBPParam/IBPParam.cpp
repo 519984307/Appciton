@@ -966,7 +966,7 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
     {
         if (IBP == IBP_INPUT_1)
         {
-            switch (calibinfo)
+            switch (static_cast<IBPZeroResult>(calibinfo))
             {
             case IBP_ZERO_SUCCESS:
             {
@@ -1002,7 +1002,7 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
         }
         else if (IBP == IBP_INPUT_2)
         {
-            switch (calibinfo)
+            switch (static_cast<IBPZeroResult>(calibinfo))
             {
             case IBP_ZERO_SUCCESS:
             {
@@ -1045,7 +1045,7 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
     {
         if (IBP == IBP_INPUT_1)
         {
-            switch (calibinfo)
+            switch (static_cast<IBPCalibrationResult>(calibinfo))
             {
             case IBP_CALIBRATION_SUCCESS:
             {
@@ -1085,7 +1085,7 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
         }
         else if (IBP == IBP_INPUT_2)
         {
-            switch (calibinfo)
+            switch (static_cast<IBPCalibrationResult>(calibinfo))
             {
             case IBP_CALIBRATION_SUCCESS:
             {
