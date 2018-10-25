@@ -518,25 +518,18 @@ void MergeConfig::_loadSupervisorConfig()
     }
 
     /*************************ECG****************************/
-    bret = config.getStrValue("ECG|PadsECGBandwidth", str);
-    bret &= currentConfig.getStrValue("ECG|PadsECGBandwidth", str1);
+    bret = config.getStrValue("ECG|BandWidth", str);
+    bret &= currentConfig.getStrValue("ECG|BandWidth", str1);
     if (bret && (str1 != str))
     {
-        currentConfig.setStrValue("ECG|PadsECGBandwidth", str);
+        currentConfig.setStrValue("ECG|BandWidth", str);
     }
 
-    bret = config.getStrValue("ECG|ChestLeadsECGBandwidth", str);
-    bret &= currentConfig.getStrValue("ECG|ChestLeadsECGBandwidth", str1);
+    bret = config.getStrValue("ECG|CalcLead", str);
+    bret &= currentConfig.getStrValue("ECG|CalcLead", str1);
     if (bret && (str1 != str))
     {
-        currentConfig.setStrValue("ECG|ChestLeadsECGBandwidth", str);
-    }
-
-    bret = config.getStrValue("ECG|DefaultECGLeadInMonitorMode", str);
-    bret &= currentConfig.getStrValue("ECG|DefaultECGLeadInMonitorMode", str1);
-    if (bret && (str1 != str))
-    {
-        currentConfig.setStrValue("ECG|DefaultECGLeadInMonitorMode", str);
+        currentConfig.setStrValue("ECG|CalcLead", str);
     }
 
     bret = config.getStrValue("ECG|QRSVolume", str);

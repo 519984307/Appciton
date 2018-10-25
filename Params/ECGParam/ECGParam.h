@@ -164,7 +164,7 @@ public:
 
     // 获取Topwaveform的名称。
     const QString &getCalcLeadWaveformName(void);
-    const QString &getWaveWidgetName(ECGLead lead);
+    QString getWaveWidgetName(ECGLead lead);
 
     // 更新ECG心电标准显示
     void updateECGStandard(int standard);
@@ -332,9 +332,6 @@ signals:
     void updateFilterMode(void);
 
 private slots:
-    // presenting rhythm, 6 seconds before the first primary lead on
-    void presentRhythm();
-
     /**
      * @brief onOxyCRGWaveUpdated 呼吸氧和波形更新槽函数
      */

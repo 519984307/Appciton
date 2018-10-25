@@ -76,6 +76,9 @@ OTHER_FILES +=                                                                  
     nPM/locale/ChineseSimplified.xml                                            \
     nPM/locale/English.xml                                                      \
     nPM/locale/PrintEnglish.xml                                                 \
+    nPM/etc/AdultConfig.Original.xml                                            \
+    nPM/etc/PedConfig.Original.xml                                              \
+    nPM/etc/NeoConfig.Original.xml                                              \
 
 SOURCES +=                                                                      \
     SOUP/Json/json_parser.cc                                                    \
@@ -1325,6 +1328,3 @@ linux-arm-g++ {
 
 RESOURCES += \
     Utility/Widgets/Base/res/ui.qrc
-
-DISTFILES += \
-    nPM/etc/AdultConfig.Original.xml

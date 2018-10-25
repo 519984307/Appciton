@@ -348,7 +348,7 @@ void ConfigEditECGMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
+                       << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
                        << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
                        << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
                        << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))

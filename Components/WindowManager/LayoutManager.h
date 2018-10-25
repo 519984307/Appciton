@@ -73,11 +73,6 @@ public:
     UserFaceType getUFaceType() const;
 
     /**
-     * @brief updateLayout update the layout info and re-perform layout stuff
-     */
-    void updateLayout();
-
-    /**
      * @brief getDisplayedWaveform get the current displayed waveforms
      * @return a list of display wavewidget's name
      */
@@ -134,6 +129,12 @@ public:
      * @brief updateTabOrder update the tab order
      */
     void updateTabOrder();
+
+public slots:
+    /**
+     * @brief updateLayout update the layout info and re-perform layout stuff
+     */
+    void updateLayout();
 
 signals:
     /* emit when the content layout changed */

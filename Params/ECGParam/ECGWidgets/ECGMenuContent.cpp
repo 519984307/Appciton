@@ -108,7 +108,7 @@ void ECGMenuContentPrivate::loadOptions()
     case ECG_FILTERMODE_SURGERY:
         combos[ITEM_CBO_NOTCH_FITER]->
         addItems(QStringList()
-                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
+                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
                  << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
                 );
         if (notchFilter == ECG_NOTCH_50_AND_60HZ)
@@ -124,7 +124,7 @@ void ECGMenuContentPrivate::loadOptions()
     case ECG_FILTERMODE_ST:
         combos[ITEM_CBO_NOTCH_FITER]->
         addItems(QStringList()
-                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
+                 << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
                  << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
                  << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
                 );
@@ -378,9 +378,8 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
-            systemConfig.setStrValue("PrimaryCfg|ECG|Ecg1WaveWidget", d_ptr->ecgWaveforms[index]);
             layoutManager.updateLayout();
-	    // 需要在布局更新后调用更新参数接口
+            // 需要在布局更新后调用更新参数接口
             ecgParam.updateWaveWidgetStatus();
             break;
         }
@@ -400,7 +399,7 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             case ECG_FILTERMODE_SURGERY:
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
                 addItems(QStringList()
-                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
+                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
                          << trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ))
                         );
                 break;
@@ -408,7 +407,7 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             case ECG_FILTERMODE_ST:
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
                 addItems(QStringList()
-                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF1))
+                         << trs(ECGSymbol::convert(ECG_NOTCH_OFF))
                          << trs(ECGSymbol::convert(ECG_NOTCH_50HZ))
                          << trs(ECGSymbol::convert(ECG_NOTCH_60HZ))
                         );
@@ -417,7 +416,7 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
                 break;
             }
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
-            setCurrentIndex(ECG_NOTCH_OFF1);
+            setCurrentIndex(ECG_NOTCH_OFF);
             break;
         }
         case ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER:
