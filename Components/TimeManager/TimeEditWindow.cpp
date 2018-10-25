@@ -239,6 +239,7 @@ void TimeEditWindow::layoutExec()
 
     // hour
     spinBox = new SpinBox;
+    spinBox->setRange(0, 23);
     spinBox->setScale(1);
     spinBox->setStep(1);
     spinBox->setArrow(false);
