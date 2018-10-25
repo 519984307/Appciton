@@ -141,6 +141,7 @@ void SPO2Param::exitDemo()
     if (NULL != _trendWidget)
     {
         _trendWidget->setSPO2Value(InvData());
+        _trendWidget->setPIValue(InvData());
     }
 
     setPR(InvData());

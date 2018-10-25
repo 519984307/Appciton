@@ -234,7 +234,7 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
 
     // PI;
     short piValue = packet[15];
-    if (piValue > 15 ||piValue < 0)
+    if (piValue > 15 || piValue < 1)
     {
         piValue = InvData();
     }
