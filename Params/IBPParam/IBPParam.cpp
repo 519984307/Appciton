@@ -47,7 +47,8 @@ enum IBPCalibrationResult
  *************************************************************************************************/
 IBPParam::IBPParam() : Param(PARAM_IBP),  _provider(NULL), _waveWidgetIBP1(NULL),
     _waveWidgetIBP2(NULL), _trendWidgetIBP1(NULL), _trendWidgetIBP2(NULL),
-    _staIBP1(true), _staIBP2(true), _connectedProvider(false)
+    _staIBP1(true), _staIBP2(true), _connectedProvider(false), _ibp1ZeroReply(false),
+    _ibp2ZeroReply(false)
 {
     _ibp1.pressureName = IBP_PRESSURE_ART;
     _ibp2.pressureName = IBP_PRESSURE_PA;
@@ -966,6 +967,7 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
     {
         if (IBP == IBP_INPUT_1)
         {
+            _ibp1ZeroReply = true;
             switch (static_cast<IBPZeroResult>(calibinfo))
             {
             case IBP_ZERO_SUCCESS:
@@ -1002,6 +1004,7 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
         }
         else if (IBP == IBP_INPUT_2)
         {
+            _ibp2ZeroReply = true;
             switch (static_cast<IBPZeroResult>(calibinfo))
             {
             case IBP_ZERO_SUCCESS:
@@ -1558,6 +1561,17 @@ void IBPParam::clearCalibAlarm()
     {
         ibpOneShotAlarm.setOneShotAlarm(id, false);
     }
+}
+
+bool IBPParam::getIBPZeroResult()
+{
+    bool replyResult = _ibp1ZeroReply && _ibp2ZeroReply;
+    if (replyResult)
+    {
+        _ibp1ZeroReply = false;
+        _ibp2ZeroReply = false;
+    }
+    return replyResult;
 }
 
 void IBPParam::onPaletteChanged(ParamID id)

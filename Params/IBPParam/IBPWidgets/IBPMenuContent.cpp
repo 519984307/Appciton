@@ -28,7 +28,8 @@
 #include "AlarmLimitWindow.h"
 
 #define AUTO_SCALE_UPDATE_TIME          (2 * 1000)
-#define ZERO_INTERVAL_TIME              (1000)
+#define ZERO_INTERVAL_TIME              (100)
+#define TIMEOUT_WAIT_NUMBER             (5000 / ZERO_INTERVAL_TIME)
 
 class IBPMenuContentPrivate
 {
@@ -53,7 +54,8 @@ public:
         q_ptr(q_ptr),
         oneGBox(NULL), twoGBox(NULL),
         autoTimerId(-1),
-        zeroTimerId(-1)
+        zeroTimerId(-1),
+        timeoutNum(0)
     {}
 
     // load settings
@@ -71,6 +73,7 @@ public:
     IBPRulerLimit rulerLimit1;
     IBPRulerLimit rulerLimit2;
     int zeroTimerId;
+    int timeoutNum;                     // 最多超时等待50次
 };
 
 void IBPMenuContentPrivate::loadOptions()
@@ -411,10 +414,18 @@ void IBPMenuContent::timerEvent(QTimerEvent *ev)
     }
     else if (d_ptr->zeroTimerId == ev->timerId())
     {
-        d_ptr->buttons[IBPMenuContentPrivate::ITEM_CBO_CALIB_ZERO]->setEnabled(true);
-        d_ptr->buttons[IBPMenuContentPrivate::ITEM_CBO_CALIB_ZERO]->setText(trs("IBPZeroStart"));
-        killTimer(d_ptr->zeroTimerId);
-        d_ptr->zeroTimerId = -1;
+        if (ibpParam.getIBPZeroResult() || d_ptr->timeoutNum == TIMEOUT_WAIT_NUMBER)
+        {
+            d_ptr->buttons[IBPMenuContentPrivate::ITEM_CBO_CALIB_ZERO]->setEnabled(true);
+            d_ptr->buttons[IBPMenuContentPrivate::ITEM_CBO_CALIB_ZERO]->setText(trs("IBPZeroStart"));
+            killTimer(d_ptr->zeroTimerId);
+            d_ptr->zeroTimerId = -1;
+            d_ptr->timeoutNum = 0;
+        }
+        else
+        {
+            d_ptr->timeoutNum++;
+        }
     }
 }
 
