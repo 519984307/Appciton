@@ -88,12 +88,15 @@ static void _task500MSec1(void)
 static void _task50MSec(void)
 {
     static unsigned t = 0;
+    unsigned curT = timeManager.getCurTime();
     if (t == 0)
     {
-        t = timeManager.getCurTime();
+        t = curT;
     }
 
-    if (timeManager.getCurTime() < t + 1)
+    // current time might be changed, so we get the abstract value.
+    // one second has passed
+    if (qAbs(curT - t) < 1)
     {
         return;
     }
@@ -117,7 +120,7 @@ static void _task50MSec(void)
     trendDataStorageManager.periodRun(t);
     paramManager.showSubParamValue();
 
-    t++;
+    t = curT;
 }
 
 /**************************************************************************************************
