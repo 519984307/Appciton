@@ -91,7 +91,7 @@ public:
     void isAlarm(bool isAlarm, bool isLimit);
 
     // get HR souce
-    HrSourceType getHrSource() const;
+    HrSourceType getCurHRSource() const;
 
     // 设置计算导联字串。
     void setECGTrendWidgetCalcName(ECGLead calLead);

@@ -124,6 +124,9 @@ void ECGParam::handDemoTrendData(void)
     int hrValue = 60;
     ecgDupParam.updateHR(hrValue);
 
+    soundManager.heartBeatTone();
+    ecgDupParam.updateHRBeatIcon();
+
     if (oxyCRGRrHrTrend)
     {
         oxyCRGRrHrTrend->addHrTrendData(hrValue);

@@ -68,7 +68,7 @@ void ECGMenuContentPrivate::loadOptions()
     {
         index = HR_PR_SOURCE_AUTO;
     }
-    else if (ecgDupParam.getHrSource() == ECGDupParam::HR_SOURCE_ECG)
+    else if (ecgDupParam.getCurHRSource() == ECGDupParam::HR_SOURCE_ECG)
     {
         index = HR_PR_SOURCE_ECG;
     }

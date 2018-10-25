@@ -282,7 +282,7 @@ void ECGDupParam::isAlarm(bool isAlarm, bool isLimit)
 /***************************************************************************************************
  * get the hr source
  **************************************************************************************************/
-ECGDupParam::HrSourceType ECGDupParam::getHrSource() const
+ECGDupParam::HrSourceType ECGDupParam::getCurHRSource() const
 {
     if (_hrSource == HR_SOURCE_AUTO)
     {

@@ -245,7 +245,7 @@ void ParamDataStorageManager::mainRun(unsigned t)
     paramBuf->item.co2Baro = data.co2baro;
     paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(&respOneShotAlarm, RESP_ONESHOT_ALARM_APNEA)
             || alertor.getOneShotAlarmStatus(&co2OneShotAlarm, CO2_ONESHOT_ALARM_APNEA);
-    paramBuf->item.hrSource = ecgDupParam.getHrSource();
+    paramBuf->item.hrSource = ecgDupParam.getCurHRSource();
     paramBuf->item.brSource = respDupParam.getBrSource();
     paramBuf->item.isFico2Display = co2Param.getFICO2Display();
     paramBuf->item.dataLen = SUB_PARAM_NR * sizeof(ParamItem);
@@ -318,7 +318,7 @@ void ParamDataStorageManager::addNIBPData(unsigned t)
     paramBuf->item.co2Baro = data.co2baro;
     paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(&respOneShotAlarm, RESP_ONESHOT_ALARM_APNEA)
             || alertor.getOneShotAlarmStatus(&co2OneShotAlarm, CO2_ONESHOT_ALARM_APNEA);
-    paramBuf->item.hrSource = ecgDupParam.getHrSource();
+    paramBuf->item.hrSource = ecgDupParam.getCurHRSource();
     paramBuf->item.brSource = respDupParam.getBrSource();
     paramBuf->item.isFico2Display = co2Param.getFICO2Display();
     paramBuf->item.isNibpShowMeasureValue = 1;
@@ -437,7 +437,7 @@ void ParamDataStorageManager::addAlarmData(unsigned t, ParamID id)
     paramBuf->item.co2Baro = data.co2baro;
     paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(&respOneShotAlarm, RESP_ONESHOT_ALARM_APNEA)
             || alertor.getOneShotAlarmStatus(&co2OneShotAlarm, CO2_ONESHOT_ALARM_APNEA);
-    paramBuf->item.hrSource = ecgDupParam.getHrSource();
+    paramBuf->item.hrSource = ecgDupParam.getCurHRSource();
     paramBuf->item.brSource = respDupParam.getBrSource();
     paramBuf->item.isFico2Display = co2Param.getFICO2Display();
     paramBuf->item.isAlarm = 1;

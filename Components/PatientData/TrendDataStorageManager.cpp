@@ -275,7 +275,7 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
     dataSegment->eventFlag = eventStorageManager.getEventTriggerFlag();
     eventStorageManager.clearEventTriggerFlag();
 
-    if (ecgDupParam.getHrSource() == ECGDupParam::HR_SOURCE_SPO2)
+    if (ecgDupParam.getCurHRSource() == ECGDupParam::HR_SOURCE_SPO2)
     {
         dataSegment->status |= HRSourceIsSpo2;
     }
