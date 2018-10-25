@@ -105,7 +105,30 @@ public:
     {
         static const char *symbol[IBP_ONESHOT_NR] =
         {
-            "IBP1LeadOff", "IBP2LeadOff"
+            "IBP1LeadOff", "IBP2LeadOff",
+            "IBP1ZeroCalibSuccess",
+            "IBP1MeasurePressureIsPulse",
+            "IBP1ZeroCalibPressureBeyondMeasureRange",
+            "IBP1LeadOffZeroCalibFail",
+            "IBP1NoSetZeroCalibTime",
+            "IBP2ZeroCalibSuccess",
+            "IBP2MeasurePressureIsPulse",
+            "IBP2ZeroCalibPressureBeyondMeasureRange",
+            "IBP2LeadOffZeroCalibFail",
+            "IBP2NoSetZeroCalibTime",
+
+            "IBP1CalibrationSuccess",
+            "IBP1MeasurePressureIsPulse",
+            "IBP1CalibrationPressureBeyondMeasureRange",
+            "IBP1NoZeroCalib",
+            "IBP1LeadOffCalibrationFail",
+            "IBP1NoSetCalibrationTime",
+            "IBP2CalibrationSuccess",
+            "IBP2MeasurePressureIsPulse",
+            "IBP2CalibrationPressureBeyondMeasureRange",
+            "IBP2NoZeroCalib",
+            "IBP2LeadOffCalibrationFail",
+            "IBP2NoSetCalibrationTime",
         };
         return symbol[index];
     }

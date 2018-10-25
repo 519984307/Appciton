@@ -105,6 +105,14 @@ public:
     void setScaleInfo(IBPScaleInfo &info, IBPPressureName name);
     IBPScaleInfo &getScaleInfo(IBPSignalInput ibp);
 
+    // 获取IBP导联脱落状态
+    bool getIBPLeadOff(IBPSignalInput ibp);
+
+    // 清空校准相关报警
+    void clearCalibAlarm(void);
+
+    // 获取IBP校零结果是否成功
+    bool getIBPZeroResult(void);
 public:
     // 校零。
     void zeroCalibration(IBPSignalInput IBP);
@@ -176,5 +184,8 @@ private:
     bool _staIBP1;                        // 导联状态
     bool _staIBP2;
     bool _connectedProvider;
+
+    bool _ibp1ZeroReply;                // 校零回复
+    bool _ibp2ZeroReply;
 };
 #define ibpParam (IBPParam::construction())
