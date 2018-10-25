@@ -135,7 +135,7 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_ECG1_GAIN]->clear();
     for (int i = 0; i < ECG_GAIN_NR; i++)
     {
-        combos[ITEM_CBO_ECG1_GAIN]->addItem(trs(ECGSymbol::convert((ECGGain)i)));
+        combos[ITEM_CBO_ECG1_GAIN]->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))));
     }
 
     config->getNumValue("ECG|Ecg1Gain", index);
