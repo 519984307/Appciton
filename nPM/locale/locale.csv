@@ -235,9 +235,10 @@ SPO2Setting,SPO2设置,SPO2 Setting
 RRSource,RR来源,RR Source
 BRSource,BR来源,BR Source
 NIBPSetting,NIBP设置,NIBP Setting
-ECGHRPRSourceAuto,自动,Auto
-ECGHRPRSourceECG,ECG,ECG
-ECGHRPRSourceSPO2,SPO2,SPO2
+HRSourceAuto,自动,Auto
+HRSourceECG,ECG,ECG
+HRSourceSPO2,SPO2,SPO2
+HRSourceIBP,IBP,IBP
 HR_PRSource,HR_PR来源,HR_PR Source
 CO2Setting,CO2设置,CO2 Setting
 PatientManager,病人管理,Patient Manager

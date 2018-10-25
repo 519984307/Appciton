@@ -17,6 +17,7 @@
 #include "IConfig.h"
 #include "IBPDefine.h"
 #include "LayoutManager.h"
+#include "ECGDupParam.h"
 
 IBPParam *IBPParam::_selfObj = NULL;
 
@@ -1142,6 +1143,18 @@ void IBPParam::leadStatus(bool staIBP1, bool staIBP2)
     }
 }
 
+bool IBPParam::isIBPLeadOff(IBPSignalInput IBP)
+{
+    if (IBP == IBP_INPUT_1)
+    {
+        return _staIBP1;
+    }
+    else if (IBP == IBP_INPUT_2)
+    {
+        return _staIBP2;
+    }
+}
+
 /**************************************************************************************************
  * 设置扫描速度。
  *************************************************************************************************/
@@ -1348,6 +1361,17 @@ void IBPParam::setParamData(IBPSignalInput IBP, unsigned short sys, unsigned sho
         _ibp2.mean = mean;
         _ibp2.pr = pr;
     }
+
+    // 尽量选择2个通道中有效值的那个pr
+    if (IBP == IBP_INPUT_1 && pr == InvData())
+    {
+        pr = _ibp2.pr;
+    }
+    else if (IBP == IBP_INPUT_2 && pr == InvData())
+    {
+        pr = _ibp1.pr;
+    }
+    ecgDupParam.updatePR(static_cast<short>(pr), PR_SOURCE_IBP);
 }
 
 /**************************************************************************************************

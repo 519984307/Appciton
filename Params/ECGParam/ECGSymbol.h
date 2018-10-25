@@ -18,13 +18,14 @@
 class ECGSymbol
 {
 public:
-    static const char *convert(ECGHRPRSourceType index)
+    static const char *convert(HRSourceType index)
     {
-        static const char *symbol[HR_PR_SOURCE_NR] =
+        static const char *symbol[HR_SOURCE_NR] =
         {
-            "ECGHRPRSourceAuto",
-            "ECGHRPRSourceECG",
-            "ECGHRPRSourceSPO2"
+            "HRSourceECG",
+            "HRSourceSPO2"
+            "HRSourceIBP"
+            "HRSourceAuto",
         };
 
         return symbol[index];

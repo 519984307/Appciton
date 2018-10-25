@@ -17,6 +17,8 @@
 #include "Debug.h"
 #include "ECGParam.h"
 #include "SoundManager.h"
+#include "SPO2Param.h"
+#include "IBPParam.h"
 
 ECGDupParam *ECGDupParam::_selfObj = NULL;
 
@@ -127,12 +129,65 @@ void ECGDupParam::setTrendWidget(ECGTrendWidget *trendWidget)
     _trendWidget = trendWidget;
 }
 
-/**************************************************************************************************
- * 更新PR的值。
- *************************************************************************************************/
-void ECGDupParam::updatePR(short pr)
+void ECGDupParam::updatePR(short pr, PRSourceType type)
 {
-    _prValue = pr;
+    if (type == PR_SOURCE_SPO2)
+    {
+        _prValueFromSPO2 = pr;
+    }
+    else if (type == PR_SOURCE_IBP)
+    {
+        _prValueFromIBP = pr;
+    }
+
+    bool isIBP1LeadOff = ibpParam.isIBPLeadOff(IBP_INPUT_1);
+    bool isIBP2LeadOff = ibpParam.isIBPLeadOff(IBP_INPUT_2);
+    bool isSPO2Valid = spo2Param.isValid();
+
+    switch (_prSource)
+    {
+        case PR_SOURCE_AUTO:
+        {
+            if (isSPO2Valid && _prValueFromSPO2 != InvData())
+            {
+                _prValue = _prValueFromSPO2;
+            }
+            else if ((!isIBP1LeadOff || !isIBP2LeadOff)
+                 && (_prValueFromIBP != InvData()))
+            {
+                _prValue = _prValueFromIBP;
+            }
+            else
+            {
+                _prValue = InvData();
+            }
+        }
+        break;
+        case PR_SOURCE_SPO2:
+        {
+            if (isSPO2Valid)
+            {
+                _prValue = _prValueFromSPO2;
+            }
+            else
+            {
+                _prValue = InvData();
+            }
+        }
+        break;
+        case PR_SOURCE_IBP:
+        {
+            if (!isIBP1LeadOff || !isIBP2LeadOff)
+            {
+                _prValue = _prValueFromIBP;
+            }
+            else
+            {
+                _prValue = InvData();
+            }
+        }
+        break;
+    }
 
     if (_trendWidget == NULL)
     {
@@ -282,14 +337,21 @@ void ECGDupParam::isAlarm(bool isAlarm, bool isLimit)
 /***************************************************************************************************
  * get the hr source
  **************************************************************************************************/
-ECGDupParam::HrSourceType ECGDupParam::getHrSource() const
+HRSourceType ECGDupParam::getHrSource() const
 {
     if (_hrSource == HR_SOURCE_AUTO)
     {
-        HrSourceType type;
+        HRSourceType type = HR_SOURCE_AUTO;
         if (_hrValue == InvData() && _prValue != InvData())
         {
-            type = HR_SOURCE_SPO2;
+            if (_prSource == PR_SOURCE_SPO2)
+            {
+                type = HR_SOURCE_SPO2;
+            }
+            else if (_prSource == PR_SOURCE_IBP)
+            {
+                type = HR_SOURCE_IBP;
+            }
         }
         else
         {
@@ -319,9 +381,23 @@ void ECGDupParam::onPaletteChanged(ParamID id)
     QPalette pal = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     _trendWidget->updatePalette(pal);
 }
-void ECGDupParam::setHrSource(ECGDupParam::HrSourceType type)
+void ECGDupParam::setHrSource(HRSourceType type)
 {
     _hrSource = type;
+
+    // 更新pr来源选择
+    if (type == HR_SOURCE_SPO2)
+    {
+        _prSource = PR_SOURCE_SPO2;
+    }
+    else if (type == HR_SOURCE_IBP)
+    {
+        _prSource = PR_SOURCE_IBP;
+    }
+    else
+    {
+        _prSource = PR_SOURCE_AUTO;
+    }
 }
 
 bool ECGDupParam::isAutoTypeHrSouce() const
@@ -350,9 +426,12 @@ ECGDupParam::ECGDupParam()
       _trendWidget(NULL),
       _hrValue(InvData()),
       _prValue(InvData()),
+      _prValueFromSPO2(InvData()),
+      _prValueFromIBP(InvData()),
       _hrBeatFlag(true),
       _isAlarm(false),
-      _hrSource(HR_SOURCE_ECG)
+      _hrSource(HR_SOURCE_ECG),
+      _prSource(PR_SOURCE_AUTO)
 {
 }
 
