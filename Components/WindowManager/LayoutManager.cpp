@@ -18,10 +18,10 @@
 #include "IWidget.h"
 #include <QList>
 #include "OrderedMap.h"
-#include "ECGSymbol.h"
 #include "WaveWidget.h"
 #include "ShortTrendContainer.h"
 #include "TrendWidget.h"
+#include "ECGParam.h"
 
 typedef QList<LayoutNode> LayoutRow;
 
@@ -931,21 +931,25 @@ UserFaceType LayoutManager::getUFaceType() const
 void LayoutManager::updateLayout()
 {
     // find the ECG correspond wave
-    int leadMode = ECG_LEAD_MODE_3;
-    systemConfig.getNumValue("PrimaryCfg|ECG|LeadMode", leadMode);
-    QString ecg1Wave;
-    QString ecg2Wave;
-    systemConfig.getStrValue("PrimaryCfg|ECG|Ecg1WaveWidget", ecg1Wave);
-    systemConfig.getStrValue("PrimaryCfg|ECG|Ecg2WaveWidget", ecg2Wave);
-    if (leadMode == ECG_LEAD_MODE_3)
+    int leadMode = ecgParam.getLeadMode();
+    int lead = ECG_LEAD_II;
+    if (currentConfig.getNumValue("ECG|Ecg1Wave", lead))
     {
-        d_ptr->layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG1)] = ecg1Wave;
-        d_ptr->layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG2)] = QString();
+        d_ptr->layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG1)]
+                = ecgParam.getWaveWidgetName(static_cast<ECGLead>(lead));
+    }
+
+    if (leadMode > ECG_LEAD_MODE_3)
+    {
+        if (currentConfig.getNumValue("ECG|Ecg2Wave", lead))
+        {
+            d_ptr->layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG2)]
+                    = ecgParam.getWaveWidgetName(static_cast<ECGLead>(lead));
+        }
     }
     else
     {
-        d_ptr->layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG1)] = ecg1Wave;
-        d_ptr->layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG2)] = ecg2Wave;
+        d_ptr->layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG2)] = QString();
     }
 
     d_ptr->layoutInfos.clear();
