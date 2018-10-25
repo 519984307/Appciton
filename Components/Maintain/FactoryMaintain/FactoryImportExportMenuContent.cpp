@@ -178,7 +178,8 @@ void FactoryImportExportMenuContentPrivate::updateConfigList()
     QStringList configNameList;
     for (int i = 0; i < configs.count(); i++)
     {
-        configNameList.append(configs.at(i).name);
+        QString s = configs.at(i).name.left(configs.at(i).name.indexOf(QRegExp("[A-Z]"), 1));
+        configNameList.append(QString("%1(%2)").arg(trs("FactoryConfig")).arg(trs(s)));
     }
     configDataModel->setStringList(configNameList);
 

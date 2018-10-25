@@ -870,6 +870,7 @@ TransferSupervisorByUSB,传输超级配置数据到USB,Transferring Supervisor C
 TransferSupervisorByWIFI,传输超级配置数据到WIFI,Transferring Supervisor Config to WIFI
 TransferRescueDataComplete,营救数据传输完成,Rescue Data Transfer Complete
 TransferSupervisorComplete,超级配置传输完成,Supervisor Config Transfer Complete
+TransferErrorLogToUSBComplete,U盘传输错误日志完成,Transfer error log to USB complete
 TransferFailed,传输失败,Transfer Failed
 TransferCancel,传输取消,Transfer Cancel
 ECG12LTransfersuccess,12导传送成功,ECG 12 Lead Transfer Success
@@ -1506,3 +1507,11 @@ MinitrendLength,动态趋势时间,Minitrend Length
 SelectParameters,参数选择,Select Parameters
 Ok,确定,Ok
 RestoreDefault,恢复默认值,Defaluts
+CurrentConfig,当前配置,Current Config
+FactoryConfig,工厂配置,Factory Config 
+_12Hour,12 小时,12 Hour
+_24Hour,24 小时,24 Hour
+System,系统,System
+Machine,机器,Machine
+Ped,小儿,Pediatric
+Neo,新生儿,Neonate
