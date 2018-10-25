@@ -54,6 +54,7 @@
 		<Ecg1Gain>0</Ecg1Gain>
 		<Ecg2Gain>0</Ecg2Gain>
 		<SweepSpeed>1</SweepSpeed>
+		<HRSource>0</HRSource>
 		<Filter>0</Filter>
 		<DisplayMode>0</DisplayMode>
 		<LeadMode>2</LeadMode>

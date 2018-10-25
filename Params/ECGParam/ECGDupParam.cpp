@@ -398,6 +398,7 @@ void ECGDupParam::setHrSource(HRSourceType type)
     {
         _prSource = PR_SOURCE_AUTO;
     }
+    currentConfig.setNumValue("ECG|HRSource", static_cast<int>(type));
 }
 
 bool ECGDupParam::isAutoTypeHrSouce() const

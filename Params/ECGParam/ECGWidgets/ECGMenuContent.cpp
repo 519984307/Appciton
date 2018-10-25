@@ -64,15 +64,7 @@ void ECGMenuContentPrivate::loadOptions()
 {
     int index = 0;
 
-    HRSourceType sourceType = ecgDupParam.getHrSource();
-    if (ecgDupParam.isAutoTypeHrSouce())
-    {
-        index = HR_SOURCE_AUTO;
-    }
-    else
-    {
-        index = sourceType;
-    }
+    currentConfig.getNumValue("ECG|HRSource", index);
     combos[ITEM_CBO_HRPR_SOURCE]->setCurrentIndex(index);
 
     ECGLeadMode leadMode = ecgParam.getLeadMode();

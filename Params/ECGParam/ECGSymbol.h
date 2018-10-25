@@ -23,8 +23,8 @@ public:
         static const char *symbol[HR_SOURCE_NR] =
         {
             "HRSourceECG",
-            "HRSourceSPO2"
-            "HRSourceIBP"
+            "HRSourceSPO2",
+            "HRSourceIBP",
             "HRSourceAuto",
         };
 
