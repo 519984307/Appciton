@@ -133,7 +133,7 @@ void AlarmInfoWindow::layout()
         ListDataModel *model = new ListDataModel(this);
         listView->setModel(model);
         listView->setFixedHeight(model->getRowHeightHint() * LISTVIEW_MAX_VISIABLE_SIZE);
-        listView->setDrawIcon(true);
+        listView->setDrawIcon(false);
         listView->setSpacing(0);
         d_ptr->listModel = model;
         d_ptr->listView = listView;
