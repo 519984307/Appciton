@@ -303,8 +303,6 @@ void NIBPTrendWidget::setShowMeasureCount(bool lastMeasureCountflag)
  *************************************************************************************************/
 void NIBPTrendWidget::showText(QString text)
 {
-    QRect r;
-    int fontSize;
     if (text == InvStr())
     {
         //有效测量数据
@@ -316,14 +314,12 @@ void NIBPTrendWidget::showText(QString text)
             }
             return;
         }
-        r.setSize(QSize(width() - nameLabel->width(), height()));
+        _message->setFont(fontManager.numFont(_messageInvFontSize, true));
     }
     else
     {
-        r.setSize(QSize((width() - nameLabel->width()) *3 / 4, (height() / 3)));
+        _message->setFont(fontManager.numFont(_messageFontSize, true));
     }
-    fontSize = fontManager.adjustNumFontSize(r, true);
-    _message->setFont(fontManager.numFont(fontSize, true));
 
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
     psrc = normalPalette(psrc);
@@ -370,22 +366,34 @@ void NIBPTrendWidget::setTextSize()
     font.setWeight(QFont::Black);
 
     _mapValue->setFont(font);
+
+    r.setSize(QSize(width() - nameLabel->width(), height()));
+    _messageInvFontSize = fontManager.adjustNumFontSize(r, true);
+    r.setSize(QSize((width() - nameLabel->width()) *3 / 4, (height() / 3)));
+    _messageFontSize = fontManager.adjustNumFontSize(r, true);
+
+    if (_message->text() == InvStr())
+    {
+        _message->setFont(fontManager.numFont(_messageInvFontSize, true));
+    }
+    else
+    {
+        _message->setFont(fontManager.numFont(_messageFontSize, true));
+    }
 }
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-NIBPTrendWidget::NIBPTrendWidget() : TrendWidget("NIBPTrendWidget")
+NIBPTrendWidget::NIBPTrendWidget()
+    : TrendWidget("NIBPTrendWidget")
+    , _sysString(InvStr()), _diaString(InvStr())
+    , _mapString(QString("(") + InvStr() + QString(")"))
+    , _pressureString(InvStr()), _measureTime("")
+    , _sysAlarm(false), _diaAlarm(false)
+    , _mapAlarm(false), _effective(false)
+    , _messageFontSize(100), _messageInvFontSize(100)
 {
-    _sysString = InvStr();
-    _diaString = InvStr();
-    _mapString = QString("(") + InvStr() + QString(")");
-    _pressureString = InvStr();
-    _measureTime = "";
-    _sysAlarm = false;
-    _diaAlarm = false;
-    _mapAlarm = false;
-    _effective = false;
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
     setPalette(palette);
     setName(trs(paramInfo.getParamName(PARAM_NIBP)));
@@ -445,7 +453,7 @@ NIBPTrendWidget::NIBPTrendWidget() : TrendWidget("NIBPTrendWidget")
     _message = new QLabel();
     _message->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     _message->setPalette(palette);
-    _message->setFont(fontManager.textFont(100));
+    _message->setFont(fontManager.textFont(_messageFontSize));
     _message->setText(InvStr());
 
     // 将数值显示和倒计时放到一起。
@@ -506,11 +514,6 @@ NIBPTrendWidget::NIBPTrendWidget() : TrendWidget("NIBPTrendWidget")
     contentLayout->addStretch();
     contentLayout->addLayout(vLayout5);
     contentLayout->addStretch();
-
-//    setShowStacked(0);
-//    showValue();
-//    showText(InvStr());
-//    recoverResults();
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
