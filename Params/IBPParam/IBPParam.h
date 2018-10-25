@@ -105,6 +105,11 @@ public:
     void setScaleInfo(IBPScaleInfo &info, IBPPressureName name);
     IBPScaleInfo &getScaleInfo(IBPSignalInput ibp);
 
+    // 获取IBP导联脱落状态
+    bool getIBPLeadOff(IBPSignalInput ibp);
+
+    // 清空校准相关报警
+    void clearCalibAlarm(void);
 public:
     // 校零。
     void zeroCalibration(IBPSignalInput IBP);

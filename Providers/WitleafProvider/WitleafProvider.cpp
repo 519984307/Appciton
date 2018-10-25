@@ -244,10 +244,6 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
         {
             IBPCalibration calib = (IBPCalibration)((data[3] >> 7) & 0x01);
             IBPSignalInput IBP = (IBPSignalInput)((data[3] >> 6) & 0x01);
-            if (IBP == IBP_INPUT_1)
-            {
-                ibpParam.zeroCalibration(IBP_INPUT_2);
-            }
             int info = 0;
             if (calib == IBP_CALIBRATION_ZERO)
             {

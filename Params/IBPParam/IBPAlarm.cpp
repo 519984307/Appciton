@@ -622,8 +622,14 @@ SubParamID IBPOneShotAlarm::getSubParamID(int id)
  *************************************************************************************************/
 AlarmPriority IBPOneShotAlarm::getAlarmPriority(int id)
 {
-    Q_UNUSED(id)
-    return ALARM_PRIO_LOW;
+    if (id == IBP1_LEAD_OFF || id == IBP2_LEAD_OFF)
+    {
+        return ALARM_PRIO_MED;
+    }
+    else
+    {
+        return ALARM_PRIO_PROMPT;
+    }
 }
 
 /**************************************************************************************************
@@ -640,6 +646,14 @@ AlarmType IBPOneShotAlarm::getAlarmType(int id)
  *************************************************************************************************/
 bool IBPOneShotAlarm::isAlarmed(int id)
 {
+    if (id == IBP1_LEAD_OFF)
+    {
+        return  ibpParam.getIBPLeadOff(IBP_INPUT_1);
+    }
+    else if (id == IBP2_LEAD_OFF)
+    {
+        return  ibpParam.getIBPLeadOff(IBP_INPUT_2);
+    }
     return AlarmOneShotIFace::isAlarmed(id);
 }
 

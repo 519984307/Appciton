@@ -570,6 +570,30 @@ CO2ZeroDisable,CO2禁止校零,CO2 Zero Disable
 CO2ZeroInprogress,CO2校零中,CO2 Zero In Progress
 CO2SpanCalibFailed,CO2校准量程失败,CO2 Span Calib Failed
 CO2SpanCalibInprogress,CO2正在校准量程,CO2 Span Calib Inprogress
+IBP1LeadOff,IBP通道1导联脱落,IBP1 lead off
+IBP2LeadOff,IBP通道2导联脱落,IBP2 lead off
+IBP1ZeroCalibSuccess,IBP通道1校零成功,IBP1 zero success
+IBP1MeasurePressureIsPulse,IBP通道1测量压力是动脉,IBP1 zero is pluse
+IBP1ZeroCalibPressureBeyondMeasureRange,IBP通道1校零压力超出范围,IBP1 zero beyond range
+IBP1LeadOffZeroCalibFail,IBP通道1校零失败,IBP1 zero fail
+IBP1NoSetZeroCalibTime,IBP通道1没有设置校零时间,IBP1 not set zero time
+IBP2ZeroCalibSuccess,IBP通道2校零成功,IBP2 zero success
+IBP2MeasurePressureIsPulse,IBP通道2测量压力是动脉,IBP2 zero is pluse
+IBP2ZeroCalibPressureBeyondMeasureRange,IBP通道2校零压力超出范围,IBP2 zero beyond range
+IBP2LeadOffZeroCalibFail,IBP通道2校零失败,IBP2 zero fail
+IBP2NoSetZeroCalibTime,IBP通道2没有设置校零时间,IBP2 not set zero time
+IBP1CalibrationSuccess,IBP通道1校准成功,IBP1 calibration success
+IBP1MeasurePressureIsPulse,IBP通道1测量压力是动脉,IBP1 calibration is pluse
+IBP1CalibrationPressureBeyondMeasureRange,IBP通道1校准压力超出范围,IBP1 calibration beyond range
+IBP1NoZeroCalib,IBP通道1没有校零,IBP1 not zero calibration
+IBP1LeadOffCalibrationFail,IBP通道1校准失败,IBP1 calibration fail
+IBP1NoSetCalibrationTime,IBP通道1没有设置校准时间,IBP1 not set calibration time
+IBP2CalibrationSuccess,IBP通道2校准成功,IBP2 calibration success
+IBP2MeasurePressureIsPulse,IBP通道2测量压力是动脉,IBP2 calibration is pluse
+IBP2CalibrationPressureBeyondMeasureRange,IBP通道2校准压力超出范围,IBP2 calibration beyond range
+IBP2NoZeroCalib,IBP通道2没有校零,IBP2 not zero calibration
+IBP2LeadOffCalibrationFail,IBP通道2校准失败,IBP2 calibration fail
+IBP2NoSetCalibrationTime,IBP通道2没有设置校准时间,IBP2 not set calibration time
 ARTSYSLow,ART收缩压低,ART SYS Low
 ARTSYSHigh,ART收缩压高,ART SYS High
 ARTDIALow,ART舒张压低,ART DIA Low
@@ -1100,6 +1124,7 @@ CheckInput,查看输入,Check Input
 PrimitiveCalculation,原始计算,Primitive Calculation
 InOutValue,输入/输出值,
 ZeroCalibSuccess,校零成功,
+ZeroInProgress,校零进行中,Zero in progress
 CalibrationSuccess,校准成功,
 MeasurePressureIsPulse,测量压力是脉动的,
 ZeroCalibPressureBeyondMeasureRange,校零压力超出测量范围,
@@ -1249,7 +1274,8 @@ RecoverDefaults,默认覆盖,Recover Defaults
 ModuleMaintainMenu,模块维护菜单,Module Maintain
 ModuleMaintainMenuDesc,模块维护菜单,Module Maintain Menu Desc
 AnaesthesiaModuleCalibration,麻醉模块化校准,Anaesthesia Module Calibration
-IBPPressureCalibration,IBP压力校准,Pressure Calibration
+IBP1PressureCalibration,IBP通道1校准,IBP1 Pressure Calibration
+IBP2PressureCalibration,IBP通道2校准,IBP2 Pressure Calibration
 CO2ModuleMaintenance,二氧化碳模块维护,CO2 Module Maintenance
 NIBPPressureTest,NIBP压力测试,NIBP Pressure Test
 NIBPLeakageDetection,NIBP泄露检测,NIBP Leakage Detection

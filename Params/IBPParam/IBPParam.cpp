@@ -17,6 +17,7 @@
 #include "IConfig.h"
 #include "IBPDefine.h"
 #include "LayoutManager.h"
+#include "IBPAlarm.h"
 
 IBPParam *IBPParam::_selfObj = NULL;
 
@@ -913,6 +914,7 @@ IBPScaleInfo &IBPParam::getScaleInfo(IBPSignalInput ibp)
  *************************************************************************************************/
 void IBPParam::zeroCalibration(IBPSignalInput IBP)
 {
+    clearCalibAlarm();
     unsigned zeroTime = timeDate.time();
     unsigned int year = timeDate.getDateYear(zeroTime) - 2000;
     unsigned int month = timeDate.getDateMonth(zeroTime);
@@ -932,6 +934,7 @@ void IBPParam::zeroCalibration(IBPSignalInput IBP)
  *************************************************************************************************/
 void IBPParam::setCalibration(IBPSignalInput IBP, unsigned short value)
 {
+    clearCalibAlarm();
     _provider->setZero(IBP, IBP_CALIBRATION_SET, value);
 }
 
@@ -940,7 +943,6 @@ void IBPParam::setCalibration(IBPSignalInput IBP, unsigned short value)
  *************************************************************************************************/
 void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int calibinfo)
 {
-    QString info;
     if (calib == IBP_CALIBRATION_ZERO)
     {
         if (IBP == IBP_INPUT_1)
@@ -949,28 +951,28 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
             {
             case 0:
             {
-                info = "IBP" + trs("Channel") + "1" + trs("ZeroCalibSuccess");
+                ibpOneShotAlarm.setOneShotAlarm(IBP1_ZERO_SUCCESS, true);
                 _trendWidgetIBP1->setZeroFlag(true);
                 break;
             }
             case 1:
             {
-                info = "IBP" + trs("Channel") + "1" + trs("MeasurePressureIsPulse");
+                ibpOneShotAlarm.setOneShotAlarm(IBP1_ZERO_IS_PULSE, true);
                 break;
             }
             case 2:
             {
-                info = "IBP" + trs("Channel") + "1" + trs("ZeroCalibPressureBeyondMeasureRange");
+                ibpOneShotAlarm.setOneShotAlarm(IBP1_ZERO_BEYOND_RANGE, true);
                 break;
             }
             case 4:
             {
-                info = "IBP" + trs("Channel") + "1" + trs("LeadOffZeroCalibFail");
+                ibpOneShotAlarm.setOneShotAlarm(IBP1_ZERO_FAIL, true);
                 break;
             }
             case 5:
             {
-                info = "IBP" + trs("Channel") + "1" + trs("NoSetZeroCalibTime");
+                ibpOneShotAlarm.setOneShotAlarm(IBP1_ZERO_NOT_SET_TIME, true);
                 break;
             }
             default:
@@ -985,28 +987,28 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
             {
             case 0:
             {
-                info = "IBP" + trs("Channel") + "2" + trs("ZeroCalibSuccess");
+                ibpOneShotAlarm.setOneShotAlarm(IBP2_ZERO_SUCCESS, true);
                 _trendWidgetIBP2->setZeroFlag(true);
                 break;
             }
             case 1:
             {
-                info = "IBP" + trs("Channel") + "2" + trs("MeasurePressureIsPulse");
+                ibpOneShotAlarm.setOneShotAlarm(IBP2_ZERO_IS_PULSE, true);
                 break;
             }
             case 2:
             {
-                info = "IBP" + trs("Channel") + "2" + trs("ZeroCalibPressureBeyondMeasureRange");
+                ibpOneShotAlarm.setOneShotAlarm(IBP2_ZERO_BEYOND_RANGE, true);
                 break;
             }
             case 4:
             {
-                info = "IBP" + trs("Channel") + "2" + trs("LeadOffZeroCalibFail");
+                ibpOneShotAlarm.setOneShotAlarm(IBP2_ZERO_FAIL, true);
                 break;
             }
             case 5:
             {
-                info = "IBP" + trs("Channel") + "2" + trs("NoSetZeroCalibTime");
+                ibpOneShotAlarm.setOneShotAlarm(IBP2_ZERO_NOT_SET_TIME, true);
                 break;
             }
             default:
@@ -1028,32 +1030,32 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
             {
             case 0:
             {
-                info = "IBP" + trs("Channel") + "1" + trs("CalibrationSuccess");
+                ibpOneShotAlarm.setOneShotAlarm(IBP1_CALIB_SUCCESS, true);
                 break;
             }
             case 1:
             {
-                info = "IBP" + trs("Channel") + "1" + trs("MeasurePressureIsPulse");
+                ibpOneShotAlarm.setOneShotAlarm(IBP1_CALIB_IS_PULSE, true);
                 break;
             }
             case 2:
             {
-                info = "IBP" + trs("Channel") + "1" + trs("CalibrationPressureBeyondMeasureRange");
+                ibpOneShotAlarm.setOneShotAlarm(IBP1_CALIB_BEYOND_RANGE, true);
                 break;
             }
             case 3:
             {
-                info = "IBP" + trs("Channel") + "1" + trs("NoZeroCalib");
+                ibpOneShotAlarm.setOneShotAlarm(IBP1_CALIB_NOT_ZERO, true);
                 break;
             }
             case 4:
             {
-                info = "IBP" + trs("Channel") + "1" + trs("LeadOffCalibrationFail");
+                ibpOneShotAlarm.setOneShotAlarm(IBP1_CALIB_FAIL, true);
                 break;
             }
             case 6:
             {
-                info = "IBP" + trs("Channel") + "1" + trs("NoSetCalibrationTime");
+                ibpOneShotAlarm.setOneShotAlarm(IBP1_CALIB_NOT_SET_TIME, true);
                 break;
             }
             default:
@@ -1068,32 +1070,32 @@ void IBPParam::calibrationInfo(IBPCalibration calib, IBPSignalInput IBP, int cal
             {
             case 0:
             {
-                info = "IBP" + trs("Channel") + "2" + trs("CalibrationSuccess");
+                ibpOneShotAlarm.setOneShotAlarm(IBP2_CALIB_SUCCESS, true);
                 break;
             }
             case 1:
             {
-                info = "IBP" + trs("Channel") + "2" + trs("MeasurePressureIsPulse");
+                ibpOneShotAlarm.setOneShotAlarm(IBP2_CALIB_IS_PULSE, true);
                 break;
             }
             case 2:
             {
-                info = "IBP" + trs("Channel") + "2" + trs("CalibrationPressureBeyondMeasureRange");
+                ibpOneShotAlarm.setOneShotAlarm(IBP2_CALIB_BEYOND_RANGE, true);
                 break;
             }
             case 3:
             {
-                info = "IBP" + trs("Channel") + "2" + trs("NoZeroCalib");
+                ibpOneShotAlarm.setOneShotAlarm(IBP2_CALIB_NOT_ZERO, true);
                 break;
             }
             case 4:
             {
-                info = "IBP" + trs("Channel") + "2" + trs("LeadOffCalibrationFail");
+                ibpOneShotAlarm.setOneShotAlarm(IBP2_CALIB_FAIL, true);
                 break;
             }
             case 6:
             {
-                info = "IBP" + trs("Channel") + "2" + trs("NoSetCalibrationTime");
+                ibpOneShotAlarm.setOneShotAlarm(IBP2_CALIB_NOT_SET_TIME, true);
                 break;
             }
             default:
@@ -1516,6 +1518,27 @@ WaveformID IBPParam::getWaveformID(IBPPressureName name)
         break;
     }
     return waveID;
+}
+
+bool IBPParam::getIBPLeadOff(IBPSignalInput ibp)
+{
+    if (ibp == IBP_INPUT_1)
+    {
+        return _staIBP1;
+    }
+    else if (ibp == IBP_INPUT_2)
+    {
+        return _staIBP2;
+    }
+    return true;
+}
+
+void IBPParam::clearCalibAlarm()
+{
+    for (int id = IBP1_ZERO_SUCCESS; id < IBP_ONESHOT_NR; id++)
+    {
+        ibpOneShotAlarm.setOneShotAlarm(id, false);
+    }
 }
 
 void IBPParam::onPaletteChanged(ParamID id)
