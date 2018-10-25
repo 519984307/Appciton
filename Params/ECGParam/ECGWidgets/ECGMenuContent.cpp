@@ -94,6 +94,24 @@ void ECGMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_ECG2]->clear();
     combos[ITEM_CBO_ECG1]->addItems(ecgWaveformTitles);
     combos[ITEM_CBO_ECG2]->addItems(ecgWaveformTitles);
+    int index1 = 0;
+    int index2 = 0;
+    currentConfig.getNumValue("ECG|Ecg2Wave", index2);
+    currentConfig.getNumValue("ECG|Ecg1Wave", index1);
+    // 读取的ecg1wave、ecg2wave如果item相同，则复位为0、1.
+    if (index2 == index1)
+    {
+        index1 = 0;
+        index2 = 1;
+        currentConfig.setNumValue("ECG|Ecg1Wave", index1);
+        currentConfig.setNumValue("ECG|Ecg2Wave", index2);
+    }
+    // 保证导联的item与ecg1wave的item值一致
+    int lead = ecgParam.getCalcLead();
+    if (index1 != lead)
+    {
+        ecgParam.setCalcLead(static_cast<ECGLead>(index1));
+    }
     QString ecgTopWaveform = ecgParam.getCalcLeadWaveformName();
     index = ecgWaveforms.indexOf(ecgTopWaveform);
     if (index >= 0)
@@ -106,13 +124,7 @@ void ECGMenuContentPrivate::loadOptions()
     }
     combos[ITEM_CBO_ECG1]->blockSignals(false);
 
-    index = 0;
-    currentConfig.getNumValue("ECG|Ecg2Wave", index);
-    combos[ITEM_CBO_ECG_GAIN]->blockSignals(true);
-    ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
-    combos[ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
-    combos[ITEM_CBO_ECG_GAIN]->blockSignals(false);
-    combos[ITEM_CBO_ECG2]->setCurrentIndex(index);
+    combos[ITEM_CBO_ECG2]->setCurrentIndex(index2);
     combos[ITEM_CBO_ECG2]->blockSignals(false);
 
 
@@ -441,6 +453,7 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
+            currentConfig.setNumValue("ECG|Ecg1Wave", index);
             layoutManager.updateLayout();
             // 需要在布局更新后调用更新参数接口
             ecgParam.updateWaveWidgetStatus();
@@ -461,6 +474,7 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
                 // 更新最新导联
                 int waveIndex = 0;
                 currentConfig.getNumValue("ECG|Ecg2Wave", waveIndex);
+                currentConfig.setNumValue("ECG|Ecg1Wave", waveIndex);
                 lead = static_cast<ECGLead>(waveIndex);
                 ecgParam.setCalcLead(d_ptr->ecgWaveforms[waveIndex]);
                 ecgParam.setLeadMode3DisplayLead(d_ptr->ecgWaveforms[waveIndex]);
