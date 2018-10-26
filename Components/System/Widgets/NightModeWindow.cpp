@@ -109,7 +109,7 @@ void NightModeWindow::layoutExec()
 
     QGridLayout *glayout = new QGridLayout(this);
     glayout->setMargin(10);
-    setFixedWidth(480);
+    setFixedSize(480, 480);
 
     QLabel *label;
     ComboBox *comboBox;
