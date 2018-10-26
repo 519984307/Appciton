@@ -255,7 +255,7 @@ void SoftKeyManager::resizeEvent(QResizeEvent *e)
 
     d_ptr->resetPageInfo();
     d_ptr->layoutKeyDesc();
-    this->layout()->activate();
+    d_ptr->dynamicKeyLayout->activate();
 }
 
 /***************************************************************************************************
@@ -337,13 +337,10 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager"),
     connect(d_ptr->leftPageKeyWidget, SIGNAL(released()), this, SLOT(_fixedKeyClicked()));
     hbox->addWidget(d_ptr->leftPageKeyWidget, 1);
 
-    // dynamic layout
-    QWidget *placeHolder =  new QWidget();
-    placeHolder->setAttribute(Qt::WA_NoSystemBackground);
-    hbox->addWidget(placeHolder, 1);
-    d_ptr->dynamicKeyLayout = new QHBoxLayout(placeHolder);
+    d_ptr->dynamicKeyLayout = new QHBoxLayout();
     d_ptr->dynamicKeyLayout->setSpacing(SOFTKEY_SPACING);
     d_ptr->dynamicKeyLayout->setMargin(0);
+    hbox->addLayout(d_ptr->dynamicKeyLayout, 1);
 
     // right page
     d_ptr->rightPageKeyWidget = new SoftkeyWidget();

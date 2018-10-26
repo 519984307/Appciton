@@ -31,7 +31,7 @@ public:
     {
         const char *symbol[TIME_FORMAT_NR] =
         {
-            "12 Hour", "24 Hour"
+            "_12Hour", "_24Hour"
         };
 
         return symbol[index];

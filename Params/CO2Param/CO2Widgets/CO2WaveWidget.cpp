@@ -173,7 +173,7 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
     _ruler->setFont(fontManager.textFont(infoFont - 2));
     addItem(_ruler);
 
-    setMargin(QMargins(WAVE_X_OFFSET, 0, 0, 0));
+    setMargin(QMargins(WAVE_X_OFFSET, 2, 2, 2));
 }
 
 void CO2WaveWidget::_getItemIndex(int index)

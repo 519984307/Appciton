@@ -299,7 +299,7 @@ void SpinBox::keyReleaseEvent(QKeyEvent *ev)
 
 void SpinBox::mouseReleaseEvent(QMouseEvent *ev)
 {
-    Q_UNUSED(ev)
+    QAbstractButton::mouseReleaseEvent(ev);
     QRect vrect = rect();
     QRect rect(mapToGlobal(vrect.topLeft()),
                mapToGlobal(vrect.bottomRight()));

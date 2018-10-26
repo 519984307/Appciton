@@ -11,7 +11,6 @@
 #include "FactoryMaintainMenuWindow.h"
 #include "MachineConfigModuleContent.h"
 #include "FactoryDataRecordContent.h"
-#include "SelectStarterLogoContent.h"
 #include "FactorySystemInfoMenuContent.h"
 #include "FactoryImportExportMenuContent.h"
 #include "ServiceUpdateEntranceContent.h"
@@ -28,14 +27,12 @@ FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
         instance = new FactoryMaintainMenuWindow;
         instance->addMenuContent(new MachineConfigModuleContent);
         instance->addMenuContent(new FactoryDataRecordContent);
-        instance->addMenuContent(new SelectStarterLogoContent);
         instance->addMenuContent(new FactorySystemInfoMenuContent);
         instance->addMenuContent(new FactoryImportExportMenuContent);
         instance->addMenuContent(new ServiceUpdateEntranceContent);
         instance->addMenuContent(new NIBPCalibrationMenuContent);
         instance->addMenuContent(new FactoryTestMenuContent);
         instance->addMenuContent(new FactoryTempMenuContent);
-        instance->setWindowTitle(trs("SoftWareVersionMenuDesc"));
     }
 
     return instance;

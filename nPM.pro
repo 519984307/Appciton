@@ -76,6 +76,9 @@ OTHER_FILES +=                                                                  
     nPM/locale/ChineseSimplified.xml                                            \
     nPM/locale/English.xml                                                      \
     nPM/locale/PrintEnglish.xml                                                 \
+    nPM/etc/AdultConfig.Original.xml                                            \
+    nPM/etc/PedConfig.Original.xml                                              \
+    nPM/etc/NeoConfig.Original.xml                                              \
 
 SOURCES +=                                                                      \
     SOUP/Json/json_parser.cc                                                    \
@@ -145,7 +148,6 @@ SOURCES +=                                                                      
     Utility/Widgets/InputMethod/KeyBoardPanel.cpp                               \
     Utility/Widgets/InputMethod/KeyInputPanel.cpp                               \
     Utility/Widgets/InputMethod/NumberPanel.cpp                                 \
-    Utility/Widgets/InputMethod/NumberInput.cpp                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.cpp                      \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidgetRuler.cpp                     \
@@ -167,7 +169,6 @@ SOURCES +=                                                                      
     Utility/Widgets/Trendform/ShortTrendWindow.cpp                              \
     Utility/Widgets/TrendWidget/TrendWidget.cpp                                 \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.cpp                            \
-    Utility/Widgets/Waveform/BarGraphScanMode.cpp                               \
     Utility/Widgets/Waveform/FreezeWaveReviewMode.cpp                           \
     Utility/Widgets/Waveform/FreezeTimeIndicator.cpp                            \
     Utility/Widgets/Waveform/WaveCascadeMode.cpp                                \
@@ -181,7 +182,6 @@ SOURCES +=                                                                      
     Utility/Widgets/Waveform/WaveReviewCascadeMode.cpp                          \
     Utility/Widgets/Waveform/WaveScanMode.cpp                                   \
     Utility/Widgets/Waveform/WaveWidget.cpp                                     \
-    Utility/Widgets/BarWidget.cpp                                               \
     Utility/Widgets/MessageBox.cpp                                              \
     Utility/Widgets/ExportDataWidget.cpp                                        \
     Utility/Widgets/FreezeTableWidget.cpp                                       \
@@ -228,7 +228,7 @@ SOURCES +=                                                                      
     Components/System/Widgets/DataReviewMenuContent.cpp                         \
     Components/System/Widgets/CalculateWindow.cpp                               \
     Components/System/Widgets/SystemMaintenanceMenuContent.cpp                  \
-    Components/System/Widgets/StandyWindow.cpp                                  \
+    Components/System/Widgets/StandbyWindow.cpp                                 \
     Components/System/Widgets/PowerOffWindow.cpp                                \
     Components/System/Widgets/NightModeWindow.cpp                               \
     Components/SoundManager/SoundManager.cpp                                    \
@@ -402,7 +402,6 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.cpp                \
     Components/Maintain/FactoryMaintain/NIBPZeroPointContent.cpp                \
     Components/Maintain/FactoryMaintain/NIBPPressureControlContent.cpp          \
-    Components/Maintain/FactoryMaintain/SelectStarterLogoContent.cpp            \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
     Components/Maintain/FactoryMaintain/UpgradeManager.cpp                      \
     Components/Maintain/FactoryMaintain/UpgradeWindow.cpp                       \
@@ -428,6 +427,8 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditDisplayMenuContent.cpp                   \
     Components/ConfigManager/LoadConfigMenuContent.cpp                          \
     Components/ConfigManager/UnitSetupMenuContent.cpp                           \
+    Components/ConfigManager/SaveCurrentConfigMenuContent.cpp                   \
+    Components/ConfigManager/SaveUserConfigWindow.cpp                           \
     Components/Freeze/FreezeManager.cpp                                         \
     Components/Freeze/FreezeWindow.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
@@ -626,7 +627,6 @@ HEADERS +=                                                                      
     Utility/Widgets/InputMethod/KeyBoardPanel.h                                 \
     Utility/Widgets/InputMethod/KeyInputPanel.h                                 \
     Utility/Widgets/InputMethod/NumberPanel.h                                   \
-    Utility/Widgets/InputMethod/NumberInput.h                                   \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.h                        \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget_p.h                      \
@@ -651,7 +651,6 @@ HEADERS +=                                                                      
     Utility/Widgets/Trendform/ShortTrendWindow.h                                \
     Utility/Widgets/TrendWidget/TrendWidget.h                                   \
     Utility/Widgets/TrendWidget/TrendWidgetLabel.h                              \
-    Utility/Widgets/Waveform/BarGraphScanMode.h                                 \
     Utility/Widgets/Waveform/FreezeWaveReviewMode.h                             \
     Utility/Widgets/Waveform/FreezeTimeIndicator.h                              \
     Utility/Widgets/Waveform/WaveCascadeMode.h                                  \
@@ -668,7 +667,6 @@ HEADERS +=                                                                      
     Utility/Widgets/Waveform/WaveReviewCascadeMode.h                            \
     Utility/Widgets/Waveform/WaveScanMode.h                                     \
     Utility/Widgets/Waveform/WaveWidget.h                                       \
-    Utility/Widgets/BarWidget.h                                                 \
     Utility/Widgets/ExportDataWidget.h                                          \
     Utility/Widgets/FreezeTableWidget.h                                         \
     Utility/Widgets/IButton.h                                                   \
@@ -712,7 +710,7 @@ HEADERS +=                                                                      
     Components/System/Widgets/DataReviewMenuContent.h                           \
     Components/System/Widgets/CalculateWindow.h                                 \
     Components/System/Widgets/SystemMaintenanceMenuContent.h                    \
-    Components/System/Widgets/StandyWindow.h                                    \
+    Components/System/Widgets/StandbyWindow.h                                   \
     Components/System/Widgets/PowerOffWindow.h                                  \
     Components/System/Widgets/NightModeWindow.h                                 \
     Components/SoundManager/SoundManager.h                                      \
@@ -903,7 +901,6 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersionWindow.h                 \
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.h                     \
-    Components/Maintain/FactoryMaintain/SelectStarterLogoContent.h              \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.h          \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.h            \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenuContent.h            \
@@ -937,6 +934,8 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditCodeMarkerMenuContent.h                  \
     Components/ConfigManager/LoadConfigMenuContent.h                            \
     Components/ConfigManager/UnitSetupMenuContent.h                             \
+    Components/ConfigManager/SaveCurrentConfigMenuContent.h                     \
+    Components/ConfigManager/SaveUserConfigWindow.h                             \
     Components/Freeze/FreezeManager.h                                           \
     Components/Freeze/FreezeWindow.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \
@@ -1331,6 +1330,3 @@ linux-arm-g++ {
 
 RESOURCES += \
     Utility/Widgets/Base/res/ui.qrc
-
-DISTFILES += \
-    nPM/etc/AdultConfig.Original.xml

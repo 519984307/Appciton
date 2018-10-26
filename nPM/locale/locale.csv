@@ -13,11 +13,14 @@ SystemMaintenance,维护,Maintenance
 SystemMaintenanceDesc,维护设置,Maintenance Desc
 iDMBoard,iDMBoard,iDMBoard
 BuildTime,编译时间,Build Time
+ChannelPressureEntitle1,压力标名1,Pressure Entitle1
+ChannelPressureEntitle2,压力标名2,Pressure Entitle2
 Adult,成人,Adult
 PED,小儿,Pediatric
 NEO,新生儿,Neonate
-AlarmLimit,报警限设置,Alarm Limit
+AlarmLimit,报警限,Alarm Limit
 Other,其它,Other
+Notch,陷波,Notch
 EditPassWordDesc,修改密码,Edit Password Desc
 EditPassWord,修改密码,Edit Password
 LastPassword,上次密码,Last Password
@@ -42,7 +45,7 @@ UserFaceBigFont,大字体,Big Font
 UserFaceCustom,自定义,Custom
 UserFaceUnknow,未知,Unknow
 ECG,ECG,ECG
-HR,心率,HR
+HR,HR,HR
 HR_PR,HR/PR,HR/PR
 ST-I,ST-I,ST-I
 ST-II,ST-II,ST-II
@@ -101,7 +104,7 @@ CO_CO,心排量,C.O.
 CO_CI,心指数,C.I.
 TB,血温,TB
 SPO2,SPO2,SPO2
-PR,脉率,PR
+PR,PR,PR
 PLETH,血氧波,Pleth
 NIBP,NIBP,NIBP
 RESP,RESP,RESP
@@ -179,7 +182,7 @@ NIBPMeasureMode,测量模式,Measure Mode
 NIBPIntervalTime,间隔时间,NIBP Interval Time
 NIBPAutoInterval,自动间隔,Auto Interval
 NIBPMenu,NIBP,NIBP
-NIBPMenuDesc,NIBP设置,NIBP Desc
+NIBPMenuDesc,NIBP,NIBP
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
 CO2SweepMode,CO2波形模式,CO2 Sweep Mode
@@ -217,7 +220,7 @@ T1,T1,T1
 T2,T2,T2
 TD,ΔT,ΔT
 ConfigEditTEMPMenu,TEMP,TEMP
-ConfigEditTEMPMenuDesc,TEMP设置,TEMP Desc
+ConfigEditTEMPMenuDesc,TEMP,TEMP
 TEMPMenu,TEMP,TEMP
 TEMPUnit,单位,Unit
 TEMP1Low,体温1低,TEMP1 Low
@@ -234,9 +237,10 @@ SPO2Setting,SPO2设置,SPO2 Setting
 RRSource,RR来源,RR Source
 BRSource,BR来源,BR Source
 NIBPSetting,NIBP设置,NIBP Setting
-ECGHRPRSourceAuto,自动,Auto
-ECGHRPRSourceECG,ECG,ECG
-ECGHRPRSourceSPO2,SPO2,SPO2
+HRSourceAuto,自动,Auto
+HRSourceECG,ECG,ECG
+HRSourceSPO2,SPO2,SPO2
+HRSourceIBP,IBP,IBP
 HR_PRSource,HR_PR来源,HR_PR Source
 CO2Setting,CO2设置,CO2 Setting
 PatientManager,病人管理,Patient Manager
@@ -257,7 +261,7 @@ TEMPTDLow,体温差低,ΔT Low
 TEMPTDHigh,体温差高,ΔT High
 TEMP1SensorOff,体温1探头脱落,TEMP1 Sensor Off
 PrintSettingMenu,打印设置,Print Setting
-PrintSettingMenuDesc,打印设置,Print Setting Desc
+PrintSettingMenuDesc,打印设置,Print Setting
 PrintTime,实时打印时间,PrintTime
 ClearPrintTask,清除打印任务,ClearPrintTask
 Continous,连续,Continous
@@ -274,10 +278,10 @@ celsius,℃,℃
 fahrenheit,℉,℉
 percent,%,%
 AlarmSettingMenu,报警,Alarm
-AlarmSettingUp,报警设置,Alarm Setting Up
+AlarmSettingUp,报警限设置,Alarm Setting Up
 LatchLockSwitch,报警栓锁,Alarm Latch Lock
 AlarmLimitMenu,报警限,Alarm Limit
-AlarmLimitMenuDesc,报警限设置,Alarm Limit Setting
+AlarmLimitMenuDesc,报警限,Alarm Limit Setting
 SelectAlarmNotExist,选择的报警不存在!,The selected alarm does not exist!
 PrintSpeed,打印速度,Print Speed
 PrintNumOfTraces,打印波形数量,Number Of Print Traces
@@ -290,32 +294,33 @@ DefaultAlarmVolume,默认报警音量,Default Alarm Volume
 SystemAlarmMuteTime,报警音暂停,Alarm Mute Time
 SystemBrightness,屏幕亮度,Brightness
 LTAAlarm,生命报警,LTA Alarm
+AlarmSource,报警源,Alarm Source
 SystemMenu,系统,System
 PatientMenuDesc,病人设置,Patient Setting
-ECGMenuDesc,ECG设置,ECG Desc
-STMenuDesc,ST设置,ST Setting
-SPO2MenuDesc,SPO2设置,SPO2 Setting
-RESPMenuDesc,RESP设置,RESP Setting
-CO2MenuDesc,CO2设置,CO2 Desc
-IBPMenuDesc,IBP设置,IBP Desc
-COMenuDesc,C.O.设置,C.O. Desc
+ECGMenuDesc,ECG,ECG
+STMenuDesc,ST,ST
+SPO2MenuDesc,SPO2,SPO2
+RESPMenuDesc,RESP,RESP
+CO2MenuDesc,CO2,CO2
+IBPMenuDesc,IBP,IBP
+COMenuDesc,C.O.,C.O.
 RESPAndCO2Menu,RESP和CO2,RESP & CO2
-RESPAndCO2MenuDesc,RESP和CO2设置,RESP & CO2 Setting
-TEMPMenuDesc,TEMP设置,TEMP Setting
-AGMenuDesc,AG设置,AG Setting
-AlarmSettingMenuDesc,报警设置,Alarm Setting
-PrintSetupDesc,打印设置,Print Setting
-SystemMenuDesc,系统设置,System Setting
+RESPAndCO2MenuDesc,RESP和CO2,RESP & CO2
+TEMPMenuDesc,TEMP,TEMP
+AGMenuDesc,AG,AG
+AlarmSettingMenuDesc,报警,Alarm
+PrintSetupDesc,打印,Print
+SystemMenuDesc,系统,System
 SystemStatusDesc,系统状态,System Status
 SystemInfo,系统信息,System Info
-SystemInfoSetting,系统信息设置,System Info Setting
+SystemInfoSetting,系统信息,System Info
 ErrorLog,错误日志,Error Log
 SystemStatus,状态,Status
 SomeLimitAlarmDisabled,有超限报警被关闭,Some Limit Alarm Disabled
 PowerupRecorderPressed,前面板打印键短路,Front Panel Recorder Btn Stuck
 PowerupCommunicationStop,前面板通讯停止,Front Panel Communication Stop
 WiFiMenu,无线网络,Wifi
-WiFiMenuDesc,无线网络设置,Wifi Setting
+WiFiMenuDesc,无线网络,Wifi
 Switch,开关,Switch
 Add,添加,Add
 Edit,编辑,Edit
@@ -570,6 +575,30 @@ CO2ZeroDisable,CO2禁止校零,CO2 Zero Disable
 CO2ZeroInprogress,CO2校零中,CO2 Zero In Progress
 CO2SpanCalibFailed,CO2校准量程失败,CO2 Span Calib Failed
 CO2SpanCalibInprogress,CO2正在校准量程,CO2 Span Calib Inprogress
+IBP1LeadOff,IBP通道1导联脱落,IBP1 lead off
+IBP2LeadOff,IBP通道2导联脱落,IBP2 lead off
+IBP1ZeroCalibSuccess,IBP通道1校零成功,IBP1 zero success
+IBP1MeasurePressureIsPulse,IBP通道1测量压力是动脉,IBP1 zero is pluse
+IBP1ZeroCalibPressureBeyondMeasureRange,IBP通道1校零压力超出范围,IBP1 zero beyond range
+IBP1LeadOffZeroCalibFail,IBP通道1校零失败,IBP1 zero fail
+IBP1NoSetZeroCalibTime,IBP通道1没有设置校零时间,IBP1 not set zero time
+IBP2ZeroCalibSuccess,IBP通道2校零成功,IBP2 zero success
+IBP2MeasurePressureIsPulse,IBP通道2测量压力是动脉,IBP2 zero is pluse
+IBP2ZeroCalibPressureBeyondMeasureRange,IBP通道2校零压力超出范围,IBP2 zero beyond range
+IBP2LeadOffZeroCalibFail,IBP通道2校零失败,IBP2 zero fail
+IBP2NoSetZeroCalibTime,IBP通道2没有设置校零时间,IBP2 not set zero time
+IBP1CalibrationSuccess,IBP通道1校准成功,IBP1 calibration success
+IBP1MeasurePressureIsPulse,IBP通道1测量压力是动脉,IBP1 calibration is pluse
+IBP1CalibrationPressureBeyondMeasureRange,IBP通道1校准压力超出范围,IBP1 calibration beyond range
+IBP1NoZeroCalib,IBP通道1没有校零,IBP1 not zero calibration
+IBP1LeadOffCalibrationFail,IBP通道1校准失败,IBP1 calibration fail
+IBP1NoSetCalibrationTime,IBP通道1没有设置校准时间,IBP1 not set calibration time
+IBP2CalibrationSuccess,IBP通道2校准成功,IBP2 calibration success
+IBP2MeasurePressureIsPulse,IBP通道2测量压力是动脉,IBP2 calibration is pluse
+IBP2CalibrationPressureBeyondMeasureRange,IBP通道2校准压力超出范围,IBP2 calibration beyond range
+IBP2NoZeroCalib,IBP通道2没有校零,IBP2 not zero calibration
+IBP2LeadOffCalibrationFail,IBP通道2校准失败,IBP2 calibration fail
+IBP2NoSetCalibrationTime,IBP通道2没有设置校准时间,IBP2 not set calibration time
 ARTSYSLow,ART收缩压低,ART SYS Low
 ARTSYSHigh,ART收缩压高,ART SYS High
 ARTDIALow,ART舒张压低,ART DIA Low
@@ -810,11 +839,11 @@ MonthDayYear,月/日/年,MM/DD/YYYY
 DayMonthYear,日/月/年,DD/MM/YYYY
 SupervisorTimeFormat,时间格式,Time Format
 SupervisorDisplaySec,显示秒,Display Second
-SupervisorCodeMarker,代码标记,Code Marker
+SupervisorCodeMarker,Code Marker,Code Marker
 Monitor,监护,Monitor
 Diagnostic,诊断,Diagnostic
 Surgery,手术,Surgery
-SupervisorCodeMarkerDesc,代码标记设置,Code Marker Setting
+SupervisorCodeMarkerDesc,Code Marker,Code Marker
 SupervisorMonitorLead,监护模式导联,Default ECG Lead In Monitor Mode
 SupervisorLeadNameConvention,导联命名协议,ECG Lead Convention
 SupervisorDisplayUserPrompt,显示用户提示信息,Display User Prompt
@@ -826,7 +855,7 @@ SupervisorPrintMenuDesc,打印设置,Print Setting
 SupervisorAutoPrint30Jtest,自动打印30J自测结果,Print 30J Self-test Results
 SupervisorAutoPrint12L,打印12导,Automatic Printing Of 12-Lead Report
 Supervisor12LMenu,12导,12-Lead
-Supervisor12LMenuDesc,12导设置,12-Lead Setting
+Supervisor12LMenuDesc,12导,12-Lead
 Print12LSnapshotFormat,12导快照打印格式,12-Lead Snapshot Print Format
 PDFReportFormat,12导PDF报告格式,12-Lead PDF Report Format
 Cabrera,卡布瑞拉,Cabrera
@@ -866,6 +895,7 @@ TransferSupervisorByUSB,传输超级配置数据到USB,Transferring Supervisor C
 TransferSupervisorByWIFI,传输超级配置数据到WIFI,Transferring Supervisor Config to WIFI
 TransferRescueDataComplete,营救数据传输完成,Rescue Data Transfer Complete
 TransferSupervisorComplete,超级配置传输完成,Supervisor Config Transfer Complete
+TransferErrorLogToUSBComplete,U盘传输错误日志完成,Transfer error log to USB complete
 TransferFailed,传输失败,Transfer Failed
 TransferCancel,传输取消,Transfer Cancel
 ECG12LTransfersuccess,12导传送成功,ECG 12 Lead Transfer Success
@@ -1100,6 +1130,7 @@ CheckInput,查看输入,Check Input
 PrimitiveCalculation,原始计算,Primitive Calculation
 InOutValue,输入/输出值,
 ZeroCalibSuccess,校零成功,
+ZeroInProgress,校零进行中,Zero in progress
 CalibrationSuccess,校准成功,
 MeasurePressureIsPulse,测量压力是脉动的,
 ZeroCalibPressureBeyondMeasureRange,校零压力超出测量范围,
@@ -1132,8 +1163,8 @@ IntervalTime,自动间隔时间,Interval Time
 ExportFileCompleted,导出文件完成,Export File Completed
 ExportFileFailed,导出文件失败,Export File Failed
 ExportImport,导出/导入,Export/Import
-ExportImportDesc,导出/导入配置,Export/Import Desc
-ExportImportConfig,导出/导入配置,Export/ImportConfig
+ExportImportDesc,导出/导入,Export/Import
+ExportImportConfig,导出/导入配置,Export/Import Config
 Export,导出,Export
 Import,导入,Import
 NotRepeated,取消覆盖,Not Repeated
@@ -1167,7 +1198,7 @@ AnalogOutputModule,模拟输出模块,Analog Output Module
 COModule,C.O.,C.O.
 PHASEIN,PHASEIN,PHASEIN
 M601,M601,M601
-MachineConfigModuleMenuDesc,机器配置设置,Machine Config  Desc
+MachineConfigModuleMenuDesc,机器配置,Machine Config
 MonitorInfoMenu,监护仪信息,Monitor Info
 CumulativeWorkingTime,累计工作时间,Cumulative Working Time
 TemperatureInsideCase,箱内温度,Temperature Inside Case
@@ -1179,19 +1210,19 @@ ScreenResolationSize,屏幕分辨率尺寸,Screen Resolation Size
 ElectronicSerialNumber,电子序列号,Electronic Serial Number
 SetElectronicSerialNumber,设置电子序列号,Set Electronic Serial Number
 MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info Desc
-NIBPCalibrationMenu,无创血压校准,NIBP Calibration
-NIBPCalibration,无创血压校准,NIBP Calibration
-NIBPCalibrationMenuDesc,无创血压校准设置,NIBP Calibration Desc
+NIBPCalibrationMenu,NIBP校准,NIBP Calibration
+NIBPCalibration,NIBP校准,NIBP Calibration
+NIBPCalibrationMenuDesc,NIBP校准,NIBP Calibration
 SelectStarterLogo,开机图片,Start Logo
 SelectStarterLogoMenu,开机图片,Starter Logo
 SelectStarterLogoMenuDesc,开机图片设置,Start Logo Desc
-ServiceErrorLogEntrance,错误日志进入,Service ErrorLog
-ServiceErrorLogEntranceDesc,错误日志进入设置,Service ErrorLog Entrance Desc
+ServiceErrorLogEntrance,错误日志,Service ErrorLog
+ServiceErrorLogEntranceDesc,错误日志,Service ErrorLog
 ErrorLogErase,擦除,Erase
 ErrorLogExport,导出,Export
 ErrorLogInfo,信息,Info
-ServiceUpdateEntrance,更新模块,Service Update
-ServiceUpdateEntranceDesc,更新模块设置,Service Update Entrance Desc
+ServiceUpdateEntrance,更新,Service Update
+ServiceUpdateEntranceDesc,更新,Service Update
 SoftWareVersionMenu,机器版本,SoftWare Version
 SoftWareVersionMenuDesc,机器版本,SoftWare Version Desc
 SystemSoftwareVersion,系统软件版本,System Software Version
@@ -1201,11 +1232,11 @@ Kernel,内核,Kernel
 SystemboardModule,系统版,System board Module
 RecorderModule,记录模块,Recorder Module
 ECGAlgorithmType,心电算法类型,ECG Algorithm Type
-UserMaintainGeneralMenuDesc,用户维护通用菜单设置,User Maintain General Menu Desc
+UserMaintainGeneralMenuDesc,通用,General
 BootAndStandbyLogoVersion,开机标准logo版本,Boot And Standby LogoVersion
-UserMaintainGeneralMenu,用户维护通用菜单,General Menu
-AlarmMaintainMenu,报警维护菜单,Alarm Maintain
-AlarmMaintainMenuDesc,报警维护菜单,Alarm Maintain
+UserMaintainGeneralMenu,通用,General
+AlarmMaintainMenu,报警维护,Alarm Maintain
+AlarmMaintainMenuDesc,报警维护,Alarm Maintain
 MinimumALarmVolume,最小报警音量,Minimum Alarm Volume
 AlarmPauseTime,报警暂停时间,Alarm PauseTime
 RESPWaveGain,增益,Gain
@@ -1246,10 +1277,11 @@ H3min,3分钟,3min
 _alarmLightOnAlarmReset,报警灯复位,Alarm Light On Alarm Reset
 Defaults,默认,Defaults
 RecoverDefaults,默认覆盖,Recover Defaults
-ModuleMaintainMenu,模块维护菜单,Module Maintain
-ModuleMaintainMenuDesc,模块维护菜单,Module Maintain Menu Desc
+ModuleMaintainMenu,模块维护,Module Maintain
+ModuleMaintainMenuDesc,模块维护,Module Maintain
 AnaesthesiaModuleCalibration,麻醉模块化校准,Anaesthesia Module Calibration
-IBPPressureCalibration,IBP压力校准,Pressure Calibration
+IBP1PressureCalibration,IBP通道1校准,IBP1 Pressure Calibration
+IBP2PressureCalibration,IBP通道2校准,IBP2 Pressure Calibration
 CO2ModuleMaintenance,二氧化碳模块维护,CO2 Module Maintenance
 NIBPPressureTest,NIBP压力测试,NIBP Pressure Test
 NIBPLeakageDetection,NIBP泄露检测,NIBP Leakage Detection
@@ -1267,7 +1299,7 @@ StopCO2ModuleMaintenance,停止二氧化碳模块,Stop CO2 Module Maintenance
 StopTouchScreenCalibration,停止触摸屏校准,Stop Touch Screen Calibration
 Cancel,取消覆盖,Cancel
 OthersMaintainMenu,其他维护菜单,Others Menu
-OthersMaintainMenuDesc,其他维护菜单设置,Others Menu Desc
+OthersMaintainMenuDesc,其他维护菜单,Others Menu
 WaveLine,波线,WaveLine
 Fat,粗,Fat
 Med,中,Med
@@ -1298,14 +1330,14 @@ UserMaintainPassword,用户维护密码,User Maintain Password
 UserMaintainSystem,用户维护系统,User Maintain
 Department,部门,Department
 BedNumber,床号,Bed Number
-ModifyPassword,修改密码,Modify Password
-ChangeBedNumberRight,改变床号权限,Change Bed Number Right
+ModifyPassword,密码,Password
+ChangeBedNumberRight,床号权限,Bed Number Right
 Language,语言,Language
-EditMonitorName,编辑监护仪名称,Edit Monitor Name
+EditMonitorName,监护仪名称,Monitor Name
 UserMaintainModifyConfig,用户维护修改配置,User Maintain Modify Config
 ProfileConflict,配置冲突,Profile Conflict
 WiredWorkMaintainMenu,有线网络,Wired Work
-WiredWorkMaintainMenuDesc,有线网络维护菜单设置,Wired Work  Desc
+WiredWorkMaintainMenuDesc,有线网络,Wired Work
 AddressType,地址类型,Address Type
 manual,手动,manual
 DHCP,DHCP,DHCP
@@ -1313,10 +1345,10 @@ IpAddress,IP地址,IP Address
 high,高,High
 normal,中,Normal
 low,低,Low
-ConfigManagerDesc,配置管理设置,Config Manager Desc
+ConfigManagerDesc,配置管理,Config Manager
 ConfigManager,配置管理,Config Manager
 DefaultConfig,默认配置,Default Config
-DefaultConfigDesc,默认配置设置,Default Config Desc
+DefaultConfigDesc,默认配置,Default Config
 AdultDefaultConfig,成人默认配置,Adult Default Config
 PedDefaultConfig,小儿默认配置,Ped Default Config
 NeoDefaultConfig,新生儿默认配置,Neo Default Config
@@ -1331,8 +1363,8 @@ ConfigName,配置名称,Config Name
 AalrmSource,报警源,Aalrm Source
 Ecg1Wave,波形1,Ecg1 Wave
 Ecg2Wave,波形2,Ecg2 Wave
-Ecg1Gain,增益1,Ecg1 Gain
-Ecg2Gain,增益2,Ecg2 Gain
+ECG1,ECG1,ECG1
+Ecg1Gain,增益,Ecg Gain
 Filter,滤波器,Filter
 QRSVolume,音量,QRS Volume
 ConfigIBPMenu,有创血压,Config IBP
@@ -1358,8 +1390,8 @@ BreathLead,呼吸导联,Breath Lead
 SweepSpeed,波形速度,Sweep Speed
 RespMenu,呼吸,Resp Menu
 manaul,手动,manaul
-FactoryTest,测试,Factory Test
-FactoryTestDesc,测试设置,Factory Test Desc
+FactoryTest,测试,Test
+FactoryTestDesc,测试,Test
 FactoryLight,灯光,Factory Light
 FactorySound,声音,Factory Sound
 FactoryKey,按键 ,Factory Key
@@ -1371,10 +1403,10 @@ RefreshRate,更新速率,Refresh Rate
 Note,注释,Note
 RefreshRateUpdatedRebootNow,刷新率,Refresh Rate Updated Reboot Now
 FactoryDataRecord,数据记录,Factory Data
-FactoryDataRecordDesc,数据记录设置,Factory Data Record Desc
+FactoryDataRecordDesc,数据记录,Data Record
 PDCommData,PD 通信数据,PD Comm Data
-TEMPCalibrateDesc,温度校准设置,TEMP Calibrate Desc
-SystemInfoSettingDesc,系统信息设置,System Info Setting Desc
+TEMPCalibrateDesc,温度校准,TEMP Calibrate
+SystemInfoSettingDesc,系统信息,System Info
 SelectStarterLogo,选择开始菜单,Select Starter Logo
 TEMPCalibrate0,温度校准0,TEMP Calibrate0
 TEMPCalibrate10,温度校准10,TEMP Calibrate10
@@ -1428,8 +1460,8 @@ RESPHigh,呼吸高,RESP High
 LoadConfigMenuContent,加载配置,Load Config
 LoadConfigMenuContentDesc,加载配置设置,Load Config Desc
 ConfigManagerPassword,配置管理密码,Config Manager Password
-ConfigEditCodeMarkerMenu,代码标记,Code Marker
-ConfigEditCodeMarkerMenuDesc,代码标记设置,Code Marker Desc
+ConfigEditCodeMarkerMenu,Code Marker,Code Marker
+ConfigEditCodeMarkerMenuDesc,Code Marker,Code Marker
 ConfigEditIBPMenuDesc,有创血压设置,IBP Desc
 ConfigEditSpO2MenuDesc,血氧设置,SpO2 Desc
 DeleteSelectedWifiProfile,确定删除选择的wifi配置？, Do delete selected wifi profile ?
@@ -1479,6 +1511,7 @@ ComfirmClearErrorLog,确认是否清理错误日志,Comfirm Clear Error Log
 Speed,速度,Speed
 Gain,增益,Gain
 NIBPList,NIBP列表,NIBP List
+AUTO,自动,AUTO
 CalculateMenu,计算,Calculate
 HemodynamicCalculation,血液动力学计算,Hemodynamic Calculation
 CalculateMenuDesc,计算设置,Calculation Desc
@@ -1501,3 +1534,18 @@ MinitrendLength,动态趋势时间,Minitrend Length
 SelectParameters,参数选择,Select Parameters
 Ok,确定,Ok
 RestoreDefault,恢复默认值,Defaluts
+CurrentConfig,当前配置,Current Config
+FactoryConfig,工厂配置,Factory Config 
+_12Hour,12 小时,12 Hour
+_24Hour,24 小时,24 Hour
+System,系统,System
+Machine,机器,Machine
+Ped,小儿,Pediatric
+Neo,新生儿,Neonate
+SaveCurrentSettingAs,保存当前设置,Save Current Setting
+SaveCurrentSettingAsDesc,保存当前设置菜单,Save Current Setting As
+reachedTheMaximunOfConfigurations,用户配置已满，继续保存之前请删除已有的用户配置,The maximum of user configurations is reached.Please delete existing user configurations first.
+SaveAsUserConfig,用户配置保存,Save As User Config
+SaveCurrentSettingAndConfigurationName,保存当前监护仪的设置为用户配置，您的配置命名为,Save the current settings as user configuration.Please name the configuration.
+ConfigurationName,配置名称,Configuraiton Name
+HasExistConfig,该配置名称与监护仪上配置重名。请重新命名！,The configuration name is repeated with the configuration.Please rename!

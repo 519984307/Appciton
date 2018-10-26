@@ -105,6 +105,14 @@ public:
     void setScaleInfo(IBPScaleInfo &info, IBPPressureName name);
     IBPScaleInfo &getScaleInfo(IBPSignalInput ibp);
 
+    // 获取IBP导联脱落状态
+    bool getIBPLeadOff(IBPSignalInput ibp);
+
+    // 清空校准相关报警
+    void clearCalibAlarm(void);
+
+    // 获取IBP校零结果是否成功
+    bool getIBPZeroResult(void);
 public:
     // 校零。
     void zeroCalibration(IBPSignalInput IBP);
@@ -117,6 +125,13 @@ public:
 
     // 导联状态
     void leadStatus(bool staIBP1, bool staIBP2);
+
+    /**
+     * @brief isIBPLeadOff  获取ibp导联脱落状态
+     * @param IBP  ibp通道
+     * @return  导联脱落状态
+     */
+    bool isIBPLeadOff(IBPSignalInput IBP);
 
     // 设置/获取波形速度。
     void setSweepSpeed(IBPSweepSpeed speed);
@@ -176,5 +191,8 @@ private:
     bool _staIBP1;                        // 导联状态
     bool _staIBP2;
     bool _connectedProvider;
+
+    bool _ibp1ZeroReply;                // 校零回复
+    bool _ibp2ZeroReply;
 };
 #define ibpParam (IBPParam::construction())

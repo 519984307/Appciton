@@ -88,6 +88,8 @@ void NormalModeKeyAction::keyF2Pressed(bool multiBtnPress)
         QApplication::activeModalWidget()->close();
     }
 
+    windowManager.closeAllWidows();
+    
     FreezeWindow freezeWindow;
     currentFreezeWindow = &freezeWindow;
     freezeWindow.exec();

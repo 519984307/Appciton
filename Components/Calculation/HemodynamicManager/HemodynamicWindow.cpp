@@ -401,7 +401,7 @@ void HemodynamicWindow::defaultInput()
 void HemodynamicWindow::resizeEvent(QResizeEvent *ev)
 {
     QRect waveRect = layoutManager.getMenuArea();
-    QPoint waveRectLeft = windowManager.mapToGlobal(waveRect.topLeft());
+    QPoint waveRectLeft = waveRect.topLeft();
     waveRect.moveTo(0, 0);
     QPoint winRectLeft = waveRectLeft + waveRect.center() - rect().center();
     move(winRectLeft);

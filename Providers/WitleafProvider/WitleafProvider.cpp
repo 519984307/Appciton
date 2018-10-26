@@ -53,11 +53,6 @@ bool WitleafProvider::attachParam(Param &param)
  *************************************************************************************************/
 void WitleafProvider::dataArrived()
 {
-    if (!isConnectedToParam)
-    {
-        return;
-    }
-
     readData();     // 读取数据到RingBuff中
 
     unsigned char buff[570];
@@ -114,6 +109,11 @@ void WitleafProvider::dataArrived()
  *************************************************************************************************/
 void WitleafProvider::handlePacket(unsigned char *data, int len)
 {
+    if (!isConnectedToParam)
+    {
+        return;
+    }
+
     if (!isConnected)
     {
         coParam.setConnected(true);
@@ -244,10 +244,6 @@ void WitleafProvider::handlePacket(unsigned char *data, int len)
         {
             IBPCalibration calib = (IBPCalibration)((data[3] >> 7) & 0x01);
             IBPSignalInput IBP = (IBPSignalInput)((data[3] >> 6) & 0x01);
-            if (IBP == IBP_INPUT_1)
-            {
-                ibpParam.zeroCalibration(IBP_INPUT_2);
-            }
             int info = 0;
             if (calib == IBP_CALIBRATION_ZERO)
             {

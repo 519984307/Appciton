@@ -80,6 +80,7 @@ public:
           isTouchScreenOn(false),
       #endif
           selfTestFinish(false),
+          isStandby(false),
           isTurnOff(false)
     {}
 
@@ -152,6 +153,7 @@ public:
     bool isTouchScreenOn;
 #endif
     bool selfTestFinish;
+    bool isStandby;
     bool isTurnOff;
 };
 
@@ -594,6 +596,15 @@ void SystemManager::setWorkMode(WorkMode workmode)
     }
 }
 
+void SystemManager::setStandbyStatus(bool standby)
+{
+    d_ptr->isStandby = standby;
+}
+
+bool SystemManager::isStandby() const
+{
+    return d_ptr->isStandby;
+}
 
 #ifdef Q_WS_X11
 bool SystemManager::sendCommand(const QByteArray &cmd)

@@ -12,14 +12,25 @@
 #pragma once
 
 /**
+ * @brief The PrSourceType enum  ECG 脉率来源
+ */
+enum PRSourceType
+{
+    PR_SOURCE_SPO2 = 0,
+    PR_SOURCE_IBP,
+    PR_SOURCE_AUTO,
+};
+
+/**
  * @brief The ECGHRPRSourceType enum  ECG 心率来源
  */
-enum ECGHRPRSourceType
+enum HRSourceType
 {
-    HR_PR_SOURCE_AUTO,
-    HR_PR_SOURCE_ECG,
-    HR_PR_SOURCE_SPO2,
-    HR_PR_SOURCE_NR
+    HR_SOURCE_ECG,
+    HR_SOURCE_SPO2,
+    HR_SOURCE_IBP,
+    HR_SOURCE_AUTO,
+    HR_SOURCE_NR
 };
 
 /**************************************************************************************************
@@ -178,7 +189,7 @@ enum ECGFilterMode
  *************************************************************************************************/
 enum ECGNotchFilter
 {
-    ECG_NOTCH_OFF1,             // 工频关
+    ECG_NOTCH_OFF,             // 工频关
     ECG_NOTCH_50HZ,            // 50Hz滤波
     ECG_NOTCH_60HZ,            // 60Hz滤波
     ECG_NOTCH_50_AND_60HZ,     // 50&60Hz滤波

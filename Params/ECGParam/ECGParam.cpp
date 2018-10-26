@@ -124,6 +124,9 @@ void ECGParam::handDemoTrendData(void)
     int hrValue = 60;
     ecgDupParam.updateHR(hrValue);
 
+    soundManager.heartBeatTone();
+    ecgDupParam.updateHRBeatIcon();
+
     if (oxyCRGRrHrTrend)
     {
         oxyCRGRrHrTrend->addHrTrendData(hrValue);
@@ -614,18 +617,10 @@ void ECGParam::updateVFVT(bool onoff)
  *************************************************************************************************/
 void ECGParam::setLeadOff(ECGLead lead, bool status)
 {
-    static bool checkFirstLeadOn = true;
-
     if (_leadOff[lead] != status)
     {
         _leadOff[lead] = status;
 //        updateECGNotifyMesg(lead);
-    }
-
-    if (checkFirstLeadOn && (0 == _leadOff[lead]) && _calcLead == lead)
-    {
-        QTimer::singleShot(6000, this, SLOT(presentRhythm()));
-        checkFirstLeadOn = false;
     }
 
     if (!_isEverLeadOn[lead] && !status)
@@ -846,22 +841,30 @@ const QString &ECGParam::getCalcLeadWaveformName(void)
 /**************************************************************************************************
  * 获取导联对应的波形窗体的名称。
  *************************************************************************************************/
-const QString &ECGParam::getWaveWidgetName(ECGLead lead)
+QString ECGParam::getWaveWidgetName(ECGLead lead)
 {
-    if ((ECG_LEAD_NR <= lead) || (ECG_LEAD_I > lead))
-    {
-        QString str;
-        return str = "";
-    }
-
+    QString name;
     if (_waveWidget[lead] != NULL)
     {
-        return _waveWidget[lead]->name();
+        name = _waveWidget[lead]->name();
     }
-    else
+    return name;
+}
+
+void ECGParam::updateECGStandard(int standard)
+{
+    systemConfig.setNumValue("Others|ECGStandard", standard);
+    if (_ecgStandard != static_cast<ECGLeadNameConvention>(standard))
     {
-        QString str;
-        return str = "";
+        _ecgStandard = static_cast<ECGLeadNameConvention>(standard);
+        for (int i = 0; i < ECG_LEAD_NR; i++)
+        {
+            QString name = ECGSymbol::convert((ECGLead)i, _ecgStandard);
+            if (_waveWidget[i])
+            {
+                _waveWidget[i]->updateLeadDisplayName(name);
+            }
+        }
     }
 }
 
@@ -1241,9 +1244,6 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
         _provider->setLeadSystem(newMode);
     }
 
-    int defaultLead = ECG_LEAD_II;
-    currentConfig.getNumValue("ECG|DefaultECGLeadInMonitorMode", defaultLead);
-
     // 切换到正确的计算导联。
     ECGLead calcLead = getCalcLead();
     ECGLead newCaclLead = calcLead;
@@ -1284,7 +1284,6 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
         setCalcLead(newCaclLead);
         if (layoutManager.getUFaceType() != UFACE_MONITOR_12LEAD)
         {
-            systemConfig.setStrValue("PrimaryCfg|ECG|Ecg1WaveWidget", _waveWidget[calcLead]->name());
             needUpdateLayout = 1;
         }
         else
@@ -1459,10 +1458,6 @@ void ECGParam::setCalcLead(ECGLead lead)
     }
 
     ECGLead preCalcLead = getCalcLead();
-//    leads.clear();
-//    leads.append(ECG_LEAD_I);
-//    leads.append(ECG_LEAD_II);
-//    leads.append(ECG_LEAD_III);
 
     if (-1 == leads.indexOf(lead))
     {
@@ -1475,7 +1470,7 @@ void ECGParam::setCalcLead(ECGLead lead)
     }
 
     // 将新的计算导联保存道配置文件。
-    currentConfig.setNumValue("ECG|DefaultECGLeadInMonitorMode", static_cast<int>(lead));
+    currentConfig.setNumValue("ECG|CalcLead", static_cast<int>(lead));
     _calcLead = lead;
     if (NULL != _provider)
     {
@@ -1574,7 +1569,6 @@ void ECGParam::autoSetCalcLead(void)
     setCalcLead(leads[index]);
     if (NULL != _waveWidget[calcLead] && NULL != _waveWidget[leads[index]])
     {
-        systemConfig.setStrValue("PrimaryCfg|ECG|Ecg1WaveWidget", _waveWidget[calcLead]->name());
         layoutManager.updateLayout();
     }
 }
@@ -1606,7 +1600,7 @@ void ECGParam::setBandwidth(int band)
 {
     if (_curLeadMode != ECG_LEAD_MODE_12)
     {
-        currentConfig.setNumValue("ECG|ChestLeadsECGBandwidth", band);
+        currentConfig.setNumValue("ECG|BandWidth", band);
         _chestFreqBand = static_cast<ECGBandwidth>(band);
     }
     else
@@ -1619,7 +1613,7 @@ void ECGParam::setBandwidth(int band)
         }
         else
         {
-            currentConfig.setNumValue("ECG|ChestLeadsECGBandwidth", band);
+            currentConfig.setNumValue("ECG|BandWidth", band);
             _chestFreqBand = static_cast<ECGBandwidth>(band);
         }
     }
@@ -1627,15 +1621,6 @@ void ECGParam::setBandwidth(int band)
     if (NULL != _provider)
     {
         _provider->setBandwidth(static_cast<ECGBandwidth>(band));
-    }
-
-    for (int i = 0; i < ECG_LEAD_NR; ++i)
-    {
-        if (_waveWidget[i] == NULL)
-        {
-            continue;
-        }
-        _waveWidget[i]->setBandWidth(static_cast<ECGBandwidth>(band));
     }
 }
 
@@ -1696,6 +1681,7 @@ void ECGParam::setFilterMode(int mode)
     {
         _provider->setFilterMode(_filterMode);
     }
+    emit updateFilterMode();
 }
 
 /**************************************************************************************************
@@ -1720,28 +1706,6 @@ void ECGParam::setARRThreshold(ECGAlg::ARRPara parameter, short value)
     {
         _provider->setARRThreshold(parameter, value);
     }
-}
-
-/**************************************************************************************************
- * 获取计算导联带宽字符串
- *************************************************************************************************/
-QString ECGParam::getCalBandWidthStr(void)
-{
-    QString band = "";
-
-    for (int i = 0; i < ECG_LEAD_NR; ++i)
-    {
-        if (_waveWidget[i] == NULL)
-        {
-            continue;
-        }
-        if (i == ecgParam.getCalcLead())
-        {
-            band = _waveWidget[i]->getBandWidthStr();
-        }
-    }
-
-    return band;
 }
 
 /**************************************************************************************************
@@ -2028,6 +1992,7 @@ void ECGParam::setNotchFilter(ECGNotchFilter filter)
     {
         _provider->setNotchFilter(filter);
     }
+    emit updateNotchFilter();
 }
 
 /**************************************************************************************************
@@ -2054,14 +2019,14 @@ ECGNotchFilter ECGParam::getCalcLeadNotchFilter()
  *************************************************************************************************/
 ECGLeadNameConvention ECGParam::getLeadConvention(void) const
 {
-    int leadConvention = 0;
-    currentConfig.getNumValue("ECG|ECGLeadConvention", leadConvention);
-    if (leadConvention >= ECG_CONVENTION_NR)
+    int standard = 0;
+    systemConfig.getNumValue("Others|ECGStandard", standard);
+    if (standard >= ECG_CONVENTION_NR)
     {
-        leadConvention = 0;
+        standard = 0;
     }
 
-    return static_cast<ECGLeadNameConvention>(leadConvention);
+    return static_cast<ECGLeadNameConvention>(standard);
 }
 
 /**************************************************************************************************
@@ -2179,19 +2144,34 @@ void ECGParam::clearOxyCRGWaveNum()
     _updateNum = 0;
 }
 
-/***************************************************************************************************
- * presentRhythm : presenting rhythm
- **************************************************************************************************/
-void ECGParam::presentRhythm()
+void ECGParam::updateWaveWidgetStatus()
 {
-    int rhythm = 0;
-    currentConfig.getNumValue("ECG|PresentRhythm", rhythm);
-    // check first lead on during the incident
-    if (!rhythm)
+    QList<int> waveIdList = layoutManager.getDisplayedWaveformIDs();
+    if (!waveIdList.count())
     {
-        rhythm = 1;
-        currentConfig.setNumValue("ECG|PresentRhythm", rhythm);
-        // summaryStorageManager.addPrensentingRhythm(timeManager.getCurTime());
+        return;
+    }
+
+    for (int i = 0; i < ECG_LEAD_NR; i++)
+    {
+        if (!_waveWidget[i])
+        {
+            continue;
+        }
+        if (!_waveWidget[i]->isVisible())
+        {
+            continue;
+        }
+        bool isVisible;
+        if (waveIdList.at(0) != _waveWidget[i]->getID())
+        {
+            isVisible = false;
+        }
+        else
+        {
+            isVisible = true;
+        }
+        _waveWidget[i]->setWaveInfoVisible(isVisible);
     }
 }
 
@@ -2234,7 +2214,7 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     }
 
     int lead = ECG_LEAD_II;
-    currentConfig.getNumValue("ECG|DefaultECGLeadInMonitorMode", lead);
+    currentConfig.getNumValue("ECG|CalcLead", lead);
     _calcLead = (ECGLead)lead;
 
     int mode = ECG_LEAD_MODE_5;
@@ -2250,7 +2230,7 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     _12LeadPacerMarker = (ECGPaceMode) mode;
 
     mode = ECG_BANDWIDTH_067_20HZ;
-    currentConfig.getNumValue("ECG|ChestLeadsECGBandwidth", mode);
+    currentConfig.getNumValue("ECG|BandWidth", mode);
     _chestFreqBand = (ECGBandwidth) mode;
 
     mode = ECG_FILTERMODE_MONITOR;
@@ -2265,6 +2245,8 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     mode = DISPLAY_12LEAD_STAND;
     currentConfig.getNumValue("ECG12L|DisplayFormat", mode);
     _12LeadDispFormat = (Display12LeadFormat)mode;
+
+    _ecgStandard = ECG_CONVENTION_AAMI;
 
     for (int i = 0; i < ECG_LEAD_NR; ++i)
     {
