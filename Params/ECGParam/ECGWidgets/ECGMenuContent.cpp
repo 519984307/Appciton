@@ -262,7 +262,7 @@ void ECGMenuContent::layoutExec()
     comboBox = new ComboBox();
     for (int i = 0; i < ECG_GAIN_NR; i++)
     {
-        comboBox->addItem(ECGSymbol::convert(static_cast<ECGGain>(i)));
+        comboBox->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))));
     }
     itemID  = ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN;
     comboBox->setProperty("Item",
