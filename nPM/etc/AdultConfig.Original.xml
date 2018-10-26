@@ -52,7 +52,6 @@
         <Ecg1Wave>0</Ecg1Wave>
         <Ecg2Wave>1</Ecg2Wave>
         <Ecg1Gain>0</Ecg1Gain>
-        <Ecg2Gain>0</Ecg2Gain>
         <SweepSpeed>1</SweepSpeed>
         <Filter>0</Filter>
 		<DisplayMode>0</DisplayMode>

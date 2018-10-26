@@ -30,7 +30,6 @@ public:
         ITEM_CBO_ECG1_WAVE,
         ITEM_CBO_ECG2_WAVE,
         ITEM_CBO_ECG1_GAIN,
-        ITEM_CBO_ECG2_GAIN,
         ITEM_CBO_SWEEP_SPEED,
         ITEM_CBO_FILTER_MODE,
         ITEM_CBO_HTBT_VOL,
@@ -58,7 +57,7 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
 {
     for (unsigned i = 0; i < ITEM_CBO_MAX; i++)
     {
-        MenuItem item = (MenuItem)i;
+        MenuItem item = static_cast<MenuItem>(i);
         combos[item]->blockSignals(true);
     }
 
@@ -134,28 +133,13 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
     }
 
     combos[ITEM_CBO_ECG1_GAIN]->clear();
-    combos[ITEM_CBO_ECG2_GAIN]->clear();
     for (int i = 0; i < ECG_GAIN_NR; i++)
     {
-        combos[ITEM_CBO_ECG1_GAIN]->addItem(trs(ECGSymbol::convert((ECGGain)i)));
-        combos[ITEM_CBO_ECG2_GAIN]->addItem(trs(ECGSymbol::convert((ECGGain)i)));
+        combos[ITEM_CBO_ECG1_GAIN]->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))));
     }
 
     config->getNumValue("ECG|Ecg1Gain", index);
     combos[ITEM_CBO_ECG1_GAIN]->setCurrentIndex(index);
-    config->getNumValue("ECG|Ecg2Gain", index);
-    combos[ITEM_CBO_ECG2_GAIN]->setCurrentIndex(index);
-
-    if (leadmode > ECG_LEAD_MODE_3)
-    {
-        combos[ITEM_CBO_ECG2_GAIN]->setVisible(true);
-        comboLabels[ITEM_CBO_ECG2_GAIN]->setVisible(true);
-    }
-    else
-    {
-        combos[ITEM_CBO_ECG2_GAIN]->setVisible(false);
-        comboLabels[ITEM_CBO_ECG2_GAIN]->setVisible(false);
-    }
 
     config->getNumValue("ECG|SweepSpeed", index);
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(index);
@@ -171,7 +155,7 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
 
     for (unsigned i = 0; i < ITEM_CBO_MAX; i++)
     {
-        MenuItem item = (MenuItem)i;
+        MenuItem item = static_cast<MenuItem>(i);
         combos[item]->blockSignals(false);
     }
 }
@@ -259,18 +243,6 @@ void ConfigEditECGMenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_GAIN, comboBox);
-
-    // ecg2 gain
-    label = new QLabel(trs("Ecg2Gain"));
-    d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_GAIN,
-                              label);
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    comboBox = new ComboBox();
-    itemID = static_cast<int>(ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_GAIN);
-    comboBox->setProperty("Item", qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_GAIN, comboBox);
 
     // sweep speed
     label = new QLabel(trs("SweepSpeed"));
@@ -403,16 +375,47 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
             d_ptr->config->setNumValue("ECG|AlarmSource", index);
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_WAVE:
+        {
+            int waveIndex = 0;
+            d_ptr->config->getNumValue("ECG|Ecg2Wave", waveIndex);
+            // ecg1 与ecg2的选择重复时
+            if (waveIndex == index)
+            {
+                waveIndex = 0;
+                d_ptr->config->getNumValue("ECG|Ecg1Wave", waveIndex);
+                d_ptr->config->setNumValue("ECG|Ecg2Wave", waveIndex);
+                ConfigEditECGMenuContentPrivate::MenuItem menuItem =
+                        ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_WAVE;
+                d_ptr->combos[menuItem]->blockSignals(true);
+                d_ptr->combos[menuItem]->setCurrentIndex(waveIndex);
+                d_ptr->combos[menuItem]->blockSignals(false);
+            }
+
             d_ptr->config->setNumValue("ECG|Ecg1Wave", index);
-            break;
+        }
+        break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_WAVE:
+        {
+            int waveIndex = 0;
+            d_ptr->config->getNumValue("ECG|Ecg1Wave", waveIndex);
+            // ecg1 与ecg2的选择重复时
+            if (waveIndex == index)
+            {
+                waveIndex = 0;
+                d_ptr->config->getNumValue("ECG|Ecg2Wave", waveIndex);
+                d_ptr->config->setNumValue("ECG|Ecg1Wave", waveIndex);
+                ConfigEditECGMenuContentPrivate::MenuItem menuItem =
+                        ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_WAVE;
+                d_ptr->combos[menuItem]->blockSignals(true);
+                d_ptr->combos[menuItem]->setCurrentIndex(waveIndex);
+                d_ptr->combos[menuItem]->blockSignals(false);
+            }
+
             d_ptr->config->setNumValue("ECG|Ecg2Wave", index);
-            break;
+        }
+        break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_GAIN:
             d_ptr->config->setNumValue("ECG|Ecg1Gain", index);
-            break;
-        case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG2_GAIN:
-            d_ptr->config->setNumValue("ECG|Ecg2Gain", index);
             break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL:
             d_ptr->config->setNumValue("ECG|QRSVolume", index);
