@@ -118,7 +118,7 @@ void SaveUserConfigWindow::onConfigNameBtnReleased()
     if (inputPanel.exec())
     {
         btn->setText(inputPanel.getStrValue());
-        if (btn->text() == "")
+        if (btn->text().isEmpty())
         {
             d_ptr->okBtn->setEnabled(false);
         }
@@ -132,4 +132,5 @@ void SaveUserConfigWindow::onConfigNameBtnReleased()
 void SaveUserConfigWindowPrivate::loadOption()
 {
     cofNameBtn->setText("");
+    okBtn->setEnabled(false);
 }
