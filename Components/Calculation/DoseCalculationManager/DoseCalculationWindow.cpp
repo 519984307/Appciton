@@ -643,6 +643,7 @@ DoseCalculationWindow::DoseCalculationWindow()
     : Window(),
       d_ptr(new DoseCalculationWindowPrivate)
 {
+    setFixedSize(800, 580);
     layoutExec();
     initDrugParam();
 }
