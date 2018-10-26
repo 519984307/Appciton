@@ -70,18 +70,7 @@ void ECGMenuContentPrivate::loadOptions()
 {
     int index = 0;
 
-    if (ecgDupParam.isAutoTypeHrSouce())
-    {
-        index = HR_PR_SOURCE_AUTO;
-    }
-    else if (ecgDupParam.getCurHRSource() == ECGDupParam::HR_SOURCE_ECG)
-    {
-        index = HR_PR_SOURCE_ECG;
-    }
-    else
-    {
-        index = HR_PR_SOURCE_SPO2;
-    }
+    currentConfig.getNumValue("ECG|HRSource", index);
     combos[ITEM_CBO_HRPR_SOURCE]->setCurrentIndex(index);
 
     ECGLeadMode leadMode = ecgParam.getLeadMode();
@@ -215,9 +204,10 @@ void ECGMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << trs(ECGSymbol::convert(HR_PR_SOURCE_AUTO))
-                       << trs(ECGSymbol::convert(HR_PR_SOURCE_ECG))
-                       << trs(ECGSymbol::convert(HR_PR_SOURCE_SPO2))
+                       << trs(ECGSymbol::convert(HR_SOURCE_ECG))
+                       << trs(ECGSymbol::convert(HR_SOURCE_SPO2))
+                       << trs(ECGSymbol::convert(HR_SOURCE_IBP))
+                       << trs(ECGSymbol::convert(HR_SOURCE_AUTO))
                       );
     itemID = ECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE;
     comboBox->setProperty("Item",
@@ -408,19 +398,7 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
         {
         case ECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE:
         {
-            ECGDupParam::HrSourceType  sourceType;
-            switch (index)
-            {
-            case HR_PR_SOURCE_AUTO:
-                sourceType = ECGDupParam::HR_SOURCE_AUTO;
-                break;
-            case HR_PR_SOURCE_ECG:
-                sourceType = ECGDupParam::HR_SOURCE_ECG;
-                break;
-            case HR_PR_SOURCE_SPO2:
-                sourceType = ECGDupParam::HR_SOURCE_SPO2;
-                break;
-            }
+            HRSourceType sourceType = static_cast<HRSourceType>(index);
             ecgDupParam.setHrSource(sourceType);
         }
         break;

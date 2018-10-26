@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/26
+ **/
+
+
+
 #include "../Utility/DataStorage/StorageManager_p.h"
 #include "ParamDataStorageManager.h"
 #include "StorageFile.h"
@@ -25,8 +37,8 @@ class ParamDataStorageManagerPrivate: public StorageManagerPrivate
 public:
     Q_DECLARE_PUBLIC(ParamDataStorageManager)
 
-    ParamDataStorageManagerPrivate(ParamDataStorageManager *q_ptr)
-        :StorageManagerPrivate(q_ptr),
+    explicit ParamDataStorageManagerPrivate(ParamDataStorageManager *q_ptr)
+        : StorageManagerPrivate(q_ptr),
           forceSave(true),
           lastAlarmTimestamp(0),
           nibpPendingCounter(NIBP_MAX_PENDING_TIME)
@@ -38,7 +50,7 @@ public:
     ParamDataStorageManager::ParamBuf lastParamBuf;
     bool forceSave;
     QMutex paramBufMutex;
-    unsigned lastAlarmTimestamp; //recored the timestamp of last alarm happens
+    unsigned lastAlarmTimestamp;  // recored the timestamp of last alarm happens
 
     /*
      *  When a NIBP measurement happened, it will store after alarm check (3 seconds delay).
@@ -57,29 +69,29 @@ public:
  *************************************************************************************************/
 void ParamDataStorageManagerPrivate::updateAdditionInfo()
 {
-    //starttime,deviceid,serialNum保持不变
+    // starttime,deviceid,serialNum保持不变
 
     bool changed = false;
-    if(memcmp(dataDesc.patientName, patientManager.getName(), MAX_PATIENT_NAME_LEN))
+    if (memcmp(dataDesc.patientName, patientManager.getName(), MAX_PATIENT_NAME_LEN))
     {
         Util::strlcpy(dataDesc.patientName, patientManager.getName(), MAX_PATIENT_NAME_LEN);
         changed = true;
     }
-    if(memcmp(dataDesc.PatientID, patientManager.getPatID(), MAX_PATIENT_ID_LEN))
+    if (memcmp(dataDesc.PatientID, patientManager.getPatID(), MAX_PATIENT_ID_LEN))
     {
         Util::strlcpy(dataDesc.PatientID, patientManager.getPatID(), MAX_PATIENT_ID_LEN);
         changed = true;
     }
 
-    if(!changed && !forceSave)
+    if (!changed && !forceSave)
     {
         return;
     }
 
-    //fdfileName
+    // fdfileName
 
     dataDesc.checkSum = dataDesc.sum();
-    backend->writeAdditionalData((char *)&dataDesc, sizeof(dataDesc));
+    backend->writeAdditionalData(reinterpret_cast<char *>(&dataDesc), sizeof(dataDesc));
     forceSave = false;
 }
 
@@ -103,17 +115,17 @@ void ParamDataStorageManagerPrivate::addData(ParamDataStorageManager::ParamBuf &
     {
         dataType |= TREND_FLAG_NORMAL;
     }
-    q->addData(dataType, (char *)&paramBuf, sizeof(ParamDataStorageManager::ParamBuf), paramBuf.item.t);
+    q->addData(dataType, reinterpret_cast<char *>(&paramBuf), sizeof(ParamDataStorageManager::ParamBuf), paramBuf.item.t);
 
     paramBufMutex.lock();
-    memcpy((char *)&lastParamBuf, (char *)&paramBuf, sizeof(ParamDataStorageManager::ParamBuf));
+    memcpy(reinterpret_cast<char *>(&lastParamBuf), reinterpret_cast<char *>(&paramBuf), sizeof(ParamDataStorageManager::ParamBuf));
     paramBufMutex.unlock();
 }
 
-//flush the nibpPendingList
+// flush the nibpPendingList
 void ParamDataStorageManagerPrivate::flushNibpPendingList()
 {
-    while(nibpPendingList.count())
+    while (nibpPendingList.count())
     {
         ParamDataStorageManager::ParamBuf *paramBuf = nibpPendingList.takeFirst();
         addData(*paramBuf);
@@ -126,18 +138,17 @@ ParamDataStorageManager &ParamDataStorageManager::construction()
 {
     static ParamDataStorageManager *_intance = NULL;
 
-    if(_intance == NULL)
+    if (_intance == NULL)
     {
         _intance =  new ParamDataStorageManager();
     }
 
     return *_intance;
-
 }
 
 
 ParamDataStorageManager::ParamDataStorageManager()
-    :StorageManager(new ParamDataStorageManagerPrivate(this), new StorageFile())
+    : StorageManager(new ParamDataStorageManagerPrivate(this), new StorageFile())
 {
     createDir();
 }
@@ -151,7 +162,7 @@ void ParamDataStorageManager::createDir()
     d->backend->reload(dataStorageDirManager.getCurFolder() + PARAM_DATA_FILE_NAME,
                        QIODevice::ReadWrite);
     d->backend->setReservedSize(sizeof(ParamDataDescription));
-    d->backend->readAdditionalData((char *) &d->dataDesc, sizeof(ParamDataDescription));
+    d->backend->readAdditionalData(reinterpret_cast<char *>(&d->dataDesc), sizeof(ParamDataDescription));
     if (d->dataDesc.checkSum == d->dataDesc.sum())
     {
         return;
@@ -162,29 +173,29 @@ void ParamDataStorageManager::createDir()
 
     QString tmpStr;
     currentConfig.getStrValue("General|DeviceID", tmpStr);
-    if(tmpStr.isNull())
+    if (tmpStr.isNull())
     {
         tmpStr = QString();
     }
     Util::strlcpy(d->dataDesc.deviceID, tmpStr.toLocal8Bit().constData(),
-               sizeof(d->dataDesc.deviceID));
+                  sizeof(d->dataDesc.deviceID));
 
-    //serial
+    // serial
     machineConfig.getStrValue("SerialNumber", tmpStr);
-    if(tmpStr.isNull())
+    if (tmpStr.isNull())
     {
         tmpStr = QString();
     }
     Util::strlcpy(d->dataDesc.serialNum, tmpStr.toLocal8Bit().constData(),
                   sizeof(d->dataDesc.serialNum));
 
-    //incident id number
-    QDateTime dt =QDateTime::fromTime_t(d->dataDesc.startTime);
+    // incident id number
+    QDateTime dt = QDateTime::fromTime_t(d->dataDesc.startTime);
     QString idStr = QString("ZE%1_%2_%3").arg(tmpStr).arg(dt.toString("yyyyMMdd")).arg(dt.toString("hhmmss"));
     Util::strlcpy(d->dataDesc.fdFileName, qPrintable(idStr), sizeof(d->dataDesc.fdFileName));
 
 
-    //update module config
+    // update module config
     d->dataDesc.moduleConfig = systemManager.getModuleConfig();
 }
 
@@ -203,14 +214,14 @@ void ParamDataStorageManager::mainRun(unsigned t)
     Q_D(ParamDataStorageManager);
 
 
-    if(!d->nibpPendingList.isEmpty())
+    if (!d->nibpPendingList.isEmpty())
     {
         ParamBuf *nibpParamBuf = d->nibpPendingList.first();
-        if(nibpParamBuf->item.t == t)
+        if (nibpParamBuf->item.t == t)
         {
             return;
         }
-        if((d->nibpPendingCounter--) == 0)
+        if ((d->nibpPendingCounter--) == 0)
         {
             d->flushNibpPendingList();
         }
@@ -221,22 +232,22 @@ void ParamDataStorageManager::mainRun(unsigned t)
         return;
     }
 
-    //store data every 30 seconds
-    if(0 != timeDate.getTimeSenonds(t) % 30)
+    // store data every 30 seconds
+    if (0 != timeDate.getTimeSenonds(t) % 30)
     {
         return;
     }
 
-    if(d->lastAlarmTimestamp == t)
+    if (d->lastAlarmTimestamp == t)
     {
-        //if alarm happens at the same time, skip this storage. Only store one recored for the same second
+        // if alarm happens at the same time, skip this storage. Only store one recored for the same second
         return;
     }
 
     TrendCacheData data;
-    if(!trendCache.getTendData(t, data))
+    if (!trendCache.getTendData(t, data))
     {
-        //no trend data, return
+        // no trend data, return
         return;
     }
 
@@ -244,7 +255,7 @@ void ParamDataStorageManager::mainRun(unsigned t)
     paramBuf->item.t = t;
     paramBuf->item.co2Baro = data.co2baro;
     paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(&respOneShotAlarm, RESP_ONESHOT_ALARM_APNEA)
-            || alertor.getOneShotAlarmStatus(&co2OneShotAlarm, CO2_ONESHOT_ALARM_APNEA);
+                                  || alertor.getOneShotAlarmStatus(&co2OneShotAlarm, CO2_ONESHOT_ALARM_APNEA);
     paramBuf->item.hrSource = ecgDupParam.getCurHRSource();
     paramBuf->item.brSource = respDupParam.getBrSource();
     paramBuf->item.isFico2Display = co2Param.getFICO2Display();
@@ -266,11 +277,11 @@ void ParamDataStorageManager::mainRun(unsigned t)
         paramBuf->paramItem[i].paramID = i;
         paramBuf->paramItem[i].value = data.values.value((SubParamID)i, InvData());
         paramBuf->paramItem[i].alarmFlag =
-                alertor.getAlarmSourceStatus(paramInfo.getParamName(paramID), (SubParamID)i);
+            alertor.getAlarmSourceStatus(paramInfo.getParamName(paramID), (SubParamID)i);
         paramBuf->item.checkSum += paramBuf->paramItem[i].calcSum();
     }
 
-    if(d->nibpPendingList.isEmpty())
+    if (d->nibpPendingList.isEmpty())
     {
         d->addData(*paramBuf);
         delete paramBuf;
@@ -279,7 +290,6 @@ void ParamDataStorageManager::mainRun(unsigned t)
     {
         d->nibpPendingList.append(paramBuf);
     }
-
 }
 
 
@@ -295,9 +305,9 @@ void ParamDataStorageManager::addNIBPData(unsigned t)
     }
 
     TrendCacheData data;
-    if(!trendCache.getTendData(t, data))
+    if (!trendCache.getTendData(t, data))
     {
-        //no trend data, return
+        // no trend data, return
         return;
     }
     if (t != data.lastNibpMeasureSuccessTime)
@@ -305,19 +315,19 @@ void ParamDataStorageManager::addNIBPData(unsigned t)
         return;
     }
 
-    if(!d->nibpPendingList.isEmpty())
+    if (!d->nibpPendingList.isEmpty())
     {
-        //bug, nibp measurement happend too fast
-        qWarning()<<Q_FUNC_INFO<<"Nibp measurement happens to fast, result abandoned.";
+        // bug, nibp measurement happend too fast
+        qWarning() << Q_FUNC_INFO << "Nibp measurement happens to fast, result abandoned.";
         return;
     }
 
-    //nibp measurement record need to pending for 3 seconds
+    // nibp measurement record need to pending for 3 seconds
     ParamBuf *paramBuf = new ParamBuf();
     paramBuf->item.t = t;
     paramBuf->item.co2Baro = data.co2baro;
     paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(&respOneShotAlarm, RESP_ONESHOT_ALARM_APNEA)
-            || alertor.getOneShotAlarmStatus(&co2OneShotAlarm, CO2_ONESHOT_ALARM_APNEA);
+                                  || alertor.getOneShotAlarmStatus(&co2OneShotAlarm, CO2_ONESHOT_ALARM_APNEA);
     paramBuf->item.hrSource = ecgDupParam.getCurHRSource();
     paramBuf->item.brSource = respDupParam.getBrSource();
     paramBuf->item.isFico2Display = co2Param.getFICO2Display();
@@ -341,7 +351,7 @@ void ParamDataStorageManager::addNIBPData(unsigned t)
         paramBuf->paramItem[i].paramID = i;
         paramBuf->paramItem[i].value = data.values.value((SubParamID) i, InvData());
         paramBuf->paramItem[i].alarmFlag =
-                alertor.getAlarmSourceStatus(paramInfo.getParamName(paramID), (SubParamID)i);
+            alertor.getAlarmSourceStatus(paramInfo.getParamName(paramID), (SubParamID)i);
         paramBuf->item.checkSum += paramBuf->paramItem[i].calcSum();
     }
 
@@ -359,19 +369,19 @@ void ParamDataStorageManager::addAlarmData(unsigned t, ParamID id)
         return;
     }
 
-    if(d->nibpPendingList.isEmpty() && d->lastAlarmTimestamp == t)
+    if (d->nibpPendingList.isEmpty() && d->lastAlarmTimestamp == t)
     {
-        //no exist NIBP alarm, the alarm timestamp is equal to last alarm, just return, because all the
-        //alarm info has been collected.
+        // no exist NIBP alarm, the alarm timestamp is equal to last alarm, just return, because all the
+        // alarm info has been collected.
         return;
     }
 
     d->lastAlarmTimestamp = t;
 
     TrendCacheData data;
-    if(!trendCache.getTendData(t, data))
+    if (!trendCache.getTendData(t, data))
     {
-        //no trend data, return
+        // no trend data, return
         return;
     }
 
@@ -380,7 +390,8 @@ void ParamDataStorageManager::addAlarmData(unsigned t, ParamID id)
     if (!d->nibpPendingList.isEmpty())
     {
         ParamBuf *nibpParamBuf = d->nibpPendingList.first();
-        if(nibpParamBuf->item.t == t) {
+        if (nibpParamBuf->item.t == t)
+        {
             /*
              * new alarm arrived and nibp measurement happend in the same time
              * store data in the previous nibp record
@@ -388,10 +399,10 @@ void ParamDataStorageManager::addAlarmData(unsigned t, ParamID id)
             paramBuf = nibpParamBuf;
             mergeFlag = true;
         }
-        else if(id == PARAM_NIBP)
+        else if (id == PARAM_NIBP)
         {
-            //the nibp measurement finally trigger a alarm
-            //get the alarm status and return;
+            // the nibp measurement finally trigger a alarm
+            // get the alarm status and return;
             nibpParamBuf->item.makeCheckSum();
             ParamID paramID = PARAM_NONE;
             QList<ParamID> idList;
@@ -406,10 +417,10 @@ void ParamDataStorageManager::addAlarmData(unsigned t, ParamID id)
                     continue;
                 }
 
-                if(i == SUB_PARAM_NIBP_DIA || i == SUB_PARAM_NIBP_MAP || i == SUB_PARAM_NIBP_SYS)
+                if (i == SUB_PARAM_NIBP_DIA || i == SUB_PARAM_NIBP_MAP || i == SUB_PARAM_NIBP_SYS)
                 {
                     nibpParamBuf->paramItem[i].alarmFlag =
-                            alertor.getAlarmSourceStatus(paramInfo.getParamName(paramID), (SubParamID)i);
+                        alertor.getAlarmSourceStatus(paramInfo.getParamName(paramID), (SubParamID)i);
                 }
                 nibpParamBuf->item.checkSum += nibpParamBuf->paramItem[i].calcSum();
             }
@@ -424,19 +435,19 @@ void ParamDataStorageManager::addAlarmData(unsigned t, ParamID id)
     }
     else
     {
-         paramBuf = new ParamBuf();
-         if (id == PARAM_NIBP)
-         {
-             //at this case, the alarm is created after user change the nibp alarm limit or power on during 30 second,
-             //the NIBP value of previous power cycle is store in the config file
-             paramBuf->item.isNibpShowMeasureValue = 1;
-         }
+        paramBuf = new ParamBuf();
+        if (id == PARAM_NIBP)
+        {
+            // at this case, the alarm is created after user change the nibp alarm limit or power on during 30 second,
+            // the NIBP value of previous power cycle is store in the config file
+            paramBuf->item.isNibpShowMeasureValue = 1;
+        }
     }
 
     paramBuf->item.t = t;
     paramBuf->item.co2Baro = data.co2baro;
     paramBuf->item.isApneaAlarm = alertor.getOneShotAlarmStatus(&respOneShotAlarm, RESP_ONESHOT_ALARM_APNEA)
-            || alertor.getOneShotAlarmStatus(&co2OneShotAlarm, CO2_ONESHOT_ALARM_APNEA);
+                                  || alertor.getOneShotAlarmStatus(&co2OneShotAlarm, CO2_ONESHOT_ALARM_APNEA);
     paramBuf->item.hrSource = ecgDupParam.getCurHRSource();
     paramBuf->item.brSource = respDupParam.getBrSource();
     paramBuf->item.isFico2Display = co2Param.getFICO2Display();
@@ -460,23 +471,22 @@ void ParamDataStorageManager::addAlarmData(unsigned t, ParamID id)
         paramBuf->paramItem[i].paramID = i;
         paramBuf->paramItem[i].value = data.values.value((SubParamID)i, InvData());
         paramBuf->paramItem[i].alarmFlag =
-                alertor.getAlarmSourceStatus(paramInfo.getParamName(paramID), (SubParamID)i);
+            alertor.getAlarmSourceStatus(paramInfo.getParamName(paramID), (SubParamID)i);
         paramBuf->item.checkSum += paramBuf->paramItem[i].calcSum();
     }
 
-    if(d->nibpPendingList.isEmpty())
+    if (d->nibpPendingList.isEmpty())
     {
         d->addData(*paramBuf);
         delete paramBuf;
     }
     else
     {
-        if(!mergeFlag)
+        if (!mergeFlag)
         {
             d->nibpPendingList.append(paramBuf);
         }
     }
-
 }
 
 /**************************************************************************************************
@@ -488,7 +498,7 @@ void ParamDataStorageManager::run()
 
     d->updateAdditionInfo();
 
-    if(dataStorageDirManager.isCurRescueFolderFull())
+    if (dataStorageDirManager.isCurRescueFolderFull())
     {
         discardData();
         return;
@@ -505,7 +515,7 @@ void ParamDataStorageManager::getRecentParamData(ParamDataStorageManager::ParamB
 {
     Q_D(ParamDataStorageManager);
     QMutexLocker locker(&d->paramBufMutex);
-    memcpy((char *)&parambuf, (char *)&d->lastParamBuf, sizeof(ParamBuf));
+    memcpy(reinterpret_cast<char *>(&parambuf), reinterpret_cast<char *>(&d->lastParamBuf), sizeof(ParamBuf));
 }
 
 
