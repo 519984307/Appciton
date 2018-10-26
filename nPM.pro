@@ -182,7 +182,6 @@ SOURCES +=                                                                      
     Utility/Widgets/Waveform/WaveReviewCascadeMode.cpp                          \
     Utility/Widgets/Waveform/WaveScanMode.cpp                                   \
     Utility/Widgets/Waveform/WaveWidget.cpp                                     \
-    Utility/Widgets/BarWidget.cpp                                               \
     Utility/Widgets/MessageBox.cpp                                              \
     Utility/Widgets/ExportDataWidget.cpp                                        \
     Utility/Widgets/FreezeTableWidget.cpp                                       \
@@ -668,7 +667,6 @@ HEADERS +=                                                                      
     Utility/Widgets/Waveform/WaveReviewCascadeMode.h                            \
     Utility/Widgets/Waveform/WaveScanMode.h                                     \
     Utility/Widgets/Waveform/WaveWidget.h                                       \
-    Utility/Widgets/BarWidget.h                                                 \
     Utility/Widgets/ExportDataWidget.h                                          \
     Utility/Widgets/FreezeTableWidget.h                                         \
     Utility/Widgets/IButton.h                                                   \
