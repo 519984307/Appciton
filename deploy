@@ -1,18 +1,91 @@
 #!/bin/bash
 
+MACHINE_IP=192.168.10.2
+TEMP_DIR=/tmp/machine
+TIMEOUT=2
+
+function usage()
+{
+	echo "Deploy resource to PC or machine through network"
+	echo "Usage:"
+	echo -e "\t $0 [-m]"
+	echo -e "\t -m deploy to machine"
+}
+
+function colorecho()
+{
+	echo -ne "\033[31m"
+	echo -ne $1
+	echo -e "\033[0m"
+}
+
+MACHINE=0
+if [ $# == 1 ]; then
+	if [ $1 == '-m' ]; then
+		MACHINE=1
+	else
+		usage
+		exit 1
+	fi
+elif [ $# -gt 1 ]; then
+	usage
+	exit 1
+fi
+
 INSTALL_PATH=/usr/local/nPM
 
-echo "Deploy to $INSTALL_PATH"
+if [ $MACHINE == 0 ]; then
+	colorecho "Deploy to $INSTALL_PATH"
+else
+	colorecho "Deploy to $MACHINE_IP:$INSTALL_PATH"
+fi
 
-#清理。
-rm -rf $INSTALL_PATH/*
+# check executable format
+file nPM/bin/nPM | grep -q ARM
+IS_ARM_BIN=$?
+if [ $MACHINE == 0 -a $IS_ARM_BIN == 0 ]; then
+	colorecho "Executable file format incorrect, abort"
+	exit 1
+elif [ $MACHINE == 1 -a $IS_ARM_BIN != 0 ]; then
+	colorecho "Executable file format incorrect, abort"
+	exit 1
+fi
 
-#生成语言文件。
+# 生成语言文件。
+colorecho "Generate language resources ..."
 cd nPM/locale
 ./locale.py
 cd ../..
 
-cp -aRp nPM/* $INSTALL_PATH/
-rm $INSTALL_PATH/icons/PS -rf
-rm $INSTALL_PATH/locale/locale.*
-cp $INSTALL_PATH/etc/System.Original.xml $INSTALL_PATH/etc/System.xml
+colorecho "Clear exist files ..."
+if [ $MACHINE == 0 ]; then
+	rm -rf $INSTALL_PATH/*
+else
+	test -d $TEMP_DIR || mkdir -p $TEMP_DIR
+	rm -rf $TEMP_DIR/*
+	ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=$TIMEOUT root@$MACHINE_IP "rm $INSTALL_PATH -rf"
+	if [ $? != 0 ]; then
+		colorecho "Unable to clear exist files, deploy fail"
+		exit 1
+	fi
+fi
+
+colorecho "Copy files ..."
+if [ $MACHINE == 0 ]; then
+	cp -aRp nPM/* $INSTALL_PATH/
+	rm $INSTALL_PATH/icons/PS -rf
+	rm $INSTALL_PATH/locale/locale.*
+	cp $INSTALL_PATH/etc/System.Original.xml $INSTALL_PATH/etc/System.xml
+else
+	cp -aRp nPM/* $TEMP_DIR/
+	rm $TEMP_DIR/icons/PS -rf
+	rm $TEMP_DIR/locale/locale.*
+	cp $TEMP_DIR/etc/System.Original.xml $TEMP_DIR/etc/System.xml
+	scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=$TIMEOUT -r $TEMP_DIR root@$MACHINE_IP:$INSTALL_PATH
+	if [ $? != 0 ]; then
+		colorecho "Unable to copy files, deploy fail"
+		exit 1
+	fi
+fi
+
+colorecho "Done"
