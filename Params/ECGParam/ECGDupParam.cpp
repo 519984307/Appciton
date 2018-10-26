@@ -144,6 +144,7 @@ void ECGDupParam::updatePR(short pr, PRSourceType type)
     bool isIBP2LeadOff = ibpParam.isIBPLeadOff(IBP_INPUT_2);
     bool isSPO2Valid = spo2Param.isValid();
 
+    // 更新pr值
     switch (_prSource)
     {
         case PR_SOURCE_AUTO:
@@ -194,22 +195,36 @@ void ECGDupParam::updatePR(short pr, PRSourceType type)
         return;
     }
 
-    // HR is valid。
-    if (_hrValue != InvData())
+    // 参数界面上更新pr值
+    switch (_hrSource)
     {
-        return;
-    }
-
-    // 当HR为无效值时才使用PR。
-    if (_prValue != InvData())
-    {
-        _hrBeatFlag = false;
-        _trendWidget->setHRValue(_prValue, false);
-    }
-    else // HR & PR all invalid
-    {
-        _hrBeatFlag = false;
-        _trendWidget->setHRValue(_prValue, true);
+        case HR_SOURCE_AUTO:
+        {
+            if (_hrValue != InvData())
+            {
+                return;
+            }
+            if (_prValue != InvData())
+            {
+                _trendWidget->setHRValue(_prValue, false);
+            }
+            else
+            {
+                _trendWidget->setHRValue(_prValue, true);
+            }
+            _hrBeatFlag = false;
+        }
+        break;
+        case HR_SOURCE_IBP:
+        case HR_SOURCE_SPO2:
+        {
+            _hrBeatFlag = false;
+            _trendWidget->setHRValue(_prValue, false);
+        }
+        break;
+        case HR_SOURCE_ECG:
+        case HR_SOURCE_NR:
+        break;
     }
 }
 
@@ -262,21 +277,49 @@ void ECGDupParam::updateHR(short hr)
         return;
     }
 
-    // HR不为无效时即显示。
-    if (_hrValue != InvData())
+    switch (_hrSource)
     {
-        _hrBeatFlag = true;
-        _trendWidget->setHRValue(_hrValue, true);
-    }
-    else if (_prValue != InvData())
-    {
-        _hrBeatFlag = false;
-        _trendWidget->setHRValue(_prValue, false);
-    }
-    else // HR和PR都为无效时。
-    {
-        _hrBeatFlag = true;
-        _trendWidget->setHRValue(_hrValue, true);
+        case HR_SOURCE_AUTO:
+        {
+            // HR不为无效时即显示。
+            if (_hrValue != InvData())
+            {
+                _hrBeatFlag = true;
+                _trendWidget->setHRValue(_hrValue, true);
+            }
+            else if (_prValue != InvData())
+            {
+                _hrBeatFlag = false;
+                _trendWidget->setHRValue(_prValue, false);
+            }
+            else  // HR和PR都为无效时。
+            {
+                _hrBeatFlag = true;
+                _trendWidget->setHRValue(_hrValue, true);
+            }
+        }
+        break;
+        case HR_SOURCE_IBP:
+        case HR_SOURCE_SPO2:
+        {
+            _hrBeatFlag = false;
+            _trendWidget->setHRValue(_prValue, false);
+        }
+        break;
+        case HR_SOURCE_ECG:
+        {
+            if (_hrValue != InvData())
+            {
+                _hrBeatFlag = true;
+            }
+            else
+            {
+                _hrBeatFlag = false;
+            }
+            _trendWidget->setHRValue(_hrValue, true);
+        }
+        case HR_SOURCE_NR:
+        break;
     }
 }
 
@@ -337,7 +380,7 @@ void ECGDupParam::isAlarm(bool isAlarm, bool isLimit)
 /***************************************************************************************************
  * get the hr source
  **************************************************************************************************/
-HRSourceType ECGDupParam::getHrSource() const
+HRSourceType ECGDupParam::getCurHRSource() const
 {
     if (_hrSource == HR_SOURCE_AUTO)
     {

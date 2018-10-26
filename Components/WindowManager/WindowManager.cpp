@@ -92,8 +92,6 @@ WindowManager::WindowManager() : QWidget(), d_ptr(new WindowManagerPrivate(this)
     p.setColor(QPalette::Foreground, Qt::white);
     setPalette(p);
 
-    setVisible(true);
-
     d_ptr->timer = new QTimer(this);
     d_ptr->timer->setSingleShot(true);
     d_ptr->timer->setInterval(60 * 1000);    // 60s
@@ -102,6 +100,7 @@ WindowManager::WindowManager() : QWidget(), d_ptr(new WindowManagerPrivate(this)
     qApp->installEventFilter(this);
 
     connect(&layoutManager, SIGNAL(layoutChanged()), this, SLOT(onLayoutChanged()));
+    QTimer::singleShot(0, this, SLOT(show()));
 }
 
 /***************************************************************************************************
@@ -299,6 +298,15 @@ bool WindowManager::eventFilter(QObject *obj, QEvent *ev)
 
 void WindowManager::closeAllWidows()
 {
+
+    // close the popup widget
+    QWidget *popup = NULL;
+    while ((popup = QApplication::activePopupWidget()))
+    {
+        popup->close();
+    }
+
+    // close the window in the window stack
     while (!d_ptr->windowStacks.isEmpty())
     {
         Window *p = d_ptr->windowStacks.last();
@@ -308,6 +316,7 @@ void WindowManager::closeAllWidows()
         }
     }
 
+    // close the active window
     QWidget *activeWindow = NULL;
     while ((activeWindow = QApplication::activeWindow()))
     {

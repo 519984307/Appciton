@@ -115,14 +115,22 @@ void CO2MenuContent::onBtnReleasedChanged()
     Button *button = qobject_cast<Button *>(sender());
     int index = button->property("Btn").toInt();
 
-    KeyInputPanel numberInput;
+     // 调用数字键盘
+    KeyInputPanel numberInput(KeyInputPanel::KEY_TYPE_NUMBER);
+    // 最大输入长度
+    numberInput.setMaxInputLength(3);
+    // 固定为数字键盘
+    numberInput.setKeytypeSwitchEnable(false);
+    numberInput.setSymbolEnable(false);
+    numberInput.setSpaceEnable(false);
+    // 设置初始字符串 placeholder模式
+    numberInput.setInitString(button->text(), true);
+
     unsigned num = 1000;
     switch (index)
     {
     case CO2MenuContentPrivate::ITEM_BTN_O2_COMPEN:
         numberInput.setWindowTitle(trs("O2Compensation"));
-        numberInput.setMaxInputLength(3);
-        numberInput.setInitString(button->text());
         if (numberInput.exec())
         {
             QString strValue = numberInput.getStrValue();
@@ -130,7 +138,7 @@ void CO2MenuContent::onBtnReleasedChanged()
             if (num <= 100)
             {
                 co2Param.setCompensation(CO2_COMPEN_O2, num);
-                button->setText(strValue);
+                button->setText(QString::number(num));
             }
             else
             {
@@ -141,8 +149,6 @@ void CO2MenuContent::onBtnReleasedChanged()
         break;
     case CO2MenuContentPrivate::ITEM_BTN_N2O_COMPEN:
         numberInput.setWindowTitle(trs("N2OCompensation"));
-        numberInput.setMaxInputLength(3);
-        numberInput.setInitString(button->text());
         if (numberInput.exec())
         {
             QString strValue = numberInput.getStrValue();
@@ -150,7 +156,7 @@ void CO2MenuContent::onBtnReleasedChanged()
             if (num <= 100)
             {
                 co2Param.setCompensation(CO2_COMPEN_N2O, num);
-                button->setText(strValue);
+                button->setText(QString::number(num));
             }
             else
             {

@@ -78,7 +78,7 @@ public: // SPO2ProviderIFace 的接口。
 
     virtual int getSPO2MaxValue(void)
     {
-        return 256;
+        return 255;
     }
 
     // SPO2值与PR值。

@@ -25,6 +25,7 @@
 #include "qpainter.h"
 #include "MeasureSettingWindow.h"
 #include "LayoutManager.h"
+#include "IConfig.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -220,7 +221,23 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     // 设置标题栏的相关信息。
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     setPalette(palette);
-    setName(trs(paramInfo.getSubParamName(SUB_DUP_PARAM_HR)));
+    int index = 0;
+    currentConfig.getNumValue("ECG|HRSource", index);
+    HRSourceType type = static_cast<HRSourceType>(index);
+    SubDupParamID subId;
+    switch (type)
+    {
+        case HR_SOURCE_NR:
+        case HR_SOURCE_AUTO:
+        case HR_SOURCE_ECG:
+            subId = SUB_DUP_PARAM_HR;
+        break;
+        case HR_SOURCE_SPO2:
+        case HR_SOURCE_IBP:
+            subId = SUB_DUP_PARAM_PR;
+        break;
+    }
+    setName(trs(paramInfo.getSubParamName(subId)));
     setUnit(Unit::getSymbol(UNIT_BPM));
 
     // 开始布局。

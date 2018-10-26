@@ -21,6 +21,7 @@
 #include <QVBoxLayout>
 #include "TimeManager.h"
 #include "SystemManager.h"
+#include "SystemTick.h"
 
 class TimeEditWindowPrivate
 {
@@ -151,7 +152,6 @@ void TimeEditWindowPrivate::setSysTime()
 
     QProcess::execute(cmd);
     QProcess::execute("hwclock --systohc");
-    QProcess::execute("./etc/init.d/save-rtc.sh");
     QProcess::execute("sync");
 }
 
@@ -239,6 +239,7 @@ void TimeEditWindow::layoutExec()
 
     // hour
     spinBox = new SpinBox;
+    spinBox->setRange(0, 23);
     spinBox->setScale(1);
     spinBox->setStep(1);
     spinBox->setArrow(false);
@@ -333,6 +334,7 @@ void TimeEditWindow::hideEvent(QHideEvent *ev)
     if (d_ptr->isChangeTime)
     {
         d_ptr->setSysTime();
+        systemTick.resetLastTime();
     }
     timeManager.roloadConfig();
     Window::hideEvent(ev);

@@ -213,8 +213,8 @@ void SelectDefaultConfigMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combox = new ComboBox;
     combox->addItems(QStringList()
-                     << "FactoryConfig"
-                     << "CurrentConfig");
+                     << trs("FactoryConfig")
+                     << trs("CurrentConfig"));
     layout->addWidget(combox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SelectDefaultConfigMenuContentPrivate
                          ::ITEM_CBO_ADULT_DEFCONFIG, combox);
@@ -229,8 +229,8 @@ void SelectDefaultConfigMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combox = new ComboBox;
     combox->addItems(QStringList()
-                     << "FactoryConfig"
-                     << "CurrentConfig");
+                     << trs("FactoryConfig")
+                     << trs("CurrentConfig"));
     layout->addWidget(combox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SelectDefaultConfigMenuContentPrivate
                          ::ITEM_CBO_PED_DEFCONFIG, combox);
@@ -245,8 +245,8 @@ void SelectDefaultConfigMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combox = new ComboBox;
     combox->addItems(QStringList()
-                     << "FactoryConfig"
-                     << "CurrentConfig");
+                     << trs("FactoryConfig")
+                     << trs("CurrentConfig"));
     layout->addWidget(combox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SelectDefaultConfigMenuContentPrivate
                          ::ITEM_CBO_NEO_DEFCONFIG, combox);

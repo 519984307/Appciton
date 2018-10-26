@@ -96,6 +96,8 @@ private:
     bool _diaAlarm;
     bool _mapAlarm;
     bool _effective;           //有效测量数据
+    int _messageFontSize;      // 非虚线显示时字体大小
+    int _messageInvFontSize;   // 虚线显示时字体大小
 
     static const int _margin = 1;
 

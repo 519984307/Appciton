@@ -189,7 +189,7 @@ enum ECGFilterMode
  *************************************************************************************************/
 enum ECGNotchFilter
 {
-    ECG_NOTCH_OFF1,             // 工频关
+    ECG_NOTCH_OFF,             // 工频关
     ECG_NOTCH_50HZ,            // 50Hz滤波
     ECG_NOTCH_60HZ,            // 60Hz滤波
     ECG_NOTCH_50_AND_60HZ,     // 50&60Hz滤波

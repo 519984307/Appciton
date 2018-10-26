@@ -91,10 +91,10 @@ public:
     void isAlarm(bool isAlarm, bool isLimit);
 
     /**
-     * @brief getHrSource
+     * @brief getCurHRSource
      * @return
      */
-    HRSourceType getHrSource() const;
+    HRSourceType getCurHRSource() const;
 
     // 设置计算导联字串。
     void setECGTrendWidgetCalcName(ECGLead calLead);

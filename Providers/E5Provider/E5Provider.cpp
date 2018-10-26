@@ -243,12 +243,12 @@ E5Provider::E5Provider()
 
     // set lead mode
     int leadMode;
-    systemConfig.getNumValue("PrimaryCfg|ECG|LeadMode", leadMode);
+    currentConfig.getNumValue("ECG|LeadMode", leadMode);
     setLeadSystem(static_cast<ECGLeadMode>(leadMode));
 
     // set calculation lead
     int calcLead;
-    systemConfig.getNumValue("PrimaryCfg|ECG|DefaultECGLeadInMonitorMode", calcLead);
+    currentConfig.getNumValue("ECG|CalcLead", calcLead);
     setCalcLead(static_cast<ECGLead>(calcLead));
 
     // get selftest result

@@ -76,6 +76,9 @@ OTHER_FILES +=                                                                  
     nPM/locale/ChineseSimplified.xml                                            \
     nPM/locale/English.xml                                                      \
     nPM/locale/PrintEnglish.xml                                                 \
+    nPM/etc/AdultConfig.Original.xml                                            \
+    nPM/etc/PedConfig.Original.xml                                              \
+    nPM/etc/NeoConfig.Original.xml                                              \
 
 SOURCES +=                                                                      \
     SOUP/Json/json_parser.cc                                                    \
@@ -145,7 +148,6 @@ SOURCES +=                                                                      
     Utility/Widgets/InputMethod/KeyBoardPanel.cpp                               \
     Utility/Widgets/InputMethod/KeyInputPanel.cpp                               \
     Utility/Widgets/InputMethod/NumberPanel.cpp                                 \
-    Utility/Widgets/InputMethod/NumberInput.cpp                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.cpp                      \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidgetRuler.cpp                     \
@@ -401,7 +403,6 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/NIBPRepairMenuWindow.cpp                \
     Components/Maintain/FactoryMaintain/NIBPZeroPointContent.cpp                \
     Components/Maintain/FactoryMaintain/NIBPPressureControlContent.cpp          \
-    Components/Maintain/FactoryMaintain/SelectStarterLogoContent.cpp            \
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
     Components/Maintain/FactoryMaintain/UpgradeManager.cpp                      \
     Components/Maintain/FactoryMaintain/UpgradeWindow.cpp                       \
@@ -625,7 +626,6 @@ HEADERS +=                                                                      
     Utility/Widgets/InputMethod/KeyBoardPanel.h                                 \
     Utility/Widgets/InputMethod/KeyInputPanel.h                                 \
     Utility/Widgets/InputMethod/NumberPanel.h                                   \
-    Utility/Widgets/InputMethod/NumberInput.h                                   \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.h                        \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget_p.h                      \
@@ -901,7 +901,6 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryMaintainManager.h                \
     Components/Maintain/FactoryMaintain/SoftWareVersionWindow.h                 \
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.h                     \
-    Components/Maintain/FactoryMaintain/SelectStarterLogoContent.h              \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.h          \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.h            \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenuContent.h            \
@@ -1329,6 +1328,3 @@ linux-arm-g++ {
 
 RESOURCES += \
     Utility/Widgets/Base/res/ui.qrc
-
-DISTFILES += \
-    nPM/etc/AdultConfig.Original.xml
