@@ -107,6 +107,19 @@ public:
      */
     void setWidgetStatus(bool status);
 
+    /**
+     * @brief getUserDefineConfigMaxLen 获得允许用户定义最大配置数量
+     * @return
+     */
+    int getUserDefineConfigMaxLen();
+
+    /**
+     * @brief hasExistConfig 是否已经存在同名配置表
+     * @param name
+     * @return
+     */
+    bool hasExistConfig(const QString &name);
+
 signals:
     /**
      * @brief configChange

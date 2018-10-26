@@ -18,6 +18,7 @@
 
 #define CONFIG_DIR "/usr/local/nPM/etc/"
 #define USER_DEFINE_CONFIG_PREFIX "UserDefine"
+#define MAX_CONFIG_COUNT 3
 
 class ConfigManagerPrivate
 {
@@ -227,6 +228,26 @@ bool ConfigManager::getWidgetsPreStatus()const
 void ConfigManager::setWidgetStatus(bool status)
 {
     Q_UNUSED(status)
+}
+
+int ConfigManager::getUserDefineConfigMaxLen()
+{
+    return MAX_CONFIG_COUNT;
+}
+
+bool ConfigManager::hasExistConfig(const QString &name)
+{
+    bool flag = false;
+    QList<ConfigManager::UserDefineConfigInfo> infos = getUserDefineConfigInfos();
+    for (int i = 0; i < infos.count(); i++)
+    {
+        if (name == infos.at(i).name)
+        {
+            flag = true;
+            break;
+        }
+    }
+    return flag;
 }
 
 bool ConfigManager::isReadOnly()const

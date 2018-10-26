@@ -1542,3 +1542,10 @@ System,系统,System
 Machine,机器,Machine
 Ped,小儿,Pediatric
 Neo,新生儿,Neonate
+SaveCurrentSettingAs,保存当前设置,Save Current Setting
+SaveCurrentSettingAsDesc,保存当前设置菜单,Save Current Setting As
+reachedTheMaximunOfConfigurations,用户配置已满，继续保存之前请删除已有的用户配置,The maximum of user configurations is reached.Please delete existing user configurations first.
+SaveAsUserConfig,用户配置保存,Save As User Config
+SaveCurrentSettingAndConfigurationName,保存当前监护仪的设置为用户配置，您的配置命名为,Save the current settings as user configuration.Please name the configuration.
+ConfigurationName,配置名称,Configuraiton Name
+HasExistConfig,该配置名称与监护仪上配置重名。请重新命名！,The configuration name is repeated with the configuration.Please rename!

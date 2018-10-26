@@ -428,6 +428,8 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditDisplayMenuContent.cpp                   \
     Components/ConfigManager/LoadConfigMenuContent.cpp                          \
     Components/ConfigManager/UnitSetupMenuContent.cpp                           \
+    Components/ConfigManager/SaveCurrentConfigMenuContent.cpp                   \
+    Components/ConfigManager/SaveUserConfigWindow.cpp                           \
     Components/Freeze/FreezeManager.cpp                                         \
     Components/Freeze/FreezeWindow.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
@@ -934,6 +936,8 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditCodeMarkerMenuContent.h                  \
     Components/ConfigManager/LoadConfigMenuContent.h                            \
     Components/ConfigManager/UnitSetupMenuContent.h                             \
+    Components/ConfigManager/SaveCurrentConfigMenuContent.h                     \
+    Components/ConfigManager/SaveUserConfigWindow.h                             \
     Components/Freeze/FreezeManager.h                                           \
     Components/Freeze/FreezeWindow.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \
