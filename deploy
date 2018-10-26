@@ -82,6 +82,7 @@ else
 	rm $TEMP_DIR/locale/locale.*
 	cp $TEMP_DIR/etc/System.Original.xml $TEMP_DIR/etc/System.xml
 	scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=$TIMEOUT -r $TEMP_DIR root@$MACHINE_IP:$INSTALL_PATH
+	ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=$TIMEOUT root@$MACHINE_IP "sync"
 	if [ $? != 0 ]; then
 		colorecho "Unable to copy files, deploy fail"
 		exit 1
