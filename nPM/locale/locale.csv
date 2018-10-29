@@ -45,7 +45,7 @@ UserFaceBigFont,大字体,Big Font
 UserFaceCustom,自定义,Custom
 UserFaceUnknow,未知,Unknow
 ECG,ECG,ECG
-HR,心率,HR
+HR,HR,HR
 HR_PR,HR/PR,HR/PR
 ST-I,ST-I,ST-I
 ST-II,ST-II,ST-II
@@ -104,7 +104,7 @@ CO_CO,心排量,C.O.
 CO_CI,心指数,C.I.
 TB,血温,TB
 SPO2,SPO2,SPO2
-PR,脉率,PR
+PR,PR,PR
 PLETH,血氧波,Pleth
 NIBP,NIBP,NIBP
 RESP,RESP,RESP
@@ -237,9 +237,10 @@ SPO2Setting,SPO2设置,SPO2 Setting
 RRSource,RR来源,RR Source
 BRSource,BR来源,BR Source
 NIBPSetting,NIBP设置,NIBP Setting
-ECGHRPRSourceAuto,自动,Auto
-ECGHRPRSourceECG,ECG,ECG
-ECGHRPRSourceSPO2,SPO2,SPO2
+HRSourceAuto,自动,Auto
+HRSourceECG,ECG,ECG
+HRSourceSPO2,SPO2,SPO2
+HRSourceIBP,IBP,IBP
 HR_PRSource,HR_PR来源,HR_PR Source
 CO2Setting,CO2设置,CO2 Setting
 PatientManager,病人管理,Patient Manager
@@ -894,6 +895,7 @@ TransferSupervisorByUSB,传输超级配置数据到USB,Transferring Supervisor C
 TransferSupervisorByWIFI,传输超级配置数据到WIFI,Transferring Supervisor Config to WIFI
 TransferRescueDataComplete,营救数据传输完成,Rescue Data Transfer Complete
 TransferSupervisorComplete,超级配置传输完成,Supervisor Config Transfer Complete
+TransferErrorLogToUSBComplete,U盘传输错误日志完成,Transfer error log to USB complete
 TransferFailed,传输失败,Transfer Failed
 TransferCancel,传输取消,Transfer Cancel
 ECG12LTransfersuccess,12导传送成功,ECG 12 Lead Transfer Success
@@ -1361,8 +1363,8 @@ ConfigName,配置名称,Config Name
 AalrmSource,报警源,Aalrm Source
 Ecg1Wave,波形1,Ecg1 Wave
 Ecg2Wave,波形2,Ecg2 Wave
-Ecg1Gain,增益1,Ecg1 Gain
-Ecg2Gain,增益2,Ecg2 Gain
+ECG1,ECG1,ECG1
+Ecg1Gain,增益,Ecg Gain
 Filter,滤波器,Filter
 QRSVolume,音量,QRS Volume
 ConfigIBPMenu,有创血压,Config IBP
@@ -1532,3 +1534,18 @@ MinitrendLength,动态趋势时间,Minitrend Length
 SelectParameters,参数选择,Select Parameters
 Ok,确定,Ok
 RestoreDefault,恢复默认值,Defaluts
+CurrentConfig,当前配置,Current Config
+FactoryConfig,工厂配置,Factory Config 
+_12Hour,12 小时,12 Hour
+_24Hour,24 小时,24 Hour
+System,系统,System
+Machine,机器,Machine
+Ped,小儿,Pediatric
+Neo,新生儿,Neonate
+SaveCurrentSettingAs,保存当前设置,Save Current Setting
+SaveCurrentSettingAsDesc,保存当前设置菜单,Save Current Setting As
+reachedTheMaximunOfConfigurations,用户配置已满，继续保存之前请删除已有的用户配置,The maximum of user configurations is reached.Please delete existing user configurations first.
+SaveAsUserConfig,用户配置保存,Save As User Config
+SaveCurrentSettingAndConfigurationName,保存当前监护仪的设置为用户配置，您的配置命名为,Save the current settings as user configuration.Please name the configuration.
+ConfigurationName,配置名称,Configuraiton Name
+HasExistConfig,该配置名称与监护仪上配置重名。请重新命名！,The configuration name is repeated with the configuration.Please rename!

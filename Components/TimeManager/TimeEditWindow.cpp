@@ -21,6 +21,8 @@
 #include <QVBoxLayout>
 #include "TimeManager.h"
 #include "SystemManager.h"
+#include "SystemTick.h"
+#include <QDateTime>
 
 class TimeEditWindowPrivate
 {
@@ -72,27 +74,6 @@ void TimeEditWindowPrivate::loadOptions()
     spinBoxs[ITEM_SPB_MINUTE]->setValue(timeDate.getTimeMinute());
     spinBoxs[ITEM_SPB_SECOND]->setValue(timeDate.getTimeSenonds());
 
-    if (timeDate.getDateYear() < 1970)
-    {
-        QString cmd("date -s ");
-        cmd += "\"1970-01-01 00:00:00\"";
-
-        QProcess::execute(cmd);
-        QProcess::execute("hwclock --systohc");
-        QProcess::execute("./etc/init.d/save-rtc.sh");
-        QProcess::execute("sync");
-    }
-    else if (timeDate.getDateYear() > 2037)
-    {
-        QString cmd("date -s ");
-        cmd += "\"2037-12-27 20:00:00\"";
-
-        QProcess::execute(cmd);
-        QProcess::execute("hwclock --systohc");
-        QProcess::execute("./etc/init.d/save-rtc.sh");
-        QProcess::execute("sync");
-    }
-
     int value = 0;
     currentConfig.getNumValue("DateTime|DateFormat", value);
     combos[ITEM_CBO_DATE_FORMAT]->setCurrentIndex(value);
@@ -134,25 +115,15 @@ int TimeEditWindowPrivate::getMaxDay(int year, int month)
 
 void TimeEditWindowPrivate::setSysTime()
 {
-    QString cmd("date -s ");
-    cmd += "\"";
-    cmd += QString::number(spinBoxs[ITEM_SPB_YEAR]->getValue());
-    cmd += "-";
-    cmd += QString::number(spinBoxs[ITEM_SPB_MONTH]->getValue());
-    cmd += "-";
-    cmd += QString::number(spinBoxs[ITEM_SPB_DAY]->getValue());
-    cmd += " ";
-    cmd += QString::number(spinBoxs[ITEM_SPB_HOUR]->getValue());
-    cmd += ":";
-    cmd += QString::number(spinBoxs[ITEM_SPB_MINUTE]->getValue());
-    cmd += ":";
-    cmd += QString::number(spinBoxs[ITEM_SPB_SECOND]->getValue());
-    cmd += "\"";
+    int y = spinBoxs[ITEM_SPB_YEAR]->getValue();
+    int mon = spinBoxs[ITEM_SPB_MONTH]->getValue();
+    int d = spinBoxs[ITEM_SPB_DAY]->getValue();
+    int h = spinBoxs[ITEM_SPB_HOUR]->getValue();
+    int m = spinBoxs[ITEM_SPB_MINUTE]->getValue();
+    int s = spinBoxs[ITEM_SPB_SECOND]->getValue();
 
-    QProcess::execute(cmd);
-    QProcess::execute("hwclock --systohc");
-    QProcess::execute("./etc/init.d/save-rtc.sh");
-    QProcess::execute("sync");
+    QDateTime dt(QDate(y, mon, d), QTime(h, m, s));
+    timeManager.setSystemTime(dt);
 }
 
 TimeEditWindow::TimeEditWindow()
@@ -334,6 +305,7 @@ void TimeEditWindow::hideEvent(QHideEvent *ev)
     if (d_ptr->isChangeTime)
     {
         d_ptr->setSysTime();
+        systemTick.resetLastTime();
     }
     timeManager.roloadConfig();
     Window::hideEvent(ev);

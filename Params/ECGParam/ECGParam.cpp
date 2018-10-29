@@ -124,6 +124,9 @@ void ECGParam::handDemoTrendData(void)
     int hrValue = 60;
     ecgDupParam.updateHR(hrValue);
 
+    soundManager.heartBeatTone();
+    ecgDupParam.updateHRBeatIcon();
+
     if (oxyCRGRrHrTrend)
     {
         oxyCRGRrHrTrend->addHrTrendData(hrValue);
@@ -841,12 +844,9 @@ const QString &ECGParam::getCalcLeadWaveformName(void)
 QString ECGParam::getWaveWidgetName(ECGLead lead)
 {
     QString name;
-    if ((ECG_LEAD_NR > lead) || (ECG_LEAD_I <= lead))
+    if (_waveWidget[lead] != NULL)
     {
-        if (_waveWidget[lead] != NULL)
-        {
-            name = _waveWidget[lead]->name();
-        }
+        name = _waveWidget[lead]->name();
     }
     return name;
 }

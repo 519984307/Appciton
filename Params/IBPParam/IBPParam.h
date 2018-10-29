@@ -126,6 +126,13 @@ public:
     // 导联状态
     void leadStatus(bool staIBP1, bool staIBP2);
 
+    /**
+     * @brief isIBPLeadOff  获取ibp导联脱落状态
+     * @param IBP  ibp通道
+     * @return  导联脱落状态
+     */
+    bool isIBPLeadOff(IBPSignalInput IBP);
+
     // 设置/获取波形速度。
     void setSweepSpeed(IBPSweepSpeed speed);
     IBPSweepSpeed getSweepSpeed(void);

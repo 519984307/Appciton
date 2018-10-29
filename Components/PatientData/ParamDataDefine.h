@@ -1,8 +1,20 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/26
+ **/
+
+
+
 #pragma once
 #include "BaseDefine.h"
 #include "ParamDefine.h"
 
-//参数单元
+// 参数单元
 struct ParamItem
 {
     ParamItem()
@@ -67,12 +79,12 @@ struct ParamDataItem
     }
 
     unsigned t;
-    unsigned char isAlarm;            //发生报警而增加的数据
-    unsigned char isNibpShowMeasureValue;    //Nibp measurement finished need to show value, nibp alarm also need to show value
-    unsigned char isApneaAlarm;      //Apnea alarm active or not, 0: not active, 1: active
-    unsigned char hrSource;           //hr source, 0: ecg, 1: spo2
-    unsigned char brSource;           //br source, 0: co2, 1: Impedence respiration
-    unsigned char isFico2Display;    //showing fico2 or not, 0: no displayed, 1: display
+    unsigned char isAlarm;            // 发生报警而增加的数据
+    unsigned char isNibpShowMeasureValue;    // Nibp measurement finished need to show value, nibp alarm also need to show value
+    unsigned char isApneaAlarm;      // Apnea alarm active or not, 0: not active, 1: active
+    unsigned char hrSource;           // hr source, 0: ecg, 1: spo2
+    unsigned char brSource;           // br source, 0: co2, 1: Impedence respiration
+    unsigned char isFico2Display;    // showing fico2 or not, 0: no displayed, 1: display
     short dataLen;
     short co2Baro;
     unsigned checkSum;
@@ -88,6 +100,7 @@ struct ParamDataDescription
         memset(patientName, 0, sizeof(patientName));
         memset(PatientID, 0, sizeof(PatientID));
         memset(fdFileName, 0, sizeof(fdFileName));
+        memset(serialNum, 0, sizeof(serialNum));
         moduleConfig = 0;
         checkSum = 0;
     }

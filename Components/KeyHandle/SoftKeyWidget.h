@@ -33,7 +33,6 @@ public:
 
 protected:
     virtual void paintEvent(QPaintEvent *e);
-    virtual void resizeEvent(QResizeEvent *e);
     virtual void keyPressEvent(QKeyEvent *e);
     virtual void keyReleaseEvent(QKeyEvent *e);
     virtual void mousePressEvent(QMouseEvent *e);
