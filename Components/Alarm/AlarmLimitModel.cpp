@@ -78,7 +78,10 @@ void AlarmLimitModel::alarmDataUpdate(const AlarmDataInfo &info, int type)
         alarmConfig.setLimitAlarmConfig(info.subParamID,
                                         unit, info.limitConfig);
         Param *param = paramManager.getParam(info.paramID);
-        param->updateSubParamLimit(info.subParamID);
+        if (param)
+        {
+            param->updateSubParamLimit(info.subParamID);
+        }
         break;
     }
     case SECTION_LOW_LIMIT:
@@ -86,7 +89,10 @@ void AlarmLimitModel::alarmDataUpdate(const AlarmDataInfo &info, int type)
         alarmConfig.setLimitAlarmConfig(info.subParamID,
                                         unit, info.limitConfig);
         Param *param = paramManager.getParam(info.paramID);
-        param->updateSubParamLimit(info.subParamID);
+        if (param)
+        {
+            param->updateSubParamLimit(info.subParamID);
+        }
         break;
     }
     }

@@ -137,25 +137,11 @@ int CO2LimitAlarm::getCompare(int value, int id)
         v /= mul;
         if (0 == id % 2)
         {
-            if (v < low)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
+            return v < low ? -1 : 0;
         }
         else
         {
-            if (v > high)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
+            return v > high ? 1 : 0;
         }
     }
     else
