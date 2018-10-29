@@ -26,26 +26,53 @@ public:
     }
     static PatientInfoWindow *_selfObj;
     ~PatientInfoWindow();
-    void widgetChange(void);
-    void relieveStatus(bool);
-    void newPatientStatus(bool);
+
 private slots:
-    void _idReleased(void);
-    void _nameReleased(void);
-    void _ageReleased(void);
-    void _heightReleased(void);
-    void _weightReleased(void);
-    void _relieveReleased(void);
-    void _saveInfoReleased(void);
-    void _pacerMakerReleased(int);
+    /**
+     * @brief idReleased id按钮释放
+     */
+    void idReleased(void);
+
+    /**
+     * @brief nameReleased 姓名按钮释放
+     */
+    void nameReleased(void);
+
+    /**
+     * @brief ageReleased 年龄按钮释放
+     */
+    void ageReleased(void);
+
+    /**
+     * @brief heightReleased 身高按钮释放
+     */
+    void heightReleased(void);
+
+    /**
+     * @brief weightReleased 体重按钮释放
+     */
+    void weightReleased(void);
+
+    /**
+     * @brief onBtnReleased 解除病人按钮释放
+     */
+    void onBtnReleased(void);
+
+    /**
+     * @brief pacerMakerReleased 起博打开按钮释放
+     */
+    void pacerMakerReleased(int);
 
 protected:
+    /*reimplement*/
     void showEvent(QShowEvent *);
+
+    /*reimplement*/
+    void hideEvent(QHideEvent *ev);
 
 private:
     PatientInfoWindow();
     PatientInfoWindowPrivate * const d_ptr;
-    void _setPatientInfo(void);
 };
 
 #define patientInfoWindow (PatientInfoWindow::construction())

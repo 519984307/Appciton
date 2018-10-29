@@ -202,9 +202,13 @@ void UserConfigEditMenuContent::onBtnClick()
             pathName += name;
             d_ptr->editWindow->setWindowTitlePrefix(pathName);
 
-            windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorModal |
+            windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorHideOthers |
                                                         WindowManager::ShowBehaviorNoAutoClose);
             connect(d_ptr->editWindow , SIGNAL(finished(int)) , this , SLOT(onEditFinished()));
+
+            // 每次打开主界面时，强制聚焦在首个item
+            // 需要放在showWindow下面
+            d_ptr->editWindow->focusFirstMenuItem();
         }
     }
     else if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG])
@@ -237,9 +241,13 @@ void UserConfigEditMenuContent::onBtnClick()
         }
         d_ptr->editWindow->setWindowTitlePrefix(pathName);
 
-        windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorModal |
+        windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorHideOthers |
                                                     WindowManager::ShowBehaviorNoAutoClose);
         connect(d_ptr->editWindow , SIGNAL(finished(int)) , this , SLOT(onEditFinished()));
+
+        // 每次打开主界面时，强制聚焦在首个item
+        // 需要放在showWindow下面
+        d_ptr->editWindow->focusFirstMenuItem();
     }
     else if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG])
     {

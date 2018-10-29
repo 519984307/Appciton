@@ -44,6 +44,7 @@ public:
     QLineEdit *textDisplay;
 
     QString regExpStr;
+    QString invalidStr;
 };
 
 KeyInputPanelPrivate::KeyInputPanelPrivate()
@@ -53,7 +54,8 @@ KeyInputPanelPrivate::KeyInputPanelPrivate()
       itemHeight(0),
       lastFoucsIndex(0),
       textDisplay(NULL),
-      regExpStr("")
+      regExpStr(""),
+      invalidStr(trs("InvalidInput"))
 {
     helpKeys.clear();
     keys.clear();
@@ -206,7 +208,7 @@ void KeyInputPanel::ClickedEnter(void)
         else
         {
             d_ptr->isInvalid = true;
-            d_ptr->textDisplay->setText(trs("InvalidInput"));
+            d_ptr->textDisplay->setText(d_ptr->invalidStr);
             return;
         }
     }
@@ -523,10 +525,15 @@ void KeyInputPanel::setCheckValueHook(CheckValue hook)
     _checkValue = hook;
 }
 
+void KeyInputPanel::setInvalidHint(const QString &str)
+{
+    d_ptr->invalidStr = str;
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-KeyInputPanel::KeyInputPanel(KeyType type)
+KeyInputPanel::KeyInputPanel(KeyType type, bool isShowDecimalPoint)
     : Window(),
       d_ptr(new KeyInputPanelPrivate)
 {
@@ -630,6 +637,14 @@ KeyInputPanel::KeyInputPanel(KeyType type)
                 switch (c)
                 {
                 case 0:
+                    // 显示小数点，占用原有的空白格按键区域
+                    if (isShowDecimalPoint)
+                    {
+                        key->setText(".");
+                        key->setButtonStyle(Button::ButtonTextOnly);
+                        connect(key, SIGNAL(clicked()), this, SLOT(onKeyClicked()));
+                        break;
+                    }
                     key->setButtonStyle(Button::ButtonIconOnly);
                     key->setIconSize(QSize(100, 100));
                     key->setIcon(QIcon("/usr/local/nPM/icons/blank.png"));

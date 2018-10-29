@@ -13,7 +13,6 @@
 #include "ParamManager.h"
 #include "ParamInfo.h"
 #include <QHBoxLayout>
-#include "PublicMenuManager.h"
 #include "WindowManager.h"
 #include "SPO2Param.h"
 #include "TrendWidgetLabel.h"
@@ -55,6 +54,21 @@ void SPO2TrendWidget::setSPO2Value(int16_t spo2)
 void SPO2TrendWidget::setBarValue(int16_t bar)
 {
     _spo2Bar->setValue(bar);
+}
+
+void SPO2TrendWidget::setPIValue(int16_t pi)
+{
+    if (pi == InvData())
+    {
+        _piString = InvStr();
+    }
+    else
+    {
+        int16_t piInt = pi / 10;
+        int16_t piDes = pi % 10;
+        _piString = QString::number(piInt) + "." + QString::number(piDes);
+    }
+    _piValue->setText(_piString);
 }
 
 /**************************************************************************************************
@@ -120,6 +134,14 @@ void SPO2TrendWidget::setTextSize()
     font.setWeight(QFont::Black);
 
     _spo2Value->setFont(font);
+
+    font = fontManager.numFont(fontsize/1.5, true);
+    font.setWeight(QFont::Black);
+    _piValue->setFont(font);
+
+    int fontSize = fontManager.getFontSize(9);
+    font = fontManager.textFont(fontSize);
+    _piName->setFont(font);
 }
 
 /**************************************************************************************************
@@ -146,17 +168,20 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     mLayout->addWidget(_spo2Bar);
     mLayout->setMargin(5);
 
-    // 布局。
-    QHBoxLayout *mainLayout = new QHBoxLayout();
-    mainLayout->setMargin(1);
-    mainLayout->setSpacing(1);
-    mainLayout->addStretch(1);
-    mainLayout->addWidget(_spo2Value);
-    mainLayout->addStretch(1);
+    _piName = new QLabel();
+    _piName->setPalette(palette);
+    _piName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    _piName->setText("PI");
 
-    contentLayout->addStretch(1);
-    contentLayout->addLayout(mainLayout);
-    contentLayout->addStretch(1);
+    _piValue = new QLabel();
+    _piValue->setPalette(palette);
+    _piValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    _piValue->setText(InvStr());
+
+    contentLayout->addStretch();
+    contentLayout->addWidget(_spo2Value, 3);
+    contentLayout->addWidget(_piName, 1);
+    contentLayout->addWidget(_piValue, 3);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));

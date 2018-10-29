@@ -18,6 +18,7 @@
     <IBPEnable>1</IBPEnable>
     <TEMPEnable>1</TEMPEnable>
     <WIFIEnable>1</WIFIEnable>
+    <TouchEnable>1</TouchEnable>
     <!--系统信息-->
     <SerialNumber>20180725222</SerialNumber>
     <SoftwareVersion>0.0.0.1</SoftwareVersion>
@@ -34,8 +35,8 @@
     <!--参数与Provider的关系-->
     <ECG SptProvider="DemoProvider,BLM_E5">BLM_E5</ECG>
     <RESP SptProvider="DemoProvider,BLM_E5">BLM_E5</RESP>
-    <SPO2 SptProvider="DemoProvider,BLM_SPO2,BLM_TS3,BLM_S5,MASIMO_SPO2,NELLCOR_SPO2">BLM_S5</SPO2>
-    <NIBP SptProvider="DemoProvider,BLM_NIBP,BLM_TN3,SUNTECH_NIBP">BLM_TN3</NIBP>
+    <SPO2 SptProvider="DemoProvider,BLM_S5,MASIMO_SPO2,NELLCOR_SPO2">BLM_S5</SPO2>
+    <NIBP SptProvider="DemoProvider,BLM_N5,SUNTECH_NIBP">BLM_N5</NIBP>
     <CO2 SptProvider="DemoProvider,BLM_CO2">BLM_CO2</CO2>
     <IBP SptProvider="DemoProvider,WITLEAF_IBP">WITLEAF_IBP</IBP>
     <AG SptProvider="DemoProvider,PHASEIN_AG">PHASEIN_AG</AG>
@@ -44,7 +45,7 @@
     <!--Provider端口信息-->
     <PRT48Port>/dev/ttyS3</PRT48Port>
     <BLM_E5Port>/dev/ttyS1</BLM_E5Port>
-    <BLM_TN3Port>/dev/ttyPM1</BLM_TN3Port>
+    <BLM_N5Port>/dev/ttyPM1</BLM_N5Port>
     <SUNTECH_NIBPPort>/dev/ttyPM1</SUNTECH_NIBPPort>
     <BLM_S5Port>DataDispatcher</BLM_S5Port>
     <MASIMO_SPO2Port>DataDispatcher</MASIMO_SPO2Port>

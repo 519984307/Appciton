@@ -51,8 +51,11 @@ private:
     AlarmPriority _alarmPriority;
     unsigned _pauseTime;
     QString _text;
+    const char *_message;
     bool _latch;
     bool _acknowledge;
+    AlarmParamIFace *_alarmSource;
+    int _alarmID;
 
     AlarmInfoWindow *_alarmWindow;
     AlarmType _alarmType;

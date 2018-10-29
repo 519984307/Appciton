@@ -26,9 +26,13 @@
 #include "WindowManager.h"
 #include "WiFiProfileWindow.h"
 #include "SoftWareVersionWindow.h"
-#include "DemoModeWindow.h"
 #include "NightModeWindow.h"
-#include "StandyWindow.h"
+#include "StandbyWindow.h"
+#include "PatientManager.h"
+#include "PasswordWindow.h"
+#ifdef Q_WS_QWS
+#include <QWSServer>
+#endif
 
 class NormalFunctionMenuContentPrivate
 {
@@ -40,6 +44,9 @@ public:
         ITEM_CBO_ALARM_VOLUME,
         ITEM_CBO_SCREEN_BRIGHTNESS,
         ITEM_CBO_KEYPRESS_VOLUME,
+#ifdef Q_WS_QWS
+        ITEM_CBO_TOUCH_SCREEN,
+#endif
 
         ITEM_BTN_WIFI_PROFILE,
         ITEM_BTN_MACHINE_VERSION,
@@ -79,12 +86,17 @@ void NormalFunctionMenuContentPrivate::loadOptions()
         index = soundManager.getVolume(SoundManager::SOUND_TYPE_ALARM) - 1;
         combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(index);
 
-        index = systemManager.getBrightness() - 1;
+        index = systemManager.getBrightness();
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setCurrentIndex(index);
 
         index = soundManager.getVolume(SoundManager::SOUND_TYPE_KEY_PRESS);
         combos[ITEM_CBO_KEYPRESS_VOLUME]->setCurrentIndex(index);
     }
+
+#ifdef Q_WS_QWS
+    combos[ITEM_CBO_TOUCH_SCREEN]->setCurrentIndex(systemManager.isTouchScreenOn());
+    combos[ITEM_CBO_TOUCH_SCREEN]->setEnabled(systemManager.isSupport(CONFIG_TOUCH));
+#endif
 }
 
 NormalFunctionMenuContent::NormalFunctionMenuContent()
@@ -147,13 +159,14 @@ void NormalFunctionMenuContent::layoutExec()
     label = new QLabel(trs("SystemBrightness"));
     layout->addWidget(label, row, 0);
     comboBox = new ComboBox();
-    for (int i = BRT_LEVEL_1; i < BRT_LEVEL_NR; i++)
+    for (int i = BRT_LEVEL_0; i < BRT_LEVEL_NR; i++)
     {
-        comboBox->addItem(QString::number(i));
+        comboBox->addItem(QString::number(i + 1));
     }
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
+    comboBox->setObjectName("SystemBrightness");
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, row, 1);
     row++;
@@ -172,11 +185,28 @@ void NormalFunctionMenuContent::layoutExec()
                        <<QString::number(SoundManager::VOLUME_LEV_5)
                        );
     layout->addWidget(comboBox , row , 1);
+    comboBox->setObjectName("KeyPressVolume");
     row++;
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME);
     comboBox->setProperty("Item" , qVariantFromValue(itemID));
     connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
     d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME , comboBox);
+
+#ifdef Q_WS_QWS
+    // touch screen function
+    label = new QLabel(trs("TouchScreen"));
+    layout->addWidget(label, row, 0);
+    comboBox = new ComboBox();
+    comboBox->addItem(trs("Off"));
+    comboBox->addItem(trs("On"));
+    layout->addWidget(comboBox, row, 1);
+    row++;
+    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_TOUCH_SCREEN);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(comboBox , SIGNAL(currentIndexChanged(int)) , this , SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_TOUCH_SCREEN, comboBox);
+    comboBox->setEnabled(systemManager.isSupport(CONFIG_TOUCH));
+#endif
 
     if (systemManager.isSupport(CONFIG_WIFI))
     {
@@ -230,6 +260,22 @@ void NormalFunctionMenuContent::layoutExec()
     layout->setRowStretch(row, 1);
 }
 
+void NormalFunctionMenuContent::setShowParam(const QVariant &val)
+{
+    if (val.isValid())
+    {
+        QString objName = val.toString();
+        if (!objName.isEmpty())
+        {
+            ComboBox *obj = findChild<ComboBox*>(objName);
+            if (obj)
+            {
+                obj->setFocus();
+            }
+        }
+    }
+}
+
 void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
 {
     ComboBox *box = qobject_cast<ComboBox *>(sender());
@@ -242,21 +288,27 @@ void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
         case NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME:
         {
             int volume = box->itemText(index).toInt();
-            soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, (SoundManager::VolumeLevel) volume);
+            soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, static_cast<SoundManager::VolumeLevel>(volume));
             break;
         }
         case NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS:
         {
-            int brightness = box->itemText(index).toInt();
-            systemManager.setBrightness((BrightnessLevel)brightness);
+            systemManager.setBrightness(static_cast<BrightnessLevel>(index));
             break;
         }
         case NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME:
         {
             int volume = box->itemText(index).toInt();
-            soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , (SoundManager::VolumeLevel)volume);
+            soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , static_cast<SoundManager::VolumeLevel>(volume));
             break;
         }
+#ifdef Q_WS_QWS
+        case NormalFunctionMenuContentPrivate::ITEM_CBO_TOUCH_SCREEN:
+        {
+            systemManager.setTouchScreenOnOff(index);
+            break;
+        }
+#endif
         default:
             break;
         }
@@ -290,7 +342,7 @@ void NormalFunctionMenuContent::onBtnReleasd()
         break;
         case NormalFunctionMenuContentPrivate::ITEM_BTN_ENTER_STANDY:
         {
-            StandyWindow w;
+            StandbyWindow w;
             w.exec();
         }
         break;
@@ -307,21 +359,25 @@ void NormalFunctionMenuContent::onBtnReleasd()
                 systemManager.setWorkMode(WORK_MODE_NORMAL);
                 d_ptr->demoBtn->setText(trs("DemoMode"));
                 windowManager.closeAllWidows();
+                patientManager.newPatient();
                 break;
             }
 
-            DemoModeWindow w;
-            windowManager.showWindow(&w,
-                                     WindowManager::ShowBehaviorModal);
-            if (!w.isUserInputCorrect())
+            QString password;
+            systemConfig.getStrValue("General|DemoModePassword", password);
+
+            PasswordWindow w(trs("DemoModePassword"), password);
+            w.setWindowTitle(btn->text());
+            if (w.exec() != PasswordWindow::Accepted)
             {
-                break;
+                return;
             }
 
             systemManager.setWorkMode(WORK_MODE_DEMO);
             d_ptr->demoBtn->setText(trs("ExitDemoMode"));
 
             windowManager.closeAllWidows();
+            patientManager.newPatient();
         }
         break;
     }

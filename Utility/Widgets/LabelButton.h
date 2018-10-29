@@ -1,3 +1,15 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/10/18
+ **/
+
+
+
 #pragma once
 #include "ColorManager.h"
 #include <QWidget>
@@ -12,7 +24,7 @@ class LButton: public QPushButton
     Q_OBJECT
 
 public:
-    LButton(int id = 0)
+    explicit LButton(int id = 0)
     {
         _id = id;
         QPalette p;
@@ -32,7 +44,6 @@ public:
 
     ~LButton()
     {
-
     }
 
 signals:
@@ -41,8 +52,9 @@ signals:
 
 protected:
     // 响应重绘事件。
-    void paintEvent(QPaintEvent */*e*/)
+    void paintEvent(QPaintEvent *e)
     {
+        Q_UNUSED(e);
         QPainter painter(this);
         painter.setPen(Qt::NoPen);
 
@@ -58,7 +70,7 @@ protected:
             }
             else if (!isEnabled())
             {
-                //painter.setBrush(Qt::gray);        // 暗色
+                // painter.setBrush(Qt::gray);        // 暗色
                 painter.setBrush(palette().color(QPalette::Disabled, QPalette::Window));
             }
             else          // 非聚焦。
@@ -137,12 +149,10 @@ class LButtonEx : public LButton
 public:
     LButtonEx() : LButton()
     {
-
     }
 
     ~LButtonEx()
     {
-
     }
 
 protected:
@@ -169,7 +179,7 @@ public:
     void setSpacing(int space);
 
 
-    LabelButton(const QString &text);
+    explicit LabelButton(const QString &text);
     ~LabelButton();
 
     LButton *button;          // 按钮。
@@ -181,7 +191,7 @@ class PButton: public QPushButton
     Q_OBJECT
 
 public:
-    PButton(int id = 0)
+    explicit PButton(int id = 0)
     {
         _id = id;
         QPalette p;
@@ -201,7 +211,6 @@ public:
 
     ~PButton()
     {
-
     }
 
     QPixmap pixmap;
@@ -216,8 +225,9 @@ signals:
 
 protected:
     // 响应重绘事件。
-    void paintEvent(QPaintEvent */*e*/)
+    void paintEvent(QPaintEvent *e)
     {
+        Q_UNUSED(e);
         QPainter painter(this);
         painter.setPen(Qt::NoPen);
 
@@ -299,7 +309,7 @@ class LButtonEn: public QPushButton
     Q_OBJECT
 
 public:
-    LButtonEn(int id = 0)
+    explicit LButtonEn(int id = 0)
     {
         _id = id;
         QPalette p;
@@ -319,7 +329,6 @@ public:
 
     ~LButtonEn()
     {
-
     }
 
 signals:
@@ -328,8 +337,9 @@ signals:
 
 protected:
     // 响应重绘事件。
-    void paintEvent(QPaintEvent */*e*/)
+    void paintEvent(QPaintEvent *e)
     {
+        Q_UNUSED(e);
         QPainter painter(this);
         painter.setPen(Qt::NoPen);
 

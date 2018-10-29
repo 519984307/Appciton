@@ -27,23 +27,16 @@
 #include "NormalModeKeyAction.h"
 #include "WindowManager.h"
 #include "MenuManager.h"
-#include "PublicMenuManager.h"
 #include "SupervisorMenuManager.h"
 #include "KeyBoardPanel.h"
 #include "NumberPanel.h"
 #include "SetWidget.h"
-#include "ConfigEditUnitSetupMenu.h"
 #include "NellcorProvider.h"
 
 #include "DataStorageDirManager.h"
 #include "SoundManager.h"
 #include "NetworkManager.h"
 #include "SystemTick.h"
-#include "FactoryImportExportMenu.h"
-#include "FactoryDataRecord.h"
-#include "FactoryTempMenu.h"
-#include "FactoryTestMenu.h"
-#include "FactorySystemInfoMenu.h"
 #include "UserMaintainManager.h"
 #include "FactoryMaintainManager.h"
 #include "WifiMaintainMenu.h"
@@ -60,8 +53,6 @@
 
 #include "PatientManager.h"
 #include "PatientInfoWidget.h"
-#include "PatientBarWidget.h"
-#include "PatientStatusBarWidget.h"
 
 #include "TimeDate.h"
 #include "TimeManager.h"
@@ -88,16 +79,13 @@
 #include "AlarmPhyInfoBarWidget.h"
 #include "AlarmTechInfoBarWidget.h"
 #include "AlarmMuteBarWidget.h"
-#include "AlarmLimitMenu.h"
 #include "AlarmStateMachine.h"
 
 #include "ParamManager.h"
 #include "DemoProvider.h"
-#include "TN3Provider.h"
+#include "N5Provider.h"
 #include "SuntechProvider.h"
-#include "BLMNIBPProvider.h"
 #include "S5Provider.h"
-#include "BLMSPO2Provider.h"
 #include "MasimoProvider.h"
 #include "T5Provider.h"
 #include "BLMCO2Provider.h"
@@ -117,7 +105,6 @@
 #include "IBPParam.h"
 #include "IBPWaveWidget.h"
 #include "IBPTrendWidget.h"
-#include "IBPMenu.h"
 
 #include "COParam.h"
 #include "COAlarm.h"
@@ -156,7 +143,6 @@
 #include "ECGTrendWidget.h"
 #include "ECGPVCSTrendWidget.h"
 #include "ECGSTTrendWidget.h"
-#include "ECGMenu.h"
 
 #include "E5Provider.h"
 #include "RawDataCollection.h"
@@ -165,9 +151,6 @@
 #include "USBManager.h"
 
 #include "ActivityLogManager.h"
-
-#include "CodeMarkerWidget.h"
-
 
 #include "PMessageBox.h"
 
@@ -178,7 +161,6 @@
 #include "OxyCRGSPO2Widget.h"
 
 #include "TopBarWidget.h"
-#include "NightStatusBar.h"
 
 // 构造所有的对象。
 extern void newObjects(void);

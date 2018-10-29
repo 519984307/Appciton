@@ -14,6 +14,8 @@
 #include "TimeDate.h"
 #include "IConfig.h"
 #include "SystemTick.h"
+#include <QProcess>
+#include <QDateTime>
 
 TimeManager *TimeManager::_selfObj = NULL;
 #define MAXDATETIMEVALUE  2145916800  // 2037-12-31 23:59:59秒对应的时间戳
@@ -157,4 +159,26 @@ TimeManager::TimeManager()
  *************************************************************************************************/
 TimeManager::~TimeManager()
 {
+}
+
+void TimeManager::setSystemTime(const QDateTime &datetime)
+{
+    QString cmd = QString("date -s \"%1\"").arg(datetime.toString("yyyy-MM-dd hh:mm:ss"));
+    QProcess::execute(cmd);
+    QProcess::execute("hwclock --systohc");
+    QProcess::execute("sync");
+}
+
+void TimeManager::checkAndFixSystemTime()
+{
+    QDateTime cur = QDateTime::currentDateTime();
+
+    if (cur.toTime_t() < 10)
+    {
+        setSystemTime(QDateTime(QDate(2018, 1, 1), QTime(0, 0)));
+    }
+    else if (cur.date().year() > 2037)
+    {
+        setSystemTime(QDateTime(QDate(2037, 12, 27), QTime(20, 0)));
+    }
 }

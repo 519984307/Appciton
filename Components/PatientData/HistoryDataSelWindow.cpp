@@ -19,7 +19,6 @@
 #include "HistoryDataReviewWindow.h"
 #include <QScrollBar>
 
-#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
 #define ROW_COUNT       9
 
 class HistoryDataSelWindowPrivate
@@ -44,7 +43,6 @@ HistoryDataSelWindow::HistoryDataSelWindow()
     setFixedSize(800, 580);
 
     d_ptr->table = new TableView();
-    d_ptr->table->setFocusPolicy(Qt::NoFocus);
     d_ptr->table->horizontalHeader()->setVisible(false);
     d_ptr->table->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
     d_ptr->table->verticalHeader()->setVisible(false);

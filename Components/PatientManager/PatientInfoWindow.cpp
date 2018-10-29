@@ -14,20 +14,15 @@
 #include "ComboBox.h"
 #include "LanguageManager.h"
 #include <QStringList>
-#include "PatientDefine.h"
 #include "MessageBox.h"
 #include <QHBoxLayout>
 #include "EnglishInputPanel.h"
 #include "KeyInputPanel.h"
 #include "PatientManager.h"
 #include "DischargePatientWindow.h"
-#include "DataStorageDirManager.h"
 #include <QMap>
 #include "Button.h"
-#include "WindowManager.h"
-#include "IConfig.h"
 #include "UnitManager.h"
-#include "ECGParam.h"
 
 PatientInfoWindow *PatientInfoWindow::_selfObj = NULL;
 class PatientInfoWindowPrivate
@@ -37,12 +32,11 @@ public:
         id(NULL) , type(NULL) , sex(NULL)
         , blood(NULL) , name(NULL) , pacer(NULL)
         , age(NULL) , height(NULL) , weight(NULL)
-        , relievePatient(NULL) , savePatientInfo(NULL)
-        , infoChange(false)
-        , patientNew(false)
-        , relieveFlag(true)
+        , cancel(NULL) , savePatientInfo(NULL)
         , heightLbl(NULL)
         , weightLbl(NULL)
+        , heightType(UNIT_NONE)
+        , weightType(UNIT_NONE)
     {}
 
     enum MenuItem
@@ -57,9 +51,12 @@ public:
         ITEM_BTN_PATIENT_HEIGHT,
         ITEM_BTN_PATIENT_WEIGHT,
         ITEM_BTN_CREATE_PATIENT,
-        ITEM_BTN_CLEAR_PATIENT
+        ITEM_BTN_CANCEL
     };
 
+    /**
+     * @brief loadOptions 加载选项信息
+     */
     void loadOptions();
     Button *id;                      // ID。
     ComboBox *type;                  // 病人类型。
@@ -70,19 +67,28 @@ public:
     Button *age;                     // 年龄。
     Button *height;                  // 身高。
     Button *weight;                  // 体重。
-    Button *relievePatient;          // 病人信息获取
+    Button *cancel;
     Button *savePatientInfo;         // 保存病人信息
     QLabel *heightLbl;
     QLabel *weightLbl;
 
-    bool infoChange;                 // settting has been change
-    bool patientNew;                 // 新建病人标志
-    bool relieveFlag;                // 解除病人标志
-
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem , Button *> buttons;
+
+    UnitType heightType;
+    UnitType weightType;
+
+    /**
+     * @brief savePatientInfoToManager 保存病人信息到病人配置
+     */
+    void savePatientInfoToManager(void);
 };
 
+/**
+ * @brief checkAgeValue 年龄输入合法性判断
+ * @param value
+ * @return
+ */
 static bool checkAgeValue(const QString &value)
 {
     if (value.isEmpty())
@@ -106,7 +112,7 @@ static bool checkAgeValue(const QString &value)
 }
 
 /**
- * @brief checkHeightValue
+ * @brief checkHeightValue 身高输入合法性判断
  * @param value
  * @return
  */
@@ -116,37 +122,35 @@ static bool checkHeightValue(const QString &value)
     {
         return true;
     }
-    int unitHeightIndex = -1;
-    systemConfig.getNumValue("Unit|HightUnit", unitHeightIndex);
+    UnitType unitHeightIndex = patientManager.getHeightUnit();
     bool ok = false;
     float heightValue = value.toFloat(&ok);
     if (!ok)
     {
         return false;
     }
+    Range range;
     switch (unitHeightIndex)
     {
     case UNIT_CM:         // cm: 20.0-300.0(cm)
-        if (heightValue - 300.0 > 0.000001 ||
-                heightValue - 20.0 < 0.000001)
-        {
-            return false;
-        }
+        range = Unit::getRange(UNIT_CM);
         break;
     case UNIT_INCH:         // inch: 8.0-118.0(inch)
-        if (heightValue - 118.0 > 0.000001 ||
-                heightValue - 8.0 < 0.000001)
-        {
-            return false;
-        }
+        range = Unit::getRange(UNIT_INCH);
         break;
     default:
+        return false;
+    }
+
+    if (heightValue - range.upLimit > 0.000001 ||
+            heightValue - range.downLimit < 0.000001)
+    {
         return false;
     }
     return true;
 }
 /**
- * @brief checkWeightValue
+ * @brief checkWeightValue　体重输入合法性判断
  * @param value
  * @return
  */
@@ -157,67 +161,101 @@ static bool checkWeightValue(const QString &value)
         return true;
     }
 
-    int unitWeightValue = -1;
-    systemConfig.getNumValue("Unit|WeightUnit", unitWeightValue);
+    UnitType unitWeightValue = patientManager.getWeightUnit();
     bool ok = false;
     float weightValue = value.toFloat(&ok);
     if (!ok)
     {
         return false;
     }
+    Range range;
     switch (unitWeightValue)
     {
     case UNIT_KG:           // 0.1-200.0
-        if (weightValue - 0.1 < 0.000001 ||
-                weightValue - 200.0 > 0.000001)
-        {
-            return false;
-        }
+        range = Unit::getRange(UNIT_KG);
         break;
     case UNIT_LB:           // 0.2-440.9
-        if (weightValue - 0.2 < 0.000001 ||
-                weightValue - 440.9 > 0.000001)
-        {
-            return false;
-        }
+        range = Unit::getRange(UNIT_LB);
         break;
     default:
         return false;
-        break;
     }
+
+    if (weightValue - range.downLimit < 0.000001 ||
+            weightValue - range.upLimit > 0.000001)
+    {
+        return false;
+    }
+
     return true;
 }
 void PatientInfoWindowPrivate::loadOptions()
 {
     combos[ITEM_CBO_PATIENT_TYPE]->setCurrentIndex(patientManager.getType());
+    bool patientNew = patientManager.isNewPatient();
     if (patientNew)         // 新建病人时默认打开起博
     {
-        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(ECG_PACE_ON);
+        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(PATIENT_PACER_ON);
     }
     else
     {
-        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(ecgParam.getPacermaker());
+        combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(patientManager.getPacermaker());
     }
-    buttons[ITEM_BTN_PATIENT_ID]->setEnabled(true);
     combos[ITEM_CBO_PATIENT_SEX]->setCurrentIndex(patientManager.getSex());
     combos[ITEM_CBO_BLOOD_TYPE]->setCurrentIndex(patientManager.getBlood());
-    buttons[ITEM_BTN_PATIENT_NAME]->setEnabled(true);
-    buttons[ITEM_BTN_PATIENT_AGE]->setEnabled(true);
-    buttons[ITEM_BTN_PATIENT_HEIGHT]->setEnabled(true);
-    buttons[ITEM_BTN_PATIENT_WEIGHT]->setEnabled(true);
+    buttons[ITEM_BTN_PATIENT_NAME]->setText(patientManager.getName());
+    if (patientManager.getAge() > 0)
+    {
+        buttons[ITEM_BTN_PATIENT_AGE]->setText(QString::number(patientManager.getAge()));
+    }
+    else
+    {
+        buttons[ITEM_BTN_PATIENT_AGE]->setText("");
+    }
+    if (patientManager.getHeight() > 0.000001)
+    {
+        buttons[ITEM_BTN_PATIENT_HEIGHT]->setText(QString::number(patientManager.getHeight()));
+    }
+    else
+    {
+        buttons[ITEM_BTN_PATIENT_HEIGHT]->setText("");
+    }
+    if (patientManager.getWeight() > 0.000001)
+    {
+        buttons[ITEM_BTN_PATIENT_WEIGHT]->setText(QString::number(patientManager.getWeight()));
+    }
+    else
+    {
+        buttons[ITEM_BTN_PATIENT_WEIGHT]->setText("");
+    }
+    buttons[ITEM_BTN_PATIENT_ID]->setText(patientManager.getPatID());
 
-    int unit;
-    systemConfig.getNumValue("Unit|HeightUnit", unit);
-    UnitType unitType = static_cast<UnitType>(unit);
+    UnitType oldHeightType = heightType;
+    heightType = patientManager.getHeightUnit();
 
     heightLbl->setText(QString("%1(%2)").arg(trs("PatientHeight"))
-                       .arg(Unit::getSymbol(unitType)));
+                       .arg(Unit::getSymbol(heightType)));
 
-    systemConfig.getNumValue("Unit|WeightUnit", unit);
-    unitType = static_cast<UnitType>(unit);
+    UnitType oldWeightType = weightType;
+    weightType = patientManager.getWeightUnit();
 
     weightLbl->setText(QString("%1(%2)").arg(trs("PatientWeight"))
-                       .arg(Unit::getSymbol(unitType)));
+                       .arg(Unit::getSymbol(weightType)));
+
+    bool ok;
+    float heightValue = height->text().toFloat(&ok);
+    if (ok)
+    {
+        QString ret = Unit::convert(heightType, oldHeightType, heightValue);
+        height->setText(ret);
+    }
+
+    float weightValue = weight->text().toFloat(&ok);
+    if (ok)
+    {
+        QString ret = Unit::convert(weightType, oldWeightType, weightValue);
+        weight->setText(ret);
+    }
 }
 
 PatientInfoWindow::PatientInfoWindow()
@@ -240,9 +278,9 @@ PatientInfoWindow::PatientInfoWindow()
     d_ptr->type = new ComboBox();
     d_ptr->type->setFixedWidth(250);
     d_ptr->type ->addItems(QStringList()
-                            << trs(PatientSymbol::convert(PATIENT_TYPE_ADULT))
-                            << trs(PatientSymbol::convert(PATIENT_TYPE_PED))
-                            << trs(PatientSymbol::convert(PATIENT_TYPE_NEO)));
+                           << trs(PatientSymbol::convert(PATIENT_TYPE_ADULT))
+                           << trs(PatientSymbol::convert(PATIENT_TYPE_PED))
+                           << trs(PatientSymbol::convert(PATIENT_TYPE_NEO)));
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_CBO_PATIENT_TYPE);
     d_ptr->type ->setProperty("Item" , qVariantFromValue(itemId));
     layout->addWidget(d_ptr->type
@@ -259,9 +297,9 @@ PatientInfoWindow::PatientInfoWindow()
     d_ptr->pacer = new ComboBox();
     d_ptr->pacer->setFixedWidth(250);
     d_ptr->pacer->addItems(QStringList()
-                            << trs(PatientSymbol::convert(PATIENT_PACER_OFF))
-                            << trs(PatientSymbol::convert(PATIENT_PACER_ON))
-                           );
+                           << trs(PatientSymbol::convert(PATIENT_PACER_OFF))
+                           << trs(PatientSymbol::convert(PATIENT_PACER_ON))
+                          );
     itemId = static_cast<int>
              (PatientInfoWindowPrivate::ITEM_CBO_PACER_MARKER);
     d_ptr->pacer->setProperty("Item" , qVariantFromValue(itemId));
@@ -271,7 +309,7 @@ PatientInfoWindow::PatientInfoWindow()
     d_ptr->combos.insert(PatientInfoWindowPrivate::ITEM_CBO_PACER_MARKER
                          , d_ptr->pacer);
 
-    connect(d_ptr->pacer, SIGNAL(currentIndexChanged(int)), this , SLOT(_pacerMakerReleased(int)));
+    connect(d_ptr->pacer, SIGNAL(currentIndexChanged(int)), this , SLOT(pacerMakerReleased(int)));
 
     // patient id
     label = new QLabel(trs("PatientID"));
@@ -288,7 +326,7 @@ PatientInfoWindow::PatientInfoWindow()
                       , 1);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_ID
                           , d_ptr->id);
-    connect(d_ptr->id, SIGNAL(released()), this, SLOT(_idReleased()));
+    connect(d_ptr->id, SIGNAL(released()), this, SLOT(idReleased()));
 
     // patient sex
     label = new QLabel(trs("PatientSex"));
@@ -298,10 +336,10 @@ PatientInfoWindow::PatientInfoWindow()
     d_ptr->sex = new ComboBox();
     d_ptr->sex->setFixedWidth(250);
     d_ptr->sex->addItems(QStringList()
-                          << ""
-                          << trs(PatientSymbol::convert(PATIENT_SEX_MALE))
-                          << trs(PatientSymbol::convert(PATIENT_SEX_FEMALE))
-                         );
+                         << ""
+                         << trs(PatientSymbol::convert(PATIENT_SEX_MALE))
+                         << trs(PatientSymbol::convert(PATIENT_SEX_FEMALE))
+                        );
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_CBO_PATIENT_SEX);
     d_ptr->sex->setProperty("Item" , qVariantFromValue(itemId));
     layout->addWidget(d_ptr->sex
@@ -318,12 +356,12 @@ PatientInfoWindow::PatientInfoWindow()
     d_ptr->blood = new ComboBox();
     d_ptr->blood->setFixedWidth(250);
     d_ptr->blood->addItems(QStringList()
-                            << ""
-                            << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_A))
-                            << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_B))
-                            << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_AB))
-                            << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_O))
-                           );
+                           << ""
+                           << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_A))
+                           << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_B))
+                           << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_AB))
+                           << trs(PatientSymbol::convert(PATIENT_BLOOD_TYPE_O))
+                          );
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_CBO_BLOOD_TYPE);
     d_ptr->blood->setProperty("Item" , qVariantFromValue(itemId));
     layout->addWidget(d_ptr->blood
@@ -347,7 +385,7 @@ PatientInfoWindow::PatientInfoWindow()
                       , 3);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_NAME
                           , d_ptr->name);
-    connect(d_ptr->name, SIGNAL(released()), this, SLOT(_nameReleased()));
+    connect(d_ptr->name, SIGNAL(released()), this, SLOT(nameReleased()));
 
     // patient age
     label = new QLabel(trs("PatientAge"));
@@ -365,7 +403,7 @@ PatientInfoWindow::PatientInfoWindow()
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_AGE
                           , d_ptr->age);
 
-    connect(d_ptr->age, SIGNAL(released()), this, SLOT(_ageReleased()));
+    connect(d_ptr->age, SIGNAL(released()), this, SLOT(ageReleased()));
 
     // Patient Height
     label = new QLabel();
@@ -383,7 +421,7 @@ PatientInfoWindow::PatientInfoWindow()
                       , 3);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_HEIGHT
                           , d_ptr->height);
-    connect(d_ptr->height, SIGNAL(released()), this, SLOT(_heightReleased()));
+    connect(d_ptr->height, SIGNAL(released()), this, SLOT(heightReleased()));
 
     // Patient Weight
     label = new QLabel();
@@ -401,29 +439,26 @@ PatientInfoWindow::PatientInfoWindow()
                       , 1);
     d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_WEIGHT
                           , d_ptr->weight);
-    connect(d_ptr->weight, SIGNAL(released()), this, SLOT(_weightReleased()));
+    connect(d_ptr->weight, SIGNAL(released()), this, SLOT(weightReleased()));
 
     // create patient button
-    d_ptr->savePatientInfo = new Button(trs("PatientCreate"));
+    d_ptr->savePatientInfo = new Button(trs("EnglishYESChineseSURE"));
     d_ptr->savePatientInfo->setButtonStyle(Button::ButtonTextOnly);
     itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_BTN_CREATE_PATIENT);
     d_ptr->savePatientInfo->setProperty("Item" , qVariantFromValue(itemId));
     d_ptr->savePatientInfo->setFixedWidth(180);
     buttonLayout->addWidget(d_ptr->savePatientInfo);
-    d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_CREATE_PATIENT
-                          , d_ptr->savePatientInfo);
-    connect(d_ptr->savePatientInfo, SIGNAL(released()), this, SLOT(_saveInfoReleased()));
+    connect(d_ptr->savePatientInfo, SIGNAL(released()), this, SLOT(onBtnReleased()));
 
-    // clean patient data
-    d_ptr->relievePatient = new Button(trs("CleanPatientData"));
-    d_ptr->relievePatient->setButtonStyle(Button::ButtonTextOnly);
-    itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_BTN_CLEAR_PATIENT);
-    d_ptr->relievePatient->setProperty("Item" , qVariantFromValue(itemId));
-    d_ptr->relievePatient->setFixedWidth(180);
-    buttonLayout->addWidget(d_ptr->relievePatient);
-    d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_CLEAR_PATIENT
-                          , d_ptr->relievePatient);
-    connect(d_ptr->relievePatient, SIGNAL(released()), this, SLOT(_relieveReleased()));
+    // cancel Button
+    d_ptr->cancel = new Button(trs("Cancel"));
+    d_ptr->cancel->setButtonStyle(Button::ButtonTextOnly);
+    itemId = static_cast<int>(PatientInfoWindowPrivate::ITEM_BTN_CANCEL);
+    d_ptr->cancel->setProperty("Item" , qVariantFromValue(itemId));
+    d_ptr->cancel->setFixedWidth(180);
+    buttonLayout->addWidget(d_ptr->cancel);
+    connect(d_ptr->cancel, SIGNAL(released()), this, SLOT(onBtnReleased()));
+
     layout->setRowStretch(d_ptr->combos.count() + d_ptr->buttons.count() , 1);
     layout->setSpacing(15);
     layout->setMargin(5);
@@ -432,51 +467,20 @@ PatientInfoWindow::PatientInfoWindow()
     setWindowLayout(backgroundLayout);
 }
 
-void PatientInfoWindow::_setPatientInfo()
+void PatientInfoWindowPrivate::savePatientInfoToManager()
 {
-    patientManager.setAge(d_ptr->age->text().toInt());
-    patientManager.setBlood(static_cast<PatientBloodType>(d_ptr->blood->currentIndex()));
-    patientManager.setHeight(d_ptr->height->text().toShort());
-    patientManager.setName(d_ptr->name->text());
-    patientManager.setPatID(d_ptr->id->text());
-    patientManager.setSex(static_cast<PatientSex>(d_ptr->sex->currentIndex()));
-    patientManager.setType(static_cast<PatientType>(d_ptr->type->currentIndex()));
-    patientManager.setWeight(d_ptr->weight->text().toInt());
-    patientManager.setPacermaker(static_cast<PatientPacer>(d_ptr->pacer->currentIndex()));
+    patientManager.setAge(age->text().toInt());
+    patientManager.setBlood(static_cast<PatientBloodType>(blood->currentIndex()));
+    patientManager.setHeight(height->text().toFloat());
+    patientManager.setName(name->text());
+    patientManager.setPatID(id->text());
+    patientManager.setSex(static_cast<PatientSex>(sex->currentIndex()));
+    patientManager.setType(static_cast<PatientType>(type->currentIndex()));
+    patientManager.setWeight(weight->text().toFloat());
+    patientManager.setPacermaker(static_cast<PatientPacer>(pacer->currentIndex()));
 }
 
-void PatientInfoWindow::widgetChange()
-{
-    if (d_ptr->patientNew == false && d_ptr->relieveFlag == false)
-    {
-        d_ptr->savePatientInfo->setText(trs("PatientCreate"));
-        d_ptr->relievePatient->setText(trs("CleanPatientData"));
-        d_ptr->relievePatient->setVisible(true);
-    }
-    else if (d_ptr->patientNew == true)
-    {
-        d_ptr->savePatientInfo->setText(trs("EnglishYESChineseSURE"));
-        d_ptr->relievePatient->hide();
-    }
-    else if (d_ptr->patientNew == false && d_ptr->relieveFlag == true)
-    {
-        d_ptr->savePatientInfo->setText(trs("PatientCreate"));
-        d_ptr->relievePatient->setText(trs("RelievePatient"));
-        d_ptr->relievePatient->setVisible(true);
-    }
-}
-
-void PatientInfoWindow::relieveStatus(bool relStauts)
-{
-    d_ptr->relieveFlag = relStauts;
-}
-
-void PatientInfoWindow::newPatientStatus(bool pStatus)
-{
-    d_ptr->patientNew = pStatus;
-}
-
-void PatientInfoWindow::_idReleased()
+void PatientInfoWindow::idReleased()
 {
     EnglishInputPanel englishPanel;
     englishPanel.setWindowTitle(trs("PatientID"));
@@ -489,7 +493,7 @@ void PatientInfoWindow::_idReleased()
     }
 }
 
-void PatientInfoWindow::_nameReleased()
+void PatientInfoWindow::nameReleased()
 {
     EnglishInputPanel englishPanel;
     englishPanel.setWindowTitle(trs("PatientName"));
@@ -502,7 +506,7 @@ void PatientInfoWindow::_nameReleased()
     }
 }
 
-void PatientInfoWindow::_ageReleased()
+void PatientInfoWindow::ageReleased()
 {
     KeyInputPanel inputPanel(KeyInputPanel::KEY_TYPE_NUMBER);
     inputPanel.setWindowTitle(trs("PatientAge"));
@@ -512,6 +516,9 @@ void PatientInfoWindow::_ageReleased()
     inputPanel.setSymbolEnable(false);
     inputPanel.setKeytypeSwitchEnable(false);
     inputPanel.setCheckValueHook(checkAgeValue);
+    inputPanel.setInvalidHint(QString("%1(%2 ~ %3)").arg(trs("InvalidInput"))
+                             .arg(QString::number(0))
+                             .arg(QString::number(120)));
 
     if (inputPanel.exec())
     {
@@ -520,19 +527,16 @@ void PatientInfoWindow::_ageReleased()
         int age = text.toInt(&ok);
         if (ok)
         {
-            patientManager.setAge(age);
             d_ptr->age->setText(QString::number(age));
         }
         else if (text.isEmpty())
         {
-            patientManager.setAge(-1);
             d_ptr->age->setText("");
         }
-        d_ptr->infoChange = true;
     }
 }
 
-void PatientInfoWindow::_heightReleased()
+void PatientInfoWindow::heightReleased()
 {
     KeyInputPanel inputPanel(KeyInputPanel::KEY_TYPE_NUMBER);
     inputPanel.setWindowTitle(trs("PatientHeight"));
@@ -542,6 +546,11 @@ void PatientInfoWindow::_heightReleased()
     inputPanel.setSymbolEnable(false);
     inputPanel.setKeytypeSwitchEnable(false);
     inputPanel.setCheckValueHook(checkHeightValue);
+    Range range = Unit::getRange(d_ptr->heightType);
+    QString rangeStr = QString("%1 ~ %2").arg(QString::number(range.downLimit, 'f', 1))
+                       .arg(QString::number(range.upLimit, 'f', 1));
+    inputPanel.setInvalidHint(QString("%1(%2)").arg(trs("InvalidInput"))
+                             .arg(rangeStr));
 
     if (inputPanel.exec())
     {
@@ -550,19 +559,16 @@ void PatientInfoWindow::_heightReleased()
         float height = text.toFloat(&ok);
         if (ok)
         {
-            patientManager.setHeight(height);
             d_ptr->height->setText(QString::number(height));
         }
         else if (text.isEmpty())
         {
-            patientManager.setHeight(-1);
             d_ptr->height->setText("");
         }
-        d_ptr->infoChange = true;
     }
 }
 
-void PatientInfoWindow::_weightReleased()
+void PatientInfoWindow::weightReleased()
 {
     KeyInputPanel inputPanel(KeyInputPanel::KEY_TYPE_NUMBER);
     inputPanel.setWindowTitle(trs("PatientWeight"));
@@ -572,6 +578,11 @@ void PatientInfoWindow::_weightReleased()
     inputPanel.setSymbolEnable(false);
     inputPanel.setKeytypeSwitchEnable(false);
     inputPanel.setCheckValueHook(checkWeightValue);
+    Range range = Unit::getRange(d_ptr->weightType);
+    QString rangeStr = QString("%1 ~ %2").arg(QString::number(range.downLimit, 'f', 1))
+                       .arg(QString::number(range.upLimit, 'f', 1));
+    inputPanel.setInvalidHint(QString("%1(%2)").arg(trs("InvalidInput"))
+                             .arg(rangeStr));
 
     if (inputPanel.exec())
     {
@@ -580,97 +591,51 @@ void PatientInfoWindow::_weightReleased()
         float weight = text.toFloat(&ok);
         if (ok)
         {
-            patientManager.setWeight(weight);
             d_ptr->weight->setText(QString::number(weight));
         }
         else if (text.isEmpty())
         {
-            patientManager.setWeight(-1);
             d_ptr->weight->setText("");
         }
-        d_ptr->infoChange = true;
     }
 }
 
-void PatientInfoWindow::_relieveReleased()
+void PatientInfoWindow::onBtnReleased()
 {
+    Button *btn = qobject_cast<Button *>(sender());
+    if (btn == d_ptr->savePatientInfo)
+    {
+        d_ptr->savePatientInfoToManager();
+    }
     this->hide();
-    if (d_ptr->relieveFlag == true)
-    {
-        DischargePatientWindow::getInstance()->setWindowTitle(trs("RelievePatient"));
-        int ret = DischargePatientWindow::getInstance()->exec();
-        if (ret)
-            relieveStatus(false);
-    }
-    else
-    {
-        DischargePatientWindow::getInstance()->setWindowTitle(trs("CleanPatientData"));
-        DischargePatientWindow::getInstance()->exec();
-    }
 }
 
-void PatientInfoWindow::_saveInfoReleased()
+void PatientInfoWindow::pacerMakerReleased(int index)
 {
-    int warnStatus;
-
-    if (d_ptr->patientNew == true)
-    {
-        this->hide();
-        relieveStatus(true);
-    }
-    else if (d_ptr->patientNew == false && d_ptr->relieveFlag == false)
-    {
-        QStringList slist;
-        slist << trs("Cancel") << trs("EnglishYESChineseSURE");
-        MessageBox messageBox(trs("Warn"), trs("ApplicationDataToReceivingPatients"), slist);
-        this->hide();
-        warnStatus = messageBox.exec();
-        if (warnStatus == 0)
-        {
-            relieveStatus(false);
-        }
-        else if (warnStatus == 1)
-        {
-            relieveStatus(true);
-            dataStorageDirManager.createDir(true);
-            _setPatientInfo();
-        }
-    }
-    else if (d_ptr->patientNew == false && d_ptr->relieveFlag == true)
-    {
-        this->hide();
-        QStringList slist;
-        slist << trs("No") << trs("EnglishYESChineseSURE");
-        MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist);
-        if (messageBox.exec() == 1)
-        {
-            dataStorageDirManager.createDir(true);
-            _setPatientInfo();
-        }
-    }
-}
-
-void PatientInfoWindow::_pacerMakerReleased(int index)
-{
-    ecgParam.setPacermaker(static_cast<ECGPaceMode>(index));
+    patientManager.setPacermaker(static_cast<PatientPacer>(index));
 }
 
 void PatientInfoWindow::showEvent(QShowEvent *ev)
 {
     d_ptr->loadOptions();
+    if (patientManager.isNewPatient())
+    {
+        setWindowTitle(trs("NewPatient"));
+    }
+    else
+    {
+        setWindowTitle(trs("PatientInfo"));
+    }
     Window::showEvent(ev);
+}
+
+void PatientInfoWindow::hideEvent(QHideEvent *ev)
+{
+    patientManager.finishPatientInfo();
+    Window::hideEvent(ev);
 }
 
 PatientInfoWindow::~PatientInfoWindow()
 {
     delete d_ptr;
 }
-
-
-
-
-
-
-
-
-

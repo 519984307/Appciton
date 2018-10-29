@@ -25,12 +25,6 @@ class ECGDupParam: public Param
 {
     Q_OBJECT
 public:
-    enum HrSourceType{
-        HR_SOURCE_AUTO,
-        HR_SOURCE_ECG,
-        HR_SOURCE_SPO2,
-    };
-
     static ECGDupParam &construction(void)
     {
         if (_selfObj == NULL)
@@ -72,8 +66,14 @@ public:
     void setTrendWidget(ECGTrendWidget *trendWidget);
     void setWaveWidget(ECGWaveWidget *waveWidget, ECGLead whichLead);
 
+    /**
+     * @brief updatePR  更新pr的值
+     * @param pr  pr值
+     * @param type  pr来源类型
+     */
+    void updatePR(short pr, PRSourceType type = PR_SOURCE_SPO2);
+
     // 更新/读取HR的值。
-    void updatePR(short pr);
     void updateHR(short hr);
     // could return pr if hr is unvalid
     short getHR(void) const;
@@ -90,8 +90,11 @@ public:
     // 是否发生报警
     void isAlarm(bool isAlarm, bool isLimit);
 
-    // get HR souce
-    HrSourceType getHrSource() const;
+    /**
+     * @brief getCurHRSource
+     * @return
+     */
+    HRSourceType getCurHRSource() const;
 
     // 设置计算导联字串。
     void setECGTrendWidgetCalcName(ECGLead calLead);
@@ -100,7 +103,7 @@ public:
      * @brief setHrSource  设置hr来源
      * @param type
      */
-    void setHrSource(HrSourceType type);
+    void setHrSource(HRSourceType type);
 
     /**
      * @brief isAutoTypeHrSouce
@@ -122,9 +125,12 @@ private:
 
     short _hrValue;
     short _prValue;
+    short _prValueFromSPO2;
+    short _prValueFromIBP;
     bool _hrBeatFlag;
     bool _isAlarm;
     bool _isAutoHrSource;
-    HrSourceType _hrSource;
+    HRSourceType _hrSource;
+    PRSourceType _prSource;
 };
 #define ecgDupParam (ECGDupParam::construction())

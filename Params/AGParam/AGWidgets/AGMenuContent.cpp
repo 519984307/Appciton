@@ -21,6 +21,7 @@
 #include "HalSetAGMenu.h"
 #include "Button.h"
 #include "MainMenuWindow.h"
+#include "AlarmLimitWindow.h"
 
 class AGMenuContentPrivate
 {
@@ -247,10 +248,7 @@ void AGMenuContent::onComboBoxIndexChanged(int index)
 
 void AGMenuContent::onAlarmBtnReleased()
 {
-    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_ETCO2, true);
-    if (w)
-    {
-        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
-    }
+    AlarmLimitWindow w(subParamName);
+    windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }

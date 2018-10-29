@@ -18,7 +18,6 @@
 #include "ParamInfo.h"
 #include "Debug.h"
 #include "NIBPAlarm.h"
-#include "PublicMenuManager.h"
 #include "WindowManager.h"
 #include "ITableWidget.h"
 #include "TimeDate.h"
@@ -289,7 +288,7 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
 void NIBPDataTrendWidget::setTextSize()
 {
     QRect r;
-    r.setWidth((width() - nameLabel->width()) / 2.1);
+    r.setWidth((width() - nameLabel->width()) / 2.5);
     // 字体。
     int fontsize = fontManager.adjustNumFontSize(r, true, "220/150/100");
     QFont font = fontManager.numFont(fontsize, true);

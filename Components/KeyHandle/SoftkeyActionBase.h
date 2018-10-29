@@ -117,7 +117,8 @@ public:    // 一些共有的功能处理。
     static void CO2Standby(bool isPressed);
     static void CO2Measure(bool isPressed);
     static void IBPZero(bool isPressed);
-    static void sysSetup(bool isPressed);
+    static void systemBrightness(bool isPressed);
+    static void keyVolume(bool isPressed);
     static void nightMode(bool isPressed);
     static void printSet(bool isPressed);
 

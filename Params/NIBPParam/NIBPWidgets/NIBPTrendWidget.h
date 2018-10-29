@@ -11,7 +11,6 @@
 
 #pragma once
 #include "TrendWidget.h"
-#include "BarWidget.h"
 #include <QLabel>
 #include <QGroupBox>
 #include <QStackedWidget>
@@ -57,7 +56,7 @@ public:
     void setShowMeasureCount(bool lastMeasureCountflag);
 
     // 显示STAT模式
-    void showModelText(QString text);
+    void showModelText(const QString &text);
 
     NIBPTrendWidget();
     ~NIBPTrendWidget();
@@ -76,7 +75,6 @@ private:
     QLabel *_diaValue;
     QLabel *_mapValue;
     QLabel *_pressureValue;
-    BarWidget *bar;
     QLabel *_lastMeasureCount;  // 用于标记最近一次测量过了多少时间，todo。
     QLabel *_message;           // 用于提示“wait”等信息
     QLabel *_model;           // 用于提示“wait”等信息
@@ -85,7 +83,7 @@ private:
     QWidget *widget0;
     QWidget *widget1;
 
-    QStackedWidget *_stackedwidget0;
+    QStackedWidget *_stackedwidget;
 
     QString _sysString;
     QString _diaString;
@@ -96,6 +94,8 @@ private:
     bool _diaAlarm;
     bool _mapAlarm;
     bool _effective;           //有效测量数据
+    int _messageFontSize;      // 非虚线显示时字体大小
+    int _messageInvFontSize;   // 虚线显示时字体大小
 
     static const int _margin = 1;
 

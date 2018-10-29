@@ -17,6 +17,7 @@
 #include <ECGParam.h>
 #include "ParamManager.h"
 #include "Provider.h"
+#include "SystemManager.h"
 
 class SoftWareVersionWindowPrivate
 {
@@ -55,7 +56,7 @@ void SoftWareVersionWindowPrivate::loadOptions()
     outPut.clear();
     process.start("cat /proc/version");
 
-    if (process.waitForFinished())
+    if (process.waitForFinished(1000))
     {
         QByteArray byteArray = process.readAll();
         outPut = byteArray;
@@ -107,7 +108,7 @@ void SoftWareVersionWindow::layoutExec()
 {
     setWindowTitle(trs("SoftWareVersionMenu"));
 
-    QVBoxLayout *vlayout = new QVBoxLayout(this);
+    QVBoxLayout *vlayout = new QVBoxLayout;
     vlayout->setMargin(10);
 
     QGridLayout *layout = new QGridLayout;

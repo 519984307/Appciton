@@ -239,26 +239,7 @@ short AGParam::getSubParamValue(SubParamID id)
  *************************************************************************************************/
 bool AGParam::isSubParamAvaliable(SubParamID id)
 {
-//    switch (id)
-//    {
-//    case SUB_PARAM_ETCO2:
-//    case SUB_PARAM_FICO2:
-//        return _config.co2Config;
-//    case SUB_PARAM_ETN2O:
-//    case SUB_PARAM_FIN2O:
-//        return _config.n2oConfig;
-//    case SUB_PARAM_ETAA1:
-//    case SUB_PARAM_FIAA1:
-//    case SUB_PARAM_ETAA2:
-//    case SUB_PARAM_FIAA2:
-//        return _config.halConfig || _config.enfConfig || _config.isoConfig ||
-//               _config.sevConfig || _config.desConfig;
-//    case SUB_PARAM_ETO2:
-//    case SUB_PARAM_FIO2:
-//        return _config.o2Config;
-//    default:
-//        break;
-//    }
+    Q_UNUSED(id)
     return true;
 }
 
@@ -285,18 +266,22 @@ void AGParam::setProvider(AGProviderIFace *provider)
 
     // 注册波形缓存
     QString titleN2O = _waveWidgetN2O->getTitle();
+    _waveWidgetN2O->setDataRate(provider->getN2OWaveformSample());
     waveformCache.registerSource(WAVE_N2O, _provider->getN2OWaveformSample(), 0,
                                  _provider->getN2OMaxWaveform(), titleN2O, _provider->getN2OBaseLine());
 
     QString titleAA1 = _waveWidgetAA1->getTitle();
+    _waveWidgetAA1->setDataRate(provider->getAA1WaveformSample());
     waveformCache.registerSource(WAVE_AA1, _provider->getAA1WaveformSample(), 0,
                                  _provider->getAA1MaxWaveform(), titleAA1, _provider->getAA1BaseLine());
 
     QString titleAA2 = _waveWidgetAA2->getTitle();
+    _waveWidgetAA2->setDataRate(provider->getAA2WaveformSample());
     waveformCache.registerSource(WAVE_AA2, _provider->getAA2WaveformSample(), 0,
                                  _provider->getAA2MaxWaveform(), titleAA2, _provider->getAA2BaseLine());
 
     QString titleO2 = _waveWidgetO2->getTitle();
+    _waveWidgetO2->setDataRate(provider->getO2WaveformSample());
     waveformCache.registerSource(WAVE_O2, _provider->getO2WaveformSample(), 0,
                                  _provider->getO2MaxWaveform(), titleO2, _provider->getO2BaseLine());
 }

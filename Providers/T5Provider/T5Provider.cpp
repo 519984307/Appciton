@@ -44,6 +44,7 @@ bool T5Provider::attachParam(Param &param)
     if (param.getParamID() == PARAM_TEMP)
     {
         tempParam.setProvider(this);
+        Provider::attachParam(param);
         return true;
     }
     return false;
@@ -54,6 +55,11 @@ bool T5Provider::attachParam(Param &param)
  *************************************************************************************************/
 void T5Provider::handlePacket(unsigned char *data, int len)
 {
+    if (!isConnectedToParam)
+    {
+        return;
+    }
+
     BLMProvider::handlePacket(data, len);
 
     int enable = 0;

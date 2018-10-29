@@ -74,6 +74,12 @@ public:
      */
     void setCheckValueHook(CheckValue hook);
 
+    /**
+     * @brief setInvalidHint 设置无效提示信息
+     * @param str           无效提示字符串
+     */
+    void setInvalidHint(const QString &str);
+
     enum KeyOrder
     {
         KEY_ORDER_BACKSPACE = 0X03,
@@ -91,8 +97,7 @@ public:
         KEY_TYPE_LETTER
     };
 
-
-    explicit KeyInputPanel(KeyType type = KEY_TYPE_LETTER);
+    explicit KeyInputPanel(KeyType type = KEY_TYPE_LETTER, bool isShowDecimalPoint = false);
     ~KeyInputPanel();
 
 protected:

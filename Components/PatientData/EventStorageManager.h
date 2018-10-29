@@ -26,25 +26,25 @@ public:
      * @param almInfo alarm info
      * @param paramWave param relate wave
      */
-    void triggerAlarmEvent(const AlarmInfoSegment &almInfo, WaveformID paramWave);
+    void triggerAlarmEvent(const AlarmInfoSegment &almInfo, WaveformID paramWave, unsigned t);
 
     // trigger an codemarker event
-    void triggerCodeMarkerEvent(const char * codeName);
+    void triggerCodeMarkerEvent(const char * codeName, unsigned t);
 
     // trigger and realtime print event
-    void triggerRealtimePrintEvent();
+    void triggerRealtimePrintEvent(unsigned t);
 
     // trigger a nibp measurement event
-    void triggerNIBPMeasurementEvent();
+    void triggerNIBPMeasurementEvent(unsigned t);
 
     // trigger a wave freeze event
-    void triggerWaveFreezeEvent();
+    void triggerWaveFreezeEvent(unsigned t);
 
     // trigger alarm oxyCRG event
-    void triggerAlarmOxyCRGEvent(const AlarmInfoSegment &almInfo, OxyCRGEventType type);
+    void triggerAlarmOxyCRGEvent(const AlarmInfoSegment &almInfo, OxyCRGEventType type, unsigned t);
 
     // trigger oxyCRG event
-    void triggerOxyCRGEvent(OxyCRGEventType type);
+    void triggerOxyCRGEvent(OxyCRGEventType type, unsigned t);
 
     // call periodically to clear completed event
     void checkCompletedEvent(void);

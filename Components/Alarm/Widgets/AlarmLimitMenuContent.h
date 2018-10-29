@@ -20,26 +20,15 @@ public:
     AlarmLimitMenuContent();
     ~AlarmLimitMenuContent();
 
-    /**
-     * @brief setItemFocus
-     * @param param
-     */
-    void setItemFocus(const QString &param);
-
 protected:
-    /* reimplement */
-    void readyShow();
-
     /* reimplement */
     void layoutExec();
 
-    /* reimplement */
-    void setShowParam(const QVariant &param);
-
 private slots:
+    /**
+     * @brief onbtnClick
+     */
     void onbtnClick();
-    void onRowClicked(int row);
-    void onSelectRowChanged(int row);
 
 private:
     AlarmLimitMenuContentPrivate *const d_ptr;

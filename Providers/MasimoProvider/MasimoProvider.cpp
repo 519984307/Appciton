@@ -24,6 +24,7 @@ bool MasimoSetProvider::attachParam(Param &param)
     if (param.getParamID() == PARAM_SPO2)
     {
         spo2Param.setProvider(this);
+        Provider::attachParam(param);
         return true;
     }
 
@@ -286,6 +287,11 @@ void MasimoSetProvider::reconnected()
 
 void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
 {
+    if (!isConnectedToParam)
+    {
+        return;
+    }
+
     if (!isConnected)
     {
         spo2Param.setConnected(true);
@@ -323,11 +329,16 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
     case 0x02:          // 解包获取PI参数值，定义状态标记
     {
         temp = (data[1] << 8) + data[2];
-//        float v = temp;
-//        v = (v / 1000 + 0.05);
-//        short piValue = (int)(v * 10);
+        float v = temp;
 
-//        spo2Param.updatePIValue(piValue);     // 更新PI值。
+        short piValue = InvData();
+        if (v > 0 && v < 20000)
+        {
+            v = (v / 1000 + 0.05);
+            piValue = static_cast<short>(v * 10);
+        }
+
+        spo2Param.updatePIValue(piValue);     // 更新PI值。
         break;
     }
 

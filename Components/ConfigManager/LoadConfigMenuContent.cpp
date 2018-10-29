@@ -26,6 +26,7 @@
 #include "ListViewItemDelegate.h"
 #include "ConfigEditMenuWindow.h"
 #include "WindowManager.h"
+#include "SystemManager.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -289,6 +290,15 @@ void LoadConfigMenuContent::updateBtnStatus()
     {
         isEnabled = true;
     }
-    d_ptr->loadBtn->setEnabled(isEnabled);
+
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        // can't load config in the demo mode
+        d_ptr->loadBtn->setEnabled(false);
+    }
+    else
+    {
+        d_ptr->loadBtn->setEnabled(isEnabled);
+    }
     d_ptr->ViewBtn->setEnabled(isEnabled);
 }

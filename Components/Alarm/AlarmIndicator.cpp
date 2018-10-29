@@ -25,19 +25,6 @@
 AlarmIndicator *AlarmIndicator::_selfObj = NULL;
 
 /**************************************************************************************************
- * 功能：判断释放存在报警。
- *************************************************************************************************/
-bool AlarmIndicator::_existAlarm(void)
-{
-    if (_alarmInfoDisplayPool.empty())
-    {
-        return false;
-    }
-
-    return true;
-}
-
-/**************************************************************************************************
  * 功能：发布报警。
  *************************************************************************************************/
 void AlarmIndicator::publishAlarm(AlarmAudioStatus status)
@@ -222,7 +209,7 @@ void AlarmIndicator::publishAlarm(AlarmAudioStatus status)
 
         _displayInfoNode(alarmPhyNode, _alarmPhyDisplayIndex,
                          newPhyAlarmIndex, oldPhyAlarmIndex, firstPhyIndex, lastPhyIndex);
-        if (NULL != alarmPhyNode.alarmMessage)
+        if (NULL != alarmPhyNode.alarmMessage && alarmPhyNode.alarmType == ALARM_TYPE_PHY)
         {
             _displayPhySet(alarmPhyNode);
         }
@@ -368,7 +355,8 @@ void AlarmIndicator::setAlarmTechWidgets(AlarmTechInfoBarWidget *alarmWidget)
  *      isRemoveAfterLatch:latch后是否移除报警信息
  *************************************************************************************************/
 bool AlarmIndicator::addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
-                                  AlarmPriority alarmPriority, const char *alarmMessage, bool isRemoveAfterLatch)
+                                  AlarmPriority alarmPriority, const char *alarmMessage,
+                                  AlarmParamIFace *alarmSource, int alarmID, bool isRemoveAfterLatch)
 {
     //报警存在
     AlarmInfoList *list = &_alarmInfoDisplayPool;
@@ -397,7 +385,7 @@ bool AlarmIndicator::addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
         return false;
     }
 
-    AlarmInfoNode node(alarmTime, alarmType, alarmPriority, alarmMessage);
+    AlarmInfoNode node(alarmTime, alarmType, alarmPriority, alarmMessage, alarmSource, alarmID);
     node.removeAfterLatch = isRemoveAfterLatch;
 
     list->append(node);
@@ -864,6 +852,7 @@ bool AlarmIndicator::getAlarmInfo(AlarmType type, const char *alArmMessage,
  * 功能：构造。
  *************************************************************************************************/
 AlarmIndicator::AlarmIndicator()
+    :_audioStatus(ALARM_AUDIO_NORMAL)
 {
     _alarmPhyInfoWidget = NULL;
     _alarmTechInfoWidget = NULL;
@@ -871,7 +860,6 @@ AlarmIndicator::AlarmIndicator()
 
     _alarmPhyDisplayIndex = 0;
     _alarmTechDisplayIndex = 0;
-    _audioStatus = ALARM_AUDIO_NORMAL;
 
     _alarmInfoDisplayPool.clear();
 

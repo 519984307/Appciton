@@ -86,7 +86,8 @@ BigFontLayoutWindow::BigFontLayoutWindow()
     d_ptr->tableView->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
     d_ptr->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     d_ptr->tableView->setSelectionBehavior(QAbstractItemView::SelectItems);
-    d_ptr->tableView->setItemDelegate(new ScreenLayoutItemDelegate);
+    d_ptr->tableView->setItemDelegate(new ScreenLayoutItemDelegate(d_ptr->tableView));
+    d_ptr->tableView->setShowGrid(false);
 
     vLayout->addWidget(d_ptr->tableView);
 

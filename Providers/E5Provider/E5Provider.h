@@ -28,9 +28,6 @@ public:
     // attach to param
     virtual bool attachParam(Param &param);
 
-    // detach from param
-    virtual void detachParam(Param &param);
-
     // handle packet
     virtual void handlePacket(unsigned char *data, int len);
 

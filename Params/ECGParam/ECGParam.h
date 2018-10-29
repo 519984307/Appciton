@@ -164,7 +164,10 @@ public:
 
     // 获取Topwaveform的名称。
     const QString &getCalcLeadWaveformName(void);
-    const QString &getWaveWidgetName(ECGLead lead);
+    QString getWaveWidgetName(ECGLead lead);
+
+    // 更新ECG心电标准显示
+    void updateECGStandard(int standard);
 
     // 获取可得的导联集。
     void getAvailableLeads(QList<ECGLead> &leads);
@@ -237,9 +240,6 @@ public: // 用于访问配置相关信息。
     // 阀值设置
     void setARRThreshold(ECGAlg::ARRPara parameter, short value);
 
-    // 获取计算导联带宽字符串
-    QString getCalBandWidthStr();
-
     // 设置/获取起搏标记。
     void setPacermaker(ECGPaceMode onoff);
     ECGPaceMode getPacermaker(void);
@@ -310,6 +310,11 @@ public: // 用于访问配置相关信息。
      */
     void clearOxyCRGWaveNum(void);
 
+    /**
+     * @brief updateWaveWidgetStatus  更新其内部第一个心电波形的状态
+     */
+    void updateWaveWidgetStatus(void);
+
 signals:
     void calcLeadChanged();
     /**
@@ -317,10 +322,16 @@ signals:
      */
     void oxyCRGWaveUpdated(void);
 
-private slots:
-    // presenting rhythm, 6 seconds before the first primary lead on
-    void presentRhythm();
+    /**
+     * @brief updateNotchFilter 陷波信息更新信号
+     */
+    void updateNotchFilter(void);
+    /**
+     * @brief updateFilterMode  滤波模式更新信号
+     */
+    void updateFilterMode(void);
 
+private slots:
     /**
      * @brief onOxyCRGWaveUpdated 呼吸氧和波形更新槽函数
      */
@@ -354,6 +365,7 @@ private:
     ECGBandwidth _12LeadFreqBand;
     ECGFilterMode _filterMode;
     Display12LeadFormat _12LeadDispFormat;
+    ECGLeadNameConvention _ecgStandard;
 
     OxyCRGCO2Widget *_oxyCRGCO2Widget;
     OxyCRGRESPWidget *_oxyCRGRESPWidget;

@@ -15,7 +15,6 @@
 #include "ParamInfo.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include "PublicMenuManager.h"
 #include "TimeDate.h"
 #include "TimeManager.h"
 #include "WindowManager.h"
@@ -140,7 +139,7 @@ void NIBPTrendWidget::setCuffPressure(int p)
  *************************************************************************************************/
 void NIBPTrendWidget::setCountdown(int t)
 {
-    if (_stackedwidget0->currentIndex() == 1)
+    if (_stackedwidget->currentIndex() == 1)
     {
         return;
     }
@@ -193,17 +192,17 @@ void NIBPTrendWidget::isAlarm(int id, bool flag)
 {
     switch (id)
     {
-        case SUB_PARAM_NIBP_SYS:
-            _sysAlarm = flag;
-            break;
-        case SUB_PARAM_NIBP_DIA:
-            _diaAlarm = flag;
-            break;
-        case SUB_PARAM_NIBP_MAP:
-            _mapAlarm = flag;
-            break;
-        default:
-            break;
+    case SUB_PARAM_NIBP_SYS:
+        _sysAlarm = flag;
+        break;
+    case SUB_PARAM_NIBP_DIA:
+        _diaAlarm = flag;
+        break;
+    case SUB_PARAM_NIBP_MAP:
+        _mapAlarm = flag;
+        break;
+    default:
+        break;
     }
 
     updateAlarm(_sysAlarm || _diaAlarm || _mapAlarm);
@@ -256,8 +255,6 @@ void NIBPTrendWidget::showValue(void)
         showNormalStatus(_nibpValue, psrc);
         showNormalStatus(_pressureValue, psrc);
         showNormalStatus(_lastMeasureCount, psrc);
-        showNormalStatus(_model, psrc);
-        showNormalStatus(_message, psrc);
     }
     _sysValue->setText(_sysString);
     _diaValue->setText(_diaString);
@@ -283,7 +280,7 @@ void NIBPTrendWidget::setShowStacked(int num)
         _lastMeasureCount->setText("");
 //        _countDown->setVisible(false);
     }
-    _stackedwidget0->setCurrentIndex(num);
+    _stackedwidget->setCurrentIndex(num);
 }
 
 /**************************************************************************************************
@@ -311,19 +308,24 @@ void NIBPTrendWidget::showText(QString text)
         //有效测量数据
         if (_effective)
         {
-            if (_stackedwidget0->currentIndex() != 0)
+            if (_stackedwidget->currentIndex() != 0)
             {
                 setShowStacked(0);
             }
             return;
         }
-        QFont font = fontManager.numFont(40, true);
-        font.setWeight(QFont::Black);
-        _message->setFont(font);
+        _message->setFont(fontManager.numFont(_messageInvFontSize, true));
     }
     else
     {
-        _message->setFont(fontManager.numFont(15, true));
+        _message->setFont(fontManager.numFont(_messageFontSize, true));
+    }
+
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
+    psrc = normalPalette(psrc);
+    if (!_sysAlarm && !_diaAlarm && !_mapAlarm)
+    {
+        showNormalStatus(_message, psrc);
     }
 
     _message->setText(text);
@@ -333,8 +335,14 @@ void NIBPTrendWidget::showText(QString text)
 /**************************************************************************************************
  * 显示模式。
  *************************************************************************************************/
-void NIBPTrendWidget::showModelText(QString text)
+void NIBPTrendWidget::showModelText(const QString &text)
 {
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
+    psrc = normalPalette(psrc);
+    if (!_sysAlarm && !_diaAlarm && !_mapAlarm)
+    {
+        showNormalStatus(_model, psrc);
+    }
     _model->setText(text);
 }
 
@@ -344,13 +352,9 @@ void NIBPTrendWidget::showModelText(QString text)
 void NIBPTrendWidget::setTextSize()
 {
     QRect r;
-    r.setSize(QSize(((width() - nameLabel->width())/4), ((height() / 4) * 3)));
-//    int fontsize = fontManager.adjustNumFontSizeXML(r);
-//    int size = fontManager.getFontSize(fontsize);
-//    QFont font = fontManager.numFont(size, true);
+    r.setSize(QSize(((width() - nameLabel->width()) / 4), ((height() / 4) * 3)));
     int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
-//    font.setStretch(105); // 横向放大。
     font.setWeight(QFont::Black);
 
     _nibpValue->setFont(font);
@@ -359,26 +363,37 @@ void NIBPTrendWidget::setTextSize()
     _pressureValue->setFont(font);
 
     font = fontManager.numFont(fontsize - 10, true);
-//    font.setStretch(105);
     font.setWeight(QFont::Black);
 
     _mapValue->setFont(font);
+
+    r.setSize(QSize(width() - nameLabel->width(), height()));
+    _messageInvFontSize = fontManager.adjustNumFontSize(r, true);
+    r.setSize(QSize((width() - nameLabel->width()) *3 / 4, (height() / 3)));
+    _messageFontSize = fontManager.adjustNumFontSize(r, true);
+
+    if (_message->text() == InvStr())
+    {
+        _message->setFont(fontManager.numFont(_messageInvFontSize, true));
+    }
+    else
+    {
+        _message->setFont(fontManager.numFont(_messageFontSize, true));
+    }
 }
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-NIBPTrendWidget::NIBPTrendWidget() : TrendWidget("NIBPTrendWidget")
+NIBPTrendWidget::NIBPTrendWidget()
+    : TrendWidget("NIBPTrendWidget")
+    , _sysString(InvStr()), _diaString(InvStr())
+    , _mapString(QString("(") + InvStr() + QString(")"))
+    , _pressureString(InvStr()), _measureTime("")
+    , _sysAlarm(false), _diaAlarm(false)
+    , _mapAlarm(false), _effective(false)
+    , _messageFontSize(100), _messageInvFontSize(100)
 {
-    _sysString = InvStr();
-    _diaString = InvStr();
-    _mapString = QString("(") + InvStr() + QString(")");
-    _pressureString = InvStr();
-    _measureTime = "";
-    _sysAlarm = false;
-    _diaAlarm = false;
-    _mapAlarm = false;
-    _effective = false;
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
     setPalette(palette);
     setName(trs(paramInfo.getParamName(PARAM_NIBP)));
@@ -410,10 +425,6 @@ NIBPTrendWidget::NIBPTrendWidget() : TrendWidget("NIBPTrendWidget")
     _pressureValue->setPalette(palette);
     _pressureValue->setText(InvStr());
 
-    bar = new BarWidget();
-    bar->setPalette(palette);
-    bar->setFixedHeight(2);
-
     int fontSize = fontManager.getFontSize(7);
 
     _countDown = new QLabel();
@@ -438,77 +449,65 @@ NIBPTrendWidget::NIBPTrendWidget() : TrendWidget("NIBPTrendWidget")
     _message = new QLabel();
     _message->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     _message->setPalette(palette);
-    _message->setFont(fontManager.textFont(fontSize));
+    _message->setFont(fontManager.textFont(_messageFontSize));
     _message->setText(InvStr());
 
     // 将数值显示和倒计时放到一起。
-    QGroupBox *_groupBox0 = new QGroupBox();
-    _groupBox0->setStyleSheet("border:none");
-    QHBoxLayout *hLayout0 = new QHBoxLayout();
+    QWidget *groupBox0 = new QWidget();
+    QHBoxLayout *hLayout0 = new QHBoxLayout(groupBox0);
     hLayout0->setMargin(_margin);
     hLayout0->setSpacing(10);
+    hLayout0->addStretch();
     hLayout0->addWidget(_sysValue);
     hLayout0->addWidget(_nibpValue);
     hLayout0->addWidget(_diaValue);
     hLayout0->addWidget(_mapValue);
-    _groupBox0->setLayout(hLayout0);
+    hLayout0->addStretch();
 
-    QGroupBox *_groupBox1 = new QGroupBox();
-    _groupBox1->setStyleSheet("border:none");
-    QVBoxLayout *vLayout2 = new QVBoxLayout(_groupBox1);
+    QWidget *groupBox1 = new QWidget();
+    QVBoxLayout *vLayout2 = new QVBoxLayout(groupBox1);
     vLayout2->setMargin(1);
     vLayout2->setSpacing(0);
-    vLayout2->addWidget(_pressureValue);
-    _groupBox1->setLayout(vLayout2);
+    vLayout2->addWidget(_pressureValue, 0, Qt::AlignCenter);
 
-    QGroupBox *_groupBox2 = new QGroupBox();
-    _groupBox2->setStyleSheet("border:none");
-    QVBoxLayout *vLayout3 = new QVBoxLayout(_groupBox2);
+    QWidget *groupBox2 = new QWidget();
+    QVBoxLayout *vLayout3 = new QVBoxLayout(groupBox2);
     vLayout3->setMargin(1);
     vLayout3->setSpacing(0);
-    vLayout3->addWidget(_message);
-    _groupBox2->setLayout(vLayout3);
+    vLayout3->addWidget(_message, 0, Qt::AlignCenter);
 
-    QGroupBox *_groupBox3 = new QGroupBox();
-    _groupBox3->setStyleSheet("border:none");
-    QVBoxLayout *vLayout4 = new QVBoxLayout(_groupBox3);
+    QWidget *groupBox3 = new QWidget();
+    QVBoxLayout *vLayout4 = new QVBoxLayout(groupBox3);
     vLayout4->setMargin(1);
     vLayout4->setSpacing(0);
-    vLayout4->addWidget(_countDown);
-    _groupBox3->setLayout(vLayout4);
+    vLayout4->addWidget(_countDown, 0, Qt::AlignCenter);
 
-    _stackedwidget0 = new QStackedWidget();
-    _stackedwidget0->addWidget(_groupBox0);
-    _stackedwidget0->addWidget(_groupBox1);
-    _stackedwidget0->addWidget(_groupBox2);
-//    _stackedwidget0->addWidget(_groupBox3);
+    _stackedwidget = new QStackedWidget();
+    _stackedwidget->addWidget(groupBox0);
+    _stackedwidget->addWidget(groupBox1);
+    _stackedwidget->addWidget(groupBox2);
+    _stackedwidget->addWidget(groupBox3);
+    _stackedwidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
     // 将最后测量时间和模式放到一起。
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->setContentsMargins(5, 0, 5, 0);
+    hLayout->addStretch();
     hLayout->addWidget(_lastMeasureCount);
     hLayout->addWidget(_model);
+    hLayout->addStretch();
 
     // 第二组。
     QVBoxLayout *vLayout5 = new QVBoxLayout();
     vLayout5->setMargin(1);
     vLayout5->setSpacing(0);
-    vLayout5->addWidget(_stackedwidget0);
+    vLayout5->addWidget(_stackedwidget, 1);
     vLayout5->addLayout(hLayout);
 
-    contentLayout->addStretch();
-    contentLayout->addLayout(vLayout5);
-    contentLayout->addStretch();
-
-//    setShowStacked(0);
-//    showValue();
-//    showText(InvStr());
-//    recoverResults();
-
-    setFixedHeight(142);
+    contentLayout->addLayout(vLayout5, 1);
 
     // 释放事件。
-    connect(this, SIGNAL(released(IWidget*)), this, SLOT(_releaseHandle(IWidget*)));
+    connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 }
 
 /**************************************************************************************************

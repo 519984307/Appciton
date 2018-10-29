@@ -20,8 +20,8 @@
 #include <TableHeaderView.h>
 #include "HemodynamicManager.h"
 #include <QDateTime>
-#include "HemodynamicWidget.h"
 #include "WindowManager.h"
+#include "HemodynamicWindow.h"
 
 #define MAX_ROW_COUNT           28
 #define MAX_COLUMN_COUNT        12
@@ -85,7 +85,7 @@ HemodynaimcReviewWindow::HemodynaimcReviewWindow()
 
 HemodynaimcReviewWindow *HemodynaimcReviewWindow::getInstance()
 {
-    HemodynaimcReviewWindow *instance = NULL;
+    static HemodynaimcReviewWindow *instance = NULL;
     if (!instance)
     {
         instance = new HemodynaimcReviewWindow;
@@ -102,7 +102,7 @@ void HemodynaimcReviewWindow::layoutExec()
 {
     setWindowTitle(trs("ReviewWindow"));
 
-    QVBoxLayout *vlayout = new QVBoxLayout(this);
+    QVBoxLayout *vlayout = new QVBoxLayout;
     vlayout->setMargin(10);
     vlayout->setAlignment(Qt::AlignTop);
 
@@ -493,7 +493,7 @@ void HemodynaimcReviewWindow::onBtnReturnReleased()
         getReviewData().
         at(hemodynamicManager.
            getReviewData().length() - column + 1));
-    hemodynamicWidget.updateData();
+    HemodynamicWindow::getInstance()->updateData();
     hide();
 }
 

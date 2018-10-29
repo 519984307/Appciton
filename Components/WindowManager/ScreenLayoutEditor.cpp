@@ -13,6 +13,8 @@
 #include <Button.h>
 #include <QLabel>
 #include "LanguageManager.h"
+#include <QDesktopWidget>
+#include <QApplication>
 
 class ScreenLayoutEditorPrivate
 {
@@ -173,6 +175,16 @@ void ScreenLayoutEditor::showEvent(QShowEvent *ev)
     Window::showEvent(ev);
     if (!d_ptr->displayPos.isNull())
     {
+        QDesktopWidget *desktop = QApplication::desktop();
+        if (d_ptr->displayPos.y() + this->height() > desktop->height())
+        {
+            d_ptr->displayPos.ry() = desktop->height() - this->height() - 8;
+        }
+
+        if (d_ptr->displayPos.x() + this->width() > desktop->width())
+        {
+            d_ptr->displayPos.rx() = desktop->width() - this->width() - 8;
+        }
         this->move(d_ptr->displayPos);
     }
 }

@@ -20,6 +20,7 @@ enum PowerOnSession
 
 class DateTimeWidget;
 class ElapseTimeWidget;
+class QDateTime;
 class TimeManager
 {
 public:
@@ -71,6 +72,19 @@ public:
      */
     void roloadConfig();
     ~TimeManager();
+
+
+    /**
+     * @brief setSystemTime set the system datetime
+     * @param datetime the setting datetime
+     */
+    void setSystemTime(const QDateTime &datetime);
+
+    /**
+     * @brief checkAndFixSystemTime check and fix the system time,
+     *        should be called at startup
+     */
+    void checkAndFixSystemTime();
 
 private:
     TimeManager();

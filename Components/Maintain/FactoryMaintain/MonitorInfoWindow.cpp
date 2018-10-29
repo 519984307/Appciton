@@ -134,10 +134,10 @@ void MonitorInfoWindow::layoutExec()
 {
     setWindowTitle(trs("MonitorInfoMenu"));
 
-    QVBoxLayout *vlayout = new QVBoxLayout(this);
+    QVBoxLayout *vlayout = new QVBoxLayout;
     vlayout->setMargin(10);
 
-    QGridLayout *layout = new QGridLayout(this);
+    QGridLayout *layout = new QGridLayout;
     layout->setVerticalSpacing(20);
     vlayout->addStretch();
     vlayout->addLayout(layout);

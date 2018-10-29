@@ -4,11 +4,10 @@
     <General>
         <SuperPassword>97878161</SuperPassword>
         <Password>1234</Password>
-	<UserMaintainPassword>123456</UserMaintainPassword>
+        <UserMaintainPassword>123456</UserMaintainPassword>
         <DeviceIdentifier>00000000000</DeviceIdentifier>
         <DefaultPatientType>0</DefaultPatientType>
         <!-- 0:adult；1:ped； -->
-        <DefaultDisplayBrightness>7</DefaultDisplayBrightness>
         <FullDisclosureRecording>1</FullDisclosureRecording>
     </General>
     <Unit>
@@ -21,33 +20,32 @@
         <ICPUnit>5</ICPUnit>
         <CO2Unit>5</CO2Unit>
     </Unit>
-	<Layout>
-		<SelectInterface>3</SelectInterface>
-	</Layout>
-	<OxyCRG>
-		<Trend1>1</Trend1>
-		<Trend2>0</Trend2>
-		<Wave>0</Wave>
-		<Interval>1</Interval>
-		<Ruler>
-			<HRLow>0</HRLow>	
-			<HRHigh>0</HRHigh>	
-			<RRLow>0</RRLow>	
-			<RRHigh>0</RRHigh>	
-			<SPO2Low>0</SPO2Low>	
-			<SPO2High>0</SPO2High>	
-			<CO2Low>0</CO2Low>	
-			<CO2High>0</CO2High>	
-		</Ruler>
-	</OxyCRG>
+    <Layout>
+        <SelectInterface>3</SelectInterface>
+    </Layout>
+    <OxyCRG>
+        <Trend1>1</Trend1>
+        <Trend2>0</Trend2>
+        <Wave>0</Wave>
+        <Interval>1</Interval>
+        <Ruler>
+            <HRLow>0</HRLow>	
+            <HRHigh>0</HRHigh>	
+            <RRLow>0</RRLow>	
+            <RRHigh>0</RRHigh>	
+            <SPO2Low>0</SPO2Low>	
+            <SPO2High>0</SPO2High>	
+            <CO2Low>0</CO2Low>	
+            <CO2High>0</CO2High>	
+        </Ruler>
+    </OxyCRG>
     <PACER>
         <DefaultPacerRate>70</DefaultPacerRate>
         <FixedRatePacing>1</FixedRatePacing>
     </PACER>
     <ECG>
-        <PadsECGBandwidth>0</PadsECGBandwidth>
-        <ChestLeadsECGBandwidth>0</ChestLeadsECGBandwidth>
-        <DefaultECGLeadInMonitorMode>1</DefaultECGLeadInMonitorMode>
+        <BandWidth>0</BandWidth>
+        <CalcLead>1</CalcLead>
         <QRSVolume>3</QRSVolume>
         <ECGLeadConvention>0</ECGLeadConvention>
         <AlarmSource>0</AlarmSource>
@@ -56,29 +54,30 @@
         <Ecg1Gain>0</Ecg1Gain>
         <Ecg2Gain>0</Ecg2Gain>
         <SweepSpeed>1</SweepSpeed>
+        <HRSource>0</HRSource>
         <Filter>0</Filter>
-	<DisplayMode>0</DisplayMode>
+        <DisplayMode>0</DisplayMode>
         <LeadMode>2</LeadMode>
         <NotchFilter>0</NotchFilter>
         <SmartLeadOff>0</SmartLeadOff>
-	<ECG12LeadPacerMaker>0</ECG12LeadPacerMaker>
-	<PacerMaker>1</PacerMaker>
-	<EverLeadOn>0</EverLeadOn>
+        <ECG12LeadPacerMaker>0</ECG12LeadPacerMaker>
+        <PacerMaker>1</PacerMaker>
+        <EverLeadOn>0</EverLeadOn>
     </ECG>
     <AG>
-         <AGModule>0</AGModule>
-         <SweepSpeed>1</SweepSpeed>
-         <OperationMode>0</OperationMode>
-         <UnitSetUp>7</UnitSetUp>
-         <ApneaAlarm>0</ApneaAlarm>
-         <O2Compensation>1</O2Compensation>
-         <N2OCompensation>0</N2OCompensation>
-		 <Anesthetic>0</Anesthetic>
+        <AGModule>0</AGModule>
+        <SweepSpeed>1</SweepSpeed>
+        <OperationMode>0</OperationMode>
+        <UnitSetUp>7</UnitSetUp>
+        <ApneaAlarm>0</ApneaAlarm>
+        <O2Compensation>1</O2Compensation>
+        <N2OCompensation>0</N2OCompensation>
+        <Anesthetic>0</Anesthetic>
     </AG>
     <TEMP>
-         <ChannelOne>0</ChannelOne>
-         <ChannelTwo>0</ChannelTwo>
-         <ChannelDisable>0</ChannelDisable>
+        <ChannelOne>0</ChannelOne>
+        <ChannelTwo>0</ChannelTwo>
+        <ChannelDisable>0</ChannelDisable>
     </TEMP>
     <IBP>
         <ChannelPressureEntitle1>0</ChannelPressureEntitle1>
@@ -95,7 +94,7 @@
         <AutomaticRetry>0</AutomaticRetry>
         <AdultInitialCuffInflation>2</AdultInitialCuffInflation>
         <PedInitialCuffInflation>4</PedInitialCuffInflation>
-		<NeoInitialCuffInflation>3</NeoInitialCuffInflation>
+        <NeoInitialCuffInflation>3</NeoInitialCuffInflation>
     </NIBP>
     <SPO2>
         <Sensitivity>1</Sensitivity>
@@ -143,7 +142,7 @@
         <EnableAlarmAudioOff>1</EnableAlarmAudioOff>
         <EnableAlarmOff>1</EnableAlarmOff>
         <AlarmOffAtPowerOn>0</AlarmOffAtPowerOn>
-		<ApneaTime>2</ApneaTime>
+        <ApneaTime>2</ApneaTime>
     </Alarm>
     <AlarmSource>
         <Adult>
@@ -523,13 +522,13 @@
                     <High Min="231" Max="450">380</High>
                     <Step>1</Step>
                     <Scale>1</Scale>
-                 </celsius>
-                 <fahrenheit>
+                </celsius>
+                <fahrenheit>
                     <Low Min="590" Max="1219">950</Low>
                     <High Min="591" Max="1220">1000</High>
                     <Step>1</Step>
                     <Scale>10</Scale>
-                 </fahrenheit>
+                </fahrenheit>
             </TB>
             <ETCO2 Enable="1" Prio="2">
                 <percent>
@@ -931,13 +930,13 @@
                     <High Min="151" Max="500">378</High>
                     <Step>1</Step>
                     <Scale>10</Scale>
-                 </celsius>
-                 <fahrenheit>
+                </celsius>
+                <fahrenheit>
                     <Low Min="590" Max="1219">950</Low>
                     <High Min="591" Max="1220">1000</High>
                     <Step>1</Step>
                     <Scale>10</Scale>
-                 </fahrenheit>
+                </fahrenheit>
             </TB>
             <ETCO2 Enable="1" Prio="2">
                 <percent>
@@ -1393,13 +1392,13 @@
             <g>150</g>
             <b>205</b>
         </Purple>
-	<ECGDUPColor>Green</ECGDUPColor>
+        <ECGDUPColor>Green</ECGDUPColor>
         <ECGColor>Green</ECGColor>
         <SPO2Color>Yellow</SPO2Color>
         <NIBPColor>Blue</NIBPColor>
         <CO2Color>Red</CO2Color>
         <RESPColor>Red</RESPColor>
-	<RESPDUPColor>Red</RESPDUPColor>
+        <RESPDUPColor>Red</RESPDUPColor>
         <AGColor>Orange</AGColor>
         <IBPColor>Purple</IBPColor>
         <TEMPColor>Brown</TEMPColor>
@@ -1416,7 +1415,7 @@
         <NIBPReading>0</NIBPReading>
         <DiagnosticECG>1</DiagnosticECG>
         <Print30JSelfTestReport>0</Print30JSelfTestReport>
-	<PrintSpeed>0</PrintSpeed>
+        <PrintSpeed>0</PrintSpeed>
     </Print>
     <ECG12L>
         <NotchFilter>0</NotchFilter>

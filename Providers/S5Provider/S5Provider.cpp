@@ -30,17 +30,11 @@ bool S5Provider::attachParam(Param &param)
 {
     if (param.getParamID() == PARAM_SPO2)
     {
-        isHandleModuleData = true;
         spo2Param.setProvider(this);
+        Provider::attachParam(param);
         return true;
     }
     return false;
-}
-
-void S5Provider::detachParam(Param &param)
-{
-    Q_UNUSED(param);
-    isHandleModuleData = false;
 }
 
 /**************************************************************************************************
@@ -48,7 +42,7 @@ void S5Provider::detachParam(Param &param)
  *************************************************************************************************/
 void S5Provider::handlePacket(unsigned char *data, int len)
 {
-    if (!isHandleModuleData)
+    if (!isConnectedToParam)
     {
         return;
     }
@@ -236,10 +230,22 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
         _isValuePR = (packet[i + 5] == 0x80) ? false : true;
     }
     // 棒图。
-    spo2Param.addBarData((packet[15] == 127) ? 50 : packet[15]);
+    // spo2Param.addBarData((packet[15] == 127) ? 50 : packet[15]);
+
+    // PI;
+    short piValue = (packet[15] << 8) + packet[16];
+    if (piValue > 15 || piValue < 0)
+    {
+        piValue = InvData();
+    }
+    else
+    {
+        piValue *= 10;
+    }
+    spo2Param.updatePIValue(piValue);
 
     // 脉搏音。
-    spo2Param.setPulseAudio(packet[16]);
+    spo2Param.setPulseAudio(packet[17]);
 
     return true;
 }

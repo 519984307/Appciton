@@ -24,6 +24,9 @@ protected:
     /* reimplment */
     void layoutExec();
 
+    /*reimplment*/
+    void showEvent(QShowEvent *ev);
+
 private slots:
     /**
      * @brief onBtnReleased

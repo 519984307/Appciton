@@ -12,6 +12,7 @@
 #include "Window.h"
 #include <QScopedPointer>
 #include <QModelIndex>
+#include "Param.h"
 
 class EventWindowPrivate;
 class EventWindow : public Window
@@ -43,6 +44,7 @@ public:
      */
     void setHistoryData(bool flag);
 
+    void findEventIndex(SubParamID id, unsigned time);
 protected:
     void showEvent(QShowEvent *ev);
 

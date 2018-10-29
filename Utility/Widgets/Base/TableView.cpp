@@ -42,19 +42,32 @@ public:
             int rowCount = m->rowCount();
             int columnCount =  m->columnCount();
             int itemCount = rowCount * columnCount;
-            int i = curIndex.row() * columnCount + curIndex.column();
+            int pos = curIndex.row() * columnCount + curIndex.column();
+            int downRange = 0;
+            int upRange = itemCount;
+
+            int downX = q_ptr->columnAt(1) + 1;
+            int downY = q_ptr->rowAt(1) + 1;
+            int upX = q_ptr->columnAt(q_ptr->viewport()->width() - 1) + 1;
+            int upY = q_ptr->rowAt(q_ptr->viewport()->height() - 1) + 1;
+            downRange = (downY - 1) * upX + downX - 1;
+            if (q_ptr->hasNextPage())
+            {
+                upRange = (upY - 1) * upX + upX - 1;
+            }
+
             int delta = next ? 1 : -1;
 
-            i += delta;
-            while (i >=0 && i < itemCount)
+            pos += delta;
+            while (pos >= downRange && pos <= upRange)
             {
-                curIndex = m->index(i / columnCount, i % columnCount);
+                curIndex = m->index(pos / columnCount, pos % columnCount);
                 if (m->flags(curIndex) & Qt::ItemIsSelectable)
                 {
                     index = curIndex;
                     break;
                 }
-                i += delta;
+                pos += delta;
             }
         }
         return index;
@@ -71,12 +84,14 @@ public:
         QModelIndex index;
         if (first)
         {
-            index = model->index(0, 0);
+            index = model->index(q_ptr->rowAt(1),
+                                 q_ptr->columnAt(1));
         }
         else
         {
 
-            index = model->index(model->rowCount() - 1, model->columnCount() - 1);
+            index = model->index(q_ptr->rowAt(q_ptr->viewport()->height() - 1),
+                                 q_ptr->columnAt(q_ptr->viewport()->width() - 1));
         }
 
         if (!(model->flags(index) & Qt::ItemIsSelectable))
@@ -429,7 +444,7 @@ void TableView::focusInEvent(QFocusEvent *ev)
         {
             setCurrentIndex(d_ptr->lastIndex);
         }
-        else
+        else if (!currentIndex().isValid())
         {
             // focus the first item or the first row
             if (this->selectionBehavior() == QAbstractItemView::SelectRows)

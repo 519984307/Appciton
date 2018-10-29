@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/10/25
+ **/
+
 #pragma once
 #include <QObject>
 #include <QScopedPointer>
@@ -8,8 +18,8 @@ class SoundManager : public QObject
 {
     Q_OBJECT
 public:
-
-    enum SoundType {
+    enum SoundType
+    {
         SOUND_TYPE_NONE,        /* no sound playing */
         SOUND_TYPE_KEY_PRESS,
         SOUND_TYPE_ERROR,
@@ -19,7 +29,8 @@ public:
         SOUND_TYPE_NR,
     };
 
-    enum VolumeLevel {
+    enum VolumeLevel
+    {
         VOLUME_LEV_0,   /* muted */
         VOLUME_LEV_1,
         VOLUME_LEV_2,

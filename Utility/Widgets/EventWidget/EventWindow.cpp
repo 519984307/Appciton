@@ -44,6 +44,7 @@
 #include "EventWaveSetWindow.h"
 #include "DataStorageDefine.h"
 #include "TableViewItemDelegate.h"
+#include "MessageBox.h"
 
 class EventWindowPrivate
 {
@@ -181,6 +182,41 @@ void EventWindow::setHistoryData(bool flag)
     else
     {
         d_ptr->backend = eventStorageManager.backend();
+    }
+}
+
+void EventWindow::findEventIndex(SubParamID id, unsigned time)
+{
+    int eventNum = d_ptr->backend->getBlockNR();
+    int index = -1;
+    for (int i = eventNum - 1; i >= 0; i --)
+    {
+        if (d_ptr->parseEventData(i))
+        {
+            if (d_ptr->ctx.infoSegment->timestamp == time &&
+                    d_ptr->ctx.almSegment->subParamID == id)
+            {
+                index = i;
+            }
+        }
+    }
+    int pos = -1;
+    for (int j = 0; j < d_ptr->dataIndex.count(); j++)
+    {
+        if (d_ptr->dataIndex.at(j) == index)
+        {
+            pos = j;
+        }
+    }
+    if (pos == -1)
+    {
+        this->hide();
+        MessageBox messageBox(trs("Prompt"), trs("SelectAlarmNotExist"), false);
+        messageBox.exec();
+    }
+    else
+    {
+        waveInfoReleased(pos);
     }
 }
 

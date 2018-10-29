@@ -13,6 +13,8 @@
 #include "ErrorLogItem.h"
 #include "LayoutManager.h"
 #include "ShortTrendContainer.h"
+#include "NightModeManager.h"
+#include "RunningStatusBar.h"
 
 /**************************************************************************************************
  * 功能： 初始化系统。
@@ -27,6 +29,8 @@ static void _initSystem(void)
     // superConfig.construction();
 
     // superRunConfig.construction();
+
+    timeManager.checkAndFixSystemTime();
 
     // 新会话，需要恢复主配置文件
     if (timeManager.getPowerOnSession() == POWER_ON_SESSION_NEW)
@@ -157,7 +161,6 @@ static void _initComponents(void)
     PatientInfoWidget *patientInfoWidget = new PatientInfoWidget();
     layoutManager.addLayoutWidget(patientInfoWidget);
     patientManager.setPatientInfoWidget(*patientInfoWidget);
-    layoutManager.addLayoutWidget(&patientStatusBar);
 
     // 初始化报警。
     alertor.construction();
@@ -171,7 +174,17 @@ static void _initComponents(void)
     layoutManager.addLayoutWidget(alarmPhyInfo);
     layoutManager.addLayoutWidget(alarmTechInfo);
     layoutManager.addLayoutWidget(alarmPhyMuteBar);
-    layoutManager.addLayoutWidget(&nightStatusBar);
+
+    // running status
+    runningStatus.setPacerStatus(patientManager.getPacermaker());
+    runningStatus.setNightModeStatus(nightModeManager.isNightMode());
+#ifdef Q_WS_QWS
+    if (systemManager.isSupport(CONFIG_TOUCH))
+    {
+        runningStatus.setTouchStatus(systemManager.isTouchScreenOn());
+    }
+#endif
+    layoutManager.addLayoutWidget(&runningStatus);
 
     //报警状态
     alarmStateMachine.Construction();
@@ -320,11 +333,7 @@ static void _initProviderParam(void)
     {
         QString str;
         machineConfig.getStrValue("SPO2", str);
-        if (str == "BLM_SPO2")
-        {
-            paramManager.addProvider(*new BLMSPO2Provider());
-        }
-        else if (str == "MASIMO_SPO2")
+        if (str == "MASIMO_SPO2")
         {
             paramManager.addProvider(*new MasimoSetProvider());
         }
@@ -363,7 +372,7 @@ static void _initProviderParam(void)
         }
         else
         {
-            paramManager.addProvider(*new TN3Provider());
+            paramManager.addProvider(*new N5Provider());
         }
 
         paramManager.addParam(nibpParam.construction());
@@ -505,7 +514,7 @@ static void _initProviderParam(void)
     paramManager.getVersion();
 
     // 关联设备和参数对象。
-    paramManager.connectParamProvider();
+    paramManager.connectParamProvider(WORK_MODE_NORMAL);
 
 
     alertor.addOneShotSource(systemAlarm.Construction());
@@ -543,21 +552,16 @@ static void _initPrint(void)
 static void _initMenu(void)
 {
     menuManager.construction();
-    publicMenuManager.construction();
     userMaintainManager.construction();
     wifiMaintainMenu.construction();
-    unitSetup.construction();
 
     userMaintainManager.addSubMenu(&wifiMaintainMenu);
-    userMaintainManager.addSubMenu(&unitSetup);
 
     // supervisorMenuManager
     supervisorMenuManager.construction();
 
     //其它弹出菜单初始化
     patientManager.construction();
-
-    codeMarkerWidget.construction();
 }
 
 /**************************************************************************************************
@@ -579,7 +583,6 @@ void newObjects(void)
 void deleteObjects(void)
 {
 //    deleteWaveWidgetSelectMenu();
-    deletePublicMenuManager();
     deleteSupervisorMenuManager();
     deleteMenuManager();
     // deletePatientMenu();
@@ -593,7 +596,6 @@ void deleteObjects(void)
     // deleteSuperConfig();
     deleteSuperRunConfig();
     deleteSystemTick();
-    deleteSystemManager();
     deleteSystemBoardProvider();
     deletePowerManager();
     deleteKeyActionManager();
@@ -612,9 +614,6 @@ void deleteObjects(void)
     deleteTrendCache();
     deleteRescueDataExportWidget();
     deleteRescueDataDeleteWidget();
-
-    deleteCodeMarkerWidget();
-
 
     deleteRecorderManager();
 

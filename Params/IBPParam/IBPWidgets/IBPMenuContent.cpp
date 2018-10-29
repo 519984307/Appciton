@@ -25,8 +25,11 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QTimerEvent>
+#include "AlarmLimitWindow.h"
 
 #define AUTO_SCALE_UPDATE_TIME          (2 * 1000)
+#define ZERO_INTERVAL_TIME              (100)
+#define TIMEOUT_WAIT_NUMBER             (5000 / ZERO_INTERVAL_TIME)
 
 class IBPMenuContentPrivate
 {
@@ -44,14 +47,15 @@ public:
         ITEM_CBO_SWEEP_SPEED,
         ITEM_CBO_FILTER_MODE,
         ITEM_CBO_SENSITIVITY,
-        ITEM_CBO_CALIB_ZERO,
-        ITEM_CBO_CALIBRATION
+        ITEM_CBO_CALIB_ZERO
     };
 
     explicit IBPMenuContentPrivate(IBPMenuContent *const q_ptr) :
         q_ptr(q_ptr),
         oneGBox(NULL), twoGBox(NULL),
-        autoTimerId(-1)
+        autoTimerId(-1),
+        zeroTimerId(-1),
+        timeoutNum(0)
     {}
 
     // load settings
@@ -68,6 +72,8 @@ public:
     int autoTimerId;
     IBPRulerLimit rulerLimit1;
     IBPRulerLimit rulerLimit2;
+    int zeroTimerId;
+    int timeoutNum;                     // 最多超时等待50次
 };
 
 void IBPMenuContentPrivate::loadOptions()
@@ -366,17 +372,6 @@ void IBPMenuContent::layoutExec()
     gLayout->addWidget(button, 3, 1);
     d_ptr->buttons.insert(IBPMenuContentPrivate::ITEM_CBO_CALIB_ZERO, button);
 
-    // 校准
-    label = new QLabel(trs("ServiceCalibrate"));
-    gLayout->addWidget(label, 4, 0);
-    button = new Button(trs("80"));
-    button->setButtonStyle(Button::ButtonTextOnly);
-    itemID = static_cast<int>(IBPMenuContentPrivate::ITEM_CBO_CALIBRATION);
-    button->setProperty("Item", qVariantFromValue(itemID));
-    connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
-    gLayout->addWidget(button, 4, 1);
-    d_ptr->buttons.insert(IBPMenuContentPrivate::ITEM_CBO_CALIBRATION, button);
-
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
@@ -415,6 +410,21 @@ void IBPMenuContent::timerEvent(QTimerEvent *ev)
                 d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_DOWN_SCALE_2]->setValue(info.low);
                 d_ptr->spinBoxs[IBPMenuContentPrivate::ITEM_SBO_UP_SCALE_2]->setValue(info.high);
             }
+        }
+    }
+    else if (d_ptr->zeroTimerId == ev->timerId())
+    {
+        if (ibpParam.getIBPZeroResult() || d_ptr->timeoutNum == TIMEOUT_WAIT_NUMBER)
+        {
+            d_ptr->buttons[IBPMenuContentPrivate::ITEM_CBO_CALIB_ZERO]->setEnabled(true);
+            d_ptr->buttons[IBPMenuContentPrivate::ITEM_CBO_CALIB_ZERO]->setText(trs("IBPZeroStart"));
+            killTimer(d_ptr->zeroTimerId);
+            d_ptr->zeroTimerId = -1;
+            d_ptr->timeoutNum = 0;
+        }
+        else
+        {
+            d_ptr->timeoutNum++;
         }
     }
 }
@@ -597,34 +607,11 @@ void IBPMenuContent::onButtonReleased()
         {
         case IBPMenuContentPrivate::ITEM_CBO_CALIB_ZERO:
             ibpParam.zeroCalibration(IBP_INPUT_1);
+            ibpParam.zeroCalibration(IBP_INPUT_2);
+            button->setText(trs("ZeroInProgress"));
+            button->setEnabled(false);
+            d_ptr->zeroTimerId = startTimer(ZERO_INTERVAL_TIME);
             break;
-        case IBPMenuContentPrivate::ITEM_CBO_CALIBRATION:
-        {
-            KeyInputPanel numberPad;
-            numberPad.setWindowTitle(trs("ServiceCalibrate"));
-            numberPad.setMaxInputLength(7);
-            numberPad.setInitString(button->text());
-            if (numberPad.exec())
-            {
-                QString text = numberPad.getStrValue();
-                bool ok = false;
-                quint16 value = text.toShort(&ok);
-                if (ok)
-                {
-                    if (value >= 80 && value <= 300)
-                    {
-                        button->setText(text);
-                        ibpParam.setCalibration(IBP_INPUT_1, value);
-                    }
-                    else
-                    {
-                        MessageBox messageBox(trs("Prompt"), trs("InvalidInput") + " 80-300 ", QStringList(trs("EnglishYESChineseSURE")));
-                        messageBox.exec();
-                    }
-                }
-            }
-            break;
-        }
         default:
             break;
         }
@@ -633,10 +620,7 @@ void IBPMenuContent::onButtonReleased()
 
 void IBPMenuContent::onAlarmBtnReleased()
 {
-    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_ART_SYS, true);
-    if (w)
-    {
-        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
-    }
+    AlarmLimitWindow w(subParamName);
+    windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }

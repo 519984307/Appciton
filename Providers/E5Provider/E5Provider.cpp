@@ -243,12 +243,12 @@ E5Provider::E5Provider()
 
     // set lead mode
     int leadMode;
-    systemConfig.getNumValue("PrimaryCfg|ECG|LeadMode", leadMode);
+    currentConfig.getNumValue("ECG|LeadMode", leadMode);
     setLeadSystem(static_cast<ECGLeadMode>(leadMode));
 
     // set calculation lead
     int calcLead;
-    systemConfig.getNumValue("PrimaryCfg|ECG|DefaultECGLeadInMonitorMode", calcLead);
+    currentConfig.getNumValue("ECG|CalcLead", calcLead);
     setCalcLead(static_cast<ECGLead>(calcLead));
 
     // get selftest result
@@ -276,20 +276,14 @@ bool E5Provider::attachParam(Param &param)
     }
     if (ret)
     {
-        isHandleModuleData = true;
+        Provider::attachParam(param);
     }
     return ret;
 }
 
-void E5Provider::detachParam(Param &param)
-{
-    Q_UNUSED(param);
-    isHandleModuleData = false;
-}
-
 void E5Provider::handlePacket(unsigned char *data, int len)
 {
-    if (!isHandleModuleData)
+    if (!isConnectedToParam)
     {
         return;
     }

@@ -21,6 +21,7 @@
 #include "ConfigManager.h"
 #include "NIBPMonitorStateDefine.h"
 #include "MainMenuWindow.h"
+#include "AlarmLimitWindow.h"
 
 class NIBPMenuContentPrivate
 {
@@ -261,12 +262,9 @@ void NIBPMenuContent::onBtnReleasedChanged()
 
 void NIBPMenuContent::onAlarmBtnReleased()
 {
-    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_NIBP_SYS, true);
-    if (w)
-    {
-        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
-    }
+    AlarmLimitWindow w(subParamName);
+    windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }
 
 void NIBPMenuContent::onComboBoxIndexChanged(int index)

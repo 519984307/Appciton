@@ -46,9 +46,9 @@ public:
     void setWindowTitlePrefix(const QString &prefix);
 
     /**
-     * @brief focusMenuItem  设置聚焦点为菜单栏第一个item
+     * @brief focusFirstMenuItem  设置聚焦点为菜单栏第一个item
      */
-    void focusMenuItem();
+    void focusFirstMenuItem();
 
     /**
      * @brief ensureWidgetVisiable ensure the widget in the window visiable

@@ -14,10 +14,8 @@
 #include "UnitManager.h"
 #include "ParamManager.h"
 #include "ParamInfo.h"
-#include "PublicMenuManager.h"
 #include "TEMPParam.h"
 #include "WindowManager.h"
-#include "AlarmLimitMenu.h"
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"
 
@@ -245,16 +243,27 @@ void TEMPTrendWidget::showValue(void)
     if (_t1Str != InvStr())
     {
         _alarmIndicate(_t1Alarm, TEMP_GRP_T1);
+    }
+    if (_t1Value)
+    {
         _t1Value->setText(_t1Str);
     }
+
     if (_t2Str != InvStr())
     {
         _alarmIndicate(_t1Alarm, TEMP_GRP_T2);
+    }
+    if (_t2Value)
+    {
         _t2Value->setText(_t2Str);
     }
+
     if (_tdStr != InvStr())
     {
         _alarmIndicate(_t1Alarm, TEMP_GRP_TD);
+    }
+    if (_tdValue)
+    {
         _tdValue->setText(_tdStr);
     }
 }

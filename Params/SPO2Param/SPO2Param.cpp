@@ -119,9 +119,11 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
 void SPO2Param::handDemoTrendData(void)
 {
     _spo2Value = 98;
+    _piValue = 41;
     if (NULL != _trendWidget)
     {
         _trendWidget->setSPO2Value(_spo2Value);
+        _trendWidget->setPIValue(_piValue);
     }
 
     if (NULL != _oxyCRGSPO2Trend)
@@ -233,6 +235,8 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider)
     // 请求波形缓冲区。
     waveformCache.registerSource(WAVE_SPO2, _provider->getSPO2WaveformSample(), 0, _provider->getSPO2MaxValue(),
                                  tile, _provider->getSPO2BaseLine());
+
+    _waveWidget->setGain(_gain);
 }
 
 /**************************************************************************************************
@@ -257,6 +261,7 @@ void SPO2Param::reset()
  *************************************************************************************************/
 void SPO2Param::setGain(SPO2Gain gain)
 {
+    _gain = gain;
     currentConfig.setNumValue("SPO2|Gain", static_cast<int>(gain));
 
     if (NULL != _waveWidget)
@@ -270,10 +275,7 @@ void SPO2Param::setGain(SPO2Gain gain)
  *************************************************************************************************/
 SPO2Gain SPO2Param::getGain(void)
 {
-    int gain = SPO2_GAIN_X10;
-    currentConfig.getNumValue("SPO2|Gain", gain);
-
-    return (SPO2Gain)gain;
+    return _gain;
 }
 
 /**************************************************************************************************
@@ -406,6 +408,19 @@ void SPO2Param::setPR(short prValue)
     ecgDupParam.updatePR(prValue);
 }
 
+void SPO2Param::updatePIValue(short piValue)
+{
+    if (_piValue == piValue)
+    {
+        return;
+    }
+    _piValue = piValue;
+    if (NULL != _trendWidget)
+    {
+        _trendWidget->setPIValue(_piValue);
+    }
+}
+
 /**************************************************************************************************
  * 设置波形值。
  *************************************************************************************************/
@@ -420,6 +435,10 @@ void SPO2Param::addWaveformData(short wave)
     if (NULL != _waveWidget)
     {
         _waveWidget->addData(wave, flag);
+    }
+    if (NULL != _trendWidget)
+    {
+        _trendWidget->setBarValue(wave * 15 / 127);
     }
     waveformCache.addData(WAVE_SPO2, (flag << 16) | wave);
 }
@@ -697,6 +716,7 @@ int SPO2Param::getSweepSpeed(void)
  * 构造。
  *************************************************************************************************/
 SPO2Param::SPO2Param() : Param(PARAM_SPO2),
+                         _gain(SPO2_GAIN_X10),
                          _oxyCRGSPO2Trend(NULL)
 {
     _provider = NULL;
@@ -704,14 +724,19 @@ SPO2Param::SPO2Param() : Param(PARAM_SPO2),
     _waveWidget = NULL;
 
     _spo2Value = InvData();
+    _piValue = InvData();
     _prValue = InvData();
     _barValue = InvData();
-    _isValid = false;
+    _isValid = true;
     _sensorOff = true;
     _recPackageInPowerOn2sec = 0;
 
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverCheckFinger", _isEverCheckFinger);
     systemConfig.getNumValue("PrimaryCfg|SPO2|EverSensorOn", _isEverSensorOn);
+
+    int gain = SPO2_GAIN_X10;
+    currentConfig.getNumValue("SPO2|Gain", gain);
+    _gain = static_cast<SPO2Gain>(gain);
 
     QTimer::singleShot(2000, this, SLOT(checkSelftest()));
 }

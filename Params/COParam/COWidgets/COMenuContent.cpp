@@ -23,6 +23,7 @@
 #include "KeyInputPanel.h"
 #include "MessageBox.h"
 #include "MainMenuWindow.h"
+#include "AlarmLimitWindow.h"
 
 class COMenuContentPrivate
 {
@@ -48,7 +49,7 @@ public:
 
 void COMenuContentPrivate::loadOptions()
 {
-    buttons[ITEM_CBO_CO_RATIO]->setText(QString::number(static_cast<double>(coParam.getCORatio() / 1000)));
+    buttons[ITEM_CBO_CO_RATIO]->setText(QString::number(static_cast<double>(coParam.getCORatio() * 1.0 / 1000)));
     combos[ITEM_CBO_INJECT_TEMP_SOURCE]->setCurrentIndex(coParam.getTempSource());
     if (combos[ITEM_CBO_INJECT_TEMP_SOURCE]->currentIndex() == CO_TI_MODE_AUTO)
     {
@@ -58,7 +59,7 @@ void COMenuContentPrivate::loadOptions()
     {
         buttons[ITEM_CBO_INJECTION_TEMP]->setEnabled(true);
     }
-    buttons[ITEM_CBO_INJECTION_TEMP]->setText(QString::number(static_cast<double>(coParam.getInjectionTemp() / 10)));
+    buttons[ITEM_CBO_INJECTION_TEMP]->setText(QString::number(static_cast<double>(coParam.getInjectionTemp() * 1.0 / 10)));
     buttons[ITEM_CBO_INJECTION_VOLUMN]->setText(QString::number(coParam.getInjectionVolumn()));
     buttons[ITEM_CBO_MEASURE_CONTROL]->setText(trs(COSymbol::convert(coParam.getMeasureCtrl())));
 }
@@ -196,11 +197,21 @@ void COMenuContent::onButtonReleased()
         switch (item) {
         case COMenuContentPrivate::ITEM_CBO_CO_RATIO:
         {
-
-            KeyInputPanel numberPad;
+            // 调用数字键盘
+            KeyInputPanel numberPad(KeyInputPanel::KEY_TYPE_NUMBER, true);
+            // 使能键盘的有效字符
+            QString rec("[0-9]");
+            numberPad.setBtnEnable(rec);
+            // 设置键盘标题
             numberPad.setWindowTitle(trs("CORatio"));
+            // 最大输入长度
             numberPad.setMaxInputLength(5);
-            numberPad.setInitString(button->text());
+            // 固定为数字键盘
+            numberPad.setKeytypeSwitchEnable(false);
+            numberPad.setSymbolEnable(false);
+            // 设置初始字符串 placeholder模式
+            numberPad.setInitString(button->text(), true);
+
             if (numberPad.exec())
             {
                 QString text = numberPad.getStrValue();
@@ -225,10 +236,21 @@ void COMenuContent::onButtonReleased()
         }
         case COMenuContentPrivate::ITEM_CBO_INJECTION_TEMP:
         {
-            KeyInputPanel numberPad;
+             // 调用数字键盘
+            KeyInputPanel numberPad(KeyInputPanel::KEY_TYPE_NUMBER, true);
+            // 使能键盘的有效字符
+            QString rec("[0-9]");
+            numberPad.setBtnEnable(rec);
+            // 设置键盘标题
             numberPad.setWindowTitle(trs("InjectionTemp"));
+            // 最大输入长度
             numberPad.setMaxInputLength(4);
-            numberPad.setInitString(button->text());
+            // 固定为数字键盘
+            numberPad.setKeytypeSwitchEnable(false);
+            numberPad.setSymbolEnable(false);
+            // 设置初始字符串 placeholder模式
+            numberPad.setInitString(button->text(), true);
+
             if (numberPad.exec())
             {
                 QString text = numberPad.getStrValue();
@@ -253,10 +275,21 @@ void COMenuContent::onButtonReleased()
         }
         case COMenuContentPrivate::ITEM_CBO_INJECTION_VOLUMN:
         {
-            KeyInputPanel numberPad;
+            // 调用数字键盘
+            KeyInputPanel numberPad(KeyInputPanel::KEY_TYPE_NUMBER, true);
+            // 使能键盘的有效字符
+            QString rec("[0-9]");
+            numberPad.setBtnEnable(rec);
+            // 设置键盘标题
             numberPad.setWindowTitle(trs("InjectionVolumn"));
+            // 最大输入长度
             numberPad.setMaxInputLength(3);
-            numberPad.setInitString(button->text());
+            // 固定为数字键盘
+            numberPad.setKeytypeSwitchEnable(false);
+            numberPad.setSymbolEnable(false);
+            // 设置初始字符串 placeholder模式
+            numberPad.setInitString(button->text(), true);
+
             if (numberPad.exec())
             {
                 QString text = numberPad.getStrValue();
@@ -301,10 +334,7 @@ void COMenuContent::onButtonReleased()
 
 void COMenuContent::onAlarmBtnReleased()
 {
-    MainMenuWindow *w = MainMenuWindow::getInstance();
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_CO_CO, true);
-    if (w)
-    {
-        w->popup(trs("AlarmLimitMenu"), qVariantFromValue(subParamName));
-    }
+    AlarmLimitWindow w(subParamName);
+    windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }
