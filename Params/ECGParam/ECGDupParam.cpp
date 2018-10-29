@@ -341,6 +341,14 @@ QList<SubParamID> ECGDupParam::getShortTrendList()
     return _trendWidget->getShortTrendSubParams();
 }
 
+void ECGDupParam::updateSubParamLimit(SubParamID id)
+{
+    if (id == SUB_PARAM_HR_PR)
+    {
+        _trendWidget->updateLimit();
+    }
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/

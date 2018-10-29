@@ -1250,6 +1250,14 @@ void NIBPParam::switchToManual(void)
     }
 }
 
+void NIBPParam::updateSubParamLimit(SubParamID id)
+{
+    if (id == SUB_PARAM_NIBP_SYS)
+    {
+        _trendWidget->updateLimit();
+    }
+}
+
 /**************************************************************************************************
  * 停止测量。
  *************************************************************************************************/

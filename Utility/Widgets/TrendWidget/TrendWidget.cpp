@@ -52,7 +52,12 @@ void TrendWidget::resizeEvent(QResizeEvent *e)
     QFont font = fontManager.textFont(fontSize);
     nameLabel->setFont(font);
     calcLeadLabel->setFont(font);
+
+    fontSize = fontManager.getFontSize(1);
+    font = fontManager.textFont(fontSize);
     unitLabel->setFont(font);
+    upLimit->setFont(font);
+    downLimit->setFont(font);
 
     setTextSize();
 }
@@ -106,6 +111,47 @@ void TrendWidget::showAlarmStatus(QWidget *value, QPalette psrc, bool isSetName)
     }
 }
 
+void TrendWidget::showAlarmParamLimit(const QString &valueStr, QPalette psrc)
+{
+    QPalette p = upLimit->palette();
+    QPalette alaColor = alarmPalette(p);
+    double value = valueStr.toDouble();
+    double up = upLimit->text().toDouble();
+    double down = downLimit->text().toDouble();
+    if (value > up)
+    {
+        if (p.windowText().color() != alaColor.windowText().color())
+        {
+            upLimit->setPalette(alaColor);
+        }
+        else
+        {
+            upLimit->setPalette(psrc);
+        }
+    }
+    else
+    {
+        upLimit->setPalette(alaColor);
+    }
+
+    p = downLimit->palette();
+    if (value < down)
+    {
+        if (p.windowText().color() != alaColor.windowText().color())
+        {
+            downLimit->setPalette(alaColor);
+        }
+        else
+        {
+            downLimit->setPalette(psrc);
+        }
+    }
+    else
+    {
+        downLimit->setPalette(alaColor);
+    }
+}
+
 void TrendWidget::showNormalStatus(QWidget *value, QPalette psrc)
 {
     setPalette(psrc);
@@ -113,6 +159,21 @@ void TrendWidget::showNormalStatus(QWidget *value, QPalette psrc)
     if (p.windowText().color() != psrc.windowText().color())
     {
         value->setPalette(psrc);
+    }
+}
+
+void TrendWidget::showNormalParamLimit(QPalette psrc)
+{
+    QPalette p = upLimit->palette();
+    if (p.windowText().color() != psrc.windowText().color())
+    {
+        upLimit->setPalette(psrc);
+    }
+
+    p = downLimit->palette();
+    if (p.windowText().color() != psrc.windowText().color())
+    {
+        downLimit->setPalette(psrc);
     }
 }
 
@@ -171,6 +232,20 @@ void TrendWidget::setUnit(const QString &unit)
     unitLabel->setText(unit);
 }
 
+void TrendWidget::setLimit(int up, int down, int scale)
+{
+    if (scale == 1)
+    {
+        upLimit->setText(QString::number(up));
+        downLimit->setText(QString::number(down));
+    }
+    else
+    {
+        upLimit->setText(QString::number(up / scale) + "." + QString::number(up % scale));
+        downLimit->setText(QString::number(down / scale) + "." + QString::number(down % scale));
+    }
+}
+
 /**************************************************************************************************
  * 功能： 设置计算导联字串。
  * 参数：
@@ -216,7 +291,8 @@ void TrendWidget::setUnitFont(int size, bool isBold)
  * 构造。
  *************************************************************************************************/
 TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
-    : IWidget(widgetName)
+    : IWidget(widgetName), nameLabel(NULL), calcLeadLabel(NULL),
+      unitLabel(NULL), upLimit(NULL), downLimit(NULL)
 {
     _title = "";
     nameLabel = new TrendWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
@@ -228,6 +304,12 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
     unitLabel = new QLabel("", this);
     unitLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
 
+    upLimit = new QLabel("", this);
+    upLimit->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+
+    downLimit = new QLabel("", this);
+    downLimit->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+
     mLayout = new QHBoxLayout();
 
     if (!vertical)
@@ -235,6 +317,8 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
         QVBoxLayout *vLayout = new QVBoxLayout();
         vLayout->addWidget(nameLabel);
         vLayout->addWidget(unitLabel);
+        vLayout->addWidget(upLimit);
+        vLayout->addWidget(downLimit);
         vLayout->addLayout(mLayout, 1);
         vLayout->addStretch();
         vLayout->setSpacing(0);

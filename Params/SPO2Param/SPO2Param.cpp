@@ -709,6 +709,14 @@ int SPO2Param::getSweepSpeed(void)
     return speed;
 }
 
+void SPO2Param::updateSubParamLimit(SubParamID id)
+{
+    if (id == SUB_PARAM_SPO2)
+    {
+        _trendWidget->updateLimit();
+    }
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/

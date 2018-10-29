@@ -114,6 +114,9 @@ public:
 
     /*remiplement*/
     QList<SubParamID> getShortTrendList(SubParamID type);
+
+    // 刷新参数上下限
+    virtual void updateSubParamLimit(SubParamID id);
 private slots:
     /**
      * @brief onPaletteChanged change palette

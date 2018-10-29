@@ -85,6 +85,13 @@ void NIBPTrendWidget::setResults(int16_t sys, int16_t dia, int16_t map, unsigned
     setShowStacked(0);//显示测量结果
 }
 
+void NIBPTrendWidget::updateLimit()
+{
+    UnitType unitType = paramManager.getSubParamUnit(PARAM_NIBP, SUB_PARAM_NIBP_SYS);
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_NIBP_SYS, unitType);
+    setLimit(config.highLimit, config.lowLimit, config.scale);
+}
+
 /**************************************************************************************************
  * 恢复测量结果的数据。
  *************************************************************************************************/
@@ -234,6 +241,7 @@ void NIBPTrendWidget::showValue(void)
 
         if (_sysAlarm)
         {
+            showAlarmParamLimit(_sysString, psrc);
             showAlarmStatus(_sysValue, psrc);
         }
 
@@ -249,6 +257,7 @@ void NIBPTrendWidget::showValue(void)
     }
     else
     {
+        showNormalParamLimit(psrc);
         showNormalStatus(_sysValue, psrc);
         showNormalStatus(_diaValue, psrc);
         showNormalStatus(_mapValue, psrc);
@@ -398,6 +407,9 @@ NIBPTrendWidget::NIBPTrendWidget()
     setPalette(palette);
     setName(trs(paramInfo.getParamName(PARAM_NIBP)));
     setUnit(Unit::getSymbol(nibpParam.getUnit()));
+
+    // 设置上下限
+    updateLimit();
 
     // 构造出所有控件。
     _nibpValue = new QLabel();

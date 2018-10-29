@@ -1001,10 +1001,10 @@
             </FICO2>
             <ETN2O Enable="1" Prio="2">
                 <percent>
-                    <Low Min="0" Max="249">10</Low>
-                    <High Min="1" Max="250">80</High>
+                    <Low Min="0" Max="249">1</Low>
+                    <High Min="1" Max="250">8</High>
                     <Step>1</Step>
-                    <Scale>10</Scale>
+                    <Scale>1</Scale>
                 </percent>
                 <mmHg>
                     <Low Min="0" Max="189">7</Low>
@@ -1022,9 +1022,9 @@
             <FIN2O Enable="0" Prio="2">
                 <percent>
                     <Low Min="0" Max="249">0</Low>
-                    <High Min="1" Max="250">80</High>
+                    <High Min="1" Max="250">8</High>
                     <Step>1</Step>
-                    <Scale>10</Scale>
+                    <Scale>1</Scale>
                 </percent>
                 <mmHg>
                     <Low Min="0" Max="189">0</Low>
@@ -1121,10 +1121,10 @@
             </FIAA2>
             <ETO2 Enable="1" Prio="2">
                 <percent>
-                    <Low Min="0" Max="249">10</Low>
-                    <High Min="1" Max="250">80</High>
+                    <Low Min="0" Max="249">1</Low>
+                    <High Min="1" Max="250">8</High>
                     <Step>1</Step>
-                    <Scale>10</Scale>
+                    <Scale>1</Scale>
                 </percent>
                 <mmHg>
                     <Low Min="0" Max="189">7</Low>
@@ -1142,9 +1142,9 @@
             <FIO2 Enable="0" Prio="2">
                 <percent>
                     <Low Min="0" Max="249">0</Low>
-                    <High Min="1" Max="250">80</High>
+                    <High Min="1" Max="250">8</High>
                     <Step>1</Step>
-                    <Scale>10</Scale>
+                    <Scale>1</Scale>
                 </percent>
                 <mmHg>
                     <Low Min="0" Max="189">0</Low>

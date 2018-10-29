@@ -17,6 +17,8 @@
 #include "SPO2Param.h"
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"
+#include "AlarmConfig.h"
+#include "ParamManager.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -46,6 +48,13 @@ void SPO2TrendWidget::setSPO2Value(int16_t spo2)
     {
         _spo2String = InvStr();
     }
+}
+
+void SPO2TrendWidget::updateLimit()
+{
+    UnitType unitType = paramManager.getSubParamUnit(PARAM_SPO2, SUB_PARAM_SPO2);
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_SPO2, unitType);
+    setLimit(config.highLimit, config.lowLimit, config.scale);
 }
 
 /**************************************************************************************************
@@ -105,6 +114,7 @@ void SPO2TrendWidget::showValue(void)
     psrc = normalPalette(psrc);
     if (_isAlarm)
     {
+        showAlarmParamLimit(_spo2String, psrc);
         showAlarmStatus(_spo2Bar, psrc);
         showAlarmStatus(_spo2Value, psrc);
     }
@@ -155,6 +165,9 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     setPalette(palette);
     setName(trs(paramInfo.getParamName(PARAM_SPO2)));
     setUnit(Unit::localeSymbol(UNIT_PERCENT));
+
+    // 设置上下限
+    updateLimit();
 
     // 血氧值。
     _spo2Value = new QLabel();

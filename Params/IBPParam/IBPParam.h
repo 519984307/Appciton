@@ -159,6 +159,8 @@ public:
     SubParamID getSubParamID(IBPPressureName name);
     WaveformID getWaveformID(IBPPressureName name);
 
+    // 刷新参数上下限
+    virtual void updateSubParamLimit(SubParamID id);
 private slots:
     void onPaletteChanged(ParamID id);
 

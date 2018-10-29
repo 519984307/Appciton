@@ -276,7 +276,7 @@ void TEMPTrendWidget::setTextSize()
     QRect r;
     int widgetWidth = width();
     int nameLabelWidth = nameLabel->width();
-    r.setSize(QSize((widgetWidth- nameLabelWidth)/2, height()/2));
+    r.setSize(QSize((widgetWidth- nameLabelWidth)/3, height()/2));
     // 字体。
     int fontsize = fontManager.adjustNumFontSize(r, true, "3888");
     int nameFontSize = fontsize / 2;

@@ -110,6 +110,9 @@ public:
 
     /*remiplement*/
     QList<SubParamID> getShortTrendList();
+
+    // 刷新参数上下限
+    virtual void updateSubParamLimit(SubParamID id);
 private slots:
     void onPaletteChanged(ParamID id);
 

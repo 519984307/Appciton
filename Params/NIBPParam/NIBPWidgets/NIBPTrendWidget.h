@@ -15,6 +15,8 @@
 #include <QLabel>
 #include <QGroupBox>
 #include <QStackedWidget>
+#include "AlarmConfig.h"
+#include "ParamManager.h"
 
 class NIBPTrendWidget: public TrendWidget
 {
@@ -25,6 +27,9 @@ class NIBPTrendWidget: public TrendWidget
 public:
     // 设置测量结果的数据。
     void setResults(int16_t sys, int16_t dia, int16_t map, unsigned time);
+
+    // 刷新趋势参数上下限
+    void updateLimit(void);
 
     // 恢复测量结果的数据。
     void recoverResults(int16_t &sys, int16_t &dia, int16_t &map, unsigned &time);

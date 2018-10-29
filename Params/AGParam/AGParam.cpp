@@ -824,6 +824,27 @@ QList<SubParamID> AGParam::getShortTrendList(SubParamID type)
     return subParams;
 }
 
+void AGParam::updateSubParamLimit(SubParamID id)
+{
+    switch (id)
+    {
+    case SUB_PARAM_ETN2O:
+        _trendWidgetN2O->updateLimit();
+        break;
+    case SUB_PARAM_ETAA1:
+        _trendWidgetAA1->updateLimit();
+        break;
+    case SUB_PARAM_ETAA2:
+        _trendWidgetAA2->updateLimit();
+        break;
+    case SUB_PARAM_ETO2:
+        _trendWidgetO2->updateLimit();
+        break;
+    default:
+        break;
+    }
+}
+
 void AGParam::onPaletteChanged(ParamID id)
 {
     if (id != PARAM_AG)

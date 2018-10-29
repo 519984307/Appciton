@@ -16,6 +16,8 @@
 #include "RESPParam.h"
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"
+#include "AlarmConfig.h"
+#include "ParamManager.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -51,6 +53,12 @@ void RESPTrendWidget::setRRValue(int16_t rr , bool isRR)
     }
 }
 
+void RESPTrendWidget::updateLimit()
+{
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_RR_BR, UNIT_RPM);
+    setLimit(config.highLimit, config.lowLimit, config.scale);
+}
+
 
 /**************************************************************************************************
  * 窗口是否使能。
@@ -79,10 +87,12 @@ void RESPTrendWidget::showValue(void)
     QPalette fgColor = normalPalette(psrc);
     if (_isAlarm)
     {
+        showAlarmParamLimit(_rrString, fgColor);
         showAlarmStatus(_rrValue, fgColor);
     }
     else
     {
+        showNormalParamLimit(fgColor);
         showNormalStatus(_rrValue, fgColor);
     }
 
@@ -118,6 +128,9 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
     setPalette(palette);
     setName(trs(paramInfo.getSubParamName(SUB_PARAM_RR_BR)));
     setUnit(Unit::getSymbol(UNIT_RPM));
+
+    // 设置上下限
+    updateLimit();
 
     // RR值。
     _rrValue = new QLabel();

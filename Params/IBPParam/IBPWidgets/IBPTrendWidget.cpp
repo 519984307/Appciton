@@ -19,6 +19,8 @@
 #include <QDebug>
 #include <QGroupBox>
 #include "MeasureSettingWindow.h"
+#include "AlarmConfig.h"
+#include "ParamManager.h"
 
 /**************************************************************************************************
  * 设置测量结果的数据。
@@ -74,6 +76,43 @@ void IBPTrendWidget::setData(int16_t sys, int16_t dia, int16_t map)
     _veinValue->setText(_veinString);
 
     return;
+}
+
+void IBPTrendWidget::updateLimit()
+{
+    SubParamID id;
+    switch (_entitle)
+    {
+    case IBP_PRESSURE_ART:
+        id = SUB_PARAM_ART_SYS;
+        break;
+    case IBP_PRESSURE_PA:
+        id = SUB_PARAM_PA_SYS;
+        break;
+    case IBP_PRESSURE_CVP:
+        id = SUB_PARAM_CVP_MAP;
+        break;
+    case IBP_PRESSURE_LAP:
+        id = SUB_PARAM_LAP_MAP;
+        break;
+    case IBP_PRESSURE_RAP:
+        id = SUB_PARAM_RAP_MAP;
+        break;
+    case IBP_PRESSURE_ICP:
+        id = SUB_PARAM_ICP_MAP;
+        break;
+    case IBP_PRESSURE_AUXP1:
+        id = SUB_PARAM_AUXP1_SYS;
+        break;
+    case IBP_PRESSURE_AUXP2:
+        id = SUB_PARAM_AUXP2_SYS;
+        break;
+    default:
+        return;
+    }
+    UnitType unitType = paramManager.getSubParamUnit(PARAM_IBP, id);
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(id, unitType);
+    setLimit(config.highLimit, config.lowLimit, config.scale);
 }
 
 /**************************************************************************************************
@@ -176,6 +215,17 @@ void IBPTrendWidget::showValue()
 
         if (_sysAlarm)
         {
+            switch (_entitle)
+            {
+            case IBP_PRESSURE_ART:
+            case IBP_PRESSURE_PA:
+            case IBP_PRESSURE_AUXP1:
+            case IBP_PRESSURE_AUXP2:
+                showAlarmParamLimit(_sysString, psrc);
+                break;
+            default:
+                break;
+            }
             showAlarmStatus(_sysValue, psrc);
         }
 
@@ -186,12 +236,24 @@ void IBPTrendWidget::showValue()
 
         if (_mapAlarm)
         {
+            switch (_entitle)
+            {
+            case IBP_PRESSURE_ICP:
+            case IBP_PRESSURE_LAP:
+            case IBP_PRESSURE_RAP:
+            case IBP_PRESSURE_CVP:
+                showAlarmParamLimit(_mapString, psrc);
+                break;
+            default:
+                break;
+            }
             showAlarmStatus(_mapValue, psrc);
             showAlarmStatus(_veinValue, psrc);
         }
     }
     else
     {
+        showNormalParamLimit(psrc);
         showNormalStatus(_sysValue, psrc);
         showNormalStatus(_diaValue, psrc);
         showNormalStatus(_mapValue, psrc);
@@ -216,6 +278,9 @@ IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPPressureName &
     setPalette(palette);
     setName(IBPSymbol::convert(entitle));
     setUnit("mmHg");
+
+    // 设置上下限
+    updateLimit();
 
     // 构造出所有控件。
 
