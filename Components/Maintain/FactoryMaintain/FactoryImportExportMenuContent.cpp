@@ -410,7 +410,6 @@ void FactoryImportExportMenuContent::updateBtnStatus()
 
 void FactoryImportExportMenuContent::onTimeOut()
 {
-    return;
     bool isEnable;
     if (usbManager.isUSBExist())
     {
