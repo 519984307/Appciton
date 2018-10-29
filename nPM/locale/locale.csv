@@ -1457,6 +1457,7 @@ CO2Low,二氧化碳低,CO2 Low
 CO2High,二氧化碳高,CO2 High
 RESPLow,呼吸低,RESP Low
 RESPHigh,呼吸高,RESP High
+ImportFiles,导入文件,ImportFiles
 LoadConfigMenuContent,加载配置,Load Config
 LoadConfigMenuContentDesc,加载配置设置,Load Config Desc
 ConfigManagerPassword,配置管理密码,Config Manager Password

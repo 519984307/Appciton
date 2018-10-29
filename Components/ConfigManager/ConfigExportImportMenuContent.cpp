@@ -321,7 +321,7 @@ bool ConfigExportImportMenuContent::insertFileFromUSB()
     }
 
 
-    ImportSubWidget myImportSubWidget(files);
+    ImportSubWidget myImportSubWidget(files, USB0_PATH_NAME);
     bool status = myImportSubWidget.exec();
     d_ptr->importFileName.clear();
     if (status == true) //  OK
