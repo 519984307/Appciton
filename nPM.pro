@@ -411,6 +411,7 @@ SOURCES +=                                                                      
     Components/ConfigManager/SelectDefaultConfigMenuContent.cpp                 \
     Components/ConfigManager/ConfigManagerPassWordEditMenuContent.cpp           \
     Components/ConfigManager/UserConfigEditMenuContent.cpp                      \
+    Components/ConfigManager/PatientTypeSelectWindow.cpp                        \
     Components/ConfigManager/ConfigExportImportMenuContent.cpp                  \
     Components/ConfigManager/ConfigEditMenuWindow.cpp                           \
     Components/ConfigManager/ConfigEditGeneralMenuContent.cpp                   \
@@ -917,6 +918,7 @@ HEADERS +=                                                                      
     Components/ConfigManager/SelectDefaultConfigMenuContent.h                   \
     Components/ConfigManager/ConfigManagerPassWordEditMenuContent.h             \
     Components/ConfigManager/UserConfigEditMenuContent.h                        \
+    Components/ConfigManager/PatientTypeSelectWindow.h                          \
     Components/ConfigManager/ConfigExportImportMenuContent.h                    \
     Components/ConfigManager/ConfigEditMenuWindow.h                             \
     Components/ConfigManager/ConfigEditGeneralMenuContent.h                     \
