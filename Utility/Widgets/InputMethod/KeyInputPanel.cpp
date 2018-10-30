@@ -487,16 +487,8 @@ void KeyInputPanel::setSpaceEnable(bool enable)
     {
         return;
     }
-    Button *btn = d_ptr->keys[KEY_ORDER_SPACE];
 
-    btn->setEnabled(enable);
-
-    if (!enable)
-    {
-    }
-    else
-    {
-    }
+    d_ptr->keys[KEY_ORDER_SPACE]->setEnabled(enable);
 }
 
 /**************************************************************************************************
