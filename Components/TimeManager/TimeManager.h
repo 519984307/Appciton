@@ -40,6 +40,16 @@ public:
     // 主运行。
     void mainRun(unsigned t);
 
+    /**
+     * @brief recordRunTime  记录运行时间 默认执行周期500ms
+     */
+    void recordRunTime(void);
+
+    /**
+     * @brief getRunTime  获取运行时间
+     */
+    unsigned getRunTime(void) const;
+
     // 获取开机时的状态。
     PowerOnSession getPowerOnSession(void) const
     {
@@ -97,6 +107,7 @@ private:
     unsigned _elapseStartTime;
     unsigned _curTime;
     bool _showSecond;                 //是否显示秒
+    unsigned _runTime;
 };
 #define timeManager (TimeManager::construction())
 #define deleteTimeManager() (delete TimeManager::_selfObj)

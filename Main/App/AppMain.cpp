@@ -54,6 +54,8 @@ static void _taskOneSec2(void)
  *************************************************************************************************/
 static void _task500MSec0(void)
 {
+    timeManager.recordRunTime();
+
     // 更新界面显示。
     static unsigned t = 0;
     if (0 != t)
