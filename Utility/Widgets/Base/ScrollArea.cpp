@@ -30,8 +30,8 @@ void ScrollAreaPrivate::init()
     scroller = new QScrollAreaKineticScroller();
 
     scroller->setWidget(q_ptr);
-    // scroller->setScrollMetric(QKineticScroller::OvershootMaximumDistance,
-    //                                  qVariantFromValue(QPointF(0, 0.02)));
+    scroller->setScrollMetric(QKineticScroller::OvershootMaximumDistance,
+                                      qVariantFromValue(QPointF(0, 0.02)));
     scroller->setScrollMetric(QKineticScroller::OvershootSpringConstant, qVariantFromValue(80));
     scroller->setScrollMetric(QKineticScroller::DragStartDistance, qVariantFromValue(0.005));
 }
