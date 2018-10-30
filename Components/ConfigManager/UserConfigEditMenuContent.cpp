@@ -171,7 +171,7 @@ void UserConfigEditMenuContent::onBtnClick()
         {
             PatientTypeSelectWindow patientW;
             // 选择有效item后退出时返回：1
-            if (patientW.exec() != 1)
+            if (patientW.exec() != DONE_SUCCESS)
             {
                 break;
             }

@@ -166,5 +166,5 @@ void PatientTypeSelectWindow::onBtnReleased()
     // 更新配置文件完整路径
     d_ptr->configPath = QString("%1%2").arg(CONFIG_DIR).arg(name);
     // 选择有效item后退出
-    done(1);
+    done(DONE_SUCCESS);
 }

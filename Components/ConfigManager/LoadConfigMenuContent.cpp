@@ -225,19 +225,19 @@ void LoadConfigMenuContent::onBtnClick()
 
             if (fileName == PatientSymbol::convert(PATIENT_TYPE_ADULT))
             {
-                patitentTypeInt = 0;
+                patitentTypeInt = PATIENT_TYPE_ADULT;
             }
             else if (fileName == PatientSymbol::convert(PATIENT_TYPE_PED))
             {
-                patitentTypeInt = 1;
+                patitentTypeInt = PATIENT_TYPE_PED;
             }
             else if (fileName == PatientSymbol::convert(PATIENT_TYPE_NEO))
             {
-                patitentTypeInt = 2;
+                patitentTypeInt = PATIENT_TYPE_NEO;
             }
             else
             {
-                patitentTypeInt = 0;
+                patitentTypeInt = PATIENT_TYPE_ADULT;
             }
         }
         systemConfig.setNumValue("General|PatientType", patitentTypeInt);
