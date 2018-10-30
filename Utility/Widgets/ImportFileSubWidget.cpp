@@ -18,7 +18,7 @@
 #include "ListDataModel.h"
 #include <QMap>
 
-#define LISTVIEW_MAX_VISIABLE_TIME 6
+#define LISTVIEW_MAX_VISIABLE_TIME 5
 
 class ImportSubWidgetPrivate
 {
@@ -39,11 +39,12 @@ ImportSubWidgetPrivate::ImportSubWidgetPrivate()
     rowsMap.clear();
 }
 
-ImportSubWidget::ImportSubWidget(const QStringList &iListWidgetName)
+ImportSubWidget::ImportSubWidget(const QStringList &iListWidgetName, const QString &path)
     : Window(),
       d_ptr(new ImportSubWidgetPrivate)
 {
     setWindowTitle(trs("ImportFiles"));
+    setFixedSize(450, 450);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(10);
@@ -51,7 +52,7 @@ ImportSubWidget::ImportSubWidget(const QStringList &iListWidgetName)
 
     QLabel *label;
 
-    label = new QLabel(trs("SelectFiles"));
+    label = new QLabel(path);
     layout->addWidget(label);
 
     ListView *listView = new ListView;
@@ -70,7 +71,8 @@ ImportSubWidget::ImportSubWidget(const QStringList &iListWidgetName)
     Button *button = new Button(trs("Ok"));
     button->setButtonStyle(Button::ButtonTextOnly);
     connect(button, SIGNAL(released()), this, SLOT(getSelsectItems()));
-    layout->addWidget(button, Qt::AlignVCenter);
+    layout->addWidget(button, 1, Qt::AlignRight);
+    button->setFixedWidth(100);
     button->setEnabled(false);
     d_ptr->oKBtn = button;
 
