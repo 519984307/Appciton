@@ -41,7 +41,7 @@ void ConfigManagerPassWordEditMenuContent::layoutExec()
     QGridLayout *glayout = new QGridLayout(this);
     glayout->setMargin(10);
 
-    Button *btn = new Button(trs("EditPassWord"));
+    Button *btn = new Button(QString("%1 >>").arg(trs("EditPassWord")));
     btn->setButtonStyle(Button::ButtonTextOnly);
     glayout->addWidget(btn, 0, 1);
     glayout->setColumnStretch(0, 1);

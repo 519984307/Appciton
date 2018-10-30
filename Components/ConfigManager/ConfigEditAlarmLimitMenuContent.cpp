@@ -199,8 +199,7 @@ void ConfigEditAlarmLimitMenuContent::layoutExec()
 
     layout->addWidget(table);
 
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
-    d_ptr->model = new ConfigEditAlarmLimitModel(w);
+    d_ptr->model = new ConfigEditAlarmLimitModel(d_ptr->config);
 
     table->setModel(d_ptr->model);
 

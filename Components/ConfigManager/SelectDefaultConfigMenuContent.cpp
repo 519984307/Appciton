@@ -259,30 +259,3 @@ void SelectDefaultConfigMenuContent::layoutExec()
     //  add a stretch
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

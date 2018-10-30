@@ -65,6 +65,7 @@ void ConfigEditMenuWindow::initializeSubMenu()
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditGeneralMenu"] = subMenu;
 
+    // 如果不添加this参数，在查找其父类指针时，其父类指针默认为NULL
     subMenu = new ConfigEditAlarmLimitMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditAlarmLimitMenu"] = subMenu;
