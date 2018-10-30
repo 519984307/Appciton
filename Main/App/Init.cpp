@@ -109,6 +109,9 @@ static void _initSystem(void)
 
     // 存储目录管理。
     dataStorageDirManager.construction();
+    // initialize the storage manager in the main thread
+    EventStorageManager::getInstance();
+    TrendDataStorageManager::getInstance();
 
     //消息提示框
     pMessageBox.construction();

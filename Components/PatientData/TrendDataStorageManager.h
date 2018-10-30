@@ -76,6 +76,10 @@ public:
      */
     TrendDataType getLatestShortTrendData(SubParamID subParam, ShortTrendInterval interval);
 
+protected:
+    /*reimplement*/
+    void newPatientHandle();
+
 signals:
     void newTrendDataArrived(ShortTrendInterval interval);
 

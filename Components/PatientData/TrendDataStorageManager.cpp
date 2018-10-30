@@ -382,6 +382,13 @@ TrendDataType TrendDataStorageManager::getLatestShortTrendData(SubParamID subPar
     return InvData();
 }
 
+void TrendDataStorageManager::newPatientHandle()
+{
+    Q_D(TrendDataStorageManager);
+    d->backend->reload(dataStorageDirManager.getCurFolder() + TREND_DATA_FILE_NAME,
+                       QIODevice::ReadWrite);
+}
+
 TrendDataStorageManager::TrendDataStorageManager()
     : StorageManager(new TrendDataStorageManagerPrivate(this), new StorageFile())
 {
