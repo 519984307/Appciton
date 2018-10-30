@@ -30,6 +30,8 @@ static void _initSystem(void)
 
     // superRunConfig.construction();
 
+    timeManager.checkAndFixSystemTime();
+
     // 新会话，需要恢复主配置文件
     if (timeManager.getPowerOnSession() == POWER_ON_SESSION_NEW)
     {

@@ -414,6 +414,7 @@ Uart::~Uart()
 
     if (_fd != -1)
     {
+        tcflush(_fd, TCIOFLUSH);
         close(_fd);
     }
 }

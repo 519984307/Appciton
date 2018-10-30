@@ -437,6 +437,10 @@ void SPO2Param::addWaveformData(short wave)
     {
         _waveWidget->addData(wave, flag);
     }
+    if (NULL != _trendWidget)
+    {
+        _trendWidget->setBarValue(wave * 15 / 127);
+    }
     waveformCache.addData(WAVE_SPO2, (flag << 16) | wave);
 }
 
@@ -732,7 +736,7 @@ SPO2Param::SPO2Param() : Param(PARAM_SPO2),
     _piValue = InvData();
     _prValue = InvData();
     _barValue = InvData();
-    _isValid = false;
+    _isValid = true;
     _sensorOff = true;
     _recPackageInPowerOn2sec = 0;
 

@@ -94,11 +94,6 @@ void SoftkeyWidget::paintEvent(QPaintEvent *e)
     IWidget::paintEvent(e);
 }
 
-void SoftkeyWidget::resizeEvent(QResizeEvent *e)
-{
-    Q_UNUSED(e)
-}
-
 /***************************************************************************************************
  * 功能：键盘按下事件。
  * 参数：

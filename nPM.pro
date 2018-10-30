@@ -182,7 +182,6 @@ SOURCES +=                                                                      
     Utility/Widgets/Waveform/WaveReviewCascadeMode.cpp                          \
     Utility/Widgets/Waveform/WaveScanMode.cpp                                   \
     Utility/Widgets/Waveform/WaveWidget.cpp                                     \
-    Utility/Widgets/BarWidget.cpp                                               \
     Utility/Widgets/MessageBox.cpp                                              \
     Utility/Widgets/ExportDataWidget.cpp                                        \
     Utility/Widgets/FreezeTableWidget.cpp                                       \
@@ -428,6 +427,8 @@ SOURCES +=                                                                      
     Components/ConfigManager/ConfigEditDisplayMenuContent.cpp                   \
     Components/ConfigManager/LoadConfigMenuContent.cpp                          \
     Components/ConfigManager/UnitSetupMenuContent.cpp                           \
+    Components/ConfigManager/SaveCurrentConfigMenuContent.cpp                   \
+    Components/ConfigManager/SaveUserConfigWindow.cpp                           \
     Components/Freeze/FreezeManager.cpp                                         \
     Components/Freeze/FreezeWindow.cpp                                          \
     Components/Freeze/FreezeDataModel.cpp                                       \
@@ -666,7 +667,6 @@ HEADERS +=                                                                      
     Utility/Widgets/Waveform/WaveReviewCascadeMode.h                            \
     Utility/Widgets/Waveform/WaveScanMode.h                                     \
     Utility/Widgets/Waveform/WaveWidget.h                                       \
-    Utility/Widgets/BarWidget.h                                                 \
     Utility/Widgets/ExportDataWidget.h                                          \
     Utility/Widgets/FreezeTableWidget.h                                         \
     Utility/Widgets/IButton.h                                                   \
@@ -934,6 +934,8 @@ HEADERS +=                                                                      
     Components/ConfigManager/ConfigEditCodeMarkerMenuContent.h                  \
     Components/ConfigManager/LoadConfigMenuContent.h                            \
     Components/ConfigManager/UnitSetupMenuContent.h                             \
+    Components/ConfigManager/SaveCurrentConfigMenuContent.h                     \
+    Components/ConfigManager/SaveUserConfigWindow.h                             \
     Components/Freeze/FreezeManager.h                                           \
     Components/Freeze/FreezeWindow.h                                            \
     Components/Freeze/FreezeDataModel.h                                         \

@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/10/25
+ **/
+
 #include "SoundManager.h"
 #include "WavFile.h"
 #include "WavPlayer.h"
@@ -13,7 +23,7 @@
 #include <QThread>
 
 #define SOUND_DIR "/usr/local/nPM/sound/"
-#define PULSE_TONE_DIR "/usr/local/nPM/sound/pulse_tone"
+#define PULSE_TONE_DIR "/usr/local/nPM/sound/pulse_tone/"
 #define MUTE_CTRL_DEV "/dev/pmos_misc"
 #define PMOS_MUTE_CMD _IOW('I', 0, int)
 #define PMOS_MUTE_STATUS _IOR('I', 1, int)
@@ -36,22 +46,22 @@ enum PulseToneType
     SMART_PULSE_TONE_100,
 };
 
-class SoundManagerPrivate {
+class SoundManagerPrivate
+{
 public:
-
-    SoundManagerPrivate(SoundManager * const q_ptr)
-        :q_ptr(q_ptr), curSoundType(SoundManager::SOUND_TYPE_NONE), player(NULL),
+    explicit SoundManagerPrivate(SoundManager *const q_ptr)
+        : q_ptr(q_ptr), curSoundType(SoundManager::SOUND_TYPE_NONE), player(NULL),
           curVolume(SoundManager::VOLUME_LEV_0), muteCtrlFd(-1), almTimer(NULL),
           curAlarmPriority(ALARM_PRIO_PROMPT), pendingWavFile(NULL), pendingVolume(SoundManager::VOLUME_LEV_0)
     {
-        for(int i = SoundManager::SOUND_TYPE_NONE; i < SoundManager::SOUND_TYPE_NR; i++)
+        for (int i = SoundManager::SOUND_TYPE_NONE; i < SoundManager::SOUND_TYPE_NR; i++)
         {
             // set default volumn to VOLUMN_LEV_3
             soundVolumes[i] = SoundManager::VOLUME_LEV_3;
         }
 
         int fd = open(MUTE_CTRL_DEV, O_RDONLY);
-        if(fd < 0)
+        if (fd < 0)
         {
             perror("Open mute control device faild");
         }
@@ -64,7 +74,7 @@ public:
         almTimer = new QTimer(q_ptr);
         QObject::connect(almTimer, SIGNAL(timeout()), q_ptr, SLOT(alarmTimeout()));
 
-        //initialize the alarm interval for the 3 alarm levels
+        // initialize the alarm interval for the 3 alarm levels
         alarmInterval[0] = 25000;
         alarmInterval[1] = 15000;
         alarmInterval[2] = 10000;
@@ -89,8 +99,9 @@ public:
      * @param specType the specific type of the sound type
      * @return
      */
-    static int key(SoundManager::SoundType soundType, unsigned short specType = 0) {
-        return ((unsigned short)soundType<<16)|specType;
+    static int key(SoundManager::SoundType soundType, unsigned short specType = 0)
+    {
+        return ((unsigned short)soundType << 16) | specType;
     }
 
     /**
@@ -171,7 +182,7 @@ public:
     void setVolume(SoundManager::VolumeLevel volumeLev)
     {
         int v = 0;
-        switch(volumeLev)
+        switch (volumeLev)
         {
         case SoundManager::VOLUME_LEV_1:
             v = 30;
@@ -203,32 +214,32 @@ public:
     void playSound(SoundManager::SoundType soundType, unsigned short specType = 0)
     {
         WavFile *wav = wavFiles.value(key(soundType, specType));
-        if(wav == NULL)
+        if (wav == NULL)
         {
             wav = new WavFile();
             wav->load(getWavFilePath(soundType, specType));
             wavFiles.insert(key(soundType, specType), wav);
         }
 
-        if(soundVolumes[soundType] == SoundManager::VOLUME_LEV_0)
+        if (soundVolumes[soundType] == SoundManager::VOLUME_LEV_0)
         {
             // already muted, don't play
             return;
         }
 
-        if(player->isPlaying())
+        if (player->isPlaying())
         {
-            if(curSoundType > soundType)
+            if (curSoundType > soundType)
             {
                 // or has high priority sound playing, don't play
                 return;
             }
             else
             {
-                //stop the playing sound
+                // stop the playing sound
                 QMetaObject::invokeMethod(player, "stop");
 
-                //store info for play after receive player finished signal
+                // store info for play after receive player finished signal
                 pendingWavFile = wav;
                 pendingVolume = soundVolumes[soundType];
                 curSoundType = soundType;
@@ -237,13 +248,13 @@ public:
         }
 
         // set volume of the sound type
-        if(curVolume != soundVolumes[soundType])
+        if (curVolume != soundVolumes[soundType])
         {
             curVolume = soundVolumes[soundType];
             setVolume(curVolume);
         }
 
-        QMetaObject::invokeMethod(player, "play", Q_ARG(WavFile*, wav));
+        QMetaObject::invokeMethod(player, "play", Q_ARG(WavFile *, wav));
         curSoundType = soundType;
     }
 
@@ -254,9 +265,9 @@ public:
      */
     void setMute(bool mute)
     {
-        if(muteCtrlFd != -1)
+        if (muteCtrlFd != -1)
         {
-            if(ioctl(muteCtrlFd, PMOS_MUTE_CMD, mute) < 0)
+            if (ioctl(muteCtrlFd, PMOS_MUTE_CMD, mute) < 0)
             {
                 perror("Set mute status failed");
             }
@@ -269,10 +280,10 @@ public:
      */
     bool isMute()
     {
-        if(muteCtrlFd != -1)
+        if (muteCtrlFd != -1)
         {
             long value = 0;
-            if(ioctl(muteCtrlFd, PMOS_MUTE_STATUS, &value) < 0)
+            if (ioctl(muteCtrlFd, PMOS_MUTE_STATUS, &value) < 0)
             {
                 perror("get mute status failed");
                 return  false;
@@ -285,7 +296,7 @@ public:
         return true;
     }
 
-    SoundManager * const q_ptr;
+    SoundManager *const q_ptr;
     SoundManager::SoundType curSoundType;
     WavPlayer *player;
     QThread *playerThread;
@@ -299,6 +310,10 @@ public:
 
     QMap<int, WavFile *> wavFiles;
     SoundManager::VolumeLevel soundVolumes[SoundManager::SOUND_TYPE_NR];
+
+private:
+    // disable copy construct
+    SoundManagerPrivate(const SoundManagerPrivate&);
 };
 
 SoundManager::~SoundManager()
@@ -308,17 +323,17 @@ SoundManager::~SoundManager()
 }
 
 SoundManager::SoundManager()
-    :QObject(),
+    : QObject(),
       d_ptr(new SoundManagerPrivate(this))
 {
     d_ptr->playerThread->start();
-    qRegisterMetaType<WavFile*>("WavFile*");
+    qRegisterMetaType<WavFile *>("WavFile*");
 }
 
 SoundManager &SoundManager::getInstance()
 {
     static SoundManager *instance = NULL;
-    if(instance == NULL)
+    if (instance == NULL)
     {
         instance = new SoundManager();
     }
@@ -338,19 +353,19 @@ void SoundManager::errorTone()
 void SoundManager::pulseTone(short spo2Value)
 {
     PulseToneType type = NORMAL_PULSE_TONE;
-    if(spo2Value >=0 && spo2Value <= 84)
+    if (spo2Value >= 0 && spo2Value <= 84)
     {
         type = SMART_PULSE_TONE_80;
     }
-    else if(spo2Value >= 85 && spo2Value <= 87)
+    else if (spo2Value >= 85 && spo2Value <= 87)
     {
         type = SMART_PULSE_TONE_85;
     }
-    else if(spo2Value >= 88 && spo2Value <= 89)
+    else if (spo2Value >= 88 && spo2Value <= 89)
     {
         type = SMART_PULSE_TONE_90;
     }
-    else if(spo2Value >= 90 && spo2Value <= 100 )
+    else if (spo2Value >= 90 && spo2Value <= 100)
     {
         type = (PulseToneType)(SMART_PULSE_TONE_90 + (spo2Value -  90));
     }
@@ -365,15 +380,15 @@ void SoundManager::heartBeatTone()
 
 void SoundManager::updateAlarm(bool hasAlarm, AlarmPriority curHighestPriority)
 {
-    if(!d_ptr->almTimer)
+    if (!d_ptr->almTimer)
     {
-        return ;
+        return;
     }
 
     if (!hasAlarm)
     {
-        //no alarm, stop the alarm timer
-        if(d_ptr->almTimer->isActive())
+        // no alarm, stop the alarm timer
+        if (d_ptr->almTimer->isActive())
         {
             d_ptr->almTimer->stop();
         }
@@ -388,25 +403,25 @@ void SoundManager::updateAlarm(bool hasAlarm, AlarmPriority curHighestPriority)
         return;
     }
 
-    if(!d_ptr->almTimer->isActive())
+    if (!d_ptr->almTimer->isActive())
     {
         d_ptr->almTimer->start(d_ptr->alarmInterval[curHighestPriority]);
         d_ptr->playSound(SOUND_TYPE_ALARM, curHighestPriority);
     }
     else
     {
-        if(d_ptr->almTimer->interval() != d_ptr->alarmInterval[curHighestPriority])
+        if (d_ptr->almTimer->interval() != d_ptr->alarmInterval[curHighestPriority])
         {
-            //play different alarm level sound
+            // play different alarm level sound
             d_ptr->almTimer->stop();
 
-            //stop the current playing sound
-            if(d_ptr->player->isPlaying())
+            // stop the current playing sound
+            if (d_ptr->player->isPlaying())
             {
                 QMetaObject::invokeMethod(d_ptr->player, "stop");
             }
 
-            //paly the new alarm level
+            // paly the new alarm level
             d_ptr->playSound(SOUND_TYPE_ALARM, curHighestPriority);
         }
     }
@@ -432,7 +447,7 @@ void SoundManager::selfTest()
 
 void SoundManager::alarmTimeout()
 {
-    if(!d_ptr->almTimer)
+    if (!d_ptr->almTimer)
     {
         return;
     }
@@ -451,17 +466,17 @@ void SoundManager::volumeInit()
 
 void SoundManager::playFinished()
 {
-    //has another wave file to play
-    if(d_ptr->pendingWavFile)
+    // has another wave file to play
+    if (d_ptr->pendingWavFile)
     {
         // set volume of the sound type
-        if(d_ptr->curVolume != d_ptr->pendingVolume)
+        if (d_ptr->curVolume != d_ptr->pendingVolume)
         {
             d_ptr->curVolume = d_ptr->pendingVolume;
             d_ptr->setVolume(d_ptr->curVolume);
         }
 
-        QMetaObject::invokeMethod(d_ptr->player, "play", Q_ARG(WavFile*, d_ptr->pendingWavFile));
+        QMetaObject::invokeMethod(d_ptr->player, "play", Q_ARG(WavFile *, d_ptr->pendingWavFile));
         d_ptr->pendingWavFile = NULL;
     }
 }
