@@ -168,7 +168,8 @@ void FactoryImportExportMenuContent::layoutExec()
 
     layout->addStretch(1);
 
-    QTimer *timer = new QTimer;
+    // 需要加入this，绑定父子关系，以便自动释放空间,避免造成内存泄露
+    QTimer *timer = new QTimer(this);
     timer->setInterval(500);
     connect(timer, SIGNAL(timeout()), this, SLOT(onTimeOut()));
     timer->start();
@@ -481,17 +482,7 @@ bool FactoryImportExportMenuContent::insertFileFromUSB()
         return false;
     }
 
-    QStringList configNameList = files;
-    QStringList nameList;
-    for (int i = 0; i < configNameList.count(); i++)
-    {
-        configNameList[i].replace(".Original", "");
-        configNameList[i].replace(".xml", "OfFactory");
-        QString s = configNameList.at(i).left(configNameList.at(i).indexOf(QRegExp("[A-Z]"), 1));
-        nameList.append(QString("%1(%2)").arg(trs("FactoryConfig")).arg(trs(s)));
-    }
-
-    ImportSubWidget myImportSubWidget(nameList, USB0_PATH_NAME);
+    ImportSubWidget myImportSubWidget(files, USB0_PATH_NAME);
     bool status = myImportSubWidget.exec();
     d_ptr->importFileName.clear();
     if (status == true) //  OK
