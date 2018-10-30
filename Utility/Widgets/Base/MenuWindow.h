@@ -62,6 +62,7 @@ protected:
 
 private slots:
     void onSelectItemChanged(int index);
+    void onVisiableItemChanged(int index);
     void onReturnBtnClick();
 
 private:

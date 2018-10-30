@@ -20,6 +20,7 @@
 #include "LayoutManager.h"
 #include "BigFontLayoutWindow.h"
 #include "IConfig.h"
+#include "ThemeManager.h"
 
 class ScreenMenuContentPrivate
 {
@@ -70,6 +71,8 @@ void ScreenMenuContent::readyShow()
 void ScreenMenuContent::layoutExec()
 {
     QGridLayout *layout = new QGridLayout(this);
+    layout->setMargin(10);
+    layout->setHorizontalSpacing(0);
 
     QLabel *label;
     ComboBox *comboBox;

@@ -21,7 +21,7 @@ public:
 
 
 signals:
-    void focusChanged(bool in);
+    void focusChanged(bool in, Qt::FocusReason reason);
 
 protected:
     /* reimplement */
