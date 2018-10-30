@@ -17,7 +17,7 @@ class ConfigEditCO2MenuContent: public MenuContent
 {
     Q_OBJECT
 public:
-    explicit ConfigEditCO2MenuContent(Config *const config);
+    explicit ConfigEditCO2MenuContent(Config *const config, QWidget *parent = NULL);
     ~ConfigEditCO2MenuContent();
 
 protected:

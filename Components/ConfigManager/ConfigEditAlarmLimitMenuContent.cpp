@@ -130,8 +130,8 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
     model->setupAlarmDataInfos(infos);
 }
 
-ConfigEditAlarmLimitMenuContent::ConfigEditAlarmLimitMenuContent(Config *const config)
-    : MenuContent(trs("AlarmLimitMenu"), trs("AlarmLimitMenuDesc")),
+ConfigEditAlarmLimitMenuContent::ConfigEditAlarmLimitMenuContent(Config *const config, QWidget *parent)
+    : MenuContent(trs("AlarmLimitMenu"), trs("AlarmLimitMenuDesc"), parent),
       d_ptr(new ConfigEditAlarmLimitMenuContentPrivate(config))
 {
 }

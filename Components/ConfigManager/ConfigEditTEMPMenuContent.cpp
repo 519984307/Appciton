@@ -50,9 +50,10 @@ public:
 
 
 
-ConfigEditTEMPMenuContent::ConfigEditTEMPMenuContent(Config *const config)
+ConfigEditTEMPMenuContent::ConfigEditTEMPMenuContent(Config *const config, QWidget *parent)
     : MenuContent(trs("ConfigEditTEMPMenu"),
-                  trs("ConfigEditTEMPMenuDesc")),
+                  trs("ConfigEditTEMPMenuDesc"),
+                  parent),
       d_ptr(new ConfigEditTEMPMenuContentPrivate(config))
 {
 }

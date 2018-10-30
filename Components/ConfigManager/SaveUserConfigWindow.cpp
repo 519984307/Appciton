@@ -44,6 +44,7 @@ SaveUserConfigWindow::SaveUserConfigWindow()
     vLayout->setMargin(10);
     vLayout->setSpacing(20);
     QHBoxLayout *hLayout = new QHBoxLayout;
+    hLayout->setMargin(0);
     QLabel *hint = new QLabel;
     hint->setWordWrap(true);
     hint->setText(trs("SaveCurrentSettingAndConfigurationName"));
@@ -65,6 +66,7 @@ SaveUserConfigWindow::SaveUserConfigWindow()
     d_ptr->okBtn->setText(trs("Ok"));
     connect(d_ptr->okBtn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     hLayout = new QHBoxLayout;
+    hLayout->setMargin(0);
     hLayout->addWidget(d_ptr->okBtn);
 
     d_ptr->cancelBtn = new Button;

@@ -51,9 +51,10 @@ ConfigEditSpO2MenuContentPrivate
     combos.clear();
 }
 
-ConfigEditSpO2MenuContent::ConfigEditSpO2MenuContent(Config * const config):
+ConfigEditSpO2MenuContent::ConfigEditSpO2MenuContent(Config * const config, QWidget *parent):
     MenuContent(trs("SPO2Menu"),
-                trs("SPO2MenuDesc")),
+                trs("SPO2MenuDesc"),
+                parent),
     d_ptr(new ConfigEditSpO2MenuContentPrivate(config))
 {
 }

@@ -18,7 +18,7 @@
 #include "Debug.h"
 #include <QIcon>
 #include <QPainter>
-
+#include <QColorGroup>
 
 class KeyInputPanelPrivate
 {
@@ -487,8 +487,16 @@ void KeyInputPanel::setSpaceEnable(bool enable)
     {
         return;
     }
+    Button *btn = d_ptr->keys[KEY_ORDER_SPACE];
 
-    d_ptr->keys[KEY_ORDER_SPACE]->setEnabled(enable);
+    btn->setEnabled(enable);
+
+    if (!enable)
+    {
+    }
+    else
+    {
+    }
 }
 
 /**************************************************************************************************

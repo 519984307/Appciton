@@ -49,9 +49,10 @@ ConfigEditRespMenuContentPrivate
     combos.clear();
 }
 
-ConfigEditRespMenuContent::ConfigEditRespMenuContent(Config *const config):
+ConfigEditRespMenuContent::ConfigEditRespMenuContent(Config *const config, QWidget *parent):
     MenuContent(trs("RESPMenu"),
-                trs("RESPMenuDesc")),
+                trs("RESPMenuDesc"),
+                parent),
     d_ptr(new ConfigEditRespMenuContentPrivate(config))
 {
 }

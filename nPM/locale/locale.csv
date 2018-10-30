@@ -21,7 +21,7 @@ NEO,新生儿,Neonate
 AlarmLimit,报警限,Alarm Limit
 Other,其它,Other
 Notch,陷波,Notch
-EditPassWordDesc,修改密码,Edit Password Desc
+EditPassWordDesc,修改密码,Edit Password
 EditPassWord,修改密码,Edit Password
 LastPassword,上次密码,Last Password
 EditPasswordNotSuccess,修改密码失败,Edit Password Not Success
@@ -434,8 +434,8 @@ _120min,120 分,120 min
 min,分,min
 Parameter,参数,Parameter
 AlarmStatus,状态,Status
-LowerLimit,低限,Lower Limit
-UpperLimit,高限,Upper Limit
+LowerLimit,低限,Low
+UpperLimit,高限,High
 NIBP_SYS,收缩压,SYS
 NIBP_DIA,舒张压,DIA
 NIBP_MAP,平均压,MAP
@@ -1355,7 +1355,7 @@ NeoDefaultConfig,新生儿默认配置,Neo Default Config
 FactoryConfig,工厂配置,Factory Config
 CurrentConfig,当前配置,Current Config
 ConfigManagerment,配置管理,Config Manager
-ConfigManagermentDesc,配置管理设置,Config Managerment Desc
+ConfigManagermentDesc,配置管理,Config Managerment
 General,通用,General
 SetConfigName,设置配置项名称,Set Config Name
 GeneralDesc,通用设置,General Desc
@@ -1543,7 +1543,7 @@ Machine,机器,Machine
 Ped,小儿,Pediatric
 Neo,新生儿,Neonate
 SaveCurrentSettingAs,保存当前设置,Save Current Setting
-SaveCurrentSettingAsDesc,保存当前设置菜单,Save Current Setting As
+SaveCurrentSettingAsDesc,保存当前设置菜单,Save Current Setting
 reachedTheMaximunOfConfigurations,用户配置已满，继续保存之前请删除已有的用户配置,The maximum of user configurations is reached.Please delete existing user configurations first.
 SaveAsUserConfig,用户配置保存,Save As User Config
 SaveCurrentSettingAndConfigurationName,保存当前监护仪的设置为用户配置，您的配置命名为,Save the current settings as user configuration.Please name the configuration.

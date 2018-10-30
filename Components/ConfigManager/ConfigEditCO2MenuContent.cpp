@@ -48,8 +48,8 @@ public:
     Config *const config;
 };
 
-ConfigEditCO2MenuContent::ConfigEditCO2MenuContent(Config *const config):
-    MenuContent(trs("CO2Menu"), trs("CO2MenuDesc")),
+ConfigEditCO2MenuContent::ConfigEditCO2MenuContent(Config *const config, QWidget *parent):
+    MenuContent(trs("CO2Menu"), trs("CO2MenuDesc"), parent),
     d_ptr(new ConfigEditCO2MenuContentPrivate(config))
 {
 }
