@@ -16,7 +16,7 @@ class ConfigEditNIBPMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    explicit ConfigEditNIBPMenuContent(Config *const config, QWidget *parent = NULL);
+    explicit ConfigEditNIBPMenuContent(Config *const config);
     ~ConfigEditNIBPMenuContent();
 
 protected:

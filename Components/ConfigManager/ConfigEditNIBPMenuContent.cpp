@@ -54,10 +54,9 @@ ConfigEditNIBPMenuContentPrivate
     combos.clear();
 }
 
-ConfigEditNIBPMenuContent::ConfigEditNIBPMenuContent(Config *const config, QWidget *parent):
+ConfigEditNIBPMenuContent::ConfigEditNIBPMenuContent(Config *const config):
     MenuContent(trs("NIBPMenu"),
-                trs("NIBPMenuDesc"),
-                parent),
+                trs("NIBPMenuDesc")),
     d_ptr(new ConfigEditNIBPMenuContentPrivate(config))
 {
 }

@@ -17,7 +17,7 @@ class ConfigEditECGMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    explicit ConfigEditECGMenuContent(Config * const config, QWidget *parent = NULL);
+    explicit ConfigEditECGMenuContent(Config * const config);
     ~ConfigEditECGMenuContent();
 
 protected:

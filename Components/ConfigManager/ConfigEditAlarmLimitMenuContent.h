@@ -18,7 +18,7 @@ class ConfigEditAlarmLimitMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    explicit ConfigEditAlarmLimitMenuContent(Config *const config, QWidget *parent = NULL);
+    explicit ConfigEditAlarmLimitMenuContent(Config *const config);
     ~ConfigEditAlarmLimitMenuContent();
     /**
      * @brief setItemFocus

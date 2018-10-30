@@ -40,10 +40,9 @@ public:
     Config *const config;
 };
 
-ConfigEditCodeMarkerMenuContent::ConfigEditCodeMarkerMenuContent(Config *const config, QWidget *parent):
+ConfigEditCodeMarkerMenuContent::ConfigEditCodeMarkerMenuContent(Config *const config):
     MenuContent(trs("ConfigEditCodeMarkerMenu"),
-                trs("ConfigEditCodeMarkerMenuDesc"),
-                parent),
+                trs("ConfigEditCodeMarkerMenuDesc")),
     d_ptr(new ConfigEditCodeMarkerMenuContentPrivate(config))
 {
 }

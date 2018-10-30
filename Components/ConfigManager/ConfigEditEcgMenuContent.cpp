@@ -160,8 +160,8 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
     }
 }
 
-ConfigEditECGMenuContent::ConfigEditECGMenuContent(Config * const config, QWidget *parent)
-    : MenuContent(trs("ECGMenu"), trs("ECGMenuDesc"), parent),
+ConfigEditECGMenuContent::ConfigEditECGMenuContent(Config * const config)
+    : MenuContent(trs("ECGMenu"), trs("ECGMenuDesc")),
       d_ptr(new ConfigEditECGMenuContentPrivate(config))
 {
 }

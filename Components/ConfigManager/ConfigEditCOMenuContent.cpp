@@ -89,8 +89,8 @@ void ConfigEditCOMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_INJECT_TEMP_SOURCE]->blockSignals(false);
 }
 
-ConfigEditCOMenuContent::ConfigEditCOMenuContent(Config * const config, QWidget *parent)
-    : MenuContent(trs("COMenu"), trs("COMenuDesc"), parent),
+ConfigEditCOMenuContent::ConfigEditCOMenuContent(Config * const config)
+    : MenuContent(trs("COMenu"), trs("COMenuDesc")),
       d_ptr(new ConfigEditCOMenuContentPrivate(config))
 {
 }

@@ -66,39 +66,39 @@ void ConfigEditMenuWindow::initializeSubMenu()
     d_ptr->subMenuMap["ConfigEditGeneralMenu"] = subMenu;
 
     // 如果不添加this参数，在查找其父类指针时，其父类指针默认为NULL
-    subMenu = new ConfigEditAlarmLimitMenuContent(config, this);
+    subMenu = new ConfigEditAlarmLimitMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditAlarmLimitMenu"] = subMenu;
 
-    subMenu = new ConfigEditECGMenuContent(config, this);
+    subMenu = new ConfigEditECGMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditEcgMenu"] = subMenu;
 
-    subMenu = new ConfigEditRespMenuContent(config, this);
+    subMenu = new ConfigEditRespMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditRespMenu"] = subMenu;
 
-    subMenu = new ConfigEditTEMPMenuContent(config, this);
+    subMenu = new ConfigEditTEMPMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditTEMPMenu"] = subMenu;
 
-    subMenu = new ConfigEditSpO2MenuContent(config, this);
+    subMenu = new ConfigEditSpO2MenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditSpO2Menu"] = subMenu;
 
-    subMenu = new ConfigEditNIBPMenuContent(config, this);
+    subMenu = new ConfigEditNIBPMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditNIBPMenu"] = subMenu;
 
-    subMenu = new ConfigEditCOMenuContent(config, this);
+    subMenu = new ConfigEditCOMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditCOMenu"] = subMenu;
 
-    subMenu = new ConfigEditCO2MenuContent(config, this);
+    subMenu = new ConfigEditCO2MenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditCO2Menu"] = subMenu;
 
-    subMenu = new ConfigEditIBPMenuContent(config, this);
+    subMenu = new ConfigEditIBPMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditIBPMenu"] = subMenu;
 

@@ -17,7 +17,7 @@ class ConfigEditCodeMarkerMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    explicit ConfigEditCodeMarkerMenuContent(Config *const config, QWidget *parent = NULL);
+    explicit ConfigEditCodeMarkerMenuContent(Config *const config);
     ~ConfigEditCodeMarkerMenuContent();
 
 protected:

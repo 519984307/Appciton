@@ -49,10 +49,9 @@ ConfigEditIBPMenuContentPrivate::ConfigEditIBPMenuContentPrivate(Config *const c
     combos.clear();
 }
 
-ConfigEditIBPMenuContent::ConfigEditIBPMenuContent(Config * const config, QWidget *parent):
+ConfigEditIBPMenuContent::ConfigEditIBPMenuContent(Config * const config):
     MenuContent(trs("IBPMenu"),
-                trs("IBPMenuDesc"),
-                parent),
+                trs("IBPMenuDesc")),
     d_ptr(new ConfigEditIBPMenuContentPrivate(config))
 {
 }

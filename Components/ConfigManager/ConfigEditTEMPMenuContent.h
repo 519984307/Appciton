@@ -16,7 +16,7 @@ class ConfigEditTEMPMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    explicit ConfigEditTEMPMenuContent(Config *const config, QWidget *parent = NULL);
+    explicit ConfigEditTEMPMenuContent(Config *const config);
     ~ConfigEditTEMPMenuContent();
     /**
      * @brief layoutExec
