@@ -89,7 +89,6 @@ void NormalModeKeyAction::keyF2Pressed(bool multiBtnPress)
     }
 
     windowManager.closeAllWidows();
-    
     FreezeWindow freezeWindow;
     currentFreezeWindow = &freezeWindow;
     freezeWindow.exec();
@@ -196,6 +195,9 @@ void NormalModeKeyAction::keyF4Released(bool multiBtnPress)
     {
         MainMenuWindow *w = MainMenuWindow::getInstance();
         windowManager.showWindow(w, WindowManager::ShowBehaviorNone);
+        // 每次打开主界面时，强制聚焦在首个item
+        // 需要放在showWindow下面
+        w->focusFirstMenuItem();
     }
     else
     {
