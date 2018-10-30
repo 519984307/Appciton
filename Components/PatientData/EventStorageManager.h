@@ -72,9 +72,9 @@ public:
      */
     QString getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot);
 
-private slots:
+protected:
     /*reimplement*/
-    void onChangeDirPath();
+    void newPatientHandle();
 
 private:
     Q_DECLARE_PRIVATE(EventStorageManager)

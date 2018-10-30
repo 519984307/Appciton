@@ -185,7 +185,6 @@ TrendDataStorageManager &TrendDataStorageManager::getInstance()
     if (instance == NULL)
     {
         instance = new TrendDataStorageManager();
-        instance->doConnect();
     }
     return *instance;
 }
@@ -383,7 +382,7 @@ TrendDataType TrendDataStorageManager::getLatestShortTrendData(SubParamID subPar
     return InvData();
 }
 
-void TrendDataStorageManager::onChangeDirPath()
+void TrendDataStorageManager::newPatientHandle()
 {
     Q_D(TrendDataStorageManager);
     d->backend->reload(dataStorageDirManager.getCurFolder() + TREND_DATA_FILE_NAME,

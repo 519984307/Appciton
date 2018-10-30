@@ -39,6 +39,7 @@ StorageManager::StorageManager(IStorageBackend *backend)
 {
     Q_D(StorageManager);
     d->backend = backend;
+    connect(&dataStorageDirManager, SIGNAL(newPatient()), this, SLOT(onNewPatientHandle()));
 }
 
 /***************************************************************************************************
@@ -186,11 +187,6 @@ bool StorageManager::exist(const QString &filename)
     return f.isValid();
 }
 
-void StorageManager::doConnect()
-{
-    connect(&dataStorageDirManager, SIGNAL(changeDirPath()), this, SLOT(onChangeDirPath()));
-}
-
 /***************************************************************************************************
  * constructor : call by inherited class to perforem Q and D pointer
  **************************************************************************************************/
@@ -199,6 +195,7 @@ StorageManager::StorageManager(StorageManagerPrivate *d_ptr, IStorageBackend *ba
 {
     Q_D(StorageManager);
     d->backend = backend;
+    connect(&dataStorageDirManager, SIGNAL(newPatient()), this, SLOT(onNewPatientHandle()));
 }
 
 void StorageManager::saveDataCallback(quint32 dataID, const char *data, quint32 len)
@@ -206,6 +203,11 @@ void StorageManager::saveDataCallback(quint32 dataID, const char *data, quint32 
     Q_UNUSED(dataID);
     Q_UNUSED(data);
     Q_UNUSED(len);
+}
+
+void StorageManager::onNewPatientHandle()
+{
+    newPatientHandle();
 }
 
 

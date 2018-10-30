@@ -421,7 +421,7 @@ void DataStorageDirManager::createDir(bool createNew)
         timeManager.setElapsedTime();
         Config systemDefCfg(systemConfig.getCurConfigName());
         systemConfig.setNodeValue("PrimaryCfg", systemDefCfg);
-        emit changeDirPath();
+        emit newPatient();
     }
 }
 

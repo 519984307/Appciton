@@ -56,15 +56,15 @@ protected:
     virtual void saveDataCallback(quint32 dataID, const char *data, quint32 len);
 
     /**
-     * @brief doConnect 完成信号连接
+     * @brief newPatientHandle　新建病人后的处理
      */
-    void doConnect();
+    virtual void newPatientHandle(){}
 
 private slots:
     /**
-     * @brief onChangeDirPath 改变路径后响应函数
+     * @brief onNewPatientHandle 新建病人后响应函数
      */
-    virtual void onChangeDirPath(){}
+    void onNewPatientHandle();
 
 private:
     Q_DECLARE_PRIVATE(StorageManager)

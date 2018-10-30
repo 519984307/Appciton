@@ -76,12 +76,12 @@ public:
      */
     TrendDataType getLatestShortTrendData(SubParamID subParam, ShortTrendInterval interval);
 
+protected:
+    /*reimplement*/
+    void newPatientHandle();
+
 signals:
     void newTrendDataArrived(ShortTrendInterval interval);
-
-private slots:
-    /*reimplement*/
-    void onChangeDirPath();
 
 private:
     Q_DECLARE_PRIVATE(TrendDataStorageManager)

@@ -113,9 +113,9 @@ public:
 
 signals:
     /**
-     * @brief changeDirPath 改变了保存文件夹路径
+     * @brief newPatient 新建病人信号
      */
-    void changeDirPath();
+    void newPatient();
 
 private:
     DataStorageDirManager();
