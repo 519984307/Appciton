@@ -13,6 +13,7 @@
 #include "ParamInfo.h"
 #include "AlarmConfig.h"
 #include "AGParam.h"
+#include "FloatHandle.h"
 
 AGLimitAlarm *AGLimitAlarm::_selfObj = NULL;
 
@@ -178,26 +179,60 @@ int AGLimitAlarm::getLower(int id)
  *************************************************************************************************/
 int AGLimitAlarm::getCompare(int value, int id)
 {
-    if (0 == id % 2)
+    SubParamID subID = getSubParamID(id);
+    UnitType curUnit = agParam.getCurrentUnit(subID);
+    UnitType defUnit = paramInfo.getUnitOfSubParam(subID);
+
+    LimitAlarmConfig limitConfig = alarmConfig.getLimitAlarmConfig(subID, curUnit);
+
+    int mul = limitConfig.scale;
+    QString valueStr;
+    if (curUnit == UNIT_MMHG)
     {
-        if (value < getLower(id))
+        int low = limitConfig.lowLimit;
+        int high = limitConfig.highLimit;
+        int v = 0;
+        valueStr = Unit::convert(curUnit, defUnit, value);
+        v = valueStr.toInt();
+        v /= mul;
+        if (0 == id % 2)
         {
-            return -1;
+            return v < low ? -1 : 0;
         }
         else
         {
-            return 0;
+            return v > high ? 1 : 0;
         }
     }
     else
     {
-        if (value > getUpper(id))
+        float low = static_cast<float>(limitConfig.lowLimit) / limitConfig.scale;
+        float high = static_cast<float>(limitConfig.highLimit) / limitConfig.scale;
+        float v = 0;
+        float v1 = value * 1.0 / mul;
+        valueStr = Unit::convert(curUnit, defUnit, v1);
+        v = valueStr.toDouble();
+        if (0 == id % 2)
         {
-            return 1;
+            if (isUpper(low, v))
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
         }
         else
         {
-            return 0;
+            if (isUpper(v, high))
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }

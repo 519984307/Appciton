@@ -141,6 +141,7 @@ void SPO2Param::exitDemo()
     if (NULL != _trendWidget)
     {
         _trendWidget->setSPO2Value(InvData());
+        _trendWidget->setPIValue(InvData());
     }
 
     setPR(InvData());
@@ -710,6 +711,14 @@ int SPO2Param::getSweepSpeed(void)
     int speed = SPO2_WAVE_VELOCITY_250;
     currentConfig.getNumValue("SPO2|SweepSpeed", speed);
     return speed;
+}
+
+void SPO2Param::updateSubParamLimit(SubParamID id)
+{
+    if (id == SUB_PARAM_SPO2)
+    {
+        _trendWidget->updateLimit();
+    }
 }
 
 /**************************************************************************************************

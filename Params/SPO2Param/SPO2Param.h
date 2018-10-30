@@ -165,6 +165,8 @@ public:
         return _isEverSensorOn;
     }
 
+    // 刷新参数上下限
+    virtual void updateSubParamLimit(SubParamID id);
 private slots:
     void checkSelftest();
     void onPaletteChanged(ParamID id);

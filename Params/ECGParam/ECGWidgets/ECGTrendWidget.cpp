@@ -25,6 +25,8 @@
 #include "qpainter.h"
 #include "MeasureSettingWindow.h"
 #include "LayoutManager.h"
+#include "AlarmConfig.h"
+#include "ParamManager.h"
 #include "IConfig.h"
 
 /**************************************************************************************************
@@ -98,6 +100,13 @@ void ECGTrendWidget::setHRValue(int16_t hr, bool isHR)
     }
 }
 
+void ECGTrendWidget::updateLimit()
+{
+    UnitType unitType = paramManager.getSubParamUnit(PARAM_ECG, SUB_PARAM_HR_PR);
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_HR_PR, unitType);
+    setLimit(config.highLimit, config.lowLimit, config.scale);
+}
+
 /**************************************************************************************************
  * 是否报警。
  *************************************************************************************************/
@@ -117,10 +126,12 @@ void ECGTrendWidget::showValue(void)
     psrc = normalPalette(psrc);
     if (_isAlarm)
     {
+        showAlarmParamLimit(_hrString, psrc);
         showAlarmStatus(_hrValue, psrc);
     }
     else
     {
+        showNormalParamLimit(psrc);
         showNormalStatus(_hrValue, psrc);
     }
 
@@ -239,6 +250,9 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     }
     setName(trs(paramInfo.getSubParamName(subId)));
     setUnit(Unit::getSymbol(UNIT_BPM));
+
+    // 设置上下限
+    updateLimit();
 
     // 开始布局。
     _hrBeatIcon = new QLabel();

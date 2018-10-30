@@ -262,6 +262,8 @@ public:
     // 状态转为MANUAL
     void switchToManual(void);
 
+    // 刷新参数上下限
+    virtual void updateSubParamLimit(SubParamID id);
 private slots:
     void _patientTypeChangeSlot(PatientType type);
     void _btnTimeOut();

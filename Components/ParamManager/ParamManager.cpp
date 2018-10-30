@@ -46,6 +46,11 @@ Provider *ParamManager::getProvider(const QString &name)
     return _providers.value(name, NULL);
 }
 
+Param *ParamManager::getParam(ParamID id)
+{
+    return _paramWithID.value(id, NULL);
+}
+
 /**************************************************************************************************
  * 功能： 获取系统的Params。
  * 参数：

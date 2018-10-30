@@ -60,6 +60,9 @@ public:
     // 获取当前的单位。
     virtual UnitType getCurrentUnit(SubParamID id);
 
+    // 刷新参数上下限
+    virtual void updateSubParamLimit(SubParamID /*id*/){}
+
     // 构造与析构。
     explicit Param(ParamID id);
     virtual ~Param();

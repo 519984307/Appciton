@@ -256,6 +256,14 @@ bool RESPDupParam::isAutoBrSourceEnabled() const
     return _isAutoBrSource;
 }
 
+void RESPDupParam::updateSubParamLimit(SubParamID id)
+{
+    if (id == SUB_PARAM_RR_BR)
+    {
+        _trendWidget->updateLimit();
+    }
+}
+
 void RESPDupParam::onPaletteChanged(ParamID id)
 {
     if (id != PARAM_RESP)

@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/10/29
+ **/
+
 #include "CO2Alarm.h"
 #include "CO2Param.h"
 #include "RESPDupParam.h"
@@ -30,8 +40,9 @@ int CO2LimitAlarm::getAlarmSourceNR(void)
 /**************************************************************************************************
  * 获取报警对应的波形ID，该波形将被存储。
  *************************************************************************************************/
-WaveformID CO2LimitAlarm::getWaveformID(int /*id*/)
+WaveformID CO2LimitAlarm::getWaveformID(int id)
 {
+    Q_UNUSED(id)
     return WAVE_CO2;
 }
 
@@ -126,31 +137,17 @@ int CO2LimitAlarm::getCompare(int value, int id)
         v /= mul;
         if (0 == id % 2)
         {
-            if (v < low)
-            {
-                return -1;
-            }
-            else
-            {
-                return 0;
-            }
+            return v < low ? -1 : 0;
         }
         else
         {
-            if (v > high)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
+            return v > high ? 1 : 0;
         }
     }
     else
     {
-        float low = (float)limitConfig.lowLimit / limitConfig.scale;
-        float high = (float)limitConfig.highLimit / limitConfig.scale;
+        float low = static_cast<float>(limitConfig.lowLimit) / limitConfig.scale;
+        float high = static_cast<float>(limitConfig.highLimit) / limitConfig.scale;
         float v = 0;
         float v1 = value * 1.0 / mul;
         valueStr = Unit::convert(curUnit, defUnit, v1, co2Param.getBaro());
@@ -236,7 +233,6 @@ CO2LimitAlarm::CO2LimitAlarm()
  *************************************************************************************************/
 CO2LimitAlarm::~CO2LimitAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -277,8 +273,9 @@ WaveformID CO2OneShotAlarm::getWaveformID(int id)
 /**************************************************************************************************
  * 获取id对应的参数ID。
  *************************************************************************************************/
-SubParamID CO2OneShotAlarm::getSubParamID(int /*id*/)
+SubParamID CO2OneShotAlarm::getSubParamID(int id)
 {
+    Q_UNUSED(id)
     return SUB_PARAM_NONE;
 }
 
@@ -324,7 +321,7 @@ AlarmType CO2OneShotAlarm::getAlarmType(int id)
  *************************************************************************************************/
 void CO2OneShotAlarm::notifyAlarm(int id, bool isAlarm)
 {
-    if (id == CO2_ONESHOT_ALARM_APNEA)
+    if (id == CO2_ONESHOT_ALARM_APNEA && isAlarm)
     {
         respDupParam.isAlarm(isAlarm, false);
     }
@@ -354,7 +351,7 @@ bool CO2OneShotAlarm::isAlarmEnable(int id)
         v = co2Param.getAwRRSwitch();
     }
 
-    return ((bool)v && co2Param.isEnabled());
+    return (static_cast<bool>(v) && co2Param.isEnabled());
 }
 
 /**************************************************************************************************
@@ -376,8 +373,9 @@ bool CO2OneShotAlarm::isAlarmed(int id)
 /**************************************************************************************************
  * latch后移除报警显示信息。
  *************************************************************************************************/
-bool CO2OneShotAlarm::isRemoveAfterLatch(int /*id*/)
+bool CO2OneShotAlarm::isRemoveAfterLatch(int id)
 {
+    Q_UNUSED(id)
     return false;
 }
 
@@ -386,7 +384,6 @@ bool CO2OneShotAlarm::isRemoveAfterLatch(int /*id*/)
  *************************************************************************************************/
 CO2OneShotAlarm::CO2OneShotAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -394,5 +391,4 @@ CO2OneShotAlarm::CO2OneShotAlarm()
  *************************************************************************************************/
 CO2OneShotAlarm::~CO2OneShotAlarm()
 {
-
 }

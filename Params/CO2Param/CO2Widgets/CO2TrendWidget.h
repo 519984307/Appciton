@@ -27,6 +27,9 @@ public:
     void setEtCO2Value(int16_t v);
     void setFiCO2Value(int16_t v);
 
+    // 刷新趋势参数上下限
+    void updateLimit(void);
+
     // 单位更改。
     void setUNit(UnitType unit);
 

@@ -19,6 +19,8 @@
 #include <QVBoxLayout>
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"
+#include "AlarmConfig.h"
+#include "ParamManager.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -84,6 +86,13 @@ void CO2TrendWidget::setEtCO2Value(int16_t v)
 void CO2TrendWidget::setFiCO2Value(int16_t v)
 {
     _setValue(v, _fico2Str);
+}
+
+void CO2TrendWidget::updateLimit()
+{
+    UnitType unitType = paramManager.getSubParamUnit(PARAM_CO2, SUB_PARAM_ETCO2);
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_ETCO2, unitType);
+    setLimit(config.highLimit, config.lowLimit, config.scale);
 }
 
 /**************************************************************************************************
@@ -157,6 +166,7 @@ void CO2TrendWidget::showValue()
 
         if (_etco2Alarm)
         {
+            showAlarmParamLimit(_etco2Str, fgColor);
             showAlarmStatus(_etco2Value, fgColor);
         }
 
@@ -168,6 +178,7 @@ void CO2TrendWidget::showValue()
     }
     else
     {
+        showNormalParamLimit(fgColor);
         showNormalStatus(_etco2Value, fgColor);
         showNormalStatus(_fico2Value, fgColor);
         showNormalStatus(_fico2Label, fgColor);
@@ -230,6 +241,9 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
     setPalette(palette);
     setName(trs(paramInfo.getSubParamName(SUB_PARAM_ETCO2)));
     setUnit(Unit::localeSymbol(co2Param.getUnit()));
+
+    // 设置上下限
+    updateLimit();
 
 //    // 构造资源。
     _etco2Value = new QLabel();

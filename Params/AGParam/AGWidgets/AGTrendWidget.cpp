@@ -19,6 +19,8 @@
 #include "WindowManager.h"
 #include <QDebug>
 #include "MeasureSettingWindow.h"
+#include "AlarmConfig.h"
+#include "ParamManager.h"
 
 /**************************************************************************************************
  * 设置麻醉剂类型。
@@ -35,6 +37,31 @@ void AGTrendWidget::setAnestheticType(AGAnaestheticType type)
         setName("Et" + (QString)AGSymbol::convert(type));
         _fiName->setText("Fi" + (QString)AGSymbol::convert(type));
     }
+}
+
+void AGTrendWidget::updateLimit()
+{
+    SubParamID id;
+    switch (_gasType)
+    {
+    case AG_TYPE_N2O:
+        id = SUB_PARAM_ETN2O;
+        break;
+    case AG_TYPE_AA1:
+        id = SUB_PARAM_ETAA1;
+        break;
+    case AG_TYPE_AA2:
+        id = SUB_PARAM_ETAA2;
+        break;
+    case AG_TYPE_O2:
+        id = SUB_PARAM_ETO2;
+        break;
+    default:
+        break;
+    }
+    UnitType unitType = paramManager.getSubParamUnit(PARAM_AG, id);
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(id, unitType);
+    setLimit(config.highLimit, config.lowLimit, config.scale);
 }
 
 /**************************************************************************************************
@@ -135,6 +162,7 @@ void AGTrendWidget::showValue()
 
         if (_etAlarm)
         {
+            showAlarmParamLimit(_etStr, psrc);
             showAlarmStatus(_etValue, psrc);
         }
 
@@ -146,6 +174,7 @@ void AGTrendWidget::showValue()
     }
     else
     {
+        showNormalParamLimit(psrc);
         showNormalStatus(_etValue, psrc);
         showNormalStatus(_fiName, psrc);
         showNormalStatus(_fiValue, psrc);
@@ -173,6 +202,9 @@ AGTrendWidget::AGTrendWidget(const QString &trendName, const AGTypeGas gasType)
 
     setName("Et" + (QString)AGSymbol::convert(gasType));
     setUnit("%");
+
+    // 设置上下限
+    updateLimit();
 
     // 构造资源。
     _etValue = new QLabel();

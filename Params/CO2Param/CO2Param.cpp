@@ -834,6 +834,14 @@ short CO2Param::getEtCO2MinValue()
     return d_ptr->etco2MinVal;
 }
 
+void CO2Param::updateSubParamLimit(SubParamID id)
+{
+    if (id == SUB_PARAM_ETCO2)
+    {
+        d_ptr->trendWidget->updateLimit();
+    }
+}
+
 void CO2Param::onPaletteChanged(ParamID id)
 {
     if (id != PARAM_CO2)
