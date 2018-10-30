@@ -111,13 +111,7 @@ void TimeManager::mainRun(unsigned t)
 
 void TimeManager::recordRunTime()
 {
-    static int recordTimes = 0;
-    recordTimes++;
-    if (recordTimes == 2)
-    {
-        recordTimes = 0;
-        _runTime++;
-    }
+    _runTime++;
 }
 
 unsigned TimeManager::getRunTime() const

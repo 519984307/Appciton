@@ -41,7 +41,7 @@ public:
     void mainRun(unsigned t);
 
     /**
-     * @brief recordRunTime  记录运行时间 默认执行周期500ms
+     * @brief recordRunTime  记录运行时间 默认执行周期1S
      */
     void recordRunTime(void);
 
