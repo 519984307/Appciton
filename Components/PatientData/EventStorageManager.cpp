@@ -85,6 +85,7 @@ EventStorageManager &EventStorageManager::getInstance()
     if (instance == NULL)
     {
         instance = new EventStorageManager();
+        instance->doConnect();
     }
     return *instance;
 }
@@ -283,6 +284,12 @@ void EventStorageManager::clearEventTriggerFlag()
 {
     Q_D(EventStorageManager);
     d->_eventTriggerFlag = false;
+}
+
+void EventStorageManager::onChangeDirPath()
+{
+    Q_D(EventStorageManager);
+    d->backend->reload(dataStorageDirManager.getCurFolder() + EVENT_DATA_FILE_NAME, QIODevice::ReadWrite);
 }
 
 EventStorageManager::EventStorageManager()

@@ -1,7 +1,19 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/10/30
+ **/
+
+
 #pragma once
 #include <QString>
 #include "RescueDataDefine.h"
 #include "DataStorageDefine.h"
+#include <QObject>
 
 struct FolderName
 {
@@ -40,13 +52,13 @@ struct FolderName
     {
         return name.right(14);
     }
-
 };
 
 //数据存储目录管理
 class StorageManager;
-class DataStorageDirManager
+class DataStorageDirManager : public QObject
 {
+    Q_OBJECT
 public:
     static DataStorageDirManager &construction()
     {
@@ -91,19 +103,25 @@ public:
     void deleteData(QString &path);
     void deleteData(int index);
 
-    //整理上一个rescure incident存储目录中文件
+    // 整理上一个rescure incident存储目录中文件
     static bool cleanUpLastIncidentDir();
 
-    //clean up incident directory
+    // clean up incident directory
     static bool cleanUpIncidentDir(const QString &dir);
-    //get the size of specific directory
+    // get the size of specific directory
     static quint64 dirSize(const QString &dir);
+
+signals:
+    /**
+     * @brief changeDirPath 改变了保存文件夹路径
+     */
+    void changeDirPath();
 
 private:
     DataStorageDirManager();
     int _deleteDir(const QString &path);
 
-    //删除较早的数据
+    // 删除较早的数据
     void _deleteOldData(void);
 
     // 创建FD文件名
@@ -114,9 +132,9 @@ private:
     unsigned _previousDataSize;     // the size of previous rescue data
     QString _curFolder;              // 当前目录
     QString _fdFileName;             // fulldisclosure文件名
-    QList<struct FolderName> _folderNameList;//存储目录下文件夹名称及对应的大小
+    QList<struct FolderName> _folderNameList;// 存储目录下文件夹名称及对应的大小
 
-    QList<StorageManager *> _storageList;           //
+    QList<StorageManager *> _storageList;
 
     bool _createNew;
 };

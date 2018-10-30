@@ -79,6 +79,10 @@ public:
 signals:
     void newTrendDataArrived(ShortTrendInterval interval);
 
+private slots:
+    /*reimplement*/
+    void onChangeDirPath();
+
 private:
     Q_DECLARE_PRIVATE(TrendDataStorageManager)
     TrendDataStorageManager();
