@@ -303,6 +303,8 @@ public:
     // set the config with the config object
     void setConfig(const QString &indexStr, const QVariantMap &config);
 
+    // get default file name
+    QString getDefaultFileName(const QString &fileName);
 private:
     QString _getBackupFileName(const QString &fileName);
     QString _getFactoryFileName(const QString &fileName);
