@@ -65,7 +65,7 @@ public:
     void setOxyCRGRrHrWidget(OxyCRGRRHRWaveWidget *p);
 
     void setWaveType(int index);
-    int  getWaveType(void)const;
+    int  getWaveType(void) const;
 
     /* reimplement */
     void getSubFocusWidget(QList<QWidget *> &subWidget) const;
@@ -94,11 +94,7 @@ private slots:
      */
     void _autoSetRuler(void);
 
-signals:
-    void _intervalChanged(int index);
 private:
-    static const int _titleBarHeight = 24;
-    static const int _labelHeight = 40;
     QVBoxLayout *_mainLayout;
     QVBoxLayout *_hLayoutWave;
     QLabel *_titleLabel;
@@ -107,11 +103,6 @@ private:
     OxyCRGWidgetLabel *_changeTrend;      // 呼吸波与CO2
     PopupList *_intervalList;
     PopupList *_changeTrendList;
-    OxyCRGRESPWidget *_oxycrgWidget;
-    OxyCRGHRWidget *_oxycrgHrWidget;
-    OxyCRGSPO2Widget *_oxycrgSpo2Widget;
-    OxyCRGCO2Widget  *_oxycrgCo2Widget;
-    OxyCRGTrendWaveWidget *_oxycrgTrendWaveWidget;
     void _trendLayout(void);
     void _clearLayout(void);
 

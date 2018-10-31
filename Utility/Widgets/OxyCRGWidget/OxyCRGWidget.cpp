@@ -35,6 +35,10 @@
 #include "OxyCRGRRHRWaveWidget.h"
 #include "LayoutManager.h"
 
+
+#define TITLE_BAR_HEIGHT    24
+#define LABEL_HEIGHT    40
+
 class OxyCRGWidgetPrivate
 {
 public:
@@ -44,8 +48,14 @@ public:
           spo2Trend(NULL),
           co2Wave(NULL),
           respWave(NULL),
-          setUp(NULL)
+          setupBtn(NULL),
+          setupWin(NULL)
     {
+    }
+
+    ~OxyCRGWidgetPrivate()
+    {
+        delete setupWin;
     }
 
     OxyCRGWidgetLabel *setRulerAuto;
@@ -53,7 +63,8 @@ public:
     OxyCRGSPO2TrendWidget *spo2Trend;
     OxyCRGCO2WaveWidget *co2Wave;
     OxyCRGRESPWaveWidget *respWave;
-    OxyCRGWidgetLabel *setUp;
+    OxyCRGWidgetLabel *setupBtn;
+    OxyCRGSetupWindow *setupWin;
 };
 /**************************************************************************************************
  * 析构。
@@ -86,7 +97,7 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     // 标题栏。
     _titleLabel = new QLabel(trs("UserFaceOxyCRG"));
     _titleLabel->setAlignment(Qt::AlignCenter);
-    _titleLabel->setFixedHeight(_titleBarHeight);
+    _titleLabel->setFixedHeight(TITLE_BAR_HEIGHT);
     int fontSize = 24;
     _titleLabel->setFont(fontManager.textFont(fontSize));
     _titleLabel->setWordWrap(true);
@@ -103,28 +114,28 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     fontSize = 18;
     _interval = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
     _interval->setFont(fontManager.textFont(fontSize));
-    _interval->setFixedSize(labelWidth, _labelHeight);
+    _interval->setFixedSize(labelWidth, LABEL_HEIGHT);
     _interval->setText("");
     connect(_interval, SIGNAL(released(IWidget *)), this, SLOT(_intervalSlot(IWidget *)));
 
     _changeTrend = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
     _changeTrend->setFont(fontManager.textFont(fontSize));
-    _changeTrend->setFixedSize(labelWidth, _labelHeight);
+    _changeTrend->setFixedSize(labelWidth, LABEL_HEIGHT);
     _changeTrend->setText("");
     connect(_changeTrend, SIGNAL(released(IWidget *)), this, SLOT(_changeTrendSlot(IWidget *)));
 
     OxyCRGWidgetLabel *setRulerAuto = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
     setRulerAuto->setFont(fontManager.textFont(fontSize));
-    setRulerAuto->setFixedSize(labelWidth, _labelHeight);
+    setRulerAuto->setFixedSize(labelWidth, LABEL_HEIGHT);
     setRulerAuto->setText(trs("Auto"));
     connect(setRulerAuto, SIGNAL(released(IWidget *)), this, SLOT(_autoSetRuler()));
     d_ptr->setRulerAuto = setRulerAuto;
 
-    d_ptr->setUp = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
-    d_ptr->setUp->setFont(fontManager.textFont(fontSize));
-    d_ptr->setUp->setFixedSize(labelWidth, _labelHeight);
-    d_ptr->setUp->setText(trs("SetUp"));
-    connect(d_ptr->setUp, SIGNAL(released(IWidget *)), this, SLOT(_onSetupUpdated(IWidget *)));
+    d_ptr->setupBtn = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
+    d_ptr->setupBtn->setFont(fontManager.textFont(fontSize));
+    d_ptr->setupBtn->setFixedSize(labelWidth, LABEL_HEIGHT);
+    d_ptr->setupBtn->setText(trs("SetUp"));
+    connect(d_ptr->setupBtn, SIGNAL(released(IWidget *)), this, SLOT(_onSetupUpdated(IWidget *)));
 
     int rWidth = rect().width() / 4;
     int addWidth = (rWidth - labelWidth) / 2;
@@ -135,7 +146,7 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     bottomLayout->addSpacing(addWidth);
     bottomLayout->addWidget(setRulerAuto);
     bottomLayout->addSpacing(addWidth);
-    bottomLayout->addWidget(d_ptr->setUp);
+    bottomLayout->addWidget(d_ptr->setupBtn);
     bottomLayout->addSpacing(addWidth);
 
     _mainLayout->addWidget(_titleLabel, 0, Qt::AlignCenter);
@@ -146,6 +157,8 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     setLayout(_mainLayout);
 
     setFocusPolicy(Qt::NoFocus);
+
+    d_ptr->setupWin =  new OxyCRGSetupWindow;
 }
 
 /**************************************************************************************************
@@ -153,6 +166,7 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
  *************************************************************************************************/
 OxyCRGWidget::~OxyCRGWidget()
 {
+    delete d_ptr;
 }
 
 /**************************************************************************************************
@@ -360,7 +374,7 @@ void OxyCRGWidget::paintEvent(QPaintEvent *event)
     barPainter.setPen(pen);
     barPainter.drawRect(rect());
 
-    QRect rectAdjust = rect().adjusted(1, _titleBarHeight - 1, -1, -_labelHeight - 4);
+    QRect rectAdjust = rect().adjusted(1, TITLE_BAR_HEIGHT - 1, -1, -LABEL_HEIGHT - 4);
 //    barPainter.drawRect(rectAdjust);
     barPainter.drawLine(rectAdjust.bottomLeft(), rectAdjust.bottomRight());
 
@@ -378,17 +392,17 @@ void OxyCRGWidget::paintEvent(QPaintEvent *event)
 
 
     QRect r = rect();
-    r.setBottom(_titleBarHeight);
+    r.setBottom(TITLE_BAR_HEIGHT);
     barPainter.fillRect(r, QColor(152, 245, 255));
 
     int rWidth = rect().width() / 4;
     int addWidth = (rWidth - _interval->width()) / 2;
-    int rHeight = rect().bottom() - _labelHeight;
+    int rHeight = rect().bottom() - LABEL_HEIGHT;
 
     _interval->move(addWidth, rHeight);
     _changeTrend->move((addWidth + rWidth), rHeight);
     d_ptr->setRulerAuto->move((addWidth + rWidth * 2), rHeight);
-    d_ptr->setUp->move((addWidth + rWidth * 3), rHeight);
+    d_ptr->setupBtn->move((addWidth + rWidth * 3), rHeight);
 }
 
 /**************************************************************************************************
@@ -482,7 +496,7 @@ int OxyCRGWidget::getWaveType()const
 void OxyCRGWidget::getSubFocusWidget(QList<QWidget *> &subWidget) const
 {
     subWidget.clear();
-    subWidget << _interval << _changeTrend << d_ptr->setRulerAuto << d_ptr->setUp;
+    subWidget << _interval << _changeTrend << d_ptr->setRulerAuto << d_ptr->setupBtn;
 }
 
 void OxyCRGWidget::setOxyCRGRrHrWidget(OxyCRGRRHRWaveWidget *p)
@@ -540,16 +554,14 @@ void OxyCRGWidget::_changeTrendSlot(IWidget *widget)
  *************************************************************************************************/
 void OxyCRGWidget::_onSetupUpdated(IWidget *widget)
 {
-    if (widget != d_ptr->setUp)
+    if (widget != d_ptr->setupBtn)
     {
         return;
     }
 
-    OxyCRGSetupWindow setupWidget;
+    windowManager.showWindow(d_ptr->setupWin, WindowManager::ShowBehaviorModal);
 
-    windowManager.showWindow(&setupWidget, WindowManager::ShowBehaviorModal);
-
-    int index = setupWidget.getWaveTypeIndex();
+    int index = d_ptr->setupWin->getWaveTypeIndex();
     if (index != (getWaveType()) && (index == 0 || index == 1))
     {
         setWaveType(index);
@@ -564,20 +576,20 @@ void OxyCRGWidget::_onSetupUpdated(IWidget *widget)
     int valueLow;
     int valueHight;
 
-    valueLow = setupWidget.getCO2Low();
-    valueHight = setupWidget.getCO2High();
+    valueLow = d_ptr->setupWin->getCO2Low();
+    valueHight = d_ptr->setupWin->getCO2High();
     d_ptr->co2Wave->setRulerValue(valueHight, valueLow);
 
-    valueLow = setupWidget.getHRLow();
-    valueHight = setupWidget.getHRHigh();
+    valueLow = d_ptr->setupWin->getHRLow();
+    valueHight = d_ptr->setupWin->getHRHigh();
     d_ptr->rrHrTrend->setHrRulerValue(valueHight, valueLow);
 
-    valueLow = setupWidget.getRRLow();
-    valueHight = setupWidget.getRRHigh();
+    valueLow = d_ptr->setupWin->getRRLow();
+    valueHight = d_ptr->setupWin->getRRHigh();
     d_ptr->rrHrTrend->setRrRulerValue(valueHight, valueLow);
 
-    valueLow = setupWidget.getSPO2Low();
-    valueHight = setupWidget.getSPO2High();
+    valueLow = d_ptr->setupWin->getSPO2Low();
+    valueHight = d_ptr->setupWin->getSPO2High();
     d_ptr->spo2Trend->setRulerValue(valueHight, valueLow);
 }
 

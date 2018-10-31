@@ -9,7 +9,6 @@
  **/
 #include "OxyCRGSetupWindow.h"
 #include "ComboBox.h"
-#include <QMap>
 #include <QLabel>
 #include "LanguageManager.h"
 #include <QGridLayout>
@@ -17,8 +16,6 @@
 #include "ConfigManager.h"
 #include <QGroupBox>
 #include "Button.h"
-#include "WindowManager.h"
-#include <QLineEdit>
 
 class OxyCRGSetupWindowPrivate
 {
@@ -75,7 +72,7 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     setWindowTitle(trs("OxyCRGWidgetSetup"));
 
     QGroupBox *groupBox = new QGroupBox(trs("TrendWaveSelect"));
-    QGridLayout *layout = new QGridLayout(this);
+    QGridLayout *layout = new QGridLayout();
     layout->setMargin(10);
     int configIndex;
     QHBoxLayout *hlsub;
@@ -92,15 +89,13 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
                     );
     layout->addWidget(combo, layoutIndex, 1);
     combo->setProperty("Item", qVariantFromValue(comboIndex));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
     d_ptr->trend1 = combo;
     layoutIndex++;
     comboIndex++;
     configIndex = 0;
     currentConfig.getNumValue("OxyCRG|Trend1", configIndex);
-    combo->blockSignals(true);
     combo->setCurrentIndex(configIndex);
-    combo->blockSignals(false);
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
 
     // trend2
     label = new QLabel(trs("Trend2"));
@@ -123,19 +118,17 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
                     );
     layout->addWidget(combo, layoutIndex, 1);
     combo->setProperty("Item", qVariantFromValue(comboIndex));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
     d_ptr->wave = combo;
     layoutIndex++;
     comboIndex++;
     configIndex = 0;
     currentConfig.getNumValue("OxyCRG|Wave", configIndex);
-    combo->blockSignals(true);
     combo->setCurrentIndex(configIndex);
-    combo->blockSignals(false);
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
 
     groupBox->setLayout(layout);
 
-    QVBoxLayout *vl = new QVBoxLayout(this);
+    QVBoxLayout *vl = new QVBoxLayout();
     QVBoxLayout *vlSub = new QVBoxLayout;
     vl->addWidget(groupBox);
 
@@ -166,15 +159,14 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
                     );
     layout->addWidget(combo, layoutIndexTwo, 1);
     combo->setProperty("Item", qVariantFromValue(comboIndex));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
+    combo->setMinimumWidth(100);
     d_ptr->hrLow = combo;
     layoutIndexTwo++;
     comboIndex++;
     configIndex = 0;
     currentConfig.getNumValue("OxyCRG|Ruler|HRLow", configIndex);
-    combo->blockSignals(true);
     combo->setCurrentIndex(configIndex);
-    combo->blockSignals(false);
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
 
     // hr high
     label = new QLabel(trs("High"));
@@ -190,15 +182,13 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
                     );
     layout->addWidget(combo, layoutIndexTwo, 1);
     combo->setProperty("Item", qVariantFromValue(comboIndex));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
     d_ptr->hrHigh = combo;
     layoutIndexTwo++;
     comboIndex++;
     configIndex = 0;
     currentConfig.getNumValue("OxyCRG|Ruler|HRHigh", configIndex);
-    combo->blockSignals(true);
     combo->setCurrentIndex(configIndex);
-    combo->blockSignals(false);
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
 
     vlSub->addLayout(layout);
     hl->addLayout(vlSub);
@@ -226,15 +216,14 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
                     );
     layout->addWidget(combo, layoutIndexThree, 1);
     combo->setProperty("Item", qVariantFromValue(comboIndex));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
+    combo->setMinimumWidth(100);
     d_ptr->rrLow = combo;
     layoutIndexThree++;
     comboIndex++;
     configIndex = 0;
     currentConfig.getNumValue("OxyCRG|Ruler|RRLow", configIndex);
-    combo->blockSignals(true);
     combo->setCurrentIndex(configIndex);
-    combo->blockSignals(false);
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
 
     // hr high
     label = new QLabel(trs("High"));
@@ -248,15 +237,13 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
                     );
     layout->addWidget(combo, layoutIndexThree, 1);
     combo->setProperty("Item", qVariantFromValue(comboIndex));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
     d_ptr->rrHigh = combo;
     layoutIndexThree++;
     comboIndex++;
     configIndex = 0;
     currentConfig.getNumValue("OxyCRG|Ruler|RRHigh", configIndex);
-    combo->blockSignals(true);
     combo->setCurrentIndex(configIndex);
-    combo->blockSignals(false);
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
     if (configIndex == 0)
     {
         d_ptr->rrLow->setEnabled(false);
@@ -291,15 +278,14 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
                     );
     layout->addWidget(combo, layoutIndexFour, 1);
     combo->setProperty("Item", qVariantFromValue(comboIndex));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
+    combo->setMinimumWidth(100);
     d_ptr->spo2Low = combo;
     layoutIndexFour++;
     comboIndex++;
     configIndex = 0;
     currentConfig.getNumValue("OxyCRG|Ruler|SPO2Low", configIndex);
-    combo->blockSignals(true);
     combo->setCurrentIndex(configIndex);
-    combo->blockSignals(false);
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
 
     // spo2 high
     label = new QLabel(trs("High"));
@@ -335,6 +321,7 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     btn->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(btn, layoutIndexFive, 1);
     btn->setEnabled(false);
+    btn->setMinimumWidth(100);
     d_ptr->co2Low = btn;
     layoutIndexFive++;
 
@@ -353,14 +340,12 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
                     );
     layout->addWidget(combo, layoutIndexFive, 1);
     combo->setProperty("Item", qVariantFromValue(comboIndex));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
     d_ptr->co2High = combo;
     layoutIndexFive++;
     configIndex = 0;
     currentConfig.getNumValue("OxyCRG|Ruler|CO2High", configIndex);
-    combo->blockSignals(true);
     combo->setCurrentIndex(configIndex);
-    combo->blockSignals(false);
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
     vlSub->addLayout(layout);
     hl->addLayout(vlSub);
 
@@ -431,10 +416,6 @@ int OxyCRGSetupWindow::getRRHigh() const
 void OxyCRGSetupWindow::showEvent(QShowEvent *ev)
 {
     Window::showEvent(ev);
-    d_ptr->hrLow->setMinimumWidth(100);
-    d_ptr->rrLow->setMinimumWidth(100);
-    d_ptr->spo2Low->setMinimumWidth(100);
-    d_ptr->co2Low->setMinimumWidth(100);
 }
 
 void OxyCRGSetupWindow::onComboUpdated(int index)
