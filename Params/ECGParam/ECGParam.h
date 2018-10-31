@@ -19,6 +19,7 @@
 #include "OxyCRGCO2Widget.h"
 #include "OxyCRGRESPWidget.h"
 #include "ECGAlg2SoftInterface.h"
+#include "SystemManager.h"
 
 enum
 {
@@ -336,6 +337,11 @@ private slots:
      * @brief onOxyCRGWaveUpdated 呼吸氧和波形更新槽函数
      */
     void onOxyCRGWaveUpdated(void);
+
+    /**
+     * @brief onWorkModeChanged  滤波模式更新
+     */
+    void onWorkModeChanged(WorkMode mode);
 
     /**
      * @brief onPaletteChanged change palette
