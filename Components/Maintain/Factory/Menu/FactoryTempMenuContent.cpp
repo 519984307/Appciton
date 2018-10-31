@@ -109,6 +109,7 @@ void FactoryTempMenuContent::layoutExec()
 {
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
+    this->setFocusPolicy(Qt::NoFocus);
     QHBoxLayout *hl;
     QLabel *label;
     Button *button;
@@ -190,7 +191,6 @@ void FactoryTempMenuContent::hideEvent(QHideEvent *e)
  *************************************************************************************************/
 void FactoryTempMenuContent::readyShow()
 {
-    d_ptr->channel->setFocus();
     d_ptr->channel->setCurrentIndex(0);
     d_ptr->calibrateChannel = 0;
     d_ptr->tempChannel->setText(trs("TEMP1"));

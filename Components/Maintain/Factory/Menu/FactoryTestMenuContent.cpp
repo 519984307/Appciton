@@ -136,6 +136,7 @@ void FactoryTestMenuContent::layoutExec()
 {
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
+    this->setFocusPolicy(Qt::NoFocus);
 
     QLabel *label;
     Button *button;
@@ -240,7 +241,6 @@ FactoryTestMenuContent::~FactoryTestMenuContent()
 
 void FactoryTestMenuContent::readyShow()
 {
-    d_ptr->lbtn[0]->setFocus();
 }
 
 

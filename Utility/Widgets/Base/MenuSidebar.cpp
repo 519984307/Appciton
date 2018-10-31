@@ -65,7 +65,8 @@ void MenuSidebarPrivate::onItemClicked()
 
 void MenuSidebarPrivate::onItemFocusChanged(bool in, Qt::FocusReason reason)
 {
-    if (in && widget->height() > q_ptr->viewport()->height())
+    // 当in为true，菜单侧边栏的高度不小于其视窗的高度时，才进入执行
+    if (in && widget->height() >= q_ptr->viewport()->height())
     {
         Q_Q(MenuSidebar);
         MenuSidebarItem *item = qobject_cast<MenuSidebarItem *>(q->sender());
