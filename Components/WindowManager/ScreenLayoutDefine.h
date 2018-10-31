@@ -18,6 +18,7 @@
 #define LAYOUT_ROW_COUNT 8
 #define LAYOUT_MAX_WAVE_ROW_NUM 6
 #define LAYOUT_WAVE_END_COLUMN 4
+#define LAYOUT_WAVE_ROW_ITEM_COUNT 3
 
 enum LayoutNodeType
 {

@@ -345,6 +345,7 @@ void LayoutManagerPrivate::performStandardLayout()
         LayoutRow::ConstIterator nodeIter = iter.value().constBegin();
         QList<LayoutNode> blankNodes;
         blankNodes.clear();
+        int curRowItemCount = 0;
         int row = iter.key();
         for (; nodeIter != iter.value().constEnd(); ++nodeIter)
         {
@@ -375,29 +376,31 @@ void LayoutManagerPrivate::performStandardLayout()
                     leftParamLayout->setRowStretch(row - LAYOUT_MAX_WAVE_ROW_NUM, 1);
                     displayParams.append(w->name());
                 }
+                curRowItemCount += LAYOUT_WAVE_ROW_ITEM_COUNT;
             }
             else
             {
                 rightParamLayout->addWidget(w, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
                 rightParamLayout->setRowStretch(row, 1);
                 displayParams.append(w->name());
+                curRowItemCount += LAYOUT_COLUMN_COUNT;
             }
         }
         if (blankNodes.isEmpty())
         {
             continue;
         }
-
         QList<LayoutNode>::ConstIterator blankNodeIter = blankNodes.constBegin();
         for (; blankNodeIter != blankNodes.constEnd(); blankNodeIter++)
         {
+            if (blankNodes.count() >= curRowItemCount)
+            {
+                continue;
+            }
+
             if ((*blankNodeIter).pos < LAYOUT_WAVE_END_COLUMN)
             {
                 // left part
-                if (blankNodes.count() >= LAYOUT_COLUMN_COUNT)
-                {
-                    continue;
-                }
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM)
                 {
                     IWidget *w = new IWidget;
@@ -415,7 +418,7 @@ void LayoutManagerPrivate::performStandardLayout()
             }
             else if (blankNodes.count() < LAYOUT_COLUMN_COUNT)
             {
-                // has wave Item or left param item
+                // right part
                 IWidget *w = new IWidget;
                 w->setFocusPolicy(Qt::NoFocus);
                 rightParamLayout->addWidget(w, row, (*blankNodeIter).pos, 1, (*blankNodeIter).span);
