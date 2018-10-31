@@ -119,7 +119,8 @@ void ECGMenuContentPrivate::loadOptions()
     ECGFilterMode filterMode = ecgParam.getFilterMode();
 
     // demo 模式下心电滤波模式固定为诊断，不可更改
-    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    WorkMode workMode = systemManager.getCurWorkMode();
+    if (workMode == WORK_MODE_DEMO)
     {
         if (filterMode != ECG_FILTERMODE_DIAGNOSTIC)
         {
@@ -131,6 +132,18 @@ void ECGMenuContentPrivate::loadOptions()
     else
     {
         combos[ITEM_CBO_FILTER_MODE]->setEnabled(true);
+    }
+
+    // demo模式,12导界面下心电增益改为不可调
+    UserFaceType faceType =  layoutManager.getUFaceType();
+    if (workMode == WORK_MODE_DEMO
+            && faceType == UFACE_MONITOR_12LEAD)
+    {
+        combos[ITEM_CBO_ECG_GAIN]->setEnabled(false);
+    }
+    else
+    {
+        combos[ITEM_CBO_ECG_GAIN]->setEnabled(true);
     }
 
     ECGNotchFilter notchFilter = ecgParam.getNotchFilter();
@@ -179,7 +192,7 @@ void ECGMenuContentPrivate::loadOptions()
 
     // 增加判断是否为全屏12导界面，如果是，则显示一个ECG item
     if (leadMode == ECG_LEAD_MODE_3
-            || layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD)
+            || faceType == UFACE_MONITOR_12LEAD)
     {
         isHide = true;
         ecg1Label->setText(trs("ECG"));
