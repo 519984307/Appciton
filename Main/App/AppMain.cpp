@@ -26,6 +26,7 @@ static QThread *_networkThread = NULL;
  *************************************************************************************************/
 static void _taskOneSec1(void)
 {
+    timeManager.recordRunTime();
     paramManager.checkProviderConnection();
     systemBoardProvider.checkConnection();
 }
