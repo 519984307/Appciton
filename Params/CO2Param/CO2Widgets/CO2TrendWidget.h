@@ -26,6 +26,7 @@ public:
     // 设置测量值。
     void setEtCO2Value(int16_t v);
     void setFiCO2Value(int16_t v);
+    void setawRRValue(int16_t v);
 
     // 刷新趋势参数上下限
     void updateLimit(void);
@@ -64,9 +65,12 @@ private:
     QLabel *_etco2Value;
     QLabel *_fico2Label;
     QLabel *_fico2Value;
+    QLabel *_awRRName;
+    QLabel *_awRRValue;
 
     QString _etco2Str;
     QString _fico2Str;
+    QString _awRRStr;
     bool _etco2Alarm;
     bool _fico2Alarm;
 };

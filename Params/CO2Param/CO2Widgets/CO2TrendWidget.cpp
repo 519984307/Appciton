@@ -88,6 +88,18 @@ void CO2TrendWidget::setFiCO2Value(int16_t v)
     _setValue(v, _fico2Str);
 }
 
+void CO2TrendWidget::setawRRValue(int16_t v)
+{
+    if (v == InvData())
+    {
+        _awRRStr = InvStr();
+    }
+    else
+    {
+        _awRRStr = QString::number(v);
+    }
+}
+
 void CO2TrendWidget::updateLimit()
 {
     UnitType unitType = paramManager.getSubParamUnit(PARAM_CO2, SUB_PARAM_ETCO2);
@@ -182,6 +194,7 @@ void CO2TrendWidget::showValue()
     }
 
     _etco2Value->setText(_etco2Str);
+    _awRRValue->setText(_awRRStr);
 
     if (!_fico2Value->isHidden())
     {
@@ -206,13 +219,15 @@ void CO2TrendWidget::setTextSize()
     _etco2Value->setFont(font);
 
     fontsize = fontManager.adjustNumFontSize(r, true, "2222");
-    font = fontManager.numFont(fontsize / 1.5, true);
+    font = fontManager.numFont(fontsize / 3, true);
     font.setWeight(QFont::Black);
     _fico2Value->setFont(font);
+    _awRRValue->setFont(font);
 
     font = fontManager.textFont(fontManager.getFontSize(3));
     _etCO2Label->setFont(font);
     _fico2Label->setFont(font);
+    _awRRName->setFont(font);
 }
 
 // 立刻显示数据。
@@ -229,6 +244,7 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
 {
     _etco2Str = InvStr();
     _fico2Str = InvStr();
+    _awRRStr = InvStr();
     _etco2Alarm = false;
     _fico2Alarm = false;
 
@@ -253,21 +269,35 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
 
     _etco2Value->setPalette(palette);
     _etco2Value->setText(InvStr());
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(_etCO2Label, 1);
+    layout->addWidget(_etco2Value, 3);
+
+    _awRRName = new QLabel("awRR", this);
+    _awRRName->setPalette(palette);
+    _awRRName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
     _fico2Label = new QLabel("Fi", this);
     _fico2Label->setPalette(palette);
     _fico2Label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->addWidget(_awRRName);
+    vLayout->addWidget(_fico2Label);
+    layout->addLayout(vLayout, 1);
+
+    _awRRValue = new QLabel(this);
+    _awRRValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    _awRRValue->setPalette(palette);
+    _awRRValue->setText(InvStr());
 
     _fico2Value = new QLabel(this);
     _fico2Value->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
     _fico2Value->setPalette(palette);
     _fico2Value->setText(InvStr());
-
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->addWidget(_etCO2Label, 1);
-    layout->addWidget(_etco2Value, 3);
-    layout->addWidget(_fico2Label, 1);
-    layout->addWidget(_fico2Value, 3);
+    vLayout = new QVBoxLayout();
+    vLayout->addWidget(_awRRValue);
+    vLayout->addWidget(_fico2Value);
+    layout->addLayout(vLayout, 3);
     contentLayout->addLayout(layout, 7);
 
     // 释放事件。

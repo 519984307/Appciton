@@ -83,6 +83,9 @@ public:
     // 获取BR。
     void setBR(short);
 
+    // 设置RR
+    void setRR(short);
+
     // 设置获取实时大气压值。
     short getBaro(void);
     void setBaro(short);
