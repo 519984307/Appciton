@@ -176,7 +176,10 @@ void ECGMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_QRS_TONE]->setCurrentIndex(ecgParam.getQRSToneVolume());
 
     bool isHide = true;
-    if (leadMode == ECG_LEAD_MODE_3)
+
+    // 增加判断是否为全屏12导界面，如果是，则显示一个ECG item
+    if (leadMode == ECG_LEAD_MODE_3
+            || layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD)
     {
         isHide = true;
         ecg1Label->setText(trs("ECG"));
