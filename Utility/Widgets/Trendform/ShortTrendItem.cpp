@@ -299,6 +299,8 @@ void ShortTrendItemPrivate::drawWave(QPainter *painter, const QRect &r)
             {
                 if (!moveTo)
                 {
+                    // current point is not a valid point,
+                    // draw latest the valid points
                     path.lineTo(lastPoint);
                     moveTo = true;
                 }
@@ -320,6 +322,11 @@ void ShortTrendItemPrivate::drawWave(QPainter *painter, const QRect &r)
                 if (lastPoint.y() != curPoint.y())
                 {
                     path.lineTo(lastPoint);
+                    path.lineTo(curPoint);
+                }
+                else if (((index + 1) % pointNum) == endIndex)
+                {
+                    // reach the end
                     path.lineTo(curPoint);
                 }
             }
@@ -475,6 +482,7 @@ void ShortTrendItem::setTrendDuration(ShortTrendDuration duration)
     d_ptr->duration = duration;
     d_ptr->updateBGFlag = true;
     d_ptr->resetPointBufFlag = true;
+    update();
 }
 
 ShortTrendDuration ShortTrendItem::getTrendDuration() const
