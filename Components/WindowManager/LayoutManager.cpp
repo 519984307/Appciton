@@ -65,7 +65,7 @@ public:
      * @param marginStr
      * @return
      */
-    QMargins parseMargin(const QString& marginStr);
+    QMargins parseMargin(const QString &marginStr);
 
     /**
      * @brief doParseMainLayout parse the main layout
@@ -292,7 +292,8 @@ void LayoutManagerPrivate::doContentLayout()
     // the content widget should also be update in every layout
     contentWidgets.clear();
 
-    switch (curUserFace) {
+    switch (curUserFace)
+    {
     case UFACE_MONITOR_STANDARD:
         performStandardLayout();
         break;
@@ -342,17 +343,19 @@ void LayoutManagerPrivate::performStandardLayout()
     for (; iter != layoutInfos.end(); ++iter)
     {
         LayoutRow::ConstIterator nodeIter = iter.value().constBegin();
+        QList<LayoutNode> blankNodes;
+        blankNodes.clear();
+        int row = iter.key();
         for (; nodeIter != iter.value().constEnd(); ++nodeIter)
         {
-            int row = iter.key();
             IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
             if (!w || !widgetLayoutable[w->name()])
             {
+                blankNodes.append(*nodeIter);
                 continue;
             }
 
             contentWidgets.append(w);
-
             w->setVisible(true);
             w->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
             if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN)
@@ -360,6 +363,7 @@ void LayoutManagerPrivate::performStandardLayout()
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM)
                 {
                     waveLayout->addWidget(w, row, nodeIter->pos, 1, nodeIter->span);
+                    waveLayout->setRowStretch(row, 1);
                     if (qobject_cast<WaveWidget *>(w))
                     {
                         displayWaveforms.append(w->name());
@@ -368,13 +372,54 @@ void LayoutManagerPrivate::performStandardLayout()
                 else
                 {
                     leftParamLayout->addWidget(w, row - LAYOUT_MAX_WAVE_ROW_NUM, nodeIter->pos, 1, nodeIter->span);
+                    leftParamLayout->setRowStretch(row - LAYOUT_MAX_WAVE_ROW_NUM, 1);
                     displayParams.append(w->name());
                 }
             }
             else
             {
                 rightParamLayout->addWidget(w, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
+                rightParamLayout->setRowStretch(row, 1);
                 displayParams.append(w->name());
+            }
+        }
+        if (blankNodes.isEmpty())
+        {
+            continue;
+        }
+
+        QList<LayoutNode>::ConstIterator blankNodeIter = blankNodes.constBegin();
+        for (; blankNodeIter != blankNodes.constEnd(); blankNodeIter++)
+        {
+            if ((*blankNodeIter).pos < LAYOUT_WAVE_END_COLUMN)
+            {
+                // left part
+                if (blankNodes.count() >= LAYOUT_COLUMN_COUNT)
+                {
+                    continue;
+                }
+                if (row < LAYOUT_MAX_WAVE_ROW_NUM)
+                {
+                    IWidget *w = new IWidget;
+                    w->setFocusPolicy(Qt::NoFocus);
+                    waveLayout->addWidget(w, row, (*blankNodeIter).pos, 1, (*blankNodeIter).span);
+                    waveLayout->setRowStretch(row, 1);
+                }
+                else
+                {
+                    IWidget *w = new IWidget;
+                    w->setFocusPolicy(Qt::NoFocus);
+                    leftParamLayout->addWidget(w, row - LAYOUT_MAX_WAVE_ROW_NUM, (*blankNodeIter).pos, 1, (*blankNodeIter).span);
+                    leftParamLayout->setRowStretch(row - LAYOUT_MAX_WAVE_ROW_NUM, 1);
+                }
+            }
+            else if (blankNodes.count() < LAYOUT_COLUMN_COUNT)
+            {
+                // has wave Item or left param item
+                IWidget *w = new IWidget;
+                w->setFocusPolicy(Qt::NoFocus);
+                rightParamLayout->addWidget(w, row, (*blankNodeIter).pos, 1, (*blankNodeIter).span);
+                rightParamLayout->setRowStretch(row, 1);
             }
         }
     }
@@ -382,7 +427,10 @@ void LayoutManagerPrivate::performStandardLayout()
     // the wave container stretch
     leftLayout->setStretch(0, waveLayout->rowCount());
     // the let param container stretch
-    leftLayout->setStretch(1, leftParamLayout->rowCount());
+    if (leftParamLayout->count() > 0)
+    {
+        leftLayout->setStretch(1, leftParamLayout->rowCount());
+    }
 }
 
 void LayoutManagerPrivate::perform12LeadLayout()
@@ -626,7 +674,7 @@ void LayoutManagerPrivate::performTrendLayout()
     leftLayout->addWidget(leftParamContainer);
 
 
-    ShortTrendContainer *trendContainer = qobject_cast<ShortTrendContainer*> (layoutWidgets["ShortTrendContainer"]);
+    ShortTrendContainer *trendContainer = qobject_cast<ShortTrendContainer *> (layoutWidgets["ShortTrendContainer"]);
     if (trendContainer)
     {
         contentLayout->addWidget(trendContainer, 3);
@@ -936,7 +984,7 @@ void LayoutManager::updateLayout()
     if (currentConfig.getNumValue("ECG|Ecg1Wave", lead))
     {
         d_ptr->layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG1)]
-                = ecgParam.getWaveWidgetName(static_cast<ECGLead>(lead));
+            = ecgParam.getWaveWidgetName(static_cast<ECGLead>(lead));
     }
 
     if (leadMode > ECG_LEAD_MODE_3)
@@ -944,7 +992,7 @@ void LayoutManager::updateLayout()
         if (currentConfig.getNumValue("ECG|Ecg2Wave", lead))
         {
             d_ptr->layoutNodeMap[layoutNodeName(LAYOUT_NODE_WAVE_ECG2)]
-                    = ecgParam.getWaveWidgetName(static_cast<ECGLead>(lead));
+                = ecgParam.getWaveWidgetName(static_cast<ECGLead>(lead));
         }
     }
     else
@@ -1144,7 +1192,7 @@ void LayoutManager::updateTabOrder()
 }
 
 LayoutManager::LayoutManager()
-    :d_ptr(new LayoutManagerPrivate())
+    : d_ptr(new LayoutManagerPrivate())
 {
     d_ptr->layoutMap = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|Normal");
 
