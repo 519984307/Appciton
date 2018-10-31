@@ -273,11 +273,11 @@ void AlarmLimitWindow::onDefaultsClick()
     MessageBox messageBox(trs("Warn"), trs("SureAllAlarmDefaults"), slist);
     if (messageBox.exec() == 1)
     {
-        restoryDefaults();
+        restoreDefaults();
     }
 }
 
-void AlarmLimitWindow::restoryDefaults()
+void AlarmLimitWindow::restoreDefaults()
 {
     Config defaultConfig(currentConfig.getDefaultFileName(currentConfig.getFileName()));
 

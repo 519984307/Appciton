@@ -66,7 +66,7 @@ private slots:
     void onDefaultsClick();
 
 private:
-    void restoryDefaults();
+    void restoreDefaults();
 
 private:
     AlarmLimitWindowPrivate *const d_ptr;
