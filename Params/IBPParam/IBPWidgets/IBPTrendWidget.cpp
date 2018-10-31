@@ -354,7 +354,7 @@ IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPPressureName &
     _stackedwidget->addWidget(_groupBox1);
     _stackedwidget->addWidget(_groupBox2);
 
-    contentLayout->addWidget(_stackedwidget, Qt::AlignCenter);
+    contentLayout->addWidget(_stackedwidget, 7, Qt::AlignCenter);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));

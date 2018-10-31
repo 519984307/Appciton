@@ -30,6 +30,9 @@ public:
     // 显示新值。
     void showValue(void);
 
+    // 刷新上下限
+    void updateLimit();
+
     TEMPTrendWidget();
     ~TEMPTrendWidget();
 
@@ -50,8 +53,6 @@ private:
         TEMP_GRP_TD,
         TEMP_GRP_NR
     };
-
-    void _alarmIndicate(bool isAlarms, tempGrp grp);
 
     QLabel *_t1Value;
     QLabel *_t2Value;

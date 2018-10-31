@@ -128,10 +128,6 @@ void TrendWidget::showAlarmParamLimit(const QString &valueStr, QPalette psrc)
             upLimit->setPalette(psrc);
         }
     }
-    else
-    {
-        upLimit->setPalette(alaColor);
-    }
 
     p = downLimit->palette();
     if (value < down)
@@ -144,10 +140,6 @@ void TrendWidget::showAlarmParamLimit(const QString &valueStr, QPalette psrc)
         {
             downLimit->setPalette(psrc);
         }
-    }
-    else
-    {
-        downLimit->setPalette(alaColor);
     }
 }
 
@@ -305,7 +297,7 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
         contentLayout = new QHBoxLayout();
         contentLayout->setMargin(0);
         contentLayout->setSpacing(0);
-        contentLayout->addLayout(vLayout);
+        contentLayout->addLayout(vLayout, 1);
 
 
         setLayout(contentLayout);

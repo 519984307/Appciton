@@ -39,6 +39,7 @@ public:
               waveWidget(NULL),
               etco2Value(InvData()),
               fico2Value(InvData()),
+              awRRValue(InvData()),
               etco2MaxVal(0),
               etco2MinVal(0),
               brVaule(InvData()),
@@ -77,6 +78,7 @@ public:
 
     short  etco2Value;
     short  fico2Value;
+    short  awRRValue;
     short  etco2MaxVal;
     short  etco2MinVal;
     short  brVaule;
@@ -217,12 +219,14 @@ void CO2Param::handDemoTrendData(void)
 //    d_ptr->fico2Value = qrand() % 80;
     d_ptr->etco2Value = 50;
     d_ptr->fico2Value = 3;
+    d_ptr->awRRValue = 20;
     d_ptr->brVaule = 20;
 
     if (NULL != d_ptr->trendWidget)
     {
         d_ptr->trendWidget->setEtCO2Value(d_ptr->etco2Value);
         d_ptr->trendWidget->setFiCO2Value(d_ptr->fico2Value);
+        d_ptr->trendWidget->setawRRValue(d_ptr->awRRValue);
     }
     setBR(d_ptr->brVaule);
 }
@@ -460,6 +464,20 @@ void CO2Param::setBR(short br)
     }
 
     respDupParam.updateBR(br);
+}
+
+void CO2Param::setRR(short rr)
+{
+    if (!(isEnabled() && d_ptr->co2Switch))
+    {
+        rr = InvData();
+    }
+
+    d_ptr->awRRValue = rr;
+    if (NULL != d_ptr->trendWidget)
+    {
+        d_ptr->trendWidget->setawRRValue(rr);
+    }
 }
 
 /**************************************************************************************************

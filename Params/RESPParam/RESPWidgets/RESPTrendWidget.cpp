@@ -147,7 +147,7 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
     mainLayout->addStretch(1);
 
     contentLayout->addStretch(1);
-    contentLayout->addLayout(mainLayout);
+    contentLayout->addLayout(mainLayout, 3);
     contentLayout->addStretch(1);
 
     // 释放事件。

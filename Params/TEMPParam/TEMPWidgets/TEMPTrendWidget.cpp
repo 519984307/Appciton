@@ -18,6 +18,8 @@
 #include "WindowManager.h"
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"
+#include "AlarmConfig.h"
+#include "ParamManager.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -27,50 +29,6 @@ void TEMPTrendWidget::_releaseHandle(IWidget *iWidget)
     Q_UNUSED(iWidget)
     MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
     p->popup(trs("TEMPMenu"));
-}
-
-/**************************************************************************************************
- * 报警指示处理。
- *************************************************************************************************/
-void TEMPTrendWidget::_alarmIndicate(bool isAlarms, tempGrp grp)
-{
-    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
-    psrc = normalPalette(psrc);
-    QLabel *value = NULL;
-    QLabel *name = NULL;
-    switch (grp)
-    {
-    case TEMP_GRP_T1:
-        value = _t1Value;
-        name = _t1Name;
-        break;
-    case TEMP_GRP_T2:
-        value = _t2Value;
-        name = _t2Name;
-        break;
-    case TEMP_GRP_TD:
-        value = _tdValue;
-        name = _tdName;
-        break;
-    default:
-        value = NULL;
-        name = NULL;
-        break;
-    }
-    if (value == NULL || name == NULL)
-    {
-        return;
-    }
-    if (isAlarms)
-    {
-        showAlarmStatus(value, psrc);
-        showAlarmStatus(name, psrc);
-    }
-    else
-    {
-        showNormalStatus(value, psrc);
-        showNormalStatus(name, psrc);
-    }
 }
 
 /**************************************************************************************************
@@ -132,8 +90,6 @@ void TEMPTrendWidget::setTEMPValue(int16_t t1, int16_t t2, int16_t td)
 //            _tdStr.sprintf("%.1f", td / 10.0);
             _tdStr = QString("%1").number(td / 10.0 , 'f' , 1);
         }
-
-        return;
     }
 
     if (t1 == InvData())
@@ -189,6 +145,10 @@ void TEMPTrendWidget::setTEMPValue(int16_t t1, int16_t t2, int16_t td)
                                       , 'f'
                                       , 1);
     }
+
+    _t1Value->setText(_t1Str);
+    _t2Value->setText(_t2Str);
+    _tdValue->setText(_tdStr);
 }
 
 /**************************************************************************************************
@@ -240,32 +200,55 @@ void TEMPTrendWidget::isAlarm(int id, bool flag)
  *************************************************************************************************/
 void TEMPTrendWidget::showValue(void)
 {
-    if (_t1Str != InvStr())
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
+    psrc = normalPalette(psrc);
+    if (_t1Alarm || _t2Alarm || _tdAlarm)
     {
-        _alarmIndicate(_t1Alarm, TEMP_GRP_T1);
-    }
-    if (_t1Value)
-    {
-        _t1Value->setText(_t1Str);
-    }
+        if (!_t1Alarm)
+        {
+            showNormalStatus(_t1Value, psrc);
+        }
 
-    if (_t2Str != InvStr())
-    {
-        _alarmIndicate(_t1Alarm, TEMP_GRP_T2);
-    }
-    if (_t2Value)
-    {
-        _t2Value->setText(_t2Str);
-    }
+        if (!_t2Alarm)
+        {
+            showNormalStatus(_t2Value, psrc);
+        }
 
-    if (_tdStr != InvStr())
-    {
-        _alarmIndicate(_t1Alarm, TEMP_GRP_TD);
+        if (!_tdAlarm)
+        {
+            showNormalStatus(_tdValue, psrc);
+        }
+
+        if (_t1Alarm)
+        {
+            showAlarmStatus(_t1Value, psrc);
+            showAlarmParamLimit(_t1Str, psrc);
+        }
+
+        if (_t2Alarm)
+        {
+            showAlarmStatus(_t2Value, psrc);
+        }
+
+        if (_tdAlarm)
+        {
+            showAlarmStatus(_tdValue, psrc);
+        }
     }
-    if (_tdValue)
+    else
     {
-        _tdValue->setText(_tdStr);
+        showNormalParamLimit(psrc);
+        showNormalStatus(_t1Value, psrc);
+        showNormalStatus(_t2Value, psrc);
+        showNormalStatus(_tdValue, psrc);
     }
+}
+
+void TEMPTrendWidget::updateLimit()
+{
+    UnitType unitType = paramManager.getSubParamUnit(PARAM_TEMP, SUB_PARAM_T1);
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_T1, unitType);
+    setLimit(config.highLimit, config.lowLimit, config.scale);
 }
 
 /**************************************************************************************************
@@ -310,7 +293,10 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     setPalette(palette);
 
     // 标签设定。
-    setName(trs("TEMP"));
+    setName("Temp");
+
+    // 显示上下限
+    updateLimit();
 
     // 设置单位。
     UnitType u = tempParam.getUnit();
@@ -323,62 +309,59 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
         setUnit(Unit::localeSymbol(UNIT_TF));
     }
 
-    QHBoxLayout *temperature = new QHBoxLayout;
+    QHBoxLayout *hLayout = new QHBoxLayout;
     QVBoxLayout *vLayout = new QVBoxLayout();
     QHBoxLayout *mainLayout = new QHBoxLayout();
     mainLayout->setMargin(1);
     mainLayout->setSpacing(1);
 
     _t1Name = new QLabel();
-    _t1Name->setAlignment(Qt::AlignBottom | Qt::AlignRight);
+    _t1Name->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
     _t1Name->setPalette(palette);
     _t1Name->setText(trs("T1"));
+    _t2Name = new QLabel();
+    _t2Name->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
+    _t2Name->setPalette(palette);
+    _t2Name->setText(trs("T2"));
+    vLayout->addWidget(_t1Name);
+    vLayout->addWidget(_t2Name);
+    hLayout->addLayout(vLayout);
+
     _t1Value = new QLabel();
     _t1Value->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
     _t1Value->setPalette(palette);
     _t1Value->setText(InvStr());
-    temperature->addWidget(_t1Name);
-    temperature->addWidget(_t1Value);
-    vLayout->addStretch(1);
-    vLayout->addLayout(temperature);
-    vLayout->addStretch(1);
-
-    _t2Name = new QLabel();
-    _t2Name->setAlignment(Qt::AlignBottom | Qt::AlignRight);
-    _t2Name->setPalette(palette);
-    _t2Name->setText(trs("T2"));
     _t2Value = new QLabel();
     _t2Value->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
     _t2Value->setPalette(palette);
     _t2Value->setText(InvStr());
-    temperature = new QHBoxLayout;
-    temperature->addWidget(_t2Name);
-    temperature->addWidget(_t2Value);
-    vLayout->addLayout(temperature);
-    vLayout->addStretch(1);
+    vLayout = new QVBoxLayout();
+    vLayout->addWidget(_t1Value);
+    vLayout->addWidget(_t2Value);
+    hLayout->addLayout(vLayout);
     mainLayout->addStretch(1);
-    mainLayout->addLayout(vLayout);
-    mainLayout->addStretch(1);
+    mainLayout->addLayout(hLayout);
 
     _tdName = new QLabel();
-    _tdName->setAlignment(Qt::AlignBottom | Qt::AlignRight);
+    _tdName->setAlignment(Qt::AlignHCenter | Qt::AlignRight);
     _tdName->setPalette(palette);
     _tdName->setText(trs("TD"));
     _tdValue = new QLabel();
     _tdValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
     _tdValue->setPalette(palette);
     _tdValue->setText(InvStr());
-    temperature = new QHBoxLayout;
-    temperature->addWidget(_tdName);
-    temperature->addWidget(_tdValue);
-    vLayout = new QVBoxLayout;
-    vLayout->addStretch(1);
-    vLayout->addLayout(temperature);
-    vLayout->addStretch(1);
+    hLayout = new QHBoxLayout;
+    hLayout->addWidget(_tdName);
+    hLayout->addWidget(_tdValue);
+    vLayout = new QVBoxLayout();
+    vLayout->addStretch();
+    vLayout->addLayout(hLayout);
+    vLayout->addStretch();
+    mainLayout->addStretch(1);
     mainLayout->addLayout(vLayout);
     mainLayout->addStretch(1);
 
-    contentLayout->addLayout(mainLayout);
+    contentLayout->addLayout(mainLayout, 3);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));

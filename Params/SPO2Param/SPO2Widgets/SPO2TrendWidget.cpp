@@ -149,7 +149,7 @@ void SPO2TrendWidget::setTextSize()
     font.setWeight(QFont::Black);
     _piValue->setFont(font);
 
-    int fontSize = fontManager.getFontSize(9);
+    int fontSize = fontManager.getFontSize(3);
     font = fontManager.textFont(fontSize);
     _piName->setFont(font);
 }
@@ -191,10 +191,12 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     _piValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
     _piValue->setText(InvStr());
 
-    contentLayout->addStretch();
-    contentLayout->addWidget(_spo2Value, 3);
-    contentLayout->addWidget(_piName, 1);
-    contentLayout->addWidget(_piValue, 3);
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(_spo2Value, 4);
+    layout->addWidget(_piName, 1);
+    layout->addWidget(_piValue, 3);
+
+    contentLayout->addLayout(layout, 7);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
