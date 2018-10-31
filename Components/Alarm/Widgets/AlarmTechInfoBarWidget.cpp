@@ -82,9 +82,7 @@ void AlarmTechInfoBarWidget::_drawText(void)
         r.adjust(focusedBorderWidth() + 6, 0, 0, 0);
     }
 
-    QRect SizeFont;
-    SizeFont.setHeight(height() * 0.66);
-    int fontSize = fontManager.adjustTextFontSize(SizeFont);
+    int fontSize = fontManager.getFontSize(4);
     painter.setFont(fontManager.textFont(fontSize));
 //    painter.setFont(fontManager.textFont(fontManager.getFontSize(1)));
     painter.drawText(r, Qt::AlignVCenter | Qt::AlignLeft, trs(_text));

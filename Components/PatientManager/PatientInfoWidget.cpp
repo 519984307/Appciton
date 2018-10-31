@@ -53,7 +53,7 @@ void PatientInfoWidget::_releaseHandle(IWidget *iWidget)
  *************************************************************************************************/
 PatientInfoWidget::PatientInfoWidget(QWidget *parent) : IWidget("PatientInfoWidget", parent)
 {
-    int fontSize = fontManager.getFontSize(3);
+    int fontSize = fontManager.getFontSize(4);
 
     _bed = new QLabel(this);
     _bed->setFont(fontManager.textFont(fontSize));
