@@ -200,6 +200,7 @@ void RecordPageProcessor::timerEvent(QTimerEvent *ev)
             {
                 break;
             }
+            memset(data, 0, dataLen);
         }
 
         if (d_ptr->curPageXPos >= pageWidth)
