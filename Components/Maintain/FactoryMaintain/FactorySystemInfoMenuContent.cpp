@@ -54,7 +54,6 @@ void FactorySystemInfoMenuContentPrivate::loadOptions()
     QString str;
     machineConfig.getStrValue("SerialNumber", str);
     serialNumBtn->setText(str);
-    serialNumBtn->setFocus();
 }
 
 void FactorySystemInfoMenuContent::readyShow()
@@ -66,6 +65,7 @@ void FactorySystemInfoMenuContent::layoutExec()
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->setMargin(10);
+    this->setFocusPolicy(Qt::NoFocus);
 
     QLabel *label = new QLabel(trs("SerialNum"));
     layout->addWidget(label);
