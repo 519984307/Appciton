@@ -60,6 +60,14 @@ private slots:
      */
     void onSelectRowChanged(int row);
 
+    /**
+     * @brief onDefaultsClick
+     */
+    void onDefaultsClick();
+
+private:
+    void restoryDefaults();
+
 private:
     AlarmLimitWindowPrivate *const d_ptr;
 };

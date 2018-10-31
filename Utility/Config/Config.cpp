@@ -271,6 +271,11 @@ void Config::setConfig(const QString &indexStr, const QVariantMap &config)
     save();
 }
 
+QString Config::getDefaultFileName(const QString &fileName)
+{
+    return _getFactoryFileName(fileName);
+}
+
 /**************************************************************************************************
  * 功能： 读取字符串值。
  * 参数：
