@@ -93,7 +93,7 @@ protected:
      * @param psrc              对应字体调色板
      * @param isSetName         是否设置标题颜色
      */
-    void showAlarmStatus(QWidget *value, QPalette psrc, bool isSetName = true);
+    void showAlarmStatus(QWidget *value, QPalette psrc, bool isSetName = false);
 
     /**
      * @brief showAlarmParamLimit   闪烁对应的上下报警限

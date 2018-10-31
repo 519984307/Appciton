@@ -129,10 +129,6 @@ void TrendWidget::showAlarmParamLimit(const QString &valueStr, QPalette psrc)
             upLimit->setPalette(psrc);
         }
     }
-    else
-    {
-        upLimit->setPalette(alaColor);
-    }
 
     p = downLimit->palette();
     if (value < down)
@@ -145,10 +141,6 @@ void TrendWidget::showAlarmParamLimit(const QString &valueStr, QPalette psrc)
         {
             downLimit->setPalette(psrc);
         }
-    }
-    else
-    {
-        downLimit->setPalette(alaColor);
     }
 }
 
