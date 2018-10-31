@@ -107,7 +107,7 @@ void NIBPParam::setConnected(bool isConnected)
 void NIBPParam::handDemoTrendData(void)
 {
     static int cnt = 50;
-    if (cnt++ < 50)
+    if (cnt++ < 60)
     {
         return;
     }

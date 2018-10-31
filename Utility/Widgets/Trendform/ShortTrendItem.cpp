@@ -382,7 +382,7 @@ void ShortTrendItemPrivate::drawNibpMark(QPainter *painter, const QRect &r)
 
     int index = startIndex;
     QPainterPath path;
-    int tickLen = systemManager.getScreenPixelHPitch();
+    int tickLen = 2 / systemManager.getScreenPixelHPitch();
     float xPos = waveMargin.left() + start * deltaX;
     while (index != endIndex)
     {
