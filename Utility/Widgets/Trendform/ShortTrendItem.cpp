@@ -200,7 +200,6 @@ void ShortTrendItemPrivate::updateBackground()
         p.drawText(textRect, Qt::AlignCenter, labels.at(1));
         textRect.moveRight(waveRegion.right());
         p.drawText(textRect, Qt::AlignVCenter | Qt::AlignRight, labels.at(2));
-        drawTimeLabelFlag = false;
     }
 
     // draw the name label
@@ -436,6 +435,7 @@ void ShortTrendItem::setTrendName(const QString &name)
 
     d_ptr->name = name;
     d_ptr->updateBGFlag = true;
+    update();
 }
 
 QList<SubParamID> ShortTrendItem::getSubParamList() const
@@ -513,7 +513,7 @@ void ShortTrendItem::enableDrawingTimeLabel(bool enable)
         return;
     }
 
-    d_ptr->drawTimeLabelFlag = true;
+    d_ptr->drawTimeLabelFlag = enable;
 
     if (enable)
     {
