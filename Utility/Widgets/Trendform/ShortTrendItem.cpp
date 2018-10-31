@@ -183,8 +183,19 @@ void ShortTrendItemPrivate::updateBackground()
         int yPos = waveRegion.bottom() - (rowHeight * i - 0.5);
         center.setY(yPos);
         textRect.moveCenter(center);
-        int value = step * i + minValue + 0.5;
-        p.drawText(textRect, Qt::AlignVCenter | Qt::AlignRight, Util::convertToString(value, scale));
+        if (i == 0)
+        {
+            p.drawText(textRect, Qt::AlignVCenter | Qt::AlignRight, Util::convertToString(minValue, scale));
+        }
+        else if (i == rowNum)
+        {
+            p.drawText(textRect, Qt::AlignVCenter | Qt::AlignRight, Util::convertToString(maxValue, scale));
+        }
+        else
+        {
+            int value = step * i + minValue + 0.5;
+            p.drawText(textRect, Qt::AlignVCenter | Qt::AlignRight, Util::convertToString(value, scale));
+        }
     }
 
     // draw the time label
