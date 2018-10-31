@@ -16,6 +16,7 @@
 #include "EnglishInputPanel.h"
 #include "ConfigManager.h"
 #include "MessageBox.h"
+#include "PatientManager.h"
 
 #define MaxInputLength 12
 
@@ -101,7 +102,7 @@ void SaveUserConfigWindow::onBtnReleased()
         }
         else
         {
-            configManager.saveUserDefineConfig(d_ptr->cofNameBtn->text(), &currentConfig);
+            configManager.saveUserDefineConfig(d_ptr->cofNameBtn->text(), &currentConfig, patientManager.getType());
         }
         this->close();
     }
