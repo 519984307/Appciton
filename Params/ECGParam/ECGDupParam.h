@@ -96,9 +96,6 @@ public:
      */
     HRSourceType getCurHRSource() const;
 
-    // 设置计算导联字串。
-    void setECGTrendWidgetCalcName(ECGLead calLead);
-
     /**
      * @brief setHrSource  设置hr来源
      * @param type
