@@ -202,7 +202,7 @@ signals:
 #endif
 
 signals:
-    void curWorkModeChanged(WorkMode mode);
+    void workModeChanged(WorkMode mode);
 
 private slots:
     void publishTestResult();

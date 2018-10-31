@@ -339,9 +339,9 @@ private slots:
     void onOxyCRGWaveUpdated(void);
 
     /**
-     * @brief onFilterModeUpdated  滤波模式更新
+     * @brief onWorkModeChanged  滤波模式更新
      */
-    void onFilterModeUpdated(WorkMode mode);
+    void onWorkModeChanged(WorkMode mode);
 
     /**
      * @brief onPaletteChanged change palette

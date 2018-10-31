@@ -596,7 +596,7 @@ void SystemManager::setWorkMode(WorkMode workmode)
     }
 
     // 添加当前工作模式改变信号，用作切换模式下的其他参数的及时更新信号
-    emit curWorkModeChanged(workmode);
+    emit workModeChanged(workmode);
 }
 
 void SystemManager::setStandbyStatus(bool standby)

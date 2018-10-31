@@ -2262,7 +2262,7 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     connect(this, SIGNAL(oxyCRGWaveUpdated()), this, SLOT(onOxyCRGWaveUpdated()));
 
     // 绑定当前工作模式改变信号和滤波模式槽函数
-    connect(&systemManager, SIGNAL(curWorkModeChanged(WorkMode)), this, SLOT(onFilterModeUpdated(WorkMode)));
+    connect(&systemManager, SIGNAL(workModeChanged(WorkMode)), this, SLOT(onWorkModeChanged(WorkMode)));
 }
 
 /**************************************************************************************************
@@ -2301,7 +2301,7 @@ void ECGParam::onOxyCRGWaveUpdated()
     }
 }
 
-void ECGParam::onFilterModeUpdated(WorkMode mode)
+void ECGParam::onWorkModeChanged(WorkMode mode)
 {
     if (mode != WORK_MODE_DEMO)
     {
