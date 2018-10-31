@@ -12,12 +12,6 @@
 #include "Window.h"
 #include "PatientDefine.h"
 
-enum PatientWindowQuitStatus
-{
-    DONE_ZREO = 0,
-    DONE_SUCCESS,
-};
-
 class PatientTypeSelectWindowPrivate;
 class PatientTypeSelectWindow : public Window
 {

@@ -1532,7 +1532,7 @@ MinitrendSetup,短趋势设置,Minitrend Setup
 MinitrendLength,动态趋势时间,Minitrend Length
 SelectParameters,参数选择,Select Parameters
 Ok,确定,Ok
-PatientTypeSelect,病人类型选择,Patient Type Select
+SelectOriginalConfig,选择原始配置,Select Original Config
 RestoreDefault,恢复默认值,Defaluts
 CurrentConfig,当前配置,Current Config
 FactoryConfig,工厂配置,Factory Config 
