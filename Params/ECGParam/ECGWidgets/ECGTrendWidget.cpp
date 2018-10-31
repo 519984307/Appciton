@@ -56,21 +56,6 @@ void ECGTrendWidget::setHRValue(int16_t hr, bool isHR)
     if (isHR)
     {
         setName(trs(paramInfo.getSubParamName(SUB_DUP_PARAM_HR)));
-
-        if (layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD)
-        {
-            int index = ecgParam.getCalcLead();
-            ECGLeadNameConvention convention = ecgParam.getLeadConvention();
-            if (index == ECG_LEAD_AVR)
-            {
-                setCalcLeadName(ECGSymbol::convert((ECGLead)index, convention, true, false));
-            }
-            else
-            {
-                bool isCabrela = (ecgParam.get12LDisplayFormat() == DISPLAY_12LEAD_CABRELA);
-                setCalcLeadName(ECGSymbol::convert((ECGLead)index, convention, true, isCabrela));
-            }
-        }
     }
     else
     {
@@ -79,11 +64,6 @@ void ECGTrendWidget::setHRValue(int16_t hr, bool isHR)
             _hrBeatIcon->setPixmap(QPixmap());
         }
         setName(trs(paramInfo.getSubParamName(SUB_DUP_PARAM_PR)));
-
-        if (layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD)
-        {
-            setCalcLeadName("");
-        }
     }
 
     if (hr >= 0)
@@ -144,32 +124,6 @@ void ECGTrendWidget::showValue(void)
 void ECGTrendWidget::showEvent(QShowEvent *e)
 {
     TrendWidget::showEvent(e);
-
-    if (layoutManager.getUFaceType() != UFACE_MONITOR_12LEAD)
-    {
-        setCalcLeadName("");
-    }
-    else
-    {
-        if (ecgDupParam.isHRValid())
-        {
-            int index = ecgParam.getCalcLead();
-            ECGLeadNameConvention convention = ecgParam.getLeadConvention();
-            if (index == ECG_LEAD_AVR)
-            {
-                setCalcLeadName(ECGSymbol::convert((ECGLead)index, convention, true, false));
-            }
-            else
-            {
-                bool isCabrela = (ecgParam.get12LDisplayFormat() == DISPLAY_12LEAD_CABRELA);
-                setCalcLeadName(ECGSymbol::convert((ECGLead)index, convention, true, isCabrela));
-            }
-        }
-        else
-        {
-            setCalcLeadName("");
-        }
-    }
 }
 
 /**************************************************************************************************
@@ -197,30 +151,6 @@ void ECGTrendWidget::blinkBeatPixmap()
 {
     _hrBeatIcon->setPixmap(beatPixmap);
     _timer->start();
-}
-
-/**************************************************************************************************
- * 设置计算导联字串。
- *************************************************************************************************/
-void ECGTrendWidget::setTrendWidgetCalcName(ECGLead calLead)
-{
-    if (layoutManager.getUFaceType() != UFACE_MONITOR_12LEAD)
-    {
-        setCalcLeadName("");
-    }
-    else
-    {
-        ECGLeadNameConvention convention = ecgParam.getLeadConvention();
-        if (calLead == ECG_LEAD_AVR)
-        {
-            setCalcLeadName(ECGSymbol::convert(calLead, convention, true, false));
-        }
-        else
-        {
-            bool isCabrela = (ecgParam.get12LDisplayFormat() == DISPLAY_12LEAD_CABRELA);
-            setCalcLeadName(ECGSymbol::convert(calLead, convention, true, isCabrela));
-        }
-    }
 }
 
 /**************************************************************************************************

@@ -406,15 +406,6 @@ HRSourceType ECGDupParam::getCurHRSource() const
     return _hrSource;
 }
 
-
-/**************************************************************************************************
- * 设置计算导联字串。
- *************************************************************************************************/
-void ECGDupParam::setECGTrendWidgetCalcName(ECGLead calLead)
-{
-    _trendWidget->setTrendWidgetCalcName(calLead);
-}
-
 void ECGDupParam::onPaletteChanged(ParamID id)
 {
     if (id != PARAM_ECG)

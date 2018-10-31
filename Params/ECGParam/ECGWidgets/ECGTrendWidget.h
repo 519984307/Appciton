@@ -35,9 +35,6 @@ public:
     // 闪烁心跳图标
     void blinkBeatPixmap();
 
-    //设置计算导联字串
-    void setTrendWidgetCalcName(ECGLead calLead);
-
     ECGTrendWidget();
     ~ECGTrendWidget();
 

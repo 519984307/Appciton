@@ -51,7 +51,6 @@ void TrendWidget::resizeEvent(QResizeEvent *e)
     int fontSize = fontManager.getFontSize(4);
     QFont font = fontManager.textFont(fontSize);
     nameLabel->setFont(font);
-    calcLeadLabel->setFont(font);
 
     fontSize = fontManager.getFontSize(1);
     font = fontManager.textFont(fontSize);
@@ -247,24 +246,6 @@ void TrendWidget::setLimit(int up, int down, int scale)
 }
 
 /**************************************************************************************************
- * 功能： 设置计算导联字串。
- * 参数：
- *      unit:单位。
- *************************************************************************************************/
-void TrendWidget::setCalcLeadName(const QString &unit)
-{
-    if (!calcLeadLabel->isVisible())
-    {
-        calcLeadLabel->setVisible(true);
-    }
-
-    if (unit != calcLeadLabel->text())
-    {
-        calcLeadLabel->setText(unit);
-    }
-}
-
-/**************************************************************************************************
  * 功能： 设置名称的字体。
  * 参数：
  *      size: 字号。
@@ -291,15 +272,12 @@ void TrendWidget::setUnitFont(int size, bool isBold)
  * 构造。
  *************************************************************************************************/
 TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
-    : IWidget(widgetName), nameLabel(NULL), calcLeadLabel(NULL),
+    : IWidget(widgetName), nameLabel(NULL),
       unitLabel(NULL), upLimit(NULL), downLimit(NULL)
 {
     _title = "";
     nameLabel = new TrendWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     nameLabel->setFocusPolicy(Qt::NoFocus);
-
-    calcLeadLabel = new QLabel("", this);
-    calcLeadLabel->setAlignment(Qt::AlignRight);
 
     unitLabel = new QLabel("", this);
     unitLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);

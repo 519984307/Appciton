@@ -58,7 +58,6 @@ protected:
     void setName(const QString &name);
     void setUnit(const QString &unit);
     void setLimit(int up, int down, int scale);
-    void setCalcLeadName(const QString &calcLead);
 
     void setNameFont(int size, bool isBold = false);
     void setUnitFont(int size, bool isBold = false);
@@ -77,7 +76,6 @@ protected:
     static const int barHeight = 21;
 
     TrendWidgetLabel *nameLabel;
-    QLabel *calcLeadLabel;
     QLabel *unitLabel;
 
     QLabel *upLimit;

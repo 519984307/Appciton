@@ -1286,10 +1286,6 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
         {
             needUpdateLayout = 1;
         }
-        else
-        {
-            ecgDupParam.setECGTrendWidgetCalcName(_calcLead);
-        }
     }
 
     // update visiable or invisiable waves
