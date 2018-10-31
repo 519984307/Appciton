@@ -516,7 +516,7 @@ NIBPTrendWidget::NIBPTrendWidget()
     vLayout5->addWidget(_stackedwidget, 1);
     vLayout5->addLayout(hLayout);
 
-    contentLayout->addLayout(vLayout5, 1);
+    contentLayout->addLayout(vLayout5, 7);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));

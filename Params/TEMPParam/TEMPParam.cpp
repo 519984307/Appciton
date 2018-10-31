@@ -38,8 +38,8 @@ void TEMPParam::handDemoWaveform(WaveformID /*id*/, int16_t /*data*/)
  *************************************************************************************************/
 void TEMPParam::handDemoTrendData(void)
 {
-    _t1Value = 370;
-    _t2Value = 372;
+    _t1Value = 371;
+    _t2Value = 373;
     _tdValue = abs(_t1Value - _t2Value);
     if (NULL != _trendWidget)
     {
@@ -273,6 +273,14 @@ void TEMPParam::getCalibrateData(unsigned char *packet)
         return;
     }
     // TODO: set result to the factory calibration menu
+}
+
+void TEMPParam::updateSubParamLimit(SubParamID id)
+{
+    if (id == SUB_PARAM_T1)
+    {
+        _trendWidget->updateLimit();
+    }
 }
 
 /**************************************************************************************************

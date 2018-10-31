@@ -60,6 +60,7 @@ private slots:
 private:
     void _setValue(int16_t v, QString &str);
 
+    QLabel *_etCO2Label;
     QLabel *_etco2Value;
     QLabel *_fico2Label;
     QLabel *_fico2Value;

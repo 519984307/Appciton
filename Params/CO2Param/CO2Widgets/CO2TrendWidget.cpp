@@ -161,7 +161,6 @@ void CO2TrendWidget::showValue()
         if (!_fico2Alarm)
         {
             showNormalStatus(_fico2Value, fgColor);
-            showNormalStatus(_fico2Label, fgColor);
         }
 
         if (_etco2Alarm)
@@ -173,7 +172,6 @@ void CO2TrendWidget::showValue()
         if (_fico2Alarm)
         {
             showAlarmStatus(_fico2Value, fgColor, false);
-            showAlarmStatus(_fico2Label, fgColor, false);
         }
     }
     else
@@ -181,7 +179,6 @@ void CO2TrendWidget::showValue()
         showNormalParamLimit(fgColor);
         showNormalStatus(_etco2Value, fgColor);
         showNormalStatus(_fico2Value, fgColor);
-        showNormalStatus(_fico2Label, fgColor);
     }
 
     _etco2Value->setText(_etco2Str);
@@ -213,8 +210,9 @@ void CO2TrendWidget::setTextSize()
     font.setWeight(QFont::Black);
     _fico2Value->setFont(font);
 
-    QFont fico2Font = fontManager.textFont(fontManager.getFontSize(9));
-    _fico2Label->setFont(fico2Font);
+    font = fontManager.textFont(fontManager.getFontSize(3));
+    _etCO2Label->setFont(font);
+    _fico2Label->setFont(font);
 }
 
 // 立刻显示数据。
@@ -239,20 +237,24 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
 
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
     setPalette(palette);
-    setName(trs(paramInfo.getSubParamName(SUB_PARAM_ETCO2)));
+    setName("CO2");
     setUnit(Unit::localeSymbol(co2Param.getUnit()));
 
     // 设置上下限
     updateLimit();
 
 //    // 构造资源。
+    _etCO2Label = new QLabel("Et", this);
+    _etCO2Label->setPalette(palette);
+    _etCO2Label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+
     _etco2Value = new QLabel();
     _etco2Value->setAlignment(Qt::AlignHCenter | Qt::AlignTop|Qt::AlignVCenter);
 
     _etco2Value->setPalette(palette);
     _etco2Value->setText(InvStr());
 
-    _fico2Label = new QLabel(trs("FICO2"), this);
+    _fico2Label = new QLabel("Fi", this);
     _fico2Label->setPalette(palette);
     _fico2Label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
@@ -261,9 +263,12 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
     _fico2Value->setPalette(palette);
     _fico2Value->setText(InvStr());
 
-    contentLayout->addWidget(_etco2Value, 3);
-    contentLayout->addWidget(_fico2Label, 1);
-    contentLayout->addWidget(_fico2Value, 3);
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(_etCO2Label, 1);
+    layout->addWidget(_etco2Value, 3);
+    layout->addWidget(_fico2Label, 1);
+    layout->addWidget(_fico2Value, 3);
+    contentLayout->addLayout(layout, 7);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));

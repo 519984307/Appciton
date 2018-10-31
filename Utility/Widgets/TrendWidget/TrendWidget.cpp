@@ -319,7 +319,7 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
         contentLayout = new QHBoxLayout();
         contentLayout->setMargin(0);
         contentLayout->setSpacing(0);
-        contentLayout->addLayout(vLayout);
+        contentLayout->addLayout(vLayout, 1);
 
 
         setLayout(contentLayout);

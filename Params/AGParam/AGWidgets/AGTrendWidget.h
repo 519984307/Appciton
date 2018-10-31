@@ -46,6 +46,7 @@ private slots:
     void _releaseHandle(IWidget *);
 
 private:
+    QLabel *_etName;
     QLabel *_etValue;
     QLabel *_fiName;
     QLabel *_fiValue;

@@ -29,13 +29,13 @@ void AGTrendWidget::setAnestheticType(AGAnaestheticType type)
 {
     if (type == AG_ANAESTHETIC_NO)
     {
-        setName("Et" + (QString)AGSymbol::convert(_gasType));
-        _fiName->setText("Fi" + (QString)AGSymbol::convert(_gasType));
+        setName((QString)AGSymbol::convert(_gasType));
+        _fiName->setText("Fi");
     }
     else
     {
-        setName("Et" + (QString)AGSymbol::convert(type));
-        _fiName->setText("Fi" + (QString)AGSymbol::convert(type));
+        setName((QString)AGSymbol::convert(type));
+        _fiName->setText("Fi");
     }
 }
 
@@ -156,7 +156,6 @@ void AGTrendWidget::showValue()
 
         if (!_fiAlarm)
         {
-            showNormalStatus(_fiName, psrc);
             showNormalStatus(_fiValue, psrc);
         }
 
@@ -168,7 +167,6 @@ void AGTrendWidget::showValue()
 
         if (_fiAlarm)
         {
-            showAlarmStatus(_fiName, psrc, false);
             showAlarmStatus(_fiValue, psrc, false);
         }
     }
@@ -176,7 +174,6 @@ void AGTrendWidget::showValue()
     {
         showNormalParamLimit(psrc);
         showNormalStatus(_etValue, psrc);
-        showNormalStatus(_fiName, psrc);
         showNormalStatus(_fiValue, psrc);
     }
 
@@ -200,13 +197,18 @@ AGTrendWidget::AGTrendWidget(const QString &trendName, const AGTypeGas gasType)
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
     setPalette(palette);
 
-    setName("Et" + (QString)AGSymbol::convert(gasType));
+    setName((QString)AGSymbol::convert(gasType));
     setUnit("%");
 
     // 设置上下限
     updateLimit();
 
     // 构造资源。
+    _etName = new QLabel();
+    _etName->setPalette(palette);
+    _etName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    _etName->setText("Et");
+
     _etValue = new QLabel();
     _etValue->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     _etValue->setPalette(palette);
@@ -215,17 +217,19 @@ AGTrendWidget::AGTrendWidget(const QString &trendName, const AGTypeGas gasType)
     _fiName = new QLabel();
     _fiName->setPalette(palette);
     _fiName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    _fiName->setText("Fi" + (QString)AGSymbol::convert(gasType));
+    _fiName->setText("Fi");
 
     _fiValue = new QLabel();
     _fiValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
     _fiValue->setPalette(palette);
     _fiValue->setText(InvStr());
 
-    contentLayout->addStretch();
-    contentLayout->addWidget(_etValue, 3);
-    contentLayout->addWidget(_fiName, 1);
-    contentLayout->addWidget(_fiValue, 3);
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(_etName, 1);
+    layout->addWidget(_etValue, 3);
+    layout->addWidget(_fiName, 1);
+    layout->addWidget(_fiValue, 3);
+    contentLayout->addLayout(layout, 7);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
@@ -282,9 +286,10 @@ void AGTrendWidget::setTextSize()
     font.setWeight(QFont::Black);
     _fiValue->setFont(font);
 
-    int fontSize = fontManager.getFontSize(9);
+    int fontSize = fontManager.getFontSize(3);
     font = fontManager.textFont(fontSize);
     _fiName->setFont(font);
+    _etName->setFont(font);
 }
 
 

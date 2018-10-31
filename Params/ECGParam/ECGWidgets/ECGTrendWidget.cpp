@@ -279,9 +279,7 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     hlayout->addWidget(_hrValue);
     hlayout->addWidget(_hrBeatIcon);
 
-    contentLayout->addStretch(1);
-    contentLayout->addLayout(hlayout);
-    contentLayout->addStretch(1);
+    contentLayout->addLayout(hlayout, 3);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));

@@ -97,6 +97,8 @@ public:
     //接收定标数据
     void getCalibrateData(unsigned char *packet);
 
+    // 刷新上下限
+    virtual void updateSubParamLimit(SubParamID id);
 public:
     // 设置/获取单位。
     void setUnit(UnitType u);

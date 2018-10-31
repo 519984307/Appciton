@@ -102,7 +102,7 @@ ECGPVCSTrendWidget::ECGPVCSTrendWidget() : TrendWidget("ECGPVCSTrendWidget")
     // 设置标题栏的相关信息。
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     setPalette(palette);
-    setName(trs(paramInfo.getSubParamName(SUB_PARAM_ECG_PVCS)));
+    setName("PVCs");
 
     _pvcsValue = new QLabel();
     _pvcsValue->setPalette(palette);
@@ -117,7 +117,7 @@ ECGPVCSTrendWidget::ECGPVCSTrendWidget() : TrendWidget("ECGPVCSTrendWidget")
     mainLayout->addStretch(1);
 
     contentLayout->addStretch(1);
-    contentLayout->addLayout(mainLayout);
+    contentLayout->addLayout(mainLayout, 3);
     contentLayout->addStretch(1);
 
     // 释放事件。
