@@ -58,9 +58,10 @@ public:
      * @brief saveUserDefineConfig the user define config
      * @param configName config name
      * @param configObj pointer to the config object
+     * @param type patient type
      * @return save successfully or not
      */
-    bool saveUserDefineConfig(const QString & configName, Config * configObj);
+    bool saveUserDefineConfig(const QString & configName, Config * configObj, const PatientType &type);
 
     /**
      * @brief saveUserConfigInfo save the user config info to the system config

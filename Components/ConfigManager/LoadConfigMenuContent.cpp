@@ -204,6 +204,7 @@ void LoadConfigMenuContent::onBtnClick()
 
         // update patient type
         int patitentTypeInt = 255;
+        // 如果从原始文件加载，通过文件名称获取病人类型
         QString fileNameStr(d_ptr->configs.at(index).fileName);
         if (fileNameStr.indexOf("Adult") >= 0)
         {
@@ -219,7 +220,25 @@ void LoadConfigMenuContent::onBtnClick()
         }
         else
         {
-            patitentTypeInt = 0;
+            // 如果是从用户自定义文件加载，通过病人类型标记获取病人类型
+            QString fileName(d_ptr->configs.at(index).patType);
+
+            if (fileName == PatientSymbol::convert(PATIENT_TYPE_ADULT))
+            {
+                patitentTypeInt = PATIENT_TYPE_ADULT;
+            }
+            else if (fileName == PatientSymbol::convert(PATIENT_TYPE_PED))
+            {
+                patitentTypeInt = PATIENT_TYPE_PED;
+            }
+            else if (fileName == PatientSymbol::convert(PATIENT_TYPE_NEO))
+            {
+                patitentTypeInt = PATIENT_TYPE_NEO;
+            }
+            else
+            {
+                patitentTypeInt = PATIENT_TYPE_ADULT;
+            }
         }
         systemConfig.setNumValue("General|PatientType", patitentTypeInt);
         systemConfig.updateCurConfigName();

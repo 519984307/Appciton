@@ -1445,7 +1445,7 @@ LoadConfig,加载配置,Load Config
 SuccessToLoad,加载成功,Success ToLoad
 Load,加载,Load
 View,查看,View
-LoadConfigDesc,加载配置设置,Load Config Desc
+LoadConfigDesc,加载配置,Load Config
 Trend1,趋势图1 ,Trend 1
 Trend2,趋势图2,Trend 2
 RulerAdjust,标尺调整,Ruler Adjust
@@ -1459,7 +1459,7 @@ RESPLow,呼吸低,RESP Low
 RESPHigh,呼吸高,RESP High
 ImportFiles,导入文件,ImportFiles
 LoadConfigMenuContent,加载配置,Load Config
-LoadConfigMenuContentDesc,加载配置设置,Load Config Desc
+LoadConfigMenuContentDesc,加载配置,Load Config
 ConfigManagerPassword,配置管理密码,Config Manager Password
 ConfigEditCodeMarkerMenu,Code Marker,Code Marker
 ConfigEditCodeMarkerMenuDesc,Code Marker,Code Marker
@@ -1534,6 +1534,7 @@ MinitrendSetup,短趋势设置,Minitrend Setup
 MinitrendLength,动态趋势时间,Minitrend Length
 SelectParameters,参数选择,Select Parameters
 Ok,确定,Ok
+SelectOriginalConfig,选择原始配置,Select Original Config
 RestoreDefault,恢复默认值,Defaluts
 CurrentConfig,当前配置,Current Config
 FactoryConfig,工厂配置,Factory Config 

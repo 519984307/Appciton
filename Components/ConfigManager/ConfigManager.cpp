@@ -260,7 +260,7 @@ void ConfigManager::setWidgetIfOnlyShown(bool status)
     d_ptr->isDisableWidgets = status;
 }
 
-bool ConfigManager::saveUserDefineConfig(const QString &configName, Config *configObj)
+bool ConfigManager::saveUserDefineConfig(const QString &configName, Config *configObj, const PatientType &type)
 {
     QList<ConfigManager::UserDefineConfigInfo> infos = getUserDefineConfigInfos();
     QString filename = QString("%1%2.xml").arg(USER_DEFINE_CONFIG_PREFIX).arg(timeDate.time());
@@ -272,7 +272,7 @@ bool ConfigManager::saveUserDefineConfig(const QString &configName, Config *conf
     ConfigManager::UserDefineConfigInfo info;
     info.fileName = filename;
     info.name = configName;
-    info.patType = patientManager.getTypeStr();        // 保存病人类型信息
+    info.patType = PatientSymbol::convert(type);        // 保存病人类型信息
     infos.append(info);
     saveUserConfigInfo(infos);
     return true;
