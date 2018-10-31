@@ -1676,7 +1676,7 @@ void ECGParam::setFilterMode(int mode)
     {
         return;
     }
-    _filterMode = (ECGFilterMode)mode;
+    _filterMode = static_cast<ECGFilterMode>(mode);
     if (NULL != _provider)
     {
         _provider->setFilterMode(_filterMode);
@@ -2260,6 +2260,9 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
     _isPowerOnNewSession = true;
 
     connect(this, SIGNAL(oxyCRGWaveUpdated()), this, SLOT(onOxyCRGWaveUpdated()));
+
+    // 绑定当前工作模式改变信号和滤波模式槽函数
+    connect(&systemManager, SIGNAL(curWorkModeChanged(WorkMode)), this, SLOT(onFilterModeUpdated(WorkMode)));
 }
 
 /**************************************************************************************************
@@ -2296,6 +2299,15 @@ void ECGParam::onOxyCRGWaveUpdated()
     {
 //        _oxyCRGRESPWidget->update();
     }
+}
+
+void ECGParam::onFilterModeUpdated(WorkMode mode)
+{
+    if (mode != WORK_MODE_DEMO)
+    {
+        return;
+    }
+    setFilterMode(ECG_FILTERMODE_DIAGNOSTIC);
 }
 
 void ECGParam::onPaletteChanged(ParamID id)

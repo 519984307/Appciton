@@ -116,10 +116,25 @@ void ECGMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_ECG2]->setCurrentIndex(index2);
     combos[ITEM_CBO_ECG2]->blockSignals(false);
 
-
     ECGFilterMode filterMode = ecgParam.getFilterMode();
+
+    // demo 模式下心电滤波模式固定为诊断，不可更改
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        if (filterMode != ECG_FILTERMODE_DIAGNOSTIC)
+        {
+            filterMode = ECG_FILTERMODE_DIAGNOSTIC;
+            ecgParam.setFilterMode(filterMode);
+        }
+        combos[ITEM_CBO_FILTER_MODE]->setEnabled(false);
+    }
+    else
+    {
+        combos[ITEM_CBO_FILTER_MODE]->setEnabled(true);
+    }
+
     ECGNotchFilter notchFilter = ecgParam.getNotchFilter();
-    combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(ecgParam.getFilterMode());
+    combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(filterMode);
 
     combos[ITEM_CBO_NOTCH_FITER]->clear();
     switch (filterMode)

@@ -201,6 +201,9 @@ signals:
     void metronomeReceived();
 #endif
 
+signals:
+    void curWorkModeChanged(WorkMode mode);
+
 private slots:
     void publishTestResult();
 
