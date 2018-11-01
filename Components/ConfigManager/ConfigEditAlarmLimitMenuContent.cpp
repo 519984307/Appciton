@@ -31,10 +31,10 @@
 class ConfigEditAlarmLimitMenuContentPrivate
 {
 public:
-    explicit ConfigEditAlarmLimitMenuContentPrivate(Config *const config)
+    explicit ConfigEditAlarmLimitMenuContentPrivate(Config *const config, const PatientType &type)
         : model(NULL), table(NULL),
           prevBtn(NULL), nextBtn(NULL),
-          config(config)
+          config(config), patType(type)
     {
     }
 
@@ -45,6 +45,7 @@ public:
     Button *prevBtn;
     Button *nextBtn;
     Config *config;
+    PatientType patType;
     QList<AlarmDataInfo> infos;
 };
 
@@ -77,7 +78,8 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
             info.status = alarmConfig.isLimitAlarmEnable(subId);
             UnitType unit  = paramManager.getSubParamUnit(pid, subId);
 
-            QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
+            QString type = PatientSymbol::convert(patType);
+            QString prefix = "AlarmSource|" + type + "|";
             prefix += paramInfo.getSubParamName(subId, true);
             prefix += "|";
             prefix += Unit::getSymbol(unit);
@@ -130,9 +132,9 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
     model->setupAlarmDataInfos(infos);
 }
 
-ConfigEditAlarmLimitMenuContent::ConfigEditAlarmLimitMenuContent(Config *const config)
+ConfigEditAlarmLimitMenuContent::ConfigEditAlarmLimitMenuContent(Config *const config, const PatientType &type)
     : MenuContent(trs("AlarmLimitMenu"), trs("AlarmLimitMenuDesc")),
-      d_ptr(new ConfigEditAlarmLimitMenuContentPrivate(config))
+      d_ptr(new ConfigEditAlarmLimitMenuContentPrivate(config, type))
 {
 }
 

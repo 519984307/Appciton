@@ -10,6 +10,7 @@
 #pragma once
 #include "MenuWindow.h"
 #include "Config.h"
+#include "PatientDefine.h"
 
 class ConfigEditMenuWindowPrivate;
 class ConfigEditMenuWindow : public MenuWindow
@@ -47,6 +48,12 @@ public:
      * @return return the edit config name
      */
     QString getCurrentEditConfigName() const;
+
+    /**
+     * @brief setCurEditConfigPatType  设置当前配置病人类型
+     * @param type  病人类型
+     */
+    void setCurEditConfigPatType(const PatientType &type);
 
     /**
      * @brief getCurrentEditConfigItem  获得当前的配置项

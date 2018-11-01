@@ -209,6 +209,7 @@ void UserConfigEditMenuContent::onBtnClick()
             d_ptr->editWindow = new ConfigEditMenuWindow();
             d_ptr->editWindow->setCurrentEditConfigName(d_ptr->generateDefaultConfigName());
             d_ptr->editWindow->setCurrentEditConfig(d_ptr->curConfig);
+            d_ptr->editWindow->setCurEditConfigPatType(type);
             d_ptr->editWindow->initializeSubMenu();
 
             QString name = d_ptr->editWindow->getCurrentEditConfigName();
@@ -240,6 +241,28 @@ void UserConfigEditMenuContent::onBtnClick()
             d_ptr->editWindow = new ConfigEditMenuWindow();
             d_ptr->editWindow->setCurrentEditConfigName(d_ptr->configs.at(index).name);
             d_ptr->editWindow->setCurrentEditConfig(d_ptr->curConfig);
+
+            // 设置当前配置病人信息的病人类型
+            QString patType = d_ptr->configs.at(index).patType;
+            PatientType type;
+            if (patType == PatientSymbol::convert(PATIENT_TYPE_ADULT))
+            {
+                type = PATIENT_TYPE_ADULT;
+            }
+            else if (patType == PatientSymbol::convert(PATIENT_TYPE_PED))
+            {
+                type = PATIENT_TYPE_PED;
+            }
+            else if (patType == PatientSymbol::convert(PATIENT_TYPE_NEO))
+            {
+                type = PATIENT_TYPE_NEO;
+            }
+            else
+            {
+                type = PATIENT_TYPE_NULL;
+            }
+            d_ptr->editWindow->setCurEditConfigPatType(type);
+
             d_ptr->editWindow->initializeSubMenu();
 
             QString fileName = d_ptr->curConfig->getFileName();

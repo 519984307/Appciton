@@ -26,16 +26,17 @@ class ConfigEditMenuWindowPrivate
 {
 public:
     ConfigEditMenuWindowPrivate()
-        : isSubmenuInitial(false),
-          curEditConfig(NULL)
+        : isSubmenuInitial(false)
+        , curEditConfig(NULL)
+        , configName("")
+        , patType(PATIENT_TYPE_NULL)
     {
-        configName.clear();
-        subMenuMap.clear();
     }
 
     bool isSubmenuInitial;
     Config *curEditConfig;
     QString configName;
+    PatientType patType;
     QMap <QString, MenuContent *> subMenuMap;
 };
 
@@ -65,8 +66,7 @@ void ConfigEditMenuWindow::initializeSubMenu()
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditGeneralMenu"] = subMenu;
 
-    // 如果不添加this参数，在查找其父类指针时，其父类指针默认为NULL
-    subMenu = new ConfigEditAlarmLimitMenuContent(config);
+    subMenu = new ConfigEditAlarmLimitMenuContent(config, d_ptr->patType);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditAlarmLimitMenu"] = subMenu;
 
@@ -138,6 +138,11 @@ void ConfigEditMenuWindow::setCurrentEditConfigName(const QString &name)
 QString ConfigEditMenuWindow::getCurrentEditConfigName() const
 {
     return d_ptr->configName;
+}
+
+void ConfigEditMenuWindow::setCurEditConfigPatType(const PatientType &type)
+{
+    d_ptr->patType = type;
 }
 
 QMap <QString, MenuContent *> ConfigEditMenuWindow::getCurrentEditConfigItem() const

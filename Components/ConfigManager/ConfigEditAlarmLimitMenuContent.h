@@ -18,7 +18,7 @@ class ConfigEditAlarmLimitMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    explicit ConfigEditAlarmLimitMenuContent(Config *const config);
+    explicit ConfigEditAlarmLimitMenuContent(Config *const config, const PatientType &type);
     ~ConfigEditAlarmLimitMenuContent();
     /**
      * @brief setItemFocus
