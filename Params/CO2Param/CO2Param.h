@@ -14,7 +14,6 @@
 #include "CO2Symbol.h"
 #include "UnitManager.h"
 #include "AlarmDefine.h"
-#include "OxyCRGCO2Widget.h"
 
 class CO2TrendWidget;
 class CO2WaveWidget;

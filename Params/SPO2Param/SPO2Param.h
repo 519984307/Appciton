@@ -17,7 +17,6 @@
 
 class SPO2TrendWidget;
 class SPO2WaveWidget;
-class OxyCRGSPO2Widget;
 class OxyCRGSPO2TrendWidget;
 class SPO2ProviderIFace;
 class SPO2Param: public Param
@@ -78,7 +77,6 @@ public:
     // 设置界面对象。
     void setTrendWidget(SPO2TrendWidget *trendWidget);
     void setWaveWidget(SPO2WaveWidget *waveWidget);
-    void setOxyCRGWaveWidget(OxyCRGSPO2Widget *waveWidget);
     void setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *trendWidget);
 
     // PR音量
@@ -190,7 +188,6 @@ private:
     SPO2ProviderIFace *_provider;
     SPO2TrendWidget *_trendWidget;
     SPO2WaveWidget *_waveWidget;
-    OxyCRGSPO2Widget *_waveOxyCRGWidget;
 
     bool _isEverCheckFinger;  // use to decide prompt sensor off
     bool _isEverSensorOn;   // use to decide display waveform at power on

@@ -13,7 +13,6 @@
 #include "BaseDefine.h"
 #include "IConfig.h"
 #include "ECGWaveWidget.h"
-#include "OxyCRGHRWidget.h"
 #include "ECGPVCSTrendWidget.h"
 #include "ECGSTTrendWidget.h"
 #include "Debug.h"
@@ -2257,8 +2256,6 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
 //    _lastCabelType = 0x00;
     _isPowerOnNewSession = true;
 
-    connect(this, SIGNAL(oxyCRGWaveUpdated()), this, SLOT(onOxyCRGWaveUpdated()));
-
     // 绑定当前工作模式改变信号和滤波模式槽函数
     connect(&systemManager, SIGNAL(workModeChanged(WorkMode)), this, SLOT(onWorkModeChanged(WorkMode)));
 }
@@ -2269,34 +2266,6 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
 ECGParam::~ECGParam()
 {
     _timer.stop();
-}
-
-void ECGParam::setOxyCRGCO2Widget(OxyCRGCO2Widget *p)
-{
-    if (p)
-    {
-        _oxyCRGCO2Widget = p;
-    }
-}
-
-void ECGParam::setOxyCRGRESPWidget(OxyCRGRESPWidget *p)
-{
-    if (p)
-    {
-        _oxyCRGRESPWidget = p;
-    }
-}
-
-void ECGParam::onOxyCRGWaveUpdated()
-{
-    if (_oxyCRGCO2Widget)
-    {
-//        _oxyCRGCO2Widget->update();
-    }
-    if (_oxyCRGRESPWidget)
-    {
-//        _oxyCRGRESPWidget->update();
-    }
 }
 
 void ECGParam::onWorkModeChanged(WorkMode mode)

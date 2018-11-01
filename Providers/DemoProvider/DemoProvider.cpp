@@ -73,22 +73,6 @@ struct DemoTrendDesc
 };
 static DemoTrendDesc _demoTrendData[PARAM_NR];
 
-
-void DemoProvider::setOxyCRGCO2Widget(OxyCRGCO2Widget *p)
-{
-    if (p)
-    {
-        _oxyCRGCO2Widget = p;
-    }
-}
-
-void DemoProvider::setOxyCRGRESPWidget(OxyCRGRESPWidget *p)
-{
-    if (p)
-    {
-        _oxyCRGRESPWidget = p;
-    }
-}
 /**************************************************************************************************
  * 定时器Slot函数。
  *************************************************************************************************/
@@ -312,9 +296,7 @@ QByteArray DemoProvider::getDemoWaveData(WaveformID waveid)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-DemoProvider::DemoProvider() : Provider("DemoProvider"),
-    _oxyCRGCO2Widget(NULL),
-    _oxyCRGRESPWidget(NULL)
+DemoProvider::DemoProvider() : Provider("DemoProvider")
 {
     _timerID = 0;
 

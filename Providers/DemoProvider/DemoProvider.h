@@ -23,8 +23,6 @@
 #include "COProviderIFace.h"
 #include "AGProviderIFace.h"
 #include "AlarmDefine.h"
-#include "OxyCRGRESPWidget.h"
-#include "OxyCRGCO2Widget.h"
 
 
 class ECGParam;
@@ -43,8 +41,6 @@ class DemoProvider: public Provider,
 {
     Q_OBJECT
 public:
-    void setOxyCRGRESPWidget(OxyCRGRESPWidget *p);
-    void setOxyCRGCO2Widget(OxyCRGCO2Widget *p);
     virtual void sendVersion() { }
     // 实现Provider的接口。
     virtual bool attachParam(Param &param);
@@ -145,8 +141,6 @@ protected:
 private:
     void _produceDemoData(void);
     QFile _demoFile[WAVE_NR];
-    OxyCRGCO2Widget *_oxyCRGCO2Widget;
-    OxyCRGRESPWidget *_oxyCRGRESPWidget;
     int _timerID;
     QTime _time;
 

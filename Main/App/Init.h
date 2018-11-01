@@ -155,10 +155,6 @@
 #include "PMessageBox.h"
 
 #include "OxyCRGWidget.h"
-#include "OxyCRGHRWidget.h"
-#include "OxyCRGRESPWidget.h"
-#include "OxyCRGRRWidget.h"
-#include "OxyCRGSPO2Widget.h"
 
 #include "TopBarWidget.h"
 

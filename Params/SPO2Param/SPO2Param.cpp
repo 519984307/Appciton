@@ -12,7 +12,6 @@
 #include "SPO2Alarm.h"
 #include "SPO2TrendWidget.h"
 #include "SPO2WaveWidget.h"
-#include "OxyCRGSPO2Widget.h"
 #include "SPO2ProviderIFace.h"
 #include "IConfig.h"
 #include "WaveformCache.h"
@@ -329,17 +328,6 @@ void SPO2Param::setWaveWidget(SPO2WaveWidget *waveWidget)
     }
     _waveWidget = waveWidget;
     _setWaveformSpeed((SPO2WaveVelocity)getSweepSpeed());
-}
-
-/**************************************************************************************************
- * 设置界面对象。
- *************************************************************************************************/
-void SPO2Param::setOxyCRGWaveWidget(OxyCRGSPO2Widget *waveWidget)
-{
-    if (waveWidget == NULL)
-    {
-        return;
-    }
 }
 
 void SPO2Param::setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *trendWidget)

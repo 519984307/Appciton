@@ -27,7 +27,6 @@
 #include "OxyCRGSetupWindow.h"
 #include "IMessageBox.h"
 #include "ECGParam.h"
-#include "OxyCRGRRWidget.h"
 #include "OxyCRGTrendWaveWidget.h"
 #include "OxyCRGCO2WaveWidget.h"
 #include "OxyCRGSPO2TrendWidget.h"

@@ -13,11 +13,7 @@
 #pragma once
 #include "IWidget.h"
 #include "OxyCRGSymbol.h"
-#include "OxyCRGRESPWidget.h"
-#include "OxyCRGHRWidget.h"
-#include "OxyCRGSPO2Widget.h"
 #include "IButton.h"
-#include "OxyCRGCO2Widget.h"
 
 class QLabel;
 class QHBoxLayout;
