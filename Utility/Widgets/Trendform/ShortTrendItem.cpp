@@ -215,6 +215,8 @@ void ShortTrendItemPrivate::updateBackground()
 
     // draw the name label
     p.setPen(waveColor);
+    font = fontManager.textFont(20);
+    p.setFont(font);
     QFontMetrics fm(font);
     int nameWidth = fm.width(name) + 2;
     textRect.setWidth(nameWidth);
