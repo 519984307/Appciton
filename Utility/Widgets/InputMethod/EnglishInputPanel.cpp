@@ -19,6 +19,11 @@
 #include <QList>
 #include "Debug.h"
 
+#define PATH_ICON_SHIFT "/usr/local/nPM/icons/shift.png"
+#define PATH_ICON_CLEAR "/usr/local/nPM/icons/clear.png"
+#define PATH_ICON_BACKSPACE "/usr/local/nPM/icons/backspace.png"
+#define PATH_ICON_ENTER "/usr/local/nPM/icons/enter.png"
+
 class EnglishInputPanelPrivate
 {
 public:
@@ -436,25 +441,26 @@ EnglishInputPanel::EnglishInputPanel()
 
     // Shift键。
     key = new Button();
-    key->setButtonStyle(Button::ButtonTextOnly);
-    key->setText("Shift");
+    key->setButtonStyle(Button::ButtonIconOnly);
+    int height = d_ptr->itemHeight * 2 / 3;
+    key->setIconSize(QSize(height, height));
+    key->setIcon(QIcon(PATH_ICON_SHIFT));
     key->setFixedHeight(d_ptr->itemHeight);
-    key->setFont(keyFont);
     connect(key, SIGNAL(clicked()), this, SLOT(ClickedShift()));
     hLayout->addWidget(key, 1);
 
     // 清除所有。
     key = new Button();
-    key->setButtonStyle(Button::ButtonTextOnly);
-    key->setText("Clear All");
+    key->setButtonStyle(Button::ButtonIconOnly);
+    key->setIconSize(QSize(height, height));
+    key->setIcon(QIcon(PATH_ICON_CLEAR));
     key->setFixedHeight(d_ptr->itemHeight);
-    key->setFont(keyFont);
     connect(key, SIGNAL(released()), this, SLOT(ClickedClear()));
     hLayout->addWidget(key, 1);
 
     // 空格键。
     d_ptr->space = new Button();
-    key->setButtonStyle(Button::ButtonTextOnly);
+    d_ptr->space->setButtonStyle(Button::ButtonTextOnly);
     d_ptr->space->setText(" ");
     d_ptr->space->setFixedHeight(d_ptr->itemHeight);
     d_ptr->space->setFont(keyFont);
@@ -463,19 +469,19 @@ EnglishInputPanel::EnglishInputPanel()
 
     // Backspace键。
     key = new Button();
-    key->setButtonStyle(Button::ButtonTextOnly);
-    key->setText("Backspace");
+    key->setButtonStyle(Button::ButtonIconOnly);
+    key->setIcon(QIcon(PATH_ICON_BACKSPACE));
+    key->setIconSize(QSize(height, height));
     key->setFixedHeight(d_ptr->itemHeight);
-    key->setFont(keyFont);
     connect(key, SIGNAL(clicked()), this, SLOT(ClickedBackspace()));
     hLayout->addWidget(key, 1);
 
     // Enter键。
     d_ptr->enter = new Button();
-    d_ptr->enter->setButtonStyle(Button::ButtonTextOnly);
-    d_ptr->enter->setText("Enter");
+    d_ptr->enter->setButtonStyle(Button::ButtonIconOnly);
+    d_ptr->enter->setIconSize(QSize(height, height));
+    d_ptr->enter->setIcon(QIcon(PATH_ICON_ENTER));
     d_ptr->enter->setFixedHeight(d_ptr->itemHeight);
-    d_ptr->enter->setFont(keyFont);
     connect(d_ptr->enter, SIGNAL(released()), this, SLOT(ClickedEnter()));
     hLayout->addWidget(d_ptr->enter, 1);
 
