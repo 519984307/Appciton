@@ -215,18 +215,18 @@ void IBPTrendWidget::showValue()
 
         if (_sysAlarm)
         {
+            showAlarmStatus(_sysValue, psrc);
             switch (_entitle)
             {
             case IBP_PRESSURE_ART:
             case IBP_PRESSURE_PA:
             case IBP_PRESSURE_AUXP1:
             case IBP_PRESSURE_AUXP2:
-                showAlarmParamLimit(_sysString, psrc);
+                showAlarmParamLimit(_sysValue, _sysString, psrc);
                 break;
             default:
                 break;
             }
-            showAlarmStatus(_sysValue, psrc);
         }
 
         if (_diaAlarm)
@@ -236,19 +236,19 @@ void IBPTrendWidget::showValue()
 
         if (_mapAlarm)
         {
+            showAlarmStatus(_mapValue, psrc);
+            showAlarmStatus(_veinValue, psrc);
             switch (_entitle)
             {
             case IBP_PRESSURE_ICP:
             case IBP_PRESSURE_LAP:
             case IBP_PRESSURE_RAP:
             case IBP_PRESSURE_CVP:
-                showAlarmParamLimit(_mapString, psrc);
+                showAlarmParamLimit(_mapValue, _mapString, psrc);
                 break;
             default:
                 break;
             }
-            showAlarmStatus(_mapValue, psrc);
-            showAlarmStatus(_veinValue, psrc);
         }
     }
     else

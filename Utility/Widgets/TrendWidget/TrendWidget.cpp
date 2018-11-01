@@ -82,13 +82,9 @@ QPalette TrendWidget::normalPalette(QPalette psrc)
  *************************************************************************************************/
 QPalette TrendWidget::alarmPalette(QPalette psrc, bool isSetName)
 {
-    if (psrc.window().color() != Qt::white)
+    if (isSetName && psrc.windowText().color() != Qt::black)
     {
-        psrc.setColor(QPalette::Window, Qt::white);
-    }
-    if (isSetName && psrc.windowText().color() != Qt::red)
-    {
-        psrc.setColor(QPalette::WindowText, Qt::red);
+        psrc.setColor(QPalette::WindowText, Qt::black);
     }
     return psrc;
 }
@@ -110,7 +106,7 @@ void TrendWidget::showAlarmStatus(QWidget *value, QPalette psrc, bool isSetName)
     }
 }
 
-void TrendWidget::showAlarmParamLimit(const QString &valueStr, QPalette psrc)
+void TrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &valueStr, QPalette psrc)
 {
     QPalette p = upLimit->palette();
     QPalette alaColor = alarmPalette(p);
@@ -119,27 +115,21 @@ void TrendWidget::showAlarmParamLimit(const QString &valueStr, QPalette psrc)
     double down = downLimit->text().toDouble();
     if (value > up)
     {
-        if (p.windowText().color() != alaColor.windowText().color())
-        {
-            upLimit->setPalette(alaColor);
-        }
-        else
-        {
-            upLimit->setPalette(psrc);
-        }
+        upLimit->setPalette(valueWidget->palette());
+    }
+    else
+    {
+        upLimit->setPalette(psrc);
     }
 
     p = downLimit->palette();
     if (value < down)
     {
-        if (p.windowText().color() != alaColor.windowText().color())
-        {
-            downLimit->setPalette(alaColor);
-        }
-        else
-        {
-            downLimit->setPalette(psrc);
-        }
+        downLimit->setPalette(valueWidget->palette());
+    }
+    else
+    {
+        downLimit->setPalette(psrc);
     }
 }
 

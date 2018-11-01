@@ -161,8 +161,8 @@ void AGTrendWidget::showValue()
 
         if (_etAlarm)
         {
-            showAlarmParamLimit(_etStr, psrc);
             showAlarmStatus(_etValue, psrc);
+            showAlarmParamLimit(_etValue, _etStr, psrc);
         }
 
         if (_fiAlarm)

@@ -241,8 +241,8 @@ void NIBPTrendWidget::showValue(void)
 
         if (_sysAlarm)
         {
-            showAlarmParamLimit(_sysString, psrc);
             showAlarmStatus(_sysValue, psrc);
+            showAlarmParamLimit(_sysValue, _sysString, psrc);
         }
 
         if (_diaAlarm)

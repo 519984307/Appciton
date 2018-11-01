@@ -87,8 +87,8 @@ void RESPTrendWidget::showValue(void)
     QPalette fgColor = normalPalette(psrc);
     if (_isAlarm)
     {
-        showAlarmParamLimit(_rrString, fgColor);
         showAlarmStatus(_rrValue, fgColor);
+        showAlarmParamLimit(_rrValue, _rrString, fgColor);
     }
     else
     {
