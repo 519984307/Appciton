@@ -103,6 +103,18 @@ public:
     // 设置脉搏音标志。
     void setPulseAudio(bool pulse);
 
+    /**
+     * @brief setBeatVol
+     * @param val
+     */
+    void setBeatVol(SoundManager::VolumeLevel vol);
+
+    /**
+     * @brief getBeatVol
+     * @return
+     */
+    SoundManager::VolumeLevel getBeatVol(void) const;
+
     // 设置波形上的提示信息。
     void setNotify(bool enable, QString str = " ");
 

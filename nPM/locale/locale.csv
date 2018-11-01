@@ -130,7 +130,8 @@ ECGBandwidth,带宽,Bandwidth
 ECGGain,增益,Gain
 ECGPacemaker,起搏器,Pacemaker
 ECGSweepSpeed,波形速度,Sweep Speed
-ECGQRSToneVolume,QRS/PR 音量,QRS/PR Volume
+ECGQRSToneVolume,QRS 音量,QRS Volume
+BeatVol,脉搏音量,Beat Vol
 ECGMenu,ECG,ECG
 ECGSTSWitch,ST开关,ST SWitch
 ECGSTPoint,ST点,ST Point
@@ -143,7 +144,6 @@ Arrhythmia,心律失常 >>,Arrhythmia >>
 ECGPaceMarker,起搏标记,Pace maker
 ECG12LPaceMarker,12导起搏标记,12L Pace maker
 SelfLearn,自学习,Self Learn
-ECGQRSPRToneVolume,QRS/PR 音量,QRS/PR Volume
 Asystole,停搏时间,Asystole
 HeartPause,暂停时间,Heart Pause
 Tachycardia,心动过速,Tachy cardia

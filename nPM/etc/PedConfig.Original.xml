@@ -121,6 +121,7 @@
         <SmartPluseTone>1</SmartPluseTone>
         <SweepSpeed>2</SweepSpeed>
         <Gain>0</Gain>
+        <BeatVol>1</BeatVol>
         <ModuleControl>1</ModuleControl>
     </SPO2>
     <CO2>
