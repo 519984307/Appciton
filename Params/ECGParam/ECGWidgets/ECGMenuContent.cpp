@@ -27,6 +27,7 @@
 #include "LayoutManager.h"
 #include "ECGDupParam.h"
 #include "AlarmLimitWindow.h"
+#include "SPO2Param.h"
 
 class ECGMenuContentPrivate
 {
@@ -158,7 +159,15 @@ void ECGMenuContentPrivate::loadOptions()
 
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(ecgParam.getSweepSpeed());
 
-    combos[ITEM_CBO_QRS_TONE]->setCurrentIndex(ecgParam.getQRSToneVolume());
+    int volSPO2 = spo2Param.getBeatVol();
+    int volECG = ecgParam.getQRSToneVolume();
+    if (volSPO2 != volECG)
+    {
+        // 保持脉搏音与心跳音同步
+        spo2Param.setBeatVol(static_cast<SoundManager::VolumeLevel>(volECG));
+    }
+
+    combos[ITEM_CBO_QRS_TONE]->setCurrentIndex(volECG);
 
     bool isHide = true;
     if (leadMode == ECG_LEAD_MODE_3)
@@ -331,14 +340,7 @@ void ECGMenuContent::layoutExec()
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED, comboBox);
 
     // qrs tone
-    if (systemManager.isSupport(CONFIG_SPO2))
-    {
-        label = new QLabel(trs("ECGQRSPRToneVolume"));
-    }
-    else
-    {
-        label = new QLabel(trs("ECGQRSToneVolume"));
-    }
+    label = new QLabel(trs("ECGQRSToneVolume"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItem(trs("Off"));
