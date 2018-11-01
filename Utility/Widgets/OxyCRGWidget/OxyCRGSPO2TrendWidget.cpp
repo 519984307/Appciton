@@ -19,13 +19,45 @@
 class OxyCRGSPO2TrendWidgetPrivate : public OxyCRGTrendWaveWidgetPrivate
 {
 public:
+    void init();
 };
+
+void OxyCRGSPO2TrendWidgetPrivate::init()
+{
+    QPalette palette = colorManager.getPalette(
+                  paramInfo.getParamName(PARAM_SPO2));
+    QColor color = palette.color(QPalette::WindowText);
+    palette.setColor(QPalette::Highlight, color);
+    color = palette.color(QPalette::WindowText);
+    color.setRed(color.red() * 2 / 3);
+    color.setGreen(color.green() * 2 / 3);
+    color.setBlue(color.blue() * 2 / 3);
+    waveColor = color;
+
+    int valueLow = 0;
+    int valueHigh = 0;
+    currentConfig.getNumValue("OxyCRG|Ruler|SPO2Low", valueLow);
+    currentConfig.getNumValue("OxyCRG|Ruler|SPO2High", valueHigh);
+    QString strValueLow =  OxyCRGSymbol::convert(SPO2LowTypes(valueLow));
+    valueLow = strValueLow.toInt();
+    QString strValueHigh =  OxyCRGSymbol::convert(SPO2HighTypes(valueHigh));
+    valueHigh = strValueHigh.toInt();
+    rulerHigh = valueHigh;
+    rulerLow = valueLow;
+
+    int dataLen = waveDataRate * 8 * 60;  // 最大8分钟数据
+    dataBuf = new RingBuff<short>(dataLen);
+    dataBufIndex = 0;
+    dataBufLen = dataLen;
+    name = "SPO2";
+}
 
 OxyCRGSPO2TrendWidget::OxyCRGSPO2TrendWidget(const QString &waveName)
                      : OxyCRGTrendWaveWidget(waveName,
                                              new OxyCRGSPO2TrendWidgetPrivate)
 {
-    init();
+    Q_D(OxyCRGSPO2TrendWidget);
+    d->init();
 }
 
 OxyCRGSPO2TrendWidget::~OxyCRGSPO2TrendWidget()
@@ -118,11 +150,6 @@ void OxyCRGSPO2TrendWidget::showEvent(QShowEvent *e)
     {
         d->dataBuf->clear();
     }
-
-    if (d->flagBuf)
-    {
-        d->flagBuf->clear();
-    }
 }
 
 void OxyCRGSPO2TrendWidget::hideEvent(QHideEvent *e)
@@ -140,47 +167,9 @@ void OxyCRGSPO2TrendWidget::hideEvent(QHideEvent *e)
     {
         d->dataBuf->clear();
     }
-
-    if (d->flagBuf)
-    {
-        d->flagBuf->clear();
-    }
 }
 
 void OxyCRGSPO2TrendWidget::addTrendData(int data)
 {
-    addWaveData(data, 0);
-}
-
-void OxyCRGSPO2TrendWidget::init()
-{
-    Q_D(OxyCRGSPO2TrendWidget);
-
-    QPalette palette = colorManager.getPalette(
-                  paramInfo.getParamName(PARAM_SPO2));
-    QColor color = palette.color(QPalette::WindowText);
-    palette.setColor(QPalette::Highlight, color);
-    color = palette.color(QPalette::WindowText);
-    color.setRed(color.red() * 2 / 3);
-    color.setGreen(color.green() * 2 / 3);
-    color.setBlue(color.blue() * 2 / 3);
-    d->waveColor = color;
-
-    int valueLow = 0;
-    int valueHigh = 0;
-    currentConfig.getNumValue("OxyCRG|Ruler|SPO2Low", valueLow);
-    currentConfig.getNumValue("OxyCRG|Ruler|SPO2High", valueHigh);
-    QString strValueLow =  OxyCRGSymbol::convert(SPO2LowTypes(valueLow));
-    valueLow = strValueLow.toInt();
-    QString strValueHigh =  OxyCRGSymbol::convert(SPO2HighTypes(valueHigh));
-    valueHigh = strValueHigh.toInt();
-    d->rulerHigh = valueHigh;
-    d->rulerLow = valueLow;
-
-    int dataLen = d->waveDataRate * 8 * 60;  // 最大8分钟数据
-    d->flagBuf = new RingBuff<bool>(dataLen);
-    d->dataBuf = new RingBuff<short>(dataLen);
-    d->dataBufIndex = 0;
-    d->dataBufLen = dataLen;
-    d->name = "SPO2";
+    addWaveData(data);
 }

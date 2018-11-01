@@ -30,7 +30,6 @@ class OxyCRGRRHRWaveWidgetPrivate :
 public:
     OxyCRGRRHRWaveWidgetPrivate()
         : OxyCRGTrendWaveWidgetPrivate(),
-          rrFlagBuf(NULL),
           rrDataBuf(NULL),
           rrDataBufIndex(0),
           rrDataBufLen(0),
@@ -41,8 +40,6 @@ public:
           rrWaveName("")
     {
     }
-
-    RingBuff<bool> *rrFlagBuf;           // 波形标记缓存， 值为1则表示该数据有误
 
     RingBuff<short> *rrDataBuf;          // 波形数据缓存
 
@@ -276,19 +273,9 @@ void OxyCRGRRHRWaveWidget::showEvent(QShowEvent *e)
         d->dataBuf->clear();
     }
 
-    if (d->flagBuf)
-    {
-        d->flagBuf->clear();
-    }
-
     if (d->rrDataBuf)
     {
         d->rrDataBuf->clear();
-    }
-
-    if (d->rrFlagBuf)
-    {
-        d->rrFlagBuf->clear();
     }
 }
 
@@ -308,27 +295,15 @@ void OxyCRGRRHRWaveWidget::hideEvent(QHideEvent *e)
         d->dataBuf->clear();
     }
 
-    if (d->flagBuf)
-    {
-        d->flagBuf->clear();
-    }
-
     if (d->rrDataBuf)
     {
         d->rrDataBuf->clear();
-    }
-
-    if (d->rrFlagBuf)
-    {
-        d->rrFlagBuf->clear();
     }
 }
 
 void OxyCRGRRHRWaveWidget::init()
 {
     Q_D(OxyCRGRRHRWaveWidget);
-
-    d->waveDataRate = 1;
 
     // rr标尺的颜色更深。
     QPalette palette = colorManager.getPalette(
@@ -356,7 +331,6 @@ void OxyCRGRRHRWaveWidget::init()
     d->rrDataBufIndex = 0;
     d->rrDataBufLen = d->waveDataRate * 8 * 60; // 最大8分钟数据
     d->rrDataBuf = new RingBuff<short>(d->rrDataBufLen);
-    d->rrFlagBuf = new RingBuff<bool>(d->rrDataBufLen);
 
     // hr标尺的颜色更深。
     palette = colorManager.getPalette(
@@ -381,7 +355,6 @@ void OxyCRGRRHRWaveWidget::init()
     d->rulerLow = valueLow;
     // 申请存储hr波形数据堆空间
     int dataLen = d->waveDataRate * 8 * 60;  // 最大8分钟数据
-    d->flagBuf = new RingBuff<bool>(dataLen);
     d->dataBuf = new RingBuff<short>(dataLen);
     d->dataBufIndex = 0;
     d->dataBufLen = dataLen;

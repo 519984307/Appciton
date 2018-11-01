@@ -18,7 +18,7 @@ class OxyCRGTrendWaveWidget : public IWidget
 {
     Q_OBJECT
 public:
-    explicit OxyCRGTrendWaveWidget(const QString &waveName,
+    OxyCRGTrendWaveWidget(const QString &waveName,
                                    OxyCRGTrendWaveWidgetPrivate * p);
     ~OxyCRGTrendWaveWidget();
 
@@ -27,7 +27,7 @@ public:
      * @param value
      * @param flag
      */
-    void addWaveData(int value, int flag);
+    void addWaveData(int value);
 
     /**
      * @brief getIntervalTime
@@ -55,14 +55,17 @@ private slots:
     void onTimeOutExec(void);
 
 protected:
-    /* reimpelment */
+    /* reimplement */
     void paintEvent(QPaintEvent *e);
 
-    /* reimplment */
+    /* reimplement */
     void showEvent(QShowEvent *e);
 
-    /* reimplment */
+    /* reimplement */
     void hideEvent(QHideEvent *e);
+
+    /* reimplement */
+    void resizeEvent(QResizeEvent *e);
 
     /**
      * @brief setDataRate

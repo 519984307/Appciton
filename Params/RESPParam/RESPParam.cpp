@@ -109,7 +109,7 @@ void RESPParam::handDemoWaveform(WaveformID id, short data)
 
     if (d_ptr->oxyCRGRESPWave)
     {
-        d_ptr->oxyCRGRESPWave->addWaveData(data, 0);
+        d_ptr->oxyCRGRESPWave->addWaveData(data);
     }
     waveformCache.addData((WaveformID)id, data);
 }
@@ -263,7 +263,7 @@ void RESPParam::addWaveformData(int wave, int flag)
     }
     if (d_ptr->oxyCRGRESPWave)
     {
-        d_ptr->oxyCRGRESPWave->addWaveData(wave, flag);
+        d_ptr->oxyCRGRESPWave->addWaveData(wave);
     }
     waveformCache.addData(WAVE_RESP, (flag << 16) | (wave & 0xFFFF));
 }

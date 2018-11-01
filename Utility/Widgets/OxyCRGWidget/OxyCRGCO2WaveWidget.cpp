@@ -38,8 +38,6 @@ OxyCRGCO2WaveWidget::~OxyCRGCO2WaveWidget()
     Q_D(OxyCRGCO2WaveWidget);
     delete d->dataBuf;
     d->dataBuf = NULL;
-    delete d->flagBuf;
-    d->flagBuf = NULL;
 }
 
 void OxyCRGCO2WaveWidget::paintEvent(QPaintEvent *e)
@@ -101,6 +99,7 @@ void OxyCRGCO2WaveWidget::paintEvent(QPaintEvent *e)
     QList<QPoint> pointList;
     for (int i = index; i < dataSize; i++)
     {
+        // TODO : check invalid wave data point
         dataH = h - (d->dataBuf->at(i) - rulerLow) * 1.0 /
                 (rulerHigh - rulerLow) * h;
         curX += xStep;
@@ -110,17 +109,6 @@ void OxyCRGCO2WaveWidget::paintEvent(QPaintEvent *e)
             curX = rect().width() + rect().x() - WX_SHIFT;
             path.lineTo(curX, dataH);
             break;
-        }
-
-        // 添加虚线坐标
-        if (d->flagBuf->at(i))
-        {
-            pointList.append(QPoint(curX, dataH));
-            int dataNextH = h - (d->dataBuf->at(i + 1) - rulerLow) * 1.0 /
-                    (rulerHigh - rulerLow) * h;
-            int curNextX = curX + xStep;
-            pointList.append(QPoint(curNextX, dataNextH));
-            continue;
         }
 
         path.lineTo(curX, dataH);
@@ -155,11 +143,6 @@ void OxyCRGCO2WaveWidget::showEvent(QShowEvent *e)
     {
         d->dataBuf->clear();
     }
-
-    if (d->flagBuf)
-    {
-        d->flagBuf->clear();
-    }
 }
 
 void OxyCRGCO2WaveWidget::hideEvent(QHideEvent *e)
@@ -177,11 +160,6 @@ void OxyCRGCO2WaveWidget::hideEvent(QHideEvent *e)
     {
         d->dataBuf->clear();
     }
-
-    if (d->flagBuf)
-    {
-        d->flagBuf->clear();
-    }
 }
 
 void OxyCRGCO2WaveWidget::setDataRate(int rate)
@@ -197,11 +175,8 @@ void OxyCRGCO2WaveWidget::setDataRate(int rate)
 
     delete d->dataBuf;
     d->dataBuf = NULL;
-    delete d->flagBuf;
-    d->flagBuf = NULL;
 
     int dataLen = d->lastDataRate * 8 * 60;  // 最大8分钟数据
-    d->flagBuf = new RingBuff<bool>(dataLen);
     d->dataBuf = new RingBuff<short>(dataLen);
     d->dataBufIndex = 0;
     d->dataBufLen = dataLen;
@@ -233,7 +208,6 @@ void OxyCRGCO2WaveWidget::init()
     d->rulerLow = valueLow;
 
     int dataLen = d->lastDataRate * 8 * 60;  // 最大8分钟数据
-    d->flagBuf = new RingBuff<bool>(dataLen);
     d->dataBuf = new RingBuff<short>(dataLen);
     d->dataBufIndex = 0;
     d->dataBufLen = dataLen;

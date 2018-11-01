@@ -37,11 +37,9 @@ OxyCRGTrendWaveWidget::~OxyCRGTrendWaveWidget()
     delete d_ptr;
 }
 
-void OxyCRGTrendWaveWidget::addWaveData(int value, int flag)
+void OxyCRGTrendWaveWidget::addWaveData(int value)
 {
     d_ptr->dataBuf->push(value);
-
-    d_ptr->flagBuf->push(flag);
 }
 
 void OxyCRGTrendWaveWidget::setRulerValue(int valueHigh, int valueLow)
@@ -68,11 +66,6 @@ void OxyCRGTrendWaveWidget::setClearWaveDataStatus(bool clearStatus)
         {
             d_ptr->dataBuf->clear();
         }
-
-        if (d_ptr->flagBuf)
-        {
-            d_ptr->flagBuf->clear();
-        }
     }
 }
 
@@ -86,25 +79,23 @@ void OxyCRGTrendWaveWidget::onTimeOutExec()
     update();
 }
 
-
 void OxyCRGTrendWaveWidget::paintEvent(QPaintEvent *e)
 {
     IWidget::paintEvent(e);
 
-    int x1 = rect().x();
-    int y1 = rect().y();
-    int w = rect().width();
-    int h = rect().height();
+    QRect r = rect();
+    int x1 = r.x();
+    int y1 = r.y();
+    int w = r.width();
+    int h = r.height();
     int xShift = X_SHIFT;
     int yShift = Y_SHIFT;
     int wxShift = WX_SHIFT;
 
-    QPainterPath pathRect;
     QPainter painter(this);
     // 添加边框
-    pathRect.addRect(x1, y1, w, h);
     painter.setPen(QPen(Qt::white, 1, Qt::SolidLine));
-    painter.drawPath(pathRect);
+    painter.drawRect(r);
 
     // 添加波形名字
     painter.setPen(QPen(d_ptr->waveColor, 1, Qt::SolidLine));
@@ -132,39 +123,26 @@ void OxyCRGTrendWaveWidget::paintEvent(QPaintEvent *e)
                          QString::number(d_ptr->rulerLow));
     }
 
-    QPainterPath pathBackRuler;
-
-    if (x1 != d_ptr->x1 ||
-        y1 != d_ptr->y1 ||
-        w  != d_ptr->w  ||
-        h  != d_ptr->h)
+    if (d_ptr->backgroundRulerPath.isEmpty())
     {
         // 添加背景标尺虚线
         int xStep = qRound((w - wxShift * 2) * 1.0 / 4);
         for (int i = 1; i < 4; i++)
         {
-            pathBackRuler.moveTo(x1 + wxShift + xStep * i, y1);
-            pathBackRuler.lineTo(x1 + wxShift + xStep * i, y1 + h);
+            d_ptr->backgroundRulerPath.moveTo(x1 + wxShift + xStep * i, y1);
+            d_ptr->backgroundRulerPath.lineTo(x1 + wxShift + xStep * i, y1 + h);
         }
+
         int yStep = qRound(h * 1.0 / 3);
         for (int i = 1; i < 3; i++)
         {
-            pathBackRuler.moveTo(x1 + wxShift, y1 + yStep * i);
-            pathBackRuler.lineTo(x1 + w - wxShift, y1 + yStep * i);
+            d_ptr->backgroundRulerPath.moveTo(x1 + wxShift, y1 + yStep * i);
+            d_ptr->backgroundRulerPath.lineTo(x1 + w - wxShift, y1 + yStep * i);
         }
-        d_ptr->pathBackRuler = pathBackRuler;
-        d_ptr->x1 = x1;
-        d_ptr->y1 = y1;
-        d_ptr->w  = w;
-        d_ptr->h  = h;
-    }
-    else
-    {
-        pathBackRuler = d_ptr->pathBackRuler;
     }
 
     painter.setPen(QPen(Qt::white, 1, Qt::DotLine));
-    painter.drawPath(pathBackRuler);
+    painter.drawPath(d_ptr->backgroundRulerPath);
 }
 
 void OxyCRGTrendWaveWidget::showEvent(QShowEvent *e)
@@ -183,4 +161,11 @@ void OxyCRGTrendWaveWidget::hideEvent(QHideEvent *e)
     {
         d_ptr->timer->stop();
     }
+}
+
+void OxyCRGTrendWaveWidget::resizeEvent(QResizeEvent *e)
+{
+    IWidget::resizeEvent(e);
+    // clear the background ruler
+    d_ptr->backgroundRulerPath = QPainterPath();
 }

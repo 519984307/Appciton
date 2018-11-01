@@ -23,8 +23,7 @@ class OxyCRGTrendWaveWidgetPrivate
 {
 public:
     OxyCRGTrendWaveWidgetPrivate()
-                : flagBuf(NULL),
-                  dataBuf(NULL),
+                : dataBuf(NULL),
                   dataBufIndex(0),
                   dataBufLen(0),
                   name(""),
@@ -33,11 +32,12 @@ public:
                   waveColor(Qt::green),
                   waveDataRate(1),
                   timer(NULL),
-                  isClearWaveData(true),
-                  x1(0), y1(0), w(0), h(0)
+                  isClearWaveData(true)
     {
     }
-    RingBuff<bool> *flagBuf;     // 波形标记缓存， 值为1则表示该数据有误
+
+    virtual ~OxyCRGTrendWaveWidgetPrivate(){}
+
     RingBuff<short> *dataBuf;    // 波形数据缓存
     int dataBufIndex;            // 波形数据缓存下标
     int dataBufLen;              // 波形数据长度
@@ -54,11 +54,6 @@ public:
 
     bool isClearWaveData;        // 是否清除波形数据
 
-    QPainterPath pathBackRuler;  // 背景标尺
-
-    int x1;                      // 边框的左上角坐标x
-    int y1;                      // 边框的左下角坐标y
-    int w;                       // 边框的宽度
-    int h;                       // 边框的高度
+    QPainterPath backgroundRulerPath;  // 背景标尺
 };
 

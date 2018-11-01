@@ -205,7 +205,7 @@ void CO2Param::handDemoWaveform(WaveformID id, short data)
 
     if (d_ptr->oxyCRGCO2Wave)
     {
-        d_ptr->oxyCRGCO2Wave->addWaveData(data, 0);
+        d_ptr->oxyCRGCO2Wave->addWaveData(data);
     }
     waveformCache.addData((WaveformID)id, data);
 }
@@ -619,7 +619,7 @@ void CO2Param::addWaveformData(short wave, bool invalid)
 
     if (d_ptr->oxyCRGCO2Wave)
     {
-        d_ptr->oxyCRGCO2Wave->addWaveData(wave, flag);
+        d_ptr->oxyCRGCO2Wave->addWaveData(wave);
     }
 
     waveformCache.addData(WAVE_CO2, (flag << 16) | (wave & 0xFFFF));
