@@ -12,7 +12,7 @@
 #include "TableView.h"
 #include "Button.h"
 #include "LanguageManager.h"
-#include "DropList.h"
+#include "ComboBox.h"
 #include "EventInfoWidget.h"
 #include "OxyCRGEventWaveWidget.h"
 #include <QStackedLayout>
@@ -77,7 +77,7 @@ class OxyCRGEventWindowPrivate
 {
 public:
     OxyCRGEventWindowPrivate()
-        : table(NULL), model(NULL), typeDpl(NULL),
+        : table(NULL), model(NULL), typeCbo(NULL),
           upPageBtn(NULL), downPageBtn(NULL), infoWidget(NULL),
           waveWidget(NULL), eventListBtn(NULL), coordinateMoveBtn(NULL),
           cursorMoveBtn(NULL), eventMoveBtn(NULL), printBtn(NULL),
@@ -177,7 +177,7 @@ public:
 public:
     TableView *table;
     EventReviewModel *model;
-    DropList *typeDpl;
+    ComboBox *typeCbo;
     Button *upPageBtn;
     Button *downPageBtn;
 
@@ -365,7 +365,9 @@ OxyCRGEventWindow::OxyCRGEventWindow()
     connect(d_ptr->table, SIGNAL(clicked(QModelIndex)), this, SLOT(waveInfoReleased(QModelIndex)));
     connect(d_ptr->table, SIGNAL(rowClicked(int)), this, SLOT(waveInfoReleased(int)));
 
-    d_ptr->typeDpl = new DropList(trs("Type"));
+    QLabel *typeLabel = new QLabel(trs("Type"));
+    d_ptr->typeCbo = new ComboBox();
+    d_ptr->typeCbo->addItem(trs("All"));
 
     d_ptr->upPageBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));
     d_ptr->upPageBtn->setButtonStyle(Button::ButtonIconOnly);
@@ -376,7 +378,9 @@ OxyCRGEventWindow::OxyCRGEventWindow()
     connect(d_ptr->downPageBtn, SIGNAL(released()), this, SLOT(downPageReleased()));
 
     QHBoxLayout *hTableLayout = new QHBoxLayout();
-    hTableLayout->addWidget(d_ptr->typeDpl, 2);
+    hTableLayout->addStretch(1);
+    hTableLayout->addWidget(typeLabel, 1);
+    hTableLayout->addWidget(d_ptr->typeCbo, 3);
     hTableLayout->addStretch(5);
     hTableLayout->addWidget(d_ptr->upPageBtn, 1);
     hTableLayout->addWidget(d_ptr->downPageBtn, 1);

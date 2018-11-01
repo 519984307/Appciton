@@ -11,7 +11,7 @@
 #include "EventWindow.h"
 #include "TableView.h"
 #include "Button.h"
-#include "DropList.h"
+#include "ComboBox.h"
 #include "MoveButton.h"
 #include "EventInfoWidget.h"
 #include <QListWidget>
@@ -51,7 +51,7 @@ class EventWindowPrivate
 public:
     EventWindowPrivate()
         : eventTable(NULL), model(NULL), upPageBtn(NULL),
-          downPageBtn(NULL), typeDpt(NULL), levelDpt(NULL),
+          downPageBtn(NULL), typeCbo(NULL), levelCbo(NULL),
           infoWidget(NULL), trendListWidget(NULL), waveWidget(NULL),
           eventListBtn(NULL), coordinateMoveBtn(NULL), eventMoveBtn(NULL),
           printBtn(NULL),
@@ -105,8 +105,8 @@ public:
     EventReviewModel *model;
     Button *upPageBtn;
     Button *downPageBtn;
-    DropList *typeDpt;
-    DropList *levelDpt;
+    ComboBox *typeCbo;
+    ComboBox *levelCbo;
 
     EventInfoWidget *infoWidget;
     QListWidget *trendListWidget;
@@ -531,19 +531,21 @@ EventWindow::EventWindow()
     connect(d_ptr->eventTable, SIGNAL(clicked(QModelIndex)), this, SLOT(waveInfoReleased(QModelIndex)));
     connect(d_ptr->eventTable, SIGNAL(rowClicked(int)), this, SLOT(waveInfoReleased(int)));
 
-    d_ptr->typeDpt = new DropList(trs("Type"));
+    QLabel *typeLabel = new QLabel(trs("Type"));
+    d_ptr->typeCbo = new ComboBox();
     for (int i = 0; i < EventTypeMax - 1; i ++)
     {
-        d_ptr->typeDpt->addItem(trs(EventDataSymbol::convert((EventType)i)));
+        d_ptr->typeCbo->addItem(trs(EventDataSymbol::convert((EventType)i)));
     }
-    connect(d_ptr->typeDpt, SIGNAL(currentIndexChanged(int)), this, SLOT(eventTypeSelect(int)));
+    connect(d_ptr->typeCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(eventTypeSelect(int)));
 
-    d_ptr->levelDpt = new DropList(trs("Level"));
+    QLabel *levelLabel = new QLabel(trs("Level"));
+    d_ptr->levelCbo = new ComboBox();
     for (int i = 0; i < EVENT_LEVEL_NR; i ++)
     {
-        d_ptr->levelDpt->addItem(trs(EventDataSymbol::convert((EventLevel)i)));
+        d_ptr->levelCbo->addItem(trs(EventDataSymbol::convert((EventLevel)i)));
     }
-
+    connect(d_ptr->levelCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(eventLevelSelect(int)));
 
     d_ptr->upPageBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));
     d_ptr->upPageBtn->setButtonStyle(Button::ButtonIconOnly);
@@ -554,11 +556,13 @@ EventWindow::EventWindow()
     connect(d_ptr->downPageBtn, SIGNAL(released()), this, SLOT(downPageReleased()));
 
     QHBoxLayout *hTableLayout = new QHBoxLayout();
-    hTableLayout->addStretch(2);
-    hTableLayout->addWidget(d_ptr->typeDpt, 2);
-    hTableLayout->addStretch(2);
-    hTableLayout->addWidget(d_ptr->levelDpt, 2);
-    hTableLayout->addStretch(2);
+    hTableLayout->addStretch(1);
+    hTableLayout->addWidget(typeLabel, 1);
+    hTableLayout->addWidget(d_ptr->typeCbo, 3);
+    hTableLayout->addStretch(1);
+    hTableLayout->addWidget(levelLabel, 1);
+    hTableLayout->addWidget(d_ptr->levelCbo, 3);
+    hTableLayout->addStretch(1);
     hTableLayout->addWidget(d_ptr->upPageBtn, 1);
     hTableLayout->addWidget(d_ptr->downPageBtn, 1);
 
