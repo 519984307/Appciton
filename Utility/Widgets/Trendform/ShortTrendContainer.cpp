@@ -100,14 +100,18 @@ void ShortTrendContainer::addSubParamToTrendItem(int trendindex, QList<SubParamI
     ShortTrendItem *item = d_ptr->trendItems.at(trendindex);
     item->setSubParamList(subParamIDs);
 
-    if (subParamIDs[0] == SUB_PARAM_NIBP_SYS
+    if ((subParamIDs[0] == SUB_PARAM_NIBP_SYS
             || subParamIDs[0] == SUB_PARAM_NIBP_DIA
-            || subParamIDs[0] == SUB_PARAM_NIBP_MAP)
+            || subParamIDs[0] == SUB_PARAM_NIBP_MAP) && !item->isNibpTrend())
     {
         item->setNibpTrend(true);
+        connect(&trendDataStorageManager, SIGNAL(newNibpDataReceived()),
+                item, SLOT(onNewNibpMeasurementData()));
     }
-    else
+    else if (item->isNibpTrend())
     {
+        disconnect(&trendDataStorageManager, SIGNAL(newNibpDataReceived()),
+                item, SLOT(onNewNibpMeasurementData()));
         item->setNibpTrend(false);
     }
 

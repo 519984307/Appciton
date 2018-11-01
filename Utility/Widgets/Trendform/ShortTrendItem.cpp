@@ -382,7 +382,7 @@ void ShortTrendItemPrivate::drawNibpMark(QPainter *painter, const QRect &r)
 
     int index = startIndex;
     QPainterPath path;
-    int tickLen = 2 / systemManager.getScreenPixelHPitch();
+    int tickLen = 1.5 / systemManager.getScreenPixelHPitch();
     float xPos = waveMargin.left() + start * deltaX;
     while (index != endIndex)
     {
@@ -593,6 +593,17 @@ void ShortTrendItem::onNewTrendDataArrived(ShortTrendInterval interval)
 
         update(d_ptr->waveRegion);
     }
+}
+
+void ShortTrendItem::onNewNibpMeasurementData()
+{
+   if (!this->isVisible() || !d_ptr->isNibp)
+   {
+       return;
+   }
+
+   d_ptr->resetPointBufFlag = true;
+   update(d_ptr->waveRegion);
 }
 
 void ShortTrendItem::paintEvent(QPaintEvent *ev)

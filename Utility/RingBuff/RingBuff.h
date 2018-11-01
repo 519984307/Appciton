@@ -38,6 +38,7 @@ public:
     int maxSpace() const;
     T at(int index) const;
     T takeTail();
+    T takeHead();
     T head(bool &isOK);
     int copy(int index, T *buf, int len) const;
     int pop(int count);
@@ -269,6 +270,23 @@ T RingBuff<T>::takeTail()
 
     T value = _buf[_out];
     _out = (_out + 1) & _mask;
+
+    return value;
+}
+
+/*
+ * return the newest item and remove it from the buffer
+ */
+template<typename T>
+T RingBuff<T>::takeHead()
+{
+    if (isEmpty())
+    {
+        return 0;
+    }
+
+    T value = _buf[(_in - 1) & _mask];
+    _in = (_in - 1) & _mask;
 
     return value;
 }

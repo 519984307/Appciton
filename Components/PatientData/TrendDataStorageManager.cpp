@@ -66,7 +66,7 @@ public:
 
     void storeShortTrendData(SubParamID subParamID, unsigned timestamp, TrendDataType data, bool forceSave = false);
 
-    void emitShortTrendSingals(unsigned timestamp, bool forceEmit);
+    void emitShortTrendSingals(unsigned timestamp);
 
     TrendDataDescription dataDesc;
     bool firstSave;  // first time save after initialize
@@ -133,18 +133,35 @@ void TrendDataStorageManagerPrivate::storeShortTrendData(SubParamID subParamID, 
     QMap<SubParamID, ShortTrendStorage *>::Iterator iter = shortTrends.find(subParamID);
     if (iter != shortTrends.end())
     {
-        if (timeStamp % 10 == 0 || forceSave)
+        if (timeStamp % 10 == 0)
         {
             (*iter)->trendBuffer[SHORT_TREND_INTERVAL_10S]->push(data);
         }
+        else if (forceSave)
+        {
+            // remove last data
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_10S]->takeHead();
+            // add current data
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_10S]->push(data);
+        }
 
-        if (timeStamp % 20 == 0 || forceSave)
+        if (timeStamp % 20 == 0)
         {
             (*iter)->trendBuffer[SHORT_TREND_INTERVAL_20S]->push(data);
         }
-
-        if (timeStamp % 30 == 0 || forceSave)
+        else if (forceSave)
         {
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_20S]->takeHead();
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_20S]->push(data);
+        }
+
+        if (timeStamp % 30 == 0)
+        {
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_30S]->push(data);
+        }
+        else if (forceSave)
+        {
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_30S]->takeHead();
             (*iter)->trendBuffer[SHORT_TREND_INTERVAL_30S]->push(data);
         }
 
@@ -152,28 +169,33 @@ void TrendDataStorageManagerPrivate::storeShortTrendData(SubParamID subParamID, 
         {
             (*iter)->trendBuffer[SHORT_TREND_INTERVAL_60S]->push(data);
         }
+        else if (forceSave)
+        {
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_60S]->takeHead();
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_60S]->push(data);
+        }
     }
 }
 
-void TrendDataStorageManagerPrivate::emitShortTrendSingals(unsigned timestamp, bool forceEmit)
+void TrendDataStorageManagerPrivate::emitShortTrendSingals(unsigned timestamp)
 {
     Q_Q(TrendDataStorageManager);
-    if (timestamp % 10 == 0 || forceEmit)
+    if (timestamp % 10 == 0)
     {
         emit q->newTrendDataArrived(SHORT_TREND_INTERVAL_10S);
     }
 
-    if (timestamp % 20 == 0 || forceEmit)
+    if (timestamp % 20 == 0)
     {
         emit q->newTrendDataArrived(SHORT_TREND_INTERVAL_20S);
     }
 
-    if (timestamp % 30 == 0 || forceEmit)
+    if (timestamp % 30 == 0)
     {
         emit q->newTrendDataArrived(SHORT_TREND_INTERVAL_30S);
     }
 
-    if (timestamp % 60 == 0 || forceEmit)
+    if (timestamp % 60 == 0)
     {
         emit q->newTrendDataArrived(SHORT_TREND_INTERVAL_60S);
     }
@@ -197,12 +219,26 @@ void TrendDataStorageManager::periodRun(unsigned t)
 {
     Q_D(TrendDataStorageManager);
 
-    if (0 != t % 5 || d->lastStoreTimestamp >= t)
+    if (d->lastStoreTimestamp >= t)
     {
         return;
     }
 
-    storeData(t, CollectStatusPeriod);
+    TrendDataFlags status = CollectStatusNone;
+    if (0 == t % 5)
+    {
+        status |= CollectStatusPeriod;
+    }
+
+    if ( trendCache.getLastNibpSuccessMeasureTime() == t)
+    {
+        status |= CollectStatusNIBP;
+    }
+
+    if (status != CollectStatusNone)
+    {
+        storeData(t, status);
+    }
 }
 
 void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
@@ -230,7 +266,7 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
 
     bool hasAlarm = false;
     ParamID paramId = PARAM_NONE;
-    bool forceEmitSignal = false;
+    bool newNibpData = false;
 
     for (int i = 0; i < SUB_PARAM_NR; i++)
     {
@@ -265,7 +301,7 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
             if (t == data.lastNibpMeasureSuccessTime)
             {
                 d->storeShortTrendData(subParamID, t, valueSegment.value, true);
-                forceEmitSignal = true;
+                newNibpData = true;
             }
             else
             {
@@ -280,7 +316,12 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
     }
 
     // emit signals
-    d->emitShortTrendSingals(t, forceEmitSignal);
+    d->emitShortTrendSingals(t);
+
+    if (newNibpData)
+    {
+        emit newNibpDataReceived();
+    }
 
     int dataSize = sizeof(TrendDataSegment) + valueSegments.size() * sizeof(TrendValueSegment);
     QByteArray content(dataSize, 0);
