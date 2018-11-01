@@ -130,11 +130,13 @@ void AlarmInfoWindow::layout()
     {
         ListView *listView = new ListView();
         listView->setItemDelegate(new ListViewItemDelegate);
+        listView->setSelectionMode(QAbstractItemView::NoSelection);
         ListDataModel *model = new ListDataModel(this);
         listView->setModel(model);
         listView->setFixedHeight(model->getRowHeightHint() * LISTVIEW_MAX_VISIABLE_SIZE);
         listView->setDrawIcon(false);
         listView->setSpacing(0);
+        listView->setFocusPolicy(Qt::NoFocus);
         d_ptr->listModel = model;
         d_ptr->listView = listView;
 
