@@ -457,20 +457,27 @@ void LayoutManagerPrivate::perform12LeadLayout()
         {
             int row = iter.key();
             IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
-            if (!w || !widgetLayoutable[w->name()])
+            QWidget *qw = w;
+            if (!qw)
             {
-                continue;
+                qw = createContainter();
             }
-
-            contentWidgets.append(w);
+            if (w)
+            {
+                contentWidgets.append(w);
+            }
 
             // only add the param on the right in the standard layout
             if (nodeIter->pos >= LAYOUT_WAVE_END_COLUMN)
             {
-                w->setVisible(true);
-                w->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-                rightParamLayout->addWidget(w, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
-                displayParams.append(w->name());
+                qw->setVisible(true);
+                qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+                rightParamLayout->addWidget(qw, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
+                rightParamLayout->setRowStretch(row, 1);
+                if (w)
+                {
+                    displayParams.append(w->name());
+                }
             }
         }
     }
