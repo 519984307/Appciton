@@ -340,10 +340,13 @@ void LayoutManagerPrivate::performStandardLayout()
     rightParamLayout->setMargin(0);
 
     OrderedMap<int, LayoutRow>::ConstIterator iter = layoutInfos.begin();
+    int waveRowCount = 0;
+    int leftParamRowCount = 0;
     for (; iter != layoutInfos.end(); ++iter)
     {
         LayoutRow::ConstIterator nodeIter = iter.value().constBegin();
         int row = iter.key();
+        bool isCurRow = true;
         for (; nodeIter != iter.value().constEnd(); ++nodeIter)
         {
             IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
@@ -364,18 +367,26 @@ void LayoutManagerPrivate::performStandardLayout()
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM)
                 {
                     waveLayout->addWidget(qw, row, nodeIter->pos, 1, nodeIter->span);
-                    waveLayout->setRowStretch(row, 1);
                     if (w)
                     {
                         displayWaveforms.append(w->name());
+                    }
+                    if (isCurRow)
+                    {
+                        waveRowCount++;
                     }
                 }
                 else
                 {
                     leftParamLayout->addWidget(qw, row - LAYOUT_MAX_WAVE_ROW_NUM, nodeIter->pos, 1, nodeIter->span);
-                    leftParamLayout->setRowStretch(row - LAYOUT_MAX_WAVE_ROW_NUM, 1);
                     if (w)
+                    {
                         displayParams.append(w->name());
+                    }
+                    if (isCurRow)
+                    {
+                        leftParamRowCount++;
+                    }
                 }
             }
             else
@@ -383,30 +394,17 @@ void LayoutManagerPrivate::performStandardLayout()
                 rightParamLayout->addWidget(qw, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
                 rightParamLayout->setRowStretch(row, 1);
                 if (w)
+                {
                     displayParams.append(w->name());
+                }
             }
+            isCurRow = false;
         }
     }
 
     // the wave container stretch
-    int waveRowCount = 0;
-    int leftParamRowCount = 0;
-    for (int i = 0; i < waveLayout->rowCount(); i++)
-    {
-        if (waveLayout->rowStretch(i) == 1)
-        {
-            waveRowCount++;
-        }
-    }
     leftLayout->setStretch(0, waveRowCount);
     // the let param container stretch
-    for (int i = 0; i < leftParamLayout->rowCount(); i++)
-    {
-        if (leftParamLayout->rowStretch(i) == 1)
-        {
-            leftParamRowCount++;
-        }
-    }
     leftLayout->setStretch(1, leftParamRowCount);
 }
 
@@ -692,9 +690,12 @@ void LayoutManagerPrivate::performTrendLayout()
     QList<TrendWidget *> rightTrendWidgets;
 
     OrderedMap<int, LayoutRow>::ConstIterator iter = layoutInfos.begin();
+    int waveRowCount = 0;
+    int leftParamRowCount = 0;
     for (; iter != layoutInfos.end(); ++iter)
     {
         LayoutRow::ConstIterator nodeIter = iter.value().constBegin();
+        bool rowFlag = true;
         for (; nodeIter != iter.value().constEnd(); ++nodeIter)
         {
             int row = iter.key();
@@ -721,6 +722,10 @@ void LayoutManagerPrivate::performTrendLayout()
                     {
                         displayWaveforms.append(w->name());
                     }
+                    if (rowFlag)
+                    {
+                        waveRowCount++;
+                    }
                 }
                 else
                 {
@@ -729,6 +734,10 @@ void LayoutManagerPrivate::performTrendLayout()
                     if (w)
                     {
                         displayParams.append(w->name());
+                    }
+                    if (rowFlag)
+                    {
+                        leftParamRowCount++;
                     }
                 }
             }
@@ -749,29 +758,14 @@ void LayoutManagerPrivate::performTrendLayout()
                     }
                 }
             }
+            rowFlag = false;
         }
     }
 
     // the wave container stretch
-    int waveRowCount = 0;
-    int leftParamRowCount = 0;
-    for (int i = 0; i < waveLayout->rowCount(); i++)
-    {
-        if (waveLayout->rowStretch(i) == 1)
-        {
-            waveRowCount++;
-        }
-    }
     leftLayout->setStretch(0, waveRowCount);
 
     // the let param container stretch
-    for (int i = 0; i < leftParamLayout->rowCount(); i++)
-    {
-        if (leftParamLayout->rowStretch(i) == 1)
-        {
-            leftParamRowCount++;
-        }
-    }
     leftLayout->setStretch(1, leftParamRowCount);
 
     typedef QList<SubParamID> SubParamIDListType;
