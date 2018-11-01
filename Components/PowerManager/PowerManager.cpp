@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/11/1
+ **/
+
+
 #include "PowerManager.h"
 #include "WindowManager.h"
 #include "BatteryAlarm.h"
@@ -23,7 +34,7 @@ PowerManager::PowerManager()
     _timer->setInterval(5000);
     connect(_timer, SIGNAL(timeout()), this, SLOT(_timerOut()));
 
-    _shutdownMsgBox = new  IMessageBox (trs("BatteryShutDown"), trs("Systemwillshutdownatonce"), false);
+    _shutdownMsgBox = new  IMessageBox(trs("BatteryShutDown"), trs("Systemwillshutdownatonce"), false);
     _shutdownMsgBox->setYesKeyVisible(false);
 }
 
@@ -70,7 +81,7 @@ void PowerManager::_moniterRun(void)
     bool powerTypeChange = false;
     bool calibrationFlag = false;
 
-    //lowBattery 1s刷新一次,电池电量图标则看情况.
+    // lowBattery 1s刷新一次,电池电量图标则看情况.
     batteryVoltage = batteryMessage.getVoltage();
     batteryADCVoltage = batteryMessage.getVoltageADC();
     batteryCapacity = batteryMessage.getRemainingCapacity();
@@ -80,7 +91,7 @@ void PowerManager::_moniterRun(void)
 
     if (_isChargePeriod)
     {
-        _chargrdDelayTime ++;
+        _chargrdDelayTime++;
         if (_chargrdDelayTime > 90)
         {
             _isChargePeriod = false;
@@ -96,15 +107,15 @@ void PowerManager::_moniterRun(void)
         _powerType = currentPowerType;
     }
 
-    //电源线插拔时作出行为
-    _powerLineChange(lastPowerType,currentPowerType,powerTypeChange);
+    // 电源线插拔时作出行为
+    _powerLineChange(lastPowerType, currentPowerType, powerTypeChange);
 
-    //弹出关机提示框后，5s若有AC接入，则不关机
+    // 弹出关机提示框后，5s若有AC接入，则不关机
     if (_shutBattery)
     {
         if (currentPowerType != POWER_SUPLY_BAT)
         {
-            //不关机就打开储存功能；
+            // 不关机就打开储存功能；
             systemManager.turnOff(false);
             _timer->stop();
             _shutBattery = false;
@@ -126,11 +137,11 @@ void PowerManager::_moniterRun(void)
     // 根据电池信息修改电池图标。
     if (currentPowerType == POWER_SUPLY_UNKOWN)
     {
-        //判断电压
+        // 判断电压
         if (batteryADCVoltage > 0 && batteryADCVoltage <= 10500)
         {
-            //在defib charging状态下
-            if(_isChargePeriod)
+            // 在defib charging状态下
+            if (_isChargePeriod)
             {
                 if (batteryADCVoltage < 9852)
                 {
@@ -149,8 +160,8 @@ void PowerManager::_moniterRun(void)
                     }
                 }
             }
-            //在printing状态下
-            //在monitor状态下
+            // 在printing状态下
+            // 在monitor状态下
             else
             {
                 if (batteryADCVoltage < 10500)
@@ -178,7 +189,7 @@ void PowerManager::_moniterRun(void)
             {
                 _replaceBattery = false;
             }
-            //电压大于10.5V时，取消lowBattery，replaceBattery报警
+            // 电压大于10.5V时，取消lowBattery，replaceBattery报警
             if (batteryADCVoltage > 10600)
             {
                 _lowBattery = false;
@@ -245,8 +256,7 @@ void PowerManager::_moniterRun(void)
         errorCount = 0;
         commFault = 0;
 
-        batteryBarWidget.setStatus(BATTERY_NOT_EXISTED);
-        //初始化数据，只有当电池拔出时更新
+        // 初始化数据，只有当电池拔出时更新
         batteryMessage.setInit();
         _initBatteryData();
     }
@@ -256,7 +266,7 @@ void PowerManager::_moniterRun(void)
         commFault = 0;
 
         batteryBarWidget.setStatus(BATTERY_NOT_EXISTED);
-        //初始化数据，只有当电池拔出时更新
+        // 初始化数据，只有当电池拔出时更新
         batteryMessage.setInit();
         _initBatteryData();
     }
@@ -268,10 +278,10 @@ void PowerManager::_moniterRun(void)
             commFault = 0;
             // todo,判断是否为low battery
             // 充电/准备阶段 home按键禁用
-            if ((batteryVoltage > 0 && batteryVoltage <= 10570 ) ||
+            if ((batteryVoltage > 0 && batteryVoltage <= 10570) ||
                     (batteryCapacity > 0 && batteryCapacity <= LOW_BATTERY))
             {
-                //判断电池电量
+                // 判断电池电量
                 if (batteryCapacity > 0 && batteryCapacity < LOW_BATTERY)
                 {
                     _lowBattery = true;
@@ -292,9 +302,9 @@ void PowerManager::_moniterRun(void)
                     }
                 }
 
-                //判断电压
-                //在defib charging状态下
-                if(_isChargePeriod)
+                // 判断电压
+                // 在defib charging状态下
+                if (_isChargePeriod)
                 {
 
                     if (batteryVoltage < 10280)
@@ -319,7 +329,7 @@ void PowerManager::_moniterRun(void)
                         }
                     }
                 }
-                //在monitor状态下
+                // 在monitor状态下
                 else
                 {
                     if (batteryVoltage < 10570)
@@ -351,10 +361,8 @@ void PowerManager::_moniterRun(void)
                         }
                     }
                 }
-
             }
-            ////电量大于1200mh，电压大于10.57V时，取消lowBattery，replaceBattery报警
-            //电量大于350mh，电压大于10.2V时，取消replaceBattery报警
+            // 电量大于350mh，电压大于10.2V时，取消replaceBattery报警
             if (currentPowerType != POWER_SUPLY_BAT)
             {
                 if (batteryVoltage > 10300 && batteryCapacity > REPLACE_BATTERY_EXIT)
@@ -385,8 +393,8 @@ void PowerManager::_moniterRun(void)
             //判断电压
             if (batteryADCVoltage > 0 && batteryADCVoltage <= 10500)
             {
-                //在defib charging状态下
-                if(_isChargePeriod)
+                // 在defib charging状态下
+                if (_isChargePeriod)
                 {
                     if (batteryADCVoltage < 9852)
                     {
@@ -406,8 +414,8 @@ void PowerManager::_moniterRun(void)
                         }
                     }
                 }
-                //在printing状态下
-                //在monitor状态下
+                // 在printing状态下
+                // 在monitor状态下
                 else
                 {
                     if (batteryADCVoltage < 10500)
@@ -435,7 +443,7 @@ void PowerManager::_moniterRun(void)
                 {
                     _replaceBattery = false;
                 }
-                //电压大于10.5V时，取消lowBattery，replaceBattery报警
+                // 电压大于10.5V时，取消lowBattery，replaceBattery报警
                 if (batteryADCVoltage > 10600)
                 {
                     _lowBattery = false;
@@ -448,7 +456,7 @@ void PowerManager::_moniterRun(void)
                 {
                     _replaceBattery = false;
                 }
-                //电压大于10.5V时，取消lowBattery，replaceBattery报警
+                // 电压大于10.5V时，取消lowBattery，replaceBattery报警
                 if (batteryADCVoltage > 10600)
                 {
                     _lowBattery = false;
@@ -521,7 +529,7 @@ void PowerManager::_moniterRun(void)
         _defibDisable = false;
     }
 
-    //根据报警决定是否修改电池图标
+    // 根据报警决定是否修改电池图标
     _batteryChangeByAlarm();
 
     _updateBatAlarm(BAT_ONESHOT_REPLACE_BATTERY, _replaceBattery);
@@ -544,7 +552,7 @@ void PowerManager::_configRun(void)
     PowerSuplyType currentPowerType = systemBoardProvider.getPowerSuplyType();
 
 
-    //弹出关机提示框后，5s若有AC接入，则不关机
+    // 弹出关机提示框后，5s若有AC接入，则不关机
     if (_shutBattery)
     {
         if (currentPowerType == POWER_SUPLY_AC || currentPowerType == POWER_SUPLY_AC_BAT)
@@ -569,7 +577,7 @@ void PowerManager::_configRun(void)
     {
         if (systemBoardProvider.getErrorWaringCode() == ERR_CODE_NONE)   // 无电池错误。
         {
-            if ((batteryVoltage > 0 && batteryVoltage <= 10090 ) ||
+            if ((batteryVoltage > 0 && batteryVoltage <= 10090) ||
                     (batteryCapacity > 0 && batteryCapacity <= SHUTDOWN_BATTERY))
             {
                 //判断电池电量
@@ -592,7 +600,7 @@ void PowerManager::_configRun(void)
         }
         else
         {
-            //判断电压
+            // 判断电压
             if (batteryADCVoltage > 0 && batteryADCVoltage <= 10020)
             {
                 if (batteryADCVoltage < 10020)
@@ -606,9 +614,9 @@ void PowerManager::_configRun(void)
             }
         }
     }
-    else if(currentPowerType == POWER_SUPLY_UNKOWN)
+    else if (currentPowerType == POWER_SUPLY_UNKOWN)
     {
-        //判断电压
+        // 判断电压
         if (batteryADCVoltage > 0 && batteryADCVoltage <= 10020)
         {
             if (batteryADCVoltage < 10020)
@@ -643,35 +651,36 @@ void PowerManager::_batteryIconNormal(void)
     batteryBarWidget.setStatus(BATTERY_NORMAL);
 }
 
-void PowerManager::_powerLineChange(const PowerSuplyType &lastPowerType, const PowerSuplyType &currentPowerType, const bool &powerTypeChange)
+void PowerManager::_powerLineChange(const PowerSuplyType &lastPowerType, const PowerSuplyType &currentPowerType,
+                                    const bool &powerTypeChange)
 {
-    static int batteryCountDown = 0;    //90s至少刷新一次电量图标.
-    static int CountDown = 0;    //90s至少刷新一次电量图标.
+    static int batteryCountDown = 0;    // 90s至少刷新一次电量图标.
+    static int CountDown = 0;    // 90s至少刷新一次电量图标.
     static bool ACtoBattery = false;
     static bool BatterytoAC = false;
     int batteryVoltage = batteryMessage.getVoltage();
     int batteryCapacity = batteryMessage.getRemainingCapacity();
 
     static unsigned char count = 0;
-    //电池刚接入或者电池接入超过0s但不足10s,执行此条件
-    if((lastPowerType != POWER_SUPLY_BAT && lastPowerType != POWER_SUPLY_AC_BAT
-        && (currentPowerType == POWER_SUPLY_AC_BAT || currentPowerType == POWER_SUPLY_BAT))
+    // 电池刚接入或者电池接入超过0s但不足10s,执行此条件
+    if ((lastPowerType != POWER_SUPLY_BAT && lastPowerType != POWER_SUPLY_AC_BAT
+            && (currentPowerType == POWER_SUPLY_AC_BAT || currentPowerType == POWER_SUPLY_BAT))
             || count != 0)
     {
-        //电池接入到达10s,则不再满足执行条件
-        count = count >= 10 ? 0 : (count+1);
+        // 电池接入到达10s,则不再满足执行条件
+        count = count >= 10 ? 0 : (count + 1);
     }
 
-    if(powerTypeChange == true)
+    if (powerTypeChange == true)
     {
-        //电池接入10s内不应执行90s延迟.
-        if(count == 0)
+        // 电池接入10s内不应执行90s延迟.
+        if (count == 0)
         {
-            if(lastPowerType == POWER_SUPLY_BAT && _powerType == POWER_SUPLY_AC_BAT)
+            if (lastPowerType == POWER_SUPLY_BAT && _powerType == POWER_SUPLY_AC_BAT)
             {
                 BatterytoAC = true;
             }
-            else if(lastPowerType == POWER_SUPLY_AC_BAT && _powerType == POWER_SUPLY_BAT)
+            else if (lastPowerType == POWER_SUPLY_AC_BAT && _powerType == POWER_SUPLY_BAT)
             {
                 ACtoBattery = true;
             }
@@ -687,8 +696,8 @@ void PowerManager::_powerLineChange(const PowerSuplyType &lastPowerType, const P
             BatterytoAC = false;
         }
     }
-    //无变化
-    if(ACtoBattery == false && BatterytoAC == false)
+    // 无变化
+    if (ACtoBattery == false && BatterytoAC == false)
     {
         // 使用BAT充电
         if (currentPowerType == POWER_SUPLY_BAT)
@@ -696,7 +705,7 @@ void PowerManager::_powerLineChange(const PowerSuplyType &lastPowerType, const P
             // PD充电后一段时间不显示
             if (!_isChargePeriod)
             {
-                if (batteryVoltage != 0 && batteryCapacity!= 65535)
+                if (batteryVoltage != 0 && batteryCapacity != 65535)
                 {
                     _timeValue = batteryMessage.getAverageTimeToEmpty() / 30;
                 }
@@ -711,60 +720,60 @@ void PowerManager::_powerLineChange(const PowerSuplyType &lastPowerType, const P
             }
         }
     }
-    //AC拔掉
-    else if(ACtoBattery == true && BatterytoAC == false)
+    // AC拔掉
+    else if (ACtoBattery == true && BatterytoAC == false)
     {
         ++batteryCountDown;
-        //BAT状态倒计时到了,或者不再是BAT状态,则退出AC的状态
-        if(batteryCountDown >= TIME_CHANGE && currentPowerType == POWER_SUPLY_BAT)
+        // BAT状态倒计时到了,或者不再是BAT状态,则退出AC的状态
+        if (batteryCountDown >= TIME_CHANGE && currentPowerType == POWER_SUPLY_BAT)
         {
             // PD充电后一段时间不显示
-            if(!_isChargePeriod)
+            if (!_isChargePeriod)
             {
                 ACtoBattery = false;
                 batteryCountDown = 0;
             }
         }
-        else if(currentPowerType != POWER_SUPLY_BAT)
+        else if (currentPowerType != POWER_SUPLY_BAT)
         {
             ACtoBattery = false;
             batteryCountDown = 0;
         }
     }
-    //AC插上
-    else if(ACtoBattery == false && BatterytoAC == true)
+    // AC插上
+    else if (ACtoBattery == false && BatterytoAC == true)
     {
         ++CountDown;
-        //AC_BAT状态倒计时到了,或者不再是AC_BAT状态,则退出AC插上的状态
-        if((CountDown >= TIME_CHANGE && currentPowerType == POWER_SUPLY_AC_BAT) || currentPowerType != POWER_SUPLY_AC_BAT)
+        // AC_BAT状态倒计时到了,或者不再是AC_BAT状态,则退出AC插上的状态
+        if ((CountDown >= TIME_CHANGE && currentPowerType == POWER_SUPLY_AC_BAT) || currentPowerType != POWER_SUPLY_AC_BAT)
         {
             BatterytoAC = false;
             CountDown = 0;
         }
     }
-    //AC多次插拔
-    else if(ACtoBattery == true && BatterytoAC == true)
+    // AC多次插拔
+    else if (ACtoBattery == true && BatterytoAC == true)
     {
         ++CountDown;
-        //AC接入 或者battery接入时,电量CountDown固定刷新90s
-        if(currentPowerType == POWER_SUPLY_AC_BAT || currentPowerType == POWER_SUPLY_BAT)
+        // AC接入 或者battery接入时,电量CountDown固定刷新90s
+        if (currentPowerType == POWER_SUPLY_AC_BAT || currentPowerType == POWER_SUPLY_BAT)
         {
-            //battery未供电时,battery的90s计时清零.
-            if(currentPowerType != POWER_SUPLY_BAT && batteryCountDown != 0)
+            // battery未供电时,battery的90s计时清零.
+            if (currentPowerType != POWER_SUPLY_BAT && batteryCountDown != 0)
             {
                 batteryCountDown = 0;
             }
-            //公共倒计时到叻,且电池供电不稳定,就用电量刷新界面.
-            if(CountDown >= TIME_CHANGE && batteryCountDown < TIME_CHANGE)
+            // 公共倒计时到叻,且电池供电不稳定,就用电量刷新界面.
+            if (CountDown >= TIME_CHANGE && batteryCountDown < TIME_CHANGE)
             {
                 BatterytoAC = false;
                 CountDown = 0;
             }
-            //battery接入时,battery90s后电池供电稳定,采用电池信息刷新界面.
-            if(currentPowerType == POWER_SUPLY_BAT)
+            // battery接入时,battery90s后电池供电稳定,采用电池信息刷新界面.
+            if (currentPowerType == POWER_SUPLY_BAT)
             {
                 ++batteryCountDown;
-                if(batteryCountDown >= TIME_CHANGE)
+                if (batteryCountDown >= TIME_CHANGE)
                 {
                     ACtoBattery = false;
                     BatterytoAC = false;
@@ -781,14 +790,12 @@ void PowerManager::_powerLineChange(const PowerSuplyType &lastPowerType, const P
             CountDown = 0;
         }
     }
-
-
 }
 
 void PowerManager::_batteryChangeByAlarm()
 {
     static bool lastBatteryLow = false;
-    if(_lowBattery || _replaceBattery || _shutBattery)
+    if (_lowBattery || _replaceBattery || _shutBattery)
     {
         if (systemBoardProvider.getErrorWaringCode() == ERR_CODE_NONE) // 电池通信中断.
         {
@@ -800,7 +807,7 @@ void PowerManager::_batteryChangeByAlarm()
             lastBatteryLow = false;
         }
     }
-    else if(lastBatteryLow == true && (_powerType == POWER_SUPLY_BAT || POWER_SUPLY_AC_BAT))
+    else if (lastBatteryLow == true && (_powerType == POWER_SUPLY_BAT || POWER_SUPLY_AC_BAT))
     {
         lastBatteryLow = false;
         // 使用BAT充电
@@ -809,7 +816,7 @@ void PowerManager::_batteryChangeByAlarm()
             // PD充电后一段时间不显示
             if (!_isChargePeriod)
             {
-                if (batteryMessage.getVoltage() != 0 && batteryMessage.getRemainingCapacity()!= 65535)
+                if (batteryMessage.getVoltage() != 0 && batteryMessage.getRemainingCapacity() != 65535)
                 {
                     _timeValue = batteryMessage.getAverageTimeToEmpty() / 30;
                 }

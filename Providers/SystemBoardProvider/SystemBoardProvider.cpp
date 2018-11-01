@@ -228,10 +228,22 @@ void SystemBoardProvider::_parseBatteryInfo(unsigned char *data, int len)
         return;
     }
 
-    modeStatus.isCharging = data[1];
-    modeStatus.adcValue = (data[3] << 8) | data[2];
+    modeStatus.isCharging = data[1];        // 是否正在充电
+    modeStatus.adcValue = (data[3] << 8) | data[2];     // AC值
 
-    // TODO: update the battery info in the screen
+    if (modeStatus.isCharging)
+    {
+        modeStatus.powerSuply = POWER_SUPLY_AC_BAT;
+    }
+    else if (modeStatus.adcValue != 0)
+    {
+        modeStatus.powerSuply = POWER_SUPLY_BAT;
+    }
+    else
+    {
+        modeStatus.powerSuply = POWER_SUPLY_UNKOWN;
+    }
+    powerManager.batteryMessage.updatePeriodicBatMessage(data);
 }
 
 /***************************************************************************************************
