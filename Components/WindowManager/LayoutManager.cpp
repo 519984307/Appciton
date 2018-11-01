@@ -517,21 +517,22 @@ void LayoutManagerPrivate::performOxyCRGLayout()
         {
             int row = iter.key();
             IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
-            if (!w || !widgetLayoutable[w->name()])
+            QWidget *qw = w;
+            if (!qw)
             {
-                continue;
+                qw = createContainter();
             }
-
             if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN) // in the left part, contain wave or param
             {
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM) // wave widgets
                 {
                     if (waveWidgetCounter < MAX_WAVEWIDGET_ROW_IN_OXYCRG_LAYOUT || currentRow == row)
                     {
-                        w->setVisible(true);
-                        w->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-                        waveLayout->addWidget(w, row, nodeIter->pos, 1, nodeIter->span);
-                        if (qobject_cast<WaveWidget *>(w))
+                        qw->setVisible(true);
+                        qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+                        waveLayout->addWidget(qw, row, nodeIter->pos, 1, nodeIter->span);
+                        waveLayout->setRowStretch(row, 1);
+                        if (w)
                         {
                             displayWaveforms.append(w->name());
                         }
@@ -555,13 +556,20 @@ void LayoutManagerPrivate::performOxyCRGLayout()
             }
             else  // the right part are all param
             {
-                w->setVisible(true);
-                w->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-                rightParamLayout->addWidget(w, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
-                displayParams.append(w->name());
+                qw->setVisible(true);
+                qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+                rightParamLayout->addWidget(qw, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
+                rightParamLayout->setRowStretch(row, 1);
+                if (w)
+                {
+                    displayParams.append(w->name());
+                }
             }
 
-            contentWidgets.append(w);
+            if (w)
+            {
+                contentWidgets.append(w);
+            }
         }
     }
 }
