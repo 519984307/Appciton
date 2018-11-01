@@ -352,7 +352,6 @@ void LayoutManagerPrivate::performStandardLayout()
             {
                 qw = createContainter();
             }
-
             if (w)
             {
                 contentWidgets.append(w);
@@ -685,33 +684,47 @@ void LayoutManagerPrivate::performTrendLayout()
         {
             int row = iter.key();
             IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
-            if (!w || !widgetLayoutable[w->name()])
+            QWidget *qw = w;
+            if (!qw)
             {
-                continue;
+                qw = createContainter();
             }
-            contentWidgets.append(w);
-            w->setVisible(true);
-            w->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
+            if (w)
+            {
+                contentWidgets.append(w);
+            }
+            qw->setVisible(true);
+            qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
             if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN)
             {
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM)
                 {
-                    waveLayout->addWidget(w, row, nodeIter->pos, 1, nodeIter->span);
-                    if (qobject_cast<WaveWidget *>(w))
+                    waveLayout->addWidget(qw, row, nodeIter->pos, 1, nodeIter->span);
+                    waveLayout->setRowStretch(row, 1);
+                    if (w)
                     {
                         displayWaveforms.append(w->name());
                     }
                 }
                 else
                 {
-                    leftParamLayout->addWidget(w, row - LAYOUT_MAX_WAVE_ROW_NUM, nodeIter->pos, 1, nodeIter->span);
-                    displayParams.append(w->name());
+                    leftParamLayout->addWidget(qw, row - LAYOUT_MAX_WAVE_ROW_NUM, nodeIter->pos, 1, nodeIter->span);
+                    leftParamLayout->setRowStretch(row - LAYOUT_MAX_WAVE_ROW_NUM , 1);
+                    if (w)
+                    {
+                        displayParams.append(w->name());
+                    }
                 }
             }
             else
             {
-                rightParamLayout->addWidget(w, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
-                displayParams.append(w->name());
+                rightParamLayout->addWidget(qw, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
+                rightParamLayout->setRowStretch(row, 1);
+                if (w)
+                {
+                    displayParams.append(w->name());
+                }
                 if (nodeIter->pos == LAYOUT_WAVE_END_COLUMN) // the first trend node on each row
                 {
                     TrendWidget *trendWidget = qobject_cast<TrendWidget *>(w);
@@ -725,9 +738,26 @@ void LayoutManagerPrivate::performTrendLayout()
     }
 
     // the wave container stretch
-    leftLayout->setStretch(0, waveLayout->rowCount());
+    int waveRowCount = 0;
+    int leftParamRowCount = 0;
+    for (int i = 0; i < waveLayout->rowCount(); i++)
+    {
+        if (waveLayout->rowStretch(i) == 1)
+        {
+            waveRowCount++;
+        }
+    }
+    leftLayout->setStretch(0, waveRowCount);
+
     // the let param container stretch
-    leftLayout->setStretch(1, leftParamLayout->rowCount());
+    for (int i = 0; i < leftParamLayout->rowCount(); i++)
+    {
+        if (leftParamLayout->rowStretch(i) == 1)
+        {
+            leftParamRowCount++;
+        }
+    }
+    leftLayout->setStretch(1, leftParamRowCount);
 
     typedef QList<SubParamID> SubParamIDListType;
 
