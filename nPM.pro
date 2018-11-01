@@ -148,9 +148,7 @@ SOURCES +=                                                                      
     Utility/Widgets/InputMethod/KeyBoardPanel.cpp                               \
     Utility/Widgets/InputMethod/KeyInputPanel.cpp                               \
     Utility/Widgets/InputMethod/NumberPanel.cpp                                 \
-    Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.cpp                      \
-    Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidgetRuler.cpp                     \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidget.cpp                               \
     Utility/Widgets/OxyCRGWidget/OxyCRGRESPWaveWidget.cpp                       \
     Utility/Widgets/OxyCRGWidget/OxyCRGCO2WaveWidget.cpp                        \
@@ -623,10 +621,8 @@ HEADERS +=                                                                      
     Utility/Widgets/InputMethod/KeyBoardPanel.h                                 \
     Utility/Widgets/InputMethod/KeyInputPanel.h                                 \
     Utility/Widgets/InputMethod/NumberPanel.h                                   \
-    Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.h                        \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget_p.h                      \
-    Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidgetRuler.h                       \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidget.h                                 \
     Utility/Widgets/OxyCRGWidget/OxyCRGRESPWaveWidget.h                         \
     Utility/Widgets/OxyCRGWidget/OxyCRGRRHRWaveWidget.h                         \
