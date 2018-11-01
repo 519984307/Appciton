@@ -222,7 +222,7 @@ void TEMPTrendWidget::showValue(void)
         if (_t1Alarm)
         {
             showAlarmStatus(_t1Value, psrc);
-            showAlarmParamLimit(_t1Str, psrc);
+            showAlarmParamLimit(_t1Value, _t1Str, psrc);
         }
 
         if (_t2Alarm)

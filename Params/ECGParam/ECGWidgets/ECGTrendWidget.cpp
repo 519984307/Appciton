@@ -106,8 +106,8 @@ void ECGTrendWidget::showValue(void)
     psrc = normalPalette(psrc);
     if (_isAlarm)
     {
-        showAlarmParamLimit(_hrString, psrc);
         showAlarmStatus(_hrValue, psrc);
+        showAlarmParamLimit(_hrValue, _hrString, psrc);
     }
     else
     {

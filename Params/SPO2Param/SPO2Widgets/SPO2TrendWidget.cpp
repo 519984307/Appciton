@@ -114,9 +114,9 @@ void SPO2TrendWidget::showValue(void)
     psrc = normalPalette(psrc);
     if (_isAlarm)
     {
-        showAlarmParamLimit(_spo2String, psrc);
         showAlarmStatus(_spo2Bar, psrc);
         showAlarmStatus(_spo2Value, psrc);
+        showAlarmParamLimit(_spo2Value, _spo2String, psrc);
     }
     else
     {

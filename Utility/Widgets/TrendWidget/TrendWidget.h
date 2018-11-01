@@ -98,7 +98,7 @@ protected:
      * @param psrc                  参数对应的调色板
      * @param valueStr              当前参数值字符串
      */
-    void showAlarmParamLimit(const QString &valueStr, QPalette psrc);
+    void showAlarmParamLimit(QWidget *value, const QString &valueStr, QPalette psrc);
 
     /**
      * @brief showNormalStatus  设置正常时状态：黑底＋对应颜色字体

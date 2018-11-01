@@ -177,8 +177,8 @@ void CO2TrendWidget::showValue()
 
         if (_etco2Alarm)
         {
-            showAlarmParamLimit(_etco2Str, fgColor);
             showAlarmStatus(_etco2Value, fgColor);
+            showAlarmParamLimit(_etco2Value, _etco2Str, fgColor);
         }
 
         if (_fico2Alarm)
