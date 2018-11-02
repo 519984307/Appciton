@@ -835,9 +835,19 @@ void ScreenLayoutModel::saveLayoutInfo()
     systemConfig.setConfig("PrimaryCfg|UILayout|ContentLayout|Normal", d_ptr->getLayoutMap());
 }
 
-void ScreenLayoutModel::loadLayoutInfo()
+void ScreenLayoutModel::loadLayoutInfo(bool isDefaultConfig)
 {
-    const QVariantMap config = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|Normal");
+    QVariantMap config;
+    if (isDefaultConfig)
+    {
+        Config defalutConfig(ORGINAL_SYSTEM_CFG_FILE);
+        config = defalutConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|Normal");
+    }
+    else
+    {
+        config = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|Normal");
+    }
+
     beginResetModel();
     d_ptr->loadLayoutFromConfig(config);
     endResetModel();

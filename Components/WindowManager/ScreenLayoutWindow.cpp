@@ -118,4 +118,8 @@ void ScreenLayoutWindow::onButtonClicked()
         layoutManager.reloadLayoutConfig();
         this->close();
     }
+    else if (btn == d_ptr->defaultBtn)
+    {
+        model->loadLayoutInfo(true);
+    }
 }
