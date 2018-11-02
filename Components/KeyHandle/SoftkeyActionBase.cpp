@@ -58,7 +58,7 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", trs("ChooseScreen"), "screenSwitch.png", SoftkeyActionBase::switchSystemMode),
     KeyActionDesc("", trs("ScreenSetup"), "interface.png",   SoftkeyActionBase::WindowLayout),
     KeyActionDesc("", trs("ParameterSwitch"), "paraSwitch.png"),
-    KeyActionDesc("", trs("LockScreen"), "lockScreen.png", SoftkeyActionBase::lockScreen),
+    KeyActionDesc("", trs("DisableTouchScreen"), "lockScreen.png", SoftkeyActionBase::lockScreen),
     KeyActionDesc("", trs("Standby"), "standby.png", SoftkeyActionBase::standby),
     KeyActionDesc("", trs("CO2ZeroCalib"), "calib.png", SoftkeyActionBase::CO2Zero),
     KeyActionDesc("", trs("CO2Standby"), "standby.png", SoftkeyActionBase::CO2Standby),
@@ -225,7 +225,11 @@ void SoftkeyActionBase::lockScreen(bool isPressed)
     {
         return;
     }
-    // TODO : lockScreen
+
+#ifdef Q_WS_QWS
+    bool isOn = systemManager.isTouchScreenOn();
+    systemManager.setTouchScreenOnOff(!isOn);
+#endif
 }
 
 void SoftkeyActionBase::switchSystemMode(bool isPressed)

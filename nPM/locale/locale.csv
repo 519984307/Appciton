@@ -247,8 +247,8 @@ PatientManager,病人管理,Patient Manager
 PatientManagerDesc,病人管理,Patient Manager Desc
 PatientInfo,病人信息,Patient Info
 NewPatient,新建病人,New Patient
-NormalFunctionMenu,常规功能,Normal Function Menu
-NormalFunctionMenuDesc,常规功能,Normal Function Menu Desc
+NormalFunctionMenu,常规功能,Normal Function
+NormalFunctionMenuDesc,常规功能,Normal Function
 Calculate,计算,Calculate
 WiFiProfile,WiFi配置,WiFi Profile
 MachineVersion,机器版本,Machine Version
@@ -1477,7 +1477,7 @@ Blood,血液,Blood
 DeleteAll,删除全部,Delete All
 DeleteCase,删除事件,Delete Case
 Freeze,冻结,Freeze
-LockScreen,锁屏,Lock Screen
+DisableTouchScreen,禁触摸屏,Disable Touch
 Open,开放,Open
 Start,开始,Start
 AlarmLightOnAlarmReset,警示复位灯,Alarm Light On Alarm Reset
