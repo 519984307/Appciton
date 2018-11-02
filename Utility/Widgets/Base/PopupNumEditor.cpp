@@ -82,7 +82,6 @@ void PopupNumEditorPrivate::increaseValue()
     if (editInfo.curValue + editInfo.step <= editInfo.highLimit)
     {
         editInfo.curValue += editInfo.step;
-        emit q_ptr->valueChanged(editInfo.curValue);
     }
 }
 
@@ -91,7 +90,6 @@ void PopupNumEditorPrivate::decreaseValue()
     if (editInfo.curValue - editInfo.step >= editInfo.lowLimit)
     {
         editInfo.curValue -= editInfo.step;
-        emit q_ptr->valueChanged(editInfo.curValue);
     }
 }
 
@@ -257,6 +255,7 @@ void PopupNumEditor::keyReleaseEvent(QKeyEvent *ev)
         break;
     case Qt::Key_Return:
     case Qt::Key_Enter:
+        emit valueChanged(d_ptr->editInfo.curValue);
         this->close();
         break;
     default:
@@ -317,6 +316,7 @@ void PopupNumEditor::mouseReleaseEvent(QMouseEvent *ev)
     else
     {
         // click somewhere else
+        emit valueChanged(d_ptr->editInfo.curValue);
         close();
     }
 
