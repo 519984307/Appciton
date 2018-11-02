@@ -162,10 +162,13 @@ void SoftKeyManager::getSubFocusWidget(QList<QWidget *> &subWidgets) const
     subWidgets.append(d_ptr->rightPageKeyWidget);
 }
 
-void SoftKeyManager::resetPage()
+void SoftKeyManager::refreshPage(bool isFirstPage)
 {
-    d_ptr->mainMenuKeyWidget->setFocus();
-    d_ptr->resetPageInfo();
+    if (isFirstPage)
+    {
+        d_ptr->mainMenuKeyWidget->setFocus();
+        d_ptr->resetPageInfo();
+    }
     d_ptr->layoutKeyDesc();
 }
 

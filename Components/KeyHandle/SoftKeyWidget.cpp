@@ -13,8 +13,6 @@
 #include "SoftKeyWidget.h"
 #include "FontManager.h"
 
-#define ICON_PATH "/usr/local/nPM/icons/"
-
 /***************************************************************************************************
  * 功能：重绘事件。
  * 参数：

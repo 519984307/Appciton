@@ -1,6 +1,6 @@
-/**
+﻿/**
  ** This file is part of the nPM project.
- ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** Copyright(C) Better Life Medical Technology Co., Ltd.
  ** All Rights Reserved.
  ** Unauthorized copying of this file, via any medium is strictly prohibited
  ** Proprietary and confidential
@@ -15,6 +15,7 @@
 #include <QColor>
 #define ICON_FILE_LEFT              "left.png"
 #define ICON_FILE_RIGHT             "right.png"
+#define ICON_PATH "/usr/local/nPM/icons/"
 
 enum SoftKeyActionType
 {
@@ -43,8 +44,7 @@ enum SoftBaseKeyType
     SOFT_BASE_KEY_SCREEN_BAN,
     SOFT_BASE_KEY_STANDBY,
     SOFT_BASE_KEY_CO2_CALIBRATION,
-    SOFT_BASE_KEY_CO2_STANDBY,
-    SOFT_BASE_KEY_CO2_MEASURE,
+    SOFT_BASE_KEY_CO2_HANDLE,
     SOFT_BASE_KEY_IBP_CALIBRATION,
     SOFT_BASE_KEY_CALCULATION,
     SOFT_BASE_KEY_KEYBOARD_VOLUMN,
@@ -66,7 +66,7 @@ struct KeyActionDesc
                   const QColor &color = Qt::white,
                   const QColor &pressColor = QColor(0x1C, 0x86, 0xEE),
                   bool border = true
-                  )
+                 )
         : text(txt), iconPath(path), hook(phook), type(type),
           focus(focus), color(color), pressColor(pressColor),
           releaseColor(releaseColor), border(border), hint(hint)
@@ -114,8 +114,7 @@ public:    // 一些共有的功能处理。
     static void eventReview(bool isPressed);
     static void standby(bool isPressed);
     static void CO2Zero(bool isPressed);
-    static void CO2Standby(bool isPressed);
-    static void CO2Measure(bool isPressed);
+    static void CO2Handle(bool isPressed);
     static void IBPZero(bool isPressed);
     static void systemBrightness(bool isPressed);
     static void keyVolume(bool isPressed);
