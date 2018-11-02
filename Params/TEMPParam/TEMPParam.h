@@ -99,6 +99,12 @@ public:
 
     // 刷新上下限
     virtual void updateSubParamLimit(SubParamID id);
+
+    // 获取校准是否回复
+    bool getCalibrationReply();
+
+    // 获取校准结果
+    bool getCalibrationResult();
 public:
     // 设置/获取单位。
     void setUnit(UnitType u);
@@ -121,5 +127,8 @@ private:
     int _calibrateValue;
 
     bool _isTEMPDisable;
+
+    bool _calibrationReply;
+    bool _calibrationResult;
 };
 #define tempParam (TEMPParam::construction())
