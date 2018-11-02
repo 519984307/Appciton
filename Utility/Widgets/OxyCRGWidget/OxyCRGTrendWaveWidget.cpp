@@ -84,8 +84,6 @@ void OxyCRGTrendWaveWidget::paintEvent(QPaintEvent *e)
     IWidget::paintEvent(e);
 
     QRect r = rect();
-    int x1 = r.x();
-    int y1 = r.y();
     int w = r.width();
     int h = r.height();
     int xShift = X_SHIFT;
@@ -100,7 +98,7 @@ void OxyCRGTrendWaveWidget::paintEvent(QPaintEvent *e)
     // 添加波形名字
     painter.setPen(QPen(d_ptr->waveColor, 1, Qt::SolidLine));
     painter.setFont(fontManager.textFont(16));
-    painter.drawText(x1 + xShift, y1 + yShift,
+    painter.drawText(xShift, yShift,
                      wxShift, h / 3,
                      Qt::AlignLeft|Qt::AlignTop,
                      d_ptr->name);
@@ -109,7 +107,7 @@ void OxyCRGTrendWaveWidget::paintEvent(QPaintEvent *e)
     if (d_ptr->rulerHigh != InvData())
     {
         painter.setPen(QPen(d_ptr->waveColor, 1, Qt::SolidLine));
-        painter.drawText(x1 + wxShift + xShift, y1 + yShift,
+        painter.drawText(wxShift + xShift, yShift,
                          wxShift, wxShift / 2,
                          Qt::AlignTop | Qt::AlignLeft,
                          QString::number(d_ptr->rulerHigh));
@@ -117,7 +115,7 @@ void OxyCRGTrendWaveWidget::paintEvent(QPaintEvent *e)
     if (d_ptr->rulerLow != InvData())
     {
         painter.setPen(QPen(d_ptr->waveColor, 1, Qt::SolidLine));
-        painter.drawText(x1 + wxShift + xShift, y1 + h - yShift - wxShift / 2,
+        painter.drawText(wxShift + xShift, h - yShift - wxShift / 2,
                          wxShift, wxShift / 2,
                          Qt::AlignBottom | Qt::AlignLeft,
                          QString::number(d_ptr->rulerLow));
@@ -129,15 +127,15 @@ void OxyCRGTrendWaveWidget::paintEvent(QPaintEvent *e)
         int xStep = qRound((w - wxShift * 2) * 1.0 / 4);
         for (int i = 1; i < 4; i++)
         {
-            d_ptr->backgroundRulerPath.moveTo(x1 + wxShift + xStep * i, y1);
-            d_ptr->backgroundRulerPath.lineTo(x1 + wxShift + xStep * i, y1 + h);
+            d_ptr->backgroundRulerPath.moveTo(wxShift + xStep * i, 0);
+            d_ptr->backgroundRulerPath.lineTo(wxShift + xStep * i, h);
         }
 
         int yStep = qRound(h * 1.0 / 3);
         for (int i = 1; i < 3; i++)
         {
-            d_ptr->backgroundRulerPath.moveTo(x1 + wxShift, y1 + yStep * i);
-            d_ptr->backgroundRulerPath.lineTo(x1 + w - wxShift, y1 + yStep * i);
+            d_ptr->backgroundRulerPath.moveTo(wxShift, yStep * i);
+            d_ptr->backgroundRulerPath.lineTo(w - wxShift, yStep * i);
         }
     }
 
@@ -168,4 +166,8 @@ void OxyCRGTrendWaveWidget::resizeEvent(QResizeEvent *e)
     IWidget::resizeEvent(e);
     // clear the background ruler
     d_ptr->backgroundRulerPath = QPainterPath();
+    // update the wave region
+    d_ptr->waveRegion = QRect(WX_SHIFT, Y_SHIFT,
+                              width() - WX_SHIFT * 2,
+                              height() - Y_SHIFT * 2);
 }

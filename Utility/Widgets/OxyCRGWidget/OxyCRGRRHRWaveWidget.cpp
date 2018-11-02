@@ -354,10 +354,8 @@ void OxyCRGRRHRWaveWidget::init()
     d->rulerHigh = valueHigh;
     d->rulerLow = valueLow;
     // 申请存储hr波形数据堆空间
-    int dataLen = d->waveDataRate * 8 * 60;  // 最大8分钟数据
+    int dataLen = d->waveDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
     d->dataBuf = new RingBuff<short>(dataLen);
-    d->dataBufIndex = 0;
-    d->dataBufLen = dataLen;
     d->name = "HR_PR";
 
     int index = 0;

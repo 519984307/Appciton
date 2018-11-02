@@ -18,14 +18,13 @@
 #define X_SHIFT     (2)
 #define Y_SHIFT     (2)
 #define WX_SHIFT     (50)
+#define MAX_WAVE_DURATION (8)
 
 class OxyCRGTrendWaveWidgetPrivate
 {
 public:
     OxyCRGTrendWaveWidgetPrivate()
                 : dataBuf(NULL),
-                  dataBufIndex(0),
-                  dataBufLen(0),
                   name(""),
                   rulerHigh(InvData()),
                   rulerLow(InvData()),
@@ -39,8 +38,6 @@ public:
     virtual ~OxyCRGTrendWaveWidgetPrivate(){}
 
     RingBuff<short> *dataBuf;    // 波形数据缓存
-    int dataBufIndex;            // 波形数据缓存下标
-    int dataBufLen;              // 波形数据长度
 
     QString name;                // 波形名称
     int rulerHigh;               // 标尺高值
@@ -55,5 +52,6 @@ public:
     bool isClearWaveData;        // 是否清除波形数据
 
     QPainterPath backgroundRulerPath;  // 背景标尺
+    QRect waveRegion;
 };
 

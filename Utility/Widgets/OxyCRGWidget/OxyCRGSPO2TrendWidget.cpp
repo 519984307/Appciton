@@ -45,10 +45,8 @@ void OxyCRGSPO2TrendWidgetPrivate::init()
     rulerHigh = valueHigh;
     rulerLow = valueLow;
 
-    int dataLen = waveDataRate * 8 * 60;  // 最大8分钟数据
+    int dataLen = waveDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
     dataBuf = new RingBuff<short>(dataLen);
-    dataBufIndex = 0;
-    dataBufLen = dataLen;
     name = "SPO2";
 }
 

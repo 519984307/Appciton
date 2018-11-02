@@ -176,10 +176,8 @@ void OxyCRGCO2WaveWidget::setDataRate(int rate)
     delete d->dataBuf;
     d->dataBuf = NULL;
 
-    int dataLen = d->lastDataRate * 8 * 60;  // 最大8分钟数据
+    int dataLen = d->lastDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
     d->dataBuf = new RingBuff<short>(dataLen);
-    d->dataBufIndex = 0;
-    d->dataBufLen = dataLen;
 }
 
 void OxyCRGCO2WaveWidget::init()
@@ -207,9 +205,7 @@ void OxyCRGCO2WaveWidget::init()
     d->rulerHigh = valueHigh;
     d->rulerLow = valueLow;
 
-    int dataLen = d->lastDataRate * 8 * 60;  // 最大8分钟数据
+    int dataLen = d->lastDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
     d->dataBuf = new RingBuff<short>(dataLen);
-    d->dataBufIndex = 0;
-    d->dataBufLen = dataLen;
     d->name = "CO2";
 }

@@ -174,10 +174,8 @@ void OxyCRGRESPWaveWidget::setDataRate(int rate)
     delete d->dataBuf;
     d->dataBuf = NULL;
 
-    int dataLen = d->lastDataRate * 8 * 60;  // 最大8分钟数据
+    int dataLen = d->lastDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
     d->dataBuf = new RingBuff<short>(dataLen);
-    d->dataBufIndex = 0;
-    d->dataBufLen = dataLen;
 }
 
 void OxyCRGRESPWaveWidget::init()
@@ -197,9 +195,7 @@ void OxyCRGRESPWaveWidget::init()
     d->rulerHigh = InvData();
     d->rulerLow = InvData();
 
-    int dataLen = d->lastDataRate * 8 * 60;  // 最大8分钟数据
+    int dataLen = d->lastDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
     d->dataBuf = new RingBuff<short>(dataLen);
-    d->dataBufIndex = 0;
-    d->dataBufLen = dataLen;
     d->name = "RESP";
 }
