@@ -108,7 +108,7 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     bottomLayout = new QHBoxLayout();
     bottomLayout->setMargin(2);
     bottomLayout->setSpacing(1);
-    int labelWidth = 80;
+    int labelWidth = 120;
 
     fontSize = 18;
     _interval = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
@@ -126,7 +126,7 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     OxyCRGWidgetLabel *setRulerAuto = new OxyCRGWidgetLabel("", Qt::AlignCenter, this);
     setRulerAuto->setFont(fontManager.textFont(fontSize));
     setRulerAuto->setFixedSize(labelWidth, LABEL_HEIGHT);
-    setRulerAuto->setText(trs("Auto"));
+    setRulerAuto->setText(trs("AutoRuler"));
     connect(setRulerAuto, SIGNAL(released(IWidget *)), this, SLOT(_autoSetRuler()));
     d_ptr->setRulerAuto = setRulerAuto;
 
