@@ -1458,6 +1458,7 @@ Wave,波形,Wave
 DefaultSetting,缺省设置,Default Setting
 CO2Low,二氧化碳低,CO2 Low
 CO2High,二氧化碳高,CO2 High
+AutoRuler,自动标尺,Auto Ruler
 RESPLow,呼吸低,RESP Low
 RESPHigh,呼吸高,RESP High
 ImportFiles,导入文件,ImportFiles
