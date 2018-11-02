@@ -406,13 +406,19 @@ void LayoutManagerPrivate::performStandardLayout()
 
 void LayoutManagerPrivate::perform12LeadLayout()
 {
+    QVBoxLayout *vLayout = new QVBoxLayout();
     QWidget *waveContainer = createContainter();
-    contentLayout->addWidget(waveContainer, waveAreaStretch);
+    contentLayout->addLayout(vLayout, waveAreaStretch);
     QWidget *rightParamContainer = createContainter();
     contentLayout->addWidget(rightParamContainer, paramAreaStretch);
+    QWidget *leftParamContainer = createContainter();
 
     QGridLayout *waveLayout = new QGridLayout(waveContainer);
     waveLayout->setMargin(0);
+    vLayout->addWidget(waveContainer);
+    QGridLayout *leftParamLayout = new QGridLayout(leftParamContainer);
+    leftParamLayout->setMargin(0);
+    vLayout->addWidget(leftParamContainer);
     QGridLayout *rightParamLayout = new QGridLayout(rightParamContainer);
     rightParamLayout->setMargin(0);
 
@@ -444,6 +450,8 @@ void LayoutManagerPrivate::perform12LeadLayout()
     }
 
     OrderedMap<int, LayoutRow>::ConstIterator iter = layoutInfos.begin();
+    int insetRow = 0;
+    int lastWaveRow = 0;
     for (; iter != layoutInfos.end(); ++iter)
     {
         LayoutRow::ConstIterator nodeIter = iter.value().constBegin();
@@ -460,10 +468,30 @@ void LayoutManagerPrivate::perform12LeadLayout()
             {
                 contentWidgets.append(w);
             }
-
-            // only add the param on the right in the standard layout
-            if (nodeIter->pos >= LAYOUT_WAVE_END_COLUMN)
+            if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN)
             {
+                // add the param on the left in the standard layout
+                if (row < LAYOUT_MAX_WAVE_ROW_NUM)
+                {
+                    // standard layout wave region
+                    lastWaveRow = insetRow;
+                }
+                else
+                {
+                    // standard layout left pararm region
+                    qw->setVisible(true);
+                    qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+                    leftParamLayout->addWidget(qw, insetRow - lastWaveRow - 1 , nodeIter->pos, 1, nodeIter->span);
+                    leftParamLayout->setRowStretch(insetRow - lastWaveRow - 1, 1);
+                    if (w)
+                    {
+                        displayParams.append(w->name());
+                    }
+                }
+            }
+            else
+            {
+                // add the param on the right in the standard layout
                 qw->setVisible(true);
                 qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
                 rightParamLayout->addWidget(qw, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
@@ -474,7 +502,15 @@ void LayoutManagerPrivate::perform12LeadLayout()
                 }
             }
         }
+
+        if (!(*iter).isEmpty())
+        {
+            insetRow++;
+        }
     }
+
+    vLayout->setStretch(0, lastWaveRow + 1);
+    vLayout->setStretch(1, leftParamLayout->rowCount());
 }
 
 #define MAX_WAVEWIDGET_ROW_IN_OXYCRG_LAYOUT 3       // the maximum wavewidget row can be displayed in the wave area while in the oxycrg layout
