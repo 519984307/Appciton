@@ -639,13 +639,8 @@ void LayoutManagerPrivate::performBigFontLayout()
                 displayWaveforms.append(w->name());
                 contentWidgets.append(w);
             }
-            else
-            {
-                vLayout->addWidget(createContainter(), 1);
-            }
             column++;
         }
-
         row++;
     }
 }
