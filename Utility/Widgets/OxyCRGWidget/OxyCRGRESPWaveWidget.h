@@ -34,10 +34,5 @@ protected:
     void hideEvent(QHideEvent *e);
 
 private:
-    /**
-     * @brief init
-     */
-    void init(void);
-
     Q_DECLARE_PRIVATE(OxyCRGRESPWaveWidget)
 };

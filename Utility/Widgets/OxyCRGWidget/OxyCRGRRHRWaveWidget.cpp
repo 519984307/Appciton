@@ -149,7 +149,7 @@ void OxyCRGRRHRWaveWidget::paintEvent(QPaintEvent *e)
 
     // 数据速率
     int dataRate = d->waveDataRate;
-    OxyCRGInterval interval = getIntervalTime();
+    OxyCRGInterval interval = getInterval();
     int intervalTime = 1 * 60;
 
     switch (interval)

@@ -23,14 +23,46 @@ public:
                 : lastDataRate(0)
     {
     }
+
+    void init();
     int lastDataRate;
 };
+
+
+void OxyCRGCO2WaveWidgetPrivate::init()
+{
+    QPalette palette = colorManager.getPalette(
+                  paramInfo.getParamName(PARAM_CO2));
+    QColor color = palette.color(QPalette::WindowText);
+    palette.setColor(QPalette::Highlight, color);
+    color = palette.color(QPalette::WindowText);
+    color.setRed(color.red() * 2 / 3);
+    color.setGreen(color.green() * 2 / 3);
+    color.setBlue(color.blue() * 2 / 3);
+    waveColor = color;
+
+    int valueLow = 0;
+    int valueHigh = 0;
+    currentConfig.getNumValue("OxyCRG|Ruler|CO2Low", valueLow);
+    currentConfig.getNumValue("OxyCRG|Ruler|CO2High", valueHigh);
+    QString strValueLow =  OxyCRGSymbol::convert(CO2LowTypes(valueLow));
+    valueLow = strValueLow.toInt();
+    QString strValueHigh =  OxyCRGSymbol::convert(CO2HighTypes(valueHigh));
+    valueHigh = strValueHigh.toInt();
+    rulerHigh = valueHigh;
+    rulerLow = valueLow;
+
+    int dataLen = lastDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
+    dataBuf = new RingBuff<short>(dataLen);
+    name = "CO2";
+}
 
 OxyCRGCO2WaveWidget::OxyCRGCO2WaveWidget(const QString &waveName)
                      : OxyCRGTrendWaveWidget(waveName,
                                              new OxyCRGCO2WaveWidgetPrivate)
 {
-    init();
+    Q_D(OxyCRGCO2WaveWidget);
+    d->init();
 }
 
 OxyCRGCO2WaveWidget::~OxyCRGCO2WaveWidget()
@@ -46,9 +78,14 @@ void OxyCRGCO2WaveWidget::paintEvent(QPaintEvent *e)
 
     OxyCRGTrendWaveWidget::paintEvent(e);
 
+#if 1
+    QPainter painter(this);
+    d->drawWave(&painter, d->waveRegion, d->waveBuffer);
+#else
+
     int w = rect().width() - WX_SHIFT * 2;
     int h = rect().height();
-    OxyCRGInterval interval = getIntervalTime();
+    OxyCRGInterval interval = getInterval();
     int intervalTime = 1 * 60;
     // 数据速率
     int dataRate = d->waveDataRate;
@@ -126,6 +163,7 @@ void OxyCRGCO2WaveWidget::paintEvent(QPaintEvent *e)
     {
         painter.drawLine(pointList.at(2 * i), pointList.at(2 * i + 1));
     }
+#endif
 }
 
 void OxyCRGCO2WaveWidget::showEvent(QShowEvent *e)
@@ -178,34 +216,4 @@ void OxyCRGCO2WaveWidget::setDataRate(int rate)
 
     int dataLen = d->lastDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
     d->dataBuf = new RingBuff<short>(dataLen);
-}
-
-void OxyCRGCO2WaveWidget::init()
-{
-    Q_D(OxyCRGCO2WaveWidget);
-
-    QPalette palette = colorManager.getPalette(
-                  paramInfo.getParamName(PARAM_CO2));
-    QColor color = palette.color(QPalette::WindowText);
-    palette.setColor(QPalette::Highlight, color);
-    color = palette.color(QPalette::WindowText);
-    color.setRed(color.red() * 2 / 3);
-    color.setGreen(color.green() * 2 / 3);
-    color.setBlue(color.blue() * 2 / 3);
-    d->waveColor = color;
-
-    int valueLow = 0;
-    int valueHigh = 0;
-    currentConfig.getNumValue("OxyCRG|Ruler|CO2Low", valueLow);
-    currentConfig.getNumValue("OxyCRG|Ruler|CO2High", valueHigh);
-    QString strValueLow =  OxyCRGSymbol::convert(CO2LowTypes(valueLow));
-    valueLow = strValueLow.toInt();
-    QString strValueHigh =  OxyCRGSymbol::convert(CO2HighTypes(valueHigh));
-    valueHigh = strValueHigh.toInt();
-    d->rulerHigh = valueHigh;
-    d->rulerLow = valueLow;
-
-    int dataLen = d->lastDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
-    d->dataBuf = new RingBuff<short>(dataLen);
-    d->name = "CO2";
 }

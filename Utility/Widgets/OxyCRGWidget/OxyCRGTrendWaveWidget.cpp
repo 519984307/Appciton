@@ -19,6 +19,170 @@
 #include <QTimer>
 #include <QScopedPointer>
 
+OxyCRGTrendWaveWidgetPrivate::OxyCRGTrendWaveWidgetPrivate()
+    : dataBuf(NULL),
+      waveBuffer(NULL),
+      name(""),
+      rulerHigh(InvData()),
+      rulerLow(InvData()),
+      waveColor(Qt::green),
+      waveDataRate(1),
+      timer(NULL),
+      isClearWaveData(true),
+      drawRuler(true),
+      interval(OxyCRG_Interval_2),
+      pointGap(0),
+      pointGapSumFraction(0.0)
+{
+    int index = OxyCRG_Interval_2;
+    currentConfig.getNumValue("OxyCRG|Interval", index);
+    interval = static_cast<OxyCRGInterval>(index);
+}
+
+int OxyCRGTrendWaveWidgetPrivate::getIntervalSeconds(OxyCRGInterval interval)
+{
+    switch (interval) {
+    case OxyCRG_Interval_1:
+        return 60;
+    case OxyCRG_Interval_2:
+        return 120;
+    case OxyCRG_Interval_4:
+        return 240;
+    case OxyCRG_Interval_8:
+        return 480;
+    default:
+        break;
+    }
+    return 120;
+}
+
+void OxyCRGTrendWaveWidgetPrivate::drawWave(QPainter *painter, const QRect &waveRegion, const OxyCRGWaveBuffer *buffer)
+{
+    if (!painter || !waveRegion.isValid() || !buffer)
+    {
+        return;
+    }
+
+    painter->save();
+    painter->setClipRect(waveRegion);
+    painter->setPen(QPen(waveColor, 2, Qt::SolidLine));
+
+    QPainterPath path;
+    int curSegmementIndex = (buffer->newestSegmentIndex + 1) % buffer->segmentCount;
+    float xPos = waveRegion.x();
+    bool moveTo = true;
+    QPoint lastPoint;
+    while (true)
+    {
+        const OxyCRGWaveSegment &seg = buffer->segments[curSegmementIndex];
+
+        if (seg.isValid())
+        {
+            if (seg.isPoint())
+            {
+                // draw point
+                QPoint curPoint(xPos, seg.maxY);
+                if (moveTo)
+                {
+                    path.moveTo(curPoint);
+                    moveTo = false;
+                }
+                else
+                {
+                    if (lastPoint.y() != curPoint.y())
+                    {
+                        path.lineTo(lastPoint);
+                        path.lineTo(curPoint);
+                    }
+                }
+
+                lastPoint = curPoint;
+            }
+            else
+            {
+                // draw line
+                if (!moveTo)
+                {
+                    path.lineTo(lastPoint);
+                    moveTo = true;
+                }
+
+                path.moveTo(QPoint(xPos, seg.maxY));
+                path.lineTo(QPoint(xPos, seg.minY));
+            }
+        }
+        else
+        {
+            if (!moveTo)
+            {
+                // current point is not a valid point,
+                // draw the latest valid point
+                path.lineTo(lastPoint);
+                moveTo = true;
+            }
+        }
+
+        if (curSegmementIndex == buffer->newestSegmentIndex)
+        {
+            if (!moveTo)
+            {
+                // reach the end
+                path.lineTo(lastPoint);
+            }
+            break;
+        }
+
+        if (pointGap > 1)
+        {
+            xPos += pointGap;
+        }
+        else
+        {
+            xPos += 1;
+        }
+
+        curSegmementIndex = (curSegmementIndex + 1) % buffer->segmentCount;
+    }
+
+    painter->drawPath(path);
+    painter->restore();
+}
+
+void OxyCRGTrendWaveWidgetPrivate::updateWaveDrawingContext()
+{
+    int sampleCount = getIntervalSeconds(interval) * waveDataRate;
+
+    int segmentCount = waveRegion.width();
+    if (sampleCount < segmentCount)
+    {
+        segmentCount = sampleCount + 1;
+    }
+
+    if (!waveBuffer)
+    {
+        waveBuffer = new OxyCRGWaveBuffer(segmentCount);
+    }
+    else
+    {
+        waveBuffer->resize(segmentCount);
+    }
+
+    pointGap = 1.0 * waveRegion.width() / sampleCount;
+
+    if (pointGap < 1)
+    {
+        waveBuffer->highDensitiy = true;
+    }
+}
+
+OxyCRGTrendWaveWidgetPrivate::~OxyCRGTrendWaveWidgetPrivate()
+{
+    if (waveBuffer)
+    {
+        delete waveBuffer;
+    }
+}
+
 OxyCRGTrendWaveWidget::OxyCRGTrendWaveWidget(const QString &waveName,
                                              OxyCRGTrendWaveWidgetPrivate *p)
                      : IWidget(waveName),
@@ -40,20 +204,54 @@ OxyCRGTrendWaveWidget::~OxyCRGTrendWaveWidget()
 void OxyCRGTrendWaveWidget::addWaveData(int value)
 {
     d_ptr->dataBuf->push(value);
+
+    if (isVisible() && d_ptr->rulerHigh != d_ptr->rulerLow)
+    {
+        d_ptr->pointGapSumFraction += d_ptr->pointGap;
+
+        short mapYValue;
+        if (value == InvData())
+        {
+            mapYValue = 0;
+        }
+        else
+        {
+            mapYValue = d_ptr->waveRegion.bottom() -
+                    (value - d_ptr->rulerLow) * d_ptr->waveRegion.height() / (d_ptr->rulerHigh - d_ptr->rulerLow);
+        }
+
+        if (d_ptr->pointGapSumFraction > 1.0)
+        {
+            d_ptr->waveBuffer->pushPointData(mapYValue, true);
+            d_ptr->pointGapSumFraction -= static_cast<int>(d_ptr->pointGapSumFraction);
+        }
+        else
+        {
+            d_ptr->waveBuffer->pushPointData(mapYValue, false);
+        }
+    }
+}
+
+void OxyCRGTrendWaveWidget::setInterval(OxyCRGInterval interval)
+{
+    if (d_ptr->interval == interval)
+    {
+        return;
+    }
+
+    d_ptr->interval = interval;
+    d_ptr->updateWaveDrawingContext();
+}
+
+OxyCRGInterval OxyCRGTrendWaveWidget::getInterval() const
+{
+    return d_ptr->interval;
 }
 
 void OxyCRGTrendWaveWidget::setRulerValue(int valueHigh, int valueLow)
 {
     d_ptr->rulerHigh = valueHigh;
     d_ptr->rulerLow = valueLow;
-}
-
-OxyCRGInterval OxyCRGTrendWaveWidget::getIntervalTime()
-{
-    int index = OxyCRG_Interval_1;
-    currentConfig.getNumValue("OxyCRG|Interval", index);
-
-    return (OxyCRGInterval)index;
 }
 
 void OxyCRGTrendWaveWidget::setClearWaveDataStatus(bool clearStatus)
@@ -72,6 +270,7 @@ void OxyCRGTrendWaveWidget::setClearWaveDataStatus(bool clearStatus)
 void OxyCRGTrendWaveWidget::setDataRate(int rate)
 {
     d_ptr->waveDataRate = rate;
+    d_ptr->updateWaveDrawingContext();
 }
 
 void OxyCRGTrendWaveWidget::onTimeOutExec()
@@ -104,16 +303,14 @@ void OxyCRGTrendWaveWidget::paintEvent(QPaintEvent *e)
                      d_ptr->name);
 
     // 添加标尺高低值
-    if (d_ptr->rulerHigh != InvData())
+    if (d_ptr->drawRuler)
     {
         painter.setPen(QPen(d_ptr->waveColor, 1, Qt::SolidLine));
         painter.drawText(wxShift + xShift, yShift,
                          wxShift, wxShift / 2,
                          Qt::AlignTop | Qt::AlignLeft,
                          QString::number(d_ptr->rulerHigh));
-    }
-    if (d_ptr->rulerLow != InvData())
-    {
+
         painter.setPen(QPen(d_ptr->waveColor, 1, Qt::SolidLine));
         painter.drawText(wxShift + xShift, h - yShift - wxShift / 2,
                          wxShift, wxShift / 2,
@@ -170,4 +367,6 @@ void OxyCRGTrendWaveWidget::resizeEvent(QResizeEvent *e)
     d_ptr->waveRegion = QRect(WX_SHIFT, Y_SHIFT,
                               width() - WX_SHIFT * 2,
                               height() - Y_SHIFT * 2);
+
+    d_ptr->updateWaveDrawingContext();
 }

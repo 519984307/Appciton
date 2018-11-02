@@ -33,7 +33,12 @@ public:
      * @brief getIntervalTime
      * @return
      */
-    static OxyCRGInterval getIntervalTime(void);
+    OxyCRGInterval getInterval() const;
+
+    /**
+     * @brief setInterval set the
+     */
+    void setInterval(OxyCRGInterval interval);
 
     /**
      * @brief setClearWaveDataStatus

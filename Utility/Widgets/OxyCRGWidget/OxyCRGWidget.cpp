@@ -222,22 +222,26 @@ void OxyCRGWidget::_setInterval(OxyCRGInterval index)
 {
     currentConfig.setNumValue("OxyCRG|Interval", static_cast<int>(index));
 
-    _interval->setText(OxyCRGSymbol::convert(OxyCRGInterval(index)));
+    _interval->setText(OxyCRGSymbol::convert(index));
 
     if (d_ptr->rrHrTrend)
     {
+        d_ptr->rrHrTrend->setInterval(index);
         d_ptr->rrHrTrend->update();
     }
     if (d_ptr->spo2Trend)
     {
+        d_ptr->spo2Trend->setInterval(index);
         d_ptr->spo2Trend->update();
     }
     if (d_ptr->respWave)
     {
+        d_ptr->respWave->setInterval(index);
         d_ptr->respWave->update();
     }
     if (d_ptr->co2Wave)
     {
+        d_ptr->co2Wave->setInterval(index);
         d_ptr->co2Wave->update();
     }
 }

@@ -35,7 +35,6 @@ enum OxyCRGTrend
     OxyCRG_Trend_NR
 };
 
-
 /**
  * @brief The TrendTypeOne enum  Trend1
  */
