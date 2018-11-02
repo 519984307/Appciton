@@ -44,7 +44,7 @@ ImportSubWidget::ImportSubWidget(const QStringList &iListWidgetName, const QStri
       d_ptr(new ImportSubWidgetPrivate)
 {
     setWindowTitle(trs("ImportFiles"));
-    setFixedSize(450, 450);
+    setFixedSize(480, 450);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(10);

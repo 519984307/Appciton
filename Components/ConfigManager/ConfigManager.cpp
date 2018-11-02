@@ -15,6 +15,7 @@
 #include "Debug.h"
 #include "TimeDate.h"
 #include <QFile>
+#include <QDateTime>
 
 #define CONFIG_DIR "/usr/local/nPM/etc/"
 #define USER_DEFINE_CONFIG_PREFIX "UserDefine"
@@ -263,7 +264,9 @@ void ConfigManager::setWidgetIfOnlyShown(bool status)
 bool ConfigManager::saveUserDefineConfig(const QString &configName, Config *configObj, const PatientType &type)
 {
     QList<ConfigManager::UserDefineConfigInfo> infos = getUserDefineConfigInfos();
-    QString filename = QString("%1%2.xml").arg(USER_DEFINE_CONFIG_PREFIX).arg(timeDate.time());
+    QString filename = QString("%1-%2.xml").arg(USER_DEFINE_CONFIG_PREFIX).arg(QDateTime::currentDateTimeUtc().toString());
+    filename.replace(' ', '-');
+    filename.replace(':', '-');
     QString filePath = QString("%1%2").arg(CONFIG_DIR).arg(filename);
     if (!configObj->saveToFile(filePath))
     {

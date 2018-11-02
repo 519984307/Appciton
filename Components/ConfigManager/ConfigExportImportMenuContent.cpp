@@ -27,14 +27,21 @@
 #include "ListViewItemDelegate.h"
 #include <QLabel>
 #include <QString>
+#include "USBManager.h"
+#include "ThemeManager.h"
+#include <QTimer>
 
 #define CONFIG_MAX_NUM 3
 
-#define USB0_DEVICE_NODE   ("/dev/sda2")
-#define USB0_PATH_NAME     ("/mnt/usb0")
+#define FILE_PATH          ("/media/usbdisk/etc")
+
 #define CONFIG_DIR         ("/usr/local/nPM/etc/")
-#define USER_DEFINE_CONFIG_PREFIX "UserDefine"
-#define LISTVIEW_MAX_VISIABLE_TIME 6
+
+#define USER_DEFINE_CONFIG_PREFIX ("UserDefine")
+
+#define LISTVIEW_MAX_VISIABLE_TIME (5)
+
+#define HEIGHT_HINT (themeManger.getAcceptableControlHeight())
 
 class ConfigExportImportMenuContentPrivate
 {
@@ -48,7 +55,9 @@ public:
         configDataModel(NULL),
         exportBtn(NULL),
         importBtn(NULL),
-        importFlag(255)
+        importFlag(255),
+        infoLab(NULL),
+        timer(NULL)
     {
         configs.clear();
         exportFileName.clear();
@@ -84,6 +93,8 @@ public:
     Button *exportBtn;
     Button *importBtn;
     int importFlag;
+    QLabel *infoLab;  // 记录usb是否存在信息
+    QTimer *timer;
 };
 
 
@@ -122,6 +133,23 @@ void ConfigExportImportMenuContentPrivate::updateConfigList()
         isEnable = true;
     }
     importBtn->setEnabled(isEnable);
+}
+
+void ConfigExportImportMenuContent::onTimeOut()
+{
+    bool isEnable;
+    if (usbManager.isUSBExist())
+    {
+        isEnable = true;
+        d_ptr->infoLab->hide();
+    }
+    else
+    {
+        isEnable = false;
+        d_ptr->infoLab->show();
+    }
+    updateBtnStatus();
+    d_ptr->importBtn->setEnabled(isEnable);
 }
 
 ConfigExportImportMenuContent::ConfigExportImportMenuContent()
@@ -174,6 +202,20 @@ void ConfigExportImportMenuContent::layoutExec()
 
     layout->addLayout(hl);
     layout->addStretch(1);
+
+    label = new QLabel(trs("WarningNoUSB"));
+    label->setFixedHeight(HEIGHT_HINT);
+    d_ptr->infoLab = label;
+    layout->addWidget(label, 1, Qt::AlignRight);
+
+    layout->addStretch(1);
+
+    // 需要加入this，绑定父子关系，以便自动释放空间,避免造成内存泄露
+    QTimer *timer = new QTimer(this);
+    timer->setInterval(500);
+    connect(timer, SIGNAL(timeout()), this, SLOT(onTimeOut()));
+    timer->start();
+    d_ptr->timer = timer;
 }
 
 void ConfigExportImportMenuContent::readyShow()
@@ -182,28 +224,38 @@ void ConfigExportImportMenuContent::readyShow()
     d_ptr->updateConfigList();
 }
 
+void ConfigExportImportMenuContent::showEvent(QShowEvent *ev)
+{
+    MenuContent::showEvent(ev);
+
+    d_ptr->timer->start();
+    onTimeOut();
+}
+
+void ConfigExportImportMenuContent::hideEvent(QHideEvent *ev)
+{
+    MenuContent::hideEvent(ev);
+
+    d_ptr->timer->stop();
+}
+
 
 /**************************************************************************************************
  * 导出xml文件。
  *************************************************************************************************/
 bool ConfigExportImportMenuContent::exportFileToUSB()
 {
-    //  检测设备节点
-    if (!QFile::exists(USB0_DEVICE_NODE))
+    // 判断u盘是否存在
+    if (!usbManager.isUSBExist())
     {
+        MessageBox message(trs("Import"), trs("WarningNoUSB"), false);
+        message.exec();
         return false;
     }
 
-    //  挂载u盘
-    QProcess::execute(QString("mount -t vfat %1 %2").arg(USB0_DEVICE_NODE).arg(USB0_PATH_NAME));
-    QProcess::execute("sync");
-//    if (backFlag != QProcess::NormalExit) // 挂载失败
-//    {
-//    }
-    if (QFile::exists(USB0_PATH_NAME) == false)
-    {
-        return false;
-    }
+    // 如果没有对应文件夹，则主动创建此文件夹
+    QDir dir;
+    dir.mkdir(FILE_PATH);
 
     // get selected row file path names
     d_ptr->exportFileName.clear();
@@ -222,7 +274,7 @@ bool ConfigExportImportMenuContent::exportFileToUSB()
     {
         bool isExist;
         if (QFile::exists(QString("%1/%2").
-                          arg(USB0_PATH_NAME).
+                          arg(FILE_PATH).
                           arg(d_ptr->exportFileName.at(i))))
         {
             isExist = true;
@@ -253,7 +305,7 @@ bool ConfigExportImportMenuContent::exportFileToUSB()
                                arg(CONFIG_DIR).
                                arg(d_ptr->exportFileName.at(i));
             QString newFileName = QString("%1/%2").
-                                  arg(USB0_PATH_NAME).
+                                  arg(FILE_PATH).
                                   arg(d_ptr->exportFileName.at(i));
             QFile::remove(newFileName);
             isCopyOk = QFile::copy(fileName, newFileName);
@@ -270,14 +322,6 @@ bool ConfigExportImportMenuContent::exportFileToUSB()
         }
     }
 
-    QProcess::execute(QString("umount -t vfat %1 %2").
-                                 arg(USB0_DEVICE_NODE).
-                                 arg(USB0_PATH_NAME));
-    QProcess::execute("sync");
-//    if (backFlag != QProcess::NormalExit)
-//    {
-//    }
-
     return true;
 }
 
@@ -286,30 +330,16 @@ bool ConfigExportImportMenuContent::exportFileToUSB()
  *************************************************************************************************/
 bool ConfigExportImportMenuContent::insertFileFromUSB()
 {
-    //  建立日志文件
-    QFile filelogg(QString("%1%2").arg(CONFIG_DIR).arg("logg.txt"));
-    filelogg.open(QIODevice::WriteOnly | QIODevice::Append);
-    d_ptr->textStream.setDevice(&filelogg);/*打开日志IO文件*/
-
-    //  检测设备节点
-    if (!QFile::exists(USB0_DEVICE_NODE))
+    // 判断u盘是否存在
+    if (!usbManager.isUSBExist())
     {
-        return false;
-    }
-
-    //  挂载u盘
-    QProcess::execute(QString("mount -t vfat %1 %2").arg(USB0_DEVICE_NODE).arg(USB0_PATH_NAME));
-    QProcess::execute("sync");
-//    if (backFlag != QProcess::NormalExit) //  挂载失败
-//    {
-//    }
-    if (QFile::exists(USB0_PATH_NAME) == false)
-    {
+        MessageBox message(trs("Import"), trs("WarningNoUSB"), false);
+        message.exec();
         return false;
     }
 
     // find the xml files
-    QDir dir(QString("%1%2").arg(USB0_PATH_NAME).arg("/"));
+    QDir dir(QString("%1%2").arg(FILE_PATH).arg("/"));
     QStringList nameFilters;
     nameFilters.append("*.xml");
     QStringList files = dir.entryList(nameFilters, QDir::Files | QDir::Readable, QDir::Name);
@@ -321,7 +351,7 @@ bool ConfigExportImportMenuContent::insertFileFromUSB()
     }
 
 
-    ImportSubWidget myImportSubWidget(files, USB0_PATH_NAME);
+    ImportSubWidget myImportSubWidget(files, FILE_PATH);
     bool status = myImportSubWidget.exec();
     d_ptr->importFileName.clear();
     if (status == true) //  OK
@@ -345,13 +375,13 @@ bool ConfigExportImportMenuContent::insertFileFromUSB()
     QFile fileLocal(QString("%1usercheck.xml").arg(CONFIG_DIR));
     if (!fileLocal.open(QFile::ReadOnly | QFile::Text))
     {
-        MessageBox message(trs("Import"), trs("ImportFileFailed"));
+        MessageBox message(trs("Import"), trs("ImportFileFailed"), false);
         message.exec();
         return false;
     }
     if (!d_ptr->localXml.setContent(&fileLocal))
     {
-        MessageBox message(trs("Import"), trs("ImportFileFailed"));
+        MessageBox message(trs("Import"), trs("ImportFileFailed"), false);
         message.exec();
         return false;
     }
@@ -364,17 +394,17 @@ bool ConfigExportImportMenuContent::insertFileFromUSB()
     for (int i = 0; i < d_ptr->importFileName.count(); i++)
     {
         QFile fileImport(QString("%1/%2").
-                         arg(USB0_PATH_NAME).
+                         arg(FILE_PATH).
                          arg(d_ptr->importFileName.at(i)));
         if (!fileImport.open(QFile::ReadOnly | QFile::Text))
         {
-            MessageBox message(trs("Import"), trs("ImportFileFailed"));
+            MessageBox message(trs("Import"), trs("ImportFileFailed"), false);
             message.exec();
             return false;
         }
         if (!d_ptr->importXml.setContent(&fileImport))
         {
-            MessageBox message(trs("Import"), trs("ImportFileFailed"));
+            MessageBox message(trs("Import"), trs("ImportFileFailed"), false);
             message.exec();
             return false;
         }
@@ -388,7 +418,7 @@ bool ConfigExportImportMenuContent::insertFileFromUSB()
 
         if (!checkXmlFlag)
         {
-            MessageBox message(trs("Import"), trs("ImportFileFailed"));
+            MessageBox message(trs("Import"), trs("ImportFileFailed"), false);
             message.exec();
             return false;
         }
@@ -422,7 +452,7 @@ bool ConfigExportImportMenuContent::insertFileFromUSB()
         if (importFlag)
         {
             QString fileName = QString("%1/%2").
-                               arg(USB0_PATH_NAME).
+                               arg(FILE_PATH).
                                arg(d_ptr->importFileName.at(i));
             QString newFileName = QString("%1%2").
                                   arg(CONFIG_DIR).
@@ -444,9 +474,24 @@ bool ConfigExportImportMenuContent::insertFileFromUSB()
         // update import configs
         ConfigManager::UserDefineConfigInfo newUserDfine;
         newUserDfine.fileName = d_ptr->importFileName.at(i);
-        newUserDfine.name = d_ptr->importFileName.at(i);
-        newUserDfine.name = newUserDfine.name.replace(".xml", "");
-        d_ptr->configs.append(newUserDfine);
+        newUserDfine.name = QString("UserConfig%1").arg(d_ptr->configs.count() + 1);
+
+        // 查找是否有同名文件，不再更新同名文件名称
+        bool isAppend = true;
+        foreach(ConfigManager::UserDefineConfigInfo fileInfo, d_ptr->configs)
+        {
+            if (fileInfo.fileName == newUserDfine.fileName)
+            {
+                isAppend = false;
+                break;
+            }
+        }
+        if (isAppend)
+        {
+            d_ptr->configs.append(newUserDfine);
+        }
+
+        // 导入文件不超过规定最大值
         if (d_ptr->configs.count() >= CONFIG_MAX_NUM)
         {
             break;
@@ -455,14 +500,6 @@ bool ConfigExportImportMenuContent::insertFileFromUSB()
     d_ptr->updateConfigList();
     configManager.saveUserConfigInfo(d_ptr->configs);
 
-    //  解挂U盘
-    QProcess::execute(QString("umount -t vfat %1 %2").arg(USB0_DEVICE_NODE).arg(USB0_PATH_NAME));
-    QProcess::execute("sync");
-//    if (backFlag != QProcess::NormalExit) //  挂载失败
-//    {
-//    }
-
-    filelogg.close();
     return true;
 }
 
@@ -656,10 +693,10 @@ void ConfigExportImportMenuContent::onBtnClick()
 
 void ConfigExportImportMenuContent::updateBtnStatus()
 {
-
     int curSelectedRow = d_ptr->configListView->curCheckedRow();
     bool isEnable;
-    if (curSelectedRow == -1)
+    if (curSelectedRow == -1
+            || !usbManager.isUSBExist())
     {
         isEnable = false;
     }

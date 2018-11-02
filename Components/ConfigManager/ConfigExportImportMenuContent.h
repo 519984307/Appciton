@@ -54,6 +54,13 @@ protected:
      * @brief readyShow
      */
     virtual void readyShow();
+
+    /* reimplment */
+    void showEvent(QShowEvent *ev);
+
+    /* reimplment */
+    void hideEvent(QHideEvent *ev);
+
 private slots:
     /**
      * @brief onBtnClick
@@ -63,6 +70,12 @@ private slots:
      * @brief updateBtnStatus
      */
     void updateBtnStatus();
+
+    /**
+     * @brief onTimeOut  定时器触发函数
+     */
+    void onTimeOut(void);
+
 private:
     /**
      * @brief checkXMLContent  check validity of the import XML
