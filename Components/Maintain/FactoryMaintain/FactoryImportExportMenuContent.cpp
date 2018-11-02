@@ -394,7 +394,6 @@ void FactoryImportExportMenuContent::onBtnClick()
 
 void FactoryImportExportMenuContent::updateBtnStatus()
 {
-
     int curSelectedRow = d_ptr->configListView->curCheckedRow();
     bool isEnable;
     if (curSelectedRow == -1

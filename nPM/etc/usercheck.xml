@@ -43,10 +43,10 @@
 		<Zero cAttr0="0" cMin="0" cMax="1" cLen="1">1</Zero>
 	    </CO2>
 	    <CO>
-		<ratdio cAttr0="0" cMin="0" cMax="1" cLen="5">0.555</ratdio>
+		<ratdio cAttr0="0" cMin="0" cMax="1000" cLen="4">555</ratdio>
 		<InjectionTempSource cAttr0="0" cMin="0" cMax="1" cLen="1">1</InjectionTempSource>
-		<InjectionTemp cAttr0="0" cMin="0" cMax="27" cLen="4">18</InjectionTemp>
-		<InjectionVolumn cAttr0="0" cMin="0" cMax="27" cLen="4">25</InjectionVolumn>
+		<InjectionTemp cAttr0="0" cMin="0" cMax="270" cLen="3">18</InjectionTemp>
+		<InjectionVolumn cAttr0="0" cMin="0" cMax="200" cLen="3">25</InjectionVolumn>
 		<MeasureMode cAttr0="0" cMin="0" cMax="1" cLen="1">1</MeasureMode>
 	    </CO>
 	    <RESP>
