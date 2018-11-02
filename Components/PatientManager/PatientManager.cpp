@@ -63,8 +63,7 @@ void PatientManager::setType(PatientType type)
     d_ptr->patientInfoWidget->loadPatientInfo();
 
     // 报警限修改
-    QString str = "AlarmSource|";
-    str += PatientSymbol::convert(d_ptr->patientInfo.type);
+    QString str = "AlarmSource";
     currentConfig.setNodeValue(str, currentConfig);
 
     emit signalPatientType(d_ptr->patientInfo.type);

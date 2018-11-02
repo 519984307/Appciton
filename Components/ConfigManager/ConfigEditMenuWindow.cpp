@@ -66,7 +66,7 @@ void ConfigEditMenuWindow::initializeSubMenu()
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditGeneralMenu"] = subMenu;
 
-    subMenu = new ConfigEditAlarmLimitMenuContent(config, d_ptr->patType);
+    subMenu = new ConfigEditAlarmLimitMenuContent(config);
     addMenuContent(subMenu);
     d_ptr->subMenuMap["ConfigEditAlarmLimitMenu"] = subMenu;
 
@@ -138,11 +138,6 @@ void ConfigEditMenuWindow::setCurrentEditConfigName(const QString &name)
 QString ConfigEditMenuWindow::getCurrentEditConfigName() const
 {
     return d_ptr->configName;
-}
-
-void ConfigEditMenuWindow::setCurEditConfigPatType(const PatientType &type)
-{
-    d_ptr->patType = type;
 }
 
 QMap <QString, MenuContent *> ConfigEditMenuWindow::getCurrentEditConfigItem() const

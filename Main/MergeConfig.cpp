@@ -673,8 +673,6 @@ void MergeConfig::_loadSupervisorConfig()
     for (int i = 0; i < PATIENT_TYPE_NEO; ++i)
     {
         QString prefix = "AlarmSource|";
-        prefix += PatientSymbol::convert((PatientType)i);
-        prefix += "|";
         for (int j = 0; j < SUB_PARAM_NR; ++j)
         {
             QString subParamName = paramInfo.getSubParamName((SubParamID)j, true);

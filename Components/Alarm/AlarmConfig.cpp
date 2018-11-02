@@ -32,7 +32,7 @@ bool AlarmConfig::isLimitAlarmEnable(SubParamID subParamId)
         LimitAlarmControl ctrl;
 
         // load data from config file
-        QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
+        QString prefix = "AlarmSource|";
         prefix += paramInfo.getSubParamName(subParamId, true);
         int v = 0;
         currentConfig.getNumAttr(prefix, "Enable", v);
@@ -56,7 +56,7 @@ void AlarmConfig::setLimitAlarmEnable(SubParamID subParamId, bool enable)
     LimitAlarmControlCache::iterator iter = _controlCache.find(subParamId);
     iter->enable = enable;
 
-    QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
+    QString prefix = "AlarmSource|";
     prefix += paramInfo.getSubParamName(subParamId, true);
 
     // save to config file
@@ -72,7 +72,7 @@ AlarmPriority AlarmConfig::getLimitAlarmPriority(SubParamID subParamId)
         LimitAlarmControl ctrl;
 
         // load data from config file
-        QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
+        QString prefix = "AlarmSource|";
         prefix += paramInfo.getSubParamName(subParamId, true);
         int v = 0;
         currentConfig.getNumAttr(prefix, "Enable", v);
@@ -96,7 +96,7 @@ void AlarmConfig::setLimitAlarmPriority(SubParamID subParamId, AlarmPriority pri
     LimitAlarmControlCache::iterator iter = _controlCache.find(subParamId);
     iter->priority = prio;
 
-    QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
+    QString prefix = "AlarmSource|";
     prefix += paramInfo.getSubParamName(subParamId, true);
 
     // save to config file
@@ -113,7 +113,7 @@ LimitAlarmConfig AlarmConfig::getLimitAlarmConfig(SubParamID subParamId, UnitTyp
         LimitAlarmConfig config;
 
         // load data from config file
-        QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
+        QString prefix = "AlarmSource|";
         prefix += paramInfo.getSubParamName(subParamId, true);
         prefix += "|";
         prefix += Unit::getSymbol(unit);
@@ -210,7 +210,7 @@ void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, cons
         return;
     }
 
-    QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
+    QString prefix = "AlarmSource|";
     prefix += paramInfo.getSubParamName(subParamId, true);
 
     int val = 0;

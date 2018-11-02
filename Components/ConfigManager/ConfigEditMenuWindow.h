@@ -50,12 +50,6 @@ public:
     QString getCurrentEditConfigName() const;
 
     /**
-     * @brief setCurEditConfigPatType  设置当前配置病人类型
-     * @param type  病人类型
-     */
-    void setCurEditConfigPatType(const PatientType &type);
-
-    /**
      * @brief getCurrentEditConfigItem  获得当前的配置项
      * @return
      */

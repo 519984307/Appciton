@@ -698,7 +698,7 @@ ApneaAlarmTime CO2Param::getApneaTime(void)
 bool CO2Param::getAwRRSwitch(void)
 {
     int enable = 0;
-    QString path = "AlarmSource|" + patientManager.getTypeStr() + "|";
+    QString path = "AlarmSource|";
     path += paramInfo.getSubParamName(SUB_PARAM_RR_BR);
     currentConfig.getNumAttr(path, "Enable", enable);
 
@@ -882,7 +882,7 @@ CO2Param::CO2Param()
     currentConfig.getNumValue("Local|CO2Unit", t);
     d_ptr->curUnit = (UnitType)t;
 
-    QString path = "AlarmSource|" + patientManager.getTypeStr() + "|";
+    QString path = "AlarmSource|";
     path += paramInfo.getSubParamName(SUB_PARAM_ETCO2);
     path += "|";
     if (UNIT_PERCENT == t)

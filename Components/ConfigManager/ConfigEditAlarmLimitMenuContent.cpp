@@ -31,10 +31,10 @@
 class ConfigEditAlarmLimitMenuContentPrivate
 {
 public:
-    explicit ConfigEditAlarmLimitMenuContentPrivate(Config *const config, const PatientType &type)
+    explicit ConfigEditAlarmLimitMenuContentPrivate(Config *const config)
         : model(NULL), table(NULL),
           prevBtn(NULL), nextBtn(NULL),
-          config(config), patType(type)
+          config(config)
     {
     }
 
@@ -45,7 +45,6 @@ public:
     Button *prevBtn;
     Button *nextBtn;
     Config *config;
-    PatientType patType;
     QList<AlarmDataInfo> infos;
 };
 
@@ -78,8 +77,7 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
             info.status = alarmConfig.isLimitAlarmEnable(subId);
             UnitType unit  = paramManager.getSubParamUnit(pid, subId);
 
-            QString type = PatientSymbol::convert(patType);
-            QString prefix = "AlarmSource|" + type + "|";
+            QString prefix = "AlarmSource|";
             prefix += paramInfo.getSubParamName(subId, true);
             prefix += "|";
             prefix += Unit::getSymbol(unit);
@@ -120,7 +118,7 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
             info.limitConfig.step = v;
 
             int alarmLev = 0;
-            config->getNumAttr(QString("AlarmSource|%1|%2").arg(patientManager.getTypeStr())
+            config->getNumAttr(QString("AlarmSource|%")
                                .arg(paramInfo.getSubParamName(subId, true)),
                                "Prio", alarmLev);
             info.alarmLevel = alarmLev;
@@ -132,9 +130,9 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
     model->setupAlarmDataInfos(infos);
 }
 
-ConfigEditAlarmLimitMenuContent::ConfigEditAlarmLimitMenuContent(Config *const config, const PatientType &type)
+ConfigEditAlarmLimitMenuContent::ConfigEditAlarmLimitMenuContent(Config *const config)
     : MenuContent(trs("AlarmLimitMenu"), trs("AlarmLimitMenuDesc")),
-      d_ptr(new ConfigEditAlarmLimitMenuContentPrivate(config, type))
+      d_ptr(new ConfigEditAlarmLimitMenuContentPrivate(config))
 {
 }
 
