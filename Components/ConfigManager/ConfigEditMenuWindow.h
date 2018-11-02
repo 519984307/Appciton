@@ -10,6 +10,7 @@
 #pragma once
 #include "MenuWindow.h"
 #include "Config.h"
+#include "PatientDefine.h"
 
 class ConfigEditMenuWindowPrivate;
 class ConfigEditMenuWindow : public MenuWindow

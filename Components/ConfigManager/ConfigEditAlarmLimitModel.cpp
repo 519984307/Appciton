@@ -44,7 +44,7 @@ void ConfigEditAlarmLimitModel::alarmDataUpdate(const AlarmDataInfo &info, int t
 
     UnitType unit  = paramManager.getSubParamUnit(info.paramID, info.subParamID);
 
-    QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
+    QString prefix = "AlarmSource|";
     prefix += paramInfo.getSubParamName(info.subParamID, true);
 
     switch (type)

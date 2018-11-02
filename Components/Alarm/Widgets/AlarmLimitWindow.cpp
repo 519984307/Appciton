@@ -86,7 +86,7 @@ void AlarmLimitWindowPrivate::loadoptions()
             UnitType unit  = paramManager.getSubParamUnit(pid, subId);
             info.limitConfig = alarmConfig.getLimitAlarmConfig(subId, unit);
             int alarmLev = 0;
-            currentConfig.getNumAttr(QString("AlarmSource|%1|%2").arg(patientManager.getTypeStr())
+            currentConfig.getNumAttr(QString("AlarmSource|%1")
                                      .arg(paramInfo.getSubParamName(subId, true)),
                                      "Prio", alarmLev);
             info.alarmLevel = alarmLev;
@@ -304,35 +304,35 @@ void AlarmLimitWindow::restoreDefaults()
         {
             // default
             int status = 0;
-            defaultConfig.getNumAttr(QString("AlarmSource|%1|%2").arg(patientManager.getTypeStr())
+            defaultConfig.getNumAttr(QString("AlarmSource|%1")
                                      .arg(paramInfo.getSubParamName(subId, true)),
                                      "Enable", status);
-            currentConfig.setNumAttr(QString("AlarmSource|%1|%2").arg(patientManager.getTypeStr())
+            currentConfig.setNumAttr(QString("AlarmSource|%1")
                                      .arg(paramInfo.getSubParamName(subId, true)),
                                      "Enable", status);
 
             int lev = 0;
-            defaultConfig.getNumAttr(QString("AlarmSource|%1|%2").arg(patientManager.getTypeStr())
+            defaultConfig.getNumAttr(QString("AlarmSource|%1")
                                      .arg(paramInfo.getSubParamName(subId, true)),
                                      "Prio", lev);
-            currentConfig.setNumAttr(QString("AlarmSource|%1|%2").arg(patientManager.getTypeStr())
+            currentConfig.setNumAttr(QString("AlarmSource|%1")
                                      .arg(paramInfo.getSubParamName(subId, true)),
                                      "Prio", lev);
 
             UnitType unit = paramManager.getSubParamUnit(pid, subId);
             int high = 0;
-            defaultConfig.getNumValue(QString("AlarmSource|%1|%2|%3|%4").arg(patientManager.getTypeStr())
+            defaultConfig.getNumValue(QString("AlarmSource|%1|%2|%3")
                                       .arg(paramInfo.getSubParamName(subId, true)).arg(Unit::getSymbol(unit))
                                       .arg("High"), high);
-            currentConfig.setNumValue(QString("AlarmSource|%1|%2|%3|%4").arg(patientManager.getTypeStr())
+            currentConfig.setNumValue(QString("AlarmSource|%1|%2|%3")
                                       .arg(paramInfo.getSubParamName(subId, true)).arg(Unit::getSymbol(unit))
                                       .arg("High"), high);
 
             int low = 0;
-            defaultConfig.getNumValue(QString("AlarmSource|%1|%2|%3|%4").arg(patientManager.getTypeStr())
+            defaultConfig.getNumValue(QString("AlarmSource|%1|%2|%3")
                                       .arg(paramInfo.getSubParamName(subId, true)).arg(Unit::getSymbol(unit))
                                       .arg("Low"), low);
-            currentConfig.setNumValue(QString("AlarmSource|%1|%2|%3|%4").arg(patientManager.getTypeStr())
+            currentConfig.setNumValue(QString("AlarmSource|%1|%2|%3")
                                       .arg(paramInfo.getSubParamName(subId, true)).arg(Unit::getSymbol(unit))
                                       .arg("Low"), low);
 
