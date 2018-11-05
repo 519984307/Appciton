@@ -542,10 +542,23 @@ void LayoutManagerPrivate::performOxyCRGLayout()
     rightParamLayout->setMargin(0);
 
     int insertRow = 0;
-    int lastLeftParamRow = 0;
-    int remainRow = MAX_WIDGET_ROW_IN_OXYCRG_LAYOUT;    // 剩下可插入的行数
+    int lastWaveRow = 0;
+    int waveRemainRow = MAX_WIDGET_ROW_IN_OXYCRG_LAYOUT;    // 波形剩下可插入的行数
     OrderedMap<int, LayoutRow>::ConstIterator iter = layoutInfos.end() - 1;
     for (; iter != layoutInfos.begin(); --iter)
+    {
+        int row = iter.key();
+        if (row >= LAYOUT_MAX_WAVE_ROW_NUM && !(*iter).isEmpty())
+        {
+            waveRemainRow--;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    for (iter = layoutInfos.begin(); iter != layoutInfos.end(); ++iter)
     {
         LayoutRow::ConstIterator nodeIter = iter.value().constBegin();
         for (; nodeIter != iter.value().constEnd(); ++nodeIter)
@@ -561,22 +574,19 @@ void LayoutManagerPrivate::performOxyCRGLayout()
             {
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM) // wave widgets
                 {
-                    if (remainRow < MAX_WIDGET_ROW_IN_OXYCRG_LAYOUT && remainRow > 0)
+                    if (waveRemainRow <= MAX_WIDGET_ROW_IN_OXYCRG_LAYOUT && waveRemainRow > 0)
                     {
                         qw->setVisible(true);
                         qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-                        waveLayout->addWidget(qw, insertRow - lastLeftParamRow - 1, nodeIter->pos, 1, nodeIter->span);
-                        waveLayout->setRowStretch(insertRow - lastLeftParamRow - 1, 1);
+                        waveLayout->addWidget(qw, insertRow, nodeIter->pos, 1, nodeIter->span);
+                        waveLayout->setRowStretch(insertRow, 1);
                         if (w)
                         {
                             displayWaveforms.append(w->name());
                         }
-                        remainRow--;
+                        waveRemainRow--;
                     }
-                    else
-                    {
-                        continue;
-                    }
+                    lastWaveRow = insertRow;
                 }
                 else    // param widgets
                 {
@@ -584,14 +594,12 @@ void LayoutManagerPrivate::performOxyCRGLayout()
                     // standard layout left pararm region
                     qw->setVisible(true);
                     qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-                    leftParamLayout->addWidget(qw, insertRow, nodeIter->pos, 1, nodeIter->span);
-                    leftParamLayout->setRowStretch(insertRow, 1);
+                    leftParamLayout->addWidget(qw, insertRow - lastWaveRow - 1, nodeIter->pos, 1, nodeIter->span);
+                    leftParamLayout->setRowStretch(insertRow - lastWaveRow - 1, 1);
                     if (w)
                     {
                         displayParams.append(w->name());
                     }
-                    lastLeftParamRow = insertRow;
-                    remainRow = MAX_WIDGET_ROW_IN_OXYCRG_LAYOUT - insertRow - 1;
                 }
             }
             else  // the right part are all param
