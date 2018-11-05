@@ -129,11 +129,15 @@ void ScreenMenuContent::onComboxIndexChanged(int index)
     {
         if (index == ScreenMenuContentPrivate::SCREEN_LAYOUT_STANDARD)
         {
-            windowManager.showWindow(ScreenLayoutWindow::getInstance(), WindowManager::ShowBehaviorModal);
+            windowManager.showWindow(ScreenLayoutWindow::getInstance(),
+                                     WindowManager::ShowBehaviorNoAutoClose |
+                                     WindowManager::ShowBehaviorCloseOthers);
         }
         else if (index == ScreenMenuContentPrivate::SCREEN_LAYOUT_BIGFONT)
         {
-            windowManager.showWindow(BigFontLayoutWindow::getInstance(), WindowManager::ShowBehaviorModal);
+            windowManager.showWindow(BigFontLayoutWindow::getInstance(),
+                                     WindowManager::ShowBehaviorNoAutoClose |
+                                     WindowManager::ShowBehaviorCloseOthers);
         }
     }
 }
