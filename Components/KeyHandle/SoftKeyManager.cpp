@@ -25,8 +25,8 @@
 #include <QDebug>
 #include <QResizeEvent>
 #include "LayoutManager.h"
-
-
+#include <QApplication>
+#include <QTimer>
 
 #define PREFER_SOFTKEY_WIDTH 98
 #define SOFTKEY_SPACING 2
@@ -171,14 +171,41 @@ void SoftKeyManager::resetPage()
 
 void SoftKeyManager::_dynamicKeyClicked(int index)
 {
-    int descIndex = d_ptr->curPage * d_ptr->dynamicKeyWidgets.count() + index;
-    if (d_ptr->currentAction)
+    // 如果存在活动弹出窗口，优先关掉全部窗口
+    bool closePupup = false;
+    while (QApplication::activePopupWidget())
     {
-        KeyActionDesc *desc = d_ptr->currentAction->getActionDesc(descIndex);
-        if (desc != NULL && desc->hook != NULL)
+        QApplication::activePopupWidget()->close();
+        closePupup = true;
+    }
+
+    if (closePupup)
+    {
+        return;
+    }
+
+    QWidget *wm = &windowManager;
+    QWidget *activeWindow = QApplication::activeWindow();
+    if (activeWindow == wm || activeWindow == NULL)
+    {
+        // 执行hook函数指针,打开相应软按键弹窗
+        int descIndex = d_ptr->curPage * d_ptr->dynamicKeyWidgets.count() + index;
+        if (d_ptr->currentAction)
         {
-            desc->hook(0);
+            KeyActionDesc *desc = d_ptr->currentAction->getActionDesc(descIndex);
+            if (desc != NULL && desc->hook != NULL)
+            {
+                desc->hook(0);
+            }
         }
+    }
+    else
+    {
+        while (QApplication::activeModalWidget())
+        {
+            QApplication::activeModalWidget()->close();
+        }
+        QTimer::singleShot(0, &windowManager, SLOT(closeAllWidows()));
     }
 }
 
@@ -187,10 +214,37 @@ void SoftKeyManager::_fixedKeyClicked()
     SoftkeyWidget *w = qobject_cast<SoftkeyWidget*>(sender());
     if (d_ptr->mainMenuKeyWidget == w)
     {
-        KeyActionDesc *desc = SoftkeyActionBase::getBaseActionDesc(SOFT_BASE_KEY_MAIN_SETUP);
-        if (desc != NULL && desc->hook != NULL)
+        bool closePupup = false;
+        while (QApplication::activePopupWidget())
         {
-            desc->hook(0);
+            QApplication::activePopupWidget()->close();
+            closePupup = true;
+        }
+
+        if (closePupup)
+        {
+            return;
+        }
+
+
+        QWidget *wm = &windowManager;
+        QWidget *activeWindow = QApplication::activeWindow();
+        if (activeWindow == wm || activeWindow == NULL)
+        {
+            KeyActionDesc *desc = SoftkeyActionBase::getBaseActionDesc(SOFT_BASE_KEY_MAIN_SETUP);
+            if (desc != NULL && desc->hook != NULL)
+            {
+                desc->hook(0);
+            }
+        }
+        else
+        {
+            while (QApplication::activeModalWidget())
+            {
+                QApplication::activeModalWidget()->close();
+            }
+            QTimer::singleShot(0, &windowManager, SLOT(closeAllWidows()));
+            softkeyManager.resetPage();
         }
     }
     else if (d_ptr->leftPageKeyWidget == w)
