@@ -50,6 +50,12 @@ public:
      */
     void updateWaveAndParamInfo();
 
+    /**
+     * @brief isChangeLayoutInfo 是否修改过布局设置
+     * @return
+     */
+    bool isChangeLayoutInfo();
+
 signals:
     /**
      * @brief spanChanged emit when the span changed
