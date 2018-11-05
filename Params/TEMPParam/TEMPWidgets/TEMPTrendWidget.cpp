@@ -356,19 +356,17 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     mainLayout->addLayout(hLayout);
 
     _tdName = new QLabel();
-    _tdName->setAlignment(Qt::AlignHCenter | Qt::AlignRight);
+    _tdName->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
     _tdName->setPalette(palette);
     _tdName->setText(trs("TD"));
     _tdValue = new QLabel();
     _tdValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
     _tdValue->setPalette(palette);
     _tdValue->setText(InvStr());
-    hLayout = new QHBoxLayout;
-    hLayout->addWidget(_tdName);
-    hLayout->addWidget(_tdValue);
     vLayout = new QVBoxLayout();
     vLayout->addStretch();
-    vLayout->addLayout(hLayout);
+    vLayout->addWidget(_tdName);
+    vLayout->addWidget(_tdValue);
     vLayout->addStretch();
     mainLayout->addStretch(1);
     mainLayout->addLayout(vLayout);
