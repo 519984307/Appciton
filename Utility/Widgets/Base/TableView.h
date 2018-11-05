@@ -53,6 +53,9 @@ signals:
     /* emit when the select row changed */
     void selectRowChanged(int row);
 
+    /* emit when the item is clicked */
+    void itemClicked(QModelIndex item);
+
 protected:
     /* reimplement */
     // void mouseMoveEvent(QMouseEvent *ev);
