@@ -1134,7 +1134,8 @@ PrimitiveCalculation,原始计算,Primitive Calculation
 InOutValue,输入/输出值,
 ZeroCalibSuccess,校零成功,
 ZeroInProgress,校零进行中,Zero in progress
-CalibrationSuccess,校准成功,
+CalibrationSuccess,校准成功,Calibration Success
+CalibrationFail,校准失败,Calibration Fail
 MeasurePressureIsPulse,测量压力是脉动的,
 ZeroCalibPressureBeyondMeasureRange,校零压力超出测量范围,
 CalibrationPressureBeyondMeasureRange,校准压力超出测量范围,
@@ -1411,7 +1412,10 @@ PDCommData,PD 通信数据,PD Comm Data
 TEMPCalibrateDesc,温度校准,TEMP Calibrate
 SystemInfoSettingDesc,系统信息,System Info
 SelectStarterLogo,选择开始菜单,Select Starter Logo
+WaitingCalibration,等待校准,Waiting Calibration
+Calibrating,正在校准,
 TEMPCalibrate0,温度校准0,TEMP Calibrate0
+TEMPCalibrate5,温度校准5,TEMP Calibrate5
 TEMPCalibrate10,温度校准10,TEMP Calibrate10
 TEMPCalibrate15,温度校准15,TEMP Calibrate15
 TEMPCalibrate20,温度校准20,TEMP Calibrate20
@@ -1422,6 +1426,7 @@ TEMPCalibrate40,温度校准40,TEMP Calibrate40
 TEMPCalibrate45,温度校准45,TEMP Calibrate45
 TEMPCalibrate50,温度校准50,TEMP Calibrate50
 TEMPCalibrate0is7409.3,温度校准0是7409.3,TEMP Calibrate0 is 7409.3
+TEMPCalibrate5is5742.9,温度校准5是5742.9,TEMP Calibrate5 is 5742.9
 TEMPCalibrate10is4491.1,温度校准10是4491.1,TEMP Calibrate10 is 4491.1
 TEMPCalibrate15is3541.3,温度校准15是3541.3,TEMP Calibrate15 is 3541.3
 TEMPCalibrate20is2813.9,温度校准20是2813.9,TEMP Calibrate20 is 2813.9
@@ -1433,6 +1438,8 @@ TEMPCalibrate45is984,温度校准45是984,TEMP Calibrate45 is 984
 TEMPCalibrate50is811.3,温度校准50是811.3,TEMP Calibrate50 is 811.3
 TEMP1,温度1,TEMP1
 TEMP2,温度2,TEMP2
+TEMPModuleNotCalibration1,温度模块通道1未定标,TEMP Channel 1 Not Calibration
+TEMPModuleNotCalibration2,温度模块通道2未定标,TEMP Channel 2 Not Calibration
 TEMPModuleDisable,温度模块失能,TEMP Module Disable
 TEMPCommunicationStop,温度通信停止,TEMP Communication Stop
 TEMPChannel,温度通道,TEMP Channel

@@ -120,6 +120,7 @@ void SPO2TrendWidget::showValue(void)
     }
     else
     {
+        showNormalParamLimit(psrc);
         showNormalStatus(_spo2Bar, psrc);
         showNormalStatus(_spo2Value, psrc);
     }

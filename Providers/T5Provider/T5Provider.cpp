@@ -24,16 +24,12 @@ static const char *tempErrorCode[] =
 {
     "Unknown mistake.\r\n",
     "The data saved in Flash is reset to the default value.\r\n",
-    "\n",
-    "\n",
-    "\n",
-    "\n",
-    "\n",
-    "\n",
     "Flash wrong.\r\n",
     "AD Sampling failed.\r\n",
-    "Check channel of AD Sampling is overrange.\r\n",
-    "Calibration is unsuccessful.\r\n",
+    "Check channel 1 of AD Sampling is overrange.\r\n",
+    "Check channel 2 of AD Sampling is overrange.\r\n",
+    "Temp module channel 1 not calibration\n",
+    "Temp module channel 2 not calibration\n",
 };
 
 /**************************************************************************************************
@@ -211,10 +207,6 @@ void T5Provider::_selfTest(unsigned char *packet, int len)
     int num = packet[1];
     if (num > 0)
     {
-        systemManager.setPoweronTestResult(T5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
-        tempParam.setErrorDisable();
-        tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE, true);
-
         QString errorStr("");
         errorStr = "error code = ";
         for (int i = 1; i < len; i++)
@@ -227,11 +219,18 @@ void T5Provider::_selfTest(unsigned char *packet, int len)
         {
             switch (packet[i])
             {
-            case 0x01:
-            case 0x08:
-            case 0x09:
-            case 0x0A:
-            case 0x0B:
+            case 0x03:
+                systemManager.setPoweronTestResult(T5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
+                tempParam.setErrorDisable();
+                tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE, true);
+                errorStr += tempErrorCode[packet[i]];
+                break;
+            case 0x06:
+                tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_NOT_CALIBRATION_1, true);
+                errorStr += tempErrorCode[packet[i]];
+                break;
+            case 0x07:
+                tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_NOT_CALIBRATION_2, true);
                 errorStr += tempErrorCode[packet[i]];
                 break;
             default:

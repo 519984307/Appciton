@@ -268,11 +268,11 @@ void TEMPParam::sendCalibrateData(int channel, int value)
 
 void TEMPParam::getCalibrateData(unsigned char *packet)
 {
-    if (_calibrateChannel != packet[1] || _calibrateValue != packet[2])
+    if (_calibrateChannel == packet[1] || _calibrateValue == packet[2])
     {
-        return;
+        _calibrationReply = true;
+        _calibrationResult = packet[3];
     }
-    // TODO: set result to the factory calibration menu
 }
 
 void TEMPParam::updateSubParamLimit(SubParamID id)
@@ -281,6 +281,21 @@ void TEMPParam::updateSubParamLimit(SubParamID id)
     {
         _trendWidget->updateLimit();
     }
+}
+
+bool TEMPParam::getCalibrationReply()
+{
+    bool reply = _calibrationReply;
+    if (reply)
+    {
+        _calibrationReply = false;
+    }
+    return reply;
+}
+
+bool TEMPParam::getCalibrationResult()
+{
+    return _calibrationResult;
 }
 
 /**************************************************************************************************

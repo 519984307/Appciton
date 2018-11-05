@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/11/2
+ **/
+
 #include "TEMPAlarm.h"
 #include "TEMPParam.h"
 #include "IConfig.h"
@@ -28,8 +38,9 @@ int TEMPLimitAlarm::getAlarmSourceNR(void)
 /**************************************************************************************************
  * 获取报警对应的波形ID，该波形将被存储。
  *************************************************************************************************/
-WaveformID TEMPLimitAlarm::getWaveformID(int /*id*/)
+WaveformID TEMPLimitAlarm::getWaveformID(int id)
 {
+    Q_UNUSED(id)
     return WAVE_NONE;
 }
 
@@ -40,16 +51,16 @@ SubParamID TEMPLimitAlarm::getSubParamID(int id)
 {
     switch (id)
     {
-        case TEMP_LIMIT_ALARM_T1_HIGH:
-        case TEMP_LIMIT_ALARM_T1_LOW:
-            return SUB_PARAM_T1;
+    case TEMP_LIMIT_ALARM_T1_HIGH:
+    case TEMP_LIMIT_ALARM_T1_LOW:
+        return SUB_PARAM_T1;
 
-        case TEMP_LIMIT_ALARM_T2_HIGH:
-        case TEMP_LIMIT_ALARM_T2_LOW:
-            return SUB_PARAM_T2;
+    case TEMP_LIMIT_ALARM_T2_HIGH:
+    case TEMP_LIMIT_ALARM_T2_LOW:
+        return SUB_PARAM_T2;
 
-        default:
-            return SUB_PARAM_TD;
+    default:
+        return SUB_PARAM_TD;
     }
 }
 
@@ -71,16 +82,16 @@ int TEMPLimitAlarm::getValue(int id)
 
     switch (id)
     {
-        case TEMP_LIMIT_ALARM_T1_HIGH:
-        case TEMP_LIMIT_ALARM_T1_LOW:
-            return t1;
+    case TEMP_LIMIT_ALARM_T1_HIGH:
+    case TEMP_LIMIT_ALARM_T1_LOW:
+        return t1;
 
-        case TEMP_LIMIT_ALARM_T2_HIGH:
-        case TEMP_LIMIT_ALARM_T2_LOW:
-            return t2;
+    case TEMP_LIMIT_ALARM_T2_HIGH:
+    case TEMP_LIMIT_ALARM_T2_LOW:
+        return t2;
 
-        default:
-            return td;
+    default:
+        return td;
     }
 }
 
@@ -123,8 +134,8 @@ int TEMPLimitAlarm::getCompare(int value, int id)
     int mul = paramInfo.getMultiOfSubParam(subID);
 
     LimitAlarmConfig limitConfig = alarmConfig.getLimitAlarmConfig(subID, curUnit);
-    float low = (float)limitConfig.lowLimit / limitConfig.scale;
-    float high = (float)limitConfig.highLimit / limitConfig.scale;
+    float low = static_cast<float>(limitConfig.lowLimit) / limitConfig.scale;
+    float high = static_cast<float>(limitConfig.highLimit) / limitConfig.scale;
     float v = value * 1.0 / mul;
     float v1 = value * 1.0 / mul;
 
@@ -190,49 +201,47 @@ void TEMPLimitAlarm::notifyAlarm(int id, bool flag)
 
     switch (id)
     {
-        case TEMP_LIMIT_ALARM_T1_HIGH:
-            _isT1Alarm |= flag;
-            tempParam.noticeLimitAlarm(subID, _isT1Alarm);
-            _isT1Alarm = false;
-            break;
+    case TEMP_LIMIT_ALARM_T1_HIGH:
+        _isT1Alarm |= flag;
+        tempParam.noticeLimitAlarm(subID, _isT1Alarm);
+        _isT1Alarm = false;
+        break;
 
-        case TEMP_LIMIT_ALARM_T1_LOW:
-            _isT1Alarm |= flag;
-            break;
+    case TEMP_LIMIT_ALARM_T1_LOW:
+        _isT1Alarm |= flag;
+        break;
 
-        case TEMP_LIMIT_ALARM_T2_HIGH:
-            _isT2Alarm |= flag;
-            tempParam.noticeLimitAlarm(subID, _isT2Alarm);
-            _isT2Alarm = false;
-            break;
+    case TEMP_LIMIT_ALARM_T2_HIGH:
+        _isT2Alarm |= flag;
+        tempParam.noticeLimitAlarm(subID, _isT2Alarm);
+        _isT2Alarm = false;
+        break;
 
-        case TEMP_LIMIT_ALARM_T2_LOW:
-            _isT2Alarm |= flag;
-            break;
+    case TEMP_LIMIT_ALARM_T2_LOW:
+        _isT2Alarm |= flag;
+        break;
 
-        case TEMP_LIMIT_ALARM_TD_LOW:
-            _isTDAlarm |= flag;
-            break;
+    case TEMP_LIMIT_ALARM_TD_LOW:
+        _isTDAlarm |= flag;
+        break;
 
-        case TEMP_LIMIT_ALARM_TD_HIGH:
-            _isTDAlarm |= flag;
-            tempParam.noticeLimitAlarm(subID, _isTDAlarm);
-            _isTDAlarm = false;
-            break;
+    case TEMP_LIMIT_ALARM_TD_HIGH:
+        _isTDAlarm |= flag;
+        tempParam.noticeLimitAlarm(subID, _isTDAlarm);
+        _isTDAlarm = false;
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-TEMPLimitAlarm::TEMPLimitAlarm()
+TEMPLimitAlarm::TEMPLimitAlarm() : _isT1Alarm(false), _isT2Alarm(false), _isTDAlarm(false),
+    _t1(0), _t2(0)
 {
-    _isT1Alarm = false;
-    _isT2Alarm = false;
-    _isTDAlarm = false;
 }
 
 /**************************************************************************************************
@@ -240,7 +249,6 @@ TEMPLimitAlarm::TEMPLimitAlarm()
  *************************************************************************************************/
 TEMPLimitAlarm::~TEMPLimitAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -268,8 +276,9 @@ int TEMPOneShotAlarm::getAlarmSourceNR(void)
 /**************************************************************************************************
  * 获取报警对应的波形ID，该波形将被存储。
  *************************************************************************************************/
-WaveformID TEMPOneShotAlarm::getWaveformID(int /*id*/)
+WaveformID TEMPOneShotAlarm::getWaveformID(int id)
 {
+    Q_UNUSED(id)
     return WAVE_NONE;
 }
 
@@ -280,18 +289,21 @@ AlarmPriority TEMPOneShotAlarm::getAlarmPriority(int id)
 {
     switch (id)
     {
-        case TEMP_ONESHOT_ALARM_MODULE_DISABLE:
-            return ALARM_PRIO_HIGH;
-
-        default:
-            return ALARM_PRIO_MED;
+    case TEMP_ONESHOT_ALARM_MODULE_DISABLE:
+        return ALARM_PRIO_HIGH;
+    case TEMP_ONESHOT_ALARM_NOT_CALIBRATION_1:
+    case TEMP_ONESHOT_ALARM_NOT_CALIBRATION_2:
+        return ALARM_PRIO_PROMPT;
+    default:
+        return ALARM_PRIO_MED;
     }
 }
 /**************************************************************************************************
  * 该报警是否为生命报警，技术报警和生理/生命报警分开存放。
  *************************************************************************************************/
-AlarmType TEMPOneShotAlarm::getAlarmType(int /*id*/)
+AlarmType TEMPOneShotAlarm::getAlarmType(int id)
 {
+    Q_UNUSED(id)
     return ALARM_TYPE_TECH;
 }
 
@@ -310,14 +322,14 @@ bool TEMPOneShotAlarm::isRemoveAfterLatch(int id)
 {
     switch (id)
     {
-        case TEMP_OVER_RANGR_1:
-        case TEMP_OVER_RANGR_2:
-        case TEMP_OVER_RANGR_ALL:
-        case TEMP_ONESHOT_ALARM_COMMUNICATION_STOP:
-        case TEMP_ONESHOT_ALARM_MODULE_DISABLE:
-            return false;
-        default:
-            return true;
+    case TEMP_OVER_RANGR_1:
+    case TEMP_OVER_RANGR_2:
+    case TEMP_OVER_RANGR_ALL:
+    case TEMP_ONESHOT_ALARM_COMMUNICATION_STOP:
+    case TEMP_ONESHOT_ALARM_MODULE_DISABLE:
+        return false;
+    default:
+        return true;
     }
 }
 
@@ -326,7 +338,6 @@ bool TEMPOneShotAlarm::isRemoveAfterLatch(int id)
  *************************************************************************************************/
 TEMPOneShotAlarm::TEMPOneShotAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -334,5 +345,4 @@ TEMPOneShotAlarm::TEMPOneShotAlarm()
  *************************************************************************************************/
 TEMPOneShotAlarm::~TEMPOneShotAlarm()
 {
-
 }
