@@ -84,6 +84,7 @@ class ScreenLayoutModelPrivate
 public:
     ScreenLayoutModelPrivate()
         : demoProvider(NULL)
+        , isChangeData(false)
     {
         demoProvider = qobject_cast<DemoProvider *>(paramManager.getProvider("DemoProvider"));
     }
@@ -509,6 +510,7 @@ public:
     QVector<LayoutRow *> layoutNodes;
     OrderedMap<QString, WaveformID> waveIDMaps;
     OrderedMap<QString, ParamNodeDescription> paramNodeDescriptions;    // store data to describe param node
+    bool isChangeData;
 };
 
 ScreenLayoutModel::ScreenLayoutModel(QObject *parent)
@@ -583,6 +585,7 @@ bool ScreenLayoutModel::setData(const QModelIndex &index, const QVariant &value,
             }
 
             emit dataChanged(index, anotherChangeIndex);
+            d_ptr->isChangeData = true;
         }
     }
         break;
@@ -612,6 +615,7 @@ bool ScreenLayoutModel::setData(const QModelIndex &index, const QVariant &value,
                 }
             }
             emit dataChanged(index, anotherIndex);
+            d_ptr->isChangeData = true;
         }
     }
         break;
@@ -833,6 +837,7 @@ QSize ScreenLayoutModel::span(const QModelIndex &index) const
 void ScreenLayoutModel::saveLayoutInfo()
 {
     systemConfig.setConfig("PrimaryCfg|UILayout|ContentLayout|Normal", d_ptr->getLayoutMap());
+    d_ptr->isChangeData = false;
 }
 
 void ScreenLayoutModel::loadLayoutInfo(bool isDefaultConfig)
@@ -871,6 +876,11 @@ void ScreenLayoutModel::loadLayoutInfo(bool isDefaultConfig)
 void ScreenLayoutModel::updateWaveAndParamInfo()
 {
     d_ptr->loadItemInfos();
+}
+
+bool ScreenLayoutModel::isChangeLayoutInfo()
+{
+    return d_ptr->isChangeData;
 }
 
 ScreenLayoutModel::~ScreenLayoutModel()

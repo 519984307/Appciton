@@ -130,7 +130,8 @@ void SoftkeyActionBase::WindowLayout(bool isPressed)
     }
 
     windowManager.showWindow(ScreenLayoutWindow::getInstance(),
-                             WindowManager::ShowBehaviorCloseIfVisiable | WindowManager::ShowBehaviorCloseOthers);
+                             WindowManager::ShowBehaviorNoAutoClose |
+                             WindowManager::ShowBehaviorCloseOthers);
 }
 
 /***************************************************************************************************

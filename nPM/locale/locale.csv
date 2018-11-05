@@ -1564,3 +1564,4 @@ SaveCurrentSettingAndConfigurationName,保存当前监护仪的设置为用户�
 ConfigurationName,配置名称,Configuraiton Name
 HasExistConfig,该配置名称与监护仪上配置重名。请重新命名！,The configuration name is repeated with the configuration.Please rename!
 ECGFullScreen,心电全屏,ECG Full Screen
+isSaveLayout,是否保存布局配置？,Do you want to save the layout config?
