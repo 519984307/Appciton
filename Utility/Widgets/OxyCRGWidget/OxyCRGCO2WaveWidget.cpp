@@ -20,7 +20,8 @@
 class OxyCRGCO2WaveWidgetPrivate : public OxyCRGTrendWaveWidgetPrivate
 {
 public:
-    OxyCRGCO2WaveWidgetPrivate()
+    explicit OxyCRGCO2WaveWidgetPrivate(OxyCRGCO2WaveWidget * const q_ptr)
+        :OxyCRGTrendWaveWidgetPrivate(q_ptr)
     {
     }
 
@@ -55,7 +56,7 @@ void OxyCRGCO2WaveWidgetPrivate::init()
 
 OxyCRGCO2WaveWidget::OxyCRGCO2WaveWidget(const QString &waveName)
                      : OxyCRGTrendWaveWidget(waveName,
-                                             new OxyCRGCO2WaveWidgetPrivate)
+                                             new OxyCRGCO2WaveWidgetPrivate(this))
 {
     Q_D(OxyCRGCO2WaveWidget);
     d->init();

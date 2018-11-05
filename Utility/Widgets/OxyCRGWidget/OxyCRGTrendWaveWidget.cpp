@@ -20,8 +20,9 @@
 #include <QTimer>
 #include <QScopedPointer>
 
-OxyCRGTrendWaveWidgetPrivate::OxyCRGTrendWaveWidgetPrivate()
-    : dataBuf(NULL),
+OxyCRGTrendWaveWidgetPrivate::OxyCRGTrendWaveWidgetPrivate(OxyCRGTrendWaveWidget * const q_ptr)
+    : q_ptr(q_ptr),
+      dataBuf(NULL),
       waveBuffer(NULL),
       name(""),
       rulerHigh(InvData()),
@@ -180,6 +181,43 @@ void OxyCRGTrendWaveWidgetPrivate::updateWaveDrawingContext()
     pointGapSumFraction = 0.0;
 }
 
+void OxyCRGTrendWaveWidgetPrivate::reloadWaveBuffer()
+{
+    waveBuffer->clear();
+    pointGapSumFraction = 0.0;
+
+    Q_ASSERT(rulerHigh != rulerLow);
+    int datasize = dataBuf->dataSize();
+    int requestDataSize = getIntervalSeconds(interval) * waveDataRate;
+    int index = (datasize > requestDataSize) ? datasize - requestDataSize : 0;
+
+    for (int i = index; i < datasize; ++i)
+    {
+        short value = dataBuf->at(i);
+        short mapYValue;
+        if (value == InvData())
+        {
+            mapYValue = 0;
+        }
+        else
+        {
+            mapYValue = waveRegion.bottom() -
+                    (value - rulerLow) * waveRegion.height() / (rulerHigh - rulerLow);
+        }
+
+        if (pointGapSumFraction > 1.0)
+        {
+            waveBuffer->pushPointData(mapYValue, true);
+            pointGapSumFraction -= static_cast<int>(pointGapSumFraction);
+        }
+        else
+        {
+            waveBuffer->pushPointData(mapYValue, false);
+        }
+    }
+    q_ptr->update();
+}
+
 OxyCRGTrendWaveWidgetPrivate::~OxyCRGTrendWaveWidgetPrivate()
 {
     if (waveBuffer)
@@ -212,30 +250,28 @@ void OxyCRGTrendWaveWidget::addWaveData(int value)
 {
     d_ptr->dataBuf->push(value);
 
-    if (isVisible() && d_ptr->rulerHigh != d_ptr->rulerLow)
+    Q_ASSERT(d_ptr->rulerHigh != d_ptr->rulerLow);
+    d_ptr->pointGapSumFraction += d_ptr->pointGap;
+
+    short mapYValue;
+    if (value == InvData())
     {
-        d_ptr->pointGapSumFraction += d_ptr->pointGap;
+        mapYValue = 0;
+    }
+    else
+    {
+        mapYValue = d_ptr->waveRegion.bottom() -
+                (value - d_ptr->rulerLow) * d_ptr->waveRegion.height() / (d_ptr->rulerHigh - d_ptr->rulerLow);
+    }
 
-        short mapYValue;
-        if (value == InvData())
-        {
-            mapYValue = 0;
-        }
-        else
-        {
-            mapYValue = d_ptr->waveRegion.bottom() -
-                    (value - d_ptr->rulerLow) * d_ptr->waveRegion.height() / (d_ptr->rulerHigh - d_ptr->rulerLow);
-        }
-
-        if (d_ptr->pointGapSumFraction > 1.0)
-        {
-            d_ptr->waveBuffer->pushPointData(mapYValue, true);
-            d_ptr->pointGapSumFraction -= static_cast<int>(d_ptr->pointGapSumFraction);
-        }
-        else
-        {
-            d_ptr->waveBuffer->pushPointData(mapYValue, false);
-        }
+    if (d_ptr->pointGapSumFraction > 1.0)
+    {
+        d_ptr->waveBuffer->pushPointData(mapYValue, true);
+        d_ptr->pointGapSumFraction -= static_cast<int>(d_ptr->pointGapSumFraction);
+    }
+    else
+    {
+        d_ptr->waveBuffer->pushPointData(mapYValue, false);
     }
 }
 
@@ -248,6 +284,7 @@ void OxyCRGTrendWaveWidget::setInterval(OxyCRGInterval interval)
 
     d_ptr->interval = interval;
     d_ptr->updateWaveDrawingContext();
+    d_ptr->reloadWaveBuffer();
 }
 
 OxyCRGInterval OxyCRGTrendWaveWidget::getInterval() const
@@ -259,6 +296,7 @@ void OxyCRGTrendWaveWidget::setRulerValue(int valueHigh, int valueLow)
 {
     d_ptr->rulerHigh = valueHigh;
     d_ptr->rulerLow = valueLow;
+    d_ptr->reloadWaveBuffer();
 }
 
 void OxyCRGTrendWaveWidget::setClearWaveDataStatus(bool clearStatus)

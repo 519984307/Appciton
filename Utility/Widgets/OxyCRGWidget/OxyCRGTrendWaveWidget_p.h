@@ -14,6 +14,7 @@
 #include "BaseDefine.h"
 #include <QPainterPath>
 #include "OxyCRGDefine.h"
+#include "OxyCRGTrendWaveWidget.h"
 
 #define X_SHIFT     (2)
 #define Y_SHIFT     (2)
@@ -135,7 +136,7 @@ private:
 class OxyCRGTrendWaveWidgetPrivate
 {
 public:
-    OxyCRGTrendWaveWidgetPrivate();
+    explicit OxyCRGTrendWaveWidgetPrivate(OxyCRGTrendWaveWidget * const q_ptr);
 
     /**
      * @brief getIntervalSeconds  convert interval to seconds
@@ -154,12 +155,14 @@ public:
     virtual void updateWaveDrawingContext();
 
     /**
-     * @brief resetWaveBuffer
+     * @brief reload the wave buffer base on the data buff
+     *
      */
     void reloadWaveBuffer();
 
     virtual ~OxyCRGTrendWaveWidgetPrivate();
 
+    OxyCRGTrendWaveWidget * q_ptr;
     RingBuff<short> *dataBuf;    // 波形数据缓存
     OxyCRGWaveBuffer *waveBuffer; // wave buffer
 

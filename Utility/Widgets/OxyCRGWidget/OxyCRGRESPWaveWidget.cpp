@@ -20,7 +20,8 @@
 class OxyCRGRESPWaveWidgetPrivate : public OxyCRGTrendWaveWidgetPrivate
 {
 public:
-    OxyCRGRESPWaveWidgetPrivate()
+    explicit OxyCRGRESPWaveWidgetPrivate(OxyCRGRESPWaveWidget * const q_ptr)
+        :OxyCRGTrendWaveWidgetPrivate(q_ptr)
     {
     }
     void init();
@@ -48,7 +49,7 @@ void OxyCRGRESPWaveWidgetPrivate::init()
 
 OxyCRGRESPWaveWidget::OxyCRGRESPWaveWidget(const QString &waveName)
                      : OxyCRGTrendWaveWidget(waveName,
-                                             new OxyCRGRESPWaveWidgetPrivate)
+                                             new OxyCRGRESPWaveWidgetPrivate(this))
 {
     Q_D(OxyCRGRESPWaveWidget);
     d->init();

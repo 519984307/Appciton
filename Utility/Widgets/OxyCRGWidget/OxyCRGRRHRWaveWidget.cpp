@@ -29,8 +29,8 @@ class OxyCRGRRHRWaveWidgetPrivate :
     public OxyCRGTrendWaveWidgetPrivate
 {
 public:
-    OxyCRGRRHRWaveWidgetPrivate()
-        : OxyCRGTrendWaveWidgetPrivate(),
+    explicit OxyCRGRRHRWaveWidgetPrivate(OxyCRGRRHRWaveWidget * const q_ptr)
+        : OxyCRGTrendWaveWidgetPrivate(q_ptr),
           rrDataBuf(NULL),
           rrWaveBuffer(NULL),
           rrDataBufIndex(0),
@@ -62,7 +62,16 @@ public:
 
     void init();
 
+    /* reimplement */
     void updateWaveDrawingContext();
+
+    /* reimplement */
+    void reloadWaveBuffer();
+
+    /**
+     * @brief reloadRRwaveBuffer reload the rr wave buffer
+     */
+    void reloadRRwaveBuffer();
 
     RingBuff<short> *rrDataBuf;          // 波形数据缓存
     OxyCRGWaveBuffer *rrWaveBuffer;      // rr wave buffer
@@ -190,9 +199,51 @@ void OxyCRGRRHRWaveWidgetPrivate::updateWaveDrawingContext()
     rrPointGapSumFraction = pointGapSumFraction;
 }
 
+void OxyCRGRRHRWaveWidgetPrivate::reloadWaveBuffer()
+{
+    Q_ASSERT(rrRulerHigh != rrRulerLow);
+    OxyCRGTrendWaveWidgetPrivate::reloadWaveBuffer();
+    reloadRRwaveBuffer();
+}
+
+void OxyCRGRRHRWaveWidgetPrivate::reloadRRwaveBuffer()
+{
+    rrWaveBuffer->clear();
+    rrPointGapSumFraction = 0.0;
+
+    int dataSize = rrDataBuf->dataSize();
+    int requestDataSize = getIntervalSeconds(interval) * waveDataRate;
+    int index = (dataSize > requestDataSize) ? dataSize - requestDataSize : 0;
+
+    for (int i = index; i < dataSize; ++i)
+    {
+        short value = rrDataBuf->at(i);
+        short mapYValue;
+        if (value == InvData())
+        {
+            mapYValue = 0;
+        }
+        else
+        {
+            mapYValue = waveRegion.bottom() -
+                    (value - rrRulerLow) * waveRegion.height() / (rrRulerHigh - rrRulerLow);
+        }
+
+        if (rrPointGapSumFraction > 1.0)
+        {
+            rrWaveBuffer->pushPointData(mapYValue, true);
+            rrPointGapSumFraction -= static_cast<int>(rrPointGapSumFraction);
+        }
+        else
+        {
+            rrWaveBuffer->pushPointData(mapYValue, false);
+        }
+    }
+}
+
 OxyCRGRRHRWaveWidget::OxyCRGRRHRWaveWidget(const QString &waveName)
     : OxyCRGTrendWaveWidget(waveName,
-                            new OxyCRGRRHRWaveWidgetPrivate)
+                            new OxyCRGRRHRWaveWidgetPrivate(this))
 {
     Q_D(OxyCRGRRHRWaveWidget);
     d->init();
@@ -207,30 +258,28 @@ void OxyCRGRRHRWaveWidget::addRrTrendData(int value)
     Q_D(OxyCRGRRHRWaveWidget);
     d->rrDataBuf->push(value);
 
-    if (isVisible() && d->rrRulerHigh != d->rrRulerLow)
+    Q_ASSERT(d->rrRulerHigh != d->rrRulerLow);
+    d->rrPointGapSumFraction += d->rrPointGap;
+
+    short mapYValue;
+    if (value == InvData())
     {
-        d->rrPointGapSumFraction += d->rrPointGap;
+        mapYValue = 0;
+    }
+    else
+    {
+        mapYValue = d->waveRegion.bottom() -
+                (value - d->rrRulerLow) * d->waveRegion.height() / (d->rrRulerHigh - d->rrRulerLow);
+    }
 
-        short mapYValue;
-        if (value == InvData())
-        {
-            mapYValue = 0;
-        }
-        else
-        {
-            mapYValue = d->waveRegion.bottom() -
-                    (value - d->rrRulerLow) * d->waveRegion.height() / (d->rrRulerHigh - d->rrRulerLow);
-        }
-
-        if (d->rrPointGapSumFraction > 1.0)
-        {
-            d->rrWaveBuffer->pushPointData(mapYValue, true);
-            d->rrPointGapSumFraction -= static_cast<int>(d->rrPointGapSumFraction);
-        }
-        else
-        {
-            d->rrWaveBuffer->pushPointData(mapYValue, false);
-        }
+    if (d->rrPointGapSumFraction > 1.0)
+    {
+        d->rrWaveBuffer->pushPointData(mapYValue, true);
+        d->rrPointGapSumFraction -= static_cast<int>(d->rrPointGapSumFraction);
+    }
+    else
+    {
+        d->rrWaveBuffer->pushPointData(mapYValue, false);
     }
 }
 
@@ -244,11 +293,16 @@ void OxyCRGRRHRWaveWidget::setRrRulerValue(int valueHigh, int valueLow)
     Q_D(OxyCRGRRHRWaveWidget);
     d->rrRulerHigh = valueHigh;
     d->rrRulerLow = valueLow;
+    d->reloadRRwaveBuffer();
+    update();
 }
 
 void OxyCRGRRHRWaveWidget::setHrRulerValue(int valueHigh, int valueLow)
 {
-    setRulerValue(valueHigh, valueLow);
+    Q_D(OxyCRGRRHRWaveWidget);
+    d->rulerHigh = valueHigh;
+    d->rulerLow = valueLow;
+    d->OxyCRGTrendWaveWidgetPrivate::reloadWaveBuffer();
 }
 
 void OxyCRGRRHRWaveWidget::setRrTrendShowStatus(bool isShow)
