@@ -27,7 +27,6 @@ OxyCRGTrendWaveWidgetPrivate::OxyCRGTrendWaveWidgetPrivate()
       rulerLow(InvData()),
       waveColor(Qt::green),
       waveDataRate(1),
-      timer(NULL),
       isClearWaveData(true),
       drawRuler(true),
       interval(OxyCRG_Interval_2),
@@ -190,12 +189,7 @@ OxyCRGTrendWaveWidget::OxyCRGTrendWaveWidget(const QString &waveName,
                      : IWidget(waveName),
                        d_ptr(p)
 {
-   setFocusPolicy(Qt::NoFocus);
-
-    QTimer *timer = new QTimer(this);
-    timer->setInterval(1000);
-    connect(timer, SIGNAL(timeout()), this, SLOT(onTimeOutExec()));
-    d_ptr->timer = timer;
+    setFocusPolicy(Qt::NoFocus);
 }
 
 OxyCRGTrendWaveWidget::~OxyCRGTrendWaveWidget()
@@ -269,11 +263,6 @@ void OxyCRGTrendWaveWidget::setClearWaveDataStatus(bool clearStatus)
     }
 }
 
-void OxyCRGTrendWaveWidget::onTimeOutExec()
-{
-    update();
-}
-
 void OxyCRGTrendWaveWidget::paintEvent(QPaintEvent *e)
 {
     IWidget::paintEvent(e);
@@ -339,19 +328,11 @@ void OxyCRGTrendWaveWidget::paintEvent(QPaintEvent *e)
 void OxyCRGTrendWaveWidget::showEvent(QShowEvent *e)
 {
     IWidget::showEvent(e);
-    if (d_ptr->timer)
-    {
-        d_ptr->timer->start();
-    }
 }
 
 void OxyCRGTrendWaveWidget::hideEvent(QHideEvent *e)
 {
     IWidget::hideEvent(e);
-    if (d_ptr->timer)
-    {
-        d_ptr->timer->stop();
-    }
 }
 
 void OxyCRGTrendWaveWidget::resizeEvent(QResizeEvent *e)

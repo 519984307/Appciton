@@ -14,8 +14,7 @@
 #include "WindowManager.h"
 #include "ColorManager.h"
 #include "OxyCRGWidgetLabel.h"
-#include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QBoxLayout>
 #include <QLabel>
 #include <QMap>
 #include "IWidget.h"
@@ -33,6 +32,7 @@
 #include "OxyCRGRESPWaveWidget.h"
 #include "OxyCRGRRHRWaveWidget.h"
 #include "LayoutManager.h"
+#include <QTimer>
 
 
 #define TITLE_BAR_HEIGHT    24
@@ -48,7 +48,8 @@ public:
           co2Wave(NULL),
           respWave(NULL),
           setupBtn(NULL),
-          setupWin(NULL)
+          setupWin(NULL),
+          updateTimer(NULL)
     {
     }
 
@@ -64,6 +65,7 @@ public:
     OxyCRGRESPWaveWidget *respWave;
     OxyCRGWidgetLabel *setupBtn;
     OxyCRGSetupWindow *setupWin;
+    QTimer *updateTimer;
 };
 /**************************************************************************************************
  * 析构。
@@ -158,6 +160,7 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     setFocusPolicy(Qt::NoFocus);
 
     d_ptr->setupWin =  new OxyCRGSetupWindow;
+    d_ptr->updateTimer = new QTimer(this);
 }
 
 /**************************************************************************************************
@@ -435,6 +438,7 @@ void OxyCRGWidget::showEvent(QShowEvent *e)
     {
         d_ptr->co2Wave->setClearWaveDataStatus(true);
     }
+    d_ptr->updateTimer->start(1000);
 }
 
 void OxyCRGWidget::hideEvent(QHideEvent *e)
@@ -456,6 +460,7 @@ void OxyCRGWidget::hideEvent(QHideEvent *e)
     {
         d_ptr->co2Wave->setClearWaveDataStatus(true);
     }
+    d_ptr->updateTimer->stop();
 }
 
 void OxyCRGWidget::setOxyCRGRespWidget(OxyCRGRESPWaveWidget *p)
@@ -463,6 +468,7 @@ void OxyCRGWidget::setOxyCRGRespWidget(OxyCRGRESPWaveWidget *p)
     if (p != NULL)
     {
         d_ptr->respWave = p;
+        connect(d_ptr->updateTimer, SIGNAL(timeout()), p, SLOT(update()));
     }
 }
 
@@ -472,6 +478,7 @@ void OxyCRGWidget::setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *p)
     if (p != NULL)
     {
         d_ptr->spo2Trend = p;
+        connect(d_ptr->updateTimer, SIGNAL(timeout()), p, SLOT(update()));
     }
 }
 
@@ -480,6 +487,7 @@ void OxyCRGWidget::setOxyCRGCO2Widget(OxyCRGCO2WaveWidget *p)
     if (p != NULL)
     {
         d_ptr->co2Wave = p;
+        connect(d_ptr->updateTimer, SIGNAL(timeout()), p, SLOT(update()));
     }
 }
 
@@ -507,6 +515,7 @@ void OxyCRGWidget::setOxyCRGRrHrWidget(OxyCRGRRHRWaveWidget *p)
     if (p)
     {
         d_ptr->rrHrTrend = p;
+        connect(d_ptr->updateTimer, SIGNAL(timeout()), p, SLOT(update()));
     }
 }
 

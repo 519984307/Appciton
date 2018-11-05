@@ -53,12 +53,6 @@ public:
      */
     void setRulerValue(int valueHigh, int valueLow);
 
-private slots:
-    /**
-     * @brief onTimeOutExec
-     */
-    void onTimeOutExec(void);
-
 protected:
     /* reimplement */
     void paintEvent(QPaintEvent *e);

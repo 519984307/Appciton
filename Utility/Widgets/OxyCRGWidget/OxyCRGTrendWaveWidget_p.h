@@ -11,7 +11,6 @@
 #pragma once
 #include "RingBuff.h"
 #include <QColor>
-#include <QTimer>
 #include "BaseDefine.h"
 #include <QPainterPath>
 #include "OxyCRGDefine.h"
@@ -171,8 +170,6 @@ public:
     QColor waveColor;            // 波形颜色
 
     int waveDataRate;            // 波形速率
-
-    QTimer *timer;               // 定时器用来更新波形刷新
 
     bool isClearWaveData;        // 是否清除波形数据
     bool drawRuler;              // mark whether need to draw ruler
