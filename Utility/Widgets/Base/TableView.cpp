@@ -334,6 +334,7 @@ void TableView::keyReleaseEvent(QKeyEvent *ev)
         {
             emit rowClicked(index.row());
             d_ptr->focusTheEditableItem(index.row());
+            emit itemClicked(index);
         }
     }
     break;
