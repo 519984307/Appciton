@@ -837,6 +837,7 @@ QSize ScreenLayoutModel::span(const QModelIndex &index) const
 void ScreenLayoutModel::saveLayoutInfo()
 {
     systemConfig.setConfig("PrimaryCfg|UILayout|ContentLayout|Normal", d_ptr->getLayoutMap());
+    d_ptr->isChangeData = false;
 }
 
 void ScreenLayoutModel::loadLayoutInfo(bool isDefaultConfig)

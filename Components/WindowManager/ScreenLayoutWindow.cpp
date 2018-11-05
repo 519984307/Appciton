@@ -104,7 +104,7 @@ void ScreenLayoutWindow::hideEvent(QHideEvent *ev)
 {
     Window::hideEvent(ev);
     ScreenLayoutModel *model = qobject_cast<ScreenLayoutModel*>(d_ptr->view->model());
-    if (this->getCloseBtn() == sender() && model->isChangeLayoutInfo())
+    if (model->isChangeLayoutInfo())
     {
         MessageBox message(trs("Prompt"), trs("isSaveLayout"));
         int ret = message.exec();
