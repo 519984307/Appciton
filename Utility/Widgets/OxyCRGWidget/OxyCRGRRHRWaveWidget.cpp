@@ -31,17 +31,33 @@ public:
     OxyCRGRRHRWaveWidgetPrivate()
         : OxyCRGTrendWaveWidgetPrivate(),
           rrDataBuf(NULL),
+          rrWaveBuffer(NULL),
           rrDataBufIndex(0),
           rrDataBufLen(0),
           rrRulerHigh(InvData()),
           rrRulerLow(InvData()),
           rrWaveColor(Qt::green),
           isShowRr(false),
-          rrWaveName("")
+          rrWaveName(""),
+          rrPointGap(0),
+          rrPointGapSumFraction(0.0)
     {
     }
 
+    ~OxyCRGRRHRWaveWidgetPrivate()
+    {
+        if (rrWaveBuffer)
+        {
+            delete rrWaveBuffer;
+        }
+    }
+
+    void init();
+
+    void updateWaveDrawingContext();
+
     RingBuff<short> *rrDataBuf;          // 波形数据缓存
+    OxyCRGWaveBuffer *rrWaveBuffer;      // rr wave buffer
 
     int rrDataBufIndex;                  // 波形数据缓存下标
 
@@ -56,14 +72,125 @@ public:
     bool isShowRr;                       // 是否显示RR趋势波形
 
     QString rrWaveName;                  // rr波形名称
+    float rrPointGap;                    // rr wave ponit gap
+    float rrPointGapSumFraction;         // the fraction part of the rr wave gap sum
 };
 
+void OxyCRGRRHRWaveWidgetPrivate::init()
+{
+    // rr标尺的颜色更深。
+    QPalette palette = colorManager.getPalette(
+                           paramInfo.getParamName(PARAM_RESP));
+    QColor color = palette.color(QPalette::WindowText);
+    palette.setColor(QPalette::Highlight, color);
+    color = palette.color(QPalette::WindowText);
+    color.setRed(color.red() * 2 / 3);
+    color.setGreen(color.green() * 2 / 3);
+    color.setBlue(color.blue() * 2 / 3);
+    rrWaveColor = color;
+    rrWaveName = "RR";
+    // rr设置标尺值
+    int valueLow = 0;
+    int valueHigh = 0;
+    currentConfig.getNumValue("OxyCRG|Ruler|RRLow", valueLow);
+    currentConfig.getNumValue("OxyCRG|Ruler|RRHigh", valueHigh);
+    QString strValueLow =  OxyCRGSymbol::convert(RRLowTypes(valueLow));
+    valueLow = strValueLow.toInt();
+    QString strValueHigh =  OxyCRGSymbol::convert(RRHighTypes(valueHigh));
+    valueHigh = strValueHigh.toInt();
+    rrRulerHigh = valueHigh;
+    rrRulerLow = valueLow;
+    // 申请存储rr波形数据堆空间
+    rrDataBufIndex = 0;
+    rrDataBufLen = waveDataRate * 8 * 60; // 最大8分钟数据
+    rrDataBuf = new RingBuff<short>(rrDataBufLen);
+
+    // hr标尺的颜色更深。
+    palette = colorManager.getPalette(
+                  paramInfo.getParamName(PARAM_ECG));
+    color = palette.color(QPalette::WindowText);
+    palette.setColor(QPalette::Highlight, color);
+    color = palette.color(QPalette::WindowText);
+    color.setRed(color.red() * 2 / 3);
+    color.setGreen(color.green() * 2 / 3);
+    color.setBlue(color.blue() * 2 / 3);
+    waveColor = color;
+    // hr设置标尺值
+    valueLow = 0;
+    valueHigh = 0;
+    currentConfig.getNumValue("OxyCRG|Ruler|HRLow", valueLow);
+    currentConfig.getNumValue("OxyCRG|Ruler|HRHigh", valueHigh);
+    strValueLow =  OxyCRGSymbol::convert(HRLowTypes(valueLow));
+    valueLow = strValueLow.toInt();
+    strValueHigh =  OxyCRGSymbol::convert(HRHighTypes(valueHigh));
+    valueHigh = strValueHigh.toInt();
+    rulerHigh = valueHigh;
+    rulerLow = valueLow;
+    // 申请存储hr波形数据堆空间
+    int dataLen = waveDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
+    dataBuf = new RingBuff<short>(dataLen);
+    name = "HR_PR";
+
+    int index = 0;
+    currentConfig.getNumValue("OxyCRG|Trend1", index);
+    if (index == 0)
+    {
+        isShowRr = false;
+    }
+    else
+    {
+        isShowRr = true;
+    }
+}
+
+void OxyCRGRRHRWaveWidgetPrivate::updateWaveDrawingContext()
+{
+    int sampleCount = getIntervalSeconds(interval) * waveDataRate;
+
+    int segmentCount = waveRegion.width();
+    if (sampleCount < segmentCount)
+    {
+        segmentCount = sampleCount + 1;
+    }
+
+    if (!waveBuffer)
+    {
+        waveBuffer = new OxyCRGWaveBuffer(segmentCount);
+    }
+    else
+    {
+        waveBuffer->resize(segmentCount);
+    }
+
+    if (!rrWaveBuffer)
+    {
+        rrWaveBuffer = new OxyCRGWaveBuffer(segmentCount);
+    }
+    else
+    {
+
+        rrWaveBuffer->resize(segmentCount);
+    }
+
+    pointGap = 1.0 * waveRegion.width() / sampleCount;
+
+    if (pointGap < 1)
+    {
+        waveBuffer->highDensitiy = true;
+    }
+
+    pointGapSumFraction = 0.0;
+
+    rrPointGap = pointGap;
+    rrPointGapSumFraction = pointGapSumFraction;
+}
 
 OxyCRGRRHRWaveWidget::OxyCRGRRHRWaveWidget(const QString &waveName)
     : OxyCRGTrendWaveWidget(waveName,
                             new OxyCRGRRHRWaveWidgetPrivate)
 {
-    init();
+    Q_D(OxyCRGRRHRWaveWidget);
+    d->init();
 }
 
 OxyCRGRRHRWaveWidget::~OxyCRGRRHRWaveWidget()
@@ -74,12 +201,37 @@ void OxyCRGRRHRWaveWidget::addRrTrendData(int value)
 {
     Q_D(OxyCRGRRHRWaveWidget);
     d->rrDataBuf->push(value);
+
+    if (isVisible() && d->rrRulerHigh != d->rrRulerLow)
+    {
+        d->rrPointGapSumFraction += d->rrPointGap;
+
+        short mapYValue;
+        if (value == InvData())
+        {
+            mapYValue = 0;
+        }
+        else
+        {
+            mapYValue = d->waveRegion.bottom() -
+                    (value - d->rrRulerLow) * d->waveRegion.height() / (d->rrRulerHigh - d->rrRulerLow);
+        }
+
+        if (d->rrPointGapSumFraction > 1.0)
+        {
+            d->rrWaveBuffer->pushPointData(mapYValue, true);
+            d->rrPointGapSumFraction -= static_cast<int>(d->rrPointGapSumFraction);
+        }
+        else
+        {
+            d->rrWaveBuffer->pushPointData(mapYValue, false);
+        }
+    }
 }
 
 void OxyCRGRRHRWaveWidget::addHrTrendData(int value)
 {
-    Q_D(OxyCRGRRHRWaveWidget);
-    d->dataBuf->push(value);
+    OxyCRGTrendWaveWidget::addWaveData(value);
 }
 
 void OxyCRGRRHRWaveWidget::setRrRulerValue(int valueHigh, int valueLow)
@@ -105,23 +257,23 @@ void OxyCRGRRHRWaveWidget::paintEvent(QPaintEvent *e)
     Q_D(OxyCRGRRHRWaveWidget);
     OxyCRGTrendWaveWidget::paintEvent(e);
 
-    int w = rect().width() - WX_SHIFT * 2;
-    int h = rect().height();
     QPainter painter(this);
+
+    d->drawWave(&painter, d->waveRegion, d->waveBuffer, d->waveColor);
 
     if (d->isShowRr)
     {
+        int w = rect().width() - WX_SHIFT * 2;
+        int h = rect().height();
         // 添加波形名字
-        int x1 = rect().x();
-        int y1 = rect().y();
         int xShift = X_SHIFT;
         int yShift = Y_SHIFT;
         int wxShift = WX_SHIFT;
 
         painter.setPen(QPen(d->rrWaveColor, 1, Qt::SolidLine));
         painter.setFont(fontManager.textFont(16));
-        painter.drawText(x1 + xShift + w + wxShift,
-                         y1 + yShift,
+        painter.drawText(xShift + w + wxShift,
+                         yShift,
                          wxShift, h / 3,
                          Qt::AlignLeft | Qt::AlignTop,
                          d->rrWaveName);
@@ -130,8 +282,8 @@ void OxyCRGRRHRWaveWidget::paintEvent(QPaintEvent *e)
         if (d->rrRulerHigh != InvData())
         {
             painter.setPen(QPen(d->rrWaveColor, 1, Qt::SolidLine));
-            painter.drawText(x1 + w - xShift,
-                             y1 + yShift,
+            painter.drawText(w - xShift,
+                             yShift,
                              wxShift, wxShift / 2,
                              Qt::AlignTop | Qt::AlignRight,
                              QString::number(d->rrRulerHigh));
@@ -139,122 +291,15 @@ void OxyCRGRRHRWaveWidget::paintEvent(QPaintEvent *e)
         if (d->rrRulerLow != InvData())
         {
             painter.setPen(QPen(d->rrWaveColor, 1, Qt::SolidLine));
-            painter.drawText(x1 + w - xShift,
-                             y1 + h - yShift - wxShift / 2,
+            painter.drawText(w - xShift,
+                             h - yShift - wxShift / 2,
                              wxShift, wxShift / 2,
                              Qt::AlignBottom | Qt::AlignRight,
                              QString::number(d->rrRulerLow));
         }
+
+        d->drawWave(&painter, d_ptr->waveRegion, d->rrWaveBuffer, d->rrWaveColor);
     }
-
-    // 数据速率
-    int dataRate = d->waveDataRate;
-    OxyCRGInterval interval = getInterval();
-    int intervalTime = 1 * 60;
-
-    switch (interval)
-    {
-    case OxyCRG_Interval_1:
-        intervalTime = 1 * 60;
-        break;
-    case OxyCRG_Interval_2:
-        intervalTime = 2 * 60;
-        break;
-    case OxyCRG_Interval_4:
-        intervalTime = 4 * 60;
-        break;
-    case OxyCRG_Interval_8:
-        intervalTime = 8 * 60;
-        break;
-    case OxyCRG_Interval_NR:
-        intervalTime = 8 * 60;
-        break;
-    }
-    // 每次需要显示的数据点数
-    int dataCount = dataRate * intervalTime;
-
-
-    // HR
-    painter.setPen(QPen(d->waveColor, 2, Qt::SolidLine));
-    QPainterPath pathHr;
-
-
-    double xAllShift = w * 1.0 / intervalTime;
-    double xStep = xAllShift / dataRate;
-    int rulerHigh = d->rulerHigh;
-    int rulerLow = d->rulerLow;
-    int dataSize = d->dataBuf->dataSize();
-    int index = (dataSize - dataCount > 0) ? (dataSize - dataCount) : (0);
-    double curX = rect().width()
-                  + rect().x()
-                  - WX_SHIFT
-                  - dataSize * xStep;
-    if (curX < rect().x() + WX_SHIFT)
-    {
-        curX = rect().x() + WX_SHIFT;
-    }
-    double dataH = h - (d->dataBuf->at(index) - rulerLow) * 1.0 /
-                   (rulerHigh - rulerLow) * h;
-    pathHr.moveTo(curX, dataH);
-    for (int i = index; i < dataSize; i++)
-    {
-        dataH = h - (d->dataBuf->at(i) - rulerLow) * 1.0 /
-                (rulerHigh - rulerLow) * h;
-        curX += xStep;
-        if (curX > (rect().width() + rect().x() - WX_SHIFT))
-        {
-            curX = rect().width() + rect().x() - WX_SHIFT;
-            pathHr.lineTo(curX, dataH);
-            break;
-        }
-
-        pathHr.lineTo(curX, dataH);
-    }
-    painter.drawPath(pathHr);
-
-    // RR
-    if (!d->isShowRr)
-    {
-        return;
-    }
-
-    painter.setPen(QPen(d->rrWaveColor, 2, Qt::SolidLine));
-    QPainterPath pathResp;
-
-    xAllShift = w * 1.0 / intervalTime;
-    xStep = xAllShift / dataRate;
-    rulerHigh = d->rrRulerHigh;
-    rulerLow = d->rrRulerLow;
-    dataSize = d->rrDataBuf->dataSize();
-    index = (dataSize - dataCount > 0) ? (dataSize - dataCount) : (0);
-
-    curX = rect().width()
-           + rect().x()
-           - WX_SHIFT
-           - dataSize * xStep;
-    if (curX < rect().x() + WX_SHIFT)
-    {
-        curX = rect().x() + WX_SHIFT;
-    }
-    dataH = h - (d->rrDataBuf->at(index) - rulerLow) * 1.0 /
-            (rulerHigh - rulerLow) * h;
-    pathResp.moveTo(curX, dataH);
-    for (int i = index; i < dataSize; i++)
-    {
-        dataH = h - (d->rrDataBuf->at(i) - rulerLow) * 1.0 /
-                (rulerHigh - rulerLow) * h;
-
-        curX += xStep;
-        if (curX > (rect().width() + rect().x() - WX_SHIFT))
-        {
-            curX = rect().width() + rect().x() - WX_SHIFT;
-            pathResp.lineTo(curX, dataH);
-            break;
-        }
-
-        pathResp.lineTo(curX, dataH);
-    }
-    painter.drawPath(pathResp);
 }
 
 void OxyCRGRRHRWaveWidget::showEvent(QShowEvent *e)
@@ -298,74 +343,5 @@ void OxyCRGRRHRWaveWidget::hideEvent(QHideEvent *e)
     if (d->rrDataBuf)
     {
         d->rrDataBuf->clear();
-    }
-}
-
-void OxyCRGRRHRWaveWidget::init()
-{
-    Q_D(OxyCRGRRHRWaveWidget);
-
-    // rr标尺的颜色更深。
-    QPalette palette = colorManager.getPalette(
-                           paramInfo.getParamName(PARAM_RESP));
-    QColor color = palette.color(QPalette::WindowText);
-    palette.setColor(QPalette::Highlight, color);
-    color = palette.color(QPalette::WindowText);
-    color.setRed(color.red() * 2 / 3);
-    color.setGreen(color.green() * 2 / 3);
-    color.setBlue(color.blue() * 2 / 3);
-    d->rrWaveColor = color;
-    d->rrWaveName = "RR";
-    // rr设置标尺值
-    int valueLow = 0;
-    int valueHigh = 0;
-    currentConfig.getNumValue("OxyCRG|Ruler|RRLow", valueLow);
-    currentConfig.getNumValue("OxyCRG|Ruler|RRHigh", valueHigh);
-    QString strValueLow =  OxyCRGSymbol::convert(RRLowTypes(valueLow));
-    valueLow = strValueLow.toInt();
-    QString strValueHigh =  OxyCRGSymbol::convert(RRHighTypes(valueHigh));
-    valueHigh = strValueHigh.toInt();
-    d->rrRulerHigh = valueHigh;
-    d->rrRulerLow = valueLow;
-    // 申请存储rr波形数据堆空间
-    d->rrDataBufIndex = 0;
-    d->rrDataBufLen = d->waveDataRate * 8 * 60; // 最大8分钟数据
-    d->rrDataBuf = new RingBuff<short>(d->rrDataBufLen);
-
-    // hr标尺的颜色更深。
-    palette = colorManager.getPalette(
-                  paramInfo.getParamName(PARAM_ECG));
-    color = palette.color(QPalette::WindowText);
-    palette.setColor(QPalette::Highlight, color);
-    color = palette.color(QPalette::WindowText);
-    color.setRed(color.red() * 2 / 3);
-    color.setGreen(color.green() * 2 / 3);
-    color.setBlue(color.blue() * 2 / 3);
-    d->waveColor = color;
-    // hr设置标尺值
-    valueLow = 0;
-    valueHigh = 0;
-    currentConfig.getNumValue("OxyCRG|Ruler|HRLow", valueLow);
-    currentConfig.getNumValue("OxyCRG|Ruler|HRHigh", valueHigh);
-    strValueLow =  OxyCRGSymbol::convert(HRLowTypes(valueLow));
-    valueLow = strValueLow.toInt();
-    strValueHigh =  OxyCRGSymbol::convert(HRHighTypes(valueHigh));
-    valueHigh = strValueHigh.toInt();
-    d->rulerHigh = valueHigh;
-    d->rulerLow = valueLow;
-    // 申请存储hr波形数据堆空间
-    int dataLen = d->waveDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
-    d->dataBuf = new RingBuff<short>(dataLen);
-    d->name = "HR_PR";
-
-    int index = 0;
-    currentConfig.getNumValue("OxyCRG|Trend1", index);
-    if (index == 0)
-    {
-        d->isShowRr = false;
-    }
-    else
-    {
-        d->isShowRr = true;
     }
 }

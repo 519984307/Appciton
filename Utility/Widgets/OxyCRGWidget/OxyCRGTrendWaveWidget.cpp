@@ -56,7 +56,7 @@ int OxyCRGTrendWaveWidgetPrivate::getIntervalSeconds(OxyCRGInterval interval)
     return 120;
 }
 
-void OxyCRGTrendWaveWidgetPrivate::drawWave(QPainter *painter, const QRect &waveRegion, const OxyCRGWaveBuffer *buffer)
+void OxyCRGTrendWaveWidgetPrivate::drawWave(QPainter *painter, const QRect &waveRegion, const OxyCRGWaveBuffer *buffer, const QColor &waveColor)
 {
     if (!painter || !waveRegion.isValid() || !buffer)
     {
@@ -173,6 +173,8 @@ void OxyCRGTrendWaveWidgetPrivate::updateWaveDrawingContext()
     {
         waveBuffer->highDensitiy = true;
     }
+
+    pointGapSumFraction = 0.0;
 }
 
 OxyCRGTrendWaveWidgetPrivate::~OxyCRGTrendWaveWidgetPrivate()

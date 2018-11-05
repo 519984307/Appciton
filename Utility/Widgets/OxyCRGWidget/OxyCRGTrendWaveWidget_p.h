@@ -146,13 +146,13 @@ public:
     /**
      * @brief drawWave draw the wave data
      */
-    void drawWave(QPainter *painter, const QRect &waveRegion, const OxyCRGWaveBuffer * buffer);
+    void drawWave(QPainter *painter, const QRect &waveRegion, const OxyCRGWaveBuffer * buffer, const QColor &waveColor);
 
     /**
      * @brief updateWaveDrawingContext udpate the wave draw context, should be called when the interval,
      *        the wavedatarate or waveRegion is changed.
      */
-    void updateWaveDrawingContext();
+    virtual void updateWaveDrawingContext();
 
     /**
      * @brief resetWaveBuffer

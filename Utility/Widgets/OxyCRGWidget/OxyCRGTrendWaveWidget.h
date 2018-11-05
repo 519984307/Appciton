@@ -53,6 +53,12 @@ public:
      */
     void setRulerValue(int valueHigh, int valueLow);
 
+    /**
+     * @brief setDataRate
+     * @param rate
+     */
+    virtual void setDataRate(int rate);
+
 private slots:
     /**
      * @brief onTimeOutExec
@@ -71,12 +77,6 @@ protected:
 
     /* reimplement */
     void resizeEvent(QResizeEvent *e);
-
-    /**
-     * @brief setDataRate
-     * @param rate
-     */
-    virtual void setDataRate(int rate);
 
     OxyCRGTrendWaveWidgetPrivate *const d_ptr;
 };
