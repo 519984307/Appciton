@@ -104,6 +104,14 @@ public:
     void setUnit(UnitType u);
     UnitType getUnit(void);
 
+signals:
+    /**
+     * @brief updateTempName 更新温度通道名称信号
+     * @param channel 通道号
+     * @param TEMPChannelType 通道类型
+     */
+    void updateTempName(TEMPChannelIndex channel, TEMPChannelType type);
+
 private slots:
     void onPaletteChanged(ParamID id);
 

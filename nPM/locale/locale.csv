@@ -221,7 +221,8 @@ T2,T2,T2
 TD,ΔT,ΔT
 ConfigEditTEMPMenu,TEMP,TEMP
 ConfigEditTEMPMenuDesc,TEMP,TEMP
-TEMPMenu,TEMP,TEMP
+TEMPMenuContent,TEMP,TEMP
+TEMPMenuContentDesc,TEMP,TEMP
 TEMPUnit,单位,Unit
 TEMP1Low,体温1低,TEMP1 Low
 TEMP1High,体温1高,TEMP1 High

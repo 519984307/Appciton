@@ -28,7 +28,20 @@ void TEMPTrendWidget::_releaseHandle(IWidget *iWidget)
 {
     Q_UNUSED(iWidget)
     MeasureSettingWindow *p = MeasureSettingWindow::getInstance();
-    p->popup(trs("TEMPMenu"));
+    p->popup(trs("TEMPMenuContent"));
+}
+
+void TEMPTrendWidget::onTempNameUpdate(TEMPChannelIndex channel, TEMPChannelType type)
+{
+    if (channel == TEMP_CHANNEL_ONE)
+    {
+       _t1Name->setText(trs(TEMPSymbol::convert(type)));
+    }
+    else
+    {
+       _t2Name->setText(trs(TEMPSymbol::convert(type)));
+    }
+    update();
 }
 
 /**************************************************************************************************
@@ -365,6 +378,10 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
+
+    // 增加更新温度通道名称链接-- 暂时屏蔽温度通道名称更改链接
+//    connect(&tempParam, SIGNAL(updateTempName(TEMPChannelIndex,TEMPChannelType)),
+//            this, SLOT(onTempNameUpdate(TEMPChannelIndex,TEMPChannelType)));
 }
 
 /**************************************************************************************************

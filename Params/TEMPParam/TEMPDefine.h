@@ -49,7 +49,18 @@ enum TEMPLimitAlarmType
     TEMP_LIMIT_ALARM_NR
 };
 
+/**
+ * @brief The TEMPChannelIndex enum
+ */
+enum TEMPChannelIndex
+{
+    TEMP_CHANNEL_ONE,
+    TEMP_CHANNEL_TWO,
+};
 
+/**
+ * @brief The TEMPChannelType enum
+ */
 enum TEMPChannelType
 {
     TEMP_CHANNEL_T_ONE = 0,

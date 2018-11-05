@@ -496,7 +496,7 @@ SOURCES +=                                                                      
     Params/TEMPParam/TEMPParam.cpp                                              \
     Params/TEMPParam/TEMPAlarm.cpp                                              \
     Params/TEMPParam/TEMPWidgets/TEMPTrendWidget.cpp                            \
-    Params/TEMPParam/TEMPWidgets/TEMPMenu.cpp                                   \
+    Params/TEMPParam/TEMPWidgets/TEMPMenuContent.cpp                            \
     Params/RESPParam/RESPAlarm.cpp                                              \
     Params/RESPParam/RESPDupAlarm.cpp                                           \
     Params/RESPParam/RESPDupParam.cpp                                           \
@@ -1024,7 +1024,7 @@ HEADERS +=                                                                      
     Params/TEMPParam/TEMPParam.h                                                \
     Params/TEMPParam/TEMPAlarm.h                                                \
     Params/TEMPParam/TEMPWidgets/TEMPTrendWidget.h                              \
-    Params/TEMPParam/TEMPWidgets/TEMPMenu.h                                     \
+    Params/TEMPParam/TEMPWidgets/TEMPMenuContent.h                              \
     Params/TEMPParam/TEMPProviderIFace.h                                        \
     Params/RESPParam/RESPAlarm.h                                                \
     Params/RESPParam/RESPDefine.h                                               \

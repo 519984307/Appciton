@@ -12,6 +12,7 @@
 #pragma once
 #include "TrendWidget.h"
 #include <QLabel>
+#include "TEMPDefine.h"
 
 class TEMPTrendWidget: public TrendWidget
 {
@@ -43,6 +44,13 @@ protected:
 
 private slots:
     void _releaseHandle(IWidget *);
+
+    /**
+     * @brief onTempNameUpdate
+     * @param channel 通道号
+     * @param TEMPChannelType 通道类型
+     */
+    void onTempNameUpdate(TEMPChannelIndex channel, TEMPChannelType type);
 
 private:
     // 温度组

@@ -7,7 +7,7 @@
  **
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/24
  **/
-#include "TEMPMenu.h"
+#include "TEMPMenuContent.h"
 #include "ComboBox.h"
 #include <QLabel>
 #include <QGridLayout>
@@ -18,7 +18,7 @@
 #include "Button.h"
 #include "AlarmLimitWindow.h"
 
-class TEMPMenuPrivate
+class TEMPMenuContentPrivate
 {
 public:
     enum MenuItem
@@ -28,7 +28,7 @@ public:
         ITEM_CBO_ENABLE,
     };
 
-    TEMPMenuPrivate()
+    TEMPMenuContentPrivate()
         : tempChannelOne(NULL),
           tempChannelTwo(NULL),
           tempChannelDisable(NULL)
@@ -46,19 +46,19 @@ public:
 
 
 
-TEMPMenu::TEMPMenu()
-    : MenuContent(trs("TEMPMenu"),
-                  trs("TEMPMenuDesc")),
-      d_ptr(new TEMPMenuPrivate)
+TEMPMenuContent::TEMPMenuContent()
+    : MenuContent(trs("TEMPMenuContent"),
+                  trs("TEMPMenuContentDesc")),
+      d_ptr(new TEMPMenuContentPrivate)
 {
 }
 
-TEMPMenu::~TEMPMenu()
+TEMPMenuContent::~TEMPMenuContent()
 {
     delete d_ptr;
 }
 
-void TEMPMenu::layoutExec()
+void TEMPMenuContent::layoutExec()
 {
     QGridLayout *glayout = new QGridLayout(this);
     glayout->setMargin(10);
@@ -72,6 +72,8 @@ void TEMPMenu::layoutExec()
     label = new QLabel(trs("TEMPChannelOne"));
     glayout->addWidget(label, layoutIndex, 0);
     combo = new ComboBox;
+    // 暂时失能通道类型选择
+    combo->setEnabled(false);
     for (int i = 0; i < TEMP_CHANNEL_NR; i++)
     {
         combo->addItem(trs(TEMPSymbol::convert(TEMPChannelType(i))));
@@ -87,6 +89,8 @@ void TEMPMenu::layoutExec()
     label = new QLabel(trs("TEMPChannelTwo"));
     glayout->addWidget(label, layoutIndex, 0);
     combo = new ComboBox;
+    // 暂时失能通道类型选择
+    combo->setEnabled(false);
     for (int i = 0; i < TEMP_CHANNEL_NR; i++)
     {
         QString str = TEMPSymbol::convert(TEMPChannelType(i));
@@ -129,16 +133,19 @@ void TEMPMenu::layoutExec()
     layoutIndex++;
 
     glayout->setRowStretch(layoutIndex , 1);
+
+    // 添加更新温度通道名称信号链接
+//    connect(this, SIGNAL(updateTempName(TEMPChannelIndex,TEMPChannelType)),
+//            &tempParam, SIGNAL(updateTempName(TEMPChannelIndex,TEMPChannelType)));
 }
 
-void TEMPMenu::readyShow()
+void TEMPMenuContent::readyShow()
 {
     d_ptr->loadOption();
 }
 
-void TEMPMenu::onComboIndexUpdated(int index)
+void TEMPMenuContent::onComboIndexUpdated(int index)
 {
-    Q_UNUSED(index)
     ComboBox *combo = qobject_cast<ComboBox *>(sender());
 
     if (!combo)
@@ -146,14 +153,18 @@ void TEMPMenu::onComboIndexUpdated(int index)
         return;
     }
 
-    int item = combo->property("item").toInt();
+    int item = combo->property("Item").toInt();
     switch (item)
     {
-    case TEMPMenuPrivate::ITEM_CBO_ONE:
+    case TEMPMenuContentPrivate::ITEM_CBO_ONE:
+        emit updateTempName(TEMP_CHANNEL_ONE,
+                                static_cast<TEMPChannelType>(index));
         break;
-    case TEMPMenuPrivate::ITEM_CBO_TWO:
+    case TEMPMenuContentPrivate::ITEM_CBO_TWO:
+        emit updateTempName(TEMP_CHANNEL_TWO,
+                                static_cast<TEMPChannelType>(index));
         break;
-    case TEMPMenuPrivate::ITEM_CBO_ENABLE:
+    case TEMPMenuContentPrivate::ITEM_CBO_ENABLE:
         if (index)
         {
             tempParam.setErrorDisable();
@@ -166,14 +177,14 @@ void TEMPMenu::onComboIndexUpdated(int index)
     }
 }
 
-void TEMPMenu::onAlarmBtnReleased()
+void TEMPMenuContent::onAlarmBtnReleased()
 {
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_T1, true);
     AlarmLimitWindow w(subParamName);
     windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }
 
-void TEMPMenuPrivate::loadOption()
+void TEMPMenuContentPrivate::loadOption()
 {
     if (!tempParam.getErrorDisable())
     {
