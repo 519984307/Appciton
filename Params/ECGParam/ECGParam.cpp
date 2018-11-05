@@ -1562,6 +1562,7 @@ void ECGParam::autoSetCalcLead(void)
     }
 
     setCalcLead(leads[index]);
+    currentConfig.setNumValue("ECG|Ecg1Wave", static_cast<int>(leads[index]));
     if (NULL != _waveWidget[calcLead] && NULL != _waveWidget[leads[index]])
     {
         layoutManager.updateLayout();
