@@ -179,6 +179,9 @@ public:
     OxyCRGInterval interval;
     float pointGap;              // gap between two data point
     float pointGapSumFraction;   // the point gap sum 's fraction part
+
+private:
+    OxyCRGTrendWaveWidgetPrivate(const OxyCRGTrendWaveWidgetPrivate&other); // make the cppckeck stop complain
 };
 
 

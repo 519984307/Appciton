@@ -32,6 +32,7 @@
 #include "OxyCRGRESPWaveWidget.h"
 #include "OxyCRGRRHRWaveWidget.h"
 #include "LayoutManager.h"
+#include "OxyCRGTrendWaveWidget_p.h"
 #include <QTimer>
 
 

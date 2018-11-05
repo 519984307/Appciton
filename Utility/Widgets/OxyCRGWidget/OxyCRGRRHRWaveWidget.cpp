@@ -9,6 +9,7 @@
  **/
 
 #include "OxyCRGRRHRWaveWidget.h"
+#include "OxyCRGTrendWaveWidget_p.h"
 #include "RingBuff.h"
 #include <QPainterPath>
 #include <QPainter>
@@ -49,6 +50,13 @@ public:
         if (rrWaveBuffer)
         {
             delete rrWaveBuffer;
+            rrWaveBuffer = NULL;
+        }
+
+        if (rrDataBuf)
+        {
+            delete rrDataBuf;
+            rrDataBuf = NULL;
         }
     }
 
@@ -126,9 +134,6 @@ void OxyCRGRRHRWaveWidgetPrivate::init()
     valueHigh = strValueHigh.toInt();
     rulerHigh = valueHigh;
     rulerLow = valueLow;
-    // 申请存储hr波形数据堆空间
-    int dataLen = waveDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
-    dataBuf = new RingBuff<short>(dataLen);
     name = "HR_PR";
 
     int index = 0;

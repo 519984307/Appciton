@@ -10,6 +10,7 @@
 
 
 #include "OxyCRGCO2WaveWidget.h"
+#include "OxyCRGTrendWaveWidget_p.h"
 #include <QPainter>
 #include "ColorManager.h"
 #include "ParamInfo.h"
@@ -49,9 +50,6 @@ void OxyCRGCO2WaveWidgetPrivate::init()
     valueHigh = strValueHigh.toInt();
     rulerHigh = valueHigh;
     rulerLow = valueLow;
-
-    int dataLen = waveDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
-    dataBuf = new RingBuff<short>(dataLen);
     name = "CO2";
 }
 
@@ -65,9 +63,6 @@ OxyCRGCO2WaveWidget::OxyCRGCO2WaveWidget(const QString &waveName)
 
 OxyCRGCO2WaveWidget::~OxyCRGCO2WaveWidget()
 {
-    Q_D(OxyCRGCO2WaveWidget);
-    delete d->dataBuf;
-    d->dataBuf = NULL;
 }
 
 void OxyCRGCO2WaveWidget::paintEvent(QPaintEvent *e)

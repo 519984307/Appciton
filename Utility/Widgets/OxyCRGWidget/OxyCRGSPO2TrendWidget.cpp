@@ -10,6 +10,7 @@
 
 
 #include "OxyCRGSPO2TrendWidget.h"
+#include "OxyCRGTrendWaveWidget_p.h"
 #include <QPainter>
 #include "ColorManager.h"
 #include "ParamInfo.h"
@@ -45,8 +46,6 @@ void OxyCRGSPO2TrendWidgetPrivate::init()
     rulerHigh = valueHigh;
     rulerLow = valueLow;
 
-    int dataLen = waveDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
-    dataBuf = new RingBuff<short>(dataLen);
     name = "SPO2";
 }
 

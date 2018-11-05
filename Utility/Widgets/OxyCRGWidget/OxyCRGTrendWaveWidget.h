@@ -12,8 +12,8 @@
 #include "IWidget.h"
 #include "OxyCRGDefine.h"
 #include "RingBuff.h"
-#include "OxyCRGTrendWaveWidget_p.h"
 
+class OxyCRGTrendWaveWidgetPrivate;
 class OxyCRGTrendWaveWidget : public IWidget
 {
     Q_OBJECT

@@ -9,6 +9,7 @@
  **/
 
 #include "OxyCRGTrendWaveWidget.h"
+#include "OxyCRGTrendWaveWidget_p.h"
 #include <QPainter>
 #include <QPainterPath>
 #include "BaseDefine.h"
@@ -36,6 +37,9 @@ OxyCRGTrendWaveWidgetPrivate::OxyCRGTrendWaveWidgetPrivate()
     int index = OxyCRG_Interval_2;
     currentConfig.getNumValue("OxyCRG|Interval", index);
     interval = static_cast<OxyCRGInterval>(index);
+
+    int dataLen = waveDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
+    dataBuf = new RingBuff<short>(dataLen);
 }
 
 int OxyCRGTrendWaveWidgetPrivate::getIntervalSeconds(OxyCRGInterval interval)
@@ -181,6 +185,13 @@ OxyCRGTrendWaveWidgetPrivate::~OxyCRGTrendWaveWidgetPrivate()
     if (waveBuffer)
     {
         delete waveBuffer;
+        waveBuffer = NULL;
+    }
+
+    if (dataBuf)
+    {
+        delete dataBuf;
+        dataBuf = NULL;
     }
 }
 
