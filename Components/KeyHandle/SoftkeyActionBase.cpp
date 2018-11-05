@@ -51,7 +51,7 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", trs("ECGCalcLead"), "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
     KeyActionDesc("", trs("AlarmSettingMenu"), "limitSet.png", SoftkeyActionBase::limitMenu),
     KeyActionDesc("", trs("CodeMarker"), "CodeMarker.png", SoftkeyActionBase::codeMarker),
-    KeyActionDesc("", trs("TrendGraph"), "Summary.png", SoftkeyActionBase::summaryReview),
+    KeyActionDesc("", trs("TrendGraph"), "Summary1.png", SoftkeyActionBase::summaryReview),
     KeyActionDesc("", trs("eventReview"), "Summary.png", SoftkeyActionBase::eventReview),
     KeyActionDesc("", trs("ChooseScreen"), "screenSwitch.png", SoftkeyActionBase::switchSystemMode),
     KeyActionDesc("", trs("ScreenSetup"), "interface.png",   SoftkeyActionBase::WindowLayout),
@@ -292,7 +292,7 @@ void SoftkeyActionBase::CO2Handle(bool isPressed)
     if (co2Mode == CO2_MODE_STANDBY)
     {
         co2Mode = CO2_MODE_MEASURE;
-        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("%1/%2").arg(ICON_PATH).arg("measure.png");
+        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("measure.png");
         _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Measure");
 
         // TODO: CO2待机
@@ -300,7 +300,7 @@ void SoftkeyActionBase::CO2Handle(bool isPressed)
     else
     {
         co2Mode = CO2_MODE_STANDBY;
-        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("%1/%2").arg(ICON_PATH).arg("standby.png");
+        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("standby.png");
         _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Standby");
 
         // TODO: CO2测量
