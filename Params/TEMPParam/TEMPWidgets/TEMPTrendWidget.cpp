@@ -234,26 +234,20 @@ void TEMPTrendWidget::showValue(void)
 
         if (_t1Alarm)
         {
-            showAlarmStatus(_t1Value, psrc);
+            showAlarmStatus(_t1Value);
             showAlarmParamLimit(_t1Value, _t1Str, psrc);
         }
 
         if (_t2Alarm)
         {
-            showAlarmStatus(_t2Value, psrc);
+            showAlarmStatus(_t2Value);
         }
 
         if (_tdAlarm)
         {
-            showAlarmStatus(_tdValue, psrc);
+            showAlarmStatus(_tdValue);
         }
-    }
-    else
-    {
-        showNormalParamLimit(psrc);
-        showNormalStatus(_t1Value, psrc);
-        showNormalStatus(_t2Value, psrc);
-        showNormalStatus(_tdValue, psrc);
+        restoreNormalStatusLater();
     }
 }
 
@@ -395,4 +389,14 @@ QList<SubParamID> TEMPTrendWidget::getShortTrendSubParams() const
     list.append(SUB_PARAM_T1);
     list.append(SUB_PARAM_T2);
     return list;
+}
+
+void TEMPTrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
+    psrc = normalPalette(psrc);
+    showNormalParamLimit(psrc);
+    showNormalStatus(_t1Value, psrc);
+    showNormalStatus(_t2Value, psrc);
+    showNormalStatus(_tdValue, psrc);
 }

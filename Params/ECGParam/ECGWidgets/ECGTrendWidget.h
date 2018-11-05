@@ -39,6 +39,8 @@ public:
     ~ECGTrendWidget();
 
     QList<SubParamID> getShortTrendSubParams() const;
+public:
+    virtual void doRestoreNormalStatus();
 
 protected:
     void showEvent(QShowEvent *e);

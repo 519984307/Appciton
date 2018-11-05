@@ -215,7 +215,7 @@ void IBPTrendWidget::showValue()
 
         if (_sysAlarm)
         {
-            showAlarmStatus(_sysValue, psrc);
+            showAlarmStatus(_sysValue);
             switch (_entitle)
             {
             case IBP_PRESSURE_ART:
@@ -231,13 +231,13 @@ void IBPTrendWidget::showValue()
 
         if (_diaAlarm)
         {
-            showAlarmStatus(_diaValue, psrc);
+            showAlarmStatus(_diaValue);
         }
 
         if (_mapAlarm)
         {
-            showAlarmStatus(_mapValue, psrc);
-            showAlarmStatus(_veinValue, psrc);
+            showAlarmStatus(_mapValue);
+            showAlarmStatus(_veinValue);
             switch (_entitle)
             {
             case IBP_PRESSURE_ICP:
@@ -250,15 +250,7 @@ void IBPTrendWidget::showValue()
                 break;
             }
         }
-    }
-    else
-    {
-        showNormalParamLimit(psrc);
-        showNormalStatus(_sysValue, psrc);
-        showNormalStatus(_diaValue, psrc);
-        showNormalStatus(_mapValue, psrc);
-        showNormalStatus(_veinValue, psrc);
-        showNormalStatus(_ibpValue, psrc);
+        restoreNormalStatusLater();
     }
 }
 
@@ -396,6 +388,18 @@ QList<SubParamID> IBPTrendWidget::getShortTrendSubParams() const
         break;
     }
     return list;
+}
+
+void IBPTrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
+    psrc = normalPalette(psrc);
+    showNormalParamLimit(psrc);
+    showNormalStatus(_sysValue, psrc);
+    showNormalStatus(_diaValue, psrc);
+    showNormalStatus(_mapValue, psrc);
+    showNormalStatus(_veinValue, psrc);
+    showNormalStatus(_ibpValue, psrc);
 }
 
 /**************************************************************************************************

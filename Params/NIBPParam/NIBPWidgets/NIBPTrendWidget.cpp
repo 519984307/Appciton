@@ -63,26 +63,32 @@ void NIBPTrendWidget::setResults(int16_t sys, int16_t dia, int16_t map, unsigned
         _sysString = InvStr();
         _diaString = InvStr();
         _mapString = InvStr();
-        return;
-    }
-
-    UnitType unit = nibpParam.getUnit();
-    if (unit == UNIT_MMHG)
-    {
-        _sysString = QString::number(sys);
-        _diaString = QString::number(dia);
-        _mapString = "(" + QString::number(map) + ")";
     }
     else
     {
-        _sysString = Unit::convert(unit, UNIT_MMHG, sys);
-        _diaString = Unit::convert(unit, UNIT_MMHG, dia);
-        _mapString = Unit::convert(unit, UNIT_MMHG, map);
+        UnitType unit = nibpParam.getUnit();
+        if (unit == UNIT_MMHG)
+        {
+            _sysString = QString::number(sys);
+            _diaString = QString::number(dia);
+            _mapString = "(" + QString::number(map) + ")";
+        }
+        else
+        {
+            _sysString = Unit::convert(unit, UNIT_MMHG, sys);
+            _diaString = Unit::convert(unit, UNIT_MMHG, dia);
+            _mapString = Unit::convert(unit, UNIT_MMHG, map);
+        }
+        showValue();
+        _effective = true;
+        setShowStacked(0);//显示测量结果
     }
 
-    showValue();
-    _effective = true;
-    setShowStacked(0);//显示测量结果
+    _sysValue->setText(_sysString);
+    _diaValue->setText(_diaString);
+    _mapValue->setText(_mapString);
+    _pressureValue->setText(_pressureString);
+    _lastMeasureCount->setText(_measureTime);
 }
 
 void NIBPTrendWidget::updateLimit()
@@ -241,35 +247,21 @@ void NIBPTrendWidget::showValue(void)
 
         if (_sysAlarm)
         {
-            showAlarmStatus(_sysValue, psrc);
+            showAlarmStatus(_sysValue);
             showAlarmParamLimit(_sysValue, _sysString, psrc);
         }
 
         if (_diaAlarm)
         {
-            showAlarmStatus(_diaValue, psrc);
+            showAlarmStatus(_diaValue);
         }
 
         if (_mapAlarm)
         {
-            showAlarmStatus(_mapValue, psrc);
+            showAlarmStatus(_mapValue);
         }
+        restoreNormalStatusLater();
     }
-    else
-    {
-        showNormalParamLimit(psrc);
-        showNormalStatus(_sysValue, psrc);
-        showNormalStatus(_diaValue, psrc);
-        showNormalStatus(_mapValue, psrc);
-        showNormalStatus(_nibpValue, psrc);
-        showNormalStatus(_pressureValue, psrc);
-        showNormalStatus(_lastMeasureCount, psrc);
-    }
-    _sysValue->setText(_sysString);
-    _diaValue->setText(_diaString);
-    _mapValue->setText(_mapString);
-    _pressureValue->setText(_pressureString);
-    _lastMeasureCount->setText(_measureTime);
 }
 
 /**************************************************************************************************
@@ -534,4 +526,17 @@ QList<SubParamID> NIBPTrendWidget::getShortTrendSubParams() const
     QList<SubParamID> list;
     list << SUB_PARAM_NIBP_SYS << SUB_PARAM_NIBP_DIA << SUB_PARAM_NIBP_MAP;
     return list;
+}
+
+void NIBPTrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
+    psrc = normalPalette(psrc);
+    showNormalParamLimit(psrc);
+    showNormalStatus(_sysValue, psrc);
+    showNormalStatus(_diaValue, psrc);
+    showNormalStatus(_mapValue, psrc);
+    showNormalStatus(_nibpValue, psrc);
+    showNormalStatus(_pressureValue, psrc);
+    showNormalStatus(_lastMeasureCount, psrc);
 }

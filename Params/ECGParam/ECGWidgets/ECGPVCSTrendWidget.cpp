@@ -42,6 +42,7 @@ void ECGPVCSTrendWidget::setPVCSValue(int16_t pvcs)
     {
         _pvcsString = QString::number(pvcs);
     }
+    _pvcsValue->setText(_pvcsString);
 }
 
 /**************************************************************************************************
@@ -59,18 +60,11 @@ void ECGPVCSTrendWidget::isAlarm(bool isAlarm)
  *************************************************************************************************/
 void ECGPVCSTrendWidget::showValue(void)
 {
-    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-    psrc = normalPalette(psrc);
     if (_isAlarm)
     {
-        showAlarmStatus(_pvcsValue, psrc);
+        showAlarmStatus(_pvcsValue);
+        restoreNormalStatusLater();
     }
-    else
-    {
-        showNormalStatus(_pvcsValue, psrc);
-    }
-
-    _pvcsValue->setText(_pvcsString);
 }
 
 /**************************************************************************************************
@@ -131,4 +125,11 @@ ECGPVCSTrendWidget::ECGPVCSTrendWidget() : TrendWidget("ECGPVCSTrendWidget")
  *************************************************************************************************/
 ECGPVCSTrendWidget::~ECGPVCSTrendWidget()
 {
+}
+
+void ECGPVCSTrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
+    psrc = normalPalette(psrc);
+    showNormalStatus(_pvcsValue, psrc);
 }

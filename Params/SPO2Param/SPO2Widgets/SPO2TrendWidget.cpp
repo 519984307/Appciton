@@ -48,6 +48,7 @@ void SPO2TrendWidget::setSPO2Value(int16_t spo2)
     {
         _spo2String = InvStr();
     }
+    _spo2Value->setText(_spo2String);
 }
 
 void SPO2TrendWidget::updateLimit()
@@ -114,18 +115,11 @@ void SPO2TrendWidget::showValue(void)
     psrc = normalPalette(psrc);
     if (_isAlarm)
     {
-        showAlarmStatus(_spo2Bar, psrc);
-        showAlarmStatus(_spo2Value, psrc);
+        showAlarmStatus(_spo2Bar);
+        showAlarmStatus(_spo2Value);
         showAlarmParamLimit(_spo2Value, _spo2String, psrc);
+        restoreNormalStatusLater();
     }
-    else
-    {
-        showNormalParamLimit(psrc);
-        showNormalStatus(_spo2Bar, psrc);
-        showNormalStatus(_spo2Value, psrc);
-    }
-
-    _spo2Value->setText(_spo2String);
 }
 
 /**************************************************************************************************
@@ -215,4 +209,13 @@ QList<SubParamID> SPO2TrendWidget::getShortTrendSubParams() const
    QList<SubParamID> list;
    list.append(SUB_PARAM_SPO2);
    return list;
+}
+
+void SPO2TrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
+    psrc = normalPalette(psrc);
+    showNormalParamLimit(psrc);
+    showNormalStatus(_spo2Bar, psrc);
+    showNormalStatus(_spo2Value, psrc);
 }
