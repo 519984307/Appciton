@@ -1083,8 +1083,8 @@ CodeMarker27,Digoxin,Paralytic
 CodeMarker28,Vasopr,Nitro
 CodeMarker29,Dextrose,Lasix
 CodeMarker30,Paralytic,Calcium
-CodeMarker31,Albuterol,
-CodeMarker32,Nitro,
+CodeMarker31,Albuterol,Albuterol
+CodeMarker32,Nitro,Nitro
 DoseCalculation,剂量计算,Dose Calculation
 DrugName,药物名称,Drug Name
 DrugTotal,药物总量,Drug Total
