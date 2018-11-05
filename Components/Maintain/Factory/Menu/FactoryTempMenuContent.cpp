@@ -25,11 +25,33 @@
 #define CALIBRATION_INTERVAL_TIME              (100)
 #define TIMEOUT_WAIT_NUMBER                    (5000 / CALIBRATION_INTERVAL_TIME)
 
+enum TempCalibrateValue
+{
+    TEMP_CALIBRATE_0,
+    TEMP_CALIBRATE_5,
+    TEMP_CALIBRATE_10,
+    TEMP_CALIBRATE_15,
+    TEMP_CALIBRATE_20,
+    TEMP_CALIBRATE_25,
+    TEMP_CALIBRATE_30,
+    TEMP_CALIBRATE_35,
+    TEMP_CALIBRATE_40,
+    TEMP_CALIBRATE_45,
+    TEMP_CALIBRATE_50,
+    TEMP_CALIBRATE_NR,
+};
+
+enum TempCalibrateChannel
+{
+    TEMP_CALIBRATE_CHANNEL_1,
+    TEMP_CALIBRATE_CHANNEL_2,
+};
+
 class FactoryTempMenuContentPrivate
 {
 public:
-    static QString btnStr[11];
-    static QString labelStr[11];
+    static QString btnStr[TEMP_CALIBRATE_NR];
+    static QString labelStr[TEMP_CALIBRATE_NR];
 
     FactoryTempMenuContentPrivate();
 
@@ -40,8 +62,8 @@ public:
     QStackedWidget *stackedwidget;
     ComboBox *channel;
 
-    Button *lbtn[11];
-    QLabel *calibrateResult[11];
+    Button *lbtn[TEMP_CALIBRATE_NR];
+    QLabel *calibrateResult[TEMP_CALIBRATE_NR];
 
     int calibrationTimerId;
     int timeoutNum;
@@ -61,7 +83,7 @@ FactoryTempMenuContentPrivate::FactoryTempMenuContentPrivate()
       calibrateChannel(0),
       calibrateValue(0)
 {
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < TEMP_CALIBRATE_NR; i++)
     {
         lbtn[i] = NULL;
         calibrateResult[i] = NULL;
@@ -152,7 +174,7 @@ void FactoryTempMenuContent::layoutExec()
     d_ptr->channel = combo;
     layout->addWidget(combo, 1, 1);
 
-    for (int i = 0; i < 11; i++)
+    for (int i = 0; i < TEMP_CALIBRATE_NR; i++)
     {
         label = new QLabel(trs(d_ptr->labelStr[i]));
         layout->addWidget(label, 2 + i, 0);
@@ -211,7 +233,7 @@ void FactoryTempMenuContent::readyShow()
     d_ptr->calibrateChannel = 0;
     d_ptr->tempChannel->setText(trs("TEMP1"));
 
-    for (int i = 0; i < 11; ++i)
+    for (int i = 0; i < TEMP_CALIBRATE_NR; ++i)
     {
         d_ptr->calibrateResult[i]->setText(trs("WaitingCalibration"));
     }
@@ -248,7 +270,7 @@ void FactoryTempMenuContent::showError(QString str)
 void FactoryTempMenuContent::onChannelReleased(int channel)
 {
     d_ptr->calibrateChannel = channel;
-    if (channel == 0)
+    if (channel == TEMP_CALIBRATE_CHANNEL_1)
     {
         d_ptr->tempChannel->setText(trs("TEMP1"));
     }
@@ -256,7 +278,7 @@ void FactoryTempMenuContent::onChannelReleased(int channel)
     {
         d_ptr->tempChannel->setText(trs("TEMP2"));
     }
-    for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < TEMP_CALIBRATE_NR; ++i)
     {
         d_ptr->calibrateResult[i]->setPixmap(QPixmap::fromImage(QImage()));
     }
