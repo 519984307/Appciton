@@ -10,13 +10,15 @@
 #pragma once
 
 #include "MenuContent.h"
-class TEMPMenuPrivate;
-class TEMPMenu : public MenuContent
+#include "TEMPDefine.h"
+
+class TEMPMenuContentPrivate;
+class TEMPMenuContent : public MenuContent
 {
     Q_OBJECT
 public:
-    TEMPMenu();
-    ~TEMPMenu();
+    TEMPMenuContent();
+    ~TEMPMenuContent();
     /**
      * @brief layoutExec
      */
@@ -25,6 +27,15 @@ public:
      * @brief readyShow
      */
     virtual void readyShow();
+
+signals:
+    /**
+     * @brief updateTempName 更新温度通道名称信号
+     * @param channel 通道号
+     * @param TEMPChannelType 通道类型
+     */
+    void updateTempName(TEMPChannelIndex channel, TEMPChannelType type);
+
 private slots:
     /**
      * @brief onComboIndexUpdated
@@ -37,6 +48,6 @@ private slots:
     void onAlarmBtnReleased(void);
 
 private:
-    TEMPMenuPrivate *const d_ptr;
+    TEMPMenuContentPrivate *const d_ptr;
 };
 
