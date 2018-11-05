@@ -10,6 +10,7 @@
 
 #include "FactoryMaintainMenuWindow.h"
 #include "MachineConfigModuleContent.h"
+#include "FactoryVersionInfo.h"
 #include "FactoryDataRecordContent.h"
 #include "FactorySystemInfoMenuContent.h"
 #include "FactoryImportExportMenuContent.h"
@@ -26,6 +27,7 @@ FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
     {
         instance = new FactoryMaintainMenuWindow;
         instance->addMenuContent(new MachineConfigModuleContent);
+        instance->addMenuContent(new FactoryVersionInfo);
         instance->addMenuContent(new FactoryDataRecordContent);
         instance->addMenuContent(new FactorySystemInfoMenuContent);
 //        instance->addMenuContent(new FactoryImportExportMenuContent);

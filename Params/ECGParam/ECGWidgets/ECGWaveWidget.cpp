@@ -841,7 +841,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
 
     _filterMode = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _filterMode->setFont(fontManager.textFont(fontSize));
-    _filterMode->setFixedSize(100, fontH);
+    _filterMode->setFixedSize(120, fontH);
     _filterMode->setFocusPolicy(Qt::NoFocus);
     addItem(_filterMode);
     connect(&ecgParam, SIGNAL(updateFilterMode()), this, SLOT(_updateFilterMode()));

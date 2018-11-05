@@ -1412,6 +1412,8 @@ FactoryDataRecordDesc,数据记录,Data Record
 PDCommData,PD 通信数据,PD Comm Data
 TEMPCalibrateDesc,温度校准,TEMP Calibrate
 SystemInfoSettingDesc,系统信息,System Info
+FactoryVersionInfo,版本信息,Version Info
+FactoryVersionInfoDesc,版本信息,Version Info
 SelectStarterLogo,选择开始菜单,Select Starter Logo
 WaitingCalibration,等待校准,Waiting Calibration
 Calibrating,正在校准,

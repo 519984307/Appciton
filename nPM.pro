@@ -389,6 +389,7 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.cpp                   \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.cpp        \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.cpp          \
+    Components/Maintain/FactoryMaintain/FactoryVersionInfo.cpp                  \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenuContent.cpp          \
     Components/Maintain/FactoryMaintain/NIBPCalibrateContent.cpp                \
     Components/Maintain/FactoryMaintain/NIBPManometerContent.cpp                \
@@ -890,6 +891,7 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.h                     \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.h          \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.h            \
+    Components/Maintain/FactoryMaintain/FactoryVersionInfo.h                    \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenuContent.h            \
     Components/Maintain/FactoryMaintain/NIBPCalibrateContent.h                  \
     Components/Maintain/FactoryMaintain/NIBPManometerContent.h                  \
