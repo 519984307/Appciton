@@ -704,23 +704,22 @@ void LayoutManagerPrivate::performTrendLayout()
     leftLayout->setContentsMargins(0, 0, 0, 0);
     QWidget *waveContainer = createContainter();
     QWidget *leftParamContainer = createContainter();
-    leftLayout->addWidget(waveContainer);
-    leftLayout->addWidget(leftParamContainer);
 
-
+    QHBoxLayout *hLayout = new QHBoxLayout();
     ShortTrendContainer *trendContainer = qobject_cast<ShortTrendContainer *> (layoutWidgets["ShortTrendContainer"]);
     if (trendContainer)
     {
-        contentLayout->addWidget(trendContainer, 3);
-        contentLayout->addLayout(leftLayout, 5);
+        hLayout->addWidget(trendContainer, 3);
+        hLayout->addWidget(waveContainer, 5);
+        leftLayout->addLayout(hLayout);
+        leftLayout->addWidget(leftParamContainer);
         trendContainer->setVisible(true);
         trendContainer->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
         contentWidgets.append(trendContainer);
     }
-    else
-    {
-        contentLayout->addLayout(leftLayout, 8);
-    }
+
+    contentLayout->addLayout(leftLayout, 8);
+
     QWidget *rightParamContainer = createContainter();
     contentLayout->addWidget(rightParamContainer, 4);
 
@@ -815,7 +814,7 @@ void LayoutManagerPrivate::performTrendLayout()
     foreach(const TrendWidget *trend, rightTrendWidgets)
     {
         QList<SubParamID> subParams = trend->getShortTrendSubParams();
-        if (subParams.count())
+        if (subParams.count() && list.count() <= lastWaveRow)
         {
             list.append(subParams);
         }
