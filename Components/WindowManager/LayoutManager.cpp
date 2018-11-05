@@ -401,7 +401,8 @@ void LayoutManagerPrivate::performStandardLayout()
     // the wave container stretch
     leftLayout->setStretch(0, waveLayout->rowCount());
     // the let param container stretch
-    leftLayout->setStretch(1, leftParamLayout->rowCount());
+    if (leftParamLayout->count() != 0)
+        leftLayout->setStretch(1, leftParamLayout->rowCount());
 }
 
 void LayoutManagerPrivate::perform12LeadLayout()
@@ -510,7 +511,8 @@ void LayoutManagerPrivate::perform12LeadLayout()
     }
 
     vLayout->setStretch(0, lastWaveRow + 1);
-    vLayout->setStretch(1, leftParamLayout->rowCount());
+    if (leftParamLayout->count() != 0)
+        vLayout->setStretch(1, leftParamLayout->rowCount());
 }
 
 #define MAX_WIDGET_ROW_IN_OXYCRG_LAYOUT 3       // the maximum widget row can be displayed in the wave area while in the oxycrg layout
@@ -524,7 +526,6 @@ void LayoutManagerPrivate::performOxyCRGLayout()
     leftLayout->addWidget(waveContainer);
     if (oxyCRGWidget)
     {
-        contentWidgets.append(oxyCRGWidget);
         oxyCRGWidget->setVisible(true);
         oxyCRGWidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
         leftLayout->addWidget(oxyCRGWidget);
@@ -560,10 +561,15 @@ void LayoutManagerPrivate::performOxyCRGLayout()
 
     for (iter = layoutInfos.begin(); iter != layoutInfos.end(); ++iter)
     {
+        int row = iter.key();
+        if (row >= LAYOUT_MAX_WAVE_ROW_NUM && (contentWidgets.indexOf(oxyCRGWidget) == -1))
+        {
+            // find a suitable row to insert oxyCRGWidget
+            contentWidgets.append(oxyCRGWidget);
+        }
         LayoutRow::ConstIterator nodeIter = iter.value().constBegin();
         for (; nodeIter != iter.value().constEnd(); ++nodeIter)
         {
-            int row = iter.key();
             IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
             QWidget *qw = w;
             if (!qw)
@@ -625,8 +631,13 @@ void LayoutManagerPrivate::performOxyCRGLayout()
         }
     }
     leftLayout->setStretch(0, waveLayout->rowCount());
-    leftLayout->setStretch(1, insertRow - leftParamLayout->rowCount() - waveLayout->rowCount());
-    leftLayout->setStretch(2, leftParamLayout->rowCount());
+    int leftParamRowCount = 0;
+    if (leftParamLayout->count() != 0)
+    {
+        leftParamRowCount = leftParamLayout->rowCount();
+    }
+    leftLayout->setStretch(1, insertRow - leftParamRowCount - waveLayout->rowCount());
+    leftLayout->setStretch(2, leftParamRowCount);
 }
 
 void LayoutManagerPrivate::performBigFontLayout()
@@ -813,7 +824,8 @@ void LayoutManagerPrivate::performTrendLayout()
     leftLayout->setStretch(0, waveLayout->rowCount());
 
     // the let param container stretch
-    leftLayout->setStretch(1, leftParamLayout->rowCount());
+    if (leftParamLayout->count() != 0)
+        leftLayout->setStretch(1, leftParamLayout->rowCount());
 
     typedef QList<SubParamID> SubParamIDListType;
 
