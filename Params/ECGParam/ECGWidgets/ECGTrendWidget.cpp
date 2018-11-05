@@ -28,6 +28,7 @@
 #include "AlarmConfig.h"
 #include "ParamManager.h"
 #include "IConfig.h"
+#include "TimeDate.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -78,6 +79,7 @@ void ECGTrendWidget::setHRValue(int16_t hr, bool isHR)
     {
         _hrString = InvStr();
     }
+    _hrValue->setText(_hrString);
 }
 
 void ECGTrendWidget::updateLimit()
@@ -106,16 +108,10 @@ void ECGTrendWidget::showValue(void)
     psrc = normalPalette(psrc);
     if (_isAlarm)
     {
-        showAlarmStatus(_hrValue, psrc);
+        showAlarmStatus(_hrValue);
         showAlarmParamLimit(_hrValue, _hrString, psrc);
+        restoreNormalStatusLater();
     }
-    else
-    {
-        showNormalParamLimit(psrc);
-        showNormalStatus(_hrValue, psrc);
-    }
-
-    _hrValue->setText(_hrString);
 }
 
 /**************************************************************************************************
@@ -236,4 +232,12 @@ QList<SubParamID> ECGTrendWidget::getShortTrendSubParams() const
     QList<SubParamID> list;
     list.append(SUB_PARAM_HR_PR);
     return list;
+}
+
+void ECGTrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
+    psrc = normalPalette(psrc);
+    showNormalParamLimit(psrc);
+    showNormalStatus(_hrValue, psrc);
 }

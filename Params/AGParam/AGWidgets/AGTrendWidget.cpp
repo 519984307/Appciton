@@ -161,27 +161,16 @@ void AGTrendWidget::showValue()
 
         if (_etAlarm)
         {
-            showAlarmStatus(_etValue, psrc);
+            showAlarmStatus(_etValue);
             showAlarmParamLimit(_etValue, _etStr, psrc);
         }
 
         if (_fiAlarm)
         {
-            showAlarmStatus(_fiValue, psrc, false);
+            showAlarmStatus(_fiValue);
         }
-    }
-    else
-    {
-        showNormalParamLimit(psrc);
-        showNormalStatus(_etValue, psrc);
-        showNormalStatus(_fiValue, psrc);
-    }
 
-    _etValue->setText(_etStr);
-
-    if (!_fiValue->isHidden())
-    {
-        _fiValue->setText(_fiStr);
+        restoreNormalStatusLater();
     }
 }
 
@@ -265,6 +254,15 @@ QList<SubParamID> AGTrendWidget::getShortTrendSubParams() const
         break;
     }
     return list;
+}
+
+void AGTrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
+    psrc = normalPalette(psrc);
+    showNormalParamLimit(psrc);
+    showNormalStatus(_etValue, psrc);
+    showNormalStatus(_fiValue, psrc);
 }
 
 /**************************************************************************************************

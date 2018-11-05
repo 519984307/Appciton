@@ -17,6 +17,7 @@
 #include "Debug.h"
 #include "BaseDefine.h"
 #include "TrendWidgetLabel.h"
+#include <QTimer>
 
 /**************************************************************************************************
  * 重绘。
@@ -80,9 +81,9 @@ QPalette TrendWidget::normalPalette(QPalette psrc)
  * 参数：
  *      psrc:趋势数据设置颜色。
  *************************************************************************************************/
-QPalette TrendWidget::alarmPalette(QPalette psrc, bool isSetName)
+QPalette TrendWidget::alarmPalette(QPalette psrc)
 {
-    if (isSetName && psrc.windowText().color() != Qt::black)
+    if (psrc.windowText().color() != Qt::black)
     {
         psrc.setColor(QPalette::WindowText, Qt::black);
     }
@@ -90,20 +91,11 @@ QPalette TrendWidget::alarmPalette(QPalette psrc, bool isSetName)
 }
 
 //　报警时状态闪烁＋白底红字
-void TrendWidget::showAlarmStatus(QWidget *value, QPalette psrc, bool isSetName)
+void TrendWidget::showAlarmStatus(QWidget *value)
 {
-    QPalette alaColor = alarmPalette(palette(), isSetName);
-    setPalette(alaColor);
     QPalette p = value->palette();
-    alaColor = alarmPalette(p);
-    if (p.windowText().color() != alaColor.windowText().color())
-    {
-        value->setPalette(alaColor);
-    }
-    else
-    {
-        value->setPalette(psrc);
-    }
+    QPalette alaColor  = alarmPalette(p);
+    value->setPalette(alaColor);
 }
 
 void TrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &valueStr, QPalette psrc)
@@ -190,6 +182,11 @@ void TrendWidget::updateAlarm(bool alarmFlag)
 void TrendWidget::updatePalette(const QPalette &pal)
 {
     setPalette(pal);
+}
+
+void TrendWidget::restoreNormalStatusLater()
+{
+    QTimer::singleShot(500, this, SLOT(doRestoreNormalStatus()));
 }
 
 /**************************************************************************************************

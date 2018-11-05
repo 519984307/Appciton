@@ -30,6 +30,8 @@ public:
 
     ECGPVCSTrendWidget();
     ~ECGPVCSTrendWidget();
+public:
+    virtual void doRestoreNormalStatus();
 
 protected:
     virtual void setTextSize(void);

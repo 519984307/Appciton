@@ -78,6 +78,7 @@ bool CO2TrendWidget::enable()
 void CO2TrendWidget::setEtCO2Value(int16_t v)
 {
     _setValue(v, _etco2Str);
+    _etco2Value->setText(_etco2Str);
 }
 
 /**************************************************************************************************
@@ -86,6 +87,7 @@ void CO2TrendWidget::setEtCO2Value(int16_t v)
 void CO2TrendWidget::setFiCO2Value(int16_t v)
 {
     _setValue(v, _fico2Str);
+    _fico2Value->setText(_fico2Str);
 }
 
 void CO2TrendWidget::setawRRValue(int16_t v)
@@ -98,6 +100,7 @@ void CO2TrendWidget::setawRRValue(int16_t v)
     {
         _awRRStr = QString::number(v);
     }
+    _awRRValue->setText(_awRRStr);
 }
 
 void CO2TrendWidget::updateLimit()
@@ -177,28 +180,16 @@ void CO2TrendWidget::showValue()
 
         if (_etco2Alarm)
         {
-            showAlarmStatus(_etco2Value, fgColor);
+            showAlarmStatus(_etco2Value);
             showAlarmParamLimit(_etco2Value, _etco2Str, fgColor);
         }
 
         if (_fico2Alarm)
         {
-            showAlarmStatus(_fico2Value, fgColor, false);
+            showAlarmStatus(_fico2Value);
         }
-    }
-    else
-    {
-        showNormalParamLimit(fgColor);
-        showNormalStatus(_etco2Value, fgColor);
-        showNormalStatus(_fico2Value, fgColor);
-    }
 
-    _etco2Value->setText(_etco2Str);
-    _awRRValue->setText(_awRRStr);
-
-    if (!_fico2Value->isHidden())
-    {
-        _fico2Value->setText(_fico2Str);
+        restoreNormalStatusLater();
     }
 }
 
@@ -317,4 +308,13 @@ QList<SubParamID> CO2TrendWidget::getShortTrendSubParams() const
     list.append(SUB_PARAM_ETCO2);
     list.append(SUB_PARAM_FICO2);
     return list;
+}
+
+void CO2TrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
+    psrc = normalPalette(psrc);
+    showNormalParamLimit(psrc);
+    showNormalStatus(_etco2Value, psrc);
+    showNormalStatus(_fico2Value, psrc);
 }

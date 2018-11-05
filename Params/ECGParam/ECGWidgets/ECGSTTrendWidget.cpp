@@ -45,6 +45,7 @@ void ECGSTTrendWidget::setSTValue(ECGST lead, int16_t st)
 //        _stString[lead].sprintf("%.1f", st / 10.0);
         _stString[lead] = QString("%1").number(st / 10.0 , 'f' , 1);
     }
+    _stValue[lead]->setText(_stString[lead]);
 }
 
 /**************************************************************************************************
@@ -76,8 +77,8 @@ void ECGSTTrendWidget::showValue(void)
         {
             if (_isAlarm[i])
             {
-                showAlarmStatus(_stLabel[i], psrc);
-                showAlarmStatus(_stValue[i], psrc);
+                showAlarmStatus(_stLabel[i]);
+                showAlarmStatus(_stValue[i]);
             }
             else
             {
@@ -85,18 +86,7 @@ void ECGSTTrendWidget::showValue(void)
                 showNormalStatus(_stValue[i], psrc);
             }
         }
-    }
-    else
-    {
-        for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
-        {
-            showNormalStatus(_stLabel[i], psrc);
-            showNormalStatus(_stValue[i], psrc);
-        }
-    }
-    for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
-    {
-        _stValue[i]->setText(_stString[i]);
+        restoreNormalStatusLater();
     }
 }
 
@@ -211,4 +201,15 @@ ECGSTTrendWidget::ECGSTTrendWidget() : TrendWidget("ECGSTTrendWidget")
  *************************************************************************************************/
 ECGSTTrendWidget::~ECGSTTrendWidget()
 {
+}
+
+void ECGSTTrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
+    psrc = normalPalette(psrc);
+    for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
+    {
+        showNormalStatus(_stLabel[i], psrc);
+        showNormalStatus(_stValue[i], psrc);
+    }
 }

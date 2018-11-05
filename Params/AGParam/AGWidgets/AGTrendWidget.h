@@ -39,6 +39,9 @@ public:
 
     QList<SubParamID> getShortTrendSubParams() const;
 
+public:
+    virtual void doRestoreNormalStatus();
+
 protected:
     virtual void setTextSize(void);
 
