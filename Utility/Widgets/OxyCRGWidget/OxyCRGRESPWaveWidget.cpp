@@ -20,11 +20,9 @@ class OxyCRGRESPWaveWidgetPrivate : public OxyCRGTrendWaveWidgetPrivate
 {
 public:
     OxyCRGRESPWaveWidgetPrivate()
-                : lastDataRate(0)
     {
     }
     void init();
-    int lastDataRate;
 };
 
 void OxyCRGRESPWaveWidgetPrivate::init()
@@ -44,7 +42,7 @@ void OxyCRGRESPWaveWidgetPrivate::init()
 
     drawRuler = false;
 
-    int dataLen = lastDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
+    int dataLen = waveDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
     dataBuf = new RingBuff<short>(dataLen);
     name = "RESP";
 }
@@ -110,17 +108,18 @@ void OxyCRGRESPWaveWidget::hideEvent(QHideEvent *e)
 void OxyCRGRESPWaveWidget::setDataRate(int rate)
 {
     Q_D(OxyCRGRESPWaveWidget);
-    OxyCRGTrendWaveWidget::setDataRate(rate);
 
-    if (d->lastDataRate == rate)
+    if (d->waveDataRate == rate)
     {
         return;
     }
-    d->lastDataRate = rate;
 
+    d->waveDataRate = rate;
     delete d->dataBuf;
     d->dataBuf = NULL;
 
-    int dataLen = d->lastDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
+    int dataLen = d->waveDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
     d->dataBuf = new RingBuff<short>(dataLen);
+
+    d->updateWaveDrawingContext();
 }

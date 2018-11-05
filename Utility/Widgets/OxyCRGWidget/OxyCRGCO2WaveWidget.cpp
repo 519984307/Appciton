@@ -20,12 +20,10 @@ class OxyCRGCO2WaveWidgetPrivate : public OxyCRGTrendWaveWidgetPrivate
 {
 public:
     OxyCRGCO2WaveWidgetPrivate()
-                : lastDataRate(0)
     {
     }
 
     void init();
-    int lastDataRate;
 };
 
 
@@ -52,7 +50,7 @@ void OxyCRGCO2WaveWidgetPrivate::init()
     rulerHigh = valueHigh;
     rulerLow = valueLow;
 
-    int dataLen = lastDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
+    int dataLen = waveDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
     dataBuf = new RingBuff<short>(dataLen);
     name = "CO2";
 }
@@ -119,17 +117,18 @@ void OxyCRGCO2WaveWidget::hideEvent(QHideEvent *e)
 void OxyCRGCO2WaveWidget::setDataRate(int rate)
 {
     Q_D(OxyCRGCO2WaveWidget);
-    OxyCRGTrendWaveWidget::setDataRate(rate);
 
-    if (d->lastDataRate == rate)
+    if (d->waveDataRate == rate)
     {
         return;
     }
-    d->lastDataRate = rate;
 
+    d->waveDataRate = rate;
     delete d->dataBuf;
     d->dataBuf = NULL;
 
-    int dataLen = d->lastDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
+    int dataLen = d->waveDataRate * MAX_WAVE_DURATION * 60;  // 最大8分钟数据
     d->dataBuf = new RingBuff<short>(dataLen);
+
+    d->updateWaveDrawingContext();
 }

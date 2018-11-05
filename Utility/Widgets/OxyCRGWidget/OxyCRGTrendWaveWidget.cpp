@@ -269,12 +269,6 @@ void OxyCRGTrendWaveWidget::setClearWaveDataStatus(bool clearStatus)
     }
 }
 
-void OxyCRGTrendWaveWidget::setDataRate(int rate)
-{
-    d_ptr->waveDataRate = rate;
-    d_ptr->updateWaveDrawingContext();
-}
-
 void OxyCRGTrendWaveWidget::onTimeOutExec()
 {
     update();
