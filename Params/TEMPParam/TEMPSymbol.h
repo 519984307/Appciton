@@ -46,7 +46,9 @@ public:
             "TEMP2OverRange",
             "TEMPOverRangeAll",
             "TEMPCommunicationStop",
-            "TEMPModuleDisable"
+            "TEMPModuleDisable",
+            "TEMPModuleNotCalibration1",
+            "TEMPModuleNotCalibration2"
         };
         return symbol[index];
     }

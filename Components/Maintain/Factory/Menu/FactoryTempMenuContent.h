@@ -21,20 +21,6 @@ public:
 
     ~FactoryTempMenuContent();
 
-
-    /**
-     * @brief getResult
-     * @param channel
-     * @param value
-     * @param flag
-     */
-    void getResult(int channel, int value, bool flag);
-    /**
-     * @brief setTEMPValue
-     * @param t1
-     * @param t2
-     */
-    void setTEMPValue(int16_t t1, int16_t t2);
     /**
      * @brief showError
      * @param str
@@ -46,6 +32,8 @@ protected:
     virtual void readyShow();
 
     virtual void layoutExec();
+
+    void timerEvent(QTimerEvent *ev);
 
 private slots:
     /**
