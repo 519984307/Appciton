@@ -478,10 +478,6 @@ void LayoutManagerPrivate::perform12LeadLayout()
             int row = iter.key();
             IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
             QWidget *qw = w;
-            if (!qw)
-            {
-                qw = createContainter();
-            }
             if (w)
             {
                 contentWidgets.append(w);
@@ -499,6 +495,10 @@ void LayoutManagerPrivate::perform12LeadLayout()
                     // standard layout left pararm region
                     qw->setVisible(true);
                     qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+                    if (!qw)
+                    {
+                        qw = createContainter();
+                    }
                     leftParamLayout->addWidget(qw, insertRow - lastWaveRow - 1 , nodeIter->pos, 1, nodeIter->span);
                     leftParamLayout->setRowStretch(insertRow - lastWaveRow - 1, 1);
                     if (w)
@@ -510,6 +510,10 @@ void LayoutManagerPrivate::perform12LeadLayout()
             else
             {
                 // add the param on the right in the standard layout
+                if (!qw)
+                {
+                    qw = createContainter();
+                }
                 qw->setVisible(true);
                 qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
                 rightParamLayout->addWidget(qw, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
@@ -703,16 +707,16 @@ void LayoutManagerPrivate::performOxyCRGLayout()
         {
             IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
             QWidget *qw = w;
-            if (!qw)
-            {
-                qw = createContainter();
-            }
             if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN) // in the left part, contain wave or param
             {
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM) // wave widgets
                 {
                     if (waveRemainRow <= MAX_WIDGET_ROW_IN_OXYCRG_LAYOUT && waveRemainRow > 0)
                     {
+                        if (!qw)
+                        {
+                            qw = createContainter();
+                        }
                         qw->setVisible(true);
                         qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
                         waveLayout->addWidget(qw, insertRow, nodeIter->pos, 1, nodeIter->span);
@@ -729,6 +733,10 @@ void LayoutManagerPrivate::performOxyCRGLayout()
                 {
                     // add the params in the left part
                     // standard layout left pararm region
+                    if (!qw)
+                    {
+                        qw = createContainter();
+                    }
                     qw->setVisible(true);
                     qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
                     leftParamLayout->addWidget(qw, insertRow - lastWaveRow - 1, nodeIter->pos, 1, nodeIter->span);
@@ -741,6 +749,10 @@ void LayoutManagerPrivate::performOxyCRGLayout()
             }
             else  // the right part are all param
             {
+                if (!qw)
+                {
+                    qw = createContainter();
+                }
                 qw->setVisible(true);
                 qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
                 rightParamLayout->addWidget(qw, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
