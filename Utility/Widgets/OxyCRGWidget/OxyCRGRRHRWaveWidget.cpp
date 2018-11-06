@@ -208,6 +208,13 @@ void OxyCRGRRHRWaveWidgetPrivate::reloadWaveBuffer()
 
 void OxyCRGRRHRWaveWidgetPrivate::reloadRRwaveBuffer()
 {
+    if (!rrWaveBuffer)
+    {
+        return;
+    }
+
+    Q_ASSERT(rrRulerHigh != rrRulerLow);
+
     rrWaveBuffer->clear();
     rrPointGapSumFraction = 0.0;
 
@@ -260,7 +267,10 @@ void OxyCRGRRHRWaveWidget::addRrTrendData(int value)
 {
     Q_D(OxyCRGRRHRWaveWidget);
     d->rrDataBuf->push(value);
-
+    if (!d->rrWaveBuffer)
+    {
+        return;
+    }
     Q_ASSERT(d->rrRulerHigh != d->rrRulerLow);
     d->rrPointGapSumFraction += d->rrPointGap;
 

@@ -183,6 +183,11 @@ void OxyCRGTrendWaveWidgetPrivate::updateWaveDrawingContext()
 
 void OxyCRGTrendWaveWidgetPrivate::reloadWaveBuffer()
 {
+    if (!waveBuffer)
+    {
+        return;
+    }
+
     waveBuffer->clear();
     pointGapSumFraction = 0.0;
 
@@ -250,6 +255,11 @@ OxyCRGTrendWaveWidget::~OxyCRGTrendWaveWidget()
 void OxyCRGTrendWaveWidget::addWaveData(int value)
 {
     d_ptr->dataBuf->push(value);
+
+    if (!d_ptr->waveBuffer)
+    {
+        return;
+    }
 
     Q_ASSERT(d_ptr->rulerHigh != d_ptr->rulerLow);
     d_ptr->pointGapSumFraction += d_ptr->pointGap;
