@@ -317,8 +317,6 @@ public:
         }
         else if (info.waveid >= WAVE_ART && info.waveid <= WAVE_AUXP2)
         {
-            info.waveMaxValue = demoProvider->getIBPMaxWaveform();
-            info.waveMinValue = 0;
             info.baseLine = demoProvider->getIBPBaseLine();
             info.sampleRate = demoProvider->getIBPWaveformSample();
         }
