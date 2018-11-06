@@ -14,7 +14,7 @@
 #include <QVBoxLayout>
 #include "SystemManager.h"
 #include <QVBoxLayout>
-#include <QHBoxLayout>
+#include <QGridLayout>
 
 class SoftWareVersionWindowPrivate
 {
@@ -34,29 +34,30 @@ void SoftWareVersionWindow::layoutExec()
 
     QHBoxLayout *hlayout = new QHBoxLayout;
     hlayout->setMargin(10);
-    QVBoxLayout *vlayout = new QVBoxLayout;
+    QGridLayout *glayout = new QGridLayout;
 
-    setFixedSize(520, 260);
+    setFixedSize(600, 130);
 
     QLabel *label;
 
     label = new QLabel;
     label->setPixmap(QPixmap("/usr/local/nPM/icons/betterLife.png"));
-    hlayout->addWidget(label, 1, Qt::AlignCenter);
+    hlayout->addWidget(label, 1, Qt::AlignTop);
 
     label = new QLabel(QString("%1:").arg(trs("SystemSoftwareVersion")));
-    vlayout->addWidget(label, 1, Qt::AlignLeft | Qt::AlignHCenter);
+    glayout->addWidget(label, 0, 0, Qt::AlignLeft | Qt::AlignHCenter);
     label = new QLabel;
     label->setText(GIT_VERSION);
-    vlayout->addWidget(label, 1, Qt::AlignLeft | Qt::AlignHCenter);
+    glayout->addWidget(label, 0, 1, Qt::AlignLeft | Qt::AlignHCenter);
 
     label = new QLabel(QString("%1:").arg(trs("BuildTime")));
-    vlayout->addWidget(label, 1, Qt::AlignLeft | Qt::AlignHCenter);
+    glayout->addWidget(label, 1, 0, Qt::AlignLeft | Qt::AlignHCenter);
     label = new QLabel;
     label->setText(QString("%1 %2").arg(__TIME__).arg(__DATE__));
-    vlayout->addWidget(label, 1, Qt::AlignLeft | Qt::AlignHCenter);
+    glayout->addWidget(label, 1, 1, Qt::AlignLeft | Qt::AlignHCenter);
+    glayout->setRowStretch(2, 1);
 
-    hlayout->addLayout(vlayout, 1);
+    hlayout->addLayout(glayout, 2);
 
     setWindowLayout(hlayout);
 }
