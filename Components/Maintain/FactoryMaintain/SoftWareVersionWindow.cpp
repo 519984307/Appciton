@@ -16,13 +16,6 @@
 #include <QVBoxLayout>
 #include <QGridLayout>
 
-class SoftWareVersionWindowPrivate
-{
-public:
-    SoftWareVersionWindowPrivate() {}
-};
-
-
 SoftWareVersionWindow::SoftWareVersionWindow(): Window()
 {
     layoutExec();

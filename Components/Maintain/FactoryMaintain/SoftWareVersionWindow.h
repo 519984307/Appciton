@@ -12,7 +12,6 @@
 
 #include "Window.h"
 
-class SoftWareVersionWindowPrivate;
 class SoftWareVersionWindow : public Window
 {
     Q_OBJECT
