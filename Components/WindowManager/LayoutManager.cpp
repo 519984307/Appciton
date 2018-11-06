@@ -94,6 +94,11 @@ public:
     void perform12LeadLayout();
 
     /**
+     * @brief perform7LeadLayout perform 7 lead layout
+     */
+    void perform7LeadLayout();
+
+    /**
      * @brief performOxyCRGLayout perform OxyCRG interface layout
      */
     void performOxyCRGLayout();
@@ -297,8 +302,20 @@ void LayoutManagerPrivate::doContentLayout()
     case UFACE_MONITOR_STANDARD:
         performStandardLayout();
         break;
-    case UFACE_MONITOR_12LEAD:
-        perform12LeadLayout();
+    case UFACE_MONITOR_ECG_FULLSCREEN:
+        if (ecgParam.getLeadMode() == ECG_LEAD_MODE_12)
+        {
+            perform12LeadLayout();
+        }
+        else if (ecgParam.getLeadMode() == ECG_LEAD_MODE_5)
+        {
+            perform7LeadLayout();
+        }
+        else
+        {
+            qWarning() << "No ECG Fullscreen Layout for 3 Lead ECG";
+            performStandardLayout();
+        }
         break;
     case UFACE_MONITOR_OXYCRG:
         performOxyCRGLayout();
@@ -513,6 +530,120 @@ void LayoutManagerPrivate::perform12LeadLayout()
     vLayout->setStretch(0, lastWaveRow + 1);
     if (leftParamLayout->count() != 0)
         vLayout->setStretch(1, leftParamLayout->rowCount());
+}
+
+void LayoutManagerPrivate::perform7LeadLayout()
+{
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    QWidget *waveContainer = createContainter();
+    contentLayout->addLayout(vLayout, waveAreaStretch);
+    QWidget *rightParamContainer = createContainter();
+    contentLayout->addWidget(rightParamContainer, paramAreaStretch);
+    QWidget *leftParamContainer = createContainter();
+
+    QGridLayout *waveLayout = new QGridLayout(waveContainer);
+    waveLayout->setMargin(0);
+    vLayout->addWidget(waveContainer);
+    QGridLayout *leftParamLayout = new QGridLayout(leftParamContainer);
+    leftParamLayout->setMargin(0);
+    vLayout->addWidget(leftParamContainer);
+    QGridLayout *rightParamLayout = new QGridLayout(rightParamContainer);
+    rightParamLayout->setMargin(0);
+
+    // add the 7 lead waveforms
+    QString path("PrimaryCfg|UILayout|ContentLayout|ECG7Lead");
+    QString waveOrder;
+    systemConfig.getStrValue(path, waveOrder);
+
+    QStringList ecgWaveList = waveOrder.split(',');
+
+    for (int i = 0;  i < ecgWaveList.count(); ++i)
+    {
+        IWidget *w = layoutWidgets[ecgWaveList.at(i)];
+        if (w)
+        {
+            w->setVisible(true);
+            w->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+            waveLayout->addWidget(layoutWidgets[ecgWaveList.at(i)], i, 0);
+            displayWaveforms.append(w->name());
+            contentWidgets.append(w);
+        }
+    }
+
+    OrderedMap<int, LayoutRow>::ConstIterator iter = layoutInfos.begin();
+    int curLeftParamRowNum = 0;
+    for (; iter != layoutInfos.end(); ++iter)
+    {
+        LayoutRow::ConstIterator nodeIter = iter.value().constBegin();
+        for (; nodeIter != iter.value().constEnd(); ++nodeIter)
+        {
+            int row = iter.key();
+            IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
+            QWidget *qw = w;
+            if (!qw)
+            {
+                qw = createContainter();
+            }
+            if (w)
+            {
+                contentWidgets.append(w);
+            }
+            if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN)
+            {
+                // add the param on the left in the standard layout
+                if (row < LAYOUT_MAX_WAVE_ROW_NUM || waveLayout->rowCount() + curLeftParamRowNum >= LAYOUT_ROW_COUNT)
+                {
+                    // not add to layout, need to remove here
+                    if (w)
+                    {
+                        contentWidgets.takeLast();
+                    }
+                    else if (qw)
+                    {
+                        delete qw;
+                        qw = NULL;
+                    }
+                }
+                else
+                {
+                    // standard layout left param region
+                    qw->setVisible(true);
+                    qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+                    leftParamLayout->addWidget(qw, curLeftParamRowNum, nodeIter->pos, 1, nodeIter->span);
+                    leftParamLayout->setRowStretch(curLeftParamRowNum, 1);
+                    if (w)
+                    {
+                        displayParams.append(w->name());
+                    }
+                }
+            }
+            else
+            {
+                // add the param on the right in the standard layout
+                qw->setVisible(true);
+                qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+                rightParamLayout->addWidget(qw, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
+                rightParamLayout->setRowStretch(row, 1);
+                if (w)
+                {
+                    displayParams.append(w->name());
+                }
+            }
+        }
+
+        if (!(*iter).isEmpty() && leftParamLayout->count())
+        {
+            // NOTE: the rowCount of a grid layout is default to 1 even has no layout item,
+            // so we must use the count() to check whether wether has any item in the layout
+            if (leftParamLayout->rowCount() > curLeftParamRowNum)
+            {
+                curLeftParamRowNum++;
+            }
+        }
+    }
+
+    vLayout->setStretch(0, waveLayout->rowCount());
+    vLayout->setStretch(1, leftParamLayout->rowCount());
 }
 
 #define MAX_WIDGET_ROW_IN_OXYCRG_LAYOUT 3       // the maximum widget row can be displayed in the wave area while in the oxycrg layout

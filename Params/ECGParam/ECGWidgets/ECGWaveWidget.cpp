@@ -191,7 +191,7 @@ void ECGWaveWidget::_popupDestroyed(void)
         _isAutoGain = false;
     }
 
-    if (layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD)
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
     {
         for (int i = ECG_LEAD_I; i <= ECG_LEAD_V6; i++)
         {
@@ -281,7 +281,7 @@ void ECGWaveWidget::_loadConfig(void)
 {
     setSpeed(ecgParam.getSweepSpeed());
 
-    if (layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD)
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
     {
         _name->setFocusPolicy(Qt::NoFocus);
 

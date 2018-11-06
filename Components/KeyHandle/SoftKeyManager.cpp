@@ -272,7 +272,7 @@ SoftKeyActionType SoftKeyManager::uFaceTypeToSoftKeyType(UserFaceType type)
     case UFACE_MONITOR_OXYCRG:
     case UFACE_MONITOR_TREND:
     case UFACE_MONITOR_BIGFONT:
-    case UFACE_MONITOR_12LEAD:
+    case UFACE_MONITOR_ECG_FULLSCREEN:
     case UFACE_MONITOR_CUSTOM:
         actionType = SOFTKEY_ACTION_STANDARD;
         break;
