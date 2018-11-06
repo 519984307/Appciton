@@ -174,7 +174,6 @@ public:
 
     int waveDataRate;            // 波形速率
 
-    bool isClearWaveData;        // 是否清除波形数据
     bool drawRuler;              // mark whether need to draw ruler
 
     QPainterPath backgroundRulerPath;  // 背景标尺

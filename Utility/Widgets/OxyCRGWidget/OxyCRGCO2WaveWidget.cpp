@@ -76,40 +76,6 @@ void OxyCRGCO2WaveWidget::paintEvent(QPaintEvent *e)
     d->drawWave(&painter, d->waveRegion, d->waveBuffer, d->waveColor);
 }
 
-void OxyCRGCO2WaveWidget::showEvent(QShowEvent *e)
-{
-    Q_D(OxyCRGCO2WaveWidget);
-    OxyCRGTrendWaveWidget::showEvent(e);
-
-    if (d->isClearWaveData == false)
-    {
-        d->isClearWaveData = true;
-        return;
-    }
-
-    if (d->dataBuf)
-    {
-        d->dataBuf->clear();
-    }
-}
-
-void OxyCRGCO2WaveWidget::hideEvent(QHideEvent *e)
-{
-    Q_D(OxyCRGCO2WaveWidget);
-    OxyCRGTrendWaveWidget::hideEvent(e);
-
-    if (d->isClearWaveData == false)
-    {
-        d->isClearWaveData = true;
-        return;
-    }
-
-    if (d->dataBuf)
-    {
-        d->dataBuf->clear();
-    }
-}
-
 void OxyCRGCO2WaveWidget::setDataRate(int rate)
 {
     Q_D(OxyCRGCO2WaveWidget);

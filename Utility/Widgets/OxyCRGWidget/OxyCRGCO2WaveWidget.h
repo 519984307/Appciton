@@ -25,12 +25,6 @@ protected:
     /* reimplment */
     void paintEvent(QPaintEvent *e);
 
-    /* reimplment */
-    void showEvent(QShowEvent *e);
-
-    /* reimplment */
-    void hideEvent(QHideEvent *e);
-
 private:
     Q_DECLARE_PRIVATE(OxyCRGCO2WaveWidget)
 };

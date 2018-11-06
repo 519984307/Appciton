@@ -68,40 +68,6 @@ void OxyCRGRESPWaveWidget::paintEvent(QPaintEvent *e)
     d->drawWave(&painter, d->waveRegion, d->waveBuffer, d->waveColor);
 }
 
-void OxyCRGRESPWaveWidget::showEvent(QShowEvent *e)
-{
-    Q_D(OxyCRGRESPWaveWidget);
-    OxyCRGTrendWaveWidget::showEvent(e);
-
-    if (d->isClearWaveData == false)
-    {
-        d->isClearWaveData = true;
-        return;
-    }
-
-    if (d->dataBuf)
-    {
-        d->dataBuf->clear();
-    }
-}
-
-void OxyCRGRESPWaveWidget::hideEvent(QHideEvent *e)
-{
-    Q_D(OxyCRGRESPWaveWidget);
-    OxyCRGTrendWaveWidget::hideEvent(e);
-
-    if (d->isClearWaveData == false)
-    {
-        d->isClearWaveData = true;
-        return;
-    }
-
-    if (d->dataBuf)
-    {
-        d->dataBuf->clear();
-    }
-}
-
 void OxyCRGRESPWaveWidget::setDataRate(int rate)
 {
     Q_D(OxyCRGRESPWaveWidget);

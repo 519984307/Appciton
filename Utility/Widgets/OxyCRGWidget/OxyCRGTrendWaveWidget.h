@@ -38,13 +38,12 @@ public:
     /**
      * @brief setInterval set the
      */
-    void setInterval(OxyCRGInterval interval);
+    virtual void setInterval(OxyCRGInterval interval);
 
     /**
-     * @brief setClearWaveDataStatus
-     * @param clearStatus
+     * @brief clearData clear all the wave data
      */
-    void setClearWaveDataStatus(bool clearStatus);
+    virtual void clearData();
 
     /**
      * @brief setRulerValue
@@ -56,12 +55,6 @@ public:
 protected:
     /* reimplement */
     void paintEvent(QPaintEvent *e);
-
-    /* reimplement */
-    void showEvent(QShowEvent *e);
-
-    /* reimplement */
-    void hideEvent(QHideEvent *e);
 
     /* reimplement */
     void resizeEvent(QResizeEvent *e);

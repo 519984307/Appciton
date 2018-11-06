@@ -73,40 +73,6 @@ void OxyCRGSPO2TrendWidget::paintEvent(QPaintEvent *e)
     d->drawWave(&painter, d_ptr->waveRegion, d_ptr->waveBuffer, d_ptr->waveColor);
 }
 
-void OxyCRGSPO2TrendWidget::showEvent(QShowEvent *e)
-{
-    Q_D(OxyCRGSPO2TrendWidget);
-    OxyCRGTrendWaveWidget::showEvent(e);
-
-    if (d->isClearWaveData == false)
-    {
-        d->isClearWaveData = true;
-        return;
-    }
-
-    if (d->dataBuf)
-    {
-        d->dataBuf->clear();
-    }
-}
-
-void OxyCRGSPO2TrendWidget::hideEvent(QHideEvent *e)
-{
-    Q_D(OxyCRGSPO2TrendWidget);
-    OxyCRGTrendWaveWidget::hideEvent(e);
-
-    if (d->isClearWaveData == false)
-    {
-        d->isClearWaveData = true;
-        return;
-    }
-
-    if (d->dataBuf)
-    {
-        d->dataBuf->clear();
-    }
-}
-
 void OxyCRGSPO2TrendWidget::addTrendData(int data)
 {
     addWaveData(data);

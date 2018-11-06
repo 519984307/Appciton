@@ -238,7 +238,10 @@ void OxyCRGRRHRWaveWidgetPrivate::reloadRRwaveBuffer()
         {
             rrWaveBuffer->pushPointData(mapYValue, false);
         }
+
+        rrPointGapSumFraction += rrPointGap;
     }
+    q_ptr->update();
 }
 
 OxyCRGRRHRWaveWidget::OxyCRGRRHRWaveWidget(const QString &waveName)
@@ -291,15 +294,24 @@ void OxyCRGRRHRWaveWidget::addHrTrendData(int value)
 void OxyCRGRRHRWaveWidget::setRrRulerValue(int valueHigh, int valueLow)
 {
     Q_D(OxyCRGRRHRWaveWidget);
+    if (d->rrRulerHigh == valueHigh && d->rrRulerLow == valueLow)
+    {
+        return;
+    }
+
     d->rrRulerHigh = valueHigh;
     d->rrRulerLow = valueLow;
     d->reloadRRwaveBuffer();
-    update();
 }
 
 void OxyCRGRRHRWaveWidget::setHrRulerValue(int valueHigh, int valueLow)
 {
     Q_D(OxyCRGRRHRWaveWidget);
+    if (d->rulerHigh == valueHigh && d->rulerLow == valueLow)
+    {
+        return;
+    }
+
     d->rulerHigh = valueHigh;
     d->rulerLow = valueLow;
     d->OxyCRGTrendWaveWidgetPrivate::reloadWaveBuffer();
@@ -308,7 +320,33 @@ void OxyCRGRRHRWaveWidget::setHrRulerValue(int valueHigh, int valueLow)
 void OxyCRGRRHRWaveWidget::setRrTrendShowStatus(bool isShow)
 {
     Q_D(OxyCRGRRHRWaveWidget);
+    if (d->isShowRr == isShow)
+    {
+        return;
+    }
+
     d->isShowRr = isShow;
+    update();
+}
+
+void OxyCRGRRHRWaveWidget::clearData()
+{
+    Q_D(OxyCRGRRHRWaveWidget);
+    d->rrDataBuf->clear();
+    d->reloadRRwaveBuffer();
+    OxyCRGTrendWaveWidget::clearData();
+}
+
+void OxyCRGRRHRWaveWidget::setInterval(OxyCRGInterval interval)
+{
+    Q_D(OxyCRGRRHRWaveWidget);
+    if (d->interval == interval)
+    {
+        return;
+    }
+
+    OxyCRGTrendWaveWidget::setInterval(interval);
+    d->reloadRRwaveBuffer();
 }
 
 void OxyCRGRRHRWaveWidget::paintEvent(QPaintEvent *e)
@@ -358,49 +396,5 @@ void OxyCRGRRHRWaveWidget::paintEvent(QPaintEvent *e)
         }
 
         d->drawWave(&painter, d_ptr->waveRegion, d->rrWaveBuffer, d->rrWaveColor);
-    }
-}
-
-void OxyCRGRRHRWaveWidget::showEvent(QShowEvent *e)
-{
-    Q_D(OxyCRGRRHRWaveWidget);
-    OxyCRGTrendWaveWidget::showEvent(e);
-
-    if (d->isClearWaveData == false)
-    {
-        d->isClearWaveData = true;
-        return;
-    }
-
-    if (d->dataBuf)
-    {
-        d->dataBuf->clear();
-    }
-
-    if (d->rrDataBuf)
-    {
-        d->rrDataBuf->clear();
-    }
-}
-
-void OxyCRGRRHRWaveWidget::hideEvent(QHideEvent *e)
-{
-    Q_D(OxyCRGRRHRWaveWidget);
-    OxyCRGTrendWaveWidget::hideEvent(e);
-
-    if (d->isClearWaveData == false)
-    {
-        d->isClearWaveData = true;
-        return;
-    }
-
-    if (d->dataBuf)
-    {
-        d->dataBuf->clear();
-    }
-
-    if (d->rrDataBuf)
-    {
-        d->rrDataBuf->clear();
     }
 }

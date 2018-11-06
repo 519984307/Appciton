@@ -19,6 +19,7 @@
 #include "WaveWidgetLabel.h"
 #include <QTimer>
 #include <QScopedPointer>
+#include <QResizeEvent>
 
 OxyCRGTrendWaveWidgetPrivate::OxyCRGTrendWaveWidgetPrivate(OxyCRGTrendWaveWidget * const q_ptr)
     : q_ptr(q_ptr),
@@ -29,13 +30,12 @@ OxyCRGTrendWaveWidgetPrivate::OxyCRGTrendWaveWidgetPrivate(OxyCRGTrendWaveWidget
       rulerLow(InvData()),
       waveColor(Qt::green),
       waveDataRate(1),
-      isClearWaveData(true),
       drawRuler(true),
-      interval(OxyCRG_Interval_2),
+      interval(OXYCRG_INTERVAL_2),
       pointGap(0),
       pointGapSumFraction(0.0)
 {
-    int index = OxyCRG_Interval_2;
+    int index = OXYCRG_INTERVAL_2;
     currentConfig.getNumValue("OxyCRG|Interval", index);
     interval = static_cast<OxyCRGInterval>(index);
 
@@ -46,13 +46,13 @@ OxyCRGTrendWaveWidgetPrivate::OxyCRGTrendWaveWidgetPrivate(OxyCRGTrendWaveWidget
 int OxyCRGTrendWaveWidgetPrivate::getIntervalSeconds(OxyCRGInterval interval)
 {
     switch (interval) {
-    case OxyCRG_Interval_1:
+    case OXYCRG_INTERVAL_1:
         return 60;
-    case OxyCRG_Interval_2:
+    case OXYCRG_INTERVAL_2:
         return 120;
-    case OxyCRG_Interval_4:
+    case OXYCRG_INTERVAL_4:
         return 240;
-    case OxyCRG_Interval_8:
+    case OXYCRG_INTERVAL_8:
         return 480;
     default:
         break;
@@ -214,6 +214,7 @@ void OxyCRGTrendWaveWidgetPrivate::reloadWaveBuffer()
         {
             waveBuffer->pushPointData(mapYValue, false);
         }
+        pointGapSumFraction += pointGap;
     }
     q_ptr->update();
 }
@@ -294,22 +295,20 @@ OxyCRGInterval OxyCRGTrendWaveWidget::getInterval() const
 
 void OxyCRGTrendWaveWidget::setRulerValue(int valueHigh, int valueLow)
 {
+    if (d_ptr->rulerHigh == valueHigh && d_ptr->rulerLow == valueLow)
+    {
+        return;
+    }
+
     d_ptr->rulerHigh = valueHigh;
     d_ptr->rulerLow = valueLow;
     d_ptr->reloadWaveBuffer();
 }
 
-void OxyCRGTrendWaveWidget::setClearWaveDataStatus(bool clearStatus)
+void OxyCRGTrendWaveWidget::clearData()
 {
-    d_ptr->isClearWaveData = clearStatus;
-
-    if (clearStatus)
-    {
-        if (d_ptr->dataBuf)
-        {
-            d_ptr->dataBuf->clear();
-        }
-    }
+    d_ptr->dataBuf->clear();
+    d_ptr->reloadWaveBuffer();
 }
 
 void OxyCRGTrendWaveWidget::paintEvent(QPaintEvent *e)
@@ -374,19 +373,10 @@ void OxyCRGTrendWaveWidget::paintEvent(QPaintEvent *e)
     painter.drawPath(d_ptr->backgroundRulerPath);
 }
 
-void OxyCRGTrendWaveWidget::showEvent(QShowEvent *e)
-{
-    IWidget::showEvent(e);
-}
-
-void OxyCRGTrendWaveWidget::hideEvent(QHideEvent *e)
-{
-    IWidget::hideEvent(e);
-}
-
 void OxyCRGTrendWaveWidget::resizeEvent(QResizeEvent *e)
 {
     IWidget::resizeEvent(e);
+
     // clear the background ruler
     d_ptr->backgroundRulerPath = QPainterPath();
     // update the wave region
@@ -395,4 +385,5 @@ void OxyCRGTrendWaveWidget::resizeEvent(QResizeEvent *e)
                               height() - Y_SHIFT * 2);
 
     d_ptr->updateWaveDrawingContext();
+    d_ptr->reloadWaveBuffer();
 }
