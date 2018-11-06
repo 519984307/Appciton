@@ -23,32 +23,31 @@ public:
     ~OxyCRGTrendWaveWidget();
 
     /**
-     * @brief addWaveData
+     * @brief addWaveData add wave data to the ring buffer and the interval point cache
      * @param value
-     * @param flag
      */
     void addWaveData(int value);
 
     /**
-     * @brief getIntervalTime
+     * @brief getIntervalTime get the intervel setting of the OxyCRG widget
      * @return
      */
     OxyCRGInterval getInterval() const;
 
     /**
-     * @brief setInterval set the
+     * @brief setInterval set the interval
      */
     virtual void setInterval(OxyCRGInterval interval);
 
     /**
-     * @brief clearData clear all the wave data
+     * @brief clearData clear all the wave data and the interval point cache
      */
     virtual void clearData();
 
     /**
-     * @brief setRulerValue
-     * @param valueHigh
-     * @param valueLow
+     * @brief setRulerValue set the wave data ruler
+     * @param valueHigh the high value
+     * @param valueLow the low value
      */
     void setRulerValue(int valueHigh, int valueLow);
 

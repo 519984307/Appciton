@@ -86,7 +86,7 @@ private slots:
     void onIntervalClicked(IWidget *widget);
 
     /**
-     * @brief onSetup setup slot
+     * @brief onSetup slot of the settup label click signal
      * @param widget
      */
     void onSetupClicked(IWidget *widget);

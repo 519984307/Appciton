@@ -463,6 +463,7 @@ void OxyCRGWidget::onCompressWaveChanged(int index)
 
 void OxyCRGWidget::onAutoClicked()
 {
+    // TODO:  this is not a auto ruler setting function, fixed it
     if (d_ptr->rrHrTrend)
     {
         QString strValueHigh = OxyCRGSymbol::convert(RR_HIGH_40);
