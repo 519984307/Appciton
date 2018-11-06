@@ -521,6 +521,7 @@ static void _initProviderParam(void)
 
 
     alertor.addOneShotSource(systemAlarm.Construction());
+    alertor.addOneShotSource(printOneShotAlarm.construction());
 }
 
 /**************************************************************************************************

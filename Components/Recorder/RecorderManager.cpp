@@ -329,123 +329,20 @@ void RecorderManager::providerConnectionChanged(bool isConnected)
 
 void RecorderManager::providerStatusChanged(PrinterStatus status)
 {
-    bool needStop = true;
-    switch (status)
+    bool isOutOfPaper = status & 0x01;
+    bool isOverHeating = (status >> 1) & 0x01;
+    bool isPrinterFault = (status >> 2) & 0x01;
+
+    printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_OUT_OF_PAPER, isOutOfPaper);
+    printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_OVER_HEATING, isOverHeating);
+    printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, isPrinterFault);
+
+    if (status)
     {
-    case PRINTER_STAT_NORMAL:            // 正常
-        needStop = false;
-        break;
-
-    case PRINTER_STAT_DOOR_OPENED:       // 仓门未关闭
-    case PRINTER_STAT_DOOR_OUT_OF_PAPER: // 仓门未关闭、缺纸
-        // 发送"仓门为关闭"的中级技术报警
-        printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_DOOR_OPENED, true);
-        // 移除缺纸的报警。
-        printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_OUT_OF_PAPER, false);
-
-        break;
-    case PRINTER_STAT_DOOR_OPEND_OVER_HEATING: // 仓门未关闭、过热（打印头温度)
-    case PRINTER_STAT_DOOR_OPEND_TEMP_OVERRUN: // 仓门未关闭、过热（电机温度）
-    case PRINTER_STAT_DOOR_OPENED_OVER_HEATING_TEMP_OVERRUN: // 仓门未关闭、过热(打印头温度、电机温度)
-    case PRINTER_STAT_ALL:               // 仓门未关闭、缺纸、过热(打印头过热、电机过热)
-        // nPM发出“打印机仓门未关”的中级技术报警和"打印机故障"的中级技术报警
-        printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_DOOR_OPENED, true);
-        printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, true);
-
-        break;
-    case PRINTER_STAT_OUT_OF_PAPER:      // 缺纸 (若仓门未关与缺纸状态同时存在，则仓门状态优先级高)
-        // 发送"打印机缺纸"的中级技术报警
-        printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_OUT_OF_PAPER, true);
-
-        break;
-    case PRINTER_STAT_OUT_OF_PAPER_OVER_HEATING: // 缺纸、过热（打印头温度）
-    case PRINTER_STAT_OUT_OF_PAPER_TEMP_OVERRUN: // 缺纸、过热
-    case PRINTER_STAT_OUT_OF_PAPER_OVER_HEATING_TEMP_OVERRUN: // 缺纸、过热(打印头温度、电机温度)
-        // 发送"打印机缺纸"的中级技术报警和"打印机故障"中级技术报警
-        printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, true);
-        printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_OUT_OF_PAPER, true);
-
-        break;
-    case PRINTER_STAT_OVER_HEATING: //过热 (打印头温度)
-    case PRINTER_STAT_TEMP_OVERRUN: // 过热 (电机温度)
-    case PRINTER_STAT_OVER_HEATING_TEMP_OVERRUN: // 过热（打印头温度、电机温度）
-        // todo，nPM发出"打印机故障"的中级技术报警
-        printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, true);
-
-        break;
-    default:
-        break;
-    }
-
-    if (needStop)
-    {
-        // stop page processing
+        // stop current generator
+        QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
+        // stop page processor
         QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
-    }
-
-    // 解除报警
-    switch (d_ptr->status)
-    {
-    case PRINTER_STAT_NORMAL:            // 正常
-        break;
-    case PRINTER_STAT_DOOR_OPENED:       // 仓门未关闭
-    case PRINTER_STAT_DOOR_OUT_OF_PAPER: // 仓门未关闭、缺纸
-        // 仓门关闭
-        if (!(status & PRINTER_STAT_DOOR_OPENED))
-        {
-            printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_DOOR_OPENED, false);
-        }
-        break;
-    case PRINTER_STAT_DOOR_OPEND_OVER_HEATING: // 仓门未关闭、过热（打印头温度)
-    case PRINTER_STAT_DOOR_OPEND_TEMP_OVERRUN: // 仓门未关闭、过热（电机温度）
-    case PRINTER_STAT_DOOR_OPENED_OVER_HEATING_TEMP_OVERRUN: // 仓门未关闭、过热(打印头温度、电机温度)
-    case PRINTER_STAT_ALL:               // 仓门未关闭、缺纸、过热(打印头过热、电机过热)
-        // 仓门关闭
-        if (!(status & PRINTER_STAT_DOOR_OPENED))
-        {
-            printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_DOOR_OPENED, false);
-        }
-
-        // 温度正常
-        if (!(status & PRINTER_STAT_OVER_HEATING_TEMP_OVERRUN))
-        {
-            printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, false);
-        }
-        break;
-    case PRINTER_STAT_OUT_OF_PAPER:      // 缺纸 (若仓门未关与缺纸状态同时存在，则仓门状态优先级高)
-        // 有纸
-        if (!(status & PRINTER_STAT_OUT_OF_PAPER))
-        {
-            printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_OUT_OF_PAPER, false);
-        }
-        break;
-    case PRINTER_STAT_OUT_OF_PAPER_OVER_HEATING: // 缺纸、过热（打印头温度）
-    case PRINTER_STAT_OUT_OF_PAPER_TEMP_OVERRUN: // 缺纸、过热
-    case PRINTER_STAT_OUT_OF_PAPER_OVER_HEATING_TEMP_OVERRUN: // 缺纸、过热(打印头温度、电机温度)
-        // 有纸
-        if (!(status & PRINTER_STAT_OUT_OF_PAPER))
-        {
-            printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_OUT_OF_PAPER, false);
-        }
-
-        // 温度正常
-        if (!(status & PRINTER_STAT_OVER_HEATING_TEMP_OVERRUN))
-        {
-            printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, false);
-        }
-        break;
-
-    case PRINTER_STAT_OVER_HEATING: //过热 (打印头温度)
-    case PRINTER_STAT_TEMP_OVERRUN: // 过热 (电机温度)
-    case PRINTER_STAT_OVER_HEATING_TEMP_OVERRUN: // 过热（打印头温度、电机温度）
-        // 温度正常
-        if (!(status & PRINTER_STAT_OVER_HEATING_TEMP_OVERRUN))
-        {
-            printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, false);
-        }
-        break;
-    default:
-        break;
     }
     d_ptr->status = status;
 }

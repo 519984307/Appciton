@@ -1001,6 +1001,7 @@ AlarmMute,报警静音,Mute
 RecorderAction,记录仪,Recorder Action
 PrinterDoorOpened,打印机仓门未关,Printer Door Opened
 PrinterOutOfPaper,打印机缺纸,Printer Out Of Paper
+PrinterOverHeating,打印头过热,Printer Over Heating
 PrinterFault,打印机故障,Printer Fault
 PacerDisabled,起搏失效,Pacer Disabled
 ReplaceBattery,替换电池,Replace Battery
