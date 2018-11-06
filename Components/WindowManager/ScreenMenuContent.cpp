@@ -21,6 +21,7 @@
 #include "BigFontLayoutWindow.h"
 #include "IConfig.h"
 #include "ThemeManager.h"
+#include "ECGParam.h"
 
 class ScreenMenuContentPrivate
 {
@@ -32,6 +33,8 @@ public:
     {}
 
     void loadOptions();
+
+    void reloadScreenType();
 
     ComboBox *interfaceCbo;     // 界面选择
     ComboBox *layoutCbo;        // 布局设置
@@ -47,9 +50,57 @@ public:
 void ScreenMenuContentPrivate::loadOptions()
 {
     layoutCbo->setCurrentIndex(0);
-    int type = 0;
+    reloadScreenType();
+    int type = UFACE_MONITOR_STANDARD;
     systemConfig.getNumValue("UserFaceType", type);
+    int index = 0;
+    for (; index < interfaceCbo->count(); ++index)
+    {
+        if (interfaceCbo->itemData(index).toInt() == type)
+        {
+            type = index;
+            break;
+        }
+    }
     interfaceCbo->setCurrentIndex(type);
+}
+
+void ScreenMenuContentPrivate::reloadScreenType()
+{
+    QStringList screenTypeTextList;
+    QList<int> screenTypeList;
+    if (ecgParam.getLeadMode() == ECG_LEAD_MODE_3)
+    {
+        screenTypeTextList<< trs("Standard")
+                       << trs("OxyCRG")
+                       << trs("Trend")
+                       << trs("BigFont");
+        screenTypeList << UFACE_MONITOR_STANDARD
+                       << UFACE_MONITOR_OXYCRG
+                       << UFACE_MONITOR_TREND
+                       << UFACE_MONITOR_BIGFONT;
+    }
+    else
+    {
+        screenTypeTextList<< trs("Standard")
+                       << trs("ECGFullScreen")
+                       << trs("OxyCRG")
+                       << trs("Trend")
+                       << trs("BigFont");
+        screenTypeList << UFACE_MONITOR_STANDARD
+                       << UFACE_MONITOR_12LEAD
+                       << UFACE_MONITOR_OXYCRG
+                       << UFACE_MONITOR_TREND
+                       << UFACE_MONITOR_BIGFONT;
+    }
+
+    interfaceCbo->blockSignals(true);
+    interfaceCbo->clear();
+    for (int i = 0; i< screenTypeList.count(); ++i)
+    {
+        interfaceCbo->addItem(screenTypeTextList.at(i), screenTypeList.at(i));
+    }
+    interfaceCbo->blockSignals(false);
 }
 
 ScreenMenuContent::ScreenMenuContent()
@@ -82,13 +133,6 @@ void ScreenMenuContent::layoutExec()
     label = new QLabel(trs("CurrentScreen"));
     layout->addWidget(label, count, 0);
     comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("Standard")
-                       << trs("ECGFullScreen")
-                       << trs("OxyCRG")
-                       << trs("Trend")
-                       << trs("BigFont")
-                      );
     layout->addWidget(comboBox, count++, 1);
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboxIndexChanged(int)));
     d_ptr->interfaceCbo = comboBox;
@@ -118,7 +162,7 @@ void ScreenMenuContent::onComboxIndexChanged(int index)
     ComboBox *cbo = qobject_cast<ComboBox *>(sender());
     if (cbo == d_ptr->interfaceCbo)
     {
-        UserFaceType type = static_cast<UserFaceType>(index);
+        UserFaceType type = static_cast<UserFaceType>(d_ptr->interfaceCbo->itemData(index).toInt());
         if (type > UFACE_NR)
         {
             return;
