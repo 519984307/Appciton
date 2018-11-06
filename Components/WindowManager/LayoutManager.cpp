@@ -297,7 +297,7 @@ void LayoutManagerPrivate::doContentLayout()
     case UFACE_MONITOR_STANDARD:
         performStandardLayout();
         break;
-    case UFACE_MONITOR_12LEAD:
+    case UFACE_MONITOR_ECG_FULLSCREEN:
         perform12LeadLayout();
         break;
     case UFACE_MONITOR_OXYCRG:

@@ -88,7 +88,7 @@ void ScreenMenuContentPrivate::reloadScreenType()
                        << trs("Trend")
                        << trs("BigFont");
         screenTypeList << UFACE_MONITOR_STANDARD
-                       << UFACE_MONITOR_12LEAD
+                       << UFACE_MONITOR_ECG_FULLSCREEN
                        << UFACE_MONITOR_OXYCRG
                        << UFACE_MONITOR_TREND
                        << UFACE_MONITOR_BIGFONT;
