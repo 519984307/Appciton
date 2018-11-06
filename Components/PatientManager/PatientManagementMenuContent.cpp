@@ -17,7 +17,6 @@
 #include "WindowManager.h"
 #include "MessageBox.h"
 #include <QApplication>
-#include "DischargePatientWindow.h"
 
 class PatientManagementMenuContentPrivate
 {
@@ -138,9 +137,7 @@ void PatientManagementMenuContent::onBtnReleased()
         break;
         case PatientManagementMenuContentPrivate::ITEM_BTN_DISCHARGE_PATIENT:
         {
-            DischargePatientWindow dischargeWin;
-            connect(&dischargeWin, SIGNAL(finished(int)), this, SLOT(dischargeWinExit(int)));
-            dischargeWin.exec();
+            patientManager.dischargePatient();
         }
         break;
         default:
