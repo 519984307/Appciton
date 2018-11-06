@@ -991,7 +991,6 @@
                 <bottomBarRowOrder>                                    
                 </bottomBarRowOrder>
                 <WaveTrendOrder>NIBPTrendWidget,NIBPDataTrendWidget</WaveTrendOrder>
-                <OxyCRGWidget>OxyCRGHRWidget,OxyCRGSPO2Widget,OxyCRGRESPWidget</OxyCRGWidget>
                 <!--软按键区比例-->
                 <softkeyAreaRowOrder>
                     <SoftkeyArea>1170</SoftkeyArea>

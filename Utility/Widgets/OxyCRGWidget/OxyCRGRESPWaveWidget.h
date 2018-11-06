@@ -27,17 +27,6 @@ protected:
     /* reimplment */
     void paintEvent(QPaintEvent *e);
 
-    /* reimplment */
-    void showEvent(QShowEvent *e);
-
-    /* reimplment */
-    void hideEvent(QHideEvent *e);
-
 private:
-    /**
-     * @brief init
-     */
-    void init(void);
-
     Q_DECLARE_PRIVATE(OxyCRGRESPWaveWidget)
 };

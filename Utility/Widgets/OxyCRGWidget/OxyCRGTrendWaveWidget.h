@@ -12,8 +12,8 @@
 #include "IWidget.h"
 #include "OxyCRGDefine.h"
 #include "RingBuff.h"
-#include "OxyCRGTrendWaveWidget_p.h"
 
+class OxyCRGTrendWaveWidgetPrivate;
 class OxyCRGTrendWaveWidget : public IWidget
 {
     Q_OBJECT
@@ -23,55 +23,40 @@ public:
     ~OxyCRGTrendWaveWidget();
 
     /**
-     * @brief addWaveData
+     * @brief addWaveData add wave data to the ring buffer and the interval point cache
      * @param value
-     * @param flag
      */
     void addWaveData(int value);
 
     /**
-     * @brief getIntervalTime
+     * @brief getIntervalTime get the intervel setting of the OxyCRG widget
      * @return
      */
-    static OxyCRGInterval getIntervalTime(void);
+    OxyCRGInterval getInterval() const;
 
     /**
-     * @brief setClearWaveDataStatus
-     * @param clearStatus
+     * @brief setInterval set the interval
      */
-    void setClearWaveDataStatus(bool clearStatus);
+    virtual void setInterval(OxyCRGInterval interval);
 
     /**
-     * @brief setRulerValue
-     * @param valueHigh
-     * @param valueLow
+     * @brief clearData clear all the wave data and the interval point cache
+     */
+    virtual void clearData();
+
+    /**
+     * @brief setRulerValue set the wave data ruler
+     * @param valueHigh the high value
+     * @param valueLow the low value
      */
     void setRulerValue(int valueHigh, int valueLow);
-
-private slots:
-    /**
-     * @brief onTimeOutExec
-     */
-    void onTimeOutExec(void);
 
 protected:
     /* reimplement */
     void paintEvent(QPaintEvent *e);
 
     /* reimplement */
-    void showEvent(QShowEvent *e);
-
-    /* reimplement */
-    void hideEvent(QHideEvent *e);
-
-    /* reimplement */
     void resizeEvent(QResizeEvent *e);
-
-    /**
-     * @brief setDataRate
-     * @param rate
-     */
-    virtual void setDataRate(int rate);
 
     OxyCRGTrendWaveWidgetPrivate *const d_ptr;
 };
