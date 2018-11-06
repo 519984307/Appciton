@@ -32,32 +32,26 @@ void SoftWareVersionWindow::layoutExec()
 {
     setWindowTitle(trs("SoftWareVersionMenu"));
 
-    QHBoxLayout *hlayout = new QHBoxLayout;
-    hlayout->setMargin(10);
     QGridLayout *glayout = new QGridLayout;
 
-    setFixedSize(600, 130);
-
-    QLabel *label;
-
-    label = new QLabel;
+    QLabel *label = new QLabel;
     label->setPixmap(QPixmap("/usr/local/nPM/icons/betterLife.png"));
-    hlayout->addWidget(label, 1, Qt::AlignTop);
+    glayout->addWidget(label, 0, 0, 2, 1, Qt::AlignCenter);
+    glayout->setColumnStretch(0, 1);
 
     label = new QLabel(QString("%1:").arg(trs("SystemSoftwareVersion")));
-    glayout->addWidget(label, 0, 0, Qt::AlignLeft | Qt::AlignHCenter);
+    glayout->addWidget(label, 0, 1, Qt::AlignLeft | Qt::AlignHCenter);
     label = new QLabel;
     label->setText(GIT_VERSION);
-    glayout->addWidget(label, 0, 1, Qt::AlignLeft | Qt::AlignHCenter);
+    glayout->addWidget(label, 0, 2, Qt::AlignLeft | Qt::AlignHCenter);
 
     label = new QLabel(QString("%1:").arg(trs("BuildTime")));
-    glayout->addWidget(label, 1, 0, Qt::AlignLeft | Qt::AlignHCenter);
+    glayout->addWidget(label, 1, 1, Qt::AlignLeft | Qt::AlignHCenter);
     label = new QLabel;
     label->setText(QString("%1 %2").arg(__TIME__).arg(__DATE__));
-    glayout->addWidget(label, 1, 1, Qt::AlignLeft | Qt::AlignHCenter);
-    glayout->setRowStretch(2, 1);
+    glayout->addWidget(label, 1, 2, Qt::AlignLeft | Qt::AlignHCenter);
 
-    hlayout->addLayout(glayout, 2);
+    setWindowLayout(glayout);
 
-    setWindowLayout(hlayout);
+    setFixedSize(600, 240);
 }
