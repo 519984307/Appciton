@@ -8,128 +8,55 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/7/20
  **/
 #include "SoftWareVersionWindow.h"
-#include <QGridLayout>
 #include <QLabel>
 #include <QMap>
 #include <QProcess>
 #include <QVBoxLayout>
 #include "SystemManager.h"
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 
 class SoftWareVersionWindowPrivate
 {
 public:
-    enum MenuItem
-    {
-        ITEM_LAB_SYS_VER = 0,
-        ITEM_LAB_BIULD_TIME,
-        ITEM_LAB_KERNEL,
-        ITEM_LAB_LOGO,
-        ITEM_LAB_MAX,
-    };
-
     SoftWareVersionWindowPrivate() {}
-    /**
-     * @brief loadOptions
-     */
-    void loadOptions();
-
-    QMap <MenuItem, QLabel *> labs;
 };
 
 
-void SoftWareVersionWindowPrivate::loadOptions()
-{
-    QString outPut;
-    QProcess process;
-    outPut.clear();
-    process.start("cat /proc/version");
-
-    if (process.waitForFinished(1000))
-    {
-        QByteArray byteArray = process.readAll();
-        outPut = byteArray;
-    }
-    QStringList versionList = outPut.split(" ");
-    if (versionList.count() >= 3)
-    {
-        labs[ITEM_LAB_KERNEL]->setText(trs(versionList.at(2)));
-    }
-
-    labs[ITEM_LAB_SYS_VER]->setText(GIT_VERSION);
-
-    labs[ITEM_LAB_BIULD_TIME]->setText(QString("%1 %2").arg(__TIME__).arg(__DATE__));
-}
-
-SoftWareVersionWindow::SoftWareVersionWindow():
-    Window(),
-    d_ptr(new SoftWareVersionWindowPrivate)
+SoftWareVersionWindow::SoftWareVersionWindow(): Window()
 {
     layoutExec();
-    readyShow();
-}
-
-SoftWareVersionWindow::~SoftWareVersionWindow()
-{
-    delete d_ptr;
-}
-
-void SoftWareVersionWindow::readyShow()
-{
-    d_ptr->loadOptions();
 }
 
 void SoftWareVersionWindow::layoutExec()
 {
     setWindowTitle(trs("SoftWareVersionMenu"));
 
+    QHBoxLayout *hlayout = new QHBoxLayout;
+    hlayout->setMargin(10);
     QVBoxLayout *vlayout = new QVBoxLayout;
-    vlayout->setMargin(10);
 
-    QGridLayout *layout = new QGridLayout;
-    layout->setVerticalSpacing(10);
-    vlayout->addStretch();
-    vlayout->addLayout(layout);
-    vlayout->addStretch();
-    setFixedSize(480, 260);
+    setFixedSize(520, 260);
 
-    QLabel *labelLeft;
-    QLabel *labelRight;
+    QLabel *label;
 
-    labelLeft = new QLabel(trs("SystemSoftwareVersion"));
-    layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
-    labelRight = new QLabel("");
-    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
-    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(SoftWareVersionWindowPrivate
-                       ::ITEM_LAB_SYS_VER, labelRight);
+    label = new QLabel;
+    label->setPixmap(QPixmap("/usr/local/nPM/icons/betterLife.png"));
+    hlayout->addWidget(label, 1, Qt::AlignCenter);
 
-    labelLeft = new QLabel(trs("BuildTime"));
-    layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
-    labelRight = new QLabel("");
-    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
-    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(SoftWareVersionWindowPrivate
-                       ::ITEM_LAB_BIULD_TIME, labelRight);
+    label = new QLabel(QString("%1:").arg(trs("SystemSoftwareVersion")));
+    vlayout->addWidget(label, 1, Qt::AlignLeft | Qt::AlignHCenter);
+    label = new QLabel;
+    label->setText(GIT_VERSION);
+    vlayout->addWidget(label, 1, Qt::AlignLeft | Qt::AlignHCenter);
 
+    label = new QLabel(QString("%1:").arg(trs("BuildTime")));
+    vlayout->addWidget(label, 1, Qt::AlignLeft | Qt::AlignHCenter);
+    label = new QLabel;
+    label->setText(QString("%1 %2").arg(__TIME__).arg(__DATE__));
+    vlayout->addWidget(label, 1, Qt::AlignLeft | Qt::AlignHCenter);
 
-    labelLeft = new QLabel(trs("Kernel"));
-    layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
-    labelRight = new QLabel("");
-    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
-    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(SoftWareVersionWindowPrivate
-                       ::ITEM_LAB_KERNEL, labelRight);
+    hlayout->addLayout(vlayout, 1);
 
-    labelLeft = new QLabel(trs("Logo"));
-    layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
-    labelRight = new QLabel;
-    labelRight->setPixmap(QPixmap("/usr/local/nPM/icons/betterLife128.png"));
-    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
-    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(SoftWareVersionWindowPrivate
-                       ::ITEM_LAB_LOGO, labelRight);
-
-    layout->setRowStretch(d_ptr->labs.count(), 1);
-
-    setWindowLayout(vlayout);
+    setWindowLayout(hlayout);
 }
