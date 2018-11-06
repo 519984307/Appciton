@@ -158,7 +158,7 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     }
     infos.append(str);
 
-    infos.append(QString("%1: ").arg(trs("ID")).arg(patInfo.id));
+    infos.append(QString("%1: %2").arg(trs("ID")).arg(patInfo.id));
 
     // calculate the info text width
     int textWidth = 0;
