@@ -214,6 +214,7 @@ void SoftKeyManager::_fixedKeyClicked()
     SoftkeyWidget *w = qobject_cast<SoftkeyWidget*>(sender());
     if (d_ptr->mainMenuKeyWidget == w)
     {
+        // 如果存在活动弹出窗口，优先关掉全部窗口
         bool closePupup = false;
         while (QApplication::activePopupWidget())
         {
@@ -231,6 +232,7 @@ void SoftKeyManager::_fixedKeyClicked()
         QWidget *activeWindow = QApplication::activeWindow();
         if (activeWindow == wm || activeWindow == NULL)
         {
+            // 执行hook函数指针,打开主菜单软按键弹窗
             KeyActionDesc *desc = SoftkeyActionBase::getBaseActionDesc(SOFT_BASE_KEY_MAIN_SETUP);
             if (desc != NULL && desc->hook != NULL)
             {
