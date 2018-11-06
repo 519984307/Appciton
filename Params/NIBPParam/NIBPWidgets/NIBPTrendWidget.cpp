@@ -224,17 +224,13 @@ void NIBPTrendWidget::setCountdown(int t)
     QString str;
     if (hour != 0)
     {
-//        str.sprintf("%.2d:%.2d:%.2d", hour, min, sec);
-        str = QString("%1:%2:%3").arg(hour).arg(min).arg(sec);
+        str = QString("%1:%2:%3").arg(hour, 2).arg(min, 2).arg(sec, 2);
     }
     else
     {
-//        str.sprintf("%.2d:%.2d", min, sec);
-        str = QString("%1:%2").arg(min).arg(sec);
+        str = QString("%1:%2").arg(min, 2).arg(sec, 2);
     }
-//    setInfo(str);
     d_ptr->setCountDown(str);
-//    _countDown->setVisible(true);
 }
 
 /**************************************************************************************************
@@ -335,26 +331,11 @@ void NIBPTrendWidgetPrivate::layoutExec(QHBoxLayout *layout)
     vLayout3->setSpacing(0);
     vLayout3->addWidget(countDown, 0, Qt::AlignCenter);
 
-    // 大字体界面时的布局
-//    QWidget *groupBox4 = new QWidget();
-//    QVBoxLayout *vLayout4 = new QVBoxLayout(groupBox4);
-//    QHBoxLayout *hLayout4 = new QHBoxLayout();
-//    hLayout4->setMargin(margin);
-//    hLayout4->setSpacing(10);
-//    hLayout4->addStretch();
-//    hLayout4->addWidget(sysValue);
-//    hLayout4->addWidget(nibpValue);
-//    hLayout4->addWidget(diaValue);
-//    hLayout4->addStretch();
-//    vLayout4->addLayout(hLayout4);
-//    vLayout4->addWidget(mapValue, 0 , Qt::AlignHCenter);
-
     stackedwidget = new QStackedWidget();
     stackedwidget->addWidget(groupBox0);
     stackedwidget->addWidget(groupBox1);
     stackedwidget->addWidget(groupBox2);
     stackedwidget->addWidget(groupBox3);
-//    stackedwidget->addWidget(groupBox4);
     stackedwidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
     // 将最后测量时间和模式放到一起。
