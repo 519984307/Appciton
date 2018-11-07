@@ -93,6 +93,7 @@ void RecorderManager::setPrintSpeed(PrintSpeed speed)
         return;
     }
 
+    d_ptr->curSpeed = speed;
     currentConfig.setNumValue("Print|PrintSpeed", static_cast<int>(speed));
 
     emit speedChanged(speed);
@@ -126,6 +127,7 @@ void RecorderManager::setPrintPrividerIFace(PrintProviderIFace *iface)
     }
 
     d_ptr->iface = iface;
+    d_ptr->iface->getStatusInfo();
     d_ptr->processor = new RecordPageProcessor(iface);
     d_ptr->processor->moveToThread(d_ptr->procThread);
     connect(d_ptr->procThread, SIGNAL(finished()), d_ptr->processor, SLOT(deleteLater()));
@@ -215,11 +217,10 @@ void RecorderManager::selfTest()
 bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
 {
     bool startImmediately = false;
-    if (!d_ptr->generator)
+    if (!d_ptr->generator && !d_ptr->status)
     {
         // no generator currently
         d_ptr->generator = generator;
-        d_ptr->generator->setPrintTime(d_ptr->timeSec);
         generator->moveToThread(d_ptr->procThread);
         startImmediately = true;
     }

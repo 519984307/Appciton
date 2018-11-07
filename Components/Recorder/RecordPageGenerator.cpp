@@ -87,6 +87,10 @@ void RecordPageGenerator::pageControl(bool pause)
 {
     _generate = !pause;
 
+    if (_generate)
+    {
+        _timer.start(_timerInterval, this);
+    }
     qDebug() << "Page Generator " << (pause ? "pause" : "restart");
 }
 
