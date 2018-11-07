@@ -426,7 +426,7 @@ void SoftKeyManagerPrivate::handleSoftKeyClick(bool isMainSetup, int index)
         QTimer::singleShot(0, &windowManager, SLOT(closeAllWidows()));
         if (isMainSetup)
         {
-            softkeyManager.resetPage();
+            softkeyManager.refreshPage();
         }
     }
 }
