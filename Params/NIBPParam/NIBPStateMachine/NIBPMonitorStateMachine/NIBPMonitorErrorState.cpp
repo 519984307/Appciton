@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/11/7
+ **/
+
 #include "NIBPMonitorErrorState.h"
 #include "NIBPParam.h"
 #include "NIBPAlarm.h"
@@ -42,9 +52,9 @@ void NIBPMonitorErrorState::handleNIBPEvent(NIBPEvent event, const unsigned char
     switch (event)
     {
     case NIBP_EVENT_CONNECTION_NORMAL:
-        //恢复STAT按钮
+        // 恢复STAT按钮
         nibpParam.setSTATMeasure(false);
-        //防止在错误状态时间内，产生的倒计时测量触发
+        // 防止在错误状态时间内，产生的倒计时测量触发
         nibpCountdownTime.setAutoMeasureTimeout(false);
         switchState(NIBP_MONITOR_STANDBY_STATE);
         nibpParam.setText(InvStr());
@@ -71,7 +81,6 @@ void NIBPMonitorErrorState::handleNIBPEvent(NIBPEvent event, const unsigned char
  *************************************************************************************************/
 NIBPMonitorErrorState::NIBPMonitorErrorState() : NIBPState(NIBP_MONITOR_ERROR_STATE)
 {
-
 }
 
 /**************************************************************************************************
@@ -79,5 +88,4 @@ NIBPMonitorErrorState::NIBPMonitorErrorState() : NIBPState(NIBP_MONITOR_ERROR_ST
  *************************************************************************************************/
 NIBPMonitorErrorState::~NIBPMonitorErrorState()
 {
-
 }
