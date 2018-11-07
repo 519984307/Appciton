@@ -25,7 +25,10 @@
 #include "qpainter.h"
 #include "MeasureSettingWindow.h"
 #include "LayoutManager.h"
+#include "AlarmConfig.h"
+#include "ParamManager.h"
 #include "IConfig.h"
+#include "TimeDate.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -54,21 +57,6 @@ void ECGTrendWidget::setHRValue(int16_t hr, bool isHR)
     if (isHR)
     {
         setName(trs(paramInfo.getSubParamName(SUB_DUP_PARAM_HR)));
-
-        if (layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD)
-        {
-            int index = ecgParam.getCalcLead();
-            ECGLeadNameConvention convention = ecgParam.getLeadConvention();
-            if (index == ECG_LEAD_AVR)
-            {
-                setCalcLeadName(ECGSymbol::convert((ECGLead)index, convention, true, false));
-            }
-            else
-            {
-                bool isCabrela = (ecgParam.get12LDisplayFormat() == DISPLAY_12LEAD_CABRELA);
-                setCalcLeadName(ECGSymbol::convert((ECGLead)index, convention, true, isCabrela));
-            }
-        }
     }
     else
     {
@@ -77,11 +65,6 @@ void ECGTrendWidget::setHRValue(int16_t hr, bool isHR)
             _hrBeatIcon->setPixmap(QPixmap());
         }
         setName(trs(paramInfo.getSubParamName(SUB_DUP_PARAM_PR)));
-
-        if (layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD)
-        {
-            setCalcLeadName("");
-        }
     }
 
     if (hr >= 0)
@@ -96,6 +79,14 @@ void ECGTrendWidget::setHRValue(int16_t hr, bool isHR)
     {
         _hrString = InvStr();
     }
+    _hrValue->setText(_hrString);
+}
+
+void ECGTrendWidget::updateLimit()
+{
+    UnitType unitType = paramManager.getSubParamUnit(PARAM_ECG, SUB_PARAM_HR_PR);
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_HR_PR, unitType);
+    setLimit(config.highLimit, config.lowLimit, config.scale);
 }
 
 /**************************************************************************************************
@@ -117,14 +108,10 @@ void ECGTrendWidget::showValue(void)
     psrc = normalPalette(psrc);
     if (_isAlarm)
     {
-        showAlarmStatus(_hrValue, psrc);
+        showAlarmStatus(_hrValue);
+        showAlarmParamLimit(_hrValue, _hrString, psrc);
+        restoreNormalStatusLater();
     }
-    else
-    {
-        showNormalStatus(_hrValue, psrc);
-    }
-
-    _hrValue->setText(_hrString);
 }
 
 /**************************************************************************************************
@@ -133,32 +120,6 @@ void ECGTrendWidget::showValue(void)
 void ECGTrendWidget::showEvent(QShowEvent *e)
 {
     TrendWidget::showEvent(e);
-
-    if (layoutManager.getUFaceType() != UFACE_MONITOR_12LEAD)
-    {
-        setCalcLeadName("");
-    }
-    else
-    {
-        if (ecgDupParam.isHRValid())
-        {
-            int index = ecgParam.getCalcLead();
-            ECGLeadNameConvention convention = ecgParam.getLeadConvention();
-            if (index == ECG_LEAD_AVR)
-            {
-                setCalcLeadName(ECGSymbol::convert((ECGLead)index, convention, true, false));
-            }
-            else
-            {
-                bool isCabrela = (ecgParam.get12LDisplayFormat() == DISPLAY_12LEAD_CABRELA);
-                setCalcLeadName(ECGSymbol::convert((ECGLead)index, convention, true, isCabrela));
-            }
-        }
-        else
-        {
-            setCalcLeadName("");
-        }
-    }
 }
 
 /**************************************************************************************************
@@ -189,30 +150,6 @@ void ECGTrendWidget::blinkBeatPixmap()
 }
 
 /**************************************************************************************************
- * 设置计算导联字串。
- *************************************************************************************************/
-void ECGTrendWidget::setTrendWidgetCalcName(ECGLead calLead)
-{
-    if (layoutManager.getUFaceType() != UFACE_MONITOR_12LEAD)
-    {
-        setCalcLeadName("");
-    }
-    else
-    {
-        ECGLeadNameConvention convention = ecgParam.getLeadConvention();
-        if (calLead == ECG_LEAD_AVR)
-        {
-            setCalcLeadName(ECGSymbol::convert(calLead, convention, true, false));
-        }
-        else
-        {
-            bool isCabrela = (ecgParam.get12LDisplayFormat() == DISPLAY_12LEAD_CABRELA);
-            setCalcLeadName(ECGSymbol::convert(calLead, convention, true, isCabrela));
-        }
-    }
-}
-
-/**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
@@ -240,6 +177,9 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     setName(trs(paramInfo.getSubParamName(subId)));
     setUnit(Unit::getSymbol(UNIT_BPM));
 
+    // 设置上下限
+    updateLimit();
+
     // 开始布局。
     _hrBeatIcon = new QLabel();
     _hrBeatIcon->setFixedSize(24, 24);
@@ -265,9 +205,7 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     hlayout->addWidget(_hrValue);
     hlayout->addWidget(_hrBeatIcon);
 
-    contentLayout->addStretch(1);
-    contentLayout->addLayout(hlayout);
-    contentLayout->addStretch(1);
+    contentLayout->addLayout(hlayout, 3);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
@@ -294,4 +232,12 @@ QList<SubParamID> ECGTrendWidget::getShortTrendSubParams() const
     QList<SubParamID> list;
     list.append(SUB_PARAM_HR_PR);
     return list;
+}
+
+void ECGTrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
+    psrc = normalPalette(psrc);
+    showNormalParamLimit(psrc);
+    showNormalStatus(_hrValue, psrc);
 }

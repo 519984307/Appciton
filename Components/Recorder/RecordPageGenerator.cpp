@@ -87,6 +87,10 @@ void RecordPageGenerator::pageControl(bool pause)
 {
     _generate = !pause;
 
+    if (_generate)
+    {
+        _timer.start(_timerInterval, this);
+    }
     qDebug() << "Page Generator " << (pause ? "pause" : "restart");
 }
 
@@ -158,7 +162,7 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
     }
     infos.append(str);
 
-    infos.append(QString("%1: ").arg(trs("ID")).arg(patInfo.id));
+    infos.append(QString("%1: %2").arg(trs("ID")).arg(patInfo.id));
 
     // calculate the info text width
     int textWidth = 0;
@@ -1870,7 +1874,7 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
             caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
                                              ecgParam.getLeadConvention()))
                       .arg(ECGSymbol::convert(ecgParam.getFilterMode()));
-            info.waveInfo.ecg.in12LeadMode = layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD;
+            info.waveInfo.ecg.in12LeadMode = layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN;
             info.waveInfo.ecg._12LeadDisplayFormat = ecgParam.get12LDisplayFormat();
             captionLength = fontManager.textWidthInPixels(caption, font());
             break;
@@ -2182,13 +2186,6 @@ void RecordPageGenerator::timerEvent(QTimerEvent *ev)
     if (_timer.timerId() == ev->timerId())
     {
         _timer.stop();
-        if (_requestStop)
-        {
-            _requestStop = false;
-            emit stopped();
-            onStopGenerate();
-            return;
-        }
 
         if (!_generate)
         {
@@ -2198,6 +2195,14 @@ void RecordPageGenerator::timerEvent(QTimerEvent *ev)
         RecordPage *page = createPage();
         if (page == NULL)
         {
+            emit stopped();
+            onStopGenerate();
+            return;
+        }
+        else if (_requestStop)
+        {
+            _requestStop = false;
+            delete page;
             emit stopped();
             onStopGenerate();
             return;

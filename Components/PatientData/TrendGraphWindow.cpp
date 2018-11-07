@@ -146,7 +146,7 @@ TrendGraphWindow::TrendGraphWindow()
 {
     setWindowTitle(trs("TrendGraph"));
     int maxWidth = 800;
-    int maxHeight = 580;
+    int maxHeight = 560;
     resize(maxWidth, maxHeight);
 
     d_ptr->waveWidget = new TrendWaveWidget();

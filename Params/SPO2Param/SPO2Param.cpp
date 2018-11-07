@@ -12,7 +12,6 @@
 #include "SPO2Alarm.h"
 #include "SPO2TrendWidget.h"
 #include "SPO2WaveWidget.h"
-#include "OxyCRGSPO2Widget.h"
 #include "SPO2ProviderIFace.h"
 #include "IConfig.h"
 #include "WaveformCache.h"
@@ -141,6 +140,7 @@ void SPO2Param::exitDemo()
     if (NULL != _trendWidget)
     {
         _trendWidget->setSPO2Value(InvData());
+        _trendWidget->setPIValue(InvData());
     }
 
     setPR(InvData());
@@ -330,17 +330,6 @@ void SPO2Param::setWaveWidget(SPO2WaveWidget *waveWidget)
     _setWaveformSpeed((SPO2WaveVelocity)getSweepSpeed());
 }
 
-/**************************************************************************************************
- * 设置界面对象。
- *************************************************************************************************/
-void SPO2Param::setOxyCRGWaveWidget(OxyCRGSPO2Widget *waveWidget)
-{
-    if (waveWidget == NULL)
-    {
-        return;
-    }
-}
-
 void SPO2Param::setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *trendWidget)
 {
     if (trendWidget == NULL)
@@ -471,6 +460,21 @@ void SPO2Param::setPulseAudio(bool pulse)
                                : -1);
         ecgDupParam.updatePRBeatIcon();
     }
+}
+
+void SPO2Param::setBeatVol(SoundManager::VolumeLevel vol)
+{
+    // 将脉搏音与心跳音绑定在一起，形成联动
+    currentConfig.setNumValue("SPO2|BeatVol", static_cast<int>(vol));
+    currentConfig.setNumValue("ECG|QRSVolume", static_cast<int>(vol));
+    soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, vol);
+}
+
+SoundManager::VolumeLevel SPO2Param::getBeatVol() const
+{
+    int vol = SoundManager::VOLUME_LEV_2;
+    currentConfig.getNumValue("SPO2|BeatVol", vol);
+    return static_cast<SoundManager::VolumeLevel>(vol);
 }
 
 void SPO2Param::setNotify(bool enable, QString str)
@@ -710,6 +714,14 @@ int SPO2Param::getSweepSpeed(void)
     int speed = SPO2_WAVE_VELOCITY_250;
     currentConfig.getNumValue("SPO2|SweepSpeed", speed);
     return speed;
+}
+
+void SPO2Param::updateSubParamLimit(SubParamID id)
+{
+    if (id == SUB_PARAM_SPO2)
+    {
+        _trendWidget->updateLimit();
+    }
 }
 
 /**************************************************************************************************

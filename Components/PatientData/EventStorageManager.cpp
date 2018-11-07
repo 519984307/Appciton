@@ -285,6 +285,12 @@ void EventStorageManager::clearEventTriggerFlag()
     d->_eventTriggerFlag = false;
 }
 
+void EventStorageManager::newPatientHandle()
+{
+    Q_D(EventStorageManager);
+    d->backend->reload(dataStorageDirManager.getCurFolder() + EVENT_DATA_FILE_NAME, QIODevice::ReadWrite);
+}
+
 EventStorageManager::EventStorageManager()
     : StorageManager(new EventStorageManagerPrivate(this), new StorageFile())
 {

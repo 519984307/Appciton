@@ -22,6 +22,7 @@
 #include "MainMenuWindow.h"
 #include "Button.h"
 #include "AlarmLimitWindow.h"
+#include "ECGParam.h"
 
 class SPO2MenuContentPrivate
 {
@@ -33,7 +34,8 @@ public:
         ITEM_CBO_SENSITIVITY,
         ITEM_CBO_FAST_SAT,
         ITEM_CBO_SMART_TONE,
-        ITEM_CBO_GAIN
+        ITEM_CBO_GAIN,
+        ITEM_CBO_BEAT_VOL,
     };
 
     SPO2MenuContentPrivate() {}
@@ -52,6 +54,14 @@ void SPO2MenuContentPrivate::loadOptions()
     combos[ITEM_CBO_FAST_SAT]->setCurrentIndex(spo2Param.getFastSat());
     combos[ITEM_CBO_SMART_TONE]->setCurrentIndex(spo2Param.getSmartPulseTone());
     combos[ITEM_CBO_GAIN]->setCurrentIndex(spo2Param.getGain());
+    int volSPO2 = spo2Param.getBeatVol();
+    int volECG = ecgParam.getQRSToneVolume();
+    if (volSPO2 != volECG)
+    {
+        // 保持脉搏音与心跳音同步
+        ecgParam.setQRSToneVolume(static_cast<SoundManager::VolumeLevel>(volSPO2));
+    }
+    combos[ITEM_CBO_BEAT_VOL]->setCurrentIndex(volSPO2);
 }
 
 SPO2MenuContent::SPO2MenuContent()
@@ -169,6 +179,22 @@ void SPO2MenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_GAIN, comboBox);
 
+    // 音量
+    label = new QLabel(trs("BeatVol"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItem(trs("Off"));
+    for (int i = SoundManager::VOLUME_LEV_1; i <= SoundManager::VOLUME_LEV_MAX; i++)
+    {
+        comboBox->addItem(QString::number(i));
+    }
+    itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_BEAT_VOL);
+    comboBox->setProperty("Item",
+                          qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_BEAT_VOL, comboBox);
+
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
@@ -206,6 +232,9 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
             break;
         case SPO2MenuContentPrivate::ITEM_CBO_GAIN:
             spo2Param.setGain(static_cast<SPO2Gain>(index));
+            break;
+        case SPO2MenuContentPrivate::ITEM_CBO_BEAT_VOL:
+            spo2Param.setBeatVol(static_cast<SoundManager::VolumeLevel>(index));
             break;
         default:
             break;

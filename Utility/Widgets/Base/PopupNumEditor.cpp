@@ -82,7 +82,6 @@ void PopupNumEditorPrivate::increaseValue()
     if (editInfo.curValue + editInfo.step <= editInfo.highLimit)
     {
         editInfo.curValue += editInfo.step;
-        emit q_ptr->valueChanged(editInfo.curValue);
     }
 }
 
@@ -91,7 +90,6 @@ void PopupNumEditorPrivate::decreaseValue()
     if (editInfo.curValue - editInfo.step >= editInfo.lowLimit)
     {
         editInfo.curValue -= editInfo.step;
-        emit q_ptr->valueChanged(editInfo.curValue);
     }
 }
 
@@ -166,7 +164,8 @@ void PopupNumEditor::paintEvent(QPaintEvent *ev)
     }
     painter.drawRoundedRect(upRegion.adjusted(bw / 2, bw / 2, - bw / 2, br + bw), br, br);
 
-    const QIcon &upIcon = themeManger.getIcon(ThemeManager::IconUp);
+    int iconWidth = upRegion.height() > upRegion.width() ? upRegion.width() : upRegion.height();
+    const QIcon upIcon = themeManger.getIcon(ThemeManager::IconUp, QSize(iconWidth, iconWidth));
     upIcon.paint(&painter, upRegion);
 
     QRect downRegion = r;
@@ -186,7 +185,7 @@ void PopupNumEditor::paintEvent(QPaintEvent *ev)
     }
     painter.drawRoundedRect(downRegion.adjusted(bw / 2, -br - bw, -bw / 2, -bw / 2), br, br);
 
-    const QIcon &downIcon = themeManger.getIcon(ThemeManager::IconDown);
+    const QIcon downIcon = themeManger.getIcon(ThemeManager::IconDown, QSize(iconWidth, iconWidth));
     downIcon.paint(&painter, downRegion);
 
     painter.setBrush(pal.color(QPalette::Active, QPalette::Window));
@@ -257,6 +256,7 @@ void PopupNumEditor::keyReleaseEvent(QKeyEvent *ev)
         break;
     case Qt::Key_Return:
     case Qt::Key_Enter:
+        emit valueChanged(d_ptr->editInfo.curValue);
         this->close();
         break;
     default:
@@ -317,6 +317,7 @@ void PopupNumEditor::mouseReleaseEvent(QMouseEvent *ev)
     else
     {
         // click somewhere else
+        emit valueChanged(d_ptr->editInfo.curValue);
         close();
     }
 

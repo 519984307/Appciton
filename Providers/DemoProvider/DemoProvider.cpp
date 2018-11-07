@@ -47,7 +47,7 @@ static DemoWaveDataDesc _demoWaveData[WAVE_NR] =
     {"ECG-V6",    WAVE_ECG_V6,    NULL, 250, 0},
     {"RESP",      WAVE_RESP,      NULL, 250, 0},
     {"SPO2",      WAVE_SPO2,      NULL, 250, 0},
-    {"CO2",       WAVE_CO2,       NULL, 40, 0},
+    {"CO2",       WAVE_CO2,       NULL, 80, 0},
     {"N2O",       WAVE_N2O,       NULL, 125, 0},
     {"AA1",       WAVE_AA1,       NULL, 125, 0},
     {"AA2",       WAVE_AA2,       NULL, 125, 0},
@@ -73,22 +73,6 @@ struct DemoTrendDesc
 };
 static DemoTrendDesc _demoTrendData[PARAM_NR];
 
-
-void DemoProvider::setOxyCRGCO2Widget(OxyCRGCO2Widget *p)
-{
-    if (p)
-    {
-        _oxyCRGCO2Widget = p;
-    }
-}
-
-void DemoProvider::setOxyCRGRESPWidget(OxyCRGRESPWidget *p)
-{
-    if (p)
-    {
-        _oxyCRGRESPWidget = p;
-    }
-}
 /**************************************************************************************************
  * 定时器Slot函数。
  *************************************************************************************************/
@@ -312,9 +296,7 @@ QByteArray DemoProvider::getDemoWaveData(WaveformID waveid)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-DemoProvider::DemoProvider() : Provider("DemoProvider"),
-    _oxyCRGCO2Widget(NULL),
-    _oxyCRGRESPWidget(NULL)
+DemoProvider::DemoProvider() : Provider("DemoProvider")
 {
     _timerID = 0;
 

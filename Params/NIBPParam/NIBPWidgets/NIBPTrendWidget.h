@@ -14,7 +14,11 @@
 #include <QLabel>
 #include <QGroupBox>
 #include <QStackedWidget>
+#include "AlarmConfig.h"
+#include "ParamManager.h"
+#include <QScopedPointer>
 
+class NIBPTrendWidgetPrivate;
 class NIBPTrendWidget: public TrendWidget
 {
     Q_OBJECT
@@ -24,6 +28,9 @@ class NIBPTrendWidget: public TrendWidget
 public:
     // 设置测量结果的数据。
     void setResults(int16_t sys, int16_t dia, int16_t map, unsigned time);
+
+    // 刷新趋势参数上下限
+    void updateLimit(void);
 
     // 恢复测量结果的数据。
     void recoverResults(int16_t &sys, int16_t &dia, int16_t &map, unsigned &time);
@@ -62,6 +69,8 @@ public:
     ~NIBPTrendWidget();
 
     QList<SubParamID> getShortTrendSubParams() const;
+public:
+    virtual void doRestoreNormalStatus();
 
 protected:
     virtual void setTextSize(void);
@@ -70,34 +79,5 @@ private slots:
     void _releaseHandle(IWidget *);
 
 private:
-    QLabel *_nibpValue;
-    QLabel *_sysValue;
-    QLabel *_diaValue;
-    QLabel *_mapValue;
-    QLabel *_pressureValue;
-    QLabel *_lastMeasureCount;  // 用于标记最近一次测量过了多少时间，todo。
-    QLabel *_message;           // 用于提示“wait”等信息
-    QLabel *_model;           // 用于提示“wait”等信息
-    QLabel *_countDown;
-
-    QWidget *widget0;
-    QWidget *widget1;
-
-    QStackedWidget *_stackedwidget;
-
-    QString _sysString;
-    QString _diaString;
-    QString _mapString;
-    QString _pressureString;
-    QString _measureTime;
-    bool _sysAlarm;
-    bool _diaAlarm;
-    bool _mapAlarm;
-    bool _effective;           //有效测量数据
-    int _messageFontSize;      // 非虚线显示时字体大小
-    int _messageInvFontSize;   // 虚线显示时字体大小
-
-    static const int _margin = 1;
-
-    void setCountDown(const QString &time);
+    const QScopedPointer<NIBPTrendWidgetPrivate> d_ptr;
 };

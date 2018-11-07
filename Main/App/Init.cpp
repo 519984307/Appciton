@@ -109,6 +109,9 @@ static void _initSystem(void)
 
     // 存储目录管理。
     dataStorageDirManager.construction();
+    // initialize the storage manager in the main thread
+    EventStorageManager::getInstance();
+    TrendDataStorageManager::getInstance();
 
     //消息提示框
     pMessageBox.construction();
@@ -168,7 +171,7 @@ static void _initComponents(void)
 
     AlarmPhyInfoBarWidget *alarmPhyInfo = new AlarmPhyInfoBarWidget("AlarmPhyInfoBarWidget");
     AlarmTechInfoBarWidget *alarmTechInfo = new AlarmTechInfoBarWidget("AlarmTechInfoBarWidget");
-    AlarmMuteBarWidget *alarmPhyMuteBar = new AlarmMuteBarWidget();
+    AlarmStatusWidget *alarmPhyMuteBar = new AlarmStatusWidget();
     alarmIndicator.setAlarmPhyWidgets(alarmPhyInfo, alarmPhyMuteBar);
     alarmIndicator.setAlarmTechWidgets(alarmTechInfo);
     layoutManager.addLayoutWidget(alarmPhyInfo);
@@ -518,6 +521,7 @@ static void _initProviderParam(void)
 
 
     alertor.addOneShotSource(systemAlarm.Construction());
+    alertor.addOneShotSource(printOneShotAlarm.construction());
 }
 
 /**************************************************************************************************

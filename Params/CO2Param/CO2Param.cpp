@@ -39,6 +39,7 @@ public:
               waveWidget(NULL),
               etco2Value(InvData()),
               fico2Value(InvData()),
+              awRRValue(InvData()),
               etco2MaxVal(0),
               etco2MinVal(0),
               brVaule(InvData()),
@@ -77,6 +78,7 @@ public:
 
     short  etco2Value;
     short  fico2Value;
+    short  awRRValue;
     short  etco2MaxVal;
     short  etco2MinVal;
     short  brVaule;
@@ -203,7 +205,7 @@ void CO2Param::handDemoWaveform(WaveformID id, short data)
 
     if (d_ptr->oxyCRGCO2Wave)
     {
-        d_ptr->oxyCRGCO2Wave->addWaveData(data, 0);
+        d_ptr->oxyCRGCO2Wave->addWaveData(data);
     }
     waveformCache.addData((WaveformID)id, data);
 }
@@ -217,12 +219,14 @@ void CO2Param::handDemoTrendData(void)
 //    d_ptr->fico2Value = qrand() % 80;
     d_ptr->etco2Value = 50;
     d_ptr->fico2Value = 3;
+    d_ptr->awRRValue = 20;
     d_ptr->brVaule = 20;
 
     if (NULL != d_ptr->trendWidget)
     {
         d_ptr->trendWidget->setEtCO2Value(d_ptr->etco2Value);
         d_ptr->trendWidget->setFiCO2Value(d_ptr->fico2Value);
+        d_ptr->trendWidget->setawRRValue(d_ptr->awRRValue);
     }
     setBR(d_ptr->brVaule);
 }
@@ -462,6 +466,20 @@ void CO2Param::setBR(short br)
     respDupParam.updateBR(br);
 }
 
+void CO2Param::setRR(short rr)
+{
+    if (!(isEnabled() && d_ptr->co2Switch))
+    {
+        rr = InvData();
+    }
+
+    d_ptr->awRRValue = rr;
+    if (NULL != d_ptr->trendWidget)
+    {
+        d_ptr->trendWidget->setawRRValue(rr);
+    }
+}
+
 /**************************************************************************************************
  * 获取Baro。
  *************************************************************************************************/
@@ -601,7 +619,7 @@ void CO2Param::addWaveformData(short wave, bool invalid)
 
     if (d_ptr->oxyCRGCO2Wave)
     {
-        d_ptr->oxyCRGCO2Wave->addWaveData(wave, flag);
+        d_ptr->oxyCRGCO2Wave->addWaveData(wave);
     }
 
     waveformCache.addData(WAVE_CO2, (flag << 16) | (wave & 0xFFFF));
@@ -680,7 +698,7 @@ ApneaAlarmTime CO2Param::getApneaTime(void)
 bool CO2Param::getAwRRSwitch(void)
 {
     int enable = 0;
-    QString path = "AlarmSource|" + patientManager.getTypeStr() + "|";
+    QString path = "AlarmSource|";
     path += paramInfo.getSubParamName(SUB_PARAM_RR_BR);
     currentConfig.getNumAttr(path, "Enable", enable);
 
@@ -834,6 +852,14 @@ short CO2Param::getEtCO2MinValue()
     return d_ptr->etco2MinVal;
 }
 
+void CO2Param::updateSubParamLimit(SubParamID id)
+{
+    if (id == SUB_PARAM_ETCO2)
+    {
+        d_ptr->trendWidget->updateLimit();
+    }
+}
+
 void CO2Param::onPaletteChanged(ParamID id)
 {
     if (id != PARAM_CO2)
@@ -856,7 +882,7 @@ CO2Param::CO2Param()
     currentConfig.getNumValue("Local|CO2Unit", t);
     d_ptr->curUnit = (UnitType)t;
 
-    QString path = "AlarmSource|" + patientManager.getTypeStr() + "|";
+    QString path = "AlarmSource|";
     path += paramInfo.getSubParamName(SUB_PARAM_ETCO2);
     path += "|";
     if (UNIT_PERCENT == t)

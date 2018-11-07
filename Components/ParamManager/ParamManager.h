@@ -41,6 +41,13 @@ public:
      */
     Provider *getProvider(const QString &name);
 
+    /**
+     * @brief getParam get a param base on the param ID
+     * @param id param id
+     * @return pointer to the param or NULL if not found
+     */
+    Param *getParam(ParamID id);
+
     // 获取系统的Params。
     void getParams(QList<Param*> &params);
     void getParams(QList<ParamID> &paramID);

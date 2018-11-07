@@ -29,6 +29,7 @@ public:
     void loadColorScheme();
     QMap<int, QColor> colorScheme;
     QMap<ThemeManager::IconType, QIcon> iconMap;
+    CacheKeyMap iconKeyMap;
     QMap<ThemeManager::ShadowElementType, CacheKeyMap> cacheKeyMaps;
     QSvgRenderer *shadowRenderer;
 };
@@ -197,8 +198,15 @@ void ThemeManager::setupPalette(ThemeManager::ControlType type, QPalette &pal)
                  getColor(type, ElementBackgound, StateHighlight));
 }
 
-const QIcon &ThemeManager::getIcon(ThemeManager::IconType icon)
+QIcon ThemeManager::getIcon(ThemeManager::IconType icon, const QSize &size)
 {
+    if (size.isValid())
+    {
+        // try to load from the pixmap cache
+        return QIcon(getPixmap(icon, size));
+    }
+
+    // load from the icon cache
     QMap<IconType, QIcon>::ConstIterator iter;
     iter = d_ptr->iconMap.find(icon);
     if (iter != d_ptr->iconMap.constEnd())
@@ -213,6 +221,31 @@ const QIcon &ThemeManager::getIcon(ThemeManager::IconType icon)
         ico = QIcon(iconPaths[icon]);
     }
     return *d_ptr->iconMap.insert(icon, ico);
+}
+
+QPixmap ThemeManager::getPixmap(ThemeManager::IconType icon, const QSize &size)
+{
+   QPixmap pm;
+   int key =  (icon << 24) + (size.width() << 16) + size.height();
+   CacheKeyMap::ConstIterator iter = d_ptr->iconKeyMap.find(key);
+
+   if (iter != d_ptr->iconKeyMap.constEnd())
+   {
+       if (QPixmapCache::find(iter.value(), &pm))
+       {
+           return pm;
+       }
+   }
+
+   pm = QPixmap(size);
+   pm.fill(Qt::transparent);
+   QPainter p(&pm);
+   QString svgFilePath = iconPaths[icon];
+   QSvgRenderer svgRender(svgFilePath);
+   svgRender.render(&p);
+   p.end();
+   d_ptr->iconKeyMap[key] = QPixmapCache::insert(pm);
+   return pm;
 }
 
 QPixmap ThemeManager::getShadowElement(ThemeManager::ShadowElementType type, const QSize &size)
@@ -259,6 +292,6 @@ ThemeManager::ThemeManager()
 {
     d_ptr->shadowRenderer = new QSvgRenderer(QString(":/ui/shadow.svg"), this);
     d_ptr->loadColorScheme();
-    QPixmapCache::setCacheLimit(10*1024*1024); // 10M
+    QPixmapCache::setCacheLimit(10*1024); // 10M
 }
 

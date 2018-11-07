@@ -24,7 +24,6 @@ public:
 
 protected:
     void showEvent(QShowEvent *e);
-    void exit(void);
 
 private slots:
     void onBtnRelease();

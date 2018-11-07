@@ -96,13 +96,13 @@ void MenuSidebarItem::nextCheckState()
 void MenuSidebarItem::focusInEvent(QFocusEvent *ev)
 {
     QAbstractButton::focusInEvent(ev);
-    emit focusChanged(true);
+    emit focusChanged(true, ev->reason());
 }
 
 void MenuSidebarItem::focusOutEvent(QFocusEvent *ev)
 {
     QAbstractButton::focusOutEvent(ev);
-    emit focusChanged(false);
+    emit focusChanged(false, ev->reason());
 }
 
 void MenuSidebarItem::keyPressEvent(QKeyEvent *ev)

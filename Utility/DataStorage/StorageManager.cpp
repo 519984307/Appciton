@@ -1,8 +1,20 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/10/30
+ **/
+
+
 #include "StorageManager_p.h"
 #include <QList>
 #include <QMutex>
 #include <QMutexLocker>
 #include "StorageFile.h"
+#include "DataStorageDirManager.h"
 
 StorageManagerPrivate::~StorageManagerPrivate()
 {
@@ -23,10 +35,11 @@ void StorageManagerPrivate::switchList()
  * constructor
  **************************************************************************************************/
 StorageManager::StorageManager(IStorageBackend *backend)
-    :d_ptr(new StorageManagerPrivate(this))
+    : d_ptr(new StorageManagerPrivate(this))
 {
     Q_D(StorageManager);
     d->backend = backend;
+    connect(&dataStorageDirManager, SIGNAL(newPatient()), this, SLOT(onNewPatientHandle()));
 }
 
 /***************************************************************************************************
@@ -47,7 +60,7 @@ StorageManager::~StorageManager()
 quint32 StorageManager::saveData()
 {
     Q_D(StorageManager);
-    if(!d->backend)
+    if (!d->backend)
     {
         return 0;
     }
@@ -55,21 +68,22 @@ quint32 StorageManager::saveData()
     StorageItem item;
     quint32 totalLength = 0;
 
-    //flush item
+    // flush item
     d->mutex.lock();
-    while(!d->storageItemList[!d->currentCacheList].isEmpty())
+    while (!d->storageItemList[!d->currentCacheList].isEmpty())
     {
         item = d->storageItemList[!d->currentCacheList].takeFirst();
         d->mutex.unlock();
         saveDataCallback(item.datatype, item.content.constData(), item.content.length());
-        totalLength += d->backend->appendBlockData(item.datatype, item.content.constData(), item.content.length(), item.extraData);
+        totalLength += d->backend->appendBlockData(item.datatype, item.content.constData(), item.content.length(),
+                       item.extraData);
         d->mutex.lock();
     }
     d->mutex.unlock();
 
 
 
-    //switch cache list
+    // switch cache list
     d->switchList();
     return totalLength;
 }
@@ -83,7 +97,7 @@ void StorageManager::discardData()
 
     StorageItem item;
     d->mutex.lock();
-    while(!d->storageItemList[!d->currentCacheList].isEmpty())
+    while (!d->storageItemList[!d->currentCacheList].isEmpty())
     {
         item = d->storageItemList[!d->currentCacheList].takeFirst();
     }
@@ -108,17 +122,18 @@ IStorageBackend *StorageManager::backend() const
 void StorageManager::addData(quint32 dataID, const char *data, quint32 len, quint32 extraData, bool needFreeData)
 {
     Q_D(StorageManager);
-    if(data == NULL || len == 0)
+    if (data == NULL || len == 0)
     {
         return;
     }
     char *buf = NULL;
-    if(needFreeData) {
-        buf = (char *)data;
+    if (needFreeData)
+    {
+        buf = const_cast<char *>(data);
     }
     else
     {
-        buf = (char *) malloc(len);
+        buf = static_cast<char *>(malloc(len));
         memcpy(buf, data, len);
     }
     StorageItem item(dataID, buf, len, extraData);
@@ -145,7 +160,7 @@ quint32 StorageManager::size() const
 {
     Q_D(const StorageManager);
 
-    if(d->backend)
+    if (d->backend)
     {
         return d->backend->fileSize();
     }
@@ -158,7 +173,7 @@ quint32 StorageManager::size() const
  **************************************************************************************************/
 IStorageBackend *StorageManager::open(const QString &filename, QIODevice::OpenMode openmode)
 {
-    //TODO: make a backend factory;
+    // TODO: make a backend factory;
     return new StorageFile(filename, openmode);
 }
 
@@ -176,10 +191,11 @@ bool StorageManager::exist(const QString &filename)
  * constructor : call by inherited class to perforem Q and D pointer
  **************************************************************************************************/
 StorageManager::StorageManager(StorageManagerPrivate *d_ptr, IStorageBackend *backend)
-    :d_ptr(d_ptr)
+    : d_ptr(d_ptr)
 {
     Q_D(StorageManager);
     d->backend = backend;
+    connect(&dataStorageDirManager, SIGNAL(newPatient()), this, SLOT(onNewPatientHandle()));
 }
 
 void StorageManager::saveDataCallback(quint32 dataID, const char *data, quint32 len)
@@ -187,6 +203,11 @@ void StorageManager::saveDataCallback(quint32 dataID, const char *data, quint32 
     Q_UNUSED(dataID);
     Q_UNUSED(data);
     Q_UNUSED(len);
+}
+
+void StorageManager::onNewPatientHandle()
+{
+    newPatientHandle();
 }
 
 

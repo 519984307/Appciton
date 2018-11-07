@@ -863,7 +863,7 @@
                     <LayoutItem stretch="1">PatientInfoWidget</LayoutItem>
                     <LayoutItem width="96">RunningStatusBar</LayoutItem>
                     <LayoutItem width="210">DateTimeWidget</LayoutItem>
-                    <LayoutItem width="50">AlarmMuteBarWidget</LayoutItem>
+                    <LayoutItem width="50">AlarmStatusWidget</LayoutItem>
                     <LayoutItem width="350">AlarmPhyInfoBarWidget</LayoutItem>
                     <LayoutItem width="350">AlarmTechInfoBarWidget</LayoutItem>
                 </LayoutItem>
@@ -943,6 +943,7 @@
                     <Standard>ECGIWaveWidget,ECGV1WaveWidget,ECGIIWaveWidget,ECGV2WaveWidget,ECGIIIWaveWidget,ECGV3WaveWidget,ECGaVRWaveWidget,ECGV4WaveWidget,ECGaVLWaveWidget,ECGV5WaveWidget,ECGaVFWaveWidget,ECGV6WaveWidget</Standard>
                     <Cabrera>ECGaVLWaveWidget,ECGV1WaveWidget,ECGIWaveWidget,ECGV2WaveWidget,ECGaVRWaveWidget,ECGV3WaveWidget,ECGIIWaveWidget,ECGV4WaveWidget,ECGaVFWaveWidget,ECGV5WaveWidget,ECGIIIWaveWidget,ECGV6WaveWidget</Cabrera>
                 </ECG12Lead>
+                <ECG7Lead>ECGIWaveWidget,ECGIIWaveWidget,ECGIIIWaveWidget,ECGaVLWaveWidget,ECGaVRWaveWidget,ECGaVFWaveWidget,ECGV1WaveWidget</ECG7Lead>
             </ContentLayout>
             <WidgetsOrder>
                 <FontSize>
@@ -980,7 +981,7 @@
                     <NightStatusBar>50</NightStatusBar>
                     <PatientStatusBarWidget>50</PatientStatusBarWidget>
                     <DateTimeWidget>100</DateTimeWidget>
-                    <AlarmMuteBarWidget>50</AlarmMuteBarWidget>
+                    <AlarmStatusWidget>50</AlarmStatusWidget>
                     <AlarmPhyInfoBarWidget>350</AlarmPhyInfoBarWidget>
                     <AlarmTechInfoBarWidget>350</AlarmTechInfoBarWidget>
                 </topBarRowOrder>
@@ -991,7 +992,6 @@
                 <bottomBarRowOrder>                                    
                 </bottomBarRowOrder>
                 <WaveTrendOrder>NIBPTrendWidget,NIBPDataTrendWidget</WaveTrendOrder>
-                <OxyCRGWidget>OxyCRGHRWidget,OxyCRGSPO2Widget,OxyCRGRESPWidget</OxyCRGWidget>
                 <!--软按键区比例-->
                 <softkeyAreaRowOrder>
                     <SoftkeyArea>1170</SoftkeyArea>

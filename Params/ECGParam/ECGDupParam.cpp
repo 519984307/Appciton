@@ -406,15 +406,6 @@ HRSourceType ECGDupParam::getCurHRSource() const
     return _hrSource;
 }
 
-
-/**************************************************************************************************
- * 设置计算导联字串。
- *************************************************************************************************/
-void ECGDupParam::setECGTrendWidgetCalcName(ECGLead calLead)
-{
-    _trendWidget->setTrendWidgetCalcName(calLead);
-}
-
 void ECGDupParam::onPaletteChanged(ParamID id)
 {
     if (id != PARAM_ECG)
@@ -459,6 +450,14 @@ bool ECGDupParam::isAutoTypeHrSouce() const
 QList<SubParamID> ECGDupParam::getShortTrendList()
 {
     return _trendWidget->getShortTrendSubParams();
+}
+
+void ECGDupParam::updateSubParamLimit(SubParamID id)
+{
+    if (id == SUB_PARAM_HR_PR)
+    {
+        _trendWidget->updateLimit();
+    }
 }
 
 /**************************************************************************************************

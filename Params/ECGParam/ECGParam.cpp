@@ -13,7 +13,6 @@
 #include "BaseDefine.h"
 #include "IConfig.h"
 #include "ECGWaveWidget.h"
-#include "OxyCRGHRWidget.h"
 #include "ECGPVCSTrendWidget.h"
 #include "ECGSTTrendWidget.h"
 #include "Debug.h"
@@ -430,7 +429,7 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
         flag = tmpFalg;
 
         // 12导模式下需要内部起搏标记(数据无效时不标记)
-        if ((faceType == UFACE_MONITOR_12LEAD) && ipaceMark && (!leadoff[i]))
+        if ((faceType == UFACE_MONITOR_ECG_FULLSCREEN) && ipaceMark && (!leadoff[i]))
         {
             flag |= ECG_INTERNAL_FLAG_BIT;
         }
@@ -470,7 +469,7 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
 
 #if 1
         // 诊断模式和12L模式的全部导联
-        if ((faceType == UFACE_MONITOR_12LEAD) || (WAVE_SAMPLE_RATE_500 == rate && i != ECG_LEAD_V6 + 1))
+        if ((faceType == UFACE_MONITOR_ECG_FULLSCREEN) || (WAVE_SAMPLE_RATE_500 == rate && i != ECG_LEAD_V6 + 1))
         {
             flag &= ~ECG_WAVE_RATE_250_BIT;
         }
@@ -518,7 +517,7 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
             norfalg &= ~ECG_EXTERNAL_SOLD_FLAG_BIT;
         }
 
-        if (!(i == WAVE_ECG_aVR && faceType == UFACE_MONITOR_12LEAD &&
+        if (!(i == WAVE_ECG_aVR && faceType == UFACE_MONITOR_ECG_FULLSCREEN &&
                 ecgParam.get12LDisplayFormat() == DISPLAY_12LEAD_CABRELA))
         {
             _waveWidget[i]->addWaveformData(waveform[i], norfalg & 0xFFFF);
@@ -1282,13 +1281,9 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
     if (calcLead != newCaclLead)
     {
         setCalcLead(newCaclLead);
-        if (layoutManager.getUFaceType() != UFACE_MONITOR_12LEAD)
+        if (layoutManager.getUFaceType() != UFACE_MONITOR_ECG_FULLSCREEN)
         {
             needUpdateLayout = 1;
-        }
-        else
-        {
-            ecgDupParam.setECGTrendWidgetCalcName(_calcLead);
         }
     }
 
@@ -1311,7 +1306,7 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
         layoutManager.updateLayout();
     }
 
-    if (layoutManager.getUFaceType() != UFACE_MONITOR_12LEAD)
+    if (layoutManager.getUFaceType() != UFACE_MONITOR_ECG_FULLSCREEN)
     {
         if (newMode == ECG_LEAD_MODE_3)
         {
@@ -1567,6 +1562,7 @@ void ECGParam::autoSetCalcLead(void)
     }
 
     setCalcLead(leads[index]);
+    currentConfig.setNumValue("ECG|Ecg1Wave", static_cast<int>(leads[index]));
     if (NULL != _waveWidget[calcLead] && NULL != _waveWidget[leads[index]])
     {
         layoutManager.updateLayout();
@@ -1676,7 +1672,7 @@ void ECGParam::setFilterMode(int mode)
     {
         return;
     }
-    _filterMode = (ECGFilterMode)mode;
+    _filterMode = static_cast<ECGFilterMode>(mode);
     if (NULL != _provider)
     {
         _provider->setFilterMode(_filterMode);
@@ -1968,6 +1964,8 @@ int ECGParam::getMaxGain(void)
  *************************************************************************************************/
 void ECGParam::setQRSToneVolume(SoundManager::VolumeLevel vol)
 {
+    // 将脉搏音与心跳音绑定在一起，形成联动
+    currentConfig.setNumValue("SPO2|BeatVol", static_cast<int>(vol));
     currentConfig.setNumValue("ECG|QRSVolume", static_cast<int>(vol));
     soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT, vol);
 }
@@ -2259,7 +2257,8 @@ ECGParam::ECGParam() : Param(PARAM_ECG),
 //    _lastCabelType = 0x00;
     _isPowerOnNewSession = true;
 
-    connect(this, SIGNAL(oxyCRGWaveUpdated()), this, SLOT(onOxyCRGWaveUpdated()));
+    // 绑定当前工作模式改变信号和滤波模式槽函数
+    connect(&systemManager, SIGNAL(workModeChanged(WorkMode)), this, SLOT(onWorkModeChanged(WorkMode)));
 }
 
 /**************************************************************************************************
@@ -2270,32 +2269,13 @@ ECGParam::~ECGParam()
     _timer.stop();
 }
 
-void ECGParam::setOxyCRGCO2Widget(OxyCRGCO2Widget *p)
+void ECGParam::onWorkModeChanged(WorkMode mode)
 {
-    if (p)
+    if (mode != WORK_MODE_DEMO)
     {
-        _oxyCRGCO2Widget = p;
+        return;
     }
-}
-
-void ECGParam::setOxyCRGRESPWidget(OxyCRGRESPWidget *p)
-{
-    if (p)
-    {
-        _oxyCRGRESPWidget = p;
-    }
-}
-
-void ECGParam::onOxyCRGWaveUpdated()
-{
-    if (_oxyCRGCO2Widget)
-    {
-//        _oxyCRGCO2Widget->update();
-    }
-    if (_oxyCRGRESPWidget)
-    {
-//        _oxyCRGRESPWidget->update();
-    }
+    setFilterMode(ECG_FILTERMODE_DIAGNOSTIC);
 }
 
 void ECGParam::onPaletteChanged(ParamID id)

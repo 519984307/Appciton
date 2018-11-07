@@ -21,7 +21,7 @@ NEO,新生儿,Neonate
 AlarmLimit,报警限,Alarm Limit
 Other,其它,Other
 Notch,陷波,Notch
-EditPassWordDesc,修改密码,Edit Password Desc
+EditPassWordDesc,修改密码,Edit Password
 EditPassWord,修改密码,Edit Password
 LastPassword,上次密码,Last Password
 EditPasswordNotSuccess,修改密码失败,Edit Password Not Success
@@ -130,7 +130,8 @@ ECGBandwidth,带宽,Bandwidth
 ECGGain,增益,Gain
 ECGPacemaker,起搏器,Pacemaker
 ECGSweepSpeed,波形速度,Sweep Speed
-ECGQRSToneVolume,QRS/PR 音量,QRS/PR Volume
+ECGQRSToneVolume,QRS 音量,QRS Volume
+BeatVol,脉搏音量,Beat Vol
 ECGMenu,ECG,ECG
 ECGSTSWitch,ST开关,ST SWitch
 ECGSTPoint,ST点,ST Point
@@ -143,7 +144,6 @@ Arrhythmia,心律失常 >>,Arrhythmia >>
 ECGPaceMarker,起搏标记,Pace maker
 ECG12LPaceMarker,12导起搏标记,12L Pace maker
 SelfLearn,自学习,Self Learn
-ECGQRSPRToneVolume,QRS/PR 音量,QRS/PR Volume
 Asystole,停搏时间,Asystole
 HeartPause,暂停时间,Heart Pause
 Tachycardia,心动过速,Tachy cardia
@@ -221,7 +221,8 @@ T2,T2,T2
 TD,ΔT,ΔT
 ConfigEditTEMPMenu,TEMP,TEMP
 ConfigEditTEMPMenuDesc,TEMP,TEMP
-TEMPMenu,TEMP,TEMP
+TEMPMenuContent,TEMP,TEMP
+TEMPMenuContentDesc,TEMP,TEMP
 TEMPUnit,单位,Unit
 TEMP1Low,体温1低,TEMP1 Low
 TEMP1High,体温1高,TEMP1 High
@@ -247,8 +248,8 @@ PatientManager,病人管理,Patient Manager
 PatientManagerDesc,病人管理,Patient Manager Desc
 PatientInfo,病人信息,Patient Info
 NewPatient,新建病人,New Patient
-NormalFunctionMenu,常规功能,Normal Function Menu
-NormalFunctionMenuDesc,常规功能,Normal Function Menu Desc
+NormalFunctionMenu,常规功能,Normal Function
+NormalFunctionMenuDesc,常规功能,Normal Function
 Calculate,计算,Calculate
 WiFiProfile,WiFi配置,WiFi Profile
 MachineVersion,机器版本,Machine Version
@@ -278,6 +279,8 @@ celsius,℃,℃
 fahrenheit,℉,℉
 percent,%,%
 AlarmSettingMenu,报警,Alarm
+Defaults,恢复默认值,Defaults
+SureAllAlarmDefaults,"所有报警设置将恢复默认值,您确定进行吗?",All alarm settings will reset to the defaults. Are you sure to continue?
 AlarmSettingUp,报警限设置,Alarm Setting Up
 LatchLockSwitch,报警栓锁,Alarm Latch Lock
 AlarmLimitMenu,报警限,Alarm Limit
@@ -415,14 +418,15 @@ NIBPWAITING,请等待,NIBP Waiting
 NIBPNoResponse,无响应,No Response
 NIBPTemporarily,临时,Temporarily
 NIBPDisable,禁用,Disable
-_1min,1 分,1 min
+_1min,1 min,1 min
 _1.5min,1.5 分,1.5 min
-_2min,2 分,2 min
+_2min,2 min,2 min
 _2.5min,2.5 分,2.5 min
 _3min,3 分,3 min
 _3.5min,3.5 分,3.5 min
-_4min,4 分,4 min
+_4min,4 min,4 min
 _5min,5 分,5 min
+_8min,8 min,8 min
 _10min,10 分,10 min
 _15min,15 分,15 min
 _20min,20 分,20 min
@@ -434,8 +438,8 @@ _120min,120 分,120 min
 min,分,min
 Parameter,参数,Parameter
 AlarmStatus,状态,Status
-LowerLimit,低限,Lower Limit
-UpperLimit,高限,Upper Limit
+LowerLimit,低限,Low
+UpperLimit,高限,High
 NIBP_SYS,收缩压,SYS
 NIBP_DIA,舒张压,DIA
 NIBP_MAP,平均压,MAP
@@ -960,6 +964,7 @@ SelectHistoryData,选择历史数据,Select Data
 TrendTable,趋势表,Trend Table
 Page,翻页,Page
 TrendGraph,趋势图,Trend Graph
+Scroll,滚动,Scroll
 PreviousEvent,上个事件,Prv Event
 NextEvent,下个事件,Next Event
 EventReview,事件回顾,Event Review
@@ -997,6 +1002,7 @@ AlarmMute,报警静音,Mute
 RecorderAction,记录仪,Recorder Action
 PrinterDoorOpened,打印机仓门未关,Printer Door Opened
 PrinterOutOfPaper,打印机缺纸,Printer Out Of Paper
+PrinterOverHeating,打印头过热,Printer Over Heating
 PrinterFault,打印机故障,Printer Fault
 PacerDisabled,起搏失效,Pacer Disabled
 ReplaceBattery,替换电池,Replace Battery
@@ -1079,8 +1085,8 @@ CodeMarker27,Digoxin,Paralytic
 CodeMarker28,Vasopr,Nitro
 CodeMarker29,Dextrose,Lasix
 CodeMarker30,Paralytic,Calcium
-CodeMarker31,Albuterol,
-CodeMarker32,Nitro,
+CodeMarker31,Albuterol,Albuterol
+CodeMarker32,Nitro,Nitro
 DoseCalculation,剂量计算,Dose Calculation
 DrugName,药物名称,Drug Name
 DrugTotal,药物总量,Drug Total
@@ -1131,7 +1137,8 @@ PrimitiveCalculation,原始计算,Primitive Calculation
 InOutValue,输入/输出值,
 ZeroCalibSuccess,校零成功,
 ZeroInProgress,校零进行中,Zero in progress
-CalibrationSuccess,校准成功,
+CalibrationSuccess,校准成功,Calibration Success
+CalibrationFail,校准失败,Calibration Fail
 MeasurePressureIsPulse,测量压力是脉动的,
 ZeroCalibPressureBeyondMeasureRange,校零压力超出测量范围,
 CalibrationPressureBeyondMeasureRange,校准压力超出测量范围,
@@ -1355,7 +1362,7 @@ NeoDefaultConfig,新生儿默认配置,Neo Default Config
 FactoryConfig,工厂配置,Factory Config
 CurrentConfig,当前配置,Current Config
 ConfigManagerment,配置管理,Config Manager
-ConfigManagermentDesc,配置管理设置,Config Managerment Desc
+ConfigManagermentDesc,配置管理,Config Managerment
 General,通用,General
 SetConfigName,设置配置项名称,Set Config Name
 GeneralDesc,通用设置,General Desc
@@ -1407,8 +1414,13 @@ FactoryDataRecordDesc,数据记录,Data Record
 PDCommData,PD 通信数据,PD Comm Data
 TEMPCalibrateDesc,温度校准,TEMP Calibrate
 SystemInfoSettingDesc,系统信息,System Info
+FactoryVersionInfo,版本信息,Version Info
+FactoryVersionInfoDesc,版本信息,Version Info
 SelectStarterLogo,选择开始菜单,Select Starter Logo
+WaitingCalibration,等待校准,Waiting Calibration
+Calibrating,正在校准,
 TEMPCalibrate0,温度校准0,TEMP Calibrate0
+TEMPCalibrate5,温度校准5,TEMP Calibrate5
 TEMPCalibrate10,温度校准10,TEMP Calibrate10
 TEMPCalibrate15,温度校准15,TEMP Calibrate15
 TEMPCalibrate20,温度校准20,TEMP Calibrate20
@@ -1419,6 +1431,7 @@ TEMPCalibrate40,温度校准40,TEMP Calibrate40
 TEMPCalibrate45,温度校准45,TEMP Calibrate45
 TEMPCalibrate50,温度校准50,TEMP Calibrate50
 TEMPCalibrate0is7409.3,温度校准0是7409.3,TEMP Calibrate0 is 7409.3
+TEMPCalibrate5is5742.9,温度校准5是5742.9,TEMP Calibrate5 is 5742.9
 TEMPCalibrate10is4491.1,温度校准10是4491.1,TEMP Calibrate10 is 4491.1
 TEMPCalibrate15is3541.3,温度校准15是3541.3,TEMP Calibrate15 is 3541.3
 TEMPCalibrate20is2813.9,温度校准20是2813.9,TEMP Calibrate20 is 2813.9
@@ -1430,6 +1443,8 @@ TEMPCalibrate45is984,温度校准45是984,TEMP Calibrate45 is 984
 TEMPCalibrate50is811.3,温度校准50是811.3,TEMP Calibrate50 is 811.3
 TEMP1,温度1,TEMP1
 TEMP2,温度2,TEMP2
+TEMPModuleNotCalibration1,温度模块通道1未定标,TEMP Channel 1 Not Calibration
+TEMPModuleNotCalibration2,温度模块通道2未定标,TEMP Channel 2 Not Calibration
 TEMPModuleDisable,温度模块失能,TEMP Module Disable
 TEMPCommunicationStop,温度通信停止,TEMP Communication Stop
 TEMPChannel,温度通道,TEMP Channel
@@ -1445,7 +1460,7 @@ LoadConfig,加载配置,Load Config
 SuccessToLoad,加载成功,Success ToLoad
 Load,加载,Load
 View,查看,View
-LoadConfigDesc,加载配置设置,Load Config Desc
+LoadConfigDesc,加载配置,Load Config
 Trend1,趋势图1 ,Trend 1
 Trend2,趋势图2,Trend 2
 RulerAdjust,标尺调整,Ruler Adjust
@@ -1455,10 +1470,12 @@ Wave,波形,Wave
 DefaultSetting,缺省设置,Default Setting
 CO2Low,二氧化碳低,CO2 Low
 CO2High,二氧化碳高,CO2 High
+AutoRuler,自动标尺,Auto Ruler
 RESPLow,呼吸低,RESP Low
 RESPHigh,呼吸高,RESP High
+ImportFiles,导入文件,ImportFiles
 LoadConfigMenuContent,加载配置,Load Config
-LoadConfigMenuContentDesc,加载配置设置,Load Config Desc
+LoadConfigMenuContentDesc,加载配置,Load Config
 ConfigManagerPassword,配置管理密码,Config Manager Password
 ConfigEditCodeMarkerMenu,Code Marker,Code Marker
 ConfigEditCodeMarkerMenuDesc,Code Marker,Code Marker
@@ -1473,7 +1490,7 @@ Blood,血液,Blood
 DeleteAll,删除全部,Delete All
 DeleteCase,删除事件,Delete Case
 Freeze,冻结,Freeze
-LockScreen,锁屏,Lock Screen
+DisableTouchScreen,禁触摸屏,Disable Touch
 Open,开放,Open
 Start,开始,Start
 AlarmLightOnAlarmReset,警示复位灯,Alarm Light On Alarm Reset
@@ -1493,7 +1510,7 @@ _12Lead,12 导联,12 Lead
 OxyCRG,呼吸氧合,OxyCRG
 Trend,趋势,Trend
 BigFont,大字体,Big Font
-DEMO,演示,DEMO
+DEMO,  演  示  ,  DEMO  
 DemoMode,演示模式,Demo Mode
 DemoModeMenu,演示模式,Demo Modea Menu
 DemoModePassword,演示模式密码,Demo Mode Password
@@ -1533,6 +1550,7 @@ MinitrendSetup,短趋势设置,Minitrend Setup
 MinitrendLength,动态趋势时间,Minitrend Length
 SelectParameters,参数选择,Select Parameters
 Ok,确定,Ok
+SelectOriginalConfig,选择原始配置,Select Original Config
 RestoreDefault,恢复默认值,Defaluts
 CurrentConfig,当前配置,Current Config
 FactoryConfig,工厂配置,Factory Config 
@@ -1543,9 +1561,11 @@ Machine,机器,Machine
 Ped,小儿,Pediatric
 Neo,新生儿,Neonate
 SaveCurrentSettingAs,保存当前设置,Save Current Setting
-SaveCurrentSettingAsDesc,保存当前设置菜单,Save Current Setting As
+SaveCurrentSettingAsDesc,保存当前设置菜单,Save Current Setting
 reachedTheMaximunOfConfigurations,用户配置已满，继续保存之前请删除已有的用户配置,The maximum of user configurations is reached.Please delete existing user configurations first.
 SaveAsUserConfig,用户配置保存,Save As User Config
 SaveCurrentSettingAndConfigurationName,保存当前监护仪的设置为用户配置，您的配置命名为,Save the current settings as user configuration.Please name the configuration.
 ConfigurationName,配置名称,Configuraiton Name
 HasExistConfig,该配置名称与监护仪上配置重名。请重新命名！,The configuration name is repeated with the configuration.Please rename!
+ECGFullScreen,心电全屏,ECG Full Screen
+isSaveLayout,是否保存布局配置？,Do you want to save the layout config?

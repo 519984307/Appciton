@@ -11,22 +11,15 @@
 
 #include "SoftkeyActionBase.h"
 #include "SoftKeyManager.h"
+#include "SoftkeyActionBase.h"
 #include <QApplication>
-#include "SoftKeyWidget.h"
 #include "ECGParam.h"
-#include "SystemBoardProvider.h"
 #include "WindowManager.h"
 #include "PatientInfoWindow.h"
 #include "MessageBox.h"
 #include "CO2Param.h"
-#include "SystemManager.h"
 #include "DoseCalculationManager.h"
-#include "Window.h"
-#include "MenuSidebar.h"
 #include "MenuWindow.h"
-#include "Frame.h"
-#include "FrameItem.h"
-#include "ComboBox.h"
 #include "PatientManager.h"
 #include "PatientInfoWindow.h"
 #include "CodeMarkerWindow.h"
@@ -37,9 +30,14 @@
 #include "IBPParam.h"
 #include "IConfig.h"
 #include "NightModeManager.h"
-#include "MenuSidebarItem.h"
 #include "StandbyWindow.h"
 #include "CalculateWindow.h"
+
+enum Co2Mode
+{
+    CO2_MODE_STANDBY,
+    CO2_MODE_MEASURE
+};
 
 /***************************************************************************************************
  * 所有的快捷按键定义。
@@ -54,15 +52,14 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", trs("AlarmSettingMenu"), "limitSet.png", SoftkeyActionBase::limitMenu),
     KeyActionDesc("", trs("CodeMarker"), "CodeMarker.png", SoftkeyActionBase::codeMarker),
     KeyActionDesc("", trs("TrendGraph"), "Summary.png", SoftkeyActionBase::summaryReview),
-    KeyActionDesc("", trs("eventReview"), "Summary.png", SoftkeyActionBase::eventReview),
+    KeyActionDesc("", trs("eventReview"), "Summary1.png", SoftkeyActionBase::eventReview),
     KeyActionDesc("", trs("ChooseScreen"), "screenSwitch.png", SoftkeyActionBase::switchSystemMode),
     KeyActionDesc("", trs("ScreenSetup"), "interface.png",   SoftkeyActionBase::WindowLayout),
     KeyActionDesc("", trs("ParameterSwitch"), "paraSwitch.png"),
-    KeyActionDesc("", trs("LockScreen"), "lockScreen.png", SoftkeyActionBase::lockScreen),
+    KeyActionDesc("", trs("DisableTouchScreen"), "lockScreen.png", SoftkeyActionBase::lockScreen),
     KeyActionDesc("", trs("Standby"), "standby.png", SoftkeyActionBase::standby),
     KeyActionDesc("", trs("CO2ZeroCalib"), "calib.png", SoftkeyActionBase::CO2Zero),
-    KeyActionDesc("", trs("CO2Standby"), "standby.png", SoftkeyActionBase::CO2Standby),
-    KeyActionDesc("", trs("CO2Measure"), "measure.png", SoftkeyActionBase::CO2Measure),
+    KeyActionDesc("", trs("CO2Standby"), "standby.png", SoftkeyActionBase::CO2Handle),
     KeyActionDesc("", trs("IBPZeroCalib"), "calib.png", SoftkeyActionBase::IBPZero),
     KeyActionDesc("", trs("Calculation"), "dosecalculation.png", SoftkeyActionBase::calculation),
     KeyActionDesc("", trs("KeyBoardVolumn"), "keyBoard.png", SoftkeyActionBase::keyVolume),
@@ -130,7 +127,8 @@ void SoftkeyActionBase::WindowLayout(bool isPressed)
     }
 
     windowManager.showWindow(ScreenLayoutWindow::getInstance(),
-                             WindowManager::ShowBehaviorCloseIfVisiable | WindowManager::ShowBehaviorCloseOthers);
+                             WindowManager::ShowBehaviorNoAutoClose |
+                             WindowManager::ShowBehaviorCloseOthers);
 }
 
 /***************************************************************************************************
@@ -152,8 +150,8 @@ void SoftkeyActionBase::calculation(bool isPressed)
     {
         return;
     }
-    CalculateWindow w;
-    windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
+    CalculateWindow *w = CalculateWindow::getInstance();
+    windowManager.showWindow(w, WindowManager::ShowBehaviorCloseOthers);
 }
 
 /***************************************************************************************************
@@ -225,7 +223,11 @@ void SoftkeyActionBase::lockScreen(bool isPressed)
     {
         return;
     }
-    // TODO : lockScreen
+
+#ifdef Q_WS_QWS
+    bool isOn = systemManager.isTouchScreenOn();
+    systemManager.setTouchScreenOnOff(!isOn);
+#endif
 }
 
 void SoftkeyActionBase::switchSystemMode(bool isPressed)
@@ -284,22 +286,31 @@ void SoftkeyActionBase::CO2Zero(bool isPressed)
     co2Param.zeroCalibration();
 }
 
-void SoftkeyActionBase::CO2Standby(bool isPressed)
+void SoftkeyActionBase::CO2Handle(bool isPressed)
 {
     if (isPressed)
     {
         return;
     }
-    // TODO: CO2待机
-}
 
-void SoftkeyActionBase::CO2Measure(bool isPressed)
-{
-    if (isPressed)
+    static Co2Mode co2Mode = CO2_MODE_STANDBY;
+    if (co2Mode == CO2_MODE_STANDBY)
     {
-        return;
+        co2Mode = CO2_MODE_MEASURE;
+        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("measure.png");
+        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Measure");
+
+        // TODO: CO2待机
     }
-    // TODO: CO2测量
+    else
+    {
+        co2Mode = CO2_MODE_STANDBY;
+        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].iconPath = QString("standby.png");
+        _baseKeys[SOFT_BASE_KEY_CO2_HANDLE].hint = trs("CO2Standby");
+
+        // TODO: CO2测量
+    }
+    softkeyManager.refreshPage(false);
 }
 
 void SoftkeyActionBase::IBPZero(bool isPressed)

@@ -14,7 +14,6 @@
 #include "CO2Symbol.h"
 #include "UnitManager.h"
 #include "AlarmDefine.h"
-#include "OxyCRGCO2Widget.h"
 
 class CO2TrendWidget;
 class CO2WaveWidget;
@@ -83,6 +82,9 @@ public:
     // 获取BR。
     void setBR(short);
 
+    // 设置RR
+    void setRR(short);
+
     // 设置获取实时大气压值。
     short getBaro(void);
     void setBaro(short);
@@ -150,6 +152,8 @@ public:
     short getEtCO2MaxValue();
     short getEtCO2MinValue();
 
+    // 刷新参数上下限
+    virtual void updateSubParamLimit(SubParamID id);
 private slots:
     void onPaletteChanged(ParamID id);
 

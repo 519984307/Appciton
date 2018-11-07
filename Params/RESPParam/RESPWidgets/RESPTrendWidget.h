@@ -24,6 +24,9 @@ public:
     // 刷新BR和RR的值。
     void setRRValue(int16_t rr, bool isRR);
 
+    // 刷新趋势参数上下限
+    void updateLimit(void);
+
     // 是否报警
     void isAlarm(bool flag);
 
@@ -34,6 +37,8 @@ public:
     ~RESPTrendWidget();
 
     QList<SubParamID> getShortTrendSubParams() const;
+public:
+    virtual void doRestoreNormalStatus();
 
 protected:
     virtual void setTextSize(void);

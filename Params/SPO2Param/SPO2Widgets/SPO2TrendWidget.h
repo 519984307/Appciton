@@ -22,6 +22,9 @@ public:
     // 设置SPO2的值。
     void setSPO2Value(int16_t spo2);
 
+    // 刷新趋势参数上下限
+    void updateLimit(void);
+
     // 设置棒图的值。
     void setBarValue(int16_t bar);
 
@@ -41,6 +44,8 @@ public:
     ~SPO2TrendWidget();
 
     QList<SubParamID> getShortTrendSubParams() const;
+public:
+    virtual void doRestoreNormalStatus();
 
 protected:
     virtual void setTextSize(void);

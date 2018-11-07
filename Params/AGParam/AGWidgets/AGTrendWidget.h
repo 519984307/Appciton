@@ -21,8 +21,11 @@ public:
     void setAnestheticType(AGAnaestheticType type);
 
     // 设置测量实时数据。
-    void setEtData(short etValue);
-    void setFiData(short fiValue);
+    void setEtData(int16_t etValue);
+    void setFiData(int16_t fiValue);
+
+    // 刷新趋势参数上下限
+    void updateLimit(void);
 
     // 是否报警
     void isAlarm(int id, bool flag);
@@ -36,6 +39,9 @@ public:
 
     QList<SubParamID> getShortTrendSubParams() const;
 
+public:
+    virtual void doRestoreNormalStatus();
+
 protected:
     virtual void setTextSize(void);
 
@@ -43,6 +49,7 @@ private slots:
     void _releaseHandle(IWidget *);
 
 private:
+    QLabel *_etName;
     QLabel *_etValue;
     QLabel *_fiName;
     QLabel *_fiValue;

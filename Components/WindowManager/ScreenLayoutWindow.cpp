@@ -17,6 +17,7 @@
 #include "Button.h"
 #include "LanguageManager.h"
 #include "LayoutManager.h"
+#include "MessageBox.h"
 
 class ScreenLayoutWindowPrivate
 {
@@ -99,6 +100,22 @@ ScreenLayoutWindow::~ScreenLayoutWindow()
     delete d_ptr;
 }
 
+void ScreenLayoutWindow::hideEvent(QHideEvent *ev)
+{
+    Window::hideEvent(ev);
+    ScreenLayoutModel *model = qobject_cast<ScreenLayoutModel*>(d_ptr->view->model());
+    if (model->isChangeLayoutInfo())
+    {
+        MessageBox message(trs("Prompt"), trs("isSaveLayout"));
+        int ret = message.exec();
+        if (ret == QDialog::Accepted)
+        {
+            model->saveLayoutInfo();
+            layoutManager.reloadLayoutConfig();
+        }
+    }
+}
+
 void ScreenLayoutWindow::onButtonClicked()
 {
     Button *btn = qobject_cast<Button *>(sender());
@@ -117,5 +134,9 @@ void ScreenLayoutWindow::onButtonClicked()
         model->saveLayoutInfo();
         layoutManager.reloadLayoutConfig();
         this->close();
+    }
+    else if (btn == d_ptr->defaultBtn)
+    {
+        model->loadLayoutInfo(true);
     }
 }

@@ -54,6 +54,10 @@ protected:
      * @brief readyShow
      */
     virtual void readyShow();
+
+    /* reimplment */
+    void showEvent(QShowEvent *ev);
+
 private slots:
     /**
      * @brief onBtnClick
@@ -63,6 +67,12 @@ private slots:
      * @brief updateBtnStatus
      */
     void updateBtnStatus();
+
+    /**
+     * @brief onTimeOut  定时器触发函数
+     */
+    void onTimeOut(void);
+
 private:
     /**
      * @brief checkXMLContent  check validity of the import XML
@@ -78,7 +88,7 @@ private:
      * @param localtag    local check tag
      * @return ture-valid;false-invalid；
      */
-    bool compareTagAttribute(QDomElement importtag, QDomElement localtag);//
+    bool compareTagAttribute(QDomElement importtag, QDomElement localtag);
 
 
     FactoryImportExportMenuContentPrivate *const d_ptr;

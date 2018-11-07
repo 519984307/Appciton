@@ -19,6 +19,8 @@
 #include <QVBoxLayout>
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"
+#include "AlarmConfig.h"
+#include "ParamManager.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -76,6 +78,7 @@ bool CO2TrendWidget::enable()
 void CO2TrendWidget::setEtCO2Value(int16_t v)
 {
     _setValue(v, _etco2Str);
+    _etco2Value->setText(_etco2Str);
 }
 
 /**************************************************************************************************
@@ -84,6 +87,27 @@ void CO2TrendWidget::setEtCO2Value(int16_t v)
 void CO2TrendWidget::setFiCO2Value(int16_t v)
 {
     _setValue(v, _fico2Str);
+    _fico2Value->setText(_fico2Str);
+}
+
+void CO2TrendWidget::setawRRValue(int16_t v)
+{
+    if (v == InvData())
+    {
+        _awRRStr = InvStr();
+    }
+    else
+    {
+        _awRRStr = QString::number(v);
+    }
+    _awRRValue->setText(_awRRStr);
+}
+
+void CO2TrendWidget::updateLimit()
+{
+    UnitType unitType = paramManager.getSubParamUnit(PARAM_CO2, SUB_PARAM_ETCO2);
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_ETCO2, unitType);
+    setLimit(config.highLimit, config.lowLimit, config.scale);
 }
 
 /**************************************************************************************************
@@ -152,32 +176,20 @@ void CO2TrendWidget::showValue()
         if (!_fico2Alarm)
         {
             showNormalStatus(_fico2Value, fgColor);
-            showNormalStatus(_fico2Label, fgColor);
         }
 
         if (_etco2Alarm)
         {
-            showAlarmStatus(_etco2Value, fgColor);
+            showAlarmStatus(_etco2Value);
+            showAlarmParamLimit(_etco2Value, _etco2Str, fgColor);
         }
 
         if (_fico2Alarm)
         {
-            showAlarmStatus(_fico2Value, fgColor, false);
-            showAlarmStatus(_fico2Label, fgColor, false);
+            showAlarmStatus(_fico2Value);
         }
-    }
-    else
-    {
-        showNormalStatus(_etco2Value, fgColor);
-        showNormalStatus(_fico2Value, fgColor);
-        showNormalStatus(_fico2Label, fgColor);
-    }
 
-    _etco2Value->setText(_etco2Str);
-
-    if (!_fico2Value->isHidden())
-    {
-        _fico2Value->setText(_fico2Str);
+        restoreNormalStatusLater();
     }
 }
 
@@ -198,12 +210,15 @@ void CO2TrendWidget::setTextSize()
     _etco2Value->setFont(font);
 
     fontsize = fontManager.adjustNumFontSize(r, true, "2222");
-    font = fontManager.numFont(fontsize / 1.5, true);
+    font = fontManager.numFont(fontsize / 3, true);
     font.setWeight(QFont::Black);
     _fico2Value->setFont(font);
+    _awRRValue->setFont(font);
 
-    QFont fico2Font = fontManager.textFont(fontManager.getFontSize(9));
-    _fico2Label->setFont(fico2Font);
+    font = fontManager.textFont(fontManager.getFontSize(3));
+    _etCO2Label->setFont(font);
+    _fico2Label->setFont(font);
+    _awRRName->setFont(font);
 }
 
 // 立刻显示数据。
@@ -220,6 +235,7 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
 {
     _etco2Str = InvStr();
     _fico2Str = InvStr();
+    _awRRStr = InvStr();
     _etco2Alarm = false;
     _fico2Alarm = false;
 
@@ -228,28 +244,52 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
 
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
     setPalette(palette);
-    setName(trs(paramInfo.getSubParamName(SUB_PARAM_ETCO2)));
+    setName("CO2");
     setUnit(Unit::localeSymbol(co2Param.getUnit()));
 
+    // 设置上下限
+    updateLimit();
+
 //    // 构造资源。
+    _etCO2Label = new QLabel("Et", this);
+    _etCO2Label->setPalette(palette);
+    _etCO2Label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+
     _etco2Value = new QLabel();
     _etco2Value->setAlignment(Qt::AlignHCenter | Qt::AlignTop|Qt::AlignVCenter);
 
     _etco2Value->setPalette(palette);
     _etco2Value->setText(InvStr());
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(_etCO2Label, 1);
+    layout->addWidget(_etco2Value, 3);
 
-    _fico2Label = new QLabel(trs("FICO2"), this);
+    _awRRName = new QLabel("awRR", this);
+    _awRRName->setPalette(palette);
+    _awRRName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+
+    _fico2Label = new QLabel("Fi", this);
     _fico2Label->setPalette(palette);
     _fico2Label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->addWidget(_awRRName);
+    vLayout->addWidget(_fico2Label);
+    layout->addLayout(vLayout, 1);
+
+    _awRRValue = new QLabel(this);
+    _awRRValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
+    _awRRValue->setPalette(palette);
+    _awRRValue->setText(InvStr());
 
     _fico2Value = new QLabel(this);
     _fico2Value->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
     _fico2Value->setPalette(palette);
     _fico2Value->setText(InvStr());
-
-    contentLayout->addWidget(_etco2Value, 3);
-    contentLayout->addWidget(_fico2Label, 1);
-    contentLayout->addWidget(_fico2Value, 3);
+    vLayout = new QVBoxLayout();
+    vLayout->addWidget(_awRRValue);
+    vLayout->addWidget(_fico2Value);
+    layout->addLayout(vLayout, 3);
+    contentLayout->addLayout(layout, 7);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
@@ -268,4 +308,13 @@ QList<SubParamID> CO2TrendWidget::getShortTrendSubParams() const
     list.append(SUB_PARAM_ETCO2);
     list.append(SUB_PARAM_FICO2);
     return list;
+}
+
+void CO2TrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
+    psrc = normalPalette(psrc);
+    showNormalParamLimit(psrc);
+    showNormalStatus(_etco2Value, psrc);
+    showNormalStatus(_fico2Value, psrc);
 }

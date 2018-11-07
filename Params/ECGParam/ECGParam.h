@@ -16,9 +16,8 @@
 #include "SoundManager.h"
 #include <QBasicTimer>
 #include "SystemDefine.h"
-#include "OxyCRGCO2Widget.h"
-#include "OxyCRGRESPWidget.h"
 #include "ECGAlg2SoftInterface.h"
+#include "SystemManager.h"
 
 enum
 {
@@ -30,7 +29,6 @@ enum
 
 class ECGPVCSTrendWidget;
 class ECGSTTrendWidget;
-class OxyCRGHRWidget;
 class MonitorSoftkeyAction;
 class ECGWaveWidget;
 class ECGProviderIFace;
@@ -57,17 +55,6 @@ public:
     friend class TestECGParam;
 #endif
 public:
-    /**
-     * @brief setOxyCRGRESPWidget //加入呼吸氧和中波形
-     * @param p //呼吸氧和中resp波形指针
-     */
-    void setOxyCRGRESPWidget(OxyCRGRESPWidget *p);
-    /**
-     * @brief setOxyCRGCO2Widget //加入呼吸氧和中波形
-     * @param p //呼吸氧和中co2波形指针
-     */
-    void setOxyCRGCO2Widget(OxyCRGCO2Widget *p);
-
     // 发送协议命令
     void sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len);
 
@@ -317,10 +304,6 @@ public: // 用于访问配置相关信息。
 
 signals:
     void calcLeadChanged();
-    /**
-     * @brief oxyCRGWaveUpdated 呼吸氧和波形更新信号
-     */
-    void oxyCRGWaveUpdated(void);
 
     /**
      * @brief updateNotchFilter 陷波信息更新信号
@@ -333,9 +316,9 @@ signals:
 
 private slots:
     /**
-     * @brief onOxyCRGWaveUpdated 呼吸氧和波形更新槽函数
+     * @brief onWorkModeChanged  滤波模式更新
      */
-    void onOxyCRGWaveUpdated(void);
+    void onWorkModeChanged(WorkMode mode);
 
     /**
      * @brief onPaletteChanged change palette
@@ -366,9 +349,6 @@ private:
     ECGFilterMode _filterMode;
     Display12LeadFormat _12LeadDispFormat;
     ECGLeadNameConvention _ecgStandard;
-
-    OxyCRGCO2Widget *_oxyCRGCO2Widget;
-    OxyCRGRESPWidget *_oxyCRGRESPWidget;
 
     char _leadOff[ECG_LEAD_NR];
     MonitorSoftkeyAction *_monitorSoftkey;

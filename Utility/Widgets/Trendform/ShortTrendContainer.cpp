@@ -100,32 +100,32 @@ void ShortTrendContainer::addSubParamToTrendItem(int trendindex, QList<SubParamI
     ShortTrendItem *item = d_ptr->trendItems.at(trendindex);
     item->setSubParamList(subParamIDs);
 
-    if (subParamIDs[0] == SUB_PARAM_NIBP_SYS
+    if ((subParamIDs[0] == SUB_PARAM_NIBP_SYS
             || subParamIDs[0] == SUB_PARAM_NIBP_DIA
-            || subParamIDs[0] == SUB_PARAM_NIBP_MAP)
+            || subParamIDs[0] == SUB_PARAM_NIBP_MAP) && !item->isNibpTrend())
     {
         item->setNibpTrend(true);
+        connect(&trendDataStorageManager, SIGNAL(newNibpDataReceived()),
+                item, SLOT(onNewNibpMeasurementData()));
     }
-    else
+    else if (item->isNibpTrend())
     {
+        disconnect(&trendDataStorageManager, SIGNAL(newNibpDataReceived()),
+                item, SLOT(onNewNibpMeasurementData()));
         item->setNibpTrend(false);
     }
 
     ParamID parmID = paramInfo.getParamID(subParamIDs[0]);
     item->setWaveColor(colorManager.getColor(paramInfo.getParamName(parmID)));
+
     if (subParamIDs.count() == 1)
     {
-        // this is the first subparam, use the first param's data range and color
+        // only one sub param, use the sub parameter's name
         item->setTrendName(trs(paramInfo.getSubParamName(subParamIDs[0])));
-        // use the limit alarm range as the data range
-        UnitType unit = paramManager.getSubParamUnit(parmID, subParamIDs[0]);
-        LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subParamIDs[0], unit);
-        item->setValueRange(config.maxHighLimit, config.minLowLimit, config.scale);
     }
     else
     {
-        // if the trend item contain more than 1 sub param, use the last sub param's param name
-        // as trend name
+        // use the parameter's name
         if (parmID == PARAM_IBP)
         {
             item->setTrendName(paramInfo.getIBPPressName(subParamIDs[0]));
@@ -135,6 +135,11 @@ void ShortTrendContainer::addSubParamToTrendItem(int trendindex, QList<SubParamI
             item->setTrendName(paramInfo.getParamName(parmID));
         }
     }
+
+    // use the limit alarm range as the data range
+    UnitType unit = paramManager.getSubParamUnit(parmID, subParamIDs[0]);
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subParamIDs[0], unit);
+    item->setValueRange(config.maxHighLimit, config.minLowLimit, config.scale);
 }
 
 void ShortTrendContainer::clearTrendItemSubParam(int trendindex)
@@ -161,7 +166,6 @@ void ShortTrendContainer::setTrendDuration(ShortTrendDuration duration)
     {
         (*iter)->setTrendDuration(duration);
     }
-    d_ptr->trendItems.last()->enableDrawingTimeLabel(true);
 }
 
 ShortTrendDuration ShortTrendContainer::getTrendDuration() const

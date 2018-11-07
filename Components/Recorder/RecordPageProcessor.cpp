@@ -63,7 +63,7 @@ bool RecordPageProcessor::isProcessing() const
 
 void RecordPageProcessor::updatePrintSpeed(PrintSpeed speed)
 {
-    if (d_ptr->curSpeed == speed || speed > PRINT_SPEED_NR)
+    if (speed >= PRINT_SPEED_NR || d_ptr->curSpeed == speed)
     {
         return;
     }
@@ -76,7 +76,7 @@ void RecordPageProcessor::updatePrintSpeed(PrintSpeed speed)
     else
     {
         // set speed imediately
-        d_ptr->iface->setPrintSpeed(d_ptr->curSpeed);
+        d_ptr->iface->setPrintSpeed(speed);
         qDebug() << "Set Print Speed " << speed;
     }
 }
@@ -200,6 +200,7 @@ void RecordPageProcessor::timerEvent(QTimerEvent *ev)
             {
                 break;
             }
+            memset(data, 0, dataLen);
         }
 
         if (d_ptr->curPageXPos >= pageWidth)

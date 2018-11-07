@@ -77,7 +77,7 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
             info.status = alarmConfig.isLimitAlarmEnable(subId);
             UnitType unit  = paramManager.getSubParamUnit(pid, subId);
 
-            QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
+            QString prefix = "AlarmSource|";
             prefix += paramInfo.getSubParamName(subId, true);
             prefix += "|";
             prefix += Unit::getSymbol(unit);
@@ -118,7 +118,7 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
             info.limitConfig.step = v;
 
             int alarmLev = 0;
-            config->getNumAttr(QString("AlarmSource|%1|%2").arg(patientManager.getTypeStr())
+            config->getNumAttr(QString("AlarmSource|%")
                                .arg(paramInfo.getSubParamName(subId, true)),
                                "Prio", alarmLev);
             info.alarmLevel = alarmLev;
@@ -199,8 +199,7 @@ void ConfigEditAlarmLimitMenuContent::layoutExec()
 
     layout->addWidget(table);
 
-    ConfigEditMenuWindow *w = qobject_cast<ConfigEditMenuWindow *>(this->getMenuWindow());
-    d_ptr->model = new ConfigEditAlarmLimitModel(w);
+    d_ptr->model = new ConfigEditAlarmLimitModel(d_ptr->config);
 
     table->setModel(d_ptr->model);
 

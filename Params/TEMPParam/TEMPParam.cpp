@@ -38,8 +38,8 @@ void TEMPParam::handDemoWaveform(WaveformID /*id*/, int16_t /*data*/)
  *************************************************************************************************/
 void TEMPParam::handDemoTrendData(void)
 {
-    _t1Value = 370;
-    _t2Value = 372;
+    _t1Value = 371;
+    _t2Value = 373;
     _tdValue = abs(_t1Value - _t2Value);
     if (NULL != _trendWidget)
     {
@@ -268,11 +268,34 @@ void TEMPParam::sendCalibrateData(int channel, int value)
 
 void TEMPParam::getCalibrateData(unsigned char *packet)
 {
-    if (_calibrateChannel != packet[1] || _calibrateValue != packet[2])
+    if (_calibrateChannel == packet[1] || _calibrateValue == packet[2])
     {
-        return;
+        _calibrationReply = true;
+        _calibrationResult = packet[3];
     }
-    // TODO: set result to the factory calibration menu
+}
+
+void TEMPParam::updateSubParamLimit(SubParamID id)
+{
+    if (id == SUB_PARAM_T1)
+    {
+        _trendWidget->updateLimit();
+    }
+}
+
+bool TEMPParam::getCalibrationReply()
+{
+    bool reply = _calibrationReply;
+    if (reply)
+    {
+        _calibrationReply = false;
+    }
+    return reply;
+}
+
+bool TEMPParam::getCalibrationResult()
+{
+    return _calibrationResult;
 }
 
 /**************************************************************************************************

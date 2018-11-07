@@ -82,7 +82,7 @@ AlarmInfoWindow::~AlarmInfoWindow()
     delete d_ptr;
 }
 
-void AlarmInfoWindow::updateData()
+void AlarmInfoWindow::updateData(bool isShowFirstPage)
 {
     int total = alarmIndicator.getAlarmCount();
     if (total <= 1)
@@ -93,6 +93,10 @@ void AlarmInfoWindow::updateData()
     }
 
     d_ptr->totalList = total;
+    if (isShowFirstPage)
+    {
+        d_ptr->curPage = 1;
+    }
     d_ptr->loadOption();
 }
 
@@ -130,11 +134,13 @@ void AlarmInfoWindow::layout()
     {
         ListView *listView = new ListView();
         listView->setItemDelegate(new ListViewItemDelegate);
+        listView->setSelectionMode(QAbstractItemView::NoSelection);
         ListDataModel *model = new ListDataModel(this);
         listView->setModel(model);
         listView->setFixedHeight(model->getRowHeightHint() * LISTVIEW_MAX_VISIABLE_SIZE);
         listView->setDrawIcon(false);
         listView->setSpacing(0);
+        listView->setFocusPolicy(Qt::NoFocus);
         d_ptr->listModel = model;
         d_ptr->listView = listView;
 
@@ -165,7 +171,7 @@ void AlarmInfoWindow::layout()
 
 void AlarmInfoWindow::showEvent(QShowEvent *ev)
 {
-    updateData();
+    updateData(true);
     Window::showEvent(ev);
 }
 

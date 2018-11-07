@@ -60,6 +60,7 @@ quint64 DataStorageDirManager::dirSize(const QString &dir)
  * 构造。
  *************************************************************************************************/
 DataStorageDirManager::DataStorageDirManager()
+    : QObject()
 {
     int folderSequenceNum = 0;
     systemConfig.getNumValue("DataStorage|FolderSequenceNum", folderSequenceNum);
@@ -420,6 +421,7 @@ void DataStorageDirManager::createDir(bool createNew)
         timeManager.setElapsedTime();
         Config systemDefCfg(systemConfig.getCurConfigName());
         systemConfig.setNodeValue("PrimaryCfg", systemDefCfg);
+        emit newPatient();
     }
 }
 

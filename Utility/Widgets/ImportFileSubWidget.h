@@ -16,7 +16,7 @@ class ImportSubWidget :public Window
 {
     Q_OBJECT
 public:
-    explicit ImportSubWidget(const QStringList &iListWidgetName);
+    explicit ImportSubWidget(const QStringList &iListWidgetName, const QString &path);
 public slots:
     void getSelsectItems();
     void updateBtnStatus();

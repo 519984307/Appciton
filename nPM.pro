@@ -148,18 +148,11 @@ SOURCES +=                                                                      
     Utility/Widgets/InputMethod/KeyBoardPanel.cpp                               \
     Utility/Widgets/InputMethod/KeyInputPanel.cpp                               \
     Utility/Widgets/InputMethod/NumberPanel.cpp                                 \
-    Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.cpp                      \
-    Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidgetRuler.cpp                     \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidget.cpp                               \
-    Utility/Widgets/OxyCRGWidget/OxyCRGHRWidget.cpp                             \
-    Utility/Widgets/OxyCRGWidget/OxyCRGRESPWidget.cpp                           \
     Utility/Widgets/OxyCRGWidget/OxyCRGRESPWaveWidget.cpp                       \
-    Utility/Widgets/OxyCRGWidget/OxyCRGCO2Widget.cpp                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGCO2WaveWidget.cpp                        \
-    Utility/Widgets/OxyCRGWidget/OxyCRGRRWidget.cpp                             \
     Utility/Widgets/OxyCRGWidget/OxyCRGRRHRWaveWidget.cpp                       \
-    Utility/Widgets/OxyCRGWidget/OxyCRGSPO2Widget.cpp                           \
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2TrendWidget.cpp                      \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.cpp                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWindow.cpp                          \
@@ -249,10 +242,11 @@ SOURCES +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmPauseState.cpp                      \
     Components/Alarm/AlarmStateMachine/AlarmOffState.cpp                        \
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.cpp                   \
+    Components/Alarm/AlarmStateMachine/AlarmResetState.cpp                      \
     Components/Alarm/Widgets/AlarmInfoPopListView.cpp                           \
     Components/Alarm/Widgets/AlarmLimitMenuContent.cpp                          \
     Components/Alarm/Widgets/AlarmLimitWindow.cpp                               \
-    Components/Alarm/Widgets/AlarmMuteBarWidget.cpp                             \
+    Components/Alarm/Widgets/AlarmStatusWidget.cpp                              \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.cpp                         \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.cpp                          \
     Components/Alarm/Widgets/AlarmInfoWindow.cpp                                \
@@ -396,6 +390,7 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.cpp                   \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.cpp        \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.cpp          \
+    Components/Maintain/FactoryMaintain/FactoryVersionInfo.cpp                  \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenuContent.cpp          \
     Components/Maintain/FactoryMaintain/NIBPCalibrateContent.cpp                \
     Components/Maintain/FactoryMaintain/NIBPManometerContent.cpp                \
@@ -410,6 +405,7 @@ SOURCES +=                                                                      
     Components/ConfigManager/SelectDefaultConfigMenuContent.cpp                 \
     Components/ConfigManager/ConfigManagerPassWordEditMenuContent.cpp           \
     Components/ConfigManager/UserConfigEditMenuContent.cpp                      \
+    Components/ConfigManager/PatientTypeSelectWindow.cpp                        \
     Components/ConfigManager/ConfigExportImportMenuContent.cpp                  \
     Components/ConfigManager/ConfigEditMenuWindow.cpp                           \
     Components/ConfigManager/ConfigEditGeneralMenuContent.cpp                   \
@@ -502,7 +498,7 @@ SOURCES +=                                                                      
     Params/TEMPParam/TEMPParam.cpp                                              \
     Params/TEMPParam/TEMPAlarm.cpp                                              \
     Params/TEMPParam/TEMPWidgets/TEMPTrendWidget.cpp                            \
-    Params/TEMPParam/TEMPWidgets/TEMPMenu.cpp                                   \
+    Params/TEMPParam/TEMPWidgets/TEMPMenuContent.cpp                            \
     Params/RESPParam/RESPAlarm.cpp                                              \
     Params/RESPParam/RESPDupAlarm.cpp                                           \
     Params/RESPParam/RESPDupParam.cpp                                           \
@@ -627,19 +623,12 @@ HEADERS +=                                                                      
     Utility/Widgets/InputMethod/KeyBoardPanel.h                                 \
     Utility/Widgets/InputMethod/KeyInputPanel.h                                 \
     Utility/Widgets/InputMethod/NumberPanel.h                                   \
-    Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidget.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget.h                        \
     Utility/Widgets/OxyCRGWidget/OxyCRGTrendWaveWidget_p.h                      \
-    Utility/Widgets/OxyCRGWidget/OxyCRGTrendWidgetRuler.h                       \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidget.h                                 \
-    Utility/Widgets/OxyCRGWidget/OxyCRGHRWidget.h                               \
-    Utility/Widgets/OxyCRGWidget/OxyCRGRESPWidget.h                             \
-    Utility/Widgets/OxyCRGWidget/OxyCRGRRWidget.h                               \
     Utility/Widgets/OxyCRGWidget/OxyCRGRESPWaveWidget.h                         \
     Utility/Widgets/OxyCRGWidget/OxyCRGRRHRWaveWidget.h                         \
-    Utility/Widgets/OxyCRGWidget/OxyCRGSPO2Widget.h                             \
     Utility/Widgets/OxyCRGWidget/OxyCRGSPO2TrendWidget.h                        \
-    Utility/Widgets/OxyCRGWidget/OxyCRGCO2Widget.h                              \
     Utility/Widgets/OxyCRGWidget/OxyCRGCO2WaveWidget.h                          \
     Utility/Widgets/OxyCRGWidget/OxyCRGSetupWindow.h                            \
     Utility/Widgets/OxyCRGWidget/OxyCRGWidgetLabel.h                            \
@@ -736,10 +725,11 @@ HEADERS +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmPauseState.h                        \
     Components/Alarm/AlarmStateMachine/AlarmOffState.h                          \
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.h                     \
+    Components/Alarm/AlarmStateMachine/AlarmResetState.h                        \
     Components/Alarm/Widgets/AlarmInfoPopListView.h                             \
     Components/Alarm/Widgets/AlarmLimitMenuContent.h                            \
     Components/Alarm/Widgets/AlarmLimitWindow.h                                 \
-    Components/Alarm/Widgets/AlarmMuteBarWidget.h                               \
+    Components/Alarm/Widgets/AlarmStatusWidget.h                                \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.h                           \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.h                            \
     Components/Alarm/Widgets/AlarmInfoWindow.h                                  \
@@ -903,6 +893,7 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/MonitorInfoWindow.h                     \
     Components/Maintain/FactoryMaintain/ServiceUpdateEntranceContent.h          \
     Components/Maintain/FactoryMaintain/MachineConfigModuleContent.h            \
+    Components/Maintain/FactoryMaintain/FactoryVersionInfo.h                    \
     Components/Maintain/FactoryMaintain/NIBPCalibrationMenuContent.h            \
     Components/Maintain/FactoryMaintain/NIBPCalibrateContent.h                  \
     Components/Maintain/FactoryMaintain/NIBPManometerContent.h                  \
@@ -917,6 +908,7 @@ HEADERS +=                                                                      
     Components/ConfigManager/SelectDefaultConfigMenuContent.h                   \
     Components/ConfigManager/ConfigManagerPassWordEditMenuContent.h             \
     Components/ConfigManager/UserConfigEditMenuContent.h                        \
+    Components/ConfigManager/PatientTypeSelectWindow.h                          \
     Components/ConfigManager/ConfigExportImportMenuContent.h                    \
     Components/ConfigManager/ConfigEditMenuWindow.h                             \
     Components/ConfigManager/ConfigEditGeneralMenuContent.h                     \
@@ -1036,7 +1028,7 @@ HEADERS +=                                                                      
     Params/TEMPParam/TEMPParam.h                                                \
     Params/TEMPParam/TEMPAlarm.h                                                \
     Params/TEMPParam/TEMPWidgets/TEMPTrendWidget.h                              \
-    Params/TEMPParam/TEMPWidgets/TEMPMenu.h                                     \
+    Params/TEMPParam/TEMPWidgets/TEMPMenuContent.h                              \
     Params/TEMPParam/TEMPProviderIFace.h                                        \
     Params/RESPParam/RESPAlarm.h                                                \
     Params/RESPParam/RESPDefine.h                                               \

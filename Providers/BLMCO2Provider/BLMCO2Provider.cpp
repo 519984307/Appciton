@@ -137,6 +137,9 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         break;
 
     case GEN_VALS:    //一些其他附加信息值
+        value = (packet[14] == 0xFF) ? InvData() : packet[14];
+        co2Param.setRR(value);
+
         value = packet[18];
         value <<= 8;
         value |= packet[19];

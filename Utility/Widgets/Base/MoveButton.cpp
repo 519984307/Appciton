@@ -15,6 +15,7 @@
 #include <QKeyEvent>
 #include "PopupMoveEditor.h"
 #include "FontManager.h"
+#include <QStyle>
 
 class MoveButtonPrivate
 {
@@ -29,6 +30,7 @@ public:
 MoveButton::MoveButton(const QString &text)
     : Button(text), d_ptr(new MoveButtonPrivate(text))
 {
+    setIconSize(QSize(32, 32));
 }
 
 MoveButton::~MoveButton()
@@ -51,57 +53,33 @@ void MoveButton::paintEvent(QPaintEvent *ev)
     if (hasFocus())
     {
         pen.setColor(pal.color(QPalette::Active, QPalette::Shadow));
+        bgColor = pal.color(QPalette::Active, QPalette::Highlight);
     }
     else if (!isEnabled())
     {
         pen.setColor(pal.color(QPalette::Disabled, QPalette::Shadow));
     }
+
     painter.setPen(pen);
+    painter.setBrush(bgColor);
+
+    painter.drawRoundedRect(r.adjusted(bw / 2, bw / 2, -bw / 2, -bw/2),
+                            br, br);
     QRect leftRegion = r;
     leftRegion.setRight(r.width() / 4);
-    painter.setClipRect(leftRegion);
-    if (hasFocus())
-    {
-        bgColor = pal.color(QPalette::Active, QPalette::Highlight);
-        painter.setBrush(bgColor);
-        //        textColor = pal.color(QPalette::Active, QPalette::HighlightedText);
-//        icoMode = QIcon::Active;
-    }
-    else
-    {
-        painter.setBrush(pal.color(QPalette::Disabled, QPalette::Window));
-    }
-    painter.drawRoundedRect(leftRegion.adjusted(bw / 2, bw / 2, br + bw, - bw / 2), br, br);
-
-    const QIcon &leftIcon = themeManger.getIcon(ThemeManager::IconLeft);
-    leftIcon.paint(&painter, leftRegion);
+    QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignCenter, iconSize(), leftRegion);
+    painter.drawPixmap(iconRect, themeManger.getPixmap(ThemeManager::IconLeft, iconSize()));
 
     QRect rightRegion = r;
     rightRegion.setLeft(r.width() * 3 / 4);
-    painter.setClipRect(rightRegion);
-    if (hasFocus())
-    {
-        bgColor = pal.color(QPalette::Active, QPalette::Highlight);
-        painter.setBrush(bgColor);
-    }
-    else
-    {
-        painter.setBrush(pal.color(QPalette::Disabled, QPalette::Window));
-    }
-    painter.drawRoundedRect(rightRegion.adjusted(-br - bw, bw / 2,  -bw / 2, -bw / 2), br, br);
+    iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignCenter, iconSize(), rightRegion);
+    painter.drawPixmap(iconRect, themeManger.getPixmap(ThemeManager::IconRight, iconSize()));
 
-    const QIcon &rightIcon = themeManger.getIcon(ThemeManager::IconRight);
-    rightIcon.paint(&painter, rightRegion);
-
-    painter.setBrush(pal.color(QPalette::Active, QPalette::Window));
-    QRect textRegion = r;
-    textRegion.setLeft(r.width() / 4 + 1);
-    textRegion.setRight(r.width() * 3 / 4 - 1);
-    painter.setClipRect(textRegion);
-    painter.drawRect(textRegion.adjusted(- bw, bw / 2, bw, -bw / 2));
-
+    QRect textRect = r;
+    textRect.adjust(r.width() / 4, bw , - r.width() / 4, - bw);
+    painter.fillRect(textRect, pal.color(QPalette::Inactive, QPalette::Window));
     painter.setPen(pal.color(QPalette::Inactive, QPalette::WindowText));
-    painter.drawText(textRegion, Qt::AlignCenter, d_ptr->name);
+    painter.drawText(textRect, Qt::AlignCenter, d_ptr->name);
 }
 
 void MoveButton::keyPressEvent(QKeyEvent *ev)

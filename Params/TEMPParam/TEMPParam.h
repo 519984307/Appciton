@@ -97,10 +97,26 @@ public:
     //接收定标数据
     void getCalibrateData(unsigned char *packet);
 
+    // 刷新上下限
+    virtual void updateSubParamLimit(SubParamID id);
+
+    // 获取校准是否回复
+    bool getCalibrationReply();
+
+    // 获取校准结果
+    bool getCalibrationResult();
 public:
     // 设置/获取单位。
     void setUnit(UnitType u);
     UnitType getUnit(void);
+
+signals:
+    /**
+     * @brief updateTempName 更新温度通道名称信号
+     * @param channel 通道号
+     * @param TEMPChannelType 通道类型
+     */
+    void updateTempName(TEMPChannelIndex channel, TEMPChannelType type);
 
 private slots:
     void onPaletteChanged(ParamID id);
@@ -119,5 +135,8 @@ private:
     int _calibrateValue;
 
     bool _isTEMPDisable;
+
+    bool _calibrationReply;
+    bool _calibrationResult;
 };
 #define tempParam (TEMPParam::construction())

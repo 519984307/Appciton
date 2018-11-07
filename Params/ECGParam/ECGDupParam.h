@@ -96,9 +96,6 @@ public:
      */
     HRSourceType getCurHRSource() const;
 
-    // 设置计算导联字串。
-    void setECGTrendWidgetCalcName(ECGLead calLead);
-
     /**
      * @brief setHrSource  设置hr来源
      * @param type
@@ -113,6 +110,9 @@ public:
 
     /*remiplement*/
     QList<SubParamID> getShortTrendList();
+
+    // 刷新参数上下限
+    virtual void updateSubParamLimit(SubParamID id);
 private slots:
     void onPaletteChanged(ParamID id);
 

@@ -12,6 +12,7 @@
 #pragma once
 #include "TrendWidget.h"
 #include <QLabel>
+#include "TEMPDefine.h"
 
 class TEMPTrendWidget: public TrendWidget
 {
@@ -30,16 +31,28 @@ public:
     // 显示新值。
     void showValue(void);
 
+    // 刷新上下限
+    void updateLimit();
+
     TEMPTrendWidget();
     ~TEMPTrendWidget();
 
     QList<SubParamID> getShortTrendSubParams() const;
+public:
+    virtual void doRestoreNormalStatus();
 
 protected:
     virtual void setTextSize(void);
 
 private slots:
     void _releaseHandle(IWidget *);
+
+    /**
+     * @brief onTempNameUpdate
+     * @param channel 通道号
+     * @param TEMPChannelType 通道类型
+     */
+    void onTempNameUpdate(TEMPChannelIndex channel, TEMPChannelType type);
 
 private:
     // 温度组
@@ -50,8 +63,6 @@ private:
         TEMP_GRP_TD,
         TEMP_GRP_NR
     };
-
-    void _alarmIndicate(bool isAlarms, tempGrp grp);
 
     QLabel *_t1Value;
     QLabel *_t2Value;

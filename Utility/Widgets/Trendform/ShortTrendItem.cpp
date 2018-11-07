@@ -183,8 +183,19 @@ void ShortTrendItemPrivate::updateBackground()
         int yPos = waveRegion.bottom() - (rowHeight * i - 0.5);
         center.setY(yPos);
         textRect.moveCenter(center);
-        int value = step * i + minValue + 0.5;
-        p.drawText(textRect, Qt::AlignVCenter | Qt::AlignRight, Util::convertToString(value, scale));
+        if (i == 0)
+        {
+            p.drawText(textRect, Qt::AlignVCenter | Qt::AlignRight, Util::convertToString(minValue, scale));
+        }
+        else if (i == rowNum)
+        {
+            p.drawText(textRect, Qt::AlignVCenter | Qt::AlignRight, Util::convertToString(maxValue, scale));
+        }
+        else
+        {
+            int value = step * i + minValue + 0.5;
+            p.drawText(textRect, Qt::AlignVCenter | Qt::AlignRight, Util::convertToString(value, scale));
+        }
     }
 
     // draw the time label
@@ -200,11 +211,12 @@ void ShortTrendItemPrivate::updateBackground()
         p.drawText(textRect, Qt::AlignCenter, labels.at(1));
         textRect.moveRight(waveRegion.right());
         p.drawText(textRect, Qt::AlignVCenter | Qt::AlignRight, labels.at(2));
-        drawTimeLabelFlag = false;
     }
 
     // draw the name label
     p.setPen(waveColor);
+    font = fontManager.textFont(20);
+    p.setFont(font);
     QFontMetrics fm(font);
     int nameWidth = fm.width(name) + 2;
     textRect.setWidth(nameWidth);
@@ -299,6 +311,8 @@ void ShortTrendItemPrivate::drawWave(QPainter *painter, const QRect &r)
             {
                 if (!moveTo)
                 {
+                    // current point is not a valid point,
+                    // draw latest the valid points
                     path.lineTo(lastPoint);
                     moveTo = true;
                 }
@@ -320,6 +334,11 @@ void ShortTrendItemPrivate::drawWave(QPainter *painter, const QRect &r)
                 if (lastPoint.y() != curPoint.y())
                 {
                     path.lineTo(lastPoint);
+                    path.lineTo(curPoint);
+                }
+                else if (((index + 1) % pointNum) == endIndex)
+                {
+                    // reach the end
                     path.lineTo(curPoint);
                 }
             }
@@ -365,7 +384,7 @@ void ShortTrendItemPrivate::drawNibpMark(QPainter *painter, const QRect &r)
 
     int index = startIndex;
     QPainterPath path;
-    int tickLen = systemManager.getScreenPixelHPitch();
+    int tickLen = 1.5 / systemManager.getScreenPixelHPitch();
     float xPos = waveMargin.left() + start * deltaX;
     while (index != endIndex)
     {
@@ -429,6 +448,7 @@ void ShortTrendItem::setTrendName(const QString &name)
 
     d_ptr->name = name;
     d_ptr->updateBGFlag = true;
+    update();
 }
 
 QList<SubParamID> ShortTrendItem::getSubParamList() const
@@ -475,6 +495,7 @@ void ShortTrendItem::setTrendDuration(ShortTrendDuration duration)
     d_ptr->duration = duration;
     d_ptr->updateBGFlag = true;
     d_ptr->resetPointBufFlag = true;
+    update();
 }
 
 ShortTrendDuration ShortTrendItem::getTrendDuration() const
@@ -505,7 +526,7 @@ void ShortTrendItem::enableDrawingTimeLabel(bool enable)
         return;
     }
 
-    d_ptr->drawTimeLabelFlag = true;
+    d_ptr->drawTimeLabelFlag = enable;
 
     if (enable)
     {
@@ -574,6 +595,17 @@ void ShortTrendItem::onNewTrendDataArrived(ShortTrendInterval interval)
 
         update(d_ptr->waveRegion);
     }
+}
+
+void ShortTrendItem::onNewNibpMeasurementData()
+{
+   if (!this->isVisible() || !d_ptr->isNibp)
+   {
+       return;
+   }
+
+   d_ptr->resetPointBufFlag = true;
+   update(d_ptr->waveRegion);
 }
 
 void ShortTrendItem::paintEvent(QPaintEvent *ev)

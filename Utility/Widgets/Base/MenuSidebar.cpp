@@ -34,7 +34,7 @@ public:
     }
 
     void onItemClicked();
-    void onItemFocusChanged(bool in);
+    void onItemFocusChanged(bool in, Qt::FocusReason reason);
 
     QWidget *widget;
     QStringList itemTextList;
@@ -63,9 +63,10 @@ void MenuSidebarPrivate::onItemClicked()
     }
 }
 
-void MenuSidebarPrivate::onItemFocusChanged(bool in)
+void MenuSidebarPrivate::onItemFocusChanged(bool in, Qt::FocusReason reason)
 {
-    if (in && widget->height() > q_ptr->viewport()->height())
+    // 当in为true，菜单侧边栏的高度不小于其视窗的高度时，才进入执行
+    if (in && widget->height() >= q_ptr->viewport()->height())
     {
         Q_Q(MenuSidebar);
         MenuSidebarItem *item = qobject_cast<MenuSidebarItem *>(q->sender());
@@ -74,6 +75,20 @@ void MenuSidebarPrivate::onItemFocusChanged(bool in)
             q_ptr->ensureWidgetVisible(item, 0, 0);
         }
         scrollBar->setVisible(true);
+
+        if (reason == Qt::TabFocusReason || reason == Qt::BacktabFocusReason)
+        {
+            if (curSelectIndex >= 0)
+            {
+                // uncheck the previous item
+                MenuSidebarItem *lastCheckItem = itemList.at(curSelectIndex);
+                lastCheckItem->setChecked(false);
+            }
+
+            curSelectIndex = itemList.indexOf(item);
+            item->setChecked(true);
+            emit q->visiableItemChanged(curSelectIndex);
+        }
     }
 }
 
@@ -125,7 +140,7 @@ void MenuSidebar::addItem(const QString &text)
     d->itemLayout->insertWidget(d->itemList.count(), item);
     d->itemList.append(item);
     connect(item, SIGNAL(clicked(bool)), this, SLOT(onItemClicked()));
-    connect(item, SIGNAL(focusChanged(bool)), this, SLOT(onItemFocusChanged(bool)));
+    connect(item, SIGNAL(focusChanged(bool, Qt::FocusReason)), this, SLOT(onItemFocusChanged(bool, Qt::FocusReason)));
 }
 
 int MenuSidebar::itemCount() const

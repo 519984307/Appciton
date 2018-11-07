@@ -28,6 +28,7 @@
 #include <QFocusEvent>
 #include <QTimer>
 #include <SystemManager.h>
+#include "MessageBox.h"
 
 #define TABLE_ROW_NUM 7
 
@@ -39,6 +40,7 @@ public:
         , table(NULL)
         , prevBtn(NULL)
         , nextBtn(NULL)
+        , defaultsBtn(NULL)
         , param(param)
     {
     }
@@ -49,6 +51,7 @@ public:
     TableView *table;
     Button *prevBtn;
     Button *nextBtn;
+    Button *defaultsBtn;
     QList<AlarmDataInfo> infos;
     QString param;
 };
@@ -83,7 +86,7 @@ void AlarmLimitWindowPrivate::loadoptions()
             UnitType unit  = paramManager.getSubParamUnit(pid, subId);
             info.limitConfig = alarmConfig.getLimitAlarmConfig(subId, unit);
             int alarmLev = 0;
-            currentConfig.getNumAttr(QString("AlarmSource|%1|%2").arg(patientManager.getTypeStr())
+            currentConfig.getNumAttr(QString("AlarmSource|%1")
                                      .arg(paramInfo.getSubParamName(subId, true)),
                                      "Prio", alarmLev);
             info.alarmLevel = alarmLev;
@@ -208,6 +211,13 @@ void AlarmLimitWindow::layoutExec()
     connect(btn, SIGNAL(clicked(bool)), this, SLOT(onbtnClick()));
     d_ptr->nextBtn = btn;
 
+    btn = new Button(trs("Defaults"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    btn->setMinimumWidth(100);
+    hlayout->addWidget(btn);
+    connect(btn, SIGNAL(clicked(bool)), this, SLOT(onDefaultsClick()));
+    d_ptr->defaultsBtn = btn;
+
     hlayout->addStretch(1);
 
     layout->addLayout(hlayout);
@@ -254,4 +264,89 @@ void AlarmLimitWindow::onSelectRowChanged(int row)
     {
         d_ptr->model->stopEditRow();
     }
+}
+
+void AlarmLimitWindow::onDefaultsClick()
+{
+    QStringList slist;
+    slist << trs("No") << trs("Ok");
+    MessageBox messageBox(trs("Warn"), trs("SureAllAlarmDefaults"), slist);
+    if (messageBox.exec() == 1)
+    {
+        restoreDefaults();
+    }
+}
+
+void AlarmLimitWindow::restoreDefaults()
+{
+    Config defaultConfig(currentConfig.getDefaultFileName(currentConfig.getFileName()));
+
+    QList<ParamID> pids;
+    paramManager.getParams(pids);
+    QList<AlarmDataInfo> infos;
+    for (int i = 0; i < SUB_PARAM_NR; ++i)
+    {
+        SubParamID subId = static_cast<SubParamID>(i);
+        ParamID pid = paramInfo.getParamID(subId);
+
+        if (pid == PARAM_IBP && systemManager.isSupport(PARAM_IBP))
+        {
+            IBPPressureName pressName1 = ibpParam.getEntitle(IBP_INPUT_1);
+            IBPPressureName pressName2 = ibpParam.getEntitle(IBP_INPUT_2);
+            IBPPressureName curPressName = ibpParam.getPressureName(subId);
+            if (curPressName != pressName1 && curPressName != pressName2)
+            {
+                continue;
+            }
+        }
+
+        if (pids.contains(pid))
+        {
+            // default
+            int status = 0;
+            defaultConfig.getNumAttr(QString("AlarmSource|%1")
+                                     .arg(paramInfo.getSubParamName(subId, true)),
+                                     "Enable", status);
+            currentConfig.setNumAttr(QString("AlarmSource|%1")
+                                     .arg(paramInfo.getSubParamName(subId, true)),
+                                     "Enable", status);
+
+            int lev = 0;
+            defaultConfig.getNumAttr(QString("AlarmSource|%1")
+                                     .arg(paramInfo.getSubParamName(subId, true)),
+                                     "Prio", lev);
+            currentConfig.setNumAttr(QString("AlarmSource|%1")
+                                     .arg(paramInfo.getSubParamName(subId, true)),
+                                     "Prio", lev);
+
+            UnitType unit = paramManager.getSubParamUnit(pid, subId);
+            int high = 0;
+            defaultConfig.getNumValue(QString("AlarmSource|%1|%2|%3")
+                                      .arg(paramInfo.getSubParamName(subId, true)).arg(Unit::getSymbol(unit))
+                                      .arg("High"), high);
+            currentConfig.setNumValue(QString("AlarmSource|%1|%2|%3")
+                                      .arg(paramInfo.getSubParamName(subId, true)).arg(Unit::getSymbol(unit))
+                                      .arg("High"), high);
+
+            int low = 0;
+            defaultConfig.getNumValue(QString("AlarmSource|%1|%2|%3")
+                                      .arg(paramInfo.getSubParamName(subId, true)).arg(Unit::getSymbol(unit))
+                                      .arg("Low"), low);
+            currentConfig.setNumValue(QString("AlarmSource|%1|%2|%3")
+                                      .arg(paramInfo.getSubParamName(subId, true)).arg(Unit::getSymbol(unit))
+                                      .arg("Low"), low);
+
+            AlarmDataInfo info;
+            info.paramID = pid;
+            info.subParamID = subId;
+            info.status = status;
+            info.limitConfig = alarmConfig.getLimitAlarmConfig(subId, unit);
+            info.alarmLevel = lev;
+            info.limitConfig.highLimit = high;
+            info.limitConfig.lowLimit = low;
+            infos.append(info);
+        }
+    }
+    d_ptr->infos = infos;
+    d_ptr->model->setupAlarmDataInfos(infos);
 }

@@ -13,13 +13,38 @@
 #include "ParamInfo.h"
 #include "ParamManager.h"
 
+class ConfigEditAlarmLimitModelPrivate
+{
+public:
+    explicit ConfigEditAlarmLimitModelPrivate(Config *config)
+                    : config(config)
+    {
+    }
+    Config *config;
+};
+
+ConfigEditAlarmLimitModel::ConfigEditAlarmLimitModel(Config *config)
+                         : AlarmLimitModel()
+                         , d_ptr(new ConfigEditAlarmLimitModelPrivate(config))
+{
+}
+
+ConfigEditAlarmLimitModel::~ConfigEditAlarmLimitModel()
+{
+   delete d_ptr;
+}
+
 void ConfigEditAlarmLimitModel::alarmDataUpdate(const AlarmDataInfo &info, int type)
 {
-    Config *config = w->getCurrentEditConfig();
+    Config *config = d_ptr->config;
+    if (!config)
+    {
+        return;
+    }
 
     UnitType unit  = paramManager.getSubParamUnit(info.paramID, info.subParamID);
 
-    QString prefix = "AlarmSource|" + patientManager.getTypeStr() + "|";
+    QString prefix = "AlarmSource|";
     prefix += paramInfo.getSubParamName(info.subParamID, true);
 
     switch (type)

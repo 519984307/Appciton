@@ -191,7 +191,7 @@ void ECGWaveWidget::_popupDestroyed(void)
         _isAutoGain = false;
     }
 
-    if (layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD)
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
     {
         for (int i = ECG_LEAD_I; i <= ECG_LEAD_V6; i++)
         {
@@ -281,7 +281,7 @@ void ECGWaveWidget::_loadConfig(void)
 {
     setSpeed(ecgParam.getSweepSpeed());
 
-    if (layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD)
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
     {
         _name->setFocusPolicy(Qt::NoFocus);
 
@@ -841,7 +841,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
 
     _filterMode = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _filterMode->setFont(fontManager.textFont(fontSize));
-    _filterMode->setFixedSize(100, fontH);
+    _filterMode->setFixedSize(120, fontH);
     _filterMode->setFocusPolicy(Qt::NoFocus);
     addItem(_filterMode);
     connect(&ecgParam, SIGNAL(updateFilterMode()), this, SLOT(_updateFilterMode()));

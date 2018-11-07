@@ -26,6 +26,7 @@ static QThread *_networkThread = NULL;
  *************************************************************************************************/
 static void _taskOneSec1(void)
 {
+    timeManager.recordRunTime();
     paramManager.checkProviderConnection();
     systemBoardProvider.checkConnection();
 }
@@ -50,9 +51,9 @@ static void _taskOneSec2(void)
 }
 
 /**************************************************************************************************
- * 功能： 周期性任务，500ms执行一次。
+ * 功能： 周期性任务，50ms执行一次。
  *************************************************************************************************/
-static void _task500MSec0(void)
+static void _task50MSec0(void)
 {
     // 更新界面显示。
     static unsigned t = 0;
@@ -174,7 +175,7 @@ static void _storageThreadEntry(void)
  *************************************************************************************************/
 static void _initTasks(void)
 {
-    systemTick.addHook(500, 400, _task500MSec0);
+    systemTick.addHook(50, 0, _task50MSec0);
     if (systemManager.isSupport(CONFIG_NIBP))
     {
         systemTick.addHook(500, 200, _task500MSec1);

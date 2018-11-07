@@ -196,6 +196,11 @@ public:
     void newPatient();
 
     /**
+     * @brief dischargePatient 解除病人
+     */
+    void dischargePatient();
+
+    /**
      * @brief finishPatientInfo 完成病人信息处理
      */
     void finishPatientInfo();

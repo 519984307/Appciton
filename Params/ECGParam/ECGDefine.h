@@ -177,9 +177,9 @@ enum ECGBandwidth
  *************************************************************************************************/
 enum ECGFilterMode
 {
+    ECG_FILTERMODE_SURGERY,
     ECG_FILTERMODE_MONITOR,
     ECG_FILTERMODE_DIAGNOSTIC,
-    ECG_FILTERMODE_SURGERY,
     ECG_FILTERMODE_ST,
     ECG_FILTERMODE_NR,
 };

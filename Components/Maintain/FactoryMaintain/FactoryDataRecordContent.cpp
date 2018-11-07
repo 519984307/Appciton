@@ -42,8 +42,6 @@ FactoryDataRecordContentPrivate::FactoryDataRecordContentPrivate()
 
 void FactoryDataRecordContentPrivate::loadOptions()
 {
-    combos[ITEM_CBO_ECG]->setFocus();
-
     int value = 0;
     machineConfig.getNumValue("Record|ECG", value);
     combos[ITEM_CBO_ECG]->setCurrentIndex(value);
@@ -125,6 +123,7 @@ void FactoryDataRecordContent::layoutExec()
 {
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
+    this->setFocusPolicy(Qt::NoFocus);
 
     QLabel *label;
     ComboBox *combo;
@@ -259,23 +258,3 @@ void FactoryDataRecordContent::onComboBoxIndexChanged(int index)
     machineConfig.setNumValue(QString("Record|%1").arg(str), index);
     machineConfig.saveToDisk();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

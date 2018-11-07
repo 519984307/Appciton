@@ -27,6 +27,7 @@
 #include "LayoutManager.h"
 #include "ECGDupParam.h"
 #include "AlarmLimitWindow.h"
+#include "SPO2Param.h"
 
 class ECGMenuContentPrivate
 {
@@ -116,10 +117,38 @@ void ECGMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_ECG2]->setCurrentIndex(index2);
     combos[ITEM_CBO_ECG2]->blockSignals(false);
 
-
     ECGFilterMode filterMode = ecgParam.getFilterMode();
+
+    // demo 模式下心电滤波模式固定为诊断，不可更改
+    WorkMode workMode = systemManager.getCurWorkMode();
+    if (workMode == WORK_MODE_DEMO)
+    {
+        if (filterMode != ECG_FILTERMODE_DIAGNOSTIC)
+        {
+            filterMode = ECG_FILTERMODE_DIAGNOSTIC;
+            ecgParam.setFilterMode(filterMode);
+        }
+        combos[ITEM_CBO_FILTER_MODE]->setEnabled(false);
+    }
+    else
+    {
+        combos[ITEM_CBO_FILTER_MODE]->setEnabled(true);
+    }
+
+    // demo模式,12导界面下心电增益改为不可调
+    UserFaceType faceType =  layoutManager.getUFaceType();
+    if (workMode == WORK_MODE_DEMO
+            && faceType == UFACE_MONITOR_ECG_FULLSCREEN)
+    {
+        combos[ITEM_CBO_ECG_GAIN]->setEnabled(false);
+    }
+    else
+    {
+        combos[ITEM_CBO_ECG_GAIN]->setEnabled(true);
+    }
+
     ECGNotchFilter notchFilter = ecgParam.getNotchFilter();
-    combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(ecgParam.getFilterMode());
+    combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(filterMode);
 
     combos[ITEM_CBO_NOTCH_FITER]->clear();
     switch (filterMode)
@@ -158,10 +187,21 @@ void ECGMenuContentPrivate::loadOptions()
 
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(ecgParam.getSweepSpeed());
 
-    combos[ITEM_CBO_QRS_TONE]->setCurrentIndex(ecgParam.getQRSToneVolume());
+    int volSPO2 = spo2Param.getBeatVol();
+    int volECG = ecgParam.getQRSToneVolume();
+    if (volSPO2 != volECG)
+    {
+        // 保持脉搏音与心跳音同步
+        spo2Param.setBeatVol(static_cast<SoundManager::VolumeLevel>(volECG));
+    }
+
+    combos[ITEM_CBO_QRS_TONE]->setCurrentIndex(volECG);
 
     bool isHide = true;
-    if (leadMode == ECG_LEAD_MODE_3)
+
+    // 增加判断是否为全屏12导界面，如果是，则显示一个ECG item
+    if (leadMode == ECG_LEAD_MODE_3
+            || faceType == UFACE_MONITOR_ECG_FULLSCREEN)
     {
         isHide = true;
         ecg1Label->setText(trs("ECG"));
@@ -276,9 +316,9 @@ void ECGMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
+                       << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_MONITOR))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC))
-                       << trs(ECGSymbol::convert(ECG_FILTERMODE_SURGERY))
                        << trs(ECGSymbol::convert(ECG_FILTERMODE_ST))
                       );
     itemID = ECGMenuContentPrivate::ITEM_CBO_FILTER_MODE;
@@ -331,14 +371,7 @@ void ECGMenuContent::layoutExec()
     d_ptr->combos.insert(ECGMenuContentPrivate::ITEM_CBO_SWEEP_SPEED, comboBox);
 
     // qrs tone
-    if (systemManager.isSupport(CONFIG_SPO2))
-    {
-        label = new QLabel(trs("ECGQRSPRToneVolume"));
-    }
-    else
-    {
-        label = new QLabel(trs("ECGQRSToneVolume"));
-    }
+    label = new QLabel(trs("ECGQRSToneVolume"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItem(trs("Off"));
@@ -403,9 +436,24 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
         }
         break;
         case ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE:
-            ecgParam.setLeadMode(static_cast<ECGLeadMode>(index));
+        {
+            ECGLeadMode mode = static_cast<ECGLeadMode>(index);
+            ecgParam.setLeadMode(mode);
+            if (mode == ECG_LEAD_MODE_3 && layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
+            {
+                // no ecg full screen in 3 lead mode
+                layoutManager.setUFaceType(UFACE_MONITOR_STANDARD);
+            }
+            int lastECGIndex = d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->currentIndex();
             d_ptr->loadOptions();
-            break;
+            index = d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->currentIndex();
+            if (lastECGIndex == index)
+            {
+                break;
+            }
+
+            // fall through, because the calculate lead changed
+        }
         case ECGMenuContentPrivate::ITEM_CBO_ECG1:
         {
             int waveIndex = 0;

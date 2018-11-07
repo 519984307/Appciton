@@ -14,6 +14,7 @@
 #include "IConfig.h"
 #include "ECGParam.h"
 #include "DataStorageDirManager.h"
+#include "DischargePatientWindow.h"
 
 PatientManager *PatientManager::_selfObj = NULL;
 
@@ -63,8 +64,7 @@ void PatientManager::setType(PatientType type)
     d_ptr->patientInfoWidget->loadPatientInfo();
 
     // 报警限修改
-    QString str = "AlarmSource|";
-    str += PatientSymbol::convert(d_ptr->patientInfo.type);
+    QString str = "AlarmSource";
     currentConfig.setNodeValue(str, currentConfig);
 
     emit signalPatientType(d_ptr->patientInfo.type);
@@ -273,6 +273,13 @@ void PatientManager::newPatient()
     patientManager.setWeight(0.0);
     patientManager.setPacermaker(PATIENT_PACER_ON);
     dataStorageDirManager.createDir(true);
+}
+
+void PatientManager::dischargePatient()
+{
+    DischargePatientWindow dischargeWin;
+    connect(&dischargeWin, SIGNAL(finished(int)), this, SLOT(dischargeWinExit(int)));
+    dischargeWin.exec();
 }
 
 void PatientManager::finishPatientInfo()

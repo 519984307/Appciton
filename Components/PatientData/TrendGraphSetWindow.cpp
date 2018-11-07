@@ -25,7 +25,7 @@
 #include "ThemeManager.h"
 
 #define ITEM_HEIGHT     (themeManger.getAcceptableControlHeight())
-#define ITEM_WIDTH      100
+#define ITEM_WIDTH      150
 
 TrendGraphSetWindow *TrendGraphSetWindow::selfObj = NULL;
 

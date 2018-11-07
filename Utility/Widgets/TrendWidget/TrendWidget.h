@@ -54,10 +54,21 @@ public:
      */
     virtual QList<SubParamID> getShortTrendSubParams() const {return QList<SubParamID>();}
 
+    /**
+     * @brief restoreNormalStatusLater retore the normal display mode in about 500 ms
+     */
+    void restoreNormalStatusLater();
+
+public slots:
+    /**
+     * @brief doRestoreNormalStatus do the restore normal status stuff
+     */
+    virtual void doRestoreNormalStatus() {}
+
 protected:
     void setName(const QString &name);
     void setUnit(const QString &unit);
-    void setCalcLeadName(const QString &calcLead);
+    void setLimit(int up, int down, int scale);
 
     void setNameFont(int size, bool isBold = false);
     void setUnitFont(int size, bool isBold = false);
@@ -76,20 +87,29 @@ protected:
     static const int barHeight = 21;
 
     TrendWidgetLabel *nameLabel;
-    QLabel *calcLeadLabel;
     QLabel *unitLabel;
+
+    QLabel *upLimit;
+    QLabel *downLimit;
 
     QString _title;                           // 趋势控制标名
 
     QPalette normalPalette(QPalette psrc);
-    QPalette alarmPalette(QPalette psrc, bool isSetName = true);   // isSetName: 是否设置标题颜色
+    QPalette alarmPalette(QPalette psrc);   // isSetName: 是否设置标题颜色
     /**
      * @brief showAlarmStatus   设置报警时状态：闪烁＋白底红字
      * @param value             趋势值
      * @param psrc              对应字体调色板
      * @param isSetName         是否设置标题颜色
      */
-    void showAlarmStatus(QWidget *value, QPalette psrc, bool isSetName = true);
+    void showAlarmStatus(QWidget *value);
+
+    /**
+     * @brief showAlarmParamLimit   闪烁对应的上下报警限
+     * @param psrc                  参数对应的调色板
+     * @param valueStr              当前参数值字符串
+     */
+    void showAlarmParamLimit(QWidget *value, const QString &valueStr, QPalette psrc);
 
     /**
      * @brief showNormalStatus  设置正常时状态：黑底＋对应颜色字体
@@ -97,4 +117,10 @@ protected:
      * @param psrc              对应字体调色板
      */
     void showNormalStatus(QWidget *value, QPalette psrc);
+
+    /**
+     * @brief showNormalParamLimit  设置正常时参数报警限状态
+     * @param psrc                  参数对应字体调色板
+     */
+    void showNormalParamLimit(QPalette psrc);
 };

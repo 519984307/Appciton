@@ -19,6 +19,8 @@
 #include "WindowManager.h"
 #include <QDebug>
 #include "MeasureSettingWindow.h"
+#include "AlarmConfig.h"
+#include "ParamManager.h"
 
 /**************************************************************************************************
  * 设置麻醉剂类型。
@@ -27,14 +29,39 @@ void AGTrendWidget::setAnestheticType(AGAnaestheticType type)
 {
     if (type == AG_ANAESTHETIC_NO)
     {
-        setName("Et" + (QString)AGSymbol::convert(_gasType));
-        _fiName->setText("Fi" + (QString)AGSymbol::convert(_gasType));
+        setName((QString)AGSymbol::convert(_gasType));
+        _fiName->setText("Fi");
     }
     else
     {
-        setName("Et" + (QString)AGSymbol::convert(type));
-        _fiName->setText("Fi" + (QString)AGSymbol::convert(type));
+        setName((QString)AGSymbol::convert(type));
+        _fiName->setText("Fi");
     }
+}
+
+void AGTrendWidget::updateLimit()
+{
+    SubParamID id;
+    switch (_gasType)
+    {
+    case AG_TYPE_N2O:
+        id = SUB_PARAM_ETN2O;
+        break;
+    case AG_TYPE_AA1:
+        id = SUB_PARAM_ETAA1;
+        break;
+    case AG_TYPE_AA2:
+        id = SUB_PARAM_ETAA2;
+        break;
+    case AG_TYPE_O2:
+        id = SUB_PARAM_ETO2;
+        break;
+    default:
+        break;
+    }
+    UnitType unitType = paramManager.getSubParamUnit(PARAM_AG, id);
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(id, unitType);
+    setLimit(config.highLimit, config.lowLimit, config.scale);
 }
 
 /**************************************************************************************************
@@ -129,33 +156,21 @@ void AGTrendWidget::showValue()
 
         if (!_fiAlarm)
         {
-            showNormalStatus(_fiName, psrc);
             showNormalStatus(_fiValue, psrc);
         }
 
         if (_etAlarm)
         {
-            showAlarmStatus(_etValue, psrc);
+            showAlarmStatus(_etValue);
+            showAlarmParamLimit(_etValue, _etStr, psrc);
         }
 
         if (_fiAlarm)
         {
-            showAlarmStatus(_fiName, psrc, false);
-            showAlarmStatus(_fiValue, psrc, false);
+            showAlarmStatus(_fiValue);
         }
-    }
-    else
-    {
-        showNormalStatus(_etValue, psrc);
-        showNormalStatus(_fiName, psrc);
-        showNormalStatus(_fiValue, psrc);
-    }
 
-    _etValue->setText(_etStr);
-
-    if (!_fiValue->isHidden())
-    {
-        _fiValue->setText(_fiStr);
+        restoreNormalStatusLater();
     }
 }
 
@@ -171,10 +186,18 @@ AGTrendWidget::AGTrendWidget(const QString &trendName, const AGTypeGas gasType)
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
     setPalette(palette);
 
-    setName("Et" + (QString)AGSymbol::convert(gasType));
+    setName((QString)AGSymbol::convert(gasType));
     setUnit("%");
 
+    // 设置上下限
+    updateLimit();
+
     // 构造资源。
+    _etName = new QLabel();
+    _etName->setPalette(palette);
+    _etName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    _etName->setText("Et");
+
     _etValue = new QLabel();
     _etValue->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     _etValue->setPalette(palette);
@@ -183,17 +206,19 @@ AGTrendWidget::AGTrendWidget(const QString &trendName, const AGTypeGas gasType)
     _fiName = new QLabel();
     _fiName->setPalette(palette);
     _fiName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    _fiName->setText("Fi" + (QString)AGSymbol::convert(gasType));
+    _fiName->setText("Fi");
 
     _fiValue = new QLabel();
     _fiValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
     _fiValue->setPalette(palette);
     _fiValue->setText(InvStr());
 
-    contentLayout->addStretch();
-    contentLayout->addWidget(_etValue, 3);
-    contentLayout->addWidget(_fiName, 1);
-    contentLayout->addWidget(_fiValue, 3);
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->addWidget(_etName, 1);
+    layout->addWidget(_etValue, 3);
+    layout->addWidget(_fiName, 1);
+    layout->addWidget(_fiValue, 3);
+    contentLayout->addLayout(layout, 7);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
@@ -231,6 +256,15 @@ QList<SubParamID> AGTrendWidget::getShortTrendSubParams() const
     return list;
 }
 
+void AGTrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
+    psrc = normalPalette(psrc);
+    showNormalParamLimit(psrc);
+    showNormalStatus(_etValue, psrc);
+    showNormalStatus(_fiValue, psrc);
+}
+
 /**************************************************************************************************
  * 根据布局大小自动调整字体大小。
  *************************************************************************************************/
@@ -250,9 +284,10 @@ void AGTrendWidget::setTextSize()
     font.setWeight(QFont::Black);
     _fiValue->setFont(font);
 
-    int fontSize = fontManager.getFontSize(9);
+    int fontSize = fontManager.getFontSize(3);
     font = fontManager.textFont(fontSize);
     _fiName->setFont(font);
+    _etName->setFont(font);
 }
 
 

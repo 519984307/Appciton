@@ -42,6 +42,7 @@ void ECGPVCSTrendWidget::setPVCSValue(int16_t pvcs)
     {
         _pvcsString = QString::number(pvcs);
     }
+    _pvcsValue->setText(_pvcsString);
 }
 
 /**************************************************************************************************
@@ -59,18 +60,11 @@ void ECGPVCSTrendWidget::isAlarm(bool isAlarm)
  *************************************************************************************************/
 void ECGPVCSTrendWidget::showValue(void)
 {
-    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-    psrc = normalPalette(psrc);
     if (_isAlarm)
     {
-        showAlarmStatus(_pvcsValue, psrc);
+        showAlarmStatus(_pvcsValue);
+        restoreNormalStatusLater();
     }
-    else
-    {
-        showNormalStatus(_pvcsValue, psrc);
-    }
-
-    _pvcsValue->setText(_pvcsString);
 }
 
 /**************************************************************************************************
@@ -102,7 +96,7 @@ ECGPVCSTrendWidget::ECGPVCSTrendWidget() : TrendWidget("ECGPVCSTrendWidget")
     // 设置标题栏的相关信息。
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     setPalette(palette);
-    setName(trs(paramInfo.getSubParamName(SUB_PARAM_ECG_PVCS)));
+    setName("PVCs");
 
     _pvcsValue = new QLabel();
     _pvcsValue->setPalette(palette);
@@ -117,7 +111,7 @@ ECGPVCSTrendWidget::ECGPVCSTrendWidget() : TrendWidget("ECGPVCSTrendWidget")
     mainLayout->addStretch(1);
 
     contentLayout->addStretch(1);
-    contentLayout->addLayout(mainLayout);
+    contentLayout->addLayout(mainLayout, 3);
     contentLayout->addStretch(1);
 
     // 释放事件。
@@ -131,4 +125,11 @@ ECGPVCSTrendWidget::ECGPVCSTrendWidget() : TrendWidget("ECGPVCSTrendWidget")
  *************************************************************************************************/
 ECGPVCSTrendWidget::~ECGPVCSTrendWidget()
 {
+}
+
+void ECGPVCSTrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
+    psrc = normalPalette(psrc);
+    showNormalStatus(_pvcsValue, psrc);
 }

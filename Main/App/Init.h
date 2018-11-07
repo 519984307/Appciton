@@ -78,7 +78,7 @@
 #include "Alarm.h"
 #include "AlarmPhyInfoBarWidget.h"
 #include "AlarmTechInfoBarWidget.h"
-#include "AlarmMuteBarWidget.h"
+#include "AlarmStatusWidget.h"
 #include "AlarmStateMachine.h"
 
 #include "ParamManager.h"
@@ -155,10 +155,6 @@
 #include "PMessageBox.h"
 
 #include "OxyCRGWidget.h"
-#include "OxyCRGHRWidget.h"
-#include "OxyCRGRESPWidget.h"
-#include "OxyCRGRRWidget.h"
-#include "OxyCRGSPO2Widget.h"
 
 #include "TopBarWidget.h"
 

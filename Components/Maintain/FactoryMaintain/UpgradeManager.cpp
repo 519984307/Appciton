@@ -694,7 +694,7 @@ void UpgradeManager::upgradeProcess()
                 system("fw_setenv maspro_user_mode 1 && sync");
                 d_ptr->state = STATE_REBOOT;
             }
-            if (d_ptr->type == UPGRADE_MOD_LOGO)
+            else if (d_ptr->type == UPGRADE_MOD_LOGO)
             {
                 d_ptr->state = STATE_UPGRADE_LOGO;
             }

@@ -1561,6 +1561,18 @@ WaveformID IBPParam::getWaveformID(IBPPressureName name)
     return waveID;
 }
 
+void IBPParam::updateSubParamLimit(SubParamID id)
+{
+    if (getSubParamID(_ibp1.pressureName) == id)
+    {
+        _trendWidgetIBP1->updateLimit();
+    }
+    else if (getSubParamID(_ibp2.pressureName) == id)
+    {
+        _trendWidgetIBP2->updateLimit();
+    }
+}
+
 bool IBPParam::getIBPLeadOff(IBPSignalInput ibp)
 {
     if (ibp == IBP_INPUT_1)

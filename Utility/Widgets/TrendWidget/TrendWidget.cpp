@@ -17,6 +17,7 @@
 #include "Debug.h"
 #include "BaseDefine.h"
 #include "TrendWidgetLabel.h"
+#include <QTimer>
 
 /**************************************************************************************************
  * 重绘。
@@ -51,8 +52,12 @@ void TrendWidget::resizeEvent(QResizeEvent *e)
     int fontSize = fontManager.getFontSize(4);
     QFont font = fontManager.textFont(fontSize);
     nameLabel->setFont(font);
-    calcLeadLabel->setFont(font);
+
+    fontSize = fontManager.getFontSize(1);
+    font = fontManager.textFont(fontSize);
     unitLabel->setFont(font);
+    upLimit->setFont(font);
+    downLimit->setFont(font);
 
     setTextSize();
 }
@@ -76,33 +81,47 @@ QPalette TrendWidget::normalPalette(QPalette psrc)
  * 参数：
  *      psrc:趋势数据设置颜色。
  *************************************************************************************************/
-QPalette TrendWidget::alarmPalette(QPalette psrc, bool isSetName)
+QPalette TrendWidget::alarmPalette(QPalette psrc)
 {
-    if (psrc.window().color() != Qt::white)
+    if (psrc.windowText().color() != Qt::black)
     {
-        psrc.setColor(QPalette::Window, Qt::white);
-    }
-    if (isSetName && psrc.windowText().color() != Qt::red)
-    {
-        psrc.setColor(QPalette::WindowText, Qt::red);
+        psrc.setColor(QPalette::WindowText, Qt::black);
     }
     return psrc;
 }
 
 //　报警时状态闪烁＋白底红字
-void TrendWidget::showAlarmStatus(QWidget *value, QPalette psrc, bool isSetName)
+void TrendWidget::showAlarmStatus(QWidget *value)
 {
-    QPalette alaColor = alarmPalette(palette(), isSetName);
-    setPalette(alaColor);
     QPalette p = value->palette();
-    alaColor = alarmPalette(p);
-    if (p.windowText().color() != alaColor.windowText().color())
+    QPalette alaColor  = alarmPalette(p);
+    value->setPalette(alaColor);
+}
+
+void TrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &valueStr, QPalette psrc)
+{
+    QPalette p = upLimit->palette();
+    QPalette alaColor = alarmPalette(p);
+    double value = valueStr.toDouble();
+    double up = upLimit->text().toDouble();
+    double down = downLimit->text().toDouble();
+    if (value > up)
     {
-        value->setPalette(alaColor);
+        upLimit->setPalette(valueWidget->palette());
     }
     else
     {
-        value->setPalette(psrc);
+        upLimit->setPalette(psrc);
+    }
+
+    p = downLimit->palette();
+    if (value < down)
+    {
+        downLimit->setPalette(valueWidget->palette());
+    }
+    else
+    {
+        downLimit->setPalette(psrc);
     }
 }
 
@@ -113,6 +132,21 @@ void TrendWidget::showNormalStatus(QWidget *value, QPalette psrc)
     if (p.windowText().color() != psrc.windowText().color())
     {
         value->setPalette(psrc);
+    }
+}
+
+void TrendWidget::showNormalParamLimit(QPalette psrc)
+{
+    QPalette p = upLimit->palette();
+    if (p.windowText().color() != psrc.windowText().color())
+    {
+        upLimit->setPalette(psrc);
+    }
+
+    p = downLimit->palette();
+    if (p.windowText().color() != psrc.windowText().color())
+    {
+        downLimit->setPalette(psrc);
     }
 }
 
@@ -150,6 +184,11 @@ void TrendWidget::updatePalette(const QPalette &pal)
     setPalette(pal);
 }
 
+void TrendWidget::restoreNormalStatusLater()
+{
+    QTimer::singleShot(500, this, SLOT(doRestoreNormalStatus()));
+}
+
 /**************************************************************************************************
  * 功能： 设置显示的名称。
  * 参数：
@@ -171,21 +210,17 @@ void TrendWidget::setUnit(const QString &unit)
     unitLabel->setText(unit);
 }
 
-/**************************************************************************************************
- * 功能： 设置计算导联字串。
- * 参数：
- *      unit:单位。
- *************************************************************************************************/
-void TrendWidget::setCalcLeadName(const QString &unit)
+void TrendWidget::setLimit(int up, int down, int scale)
 {
-    if (!calcLeadLabel->isVisible())
+    if (scale == 1)
     {
-        calcLeadLabel->setVisible(true);
+        upLimit->setText(QString::number(up));
+        downLimit->setText(QString::number(down));
     }
-
-    if (unit != calcLeadLabel->text())
+    else
     {
-        calcLeadLabel->setText(unit);
+        upLimit->setText(QString::number(up / scale) + "." + QString::number(up % scale));
+        downLimit->setText(QString::number(down / scale) + "." + QString::number(down % scale));
     }
 }
 
@@ -216,17 +251,21 @@ void TrendWidget::setUnitFont(int size, bool isBold)
  * 构造。
  *************************************************************************************************/
 TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
-    : IWidget(widgetName)
+    : IWidget(widgetName), nameLabel(NULL),
+      unitLabel(NULL), upLimit(NULL), downLimit(NULL)
 {
     _title = "";
     nameLabel = new TrendWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     nameLabel->setFocusPolicy(Qt::NoFocus);
 
-    calcLeadLabel = new QLabel("", this);
-    calcLeadLabel->setAlignment(Qt::AlignRight);
-
     unitLabel = new QLabel("", this);
     unitLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+
+    upLimit = new QLabel("", this);
+    upLimit->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+
+    downLimit = new QLabel("", this);
+    downLimit->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
     mLayout = new QHBoxLayout();
 
@@ -235,6 +274,8 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
         QVBoxLayout *vLayout = new QVBoxLayout();
         vLayout->addWidget(nameLabel);
         vLayout->addWidget(unitLabel);
+        vLayout->addWidget(upLimit);
+        vLayout->addWidget(downLimit);
         vLayout->addLayout(mLayout, 1);
         vLayout->addStretch();
         vLayout->setSpacing(0);
@@ -243,7 +284,7 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
         contentLayout = new QHBoxLayout();
         contentLayout->setMargin(0);
         contentLayout->setSpacing(0);
-        contentLayout->addLayout(vLayout);
+        contentLayout->addLayout(vLayout, 1);
 
 
         setLayout(contentLayout);

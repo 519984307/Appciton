@@ -11,7 +11,7 @@
 
 
 #include "AlarmIndicator.h"
-#include "AlarmMuteBarWidget.h"
+#include "AlarmStatusWidget.h"
 #include "AlarmPhyInfoBarWidget.h"
 #include "AlarmTechInfoBarWidget.h"
 #include "SoundManager.h"
@@ -175,11 +175,11 @@ void AlarmIndicator::publishAlarm(AlarmAudioStatus status)
     }
 
     // 更新声音
-    if (phySoundPriority != ALARM_PRIO_PROMPT)
+    if (phySoundPriority != ALARM_PRIO_PROMPT && _canPlayAudio(status, false))
     {
         soundManager.updateAlarm(true, phySoundPriority);
     }
-    else if (techSoundPriority != ALARM_PRIO_PROMPT)
+    else if (techSoundPriority != ALARM_PRIO_PROMPT && _canPlayAudio(status, true))
     {
         soundManager.updateAlarm(true, techSoundPriority);
     }
@@ -285,6 +285,21 @@ void AlarmIndicator::_displayTechSet(AlarmInfoNode &node)
     _alarmTechInfoWidget->display(node);
 }
 
+bool AlarmIndicator::_canPlayAudio(AlarmAudioStatus status, bool isTechAlarm)
+{
+    if (status == ALARM_AUDIO_NORMAL)
+    {
+        return true;
+    }
+
+    if (isTechAlarm && status != ALARM_OFF)
+    {
+        return true;
+    }
+
+    return false;
+}
+
 /**************************************************************************************************
  * 报警信息显示。
  *************************************************************************************************/
@@ -331,10 +346,10 @@ void AlarmIndicator::_displayInfoNode(AlarmInfoNode &alarmNode, int &indexint, i
 /**************************************************************************************************
  * 功能：注册生理报警界面指示器。
  *************************************************************************************************/
-void AlarmIndicator::setAlarmPhyWidgets(AlarmPhyInfoBarWidget *alarmWidget, AlarmMuteBarWidget *muteWidget)
+void AlarmIndicator::setAlarmPhyWidgets(AlarmPhyInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget)
 {
     _alarmPhyInfoWidget = alarmWidget;
-    _muteWidget = muteWidget;
+    _alarmStatusWidget = muteWidget;
 }
 
 /**************************************************************************************************
@@ -744,23 +759,9 @@ void AlarmIndicator::setAudioStatus(AlarmAudioStatus status)
         return;
     }
 
-    switch (status)
-    {
-    case ALARM_AUDIO_NORMAL:
-        _muteWidget->setAudioNormal();
-        break;
-    case ALARM_AUDIO_SUSPEND:
-        _muteWidget->setAlarmPause();
-        break;
-    case ALARM_AUDIO_OFF:
-        _muteWidget->setAudioOff();
-        break;
-    default:
-        _muteWidget->setAlarmOff();
-        break;
-    }
+    _alarmStatusWidget->setAlarmStatus(status);
 
-    if (status != ALARM_AUDIO_SUSPEND)
+    if (status != ALARM_AUDIO_SUSPEND || status != ALARM_RESET)
     {
         systemConfig.setNumValue("PrimaryCfg|Alarm|AlarmStatus", static_cast<int>(status + 1));
     }
@@ -856,7 +857,7 @@ AlarmIndicator::AlarmIndicator()
 {
     _alarmPhyInfoWidget = NULL;
     _alarmTechInfoWidget = NULL;
-    _muteWidget = NULL;
+    _alarmStatusWidget = NULL;
 
     _alarmPhyDisplayIndex = 0;
     _alarmTechDisplayIndex = 0;

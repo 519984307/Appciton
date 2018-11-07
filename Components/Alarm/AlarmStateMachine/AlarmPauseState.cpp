@@ -11,6 +11,7 @@
 #include "AlarmPauseState.h"
 #include "AlarmIndicator.h"
 #include "AlarmStateMachine.h"
+#include "LightManager.h"
 
 /**************************************************************************************************
  * 构造。
@@ -32,6 +33,7 @@ AlarmPauseState::~AlarmPauseState()
 void AlarmPauseState::enter()
 {
     alarmIndicator.setAudioStatus(ALARM_AUDIO_SUSPEND);
+    lightManager.enableAlarmAudioMute(true);
 }
 
 /**************************************************************************************************

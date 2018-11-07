@@ -18,7 +18,6 @@ public:
     ~AlarmNormalState();
 
     void enter();
-    void exit();
 
     void handAlarmEvent(AlarmStateEvent event, unsigned char *data, unsigned len);
 };

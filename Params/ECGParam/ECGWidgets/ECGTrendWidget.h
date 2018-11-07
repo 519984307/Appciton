@@ -23,6 +23,9 @@ public:
     // 刷新HR和ST的值。
     void setHRValue(int16_t hr, bool isHR);
 
+    // 刷新趋势参数上下限
+    void updateLimit(void);
+
     // 是否发生报警
     void isAlarm(bool isAlarm);
 
@@ -32,13 +35,12 @@ public:
     // 闪烁心跳图标
     void blinkBeatPixmap();
 
-    //设置计算导联字串
-    void setTrendWidgetCalcName(ECGLead calLead);
-
     ECGTrendWidget();
     ~ECGTrendWidget();
 
     QList<SubParamID> getShortTrendSubParams() const;
+public:
+    virtual void doRestoreNormalStatus();
 
 protected:
     void showEvent(QShowEvent *e);

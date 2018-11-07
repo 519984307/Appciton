@@ -32,6 +32,8 @@ enum TEMPOneShotType
     TEMP_OVER_RANGR_ALL,
     TEMP_ONESHOT_ALARM_COMMUNICATION_STOP,
     TEMP_ONESHOT_ALARM_MODULE_DISABLE,
+    TEMP_ONESHOT_ALARM_NOT_CALIBRATION_1,
+    TEMP_ONESHOT_ALARM_NOT_CALIBRATION_2,
     TEMP_ONESHOT_NR,
 };
 
@@ -49,7 +51,18 @@ enum TEMPLimitAlarmType
     TEMP_LIMIT_ALARM_NR
 };
 
+/**
+ * @brief The TEMPChannelIndex enum
+ */
+enum TEMPChannelIndex
+{
+    TEMP_CHANNEL_ONE,
+    TEMP_CHANNEL_TWO,
+};
 
+/**
+ * @brief The TEMPChannelType enum
+ */
 enum TEMPChannelType
 {
     TEMP_CHANNEL_T_ONE = 0,

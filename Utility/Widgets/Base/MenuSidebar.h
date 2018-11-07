@@ -64,15 +64,15 @@ public:
     QSize sizeHint() const;
 
 signals:
-    void selectItemChanged(const QString &text);
     void selectItemChanged(int index);
+    void visiableItemChanged(int index);
 
 protected:
     void showEvent(QShowEvent *ev);
 
 private:
     Q_PRIVATE_SLOT(d_func(), void onItemClicked())
-    Q_PRIVATE_SLOT(d_func(), void onItemFocusChanged(bool))
+    Q_PRIVATE_SLOT(d_func(), void onItemFocusChanged(bool, Qt::FocusReason))
     Q_DECLARE_PRIVATE(MenuSidebar)
 };
 

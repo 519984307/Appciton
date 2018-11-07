@@ -16,7 +16,12 @@ class CalculateWindow : public Window
 {
     Q_OBJECT
 public:
-    CalculateWindow();
+    /**
+     * @brief getInstance
+     * @return
+     */
+    static CalculateWindow *getInstance(void);
+
     ~CalculateWindow();
 
     /**
@@ -31,5 +36,6 @@ private slots:
     void onBtnReleased(void);
 
 private:
+    CalculateWindow();
     CalculateWindowPrivate *d_ptr;
 };

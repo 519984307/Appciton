@@ -38,14 +38,23 @@ public:
     void saveLayoutInfo();
 
     /**
-     * @brief loadLayoutInfo load the layout info from the config file
+     * @brief loadLayoutInfo 从配置表中获取配置信息
+     * @param isDefaultConfig 是否从默认配置表中获取信息，
+     *                        true: 从默认配置表（system.original.xml）中获取信息
+     *                        false: 从系统配置表（system.xml）中获取信息
      */
-    void loadLayoutInfo();
+    void loadLayoutInfo(bool isDefaultConfig = false);
 
     /**
      * @brief updateInfo update the param and wave info
      */
     void updateWaveAndParamInfo();
+
+    /**
+     * @brief isChangeLayoutInfo 是否修改过布局设置
+     * @return
+     */
+    bool isChangeLayoutInfo();
 
 signals:
     /**

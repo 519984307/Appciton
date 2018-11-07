@@ -100,6 +100,16 @@ CalculateWindow::CalculateWindow()
     layoutExec();
 }
 
+CalculateWindow *CalculateWindow::getInstance()
+{
+    static CalculateWindow *instance = NULL;
+    if (instance == NULL)
+    {
+        instance = new CalculateWindow;
+    }
+    return instance;
+}
+
 CalculateWindow::~CalculateWindow()
 {
     delete d_ptr;

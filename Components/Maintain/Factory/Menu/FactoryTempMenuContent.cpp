@@ -20,12 +20,38 @@
 #include "FactoryMaintainManager.h"
 #include <QStackedWidget>
 #include <QGroupBox>
+#include "FontManager.h"
+
+#define CALIBRATION_INTERVAL_TIME              (100)
+#define TIMEOUT_WAIT_NUMBER                    (5000 / CALIBRATION_INTERVAL_TIME)
+
+enum TempCalibrateValue
+{
+    TEMP_CALIBRATE_0,
+    TEMP_CALIBRATE_5,
+    TEMP_CALIBRATE_10,
+    TEMP_CALIBRATE_15,
+    TEMP_CALIBRATE_20,
+    TEMP_CALIBRATE_25,
+    TEMP_CALIBRATE_30,
+    TEMP_CALIBRATE_35,
+    TEMP_CALIBRATE_40,
+    TEMP_CALIBRATE_45,
+    TEMP_CALIBRATE_50,
+    TEMP_CALIBRATE_NR,
+};
+
+enum TempCalibrateChannel
+{
+    TEMP_CALIBRATE_CHANNEL_1,
+    TEMP_CALIBRATE_CHANNEL_2,
+};
 
 class FactoryTempMenuContentPrivate
 {
 public:
-    static QString btnStr[10];
-    static QString labelStr[10];
+    static QString btnStr[TEMP_CALIBRATE_NR];
+    static QString labelStr[TEMP_CALIBRATE_NR];
 
     FactoryTempMenuContentPrivate();
 
@@ -36,13 +62,11 @@ public:
     QStackedWidget *stackedwidget;
     ComboBox *channel;
 
-    Button *lbtn[10];
-    QLabel *calibrateResult[10];
+    Button *lbtn[TEMP_CALIBRATE_NR];
+    QLabel *calibrateResult[TEMP_CALIBRATE_NR];
 
-    QImage success;
-    QImage fault;
-
-    QTimer *timer;
+    int calibrationTimerId;
+    int timeoutNum;
 
     int calibrateChannel;
     int calibrateValue;
@@ -54,22 +78,22 @@ FactoryTempMenuContentPrivate::FactoryTempMenuContentPrivate()
       tempError(NULL),
       stackedwidget(NULL),
       channel(NULL),
-      success(""),
-      fault(""),
-      timer(NULL),
+      calibrationTimerId(-1),
+      timeoutNum(0),
       calibrateChannel(0),
       calibrateValue(0)
 {
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < TEMP_CALIBRATE_NR; i++)
     {
         lbtn[i] = NULL;
         calibrateResult[i] = NULL;
     }
 }
 
-QString FactoryTempMenuContentPrivate::btnStr[10] =
+QString FactoryTempMenuContentPrivate::btnStr[11] =
 {
     "TEMPCalibrate0",
+    "TEMPCalibrate5",
     "TEMPCalibrate10",
     "TEMPCalibrate15",
     "TEMPCalibrate20",
@@ -81,9 +105,10 @@ QString FactoryTempMenuContentPrivate::btnStr[10] =
     "TEMPCalibrate50"
 };
 
-QString FactoryTempMenuContentPrivate::labelStr[10] =
+QString FactoryTempMenuContentPrivate::labelStr[11] =
 {
     "TEMPCalibrate0is7409.3",
+    "TEMPCalibrate5is5742.9",
     "TEMPCalibrate10is4491.1",
     "TEMPCalibrate15is3541.3",
     "TEMPCalibrate20is2813.9",
@@ -109,6 +134,7 @@ void FactoryTempMenuContent::layoutExec()
 {
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
+    this->setFocusPolicy(Qt::NoFocus);
     QHBoxLayout *hl;
     QLabel *label;
     Button *button;
@@ -116,10 +142,12 @@ void FactoryTempMenuContent::layoutExec()
 
     hl = new QHBoxLayout;
     label = new QLabel;
+    label->setFont(fontManager.textFont(20));
     hl->addWidget(label);
     d_ptr->tempChannel = label;
 
     label = new QLabel(trs("---"));
+    label->setFont(fontManager.textFont(20));
     hl->addWidget(label);
     d_ptr->tempValue = label;
 
@@ -146,7 +174,7 @@ void FactoryTempMenuContent::layoutExec()
     d_ptr->channel = combo;
     layout->addWidget(combo, 1, 1);
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < TEMP_CALIBRATE_NR; i++)
     {
         label = new QLabel(trs(d_ptr->labelStr[i]));
         layout->addWidget(label, 2 + i, 0);
@@ -159,30 +187,41 @@ void FactoryTempMenuContent::layoutExec()
 
         label = new QLabel;
         d_ptr->calibrateResult[i] = label;
-        layout->addWidget(label, 2 + i, 2);
+        layout->addWidget(label, 2 + i, 2, Qt::AlignCenter);
     }
 
     layout->setRowStretch(12, 1);
+}
 
-    d_ptr->success = QImage("/usr/local/iDM/icons/select.png");
-    d_ptr->success = d_ptr->success.scaled(20, 20);
-    d_ptr->fault = QImage("/usr/local/iDM/icons/cancel.png");
-    d_ptr->fault = d_ptr->fault.scaled(20, 20);
-
-
-    d_ptr->timer = new QTimer();
-    d_ptr->timer->setInterval(2000);
-    connect(d_ptr->timer, SIGNAL(timeout()), this, SLOT(timeOut()));
+void FactoryTempMenuContent::timerEvent(QTimerEvent *ev)
+{
+    if (d_ptr->calibrationTimerId == ev->timerId())
+    {
+        bool reply = tempParam.getCalibrationReply();
+        if (reply || d_ptr->timeoutNum == TIMEOUT_WAIT_NUMBER)
+        {
+            if (reply && tempParam.getCalibrationResult())
+            {
+                d_ptr->calibrateResult[d_ptr->calibrateValue]->setText(trs("CalibrationSuccess"));
+            }
+            else
+            {
+                d_ptr->calibrateResult[d_ptr->calibrateValue]->setText(trs("CalibrationFail"));
+            }
+            killTimer(d_ptr->calibrationTimerId);
+            d_ptr->calibrationTimerId = -1;
+            d_ptr->timeoutNum = 0;
+        }
+        else
+        {
+            d_ptr->timeoutNum++;
+        }
+    }
 }
 
 void FactoryTempMenuContent::hideEvent(QHideEvent *e)
 {
     QWidget::hideEvent(e);
-
-    if (NULL != d_ptr->timer)
-    {
-        d_ptr->timer->stop();
-    }
 }
 
 /**************************************************************************************************
@@ -190,14 +229,13 @@ void FactoryTempMenuContent::hideEvent(QHideEvent *e)
  *************************************************************************************************/
 void FactoryTempMenuContent::readyShow()
 {
-    d_ptr->channel->setFocus();
     d_ptr->channel->setCurrentIndex(0);
     d_ptr->calibrateChannel = 0;
     d_ptr->tempChannel->setText(trs("TEMP1"));
 
-    for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < TEMP_CALIBRATE_NR; ++i)
     {
-        d_ptr->calibrateResult[i]->setPixmap(QPixmap::fromImage(QImage()));
+        d_ptr->calibrateResult[i]->setText(trs("WaitingCalibration"));
     }
 
     if (tempParam.getErrorDisable())
@@ -218,48 +256,6 @@ void FactoryTempMenuContent::readyShow()
 }
 
 /**************************************************************************************************
- * 功能:获取校准结果
- *************************************************************************************************/
-void FactoryTempMenuContent::getResult(int channel, int value, bool flag)
-{
-    d_ptr->timer->stop();
-    int index = d_ptr->calibrateValue;
-    if (d_ptr->calibrateChannel == channel && d_ptr->calibrateValue == value)
-    {
-        if (flag)
-        {
-            d_ptr->calibrateResult[index]->setPixmap(QPixmap::fromImage(d_ptr->success));
-        }
-        else
-        {
-            d_ptr->calibrateResult[index]->setPixmap(QPixmap::fromImage(d_ptr->fault));
-        }
-    }
-    else
-    {
-        d_ptr->calibrateResult[index]->setPixmap(QPixmap::fromImage(d_ptr->fault));
-    }
-}
-
-/**************************************************************************************************
- * 功能:显示体温值
- *************************************************************************************************/
-void FactoryTempMenuContent::setTEMPValue(int16_t t1, int16_t t2)
-{
-    QString str;
-    if (d_ptr->channel->currentIndex() == 0)
-    {
-        str = QString::number(t1 / 10.0, 'g', 1);
-    }
-    else
-    {
-        str = QString::number(t2 / 10.0, 'g', 1);
-    }
-    d_ptr->tempValue->setText(str);
-    d_ptr->stackedwidget->setCurrentIndex(0);
-}
-
-/**************************************************************************************************
  * 功能:错误信息显示
  *************************************************************************************************/
 void FactoryTempMenuContent::showError(QString str)
@@ -274,7 +270,7 @@ void FactoryTempMenuContent::showError(QString str)
 void FactoryTempMenuContent::onChannelReleased(int channel)
 {
     d_ptr->calibrateChannel = channel;
-    if (channel == 0)
+    if (channel == TEMP_CALIBRATE_CHANNEL_1)
     {
         d_ptr->tempChannel->setText(trs("TEMP1"));
     }
@@ -282,7 +278,7 @@ void FactoryTempMenuContent::onChannelReleased(int channel)
     {
         d_ptr->tempChannel->setText(trs("TEMP2"));
     }
-    for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < TEMP_CALIBRATE_NR; ++i)
     {
         d_ptr->calibrateResult[i]->setPixmap(QPixmap::fromImage(QImage()));
     }
@@ -296,13 +292,13 @@ void FactoryTempMenuContent::onBtnReleased()
     Button *button = qobject_cast<Button *>(sender());
     int value = button->property("Item").toInt();
     d_ptr->calibrateValue = value;
-
+    d_ptr->calibrateResult[d_ptr->calibrateValue]->setText(trs("Calibrating"));
     if (!tempParam.isServiceProviderOk())
     {
         return;
     }
     tempParam.sendCalibrateData(d_ptr->calibrateChannel, d_ptr->calibrateValue);
-    d_ptr->timer->start();
+    d_ptr->calibrationTimerId = startTimer(CALIBRATION_INTERVAL_TIME);
 }
 
 /**************************************************************************************************
@@ -310,7 +306,7 @@ void FactoryTempMenuContent::onBtnReleased()
  *************************************************************************************************/
 void FactoryTempMenuContent::timeOut()
 {
-    d_ptr->calibrateResult[d_ptr->calibrateValue]->setPixmap(QPixmap::fromImage(d_ptr->fault));
+    d_ptr->calibrateResult[d_ptr->calibrateValue]->setText(trs("CalibrationFail"));
 }
 
 /**************************************************************************************************

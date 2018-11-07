@@ -148,9 +148,9 @@ public:
     {
         static const char *symbol[ECG_FILTERMODE_NR] =
         {
+            "Surgery",
             "Monitor",
             "Diagnostic",
-            "Surgery",
             "ST",
         };
         return symbol[mode];

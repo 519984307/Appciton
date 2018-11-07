@@ -26,16 +26,17 @@ class ConfigEditMenuWindowPrivate
 {
 public:
     ConfigEditMenuWindowPrivate()
-        : isSubmenuInitial(false),
-          curEditConfig(NULL)
+        : isSubmenuInitial(false)
+        , curEditConfig(NULL)
+        , configName("")
+        , patType(PATIENT_TYPE_NULL)
     {
-        configName.clear();
-        subMenuMap.clear();
     }
 
     bool isSubmenuInitial;
     Config *curEditConfig;
     QString configName;
+    PatientType patType;
     QMap <QString, MenuContent *> subMenuMap;
 };
 

@@ -24,6 +24,9 @@ public:
     // 设置测量实时数据。
     void setData(int16_t sys, int16_t dia, int16_t map);
 
+    // 刷新趋势参数上下限
+    void updateLimit(void);
+
     // 设置标名。
     void setEntitle(IBPPressureName entitle);
 
@@ -44,6 +47,8 @@ public:
     ~IBPTrendWidget();
 
     QList<SubParamID> getShortTrendSubParams() const;
+public:
+    virtual void doRestoreNormalStatus();
 
 protected:
     virtual void setTextSize(void);

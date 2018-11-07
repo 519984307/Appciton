@@ -23,6 +23,10 @@ public:
     static ScreenLayoutWindow *getInstance();
     ~ScreenLayoutWindow();
 
+protected:
+    /*reimplement*/
+    void hideEvent(QHideEvent *ev);
+
 private slots:
     /**
      * @brief onButtonClicked handle the button click signal

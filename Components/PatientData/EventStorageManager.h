@@ -15,6 +15,7 @@
 class EventStorageManagerPrivate;
 class EventStorageManager : public StorageManager
 {
+    Q_OBJECT
 public:
     static EventStorageManager &getInstance();
     ~EventStorageManager();
@@ -70,6 +71,10 @@ public:
      * @return the alarm message
      */
     QString getPhyAlarmMessage(ParamID paramId, int alarmType, bool isOneShot);
+
+protected:
+    /*reimplement*/
+    void newPatientHandle();
 
 private:
     Q_DECLARE_PRIVATE(EventStorageManager)

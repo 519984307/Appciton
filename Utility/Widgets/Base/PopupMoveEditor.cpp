@@ -14,6 +14,7 @@
 #include <QIcon>
 #include <QKeyEvent>
 #include <QTimer>
+#include <QStyle>
 
 class PopupMoveEditorPrivate
 {
@@ -25,7 +26,9 @@ public:
           hasBeenPressed(false),
           prvRect(0, 0, 40, 100),
           name(text),
-          timer(NULL)
+          timer(NULL),
+          iconSize(themeManger.getAcceptableControlHeight(),
+                   themeManger.getAcceptableControlHeight())
     {}
 
     // check the mouse in which region
@@ -43,6 +46,7 @@ public:
     QFont textFont;
 
     QTimer *timer;
+    QSize iconSize;
 };
 
 PopupMoveEditor::PopupMoveEditor(QString &text)
@@ -99,8 +103,8 @@ void PopupMoveEditor::paintEvent(QPaintEvent *ev)
     }
     painter.drawRoundedRect(leftRegion.adjusted(bw / 2, bw / 2, br + bw, - bw / 2), br, br);
 
-    const QIcon &leftIcon = themeManger.getIcon(ThemeManager::IconLeft);
-    leftIcon.paint(&painter, leftRegion);
+    QRect iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignCenter, d_ptr->iconSize, leftRegion);
+    painter.drawPixmap(iconRect, themeManger.getPixmap(ThemeManager::IconLeft, d_ptr->iconSize));
 
     QRect rightRegion = r;
     rightRegion.setLeft(r.width() * 2 / 3);
@@ -116,8 +120,8 @@ void PopupMoveEditor::paintEvent(QPaintEvent *ev)
     }
     painter.drawRoundedRect(rightRegion.adjusted(-br - bw, bw / 2,  -bw / 2, -bw / 2), br, br);
 
-    const QIcon &rightIcon = themeManger.getIcon(ThemeManager::IconRight);
-    rightIcon.paint(&painter, rightRegion);
+    iconRect = QStyle::alignedRect(layoutDirection(), Qt::AlignCenter, d_ptr->iconSize, rightRegion);
+    painter.drawPixmap(iconRect, themeManger.getPixmap(ThemeManager::IconRight, d_ptr->iconSize));
 
     painter.setBrush(pal.color(QPalette::Active, QPalette::Window));
 

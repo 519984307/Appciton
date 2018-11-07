@@ -12,22 +12,13 @@
 
 #include "Window.h"
 
-class SoftWareVersionWindowPrivate;
 class SoftWareVersionWindow : public Window
 {
     Q_OBJECT
 public:
     SoftWareVersionWindow();
-    ~SoftWareVersionWindow();
-    /**
-     * @brief readyShow
-     */
-    void readyShow();
     /**
      * @brief layoutExec
      */
     void layoutExec();
-
-private:
-    SoftWareVersionWindowPrivate *const d_ptr;
 };

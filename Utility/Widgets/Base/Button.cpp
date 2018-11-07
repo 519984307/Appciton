@@ -204,7 +204,7 @@ void Button::paintEvent(QPaintEvent *ev)
 
         painter.setPen(pen);
         painter.setBrush(bgColor);
-        QRect r = rect.adjusted(d_ptr->m_borderWidth, d_ptr->m_borderWidth, -d_ptr->m_borderWidth, -d_ptr->m_borderWidth);
+        QRect r = rect.adjusted(d_ptr->m_borderWidth / 2, d_ptr->m_borderWidth / 2, -d_ptr->m_borderWidth / 2, -d_ptr->m_borderWidth / 2);
         painter.drawRoundedRect(r, d_ptr->m_borderRadius, d_ptr->m_borderRadius);
     }
     else

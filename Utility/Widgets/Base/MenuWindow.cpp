@@ -72,6 +72,7 @@ MenuWindow::MenuWindow()
     d_ptr->rightLayout->addWidget(line);
 
     connect(d_ptr->sidebar, SIGNAL(selectItemChanged(int)), this, SLOT(onSelectItemChanged(int)));
+    connect(d_ptr->sidebar, SIGNAL(visiableItemChanged(int)), this, SLOT(onVisiableItemChanged(int)));
 }
 
 MenuWindow::~MenuWindow()
@@ -161,43 +162,19 @@ bool MenuWindow::focusNextPrevChild(bool next)
     QWidget *cur = focusWidget();
 
     bool isBelongToSideBar = d_ptr->sidebar->isAncestorOf(cur);
-    Button *clostBtn = getCloseBtn();
+    Button *closeBtn = getCloseBtn();
 
     // 判断当前聚焦菜单是属于左侧还是右侧
     if (isBelongToSideBar)
     {
         d_ptr->isBelongToLeftWidget = true;
     }
-    else if (clostBtn != cur)
+    else if (closeBtn != cur)
     {
         d_ptr->isBelongToLeftWidget = false;
     }
 
-    // 判断当前聚焦在关闭按钮的位置是否属于左侧聚焦区域
-    bool isFocusCloseWidgetBelongToLeft = false;
-    if (cur == clostBtn)
-    {
-        if (d_ptr->isBelongToLeftWidget)
-        {
-            isFocusCloseWidgetBelongToLeft = true;
-        }
-    }
-
-    // 强制从左侧区域聚焦
-    if (isFocusCloseWidgetBelongToLeft)
-    {
-        int count = d_ptr->sidebar->itemCount();
-        int newIndex = 0;
-        if (!next)
-        {
-            newIndex =  count - 1;
-        }
-        MenuSidebarItem *item = d_ptr->sidebar->itemAt(newIndex);
-        item->setFocus();
-
-        return true;
-    }
-
+    // 判断当前聚焦是否属于左侧聚焦区域
     if (d_ptr->isBelongToLeftWidget)
     {
         int index = d_ptr->sidebar->indexOf(qobject_cast<MenuSidebarItem *>(cur));
@@ -206,17 +183,29 @@ bool MenuWindow::focusNextPrevChild(bool next)
         // 当聚焦在左侧首个聚焦点，且飞梭向前移动聚焦点时，强制进入关闭按钮聚焦区域
         if (index == 0 && !next)
         {
-            clostBtn->setFocus();
+            closeBtn->setFocus();
             return true;
         }
         // 当聚焦在左侧末尾那个聚焦点，且飞梭向后移动聚焦点时，强制进入关闭按钮聚焦区域
         else if (index == count - 1 && next)
         {
-            clostBtn->setFocus();
+            closeBtn->setFocus();
             return true;
         }
 
-        if (index >= 0)
+        if (cur == closeBtn)
+        {
+            // the focus is at the close button currently
+            int newIndex = 0;
+            if (!next)
+            {
+                newIndex =  count - 1;
+            }
+            MenuSidebarItem *item = d_ptr->sidebar->itemAt(newIndex);
+            item->setFocus(next ? Qt::TabFocusReason : Qt::BacktabFocusReason);
+            return true;
+        }
+        else if (index >= 0)
         {
             int newIndex = 0;
             if (next)
@@ -228,7 +217,7 @@ bool MenuWindow::focusNextPrevChild(bool next)
                 newIndex = (index + count -  1) % count;
             }
             MenuSidebarItem *item = d_ptr->sidebar->itemAt(newIndex);
-            item->setFocus();
+            item->setFocus(next ? Qt::TabFocusReason : Qt::BacktabFocusReason);
         }
 
         return true;
@@ -355,6 +344,41 @@ void MenuWindow::onSelectItemChanged(int index)
             if (area->isAncestorOf(content->focusWidget()))
             {
                 area->ensureWidgetVisible(content->focusWidget());
+            }
+        }
+    }
+}
+
+void MenuWindow::onVisiableItemChanged(int index)
+{
+    Q_ASSERT(index < d_ptr->stackWidget->count());
+
+    d_ptr->stackWidget->setCurrentIndex(index);
+
+    ScrollArea *area = qobject_cast<ScrollArea *>(d_ptr->stackWidget->currentWidget());
+    if (area)
+    {
+        d_ptr->stackWidget->setFocusProxy(area);
+        MenuContent *content = qobject_cast<MenuContent *>(area->widget());
+        if (content)
+        {
+            if (d_ptr->menuPath.isEmpty())
+            {
+                setWindowTitle(content->description());
+            }
+            else
+            {
+                QString windowTitle = d_ptr->menuPath;
+                windowTitle += "-";
+                windowTitle += content->description();
+                setWindowTitle(windowTitle);
+            }
+
+            // find the first widget and make it visiable
+            QList<QWidget*> childlist = content->findChildren<QWidget *>();
+            if (!childlist.isEmpty())
+            {
+                area->ensureWidgetVisible(childlist.first());
             }
         }
     }

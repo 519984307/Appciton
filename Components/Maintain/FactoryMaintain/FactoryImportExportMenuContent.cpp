@@ -26,8 +26,11 @@
 #include "ListDataModel.h"
 #include "ListViewItemDelegate.h"
 #include "LanguageManager.h"
+#include "USBManager.h"
+#include "ThemeManager.h"
+#include <QTimer>
 
-#define CONFIG_MAX_NUM        (7)
+#define CONFIG_MAX_NUM        (6)
 #define USB0_DEVICE_NODE      ("/dev/sda2")
 #define USB0_PATH_NAME        ("/mnt/usb0")
 #define CONFIG_DIR            ("/usr/local/nPM/etc/")
@@ -36,7 +39,8 @@
 #define CONFIG_FILE_PED       ("PedConfig.Original.xml")
 #define CONFIG_FILE_SYSTEM    ("System.Original.xml")
 #define CONFIG_FILE_MACHINE   ("Machine.xml")
-#define LISTVIEW_MAX_VISIABLE_TIME (6)
+#define LISTVIEW_MAX_VISIABLE_TIME (5)
+#define HEIGHT_HINT (themeManger.getAcceptableControlHeight())
 
 class FactoryImportExportMenuContentPrivate
 {
@@ -53,7 +57,9 @@ public:
         configDataModel(NULL),
         exportBtn(NULL),
         importBtn(NULL),
-        importFlag(255)
+        importFlag(255),
+        infoLab(NULL),
+        timer(NULL)
     {
         configs.clear();
         exportFileName.clear();
@@ -88,6 +94,8 @@ public:
     Button *exportBtn;
     Button *importBtn;
     int importFlag;
+    QLabel *infoLab;  // 记录usb是否存在信息
+    QTimer *timer;
 };
 
 FactoryImportExportMenuContent::FactoryImportExportMenuContent()
@@ -106,6 +114,13 @@ void FactoryImportExportMenuContent::readyShow()
 {
     d_ptr->loadConfigs();
     d_ptr->updateConfigList();
+}
+
+void FactoryImportExportMenuContent::showEvent(QShowEvent *ev)
+{
+    MenuContent::showEvent(ev);
+
+    onTimeOut();
 }
 
 void FactoryImportExportMenuContent::layoutExec()
@@ -145,7 +160,20 @@ void FactoryImportExportMenuContent::layoutExec()
     d_ptr->importBtn = button;
 
     layout->addLayout(hl);
+
+    label = new QLabel(trs("WarningNoUSB"));
+    label->setFixedHeight(HEIGHT_HINT);
+    d_ptr->infoLab = label;
+    layout->addWidget(label, 1, Qt::AlignRight);
+
     layout->addStretch(1);
+
+    // 需要加入this，绑定父子关系，以便自动释放空间,避免造成内存泄露
+    QTimer *timer = new QTimer(this);
+    timer->setInterval(500);
+    connect(timer, SIGNAL(timeout()), this, SLOT(onTimeOut()));
+    timer->start();
+    d_ptr->timer = timer;
 }
 
 
@@ -366,10 +394,10 @@ void FactoryImportExportMenuContent::onBtnClick()
 
 void FactoryImportExportMenuContent::updateBtnStatus()
 {
-
     int curSelectedRow = d_ptr->configListView->curCheckedRow();
     bool isEnable;
-    if (curSelectedRow == -1)
+    if (curSelectedRow == -1
+            || !usbManager.isUSBExist())
     {
         isEnable = false;
     }
@@ -378,6 +406,23 @@ void FactoryImportExportMenuContent::updateBtnStatus()
         isEnable = true;
     }
     d_ptr->exportBtn->setEnabled(isEnable);
+}
+
+void FactoryImportExportMenuContent::onTimeOut()
+{
+    bool isEnable;
+    if (usbManager.isUSBExist())
+    {
+        isEnable = true;
+        d_ptr->infoLab->hide();
+    }
+    else
+    {
+        isEnable = false;
+        d_ptr->infoLab->show();
+    }
+    updateBtnStatus();
+    d_ptr->importBtn->setEnabled(isEnable);
 }
 
 QDomElement FactoryImportExportMenuContent::tagFindElement(const QStringList &list)
@@ -415,18 +460,6 @@ bool FactoryImportExportMenuContent::insertFileFromUSB()
     filelogg.open(QIODevice::WriteOnly | QIODevice::Append);
     d_ptr->textStream.setDevice(&filelogg);/*打开日志IO文件*/
 
-    //  检测设备节点
-    if (!QFile::exists(USB0_DEVICE_NODE))
-    {
-        return false;
-    }
-
-    //  挂载u盘
-    QProcess::execute(QString("mount -t vfat %1 %2").arg(USB0_DEVICE_NODE).arg(USB0_PATH_NAME));
-    QProcess::execute("sync");
-//    if (backFlag != QProcess::NormalExit) //  挂载失败
-//    {
-//    }
     if (QFile::exists(USB0_PATH_NAME) == false)
     {
         return false;
@@ -435,7 +468,11 @@ bool FactoryImportExportMenuContent::insertFileFromUSB()
     // find the xml files
     QDir dir(QString("%1%2").arg(USB0_PATH_NAME).arg("/"));
     QStringList nameFilters;
-    nameFilters.append("*.xml");
+    nameFilters.append(CONFIG_FILE_ADULT);
+    nameFilters.append(CONFIG_FILE_NEO);
+    nameFilters.append(CONFIG_FILE_PED);
+    nameFilters.append(CONFIG_FILE_SYSTEM);
+    nameFilters.append(CONFIG_FILE_MACHINE);
     QStringList files = dir.entryList(nameFilters, QDir::Files | QDir::Readable, QDir::Name);
     if (files.isEmpty())
     {
@@ -444,8 +481,7 @@ bool FactoryImportExportMenuContent::insertFileFromUSB()
         return false;
     }
 
-
-    ImportSubWidget myImportSubWidget(files);
+    ImportSubWidget myImportSubWidget(files, USB0_PATH_NAME);
     bool status = myImportSubWidget.exec();
     d_ptr->importFileName.clear();
     if (status == true) //  OK
@@ -504,18 +540,19 @@ bool FactoryImportExportMenuContent::insertFileFromUSB()
         }
         fileImport.close();
 
-        QList<QDomElement> importTagList;
-        QDomElement  importTag = d_ptr->importXml.documentElement();
+            // 依靠匹配到同名文件才导入文件，所以暂时关闭原始文件内部节点校验
+//        QList<QDomElement> importTagList;
+//        QDomElement  importTag = d_ptr->importXml.documentElement();
 
-        // check the import file
-        bool checkXmlFlag = checkXMLContent(importTagList, importTag);
+//        // check the import file
+//        bool checkXmlFlag = checkXMLContent(importTagList, importTag);
 
-        if (!checkXmlFlag)
-        {
-            MessageBox message(trs("Import"), trs("ImportFileFailed"));
-            message.exec();
-            return false;
-        }
+//        if (!checkXmlFlag)
+//        {
+//            MessageBox message(trs("Import"), trs("ImportFileFailed"));
+//            message.exec();
+//            return false;
+//        }
 
         // find the same file
         bool isExist;
@@ -567,13 +604,6 @@ bool FactoryImportExportMenuContent::insertFileFromUSB()
     }
     d_ptr->updateConfigList();
 
-    //  解挂U盘
-    QProcess::execute(QString("umount -t vfat %1 %2").arg(USB0_DEVICE_NODE).arg(USB0_PATH_NAME));
-    QProcess::execute("sync");
-//    if (backFlag != QProcess::NormalExit) //  挂载失败
-//    {
-//    }
-
     filelogg.close();
     return true;
 }
@@ -581,18 +611,6 @@ bool FactoryImportExportMenuContent::insertFileFromUSB()
 
 bool FactoryImportExportMenuContent::exportFileToUSB()
 {
-    //  检测设备节点
-    if (!QFile::exists(USB0_DEVICE_NODE))
-    {
-        return false;
-    }
-
-    //  挂载u盘
-    QProcess::execute(QString("mount -t vfat %1 %2").arg(USB0_DEVICE_NODE).arg(USB0_PATH_NAME));
-    QProcess::execute("sync");
-//    if (backFlag != QProcess::NormalExit) // 挂载失败
-//    {
-//    }
     if (QFile::exists(USB0_PATH_NAME) == false)
     {
         return false;
@@ -662,14 +680,6 @@ bool FactoryImportExportMenuContent::exportFileToUSB()
             return false;
         }
     }
-
-    QProcess::execute(QString("umount -t vfat %1 %2").
-                                 arg(USB0_DEVICE_NODE).
-                                 arg(USB0_PATH_NAME));
-    QProcess::execute("sync");
-//    if (backFlag != QProcess::NormalExit)
-//    {
-//    }
 
     return true;
 }

@@ -219,7 +219,7 @@ void MonitorInfoWindow::layoutExec()
 QString MonitorInfoWindow::getRunTime()
 {
     QString t;
-    unsigned diffTime = timeManager.getElapsedTime();
+    unsigned diffTime = timeManager.getRunTime();
     int hour = diffTime / 3600;
     int min = (diffTime - hour * 3600) / 60;
     int sec = diffTime % 60;

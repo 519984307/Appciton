@@ -106,8 +106,8 @@ void NIBPParam::setConnected(bool isConnected)
  *************************************************************************************************/
 void NIBPParam::handDemoTrendData(void)
 {
-    static int cnt = 50;
-    if (cnt++ < 50)
+    static int cnt = 290;
+    if (cnt++ < 300)
     {
         return;
     }
@@ -1247,6 +1247,14 @@ void NIBPParam::switchToManual(void)
         {
             nibpParam.setModelText(trs("NIBPManual"));
         }
+    }
+}
+
+void NIBPParam::updateSubParamLimit(SubParamID id)
+{
+    if (id == SUB_PARAM_NIBP_SYS)
+    {
+        _trendWidget->updateLimit();
     }
 }
 

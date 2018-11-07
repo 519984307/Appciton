@@ -32,7 +32,7 @@
 #define MAX_DOSE                10000
 #define MAX_INFUSIONRATE        1000
 #define MAX_DRIPRATE            1000
-#define TABLE_ROW_NUM           9
+#define TABLE_ROW_NUM           6
 
 class TitrateTableWindowPrivate
 {

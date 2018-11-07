@@ -16,6 +16,8 @@
 #include "RESPParam.h"
 #include "TrendWidgetLabel.h"
 #include "MeasureSettingWindow.h"
+#include "AlarmConfig.h"
+#include "ParamManager.h"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -49,6 +51,13 @@ void RESPTrendWidget::setRRValue(int16_t rr , bool isRR)
     {
         _rrString = InvStr();
     }
+    _rrValue->setText(_rrString);
+}
+
+void RESPTrendWidget::updateLimit()
+{
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_RR_BR, UNIT_RPM);
+    setLimit(config.highLimit, config.lowLimit, config.scale);
 }
 
 
@@ -79,14 +88,10 @@ void RESPTrendWidget::showValue(void)
     QPalette fgColor = normalPalette(psrc);
     if (_isAlarm)
     {
-        showAlarmStatus(_rrValue, fgColor);
+        showAlarmStatus(_rrValue);
+        showAlarmParamLimit(_rrValue, _rrString, fgColor);
+        restoreNormalStatusLater();
     }
-    else
-    {
-        showNormalStatus(_rrValue, fgColor);
-    }
-
-    _rrValue->setText(_rrString);
 }
 
 /**************************************************************************************************
@@ -119,6 +124,9 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
     setName(trs(paramInfo.getSubParamName(SUB_PARAM_RR_BR)));
     setUnit(Unit::getSymbol(UNIT_RPM));
 
+    // 设置上下限
+    updateLimit();
+
     // RR值。
     _rrValue = new QLabel();
     _rrValue->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
@@ -134,7 +142,7 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
     mainLayout->addStretch(1);
 
     contentLayout->addStretch(1);
-    contentLayout->addLayout(mainLayout);
+    contentLayout->addLayout(mainLayout, 3);
     contentLayout->addStretch(1);
 
     // 释放事件。
@@ -153,4 +161,12 @@ QList<SubParamID> RESPTrendWidget::getShortTrendSubParams() const
     QList<SubParamID> list;
     list.append(SUB_PARAM_RR_BR);
     return list;
+}
+
+void RESPTrendWidget::doRestoreNormalStatus()
+{
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
+    QPalette fgColor = normalPalette(psrc);
+    showNormalParamLimit(fgColor);
+    showNormalStatus(_rrValue, fgColor);
 }

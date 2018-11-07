@@ -8,37 +8,21 @@
  ** Written by ZhongHuan Duan duanzhonghuan@blmed.cn, 2018/8/20
  **/
 
-
-
 #pragma once
 #include "IWidget.h"
 #include "OxyCRGSymbol.h"
-#include "OxyCRGRESPWidget.h"
-#include "OxyCRGHRWidget.h"
-#include "OxyCRGSPO2Widget.h"
-#include "IButton.h"
-#include "OxyCRGCO2Widget.h"
 
-class QLabel;
-class QHBoxLayout;
-class QVBoxLayout;
-class OxyCRGWidgetLabel;
-class PopupList;
 class OxyCRGWidgetPrivate;
-
 class OxyCRGCO2WaveWidget;
 class OxyCRGRESPWaveWidget;
 class OxyCRGSPO2TrendWidget;
 class OxyCRGRRHRWaveWidget;
-class OxyCRGTrendWaveWidget;
 class OxyCRGWidget : public IWidget
 {
     Q_OBJECT
 public:
     OxyCRGWidget();
     ~OxyCRGWidget();
-
-    virtual void setVisible(bool visible);
 
     /**
      * @brief setOxyCRGRespWidget
@@ -64,9 +48,6 @@ public:
      */
     void setOxyCRGRrHrWidget(OxyCRGRRHRWaveWidget *p);
 
-    void setWaveType(int index);
-    int  getWaveType(void)const;
-
     /* reimplement */
     void getSubFocusWidget(QList<QWidget *> &subWidget) const;
 
@@ -82,59 +63,38 @@ protected:
     void hideEvent(QHideEvent *e);
 
 private slots:
-    void _intervalSlot(IWidget *widget);
-    void _changeTrendSlot(IWidget *widget);
-    void _onSetupUpdated(IWidget *widget);
-    void _intervalDestroyed();
-    void _changeTrendDestroyed();
-    void _getIntervalIndex(int);
-    void _getChangeTrendIndex(int);
+    /**
+     * @brief onIntervalChanged handle the interval change issue
+     */
+    void onIntervalChanged(int);
+
+    /**
+     * @brief onCompressWaveChanged handle the compress wave changed issue
+     */
+    void onCompressWaveChanged(int);
+
+    /**
+     * @brief onCompressWaveClicked on compress wave clicked
+     * @param widget
+     */
+    void onCompressWaveClicked(IWidget *widget);
+
+    /**
+     * @brief onIntervalClicked handle interval label click
+     * @param widget
+     */
+    void onIntervalClicked(IWidget *widget);
+
+    /**
+     * @brief onSetup slot of the settup label click signal
+     * @param widget
+     */
+    void onSetupClicked(IWidget *widget);
+
     /**
      * @brief _autoSetRuler  自动设置标尺槽函数
      */
-    void _autoSetRuler(void);
-
-signals:
-    void _intervalChanged(int index);
-private:
-    static const int _titleBarHeight = 24;
-    static const int _labelHeight = 40;
-    QVBoxLayout *_mainLayout;
-    QVBoxLayout *_hLayoutWave;
-    QLabel *_titleLabel;
-    QHBoxLayout *bottomLayout;
-    OxyCRGWidgetLabel *_interval;         // 时间间隔
-    OxyCRGWidgetLabel *_changeTrend;      // 呼吸波与CO2
-    PopupList *_intervalList;
-    PopupList *_changeTrendList;
-    OxyCRGRESPWidget *_oxycrgWidget;
-    OxyCRGHRWidget *_oxycrgHrWidget;
-    OxyCRGSPO2Widget *_oxycrgSpo2Widget;
-    OxyCRGCO2Widget  *_oxycrgCo2Widget;
-    OxyCRGTrendWaveWidget *_oxycrgTrendWaveWidget;
-    void _trendLayout(void);
-    void _clearLayout(void);
-
-    // 设置/获取时间间隔。
-    void _setInterval(OxyCRGInterval index);
-    OxyCRGInterval _getInterval(void);
-
-    // 设置/获取RESP/RR。
-    void _setTrend(OxyCRGTrend index);
-    OxyCRGTrend _getTrend(void);
-
-    int _roundUp(int value, int step);
-    int _roundDown(int value, int step);
-
-    float _pixelWPitch;                // 屏幕像素点距, 单位mm
-    float _pixelHPitch;                // 屏幕像素点距, 单位mm
-    bool _isShowGrid;                         // 是否显示网格
-    bool _isShowFrame;                         // 是否显示边框
-    bool _isShowScale;                         // 是否显示刻度
-    int  _waveType;                    // 波形类型
-
-    int _intervalItemIndex;
-    int _changeTrendItemIndex;
+    void onAutoClicked(void);
 
 private:
     OxyCRGWidgetPrivate *const d_ptr;

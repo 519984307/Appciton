@@ -21,7 +21,11 @@ public:
     AlarmInfoWindow(const QString &title, AlarmType type);
     ~AlarmInfoWindow();
 
-    void updateData();
+    /**
+     * @brief updateData 更新数据
+     * @param isShowFirstPage false:更新当前页数据　true:更新到第一页
+     */
+    void updateData(bool isShowFirstPage = false);
 
 protected:
     /**

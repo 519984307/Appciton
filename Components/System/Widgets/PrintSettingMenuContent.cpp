@@ -143,6 +143,7 @@ void PrintSettingMenuContent::layoutExec()
 
     QGridLayout *glayout = new QGridLayout(this);
     glayout->setMargin(10);
+    glayout->setHorizontalSpacing(0);
 
     ComboBox *combo;
     Button *btn;

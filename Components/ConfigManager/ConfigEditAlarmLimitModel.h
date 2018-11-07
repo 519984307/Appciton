@@ -12,14 +12,17 @@
 #include "AlarmLimitModel.h"
 #include "ConfigEditMenuWindow.h"
 
+class ConfigEditAlarmLimitModelPrivate;
 class ConfigEditAlarmLimitModel : public AlarmLimitModel
 {
     Q_OBJECT
 public:
-    explicit ConfigEditAlarmLimitModel(ConfigEditMenuWindow *w):w(w) {}
-    ~ConfigEditAlarmLimitModel() {}
+    explicit ConfigEditAlarmLimitModel(Config *config);
+    ~ConfigEditAlarmLimitModel();
+
 protected:
     virtual void alarmDataUpdate(const AlarmDataInfo &info, int type);
+
 private:
-    ConfigEditMenuWindow *w;
+    ConfigEditAlarmLimitModelPrivate *d_ptr;
 };

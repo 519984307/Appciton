@@ -59,6 +59,14 @@ public:
         trendData.co2Baro = data.co2baro;
         trendData.time = t;
         trendData.alarmFlag = alarm;
+
+        PrintTime timeSec = recorderManager.getPrintTime();
+        int time = -1;
+        if (timeSec == PRINT_TIME_EIGHT_SEC)
+        {
+            time = 8;
+        }
+        totalDrawWaveSegment = time;
     }
 
     QList<RecordWaveSegmentInfo> getPrintWaveInfos();
@@ -182,24 +190,6 @@ int ContinuousPageGenerator::type() const
 RecordPageGenerator::PrintPriority ContinuousPageGenerator::getPriority() const
 {
     return PriorityContinuous;
-}
-
-void ContinuousPageGenerator::setPrintTime(PrintTime timeSec)
-{
-    int time;
-    if (timeSec == PRINT_TIME_CONTINOUS)
-    {
-        time = -1;
-    }
-    else if (timeSec == PRINT_TIME_EIGHT_SEC)
-    {
-        time = 8;
-    }
-    else
-    {
-        time = -1;
-    }
-    d_ptr->totalDrawWaveSegment = time;
 }
 
 RecordPage *ContinuousPageGenerator::createPage()

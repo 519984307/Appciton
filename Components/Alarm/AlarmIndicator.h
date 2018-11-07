@@ -16,7 +16,7 @@
 
 class AlarmPhyInfoBarWidget;
 class AlarmTechInfoBarWidget;
-class AlarmMuteBarWidget;
+class AlarmStatusWidget;
 class AlarmIndicator
 {
 public:
@@ -31,7 +31,7 @@ public:
     static AlarmIndicator *_selfObj;
 
     // 注册报警界面对象。
-    void setAlarmPhyWidgets(AlarmPhyInfoBarWidget *alarmWidget, AlarmMuteBarWidget *muteWidget);
+    void setAlarmPhyWidgets(AlarmPhyInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget);
     void setAlarmTechWidgets(AlarmTechInfoBarWidget *alarmWidget);
 
     // 增加/删除报警消息。
@@ -96,10 +96,11 @@ private: // 报警信息显示。
     void _displayTechClear(void);    // 清除技术报警界面。
     void _displayPhySet(AlarmInfoNode &node);  // 设置生理报警提示信息。
     void _displayTechSet(AlarmInfoNode &node); // 设置技术报警提示信息。
+    bool _canPlayAudio(AlarmAudioStatus status, bool isTechAlarm); // check whether can play alarm sound
 
     AlarmPhyInfoBarWidget *_alarmPhyInfoWidget;
     AlarmTechInfoBarWidget *_alarmTechInfoWidget;
-    AlarmMuteBarWidget *_muteWidget;
+    AlarmStatusWidget *_alarmStatusWidget;
 
 private:
     // 最大报警信息数量。

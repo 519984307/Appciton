@@ -113,6 +113,15 @@ public:
 public slots:
     void onNewTrendDataArrived(ShortTrendInterval intreval);
 
+    /**
+     * @brief onNewNibpMeasurementData handle the new NIBP measurement data
+     * @note the nibp data might be recored at the timestamp that can't be divided by the interval.
+     *       when this case happened, the trend storage manager will emit a signal to tell the short
+     *       trend item to reload the nibp data.
+     * @param interval the signale interval
+     */
+    void onNewNibpMeasurementData();
+
 protected:
     /* reimplement */
     void paintEvent(QPaintEvent *ev);

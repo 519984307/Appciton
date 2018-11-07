@@ -30,9 +30,9 @@ void TimeManager::_refreshWidgets()
     QString t;
     timeDate.getTime(_curTime, text, _showSecond);
     timeDate.getDate(_curTime, t, true);
-    t += "    ";
+    t += " ";
     t += text;
-    t += "  ";
+    t += " ";
     if (_dateTimeWidget)
     {
         _dateTimeWidget->setText(t);
@@ -109,6 +109,16 @@ void TimeManager::mainRun(unsigned t)
     systemConfig.setNumValue("Timestamp", _curTime);
 }
 
+void TimeManager::recordRunTime()
+{
+    _runTime++;
+}
+
+unsigned TimeManager::getRunTime() const
+{
+   return _runTime;
+}
+
 void TimeManager::setElapsedTime()
 {
     _elapseStartTime = _curTime;
@@ -128,6 +138,7 @@ TimeManager::TimeManager()
 {
     _dateTimeWidget = NULL;
     _elapsedWidget = NULL;
+    _runTime = 0;
 
     // 读出运行起始时间。
     systemConfig.getNumValue("ElapseStartTime", _elapseStartTime);

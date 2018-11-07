@@ -17,7 +17,6 @@
 
 class SPO2TrendWidget;
 class SPO2WaveWidget;
-class OxyCRGSPO2Widget;
 class OxyCRGSPO2TrendWidget;
 class SPO2ProviderIFace;
 class SPO2Param: public Param
@@ -78,7 +77,6 @@ public:
     // 设置界面对象。
     void setTrendWidget(SPO2TrendWidget *trendWidget);
     void setWaveWidget(SPO2WaveWidget *waveWidget);
-    void setOxyCRGWaveWidget(OxyCRGSPO2Widget *waveWidget);
     void setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *trendWidget);
 
     // PR音量
@@ -102,6 +100,18 @@ public:
 
     // 设置脉搏音标志。
     void setPulseAudio(bool pulse);
+
+    /**
+     * @brief setBeatVol
+     * @param val
+     */
+    void setBeatVol(SoundManager::VolumeLevel vol);
+
+    /**
+     * @brief getBeatVol
+     * @return
+     */
+    SoundManager::VolumeLevel getBeatVol(void) const;
 
     // 设置波形上的提示信息。
     void setNotify(bool enable, QString str = " ");
@@ -165,6 +175,8 @@ public:
         return _isEverSensorOn;
     }
 
+    // 刷新参数上下限
+    virtual void updateSubParamLimit(SubParamID id);
 private slots:
     void checkSelftest();
     void onPaletteChanged(ParamID id);
@@ -176,7 +188,6 @@ private:
     SPO2ProviderIFace *_provider;
     SPO2TrendWidget *_trendWidget;
     SPO2WaveWidget *_waveWidget;
-    OxyCRGSPO2Widget *_waveOxyCRGWidget;
 
     bool _isEverCheckFinger;  // use to decide prompt sensor off
     bool _isEverSensorOn;   // use to decide display waveform at power on

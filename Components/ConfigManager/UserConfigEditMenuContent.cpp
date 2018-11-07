@@ -24,6 +24,7 @@
 #include "ListDataModel.h"
 #include "ListViewItemDelegate.h"
 #include "ConfigManagerMenuWindow.h"
+#include "PatientTypeSelectWindow.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -45,7 +46,7 @@ public:
     UserConfigEditMenuContentPrivate()
         :  curConfig(NULL), curEditIndex(-1),
            configDataModel(NULL), configListView(NULL),
-           editWindow(NULL)
+           editWindow(NULL), patientType(PATIENT_TYPE_NULL)
     {
         btns.clear();
     }
@@ -68,6 +69,7 @@ public:
     ListDataModel *configDataModel;
     ListView *configListView;
     ConfigEditMenuWindow *editWindow;
+    PatientType patientType;
 };
 
 void UserConfigEditMenuContentPrivate::loadConfigs()
@@ -161,35 +163,48 @@ void UserConfigEditMenuContent::readyShow()
 void UserConfigEditMenuContent::onBtnClick()
 {
     Button *btn = qobject_cast<Button *>(sender());
+    int indexType = btn->property("item").toInt();
 
-    if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_ADD_CONFIG])
+    switch (indexType)
     {
-        if (d_ptr->configDataModel->getRowCount() >= CONFIG_MAX_NUM)
+        case UserConfigEditMenuContentPrivate::ITEM_BTN_ADD_CONFIG:
         {
-        }
-        else
-        {
+            PatientTypeSelectWindow patientW;
+            // 选择有效item后退出时返回：1
+            if (patientW.exec() != QDialog::Accepted)
+            {
+                break;
+            }
+
+            if (d_ptr->configDataModel->getRowCount() >= CONFIG_MAX_NUM)
+            {
+                break;
+            }
+
             if (d_ptr->curConfig)
             {
                 delete d_ptr->curConfig;
             }
 
-            QFile myFile(QString("%1/%2")
-                         .arg(CONFIG_DIR)
-                         .arg(configManager.runningConfigFilename(patientManager.getType())));
+            PatientType type;
+            QString configPath;
+            patientW.getConfigInfo(type, configPath);
+
+            QFile myFile(configPath);
+
             if (!myFile.open(QIODevice::ReadOnly | QIODevice::Text))
             {
+                type = patientManager.getType();
+                // 如果打开失败，选择当前运行的配置文件
                 d_ptr->curConfig = new Config(QString("%1/%2")
                                               .arg(CONFIG_DIR)
-                                              .arg(configManager.factoryConfigFilename(patientManager.getType())));
+                                              .arg(configManager.runningConfigFilename(type)));
             }
             else
             {
-
-                d_ptr->curConfig = new Config(QString("%1/%2")
-                                              .arg(CONFIG_DIR)
-                                              .arg(configManager.runningConfigFilename(patientManager.getType())));
+                d_ptr->curConfig = new Config(configPath);
             }
+            d_ptr->patientType = type;
 
             d_ptr->editWindow = new ConfigEditMenuWindow();
             d_ptr->editWindow->setCurrentEditConfigName(d_ptr->generateDefaultConfigName());
@@ -210,61 +225,63 @@ void UserConfigEditMenuContent::onBtnClick()
             // 需要放在showWindow下面
             d_ptr->editWindow->focusFirstMenuItem();
         }
-    }
-    else if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG])
-    {
-        if (d_ptr->curConfig)
+        break;
+        case UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG:
         {
-            delete d_ptr->curConfig;
-        }
-        int index = d_ptr->configListView->curCheckedRow();
-        d_ptr->curEditIndex = index;
-        d_ptr->curConfig = new Config(QString("%1/%2")
-                                      .arg(CONFIG_DIR)
-                                      .arg(d_ptr->configs.at(index).fileName));
-        d_ptr->editWindow = new ConfigEditMenuWindow();
-        d_ptr->editWindow->setCurrentEditConfigName(d_ptr->configs.at(index).name);
-        d_ptr->editWindow->setCurrentEditConfig(d_ptr->curConfig);
-        d_ptr->editWindow->initializeSubMenu();
+            if (d_ptr->curConfig)
+            {
+                delete d_ptr->curConfig;
+            }
+            int index = d_ptr->configListView->curCheckedRow();
+            d_ptr->curEditIndex = index;
+            d_ptr->curConfig = new Config(QString("%1/%2")
+                                          .arg(CONFIG_DIR)
+                                          .arg(d_ptr->configs.at(index).fileName));
+            d_ptr->editWindow = new ConfigEditMenuWindow();
+            d_ptr->editWindow->setCurrentEditConfigName(d_ptr->configs.at(index).name);
+            d_ptr->editWindow->setCurrentEditConfig(d_ptr->curConfig);
+            d_ptr->editWindow->initializeSubMenu();
 
-        QString fileName = d_ptr->curConfig->getFileName();
-        QString name = d_ptr->editWindow->getCurrentEditConfigName();
-        QString pathName;
-        if (fileName.indexOf("User") >= 0)
+            QString fileName = d_ptr->curConfig->getFileName();
+            QString name = d_ptr->editWindow->getCurrentEditConfigName();
+            QString pathName;
+            if (fileName.indexOf("User") >= 0)
+            {
+                pathName = "Edit-";
+                pathName += name;
+            }
+            else
+            {
+                pathName = "Edit-DefaultSetting";
+            }
+            d_ptr->editWindow->setWindowTitlePrefix(pathName);
+
+            windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorHideOthers |
+                                                        WindowManager::ShowBehaviorNoAutoClose);
+            connect(d_ptr->editWindow , SIGNAL(finished(int)) , this , SLOT(onEditFinished()));
+
+            // 每次打开主界面时，强制聚焦在首个item
+            // 需要放在showWindow下面
+            d_ptr->editWindow->focusFirstMenuItem();
+        }
+        break;
+        case UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG:
         {
-            pathName = "Edit-";
-            pathName += name;
+            int index = d_ptr->configListView->curCheckedRow();
+            QString filename  = QString("%1/%2").arg(CONFIG_DIR).arg(d_ptr->configs.at(index).fileName);
+
+            //  delete the config file
+            QFile::remove(filename);
+            d_ptr->configs.removeAt(index);
+            configManager.saveUserConfigInfo(d_ptr->configs);
+
+            d_ptr->loadConfigs();
+            d_ptr->updateConfigList();
         }
-        else
-        {
-            pathName = "Edit-DefaultSetting";
-        }
-        d_ptr->editWindow->setWindowTitlePrefix(pathName);
-
-        windowManager.showWindow(d_ptr->editWindow, WindowManager::ShowBehaviorHideOthers |
-                                                    WindowManager::ShowBehaviorNoAutoClose);
-        connect(d_ptr->editWindow , SIGNAL(finished(int)) , this , SLOT(onEditFinished()));
-
-        // 每次打开主界面时，强制聚焦在首个item
-        // 需要放在showWindow下面
-        d_ptr->editWindow->focusFirstMenuItem();
-    }
-    else if (btn == d_ptr->btns[UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG])
-    {
-        int index = d_ptr->configListView->curCheckedRow();
-        QString filename  = QString("%1/%2").arg(CONFIG_DIR).arg(d_ptr->configs.at(index).fileName);
-
-        //  delete the config file
-        QFile::remove(filename);
-        d_ptr->configs.removeAt(index);
-        configManager.saveUserConfigInfo(d_ptr->configs);
-
-        d_ptr->loadConfigs();
-        d_ptr->updateConfigList();
-    }
-    else
-    {
-        qdebug("Unknown singal sender!");
+        break;
+        default:
+            qdebug("Unknown singal sender!");
+        break;
     }
 }
 
@@ -290,7 +307,8 @@ void UserConfigEditMenuContent::onEditFinished()
     else
     {
         //  add new config
-        configManager.saveUserDefineConfig(configName, d_ptr->curConfig);
+        configManager.saveUserDefineConfig(configName, d_ptr->curConfig, d_ptr->patientType);
+        d_ptr->patientType = PATIENT_TYPE_NULL;
     }
 
     d_ptr->editWindow->setCurrentEditConfig(NULL);
@@ -324,12 +342,15 @@ void UserConfigEditMenuContent::layoutExec()
     //  buttons
     QHBoxLayout *hl = new QHBoxLayout;
     Button *button;
+    int index = 0;
 
     //  add buttons
     button = new Button(trs("Add"));
     button->setButtonStyle(Button::ButtonTextOnly);
     connect(button, SIGNAL(released()), this, SLOT(onBtnClick()));
     hl->addWidget(button);
+    index = UserConfigEditMenuContentPrivate::ITEM_BTN_ADD_CONFIG;
+    button->setProperty("item", qVariantFromValue(index));
     d_ptr->btns.insert(UserConfigEditMenuContentPrivate::ITEM_BTN_ADD_CONFIG, button);
 
     //  edit buttons
@@ -338,6 +359,8 @@ void UserConfigEditMenuContent::layoutExec()
     button->setEnabled(false);
     connect(button, SIGNAL(released()), this, SLOT(onBtnClick()));
     hl->addWidget(button);
+    index = UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG;
+    button->setProperty("item", qVariantFromValue(index));
     d_ptr->btns.insert(UserConfigEditMenuContentPrivate::ITEM_BTN_EDIT_CONFIG, button);
 
     //  del buttons
@@ -346,6 +369,8 @@ void UserConfigEditMenuContent::layoutExec()
     button->setEnabled(false);
     connect(button, SIGNAL(released()), this, SLOT(onBtnClick()));
     hl->addWidget(button);
+    index = UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG;
+    button->setProperty("item", qVariantFromValue(index));
     d_ptr->btns.insert(UserConfigEditMenuContentPrivate::ITEM_BTN_DEL_CONFIG, button);
 
     layout->addLayout(hl);

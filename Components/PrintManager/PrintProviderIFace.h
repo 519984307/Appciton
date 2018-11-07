@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/11/6
+ **/
+
 #pragma once
 #include <QString>
 #include <QObject>
@@ -6,23 +16,15 @@
 // 工作状态定义
 enum PrinterStatus
 {
-    PRINTER_STAT_NORMAL = 0x0,                     // 正常
-    PRINTER_STAT_DOOR_OPENED = 0x01,               // 仓门未关闭
-    PRINTER_STAT_OUT_OF_PAPER = 0x02,              // 缺纸 (若仓门未关与缺纸状态同时存在，则仓门状态优先级高)
-    PRINTER_STAT_DOOR_OUT_OF_PAPER = 0x03,         // 仓门未关闭、缺纸
-    PRINTER_STAT_OVER_HEATING = 0x04,              // 过热 (打印头温度)
-    PRINTER_STAT_DOOR_OPEND_OVER_HEATING = 0x05,   // 仓门未关闭、过热（打印头温度）
-    PRINTER_STAT_OUT_OF_PAPER_OVER_HEATING = 0x06, // 缺纸、过热（打印头温度）
-    PRINTER_STAT_DOOR_OPENED_OUT_OF_PAPER_OVER_HEATING = 0x07, // 仓门未关闭、缺纸、过热（打印头温度）
-    PRINTER_STAT_TEMP_OVERRUN = 0x08,              // 过热 (电机温度)
-    PRINTER_STAT_DOOR_OPEND_TEMP_OVERRUN = 0x09,   // 仓门未关闭、过热（电机温度）
-    PRINTER_STAT_OUT_OF_PAPER_TEMP_OVERRUN = 0x0A, // 缺纸、过热
-    PRINTER_STAT_DOOR_OPENED_OUT_OF_PAPER_TEMP_OVERRUN = 0x0B, // 仓门未关闭、缺纸、过热（电机温度）
-    PRINTER_STAT_OVER_HEATING_TEMP_OVERRUN = 0x0C, // 过热（打印头温度、电机温度）
-    PRINTER_STAT_DOOR_OPENED_OVER_HEATING_TEMP_OVERRUN = 0x0D, // 仓门未关闭、过热(打印头温度、电机温度)
-    PRINTER_STAT_OUT_OF_PAPER_OVER_HEATING_TEMP_OVERRUN = 0x0E, // 缺纸、过热(打印头温度、电机温度)
-    PRINTER_STAT_ALL = 0x0F,                       // 仓门未关闭、缺纸、过热(打印头过热、电机过热)
-    PRINTER_STAT_MASK = 0x0F                       // 工作状态掩码
+    PRINTER_STAT_NORMAL = 0x0,                              // 正常
+    PRINTER_STAT_OUT_OF_PAPER = 0x01,                       // 缺纸
+    PRINTER_STAT_OVER_HEATING = 0x02,                       // 过热
+    PRINTER_STAT_OUT_OF_PAPER_OVER_HEATING = 0x03,          // 缺纸,过热
+    PRINTER_STAT_FAULT = 0x04,                              // 故障
+    PRINTER_STAT_OUT_OF_PAPER_FAULT = 0x05,                 // 缺纸,故障
+    PRINTER_STAT_OVER_HEATING_FAULT = 0x06,                 // 过热.故障
+    PRINTER_STAT_OUT_OF_PAPER_OVER_HEATING_FAULT = 0x07,    // 缺纸,过热,故障
+    PRINTER_STAT_MASK = 0x07,                               // 掩码
 };
 
 // 自检状态定义
@@ -46,7 +48,7 @@ class PrinterProviderSignalSender: public QObject
 {
     Q_OBJECT
 public:
-    PrinterProviderSignalSender(QObject *parent = 0)
+    explicit PrinterProviderSignalSender(QObject *parent = 0)
         :QObject(parent)
     {
     }
@@ -80,7 +82,6 @@ signals:
      * @param err error code
      */
     void error(unsigned char err);
-
 };
 
 /***************************************************************************************************

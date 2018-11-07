@@ -44,9 +44,6 @@ protected:
     /* override */
     virtual void onStopGenerate();
 
-    /* override */
-    virtual void setPrintTime(PrintTime timeSec);
-
 private:
     QScopedPointer<ContinuousPageGeneratorPrivate> d_ptr;
 };

@@ -64,7 +64,7 @@ public:
     // check and update addition info
     void updateAdditionInfo();
 
-    void storeShortTrendData(SubParamID subParamID, unsigned timestamp, TrendDataType data);
+    void storeShortTrendData(SubParamID subParamID, unsigned timestamp, TrendDataType data, bool forceSave = false);
 
     void emitShortTrendSingals(unsigned timestamp);
 
@@ -128,7 +128,7 @@ void TrendDataStorageManagerPrivate::updateAdditionInfo()
     firstSave = false;
 }
 
-void TrendDataStorageManagerPrivate::storeShortTrendData(SubParamID subParamID, unsigned timeStamp, TrendDataType data)
+void TrendDataStorageManagerPrivate::storeShortTrendData(SubParamID subParamID, unsigned timeStamp, TrendDataType data, bool forceSave)
 {
     QMap<SubParamID, ShortTrendStorage *>::Iterator iter = shortTrends.find(subParamID);
     if (iter != shortTrends.end())
@@ -137,9 +137,21 @@ void TrendDataStorageManagerPrivate::storeShortTrendData(SubParamID subParamID, 
         {
             (*iter)->trendBuffer[SHORT_TREND_INTERVAL_10S]->push(data);
         }
+        else if (forceSave)
+        {
+            // remove last data
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_10S]->takeHead();
+            // add current data
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_10S]->push(data);
+        }
 
         if (timeStamp % 20 == 0)
         {
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_20S]->push(data);
+        }
+        else if (forceSave)
+        {
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_20S]->takeHead();
             (*iter)->trendBuffer[SHORT_TREND_INTERVAL_20S]->push(data);
         }
 
@@ -147,9 +159,19 @@ void TrendDataStorageManagerPrivate::storeShortTrendData(SubParamID subParamID, 
         {
             (*iter)->trendBuffer[SHORT_TREND_INTERVAL_30S]->push(data);
         }
-
-        if (timeStamp % 60 == 0)
+        else if (forceSave)
         {
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_30S]->takeHead();
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_30S]->push(data);
+        }
+
+        if (timeStamp % 60 == 0 || forceSave)
+        {
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_60S]->push(data);
+        }
+        else if (forceSave)
+        {
+            (*iter)->trendBuffer[SHORT_TREND_INTERVAL_60S]->takeHead();
             (*iter)->trendBuffer[SHORT_TREND_INTERVAL_60S]->push(data);
         }
     }
@@ -197,12 +219,26 @@ void TrendDataStorageManager::periodRun(unsigned t)
 {
     Q_D(TrendDataStorageManager);
 
-    if (0 != t % 5 || d->lastStoreTimestamp >= t)
+    if (d->lastStoreTimestamp >= t)
     {
         return;
     }
 
-    storeData(t, CollectStatusPeriod);
+    TrendDataFlags status = CollectStatusNone;
+    if (0 == t % 5)
+    {
+        status |= CollectStatusPeriod;
+    }
+
+    if ( trendCache.getLastNibpSuccessMeasureTime() == t)
+    {
+        status |= CollectStatusNIBP;
+    }
+
+    if (status != CollectStatusNone)
+    {
+        storeData(t, status);
+    }
 }
 
 void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
@@ -230,6 +266,7 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
 
     bool hasAlarm = false;
     ParamID paramId = PARAM_NONE;
+    bool newNibpData = false;
 
     for (int i = 0; i < SUB_PARAM_NR; i++)
     {
@@ -258,11 +295,33 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
 
         valueSegments.append(valueSegment);
 
-        d->storeShortTrendData(subParamID, t, valueSegment.value);
+        if (subParamID == SUB_PARAM_NIBP_SYS || subParamID == SUB_PARAM_NIBP_DIA || subParamID == SUB_PARAM_NIBP_MAP)
+        {
+            // should record the nibp value when the current timestamp is equal to the nibp measurement complete timestamp
+            if (t == data.lastNibpMeasureSuccessTime)
+            {
+                d->storeShortTrendData(subParamID, t, valueSegment.value, true);
+                newNibpData = true;
+            }
+            else
+            {
+                // current time is not the nibp measure complete time, save as invalid value
+                d->storeShortTrendData(subParamID, t, InvData());
+            }
+        }
+        else
+        {
+            d->storeShortTrendData(subParamID, t, valueSegment.value);
+        }
     }
 
     // emit signals
     d->emitShortTrendSingals(t);
+
+    if (newNibpData)
+    {
+        emit newNibpDataReceived();
+    }
 
     int dataSize = sizeof(TrendDataSegment) + valueSegments.size() * sizeof(TrendValueSegment);
     QByteArray content(dataSize, 0);
@@ -380,6 +439,13 @@ TrendDataType TrendDataStorageManager::getLatestShortTrendData(SubParamID subPar
     }
 
     return InvData();
+}
+
+void TrendDataStorageManager::newPatientHandle()
+{
+    Q_D(TrendDataStorageManager);
+    d->backend->reload(dataStorageDirManager.getCurFolder() + TREND_DATA_FILE_NAME,
+                       QIODevice::ReadWrite);
 }
 
 TrendDataStorageManager::TrendDataStorageManager()

@@ -386,11 +386,15 @@ bool IApplication::qwsEventFilter(QWSEvent *e)
                 keyActionManager.handleKeyAction(KEY_F9_PRESSED);
                 break;
 
+            // 更新：左右按键不需要有按键音，确认键要有按键音
+            case Qt::Key_Return:
+            case Qt::Key_Enter:
+                soundManager.keyPressTone();
+                break;
+
             default:
                 break;
             }
-
-            soundManager.keyPressTone();
         }
     }
 

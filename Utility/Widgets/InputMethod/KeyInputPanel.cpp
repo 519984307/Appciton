@@ -18,7 +18,7 @@
 #include "Debug.h"
 #include <QIcon>
 #include <QPainter>
-
+#include <QColorGroup>
 
 class KeyInputPanelPrivate
 {
