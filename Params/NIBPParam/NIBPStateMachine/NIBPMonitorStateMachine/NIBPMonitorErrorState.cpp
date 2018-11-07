@@ -13,7 +13,6 @@
 #include "NIBPAlarm.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
-#include "SystemManager.h"
 
 /**************************************************************************************************
  * 进入该状态。
@@ -31,10 +30,7 @@ void NIBPMonitorErrorState::enter(void)
 
     nibpParam.setAdditionalMeasure(false);
 
-    if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
-    {
-        nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
-    }
+    nibpParam.setText(trs("NIBPModule") + "\n" + trs("NIBPDisable"));
     nibpParam.setModelText("");
     nibpParam.clearResult();
 
