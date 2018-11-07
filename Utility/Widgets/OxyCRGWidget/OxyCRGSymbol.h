@@ -19,20 +19,20 @@ class OxyCRGSymbol
 public:
     static const char *convert(OxyCRGInterval index)
     {
-        if (index > OxyCRG_Interval_8)
+        if (index > OXYCRG_INTERVAL_8)
         {
-            index = OxyCRG_Interval_8;
+            index = OXYCRG_INTERVAL_8;
         }
-        static const char *symbol[OxyCRG_Interval_NR] =
+        static const char *symbol[OXYCRG_INTERVAL_NR] =
         {
             "_1min", "_2min", "_4min", "_8min"
         };
         return symbol[index];
     }
 
-    static const char *convert(OxyCRGTrend index)
+    static const char *convert(OxyCRGWave index)
     {
-        static const char *symbol[OxyCRG_Trend_NR] =
+        static const char *symbol[OXYCRG_WAVE_NR] =
         {
             "RESP", "CO2"
         };

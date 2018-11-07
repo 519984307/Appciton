@@ -18,23 +18,22 @@
  */
 enum OxyCRGInterval
 {
-    OxyCRG_Interval_1,      // x1
-    OxyCRG_Interval_2,      // x2
-    OxyCRG_Interval_4,      // x4
-    OxyCRG_Interval_8,      // x8
-    OxyCRG_Interval_NR
+    OXYCRG_INTERVAL_1,      // x1
+    OXYCRG_INTERVAL_2,      // x2
+    OXYCRG_INTERVAL_4,      // x4
+    OXYCRG_INTERVAL_8,      // x8
+    OXYCRG_INTERVAL_NR
 };
 
 /**
  * @brief The OxyCRGTrend enum 呼吸波与RR
  */
-enum OxyCRGTrend
+enum OxyCRGWave
 {
-    OxyCRG_Trend_RESP,
-    OxyCRG_Trend_CO2,
-    OxyCRG_Trend_NR
+    OXYCRG_WAVE_RESP,
+    OXYCRG_WAVE_CO2,
+    OXYCRG_WAVE_NR
 };
-
 
 /**
  * @brief The TrendTypeOne enum  Trend1

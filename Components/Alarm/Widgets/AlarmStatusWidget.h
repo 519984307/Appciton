@@ -13,10 +13,9 @@
 #include "IWidget.h"
 #include "AlarmDefine.h"
 
-class AlarmMuteBarWidget : public IWidget
+class AlarmStatusWidget : public IWidget
 {
     Q_OBJECT
-
 public:
     // 设置状态正常。
     void setAudioNormal(void);
@@ -31,8 +30,8 @@ public:
     void setAlarmPause(void);
 
     // 构造与析构。
-    AlarmMuteBarWidget();
-    virtual ~AlarmMuteBarWidget();
+    AlarmStatusWidget();
+    virtual ~AlarmStatusWidget();
 
 protected:
     void paintEvent(QPaintEvent *e);

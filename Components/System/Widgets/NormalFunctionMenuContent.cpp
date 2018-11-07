@@ -324,8 +324,8 @@ void NormalFunctionMenuContent::onBtnReleasd()
     {
         case NormalFunctionMenuContentPrivate::ITEM_BTN_CALCULATE:
         {
-            CalculateWindow w;
-            windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
+            CalculateWindow *w = CalculateWindow::getInstance();
+            windowManager.showWindow(w, WindowManager::ShowBehaviorHideOthers);
         }
         break;
         case NormalFunctionMenuContentPrivate::ITEM_BTN_WIFI_PROFILE:
@@ -359,7 +359,7 @@ void NormalFunctionMenuContent::onBtnReleasd()
                 systemManager.setWorkMode(WORK_MODE_NORMAL);
                 d_ptr->demoBtn->setText(trs("DemoMode"));
                 windowManager.closeAllWidows();
-                patientManager.newPatient();
+                patientManager.dischargePatient();
                 break;
             }
 

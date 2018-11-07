@@ -185,16 +185,16 @@ public:
         switch (volumeLev)
         {
         case SoundManager::VOLUME_LEV_1:
-            v = 30;
-            break;
-        case SoundManager::VOLUME_LEV_2:
-            v = 50;
-            break;
-        case SoundManager::VOLUME_LEV_3:
             v = 70;
             break;
+        case SoundManager::VOLUME_LEV_2:
+            v = 75;
+            break;
+        case SoundManager::VOLUME_LEV_3:
+            v = 80;
+            break;
         case SoundManager::VOLUME_LEV_4:
-            v = 84;
+            v = 88;
             break;
         case SoundManager::VOLUME_LEV_5:
             v = 100;

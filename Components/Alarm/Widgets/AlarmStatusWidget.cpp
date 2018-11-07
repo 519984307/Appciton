@@ -9,7 +9,7 @@
  **/
 
 
-#include "AlarmMuteBarWidget.h"
+#include "AlarmStatusWidget.h"
 #include "LanguageManager.h"
 #include "FontManager.h"
 #include "AlarmIndicator.h"
@@ -22,7 +22,7 @@
 /**************************************************************************************************
  * 重绘制。
  *************************************************************************************************/
-void AlarmMuteBarWidget::paintEvent(QPaintEvent *e)
+void AlarmStatusWidget::paintEvent(QPaintEvent *e)
 {
     IWidget::paintEvent(e);
     QPainter painter(this);
@@ -62,7 +62,7 @@ void AlarmMuteBarWidget::paintEvent(QPaintEvent *e)
 /**************************************************************************************************
  * 设置报警静音关闭状态。
  *************************************************************************************************/
-void AlarmMuteBarWidget::setAudioNormal(void)
+void AlarmStatusWidget::setAudioNormal(void)
 {
     _audioStatus = ALARM_AUDIO_NORMAL;
     update();
@@ -71,7 +71,7 @@ void AlarmMuteBarWidget::setAudioNormal(void)
 /**************************************************************************************************
  * 设置报警音停止打开状态。
  *************************************************************************************************/
-void AlarmMuteBarWidget::setAudioOff(void)
+void AlarmStatusWidget::setAudioOff(void)
 {
     _audioStatus = ALARM_AUDIO_OFF;
     update();
@@ -80,7 +80,7 @@ void AlarmMuteBarWidget::setAudioOff(void)
 /**************************************************************************************************
  * 设置报警停止打开状态。
  *************************************************************************************************/
-void AlarmMuteBarWidget::setAlarmOff(void)
+void AlarmStatusWidget::setAlarmOff(void)
 {
     _audioStatus = ALARM_OFF;
     update();
@@ -89,7 +89,7 @@ void AlarmMuteBarWidget::setAlarmOff(void)
 /**************************************************************************************************
  * 设置报警暂停。
  *************************************************************************************************/
-void AlarmMuteBarWidget::setAlarmPause(void)
+void AlarmStatusWidget::setAlarmPause(void)
 {
     _audioStatus = ALARM_AUDIO_SUSPEND;
     update();
@@ -98,7 +98,7 @@ void AlarmMuteBarWidget::setAlarmPause(void)
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-AlarmMuteBarWidget::AlarmMuteBarWidget() : IWidget("AlarmMuteBarWidget")
+AlarmStatusWidget::AlarmStatusWidget() : IWidget("AlarmStatusWidget")
 {
     setFocusPolicy(Qt::NoFocus);
 
@@ -112,6 +112,6 @@ AlarmMuteBarWidget::AlarmMuteBarWidget() : IWidget("AlarmMuteBarWidget")
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
-AlarmMuteBarWidget::~AlarmMuteBarWidget()
+AlarmStatusWidget::~AlarmStatusWidget()
 {
 }
