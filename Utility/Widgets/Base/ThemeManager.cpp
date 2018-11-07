@@ -240,8 +240,9 @@ QPixmap ThemeManager::getPixmap(ThemeManager::IconType icon, const QSize &size)
    pm = QPixmap(size);
    pm.fill(Qt::transparent);
    QPainter p(&pm);
-   QSvgRenderer render(QString(iconPaths[icon]));
-   render.render(&p);
+   QString svgFilePath = iconPaths[icon];
+   QSvgRenderer svgRender(svgFilePath);
+   svgRender.render(&p);
    p.end();
    d_ptr->iconKeyMap[key] = QPixmapCache::insert(pm);
    return pm;
