@@ -190,14 +190,14 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
 
 
     // 监护模式状态机。
-    if (!_machines.value(NIBP_STATE_MACHINE_MONITOR, NULL))
+    if (!_machines.contains(NIBP_STATE_MACHINE_MONITOR))
     {
         NIBPStateMachine *machine = new NIBPMonitorStateMachine();
         _activityMachine = machine;
         _machines.insert(machine->type(), machine);
     }
 
-    if (!_machines.value(NIBP_STATE_MACHINE_SERVICE, NULL))
+    if (!_machines.contains(NIBP_STATE_MACHINE_SERVICE))
     {
         NIBPStateMachine *machine = new NIBPServiceStateMachine();
         _machines.insert(machine->type(), machine);
