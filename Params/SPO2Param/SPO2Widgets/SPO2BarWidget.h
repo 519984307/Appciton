@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/11/7
+ **/
+
 #pragma once
 #include <QWidget>
 
@@ -10,7 +20,7 @@ public:
     ~SPO2BarWidget();
 
     void setCellHeight(int cellHeight);
-    void setValue(int value);
+    void setValue(int value, bool isValid);
 
 protected:
     void paintEvent(QPaintEvent *e);
