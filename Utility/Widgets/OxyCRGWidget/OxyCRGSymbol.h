@@ -12,6 +12,7 @@
 
 #pragma once
 #include "OxyCRGDefine.h"
+#include <QStringList>
 
 // 将定义的枚举转换成符号。
 class OxyCRGSymbol
@@ -28,6 +29,57 @@ public:
             "_1min", "_2min", "_4min", "_8min"
         };
         return symbol[index];
+    }
+
+    static const QStringList convertInterval(OxyCRGInterval index)
+    {
+        static const char* symbol_1[OXYCRG_INTERVAL_NR] =
+        {
+            "-15 s", "-30 s", "-45 s", "-1 min"
+        };
+        static const char* symbol_2[OXYCRG_INTERVAL_NR] =
+        {
+            "-30 s", "-1 min", "-90 s", "-2 min"
+        };
+        static const char* symbol_4[OXYCRG_INTERVAL_NR] =
+        {
+            "-1 min", "-2 min", "-3 min", "-4 min"
+        };
+        static const char* symbol_8[OXYCRG_INTERVAL_NR] =
+        {
+            "-2 min", "-4 min", "-6 min", "-8 min"
+        };
+        QStringList intervalList;
+        switch (index)
+        {
+            case OXYCRG_INTERVAL_1:
+            for (int i = 0; i < OXYCRG_INTERVAL_NR; i++)
+            {
+                intervalList.append(QString("%1").arg(symbol_1[i]));
+            }
+            break;
+            case OXYCRG_INTERVAL_2:
+            for (int i = 0; i < OXYCRG_INTERVAL_NR; i++)
+            {
+                intervalList.append(QString("%1").arg(symbol_2[i]));
+            }
+            break;
+            case OXYCRG_INTERVAL_4:
+            for (int i = 0; i < OXYCRG_INTERVAL_NR; i++)
+            {
+                intervalList.append(QString("%1").arg(symbol_4[i]));
+            }
+            break;
+            case OXYCRG_INTERVAL_8:
+            case OXYCRG_INTERVAL_NR:
+            for (int i = 0; i < OXYCRG_INTERVAL_NR; i++)
+            {
+                intervalList.append(QString("%1").arg(symbol_8[i]));
+            }
+            break;
+        }
+
+        return intervalList;
     }
 
     static const char *convert(OxyCRGWave index)
