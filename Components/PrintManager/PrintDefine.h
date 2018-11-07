@@ -73,9 +73,9 @@ enum Print12LeadPDFFormat
  *************************************************************************************************/
 enum PrintOneShotType
 {
-    PRINT_ONESHOT_ALARM_DOOR_OPENED,   // 仓门未关闭
-    PRINT_ONESHOT_ALARM_OUT_OF_PAPER,  // 缺纸
-    PRINT_ONESHOT_ALARM_FAULT,     // 打印机故障
+    PRINT_ONESHOT_ALARM_OUT_OF_PAPER,   // 缺纸
+    PRINT_ONESHOT_ALARM_OVER_HEATING,   // 过热
+    PRINT_ONESHOT_ALARM_FAULT,          // 打印机故障
     PRINT_ONESHOT_NR,
 };
 
@@ -137,9 +137,9 @@ public:
     {
         static const char *symbol[PRINT_ONESHOT_NR] =
         {
-            "PrinterDoorOpened",   // 打印机仓门未关
-            "PrinterOutOfPaper",   // 打印机缺纸
-            "PrinterFault",        // 打印机故障
+            "PrinterOutOfPaper",    // 打印机缺纸
+            "PrinterOverHeating",   // 打印头过热
+            "PrinterFault",         // 打印机故障
         };
         return symbol[index];
     }
