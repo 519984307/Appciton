@@ -90,7 +90,7 @@ void OxyCRGWidgetPrivate::setInterval(OxyCRGInterval interval)
 {
     currentConfig.setNumValue("OxyCRG|Interval", static_cast<int>(interval));
 
-    intervalLbl->setText(OxyCRGSymbol::convert(interval));
+    intervalLbl->setText(trs(OxyCRGSymbol::convert(interval)));
 
     if (rrHrTrend)
     {
@@ -189,7 +189,7 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     d_ptr->intervalLbl->setFixedSize(labelWidth, LABEL_HEIGHT);
     int interval = OXYCRG_INTERVAL_1;
     currentConfig.getNumValue("OxyCRG|Interval", interval);
-    d_ptr->intervalLbl->setText(OxyCRGSymbol::convert(static_cast<OxyCRGInterval>(interval)));
+    d_ptr->intervalLbl->setText(trs(OxyCRGSymbol::convert(static_cast<OxyCRGInterval>(interval))));
     connect(d_ptr->intervalLbl, SIGNAL(released(IWidget *)), this, SLOT(onIntervalClicked(IWidget *)));
 
     d_ptr->compressWaveLbl = new OxyCRGWidgetLabel(QString(), Qt::AlignCenter, this);
@@ -382,7 +382,7 @@ void OxyCRGWidget::onIntervalClicked(IWidget *widget)
 
     for (int i = 0; i < OXYCRG_INTERVAL_NR; i++)
     {
-        popup->addItemText(OxyCRGSymbol::convert(static_cast<OxyCRGInterval>(i)));
+        popup->addItemText(trs(OxyCRGSymbol::convert(static_cast<OxyCRGInterval>(i))));
     }
 
     popup->setFont(fontManager.textFont(fontManager.getFontSize(3)));
