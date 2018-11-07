@@ -172,9 +172,10 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
 
     // 棒图。
     _spo2Bar = new SPO2BarWidget(0, 15);
-    _spo2Bar->setFixedWidth(10);
-    mLayout->addWidget(_spo2Bar);
-    mLayout->setMargin(5);
+    _spo2Bar->setFixedWidth(20);
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->addWidget(_spo2Bar);
+    vLayout->setMargin(8);
 
     _piName = new QLabel();
     _piName->setPalette(palette);
@@ -188,8 +189,9 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(_spo2Value, 4);
+    layout->addLayout(vLayout, 1);
     layout->addWidget(_piName, 1);
-    layout->addWidget(_piValue, 3);
+    layout->addWidget(_piValue, 2);
 
     contentLayout->addLayout(layout, 7);
 
