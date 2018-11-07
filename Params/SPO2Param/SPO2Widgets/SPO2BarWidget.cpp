@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/11/7
+ **/
+
 #include <QPainter>
 #include <QPaintEvent>
 #include "SPO2BarWidget.h"
@@ -40,15 +50,21 @@ void SPO2BarWidget::setCellHeight(int cellHeight)
 /**************************************************************************************************
  * 设置当前棒图值。
  *************************************************************************************************/
-void SPO2BarWidget::setValue(int value)
+void SPO2BarWidget::setValue(int value, bool isValid)
 {
-
     if ((_minValue >= _maxValue) || (value > _maxValue) || (value < _minValue))
     {
         return;
     }
     // 计算当前显示单元的最大索引
-    _curShowCellMaxIndex = _cellNumber * (value - _minValue) / (_maxValue - _minValue);
+    if (isValid)
+    {
+        _curShowCellMaxIndex = _cellNumber * (value - _minValue) / (_maxValue - _minValue);
+    }
+    else
+    {
+        _curShowCellMaxIndex = 0;
+    }
 
     // 显示单元数没有变化时，不需要刷新
     if (_curShowCellMaxIndex == _lastShowCellMaxIndex)

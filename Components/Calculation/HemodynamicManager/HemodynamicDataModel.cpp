@@ -14,8 +14,8 @@
 #include "ThemeManager.h"
 
 #define MAX_ROW_COUNT  10
-#define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
-#define HEADER_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+#define ROW_HEIGHT_HINT 43
+#define HEADER_HEIGHT_HINT 43
 class HemodynamicDataModelPrivate
 {
 public:

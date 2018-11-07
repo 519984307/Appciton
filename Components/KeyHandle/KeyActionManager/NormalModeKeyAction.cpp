@@ -206,7 +206,7 @@ void NormalModeKeyAction::keyF4Released(bool multiBtnPress)
             QApplication::activeModalWidget()->close();
         }
         QTimer::singleShot(0, &windowManager, SLOT(closeAllWidows()));
-        softkeyManager.resetPage();
+        softkeyManager.refreshPage();
     }
 }
 

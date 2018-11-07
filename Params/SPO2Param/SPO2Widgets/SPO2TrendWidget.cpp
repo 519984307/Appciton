@@ -63,7 +63,14 @@ void SPO2TrendWidget::updateLimit()
  *************************************************************************************************/
 void SPO2TrendWidget::setBarValue(int16_t bar)
 {
-    _spo2Bar->setValue(bar);
+    if (_piString == InvStr())
+    {
+        _spo2Bar->setValue(bar, false);
+    }
+    else
+    {
+        _spo2Bar->setValue(bar, true);
+    }
 }
 
 void SPO2TrendWidget::setPIValue(int16_t pi)
@@ -115,7 +122,6 @@ void SPO2TrendWidget::showValue(void)
     psrc = normalPalette(psrc);
     if (_isAlarm)
     {
-        showAlarmStatus(_spo2Bar);
         showAlarmStatus(_spo2Value);
         showAlarmParamLimit(_spo2Value, _spo2String, psrc);
         restoreNormalStatusLater();
@@ -156,6 +162,7 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
 {
     _isAlarm = false;
     _spo2String = InvStr();
+    _piString = InvStr();
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
     setPalette(palette);
     setName(trs(paramInfo.getParamName(PARAM_SPO2)));
@@ -172,9 +179,10 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
 
     // 棒图。
     _spo2Bar = new SPO2BarWidget(0, 15);
-    _spo2Bar->setFixedWidth(10);
-    mLayout->addWidget(_spo2Bar);
-    mLayout->setMargin(5);
+    _spo2Bar->setFixedWidth(20);
+    QVBoxLayout *vLayout = new QVBoxLayout();
+    vLayout->addWidget(_spo2Bar);
+    vLayout->setMargin(8);
 
     _piName = new QLabel();
     _piName->setPalette(palette);
@@ -188,8 +196,9 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->addWidget(_spo2Value, 4);
+    layout->addLayout(vLayout, 1);
     layout->addWidget(_piName, 1);
-    layout->addWidget(_piValue, 3);
+    layout->addWidget(_piValue, 2);
 
     contentLayout->addLayout(layout, 7);
 

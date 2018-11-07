@@ -418,14 +418,15 @@ NIBPWAITING,请等待,NIBP Waiting
 NIBPNoResponse,无响应,No Response
 NIBPTemporarily,临时,Temporarily
 NIBPDisable,禁用,Disable
-_1min,1 分,1 min
+_1min,1 min,1 min
 _1.5min,1.5 分,1.5 min
-_2min,2 分,2 min
+_2min,2 min,2 min
 _2.5min,2.5 分,2.5 min
 _3min,3 分,3 min
 _3.5min,3.5 分,3.5 min
-_4min,4 分,4 min
+_4min,4 min,4 min
 _5min,5 分,5 min
+_8min,8 min,8 min
 _10min,10 分,10 min
 _15min,15 分,15 min
 _20min,20 分,20 min
@@ -1001,6 +1002,7 @@ AlarmMute,报警静音,Mute
 RecorderAction,记录仪,Recorder Action
 PrinterDoorOpened,打印机仓门未关,Printer Door Opened
 PrinterOutOfPaper,打印机缺纸,Printer Out Of Paper
+PrinterOverHeating,打印头过热,Printer Over Heating
 PrinterFault,打印机故障,Printer Fault
 PacerDisabled,起搏失效,Pacer Disabled
 ReplaceBattery,替换电池,Replace Battery
@@ -1230,7 +1232,7 @@ ServiceUpdateEntrance,更新,Service Update
 ServiceUpdateEntranceDesc,更新,Service Update
 SoftWareVersionMenu,机器版本,SoftWare Version
 SoftWareVersionMenuDesc,机器版本,SoftWare Version Desc
-SystemSoftwareVersion,系统软件版本,System Software Version
+SystemSoftwareVersion,版本,Version
 PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Version
 Uboot,系统引导文件,Uboot
 Kernel,内核,Kernel

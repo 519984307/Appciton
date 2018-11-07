@@ -242,10 +242,11 @@ SOURCES +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmPauseState.cpp                      \
     Components/Alarm/AlarmStateMachine/AlarmOffState.cpp                        \
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.cpp                   \
+    Components/Alarm/AlarmStateMachine/AlarmResetState.cpp                      \
     Components/Alarm/Widgets/AlarmInfoPopListView.cpp                           \
     Components/Alarm/Widgets/AlarmLimitMenuContent.cpp                          \
     Components/Alarm/Widgets/AlarmLimitWindow.cpp                               \
-    Components/Alarm/Widgets/AlarmMuteBarWidget.cpp                             \
+    Components/Alarm/Widgets/AlarmStatusWidget.cpp                              \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.cpp                         \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.cpp                          \
     Components/Alarm/Widgets/AlarmInfoWindow.cpp                                \
@@ -724,10 +725,11 @@ HEADERS +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmPauseState.h                        \
     Components/Alarm/AlarmStateMachine/AlarmOffState.h                          \
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.h                     \
+    Components/Alarm/AlarmStateMachine/AlarmResetState.h                        \
     Components/Alarm/Widgets/AlarmInfoPopListView.h                             \
     Components/Alarm/Widgets/AlarmLimitMenuContent.h                            \
     Components/Alarm/Widgets/AlarmLimitWindow.h                                 \
-    Components/Alarm/Widgets/AlarmMuteBarWidget.h                               \
+    Components/Alarm/Widgets/AlarmStatusWidget.h                                \
     Components/Alarm/Widgets/AlarmTechInfoBarWidget.h                           \
     Components/Alarm/Widgets/AlarmPhyInfoBarWidget.h                            \
     Components/Alarm/Widgets/AlarmInfoWindow.h                                  \

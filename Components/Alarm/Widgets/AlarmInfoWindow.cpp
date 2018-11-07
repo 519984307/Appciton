@@ -82,7 +82,7 @@ AlarmInfoWindow::~AlarmInfoWindow()
     delete d_ptr;
 }
 
-void AlarmInfoWindow::updateData()
+void AlarmInfoWindow::updateData(bool isShowFirstPage)
 {
     int total = alarmIndicator.getAlarmCount();
     if (total <= 1)
@@ -93,6 +93,10 @@ void AlarmInfoWindow::updateData()
     }
 
     d_ptr->totalList = total;
+    if (isShowFirstPage)
+    {
+        d_ptr->curPage = 1;
+    }
     d_ptr->loadOption();
 }
 
@@ -167,7 +171,7 @@ void AlarmInfoWindow::layout()
 
 void AlarmInfoWindow::showEvent(QShowEvent *ev)
 {
-    updateData();
+    updateData(true);
     Window::showEvent(ev);
 }
 

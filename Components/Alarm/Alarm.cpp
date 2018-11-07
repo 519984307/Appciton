@@ -261,6 +261,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
             default:
                 break;
             }
+            alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
         }//栓锁的报警重新发生报警
         else
         {
@@ -434,15 +435,14 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
         alarmIndicator.addAlarmInfo(_timestamp, traceCtrl->type,
                                     traceCtrl->priority, traceCtrl->alarmMessage, alarmSource, i, isRemoveAfterLatch);
 
-        if (traceCtrl->type == ALARM_TYPE_LIFE)
+        if (traceCtrl->type == ALARM_TYPE_LIFE || traceCtrl->type == ALARM_TYPE_PHY)
         {
             alarmSource->notifyAlarm(i, true);
-            // summaryStorageManager.addOneshotAlarm(_timestamp);
+            alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
         }
-        else if (traceCtrl->type == ALARM_TYPE_PHY)
+        else
         {
-            alarmSource->notifyAlarm(i, true);
-            // summaryStorageManager.addPhyAlarm(_timestamp, alarmSource->getParamID(), i, true, alarmSource->getWaveformID(i));
+            alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_NEW_PHY_ALARM, 0, 0);
         }
     }
 }

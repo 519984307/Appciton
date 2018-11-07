@@ -863,7 +863,7 @@
                     <LayoutItem stretch="1">PatientInfoWidget</LayoutItem>
                     <LayoutItem width="96">RunningStatusBar</LayoutItem>
                     <LayoutItem width="210">DateTimeWidget</LayoutItem>
-                    <LayoutItem width="50">AlarmMuteBarWidget</LayoutItem>
+                    <LayoutItem width="50">AlarmStatusWidget</LayoutItem>
                     <LayoutItem width="350">AlarmPhyInfoBarWidget</LayoutItem>
                     <LayoutItem width="350">AlarmTechInfoBarWidget</LayoutItem>
                 </LayoutItem>
@@ -981,7 +981,7 @@
                     <NightStatusBar>50</NightStatusBar>
                     <PatientStatusBarWidget>50</PatientStatusBarWidget>
                     <DateTimeWidget>100</DateTimeWidget>
-                    <AlarmMuteBarWidget>50</AlarmMuteBarWidget>
+                    <AlarmStatusWidget>50</AlarmStatusWidget>
                     <AlarmPhyInfoBarWidget>350</AlarmPhyInfoBarWidget>
                     <AlarmTechInfoBarWidget>350</AlarmTechInfoBarWidget>
                 </topBarRowOrder>

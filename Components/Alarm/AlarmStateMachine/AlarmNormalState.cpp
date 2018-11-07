@@ -36,11 +36,6 @@ void AlarmNormalState::enter()
     lightManager.enableAlarmAudioMute(false);
 }
 
-void AlarmNormalState::exit()
-{
-    lightManager.enableAlarmAudioMute(true);
-}
-
 /**************************************************************************************************
  * 事件处理。
  *************************************************************************************************/
@@ -54,6 +49,11 @@ void AlarmNormalState::handAlarmEvent(AlarmStateEvent event, unsigned char */*da
         //删除栓锁报警
         alarmIndicator.delLatchPhyAlarm();
         alarmIndicator.techAlarmPauseStatusHandle();
+        if (alarmIndicator.getAlarmCount())
+        {
+            // must has alarm before enter the reset state
+            alarmStateMachine.switchState(ALARM_RESET_STATE);
+        }
         break;
     }
 
