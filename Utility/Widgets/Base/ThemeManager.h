@@ -112,9 +112,18 @@ public:
     /**
      * @brief getIcon get a icon
      * @param icon icon type
+     * @param size the desired icon size
      * @return reference to the icon
      */
-    const QIcon &getIcon(IconType icon);
+    QIcon getIcon(IconType icon, const QSize &size = QSize());
+
+    /**
+     * @brief getPixmap get a pixmap  of an icon
+     * @param icon the icon type
+     * @param size the require pixmap size
+     * @return  the pixmap
+     */
+    QPixmap getPixmap(IconType icon, const QSize &size);
 
     /**
      * @brief getAcceptableControlHeight get the acceptable control height,
