@@ -1232,7 +1232,7 @@ ServiceUpdateEntrance,更新,Service Update
 ServiceUpdateEntranceDesc,更新,Service Update
 SoftWareVersionMenu,机器版本,SoftWare Version
 SoftWareVersionMenuDesc,机器版本,SoftWare Version Desc
-SystemSoftwareVersion,系统软件版本,System Software Version
+SystemSoftwareVersion,版本,Version
 PowerManagerSoftwareVersion,电源管理软件版本,Power Manager Software Version
 Uboot,系统引导文件,Uboot
 Kernel,内核,Kernel
