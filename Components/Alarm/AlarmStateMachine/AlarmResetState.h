@@ -23,8 +23,5 @@ public:
     void enter();
 
     /* reimplement */
-    void exit();
-
-    /* reimplement */
     void handAlarmEvent(AlarmStateEvent event, unsigned char *data, unsigned len);
 };

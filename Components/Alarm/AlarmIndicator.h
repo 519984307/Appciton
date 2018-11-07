@@ -96,6 +96,7 @@ private: // 报警信息显示。
     void _displayTechClear(void);    // 清除技术报警界面。
     void _displayPhySet(AlarmInfoNode &node);  // 设置生理报警提示信息。
     void _displayTechSet(AlarmInfoNode &node); // 设置技术报警提示信息。
+    bool _canPlayAudio(AlarmAudioStatus status, bool isTechAlarm); // check whether can play alarm sound
 
     AlarmPhyInfoBarWidget *_alarmPhyInfoWidget;
     AlarmTechInfoBarWidget *_alarmTechInfoWidget;

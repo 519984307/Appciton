@@ -27,11 +27,6 @@ void AlarmResetState::enter()
     lightManager.enableAlarmAudioMute(false);
 }
 
-void AlarmResetState::exit()
-{
-    lightManager.enableAlarmAudioMute(true);
-}
-
 void AlarmResetState::handAlarmEvent(AlarmStateEvent event, unsigned char *data, unsigned len)
 {
     Q_UNUSED(data);

@@ -175,11 +175,11 @@ void AlarmIndicator::publishAlarm(AlarmAudioStatus status)
     }
 
     // 更新声音
-    if (phySoundPriority != ALARM_PRIO_PROMPT)
+    if (phySoundPriority != ALARM_PRIO_PROMPT && _canPlayAudio(status, false))
     {
         soundManager.updateAlarm(true, phySoundPriority);
     }
-    else if (techSoundPriority != ALARM_PRIO_PROMPT)
+    else if (techSoundPriority != ALARM_PRIO_PROMPT && _canPlayAudio(status, true))
     {
         soundManager.updateAlarm(true, techSoundPriority);
     }
@@ -283,6 +283,21 @@ void AlarmIndicator::_displayPhySet(AlarmInfoNode &node)
 void AlarmIndicator::_displayTechSet(AlarmInfoNode &node)
 {
     _alarmTechInfoWidget->display(node);
+}
+
+bool AlarmIndicator::_canPlayAudio(AlarmAudioStatus status, bool isTechAlarm)
+{
+    if (status == ALARM_AUDIO_NORMAL)
+    {
+        return true;
+    }
+
+    if (isTechAlarm && status != ALARM_OFF)
+    {
+        return true;
+    }
+
+    return false;
 }
 
 /**************************************************************************************************
@@ -746,7 +761,7 @@ void AlarmIndicator::setAudioStatus(AlarmAudioStatus status)
 
     _alarmStatusWidget->setAlarmStatus(status);
 
-    if (status != ALARM_AUDIO_SUSPEND)
+    if (status != ALARM_AUDIO_SUSPEND || status != ALARM_RESET)
     {
         systemConfig.setNumValue("PrimaryCfg|Alarm|AlarmStatus", static_cast<int>(status + 1));
     }

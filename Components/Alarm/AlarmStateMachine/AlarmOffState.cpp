@@ -16,6 +16,7 @@
 #include "AlarmDefine.h"
 #include "SoundManager.h"
 #include "SystemManager.h"
+#include "LightManager.h"
 
 /**************************************************************************************************
  * 构造。
@@ -46,6 +47,7 @@ void AlarmOffState::enter()
 
     alarmIndicator.setAudioStatus(ALARM_OFF);
     alarmIndicator.delAllPhyAlarm();
+    lightManager.enableAlarmAudioMute(true);
 }
 
 /**************************************************************************************************
