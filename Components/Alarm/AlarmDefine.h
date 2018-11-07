@@ -96,6 +96,7 @@ enum AlarmAudioStatus
     ALARM_AUDIO_SUSPEND,  // 报警音挂起。
     ALARM_AUDIO_OFF,      // 报警音关闭。
     ALARM_OFF,            // 报警关闭
+    ALARM_RESET,          // alarm reset
 };
 
 // 报警暂停时间

@@ -13,6 +13,7 @@
 #include "IWidget.h"
 #include "AlarmDefine.h"
 
+class AlarmStatusWidgetPrivate;
 class AlarmStatusWidget : public IWidget
 {
     Q_OBJECT
@@ -31,8 +32,5 @@ protected:
     void paintEvent(QPaintEvent *e);
 
 private:
-    QPixmap _muteAlarmPause;            // 报警暂停图标。
-    QPixmap _muteAudioOff;              // 报警静音图标。
-    QPixmap _muteAlarmOff;              // 报警关闭图标。
-    AlarmAudioStatus _audioStatus;
+    AlarmStatusWidgetPrivate * const d_ptr;
 };

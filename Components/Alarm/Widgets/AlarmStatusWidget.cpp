@@ -19,6 +19,25 @@
 #include <QPushButton>
 #include "TopBarWidget.h"
 
+class AlarmStatusWidgetPrivate
+{
+public:
+    AlarmStatusWidgetPrivate()
+        :audioStatus(ALARM_AUDIO_NORMAL)
+    {
+        alarmPausePixmap.load("/usr/local/nPM/icons/AlarmAudioPause.png");
+        audioOffPixmap.load("/usr/local/nPM/icons/AlarmAudioOff.png");
+        alarmOffPixmap.load("/usr/local/nPM/icons/AlarmOff.png");
+        alarmResetPixmap.load("/usr/local/nPM/icons/AlarmReset.png");
+    }
+
+    QPixmap alarmPausePixmap;            // 报警暂停图标。
+    QPixmap audioOffPixmap;              // 报警静音图标。
+    QPixmap alarmOffPixmap;              // 报警关闭图标。
+    QPixmap alarmResetPixmap;          // alarm reset icon
+    AlarmAudioStatus audioStatus;
+};
+
 /**************************************************************************************************
  * 重绘制。
  *************************************************************************************************/
@@ -28,7 +47,7 @@ void AlarmStatusWidget::paintEvent(QPaintEvent *e)
     QPainter painter(this);
 
     // 显示正常报警。
-    if (_audioStatus == ALARM_AUDIO_NORMAL)
+    if (d_ptr->audioStatus == ALARM_AUDIO_NORMAL)
     {
         // painter.fillRect(rect(), topBarWidget.getTopBarBlackGroundColor());
         return;
@@ -45,38 +64,38 @@ void AlarmStatusWidget::paintEvent(QPaintEvent *e)
 
     int offx = (rect().width() - (rect().height() - 10)) / 2;
     QRect r = rect().adjusted(offx, 5, -offx, -5);
-    if (_audioStatus == ALARM_AUDIO_OFF)
+    if (d_ptr->audioStatus == ALARM_AUDIO_OFF)
     {
-        painter.drawPixmap(r, _muteAudioOff, _muteAudioOff.rect());
+        painter.drawPixmap(r, d_ptr->audioOffPixmap, d_ptr->audioOffPixmap.rect());
     }
-    else if (_audioStatus == ALARM_OFF)
+    else if (d_ptr->audioStatus == ALARM_OFF)
     {
-        painter.drawPixmap(r, _muteAlarmOff, _muteAlarmOff.rect());
+        painter.drawPixmap(r, d_ptr->alarmOffPixmap, d_ptr->alarmOffPixmap.rect());
     }
-    else if (_audioStatus == ALARM_AUDIO_SUSPEND)
+    else if (d_ptr->audioStatus == ALARM_AUDIO_SUSPEND)
     {
-        painter.drawPixmap(r, _muteAlarmPause, _muteAlarmPause.rect());
+        painter.drawPixmap(r, d_ptr->alarmPausePixmap, d_ptr->alarmPausePixmap.rect());
+    }
+    else if (d_ptr->audioStatus == ALARM_RESET)
+    {
+        painter.drawPixmap(r, d_ptr->alarmResetPixmap, d_ptr->alarmResetPixmap.rect());
     }
 }
 
 void AlarmStatusWidget::setAlarmStatus(AlarmAudioStatus status)
 {
-    _audioStatus = status;
+    d_ptr->audioStatus = status;
     update();
 }
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-AlarmStatusWidget::AlarmStatusWidget() : IWidget("AlarmStatusWidget")
+AlarmStatusWidget::AlarmStatusWidget()
+    :IWidget("AlarmStatusWidget"),
+    d_ptr(new AlarmStatusWidgetPrivate())
 {
     setFocusPolicy(Qt::NoFocus);
-
-    _muteAlarmPause.load("/usr/local/nPM/icons/AlarmAudioPause.png");
-    _muteAudioOff.load("/usr/local/nPM/icons/AlarmAudioOff.png");
-    _muteAlarmOff.load("/usr/local/nPM/icons/AlarmOff.png");
-
-    _audioStatus = ALARM_AUDIO_NORMAL;
 }
 
 /**************************************************************************************************
@@ -84,4 +103,5 @@ AlarmStatusWidget::AlarmStatusWidget() : IWidget("AlarmStatusWidget")
  *************************************************************************************************/
 AlarmStatusWidget::~AlarmStatusWidget()
 {
+    delete d_ptr;
 }
