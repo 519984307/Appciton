@@ -30,9 +30,9 @@ void TimeManager::_refreshWidgets()
     QString t;
     timeDate.getTime(_curTime, text, _showSecond);
     timeDate.getDate(_curTime, t, true);
-    t += "    ";
+    t += " ";
     t += text;
-    t += "  ";
+    t += " ";
     if (_dateTimeWidget)
     {
         _dateTimeWidget->setText(t);
