@@ -73,6 +73,13 @@ public:
     void setRulerLimit(SubParamID, int down, int up, int scale);
 
     /**
+     * @brief setAutoRuler  设置子窗口是否为自动标尺
+     * @param id            自参数ID
+     * @param autoRuler     是否自动
+     */
+    void setAutoRuler(SubParamID id, bool isAuto);
+
+    /**
      * @brief loadTrendData 根据子参数ID将一页趋势数据载入容器
      * @param id 子参数ID
      * @param startIndex 开始数据的索引

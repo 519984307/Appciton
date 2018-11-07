@@ -63,6 +63,12 @@ public:
     void setRulerRange(int down, int up, int scale);
 
     /**
+     * @brief setAutoRuler  设置自动标尺
+     * @param isAuto        是否自动
+     */
+    void setAutoRuler(bool isAuto);
+
+    /**
      * @brief setTimeRange 设置两端时间范围
      * @param leftTime 左侧时间
      * @param rightTime 右侧时间
@@ -109,4 +115,5 @@ private:
     QString _paramName;             // 参数名称
     QString _paramUnit;             // 参数单位
     int _cursorPosIndex;            // 游标位置
+    bool _isAuto;                    // 是否自动标尺
 };

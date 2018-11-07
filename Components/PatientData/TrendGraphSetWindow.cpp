@@ -89,24 +89,11 @@ void TrendGraphSetWindow::allAutoReleased()
         item = d_ptr->itemList.at(i);
         item->combo->setCurrentIndex(1);
         item->downRuler->setEnabled(false);
-//        item->downRuler->disable(true);
         item->upRuler->setEnabled(false);
-//        item->upRuler->disable(true);
         SubParamID subID = item->sid;
-        ParamID id = item->pid;
-        UnitType type = paramManager.getSubParamUnit(id, subID);
-        ParamRulerConfig config = alarmConfig.getParamRulerConfig(subID, type);
         item->downRuler->setEnabled(false);
-//        item->downRuler->disable(true);
         item->upRuler->setEnabled(false);
-//        item->upRuler->disable(true);
-
-        item->downRuler->setScale(config.scale);
-        item->downRuler->setValue(config.downRuler);
-        item->upRuler->setScale(config.scale);
-        item->upRuler->setValue(config.upRuler);
-        TrendGraphWindow::getInstance()->setSubWidgetRulerLimit(subID, item->downRuler->getValue(),
-                                                item->upRuler->getValue(), item->downRuler->getScale());
+        TrendGraphWindow::getInstance()->setSubWidgetAutoRuler(subID, true);
     }
 }
 
@@ -141,6 +128,7 @@ void TrendGraphSetWindow::onComboBoxChanged(int index)
         int id = combo->property("Combo").toInt();
         RulerItem *item = d_ptr->itemList.at(id);
 
+        SubParamID subID = item->sid;
         if (index == 0)
         {
             item->downRuler->setEnabled(true);
@@ -148,19 +136,10 @@ void TrendGraphSetWindow::onComboBoxChanged(int index)
         }
         else
         {
-            SubParamID subID = item->sid;
-            ParamID id = item->pid;
-            UnitType type = paramManager.getSubParamUnit(id, subID);
-            ParamRulerConfig config = alarmConfig.getParamRulerConfig(subID, type);
             item->downRuler->setEnabled(false);
             item->upRuler->setEnabled(false);
-            item->downRuler->setScale(config.scale);
-            item->downRuler->setValue(config.downRuler);
-            item->upRuler->setScale(config.scale);
-            item->upRuler->setValue(config.upRuler);
-            TrendGraphWindow::getInstance()->setSubWidgetRulerLimit(subID, item->downRuler->getValue(),
-                                                    item->upRuler->getValue(), item->downRuler->getScale());
         }
+        TrendGraphWindow::getInstance()->setSubWidgetAutoRuler(subID, true);
     }
 }
 

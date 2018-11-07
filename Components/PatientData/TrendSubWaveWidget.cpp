@@ -23,7 +23,8 @@
 #define isEqual(a, b) (qAbs((a)-(b)) < 0.000001)
 
 TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id(id), _type(type),
-    _trendInfo(TrendGraphInfo()), _xSize(0), _ySize(0), _trendDataHead(0), _cursorPosIndex(0)
+    _trendInfo(TrendGraphInfo()), _xSize(0), _ySize(0), _trendDataHead(0), _cursorPosIndex(0),
+    _isAuto(true)
 {
     SubParamID subID = id;
     ParamID paramId = paramInfo.getParamID(subID);
@@ -118,6 +119,11 @@ void TrendSubWaveWidget::setRulerRange(int down, int up, int scale)
     _valueY.max = static_cast<double>(up) / scale;
     _valueY.min = static_cast<double>(down) / scale;
     update();
+}
+
+void TrendSubWaveWidget::setAutoRuler(bool isAuto)
+{
+    _isAuto = isAuto;
 }
 
 void TrendSubWaveWidget::setTimeRange(unsigned leftTime, unsigned rightTime)
