@@ -334,7 +334,7 @@ void AlarmIndicator::_displayInfoNode(AlarmInfoNode &alarmNode, int &indexint, i
 void AlarmIndicator::setAlarmPhyWidgets(AlarmPhyInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget)
 {
     _alarmPhyInfoWidget = alarmWidget;
-    _muteWidget = muteWidget;
+    _alarmStatusWidget = muteWidget;
 }
 
 /**************************************************************************************************
@@ -744,21 +744,7 @@ void AlarmIndicator::setAudioStatus(AlarmAudioStatus status)
         return;
     }
 
-    switch (status)
-    {
-    case ALARM_AUDIO_NORMAL:
-        _muteWidget->setAudioNormal();
-        break;
-    case ALARM_AUDIO_SUSPEND:
-        _muteWidget->setAlarmPause();
-        break;
-    case ALARM_AUDIO_OFF:
-        _muteWidget->setAudioOff();
-        break;
-    default:
-        _muteWidget->setAlarmOff();
-        break;
-    }
+    _alarmStatusWidget->setAlarmStatus(status);
 
     if (status != ALARM_AUDIO_SUSPEND)
     {
@@ -856,7 +842,7 @@ AlarmIndicator::AlarmIndicator()
 {
     _alarmPhyInfoWidget = NULL;
     _alarmTechInfoWidget = NULL;
-    _muteWidget = NULL;
+    _alarmStatusWidget = NULL;
 
     _alarmPhyDisplayIndex = 0;
     _alarmTechDisplayIndex = 0;

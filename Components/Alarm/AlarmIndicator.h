@@ -99,7 +99,7 @@ private: // 报警信息显示。
 
     AlarmPhyInfoBarWidget *_alarmPhyInfoWidget;
     AlarmTechInfoBarWidget *_alarmTechInfoWidget;
-    AlarmStatusWidget *_muteWidget;
+    AlarmStatusWidget *_alarmStatusWidget;
 
 private:
     // 最大报警信息数量。
