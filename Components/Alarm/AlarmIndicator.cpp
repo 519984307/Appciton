@@ -11,7 +11,7 @@
 
 
 #include "AlarmIndicator.h"
-#include "AlarmMuteBarWidget.h"
+#include "AlarmStatusWidget.h"
 #include "AlarmPhyInfoBarWidget.h"
 #include "AlarmTechInfoBarWidget.h"
 #include "SoundManager.h"
@@ -331,7 +331,7 @@ void AlarmIndicator::_displayInfoNode(AlarmInfoNode &alarmNode, int &indexint, i
 /**************************************************************************************************
  * 功能：注册生理报警界面指示器。
  *************************************************************************************************/
-void AlarmIndicator::setAlarmPhyWidgets(AlarmPhyInfoBarWidget *alarmWidget, AlarmMuteBarWidget *muteWidget)
+void AlarmIndicator::setAlarmPhyWidgets(AlarmPhyInfoBarWidget *alarmWidget, AlarmStatusWidget *muteWidget)
 {
     _alarmPhyInfoWidget = alarmWidget;
     _muteWidget = muteWidget;

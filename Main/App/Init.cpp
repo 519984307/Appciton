@@ -171,7 +171,7 @@ static void _initComponents(void)
 
     AlarmPhyInfoBarWidget *alarmPhyInfo = new AlarmPhyInfoBarWidget("AlarmPhyInfoBarWidget");
     AlarmTechInfoBarWidget *alarmTechInfo = new AlarmTechInfoBarWidget("AlarmTechInfoBarWidget");
-    AlarmMuteBarWidget *alarmPhyMuteBar = new AlarmMuteBarWidget();
+    AlarmStatusWidget *alarmPhyMuteBar = new AlarmStatusWidget();
     alarmIndicator.setAlarmPhyWidgets(alarmPhyInfo, alarmPhyMuteBar);
     alarmIndicator.setAlarmTechWidgets(alarmTechInfo);
     layoutManager.addLayoutWidget(alarmPhyInfo);
