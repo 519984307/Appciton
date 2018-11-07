@@ -137,7 +137,7 @@ void PopupList::additemList(const QStringList &list)
 
 void PopupList::setCurrentIndex(int index)
 {
-    if (d_ptr->curSelectIndex == index || index == d_ptr->items.count())
+    if (d_ptr->curSelectIndex == index || index >= d_ptr->items.count())
     {
         return;
     }

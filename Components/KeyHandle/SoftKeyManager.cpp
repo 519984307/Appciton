@@ -25,8 +25,8 @@
 #include <QDebug>
 #include <QResizeEvent>
 #include "LayoutManager.h"
-
-
+#include <QApplication>
+#include <QTimer>
 
 #define PREFER_SOFTKEY_WIDTH 98
 #define SOFTKEY_SPACING 2
@@ -116,6 +116,13 @@ public:
         layoutManager.updateTabOrder();
     }
 
+    /**
+     * @brief handleSoftKeyClick  处理按键点击：点击一下打开对应弹窗，再点击一下关闭对应弹窗
+     * @param isMainSetup  是否是主菜单按键
+     * @param index 软按键索引
+     */
+    void handleSoftKeyClick(bool isMainSetup = true, int index = 0);
+
     int totalPages;     // total pages
     int curPage;        // current page index
     SoftkeyActionBase *currentAction;
@@ -171,15 +178,7 @@ void SoftKeyManager::resetPage()
 
 void SoftKeyManager::_dynamicKeyClicked(int index)
 {
-    int descIndex = d_ptr->curPage * d_ptr->dynamicKeyWidgets.count() + index;
-    if (d_ptr->currentAction)
-    {
-        KeyActionDesc *desc = d_ptr->currentAction->getActionDesc(descIndex);
-        if (desc != NULL && desc->hook != NULL)
-        {
-            desc->hook(0);
-        }
-    }
+    d_ptr->handleSoftKeyClick(false, index);
 }
 
 void SoftKeyManager::_fixedKeyClicked()
@@ -187,11 +186,7 @@ void SoftKeyManager::_fixedKeyClicked()
     SoftkeyWidget *w = qobject_cast<SoftkeyWidget*>(sender());
     if (d_ptr->mainMenuKeyWidget == w)
     {
-        KeyActionDesc *desc = SoftkeyActionBase::getBaseActionDesc(SOFT_BASE_KEY_MAIN_SETUP);
-        if (desc != NULL && desc->hook != NULL)
-        {
-            desc->hook(0);
-        }
+        d_ptr->handleSoftKeyClick();
     }
     else if (d_ptr->leftPageKeyWidget == w)
     {
@@ -272,7 +267,7 @@ SoftKeyActionType SoftKeyManager::uFaceTypeToSoftKeyType(UserFaceType type)
     case UFACE_MONITOR_OXYCRG:
     case UFACE_MONITOR_TREND:
     case UFACE_MONITOR_BIGFONT:
-    case UFACE_MONITOR_12LEAD:
+    case UFACE_MONITOR_ECG_FULLSCREEN:
     case UFACE_MONITOR_CUSTOM:
         actionType = SOFTKEY_ACTION_STANDARD;
         break;
@@ -375,4 +370,60 @@ SoftKeyManager &SoftKeyManager::getInstance()
 SoftKeyManager::~SoftKeyManager()
 {
     qDeleteAll(d_ptr->actionMaps);
+}
+
+void SoftKeyManagerPrivate::handleSoftKeyClick(bool isMainSetup, int index)
+{
+    // 如果存在活动弹出窗口，优先关掉全部窗口
+    bool closePupup = false;
+    while (QApplication::activePopupWidget())
+    {
+        QApplication::activePopupWidget()->close();
+        closePupup = true;
+    }
+
+    if (closePupup)
+    {
+        return;
+    }
+
+    QWidget *wm = &windowManager;
+    QWidget *activeWindow = QApplication::activeWindow();
+    if (activeWindow == wm || activeWindow == NULL)
+    {
+        if (!isMainSetup)
+        {
+            // 执行hook函数指针,打开相应软按键弹窗
+            int descIndex = curPage * dynamicKeyWidgets.count() + index;
+            if (currentAction)
+            {
+                KeyActionDesc *desc = currentAction->getActionDesc(descIndex);
+                if (desc != NULL && desc->hook != NULL)
+                {
+                    desc->hook(0);
+                }
+            }
+        }
+        else
+        {
+            // 执行hook函数指针,打开主菜单软按键弹窗
+            KeyActionDesc *desc = SoftkeyActionBase::getBaseActionDesc(SOFT_BASE_KEY_MAIN_SETUP);
+            if (desc != NULL && desc->hook != NULL)
+            {
+                desc->hook(0);
+            }
+        }
+    }
+    else
+    {
+        while (QApplication::activeModalWidget())
+        {
+            QApplication::activeModalWidget()->close();
+        }
+        QTimer::singleShot(0, &windowManager, SLOT(closeAllWidows()));
+        if (isMainSetup)
+        {
+            softkeyManager.resetPage();
+        }
+    }
 }

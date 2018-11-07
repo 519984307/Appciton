@@ -14,6 +14,7 @@
 #include "IConfig.h"
 #include "ECGParam.h"
 #include "DataStorageDirManager.h"
+#include "DischargePatientWindow.h"
 
 PatientManager *PatientManager::_selfObj = NULL;
 
@@ -272,6 +273,13 @@ void PatientManager::newPatient()
     patientManager.setWeight(0.0);
     patientManager.setPacermaker(PATIENT_PACER_ON);
     dataStorageDirManager.createDir(true);
+}
+
+void PatientManager::dischargePatient()
+{
+    DischargePatientWindow dischargeWin;
+    connect(&dischargeWin, SIGNAL(finished(int)), this, SLOT(dischargeWinExit(int)));
+    dischargeWin.exec();
 }
 
 void PatientManager::finishPatientInfo()

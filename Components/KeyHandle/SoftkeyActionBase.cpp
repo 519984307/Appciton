@@ -153,8 +153,8 @@ void SoftkeyActionBase::calculation(bool isPressed)
     {
         return;
     }
-    CalculateWindow w;
-    windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
+    CalculateWindow *w = CalculateWindow::getInstance();
+    windowManager.showWindow(w, WindowManager::ShowBehaviorCloseOthers);
 }
 
 /***************************************************************************************************

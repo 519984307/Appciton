@@ -211,19 +211,26 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
     QRect r = layoutManager.getMenuArea();
     QPoint globalTopLeft = r.topLeft();
     r.moveTo(0, 0);
-    w->move(globalTopLeft + r.center() - w->rect().center());
-    if (w->x() < 0)
-    {
-        w->move(this->geometry().x() + 10, w->y());
-    }
 
     if (behaviors & ShowBehaviorModal)
     {
+        // 在显示模态窗口之前移动合适的位置
+        w->move(globalTopLeft + r.center() - w->rect().center());
+        if (w->x() < 0)
+        {
+            w->move(this->geometry().x() + 10, w->y());
+        }
         w->exec();
     }
     else
     {
         w->show();
+        // 在show之后可以根据自适应的窗口大小移动位置
+        w->move(globalTopLeft + r.center() - w->rect().center());
+        if (w->x() < 0)
+        {
+            w->move(this->geometry().x() + 10, w->y());
+        }
         w->activateWindow();
     }
 }

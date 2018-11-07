@@ -429,7 +429,7 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
         flag = tmpFalg;
 
         // 12导模式下需要内部起搏标记(数据无效时不标记)
-        if ((faceType == UFACE_MONITOR_12LEAD) && ipaceMark && (!leadoff[i]))
+        if ((faceType == UFACE_MONITOR_ECG_FULLSCREEN) && ipaceMark && (!leadoff[i]))
         {
             flag |= ECG_INTERNAL_FLAG_BIT;
         }
@@ -469,7 +469,7 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
 
 #if 1
         // 诊断模式和12L模式的全部导联
-        if ((faceType == UFACE_MONITOR_12LEAD) || (WAVE_SAMPLE_RATE_500 == rate && i != ECG_LEAD_V6 + 1))
+        if ((faceType == UFACE_MONITOR_ECG_FULLSCREEN) || (WAVE_SAMPLE_RATE_500 == rate && i != ECG_LEAD_V6 + 1))
         {
             flag &= ~ECG_WAVE_RATE_250_BIT;
         }
@@ -517,7 +517,7 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
             norfalg &= ~ECG_EXTERNAL_SOLD_FLAG_BIT;
         }
 
-        if (!(i == WAVE_ECG_aVR && faceType == UFACE_MONITOR_12LEAD &&
+        if (!(i == WAVE_ECG_aVR && faceType == UFACE_MONITOR_ECG_FULLSCREEN &&
                 ecgParam.get12LDisplayFormat() == DISPLAY_12LEAD_CABRELA))
         {
             _waveWidget[i]->addWaveformData(waveform[i], norfalg & 0xFFFF);
@@ -1281,7 +1281,7 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
     if (calcLead != newCaclLead)
     {
         setCalcLead(newCaclLead);
-        if (layoutManager.getUFaceType() != UFACE_MONITOR_12LEAD)
+        if (layoutManager.getUFaceType() != UFACE_MONITOR_ECG_FULLSCREEN)
         {
             needUpdateLayout = 1;
         }
@@ -1306,7 +1306,7 @@ void ECGParam::setLeadMode(ECGLeadMode newMode)
         layoutManager.updateLayout();
     }
 
-    if (layoutManager.getUFaceType() != UFACE_MONITOR_12LEAD)
+    if (layoutManager.getUFaceType() != UFACE_MONITOR_ECG_FULLSCREEN)
     {
         if (newMode == ECG_LEAD_MODE_3)
         {

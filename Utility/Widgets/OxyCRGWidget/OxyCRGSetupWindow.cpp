@@ -113,8 +113,8 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     layout->addWidget(label, layoutIndex, 0);
     combo = new ComboBox;
     combo->addItems(QStringList()
-                    << trs(OxyCRGSymbol::convert(OxyCRG_Trend_RESP))
-                    << trs(OxyCRGSymbol::convert(OxyCRG_Trend_CO2))
+                    << trs(OxyCRGSymbol::convert(OXYCRG_WAVE_RESP))
+                    << trs(OxyCRGSymbol::convert(OXYCRG_WAVE_CO2))
                     );
     layout->addWidget(combo, layoutIndex, 1);
     combo->setProperty("Item", qVariantFromValue(comboIndex));
@@ -123,6 +123,7 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     comboIndex++;
     configIndex = 0;
     currentConfig.getNumValue("OxyCRG|Wave", configIndex);
+    d_ptr->waveTypeIndex = configIndex;
     combo->setCurrentIndex(configIndex);
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
 
@@ -360,14 +361,6 @@ OxyCRGSetupWindow::~OxyCRGSetupWindow()
     delete d_ptr;
 }
 
-void OxyCRGSetupWindow::setWaveTypeIndex(int index)
-{
-    if (index >= 0 && index < 2)
-    {
-        d_ptr->waveTypeIndex = index;
-    }
-}
-
 int OxyCRGSetupWindow::getWaveTypeIndex() const
 {
     return d_ptr->waveTypeIndex;
@@ -416,6 +409,14 @@ int OxyCRGSetupWindow::getRRHigh() const
 void OxyCRGSetupWindow::showEvent(QShowEvent *ev)
 {
     Window::showEvent(ev);
+    int index = 0;
+    currentConfig.getNumValue("OxyCRG|Trend1", index);
+    d_ptr->trend1->setCurrentIndex(index);
+
+    index = 0;
+    currentConfig.getNumValue("OxyCRG|Wave", index);
+    d_ptr->wave->setCurrentIndex(index);
+    d_ptr->waveTypeIndex = index;
 }
 
 void OxyCRGSetupWindow::onComboUpdated(int index)
@@ -433,7 +434,7 @@ void OxyCRGSetupWindow::onComboUpdated(int index)
         currentConfig.setNumValue("OxyCRG|Trend1", index);
         break;
     case OxyCRGSetupWindowPrivate::ITEM_CBO_WAVE_SELECT:
-        setWaveTypeIndex(index);
+        d_ptr->waveTypeIndex = index;
         currentConfig.setNumValue("OxyCRG|Wave", index);
         break;
     case OxyCRGSetupWindowPrivate::ITEM_CBO_HR_LOW:

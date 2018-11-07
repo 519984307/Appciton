@@ -21,12 +21,6 @@ public:
 
 public :
     /**
-     * @brief setWaveTypeIndex
-     * @param index
-     */
-    void setWaveTypeIndex(int index);
-
-    /**
      * @brief getWaveTypeIndex
      * @return
      */

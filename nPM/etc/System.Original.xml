@@ -943,6 +943,7 @@
                     <Standard>ECGIWaveWidget,ECGV1WaveWidget,ECGIIWaveWidget,ECGV2WaveWidget,ECGIIIWaveWidget,ECGV3WaveWidget,ECGaVRWaveWidget,ECGV4WaveWidget,ECGaVLWaveWidget,ECGV5WaveWidget,ECGaVFWaveWidget,ECGV6WaveWidget</Standard>
                     <Cabrera>ECGaVLWaveWidget,ECGV1WaveWidget,ECGIWaveWidget,ECGV2WaveWidget,ECGaVRWaveWidget,ECGV3WaveWidget,ECGIIWaveWidget,ECGV4WaveWidget,ECGaVFWaveWidget,ECGV5WaveWidget,ECGIIIWaveWidget,ECGV6WaveWidget</Cabrera>
                 </ECG12Lead>
+                <ECG7Lead>ECGIWaveWidget,ECGIIWaveWidget,ECGIIIWaveWidget,ECGaVLWaveWidget,ECGaVRWaveWidget,ECGaVFWaveWidget,ECGV1WaveWidget</ECG7Lead>
             </ContentLayout>
             <WidgetsOrder>
                 <FontSize>
@@ -991,7 +992,6 @@
                 <bottomBarRowOrder>                                    
                 </bottomBarRowOrder>
                 <WaveTrendOrder>NIBPTrendWidget,NIBPDataTrendWidget</WaveTrendOrder>
-                <OxyCRGWidget>OxyCRGHRWidget,OxyCRGSPO2Widget,OxyCRGRESPWidget</OxyCRGWidget>
                 <!--软按键区比例-->
                 <softkeyAreaRowOrder>
                     <SoftkeyArea>1170</SoftkeyArea>

@@ -171,7 +171,7 @@ public:
                 caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
                                                  ecgParam.getLeadConvention()))
                           .arg(ECGSymbol::convert(ecgParam.getFilterMode()));
-                info.waveInfo.ecg.in12LeadMode = layoutManager.getUFaceType() == UFACE_MONITOR_12LEAD;
+                info.waveInfo.ecg.in12LeadMode = layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN;
                 info.waveInfo.ecg._12LeadDisplayFormat = ecgParam.get12LDisplayFormat();
                 captionLength = fontManager.textWidthInPixels(caption, q_ptr->font());
                 break;

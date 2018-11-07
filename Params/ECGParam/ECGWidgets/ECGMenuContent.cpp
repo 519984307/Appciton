@@ -138,7 +138,7 @@ void ECGMenuContentPrivate::loadOptions()
     // demo模式,12导界面下心电增益改为不可调
     UserFaceType faceType =  layoutManager.getUFaceType();
     if (workMode == WORK_MODE_DEMO
-            && faceType == UFACE_MONITOR_12LEAD)
+            && faceType == UFACE_MONITOR_ECG_FULLSCREEN)
     {
         combos[ITEM_CBO_ECG_GAIN]->setEnabled(false);
     }
@@ -201,7 +201,7 @@ void ECGMenuContentPrivate::loadOptions()
 
     // 增加判断是否为全屏12导界面，如果是，则显示一个ECG item
     if (leadMode == ECG_LEAD_MODE_3
-            || faceType == UFACE_MONITOR_12LEAD)
+            || faceType == UFACE_MONITOR_ECG_FULLSCREEN)
     {
         isHide = true;
         ecg1Label->setText(trs("ECG"));
@@ -436,9 +436,24 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
         }
         break;
         case ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE:
-            ecgParam.setLeadMode(static_cast<ECGLeadMode>(index));
+        {
+            ECGLeadMode mode = static_cast<ECGLeadMode>(index);
+            ecgParam.setLeadMode(mode);
+            if (mode == ECG_LEAD_MODE_3 && layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
+            {
+                // no ecg full screen in 3 lead mode
+                layoutManager.setUFaceType(UFACE_MONITOR_STANDARD);
+            }
+            int lastECGIndex = d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->currentIndex();
             d_ptr->loadOptions();
-            break;
+            index = d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->currentIndex();
+            if (lastECGIndex == index)
+            {
+                break;
+            }
+
+            // fall through, because the calculate lead changed
+        }
         case ECGMenuContentPrivate::ITEM_CBO_ECG1:
         {
             int waveIndex = 0;
