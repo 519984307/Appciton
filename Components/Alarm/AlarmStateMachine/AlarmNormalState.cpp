@@ -54,6 +54,7 @@ void AlarmNormalState::handAlarmEvent(AlarmStateEvent event, unsigned char */*da
         //删除栓锁报警
         alarmIndicator.delLatchPhyAlarm();
         alarmIndicator.techAlarmPauseStatusHandle();
+        alarmStateMachine.switchState(ALARM_RESET_STATE);
         break;
     }
 

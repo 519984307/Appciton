@@ -242,6 +242,7 @@ SOURCES +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmPauseState.cpp                      \
     Components/Alarm/AlarmStateMachine/AlarmOffState.cpp                        \
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.cpp                   \
+    Components/Alarm/AlarmStateMachine/AlarmResetState.cpp                      \
     Components/Alarm/Widgets/AlarmInfoPopListView.cpp                           \
     Components/Alarm/Widgets/AlarmLimitMenuContent.cpp                          \
     Components/Alarm/Widgets/AlarmLimitWindow.cpp                               \
@@ -724,6 +725,7 @@ HEADERS +=                                                                      
     Components/Alarm/AlarmStateMachine/AlarmPauseState.h                        \
     Components/Alarm/AlarmStateMachine/AlarmOffState.h                          \
     Components/Alarm/AlarmStateMachine/AlarmAudioOffState.h                     \
+    Components/Alarm/AlarmStateMachine/AlarmResetState.h                        \
     Components/Alarm/Widgets/AlarmInfoPopListView.h                             \
     Components/Alarm/Widgets/AlarmLimitMenuContent.h                            \
     Components/Alarm/Widgets/AlarmLimitWindow.h                                 \

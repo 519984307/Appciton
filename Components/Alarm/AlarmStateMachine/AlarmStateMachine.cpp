@@ -16,6 +16,7 @@
 #include "AlarmPauseState.h"
 #include "AlarmAudioOffState.h"
 #include "AlarmOffState.h"
+#include "AlarmResetState.h"
 #include "IConfig.h"
 #include "SystemManager.h"
 #include "Debug.h"
@@ -33,10 +34,13 @@ AlarmStateMachine::AlarmStateMachine()
     AlarmPauseState *pauseState = new AlarmPauseState();
     AlarmAudioOffState *audioOffState = new AlarmAudioOffState();
     AlarmOffState *offState = new AlarmOffState();
+    AlarmResetState *resetState = new AlarmResetState();
+
     _alarmStateMap.insert(normalState->type(), normalState);
     _alarmStateMap.insert(pauseState->type(), pauseState);
     _alarmStateMap.insert(audioOffState->type(), audioOffState);
     _alarmStateMap.insert(offState->type(), offState);
+    _alarmStateMap.insert(resetState->type(), resetState);
     _currentState = normalState;
 
     _timer = new QTimer();
