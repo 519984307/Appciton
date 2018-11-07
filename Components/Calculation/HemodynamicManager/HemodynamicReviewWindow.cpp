@@ -103,7 +103,7 @@ void HemodynaimcReviewWindow::layoutExec()
     setWindowTitle(trs("ReviewWindow"));
 
     QVBoxLayout *vlayout = new QVBoxLayout;
-    vlayout->setMargin(10);
+    vlayout->setMargin(5);
     vlayout->setAlignment(Qt::AlignTop);
 
     d_ptr->tableView = new TableView(this);
@@ -175,7 +175,7 @@ void HemodynaimcReviewWindow::layoutExec()
 
     vlayout->addLayout(hlyout);
     vlayout->addStretch(1);
-    setFixedSize(800, 654);
+    setFixedSize(800, 600);
     setWindowLayout(vlayout);
 }
 
