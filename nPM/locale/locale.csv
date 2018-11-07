@@ -418,14 +418,15 @@ NIBPWAITING,请等待,NIBP Waiting
 NIBPNoResponse,无响应,No Response
 NIBPTemporarily,临时,Temporarily
 NIBPDisable,禁用,Disable
-_1min,1 分,1 min
+_1min,1 min,1 min
 _1.5min,1.5 分,1.5 min
-_2min,2 分,2 min
+_2min,2 min,2 min
 _2.5min,2.5 分,2.5 min
 _3min,3 分,3 min
 _3.5min,3.5 分,3.5 min
-_4min,4 分,4 min
+_4min,4 min,4 min
 _5min,5 分,5 min
+_8min,8 min,8 min
 _10min,10 分,10 min
 _15min,15 分,15 min
 _20min,20 分,20 min
