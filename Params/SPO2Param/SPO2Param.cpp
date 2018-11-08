@@ -389,10 +389,12 @@ short SPO2Param::getSPO2(void)
  *************************************************************************************************/
 void SPO2Param::setPR(short prValue)
 {
-    if (_prValue == prValue)
-    {
-        return;
-    }
+    // 演示模式下趋势值为固定值，可能会造成后面数值未及时更新的错误判断,导致存取的pr值为无效值
+    // 暂时去掉
+//    if (_prValue == prValue)
+//    {
+//        return;
+//    }
 
     if (prValue < 0)
     {
@@ -459,7 +461,10 @@ void SPO2Param::addBarData(short data)
  *************************************************************************************************/
 void SPO2Param::setPulseAudio(bool pulse)
 {
-    if (pulse && ecgParam.getHR() == InvData())
+    if (pulse
+            && (ecgDupParam.getCurHRSource() == HR_SOURCE_SPO2
+                || (ecgDupParam.getCurHRSource() == HR_SOURCE_AUTO
+                    && ecgParam.getHR() == InvData())))
     {
         soundManager.pulseTone(getSmartPulseTone() == SPO2_SMART_PLUSE_TONE_ON
                                ? getSPO2()

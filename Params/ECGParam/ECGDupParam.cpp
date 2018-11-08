@@ -144,6 +144,13 @@ void ECGDupParam::updatePR(short pr, PRSourceType type)
     bool isIBP2LeadOff = ibpParam.isIBPLeadOff(IBP_INPUT_2);
     bool isSPO2Valid = spo2Param.isValid();
 
+    // 演示模式下，强制设定相关标志位
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        isIBP1LeadOff = isIBP2LeadOff = false;
+        isSPO2Valid = true;
+    }
+
     // 更新pr值
     switch (_prSource)
     {
@@ -242,7 +249,10 @@ void ECGDupParam::updateVFVT(bool onoff)
  *************************************************************************************************/
 void ECGDupParam::updateHRBeatIcon()
 {
-    if (_hrBeatFlag)
+    // 加入hr来源判断为限制条件--避免spo2\ibp模块的pr数据为无效值时造成误判
+    if (_hrBeatFlag
+            && (_hrSource == HR_SOURCE_ECG
+                || _hrSource == HR_SOURCE_AUTO))
     {
         if (NULL != _trendWidget && _hrValue != InvData())
         {
@@ -256,7 +266,11 @@ void ECGDupParam::updateHRBeatIcon()
  *************************************************************************************************/
 void ECGDupParam::updatePRBeatIcon()
 {
-    if (!_hrBeatFlag)
+    // 加入hr来源判断为限制条件--避免ecg模块的hr数据为无效值时造成误判
+    if (!_hrBeatFlag
+            && (_hrSource == HR_SOURCE_SPO2
+                || _hrSource == HR_SOURCE_IBP
+                || _hrSource == HR_SOURCE_AUTO))
     {
         if (NULL != _trendWidget && _prValue != InvData())
         {

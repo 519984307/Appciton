@@ -405,7 +405,10 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
     _waveDataInvalid = !_waveDataInvalid;
 
     // 心跳音
-    if (rMark && _hrValue != InvData())
+    if (rMark
+            && _hrValue != InvData()
+            && (ecgDupParam.getCurHRSource() == HR_SOURCE_ECG
+                || ecgDupParam.getCurHRSource() == HR_SOURCE_AUTO))
     {
         soundManager.heartBeatTone();
         ecgDupParam.updateHRBeatIcon();
@@ -536,10 +539,11 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
  *************************************************************************************************/
 void ECGParam::updateHR(short hr)
 {
-    if (_hrValue == hr)
-    {
-        return;
-    }
+    // 屏蔽同值退出功能，避免造成后面数值丢失的误判
+//    if (_hrValue == hr)
+//    {
+//        return;
+//    }
 
     if (hr < 0)
     {
