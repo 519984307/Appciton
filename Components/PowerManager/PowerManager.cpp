@@ -646,7 +646,8 @@ void PowerManager::_batteryIconNormal(void)
     }
     else
     {
-        batteryBarWidget.setIcon(_timeValue);
+//        batteryBarWidget.setIcon(_timeValue);
+        batteryBarWidget.setIconFull();
     }
     batteryBarWidget.setStatus(BATTERY_NORMAL);
 }
