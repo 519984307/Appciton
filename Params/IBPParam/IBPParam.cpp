@@ -48,7 +48,7 @@ enum IBPCalibrationResult
  *************************************************************************************************/
 IBPParam::IBPParam() : Param(PARAM_IBP),  _provider(NULL), _waveWidgetIBP1(NULL),
     _waveWidgetIBP2(NULL), _trendWidgetIBP1(NULL), _trendWidgetIBP2(NULL),
-    _staIBP1(true), _staIBP2(true), _connectedProvider(false), _ibp1ZeroReply(false),
+    _staIBP1(false), _staIBP2(false), _connectedProvider(false), _ibp1ZeroReply(false),
     _ibp2ZeroReply(false)
 {
     _ibp1.pressureName = IBP_PRESSURE_ART;
