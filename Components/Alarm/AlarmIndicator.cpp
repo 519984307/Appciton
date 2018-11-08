@@ -761,7 +761,7 @@ void AlarmIndicator::setAudioStatus(AlarmAudioStatus status)
 
     _alarmStatusWidget->setAlarmStatus(status);
 
-    if (status != ALARM_AUDIO_SUSPEND || status != ALARM_RESET)
+    if (status != ALARM_AUDIO_SUSPEND && status != ALARM_RESET)
     {
         systemConfig.setNumValue("PrimaryCfg|Alarm|AlarmStatus", static_cast<int>(status + 1));
     }

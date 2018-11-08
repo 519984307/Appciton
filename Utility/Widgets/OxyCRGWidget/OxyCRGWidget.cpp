@@ -35,6 +35,7 @@
 #include "OxyCRGTrendWaveWidget_p.h"
 #include <QStackedWidget>
 #include <QTimer>
+#include "OxyCRGEventWindow.h"
 
 #define TITLE_BAR_HEIGHT    24
 #define LABEL_HEIGHT    40
@@ -42,20 +43,22 @@
 class OxyCRGWidgetPrivate
 {
 public:
-    OxyCRGWidgetPrivate()
+    explicit OxyCRGWidgetPrivate(OxyCRGWidget *q)
         : autoLbl(NULL),
           rrHrTrend(NULL),
           spo2Trend(NULL),
           co2Wave(NULL),
           respWave(NULL),
+          eventBtn(NULL),
+          recordBtn(NULL),
           setupBtn(NULL),
           setupWin(NULL),
           updateTimer(NULL),
           intervalLbl(NULL),
-          compressWaveLbl(NULL),
           firstTrendStackWidget(NULL),
           secondTrendStackWidget(NULL),
-          compressWaveStackWidget(NULL)
+          compressWaveStackWidget(NULL),
+          q_ptr(q)
     {
     }
 
@@ -64,7 +67,12 @@ public:
     OxyCRGInterval getInterval() const;
 
     OxyCRGWave getCompressWave() const;
-    void setCompressWave(OxyCRGWave wave) const;
+    void setCompressWave(OxyCRGWave wave);
+
+    /**
+     * @brief moveBottomLables
+     */
+    void moveBottomLables(void);
 
     ~OxyCRGWidgetPrivate()
     {
@@ -76,20 +84,26 @@ public:
     OxyCRGSPO2TrendWidget *spo2Trend;
     OxyCRGCO2WaveWidget *co2Wave;
     OxyCRGRESPWaveWidget *respWave;
+    OxyCRGWidgetLabel *eventBtn;
+    OxyCRGWidgetLabel *recordBtn;
     OxyCRGWidgetLabel *setupBtn;
     OxyCRGSetupWindow *setupWin;
     QTimer *updateTimer;
     OxyCRGWidgetLabel *intervalLbl;
-    OxyCRGWidgetLabel *compressWaveLbl;
     QStackedWidget *firstTrendStackWidget;
     QStackedWidget *secondTrendStackWidget;
     QStackedWidget *compressWaveStackWidget;
+    QStringList intervalShowList;
+    OxyCRGWidget *q_ptr;
 };
 
 void OxyCRGWidgetPrivate::setInterval(OxyCRGInterval interval)
 {
     currentConfig.setNumValue("OxyCRG|Interval", static_cast<int>(interval));
 
+    intervalLbl->setText(OxyCRGSymbol::convert(interval));
+    intervalShowList.clear();
+    intervalShowList = OxyCRGSymbol::convertInterval(static_cast<OxyCRGInterval>(interval));
     intervalLbl->setText(trs(OxyCRGSymbol::convert(interval)));
 
     if (rrHrTrend)
@@ -130,7 +144,7 @@ OxyCRGWave OxyCRGWidgetPrivate::getCompressWave() const
     return static_cast<OxyCRGWave>(index);
 }
 
-void OxyCRGWidgetPrivate::setCompressWave(OxyCRGWave wave) const
+void OxyCRGWidgetPrivate::setCompressWave(OxyCRGWave wave)
 {
     int index = wave;
     currentConfig.setNumValue("OxyCRG|Wave", index);
@@ -138,15 +152,40 @@ void OxyCRGWidgetPrivate::setCompressWave(OxyCRGWave wave) const
     if (index < compressWaveStackWidget->count())
     {
         compressWaveStackWidget->setCurrentIndex(index);
+        moveBottomLables();
     }
-    compressWaveLbl->setText(OxyCRGSymbol::convert(wave));
+}
+
+void OxyCRGWidgetPrivate::moveBottomLables()
+{
+    QRect r = q_ptr->rect();
+    int rHeight = r.bottom() - LABEL_HEIGHT;
+    int xShift = r.x();
+    int xStep = (r.width() - WX_SHIFT - WX_SHIFT) / 4;
+
+    eventBtn->move(xShift, rHeight);
+
+    xShift = r.right() - WX_SHIFT - 3 * xStep;
+    xShift -= intervalLbl->width() / 2;
+    intervalLbl->move(xShift, rHeight);
+
+    xShift = r.right() - WX_SHIFT - 2 * xStep;
+    xShift -= setupBtn->width() / 2;
+    setupBtn->move(xShift, rHeight);
+
+    xShift = r.right() - WX_SHIFT - 1 * xStep;
+    xShift -= autoLbl->width() / 2;
+    autoLbl->move(xShift, rHeight);
+
+    xShift = r.right() - recordBtn->width();
+    recordBtn->move(xShift, rHeight);
 }
 
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
 OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
-    d_ptr(new OxyCRGWidgetPrivate)
+    d_ptr(new OxyCRGWidgetPrivate(this))
 {
     QPalette palette;
     palette.setColor(QPalette::WindowText, QColor(152, 245, 255));
@@ -181,43 +220,44 @@ OxyCRGWidget::OxyCRGWidget(): IWidget("OxyCRGWidget"),
     QHBoxLayout *bottomLayout = new QHBoxLayout();
     bottomLayout->setMargin(2);
     bottomLayout->setSpacing(1);
-    int labelWidth = 120;
-
+    int labelWidth = 80;
     fontSize = 18;
+
+    d_ptr->eventBtn = new OxyCRGWidgetLabel(trs("Event"), Qt::AlignCenter, this);
+    d_ptr->eventBtn->setFont(fontManager.textFont(fontSize));
+    d_ptr->eventBtn->setFixedSize(labelWidth, LABEL_HEIGHT);
+    connect(d_ptr->eventBtn, SIGNAL(released(IWidget *)), this, SLOT(onEventClicked(IWidget*)));
+
     d_ptr->intervalLbl = new OxyCRGWidgetLabel(QString(), Qt::AlignCenter, this);
     d_ptr->intervalLbl->setFont(fontManager.textFont(fontSize));
     d_ptr->intervalLbl->setFixedSize(labelWidth, LABEL_HEIGHT);
     int interval = OXYCRG_INTERVAL_1;
     currentConfig.getNumValue("OxyCRG|Interval", interval);
+    d_ptr->intervalShowList = OxyCRGSymbol::convertInterval(static_cast<OxyCRGInterval>(interval));
+    d_ptr->intervalLbl->setText(OxyCRGSymbol::convert(static_cast<OxyCRGInterval>(interval)));
     d_ptr->intervalLbl->setText(trs(OxyCRGSymbol::convert(static_cast<OxyCRGInterval>(interval))));
     connect(d_ptr->intervalLbl, SIGNAL(released(IWidget *)), this, SLOT(onIntervalClicked(IWidget *)));
-
-    d_ptr->compressWaveLbl = new OxyCRGWidgetLabel(QString(), Qt::AlignCenter, this);
-    d_ptr->compressWaveLbl->setFont(fontManager.textFont(fontSize));
-    d_ptr->compressWaveLbl->setFixedSize(labelWidth, LABEL_HEIGHT);
-    connect(d_ptr->compressWaveLbl, SIGNAL(released(IWidget *)), this, SLOT(onCompressWaveClicked(IWidget *)));
-
-    d_ptr->autoLbl = new OxyCRGWidgetLabel(trs("Auto"), Qt::AlignCenter, this);
-    d_ptr->autoLbl->setFont(fontManager.textFont(fontSize));
-    d_ptr->autoLbl->setFixedSize(labelWidth, LABEL_HEIGHT);
-    connect(d_ptr->autoLbl, SIGNAL(released(IWidget *)), this, SLOT(onAutoClicked()));
 
     d_ptr->setupBtn = new OxyCRGWidgetLabel(trs("SetUp"), Qt::AlignCenter, this);
     d_ptr->setupBtn->setFont(fontManager.textFont(fontSize));
     d_ptr->setupBtn->setFixedSize(labelWidth, LABEL_HEIGHT);
     connect(d_ptr->setupBtn, SIGNAL(released(IWidget *)), this, SLOT(onSetupClicked(IWidget *)));
 
-    int rWidth = rect().width() / 4;
-    int addWidth = (rWidth - labelWidth) / 2;
-    bottomLayout->addSpacing(addWidth);
+    d_ptr->autoLbl = new OxyCRGWidgetLabel(trs("AutoRuler"), Qt::AlignCenter, this);
+    d_ptr->autoLbl->setFont(fontManager.textFont(fontSize));
+    d_ptr->autoLbl->setFixedSize(labelWidth * 3 / 2, LABEL_HEIGHT);
+    connect(d_ptr->autoLbl, SIGNAL(released(IWidget *)), this, SLOT(onAutoClicked()));
+
+    d_ptr->recordBtn = new OxyCRGWidgetLabel(trs("Record"), Qt::AlignCenter, this);
+    d_ptr->recordBtn->setFont(fontManager.textFont(fontSize));
+    d_ptr->recordBtn->setFixedSize(labelWidth, LABEL_HEIGHT);
+    connect(d_ptr->recordBtn, SIGNAL(released(IWidget *)), this, SLOT(onRecordClicked(IWidget*)));
+
+    bottomLayout->addWidget(d_ptr->eventBtn);
     bottomLayout->addWidget(d_ptr->intervalLbl);
-    bottomLayout->addSpacing(addWidth);
-    bottomLayout->addWidget(d_ptr->compressWaveLbl);
-    bottomLayout->addSpacing(addWidth);
-    bottomLayout->addWidget(d_ptr->autoLbl);
-    bottomLayout->addSpacing(addWidth);
     bottomLayout->addWidget(d_ptr->setupBtn);
-    bottomLayout->addSpacing(addWidth);
+    bottomLayout->addWidget(d_ptr->autoLbl);
+    bottomLayout->addWidget(d_ptr->recordBtn);
 
     mainLayout->addWidget(titleLabel, 0, Qt::AlignCenter);
     mainLayout->addLayout(hLayoutWave);
@@ -251,39 +291,32 @@ void OxyCRGWidget::paintEvent(QPaintEvent *event)
 
     // 绘制边框。
     QPen pen;
+    QRect r = rect();
     pen.setColor(Qt::white);
     pen.setWidth(2);
     barPainter.setPen(pen);
     barPainter.drawRect(rect());
 
-    QRect rectAdjust = rect().adjusted(1, TITLE_BAR_HEIGHT - 1, -1, -LABEL_HEIGHT - 4);
-    barPainter.drawLine(rectAdjust.bottomLeft(), rectAdjust.bottomRight());
-
-    // 画上x轴刻度线
-    barPainter.setPen(QPen(Qt::white, 1, Qt::SolidLine));
-
-    int xStep = (rect().width() - WX_SHIFT - WX_SHIFT) / 4;
-    barPainter.setFont(fontManager.textFont(fontManager.getFontSize(0)));
-    for (int i = 1; i < 4; i++)
-    {
-        barPainter.drawText(rect().bottomRight().x() - WX_SHIFT - i * xStep,
-                            rectAdjust.bottomRight().y() + 12,
-                            QString::number(i));
-    }
-
-
-    QRect r = rect();
     r.setBottom(TITLE_BAR_HEIGHT);
     barPainter.fillRect(r, QColor(152, 245, 255));
 
-    int rWidth = rect().width() / 4;
-    int addWidth = (rWidth - d_ptr->intervalLbl->width()) / 2;
-    int rHeight = rect().bottom() - LABEL_HEIGHT;
+    QRect rectAdjust = rect().adjusted(1, TITLE_BAR_HEIGHT - 1, -1, -LABEL_HEIGHT - 4);
+    barPainter.drawLine(rectAdjust.bottomLeft(), rectAdjust.bottomRight());
 
-    d_ptr->intervalLbl->move(addWidth, rHeight);
-    d_ptr->compressWaveLbl->move((addWidth + rWidth), rHeight);
-    d_ptr->autoLbl->move((addWidth + rWidth * 2), rHeight);
-    d_ptr->setupBtn->move((addWidth + rWidth * 3), rHeight);
+    // 画时间间隔
+    if (d_ptr->intervalShowList.count() != 4)
+    {
+        return;
+    }
+    int xStep = (rect().width() - WX_SHIFT - WX_SHIFT) / 4;
+    barPainter.setPen(QPen(Qt::white, 1, Qt::SolidLine));
+    barPainter.setFont(fontManager.textFont(fontManager.getFontSize(0)));
+    for (int i = 0; i < 4; i++)
+    {
+        barPainter.drawText(rect().bottomRight().x() - WX_SHIFT - xStep / 2 - i * xStep,
+                            rectAdjust.bottomRight().y() + 12,
+                            d_ptr->intervalShowList.at(i));
+    }
 }
 
 /**************************************************************************************************
@@ -292,6 +325,8 @@ void OxyCRGWidget::paintEvent(QPaintEvent *event)
 void OxyCRGWidget::resizeEvent(QResizeEvent *e)
 {
     IWidget::resizeEvent(e);
+
+    d_ptr->moveBottomLables();
 }
 
 void OxyCRGWidget::showEvent(QShowEvent *e)
@@ -361,7 +396,11 @@ void OxyCRGWidget::setOxyCRGCO2Widget(OxyCRGCO2WaveWidget *p)
 void OxyCRGWidget::getSubFocusWidget(QList<QWidget *> &subWidget) const
 {
     subWidget.clear();
-    subWidget << d_ptr->intervalLbl << d_ptr->compressWaveLbl << d_ptr->autoLbl << d_ptr->setupBtn;
+    subWidget << d_ptr->eventBtn
+              << d_ptr->intervalLbl
+              << d_ptr->setupBtn
+              << d_ptr->autoLbl
+              << d_ptr->recordBtn;
 }
 
 void OxyCRGWidget::setOxyCRGRrHrWidget(OxyCRGRRHRWaveWidget *p)
@@ -390,23 +429,6 @@ void OxyCRGWidget::onIntervalClicked(IWidget *widget)
     currentConfig.getNumValue("OxyCRG|Interval", index);
     popup->setCurrentIndex(index);
     connect(popup, SIGNAL(selectItemChanged(int)), this, SLOT(onIntervalChanged(int)));
-    popup->show();
-}
-
-void OxyCRGWidget::onCompressWaveClicked(IWidget *widget)
-{
-    Q_UNUSED(widget)
-
-    PopupList *popup = new PopupList(d_ptr->compressWaveLbl, false);
-    for (int i = 0; i< OXYCRG_WAVE_NR; i++)
-    {
-        popup->addItemText(OxyCRGSymbol::convert(static_cast<OxyCRGWave>(i)));
-    }
-    popup->setFont(fontManager.textFont(fontManager.getFontSize(3)));
-    int index = OXYCRG_WAVE_RESP;
-    currentConfig.getNumValue("OxyCRG|Wave", index);
-    popup->setCurrentIndex(index);
-    connect(popup, SIGNAL(selectItemChanged(int)), this, SLOT(onCompressWaveChanged(int)));
     popup->show();
 }
 
@@ -449,16 +471,31 @@ void OxyCRGWidget::onSetupClicked(IWidget *widget)
     d_ptr->spo2Trend->setRulerValue(valueHight, valueLow);
 }
 
+void OxyCRGWidget::onEventClicked(IWidget *widget)
+{
+    if (widget != d_ptr->eventBtn)
+    {
+        return;
+    }
+    OxyCRGEventWindow::getInstance()->setHistoryData(false);
+    windowManager.showWindow(OxyCRGEventWindow::getInstance(),
+                             WindowManager::
+                             ShowBehaviorCloseOthers);
+}
+
+void OxyCRGWidget::onRecordClicked(IWidget *widget)
+{
+    if (widget != d_ptr->recordBtn)
+    {
+        return;
+    }
+    // TODO
+}
+
 void OxyCRGWidget::onIntervalChanged(int index)
 {
     d_ptr->setInterval(static_cast<OxyCRGInterval>(index));
-}
-
-void OxyCRGWidget::onCompressWaveChanged(int index)
-{
-    OxyCRGWave wave = static_cast<OxyCRGWave>(index);
-    d_ptr->setCompressWave(wave);
-    d_ptr->compressWaveLbl->setText(OxyCRGSymbol::convert(wave));
+    update();
 }
 
 void OxyCRGWidget::onAutoClicked()
@@ -502,7 +539,7 @@ void OxyCRGWidget::onAutoClicked()
 
     if (d_ptr->co2Wave)
     {
-        QString strValueHigh = OxyCRGSymbol::convert(CO2_HIGH_15);
+        QString strValueHigh = OxyCRGSymbol::convert(CO2_HIGH_40);
         int valueHigh = strValueHigh.toInt();
         QString strValueLow = OxyCRGSymbol::convert(CO2_LOW_0);
         int valueLow = strValueLow.toInt();
@@ -510,6 +547,6 @@ void OxyCRGWidget::onAutoClicked()
         d_ptr->co2Wave->setRulerValue(valueHigh, valueLow);
 
         currentConfig.setNumValue("OxyCRG|Ruler|CO2Low", static_cast<int>(CO2_LOW_0));
-        currentConfig.setNumValue("OxyCRG|Ruler|CO2High", static_cast<int>(CO2_HIGH_15));
+        currentConfig.setNumValue("OxyCRG|Ruler|CO2High", static_cast<int>(CO2_HIGH_40));
     }
 }
