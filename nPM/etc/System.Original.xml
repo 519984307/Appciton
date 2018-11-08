@@ -883,29 +883,30 @@
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="1">ECG2Wave</LayoutNode>
-                        <LayoutNode pos="4" span="2" editable="1">N2O</LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="1"></LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="1">SPO2Wave</LayoutNode>
                         <LayoutNode pos="4" span="2" editable="1">SPO2</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
-                        <LayoutNode pos="0" span="4" editable="1">IBP1Wave</LayoutNode>
-                        <LayoutNode pos="4" span="2" editable="1">IBP1</LayoutNode>
-                    </LayoutRow>
-                    <LayoutRow>
-                        <LayoutNode pos="0" span="4" editable="1">IBP2Wave</LayoutNode>
-                        <LayoutNode pos="4" span="2" editable="1">IBP2</LayoutNode>
+                        <LayoutNode pos="0" span="4" editable="1">RESPWave</LayoutNode>
+                        <LayoutNode pos="4" span="1" editable="1">RESP</LayoutNode>
+                        <LayoutNode pos="5" span="1" editable="1"></LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="1">CO2Wave</LayoutNode>
                         <LayoutNode pos="4" span="2" editable="1">CO2</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
+                        <LayoutNode pos="0" span="4" editable="1"></LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="1"></LayoutNode>
+                    </LayoutRow>
+                    <LayoutRow>
                         <LayoutNode pos="0" span="2" editable="1">NIBP</LayoutNode>
                         <LayoutNode pos="2" span="2" editable="1">NIBPList</LayoutNode>
                         <LayoutNode pos="4" span="1" editable="1">TEMP</LayoutNode>
-                        <LayoutNode pos="5" span="1" editable="1">RESP</LayoutNode>
+                        <LayoutNode pos="5" span="1" editable="1"></LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode pos="0" span="2" editable="1"></LayoutNode>
