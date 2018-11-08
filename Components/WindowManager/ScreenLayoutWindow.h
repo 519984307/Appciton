@@ -27,6 +27,9 @@ protected:
     /*reimplement*/
     void hideEvent(QHideEvent *ev);
 
+    /*reimplement*/
+    void showEvent(QShowEvent *);
+
 private slots:
     /**
      * @brief onButtonClicked handle the button click signal
