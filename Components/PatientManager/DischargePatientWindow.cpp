@@ -66,7 +66,7 @@ void DischargePatientWindow::layoutExec()
     d_ptr->standbyChk->setFixedSize(32, 32);
 
     QLabel *lbl = new QLabel;
-#ifndef STANDBY_FUNCTION
+#ifndef HIDE_STANDBY_FUNCTION
     lbl->setText(trs("Standby"));
     lbl->setFixedWidth(100);
 #else
@@ -75,7 +75,7 @@ void DischargePatientWindow::layoutExec()
 
     lbl->setAlignment(Qt::AlignCenter);
     hlayout->addStretch();
-#ifndef STANDBY_FUNCTION
+#ifndef HIDE_STANDBY_FUNCTION
     hlayout->addWidget(d_ptr->standbyChk);
 #endif
     hlayout->addWidget(lbl);
