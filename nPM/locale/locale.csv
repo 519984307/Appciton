@@ -560,6 +560,7 @@ SPO2SearchPulseTooLong,血氧脉搏搜索时间过长,SPO2 Search Pulse Too Long
 SPO2SearchingPulse,血氧脉搏搜索,SPO2 Searching Pulse
 SPO2CommunicationStop,SPO2通讯停止,SPO2 Communication Stop
 SPO2ProbeFault,血氧探头故障,SPO2 Probe Fault
+SPO2SignalSaturation,SPO2信号饱和,SPO2 Signal Saturation
 CO2EtCO2Low,EtCO2 低,EtCO2 Low
 CO2EtCO2High,EtCO2 高,EtCO2 High
 CO2FiCO2Low,FiCO2 低,FiCO2 Low
