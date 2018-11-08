@@ -17,6 +17,7 @@
 #include "WaveformCache.h"
 #include "StorageManager.h"
 #include <QDateTime>
+#include "SystemManager.h"
 
 DataStorageDirManager *DataStorageDirManager::_selfObj = NULL;
 static QString _lastFolder;
@@ -338,11 +339,15 @@ void DataStorageDirManager::createDir(bool createNew)
     {
         _folderNameList.clear();
         _curFolder.clear();
-//        QDateTime dt = QDateTime::fromTime_t(timeManager.getStartTime());
         QDateTime dt = QDateTime::fromTime_t(timeManager.getCurTime());
         timeStr = dt.toString("yyyyMMddHHmmss");
         _curFolder += DATA_STORE_PATH;
-        _curFolder += QString::number(folderSequenceNum) + "nPM" + timeStr;
+        QString demoFlag = "";
+        if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+        {
+            demoFlag = "D";
+        }
+        _curFolder += QString::number(folderSequenceNum) + "nPM" + demoFlag + timeStr;
         dir.setPath(_curFolder);
         if (dir.mkpath(_curFolder))
         {
