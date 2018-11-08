@@ -133,16 +133,8 @@ void DischargePatientWindow::onBtnRelease()
     }
     else if (btn == d_ptr->yesBtn)
     {
+        this->accept();
         windowManager.closeAllWidows();
-        if (patientManager.isMonitoring())
-        {
-            patientManager.setMonitor(false);
-            patientManager.newPatient();
-        }
-        else
-        {
-            // TODO 清除当前病人历史数据
-        }
         if (d_ptr->isStandby)
         {
             StandbyWindow standyWin;
@@ -151,7 +143,7 @@ void DischargePatientWindow::onBtnRelease()
     }
     else if (btn == d_ptr->noBtn)
     {
-        this->close();
+        this->reject();
     }
 }
 

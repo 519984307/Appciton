@@ -361,7 +361,7 @@ void NormalFunctionMenuContent::onBtnReleasd()
                 systemManager.setWorkMode(WORK_MODE_NORMAL);
                 d_ptr->demoBtn->setText(trs("DemoMode"));
                 windowManager.closeAllWidows();
-                patientManager.dischargePatient();
+                patientManager.dischargePatient(false);
                 break;
             }
 

@@ -21,15 +21,21 @@ PatientManager *PatientManager::_selfObj = NULL;
 class PatientManagerPrivate
 {
 public:
-    PatientManagerPrivate()
-        : patientInfoWidget(NULL),
+    explicit PatientManagerPrivate(PatientManager *const q_ptr)
+        : q_ptr(q_ptr),
+          patientInfoWidget(NULL),
           patientNew(false),
           relieveFlag(true)
     {}
+    PatientManager * const q_ptr;
     PatientInfo patientInfo;
     PatientInfoWidget *patientInfoWidget;
 
     void loadPatientInfo(PatientInfo &info);
+    /**
+     * @brief handleDischarge 解除病人后，刷新标志状态
+     */
+    void handleDischarge();
 
     bool patientNew;                 // 新建病人标志
     bool relieveFlag;                // 解除病人标志
@@ -275,11 +281,20 @@ void PatientManager::newPatient()
     dataStorageDirManager.createDir(true);
 }
 
-void PatientManager::dischargePatient()
+void PatientManager::dischargePatient(bool isShowStandbyWin)
 {
-    DischargePatientWindow dischargeWin;
-    connect(&dischargeWin, SIGNAL(finished(int)), this, SLOT(dischargeWinExit(int)));
-    dischargeWin.exec();
+    if (isShowStandbyWin)
+    {
+        DischargePatientWindow dischargeWin;
+        if (dischargeWin.exec() == QDialog::Accepted)
+        {
+            d_ptr->handleDischarge();
+        }
+    }
+    else
+    {
+        d_ptr->handleDischarge();
+    }
 }
 
 void PatientManager::finishPatientInfo()
@@ -329,11 +344,24 @@ void PatientManagerPrivate::loadPatientInfo(PatientInfo &info)
     ::strncpy(info.id, strValue.toUtf8().constData(), sizeof(info.id));
 }
 
+void PatientManagerPrivate::handleDischarge()
+{
+    if (relieveFlag)
+    {
+        relieveFlag = false;
+        q_ptr->newPatient();
+    }
+    else
+    {
+        // TODO 清除当前病人历史数据
+    }
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 PatientManager::PatientManager()
-    : d_ptr(new PatientManagerPrivate)
+    : d_ptr(new PatientManagerPrivate(this))
 {
     d_ptr->loadPatientInfo(d_ptr->patientInfo);
 }
