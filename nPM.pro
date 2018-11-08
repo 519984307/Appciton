@@ -53,6 +53,9 @@ DEFINES += CONFIG_CAPTURE_SCREEN
 #used by ECG algorithm team, default closed
 DEFINES += CONFIG_ECG_TEST
 
+#用于隐藏待机功能
+DEFINES += HIDE_STANDBY_FUNCTION
+
 
 # Depending libraries
 LIBS += -ldl -lasound -lz

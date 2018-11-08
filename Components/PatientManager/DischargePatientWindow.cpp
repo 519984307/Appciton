@@ -51,10 +51,11 @@ DischargePatientWindow::~DischargePatientWindow()
 void DischargePatientWindow::layoutExec()
 {
     setWindowTitle(trs("RelievePatient"));
-    setFixedSize(300, 180);
+    setFixedSize(400, 200);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(10);
+    layout->addStretch();
     QHBoxLayout *hlayout = new QHBoxLayout();
 
     d_ptr->standbyChk = new Button;
@@ -65,14 +66,22 @@ void DischargePatientWindow::layoutExec()
     d_ptr->standbyChk->setFixedSize(32, 32);
 
     QLabel *lbl = new QLabel;
+#ifndef HIDE_STANDBY_FUNCTION
     lbl->setText(trs("Standby"));
     lbl->setFixedWidth(100);
+#else
+    lbl->setText(trs("isRelievePatient"));
+#endif
+
     lbl->setAlignment(Qt::AlignCenter);
     hlayout->addStretch();
+#ifndef HIDE_STANDBY_FUNCTION
     hlayout->addWidget(d_ptr->standbyChk);
+#endif
     hlayout->addWidget(lbl);
     hlayout->addStretch();
     layout->addLayout(hlayout);
+    layout->addStretch();
 
     connect(d_ptr->standbyChk, SIGNAL(released()), this, SLOT(onBtnRelease()));
 
