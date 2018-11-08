@@ -190,12 +190,18 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
 
 
     // 监护模式状态机。
-    NIBPStateMachine *machine = new NIBPMonitorStateMachine();
-    _activityMachine = machine;
-    _machines.insert(machine->type(), machine);
+    if (!_machines.contains(NIBP_STATE_MACHINE_MONITOR))
+    {
+        NIBPStateMachine *machine = new NIBPMonitorStateMachine();
+        _activityMachine = machine;
+        _machines.insert(machine->type(), machine);
+    }
 
-    machine = new NIBPServiceStateMachine();
-    _machines.insert(machine->type(), machine);
+    if (!_machines.contains(NIBP_STATE_MACHINE_SERVICE))
+    {
+        NIBPStateMachine *machine = new NIBPServiceStateMachine();
+        _machines.insert(machine->type(), machine);
+    }
 
     if (_activityMachine->isExit())
     {
@@ -205,6 +211,11 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
     {
         // state machine might reentry while it is existing, don't enter again
         qdebug("Already in NIBP monitor state machine\n");
+    }
+
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        switchState(NIBP_SERVICE_STANDBY_STATE);
     }
 }
 
@@ -545,7 +556,10 @@ void NIBPParam::connectedFlag(bool flag)
     }
     else
     {
-        handleNIBPEvent(NIBP_EVENT_MODULE_ERROR, NULL, 0);
+        if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+        {
+            handleNIBPEvent(NIBP_EVENT_MODULE_ERROR, NULL, 0);
+        }
         //通信中断，清除所有报警，只产生通信中断报警
         nibpOneShotAlarm.clear();
         nibpOneShotAlarm.setOneShotAlarm(NIBP_ONESHOT_ALARM_MODULE_DISABLE, _isNIBPDisable);
