@@ -104,14 +104,14 @@ void NIBPParam::setConnected(bool isConnected)
 /**************************************************************************************************
  * 处理DEMO数据。
  *************************************************************************************************/
+static int counter = 300;
 void NIBPParam::handDemoTrendData(void)
 {
-    static int cnt = 300;
-    if (cnt++ < 300)
+    if (counter++ < 300)
     {
         return;
     }
-    cnt = 0;
+    counter = 0;
 
     _sysValue = qrand() % 30 + 90;
     _diaValue = qrand() % 20 + 60;
@@ -125,6 +125,7 @@ void NIBPParam::handDemoTrendData(void)
 
 void NIBPParam::exitDemo()
 {
+    counter = 300;
     _sysValue = InvData();
     _diaValue = InvData();
     _mapVaule = InvData();
