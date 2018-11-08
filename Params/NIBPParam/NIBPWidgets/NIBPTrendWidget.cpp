@@ -194,13 +194,8 @@ void NIBPTrendWidget::setCuffPressure(int p)
 {
     setShowStacked(1);
     UnitType unit = nibpParam.getUnit();
-    if (unit == UNIT_MMHG)
-    {
-        d_ptr->pressureString = QString::number(p);
-        return;
-    }
-
     d_ptr->pressureString = Unit::convert(unit, UNIT_MMHG, p);
+    d_ptr->pressureValue->setText(d_ptr->pressureString);
 }
 
 /**************************************************************************************************
