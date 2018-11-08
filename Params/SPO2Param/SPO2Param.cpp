@@ -229,6 +229,11 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider)
         _provider->setSmartTone(false);
     }
 
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        _waveWidget->setNotify(false, "");
+    }
+
     //查询状态
     _provider->sendStatus();
 
