@@ -116,6 +116,13 @@ void ScreenLayoutWindow::hideEvent(QHideEvent *ev)
     }
 }
 
+void ScreenLayoutWindow::showEvent(QShowEvent *ev)
+{
+    ScreenLayoutModel *model = qobject_cast<ScreenLayoutModel *>(d_ptr->view->model());
+    model->loadLayoutInfo();
+    Window::showEvent(ev);
+}
+
 void ScreenLayoutWindow::onButtonClicked()
 {
     Button *btn = qobject_cast<Button *>(sender());
