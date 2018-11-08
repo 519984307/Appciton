@@ -17,6 +17,7 @@
 #include "IMessageBox.h"
 #include "Button.h"
 #include "KeyInputPanel.h"
+#include "PatientManager.h"
 
 class UserMaintainGeneralMenuContentPrivate
 {
@@ -279,7 +280,7 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
                 if (oldStr != text)
                 {
                     button->setText(text);
-                    systemConfig.setStrValue("General|BedNumber", text);
+                    patientManager.setBedNum(text);
                 }
             }
             break;

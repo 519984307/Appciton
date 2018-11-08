@@ -35,6 +35,7 @@ void PatientInfoWidget::loadPatientInfo()
     }
     _patientName->setText(nameStr);
     _patientType->setText(typeStr);
+    _bed->setText(patientManager.getBedNum());
 }
 
 void PatientInfoWidget::_releaseHandle(IWidget *iWidget)
@@ -58,10 +59,7 @@ PatientInfoWidget::PatientInfoWidget(QWidget *parent) : IWidget("PatientInfoWidg
     _bed = new QLabel(this);
     _bed->setFont(fontManager.textFont(fontSize));
     _bed->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    QString bedNum = "";
-    systemConfig.getStrValue("General|BedNumber", bedNum);
-    QString bedStr = bedNum;
-    _bed->setText(bedStr);
+    _bed->setText(patientManager.getBedNum());
 
     _patientName = new QLabel(this);
     _patientName->setFont(fontManager.textFont(fontSize));

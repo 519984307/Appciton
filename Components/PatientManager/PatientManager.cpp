@@ -218,6 +218,19 @@ const char *PatientManager::getPatID()
     return d_ptr->patientInfo.id;
 }
 
+void PatientManager::setBedNum(const QString &bedNum)
+{
+    systemConfig.setStrValue("General|BedNumber", bedNum);
+    d_ptr->patientInfoWidget->loadPatientInfo();
+}
+
+const QString PatientManager::getBedNum()
+{
+    QString bedNumStr;
+    systemConfig.getStrValue("General|BedNumber", bedNumStr);
+    return bedNumStr;
+}
+
 /**************************************************************************************************
  * 功能： 获取名字的长度。
  *************************************************************************************************/
