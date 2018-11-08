@@ -55,7 +55,9 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", trs("eventReview"), "Summary1.png", SoftkeyActionBase::eventReview),
     KeyActionDesc("", trs("ChooseScreen"), "screenSwitch.png", SoftkeyActionBase::switchSystemMode),
     KeyActionDesc("", trs("ScreenSetup"), "interface.png",   SoftkeyActionBase::WindowLayout),
+#ifndef HIDE_PARAM_SWITCH
     KeyActionDesc("", trs("ParameterSwitch"), "paraSwitch.png"),
+#endif
     KeyActionDesc("", trs("DisableTouchScreen"), "lockScreen.png", SoftkeyActionBase::lockScreen),
 #ifndef HIDE_STANDBY_FUNCTION
     KeyActionDesc("", trs("Standby"), "standby.png", SoftkeyActionBase::standby),
