@@ -107,7 +107,7 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
     }
     if (NULL != _trendWidget)
     {
-        _trendWidget->setBarValue(data * 15 / 127);
+        _trendWidget->setBarValue(data * 15 / 255);
     }
     waveformCache.addData((WaveformID)id, data);
 }
@@ -428,7 +428,7 @@ void SPO2Param::addWaveformData(short wave)
     }
     if (NULL != _trendWidget)
     {
-        _trendWidget->setBarValue(wave * 15 / 127);
+        _trendWidget->setBarValue(wave * 15 / 255);
     }
     waveformCache.addData(WAVE_SPO2, (flag << 16) | wave);
 }
