@@ -17,6 +17,7 @@
 #include "Button.h"
 #include "LanguageManager.h"
 #include "LayoutManager.h"
+#include "MessageBox.h"
 
 class BigFontLayoutWindowPrivate
 {
@@ -51,6 +52,29 @@ BigFontLayoutWindow::~BigFontLayoutWindow()
     delete d_ptr;
 }
 
+void BigFontLayoutWindow::hideEvent(QHideEvent *ev)
+{
+    Window::hideEvent(ev);
+    BigFontLayoutModel *model = qobject_cast<BigFontLayoutModel*>(d_ptr->tableView->model());
+    if (model->isChangeLayoutInfo())
+    {
+        MessageBox message(trs("Prompt"), trs("isSaveLayout"));
+        int ret = message.exec();
+        if (ret == QDialog::Accepted)
+        {
+            model->saveLayoutInfo();
+            layoutManager.updateLayout();
+        }
+    }
+}
+
+void BigFontLayoutWindow::showEvent(QShowEvent *ev)
+{
+    BigFontLayoutModel *model = qobject_cast<BigFontLayoutModel *>(d_ptr->tableView->model());
+    model->loadLayoutInfo();
+    Window::showEvent(ev);
+}
+
 void BigFontLayoutWindow::onButtonClicked()
 {
     Button *btn = qobject_cast<Button *>(sender());
@@ -69,6 +93,10 @@ void BigFontLayoutWindow::onButtonClicked()
         model->saveLayoutInfo();
         layoutManager.updateLayout();
         this->close();
+    }
+    else if (btn == d_ptr->defaultBtn)
+    {
+        model->loadLayoutInfo(true);
     }
 }
 

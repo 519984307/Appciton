@@ -44,13 +44,22 @@ public:
 
     /**
      * @brief loadLayoutInfo 从配置表中加载布局信息
+     * @param isDefaultConfig 是否从默认配置表中获取信息，
+     *                        true: 从默认配置表（system.original.xml）中获取信息
+     *                        false: 从系统配置表（system.xml）中获取信息
      */
-    void loadLayoutInfo();
+    void loadLayoutInfo(bool isDefaultConfig = false);
 
     /**
      * @brief updateWaveAndParamInfo  更新波形和参数信息
      */
     void updateWaveAndParamInfo();
+
+    /**
+     * @brief isChangeLayoutInfo 是否修改过布局
+     * @return
+     */
+    bool isChangeLayoutInfo();
 
 signals:
     /**
