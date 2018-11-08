@@ -92,13 +92,13 @@ QList<RecordWaveSegmentInfo> ContinuousPageGeneratorPrivate::getPrintWaveInfos()
     QList<WaveformID> waves;
 
     // 打印波形信息更新为从配置文件中选择型的方式
-    int index[PRINT_WAVE_NUM] = {0};
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
         QString path;
+        int w = WAVE_NONE;
         path = QString("Print|SelectWave%1").arg(i + 1);
-        systemConfig.getNumValue(path, index[i]);
-        waves.append(static_cast<WaveformID>(index[i]));
+        systemConfig.getNumValue(path, w);
+        waves.append(static_cast<WaveformID>(w));
     }
 
     return RecordPageGenerator::getWaveInfos(waves);

@@ -1919,6 +1919,7 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
             break;
         }
         default:
+            continue;
             break;
         }
 
