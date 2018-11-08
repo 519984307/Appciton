@@ -144,7 +144,10 @@ QVariant TitrateTableModel::data(const QModelIndex &index, int role) const
         break;
 
     case Qt::SizeHintRole:
-        return QSize(10, ROW_HEIGHT_HINT);
+    {
+        int w = d_ptr->viewWidth / COLUMN_NR;
+        return QSize(w, ROW_HEIGHT_HINT);
+    }
         break;
     default:
         break;
@@ -203,7 +206,7 @@ QVariant TitrateTableModel::headerData(int section, Qt::Orientation orientation,
     case Qt::SizeHintRole:
         if (orientation == Qt::Horizontal)
         {
-            int w = d_ptr->viewWidth / (COLUMN_NR + 1);
+            int w = d_ptr->viewWidth / (COLUMN_NR);
             return QSize(w, HEADER_HEIGHT_HINT);
         }
         break;

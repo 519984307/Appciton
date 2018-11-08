@@ -104,6 +104,8 @@ FreezeWindow::FreezeWindow()
     layout->addLayout(hl, 1, 0);
     layout->setRowStretch(2, 1);
     setWindowLayout(layout);
+    // 加大宽度，使得英文‘Waveform Move’可以完全显示
+    setFixedWidth(480);
 }
 
 FreezeWindow::~FreezeWindow()

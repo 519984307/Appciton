@@ -136,11 +136,12 @@ void TitrateTableWindow::layoutExecIt()
     TableHeaderView *hor = new TableHeaderView(Qt::Horizontal);
     d_ptr->titrateTable->setHorizontalHeader(hor);
     d_ptr->titrateTable->horizontalHeader()->setClickable(false);
+    d_ptr->titrateTable->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
     d_ptr->titrateTable->verticalHeader()->setHidden(true);
     d_ptr->titrateTable->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
     d_ptr->titrateTable->setFixedHeight(d_ptr->model->getHeaderHeightHint()
                                         + d_ptr->model->getRowHeightHint() * TABLE_ROW_NUM);
-    d_ptr->titrateTable->setFixedWidth(600);
+    d_ptr->titrateTable->setFixedWidth(770);
     d_ptr->model = new TitrateTableModel;
     d_ptr->titrateTable->setModel(d_ptr->model);
     d_ptr->titrateTable->setItemDelegate(new TableViewItemDelegate(this));
