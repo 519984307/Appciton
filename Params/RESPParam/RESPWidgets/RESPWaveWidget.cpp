@@ -77,7 +77,7 @@ RESPWaveWidget::RESPWaveWidget(const QString &waveName, const QString &title)
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
     setPalette(palette);
 
-    int infoFont = 14;
+    int infoFont = fontManager.getFontSize(4);;
     int fontH = fontManager.textHeightInPixels(fontManager.textFont(infoFont)) + 4;
     _name->setFixedSize(130, fontH);
     _name->setFont(fontManager.textFont(infoFont));
