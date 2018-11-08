@@ -416,13 +416,12 @@ void MasimoSetProvider::handlePacket(unsigned char *data, int /*len*/)
     // 接收PLE波形。
     char pleWaveformValue = 0;
     pleWaveformValue = data[3];
-    spo2Param.addWaveformData(100 - (unsigned char)(pleWaveformValue + 128) / 3);
+    short wave = 100 - (unsigned char)(pleWaveformValue + 128) / 3;
+    spo2Param.addWaveformData(wave);
 //    spo2Param.addWaveformData(128 - pleWaveformValue);
 
     // 棒图，使用PLETH为原始数据。
-    unsigned char barData;
-    barData = data[3];
-    spo2Param.addBarData(barData / 15);
+    spo2Param.addBarData(wave * 15 / 255);
 
     // BEEP音。
     if ((data[4] != 0) && !(data[4] & 0x80))
