@@ -740,7 +740,7 @@ SPO2Param::SPO2Param() : Param(PARAM_SPO2),
     _piValue = InvData();
     _prValue = InvData();
     _barValue = InvData();
-    _isValid = true;
+    _isValid = false;
     _sensorOff = true;
     _recPackageInPowerOn2sec = 0;
 
