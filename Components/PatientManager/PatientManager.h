@@ -149,6 +149,13 @@ public:
     const char *getPatID(void);
 
     /**
+     * @brief setBedNum 设置病床号
+     * @param bedNum
+     */
+    void setBedNum(const QString &bedNum);
+    const QString getBedNum();
+
+    /**
      * @brief getNameLength 获取名字的长度。
      * @return
      */
