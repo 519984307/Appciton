@@ -57,7 +57,7 @@ static KeyActionDesc _baseKeys[] =
     KeyActionDesc("", trs("ScreenSetup"), "interface.png",   SoftkeyActionBase::WindowLayout),
     KeyActionDesc("", trs("ParameterSwitch"), "paraSwitch.png"),
     KeyActionDesc("", trs("DisableTouchScreen"), "lockScreen.png", SoftkeyActionBase::lockScreen),
-    KeyActionDesc("", trs("Standby"), "standby.png", SoftkeyActionBase::standby),
+//    KeyActionDesc("", trs("Standby"), "standby.png", SoftkeyActionBase::standby),
     KeyActionDesc("", trs("CO2ZeroCalib"), "calib.png", SoftkeyActionBase::CO2Zero),
     KeyActionDesc("", trs("CO2Standby"), "standby.png", SoftkeyActionBase::CO2Handle),
     KeyActionDesc("", trs("IBPZeroCalib"), "calib.png", SoftkeyActionBase::IBPZero),

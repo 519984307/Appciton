@@ -235,8 +235,8 @@ void NormalFunctionMenuContent::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_BTN_ENTER_STANDY);
     btn->setProperty("Item", qVariantFromValue(itemID));
-    layout->addWidget(btn, row, 1);
-    row++;
+//    layout->addWidget(btn, row, 1);
+//    row++;
 
     // night mode
     btn = new Button(trs("NightMode"));

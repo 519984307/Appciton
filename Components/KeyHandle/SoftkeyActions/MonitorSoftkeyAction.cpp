@@ -31,7 +31,7 @@ static KeyActionDesc _monitorKeys[] =
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_WINDOWLAYOUT),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_PARA_SWITCH),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_SCREEN_BAN),
-    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_STANDBY),
+//    KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_STANDBY),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_CO2_CALIBRATION),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_CO2_HANDLE),
     KeyActionDesc("", "", "", NULL, SOFT_BASE_KEY_IBP_CALIBRATION),
