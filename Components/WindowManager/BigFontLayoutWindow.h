@@ -23,6 +23,13 @@ public:
     static BigFontLayoutWindow *getInstance();
     ~BigFontLayoutWindow();
 
+protected:
+    /*reimplement*/
+    void hideEvent(QHideEvent *ev);
+
+    /*reimplement*/
+    void showEvent(QShowEvent *);
+
 private slots:
     void onButtonClicked();
 private:

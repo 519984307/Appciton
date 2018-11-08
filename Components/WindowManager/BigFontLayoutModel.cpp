@@ -34,7 +34,8 @@ class BigFontLayoutModelPrivate
 {
 public:
     BigFontLayoutModelPrivate()
-        : demoProvider(NULL)
+        : demoProvider(NULL),
+          isChangeData(false)
     {
         demoProvider = qobject_cast<DemoProvider *>(paramManager.getProvider("DemoProvider"));
     }
@@ -97,6 +98,8 @@ public:
     OrderedMap<QString, ParamNodeDescription> paramNodeDescriptions;     // store param node's description
     QVector<LayoutRow *> layoutNodes;
     QMap<WaveformID, QByteArray> waveCaches;
+
+    bool isChangeData;
 };
 
 BigFontLayoutModel::BigFontLayoutModel(QObject *parent)
@@ -149,6 +152,7 @@ bool BigFontLayoutModel::setData(const QModelIndex &index, const QVariant &value
                 anotherIndex = waveIndex;
             }
             emit dataChanged(index, anotherIndex);
+            d_ptr->isChangeData = true;
         }
         break;
     }
@@ -168,6 +172,7 @@ bool BigFontLayoutModel::setData(const QModelIndex &index, const QVariant &value
                 waveNode->name = QString();
             }
             emit dataChanged(index, anotherIndex);
+            d_ptr->isChangeData = true;
         }
         break;
     }
@@ -361,14 +366,33 @@ QSize BigFontLayoutModel::span(const QModelIndex &index) const
 void BigFontLayoutModel::saveLayoutInfo()
 {
     systemConfig.setConfig("PrimaryCfg|UILayout|ContentLayout|BigFont", d_ptr->getLayoutMap());
+    d_ptr->isChangeData = false;
 }
 
-void BigFontLayoutModel::loadLayoutInfo()
+void BigFontLayoutModel::loadLayoutInfo(bool isDefaultConfig)
 {
-    const QVariantMap config = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|BigFont");
+
+    QVariantMap config;
+    if (isDefaultConfig)
+    {
+        Config defalutConfig(ORGINAL_SYSTEM_CFG_FILE);
+        config = defalutConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|BigFont");
+    }
+    else
+    {
+        config = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|BigFont");
+    }
+
+    QVariantMap oldMap = d_ptr->getLayoutMap();
     beginResetModel();
     d_ptr->loadLayoutFromConfig(config);
     endResetModel();
+    QVariantMap newMap = d_ptr->getLayoutMap();
+
+    if (oldMap != newMap && isDefaultConfig)
+    {
+        d_ptr->isChangeData = true;
+    }
 
     int row = rowCount();
     int column = columnCount();
@@ -388,6 +412,11 @@ void BigFontLayoutModel::loadLayoutInfo()
 void BigFontLayoutModel::updateWaveAndParamInfo()
 {
     d_ptr->loadItemInfos();
+}
+
+bool BigFontLayoutModel::isChangeLayoutInfo()
+{
+    return d_ptr->isChangeData;
 }
 
 LayoutNode *BigFontLayoutModelPrivate::findNode(const QModelIndex &index)
@@ -555,6 +584,7 @@ void BigFontLayoutModelPrivate::clearAllLayoutNodes()
     }
     qDeleteAll(layoutNodes);
     layoutNodes.clear();
+    isChangeData = false;
 }
 
 void BigFontLayoutModelPrivate::loadLayoutFromConfig(const QVariantMap &config)
