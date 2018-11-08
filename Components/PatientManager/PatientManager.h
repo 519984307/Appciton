@@ -149,6 +149,13 @@ public:
     const char *getPatID(void);
 
     /**
+     * @brief setBedNum 设置病床号
+     * @param bedNum
+     */
+    void setBedNum(const QString &bedNum);
+    const QString getBedNum();
+
+    /**
      * @brief getNameLength 获取名字的长度。
      * @return
      */
@@ -197,8 +204,9 @@ public:
 
     /**
      * @brief dischargePatient 解除病人
+     * @param isShowStandbyWin 是否显示待机窗口
      */
-    void dischargePatient();
+    void dischargePatient(bool isShowStandbyWin = true);
 
     /**
      * @brief finishPatientInfo 完成病人信息处理

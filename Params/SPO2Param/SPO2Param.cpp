@@ -107,7 +107,7 @@ void SPO2Param::handDemoWaveform(WaveformID id, short data)
     }
     if (NULL != _trendWidget)
     {
-        _trendWidget->setBarValue(data * 15 / 127);
+        _trendWidget->setBarValue(data * 15 / 255);
     }
     waveformCache.addData((WaveformID)id, data);
 }
@@ -227,6 +227,11 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider)
         _provider->setSensitivityFastSat(SPO2_MASIMO_SENS_NORMAL, false);
         _provider->setAverageTime(SPO2_AVER_TIME_8SEC);
         _provider->setSmartTone(false);
+    }
+
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        _waveWidget->setNotify(false, "");
     }
 
     //查询状态
@@ -428,7 +433,7 @@ void SPO2Param::addWaveformData(short wave)
     }
     if (NULL != _trendWidget)
     {
-        _trendWidget->setBarValue(wave * 15 / 127);
+        _trendWidget->setBarValue(wave * 15 / 255);
     }
     waveformCache.addData(WAVE_SPO2, (flag << 16) | wave);
 }
@@ -740,7 +745,7 @@ SPO2Param::SPO2Param() : Param(PARAM_SPO2),
     _piValue = InvData();
     _prValue = InvData();
     _barValue = InvData();
-    _isValid = true;
+    _isValid = false;
     _sensorOff = true;
     _recPackageInPowerOn2sec = 0;
 

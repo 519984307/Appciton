@@ -23,7 +23,7 @@ ParamInfo *ParamInfo::_selfObj = NULL;
  *************************************************************************************************/
 static const char *_paramNames[PARAM_NR] =
 {
-    "ECG", "SPO2", "RESP", "NIBP", "CO2", "TEMP", "ECGDUP", "RESPDUP", "IBP", "AG", "CO"
+    "ECG", "SPO2", "RESP", "NIBP", "CO2", "TEMP", "ECGDUP", "RESPDUP", "IBP", "AG", "CO", "UPGRADE"
 };
 
 /**************************************************************************************************
@@ -214,6 +214,11 @@ static const char *_subDupParamNames[SUB_DUP_PARAM_NR] =
  *************************************************************************************************/
 const char *ParamInfo::getParamName(ParamID id)
 {
+    if (id < PARAM_ECG || id >= PARAM_NR)
+    {
+        return NULL;
+    }
+
     return _paramNames[id];
 }
 

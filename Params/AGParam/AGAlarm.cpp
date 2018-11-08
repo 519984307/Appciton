@@ -14,6 +14,7 @@
 #include "AlarmConfig.h"
 #include "AGParam.h"
 #include "FloatHandle.h"
+#include "SystemManager.h"
 
 AGLimitAlarm *AGLimitAlarm::_selfObj = NULL;
 
@@ -415,6 +416,11 @@ AlarmType AGOneShotAlarm::getAlarmType(int id)
  *************************************************************************************************/
 bool AGOneShotAlarm::isAlarmed(int id)
 {
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    {
+        return false;
+    }
+
     return AlarmOneShotIFace::isAlarmed(id);
 }
 

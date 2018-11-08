@@ -380,6 +380,7 @@ PatientCreate,新建病人,Create Patient
 FastReceivingPatients,快速接收病人,Fast Receiving Patients
 ReceivingPatients,接收病人,Receiving Patients
 RelievePatient,解除病人,Discharge Patient
+isRelievePatient,是否解除病人,Whether to discharge patient
 CleanPatientData,清除病人数据,Clean Patient Data
 WhetherStandby,是否进入待机？,Whether to enter the standby machine？
 RemoveAndRecePatient,"解除当前病人,接收新病人?",Relieving the current patient and receiving new patients?
@@ -552,12 +553,14 @@ SPO2Low,血氧低,SPO2 Low
 SPO2High,血氧高,SPO2 High
 SPO2PRLow,脉率低,PR Low
 SPO2PRHigh,脉率高,PR High
+SPO2PulseSearch,脉搏搜索中,SPO2 Pulse Search
 SPO2SensorOff,血氧传感器脱落,SPO2 Sensor Off
 SPO2CheckSensor,检查血氧传感器探头,SPO2 Check Sensor
 SPO2SearchPulseTooLong,血氧脉搏搜索时间过长,SPO2 Search Pulse Too Long
 SPO2SearchingPulse,血氧脉搏搜索,SPO2 Searching Pulse
 SPO2CommunicationStop,SPO2通讯停止,SPO2 Communication Stop
 SPO2ProbeFault,血氧探头故障,SPO2 Probe Fault
+SPO2SignalSaturation,SPO2信号饱和,SPO2 Signal Saturation
 CO2EtCO2Low,EtCO2 低,EtCO2 Low
 CO2EtCO2High,EtCO2 高,EtCO2 High
 CO2FiCO2Low,FiCO2 低,FiCO2 Low

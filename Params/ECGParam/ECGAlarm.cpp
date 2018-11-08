@@ -134,6 +134,11 @@ QString ECGOneShotAlarm::getAlarmSourceName(void)
  *************************************************************************************************/
 bool ECGOneShotAlarm::isAlarmed(int id)
 {
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    {
+        return false;
+    }
+
     if (id >= ECG_ONESHOT_ALARM_LEADOFF && id <= ECG_ONESHOT_ALARM_V6_LEADOFF)
     {
         switch (id)

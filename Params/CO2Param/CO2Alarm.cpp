@@ -359,6 +359,11 @@ bool CO2OneShotAlarm::isAlarmEnable(int id)
  *************************************************************************************************/
 bool CO2OneShotAlarm::isAlarmed(int id)
 {
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    {
+        return false;
+    }
+
     if (id != CO2_ONESHOT_ALARM_APNEA)
     {
         if (!co2Param.isConnected() || !co2Param.getCO2Switch())

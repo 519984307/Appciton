@@ -235,8 +235,10 @@ void NormalFunctionMenuContent::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
     itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_BTN_ENTER_STANDY);
     btn->setProperty("Item", qVariantFromValue(itemID));
+#ifndef HIDE_STANDBY_FUNCTION
     layout->addWidget(btn, row, 1);
     row++;
+#endif
 
     // night mode
     btn = new Button(trs("NightMode"));
@@ -359,7 +361,7 @@ void NormalFunctionMenuContent::onBtnReleasd()
                 systemManager.setWorkMode(WORK_MODE_NORMAL);
                 d_ptr->demoBtn->setText(trs("DemoMode"));
                 windowManager.closeAllWidows();
-                patientManager.dischargePatient();
+                patientManager.dischargePatient(false);
                 break;
             }
 

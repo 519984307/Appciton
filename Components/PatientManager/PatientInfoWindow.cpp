@@ -233,9 +233,7 @@ void PatientInfoWindowPrivate::loadOptions()
         buttons[ITEM_BTN_PATIENT_WEIGHT]->setText("");
     }
     buttons[ITEM_BTN_PATIENT_ID]->setText(patientManager.getPatID());
-    QString bedNumStr;
-    systemConfig.getStrValue("General|BedNumber", bedNumStr);
-    bedNum->setText(bedNumStr);
+    bedNum->setText(patientManager.getBedNum());
 
     UnitType oldHeightType = heightType;
     heightType = patientManager.getHeightUnit();

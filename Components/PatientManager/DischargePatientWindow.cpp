@@ -51,10 +51,11 @@ DischargePatientWindow::~DischargePatientWindow()
 void DischargePatientWindow::layoutExec()
 {
     setWindowTitle(trs("RelievePatient"));
-    setFixedSize(300, 180);
+    setFixedSize(400, 200);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->setMargin(10);
+    layout->addStretch();
     QHBoxLayout *hlayout = new QHBoxLayout();
 
     d_ptr->standbyChk = new Button;
@@ -65,14 +66,22 @@ void DischargePatientWindow::layoutExec()
     d_ptr->standbyChk->setFixedSize(32, 32);
 
     QLabel *lbl = new QLabel;
+#ifndef HIDE_STANDBY_FUNCTION
     lbl->setText(trs("Standby"));
     lbl->setFixedWidth(100);
+#else
+    lbl->setText(trs("isRelievePatient"));
+#endif
+
     lbl->setAlignment(Qt::AlignCenter);
     hlayout->addStretch();
+#ifndef HIDE_STANDBY_FUNCTION
     hlayout->addWidget(d_ptr->standbyChk);
+#endif
     hlayout->addWidget(lbl);
     hlayout->addStretch();
     layout->addLayout(hlayout);
+    layout->addStretch();
 
     connect(d_ptr->standbyChk, SIGNAL(released()), this, SLOT(onBtnRelease()));
 
@@ -124,16 +133,8 @@ void DischargePatientWindow::onBtnRelease()
     }
     else if (btn == d_ptr->yesBtn)
     {
+        this->accept();
         windowManager.closeAllWidows();
-        if (patientManager.isMonitoring())
-        {
-            patientManager.setMonitor(false);
-            patientManager.newPatient();
-        }
-        else
-        {
-            // TODO 清除当前病人历史数据
-        }
         if (d_ptr->isStandby)
         {
             StandbyWindow standyWin;
@@ -142,7 +143,7 @@ void DischargePatientWindow::onBtnRelease()
     }
     else if (btn == d_ptr->noBtn)
     {
-        this->close();
+        this->reject();
     }
 }
 

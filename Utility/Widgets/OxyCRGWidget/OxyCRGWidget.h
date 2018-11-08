@@ -69,17 +69,6 @@ private slots:
     void onIntervalChanged(int);
 
     /**
-     * @brief onCompressWaveChanged handle the compress wave changed issue
-     */
-    void onCompressWaveChanged(int);
-
-    /**
-     * @brief onCompressWaveClicked on compress wave clicked
-     * @param widget
-     */
-    void onCompressWaveClicked(IWidget *widget);
-
-    /**
      * @brief onIntervalClicked handle interval label click
      * @param widget
      */
@@ -90,6 +79,18 @@ private slots:
      * @param widget
      */
     void onSetupClicked(IWidget *widget);
+
+    /**
+     * @brief onEventClicked slot of the event label click signal
+     * @param widget
+     */
+    void onEventClicked(IWidget *widget);
+
+    /**
+     * @brief onRecordClicked slot of the record label click signal
+     * @param widget
+     */
+    void onRecordClicked(IWidget *widget);
 
     /**
      * @brief _autoSetRuler  自动设置标尺槽函数

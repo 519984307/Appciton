@@ -234,6 +234,13 @@ void EventWindow::showEvent(QShowEvent *ev)
     {
         d_ptr->eventTable->setFocusPolicy(Qt::StrongFocus);
     }
+
+    int curScroller = d_ptr->eventTable->verticalScrollBar()->value();
+    int maxValue = d_ptr->eventTable->verticalScrollBar()->maximum();
+    bool hasBtn = curScroller > 0;
+    d_ptr->upPageBtn->setEnabled(hasBtn);
+    hasBtn = curScroller < maxValue;
+    d_ptr->downPageBtn->setEnabled(hasBtn);
 }
 
 void EventWindow::waveInfoReleased(QModelIndex index)
@@ -261,12 +268,28 @@ void EventWindow::eventTypeSelect(int index)
 {
     d_ptr->curEventType = (EventType)index;
     d_ptr->loadEventData();
+    if (d_ptr->dataIndex.count())
+    {
+        d_ptr->eventTable->setFocusPolicy(Qt::StrongFocus);
+    }
+    else
+    {
+        d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
+    }
 }
 
 void EventWindow::eventLevelSelect(int index)
 {
     d_ptr->curEventLevel = (EventLevel)index;
     d_ptr->loadEventData();
+    if (d_ptr->dataIndex.count())
+    {
+        d_ptr->eventTable->setFocusPolicy(Qt::StrongFocus);
+    }
+    else
+    {
+        d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
+    }
 }
 
 void EventWindow::upPageReleased()

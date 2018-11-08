@@ -357,6 +357,16 @@ bool NIBPOneShotAlarm::isRemoveAfterLatch(int id)
     }
 }
 
+bool NIBPOneShotAlarm::isAlarmed(int id)
+{
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    {
+        return false;
+    }
+
+    return AlarmOneShotIFace::isAlarmed(id);
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/

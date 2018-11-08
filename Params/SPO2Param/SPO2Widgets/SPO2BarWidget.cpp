@@ -52,18 +52,15 @@ void SPO2BarWidget::setCellHeight(int cellHeight)
  *************************************************************************************************/
 void SPO2BarWidget::setValue(int value, bool isValid)
 {
-    if ((_minValue >= _maxValue) || (value > _maxValue) || (value < _minValue))
-    {
-        return;
-    }
     // 计算当前显示单元的最大索引
-    if (isValid)
+    if ((_minValue >= _maxValue) || (value > _maxValue) || (value < _minValue)
+            || !isValid)
     {
-        _curShowCellMaxIndex = _cellNumber * (value - _minValue) / (_maxValue - _minValue);
+        _curShowCellMaxIndex = 0;
     }
     else
     {
-        _curShowCellMaxIndex = 0;
+        _curShowCellMaxIndex = _cellNumber * (value - _minValue) / (_maxValue - _minValue);
     }
 
     // 显示单元数没有变化时，不需要刷新

@@ -107,6 +107,7 @@ public:
         }
         qDeleteAll(layoutNodes);
         layoutNodes.clear();
+        isChangeData = false;
     }
 
     /**
@@ -851,9 +852,18 @@ void ScreenLayoutModel::loadLayoutInfo(bool isDefaultConfig)
         config = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|Normal");
     }
 
+    QVariantMap oldMap = d_ptr->getLayoutMap();
+
     beginResetModel();
     d_ptr->loadLayoutFromConfig(config);
     endResetModel();
+
+    QVariantMap newMap = d_ptr->getLayoutMap();
+    if (oldMap != newMap && isDefaultConfig)
+    {
+        // 判断默认恢复后且有更改过数据
+        d_ptr->isChangeData = true;
+    }
 
     // load the item's row span
     int row = rowCount();

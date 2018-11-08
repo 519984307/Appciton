@@ -74,7 +74,6 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     QGroupBox *groupBox = new QGroupBox(trs("TrendWaveSelect"));
     QGridLayout *layout = new QGridLayout();
     layout->setMargin(10);
-    int configIndex;
     QHBoxLayout *hlsub;
 
     int comboIndex = 0;
@@ -92,9 +91,6 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     d_ptr->trend1 = combo;
     layoutIndex++;
     comboIndex++;
-    configIndex = 0;
-    currentConfig.getNumValue("OxyCRG|Trend1", configIndex);
-    combo->setCurrentIndex(configIndex);
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
 
     // trend2
@@ -121,10 +117,6 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     d_ptr->wave = combo;
     layoutIndex++;
     comboIndex++;
-    configIndex = 0;
-    currentConfig.getNumValue("OxyCRG|Wave", configIndex);
-    d_ptr->waveTypeIndex = configIndex;
-    combo->setCurrentIndex(configIndex);
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
 
     groupBox->setLayout(layout);
@@ -164,9 +156,6 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     d_ptr->hrLow = combo;
     layoutIndexTwo++;
     comboIndex++;
-    configIndex = 0;
-    currentConfig.getNumValue("OxyCRG|Ruler|HRLow", configIndex);
-    combo->setCurrentIndex(configIndex);
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
 
     // hr high
@@ -186,9 +175,6 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     d_ptr->hrHigh = combo;
     layoutIndexTwo++;
     comboIndex++;
-    configIndex = 0;
-    currentConfig.getNumValue("OxyCRG|Ruler|HRHigh", configIndex);
-    combo->setCurrentIndex(configIndex);
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
 
     vlSub->addLayout(layout);
@@ -221,9 +207,6 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     d_ptr->rrLow = combo;
     layoutIndexThree++;
     comboIndex++;
-    configIndex = 0;
-    currentConfig.getNumValue("OxyCRG|Ruler|RRLow", configIndex);
-    combo->setCurrentIndex(configIndex);
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
 
     // hr high
@@ -241,15 +224,7 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     d_ptr->rrHigh = combo;
     layoutIndexThree++;
     comboIndex++;
-    configIndex = 0;
-    currentConfig.getNumValue("OxyCRG|Ruler|RRHigh", configIndex);
-    combo->setCurrentIndex(configIndex);
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
-    if (configIndex == 0)
-    {
-        d_ptr->rrLow->setEnabled(false);
-        d_ptr->rrLow->setCurrentIndex(0);
-    }
     vlSub->addLayout(layout);
     hl->addLayout(vlSub);
 
@@ -283,9 +258,6 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     d_ptr->spo2Low = combo;
     layoutIndexFour++;
     comboIndex++;
-    configIndex = 0;
-    currentConfig.getNumValue("OxyCRG|Ruler|SPO2Low", configIndex);
-    combo->setCurrentIndex(configIndex);
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
 
     // spo2 high
@@ -343,9 +315,6 @@ OxyCRGSetupWindow::OxyCRGSetupWindow()
     combo->setProperty("Item", qVariantFromValue(comboIndex));
     d_ptr->co2High = combo;
     layoutIndexFive++;
-    configIndex = 0;
-    currentConfig.getNumValue("OxyCRG|Ruler|CO2High", configIndex);
-    combo->setCurrentIndex(configIndex);
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboUpdated(int)));
     vlSub->addLayout(layout);
     hl->addLayout(vlSub);
@@ -417,6 +386,35 @@ void OxyCRGSetupWindow::showEvent(QShowEvent *ev)
     currentConfig.getNumValue("OxyCRG|Wave", index);
     d_ptr->wave->setCurrentIndex(index);
     d_ptr->waveTypeIndex = index;
+
+    index = 0;
+    currentConfig.getNumValue("OxyCRG|Ruler|HRLow", index);
+    d_ptr->hrLow->setCurrentIndex(index);
+
+    index = 0;
+    currentConfig.getNumValue("OxyCRG|Ruler|HRHigh", index);
+    d_ptr->hrHigh->setCurrentIndex(index);
+
+    index = 0;
+    currentConfig.getNumValue("OxyCRG|Ruler|RRLow", index);
+    d_ptr->rrLow->setCurrentIndex(index);
+
+    index = 0;
+    currentConfig.getNumValue("OxyCRG|Ruler|RRHigh", index);
+    d_ptr->rrHigh->setCurrentIndex(index);
+    if (index == 0)
+    {
+        d_ptr->rrLow->setEnabled(false);
+        d_ptr->rrLow->setCurrentIndex(0);
+    }
+
+    index = 0;
+    currentConfig.getNumValue("OxyCRG|Ruler|SPO2Low", index);
+    d_ptr->spo2Low->setCurrentIndex(index);
+
+    index = 0;
+    currentConfig.getNumValue("OxyCRG|Ruler|CO2High", index);
+    d_ptr->co2High->setCurrentIndex(index);
 }
 
 void OxyCRGSetupWindow::onComboUpdated(int index)

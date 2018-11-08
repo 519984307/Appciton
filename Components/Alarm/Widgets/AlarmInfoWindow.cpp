@@ -85,12 +85,6 @@ AlarmInfoWindow::~AlarmInfoWindow()
 void AlarmInfoWindow::updateData(bool isShowFirstPage)
 {
     int total = alarmIndicator.getAlarmCount();
-    if (total <= 1)
-    {
-        d_ptr->totalList = total;
-        hide();
-        return;
-    }
 
     d_ptr->totalList = total;
     if (isShowFirstPage)
