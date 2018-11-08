@@ -12,6 +12,7 @@
 #include "ParamInfo.h"
 #include "AlarmConfig.h"
 #include "IBPParam.h"
+#include "SystemManager.h"
 
 IBPLimitAlarm *IBPLimitAlarm::_selfObj = NULL;
 
@@ -646,6 +647,11 @@ AlarmType IBPOneShotAlarm::getAlarmType(int id)
  *************************************************************************************************/
 bool IBPOneShotAlarm::isAlarmed(int id)
 {
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    {
+        return false;
+    }
+
     if (id == IBP1_LEAD_OFF)
     {
         return  ibpParam.getIBPLeadOff(IBP_INPUT_1);

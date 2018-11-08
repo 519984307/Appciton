@@ -6,6 +6,7 @@
 #include "RESPParam.h"
 #include "RESPDupParam.h"
 #include "AlarmConfig.h"
+#include "SystemManager.h"
 
 RESPLimitAlarm *RESPLimitAlarm::_selfObj = NULL;
 
@@ -226,6 +227,16 @@ bool RESPOneShotAlarm::isAlarmEnable(int id)
 bool RESPOneShotAlarm::isRemoveAfterLatch(int /*id*/)
 {
     return false;
+}
+
+bool RESPOneShotAlarm::isAlarmed(int id)
+{
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    {
+        return false;
+    }
+
+    AlarmOneShotIFace::isAlarmed(id);
 }
 
 /**************************************************************************************************

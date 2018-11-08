@@ -2,6 +2,7 @@
 #include "ParamInfo.h"
 #include "AlarmConfig.h"
 #include "COParam.h"
+#include "SystemManager.h"
 
 COLimitAlarm *COLimitAlarm::_selfObj = NULL;
 
@@ -251,6 +252,11 @@ AlarmType COOneShotAlarm::getAlarmType(int /*id*/)
  *************************************************************************************************/
 bool COOneShotAlarm::isAlarmed(int id)
 {
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    {
+        return false;
+    }
+
     return AlarmOneShotIFace::isAlarmed(id);
 }
 

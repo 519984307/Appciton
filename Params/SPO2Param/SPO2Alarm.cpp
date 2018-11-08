@@ -14,6 +14,7 @@
 #include "SPO2Symbol.h"
 #include "PatientManager.h"
 #include "AlarmConfig.h"
+#include "SystemManager.h"
 
 SPO2LimitAlarm *SPO2LimitAlarm::_selfObj = NULL;
 
@@ -229,6 +230,11 @@ AlarmType SPO2OneShotAlarm::getAlarmType(int id)
  *************************************************************************************************/
 bool SPO2OneShotAlarm::isAlarmed(int id)
 {
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO && getAlarmType(id) == ALARM_TYPE_TECH)
+    {
+        return false;
+    }
+
     if (id == SPO2_ONESHOT_ALARM_CHECK_SENSOR)
     {
         return AlarmOneShotIFace::isAlarmed(id) && spo2Param.getEverCheckFinger();

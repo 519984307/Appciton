@@ -107,6 +107,9 @@ public:
     // remove alarm message after latch
     virtual bool isRemoveAfterLatch(int id);
 
+    /* reimplement */
+    virtual bool isAlarmed(int id);
+
     // 构造与析构。
     virtual ~RESPOneShotAlarm();
 
