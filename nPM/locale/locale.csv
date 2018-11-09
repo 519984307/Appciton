@@ -1096,6 +1096,8 @@ DrugTotal,药物总量,Drug Total
 LiquidVolume,液体体积,Liquid Volume
 DrugConcentration,药物浓度,DrugConcentration
 Dosemin,剂量,Dose
+ET,Et,Et
+FI,Fi,Fi
 Dosehr,剂量,Dose
 DoseKgmin,剂量,Dose
 DoseKghr,剂量,Dose
