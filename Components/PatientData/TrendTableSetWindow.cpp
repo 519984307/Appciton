@@ -96,7 +96,7 @@ TrendTableSetWindow::TrendTableSetWindow()
     d_ptr->trendGroupCbo->addItems(QStringList()
                                    << "Resp"
                                    << "IBP"
-                                   << "AG"
+//                                   << "AG"   // 暂时去掉AG组相关数据的趋势表显示
                                   );
     connect(d_ptr->trendGroupCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(trendGroupReleased(int)));
     gridLayout->addWidget(label, 1, 0);

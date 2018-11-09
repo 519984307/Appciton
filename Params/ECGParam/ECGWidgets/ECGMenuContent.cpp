@@ -433,6 +433,21 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
         {
             HRSourceType sourceType = static_cast<HRSourceType>(index);
             ecgDupParam.setHrSource(sourceType);
+
+            // 切换类型时手动更新hr/pr值，避免上次pr/hr值为无效值
+            short originalHR = ecgDupParam.getHR(true);
+            PRSourceType prSourceType = ecgDupParam.getCurPRSource();
+            // 增加自动模式下优先更新hr功能
+            if (sourceType == HR_SOURCE_ECG
+                    || sourceType == HR_SOURCE_AUTO)
+            {
+                ecgDupParam.updateHR(originalHR);
+            }
+            else if (sourceType == HR_SOURCE_SPO2
+                     || sourceType == HR_SOURCE_IBP)
+            {
+                ecgDupParam.updatePR(0, prSourceType, false);
+            }
         }
         break;
         case ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE:

@@ -134,7 +134,10 @@ void Provider::checkConnection(void)
         {
             _firstCheck = false;
             isConnected = false;
-            disconnected();
+            if (isConnectedToParam)
+            {
+                disconnected();
+            }
         }
     }
 }

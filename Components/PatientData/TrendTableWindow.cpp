@@ -222,7 +222,7 @@ bool TrendTableWindow::eventFilter(QObject *o, QEvent *e)
 TrendTableWindow::TrendTableWindow()
     : Window(), d_ptr(new TrendTableWindowPrivate(this))
 {
-    resize(800, 580);
+    resize(825, 580);
 
     d_ptr->table = new TableView();
     TableHeaderView *horizontalHeader = new TableHeaderView(Qt::Horizontal);
@@ -242,7 +242,7 @@ TrendTableWindow::TrendTableWindow()
     d_ptr->table->setModel(d_ptr->model);
     d_ptr->table->setFixedHeight(d_ptr->model->getHeaderHeightHint()
                                  + d_ptr->model->getRowHeightHint() * TABLE_ROW_NR);
-    d_ptr->table->setFixedWidth(800);
+    d_ptr->table->setFixedWidth(825);
     d_ptr->table->setItemDelegate(new TableViewItemDelegate(this));
 
     d_ptr->upBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));

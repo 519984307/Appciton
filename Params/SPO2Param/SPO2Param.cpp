@@ -459,7 +459,10 @@ void SPO2Param::addBarData(short data)
  *************************************************************************************************/
 void SPO2Param::setPulseAudio(bool pulse)
 {
-    if (pulse && ecgParam.getHR() == InvData())
+    if (pulse
+            && (ecgDupParam.getCurHRSource() == HR_SOURCE_SPO2
+                || (ecgDupParam.getCurHRSource() == HR_SOURCE_AUTO
+                    && ecgParam.getHR() == InvData())))
     {
         soundManager.pulseTone(getSmartPulseTone() == SPO2_SMART_PLUSE_TONE_ON
                                ? getSPO2()

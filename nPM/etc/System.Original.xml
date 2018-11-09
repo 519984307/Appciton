@@ -129,6 +129,7 @@
         <SelectWave1>1</SelectWave1>
         <SelectWave2>2</SelectWave2>
         <SelectWave3>3</SelectWave3>
+        <PrintTime>0</PrintTime> <!--0:continous 1:8s-->
     </Print>
 
     <ConfigManager>

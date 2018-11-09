@@ -167,10 +167,11 @@ void NIBPDataTrendWidget::showValue(void)
 
     for (int i = 0; i < _rowNR; i++)
     {
-        for (int j = 0; j< COLUMN_COUNT; j++)
-        {
-            _table->item(i, j)->setText("");
-        }
+        _table->item(i, 0)->setText("");
+        QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
+        l->setText("");
+        l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
+        l->setText("");
     }
 
     for (int i = 0; i < _rowNR; i++)
@@ -182,14 +183,14 @@ void NIBPDataTrendWidget::showValue(void)
         if (providerBuff.sysvalue == InvData() || providerBuff.diavalue == InvData() ||
                 providerBuff.mapvalue == InvData())
         {
-            textStr = QString("%1/%2/%3").arg(InvStr()).arg(InvStr()).arg(InvStr());
+            textStr = QString("<center>%1/%2/%3</center>").arg(InvStr()).arg(InvStr()).arg(InvStr());
         }
         else
         {
             QString valStr;
             QString boldwrap = "<b>%1</b>";
             QString colorwrap = "<font color=red>%1</font>";
-            textStr = QString("%1/%2/%3");
+            textStr = QString("<center>%1/%2/%3</center>");
 
             defUnitType = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
             unit = paramManager.getSubParamUnit(PARAM_NIBP, SUB_PARAM_NIBP_SYS);
@@ -236,8 +237,15 @@ void NIBPDataTrendWidget::showValue(void)
                           .arg(Unit::convert(unit, defUnitType, providerBuff.mapvalue));
             }
         }
-        _table->item(i, 1)->setText(textStr);
-        _table->item(i, 2)->setText(prStr);
+        QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
+        l->setAlignment(Qt::AlignHCenter);
+        l->setText(textStr);
+        l->setTextInteractionFlags(Qt::NoTextInteraction);
+
+        QLabel *prLbl = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
+        prLbl->setAlignment(Qt::AlignHCenter);
+        prLbl->setText(prStr);
+        prLbl->setTextInteractionFlags(Qt::NoTextInteraction);
 
         if (t != _nibpNrendCacheMap.begin())
         {
@@ -272,16 +280,13 @@ void NIBPDataTrendWidget::resizeEvent(QResizeEvent *e)
         item->setTextColor(textColor);
         _table->setItem(i, 0, item);
 
+        QLabel *l = new QLabel();
+        _table->setCellWidget(i, 1, l);
+        l->setText("");
 
-        item = new QTableWidgetItem();
-        item->setTextAlignment(Qt::AlignCenter);
-        item->setTextColor(textColor);
-        _table->setItem(i, 1, item);
-
-        item = new QTableWidgetItem();
-        item->setTextAlignment(Qt::AlignCenter);
-        item->setTextColor(textColor);
-        _table->setItem(i, 2, item);
+        QLabel *prLbl = new QLabel();
+        _table->setCellWidget(i, 2, prLbl);
+        prLbl->setText("");
     }
 }
 
@@ -309,13 +314,6 @@ void NIBPDataTrendWidget::updatePalette(const QPalette &pal)
                                 "background-color:black;}")
                         .arg(color.red()).arg(color.green()).arg(color.blue());
     _table->horizontalHeader()->setStyleSheet(headStyle);
-    for (int i = 0; i< _rowNR; i++)
-    {
-        for (int j = 0; j< COLUMN_COUNT; j++)
-        {
-            _table->item(i, j)->setTextColor(color);
-        }
-    }
 }
 
 /**************************************************************************************************

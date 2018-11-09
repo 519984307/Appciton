@@ -26,6 +26,7 @@
 
 #define COLUMN_COUNT        7
 #define MAX_ROW_COUNT       9
+#define DEFAULT_WIDTH       (825)
 
 #define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
 #define HEADER_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
@@ -131,7 +132,7 @@ QVariant TrendTableModel::data(const QModelIndex &index, int role) const
     }
     case Qt::SizeHintRole:
     {
-        int w = 800 / (COLUMN_COUNT + 1);
+        int w = DEFAULT_WIDTH / (COLUMN_COUNT + 1);
         return QSize(w, HEADER_HEIGHT_HINT * 3 / 2);
     }
     case Qt::TextAlignmentRole:
@@ -198,7 +199,8 @@ QVariant TrendTableModel::headerData(int section, Qt::Orientation orientation, i
     {
     case Qt::SizeHintRole:
     {
-        int w = 800 / (COLUMN_COUNT + 1);
+        int w = DEFAULT_WIDTH / (COLUMN_COUNT + 1);
+
         if (orientation == Qt::Vertical)
         {
             return QSize(w, HEADER_HEIGHT_HINT * 3 / 2);
@@ -237,6 +239,24 @@ QVariant TrendTableModel::headerData(int section, Qt::Orientation orientation, i
             case SUB_PARAM_AUXP2_SYS:
                 str = paramInfo.getSubParamName(id);
                 str = str.left(str.length() - 4);
+                break;
+            case SUB_PARAM_T1:
+                str = paramInfo.getSubParamName(id);
+                str += '/';
+                str += paramInfo.getSubParamName(SUB_PARAM_T2);
+                break;
+            case SUB_PARAM_ETCO2:
+            {
+                QString name;
+                name = paramInfo.getSubParamName(id);
+                str = name.right(3);
+                str += '(';
+                str += trs(name.left(name.length() - 3));
+                str += '/';
+                name = paramInfo.getSubParamName(SUB_PARAM_FICO2);
+                str += trs(name.left(name.length() - 3));
+                str += ')';
+            }
                 break;
             default:
                 str = trs(paramInfo.getSubParamName(id));
@@ -925,7 +945,7 @@ void TrendTableModelPrivate::loadTrendData()
             for (int j = 0; j < rowCount; j ++)
             {
 
-                if (displayList.at(j) == SUB_PARAM_NIBP_MAP)
+                if (displayList.at(j) == SUB_PARAM_NIBP_SYS)
                 {
                     qint16 nibpSys = pack->subparamValue.value((SubParamID)(displayList.at(j) - 2), InvData());
                     qint16 nibpDia = pack->subparamValue.value((SubParamID)(displayList.at(j) - 1), InvData());
@@ -952,8 +972,22 @@ void TrendTableModelPrivate::loadTrendData()
                 {
                     qint16 data1 = pack->subparamValue.value(displayList.at(j), InvData());
                     qint16 data2 = pack->subparamValue.value((SubParamID)(displayList.at(j) + 1), InvData());
-                    QString dataStr1 = data1 == InvData() ? "---" : QString::number(data1);
-                    QString dataStr2 = data2 == InvData() ? "---" : QString::number(data2);
+
+                    QString dataStr1;
+                    QString dataStr2;
+
+                    if (displayList.at(j) == SUB_PARAM_T1)
+                    {
+                        double dubData1 = data1 * 1.0 / 10;
+                        double dubData2 = data2 * 1.0 / 10;
+                        dataStr1 = data1 == InvData() ? "---" : QString::number(dubData1, 'f', 1);
+                        dataStr2 = data2 == InvData() ? "---" : QString::number(dubData2, 'f', 1);
+                    }
+                    else
+                    {
+                        dataStr1 = data1 == InvData() ? "---" : QString::number(data1);
+                        dataStr2 = data2 == InvData() ? "---" : QString::number(data2);
+                    }
                     dataContent.dataStr = dataStr1 + "/" + dataStr2;
                 }
                 else

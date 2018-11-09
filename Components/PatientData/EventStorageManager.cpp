@@ -20,6 +20,7 @@
 #include "RecorderManager.h"
 #include "TriggerPageGenerator.h"
 #include "LayoutManager.h"
+#include "ConfigManager.h"
 
 #define MAX_STORE_WAVE_NUM 3
 
@@ -132,8 +133,9 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
             almInfo);
     item->startCollectTrendAndWaveformData(t);
 
-    // TODO: check whether support trigger print
-    if (recorderManager.addPageGenerator(new TriggerPageGenerator(item)))
+    int index = 0;
+    currentConfig.setNumValue("Print|PhysiologicalAlarm", index);
+    if (index && recorderManager.addPageGenerator(new TriggerPageGenerator(item)))
     {
         item->setWaitForTriggerPrintFlag(true);
     }
