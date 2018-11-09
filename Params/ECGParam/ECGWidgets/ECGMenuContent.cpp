@@ -433,6 +433,17 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
         {
             HRSourceType sourceType = static_cast<HRSourceType>(index);
             ecgDupParam.setHrSource(sourceType);
+
+            // 切换类型时手动更新hr/pr值，避免上次pr/hr值为无效值
+            if (sourceType == HR_SOURCE_ECG)
+            {
+                ecgDupParam.updateHR(ecgDupParam.getHR(true));
+            }
+            else if (sourceType == HR_SOURCE_SPO2
+                     || sourceType == HR_SOURCE_IBP)
+            {
+                ecgDupParam.updatePR(0, ecgDupParam.getCurPRSource(), false);
+            }
         }
         break;
         case ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE:
