@@ -283,10 +283,17 @@ void RecorderManager::setPrintTime(PrintTime timeSec)
         return;
     }
     d_ptr->timeSec = timeSec;
+    systemConfig.setNumValue("Print|PrintTime", static_cast<int>(d_ptr->timeSec));
 }
 
 PrintTime RecorderManager::getPrintTime() const
 {
+    int index = 0;
+    systemConfig.getNumValue("Print|PrintTime", index);
+    if (d_ptr->timeSec != index)
+    {
+        d_ptr->timeSec = static_cast<PrintTime>(index);
+    }
     return d_ptr->timeSec;
 }
 
