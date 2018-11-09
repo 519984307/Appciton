@@ -336,6 +336,7 @@ void HemodynaimcReviewWindow::updateReviewTable()
 void HemodynaimcReviewWindow::showEvent(QShowEvent *ev)
 {
     Q_UNUSED(ev)
+    updateReviewTable();
 }
 
 
