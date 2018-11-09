@@ -70,13 +70,20 @@ public:
      * @brief updatePR  更新pr的值
      * @param pr  pr值
      * @param type  pr来源类型
+     * @param isUpdatePr  默认更新pr值
      */
-    void updatePR(short pr, PRSourceType type = PR_SOURCE_SPO2);
+    void updatePR(short pr, PRSourceType type = PR_SOURCE_SPO2, bool isUpdatePr = true);
 
     // 更新/读取HR的值。
     void updateHR(short hr);
-    // could return pr if hr is unvalid
-    short getHR(void) const;
+
+    /**
+     * @brief getHR  获取hr值
+     * @param isGetOriginalHR  默认是优化过后的hr值 (如果hr无效返回pr)
+     * @return  返回hr值
+     */
+    short getHR(bool isGetOriginalHR = false) const;
+
     // 是否为HR有效。
     bool isHRValid(void);
 
@@ -95,6 +102,12 @@ public:
      * @return
      */
     HRSourceType getCurHRSource() const;
+
+    /**
+     * @brief getCurPRSource
+     * @return
+     */
+    PRSourceType getCurPRSource() const;
 
     /**
      * @brief setHrSource  设置hr来源

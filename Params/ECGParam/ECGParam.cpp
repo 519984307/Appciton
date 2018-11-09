@@ -539,11 +539,10 @@ void ECGParam::updateWaveform(int waveform[], bool *leadoff, bool ipaceMark, boo
  *************************************************************************************************/
 void ECGParam::updateHR(short hr)
 {
-    // 屏蔽同值退出功能，避免造成后面数值丢失的误判
-//    if (_hrValue == hr)
-//    {
-//        return;
-//    }
+    if (_hrValue == hr)
+    {
+        return;
+    }
 
     if (hr < 0)
     {

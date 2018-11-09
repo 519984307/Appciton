@@ -389,12 +389,10 @@ short SPO2Param::getSPO2(void)
  *************************************************************************************************/
 void SPO2Param::setPR(short prValue)
 {
-    // 演示模式下趋势值为固定值，可能会造成后面数值未及时更新的错误判断,导致存取的pr值为无效值
-    // 暂时去掉
-//    if (_prValue == prValue)
-//    {
-//        return;
-//    }
+    if (_prValue == prValue)
+    {
+        return;
+    }
 
     if (prValue < 0)
     {

@@ -129,15 +129,18 @@ void ECGDupParam::setTrendWidget(ECGTrendWidget *trendWidget)
     _trendWidget = trendWidget;
 }
 
-void ECGDupParam::updatePR(short pr, PRSourceType type)
+void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
 {
-    if (type == PR_SOURCE_SPO2)
+    if (isUpdatePr)
     {
-        _prValueFromSPO2 = pr;
-    }
-    else if (type == PR_SOURCE_IBP)
-    {
-        _prValueFromIBP = pr;
+        if (type == PR_SOURCE_SPO2)
+        {
+            _prValueFromSPO2 = pr;
+        }
+        else if (type == PR_SOURCE_IBP)
+        {
+            _prValueFromIBP = pr;
+        }
     }
 
     bool isIBP1LeadOff = ibpParam.isIBPLeadOff(IBP_INPUT_1);
@@ -340,8 +343,13 @@ void ECGDupParam::updateHR(short hr)
 /**************************************************************************************************
  * 获取HR的值。
  *************************************************************************************************/
-short ECGDupParam::getHR(void) const
+short ECGDupParam::getHR(bool isGetOriginalHR) const
 {
+    if (isGetOriginalHR)
+    {
+        return _hrValue;
+    }
+
     if (InvData() != _hrValue)
     {
         return _hrValue;
@@ -418,6 +426,11 @@ HRSourceType ECGDupParam::getCurHRSource() const
     }
 
     return _hrSource;
+}
+
+PRSourceType ECGDupParam::getCurPRSource() const
+{
+    return _prSource;
 }
 
 void ECGDupParam::onPaletteChanged(ParamID id)
