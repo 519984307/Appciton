@@ -283,6 +283,7 @@ void RecorderManager::setPrintTime(PrintTime timeSec)
         return;
     }
     d_ptr->timeSec = timeSec;
+    systemConfig.setNumValue("Print|PrintTime", static_cast<int>(d_ptr->timeSec));
 }
 
 PrintTime RecorderManager::getPrintTime() const
@@ -374,6 +375,10 @@ RecorderManager::RecorderManager()
     qRegisterMetaType<RecordPage *>("RecordPage*");
     qRegisterMetaType<PrintSpeed>("PrintSpeed");
 
+    // 获取打印时间
+    int index = 0;
+    systemConfig.getNumValue("Print|PrintTime", index);
+    d_ptr->timeSec = static_cast<PrintTime>(index);
 
     d_ptr->curSpeed = getPrintSpeed();
 
