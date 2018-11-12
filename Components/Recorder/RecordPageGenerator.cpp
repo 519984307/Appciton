@@ -2203,7 +2203,7 @@ void RecordPageGenerator::timerEvent(QTimerEvent *ev)
         }
         else if (_requestStop)
         {
-            recorderManager.overPrint();
+            emit generatePage(createEndPage());
             _requestStop = false;
             delete page;
             emit stopped();

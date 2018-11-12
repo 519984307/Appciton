@@ -214,17 +214,6 @@ void RecorderManager::selfTest()
     QTimer::singleShot(5000, this, SLOT(testSlot()));
 }
 
-void RecorderManager::overPrint()
-{
-    if (!d_ptr->processor)
-    {
-        return;
-    }
-
-    RecordPage *overPage = new RecordPage(20 * RECORDER_PIXEL_PER_MM);
-    QMetaObject::invokeMethod(d_ptr->processor, "addPage", Q_ARG(RecordPage *, overPage));
-}
-
 bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
 {
     bool startImmediately = false;
