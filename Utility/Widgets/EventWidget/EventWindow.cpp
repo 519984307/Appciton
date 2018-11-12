@@ -581,13 +581,13 @@ EventWindow::EventWindow()
     QHBoxLayout *hTableLayout = new QHBoxLayout();
     hTableLayout->addStretch(1);
     hTableLayout->addWidget(typeLabel, 1);
-    hTableLayout->addWidget(d_ptr->typeCbo, 6);
+    hTableLayout->addWidget(d_ptr->typeCbo, 3);
     hTableLayout->addStretch(1);
     hTableLayout->addWidget(levelLabel, 1);
-    hTableLayout->addWidget(d_ptr->levelCbo, 6);
+    hTableLayout->addWidget(d_ptr->levelCbo, 3);
     hTableLayout->addStretch(1);
-    hTableLayout->addWidget(d_ptr->upPageBtn, 2);
-    hTableLayout->addWidget(d_ptr->downPageBtn, 2);
+    hTableLayout->addWidget(d_ptr->upPageBtn, 1);
+    hTableLayout->addWidget(d_ptr->downPageBtn, 1);
 
     QVBoxLayout *vTableLayout = new QVBoxLayout();
     vTableLayout->addWidget(d_ptr->eventTable);

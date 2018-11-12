@@ -177,7 +177,7 @@ RRLow,RR低,RR Low
 RRHigh,RR高,RR High
 RESPApnea,呼吸窒息,RESP Apnea
 RESPAutoActivation,呼吸激活,RESP Automatic Activation
-NIBPMeasurement,无创血压测量,NIBP Measurement
+NIBPMeasurement,无创血压测量,NIBP
 NIBPMeasureMode,测量模式,Measure Mode
 NIBPIntervalTime,间隔时间,NIBP Interval Time
 NIBPAutoInterval,自动间隔,Auto Interval
@@ -931,7 +931,7 @@ Level,级别,Level
 Upper,过高,Upper
 Lower,过低,Lower
 EventList,事件列表,Event List
-RealTimePrint,实时打印,RealTIme Print
+RealTimePrint,实时打印,RealTime Print
 WaveFreeze,波形冻结,Wave Freeze
 WaveformMove,波形移动,Waveform Move
 All ,全部,All
@@ -1000,7 +1000,7 @@ ShockDelivery,释放电击,Shock Delivery
 CheckPatient,检查病人,Check Patient
 PacerStartup,起搏开始,Pacer Startup
 NIBPReading,NIBP快照,NIBP Reading
-PhyAlarm,生理报警,Physiological Alarm
+PhyAlarm,生理报警,Phy. Alarm
 AlarmMute,报警静音,Mute
 RecorderAction,记录仪,Recorder Action
 PrinterDoorOpened,打印机仓门未关,Printer Door Opened
