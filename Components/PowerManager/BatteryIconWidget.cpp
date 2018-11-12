@@ -11,17 +11,105 @@
 
 #include "BatteryIconWidget.h"
 #include "qpainter.h"
-#include "Debug.h"
+#include <QTimer>
+
+class BatteryIconWidgetPrivate
+{
+public:
+    explicit BatteryIconWidgetPrivate(QColor color);
+    ~BatteryIconWidgetPrivate(){}
+
+    static const int boarderWidth = 2;
+    static const int radius = 4;
+    static const int wCount = 5;
+
+    QString printString;                     // 用于打印的字符串
+    BatteryPowerLevel batteryVolume;         // 当前电量等级
+    int lastBatteryVolume;
+    int timeRelative;                        // 当前剩余时间
+    int lastTimeRelative;
+    QColor fillColor;                        // 填充颜色
+    QColor lastFillColor;
+    BatteryIconStatus batteryStatus;         // 电池状态
+    BatteryIconStatus lastBatteryStatus;
+    QColor iconBlackGroundColor;
+    QTimer *chargingTimer;                   // 充电动画定时器
+    BatteryPowerLevel chargingVolume;       // 充电动画电量等级
+
+    /**
+     * @brief saveCurrentParaValue 保存当前参数值
+     */
+    void saveCurrentParaValue(void);
+
+    /**
+     * @brief drawBatteryImage 颜色填充和字符串显示
+     * @param painter
+     * @param rect
+     */
+    void drawBatteryImage(QPainter &painter, QRect &rect);
+
+    /**
+     * @brief drawBatteryError 画电池故障图标
+     * @param painter
+     * @param rect
+     */
+    void drawBatteryError(QPainter &painter, QRect &rect);
+
+    /**
+     * @brief drawBatteryCalibrate 画电池需要校准图标
+     * @param painter
+     * @param rect
+     */
+    void drawBatteryCalibrate(QPainter &painter, QRect &rect);
+
+    /**
+     * @brief drawBatteryNo 画电池不存在图标
+     * @param painter
+     * @param rect
+     */
+    void drawBatteryNo(QPainter &painter, QRect &rect);
+
+    /**
+     * @brief drawBatteryCommFault 画电池通讯错误图标
+     * @param painter
+     * @param rect
+     */
+    void drawBatteryCommFault(QPainter &painter, QRect &rect);
+
+    /**
+     * @brief drawBatteryFillRect 画正常电量显示图标
+     * @param painter
+     * @param rect
+     */
+    void drawBatteryFillRect(QPainter &painter, QRect &rect, BatteryPowerLevel volume);
+
+    /**
+     * @brief drawBatteryFrame 上电池底色, 并返回电池边框路径
+     * @param painter
+     * @param rect
+     * @return
+     */
+    QPainterPath drawBatteryFrame(QPainter &painter, QRect &rect);
+
+    /**
+     * @brief drawBatteryFrameLine 画电池边框
+     * @param painter
+     * @param rect
+     * @param path
+     */
+    void drawBatteryFrameLine(QPainter &painter, QRect &rect, QPainterPath &path);
+};
 
 /**************************************************************************************************
  * 设置电池状态
  *************************************************************************************************/
 void BatteryIconWidget::setStatus(BatteryIconStatus status)
 {
-    _batteryStatus = status;
+    d_ptr->batteryStatus = status;
 
-    if ((_batteryStatus == _lastBatteryStatus) && (_batteryVolume == _lastBatteryVolume)
-            && (_timeRelative == _lastTimeRelative))
+    if ((d_ptr->batteryStatus == d_ptr->lastBatteryStatus)
+            && (d_ptr->batteryVolume == d_ptr->lastBatteryVolume)
+            && (d_ptr->timeRelative == d_ptr->lastTimeRelative))
     {
         return;
     }
@@ -33,9 +121,13 @@ void BatteryIconWidget::setStatus(BatteryIconStatus status)
 /**************************************************************************************************
  * 设置电量参数level = 0-5.
  *************************************************************************************************/
-void BatteryIconWidget::setVolume(int volume)
+void BatteryIconWidget::setVolume(BatteryPowerLevel volume)
 {
-    _batteryVolume = volume;
+    d_ptr->batteryVolume = volume;
+    if (d_ptr->batteryVolume != volume)
+    {
+        d_ptr->chargingVolume = volume;
+    }
 }
 
 /**************************************************************************************************
@@ -43,7 +135,7 @@ void BatteryIconWidget::setVolume(int volume)
  *************************************************************************************************/
 void BatteryIconWidget::setFillColor(const QColor &color)
 {
-    _fillColor = color;
+    d_ptr->fillColor = color;
 }
 
 /**************************************************************************************************
@@ -53,33 +145,42 @@ void BatteryIconWidget::setTimeValue(int time)
 {
     time = (time >= 6) ? 6 : time;
 
-    _timeRelative = time;
+    d_ptr->timeRelative = time;
 
     // 将剩余可运行时间转变为字符串
-    if (_timeRelative == 0)
+    if (d_ptr->timeRelative == 0)
     {
-        _printString = "<0:30";
+        d_ptr->printString = "<0:30";
     }
-    else if (_timeRelative == -1)
+    else if (d_ptr->timeRelative == -1)
     {
-        _printString = "low";
+        d_ptr->printString = "low";
     }
-    else if (_timeRelative == -2)
+    else if (d_ptr->timeRelative == -2)
     {
-        _printString = "";
+        d_ptr->printString = "";
     }
     else
     {
-        if (_timeRelative % 2 == 1)
+        if (d_ptr->timeRelative % 2 == 1)
         {
-            _printString = QString("%1%2%3")
-                           .arg(_timeRelative / 2).arg(":").arg("30+");
+            d_ptr->printString = QString("%1%2%3")
+                           .arg(d_ptr->timeRelative / 2).arg(":").arg("30+");
         }
         else
         {
-            _printString = QString("%1%2%3")
-                           .arg(_timeRelative / 2).arg(":").arg("00+");
+            d_ptr->printString = QString("%1%2%3")
+                           .arg(d_ptr->timeRelative / 2).arg(":").arg("00+");
         }
+    }
+}
+
+void BatteryIconWidget::charging()
+{
+    setStatus(BATTERY_CHARGING);
+    if (!d_ptr->chargingTimer->isActive())
+    {
+        d_ptr->chargingTimer->start();
     }
 }
 
@@ -93,10 +194,10 @@ void BatteryIconWidget::paintEvent(QPaintEvent *e)
     QPainter painter(this);
     QPainterPath rectFramePath;
     QRect r = this->rect();
-    if (_iconBlackGroundColor.isValid())
+    if (d_ptr->iconBlackGroundColor.isValid())
     {
-        if (_iconBlackGroundColor.isValid())
-            painter.fillRect(r , _iconBlackGroundColor);
+        if (d_ptr->iconBlackGroundColor.isValid())
+            painter.fillRect(r , d_ptr->iconBlackGroundColor);
         else
             painter.fillRect(r, Qt::black);
     }
@@ -106,84 +207,95 @@ void BatteryIconWidget::paintEvent(QPaintEvent *e)
     painter.setRenderHint(QPainter::Antialiasing, true);
 
     // 上电池底色
-    rectFramePath = _drawBatteryFrame(painter, r);
+    rectFramePath = d_ptr->drawBatteryFrame(painter, r);
 
     // 根据传递的参数进行绘图
-    _drawBatteryImage(painter, r);
+    d_ptr->drawBatteryImage(painter, r);
 
     // 保存当前参数值
-    _saveCurrentParaValue();
+    d_ptr->saveCurrentParaValue();
 
     // 画电池边框
-    _drawBatteryFrameLine(painter, r, rectFramePath);
+    d_ptr->drawBatteryFrameLine(painter, r, rectFramePath);
 }
 
-/**************************************************************************************************
- * 保存当前参数值
- *************************************************************************************************/
-void BatteryIconWidget::_saveCurrentParaValue(void)
+void BatteryIconWidget::chargingTimeOut()
 {
-    _lastBatteryStatus = _batteryStatus;
-    _lastTimeRelative = _timeRelative;
-    _lastBatteryVolume = _batteryVolume;
+    if (d_ptr->batteryVolume == BAT_VOLUME_5)
+    {
+        d_ptr->chargingTimer->stop();
+        return;
+    }
+    int volume = static_cast<int>(d_ptr->chargingVolume) + 1;
+    d_ptr->chargingVolume = static_cast<BatteryPowerLevel>(volume);
+    if (d_ptr->chargingVolume > BAT_VOLUME_5)
+    {
+        d_ptr->chargingVolume = d_ptr->batteryVolume;
+    }
+    update();
 }
 
-/**************************************************************************************************
- * 颜色填充和字符串显示
- *************************************************************************************************/
-void BatteryIconWidget::_drawBatteryImage(QPainter &painter, QRect &rect)
+void BatteryIconWidgetPrivate::saveCurrentParaValue(void)
+{
+    lastBatteryStatus = batteryStatus;
+    lastTimeRelative = timeRelative;
+    lastBatteryVolume = batteryVolume;
+}
+
+void BatteryIconWidgetPrivate::drawBatteryImage(QPainter &painter, QRect &rect)
 {
     // 设置电池内字体格式
     QFont font;
     font.setPixelSize(20);
     painter.setFont(font);
-    painter.setPen(QPen(Qt::white, _boarderWidth));
+    painter.setPen(QPen(Qt::white, boarderWidth));
 
-    switch (_batteryStatus)
+    switch (batteryStatus)
     {
     case BATTERY_NORMAL:
 
         // 正常电量图标显示
-        _drawBatteryFillRect(painter, rect);
+        drawBatteryFillRect(painter, rect, batteryVolume);
         // 剩余时间显示成字符串,
-        if (_batteryVolume > 0 && _batteryVolume < 5)
+        if (batteryVolume > 0 && batteryVolume < 5)
         {
-            painter.drawText(rect, Qt::AlignCenter, _printString);
+            painter.drawText(rect, Qt::AlignCenter, printString);
         }
         break;
 
     case BATTERY_NOT_EXISTED:
 
         // 电池不存在
-        _drawBatteryNo(painter, rect);
+        drawBatteryNo(painter, rect);
         break;
 
     case BATTERY_ERROR:
 
         // 电池故障
-        _drawBatteryError(painter, rect);
+        drawBatteryError(painter, rect);
         break;
 
     case BATTERY_COM_FAULT:
 
         // 电池通讯错误
-        _drawBatteryCommFault(painter, rect);
+        drawBatteryCommFault(painter, rect);
         break;
     case BATTERY_CALIBRATION_REQUIRED:
         // 电池需要校准
-        _drawBatteryCalibrate(painter, rect);
-
+        drawBatteryCalibrate(painter, rect);
+        break;
+    case BATTERY_CHARGING:
+        drawBatteryFillRect(painter, rect, chargingVolume);
+        break;
     default:
         break;
     }
 }
 
-/**************************************************************************************************
- * 画电池边框
- *************************************************************************************************/
-void BatteryIconWidget::_drawBatteryFrameLine(QPainter &painter, QRect &/*rect*/, QPainterPath &path)
+void BatteryIconWidgetPrivate::drawBatteryFrameLine(QPainter &painter, QRect &rect, QPainterPath &path)
 {
-    painter.setPen(QPen(QColor(178, 178, 178), _boarderWidth, Qt::SolidLine));
+    Q_UNUSED(rect)
+    painter.setPen(QPen(QColor(178, 178, 178), boarderWidth, Qt::SolidLine));
     painter.drawPath(path);
 
     /* // 带虚线的电池边框
@@ -211,10 +323,7 @@ void BatteryIconWidget::_drawBatteryFrameLine(QPainter &painter, QRect &/*rect*/
      */
 }
 
-/**************************************************************************************************
- * 上电池底色, 并返回电池边框路径
- *************************************************************************************************/
-QPainterPath BatteryIconWidget::_drawBatteryFrame(QPainter &painter, QRect &rect)
+QPainterPath BatteryIconWidgetPrivate::drawBatteryFrame(QPainter &painter, QRect &rect)
 {
     rect = rect.adjusted(1, 1, 0, 0);
     QPoint topleft = rect.topLeft();
@@ -225,25 +334,25 @@ QPainterPath BatteryIconWidget::_drawBatteryFrame(QPainter &painter, QRect &rect
     int wCount = 15;
     // 设置电池边框路径
     QPainterPath mypath;
-    mypath.moveTo(bottomleft - QPoint(0, _radius));
-    mypath.lineTo(topleft + QPoint(0, _radius));
-    mypath.quadTo(topleft, topleft + QPoint(_radius, 0));
-    mypath.lineTo(topright.x() - rect.width() / wCount - _radius / 2, topright.y());
+    mypath.moveTo(bottomleft - QPoint(0, radius));
+    mypath.lineTo(topleft + QPoint(0, radius));
+    mypath.quadTo(topleft, topleft + QPoint(radius, 0));
+    mypath.lineTo(topright.x() - rect.width() / wCount - radius / 2, topright.y());
     mypath.quadTo(topright.x() - rect.width() / wCount, topright.y(), topright.x() -
-                  rect.width() / wCount, topright.y()  + _radius / 2);
+                  rect.width() / wCount, topright.y()  + radius / 2);
     mypath.lineTo(topright.x() - rect.width() / wCount, topright.y() + rect.height() * 3 / 10);
     mypath.lineTo(topright.x(), topright.y() + rect.height() * 3 / 10);
     mypath.lineTo(bottomright.x(), bottomright.y() - rect.height() * 3 / 10);
     mypath.lineTo(bottomright.x() - rect.width() / wCount, bottomright.y() - rect.height() * 3 / 10);
-    mypath.lineTo(bottomright.x() - rect.width() / wCount, bottomright.y() - _radius / 2);
+    mypath.lineTo(bottomright.x() - rect.width() / wCount, bottomright.y() - radius / 2);
     mypath.quadTo(bottomright.x() - rect.width() / wCount, bottomright.y(),
-                  bottomright.x() - rect.width() / wCount - _radius / 2, bottomright.y());
-    mypath.lineTo(bottomleft + QPoint(_radius, 0));
-    mypath.quadTo(bottomleft, bottomleft - QPoint(0, _radius));
+                  bottomright.x() - rect.width() / wCount - radius / 2, bottomright.y());
+    mypath.lineTo(bottomleft + QPoint(radius, 0));
+    mypath.quadTo(bottomleft, bottomleft - QPoint(0, radius));
 
     // 用黑色作为路径填充色
-    if (_iconBlackGroundColor.isValid())
-        painter.fillPath(mypath, QBrush(_iconBlackGroundColor));
+    if (iconBlackGroundColor.isValid())
+        painter.fillPath(mypath, QBrush(iconBlackGroundColor));
     else
         painter.fillPath(mypath, QBrush(Qt::black));
 
@@ -252,10 +361,7 @@ QPainterPath BatteryIconWidget::_drawBatteryFrame(QPainter &painter, QRect &rect
     return mypath;
 }
 
-/**************************************************************************************************
- * 画电池不存在图标
- *************************************************************************************************/
-void BatteryIconWidget::_drawBatteryNo(QPainter &painter, QRect &rect)
+void BatteryIconWidgetPrivate::drawBatteryNo(QPainter &painter, QRect &rect)
 {
     // 获得新的矩形顶点坐标
     QRect rectAdjust = rect.adjusted(rect.width() * 8 / 21, rect.height() / 3,
@@ -266,7 +372,7 @@ void BatteryIconWidget::_drawBatteryNo(QPainter &painter, QRect &rect)
     QPoint bottomright = rectAdjust.bottomRight();
 
     // 画一个白色“X”样式图
-    QPen pen(QColor(220, 220, 220), _boarderWidth);
+    QPen pen(QColor(220, 220, 220), boarderWidth);
     pen.setWidth(1);
     painter.setRenderHint(QPainter::Antialiasing, false);
     painter.setPen(pen);
@@ -306,10 +412,7 @@ void BatteryIconWidget::_drawBatteryNo(QPainter &painter, QRect &rect)
     */
 }
 
-/**************************************************************************************************
- * 画电池故障图标
- *************************************************************************************************/
-void BatteryIconWidget::_drawBatteryError(QPainter &painter, QRect &rect)
+void BatteryIconWidgetPrivate::drawBatteryError(QPainter &painter, QRect &rect)
 {
     // 获得新的矩形顶点坐标
     QRect rectAdjust = rect.adjusted(rect.width() / 6, rect.height() / 4,
@@ -319,23 +422,17 @@ void BatteryIconWidget::_drawBatteryError(QPainter &painter, QRect &rect)
     QPoint bottomleft = rectAdjust.bottomLeft();
     QPoint bottomright = rectAdjust.bottomRight();
 
-    painter.setPen(QPen(Qt::red, _boarderWidth));
+    painter.setPen(QPen(Qt::red, boarderWidth));
     painter.drawLine(topleft.x(), topleft.y(), bottomright.x(), bottomright.y());
     painter.drawLine(bottomleft.x(), bottomleft.y(), topright.x(), topright.y());
 }
 
-/**************************************************************************************************
- * 画电池需要校准图标
- *************************************************************************************************/
-void BatteryIconWidget::_drawBatteryCalibrate(QPainter &painter, QRect &rect)
+void BatteryIconWidgetPrivate::drawBatteryCalibrate(QPainter &painter, QRect &rect)
 {
     painter.drawText(rect, Qt::AlignCenter, "?");
 }
 
-/**************************************************************************************************
- * 画电池通讯错误图标
- *************************************************************************************************/
-void BatteryIconWidget::_drawBatteryCommFault(QPainter &painter, QRect &rect)
+void BatteryIconWidgetPrivate::drawBatteryCommFault(QPainter &painter, QRect &rect)
 {
     QPoint topleft = rect.topLeft();
     QPoint topright = rect.topRight();
@@ -399,12 +496,9 @@ void BatteryIconWidget::_drawBatteryCommFault(QPainter &painter, QRect &rect)
                      - rect.height() / 6);
 }
 
-/**************************************************************************************************
- * 画正常电量显示图标
- *************************************************************************************************/
-void BatteryIconWidget::_drawBatteryFillRect(QPainter &painter, QRect &rect)
+void BatteryIconWidgetPrivate::drawBatteryFillRect(QPainter &painter, QRect &rect, BatteryPowerLevel volume)
 {
-    if (_batteryVolume <= 0)
+    if (volume <= 0)
     {
         return;
     }
@@ -417,100 +511,72 @@ void BatteryIconWidget::_drawBatteryFillRect(QPainter &painter, QRect &rect)
 
     // 设置填充路径
     QPainterPath mypath;
-    mypath.moveTo(bottomleft - QPoint(0, _radius));
-    mypath.lineTo(topleft + QPoint(0, _radius));
-    mypath.quadTo(topleft, topleft + QPoint(_radius, 0));
-//    mypath.lineTo(topleft.x() + rect.width() * 2 / _wCount, topleft.y());
+    mypath.moveTo(bottomleft - QPoint(0, radius));
+    mypath.lineTo(topleft + QPoint(0, radius));
+    mypath.quadTo(topleft, topleft + QPoint(radius, 0));
 
-    if (_batteryVolume <= _wCount - 1)
+    if (volume <= wCount - 1)
     {
-        mypath.lineTo(topleft.x() - 2.5 + _batteryVolume * rect.width() / _wCount, topleft.y());
-        mypath.lineTo(bottomleft.x() + 2.5  + _batteryVolume * rect.width() / _wCount, bottomleft.y());
+        mypath.lineTo(topleft.x() - 2.5 + volume * rect.width() / wCount, topleft.y());
+        mypath.lineTo(bottomleft.x() + 2.5  + volume * rect.width() / wCount, bottomleft.y());
     }
     else
     {
         int wCount = 15;
-        mypath.lineTo(topright.x() - rect.width() / wCount - _radius / 2, topright.y());
+        mypath.lineTo(topright.x() - rect.width() / wCount - radius / 2, topright.y());
         mypath.quadTo(topright.x() - rect.width() / wCount, topright.y(), topright.x() -
-                      rect.width() / wCount, topright.y()  + _radius / 2);
+                      rect.width() / wCount, topright.y()  + radius / 2);
 
         mypath.lineTo(topright.x() - rect.width() / wCount, topright.y() + rect.height() * 3 / 10);
         mypath.lineTo(topright.x(), topright.y() + rect.height() * 3 / 10);
         mypath.lineTo(bottomright.x(), bottomright.y() - rect.height() * 3 / 10);
         mypath.lineTo(bottomright.x() - rect.width() / wCount, bottomright.y() -
                       rect.height() * 3 / 10);
-        mypath.lineTo(bottomright.x() - rect.width() / wCount, bottomright.y() - _radius / 2);
+        mypath.lineTo(bottomright.x() - rect.width() / wCount, bottomright.y() - radius / 2);
         mypath.quadTo(bottomright.x() - rect.width() / wCount, bottomright.y(),
-                      bottomright.x() - rect.width() / wCount - _radius / 2, bottomright.y());
+                      bottomright.x() - rect.width() / wCount - radius / 2, bottomright.y());
     }
-//    if (_batteryVolume <= _wCount - 2)
-//    {
-//        mypath.lineTo(topleft.x() + rect.width() * 2 / _wCount +
-//                _batteryVolume * rect.width() * 11 / (13 * _wCount), topleft.y());
-//        mypath.lineTo(bottomleft.x() + rect.width() * 2 / _wCount +
-//                _batteryVolume * rect.width() * 11 / (13 * _wCount), bottomleft.y());
-//    }
-//    else if (_batteryVolume == _wCount - 1)
-//    {
-//        mypath.lineTo(topright.x() - rect.width() / _wCount - _radius / 2, topright.y());
-//        mypath.quadTo(topright.x() - rect.width() / _wCount, topright.y(),topright.x() -
-//                rect.width() / _wCount, topright.y()  + _radius / 2);
-//        mypath.lineTo(bottomright.x() - rect.width() / _wCount, bottomright.y() - _radius / 2);
-//        mypath.quadTo(bottomright.x() - rect.width() / _wCount, bottomright.y(),
-//                      bottomright.x() - rect.width() / _wCount - _radius / 2, bottomright.y());
-//    }
-//    else
-//    {
-//        mypath.lineTo(topright.x() - rect.width() / _wCount - _radius / 2, topright.y());
-//        mypath.quadTo(topright.x() - rect.width() / _wCount, topright.y(),topright.x() -
-//                rect.width() / _wCount, topright.y()  + _radius / 2);
-//        mypath.lineTo(topright.x() - rect.width() / _wCount, topright.y() + rect.height() * 3 / 10);
-//        mypath.lineTo(topright.x(), topright.y() + rect.height() * 3 / 10);
-//        mypath.lineTo(bottomright.x(), bottomright.y() - rect.height() * 3 / 10);
-//        mypath.lineTo(bottomright.x() - rect.width() / _wCount, bottomright.y() -
-//                rect.height() * 3 / 10);
-//        mypath.lineTo(bottomright.x() - rect.width() / _wCount, bottomright.y() - _radius / 2);
-//        mypath.quadTo(bottomright.x() - rect.width() / _wCount, bottomright.y(),
-//                      bottomright.x() - rect.width() / _wCount - _radius / 2, bottomright.y());
-//    }
-//    mypath.lineTo(bottomleft.x() + rect.width() * 2 / _wCount, bottomleft.y());
-    mypath.lineTo(bottomleft + QPoint(_radius, 0));
-    mypath.quadTo(bottomleft, bottomleft - QPoint(0, _radius));
-// printf("_batteryVolume = %d\n_timeRelative = %d\n",_batteryVolume,_timeRelative);
-// if (_fillColor == QColor(0, 128, 0))
-// {
-//    printf("current fillcolor is white\n");
-// }
-// else
-// {
-//    printf("current fillcolor is yellow\n");
-// }
+    mypath.lineTo(bottomleft + QPoint(radius, 0));
+    mypath.quadTo(bottomleft, bottomleft - QPoint(0, radius));
+
     // 选择填充色
-    painter.fillPath(mypath, _fillColor);
+    painter.fillPath(mypath, fillColor);
 }
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-BatteryIconWidget::BatteryIconWidget(QColor iconColor) : QWidget(NULL)
+BatteryIconWidget::BatteryIconWidget(QColor iconColor)
+    : QWidget(NULL),
+      d_ptr(new BatteryIconWidgetPrivate(iconColor))
 {
     // 固定电池框大小
     setFixedSize(64, 32);
-    _printString = "";
-    _batteryVolume = 0;             // 当前电量等级
-    _lastBatteryVolume = 0;
-    _timeRelative = -2;
-    _lastTimeRelative = -2;
-    _fillColor = QColor(0, 128, 0);
-    _lastFillColor = QColor(0, 128, 0);
-    _batteryStatus = BATTERY_NORMAL;
-    _lastBatteryStatus = BATTERY_NONE;
-    _iconBlackGroundColor = iconColor;
+    d_ptr->chargingTimer = new QTimer();
+    d_ptr->chargingTimer->setInterval(1000 * 2);     // 两秒刷新一次
+    connect(d_ptr->chargingTimer, SIGNAL(timeout()), this, SLOT(chargingTimeOut()));
 }
 
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
 BatteryIconWidget::~BatteryIconWidget()
+{
+    delete d_ptr;
+}
+
+BatteryIconWidgetPrivate::BatteryIconWidgetPrivate(QColor color)
+    : printString(QString()),
+      batteryVolume(BAT_VOLUME_0),
+      lastBatteryVolume(0),
+      timeRelative(-2),
+      lastTimeRelative(-2),
+      fillColor(QColor(0, 128, 0)),
+      lastFillColor(QColor(0, 128, 0)),
+      batteryStatus(BATTERY_NORMAL),
+      lastBatteryStatus(BATTERY_NONE),
+      iconBlackGroundColor(color),
+      chargingTimer(NULL),
+      chargingVolume(BAT_VOLUME_0)
 {
 }

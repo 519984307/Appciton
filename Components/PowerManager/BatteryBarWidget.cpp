@@ -35,7 +35,7 @@ void BatteryBarWidget::setStatus(BatteryIconStatus status)
 /**************************************************************************************************
  * 设置电量参数level = 0-5.
  *************************************************************************************************/
-void BatteryBarWidget::setVolume(int volume)
+void BatteryBarWidget::setVolume(BatteryPowerLevel volume)
 {
     _batteryIconWidget->setVolume(volume);
 }
@@ -63,23 +63,23 @@ void BatteryBarWidget::setIcon(int time)
 {
     if (time >= 6)
     {
-        _batteryIconWidget->setVolume(4);
+        _batteryIconWidget->setVolume(BAT_VOLUME_4);
     }
     else if (time >= 4)
     {
-        _batteryIconWidget->setVolume(3);
+        _batteryIconWidget->setVolume(BAT_VOLUME_3);
     }
     else if (time >= 2)
     {
-        _batteryIconWidget->setVolume(2);
+        _batteryIconWidget->setVolume(BAT_VOLUME_2);
     }
     else if (time >= -1)
     {
-        _batteryIconWidget->setVolume(1);
+        _batteryIconWidget->setVolume(BAT_VOLUME_1);
     }
     else
     {
-        _batteryIconWidget->setVolume(0);
+        _batteryIconWidget->setVolume(BAT_VOLUME_0);
     }
 
     _batteryIconWidget->setTimeValue(time);
@@ -88,16 +88,21 @@ void BatteryBarWidget::setIcon(int time)
 
 void BatteryBarWidget::setIconFull()
 {
-    _batteryIconWidget->setVolume(5);
+    _batteryIconWidget->setVolume(BAT_VOLUME_5);
     _batteryIconWidget->setTimeValue(-2);
     _batteryIconWidget->setFillColor(QColor(0, 128, 0));
 }
 
 void BatteryBarWidget::setIconLow()
 {
-    _batteryIconWidget->setVolume(1);
+    _batteryIconWidget->setVolume(BAT_VOLUME_1);
     _batteryIconWidget->setTimeValue(-1);
     _batteryIconWidget->setFillColor(Qt::yellow);
+}
+
+void BatteryBarWidget::charging()
+{
+    _batteryIconWidget->charging();
 }
 
 void BatteryBarWidget::paintEvent(QPaintEvent *e)

@@ -14,7 +14,6 @@
 #include "BatteryAlarm.h"
 #include "BatteryIconWidget.h"
 #include "SystemStatusBarWidget.h"
-#include "Debug.h"
 #include <QTimer>
 #include "IMessageBox.h"
 #include "ErrorLog.h"
