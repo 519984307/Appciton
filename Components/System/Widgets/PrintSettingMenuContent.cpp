@@ -32,8 +32,7 @@ public:
         : clearPrintTask(NULL),
           printTime(NULL),
           printSpeed(NULL),
-          curLeadMode(ECG_LEAD_MODE_NR),
-          curUFaceType(UFACE_NR)
+          isLayoutUpdated(false)
     {
     }
     /**
@@ -47,8 +46,7 @@ public:
     QStringList waveNames;
     ComboBox *printTime;
     ComboBox *printSpeed;
-    ECGLeadMode curLeadMode;
-    UserFaceType curUFaceType;
+    bool isLayoutUpdated;
 };
 
 void PrintSettingMenuContentPrivate::loadOptions()
@@ -61,23 +59,10 @@ void PrintSettingMenuContentPrivate::loadOptions()
 
     bool isUpdateWaveIds = false;
 
-    // 导联模式改变时更新当前波形ID
-    int mode = ECG_LEAD_MODE_NR;
-    currentConfig.getNumValue("ECG|LeadMode", mode);
-
-    // 用户界面改变时更新当前波形ID
-    int uFaceType = UFACE_NR;
-    systemConfig.getNumValue("UserFaceType", uFaceType);
-
-    if (curLeadMode != static_cast<ECGLeadMode>(mode)
-            || curUFaceType != static_cast<UserFaceType>(uFaceType))
+    if (isLayoutUpdated)
     {
-        curLeadMode = static_cast<ECGLeadMode>(mode);
-        curUFaceType = static_cast<UserFaceType>(uFaceType);
-
+        isLayoutUpdated = false;
         // select wave
-        waveIDs = layoutManager.getDisplayedWaveformIDs();
-        waveNames = layoutManager.getDisplayedWaveformLabels();
         for (int i = 0; i < PRINT_WAVE_NUM; i++)
         {
             ComboBox *combo = selectWaves.at(i);
@@ -134,7 +119,7 @@ void PrintSettingMenuContentPrivate::loadOptions()
     if (offCount < PRINT_WAVE_NUM - 1
             || isUpdateWaveIds)
     {
-        if ((waveCboIds.size()) < PRINT_WAVE_NUM )
+        if ((waveCboIds.size()) < PRINT_WAVE_NUM)
         {
             int idCount = waveIDs.count();
             for (int i = 0; i < PRINT_WAVE_NUM; i++)
@@ -215,8 +200,8 @@ void PrintSettingMenuContent::layoutExec()
 
     // select wave
     QStringList waveNames;
-    d_ptr->waveIDs = layoutManager.getDisplayedWaveformIDs();
-    waveNames = layoutManager.getDisplayedWaveformLabels();
+    d_ptr->waveIDs = layoutManager.getStandardWaveformIDs();
+    waveNames = layoutManager.getStandardWaveformLabels();
     d_ptr->waveNames = waveNames;
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
@@ -284,6 +269,8 @@ void PrintSettingMenuContent::layoutExec()
     index++;
 
     glayout->setRowStretch(index, 1);
+
+    connect(&layoutManager, SIGNAL(StandardLayoutChanged()), this, SLOT(onStandardLayoutChanged()));
 }
 
 void PrintSettingMenuContent::onComboxIndexChanged(int index)
@@ -380,4 +367,11 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
 
 void PrintSettingMenuContent::onClearBtnReleased()
 {
+}
+
+void PrintSettingMenuContent::onStandardLayoutChanged()
+{
+    d_ptr->waveIDs = layoutManager.getStandardWaveformIDs();
+    d_ptr->waveNames = layoutManager.getStandardWaveformLabels();
+    d_ptr->isLayoutUpdated = true;
 }

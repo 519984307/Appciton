@@ -85,6 +85,18 @@ public:
     QList<int> getDisplayedWaveformIDs() const;
 
     /**
+     * @brief getStandardWaveformLabels get the standard waveforms
+     * @return a list of display wavewidget's name
+     */
+    QStringList getStandardWaveformLabels() const;
+
+    /**
+     * @brief getStandardWaveformIDs get the standard waveforms id
+     * @return a list of display waveform's id
+     */
+    QList<int> getStandardWaveformIDs() const;
+
+    /**
      * @brief getDisplayedWaveformLabels get the display waveforms labels
      * @return a list of display waveform's label
      */
@@ -139,6 +151,9 @@ public slots:
 signals:
     /* emit when the content layout changed */
     void layoutChanged();
+
+    /* 当标准布局改变时，发送该信号 */
+    void StandardLayoutChanged();
 
 private:
     LayoutManagerPrivate * const d_ptr;

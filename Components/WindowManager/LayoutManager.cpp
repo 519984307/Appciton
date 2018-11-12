@@ -28,13 +28,14 @@ typedef QList<LayoutNode> LayoutRow;
 class LayoutManagerPrivate
 {
 public:
-    LayoutManagerPrivate()
+    explicit LayoutManagerPrivate(LayoutManager *q)
         : contentView(new IWidget("ContentView")),
           contentLayout(new QHBoxLayout(contentView)),
           curUserFace(UFACE_MONITOR_STANDARD),
           mainLayout(NULL),
           waveAreaStretch(4),
-          paramAreaStretch(2)
+          paramAreaStretch(2),
+          q_ptr(q)
     {
         contentLayout->setSpacing(0);
         contentLayout->setContentsMargins(0, 0, 0, 0);
@@ -138,6 +139,7 @@ public:
 
     QStringList displayWaveforms;   /* current visiable wave widget's name list */
     QStringList displayParams;      /* current visiable param widget's name list */
+    QStringList StandardWaveforms;  /* 标准界面上的波形名字链表 */
 
     QMap<QString, bool> widgetLayoutable;   /* record whether the widget is layoutable */
     QList<IWidget *> contentWidgets;        /* record the widgets in the content view */
@@ -145,6 +147,7 @@ public:
 
     int waveAreaStretch;
     int paramAreaStretch;
+    LayoutManager *q_ptr;
 
 private:
     LayoutManagerPrivate(const LayoutManagerPrivate &);
@@ -301,6 +304,7 @@ void LayoutManagerPrivate::doContentLayout()
     {
     case UFACE_MONITOR_STANDARD:
         performStandardLayout();
+        QMetaObject::invokeMethod(q_ptr, "StandardLayoutChanged");
         break;
     case UFACE_MONITOR_ECG_FULLSCREEN:
         if (ecgParam.getLeadMode() == ECG_LEAD_MODE_12)
@@ -339,6 +343,9 @@ void LayoutManagerPrivate::doContentLayout()
 
 void LayoutManagerPrivate::performStandardLayout()
 {
+    // 清除标准界面波形名字链表
+    StandardWaveforms.clear();
+
     QVBoxLayout *leftLayout = new QVBoxLayout();
     leftLayout->setContentsMargins(0, 0, 0, 0);
     QWidget *waveContainer = createContainter();
@@ -386,6 +393,9 @@ void LayoutManagerPrivate::performStandardLayout()
                     if (w)
                     {
                         displayWaveforms.append(w->name());
+                        // 由于从displayWaveforms链表不好找到对应标准界面下波形名称，
+                        // 所以添加一个只保存标准界面下的波形名称链表
+                        StandardWaveforms.append(w->name());
                     }
                     lastWaveRow = insetRow;
                 }
@@ -1330,6 +1340,38 @@ QList<int> LayoutManager::getDisplayedWaveformIDs() const
     return waveIDs;
 }
 
+QStringList LayoutManager::getStandardWaveformLabels() const
+{
+    QStringList waveLabels;
+    QStringList::ConstIterator iter;
+    for (iter = d_ptr->StandardWaveforms.constBegin(); iter != d_ptr->StandardWaveforms.constEnd(); ++iter)
+    {
+        WaveWidget *w = qobject_cast<WaveWidget *>(d_ptr->layoutWidgets[*iter]);
+        if (w)
+        {
+            waveLabels.append(w->waveLabel());
+        }
+    }
+
+    return waveLabels;
+}
+
+QList<int> LayoutManager::getStandardWaveformIDs() const
+{
+    QList<int> waveIDs;
+    QStringList::ConstIterator iter;
+    for (iter = d_ptr->StandardWaveforms.constBegin(); iter != d_ptr->StandardWaveforms.constEnd(); ++iter)
+    {
+        WaveWidget *w = qobject_cast<WaveWidget *>(d_ptr->layoutWidgets[*iter]);
+        if (w)
+        {
+            waveIDs.append(w->getID());
+        }
+    }
+
+    return waveIDs;
+}
+
 QStringList LayoutManager::getDisplayedWaveformLabels() const
 {
     QStringList waveLabels;
@@ -1421,7 +1463,7 @@ void LayoutManager::updateTabOrder()
 }
 
 LayoutManager::LayoutManager()
-    : d_ptr(new LayoutManagerPrivate())
+    : d_ptr(new LayoutManagerPrivate(this))
 {
     d_ptr->layoutMap = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|Normal");
 
