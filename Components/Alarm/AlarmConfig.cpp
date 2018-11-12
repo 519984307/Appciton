@@ -201,6 +201,21 @@ ParamRulerConfig AlarmConfig::getParamRulerConfig(SubParamID subParamId, UnitTyp
     return config;
 }
 
+void AlarmConfig::setParamRulerConfig(SubParamID subParamID, UnitType unit, int low, int high)
+{
+    // load data from config file
+    QString prefix = "TrendGraph|Ruler|";
+    prefix += paramInfo.getSubParamName(subParamID, true);
+    prefix += "|";
+    prefix += Unit::getSymbol(unit);
+    prefix += "|";
+    QString highPrefix = prefix + "High";
+    systemConfig.setNumValue(highPrefix, high);
+
+    QString lowPrefix = prefix + "Low";
+    systemConfig.setNumValue(lowPrefix, low);
+}
+
 void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, const LimitAlarmConfig &config)
 {
     AlarmConfigKey key(subParamId, unit);

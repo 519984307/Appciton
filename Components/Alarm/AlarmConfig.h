@@ -95,6 +95,9 @@ public:
     // get ruler config
     ParamRulerConfig getParamRulerConfig(SubParamID subParamId, UnitType unit);
 
+    // set ruler config
+    void setParamRulerConfig(SubParamID subParamID, UnitType unit, int low, int high);
+
     // set the alarm config
     void setLimitAlarmConfig(SubParamID subParamId, UnitType unit, const LimitAlarmConfig &config);
 
