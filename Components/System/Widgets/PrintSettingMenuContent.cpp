@@ -31,7 +31,9 @@ public:
     PrintSettingMenuContentPrivate()
         : clearPrintTask(NULL),
           printTime(NULL),
-          printSpeed(NULL)
+          printSpeed(NULL),
+          curLeadMode(ECG_LEAD_MODE_NR),
+          curUFaceType(UFACE_NR)
     {
     }
     /**
@@ -45,6 +47,8 @@ public:
     QStringList waveNames;
     ComboBox *printTime;
     ComboBox *printSpeed;
+    ECGLeadMode curLeadMode;
+    UserFaceType curUFaceType;
 };
 
 void PrintSettingMenuContentPrivate::loadOptions()
@@ -55,7 +59,49 @@ void PrintSettingMenuContentPrivate::loadOptions()
     PrintSpeed speed = recorderManager.getPrintSpeed();
     printSpeed->setCurrentIndex(speed);
 
-    // 加载配置文件中选择的波形id
+    bool isUpdateWaveIds = false;
+
+    // 导联模式改变时更新当前波形ID
+    int mode = ECG_LEAD_MODE_NR;
+    currentConfig.getNumValue("ECG|LeadMode", mode);
+
+    // 用户界面改变时更新当前波形ID
+    int uFaceType = UFACE_NR;
+    systemConfig.getNumValue("UserFaceType", uFaceType);
+
+    if (curLeadMode != static_cast<ECGLeadMode>(mode)
+            || curUFaceType != static_cast<UserFaceType>(uFaceType))
+    {
+        curLeadMode = static_cast<ECGLeadMode>(mode);
+        curUFaceType = static_cast<UserFaceType>(uFaceType);
+
+        // select wave
+        waveIDs = layoutManager.getDisplayedWaveformIDs();
+        waveNames = layoutManager.getDisplayedWaveformLabels();
+        for (int i = 0; i < PRINT_WAVE_NUM; i++)
+        {
+            ComboBox *combo = selectWaves.at(i);
+            combo->clear();
+            combo->addItem(trs("Off"));
+            foreach(QString name, waveNames)
+            {
+                combo->addItem(name);
+            }
+            // 更新选择打印波形combo时，默认选择“Off” item
+            combo->setCurrentIndex(0);
+            // 如果波形数量小于选择打印波形combo时，失能多余的选择打印波形combo
+            if (waveNames.size() <= i)
+            {
+                combo->setEnabled(false);
+            }
+            else
+            {
+                combo->setEnabled(true);
+            }
+        }
+        isUpdateWaveIds = true;
+    }
+
     int offCount = 0;
     QSet<int> waveCboIds;
     int savedWaveIds[PRINT_WAVE_NUM] = {0};
@@ -66,6 +112,12 @@ void PrintSettingMenuContentPrivate::loadOptions()
         QString path;
         path = QString("Print|SelectWave%1").arg(i + 1);
         systemConfig.getNumValue(path, savedWaveIds[i]);
+        // 保存的波形id与当前的波形ids不匹配时，结束此次循环
+        if (waveIDs.indexOf(savedWaveIds[i]) < 0)
+        {
+            continue;
+        }
+
         if (savedWaveIds[i] < WAVE_NR)
         {
             waveCboIds.insert(savedWaveIds[i]);
@@ -78,16 +130,25 @@ void PrintSettingMenuContentPrivate::loadOptions()
     }
 
     // 如果出现重复选择项，重新按照当前显示波形序列更新打印波形id
-    if (offCount < PRINT_WAVE_NUM - 1)
+    // 或者lead mode已经更新
+    if (offCount < PRINT_WAVE_NUM - 1
+            || isUpdateWaveIds)
     {
         if ((waveCboIds.size()) < PRINT_WAVE_NUM )
         {
+            int idCount = waveIDs.count();
             for (int i = 0; i < PRINT_WAVE_NUM; i++)
             {
                 QString path;
                 path = QString("Print|SelectWave%1").arg(i + 1);
-                systemConfig.setNumValue(path, waveIDs.at(i));
-                savedWaveIds[i] = i + 1;
+                int waveId = WAVE_NONE;
+                if (i < idCount)
+                {
+                    waveId = waveIDs.at(i);
+                }
+                systemConfig.setNumValue(path, waveId);
+                // 更新打印的波形ids
+                savedWaveIds[i] = waveId;
             }
         }
     }
