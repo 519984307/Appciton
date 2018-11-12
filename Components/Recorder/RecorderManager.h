@@ -99,6 +99,11 @@ public:
     void selfTest();
 
     /**
+     * @brief overPrint
+     */
+    void overPrint();
+
+    /**
      * @brief requestPrint request print a specific type
      * @param type print type
      * @return  sucess or not

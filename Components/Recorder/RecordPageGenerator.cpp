@@ -31,6 +31,7 @@
 #include "Utility.h"
 #include "LayoutManager.h"
 #include <QDebug>
+#include "RecorderManager.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
@@ -2178,7 +2179,7 @@ RecordPage *RecordPageGenerator::createStringListSegemnt(const QStringList &strL
 
 RecordPage *RecordPageGenerator::createEndPage()
 {
-    RecordPage *page = new RecordPage(80);
+    RecordPage *page = new RecordPage(160);
     return page;
 }
 
@@ -2202,6 +2203,7 @@ void RecordPageGenerator::timerEvent(QTimerEvent *ev)
         }
         else if (_requestStop)
         {
+            recorderManager.overPrint();
             _requestStop = false;
             delete page;
             emit stopped();
