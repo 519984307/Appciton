@@ -109,10 +109,10 @@ void FactoryVersionInfo::layoutExec()
     if (systemManager.isSupport(CONFIG_SPO2))
     {
         labelLeft = new QLabel(trs("SPO2Version") + "    ");
-        layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
 
         labelRight = new QLabel;
-        layout->addWidget(labelRight, d_ptr->labs.count(), 1);
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
         d_ptr->labs.insert(FactoryVersionInfoPrivate
                            ::ITEM_LAB_SPO2_VERSION, labelRight);
     }
@@ -196,6 +196,7 @@ void FactoryVersionInfoPrivate::loadOptions()
         labs[ITEM_LAB_TEMP_VERSION]->setText(version);
     }
 
+    version.clear();
     p = paramManager.getProvider("PRT72");
     if (p)
     {
