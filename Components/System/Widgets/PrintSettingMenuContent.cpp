@@ -273,8 +273,6 @@ void PrintSettingMenuContent::layoutExec()
     index++;
 
     glayout->setRowStretch(index, 1);
-
-    connect(&layoutManager, SIGNAL(StandardLayoutChanged()), this, SLOT(wavesUpdate()));
 }
 
 void PrintSettingMenuContent::onComboxIndexChanged(int index)
