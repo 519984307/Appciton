@@ -18,6 +18,8 @@
 #include "WindowManager.h"
 #include "IConfig.h"
 #include "LayoutManager.h"
+#include "ECGParam.h"
+#include "IBPParam.h"
 
 class PrintSettingMenuContentPrivate
 {
@@ -30,39 +32,43 @@ public:
 
     PrintSettingMenuContentPrivate()
         : clearPrintTask(NULL),
-          printTime(NULL),
-          printSpeed(NULL),
-          isLayoutUpdated(false)
+          printTimeCbo(NULL),
+          printSpeedCbo(NULL)
     {
     }
     /**
      * @brief loadOptions
      */
     void loadOptions(void);
+    /**
+     * @brief wavesUpdate
+     */
+    void wavesUpdate(void);
 
     Button *clearPrintTask;
     QList<ComboBox *> selectWaves;
     QList<int> waveIDs;
     QStringList waveNames;
-    ComboBox *printTime;
-    ComboBox *printSpeed;
-    bool isLayoutUpdated;
+    QList<int> lastWaveIDs;
+    ComboBox *printTimeCbo;
+    ComboBox *printSpeedCbo;
 };
 
 void PrintSettingMenuContentPrivate::loadOptions()
 {
     PrintTime timeSec = recorderManager.getPrintTime();
-    printTime->setCurrentIndex(timeSec);
+    printTimeCbo->setCurrentIndex(timeSec);
 
     PrintSpeed speed = recorderManager.getPrintSpeed();
-    printSpeed->setCurrentIndex(speed);
+    printSpeedCbo->setCurrentIndex(speed);
+
+    // update wave
+    wavesUpdate();
 
     bool isUpdateWaveIds = false;
-
-    if (isLayoutUpdated)
+    if (waveIDs != lastWaveIDs)
     {
-        isLayoutUpdated = false;
-        // select wave
+        lastWaveIDs = waveIDs;
         for (int i = 0; i < PRINT_WAVE_NUM; i++)
         {
             ComboBox *combo = selectWaves.at(i);
@@ -98,7 +104,8 @@ void PrintSettingMenuContentPrivate::loadOptions()
         path = QString("Print|SelectWave%1").arg(i + 1);
         systemConfig.getNumValue(path, savedWaveIds[i]);
         // 保存的波形id与当前的波形ids不匹配时，结束此次循环
-        if (waveIDs.indexOf(savedWaveIds[i]) < 0)
+        if (waveIDs.indexOf(savedWaveIds[i]) < 0
+                && savedWaveIds[i] != WAVE_NONE)
         {
             continue;
         }
@@ -199,10 +206,7 @@ void PrintSettingMenuContent::layoutExec()
     int lastColumn = 2;
 
     // select wave
-    QStringList waveNames;
-//    d_ptr->waveIDs = layoutManager.getStandardWaveformIDs();
-//    waveNames = layoutManager.getStandardWaveformLabels();
-    d_ptr->waveNames = waveNames;
+    d_ptr->wavesUpdate();
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
         QString comboName = QString("%1%2").arg(trs("Wave")).arg(i + 1);
@@ -211,11 +215,11 @@ void PrintSettingMenuContent::layoutExec()
         ComboBox *combo = new ComboBox;
         d_ptr->selectWaves.append(combo);
         combo->addItem(trs("Off"));
-        foreach(QString name, waveNames)
+        foreach(QString name, d_ptr->waveNames)
         {
             combo->addItem(name);
         }
-        if (waveNames.size() <= i)
+        if (d_ptr->waveNames.size() <= i)
         {
             combo->setEnabled(false);
         }
@@ -234,7 +238,7 @@ void PrintSettingMenuContent::layoutExec()
     glayout->addWidget(label, index, 0);
 
     combo = new ComboBox;
-    d_ptr->printTime = combo;
+    d_ptr->printTimeCbo = combo;
     combo->addItems(QStringList()
                     << trs(PrintSymbol::convert(PRINT_TIME_CONTINOUS))
                     << trs(PrintSymbol::convert(PRINT_TIME_EIGHT_SEC))
@@ -250,7 +254,7 @@ void PrintSettingMenuContent::layoutExec()
     glayout->addWidget(label, index, 0);
 
     combo = new ComboBox;
-    d_ptr->printSpeed = combo;
+    d_ptr->printSpeedCbo = combo;
     combo->addItems(QStringList()
                     << PrintSymbol::convert(PRINT_SPEED_125)
                     << PrintSymbol::convert(PRINT_SPEED_250)
@@ -270,7 +274,7 @@ void PrintSettingMenuContent::layoutExec()
 
     glayout->setRowStretch(index, 1);
 
-    connect(&layoutManager, SIGNAL(StandardLayoutChanged()), this, SLOT(onStandardLayoutChanged()));
+    connect(&layoutManager, SIGNAL(StandardLayoutChanged()), this, SLOT(wavesUpdate()));
 }
 
 void PrintSettingMenuContent::onComboxIndexChanged(int index)
@@ -369,9 +373,51 @@ void PrintSettingMenuContent::onClearBtnReleased()
 {
 }
 
-void PrintSettingMenuContent::onStandardLayoutChanged()
+void PrintSettingMenuContentPrivate::wavesUpdate()
 {
-//    d_ptr->waveIDs = layoutManager.getStandardWaveformIDs();
-//    d_ptr->waveNames = layoutManager.getStandardWaveformLabels();
-    d_ptr->isLayoutUpdated = true;
+    waveIDs.clear();
+    waveNames.clear();
+
+    // ecg
+    int index = 0;
+    currentConfig.getNumValue("ECG|Ecg1Wave", index);
+    ECGLead ecgLead = static_cast<ECGLead>(index);
+    WaveformID waveID = ecgParam.leadToWaveID(ecgLead);
+    waveIDs.append(waveID);
+    waveNames.append(ECGSymbol::convert(ecgLead, ecgParam.getLeadConvention()));
+
+    ECGLeadMode leadMode = ecgParam.getLeadMode();
+    if (leadMode == ECG_LEAD_MODE_5
+            || leadMode == ECG_LEAD_MODE_12)
+    {
+        int index = 0;
+        currentConfig.getNumValue("ECG|Ecg2Wave", index);
+        ECGLead ecgLead = static_cast<ECGLead>(index);
+        WaveformID waveID = ecgParam.leadToWaveID(ecgLead);
+        waveIDs.append(waveID);
+        waveNames.append(ECGSymbol::convert(ecgLead, ecgParam.getLeadConvention()));
+    }
+
+    // resp
+    waveIDs.append(WAVE_RESP);
+    waveNames.append("RESP");
+
+    // spo2
+    waveIDs.append(WAVE_SPO2);
+    waveNames.append("SPO2");
+
+    // ibp
+    IBPPressureName ibpTitle = ibpParam.getEntitle(IBP_INPUT_1);
+    waveID = ibpParam.getWaveformID(ibpTitle);
+    waveIDs.append(waveID);
+    waveNames.append(IBPSymbol::convert(ibpTitle));
+
+    ibpTitle = ibpParam.getEntitle(IBP_INPUT_2);
+    waveID = ibpParam.getWaveformID(ibpTitle);
+    waveIDs.append(waveID);
+    waveNames.append(IBPSymbol::convert(ibpTitle));
+
+    // co2
+    waveIDs.append(WAVE_CO2);
+    waveNames.append("CO2");
 }

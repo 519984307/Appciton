@@ -1421,7 +1421,7 @@ void LayoutManager::updateTabOrder()
 }
 
 LayoutManager::LayoutManager()
-    : d_ptr(new LayoutManagerPrivate)
+    : d_ptr(new LayoutManagerPrivate())
 {
     d_ptr->layoutMap = systemConfig.getConfig("PrimaryCfg|UILayout|ContentLayout|Normal");
 

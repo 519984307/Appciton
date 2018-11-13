@@ -2176,6 +2176,11 @@ void ECGParam::updateWaveWidgetStatus()
     }
 }
 
+ECGLeadNameConvention ECGParam::getLeadNameConvention() const
+{
+    return _ecgStandard;
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/

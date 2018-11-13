@@ -302,6 +302,12 @@ public: // 用于访问配置相关信息。
      */
     void updateWaveWidgetStatus(void);
 
+    /**
+     * @brief getLeadNameConvention  获取导联协议
+     * @return
+     */
+    ECGLeadNameConvention getLeadNameConvention() const;
+
 signals:
     void calcLeadChanged();
 

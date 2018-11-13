@@ -47,11 +47,6 @@ private slots:
      */
     void onClearBtnReleased();
 
-    /**
-     * @brief onStandardLayoutChanged
-     */
-    void onStandardLayoutChanged(void);
-
 private:
     PrintSettingMenuContentPrivate *const d_ptr;
 };
