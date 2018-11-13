@@ -531,6 +531,14 @@ void NIBPTrendWidget::showModelText(const QString &text)
         showNormalStatus(d_ptr->model, psrc);
     }
     d_ptr->model->setText(text);
+    if (text.isEmpty())
+    {
+        d_ptr->model->setVisible(false);
+    }
+    else
+    {
+        d_ptr->model->setVisible(true);
+    }
 }
 
 /**************************************************************************************************
