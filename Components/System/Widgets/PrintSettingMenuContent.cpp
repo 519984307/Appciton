@@ -200,8 +200,8 @@ void PrintSettingMenuContent::layoutExec()
 
     // select wave
     QStringList waveNames;
-    d_ptr->waveIDs = layoutManager.getStandardWaveformIDs();
-    waveNames = layoutManager.getStandardWaveformLabels();
+//    d_ptr->waveIDs = layoutManager.getStandardWaveformIDs();
+//    waveNames = layoutManager.getStandardWaveformLabels();
     d_ptr->waveNames = waveNames;
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
@@ -371,7 +371,7 @@ void PrintSettingMenuContent::onClearBtnReleased()
 
 void PrintSettingMenuContent::onStandardLayoutChanged()
 {
-    d_ptr->waveIDs = layoutManager.getStandardWaveformIDs();
-    d_ptr->waveNames = layoutManager.getStandardWaveformLabels();
+//    d_ptr->waveIDs = layoutManager.getStandardWaveformIDs();
+//    d_ptr->waveNames = layoutManager.getStandardWaveformLabels();
     d_ptr->isLayoutUpdated = true;
 }
