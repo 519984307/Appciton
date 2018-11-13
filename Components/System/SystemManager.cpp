@@ -263,6 +263,9 @@ bool SystemManager::isSupport(ParamID paramID) const
     case PARAM_TEMP:
         path = "TEMPEnable";
         break;
+    case PARAM_O2:
+        path = "O2Enable";
+        break;
     default:
         break;
     }

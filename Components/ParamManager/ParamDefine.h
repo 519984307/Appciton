@@ -29,6 +29,7 @@ enum ParamID
     PARAM_IBP,
     PARAM_AG,
     PARAM_CO,
+    PARAM_O2,
 
     PARAM_UPGRADE,
 
@@ -106,6 +107,8 @@ enum SubParamID
     SUB_PARAM_ST_V4,
     SUB_PARAM_ST_V5,
     SUB_PARAM_ST_V6,
+
+    SUB_PARAM_O2,
 
     SUB_PARAM_NR,
 };

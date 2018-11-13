@@ -35,6 +35,7 @@ enum ConfiguredFuncs
     CONFIG_IBP = 0x200,
     CONFIG_WIFI = 0x400,
     CONFIG_TOUCH = 0x800,
+    CONFIG_O2 = 0x1000,
 };
 
 // 前面板按键状态,与系统板获取按键状态命令回复一致

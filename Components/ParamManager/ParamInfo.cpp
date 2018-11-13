@@ -23,7 +23,9 @@ ParamInfo *ParamInfo::_selfObj = NULL;
  *************************************************************************************************/
 static const char *_paramNames[PARAM_NR] =
 {
-    "ECG", "SPO2", "RESP", "NIBP", "CO2", "TEMP", "ECGDUP", "RESPDUP", "IBP", "AG", "CO", "UPGRADE"
+    "ECG", "SPO2", "RESP", "NIBP", "CO2",
+    "TEMP", "ECGDUP", "RESPDUP", "IBP", "AG",
+    "CO", "UPGRADE", "O2"
 };
 
 /**************************************************************************************************
@@ -193,7 +195,8 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
         return "ST V5";
     case SUB_PARAM_ST_V6:
         return "ST V6";
-
+    case SUB_PARAM_O2:
+        return "O2";
     default:
         return NULL;
     }
@@ -325,6 +328,9 @@ ParamID ParamInfo::getParamID(SubParamID id)
     case SUB_PARAM_ETO2:
     case SUB_PARAM_FIO2:
         paramID = PARAM_AG;
+        break;
+    case SUB_PARAM_O2:
+        paramID = PARAM_O2;
         break;
     default:
         break;
@@ -684,6 +690,7 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id)
     case SUB_PARAM_FIAA2:
     case SUB_PARAM_ETO2:
     case SUB_PARAM_FIO2:
+    case SUB_PARAM_O2:
         return UNIT_PERCENT;
 
     case SUB_PARAM_T1:

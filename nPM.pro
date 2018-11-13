@@ -510,6 +510,9 @@ SOURCES +=                                                                      
     Params/RESPParam/RESPWidgets/RESPWaveWidget.cpp                             \
     Params/RESPParam/RESPWidgets/RESPTrendWidget.cpp                            \
     Params/RESPParam/RESPWidgets/RESPMenuContent.cpp                            \
+    Params/O2Param/O2Widgets/O2TrendWidget.cpp                                  \
+    Params/O2Param/O2Param.cpp                                                  \
+    Params/O2Param/O2Alarm.cpp                                                  \
 #################################################################################
     Providers/Provider.cpp                                                      \
     Providers/BLMProvider.cpp                                                   \
@@ -529,6 +532,7 @@ SOURCES +=                                                                      
     Providers/RawData/RawDataCollectionTxt.cpp                                  \
     Providers/S5Provider/S5Provider.cpp                                         \
     Providers/DataDispatcher.cpp                                                \
+    Providers/NeonateProvider/NeonateProvider.cpp                               \
 #################################################################################
     Main/App/AppMain.cpp                                                        \
     Main/App/Init.cpp                                                           \
@@ -1045,6 +1049,12 @@ HEADERS +=                                                                      
     Params/RESPParam/RESPWidgets/RESPTrendWidget.h                              \
     Params/RESPParam/RESPWidgets/RESPMenuContent.h                              \
     Params/PAParam/PASymbol.h                                                   \
+    Params/O2Param/O2Widgets/O2TrendWidget.h                                    \
+    Params/O2Param/O2Param.h                                                    \
+    Params/O2Param/O2ProviderIFace.h                                            \
+    Params/O2Param/O2Alarm.h                                                    \
+    Params/O2Param/O2Define.h                                                   \
+    Params/O2Param/O2Symbol.h                                                   \
 #################################################################################
     Providers/Provider.h                                                        \
     Providers/BLMProvider.h                                                     \
@@ -1065,6 +1075,7 @@ HEADERS +=                                                                      
     Providers/RawData/RawDataCollectionTxt.h                                    \
     Providers/S5Provider/S5Provider.h                                           \
     Providers/DataDispatcher.h                                                  \
+    Providers/NeonateProvider/NeonateProvider.h                                 \
 #################################################################################
     Main/App/Init.h                                                             \
     Main/IApplication.h                                                         \
@@ -1170,6 +1181,7 @@ DEPENDPATH +=                                                                   
     Providers/SystemBoardProvider                                               \
     Providers/RawData                                                           \
     Providers/S5Provider                                                        \
+    Providers/NeonateProvider                                                   \
     Params                                                                      \
     Params/AGParam                                                              \
     Params/AGParam/AGWidgets                                                    \
@@ -1193,7 +1205,8 @@ DEPENDPATH +=                                                                   
     Params/TEMPParam/TEMPWidgets                                                \
     Params/RESPParam                                                            \
     Params/RESPParam/RESPWidgets                                                \
-
+    Params/O2Param                                                              \
+    Params/O2Param/O2Widgets                                                    \
 
 
 INCLUDEPATH +=                                                                  \
@@ -1294,6 +1307,7 @@ INCLUDEPATH +=                                                                  
     Providers/SystemBoardProvider                                               \
     Providers/RawData                                                           \
     Providers/S5Provider                                                        \
+    Providers/NeonateProvider                                                   \
     Params                                                                      \
     Params/AGParam                                                              \
     Params/AGParam/AGWidgets                                                    \
@@ -1317,6 +1331,8 @@ INCLUDEPATH +=                                                                  
     Params/TEMPParam/TEMPWidgets                                                \
     Params/RESPParam                                                            \
     Params/RESPParam/RESPWidgets                                                \
+    Params/O2Param                                                              \
+    Params/O2Param/O2Widgets                                                    \
 
 linux-arm-g++ {
     SOURCES +=  Utility/Widgets/TSCalibrationWindow.cpp
