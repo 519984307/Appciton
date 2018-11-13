@@ -58,7 +58,7 @@ static KeyActionDesc _baseKeys[] =
 #ifndef HIDE_PARAM_SWITCH
     KeyActionDesc("", trs("ParameterSwitch"), "paraSwitch.png"),
 #endif
-    KeyActionDesc("", trs("DisableTouchScreen"), "lockScreen.png", SoftkeyActionBase::lockScreen),
+    KeyActionDesc("", trs("DisableTouchScreen"), "touch.png", SoftkeyActionBase::banTouchScreen),
 #ifndef HIDE_STANDBY_FUNCTION
     KeyActionDesc("", trs("Standby"), "standby.png", SoftkeyActionBase::standby),
 #endif
@@ -221,7 +221,7 @@ void SoftkeyActionBase::mainsetup(bool isPressed)
     w->focusFirstMenuItem();
 }
 
-void SoftkeyActionBase::lockScreen(bool isPressed)
+void SoftkeyActionBase::banTouchScreen(bool isPressed)
 {
     if (isPressed)
     {
@@ -231,6 +231,7 @@ void SoftkeyActionBase::lockScreen(bool isPressed)
 #ifdef Q_WS_QWS
     bool isOn = systemManager.isTouchScreenOn();
     systemManager.setTouchScreenOnOff(!isOn);
+    softkeyManager.refreshPage(false);
 #endif
 }
 
@@ -382,6 +383,24 @@ KeyActionDesc *SoftkeyActionBase::getActionDesc(int index)
     if (index > SOFT_BASE_KEY_NR)
     {
         return NULL;
+    }
+
+    if (index == SOFT_BASE_KEY_SCREEN_BAN)
+    {
+        bool isOn = systemManager.isTouchScreenOn();
+        QString iconPath, hint;
+        if (isOn)
+        {
+            iconPath = QString("touch.png");
+            hint = trs("EnabledTouchScreen");
+        }
+        else
+        {
+            iconPath = QString("banTouch.png");
+            hint = trs("DisableTouchScreen");
+        }
+        _baseKeys[index].iconPath = iconPath;
+        _baseKeys[index].hint = hint;
     }
 
     return &_baseKeys[index];

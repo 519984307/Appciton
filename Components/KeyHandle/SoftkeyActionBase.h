@@ -112,7 +112,7 @@ public:    // 一些共有的功能处理。
     static void rescueData(bool isPressed);
     static void calculation(bool isPressed);
     static void mainsetup(bool isPressed);
-    static void lockScreen(bool isPressed);
+    static void banTouchScreen(bool isPressed);
     static void switchSystemMode(bool isPressed);
     static void summaryReview(bool isPressed);
     static void eventReview(bool isPressed);

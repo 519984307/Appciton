@@ -1496,6 +1496,7 @@ DeleteAll,删除全部,Delete All
 DeleteCase,删除事件,Delete Case
 Freeze,冻结,Freeze
 DisableTouchScreen,禁触摸屏,Disable Touch
+EnabledTouchScreen,启触摸屏,Enabled Touch
 Open,开放,Open
 Start,开始,Start
 AlarmLightOnAlarmReset,警示复位灯,Alarm Light On Alarm Reset
