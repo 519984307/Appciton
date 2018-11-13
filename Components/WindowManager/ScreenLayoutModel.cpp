@@ -36,7 +36,7 @@ const char *layoutNodeName(LayoutNodeType nodeType)
         "N2O",
         "AA1",
         "AA2",
-        "O2",
+        "AG_O2",
 
         "NIBP",
         "NIBPList",
@@ -44,6 +44,7 @@ const char *layoutNodeName(LayoutNodeType nodeType)
         "C.O.",
         "ST",
         "PVCs",
+        "O2",
 
         "ECG1Wave",
         "ECG2Wave",
@@ -366,10 +367,11 @@ public:
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA1)] = ParamNodeDescription("AA1",  PARAM_SPAN_TWO);
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA2)] = ParamNodeDescription("AA2", PARAM_SPAN_TWO);
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_N2O)] = ParamNodeDescription("N2O", PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_O2)] = ParamNodeDescription("O2", PARAM_SPAN_TWO);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_O2)] = ParamNodeDescription("AG_O2", PARAM_SPAN_TWO);
 
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = ParamNodeDescription("ST", PARAM_SPAN_TWO);
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_PVCS)] = ParamNodeDescription("PVCs", PARAM_SPAN_ONE);
+        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_OXYGEN)] = ParamNodeDescription("O2", PARAM_SPAN_ONE);
     }
 
     /**

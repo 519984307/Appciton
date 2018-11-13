@@ -25,7 +25,7 @@ static const char *_paramNames[PARAM_NR] =
 {
     "ECG", "SPO2", "RESP", "NIBP", "CO2",
     "TEMP", "ECGDUP", "RESPDUP", "IBP", "AG",
-    "CO", "UPGRADE", "O2"
+    "CO", "O2", "UPGRADE"
 };
 
 /**************************************************************************************************

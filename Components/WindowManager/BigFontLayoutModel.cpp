@@ -726,10 +726,11 @@ void BigFontLayoutModelPrivate::loadItemInfos()
     paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA1)] = ParamNodeDescription("AA1", LAYOUT_NODE_WAVE_AA1);
     paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA2)] = ParamNodeDescription("AA2", LAYOUT_NODE_WAVE_AA2);
     paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_N2O)] = ParamNodeDescription("N2O", LAYOUT_NODE_WAVE_N2O);
-    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_O2)] = ParamNodeDescription("O2", LAYOUT_NODE_WAVE_O2);
+    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_O2)] = ParamNodeDescription("AG_O2", LAYOUT_NODE_WAVE_O2);
 
     paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = ParamNodeDescription("ST");
     paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_PVCS)] = ParamNodeDescription("PVCs");
+    paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_OXYGEN)] = ParamNodeDescription("O2");
 }
 
 QByteArray BigFontLayoutModelPrivate::getWaveData(WaveformID waveid)

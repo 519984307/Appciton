@@ -66,6 +66,8 @@ void O2Param::showSubParamValue()
 
 UnitType O2Param::getCurrentUnit(SubParamID id)
 {
+    Q_UNUSED(id)
+    return UNIT_PERCENT;
 }
 
 void O2Param::setProvider(O2ProviderIFace *provider)
