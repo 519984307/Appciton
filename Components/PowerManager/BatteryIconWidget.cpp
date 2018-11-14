@@ -177,7 +177,6 @@ void BatteryIconWidget::setTimeValue(int time)
 
 void BatteryIconWidget::charging()
 {
-    setStatus(BATTERY_CHARGING);
     if (!d_ptr->chargingTimer->isActive())
     {
         d_ptr->chargingTimer->start();
@@ -562,6 +561,7 @@ BatteryIconWidget::BatteryIconWidget(QColor iconColor)
  *************************************************************************************************/
 BatteryIconWidget::~BatteryIconWidget()
 {
+    delete d_ptr->chargingTimer;
     delete d_ptr;
 }
 

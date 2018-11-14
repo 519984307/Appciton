@@ -305,6 +305,7 @@ SOURCES +=                                                                      
     Components/PowerManager/BatteryBarWidget.cpp                                \
     Components/PowerManager/BatteryIconWidget.cpp                               \
     Components/PowerManager/PowerManager.cpp                                    \
+    Components/PowerManager/PowerManagerBrief.cpp                               \
     Components/WindowManager/IWidget.cpp                                        \
     Components/WindowManager/WindowManager.cpp                                  \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
@@ -794,6 +795,7 @@ HEADERS +=                                                                      
     Components/PowerManager/BatteryBarWidget.h                                  \
     Components/PowerManager/BatteryIconWidget.h                                 \
     Components/PowerManager/PowerManager.h                                      \
+    Components/PowerManager/PowerManagerBrief.h                                 \
     Components/PowerManager/PowerManagerProviderIFace.h                         \
     Components/TimeManager/DateTimeWidget.h                                     \
     Components/TimeManager/ElapseTimeWidget.h                                   \

@@ -156,7 +156,7 @@ static void _initComponents(void)
 
     // 电源
     BatteryBarWidget *bar = &batteryBarWidget;
-    powerManager.construction();
+    powerMangerBrief.construction();
     alertor.addOneShotSource(batteryOneShotAlarm.construction());
     layoutManager.addLayoutWidget(bar);
 
@@ -601,7 +601,6 @@ void deleteObjects(void)
     deleteSuperRunConfig();
     deleteSystemTick();
     deleteSystemBoardProvider();
-    deletePowerManager();
     deleteKeyActionManager();
 
     deleteDataStorageDirManager();

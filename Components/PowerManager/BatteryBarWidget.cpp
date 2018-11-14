@@ -37,6 +37,10 @@ void BatteryBarWidget::setStatus(BatteryIconStatus status)
  *************************************************************************************************/
 void BatteryBarWidget::setVolume(BatteryPowerLevel volume)
 {
+    if (volume == BAT_VOLUME_LOW)
+    {
+        return;
+    }
     _batteryIconWidget->setVolume(volume);
 }
 
