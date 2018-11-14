@@ -245,7 +245,7 @@ void ECGMenuContentPrivate::updatePrintWaveIds()
         int waveId = WAVE_NONE;
         systemConfig.getNumValue(path, waveId);
         // 旧的打印波形与ecg当前保存的波形一致时
-        if(waveId == ecgWaveIdList.at(0))
+        if (waveId == ecgWaveIdList.at(0))
         {
             int index = 0;
             currentConfig.getNumValue("ECG|Ecg1Wave", index);
@@ -275,7 +275,7 @@ void ECGMenuContentPrivate::updatePrintWaveIds()
         int waveId = WAVE_NONE;
         systemConfig.getNumValue(path, waveId);
         // 旧的打印波形与ecg当前保存的波形一致时
-        if(waveId == ecgWaveIdList.at(1))
+        if (waveId == ecgWaveIdList.at(1))
         {
             int index = 0;
             currentConfig.getNumValue("ECG|Ecg2Wave", index);
@@ -283,7 +283,7 @@ void ECGMenuContentPrivate::updatePrintWaveIds()
             WaveformID ecgwaveID = ecgParam.leadToWaveID(ecgLead);
             // 替换波形
             if (leadMode == ECG_LEAD_MODE_5
-                || leadMode == ECG_LEAD_MODE_12)
+                    || leadMode == ECG_LEAD_MODE_12)
             {
                 if (ecgwaveID != waveId)
                 {
@@ -295,7 +295,7 @@ void ECGMenuContentPrivate::updatePrintWaveIds()
                 systemConfig.setNumValue(path, static_cast<int>(WAVE_NONE));
             }
             break;
-         }
+        }
     }
 }
 

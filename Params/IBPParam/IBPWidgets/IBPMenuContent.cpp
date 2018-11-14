@@ -153,7 +153,7 @@ void IBPMenuContentPrivate::updatePrintWaveIds()
         int waveId = WAVE_NONE;
         systemConfig.getNumValue(path, waveId);
         // 旧的打印波形与当前保存的波形一致时
-        if(waveId == waveIdList.at(0))
+        if (waveId == waveIdList.at(0))
         {
             IBPPressureName ibpTitle = ibpParam.getEntitle(IBP_INPUT_1);
             int ibpWaveID = ibpParam.getWaveformID(ibpTitle);
@@ -180,7 +180,7 @@ void IBPMenuContentPrivate::updatePrintWaveIds()
         int waveId = WAVE_NONE;
         systemConfig.getNumValue(path, waveId);
         // 旧的打印波形与当前保存的波形一致时
-        if(waveId == waveIdList.at(1))
+        if (waveId == waveIdList.at(1))
         {
             IBPPressureName ibpTitle = ibpParam.getEntitle(IBP_INPUT_2);
             int ibpWaveID = ibpParam.getWaveformID(ibpTitle);
@@ -660,7 +660,7 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
         }
 
         if (item ==  IBPMenuContentPrivate::ITEM_CBO_ENTITLE_1
-            || item ==  IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2)
+                || item ==  IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2)
         {
             d_ptr->updatePrintWaveIds();
         }
