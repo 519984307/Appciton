@@ -340,10 +340,12 @@ void AlarmLimitWindow::restoreDefaults()
             info.paramID = pid;
             info.subParamID = subId;
             info.status = status;
+            alarmConfig.setLimitAlarmEnable(subId, status);
             info.limitConfig = alarmConfig.getLimitAlarmConfig(subId, unit);
             info.alarmLevel = lev;
             info.limitConfig.highLimit = high;
             info.limitConfig.lowLimit = low;
+            alarmConfig.setLimitAlarmConfig(subId, unit, info.limitConfig);
             infos.append(info);
         }
     }
