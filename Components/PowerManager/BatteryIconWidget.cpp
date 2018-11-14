@@ -567,7 +567,7 @@ BatteryIconWidget::~BatteryIconWidget()
 
 BatteryIconWidgetPrivate::BatteryIconWidgetPrivate(QColor color)
     : printString(QString()),
-      batteryVolume(BAT_VOLUME_0),
+      batteryVolume(BAT_VOLUME_NONE),
       lastBatteryVolume(0),
       timeRelative(-2),
       lastTimeRelative(-2),
@@ -577,6 +577,6 @@ BatteryIconWidgetPrivate::BatteryIconWidgetPrivate(QColor color)
       lastBatteryStatus(BATTERY_NONE),
       iconBlackGroundColor(color),
       chargingTimer(NULL),
-      chargingVolume(BAT_VOLUME_0)
+      chargingVolume(BAT_VOLUME_NONE)
 {
 }

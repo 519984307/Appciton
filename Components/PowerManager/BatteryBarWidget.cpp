@@ -37,7 +37,7 @@ void BatteryBarWidget::setStatus(BatteryIconStatus status)
  *************************************************************************************************/
 void BatteryBarWidget::setVolume(BatteryPowerLevel volume)
 {
-    if (volume == BAT_VOLUME_LOW)
+    if (volume == BAT_VOLUME_0)
     {
         return;
     }
@@ -122,7 +122,6 @@ void BatteryBarWidget::paintEvent(QPaintEvent *e)
 void BatteryBarWidget::_batRealsed(IWidget * iWidget)
 {
     Q_UNUSED(iWidget)
-    windowManager.showWindow(&_batteryIndicatorWindow , WindowManager::ShowBehaviorModal);
 }
 
 /**************************************************************************************************
@@ -132,6 +131,7 @@ BatteryBarWidget::BatteryBarWidget() : IWidget("BatteryBarWidget")
 {
     _batteryIconWidget = new BatteryIconWidget(blackgroundColor);
     _batteryStatus = BATTERY_NORMAL;
+    setFocusPolicy(Qt::NoFocus);
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(0);

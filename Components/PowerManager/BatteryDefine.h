@@ -44,7 +44,7 @@ enum BatStatus
 
 enum BatteryPowerLevel
 {
-    BAT_VOLUME_LOW = -1,
+    BAT_VOLUME_NONE = -1,
     BAT_VOLUME_0,
     BAT_VOLUME_1,
     BAT_VOLUME_2,

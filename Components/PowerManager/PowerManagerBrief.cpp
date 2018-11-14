@@ -20,7 +20,8 @@ class PowerMangerBriefPrivate
 {
 public:
     explicit PowerMangerBriefPrivate(PowerMangerBrief * const q_ptr)
-        : q_ptr(q_ptr), lowBattery(false), shutBattery(false)
+        : q_ptr(q_ptr), lowBattery(false), shutBattery(false),
+          lastVolume(BAT_VOLUME_NONE)
     {}
     ~PowerMangerBriefPrivate(){}
 
@@ -29,6 +30,7 @@ public:
     PowerSuplyType powerType;       // 电源类型
     bool lowBattery;                // 低电量
     bool shutBattery;               // 关机电量
+    BatteryPowerLevel lastVolume;   // 上一次的电量等级
 
     void monitorRun();
 
@@ -103,7 +105,8 @@ void PowerMangerBriefPrivate::monitorRun()
     else if (powerType == POWER_SUPLY_BAT)
     {
         batteryBarWidget.setStatus(BATTERY_NORMAL);
-        batteryBarWidget.setVolume(getCurrentVolume());
+        BatteryPowerLevel curVolume = getCurrentVolume();
+        batteryBarWidget.setVolume(curVolume);
         if (shutBattery)
         {
             // 是否电量低于开机所需电量，是则自动关机
@@ -112,9 +115,14 @@ void PowerMangerBriefPrivate::monitorRun()
         else if (lowBattery)
         {
             // 电量到达低电量，提示电量过低
-            MessageBox lowMessage(trs("Prompt"), trs("LowBattery"), false);
-            lowMessage.exec();
+            batteryBarWidget.setIconLow();  // 黄灯显示低电量
+            if (lastVolume != curVolume)
+            {
+                MessageBox lowMessage(trs("Prompt"), trs("LowBattery"), false);
+                lowMessage.exec();
+            }
         }
+        lastVolume = curVolume;
     }
     else
     {
@@ -140,38 +148,34 @@ BatteryPowerLevel PowerMangerBriefPrivate::getCurrentVolume()
 
     batteryADCVoltage = systemBoardProvider.getPowerADC();
 
-    BatteryPowerLevel powerLevel = BAT_VOLUME_LOW;
+    BatteryPowerLevel powerLevel = BAT_VOLUME_0;
     lowBattery = false;
     shutBattery = false;
     if (batteryADCVoltage < BAT_LEVEL_0)
     {
         // over low
-        powerLevel = BAT_VOLUME_LOW;
+        powerLevel = BAT_VOLUME_0;
         lowBattery = true;
         shutBattery = true;
     }
     else if (batteryADCVoltage >= BAT_LEVEL_0 && batteryADCVoltage < BAT_LEVEL_1)
     {
-        powerLevel = BAT_VOLUME_0;
+        powerLevel = BAT_VOLUME_1;
         lowBattery = true;
     }
     else if (batteryADCVoltage >= BAT_LEVEL_1 && batteryADCVoltage < BAT_LEVEL_2)
     {
-        powerLevel = BAT_VOLUME_1;
+        powerLevel = BAT_VOLUME_2;
     }
     else if (batteryADCVoltage >= BAT_LEVEL_2 && batteryADCVoltage < BAT_LEVEL_3)
     {
-        powerLevel = BAT_VOLUME_2;
+        powerLevel = BAT_VOLUME_3;
     }
     else if (batteryADCVoltage >= BAT_LEVEL_3 && batteryADCVoltage < BAT_LEVEL_4)
     {
-        powerLevel = BAT_VOLUME_3;
-    }
-    else if (batteryADCVoltage >= BAT_LEVEL_4 && batteryADCVoltage <= BAT_LEVEL_5)
-    {
         powerLevel = BAT_VOLUME_4;
     }
-    else if (batteryADCVoltage > BAT_LEVEL_5)
+    else if (batteryADCVoltage >= BAT_LEVEL_4 && batteryADCVoltage <= BAT_LEVEL_5)
     {
         powerLevel = BAT_VOLUME_5;
     }
@@ -207,6 +211,6 @@ void PowerMangerBriefPrivate::shutdownWarn()
     if (systemBoardProvider.getPowerSuplyType() != POWER_SUPLY_AC
             && systemBoardProvider.getPowerSuplyType() != POWER_SUPLY_AC_BAT)
     {
-        QTimer::singleShot(10000, q_ptr, SLOT(powerOff()));     // 弹出关机提示后１０秒关机
+        QTimer::singleShot(10000, q_ptr, SLOT(powerOff()));     // 弹出关机提示后10秒关机
     }
 }
