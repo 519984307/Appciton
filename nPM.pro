@@ -404,6 +404,7 @@ SOURCES +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.cpp      \
     Components/Maintain/FactoryMaintain/UpgradeManager.cpp                      \
     Components/Maintain/FactoryMaintain/UpgradeWindow.cpp                       \
+    Components/Maintain/FactoryMaintain/O2CalibrationMenuContent.cpp            \
     Components/CodeMarker/Widgets/CodeMarkerWindow.cpp                          \
     Components/ConfigManager/ConfigManager.cpp                                  \
     Components/ConfigManager/SelectDefaultConfigMenuContent.cpp                 \
@@ -511,6 +512,7 @@ SOURCES +=                                                                      
     Params/RESPParam/RESPWidgets/RESPTrendWidget.cpp                            \
     Params/RESPParam/RESPWidgets/RESPMenuContent.cpp                            \
     Params/O2Param/O2Widgets/O2TrendWidget.cpp                                  \
+    Params/O2Param/O2Widgets/O2MenuContent.cpp                                  \
     Params/O2Param/O2Param.cpp                                                  \
     Params/O2Param/O2Alarm.cpp                                                  \
 #################################################################################
@@ -910,6 +912,7 @@ HEADERS +=                                                                      
     Components/Maintain/FactoryMaintain/FactoryImportExportMenuContent.h        \
     Components/Maintain/FactoryMaintain/UpgradeManager.h                        \
     Components/Maintain/FactoryMaintain/UpgradeWindow.h                         \
+    Components/Maintain/FactoryMaintain/O2CalibrationMenuContent.h              \
     Components/CodeMarker/Widgets/CodeMarkerList.h                              \
     Components/CodeMarker/Widgets/CodeMarkerWindow.h                            \
     Components/ConfigManager/ConfigManager.h                                    \
@@ -1050,6 +1053,7 @@ HEADERS +=                                                                      
     Params/RESPParam/RESPWidgets/RESPMenuContent.h                              \
     Params/PAParam/PASymbol.h                                                   \
     Params/O2Param/O2Widgets/O2TrendWidget.h                                    \
+    Params/O2Param/O2Widgets/O2MenuContent.h                                    \
     Params/O2Param/O2Param.h                                                    \
     Params/O2Param/O2ProviderIFace.h                                            \
     Params/O2Param/O2Alarm.h                                                    \

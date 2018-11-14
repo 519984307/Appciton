@@ -18,6 +18,7 @@
 #include "NIBPMenuContent.h"
 #include "CO2MenuContent.h"
 #include "TEMPMenuContent.h"
+#include "O2MenuContent.h"
 #include "SystemManager.h"
 
 MeasureSettingWindow *MeasureSettingWindow::getInstance()
@@ -53,6 +54,10 @@ MeasureSettingWindow *MeasureSettingWindow::getInstance()
         if (systemManager.isSupport(CONFIG_CO2))
         {
             instance->addMenuContent(new CO2MenuContent);
+        }
+        if (systemManager.isSupport(CONFIG_O2))
+        {
+            instance->addMenuContent(new O2MenuContent);
         }
     }
     return instance;

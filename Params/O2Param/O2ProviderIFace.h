@@ -29,7 +29,7 @@ public:
     virtual void sendProbeState(void){}
 
     // 传感器校准
-    virtual void sendCalibration(void){}
+    virtual void sendCalibration(int /*concentration*/){}
 
     // 马达控制
     virtual void sendMotorControl(void){}

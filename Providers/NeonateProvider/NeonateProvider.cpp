@@ -9,6 +9,9 @@
  **/
 
 #include "NeonateProvider.h"
+#include "O2Param.h"
+#include "ErrorLogItem.h"
+#include "ErrorLog.h"
 
 bool NeonateProvider::attachParam(Param &param)
 {
@@ -41,12 +44,12 @@ void NeonateProvider::sendO2SelfTest()
 
 void NeonateProvider::sendProbeState()
 {
-    sendCmd(NEONATE_CMD_PROBE_STATUS, NULL, 0);
+    sendCmd(NEONATE_CMD_PROBE_MOTOR, NULL, 0);
 }
 
-void NeonateProvider::sendCalibration(O2Concentration calib)
+void NeonateProvider::sendCalibration(int concentration)
 {
-    unsigned char data = calib;
+    unsigned char data = concentration;
     sendCmd(NEONATE_CMD_CALIBRATION, &data, 1);
 }
 
@@ -54,6 +57,12 @@ void NeonateProvider::sendMotorControl(int status)
 {
     unsigned char data = status;
     sendCmd(NEONATE_CMD_MOTOR_CONTROL, &data, 1);
+}
+
+void NeonateProvider::sendACK(unsigned char type)
+{
+    unsigned char data = type;
+    sendCmd(NEONATE_RESPONSE_ACK, &data, 1);
 }
 
 void NeonateProvider::handlePacket(unsigned char *data, int len)
@@ -64,25 +73,35 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
     }
     BLMProvider::handlePacket(data, len);
 
+    sendACK(data[0]);
     switch (data[0])
     {
     case NEONATE_RSP_VERSION:
         break;
     case NEONATE_RSP_SELF_STATUS:
         break;
-    case NEONATE_RSP_PROBE_STATUS:
+    case NEONATE_RSP_PROBE_MOTOR:
         break;
     case NEONATE_RSP_CALIBRATION:
+        o2Param.calibrationResult(data);
         break;
     case NEONATE_RSP_MOTOR_CONTROL:
         break;
     case NEONATE_NOTIFY_START_UP:
+    {
+        ErrorLogItem *item = new CriticalFaultLogItem();
+        item->setName("T5 Start");
+        errorLog.append(item);
+        o2Param.reset();
         break;
-    case NEONATE_NOTIFY_PROBE_OFF:
+    }
+    case NEONATE_NOTIFY_PROBE_MOTOR:
         break;
     case NEONATE_CYCLE_ALIVE:
+        feed();
         break;
     case NEONATE_CYCLE_O2_DATA:
+        o2Param.setO2Concentration(data[1]);
         break;
     case NEONATE_CYCLE_AD_DATA:
         break;

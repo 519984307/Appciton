@@ -21,15 +21,15 @@ enum NeonatePacketType
     NEONATE_RSP_VERSION             = 0x11,
     NEONATE_CMD_SELF_STATUS         = 0x12,     // 获取自检状态
     NEONATE_RSP_SELF_STATUS         = 0x13,
-    NEONATE_CMD_PROBE_STATUS        = 0x14,     // 获取探头状态
-    NEONATE_RSP_PROBE_STATUS        = 0x15,
+    NEONATE_CMD_PROBE_MOTOR         = 0x14,     // 获取探头,马达状态
+    NEONATE_RSP_PROBE_MOTOR         = 0x15,
     NEONATE_CMD_CALIBRATION         = 0x16,     // 传感器校准
     NEONATE_RSP_CALIBRATION         = 0x17,
     NEONATE_CMD_MOTOR_CONTROL       = 0x18,     // 马达控制
     NEONATE_RSP_MOTOR_CONTROL       = 0x19,
 
     NEONATE_NOTIFY_START_UP         = 0x40,     // 启动帧
-    NEONATE_NOTIFY_PROBE_OFF        = 0x41,     // 探头脱落帧
+    NEONATE_NOTIFY_PROBE_MOTOR      = 0x41,     // 马达与探头状态帧
 
     NEONATE_CYCLE_ALIVE             = 0x5B,     // 保活帧
     NEONATE_CYCLE_O2_DATA           = 0x5C,     // 氧气浓度数据帧
@@ -68,10 +68,13 @@ public: // O2ProviderIFace的接口
     virtual void sendProbeState(void);
 
     // 传感器校准
-    virtual void sendCalibration(O2Concentration calib);
+    virtual void sendCalibration(int concentration);
 
     // 马达控制
     virtual void sendMotorControl(int status);
+
+    // 应答
+    void sendACK(unsigned char type);
 
 protected:
     virtual void handlePacket(unsigned char *data, int len);

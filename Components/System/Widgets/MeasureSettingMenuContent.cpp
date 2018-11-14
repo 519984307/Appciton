@@ -31,6 +31,7 @@ public:
         ITEM_BTN_SPO2,
         ITEM_BTN_NIBP,
         ITEM_BTN_CO2,
+        ITEM_BTN_O2,
     };
 };
 
@@ -177,6 +178,20 @@ void MeasureSettingMenuContent::layoutExec()
         btn->setButtonStyle(Button::ButtonTextOnly);
         connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
         btn->setProperty("Item", qVariantFromValue(item));
+        item++;
+    }
+
+    // O2
+    if (systemManager.isSupport(CONFIG_O2))
+    {
+        btn = new Button(QString("%1 >>").arg(trs("O2Setting")));
+        hl = new QHBoxLayout;
+        hl->addStretch(1);
+        hl->addWidget(btn, 1);
+        vlayout->addLayout(hl);
+        btn->setButtonStyle(Button::ButtonTextOnly);
+        connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
+        btn->setProperty("Item", qVariantFromValue(item));
     }
     vlayout->addStretch();
 }
@@ -219,7 +234,10 @@ void MeasureSettingMenuContent::onBtnReleasd()
         strName = trs("NIBPMenu");
         break;
     case MeasureSettingMenuContentPrivate::ITEM_BTN_CO2:
-        p->popup(trs("NIBPMenu"));
+        strName = trs("CO2Menu");
+        break;
+    case MeasureSettingMenuContentPrivate::ITEM_BTN_O2:
+        strName = trs("O2Menu");
         break;
     }
 

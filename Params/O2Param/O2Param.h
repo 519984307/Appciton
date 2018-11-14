@@ -40,6 +40,12 @@ public:
     // 设置数据提供对象
     void setProvider(O2ProviderIFace *provider);
 
+    /**
+     * @brief isServiceProviderOk  服务模式升级数据提供的对象是否存在
+     * @return 存在返回true
+     */
+    bool isServiceProviderOk();
+
     // 设置界面对象
     void setTrendWidget(O2TrendWidget *trendWidget);
 
@@ -50,6 +56,21 @@ public:
     // 超限报警通知
     void noticeLimitAlarm(bool flag);
 
+    // 模块复位
+    void reset();
+
+public:
+    // 浓度校准
+    void sendCalibration(int concentration);
+
+    // 浓度校准结果
+    void calibrationResult(unsigned char *packet);
+
+    // 获取校准是否回复
+    bool getCalibrationReply();
+
+    // 获取校准结果
+    bool getCalibrationResult();
 
 private:
     O2Param();
