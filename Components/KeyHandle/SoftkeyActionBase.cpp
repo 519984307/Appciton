@@ -387,6 +387,7 @@ KeyActionDesc *SoftkeyActionBase::getActionDesc(int index)
 
     if (index == SOFT_BASE_KEY_SCREEN_BAN)
     {
+#ifdef Q_WS_QWS
         bool isOn = systemManager.isTouchScreenOn();
         QString iconPath, hint;
         if (isOn)
@@ -401,6 +402,7 @@ KeyActionDesc *SoftkeyActionBase::getActionDesc(int index)
         }
         _baseKeys[index].iconPath = iconPath;
         _baseKeys[index].hint = hint;
+        #endif
     }
 
     return &_baseKeys[index];
