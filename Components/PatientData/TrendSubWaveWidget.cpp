@@ -436,6 +436,10 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     QRect dataRect(_trendDataHead, height() / 5, width() - _trendDataHead, height() / 5 * 4);
     if (_type == TREND_GRAPH_TYPE_NORMAL)
     {
+        if (_trendInfo.trendData.isEmpty())
+        {
+            return;
+        }
         if (_trendInfo.trendData.at(_cursorPosIndex).isAlarm)
         {
             barPainter.fillRect(dataRect, Qt::white);
@@ -458,6 +462,10 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     {
         font.setPixelSize(30);
         barPainter.setFont(font);
+        if (_trendInfo.trendDataV3.isEmpty())
+        {
+            return;
+        }
 
         if (_trendInfo.trendDataV3.at(_cursorPosIndex).isAlarm)
         {
@@ -487,6 +495,11 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     {
         font.setPixelSize(30);
         barPainter.setFont(font);
+
+        if (_trendInfo.trendDataV2.isEmpty())
+        {
+            return;
+        }
 
         if (_trendInfo.trendDataV2.at(_cursorPosIndex).isAlarm)
         {
