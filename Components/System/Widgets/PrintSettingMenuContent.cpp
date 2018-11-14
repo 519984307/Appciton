@@ -18,6 +18,11 @@
 #include "WindowManager.h"
 #include "IConfig.h"
 #include "LayoutManager.h"
+#include "ECGParam.h"
+#include "IBPParam.h"
+#include "RESPSymbol.h"
+#include "SPO2Symbol.h"
+#include "CO2Symbol.h"
 
 class PrintSettingMenuContentPrivate
 {
@@ -29,9 +34,9 @@ public:
     };
 
     PrintSettingMenuContentPrivate()
-        : clearPrintTask(NULL),
-          printTime(NULL),
-          printSpeed(NULL)
+        : clearPrintTaskBtn(NULL),
+          printTimeCbo(NULL),
+          printSpeedCbo(NULL)
     {
     }
     /**
@@ -39,23 +44,59 @@ public:
      */
     void loadOptions(void);
 
-    Button *clearPrintTask;
+    /**
+     * @brief wavesUpdate 波形更新
+     * @param waveIDs  获取更新的波形id
+     * @param waveNames  获取更新的波形名字
+     */
+    void wavesUpdate(QList<int> &waveIDs, QStringList &waveNames);
+
+    Button *clearPrintTaskBtn;
     QList<ComboBox *> selectWaves;
     QList<int> waveIDs;
     QStringList waveNames;
-    ComboBox *printTime;
-    ComboBox *printSpeed;
+    ComboBox *printTimeCbo;
+    ComboBox *printSpeedCbo;
 };
 
 void PrintSettingMenuContentPrivate::loadOptions()
 {
     PrintTime timeSec = recorderManager.getPrintTime();
-    printTime->setCurrentIndex(timeSec);
+    printTimeCbo->setCurrentIndex(timeSec);
 
     PrintSpeed speed = recorderManager.getPrintSpeed();
-    printSpeed->setCurrentIndex(speed);
+    printSpeedCbo->setCurrentIndex(speed);
 
-    // 加载配置文件中选择的波形id
+    // update wave
+    QList<int> updatedWaveIDs;
+    wavesUpdate(updatedWaveIDs, waveNames);
+
+    if (waveIDs != updatedWaveIDs)
+    {
+        waveIDs = updatedWaveIDs;
+        for (int i = 0; i < PRINT_WAVE_NUM; i++)
+        {
+            ComboBox *combo = selectWaves.at(i);
+            combo->blockSignals(true);
+            combo->clear();
+            combo->addItem(trs("Off"));
+            foreach(QString name, waveNames)
+            {
+                combo->addItem(name);
+            }
+            combo->blockSignals(false);
+            // 如果波形数量小于选择打印波形combo时，失能多余的选择打印波形combo
+            if (waveNames.size() <= i)
+            {
+                combo->setEnabled(false);
+            }
+            else
+            {
+                combo->setEnabled(true);
+            }
+        }
+    }
+
     int offCount = 0;
     QSet<int> waveCboIds;
     int savedWaveIds[PRINT_WAVE_NUM] = {0};
@@ -66,6 +107,7 @@ void PrintSettingMenuContentPrivate::loadOptions()
         QString path;
         path = QString("Print|SelectWave%1").arg(i + 1);
         systemConfig.getNumValue(path, savedWaveIds[i]);
+
         if (savedWaveIds[i] < WAVE_NR)
         {
             waveCboIds.insert(savedWaveIds[i]);
@@ -80,14 +122,21 @@ void PrintSettingMenuContentPrivate::loadOptions()
     // 如果出现重复选择项，重新按照当前显示波形序列更新打印波形id
     if (offCount < PRINT_WAVE_NUM - 1)
     {
-        if ((waveCboIds.size()) < PRINT_WAVE_NUM )
+        if ((waveCboIds.size()) < PRINT_WAVE_NUM)
         {
+            int idCount = waveIDs.count();
             for (int i = 0; i < PRINT_WAVE_NUM; i++)
             {
                 QString path;
                 path = QString("Print|SelectWave%1").arg(i + 1);
-                systemConfig.setNumValue(path, waveIDs.at(i));
-                savedWaveIds[i] = i + 1;
+                int waveId = WAVE_NONE;
+                if (i < idCount)
+                {
+                    waveId = waveIDs.at(i);
+                }
+                systemConfig.setNumValue(path, waveId);
+                // 更新打印的波形ids
+                savedWaveIds[i] = waveId;
             }
         }
     }
@@ -153,10 +202,7 @@ void PrintSettingMenuContent::layoutExec()
     int lastColumn = 2;
 
     // select wave
-    QStringList waveNames;
-    d_ptr->waveIDs = layoutManager.getDisplayedWaveformIDs();
-    waveNames = layoutManager.getDisplayedWaveformLabels();
-    d_ptr->waveNames = waveNames;
+    d_ptr->wavesUpdate(d_ptr->waveIDs, d_ptr->waveNames);
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
         QString comboName = QString("%1%2").arg(trs("Wave")).arg(i + 1);
@@ -165,11 +211,11 @@ void PrintSettingMenuContent::layoutExec()
         ComboBox *combo = new ComboBox;
         d_ptr->selectWaves.append(combo);
         combo->addItem(trs("Off"));
-        foreach(QString name, waveNames)
+        foreach(QString name, d_ptr->waveNames)
         {
             combo->addItem(name);
         }
-        if (waveNames.size() <= i)
+        if (d_ptr->waveNames.size() <= i)
         {
             combo->setEnabled(false);
         }
@@ -188,7 +234,7 @@ void PrintSettingMenuContent::layoutExec()
     glayout->addWidget(label, index, 0);
 
     combo = new ComboBox;
-    d_ptr->printTime = combo;
+    d_ptr->printTimeCbo = combo;
     combo->addItems(QStringList()
                     << trs(PrintSymbol::convert(PRINT_TIME_CONTINOUS))
                     << trs(PrintSymbol::convert(PRINT_TIME_EIGHT_SEC))
@@ -204,7 +250,7 @@ void PrintSettingMenuContent::layoutExec()
     glayout->addWidget(label, index, 0);
 
     combo = new ComboBox;
-    d_ptr->printSpeed = combo;
+    d_ptr->printSpeedCbo = combo;
     combo->addItems(QStringList()
                     << PrintSymbol::convert(PRINT_SPEED_125)
                     << PrintSymbol::convert(PRINT_SPEED_250)
@@ -319,4 +365,54 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
 
 void PrintSettingMenuContent::onClearBtnReleased()
 {
+}
+
+void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> &waveIDs, QStringList &waveNames)
+{
+    waveIDs.clear();
+    waveNames.clear();
+
+    // ecg
+    int index = 0;
+    currentConfig.getNumValue("ECG|Ecg1Wave", index);
+    ECGLead ecgLead = static_cast<ECGLead>(index);
+    WaveformID waveID = ecgParam.leadToWaveID(ecgLead);
+    waveIDs.append(waveID);
+    waveNames.append(ECGSymbol::convert(ecgLead, ecgParam.getLeadConvention()));
+
+    ECGLeadMode leadMode = ecgParam.getLeadMode();
+    if (leadMode == ECG_LEAD_MODE_5
+            || leadMode == ECG_LEAD_MODE_12)
+    {
+        int index = 0;
+        currentConfig.getNumValue("ECG|Ecg2Wave", index);
+        ECGLead ecgLead = static_cast<ECGLead>(index);
+        WaveformID waveID = ecgParam.leadToWaveID(ecgLead);
+        waveIDs.append(waveID);
+        waveNames.append(ECGSymbol::convert(ecgLead, ecgParam.getLeadConvention()));
+    }
+
+    // resp
+    waveIDs.append(WAVE_RESP);
+    waveNames.append(paramInfo.getParamWaveformName(WAVE_RESP));
+
+
+    // spo2
+    waveIDs.append(WAVE_SPO2);
+    waveNames.append(paramInfo.getParamWaveformName(WAVE_SPO2));
+
+    // ibp
+    IBPPressureName ibpTitle = ibpParam.getEntitle(IBP_INPUT_1);
+    waveID = ibpParam.getWaveformID(ibpTitle);
+    waveIDs.append(waveID);
+    waveNames.append(IBPSymbol::convert(ibpTitle));
+
+    ibpTitle = ibpParam.getEntitle(IBP_INPUT_2);
+    waveID = ibpParam.getWaveformID(ibpTitle);
+    waveIDs.append(waveID);
+    waveNames.append(IBPSymbol::convert(ibpTitle));
+
+    // co2
+    waveIDs.append(WAVE_CO2);
+    waveNames.append(paramInfo.getParamWaveformName(WAVE_CO2));
 }

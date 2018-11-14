@@ -29,6 +29,8 @@
 #include "AlarmLimitWindow.h"
 #include "SPO2Param.h"
 
+#define PRINT_WAVE_NUM (3)
+
 class ECGMenuContentPrivate
 {
 public:
@@ -57,6 +59,11 @@ public:
     // load settings
     void loadOptions();
 
+    /**
+     * @brief updatePrintWaveIds
+     */
+    void updatePrintWaveIds();
+
     QMap<MenuItem, ComboBox *> combos;
     Button *selfLearnBtn;
     Button *arrhythmiaBtn;
@@ -65,6 +72,7 @@ public:
     QStringList ecgWaveformTitles;
     QLabel *ecg1Label;
     QLabel *ecg2Label;
+    QList<int> ecgWaveIdList;
 };
 
 void ECGMenuContentPrivate::loadOptions()
@@ -96,6 +104,17 @@ void ECGMenuContentPrivate::loadOptions()
         currentConfig.setNumValue("ECG|Ecg1Wave", index1);
         currentConfig.setNumValue("ECG|Ecg2Wave", index2);
     }
+
+    // 更新初始状态ecg1,2波形id
+    ecgWaveIdList.clear();
+    ECGLead ecgLead = static_cast<ECGLead>(index1);
+    WaveformID ecgwaveID = ecgParam.leadToWaveID(ecgLead);
+    ecgWaveIdList.append(ecgwaveID);
+
+    ecgLead = static_cast<ECGLead>(index2);
+    ecgwaveID = ecgParam.leadToWaveID(ecgLead);
+    ecgWaveIdList.append(ecgwaveID);
+
     // 保证导联的item与ecg1wave的item值一致
     int lead = ecgParam.getCalcLead();
     if (index1 != lead)
@@ -213,6 +232,71 @@ void ECGMenuContentPrivate::loadOptions()
     }
     ecg2Label->setVisible(!isHide);
     combos[ITEM_CBO_ECG2]->setVisible(!isHide);
+}
+
+void ECGMenuContentPrivate::updatePrintWaveIds()
+{
+    // ecg1
+    int cboItem = 0;
+    for (int i = 0; i < PRINT_WAVE_NUM; i++)
+    {
+        QString path;
+        path = QString("Print|SelectWave%1").arg(i + 1);
+        int waveId = WAVE_NONE;
+        systemConfig.getNumValue(path, waveId);
+        // 旧的打印波形与ecg当前保存的波形一致时
+        if (waveId == ecgWaveIdList.at(0))
+        {
+            int index = 0;
+            currentConfig.getNumValue("ECG|Ecg1Wave", index);
+            ECGLead ecgLead = static_cast<ECGLead>(index);
+            WaveformID ecgwaveID = ecgParam.leadToWaveID(ecgLead);
+            // 替换波形
+            if (ecgwaveID != waveId)
+            {
+                systemConfig.setNumValue(path, static_cast<int>(ecgwaveID));
+            }
+            cboItem = i;
+            break;
+        }
+    }
+
+    // ecg2
+    ECGLeadMode leadMode = ecgParam.getLeadMode();
+    for (int i = 0; i < PRINT_WAVE_NUM; i++)
+    {
+        // 剔除ecg1对应的选择item
+        if (cboItem == i)
+        {
+            continue;
+        }
+        QString path;
+        path = QString("Print|SelectWave%1").arg(i + 1);
+        int waveId = WAVE_NONE;
+        systemConfig.getNumValue(path, waveId);
+        // 旧的打印波形与ecg当前保存的波形一致时
+        if (waveId == ecgWaveIdList.at(1))
+        {
+            int index = 0;
+            currentConfig.getNumValue("ECG|Ecg2Wave", index);
+            ECGLead ecgLead = static_cast<ECGLead>(index);
+            WaveformID ecgwaveID = ecgParam.leadToWaveID(ecgLead);
+            // 替换波形
+            if (leadMode == ECG_LEAD_MODE_5
+                    || leadMode == ECG_LEAD_MODE_12)
+            {
+                if (ecgwaveID != waveId)
+                {
+                    systemConfig.setNumValue(path, static_cast<int>(ecgwaveID));
+                }
+            }
+            else
+            {
+                systemConfig.setNumValue(path, static_cast<int>(WAVE_NONE));
+            }
+            break;
+        }
+    }
 }
 
 ECGMenuContent::ECGMenuContent()
@@ -600,6 +684,13 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             break;
         default:
             break;
+        }
+
+        if (item == ECGMenuContentPrivate::ITEM_CBO_LEAD_MODE
+                || item == ECGMenuContentPrivate::ITEM_CBO_ECG1
+                || item == ECGMenuContentPrivate::ITEM_CBO_ECG2)
+        {
+            d_ptr->updatePrintWaveIds();
         }
     }
 }
