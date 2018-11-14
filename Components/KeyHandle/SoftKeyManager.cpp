@@ -47,7 +47,8 @@ public:
           rightPageKeyWidget(NULL),
           emptyKeyDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
           signalMapper(NULL),
-          dynamicKeyLayout(NULL)
+          dynamicKeyLayout(NULL),
+          isShowTouchBan(true)
     {}
 
     void resetPageInfo()
@@ -100,6 +101,14 @@ public:
             while (keyIndex < dynamicKeyWidgets.count())
             {
                 KeyActionDesc *desc = currentAction->getActionDesc(startDescIndex);
+
+                // 屏蔽禁止触摸屏后，禁止载入其内容
+                if (startDescIndex + 1 == SOFT_BASE_KEY_SCREEN_BAN
+                        && !isShowTouchBan)
+                {
+                    desc = NULL;
+                }
+
                 if (desc)
                 {
                     dynamicKeyWidgets.at(keyIndex)->setContent(desc);
@@ -135,6 +144,7 @@ public:
     SoftKeyActionMap actionMaps;
     QSignalMapper *signalMapper;
     QHBoxLayout *dynamicKeyLayout;
+    bool isShowTouchBan;
 };
 
 /***************************************************************************************************
@@ -177,6 +187,11 @@ void SoftKeyManager::refreshPage(bool isFirstPage)
         d_ptr->resetPageInfo();
     }
     d_ptr->layoutKeyDesc();
+}
+
+void SoftKeyManager::touchBanShowBehavior(bool isShow)
+{
+    d_ptr->isShowTouchBan = isShow;
 }
 
 void SoftKeyManager::_dynamicKeyClicked(int index)
@@ -401,6 +416,14 @@ void SoftKeyManagerPrivate::handleSoftKeyClick(bool isMainSetup, int index)
             if (currentAction)
             {
                 KeyActionDesc *desc = currentAction->getActionDesc(descIndex);
+
+                // 屏蔽禁止触摸屏后，禁止调用其hook函数
+                if (descIndex + 1 == SOFT_BASE_KEY_SCREEN_BAN
+                        && !isShowTouchBan)
+                {
+                    desc = NULL;
+                }
+
                 if (desc != NULL && desc->hook != NULL)
                 {
                     desc->hook(0);

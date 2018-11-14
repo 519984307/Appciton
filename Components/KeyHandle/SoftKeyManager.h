@@ -46,6 +46,12 @@ public:
      */
     void refreshPage(bool isFirstPage = true);
 
+    /**
+     * @brief touchBanShowBehavior
+     * @param isShow
+     */
+    void touchBanShowBehavior(bool isShow = true);
+
 protected:
     void paintEvent(QPaintEvent *e);
     void resizeEvent(QResizeEvent *e);
