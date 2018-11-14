@@ -20,6 +20,9 @@
 #include "LayoutManager.h"
 #include "ECGParam.h"
 #include "IBPParam.h"
+#include "RESPSymbol.h"
+#include "SPO2Symbol.h"
+#include "CO2Symbol.h"
 
 class PrintSettingMenuContentPrivate
 {
@@ -31,7 +34,7 @@ public:
     };
 
     PrintSettingMenuContentPrivate()
-        : clearPrintTask(NULL),
+        : clearPrintTaskBtn(NULL),
           printTimeCbo(NULL),
           printSpeedCbo(NULL)
     {
@@ -40,16 +43,18 @@ public:
      * @brief loadOptions
      */
     void loadOptions(void);
-    /**
-     * @brief wavesUpdate
-     */
-    void wavesUpdate(void);
 
-    Button *clearPrintTask;
+    /**
+     * @brief wavesUpdate 波形更新
+     * @param waveIDs  获取更新的波形id
+     * @param waveNames  获取更新的波形名字
+     */
+    void wavesUpdate(QList<int> &waveIDs, QStringList &waveNames);
+
+    Button *clearPrintTaskBtn;
     QList<ComboBox *> selectWaves;
     QList<int> waveIDs;
     QStringList waveNames;
-    QList<int> lastWaveIDs;
     ComboBox *printTimeCbo;
     ComboBox *printSpeedCbo;
 };
@@ -63,23 +68,23 @@ void PrintSettingMenuContentPrivate::loadOptions()
     printSpeedCbo->setCurrentIndex(speed);
 
     // update wave
-    wavesUpdate();
+    QList<int> updatedWaveIDs;
+    wavesUpdate(updatedWaveIDs, waveNames);
 
-    bool isUpdateWaveIds = false;
-    if (waveIDs != lastWaveIDs)
+    if (waveIDs != updatedWaveIDs)
     {
-        lastWaveIDs = waveIDs;
+        waveIDs = updatedWaveIDs;
         for (int i = 0; i < PRINT_WAVE_NUM; i++)
         {
             ComboBox *combo = selectWaves.at(i);
+            combo->blockSignals(true);
             combo->clear();
             combo->addItem(trs("Off"));
             foreach(QString name, waveNames)
             {
                 combo->addItem(name);
             }
-            // 更新选择打印波形combo时，默认选择“Off” item
-            combo->setCurrentIndex(0);
+            combo->blockSignals(false);
             // 如果波形数量小于选择打印波形combo时，失能多余的选择打印波形combo
             if (waveNames.size() <= i)
             {
@@ -90,7 +95,6 @@ void PrintSettingMenuContentPrivate::loadOptions()
                 combo->setEnabled(true);
             }
         }
-        isUpdateWaveIds = true;
     }
 
     int offCount = 0;
@@ -103,12 +107,6 @@ void PrintSettingMenuContentPrivate::loadOptions()
         QString path;
         path = QString("Print|SelectWave%1").arg(i + 1);
         systemConfig.getNumValue(path, savedWaveIds[i]);
-        // 保存的波形id与当前的波形ids不匹配时，结束此次循环
-        if (waveIDs.indexOf(savedWaveIds[i]) < 0
-                && savedWaveIds[i] != WAVE_NONE)
-        {
-            continue;
-        }
 
         if (savedWaveIds[i] < WAVE_NR)
         {
@@ -122,9 +120,7 @@ void PrintSettingMenuContentPrivate::loadOptions()
     }
 
     // 如果出现重复选择项，重新按照当前显示波形序列更新打印波形id
-    // 或者lead mode已经更新
-    if (offCount < PRINT_WAVE_NUM - 1
-            || isUpdateWaveIds)
+    if (offCount < PRINT_WAVE_NUM - 1)
     {
         if ((waveCboIds.size()) < PRINT_WAVE_NUM)
         {
@@ -206,7 +202,7 @@ void PrintSettingMenuContent::layoutExec()
     int lastColumn = 2;
 
     // select wave
-    d_ptr->wavesUpdate();
+    d_ptr->wavesUpdate(d_ptr->waveIDs, d_ptr->waveNames);
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
         QString comboName = QString("%1%2").arg(trs("Wave")).arg(i + 1);
@@ -371,7 +367,7 @@ void PrintSettingMenuContent::onClearBtnReleased()
 {
 }
 
-void PrintSettingMenuContentPrivate::wavesUpdate()
+void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> &waveIDs, QStringList &waveNames)
 {
     waveIDs.clear();
     waveNames.clear();
@@ -398,11 +394,12 @@ void PrintSettingMenuContentPrivate::wavesUpdate()
 
     // resp
     waveIDs.append(WAVE_RESP);
-    waveNames.append("RESP");
+    waveNames.append(paramInfo.getParamWaveformName(WAVE_RESP));
+
 
     // spo2
     waveIDs.append(WAVE_SPO2);
-    waveNames.append("SPO2");
+    waveNames.append(paramInfo.getParamWaveformName(WAVE_SPO2));
 
     // ibp
     IBPPressureName ibpTitle = ibpParam.getEntitle(IBP_INPUT_1);
@@ -417,5 +414,5 @@ void PrintSettingMenuContentPrivate::wavesUpdate()
 
     // co2
     waveIDs.append(WAVE_CO2);
-    waveNames.append("CO2");
+    waveNames.append(paramInfo.getParamWaveformName(WAVE_CO2));
 }

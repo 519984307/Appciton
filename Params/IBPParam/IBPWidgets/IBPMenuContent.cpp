@@ -30,6 +30,7 @@
 #define AUTO_SCALE_UPDATE_TIME          (2 * 1000)
 #define ZERO_INTERVAL_TIME              (100)
 #define TIMEOUT_WAIT_NUMBER             (5000 / ZERO_INTERVAL_TIME)
+#define PRINT_WAVE_NUM (3)
 
 class IBPMenuContentPrivate
 {
@@ -61,6 +62,11 @@ public:
     // load settings
     void loadOptions();
 
+    /**
+     * @brief updatePrintWaveIds
+     */
+    void updatePrintWaveIds();
+
     IBPMenuContent *const q_ptr;
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> buttons;
@@ -74,12 +80,19 @@ public:
     IBPRulerLimit rulerLimit2;
     int zeroTimerId;
     int timeoutNum;                     // 最多超时等待50次
+    QList<int> waveIdList;
 };
 
 void IBPMenuContentPrivate::loadOptions()
 {
     ibp1 = ibpParam.getEntitle(IBP_INPUT_1);
     ibp2 = ibpParam.getEntitle(IBP_INPUT_2);
+
+    // 获取当前ibp的波形id
+    waveIdList.clear();
+    waveIdList.append(ibpParam.getWaveformID(ibp1));
+    waveIdList.append(ibpParam.getWaveformID(ibp2));
+
     combos[ITEM_CBO_ENTITLE_1]->setCurrentIndex(ibp1);
     combos[ITEM_CBO_ENTITLE_2]->setCurrentIndex(ibp2);
     rulerLimit1 = ibpParam.getRulerLimit(IBP_INPUT_1);
@@ -127,6 +140,58 @@ void IBPMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(ibpParam.getSweepSpeed());
     combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(ibpParam.getFilter());
     combos[ITEM_CBO_SENSITIVITY]->setCurrentIndex(ibpParam.getSensitivity());
+}
+
+void IBPMenuContentPrivate::updatePrintWaveIds()
+{
+    // ibp1
+    int cboItem = 0;
+    for (int i = 0; i < PRINT_WAVE_NUM; i++)
+    {
+        QString path;
+        path = QString("Print|SelectWave%1").arg(i + 1);
+        int waveId = WAVE_NONE;
+        systemConfig.getNumValue(path, waveId);
+        // 旧的打印波形与当前保存的波形一致时
+        if(waveId == waveIdList.at(0))
+        {
+            IBPPressureName ibpTitle = ibpParam.getEntitle(IBP_INPUT_1);
+            int ibpWaveID = ibpParam.getWaveformID(ibpTitle);
+            // 替换波形
+            if (ibpWaveID != waveId)
+            {
+                systemConfig.setNumValue(path, ibpWaveID);
+            }
+            cboItem = i;
+            break;
+        }
+    }
+
+    // ibp2
+    for (int i = 0; i < PRINT_WAVE_NUM; i++)
+    {
+        if (cboItem == i)
+        {
+            continue;
+        }
+
+        QString path;
+        path = QString("Print|SelectWave%1").arg(i + 1);
+        int waveId = WAVE_NONE;
+        systemConfig.getNumValue(path, waveId);
+        // 旧的打印波形与当前保存的波形一致时
+        if(waveId == waveIdList.at(1))
+        {
+            IBPPressureName ibpTitle = ibpParam.getEntitle(IBP_INPUT_2);
+            int ibpWaveID = ibpParam.getWaveformID(ibpTitle);
+            // 替换波形
+            if (ibpWaveID != waveId)
+            {
+                systemConfig.setNumValue(path, ibpWaveID);
+            }
+            break;
+        }
+    }
 }
 
 IBPMenuContent::IBPMenuContent()
@@ -592,6 +657,12 @@ void IBPMenuContent::onComboBoxIndexChanged(int index)
             break;
         default:
             break;
+        }
+
+        if (item ==  IBPMenuContentPrivate::ITEM_CBO_ENTITLE_1
+            || item ==  IBPMenuContentPrivate::ITEM_CBO_ENTITLE_2)
+        {
+            d_ptr->updatePrintWaveIds();
         }
     }
 }
