@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/11/12
+ **/
+
+
 #pragma once
 #include <QString>
 
@@ -29,6 +40,28 @@ enum BatStatus
     BAT_STATUS_ERROR,                   // 电池错误
     BAT_STATUS_COMM_FAULT,              // 电池通信错误
     BAT_STATUS_NR,
+};
+
+enum BatteryPowerLevel
+{
+    BAT_VOLUME_NONE = -1,
+    BAT_VOLUME_0,
+    BAT_VOLUME_1,
+    BAT_VOLUME_2,
+    BAT_VOLUME_3,
+    BAT_VOLUME_4,
+    BAT_VOLUME_5
+};
+
+// 每个等级对应的ADC值
+enum BatteryLevelAdc
+{
+    BAT_LEVEL_0 = 3154,
+    BAT_LEVEL_1 = 3351,
+    BAT_LEVEL_2 = 3548,
+    BAT_LEVEL_3 = 3745,
+    BAT_LEVEL_4 = 3942,
+    BAT_LEVEL_5 = 4096
 };
 
 struct FixedBatMessage

@@ -45,7 +45,7 @@ public:
     }
 
     // 设置电量参数level = 0-15.
-    void setVolume(int level);
+    void setVolume(BatteryPowerLevel level);
 
     // 设置填充颜色
     void setFillColor(const QColor &color);
@@ -57,6 +57,7 @@ public:
     void setIcon(int time);
     void setIconFull(void);
     void setIconLow(void);
+    void charging();
 
 protected:
     void paintEvent(QPaintEvent *e);
