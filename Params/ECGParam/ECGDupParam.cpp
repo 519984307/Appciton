@@ -350,12 +350,23 @@ short ECGDupParam::getHR(bool isGetOriginalHR) const
         return _hrValue;
     }
 
-    if (InvData() != _hrValue)
+    if (_hrSource == HR_SOURCE_AUTO)
+    {
+        if (InvData() != _hrValue)
+        {
+            return _hrValue;
+        }
+
+        if (InvData() != _prValue)
+        {
+            return _prValue;
+        }
+    }
+    else if (_hrSource == HR_SOURCE_ECG)
     {
         return _hrValue;
     }
-
-    if (InvData() != _prValue)
+    else
     {
         return _prValue;
     }
