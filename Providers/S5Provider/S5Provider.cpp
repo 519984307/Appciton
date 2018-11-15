@@ -17,7 +17,7 @@
 #include "SystemManager.h"
 #include "ServiceVersion.h"
 #include <sys/time.h>
-#include "RawDataCollection.h"
+#include "RawDataCollector.h"
 #include "SystemManager.h"
 #include "ErrorLogItem.h"
 #include "ErrorLog.h"
@@ -71,7 +71,6 @@ void S5Provider::handlePacket(unsigned char *data, int len)
     }
 
     spo2Param.receivePackage();
-    int enable = 0;
     switch (data[0])
     {
     // 灵敏度0x13
@@ -109,11 +108,7 @@ void S5Provider::handlePacket(unsigned char *data, int len)
 
     // 原始数据0x5D
     case S5_NOTIFY_DATA:
-        machineConfig.getNumValue("Record|SPO2", enable);
-        if (enable)
-        {
-            rawDataCollection.pushData("BLM_S5", data, len);
-        }
+        rawDataCollector.collectData(RawDataCollector::SPO2_DATA, data, len);
         break;
 
     // 错误警告帧0x76

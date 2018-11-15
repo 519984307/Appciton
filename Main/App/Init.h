@@ -150,8 +150,7 @@
 #include "ECGSTTrendWidget.h"
 
 #include "E5Provider.h"
-#include "RawDataCollection.h"
-#include "RawDataCollectionTxt.h"
+#include "RawDataCollector.h"
 
 #include "USBManager.h"
 

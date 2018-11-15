@@ -20,7 +20,7 @@
 #include "NIBPAlarm.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
-#include "RawDataCollection.h"
+#include "RawDataCollector.h"
 #include "IConfig.h"
 
 static const char *nibpSelfErrorCode[] =
@@ -222,7 +222,6 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     }
     BLMProvider::handlePacket(data, len);
 
-    int enable = 0;
     switch (data[0])
     {
     // 启动测量
@@ -291,11 +290,7 @@ void N5Provider::handlePacket(unsigned char *data, int len)
 
     // 原始数据
     case N5_NOTIFY_DATA:
-        machineConfig.getNumValue("Record|NIBP", enable);
-        if (enable)
-        {
-            rawDataCollection.pushData("BLM_TN3", data, len);
-        }
+        rawDataCollector.collectData(RawDataCollector::NIBP_DATA, data, len);
         break;
 
     // 进入维护模式

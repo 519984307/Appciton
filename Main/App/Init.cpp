@@ -200,8 +200,7 @@ static void _initComponents(void)
     // U盘管理
     usbManager.getInstance();
     // U盘数据储存
-    rawDataCollection.construction();
-    rawDataCollectionTxt.construction();
+    rawDataCollector.getInstance();
 }
 /**************************************************************************************************
  * 功能： 初始化参数和提供者对象。
@@ -632,8 +631,6 @@ void deleteObjects(void)
     deleteRecorderManager();
 
 //    deleteNetworkManager();
-    deleteRawDataCollection();
-    deleteRawDataCollectionTxt();
     deleteUsbManager();
     deleteActivityLogManager();
 

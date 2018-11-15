@@ -21,7 +21,6 @@
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
 #include "IConfig.h"
-#include "RawDataCollectionTxt.h"
 #include "PowerOffWindow.h"
 
 enum SystemBoardMessageType
