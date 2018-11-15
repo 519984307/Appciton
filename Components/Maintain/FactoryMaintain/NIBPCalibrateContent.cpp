@@ -40,7 +40,7 @@ NIBPCalibrateContentPrivate::NIBPCalibrateContentPrivate()
       btnFlag1(false),
       btnFlag2(false),
       pressurevalue(0),
-      calibrateFlag(false)
+      calibrateFlag(true)
 {
     itemList.clear();
     itemList.append(new CalibrateSetItem());
@@ -127,7 +127,7 @@ void NIBPCalibrateContent::init()
     d_ptr->item->btn->setText(trs("ServiceCalibrate"));
     d_ptr->item->btn->setEnabled(true);
 
-    d_ptr->calibrateFlag = false;
+    d_ptr->calibrateFlag = true;
 }
 
 bool NIBPCalibrateContent::focusNextPrevChild(bool next)

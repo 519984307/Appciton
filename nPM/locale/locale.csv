@@ -690,6 +690,7 @@ NIBPServiceWaitAgain,"血压服务模式等待中, 请重试!","NIBP Service Wai
 CalibratePoint1,校准点1,CalibratePoint 1
 CalibratePoint2,校准点2,CalibratePoint 2
 ServiceCalibrate,校准,Calibrate
+ServiceCalibrating,校准中,Calibrating
 NIBPCalibrateModel,校准模式,NIBP Calibrate Model
 ServiceCalibrateDesc,校准,Calibrate Desc
 ServiceSuccess,成功,Success
