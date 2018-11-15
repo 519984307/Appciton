@@ -54,11 +54,11 @@ public:
      int getActualKeyIndex(int index);
 
      /**
-      * @brief setKeyTypeMask  设置按键掩码
-      * @param mask  按键掩码
-      * @param statue true--加入掩码，false--移除掩码
+      * @brief setKeyTypeAvailable  设置按键类型是否可用
+      * @param keyType  按键类型
+      * @param isAvailable  是否有用
       */
-     void setKeyTypeMask(KeyTypeMask mask, bool statue = true);
+     void setKeyTypeAvailable(SoftBaseKeyType keyType, bool isAvailable);
 
 protected:
     void paintEvent(QPaintEvent *e);

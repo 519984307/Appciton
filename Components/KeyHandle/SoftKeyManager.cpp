@@ -47,8 +47,7 @@ public:
           rightPageKeyWidget(NULL),
           emptyKeyDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
           signalMapper(NULL),
-          dynamicKeyLayout(NULL),
-          keyTypeMask(0)
+          dynamicKeyLayout(NULL)
     {}
 
     void resetPageInfo()
@@ -138,7 +137,7 @@ public:
     SoftKeyActionMap actionMaps;
     QSignalMapper *signalMapper;
     QHBoxLayout *dynamicKeyLayout;
-    qint32 keyTypeMask;
+    QMap<SoftBaseKeyType, bool> keyTypeStatueMap;
 };
 
 /***************************************************************************************************
@@ -188,13 +187,14 @@ int SoftKeyManager::getActualKeyIndex(int index)
     int indexNew = index;
     for (int i = 0; i <= index; i++)
     {
-        if (d_ptr->keyTypeMask & (1 << i))
+        SoftBaseKeyType keyType = static_cast<SoftBaseKeyType>(i);
+        if (d_ptr->keyTypeStatueMap[keyType] == false)
         {
             indexNew++;
         }
     }
 
-    while (d_ptr->keyTypeMask & (1 << indexNew))
+    while (d_ptr->keyTypeStatueMap[static_cast<SoftBaseKeyType>(indexNew)] == false)
     {
         indexNew++;
         if (indexNew > SOFT_BASE_KEY_NR)
@@ -205,16 +205,11 @@ int SoftKeyManager::getActualKeyIndex(int index)
     return indexNew;
 }
 
-void SoftKeyManager::setKeyTypeMask(KeyTypeMask mask, bool statue)
+void SoftKeyManager::setKeyTypeAvailable(SoftBaseKeyType keyType, bool isAvailable)
 {
-    if (statue)
-    {
-        d_ptr->keyTypeMask |= mask;
-    }
-    else
-    {
-        d_ptr->keyTypeMask &= ~mask;
-    }
+    int indexNew = static_cast<int>(keyType - SOFT_BASE_KEY_PAT_INFO);
+    SoftBaseKeyType type =  static_cast<SoftBaseKeyType>(indexNew);
+    d_ptr->keyTypeStatueMap[type] = isAvailable;
 }
 
 void SoftKeyManager::_dynamicKeyClicked(int index)
@@ -394,9 +389,17 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager"),
     SoftkeyActionBase *action = new MonitorSoftkeyAction();
     d_ptr->actionMaps.insert(action->getType(), action);
 
+    // 初始化按键状态map
+    d_ptr->keyTypeStatueMap.clear();
+    for (int i = 0; i < SOFT_BASE_KEY_NR; i++)
+    {
+        SoftBaseKeyType keyType = static_cast<SoftBaseKeyType>(i);
+        d_ptr->keyTypeStatueMap.insert(keyType, true);
+    }
+
     int index = 0;
     machineConfig.getNumValue("TouchEnable", index);
-    setKeyTypeMask(KEY_SCREEN_BAN_MASK, !index);
+    setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);
 }
 
 /***************************************************************************************************
