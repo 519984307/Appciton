@@ -415,7 +415,7 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             machineConfig.setNumValue("TouchEnable", index);
             machineConfig.saveToDisk();
             systemManager.setTouchScreenOnOff(index);
-            softkeyManager.touchBanShowBehavior(index);
+            softkeyManager.setKeyTypeMask(KEY_SCREEN_BAN_MASK, !index);
             softkeyManager.refreshPage();
             return;
 #endif

@@ -48,7 +48,7 @@ public:
           emptyKeyDesc("", "", "", NULL, SOFT_BASE_KEY_NR, false, Qt::black, Qt::black, Qt::black, false),
           signalMapper(NULL),
           dynamicKeyLayout(NULL),
-          isShowTouchBan(true)
+          keyTypeMask(0)
     {}
 
     void resetPageInfo()
@@ -100,14 +100,8 @@ public:
             int keyIndex = 0;
             while (keyIndex < dynamicKeyWidgets.count())
             {
-                KeyActionDesc *desc = currentAction->getActionDesc(startDescIndex);
-
-                // 屏蔽禁止触摸屏后，禁止载入其内容
-                if (startDescIndex + 1 == SOFT_BASE_KEY_SCREEN_BAN
-                        && !isShowTouchBan)
-                {
-                    desc = NULL;
-                }
+                int indexNew = softkeyManager.getActualKeyIndex(startDescIndex);
+                KeyActionDesc *desc = currentAction->getActionDesc(indexNew);
 
                 if (desc)
                 {
@@ -144,7 +138,7 @@ public:
     SoftKeyActionMap actionMaps;
     QSignalMapper *signalMapper;
     QHBoxLayout *dynamicKeyLayout;
-    bool isShowTouchBan;
+    qint32 keyTypeMask;
 };
 
 /***************************************************************************************************
@@ -189,9 +183,38 @@ void SoftKeyManager::refreshPage(bool isFirstPage)
     d_ptr->layoutKeyDesc();
 }
 
-void SoftKeyManager::touchBanShowBehavior(bool isShow)
+int SoftKeyManager::getActualKeyIndex(int index)
 {
-    d_ptr->isShowTouchBan = isShow;
+    int indexNew = index;
+    for (int i = 0; i <= index; i++)
+    {
+        if (d_ptr->keyTypeMask & (1 << i))
+        {
+            indexNew++;
+        }
+    }
+
+    while (d_ptr->keyTypeMask & (1 << indexNew))
+    {
+        indexNew++;
+        if (indexNew > SOFT_BASE_KEY_NR)
+        {
+            break;
+        }
+    }
+    return indexNew;
+}
+
+void SoftKeyManager::setKeyTypeMask(KeyTypeMask mask, bool statue)
+{
+    if (statue)
+    {
+        d_ptr->keyTypeMask |= mask;
+    }
+    else
+    {
+        d_ptr->keyTypeMask &= ~mask;
+    }
 }
 
 void SoftKeyManager::_dynamicKeyClicked(int index)
@@ -370,6 +393,10 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager"),
     // new出SoftkeyAction对象。
     SoftkeyActionBase *action = new MonitorSoftkeyAction();
     d_ptr->actionMaps.insert(action->getType(), action);
+
+    int index = 0;
+    machineConfig.getNumValue("TouchEnable", index);
+    setKeyTypeMask(KEY_SCREEN_BAN_MASK, !index);
 }
 
 /***************************************************************************************************
@@ -415,14 +442,8 @@ void SoftKeyManagerPrivate::handleSoftKeyClick(bool isMainSetup, int index)
             int descIndex = curPage * dynamicKeyWidgets.count() + index;
             if (currentAction)
             {
-                KeyActionDesc *desc = currentAction->getActionDesc(descIndex);
-
-                // 屏蔽禁止触摸屏后，禁止调用其hook函数
-                if (descIndex + 1 == SOFT_BASE_KEY_SCREEN_BAN
-                        && !isShowTouchBan)
-                {
-                    desc = NULL;
-                }
+                int indexNew = softkeyManager.getActualKeyIndex(descIndex);
+                KeyActionDesc *desc = currentAction->getActionDesc(indexNew);
 
                 if (desc != NULL && desc->hook != NULL)
                 {

@@ -47,10 +47,18 @@ public:
     void refreshPage(bool isFirstPage = true);
 
     /**
-     * @brief touchBanShowBehavior
-     * @param isShow
+     * @brief getActualKeyIndex  获取实际的按键索引
+     * @param index 索引
+     * @return 返回实际的索引
      */
-    void touchBanShowBehavior(bool isShow = true);
+     int getActualKeyIndex(int index);
+
+     /**
+      * @brief setKeyTypeMask  设置按键掩码
+      * @param mask  按键掩码
+      * @param statue true--加入掩码，false--移除掩码
+      */
+     void setKeyTypeMask(KeyTypeMask mask, bool statue = true);
 
 protected:
     void paintEvent(QPaintEvent *e);
