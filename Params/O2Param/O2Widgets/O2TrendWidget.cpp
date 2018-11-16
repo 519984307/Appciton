@@ -45,11 +45,11 @@ void O2TrendWidget::isAlarm(bool flag)
 void O2TrendWidget::showValue()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_O2));
-    QPalette fgColor = normalPalette(psrc);
+    normalPalette(psrc);
     if (_isAlarm)
     {
         showAlarmStatus(_o2Value);
-        showAlarmParamLimit(_o2Value, _o2String, fgColor);
+        showAlarmParamLimit(_o2Value, _o2String, psrc);
         restoreNormalStatusLater();
     }
 }
@@ -100,9 +100,9 @@ QList<SubParamID> O2TrendWidget::getShortTrendSubParams() const
 void O2TrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_O2));
-    QPalette fgColor = normalPalette(psrc);
-    showNormalParamLimit(fgColor);
-    showNormalStatus(_o2Value, fgColor);
+    normalPalette(psrc);
+    showNormalParamLimit(psrc);
+    showNormalStatus(_o2Value, psrc);
 }
 
 void O2TrendWidget::setTextSize()
