@@ -11,20 +11,18 @@
 #pragma once
 #include "IWidget.h"
 #include "TrendDataDefine.h"
+#include "QDebug"
 
-struct TrendConvertDesc
+struct TrendParamDesc
 {
-    TrendConvertDesc()
-    {
-        max = 0;
-        min = 0;
-        start = 0;
-        end = 0;
-    }
+    TrendParamDesc() : max(0), min(0),
+        start(0), end(0), scale(1)
+    {}
     double max;        // 数据范围最大值
     double min;        // 数据范围最小值
     int start;      // 坐标开始像素点
     int end;        // 坐标结束像素点
+    int scale;
 };
 
 class TrendSubWaveWidget : public IWidget
@@ -63,6 +61,12 @@ public:
     void setRulerRange(int down, int up, int scale);
 
     /**
+     * @brief setAutoRuler  设置自动标尺
+     * @param isAuto        是否自动
+     */
+    void setAutoRuler(bool isAuto);
+
+    /**
      * @brief setTimeRange 设置两端时间范围
      * @param leftTime 左侧时间
      * @param rightTime 右侧时间
@@ -93,15 +97,15 @@ private:
      * @param data 数据
      * @return 像素位置
      */
-    double _mapValue(TrendConvertDesc desc, int data);
+    double _mapValue(TrendParamDesc desc, int data);
 
 private:
     TrendSubWidgetInfo _info;
     SubParamID _id;
     TrendGraphType _type;
     TrendGraphInfo _trendInfo;      // 趋势图数据信息
-    TrendConvertDesc _timeX;
-    TrendConvertDesc _valueY;
+    TrendParamDesc _timeX;
+    TrendParamDesc _valueY;
     int _xSize;                     // 趋势x坐标长度
     int _ySize;                     // 趋势y坐标长度
     int _trendDataHead;             // 趋势数据开始位置
@@ -109,4 +113,8 @@ private:
     QString _paramName;             // 参数名称
     QString _paramUnit;             // 参数单位
     int _cursorPosIndex;            // 游标位置
+    bool _isAuto;                    // 是否自动标尺
+    int _maxValue;                  // 数据中最大值
+    int _minValue;                  // 数据中最小值
+    bool _fristValue;               // 是否为第一个数据
 };

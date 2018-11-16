@@ -354,6 +354,21 @@ void TrendWaveWidget::setRulerLimit(SubParamID id, int down, int up, int scale)
     }
 }
 
+void TrendWaveWidget::setAutoRuler(SubParamID id, bool isAuto)
+{
+    int count = _hLayoutTrend->count();
+    for (int i = 0; i < count; i++)
+    {
+        QLayoutItem *item = _hLayoutTrend->itemAt(i);
+        TrendSubWaveWidget *widget = qobject_cast<TrendSubWaveWidget *>(item->widget());
+        if (widget->getSubParamID() == id)
+        {
+            widget->setAutoRuler(isAuto);
+            return;
+        }
+    }
+}
+
 void TrendWaveWidget::loadTrendData(SubParamID subID, const int startIndex, const int endIndex)
 {
     if (startIndex == InvData() || endIndex == InvData())

@@ -23,7 +23,8 @@
 #define isEqual(a, b) (qAbs((a)-(b)) < 0.000001)
 
 TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id(id), _type(type),
-    _trendInfo(TrendGraphInfo()), _xSize(0), _ySize(0), _trendDataHead(0), _cursorPosIndex(0)
+    _trendInfo(TrendGraphInfo()), _timeX(TrendParamDesc()), _valueY(TrendParamDesc()), _xSize(0), _ySize(0), _trendDataHead(0), _cursorPosIndex(0),
+    _isAuto(true), _maxValue(0), _minValue(0), _fristValue(true)
 {
     SubParamID subID = id;
     ParamID paramId = paramInfo.getParamID(subID);
@@ -41,6 +42,7 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id
         {
             _valueY.min = static_cast<double>(config.downRuler) / config.scale;
             _valueY.max = static_cast<double>(config.upRuler) / config.scale;
+            _valueY.scale = config.scale;
         }
         _paramName = paramInfo.getSubParamName(id);
         if (_type == TREND_GRAPH_TYPE_AG_TEMP)
@@ -65,6 +67,7 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id
         {
             _valueY.min = static_cast<double>(configDown.downRuler) / configDown.scale;
             _valueY.max = static_cast<double>(configUp.upRuler) / configUp.scale;
+            _valueY.scale = configUp.scale;
         }
         QString str = paramInfo.getSubParamName(id);
         _paramName = str.left(str.length() - 4);
@@ -117,7 +120,15 @@ void TrendSubWaveWidget::setRulerRange(int down, int up, int scale)
 {
     _valueY.max = static_cast<double>(up) / scale;
     _valueY.min = static_cast<double>(down) / scale;
+    _valueY.scale = scale;
+    UnitType unit = paramInfo.getUnitOfSubParam(_id);
+    alarmConfig.setParamRulerConfig(_id, unit, down, up);
     update();
+}
+
+void TrendSubWaveWidget::setAutoRuler(bool isAuto)
+{
+    _isAuto = isAuto;
 }
 
 void TrendSubWaveWidget::setTimeRange(unsigned leftTime, unsigned rightTime)
@@ -408,6 +419,7 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         return;
     }
     barPainter.save();
+    _fristValue = true;
     QList<QPainterPath> paths = generatorPainterPath(_trendInfo);
     QList<QPainterPath>::ConstIterator iter;
     for (iter = paths.constBegin(); iter != paths.constEnd(); iter++)
@@ -526,11 +538,73 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     }
 }
 
-double TrendSubWaveWidget::_mapValue(TrendConvertDesc desc, int data)
+double TrendSubWaveWidget::_mapValue(TrendParamDesc desc, int data)
 {
     if (data == InvData())
     {
         return InvData();
+    }
+
+    if (_isAuto && desc.max != _timeX.max)
+    {
+        if (_fristValue)
+        {
+            _maxValue = data;
+            _minValue = data;
+            _fristValue = false;
+            int maxDiff = desc.max - _maxValue;
+            if (maxDiff <= 0 || maxDiff > 10 || (static_cast<int>(desc.max) % 10))
+            {
+                desc.max = _maxValue + (10 - _maxValue % 10);
+                _valueY.max = desc.max;
+                UnitType unit = paramInfo.getUnitOfSubParam(_id);
+                alarmConfig.setParamRulerConfig(_id, unit,
+                                                _valueY.min * _valueY.scale,
+                                                _valueY.max * _valueY.scale);
+            }
+            int minDiff = _minValue - desc.min;
+            if (minDiff <= 0 || minDiff > 10 || (static_cast<int>(desc.min) % 10))
+            {
+                int value = (_minValue % 10) ? (_minValue % 10) : 10;
+                desc.min = _minValue - value;
+                _valueY.min = desc.min;
+                UnitType unit = paramInfo.getUnitOfSubParam(_id);
+                alarmConfig.setParamRulerConfig(_id, unit,
+                                                _valueY.min * _valueY.scale,
+                                                _valueY.max * _valueY.scale);
+            }
+        }
+
+        if (data > _maxValue)
+        {
+            _maxValue = data;
+            int maxDiff = desc.max - _maxValue;
+            if (maxDiff <= 0 || maxDiff > 10 || (static_cast<int>(desc.max) % 10))
+            {
+                desc.max = _maxValue + (10 - _maxValue % 10);
+                _valueY.max = desc.max;
+                UnitType unit = paramInfo.getUnitOfSubParam(_id);
+                alarmConfig.setParamRulerConfig(_id, unit,
+                                                _valueY.min * _valueY.scale,
+                                                _valueY.max * _valueY.scale);
+            }
+        }
+
+        if (data < _minValue)
+        {
+            _minValue = data;
+            int minDiff = _minValue - desc.min;
+            if (minDiff <= 0 || minDiff > 10 || (static_cast<int>(desc.min) % 10))
+            {
+                int value = (_minValue % 10) ? (_minValue % 10) : 10;
+                desc.min = _minValue - value;
+                _valueY.min = desc.min;
+                UnitType unit = paramInfo.getUnitOfSubParam(_id);
+                alarmConfig.setParamRulerConfig(_id, unit,
+                                                _valueY.min * _valueY.scale,
+                                                _valueY.max * _valueY.scale);
+            }
+        }
     }
 
     double dpos = 0;

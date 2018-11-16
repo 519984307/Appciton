@@ -63,6 +63,11 @@ void TrendGraphWindow::setSubWidgetRulerLimit(SubParamID id, int down, int up, i
     d_ptr->waveWidget->setRulerLimit(id, down, up, scale);
 }
 
+void TrendGraphWindow::setSubWidgetAutoRuler(SubParamID id, bool isAuto)
+{
+    d_ptr->waveWidget->setAutoRuler(id, isAuto);
+}
+
 void TrendGraphWindow::updateTrendGraph()
 {
     d_ptr->waveWidget->trendWaveReset();
