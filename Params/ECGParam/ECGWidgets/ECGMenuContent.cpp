@@ -83,7 +83,9 @@ void ECGMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_HRPR_SOURCE]->setCurrentIndex(index);
 
     ECGLeadMode leadMode = ecgParam.getLeadMode();
+    combos[ITEM_CBO_LEAD_MODE]->blockSignals(true);
     combos[ITEM_CBO_LEAD_MODE]->setCurrentIndex(leadMode);
+    combos[ITEM_CBO_LEAD_MODE]->blockSignals(false);
 
     combos[ITEM_CBO_ECG1]->blockSignals(true);
     combos[ITEM_CBO_ECG2]->blockSignals(true);
@@ -167,7 +169,9 @@ void ECGMenuContentPrivate::loadOptions()
     }
 
     ECGNotchFilter notchFilter = ecgParam.getNotchFilter();
+    combos[ITEM_CBO_FILTER_MODE]->blockSignals(true);
     combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(filterMode);
+    combos[ITEM_CBO_FILTER_MODE]->blockSignals(false);
 
     combos[ITEM_CBO_NOTCH_FITER]->clear();
     switch (filterMode)
