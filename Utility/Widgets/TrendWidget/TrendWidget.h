@@ -55,7 +55,7 @@ public:
     virtual QList<SubParamID> getShortTrendSubParams() const {return QList<SubParamID>();}
 
     /**
-     * @brief restoreNormalStatusLater retore the normal display mode in about 500 ms
+     * @brief restoreNormalStatusLater restore the normal display mode in about 500 ms
      */
     void restoreNormalStatusLater();
 
@@ -94,7 +94,7 @@ protected:
 
     QString _title;                           // 趋势控制标名
 
-    QPalette normalPalette(QPalette psrc);
+    void normalPalette(QPalette &psrc);
     QPalette alarmPalette(QPalette psrc);   // isSetName: 是否设置标题颜色
     /**
      * @brief showAlarmStatus   设置报警时状态：闪烁＋白底红字
@@ -112,11 +112,17 @@ protected:
     void showAlarmParamLimit(QWidget *value, const QString &valueStr, QPalette psrc);
 
     /**
-     * @brief showNormalStatus  设置正常时状态：黑底＋对应颜色字体
-     * @param value             趋势值
+     * @brief showNormalStatus  设置正常时状态：黑底＋对应颜色字体(刷新全部控件颜色)
      * @param psrc              对应字体调色板
      */
-    void showNormalStatus(QWidget *value, QPalette psrc);
+    void showNormalStatus(QPalette psrc);
+
+    /**
+     * @brief showNormalStatus 设置正常时状态：黑底＋对应颜色字体(刷新某一控件颜色)
+     * @param value
+     * @param psrc
+     */
+    void showNormalStatus(QWidget* value, QPalette psrc);
 
     /**
      * @brief showNormalParamLimit  设置正常时参数报警限状态

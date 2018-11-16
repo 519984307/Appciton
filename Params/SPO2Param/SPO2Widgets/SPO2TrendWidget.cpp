@@ -119,12 +119,15 @@ void SPO2TrendWidget::isAlarm(bool flag)
 void SPO2TrendWidget::showValue(void)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
-    psrc = normalPalette(psrc);
     if (_isAlarm)
     {
         showAlarmStatus(_spo2Value);
         showAlarmParamLimit(_spo2Value, _spo2String, psrc);
         restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
     }
 }
 
@@ -223,8 +226,5 @@ QList<SubParamID> SPO2TrendWidget::getShortTrendSubParams() const
 void SPO2TrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
-    psrc = normalPalette(psrc);
-    showNormalParamLimit(psrc);
-    showNormalStatus(_spo2Bar, psrc);
-    showNormalStatus(_spo2Value, psrc);
+    showNormalStatus(psrc);
 }

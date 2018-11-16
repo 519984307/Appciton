@@ -60,10 +60,15 @@ void ECGPVCSTrendWidget::isAlarm(bool isAlarm)
  *************************************************************************************************/
 void ECGPVCSTrendWidget::showValue(void)
 {
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     if (_isAlarm)
     {
         showAlarmStatus(_pvcsValue);
         restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
     }
 }
 
@@ -130,6 +135,5 @@ ECGPVCSTrendWidget::~ECGPVCSTrendWidget()
 void ECGPVCSTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-    psrc = normalPalette(psrc);
-    showNormalStatus(_pvcsValue, psrc);
+    showNormalStatus(psrc);
 }

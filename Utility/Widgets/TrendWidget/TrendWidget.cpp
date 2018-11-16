@@ -67,13 +67,12 @@ void TrendWidget::resizeEvent(QResizeEvent *e)
  * 参数：
  *      psrc:趋势数据设置颜色。
  *************************************************************************************************/
-QPalette TrendWidget::normalPalette(QPalette psrc)
+void TrendWidget::normalPalette(QPalette &psrc)
 {
     if (psrc.window().color() != Qt::black)     // 趋势数据正常情况下，背景为黑色
     {
         psrc.setColor(QPalette::Window, Qt::black);
     }
-    return psrc;
 }
 
 /**************************************************************************************************
@@ -100,8 +99,8 @@ void TrendWidget::showAlarmStatus(QWidget *value)
 
 void TrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &valueStr, QPalette psrc)
 {
+    normalPalette(psrc);
     QPalette p = upLimit->palette();
-    QPalette alaColor = alarmPalette(p);
     double value = valueStr.toDouble();
     double up = upLimit->text().toDouble();
     double down = downLimit->text().toDouble();
@@ -125,8 +124,35 @@ void TrendWidget::showAlarmParamLimit(QWidget *valueWidget, const QString &value
     }
 }
 
+// 将控件下的全部控件都刷新颜色
+void setWidgetPalette(QLayout *layout, QPalette psrc)
+{
+    for (int i = 0; i < layout->count(); i++)
+    {
+        if (layout->itemAt(i)->layout())
+        {
+            setWidgetPalette(layout->itemAt(i)->layout(), psrc);
+        }
+        else if (layout->itemAt(i)->widget())
+        {
+            QWidget *item = layout->itemAt(i)->widget();
+            if (item->palette().windowText().color() != psrc.windowText().color())
+            {
+                layout->itemAt(i)->widget()->setPalette(psrc);
+            }
+        }
+    }
+}
+
+void TrendWidget::showNormalStatus(QPalette psrc)
+{
+    normalPalette(psrc);
+    setWidgetPalette(contentLayout, psrc);
+}
+
 void TrendWidget::showNormalStatus(QWidget *value, QPalette psrc)
 {
+    normalPalette(psrc);
     setPalette(psrc);
     QPalette p = value->palette();
     if (p.windowText().color() != psrc.windowText().color())

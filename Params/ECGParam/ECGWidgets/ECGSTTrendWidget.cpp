@@ -67,7 +67,6 @@ void ECGSTTrendWidget::isAlarm(int id, bool flag)
 void ECGSTTrendWidget::showValue(void)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-    psrc = normalPalette(psrc);
     if (_isAlarm[ECG_ST_I] || _isAlarm[ECG_ST_II] || _isAlarm[ECG_ST_III] ||
             _isAlarm[ECG_ST_aVR] || _isAlarm[ECG_ST_aVL] || _isAlarm[ECG_ST_aVF] ||
             _isAlarm[ECG_ST_V1] || _isAlarm[ECG_ST_V2] || _isAlarm[ECG_ST_V3] ||
@@ -206,10 +205,5 @@ ECGSTTrendWidget::~ECGSTTrendWidget()
 void ECGSTTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-    psrc = normalPalette(psrc);
-    for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
-    {
-        showNormalStatus(_stLabel[i], psrc);
-        showNormalStatus(_stValue[i], psrc);
-    }
+    showNormalStatus(psrc);
 }
