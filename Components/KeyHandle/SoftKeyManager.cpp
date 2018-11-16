@@ -138,6 +138,7 @@ public:
     QSignalMapper *signalMapper;
     QHBoxLayout *dynamicKeyLayout;
     QMap<SoftBaseKeyType, bool> keyTypeStatueMap;
+    QMap<SoftBaseKeyType, SoftBaseKeyType> keyTypeOldNewMap;
 };
 
 /***************************************************************************************************
@@ -184,25 +185,8 @@ void SoftKeyManager::refreshPage(bool isFirstPage)
 
 int SoftKeyManager::getActualKeyIndex(int index)
 {
-    int indexNew = index;
-    for (int i = 0; i <= index; i++)
-    {
-        SoftBaseKeyType keyType = static_cast<SoftBaseKeyType>(i);
-        if (d_ptr->keyTypeStatueMap[keyType] == false)
-        {
-            indexNew++;
-        }
-    }
-
-    while (d_ptr->keyTypeStatueMap[static_cast<SoftBaseKeyType>(indexNew)] == false)
-    {
-        indexNew++;
-        if (indexNew > SOFT_BASE_KEY_NR)
-        {
-            break;
-        }
-    }
-    return indexNew;
+    SoftBaseKeyType oldKeyType = static_cast<SoftBaseKeyType>(index);
+    return static_cast<int>(d_ptr->keyTypeOldNewMap[oldKeyType]);
 }
 
 void SoftKeyManager::setKeyTypeAvailable(SoftBaseKeyType keyType, bool isAvailable)
@@ -210,6 +194,32 @@ void SoftKeyManager::setKeyTypeAvailable(SoftBaseKeyType keyType, bool isAvailab
     int indexNew = static_cast<int>(keyType - SOFT_BASE_KEY_PAT_INFO);
     SoftBaseKeyType type =  static_cast<SoftBaseKeyType>(indexNew);
     d_ptr->keyTypeStatueMap[type] = isAvailable;
+
+    for (int index = 0; index < SOFT_BASE_KEY_NR; index++)
+    {
+        int indexNew = index;
+        for (int i = 0; i <= index; i++)
+        {
+            SoftBaseKeyType keyType = static_cast<SoftBaseKeyType>(i);
+            if (d_ptr->keyTypeStatueMap[keyType] == false)
+            {
+                indexNew++;
+            }
+        }
+
+        while (d_ptr->keyTypeStatueMap[static_cast<SoftBaseKeyType>(indexNew)] == false)
+        {
+            indexNew++;
+            if (indexNew > SOFT_BASE_KEY_NR)
+            {
+                break;
+            }
+        }
+
+        SoftBaseKeyType oldKeyType = static_cast<SoftBaseKeyType>(index);
+        SoftBaseKeyType newKeyType = static_cast<SoftBaseKeyType>(indexNew);
+        d_ptr->keyTypeOldNewMap[oldKeyType] = newKeyType;
+    }
 }
 
 void SoftKeyManager::_dynamicKeyClicked(int index)
@@ -390,10 +400,12 @@ SoftKeyManager::SoftKeyManager() : IWidget("SoftKeyManager"),
     d_ptr->actionMaps.insert(action->getType(), action);
 
     // 初始化按键状态map
+    d_ptr->keyTypeOldNewMap.clear();
     d_ptr->keyTypeStatueMap.clear();
     for (int i = 0; i < SOFT_BASE_KEY_NR; i++)
     {
         SoftBaseKeyType keyType = static_cast<SoftBaseKeyType>(i);
+        d_ptr->keyTypeOldNewMap.insert(keyType, keyType);
         d_ptr->keyTypeStatueMap.insert(keyType, true);
     }
 
