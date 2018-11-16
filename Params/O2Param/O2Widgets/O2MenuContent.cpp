@@ -42,7 +42,7 @@ void O2MenuContent::layoutExec()
     QGridLayout *glayout = new QGridLayout(this);
     glayout->setMargin(10);
 
-    QLabel *label = new QLabel(trs("MotorControl"));
+    QLabel *label = new QLabel(trs("ApneaStimulation"));
     glayout->addWidget(label, 0, 0);
     d_ptr->motorBtn = new ComboBox();
     d_ptr->motorBtn->addItems(QStringList()
