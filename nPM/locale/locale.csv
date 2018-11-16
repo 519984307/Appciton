@@ -1494,7 +1494,7 @@ Interface,界面布局,Interface
 Dose,剂量,Dose
 Blood,血液,Blood
 DeleteAll,删除全部,Delete All
-DeleteCase,删除事件,Delete Case
+DeletePatientData,删除病人数据,Delete Patient Data
 Freeze,冻结,Freeze
 DisableTouchScreen,禁触摸屏,Disable Touch
 EnabledTouchScreen,启触摸屏,Enabled Touch

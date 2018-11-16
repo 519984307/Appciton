@@ -17,6 +17,7 @@
 #include "WindowManager.h"
 #include "MessageBox.h"
 #include <QApplication>
+#include "RescueDataDeleteWindow.h"
 
 class PatientManagementMenuContentPrivate
 {
@@ -25,7 +26,8 @@ public:
     {
         ITEM_BTN_PATIENT_INFO,
         ITEM_BTN_NEW_PATIENT,
-        ITEM_BTN_DISCHARGE_PATIENT
+        ITEM_BTN_DISCHARGE_PATIENT,
+        ITEM_BTN_DATA_DELETE_CASE
     };
 
     PatientManagementMenuContentPrivate()
@@ -91,6 +93,14 @@ void PatientManagementMenuContent::layoutExec()
     connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
     d_ptr->dischargePatient = btn;
 
+    // recues data delete case
+    btn = new Button(trs("DeletePatientData"));
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    btn->setProperty("Item", qVariantFromValue(index));
+    glayout->addWidget(btn, index, 1);
+    index++;
+    connect(btn, SIGNAL(released()), this, SLOT(onBtnReleased()));
+
     glayout->setRowStretch(index, 1);
 }
 
@@ -138,6 +148,22 @@ void PatientManagementMenuContent::onBtnReleased()
         case PatientManagementMenuContentPrivate::ITEM_BTN_DISCHARGE_PATIENT:
         {
             patientManager.dischargePatient();
+        }
+        break;
+        case PatientManagementMenuContentPrivate::ITEM_BTN_DATA_DELETE_CASE:
+        {
+            bool isVisible = rescueDataDeleteWindow.isVisible();
+            while (NULL != QApplication::activeModalWidget())
+            {
+                QApplication::activeModalWidget()->hide();
+                menuManager.close();
+            }
+
+            if (isVisible)
+            {
+                return;
+            }
+            windowManager.showWindow(&rescueDataDeleteWindow , WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorCloseOthers);
         }
         break;
         default:
