@@ -1017,6 +1017,7 @@ BatteryCapacityIcons,电池容量图标,Battery Capacity Incons
 SmtpServer,SMTP服务器,SMTP Server
 SmtpServerPort,SMTP 服务端口,SMTP Server Port
 Username,用户名,Username
+Hardware,硬件,Hard Ware
 ConnectionSecurity,连接安全性,Connection Security
 ConfiguredMailRecipients,配置邮件接收者,Configured Mail Recipients
 Mail,邮件,Mail
