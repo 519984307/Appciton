@@ -578,7 +578,7 @@ void N5Provider::servicePressurepoint(const unsigned char *data, unsigned int le
     }
     cmd[1] = pressure & 0xFF;
     cmd[2] = (pressure >> 8) & 0xFF;
-    len = 0;
+    len  = 3;
     sendCmd(N5_CMD_PRESSURE_POINT, cmd, len);
 }
 

@@ -90,6 +90,7 @@ protected:
      */
     virtual void layoutExec(void);
     virtual bool focusNextPrevChild(bool next);
+    void timerEvent(QTimerEvent *ev);
 
 private slots:
     /**
@@ -100,6 +101,8 @@ private slots:
      * @brief onBtn2Calibrated  校准点2按钮
      */
     void onBtn2Calibrated(void);
+
+    void inCalibrateMode(void);
 
 private:
     NIBPCalibrateContent();

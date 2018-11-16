@@ -1265,6 +1265,27 @@ void NIBPParam::switchToManual(void)
     }
 }
 
+void NIBPParam::setCalibrateResult(bool result)
+{
+    _calibrationReply = true;
+    _calibrationResult = result;
+}
+
+bool NIBPParam::getCalibrationReply()
+{
+    bool reply = _calibrationReply;
+    if (reply)
+    {
+        _calibrationReply = false;
+    }
+    return reply;
+}
+
+bool NIBPParam::getCalibrationResult()
+{
+    return _calibrationResult;
+}
+
 void NIBPParam::updateSubParamLimit(SubParamID id)
 {
     if (id == SUB_PARAM_NIBP_SYS)
@@ -1354,7 +1375,8 @@ NIBPParam::NIBPParam()
       _statOpenTemp(false), _isCreateSnapshotFlag(false),
       _isNIBPDisable(false), _isManualMeasure(false),
       _connectedFlag(false), _connectedProvider(false),
-      _text(InvStr()), _activityMachine(NULL)
+      _text(InvStr()), _activityMachine(NULL),
+      _calibrationReply(false), _calibrationResult(false)
 {
     nibpCountdownTime.construction();
 

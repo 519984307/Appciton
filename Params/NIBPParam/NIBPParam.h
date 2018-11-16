@@ -262,6 +262,15 @@ public:
     // 状态转为MANUAL
     void switchToManual(void);
 
+    //接收定标数据
+    void setCalibrateResult(bool result);
+
+    // 获取校准是否回复
+    bool getCalibrationReply();
+
+    // 获取校准结果
+    bool getCalibrationResult();
+
     // 刷新参数上下限
     virtual void updateSubParamLimit(SubParamID id);
 private slots:
@@ -301,6 +310,8 @@ private:
     bool _connectedProvider;                // 是否连接Provider
     QString _text;
 
+    bool _calibrationReply;                 // 校准回复
+    bool _calibrationResult;                // 校准结果
 private:
     typedef QMap<NIBPStateMachineType, NIBPStateMachine *> MachineStateMap;
     MachineStateMap _machines;

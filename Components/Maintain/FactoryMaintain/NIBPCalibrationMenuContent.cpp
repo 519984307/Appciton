@@ -29,11 +29,6 @@ NIBPCalibrationMenuContent::NIBPCalibrationMenuContent()
                   trs("NIBPCalibrationMenuDesc"))
 
 {
-    NIBPRepairMenuWindow *w = NIBPRepairMenuWindow::getInstance();
-    w->addMenuContent(NIBPCalibrateContent::getInstance());
-    w->addMenuContent(NIBPManometerContent::getInstance());
-    w->addMenuContent(NIBPZeroPointContent::getInstance());
-    w->addMenuContent(NIBPPressureControlContent::getInstance());
 }
 
 void NIBPCalibrationMenuContent::layoutExec()
@@ -53,7 +48,12 @@ void NIBPCalibrationMenuContent::layoutExec()
 
 void NIBPCalibrationMenuContent::onBtnSlot()
 {
-    NIBPRepairMenuWindow *w = NIBPRepairMenuWindow::getInstance();
-    w->init();
-    windowManager.showWindow(w, WindowManager::ShowBehaviorModal);
+//    NIBPRepairMenuWindow *w = NIBPRepairMenuWindow::getInstance();
+//    w->init();
+//    windowManager.showWindow(w, WindowManager::ShowBehaviorModal);
+    windowManager.showWindow(NIBPRepairMenuWindow::getInstance(),
+                             WindowManager::ShowBehaviorHideOthers
+                             | WindowManager::ShowBehaviorNoAutoClose);
+    NIBPRepairMenuWindow::getInstance()->focusFirstMenuItem();
+    NIBPRepairMenuWindow::getInstance()->init();
 }
