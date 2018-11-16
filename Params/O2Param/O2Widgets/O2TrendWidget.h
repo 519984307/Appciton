@@ -16,9 +16,6 @@ class O2TrendWidget : public TrendWidget
 {
     Q_OBJECT
 public:
-    // 窗口是否使能
-    bool enable();
-
     // 刷新O2的值
     void setO2Value(int16_t o2);
 

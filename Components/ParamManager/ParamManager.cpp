@@ -77,7 +77,7 @@ void ParamManager::getParams(QList<ParamID> &paramID)
     ParamWithIDMap::Iterator it = _paramWithID.begin();
     for (; it != _paramWithID.end(); ++it)
     {
-        if (it.key() > PARAM_CO)
+        if (it.key() > PARAM_O2)
         {
             continue;
         }

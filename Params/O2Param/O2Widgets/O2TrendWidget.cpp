@@ -17,10 +17,6 @@
 #include "MeasureSettingWindow.h"
 #include "AlarmConfig.h"
 
-bool O2TrendWidget::enable()
-{
-}
-
 void O2TrendWidget::setO2Value(int16_t o2)
 {
     if (o2 != InvData())

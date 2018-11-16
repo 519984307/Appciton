@@ -19,23 +19,26 @@
 #define CALIBRATION_INTERVAL_TIME              (100)
 #define TIMEOUT_WAIT_NUMBER                    (5000 / CALIBRATION_INTERVAL_TIME)
 
+enum O2ConcentrationCalibrte
+{
+    O2_PERCENT_21,
+    O2_PERCENT_100
+};
 
 class O2CalibrationMenuContentPrivate
 {
 public:
     O2CalibrationMenuContentPrivate()
-        :percent21Btn(NULL), percent100Btn(NULL),
-          percent21Lbe(NULL), percent100Lbe(NULL),
-          calibTimerID(-1), timeoutNum(0)
+        : calibTimerID(-1), timeoutNum(0),
+          calibratePercent(O2_PERCENT_21)
     {}
 
-    Button *percent21Btn;
-    Button *percent100Btn;
-    QLabel *percent21Lbe;
-    QLabel *percent100Lbe;
+    QList<Button *> percentBtns;
+    QList<QLabel *> percentLab;
 
     int calibTimerID;
     int timeoutNum;
+    O2ConcentrationCalibrte calibratePercent;
 };
 
 O2CalibrationMenuContent::O2CalibrationMenuContent()
@@ -52,8 +55,8 @@ O2CalibrationMenuContent::~O2CalibrationMenuContent()
 
 void O2CalibrationMenuContent::readyShow()
 {
-    d_ptr->percent21Lbe->setText(trs("WaitingCalibration"));
-    d_ptr->percent100Lbe->setText(trs("WaitingCalibration"));
+    d_ptr->percentLab.at(O2_PERCENT_21)->setText(trs("WaitingCalibration"));
+    d_ptr->percentLab.at(O2_PERCENT_100)->setText(trs("WaitingCalibration"));
 }
 
 void O2CalibrationMenuContent::layoutExec()
@@ -65,23 +68,23 @@ void O2CalibrationMenuContent::layoutExec()
 
     button = new Button(trs("Percent21Calibration"));
     button->setButtonStyle(Button::ButtonTextOnly);
-    connect(button, SIGNAL(released()), this, SLOT(percent21Released(int)));
+    connect(button, SIGNAL(released()), this, SLOT(percent21Released()));
     layout->addWidget(button, 0, 0);
-    d_ptr->percent21Btn = button;
+    d_ptr->percentBtns.append(button);
 
     label = new QLabel();
     layout->addWidget(label, 0, 1, Qt::AlignCenter);
-    d_ptr->percent21Lbe = label;
+    d_ptr->percentLab.append(label);
 
     button = new Button(trs("Percent100Calibration"));
     button->setButtonStyle(Button::ButtonTextOnly);
-    connect(button, SIGNAL(released()), this, SLOT(percent100Released(int)));
+    connect(button, SIGNAL(released()), this, SLOT(percent100Released()));
     layout->addWidget(button, 1, 0);
-    d_ptr->percent21Btn = button;
+    d_ptr->percentBtns.append(button);
 
     label = new QLabel();
     layout->addWidget(label, 1, 1, Qt::AlignCenter);
-    d_ptr->percent100Lbe = label;
+    d_ptr->percentLab.append(label);
 
     layout->setRowStretch(2, 1);
 }
@@ -95,8 +98,19 @@ void O2CalibrationMenuContent::timerEvent(QTimerEvent *ev)
         {
             if (reply && o2Param.getCalibrationResult())
             {
-                d_ptr->percent21Lbe->setText(trs("CalibrationSuccess"));
+                d_ptr->percentLab.at(d_ptr->calibratePercent)->setText(trs("CalibrationSuccess"));
             }
+            else
+            {
+                d_ptr->percentLab.at(d_ptr->calibratePercent)->setText(trs("CalibrationFail"));
+            }
+            killTimer(d_ptr->calibTimerID);
+            d_ptr->calibTimerID = -1;
+            d_ptr->timeoutNum = 0;
+        }
+        else
+        {
+            d_ptr->timeoutNum++;
         }
     }
 }
@@ -107,6 +121,7 @@ void O2CalibrationMenuContent::percent21Released(void)
     {
         o2Param.sendCalibration(0);
         d_ptr->calibTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+        d_ptr->calibratePercent = O2_PERCENT_21;
     }
 }
 
@@ -116,5 +131,6 @@ void O2CalibrationMenuContent::percent100Released(void)
     {
         o2Param.sendCalibration(1);
         d_ptr->calibTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+        d_ptr->calibratePercent = O2_PERCENT_100;
     }
 }

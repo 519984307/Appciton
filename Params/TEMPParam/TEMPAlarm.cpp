@@ -340,7 +340,7 @@ bool TEMPOneShotAlarm::isAlarmed(int id)
         return false;
     }
 
-    AlarmOneShotIFace::isAlarmed(id);
+    return AlarmOneShotIFace::isAlarmed(id);
 }
 
 /**************************************************************************************************

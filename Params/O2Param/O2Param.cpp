@@ -61,10 +61,19 @@ void O2Param::exitDemo()
 
 int16_t O2Param::getSubParamValue(SubParamID id)
 {
+    if (id == SUB_PARAM_O2)
+    {
+        return getO2Concentration();
+    }
+    return InvData();
 }
 
 void O2Param::showSubParamValue()
 {
+    if (NULL != d_ptr->trendWidget)
+    {
+        d_ptr->trendWidget->showValue();
+    }
 }
 
 UnitType O2Param::getCurrentUnit(SubParamID id)
@@ -137,6 +146,14 @@ void O2Param::reset()
     }
     d_ptr->provider->sendO2SelfTest();
     d_ptr->provider->sendProbeState();
+}
+
+void O2Param::updateSubParamLimit(SubParamID id)
+{
+    if (id == SUB_PARAM_O2)
+    {
+        d_ptr->trendWidget->updateLimit();
+    }
 }
 
 void O2Param::sendCalibration(int concentration)

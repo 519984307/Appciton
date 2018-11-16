@@ -59,6 +59,8 @@ public:
     // 模块复位
     void reset();
 
+    // 刷新参数上下限
+    virtual void updateSubParamLimit(SubParamID id);
 public:
     // 浓度校准
     void sendCalibration(int concentration);

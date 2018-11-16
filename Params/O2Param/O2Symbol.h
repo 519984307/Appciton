@@ -37,6 +37,10 @@ public:
     {
         static const char *symbol[O2_ONESHOT_ALARM_NR] =
         {
+            "O2CalibrateReset",
+            "O2NotCalibrate",
+            "O2MotorNotInPositon",
+            "O2SensorOff"
         };
         return symbol[index];
     }

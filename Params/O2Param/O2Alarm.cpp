@@ -164,6 +164,11 @@ WaveformID O2OneShotAlarm::getWaveformID(int id)
 
 AlarmPriority O2OneShotAlarm::getAlarmPriority(int id)
 {
+    if (id == O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION ||
+            id == O2_ONESHOT_ALARM_SENSOR_OFF)
+    {
+        return ALARM_PRIO_HIGH;
+    }
     return ALARM_PRIO_PROMPT;
 }
 
@@ -186,7 +191,7 @@ bool O2OneShotAlarm::isRemoveAfterLatch(int id)
 
 bool O2OneShotAlarm::isAlarmed(int id)
 {
-    AlarmOneShotIFace::isAlarmed(id);
+    return AlarmOneShotIFace::isAlarmed(id);
 }
 
 O2OneShotAlarm::O2OneShotAlarm()

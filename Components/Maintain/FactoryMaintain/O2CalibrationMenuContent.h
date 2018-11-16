@@ -26,9 +26,9 @@ protected:
 
     void timerEvent(QTimerEvent *ev);
 private slots:
-    void percent21Released(int);
+    void percent21Released(void);
 
-    void percent100Released(int);
+    void percent100Released(void);
 
 private:
     O2CalibrationMenuContentPrivate *const d_ptr;

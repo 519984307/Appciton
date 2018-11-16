@@ -12,9 +12,19 @@
 #include "O2Param.h"
 #include "ErrorLogItem.h"
 #include "ErrorLog.h"
+#include "O2Alarm.h"
+#include "O2Define.h"
+#include "SystemManager.h"
 
 bool NeonateProvider::attachParam(Param &param)
 {
+    if (param.getParamID() == PARAM_O2)
+    {
+        o2Param.setProvider(this);
+        Provider::attachParam(param);
+        return true;
+    }
+    return false;
 }
 
 NeonateProvider::NeonateProvider() : BLMProvider("NEONATE_O2"), O2ProviderIFace()
@@ -79,8 +89,11 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
     case NEONATE_RSP_VERSION:
         break;
     case NEONATE_RSP_SELF_STATUS:
+        _selfTest(data, len);
         break;
     case NEONATE_RSP_PROBE_MOTOR:
+        o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, data[1]);
+        o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, data[2]);
         break;
     case NEONATE_RSP_CALIBRATION:
         o2Param.calibrationResult(data);
@@ -96,6 +109,8 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
         break;
     }
     case NEONATE_NOTIFY_PROBE_MOTOR:
+        o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, data[1]);
+        o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, data[2]);
         break;
     case NEONATE_CYCLE_ALIVE:
         feed();
@@ -118,4 +133,30 @@ void NeonateProvider::disconnected()
 
 void NeonateProvider::reconnected()
 {
+}
+
+void NeonateProvider::_selfTest(unsigned char *packet, int len)
+{
+    int num = packet[1];
+    if (num > 0)
+    {
+        for (int i = 2; i < len; i++)
+        {
+            switch (packet[i])
+            {
+            case 0x01:
+                o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_CALIBRATE_RESET, true);
+                break;
+            case 0x02:
+                o2OneShotAlarm.setOneShotAlarm(O2_ONESHOT_ALARM_NOT_CALIBRATE, true);
+                break;
+            default:
+                break;
+            }
+        }
+    }
+    else if (num == 0)
+    {
+        systemManager.setPoweronTestResult(O2_MODULE_SELFTEST_RESULT, SELFTEST_SUCCESS);
+    }
 }
