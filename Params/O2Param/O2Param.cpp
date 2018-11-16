@@ -156,6 +156,11 @@ void O2Param::updateSubParamLimit(SubParamID id)
     }
 }
 
+void O2Param::sendMotorControl(int control)
+{
+    d_ptr->provider->sendMotorControl(control);
+}
+
 void O2Param::sendCalibration(int concentration)
 {
     d_ptr->calibConcentration = concentration;

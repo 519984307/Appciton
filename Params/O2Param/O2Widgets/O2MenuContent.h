@@ -35,6 +35,8 @@ private slots:
      */
     void onAlarmBtnReleased(void);
 
+    void motorControlIndexChanged(int index);
+
 private:
     O2MenuContentPrivate *const d_ptr;
 };

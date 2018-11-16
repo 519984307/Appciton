@@ -19,7 +19,7 @@
 
 void O2TrendWidget::setO2Value(int16_t o2)
 {
-    if (o2 != InvData())
+    if (o2 != 0xff)
     {
         _o2String = QString::number(o2);
     }

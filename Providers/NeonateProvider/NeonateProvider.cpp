@@ -63,7 +63,7 @@ void NeonateProvider::sendCalibration(int concentration)
     sendCmd(NEONATE_CMD_CALIBRATION, &data, 1);
 }
 
-void NeonateProvider::sendMotorControl(int status)
+void NeonateProvider::sendMotorControl(bool status)
 {
     unsigned char data = status;
     sendCmd(NEONATE_CMD_MOTOR_CONTROL, &data, 1);

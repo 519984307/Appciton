@@ -32,5 +32,5 @@ public:
     virtual void sendCalibration(int /*concentration*/){}
 
     // 马达控制
-    virtual void sendMotorControl(void){}
+    virtual void sendMotorControl(bool /*status*/){}
 };

@@ -62,6 +62,9 @@ public:
     // 刷新参数上下限
     virtual void updateSubParamLimit(SubParamID id);
 public:
+    // 马达控制
+    void sendMotorControl(int control);
+
     // 浓度校准
     void sendCalibration(int concentration);
 

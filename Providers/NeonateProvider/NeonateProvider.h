@@ -71,7 +71,7 @@ public: // O2ProviderIFace的接口
     virtual void sendCalibration(int concentration);
 
     // 马达控制
-    virtual void sendMotorControl(int status);
+    virtual void sendMotorControl(bool status);
 
     // 应答
     void sendACK(unsigned char type);

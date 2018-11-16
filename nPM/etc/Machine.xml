@@ -43,6 +43,7 @@
     <AG SptProvider="DemoProvider,PHASEIN_AG">PHASEIN_AG</AG>
     <CO SptProvider="DemoProvider,WITLEAF_IBP">WITLEAF_IBP</CO>
     <TEMP SptProvider="DemoProvider,BLM_TT3,BLM_T5">BLM_T5</TEMP>
+    <O2 SptProvider="DemoProvider,NEONATE_O2">NEONATE_O2</O2>
     <!--Provider端口信息-->
     <PRT48Port>/dev/ttyS3</PRT48Port>
     <BLM_E5Port>/dev/ttyS1</BLM_E5Port>
@@ -55,5 +56,6 @@
     <WITLEAF_IBPPort>/dev/ttyS4</WITLEAF_IBPPort>
     <BLM_CO2Port>/dev/ttyPM2</BLM_CO2Port>
     <DataDispatcherPort>/dev/ttyPM3</DataDispatcherPort>
+    <NEONATE_O2Port>/dev/ttyS5</NEONATE_O2Port>
     <!--    <PHASEIN_AGPort>/dev/ttyWK3</PHASEIN_AGPort>-->
 </Machine>
