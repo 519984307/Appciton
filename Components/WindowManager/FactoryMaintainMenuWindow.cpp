@@ -18,6 +18,7 @@
 #include "NIBPCalibrationMenuContent.h"
 #include "FactoryTestMenuContent.h"
 #include "FactoryTempMenuContent.h"
+#include "O2CalibrationMenuContent.h"
 #include "LanguageManager.h"
 
 FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
@@ -35,6 +36,7 @@ FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
         instance->addMenuContent(new NIBPCalibrationMenuContent);
         instance->addMenuContent(new FactoryTestMenuContent);
         instance->addMenuContent(new FactoryTempMenuContent);
+        instance->addMenuContent(new O2CalibrationMenuContent);
     }
 
     return instance;

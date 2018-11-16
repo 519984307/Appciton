@@ -510,6 +510,17 @@ static void _initProviderParam(void)
         layoutManager.addLayoutWidget(tempTrendWidget, LAYOUT_NODE_PARAM_TEMP);
     }
 
+    if (systemManager.isSupport(CONFIG_O2))
+    {
+         paramManager.addProvider(*new NeonateProvider());
+         paramManager.addParam(o2Param.getInstance());
+         alertor.addLimtSource(o2LimitAlarm.getInstance());
+         alertor.addOneShotSource(o2OneShotAlarm.getInstance());
+         O2TrendWidget *o2TrendWidget  = new O2TrendWidget();
+         o2Param.setTrendWidget(o2TrendWidget);
+         layoutManager.addLayoutWidget(o2TrendWidget, LAYOUT_NODE_PARAM_OXYGEN);
+    }
+
     // short trend container
     ShortTrendContainer *trendContainer = new ShortTrendContainer;
     layoutManager.addLayoutWidget(trendContainer);

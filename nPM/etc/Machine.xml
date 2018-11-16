@@ -19,11 +19,12 @@
     <TEMPEnable>1</TEMPEnable>
     <WIFIEnable>1</WIFIEnable>
     <TouchEnable>1</TouchEnable>
+    <O2Enable>1</O2Enable>
     <!--系统信息-->
     <SerialNumber>20180725222</SerialNumber>
     <SoftwareVersion>0.0.0.1</SoftwareVersion>
     <!--参数信息-->
-    <AllParams>ECG,SPO2,RESP,NIBP,CO2,IBP,AG,CO,TEMP</AllParams>
+    <AllParams>ECG,SPO2,RESP,NIBP,CO2,IBP,AG,CO,TEMP,O2</AllParams>
     <!--数据记录使能选择-->
     <Record>
         <ECG>0</ECG>
@@ -42,6 +43,7 @@
     <AG SptProvider="DemoProvider,PHASEIN_AG">PHASEIN_AG</AG>
     <CO SptProvider="DemoProvider,WITLEAF_IBP">WITLEAF_IBP</CO>
     <TEMP SptProvider="DemoProvider,BLM_TT3,BLM_T5">BLM_T5</TEMP>
+    <O2 SptProvider="DemoProvider,NEONATE_O2">NEONATE_O2</O2>
     <!--Provider端口信息-->
     <PRT48Port>/dev/ttyS3</PRT48Port>
     <BLM_E5Port>/dev/ttyS1</BLM_E5Port>
@@ -54,5 +56,6 @@
     <WITLEAF_IBPPort>/dev/ttyS4</WITLEAF_IBPPort>
     <BLM_CO2Port>/dev/ttyPM2</BLM_CO2Port>
     <DataDispatcherPort>/dev/ttyPM3</DataDispatcherPort>
+    <NEONATE_O2Port>/dev/ttyS5</NEONATE_O2Port>
     <!--    <PHASEIN_AGPort>/dev/ttyWK3</PHASEIN_AGPort>-->
 </Machine>

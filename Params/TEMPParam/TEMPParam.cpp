@@ -339,7 +339,9 @@ void TEMPParam::onPaletteChanged(ParamID id)
 TEMPParam::TEMPParam() : Param(PARAM_TEMP),
     _provider(NULL), _trendWidget(NULL),
     _t1Value(InvData()), _t2Value(InvData()),
-    _tdValue(InvData()), _isTEMPDisable(false)
+    _tdValue(InvData()), _calibrateChannel(0),
+    _calibrateValue(0), _isTEMPDisable(false),
+    _calibrationReply(false), _calibrationResult(false)
 {
 }
 

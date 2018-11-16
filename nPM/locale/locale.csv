@@ -196,6 +196,15 @@ CO2ZeroCalib,CO2校零,CO2 Zero
 CO2ZeroStart,开始,Start
 CO2Menu,CO2,CO2
 CO2Switch,二氧化碳开关,CO2 Switch
+O2Menu,O2,O2
+O2MenuDesc,O2,O2
+O2Setting,O2设置,O2 Setting
+O2CalibrateReset,氧浓度校准数据被复位,O2 Calibrate Is Reset
+O2NotCalibrate,氧浓度传感器未校准,O2 Sensor Not Calibrate
+O2Low,氧浓度低,O2 Low
+O2High,氧浓度高,O2 High
+ApneaStimulation,窒息唤醒,Apnea Stimulation
+Stop,停止,Stop
 AGMenu,AG,AG
 AGSweepSpeed,波形速度,Sweep Speed
 IBPMenu,IBP,IBP
@@ -309,6 +318,7 @@ IBPMenuDesc,IBP,IBP
 COMenuDesc,C.O.,C.O.
 RESPAndCO2Menu,RESP和CO2,RESP & CO2
 RESPAndCO2MenuDesc,RESP和CO2,RESP & CO2
+TEMPMenu,TEMP,TEMP
 TEMPMenuDesc,TEMP,TEMP
 AGMenuDesc,AG,AG
 AlarmSettingMenuDesc,报警,Alarm
@@ -1226,6 +1236,10 @@ MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info Desc
 NIBPCalibrationMenu,NIBP校准,NIBP Calibration
 NIBPCalibration,NIBP校准,NIBP Calibration
 NIBPCalibrationMenuDesc,NIBP校准,NIBP Calibration
+O2Calibrate,氧浓度校准,O2 Calibrate
+O2CalibrateDesc,氧浓度校准,O2 Calibrate
+Percent21Calibration,21% 校准,21% Calibrate
+Percent100Calibration,100% 校准,100% Calibrate
 SelectStarterLogo,开机图片,Start Logo
 SelectStarterLogoMenu,开机图片,Starter Logo
 SelectStarterLogoMenuDesc,开机图片设置,Start Logo Desc

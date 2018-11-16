@@ -117,6 +117,11 @@
 #include "AGWaveWidget.h"
 #include "AGTrendWidget.h"
 
+#include "NeonateProvider.h"
+#include "O2Param.h"
+#include "O2Alarm.h"
+#include "O2TrendWidget.h"
+
 #include "SPO2Param.h"
 #include "SPO2Alarm.h"
 #include "SPO2WaveWidget.h"
