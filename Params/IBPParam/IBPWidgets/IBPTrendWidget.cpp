@@ -194,7 +194,6 @@ void IBPTrendWidget::isAlarm(int id, bool flag)
 void IBPTrendWidget::showValue()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
-    psrc = normalPalette(psrc);
     if (_sysAlarm || _diaAlarm || _mapAlarm)
     {
         if (!_sysAlarm)
@@ -393,13 +392,7 @@ QList<SubParamID> IBPTrendWidget::getShortTrendSubParams() const
 void IBPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
-    psrc = normalPalette(psrc);
-    showNormalParamLimit(psrc);
-    showNormalStatus(_sysValue, psrc);
-    showNormalStatus(_diaValue, psrc);
-    showNormalStatus(_mapValue, psrc);
-    showNormalStatus(_veinValue, psrc);
-    showNormalStatus(_ibpValue, psrc);
+    showNormalStatus(psrc);
 }
 
 /**************************************************************************************************

@@ -412,7 +412,6 @@ void NIBPTrendWidget::isAlarm(int id, bool flag)
 void NIBPTrendWidget::showValue(void)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
-    psrc = normalPalette(psrc);
     if (d_ptr->sysAlarm || d_ptr->diaAlarm || d_ptr->mapAlarm)
     {
         if (!d_ptr->sysAlarm)
@@ -447,7 +446,13 @@ void NIBPTrendWidget::showValue(void)
         }
         restoreNormalStatusLater();
     }
-
+    else
+    {
+        showNormalStatus(d_ptr->nibpValue, psrc);
+        showNormalStatus(d_ptr->sysValue, psrc);
+        showNormalStatus(d_ptr->diaValue, psrc);
+        showNormalStatus(d_ptr->mapValue, psrc);
+    }
     d_ptr->adjustValueLayout();
 }
 
@@ -509,7 +514,7 @@ void NIBPTrendWidget::showText(QString text)
     }
 
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
-    psrc = normalPalette(psrc);
+    normalPalette(psrc);
     if (!d_ptr->sysAlarm && !d_ptr->diaAlarm && !d_ptr->mapAlarm)
     {
         showNormalStatus(d_ptr->message, psrc);
@@ -525,7 +530,7 @@ void NIBPTrendWidget::showText(QString text)
 void NIBPTrendWidget::showModelText(const QString &text)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
-    psrc = normalPalette(psrc);
+    normalPalette(psrc);
     if (!d_ptr->sysAlarm && !d_ptr->diaAlarm && !d_ptr->mapAlarm)
     {
         showNormalStatus(d_ptr->model, psrc);
@@ -616,12 +621,8 @@ QList<SubParamID> NIBPTrendWidget::getShortTrendSubParams() const
 void NIBPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_NIBP));
-    psrc = normalPalette(psrc);
-    showNormalParamLimit(psrc);
+    showNormalStatus(d_ptr->nibpValue, psrc);
     showNormalStatus(d_ptr->sysValue, psrc);
     showNormalStatus(d_ptr->diaValue, psrc);
     showNormalStatus(d_ptr->mapValue, psrc);
-    showNormalStatus(d_ptr->nibpValue, psrc);
-    showNormalStatus(d_ptr->pressureValue, psrc);
-    showNormalStatus(d_ptr->lastMeasureCount, psrc);
 }

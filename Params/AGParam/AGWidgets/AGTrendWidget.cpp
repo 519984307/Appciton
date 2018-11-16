@@ -146,7 +146,6 @@ void AGTrendWidget::isAlarm(int id, bool flag)
 void AGTrendWidget::showValue()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
-    psrc = normalPalette(psrc);
     if (_fiAlarm || _etAlarm)
     {
         if (!_etAlarm)
@@ -171,6 +170,10 @@ void AGTrendWidget::showValue()
         }
 
         restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
     }
 }
 
@@ -259,10 +262,7 @@ QList<SubParamID> AGTrendWidget::getShortTrendSubParams() const
 void AGTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
-    psrc = normalPalette(psrc);
-    showNormalParamLimit(psrc);
-    showNormalStatus(_etValue, psrc);
-    showNormalStatus(_fiValue, psrc);
+    showNormalStatus(psrc);
 }
 
 /**************************************************************************************************

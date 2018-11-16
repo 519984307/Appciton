@@ -85,12 +85,15 @@ void RESPTrendWidget::isAlarm(bool flag)
 void RESPTrendWidget::showValue(void)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
-    QPalette fgColor = normalPalette(psrc);
     if (_isAlarm)
     {
         showAlarmStatus(_rrValue);
-        showAlarmParamLimit(_rrValue, _rrString, fgColor);
+        showAlarmParamLimit(_rrValue, _rrString, psrc);
         restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
     }
 }
 
@@ -166,7 +169,5 @@ QList<SubParamID> RESPTrendWidget::getShortTrendSubParams() const
 void RESPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
-    QPalette fgColor = normalPalette(psrc);
-    showNormalParamLimit(fgColor);
-    showNormalStatus(_rrValue, fgColor);
+    showNormalStatus(psrc);
 }

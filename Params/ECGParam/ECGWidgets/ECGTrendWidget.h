@@ -56,6 +56,8 @@ private:
     QPixmap beatPixmap;
     QString _hrString;
     bool _isAlarm;
+    void _drawBeatIcon(QColor color);
+    QColor lastIconColor;
 
 private:
     QTimer *_timer;

@@ -165,23 +165,22 @@ void CO2TrendWidget::isAlarm(int id, bool flag)
 void CO2TrendWidget::showValue()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
-    QPalette fgColor = normalPalette(psrc);
     if (_fico2Alarm || _etco2Alarm)
     {
         if (!_etco2Alarm)
         {
-            showNormalStatus(_etco2Value, fgColor);
+            showNormalStatus(_etco2Value, psrc);
         }
 
         if (!_fico2Alarm)
         {
-            showNormalStatus(_fico2Value, fgColor);
+            showNormalStatus(_fico2Value, psrc);
         }
 
         if (_etco2Alarm)
         {
             showAlarmStatus(_etco2Value);
-            showAlarmParamLimit(_etco2Value, _etco2Str, fgColor);
+            showAlarmParamLimit(_etco2Value, _etco2Str, psrc);
         }
 
         if (_fico2Alarm)
@@ -190,6 +189,10 @@ void CO2TrendWidget::showValue()
         }
 
         restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
     }
 }
 
@@ -313,8 +316,5 @@ QList<SubParamID> CO2TrendWidget::getShortTrendSubParams() const
 void CO2TrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
-    psrc = normalPalette(psrc);
-    showNormalParamLimit(psrc);
-    showNormalStatus(_etco2Value, psrc);
-    showNormalStatus(_fico2Value, psrc);
+    showNormalStatus(psrc);
 }

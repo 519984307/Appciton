@@ -29,6 +29,9 @@
 #include "ParamManager.h"
 #include "IConfig.h"
 #include "TimeDate.h"
+#include <QBitmap>
+
+#define beatIconPath "/usr/local/nPM/icons/beat.png"
 
 /**************************************************************************************************
  * 释放事件，弹出菜单。
@@ -47,6 +50,24 @@ void ECGTrendWidget::_timeOut()
 {
     _timer->stop();
     _hrBeatIcon->setPixmap(QPixmap());
+}
+
+void ECGTrendWidget::_drawBeatIcon(QColor color)
+{
+    if (lastIconColor == color)
+    {
+        return;
+    }
+    QImage destImage(beatIconPath);
+    QImage srcImage(destImage.width(), destImage.width(), QImage::Format_ARGB32);
+    srcImage.fill(color);
+    QPainter painter(&srcImage);
+    QPoint point(0, 0);
+    painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
+    painter.drawImage(point, destImage);
+    painter.end();
+    beatPixmap =  QPixmap::fromImage(srcImage);
+    lastIconColor = color;
 }
 
 /**************************************************************************************************
@@ -105,12 +126,16 @@ void ECGTrendWidget::isAlarm(bool isAlarm)
 void ECGTrendWidget::showValue(void)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-    psrc = normalPalette(psrc);
     if (_isAlarm)
     {
         showAlarmStatus(_hrValue);
         showAlarmParamLimit(_hrValue, _hrString, psrc);
         restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
+        _drawBeatIcon(psrc.windowText().color());
     }
 }
 
@@ -183,15 +208,7 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     // 开始布局。
     _hrBeatIcon = new QLabel();
     _hrBeatIcon->setFixedSize(24, 24);
-    QImage destImage("/usr/local/nPM/icons/beat.png");
-    QImage srcImage(destImage.width(), destImage.width(), QImage::Format_ARGB32);
-    srcImage.fill(palette.foreground().color());
-    QPainter painter(&srcImage);
-    QPoint point(0, 0);
-    painter.setCompositionMode(QPainter::CompositionMode_DestinationIn);
-    painter.drawImage(point, destImage);
-    painter.end();
-    beatPixmap =  QPixmap::fromImage(srcImage);
+    _drawBeatIcon(palette.windowText().color());
     _hrBeatIcon->setPixmap(QPixmap());
 
     _hrValue = new QLabel();
@@ -237,7 +254,6 @@ QList<SubParamID> ECGTrendWidget::getShortTrendSubParams() const
 void ECGTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-    psrc = normalPalette(psrc);
-    showNormalParamLimit(psrc);
-    showNormalStatus(_hrValue, psrc);
+    showNormalStatus(psrc);
+    _drawBeatIcon(psrc.windowText().color());
 }
