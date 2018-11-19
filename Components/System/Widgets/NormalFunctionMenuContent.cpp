@@ -176,6 +176,10 @@ void NormalFunctionMenuContent::layoutExec()
     label = new QLabel(trs("KeyPressVolume"));
     layout->addWidget(label , row , 0);
     comboBox = new ComboBox();
+
+    // 设置声音触发方式
+    comboBox->setPlaySoundStatue(true);
+
     comboBox->addItems(QStringList()
                        <<QString::number(SoundManager::VOLUME_LEV_0)
                        <<QString::number(SoundManager::VOLUME_LEV_1)

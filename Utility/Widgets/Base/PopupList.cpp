@@ -21,6 +21,7 @@
 #include "FontManager.h"
 #include <QKeyEvent>
 #include <QFocusEvent>
+#include "SoundManager.h"
 
 #define DEFAULT_WIDTH 150
 #define DEFAULT_HEIGHT  100
@@ -37,7 +38,8 @@ public:
           curSelectIndex(-1),
           concatToParent(concat),
           popAbove(false),
-          maximumDisplayItemNum(MAXIMUM_DISPLAY_ITEM)
+          maximumDisplayItemNum(MAXIMUM_DISPLAY_ITEM),
+          isPlaySound(false)
     {}
 
     /**
@@ -55,6 +57,7 @@ public:
     bool popAbove;
     QRect globalRect; // A global rect this popup should pop around
     int maximumDisplayItemNum;
+    bool isPlaySound;
 };
 
 int PopupListPrivate::properItemsHeight() const
@@ -207,6 +210,11 @@ QSize PopupList::sizeHint() const
     height += margins.top() + margins.bottom();
 
     return QSize(width, height);
+}
+
+void PopupList::setPlaySoundStatue(bool isPlay)
+{
+   d_ptr->isPlaySound = isPlay;
 }
 
 void PopupList::showEvent(QShowEvent *e)
@@ -404,7 +412,15 @@ bool PopupList::focusNextPrevChild(bool next)
     }
     else
     {
+        index = 0;
         d_ptr->items.at(0)->setFocus();
+    }
+    // 按条件播放声音
+    if (d_ptr->isPlaySound == true)
+    {
+        int volume = d_ptr->items.at(index)->text().toInt();
+        soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , static_cast<SoundManager::VolumeLevel>(volume));
+        soundManager.keyPressTone();
     }
     return true;
 }

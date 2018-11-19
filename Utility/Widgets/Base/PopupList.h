@@ -73,6 +73,12 @@ public:
     /* reimplement */
     QSize sizeHint() const;
 
+    /**
+     * @brief setPlaySoundStatue  在聚焦的item改变时，是否播放声音
+     * @param isPlay 是否播放声音
+     */
+    void setPlaySoundStatue(bool isPlay = false);
+
 protected:
     /* reimplement */
     void showEvent(QShowEvent *e);

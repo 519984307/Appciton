@@ -25,6 +25,12 @@ public:
     /* reimplement */
     QSize sizeHint() const;
 
+    /**
+     * @brief setPlaySoundStatue  在combobox item 聚焦改变时是否播放声音
+     * @param isPlay 是否播放声音
+     */
+    void setPlaySoundStatue(bool isPlay);
+
 protected:
     /* reimplement */
     void keyPressEvent(QKeyEvent *ev);
