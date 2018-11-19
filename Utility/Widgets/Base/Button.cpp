@@ -14,7 +14,6 @@
 #include <QStyle>
 #include <QKeyEvent>
 #include <ThemeManager.h>
-#include "SoundManager.h"
 
 #define PADDING 4
 #define ICON_TEXT_PADDING 4
