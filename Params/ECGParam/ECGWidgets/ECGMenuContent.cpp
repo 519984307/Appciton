@@ -459,6 +459,10 @@ void ECGMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItem(trs("Off"));
+
+    // 设置声音触发方式
+    comboBox->setPlaySoundType(SoundManager::SOUND_TYPE_HEARTBEAT);
+
     for (int i = SoundManager::VOLUME_LEV_1; i <= SoundManager::VOLUME_LEV_MAX; i++)
     {
         comboBox->addItem(QString::number(i));

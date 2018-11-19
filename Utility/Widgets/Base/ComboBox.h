@@ -10,6 +10,7 @@
 
 #pragma once
 #include <QComboBox>
+#include "SoundManager.h"
 
 class ComboBoxPrivate;
 class ComboBox: public QComboBox
@@ -26,10 +27,10 @@ public:
     QSize sizeHint() const;
 
     /**
-     * @brief setPlaySoundStatue  在combobox item 聚焦改变时是否播放声音
-     * @param isPlay 是否播放声音
+     * @brief setPlaySoundType  在combobox item 设置聚焦改变时播放声音的类型
+     * @param type 声音类型
      */
-    void setPlaySoundStatue(bool isPlay);
+    void setPlaySoundType(SoundManager::SoundType type);
 
 protected:
     /* reimplement */

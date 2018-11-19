@@ -73,6 +73,11 @@ public:
     void heartBeatTone();
 
     /**
+     * @brief alarmTone  play alarm sound
+     */
+    void alarmTone();
+
+    /**
      * @brief updateAlarm update alarm info
      * @param hasAlarm  the alarm type exist or not
      * @param curHighestPriority if alarm exists, need to provide the current highest priority alarm level

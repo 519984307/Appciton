@@ -15,7 +15,6 @@
 #include <QKeyEvent>
 #include <QPainter>
 #include "ThemeManager.h"
-#include "SoundManager.h"
 
 #define DEFAULT_HEIGHT (themeManger.getAcceptableControlHeight())
 
@@ -25,12 +24,12 @@ public:
     ComboBoxPrivate()
         : isPopup(false),
           popupList(NULL),
-          isPlaySoundOnItemFocusChanged(false)
+          playSoundType(SoundManager::SOUND_TYPE_NONE)
     {}
 
     bool isPopup;
     QPointer<PopupList> popupList;
-    bool isPlaySoundOnItemFocusChanged;
+    SoundManager::SoundType playSoundType;
 };
 
 ComboBox::ComboBox(QWidget *parent)
@@ -64,7 +63,7 @@ void ComboBox::showPopup()
         connect(d_ptr->popupList.data(), SIGNAL(destroyed(QObject *)), this, SLOT(onPopupDestroyed()));
         connect(d_ptr->popupList.data(), SIGNAL(selectItemChanged(int)), this, SLOT(setCurrentIndex(int)));
 
-        d_ptr->popupList->setPlaySoundStatue(d_ptr->isPlaySoundOnItemFocusChanged);
+        d_ptr->popupList->setPlaySoundType(d_ptr->playSoundType);
     }
 
     d_ptr->popupList->show();
@@ -77,9 +76,9 @@ QSize ComboBox::sizeHint() const
     return s;
 }
 
-void ComboBox::setPlaySoundStatue(bool isPlay)
+void ComboBox::setPlaySoundType(SoundManager::SoundType type)
 {
-    d_ptr->isPlaySoundOnItemFocusChanged = isPlay;
+    d_ptr->playSoundType = type;
 }
 
 void ComboBox::keyPressEvent(QKeyEvent *ev)

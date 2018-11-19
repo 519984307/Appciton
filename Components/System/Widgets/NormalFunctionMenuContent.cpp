@@ -140,6 +140,10 @@ void NormalFunctionMenuContent::layoutExec()
     label = new QLabel(trs("SystemAlarmVolume"));
     layout->addWidget(label, row, 0);
     comboBox = new ComboBox();
+
+    // 设置声音触发方式
+    comboBox->setPlaySoundType(SoundManager::SOUND_TYPE_ALARM);
+
     comboBox->addItems(QStringList()
                        << QString::number(SoundManager::VOLUME_LEV_1)
                        << QString::number(SoundManager::VOLUME_LEV_2)
@@ -178,7 +182,7 @@ void NormalFunctionMenuContent::layoutExec()
     comboBox = new ComboBox();
 
     // 设置声音触发方式
-    comboBox->setPlaySoundStatue(true);
+    comboBox->setPlaySoundType(SoundManager::SOUND_TYPE_KEY_PRESS);
 
     comboBox->addItems(QStringList()
                        <<QString::number(SoundManager::VOLUME_LEV_0)

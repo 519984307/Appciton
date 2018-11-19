@@ -10,6 +10,7 @@
 
 #pragma once
 #include <QWidget>
+#include "SoundManager.h"
 
 class PopupListPrivate;
 class PopupList : public QWidget
@@ -74,10 +75,10 @@ public:
     QSize sizeHint() const;
 
     /**
-     * @brief setPlaySoundStatue  在聚焦的item改变时，是否播放声音
-     * @param isPlay 是否播放声音
+     * @brief setPlaySoundType  在聚焦的item改变时，播放声音的类型
+     * @param type 声音类型
      */
-    void setPlaySoundStatue(bool isPlay = false);
+    void setPlaySoundType(SoundManager::SoundType type);
 
 protected:
     /* reimplement */

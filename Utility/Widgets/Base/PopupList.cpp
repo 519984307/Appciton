@@ -21,7 +21,6 @@
 #include "FontManager.h"
 #include <QKeyEvent>
 #include <QFocusEvent>
-#include "SoundManager.h"
 
 #define DEFAULT_WIDTH 150
 #define DEFAULT_HEIGHT  100
@@ -39,7 +38,7 @@ public:
           concatToParent(concat),
           popAbove(false),
           maximumDisplayItemNum(MAXIMUM_DISPLAY_ITEM),
-          isPlaySound(false)
+          playSoundType(SoundManager::SOUND_TYPE_NONE)
     {}
 
     /**
@@ -57,7 +56,7 @@ public:
     bool popAbove;
     QRect globalRect; // A global rect this popup should pop around
     int maximumDisplayItemNum;
-    bool isPlaySound;
+    SoundManager::SoundType playSoundType;
 };
 
 int PopupListPrivate::properItemsHeight() const
@@ -212,9 +211,9 @@ QSize PopupList::sizeHint() const
     return QSize(width, height);
 }
 
-void PopupList::setPlaySoundStatue(bool isPlay)
+void PopupList::setPlaySoundType(SoundManager::SoundType type)
 {
-   d_ptr->isPlaySound = isPlay;
+    d_ptr->playSoundType = type;
 }
 
 void PopupList::showEvent(QShowEvent *e)
@@ -415,13 +414,38 @@ bool PopupList::focusNextPrevChild(bool next)
         index = 0;
         d_ptr->items.at(0)->setFocus();
     }
+
     // 按条件播放声音
-    if (d_ptr->isPlaySound == true)
+    switch (d_ptr->playSoundType)
     {
-        int volume = d_ptr->items.at(index)->text().toInt();
-        soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , static_cast<SoundManager::VolumeLevel>(volume));
-        soundManager.keyPressTone();
+        case SoundManager::SOUND_TYPE_NONE:
+        case SoundManager::SOUND_TYPE_ERROR:
+        case SoundManager::SOUND_TYPE_PULSE:
+        case SoundManager::SOUND_TYPE_NR:
+        break;
+        case SoundManager::SOUND_TYPE_KEY_PRESS:
+        {
+            int volume = d_ptr->items.at(index)->text().toInt();
+            soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , static_cast<SoundManager::VolumeLevel>(volume));
+            soundManager.keyPressTone();
+        }
+        break;
+        case SoundManager::SOUND_TYPE_ALARM:
+        {
+            int volume = d_ptr->items.at(index)->text().toInt();
+            soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM , static_cast<SoundManager::VolumeLevel>(volume));
+            soundManager.alarmTone();
+        }
+        break;
+        case SoundManager::SOUND_TYPE_HEARTBEAT:
+        {
+            int volume = d_ptr->items.at(index)->text().toInt();
+            soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(volume));
+            soundManager.heartBeatTone();
+        }
+        break;
     }
+
     return true;
 }
 
