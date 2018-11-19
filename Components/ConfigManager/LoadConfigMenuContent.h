@@ -32,11 +32,6 @@ protected:
      */
     virtual void layoutExec();
 
-signals:
-    /**
-     * @brief configUpdated
-     */
-    void configUpdated();
 private slots:
     /**
      * @brief onBtnClick

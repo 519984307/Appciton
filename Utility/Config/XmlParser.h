@@ -55,6 +55,12 @@ public:
         return _fileName;
     }
 
+    /**
+     * @brief setCurrentFilePath  设置当前的配置文件路径
+     * @param path  文件路径
+     */
+    void setCurrentFilePath(QString &path);
+
 private:
     QDomElement _findElement(const QString &indexStr);
     bool _copyNode(QDomElement &dstTag, QDomElement &srcTag);

@@ -276,6 +276,12 @@ public:
     // 加载指定文件的内容。
     bool load(const QString &configPath);
 
+     /**
+     * @brief setCurrentFilePath  设置当前的配置文件路径
+     * @param path  文件路径
+     */
+    void setCurrentFilePath(QString &path);
+
     // 重新加载文件的内容。
     void reload()
     {
