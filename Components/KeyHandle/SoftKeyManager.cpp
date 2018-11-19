@@ -198,21 +198,20 @@ void SoftKeyManager::setKeyTypeAvailable(SoftBaseKeyType keyType, bool isAvailab
     for (int index = 0; index < SOFT_BASE_KEY_NR; index++)
     {
         int indexNew = index;
-        for (int i = 0; i <= index; i++)
+
+        for (int i = 0; i < SOFT_BASE_KEY_NR; i++)
         {
-            SoftBaseKeyType keyType = static_cast<SoftBaseKeyType>(i);
-            if (d_ptr->keyTypeStatueMap[keyType] == false)
+            if (i <= index)
+            {
+                SoftBaseKeyType keyType = static_cast<SoftBaseKeyType>(i);
+                if (d_ptr->keyTypeStatueMap[keyType] == false)
+                {
+                    indexNew++;
+                }
+            }
+            else if (d_ptr->keyTypeStatueMap[static_cast<SoftBaseKeyType>(indexNew)] == false)
             {
                 indexNew++;
-            }
-        }
-
-        while (d_ptr->keyTypeStatueMap[static_cast<SoftBaseKeyType>(indexNew)] == false)
-        {
-            indexNew++;
-            if (indexNew > SOFT_BASE_KEY_NR)
-            {
-                break;
             }
         }
 
