@@ -272,10 +272,12 @@ bool S5Provider::isStatus(unsigned char *packet)
         if (packet[2] == 0x01)
         {
             spo2Param.setSensorOff(false);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, false);
         }
         else
         {
             spo2Param.setSensorOff(true);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, true);
         }
         break;
 
@@ -286,12 +288,14 @@ bool S5Provider::isStatus(unsigned char *packet)
         {
             spo2Param.setNotify(true, trs("SPO2CheckSensor"));
             spo2Param.setValidStatus(isValid);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, true);
         }
         else
         {
             isValid = true;
             spo2Param.setNotify(false, trs("SPO2CheckSensor"));
             spo2Param.setValidStatus(isValid);
+            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, false);
         }
         break;
     }
