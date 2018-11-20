@@ -580,16 +580,16 @@ void ShortTrendItemPrivate::getAxisValue(short data, int flag)
     int margin = 10;
     short maxY = maxValue;
     short minY = minValue;
-    short maxDiff = abs(maxValue - data);
+    short maxDiff = maxValue - data;
     bool maxFlag = flag & modifyMaxLimit;
-    if (maxFlag && (maxDiff <= 0 || maxDiff > margin || (static_cast<int>(maxValue) % margin)))
+    if (maxFlag && (maxDiff <= 0 || maxDiff >= margin || (static_cast<int>(maxValue) % margin)))
     {
         maxY = data + (margin - data % margin);
     }
 
-    short minDiff = abs(data - minValue);
+    short minDiff = data - minValue;
     bool minFlag = flag & modifyMinLimit;
-    if (minFlag && (minDiff <= 0 || minDiff > margin || (static_cast<int>(minValue) % margin)))
+    if (minFlag && (minDiff <= 0 || minDiff >= margin || (static_cast<int>(minValue) % margin)))
     {
         int value = (data % margin) ? (data % margin) : margin;
         minY = data - value;
