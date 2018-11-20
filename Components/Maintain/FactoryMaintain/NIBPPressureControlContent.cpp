@@ -49,6 +49,7 @@ public:
     int inflateTimerID;             // 充气和放气回复定时器ID
     int pressureTimerID;            // 获取压力定时器ID
     int pressure;
+    int inflateTimeoutNum;          // 充气超时
 };
 
 NIBPPressureControlContentPrivate::NIBPPressureControlContentPrivate()
@@ -62,7 +63,7 @@ NIBPPressureControlContentPrivate::NIBPPressureControlContentPrivate()
       pressureControlFlag(false),
       modeBtn(NULL), isPressureControlMode(false), inModeTimerID(-1),
       timeoutNum(0), isInflate(true), inflateTimerID(-1), pressureTimerID(-1),
-      pressure(InvData())
+      pressure(InvData()), inflateTimeoutNum(0)
 {
 }
 
@@ -157,7 +158,7 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
     else if (d_ptr->inflateTimerID == ev->timerId())
     {
         bool reply = nibpParam.geReply();
-        if (reply || d_ptr->timeoutNum == TIMEOUT_WAIT_NUMBER * 10)
+        if (reply || d_ptr->inflateTimeoutNum == TIMEOUT_WAIT_NUMBER * 10)
         {
             if (reply && nibpParam.getResult())
             {
@@ -180,11 +181,12 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
             }
             killTimer(d_ptr->inflateTimerID);
             d_ptr->inflateTimerID = -1;
-            d_ptr->timeoutNum = 0;
+            d_ptr->inflateTimeoutNum = 0;
+            d_ptr->modeBtn->setEnabled(true);
         }
         else
         {
-            d_ptr->timeoutNum++;
+            d_ptr->inflateTimeoutNum++;
         }
     }
     else if (d_ptr->pressureTimerID == ev->timerId())
@@ -207,6 +209,8 @@ void NIBPPressureControlContent::inflateBtnReleased()
     {
         int value = d_ptr->chargePressure->getValue();
         nibpParam.provider().servicePressureinflate(value);
+        d_ptr->inflateBtn->setText(trs("Inflating"));
+        d_ptr->modeBtn->setEnabled(false);
     }
     else
     {

@@ -192,7 +192,11 @@ QuitManometerMode,退出压力计模式,Quit Manometer
 EnterManometerMode,进入压力计模式,Enter Manometer
 QuitPressureContrlMode,退出压力操控模式,Quit Pressure Contrl
 EnterPressureContrlMode,进入压力操控模式,Enter Pressure Contrl
+EnterZeroMode,进入校零模式,Enter Zero
+QuitZeroMode,退出校零模式,Quit Zero
 OperationFailedPleaseAgain,"操作失败,请重试!","Operation Failed , Please Again!"
+PumpControl,气泵控制,Pump Control
+ValveControl,气阀控制,Valve Control
 InflationPressure,充气压力,Inflation Pressure
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
@@ -721,6 +725,7 @@ TEMPChannelTwo,体温通道2,TEMP Channel Two
 TEMPChannelDisable,体温通道失能,TEMP Channel Disable 
 ServiceInflate,充气,Inflate
 ServiceDeflate,放气,Deflate
+Inflating,充气中,Inflating
 ServiceCalibrateZero,校零,Calibrate Zero
 NIBPCalibrateZeroModel,校零模式,NIBP Calibrate Zero Model
 NIBPCalibrateZero,校零模式,NIBP Calibrate Zero 

@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/11/20
+ **/
+
 #include "NIBPServiceZeroPointState.h"
 #include "NIBPServiceStateDefine.h"
 #include "NIBPParam.h"
@@ -9,7 +19,6 @@
  *************************************************************************************************/
 void NIBPServiceZeroPointState::run(void)
 {
-
 }
 
 /**************************************************************************************************
@@ -70,15 +79,15 @@ void NIBPServiceZeroPointState::handleNIBPEvent(NIBPEvent event, const unsigned 
         break;
 
     case NIBP_EVENT_TIMEOUT:
-        {
+    {
         nibpzeropoint.unPacket(false);
         _isEnterSuccess = false;
         IMessageBox messbox(trs("Warn"), trs("NIBPDirectiveTimeout"), false);
-        messbox.setWindowFlags(Qt::WindowStaysOnTopHint|Qt::FramelessWindowHint);
+        messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
         messbox.setYesBtnTxt(trs("SupervisorOK"));
         messbox.exec();
     }
-        break;
+    break;
 
     case NIBP_EVENT_SERVICE_REPAIR_RETURN:
         if (_isEnterSuccess && !nibpRepairMenuManager.getRepairError())
@@ -113,25 +122,16 @@ void NIBPServiceZeroPointState::handleNIBPEvent(NIBPEvent event, const unsigned 
         }
         else
         {
-            if (args[0] != 0x00)
-            {
-                nibpzeropoint.unPacket(false);
-                _isEnterSuccess = false;
-                IMessageBox messbox(trs("Warn"), trs("NIBPModuleEnterFail"), false);
-                messbox.setWindowFlags(Qt::WindowStaysOnTopHint|Qt::FramelessWindowHint);
-                messbox.setYesBtnTxt(trs("SupervisorOK"));
-                messbox.exec();
-            }
-            else
-            {
-                nibpzeropoint.unPacket(true);
-                _isEnterSuccess = true;
-            }
+            nibpParam.setResult(!args[0]);
         }
         break;
 
     case NIBP_EVENT_SERVICE_PRESSURECONTROL_VALVE:
-        nibpzeropoint.startSwitch(false);
+        nibpParam.setResult(true);
+        break;
+
+    case NIBP_EVENT_SERVICE_PRESSURECONTROL_PUMP:
+        nibpParam.setResult(!args[0]);
         break;
 
     case NIBP_EVENT_SERVICE_STATE_CHANGE:
@@ -146,13 +146,16 @@ void NIBPServiceZeroPointState::handleNIBPEvent(NIBPEvent event, const unsigned 
     case NIBP_EVENT_CURRENT_PRESSURE:
     {
         int pressure;
-        pressure = (args[1]<<8)+args[0];
+        pressure = (args[1] << 8) + args[0];
         if (pressure != -1)
         {
             nibpzeropoint.setCuffPressure(pressure);
             return;
         }
     }
+    break;
+    case NIBP_EVENT_SERVICE_CALIBRATE_ZERO:
+        nibpParam.setResult(true);
         break;
 
     default:
@@ -163,9 +166,9 @@ void NIBPServiceZeroPointState::handleNIBPEvent(NIBPEvent event, const unsigned 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-NIBPServiceZeroPointState::NIBPServiceZeroPointState() : NIBPState(NIBP_SERVICE_CALIBRATE_ZERO_STATE)
+NIBPServiceZeroPointState::NIBPServiceZeroPointState() : NIBPState(NIBP_SERVICE_CALIBRATE_ZERO_STATE),
+    _isReturn(false), _isEnterSuccess(false)
 {
-    _isReturn = false;
 }
 
 /**************************************************************************************************
@@ -173,5 +176,4 @@ NIBPServiceZeroPointState::NIBPServiceZeroPointState() : NIBPState(NIBP_SERVICE_
  *************************************************************************************************/
 NIBPServiceZeroPointState::~NIBPServiceZeroPointState()
 {
-
 }

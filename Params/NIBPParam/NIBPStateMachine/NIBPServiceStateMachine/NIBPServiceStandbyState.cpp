@@ -62,6 +62,7 @@ void NIBPServiceStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
     case NIBP_EVENT_SERVICE_CALIBRATE_ENTER:
     case NIBP_EVENT_SERVICE_MANOMETER_ENTER:
     case NIBP_EVENT_SERVICE_PRESSURECONTROL_ENTER:
+    case NIBP_EVENT_SERVICE_CALIBRATE_ZERO_ENTER:
         nibpParam.setResult(!args[0]);
         break;
 

@@ -340,6 +340,11 @@ void N5Provider::handlePacket(unsigned char *data, int len)
         nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_DEFLATE, NULL, 0);
         break;
 
+    // 气泵控制
+    case N5_RSP_PUMP:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_PUMP, &data[1], 1);
+        break;
+
     // 气阀控制
     case N5_RSP_VALVE:
         nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_VALVE, NULL, 0);
@@ -358,6 +363,10 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     // 服务模式压力帧
     case N5_SERVICE_PRESSURE:
         nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE, &data[1], 2);
+        break;
+
+    case N5_RSP_PRESSURE_ZERO:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_ZERO, NULL, 0);
         break;
 
     default:
@@ -720,6 +729,14 @@ bool N5Provider::isServicePressureZero(unsigned char *packet)
     }
 
     return true;
+}
+
+void N5Provider::servicePump(bool enter, unsigned char pump)
+{
+    unsigned char cmd[2];
+    cmd[0] = enter;
+    cmd[1] = pump;
+    sendCmd(N5_CMD_PUMP, cmd, 2);
 }
 
 /**************************************************************************************************

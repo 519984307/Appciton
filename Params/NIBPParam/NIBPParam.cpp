@@ -1385,8 +1385,9 @@ NIBPParam::NIBPParam()
       _statOpenTemp(false), _isCreateSnapshotFlag(false),
       _isNIBPDisable(false), _isManualMeasure(false),
       _connectedFlag(false), _connectedProvider(false),
-      _text(InvStr()), _activityMachine(NULL),
-      _reply(false), _result(false), _manometerPressure(InvData())
+      _text(InvStr()),
+      _reply(false), _result(false), _manometerPressure(InvData()),
+      _activityMachine(NULL)
 {
     nibpCountdownTime.construction();
 

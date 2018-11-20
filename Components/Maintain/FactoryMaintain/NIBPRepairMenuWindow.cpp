@@ -72,11 +72,6 @@ NIBPRepairMenuWindow *NIBPRepairMenuWindow::getInstance()
  *************************************************************************************************/
 void NIBPRepairMenuWindow::init()
 {
-//    NIBPCalibrateContent::getInstance()->init();
-//    NIBPManometerContent::getInstance()->init();
-//    NIBPPressureControlContent::getInstance()->init();
-//    NIBPZeroPointContent::getInstance()->init();
-
     d_ptr->repairError = false;
     d_ptr->replyFlag = false;
 
@@ -101,7 +96,6 @@ void NIBPRepairMenuWindow::unPacket(bool flag)
  *************************************************************************************************/
 void NIBPRepairMenuWindow::returnMenu()
 {
-    NIBPZeroPointContent::getInstance()->init();
 }
 
 /**************************************************************************************************

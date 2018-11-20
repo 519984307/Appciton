@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/11/20
+ **/
+
 #pragma once
 #include "PatientDefine.h"
 #include "NIBPDefine.h"
@@ -27,10 +37,16 @@ public:
     virtual void setPatientType(unsigned char /*type*/) { }
 
     // 发送启动指令是否有该指令的应答。
-    virtual bool needStartACK(void) { return false; }
+    virtual bool needStartACK(void)
+    {
+        return false;
+    }
 
     // 发送停止指令是否有该指令的应答。
-    virtual bool needStopACK(void) { return false; }
+    virtual bool needStopACK(void)
+    {
+        return false;
+    }
 
     // 是否为错误数据包。
     virtual NIBPOneShotType isMeasureError(unsigned char */*packet*/)
@@ -42,7 +58,7 @@ public:
     virtual void getResult(void) { }
 
     // 是否为结果包。
-    virtual bool isResult(unsigned char */*packet*/,short &/*sys*/,
+    virtual bool isResult(unsigned char */*packet*/, short &/*sys*/,
                           short &/*dia*/, short &/*map*/, short &/*pr*/, NIBPOneShotType &/*err*/)
     {
         return false;
@@ -54,7 +70,7 @@ public:
     // 进入校准模式。
     virtual void serviceCalibrate(bool /*enter*/) { }
 
-    //校准点压力值输入
+    // 校准点压力值输入
     virtual void servicePressurepoint(const unsigned char */*data*/, unsigned int /*len*/) { }
 
     // 进入压力计模式控制。
@@ -63,56 +79,99 @@ public:
     // 进入压力操控模式。
     virtual void servicePressurecontrol(bool /*enter*/) { }
 
-    //压力控制（充气）
+    // 压力控制（充气）
     virtual void servicePressureinflate(short /*pressure*/) { }
-    virtual bool isServicePressureinflate(unsigned char */*packet*/) {return false;}
+    virtual bool isServicePressureinflate(unsigned char */*packet*/)
+    {
+        return false;
+    }
 
-    //放气控制
+    // 放气控制
     virtual void servicePressuredeflate(void) { }
 
-    //气阀控制
+    // 气泵控制
+    virtual void servicePump(bool /*enter*/, unsigned char /*pump*/) { }
+    virtual bool isServicePump(unsigned char */*packet*/)
+    {
+        return false;
+    }
+
+    // 气阀控制
     virtual void serviceValve(bool /*enter*/) { }
-    virtual bool isServiceValve(unsigned char */*packet*/)  {return false;}
+    virtual bool isServiceValve(unsigned char */*packet*/)
+    {
+        return false;
+    }
 
     // 压力数据，不是压力数据返回-1。
-    virtual int serviceCuffPressure(unsigned char */*packet*/) {return -1;}
+    virtual int serviceCuffPressure(unsigned char */*packet*/)
+    {
+        return -1;
+    }
 
-    //进入校零模式
+    // 进入校零模式
     virtual void serviceCalibrateZero(bool /*enter*/) { }
-    virtual bool isServiceCalibrateZero(unsigned char */*packet*/) {return false;}
+    virtual bool isServiceCalibrateZero(unsigned char */*packet*/)
+    {
+        return false;
+    }
 
-    //校零
+    // 校零
     virtual void servicePressureZero(void) { }
-    virtual bool isServicePressureZero(unsigned char */*packet*/) {return false;}
+    virtual bool isServicePressureZero(unsigned char */*packet*/)
+    {
+        return false;
+    }
 
-    //过压保护
+    // 过压保护
     virtual void servicePressureProtect(bool /*enter*/) { }
-    virtual bool isServicePressureProtect(unsigned char */*packet*/) {return false;}
+    virtual bool isServicePressureProtect(unsigned char */*packet*/)
+    {
+        return false;
+    }
 
-    //进入升级模式
+    // 进入升级模式
     virtual void serviceUpgradeEnter(void) { }
-    virtual bool isServiceUpgradeEnter(unsigned char */*packet*/) {return false;}
+    virtual bool isServiceUpgradeEnter(unsigned char */*packet*/)
+    {
+        return false;
+    }
 
-    //数据发送启动
+    // 数据发送启动
     virtual void serviceUpgradeSend(void) { }
-    virtual bool isServiceUpgradeSend(unsigned char */*packet*/) {return false;}
+    virtual bool isServiceUpgradeSend(unsigned char */*packet*/)
+    {
+        return false;
+    }
 
-    //升级模式擦除Flash
+    // 升级模式擦除Flash
     virtual void serviceUpgradeClear(void) { }
-    virtual bool isServiceUpgradeClear(unsigned char */*packet*/) {return false;}
+    virtual bool isServiceUpgradeClear(unsigned char */*packet*/)
+    {
+        return false;
+    }
 
-    //升级模式硬件版本号
+    // 升级模式硬件版本号
     virtual void serviceUpgradeRead(void) { }
-    virtual bool isServiceUpgradeReade(unsigned char */*packet*/) {return false;}
+    virtual bool isServiceUpgradeReade(unsigned char */*packet*/)
+    {
+        return false;
+    }
 
-    //文件片段传输
+    // 文件片段传输
     virtual void serviceUpgradeFile(unsigned char */*packet*/) { }
-    virtual bool isServiceUpgradeFile(unsigned char */*packet*/) {return false;}
+    virtual bool isServiceUpgradeFile(unsigned char */*packet*/)
+    {
+        return false;
+    }
 
-    //升级结果
-    virtual bool isServiceUpgradeFinish(unsigned char */*packet*/) {return false;}
+    // 升级结果
+    virtual bool isServiceUpgradeFinish(unsigned char */*packet*/)
+    {
+        return false;
+    }
 
-    //发送协议命令
+    // 发送协议命令
     virtual void sendCmdData(unsigned char /*cmdId*/, const unsigned char */*data*/,
                              unsigned int /*len*/) { }
 
