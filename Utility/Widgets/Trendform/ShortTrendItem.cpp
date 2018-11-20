@@ -123,7 +123,7 @@ public:
         modifyMaxLimit = 1 << 0,
         modifyMinLimit = 1 << 1
     };
-    void getAxisValue(short data, int flag);
+    void setAxisValue(short data, int flag);
 
     ShortTrendItem *const q_ptr;
     QString name;
@@ -575,7 +575,7 @@ bool ShortTrendItem::isNibpTrend() const
     return d_ptr->isNibp;
 }
 
-void ShortTrendItemPrivate::getAxisValue(short data, int flag)
+void ShortTrendItemPrivate::setAxisValue(short data, int flag)
 {
     int margin = 10;
     short maxY = maxValue;
@@ -614,15 +614,15 @@ void ShortTrendItem::onNewTrendDataArrived(ShortTrendInterval interval)
                 if (d_ptr->firstValue)
                 {
                     d_ptr->firstValue = false;
-                    d_ptr->getAxisValue(data, ShortTrendItemPrivate::modifyMaxLimit | ShortTrendItemPrivate::modifyMinLimit);
+                    d_ptr->setAxisValue(data, ShortTrendItemPrivate::modifyMaxLimit | ShortTrendItemPrivate::modifyMinLimit);
                 }
                 else if (data > d_ptr->maxValue)
                 {
-                    d_ptr->getAxisValue(data, ShortTrendItemPrivate::modifyMaxLimit);
+                    d_ptr->setAxisValue(data, ShortTrendItemPrivate::modifyMaxLimit);
                 }
                 else if (data < d_ptr->minValue)
                 {
-                    d_ptr->getAxisValue(data, ShortTrendItemPrivate::modifyMinLimit);
+                    d_ptr->setAxisValue(data, ShortTrendItemPrivate::modifyMinLimit);
                 }
 
                 float yValue = d_ptr->waveRegion.bottom()
