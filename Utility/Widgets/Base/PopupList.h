@@ -10,7 +10,6 @@
 
 #pragma once
 #include <QWidget>
-#include "SoundManager.h"
 
 class PopupListPrivate;
 class PopupList : public QWidget
