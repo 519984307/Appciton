@@ -112,6 +112,15 @@ void ConfigExportImportMenuContentPrivate::updateConfigList()
     }
     configDataModel->setStringList(configNameList);
 
+    if (configNameList.isEmpty())
+    {
+        configListView->setEnabled(false);
+    }
+    else
+    {
+        configListView->setEnabled(true);
+    }
+
     int curSelectedRow = configListView->curCheckedRow();
     bool isEnable;
     if (curSelectedRow == -1)
