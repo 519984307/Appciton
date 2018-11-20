@@ -236,13 +236,7 @@ void NIBPDataTrendWidget::showValue(void)
                             .arg(QString::number(providerBuff.prvalue));
                     prStr = prStr.arg(valStr);
                 }
-                if (!providerBuff.sysAlarm && !providerBuff.diaAlarm && !providerBuff.mapAlarm)
-                {
-                    textStr = color.arg(textColor.red())
-                            .arg(textColor.green())
-                            .arg(textColor.blue())
-                            .arg(textStr);
-                }
+                textStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(textStr);
             }
             else
             {
