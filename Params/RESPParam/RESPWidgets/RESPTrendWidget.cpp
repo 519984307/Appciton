@@ -130,6 +130,9 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
     // 设置上下限
     updateLimit();
 
+    // 设置报警关闭标志
+    showAlarmOff();
+
     // RR值。
     _rrValue = new QLabel();
     _rrValue->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);

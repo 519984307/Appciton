@@ -65,6 +65,9 @@ O2TrendWidget::O2TrendWidget() : TrendWidget("O2TrendWidget"),
     // 设置上下限
     updateLimit();
 
+    // 设置报警关闭标志
+    showAlarmOff();
+
     // O2值
     _o2Value = new QLabel();
     _o2Value->setAlignment(Qt::AlignCenter);

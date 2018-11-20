@@ -273,6 +273,9 @@ IBPTrendWidget::IBPTrendWidget(const QString &trendName, const IBPPressureName &
     // 设置上下限
     updateLimit();
 
+    // 设置报警关闭标志
+    showAlarmOff();
+
     // 构造出所有控件。
 
     _zeroWarn = new QLabel();

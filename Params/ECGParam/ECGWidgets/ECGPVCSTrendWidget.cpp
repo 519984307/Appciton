@@ -98,6 +98,9 @@ ECGPVCSTrendWidget::ECGPVCSTrendWidget() : TrendWidget("ECGPVCSTrendWidget")
     _isAlarm = false;
     _pvcsString = InvStr();
 
+    // 设置报警关闭标志
+    showAlarmOff();
+
     // 设置标题栏的相关信息。
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     setPalette(palette);
@@ -136,4 +139,11 @@ void ECGPVCSTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     showNormalStatus(psrc);
+}
+
+QList<SubParamID> ECGPVCSTrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    list.append(SUB_PARAM_ECG_PVCS);
+    return list;
 }

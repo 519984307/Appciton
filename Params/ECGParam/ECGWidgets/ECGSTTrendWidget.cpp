@@ -128,7 +128,8 @@ ECGSTTrendWidget::ECGSTTrendWidget() : TrendWidget("ECGSTTrendWidget")
     setName(trs("ST"));
     setUnit(Unit::getSymbol(UNIT_MV));
 
-
+    // 设置报警关闭标志
+    showAlarmOff();
 
     QHBoxLayout *hlayout[ECG_ST_NR];
     for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
@@ -206,4 +207,22 @@ void ECGSTTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
     showNormalStatus(psrc);
+}
+
+QList<SubParamID> ECGSTTrendWidget::getShortTrendSubParams() const
+{
+    QList<SubParamID> list;
+    list.append(SUB_PARAM_ST_I);
+    list.append(SUB_PARAM_ST_II);
+    list.append(SUB_PARAM_ST_III);
+    list.append(SUB_PARAM_ST_aVR);
+    list.append(SUB_PARAM_ST_aVL);
+    list.append(SUB_PARAM_ST_aVF);
+    list.append(SUB_PARAM_ST_V1);
+    list.append(SUB_PARAM_ST_V2);
+    list.append(SUB_PARAM_ST_V3);
+    list.append(SUB_PARAM_ST_V4);
+    list.append(SUB_PARAM_ST_V5);
+    list.append(SUB_PARAM_ST_V6);
+    return list;
 }
