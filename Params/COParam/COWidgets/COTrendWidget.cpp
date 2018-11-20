@@ -36,6 +36,9 @@ COTrendWidget::COTrendWidget(const QString &trendName)
 
     setName("C.O.");
 
+    // 设置报警关闭标志
+    showAlarmOff();
+
     _coValue = new QLabel();
     _coValue->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     _coValue->setPalette(palette);

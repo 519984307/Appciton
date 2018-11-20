@@ -205,6 +205,9 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     // 设置上下限
     updateLimit();
 
+    // 设置报警关闭标志
+    showAlarmOff();
+
     // 开始布局。
     _hrBeatIcon = new QLabel();
     _hrBeatIcon->setFixedSize(24, 24);

@@ -308,6 +308,9 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     // 显示上下限
     updateLimit();
 
+    // 设置报警关闭标志
+    showAlarmOff();
+
     // 设置单位。
     UnitType u = tempParam.getUnit();
     if (UNIT_TC == u)

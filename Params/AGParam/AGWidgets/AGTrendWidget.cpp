@@ -195,6 +195,9 @@ AGTrendWidget::AGTrendWidget(const QString &trendName, const AGTypeGas gasType)
     // 设置上下限
     updateLimit();
 
+    // 设置报警关闭标志
+    showAlarmOff();
+
     // 构造资源。
     _etName = new QLabel();
     _etName->setPalette(palette);

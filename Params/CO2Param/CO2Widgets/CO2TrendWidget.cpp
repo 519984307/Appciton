@@ -253,6 +253,9 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
     // 设置上下限
     updateLimit();
 
+    // 设置报警关闭标志
+    showAlarmOff();
+
 //    // 构造资源。
     _etCO2Label = new QLabel("Et", this);
     _etCO2Label->setPalette(palette);

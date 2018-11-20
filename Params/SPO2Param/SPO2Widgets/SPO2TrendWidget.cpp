@@ -174,6 +174,9 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     // 设置上下限
     updateLimit();
 
+    // 设置报警关闭标志
+    showAlarmOff();
+
     // 血氧值。
     _spo2Value = new QLabel();
     _spo2Value->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
