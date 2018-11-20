@@ -31,7 +31,8 @@ public:
     ShortTrendItemPrivate(const QString &name, ShortTrendItem *const q_ptr)
         : q_ptr(q_ptr), name(name), bufferStartPos(0), duration(SHORT_TREND_DURATION_60M),
           maxValue(100), minValue(0), scale(1), waveRegion(), waveMargin(28, 8, 2, 8), waveColor(Qt::white),
-          updateBGFlag(true), resetPointBufFlag(true), drawTimeLabelFlag(false), isNibp(false)
+          updateBGFlag(true), resetPointBufFlag(true), drawTimeLabelFlag(false), isNibp(false),
+          firstValue(true)
     {
     }
 
@@ -117,6 +118,13 @@ public:
         return 0;
     }
 
+    enum modifyLimit
+    {
+        modifyMaxLimit = 1 << 0,
+        modifyMinLimit = 1 << 1
+    };
+    void setAxisValue(short data, int flag);
+
     ShortTrendItem *const q_ptr;
     QString name;
     QPixmap background;
@@ -134,6 +142,7 @@ public:
     bool resetPointBufFlag;
     bool drawTimeLabelFlag;
     bool isNibp;
+    bool firstValue;
 };
 
 void ShortTrendItemPrivate::updateBackground()
@@ -566,6 +575,28 @@ bool ShortTrendItem::isNibpTrend() const
     return d_ptr->isNibp;
 }
 
+void ShortTrendItemPrivate::setAxisValue(short data, int flag)
+{
+    int margin = 10;
+    short maxY = maxValue;
+    short minY = minValue;
+    short maxDiff = maxValue - data;
+    bool maxFlag = flag & modifyMaxLimit;
+    if (maxFlag && (maxDiff <= 0 || maxDiff >= margin || (static_cast<int>(maxValue) % margin)))
+    {
+        maxY = data + (margin - data % margin);
+    }
+
+    short minDiff = data - minValue;
+    bool minFlag = flag & modifyMinLimit;
+    if (minFlag && (minDiff <= 0 || minDiff >= margin || (static_cast<int>(minValue) % margin)))
+    {
+        int value = (data % margin) ? (data % margin) : margin;
+        minY = data - value;
+    }
+    q_ptr->setValueRange(maxY, minY, scale);
+}
+
 void ShortTrendItem::onNewTrendDataArrived(ShortTrendInterval interval)
 {
     if (!this->isVisible())
@@ -580,6 +611,20 @@ void ShortTrendItem::onNewTrendDataArrived(ShortTrendInterval interval)
             TrendDataType data = trendDataStorageManager.getLatestShortTrendData(d_ptr->subParams.at(i), interval);
             if (data != InvData())
             {
+                if (d_ptr->firstValue)
+                {
+                    d_ptr->firstValue = false;
+                    d_ptr->setAxisValue(data, ShortTrendItemPrivate::modifyMaxLimit | ShortTrendItemPrivate::modifyMinLimit);
+                }
+                else if (data > d_ptr->maxValue)
+                {
+                    d_ptr->setAxisValue(data, ShortTrendItemPrivate::modifyMaxLimit);
+                }
+                else if (data < d_ptr->minValue)
+                {
+                    d_ptr->setAxisValue(data, ShortTrendItemPrivate::modifyMinLimit);
+                }
+
                 float yValue = d_ptr->waveRegion.bottom()
                         - (data - d_ptr->minValue) * d_ptr->waveRegion.height()
                         / (d_ptr->maxValue - d_ptr->minValue);
