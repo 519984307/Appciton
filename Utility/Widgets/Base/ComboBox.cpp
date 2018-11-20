@@ -62,8 +62,7 @@ void ComboBox::showPopup()
         d_ptr->popupList->setCurrentIndex(currentIndex());
         connect(d_ptr->popupList.data(), SIGNAL(destroyed(QObject *)), this, SLOT(onPopupDestroyed()));
         connect(d_ptr->popupList.data(), SIGNAL(selectItemChanged(int)), this, SLOT(setCurrentIndex(int)));
-
-        d_ptr->popupList->setPlaySoundType(d_ptr->playSoundType);
+        connect(d_ptr->popupList.data(), SIGNAL(itemFocusChanged(int)), this, SLOT(onItemFocusChanged(int)));
     }
 
     d_ptr->popupList->show();
@@ -190,5 +189,13 @@ void ComboBox::onPopupDestroyed()
     {
         emit activated(currentIndex());
         emit activated(currentText());
+    }
+}
+
+void ComboBox::onItemFocusChanged(int value)
+{
+    if (d_ptr->playSoundType != SoundManager::SOUND_TYPE_NONE)
+    {
+        emit itemFocusChanged(value, d_ptr->playSoundType);
     }
 }

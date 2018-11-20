@@ -74,12 +74,6 @@ public:
     /* reimplement */
     QSize sizeHint() const;
 
-    /**
-     * @brief setPlaySoundType  在聚焦的item改变时，播放声音的类型
-     * @param type 声音类型
-     */
-    void setPlaySoundType(SoundManager::SoundType type);
-
 protected:
     /* reimplement */
     void showEvent(QShowEvent *e);
@@ -99,6 +93,12 @@ protected:
 signals:
     void selectItemChanged(int index);
     void selectItemChanged(const QString &text);
+
+    /**
+     * @brief itemFocusChanged
+     * @param value
+     */
+    void itemFocusChanged(int value);
 
 private slots:
     void onItemSelected();

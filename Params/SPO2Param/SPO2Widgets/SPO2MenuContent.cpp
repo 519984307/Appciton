@@ -187,6 +187,8 @@ void SPO2MenuContent::layoutExec()
 
     // 设置声音触发方式
     comboBox->setPlaySoundType(SoundManager::SOUND_TYPE_HEARTBEAT);
+    connect(comboBox, SIGNAL(itemFocusChanged(int, SoundManager::SoundType)),
+            &soundManager, SLOT(onPopupListItemFocusChanged(int, SoundManager::SoundType)));
 
     for (int i = SoundManager::VOLUME_LEV_1; i <= SoundManager::VOLUME_LEV_MAX; i++)
     {

@@ -37,8 +37,7 @@ public:
           curSelectIndex(-1),
           concatToParent(concat),
           popAbove(false),
-          maximumDisplayItemNum(MAXIMUM_DISPLAY_ITEM),
-          playSoundType(SoundManager::SOUND_TYPE_NONE)
+          maximumDisplayItemNum(MAXIMUM_DISPLAY_ITEM)
     {}
 
     /**
@@ -56,7 +55,6 @@ public:
     bool popAbove;
     QRect globalRect; // A global rect this popup should pop around
     int maximumDisplayItemNum;
-    SoundManager::SoundType playSoundType;
 };
 
 int PopupListPrivate::properItemsHeight() const
@@ -209,11 +207,6 @@ QSize PopupList::sizeHint() const
     height += margins.top() + margins.bottom();
 
     return QSize(width, height);
-}
-
-void PopupList::setPlaySoundType(SoundManager::SoundType type)
-{
-    d_ptr->playSoundType = type;
 }
 
 void PopupList::showEvent(QShowEvent *e)
@@ -415,36 +408,8 @@ bool PopupList::focusNextPrevChild(bool next)
         d_ptr->items.at(0)->setFocus();
     }
 
-    // 按条件播放声音
-    switch (d_ptr->playSoundType)
-    {
-        case SoundManager::SOUND_TYPE_NONE:
-        case SoundManager::SOUND_TYPE_ERROR:
-        case SoundManager::SOUND_TYPE_PULSE:
-        case SoundManager::SOUND_TYPE_NR:
-        break;
-        case SoundManager::SOUND_TYPE_KEY_PRESS:
-        {
-            int volume = d_ptr->items.at(index)->text().toInt();
-            soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , static_cast<SoundManager::VolumeLevel>(volume));
-            soundManager.keyPressTone();
-        }
-        break;
-        case SoundManager::SOUND_TYPE_ALARM:
-        {
-            int volume = d_ptr->items.at(index)->text().toInt();
-            soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM , static_cast<SoundManager::VolumeLevel>(volume));
-            soundManager.alarmTone();
-        }
-        break;
-        case SoundManager::SOUND_TYPE_HEARTBEAT:
-        {
-            int volume = d_ptr->items.at(index)->text().toInt();
-            soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(volume));
-            soundManager.heartBeatTone();
-        }
-        break;
-    }
+    int value = d_ptr->items.at(index)->text().toInt();
+    emit itemFocusChanged(value);
 
     return true;
 }

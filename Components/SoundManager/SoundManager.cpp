@@ -485,3 +485,34 @@ void SoundManager::playFinished()
         d_ptr->pendingWavFile = NULL;
     }
 }
+
+void SoundManager::onPopupListItemFocusChanged(int volume, SoundManager::SoundType type)
+{
+    // 按条件播放声音
+    switch (type)
+    {
+        case SoundManager::SOUND_TYPE_NONE:
+        case SoundManager::SOUND_TYPE_ERROR:
+        case SoundManager::SOUND_TYPE_PULSE:
+        case SoundManager::SOUND_TYPE_NR:
+        break;
+        case SoundManager::SOUND_TYPE_KEY_PRESS:
+        {
+            setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , static_cast<SoundManager::VolumeLevel>(volume));
+            keyPressTone();
+        }
+        break;
+        case SoundManager::SOUND_TYPE_ALARM:
+        {
+            setVolume(SoundManager::SOUND_TYPE_ALARM , static_cast<SoundManager::VolumeLevel>(volume));
+            alarmTone();
+        }
+        break;
+        case SoundManager::SOUND_TYPE_HEARTBEAT:
+        {
+            setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(volume));
+            heartBeatTone();
+        }
+        break;
+    }
+}

@@ -119,6 +119,12 @@ private slots:
      */
     void playFinished();
 
+    /**
+     * @brief onPopupListItemFocusChanged
+     * @param volume
+     * @param type
+     */
+    void onPopupListItemFocusChanged(int volume, SoundManager::SoundType type);
 
 private:
     SoundManager();
