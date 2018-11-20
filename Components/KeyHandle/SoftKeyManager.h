@@ -46,13 +46,6 @@ public:
      */
     void refreshPage(bool isFirstPage = true);
 
-    /**
-     * @brief getActualKeyIndex  获取实际的按键索引
-     * @param index 索引
-     * @return 返回实际的索引
-     */
-     int getActualKeyIndex(int index);
-
      /**
       * @brief setKeyTypeAvailable  设置按键类型是否可用
       * @param keyType  按键类型
