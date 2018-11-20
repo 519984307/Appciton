@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/11/20
+ **/
+
 #include "NIBPServiceStandbyState.h"
 #include "NIBPServiceStateDefine.h"
 #include "NIBPParam.h"
@@ -8,7 +18,6 @@
  *************************************************************************************************/
 void NIBPServiceStandbyState::run(void)
 {
-
 }
 
 /**************************************************************************************************
@@ -23,7 +32,7 @@ void NIBPServiceStandbyState::enter(void)
 /**************************************************************************************************
  * 处理事件。
  *************************************************************************************************/
-void NIBPServiceStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned char */*args*/, int /*argLen*/)
+void NIBPServiceStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned char *args, int /*argLen*/)
 {
     switch (event)
     {
@@ -36,11 +45,11 @@ void NIBPServiceStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
     {
         nibpRepairMenuManager.unPacket(false);
         IMessageBox messbox(trs("Warn"), trs("NIBPDirectiveTimeout"), false);
-        messbox.setWindowFlags(Qt::WindowStaysOnTopHint|Qt::FramelessWindowHint);
+        messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
         messbox.setYesBtnTxt(trs("SupervisorOK"));
         messbox.exec();
     }
-        break;
+    break;
 
     case NIBP_EVENT_SERVICE_REPAIR_ENTER_SUCCESS:
         nibpRepairMenuManager.unPacket(true);
@@ -48,6 +57,12 @@ void NIBPServiceStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
 
     case NIBP_EVENT_SERVICE_REPAIR_ENTER_FAIL:
         nibpRepairMenuManager.unPacket(false);
+        break;
+
+    case NIBP_EVENT_SERVICE_CALIBRATE_ENTER:
+    case NIBP_EVENT_SERVICE_MANOMETER_ENTER:
+    case NIBP_EVENT_SERVICE_PRESSURECONTROL_ENTER:
+        nibpParam.setResult(!args[0]);
         break;
 
     default:
@@ -60,7 +75,6 @@ void NIBPServiceStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
  *************************************************************************************************/
 NIBPServiceStandbyState::NIBPServiceStandbyState() : NIBPState(NIBP_SERVICE_STANDBY_STATE)
 {
-
 }
 
 /**************************************************************************************************
@@ -68,5 +82,4 @@ NIBPServiceStandbyState::NIBPServiceStandbyState() : NIBPState(NIBP_SERVICE_STAN
  *************************************************************************************************/
 NIBPServiceStandbyState::~NIBPServiceStandbyState()
 {
-
 }

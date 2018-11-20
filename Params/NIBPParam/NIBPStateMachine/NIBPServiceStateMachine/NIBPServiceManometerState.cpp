@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/11/20
+ **/
+
 #include "NIBPServiceManometerState.h"
 #include "NIBPServiceStateDefine.h"
 #include "NIBPParam.h"
@@ -34,11 +44,11 @@ void NIBPServiceManometerState::handleNIBPEvent(NIBPEvent event, const unsigned 
         nibpmanometer.unPacket(false);
         _isEnterSuccess = false;
         IMessageBox messbox(trs("Warn"), trs("NIBPDirectiveTimeout"), false);
-        messbox.setWindowFlags(Qt::WindowStaysOnTopHint|Qt::FramelessWindowHint);
+        messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
         messbox.setYesBtnTxt(trs("SupervisorOK"));
         messbox.exec();
     }
-        break;
+    break;
 
     case NIBP_EVENT_SERVICE_REPAIR_RETURN:
         if (_isEnterSuccess && !nibpRepairMenuManager.getRepairError())
@@ -55,7 +65,7 @@ void NIBPServiceManometerState::handleNIBPEvent(NIBPEvent event, const unsigned 
 
     case NIBP_EVENT_SERVICE_MANOMETER_ENTER:
         timeStop();
-        if(_isReturn)
+        if (_isReturn)
         {
             _isReturn = false;
             if (args[0] != 0x00)
@@ -64,41 +74,27 @@ void NIBPServiceManometerState::handleNIBPEvent(NIBPEvent event, const unsigned 
             }
             else
             {
-                nibpmanometer.init();
                 nibpRepairMenuManager.returnMenu();
                 switchState(NIBP_SERVICE_STANDBY_STATE);
             }
         }
         else
         {
-            if (args[0] != 0x00)
-            {
-                nibpmanometer.unPacket(false);
-                _isEnterSuccess = false;
-                IMessageBox messbox(trs("Warn"), trs("NIBPModuleEnterFail"), false);
-                messbox.setWindowFlags(Qt::WindowStaysOnTopHint|Qt::FramelessWindowHint);
-                messbox.setYesBtnTxt(trs("SupervisorOK"));
-                messbox.exec();
-            }
-            else
-            {
-                nibpmanometer.unPacket(true);
-                _isEnterSuccess = true;
-            }
+            nibpParam.setResult(!args[0]);
         }
         break;
 
     case NIBP_EVENT_CURRENT_PRESSURE:
     {
-        int pressure;
-        pressure = (args[1]<<8)+args[0];
+        int16_t pressure;
+        pressure = (args[1] << 8) + args[0];
         if (pressure != -1)
         {
-            nibpParam.setCuffPressure(pressure);
+            nibpParam.setManometerPressure(pressure);
             return;
         }
     }
-        break;
+    break;
     default:
         break;
     }
@@ -107,9 +103,9 @@ void NIBPServiceManometerState::handleNIBPEvent(NIBPEvent event, const unsigned 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-NIBPServiceManometerState::NIBPServiceManometerState() : NIBPState(NIBP_SERVICE_MANOMETER_STATE)
+NIBPServiceManometerState::NIBPServiceManometerState() : NIBPState(NIBP_SERVICE_MANOMETER_STATE),
+    _isReturn(false), _isEnterSuccess(false)
 {
-    _isReturn = false;
 }
 
 /**************************************************************************************************
@@ -117,5 +113,4 @@ NIBPServiceManometerState::NIBPServiceManometerState() : NIBPState(NIBP_SERVICE_
  *************************************************************************************************/
 NIBPServiceManometerState::~NIBPServiceManometerState()
 {
-
 }

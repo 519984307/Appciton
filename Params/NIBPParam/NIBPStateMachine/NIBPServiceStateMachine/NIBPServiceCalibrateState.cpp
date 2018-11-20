@@ -81,22 +81,7 @@ void NIBPServiceCalibrateState::handleNIBPEvent(NIBPEvent event, const unsigned 
         }
         else
         {
-//            if (args[0] != 0x00)
-//            {
-//                nibpcalibrate.unPacket(false);
-//                nibpcalibrate.setText(trs("NIBPCalibrateModelEnterFail"));
-//                _isEnterSuccess = false;
-//                MessageBox messbox(trs("Warn"), trs("NIBPModuleEnterFail"), false);
-//                messbox.setWindowFlags(Qt::WindowStaysOnTopHint|Qt::FramelessWindowHint);
-////                messbox.setYesBtnTxt(trs("SupervisorOK"));
-//                messbox.exec();
-//            }
-//            else
-//            {
-//                nibpcalibrate.unPacket(true);
-//                _isEnterSuccess = true;
-//            }
-            nibpParam.setCalibrateResult(!args[0]);
+            nibpParam.setResult(!args[0]);
         }
         break;
 
@@ -107,7 +92,7 @@ void NIBPServiceCalibrateState::handleNIBPEvent(NIBPEvent event, const unsigned 
 
     case NIBP_EVENT_SERVICE_CALIBRATE_RSP_PRESSURE_POINT:
         timeStop();
-        nibpParam.setCalibrateResult(args[0]);
+        nibpParam.setResult(args[0]);
     default:
         break;
     }

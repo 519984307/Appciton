@@ -35,7 +35,8 @@ public:
         : label(NULL), point2Spb(NULL),
           pressurevalue(0), calibrateFlag(false),
           point(NIBP_CALIBRATE_ZERO), calibrateTimerID(-1),
-          timeoutNum(0), inModeTimerID(-1)
+          timeoutNum(0), inModeTimerID(-1), isCalibrateMode(false),
+          modeBtn(NULL)
     {
     }
     QList<Button *> btnList;
@@ -51,6 +52,8 @@ public:
     int timeoutNum;
 
     int inModeTimerID;                      // 进入校准模式定时器ID
+    bool isCalibrateMode;                   // 是否处于校准模式
+    Button *modeBtn;                        // 进入/退出模式按钮
 };
 
 NIBPCalibrateContent *NIBPCalibrateContent::getInstance()
@@ -91,6 +94,7 @@ void NIBPCalibrateContent::layoutExec()
     button->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(button, 0, 2);
     connect(button, SIGNAL(released()), this, SLOT(inCalibrateMode()));
+    d_ptr->modeBtn = button;
 
     label = new QLabel(trs("CalibratePoint1"));
     layout->addWidget(label, 1, 0);
@@ -126,49 +130,15 @@ void NIBPCalibrateContent::layoutExec()
     layout->setRowStretch(3, 1);
 }
 
-/**************************************************************************************************
- * 初始化。
- *************************************************************************************************/
-void NIBPCalibrateContent::init()
-{
-//    d_ptr->label->setText("");
-
-//    d_ptr->btnFlag1 = false;
-//    d_ptr->btnFlag2 = false;
-//    d_ptr->item = d_ptr->itemList.at(0);
-//    d_ptr->item->btn->setText(trs("ServiceCalibrate"));
-//    d_ptr->item->btn->setEnabled(true);
-
-//    d_ptr->item = d_ptr->itemList.at(1);
-//    d_ptr->item->range->setValue(250);
-////    d_ptr->item->range->disable(false);
-//    d_ptr->item->range->setEnabled(true);
-//    d_ptr->item->btn->setText(trs("ServiceCalibrate"));
-//    d_ptr->item->btn->setEnabled(true);
-
-//    d_ptr->calibrateFlag = true;
-}
-
-bool NIBPCalibrateContent::focusNextPrevChild(bool next)
-{
-    init();
-
-//    nibpParam.switchState(NIBP_SERVICE_CALIBRATE_STATE);
-
-    MenuContent::focusNextPrevChild(next);
-
-    return next;
-}
-
 void NIBPCalibrateContent::timerEvent(QTimerEvent *ev)
 {
     if (d_ptr->calibrateTimerID == ev->timerId())
     {
-        bool reply = nibpParam.getCalibrationReply();
+        bool reply = nibpParam.geReply();
         if (reply || d_ptr->timeoutNum == TIMEOUT_WAIT_NUMBER)
         {
             Button *btn = d_ptr->btnList.at(d_ptr->point);
-            if (reply && nibpParam.getCalibrationResult())
+            if (reply && nibpParam.getResult())
             {
                 btn->setText(trs("CalibrationSuccess"));
             }
@@ -187,16 +157,31 @@ void NIBPCalibrateContent::timerEvent(QTimerEvent *ev)
     }
     else if (d_ptr->inModeTimerID == ev->timerId())
     {
-        bool reply = nibpParam.getCalibrationReply();
+        bool reply = nibpParam.geReply();
         if (reply || d_ptr->timeoutNum == TIMEOUT_WAIT_NUMBER)
         {
-            if (reply && nibpParam.getCalibrationResult())
+            if (reply && nibpParam.getResult())
             {
-                Button *btn = d_ptr->btnList.at(0);
-                btn->setEnabled(true);
-                btn = d_ptr->btnList.at(1);
-                btn->setEnabled(true);
-                d_ptr->calibrateFlag = true;
+                if (d_ptr->isCalibrateMode)
+                {
+                    d_ptr->isCalibrateMode = false;
+                    d_ptr->modeBtn->setText(trs("EnterCalibrateMode"));
+                    Button *btn = d_ptr->btnList.at(0);
+                    btn->setEnabled(false);
+                    btn = d_ptr->btnList.at(1);
+                    btn->setEnabled(false);
+                    d_ptr->calibrateFlag = false;
+                }
+                else
+                {
+                    d_ptr->isCalibrateMode = true;
+                    d_ptr->modeBtn->setText(trs("QuitCalibrateMode"));
+                    Button *btn = d_ptr->btnList.at(0);
+                    btn->setEnabled(true);
+                    btn = d_ptr->btnList.at(1);
+                    btn->setEnabled(true);
+                    d_ptr->calibrateFlag = true;
+                }
             }
             else
             {
@@ -271,108 +256,16 @@ void NIBPCalibrateContent::onBtn2Calibrated()
 void NIBPCalibrateContent::inCalibrateMode()
 {
     d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
-    nibpParam.switchState(NIBP_SERVICE_CALIBRATE_STATE);
+    if (d_ptr->isCalibrateMode)
+    {
+        nibpParam.provider().serviceCalibrate(false);
+        nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
+    }
+    else
+    {
+        nibpParam.switchState(NIBP_SERVICE_CALIBRATE_STATE);
+    }
 }
-
-///**************************************************************************************************
-// * 进入模式的应答。
-// *************************************************************************************************/
-// void NIBPCalibrateContent::unPacket(bool flag)
-//{
-//    d_ptr->calibrateFlag = flag;
-//    if (flag)
-//    {
-//        d_ptr->item = d_ptr->itemList.at(0);
-//        d_ptr->item->btn->setEnabled(true);
-
-//        d_ptr->item = d_ptr->itemList.at(1);
-//        // d_ptr->item->range->disable(true);
-//        d_ptr->item->range->setEnabled(false);
-//        d_ptr->item->btn->setEnabled(false);
-//    }
-//    else
-//    {
-//        d_ptr->item = d_ptr->itemList.at(0);
-//        d_ptr->item->btn->setEnabled(false);
-
-//        d_ptr->item = d_ptr->itemList.at(1);
-//        // d_ptr->item->range->disable(true);
-//        d_ptr->item->range->setEnabled(false);
-//        d_ptr->item->btn->setEnabled(false);
-//    }
-//}
-
-void NIBPCalibrateContent::setText(QString str)
-{
-    d_ptr->label->setText(str);
-}
-
-/**************************************************************************************************
- * 校准点应答。
- *************************************************************************************************/
-// void NIBPCalibrateContent::unPacketPressure(bool flag)
-//{
-//    if (d_ptr->btnFlag1)
-//    {
-//        d_ptr->btnFlag1 = false;
-//        if (flag)
-//        {
-//            d_ptr->item = d_ptr->itemList.at(0);
-//            d_ptr->item->btn->setText(trs("ServiceSuccess"));
-
-//            d_ptr->item = d_ptr->itemList.at(1);
-//            d_ptr->item->range->setValue(250);
-////            d_ptr->item->range->disable(false);
-//            d_ptr->item->range->setEnabled(true);
-//            d_ptr->item->btn->setEnabled(true);
-//            d_ptr->label->setText(trs("ServiceCalibrateNextOne"));
-//        }
-//        else
-//        {
-//            d_ptr->item = d_ptr->itemList.at(0);
-//            d_ptr->item->btn->setText(trs("ServiceAgain"));
-
-//            d_ptr->item = d_ptr->itemList.at(1);
-////            d_ptr->item->range->disable(true);
-//            d_ptr->item->range->setEnabled(false);
-//            d_ptr->item->btn->setEnabled(false);
-//            d_ptr->label->setText(trs("CalibrateFail") + "," + trs("ServiceCalibrateAgain"));
-//        }
-//    }
-//    if (d_ptr->btnFlag2)
-//    {
-//        d_ptr->btnFlag2 = false;
-//        if (flag)
-//        {
-//            d_ptr->item = d_ptr->itemList.at(0);
-//            d_ptr->item->btn->setText(trs("ServiceCalibrate"));
-//            d_ptr->item->btn->setEnabled(true);
-
-//            d_ptr->item = d_ptr->itemList.at(1);
-////            d_ptr->item->range->disable(true);
-//            d_ptr->item->range->setEnabled(false);
-//            d_ptr->item->btn->setText(trs("ServiceCalibrate"));
-//            d_ptr->item->btn->setEnabled(false);
-//            d_ptr->label->setText(trs("CalibrateSuccess"));
-//        }
-//        else
-//        {
-//            d_ptr->item = d_ptr->itemList.at(0);
-//            d_ptr->item->btn->setText(trs("ServiceCalibrate"));
-//            d_ptr->item->btn->setEnabled(true);
-
-//            d_ptr->item = d_ptr->itemList.at(1);
-//            d_ptr->item->range->setValue(250);
-////            d_ptr->item->range->disable(true);
-//            d_ptr->item->range->setEnabled(false);
-//            d_ptr->item->btn->setText(trs("ServiceCalibrate"));
-//            d_ptr->item->btn->setEnabled(false);
-//            d_ptr->label->setText(trs("CalibrateFail") + "," + trs("ServiceCalibrateAgain"));
-//        }
-//    }
-//    d_ptr->btnFlag1 = false;
-//    d_ptr->btnFlag2 = false;
-//}
 
 NIBPCalibrateContent::~NIBPCalibrateContent()
 {

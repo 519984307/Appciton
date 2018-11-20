@@ -60,28 +60,6 @@ public:
      */
     static NIBPCalibrateContent *getInstance();
 
-    /**
-     * @brief unPacket  进入校准模式的应答
-     * @param flag
-     */
-    void unPacket(bool flag);
-    /**
-     * @brief setText
-     * @param str
-     */
-    void setText(QString str);
-
-    /**
-     * @brief unPacketPressure  校准点应答
-     * @param flag
-     */
-    void unPacketPressure(bool flag);
-
-    /**
-     * @brief init  初始化
-     */
-    void init(void);
-
     ~NIBPCalibrateContent();
 
 protected:
@@ -89,7 +67,6 @@ protected:
      * @brief layoutExec
      */
     virtual void layoutExec(void);
-    virtual bool focusNextPrevChild(bool next);
     void timerEvent(QTimerEvent *ev);
 
 private slots:

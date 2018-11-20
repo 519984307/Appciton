@@ -186,7 +186,14 @@ NIBPMenuDesc,NIBP,NIBP
 NIBPDirectiveTimeout,指令超时,Directive Timeout
 NIBPModuleEnterFail,进入校准模式失败,Calibrate Mode Enter Fail
 NIBPCalibrateModelEnterFail,进入校准模式失败,Calibrate Mode Enter Fail
-EnterCalibrateMode,进入校准模式,Enter Calibrate Mode
+EnterCalibrateMode,进入校准模式,Calibrate Mode
+QuitCalibrateMode,退出校准模式,Quit Calibrate
+QuitManometerMode,退出压力计模式,Quit Manometer
+EnterManometerMode,进入压力计模式,Enter Manometer
+QuitPressureContrlMode,退出压力操控模式,Quit Pressure Contrl
+EnterPressureContrlMode,进入压力操控模式,Enter Pressure Contrl
+OperationFailedPleaseAgain,"操作失败,请重试!","Operation Failed , Please Again!"
+InflationPressure,充气压力,Inflation Pressure
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
 CO2SweepMode,CO2波形模式,CO2 Sweep Mode

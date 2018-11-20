@@ -1265,25 +1265,35 @@ void NIBPParam::switchToManual(void)
     }
 }
 
-void NIBPParam::setCalibrateResult(bool result)
+void NIBPParam::setResult(bool result)
 {
-    _calibrationReply = true;
-    _calibrationResult = result;
+    _reply = true;
+    _result = result;
 }
 
-bool NIBPParam::getCalibrationReply()
+bool NIBPParam::geReply()
 {
-    bool reply = _calibrationReply;
+    bool reply = _reply;
     if (reply)
     {
-        _calibrationReply = false;
+        _reply = false;
     }
     return reply;
 }
 
-bool NIBPParam::getCalibrationResult()
+bool NIBPParam::getResult()
 {
-    return _calibrationResult;
+    return _result;
+}
+
+void NIBPParam::setManometerPressure(int16_t value)
+{
+    _manometerPressure = value;
+}
+
+int16_t NIBPParam::getManometerPressure()
+{
+    return _manometerPressure;
 }
 
 void NIBPParam::updateSubParamLimit(SubParamID id)
@@ -1376,7 +1386,7 @@ NIBPParam::NIBPParam()
       _isNIBPDisable(false), _isManualMeasure(false),
       _connectedFlag(false), _connectedProvider(false),
       _text(InvStr()), _activityMachine(NULL),
-      _calibrationReply(false), _calibrationResult(false)
+      _reply(false), _result(false), _manometerPressure(InvData())
 {
     nibpCountdownTime.construction();
 

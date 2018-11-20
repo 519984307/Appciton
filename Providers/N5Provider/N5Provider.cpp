@@ -332,7 +332,7 @@ void N5Provider::handlePacket(unsigned char *data, int len)
 
     // 压力控制（充气）
     case N5_RSP_PRESSURE_INFLATE:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_INFLATE, NULL, 0);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_INFLATE, &data[1], 1);
         break;
 
     // 放气控制

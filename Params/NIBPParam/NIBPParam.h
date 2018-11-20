@@ -263,13 +263,17 @@ public:
     void switchToManual(void);
 
     //接收定标数据
-    void setCalibrateResult(bool result);
+    void setResult(bool result);
 
     // 获取校准是否回复
-    bool getCalibrationReply();
+    bool geReply();
 
     // 获取校准结果
-    bool getCalibrationResult();
+    bool getResult();
+
+    // 设置/获取压力计模式下压力
+    void setManometerPressure(int16_t value);
+    int16_t getManometerPressure(void);
 
     // 刷新参数上下限
     virtual void updateSubParamLimit(SubParamID id);
@@ -310,8 +314,10 @@ private:
     bool _connectedProvider;                // 是否连接Provider
     QString _text;
 
-    bool _calibrationReply;                 // 校准回复
-    bool _calibrationResult;                // 校准结果
+    bool _reply;                 // 校准回复
+    bool _result;                // 校准结果
+    int16_t _manometerPressure;             // 压力计模式下压力
+
 private:
     typedef QMap<NIBPStateMachineType, NIBPStateMachine *> MachineStateMap;
     MachineStateMap _machines;

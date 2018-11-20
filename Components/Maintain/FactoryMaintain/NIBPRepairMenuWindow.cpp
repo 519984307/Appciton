@@ -101,9 +101,6 @@ void NIBPRepairMenuWindow::unPacket(bool flag)
  *************************************************************************************************/
 void NIBPRepairMenuWindow::returnMenu()
 {
-    NIBPCalibrateContent::getInstance()->init();
-    NIBPManometerContent::getInstance()->init();
-    NIBPPressureControlContent::getInstance()->init();
     NIBPZeroPointContent::getInstance()->init();
 }
 
