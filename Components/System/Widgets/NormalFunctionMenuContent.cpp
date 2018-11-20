@@ -144,7 +144,7 @@ void NormalFunctionMenuContent::layoutExec()
     // 设置声音触发方式
     comboBox->setPlaySoundType(SoundManager::SOUND_TYPE_ALARM);
     connect(comboBox, SIGNAL(itemFocusChanged(int, SoundManager::SoundType)),
-            &soundManager, SLOT(onPopupListItemFocusChanged(int, SoundManager::SoundType)));
+            this, SLOT(onPopupListItemFocusChanged(int, SoundManager::SoundType)));
 
     comboBox->addItems(QStringList()
                        << QString::number(SoundManager::VOLUME_LEV_1)
@@ -186,7 +186,7 @@ void NormalFunctionMenuContent::layoutExec()
     // 设置声音触发方式
     comboBox->setPlaySoundType(SoundManager::SOUND_TYPE_KEY_PRESS);
     connect(comboBox, SIGNAL(itemFocusChanged(int, SoundManager::SoundType)),
-            &soundManager, SLOT(onPopupListItemFocusChanged(int, SoundManager::SoundType)));
+            this, SLOT(onPopupListItemFocusChanged(int, SoundManager::SoundType)));
 
     comboBox->addItems(QStringList()
                        <<QString::number(SoundManager::VOLUME_LEV_0)
@@ -394,5 +394,19 @@ void NormalFunctionMenuContent::onBtnReleasd()
             patientManager.newPatient();
         }
         break;
+    }
+}
+
+void NormalFunctionMenuContent::onPopupListItemFocusChanged(int volume, SoundManager::SoundType type)
+{
+    if (type == SoundManager::SOUND_TYPE_KEY_PRESS)
+    {
+        soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , static_cast<SoundManager::VolumeLevel>(volume));
+        soundManager.keyPressTone();
+    }
+    else if (type == SoundManager::SOUND_TYPE_ALARM)
+    {
+        soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM , static_cast<SoundManager::VolumeLevel>(volume));
+        soundManager.alarmTone();
     }
 }

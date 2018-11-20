@@ -188,7 +188,7 @@ void SPO2MenuContent::layoutExec()
     // 设置声音触发方式
     comboBox->setPlaySoundType(SoundManager::SOUND_TYPE_HEARTBEAT);
     connect(comboBox, SIGNAL(itemFocusChanged(int, SoundManager::SoundType)),
-            &soundManager, SLOT(onPopupListItemFocusChanged(int, SoundManager::SoundType)));
+            this, SLOT(onPopupListItemFocusChanged(int, SoundManager::SoundType)));
 
     for (int i = SoundManager::VOLUME_LEV_1; i <= SoundManager::VOLUME_LEV_MAX; i++)
     {
@@ -253,4 +253,13 @@ void SPO2MenuContent::onAlarmBtnReleased()
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_SPO2, true);
     AlarmLimitWindow w(subParamName);
     windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
+}
+
+void SPO2MenuContent::onPopupListItemFocusChanged(int volume, SoundManager::SoundType type)
+{
+    if (type == SoundManager::SOUND_TYPE_HEARTBEAT)
+    {
+        soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(volume));
+        soundManager.heartBeatTone();
+    }
 }
