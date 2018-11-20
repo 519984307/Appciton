@@ -189,27 +189,20 @@ void SoftKeyManager::refreshPage(bool isFirstPage)
 void SoftKeyManager::setKeyTypeAvailable(SoftBaseKeyType keyType, bool isAvailable)
 {
     // 更新按键类型状态map
-    int indexNew = static_cast<int>(keyType - SOFT_BASE_KEY_PAT_INFO);
-    SoftBaseKeyType type =  static_cast<SoftBaseKeyType>(indexNew);
-    d_ptr->keyTypeStatueMap[type] = isAvailable;
+    d_ptr->keyTypeStatueMap[keyType] = isAvailable;
 
     // 重新加载按键类型链表
     d_ptr->keyTypeList.clear();
-    for (int i = 0; i < SOFT_BASE_KEY_NR; i++)
+    for (int i = SOFT_BASE_KEY_PAT_INFO; i < SOFT_BASE_KEY_NR; i++)
     {
         SoftBaseKeyType keyType = static_cast<SoftBaseKeyType>(i);
-        d_ptr->keyTypeList.append(d_ptr->currentAction->getActionDesc(keyType));
-    }
-
-    // 更新按键类型链表
-    for (int i = 0; i < SOFT_BASE_KEY_NR; i++)
-    {
-        SoftBaseKeyType keyType = static_cast<SoftBaseKeyType>(i);
-        if (d_ptr->keyTypeStatueMap[keyType] == false)
+        if (d_ptr->keyTypeStatueMap[keyType] == true)
         {
-            d_ptr->keyTypeList.removeAt(i);
+            d_ptr->keyTypeList.append(d_ptr->currentAction->getBaseActionDesc(keyType));
         }
     }
+
+    refreshPage();
 }
 
 void SoftKeyManager::_dynamicKeyClicked(int index)
@@ -341,10 +334,10 @@ void SoftKeyManager::setContent(SoftKeyActionType type)
     // 初始化加载按键类型
     d_ptr->keyTypeList.clear();
     d_ptr->keyTypeStatueMap.clear();
-    for (int i = 0; i < SOFT_BASE_KEY_NR; i++)
+    for (int i = SOFT_BASE_KEY_PAT_INFO; i < SOFT_BASE_KEY_NR; i++)
     {
         SoftBaseKeyType keyType = static_cast<SoftBaseKeyType>(i);
-        d_ptr->keyTypeList.append(d_ptr->currentAction->getActionDesc(keyType));
+        d_ptr->keyTypeList.append(d_ptr->currentAction->getBaseActionDesc(keyType));
         d_ptr->keyTypeStatueMap[keyType] = true;
     }
 

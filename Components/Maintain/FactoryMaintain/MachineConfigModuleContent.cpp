@@ -416,7 +416,6 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             machineConfig.saveToDisk();
             systemManager.setTouchScreenOnOff(index);
             softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);
-            softkeyManager.refreshPage();
             return;
 #endif
         default:
