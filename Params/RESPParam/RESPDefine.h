@@ -77,6 +77,7 @@ enum RESPLead
 {
     RESP_LEAD_II,
     RESP_LEAD_I,
+    RESP_LEAD_AUTO,
     RESP_LEAD_NR
 };
 

@@ -141,7 +141,8 @@ void RESPMenuContent::layoutExec()
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
                        << trs(RESPSymbol::convert(RESP_LEAD_II))
-                       << trs(RESPSymbol::convert(RESP_LEAD_I)));
+                       << trs(RESPSymbol::convert(RESP_LEAD_I))
+                       << trs(RESPSymbol::convert(RESP_LEAD_AUTO)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(RESPMenuContentPrivate
                          ::ITEM_CBO_BREATH_LEAD, comboBox);
