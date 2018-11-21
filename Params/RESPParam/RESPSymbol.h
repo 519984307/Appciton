@@ -59,7 +59,7 @@ public:
     {
         static const char *symbol[RESP_LEAD_NR] =
         {
-            "I", "II"
+            "II", "I", "Auto"
         };
         return symbol[index];
     }
