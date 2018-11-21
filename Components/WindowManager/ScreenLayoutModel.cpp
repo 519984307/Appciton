@@ -378,8 +378,8 @@ public:
 
 #ifndef HIDE_ECG_ST_SUBPARAM
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = ParamNodeDescription("ST", PARAM_SPAN_TWO);
-#endif
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_PVCS)] = ParamNodeDescription("PVCs", PARAM_SPAN_ONE);
+#endif
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_OXYGEN)] = ParamNodeDescription("O2", PARAM_SPAN_ONE);
     }
 
