@@ -203,14 +203,6 @@ TrendGraphSetWindow::TrendGraphSetWindow()
         RulerItem *item = NULL;
         item = d_ptr->itemList.at(i);
         name = paramInfo.getSubParamName(item->sid);
-        if (item->sid == SUB_PARAM_NIBP_SYS)
-        {
-            name = name.left(4);
-        }
-        else if (item->sid == SUB_PARAM_ETCO2)
-        {
-            name = name.right(3);
-        }
         item->label->setText(trs(name));
         item->label->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
         item->combo->addItem(trs("Off"));
