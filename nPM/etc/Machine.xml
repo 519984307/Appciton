@@ -13,8 +13,8 @@
     <NIBPEnable>1</NIBPEnable>
     <RESPEnable>1</RESPEnable>
     <CO2Enable>1</CO2Enable>
-    <AGEnable>1</AGEnable>
-    <COEnable>1</COEnable>
+    <AGEnable>0</AGEnable>
+    <COEnable>0</COEnable>
     <IBPEnable>1</IBPEnable>
     <TEMPEnable>1</TEMPEnable>
     <WIFIEnable>1</WIFIEnable>
