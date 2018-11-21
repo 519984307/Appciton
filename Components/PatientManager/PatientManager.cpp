@@ -15,6 +15,8 @@
 #include "ECGParam.h"
 #include "DataStorageDirManager.h"
 #include "DischargePatientWindow.h"
+#include "NIBPParam.h"
+#include "NIBPProviderIFace.h"
 
 PatientManager *PatientManager::_selfObj = NULL;
 
@@ -76,6 +78,7 @@ void PatientManager::setType(PatientType type)
     emit signalPatientType(d_ptr->patientInfo.type);
 
     ecgParam.setPatientType((unsigned char)(d_ptr->patientInfo.type));
+    nibpParam.provider().setPatientType(type);
 }
 
 /**************************************************************************************************
