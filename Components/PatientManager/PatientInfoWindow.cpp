@@ -44,7 +44,7 @@ public:
     enum MenuItem
     {
         ITEM_CBO_PATIENT_TYPE = 1,
-        ITEM_CBO_PATIENT_BED,
+        ITEM_BTN_PATIENT_BED,
         ITEM_CBO_PACER_MARKER,
         ITEM_BTN_PATIENT_ID,
         ITEM_CBO_PATIENT_SEX,
@@ -261,6 +261,10 @@ void PatientInfoWindowPrivate::loadOptions()
         QString ret = Unit::convert(weightType, oldWeightType, weightValue);
         weight->setText(ret);
     }
+
+    int index = 0;
+    systemConfig.getNumValue("General|ChangeBedNumberRight", index);
+    buttons[ITEM_BTN_PATIENT_BED]->setEnabled(index);
 }
 
 PatientInfoWindow::PatientInfoWindow()
@@ -303,13 +307,13 @@ PatientInfoWindow::PatientInfoWindow()
                       itemPos++ % 4);
     d_ptr->bedNum = new Button();
     d_ptr->bedNum->setButtonStyle(Button::ButtonTextOnly);
-    d_ptr->bedNum->setFocusPolicy(Qt::NoFocus);
     d_ptr->bedNum->setFixedWidth(250);
     layout->addWidget(d_ptr->bedNum,
                       (d_ptr->combos.count() + d_ptr->buttons.count()) / 2,
                       itemPos++ % 4);
-    d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_CBO_PATIENT_BED
+    d_ptr->buttons.insert(PatientInfoWindowPrivate::ITEM_BTN_PATIENT_BED
                          , d_ptr->bedNum);
+    connect(d_ptr->bedNum, SIGNAL(released()), this, SLOT(bedNumReleased()));
 
     // patient pace marker
     label = new QLabel(trs("PatientPacemarker"));
@@ -635,6 +639,29 @@ void PatientInfoWindow::onBtnReleased()
 void PatientInfoWindow::pacerMakerReleased(int index)
 {
     patientManager.setPacermaker(static_cast<PatientPacer>(index));
+}
+
+void PatientInfoWindow::bedNumReleased()
+{
+    Button *btn = qobject_cast<Button *>(sender());
+    KeyInputPanel idPanel;
+    idPanel.setWindowTitle(trs("BedNumber"));
+    idPanel.setInitString(btn->text());
+    idPanel.setMaxInputLength(11);
+    QString regKeyStr("[a-zA-Z]|[0-9]|_");
+    idPanel.setBtnEnable(regKeyStr);
+
+    if (1 == idPanel.exec())
+    {
+        QString oldStr = btn->text();
+        QString text = idPanel.getStrValue();
+
+        if (oldStr != text)
+        {
+            btn->setText(text);
+            patientManager.setBedNum(text);
+        }
+    }
 }
 
 void PatientInfoWindow::showEvent(QShowEvent *ev)
