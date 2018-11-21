@@ -52,6 +52,11 @@ void TrendTableSetWindow::showEvent(QShowEvent *ev)
 
     QString groupPrefix = prefix + "TrendGroup";
     systemConfig.getNumValue(groupPrefix, index);
+    int count = d_ptr->trendGroupCbo->count();
+    if (index >= count)
+    {
+        index = count - 1;
+    }
     d_ptr->trendGroupCbo->setCurrentIndex(index);
 }
 
