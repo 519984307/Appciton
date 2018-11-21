@@ -22,7 +22,7 @@
 #include <QWSServer>
 #include "SystemManager.h"
 #endif
-
+#include "SoftKeyManager.h"
 
 class MachineConfigModuleContentPrivte
 {
@@ -320,10 +320,12 @@ void MachineConfigModuleContent::layoutExec()
     label = new QLabel(trs("TouchScreenModule"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
+    combo->blockSignals(true);
     combo->addItems(QStringList()
                     << trs("Off")
                     << trs("On")
                    );
+    combo->blockSignals(false);
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte
                          ::ITEM_CBO_TSCREEN, combo);
@@ -413,6 +415,7 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             machineConfig.setNumValue("TouchEnable", index);
             machineConfig.saveToDisk();
             systemManager.setTouchScreenOnOff(index);
+            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);
             return;
 #endif
         default:
