@@ -22,6 +22,7 @@
 #include "ShortTrendContainer.h"
 #include "TrendWidget.h"
 #include "ECGParam.h"
+#include "CO2Param.h"
 
 typedef QList<LayoutNode> LayoutRow;
 
@@ -1263,6 +1264,15 @@ void LayoutManager::updateLayout()
             node.editable = editable;
             node.pos = pos;
             node.span = span;
+
+            if (node.name == layoutNodeName(LAYOUT_NODE_PARAM_CO2)
+                    || node.name == layoutNodeName(LAYOUT_NODE_WAVE_CO2))
+            {
+                if (!co2Param.isConnected())
+                {
+                    continue;
+                }
+            }
 
             if (row.isEmpty())
             {
