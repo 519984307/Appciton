@@ -38,7 +38,9 @@ public:
 
     /**
      * @brief setAlarmPause set the alarm pause time
-     * @param seconds
+     * @param seconds the left second of alarm pause
+     * @note if the seconds equal to INT_MAX, will display alarm off;
+     *       if seconds <= 0, will display normal alarm message
      */
     void setAlarmPause(int seconds);
 

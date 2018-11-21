@@ -118,7 +118,17 @@ void AlarmPhyInfoBarWidget::_drawAlarmPauseMessage()
 
     int fontSize = fontManager.getFontSize(4);
     painter.setFont(fontManager.textFont(fontSize));
-    QString s = QString("%1 %2s").arg(trs("AlarmPause")).arg(_alarmPauseTime);
+
+    QString s;
+    if (_alarmPauseTime == INT_MAX)
+    {
+        s = QString(trs("AlarmOff"));
+    }
+    else
+    {
+        s = QString("%1 %2s").arg(trs("AlarmPause")).arg(_alarmPauseTime);
+    }
+
     painter.drawText(tempRect, Qt::AlignCenter, s);
 }
 
