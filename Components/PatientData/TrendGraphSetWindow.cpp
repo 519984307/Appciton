@@ -242,11 +242,15 @@ TrendGraphSetWindow::TrendGraphSetWindow()
     systemConfig.getNumValue(groupPrefix, index);
     d_ptr->trendGroupList = new DropList(trs("TrendGroup"));
     d_ptr->trendGroupList->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
-    d_ptr->trendGroupList->addItems(QStringList()
-                                    << "Resp"
-                                    << "IBP"
-                                    << "AG"
-                                   );
+    d_ptr->trendGroupList->addItem("Resp");
+    if (systemManager.isSupport(CONFIG_IBP))
+    {
+        d_ptr->trendGroupList->addItem("IBP");
+    }
+    if (systemManager.isSupport(CONFIG_AG))
+    {
+        d_ptr->trendGroupList->addItem("AG");
+    }
     d_ptr->trendGroupList->setCurrentIndex(index);
     connect(d_ptr->trendGroupList, SIGNAL(currentIndexChanged(int)), this, SLOT(trendGroupReleased(int)));
 
