@@ -47,6 +47,7 @@ ShortTrendContainer::ShortTrendContainer()
         trendDataStorageManager.registerShortTrend(static_cast<SubParamID>(i));
     }
     connect(this, SIGNAL(released()), this, SLOT(onReleased()));
+    connect(&colorManager, SIGNAL(paletteChanged(ParamID)), this, SLOT(onPaletteChanged(ParamID)));
 }
 
 ShortTrendContainer::~ShortTrendContainer()
@@ -198,4 +199,27 @@ void ShortTrendContainer::onReleased()
 {
     ShortTrendWindow win(this);
     windowManager.showWindow(&win, WindowManager::ShowBehaviorModal);
+}
+
+void ShortTrendContainer::onPaletteChanged(ParamID id)
+{
+    QList<ShortTrendItem *>::iterator iter = d_ptr->trendItems.begin();
+    for (; iter != d_ptr->trendItems.end(); ++iter)
+    {
+        QList<SubParamID> subParams = (*iter)->getSubParamList();
+        ParamID param = paramInfo.getParamID(subParams.at(0));
+        if (param == PARAM_DUP_ECG)
+        {
+            param = PARAM_ECG;
+        }
+        if (param == PARAM_DUP_RESP)
+        {
+            param = PARAM_RESP;
+        }
+        if (param == id)
+        {
+            (*iter)->setWaveColor(colorManager.getColor(paramInfo.getParamName(param)));
+            (*iter)->updateBlackground();
+        }
+    }
 }

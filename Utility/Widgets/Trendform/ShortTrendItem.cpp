@@ -575,6 +575,12 @@ bool ShortTrendItem::isNibpTrend() const
     return d_ptr->isNibp;
 }
 
+void ShortTrendItem::updateBlackground()
+{
+    d_ptr->updateBGFlag = true;
+    update();
+}
+
 void ShortTrendItemPrivate::setAxisValue(short data, int flag)
 {
     int margin = 10;

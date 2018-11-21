@@ -237,6 +237,11 @@ void ParaColorWindow::hideEvent(QHideEvent *ev)
     QMap<QString, QString>::Iterator iter = d_ptr->colorSetList.begin();
     while (iter != d_ptr->colorSetList.end())
     {
+        if (iter.key() == "Display|ECGColor")
+        {
+            currentConfig.setStrValue("Display|ECGDUPColor",
+                                      iter.value());
+        }
         currentConfig.setStrValue(iter.key(),
                                   iter.value());
         iter++;
