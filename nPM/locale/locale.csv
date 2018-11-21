@@ -183,6 +183,21 @@ NIBPIntervalTime,间隔时间,NIBP Interval Time
 NIBPAutoInterval,自动间隔,Auto Interval
 NIBPMenu,NIBP,NIBP
 NIBPMenuDesc,NIBP,NIBP
+NIBPDirectiveTimeout,指令超时,Directive Timeout
+NIBPModuleEnterFail,进入校准模式失败,Calibrate Mode Enter Fail
+NIBPCalibrateModelEnterFail,进入校准模式失败,Calibrate Mode Enter Fail
+EnterCalibrateMode,进入校准模式,Calibrate Mode
+QuitCalibrateMode,退出校准模式,Quit Calibrate
+QuitManometerMode,退出压力计模式,Quit Manometer
+EnterManometerMode,进入压力计模式,Enter Manometer
+QuitPressureContrlMode,退出压力操控模式,Quit Pressure Contrl
+EnterPressureContrlMode,进入压力操控模式,Enter Pressure Contrl
+EnterZeroMode,进入校零模式,Enter Zero
+QuitZeroMode,退出校零模式,Quit Zero
+OperationFailedPleaseAgain,"操作失败,请重试!","Operation Failed , Please Again!"
+PumpControl,气泵控制,Pump Control
+ValveControl,气阀控制,Valve Control
+InflationPressure,充气压力,Inflation Pressure
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
 CO2SweepMode,CO2波形模式,CO2 Sweep Mode
@@ -700,6 +715,7 @@ NIBPServiceWaitAgain,"血压服务模式等待中, 请重试!","NIBP Service Wai
 CalibratePoint1,校准点1,CalibratePoint 1
 CalibratePoint2,校准点2,CalibratePoint 2
 ServiceCalibrate,校准,Calibrate
+ServiceCalibrating,校准中,Calibrating
 NIBPCalibrateModel,校准模式,NIBP Calibrate Model
 ServiceCalibrateDesc,校准,Calibrate Desc
 ServiceSuccess,成功,Success
@@ -719,6 +735,7 @@ TEMPChannelTwo,体温通道2,TEMP Channel Two
 TEMPChannelDisable,体温通道失能,TEMP Channel Disable 
 ServiceInflate,充气,Inflate
 ServiceDeflate,放气,Deflate
+Inflating,充气中,Inflating
 ServiceCalibrateZero,校零,Calibrate Zero
 NIBPCalibrateZeroModel,校零模式,NIBP Calibrate Zero Model
 NIBPCalibrateZero,校零模式,NIBP Calibrate Zero 

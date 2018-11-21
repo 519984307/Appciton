@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/11/16
+ **/
+
 #include "NIBPParam.h"
 #include "NIBPServiceCalibrateState.h"
 #include "NIBPServiceStateDefine.h"
@@ -33,12 +43,12 @@ void NIBPServiceCalibrateState::handleNIBPEvent(NIBPEvent event, const unsigned 
     {
         nibpcalibrate.unPacket(false);
         _isEnterSuccess = false;
-        IMessageBox messbox(trs("Warn"), trs("NIBPDirectiveTimeout"), false);
-        messbox.setWindowFlags(Qt::WindowStaysOnTopHint|Qt::FramelessWindowHint);
-        messbox.setYesBtnTxt(trs("SupervisorOK"));
+        MessageBox messbox(trs("Warn"), trs("NIBPDirectiveTimeout"), false);
+        messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+//        messbox.setYesBtnTxt(trs("SupervisorOK"));
         messbox.exec();
     }
-        break;
+    break;
 
     case NIBP_EVENT_SERVICE_REPAIR_RETURN:
         if (_isEnterSuccess && !nibpRepairMenuManager.getRepairError())
@@ -71,39 +81,18 @@ void NIBPServiceCalibrateState::handleNIBPEvent(NIBPEvent event, const unsigned 
         }
         else
         {
-            if (args[0] != 0x00)
-            {
-                nibpcalibrate.unPacket(false);
-                nibpcalibrate.setText(trs("NIBPCalibrateModelEnterFail"));
-                _isEnterSuccess = false;
-                IMessageBox messbox(trs("Warn"), trs("NIBPModuleEnterFail"), false);
-                messbox.setWindowFlags(Qt::WindowStaysOnTopHint|Qt::FramelessWindowHint);
-                messbox.setYesBtnTxt(trs("SupervisorOK"));
-                messbox.exec();
-            }
-            else
-            {
-                nibpcalibrate.unPacket(true);
-                _isEnterSuccess = true;
-            }
+            nibpParam.setResult(!args[0]);
         }
         break;
 
     case NIBP_EVENT_SERVICE_CALIBRATE_CMD_PRESSURE_POINT:
         setTimeOut();
-        nibpParam.provider().servicePressurepoint(args,argLen);
+        nibpParam.provider().servicePressurepoint(args, argLen);
         break;
 
     case NIBP_EVENT_SERVICE_CALIBRATE_RSP_PRESSURE_POINT:
         timeStop();
-        if (args[0] != 0x01)
-        {
-            nibpcalibrate.unPacketPressure(false);
-        }
-        else
-        {
-            nibpcalibrate.unPacketPressure(true);
-        }
+        nibpParam.setResult(args[0]);
     default:
         break;
     }
@@ -115,6 +104,7 @@ void NIBPServiceCalibrateState::handleNIBPEvent(NIBPEvent event, const unsigned 
 NIBPServiceCalibrateState::NIBPServiceCalibrateState() : NIBPState(NIBP_SERVICE_CALIBRATE_STATE)
 {
     _isReturn = false;
+    _isEnterSuccess = false;
 }
 
 /**************************************************************************************************
@@ -122,5 +112,4 @@ NIBPServiceCalibrateState::NIBPServiceCalibrateState() : NIBPState(NIBP_SERVICE_
  *************************************************************************************************/
 NIBPServiceCalibrateState::~NIBPServiceCalibrateState()
 {
-
 }

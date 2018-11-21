@@ -22,6 +22,11 @@
 #include <QLayout>
 #include "NIBPProviderIFace.h"
 #include "NIBPServiceStateDefine.h"
+#include "MessageBox.h"
+
+#define CALIBRATION_INTERVAL_TIME              (100)
+#define TIMEOUT_WAIT_NUMBER                    (5000 / CALIBRATION_INTERVAL_TIME)
+#define INFLATE_WAIT_NUMBER                    (100000 / CALIBRATION_INTERVAL_TIME)
 
 class NIBPPressureControlContentPrivate
 {
@@ -35,6 +40,16 @@ public:
     int patientVaulue;                  //  病人类型
     bool inflateSwitch;                 //  充气、放气标志
     bool pressureControlFlag;          //  进入模式标志
+
+    Button *modeBtn;                // 进入/退出模式
+    bool isPressureControlMode;     // 是否处于压力操控模式
+    int inModeTimerID;              // 进入压力操控模式定时器ID
+    int timeoutNum;
+    int isInflate;                  // 是否充气;
+    int inflateTimerID;             // 充气和放气回复定时器ID
+    int pressureTimerID;            // 获取压力定时器ID
+    int pressure;
+    int inflateTimeoutNum;          // 充气超时
 };
 
 NIBPPressureControlContentPrivate::NIBPPressureControlContentPrivate()
@@ -45,7 +60,10 @@ NIBPPressureControlContentPrivate::NIBPPressureControlContentPrivate()
       inflatePressure(0),
       patientVaulue(0),
       inflateSwitch(0),
-      pressureControlFlag(false)
+      pressureControlFlag(false),
+      modeBtn(NULL), isPressureControlMode(false), inModeTimerID(-1),
+      timeoutNum(0), isInflate(true), inflateTimerID(-1), pressureTimerID(-1),
+      pressure(InvData()), inflateTimeoutNum(0)
 {
 }
 
@@ -58,105 +76,126 @@ void NIBPPressureControlContent::layoutExec()
     QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
 
-    QHBoxLayout *hl = new QHBoxLayout();
-    QLabel *l = new QLabel(trs("ServicePressure"));
-    hl->addWidget(l);
+    Button *button;
+    QLabel *label;
 
-    d_ptr->value = new QLabel();
-    d_ptr->value->setText(InvStr());
-    hl->addWidget(d_ptr->value);
+    button = new Button(trs("EnterPressureContrlMode"));
+    button->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(button, 0, 2);
+    connect(button, SIGNAL(released()), this, SLOT(enterPressureContrlReleased()));
+    d_ptr->modeBtn = button;
 
-    l = new QLabel();
-    l->setText(Unit::getSymbol(nibpParam.getUnit()));
-    hl->addWidget(l);
+    label = new QLabel(trs("InflationPressure"));
+    layout->addWidget(label, 1, 0, Qt::AlignCenter);
 
-    layout->addLayout(hl, 0, 0);
-
-    hl = new QHBoxLayout();
-    l = new QLabel(trs("ServicePatientType"));
-    hl->addWidget(l);
-    d_ptr->patientType = new ComboBox();
-    d_ptr->patientType->addItem(trs(PatientSymbol::convert(PATIENT_TYPE_ADULT)));
-    d_ptr->patientType->addItem(trs(PatientSymbol::convert(PATIENT_TYPE_PED)));
-    d_ptr->patientType->addItem(trs(PatientSymbol::convert(PATIENT_TYPE_NULL)));
-    connect(d_ptr->patientType, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(patientInflate(int)));
-    hl->addWidget(d_ptr->patientType);
-    layout->addLayout(hl, 1, 0);
-
-    hl = new QHBoxLayout();
-    l = new QLabel(trs("ServiceChargePressure"));
-    hl->addWidget(l);
     d_ptr->chargePressure = new SpinBox();
-//    d_ptr->chargePressure->setSuffix(Unit::getSymbol(UNIT_MMHG));
-//    d_ptr->chargePressure->setSuffixSpace(2);
-//    d_ptr->chargePressure->setMode(ISPIN_MODE_INT);
     d_ptr->chargePressure->setRange(50, 300);
     d_ptr->chargePressure->setValue(250);
     d_ptr->chargePressure->setStep(5);
-    connect(d_ptr->chargePressure, SIGNAL(valueChange(int, int)), this, SLOT(pressureChange(int)));
-    hl->addWidget(d_ptr->chargePressure);
-    layout->addLayout(hl, 2, 0);
+    layout->addWidget(d_ptr->chargePressure, 1, 1);
 
+    button  = new Button(trs("ServiceInflate"));
+    button->setButtonStyle(Button::ButtonTextOnly);
+    button->setEnabled(false);
+    layout->addWidget(button, 1, 2);
+    connect(button, SIGNAL(released()), this, SLOT(inflateBtnReleased()));
+    d_ptr->inflateBtn = button;
 
-    hl = new QHBoxLayout();
-    l = new QLabel(trs("ServiceInflate"));
-    hl->addWidget(l);
-    d_ptr->inflateBtn = new Button();
-    d_ptr->inflateBtn->setText(trs("ServiceInflate"));
-    d_ptr->inflateBtn->setButtonStyle(Button::ButtonTextOnly);
-    d_ptr->inflatePressure = true;
-    connect(d_ptr->inflateBtn, SIGNAL(released()), this, SLOT(inflateBtnReleased()));
-    hl->addWidget(d_ptr->inflateBtn);
-    layout->addLayout(hl, 3, 0);
+    label = new QLabel(trs("ServicePressure"));
+    layout->addWidget(label, 2, 0, Qt::AlignCenter);
 
-    layout->setRowStretch(4, 1);
+    label = new QLabel(InvStr());
+    layout->addWidget(label, 2, 1, Qt::AlignCenter);
+    d_ptr->value = label;
+
+    label = new QLabel();
+    label->setText(Unit::getSymbol(nibpParam.getUnit()));
+    layout->addWidget(label, 2, 2, Qt::AlignCenter);
+
+    layout->setRowStretch(3, 1);
 }
 
-/**************************************************************************************************
- * 初始化。
- *************************************************************************************************/
-void NIBPPressureControlContent::init(void)
+void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
 {
-    d_ptr->value->setText(InvStr());
-    d_ptr->chargePressure->setValue(250);
-//    d_ptr->chargePressure->disable(false);
-    d_ptr->chargePressure->setEnabled(true);
-    btnSwitch(true);
-
-    d_ptr->patientVaulue = 0;
-    d_ptr->patientType->setCurrentIndex(d_ptr->patientVaulue);
-
-    nibpParam.provider().servicePressureProtect(true);
-
-    d_ptr->patientType->setDisabled(false);
-    d_ptr->inflateBtn->setEnabled(true);
-
-    d_ptr->pressureControlFlag = false;
-}
-
-/**************************************************************************************************
- * 进入压力控制指令。
- *************************************************************************************************/
-bool NIBPPressureControlContent::focusNextPrevChild(bool next)
-{
-    init();
-
-    nibpParam.switchState(NIBP_SERVICE_PRESSURECONTROL_STATE);
-
-    MenuContent::focusNextPrevChild(next);
-
-    return next;
-}
-
-/**************************************************************************************************
- * 病人类型，充气值改变指令
- *************************************************************************************************/
-void NIBPPressureControlContent::changeReleased(void)
-{
-    if (!d_ptr->inflatePressure)
+    if (d_ptr->inModeTimerID == ev->timerId())
     {
-        deflateReleased();
+        bool reply = nibpParam.geReply();
+        if (reply || d_ptr->timeoutNum == INFLATE_WAIT_NUMBER)
+        {
+            if (reply && nibpParam.getResult())
+            {
+                if (d_ptr->isPressureControlMode)
+                {
+                    d_ptr->isPressureControlMode = false;
+                    d_ptr->modeBtn->setText(trs("EnterPressureContrlMode"));
+                    d_ptr->inflateBtn->setEnabled(false);
+                    killTimer(d_ptr->pressureTimerID);
+                    d_ptr->pressureTimerID = -1;
+                }
+                else
+                {
+                    d_ptr->isPressureControlMode = true;
+                    d_ptr->modeBtn->setText(trs("QuitPressureContrlMode"));
+                    d_ptr->inflateBtn->setEnabled(true);
+                    d_ptr->pressureTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+                }
+            }
+            else
+            {
+                MessageBox messbox(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
+                messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+                messbox.exec();
+            }
+            killTimer(d_ptr->inModeTimerID);
+            d_ptr->inModeTimerID = -1;
+            d_ptr->timeoutNum = 0;
+        }
+        else
+        {
+            d_ptr->timeoutNum++;
+        }
+    }
+    else if (d_ptr->inflateTimerID == ev->timerId())
+    {
+        bool reply = nibpParam.geReply();
+        if (reply || d_ptr->inflateTimeoutNum == TIMEOUT_WAIT_NUMBER * 10)
+        {
+            if (reply && nibpParam.getResult())
+            {
+                if (d_ptr->isInflate)
+                {
+                    d_ptr->isInflate = false;
+                    d_ptr->inflateBtn->setText(trs("ServiceDeflate"));
+                }
+                else
+                {
+                    d_ptr->isInflate = true;
+                    d_ptr->inflateBtn->setText(trs("ServiceInflate"));
+                }
+            }
+            else
+            {
+                MessageBox messbox(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
+                messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+                messbox.exec();
+            }
+            killTimer(d_ptr->inflateTimerID);
+            d_ptr->inflateTimerID = -1;
+            d_ptr->inflateTimeoutNum = 0;
+            d_ptr->modeBtn->setEnabled(true);
+        }
+        else
+        {
+            d_ptr->inflateTimeoutNum++;
+        }
+    }
+    else if (d_ptr->pressureTimerID == ev->timerId())
+    {
+        if (d_ptr->pressure != nibpParam.getManometerPressure())
+        {
+            d_ptr->pressure = nibpParam.getManometerPressure();
+            d_ptr->value->setNum(nibpParam.getManometerPressure());
+        }
     }
 }
 
@@ -165,174 +204,33 @@ void NIBPPressureControlContent::changeReleased(void)
  *************************************************************************************************/
 void NIBPPressureControlContent::inflateBtnReleased()
 {
-    if (d_ptr->pressureControlFlag)
+    d_ptr->inflateTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+    if (d_ptr->isInflate)
     {
-        if (d_ptr->inflatePressure)
-        {
-            inflateReleased();
-            btnSwitch(false);
-        }
-        else
-        {
-            deflateReleased();
-        }
+        int value = d_ptr->chargePressure->getValue();
+        nibpParam.provider().servicePressureinflate(value);
+        d_ptr->inflateBtn->setText(trs("Inflating"));
+        d_ptr->modeBtn->setEnabled(false);
     }
     else
     {
-        NIBPRepairMenuWindow::getInstance()->messageBox();
+        nibpParam.provider().servicePressuredeflate();
     }
 }
 
-/**************************************************************************************************
- * 充气槽函数。
- *************************************************************************************************/
-void NIBPPressureControlContent::inflateReleased()
+void NIBPPressureControlContent::enterPressureContrlReleased()
 {
-//    PatientType type = (PatientType)(d_ptr->patientType->currentIndex());
-//    if ( type == PATIENT_TYPE_NULL )
-    int index = d_ptr->patientType->currentIndex();
-    if (d_ptr->patientType->itemText(index) == trs(PatientSymbol::convert(PATIENT_TYPE_NULL)))
+    d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+    if (d_ptr->isPressureControlMode)
     {
-        nibpParam.provider().servicePressureProtect(false);
+        nibpParam.provider().servicePressurecontrol(false);
+        nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
     }
     else
     {
-        nibpParam.provider().servicePressureProtect(true);
-    }
-
-    nibpParam.provider().setPatientType((unsigned char)((PatientType)d_ptr->patientVaulue));
-
-    int value = d_ptr->chargePressure->getValue();
-    d_ptr->inflatePressure = value;
-
-    nibpParam.provider().servicePressureinflate(d_ptr->inflatePressure);
-}
-
-/**************************************************************************************************
- * 放气槽函数。
- *************************************************************************************************/
-void NIBPPressureControlContent::deflateReleased(void)
-{
-    nibpParam.provider().servicePressuredeflate();
-}
-
-/**************************************************************************************************
- * 充气压力值设定。
- *************************************************************************************************/
-void NIBPPressureControlContent::pressureChange(int value)
-{
-//    UnitType unit = nibpParam.getUnit();
-//    if (unit == UNIT_KPA)
-//    {
-//        int i = 0;
-//        Unit::convert(UNIT_MMHG, i, unit, value.toDouble());
-//        _inflate_pressure = i;
-//        return;
-//    }
-    if (d_ptr->pressureControlFlag)
-    {
-        changeReleased();
-        d_ptr->inflatePressure = value;
-    }
-    else
-    {
-        NIBPRepairMenuWindow::getInstance()->messageBox();
+        nibpParam.switchState(NIBP_SERVICE_PRESSURECONTROL_STATE);
     }
 }
-
-/**************************************************************************************************
- * 病人类型槽函数。
- *************************************************************************************************/
-void NIBPPressureControlContent::patientInflate(int index)
-{
-    if (d_ptr->pressureControlFlag)
-    {
-        changeReleased();
-//        PatientType type = (PatientType)index;
-//        if( type == PATIENT_TYPE_NULL )
-        if (d_ptr->patientType->itemText(index) == trs(PatientSymbol::convert(PATIENT_TYPE_NULL)))
-        {
-            nibpParam.provider().servicePressureProtect(false);
-        }
-        else
-        {
-            nibpParam.provider().servicePressureProtect(true);
-            d_ptr->patientVaulue = index;
-        }
-    }
-    else
-    {
-        NIBPRepairMenuWindow::getInstance()->messageBox();
-    }
-}
-
-/**************************************************************************************************
- * 压力值。
- *************************************************************************************************/
-void NIBPPressureControlContent::setCuffPressure(int pressure)
-{
-    if (pressure == -1)
-    {
-        d_ptr->value->setText(InvStr());
-    }
-    else
-    {
-        UnitType unit = nibpParam.getUnit();
-        if (unit == UNIT_MMHG)
-        {
-            d_ptr->value->setNum(pressure);
-            return;
-        }
-
-        QString str = Unit::convert(unit, UNIT_MMHG, pressure);
-        d_ptr->value->setText(str);
-    }
-}
-
-/**************************************************************************************************
- * 进入模式应答。
- *************************************************************************************************/
-void NIBPPressureControlContent::unPacket(bool flag)
-{
-    d_ptr->pressureControlFlag = flag;
-    if (flag)
-    {
-        d_ptr->value->setText(InvStr());
-        d_ptr->patientType->setDisabled(false);
-//        d_ptr->chargePressure->disable(false);
-        d_ptr->chargePressure->setEnabled(true);
-        d_ptr->inflateBtn->setEnabled(true);
-    }
-    else
-    {
-        d_ptr->value->setText("999");
-        d_ptr->patientType->setDisabled(true);
-//        d_ptr->chargePressure->disable(true);
-        d_ptr->chargePressure->setEnabled(false);
-        d_ptr->inflateBtn->setEnabled(false);
-        QLayout *layout = getMenuWindow()->getWindowLayout();
-        QWidget *lastWin = layout->itemAt(layout->count() - 1)->widget();
-        lastWin->setFocus();
-    }
-}
-
-/**************************************************************************************************
- * 充气、放气按钮切换的控制。
- *************************************************************************************************/
-void NIBPPressureControlContent::btnSwitch(bool inflate)
-{
-    if (inflate)
-    {
-        d_ptr->inflateBtn->setText(trs("ServiceInflate"));
-        d_ptr->inflatePressure = true;
-    }
-    else
-    {
-        d_ptr->inflateBtn->setText(trs("ServiceDeflate"));
-        d_ptr->inflatePressure = false;
-    }
-}
-
 
 NIBPPressureControlContent *NIBPPressureControlContent::getInstance()
 {
