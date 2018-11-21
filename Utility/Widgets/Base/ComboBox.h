@@ -26,12 +26,6 @@ public:
     /* reimplement */
     QSize sizeHint() const;
 
-    /**
-     * @brief setPlaySoundType  在聚焦的item改变时，设置播放声音类型
-     * @param type 声音类型
-     */
-    void setPlaySoundType(SoundManager::SoundType type);
-
 protected:
     /* reimplement */
     void keyPressEvent(QKeyEvent *ev);
@@ -46,18 +40,11 @@ signals:
     /**
      * @brief itemFocusChanged  聚焦改变信号触发
      * @param value
-     * @param type
      */
-    void itemFocusChanged(int value, SoundManager::SoundType type);
+    void itemFocusChanged(int value);
 
 private slots:
     void onPopupDestroyed();
-
-    /**
-     * @brief onItemFocusChanged
-     * @param value
-     */
-    void onItemFocusChanged(int value);
 
 private:
     QScopedPointer<ComboBoxPrivate> d_ptr;

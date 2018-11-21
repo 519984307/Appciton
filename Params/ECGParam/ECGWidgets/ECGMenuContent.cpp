@@ -461,9 +461,8 @@ void ECGMenuContent::layoutExec()
     comboBox->addItem(trs("Off"));
 
     // 设置声音触发方式
-    comboBox->setPlaySoundType(SoundManager::SOUND_TYPE_HEARTBEAT);
-    connect(comboBox, SIGNAL(itemFocusChanged(int, SoundManager::SoundType)),
-            this, SLOT(onPopupListItemFocusChanged(int, SoundManager::SoundType)));
+    connect(comboBox, SIGNAL(itemFocusChanged(int)),
+            this, SLOT(onPopupListItemFocusChanged(int)));
 
     for (int i = SoundManager::VOLUME_LEV_1; i <= SoundManager::VOLUME_LEV_MAX; i++)
     {
@@ -723,9 +722,10 @@ void ECGMenuContent::onAlarmBtnReleased()
     windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }
 
-void ECGMenuContent::onPopupListItemFocusChanged(int volume, SoundManager::SoundType type)
+void ECGMenuContent::onPopupListItemFocusChanged(int volume)
 {
-    if (type == SoundManager::SOUND_TYPE_HEARTBEAT)
+    ComboBox * w = qobject_cast<ComboBox*>(sender());
+    if (w == d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_QRS_TONE])
     {
         soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(volume));
         soundManager.heartBeatTone();

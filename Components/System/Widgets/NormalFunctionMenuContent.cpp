@@ -142,9 +142,8 @@ void NormalFunctionMenuContent::layoutExec()
     comboBox = new ComboBox();
 
     // 设置声音触发方式
-    comboBox->setPlaySoundType(SoundManager::SOUND_TYPE_ALARM);
-    connect(comboBox, SIGNAL(itemFocusChanged(int, SoundManager::SoundType)),
-            this, SLOT(onPopupListItemFocusChanged(int, SoundManager::SoundType)));
+    connect(comboBox, SIGNAL(itemFocusChanged(int)),
+            this, SLOT(onPopupListItemFocusChanged(int)));
 
     comboBox->addItems(QStringList()
                        << QString::number(SoundManager::VOLUME_LEV_1)
@@ -184,9 +183,8 @@ void NormalFunctionMenuContent::layoutExec()
     comboBox = new ComboBox();
 
     // 设置声音触发方式
-    comboBox->setPlaySoundType(SoundManager::SOUND_TYPE_KEY_PRESS);
-    connect(comboBox, SIGNAL(itemFocusChanged(int, SoundManager::SoundType)),
-            this, SLOT(onPopupListItemFocusChanged(int, SoundManager::SoundType)));
+    connect(comboBox, SIGNAL(itemFocusChanged(int)),
+            this, SLOT(onPopupListItemFocusChanged(int)));
 
     comboBox->addItems(QStringList()
                        <<QString::number(SoundManager::VOLUME_LEV_0)
@@ -397,14 +395,16 @@ void NormalFunctionMenuContent::onBtnReleasd()
     }
 }
 
-void NormalFunctionMenuContent::onPopupListItemFocusChanged(int volume, SoundManager::SoundType type)
+void NormalFunctionMenuContent::onPopupListItemFocusChanged(int volume)
 {
-    if (type == SoundManager::SOUND_TYPE_KEY_PRESS)
+    ComboBox *w = qobject_cast<ComboBox*>(sender());
+
+    if (w == d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME])
     {
         soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , static_cast<SoundManager::VolumeLevel>(volume));
         soundManager.keyPressTone();
     }
-    else if (type == SoundManager::SOUND_TYPE_ALARM)
+    else if (w == d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME])
     {
         soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM , static_cast<SoundManager::VolumeLevel>(volume));
         soundManager.alarmTone();

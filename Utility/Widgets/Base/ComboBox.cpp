@@ -23,13 +23,11 @@ class ComboBoxPrivate
 public:
     ComboBoxPrivate()
         : isPopup(false),
-          popupList(NULL),
-          playSoundType(SoundManager::SOUND_TYPE_NONE)
+          popupList(NULL)
     {}
 
     bool isPopup;
     QPointer<PopupList> popupList;
-    SoundManager::SoundType playSoundType;
 };
 
 ComboBox::ComboBox(QWidget *parent)
@@ -62,7 +60,7 @@ void ComboBox::showPopup()
         d_ptr->popupList->setCurrentIndex(currentIndex());
         connect(d_ptr->popupList.data(), SIGNAL(destroyed(QObject *)), this, SLOT(onPopupDestroyed()));
         connect(d_ptr->popupList.data(), SIGNAL(selectItemChanged(int)), this, SLOT(setCurrentIndex(int)));
-        connect(d_ptr->popupList.data(), SIGNAL(itemFocusChanged(int)), this, SLOT(onItemFocusChanged(int)));
+        connect(d_ptr->popupList.data(), SIGNAL(itemFocusChanged(int)), this, SIGNAL(itemFocusChanged(int)));
     }
 
     d_ptr->popupList->show();
@@ -73,11 +71,6 @@ QSize ComboBox::sizeHint() const
     QSize s = QComboBox::sizeHint();
     s.setHeight(DEFAULT_HEIGHT);
     return s;
-}
-
-void ComboBox::setPlaySoundType(SoundManager::SoundType type)
-{
-    d_ptr->playSoundType = type;
 }
 
 void ComboBox::keyPressEvent(QKeyEvent *ev)
@@ -189,13 +182,5 @@ void ComboBox::onPopupDestroyed()
     {
         emit activated(currentIndex());
         emit activated(currentText());
-    }
-}
-
-void ComboBox::onItemFocusChanged(int value)
-{
-    if (d_ptr->playSoundType != SoundManager::SOUND_TYPE_NONE)
-    {
-        emit itemFocusChanged(value, d_ptr->playSoundType);
     }
 }

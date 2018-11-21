@@ -37,9 +37,8 @@ private slots:
     /**
      * @brief onPopupListItemFocusChanged
      * @param volume
-     * @param type
      */
-    void onPopupListItemFocusChanged(int volume, SoundManager::SoundType type);
+    void onPopupListItemFocusChanged(int volume);
 
 private:
     SPO2MenuContentPrivate * const d_ptr;
