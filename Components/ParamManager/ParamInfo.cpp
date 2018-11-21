@@ -254,6 +254,7 @@ ParamID ParamInfo::getParamID(SubParamID id)
     {
     case SUB_PARAM_HR_PR:
     case SUB_PARAM_ECG_PVCS:
+#ifndef HIDE_ECG_ST_SUBPARAM
     case SUB_PARAM_ST_I:
     case SUB_PARAM_ST_II:
     case SUB_PARAM_ST_III:
@@ -266,6 +267,7 @@ ParamID ParamInfo::getParamID(SubParamID id)
     case SUB_PARAM_ST_V4:
     case SUB_PARAM_ST_V5:
     case SUB_PARAM_ST_V6:
+#endif
         paramID = PARAM_DUP_ECG;
         break;
     case SUB_PARAM_RR_BR:

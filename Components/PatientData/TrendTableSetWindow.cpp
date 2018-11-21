@@ -19,6 +19,7 @@
 #include "TrendTableWindow.h"
 #include "IConfig.h"
 #include "WindowManager.h"
+#include "SystemManager.h"
 
 TrendTableSetWindow *TrendTableSetWindow::selfObj = NULL;
 
@@ -93,11 +94,15 @@ TrendTableSetWindow::TrendTableSetWindow()
 
     label = new QLabel(trs("TrendGroup"));
     d_ptr->trendGroupCbo = new ComboBox();
-    d_ptr->trendGroupCbo->addItems(QStringList()
-                                   << "Resp"
-                                   << "IBP"
-//                                   << "AG"   // 暂时去掉AG组相关数据的趋势表显示
-                                  );
+    d_ptr->trendGroupCbo->addItem("Resp");
+    if (systemManager.isSupport(CONFIG_IBP))
+    {
+        d_ptr->trendGroupCbo->addItem("IBP");
+    }
+    if (systemManager.isSupport(CONFIG_AG))
+    {
+        d_ptr->trendGroupCbo->addItem("AG");
+    }
     connect(d_ptr->trendGroupCbo, SIGNAL(currentIndexChanged(int)), this, SLOT(trendGroupReleased(int)));
     gridLayout->addWidget(label, 1, 0);
     gridLayout->addWidget(d_ptr->trendGroupCbo, 1, 1);
