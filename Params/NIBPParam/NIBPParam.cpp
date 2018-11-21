@@ -188,7 +188,7 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
     }
     _provider = provider;
     _provider->sendSelfTest();
-
+    _provider->setPatientType(patientManager.getType());
 
     // 监护模式状态机。
     if (!_machines.contains(NIBP_STATE_MACHINE_MONITOR))
