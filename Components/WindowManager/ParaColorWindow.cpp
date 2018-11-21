@@ -64,9 +64,9 @@ void ParaColorWindowPrivate::loadOptions()
     for (int i = 0; i < strList.count(); i++)
     {
         color.clear();
-        MenuItem item = static_cast<MenuItem>(i);
         nodePath = QString("Display|%1").arg(strList.at(i));
         currentConfig.getStrValue(nodePath, color);
+        MenuItem item = static_cast<MenuItem>(i);
         combos[item]->setCurrentIndex(colorList.indexOf(color));
         colorSetList.insert(nodePath, color);
     }
@@ -253,6 +253,7 @@ void ParaColorWindow::onComboBoxIndexChanged(int index)
     }
     ComboBox *box = qobject_cast<ComboBox *>(sender());
     QString strPath;
+    QString dupPath;
     ParamID id = PARAM_NONE;
     if (box)
     {
@@ -264,6 +265,9 @@ void ParaColorWindow::onComboBoxIndexChanged(int index)
         {
             strPath = "Display|ECGColor";
             id = PARAM_ECG;
+            dupPath = "Display|ECGDUPColor";
+            d_ptr->colorSetList[dupPath] = d_ptr->colorSetList[strPath];
+
             break;
         }
         case ParaColorWindowPrivate::ITEM_CBO_SPO2_COLOR:
@@ -317,6 +321,11 @@ void ParaColorWindow::onComboBoxIndexChanged(int index)
         if (id != PARAM_NONE && !d_ptr->paramIdList.contains(id))
         {
             d_ptr->paramIdList.append(id);
+        }
+        QMap<QString, QString>::Iterator dupIter = d_ptr->colorSetList.find(dupPath);
+        if (dupIter != d_ptr->colorSetList.end())
+        {
+            dupIter.value() = d_ptr->colorList.at(index);
         }
     }
 }

@@ -76,6 +76,7 @@ public:
 
 private slots:
     void onReleased();
+    void onPaletteChanged(ParamID id);
 private:
     ShortTrendContainerPrivate *const d_ptr;
 };
