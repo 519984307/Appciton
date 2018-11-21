@@ -203,8 +203,7 @@ TrendGraphSetWindow::TrendGraphSetWindow()
         RulerItem *item = NULL;
         item = d_ptr->itemList.at(i);
         name = paramInfo.getSubParamName(item->sid);
-
-        item->label->setText(name);
+        item->label->setText(trs(name));
         item->label->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
         item->combo->addItem(trs("Off"));
         item->combo->addItem(trs("On"));
