@@ -229,12 +229,14 @@ static void _initProviderParam(void)
     ECGTrendWidget *ecgTrendWidget = new ECGTrendWidget();
     ecgDupParam.setTrendWidget(ecgTrendWidget);
     layoutManager.addLayoutWidget(ecgTrendWidget, LAYOUT_NODE_PARAM_ECG);
+#ifndef HIDE_ECG_ST_SUBPARAM
     ECGPVCSTrendWidget *ecgPVCSTrendWidget = new ECGPVCSTrendWidget();
     ecgParam.setECGPVCSTrendWidget(ecgPVCSTrendWidget);
     layoutManager.addLayoutWidget(ecgPVCSTrendWidget, LAYOUT_NODE_PARAM_PVCS);
     ECGSTTrendWidget *ecgSTTrendWidget = new ECGSTTrendWidget();
     ecgParam.setECGSTTrendWidget(ecgSTTrendWidget);
     layoutManager.addLayoutWidget(ecgSTTrendWidget, LAYOUT_NODE_PARAM_ST);
+#endif
 
     ECGWaveWidget *ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_I, "ECGIWaveWidget",
             ECGSymbol::convert(ECG_LEAD_I, ecgParam.getLeadConvention()));

@@ -737,9 +737,8 @@ void BigFontLayoutModelPrivate::loadItemInfos()
 
 #ifndef HIDE_ECG_ST_SUBPARAM
     paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = ParamNodeDescription("ST");
-#endif
-
     paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_PVCS)] = ParamNodeDescription("PVCs");
+#endif
     paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_OXYGEN)] = ParamNodeDescription("O2");
 }
 

@@ -60,6 +60,9 @@ DEFINES += HIDE_PARAM_SWITCH
 #用于隐藏ST功能
 DEFINES += HIDE_ECG_ST_SUBPARAM
 
+#隐藏IBP校零软按键
+DEFINES += HIDE_IBP_CALIBRATE_ZERO
+
 # Depending libraries
 LIBS += -ldl -lasound -lz
 
