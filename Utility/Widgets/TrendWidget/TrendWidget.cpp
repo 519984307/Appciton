@@ -150,6 +150,12 @@ void TrendWidget::showNormalStatus(QPalette psrc)
     setWidgetPalette(contentLayout, psrc);
 }
 
+void TrendWidget::showNormalStatus(QLayout *layout, QPalette psrc)
+{
+    normalPalette(psrc);
+    setWidgetPalette(layout, psrc);
+}
+
 void TrendWidget::showNormalStatus(QWidget *value, QPalette psrc)
 {
     normalPalette(psrc);

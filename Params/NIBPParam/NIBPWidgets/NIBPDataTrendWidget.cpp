@@ -184,7 +184,11 @@ void NIBPDataTrendWidget::showValue(void)
         if (providerBuff.sysvalue == InvData() || providerBuff.diavalue == InvData() ||
                 providerBuff.mapvalue == InvData())
         {
+            QString color = "<font style='color:rgb(%1,%2,%3);'>%4</font>";
             textStr = QString("<center>%1/%2/%3</center>").arg(InvStr()).arg(InvStr()).arg(InvStr());
+            textStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(textStr);
+            prStr = QString("<center>%1</center>").arg(InvStr());
+            prStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(prStr);
         }
         else
         {

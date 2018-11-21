@@ -117,6 +117,8 @@ protected:
      */
     void showNormalStatus(QPalette psrc);
 
+    void showNormalStatus(QLayout *layout, QPalette psrc);
+
     /**
      * @brief showNormalStatus 设置正常时状态：黑底＋对应颜色字体(刷新某一控件颜色)
      * @param value
