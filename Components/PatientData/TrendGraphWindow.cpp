@@ -125,7 +125,7 @@ void TrendGraphWindow::onButtonReleased()
         }
         case TrendGraphWindowPrivate::ACTION_BTN_SET_WIDGET:
         {
-            windowManager.showWindow(&trendGraphSetWindow, WindowManager::ShowBehaviorModal);
+            windowManager.showWindow(&trendGraphSetWindow, WindowManager::ShowBehaviorHideOthers);
             break;
         }
         case TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE:

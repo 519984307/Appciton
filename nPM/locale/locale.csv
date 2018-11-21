@@ -266,7 +266,7 @@ HRSourceAuto,自动,Auto
 HRSourceECG,ECG,ECG
 HRSourceSPO2,SPO2,SPO2
 HRSourceIBP,IBP,IBP
-HR_PRSource,HR_PR来源,HR_PR Source
+HR_PRSource,HR/PR来源,HR/PR Source
 CO2Setting,CO2设置,CO2 Setting
 PatientManager,病人管理,Patient Manager
 PatientManagerDesc,病人管理,Patient Manager Desc
