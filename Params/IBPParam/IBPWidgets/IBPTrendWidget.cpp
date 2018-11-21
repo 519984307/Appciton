@@ -251,6 +251,10 @@ void IBPTrendWidget::showValue()
         }
         restoreNormalStatusLater();
     }
+    else
+    {
+        showNormalStatus(_stackedwidget->currentWidget()->layout(), psrc);
+    }
 }
 
 /**************************************************************************************************
@@ -392,7 +396,7 @@ QList<SubParamID> IBPTrendWidget::getShortTrendSubParams() const
 void IBPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_IBP));
-    showNormalStatus(psrc);
+    showNormalStatus(_stackedwidget->currentWidget()->layout(), psrc);
 }
 
 /**************************************************************************************************
