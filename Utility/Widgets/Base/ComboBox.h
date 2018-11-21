@@ -10,6 +10,7 @@
 
 #pragma once
 #include <QComboBox>
+#include "SoundManager.h"
 
 class ComboBoxPrivate;
 class ComboBox: public QComboBox
@@ -34,6 +35,13 @@ protected:
     void hideEvent(QHideEvent *ev);
     /* reimplement */
     void paintEvent(QPaintEvent *ev);
+
+signals:
+    /**
+     * @brief itemFocusChanged  聚焦改变信号触发
+     * @param value
+     */
+    void itemFocusChanged(int value);
 
 private slots:
     void onPopupDestroyed();

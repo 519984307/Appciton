@@ -10,6 +10,7 @@
 
 #pragma once
 #include "MenuContent.h"
+#include "SoundManager.h"
 
 class SPO2MenuContentPrivate;
 class SPO2MenuContent : public MenuContent
@@ -32,6 +33,12 @@ private slots:
      * @brief onAlarmBtnReleased
      */
     void onAlarmBtnReleased(void);
+
+    /**
+     * @brief onPopupListItemFocusChanged
+     * @param volume
+     */
+    void onPopupListItemFocusChanged(int volume);
 
 private:
     SPO2MenuContentPrivate * const d_ptr;

@@ -10,6 +10,7 @@
 
 #pragma once
 #include "MenuContent.h"
+#include "SoundManager.h"
 
 class ECGMenuContentPrivate;
 class ECGMenuContent : public MenuContent
@@ -38,6 +39,12 @@ private slots:
      * @brief onAlarmBtnReleased
      */
     void onAlarmBtnReleased(void);
+
+    /**
+     * @brief onPopupListItemFocusChanged
+     * @param volume
+     */
+    void onPopupListItemFocusChanged(int volume);
 
 private:
     ECGMenuContentPrivate * const d_ptr;

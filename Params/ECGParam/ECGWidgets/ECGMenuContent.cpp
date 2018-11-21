@@ -463,6 +463,11 @@ void ECGMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItem(trs("Off"));
+
+    // 设置声音触发方式
+    connect(comboBox, SIGNAL(itemFocusChanged(int)),
+            this, SLOT(onPopupListItemFocusChanged(int)));
+
     for (int i = SoundManager::VOLUME_LEV_1; i <= SoundManager::VOLUME_LEV_MAX; i++)
     {
         comboBox->addItem(QString::number(i));
@@ -719,5 +724,15 @@ void ECGMenuContent::onAlarmBtnReleased()
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_HR_PR, true);
     AlarmLimitWindow w(subParamName);
     windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
+}
+
+void ECGMenuContent::onPopupListItemFocusChanged(int volume)
+{
+    ComboBox * w = qobject_cast<ComboBox*>(sender());
+    if (w == d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_QRS_TONE])
+    {
+        soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT , static_cast<SoundManager::VolumeLevel>(volume));
+        soundManager.heartBeatTone();
+    }
 }
 
