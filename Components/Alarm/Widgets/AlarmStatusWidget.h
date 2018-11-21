@@ -22,7 +22,7 @@ public:
      * @brief setAlarmStatus set the alarm status
      * @param status new status
      */
-    void setAlarmStatus(AlarmAudioStatus status);
+    void setAlarmStatus(AlarmStatus status);
 
     // 构造与析构。
     AlarmStatusWidget();

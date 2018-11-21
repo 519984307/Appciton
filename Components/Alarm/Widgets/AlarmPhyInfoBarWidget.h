@@ -36,6 +36,12 @@ public:
 
     void updateList();
 
+    /**
+     * @brief setAlarmPause set the alarm pause time
+     * @param seconds
+     */
+    void setAlarmPause(int seconds);
+
 protected:
     void paintEvent(QPaintEvent *e);
 
@@ -46,16 +52,16 @@ private slots:
 private:
     void _drawBackground(void);
     void _drawText(void);
+    void _drawAlarmPauseMessage(void);
 
-    AlarmType _type;
     AlarmPriority _alarmPriority;
-    unsigned _pauseTime;
     QString _text;
     const char *_message;
     bool _latch;
     bool _acknowledge;
     AlarmParamIFace *_alarmSource;
     int _alarmID;
+    int _alarmPauseTime;
 
     AlarmInfoWindow *_alarmWindow;
     AlarmType _alarmType;

@@ -136,8 +136,9 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
 
         bool isEnable = alarmSource->isAlarmEnable(i);
         int completeResult = alarmSource->getCompare(curValue, i);
-        // 报警关闭不处理超限报警
-        if (_curAlarmStatus == ALARM_OFF)
+
+        // 报警关闭不处理超限报警, don't handle limit alarm when alarm pause
+        if (_curAlarmStatus == ALARM_STATUS_OFF || _curAlarmStatus == ALARM_STATUS_PAUSE)
         {
             traceCtrl->Reset();
             alarmSource->notifyAlarm(i, false);
@@ -315,8 +316,8 @@ void Alarm::_handleOneShotAlarm(AlarmOneShotIFace *alarmSource)
         AlarmPriority priority = alarmSource->getAlarmPriority(i);
         bool isRemoveAfterLatch = alarmSource->isRemoveAfterLatch(i);
 
-        // 报警关闭不处理生理报警报警
-        if (_curAlarmStatus == ALARM_OFF && type != ALARM_TYPE_TECH)
+        // 报警关闭不处理生理报警报警, don't handle phy alarm when in alarm pause state
+        if ((_curAlarmStatus == ALARM_STATUS_OFF || _curAlarmStatus == ALARM_STATUS_PAUSE) && type != ALARM_TYPE_TECH)
         {
             alarmSource->notifyAlarm(i, false);
             traceCtrl->Reset();
@@ -627,7 +628,7 @@ void Alarm::mainRun(unsigned t)
 /**************************************************************************************************
  * 功能： 添加报警状态。
  *************************************************************************************************/
-void Alarm::addAlarmStatus(AlarmAudioStatus status)
+void Alarm::addAlarmStatus(AlarmStatus status)
 {
     while (!_alarmStatusList.isEmpty())
     {
@@ -800,7 +801,7 @@ Alarm::Alarm() : _isLatchLock(true)
         _isLatchLock = false;
     }
     _alarmStatusList.clear();
-    _curAlarmStatus = ALARM_AUDIO_NORMAL;
+    _curAlarmStatus = ALARM_STATUS_NORMAL;
 }
 
 /**************************************************************************************************

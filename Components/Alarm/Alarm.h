@@ -60,7 +60,7 @@ public:
     void mainRun(unsigned t);
 
     // 添加报警状态
-    void addAlarmStatus(AlarmAudioStatus status);
+    void addAlarmStatus(AlarmStatus status);
 
     // get the alarm string from alarm source
     const char *getAlarmMessage(ParamID paramId, int alarmType, bool isOneshotAlarm);
@@ -95,8 +95,8 @@ private:
     unsigned _timestamp;
     QMultiMap<ParamID, AlarmLimitIFace *> _limitSources;
     QMultiMap<ParamID, AlarmOneShotIFace *> _oneshotSources;
-    QList<AlarmAudioStatus> _alarmStatusList;
-    AlarmAudioStatus _curAlarmStatus;
+    QList<AlarmStatus> _alarmStatusList;
+    AlarmStatus _curAlarmStatus;
     bool _isLatchLock;       // 栓锁状态
     // 构造。
     Alarm();

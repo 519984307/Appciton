@@ -45,7 +45,7 @@ void AlarmOffState::enter()
         beginTimer(time * 5 * 60 * 1000);
     }
 
-    alarmIndicator.setAudioStatus(ALARM_OFF);
+    alarmIndicator.setAlarmStatus(ALARM_STATUS_OFF);
     alarmIndicator.delAllPhyAlarm();
     lightManager.enableAlarmAudioMute(true);
 }

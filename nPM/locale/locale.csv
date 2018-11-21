@@ -848,6 +848,7 @@ Purple,紫色,Purple
 SupervisorAudioMenu,声音,Audio
 SupervisorAudioMenuDesc,声音设置,Audio Setting
 SupervisorVoiceVolume,语音提示音量,Default Voice Prompt Tone
+AlarmPause,报警暂停,Alarm Pause
 AlarmPauseTime,报警暂停时间,Alarm Pause Time
 AlarmOffPromptMechanism,报警关闭提示机制,Alarm Off Prompt Mechanism
 EnableAlarmAudioOff,使能报警声音关闭,Enable Alarm Audio Off
