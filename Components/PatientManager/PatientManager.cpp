@@ -261,14 +261,14 @@ const PatientInfo &PatientManager::getPatientInfo(void)
 UnitType PatientManager::getWeightUnit()
 {
     int unit = UNIT_KG;
-    currentConfig.getNumValue("Local|WEIGHTUnit", unit);
+    systemConfig.getNumValue("Unit|WeightUnit", unit);
     return (UnitType)unit;
 }
 
 UnitType PatientManager::getHeightUnit()
 {
     int unit = UNIT_CM;
-    currentConfig.getNumValue("Local|HEIGHTUnit", unit);
+    systemConfig.getNumValue("Unit|HeightUnit", unit);
     return (UnitType)unit;
 }
 
