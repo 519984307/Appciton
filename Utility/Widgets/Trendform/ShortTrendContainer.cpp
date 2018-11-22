@@ -137,6 +137,21 @@ void ShortTrendContainer::addSubParamToTrendItem(int trendindex, QList<SubParamI
         }
     }
 
+    // 寻找是否存在与之一样的短趋势，有这设置与之一样的数据范围
+    for (int i = 0; i < d_ptr->trendItems.count(); i++)
+    {
+        if (i == trendindex)
+        {
+            continue;
+        }
+        if (item->getSubParamList() == d_ptr->trendItems.at(i)->getSubParamList())
+        {
+            short max = 0, min = 0, scale = 0;
+            d_ptr->trendItems.at(i)->getValueRange(max, min, scale);
+            item->setValueRange(max, min, scale);
+            return;
+        }
+    }
     // use the limit alarm range as the data range
     UnitType unit = paramManager.getSubParamUnit(parmID, subParamIDs[0]);
     LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subParamIDs[0], unit);
