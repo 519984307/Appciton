@@ -60,11 +60,11 @@ void AlarmLimitMenuContent::layoutExec()
     glayout->addWidget(btn, 0, 1);
     d_ptr->alarmLimitBtn = btn;
 
-    btn = new Button(trs("Other"));
-    btn->setButtonStyle(Button::ButtonTextOnly);
-    connect(btn, SIGNAL(released()), this, SLOT(onbtnClick()));
-    glayout->addWidget(btn, 1, 1);
-    d_ptr->otherBtn = btn;
+//    btn = new Button(trs("Other"));
+//    btn->setButtonStyle(Button::ButtonTextOnly);
+//    connect(btn, SIGNAL(released()), this, SLOT(onbtnClick()));
+//    glayout->addWidget(btn, 1, 1);
+//    d_ptr->otherBtn = btn;
 
     glayout->setRowStretch(2, 1);
 }
