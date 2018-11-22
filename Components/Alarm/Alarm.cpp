@@ -148,7 +148,7 @@ void Alarm::_handleLimitAlarm(AlarmLimitIFace *alarmSource, QList<ParamID> &alar
         // 报警关闭
         if (!isEnable)
         {
-            if (traceCtrl->lastAlarmed)
+            if (traceCtrl->lastAlarmed && _isLatchLock)
             {
                 traceCtrl->normalTimesCount = ALARM_LIMIT_TIMES;
                 if (alarmIndicator.latchAlarmInfo(traceCtrl->type, traceCtrl->alarmMessage))
