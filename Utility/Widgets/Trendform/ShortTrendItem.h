@@ -110,6 +110,11 @@ public:
      */
     bool isNibpTrend() const;
 
+    /**
+     * @brief updateBlackground update blackground
+     */
+    void updateBlackground();
+
 public slots:
     void onNewTrendDataArrived(ShortTrendInterval intreval);
 

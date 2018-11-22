@@ -93,6 +93,12 @@ signals:
     void selectItemChanged(int index);
     void selectItemChanged(const QString &text);
 
+    /**
+     * @brief itemFocusChanged
+     * @param value
+     */
+    void itemFocusChanged(int value);
+
 private slots:
     void onItemSelected();
 

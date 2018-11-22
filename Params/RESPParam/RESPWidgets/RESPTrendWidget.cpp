@@ -85,12 +85,15 @@ void RESPTrendWidget::isAlarm(bool flag)
 void RESPTrendWidget::showValue(void)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
-    QPalette fgColor = normalPalette(psrc);
     if (_isAlarm)
     {
         showAlarmStatus(_rrValue);
-        showAlarmParamLimit(_rrValue, _rrString, fgColor);
+        showAlarmParamLimit(_rrValue, _rrString, psrc);
         restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
     }
 }
 
@@ -126,6 +129,9 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
 
     // 设置上下限
     updateLimit();
+
+    // 设置报警关闭标志
+    showAlarmOff();
 
     // RR值。
     _rrValue = new QLabel();
@@ -166,7 +172,5 @@ QList<SubParamID> RESPTrendWidget::getShortTrendSubParams() const
 void RESPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
-    QPalette fgColor = normalPalette(psrc);
-    showNormalParamLimit(fgColor);
-    showNormalStatus(_rrValue, fgColor);
+    showNormalStatus(psrc);
 }

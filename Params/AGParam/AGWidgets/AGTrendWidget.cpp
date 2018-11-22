@@ -146,7 +146,6 @@ void AGTrendWidget::isAlarm(int id, bool flag)
 void AGTrendWidget::showValue()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
-    psrc = normalPalette(psrc);
     if (_fiAlarm || _etAlarm)
     {
         if (!_etAlarm)
@@ -172,6 +171,10 @@ void AGTrendWidget::showValue()
 
         restoreNormalStatusLater();
     }
+    else
+    {
+        showNormalStatus(psrc);
+    }
 }
 
 /**************************************************************************************************
@@ -191,6 +194,9 @@ AGTrendWidget::AGTrendWidget(const QString &trendName, const AGTypeGas gasType)
 
     // 设置上下限
     updateLimit();
+
+    // 设置报警关闭标志
+    showAlarmOff();
 
     // 构造资源。
     _etName = new QLabel();
@@ -259,10 +265,7 @@ QList<SubParamID> AGTrendWidget::getShortTrendSubParams() const
 void AGTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_AG));
-    psrc = normalPalette(psrc);
-    showNormalParamLimit(psrc);
-    showNormalStatus(_etValue, psrc);
-    showNormalStatus(_fiValue, psrc);
+    showNormalStatus(psrc);
 }
 
 /**************************************************************************************************

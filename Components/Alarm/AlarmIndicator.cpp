@@ -27,7 +27,7 @@ AlarmIndicator *AlarmIndicator::_selfObj = NULL;
 /**************************************************************************************************
  * 功能：发布报警。
  *************************************************************************************************/
-void AlarmIndicator::publishAlarm(AlarmAudioStatus status)
+void AlarmIndicator::publishAlarm(AlarmStatus status)
 {
     if (_alarmInfoDisplayPool.isEmpty())
     {
@@ -61,7 +61,7 @@ void AlarmIndicator::publishAlarm(AlarmAudioStatus status)
     {
         AlarmInfoNode node = *it;
 
-        if (ALARM_OFF != status && ALARM_TYPE_TECH != node.alarmType)
+        if (ALARM_STATUS_OFF != status && ALARM_TYPE_TECH != node.alarmType)
         {
             if (0 < it->pauseTime)
             {
@@ -70,7 +70,7 @@ void AlarmIndicator::publishAlarm(AlarmAudioStatus status)
             }
 
             // pause/audio off状态没有生理报警声音
-            if (0 == node.pauseTime && status != ALARM_AUDIO_OFF)
+            if (0 == node.pauseTime && status != ALARM_STATUS_AUDIO_OFF)
             {
                 if (phySoundPriority < node.alarmPriority)
                 {
@@ -285,14 +285,14 @@ void AlarmIndicator::_displayTechSet(AlarmInfoNode &node)
     _alarmTechInfoWidget->display(node);
 }
 
-bool AlarmIndicator::_canPlayAudio(AlarmAudioStatus status, bool isTechAlarm)
+bool AlarmIndicator::_canPlayAudio(AlarmStatus status, bool isTechAlarm)
 {
-    if (status == ALARM_AUDIO_NORMAL)
+    if (status == ALARM_STATUS_NORMAL)
     {
         return true;
     }
 
-    if (isTechAlarm && status != ALARM_OFF)
+    if (isTechAlarm && status != ALARM_STATUS_OFF)
     {
         return true;
     }
@@ -752,7 +752,7 @@ void AlarmIndicator::updateAlarmInfo(const AlarmInfoNode &node)
 /**************************************************************************************************
  * 功能：控制报警音。
  *************************************************************************************************/
-void AlarmIndicator::setAudioStatus(AlarmAudioStatus status)
+void AlarmIndicator::setAlarmStatus(AlarmStatus status)
 {
     if (_audioStatus == status)
     {
@@ -761,7 +761,7 @@ void AlarmIndicator::setAudioStatus(AlarmAudioStatus status)
 
     _alarmStatusWidget->setAlarmStatus(status);
 
-    if (status != ALARM_AUDIO_SUSPEND && status != ALARM_RESET)
+    if (status != ALARM_STATUS_PAUSE && status != ALARM_STATUS_RESET)
     {
         systemConfig.setNumValue("PrimaryCfg|Alarm|AlarmStatus", static_cast<int>(status + 1));
     }
@@ -853,7 +853,7 @@ bool AlarmIndicator::getAlarmInfo(AlarmType type, const char *alArmMessage,
  * 功能：构造。
  *************************************************************************************************/
 AlarmIndicator::AlarmIndicator()
-    :_audioStatus(ALARM_AUDIO_NORMAL)
+    :_audioStatus(ALARM_STATUS_NORMAL)
 {
     _alarmPhyInfoWidget = NULL;
     _alarmTechInfoWidget = NULL;
@@ -881,4 +881,12 @@ AlarmIndicator::AlarmIndicator()
 AlarmIndicator::~AlarmIndicator()
 {
     _alarmInfoDisplayPool.clear();
+}
+
+void AlarmIndicator::updateAlarmPauseTime(int seconds)
+{
+    if (_alarmPhyInfoWidget)
+    {
+        _alarmPhyInfoWidget->setAlarmPause(seconds);
+    }
 }

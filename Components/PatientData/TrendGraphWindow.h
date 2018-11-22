@@ -23,6 +23,8 @@ public:
 public:
     void setSubWidgetRulerLimit(SubParamID id, int down, int up, int scale);
 
+    void setSubWidgetAutoRuler(SubParamID id, bool isAuto);
+
     void updateTrendGraph();
 
     void timeIntervalChange(int timeInterval);

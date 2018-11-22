@@ -40,6 +40,8 @@ public:
 public:// PowerParamProviderIFace.
     virtual PowerSuplyType getPowerSuplyType(void);
 
+    virtual short getPowerADC(void);
+
     //获取版本号
     virtual void sendVersion(void);
 

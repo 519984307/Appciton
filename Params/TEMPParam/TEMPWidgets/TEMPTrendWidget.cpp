@@ -214,7 +214,6 @@ void TEMPTrendWidget::isAlarm(int id, bool flag)
 void TEMPTrendWidget::showValue(void)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
-    psrc = normalPalette(psrc);
     if (_t1Alarm || _t2Alarm || _tdAlarm)
     {
         if (!_t1Alarm)
@@ -248,6 +247,10 @@ void TEMPTrendWidget::showValue(void)
             showAlarmStatus(_tdValue);
         }
         restoreNormalStatusLater();
+    }
+    else
+    {
+        showNormalStatus(psrc);
     }
 }
 
@@ -304,6 +307,9 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
 
     // 显示上下限
     updateLimit();
+
+    // 设置报警关闭标志
+    showAlarmOff();
 
     // 设置单位。
     UnitType u = tempParam.getUnit();
@@ -394,9 +400,5 @@ QList<SubParamID> TEMPTrendWidget::getShortTrendSubParams() const
 void TEMPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
-    psrc = normalPalette(psrc);
-    showNormalParamLimit(psrc);
-    showNormalStatus(_t1Value, psrc);
-    showNormalStatus(_t2Value, psrc);
-    showNormalStatus(_tdValue, psrc);
+    showNormalStatus(psrc);
 }

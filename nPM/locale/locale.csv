@@ -115,11 +115,11 @@ BR,呼吸率,BR
 RR_BR,RR/BR,RR/BR
 Close,关闭,Close
 Back,后退,Back
-PatientID,病人ID,Patient ID
-PatientType,病人类型,Patient Type
-PatientSex,病人性别,Patient Sex
-PatientPacemarker,起搏器,Pacemarker
-PatientBloodType,血型,Blood Type
+PatientID,病人ID,ID
+PatientType,病人类型,Type
+PatientSex,病人性别,Sex
+PatientPacemarker,起搏器,Paced
+PatientBloodType,血型,Blood
 PatientWeight,体重,Weight
 PatientHeight,身高,Height
 PatientMenu,病人,Patient
@@ -177,12 +177,27 @@ RRLow,RR低,RR Low
 RRHigh,RR高,RR High
 RESPApnea,呼吸窒息,RESP Apnea
 RESPAutoActivation,呼吸激活,RESP Automatic Activation
-NIBPMeasurement,无创血压测量,NIBP Measurement
+NIBPMeasurement,无创血压测量,NIBP
 NIBPMeasureMode,测量模式,Measure Mode
 NIBPIntervalTime,间隔时间,NIBP Interval Time
 NIBPAutoInterval,自动间隔,Auto Interval
 NIBPMenu,NIBP,NIBP
 NIBPMenuDesc,NIBP,NIBP
+NIBPDirectiveTimeout,指令超时,Directive Timeout
+NIBPModuleEnterFail,进入校准模式失败,Calibrate Mode Enter Fail
+NIBPCalibrateModelEnterFail,进入校准模式失败,Calibrate Mode Enter Fail
+EnterCalibrateMode,进入校准模式,Calibrate Mode
+QuitCalibrateMode,退出校准模式,Quit Calibrate
+QuitManometerMode,退出压力计模式,Quit Manometer
+EnterManometerMode,进入压力计模式,Enter Manometer
+QuitPressureContrlMode,退出压力操控模式,Quit Pressure Contrl
+EnterPressureContrlMode,进入压力操控模式,Enter Pressure Contrl
+EnterZeroMode,进入校零模式,Enter Zero
+QuitZeroMode,退出校零模式,Quit Zero
+OperationFailedPleaseAgain,"操作失败,请重试!","Operation Failed , Please Again!"
+PumpControl,气泵控制,Pump Control
+ValveControl,气阀控制,Valve Control
+InflationPressure,充气压力,Inflation Pressure
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
 CO2SweepMode,CO2波形模式,CO2 Sweep Mode
@@ -196,6 +211,15 @@ CO2ZeroCalib,CO2校零,CO2 Zero
 CO2ZeroStart,开始,Start
 CO2Menu,CO2,CO2
 CO2Switch,二氧化碳开关,CO2 Switch
+O2Menu,O2,O2
+O2MenuDesc,O2,O2
+O2Setting,O2设置,O2 Setting
+O2CalibrateReset,氧浓度校准数据被复位,O2 Calibrate Is Reset
+O2NotCalibrate,氧浓度传感器未校准,O2 Sensor Not Calibrate
+O2Low,氧浓度低,O2 Low
+O2High,氧浓度高,O2 High
+ApneaStimulation,窒息唤醒,Apnea Stimulation
+Stop,停止,Stop
 AGMenu,AG,AG
 AGSweepSpeed,波形速度,Sweep Speed
 IBPMenu,IBP,IBP
@@ -242,10 +266,10 @@ HRSourceAuto,自动,Auto
 HRSourceECG,ECG,ECG
 HRSourceSPO2,SPO2,SPO2
 HRSourceIBP,IBP,IBP
-HR_PRSource,HR_PR来源,HR_PR Source
+HR_PRSource,HR/PR来源,HR/PR Source
 CO2Setting,CO2设置,CO2 Setting
-PatientManager,病人管理,Patient Manager
-PatientManagerDesc,病人管理,Patient Manager Desc
+PatientManager,病人管理,Patient Setup
+PatientManagerDesc,病人管理,Patient Setup Desc
 PatientInfo,病人信息,Patient Info
 NewPatient,新建病人,New Patient
 NormalFunctionMenu,常规功能,Normal Function
@@ -309,6 +333,7 @@ IBPMenuDesc,IBP,IBP
 COMenuDesc,C.O.,C.O.
 RESPAndCO2Menu,RESP和CO2,RESP & CO2
 RESPAndCO2MenuDesc,RESP和CO2,RESP & CO2
+TEMPMenu,TEMP,TEMP
 TEMPMenuDesc,TEMP,TEMP
 AGMenuDesc,AG,AG
 AlarmSettingMenuDesc,报警,Alarm
@@ -370,8 +395,8 @@ NumberKeyboard,数字键盘,Number Keyboard
 ErrorInput,输入错误,Error Input
 Male,男性,Male
 Female,女性,Female
-PatientAge,病人年龄,Patient Age
-PatientName,病人姓名,Patient Name
+PatientAge,病人年龄,Age
+PatientName,病人姓名,Name
 PatientInformation,病人信息,Patient Information
 PatientNew,新增病人,New Patient
 GetPatientInfo,病人信息获取,Get Patient Info
@@ -690,6 +715,7 @@ NIBPServiceWaitAgain,"血压服务模式等待中, 请重试!","NIBP Service Wai
 CalibratePoint1,校准点1,CalibratePoint 1
 CalibratePoint2,校准点2,CalibratePoint 2
 ServiceCalibrate,校准,Calibrate
+ServiceCalibrating,校准中,Calibrating
 NIBPCalibrateModel,校准模式,NIBP Calibrate Model
 ServiceCalibrateDesc,校准,Calibrate Desc
 ServiceSuccess,成功,Success
@@ -709,6 +735,7 @@ TEMPChannelTwo,体温通道2,TEMP Channel Two
 TEMPChannelDisable,体温通道失能,TEMP Channel Disable 
 ServiceInflate,充气,Inflate
 ServiceDeflate,放气,Deflate
+Inflating,充气中,Inflating
 ServiceCalibrateZero,校零,Calibrate Zero
 NIBPCalibrateZeroModel,校零模式,NIBP Calibrate Zero Model
 NIBPCalibrateZero,校零模式,NIBP Calibrate Zero 
@@ -821,6 +848,8 @@ Purple,紫色,Purple
 SupervisorAudioMenu,声音,Audio
 SupervisorAudioMenuDesc,声音设置,Audio Setting
 SupervisorVoiceVolume,语音提示音量,Default Voice Prompt Tone
+AlarmPause,报警暂停,Alarm Pause
+AlarmOff,报警关闭,Alarm Off
 AlarmPauseTime,报警暂停时间,Alarm Pause Time
 AlarmOffPromptMechanism,报警关闭提示机制,Alarm Off Prompt Mechanism
 EnableAlarmAudioOff,使能报警声音关闭,Enable Alarm Audio Off
@@ -931,7 +960,7 @@ Level,级别,Level
 Upper,过高,Upper
 Lower,过低,Lower
 EventList,事件列表,Event List
-RealTimePrint,实时打印,RealTIme Print
+RealTimePrint,实时打印,RealTime Print
 WaveFreeze,波形冻结,Wave Freeze
 WaveformMove,波形移动,Waveform Move
 All ,全部,All
@@ -1000,7 +1029,7 @@ ShockDelivery,释放电击,Shock Delivery
 CheckPatient,检查病人,Check Patient
 PacerStartup,起搏开始,Pacer Startup
 NIBPReading,NIBP快照,NIBP Reading
-PhyAlarm,生理报警,Physiological Alarm
+PhyAlarm,生理报警,Phy. Alarm
 AlarmMute,报警静音,Mute
 RecorderAction,记录仪,Recorder Action
 PrinterDoorOpened,打印机仓门未关,Printer Door Opened
@@ -1017,6 +1046,7 @@ BatteryCapacityIcons,电池容量图标,Battery Capacity Incons
 SmtpServer,SMTP服务器,SMTP Server
 SmtpServerPort,SMTP 服务端口,SMTP Server Port
 Username,用户名,Username
+Hardware,硬件,Hard Ware
 ConnectionSecurity,连接安全性,Connection Security
 ConfiguredMailRecipients,配置邮件接收者,Configured Mail Recipients
 Mail,邮件,Mail
@@ -1225,6 +1255,10 @@ MonitorInfoMenuDesc,监护仪信息菜单设置,Monitor Info Desc
 NIBPCalibrationMenu,NIBP校准,NIBP Calibration
 NIBPCalibration,NIBP校准,NIBP Calibration
 NIBPCalibrationMenuDesc,NIBP校准,NIBP Calibration
+O2Calibrate,氧浓度校准,O2 Calibrate
+O2CalibrateDesc,氧浓度校准,O2 Calibrate
+Percent21Calibration,21% 校准,21% Calibrate
+Percent100Calibration,100% 校准,100% Calibrate
 SelectStarterLogo,开机图片,Start Logo
 SelectStarterLogoMenu,开机图片,Starter Logo
 SelectStarterLogoMenuDesc,开机图片设置,Start Logo Desc
@@ -1341,7 +1375,7 @@ Physiology,生理,Physiology
 UserMaintainPassword,用户维护密码,User Maintain Password
 UserMaintainSystem,用户维护系统,User Maintain
 Department,部门,Department
-BedNumber,床号,Bed Number
+BedNumber,床号,Bed
 ModifyPassword,密码,Password
 ChangeBedNumberRight,床号权限,Bed Number Right
 Language,语言,Language
@@ -1493,9 +1527,10 @@ Interface,界面布局,Interface
 Dose,剂量,Dose
 Blood,血液,Blood
 DeleteAll,删除全部,Delete All
-DeleteCase,删除事件,Delete Case
+DeletePatientData,删除病人数据,Delete Patient Data
 Freeze,冻结,Freeze
 DisableTouchScreen,禁触摸屏,Disable Touch
+EnabledTouchScreen,启触摸屏,Enabled Touch
 Open,开放,Open
 Start,开始,Start
 AlarmLightOnAlarmReset,警示复位灯,Alarm Light On Alarm Reset
@@ -1574,3 +1609,10 @@ ConfigurationName,配置名称,Configuraiton Name
 HasExistConfig,该配置名称与监护仪上配置重名。请重新命名！,The configuration name is repeated with the configuration.Please rename!
 ECGFullScreen,心电全屏,ECG Full Screen
 isSaveLayout,是否保存布局配置？,Do you want to save the layout config?
+LowBattery,电量过低,Low quantity of electricity
+RESPCheckElectrodes,RESP电极检查,RESP Check Electrodes
+SPO2SignalWeak,检测血氧信号弱,SPO2 Signal Weak
+SPO2CableOff,血氧电缆断开,SPO2 Cable Off
+SPO2FingerOff,未检测到手指,SPO2 Finger Off
+SPO2LEDFault,血氧LED错误,SPO2 LED Fault
+SPO2LowPerfusion,血氧低弱灌注,SPO2 Low Perfusion

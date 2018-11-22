@@ -48,7 +48,7 @@
 #include "LightManager.h"
 #include "BatteryMessage.h"
 #include "BatteryAlarm.h"
-#include "PowerManager.h"
+#include "PowerManagerBrief.h"
 #include "PromptInfoBarWidget.h"
 
 #include "PatientManager.h"
@@ -117,6 +117,11 @@
 #include "AGWaveWidget.h"
 #include "AGTrendWidget.h"
 
+#include "NeonateProvider.h"
+#include "O2Param.h"
+#include "O2Alarm.h"
+#include "O2TrendWidget.h"
+
 #include "SPO2Param.h"
 #include "SPO2Alarm.h"
 #include "SPO2WaveWidget.h"
@@ -145,8 +150,7 @@
 #include "ECGSTTrendWidget.h"
 
 #include "E5Provider.h"
-#include "RawDataCollection.h"
-#include "RawDataCollectionTxt.h"
+#include "RawDataCollector.h"
 
 #include "USBManager.h"
 

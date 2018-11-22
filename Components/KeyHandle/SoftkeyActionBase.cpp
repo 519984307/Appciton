@@ -58,13 +58,15 @@ static KeyActionDesc _baseKeys[] =
 #ifndef HIDE_PARAM_SWITCH
     KeyActionDesc("", trs("ParameterSwitch"), "paraSwitch.png"),
 #endif
-    KeyActionDesc("", trs("DisableTouchScreen"), "lockScreen.png", SoftkeyActionBase::lockScreen),
+    KeyActionDesc("", trs("DisableTouchScreen"), "touch.png", SoftkeyActionBase::banTouchScreen),
 #ifndef HIDE_STANDBY_FUNCTION
     KeyActionDesc("", trs("Standby"), "standby.png", SoftkeyActionBase::standby),
 #endif
     KeyActionDesc("", trs("CO2ZeroCalib"), "calib.png", SoftkeyActionBase::CO2Zero),
     KeyActionDesc("", trs("CO2Standby"), "standby.png", SoftkeyActionBase::CO2Handle),
+#ifndef HIDE_IBP_CALIBRATE_ZERO
     KeyActionDesc("", trs("IBPZeroCalib"), "calib.png", SoftkeyActionBase::IBPZero),
+#endif
     KeyActionDesc("", trs("Calculation"), "dosecalculation.png", SoftkeyActionBase::calculation),
     KeyActionDesc("", trs("KeyBoardVolumn"), "keyBoard.png", SoftkeyActionBase::keyVolume),
     KeyActionDesc("", trs("SystemBrightness"), "Brightness.png", SoftkeyActionBase::systemBrightness),
@@ -221,7 +223,7 @@ void SoftkeyActionBase::mainsetup(bool isPressed)
     w->focusFirstMenuItem();
 }
 
-void SoftkeyActionBase::lockScreen(bool isPressed)
+void SoftkeyActionBase::banTouchScreen(bool isPressed)
 {
     if (isPressed)
     {
@@ -231,6 +233,7 @@ void SoftkeyActionBase::lockScreen(bool isPressed)
 #ifdef Q_WS_QWS
     bool isOn = systemManager.isTouchScreenOn();
     systemManager.setTouchScreenOnOff(!isOn);
+    softkeyManager.refreshPage(false);
 #endif
 }
 
@@ -382,6 +385,26 @@ KeyActionDesc *SoftkeyActionBase::getActionDesc(int index)
     if (index > SOFT_BASE_KEY_NR)
     {
         return NULL;
+    }
+
+    if (index == SOFT_BASE_KEY_SCREEN_BAN)
+    {
+#ifdef Q_WS_QWS
+        bool isOn = systemManager.isTouchScreenOn();
+        QString iconPath, hint;
+        if (isOn)
+        {
+            iconPath = QString("touch.png");
+            hint = trs("EnabledTouchScreen");
+        }
+        else
+        {
+            iconPath = QString("banTouch.png");
+            hint = trs("DisableTouchScreen");
+        }
+        _baseKeys[index].iconPath = iconPath;
+        _baseKeys[index].hint = hint;
+        #endif
     }
 
     return &_baseKeys[index];

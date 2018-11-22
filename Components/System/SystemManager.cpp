@@ -218,6 +218,9 @@ bool SystemManager::isSupport(ConfiguredFuncs funcs) const
     case CONFIG_TOUCH:
         path = "TouchEnable";
         break;
+    case CONFIG_O2:
+        path = "O2Enable";
+        break;
     default:
         break;
     }
@@ -262,6 +265,9 @@ bool SystemManager::isSupport(ParamID paramID) const
         break;
     case PARAM_TEMP:
         path = "TEMPEnable";
+        break;
+    case PARAM_O2:
+        path = "O2Enable";
         break;
     default:
         break;

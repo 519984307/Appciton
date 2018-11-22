@@ -383,6 +383,19 @@ void AlarmLimitModel::setupAlarmDataInfos(const QList<AlarmDataInfo> &dataInfos)
     beginResetModel();
     d_ptr->alarmDataInfos = dataInfos;
     endResetModel();
+    for (int i = 0; i < dataInfos.count(); i++)
+    {
+        AlarmDataInfo info = dataInfos.at(i);
+        UnitType unit = paramManager.getSubParamUnit(info.paramID,
+                        info.subParamID);
+        alarmConfig.setLimitAlarmConfig(info.subParamID,
+                                        unit, info.limitConfig);
+        Param *param = paramManager.getParam(info.paramID);
+        if (param)
+        {
+            param->updateSubParamLimit(info.subParamID);
+        }
+    }
 }
 
 bool AlarmLimitModel::eventFilter(QObject *obj, QEvent *ev)

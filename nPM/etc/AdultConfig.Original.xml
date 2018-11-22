@@ -793,6 +793,14 @@
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</TD>
+		<O2 Enable="0" Prio="2">
+		<percent>
+		    <Low Min="0" Max="99">20</Low>
+		    <High Min="1" Max="100">60</High>
+		    <Step>1</Step>
+		    <Scale>1</Scale>
+		</percent>
+		</O2>
     </AlarmSource>
     <Local>
         <Language CurrentOption="1" OptionCount="2">
@@ -864,6 +872,7 @@
         <AGColor>Orange</AGColor>
         <IBPColor>Purple</IBPColor>
         <TEMPColor>Brown</TEMPColor>
+        <O2Color>Brown</O2Color>
         <!--do not modify-->
     </Display>
     <Print>

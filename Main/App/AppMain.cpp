@@ -38,7 +38,7 @@ static void _taskOneSec2(void)
 {
     // summaryStorageManager.checkCompletedItem();
     eventStorageManager.checkCompletedEvent();
-    powerManager.run();
+    powerMangerBrief.run();
 
     if (!usbManager.isUSBExist())
     {
@@ -158,8 +158,7 @@ static void _storageThreadEntry(void)
 
     if (!systemManager.isGoingToTrunOff())
     {
-        rawDataCollection.run();
-        rawDataCollectionTxt.run();
+        rawDataCollector.run();
     }
 
     if (!systemManager.isGoingToTrunOff())

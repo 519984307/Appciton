@@ -156,7 +156,7 @@ static void _initComponents(void)
 
     // 电源
     BatteryBarWidget *bar = &batteryBarWidget;
-    powerManager.construction();
+    powerMangerBrief.construction();
     alertor.addOneShotSource(batteryOneShotAlarm.construction());
     layoutManager.addLayoutWidget(bar);
 
@@ -200,8 +200,7 @@ static void _initComponents(void)
     // U盘管理
     usbManager.getInstance();
     // U盘数据储存
-    rawDataCollection.construction();
-    rawDataCollectionTxt.construction();
+    rawDataCollector.getInstance();
 }
 /**************************************************************************************************
  * 功能： 初始化参数和提供者对象。
@@ -230,12 +229,14 @@ static void _initProviderParam(void)
     ECGTrendWidget *ecgTrendWidget = new ECGTrendWidget();
     ecgDupParam.setTrendWidget(ecgTrendWidget);
     layoutManager.addLayoutWidget(ecgTrendWidget, LAYOUT_NODE_PARAM_ECG);
+#ifndef HIDE_ECG_ST_PVCS_SUBPARAM
     ECGPVCSTrendWidget *ecgPVCSTrendWidget = new ECGPVCSTrendWidget();
     ecgParam.setECGPVCSTrendWidget(ecgPVCSTrendWidget);
     layoutManager.addLayoutWidget(ecgPVCSTrendWidget, LAYOUT_NODE_PARAM_PVCS);
     ECGSTTrendWidget *ecgSTTrendWidget = new ECGSTTrendWidget();
     ecgParam.setECGSTTrendWidget(ecgSTTrendWidget);
     layoutManager.addLayoutWidget(ecgSTTrendWidget, LAYOUT_NODE_PARAM_ST);
+#endif
 
     ECGWaveWidget *ecgWaveWidget = new ECGWaveWidget(WAVE_ECG_I, "ECGIWaveWidget",
             ECGSymbol::convert(ECG_LEAD_I, ecgParam.getLeadConvention()));
@@ -510,6 +511,17 @@ static void _initProviderParam(void)
         layoutManager.addLayoutWidget(tempTrendWidget, LAYOUT_NODE_PARAM_TEMP);
     }
 
+    if (systemManager.isSupport(CONFIG_O2))
+    {
+         paramManager.addProvider(*new NeonateProvider());
+         paramManager.addParam(o2Param.getInstance());
+         alertor.addLimtSource(o2LimitAlarm.getInstance());
+         alertor.addOneShotSource(o2OneShotAlarm.getInstance());
+         O2TrendWidget *o2TrendWidget  = new O2TrendWidget();
+         o2Param.setTrendWidget(o2TrendWidget);
+         layoutManager.addLayoutWidget(o2TrendWidget, LAYOUT_NODE_PARAM_OXYGEN);
+    }
+
     // short trend container
     ShortTrendContainer *trendContainer = new ShortTrendContainer;
     layoutManager.addLayoutWidget(trendContainer);
@@ -601,7 +613,6 @@ void deleteObjects(void)
     deleteSuperRunConfig();
     deleteSystemTick();
     deleteSystemBoardProvider();
-    deletePowerManager();
     deleteKeyActionManager();
 
     deleteDataStorageDirManager();
@@ -622,8 +633,6 @@ void deleteObjects(void)
     deleteRecorderManager();
 
 //    deleteNetworkManager();
-    deleteRawDataCollection();
-    deleteRawDataCollectionTxt();
     deleteUsbManager();
     deleteActivityLogManager();
 

@@ -22,6 +22,7 @@
 #include <QTextStream>
 #include <QFile>
 #include "IConfig.h"
+#include "RawDataCollector.h"
 
 enum E5RecvPacketType
 {
@@ -118,7 +119,7 @@ public:
 /* parse the data from the module and pass it to the algorithm interface */
 void E5ProviderPrivate::handleEcgRawData(unsigned char *data, int len)
 {
-    Q_ASSERT(len != 529);
+    Q_ASSERT(len == 524);
 
     for (int n = 0; n < 20; n++)
     {
@@ -356,6 +357,7 @@ void E5Provider::handlePacket(unsigned char *data, int len)
         feed();
         break;
     case E5_PERIODIC_ECG_DATA:
+        rawDataCollector.collectData(RawDataCollector::ECG_DATA, data + 1, len -1);
         d_ptr->handleEcgRawData(data + 1, len - 1);
         break;
     case E5_PERIODIC_HR:

@@ -63,6 +63,11 @@ void TrendGraphWindow::setSubWidgetRulerLimit(SubParamID id, int down, int up, i
     d_ptr->waveWidget->setRulerLimit(id, down, up, scale);
 }
 
+void TrendGraphWindow::setSubWidgetAutoRuler(SubParamID id, bool isAuto)
+{
+    d_ptr->waveWidget->setAutoRuler(id, isAuto);
+}
+
 void TrendGraphWindow::updateTrendGraph()
 {
     d_ptr->waveWidget->trendWaveReset();
@@ -120,7 +125,7 @@ void TrendGraphWindow::onButtonReleased()
         }
         case TrendGraphWindowPrivate::ACTION_BTN_SET_WIDGET:
         {
-            windowManager.showWindow(&trendGraphSetWindow, WindowManager::ShowBehaviorModal);
+            windowManager.showWindow(&trendGraphSetWindow, WindowManager::ShowBehaviorHideOthers);
             break;
         }
         case TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE:

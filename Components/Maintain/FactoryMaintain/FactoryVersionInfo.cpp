@@ -17,6 +17,9 @@
 #include "IConfig.h"
 #include "ParamManager.h"
 #include "Provider.h"
+#include <QProcess>
+
+#define READ_HARDWARE_VERSION ("cat /sys/class/pmos/hardware")
 
 class FactoryVersionInfoPrivate
 {
@@ -24,6 +27,7 @@ public:
     enum MenuItem
     {
         ITEM_LAB_U_BOOT,
+        ITEM_LAB_HARDWARE_VERSION,
         ITEM_LAB_KEYBD_MOD,
         ITEM_LAB_ECG_ALGHTP,
         ITEM_LAB_ECG_VERSION,
@@ -74,6 +78,13 @@ void FactoryVersionInfo::layoutExec()
     d_ptr->labs.insert(FactoryVersionInfoPrivate
                        ::ITEM_LAB_U_BOOT, labelRight);
 
+    labelLeft = new QLabel(trs("Hardware"));
+    layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
+    labelRight = new QLabel("");
+    layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
+    d_ptr->labs.insert(FactoryVersionInfoPrivate
+                       ::ITEM_LAB_HARDWARE_VERSION, labelRight);
+
     labelLeft = new QLabel(trs("SystemboardModule"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
     labelRight = new QLabel("");
@@ -109,10 +120,10 @@ void FactoryVersionInfo::layoutExec()
     if (systemManager.isSupport(CONFIG_SPO2))
     {
         labelLeft = new QLabel(trs("SPO2Version") + "    ");
-        layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
+        layout->addWidget(labelLeft, d_ptr->labs.count(), 0, Qt::AlignLeft);
 
         labelRight = new QLabel;
-        layout->addWidget(labelRight, d_ptr->labs.count(), 1);
+        layout->addWidget(labelRight, d_ptr->labs.count(), 1, Qt::AlignRight);
         d_ptr->labs.insert(FactoryVersionInfoPrivate
                            ::ITEM_LAB_SPO2_VERSION, labelRight);
     }
@@ -146,6 +157,15 @@ void FactoryVersionInfoPrivate::loadOptions()
     tmpStr.clear();
     systemConfig.getStrValue("SoftWareVersion|Uboot", tmpStr);
     labs[ITEM_LAB_U_BOOT]->setText(trs(tmpStr));
+
+    tmpStr.clear();
+    QProcess process;
+    process.start(READ_HARDWARE_VERSION);
+    if (process.waitForFinished(1000))
+    {
+        tmpStr = process.readAll();
+        labs[ITEM_LAB_HARDWARE_VERSION]->setText(tmpStr);
+    }
 
     tmpStr.clear();
     systemConfig.getStrValue("SoftWareVersion|KeyboardModule", tmpStr);
@@ -196,6 +216,7 @@ void FactoryVersionInfoPrivate::loadOptions()
         labs[ITEM_LAB_TEMP_VERSION]->setText(version);
     }
 
+    version.clear();
     p = paramManager.getProvider("PRT72");
     if (p)
     {

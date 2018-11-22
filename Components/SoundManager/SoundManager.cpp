@@ -378,6 +378,11 @@ void SoundManager::heartBeatTone()
     d_ptr->playSound(SOUND_TYPE_HEARTBEAT);
 }
 
+void SoundManager::alarmTone()
+{
+    d_ptr->playSound(SOUND_TYPE_ALARM);
+}
+
 void SoundManager::updateAlarm(bool hasAlarm, AlarmPriority curHighestPriority)
 {
     if (!d_ptr->almTimer)

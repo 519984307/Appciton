@@ -23,7 +23,9 @@ ParamInfo *ParamInfo::_selfObj = NULL;
  *************************************************************************************************/
 static const char *_paramNames[PARAM_NR] =
 {
-    "ECG", "SPO2", "RESP", "NIBP", "CO2", "TEMP", "ECGDUP", "RESPDUP", "IBP", "AG", "CO", "UPGRADE"
+    "ECG", "SPO2", "RESP", "NIBP", "CO2",
+    "TEMP", "ECGDUP", "RESPDUP", "IBP", "AG",
+    "CO", "O2", "UPGRADE"
 };
 
 /**************************************************************************************************
@@ -193,7 +195,8 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
         return "ST V5";
     case SUB_PARAM_ST_V6:
         return "ST V6";
-
+    case SUB_PARAM_O2:
+        return "O2";
     default:
         return NULL;
     }
@@ -250,6 +253,7 @@ ParamID ParamInfo::getParamID(SubParamID id)
     switch (id)
     {
     case SUB_PARAM_HR_PR:
+#ifndef HIDE_ECG_ST_PVCS_SUBPARAM
     case SUB_PARAM_ECG_PVCS:
     case SUB_PARAM_ST_I:
     case SUB_PARAM_ST_II:
@@ -263,6 +267,7 @@ ParamID ParamInfo::getParamID(SubParamID id)
     case SUB_PARAM_ST_V4:
     case SUB_PARAM_ST_V5:
     case SUB_PARAM_ST_V6:
+#endif
         paramID = PARAM_DUP_ECG;
         break;
     case SUB_PARAM_RR_BR:
@@ -325,6 +330,9 @@ ParamID ParamInfo::getParamID(SubParamID id)
     case SUB_PARAM_ETO2:
     case SUB_PARAM_FIO2:
         paramID = PARAM_AG;
+        break;
+    case SUB_PARAM_O2:
+        paramID = PARAM_O2;
         break;
     default:
         break;
@@ -684,6 +692,7 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id)
     case SUB_PARAM_FIAA2:
     case SUB_PARAM_ETO2:
     case SUB_PARAM_FIO2:
+    case SUB_PARAM_O2:
         return UNIT_PERCENT;
 
     case SUB_PARAM_T1:

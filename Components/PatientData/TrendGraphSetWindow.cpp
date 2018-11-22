@@ -67,6 +67,7 @@ void TrendGraphSetWindow::showEvent(QShowEvent *ev)
     Window::showEvent(ev);
 
     upDateTrendGroup();
+    d_ptr->loadOptions();
 }
 
 bool TrendGraphSetWindow::focusNextPrevChild(bool next)
@@ -89,24 +90,11 @@ void TrendGraphSetWindow::allAutoReleased()
         item = d_ptr->itemList.at(i);
         item->combo->setCurrentIndex(1);
         item->downRuler->setEnabled(false);
-//        item->downRuler->disable(true);
         item->upRuler->setEnabled(false);
-//        item->upRuler->disable(true);
         SubParamID subID = item->sid;
-        ParamID id = item->pid;
-        UnitType type = paramManager.getSubParamUnit(id, subID);
-        ParamRulerConfig config = alarmConfig.getParamRulerConfig(subID, type);
         item->downRuler->setEnabled(false);
-//        item->downRuler->disable(true);
         item->upRuler->setEnabled(false);
-//        item->upRuler->disable(true);
-
-        item->downRuler->setScale(config.scale);
-        item->downRuler->setValue(config.downRuler);
-        item->upRuler->setScale(config.scale);
-        item->upRuler->setValue(config.upRuler);
-        TrendGraphWindow::getInstance()->setSubWidgetRulerLimit(subID, item->downRuler->getValue(),
-                                                item->upRuler->getValue(), item->downRuler->getScale());
+        TrendGraphWindow::getInstance()->setSubWidgetAutoRuler(subID, true);
     }
 }
 
@@ -141,6 +129,7 @@ void TrendGraphSetWindow::onComboBoxChanged(int index)
         int id = combo->property("Combo").toInt();
         RulerItem *item = d_ptr->itemList.at(id);
 
+        SubParamID subID = item->sid;
         if (index == 0)
         {
             item->downRuler->setEnabled(true);
@@ -148,19 +137,10 @@ void TrendGraphSetWindow::onComboBoxChanged(int index)
         }
         else
         {
-            SubParamID subID = item->sid;
-            ParamID id = item->pid;
-            UnitType type = paramManager.getSubParamUnit(id, subID);
-            ParamRulerConfig config = alarmConfig.getParamRulerConfig(subID, type);
             item->downRuler->setEnabled(false);
             item->upRuler->setEnabled(false);
-            item->downRuler->setScale(config.scale);
-            item->downRuler->setValue(config.downRuler);
-            item->upRuler->setScale(config.scale);
-            item->upRuler->setValue(config.upRuler);
-            TrendGraphWindow::getInstance()->setSubWidgetRulerLimit(subID, item->downRuler->getValue(),
-                                                    item->upRuler->getValue(), item->downRuler->getScale());
         }
+        TrendGraphWindow::getInstance()->setSubWidgetAutoRuler(subID, index);
     }
 }
 
@@ -223,11 +203,11 @@ TrendGraphSetWindow::TrendGraphSetWindow()
         RulerItem *item = NULL;
         item = d_ptr->itemList.at(i);
         name = paramInfo.getSubParamName(item->sid);
-
-        item->label->setText(name);
+        item->label->setText(trs(name));
         item->label->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
         item->combo->addItem(trs("Off"));
         item->combo->addItem(trs("On"));
+        item->combo->setCurrentIndex(1);
         item->combo->setProperty("Combo", qVariantFromValue(i));
         item->combo->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
         connect(item->combo, SIGNAL(currentIndexChanged(int)),
@@ -235,11 +215,13 @@ TrendGraphSetWindow::TrendGraphSetWindow()
 
         item->downRuler->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
         item->downRuler->setProperty("Ruler", qVariantFromValue(i * 2));
+        item->downRuler->setEnabled(false);
         connect(item->downRuler, SIGNAL(valueChange(int, int)),
                 this, SLOT(upDownRulerChange(int, int)));
 
         item->upRuler->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
         item->upRuler->setProperty("Ruler", qVariantFromValue(i * 2 + 1));
+        item->upRuler->setEnabled(false);
         connect(item->upRuler, SIGNAL(valueChange(int, int)),
                 this, SLOT(upDownRulerChange(int, int)));
     }
@@ -259,11 +241,15 @@ TrendGraphSetWindow::TrendGraphSetWindow()
     systemConfig.getNumValue(groupPrefix, index);
     d_ptr->trendGroupList = new DropList(trs("TrendGroup"));
     d_ptr->trendGroupList->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
-    d_ptr->trendGroupList->addItems(QStringList()
-                                    << "Resp"
-                                    << "IBP"
-                                    << "AG"
-                                   );
+    d_ptr->trendGroupList->addItem("Resp");
+    if (systemManager.isSupport(CONFIG_IBP))
+    {
+        d_ptr->trendGroupList->addItem("IBP");
+    }
+    if (systemManager.isSupport(CONFIG_AG))
+    {
+        d_ptr->trendGroupList->addItem("AG");
+    }
     d_ptr->trendGroupList->setCurrentIndex(index);
     connect(d_ptr->trendGroupList, SIGNAL(currentIndexChanged(int)), this, SLOT(trendGroupReleased(int)));
 
@@ -448,10 +434,6 @@ void TrendGraphSetWindowPrivate::loadOptions()
         ParamID id = item->pid;
         UnitType type = paramManager.getSubParamUnit(id, subID);
         ParamRulerConfig config = alarmConfig.getParamRulerConfig(subID, type);
-
-        item->combo->setCurrentIndex(1);
-        item->downRuler->setEnabled(false);
-        item->upRuler->setEnabled(false);
 
         item->downRuler->setScale(config.scale);
         item->downRuler->setRange(config.minDownRuler, config.upRuler - 1);

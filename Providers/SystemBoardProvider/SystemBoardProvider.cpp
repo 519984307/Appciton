@@ -21,7 +21,6 @@
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
 #include "IConfig.h"
-#include "RawDataCollectionTxt.h"
 #include "PowerOffWindow.h"
 
 enum SystemBoardMessageType
@@ -231,7 +230,7 @@ void SystemBoardProvider::_parseBatteryInfo(unsigned char *data, int len)
     modeStatus.isCharging = data[1];        // 是否正在充电
     modeStatus.adcValue = (data[3] << 8) | data[2];     // ADC值
 
-    if (modeStatus.adcValue != 0)
+    if (modeStatus.adcValue > 500)
     {
         if (modeStatus.isCharging)
         {
@@ -246,9 +245,6 @@ void SystemBoardProvider::_parseBatteryInfo(unsigned char *data, int len)
     {
         modeStatus.powerSuply = POWER_SUPLY_AC;
     }
-
-//    unsigned char *adcData = data + 2;
-//    powerManager.batteryMessage.updatePeriodicBatValue(adcData);
 }
 
 /***************************************************************************************************
@@ -399,6 +395,11 @@ void SystemBoardProvider::reconnected(void)
 PowerSuplyType SystemBoardProvider::getPowerSuplyType(void)
 {
     return modeStatus.powerSuply;
+}
+
+short SystemBoardProvider::getPowerADC()
+{
+    return modeStatus.adcValue;
 }
 
 /**************************************************************************************************

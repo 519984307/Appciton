@@ -17,7 +17,7 @@
 #include "ServiceVersion.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
-#include "RawDataCollection.h"
+#include "RawDataCollector.h"
 #include "IConfig.h"
 
 static const char *tempErrorCode[] =
@@ -58,7 +58,6 @@ void T5Provider::handlePacket(unsigned char *data, int len)
 
     BLMProvider::handlePacket(data, len);
 
-    int enable = 0;
     switch (data[0])
     {
     // 自检状态
@@ -112,11 +111,7 @@ void T5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case T5_CYCLE_DATA:
-        machineConfig.getNumValue("Record|TEMP", enable);
-        if (enable)
-        {
-            rawDataCollection.pushData("BLM_T5", data, len);
-        }
+        rawDataCollector.collectData(RawDataCollector::TEMP_DATA, data, len);
         break;
 
     case T5_DATA_ERROR:

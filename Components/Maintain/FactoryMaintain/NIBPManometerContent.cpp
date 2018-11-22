@@ -14,21 +14,27 @@
 #include "NIBPRepairMenuWindow.h"
 #include "NIBPEventDefine.h"
 #include "NIBPServiceStateDefine.h"
+#include "Button.h"
+#include "MessageBox.h"
 
 class NIBPManometerContentPrivate
 {
 public:
-    NIBPManometerContentPrivate();
+    NIBPManometerContentPrivate()
+        : value(NULL), inModeTimerID(-1),
+          timeoutNum(0), pressureTimerID(-1),
+          pressure(InvData()), isManometerMode(false),
+          modeBtn(NULL)
+    {}
 
     QLabel *value;
+    int inModeTimerID;          // 进入压力计模式定时器ID
+    int timeoutNum;
+    int pressureTimerID;        // 获取压力定时器ID
+    int pressure;
+    bool isManometerMode;       // 是否处于压力计模式
+    Button *modeBtn;            // 进入/退出模式
 };
-
-
-
-NIBPManometerContentPrivate::NIBPManometerContentPrivate()
-    : value(NULL)
-{
-}
 
 NIBPManometerContent *NIBPManometerContent::getInstance()
 {
@@ -56,80 +62,90 @@ NIBPManometerContent::NIBPManometerContent()
  *************************************************************************************************/
 void NIBPManometerContent::layoutExec()
 {
-    QHBoxLayout *layout = new QHBoxLayout(this);
+    QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
     layout->setAlignment(Qt::AlignTop);
 
-    QLabel *l = new QLabel(trs("ServicePressure"));
-    layout->addWidget(l);
+    QLabel *label;
+    Button *button;
 
-    d_ptr->value = new QLabel();
-    d_ptr->value->setText(InvStr());
-    layout->addWidget(d_ptr->value);
+    button = new Button(trs("EnterManometerMode"));
+    button->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(button, 0, 2);
+    connect(button, SIGNAL(released()), this, SLOT(enterManometerReleased()));
+    d_ptr->modeBtn = button;
 
-    l = new QLabel();
-    l->setText(Unit::getSymbol(nibpParam.getUnit()));
-    layout->addWidget(l);
+    label = new QLabel(trs("ServicePressure"));
+    layout->addWidget(label, 1, 0);
+
+    label = new QLabel(InvStr());
+    layout->addWidget(label, 1, 1);
+    d_ptr->value = label;
+
+    label = new QLabel();
+    label->setText(Unit::getSymbol(nibpParam.getUnit()));
+    layout->addWidget(label, 1, 2);
 }
 
-/**************************************************************************************************
- * 初始化。
- *************************************************************************************************/
-void NIBPManometerContent::init(void)
+void NIBPManometerContent::timerEvent(QTimerEvent *ev)
 {
-    d_ptr->value->setText(InvStr());
-}
-
-/**************************************************************************************************
- * 进入压力计模式指令。
- *************************************************************************************************/
-
-bool NIBPManometerContent::focusNextPrevChild(bool next)
-{
-    init();
-
-    nibpParam.switchState(NIBP_SERVICE_MANOMETER_STATE);
-
-    MenuContent::focusNextPrevChild(next);
-
-    return next;
-}
-
-/**************************************************************************************************
- * 压力值。
- *************************************************************************************************/
-void NIBPManometerContent::setCuffPressure(int pressure)
-{
-    if (pressure == -1)
+    if (d_ptr->inModeTimerID == ev->timerId())
     {
-        d_ptr->value->setText(InvStr());
-    }
-    else
-    {
-        UnitType unit = nibpParam.getUnit();
-        if (unit == UNIT_MMHG)
+        bool reply = nibpParam.geReply();
+        if (reply || d_ptr->timeoutNum == TIMEOUT_WAIT_NUMBER)
         {
-            d_ptr->value->setNum(pressure);
-            return;
+            if (reply && nibpParam.getResult())
+            {
+                if (d_ptr->isManometerMode)
+                {
+                    d_ptr->isManometerMode = false;
+                    d_ptr->modeBtn->setText(trs("EnterManometerMode"));
+                    killTimer(d_ptr->pressureTimerID);
+                    d_ptr->pressureTimerID = -1;
+                }
+                else
+                {
+                    d_ptr->isManometerMode = true;
+                    d_ptr->modeBtn->setText(trs("QuitManometerMode"));
+                    d_ptr->pressureTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+                }
+            }
+            else
+            {
+                MessageBox messbox(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
+                messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+                messbox.exec();
+            }
+            killTimer(d_ptr->inModeTimerID);
+            d_ptr->inModeTimerID = -1;
+            d_ptr->timeoutNum = 0;
         }
-
-        QString str = Unit::convert(unit, UNIT_MMHG, pressure);
-        d_ptr->value->setText(str);
+        else
+        {
+            d_ptr->timeoutNum++;
+        }
+    }
+    else if (d_ptr->pressureTimerID == ev->timerId())
+    {
+        if (d_ptr->pressure != nibpParam.getManometerPressure())
+        {
+            d_ptr->pressure = nibpParam.getManometerPressure();
+            d_ptr->value->setNum(nibpParam.getManometerPressure());
+        }
     }
 }
 
-/**************************************************************************************************
- * 模式应答。
- *************************************************************************************************/
-void NIBPManometerContent::unPacket(bool flag)
+void NIBPManometerContent::enterManometerReleased()
 {
-    if (flag)
+    d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+    if (d_ptr->isManometerMode)
     {
-        d_ptr->value->setText(InvStr());
+        nibpParam.provider().serviceManometer(false);
+        nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
     }
     else
     {
-        d_ptr->value->setText("999");
+        nibpParam.switchState(NIBP_SERVICE_MANOMETER_STATE);
     }
 }
 

@@ -20,7 +20,7 @@
 #include "NIBPAlarm.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
-#include "RawDataCollection.h"
+#include "RawDataCollector.h"
 #include "IConfig.h"
 
 static const char *nibpSelfErrorCode[] =
@@ -222,7 +222,6 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     }
     BLMProvider::handlePacket(data, len);
 
-    int enable = 0;
     switch (data[0])
     {
     // 启动测量
@@ -291,11 +290,7 @@ void N5Provider::handlePacket(unsigned char *data, int len)
 
     // 原始数据
     case N5_NOTIFY_DATA:
-        machineConfig.getNumValue("Record|NIBP", enable);
-        if (enable)
-        {
-            rawDataCollection.pushData("BLM_TN3", data, len);
-        }
+        rawDataCollector.collectData(RawDataCollector::NIBP_DATA, data, len);
         break;
 
     // 进入维护模式
@@ -332,12 +327,17 @@ void N5Provider::handlePacket(unsigned char *data, int len)
 
     // 压力控制（充气）
     case N5_RSP_PRESSURE_INFLATE:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_INFLATE, NULL, 0);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_INFLATE, &data[1], 1);
         break;
 
     // 放气控制
     case N5_RSP_PRESSURE_DEFLATE:
         nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_DEFLATE, NULL, 0);
+        break;
+
+    // 气泵控制
+    case N5_RSP_PUMP:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_PUMP, &data[1], 1);
         break;
 
     // 气阀控制
@@ -358,6 +358,10 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     // 服务模式压力帧
     case N5_SERVICE_PRESSURE:
         nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE, &data[1], 2);
+        break;
+
+    case N5_RSP_PRESSURE_ZERO:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_ZERO, NULL, 0);
         break;
 
     default:
@@ -578,7 +582,7 @@ void N5Provider::servicePressurepoint(const unsigned char *data, unsigned int le
     }
     cmd[1] = pressure & 0xFF;
     cmd[2] = (pressure >> 8) & 0xFF;
-    len = 0;
+    len  = 3;
     sendCmd(N5_CMD_PRESSURE_POINT, cmd, len);
 }
 
@@ -720,6 +724,14 @@ bool N5Provider::isServicePressureZero(unsigned char *packet)
     }
 
     return true;
+}
+
+void N5Provider::servicePump(bool enter, unsigned char pump)
+{
+    unsigned char cmd[2];
+    cmd[0] = enter;
+    cmd[1] = pump;
+    sendCmd(N5_CMD_PUMP, cmd, 2);
 }
 
 /**************************************************************************************************

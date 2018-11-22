@@ -880,59 +880,59 @@
                     <LayoutRow>
                         <LayoutNode pos="0" span="4" editable="0">ECG1Wave</LayoutNode>
                         <LayoutNode pos="4" span="1" editable="0">ECG</LayoutNode>
-                        <LayoutNode pos="5" span="1" editable="0">PVCs</LayoutNode>
+                        <LayoutNode pos="5" span="1" editable="0"></LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
-                        <LayoutNode pos="0" span="4" editable="1">ECG2Wave</LayoutNode>
-                        <LayoutNode pos="4" span="2" editable="1"></LayoutNode>
+                        <LayoutNode pos="0" span="4" editable="0">ECG2Wave</LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="0"></LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
-                        <LayoutNode pos="0" span="4" editable="1">SPO2Wave</LayoutNode>
-                        <LayoutNode pos="4" span="2" editable="1">SPO2</LayoutNode>
+                        <LayoutNode pos="0" span="4" editable="0">SPO2Wave</LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="0">SPO2</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
-                        <LayoutNode pos="0" span="4" editable="1">RESPWave</LayoutNode>
-                        <LayoutNode pos="4" span="1" editable="1">RESP</LayoutNode>
-                        <LayoutNode pos="5" span="1" editable="1"></LayoutNode>
+                        <LayoutNode pos="0" span="4" editable="0">RESPWave</LayoutNode>
+                        <LayoutNode pos="4" span="1" editable="0">RESP</LayoutNode>
+                        <LayoutNode pos="5" span="1" editable="0"></LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
-                        <LayoutNode pos="0" span="4" editable="1">CO2Wave</LayoutNode>
-                        <LayoutNode pos="4" span="2" editable="1">CO2</LayoutNode>
+                        <LayoutNode pos="0" span="4" editable="0">CO2Wave</LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="0">CO2</LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
-                        <LayoutNode pos="0" span="4" editable="1"></LayoutNode>
-                        <LayoutNode pos="4" span="2" editable="1"></LayoutNode>
+                        <LayoutNode pos="0" span="4" editable="0"></LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="0"></LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
-                        <LayoutNode pos="0" span="2" editable="1">NIBP</LayoutNode>
-                        <LayoutNode pos="2" span="2" editable="1">NIBPList</LayoutNode>
-                        <LayoutNode pos="4" span="1" editable="1">TEMP</LayoutNode>
-                        <LayoutNode pos="5" span="1" editable="1"></LayoutNode>
+                        <LayoutNode pos="0" span="2" editable="0">NIBP</LayoutNode>
+                        <LayoutNode pos="2" span="2" editable="0">NIBPList</LayoutNode>
+                        <LayoutNode pos="4" span="1" editable="0">TEMP</LayoutNode>
+                        <LayoutNode pos="5" span="1" editable="0"></LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
-                        <LayoutNode pos="0" span="2" editable="1"></LayoutNode>
-                        <LayoutNode pos="2" span="2" editable="1"></LayoutNode>
-                        <LayoutNode pos="4" span="2" editable="1"></LayoutNode>
+                        <LayoutNode pos="0" span="2" editable="0"></LayoutNode>
+                        <LayoutNode pos="2" span="2" editable="0"></LayoutNode>
+                        <LayoutNode pos="4" span="2" editable="0"></LayoutNode>
                     </LayoutRow>
                 </Normal>
                 <BigFont>
                     <LayoutRow>
                         <LayoutNode>
-                            <Param pos="0" span="1" editable="1">ECG</Param>
+                            <Param pos="0" span="1" editable="0">ECG</Param>
                             <Wave pos="0" span="3" editable="0">ECG1Wave</Wave>
                         </LayoutNode>
                         <LayoutNode>
-                            <Param pos="3" span="1" editable="1">NIBP</Param>
+                            <Param pos="3" span="1" editable="0">NIBP</Param>
                             <Wave pos="3" span="3" editable="0"></Wave>
                         </LayoutNode>
                     </LayoutRow>
                     <LayoutRow>
                         <LayoutNode>
-                            <Param pos="0" span="1" editable="1">SPO2</Param>
+                            <Param pos="0" span="1" editable="0">SPO2</Param>
                             <Wave pos="0" span="3" editable="0">SPO2Wave</Wave>
                         </LayoutNode>
                         <LayoutNode>
-                            <Param pos="3" span="1" editable="1">RESP</Param>
+                            <Param pos="3" span="1" editable="0">RESP</Param>
                             <Wave pos="3" span="3" editable="0">RESPWave</Wave>
                         </LayoutNode>
                     </LayoutRow>

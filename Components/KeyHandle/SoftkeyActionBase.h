@@ -49,7 +49,9 @@ enum SoftBaseKeyType
 #endif
     SOFT_BASE_KEY_CO2_CALIBRATION,
     SOFT_BASE_KEY_CO2_HANDLE,
+#ifndef HIDE_IBP_CALIBRATE_ZERO
     SOFT_BASE_KEY_IBP_CALIBRATION,
+#endif
     SOFT_BASE_KEY_CALCULATION,
     SOFT_BASE_KEY_KEYBOARD_VOLUMN,
     SOFT_BASE_KEY_SCREEN_BRIGHTNESS,
@@ -112,7 +114,7 @@ public:    // 一些共有的功能处理。
     static void rescueData(bool isPressed);
     static void calculation(bool isPressed);
     static void mainsetup(bool isPressed);
-    static void lockScreen(bool isPressed);
+    static void banTouchScreen(bool isPressed);
     static void switchSystemMode(bool isPressed);
     static void summaryReview(bool isPressed);
     static void eventReview(bool isPressed);

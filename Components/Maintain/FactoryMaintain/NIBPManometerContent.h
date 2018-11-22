@@ -11,6 +11,8 @@
 #pragma once
 #include "MenuContent.h"
 
+#define CALIBRATION_INTERVAL_TIME              (100)
+#define TIMEOUT_WAIT_NUMBER                    (5000 / CALIBRATION_INTERVAL_TIME)
 
 class NIBPManometerContentPrivate;
 class NIBPManometerContent : public MenuContent
@@ -21,26 +23,12 @@ public:
     static NIBPManometerContent *getInstance();
     ~NIBPManometerContent();
 
-    /**
-     * @brief setCuffPressure    压力
-     * @param pressure
-     */
-    void setCuffPressure(int pressure);
-    /**
-     * @brief unPacket  模式应答
-     * @param flag
-     */
-    void unPacket(bool flag);
-
-    /**
-     * @brief init  初始化
-     */
-    void init(void);
-
 protected:
     virtual void layoutExec(void);
-    virtual void focusFirstItem() {}
-    virtual bool focusNextPrevChild(bool next);
+    void timerEvent(QTimerEvent *ev);
+
+private slots:
+    void enterManometerReleased(void);
 
 private:
     NIBPManometerContent();

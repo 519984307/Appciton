@@ -62,6 +62,8 @@ void AlarmConfig::setLimitAlarmEnable(SubParamID subParamId, bool enable)
     // save to config file
     int val = enable;
     currentConfig.setNumAttr(prefix, "Enable", val);
+
+    emit alarmOff(subParamId);
 }
 
 AlarmPriority AlarmConfig::getLimitAlarmPriority(SubParamID subParamId)
@@ -199,6 +201,21 @@ ParamRulerConfig AlarmConfig::getParamRulerConfig(SubParamID subParamId, UnitTyp
     config.scale = v;
 
     return config;
+}
+
+void AlarmConfig::setParamRulerConfig(SubParamID subParamID, UnitType unit, int low, int high)
+{
+    // load data from config file
+    QString prefix = "TrendGraph|Ruler|";
+    prefix += paramInfo.getSubParamName(subParamID, true);
+    prefix += "|";
+    prefix += Unit::getSymbol(unit);
+    prefix += "|";
+    QString highPrefix = prefix + "High";
+    systemConfig.setNumValue(highPrefix, high);
+
+    QString lowPrefix = prefix + "Low";
+    systemConfig.setNumValue(lowPrefix, low);
 }
 
 void AlarmConfig::setLimitAlarmConfig(SubParamID subParamId, UnitType unit, const LimitAlarmConfig &config)

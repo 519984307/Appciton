@@ -24,6 +24,7 @@
 #include <QScrollBar>
 #include "DataStorageDefine.h"
 #include <QMouseEvent>
+#include "ParamManager.h"
 
 #define GRAPH_DISPLAY_DATA_NUMBER           4
 #define GRAPH_POINT_NUMBER                  120                     // 一屏数据量
@@ -349,6 +350,21 @@ void TrendWaveWidget::setRulerLimit(SubParamID id, int down, int up, int scale)
         if (widget->getSubParamID() == id)
         {
             widget->setRulerRange(down, up, scale);
+            return;
+        }
+    }
+}
+
+void TrendWaveWidget::setAutoRuler(SubParamID id, bool isAuto)
+{
+    int count = _hLayoutTrend->count();
+    for (int i = 0; i < count; i++)
+    {
+        QLayoutItem *item = _hLayoutTrend->itemAt(i);
+        TrendSubWaveWidget *widget = qobject_cast<TrendSubWaveWidget *>(item->widget());
+        if (widget->getSubParamID() == id)
+        {
+            widget->setAutoRuler(isAuto);
             return;
         }
     }
@@ -900,8 +916,16 @@ void TrendWaveWidget::_getTrendData()
 void TrendWaveWidget::_initWaveSubWidget()
 {
     TrendGraphType type;
+    QList<ParamID> pids;
+    paramManager.getParams(pids);
     for (int i = 0; i < SUB_PARAM_NR; i ++)
     {
+        SubParamID subID = static_cast<SubParamID>(i);
+        ParamID pid = paramInfo.getParamID(subID);
+        if (!pids.contains(pid))
+        {
+            continue;
+        }
         switch (i)
         {
         case SUB_PARAM_HR_PR:
