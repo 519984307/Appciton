@@ -115,11 +115,11 @@ BR,呼吸率,BR
 RR_BR,RR/BR,RR/BR
 Close,关闭,Close
 Back,后退,Back
-PatientID,病人ID,Patient ID
-PatientType,病人类型,Patient Type
-PatientSex,病人性别,Patient Sex
-PatientPacemarker,起搏器,Pacemarker
-PatientBloodType,血型,Blood Type
+PatientID,病人ID,ID
+PatientType,病人类型,Type
+PatientSex,病人性别,Sex
+PatientPacemarker,起搏器,Paced
+PatientBloodType,血型,Blood
 PatientWeight,体重,Weight
 PatientHeight,身高,Height
 PatientMenu,病人,Patient
@@ -268,8 +268,8 @@ HRSourceSPO2,SPO2,SPO2
 HRSourceIBP,IBP,IBP
 HR_PRSource,HR/PR来源,HR/PR Source
 CO2Setting,CO2设置,CO2 Setting
-PatientManager,病人管理,Patient Manager
-PatientManagerDesc,病人管理,Patient Manager Desc
+PatientManager,病人管理,Patient Setup
+PatientManagerDesc,病人管理,Patient Setup Desc
 PatientInfo,病人信息,Patient Info
 NewPatient,新建病人,New Patient
 NormalFunctionMenu,常规功能,Normal Function
@@ -395,8 +395,8 @@ NumberKeyboard,数字键盘,Number Keyboard
 ErrorInput,输入错误,Error Input
 Male,男性,Male
 Female,女性,Female
-PatientAge,病人年龄,Patient Age
-PatientName,病人姓名,Patient Name
+PatientAge,病人年龄,Age
+PatientName,病人姓名,Name
 PatientInformation,病人信息,Patient Information
 PatientNew,新增病人,New Patient
 GetPatientInfo,病人信息获取,Get Patient Info
@@ -1375,7 +1375,7 @@ Physiology,生理,Physiology
 UserMaintainPassword,用户维护密码,User Maintain Password
 UserMaintainSystem,用户维护系统,User Maintain
 Department,部门,Department
-BedNumber,床号,Bed Number
+BedNumber,床号,Bed
 ModifyPassword,密码,Password
 ChangeBedNumberRight,床号权限,Bed Number Right
 Language,语言,Language
