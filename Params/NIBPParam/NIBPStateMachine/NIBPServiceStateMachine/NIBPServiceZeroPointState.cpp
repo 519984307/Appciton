@@ -80,12 +80,6 @@ void NIBPServiceZeroPointState::handleNIBPEvent(NIBPEvent event, const unsigned 
 
     case NIBP_EVENT_TIMEOUT:
     {
-        nibpzeropoint.unPacket(false);
-        _isEnterSuccess = false;
-        IMessageBox messbox(trs("Warn"), trs("NIBPDirectiveTimeout"), false);
-        messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-        messbox.setYesBtnTxt(trs("SupervisorOK"));
-        messbox.exec();
     }
     break;
 

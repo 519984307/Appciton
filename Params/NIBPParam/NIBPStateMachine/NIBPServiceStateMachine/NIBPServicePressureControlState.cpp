@@ -72,12 +72,6 @@ void NIBPServicePressureControlState::handleNIBPEvent(NIBPEvent event, const uns
 
     case NIBP_EVENT_TIMEOUT:
     {
-        nibppressurecontrol.unPacket(false);
-        _isEnterSuccess = false;
-        IMessageBox messbox(trs("Warn"), trs("NIBPDirectiveTimeout"), false);
-        messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-        messbox.setYesBtnTxt(trs("SupervisorOK"));
-        messbox.exec();
     }
     break;
 
