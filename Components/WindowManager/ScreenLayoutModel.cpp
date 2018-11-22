@@ -376,7 +376,7 @@ public:
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_NIBPLIST)] = ParamNodeDescription(trs("NIBPList"), PARAM_SPAN_TWO);
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_TEMP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_TEMP), PARAM_SPAN_ONE);
 
-#ifndef HIDE_ECG_ST_SUBPARAM
+#ifndef HIDE_ECG_ST_PVCS_SUBPARAM
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = ParamNodeDescription("ST", PARAM_SPAN_TWO);
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_PVCS)] = ParamNodeDescription("PVCs", PARAM_SPAN_ONE);
 #endif

@@ -253,7 +253,7 @@ ParamID ParamInfo::getParamID(SubParamID id)
     switch (id)
     {
     case SUB_PARAM_HR_PR:
-#ifndef HIDE_ECG_ST_SUBPARAM
+#ifndef HIDE_ECG_ST_PVCS_SUBPARAM
     case SUB_PARAM_ECG_PVCS:
     case SUB_PARAM_ST_I:
     case SUB_PARAM_ST_II:
