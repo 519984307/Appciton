@@ -43,11 +43,6 @@ void NIBPServiceStandbyState::handleNIBPEvent(NIBPEvent event, const unsigned ch
 
     case NIBP_EVENT_TIMEOUT:
     {
-        nibpRepairMenuManager.unPacket(false);
-        IMessageBox messbox(trs("Warn"), trs("NIBPDirectiveTimeout"), false);
-        messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
-        messbox.setYesBtnTxt(trs("SupervisorOK"));
-        messbox.exec();
     }
     break;
 
