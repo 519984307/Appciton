@@ -30,7 +30,7 @@
         <ECG>0</ECG>
         <SPO2>0</SPO2>
         <Battery>0</Battery>
-        <NIBP>0</NIBP>
+        <NIBP>1</NIBP>
         <TEMP>0</TEMP>
     </Record>
     <!--参数与Provider的关系-->
