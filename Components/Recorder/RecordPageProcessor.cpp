@@ -172,7 +172,6 @@ void RecordPageProcessor::timerEvent(QTimerEvent *ev)
         if (d_ptr->curProcessingPage == NULL)
         {
             // no more page to process
-            d_ptr->stopProcessing();
             emit processFinished();
             return;
         }
