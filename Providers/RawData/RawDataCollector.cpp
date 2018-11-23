@@ -58,10 +58,23 @@ public:
     void handleECGRawData(const unsigned char *data,  int len);
 
     /**
+     * @brief handleNIBPRawData handle the NIBP raw data
+     * @param data pointer to the data
+     * @param len the data length
+     */
+    void handleNIBPRawData(const unsigned char *data, int len);
+
+    /**
      * @brief saveEcgRawData and the ecg raw data to file
      * @param content the file content
      */
     void saveEcgRawData(const QByteArray &content);
+
+    /**
+     * @brief saveNIBPRawData and the NIBP raw data to file
+     * @param content the file content
+     */
+    void saveNIBPRawData(const QByteArray &content);
 
     bool collectionStatus[RawDataCollector::DATA_TYPE_NR];
 
@@ -106,6 +119,36 @@ void RawDataCollectorPrivate::handleECGRawData(const unsigned char *data, int le
     mutex.unlock();
 }
 
+void RawDataCollectorPrivate::handleNIBPRawData(const unsigned char *data, int len)
+{
+    Q_UNUSED(len)
+    Q_ASSERT(len == 50);
+
+    QByteArray content;
+    QTextStream stream(&content);
+
+    // 10个AD值,每个占3个字节
+    for (int n = 0; n < 10; n ++)
+    {
+        unsigned int adVal = (data[n * 3]) | (data[n * 3 + 1] << 8) | (data[n * 3 + 2] << 16);
+        stream << adVal << endl;
+    }
+
+    data += 10 * 3;
+
+    // 10个压力值, 每个占2个字节
+    for (int n = 0; n < 10; n++)
+    {
+        unsigned short pressureVal = (data[n * 2]) | (data[n * 2 + 1] << 8);
+        stream << pressureVal << endl;
+    }
+    stream.flush();
+
+    mutex.lock();
+    dataBuffer.append(new StoreDataType(RawDataCollector::NIBP_DATA, content));
+    mutex.unlock();
+}
+
 void RawDataCollectorPrivate::saveEcgRawData(const QByteArray &content)
 {
     QFile *f = files[RawDataCollector::ECG_DATA];
@@ -128,6 +171,7 @@ void RawDataCollectorPrivate::saveEcgRawData(const QByteArray &content)
         {
             qDebug() << "Fail to create file " << name;
             delete f;
+            return;
         }
         files[RawDataCollector::ECG_DATA] = f;
     }
@@ -140,6 +184,44 @@ void RawDataCollectorPrivate::saveEcgRawData(const QByteArray &content)
         f->close();
         delete f;
         files[RawDataCollector::ECG_DATA] = NULL;
+    }
+}
+
+void RawDataCollectorPrivate::saveNIBPRawData(const QByteArray &content)
+{
+    QFile *f = files[RawDataCollector::NIBP_DATA];
+    if (f == NULL)
+    {
+        QString dirname = usbManager.getUdiskMountPoint() + "/BLM_N5/";
+        if (!QDir(dirname).exists())
+        {
+            if (!QDir().mkpath(dirname))
+            {
+                qDebug() << "Fail to create directory " << dirname;
+                return;
+            }
+        }
+        QString name = dirname + QString("N5_%1.txt").arg(QDateTime::currentDateTime().toString("yyyyMMddHHmmss"));
+
+        // not open the file yet, open now
+        f = new QFile(name);
+        if (!f->open(QIODevice::WriteOnly))
+        {
+            qDebug() << "Fail to create file " << name;
+            delete f;
+            return;
+        }
+        files[RawDataCollector::NIBP_DATA] = f;
+    }
+
+    f->write(content);
+
+    if (f->size() > 10 * 1024 * 1024)
+    {
+        // store 10 M data in each file
+        f->close();
+        delete f;
+        files[RawDataCollector::NIBP_DATA] = NULL;
     }
 }
 
@@ -185,6 +267,10 @@ void RawDataCollector::run()
         case ECG_DATA:
             d_ptr->saveEcgRawData(data->data);
             break;
+        case NIBP_DATA:
+            d_ptr->saveNIBPRawData(data->data);
+            break;
+
         default:
             break;
         }
@@ -212,6 +298,9 @@ void RawDataCollector::collectData(RawDataCollector::CollectDataType type, const
     {
     case RawDataCollector::ECG_DATA:
         d_ptr->handleECGRawData(data, len);
+        break;
+    case RawDataCollector::NIBP_DATA:
+        d_ptr->handleNIBPRawData(data, len);
         break;
 
     default:

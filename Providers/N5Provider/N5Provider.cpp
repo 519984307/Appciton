@@ -290,7 +290,7 @@ void N5Provider::handlePacket(unsigned char *data, int len)
 
     // 原始数据
     case N5_NOTIFY_DATA:
-        rawDataCollector.collectData(RawDataCollector::NIBP_DATA, data, len);
+        rawDataCollector.collectData(RawDataCollector::NIBP_DATA, data + 1, len - 1);
         break;
 
     // 进入维护模式
