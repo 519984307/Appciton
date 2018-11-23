@@ -235,6 +235,7 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     // 停止测量。
     case N5_RSP_STOP_MEASURE:
         nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_STOP, NULL, 0);
+        rawDataCollector.collectData(RawDataCollector::NIBP_DATA, NULL, 0, true);
         break;
 
     // 获取测量结果
@@ -270,6 +271,7 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     case N5_NOTIFY_END:
         _sendACK(data[0]);
         nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_MEASURE_DONE, NULL, 0);
+        rawDataCollector.collectData(RawDataCollector::NIBP_DATA, NULL, 0, true);
         break;
 
     // 启动帧

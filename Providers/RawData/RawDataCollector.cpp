@@ -17,13 +17,15 @@
 #include <QDir>
 #include <QMutex>
 #include <QDebug>
+#include <unistd.h>
 
 struct StoreDataType
 {
-    StoreDataType(RawDataCollector::CollectDataType type, const QByteArray &data)
-        : type(type), data(data) {}
+    StoreDataType(RawDataCollector::CollectDataType type, const QByteArray &data, bool stop)
+        : type(type), data(data), stop(stop) {}
     RawDataCollector::CollectDataType type;
     QByteArray data;
+    bool stop;
 };
 
 class RawDataCollectorPrivate
@@ -55,26 +57,26 @@ public:
      * @param data pointer to the data
      * @param len the data length
      */
-    void handleECGRawData(const unsigned char *data,  int len);
+    void handleECGRawData(const unsigned char *data,  int len, bool stop);
 
     /**
      * @brief handleNIBPRawData handle the NIBP raw data
      * @param data pointer to the data
      * @param len the data length
      */
-    void handleNIBPRawData(const unsigned char *data, int len);
+    void handleNIBPRawData(const unsigned char *data, int len, bool stop);
 
     /**
      * @brief saveEcgRawData and the ecg raw data to file
-     * @param content the file content
+     * @param data the data struct contain data need to store
      */
-    void saveEcgRawData(const QByteArray &content);
+    void saveEcgRawData(const StoreDataType *data);
 
     /**
      * @brief saveNIBPRawData and the NIBP raw data to file
-     * @param content the file content
+     * @param data the data struct contain data need to store
      */
-    void saveNIBPRawData(const QByteArray &content);
+    void saveNIBPRawData(const StoreDataType *data);
 
     bool collectionStatus[RawDataCollector::DATA_TYPE_NR];
 
@@ -85,74 +87,104 @@ public:
     QMutex mutex;
 };
 
-void RawDataCollectorPrivate::handleECGRawData(const unsigned char *data, int len)
+void RawDataCollectorPrivate::handleECGRawData(const unsigned char *data, int len, bool stop)
 {
-    Q_UNUSED(len)
-    Q_ASSERT(len == 524);
-
     QByteArray content;
-    QTextStream stream(&content);
-
-    // skip the first 4 SN bytes
-    data += 4;
-
-    for (int n = 0; n < 20; n++)
+    if (stop)
     {
+        mutex.lock();
+        dataBuffer.append(new StoreDataType(RawDataCollector::ECG_DATA, content, stop));
+        mutex.unlock();
+    }
+    else
+    {
+        Q_UNUSED(len)
+        Q_ASSERT(len == 524);
+        QTextStream stream(&content);
+        // skip the first 4 SN bytes
+        data += 4;
 
-        unsigned short marksAndLeadOffs = (data[0] << 8) | data[1];
-        data += 2;
-        stream << marksAndLeadOffs;
-
-        // 12 lead data
-        for (int i = 0; i < 12; i++)
+        for (int n = 0; n < 20; n++)
         {
-            short v = data[0] | (data[1] << 8);
+
+            unsigned short marksAndLeadOffs = (data[0] << 8) | data[1];
             data += 2;
-            stream << ',' << v;
+            stream << marksAndLeadOffs;
+
+            // 12 lead data
+            for (int i = 0; i < 12; i++)
+            {
+                short v = data[0] | (data[1] << 8);
+                data += 2;
+                stream << ',' << v;
+            }
+            stream << endl;
         }
-        stream << endl;
-    }
-    stream.flush();
+        stream.flush();
 
-    mutex.lock();
-    dataBuffer.append(new StoreDataType(RawDataCollector::ECG_DATA, content));
-    mutex.unlock();
+        mutex.lock();
+        dataBuffer.append(new StoreDataType(RawDataCollector::ECG_DATA, content, stop));
+        mutex.unlock();
+    }
 }
 
-void RawDataCollectorPrivate::handleNIBPRawData(const unsigned char *data, int len)
+void RawDataCollectorPrivate::handleNIBPRawData(const unsigned char *data, int len, bool stop)
 {
-    Q_UNUSED(len)
-    Q_ASSERT(len == 50);
-
     QByteArray content;
-    QTextStream stream(&content);
 
-    // 10个AD值,每个占3个字节
-    for (int n = 0; n < 10; n ++)
+    if (stop)
     {
-        unsigned int adVal = (data[n * 3]) | (data[n * 3 + 1] << 8) | (data[n * 3 + 2] << 16);
-        stream << adVal << endl;
+        mutex.lock();
+        dataBuffer.append(new StoreDataType(RawDataCollector::NIBP_DATA, content, stop));
+        mutex.unlock();
     }
-
-    data += 10 * 3;
-
-    // 10个压力值, 每个占2个字节
-    for (int n = 0; n < 10; n++)
+    else
     {
-        unsigned short pressureVal = (data[n * 2]) | (data[n * 2 + 1] << 8);
-        stream << pressureVal << endl;
-    }
-    stream.flush();
+        Q_UNUSED(len)
+        Q_ASSERT(len == 50);
+        QTextStream stream(&content);
+        // 10个AD值,每个占3个字节
+        for (int n = 0; n < 10; n ++)
+        {
+            unsigned int adVal = (data[n * 3]) | (data[n * 3 + 1] << 8) | (data[n * 3 + 2] << 16);
+            stream << adVal << endl;
+        }
 
-    mutex.lock();
-    dataBuffer.append(new StoreDataType(RawDataCollector::NIBP_DATA, content));
-    mutex.unlock();
+        data += 10 * 3;
+
+        // 10个压力值, 每个占2个字节
+        for (int n = 0; n < 10; n++)
+        {
+            unsigned short pressureVal = (data[n * 2]) | (data[n * 2 + 1] << 8);
+            stream << pressureVal << endl;
+        }
+        stream.flush();
+
+        mutex.lock();
+        dataBuffer.append(new StoreDataType(RawDataCollector::NIBP_DATA, content, stop));
+        mutex.unlock();
+    }
 }
 
-void RawDataCollectorPrivate::saveEcgRawData(const QByteArray &content)
+void RawDataCollectorPrivate::saveEcgRawData(const StoreDataType *data)
 {
     QFile *f = files[RawDataCollector::ECG_DATA];
-    if (f == NULL)
+
+    if (f == NULL && data->stop)
+    {
+        // do nothing
+        return;
+    }
+    else if (f && data->stop)
+    {
+        // close the file and delete the file descriptor
+        fsync(f->handle());
+        f->close();
+        delete f;
+        files[RawDataCollector::ECG_DATA] = NULL;
+        return;
+    }
+    else if (f == NULL)
     {
         QString dirname = usbManager.getUdiskMountPoint() + "/ECG_DATA/";
         if (!QDir(dirname).exists())
@@ -176,21 +208,36 @@ void RawDataCollectorPrivate::saveEcgRawData(const QByteArray &content)
         files[RawDataCollector::ECG_DATA] = f;
     }
 
-    f->write(content);
+    f->write(data->data);
 
     if (f->size() > 10 * 1024 * 1024)
     {
         // store 10 M data in each file
+        fsync(f->handle());
         f->close();
         delete f;
         files[RawDataCollector::ECG_DATA] = NULL;
     }
 }
 
-void RawDataCollectorPrivate::saveNIBPRawData(const QByteArray &content)
+void RawDataCollectorPrivate::saveNIBPRawData(const StoreDataType *data)
 {
     QFile *f = files[RawDataCollector::NIBP_DATA];
-    if (f == NULL)
+    if (f == NULL && data->stop)
+    {
+        // do nothing
+        return;
+    }
+    else if (f && data->stop)
+    {
+        // close the file and delete the file descriptor
+        fsync(f->handle());
+        f->close();
+        delete f;
+        files[RawDataCollector::NIBP_DATA] = NULL;
+        return;
+    }
+    else if (f == NULL)
     {
         QString dirname = usbManager.getUdiskMountPoint() + "/BLM_N5/";
         if (!QDir(dirname).exists())
@@ -214,11 +261,12 @@ void RawDataCollectorPrivate::saveNIBPRawData(const QByteArray &content)
         files[RawDataCollector::NIBP_DATA] = f;
     }
 
-    f->write(content);
+    f->write(data->data);
 
     if (f->size() > 10 * 1024 * 1024)
     {
         // store 10 M data in each file
+        fsync(f->handle());
         f->close();
         delete f;
         files[RawDataCollector::NIBP_DATA] = NULL;
@@ -265,10 +313,10 @@ void RawDataCollector::run()
         switch (data->type)
         {
         case ECG_DATA:
-            d_ptr->saveEcgRawData(data->data);
+            d_ptr->saveEcgRawData(data);
             break;
         case NIBP_DATA:
-            d_ptr->saveNIBPRawData(data->data);
+            d_ptr->saveNIBPRawData(data);
             break;
 
         default:
@@ -286,7 +334,7 @@ RawDataCollector::RawDataCollector()
 {
 }
 
-void RawDataCollector::collectData(RawDataCollector::CollectDataType type, const unsigned char *data, int len)
+void RawDataCollector::collectData(RawDataCollector::CollectDataType type, const unsigned char *data, int len, bool stop)
 {
     if (!d_ptr->collectionStatus[type])
     {
@@ -297,10 +345,10 @@ void RawDataCollector::collectData(RawDataCollector::CollectDataType type, const
     switch (type)
     {
     case RawDataCollector::ECG_DATA:
-        d_ptr->handleECGRawData(data, len);
+        d_ptr->handleECGRawData(data, len, stop);
         break;
     case RawDataCollector::NIBP_DATA:
-        d_ptr->handleNIBPRawData(data, len);
+        d_ptr->handleNIBPRawData(data, len, stop);
         break;
 
     default:
