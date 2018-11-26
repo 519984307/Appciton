@@ -1178,7 +1178,7 @@ void NIBPParam::_btnTimeOut()
 
 void NIBPParam::onPaletteChanged(ParamID id)
 {
-    if (id != PARAM_NIBP)
+    if (id != PARAM_NIBP || !systemManager.isSupport(CONFIG_NIBP))
     {
         return;
     }
