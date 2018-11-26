@@ -104,6 +104,10 @@ void ECGMenuContentPrivate::loadOptions()
     if (index1 >= items)
     {
         index1 = ecgParam.getCalcLead();
+        if (index1 >= items)
+        {
+            index1 -= 1;
+        }
         currentConfig.setNumValue("ECG|Ecg1Wave", index1);
     }
     // 非3导联模式下，改变ecg2索引
