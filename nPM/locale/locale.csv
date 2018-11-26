@@ -219,6 +219,7 @@ O2NotCalibrate,氧浓度传感器未校准,O2 Sensor Not Calibrate
 O2Low,氧浓度低,O2 Low
 O2High,氧浓度高,O2 High
 ApneaStimulation,窒息唤醒,Apnea Stimulation
+ShakeIntensity,震动强度,Shake Intensity
 Stop,停止,Stop
 AGMenu,AG,AG
 AGSweepSpeed,波形速度,Sweep Speed

@@ -37,6 +37,8 @@ private slots:
 
     void motorControlIndexChanged(int index);
 
+    void onShakeValueChanged(int value, int scale);
+
 private:
     O2MenuContentPrivate *const d_ptr;
 };

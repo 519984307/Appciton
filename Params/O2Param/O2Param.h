@@ -65,6 +65,9 @@ public:
     // 马达控制
     void sendMotorControl(int control);
 
+    // 震动强度设置
+    void shakeIntensityControl(int intensity);
+
     // 浓度校准
     void sendCalibration(int concentration);
 

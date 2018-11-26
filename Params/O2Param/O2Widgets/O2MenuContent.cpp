@@ -17,12 +17,14 @@
 #include "WindowManager.h"
 #include "ComboBox.h"
 #include "O2Param.h"
+#include "SpinBox.h"
 
 class O2MenuContentPrivate
 {
 public:
-    O2MenuContentPrivate() : motorBtn(NULL){}
+    O2MenuContentPrivate() : shakeSpb(NULL), motorBtn(NULL){}
 
+    SpinBox *shakeSpb;
     ComboBox *motorBtn;
 };
 O2MenuContent::O2MenuContent()
@@ -42,26 +44,35 @@ void O2MenuContent::layoutExec()
     QGridLayout *glayout = new QGridLayout(this);
     glayout->setMargin(10);
 
-    QLabel *label = new QLabel(trs("ApneaStimulation"));
+    QLabel *label = new QLabel(trs("ShakeIntensity"));
     glayout->addWidget(label, 0, 0);
+    d_ptr->shakeSpb = new SpinBox();
+    d_ptr->shakeSpb->setRange(50, 100);
+    d_ptr->shakeSpb->setStep(1);
+    d_ptr->shakeSpb->setValue(50);
+    glayout->addWidget(d_ptr->shakeSpb, 0, 1);
+    connect(d_ptr->shakeSpb, SIGNAL(valueChange(int, int)), this, SLOT(onShakeValueChanged(int, int)));
+
+    label = new QLabel(trs("ApneaStimulation"));
+    glayout->addWidget(label, 1, 0);
     d_ptr->motorBtn = new ComboBox();
     d_ptr->motorBtn->addItems(QStringList()
                        << trs("Stop")
                        << trs("Start")
                       );
-    glayout->addWidget(d_ptr->motorBtn, 0, 1);
+    glayout->addWidget(d_ptr->motorBtn, 1, 1);
     connect(d_ptr->motorBtn, SIGNAL(currentIndexChanged(int)), this, SLOT(motorControlIndexChanged(int)));
 
     Button  *btn = new Button(QString("%1%2").
                               arg(trs("AlarmSettingUp")).
                               arg(" >>"));
     btn->setButtonStyle(Button::ButtonTextOnly);
-    glayout->addWidget(btn, 1, 1);
+    glayout->addWidget(btn, 2, 1);
     connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
 
     glayout->setColumnStretch(0, 1);
     glayout->setColumnStretch(1, 1);
-    glayout->setRowStretch(2, 1);
+    glayout->setRowStretch(3, 1);
 }
 
 void O2MenuContent::readyShow()
@@ -78,4 +89,9 @@ void O2MenuContent::onAlarmBtnReleased()
 void O2MenuContent::motorControlIndexChanged(int index)
 {
     o2Param.sendMotorControl(index);
+}
+
+void O2MenuContent::onShakeValueChanged(int value, int scale)
+{
+    o2Param.shakeIntensityControl(value * scale);
 }
