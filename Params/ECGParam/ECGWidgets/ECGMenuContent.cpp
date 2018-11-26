@@ -569,11 +569,33 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             // 如果ecg2与ecg1选择相同的item时
             if (waveIndex == index)
             {
-                waveIndex = ecgParam.getCalcLead();
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(true);
-                ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(waveIndex));
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
+                int calLead = ecgParam.getCalcLead();
+                // 在导联模式先于ecg1波形索引发生改变的情况下,如果此时的计算导联与旧ecg2的波形索引一致
+                // 那么预设ecg2的波形索引向后加1,避免与计算导联选择相同
+                if (waveIndex == calLead)
+                {
+                    waveIndex = calLead + 1;
+
+                    ECGLeadMode leadMode = ecgParam.getLeadMode();
+                    ECGLead leadLimit = ECG_LEAD_V6;
+                    if (leadMode == ECG_LEAD_MODE_3)
+                    {
+                        leadLimit = ECG_LEAD_III;
+                    }
+                    else if (leadMode == ECG_LEAD_MODE_5)
+                    {
+                        leadLimit = ECG_LEAD_V1;
+                    }
+                    if (waveIndex > leadLimit)
+                    {
+                        waveIndex = ECG_LEAD_I;
+                    }
+                }
+                else
+                {
+                    waveIndex =  calLead;
+                }
+
                 // 更新ecg2的item选择
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG2]->blockSignals(true);
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG2]->setCurrentIndex(waveIndex);
