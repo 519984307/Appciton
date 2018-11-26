@@ -266,7 +266,7 @@ void RESPDupParam::updateSubParamLimit(SubParamID id)
 
 void RESPDupParam::onPaletteChanged(ParamID id)
 {
-    if (id != PARAM_RESP)
+    if (id != PARAM_RESP || !systemManager.isSupport(CONFIG_RESP))
     {
         return;
     }

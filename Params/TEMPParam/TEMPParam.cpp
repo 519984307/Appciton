@@ -325,7 +325,7 @@ UnitType TEMPParam::getUnit(void)
 
 void TEMPParam::onPaletteChanged(ParamID id)
 {
-    if (id != PARAM_TEMP)
+    if (id != PARAM_TEMP || !systemManager.isSupport(CONFIG_TEMP))
     {
         return;
     }

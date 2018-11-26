@@ -862,7 +862,7 @@ void CO2Param::updateSubParamLimit(SubParamID id)
 
 void CO2Param::onPaletteChanged(ParamID id)
 {
-    if (id != PARAM_CO2)
+    if (id != PARAM_CO2 || !systemManager.isSupport(CONFIG_CO2))
     {
         return;
     }
