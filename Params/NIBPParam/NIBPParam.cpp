@@ -371,6 +371,11 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
 {
     setLastTime();
 
+    _sysValue = sys;
+    _diaValue = dia;
+    _mapVaule = map;
+    _prVaule = pr;
+
     if (_nibpDataTrendWidget != NULL)
     {
         _nibpDataTrendWidget->collectNIBPTrendData(_lastTime);
@@ -413,11 +418,6 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
     }
 
     setAdditionalMeasure(false);
-
-    _sysValue = sys;
-    _diaValue = dia;
-    _mapVaule = map;
-    _prVaule = pr;
 
     setShowMeasureCount();
     transferResults(_sysValue, _diaValue, _mapVaule, _lastTime);
