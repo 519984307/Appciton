@@ -2293,15 +2293,14 @@ void ECGParam::onPaletteChanged(ParamID id)
         return;
     }
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-    if (systemManager.isSupport(CONFIG_ST))
+    for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
     {
-        for (int i = ECG_ST_I; i < ECG_ST_NR; i++)
-        {
-            _waveWidget[i]->updatePalette(psrc);
-        }
-        _ecgSTTrendWidget->updatePalette(psrc);
+        _waveWidget[i]->updatePalette(psrc);
     }
+#ifndef HIDE_ECG_ST_PVCS_SUBPARAM
+    _ecgSTTrendWidget->updatePalette(psrc);
     _pvcsTrendWidget->updatePalette(psrc);
+#endif
 }
 /**************************************************************************************************
  * 发送协议命令。
