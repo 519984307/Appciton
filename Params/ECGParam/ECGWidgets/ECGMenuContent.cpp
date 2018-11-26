@@ -576,7 +576,17 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
                 {
                     waveIndex = calLead + 1;
 
-                    if (waveIndex >= ECG_LEAD_NR)
+                    ECGLeadMode leadMode = ecgParam.getLeadMode();
+                    ECGLead leadLimit = ECG_LEAD_V6;
+                    if (leadMode == ECG_LEAD_MODE_3)
+                    {
+                        leadLimit = ECG_LEAD_III;
+                    }
+                    else if (leadMode == ECG_LEAD_MODE_5)
+                    {
+                        leadLimit = ECG_LEAD_V1;
+                    }
+                    if (waveIndex > leadLimit)
                     {
                         waveIndex = ECG_LEAD_I;
                     }
