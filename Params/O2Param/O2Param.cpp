@@ -161,9 +161,9 @@ void O2Param::sendMotorControl(int control)
     d_ptr->provider->sendMotorControl(control);
 }
 
-void O2Param::shakeIntensityControl(int intensity)
+void O2Param::vibrationIntensityControl(int intensity)
 {
-    d_ptr->provider->sendShakeIntensity(intensity);
+    d_ptr->provider->sendVibrationIntensity(intensity);
 }
 
 void O2Param::sendCalibration(int concentration)

@@ -66,7 +66,7 @@ public:
     void sendMotorControl(int control);
 
     // 震动强度设置
-    void shakeIntensityControl(int intensity);
+    void vibrationIntensityControl(int intensity);
 
     // 浓度校准
     void sendCalibration(int concentration);

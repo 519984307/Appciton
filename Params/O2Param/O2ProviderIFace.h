@@ -35,5 +35,5 @@ public:
     virtual void sendMotorControl(bool /*status*/){}
 
     // 震动强度控制
-    virtual void sendShakeIntensity(int /*intensity*/){}
+    virtual void sendVibrationIntensity(int /*intensity*/){}
 };

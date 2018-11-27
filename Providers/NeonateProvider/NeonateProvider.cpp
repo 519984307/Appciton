@@ -69,10 +69,10 @@ void NeonateProvider::sendMotorControl(bool status)
     sendCmd(NEONATE_CMD_MOTOR_CONTROL, &data, 1);
 }
 
-void NeonateProvider::sendShakeIntensity(int intensity)
+void NeonateProvider::sendVibrationIntensity(int intensity)
 {
     unsigned char data = intensity;
-    sendCmd(NEONATE_CMD_SHAKE_INTENSITY, &data, 1);
+    sendCmd(NEONATE_CMD_VIBRATION_INTENSITY, &data, 1);
 }
 
 void NeonateProvider::sendACK(unsigned char type)

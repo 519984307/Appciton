@@ -22,9 +22,9 @@
 class O2MenuContentPrivate
 {
 public:
-    O2MenuContentPrivate() : shakeSpb(NULL), motorBtn(NULL){}
+    O2MenuContentPrivate() : vibrationSpb(NULL), motorBtn(NULL){}
 
-    SpinBox *shakeSpb;
+    SpinBox *vibrationSpb;
     ComboBox *motorBtn;
 };
 O2MenuContent::O2MenuContent()
@@ -46,12 +46,12 @@ void O2MenuContent::layoutExec()
 
     QLabel *label = new QLabel(trs("VibrationIntensity"));
     glayout->addWidget(label, 0, 0);
-    d_ptr->shakeSpb = new SpinBox();
-    d_ptr->shakeSpb->setRange(50, 100);
-    d_ptr->shakeSpb->setStep(1);
-    d_ptr->shakeSpb->setValue(50);
-    glayout->addWidget(d_ptr->shakeSpb, 0, 1);
-    connect(d_ptr->shakeSpb, SIGNAL(valueChange(int, int)), this, SLOT(onShakeValueChanged(int, int)));
+    d_ptr->vibrationSpb = new SpinBox();
+    d_ptr->vibrationSpb->setRange(50, 100);
+    d_ptr->vibrationSpb->setStep(1);
+    d_ptr->vibrationSpb->setValue(50);
+    glayout->addWidget(d_ptr->vibrationSpb, 0, 1);
+    connect(d_ptr->vibrationSpb, SIGNAL(valueChange(int, int)), this, SLOT(onVibrationValueChanged(int, int)));
 
     label = new QLabel(trs("ApneaSimulation"));
     glayout->addWidget(label, 1, 0);
@@ -91,7 +91,7 @@ void O2MenuContent::motorControlIndexChanged(int index)
     o2Param.sendMotorControl(index);
 }
 
-void O2MenuContent::onShakeValueChanged(int value, int scale)
+void O2MenuContent::onVibrationValueChanged(int value, int scale)
 {
-    o2Param.shakeIntensityControl(value * scale);
+    o2Param.vibrationIntensityControl(value * scale);
 }
