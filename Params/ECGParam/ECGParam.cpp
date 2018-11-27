@@ -1823,14 +1823,30 @@ void ECGParam::setGain(ECGGain gain, ECGLead lead)
         return;
     }
 
-    if (_waveWidget[lead] == NULL)
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
     {
-        return;
+        for (int i = 0; i < ECG_LEAD_NR; i++)
+        {
+            if (_waveWidget[i] == NULL)
+            {
+                continue;
+            }
+            QString wavename = _waveWidget[i]->name();
+            currentConfig.setNumValue("ECG|Gain|" + wavename, static_cast<int>(gain));
+            _waveWidget[i]->setGain(gain);
+        }
     }
+    else
+    {
+        if (_waveWidget[lead] == NULL)
+        {
+            return;
+        }
 
-    QString wavename = _waveWidget[lead]->name();
-    currentConfig.setNumValue("ECG|Gain|" + wavename, static_cast<int>(gain));
-    _waveWidget[lead]->setGain(gain);
+        QString wavename = _waveWidget[lead]->name();
+        currentConfig.setNumValue("ECG|Gain|" + wavename, static_cast<int>(gain));
+        _waveWidget[lead]->setGain(gain);
+    }
 }
 
 /**************************************************************************************************
