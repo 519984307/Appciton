@@ -215,7 +215,7 @@ RESPDupParam::BrSourceType RESPDupParam::getBrSource() const
         BrSourceType sourceType;
         if (_brValue == InvData() && _rrValue != InvData())
         {
-            sourceType = BR_SOURCE_RESP;
+            sourceType = BR_SOURCE_ECG;
         }
         else
         {
@@ -284,7 +284,7 @@ RESPDupParam::RESPDupParam()
       _brValue(InvData()),
       _isAlarm(false),
       _isAutoBrSource(true),
-      _manualBrSourceType(BR_SOURCE_RESP)
+      _manualBrSourceType(BR_SOURCE_ECG)
 {
 }
 
