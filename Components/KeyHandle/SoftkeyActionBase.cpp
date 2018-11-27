@@ -199,7 +199,7 @@ void SoftkeyActionBase::patientNew(bool isPressed)
     // 创建新病人
     // patientMenu.createPatient();
     QStringList slist;
-    slist << trs("No") << trs("EnglishYESChineseSURE");
+    slist << trs("No") << trs("Yes");
     MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist);
     if (messageBox.exec() == 1)
     {
