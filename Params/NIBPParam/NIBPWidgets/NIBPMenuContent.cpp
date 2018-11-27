@@ -126,10 +126,10 @@ void NIBPMenuContent::layoutExec()
     int row = d_ptr->combos.count();
 
     // start stat
-    label = new QLabel(trs("Stat"));
+    label = new QLabel(trs("STAT"));
     layout->addWidget(label, row + d_ptr->btns.count(), 0);
     button = new Button();
-    button->setText(trs("StatStart"));
+    button->setText(trs("STATSTART"));
     button->setButtonStyle(Button::ButtonTextOnly);
     itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_BTN_START_STAT);
     button->setProperty("Btn", qVariantFromValue(itemID));

@@ -69,7 +69,7 @@ void RESPMenuContentPrivate::loadOptions()
     }
     else
     {
-        index = BR_RR_SOURCE_RESP;
+        index = BR_RR_SOURCE_ECG;
     }
     combos[ITEM_CBO_RR_SOURCE]->setCurrentIndex(index);
     if (respDupParam.getParamSourceType() == RESPDupParam::BR)
@@ -158,7 +158,7 @@ void RESPMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(RESPSymbol::convert(BR_RR_AUTO))
                        << trs(RESPSymbol::convert(BR_RR_SOURCE_CO2))
-                       << trs(RESPSymbol::convert(BR_RR_SOURCE_RESP)));
+                       << trs(RESPSymbol::convert(BR_RR_SOURCE_ECG)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(RESPMenuContentPrivate
                          ::ITEM_CBO_RR_SOURCE, comboBox);
@@ -245,9 +245,9 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
             {
                 respDupParam.setBrSource(RESPDupParam::BR_SOURCE_CO2);
             }
-            else if (BR_RR_SOURCE_RESP == index)
+            else if (BR_RR_SOURCE_ECG == index)
             {
-                respDupParam.setBrSource(RESPDupParam::BR_SOURCE_RESP);
+                respDupParam.setBrSource(RESPDupParam::BR_SOURCE_ECG);
             }
         }
             break;

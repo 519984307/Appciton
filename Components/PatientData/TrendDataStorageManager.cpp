@@ -339,7 +339,7 @@ void TrendDataStorageManager::storeData(unsigned t, TrendDataFlags dataStatus)
         dataSegment->status |= HRSourceIsSpo2;
     }
 
-    if (respDupParam.getBrSource() == RESPDupParam::BR_SOURCE_RESP)
+    if (respDupParam.getBrSource() == RESPDupParam::BR_SOURCE_ECG)
     {
         dataSegment->status |= BRSourceIsResp;
     }
