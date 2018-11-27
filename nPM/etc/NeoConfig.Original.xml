@@ -754,7 +754,7 @@
 		<T1 Enable="0" Prio="2">
 		<celsius>
 		    <Low Min="1" Max="490">350</Low>
-		    <High Min="11" Max="500">380</High>
+		    <High Min="11" Max="500">378</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
@@ -768,7 +768,7 @@
 		<T2 Enable="0" Prio="2">
 		<celsius>
 		    <Low Min="1" Max="490">350</Low>
-		    <High Min="11" Max="500">380</High>
+		    <High Min="11" Max="500">378</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
@@ -782,7 +782,7 @@
 		<TD Enable="0" Prio="2">
 		<celsius>
 		    <Low Min="1" Max="490">1</Low>
-		    <High Min="11" Max="500">20</High>
+		    <High Min="11" Max="500">5</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
