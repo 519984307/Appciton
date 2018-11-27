@@ -468,73 +468,78 @@ void LayoutManagerPrivate::perform12LeadLayout()
         }
     }
 
+    QList<LayoutNode> leftParamNode;
     OrderedMap<int, LayoutRow>::ConstIterator iter = layoutInfos.begin();
-    int insertRow = 0;
-    int lastWaveRow = 0;
     for (; iter != layoutInfos.end(); ++iter)
     {
         LayoutRow::ConstIterator nodeIter = iter.value().constBegin();
         for (; nodeIter != iter.value().constEnd(); ++nodeIter)
         {
             int row = iter.key();
-            IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
-            QWidget *qw = w;
-            if (w)
-            {
-                contentWidgets.append(w);
-            }
             if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN)
             {
                 // add the param on the left in the standard layout
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM)
                 {
                     // standard layout wave region
-                    lastWaveRow = insertRow;
                 }
                 else
                 {
                     // standard layout left pararm region
-                    qw->setVisible(true);
-                    qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-                    if (!qw)
-                    {
-                        qw = createContainter();
-                    }
-                    leftParamLayout->addWidget(qw, insertRow - lastWaveRow - 1 , nodeIter->pos, 1, nodeIter->span);
-                    leftParamLayout->setRowStretch(insertRow - lastWaveRow - 1, 1);
-                    if (w)
-                    {
-                        displayParams.append(w->name());
-                    }
+                    leftParamNode.append((*nodeIter));
                 }
             }
             else
             {
                 // add the param on the right in the standard layout
+                IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
+                QWidget *qw = w;
                 if (!qw)
                 {
                     qw = createContainter();
                 }
-                qw->setVisible(true);
-                qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-                rightParamLayout->addWidget(qw, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
-                rightParamLayout->setRowStretch(row, 1);
+                if (qw)
+                {
+                    qw->setVisible(true);
+                    qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+                    rightParamLayout->addWidget(qw, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
+                    rightParamLayout->setRowStretch(row, 1);
+                }
                 if (w)
                 {
+                    contentWidgets.append(w);
                     displayParams.append(w->name());
                 }
             }
         }
+    }
 
-        if (!(*iter).isEmpty())
+    // 剩下的左参数区的控件依次插入到右参数区下方
+    QList<LayoutNode>::iterator nodeIter = leftParamNode.begin();
+    for (; nodeIter != leftParamNode.end(); ++nodeIter)
+    {
+        IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
+        QWidget *qw = w;
+        if (!qw)
         {
-            insertRow++;
+            qw = createContainter();
+        }
+        if (qw)
+        {
+            qw->setVisible(true);
+            qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+            rightParamLayout->addWidget(qw, rightParamLayout->rowCount()
+                                        , 0, 1, nodeIter->span);
+            rightParamLayout->setRowStretch(rightParamLayout->rowCount() - 1, 1);
+        }
+        if (w)
+        {
+            contentWidgets.append(w);
+            displayParams.append(w->name());
         }
     }
 
-    vLayout->setStretch(0, lastWaveRow + 1);
-    if (leftParamLayout->count() != 0)
-        vLayout->setStretch(1, leftParamLayout->rowCount());
+    vLayout->setStretch(0, waveLayout->rowCount());
 }
 
 void LayoutManagerPrivate::perform7LeadLayout()
@@ -583,31 +588,12 @@ void LayoutManagerPrivate::perform7LeadLayout()
         for (; nodeIter != iter.value().constEnd(); ++nodeIter)
         {
             int row = iter.key();
-            IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
-            QWidget *qw = w;
-            if (!qw)
-            {
-                qw = createContainter();
-            }
-            if (w)
-            {
-                contentWidgets.append(w);
-            }
             if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN)
             {
                 // add the param on the left in the standard layout
                 if (row < LAYOUT_MAX_WAVE_ROW_NUM)
                 {
-                    // not add to layout, need to remove here
-                    if (w)
-                    {
-                        contentWidgets.takeLast();
-                    }
-                    else if (qw)
-                    {
-                        delete qw;
-                        qw = NULL;
-                    }
+                    // standard layout wave region
                 }
                 else
                 {
@@ -618,12 +604,22 @@ void LayoutManagerPrivate::perform7LeadLayout()
             else
             {
                 // add the param on the right in the standard layout
-                qw->setVisible(true);
-                qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-                rightParamLayout->addWidget(qw, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
-                rightParamLayout->setRowStretch(row, 1);
+                IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
+                QWidget *qw = w;
+                if (!qw)
+                {
+                    qw = createContainter();
+                }
+                if (qw)
+                {
+                    qw->setVisible(true);
+                    qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+                    rightParamLayout->addWidget(qw, row, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
+                    rightParamLayout->setRowStretch(row, 1);
+                }
                 if (w)
                 {
+                    contentWidgets.append(w);
                     displayParams.append(w->name());
                 }
             }
@@ -636,14 +632,22 @@ void LayoutManagerPrivate::perform7LeadLayout()
     {
         IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
         QWidget *qw = w;
-        qw->setVisible(true);
-        qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+        if (!qw)
+        {
+            qw = createContainter();
+        }
+        if (qw)
+        {
+            qw->setVisible(true);
+            qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+            rightParamLayout->addWidget(qw, rightParamLayout->rowCount(), 0, 1, nodeIter->span);
+            rightParamLayout->setRowStretch(rightParamLayout->rowCount() - 1, 1);
+        }
         if (w)
         {
+            contentWidgets.append(w);
             displayParams.append(w->name());
         }
-        rightParamLayout->addWidget(qw, rightParamLayout->count() + 1, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
-        rightParamLayout->setRowStretch(rightParamLayout->count(), 1);
     }
 
     vLayout->setStretch(0, waveLayout->rowCount());
