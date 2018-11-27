@@ -98,6 +98,32 @@ void ECGMenuContentPrivate::loadOptions()
     int index2 = 0;
     currentConfig.getNumValue("ECG|Ecg2Wave", index2);
     currentConfig.getNumValue("ECG|Ecg1Wave", index1);
+
+    // 保证当前的ecg1、2的索引值小于当前ecg波形的数量
+    int items = combos[ITEM_CBO_ECG1]->count();
+    if (index1 >= items)
+    {
+        index1 = ecgParam.getCalcLead();
+        if (index1 >= items)
+        {
+            index1 = ECG_LEAD_I;
+        }
+        currentConfig.setNumValue("ECG|Ecg1Wave", index1);
+    }
+    // 非3导联模式下，改变ecg2索引
+    if (leadMode != ECG_LEAD_MODE_3)
+    {
+        if (index2 >= items)
+        {
+            index2 = ECG_LEAD_I;
+            if (index2 == index1)
+            {
+                index2 += 1;
+            }
+            currentConfig.setNumValue("ECG|Ecg2Wave", index2);
+        }
+    }
+
     // 读取的ecg1wave、ecg2wave如果item相同，则复位为0、1.
     if (index2 == index1)
     {
