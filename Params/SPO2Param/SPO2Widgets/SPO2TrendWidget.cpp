@@ -119,7 +119,7 @@ void SPO2TrendWidget::isAlarm(bool flag)
 void SPO2TrendWidget::showValue(void)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
-    if (_isAlarm)
+    if (_isAlarm && _spo2String != InvStr())
     {
         showAlarmStatus(_spo2Value);
         showAlarmParamLimit(_spo2Value, _spo2String, psrc);
