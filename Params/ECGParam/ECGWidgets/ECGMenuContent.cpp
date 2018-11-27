@@ -106,7 +106,7 @@ void ECGMenuContentPrivate::loadOptions()
         index1 = ecgParam.getCalcLead();
         if (index1 >= items)
         {
-            index1 = 0;
+            index1 = ECG_LEAD_I;
         }
         currentConfig.setNumValue("ECG|Ecg1Wave", index1);
     }
@@ -115,7 +115,7 @@ void ECGMenuContentPrivate::loadOptions()
     {
         if (index2 >= items)
         {
-            index2 = 0;
+            index2 = ECG_LEAD_I;
             if (index2 == index1)
             {
                 index2 += 1;
