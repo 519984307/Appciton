@@ -17,7 +17,6 @@
 #include "Button.h"
 #include "ConfigManager.h"
 #include "UnitManager.h"
-#include "TEMPParam.h"
 
 class UnitSetupMenuContentPrivate
 {
@@ -380,7 +379,7 @@ void UnitSetupMenuContent::onComboBoxIndexChanged(int index)
             {
                 index = UNIT_TF;
             }
-            tempParam.setUnit(static_cast<UnitType>(index));
+            systemConfig.setNumValue("Unit|TemperatureUnit", index);
             break;
         case UnitSetupMenuContentPrivate::ITEM_CBO_CVP_UNIT:
             if (index == 0)
