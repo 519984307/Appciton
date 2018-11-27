@@ -439,6 +439,10 @@ void ECGWaveWidget::setSpeed(ECGSweepSpeed speed)
     // 波形速度。
     switch (speed)
     {
+    case ECG_SWEEP_SPEED_625:
+        setWaveSpeed(6.25);
+        break;
+
     case ECG_SWEEP_SPEED_125:
         setWaveSpeed(12.5);
         break;

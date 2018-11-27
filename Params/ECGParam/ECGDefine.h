@@ -143,6 +143,7 @@ enum ECGPaceMode
  *************************************************************************************************/
 enum ECGSweepSpeed
 {
+    ECG_SWEEP_SPEED_625,
     ECG_SWEEP_SPEED_125,
     ECG_SWEEP_SPEED_250,
     ECG_SWEEP_SPEED_500,

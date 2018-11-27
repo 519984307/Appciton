@@ -473,6 +473,7 @@ void ECGMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
+                       << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_625))
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_125))
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_250))
                        << trs(ECGSymbol::convert(ECG_SWEEP_SPEED_500))
