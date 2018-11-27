@@ -116,6 +116,14 @@ void RESPWaveWidget::setZoom(int zoom)
 {
     switch (zoom)
     {
+    case RESP_ZOOM_X025:
+        setValueRange(-0x10000, 0xFFFC);
+        break;
+
+    case RESP_ZOOM_X050:
+        setValueRange(-0x8000, 0x7FFE);
+        break;
+
     case RESP_ZOOM_X100:
         setValueRange(-0x4000, 0x3FFF);
         break;

@@ -62,6 +62,8 @@ enum RESPApneaTime
  *************************************************************************************************/
 enum RESPZoom
 {
+    RESP_ZOOM_X025,      // x0.25
+    RESP_ZOOM_X050,      // x0.5
     RESP_ZOOM_X100,      // x1
     RESP_ZOOM_X200,      // x2
     RESP_ZOOM_X300,      // x3

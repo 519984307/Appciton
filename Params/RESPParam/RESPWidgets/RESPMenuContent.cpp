@@ -171,11 +171,13 @@ void RESPMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
-                   << trs(RESPSymbol::convert(RESP_ZOOM_X100))
-                   << trs(RESPSymbol::convert(RESP_ZOOM_X200))
-                   << trs(RESPSymbol::convert(RESP_ZOOM_X300))
-                   << trs(RESPSymbol::convert(RESP_ZOOM_X400))
-                   << trs(RESPSymbol::convert(RESP_ZOOM_X500)));
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X025))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X050))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X100))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X200))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X300))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X400))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X500)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(RESPMenuContentPrivate
                          ::ITEM_CBO_WAVE_GAIN, comboBox);
