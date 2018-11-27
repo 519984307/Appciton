@@ -92,40 +92,40 @@ FactoryTempMenuContentPrivate::FactoryTempMenuContentPrivate()
 
 QString FactoryTempMenuContentPrivate::btnStr[11] =
 {
-    "TEMPCalibrate0",
-    "TEMPCalibrate5",
-    "TEMPCalibrate10",
-    "TEMPCalibrate15",
-    "TEMPCalibrate20",
-    "TEMPCalibrate25",
-    "TEMPCalibrate30",
-    "TEMPCalibrate35",
-    "TEMPCalibrate40",
-    "TEMPCalibrate45",
-    "TEMPCalibrate50"
+    "0",
+    "5",
+    "10",
+    "15",
+    "20",
+    "25",
+    "30",
+    "35",
+    "40",
+    "45",
+    "50"
 };
 
 QString FactoryTempMenuContentPrivate::labelStr[11] =
 {
-    "TEMPCalibrate0is7409.3",
-    "TEMPCalibrate5is5742.9",
-    "TEMPCalibrate10is4491.1",
-    "TEMPCalibrate15is3541.3",
-    "TEMPCalibrate20is2813.9",
-    "TEMPCalibrate25is2252",
-    "TEMPCalibrate30is1814.5",
-    "TEMPCalibrate35is1471.1",
-    "TEMPCalibrate40is1199.8",
-    "TEMPCalibrate45is984",
-    "TEMPCalibrate50is811.3"
+    "7409.3",
+    "5742.9",
+    "4491.1",
+    "3541.3",
+    "2813.9",
+    "2252",
+    "1814.5",
+    "1471.1",
+    "1199.8",
+    "984",
+    "811.3"
 };
 
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 FactoryTempMenuContent::FactoryTempMenuContent()
-    : MenuContent(trs("TEMPCalibrate"),
-                  trs("TEMPCalibrateDesc")),
+    : MenuContent(trs("TEMPCalibrateMenu"),
+                  trs("TEMPCalibrateMenuesc")),
       d_ptr(new FactoryTempMenuContentPrivate)
 {
 }
@@ -176,9 +176,15 @@ void FactoryTempMenuContent::layoutExec()
 
     for (int i = 0; i < TEMP_CALIBRATE_NR; i++)
     {
-        label = new QLabel(trs(d_ptr->labelStr[i]));
+        label = new QLabel(QString("%1%2%3%4")
+                           .arg(trs("TEMPCalibrate"))
+                           .arg(d_ptr->btnStr[i])
+                           .arg(trs("is"))
+                           .arg(d_ptr->labelStr[i]));
         layout->addWidget(label, 2 + i, 0);
-        button = new Button(trs(d_ptr->btnStr[i]));
+        button = new Button(QString("%1%2")
+                                .arg(trs("TEMPCalibrate"))
+                                .arg(d_ptr->btnStr[i]));
         button->setButtonStyle(Button::ButtonTextOnly);
         button->setProperty("Item", qVariantFromValue(i));
         connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
