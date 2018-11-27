@@ -19,9 +19,9 @@
 
 void O2TrendWidget::setO2Value(int16_t o2)
 {
-    if (o2 != 0xff)
+    if ((o2 & 0xffff) != 0xffff)
     {
-        _o2String = QString::number(o2);
+        _o2String = QString("%1").number(o2 / 10.0 , 'f' , 1);
     }
     else
     {

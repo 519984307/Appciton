@@ -218,7 +218,8 @@ O2CalibrateReset,氧浓度校准数据被复位,O2 Calibrate Is Reset
 O2NotCalibrate,氧浓度传感器未校准,O2 Sensor Not Calibrate
 O2Low,氧浓度低,O2 Low
 O2High,氧浓度高,O2 High
-ApneaStimulation,窒息唤醒,Apnea Stimulation
+ApneaSimulation,窒息唤醒,Apnea Simulation
+VibrationIntensity,震动强度,Vibration Intensity
 Stop,停止,Stop
 AGMenu,AG,AG
 AGSweepSpeed,波形速度,Sweep Speed
