@@ -578,6 +578,7 @@ SPO2Low,血氧低,SPO2 Low
 SPO2High,血氧高,SPO2 High
 SPO2PRLow,脉率低,PR Low
 SPO2PRHigh,脉率高,PR High
+SPO2Initializing,SPO2初始化,SPO2 initializing
 SPO2PulseSearch,脉搏搜索中,SPO2 Pulse Search
 SPO2SensorOff,血氧传感器脱落,SPO2 Sensor Off
 SPO2CheckSensor,检查血氧传感器探头,SPO2 Check Sensor

@@ -261,93 +261,81 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
  *************************************************************************************************/
 bool S5Provider::isStatus(unsigned char *packet)
 {
-    switch (packet[1])
+    int probeSta = packet[1] & 0x3;
+    int fingerSta = (packet[1] >> 2) & 0x3;
+    int flashGainSta = (packet[1] >> 4) & 0xF;
+    int ledSta = packet[2] & 0x3;
+    int algorithmSta = (packet[2] >> 2) & 0xF;
+
+    // 探头插入
+    if (probeSta == 0x01)
     {
-    case S5_STATUS_PROBE:
-        if (packet[2] == 0x01)
-        {
-            spo2Param.setSensorOff(false);
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, false);
-        }
-        else
-        {
-            spo2Param.setSensorOff(true);
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, true);
-        }
-        break;
-
-    case S5_STATUS_FINGER:
-    {
-        bool isValid = false;
-        if (packet[2] == 0x00)
-        {
-            spo2Param.setNotify(true, trs("SPO2CheckSensor"));
-            spo2Param.setValidStatus(isValid);
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, true);
-        }
-        else
-        {
-            isValid = true;
-            spo2Param.setNotify(false, trs("SPO2CheckSensor"));
-            spo2Param.setValidStatus(isValid);
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, false);
-        }
-        break;
-    }
-    case S5_STATUS_FLASH_GAIN:
-        if (packet[2] == S5_GAIN_NORMAL)
-        {
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, false);
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, false);
-        }
-        else if (packet[2] == S5_GAIN_SATURATION)
-        {
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, true);
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, false);
-        }
-        else if (packet[2] == S5_GAIN_WEAK)
-        {
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, true);
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, false);
-        }
-        break;
-
-    case S5_STATUS_LED:
-        if (packet[2] == 0x00)
-        {
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LED_FAULT, false);
-        }
-        else
-        {
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LED_FAULT, true);
-        }
-        break;
-
-    case S5_STATUS_ALGORITHM:
         spo2Param.setSensorOff(false);
-        // 初始化
-        if (packet[2] == S5_LOGIC_INIT)
-        {
-            spo2Param.setNotify(true, trs("SPO2Initializing"));
-        }
-        // 脉搏搜索
-        else if (packet[2] == S5_LOGIC_SEARCHING)
-        {
-            spo2Param.setSearchForPulse(true);
-        }
-        //搜索时间过长
-        else if (packet[2] == S5_LOGIC_SEARCH_TOO_LONG)
-        {
-            spo2Param.setNotify(true, trs("SPO2PulseSearch"));
-        }
-        else
-        {
-            spo2Param.setNotify(false);
-        }
-        break;
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, false);
+    }
+    else
+    {
+        spo2Param.setSensorOff(true);
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, true);
+    }
 
-    default:
-        break;
+    // 手指插入
+    if (fingerSta == 0x00)
+    {
+        spo2Param.setNotify(true, trs("SPO2CheckSensor"));
+        spo2Param.setValidStatus(false);
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, true);
+    }
+    else
+    {
+        spo2Param.setNotify(false, trs("SPO2CheckSensor"));
+        spo2Param.setValidStatus(true);
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, false);
+    }
+
+    // 调光调增益
+    if (flashGainSta == S5_GAIN_NORMAL)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, false);
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, false);
+    }
+    else if (flashGainSta == S5_GAIN_SATURATION)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, true);
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, false);
+    }
+    else if (flashGainSta == S5_GAIN_WEAK)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, true);
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, false);
+    }
+
+    // LED
+    if (ledSta == 0x00)
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LED_FAULT, false);
+    }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LED_FAULT, true);
+    }
+
+    // 算法状态
+    if (algorithmSta == S5_LOGIC_INIT)
+    {
+        spo2Param.setNotify(true, trs("SPO2Initializing"));
+    }
+    else if (algorithmSta == S5_LOGIC_SEARCHING)
+    {
+        spo2Param.setSearchForPulse(true);
+    }
+    else if (algorithmSta == S5_LOGIC_SEARCH_TOO_LONG)
+    {
+        spo2Param.setNotify(true, trs("SPO2PulseSearch"));
+    }
+    else if (algorithmSta == S5_LOGIC_NORMAL)
+    {
+        spo2Param.setNotify(false);
     }
     return true;
 }
