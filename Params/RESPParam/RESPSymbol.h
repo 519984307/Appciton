@@ -92,7 +92,7 @@ public:
         {
             "Auto",
             "CO2",
-            "RESP"
+            "ECG"
         };
         return symbol[index];
     }
