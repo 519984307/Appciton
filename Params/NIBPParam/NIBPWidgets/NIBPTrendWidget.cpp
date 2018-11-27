@@ -553,7 +553,7 @@ void NIBPTrendWidget::showModelText(const QString &text)
 void NIBPTrendWidget::setTextSize()
 {
     QRect r;
-    r.setSize(QSize(((width() - nameLabel->width()) / 4), ((height() / 4) * 3)));
+    r.setSize(QSize(((width() - nameLabel->width()) / 4), ((height() / 5) * 3)));
     int fontsize = fontManager.adjustNumFontSize(r, true);
     QFont font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);

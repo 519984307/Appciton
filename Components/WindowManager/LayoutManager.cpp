@@ -575,8 +575,8 @@ void LayoutManagerPrivate::perform7LeadLayout()
         }
     }
 
+    QList<LayoutNode> leftParamNode;
     OrderedMap<int, LayoutRow>::ConstIterator iter = layoutInfos.begin();
-    int curLeftParamRowNum = 0;
     for (; iter != layoutInfos.end(); ++iter)
     {
         LayoutRow::ConstIterator nodeIter = iter.value().constBegin();
@@ -596,7 +596,7 @@ void LayoutManagerPrivate::perform7LeadLayout()
             if (nodeIter->pos < LAYOUT_WAVE_END_COLUMN)
             {
                 // add the param on the left in the standard layout
-                if (row < LAYOUT_MAX_WAVE_ROW_NUM || waveLayout->rowCount() + curLeftParamRowNum >= LAYOUT_ROW_COUNT)
+                if (row < LAYOUT_MAX_WAVE_ROW_NUM)
                 {
                     // not add to layout, need to remove here
                     if (w)
@@ -612,14 +612,7 @@ void LayoutManagerPrivate::perform7LeadLayout()
                 else
                 {
                     // standard layout left param region
-                    qw->setVisible(true);
-                    qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-                    leftParamLayout->addWidget(qw, curLeftParamRowNum, nodeIter->pos, 1, nodeIter->span);
-                    leftParamLayout->setRowStretch(curLeftParamRowNum, 1);
-                    if (w)
-                    {
-                        displayParams.append(w->name());
-                    }
+                    leftParamNode.append((*nodeIter));
                 }
             }
             else
@@ -635,20 +628,25 @@ void LayoutManagerPrivate::perform7LeadLayout()
                 }
             }
         }
+    }
 
-        if (!(*iter).isEmpty() && leftParamLayout->count())
+    // 剩下的左参数区的控件依次插入到右参数区下方
+    QList<LayoutNode>::iterator nodeIter = leftParamNode.begin();
+    for (; nodeIter != leftParamNode.end(); ++nodeIter)
+    {
+        IWidget *w = layoutWidgets.value(layoutNodeMap[nodeIter->name], NULL);
+        QWidget *qw = w;
+        qw->setVisible(true);
+        qw->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+        if (w)
         {
-            // NOTE: the rowCount of a grid layout is default to 1 even has no layout item,
-            // so we must use the count() to check whether wether has any item in the layout
-            if (leftParamLayout->rowCount() > curLeftParamRowNum)
-            {
-                curLeftParamRowNum++;
-            }
+            displayParams.append(w->name());
         }
+        rightParamLayout->addWidget(qw, rightParamLayout->count() + 1, nodeIter->pos - LAYOUT_WAVE_END_COLUMN, 1, nodeIter->span);
+        rightParamLayout->setRowStretch(rightParamLayout->count(), 1);
     }
 
     vLayout->setStretch(0, waveLayout->rowCount());
-    vLayout->setStretch(1, leftParamLayout->rowCount());
 }
 
 #define MAX_WIDGET_ROW_IN_OXYCRG_LAYOUT 3       // the maximum widget row can be displayed in the wave area while in the oxycrg layout
