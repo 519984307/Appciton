@@ -1172,8 +1172,8 @@ PrimitiveCalculation,原始计算,Primitive Calculation
 InOutValue,输入/输出值,
 ZeroCalibSuccess,校零成功,
 ZeroInProgress,校零进行中,Zero in progress
-CalibrationSuccess,校准成功,Calibration Success
-CalibrationFail,校准失败,Calibration Fail
+CalibrationSuccess,校准成功,Success
+CalibrationFail,校准失败,Fail
 MeasurePressureIsPulse,测量压力是脉动的,
 ZeroCalibPressureBeyondMeasureRange,校零压力超出测量范围,
 CalibrationPressureBeyondMeasureRange,校准压力超出测量范围,
@@ -1456,30 +1456,30 @@ SystemInfoSettingDesc,系统信息,System Info
 FactoryVersionInfo,版本信息,Version Info
 FactoryVersionInfoDesc,版本信息,Version Info
 SelectStarterLogo,选择开始菜单,Select Starter Logo
-WaitingCalibration,等待校准,Waiting Calibration
+WaitingCalibration,等待校准,Waiting
 Calibrating,正在校准,
-TEMPCalibrate0,温度校准0,TEMP Calibrate0
-TEMPCalibrate5,温度校准5,TEMP Calibrate5
-TEMPCalibrate10,温度校准10,TEMP Calibrate10
-TEMPCalibrate15,温度校准15,TEMP Calibrate15
-TEMPCalibrate20,温度校准20,TEMP Calibrate20
-TEMPCalibrate25,温度校准25,TEMP Calibrate25
-TEMPCalibrate30,温度校准30,TEMP Calibrate30
-TEMPCalibrate35,温度校准35,TEMP Calibrate35
-TEMPCalibrate40,温度校准40,TEMP Calibrate40
-TEMPCalibrate45,温度校准45,TEMP Calibrate45
-TEMPCalibrate50,温度校准50,TEMP Calibrate50
-TEMPCalibrate0is7409.3,温度校准0是7409.3,TEMP Calibrate0 is 7409.3
-TEMPCalibrate5is5742.9,温度校准5是5742.9,TEMP Calibrate5 is 5742.9
-TEMPCalibrate10is4491.1,温度校准10是4491.1,TEMP Calibrate10 is 4491.1
-TEMPCalibrate15is3541.3,温度校准15是3541.3,TEMP Calibrate15 is 3541.3
-TEMPCalibrate20is2813.9,温度校准20是2813.9,TEMP Calibrate20 is 2813.9
-TEMPCalibrate25is2252,温度校准25是2252,TEMP Calibrate25 is 2252
-TEMPCalibrate30is1814.5,温度校准30是1814.5,TEMP Calibrate30 is 1814.5
-TEMPCalibrate35is1471.1,温度校准35是1471.1,TEMP Calibrate35 is 1471.1
-TEMPCalibrate40is1199.8,温度校准40是1199.8,TEMP Calibrate40 is 1199.8
-TEMPCalibrate45is984,温度校准45是984,TEMP Calibrate45 is 984
-TEMPCalibrate50is811.3,温度校准50是811.3,TEMP Calibrate50 is 811.3
+TEMPCalibrate0,校准0,Calibrate0
+TEMPCalibrate5,校准5,Calibrate5
+TEMPCalibrate10,校准10,Calibrate10
+TEMPCalibrate15,校准15,Calibrate15
+TEMPCalibrate20,校准20,Calibrate20
+TEMPCalibrate25,校准25,Calibrate25
+TEMPCalibrate30,校准30,Calibrate30
+TEMPCalibrate35,校准35,Calibrate35
+TEMPCalibrate40,校准40,Calibrate40
+TEMPCalibrate45,校准45,Calibrate45
+TEMPCalibrate50,校准50,Calibrate50
+TEMPCalibrate0is7409.3,校准0是7409.3,Calibrate0 is 7409.3
+TEMPCalibrate5is5742.9,校准5是5742.9,Calibrate5 is 5742.9
+TEMPCalibrate10is4491.1,校准10是4491.1,Calibrate10 is 4491.1
+TEMPCalibrate15is3541.3,校准15是3541.3,Calibrate15 is 3541.3
+TEMPCalibrate20is2813.9,校准20是2813.9,Calibrate20 is 2813.9
+TEMPCalibrate25is2252,校准25是2252,Calibrate25 is 2252
+TEMPCalibrate30is1814.5,校准30是1814.5,Calibrate30 is 1814.5
+TEMPCalibrate35is1471.1,校准35是1471.1,Calibrate35 is 1471.1
+TEMPCalibrate40is1199.8,校准40是1199.8,Calibrate40 is 1199.8
+TEMPCalibrate45is984,校准45是984,Calibrate45 is 984
+TEMPCalibrate50is811.3,校准50是811.3,Calibrate50 is 811.3
 TEMP1,温度1,TEMP1
 TEMP2,温度2,TEMP2
 TEMPModuleNotCalibration1,温度模块通道1未定标,TEMP Channel 1 Not Calibration
