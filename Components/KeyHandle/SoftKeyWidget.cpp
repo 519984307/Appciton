@@ -158,6 +158,13 @@ void SoftkeyWidget::mouseReleaseEvent(QMouseEvent *e)
     update();
 }
 
+void SoftkeyWidget::focusOutEvent(QFocusEvent *e)
+{
+    IWidget::focusOutEvent(e);
+    _pressed = false;
+    update();
+}
+
 /***************************************************************************************************
  * 功能：计算合适的字体大小。
  * 参数：
