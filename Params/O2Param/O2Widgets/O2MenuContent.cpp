@@ -44,7 +44,7 @@ void O2MenuContent::layoutExec()
     QGridLayout *glayout = new QGridLayout(this);
     glayout->setMargin(10);
 
-    QLabel *label = new QLabel(trs("ShakeIntensity"));
+    QLabel *label = new QLabel(trs("VibrationIntensity"));
     glayout->addWidget(label, 0, 0);
     d_ptr->shakeSpb = new SpinBox();
     d_ptr->shakeSpb->setRange(50, 100);
@@ -53,7 +53,7 @@ void O2MenuContent::layoutExec()
     glayout->addWidget(d_ptr->shakeSpb, 0, 1);
     connect(d_ptr->shakeSpb, SIGNAL(valueChange(int, int)), this, SLOT(onShakeValueChanged(int, int)));
 
-    label = new QLabel(trs("ApneaStimulation"));
+    label = new QLabel(trs("ApneaSimulation"));
     glayout->addWidget(label, 1, 0);
     d_ptr->motorBtn = new ComboBox();
     d_ptr->motorBtn->addItems(QStringList()
