@@ -1584,8 +1584,8 @@ NightMode,夜间模式,Night
 Patient,病人信息,Patient
 IBPCOModule,IBP+CO模块,IBP+CO Module
 ShuttingDown,正在关机,Shutting Down
-StandardScreenLayout,标准界面界面布局,Standard Screen Layout
-BigFontScreenLayout,大字体界面界面布局,Big Font Screen Layout
+StandardScreenLayout,标准界面布局,Standard Screen Layout
+BigFontScreenLayout,大字体界面布局,Big Font Screen Layout
 MinitrendSetup,短趋势设置,Minitrend Setup
 MinitrendLength,动态趋势时间,Minitrend Length
 SelectParameters,参数选择,Select Parameters
