@@ -323,7 +323,7 @@ bool S5Provider::isStatus(unsigned char *packet)
     // 算法状态
     if (algorithmSta == S5_LOGIC_INIT)
     {
-        spo2Param.setNotify(true, trs("SPO2Initializing"));
+//        spo2Param.setNotify(true, trs("SPO2Initializing"));
     }
     else if (algorithmSta == S5_LOGIC_SEARCHING)
     {
@@ -333,7 +333,7 @@ bool S5Provider::isStatus(unsigned char *packet)
     {
         spo2Param.setNotify(true, trs("SPO2PulseSearch"));
     }
-    else if (algorithmSta == S5_LOGIC_NORMAL)
+    else if (algorithmSta == S5_LOGIC_NORMAL && fingerSta != 0x00)
     {
         spo2Param.setNotify(false);
     }
