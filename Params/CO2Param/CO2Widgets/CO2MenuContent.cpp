@@ -123,8 +123,6 @@ void CO2MenuContent::onBtnReleasedChanged()
     numberInput.setKeytypeSwitchEnable(false);
     numberInput.setSymbolEnable(false);
     numberInput.setSpaceEnable(false);
-    // 设置初始字符串 placeholder模式
-    numberInput.setInitString(button->text(), true);
 
     unsigned num = 1000;
     switch (index)
