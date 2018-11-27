@@ -303,12 +303,13 @@ bool TEMPParam::getCalibrationResult()
  *************************************************************************************************/
 void TEMPParam::setUnit(UnitType u)
 {
-    currentConfig.setNumValue("Display|TEMPUnit", static_cast<int>(u));
+    systemConfig.setNumValue("Unit|TemperatureUnit", static_cast<int>(u));
 
     if (NULL != _trendWidget)
     {
         _trendWidget->setUNit(u);
         _trendWidget->setTEMPValue(_t1Value, _t2Value, _tdValue);
+        _trendWidget->updateLimit();
     }
 }
 
@@ -317,10 +318,11 @@ void TEMPParam::setUnit(UnitType u)
  *************************************************************************************************/
 UnitType TEMPParam::getUnit(void)
 {
-    int u = UNIT_TDC;
-    currentConfig.getNumValue("Local|TEMPUnit", u);
+    int u = UNIT_TC;
 
-    return (UnitType)u;
+    systemConfig.getNumValue("Unit|TemperatureUnit", u);
+
+    return static_cast<UnitType>(u);
 }
 
 void TEMPParam::onPaletteChanged(ParamID id)
