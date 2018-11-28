@@ -254,13 +254,6 @@ void TEMPTrendWidget::showValue(void)
     }
 }
 
-void TEMPTrendWidget::updateLimit()
-{
-    UnitType unitType = paramManager.getSubParamUnit(PARAM_TEMP, SUB_PARAM_T1);
-    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_T1, unitType);
-    setLimit(config.highLimit, config.lowLimit, config.scale);
-}
-
 /**************************************************************************************************
  * 根据布局大小自动调整字体大小。
  *************************************************************************************************/
@@ -304,9 +297,6 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
 
     // 标签设定。
     setName("Temp");
-
-    // 显示上下限
-    updateLimit();
 
     // 设置报警关闭标志
     showAlarmOff();
