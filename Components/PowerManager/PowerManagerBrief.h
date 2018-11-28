@@ -9,7 +9,6 @@
  **/
 
 #pragma once
-#include "BatteryMessage.h"
 #include "BatteryBarWidget.h"
 #include "SystemBoardProvider.h"
 
@@ -28,6 +27,18 @@ public:
     }
     static PowerMangerBrief *_selfObj;
     ~PowerMangerBrief();
+
+    /**
+     * @brief setBatteryQuantity 设置电池电量
+     * @param adc
+     */
+    void setBatteryQuantity(short adc);
+
+    /**
+     * @brief getBatteryQuantity 获取电池电量
+     * @return
+     */
+    QString getBatteryQuantity();
 
 public:
     void run(void);

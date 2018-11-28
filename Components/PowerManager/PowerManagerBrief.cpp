@@ -21,16 +21,16 @@ class PowerMangerBriefPrivate
 public:
     explicit PowerMangerBriefPrivate(PowerMangerBrief * const q_ptr)
         : q_ptr(q_ptr), lowBattery(false), shutBattery(false),
-          lastVolume(BAT_VOLUME_NONE)
+          lastVolume(BAT_VOLUME_NONE), adcValue(0)
     {}
     ~PowerMangerBriefPrivate(){}
 
     PowerMangerBrief * const q_ptr;
-    BatteryMessage batteryMessage;
     PowerSuplyType powerType;       // 电源类型
     bool lowBattery;                // 低电量
     bool shutBattery;               // 关机电量
     BatteryPowerLevel lastVolume;   // 上一次的电量等级
+    short adcValue;                 // 电池电量
 
     void monitorRun();
 
@@ -64,6 +64,19 @@ public:
 PowerMangerBrief::~PowerMangerBrief()
 {
     delete d_ptr;
+}
+
+void PowerMangerBrief::setBatteryQuantity(short adc)
+{
+    d_ptr->adcValue = adc;
+}
+
+QString PowerMangerBrief::getBatteryQuantity()
+{
+    QString batQuantityStr;
+    float batQuantity = (d_ptr->adcValue * 1.0 ) / BAT_VOLUME_5 * 100;
+    batQuantityStr = QString("%1%2").arg(QString::number(batQuantity, 'f', 1), "%");
+    return batQuantityStr;
 }
 
 void PowerMangerBrief::run()
