@@ -138,8 +138,8 @@ ECGSTPoint,ST点,ST Point
 ECGISOPoint,ISO点,ISO Point
 ArrhythmiaAnalysisMenu,心律失常分析 ,Arrh.Analysis
 ArrhythmiaAnalysisMenuDesc,心律失常分析 ,Arrh.Analysis
-ArrhythmiaThresholdMenu,心律失常阀值,Arrh.Threshold
-ArrhythmiaThresholdMenuDesc,心律失常阀值,"Arrh,Threshold"
+ArrhythmiaThresholdMenu,心律失常阈值,Arrh.Threshold
+ArrhythmiaThresholdMenuDesc,心律失常阈值,"Arrh,Threshold"
 Arrhythmia,心律失常 >>,Arrhythmia >>
 ECGPaceMarker,起搏标记,Pace maker
 ECG12LPaceMarker,12导起搏标记,12L Pace maker

@@ -28,7 +28,7 @@ protected:
     void layoutExec();
 
 private slots:
-    void onButtonReleased(void);
+    void onSpinboxReleased(int value, int scale);
     void pauseChangeSlot(int);
 
 private:
