@@ -59,7 +59,7 @@ void UserMaintainGeneralMenuContentPrivate::loadOptions()
     systemConfig.getNumValue("General|ChangeBedNumberRight", index);
     combos[ITEM_CBO_CHANGE_BEDNUMBER_RIGHT]->setCurrentIndex(index);
 
-    currentConfig.getNumAttr("Local|Language" , "CurrentOption", index);
+    systemConfig.getNumAttr("General|Language" , "CurrentOption", index);
     combos[ITEM_CBO_LANGUAGE]->setCurrentIndex(index);
 }
 
@@ -177,15 +177,7 @@ void UserMaintainGeneralMenuContent::onComboBoxIndexChanged(int index)
             break;
         case UserMaintainGeneralMenuContentPrivate::ITEM_CBO_LANGUAGE:
         {
-            Config *config = configManager.getConfig(PATIENT_TYPE_ADULT);
-            config->setNumAttr("Local|Language" , "CurrentOption" , index);
-            config->saveToDisk();
-            config = configManager.getConfig(PATIENT_TYPE_PED);
-            config->setNumAttr("Local|Language" , "CurrentOption" , index);
-            config->saveToDisk();
-            config = configManager.getConfig(PATIENT_TYPE_NEO);
-            config->setNumAttr("Local|Language" , "CurrentOption" , index);
-            config->saveToDisk();
+            systemConfig.setNumAttr("General|Language" , "CurrentOption" , index);
             break;
         }
         default:

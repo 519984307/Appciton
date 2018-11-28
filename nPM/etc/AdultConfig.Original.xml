@@ -803,14 +803,6 @@
 		</O2>
     </AlarmSource>
     <Local>
-        <Language CurrentOption="1" OptionCount="2">
-            <!-- note："XmlFileName" segment consistent with XML language file name -->
-            <Opt0 XmlFileName="English">English</Opt0>
-            <Opt1 XmlFileName="ChineseSimplified">简体中文</Opt1>
-            <!--<Opt2 XmlFileName="PortugueseBrazil">Português(do Brasil)</Opt2>
-            <Opt3 XmlFileName="Spanish">Español</Opt3>
-            <Opt4 XmlFileName="Russian">Русский</Opt4>-->
-        </Language>
         <NIBPUnit>5</NIBPUnit>
         <CO2Unit>7</CO2Unit>
         <TEMPUnit>1</TEMPUnit>
