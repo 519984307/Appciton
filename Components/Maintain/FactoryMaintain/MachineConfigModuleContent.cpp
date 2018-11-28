@@ -23,6 +23,8 @@
 #include "SystemManager.h"
 #endif
 #include "SoftKeyManager.h"
+#include "MessageBox.h"
+#include <QProcess>
 
 class MachineConfigModuleContentPrivte
 {
@@ -42,6 +44,7 @@ public:
 #ifdef Q_WS_QWS
         ITEM_CBO_TSCREEN,
 #endif
+        ITEM_CBO_MAX
     };
 
     MachineConfigModuleContentPrivte()
@@ -53,6 +56,17 @@ public:
      */
     void loadOptions();
 
+    /**
+     * @brief configUpdateHint 配置更新提示
+     */
+    void configUpdateHint(void);
+
+    /**
+     * @brief setCombosBlockSignalStatue 设置cbo锁住信号状态
+     * @param isBlockSignals
+     */
+    void setCombosBlockSignalStatue(bool isBlockSignals);
+
     QMap <MenuItem, ComboBox *> combos;
 
     bool isSyncIBPCO;
@@ -62,6 +76,8 @@ void MachineConfigModuleContentPrivte::loadOptions()
 {
     int index;
     QString moduleName;
+
+    setCombosBlockSignalStatue(true);
 
     index = 0;
     machineConfig.getNumValue("ECG12LEADEnable", index);
@@ -134,6 +150,31 @@ void MachineConfigModuleContentPrivte::loadOptions()
     index = 0;
     machineConfig.getNumValue("WIFIEnable", index);
     combos[ITEM_CBO_WIFI]->setCurrentIndex(index);
+
+    setCombosBlockSignalStatue(false);
+}
+
+void MachineConfigModuleContentPrivte::configUpdateHint()
+{
+    QString hints = trs("MachineConfigIsUpdatedNow");
+    hints += "\n";
+    hints += trs("IsRebootMachine");
+    hints += "?";
+    MessageBox box(trs("UpdateHint"), hints);
+    QDialog::DialogCode statue = static_cast<QDialog::DialogCode>(box.exec());
+    if (statue == QDialog::Accepted)
+    {
+        QProcess::execute("reboot");
+    }
+}
+
+void MachineConfigModuleContentPrivte::setCombosBlockSignalStatue(bool isBlockSignals)
+{
+    for (int i = ITEM_CBO_ECG12; i < ITEM_CBO_MAX; i++)
+    {
+        MenuItem item = static_cast<MenuItem>(i);
+       combos[item]->blockSignals(isBlockSignals);
+    }
 }
 
 MachineConfigModuleContent::MachineConfigModuleContent()
@@ -416,6 +457,8 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             machineConfig.saveToDisk();
             systemManager.setTouchScreenOnOff(index);
             softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);
+            // 添加机器配置更新提示
+            d_ptr->configUpdateHint();
             return;
 #endif
         default:
@@ -469,4 +512,7 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         machineConfig.setStrValue(modulePath, moduleName);
     }
     machineConfig.saveToDisk();
+
+    // 添加机器配置更新提示
+    d_ptr->configUpdateHint();
 }
