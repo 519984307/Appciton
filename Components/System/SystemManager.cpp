@@ -306,6 +306,9 @@ void SystemManager::setTouchScreenOnOff(bool onOff)
         runningStatus.clearTouchStatus();
     }
 
+    // 将触摸屏使能的状态保存在系统配置文件中
+    systemConfig.setNumValue("General|TouchScreen", static_cast<int>(d_ptr->isTouchScreenOn));
+
     return;
 }
 #endif
