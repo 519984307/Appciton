@@ -23,6 +23,15 @@
 #include "ErrorLog.h"
 #include "IConfig.h"
 
+#define PROBE_IN_OUT            0x0001
+#define FINGER_IN_OUT           0x0002
+#define SIGNAL_SATURATION       0x0004
+#define SIGNAL_WEAK             0x0008
+#define LED_FAULT               0x0010
+#define PULSE_SEARCHING         0x0020
+#define PULSE_SEARCH_TOO_LONG   0x0040
+#define ALG_NORMAL              0x0060
+
 enum S5StatusType
 {
     S5_STATUS_PROBE,                // 探头插入状态
@@ -261,14 +270,8 @@ bool S5Provider::isResult_BAR(unsigned char *packet)
  *************************************************************************************************/
 bool S5Provider::isStatus(unsigned char *packet)
 {
-    int probeSta = packet[1] & 0x3;
-    int fingerSta = (packet[1] >> 2) & 0x3;
-    int flashGainSta = (packet[1] >> 4) & 0xF;
-    int ledSta = packet[2] & 0x3;
-    int algorithmSta = (packet[2] >> 2) & 0xF;
-
     // 探头插入
-    if (probeSta == 0x01)
+    if (packet[1] & PROBE_IN_OUT)
     {
         spo2Param.setSensorOff(false);
         spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CABLE_OFF, false);
@@ -280,62 +283,59 @@ bool S5Provider::isStatus(unsigned char *packet)
     }
 
     // 手指插入
-    if (fingerSta == 0x00)
-    {
-        spo2Param.setNotify(true, trs("SPO2CheckSensor"));
-        spo2Param.setValidStatus(false);
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, true);
-    }
-    else
+    if (packet[1] & FINGER_IN_OUT)
     {
         spo2Param.setNotify(false, trs("SPO2CheckSensor"));
         spo2Param.setValidStatus(true);
         spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, false);
     }
+    else
+    {
+        spo2Param.setNotify(true, trs("SPO2CheckSensor"));
+        spo2Param.setValidStatus(false);
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, true);
+    }
 
     // 调光调增益
-    if (flashGainSta == S5_GAIN_NORMAL)
-    {
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, false);
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, false);
-    }
-    else if (flashGainSta == S5_GAIN_SATURATION)
+
+    if (packet[1] & SIGNAL_SATURATION)
     {
         spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, true);
         spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, false);
     }
-    else if (flashGainSta == S5_GAIN_WEAK)
+    else if (packet[1] & SIGNAL_WEAK)
     {
         spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, true);
         spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, false);
     }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_SATURATION, false);
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SIGNAL_WEAK, false);
+    }
 
     // LED
-    if (ledSta == 0x00)
-    {
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LED_FAULT, false);
-    }
-    else
+    if (packet[1] & LED_FAULT)
     {
         spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LED_FAULT, true);
     }
+    else
+    {
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LED_FAULT, false);
+    }
 
     // 算法状态
-    if (algorithmSta == S5_LOGIC_INIT)
+    if (((packet[1] & ALG_NORMAL) == ALG_NORMAL) && !(packet[1] & FINGER_IN_OUT))
     {
-//        spo2Param.setNotify(true, trs("SPO2Initializing"));
+        spo2Param.setNotify(false);
     }
-    else if (algorithmSta == S5_LOGIC_SEARCHING)
+    else if (packet[1] & PULSE_SEARCHING)
     {
         spo2Param.setSearchForPulse(true);
     }
-    else if (algorithmSta == S5_LOGIC_SEARCH_TOO_LONG)
+    else if (packet[1] & PULSE_SEARCH_TOO_LONG)
     {
         spo2Param.setNotify(true, trs("SPO2PulseSearch"));
-    }
-    else if (algorithmSta == S5_LOGIC_NORMAL && fingerSta != 0x00)
-    {
-        spo2Param.setNotify(false);
     }
     return true;
 }
