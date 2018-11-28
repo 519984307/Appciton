@@ -129,15 +129,9 @@ void MonitorInfoWindow::layoutExec()
 {
     setWindowTitle(trs("MonitorInfoMenu"));
 
-    QVBoxLayout *vlayout = new QVBoxLayout;
-    vlayout->setMargin(10);
-
     QGridLayout *layout = new QGridLayout;
     layout->setVerticalSpacing(20);
-    vlayout->addStretch();
-    vlayout->addLayout(layout);
-    vlayout->addStretch();
-    setFixedSize(580, 480);
+    setFixedSize(480, 450);
 
     QLabel *labelLeft;
     QLabel *labelRight;
@@ -199,8 +193,8 @@ void MonitorInfoWindow::layoutExec()
                       Qt::AlignCenter|Qt::AlignRight);
     connect(d_ptr->button, SIGNAL(released()), this, SLOT(onBtnReleasedChanged()));
 
-    layout->setRowStretch((d_ptr->labs.count() + 1), 1);
-    setWindowLayout(vlayout);
+    layout->setRowStretch((layout->rowCount() + 1), 1);
+    setWindowLayout(layout);
 }
 
 QString MonitorInfoWindow::getRunTime()
