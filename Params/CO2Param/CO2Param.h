@@ -127,6 +127,7 @@ public:
     CO2SweepSpeed getSweepSpeed(void);
 
     // 获取波形模式。
+    void setSweepMode(CO2SweepMode mode);
     CO2SweepMode getSweepMode(void);
 
     // 设置/获取气体补偿。

@@ -200,7 +200,7 @@ ValveControl,气阀控制,Valve Control
 InflationPressure,充气压力,Inflation Pressure
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
-CO2SweepMode,CO2波形模式,CO2 Sweep Mode
+CO2WaveMode,CO2波形模式,CO2 Wave Mode
 CO2Curve,曲线,Curve
 CO2Filled,填充,Filled
 CO2Zoom,缩放,Zoom
