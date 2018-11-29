@@ -85,7 +85,7 @@ PatientTypeSelectWindow::PatientTypeSelectWindow()
 
     for (int i = 0; i < count; i++)
     {
-        QString fileName = userConfig[i].fileName;
+        QString fileName = userConfig[i].patType;
         nameList.append(fileName);
         PatientType type;
         if (PatientSymbol::convert(PATIENT_TYPE_ADULT) == fileName)
