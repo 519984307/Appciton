@@ -62,12 +62,16 @@ public:
     void configUpdateHint(void);
 
     /**
-     * @brief setCombosBlockSignalStatue 设置cbo锁住信号状态
+     * @brief setCombosBlockSignalStatus 设置cbo锁住信号状态
      * @param isBlockSignals
      */
-    void setCombosBlockSignalStatue(bool isBlockSignals);
+    void setCombosBlockSignalStatus(bool isBlockSignals);
 
     QMap <MenuItem, ComboBox *> combos;
+
+    QMap <MenuItem, int> itemChangedMap;
+
+    QMap <MenuItem, int> itemInitMap;
 
     bool isSyncIBPCO;
 };
@@ -77,11 +81,12 @@ void MachineConfigModuleContentPrivte::loadOptions()
     int index;
     QString moduleName;
 
-    setCombosBlockSignalStatue(true);
+    setCombosBlockSignalStatus(true);
 
     index = 0;
     machineConfig.getNumValue("ECG12LEADEnable", index);
     combos[ITEM_CBO_ECG12]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_ECG12] = index;
 
     index = 0;
     moduleName.clear();
@@ -99,6 +104,7 @@ void MachineConfigModuleContentPrivte::loadOptions()
             combos[ITEM_CBO_SPO2]->setCurrentIndex(index);
         }
     }
+    itemChangedMap[ITEM_CBO_SPO2] = index;
 
     index = 0;
     moduleName.clear();
@@ -116,26 +122,32 @@ void MachineConfigModuleContentPrivte::loadOptions()
             combos[ITEM_CBO_NIBP]->setCurrentIndex(index);
         }
     }
+    itemChangedMap[ITEM_CBO_NIBP] = index;
 
     index = 0;
     machineConfig.getNumValue("RESPEnable", index);
     combos[ITEM_CBO_RESP]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_RESP] = index;
 
     index = 0;
     machineConfig.getNumValue("CO2Enable", index);
     combos[ITEM_CBO_CO2]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_CO2] = index;
 
     index = 0;
     machineConfig.getNumValue("AGEnable", index);
     combos[ITEM_CBO_AG]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_AG] = index;
 
     index = 0;
     machineConfig.getNumValue("COEnable", index);
     combos[ITEM_CBO_CO]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_CO] = index;
 
     index = 0;
     machineConfig.getNumValue("IBPEnable", index);
     combos[ITEM_CBO_IBP]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_IBP] = index;
 
 #ifdef Q_WS_QWS
     index = 0;
@@ -146,12 +158,16 @@ void MachineConfigModuleContentPrivte::loadOptions()
     index = 0;
     machineConfig.getNumValue("TEMPEnable", index);
     combos[ITEM_CBO_TEMP]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_TEMP] = index;
 
     index = 0;
     machineConfig.getNumValue("WIFIEnable", index);
     combos[ITEM_CBO_WIFI]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_WIFI] = index;
 
-    setCombosBlockSignalStatue(false);
+    itemInitMap = itemChangedMap;
+
+    setCombosBlockSignalStatus(false);
 }
 
 void MachineConfigModuleContentPrivte::configUpdateHint()
@@ -168,7 +184,7 @@ void MachineConfigModuleContentPrivte::configUpdateHint()
     }
 }
 
-void MachineConfigModuleContentPrivte::setCombosBlockSignalStatue(bool isBlockSignals)
+void MachineConfigModuleContentPrivte::setCombosBlockSignalStatus(bool isBlockSignals)
 {
     for (int i = ITEM_CBO_ECG12; i < ITEM_CBO_MAX; i++)
     {
@@ -217,6 +233,7 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_ECG12;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // spo2 module
     label = new QLabel(trs("SPO2Module"));
@@ -234,6 +251,7 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_SPO2;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // nibp module
     label = new QLabel(trs("NIBPModule"));
@@ -250,6 +268,7 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_NIBP;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // resp module
     label = new QLabel(trs("RESPModule"));
@@ -265,6 +284,7 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_RESP;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // co2 module
     label = new QLabel(trs("CO2Module"));
@@ -280,6 +300,7 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_CO2;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // ag module
     label = new QLabel(trs("AGModule"));
@@ -295,6 +316,7 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_AG;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // co module
     label = new QLabel(trs("COModule"));
@@ -310,6 +332,7 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_CO;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // ibp module
     label = new QLabel(trs("IBPModule"));
@@ -325,6 +348,7 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_IBP;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // temp module
     label = new QLabel(trs("TEMPModule"));
@@ -340,6 +364,7 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_TEMP;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // wifi module
     label = new QLabel(trs("WIFIModule"));
@@ -355,6 +380,7 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_WIFI;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
 #ifdef Q_WS_QWS
     // touch screen module
@@ -376,6 +402,17 @@ void MachineConfigModuleContent::layoutExec()
 #endif
 
     layout->setRowStretch(d_ptr->combos.count(), 1);
+}
+
+void MachineConfigModuleContent::hideEvent(QHideEvent *e)
+{
+    QWidget::hideEvent(e);
+
+    if (d_ptr->itemChangedMap != d_ptr->itemInitMap)
+    {
+        // 添加机器配置更新提示
+        d_ptr->configUpdateHint();
+    }
 }
 
 void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
@@ -457,8 +494,6 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             machineConfig.saveToDisk();
             systemManager.setTouchScreenOnOff(index);
             softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);
-            // 添加机器配置更新提示
-            d_ptr->configUpdateHint();
             return;
 #endif
         default:
@@ -513,6 +548,7 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
     }
     machineConfig.saveToDisk();
 
-    // 添加机器配置更新提示
-    d_ptr->configUpdateHint();
+    MachineConfigModuleContentPrivte::MenuItem item =
+            static_cast<MachineConfigModuleContentPrivte::MenuItem>(indexType);
+    d_ptr->itemChangedMap[item] = index;
 }
