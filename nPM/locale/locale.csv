@@ -190,8 +190,8 @@ EnterCalibrateMode,进入校准模式,Calibrate Mode
 QuitCalibrateMode,退出校准模式,Quit Calibrate
 QuitManometerMode,退出压力计模式,Quit Manometer
 EnterManometerMode,进入压力计模式,Enter Manometer
-QuitPressureContrlMode,退出压力操控模式,Quit Pressure Contrl
-EnterPressureContrlMode,进入压力操控模式,Enter Pressure Contrl
+QuitPressureContrlMode,退出压力操控模式,Quit Pressure Control
+EnterPressureContrlMode,进入压力操控模式,Enter Pressure Control
 EnterZeroMode,进入校零模式,Enter Zero
 QuitZeroMode,退出校零模式,Quit Zero
 OperationFailedPleaseAgain,"操作失败,请重试!","Operation Failed , Please Again!"
