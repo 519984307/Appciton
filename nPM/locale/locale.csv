@@ -1496,6 +1496,7 @@ AutoRuler,自动标尺,Auto Ruler
 RESPLow,呼吸低,RESP Low
 RESPHigh,呼吸高,RESP High
 Static,静态,Static
+PageNum,页,Page
 ImportFiles,导入文件,ImportFiles
 LoadConfigMenuContent,加载配置,Load Config
 LoadConfigMenuContentDesc,加载配置,Load Config
