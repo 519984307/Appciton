@@ -523,7 +523,7 @@ void PatientInfoWindow::nameReleased()
 {
     EnglishInputPanel englishPanel;
     englishPanel.setWindowTitle(trs("PatientName"));
-    englishPanel.setMaxInputLength(100);
+    englishPanel.setMaxInputLength(120);
     englishPanel.setInitString(d_ptr->name->text());
     if (englishPanel.exec())
     {
