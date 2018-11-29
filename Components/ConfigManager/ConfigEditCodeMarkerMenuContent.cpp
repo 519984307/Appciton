@@ -16,6 +16,7 @@
 #include <QVBoxLayout>
 #include <QEvent>
 #include "ConfigManager.h"
+#include "IConfig.h"
 
 class ConfigEditCodeMarkerMenuContentPrivate
 {
@@ -65,7 +66,7 @@ void ConfigEditCodeMarkerMenuContent::hideEvent(QHideEvent *ev)
 void ConfigEditCodeMarkerMenuContentPrivate::loadOptions()
 {
     languageIndex = 0;
-    config->getNumAttr("Local|Language", "CurrentOption", languageIndex);
+    systemConfig.getNumAttr("General|Language", "CurrentOption", languageIndex);
     if (languageIndex != languageManager.getCurLanguage())
     {
         languageManager.reload(languageIndex);
@@ -184,7 +185,7 @@ void ConfigEditCodeMarkerMenuContent::onComboBoxIndexChanged(int index)
     QStringList tmpList(d_ptr->selectedCodeMarkers);
     QString strValue = tmpList.join(",");
     int num = 0;
-    d_ptr->config->getNumAttr("Local|Language", "CurrentOption", num);
+    systemConfig.getNumAttr("General|Language", "CurrentOption", num);
     QString markerStr = "CodeMarker|SelectMarker|Language";
     markerStr += QString::number(num, 10);
     d_ptr->config->setStrValue(markerStr, strValue);
