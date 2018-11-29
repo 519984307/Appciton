@@ -18,6 +18,7 @@
 #include "ConfigManager.h"
 #include "UnitManager.h"
 #include "TEMPParam.h"
+#include "CO2Param.h"
 
 class UnitSetupMenuContentPrivate
 {
@@ -131,7 +132,7 @@ void UnitSetupMenuContentPrivate::loadOptions()
     }
     combos[ITEM_CBO_ICP_UNIT]->setCurrentIndex(index);
 
-    systemConfig.getNumValue("Unit|CO2Unit", unit);
+    currentConfig.getNumValue("Local|CO2Unit", unit);
     if (unit == UNIT_MMHG)
     {
         index = 0;
@@ -437,7 +438,8 @@ void UnitSetupMenuContent::onComboBoxIndexChanged(int index)
             {
                 index = UNIT_MMHG;
             }
-            systemConfig.setNumValue("Unit|CO2Unit", index);
+            currentConfig.setNumValue("Local|CO2Unit", index);
+            co2Param.updateUnit();
             break;
         default:
             break;

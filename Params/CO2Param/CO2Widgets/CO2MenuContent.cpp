@@ -72,6 +72,32 @@ void CO2MenuContentPrivate::loadOptions()
     // 波形速度。
     combos[ITEM_CBO_WAVE_SPEED]->setCurrentIndex(co2Param.getSweepSpeed());
 
+    // 波形标尺
+    combos[ITEM_CBO_WAVE_RULER]->blockSignals(true);
+    combos[ITEM_CBO_WAVE_RULER]->clear();
+    int maxZoom = CO2_DISPLAY_ZOOM_NR;
+    float zoomArray[CO2_DISPLAY_ZOOM_NR] = {4.0, 8.0, 12.0, 20.0};
+    QString str;
+    UnitType unit = co2Param.getUnit();
+    for (int i = 0; i < maxZoom; i++)
+    {
+        str.clear();
+        if (unit == UNIT_MMHG)
+        {
+            str = "0~";
+            int tempVal = Unit::convert(UNIT_MMHG, UNIT_PERCENT, zoomArray[i]).toInt();
+            tempVal = (tempVal + 5) / 10 * 10;
+            str += QString::number(tempVal);
+        }
+        else
+        {
+            str = QString("0.0~%1").arg(QString::number(zoomArray[i], 'f', 1));
+        }
+        str += " ";
+        str += Unit::localeSymbol(unit);
+        combos[ITEM_CBO_WAVE_RULER]->addItem(str);
+    }
+    combos[ITEM_CBO_WAVE_RULER]->blockSignals(false);
     combos[ITEM_CBO_WAVE_RULER]->setCurrentIndex(co2Param.getDisplayZoom());
 
     // 气体补偿。
@@ -206,33 +232,6 @@ void CO2MenuContent::layoutExec()
     label = new QLabel(trs("Ruler"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    int maxZoom = CO2_DISPLAY_ZOOM_NR;
-    float zoomArray[CO2_DISPLAY_ZOOM_NR] = {4.0, 8.0, 12.0, 20.0};
-    QString str;
-    UnitType unit = co2Param.getUnit();
-    for (int i = 0; i < maxZoom; i++)
-    {
-        str.clear();
-        if (unit == UNIT_KPA)
-        {
-            float tempVal = Unit::convert(UNIT_KPA, UNIT_PERCENT, zoomArray[i]).toFloat();
-            str = QString("0.0~%1").arg(QString::number(tempVal, 'f', 1));
-        }
-        else if (unit == UNIT_MMHG)
-        {
-            str = "0~";
-            int tempVal = Unit::convert(UNIT_MMHG, UNIT_PERCENT, zoomArray[i]).toInt();
-            tempVal = (tempVal + 5) / 10 * 10;
-            str += QString::number(tempVal);
-        }
-        else
-        {
-            str = QString("0.0~%1").arg(QString::number(zoomArray[i], 'f', 1));
-        }
-        str += " ";
-        str += Unit::localeSymbol(unit);
-        comboBox->addItem(str);
-    }
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     itemID = static_cast<int>(CO2MenuContentPrivate::ITEM_CBO_WAVE_RULER);
