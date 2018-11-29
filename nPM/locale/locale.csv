@@ -701,7 +701,7 @@ NIBPCuffAirLeakage,血压袖带漏气,NIBP Cuff Air Leakage
 NIBPPneumaticBlockage,血压气管堵塞,NIBP Pneumatic Blockage
 NIBPCuffOverPressure,血压袖带压力过压,NIBP Cuff Over Pressure
 NIBPPressureError,血压压力错,NIBP Pressure Error
-NIBPSignalWeak,血压信号弱,NIBP Signal Weak
+NIBPSignalWeak,血压信号微弱,NIBP Signal Weak
 NIBPSignalSaturation,血压信号饱和,NIBP Signal Saturation
 NIBPMeasureOverRange,血压测量超界,NIBP Measure Over Range
 NIBPMeasureTimeout,血压测量超时,NIBP Measure Timeout
