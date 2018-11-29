@@ -33,6 +33,13 @@ private slots:
     void eraseReleased();
     void USBCheckTimeout();
 
+    /**
+     * @brief onPageInfoUpdated  页码更新槽函数
+     * @param curPage 当前页
+     * @param totalPage 总页
+     */
+    void onPageInfoUpdated(int curPage, int totalPage);
+
 private:
     ErrorLogWindow();
     QScopedPointer<ErrorLogWindowPrivate> d_ptr;
