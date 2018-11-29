@@ -85,18 +85,18 @@ PatientTypeSelectWindow::PatientTypeSelectWindow()
 
     for (int i = 0; i < count; i++)
     {
-        QString fileName = userConfig[i].patType;
-        nameList.append(fileName);
-        PatientType type;
-        if (PatientSymbol::convert(PATIENT_TYPE_ADULT) == fileName)
+        QString patType = userConfig[i].patType;
+        nameList.append(userConfig[i].fileName);
+        PatientType type = PATIENT_TYPE_NULL;
+        if (PatientSymbol::convert(PATIENT_TYPE_ADULT) == patType)
         {
             type = PATIENT_TYPE_ADULT;
         }
-        else if (PatientSymbol::convert(PATIENT_TYPE_PED) == fileName)
+        else if (PatientSymbol::convert(PATIENT_TYPE_PED) == patType)
         {
             type = PATIENT_TYPE_PED;
         }
-        else if (PatientSymbol::convert(PATIENT_TYPE_NEO) == fileName)
+        else if (PatientSymbol::convert(PATIENT_TYPE_NEO) == patType)
         {
             type = PATIENT_TYPE_NEO;
         }
