@@ -111,6 +111,11 @@ public:
     // 超限报警通知
     void noticeLimitAlarm(int id, bool flag);
 
+    /**
+     * @brief updateUnit 单位变更后刷新对应的窗口控件
+     */
+    void updateUnit(void);
+
 public:
     // 校零。
     void zeroCalibration(void);
