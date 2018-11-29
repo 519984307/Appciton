@@ -510,7 +510,7 @@ void PatientInfoWindow::idReleased()
 {
     EnglishInputPanel englishPanel;
     englishPanel.setWindowTitle(trs("PatientID"));
-    englishPanel.setMaxInputLength(100);
+    englishPanel.setMaxInputLength(120);
     englishPanel.setInitString(d_ptr->id->text());
     if (englishPanel.exec())
     {
