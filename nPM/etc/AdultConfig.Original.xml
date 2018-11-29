@@ -553,8 +553,8 @@
 		</TB>
 		<ETCO2 Enable="1" Prio="2">
 		<percent>
-		    <Low Min="1" Max="128">33</Low>
-		    <High Min="4" Max="130">66</High>
+		    <Low Min="0" Max="249">10</Low>
+		    <High Min="1" Max="250">80</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</percent>
@@ -573,8 +573,8 @@
 		</ETCO2>
 		<FICO2 Enable="0" Prio="2">
 		<percent>
-		    <Low Min="1" Max="128">1</Low>
-		    <High Min="4" Max="130">5</High>
+		    <Low Min="0" Max="249">0</Low>
+		    <High Min="1" Max="250">80</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</percent>
