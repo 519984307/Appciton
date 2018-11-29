@@ -51,6 +51,10 @@ bool qt_sendSpontaneousEvent(QObject *receiver, QEvent *event)
 int main(int argc, char *argv[])
 {
     IApplication app(argc, argv);
+
+    // 检查并固定系统时间
+    timeManager.checkAndFixSystemTime();
+
     // 捕捉段错误
     catchFatalError();
     // 检查上次程序运行期间是否有错误发生
