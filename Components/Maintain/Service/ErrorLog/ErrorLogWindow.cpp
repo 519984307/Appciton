@@ -203,7 +203,8 @@ void ErrorLogWindow::exportReleased()
         // start export
         if (usbManager.exportErrorLog())
         {
-            if (0 == exportDataWidget.exec())
+            QDialog::DialogCode statue = static_cast<QDialog::DialogCode>(exportDataWidget.exec());
+            if (QDialog::Rejected == statue)
             {
                 QString msg;
                 DataExporterBase::ExportStatus status = usbManager.getLastExportStatus();
@@ -225,6 +226,10 @@ void ErrorLogWindow::exportReleased()
                 }
                 MessageBox messageBox(trs("Warn"), msg, QStringList(trs("EnglishYESChineseSURE")));
                 messageBox.exec();
+            }
+            else if (QDialog::Accepted == statue)  // 导出成功
+            {
+                eraseReleased();  // 询问是否擦除errorlog
             }
         }
     }
