@@ -28,9 +28,10 @@
 #define SIGNAL_SATURATION       0x0004
 #define SIGNAL_WEAK             0x0008
 #define LED_FAULT               0x0010
-#define PULSE_SEARCHING         0x0020
-#define PULSE_SEARCH_TOO_LONG   0x0040
-#define ALG_NORMAL              0x0060
+#define ALGORITHM_MASK          0x0060
+#define PULSE_SEARCHING         1
+#define PULSE_SEARCH_TOO_LONG   2
+#define ALG_NORMAL              3
 
 enum S5StatusType
 {
@@ -325,17 +326,18 @@ bool S5Provider::isStatus(unsigned char *packet)
     }
 
     // 算法状态
-    if (((packet[1] & ALG_NORMAL) == ALG_NORMAL) && !(packet[1] & FINGER_IN_OUT))
-    {
-        spo2Param.setNotify(false);
-    }
-    else if (packet[1] & PULSE_SEARCHING)
+    int algorithmSta = (packet[1] & ALGORITHM_MASK) >> 5;
+    if (algorithmSta == PULSE_SEARCHING)
     {
         spo2Param.setSearchForPulse(true);
     }
-    else if (packet[1] & PULSE_SEARCH_TOO_LONG)
+    else if (algorithmSta == PULSE_SEARCH_TOO_LONG)
     {
         spo2Param.setNotify(true, trs("SPO2PulseSearch"));
+    }
+    else if ((algorithmSta == ALG_NORMAL) && !(packet[1] & FINGER_IN_OUT))
+    {
+        spo2Param.setNotify(false);
     }
     return true;
 }
