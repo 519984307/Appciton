@@ -104,7 +104,7 @@ public:
     {
         static const char *symbol[CO2_FICO2_DISPLAY_NR] =
         {
-            "OFF", "ON"
+            "Off", "On"
         };
         return symbol[index];
     }
