@@ -74,6 +74,10 @@ void RESPParamPrivate::setWaveformSpeed(RESPSweepSpeed speed)
         waveWidget->setWaveSpeed(25.0);
         break;
 
+    case RESP_SWEEP_SPEED_50_0:
+        waveWidget->setWaveSpeed(50.0);
+        break;
+
     default:
         break;
     }
