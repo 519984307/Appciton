@@ -88,7 +88,7 @@ void RecordPageProcessor::addPage(RecordPage *page)
         return;
     }
 
-#if 1
+#if 0
 #ifdef Q_WS_QWS
     QString path("/mnt/nfs/tmp/");
 #else
