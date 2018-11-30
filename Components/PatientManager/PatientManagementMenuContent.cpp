@@ -175,10 +175,10 @@ void PatientManagementMenuContentPrivate::loadOption()
 {
     if (patientManager.isMonitoring())
     {
-        dischargePatient->setText(trs("RelievePatient"));
+        dischargePatient->setEnabled(true);
     }
     else
     {
-        dischargePatient->setText(trs("CleanPatientData"));
+        dischargePatient->setEnabled(false);
     }
 }
