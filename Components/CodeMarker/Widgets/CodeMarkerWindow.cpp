@@ -20,6 +20,7 @@
 #include <QTimer>
 #include "EventStorageManager.h"
 #include "TimeManager.h"
+#include "IConfig.h"
 
 class CodeMarkerWindowPrivate
 {
@@ -55,7 +56,7 @@ CodeMarkerWindow::CodeMarkerWindow() : Window()
 {
     QString codemarkerStr;
     int num = 0;
-    currentConfig.getNumAttr("Local|Language", "CurrentOption", num);
+    systemConfig.getNumAttr("General|Language", "CurrentOption", num);
     QString markerStr = "CodeMarker|SelectMarker|Language";
     markerStr += QString::number(num, 10);
     currentConfig.getStrValue(markerStr, codemarkerStr);

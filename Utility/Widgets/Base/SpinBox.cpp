@@ -28,7 +28,7 @@ public:
     SpinBoxPrivate()
         : m_borderWidth(themeManger.getBorderWidth()),
           m_borderRadius(themeManger.getBorderRadius()),
-          arrow(true),
+          arrow(false),
           status(SpinBox::SPIN_BOX_FOCUS_IN)
     {}
 

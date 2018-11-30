@@ -75,6 +75,7 @@ ErrorLogWindow::ErrorLogWindow()
     d_ptr->table->setFixedWidth(800);
     d_ptr->table->setItemDelegate(new TableViewItemDelegate(this));
     connect(d_ptr->table, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClickSlot(QModelIndex)));
+    connect(d_ptr->model, SIGNAL(pageInfoUpdate(int, int)), this, SLOT(onPageInfoUpdated(int, int)));
 
     d_ptr->summaryBtn = new Button(trs("Summary"));
     d_ptr->summaryBtn->setButtonStyle(Button::ButtonTextOnly);
@@ -118,7 +119,8 @@ ErrorLogWindow::ErrorLogWindow()
 
     setWindowLayout(layout);
 
-    d_ptr->usbCheckTimer = new QTimer();
+    // 绑定this父类指针，父类析构时，强制析构子类，防止内存泄露
+    d_ptr->usbCheckTimer = new QTimer(this);
     d_ptr->usbCheckTimer->setInterval(500);
     connect(d_ptr->usbCheckTimer, SIGNAL(timeout()), this, SLOT(USBCheckTimeout()));
 }
@@ -201,7 +203,8 @@ void ErrorLogWindow::exportReleased()
         // start export
         if (usbManager.exportErrorLog())
         {
-            if (0 == exportDataWidget.exec())
+            QDialog::DialogCode statue = static_cast<QDialog::DialogCode>(exportDataWidget.exec());
+            if (QDialog::Rejected == statue)
             {
                 QString msg;
                 DataExporterBase::ExportStatus status = usbManager.getLastExportStatus();
@@ -223,6 +226,10 @@ void ErrorLogWindow::exportReleased()
                 }
                 MessageBox messageBox(trs("Warn"), msg, QStringList(trs("EnglishYESChineseSURE")));
                 messageBox.exec();
+            }
+            else if (QDialog::Accepted == statue)  // 导出成功
+            {
+                eraseReleased();  // 询问是否擦除errorlog
             }
         }
     }
@@ -258,4 +265,28 @@ void ErrorLogWindow::USBCheckTimeout()
     {
         d_ptr->infoLab->hide();
     }
+}
+
+void ErrorLogWindow::onPageInfoUpdated(int curPage, int totalPage)
+{
+    // 传进来的当前页是从索引0开始的计数的
+    // 显示页码时加1显示
+    curPage += 1;
+    if (totalPage < 1)
+    {
+        totalPage = curPage = 1;
+    }
+    else if (curPage > totalPage)
+    {
+        curPage = totalPage;
+    }
+    QString title = trs("ErrorLog");
+    title += " (";
+    title += QString::number(curPage);
+    title += "/";
+    title += QString::number(totalPage);
+    title += " ";
+    title += trs("PageNum");
+    title += ")";
+    setWindowTitle(title);
 }

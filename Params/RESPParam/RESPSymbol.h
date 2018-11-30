@@ -41,7 +41,7 @@ public:
     {
         static const char *symbol[RESP_SWEEP_SPEED_NR] =
         {
-            "6.25 mm/s", "12.5 mm/s", "25.0 mm/s"
+            "6.25 mm/s", "12.5 mm/s", "25.0 mm/s", "50.0 mm/s"
         };
         return symbol[index];
     }

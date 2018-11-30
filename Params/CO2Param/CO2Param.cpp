@@ -46,7 +46,6 @@ public:
               baro(750),
               connectedProvider(false),
               co2Switch(false),
-              curUnit(UNIT_NONE),
               oxyCRGCO2Wave(NULL)
     {
     }
@@ -85,7 +84,6 @@ public:
     short  baro;
     bool   connectedProvider;
     bool   co2Switch;
-    UnitType curUnit;
 
     OxyCRGCO2WaveWidget *oxyCRGCO2Wave;
 };
@@ -660,6 +658,20 @@ void CO2Param::noticeLimitAlarm(int id, bool flag)
     }
 }
 
+void CO2Param::updateUnit()
+{
+    if (d_ptr->trendWidget != NULL)
+    {
+        d_ptr->trendWidget->setUNit(getUnit());
+        d_ptr->trendWidget->updateLimit();
+    }
+
+    if (d_ptr->waveWidget != NULL)
+    {
+        d_ptr->waveWidget->setRuler(getDisplayZoom());
+    }
+}
+
 /**************************************************************************************************
  * 校零。
  *************************************************************************************************/
@@ -722,6 +734,12 @@ CO2SweepSpeed CO2Param::getSweepSpeed(void)
     int speed = CO2_SWEEP_SPEED_62_5;
     currentConfig.getNumValue("CO2|SweepSpeed", speed);
     return (CO2SweepSpeed)speed;
+}
+
+void CO2Param::setSweepMode(CO2SweepMode mode)
+{
+    currentConfig.setNumValue("CO2|CO2SweepMode", static_cast<int>(mode));
+    d_ptr->waveWidget->setWaveformMode(mode);
 }
 
 /**************************************************************************************************
@@ -825,7 +843,9 @@ CO2FICO2Display CO2Param::getFICO2Display(void)
  *************************************************************************************************/
 UnitType CO2Param::getUnit(void)
 {
-    return d_ptr->curUnit;
+    int unit = UNIT_PERCENT;
+    currentConfig.getNumValue("Local|CO2Unit", unit);
+    return static_cast<UnitType>(unit);
 }
 
 /**************************************************************************************************
@@ -880,7 +900,6 @@ CO2Param::CO2Param()
 {
     int t = UNIT_PERCENT;
     currentConfig.getNumValue("Local|CO2Unit", t);
-    d_ptr->curUnit = (UnitType)t;
 
     QString path = "AlarmSource|";
     path += paramInfo.getSubParamName(SUB_PARAM_ETCO2);

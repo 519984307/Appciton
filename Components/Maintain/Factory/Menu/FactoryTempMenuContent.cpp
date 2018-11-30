@@ -22,6 +22,7 @@
 #include <QGroupBox>
 #include "FontManager.h"
 
+#define TEMP_VALUE_UPDATE_TIME                 (100)
 #define CALIBRATION_INTERVAL_TIME              (100)
 #define TIMEOUT_WAIT_NUMBER                    (5000 / CALIBRATION_INTERVAL_TIME)
 
@@ -50,7 +51,6 @@ enum TempCalibrateChannel
 class FactoryTempMenuContentPrivate
 {
 public:
-    static QString btnStr[TEMP_CALIBRATE_NR];
     static QString labelStr[TEMP_CALIBRATE_NR];
 
     FactoryTempMenuContentPrivate();
@@ -63,13 +63,17 @@ public:
     ComboBox *channel;
 
     Button *lbtn[TEMP_CALIBRATE_NR];
+    QLabel *label[TEMP_CALIBRATE_NR];
     QLabel *calibrateResult[TEMP_CALIBRATE_NR];
 
     int calibrationTimerId;
     int timeoutNum;
 
-    int calibrateChannel;
+    TempCalibrateChannel calibrateChannel;
     int calibrateValue;
+
+    QTimer *tempValueTimer;
+    UnitType curUnitType;
 };
 
 FactoryTempMenuContentPrivate::FactoryTempMenuContentPrivate()
@@ -80,30 +84,18 @@ FactoryTempMenuContentPrivate::FactoryTempMenuContentPrivate()
       channel(NULL),
       calibrationTimerId(-1),
       timeoutNum(0),
-      calibrateChannel(0),
-      calibrateValue(0)
+      calibrateChannel(TEMP_CALIBRATE_CHANNEL_1),
+      calibrateValue(0),
+      tempValueTimer(NULL),
+      curUnitType(tempParam.getUnit())
 {
     for (int i = 0; i < TEMP_CALIBRATE_NR; i++)
     {
+        label[i] = NULL;
         lbtn[i] = NULL;
         calibrateResult[i] = NULL;
     }
 }
-
-QString FactoryTempMenuContentPrivate::btnStr[11] =
-{
-    "0",
-    "5",
-    "10",
-    "15",
-    "20",
-    "25",
-    "30",
-    "35",
-    "40",
-    "45",
-    "50"
-};
 
 QString FactoryTempMenuContentPrivate::labelStr[11] =
 {
@@ -128,6 +120,9 @@ FactoryTempMenuContent::FactoryTempMenuContent()
                   trs("TEMPCalibrateMenuesc")),
       d_ptr(new FactoryTempMenuContentPrivate)
 {
+    // 增加温度值更新
+    d_ptr->tempValueTimer = new QTimer(this);
+    connect(d_ptr->tempValueTimer, SIGNAL(timeout()), this, SLOT(timeOut()));
 }
 
 void FactoryTempMenuContent::layoutExec()
@@ -170,24 +165,35 @@ void FactoryTempMenuContent::layoutExec()
     layout->addWidget(label, 1, 0);
 
     combo = new ComboBox;
-    combo->addItem("Temp1");
+    combo->addItem(trs("Temp1"));
     combo->addItem(trs("Temp2"));
     combo->setFixedWidth(150);
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onChannelReleased(int)));
     d_ptr->channel = combo;
     layout->addWidget(combo, 1, 1);
 
+    UnitType type = tempParam.getUnit();
     for (int i = 0; i < TEMP_CALIBRATE_NR; i++)
     {
+        QString btnStr;
+        if (type == UNIT_TC)
+        {
+            btnStr = QString::number(i * 5);
+        }
+        else
+        {
+            btnStr = QString::number(i * 9 + 32);
+        }
         label = new QLabel(QString("%1%2%3%4")
                            .arg(trs("TEMPCalibrate"))
-                           .arg(d_ptr->btnStr[i])
+                           .arg(btnStr)
                            .arg(trs("is"))
                            .arg(d_ptr->labelStr[i]));
         layout->addWidget(label, 2 + i, 0);
+        d_ptr->label[i] = label;
         button = new Button(QString("%1%2")
                                 .arg(trs("TEMPCalibrate"))
-                                .arg(d_ptr->btnStr[i]));
+                                .arg(btnStr));
         button->setButtonStyle(Button::ButtonTextOnly);
         button->setFixedWidth(150);
         button->setProperty("Item", qVariantFromValue(i));
@@ -233,6 +239,9 @@ void FactoryTempMenuContent::timerEvent(QTimerEvent *ev)
 void FactoryTempMenuContent::hideEvent(QHideEvent *e)
 {
     QWidget::hideEvent(e);
+
+    // 停止温度更新定时器
+    d_ptr->tempValueTimer->stop();
 }
 
 /**************************************************************************************************
@@ -240,8 +249,35 @@ void FactoryTempMenuContent::hideEvent(QHideEvent *e)
  *************************************************************************************************/
 void FactoryTempMenuContent::readyShow()
 {
+    // 更新显示信息
+    UnitType type = tempParam.getUnit();
+    if ( type != d_ptr->curUnitType)
+    {
+        d_ptr->curUnitType = type;
+        for (int i = 0; i < TEMP_CALIBRATE_NR; i++)
+        {
+            QString btnStr;
+            if (type == UNIT_TC)
+            {
+                btnStr = QString::number(i * 5);
+            }
+            else
+            {
+                btnStr = QString::number(i * 9 + 32);
+            }
+            d_ptr->label[i]->setText(QString("%1%2%3%4")
+                               .arg(trs("TEMPCalibrate"))
+                               .arg(btnStr)
+                               .arg(trs("is"))
+                               .arg(d_ptr->labelStr[i]));
+            d_ptr->lbtn[i]->setText(QString("%1%2")
+                                    .arg(trs("TEMPCalibrate"))
+                                    .arg(btnStr));
+        }
+    }
+
     d_ptr->channel->setCurrentIndex(0);
-    d_ptr->calibrateChannel = 0;
+    d_ptr->calibrateChannel = TEMP_CALIBRATE_CHANNEL_1;
     d_ptr->tempChannel->setText(trs("TEMP1"));
 
     for (int i = 0; i < TEMP_CALIBRATE_NR; ++i)
@@ -264,6 +300,9 @@ void FactoryTempMenuContent::readyShow()
     {
         showError(trs("TEMPCommunicationStop"));
     }
+
+    // 开启温度更新定时器
+    d_ptr->tempValueTimer->start(TEMP_VALUE_UPDATE_TIME);
 }
 
 /**************************************************************************************************
@@ -280,7 +319,8 @@ void FactoryTempMenuContent::showError(QString str)
  *************************************************************************************************/
 void FactoryTempMenuContent::onChannelReleased(int channel)
 {
-    d_ptr->calibrateChannel = channel;
+    d_ptr->calibrateChannel = static_cast<TempCalibrateChannel>(channel);
+
     if (channel == TEMP_CALIBRATE_CHANNEL_1)
     {
         d_ptr->tempChannel->setText(trs("TEMP1"));
@@ -312,12 +352,46 @@ void FactoryTempMenuContent::onBtnReleased()
     d_ptr->calibrationTimerId = startTimer(CALIBRATION_INTERVAL_TIME);
 }
 
-/**************************************************************************************************
- * 功能:超时
- *************************************************************************************************/
+
 void FactoryTempMenuContent::timeOut()
 {
-    d_ptr->calibrateResult[d_ptr->calibrateValue]->setText(trs("CalibrationFail"));
+    int16_t t1;
+    int16_t t2;
+    int16_t td;
+    tempParam.getTEMP(t1, t2, td);
+    Q_UNUSED(td)
+    UnitType type = tempParam.getUnit();
+    // 体温通道1
+    if (d_ptr->calibrateChannel == TEMP_CALIBRATE_CHANNEL_1)
+    {
+        QString tStr;
+        if (t1 == InvData())
+        {
+            tStr = InvStr();
+        }
+        else
+        {
+            // 校准时可以显示实时温度
+            tStr = Unit::convert(type, UNIT_TC, t1 / 10.0);
+        }
+        d_ptr->tempValue->setText(tStr);
+        return;
+    }
+    // 体温通道2
+    if (d_ptr->calibrateChannel == TEMP_CALIBRATE_CHANNEL_2)
+    {
+        QString tStr;
+        if (t2 == InvData())
+        {
+            tStr = InvStr();
+        }
+        else
+        {
+            // 校准时可以显示实时温度
+            tStr = Unit::convert(type, UNIT_TC, t2 / 10.0);
+        }
+        d_ptr->tempValue->setText(tStr);
+    }
 }
 
 /**************************************************************************************************

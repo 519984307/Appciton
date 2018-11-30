@@ -31,9 +31,6 @@ public:
     // 显示新值。
     void showValue(void);
 
-    // 刷新上下限
-    void updateLimit();
-
     TEMPTrendWidget();
     ~TEMPTrendWidget();
 

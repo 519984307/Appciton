@@ -220,10 +220,7 @@ void TEMPParam::setOneShotAlarm(TEMPOneShotType t, bool f)
         }
     }
     tempOneShotAlarm.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE, _isTEMPDisable);
-    if (t >= TEMP_OVER_RANGR_1)
-    {
-        tempOneShotAlarm.setOneShotAlarm(t, f);
-    }
+    tempOneShotAlarm.setOneShotAlarm(t, f);
 }
 
 /**************************************************************************************************
@@ -277,10 +274,7 @@ void TEMPParam::getCalibrateData(unsigned char *packet)
 
 void TEMPParam::updateSubParamLimit(SubParamID id)
 {
-    if (id == SUB_PARAM_T1)
-    {
-        _trendWidget->updateLimit();
-    }
+    Q_UNUSED(id)
 }
 
 bool TEMPParam::getCalibrationReply()
@@ -309,7 +303,6 @@ void TEMPParam::setUnit(UnitType u)
     {
         _trendWidget->setUNit(u);
         _trendWidget->setTEMPValue(_t1Value, _t2Value, _tdValue);
-        _trendWidget->updateLimit();
     }
 }
 

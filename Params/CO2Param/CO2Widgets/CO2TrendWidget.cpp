@@ -115,7 +115,7 @@ void CO2TrendWidget::updateLimit()
  *************************************************************************************************/
 void CO2TrendWidget::setUNit(UnitType unit)
 {
-    setUnit(Unit::getSymbol(unit));
+    setUnit(Unit::localeSymbol(unit));
 }
 
 /**************************************************************************************************

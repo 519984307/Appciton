@@ -26,7 +26,7 @@ public:
     /**
      * @brief readyShow
      */
-    virtual void readyShow();
+    virtual void readyShow() {}
 
 signals:
     /**

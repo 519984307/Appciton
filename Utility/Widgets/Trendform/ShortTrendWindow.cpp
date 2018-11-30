@@ -25,6 +25,8 @@
 #include "AGParam.h"
 #include "ECGDupParam.h"
 #include "IBPTrendWidget.h"
+#include "SystemManager.h"
+#include "CO2Param.h"
 
 #define PARAM_ROW 2      // 每行2组参数
 
@@ -235,24 +237,43 @@ void ShortTrendWindowPrivate::loadOption()
 void ShortTrendWindowPrivate::loadParaList()
 {
     paraList[SUB_PARAM_HR_PR] = trs(paramInfo.getSubParamName(SUB_PARAM_HR_PR));
-    paraList[SUB_PARAM_RR_BR] = trs(paramInfo.getSubParamName(SUB_PARAM_RR_BR));
-    paraList[SUB_PARAM_SPO2] = paramInfo.getSubParamName(SUB_PARAM_SPO2);
-    SubParamID ibp1, ibp2;
-    ibpParam.getSubParamID(ibp1, ibp2);
-    paraList[ibp1] = paramInfo.getParamWaveformName(
-                         ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_1)));
-    paraList[ibp2] = paramInfo.getParamWaveformName(
-                         ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_2)));
+    if (systemManager.isSupport(CONFIG_RESP))
+    {
+        paraList[SUB_PARAM_RR_BR] = trs(paramInfo.getSubParamName(SUB_PARAM_RR_BR));
+    }
+    if (systemManager.isSupport(CONFIG_SPO2))
+    {
+        paraList[SUB_PARAM_SPO2] = paramInfo.getSubParamName(SUB_PARAM_SPO2);
+    }
+    if (systemManager.isSupport(CONFIG_IBP))
+    {
+        SubParamID ibp1, ibp2;
+        ibpParam.getSubParamID(ibp1, ibp2);
+        paraList[ibp1] = paramInfo.getParamWaveformName(
+                             ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_1)));
+        paraList[ibp2] = paramInfo.getParamWaveformName(
+                             ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_2)));
+    }
+    if (systemManager.isSupport(CONFIG_NIBP))
+    {
+        paraList[SUB_PARAM_NIBP_SYS] = paramInfo.getParamName(PARAM_NIBP);
+    }
+    if (systemManager.isSupport(CONFIG_CO2) && co2Param.isConnected())
+    {
+        paraList[SUB_PARAM_ETCO2] = paramInfo.getParamName(PARAM_CO2);
+    }
+    if (systemManager.isSupport(CONFIG_TEMP))
+    {
+        paraList[SUB_PARAM_T1] = paramInfo.getParamName(PARAM_TEMP);
+    }
 
-    paraList[SUB_PARAM_NIBP_SYS] = paramInfo.getParamName(PARAM_NIBP);
-
-    paraList[SUB_PARAM_ETCO2] = paramInfo.getParamName(PARAM_CO2);
-    paraList[SUB_PARAM_T1] = paramInfo.getParamName(PARAM_TEMP);
-
-    paraList[SUB_PARAM_ETN2O] = paramInfo.getSubParamName(SUB_PARAM_ETN2O);
-    paraList[SUB_PARAM_ETAA1] = paramInfo.getSubParamName(SUB_PARAM_ETAA1);
-    paraList[SUB_PARAM_ETAA2] = paramInfo.getSubParamName(SUB_PARAM_ETAA2);
-    paraList[SUB_PARAM_ETO2] = paramInfo.getSubParamName(SUB_PARAM_ETO2);
+    if (systemManager.isSupport(CONFIG_AG))
+    {
+        paraList[SUB_PARAM_ETN2O] = paramInfo.getSubParamName(SUB_PARAM_ETN2O);
+        paraList[SUB_PARAM_ETAA1] = paramInfo.getSubParamName(SUB_PARAM_ETAA1);
+        paraList[SUB_PARAM_ETAA2] = paramInfo.getSubParamName(SUB_PARAM_ETAA2);
+        paraList[SUB_PARAM_ETO2] = paramInfo.getSubParamName(SUB_PARAM_ETO2);
+    }
 }
 
 void ShortTrendWindowPrivate::reloadMinitrend()

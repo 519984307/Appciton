@@ -198,6 +198,10 @@ void RESPWaveWidget::_loadConfig()
     {
         setWaveSpeed(25.0);
     }
+    else if (speed == RESP_SWEEP_SPEED_50_0)
+    {
+        setWaveSpeed(50.0);
+    }
 
     setZoom(static_cast<int>(respParam.getZoom()));
 }
