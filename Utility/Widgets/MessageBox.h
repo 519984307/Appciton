@@ -18,18 +18,18 @@ public:
     explicit MessageBox(const QString &title,
                         const QString &text,
                         bool btn = true,
-                        bool isSetWordWrap = false);
+                        bool wordWrap = false);
 
     explicit MessageBox(const QString &title,
                         const QPixmap &icon,
                         const QString &text,
                         bool btn,
-                        bool isSetWordWrap = false);
+                        bool wordWrap = false);
 
     explicit MessageBox(const QString &title,
                         const QString &text,
                         const QStringList &btnNameList,
-                        bool isSetWordWrap = false);
+                        bool wordWrap = false);
 
     ~MessageBox();
 protected:
