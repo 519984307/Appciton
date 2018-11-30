@@ -978,7 +978,7 @@ GraphicTrendsPrint,趋势图打印,Graphic Trends Print
 EventTime,事件时间,Event Time
 Gender,性别,Gender
 WaveFreeze,波形冻结,Wave Freeze
-WaveformMove,波形移动,Waveform Move
+WaveformMove,回顾,Scroll
 All ,全部,All
 Hint ,提示,Hint
 Interval,间隔,Interval
