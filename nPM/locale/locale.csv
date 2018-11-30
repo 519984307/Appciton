@@ -21,6 +21,9 @@ NEO,新生儿,Neonate
 AlarmLimit,报警限,Alarm Limit
 Other,其它,Other
 Notch,陷波,Notch
+MachineConfigIsUpdatedNow,机器配置现在已经更新。,Machine Config Is Updated Now.
+IsRebootMachine,是否重启机器,Is Reboot Machine
+UpdateHint,更新提示,Update Hint
 EditPassWordDesc,修改密码,Edit Password
 EditPassWord,修改密码,Edit Password
 LastPassword,上次密码,Last Password
