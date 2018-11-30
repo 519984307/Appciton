@@ -84,8 +84,6 @@ PatientInfoWidget::PatientInfoWidget(QWidget *parent) : IWidget("PatientInfoWidg
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
     loadPatientInfo();
-
-    setFixedWidth(260);
 }
 
 /**************************************************************************************************
