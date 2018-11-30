@@ -56,6 +56,7 @@ void SaveCurrentConfigMenuContent::onBtnReleased()
                            trs("reachedTheMaximunOfConfigurations"),
                            false,
                            true);
+        message.setFixedSize(360, 220);
         windowManager.showWindow(&message, WindowManager::ShowBehaviorModal);
     }
     else
