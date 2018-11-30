@@ -400,11 +400,10 @@ void HemodynamicWindow::defaultInput()
 
 void HemodynamicWindow::resizeEvent(QResizeEvent *ev)
 {
-    QRect waveRect = layoutManager.getMenuArea();
-    QPoint waveRectLeft = waveRect.topLeft();
-    waveRect.moveTo(0, 0);
-    QPoint winRectLeft = waveRectLeft + waveRect.center() - rect().center();
-    move(winRectLeft);
+    QRect r = layoutManager.getMenuArea();
+    r.adjust(r.width() - this->width(), 0, 0, 0);  // 菜单将靠右上显示
+    QPoint globalTopLeft = r.topLeft();
+    move(globalTopLeft);
     Window::resizeEvent(ev);
 }
 
@@ -455,7 +454,7 @@ void HemodynamicWindow::onCheckOutputReleased()
     setWindowTitle(trs("Output"));
     d_ptr->reference->setFocus();
     updateData();
-    setFixedSize(800, 600);
+    setFixedSize(windowManager.getPopMenuWidth(), windowManager.getPopMenuHeight());
     emit checkInputSignal(1);
 }
 

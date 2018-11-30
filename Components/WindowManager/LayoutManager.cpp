@@ -1464,7 +1464,6 @@ QRect LayoutManager::getMenuArea() const
 {
     // 获得不遮挡第一道波形的菜单显示区域
     QRect r = d_ptr->contentView->geometry();
-    r.moveTo(0, 0);
     int startYPos = r.height() / (d_ptr->waveRowCount + d_ptr->leftParamRowCount);
     r.moveTo(0, startYPos);
     QRect gr(d_ptr->contentView->mapToGlobal(r.topLeft()),

@@ -28,8 +28,8 @@
 
 #define GRAPH_DISPLAY_DATA_NUMBER           4
 #define GRAPH_POINT_NUMBER                  120                     // 一屏数据量
-#define DATA_INTERVAL_PIXEL                 5                       // 两数据之间的像素点个数
-#define GRAPH_DATA_WIDTH                    480                     // 一屏数据所占像素点
+#define DATA_INTERVAL_PIXEL                 3                       // 两数据之间的像素点个数
+#define GRAPH_DATA_WIDTH                    360                    // 一屏数据所占像素点
 #define SCALE_REGION_HEIGHT                 34                      // 时间刻度区域高度
 
 TrendWaveWidget::TrendWaveWidget() :

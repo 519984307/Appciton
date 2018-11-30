@@ -20,6 +20,7 @@
 #include "RecorderManager.h"
 #include "TrendGraphSetWindow.h"
 #include "MoveButton.h"
+#include "ThemeManager.h"
 
 class TrendGraphWindowPrivate
 {
@@ -150,31 +151,39 @@ TrendGraphWindow::TrendGraphWindow()
     : Window(), d_ptr(new TrendGraphWindowPrivate())
 {
     setWindowTitle(trs("TrendGraph"));
-    int maxWidth = 800;
-    int maxHeight = 560;
-    resize(maxWidth, maxHeight);
+    int maxWidth = windowManager.getPopMenuWidth();
+    int maxHeight = windowManager.getPopMenuHeight();
+    setFixedSize(maxWidth, maxHeight);
+    int margin = 5;
+    int spacing = 5;
+    int itemHeight = themeManger.getAcceptableControlHeight();
 
     d_ptr->waveWidget = new TrendWaveWidget();
-    d_ptr->waveWidget->setWidgetSize(maxWidth, maxHeight - 90);
+    d_ptr->waveWidget->setWidgetSize(width() - margin * 2, maxHeight - itemHeight - spacing - margin * 2 - 50);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
+    hLayout->setSpacing(spacing);
+    hLayout->setMargin(0);
     Button *button;
     int buttonID;
 
     d_ptr->coordinateMoveBtn = new MoveButton(trs("Time"));
     d_ptr->coordinateMoveBtn->setButtonStyle(Button::ButtonTextOnly);
+    d_ptr->coordinateMoveBtn->setFixedHeight(itemHeight);
     connect(d_ptr->coordinateMoveBtn, SIGNAL(leftMove()), d_ptr->waveWidget, SLOT(leftMoveCoordinate()));
     connect(d_ptr->coordinateMoveBtn, SIGNAL(rightMove()), d_ptr->waveWidget, SLOT(rightMoveCoordinate()));
     hLayout->addWidget(d_ptr->coordinateMoveBtn, 2);
 
     d_ptr->cursorMoveBtn = new MoveButton(trs("Scroll"));
     d_ptr->cursorMoveBtn->setButtonStyle(Button::ButtonTextOnly);
+    d_ptr->cursorMoveBtn->setFixedHeight(itemHeight);
     connect(d_ptr->cursorMoveBtn, SIGNAL(leftMove()), d_ptr->waveWidget, SLOT(leftMoveCursor()));
     connect(d_ptr->cursorMoveBtn, SIGNAL(rightMove()), d_ptr->waveWidget, SLOT(rightMoveCursor()));
     hLayout->addWidget(d_ptr->cursorMoveBtn, 2);
 
     d_ptr->eventMoveBtn = new MoveButton(trs("Event"));
     d_ptr->eventMoveBtn->setButtonStyle(Button::ButtonTextOnly);
+    d_ptr->eventMoveBtn->setFixedHeight(itemHeight);
     connect(d_ptr->eventMoveBtn, SIGNAL(leftMove()), d_ptr->waveWidget, SLOT(leftMoveEvent()));
     connect(d_ptr->eventMoveBtn, SIGNAL(rightMove()), d_ptr->waveWidget, SLOT(rightMoveEvent()));
     hLayout->addWidget(d_ptr->eventMoveBtn, 2);
@@ -182,6 +191,7 @@ TrendGraphWindow::TrendGraphWindow()
     // 打印
     button = new Button(trs("Print"));
     button->setButtonStyle(Button::ButtonTextOnly);
+    button->setFixedHeight(itemHeight);
     buttonID = TrendGraphWindowPrivate::ACTION_BTN_PRINT;
     button->setProperty("Button", qVariantFromValue(buttonID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
@@ -191,6 +201,7 @@ TrendGraphWindow::TrendGraphWindow()
     // 设置窗口
     button = new Button(trs("Set"));
     button->setButtonStyle(Button::ButtonTextOnly);
+    button->setFixedHeight(itemHeight);
     buttonID = TrendGraphWindowPrivate::ACTION_BTN_SET_WIDGET;
     button->setProperty("Button", qVariantFromValue(buttonID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
@@ -201,6 +212,7 @@ TrendGraphWindow::TrendGraphWindow()
     button = new Button();
     button->setIcon(QIcon("/usr/local/nPM/icons/up.png"));
     button->setButtonStyle(Button::ButtonIconOnly);
+    button->setFixedHeight(itemHeight);
     buttonID = TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE;
     button->setProperty("Button", qVariantFromValue(buttonID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
@@ -211,6 +223,7 @@ TrendGraphWindow::TrendGraphWindow()
     button = new Button();
     button->setIcon(QIcon("/usr/local/nPM/icons/down.png"));
     button->setButtonStyle(Button::ButtonIconOnly);
+    button->setFixedHeight(itemHeight);
     buttonID = TrendGraphWindowPrivate::ACTION_BTN_DOWN_PAGE;
     button->setProperty("Button", qVariantFromValue(buttonID));
     connect(button, SIGNAL(released()), this, SLOT(onButtonReleased()));
@@ -218,6 +231,8 @@ TrendGraphWindow::TrendGraphWindow()
     d_ptr->buttons.insert(TrendGraphWindowPrivate::ACTION_BTN_DOWN_PAGE, button);
 
     QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(margin);
+    layout->setSpacing(spacing);
     layout->addWidget(d_ptr->waveWidget);
     layout->addLayout(hLayout);
 

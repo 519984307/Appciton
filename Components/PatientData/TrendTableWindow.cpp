@@ -46,7 +46,7 @@
 
 #define ITEM_HEIGHT             30
 #define ITEM_WIDTH              100
-#define TABLE_ROW_NR            6
+#define TABLE_ROW_NR            5
 #define TABLE_COL_NR            7
 #define TABLE_ITEM_WIDTH        65
 #define TABLE_ITEM_HEIGHT       35
@@ -222,7 +222,7 @@ bool TrendTableWindow::eventFilter(QObject *o, QEvent *e)
 TrendTableWindow::TrendTableWindow()
     : Window(), d_ptr(new TrendTableWindowPrivate(this))
 {
-    resize(825, 580);
+    setFixedSize(windowManager.getPopMenuWidth(), windowManager.getPopMenuHeight());
 
     d_ptr->table = new TableView();
     TableHeaderView *horizontalHeader = new TableHeaderView(Qt::Horizontal);
@@ -242,7 +242,6 @@ TrendTableWindow::TrendTableWindow()
     d_ptr->table->setModel(d_ptr->model);
     d_ptr->table->setFixedHeight(d_ptr->model->getHeaderHeightHint()
                                  + d_ptr->model->getRowHeightHint() * TABLE_ROW_NR);
-    d_ptr->table->setFixedWidth(825);
     d_ptr->table->setItemDelegate(new TableViewItemDelegate(this));
 
     d_ptr->upBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));

@@ -175,7 +175,7 @@ void HemodynaimcReviewWindow::layoutExec()
 
     vlayout->addLayout(hlyout);
     vlayout->addStretch(1);
-    setFixedSize(800, 600);
+    setFixedSize(windowManager.getPopMenuWidth(), windowManager.getPopMenuHeight());
     setWindowLayout(vlayout);
 }
 

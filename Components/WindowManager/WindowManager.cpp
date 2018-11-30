@@ -51,6 +51,13 @@ public:
     QList<QPointer<Window> > windowStacks;
     QTimer *timer;              // timer to auto close the windows
     QWidget *demoWidget;
+
+    /**
+     * @brief menuProperPos 菜单显示合适的位置
+     * @param w
+     * @return
+     */
+    QPoint menuProperPos(Window *w);
 };
 
 void WindowManager::onLayoutChanged()
@@ -66,7 +73,7 @@ void WindowManager::onLayoutChanged()
  **************************************************************************************************/
 int WindowManager::getPopMenuWidth()
 {
-    return 600;
+    return 710;
 }
 
 /***************************************************************************************************
@@ -74,7 +81,7 @@ int WindowManager::getPopMenuWidth()
  **************************************************************************************************/
 int WindowManager::getPopMenuHeight()
 {
-    return 500;
+    return 530;
 }
 
 /***************************************************************************************************
@@ -130,6 +137,25 @@ WindowManager::~WindowManager()
     }
 
     _winMap.clear();
+}
+
+QPoint WindowManagerPrivate::menuProperPos(Window *w)
+{
+    // move the proper position
+    QRect r = layoutManager.getMenuArea();
+    r.adjust(r.width() - w->width(), 0, 0, 0);  // 菜单将靠右上显示
+    QPoint globalTopLeft = r.topLeft();
+    if (windowStacks.count() > 1)
+    {
+        // 二级以上的菜单在一级菜单区域中居中显示
+        Window *win = windowStacks.at(0);
+        QPoint tmp = globalTopLeft - QPoint((win->width() - w->width()) / 2, -(win->height() - w->height()) / 2);
+        if (tmp.rx() + w->width() <= r.topRight().rx())
+        {
+            globalTopLeft = tmp;
+        }
+    }
+    return globalTopLeft;
 }
 
 void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
@@ -207,29 +233,17 @@ void WindowManager::showWindow(Window *w, ShowBehavior behaviors)
     d_ptr->windowStacks.append(newP);
     connect(w, SIGNAL(windowHide(Window *)), this, SLOT(onWindowHide(Window *)), Qt::DirectConnection);
 
-    // move the proper position
-    QRect r = layoutManager.getMenuArea();
-    r.adjust(r.width() - w->width(), 0, 0, 0);  // 菜单将靠右上显示
-    QPoint globalTopLeft = r.topLeft();
-    if (d_ptr->windowStacks.count() > 1)
-    {
-        // 二级以上的菜单在一级菜单区域中居中显示
-        Window *win = d_ptr->windowStacks.at(0);
-        globalTopLeft = globalTopLeft - QPoint((win->width() - w->width()) / 2, (win->height() - w->height()) / 2);
-    }
-
-
     if (behaviors & ShowBehaviorModal)
     {
         // 在显示模态窗口之前移动合适的位置
-        w->move(globalTopLeft);
+        w->move(d_ptr->menuProperPos(w));
         w->exec();
     }
     else
     {
         w->show();
         // 在show之后可以根据自适应的窗口大小移动位置
-        w->move(globalTopLeft);
+        w->move(d_ptr->menuProperPos(w));
         w->activateWindow();
     }
 }
