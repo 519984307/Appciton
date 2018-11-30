@@ -15,9 +15,9 @@ iDMBoard,iDMBoard,iDMBoard
 BuildTime,编译时间,Build Time
 ChannelPressureEntitle1,压力标名1,Pressure Entitle1
 ChannelPressureEntitle2,压力标名2,Pressure Entitle2
-Adult,成人,Adult
-PED,小儿,Pediatric
-NEO,新生儿,Neonate
+Adult,成人,Adu
+PED,小儿,Ped
+NEO,新生儿,Neo
 AlarmLimit,报警限,Alarm Limit
 Other,其它,Other
 Notch,陷波,Notch
@@ -345,9 +345,9 @@ SystemInfo,系统信息,System Info
 SystemInfoSetting,系统信息,System Info
 ErrorLog,错误日志,Error Log
 SystemStatus,状态,Status
-SomeLimitAlarmDisabled,有超限报警被关闭,Some Limit Alarm Disabled
-PowerupRecorderPressed,前面板打印键短路,Front Panel Recorder Btn Stuck
-PowerupCommunicationStop,前面板通讯停止,Front Panel Communication Stop
+SomeLimitAlarmDisabled,有超限报警被关闭,Some Limit Alarm Closed
+PowerupRecorderPressed,前面板打印键短路,Front Panel Record Btn Stuck
+PowerupCommunicationStop,前面板通讯停止,Front Panel Comm. Stop
 WiFiMenu,无线网络,Wifi
 WiFiMenuDesc,无线网络,Wifi
 Switch,开关,Switch
