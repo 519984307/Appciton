@@ -366,18 +366,8 @@ void FactoryTempMenuContent::timeOut()
         }
         else
         {
-            if (t1 < 0)
-            {
-                tStr = "< " + Unit::convert(type, UNIT_TC, 0);
-            }
-            else if (t1 > 500)
-            {
-                tStr = "> " + Unit::convert(type, UNIT_TC, 50);
-            }
-            else
-            {
-                tStr = Unit::convert(type, UNIT_TC, t1 / 10.0);
-            }
+            // 校准时可以显示实时温度
+            tStr = Unit::convert(type, UNIT_TC, t1 / 10.0);
         }
         d_ptr->tempValue->setText(tStr);
         return;
@@ -392,18 +382,8 @@ void FactoryTempMenuContent::timeOut()
         }
         else
         {
-            if (t2 < 0)
-            {
-                tStr = "< " + Unit::convert(type, UNIT_TC, 0);
-            }
-            else if (t2 > 500)
-            {
-                tStr = "> " + Unit::convert(type, UNIT_TC, 50);
-            }
-            else
-            {
-                tStr = Unit::convert(type, UNIT_TC, t2 / 10.0);
-            }
+            // 校准时可以显示实时温度
+            tStr = Unit::convert(type, UNIT_TC, t2 / 10.0);
         }
         d_ptr->tempValue->setText(tStr);
     }
