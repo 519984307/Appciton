@@ -15,7 +15,7 @@
 #include <QSignalMapper>
 #include "LanguageManager.h"
 
-#define BUTTON_WIDTH 120
+#define BUTTON_WIDTH 140
 #define WINDOW_WIDTH 320
 #define WINDOW_HEIGHT 180
 
