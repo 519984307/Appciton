@@ -169,7 +169,7 @@ void DoseCalculationWindow::layoutExec()
 
     layout->setColumnMinimumWidth(0, 100);
     setWindowLayout(layout);
-    setFixedSize(windowManager.getPopMenuWidth(), windowManager.getPopMenuHeight());
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 }
 
 /**************************************************************************************************

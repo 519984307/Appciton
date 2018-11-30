@@ -454,7 +454,7 @@ void HemodynamicWindow::onCheckOutputReleased()
     setWindowTitle(trs("Output"));
     d_ptr->reference->setFocus();
     updateData();
-    setFixedSize(windowManager.getPopMenuWidth(), windowManager.getPopMenuHeight());
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
     emit checkInputSignal(1);
 }
 

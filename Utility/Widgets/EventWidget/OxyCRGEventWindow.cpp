@@ -449,8 +449,8 @@ OxyCRGEventWindow::OxyCRGEventWindow()
 
     setWindowLayout(d_ptr->stackLayout);
 
-    int width = windowManager.getPopMenuWidth();
-    int height = windowManager.getPopMenuHeight();
+    int width = windowManager.getPopWindowWidth();
+    int height = windowManager.getPopWindowHeight();
     setFixedSize(width, height);
 }
 

@@ -91,7 +91,7 @@ ScreenLayoutWindow::ScreenLayoutWindow()
     d_ptr->view->setModel(model);
     connect(model, SIGNAL(spanChanged(QModelIndex)), d_ptr->view, SLOT(onSpanChanged(QModelIndex)));
 
-    setFixedSize(windowManager.getPopMenuWidth(), windowManager.getPopMenuHeight());
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 
     setWindowTitle(trs("StandardScreenLayout"));
 }

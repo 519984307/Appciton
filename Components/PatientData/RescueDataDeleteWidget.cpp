@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/11/30
+ **/
+
+
 #include <QHBoxLayout>
 #include "RescueDataListWidget.h"
 #include "RescueDataDeleteWidget.h"
@@ -33,8 +44,8 @@ RescueDataDeleteWidget *RescueDataDeleteWidget::_selfObj = NULL;
 RescueDataDeleteWidget::RescueDataDeleteWidget() : PopupWidget()
 {
 
-    int maxw = windowManager.getPopMenuWidth();
-    int maxh = windowManager.getPopMenuHeight();
+    int maxw = windowManager.getPopWindowWidth();
+    int maxh = windowManager.getPopWindowHeight();
 
     int fontSize = fontManager.getFontSize(1);
     _listWidget = new RescueDataListWidget(maxw - 20, maxh - 30 - 36);
@@ -87,7 +98,6 @@ RescueDataDeleteWidget::RescueDataDeleteWidget() : PopupWidget()
  **********************************************************************************************************************/
 RescueDataDeleteWidget::~RescueDataDeleteWidget()
 {
-
 }
 
 /**********************************************************************************************************************
@@ -134,20 +144,20 @@ void RescueDataDeleteWidget::_deleteSelectReleased()
     }
 
     IMessageBox messageBox(trs("Prompt"), trs("EraseSelectedRescueData"));
-    if(messageBox.exec() == 0)
+    if (messageBox.exec() == 0)
     {
         return;
     }
 
-    if(_deleteThreadPtr)
+    if (_deleteThreadPtr)
     {
-        //exist delete thread, do nothing
+        // exist delete thread, do nothing
         IMessageBox msgbox(trs("Warn"), trs("WarningSystemBusyTryLater"));
         msgbox.exec();
         return;
     }
 
-    //find delete index
+    // find delete index
     int count = checkList.count();
     int totalCount = list.count();
     QVariantList indexList;
@@ -178,7 +188,7 @@ static long deleteAllData(const QVariant & para)
 {
     static QMutex mutex;
     Q_UNUSED(para);
-    if(mutex.tryLock())
+    if (mutex.tryLock())
     {
         dataStorageDirManager.deleteAllData();
         mutex.unlock();
@@ -207,9 +217,9 @@ void RescueDataDeleteWidget::_deleteAllReleased()
         return;
     }
 
-    if(_deleteThreadPtr)
+    if (_deleteThreadPtr)
     {
-        //exist delete thread, do nothing
+        // exist delete thread, do nothing
         IMessageBox msgbox(trs("Warn"), trs("WarningSystemBusyTryLater"));
         msgbox.exec();
         return;

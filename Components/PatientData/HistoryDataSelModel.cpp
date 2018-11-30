@@ -85,7 +85,7 @@ QVariant HistoryDataSelModel::data(const QModelIndex &index, int role) const
     }
     case Qt::SizeHintRole:
     {
-        int w = windowManager.getPopMenuWidth() / COLUMN_COUNT;
+        int w = windowManager.getPopWindowWidth() / COLUMN_COUNT;
         return QSize(w, ROW_HEIGHT_HINT);
     }
     case Qt::TextAlignmentRole:

@@ -151,7 +151,7 @@ BigFontLayoutWindow::BigFontLayoutWindow()
     d_ptr->tableView->setModel(model);
     connect(model, SIGNAL(spanChanged(QModelIndex)), d_ptr->tableView, SLOT(onSpanChanged(QModelIndex)));
 
-    setFixedSize(windowManager.getPopMenuWidth(), windowManager.getPopMenuHeight());
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 
     setWindowTitle(trs("BigFontScreenLayout"));
 }

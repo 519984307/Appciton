@@ -395,9 +395,9 @@ MenuGroup::MenuGroup(const QString &name) : MenuWidget(name)
     _menuName = name;
     _menuDesc = name + "Desc";
 
-    _listWidth = windowManager.getPopMenuWidth() / 4;
-    _submenuWidth = windowManager.getPopMenuWidth() - _listWidth - 20;
-    _submenuHeight = windowManager.getPopMenuHeight() - 30 - 30 - 20;
+    _listWidth = windowManager.getPopWindowWidth() / 4;
+    _submenuWidth = windowManager.getPopWindowWidth() - _listWidth - 20;
+    _submenuHeight = windowManager.getPopWindowHeight() - 30 - 30 - 20;
 
     // 创建资源。
     QPalette p;

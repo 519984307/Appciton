@@ -41,7 +41,7 @@ HistoryDataSelWindow::HistoryDataSelWindow()
     : Window(), d_ptr(new HistoryDataSelWindowPrivate())
 {
     setWindowTitle(trs("HistoryDataList"));
-    setFixedSize(windowManager.getPopMenuWidth(), windowManager.getPopMenuHeight());
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 
     d_ptr->table = new TableView();
     d_ptr->table->horizontalHeader()->setVisible(false);

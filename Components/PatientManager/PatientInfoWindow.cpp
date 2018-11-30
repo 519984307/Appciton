@@ -273,7 +273,7 @@ PatientInfoWindow::PatientInfoWindow()
     , d_ptr(new PatientInfoWindowPrivate)
 {
     setWindowTitle(trs("PatientInformation"));
-    setFixedSize(windowManager.getPopMenuWidth(), windowManager.getPopMenuHeight());
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
     QGridLayout *layout = new QGridLayout();
     QVBoxLayout *backgroundLayout = new QVBoxLayout();
     QHBoxLayout *buttonLayout = new QHBoxLayout();

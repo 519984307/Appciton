@@ -28,7 +28,7 @@ public:
 };
 
 HemodynamicDataModelPrivate::HemodynamicDataModelPrivate()
-                           : viewWidth(windowManager.getPopMenuWidth())
+                           : viewWidth(windowManager.getPopWindowWidth())
 {
     dataInfos.clear();
     headDataInfo.time.clear();

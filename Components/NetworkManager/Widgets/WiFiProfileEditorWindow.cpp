@@ -138,7 +138,7 @@ void WiFiProfileEditorWindowPrivate::init(const WiFiProfileWindowInfo &profile)
 {
     Q_Q(WiFiProfileEditorWindow);
 
-    q->resize(windowManager.getPopMenuWidth(), windowManager.getPopMenuHeight());
+    q->resize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
     q->setToolTip(trs("WiFiProfileEdit"));
 
     QGridLayout *layout = new QGridLayout;

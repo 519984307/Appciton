@@ -222,7 +222,7 @@ bool TrendTableWindow::eventFilter(QObject *o, QEvent *e)
 TrendTableWindow::TrendTableWindow()
     : Window(), d_ptr(new TrendTableWindowPrivate(this))
 {
-    setFixedSize(windowManager.getPopMenuWidth(), windowManager.getPopMenuHeight());
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 
     d_ptr->table = new TableView();
     TableHeaderView *horizontalHeader = new TableHeaderView(Qt::Horizontal);

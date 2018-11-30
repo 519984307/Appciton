@@ -86,7 +86,7 @@ ParaColorWindow::ParaColorWindow()
     currentConfig.getStrValue("Display|AllColors", color);
     d_ptr->colorList = color.split(',', QString::KeepEmptyParts);
     setWindowTitle(trs("ParameterColorDesc"));
-    setFixedSize(480, windowManager.getPopMenuHeight());
+    setFixedSize(480, windowManager.getPopWindowHeight());
     layoutExec();
 }
 

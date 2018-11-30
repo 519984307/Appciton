@@ -72,7 +72,7 @@ CodeMarkerWindow::CodeMarkerWindow() : Window()
     int fontSize = fontManager.getFontSize(3);
 
     setWindowTitle(trs("CodeMarker"));
-    setFixedWidth(windowManager.getPopMenuWidth());
+    setFixedWidth(windowManager.getPopWindowWidth());
     // scroll
     d_ptr->scrollArea = new QScrollArea();
     d_ptr->scrollArea->setFocusPolicy(Qt::NoFocus);
