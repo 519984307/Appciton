@@ -144,6 +144,11 @@ QPoint WindowManagerPrivate::menuProperPos(Window *w)
     // move the proper position
     QRect r = layoutManager.getMenuArea();
     r.adjust(r.width() - w->width(), 0, 0, 0);  // 菜单将靠右上显示
+    if (r.height() < w->height())
+    {
+        // 显示不全时，遮挡第一道波形
+        r.adjust(0, r.height() - w->height(), 0, 0);
+    }
     QPoint globalTopLeft = r.topLeft();
     if (windowStacks.count() > 1)
     {
