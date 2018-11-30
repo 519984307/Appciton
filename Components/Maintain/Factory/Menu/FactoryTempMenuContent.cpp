@@ -132,8 +132,10 @@ FactoryTempMenuContent::FactoryTempMenuContent()
 
 void FactoryTempMenuContent::layoutExec()
 {
-    QGridLayout *layout = new QGridLayout(this);
+    QVBoxLayout *vLayout = new QVBoxLayout(this);
+    QGridLayout *layout = new QGridLayout();
     layout->setMargin(10);
+    layout->setSpacing(10);
     this->setFocusPolicy(Qt::NoFocus);
     QHBoxLayout *hl;
     QLabel *label;
@@ -162,7 +164,7 @@ void FactoryTempMenuContent::layoutExec()
     d_ptr->stackedwidget = stackWidget;
     d_ptr->tempError = label;
 
-    layout->addWidget(stackWidget, 0, 1, Qt::AlignRight);
+    vLayout->addWidget(stackWidget, 0, Qt::AlignCenter);
 
     label = new QLabel(trs("TEMPChannel"));
     layout->addWidget(label, 1, 0);
@@ -170,6 +172,7 @@ void FactoryTempMenuContent::layoutExec()
     combo = new ComboBox;
     combo->addItem("Temp1");
     combo->addItem(trs("Temp2"));
+    combo->setFixedWidth(150);
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onChannelReleased(int)));
     d_ptr->channel = combo;
     layout->addWidget(combo, 1, 1);
@@ -186,6 +189,7 @@ void FactoryTempMenuContent::layoutExec()
                                 .arg(trs("TEMPCalibrate"))
                                 .arg(d_ptr->btnStr[i]));
         button->setButtonStyle(Button::ButtonTextOnly);
+        button->setFixedWidth(150);
         button->setProperty("Item", qVariantFromValue(i));
         connect(button, SIGNAL(released()), this, SLOT(onBtnReleased()));
         layout->addWidget(button, 2 + i, 1);
@@ -197,6 +201,7 @@ void FactoryTempMenuContent::layoutExec()
     }
 
     layout->setRowStretch(12, 1);
+    vLayout->addLayout(layout);
 }
 
 void FactoryTempMenuContent::timerEvent(QTimerEvent *ev)

@@ -299,7 +299,7 @@ TEMPOverRangeAll,体温全部超界,TEMP Over Range All
 TEMP1ProbeTypeError,体温1探头类型错误,TEMP1ProbeTypeError
 TEMP2ProbeTypeError,体温2探头类型错误,TEMP2ProbeTypeError
 TEMPProbeTypeErrorAll,体温探头类型全部错误,TEMPProbeTypeErrorAll
-TEMPCommunicationStop,体温通讯停止,TEMP Communication Stop
+TEMPCommunicationStop,体温通讯停止,Communication Stop
 celsius,℃,℃
 fahrenheit,℉,℉
 percent,%,%
@@ -1123,19 +1123,19 @@ CodeMarker31,Albuterol,Albuterol
 CodeMarker32,Nitro,Nitro
 DoseCalculation,剂量计算,Dose Calculation
 DrugName,药物名称,Drug Name
-DrugTotal,药物总量,Drug Total
-LiquidVolume,液体体积,Liquid Volume
-DrugConcentration,药物浓度,DrugConcentration
+DrugTotal,药量,Drug Qty
+LiquidVolume,液体容积,Sol Volume
+DrugConcentration,药物浓度,Concentr.
 Dosemin,剂量,Dose
 ET,Et,Et
 FI,Fi,Fi
 Dosehr,剂量,Dose
 DoseKgmin,剂量,Dose
 DoseKghr,剂量,Dose
-InfusionRate,输液速度,Infusion Rate
+InfusionRate,输液速度,Inf Rate
 DripRate,滴速,Drip Rate
 DropSize,每滴体积,Drop Size
-Duration,持续时间,Duration
+Duration,持续时间,Inf Time
 TitrationTable,滴定表,Titration Table
 DrugA,药物 A,Drug A 
 DrugB,药物B,Drug B
