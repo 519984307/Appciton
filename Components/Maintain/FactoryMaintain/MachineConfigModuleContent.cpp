@@ -233,7 +233,6 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_ECG12;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // spo2 module
     label = new QLabel(trs("SPO2Module"));
@@ -251,7 +250,6 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_SPO2;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // nibp module
     label = new QLabel(trs("NIBPModule"));
@@ -268,7 +266,6 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_NIBP;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // resp module
     label = new QLabel(trs("RESPModule"));
@@ -284,7 +281,6 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_RESP;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // co2 module
     label = new QLabel(trs("CO2Module"));
@@ -300,7 +296,6 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_CO2;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // ag module
     label = new QLabel(trs("AGModule"));
@@ -316,7 +311,6 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_AG;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // co module
     label = new QLabel(trs("COModule"));
@@ -332,7 +326,6 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_CO;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // ibp module
     label = new QLabel(trs("IBPModule"));
@@ -348,7 +341,6 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_IBP;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // temp module
     label = new QLabel(trs("TEMPModule"));
@@ -364,7 +356,6 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_TEMP;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
     // wifi module
     label = new QLabel(trs("WIFIModule"));
@@ -380,7 +371,6 @@ void MachineConfigModuleContent::layoutExec()
     itemId = MachineConfigModuleContentPrivte::ITEM_CBO_WIFI;
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    d_ptr->itemChangedMap.insert(static_cast<MachineConfigModuleContentPrivte::MenuItem>(itemId), 0);
 
 #ifdef Q_WS_QWS
     // touch screen module
