@@ -288,7 +288,6 @@ TEMPTDHigh,体温差高,ΔT High
 TEMP1SensorOff,体温1探头脱落,TEMP1 Sensor Off
 PrintSettingMenu,打印设置,Print Setting
 PrintSettingMenuDesc,打印设置,Print Setting
-PrintTime,实时打印时间,PrintTime
 ClearPrintTask,清除打印任务,ClearPrintTask
 Continous,连续,Continous
 TEMP2SensorOff,体温2探头脱落,TEMP2 Sensor Off
@@ -969,6 +968,11 @@ Lower,过低,Lower
 EventList,事件列表,Event List
 RealTimePrint,实时打印,RealTime Print
 RealtimeSegmentWavePrint,片段实时波形打印,Realtime Segment Wave Print
+FrozenWavePrint,冻结波形打印,Frozen Wave Print
+FreezeTime,冻结时间,Freeze Time
+TabularTrendsPrint,趋势表打印,Tabular Trends Print
+GraphicTrendsPrint,趋势图打印,Graphic Trends Print
+EventTime,事件时间,Event Time
 Gender,性别,Gender
 WaveFreeze,波形冻结,Wave Freeze
 WaveformMove,波形移动,Waveform Move
