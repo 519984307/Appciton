@@ -198,7 +198,7 @@ RecordPage *ContinuousPageGenerator::createPage()
     {
     case TitlePage:
         d_ptr->curPageType = TrendPage;
-        return createTitlePage(QString(trs("RealtimeSegmentWaveRecording")), patientManager.getPatientInfo(), 0);
+        return createTitlePage(QString(trs("RealtimeSegmentWavePrint")), patientManager.getPatientInfo(), 0);
     case TrendPage:
         d_ptr->curPageType = WaveScalePage;
         return createTrendPage(d_ptr->trendData, false);

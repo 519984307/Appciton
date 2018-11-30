@@ -191,7 +191,7 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
         dt = QDateTime::fromTime_t(timestamp);
     }
 
-    QString timeStr = QString("%1: %2").arg(trs("RecordTime")).arg(dt.toString("yyyy-MM-dd HH:mm:ss"));
+    QString timeStr = QString("%1: %2").arg(trs("PrintTime")).arg(dt.toString("yyyy-MM-dd HH:mm:ss"));
 
     // record time width
     w = fontManager.textWidthInPixels(timeStr, font);
@@ -1000,7 +1000,11 @@ static void drawCaption(RecordPage *page, QPainter *painter, const RecordWaveSeg
     painter->save();
     painter->setPen(Qt::white);
     painter->translate(-segIndex * page->width(), 0);
-    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, waveInfo.drawCtx.caption);
+    QString caption = waveInfo.drawCtx.caption;
+    QString mode = trs(caption.section(" ", 3));
+    caption = caption.section(" ", 0, 2);
+    caption = caption + mode;
+    painter->drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, caption);
     painter->restore();
 }
 
