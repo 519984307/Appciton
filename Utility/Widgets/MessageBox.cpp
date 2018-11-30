@@ -16,8 +16,8 @@
 #include "LanguageManager.h"
 
 #define BUTTON_WIDTH 120
-#define WINDOW_WIDTH 320
-#define WINDOW_HEIGHT 180
+#define WINDOW_WIDTH 360
+#define WINDOW_HEIGHT 220
 
 class MessageBoxPrivate
 {
@@ -63,6 +63,7 @@ MessageBox::MessageBox(const QString &title, const QString &text, bool btn)
 
     d_ptr->index++;
     QLabel *label = new QLabel(trs(text));
+    label->setWordWrap(true);
     layout->addWidget(label, 1, 0, Qt::AlignCenter);
     d_ptr->index++;
 
@@ -108,6 +109,7 @@ MessageBox::MessageBox(const QString &title, const QPixmap &icon, const QString 
     d_ptr->index++;
 
     label = new QLabel(trs(text));
+    label->setWordWrap(true);
     layout->addWidget(label, 1, 1,  Qt::AlignCenter);
     d_ptr->index++;
 
@@ -146,6 +148,7 @@ MessageBox::MessageBox(const QString &title, const QString &text, const QStringL
 
     d_ptr->index++;
     QLabel *label = new QLabel(trs(text));
+    label->setWordWrap(true);
     layout->addWidget(label, 1, 0,  Qt::AlignCenter);
     d_ptr->index++;
 
