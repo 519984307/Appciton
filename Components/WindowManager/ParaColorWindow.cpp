@@ -18,6 +18,7 @@
 #include "SystemManager.h"
 #include "IConfig.h"
 #include "ColorManager.h"
+#include "WindowManager.h"
 
 class ParaColorWindowPrivate
 {
@@ -85,7 +86,7 @@ ParaColorWindow::ParaColorWindow()
     currentConfig.getStrValue("Display|AllColors", color);
     d_ptr->colorList = color.split(',', QString::KeepEmptyParts);
     setWindowTitle(trs("ParameterColorDesc"));
-    setFixedSize(480, 580);
+    setFixedSize(480, windowManager.getPopWindowHeight());
     layoutExec();
 }
 

@@ -13,6 +13,7 @@
 #include "ThemeManager.h"
 #include <QDateTime>
 #include "TimeDate.h"
+#include "WindowManager.h"
 
 #define COLUMN_COUNT        2
 #define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
@@ -84,7 +85,7 @@ QVariant HistoryDataSelModel::data(const QModelIndex &index, int role) const
     }
     case Qt::SizeHintRole:
     {
-        int w = 800 / COLUMN_COUNT;
+        int w = windowManager.getPopWindowWidth() / COLUMN_COUNT;
         return QSize(w, ROW_HEIGHT_HINT);
     }
     case Qt::TextAlignmentRole:

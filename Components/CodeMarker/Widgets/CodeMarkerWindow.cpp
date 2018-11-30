@@ -22,8 +22,6 @@
 #include "TimeManager.h"
 #include "IConfig.h"
 
-#define WINDOW_WIDTH 850
-
 class CodeMarkerWindowPrivate
 {
 public:
@@ -73,20 +71,15 @@ CodeMarkerWindow::CodeMarkerWindow() : Window()
 
 
     int fontSize = fontManager.getFontSize(3);
-    int barWidth = 20;
-    int borderWidth = 4;
 
     setWindowTitle(trs("CodeMarker"));
-    QWidget *widget = new QWidget();
-    widget->setFixedWidth(WINDOW_WIDTH - borderWidth * 2 - barWidth);
-    setFixedWidth(WINDOW_WIDTH);
+    setFixedWidth(windowManager.getPopWindowWidth());
     // scroll
     d_ptr->scrollArea = new QScrollArea();
     d_ptr->scrollArea->setFocusPolicy(Qt::NoFocus);
     d_ptr->scrollArea->setFrameStyle(QFrame::NoFrame);
     d_ptr->scrollArea->setAlignment(Qt::AlignTop);
     d_ptr->scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    d_ptr->scrollArea->verticalScrollBar()->setFixedWidth(barWidth);
 
     QGridLayout *layoutG = new QGridLayout();
     layoutG->setContentsMargins(4, 2, 4, 2);
@@ -102,7 +95,6 @@ CodeMarkerWindow::CodeMarkerWindow() : Window()
         codeMarkerButton[i]->setFont(fontManager.textFont(fontSize));
         connect(codeMarkerButton[i], SIGNAL(released()), this, SLOT(_btnReleased()));
         codeMarkerButton[i]->setProperty("Item" , qVariantFromValue(i));
-        codeMarkerButton[i]->setFixedWidth(200);
         layoutG->addWidget(codeMarkerButton[i], i / 4, i % 4, 1, 1);
     }
 
