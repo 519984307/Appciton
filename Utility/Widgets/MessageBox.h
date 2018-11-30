@@ -15,11 +15,21 @@ class MessageBox : public Window
 {
     Q_OBJECT
 public:
-    explicit MessageBox(const QString &title, const QString &text, bool btn = true);
+    explicit MessageBox(const QString &title,
+                        const QString &text,
+                        bool btn = true,
+                        bool isSetWordWrap = false);
 
-    explicit MessageBox(const QString &title, const QPixmap &icon, const QString &text, bool btn);
+    explicit MessageBox(const QString &title,
+                        const QPixmap &icon,
+                        const QString &text,
+                        bool btn,
+                        bool isSetWordWrap = false);
 
-    explicit MessageBox(const QString &title, const QString &text, const QStringList &btnNameList);
+    explicit MessageBox(const QString &title,
+                        const QString &text,
+                        const QStringList &btnNameList,
+                        bool isSetWordWrap = false);
 
     ~MessageBox();
 protected:
