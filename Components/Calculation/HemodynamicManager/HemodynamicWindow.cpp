@@ -24,7 +24,7 @@
 #include "LayoutManager.h"
 
 #define TABLE_ROW_NUM           9
-#define ROW_HEIGHT   (themeManger.getAcceptableControlHeight())
+#define ROW_HEIGHT   41
 class HemodynamicWindowPrivate
 {
 public:

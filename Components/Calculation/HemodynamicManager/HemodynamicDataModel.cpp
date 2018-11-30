@@ -12,10 +12,11 @@
 #include <QBrush>
 #include <QColor>
 #include "ThemeManager.h"
+#include "WindowManager.h"
 
-#define MAX_ROW_COUNT  10
-#define ROW_HEIGHT_HINT 43
-#define HEADER_HEIGHT_HINT 43
+#define MAX_ROW_COUNT  8
+#define ROW_HEIGHT_HINT 46
+#define HEADER_HEIGHT_HINT 46
 class HemodynamicDataModelPrivate
 {
 public:
@@ -27,7 +28,7 @@ public:
 };
 
 HemodynamicDataModelPrivate::HemodynamicDataModelPrivate()
-                           : viewWidth(800)
+                           : viewWidth(windowManager.getPopMenuWidth())
 {
     dataInfos.clear();
     headDataInfo.time.clear();
