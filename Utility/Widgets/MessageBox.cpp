@@ -53,7 +53,7 @@ MessageBox::~MessageBox()
     delete d_ptr;
 }
 
-MessageBox::MessageBox(const QString &title, const QString &text, bool btn)
+MessageBox::MessageBox(const QString &title, const QString &text, bool btn, bool wordWrap)
     : d_ptr(new MessageBoxPrivate)
 {
     setWindowTitle(title);
@@ -63,6 +63,10 @@ MessageBox::MessageBox(const QString &title, const QString &text, bool btn)
 
     d_ptr->index++;
     QLabel *label = new QLabel(trs(text));
+    if (wordWrap == true)
+    {
+        label->setWordWrap(true);
+    }
     layout->addWidget(label, 1, 0, Qt::AlignCenter);
     d_ptr->index++;
 
@@ -92,7 +96,7 @@ MessageBox::MessageBox(const QString &title, const QString &text, bool btn)
     resize(WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
-MessageBox::MessageBox(const QString &title, const QPixmap &icon, const QString &text, bool btn)
+MessageBox::MessageBox(const QString &title, const QPixmap &icon, const QString &text, bool btn, bool wordWrap)
     : d_ptr(new MessageBoxPrivate)
 {
     setWindowTitle(title);
@@ -108,6 +112,10 @@ MessageBox::MessageBox(const QString &title, const QPixmap &icon, const QString 
     d_ptr->index++;
 
     label = new QLabel(trs(text));
+    if (wordWrap == true)
+    {
+        label->setWordWrap(true);
+    }
     layout->addWidget(label, 1, 1,  Qt::AlignCenter);
     d_ptr->index++;
 
@@ -136,7 +144,7 @@ MessageBox::MessageBox(const QString &title, const QPixmap &icon, const QString 
     resize(WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
-MessageBox::MessageBox(const QString &title, const QString &text, const QStringList &btnNameList)
+MessageBox::MessageBox(const QString &title, const QString &text, const QStringList &btnNameList, bool wordWrap)
     : d_ptr(new MessageBoxPrivate)
 {
     setWindowTitle(title);
@@ -146,6 +154,10 @@ MessageBox::MessageBox(const QString &title, const QString &text, const QStringL
 
     d_ptr->index++;
     QLabel *label = new QLabel(trs(text));
+    if (wordWrap == true)
+    {
+        label->setWordWrap(true);
+    }
     layout->addWidget(label, 1, 0,  Qt::AlignCenter);
     d_ptr->index++;
 
