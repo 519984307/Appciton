@@ -220,10 +220,7 @@ void TEMPParam::setOneShotAlarm(TEMPOneShotType t, bool f)
         }
     }
     tempOneShotAlarm.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE, _isTEMPDisable);
-    if (t >= TEMP_OVER_RANGR_1)
-    {
-        tempOneShotAlarm.setOneShotAlarm(t, f);
-    }
+    tempOneShotAlarm.setOneShotAlarm(t, f);
 }
 
 /**************************************************************************************************
