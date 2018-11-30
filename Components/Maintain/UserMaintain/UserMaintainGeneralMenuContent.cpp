@@ -279,12 +279,22 @@ void UserMaintainGeneralMenuContent::onButtonReleased()
         }
         case UserMaintainGeneralMenuContentPrivate::ITEM_BTN_MODIFY_PASSWORD:
         {
+            // 调用数字键盘
             KeyInputPanel idPanel(KeyInputPanel::KEY_TYPE_NUMBER);
+            // 使能键盘的有效字符
+            QString rec("[0-9]");
+            idPanel.setBtnEnable(rec);
+            // 设置键盘标题
             idPanel.setWindowTitle(trs("ModifyPassword"));
-            idPanel.setInitString(button->text());
+            // 最大输入长度
             idPanel.setMaxInputLength(8);
-            QString regKeyStr("[a-zA-Z]|[0-9]|_");
-            idPanel.setBtnEnable(regKeyStr);
+            // 固定为数字键盘
+            idPanel.setKeytypeSwitchEnable(false);
+            idPanel.setSymbolEnable(false);
+            idPanel.setSpaceEnable(false);
+            // 设置初始字符串 placeholder模式
+            idPanel.setInitString(button->text(), true);
+
             idPanel.setCheckValueHook(checkPasswordValue);
 
             if (1 == idPanel.exec())
