@@ -32,6 +32,7 @@
 #include "LayoutManager.h"
 #include <QDebug>
 #include "RecorderManager.h"
+#include "TimeDate.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
@@ -185,13 +186,15 @@ RecordPage *RecordPageGenerator::createTitlePage(const QString &title, const Pat
         textWidth =  w;
     }
 
-    QDateTime dt = QDateTime::currentDateTime();
+    unsigned t = timeDate.time();
     if (timestamp)
     {
-        dt = QDateTime::fromTime_t(timestamp);
+        t = timestamp;
     }
 
-    QString timeStr = QString("%1: %2").arg(trs("RecordTime")).arg(dt.toString("yyyy-MM-dd HH:mm:ss"));
+    QString timeDateStr;
+    timeDate.getDateTime(t, timeDateStr, true, true);
+    QString timeStr = QString("%1: %2").arg(trs("RecordTime")).arg(timeDateStr);
 
     // record time width
     w = fontManager.textWidthInPixels(timeStr, font);
