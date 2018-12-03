@@ -27,7 +27,12 @@ protected:
     void showEvent(QShowEvent *ev);
 
 private slots:
-    void itemClickSlot(QModelIndex index);
+    /**
+     * @brief itemClickSlot
+     * @param row
+     */
+    void itemClickSlot(int row);
+
     void summaryReleased();
     void exportReleased();
     void eraseReleased();

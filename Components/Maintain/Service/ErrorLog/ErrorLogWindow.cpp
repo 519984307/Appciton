@@ -74,7 +74,7 @@ ErrorLogWindow::ErrorLogWindow()
                                  + d_ptr->model->getRowHeightHint() * TABLE_ROW_NR);
     d_ptr->table->setFixedWidth(800);
     d_ptr->table->setItemDelegate(new TableViewItemDelegate(this));
-    connect(d_ptr->table, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClickSlot(QModelIndex)));
+    connect(d_ptr->table, SIGNAL(rowClicked(int)), this, SLOT(itemClickSlot(int)));
     connect(d_ptr->model, SIGNAL(pageInfoUpdate(int, int)), this, SLOT(onPageInfoUpdated(int, int)));
 
     d_ptr->summaryBtn = new Button(trs("Summary"));
@@ -157,9 +157,8 @@ void ErrorLogWindow::showEvent(QShowEvent *ev)
     Window::showEvent(ev);
 }
 
-void ErrorLogWindow::itemClickSlot(QModelIndex index)
+void ErrorLogWindow::itemClickSlot(int row)
 {
-    int row = index.row();
     int realIndex = d_ptr->model->getErrorLogIndex(row);
     ErrorLogItemBase *item = errorLog.getLog(realIndex);
     if (item->isLogEmpty())
