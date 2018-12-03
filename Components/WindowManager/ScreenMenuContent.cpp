@@ -167,10 +167,6 @@ void ScreenMenuContent::onComboxIndexChanged(int index)
         {
             return;
         }
-        if (type != UFACE_MONITOR_ECG_FULLSCREEN)
-        {
-            ecgParam.updateGain();
-        }
         layoutManager.setUFaceType(type);
     }
     else if (cbo == d_ptr->layoutCbo)

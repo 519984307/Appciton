@@ -1804,22 +1804,6 @@ int ECGParam::getWaveDataRate() const
     return _provider->getWaveformSample();
 }
 
-void ECGParam::updateGain()
-{
-    for (int i = 0; i < ECG_LEAD_NR; i++)
-    {
-        if (_waveWidget[i] == NULL)
-        {
-            continue;
-        }
-        QString wavename = _waveWidget[i]->name();
-        int gain = ECG_GAIN_X10;
-        currentConfig.getNumValue("ECG|Gain|" + wavename, gain);
-        _waveWidget[i]->setGain(static_cast<ECGGain>(gain));
-    }
-}
-
-
 /**************************************************************************************************
  * 设置增益。
  *************************************************************************************************/
@@ -1840,6 +1824,7 @@ void ECGParam::setGain(ECGGain gain, ECGLead lead)
 
     if (layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
     {
+        currentConfig.setNumValue("ECG|FullScreenGain", static_cast<int>(gain));
         for (int i = 0; i < ECG_LEAD_NR; i++)
         {
             if (_waveWidget[i] == NULL)
@@ -1914,10 +1899,16 @@ ECGGain ECGParam::getGain(ECGLead lead)
         return ECG_GAIN_X10;
     }
 
-    QString waveName = _waveWidget[lead]->name();
-
     int gain = ECG_GAIN_X10;
-    currentConfig.getNumValue("ECG|Gain|" + waveName, gain);
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
+    {
+        currentConfig.getNumValue("ECG|FullScreenGain", gain);
+    }
+    else
+    {
+        QString waveName = _waveWidget[lead]->name();
+        currentConfig.getNumValue("ECG|Gain|" + waveName, gain);
+    }
     return static_cast<ECGGain>(gain);
 }
 
