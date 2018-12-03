@@ -29,7 +29,14 @@ protected:
 
 private slots:
     void onComboBoxIndexChanged(int index);
+
+#ifndef HIDE_ECG_ARRHYTHMIA_FUNCTION
+    /**
+     * @brief arrhythmiaBtnReleased
+     */
     void arrhythmiaBtnReleased(void);
+#endif
+
     void selfLearnBtnReleased(void);
     /**
      * @brief onSTSwitchBtnReleased  ST开关触发槽函数

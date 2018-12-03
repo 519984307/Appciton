@@ -63,6 +63,9 @@ DEFINES += HIDE_ECG_ST_PVCS_SUBPARAM
 #隐藏IBP校零软按键
 DEFINES += HIDE_IBP_CALIBRATE_ZERO
 
+#隐藏ECG心率失常功能
+DEFINES += HIDE_ECG_ARRHYTHMIA_FUNCTION
+
 # Depending libraries
 LIBS += -ldl -lasound -lz
 
