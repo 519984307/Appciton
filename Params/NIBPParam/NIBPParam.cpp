@@ -1357,7 +1357,7 @@ int NIBPParam::curStatusType() const
 {
     if (NULL != _activityMachine)
     {
-        debug("%d\n", _activityMachine->curStatusType());
+//        debug("%d\n", _activityMachine->curStatusType());
         return _activityMachine->curStatusType();
     }
 

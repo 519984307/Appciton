@@ -122,6 +122,7 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
         bool reply = nibpParam.geReply();
         if (reply || d_ptr->timeoutNum == INFLATE_WAIT_NUMBER)
         {
+            d_ptr->modeBtn->setEnabled(true);
             if (reply && nibpParam.getResult())
             {
                 if (d_ptr->isPressureControlMode)
@@ -221,6 +222,7 @@ void NIBPPressureControlContent::inflateBtnReleased()
 void NIBPPressureControlContent::enterPressureContrlReleased()
 {
     d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+    d_ptr->modeBtn->setEnabled(false);
     if (d_ptr->isPressureControlMode)
     {
         nibpParam.provider().servicePressurecontrol(false);
