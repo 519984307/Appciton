@@ -245,6 +245,9 @@ public: // 用于访问配置相关信息。
      */
     int getWaveDataRate(void) const;
 
+    // 刷新波形增益
+    void updateGain();
+
     // 设置/获取增益。
     void setGain(ECGGain gain, ECGLead lead);
     void setGain(ECGGain gain, int waveID);

@@ -1804,6 +1804,21 @@ int ECGParam::getWaveDataRate() const
     return _provider->getWaveformSample();
 }
 
+void ECGParam::updateGain()
+{
+    for (int i = 0; i < ECG_LEAD_NR; i++)
+    {
+        if (_waveWidget[i] == NULL)
+        {
+            continue;
+        }
+        QString wavename = _waveWidget[i]->name();
+        int gain = ECG_GAIN_X10;
+        currentConfig.getNumValue("ECG|Gain|" + wavename, gain);
+        _waveWidget[i]->setGain(static_cast<ECGGain>(gain));
+    }
+}
+
 
 /**************************************************************************************************
  * 设置增益。
@@ -1831,8 +1846,6 @@ void ECGParam::setGain(ECGGain gain, ECGLead lead)
             {
                 continue;
             }
-            QString wavename = _waveWidget[i]->name();
-            currentConfig.setNumValue("ECG|Gain|" + wavename, static_cast<int>(gain));
             _waveWidget[i]->setGain(gain);
         }
     }
