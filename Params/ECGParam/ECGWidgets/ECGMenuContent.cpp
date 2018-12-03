@@ -50,7 +50,9 @@ public:
 
     ECGMenuContentPrivate()
         : selfLearnBtn(NULL)
+    #ifndef HIDE_ECG_ARRHYTHMIA_FUNCTION
         , arrhythmiaBtn(NULL)
+    #endif
         , sTSwitchBtn(NULL)
         , ecg1Label(NULL)
         , ecg2Label(NULL)
@@ -66,7 +68,9 @@ public:
 
     QMap<MenuItem, ComboBox *> combos;
     Button *selfLearnBtn;
+#ifndef HIDE_ECG_ARRHYTHMIA_FUNCTION
     Button *arrhythmiaBtn;
+#endif
     Button *sTSwitchBtn;
     QStringList ecgWaveforms;
     QStringList ecgWaveformTitles;
@@ -512,11 +516,13 @@ void ECGMenuContent::layoutExec()
     layout->addWidget(d_ptr->selfLearnBtn, d_ptr->combos.count(), 1);
     connect(d_ptr->selfLearnBtn, SIGNAL(released()), this, SLOT(selfLearnBtnReleased()));
 
+#ifndef HIDE_ECG_ARRHYTHMIA_FUNCTION
     // 心律失常
     d_ptr->arrhythmiaBtn = new Button(trs("Arrhythmia"));
     d_ptr->arrhythmiaBtn->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(d_ptr->arrhythmiaBtn, d_ptr->combos.count() + 1, 1);
     connect(d_ptr->arrhythmiaBtn, SIGNAL(released()), this, SLOT(arrhythmiaBtnReleased()));
+#endif
 
     // ST 段开关
     d_ptr->sTSwitchBtn = new Button;
@@ -753,11 +759,13 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
     }
 }
 
+#ifndef HIDE_ECG_ARRHYTHMIA_FUNCTION
 void ECGMenuContent::arrhythmiaBtnReleased()
 {
     ArrhythmiaMenuWindow *instance = ArrhythmiaMenuWindow::getInstance();
     windowManager.showWindow(instance, WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorHideOthers);
 }
+#endif
 
 void ECGMenuContent::selfLearnBtnReleased()
 {
