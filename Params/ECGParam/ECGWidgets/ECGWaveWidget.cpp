@@ -712,10 +712,9 @@ void ECGWaveWidget::resizeEvent(QResizeEvent *e)
     x = _filterMode->x() + _filterMode->width();
     _notchInfo->move(x, 0);
 
-    x = _notchInfo->x() + _notchInfo->width();
-
-    _notify->move(x, 0);
     _notify->setFixedWidth(200);
+    _notify->move((width() - _notify->width()) / 2,
+                  qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
 
     _initValueRange(ecgParam.getGain(ecgParam.waveIDToLeadID((WaveformID)getID())));
     _calcGainRange();
