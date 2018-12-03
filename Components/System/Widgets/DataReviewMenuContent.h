@@ -24,6 +24,9 @@ protected:
     /* reimplment */
     void layoutExec();
 
+    /* reimplment */
+    void readyShow();
+
 private slots:
     /**
      * @brief onBtnRelease  按钮触发槽函数
