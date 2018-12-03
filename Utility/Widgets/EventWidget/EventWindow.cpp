@@ -1002,7 +1002,7 @@ void EventWindowPrivate::eventTrendUpdate()
 
         item->setData(EventTrendItemDelegate::ValueTextRole, valueStr);
         item->setData(EventTrendItemDelegate::TitleTextRole, titleStr);
-        item->setData(EventTrendItemDelegate::UnitTextRole, Unit::getSymbol(paramInfo.getUnitOfSubParam(subId)));
+        item->setData(EventTrendItemDelegate::UnitTextRole, Unit::localeSymbol(paramInfo.getUnitOfSubParam(subId)));
 
 
         item->setData(EventTrendItemDelegate::TrendAlarmRole, ctx.trendSegment->values[i].alarmFlag);
