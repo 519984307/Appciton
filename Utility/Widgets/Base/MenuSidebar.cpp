@@ -76,7 +76,7 @@ void MenuSidebarPrivate::onItemFocusChanged(bool in, Qt::FocusReason reason)
         }
         scrollBar->setVisible(true);
 
-        if (reason == Qt::TabFocusReason || reason == Qt::BacktabFocusReason)
+        if (reason == Qt::TabFocusReason || reason == Qt::BacktabFocusReason || reason == Qt::MouseFocusReason)
         {
             if (curSelectIndex >= 0)
             {
