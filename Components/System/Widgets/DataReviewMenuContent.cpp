@@ -20,6 +20,7 @@
 #include "EventWindow.h"
 #include "OxyCRGEventWindow.h"
 #include "HistoryDataReviewWindow.h"
+#include "SystemManager.h"
 
 class DataReviewMenuContentPrivate
 {
@@ -116,6 +117,18 @@ void DataReviewMenuContent::layoutExec()
     row++;
 
     glayout->setRowStretch(row, 1);
+}
+
+void DataReviewMenuContent::readyShow()
+{
+    if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
+    {
+        d_ptr->btns[DataReviewMenuContentPrivate::ITEM_BTN_HISTORY_REVIEW]->setEnabled(false);
+    }
+    else
+    {
+        d_ptr->btns[DataReviewMenuContentPrivate::ITEM_BTN_HISTORY_REVIEW]->setEnabled(true);
+    }
 }
 
 void DataReviewMenuContent::onBtnReleased()
