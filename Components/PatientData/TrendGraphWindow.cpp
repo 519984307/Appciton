@@ -159,7 +159,7 @@ TrendGraphWindow::TrendGraphWindow()
     int itemHeight = themeManger.getAcceptableControlHeight();
 
     d_ptr->waveWidget = new TrendWaveWidget();
-    int margins = getWindowMargin() * 2 + margin * 2;
+    int margins = contentsMargins().left() * 2 + margin * 2;
     d_ptr->waveWidget->setWidgetSize(maxWidth - margins,
                                      maxHeight - spacing - margins - getTitleHeight() - itemHeight);
 

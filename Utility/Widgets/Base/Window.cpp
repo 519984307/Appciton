@@ -147,15 +147,9 @@ int Window::exec()
     }
 }
 
-int Window::getTitleHeight()
+const int Window::getTitleHeight()
 {
     return TITLE_BAR_HEIGHT;
-}
-
-int Window::getWindowMargin()
-{
-    QMargins margin = contentsMargins();
-    return margin.left();
 }
 
 void Window::changeEvent(QEvent *ev)
