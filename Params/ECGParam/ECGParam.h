@@ -245,6 +245,12 @@ public: // 用于访问配置相关信息。
      */
     int getWaveDataRate(void) const;
 
+    /**
+     * @brief setGain 设置ECG全屏界面增益
+     * @param gain
+     */
+    void setGain(ECGGain gain);
+
     // 设置/获取增益。
     void setGain(ECGGain gain, ECGLead lead);
     void setGain(ECGGain gain, int waveID);
