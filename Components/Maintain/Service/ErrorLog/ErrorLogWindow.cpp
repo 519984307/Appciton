@@ -41,6 +41,13 @@ public:
           downPageBtn(NULL), infoLab(NULL), usbCheckTimer(NULL)
     {}
 
+    /**
+     * @brief updatePageBtnStatus  更新翻页按钮状态
+     * @param curPage 当前页
+     * @param totalPage 总页
+     */
+    void updatePageBtnStatus(int curPage, int totalPage);
+
 public:
     TableView *table;
     ErrorLogTableModel *model;
@@ -155,6 +162,26 @@ void ErrorLogWindow::showEvent(QShowEvent *ev)
 {
     init();
     Window::showEvent(ev);
+}
+
+void ErrorLogWindowPrivate::updatePageBtnStatus(int curPage, int totalPage)
+{
+    if (totalPage == 1)
+    {
+        downPageBtn->setEnabled(false);
+        upPageBtn->setEnabled(false);
+    }
+    else if (curPage == totalPage)
+    {
+        downPageBtn->setEnabled(false);
+        upPageBtn->setEnabled(true);
+        upPageBtn->setFocus(Qt::BacktabFocusReason);
+    }
+    else
+    {
+        downPageBtn->setEnabled(true);
+        upPageBtn->setEnabled(true);
+    }
 }
 
 void ErrorLogWindow::itemClickSlot(int row)
@@ -288,4 +315,6 @@ void ErrorLogWindow::onPageInfoUpdated(int curPage, int totalPage)
     title += trs("PageNum");
     title += ")";
     setWindowTitle(title);
+
+    d_ptr->updatePageBtnStatus(curPage, totalPage);
 }
