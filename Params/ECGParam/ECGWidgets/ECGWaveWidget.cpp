@@ -1086,3 +1086,32 @@ void ECGWaveWidget::setWaveInfoVisible(bool isVisible)
     }
 }
 
+void ECGWaveWidget::updateWidgetConfig()
+{
+    _loadConfig();
+
+    int index = ECG_DISPLAY_NORMAL;
+    currentConfig.getNumValue("ECG|DisplayMode", index);
+    ECGDisplayMode mode = static_cast<ECGDisplayMode>(index);
+    if (ECG_DISPLAY_NORMAL == mode)
+    {
+        setMargin(QMargins(WAVE_X_OFFSET, 2, 2, 2));
+    }
+    else if (ECG_DISPLAY_12_LEAD_FULL == mode)
+    {
+        QStringList currentWaveforms = layoutManager.getDisplayedWaveforms();
+
+        if ((!currentWaveforms.empty()) && (currentWaveforms[0] == name() ||
+                                            currentWaveforms[1] == name()))
+        {
+            setMargin(QMargins(WAVE_X_OFFSET + 4, 2, 2, 2));
+        }
+        else
+        {
+            setMargin(QMargins(WAVE_X_OFFSET + 4, 2, 2, 2));
+        }
+    }
+
+    WaveWidget::updateWidgetConfig();
+}
+

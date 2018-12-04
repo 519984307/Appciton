@@ -104,6 +104,9 @@ public:
      */
     void setWaveInfoVisible(bool isVisible);
 
+    /* reimplment */
+    void updateWidgetConfig();
+
 protected:
     // 重绘事件。
     virtual void paintEvent(QPaintEvent *e);

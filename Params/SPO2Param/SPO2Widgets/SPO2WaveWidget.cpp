@@ -99,6 +99,18 @@ bool SPO2WaveWidget::waveEnable()
     return spo2Param.isEnabled();
 }
 
+void SPO2WaveWidget::updateWidgetConfig()
+{
+    _loadConfig();
+
+    int gain = SPO2_GAIN_X10;
+    currentConfig.getNumValue("SPO2|Gain", gain);
+    spo2Param.setGain(static_cast<SPO2Gain>(gain));
+    setGain(static_cast<SPO2Gain>(gain));
+
+    WaveWidget::updateWidgetConfig();
+}
+
 void SPO2WaveWidget::_initValueRange(SPO2Gain gain)
 {
     int min = 0;
@@ -147,6 +159,9 @@ void SPO2WaveWidget::focusInEvent(QFocusEvent *e)
  *************************************************************************************************/
 void SPO2WaveWidget::_loadConfig(void)
 {
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
+    setPalette(palette);
+
     SPO2WaveVelocity speed = (SPO2WaveVelocity)spo2Param.getSweepSpeed();
 
     if (speed == SPO2_WAVE_VELOCITY_62D5)
@@ -161,8 +176,6 @@ void SPO2WaveWidget::_loadConfig(void)
     {
         setWaveSpeed(25.0);
     }
-
-    setGain(spo2Param.getGain());
 }
 
 void SPO2WaveWidget::setNotify(bool enable, QString str)
@@ -198,9 +211,6 @@ SPO2WaveWidget::SPO2WaveWidget(const QString &waveName, const QString &title)
     setID(WAVE_SPO2);
 //    setValueRange(64, 192);
 
-    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
-    setPalette(palette);
-
     int fontSize = fontManager.getFontSize(4);
     int fontH = fontManager.textHeightInPixels(fontManager.textFont(fontSize)) + 4;
     _name->setFont(fontManager.textFont(fontSize));
@@ -222,6 +232,7 @@ SPO2WaveWidget::SPO2WaveWidget(const QString &waveName, const QString &title)
     addItem(_notify);
     // 加载配置
     _loadConfig();
+    setGain(spo2Param.getGain());
 
     setMargin(QMargins(WAVE_X_OFFSET, fontH, 2, 2));
 }

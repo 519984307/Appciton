@@ -74,9 +74,6 @@ RESPWaveWidget::RESPWaveWidget(const QString &waveName, const QString &title)
     setFocusPolicy(Qt::NoFocus);
     setID(WAVE_RESP);
 
-    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
-    setPalette(palette);
-
     int infoFont = fontManager.getFontSize(4);;
     int fontH = fontManager.textHeightInPixels(fontManager.textFont(infoFont)) + 4;
     _name->setFixedSize(130, fontH);
@@ -172,11 +169,20 @@ bool RESPWaveWidget::waveEnable()
     return respParam.isEnabled();
 }
 
+void RESPWaveWidget::updateWidgetConfig()
+{
+   _loadConfig();
+   WaveWidget::updateWidgetConfig();
+}
+
 /**************************************************************************************************
  * 加载配置。
  *************************************************************************************************/
 void RESPWaveWidget::_loadConfig()
 {
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
+    setPalette(palette);
+
     RESPSweepSpeed speed = respParam.getSweepSpeed();
     if (speed == RESP_SWEEP_SPEED_6_25)
     {

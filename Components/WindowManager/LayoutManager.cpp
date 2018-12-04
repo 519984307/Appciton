@@ -128,6 +128,7 @@ public:
     IWidget *contentView;
     QHBoxLayout *contentLayout;
     QMap<QString, IWidget *> layoutWidgets;
+    QStringList layoutWidgetsNameList;
     UserFaceType curUserFace;
 
     OrderedMap<int, LayoutRow> layoutInfos;
@@ -1154,6 +1155,11 @@ void LayoutManager::addLayoutWidget(IWidget *w, LayoutNodeType nodeType)
         qdebug("Layout widget is already added.");
     }
 
+    if (-1 == d_ptr->layoutWidgetsNameList.indexOf(w->name()))
+    {
+        d_ptr->layoutWidgetsNameList.append(w->name());
+    }
+
     d_ptr->layoutWidgets.insert(w->name(), w);
     d_ptr->widgetLayoutable.insert(w->name(), true);
 
@@ -1418,6 +1424,14 @@ QRect LayoutManager::getMenuArea() const
 void LayoutManager::updateTabOrder()
 {
     d_ptr->updateTabOrder();
+}
+
+void LayoutManager::updateLayoutWidgetsConfig()
+{
+    foreach(QString name, d_ptr->layoutWidgetsNameList)
+    {
+        d_ptr->layoutWidgets[name]->updateWidgetConfig();
+    }
 }
 
 LayoutManager::LayoutManager()

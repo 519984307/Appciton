@@ -149,17 +149,6 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
     setFocusPolicy(Qt::NoFocus);
     setID(WAVE_CO2);
 
-    QPalette palette = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
-    setPalette(palette);
-
-    // 标尺的颜色更深。
-    QColor color = palette.color(QPalette::WindowText);
-    palette.setColor(QPalette::Highlight, color);
-    color.setRed(color.red() * 2 / 3);
-    color.setGreen(color.green() * 2 / 3);
-    color.setBlue(color.blue() * 2 / 3);
-    palette.setColor(QPalette::WindowText, color);
-
     int infoFont = fontManager.getFontSize(4);
     int fontH = fontManager.textHeightInPixels(fontManager.textFont(infoFont)) + 4;
 //    _name = new WaveWidgetLabel(" ", Qt::AlignLeft | Qt::AlignVCenter, this);
@@ -169,11 +158,12 @@ CO2WaveWidget::CO2WaveWidget(const QString &waveName, const QString &title)
 //    addItem(_name);
 
     _ruler = new CO2WaveRuler(this);
-    _ruler->setPalette(palette);
     _ruler->setFont(fontManager.textFont(infoFont - 2));
     addItem(_ruler);
 
     setMargin(QMargins(WAVE_X_OFFSET, 2, 2, 2));
+
+    _loadConfig();
 }
 
 void CO2WaveWidget::_getItemIndex(int index)
@@ -181,9 +171,30 @@ void CO2WaveWidget::_getItemIndex(int index)
     _currentItemIndex = index;
 }
 
+void CO2WaveWidget::_loadConfig()
+{
+    QPalette palette = colorManager.getPalette(paramInfo.getParamName(PARAM_CO2));
+    setPalette(palette);
+    // 标尺的颜色更深。
+    QColor color = palette.color(QPalette::WindowText);
+    palette.setColor(QPalette::Highlight, color);
+    color.setRed(color.red() * 2 / 3);
+    color.setGreen(color.green() * 2 / 3);
+    color.setBlue(color.blue() * 2 / 3);
+    palette.setColor(QPalette::WindowText, color);
+    _ruler->setPalette(palette);
+}
+
 /**************************************************************************************************
  * 析构。
  *************************************************************************************************/
 CO2WaveWidget::~CO2WaveWidget()
 {
+}
+
+void CO2WaveWidget::updateWidgetConfig()
+{
+    _loadConfig();
+    // 待加入波形配置代码
+    WaveWidget::updateWidgetConfig();
 }

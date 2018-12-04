@@ -704,6 +704,11 @@ void WaveWidget::resetWaveWidget()
     update();
 }
 
+void WaveWidget::updateWidgetConfig()
+{
+    resetWaveWidget();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // 说明:
 // 指定波形前进的速率, 将调整波形缓存, 并触发重绘

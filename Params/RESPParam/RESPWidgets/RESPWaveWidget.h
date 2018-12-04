@@ -31,6 +31,9 @@ public:
     // 窗口是否使能
     virtual bool waveEnable();
 
+    /* reimplment */
+    void updateWidgetConfig();
+
 protected:
     void resizeEvent(QResizeEvent *e);
     void focusInEvent(QFocusEvent */*e*/);

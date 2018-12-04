@@ -47,6 +47,8 @@ public:
 
     virtual void resetWaveWidget() {}
 
+    virtual void updateWidgetConfig() {}
+
 signals:
     void clicked(IWidget *w);   // 按键或鼠标单击信号
     void released(IWidget *w);  // 按键或鼠标释放信号

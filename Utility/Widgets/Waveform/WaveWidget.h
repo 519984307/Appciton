@@ -256,6 +256,9 @@ public:
         resetWaveFlag = flag;
     }
 
+    /* reimplment */
+    void updateWidgetConfig();
+
 public slots:
     void setWaveSpeed(float waveSpeed);
     void setDataRate(float dataRate);

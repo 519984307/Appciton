@@ -27,6 +27,7 @@
 #include "ConfigEditMenuWindow.h"
 #include "WindowManager.h"
 #include "SystemManager.h"
+#include "LayoutManager.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc"
 #define USER_DEFINE_CONFIG_NAME "UserConfig"
@@ -249,8 +250,7 @@ void LoadConfigMenuContent::onBtnClick()
         currentConfig.setCurrentFilePath(curConfigName);
         currentConfig.load(loadPath);
 
-        // send update signal
-        QMetaObject::invokeMethod(&configManager, "configUpdated");
+        layoutManager.updateLayoutWidgetsConfig();
 
         QString title(trs("LoadConfig"));
         QString text(trs("SuccessToLoad"));
