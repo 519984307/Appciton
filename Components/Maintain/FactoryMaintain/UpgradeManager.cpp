@@ -962,6 +962,7 @@ void UpgradeManager::noResponseTimeout()
         d_ptr->upgradeExit(UPGRADE_FAIL, UPGRADE_ERR_COMMUNICATION_FAIL);
         break;
     case STATE_REBOOT:
+        emit reboot();
         system("reboot");
         break;
     default:
