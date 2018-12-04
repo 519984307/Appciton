@@ -108,7 +108,7 @@ public:
         QString curFolderPath = dataStorageDirManager.getCurFolder();
         QFileInfo fileInfo(curFolderPath);
         QString curFolderName = fileInfo.fileName();
-        patientManager.dischargePatient(false);
+        patientManager.dischargePatient();
         dataStorageDirManager.deleteData(curFolderName);
     }
 

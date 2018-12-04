@@ -18,6 +18,7 @@
 #include "MessageBox.h"
 #include <QApplication>
 #include "RescueDataDeleteWindow.h"
+#include "DischargePatientWindow.h"
 
 class PatientManagementMenuContentPrivate
 {
@@ -147,7 +148,11 @@ void PatientManagementMenuContent::onBtnReleased()
         break;
         case PatientManagementMenuContentPrivate::ITEM_BTN_DISCHARGE_PATIENT:
         {
-            patientManager.dischargePatient();
+            DischargePatientWindow dischargeWin;
+            if (dischargeWin.exec() == QDialog::Accepted)
+            {
+                patientManager.dischargePatient();
+            }
         }
         break;
         case PatientManagementMenuContentPrivate::ITEM_BTN_DATA_DELETE_CASE:
