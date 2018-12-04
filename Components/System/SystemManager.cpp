@@ -45,6 +45,8 @@
 #include <QWSServer>
 #include "RunningStatusBar.h"
 #endif
+#include "PatientManager.h"
+#include "DataStorageDirManager.h"
 
 #define BACKLIGHT_DEV   "/sys/class/backlight/backlight/brightness"       // 背光控制文件接口
 
@@ -92,6 +94,7 @@ public:
         alarmIndicator.delAllPhyAlarm();
         windowManager.showDemoWidget(true);
         paramManager.connectDemoParamProvider();
+        patientManager.newPatient();
     }
 
     /**
@@ -102,6 +105,11 @@ public:
         alarmIndicator.delAllPhyAlarm();
         windowManager.showDemoWidget(false);
         paramManager.connectParamProvider(WORK_MODE_DEMO);
+        QString curFolderPath = dataStorageDirManager.getCurFolder();
+        QFileInfo fileInfo(curFolderPath);
+        QString curFolderName = fileInfo.fileName();
+        patientManager.dischargePatient();
+        dataStorageDirManager.deleteData(curFolderName);
     }
 
     /**

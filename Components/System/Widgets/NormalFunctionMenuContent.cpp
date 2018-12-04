@@ -28,7 +28,6 @@
 #include "SoftWareVersionWindow.h"
 #include "NightModeWindow.h"
 #include "StandbyWindow.h"
-#include "PatientManager.h"
 #include "PasswordWindow.h"
 #ifdef Q_WS_QWS
 #include <QWSServer>
@@ -371,7 +370,6 @@ void NormalFunctionMenuContent::onBtnReleasd()
                 systemManager.setWorkMode(WORK_MODE_NORMAL);
                 d_ptr->demoBtn->setText(trs("DemoMode"));
                 windowManager.closeAllWidows();
-                patientManager.dischargePatient(false);
                 break;
             }
 
@@ -387,9 +385,7 @@ void NormalFunctionMenuContent::onBtnReleasd()
 
             systemManager.setWorkMode(WORK_MODE_DEMO);
             d_ptr->demoBtn->setText(trs("ExitDemoMode"));
-
             windowManager.closeAllWidows();
-            patientManager.newPatient();
         }
         break;
     }

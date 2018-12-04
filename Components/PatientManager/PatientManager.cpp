@@ -14,7 +14,6 @@
 #include "IConfig.h"
 #include "ECGParam.h"
 #include "DataStorageDirManager.h"
-#include "DischargePatientWindow.h"
 #include "NIBPParam.h"
 #include "NIBPProviderIFace.h"
 
@@ -297,20 +296,9 @@ void PatientManager::newPatient()
     dataStorageDirManager.createDir(true);
 }
 
-void PatientManager::dischargePatient(bool isShowStandbyWin)
+void PatientManager::dischargePatient()
 {
-    if (isShowStandbyWin)
-    {
-        DischargePatientWindow dischargeWin;
-        if (dischargeWin.exec() == QDialog::Accepted)
-        {
-            d_ptr->handleDischarge();
-        }
-    }
-    else
-    {
-        d_ptr->handleDischarge();
-    }
+    d_ptr->handleDischarge();
 }
 
 void PatientManager::finishPatientInfo()
