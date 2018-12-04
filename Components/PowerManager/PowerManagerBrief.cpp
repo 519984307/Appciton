@@ -74,8 +74,23 @@ void PowerMangerBrief::setBatteryQuantity(short adc)
 QString PowerMangerBrief::getBatteryQuantity()
 {
     QString batQuantityStr;
-    float batQuantity = ((d_ptr->adcValue - BAT_LEVEL_0) * 1.0 ) / (BAT_LEVEL_5 - BAT_LEVEL_0) * 100;
-    batQuantityStr = QString("%1%2").arg(QString::number(batQuantity, 'f', 1), "%");
+    if (d_ptr->powerType == POWER_SUPLY_AC_BAT || d_ptr->powerType == POWER_SUPLY_BAT)
+    {
+        float batQuantity = ((d_ptr->adcValue - BAT_LEVEL_0) * 1.0 ) / (BAT_LEVEL_5 - BAT_LEVEL_0) * 100;
+        if (batQuantity < 0)
+        {
+            batQuantity = 0;
+        }
+        else if (batQuantity > 100)
+        {
+            batQuantity = 100;
+        }
+        batQuantityStr = QString("%1%2").arg(QString::number(batQuantity, 'f', 1), "%");
+    }
+    else
+    {
+        batQuantityStr = "-";
+    }
     return batQuantityStr;
 }
 
