@@ -137,7 +137,6 @@ void UpgradeWindow::exec()
     QRect r = windowManager.geometry();
     this->move(r.center() - this->rect().center());
     QDialog::exec();
-    windowManager.setVisible(true);
 }
 
 void UpgradeWindow::timerEvent(QTimerEvent *ev)
