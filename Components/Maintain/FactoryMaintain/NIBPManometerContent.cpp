@@ -94,6 +94,7 @@ void NIBPManometerContent::timerEvent(QTimerEvent *ev)
         bool reply = nibpParam.geReply();
         if (reply || d_ptr->timeoutNum == TIMEOUT_WAIT_NUMBER)
         {
+            d_ptr->modeBtn->setEnabled(true);
             if (reply && nibpParam.getResult())
             {
                 if (d_ptr->isManometerMode)
@@ -138,6 +139,7 @@ void NIBPManometerContent::timerEvent(QTimerEvent *ev)
 void NIBPManometerContent::enterManometerReleased()
 {
     d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+    d_ptr->modeBtn->setEnabled(false);
     if (d_ptr->isManometerMode)
     {
         nibpParam.provider().serviceManometer(false);

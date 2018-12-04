@@ -117,6 +117,7 @@ void NIBPCalibrateContent::layoutExec()
     spinBox = new SpinBox();
     spinBox->setValue(250);
     spinBox->setRange(0, 250);
+    spinBox->setEnabled(false);
     layout->addWidget(spinBox, 2, 1);
     d_ptr->point2Spb = spinBox;
 
@@ -160,6 +161,7 @@ void NIBPCalibrateContent::timerEvent(QTimerEvent *ev)
         bool reply = nibpParam.geReply();
         if (reply || d_ptr->timeoutNum == TIMEOUT_WAIT_NUMBER)
         {
+            d_ptr->modeBtn->setEnabled(true);
             if (reply && nibpParam.getResult())
             {
                 if (d_ptr->isCalibrateMode)
@@ -170,6 +172,7 @@ void NIBPCalibrateContent::timerEvent(QTimerEvent *ev)
                     btn->setEnabled(false);
                     btn = d_ptr->btnList.at(1);
                     btn->setEnabled(false);
+                    d_ptr->point2Spb->setEnabled(false);
                     d_ptr->calibrateFlag = false;
                 }
                 else
@@ -180,6 +183,7 @@ void NIBPCalibrateContent::timerEvent(QTimerEvent *ev)
                     btn->setEnabled(true);
                     btn = d_ptr->btnList.at(1);
                     btn->setEnabled(true);
+                    d_ptr->point2Spb->setEnabled(true);
                     d_ptr->calibrateFlag = true;
                 }
             }
@@ -256,6 +260,7 @@ void NIBPCalibrateContent::onBtn2Calibrated()
 void NIBPCalibrateContent::inCalibrateMode()
 {
     d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+    d_ptr->modeBtn->setEnabled(false);
     if (d_ptr->isCalibrateMode)
     {
         nibpParam.provider().serviceCalibrate(false);
