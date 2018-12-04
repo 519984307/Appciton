@@ -166,26 +166,21 @@ void ErrorLogWindow::showEvent(QShowEvent *ev)
 
 void ErrorLogWindowPrivate::updatePageBtnStatus(int curPage, int totalPage)
 {
-    bool isDownBtnEnable = true;
-    bool isUpBtnEnable = true;
-    bool isSetFocus = false;
     if (totalPage == 1)
     {
-        isDownBtnEnable = false;
-        isUpBtnEnable = false;
+        downPageBtn->setEnabled(false);
+        upPageBtn->setEnabled(false);
     }
     else if (curPage == totalPage)
     {
-        isDownBtnEnable = false;
-        isUpBtnEnable = true;
-        isSetFocus = true;
-    }
-
-    downPageBtn->setEnabled(isDownBtnEnable);
-    upPageBtn->setEnabled(isUpBtnEnable);
-    if (isSetFocus == true)
-    {
+        downPageBtn->setEnabled(false);
+        upPageBtn->setEnabled(true);
         upPageBtn->setFocus(Qt::BacktabFocusReason);
+    }
+    else
+    {
+        downPageBtn->setEnabled(true);
+        upPageBtn->setEnabled(true);
     }
 }
 
