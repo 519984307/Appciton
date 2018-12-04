@@ -153,7 +153,7 @@ QMap<SubParamID, QPainterPath> OxyCRGEventWaveWidget::generatorPainterPath(const
         QRect valueRect(d_ptr->waveRegWidth + width() / 4 / 3, trendHigh + 35, width() / 3, 50);
         if (trendData == InvData())
         {
-            painter.drawText(valueRect, Qt::AlignVCenter | Qt::AlignTop, "-.-");
+            painter.drawText(valueRect, Qt::AlignVCenter | Qt::AlignTop, "---");
         }
         else
         {

@@ -16,6 +16,7 @@
 #include "ParamInfo.h"
 #include "ParamManager.h"
 #include "AlarmConfig.h"
+#include "FontManager.h"
 
 #define GRAPH_POINT_NUMBER          120
 #define DATA_INTERVAL_PIXEL         5
@@ -396,6 +397,8 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     // 趋势标尺上下限
     QRect upRulerRect(_info.xHead / 3 + 7, _info.yTop - 10, _info.xHead, 30);
     QRect downRulerRect(_info.xHead / 3 + 7, _info.yBottom - 10, _info.xHead, 30);
+    QFont textfont = fontManager.textFont(fontManager.getFontSize(3));
+    barPainter.setFont(textfont);
     if (_type == TREND_GRAPH_TYPE_AG_TEMP)
     {
         barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.max, 'f', 1));
