@@ -927,7 +927,7 @@ void EventWindowPrivate::eventTrendUpdate()
         QString dataStr;
         if (ctx.trendSegment->values[i].value == InvData())
         {
-            dataStr = "-.-";
+            dataStr = InvStr();
         }
         else
         {
