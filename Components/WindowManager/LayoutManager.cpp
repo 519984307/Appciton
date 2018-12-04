@@ -1462,16 +1462,26 @@ bool LayoutManager::setWidgetLayoutable(const QString &name, bool enable)
 
 QRect LayoutManager::getMenuArea() const
 {
-    // 获得不遮挡第一道波形的菜单显示区域
     QRect r = d_ptr->contentView->geometry();
-    int startYPos = r.height() / (d_ptr->waveRowCount + d_ptr->leftParamRowCount);
-    r.moveTo(0, startYPos);
-    QRect gr(d_ptr->contentView->mapToGlobal(r.topLeft()),
-             d_ptr->contentView->mapToGlobal(r.bottomRight()));
-    gr.setWidth(gr.width() * d_ptr->waveAreaStretch / (d_ptr->waveAreaStretch + d_ptr->paramAreaStretch));
-    gr.setHeight(r.height() * (d_ptr->waveRowCount - 1 + d_ptr->leftParamRowCount)
-                 / (d_ptr->waveRowCount + d_ptr->leftParamRowCount));
-    return gr;
+    if (getUFaceType() == UFACE_MONITOR_BIGFONT)
+    {
+        r.moveTo(0, 0);
+        QRect gr(d_ptr->contentView->mapToGlobal(r.topLeft()),
+                 d_ptr->contentView->mapToGlobal(r.bottomRight()));
+        return gr;
+    }
+    else
+    {
+        // 获得不遮挡第一道波形的菜单显示区域
+        int startYPos = r.height() / (d_ptr->waveRowCount + d_ptr->leftParamRowCount);
+        r.moveTo(0, startYPos);
+        QRect gr(d_ptr->contentView->mapToGlobal(r.topLeft()),
+                 d_ptr->contentView->mapToGlobal(r.bottomRight()));
+        gr.setWidth(gr.width() * d_ptr->waveAreaStretch / (d_ptr->waveAreaStretch + d_ptr->paramAreaStretch));
+        gr.setHeight(r.height() * (d_ptr->waveRowCount - 1 + d_ptr->leftParamRowCount)
+                     / (d_ptr->waveRowCount + d_ptr->leftParamRowCount));
+        return gr;
+    }
 }
 
 void LayoutManager::updateTabOrder()

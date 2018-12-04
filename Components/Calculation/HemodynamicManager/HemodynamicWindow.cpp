@@ -401,8 +401,16 @@ void HemodynamicWindow::defaultInput()
 void HemodynamicWindow::resizeEvent(QResizeEvent *ev)
 {
     QRect r = layoutManager.getMenuArea();
-    r.adjust(r.width() - this->width(), 0, 0, 0);  // 菜单将靠右上显示
-    QPoint globalTopLeft = r.topLeft();
+    QPoint globalTopLeft;
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_BIGFONT)
+    {
+        globalTopLeft = r.center() - this->rect().center();
+    }
+    else
+    {
+        r.adjust(r.width() - this->width(), 0, 0, 0);  // 菜单将靠右上显示
+        globalTopLeft = r.topLeft();
+    }
     move(globalTopLeft);
     Window::resizeEvent(ev);
 }
