@@ -76,13 +76,6 @@ void MenuSidebarItem::paintEvent(QPaintEvent *ev)
     QPainter painter(this);
     painter.fillRect(rect, bgColor);
 
-    if (isChecked())
-    {
-        QRect markerRect =  rect;
-        markerRect.setWidth(MARKER_WIDTH);
-        painter.fillRect(markerRect, Qt::red);
-    }
-
     rect.adjust(2 * MARKER_WIDTH, 0, 0, 0);
     painter.setPen(textColor);
     painter.drawText(rect, Qt::AlignLeft | Qt::AlignVCenter, text());
