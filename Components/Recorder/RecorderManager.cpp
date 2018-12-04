@@ -159,7 +159,7 @@ bool RecorderManager::isConnected() const
 
 bool RecorderManager::isPrinting() const
 {
-    return d_ptr->processor->isProcessing();
+    return (d_ptr->generator || d_ptr->status);
 }
 
 void RecorderManager::abort()
@@ -216,47 +216,9 @@ void RecorderManager::selfTest()
 
 bool RecorderManager::addPageGenerator(RecordPageGenerator *generator)
 {
-    bool startImmediately = false;
-    if (!d_ptr->generator && !d_ptr->status)
-    {
-        // no generator currently
-        d_ptr->generator = generator;
-        generator->moveToThread(d_ptr->procThread);
-        startImmediately = true;
-    }
-    else
-    {
-
-        if (generator->getPriority() == RecordPageGenerator::PriorityContinuous)
-        {
-            // don't add the generator
-            generator->deleteLater();
-
-            // stop current generator
-            QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
-            // stop page processor
-            QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
-
-            return false;
-        }
-        else if (generator->getPriority() <= d_ptr->generator->getPriority())
-        {
-            // the priority is lower or equal to current generator
-            // don't add the generator
-            generator->deleteLater();
-            return false;
-        }
-        else
-        {
-            // stop current generator
-            QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
-            // stop page processor
-            QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
-            d_ptr->generator = generator;
-            d_ptr->generator->setPrintTime(d_ptr->timeSec);
-            generator->moveToThread(d_ptr->procThread);
-        }
-    }
+    bool startImmediately = true;
+    d_ptr->generator = generator;
+    generator->moveToThread(d_ptr->procThread);
 
     connect(generator, SIGNAL(stopped()), this, SLOT(onGeneratorStopped()), Qt::QueuedConnection);
     connect(generator, SIGNAL(generatePage(RecordPage *)), d_ptr->processor, SLOT(addPage(RecordPage *)),
@@ -289,6 +251,37 @@ void RecorderManager::setPrintTime(PrintTime timeSec)
 PrintTime RecorderManager::getPrintTime() const
 {
     return d_ptr->timeSec;
+}
+
+bool RecorderManager::stopPrint(RecordPageGenerator *generator)
+{
+    if (generator->getPriority() == RecordPageGenerator::PriorityContinuous)
+    {
+        // don't add the generator
+        generator->deleteLater();
+
+        // stop current generator
+        QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
+        // stop page processor
+        QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
+
+        return false;
+    }
+    else if (generator->getPriority() <= d_ptr->generator->getPriority())
+    {
+        // the priority is lower or equal to current generator
+        // don't add the generator
+        generator->deleteLater();
+        return false;
+    }
+    else
+    {
+        // stop current generator
+        QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
+        // stop page processor
+        QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
+        return true;
+    }
 }
 
 void RecorderManager::testSlot()

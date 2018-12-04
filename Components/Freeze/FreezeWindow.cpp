@@ -226,7 +226,17 @@ void FreezeWindow::onBtnClick()
         RecordPageGenerator *generator = new FreezePageGenerator(freezeManager.getTrendData(),
                 waveinfos);
 
-        recorderManager.addPageGenerator(generator);
+        if (recorderManager.isPrinting())
+        {
+            if (recorderManager.stopPrint(generator))
+            {
+                recorderManager.addPageGenerator(generator);
+            }
+        }
+        else
+        {
+            recorderManager.addPageGenerator(generator);
+        }
     }
 }
 

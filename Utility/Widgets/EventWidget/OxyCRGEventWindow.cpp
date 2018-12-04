@@ -335,7 +335,17 @@ void OxyCRGEventWindow::printReleased()
     trendInfos.append(d_ptr->trendInfoList.at(0));
     trendInfos.append(d_ptr->trendInfoList.at(1));
     RecordPageGenerator *generator = new OxyCRGPageGenerator(trendInfos, d_ptr->waveInfo, d_ptr->eventTitle);
-    recorderManager.addPageGenerator(generator);
+    if (recorderManager.isPrinting())
+    {
+        if (recorderManager.stopPrint(generator))
+        {
+            recorderManager.addPageGenerator(generator);
+        }
+    }
+    else
+    {
+        recorderManager.addPageGenerator(generator);
+    }
 }
 
 void OxyCRGEventWindow::setReleased()

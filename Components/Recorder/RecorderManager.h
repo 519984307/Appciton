@@ -125,6 +125,13 @@ public:
      */
     PrintTime getPrintTime(void) const;
 
+    /**
+     * @brief stopPrint 停止打印
+     * @param generator 新产生的打印
+     * @return 是否进行新产生的打印
+     */
+    bool stopPrint(RecordPageGenerator *generator);
+
 private slots:
 
     void testSlot();

@@ -441,7 +441,18 @@ void EventWindow::printRelease()
     if (curIndex < d_ptr->dataIndex.size() &&
             curIndex >= 0)
     {
-        recorderManager.addPageGenerator(new EventPageGenerator(d_ptr->backend, d_ptr->dataIndex.at(curIndex)));
+        RecordPageGenerator *gen = new EventPageGenerator(d_ptr->backend, d_ptr->dataIndex.at(curIndex));
+        if (recorderManager.isPrinting())
+        {
+            if (recorderManager.stopPrint(gen))
+            {
+                recorderManager.addPageGenerator(gen);
+            }
+        }
+        else
+        {
+            recorderManager.addPageGenerator(gen);
+        }
     }
 }
 
