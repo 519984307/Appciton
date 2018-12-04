@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/11/30
+ **/
+
 #include "FreezePageGenerator.h"
 #include "PatientManager.h"
 #include "RecorderManager.h"
@@ -11,9 +21,9 @@ class FreezePageGeneratorPrivate
 public:
     FreezePageGeneratorPrivate()
         : curPageType(RecordPageGenerator::TitlePage),
-          curDrawWaveSegment(0)
+          curDrawWaveSegment(0),
+          allWaveProcess(false)
     {
-
     }
 
     /**
@@ -43,37 +53,37 @@ public:
 bool FreezePageGeneratorPrivate::loadWaveData(int waveSegment)
 {
     bool hasWaveData = false;
-    for(int i=0; i< freezeWaveInfos.size(); i++)
+    for (int i = 0; i < freezeWaveInfos.size(); i++)
     {
         int sampleRate = waveSegInfos.at(i).sampleRate;
         int startIndex = waveSegment * sampleRate;
         const QVector<WaveDataType> &dataBuf = freezeWaveInfos.at(i).data;
         QVector<WaveDataType> &destBuf = waveSegInfos[i].secondWaveBuff;
-        if(startIndex >= dataBuf.size())
+        if (startIndex >= dataBuf.size())
         {
-            //no enough data
+            // no enough data
             destBuf.clear();
         }
         else
         {
             hasWaveData = true;
             int size = dataBuf.size();
-            if(destBuf.size() != sampleRate)
+            if (destBuf.size() != sampleRate)
             {
                 destBuf.resize(sampleRate);
             }
-            if(startIndex + sampleRate < size)
+            if (startIndex + sampleRate < size)
             {
-                for(int i = 0; i < sampleRate; i++)
+                for (int i = 0; i < sampleRate; i++)
                 {
                     destBuf[i] = dataBuf[startIndex + i];
                 }
             }
             else
             {
-                //no enough data to fill the buffer
+                // no enough data to fill the buffer
                 int count = 0;
-                for( ;count + startIndex < size; count++)
+                for (; count + startIndex < size; count++)
                 {
                     destBuf[count] = dataBuf[count + startIndex];
                 }
@@ -88,14 +98,14 @@ bool FreezePageGeneratorPrivate::loadWaveData(int waveSegment)
 
 void FreezePageGeneratorPrivate::checkAndDrawTimestamp(RecordPage *page)
 {
-    if(!page)
+    if (!page)
     {
         return;
     }
 
-    for(int i = 0; i < needDrawTimestamp.size(); i++)
+    for (int i = 0; i < needDrawTimestamp.size(); i++)
     {
-        if(needDrawTimestamp.at(i))
+        if (needDrawTimestamp.at(i))
         {
             QPainter p(page);
             QFont font = RecordPageGenerator::font();
@@ -107,21 +117,22 @@ void FreezePageGeneratorPrivate::checkAndDrawTimestamp(RecordPage *page)
             QDateTime dt = QDateTime::fromTime_t(freezeWaveInfos.at(i).timestampOfLastSecond);
             QString time = dt.toString("hh:mm:ss");
 
-            p.drawText(rect, Qt::AlignVCenter|Qt::AlignLeft, time);
+            p.drawText(rect, Qt::AlignVCenter | Qt::AlignLeft, time);
 
             needDrawTimestamp[i] = false;
         }
     }
 }
 
-FreezePageGenerator::FreezePageGenerator(const TrendDataPackage &trendData, const QList<FreezeWaveInfo> &freezeWaveInfos, QObject *parent)
+FreezePageGenerator::FreezePageGenerator(const TrendDataPackage &trendData,
+        const QList<FreezeWaveInfo> &freezeWaveInfos, QObject *parent)
     : RecordPageGenerator(parent), d_ptr(new FreezePageGeneratorPrivate())
 {
     d_ptr->trendData = trendData;
     d_ptr->freezeWaveInfos = freezeWaveInfos;
     d_ptr->needDrawTimestamp = QBitArray(freezeWaveInfos.size());
     QList<WaveformID> ids;
-    for(int i = 0; i < freezeWaveInfos.size(); i++)
+    for (int i = 0; i < freezeWaveInfos.size(); i++)
     {
         ids.append(freezeWaveInfos.at(i).id);
     }
@@ -131,7 +142,6 @@ FreezePageGenerator::FreezePageGenerator(const TrendDataPackage &trendData, cons
 
 FreezePageGenerator::~FreezePageGenerator()
 {
-
 }
 
 int FreezePageGenerator::type() const
@@ -141,11 +151,11 @@ int FreezePageGenerator::type() const
 
 RecordPage *FreezePageGenerator::createPage()
 {
-    switch(d_ptr->curPageType)
+    switch (d_ptr->curPageType)
     {
     case TitlePage:
         d_ptr->curPageType = TrendPage;
-        return createTitlePage(QString(trs("FreezeWaveRecording")), patientManager.getPatientInfo());
+        return createTitlePage(QString(trs("FrozenWavePrint")), patientManager.getPatientInfo());
 
     case TrendPage:
         d_ptr->curPageType = WaveScalePage;
@@ -153,13 +163,13 @@ RecordPage *FreezePageGenerator::createPage()
 
     case WaveScalePage:
         d_ptr->curPageType = WaveSegmentPage;
-        if(d_ptr->freezeWaveInfos.size() > 0)
+        if (d_ptr->freezeWaveInfos.size() > 0)
         {
             return createWaveScalePage(d_ptr->waveSegInfos, recorderManager.getPrintSpeed());
         }
-        //fall through
+    // fall through
     case WaveSegmentPage:
-        if(d_ptr->loadWaveData(d_ptr->curDrawWaveSegment))
+        if (d_ptr->loadWaveData(d_ptr->curDrawWaveSegment))
         {
             RecordPage *page;
             page = createWaveSegments(d_ptr->waveSegInfos, d_ptr->curDrawWaveSegment++, recorderManager.getPrintSpeed());
@@ -167,7 +177,7 @@ RecordPage *FreezePageGenerator::createPage()
             d_ptr->checkAndDrawTimestamp(page);
             return page;
         }
-        //fall through
+    // fall through
     case EndPage:
         d_ptr->curPageType = NullPage;
         return createEndPage();

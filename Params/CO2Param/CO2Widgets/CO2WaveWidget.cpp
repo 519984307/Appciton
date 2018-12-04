@@ -76,52 +76,23 @@ void CO2WaveWidget::setWaveformMode(CO2SweepMode mode)
  *************************************************************************************************/
 void CO2WaveWidget::setRuler(CO2DisplayZoom zoom)
 {
-    float zoomValue = 0;
     switch (zoom)
     {
     case CO2_DISPLAY_ZOOM_4:
         _ruler->setRuler(4.0, 2.0, 0);
-        zoomValue = 4.0;
         break;
     case CO2_DISPLAY_ZOOM_8:
         _ruler->setRuler(8.0, 4.0, 0);
-        zoomValue = 8.0;
         break;
     case CO2_DISPLAY_ZOOM_12:
         _ruler->setRuler(12.0, 6.0, 0);
-        zoomValue = 12.0;
         break;
     case CO2_DISPLAY_ZOOM_20:
         _ruler->setRuler(20.0, 10.0, 0);
-        zoomValue = 20.0;
         break;
     default:
         break;
     }
-
-    UnitType unit = co2Param.getUnit();
-    QString str;
-    if (unit == UNIT_KPA)
-    {
-        float tempVal = Unit::convert(UNIT_KPA, UNIT_PERCENT, zoomValue).toFloat();
-        str = QString("0.0~%1").arg(QString::number(
-                        static_cast<float>(
-                            static_cast<int>(tempVal + 0.5)), 'f', 1));
-    }
-    else if (unit == UNIT_MMHG)
-    {
-        str = "0~";
-        int tempVal = Unit::convert(UNIT_MMHG, UNIT_PERCENT, zoomValue).toInt();
-        tempVal = (tempVal + 5) / 10 * 10;
-        str += QString::number(tempVal);
-    }
-    else
-    {
-        str = QString("0.0~%1").arg(QString::number(zoomValue, 'f', 1));
-    }
-    str += " ";
-    str += Unit::localeSymbol(unit);
-    //    _zoom->setText(str);
 }
 
 void CO2WaveWidget::updatePalette(const QPalette &pal)

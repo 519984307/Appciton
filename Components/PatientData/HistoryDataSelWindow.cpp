@@ -18,8 +18,9 @@
 #include <QHBoxLayout>
 #include "HistoryDataReviewWindow.h"
 #include <QScrollBar>
+#include "WindowManager.h"
 
-#define ROW_COUNT       9
+#define ROW_COUNT       8
 
 class HistoryDataSelWindowPrivate
 {
@@ -40,7 +41,7 @@ HistoryDataSelWindow::HistoryDataSelWindow()
     : Window(), d_ptr(new HistoryDataSelWindowPrivate())
 {
     setWindowTitle(trs("HistoryDataList"));
-    setFixedSize(800, 580);
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 
     d_ptr->table = new TableView();
     d_ptr->table->horizontalHeader()->setVisible(false);
@@ -56,6 +57,7 @@ HistoryDataSelWindow::HistoryDataSelWindow()
     d_ptr->table->setModel(d_ptr->model);
     d_ptr->table->setFixedHeight(ROW_COUNT * d_ptr->model->getRowHeightHint());
     connect(d_ptr->table, SIGNAL(itemClicked(QModelIndex)), this, SLOT(itemSelReleased(QModelIndex)));
+    connect(d_ptr->table, SIGNAL(clicked(QModelIndex)), this, SLOT(itemSelReleased(QModelIndex)));
 
     d_ptr->upPageBtn = new Button("", QIcon("/usr/local/nPM/icons/up.png"));
     d_ptr->upPageBtn->setButtonStyle(Button::ButtonIconOnly);

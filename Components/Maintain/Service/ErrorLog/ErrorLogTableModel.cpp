@@ -199,6 +199,9 @@ void ErrorLogTableModel::loadData()
         index++;
     }
     endResetModel();
+
+    // 发送table的页码信息
+    emit pageInfoUpdate(d_ptr->currentPage, d_ptr->totalPage);
 }
 
 int ErrorLogTableModel::getErrorLogIndex(int index)

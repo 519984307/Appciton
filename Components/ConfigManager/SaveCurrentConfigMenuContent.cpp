@@ -52,7 +52,11 @@ void SaveCurrentConfigMenuContent::onBtnReleased()
     if (configManager.getUserDefineConfigInfos().count()
             >= configManager.getUserDefineConfigMaxLen())
     {
-        MessageBox message(trs("Prompt"), trs("reachedTheMaximunOfConfigurations"), false);
+        MessageBox message(trs("Prompt"),
+                           trs("reachedTheMaximunOfConfigurations"),
+                           false,
+                           true);
+        message.setFixedSize(360, 220);
         windowManager.showWindow(&message, WindowManager::ShowBehaviorModal);
     }
     else

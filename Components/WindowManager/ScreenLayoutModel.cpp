@@ -336,17 +336,33 @@ public:
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_SPO2), WAVE_SPO2);
         waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_CO2), WAVE_CO2);
 
-        // find proper IBP Wave base of the wave name
-        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_IBP1),
-                          ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_1)));
-        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_IBP2),
-                          ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_2)));
+        if (systemManager.isSupport(CONFIG_IBP))
+        {
+            // find proper IBP Wave base of the wave name
+            waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_IBP1),
+                              ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_1)));
+            waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_IBP2),
+                              ibpParam.getWaveformID(ibpParam.getEntitle(IBP_INPUT_2)));
 
-        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_N2O), WAVE_N2O);
-        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_AA1), WAVE_AA1);
-        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_AA2), WAVE_AA2);
-        waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_O2), WAVE_O2);
+            // IBP's pressure name is identical to it's wave name
+            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_IBP1)] = ParamNodeDescription(
+                        paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP1)]),  PARAM_SPAN_TWO);
+            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_IBP2)] = ParamNodeDescription(
+                        paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP2)]), PARAM_SPAN_TWO);
+        }
 
+        if (systemManager.isSupport(CONFIG_AG))
+        {
+            waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_N2O), WAVE_N2O);
+            waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_AA1), WAVE_AA1);
+            waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_AA2), WAVE_AA2);
+            waveIDMaps.insert(layoutNodeName(LAYOUT_NODE_WAVE_O2), WAVE_O2);
+
+            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA1)] = ParamNodeDescription("AA1",  PARAM_SPAN_TWO);
+            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA2)] = ParamNodeDescription("AA2", PARAM_SPAN_TWO);
+            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_N2O)] = ParamNodeDescription("N2O", PARAM_SPAN_TWO);
+            paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_O2)] = ParamNodeDescription("AG_O2", PARAM_SPAN_TWO);
+        }
 
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ECG)] = ParamNodeDescription(paramInfo.getParamName(PARAM_ECG),
                                                                                             PARAM_SPAN_ONE);
@@ -354,23 +370,16 @@ public:
                                                                                              PARAM_SPAN_TWO);
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_RESP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_RESP),
                                                                                              PARAM_SPAN_ONE);
-        // IBP's pressure name is identical to it's wave name
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_IBP1)] = ParamNodeDescription(
-                    paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP1)]),  PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_IBP2)] = ParamNodeDescription(
-                    paramInfo.getParamWaveformName(waveIDMaps[layoutNodeName(LAYOUT_NODE_WAVE_IBP2)]), PARAM_SPAN_TWO);
+
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_CO2)] = ParamNodeDescription(paramInfo.getParamName(PARAM_CO2), PARAM_SPAN_TWO);
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_NIBP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_NIBP), PARAM_SPAN_TWO);
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_NIBPLIST)] = ParamNodeDescription(trs("NIBPList"), PARAM_SPAN_TWO);
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_TEMP)] = ParamNodeDescription(paramInfo.getParamName(PARAM_TEMP), PARAM_SPAN_ONE);
 
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA1)] = ParamNodeDescription("AA1",  PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_AA2)] = ParamNodeDescription("AA2", PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_N2O)] = ParamNodeDescription("N2O", PARAM_SPAN_TWO);
-        paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_O2)] = ParamNodeDescription("AG_O2", PARAM_SPAN_TWO);
-
+#ifndef HIDE_ECG_ST_PVCS_SUBPARAM
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_ST)] = ParamNodeDescription("ST", PARAM_SPAN_TWO);
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_PVCS)] = ParamNodeDescription("PVCs", PARAM_SPAN_ONE);
+#endif
         paramNodeDescriptions[layoutNodeName(LAYOUT_NODE_PARAM_OXYGEN)] = ParamNodeDescription("O2", PARAM_SPAN_ONE);
     }
 

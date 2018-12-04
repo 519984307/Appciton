@@ -15,12 +15,15 @@ iDMBoard,iDMBoard,iDMBoard
 BuildTime,编译时间,Build Time
 ChannelPressureEntitle1,压力标名1,Pressure Entitle1
 ChannelPressureEntitle2,压力标名2,Pressure Entitle2
-Adult,成人,Adult
-PED,小儿,Pediatric
-NEO,新生儿,Neonate
+Adult,成人,Adu
+PED,小儿,Ped
+NEO,新生儿,Neo
 AlarmLimit,报警限,Alarm Limit
 Other,其它,Other
 Notch,陷波,Notch
+MachineConfigIsUpdatedNow,机器配置现在已经更新。,Machine Config Is Updated Now.
+IsRebootMachine,是否重启机器,Is Reboot Machine
+UpdateHint,更新提示,Update Hint
 EditPassWordDesc,修改密码,Edit Password
 EditPassWord,修改密码,Edit Password
 LastPassword,上次密码,Last Password
@@ -66,15 +69,15 @@ Input,输入,Input
 Output,输出,Output
 ReviewWindow,回顾窗口,Review Window
 CO2,CO2,CO2
-ETCO2,呼末CO2,EtCO2
+ETCO2,EtCO2,EtCO2
 FICO2,FiCO2,FiCO2
-ETN2O,呼末N2O,EtN2O
+ETN2O,EtN2O,EtN2O
 FIN2O,FiN2O,FiN2O
-ETAA1,呼末AA1,EtAA1
+ETAA1,EtAA1,EtAA1
 FIAA1,FiAA1,FiAA1
-ETAA2,呼末AA2,EtAA2
+ETAA2,EtAA2,EtAA2
 FIAA2,FiAA2,FiAA2
-ETO2,呼末O2,EtO2
+ETO2,EtO2,EtO2
 FIO2,FiO2,FiO2
 ART_SYS,ART收缩压,ART-SYS
 ART_DIA,ART舒张压,ART-DIA
@@ -115,11 +118,11 @@ BR,呼吸率,BR
 RR_BR,RR/BR,RR/BR
 Close,关闭,Close
 Back,后退,Back
-PatientID,病人ID,Patient ID
-PatientType,病人类型,Patient Type
-PatientSex,病人性别,Patient Sex
-PatientPacemarker,起搏器,Pacemarker
-PatientBloodType,血型,Blood Type
+PatientID,病人ID,ID
+PatientType,病人类型,Type
+PatientSex,病人性别,Sex
+PatientPacemarker,起搏器,Paced
+PatientBloodType,血型,Blood
 PatientWeight,体重,Weight
 PatientHeight,身高,Height
 PatientMenu,病人,Patient
@@ -138,8 +141,8 @@ ECGSTPoint,ST点,ST Point
 ECGISOPoint,ISO点,ISO Point
 ArrhythmiaAnalysisMenu,心律失常分析 ,Arrh.Analysis
 ArrhythmiaAnalysisMenuDesc,心律失常分析 ,Arrh.Analysis
-ArrhythmiaThresholdMenu,心律失常阀值,Arrh.Threshold
-ArrhythmiaThresholdMenuDesc,心律失常阀值,"Arrh,Threshold"
+ArrhythmiaThresholdMenu,心律失常阈值,Arrh.Threshold
+ArrhythmiaThresholdMenuDesc,心律失常阈值,"Arrh,Threshold"
 Arrhythmia,心律失常 >>,Arrhythmia >>
 ECGPaceMarker,起搏标记,Pace maker
 ECG12LPaceMarker,12导起搏标记,12L Pace maker
@@ -183,9 +186,24 @@ NIBPIntervalTime,间隔时间,NIBP Interval Time
 NIBPAutoInterval,自动间隔,Auto Interval
 NIBPMenu,NIBP,NIBP
 NIBPMenuDesc,NIBP,NIBP
+NIBPDirectiveTimeout,指令超时,Directive Timeout
+NIBPModuleEnterFail,进入校准模式失败,Calibrate Mode Enter Fail
+NIBPCalibrateModelEnterFail,进入校准模式失败,Calibrate Mode Enter Fail
+EnterCalibrateMode,进入校准模式,Calibrate Mode
+QuitCalibrateMode,退出校准模式,Quit Calibrate
+QuitManometerMode,退出压力计模式,Quit Manometer
+EnterManometerMode,进入压力计模式,Enter Manometer
+QuitPressureContrlMode,退出压力操控模式,Quit Pressure Control
+EnterPressureContrlMode,进入压力操控模式,Enter Pressure Control
+EnterZeroMode,进入校零模式,Enter Zero
+QuitZeroMode,退出校零模式,Quit Zero
+OperationFailedPleaseAgain,"操作失败,请重试!","Operation Failed , Please Again!"
+PumpControl,气泵控制,Pump Control
+ValveControl,气阀控制,Valve Control
+InflationPressure,充气压力,Inflation Pressure
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
-CO2SweepMode,CO2波形模式,CO2 Sweep Mode
+CO2WaveMode,CO2波形模式,CO2 Wave Mode
 CO2Curve,曲线,Curve
 CO2Filled,填充,Filled
 CO2Zoom,缩放,Zoom
@@ -203,7 +221,8 @@ O2CalibrateReset,氧浓度校准数据被复位,O2 Calibrate Is Reset
 O2NotCalibrate,氧浓度传感器未校准,O2 Sensor Not Calibrate
 O2Low,氧浓度低,O2 Low
 O2High,氧浓度高,O2 High
-ApneaStimulation,窒息唤醒,Apnea Stimulation
+ApneaSimulation,窒息唤醒,Apnea Simulation
+VibrationIntensity,震动强度,Vibration Intensity
 Stop,停止,Stop
 AGMenu,AG,AG
 AGSweepSpeed,波形速度,Sweep Speed
@@ -251,10 +270,10 @@ HRSourceAuto,自动,Auto
 HRSourceECG,ECG,ECG
 HRSourceSPO2,SPO2,SPO2
 HRSourceIBP,IBP,IBP
-HR_PRSource,HR_PR来源,HR_PR Source
+HR_PRSource,HR/PR来源,HR/PR Source
 CO2Setting,CO2设置,CO2 Setting
-PatientManager,病人管理,Patient Manager
-PatientManagerDesc,病人管理,Patient Manager Desc
+PatientManager,病人管理,Patient Setup
+PatientManagerDesc,病人管理,Patient Setup Desc
 PatientInfo,病人信息,Patient Info
 NewPatient,新建病人,New Patient
 NormalFunctionMenu,常规功能,Normal Function
@@ -272,7 +291,6 @@ TEMPTDHigh,体温差高,ΔT High
 TEMP1SensorOff,体温1探头脱落,TEMP1 Sensor Off
 PrintSettingMenu,打印设置,Print Setting
 PrintSettingMenuDesc,打印设置,Print Setting
-PrintTime,实时打印时间,PrintTime
 ClearPrintTask,清除打印任务,ClearPrintTask
 Continous,连续,Continous
 TEMP2SensorOff,体温2探头脱落,TEMP2 Sensor Off
@@ -283,7 +301,7 @@ TEMPOverRangeAll,体温全部超界,TEMP Over Range All
 TEMP1ProbeTypeError,体温1探头类型错误,TEMP1ProbeTypeError
 TEMP2ProbeTypeError,体温2探头类型错误,TEMP2ProbeTypeError
 TEMPProbeTypeErrorAll,体温探头类型全部错误,TEMPProbeTypeErrorAll
-TEMPCommunicationStop,体温通讯停止,TEMP Communication Stop
+TEMPCommunicationStop,体温通讯停止,Communication Stop
 celsius,℃,℃
 fahrenheit,℉,℉
 percent,%,%
@@ -329,9 +347,9 @@ SystemInfo,系统信息,System Info
 SystemInfoSetting,系统信息,System Info
 ErrorLog,错误日志,Error Log
 SystemStatus,状态,Status
-SomeLimitAlarmDisabled,有超限报警被关闭,Some Limit Alarm Disabled
-PowerupRecorderPressed,前面板打印键短路,Front Panel Recorder Btn Stuck
-PowerupCommunicationStop,前面板通讯停止,Front Panel Communication Stop
+SomeLimitAlarmDisabled,有超限报警被关闭,Some Limit Alarm Closed
+PowerupRecorderPressed,前面板打印键短路,Front Panel Record Btn Stuck
+PowerupCommunicationStop,前面板通讯停止,Front Panel Comm. Stop
 WiFiMenu,无线网络,Wifi
 WiFiMenuDesc,无线网络,Wifi
 Switch,开关,Switch
@@ -380,8 +398,8 @@ NumberKeyboard,数字键盘,Number Keyboard
 ErrorInput,输入错误,Error Input
 Male,男性,Male
 Female,女性,Female
-PatientAge,病人年龄,Patient Age
-PatientName,病人姓名,Patient Name
+PatientAge,病人年龄,Age
+PatientName,病人姓名,Name
 PatientInformation,病人信息,Patient Information
 PatientNew,新增病人,New Patient
 GetPatientInfo,病人信息获取,Get Patient Info
@@ -563,6 +581,7 @@ SPO2Low,血氧低,SPO2 Low
 SPO2High,血氧高,SPO2 High
 SPO2PRLow,脉率低,PR Low
 SPO2PRHigh,脉率高,PR High
+SPO2Initializing,SPO2初始化,SPO2 initializing
 SPO2PulseSearch,脉搏搜索中,SPO2 Pulse Search
 SPO2SensorOff,血氧传感器脱落,SPO2 Sensor Off
 SPO2CheckSensor,检查血氧传感器探头,SPO2 Check Sensor
@@ -685,7 +704,7 @@ NIBPCuffAirLeakage,血压袖带漏气,NIBP Cuff Air Leakage
 NIBPPneumaticBlockage,血压气管堵塞,NIBP Pneumatic Blockage
 NIBPCuffOverPressure,血压袖带压力过压,NIBP Cuff Over Pressure
 NIBPPressureError,血压压力错,NIBP Pressure Error
-NIBPSignalWeak,血压信号弱,NIBP Signal Weak
+NIBPSignalWeak,血压信号微弱,NIBP Signal Weak
 NIBPSignalSaturation,血压信号饱和,NIBP Signal Saturation
 NIBPMeasureOverRange,血压测量超界,NIBP Measure Over Range
 NIBPMeasureTimeout,血压测量超时,NIBP Measure Timeout
@@ -700,6 +719,7 @@ NIBPServiceWaitAgain,"血压服务模式等待中, 请重试!","NIBP Service Wai
 CalibratePoint1,校准点1,CalibratePoint 1
 CalibratePoint2,校准点2,CalibratePoint 2
 ServiceCalibrate,校准,Calibrate
+ServiceCalibrating,校准中,Calibrating
 NIBPCalibrateModel,校准模式,NIBP Calibrate Model
 ServiceCalibrateDesc,校准,Calibrate Desc
 ServiceSuccess,成功,Success
@@ -719,6 +739,7 @@ TEMPChannelTwo,体温通道2,TEMP Channel Two
 TEMPChannelDisable,体温通道失能,TEMP Channel Disable 
 ServiceInflate,充气,Inflate
 ServiceDeflate,放气,Deflate
+Inflating,充气中,Inflating
 ServiceCalibrateZero,校零,Calibrate Zero
 NIBPCalibrateZeroModel,校零模式,NIBP Calibrate Zero Model
 NIBPCalibrateZero,校零模式,NIBP Calibrate Zero 
@@ -756,6 +777,7 @@ CommunicationFail,通讯失败,Communication fail
 WriteFail,写入失败,Write Fail
 InvalidImageFormat,无效图片格式,Invalid image format
 ImageTooLarge,图片文件过大,Image too large
+Age,年龄,Age
 FoundLogoFile,找到Logo文件,Found logo file
 UpdateSystemLogo,更新系统,Update system logo
 ServiceSystem,服务系统,Service System
@@ -818,6 +840,10 @@ SupervisorCO2Unit,CO2单位,CO2 Unit
 SupervisorTEMPUnit,体温单位,TEMP Unit
 SupervisorWeightUnit,体重单位,Weight Unit
 SupervisorHeightUnit,身高单位,Height Unit
+Weight,体重,Weight
+Height,身高,Height
+ID,病历号,ID
+PrintTime,打印时间,Print Time
 Green,绿色,Green
 Yellow,黄色,Yellow
 Blue,蓝色,Blue
@@ -831,6 +857,8 @@ Purple,紫色,Purple
 SupervisorAudioMenu,声音,Audio
 SupervisorAudioMenuDesc,声音设置,Audio Setting
 SupervisorVoiceVolume,语音提示音量,Default Voice Prompt Tone
+AlarmPause,报警暂停,Alarm Pause
+AlarmOff,报警关闭,Alarm Off
 AlarmPauseTime,报警暂停时间,Alarm Pause Time
 AlarmOffPromptMechanism,报警关闭提示机制,Alarm Off Prompt Mechanism
 EnableAlarmAudioOff,使能报警声音关闭,Enable Alarm Audio Off
@@ -942,6 +970,13 @@ Upper,过高,Upper
 Lower,过低,Lower
 EventList,事件列表,Event List
 RealTimePrint,实时打印,RealTime Print
+RealtimeSegmentWavePrint,片段实时波形打印,Realtime Segment Wave Print
+FrozenWavePrint,冻结波形打印,Frozen Wave Print
+FreezeTime,冻结时间,Freeze Time
+TabularTrendsPrint,趋势表打印,Tabular Trends Print
+GraphicTrendsPrint,趋势图打印,Graphic Trends Print
+EventTime,事件时间,Event Time
+Gender,性别,Gender
 WaveFreeze,波形冻结,Wave Freeze
 WaveformMove,波形移动,Waveform Move
 All ,全部,All
@@ -1033,7 +1068,7 @@ ConfiguredMailRecipients,配置邮件接收者,Configured Mail Recipients
 Mail,邮件,Mail
 MailSetting,邮件设置,Mail Setting
 RecipientInfoEdit,接收者信息编辑,Recipient Info Edit
-Name,名字,Name
+Name,姓名,Name
 EmailAddress,邮件地址,E-mail Address
 InvalidEmailAddress,无效邮件地址,Invalid E-mail Address
 Confirm,确认,Confirm
@@ -1103,19 +1138,19 @@ CodeMarker31,Albuterol,Albuterol
 CodeMarker32,Nitro,Nitro
 DoseCalculation,剂量计算,Dose Calculation
 DrugName,药物名称,Drug Name
-DrugTotal,药物总量,Drug Total
-LiquidVolume,液体体积,Liquid Volume
-DrugConcentration,药物浓度,DrugConcentration
+DrugTotal,药量,Drug Qty
+LiquidVolume,液体容积,Sol Volume
+DrugConcentration,药物浓度,Concentr.
 Dosemin,剂量,Dose
 ET,Et,Et
 FI,Fi,Fi
 Dosehr,剂量,Dose
 DoseKgmin,剂量,Dose
 DoseKghr,剂量,Dose
-InfusionRate,输液速度,Infusion Rate
+InfusionRate,输液速度,Inf Rate
 DripRate,滴速,Drip Rate
 DropSize,每滴体积,Drop Size
-Duration,持续时间,Duration
+Duration,持续时间,Inf Time
 TitrationTable,滴定表,Titration Table
 DrugA,药物 A,Drug A 
 DrugB,药物B,Drug B
@@ -1153,8 +1188,8 @@ PrimitiveCalculation,原始计算,Primitive Calculation
 InOutValue,输入/输出值,
 ZeroCalibSuccess,校零成功,
 ZeroInProgress,校零进行中,Zero in progress
-CalibrationSuccess,校准成功,Calibration Success
-CalibrationFail,校准失败,Calibration Fail
+CalibrationSuccess,校准成功,Success
+CalibrationFail,校准失败,Fail
 MeasurePressureIsPulse,测量压力是脉动的,
 ZeroCalibPressureBeyondMeasureRange,校零压力超出测量范围,
 CalibrationPressureBeyondMeasureRange,校准压力超出测量范围,
@@ -1356,7 +1391,7 @@ Physiology,生理,Physiology
 UserMaintainPassword,用户维护密码,User Maintain Password
 UserMaintainSystem,用户维护系统,User Maintain
 Department,部门,Department
-BedNumber,床号,Bed Number
+BedNumber,床号,Bed
 ModifyPassword,密码,Password
 ChangeBedNumberRight,床号权限,Bed Number Right
 Language,语言,Language
@@ -1432,35 +1467,16 @@ RefreshRateUpdatedRebootNow,刷新率,Refresh Rate Updated Reboot Now
 FactoryDataRecord,数据记录,Factory Data
 FactoryDataRecordDesc,数据记录,Data Record
 PDCommData,PD 通信数据,PD Comm Data
-TEMPCalibrateDesc,温度校准,TEMP Calibrate
+TEMPCalibrateMenuDesc,温度校准,TEMP Calibrate
+TEMPCalibrateMenu,温度校准,TEMP Calibrate
 SystemInfoSettingDesc,系统信息,System Info
 FactoryVersionInfo,版本信息,Version Info
 FactoryVersionInfoDesc,版本信息,Version Info
 SelectStarterLogo,选择开始菜单,Select Starter Logo
-WaitingCalibration,等待校准,Waiting Calibration
+WaitingCalibration,等待校准,Waiting
 Calibrating,正在校准,
-TEMPCalibrate0,温度校准0,TEMP Calibrate0
-TEMPCalibrate5,温度校准5,TEMP Calibrate5
-TEMPCalibrate10,温度校准10,TEMP Calibrate10
-TEMPCalibrate15,温度校准15,TEMP Calibrate15
-TEMPCalibrate20,温度校准20,TEMP Calibrate20
-TEMPCalibrate25,温度校准25,TEMP Calibrate25
-TEMPCalibrate30,温度校准30,TEMP Calibrate30
-TEMPCalibrate35,温度校准35,TEMP Calibrate35
-TEMPCalibrate40,温度校准40,TEMP Calibrate40
-TEMPCalibrate45,温度校准45,TEMP Calibrate45
-TEMPCalibrate50,温度校准50,TEMP Calibrate50
-TEMPCalibrate0is7409.3,温度校准0是7409.3,TEMP Calibrate0 is 7409.3
-TEMPCalibrate5is5742.9,温度校准5是5742.9,TEMP Calibrate5 is 5742.9
-TEMPCalibrate10is4491.1,温度校准10是4491.1,TEMP Calibrate10 is 4491.1
-TEMPCalibrate15is3541.3,温度校准15是3541.3,TEMP Calibrate15 is 3541.3
-TEMPCalibrate20is2813.9,温度校准20是2813.9,TEMP Calibrate20 is 2813.9
-TEMPCalibrate25is2252,温度校准25是2252,TEMP Calibrate25 is 2252
-TEMPCalibrate30is1814.5,温度校准30是1814.5,TEMP Calibrate30 is 1814.5
-TEMPCalibrate35is1471.1,温度校准35是1471.1,TEMP Calibrate35 is 1471.1
-TEMPCalibrate40is1199.8,温度校准40是1199.8,TEMP Calibrate40 is 1199.8
-TEMPCalibrate45is984,温度校准45是984,TEMP Calibrate45 is 984
-TEMPCalibrate50is811.3,温度校准50是811.3,TEMP Calibrate50 is 811.3
+TEMPCalibrate,校准,Calibrate
+is,是,is
 TEMP1,温度1,TEMP1
 TEMP2,温度2,TEMP2
 TEMPModuleNotCalibration1,温度模块通道1未定标,TEMP Channel 1 Not Calibration
@@ -1493,6 +1509,8 @@ CO2High,二氧化碳高,CO2 High
 AutoRuler,自动标尺,Auto Ruler
 RESPLow,呼吸低,RESP Low
 RESPHigh,呼吸高,RESP High
+Static,静态,Static
+PageNum,页,Page
 ImportFiles,导入文件,ImportFiles
 LoadConfigMenuContent,加载配置,Load Config
 LoadConfigMenuContentDesc,加载配置,Load Config
@@ -1506,7 +1524,7 @@ KeyPressVolume,按键音量,Key Press Volume
 SoftKeyPatientInfo,病人信息,Patient Info.
 Interface,界面布局,Interface
 Dose,剂量,Dose
-Blood,血液,Blood
+Blood,血型,Blood
 DeleteAll,删除全部,Delete All
 DeletePatientData,删除病人数据,Delete Patient Data
 Freeze,冻结,Freeze
@@ -1565,8 +1583,8 @@ NightMode,夜间模式,Night
 Patient,病人信息,Patient
 IBPCOModule,IBP+CO模块,IBP+CO Module
 ShuttingDown,正在关机,Shutting Down
-StandardScreenLayout,标准界面界面布局,Standard Screen Layout
-BigFontScreenLayout,大字体界面界面布局,Big Font Screen Layout
+StandardScreenLayout,标准界面布局,Standard Screen Layout
+BigFontScreenLayout,大字体界面布局,Big Font Screen Layout
 MinitrendSetup,短趋势设置,Minitrend Setup
 MinitrendLength,动态趋势时间,Minitrend Length
 SelectParameters,参数选择,Select Parameters

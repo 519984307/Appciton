@@ -90,6 +90,15 @@ void UserConfigEditMenuContentPrivate::updateConfigList()
     }
     configDataModel->setStringList(configNameList);
 
+    if (configNameList.isEmpty())
+    {
+        configListView->setEnabled(false);
+    }
+    else
+    {
+        configListView->setEnabled(true);
+    }
+
     int curSelectedRow = configListView->curCheckedRow();
     bool isEnable;
     if (curSelectedRow == -1)
@@ -186,7 +195,7 @@ void UserConfigEditMenuContent::onBtnClick()
                 delete d_ptr->curConfig;
             }
 
-            PatientType type;
+            PatientType type = PATIENT_TYPE_NULL;
             QString configPath;
             patientW.getConfigInfo(type, configPath);
 

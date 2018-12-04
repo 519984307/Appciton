@@ -23,7 +23,7 @@ AlarmResetState::~AlarmResetState()
 
 void AlarmResetState::enter()
 {
-    alarmIndicator.setAudioStatus(ALARM_RESET);
+    alarmIndicator.setAlarmStatus(ALARM_STATUS_RESET);
     lightManager.enableAlarmAudioMute(false);
 }
 

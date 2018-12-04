@@ -46,6 +46,8 @@
 #include "TableViewItemDelegate.h"
 #include "MessageBox.h"
 
+#define TABLE_SPACING               (12)
+
 class EventWindowPrivate
 {
 public:
@@ -57,8 +59,8 @@ public:
           printBtn(NULL),
           setBtn(NULL), upParamBtn(NULL), downParamBtn(NULL),
           tableWidget(NULL), chartWidget(NULL), stackLayout(NULL),
-          backend(NULL), curParseIndex(0), eventNum(0), curDisplayEventNum(0),
-          curListScroller(0), isHistory(false)
+          backend(NULL), eventNum(0), curDisplayEventNum(0),
+          isHistory(false)
     {
         backend = eventStorageManager.backend();
         curEventType = EventAll;
@@ -125,10 +127,8 @@ public:
 
     EventDataPraseContext ctx;
     IStorageBackend *backend;
-    int curParseIndex;
     int eventNum;                       // 存储总事件数
     int curDisplayEventNum;             // 当前显示事件数
-    int curListScroller;
     EventType curEventType;
     EventLevel curEventLevel;
     QList<int> dataIndex;               // 当前选中事件项对应的数据所在索引
@@ -234,13 +234,6 @@ void EventWindow::showEvent(QShowEvent *ev)
     {
         d_ptr->eventTable->setFocusPolicy(Qt::StrongFocus);
     }
-
-    int curScroller = d_ptr->eventTable->verticalScrollBar()->value();
-    int maxValue = d_ptr->eventTable->verticalScrollBar()->maximum();
-    bool hasBtn = curScroller > 0;
-    d_ptr->upPageBtn->setEnabled(hasBtn);
-    hasBtn = curScroller < maxValue;
-    d_ptr->downPageBtn->setEnabled(hasBtn);
 }
 
 void EventWindow::waveInfoReleased(QModelIndex index)
@@ -294,44 +287,12 @@ void EventWindow::eventLevelSelect(int index)
 
 void EventWindow::upPageReleased()
 {
-    int maxValue = d_ptr->eventTable->verticalScrollBar()->maximum();
-    d_ptr->curListScroller = d_ptr->eventTable->verticalScrollBar()->value();
-    if (d_ptr->curListScroller > 0)
-    {
-        QScrollBar *scrollBar = d_ptr->eventTable->verticalScrollBar();
-        int positon = d_ptr->curListScroller - (maxValue * 15) / (d_ptr->curDisplayEventNum - 15);
-        scrollBar->setSliderPosition(positon);
-    }
-
-    // 上下翻页事件按钮使能
-    int curScroller = d_ptr->eventTable->verticalScrollBar()->value();
-    bool hasBtn = curScroller > 0;
-    d_ptr->upPageBtn->setEnabled(hasBtn);
-    hasBtn = curScroller < maxValue;
-    d_ptr->downPageBtn->setEnabled(hasBtn);
+    d_ptr->eventTable->scrollToPreviousPage();
 }
 
 void EventWindow::downPageReleased()
 {
-    int maxValue = d_ptr->eventTable->verticalScrollBar()->maximum();
-    d_ptr->curListScroller = d_ptr->eventTable->verticalScrollBar()->value();
-    if (d_ptr->curListScroller < maxValue && d_ptr->curDisplayEventNum != 15)
-    {
-        QScrollBar *scrollBar = d_ptr->eventTable->verticalScrollBar();
-        int positon = d_ptr->curListScroller + (maxValue * 15) / (d_ptr->curDisplayEventNum - 15);
-        scrollBar->setSliderPosition(positon);
-    }
-
-    // 上下翻页事件按钮使能
-    int curScroller = d_ptr->eventTable->verticalScrollBar()->value();
-    bool hasBtn = curScroller > 0;
-    d_ptr->upPageBtn->setEnabled(hasBtn);
-    hasBtn = curScroller < maxValue;
-    d_ptr->downPageBtn->setEnabled(hasBtn);
-    if (!hasBtn)
-    {
-        d_ptr->upPageBtn->setFocus();
-    }
+    d_ptr->eventTable->scrollToNextPage();
 }
 
 void EventWindow::eventListReleased()
@@ -590,7 +551,9 @@ EventWindow::EventWindow()
     hTableLayout->addWidget(d_ptr->downPageBtn, 1);
 
     QVBoxLayout *vTableLayout = new QVBoxLayout();
+    vTableLayout->addSpacing(TABLE_SPACING);
     vTableLayout->addWidget(d_ptr->eventTable);
+    vTableLayout->addSpacing(TABLE_SPACING);
     vTableLayout->addLayout(hTableLayout);
 
     d_ptr->tableWidget = new QWidget();
@@ -671,8 +634,8 @@ EventWindow::EventWindow()
 
     setWindowLayout(d_ptr->stackLayout);
 
-    int width = 800;
-    int height = 580;
+    int width = windowManager.getPopWindowWidth();
+    int height = windowManager.getPopWindowHeight();
     setFixedSize(width, height);
 }
 
@@ -1039,7 +1002,7 @@ void EventWindowPrivate::eventTrendUpdate()
 
         item->setData(EventTrendItemDelegate::ValueTextRole, valueStr);
         item->setData(EventTrendItemDelegate::TitleTextRole, titleStr);
-        item->setData(EventTrendItemDelegate::UnitTextRole, Unit::getSymbol(paramInfo.getUnitOfSubParam(subId)));
+        item->setData(EventTrendItemDelegate::UnitTextRole, Unit::localeSymbol(paramInfo.getUnitOfSubParam(subId)));
 
 
         item->setData(EventTrendItemDelegate::TrendAlarmRole, ctx.trendSegment->values[i].alarmFlag);

@@ -10,6 +10,7 @@
 
 #pragma once
 #include "MenuContent.h"
+#include "SoundManager.h"
 
 class ECGMenuContentPrivate;
 class ECGMenuContent : public MenuContent
@@ -28,7 +29,14 @@ protected:
 
 private slots:
     void onComboBoxIndexChanged(int index);
+
+#ifndef HIDE_ECG_ARRHYTHMIA_FUNCTION
+    /**
+     * @brief arrhythmiaBtnReleased
+     */
     void arrhythmiaBtnReleased(void);
+#endif
+
     void selfLearnBtnReleased(void);
     /**
      * @brief onSTSwitchBtnReleased  ST开关触发槽函数
@@ -38,6 +46,12 @@ private slots:
      * @brief onAlarmBtnReleased
      */
     void onAlarmBtnReleased(void);
+
+    /**
+     * @brief onPopupListItemFocusChanged
+     * @param volume
+     */
+    void onPopupListItemFocusChanged(int volume);
 
 private:
     ECGMenuContentPrivate * const d_ptr;

@@ -25,7 +25,7 @@ enum BRRRSourceType
 {
     BR_RR_AUTO,
     BR_RR_SOURCE_CO2,
-    BR_RR_SOURCE_RESP,
+    BR_RR_SOURCE_ECG,
     BR_RR_NR,
 };
 /**************************************************************************************************
@@ -36,6 +36,7 @@ enum RESPSweepSpeed
     RESP_SWEEP_SPEED_6_25,
     RESP_SWEEP_SPEED_12_5,
     RESP_SWEEP_SPEED_25_0,
+    RESP_SWEEP_SPEED_50_0,
     RESP_SWEEP_SPEED_NR
 };
 
@@ -62,6 +63,8 @@ enum RESPApneaTime
  *************************************************************************************************/
 enum RESPZoom
 {
+    RESP_ZOOM_X025,      // x0.25
+    RESP_ZOOM_X050,      // x0.5
     RESP_ZOOM_X100,      // x1
     RESP_ZOOM_X200,      // x2
     RESP_ZOOM_X300,      // x3
@@ -77,6 +80,7 @@ enum RESPLead
 {
     RESP_LEAD_II,
     RESP_LEAD_I,
+    RESP_LEAD_AUTO,
     RESP_LEAD_NR
 };
 

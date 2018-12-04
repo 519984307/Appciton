@@ -137,8 +137,6 @@ void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
         {
             data.mapAlarm = true;
         }
-
-        data.prAlarm = true;
     }
 
     if (10 <= _nibpNrendCacheMap.count())
@@ -165,9 +163,12 @@ void NIBPDataTrendWidget::showValue(void)
     UnitType defUnitType;
     UnitType unit;
 
+    QColor textColor = colorManager.getColor(paramInfo.getParamName(PARAM_NIBP));
+
     for (int i = 0; i < _rowNR; i++)
     {
         _table->item(i, 0)->setText("");
+        _table->item(i, 0)->setTextColor(textColor);
         QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
         l->setText("");
         l = qobject_cast<QLabel *>(_table->cellWidget(i, 2));
@@ -183,14 +184,20 @@ void NIBPDataTrendWidget::showValue(void)
         if (providerBuff.sysvalue == InvData() || providerBuff.diavalue == InvData() ||
                 providerBuff.mapvalue == InvData())
         {
+            QString color = "<font style='color:rgb(%1,%2,%3);'>%4</font>";
             textStr = QString("<center>%1/%2/%3</center>").arg(InvStr()).arg(InvStr()).arg(InvStr());
+            textStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(textStr);
+            prStr = QString("<center>%1</center>").arg(InvStr());
+            prStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(prStr);
         }
         else
         {
             QString valStr;
             QString boldwrap = "<b>%1</b>";
             QString colorwrap = "<font color=red>%1</font>";
+            QString color = "<font style='color:rgb(%1,%2,%3);'>%4</font>";
             textStr = QString("<center>%1/%2/%3</center>");
+            prStr = QString("<center>%1</center>");
 
             defUnitType = paramInfo.getUnitOfSubParam(SUB_PARAM_NIBP_SYS);
             unit = paramManager.getSubParamUnit(PARAM_NIBP, SUB_PARAM_NIBP_SYS);
@@ -225,10 +232,15 @@ void NIBPDataTrendWidget::showValue(void)
                 {
                     textStr = textStr.arg(QString::number(providerBuff.mapvalue));
                 }
-                if (providerBuff.prAlarm)
+                if (!providerBuff.prAlarm)
                 {
-                    prStr = QString("%1").arg(QString::number(providerBuff.prvalue));
+                    valStr = color.arg(textColor.red())
+                            .arg(textColor.green())
+                            .arg(textColor.blue())
+                            .arg(QString::number(providerBuff.prvalue));
+                    prStr = prStr.arg(valStr);
                 }
+                textStr = color.arg(textColor.red()).arg(textColor.green()).arg(textColor.blue()).arg(textStr);
             }
             else
             {

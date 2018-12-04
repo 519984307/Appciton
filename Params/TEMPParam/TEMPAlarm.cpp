@@ -289,6 +289,8 @@ AlarmPriority TEMPOneShotAlarm::getAlarmPriority(int id)
 {
     switch (id)
     {
+    case TEMP_OVER_RANGR_1:
+    case TEMP_OVER_RANGR_2:
     case TEMP_ONESHOT_ALARM_MODULE_DISABLE:
         return ALARM_PRIO_HIGH;
     case TEMP_ONESHOT_ALARM_NOT_CALIBRATION_1:

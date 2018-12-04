@@ -20,7 +20,7 @@
 #include "NIBPAlarm.h"
 #include "ErrorLog.h"
 #include "ErrorLogItem.h"
-#include "RawDataCollection.h"
+#include "RawDataCollector.h"
 #include "IConfig.h"
 
 static const char *nibpSelfErrorCode[] =
@@ -49,6 +49,7 @@ static const char *nibpErrorCode[] =
     "The air pump is unusual for running.\r\n",               // 132
     "Calibration is unsuccessful.\r\n",                       // 133
     "The Daemon error.\r\n",                                  // 134
+    "The air pump start-up timeout.\r\n"                      // 135
 };
 
 /**************************************************************************************************
@@ -102,16 +103,6 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
             case 0x0C:
                 errorStr += nibpSelfErrorCode[packet[i]];
                 break;
-
-            case 0x80:
-            case 0x81:
-            case 0x82:
-            case 0x83:
-            case 0x84:
-            case 0x85:
-            case 0x86:
-                errorStr += nibpErrorCode[packet[i] - 0x80];
-                break;
             default:
                 errorStr += "Unknown mistake.\r\n";
                 break;
@@ -119,7 +110,7 @@ void N5Provider::_selfTest(unsigned char *packet, int len)
         }
 
         ErrorLogItem *item = new CriticalFaultLogItem();
-        item->setName("TN3 Selftest Error");
+        item->setName("N5 Selftest Error");
         item->setLog(errorStr);
         item->setSubSystem(ErrorLogItem::SUB_SYS_TN3);
         item->setSystemState(ErrorLogItem::SYS_STAT_SELFTEST);
@@ -147,21 +138,6 @@ void N5Provider::_errorWarm(unsigned char *packet, int len)
 
     switch (packet[1])
     {
-    case 0x01:
-    case 0x02:
-    case 0x03:
-    case 0x04:
-    case 0x05:
-    case 0x06:
-    case 0x07:
-    case 0x08:
-    case 0x09:
-    case 0x0A:
-    case 0x0B:
-    case 0x0C:
-        errorStr += nibpSelfErrorCode[packet[1]];
-        break;
-
     case 0x80:
     case 0x81:
     case 0x82:
@@ -169,6 +145,7 @@ void N5Provider::_errorWarm(unsigned char *packet, int len)
     case 0x84:
     case 0x85:
     case 0x86:
+    case 0x87:
         errorStr += nibpErrorCode[packet[1] - 128];
         break;
     default:
@@ -177,7 +154,7 @@ void N5Provider::_errorWarm(unsigned char *packet, int len)
     }
 
     ErrorLogItem *item = new CriticalFaultLogItem();
-    item->setName("TN3 Error");
+    item->setName("N5 Error");
     item->setLog(errorStr);
     item->setSubSystem(ErrorLogItem::SUB_SYS_TN3);
     item->setSystemState(ErrorLogItem::SYS_STAT_RUNTIME);
@@ -222,7 +199,6 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     }
     BLMProvider::handlePacket(data, len);
 
-    int enable = 0;
     switch (data[0])
     {
     // 启动测量
@@ -236,6 +212,7 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     // 停止测量。
     case N5_RSP_STOP_MEASURE:
         nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_STOP, NULL, 0);
+        rawDataCollector.collectData(RawDataCollector::NIBP_DATA, NULL, 0, true);
         break;
 
     // 获取测量结果
@@ -271,6 +248,7 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     case N5_NOTIFY_END:
         _sendACK(data[0]);
         nibpParam.handleNIBPEvent(NIBP_EVENT_MONITOR_MEASURE_DONE, NULL, 0);
+        rawDataCollector.collectData(RawDataCollector::NIBP_DATA, NULL, 0, true);
         break;
 
     // 启动帧
@@ -291,11 +269,7 @@ void N5Provider::handlePacket(unsigned char *data, int len)
 
     // 原始数据
     case N5_NOTIFY_DATA:
-        machineConfig.getNumValue("Record|NIBP", enable);
-        if (enable)
-        {
-            rawDataCollection.pushData("BLM_TN3", data, len);
-        }
+        rawDataCollector.collectData(RawDataCollector::NIBP_DATA, data + 1, len - 1);
         break;
 
     // 进入维护模式
@@ -332,12 +306,17 @@ void N5Provider::handlePacket(unsigned char *data, int len)
 
     // 压力控制（充气）
     case N5_RSP_PRESSURE_INFLATE:
-        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_INFLATE, NULL, 0);
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_INFLATE, &data[1], 1);
         break;
 
     // 放气控制
     case N5_RSP_PRESSURE_DEFLATE:
         nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_DEFLATE, NULL, 0);
+        break;
+
+    // 气泵控制
+    case N5_RSP_PUMP:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_PRESSURECONTROL_PUMP, &data[1], 1);
         break;
 
     // 气阀控制
@@ -358,6 +337,10 @@ void N5Provider::handlePacket(unsigned char *data, int len)
     // 服务模式压力帧
     case N5_SERVICE_PRESSURE:
         nibpParam.handleNIBPEvent(NIBP_EVENT_CURRENT_PRESSURE, &data[1], 2);
+        break;
+
+    case N5_RSP_PRESSURE_ZERO:
+        nibpParam.handleNIBPEvent(NIBP_EVENT_SERVICE_CALIBRATE_ZERO, NULL, 0);
         break;
 
     default:
@@ -578,7 +561,7 @@ void N5Provider::servicePressurepoint(const unsigned char *data, unsigned int le
     }
     cmd[1] = pressure & 0xFF;
     cmd[2] = (pressure >> 8) & 0xFF;
-    len = 0;
+    len  = 3;
     sendCmd(N5_CMD_PRESSURE_POINT, cmd, len);
 }
 
@@ -720,6 +703,14 @@ bool N5Provider::isServicePressureZero(unsigned char *packet)
     }
 
     return true;
+}
+
+void N5Provider::servicePump(bool enter, unsigned char pump)
+{
+    unsigned char cmd[2];
+    cmd[0] = enter;
+    cmd[1] = pump;
+    sendCmd(N5_CMD_PUMP, cmd, 2);
 }
 
 /**************************************************************************************************

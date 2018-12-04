@@ -11,6 +11,7 @@
 #include "EventReviewModel.h"
 #include "ThemeManager.h"
 #include "LanguageManager.h"
+#include "WindowManager.h"
 #define COLUMN_COUNT            2
 
 #define ROW_HEIGHT_HINT (themeManger.getAcceptableControlHeight())
@@ -72,7 +73,7 @@ QVariant EventReviewModel::data(const QModelIndex &index, int role) const
     }
     case Qt::SizeHintRole:
     {
-        int w = 800 / COLUMN_COUNT;
+        int w = windowManager.getPopWindowWidth() / COLUMN_COUNT;
         return QSize(w, HEADER_HEIGHT_HINT);
     }
     case Qt::TextAlignmentRole:
@@ -95,7 +96,7 @@ QVariant EventReviewModel::headerData(int section, Qt::Orientation orientation, 
     {
         if (orientation == Qt::Horizontal)
         {
-            int w = 800 / (COLUMN_COUNT);
+            int w = windowManager.getPopWindowWidth() / (COLUMN_COUNT);
             return QSize(w, HEADER_HEIGHT_HINT);
         }
         break;

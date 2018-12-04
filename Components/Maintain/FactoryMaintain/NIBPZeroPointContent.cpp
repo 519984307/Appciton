@@ -17,28 +17,41 @@
 #include "NIBPEventDefine.h"
 #include "NIBPServiceStateDefine.h"
 #include <QShowEvent>
+#include "SpinBox.h"
+#include "MessageBox.h"
+
+#define CALIBRATION_INTERVAL_TIME              (100)
+#define TIMEOUT_WAIT_NUMBER                    (5000 / CALIBRATION_INTERVAL_TIME)
 
 class NIBPZeroPointContentPrivate
 {
 public:
-    NIBPZeroPointContentPrivate();
-    QLabel *value;
-    Button *startSwitchBtn;        // 关闭气阀、校零按钮
+    NIBPZeroPointContentPrivate()
+        : inModeTimerID(-1), pumpTimerID(-1), valveTimerID(-1),
+          zeroTimerID(-1), pressureTimerID(-1), pressure(InvData()),
+          modeBtn(NULL), isZeroMode(false),
+          isOnPump(false), isOnValve(false), pumpSpx(NULL),
+          pumpBtn(NULL), valveBtn(NULL), zeroBtn(NULL),
+          value(NULL), timeoutNum(0)
+    {}
 
-    bool startSwitch;                 // 关闭气阀、校零按钮切换标志
-    bool zeroPointFlag;               // 进入模式标记
+    int inModeTimerID;          // 进入校零模式定时器ID
+    int pumpTimerID;            // 气泵控制定时器ID
+    int valveTimerID;           // 气阀控制定时器ID
+    int zeroTimerID;            // 校零定时器ID
+    int pressureTimerID;        // 获取压力定时器ID
+    int pressure;               // 实时压力
+    Button *modeBtn;            // 进入/退出模式
+    bool isZeroMode;            // 是否处于校零模式
+    bool isOnPump;              // 是否处于打开气泵
+    bool isOnValve;             // 是否处于打开气阀
+    SpinBox *pumpSpx;           // 占空比
+    Button *pumpBtn;            // 气泵开关
+    Button *valveBtn;           // 气阀开关
+    Button *zeroBtn;            // 校零
+    QLabel *value;              // 当前压力值
+    int timeoutNum;            // 回复超时
 };
-
-
-
-
-NIBPZeroPointContentPrivate::NIBPZeroPointContentPrivate()
-    : value(NULL),
-      startSwitchBtn(NULL),
-      startSwitch(false),
-      zeroPointFlag(false)
-{
-}
 
 NIBPZeroPointContent *NIBPZeroPointContent::getInstance()
 {
@@ -67,153 +80,244 @@ NIBPZeroPointContent::NIBPZeroPointContent()
  *************************************************************************************************/
 void NIBPZeroPointContent::layoutExec()
 {
-    QHBoxLayout *layout = new QHBoxLayout(this);
+    QGridLayout *layout = new QGridLayout(this);
     layout->setMargin(10);
-    layout->setAlignment(Qt::AlignTop);
 
-    QLabel *l = new QLabel(trs("ServicePressure"));
-    layout->addWidget(l);
+    Button *button;
+    QLabel *label;
 
-    d_ptr->value = new QLabel();
-    d_ptr->value->setText(InvStr());
-    layout->addWidget(d_ptr->value);
+    button = new Button(trs("EnterZeroMode"));
+    button->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(button, 0, 2);
+    connect(button, SIGNAL(released()), this, SLOT(enterZeroReleased()));
+    d_ptr->modeBtn = button;
 
-    l = new QLabel();
-    l->setText(Unit::getSymbol(nibpParam.getUnit()));
-    layout->addWidget(l);
+    label = new QLabel(trs("PumpControl"));
+    layout->addWidget(label, 1, 0, Qt::AlignCenter);
 
-    d_ptr->startSwitchBtn = new Button();
-    d_ptr->startSwitchBtn->setText(trs("ServiceStart"));
-    d_ptr->startSwitchBtn->setButtonStyle(Button::ButtonTextOnly);
-    d_ptr->startSwitch = true;
-    connect(d_ptr->startSwitchBtn, SIGNAL(released()), this, SLOT(onBtnReleased()));
-    layout->addWidget(d_ptr->startSwitchBtn, 0, Qt::AlignRight);
+    d_ptr->pumpSpx = new SpinBox();
+    d_ptr->pumpSpx->setRange(0, 100);
+    d_ptr->pumpSpx->setValue(0);
+    d_ptr->pumpSpx->setStep(1);
+    layout->addWidget(d_ptr->pumpSpx, 1, 1);
+
+    button = new Button(trs("ON"));
+    button->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(button, 1, 2);
+    connect(button, SIGNAL(released()), this, SLOT(pumpControlReleased()));
+    d_ptr->pumpBtn = button;
+
+    label = new QLabel(trs("ValveControl"));
+    layout->addWidget(label, 2, 0, Qt::AlignCenter);
+
+    button = new Button(trs("ON"));
+    button->setButtonStyle(Button::ButtonTextOnly);
+    layout->addWidget(button, 2, 2);
+    connect(button, SIGNAL(released()), this, SLOT(valveControlReleased()));
+    d_ptr->valveBtn = button;
+
+    label = new QLabel(trs("ServicePressure"));
+    layout->addWidget(label, 3, 0, Qt::AlignCenter);
+
+    label = new QLabel(InvStr());
+    layout->addWidget(label, 3, 1, Qt::AlignCenter);
+    d_ptr->value = label;
+
+    button = new Button(trs("ServiceCalibrateZero"));
+    button->setButtonStyle(Button::ButtonTextOnly);
+    button->setEnabled(false);
+    layout->addWidget(button, 3, 2);
+    connect(button, SIGNAL(released()), this, SLOT(calibrateZeroReleased()));
+    d_ptr->zeroBtn = button;
+
+    layout->setRowStretch(4, 1);
 }
 
-void NIBPZeroPointContent::showEvent(QShowEvent *ev)
+void NIBPZeroPointContent::timerEvent(QTimerEvent *ev)
 {
-    d_ptr->startSwitchBtn->setFixedWidth(d_ptr->value->width());
-    MenuContent::showEvent(ev);
-}
-
-/**************************************************************************************************
- * 初始化。
- *************************************************************************************************/
-void NIBPZeroPointContent::init(void)
-{
-    d_ptr->value->setText(InvStr());
-    startSwitch(true);
-    d_ptr->zeroPointFlag = false;
-}
-
-/**************************************************************************************************
- * 进入校零模式指令。
- *************************************************************************************************/
-bool NIBPZeroPointContent::focusNextPrevChild(bool next)
-{
-    init();
-
-    nibpParam.switchState(NIBP_SERVICE_CALIBRATE_ZERO_STATE);
-
-    MenuContent::focusNextPrevChild(next);
-
-    return next;
-}
-
-/**************************************************************************************************
- * 关闭气阀指令。
- *************************************************************************************************/
-void NIBPZeroPointContent::onStartReleased()
-{
-    nibpParam.provider().serviceValve(true);
-}
-
-/**************************************************************************************************
- * 校零指令。
- *************************************************************************************************/
-void NIBPZeroPointContent::onZeroReleased()
-{
-    nibpParam.provider().servicePressureZero();
-}
-
-/**************************************************************************************************
- * 关闭气阀、校零按钮信号槽。
- *************************************************************************************************/
-void NIBPZeroPointContent::onBtnReleased()
-{
-    if (d_ptr->zeroPointFlag)
+    if (d_ptr->inModeTimerID == ev->timerId())
     {
-        if (d_ptr->startSwitch)
+        bool reply = nibpParam.geReply();
+        if (reply || d_ptr->timeoutNum == TIMEOUT_WAIT_NUMBER)
         {
-            onStartReleased();
+            if (reply && nibpParam.getResult())
+            {
+                if (d_ptr->isZeroMode)
+                {
+                    d_ptr->isZeroMode = false;
+                    d_ptr->modeBtn->setText(trs("EnterZeroMode"));
+                    d_ptr->zeroBtn->setEnabled(false);
+                    killTimer(d_ptr->pressureTimerID);
+                    d_ptr->pressureTimerID = -1;
+                }
+                else
+                {
+                    d_ptr->isZeroMode = true;
+                    d_ptr->modeBtn->setText(trs("QuitZeroMode"));
+                    d_ptr->zeroBtn->setEnabled(true);
+                    d_ptr->pressureTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+                }
+            }
+            else
+            {
+                MessageBox messbox(trs("Warn"), trs("NIBPModuleEnterFail"), false);
+                messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+                messbox.exec();
+            }
+            killTimer(d_ptr->inModeTimerID);
+            d_ptr->inModeTimerID = -1;
+            d_ptr->timeoutNum = 0;
+        }
+    }
+    else if (d_ptr->pumpTimerID == ev->timerId())
+    {
+        bool reply = nibpParam.geReply();
+        if (reply || d_ptr->timeoutNum == TIMEOUT_WAIT_NUMBER)
+        {
+            if (reply && nibpParam.getResult())
+            {
+                if (d_ptr->isOnPump)
+                {
+                    d_ptr->isOnPump = false;
+                    d_ptr->pumpBtn->setText(trs("OFF"));
+                }
+                else
+                {
+                    d_ptr->isOnPump = true;
+                    d_ptr->pumpBtn->setText(trs("ON"));
+                }
+            }
+            else
+            {
+                MessageBox messbox(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
+                messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+                messbox.exec();
+            }
+            killTimer(d_ptr->pumpTimerID);
+            d_ptr->pumpTimerID = -1;
+            d_ptr->timeoutNum = 0;
         }
         else
         {
-            onZeroReleased();
+            d_ptr->timeoutNum++;
         }
     }
-    else
+    else if (d_ptr->valveTimerID == ev->timerId())
     {
-        NIBPRepairMenuWindow::getInstance()->messageBox();
-    }
-}
-
-/**************************************************************************************************
- * 压力值。
- *************************************************************************************************/
-void NIBPZeroPointContent::setCuffPressure(int pressure)
-{
-    if (pressure == -1)
-    {
-        d_ptr->value->setText(InvStr());
-    }
-    else
-    {
-        UnitType unit = nibpParam.getUnit();
-        if (unit == UNIT_MMHG)
+        bool reply = nibpParam.geReply();
+        if (reply || d_ptr->timeoutNum == TIMEOUT_WAIT_NUMBER)
         {
-            d_ptr->value->setNum(pressure);
-            return;
+            if (reply && nibpParam.getResult())
+            {
+                if (d_ptr->isOnValve)
+                {
+                    d_ptr->isOnValve = false;
+                    d_ptr->valveBtn->setText(trs("OFF"));
+                }
+                else
+                {
+                    d_ptr->isOnValve = true;
+                    d_ptr->valveBtn->setText(trs("ON"));
+                }
+            }
+            else
+            {
+                MessageBox messbox(trs("Warn"), trs("OperationFailedPleaseAgain"), false);
+                messbox.setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+                messbox.exec();
+            }
+            killTimer(d_ptr->valveTimerID);
+            d_ptr->valveTimerID = -1;
+            d_ptr->timeoutNum = 0;
         }
-
-        QString str = Unit::convert(unit, UNIT_MMHG, pressure);
-        d_ptr->value->setText(str);
+        else
+        {
+            d_ptr->timeoutNum++;
+        }
+    }
+    else if (d_ptr->zeroTimerID == ev->timerId())
+    {
+        bool reply = nibpParam.geReply();
+        if (reply || d_ptr->timeoutNum == TIMEOUT_WAIT_NUMBER)
+        {
+            if (reply && nibpParam.getResult())
+            {
+                d_ptr->zeroBtn->setText(trs("CalibrationSuccess"));
+            }
+            else
+            {
+                d_ptr->zeroBtn->setText(trs("CalibrationFail"));
+            }
+            killTimer(d_ptr->zeroTimerID);
+            d_ptr->zeroTimerID = -1;
+            d_ptr->timeoutNum = 0;
+        }
+        else
+        {
+            d_ptr->timeoutNum++;
+        }
+    }
+    else if (d_ptr->pressureTimerID == ev->timerId())
+    {
+        if (d_ptr->pressure != nibpParam.getManometerPressure())
+        {
+            d_ptr->pressure = nibpParam.getManometerPressure();
+            d_ptr->value->setNum(nibpParam.getManometerPressure());
+        }
     }
 }
 
-/**************************************************************************************************
- * 进入模式应答。
- *************************************************************************************************/
-void NIBPZeroPointContent::unPacket(bool flag)
+bool NIBPZeroPointContent::focusNextPrevChild(bool next)
 {
-    d_ptr->zeroPointFlag = flag;
-    if (flag)
+    d_ptr->zeroBtn->setText(trs("ServiceCalibrateZero"));
+    return MenuContent::focusNextPrevChild(next);
+}
+
+void NIBPZeroPointContent::enterZeroReleased()
+{
+    d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+    if (d_ptr->isZeroMode)
     {
-        d_ptr->value->setText(InvStr());
-        d_ptr->startSwitchBtn->setEnabled(true);
+        nibpParam.provider().serviceCalibrateZero(false);
+        nibpParam.switchState(NIBP_SERVICE_STANDBY_STATE);
     }
     else
     {
-        d_ptr->value->setText("999");
-        d_ptr->startSwitchBtn->setEnabled(false);
+        nibpParam.switchState(NIBP_SERVICE_CALIBRATE_ZERO_STATE);
     }
 }
 
-/**************************************************************************************************
- * 关闭气阀、校零按钮切换。
- *************************************************************************************************/
-void NIBPZeroPointContent::startSwitch(bool flag)
+void NIBPZeroPointContent::pumpControlReleased()
 {
-    if (flag)
+    d_ptr->pumpTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+    if (d_ptr->isOnPump)
     {
-        d_ptr->startSwitchBtn->setText(trs("ServiceStart"));
-        d_ptr->startSwitch = true;
+        nibpParam.provider().servicePump(false, 0);
     }
     else
     {
-        d_ptr->startSwitchBtn->setText(trs("ServiceSetZero"));
-        d_ptr->startSwitch = false;
+        unsigned char value = d_ptr->pumpSpx->getValue();
+        nibpParam.provider().servicePump(true, value);
     }
+}
+
+void NIBPZeroPointContent::valveControlReleased()
+{
+    d_ptr->valveTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+    if (d_ptr->isOnValve)
+    {
+        nibpParam.provider().serviceValve(false);
+    }
+    else
+    {
+        nibpParam.provider().serviceValve(true);
+    }
+}
+
+void NIBPZeroPointContent::calibrateZeroReleased()
+{
+    d_ptr->zeroTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+    nibpParam.provider().servicePressureZero();
 }
 
 /**************************************************************************************************

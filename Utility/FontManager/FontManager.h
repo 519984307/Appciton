@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/11/29
+ **/
+
+
 #pragma once
 #include <QFont>
 
@@ -18,7 +29,7 @@ public:
     ~FontManager();
 
     // 构造文本字体
-    QFont textFont(int fontSize = -1, bool isBold =false);
+    QFont textFont(int fontSize = -1, bool isBold = false);
 
     // 构造数值字体
     QFont numFont(int fontSize = -1, bool isBold = false);
@@ -68,7 +79,6 @@ public:
 
 private:
     FontManager();
-    void _trendTextFont(void);
     QList<int> PARAM_FONT_NUM;
 
 private:

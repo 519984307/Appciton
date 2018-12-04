@@ -63,6 +63,11 @@ private slots:
      */
     void pacerMakerReleased(int);
 
+    /**
+     * @brief bedNumReleased 修改病人床号
+     */
+    void bedNumReleased(void);
+
 protected:
     /*reimplement*/
     void showEvent(QShowEvent *);

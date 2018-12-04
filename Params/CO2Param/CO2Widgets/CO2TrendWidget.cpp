@@ -130,7 +130,7 @@ void CO2TrendWidget::updateLimit()
  *************************************************************************************************/
 void CO2TrendWidget::setUNit(UnitType unit)
 {
-    setUnit(Unit::getSymbol(unit));
+    setUnit(Unit::localeSymbol(unit));
 }
 
 /**************************************************************************************************
@@ -261,6 +261,9 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
 //    setFixedHeight(86);
     setName("CO2");
     setUnit(Unit::localeSymbol(co2Param.getUnit()));
+
+    // 设置报警关闭标志
+    showAlarmOff();
 
 //    // 构造资源。
     _etCO2Label = new QLabel("Et", this);

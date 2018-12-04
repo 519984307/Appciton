@@ -15,6 +15,8 @@
 #include "ECGParam.h"
 #include "DataStorageDirManager.h"
 #include "DischargePatientWindow.h"
+#include "NIBPParam.h"
+#include "NIBPProviderIFace.h"
 
 PatientManager *PatientManager::_selfObj = NULL;
 
@@ -76,6 +78,7 @@ void PatientManager::setType(PatientType type)
     emit signalPatientType(d_ptr->patientInfo.type);
 
     ecgParam.setPatientType((unsigned char)(d_ptr->patientInfo.type));
+    nibpParam.provider().setPatientType(type);
 }
 
 /**************************************************************************************************
@@ -258,14 +261,14 @@ const PatientInfo &PatientManager::getPatientInfo(void)
 UnitType PatientManager::getWeightUnit()
 {
     int unit = UNIT_KG;
-    currentConfig.getNumValue("Local|WEIGHTUnit", unit);
+    systemConfig.getNumValue("Unit|WeightUnit", unit);
     return (UnitType)unit;
 }
 
 UnitType PatientManager::getHeightUnit()
 {
     int unit = UNIT_CM;
-    currentConfig.getNumValue("Local|HEIGHTUnit", unit);
+    systemConfig.getNumValue("Unit|HeightUnit", unit);
     return (UnitType)unit;
 }
 

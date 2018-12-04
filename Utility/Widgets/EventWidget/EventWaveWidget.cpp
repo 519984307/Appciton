@@ -21,10 +21,10 @@
 
 #define INVALID_AXIS_VALUE ((1<<30) - 1)
 
-#define WAVE_REG_WIDTH              480                                     // 波形域宽度
-#define WAVE_REG_HIGH               360                                     // 波形域高度
+#define WAVE_TOP_MARGIN             20                                      // 波形顶部边缘距
+#define WAVE_REG_HIGH               320                                     // 波形域高度
 #define WAVE_NUM                    3                                       // 波形数目
-#define WAVE_DATA_REG_HIGH          (WAVE_REG_HIGH / WAVE_NUM -20)            // 单参数波形数据域高度
+#define WAVE_DATA_REG_HIGH          (WAVE_REG_HIGH / WAVE_NUM -20)          // 单参数波形数据域高度
 
 struct WaveRegionBuffer
 {
@@ -324,8 +324,8 @@ void EventWaveWidget::initXCoordinate()
 {
     float oneSecondLength = d_ptr->pixLengthOfOneSecondWaveform();
     d_ptr->waveRagWidth = oneSecondLength * d_ptr->displayWaveSeconds;
-    d_ptr->startX = (width() - d_ptr->waveRagWidth) / 2;
-    d_ptr->endX = (width() + d_ptr->waveRagWidth) / 2;
+    d_ptr->startX = (width() - d_ptr->waveRagWidth) / 3;
+    d_ptr->endX = (width() + 2 * d_ptr->waveRagWidth) / 3;
 }
 
 int EventWaveWidget::getCurrentWaveMedSecond() const
@@ -491,7 +491,7 @@ void EventWaveWidget::_drawWave(int index, QPainter &painter)
     waveDesc.reset();
     QColor color;
     qreal x1 = 0, y1 = 0, x2 = 0, y2 = 0; // 需要连接的两点。
-    waveDesc.startY = index * WAVE_REG_HIGH / WAVE_NUM;
+    waveDesc.startY = index * WAVE_REG_HIGH / WAVE_NUM + WAVE_TOP_MARGIN;
     waveDesc.mediumY = waveDesc.startY + WAVE_DATA_REG_HIGH / 2;
     waveDesc.endY = waveDesc.startY + WAVE_DATA_REG_HIGH;
     waveDesc.waveID = waveData->waveID;

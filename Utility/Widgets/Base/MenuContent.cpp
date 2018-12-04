@@ -114,6 +114,12 @@ void MenuContent::focusInEvent(QFocusEvent *ev)
                 }
 
                 w = qobject_cast<QWidget *>(objChild);
+
+                if (w->isEnabled() == false)
+                {
+                    continue;
+                }
+
                 if (w->focusPolicy() != Qt::NoFocus)
                 {
                     w->setFocus();
@@ -127,6 +133,12 @@ void MenuContent::focusInEvent(QFocusEvent *ev)
             }
 
             w = qobject_cast<QWidget *>(obj);
+
+            if (w->isEnabled() == false)
+            {
+                continue;
+            }
+
             if (w->focusPolicy() != Qt::NoFocus)
             {
                 w->setFocus();
@@ -156,6 +168,12 @@ void MenuContent::focusInEvent(QFocusEvent *ev)
                 }
 
                 w = qobject_cast<QWidget *>(objChild);
+
+                if (w->isEnabled() == false)
+                {
+                    continue;
+                }
+
                 if (w->focusPolicy() != Qt::NoFocus)
                 {
                     w->setFocus(Qt::TabFocusReason);
@@ -169,6 +187,12 @@ void MenuContent::focusInEvent(QFocusEvent *ev)
             }
 
             w = qobject_cast<QWidget *>(obj);
+
+            if (w->isEnabled() == false)
+            {
+                continue;
+            }
+
             if (w->focusPolicy() != Qt::NoFocus)
             {
                 w->setFocus(Qt::TabFocusReason);

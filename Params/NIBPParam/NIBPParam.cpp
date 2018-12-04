@@ -188,7 +188,7 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
     }
     _provider = provider;
     _provider->sendSelfTest();
-
+    _provider->setPatientType(patientManager.getType());
 
     // 监护模式状态机。
     if (!_machines.contains(NIBP_STATE_MACHINE_MONITOR))
@@ -371,6 +371,16 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
 {
     setLastTime();
 
+    _sysValue = sys;
+    _diaValue = dia;
+    _mapVaule = map;
+    _prVaule = pr;
+
+    if (_nibpDataTrendWidget != NULL)
+    {
+        _nibpDataTrendWidget->collectNIBPTrendData(_lastTime);
+    }
+
     // 存在错误需要报错。
     if (err != NIBP_ONESHOT_NONE)
     {
@@ -408,16 +418,6 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
     }
 
     setAdditionalMeasure(false);
-
-    _sysValue = sys;
-    _diaValue = dia;
-    _mapVaule = map;
-    _prVaule = pr;
-
-    if (_nibpDataTrendWidget != NULL)
-    {
-        _nibpDataTrendWidget->collectNIBPTrendData(_lastTime);
-    }
 
     setShowMeasureCount();
     transferResults(_sysValue, _diaValue, _mapVaule, _lastTime);
@@ -1178,7 +1178,7 @@ void NIBPParam::_btnTimeOut()
 
 void NIBPParam::onPaletteChanged(ParamID id)
 {
-    if (id != PARAM_NIBP)
+    if (id != PARAM_NIBP || !systemManager.isSupport(CONFIG_NIBP))
     {
         return;
     }
@@ -1263,6 +1263,37 @@ void NIBPParam::switchToManual(void)
             nibpParam.setModelText(trs("NIBPManual"));
         }
     }
+}
+
+void NIBPParam::setResult(bool result)
+{
+    _reply = true;
+    _result = result;
+}
+
+bool NIBPParam::geReply()
+{
+    bool reply = _reply;
+    if (reply)
+    {
+        _reply = false;
+    }
+    return reply;
+}
+
+bool NIBPParam::getResult()
+{
+    return _result;
+}
+
+void NIBPParam::setManometerPressure(int16_t value)
+{
+    _manometerPressure = value;
+}
+
+int16_t NIBPParam::getManometerPressure()
+{
+    return _manometerPressure;
 }
 
 void NIBPParam::updateSubParamLimit(SubParamID id)
@@ -1354,7 +1385,9 @@ NIBPParam::NIBPParam()
       _statOpenTemp(false), _isCreateSnapshotFlag(false),
       _isNIBPDisable(false), _isManualMeasure(false),
       _connectedFlag(false), _connectedProvider(false),
-      _text(InvStr()), _activityMachine(NULL)
+      _text(InvStr()),
+      _reply(false), _result(false), _manometerPressure(InvData()),
+      _activityMachine(NULL)
 {
     nibpCountdownTime.construction();
 

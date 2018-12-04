@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/11/30
+ **/
+
+
 #pragma once
 #include <QDialog>
 #include "LanguageManager.h"
@@ -6,13 +17,13 @@
 //数据类型及传输方式
 enum Export_Data_Type
 {
-    EXPORT_RESCUE_DATA_BY_USB,       //通过U盘导出营救数据
-    EXPORT_RESCUE_DATA_BY_SFTP,      //通过WIFI导出营救数据
-    EXPORT_CONFIG_DATA_BY_USB,       //通过U盘导出配置数据
-    EXPORT_CONFIG_DATA_BY_WIFI,      //通过WIFI导出配置数据
-    EXPORT_ECG12LEAD_DATA_BY_USB,    //通过U盘导出12导心电数据
-    EXPORT_ECG12LEAD_DATA_BY_WIFI,    //通过WIFI导出12导心电数据
-    EXPORT_ERROR_LOG_BY_USB,         //Export ErrorLog through USB
+    EXPORT_RESCUE_DATA_BY_USB,       // 通过U盘导出营救数据
+    EXPORT_RESCUE_DATA_BY_SFTP,      // 通过WIFI导出营救数据
+    EXPORT_CONFIG_DATA_BY_USB,       // 通过U盘导出配置数据
+    EXPORT_CONFIG_DATA_BY_WIFI,      // 通过WIFI导出配置数据
+    EXPORT_ECG12LEAD_DATA_BY_USB,    // 通过U盘导出12导心电数据
+    EXPORT_ECG12LEAD_DATA_BY_WIFI,   // 通过WIFI导出12导心电数据
+    EXPORT_ERROR_LOG_BY_USB,         // Export ErrorLog through USB
     EXPORT_DATA_NR
 };
 
@@ -72,14 +83,20 @@ class ExportDataWidget : public QDialog
     Q_OBJECT
 
 public:
-    ExportDataWidget(Export_Data_Type type);
+    explicit ExportDataWidget(Export_Data_Type type);
     ~ExportDataWidget();
 
     //是否传输取消
-    bool isTransferCancel() const {return _transferCancel;}
+    bool isTransferCancel() const
+    {
+        return _transferCancel;
+    }
 
     //获取进度条的值
-    int getBarValue() {return _bar->value();}
+    int getBarValue()
+    {
+        return _bar->value();
+    }
 
     //初始化进度条的值
     void init();

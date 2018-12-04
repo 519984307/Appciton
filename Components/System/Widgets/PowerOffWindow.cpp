@@ -13,6 +13,7 @@
 #include <QLayout>
 #include "ThemeManager.h"
 #include "FontManager.h"
+#include "WindowManager.h"
 
 #define TITLE_BAR_HEIGHT 30
 
@@ -44,6 +45,12 @@ PowerOffWindow::PowerOffWindow()
 PowerOffWindow::~PowerOffWindow()
 {
     delete d_ptr;
+}
+
+int PowerOffWindow::exec()
+{
+    windowManager.closeAllWidows();
+    return QDialog::exec();
 }
 
 void PowerOffWindowPrivate::layoutExec()

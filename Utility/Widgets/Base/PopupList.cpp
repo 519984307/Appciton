@@ -404,8 +404,13 @@ bool PopupList::focusNextPrevChild(bool next)
     }
     else
     {
+        index = 0;
         d_ptr->items.at(0)->setFocus();
     }
+
+    int value = d_ptr->items.at(index)->text().toInt();
+    emit itemFocusChanged(value);
+
     return true;
 }
 

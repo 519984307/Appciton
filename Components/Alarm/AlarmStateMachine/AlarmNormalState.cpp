@@ -32,7 +32,7 @@ AlarmNormalState::~AlarmNormalState()
  *************************************************************************************************/
 void AlarmNormalState::enter()
 {
-    alarmIndicator.setAudioStatus(ALARM_AUDIO_NORMAL);
+    alarmIndicator.setAlarmStatus(ALARM_STATUS_NORMAL);
     lightManager.enableAlarmAudioMute(false);
 }
 
@@ -59,10 +59,7 @@ void AlarmNormalState::handAlarmEvent(AlarmStateEvent event, unsigned char */*da
 
     case ALARM_STATE_EVENT_MUTE_BTN_PRESSED:
     {
-        if (alarmIndicator.phyAlarmPauseStatusHandle())
-        {
-            alarmStateMachine.switchState(ALARM_PAUSE_STATE);
-        }
+        alarmStateMachine.switchState(ALARM_PAUSE_STATE);
         break;
     }
 #else

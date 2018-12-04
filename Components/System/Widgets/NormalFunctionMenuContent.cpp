@@ -140,6 +140,11 @@ void NormalFunctionMenuContent::layoutExec()
     label = new QLabel(trs("SystemAlarmVolume"));
     layout->addWidget(label, row, 0);
     comboBox = new ComboBox();
+
+    // 设置声音触发方式
+    connect(comboBox, SIGNAL(itemFocusChanged(int)),
+            this, SLOT(onPopupListItemFocusChanged(int)));
+
     comboBox->addItems(QStringList()
                        << QString::number(SoundManager::VOLUME_LEV_1)
                        << QString::number(SoundManager::VOLUME_LEV_2)
@@ -176,6 +181,11 @@ void NormalFunctionMenuContent::layoutExec()
     label = new QLabel(trs("KeyPressVolume"));
     layout->addWidget(label , row , 0);
     comboBox = new ComboBox();
+
+    // 设置声音触发方式
+    connect(comboBox, SIGNAL(itemFocusChanged(int)),
+            this, SLOT(onPopupListItemFocusChanged(int)));
+
     comboBox->addItems(QStringList()
                        <<QString::number(SoundManager::VOLUME_LEV_0)
                        <<QString::number(SoundManager::VOLUME_LEV_1)
@@ -382,5 +392,21 @@ void NormalFunctionMenuContent::onBtnReleasd()
             patientManager.newPatient();
         }
         break;
+    }
+}
+
+void NormalFunctionMenuContent::onPopupListItemFocusChanged(int volume)
+{
+    ComboBox *w = qobject_cast<ComboBox*>(sender());
+
+    if (w == d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_KEYPRESS_VOLUME])
+    {
+        soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , static_cast<SoundManager::VolumeLevel>(volume));
+        soundManager.keyPressTone();
+    }
+    else if (w == d_ptr->combos[NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME])
+    {
+        soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM , static_cast<SoundManager::VolumeLevel>(volume));
+        soundManager.alarmTone();
     }
 }

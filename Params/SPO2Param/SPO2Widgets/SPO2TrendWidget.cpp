@@ -130,7 +130,7 @@ void SPO2TrendWidget::isAlarm(bool flag)
 void SPO2TrendWidget::showValue(void)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
-    if (_isAlarm)
+    if (_isAlarm && _spo2String != InvStr())
     {
         showAlarmStatus(_spo2Value);
         showAlarmParamLimit(_spo2Value, _spo2String, psrc);
@@ -179,6 +179,9 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     _piString = InvStr();
     setName(trs(paramInfo.getParamName(PARAM_SPO2)));
     setUnit(Unit::localeSymbol(UNIT_PERCENT));
+
+    // 设置报警关闭标志
+    showAlarmOff();
 
     // 血氧值。
     _spo2Value = new QLabel();

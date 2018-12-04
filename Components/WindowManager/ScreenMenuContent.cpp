@@ -42,14 +42,13 @@ public:
 
     enum ScreenLayoutItem
     {
-        SCREEN_LAYOUT_STANDARD = 1,
+        SCREEN_LAYOUT_STANDARD = 0,
         SCREEN_LAYOUT_BIGFONT
     };
 };
 
 void ScreenMenuContentPrivate::loadOptions()
 {
-    layoutCbo->setCurrentIndex(0);
     reloadScreenType();
     int type = UFACE_MONITOR_STANDARD;
     systemConfig.getNumValue("UserFaceType", type);
@@ -63,6 +62,16 @@ void ScreenMenuContentPrivate::loadOptions()
         }
     }
     interfaceCbo->setCurrentIndex(type);
+    layoutCbo->blockSignals(true);
+    if (type == UFACE_MONITOR_BIGFONT)
+    {
+        layoutCbo->setCurrentIndex(SCREEN_LAYOUT_BIGFONT);
+    }
+    else
+    {
+        layoutCbo->setCurrentIndex(SCREEN_LAYOUT_STANDARD);
+    }
+    layoutCbo->blockSignals(false);
 }
 
 void ScreenMenuContentPrivate::reloadScreenType()
@@ -141,13 +150,11 @@ void ScreenMenuContent::layoutExec()
     layout->addWidget(label, count, 0);
     d_ptr->layoutCbo = new ComboBox;
     d_ptr->layoutCbo->addItems(QStringList()
-                               << QString()
                                << trs("StandardScreenLayout")
                                << trs("BigFontScreenLayout")
                                );
     layout->addWidget(d_ptr->layoutCbo, count++, 1);
-    connect(d_ptr->layoutCbo, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onComboxIndexChanged(int)));
+    connect(d_ptr->layoutCbo, SIGNAL(activated(int)), this, SLOT(onComboxIndexChanged(int)));
 
     d_ptr->paraColorBtn = new Button(trs("ParameterColor"));
     d_ptr->paraColorBtn->setButtonStyle(Button::ButtonTextOnly);

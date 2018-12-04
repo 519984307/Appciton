@@ -14,6 +14,7 @@
 #include "IConfig.h"
 #include "ComboBox.h"
 #include "SystemManager.h"
+#include "RawDataCollector.h"
 
 class FactoryDataRecordContentPrivate
 {
@@ -24,8 +25,6 @@ public:
         ITEM_CBO_SPO2,
         ITEM_CBO_NIBP,
         ITEM_CBO_TEMP,
-        ITEM_CBO_BATINFO,
-        ITEM_CBO_PDCOMM,
     };
 
     FactoryDataRecordContentPrivate();
@@ -46,22 +45,14 @@ void FactoryDataRecordContentPrivate::loadOptions()
     machineConfig.getNumValue("Record|ECG", value);
     combos[ITEM_CBO_ECG]->setCurrentIndex(value);
 
-    if (systemManager.isSupport(CONFIG_SPO2))
+    QString str;
+    machineConfig.getStrValue("SPO2", str);
+    if (systemManager.isSupport(CONFIG_SPO2) && str == "BLM_S5")
     {
-        QString str;
-        machineConfig.getStrValue("SPO2", str);
-        if (str == "BLM_TS3")
-        {
-            machineConfig.getNumValue("Record|SPO2", value);
-            combos[ITEM_CBO_SPO2]->setCurrentIndex(value);
-            combos[ITEM_CBO_SPO2]->show();
-            labs[ITEM_CBO_SPO2]->show();
-        }
-        else
-        {
-            combos[ITEM_CBO_SPO2]->hide();
-            labs[ITEM_CBO_SPO2]->hide();
-        }
+        machineConfig.getNumValue("Record|SPO2", value);
+        combos[ITEM_CBO_SPO2]->setCurrentIndex(value);
+        combos[ITEM_CBO_SPO2]->show();
+        labs[ITEM_CBO_SPO2]->show();
     }
     else
     {
@@ -69,7 +60,8 @@ void FactoryDataRecordContentPrivate::loadOptions()
         labs[ITEM_CBO_SPO2]->hide();
     }
 
-    if (systemManager.isSupport(CONFIG_NIBP))
+    machineConfig.getStrValue("NIBP", str);
+    if (systemManager.isSupport(CONFIG_NIBP) && str == "BLM_N5")
     {
         machineConfig.getNumValue("Record|NIBP", value);
         combos[ITEM_CBO_NIBP]->setCurrentIndex(value);
@@ -94,12 +86,6 @@ void FactoryDataRecordContentPrivate::loadOptions()
         combos[ITEM_CBO_TEMP]->hide();
         labs[ITEM_CBO_TEMP]->hide();
     }
-
-    machineConfig.getNumValue("Record|Battery", value);
-    combos[ITEM_CBO_BATINFO]->setCurrentIndex(value);
-
-    machineConfig.getNumValue("Record|PDCommLog", value);
-    combos[ITEM_CBO_PDCOMM]->setCurrentIndex(value);
 }
 
 FactoryDataRecordContent::FactoryDataRecordContent()
@@ -193,38 +179,6 @@ void FactoryDataRecordContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
-    label = new QLabel(trs("BatteryInfo"));
-    d_ptr->labs.insert(FactoryDataRecordContentPrivate
-                       ::ITEM_CBO_BATINFO, label);
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    combo = new ComboBox;
-    combo->addItems(QStringList()
-                    << trs("Off")
-                    << trs("On")
-                   );
-    layout->addWidget(combo, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(FactoryDataRecordContentPrivate
-                         ::ITEM_CBO_BATINFO, combo);
-    itemId = FactoryDataRecordContentPrivate::ITEM_CBO_BATINFO;
-    combo->setProperty("Item", qVariantFromValue(itemId));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-
-    label = new QLabel(trs("PDCommData"));
-    d_ptr->labs.insert(FactoryDataRecordContentPrivate
-                       ::ITEM_CBO_PDCOMM, label);
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    combo = new ComboBox;
-    combo->addItems(QStringList()
-                    << trs("Off")
-                    << trs("On")
-                   );
-    layout->addWidget(combo, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(FactoryDataRecordContentPrivate
-                         ::ITEM_CBO_PDCOMM, combo);
-    itemId = FactoryDataRecordContentPrivate::ITEM_CBO_PDCOMM;
-    combo->setProperty("Item", qVariantFromValue(itemId));
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
 
@@ -238,21 +192,19 @@ void FactoryDataRecordContent::onComboBoxIndexChanged(int index)
     {
     case FactoryDataRecordContentPrivate::ITEM_CBO_ECG:
         str = "ECG";
+        rawDataCollector.setCollectStatus(RawDataCollector::ECG_DATA, index);
         break;
     case FactoryDataRecordContentPrivate::ITEM_CBO_SPO2:
         str = "SPO2";
-        break;
-    case FactoryDataRecordContentPrivate::ITEM_CBO_BATINFO:
-        str = "Battery";
+        rawDataCollector.setCollectStatus(RawDataCollector::SPO2_DATA, index);
         break;
     case FactoryDataRecordContentPrivate::ITEM_CBO_NIBP:
         str = "NIBP";
+        rawDataCollector.setCollectStatus(RawDataCollector::NIBP_DATA, index);
         break;
     case FactoryDataRecordContentPrivate::ITEM_CBO_TEMP:
         str = "TEMP";
-        break;
-    case FactoryDataRecordContentPrivate::ITEM_CBO_PDCOMM:
-        str = "PDCommLog";
+        rawDataCollector.setCollectStatus(RawDataCollector::TEMP_DATA, index);
         break;
     }
     machineConfig.setNumValue(QString("Record|%1").arg(str), index);

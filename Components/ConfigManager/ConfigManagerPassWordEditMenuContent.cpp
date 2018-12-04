@@ -74,8 +74,6 @@ void ConfigManagerPassWordEditMenuContent::onBtnReleased()
 
     if (!numberPad.exec())
     {
-        MessageBox message(trs("EditPassWord"), trs("EditPasswordNotSuccess"), false);
-        message.exec();
         return;
     }
     QString prePassword = numberPad.getStrValue();

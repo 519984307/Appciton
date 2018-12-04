@@ -439,6 +439,10 @@ void ECGWaveWidget::setSpeed(ECGSweepSpeed speed)
     // 波形速度。
     switch (speed)
     {
+    case ECG_SWEEP_SPEED_625:
+        setWaveSpeed(6.25);
+        break;
+
     case ECG_SWEEP_SPEED_125:
         setWaveSpeed(12.5);
         break;
@@ -708,10 +712,9 @@ void ECGWaveWidget::resizeEvent(QResizeEvent *e)
     x = _filterMode->x() + _filterMode->width();
     _notchInfo->move(x, 0);
 
-    x = _notchInfo->x() + _notchInfo->width();
-
-    _notify->move(x, 0);
     _notify->setFixedWidth(200);
+    _notify->move((width() - _notify->width()) / 2,
+                  qmargins().top() + (height() - qmargins().top()) / 2 - _notify->height() - 1);
 
     _initValueRange(ecgParam.getGain(ecgParam.waveIDToLeadID((WaveformID)getID())));
     _calcGainRange();
@@ -848,7 +851,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
 
     _notchInfo = new WaveWidgetLabel("", Qt::AlignLeft | Qt::AlignVCenter, this);
     _notchInfo->setFont(fontManager.textFont(fontSize));
-    _notchInfo->setFixedSize(200, fontH);
+    _notchInfo->setFixedSize(120, fontH);
     _notchInfo->setFocusPolicy(Qt::NoFocus);
     addItem(_notchInfo);
     connect(&ecgParam, SIGNAL(updateNotchFilter()), this, SLOT(_updateNotchInfo()));
@@ -856,7 +859,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     _updateNotchInfo();
     _updateFilterMode();
 
-    _notify = new WaveWidgetLabel(trs("LeadOff"), Qt::AlignCenter, this);
+    _notify = new WaveWidgetLabel(trs("LeadOff"), Qt::AlignLeft | Qt::AlignVCenter, this);
     _notify->setFocusPolicy(Qt::NoFocus);
     _notify->setFont(fontManager.textFont(fontSize));
     _notify->setFixedHeight(fontH);

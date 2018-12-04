@@ -46,6 +46,13 @@ public:
      */
     void refreshPage(bool isFirstPage = true);
 
+     /**
+      * @brief setKeyTypeAvailable  设置按键类型是否可用
+      * @param keyType  按键类型
+      * @param isAvailable  是否有用
+      */
+     void setKeyTypeAvailable(SoftBaseKeyType keyType, bool isAvailable);
+
 protected:
     void paintEvent(QPaintEvent *e);
     void resizeEvent(QResizeEvent *e);

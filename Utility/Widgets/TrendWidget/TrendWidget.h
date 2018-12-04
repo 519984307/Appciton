@@ -65,6 +65,7 @@ public slots:
      */
     virtual void doRestoreNormalStatus() {}
 
+    virtual void doAlarmOff(SubParamID subParamId);
 protected:
     void setName(const QString &name);
     void setUnit(const QString &unit);
@@ -83,6 +84,8 @@ protected:
     //字体大小设置
     virtual void setTextSize(void) = 0;
 
+    virtual void showAlarmOff();
+
 protected:
     static const int barHeight = 21;
 
@@ -91,6 +94,8 @@ protected:
 
     QLabel *upLimit;
     QLabel *downLimit;
+
+    QLabel *alarmOffIcon;
 
     QString _title;                           // 趋势控制标名
 
@@ -116,6 +121,8 @@ protected:
      * @param psrc              对应字体调色板
      */
     void showNormalStatus(QPalette psrc);
+
+    void showNormalStatus(QLayout *layout, QPalette psrc);
 
     /**
      * @brief showNormalStatus 设置正常时状态：黑底＋对应颜色字体(刷新某一控件颜色)

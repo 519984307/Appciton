@@ -57,6 +57,14 @@ DEFINES += CONFIG_ECG_TEST
 DEFINES += HIDE_STANDBY_FUNCTION
 DEFINES += HIDE_PARAM_SWITCH
 
+#用于隐藏ST功能
+DEFINES += HIDE_ECG_ST_PVCS_SUBPARAM
+
+#隐藏IBP校零软按键
+DEFINES += HIDE_IBP_CALIBRATE_ZERO
+
+#隐藏ECG心率失常功能
+DEFINES += HIDE_ECG_ARRHYTHMIA_FUNCTION
 
 # Depending libraries
 LIBS += -ldl -lasound -lz
@@ -531,8 +539,7 @@ SOURCES +=                                                                      
     Providers/PRT48Provider/PRT48Provider.cpp                                   \
     Providers/SuntechProvider/SuntechProvider.cpp                               \
     Providers/SystemBoardProvider/SystemBoardProvider.cpp                       \
-    Providers/RawData/RawDataCollection.cpp                                     \
-    Providers/RawData/RawDataCollectionTxt.cpp                                  \
+    Providers/RawData/RawDataCollector.cpp                                      \
     Providers/S5Provider/S5Provider.cpp                                         \
     Providers/DataDispatcher.cpp                                                \
     Providers/NeonateProvider/NeonateProvider.cpp                               \
@@ -1077,8 +1084,7 @@ HEADERS +=                                                                      
     Providers/SuntechProvider/SuntechProvider.h                                 \
     Providers/SystemBoardProvider/SystemBoardProvider.h                         \
     Providers/SystemBoardProvider/SystemBoardProviderDefine.h                   \
-    Providers/RawData/RawDataCollection.h                                       \
-    Providers/RawData/RawDataCollectionTxt.h                                    \
+    Providers/RawData/RawDataCollector.h                                        \
     Providers/S5Provider/S5Provider.h                                           \
     Providers/DataDispatcher.h                                                  \
     Providers/NeonateProvider/NeonateProvider.h                                 \

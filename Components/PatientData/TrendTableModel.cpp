@@ -976,7 +976,8 @@ void TrendTableModelPrivate::loadTrendData()
                     QString dataStr1;
                     QString dataStr2;
 
-                    if (displayList.at(j) == SUB_PARAM_T1)
+                    if (displayList.at(j) == SUB_PARAM_T1
+                            || displayList.at(j) == SUB_PARAM_ETCO2)
                     {
                         double dubData1 = data1 * 1.0 / 10;
                         double dubData2 = data2 * 1.0 / 10;

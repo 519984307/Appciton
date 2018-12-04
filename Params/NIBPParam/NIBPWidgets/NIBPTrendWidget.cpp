@@ -448,10 +448,11 @@ void NIBPTrendWidget::showValue(void)
     }
     else
     {
-        showNormalStatus(d_ptr->nibpValue, psrc);
-        showNormalStatus(d_ptr->sysValue, psrc);
-        showNormalStatus(d_ptr->diaValue, psrc);
-        showNormalStatus(d_ptr->mapValue, psrc);
+        QLayout *lay = d_ptr->stackedwidget->currentWidget()->layout();
+        showNormalStatus(lay, psrc);
+        showNormalStatus(d_ptr->lastMeasureCount, psrc);
+        showNormalStatus(d_ptr->countDown, psrc);
+        showNormalStatus(d_ptr->model, psrc);
     }
     d_ptr->adjustValueLayout();
 }
@@ -596,6 +597,9 @@ NIBPTrendWidget::NIBPTrendWidget()
 
     // 设置上下限
     updateLimit();
+
+    // 设置报警关闭标志
+    showAlarmOff();
 
     // 设置布局
     d_ptr->layoutExec(contentLayout);

@@ -2297,8 +2297,10 @@ void ECGParam::onPaletteChanged(ParamID id)
     {
         _waveWidget[i]->updatePalette(psrc);
     }
-    _pvcsTrendWidget->updatePalette(psrc);
+#ifndef HIDE_ECG_ST_PVCS_SUBPARAM
     _ecgSTTrendWidget->updatePalette(psrc);
+    _pvcsTrendWidget->updatePalette(psrc);
+#endif
 }
 /**************************************************************************************************
  * 发送协议命令。

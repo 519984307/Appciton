@@ -18,6 +18,7 @@
 #include "BaseDefine.h"
 #include "TrendWidgetLabel.h"
 #include <QTimer>
+#include "AlarmConfig.h"
 
 /**************************************************************************************************
  * 重绘。
@@ -60,6 +61,25 @@ void TrendWidget::resizeEvent(QResizeEvent *e)
     downLimit->setFont(font);
 
     setTextSize();
+}
+
+void TrendWidget::showAlarmOff()
+{
+    QList<SubParamID> subParams = getShortTrendSubParams();
+    if (subParams.count() == 0)
+    {
+        return;
+    }
+    bool alarmOffVisabled = false;
+    QList<SubParamID>::ConstIterator iter = subParams.constBegin();
+    for (; iter != subParams.end(); iter++)
+    {
+        if (!alarmConfig.isLimitAlarmEnable(*iter))
+        {
+            alarmOffVisabled = true;
+        }
+    }
+    alarmOffIcon->setVisible(alarmOffVisabled);
 }
 
 /**************************************************************************************************
@@ -150,6 +170,12 @@ void TrendWidget::showNormalStatus(QPalette psrc)
     setWidgetPalette(contentLayout, psrc);
 }
 
+void TrendWidget::showNormalStatus(QLayout *layout, QPalette psrc)
+{
+    normalPalette(psrc);
+    setWidgetPalette(layout, psrc);
+}
+
 void TrendWidget::showNormalStatus(QWidget *value, QPalette psrc)
 {
     normalPalette(psrc);
@@ -213,6 +239,15 @@ void TrendWidget::updatePalette(const QPalette &pal)
 void TrendWidget::restoreNormalStatusLater()
 {
     QTimer::singleShot(500, this, SLOT(doRestoreNormalStatus()));
+}
+
+void TrendWidget::doAlarmOff(SubParamID subParamId)
+{
+    QList<SubParamID> subParams = getShortTrendSubParams();
+    if (subParams.contains(subParamId))
+    {
+        showAlarmOff();
+    }
 }
 
 /**************************************************************************************************
@@ -293,6 +328,12 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
     downLimit = new QLabel("", this);
     downLimit->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
+    alarmOffIcon = new QLabel(this);
+    QPixmap icon("/usr/local/nPM/icons/AlarmOff.png");
+    icon = icon.scaled(20, 20);
+    alarmOffIcon->setPixmap(icon);
+    alarmOffIcon->setVisible(false);
+
     mLayout = new QHBoxLayout();
 
     if (!vertical)
@@ -300,8 +341,16 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
         QVBoxLayout *vLayout = new QVBoxLayout();
         vLayout->addWidget(nameLabel);
         vLayout->addWidget(unitLabel);
-        vLayout->addWidget(upLimit);
-        vLayout->addWidget(downLimit);
+
+        QVBoxLayout *vLayoutLimit = new QVBoxLayout();
+        vLayoutLimit->addWidget(upLimit);
+        vLayoutLimit->addWidget(downLimit);
+
+        QHBoxLayout *hLayout = new QHBoxLayout();
+        hLayout->addWidget(alarmOffIcon, 1);
+        hLayout->addLayout(vLayoutLimit, 1);
+
+        vLayout->addLayout(hLayout);
         vLayout->addLayout(mLayout, 1);
         vLayout->addStretch();
         vLayout->setSpacing(0);
@@ -315,6 +364,8 @@ TrendWidget::TrendWidget(const QString &widgetName, bool vertical)
 
         setLayout(contentLayout);
     }
+
+    connect(&alarmConfig, SIGNAL(alarmOff(SubParamID)), this, SLOT(doAlarmOff(SubParamID)));
 }
 
 /**************************************************************************************************

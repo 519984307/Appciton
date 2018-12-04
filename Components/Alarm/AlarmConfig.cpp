@@ -62,6 +62,8 @@ void AlarmConfig::setLimitAlarmEnable(SubParamID subParamId, bool enable)
     // save to config file
     int val = enable;
     currentConfig.setNumAttr(prefix, "Enable", val);
+
+    emit alarmOff(subParamId);
 }
 
 AlarmPriority AlarmConfig::getLimitAlarmPriority(SubParamID subParamId)

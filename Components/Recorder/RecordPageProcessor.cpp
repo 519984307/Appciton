@@ -88,7 +88,7 @@ void RecordPageProcessor::addPage(RecordPage *page)
         return;
     }
 
-#if 0
+#if 1
 #ifdef Q_WS_QWS
     QString path("/mnt/nfs/tmp/");
 #else
@@ -172,7 +172,6 @@ void RecordPageProcessor::timerEvent(QTimerEvent *ev)
         if (d_ptr->curProcessingPage == NULL)
         {
             // no more page to process
-            d_ptr->stopProcessing();
             emit processFinished();
             return;
         }
