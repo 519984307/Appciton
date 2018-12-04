@@ -143,21 +143,31 @@ QPoint WindowManagerPrivate::menuProperPos(Window *w)
 {
     // move the proper position
     QRect r = layoutManager.getMenuArea();
-    r.adjust(r.width() - w->width(), 0, 0, 0);  // 菜单将靠右上显示
-    if (r.height() < w->height())
+    QPoint globalTopLeft;
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_BIGFONT)
     {
-        // 显示不全时，遮挡第一道波形
-        r.adjust(0, r.height() - w->height(), 0, 0);
+        // 菜单居中显示
+        globalTopLeft = r.center() - w->rect().center();
     }
-    QPoint globalTopLeft = r.topLeft();
-    if (windowStacks.count() > 1)
+    else
     {
-        // 二级以上的菜单在一级菜单区域中居中显示
-        Window *win = windowStacks.at(0);
-        QPoint tmp = globalTopLeft - QPoint((win->width() - w->width()) / 2, -(win->height() - w->height()) / 2);
-        if (tmp.rx() + w->width() <= r.topRight().rx())
+        // 菜单将靠右上显示
+        r.adjust(r.width() - w->width(), 0, 0, 0);
+        if (r.height() < w->height())
         {
-            globalTopLeft = tmp;
+            // 显示不全时，遮挡第一道波形
+            r.adjust(0, r.height() - w->height(), 0, 0);
+        }
+        globalTopLeft = r.topLeft();
+        if (windowStacks.count() > 1)
+        {
+            // 二级以上的菜单在一级菜单区域中居中显示
+            Window *win = windowStacks.at(0);
+            QPoint tmp = globalTopLeft - QPoint((win->width() - w->width()) / 2, -(win->height() - w->height()) / 2);
+            if (tmp.rx() + w->width() <= r.topRight().rx())
+            {
+                globalTopLeft = tmp;
+            }
         }
     }
     return globalTopLeft;
