@@ -67,6 +67,18 @@ protected:
     void paintEvent(QPaintEvent *ev);
 
 
+    /**
+     * @brief getTitleHeight 获取标题栏高度
+     * @return
+     */
+    int getTitleHeight();
+
+    /**
+     * @brief getWindowMargin 获得窗口的边距
+     * @return
+     */
+    int getWindowMargin();
+
 private:
     QScopedPointer<WindowPrivate> d_ptr;
 };
