@@ -684,8 +684,15 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
 
         case ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN:
         {
-            ECGLead ecg = static_cast<ECGLead>(d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->currentIndex());
-            ecgParam.setGain(static_cast<ECGGain>(index), ecg);
+            if (layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
+            {
+                ecgParam.setGain(static_cast<ECGGain>(index));
+            }
+            else
+            {
+                ECGLead ecg = static_cast<ECGLead>(d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->currentIndex());
+                ecgParam.setGain(static_cast<ECGGain>(index), ecg);
+            }
             break;
         }
         case ECGMenuContentPrivate::ITEM_CBO_FILTER_MODE:
