@@ -1257,8 +1257,7 @@ MachineConfigModuleMenuDesc,机器配置,Machine Config
 MonitorInfoMenu,监护仪信息,Monitor Info
 CumulativeWorkingTime,累计工作时间,Cumulative Working Time
 TemperatureInsideCase,箱内温度,Temperature Inside Case
-BatteryLevel,电池级别,Battery Level
-BatteryVoltage,电池电压,Battery Voltage
+BatteryQuantity,电池电量,Battery Quantity
 MachineType,机器型号,Machine Type
 MACAddress,硬件地址,MAC Address
 ScreenResolationSize,屏幕分辨率尺寸,Screen Resolation Size
