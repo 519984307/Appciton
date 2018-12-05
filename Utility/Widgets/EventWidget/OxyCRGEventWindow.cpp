@@ -337,8 +337,13 @@ void OxyCRGEventWindow::printReleased()
     RecordPageGenerator *generator = new OxyCRGPageGenerator(trendInfos, d_ptr->waveInfo, d_ptr->eventTitle);
     if (recorderManager.isPrinting())
     {
-        if (recorderManager.stopPrint(generator))
+        if (generator->getPriority() <= recorderManager.getCurPrintPriority())
         {
+            generator->deleteLater();
+        }
+        else
+        {
+            recorderManager.stopPrint();
             recorderManager.addPageGenerator(generator);
         }
     }

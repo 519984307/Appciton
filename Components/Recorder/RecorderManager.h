@@ -127,10 +127,15 @@ public:
 
     /**
      * @brief stopPrint 停止打印
-     * @param generator 新产生的打印
-     * @return 是否进行新产生的打印
+     * @return
      */
-    bool stopPrint(RecordPageGenerator *generator);
+    void stopPrint(void);
+
+    /**
+     * @brief getCurPrintPriority 获取当前打印优先级
+     * @return
+     */
+    RecordPageGenerator::PrintPriority getCurPrintPriority(void);
 
 private slots:
 

@@ -123,8 +123,13 @@ void TrendGraphWindow::onButtonReleased()
 
             if (recorderManager.isPrinting())
             {
-                if (recorderManager.stopPrint(pageGenerator))
+                if (pageGenerator->getPriority() <= recorderManager.getCurPrintPriority())
                 {
+                    pageGenerator->deleteLater();
+                }
+                else
+                {
+                    recorderManager.stopPrint();
                     recorderManager.addPageGenerator(pageGenerator);
                 }
             }

@@ -228,8 +228,13 @@ void FreezeWindow::onBtnClick()
 
         if (recorderManager.isPrinting())
         {
-            if (recorderManager.stopPrint(generator))
+            if (generator->getPriority() <= recorderManager.getCurPrintPriority())
             {
+                generator->deleteLater();
+            }
+            else
+            {
+                recorderManager.stopPrint();
                 recorderManager.addPageGenerator(generator);
             }
         }

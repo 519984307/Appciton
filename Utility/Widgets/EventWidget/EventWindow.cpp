@@ -444,8 +444,13 @@ void EventWindow::printRelease()
         RecordPageGenerator *gen = new EventPageGenerator(d_ptr->backend, d_ptr->dataIndex.at(curIndex));
         if (recorderManager.isPrinting())
         {
-            if (recorderManager.stopPrint(gen))
+            if (gen->getPriority() <= recorderManager.getCurPrintPriority())
             {
+                gen->deleteLater();
+            }
+            else
+            {
+                recorderManager.stopPrint();
                 recorderManager.addPageGenerator(gen);
             }
         }

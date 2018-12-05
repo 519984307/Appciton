@@ -104,7 +104,7 @@ void NormalModeKeyAction::keyF3Pressed(bool multiBtnPress)
     // print
     if (recorderManager.isPrinting())
     {
-        recorderManager.stopPrint(new ContinuousPageGenerator());
+        recorderManager.stopPrint();
     }
     else
     {

@@ -307,7 +307,7 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
         systemConfig.setNumValue(path, static_cast<int>(WAVE_NONE));
         if (recorderManager.isPrinting())
         {
-            recorderManager.stopPrint(new ContinuousPageGenerator());
+            recorderManager.stopPrint();
             recorderManager.addPageGenerator(new ContinuousPageGenerator());
         }
         return;
@@ -323,7 +323,7 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
     }
     if (recorderManager.isPrinting())
     {
-        recorderManager.stopPrint(new ContinuousPageGenerator());
+        recorderManager.stopPrint();
         recorderManager.addPageGenerator(new ContinuousPageGenerator());
     }
 

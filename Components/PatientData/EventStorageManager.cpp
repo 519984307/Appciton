@@ -137,17 +137,23 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
     currentConfig.setNumValue("Print|PhysiologicalAlarm", index);
     if (index)
     {
+        RecordPageGenerator *generator = new TriggerPageGenerator(item);
         if (recorderManager.isPrinting())
         {
-            if (recorderManager.stopPrint(new TriggerPageGenerator(item)))
+            if (generator->getPriority() <= recorderManager.getCurPrintPriority())
             {
-                recorderManager.addPageGenerator(new TriggerPageGenerator(item));
+                generator->deleteLater();
+            }
+            else
+            {
+                recorderManager.stopPrint();
+                recorderManager.addPageGenerator(generator);
                 item->setWaitForTriggerPrintFlag(true);
             }
         }
         else
         {
-            recorderManager.addPageGenerator(new TriggerPageGenerator(item));
+            recorderManager.addPageGenerator(generator);
             item->setWaitForTriggerPrintFlag(true);
         }
     }

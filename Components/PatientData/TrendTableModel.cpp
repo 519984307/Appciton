@@ -680,8 +680,13 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
     RecordPageGenerator *gen = new TrendTablePageGenerator(backend, printInfo);
     if (recorderManager.isPrinting())
     {
-        if (recorderManager.stopPrint(gen))
+        if (gen->getPriority() <= recorderManager.getCurPrintPriority())
         {
+            gen->deleteLater();
+        }
+        else
+        {
+            recorderManager.stopPrint();
             recorderManager.addPageGenerator(gen);
         }
     }
