@@ -45,7 +45,7 @@ TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id
             _valueY.max = static_cast<double>(config.upRuler) / config.scale;
             _valueY.scale = config.scale;
         }
-        _paramName = paramInfo.getSubParamName(id);
+        _paramName = trs(paramInfo.getSubParamName(id));
         if (_type == TREND_GRAPH_TYPE_AG_TEMP)
         {
             _paramName = _paramName.right(_paramName.length() - 2) + "(Et/Fi)";
