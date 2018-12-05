@@ -48,7 +48,7 @@
 #include "LightManager.h"
 #include "BatteryMessage.h"
 #include "BatteryAlarm.h"
-#include "PowerManagerBrief.h"
+#include "PowerManager.h"
 #include "PromptInfoBarWidget.h"
 
 #include "PatientManager.h"

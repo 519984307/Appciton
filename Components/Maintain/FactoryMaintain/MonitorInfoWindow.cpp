@@ -21,7 +21,7 @@
 #include <QVBoxLayout>
 #include "TimeManager.h"
 #include <QTimer>
-#include "PowerManagerBrief.h"
+#include "PowerManager.h"
 
 class MonitorInfoWindowPrivate
 {
@@ -81,7 +81,7 @@ void MonitorInfoWindowPrivate::loadOptions()
     labs[ITEM_LAB_TEM_INSIDECASE]->setText(trs(temStr));
 
     temStr.clear();
-    labs[ITEM_LAB_BAT_CAPACITY]->setText(powerMangerBrief.getBatteryCapacity());
+    labs[ITEM_LAB_BAT_CAPACITY]->setText(powerManger.getBatteryCapacity());
 
     temStr.clear();
     systemConfig.getStrValue("MonitorInfo|MachineType", temStr);

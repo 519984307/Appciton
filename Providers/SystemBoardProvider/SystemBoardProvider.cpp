@@ -21,7 +21,7 @@
 #include "ErrorLogItem.h"
 #include "IConfig.h"
 #include "PowerOffWindow.h"
-#include "PowerManagerBrief.h"
+#include "PowerManager.h"
 
 enum SystemBoardMessageType
 {
@@ -229,7 +229,7 @@ void SystemBoardProvider::_parseBatteryInfo(unsigned char *data, int len)
 
     modeStatus.isCharging = data[1];        // 是否正在充电
     modeStatus.adcValue = (data[3] << 8) | data[2];     // ADC值
-    powerMangerBrief.setBatteryCapacity(modeStatus.adcValue);
+    powerManger.setBatteryCapacity(modeStatus.adcValue);
 
     if (modeStatus.adcValue > 500)
     {

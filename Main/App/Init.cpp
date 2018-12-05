@@ -156,7 +156,7 @@ static void _initComponents(void)
 
     // 电源
     BatteryBarWidget *bar = &batteryBarWidget;
-    powerMangerBrief.construction();
+    powerManger.construction();
     alertor.addOneShotSource(batteryOneShotAlarm.construction());
     layoutManager.addLayoutWidget(bar);
 
