@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/12/5
+ **/
+
 #pragma once
 #include "EventDataDefine.h"
 
@@ -18,7 +28,7 @@ public:
     {
         static const char *symbol[EVENT_LEVEL_NR] =
         {
-            "All", "Hint", "Low", "Medium", "High"
+            "All", "Prompt", "Low", "Medium", "High"
         };
         return symbol[index];
     }
