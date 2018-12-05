@@ -263,3 +263,8 @@ void Window::paintEvent(QPaintEvent *ev)
     QDialog::paintEvent(ev);
 #endif
 }
+
+int Window::getTitleHeight() const
+{
+    return TITLE_BAR_HEIGHT;
+}

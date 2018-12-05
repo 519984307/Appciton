@@ -159,7 +159,9 @@ TrendGraphWindow::TrendGraphWindow()
     int itemHeight = themeManger.getAcceptableControlHeight();
 
     d_ptr->waveWidget = new TrendWaveWidget();
-    d_ptr->waveWidget->setWidgetSize(width() - margin * 2, maxHeight - itemHeight - spacing - margin * 2 - 50);
+    int margins = contentsMargins().left() * 2 + margin * 2;
+    d_ptr->waveWidget->setWidgetSize(maxWidth - margins,
+                                     maxHeight - spacing - margins - getTitleHeight() - itemHeight);
 
     QHBoxLayout *hLayout = new QHBoxLayout();
     hLayout->setSpacing(spacing);
