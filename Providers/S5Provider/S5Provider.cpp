@@ -288,13 +288,13 @@ bool S5Provider::isStatus(unsigned char *packet)
     {
         spo2Param.setNotify(false, trs("SPO2CheckSensor"));
         spo2Param.setValidStatus(true);
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, false);
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
     }
     else
     {
         spo2Param.setNotify(true, trs("SPO2CheckSensor"));
         spo2Param.setValidStatus(false);
-        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_FINGER_OFF, true);
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
     }
 
     // 调光调增益
