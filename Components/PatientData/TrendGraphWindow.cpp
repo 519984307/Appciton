@@ -121,7 +121,22 @@ void TrendGraphWindow::onButtonReleased()
             QList<unsigned> eventTimeList = d_ptr->waveWidget->getEventList();
             RecordPageGenerator *pageGenerator = new TrendGraphPageGenerator(trendGraphList, eventTimeList);
 
-            recorderManager.addPageGenerator(pageGenerator);
+            if (recorderManager.isPrinting())
+            {
+                if (pageGenerator->getPriority() <= recorderManager.getCurPrintPriority())
+                {
+                    pageGenerator->deleteLater();
+                }
+                else
+                {
+                    recorderManager.stopPrint();
+                    recorderManager.addPageGenerator(pageGenerator);
+                }
+            }
+            else
+            {
+                recorderManager.addPageGenerator(pageGenerator);
+            }
             break;
         }
         case TrendGraphWindowPrivate::ACTION_BTN_SET_WIDGET:

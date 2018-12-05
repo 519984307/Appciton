@@ -23,6 +23,7 @@
 #include "RESPSymbol.h"
 #include "SPO2Symbol.h"
 #include "CO2Symbol.h"
+#include "ContinuousPageGenerator.h"
 
 class PrintSettingMenuContentPrivate
 {
@@ -304,6 +305,11 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
     if (curWaveCbo->currentIndex() == 0)
     {
         systemConfig.setNumValue(path, static_cast<int>(WAVE_NONE));
+        if (recorderManager.isPrinting())
+        {
+            recorderManager.stopPrint();
+            recorderManager.addPageGenerator(new ContinuousPageGenerator());
+        }
         return;
     }
 
@@ -314,6 +320,11 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
     if (waveIndex >= 0 && waveIndex < d_ptr->waveNames.count())
     {
         systemConfig.setNumValue(path, d_ptr->waveIDs.at(waveIndex));
+    }
+    if (recorderManager.isPrinting())
+    {
+        recorderManager.stopPrint();
+        recorderManager.addPageGenerator(new ContinuousPageGenerator());
     }
 
     // 收集当前所有选择菜单选择的波形id

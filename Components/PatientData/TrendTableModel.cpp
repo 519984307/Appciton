@@ -678,7 +678,22 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
         }
     }
     RecordPageGenerator *gen = new TrendTablePageGenerator(backend, printInfo);
-    recorderManager.addPageGenerator(gen);
+    if (recorderManager.isPrinting())
+    {
+        if (gen->getPriority() <= recorderManager.getCurPrintPriority())
+        {
+            gen->deleteLater();
+        }
+        else
+        {
+            recorderManager.stopPrint();
+            recorderManager.addPageGenerator(gen);
+        }
+    }
+    else
+    {
+        recorderManager.addPageGenerator(gen);
+    }
 }
 
 unsigned TrendTableModel::getColumnCount() const
