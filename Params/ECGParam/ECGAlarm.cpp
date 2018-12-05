@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by luoyuchun <luoyuchun@blmed.cn>, 2018/12/5
+ **/
+
 #include "ECGAlarm.h"
 #include "ECGParam.h"
 #include "ECGDupParam.h"
@@ -29,8 +39,9 @@ int ECGLimitAlarm::getAlarmSourceNR(void)
 /**************************************************************************************************
  * 获取报警对应的波形ID，该波形将被存储。
  *************************************************************************************************/
-WaveformID ECGLimitAlarm::getWaveformID(int /*id*/)
+WaveformID ECGLimitAlarm::getWaveformID(int id)
 {
+    Q_UNUSED(id)
     // todo:返回计算导联的ID
     return WAVE_ECG_II;
 }
@@ -38,8 +49,9 @@ WaveformID ECGLimitAlarm::getWaveformID(int /*id*/)
 /**************************************************************************************************
  * 获取id对应的参数ID。
  *************************************************************************************************/
-SubParamID ECGLimitAlarm::getSubParamID(int /*id*/)
+SubParamID ECGLimitAlarm::getSubParamID(int id)
 {
+    Q_UNUSED(id)
     return SUB_PARAM_HR_PR;
 }
 
@@ -54,48 +66,55 @@ AlarmPriority ECGLimitAlarm::getAlarmPriority(int id)
 /**************************************************************************************************
  * 获取指定的生理参数测量数据。
  *************************************************************************************************/
-int ECGLimitAlarm::getValue(int /*paramIndex*/)
+int ECGLimitAlarm::getValue(int paramIndex)
 {
+    Q_UNUSED(paramIndex)
     return 0;
 }
 
 /**************************************************************************************************
  * 生理参数报警使能。
  *************************************************************************************************/
-bool ECGLimitAlarm::isAlarmEnable(int /*paramID*/)
+bool ECGLimitAlarm::isAlarmEnable(int paramID)
 {
+    Q_UNUSED(paramID)
     return true;
 }
 
 /**************************************************************************************************
  * 生理参数报警上限。
  *************************************************************************************************/
-int ECGLimitAlarm::getUpper(int /*paramID*/)
+int ECGLimitAlarm::getUpper(int paramID)
 {
+    Q_UNUSED(paramID)
     return 0;
 }
 
 /**************************************************************************************************
  * 生理参数报警下限。
  *************************************************************************************************/
-int ECGLimitAlarm::getLower(int /*paramID*/)
+int ECGLimitAlarm::getLower(int paramID)
 {
+    Q_UNUSED(paramID)
     return 0;
 }
 
 /**************************************************************************************************
  * 生理参数报警比较。
  *************************************************************************************************/
-int ECGLimitAlarm::getCompare(int /*value*/, int /*id*/)
+int ECGLimitAlarm::getCompare(int value, int id)
 {
+    Q_UNUSED(value)
+    Q_UNUSED(id)
     return 0;
 }
 
 /**************************************************************************************************
  * 将报警ID转换成字串。
  *************************************************************************************************/
-const char *ECGLimitAlarm::toString(int /*paramID*/)
+const char *ECGLimitAlarm::toString(int paramID)
 {
+    Q_UNUSED(paramID)
     return NULL;
 }
 
@@ -104,7 +123,6 @@ const char *ECGLimitAlarm::toString(int /*paramID*/)
  *************************************************************************************************/
 ECGLimitAlarm::ECGLimitAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -112,7 +130,6 @@ ECGLimitAlarm::ECGLimitAlarm()
  *************************************************************************************************/
 ECGLimitAlarm::~ECGLimitAlarm()
 {
-
 }
 
 /**************************************************************************************************
@@ -139,38 +156,38 @@ bool ECGOneShotAlarm::isAlarmed(int id)
         return false;
     }
 
-    if (id >= ECG_ONESHOT_ALARM_LEADOFF && id <= ECG_ONESHOT_ALARM_V6_LEADOFF)
+    if (id >= ECG_ONESHOT_ALARM_LEADOFF && id <= ECG_ONESHOT_ALARM_V6_LEADOFF && ecgParam.getFristConnect())
     {
         switch (id)
         {
-            case ECG_ONESHOT_ALARM_LEADOFF:
-                for (int i = ECG_LEAD_I; i <= ECG_LEAD_AVF; ++i)
-                {
-                    if (1 == ecgParam.doesLeadOff(i))
-                    {
-                        return ecgParam.getEverLeadOn((ECGLead)i);
-                    }
-                }
-                return false;
-
-            default:
+        case ECG_ONESHOT_ALARM_LEADOFF:
+            for (int i = ECG_LEAD_I; i <= ECG_LEAD_AVF; ++i)
             {
-                for (int i = ECG_LEAD_I; i <= ECG_LEAD_AVF; ++i)
+                if (1 == ecgParam.doesLeadOff(i))
                 {
-                    if (1 == ecgParam.doesLeadOff(i))
-                    {
-                        return false;
-                    }
+                    return ecgParam.getEverLeadOn((ECGLead)i);
                 }
-
-                if (1 == ecgParam.doesLeadOff(ECG_LEAD_V1 + id - ECG_ONESHOT_ALARM_V1_LEADOFF))
-                {
-                    return ecgParam.getEverLeadOn((ECGLead)(ECG_LEAD_V1 + id -
-                        ECG_ONESHOT_ALARM_V1_LEADOFF));
-                }
-
-                return false;
             }
+            return false;
+
+        default:
+        {
+            for (int i = ECG_LEAD_I; i <= ECG_LEAD_AVF; ++i)
+            {
+                if (1 == ecgParam.doesLeadOff(i))
+                {
+                    return false;
+                }
+            }
+
+            if (1 == ecgParam.doesLeadOff(ECG_LEAD_V1 + id - ECG_ONESHOT_ALARM_V1_LEADOFF))
+            {
+                return ecgParam.getEverLeadOn((ECGLead)(ECG_LEAD_V1 + id -
+                                                        ECG_ONESHOT_ALARM_V1_LEADOFF));
+            }
+
+            return false;
+        }
         }
     }
 
@@ -191,7 +208,7 @@ int ECGOneShotAlarm::getAlarmSourceNR(void)
 WaveformID ECGOneShotAlarm::getWaveformID(int id)
 {
     // todo:返回计算导联的ID
-    if ((id >= ECG_ONESHOT_ARR_ASYSTOLE) &&(id <= ECG_ONESHOT_ARR_VFIBVTAC))
+    if ((id >= ECG_ONESHOT_ARR_ASYSTOLE) && (id <= ECG_ONESHOT_ARR_VFIBVTAC))
     {
         return WAVE_ECG_II;
     }
@@ -207,7 +224,7 @@ AlarmPriority ECGOneShotAlarm::getAlarmPriority(int id)
     {
         return ALARM_PRIO_HIGH;
     }
-    else if((id >= ECG_ONESHOT_ALARM_TRANSFER_SUCCESS) && (id <= ECG_ONESHOT_ALARM_TRANSFER_FAILED))
+    else if ((id >= ECG_ONESHOT_ALARM_TRANSFER_SUCCESS) && (id <= ECG_ONESHOT_ALARM_TRANSFER_FAILED))
     {
         return ALARM_PRIO_PROMPT;
     }
@@ -230,8 +247,8 @@ bool ECGOneShotAlarm::isNeedRemove(int id)
 {
     switch (id)
     {
-        default:
-            return false;
+    default:
+        return false;
     }
 }
 
@@ -247,9 +264,9 @@ void ECGOneShotAlarm::notifyAlarm(int id, bool isAlarm)
         {
             ecgDupParam.isAlarm(_isPhyAlarm, false);
 
-            for(int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
+            for (int i = ECG_LEAD_I; i < ECG_LEAD_NR; i++)
             {
-                //只有计算导联才显示check patient
+                // 只有计算导联才显示check patient
                 ecgParam.updateECGNotifyMesg((ECGLead)i, i == ecgParam.getCalcLead() ? isAlarm : false);
             }
 
@@ -263,12 +280,12 @@ void ECGOneShotAlarm::notifyAlarm(int id, bool isAlarm)
  *************************************************************************************************/
 AlarmType ECGOneShotAlarm::getAlarmType(int id)
 {
-    if ((id >= ECG_ONESHOT_ARR_ASYSTOLE) &&(id <= ECG_ONESHOT_ARR_VFIBVTAC))
+    if ((id >= ECG_ONESHOT_ARR_ASYSTOLE) && (id <= ECG_ONESHOT_ARR_VFIBVTAC))
     {
         return ALARM_TYPE_PHY;
     }
 
-    if(id == ECG_ONESHOT_CHECK_PATIENT_ALARM)
+    if (id == ECG_ONESHOT_CHECK_PATIENT_ALARM)
     {
         return ALARM_TYPE_LIFE;
     }
@@ -289,7 +306,7 @@ const char *ECGOneShotAlarm::toString(int id)
  *************************************************************************************************/
 bool ECGOneShotAlarm::isAlarmEnable(int id)
 {
-    if ((id >= ECG_ONESHOT_ARR_ASYSTOLE) &&(id <= ECG_ONESHOT_ARR_VFIBVTAC))
+    if ((id >= ECG_ONESHOT_ARR_ASYSTOLE) && (id <= ECG_ONESHOT_ARR_VFIBVTAC))
     {
         return alarmConfig.isLimitAlarmEnable(SUB_PARAM_HR_PR);
     }
@@ -297,7 +314,7 @@ bool ECGOneShotAlarm::isAlarmEnable(int id)
     if (id == ECG_ONESHOT_CHECK_PATIENT_ALARM)
     {
         return (alarmConfig.isLimitAlarmEnable(SUB_PARAM_HR_PR) &&
-               (patientManager.getType() != PATIENT_TYPE_NEO));
+                (patientManager.getType() != PATIENT_TYPE_NEO));
     }
 
     return true;
@@ -329,6 +346,5 @@ ECGOneShotAlarm::ECGOneShotAlarm()
  *************************************************************************************************/
 ECGOneShotAlarm::~ECGOneShotAlarm()
 {
-
 }
 

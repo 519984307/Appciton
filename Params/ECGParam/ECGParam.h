@@ -314,6 +314,12 @@ public: // 用于访问配置相关信息。
      */
     ECGLeadNameConvention getLeadNameConvention() const;
 
+    /**
+     * @brief setFristConnect
+     */
+    void setFristConnect(void);
+    bool getFristConnect(void);
+
 signals:
     void calcLeadChanged();
 
@@ -376,5 +382,7 @@ private:
 
     int _updateNum;            // 呼吸氧和波形更新标志计数
     bool _connectedProvider;    // 连接Provider标识
+
+    bool _isFristConnect;         // 开机后是否正常连接过导联
 };
 #define ecgParam (ECGParam::construction())
