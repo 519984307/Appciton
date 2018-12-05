@@ -333,7 +333,7 @@ bool S5Provider::isStatus(unsigned char *packet)
     }
     else if (algorithmSta == PULSE_SEARCH_TOO_LONG)
     {
-        spo2Param.setNotify(true, trs("SPO2PulseSearch"));
+        spo2Param.setNotify(true, trs("SPO2PulseSearchTooLong"));
     }
     else if ((algorithmSta == ALG_NORMAL) && !(packet[1] & FINGER_IN_OUT))
     {
