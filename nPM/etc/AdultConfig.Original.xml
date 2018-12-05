@@ -194,42 +194,42 @@
 		</SPO2>
 		<NIBP_SYS Enable="1" Prio="2">
 		<mmHg>
-		    <Low Min="40" Max="265">90</Low>
-		    <High Min="45" Max="270">160</High>
+		    <Low Min="40" Max="254">75</Low>
+		    <High Min="41" Max="255">220</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</mmHg>
 		<kPa>
-		    <Low Min="53" Max="352">100</Low>
-		    <High Min="54" Max="353">293</High>
+		    <Low Min="53" Max="339">100</Low>
+		    <High Min="54" Max="340">293</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</kPa>
 		</NIBP_SYS>
 		<NIBP_DIA Enable="1" Prio="2">
 		<mmHg>
-		    <Low Min="10" Max="205">50</Low>
-		    <High Min="15" Max="210">90</High>
+		    <Low Min="10" Max="194">35</Low>
+		    <High Min="11" Max="195">110</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</mmHg>
 		<kPa>
-		    <Low Min="13" Max="272">47</Low>
-		    <High Min="14" Max="273">147</High>
+		    <Low Min="13" Max="259">47</Low>
+		    <High Min="14" Max="260">147</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</kPa>
 		</NIBP_DIA>
 		<NIBP_MAP Enable="1" Prio="2">
 		<mmHg>
-		    <Low Min="20" Max="225">60</Low>
-		    <High Min="25" Max="230">110</High>
+		    <Low Min="20" Max="214">50</Low>
+		    <High Min="21" Max="215">120</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</mmHg>
 		<kPa>
-		    <Low Min="27" Max="299">67</Low>
-		    <High Min="28" Max="300">160</High>
+		    <Low Min="27" Max="285">67</Low>
+		    <High Min="28" Max="286">160</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</kPa>
