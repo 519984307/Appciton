@@ -42,8 +42,6 @@ public:
      */
     bool nightMode();
 
-    SoundManager::VolumeLevel getVolume(SoundManager::SoundType type);
-
 private:
     NightModeManager();
     NightModeManagerPrivate *d_ptr;

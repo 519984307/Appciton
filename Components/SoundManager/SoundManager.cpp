@@ -21,6 +21,7 @@
 #include <QTimer>
 #include "IConfig.h"
 #include <QThread>
+#include "NightModeManager.h"
 
 #define SOUND_DIR "/usr/local/nPM/sound/"
 #define PULSE_TONE_DIR "/usr/local/nPM/sound/pulse_tone/"
@@ -464,7 +465,14 @@ void SoundManager::volumeInit()
 {
     int v = VOLUME_LEV_3;
 
-    currentConfig.getNumValue("Alarm|DefaultAlarmVolume", v);
+    if (nightModeManager.nightMode())
+    {
+        systemConfig.getNumValue("NightMode|AlarmVolume", v);
+    }
+    else
+    {
+        currentConfig.getNumValue("Alarm|DefaultAlarmVolume", v);
+    }
 
     d_ptr->soundVolumes[SOUND_TYPE_ALARM] = (VolumeLevel) v;
 }

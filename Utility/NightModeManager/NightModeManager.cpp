@@ -116,28 +116,6 @@ bool NightModeManager::nightMode()
     return d_ptr->isNightMode;
 }
 
-SoundManager::VolumeLevel NightModeManager::getVolume(SoundManager::SoundType type)
-{
-    int volume = 0;
-    QString str = "";
-    switch (type)
-    {
-    case SoundManager::SOUND_TYPE_ALARM:
-        str = "AlarmVolume";
-        break;
-    case SoundManager::SOUND_TYPE_HEARTBEAT:
-        str = "HeartBeatVolume";
-        break;
-    case SoundManager::SOUND_TYPE_KEY_PRESS:
-        str = "KeyPressVolume";
-    default:
-        break;
-    }
-
-    systemConfig.getNumValue(QString("NightMode|%1").arg(str), volume);
-    return static_cast<SoundManager::VolumeLevel>(volume);
-}
-
 NightModeManagerPrivate::NightModeManagerPrivate()
     : isNightMode(0),
       normalScreenBrightness(BRT_LEVEL_NR),

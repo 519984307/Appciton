@@ -100,14 +100,7 @@ static void _initSystem(void)
     // 报警灯。
     lightManager.construction();
     lightManager.setProvider(&systemBoardProvider);
-    if (nightModeManager.nightMode())
-    {
-        nightModeManager.setNightMode(nightModeManager.nightMode());
-    }
-    else
-    {
-        systemManager.enableBrightness(systemManager.getBrightness());
-    }
+    systemManager.enableBrightness(systemManager.getBrightness());
 
     // 自检
     systemBoardProvider.selfTest();
@@ -120,6 +113,12 @@ static void _initSystem(void)
 
     //消息提示框
     pMessageBox.construction();
+
+    // 初始化夜间模式
+    if (nightModeManager.nightMode())
+    {
+        nightModeManager.setNightMode(true);
+    }
 }
 
 /**************************************************************************************************
