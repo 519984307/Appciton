@@ -33,7 +33,6 @@ RESPModule,RESP,RESP
 NIBPModule,NIBP,NIBP
 TEMPModule,TEMP,TEMP
 SPO2Module,SPO2,SPO2
-SystemHeartBeat,心跳音量,Heart Beat Volume
 NightModeMenu,夜间模式,Night Mode
 NightModeMenuDesc,夜间模式设置,Night Mode Desc
 NIBPCompletedTips,NIBP完成音,NIBP Completed Tips
