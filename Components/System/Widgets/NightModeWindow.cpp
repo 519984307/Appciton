@@ -240,15 +240,6 @@ void NightModeWindow::layoutExec()
     setWindowLayout(glayout);
 }
 
-void NightModeWindow::hideEvent(QHideEvent *ev)
-{
-    if (nightModeManager.nightMode())
-    {
-        nightModeManager.setNightMode(true);
-    }
-    Window::hideEvent(ev);
-}
-
 void NightModeWindow::onComboBoxIndexChanged(int index)
 {
     if (index < 0)

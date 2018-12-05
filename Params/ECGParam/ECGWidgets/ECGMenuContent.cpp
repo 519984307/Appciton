@@ -28,7 +28,6 @@
 #include "ECGDupParam.h"
 #include "AlarmLimitWindow.h"
 #include "SPO2Param.h"
-#include "NightModeManager.h"
 
 #define PRINT_WAVE_NUM (3)
 
@@ -250,15 +249,6 @@ void ECGMenuContentPrivate::loadOptions()
     }
 
     combos[ITEM_CBO_QRS_TONE]->setCurrentIndex(volECG);
-
-    if (nightModeManager.nightMode())
-    {
-        combos[ITEM_CBO_QRS_TONE]->setEnabled(false);
-    }
-    else
-    {
-        combos[ITEM_CBO_QRS_TONE]->setEnabled(true);
-    }
 
     bool isHide = true;
 
