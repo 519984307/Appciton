@@ -688,7 +688,7 @@ void ECGParam::updateECGNotifyMesg(ECGLead lead, bool isAlarm)
 
     if (isConnected())
     {
-        if (1 == _leadOff[lead])
+        if (1 == _leadOff[lead] && _isFristConnect)
         {
             mesg = ECG_WAVE_NOTIFY_LEAD_OFF;
         }
@@ -2199,11 +2199,21 @@ ECGLeadNameConvention ECGParam::getLeadNameConvention() const
     return _ecgStandard;
 }
 
+void ECGParam::setFristConnect()
+{
+    _isFristConnect = true;
+}
+
+bool ECGParam::getFristConnect()
+{
+    return _isFristConnect;
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 ECGParam::ECGParam() : Param(PARAM_ECG),
-    _updateNum(0), _connectedProvider(false)
+    _updateNum(0), _connectedProvider(false), _isFristConnect(false)
 {
     // 初始化成员。
     _provider = NULL;
