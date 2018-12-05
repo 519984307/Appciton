@@ -305,7 +305,6 @@ TEMPCommunicationStop,体温通讯停止,Communication Stop
 celsius,℃,℃
 fahrenheit,℉,℉
 percent,%,%
-AlarmSettingMenu,报警,Alarm
 Defaults,恢复默认值,Defaults
 SureAllAlarmDefaults,"所有报警设置将恢复默认值,您确定进行吗?",All alarm settings will reset to the defaults. Are you sure to continue?
 AlarmSettingUp,报警限设置,Alarm Setting Up
@@ -401,7 +400,6 @@ Female,女性,Female
 PatientAge,病人年龄,Age
 PatientName,病人姓名,Name
 PatientInformation,病人信息,Patient Information
-PatientNew,新增病人,New Patient
 GetPatientInfo,病人信息获取,Get Patient Info
 PatientSave,保存病人,Save Patient
 PatientCreate,新建病人,Create Patient
