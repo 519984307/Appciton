@@ -38,7 +38,7 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
     case SUB_PARAM_HR_PR:
         if (ignoreModuleConfig || systemManager.isSupport(CONFIG_SPO2))
         {
-            return "HR_PR";
+            return "HR/PR";
         }
         else
         {
@@ -55,7 +55,7 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
         if (ignoreModuleConfig || (systemManager.isSupport(CONFIG_CO2) &&
                                    systemManager.isSupport(CONFIG_RESP)))
         {
-            return "RR_BR";
+            return "RR/BR";
         }
         else if (systemManager.isSupport(CONFIG_RESP))
         {
