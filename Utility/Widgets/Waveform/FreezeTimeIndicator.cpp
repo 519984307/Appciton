@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/11/30
+ **/
+
+
 #include "FreezeTimeIndicator.h"
 #include <QPainter>
 #include "FontManager.h"
@@ -14,7 +25,7 @@ FreezeTimeIndicator::FreezeTimeIndicator(WaveWidget *w)
 #define TEXT_WIDTH 80   // should be width enough
 void FreezeTimeIndicator::paintItem(QPainter &painter)
 {
-    if(!geometry().isValid())
+    if (!geometry().isValid())
     {
         return;
     }
@@ -46,23 +57,23 @@ void FreezeTimeIndicator::paintItem(QPainter &painter)
     rect.setTopLeft(QPoint(-TEXT_WIDTH, -fontH));
     rect.setWidth(TEXT_WIDTH);
     rect.setHeight(fontH);
-    QString t = QString("-%1s").arg(_reviewTime);
+    QString t = QString::number(_reviewTime * (-1));
     painter.drawText(rect, Qt::AlignRight|Qt::AlignVCenter, t);
 
-    //draw a up arrow
+    // draw a up arrow
     painter.restore();
 }
 
 void FreezeTimeIndicator::setReviewTime(int t)
 {
-    if(t == _reviewTime)
+    if (t == _reviewTime)
     {
         return;
     }
 
     _reviewTime = t;
 
-    if(isVisible())
+    if (isVisible())
     {
         update();
     }

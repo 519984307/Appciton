@@ -69,7 +69,7 @@ void RESPMenuContentPrivate::loadOptions()
     }
     else
     {
-        index = BR_RR_SOURCE_RESP;
+        index = BR_RR_SOURCE_ECG;
     }
     combos[ITEM_CBO_RR_SOURCE]->setCurrentIndex(index);
     if (respDupParam.getParamSourceType() == RESPDupParam::BR)
@@ -158,7 +158,7 @@ void RESPMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(RESPSymbol::convert(BR_RR_AUTO))
                        << trs(RESPSymbol::convert(BR_RR_SOURCE_CO2))
-                       << trs(RESPSymbol::convert(BR_RR_SOURCE_RESP)));
+                       << trs(RESPSymbol::convert(BR_RR_SOURCE_ECG)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(RESPMenuContentPrivate
                          ::ITEM_CBO_RR_SOURCE, comboBox);
@@ -171,11 +171,13 @@ void RESPMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
-                   << trs(RESPSymbol::convert(RESP_ZOOM_X100))
-                   << trs(RESPSymbol::convert(RESP_ZOOM_X200))
-                   << trs(RESPSymbol::convert(RESP_ZOOM_X300))
-                   << trs(RESPSymbol::convert(RESP_ZOOM_X400))
-                   << trs(RESPSymbol::convert(RESP_ZOOM_X500)));
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X025))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X050))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X100))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X200))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X300))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X400))
+                       << trs(RESPSymbol::convert(RESP_ZOOM_X500)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(RESPMenuContentPrivate
                          ::ITEM_CBO_WAVE_GAIN, comboBox);
@@ -190,7 +192,8 @@ void RESPMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_6_25))
                        << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_12_5))
-                       << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_25_0)));
+                       << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_25_0))
+                       << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_50_0)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(RESPMenuContentPrivate
                          ::ITEM_CBO_SWEEP_SPEED, comboBox);
@@ -243,9 +246,9 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
             {
                 respDupParam.setBrSource(RESPDupParam::BR_SOURCE_CO2);
             }
-            else if (BR_RR_SOURCE_RESP == index)
+            else if (BR_RR_SOURCE_ECG == index)
             {
-                respDupParam.setBrSource(RESPDupParam::BR_SOURCE_RESP);
+                respDupParam.setBrSource(RESPDupParam::BR_SOURCE_ECG);
             }
         }
             break;

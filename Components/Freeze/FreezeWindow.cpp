@@ -89,7 +89,7 @@ FreezeWindow::FreezeWindow()
     layout->addLayout(hl, 0, 0);
 
     hl = new QHBoxLayout;
-    d_ptr->waveMoveBtn = new MoveButton(trs("WaveformMove"));
+    d_ptr->waveMoveBtn = new MoveButton(trs("Scroll"));
     d_ptr->waveMoveBtn->setButtonStyle(Button::ButtonTextOnly);
     connect(d_ptr->waveMoveBtn, SIGNAL(leftMove()), this, SLOT(leftMoveWaveformSlot()));
     connect(d_ptr->waveMoveBtn, SIGNAL(rightMove()), this, SLOT(rightMoveWaveformSlot()));
@@ -226,7 +226,22 @@ void FreezeWindow::onBtnClick()
         RecordPageGenerator *generator = new FreezePageGenerator(freezeManager.getTrendData(),
                 waveinfos);
 
-        recorderManager.addPageGenerator(generator);
+        if (recorderManager.isPrinting())
+        {
+            if (generator->getPriority() <= recorderManager.getCurPrintPriority())
+            {
+                generator->deleteLater();
+            }
+            else
+            {
+                recorderManager.stopPrint();
+                recorderManager.addPageGenerator(generator);
+            }
+        }
+        else
+        {
+            recorderManager.addPageGenerator(generator);
+        }
     }
 }
 

@@ -159,7 +159,7 @@ bool RecorderManager::isConnected() const
 
 bool RecorderManager::isPrinting() const
 {
-    return d_ptr->processor->isProcessing();
+    return (d_ptr->generator || d_ptr->status);
 }
 
 void RecorderManager::abort()
@@ -289,6 +289,26 @@ void RecorderManager::setPrintTime(PrintTime timeSec)
 PrintTime RecorderManager::getPrintTime() const
 {
     return d_ptr->timeSec;
+}
+
+void RecorderManager::stopPrint(void)
+{
+    // stop current generator
+    QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
+    // stop page processor
+    QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
+}
+
+RecordPageGenerator::PrintPriority RecorderManager::getCurPrintPriority()
+{
+    if (d_ptr->generator)
+    {
+        return d_ptr->generator->getPriority();
+    }
+    else
+    {
+        return RecordPageGenerator::PriorityNone;
+    }
 }
 
 void RecorderManager::testSlot()

@@ -50,99 +50,22 @@ void TEMPTrendWidget::onTempNameUpdate(TEMPChannelIndex channel, TEMPChannelType
 void TEMPTrendWidget::setTEMPValue(int16_t t1, int16_t t2, int16_t td)
 {
     UnitType type = tempParam.getUnit();
-    if (type == UNIT_TC)
-    {
-        if (t1 == InvData())
-        {
-            _t1Str = InvStr();
-        }
-        else
-        {
-            if (t1 < 0)
-            {
-                _t1Str = "< 0";
-            }
-            else if (t1 > 500)
-            {
-                _t1Str = "> 50";
-            }
-            else
-            {
-//                _t1Str.sprintf("%.1f", t1 / 10.0);
-                _t1Str = QString("%1").number(t1 / 10.0 , 'f' , 1);
-            }
-        }
-
-        if (t2 == InvData())
-        {
-            _t2Str = InvStr();
-        }
-        else
-        {
-            if (t2 < 0)
-            {
-                _t2Str = "< 0";
-            }
-            else if (t2 > 500)
-            {
-                _t2Str = "> 50";
-            }
-            else
-            {
-//                _t2Str.sprintf("%.1f", t2 / 10.0);
-                _t2Str = QString("%1").number(t2 / 10.0 , 'f' , 1);
-            }
-        }
-
-        if (td == InvData())
-        {
-            _tdStr = InvStr();
-        }
-        else
-        {
-//            _tdStr.sprintf("%.1f", td / 10.0);
-            _tdStr = QString("%1").number(td / 10.0 , 'f' , 1);
-        }
-    }
-
-    if (t1 == InvData())
+    if (t1 == InvData() || t1 < 0 || t1 > 500)
     {
         _t1Str = InvStr();
     }
     else
     {
-        if (t1 < 0)
-        {
-            _t1Str = "< " + Unit::convert(type, UNIT_TC, 0);
-        }
-        else if (t1 > 500)
-        {
-            _t1Str = "> " + Unit::convert(type, UNIT_TC, 50);
-        }
-        else
-        {
-            _t1Str = Unit::convert(type, UNIT_TC, t1 / 10.0);
-        }
+        _t1Str = Unit::convert(type, UNIT_TC, t1 / 10.0);
     }
 
-    if (t2 == InvData())
+    if (t2 == InvData() || t2 < 0 || t2 > 500)
     {
         _t2Str = InvStr();
     }
     else
     {
-        if (t2 < 0)
-        {
-            _t2Str = "< " + Unit::convert(type, UNIT_TC, 0);
-        }
-        else if (t2 > 500)
-        {
-            _t2Str = "< " + Unit::convert(type, UNIT_TC, 50);
-        }
-        else
-        {
-            _t2Str = Unit::convert(type, UNIT_TC, t2 / 10.0);
-        }
+        _t2Str = Unit::convert(type, UNIT_TC, t2 / 10.0);
     }
 
     if (td == InvData())
@@ -151,12 +74,9 @@ void TEMPTrendWidget::setTEMPValue(int16_t t1, int16_t t2, int16_t td)
     }
     else
     {
-//        _tdStr = Unit::convert(type, UNIT_TC, td / 10.0);
-//        _tdStr.sprintf("%.1f", _tdStr.toDouble() - 32);
-//        _tdStr.sprintf("%.1f", fabs(_t1Str.toDouble() - _t2Str.toDouble()));
-        _tdStr = QString("%1").number(fabs(_t1Str.toDouble() - _t2Str.toDouble())
-                                      , 'f'
-                                      , 1);
+        _tdStr = QString("%1")
+                .number(fabs(_t1Str.toDouble()
+                             - _t2Str.toDouble()), 'f', 1);
     }
 
     _t1Value->setText(_t1Str);
@@ -254,13 +174,6 @@ void TEMPTrendWidget::showValue(void)
     }
 }
 
-void TEMPTrendWidget::updateLimit()
-{
-    UnitType unitType = paramManager.getSubParamUnit(PARAM_TEMP, SUB_PARAM_T1);
-    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_T1, unitType);
-    setLimit(config.highLimit, config.lowLimit, config.scale);
-}
-
 /**************************************************************************************************
  * 根据布局大小自动调整字体大小。
  *************************************************************************************************/
@@ -303,10 +216,7 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     setPalette(palette);
 
     // 标签设定。
-    setName("Temp");
-
-    // 显示上下限
-    updateLimit();
+    setName(paramInfo.getParamName(PARAM_TEMP));
 
     // 设置报警关闭标志
     showAlarmOff();

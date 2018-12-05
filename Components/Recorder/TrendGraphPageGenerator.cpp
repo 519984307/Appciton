@@ -243,7 +243,7 @@ RecordPage *TrendGraphPageGenerator::createPage()
     case TitlePage:
         // BUG: patient info of the event might not be the current session patient
         d_ptr->curPageType = TrendGraphPage;
-        return createTitlePage(QString(trs("GraphTrendRecording")), patientManager.getPatientInfo());
+        return createTitlePage(QString(trs("GraphicTrendsPrint")), patientManager.getPatientInfo());
 
     case TrendGraphPage:
         if (d_ptr->curDrawnGraph < d_ptr->trendGraphInfos.size())

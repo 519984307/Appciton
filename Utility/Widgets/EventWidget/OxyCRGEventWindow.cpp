@@ -335,7 +335,22 @@ void OxyCRGEventWindow::printReleased()
     trendInfos.append(d_ptr->trendInfoList.at(0));
     trendInfos.append(d_ptr->trendInfoList.at(1));
     RecordPageGenerator *generator = new OxyCRGPageGenerator(trendInfos, d_ptr->waveInfo, d_ptr->eventTitle);
-    recorderManager.addPageGenerator(generator);
+    if (recorderManager.isPrinting())
+    {
+        if (generator->getPriority() <= recorderManager.getCurPrintPriority())
+        {
+            generator->deleteLater();
+        }
+        else
+        {
+            recorderManager.stopPrint();
+            recorderManager.addPageGenerator(generator);
+        }
+    }
+    else
+    {
+        recorderManager.addPageGenerator(generator);
+    }
 }
 
 void OxyCRGEventWindow::setReleased()
@@ -449,8 +464,8 @@ OxyCRGEventWindow::OxyCRGEventWindow()
 
     setWindowLayout(d_ptr->stackLayout);
 
-    int width = 800;
-    int height = 580;
+    int width = windowManager.getPopWindowWidth();
+    int height = windowManager.getPopWindowHeight();
     setFixedSize(width, height);
 }
 

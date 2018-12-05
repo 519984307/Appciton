@@ -641,7 +641,7 @@ void SPO2Param::checkSelftest()
 
 void SPO2Param::onPaletteChanged(ParamID id)
 {
-    if (id != PARAM_SPO2)
+    if (id != PARAM_SPO2 || !systemManager.isSupport(CONFIG_SPO2))
     {
         return;
     }

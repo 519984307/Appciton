@@ -96,7 +96,6 @@ void SPO2MenuContent::layoutExec()
                        << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_62D5)
                        << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_125)
                        << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_250)
-                       << SPO2Symbol::convert(SPO2_WAVE_VELOCITY_500)
                       );
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);

@@ -69,6 +69,12 @@ void NeonateProvider::sendMotorControl(bool status)
     sendCmd(NEONATE_CMD_MOTOR_CONTROL, &data, 1);
 }
 
+void NeonateProvider::sendVibrationIntensity(int intensity)
+{
+    unsigned char data = intensity;
+    sendCmd(NEONATE_CMD_VIBRATION_INTENSITY, &data, 1);
+}
+
 void NeonateProvider::sendACK(unsigned char type)
 {
     unsigned char data = type;
@@ -116,8 +122,11 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
         feed();
         break;
     case NEONATE_CYCLE_O2_DATA:
-        o2Param.setO2Concentration(data[1]);
+    {
+        int16_t o2 = data[1] | (data[2] << 8);
+        o2Param.setO2Concentration(o2);
         break;
+    }
     case NEONATE_CYCLE_AD_DATA:
         break;
     case NEONATE_DATA_ERROR:

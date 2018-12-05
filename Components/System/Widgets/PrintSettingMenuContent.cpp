@@ -23,6 +23,7 @@
 #include "RESPSymbol.h"
 #include "SPO2Symbol.h"
 #include "CO2Symbol.h"
+#include "ContinuousPageGenerator.h"
 
 class PrintSettingMenuContentPrivate
 {
@@ -304,6 +305,11 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
     if (curWaveCbo->currentIndex() == 0)
     {
         systemConfig.setNumValue(path, static_cast<int>(WAVE_NONE));
+        if (recorderManager.isPrinting())
+        {
+            recorderManager.stopPrint();
+            recorderManager.addPageGenerator(new ContinuousPageGenerator());
+        }
         return;
     }
 
@@ -314,6 +320,11 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
     if (waveIndex >= 0 && waveIndex < d_ptr->waveNames.count())
     {
         systemConfig.setNumValue(path, d_ptr->waveIDs.at(waveIndex));
+    }
+    if (recorderManager.isPrinting())
+    {
+        recorderManager.stopPrint();
+        recorderManager.addPageGenerator(new ContinuousPageGenerator());
     }
 
     // 收集当前所有选择菜单选择的波形id
@@ -392,27 +403,38 @@ void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> &waveIDs, QStringLis
         waveNames.append(ECGSymbol::convert(ecgLead, ecgParam.getLeadConvention()));
     }
 
-    // resp
-    waveIDs.append(WAVE_RESP);
-    waveNames.append(paramInfo.getParamWaveformName(WAVE_RESP));
+    if (systemManager.isSupport(CONFIG_RESP))
+    {
+        // resp
+        waveIDs.append(WAVE_RESP);
+        waveNames.append(paramInfo.getParamWaveformName(WAVE_RESP));
+    }
 
+    if (systemManager.isSupport(CONFIG_SPO2))
+    {
+        // spo2
+        waveIDs.append(WAVE_SPO2);
+        waveNames.append(paramInfo.getParamWaveformName(WAVE_SPO2));
+    }
 
-    // spo2
-    waveIDs.append(WAVE_SPO2);
-    waveNames.append(paramInfo.getParamWaveformName(WAVE_SPO2));
+    if (systemManager.isSupport(CONFIG_IBP))
+    {
+        // ibp
+        IBPPressureName ibpTitle = ibpParam.getEntitle(IBP_INPUT_1);
+        waveID = ibpParam.getWaveformID(ibpTitle);
+        waveIDs.append(waveID);
+        waveNames.append(IBPSymbol::convert(ibpTitle));
 
-    // ibp
-    IBPPressureName ibpTitle = ibpParam.getEntitle(IBP_INPUT_1);
-    waveID = ibpParam.getWaveformID(ibpTitle);
-    waveIDs.append(waveID);
-    waveNames.append(IBPSymbol::convert(ibpTitle));
+        ibpTitle = ibpParam.getEntitle(IBP_INPUT_2);
+        waveID = ibpParam.getWaveformID(ibpTitle);
+        waveIDs.append(waveID);
+        waveNames.append(IBPSymbol::convert(ibpTitle));
+    }
 
-    ibpTitle = ibpParam.getEntitle(IBP_INPUT_2);
-    waveID = ibpParam.getWaveformID(ibpTitle);
-    waveIDs.append(waveID);
-    waveNames.append(IBPSymbol::convert(ibpTitle));
-
-    // co2
-    waveIDs.append(WAVE_CO2);
-    waveNames.append(paramInfo.getParamWaveformName(WAVE_CO2));
+    if (systemManager.isSupport(CONFIG_CO2))
+    {
+        // co2
+        waveIDs.append(WAVE_CO2);
+        waveNames.append(paramInfo.getParamWaveformName(WAVE_CO2));
+    }
 }

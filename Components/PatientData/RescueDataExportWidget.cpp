@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/11/30
+ **/
+
+
 #include <QHBoxLayout>
 #include "RescueDataListWidget.h"
 #include "RescueDataExportWidget.h"
@@ -25,8 +36,8 @@ RescueDataExportWidget::RescueDataExportWidget() : PopupWidget(),
     _type(TRANSFER_TYPE_USB)
 {
 
-    int maxw = windowManager.getPopMenuWidth();
-    int maxh = windowManager.getPopMenuHeight();
+    int maxw = windowManager.getPopWindowWidth();
+    int maxh = windowManager.getPopWindowHeight();
 
     int fontSize = fontManager.getFontSize(1);
     _listWidget = new RescueDataListWidget(maxw - 20, maxh - 30 - 36);
@@ -96,7 +107,6 @@ RescueDataExportWidget::RescueDataExportWidget() : PopupWidget(),
  **********************************************************************************************************************/
 RescueDataExportWidget::~RescueDataExportWidget()
 {
-
 }
 
 /**********************************************************************************************************************
@@ -146,7 +156,7 @@ void RescueDataExportWidget::_transferSelectReleased()
     QStringList list;
 
     _listWidget->getStrList(list);
-    if(list.isEmpty())
+    if (list.isEmpty())
     {
         IMessageBox msgbox(trs("Prompt"), trs("NoIncidents"), QStringList(trs("EnglishYESChineseSURE")));
         msgbox.exec();
@@ -229,7 +239,7 @@ void RescueDataExportWidget::_updateWindowTitle()
 #if 0
 bool RescueDataExportWidget::_transferData(QStringList &list)
 {
-    //wifi传输暂未实现
+    // wifi传输暂未实现
     if (_type == TRANSFER_TYPE_WIFI)
     {
         return false;
@@ -269,7 +279,7 @@ bool RescueDataExportWidget::_transferData(QStringList &list)
             continue;
         }
 
-        //strList does not include the current folder. must plus 1 to skip the current folder
+        // strList does not include the current folder. must plus 1 to skip the current folder
         srcDir = dataStorageDirManager.getRescueDataDir(index + 1, tmpStr);
         if (srcDir.isEmpty())
         {
@@ -277,17 +287,16 @@ bool RescueDataExportWidget::_transferData(QStringList &list)
         }
 
         incidentDirList.append(srcDir);
-
     }
 
-    if(_type == TRANSFER_TYPE_USB)
+    if (_type == TRANSFER_TYPE_USB)
     {
         ExportDataWidget exportDataWidget(EXPORT_RESCUE_DATA_BY_USB);
         connect(&udiskManager, SIGNAL(exportProcessChanged(unsigned char)), &exportDataWidget, SLOT(setBarValue(unsigned char)));
         connect(&udiskManager, SIGNAL(exportError()), &exportDataWidget, SLOT(reject()));
         connect(&exportDataWidget, SIGNAL(cancel()), &udiskManager, SLOT(cancelExport()));
 
-        //start exporting
+        // start exporting
         udiskManager.exportFullDisclosureItems(incidentDirList);
 
         if (0 == exportDataWidget.exec())
@@ -316,7 +325,7 @@ bool RescueDataExportWidget::_transferData(QStringList &list)
     }
     else if (_type == TRANSFER_TYPE_WIFI)
     {
-        //TODO: add wifi export function
+        // TODO: add wifi export function
     }
     else
     {
@@ -343,11 +352,11 @@ bool RescueDataExportWidget::_transferData(QStringList &list)
     int selectCount = list.count();
     int totalCount = strList.count();
     QStringList incidentDirList;
-    int index = 0;
     QString srcDir;
     QString tmpStr;
     for (int i = 0; i < selectCount; ++i)
     {
+        int index = 0;
         tmpStr = list.at(i);
         index = strList.indexOf(tmpStr);
         if ((-1 == index) || (index >= totalCount))
@@ -355,7 +364,7 @@ bool RescueDataExportWidget::_transferData(QStringList &list)
             continue;
         }
 
-        //strList does not include the current folder. must plus 1 to skip the current folder
+        // strList does not include the current folder. must plus 1 to skip the current folder
         srcDir = dataStorageDirManager.getRescueDataDir(index + 1, tmpStr);
         if (srcDir.isEmpty())
         {
@@ -363,10 +372,9 @@ bool RescueDataExportWidget::_transferData(QStringList &list)
         }
 
         incidentDirList.append(srcDir);
-
     }
 
-    if(_type == TRANSFER_TYPE_USB)
+    if (_type == TRANSFER_TYPE_USB)
     {
         if (!usbManager.isUSBExist())
         {
@@ -382,7 +390,7 @@ bool RescueDataExportWidget::_transferData(QStringList &list)
     }
     else if (_type == TRANSFER_TYPE_WIFI)
     {
-        if(!networkManager.isWifiWorking() || (!networkManager.isWiFiConnected()))
+        if (!networkManager.isWifiWorking() || (!networkManager.isWiFiConnected()))
         {
             IMessageBox messageBox(trs("Warn"), trs("NetworkDisconnected"), QStringList(trs("Yes")));
             messageBox.exec();

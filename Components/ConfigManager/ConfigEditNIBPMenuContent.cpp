@@ -225,16 +225,16 @@ void ConfigEditNIBPMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_2_5)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_5)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_10)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_15)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_20)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_30)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_45)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_60)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_90)
-                       << NIBPSymbol::convert(NIBP_AUTO_INTERVAL_120));
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_2_5))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_5))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_10))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_15))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_20))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_30))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_45))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_60))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_90))
+                       << trs(NIBPSymbol::convert(NIBP_AUTO_INTERVAL_120)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditNIBPMenuContentPrivate
                          ::ITEM_CBO_INTERVAL_TIME, comboBox);

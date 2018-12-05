@@ -74,6 +74,10 @@ void RESPParamPrivate::setWaveformSpeed(RESPSweepSpeed speed)
         waveWidget->setWaveSpeed(25.0);
         break;
 
+    case RESP_SWEEP_SPEED_50_0:
+        waveWidget->setWaveSpeed(50.0);
+        break;
+
     default:
         break;
     }
@@ -507,7 +511,7 @@ void RESPParam::enableRespCalc(bool enable)
 
 void RESPParam::onPaletteChanged(ParamID id)
 {
-    if (id != PARAM_RESP)
+    if (id != PARAM_RESP || !systemManager.isSupport(CONFIG_RESP))
     {
         return;
     }

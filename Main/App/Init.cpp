@@ -30,8 +30,6 @@ static void _initSystem(void)
 
     // superRunConfig.construction();
 
-    timeManager.checkAndFixSystemTime();
-
     // 新会话，需要恢复主配置文件
     if (timeManager.getPowerOnSession() == POWER_ON_SESSION_NEW)
     {
@@ -156,7 +154,7 @@ static void _initComponents(void)
 
     // 电源
     BatteryBarWidget *bar = &batteryBarWidget;
-    powerMangerBrief.construction();
+    powerManger.construction();
     alertor.addOneShotSource(batteryOneShotAlarm.construction());
     layoutManager.addLayoutWidget(bar);
 

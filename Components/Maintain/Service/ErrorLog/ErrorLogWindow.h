@@ -27,11 +27,23 @@ protected:
     void showEvent(QShowEvent *ev);
 
 private slots:
-    void itemClickSlot(QModelIndex index);
+    /**
+     * @brief itemClickSlot
+     * @param row
+     */
+    void itemClickSlot(int row);
+
     void summaryReleased();
     void exportReleased();
     void eraseReleased();
     void USBCheckTimeout();
+
+    /**
+     * @brief onPageInfoUpdated  页码更新槽函数
+     * @param curPage 当前页
+     * @param totalPage 总页
+     */
+    void onPageInfoUpdated(int curPage, int totalPage);
 
 private:
     ErrorLogWindow();

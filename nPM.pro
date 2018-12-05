@@ -63,6 +63,9 @@ DEFINES += HIDE_ECG_ST_PVCS_SUBPARAM
 #隐藏IBP校零软按键
 DEFINES += HIDE_IBP_CALIBRATE_ZERO
 
+#隐藏ECG心率失常功能
+DEFINES += HIDE_ECG_ARRHYTHMIA_FUNCTION
+
 # Depending libraries
 LIBS += -ldl -lasound -lz
 
@@ -304,13 +307,11 @@ SOURCES +=                                                                      
     Components/PatientManager/PatientManagementMenuContent.cpp                  \
     Components/PatientManager/PatientInfoWindow.cpp                             \
     Components/PatientManager/DischargePatientWindow.cpp                        \
-    Components/PowerManager/BatteryMessage.cpp                                  \
     Components/PowerManager/BatteryAlarm.cpp                                    \
     Components/PowerManager/BatteryIndicatorWindow.cpp                          \
     Components/PowerManager/BatteryBarWidget.cpp                                \
     Components/PowerManager/BatteryIconWidget.cpp                               \
     Components/PowerManager/PowerManager.cpp                                    \
-    Components/PowerManager/PowerManagerBrief.cpp                               \
     Components/WindowManager/IWidget.cpp                                        \
     Components/WindowManager/WindowManager.cpp                                  \
     Components/WindowManager/PromptInfoBarWidget.cpp                            \
@@ -799,13 +800,11 @@ HEADERS +=                                                                      
     Components/PatientManager/PatientInfoWindow.h                               \
     Components/PatientManager/DischargePatientWindow.h                          \
     Components/PowerManager/BatteryAlarm.h                                      \
-    Components/PowerManager/BatteryMessage.h                                    \
     Components/PowerManager/BatteryDefine.h                                     \
     Components/PowerManager/BatteryIndicatorWindow.h                            \
     Components/PowerManager/BatteryBarWidget.h                                  \
     Components/PowerManager/BatteryIconWidget.h                                 \
     Components/PowerManager/PowerManager.h                                      \
-    Components/PowerManager/PowerManagerBrief.h                                 \
     Components/PowerManager/PowerManagerProviderIFace.h                         \
     Components/TimeManager/DateTimeWidget.h                                     \
     Components/TimeManager/ElapseTimeWidget.h                                   \

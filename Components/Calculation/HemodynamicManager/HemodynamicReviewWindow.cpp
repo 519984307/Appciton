@@ -25,7 +25,8 @@
 
 #define MAX_ROW_COUNT           28
 #define MAX_COLUMN_COUNT        12
-#define MED_ROW_COUNT           10
+#define MED_ROW_COUNT           8           // 一屏有多少行
+#define INPUT_VALUE_COUNT       10          // 输入值有多少
 
 class HemodynaimcReviewWindowPrivate
 {
@@ -175,7 +176,7 @@ void HemodynaimcReviewWindow::layoutExec()
 
     vlayout->addLayout(hlyout);
     vlayout->addStretch(1);
-    setFixedSize(800, 600);
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
     setWindowLayout(vlayout);
 }
 
@@ -206,12 +207,12 @@ void HemodynaimcReviewWindow::updateReviewTable()
         {
             info.valueType = trs("InputValue");
         }
-        else if (i < MED_ROW_COUNT)
+        else if (i < INPUT_VALUE_COUNT)
         {
             info.valueType = HemodynamicSymbol::
                              convert((HemodynamicParam)(i - 1));
         }
-        else if (i == MED_ROW_COUNT)
+        else if (i == INPUT_VALUE_COUNT)
         {
             info.valueType = trs("OutputValue");
         }
@@ -227,12 +228,12 @@ void HemodynaimcReviewWindow::updateReviewTable()
     for (int i = 0; i < MAX_ROW_COUNT; i++)
     {
         d_ptr->unitList.append("");
-        if (i != 0 && i < MED_ROW_COUNT)
+        if (i != 0 && i < INPUT_VALUE_COUNT)
         {
             d_ptr->unitList[i] = dataInfos[i].unitRange = HemodynamicSymbol::
                                  convertUnit((HemodynamicParam)(i - 1));
         }
-        else if (i > MED_ROW_COUNT)
+        else if (i > INPUT_VALUE_COUNT)
         {
             d_ptr->unitList[i] = dataInfos[i].unitRange = HemodynamicSymbol::
                                  convertUnit((HemodynamicOutput)(i - 11));
@@ -241,11 +242,11 @@ void HemodynaimcReviewWindow::updateReviewTable()
 
     for (int i = 0; i < MAX_ROW_COUNT; i++)
     {
-        if (i <= MED_ROW_COUNT)
+        if (i <= INPUT_VALUE_COUNT)
         {
             d_ptr->rangList.append("");
         }
-        else if (i > MED_ROW_COUNT)
+        else if (i > INPUT_VALUE_COUNT)
         {
             d_ptr->rangList.append(
                 HemodynamicSymbol::
@@ -311,8 +312,8 @@ void HemodynaimcReviewWindow::updateReviewTable()
                     color = "#FFFFFF";
                 }
             }
-            dataInfos[n + 1 + MED_ROW_COUNT].time[i] = text;
-            colorInfos[n + 1 + MED_ROW_COUNT].time[i] = color;
+            dataInfos[n + 1 + INPUT_VALUE_COUNT].time[i] = text;
+            colorInfos[n + 1 + INPUT_VALUE_COUNT].time[i] = color;
         }
     }
     d_ptr->HeaderInfos = info;
@@ -322,7 +323,7 @@ void HemodynaimcReviewWindow::updateReviewTable()
     d_ptr->model->setHeadInfos(info);
 
     dataInfos.clear();
-    for (int i = 0; i < MED_ROW_COUNT; i++)
+    for (int i = 0; i < INPUT_VALUE_COUNT; i++)
     {
         dataInfos.append(d_ptr->dataInfos[i]);
     }

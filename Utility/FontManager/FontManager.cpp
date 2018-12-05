@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by Bingyun Chen <chenbingyun@blmed.cn>, 2018/11/29
+ **/
+
 #include "FontManager.h"
 #include "Debug.h"
 #include <QFontMetrics>
@@ -14,26 +24,28 @@ FontManager::FontManager()
 {
     QFontDatabase::addApplicationFont("/usr/local/nPM/fonts/DroidSans.ttf");
     QFontDatabase::addApplicationFont("/usr/local/nPM/fonts/DroidSansFallbackFull.ttf");
-    QFontDatabase::addApplicationFont("/usr/local/nPM/fonts/HelveticaNeue-Bold.otf");
+    // QFontDatabase::addApplicationFont("/usr/local/nPM/fonts/HelveticaNeue-Bold.otf");
+    QFontDatabase::addApplicationFont("/usr/local/nPM/fonts/HelveticaNeueLTPro-Bd.otf");
     _textFont.setFamily("Droid Sans Fallback");
-    _numFont.setFamily("Helvetica Neue");
+    // _numFont.setFamily("Helvetica Neue");
+    _numFont.setFamily("Helvetica Neue LT Pro");
     _recordFont.setFamily("Droid Sans Fallback");
 
 #if 0
-debug("---------------\n");
-QFontDatabase fdb;
-QStringList flist = fdb.families();
-for (int i = 0; i < flist.size(); i++)
-{
-    printf("%s:\t", qPrintable(flist[i]));
-    QStringList slist = fdb.styles(flist[i]);
-    for (int i = 0; i < slist.size(); i++)
+    debug("---------------\n");
+    QFontDatabase fdb;
+    QStringList flist = fdb.families();
+    for (int i = 0; i < flist.size(); i++)
     {
-         printf("%s,", qPrintable(slist[i]));
+        printf("%s:\t", qPrintable(flist[i]));
+        QStringList slist = fdb.styles(flist[i]);
+        for (int i = 0; i < slist.size(); i++)
+        {
+            printf("%s,", qPrintable(slist[i]));
+        }
+        printf("\n");
     }
-    printf("\n");
-}
-debug("---------------\n\n");
+    debug("---------------\n\n");
 #endif
 
     _textFont.setBold(false);
@@ -319,7 +331,7 @@ int FontManager::adjustNumFontSize(const QRect r, bool bold, QString num, int fo
     {
         if (height > 12)
         {
-            fontSize = int(height / 1.2);
+            fontSize = static_cast<int>(height / 1.2);
         }
         else
         {
@@ -378,56 +390,6 @@ int FontManager::getFontSizeXML(int index)
 }
 
 /**************************************************************************************************
- * 功能： 计算趋势框中标题的字体大小
- * 参数：
- *      index: 字号。
- *************************************************************************************************/
-void FontManager::_trendTextFont(void)
-{
-    int screenWidth = 0;
-    int screenHeight = 0;
-    machineConfig.getNumValue("ScreenWidth", screenWidth);
-    machineConfig.getNumValue("ScreenHeight", screenHeight);
-
-    _prop = (screenWidth * 1.0) / 800;
-
-    QString path;
-    int sum = 0;
-    QStringList screen;
-    path = "PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch";
-    screen = systemConfig.getChildNodeNameList(path);
-    if (screen.size() > 0 )
-    {
-        for (int i = 0; i < screen.size(); i++)
-        {
-            QString string = path + "|" + screen[i];
-            int index = 0;
-            systemConfig.getNumValue(string, index);
-            sum += index;
-        }
-    }
-    else
-    {
-        return;
-    }
-    int index = 0;
-    systemConfig.getNumValue("PrimaryCfg|UILayout|WidgetsOrder|ScreenVLayoutStretch|paramLayout", index);
-
-    QStringList names;
-
-    path = "PrimaryCfg|UILayout|WidgetsOrder|TrendOrder";
-    QString widgets;
-    systemConfig.getStrValue(path, widgets);
-    names = widgets.split(",");
-    int num = (names.size() / 2) + (names.size() % 2);
-
-    QRect r;
-    r.setHeight(((index * screenHeight)/sum / num) / 5);
-    // 字体。
-    _fontTrendText = adjustTextFontSize(r);
-}
-
-/**************************************************************************************************
  * 功能： 返回不同的字体大小
  * 参数：
  *      index: 字号。
@@ -438,33 +400,33 @@ int FontManager::getFontSize(int index)
 
     switch (index)
     {
-        case 0:
-            size = _fontSizeNum0;
-            break;
-        case 1:
-            size = _fontSizeNum1;
-            break;
-        case 2:
-            size = _fontSizeNum2;
-            break;
-        case 3:
-            size = _fontSizeNum3;
-            break;
-        case 4:
-            size = _fontSizeNum4;
-            break;
-        case 5:
-            size = _fontSizeNum5;
-            break;
-        case 6:
-            size = _fontSizeNum6;
-            break;
-        case 7:
-            size = _fontTrendText;
-            break;
-        default:
-            size = 15;
-            break;
+    case 0:
+        size = _fontSizeNum0;
+        break;
+    case 1:
+        size = _fontSizeNum1;
+        break;
+    case 2:
+        size = _fontSizeNum2;
+        break;
+    case 3:
+        size = _fontSizeNum3;
+        break;
+    case 4:
+        size = _fontSizeNum4;
+        break;
+    case 5:
+        size = _fontSizeNum5;
+        break;
+    case 6:
+        size = _fontSizeNum6;
+        break;
+    case 7:
+        size = _fontTrendText;
+        break;
+    default:
+        size = 15;
+        break;
     }
     return size;
 }

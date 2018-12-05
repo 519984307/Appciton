@@ -125,6 +125,18 @@ public:
      */
     PrintTime getPrintTime(void) const;
 
+    /**
+     * @brief stopPrint 停止打印
+     * @return
+     */
+    void stopPrint(void);
+
+    /**
+     * @brief getCurPrintPriority 获取当前打印优先级
+     * @return
+     */
+    RecordPageGenerator::PrintPriority getCurPrintPriority(void);
+
 private slots:
 
     void testSlot();

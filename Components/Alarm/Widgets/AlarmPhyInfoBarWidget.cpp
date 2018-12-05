@@ -110,7 +110,7 @@ void AlarmPhyInfoBarWidget::_drawAlarmPauseMessage()
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
-    painter.setBrush(QColor(255, 0, 0));
+    painter.setBrush(QColor(0, 175, 219));
     painter.setPen(Qt::black);
     int border = focusedBorderWidth() - 1;
     QRect tempRect = rect().adjusted(border, border, -border, -border);

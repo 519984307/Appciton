@@ -111,6 +111,11 @@ public:
     // 超限报警通知
     void noticeLimitAlarm(int id, bool flag);
 
+    /**
+     * @brief updateUnit 单位变更后刷新对应的窗口控件
+     */
+    void updateUnit(void);
+
 public:
     // 校零。
     void zeroCalibration(void);
@@ -127,6 +132,7 @@ public:
     CO2SweepSpeed getSweepSpeed(void);
 
     // 获取波形模式。
+    void setSweepMode(CO2SweepMode mode);
     CO2SweepMode getSweepMode(void);
 
     // 设置/获取气体补偿。

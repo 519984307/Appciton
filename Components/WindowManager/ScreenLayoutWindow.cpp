@@ -18,6 +18,7 @@
 #include "LanguageManager.h"
 #include "LayoutManager.h"
 #include "MessageBox.h"
+#include "WindowManager.h"
 
 class ScreenLayoutWindowPrivate
 {
@@ -90,7 +91,7 @@ ScreenLayoutWindow::ScreenLayoutWindow()
     d_ptr->view->setModel(model);
     connect(model, SIGNAL(spanChanged(QModelIndex)), d_ptr->view, SLOT(onSpanChanged(QModelIndex)));
 
-    resize(800, 600);
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 
     setWindowTitle(trs("StandardScreenLayout"));
 }

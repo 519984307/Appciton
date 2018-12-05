@@ -220,10 +220,7 @@ void TEMPParam::setOneShotAlarm(TEMPOneShotType t, bool f)
         }
     }
     tempOneShotAlarm.setOneShotAlarm(TEMP_ONESHOT_ALARM_MODULE_DISABLE, _isTEMPDisable);
-    if (t >= TEMP_OVER_RANGR_1)
-    {
-        tempOneShotAlarm.setOneShotAlarm(t, f);
-    }
+    tempOneShotAlarm.setOneShotAlarm(t, f);
 }
 
 /**************************************************************************************************
@@ -277,10 +274,7 @@ void TEMPParam::getCalibrateData(unsigned char *packet)
 
 void TEMPParam::updateSubParamLimit(SubParamID id)
 {
-    if (id == SUB_PARAM_T1)
-    {
-        _trendWidget->updateLimit();
-    }
+    Q_UNUSED(id)
 }
 
 bool TEMPParam::getCalibrationReply()
@@ -303,7 +297,7 @@ bool TEMPParam::getCalibrationResult()
  *************************************************************************************************/
 void TEMPParam::setUnit(UnitType u)
 {
-    currentConfig.setNumValue("Display|TEMPUnit", static_cast<int>(u));
+    systemConfig.setNumValue("Unit|TemperatureUnit", static_cast<int>(u));
 
     if (NULL != _trendWidget)
     {
@@ -317,15 +311,16 @@ void TEMPParam::setUnit(UnitType u)
  *************************************************************************************************/
 UnitType TEMPParam::getUnit(void)
 {
-    int u = UNIT_TDC;
-    currentConfig.getNumValue("Local|TEMPUnit", u);
+    int u = UNIT_TC;
 
-    return (UnitType)u;
+    systemConfig.getNumValue("Unit|TemperatureUnit", u);
+
+    return static_cast<UnitType>(u);
 }
 
 void TEMPParam::onPaletteChanged(ParamID id)
 {
-    if (id != PARAM_TEMP)
+    if (id != PARAM_TEMP || !systemManager.isSupport(CONFIG_TEMP))
     {
         return;
     }

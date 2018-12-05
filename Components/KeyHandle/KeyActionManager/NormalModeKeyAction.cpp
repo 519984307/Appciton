@@ -102,7 +102,14 @@ void NormalModeKeyAction::keyF3Pressed(bool multiBtnPress)
     }
 
     // print
-    recorderManager.addPageGenerator(new ContinuousPageGenerator());
+    if (recorderManager.isPrinting())
+    {
+        recorderManager.stopPrint();
+    }
+    else
+    {
+        recorderManager.addPageGenerator(new ContinuousPageGenerator());
+    }
 }
 
 void NormalModeKeyAction::keyF4Pressed(bool multiBtnPress)

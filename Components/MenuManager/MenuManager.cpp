@@ -93,9 +93,9 @@ MenuManager::MenuManager()
     , _submenuHeight(0)
 {
 //    setFixedSize(windowManager.getPopMenuWidth(), windowManager.getPopMenuHeight());
-    _listWidth = windowManager.getPopMenuWidth() / 4;
-    _submenuWidth = windowManager.getPopMenuWidth() - _listWidth - 20;
-    _submenuHeight = windowManager.getPopMenuHeight() - 30 - 30 - 20;
+    _listWidth = windowManager.getPopWindowWidth() / 4;
+    _submenuWidth = windowManager.getPopWindowWidth() - _listWidth - 20;
+    _submenuHeight = windowManager.getPopWindowHeight() - 30 - 30 - 20;
     _widgetList.clear();
 }
 

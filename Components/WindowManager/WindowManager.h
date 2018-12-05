@@ -91,10 +91,10 @@ public slots:
 
 public:
     // 获取弹出菜单宽度, TODO: remove
-    int getPopMenuWidth();
+    int getPopWindowWidth();
 
     // 获取弹出菜单高度, TODO: remove
-    int getPopMenuHeight();
+    int getPopWindowHeight();
 
 private:
     WindowManager();

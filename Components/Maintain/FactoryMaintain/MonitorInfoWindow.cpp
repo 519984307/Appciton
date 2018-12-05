@@ -21,6 +21,7 @@
 #include <QVBoxLayout>
 #include "TimeManager.h"
 #include <QTimer>
+#include "PowerManager.h"
 
 class MonitorInfoWindowPrivate
 {
@@ -29,8 +30,7 @@ public:
     {
         ITEM_LAB_CMLV_WORKTIME = 0,
         ITEM_LAB_TEM_INSIDECASE,
-        ITEM_LAB_BAT_LEV,
-        ITEM_LAB_BAT_VOLT,
+        ITEM_LAB_BAT_CAPACITY,
         ITEM_LAB_MACHINE_TYPE,
         ITEM_LAB_MAC_ADDR,
         ITEM_LAB_SCR_RESOLASIZE,
@@ -81,12 +81,7 @@ void MonitorInfoWindowPrivate::loadOptions()
     labs[ITEM_LAB_TEM_INSIDECASE]->setText(trs(temStr));
 
     temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|BatteryLevel", temStr);
-    labs[ITEM_LAB_BAT_LEV]->setText(trs(temStr));
-
-    temStr.clear();
-    systemConfig.getStrValue("MonitorInfo|BatteryVoltage", temStr);
-    labs[ITEM_LAB_BAT_VOLT]->setText(trs(temStr));
+    labs[ITEM_LAB_BAT_CAPACITY]->setText(powerManger.getBatteryCapacity());
 
     temStr.clear();
     systemConfig.getStrValue("MonitorInfo|MachineType", temStr);
@@ -134,15 +129,9 @@ void MonitorInfoWindow::layoutExec()
 {
     setWindowTitle(trs("MonitorInfoMenu"));
 
-    QVBoxLayout *vlayout = new QVBoxLayout;
-    vlayout->setMargin(10);
-
     QGridLayout *layout = new QGridLayout;
     layout->setVerticalSpacing(20);
-    vlayout->addStretch();
-    vlayout->addLayout(layout);
-    vlayout->addStretch();
-    setFixedSize(580, 480);
+    setFixedSize(480, 450);
 
     QLabel *labelLeft;
     QLabel *labelRight;
@@ -163,21 +152,13 @@ void MonitorInfoWindow::layoutExec()
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_TEM_INSIDECASE, labelRight);
 
-    labelLeft = new QLabel(trs("BatteryLevel"));
+    labelLeft = new QLabel(trs("BatteryQuantity"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
     labelRight = new QLabel("");
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoWindowPrivate
-                       ::ITEM_LAB_BAT_LEV, labelRight);
-
-    labelLeft = new QLabel(trs("BatteryVoltage"));
-    layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
-    labelRight = new QLabel("");
-    labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
-    layout->addWidget(labelRight, d_ptr->labs.count(), 1);
-    d_ptr->labs.insert(MonitorInfoWindowPrivate
-                       ::ITEM_LAB_BAT_VOLT, labelRight);
+                       ::ITEM_LAB_BAT_CAPACITY, labelRight);
 
     labelLeft = new QLabel(trs("MachineType"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
@@ -212,8 +193,8 @@ void MonitorInfoWindow::layoutExec()
                       Qt::AlignCenter|Qt::AlignRight);
     connect(d_ptr->button, SIGNAL(released()), this, SLOT(onBtnReleasedChanged()));
 
-    layout->setRowStretch((d_ptr->labs.count() + 1), 1);
-    setWindowLayout(vlayout);
+    layout->setRowStretch((layout->rowCount() + 1), 1);
+    setWindowLayout(layout);
 }
 
 QString MonitorInfoWindow::getRunTime()

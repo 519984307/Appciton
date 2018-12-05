@@ -341,6 +341,12 @@ void SoftKeyManager::setContent(SoftKeyActionType type)
         d_ptr->keyTypeStatueMap[keyType] = true;
     }
 
+    if (!systemManager.isSupport(PARAM_CO2))
+    {
+        setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, false);
+        setKeyTypeAvailable(SOFT_BASE_KEY_CO2_HANDLE, false);
+    }
+
     int index = 0;
     machineConfig.getNumValue("TouchEnable", index);
     setKeyTypeAvailable(SOFT_BASE_KEY_SCREEN_BAN, index);

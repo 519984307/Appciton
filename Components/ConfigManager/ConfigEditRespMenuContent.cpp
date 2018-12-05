@@ -197,7 +197,8 @@ void ConfigEditRespMenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_6_25))
                        << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_12_5))
-                       << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_25_0)));
+                       << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_25_0))
+                       << trs(RESPSymbol::convert(RESP_SWEEP_SPEED_50_0)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditRespMenuContentPrivate
                          ::ITEM_CBO_SWEEP_SPEED, comboBox);

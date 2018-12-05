@@ -25,7 +25,7 @@
 #include "LanguageManager.h"
 
 #define PROFILE_MAX_NUM 5
-#define LISTVIEW_MAX_VISIABLE_TIME 6
+#define LISTVIEW_MAX_VISIABLE_TIME 5
 
 class WifiMaintainMenuContentPrivate
 {

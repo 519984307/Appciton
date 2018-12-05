@@ -64,6 +64,7 @@
         <ECG12LeadPacerMaker>0</ECG12LeadPacerMaker>	
         <PacerMaker>1</PacerMaker>
         <EverLeadOn>0</EverLeadOn>
+	<FullScreenGain>3</FullScreenGain>
         <Gain>
             <ECGIWaveWidget>3</ECGIWaveWidget>
             <ECGIIWaveWidget>3</ECGIIWaveWidget>
@@ -170,65 +171,65 @@
 		<HR_PR Enable="1" Prio="2">
 			<bpm>
 			    <Low Min="15" Max="298">50</Low>
-			    <High Min="17" Max="300">121</High>
+			    <High Min="17" Max="300">150</High>
 			    <Step>1</Step>
 			    <Scale>1</Scale>
 			</bpm>
 		</HR_PR>
 		<RR_BR Enable="0" Prio="2">
 			<rpm>
-			    <Low Min="0" Max="98">8</Low>
-			    <High Min="2" Max="100">30</High>
+			    <Low Min="2" Max="149">5</Low>
+			    <High Min="3" Max="150">50</High>
 			    <Step>1</Step>
 			    <Scale>1</Scale>
 			</rpm>
 		</RR_BR>
 		<SPO2 Enable="1" Prio="2">
 		<percent>
-		    <Low Min="80" Max="98">90</Low>
-		    <High Min="82" Max="100">100</High>
+		    <Low Min="50" Max="98">85</Low>
+		    <High Min="52" Max="100">95</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</percent>
 		</SPO2>
 		<NIBP_SYS Enable="1" Prio="2">
 		<mmHg>
-		    <Low Min="40" Max="265">90</Low>
-		    <High Min="45" Max="270">160</High>
+		    <Low Min="40" Max="199">75</Low>
+		    <High Min="41" Max="200">145</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</mmHg>
 		<kPa>
-		    <Low Min="53" Max="352">100</Low>
-		    <High Min="54" Max="353">293</High>
+		    <Low Min="53" Max="339">100</Low>
+		    <High Min="54" Max="340">293</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</kPa>
 		</NIBP_SYS>
 		<NIBP_DIA Enable="1" Prio="2">
 		<mmHg>
-		    <Low Min="10" Max="205">50</Low>
-		    <High Min="15" Max="210">90</High>
+		    <Low Min="10" Max="149">35</Low>
+		    <High Min="11" Max="150">100</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</mmHg>
 		<kPa>
-		    <Low Min="13" Max="272">47</Low>
-		    <High Min="14" Max="273">147</High>
+		    <Low Min="13" Max="199">47</Low>
+		    <High Min="14" Max="200">147</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</kPa>
 		</NIBP_DIA>
 		<NIBP_MAP Enable="1" Prio="2">
 		<mmHg>
-		    <Low Min="20" Max="225">60</Low>
-		    <High Min="25" Max="230">110</High>
+		    <Low Min="20" Max="164">50</Low>
+		    <High Min="21" Max="165">110</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</mmHg>
 		<kPa>
-		    <Low Min="27" Max="299">67</Low>
-		    <High Min="28" Max="300">160</High>
+		    <Low Min="27" Max="219">67</Low>
+		    <High Min="28" Max="220">147</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</kPa>
@@ -553,8 +554,8 @@
 		</TB>
 		<ETCO2 Enable="1" Prio="2">
 		<percent>
-		    <Low Min="1" Max="128">33</Low>
-		    <High Min="4" Max="130">66</High>
+		    <Low Min="0" Max="249">10</Low>
+		    <High Min="1" Max="250">80</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</percent>
@@ -573,8 +574,8 @@
 		</ETCO2>
 		<FICO2 Enable="0" Prio="2">
 		<percent>
-		    <Low Min="1" Max="128">1</Low>
-		    <High Min="4" Max="130">5</High>
+		    <Low Min="0" Max="249">0</Low>
+		    <High Min="1" Max="250">80</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</percent>
@@ -754,7 +755,7 @@
 		<T1 Enable="0" Prio="2">
 		<celsius>
 		    <Low Min="1" Max="490">350</Low>
-		    <High Min="11" Max="500">380</High>
+		    <High Min="11" Max="500">378</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
@@ -768,7 +769,7 @@
 		<T2 Enable="0" Prio="2">
 		<celsius>
 		    <Low Min="1" Max="490">350</Low>
-		    <High Min="11" Max="500">380</High>
+		    <High Min="11" Max="500">378</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
@@ -782,7 +783,7 @@
 		<TD Enable="0" Prio="2">
 		<celsius>
 		    <Low Min="1" Max="490">1</Low>
-		    <High Min="11" Max="500">20</High>
+		    <High Min="11" Max="500">5</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
@@ -795,14 +796,6 @@
 		</TD>
     </AlarmSource>
     <Local>
-        <Language CurrentOption="1" OptionCount="2">
-            <!-- note："XmlFileName" segment consistent with XML language file name -->
-            <Opt0 XmlFileName="English">English</Opt0>
-            <Opt1 XmlFileName="ChineseSimplified">简体中文</Opt1>
-            <!--<Opt2 XmlFileName="PortugueseBrazil">Português(do Brasil)</Opt2>
-            <Opt3 XmlFileName="Spanish">Español</Opt3>
-            <Opt4 XmlFileName="Russian">Русский</Opt4>-->
-        </Language>
         <NIBPUnit>5</NIBPUnit>
         <CO2Unit>7</CO2Unit>
         <TEMPUnit>1</TEMPUnit>

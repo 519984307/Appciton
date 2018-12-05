@@ -156,7 +156,7 @@ void NightModeWindow::layoutExec()
                          ITEM_CBO_ALARM_VOLUME, comboBox);
 
     // heart beat volume
-    label = new QLabel(trs("SystemHeartBeat"));
+    label = new QLabel(trs("ECGQRSToneVolume"));
     glayout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()

@@ -98,7 +98,8 @@ public:
           ecgLeadMode(ECG_LEAD_MODE_5),
           respApneaTime(APNEA_ALARM_TIME_OFF),
           resplead(RESP_LEAD_II),
-          enableRespCalc(false)
+          enableRespCalc(false),
+          isFristConnect(false)
     {
         qMemSet(selftestResult, 0, sizeof(selftestResult));
     }
@@ -114,6 +115,7 @@ public:
     ApneaAlarmTime respApneaTime;
     RESPLead resplead;
     bool enableRespCalc;
+    bool isFristConnect;            // 是否第一次正确连接导联
 };
 
 /* parse the data from the module and pass it to the algorithm interface */
@@ -143,6 +145,12 @@ void E5ProviderPrivate::handleEcgRawData(unsigned char *data, int len)
         if (ecgParam.getLeadMode() == ECG_LEAD_MODE_5)
         {
             leadoff &= 0xFFE0;
+        }
+
+        if (!leadoff && !isFristConnect)
+        {
+            ecgParam.setFristConnect();
+            isFristConnect = true;
         }
 
         if (ecgParam.getLeadMode() == ECG_LEAD_MODE_3)

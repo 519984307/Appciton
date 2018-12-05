@@ -688,7 +688,7 @@ void ECGParam::updateECGNotifyMesg(ECGLead lead, bool isAlarm)
 
     if (isConnected())
     {
-        if (1 == _leadOff[lead])
+        if (1 == _leadOff[lead] && _isFristConnect)
         {
             mesg = ECG_WAVE_NOTIFY_LEAD_OFF;
         }
@@ -1804,6 +1804,18 @@ int ECGParam::getWaveDataRate() const
     return _provider->getWaveformSample();
 }
 
+void ECGParam::setGain(ECGGain gain)
+{
+    currentConfig.setNumValue("ECG|FullScreenGain", static_cast<int>(gain));
+    for (int i = 0; i < ECG_LEAD_NR; i++)
+    {
+        if (_waveWidget[i] == NULL)
+        {
+            continue;
+        }
+        _waveWidget[i]->setGain(gain);
+    }
+}
 
 /**************************************************************************************************
  * 设置增益。
@@ -1885,10 +1897,16 @@ ECGGain ECGParam::getGain(ECGLead lead)
         return ECG_GAIN_X10;
     }
 
-    QString waveName = _waveWidget[lead]->name();
-
     int gain = ECG_GAIN_X10;
-    currentConfig.getNumValue("ECG|Gain|" + waveName, gain);
+    if (layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
+    {
+        currentConfig.getNumValue("ECG|FullScreenGain", gain);
+    }
+    else
+    {
+        QString waveName = _waveWidget[lead]->name();
+        currentConfig.getNumValue("ECG|Gain|" + waveName, gain);
+    }
     return static_cast<ECGGain>(gain);
 }
 
@@ -2181,11 +2199,21 @@ ECGLeadNameConvention ECGParam::getLeadNameConvention() const
     return _ecgStandard;
 }
 
+void ECGParam::setFristConnect()
+{
+    _isFristConnect = true;
+}
+
+bool ECGParam::getFristConnect()
+{
+    return _isFristConnect;
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 ECGParam::ECGParam() : Param(PARAM_ECG),
-    _updateNum(0), _connectedProvider(false)
+    _updateNum(0), _connectedProvider(false), _isFristConnect(false)
 {
     // 初始化成员。
     _provider = NULL;
@@ -2297,8 +2325,10 @@ void ECGParam::onPaletteChanged(ParamID id)
     {
         _waveWidget[i]->updatePalette(psrc);
     }
-    _pvcsTrendWidget->updatePalette(psrc);
+#ifndef HIDE_ECG_ST_PVCS_SUBPARAM
     _ecgSTTrendWidget->updatePalette(psrc);
+    _pvcsTrendWidget->updatePalette(psrc);
+#endif
 }
 /**************************************************************************************************
  * 发送协议命令。

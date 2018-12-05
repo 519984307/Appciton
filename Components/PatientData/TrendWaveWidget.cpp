@@ -25,11 +25,13 @@
 #include "DataStorageDefine.h"
 #include <QMouseEvent>
 #include "ParamManager.h"
+#include "FontManager.h"
+#include "TimeDefine.h"
 
 #define GRAPH_DISPLAY_DATA_NUMBER           4
 #define GRAPH_POINT_NUMBER                  120                     // 一屏数据量
-#define DATA_INTERVAL_PIXEL                 5                       // 两数据之间的像素点个数
-#define GRAPH_DATA_WIDTH                    480                     // 一屏数据所占像素点
+#define DATA_INTERVAL_PIXEL                 3                       // 两数据之间的像素点个数
+#define GRAPH_DATA_WIDTH                    360                    // 一屏数据所占像素点
 #define SCALE_REGION_HEIGHT                 34                      // 时间刻度区域高度
 
 TrendWaveWidget::TrendWaveWidget() :
@@ -672,7 +674,20 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
     for (int i = GRAPH_DISPLAY_DATA_NUMBER; i >= 0; i --)
     {
         timeDate.getTime(t, tStr, true);
-        barPainter.drawText(rectAdjust.topLeft().x() + (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2 + i * _oneFrameWidth - 30,
+        int timeFormat = 0;
+        currentConfig.getNumValue("DateTime|TimeFormat", timeFormat);
+        if (timeFormat == TIME_FORMAT_24)
+        {
+            QFont font = fontManager.textFont(fontManager.getFontSize(3));
+            barPainter.setFont(font);
+        }
+        else
+        {
+            QFont font = fontManager.textFont(fontManager.getFontSize(1));
+            barPainter.setFont(font);
+        }
+
+        barPainter.drawText(rectAdjust.topLeft().x() + (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2 + i * _oneFrameWidth - 40,
                             rectAdjust.topLeft().y() - 5, tStr);
         t = t - onePixelTime * GRAPH_POINT_NUMBER / GRAPH_DISPLAY_DATA_NUMBER;
         barPainter.drawLine(rectAdjust.topLeft().x() + (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2 + i * _oneFrameWidth,
@@ -685,7 +700,7 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
                         cursorPos, rectAdjust.bottomLeft().y());
 
     // 当前趋势记录的时间
-    QRect timeRect = rect().adjusted(_waveRegionWidth + 5, 9, -5, 0);
+    QRect timeRect = rect().adjusted(_waveRegionWidth + 5, 12, -5, 0);
     if (_cursorPosIndex < _trendGraphInfo.alarmInfo.count())
     {
         timeDate.getDate(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp, tStr);

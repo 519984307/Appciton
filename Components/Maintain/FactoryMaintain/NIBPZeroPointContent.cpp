@@ -140,6 +140,7 @@ void NIBPZeroPointContent::timerEvent(QTimerEvent *ev)
         bool reply = nibpParam.geReply();
         if (reply || d_ptr->timeoutNum == TIMEOUT_WAIT_NUMBER)
         {
+            d_ptr->modeBtn->setEnabled(true);
             if (reply && nibpParam.getResult())
             {
                 if (d_ptr->isZeroMode)
@@ -276,6 +277,7 @@ bool NIBPZeroPointContent::focusNextPrevChild(bool next)
 void NIBPZeroPointContent::enterZeroReleased()
 {
     d_ptr->inModeTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
+    d_ptr->modeBtn->setEnabled(false);
     if (d_ptr->isZeroMode)
     {
         nibpParam.provider().serviceCalibrateZero(false);

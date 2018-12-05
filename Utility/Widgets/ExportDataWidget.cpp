@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/11/30
+ **/
+
+
 #include <QLabel>
 #include <QProgressBar>
 #include <QVBoxLayout>
@@ -28,12 +39,12 @@ ExportDataWidget::ExportDataWidget(Export_Data_Type type) : QDialog(0, Qt::Frame
     {
         _curType = EXPORT_RESCUE_DATA_BY_USB;
     }
-    setAttribute(Qt::WA_NoSystemBackground); //draw background in paintEvent
+    setAttribute(Qt::WA_NoSystemBackground); // draw background in paintEvent
     setModal(true);
 
     int fontSize = fontManager.getFontSize(1);
     int width;
-    width = windowManager.getPopMenuWidth() * 8 / 10;
+    width = windowManager.getPopWindowWidth() * 8 / 10;
 
 
     QPalette p;
@@ -52,8 +63,7 @@ ExportDataWidget::ExportDataWidget(Export_Data_Type type) : QDialog(0, Qt::Frame
     _info->setFont(fontManager.textFont(fontSize));
 
     _bar = new QProgressBar();
-    _bar->setStyleSheet("QProgressBar{background:black;border-radius:5px;} \
-                        QProgressBar::chunk{background:green;border-radius:5px;}");
+    _bar->setStyleSheet("QProgressBar{background:black;border-radius:5px;}QProgressBar::chunk{background:green;border-radius:5px;}");
     _bar->setTextVisible(false);
     _bar->setFixedWidth(width * 8 / 10);
 
@@ -97,7 +107,7 @@ void ExportDataWidget::init()
     _bar->setValue(0);
     _transferCancel = false;
 
-    return ;
+    return;
 }
 
 /**************************************************************************************************
@@ -128,8 +138,9 @@ void ExportDataWidget::setBarValue(unsigned char value)
 /**************************************************************************************************
  * 绘画事件。
  *************************************************************************************************/
-void ExportDataWidget::paintEvent(QPaintEvent */*e*/)
+void ExportDataWidget::paintEvent(QPaintEvent *e)
 {
+    Q_UNUSED(e)
     QPainterPath clipPath;
     clipPath.addRoundedRect(this->rect(), 5, 5);
 
@@ -153,7 +164,6 @@ void ExportDataWidget::paintEvent(QPaintEvent */*e*/)
         r.setBottom(_titleBarHeight);
         barPainter.fillRect(r, colorManager.getBarBkColor());
     }
-
 }
 
 /**************************************************************************************************
@@ -166,7 +176,7 @@ void ExportDataWidget::showEvent(QShowEvent *e)
 
     QRect r;
     r = layoutManager.getMenuArea();
-    //Y轴多往下移动20个像素，主要是为了不遮挡后面的界面
+    // Y轴多往下移动20个像素，主要是为了不遮挡后面的界面
     move(r.x() + (r.width() - width()) / 2 , r.y() + (r.height() - height()) / 2 + 20);
 }
 

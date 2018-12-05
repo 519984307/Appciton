@@ -18,6 +18,7 @@
 #include "LanguageManager.h"
 #include "LayoutManager.h"
 #include "MessageBox.h"
+#include "WindowManager.h"
 
 class BigFontLayoutWindowPrivate
 {
@@ -150,7 +151,7 @@ BigFontLayoutWindow::BigFontLayoutWindow()
     d_ptr->tableView->setModel(model);
     connect(model, SIGNAL(spanChanged(QModelIndex)), d_ptr->tableView, SLOT(onSpanChanged(QModelIndex)));
 
-    resize(800, 600);
+    setFixedSize(windowManager.getPopWindowWidth(), windowManager.getPopWindowHeight());
 
     setWindowTitle(trs("BigFontScreenLayout"));
 }

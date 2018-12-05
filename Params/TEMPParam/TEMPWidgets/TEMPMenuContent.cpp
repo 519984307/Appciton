@@ -25,23 +25,16 @@ public:
     {
         ITEM_CBO_ONE,
         ITEM_CBO_TWO,
-        ITEM_CBO_ENABLE,
     };
 
     TEMPMenuContentPrivate()
         : tempChannelOne(NULL),
-          tempChannelTwo(NULL),
-          tempChannelDisable(NULL)
+          tempChannelTwo(NULL)
     {
     }
-    /**
-     * @brief loadOption
-     */
-    void loadOption(void);
 
     ComboBox *tempChannelOne;
     ComboBox *tempChannelTwo;
-    ComboBox *tempChannelDisable;
 };
 
 
@@ -107,22 +100,6 @@ void TEMPMenuContent::layoutExec()
     d_ptr->tempChannelTwo = combo;
     layoutIndex++;
 
-
-    // module diable
-    label = new QLabel(trs("TEMPChannelDisable"));
-    glayout->addWidget(label, layoutIndex, 0);
-    combo = new ComboBox;
-    combo->addItems(QStringList()
-                    << trs("No")
-                    << trs("Yes")
-                   );
-    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboIndexUpdated(int)));
-    combo->setProperty("Item", qVariantFromValue(comboIndex));
-    comboIndex++;
-    glayout->addWidget(combo, layoutIndex, 1);
-    d_ptr->tempChannelDisable = combo;
-    layoutIndex++;
-
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
@@ -137,11 +114,6 @@ void TEMPMenuContent::layoutExec()
     // 添加更新温度通道名称信号链接
 //    connect(this, SIGNAL(updateTempName(TEMPChannelIndex,TEMPChannelType)),
 //            &tempParam, SIGNAL(updateTempName(TEMPChannelIndex,TEMPChannelType)));
-}
-
-void TEMPMenuContent::readyShow()
-{
-    d_ptr->loadOption();
 }
 
 void TEMPMenuContent::onComboIndexUpdated(int index)
@@ -164,16 +136,6 @@ void TEMPMenuContent::onComboIndexUpdated(int index)
         emit updateTempName(TEMP_CHANNEL_TWO,
                                 static_cast<TEMPChannelType>(index));
         break;
-    case TEMPMenuContentPrivate::ITEM_CBO_ENABLE:
-        if (index)
-        {
-            tempParam.setErrorDisable();
-        }
-        else
-        {
-            tempParam.setModuleEnable();
-        }
-        break;
     }
 }
 
@@ -182,16 +144,4 @@ void TEMPMenuContent::onAlarmBtnReleased()
     QString subParamName = paramInfo.getSubParamName(SUB_PARAM_T1, true);
     AlarmLimitWindow w(subParamName);
     windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
-}
-
-void TEMPMenuContentPrivate::loadOption()
-{
-    if (!tempParam.getErrorDisable())
-    {
-        tempChannelDisable->setCurrentIndex(0);
-    }
-    else
-    {
-        tempChannelDisable->setCurrentIndex(1);
-    }
 }

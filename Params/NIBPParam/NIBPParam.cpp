@@ -1178,7 +1178,7 @@ void NIBPParam::_btnTimeOut()
 
 void NIBPParam::onPaletteChanged(ParamID id)
 {
-    if (id != PARAM_NIBP)
+    if (id != PARAM_NIBP || !systemManager.isSupport(CONFIG_NIBP))
     {
         return;
     }
@@ -1357,7 +1357,7 @@ int NIBPParam::curStatusType() const
 {
     if (NULL != _activityMachine)
     {
-        debug("%d\n", _activityMachine->curStatusType());
+//        debug("%d\n", _activityMachine->curStatusType());
         return _activityMachine->curStatusType();
     }
 

@@ -35,7 +35,9 @@ public:
           curUserFace(UFACE_MONITOR_STANDARD),
           mainLayout(NULL),
           waveAreaStretch(4),
-          paramAreaStretch(2)
+          paramAreaStretch(2),
+          waveRowCount(0),
+          leftParamRowCount(0)
     {
         contentLayout->setSpacing(0);
         contentLayout->setContentsMargins(0, 0, 0, 0);
@@ -146,6 +148,9 @@ public:
 
     int waveAreaStretch;
     int paramAreaStretch;
+
+    int waveRowCount;
+    int leftParamRowCount;
 
 private:
     LayoutManagerPrivate(const LayoutManagerPrivate &);
@@ -418,9 +423,17 @@ void LayoutManagerPrivate::performStandardLayout()
 
     // the wave container stretch
     leftLayout->setStretch(0, waveLayout->rowCount());
+    waveRowCount = waveLayout->rowCount();
     // the let param container stretch
     if (leftParamLayout->count() != 0)
+    {
         leftLayout->setStretch(1, leftParamLayout->rowCount());
+        leftParamRowCount = leftParamLayout->rowCount();
+    }
+    else
+    {
+        leftParamRowCount = 0;
+    }
 }
 
 void LayoutManagerPrivate::perform12LeadLayout()
@@ -539,7 +552,17 @@ void LayoutManagerPrivate::perform12LeadLayout()
         }
     }
 
-    vLayout->setStretch(0, waveLayout->rowCount());
+    waveRowCount = waveLayout->rowCount();
+    vLayout->setStretch(0, waveRowCount);
+    if (leftParamLayout->count() != 0)
+    {
+        vLayout->setStretch(1, leftParamLayout->rowCount());
+        leftParamRowCount = leftParamLayout->rowCount();
+    }
+    else
+    {
+        leftParamRowCount = 0;
+    }
 }
 
 void LayoutManagerPrivate::perform7LeadLayout()
@@ -651,6 +674,16 @@ void LayoutManagerPrivate::perform7LeadLayout()
     }
 
     vLayout->setStretch(0, waveLayout->rowCount());
+    waveRowCount = waveLayout->rowCount();
+    if (leftParamLayout->count() != 0)
+    {
+        vLayout->setStretch(1, leftParamLayout->rowCount());
+        leftParamRowCount = leftParamLayout->rowCount();
+    }
+    else
+    {
+        leftParamRowCount = 0;
+    }
 }
 
 #define MAX_WIDGET_ROW_IN_OXYCRG_LAYOUT 3       // the maximum widget row can be displayed in the wave area while in the oxycrg layout
@@ -777,13 +810,15 @@ void LayoutManagerPrivate::performOxyCRGLayout()
         }
     }
     leftLayout->setStretch(0, waveLayout->rowCount());
-    int leftParamRowCount = 0;
+    int rowCount = 0;
     if (leftParamLayout->count() != 0)
     {
-        leftParamRowCount = leftParamLayout->rowCount();
+        rowCount = leftParamLayout->rowCount();
     }
-    leftLayout->setStretch(1, insertRow - leftParamRowCount - waveLayout->rowCount());
-    leftLayout->setStretch(2, leftParamRowCount);
+    leftLayout->setStretch(1, insertRow - rowCount - waveLayout->rowCount());
+    waveRowCount = insertRow - rowCount;
+    leftLayout->setStretch(2, rowCount);
+    leftParamRowCount = rowCount;
 }
 
 void LayoutManagerPrivate::performBigFontLayout()
@@ -861,6 +896,9 @@ void LayoutManagerPrivate::performBigFontLayout()
         }
         row++;
     }
+
+    waveRowCount = 0;
+    leftParamRowCount = 0;
 }
 
 void LayoutManagerPrivate::performTrendLayout()
@@ -967,10 +1005,18 @@ void LayoutManagerPrivate::performTrendLayout()
 
     // the wave container stretch
     leftLayout->setStretch(0, waveLayout->rowCount());
+    waveRowCount = waveLayout->rowCount();
 
     // the let param container stretch
     if (leftParamLayout->count() != 0)
+    {
         leftLayout->setStretch(1, leftParamLayout->rowCount());
+        leftParamRowCount = leftParamLayout->rowCount();
+    }
+    else
+    {
+        leftParamRowCount = 0;
+    }
 
     typedef QList<SubParamID> SubParamIDListType;
 
@@ -1029,6 +1075,8 @@ void LayoutManagerPrivate::clearLayout(QLayout *layout)
 
         delete item;
     }
+    waveRowCount = 0;
+    leftParamRowCount = 0;
 }
 
 void LayoutManagerPrivate::updateTabOrder()
@@ -1420,11 +1468,25 @@ bool LayoutManager::setWidgetLayoutable(const QString &name, bool enable)
 QRect LayoutManager::getMenuArea() const
 {
     QRect r = d_ptr->contentView->geometry();
-    QRect gr(d_ptr->contentView->mapToGlobal(r.topLeft()),
-             d_ptr->contentView->mapToGlobal(r.bottomRight()));
-
-    gr.setWidth(gr.width() * d_ptr->waveAreaStretch / (d_ptr->waveAreaStretch + d_ptr->paramAreaStretch));
-    return gr;
+    if (getUFaceType() == UFACE_MONITOR_BIGFONT)
+    {
+        r.moveTo(0, 0);
+        QRect gr(d_ptr->contentView->mapToGlobal(r.topLeft()),
+                 d_ptr->contentView->mapToGlobal(r.bottomRight()));
+        return gr;
+    }
+    else
+    {
+        // 获得不遮挡第一道波形的菜单显示区域
+        int startYPos = r.height() / (d_ptr->waveRowCount + d_ptr->leftParamRowCount);
+        r.moveTo(0, startYPos);
+        QRect gr(d_ptr->contentView->mapToGlobal(r.topLeft()),
+                 d_ptr->contentView->mapToGlobal(r.bottomRight()));
+        gr.setWidth(gr.width() * d_ptr->waveAreaStretch / (d_ptr->waveAreaStretch + d_ptr->paramAreaStretch));
+        gr.setHeight(r.height() * (d_ptr->waveRowCount - 1 + d_ptr->leftParamRowCount)
+                     / (d_ptr->waveRowCount + d_ptr->leftParamRowCount));
+        return gr;
+    }
 }
 
 void LayoutManager::updateTabOrder()

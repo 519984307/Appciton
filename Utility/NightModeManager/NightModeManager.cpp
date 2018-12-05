@@ -14,6 +14,7 @@
 #include "SoundManager.h"
 #include "ECGParam.h"
 #include "RunningStatusBar.h"
+#include "NIBPParam.h"
 
 NightModeManager *NightModeManager::_selfObj = NULL;
 
@@ -84,6 +85,14 @@ void NightModeManager::setNightMode()
         d_ptr->loadOption();
 
         runningStatus.setNightModeStatus(true);
+
+        // NIBP停止测量
+        int stopNibpMeasure = 0;
+        systemConfig.getNumValue("NightMode|StopNIBPMeasure", stopNibpMeasure);
+        if (stopNibpMeasure)
+        {
+            nibpParam.stopMeasure();
+        }
     }
     else
     {

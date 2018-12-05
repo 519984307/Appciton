@@ -16,7 +16,14 @@
         <Department>d12</Department>
         <BedNumber>b44</BedNumber>
         <ChangeBedNumberRight>0</ChangeBedNumberRight>
-        <Language>1</Language>
+        <Language CurrentOption="1" OptionCount="2">
+            <!-- note："XmlFileName" segment consistent with XML language file name -->
+            <Opt0 XmlFileName="English">English</Opt0>
+            <Opt1 XmlFileName="ChineseSimplified">简体中文</Opt1>
+            <!--<Opt2 XmlFileName="PortugueseBrazil">Português(do Brasil)</Opt2>
+            <Opt3 XmlFileName="Spanish">Español</Opt3>
+            <Opt4 XmlFileName="Russian">Русский</Opt4>-->
+        </Language>
         <TouchScreen>1</TouchScreen>
         <DefaultPatientType>0</DefaultPatientType>
         <DefaultDisplayBrightness>7</DefaultDisplayBrightness>
@@ -64,8 +71,6 @@
     <MonitorInfo>
         <CumulativeWsorkingTime>0</CumulativeWsorkingTime>
         <TemperatureInsideCase>39.5 c</TemperatureInsideCase>
-        <BatteryLevel>36%</BatteryLevel>
-        <BatteryVoltage>46.3</BatteryVoltage>
         <MachineType>pmos-888888</MachineType>
         <MACAddress>22:22:88:88</MACAddress>
         <ScreenResolationSize>480*1078</ScreenResolationSize>
@@ -865,8 +870,8 @@
                     <LayoutItem width="96">RunningStatusBar</LayoutItem>
                     <LayoutItem width="210">DateTimeWidget</LayoutItem>
                     <LayoutItem width="50">AlarmStatusWidget</LayoutItem>
-                    <LayoutItem width="350">AlarmPhyInfoBarWidget</LayoutItem>
-                    <LayoutItem width="350">AlarmTechInfoBarWidget</LayoutItem>
+                    <LayoutItem width="300">AlarmPhyInfoBarWidget</LayoutItem>
+                    <LayoutItem width="300">AlarmTechInfoBarWidget</LayoutItem>
                 </LayoutItem>
                 <LayoutItem stretch="1">ContentView</LayoutItem>
                 <LayoutItem height="80" direction="horizontal" spacing="0">
