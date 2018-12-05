@@ -160,15 +160,12 @@ void NightModeWindow::layoutExec()
     glayout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
-                       << QString::number(BRT_LEVEL_1)
-                       << QString::number(BRT_LEVEL_2)
-                       << QString::number(BRT_LEVEL_3)
-                       << QString::number(BRT_LEVEL_4)
-                       << QString::number(BRT_LEVEL_5)
-                       << QString::number(BRT_LEVEL_6)
-                       << QString::number(BRT_LEVEL_7)
-                       << QString::number(BRT_LEVEL_8)
-                       << QString::number(BRT_LEVEL_9)
+                       << trs("Off")
+                       << QString::number(SoundManager::VOLUME_LEV_1)
+                       << QString::number(SoundManager::VOLUME_LEV_2)
+                       << QString::number(SoundManager::VOLUME_LEV_3)
+                       << QString::number(SoundManager::VOLUME_LEV_4)
+                       << QString::number(SoundManager::VOLUME_LEV_MAX)
                       );
     comboIndex = static_cast<int>(NightModeWindowPrivate::
                                   ITEM_CBO_HEART_BEAT_VOLUME);
@@ -243,6 +240,15 @@ void NightModeWindow::layoutExec()
     setWindowLayout(glayout);
 }
 
+void NightModeWindow::hideEvent(QHideEvent *ev)
+{
+    if (nightModeManager.nightMode())
+    {
+        nightModeManager.setNightMode(true);
+    }
+    Window::hideEvent(ev);
+}
+
 void NightModeWindow::onComboBoxIndexChanged(int index)
 {
     if (index < 0)
@@ -290,5 +296,5 @@ void NightModeWindow::OnBtnReleased()
         name = trs("ExitNightMode");
     }
     d_ptr->enterNightMode->setText(name);
-    nightModeManager.setNightMode();
+    nightModeManager.setNightMode(!nightModeManager.nightMode());
 }

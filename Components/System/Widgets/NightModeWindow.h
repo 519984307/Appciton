@@ -29,6 +29,10 @@ public:
      */
     void layoutExec();
 
+protected:
+    /* reimplement */
+    void hideEvent(QHideEvent *ev);
+
 private slots:
     /**
      * @brief onComboBoxIndexChanged  下拉框选项改变槽函数

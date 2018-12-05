@@ -11,8 +11,6 @@
 #include "NightModeManager.h"
 #include "SystemManager.h"
 #include "IConfig.h"
-#include "SoundManager.h"
-#include "ECGParam.h"
 #include "RunningStatusBar.h"
 #include "NIBPParam.h"
 
@@ -27,10 +25,10 @@ public:
     // 显示夜间模式图标
     void setSystemModeBar();
     bool isNightMode;
-    int normalScreenBrightness;
-    int normalalarmVolume;
-    int normalheartBeatVolume;
-    int normalkeyVolume;
+    BrightnessLevel normalScreenBrightness;
+    SoundManager::VolumeLevel normalAlarmVolume;
+    SoundManager::VolumeLevel normalHeartBeatVolume;
+    SoundManager::VolumeLevel normalKeyVolume;
 
     /**
      * @brief loadOption    保存正常模式下的值
@@ -47,9 +45,9 @@ NightModeManager::NightModeManager(const NightModeManager &handle)
 {
     d_ptr->isNightMode = handle.d_ptr->isNightMode;
     d_ptr->normalScreenBrightness = handle.d_ptr->normalScreenBrightness;
-    d_ptr->normalalarmVolume = handle.d_ptr->normalalarmVolume;
-    d_ptr->normalheartBeatVolume = handle.d_ptr->normalheartBeatVolume;
-    d_ptr->normalkeyVolume = handle.d_ptr->normalkeyVolume;
+    d_ptr->normalAlarmVolume = handle.d_ptr->normalAlarmVolume;
+    d_ptr->normalHeartBeatVolume = handle.d_ptr->normalHeartBeatVolume;
+    d_ptr->normalKeyVolume = handle.d_ptr->normalKeyVolume;
 }
 
 NightModeManager::~NightModeManager()
@@ -57,17 +55,14 @@ NightModeManager::~NightModeManager()
     delete d_ptr;
 }
 
-void NightModeManager::setNightMode()
+void NightModeManager::setNightMode(bool nightMode)
 {
     int screenBrightness = 0;
     int alarmVolume = 0;
     int heartBeatVolume = 0;
     int keyVolume = 0;
-    int enterNightMode = 0;
-    systemConfig.getNumValue("NightMode|EnterNightMode", enterNightMode);
-    systemConfig.setNumValue("NightMode|EnterNightMode",
-                             static_cast<int>(!enterNightMode));
-    d_ptr->isNightMode = !enterNightMode;
+    systemConfig.setNumValue("NightMode|EnterNightMode", static_cast<int>(nightMode));
+    d_ptr->isNightMode = nightMode;
     if (d_ptr->isNightMode)    //　夜间模式
     {
         // 屏幕亮度(读取夜间模式)
@@ -98,27 +93,58 @@ void NightModeManager::setNightMode()
     {
         screenBrightness = d_ptr->normalScreenBrightness;
 
-        alarmVolume = d_ptr->normalalarmVolume;
+        alarmVolume = d_ptr->normalAlarmVolume;
 
-        heartBeatVolume = d_ptr->normalalarmVolume;
+        heartBeatVolume = d_ptr->normalAlarmVolume;
 
-        keyVolume = d_ptr->normalkeyVolume;
+        keyVolume = d_ptr->normalKeyVolume;
 
         runningStatus.setNightModeStatus(false);
     }
 
-    systemManager.setBrightness(static_cast<BrightnessLevel>(screenBrightness));
-    soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, (SoundManager::VolumeLevel) alarmVolume);
-    ecgParam.setQRSToneVolume(static_cast<SoundManager::VolumeLevel>(heartBeatVolume));
-    soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , (SoundManager::VolumeLevel)keyVolume);
+    systemManager.enableBrightness(static_cast<BrightnessLevel>(screenBrightness));
+    soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM,
+                           static_cast<SoundManager::VolumeLevel>(alarmVolume));
+    soundManager.setVolume(SoundManager::SOUND_TYPE_HEARTBEAT,
+                           static_cast<SoundManager::VolumeLevel>(heartBeatVolume));
+    soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS,
+                           static_cast<SoundManager::VolumeLevel>(keyVolume));
 }
 
-bool NightModeManager::isNightMode()
+bool NightModeManager::nightMode()
 {
     return d_ptr->isNightMode;
 }
 
+SoundManager::VolumeLevel NightModeManager::getVolume(SoundManager::SoundType type)
+{
+    int volume = 0;
+    QString str = "";
+    switch (type)
+    {
+    case SoundManager::SOUND_TYPE_ALARM:
+        str = "AlarmVolume";
+        break;
+    case SoundManager::SOUND_TYPE_HEARTBEAT:
+        str = "HeartBeatVolume";
+        break;
+    case SoundManager::SOUND_TYPE_KEY_PRESS:
+        str = "KeyPressVolume";
+    default:
+        break;
+    }
+
+    systemConfig.getNumValue(QString("NightMode|%1").arg(str), volume);
+    return static_cast<SoundManager::VolumeLevel>(volume);
+}
+
 NightModeManagerPrivate::NightModeManagerPrivate()
+    : isNightMode(0),
+      normalScreenBrightness(BRT_LEVEL_NR),
+      normalAlarmVolume(SoundManager::VOLUME_LEV_NR),
+      normalHeartBeatVolume(SoundManager::VOLUME_LEV_NR),
+      normalKeyVolume(SoundManager::VOLUME_LEV_NR)
+
 {
     int index = 0;
     systemConfig.getNumValue("NightMode|EnterNightMode", index);
@@ -128,15 +154,8 @@ NightModeManagerPrivate::NightModeManagerPrivate()
 
 void NightModeManagerPrivate::loadOption()
 {
-    BrightnessLevel brightnessLevel = systemManager.getBrightness();
-    normalScreenBrightness =  static_cast<int>(brightnessLevel);
-
-    SoundManager::VolumeLevel volume =  soundManager.getVolume(SoundManager::SOUND_TYPE_ALARM);
-    normalalarmVolume = static_cast<int>(volume);
-
-    volume = soundManager.getVolume(SoundManager::SOUND_TYPE_HEARTBEAT);
-    normalheartBeatVolume = static_cast<int>(volume);
-
-    volume = soundManager.getVolume(SoundManager::SOUND_TYPE_KEY_PRESS);
-    normalkeyVolume = static_cast<int>(volume);
+    normalScreenBrightness = systemManager.getBrightness();
+    normalAlarmVolume =  soundManager.getVolume(SoundManager::SOUND_TYPE_ALARM);
+    normalHeartBeatVolume = soundManager.getVolume(SoundManager::SOUND_TYPE_HEARTBEAT);
+    normalKeyVolume = soundManager.getVolume(SoundManager::SOUND_TYPE_KEY_PRESS);
 }

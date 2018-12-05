@@ -100,7 +100,14 @@ static void _initSystem(void)
     // 报警灯。
     lightManager.construction();
     lightManager.setProvider(&systemBoardProvider);
-    systemManager.enableBrightness(systemManager.getBrightness());
+    if (nightModeManager.nightMode())
+    {
+        nightModeManager.setNightMode(nightModeManager.nightMode());
+    }
+    else
+    {
+        systemManager.enableBrightness(systemManager.getBrightness());
+    }
 
     // 自检
     systemBoardProvider.selfTest();
@@ -178,7 +185,7 @@ static void _initComponents(void)
 
     // running status
     runningStatus.setPacerStatus(patientManager.getPacermaker());
-    runningStatus.setNightModeStatus(nightModeManager.isNightMode());
+    runningStatus.setNightModeStatus(nightModeManager.nightMode());
 #ifdef Q_WS_QWS
     if (systemManager.isSupport(CONFIG_TOUCH))
     {

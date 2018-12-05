@@ -369,7 +369,7 @@ void SoftkeyActionBase::nightMode(bool isPressed)
     {
         return;
     }
-    nightModeManager.setNightMode();
+    nightModeManager.setNightMode(!nightModeManager.nightMode());
 }
 
 void SoftkeyActionBase::printSet(bool isPressed)
