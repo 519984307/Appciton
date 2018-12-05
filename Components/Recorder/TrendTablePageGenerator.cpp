@@ -15,6 +15,7 @@
 #include "ParamManager.h"
 #include "ParamInfo.h"
 #include <QDateTime>
+#include "TimeDate.h"
 
 #define RECORD_PER_PAGE 10
 class TrendTablePageGeneratorPrivate
@@ -318,8 +319,9 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
         stringLists.append(QStringList() << trs("Event"));
     }
 
-    QDateTime dt = QDateTime::fromTime_t(datapack.time);
-    stringLists[index++].append(dt.toString("MM-dd hh:mm:ss"));
+    QString timeDateStr;
+    timeDate.getDateTime(datapack.time, timeDateStr, true, true);
+    stringLists[index++].append(timeDateStr);
 
     if (isEvent)
     {
