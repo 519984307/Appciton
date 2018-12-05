@@ -71,7 +71,7 @@ protected:
      * @brief getTitleHeight 获取标题栏高度
      * @return
      */
-    const int getTitleHeight();
+    int getTitleHeight() const;
 
 private:
     QScopedPointer<WindowPrivate> d_ptr;
