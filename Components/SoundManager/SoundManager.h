@@ -103,6 +103,12 @@ public:
      */
     void selfTest();
 
+    /**
+     * @brief setPlayStatus  设置声音播放状态
+     * @param isForbid  true-不允许播放  false-允许播放
+     */
+    void setPlayStatus(bool isForbid);
+
 private slots:
     /**
      * @brief alarmTimeout handle looping timer timeout event

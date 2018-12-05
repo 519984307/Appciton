@@ -23,6 +23,7 @@
 #include "IBPParam.h"
 #include "KeyInputPanel.h"
 #include "MessageBox.h"
+#include "LightManager.h"
 
 class ModuleMaintainMenuContentPrivate
 {
@@ -261,6 +262,8 @@ void ModuleMaintainMenuContent::onButtonReleased()
             {
                 QWSServer::instance()->closeMouse();
             }
+            lightManager.setLightStatus(true);
+            soundManager.setPlayStatus(true);
 
             TSCalibrationWindow w;
             w.exec();
@@ -269,6 +272,9 @@ void ModuleMaintainMenuContent::onButtonReleased()
             {
                 QWSServer::instance()->openMouse();
             }
+
+            lightManager.setLightStatus(false);
+            soundManager.setPlayStatus(false);
         }
         break;
 #endif
