@@ -35,16 +35,9 @@ public:
     // 发送协议命令
     void sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len);
 
-    /**
-     * @brief setLightStatus  设置灯光状态
-     * @param isForbidLight  true-禁止亮灯  false-允许亮灯
-     */
-    void setLightStatus(bool isForbidLight);
-
 private:
     LightManager();
     LightProviderIFace *_provider;
-    bool _isForbidLight;
 };
 #define lightManager (LightManager::construction())
 #define deleteLightManager() (delete LightManager::_selfObj)

@@ -24,6 +24,7 @@
 #include "KeyInputPanel.h"
 #include "MessageBox.h"
 #include "LightManager.h"
+#include "AlarmIndicator.h"
 
 class ModuleMaintainMenuContentPrivate
 {
@@ -262,7 +263,7 @@ void ModuleMaintainMenuContent::onButtonReleased()
             {
                 QWSServer::instance()->closeMouse();
             }
-            lightManager.setLightStatus(true);
+            alarmIndicator.setLightStatus(true);
             soundManager.setPlayStatus(true);
 
             TSCalibrationWindow w;
@@ -273,7 +274,7 @@ void ModuleMaintainMenuContent::onButtonReleased()
                 QWSServer::instance()->openMouse();
             }
 
-            lightManager.setLightStatus(false);
+            alarmIndicator.setLightStatus(false);
             soundManager.setPlayStatus(false);
         }
         break;

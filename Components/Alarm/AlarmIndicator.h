@@ -94,6 +94,12 @@ public:
      */
     void updateAlarmPauseTime(int seconds);
 
+    /**
+     * @brief setLightStatus  设置灯光状态
+     * @param isForbid true-禁止灯亮  false-允许灯亮
+     */
+    void setLightStatus(bool isForbid);
+
 private:
     AlarmIndicator();
 
@@ -125,6 +131,8 @@ private:
     AlarmStatus _audioStatus;
     int _audioPauseTime;
     static const int _checkPatientAlarmPauseTime = 12;
+
+    bool _isForbidLight;
 };
 #define alarmIndicator (AlarmIndicator::construction())
 #define deleteAlarmIndicator() (delete AlarmIndicator::_selfObj)

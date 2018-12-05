@@ -32,19 +32,6 @@ void LightManager::sendCmdData(unsigned char cmdId, const unsigned char *data, u
     }
 }
 
-void LightManager::setLightStatus(bool isForbidLight)
-{
-    _isForbidLight = isForbidLight;
-    if (_isForbidLight == true)
-    {
-        for (int i = ALARM_PRIO_PROMPT; i <= ALARM_PRIO_HIGH; i++)
-        {
-            updateAlarm(false, static_cast<AlarmPriority>(i));
-        }
-        enableAlarmAudioMute(false);
-    }
-}
-
 /**************************************************************************************************
  * 报警灯控制。
  *************************************************************************************************/
@@ -53,11 +40,6 @@ void LightManager::updateAlarm(bool hasAlarmed, AlarmPriority priority)
     if (_provider == NULL)
     {
         return;
-    }
-
-    if (_isForbidLight == true)
-    {
-        hasAlarmed = false;
     }
 
     _provider->updateAlarm(hasAlarmed, priority);
@@ -73,11 +55,6 @@ void LightManager::enableAlarmAudioMute(bool enable)
         return;
     }
 
-    if (_isForbidLight == true)
-    {
-        enable = false;
-    }
-
     _provider->enableAlarmAudioMute(enable);
 }
 
@@ -85,9 +62,8 @@ void LightManager::enableAlarmAudioMute(bool enable)
  * 构造。
  *************************************************************************************************/
 LightManager::LightManager()
-            : _provider(NULL)
-            , _isForbidLight(false)
 {
+    _provider = NULL;
 }
 
 /**************************************************************************************************
