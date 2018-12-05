@@ -56,7 +56,7 @@ Window::Window(QWidget *parent)
     closeBtn->setIcon(QIcon(":/ui/close.svg"));
     closeBtn->setButtonStyle(Button::ButtonIconOnly);
     QHBoxLayout *hlayout = new QHBoxLayout();
-    hlayout->setContentsMargins(0, 0, 0, 0);
+    hlayout->setContentsMargins(TITLE_BAR_HEIGHT, 0, 0, 0);
     hlayout->addWidget(titleLbl, 1);
     hlayout->addWidget(closeBtn);
 
