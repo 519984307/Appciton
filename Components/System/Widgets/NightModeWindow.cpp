@@ -49,11 +49,11 @@ void NightModeWindowPrivate::loadOptions()
 {
     int index = 0;
     systemConfig.getNumValue("NightMode|ScreenBrightness", index);
-    combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setCurrentIndex(index);
+    combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setCurrentIndex(index - 1);
 
     index = 0;
     systemConfig.getNumValue("NightMode|AlarmVolume", index);
-    combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(index);
+    combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(index - 1);
 
     index = 0;
     systemConfig.getNumValue("NightMode|HeartBeatVolume", index);
@@ -279,7 +279,13 @@ void NightModeWindow::onComboBoxIndexChanged(int index)
         node = "StopNIBPMeasure";
         break;
     }
-    systemConfig.setNumValue(QString("NightMode|%1").arg(node), index);
+    bool ok = false;
+    int tmp = combo->itemText(index).toInt(&ok);
+    if (!ok)
+    {
+        tmp = 0;
+    }
+    systemConfig.setNumValue(QString("NightMode|%1").arg(node), tmp);
 }
 
 void NightModeWindow::OnBtnReleased()

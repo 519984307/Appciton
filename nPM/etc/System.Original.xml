@@ -49,8 +49,8 @@
         <PhyParAlarmLatchlockOn>1</PhyParAlarmLatchlockOn>
     </Alarms>
     <NightMode>
-        <ScreenBrightness>0</ScreenBrightness>
-        <AlarmVolume>2</AlarmVolume>
+        <ScreenBrightness>1</ScreenBrightness>
+        <AlarmVolume>3</AlarmVolume>
         <HeartBeatVolume>2</HeartBeatVolume>
         <KeyPressVolume>2</KeyPressVolume>
         <NIBPCompletedTips>1</NIBPCompletedTips>
