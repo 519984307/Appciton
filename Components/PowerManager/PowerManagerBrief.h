@@ -32,13 +32,13 @@ public:
      * @brief setBatteryQuantity 设置电池电量
      * @param adc
      */
-    void setBatteryQuantity(short adc);
+    void setBatteryCapacity(short adc);
 
     /**
      * @brief getBatteryQuantity 获取电池电量
      * @return
      */
-    QString getBatteryQuantity();
+    QString getBatteryCapacity();
 
 public:
     void run(void);

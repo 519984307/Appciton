@@ -30,7 +30,7 @@ public:
     {
         ITEM_LAB_CMLV_WORKTIME = 0,
         ITEM_LAB_TEM_INSIDECASE,
-        ITEM_LAB_BAT_QUANTITY,
+        ITEM_LAB_BAT_CAPACITY,
         ITEM_LAB_MACHINE_TYPE,
         ITEM_LAB_MAC_ADDR,
         ITEM_LAB_SCR_RESOLASIZE,
@@ -81,7 +81,7 @@ void MonitorInfoWindowPrivate::loadOptions()
     labs[ITEM_LAB_TEM_INSIDECASE]->setText(trs(temStr));
 
     temStr.clear();
-    labs[ITEM_LAB_BAT_QUANTITY]->setText(powerMangerBrief.getBatteryQuantity());
+    labs[ITEM_LAB_BAT_CAPACITY]->setText(powerMangerBrief.getBatteryCapacity());
 
     temStr.clear();
     systemConfig.getStrValue("MonitorInfo|MachineType", temStr);
@@ -158,7 +158,7 @@ void MonitorInfoWindow::layoutExec()
     labelRight->setAlignment(Qt::AlignCenter|Qt::AlignRight);
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoWindowPrivate
-                       ::ITEM_LAB_BAT_QUANTITY, labelRight);
+                       ::ITEM_LAB_BAT_CAPACITY, labelRight);
 
     labelLeft = new QLabel(trs("MachineType"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);

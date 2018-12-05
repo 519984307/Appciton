@@ -66,12 +66,12 @@ PowerMangerBrief::~PowerMangerBrief()
     delete d_ptr;
 }
 
-void PowerMangerBrief::setBatteryQuantity(short adc)
+void PowerMangerBrief::setBatteryCapacity(short adc)
 {
     d_ptr->adcValue = adc;
 }
 
-QString PowerMangerBrief::getBatteryQuantity()
+QString PowerMangerBrief::getBatteryCapacity()
 {
     QString batQuantityStr;
     if (d_ptr->powerType == POWER_SUPLY_AC_BAT || d_ptr->powerType == POWER_SUPLY_BAT)

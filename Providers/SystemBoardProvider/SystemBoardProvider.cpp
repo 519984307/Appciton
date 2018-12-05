@@ -229,7 +229,7 @@ void SystemBoardProvider::_parseBatteryInfo(unsigned char *data, int len)
 
     modeStatus.isCharging = data[1];        // 是否正在充电
     modeStatus.adcValue = (data[3] << 8) | data[2];     // ADC值
-    powerMangerBrief.setBatteryQuantity(modeStatus.adcValue);
+    powerMangerBrief.setBatteryCapacity(modeStatus.adcValue);
 
     if (modeStatus.adcValue > 500)
     {
