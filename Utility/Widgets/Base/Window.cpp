@@ -22,6 +22,7 @@
 #include <QPainter>
 
 #define TITLE_BAR_HEIGHT 48
+#define LEFT_SHIFT_WIDTH 10
 
 class WindowPrivate
 {
@@ -46,7 +47,7 @@ Window::Window(QWidget *parent)
     QLabel *titleLbl = new QLabel();
     titleLbl->setFixedHeight(TITLE_BAR_HEIGHT);
     titleLbl->setText(this->windowTitle());
-    titleLbl->setAlignment(Qt::AlignCenter);
+    titleLbl->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     d_ptr->m_titleLbl = titleLbl;
     Button *closeBtn = new Button();
     d_ptr->closeBtn = closeBtn;
@@ -56,7 +57,7 @@ Window::Window(QWidget *parent)
     closeBtn->setIcon(QIcon(":/ui/close.svg"));
     closeBtn->setButtonStyle(Button::ButtonIconOnly);
     QHBoxLayout *hlayout = new QHBoxLayout();
-    hlayout->setContentsMargins(0, 0, 0, 0);
+    hlayout->setContentsMargins(LEFT_SHIFT_WIDTH, 0, 0, 0);
     hlayout->addWidget(titleLbl, 1);
     hlayout->addWidget(closeBtn);
 
