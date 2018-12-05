@@ -216,7 +216,7 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     setPalette(palette);
 
     // 标签设定。
-    setName("Temp");
+    setName(paramInfo.getParamName(PARAM_TEMP));
 
     // 设置报警关闭标志
     showAlarmOff();
