@@ -160,10 +160,10 @@ GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page
         }
     }
 
-    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subParamID, unit);
-    axisInfo.yLabels = QStringList() << Util::convertToString(graphInfo.scale.min, config.scale)
+    ParamRulerConfig config = alarmConfig.getParamRulerConfig(subParamID, unit);
+    axisInfo.yLabels = QStringList() << Util::convertToString(config.downRuler, config.scale)
                        << QString()
-                       << Util::convertToString(graphInfo.scale.max, config.scale);
+                       << Util::convertToString(config.upRuler, config.scale);
     return axisInfo;
 }
 
