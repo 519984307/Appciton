@@ -113,6 +113,12 @@ static void _initSystem(void)
 
     //消息提示框
     pMessageBox.construction();
+
+    // 初始化夜间模式
+    if (nightModeManager.nightMode())
+    {
+        nightModeManager.setNightMode(true);
+    }
 }
 
 /**************************************************************************************************
@@ -178,7 +184,7 @@ static void _initComponents(void)
 
     // running status
     runningStatus.setPacerStatus(patientManager.getPacermaker());
-    runningStatus.setNightModeStatus(nightModeManager.isNightMode());
+    runningStatus.setNightModeStatus(nightModeManager.nightMode());
 #ifdef Q_WS_QWS
     if (systemManager.isSupport(CONFIG_TOUCH))
     {

@@ -68,7 +68,7 @@ public:
 
 void NormalFunctionMenuContentPrivate::loadOptions()
 {
-    if (nightModeManager.isNightMode())
+    if (nightModeManager.nightMode())
     {
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(false);
         combos[ITEM_CBO_KEYPRESS_VOLUME]->setEnabled(false);
