@@ -189,7 +189,7 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
     }
 
     // 更新灯光
-    if (_isForbidLight == false && lightPriority != ALARM_PRIO_PROMPT)
+    if (lightPriority != ALARM_PRIO_PROMPT)
     {
         lightManager.updateAlarm(true, lightPriority);
     }
@@ -854,7 +854,6 @@ bool AlarmIndicator::getAlarmInfo(AlarmType type, const char *alArmMessage,
  *************************************************************************************************/
 AlarmIndicator::AlarmIndicator()
     :_audioStatus(ALARM_STATUS_NORMAL)
-    , _isForbidLight(false)
 {
     _alarmPhyInfoWidget = NULL;
     _alarmTechInfoWidget = NULL;
@@ -890,17 +889,4 @@ void AlarmIndicator::updateAlarmPauseTime(int seconds)
     {
         _alarmPhyInfoWidget->setAlarmPause(seconds);
     }
-}
-
-void AlarmIndicator::setLightStatus(bool isForbid)
-{
-   _isForbidLight = isForbid;
-   if (isForbid == true)
-   {
-        for (int i = ALARM_PRIO_PROMPT; i <= ALARM_PRIO_HIGH; i++)
-        {
-            lightManager.updateAlarm(false, static_cast<AlarmPriority>(i));
-        }
-        lightManager.enableAlarmAudioMute(false);
-   }
 }

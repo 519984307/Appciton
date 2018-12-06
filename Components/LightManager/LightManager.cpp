@@ -32,6 +32,19 @@ void LightManager::sendCmdData(unsigned char cmdId, const unsigned char *data, u
     }
 }
 
+void LightManager::stopLightOn(bool isClosed)
+{
+    _isClosed = isClosed;
+   if (isClosed == true)
+   {
+        for (int i = ALARM_PRIO_PROMPT; i <= ALARM_PRIO_HIGH; i++)
+        {
+            updateAlarm(false, static_cast<AlarmPriority>(i));
+        }
+        enableAlarmAudioMute(false);
+   }
+}
+
 /**************************************************************************************************
  * 报警灯控制。
  *************************************************************************************************/
@@ -40,6 +53,11 @@ void LightManager::updateAlarm(bool hasAlarmed, AlarmPriority priority)
     if (_provider == NULL)
     {
         return;
+    }
+
+    if (_isClosed == true)
+    {
+        hasAlarmed = false;
     }
 
     _provider->updateAlarm(hasAlarmed, priority);
@@ -55,6 +73,11 @@ void LightManager::enableAlarmAudioMute(bool enable)
         return;
     }
 
+    if (_isClosed == true)
+    {
+        enable = false;
+    }
+
     _provider->enableAlarmAudioMute(enable);
 }
 
@@ -62,8 +85,9 @@ void LightManager::enableAlarmAudioMute(bool enable)
  * 构造。
  *************************************************************************************************/
 LightManager::LightManager()
+            : _provider(NULL)
+            , _isClosed(false)
 {
-    _provider = NULL;
 }
 
 /**************************************************************************************************

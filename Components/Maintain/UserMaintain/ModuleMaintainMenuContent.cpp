@@ -263,8 +263,8 @@ void ModuleMaintainMenuContent::onButtonReleased()
             {
                 QWSServer::instance()->closeMouse();
             }
-            alarmIndicator.setLightStatus(true);
-            soundManager.setPlayStatus(true);
+            lightManager.stopLightOn(true);
+            soundManager.stopPlaySound(true);
 
             TSCalibrationWindow w;
             w.exec();
@@ -274,8 +274,8 @@ void ModuleMaintainMenuContent::onButtonReleased()
                 QWSServer::instance()->openMouse();
             }
 
-            alarmIndicator.setLightStatus(false);
-            soundManager.setPlayStatus(false);
+            lightManager.stopLightOn(false);
+            soundManager.stopPlaySound(false);
         }
         break;
 #endif

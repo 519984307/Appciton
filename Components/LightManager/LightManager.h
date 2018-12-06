@@ -35,9 +35,16 @@ public:
     // 发送协议命令
     void sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len);
 
+    /**
+     * @brief stopLightOn  是否停止开启灯光
+     * @param isClosed  true--不允许开启灯光  false--允许开启灯光
+     */
+    void stopLightOn(bool isClosed);
+
 private:
     LightManager();
     LightProviderIFace *_provider;
+    bool _isClosed;
 };
 #define lightManager (LightManager::construction())
 #define deleteLightManager() (delete LightManager::_selfObj)

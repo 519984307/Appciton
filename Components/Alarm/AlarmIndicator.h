@@ -94,12 +94,6 @@ public:
      */
     void updateAlarmPauseTime(int seconds);
 
-    /**
-     * @brief setLightStatus  设置灯光状态
-     * @param isForbid true-禁止灯亮  false-允许灯亮
-     */
-    void setLightStatus(bool isForbid);
-
 private:
     AlarmIndicator();
 

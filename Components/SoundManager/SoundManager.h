@@ -104,10 +104,10 @@ public:
     void selfTest();
 
     /**
-     * @brief setPlayStatus  设置声音播放状态
-     * @param isForbid  true-不允许播放  false-允许播放
+     * @brief stopPlaySound  是否停止播放声音
+     * @param isMuted  true-不允许播放  false-允许播放
      */
-    void setPlayStatus(bool isForbid);
+    void stopPlaySound(bool isMuted);
 
 private slots:
     /**

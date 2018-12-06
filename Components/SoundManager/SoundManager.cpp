@@ -54,7 +54,7 @@ public:
           curVolume(SoundManager::VOLUME_LEV_0), muteCtrlFd(-1), almTimer(NULL),
           curAlarmPriority(ALARM_PRIO_PROMPT), pendingWavFile(NULL)
         , pendingVolume(SoundManager::VOLUME_LEV_0)
-        , isForbid(false)
+        , isMuted(false)
     {
         for (int i = SoundManager::SOUND_TYPE_NONE; i < SoundManager::SOUND_TYPE_NR; i++)
         {
@@ -229,7 +229,7 @@ public:
             return;
         }
 
-        if (isForbid == true)
+        if (isMuted == true)
         {
             return;
         }
@@ -314,7 +314,7 @@ public:
     AlarmPriority curAlarmPriority;
     WavFile *pendingWavFile;
     SoundManager::VolumeLevel pendingVolume;
-    bool isForbid;
+    bool isMuted;
 
     QMap<int, WavFile *> wavFiles;
     SoundManager::VolumeLevel soundVolumes[SoundManager::SOUND_TYPE_NR];
@@ -458,10 +458,10 @@ void SoundManager::selfTest()
     QTimer::singleShot(1000, this, SLOT(volumeInit()));
 }
 
-void SoundManager::setPlayStatus(bool isForbid)
+void SoundManager::stopPlaySound(bool isMuted)
 {
-    d_ptr->isForbid = isForbid;
-    if (isForbid == true && d_ptr->player->isPlaying())
+    d_ptr->isMuted = isMuted;
+    if (isMuted == true && d_ptr->player->isPlaying())
     {
         QMetaObject::invokeMethod(d_ptr->player, "stop");
     }
