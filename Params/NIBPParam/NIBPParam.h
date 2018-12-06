@@ -238,6 +238,12 @@ public:
     // 获取单位。
     UnitType getUnit(void);
 
+    /**
+     * @brief setUnit  设置单位
+     * @param type 单位类型
+     */
+    void setUnit(UnitType type);
+
     // 停止测量。
     void stopMeasure(void);
 

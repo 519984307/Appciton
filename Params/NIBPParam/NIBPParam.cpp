@@ -1128,8 +1128,23 @@ NIBPIntelligentInflate NIBPParam::getIntelligentInflate(void)
 UnitType NIBPParam::getUnit(void)
 {
     int unit = UNIT_MMHG;
-    currentConfig.getNumValue("Local|NIBPUnit", unit);
+    systemConfig.getNumValue("Unit|PressureUnit", unit);
     return (UnitType)unit;
+}
+
+void NIBPParam::setUnit(UnitType type)
+{
+    int unit = UNIT_MMHG;
+    if (type == UNIT_KPA)
+    {
+        unit = UNIT_KPA;
+    }
+    systemConfig.setNumValue("Unit|PressureUnit", unit);
+    if (_trendWidget)
+    {
+        _trendWidget->setUNit(static_cast<UnitType>(unit));
+        _trendWidget->updateLimit();
+    }
 }
 
 /**************************************************************************************************
