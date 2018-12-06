@@ -13,6 +13,8 @@
 #include "PatientManager.h"
 #include "ParamInfo.h"
 #include "IConfig.h"
+#include "SystemManager.h"
+#include "ParamInfo.h"
 
 AlarmConfig &AlarmConfig::getInstance()
 {
@@ -43,6 +45,19 @@ bool AlarmConfig::isLimitAlarmEnable(SubParamID subParamId)
         iter = _controlCache.insert(subParamId, ctrl);
     }
     return iter.value().enable;
+}
+
+bool AlarmConfig::hasLimitAlarmDisable()
+{
+    LimitAlarmControlCache::iterator iter = _controlCache.begin();
+    for (; iter != _controlCache.end(); ++iter)
+    {
+        if (iter.value().enable == false && systemManager.isSupport(paramInfo.getParamID(iter.key())))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void AlarmConfig::setLimitAlarmEnable(SubParamID subParamId, bool enable)
