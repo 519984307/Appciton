@@ -326,7 +326,7 @@ bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short &
         switch (info.errCode)
         {
         case 0x02:
-            err = NIBP_ONESHOT_ALARM_CUFF_ERROR;
+            err = NIBP_ONESHOT_ALARM_CUFF_LOOSE;
             break;
         case 0x05:
             err = NIBP_ONESHOT_ALARM_SIGNAL_WEAK;
