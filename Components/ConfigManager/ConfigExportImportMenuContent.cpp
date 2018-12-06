@@ -497,9 +497,19 @@ bool ConfigExportImportMenuContent::insertFileFromUSB()
                     sameConfigName = true;
                 }
             }
-            if (sameConfigName == false || addIndex > CONFIG_MAX_NUM)
+            if (sameConfigName == false)
             {
                 break;
+            }
+            // 超出命名范围
+            if (addIndex > CONFIG_MAX_NUM)
+            {
+                MessageBox message(trs("Import"),
+                                   trs(QString("%1\r\n%2").
+                                       arg(newUserDfine.fileName).
+                                       arg(trs("ImportFailed"))),
+                                   QStringList() << trs("Yes"));
+                return false;
             }
         }
 
