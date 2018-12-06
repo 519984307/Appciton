@@ -46,7 +46,6 @@
 #include "SystemBoardProvider.h"
 #include "SystemAlarm.h"
 #include "LightManager.h"
-#include "BatteryMessage.h"
 #include "BatteryAlarm.h"
 #include "PowerManager.h"
 #include "PromptInfoBarWidget.h"
