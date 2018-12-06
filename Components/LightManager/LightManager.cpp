@@ -32,10 +32,10 @@ void LightManager::sendCmdData(unsigned char cmdId, const unsigned char *data, u
     }
 }
 
-void LightManager::stopLightOn(bool isClosed)
+void LightManager::stopHandlingLight(bool enable)
 {
-    _isClosed = isClosed;
-   if (isClosed == true)
+    _stopHandlingLight = enable;
+   if (enable == true)
    {
         for (int i = ALARM_PRIO_PROMPT; i <= ALARM_PRIO_HIGH; i++)
         {
@@ -55,7 +55,7 @@ void LightManager::updateAlarm(bool hasAlarmed, AlarmPriority priority)
         return;
     }
 
-    if (_isClosed == true)
+    if (_stopHandlingLight == true)
     {
         hasAlarmed = false;
     }
@@ -73,7 +73,7 @@ void LightManager::enableAlarmAudioMute(bool enable)
         return;
     }
 
-    if (_isClosed == true)
+    if (_stopHandlingLight == true)
     {
         enable = false;
     }
@@ -86,7 +86,7 @@ void LightManager::enableAlarmAudioMute(bool enable)
  *************************************************************************************************/
 LightManager::LightManager()
             : _provider(NULL)
-            , _isClosed(false)
+            , _stopHandlingLight(false)
 {
 }
 
