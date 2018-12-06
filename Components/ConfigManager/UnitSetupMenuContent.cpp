@@ -19,6 +19,7 @@
 #include "UnitManager.h"
 #include "TEMPParam.h"
 #include "CO2Param.h"
+#include "NIBPParam.h"
 
 class UnitSetupMenuContentPrivate
 {
@@ -366,7 +367,7 @@ void UnitSetupMenuContent::onComboBoxIndexChanged(int index)
             {
                 index = UNIT_MMHG;
             }
-            systemConfig.setNumValue("Unit|PressureUnit", index);
+            nibpParam.setUnit(static_cast<UnitType>(index));
             break;
         case UnitSetupMenuContentPrivate::ITEM_CBO_TEMP_UNIT:
             if (index == 0)
