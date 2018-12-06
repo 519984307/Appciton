@@ -248,18 +248,13 @@ void AlarmInfoWindowPrivate::loadOption()
         return;
     }
     start = (curPage - 1) * LISTVIEW_MAX_VISIABLE_SIZE;
-    if (count > LISTVIEW_MAX_VISIABLE_SIZE)
+    if (curPage < totalPage)
     {
-        end = start + LISTVIEW_MAX_VISIABLE_SIZE;
-        if (end > count)
-        {
-            end = count;
-            start = count - LISTVIEW_MAX_VISIABLE_SIZE;
-        }
+        end = (curPage - 1) * LISTVIEW_MAX_VISIABLE_SIZE + LISTVIEW_MAX_VISIABLE_SIZE;
     }
-    else
+    else if (curPage == totalPage)
     {
-        end = LISTVIEW_MAX_VISIABLE_SIZE;
+        end = count;
     }
 
     if (alarmType == ALARM_TYPE_PHY)
