@@ -1595,6 +1595,8 @@ System,系统,System
 Machine,机器,Machine
 Ped,小儿,Pediatric
 Neo,新生儿,Neonate
+Pediatric,小儿,Pediatric
+Neonate,新生儿,Neonate
 SaveCurrentSettingAs,保存当前设置,Save Current Setting
 SaveCurrentSettingAsDesc,保存当前设置菜单,Save Current Setting
 reachedTheMaximunOfConfigurations,用户配置已满，继续保存之前请删除已有的用户配置,The maximum of user configurations is reached.Please delete existing user configurations first.
