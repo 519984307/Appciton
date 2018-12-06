@@ -31,12 +31,18 @@ public:
     // 显示新值。
     void showValue(void);
 
+    // 刷新上下限
+    void updateLimit();
+
     TEMPTrendWidget();
     ~TEMPTrendWidget();
 
     QList<SubParamID> getShortTrendSubParams() const;
 public:
     virtual void doRestoreNormalStatus();
+
+    /* reimplment */
+    void updateWidgetConfig();
 
 protected:
     virtual void setTextSize(void);
@@ -52,6 +58,11 @@ private slots:
     void onTempNameUpdate(TEMPChannelIndex channel, TEMPChannelType type);
 
 private:
+    /**
+     * @brief _loadConfig  加载配置
+     */
+    void _loadConfig();
+
     // 温度组
     enum tempGrp
     {

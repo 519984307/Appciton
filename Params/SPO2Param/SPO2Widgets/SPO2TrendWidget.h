@@ -47,6 +47,9 @@ public:
 public:
     virtual void doRestoreNormalStatus();
 
+    /* reimplment */
+    void updateWidgetConfig();
+
 protected:
     virtual void setTextSize(void);
 
@@ -54,6 +57,11 @@ private slots:
     void _releaseHandle(IWidget *);
 
 private:
+    /**
+     * @brief _loadConfig  加载配置
+     */
+    void _loadConfig();
+
     QLabel *_spo2Value;
     QLabel *_piName;
     QLabel *_piValue;

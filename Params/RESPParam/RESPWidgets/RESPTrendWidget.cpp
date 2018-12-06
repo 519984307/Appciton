@@ -29,6 +29,17 @@ void RESPTrendWidget::_releaseHandle(IWidget *iWidget)
     p->popup(trs("RESPMenu"));
 }
 
+void RESPTrendWidget::_loadConfig()
+{
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
+    setPalette(palette);
+    _rrValue->setPalette(palette);
+
+    setName(trs(paramInfo.getSubParamName(SUB_PARAM_RR_BR)));
+    setUnit(Unit::getSymbol(UNIT_RPM));
+    updateLimit();
+}
+
 /**************************************************************************************************
  * 设置PR的值。
  *************************************************************************************************/
@@ -122,13 +133,6 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
 {
     _isAlarm = false;
     _rrString = InvStr();
-    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
-    setPalette(palette);
-    setName(trs(paramInfo.getSubParamName(SUB_PARAM_RR_BR)));
-    setUnit(Unit::getSymbol(UNIT_RPM));
-
-    // 设置上下限
-    updateLimit();
 
     // 设置报警关闭标志
     showAlarmOff();
@@ -136,7 +140,6 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
     // RR值。
     _rrValue = new QLabel();
     _rrValue->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    _rrValue->setPalette(palette);
     _rrValue->setText(InvStr());
 
     // 布局。
@@ -153,6 +156,8 @@ RESPTrendWidget::RESPTrendWidget() : TrendWidget("RESPTrendWidget")
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
+
+    _loadConfig();
 }
 
 /**************************************************************************************************
@@ -173,4 +178,9 @@ void RESPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_RESP));
     showNormalStatus(psrc);
+}
+
+void RESPTrendWidget::updateWidgetConfig()
+{
+    _loadConfig();
 }

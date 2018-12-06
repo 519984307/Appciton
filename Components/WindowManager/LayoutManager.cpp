@@ -1494,6 +1494,16 @@ void LayoutManager::updateTabOrder()
     d_ptr->updateTabOrder();
 }
 
+void LayoutManager::updateLayoutWidgetsConfig()
+{
+    QList<IWidget*> wList = d_ptr->layoutWidgets.values();
+
+    foreach(IWidget *w, wList)
+    {
+        w->updateWidgetConfig();
+    }
+}
+
 LayoutManager::LayoutManager()
     : d_ptr(new LayoutManagerPrivate())
 {

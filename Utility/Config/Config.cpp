@@ -247,6 +247,11 @@ bool Config::load(const QString &configPath)
     return _xmlParser.reload();
 }
 
+void Config::setCurrentFilePath(QString &path)
+{
+    _xmlParser.setCurrentFilePath(path);
+}
+
 // save the config to file
 bool Config::saveToFile(const QString &filepath)
 {

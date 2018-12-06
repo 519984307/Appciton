@@ -44,6 +44,20 @@ void TEMPTrendWidget::onTempNameUpdate(TEMPChannelIndex channel, TEMPChannelType
     update();
 }
 
+void TEMPTrendWidget::_loadConfig()
+{
+    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
+    setPalette(palette);
+    _t1Name->setPalette(palette);
+    _t2Name->setPalette(palette);
+    _t1Value->setPalette(palette);
+    _t2Value->setPalette(palette);
+    _tdName->setPalette(palette);
+    _tdValue->setPalette(palette);
+    // 显示上下限
+    updateLimit();
+}
+
 /**************************************************************************************************
  * 设置TEMP的值。
  *************************************************************************************************/
@@ -174,6 +188,13 @@ void TEMPTrendWidget::showValue(void)
     }
 }
 
+void TEMPTrendWidget::updateLimit()
+{
+    UnitType unitType = paramManager.getSubParamUnit(PARAM_TEMP, SUB_PARAM_T1);
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_T1, unitType);
+    setLimit(config.highLimit, config.lowLimit, config.scale);
+}
+
 /**************************************************************************************************
  * 根据布局大小自动调整字体大小。
  *************************************************************************************************/
@@ -212,9 +233,6 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     _tdStr = InvStr();
 //    setFocusPolicy(Qt::NoFocus);
 
-    QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
-    setPalette(palette);
-
     // 标签设定。
     setName(paramInfo.getParamName(PARAM_TEMP));
 
@@ -240,11 +258,9 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
 
     _t1Name = new QLabel();
     _t1Name->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
-    _t1Name->setPalette(palette);
     _t1Name->setText(trs("T1"));
     _t2Name = new QLabel();
     _t2Name->setAlignment(Qt::AlignVCenter | Qt::AlignRight);
-    _t2Name->setPalette(palette);
     _t2Name->setText(trs("T2"));
     vLayout->addWidget(_t1Name);
     vLayout->addWidget(_t2Name);
@@ -252,11 +268,9 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
 
     _t1Value = new QLabel();
     _t1Value->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-    _t1Value->setPalette(palette);
     _t1Value->setText(InvStr());
     _t2Value = new QLabel();
     _t2Value->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-    _t2Value->setPalette(palette);
     _t2Value->setText(InvStr());
     vLayout = new QVBoxLayout();
     vLayout->addWidget(_t1Value);
@@ -267,11 +281,9 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
 
     _tdName = new QLabel();
     _tdName->setAlignment(Qt::AlignLeft | Qt::AlignBottom);
-    _tdName->setPalette(palette);
     _tdName->setText(trs("TD"));
     _tdValue = new QLabel();
     _tdValue->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-    _tdValue->setPalette(palette);
     _tdValue->setText(InvStr());
     vLayout = new QVBoxLayout();
     vLayout->addStretch();
@@ -287,6 +299,7 @@ TEMPTrendWidget::TEMPTrendWidget() : TrendWidget("TEMPTrendWidget")
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
 
+    _loadConfig();
     // 增加更新温度通道名称链接-- 暂时屏蔽温度通道名称更改链接
 //    connect(&tempParam, SIGNAL(updateTempName(TEMPChannelIndex,TEMPChannelType)),
 //            this, SLOT(onTempNameUpdate(TEMPChannelIndex,TEMPChannelType)));
@@ -311,4 +324,9 @@ void TEMPTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_TEMP));
     showNormalStatus(psrc);
+}
+
+void TEMPTrendWidget::updateWidgetConfig()
+{
+    _loadConfig();
 }
