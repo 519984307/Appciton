@@ -85,7 +85,7 @@ public:
             "NIBPNoneError",
             "NIBPMeasurementAbort",
             "NIBPCuffTypeError",
-            "NIBPCuffError",
+            "NIBPCuffLoose",
             "NIBPCuffAirLeakage",
             "NIBPPneumaticBlockage",
             "NIBPCuffOverPressure",

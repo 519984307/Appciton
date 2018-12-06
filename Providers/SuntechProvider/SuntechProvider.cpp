@@ -292,7 +292,7 @@ bool SuntechProvider::isResult(unsigned char *packet,
             err = NIBP_ONESHOT_ALARM_PNEUMATIC_BLOCKAGE;
             break;
         case 0x87:
-            err = NIBP_ONESHOT_ALARM_CUFF_ERROR;
+            err = NIBP_ONESHOT_ALARM_CUFF_LOOSE;
             break;
         case 0x88:
             err = NIBP_ONESHOT_ALARM_MEASURE_TIMEOUT;
