@@ -92,11 +92,11 @@ void TEMPTrendWidget::setUNit(UnitType u)
     switch (u)
     {
     case UNIT_TC:
-        setUnit("Td (" + Unit::localeSymbol(UNIT_TC) + ")");
+        setUnit(Unit::localeSymbol(UNIT_TC));
         break;
 
     case UNIT_TF:
-        setUnit("Td (" + Unit::localeSymbol(UNIT_TF) + ")");
+        setUnit(Unit::localeSymbol(UNIT_TF));
         break;
 
     default:

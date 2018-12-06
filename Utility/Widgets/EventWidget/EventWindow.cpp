@@ -45,6 +45,7 @@
 #include "DataStorageDefine.h"
 #include "TableViewItemDelegate.h"
 #include "MessageBox.h"
+#include "CO2Param.h"
 
 #define TABLE_SPACING               (12)
 
@@ -941,15 +942,27 @@ void EventWindowPrivate::eventTrendUpdate()
     for (int i = 0; i < paramNum; i ++)
     {
         QString dataStr;
+        subId = (SubParamID)ctx.trendSegment->values[i].subParamId;
+        UnitType type = paramManager.getSubParamUnit(paramInfo.getParamID(subId), subId);
         if (ctx.trendSegment->values[i].value == InvData())
         {
             dataStr = InvStr();
         }
         else
         {
-            dataStr = QString::number(ctx.trendSegment->values[i].value);
+            if (paramInfo.getParamID(subId) == PARAM_CO2)
+            {
+                dataStr = Unit::convert(type, UNIT_PERCENT, ctx.trendSegment->values[i].value / 10.0, co2Param.getBaro());
+            }
+            else if (paramInfo.getParamID(subId) == PARAM_TEMP)
+            {
+                dataStr = Unit::convert(type, UNIT_TC, ctx.trendSegment->values[i].value / 10.0);
+            }
+            else
+            {
+                dataStr = QString::number(ctx.trendSegment->values[i].value);
+            }
         }
-        subId = (SubParamID)ctx.trendSegment->values[i].subParamId;
         switch (subId)
         {
         case SUB_PARAM_NIBP_SYS:
@@ -1018,7 +1031,7 @@ void EventWindowPrivate::eventTrendUpdate()
 
         item->setData(EventTrendItemDelegate::ValueTextRole, valueStr);
         item->setData(EventTrendItemDelegate::TitleTextRole, titleStr);
-        item->setData(EventTrendItemDelegate::UnitTextRole, Unit::localeSymbol(paramInfo.getUnitOfSubParam(subId)));
+        item->setData(EventTrendItemDelegate::UnitTextRole, Unit::localeSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(subId), subId)));
 
 
         item->setData(EventTrendItemDelegate::TrendAlarmRole, ctx.trendSegment->values[i].alarmFlag);
