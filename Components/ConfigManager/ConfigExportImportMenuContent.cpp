@@ -399,7 +399,6 @@ bool ConfigExportImportMenuContent::insertFileFromUSB()
     // load configs again
     d_ptr->loadConfigs();
 
-
     for (int i = 0; i < d_ptr->importFileName.count(); i++)
     {
         QFile fileImport(QString("%1/%2").
@@ -483,7 +482,26 @@ bool ConfigExportImportMenuContent::insertFileFromUSB()
         // update import configs
         ConfigManager::UserDefineConfigInfo newUserDfine;
         newUserDfine.fileName = d_ptr->importFileName.at(i);
-        newUserDfine.name = QString("UserConfig%1").arg(d_ptr->configs.count() + 1);
+
+        // 更新导入命名，防止命名相同
+        int addIndex = 0;
+        int count = d_ptr->configs.count();
+        while (true)
+        {
+            bool sameConfigName = false;
+            newUserDfine.name = QString("UserConfig%1").arg(count + (++addIndex));
+            foreach(ConfigManager::UserDefineConfigInfo info, d_ptr->configs)
+            {
+                if (newUserDfine.name == info.name)
+                {
+                    sameConfigName = true;
+                }
+            }
+            if (sameConfigName == false || addIndex > CONFIG_MAX_NUM)
+            {
+                break;
+            }
+        }
 
         // 查找是否有同名文件，不再更新同名文件名称
         bool isAppend = true;
