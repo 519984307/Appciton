@@ -1015,6 +1015,7 @@ void EventWindowPrivate::eventTrendUpdate()
             valueStr = et + "/" + fi;
             titleStr = paramInfo.getSubParamName(subId);
             titleStr = titleStr.right(titleStr.length() - 2);
+            titleStr += "(Et/Fi)";
             valueFont = fontManager.numFont(31);
             break;
         default:
