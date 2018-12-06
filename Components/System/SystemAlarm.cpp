@@ -11,6 +11,7 @@
 #include "SystemAlarm.h"
 #include "SystemManager.h"
 #include "KeyActionManager.h"
+#include "AlarmConfig.h"
 
 SystemAlarm *SystemAlarm::_selfObj = NULL;
 
@@ -70,7 +71,8 @@ bool SystemAlarm::isAlarmed(int id)
     case POWERUP_PANEL_RECORD_PRESSED:
         keyPressed = keyActionManager.checkKeyPressed(KEY_F9_PRESSED);
         break;
-
+    case SOME_LIMIT_ALARM_DISABLED:
+        return alarmConfig.hasLimitAlarmDisable();
     default:
         return AlarmOneShotIFace::isAlarmed(id);
     }

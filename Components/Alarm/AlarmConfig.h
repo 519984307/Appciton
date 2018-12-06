@@ -80,6 +80,12 @@ public:
     // check whether limit alarm is enable
     bool isLimitAlarmEnable(SubParamID subParamId);
 
+    /**
+     * @brief hasLimitAlarmDisable 是否有参数报警被关闭
+     * @return
+     */
+    bool hasLimitAlarmDisable();
+
     // set limit alarm enable or not
     void setLimitAlarmEnable(SubParamID subParamId, bool enable);
 
