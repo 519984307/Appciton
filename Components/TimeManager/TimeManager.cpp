@@ -128,7 +128,7 @@ void TimeManager::setElapsedTime()
 void TimeManager::roloadConfig()
 {
     // 读配置是否显示秒
-    currentConfig.getNumValue("DateTime|DisplaySecond", _showSecond);
+    systemConfig.getNumValue("DateTime|DisplaySecond", _showSecond);
 }
 
 /**************************************************************************************************
@@ -144,7 +144,7 @@ TimeManager::TimeManager()
     systemConfig.getNumValue("ElapseStartTime", _elapseStartTime);
 
     // 读配置是否显示秒
-    currentConfig.getNumValue("DateTime|DisplaySecond", _showSecond);
+    systemConfig.getNumValue("DateTime|DisplaySecond", _showSecond);
 
     // 判断上次开机与本次开机的时间间隔。
     unsigned timestamp = 0;

@@ -75,13 +75,13 @@ void TimeEditWindowPrivate::loadOptions()
     spinBoxs[ITEM_SPB_SECOND]->setValue(timeDate.getTimeSenonds());
 
     int value = 0;
-    currentConfig.getNumValue("DateTime|DateFormat", value);
+    systemConfig.getNumValue("DateTime|DateFormat", value);
     combos[ITEM_CBO_DATE_FORMAT]->setCurrentIndex(value);
 
-    currentConfig.getNumValue("DateTime|TimeFormat", value);
+    systemConfig.getNumValue("DateTime|TimeFormat", value);
     combos[ITEM_CBO_TIME_FORMAT]->setCurrentIndex(value);
 
-    currentConfig.getNumValue("DateTime|DisplaySecond", value);
+    systemConfig.getNumValue("DateTime|DisplaySecond", value);
     combos[ITEM_CBO_DISPLAY_SEC]->setCurrentIndex(value);
 }
 
@@ -321,13 +321,13 @@ void TimeEditWindow::onComboBoxIndexChanged(int index)
         switch (item)
         {
         case TimeEditWindowPrivate::ITEM_CBO_DATE_FORMAT:
-            currentConfig.setNumValue("DateTime|DateFormat", index);
+            systemConfig.setNumValue("DateTime|DateFormat", index);
             break;
         case TimeEditWindowPrivate::ITEM_CBO_TIME_FORMAT:
-            currentConfig.setNumValue("DateTime|TimeFormat", index);
+            systemConfig.setNumValue("DateTime|TimeFormat", index);
             break;
         case TimeEditWindowPrivate::ITEM_CBO_DISPLAY_SEC:
-            currentConfig.setNumValue("DateTime|DisplaySecond", index);
+            systemConfig.setNumValue("DateTime|DisplaySecond", index);
             break;
         default:
             break;

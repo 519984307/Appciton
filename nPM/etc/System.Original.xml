@@ -2,6 +2,11 @@
 <!-- 系统运行时的相关配置，这些配置不会被自动恢复。 -->
 <System>
     <!--日期格式，0:y/m/d, 1:m/d/y, 2:d/m/y-->
+    <DateTime>
+    	<DateFormat>0</DateFormat>
+	<TimeFormat>1</TimeFormat>
+	<DisplaySecond>0</DisplaySecond>
+    </DateTime>
     <DateFormat>0</DateFormat>
     <Timestamp>0</Timestamp>
     <ElapseStartTime>0</ElapseStartTime>
