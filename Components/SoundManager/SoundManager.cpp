@@ -53,7 +53,9 @@ public:
     explicit SoundManagerPrivate(SoundManager *const q_ptr)
         : q_ptr(q_ptr), curSoundType(SoundManager::SOUND_TYPE_NONE), player(NULL),
           curVolume(SoundManager::VOLUME_LEV_0), muteCtrlFd(-1), almTimer(NULL),
-          curAlarmPriority(ALARM_PRIO_PROMPT), pendingWavFile(NULL), pendingVolume(SoundManager::VOLUME_LEV_0)
+          curAlarmPriority(ALARM_PRIO_PROMPT), pendingWavFile(NULL)
+        , pendingVolume(SoundManager::VOLUME_LEV_0)
+        , stopHandlingSound(false)
     {
         for (int i = SoundManager::SOUND_TYPE_NONE; i < SoundManager::SOUND_TYPE_NR; i++)
         {
@@ -228,6 +230,11 @@ public:
             return;
         }
 
+        if (stopHandlingSound == true)
+        {
+            return;
+        }
+
         if (player->isPlaying())
         {
             if (curSoundType > soundType)
@@ -308,6 +315,7 @@ public:
     AlarmPriority curAlarmPriority;
     WavFile *pendingWavFile;
     SoundManager::VolumeLevel pendingVolume;
+    bool stopHandlingSound;
 
     QMap<int, WavFile *> wavFiles;
     SoundManager::VolumeLevel soundVolumes[SoundManager::SOUND_TYPE_NR];
@@ -449,6 +457,15 @@ void SoundManager::selfTest()
     d_ptr->playSound(SOUND_TYPE_ALARM, ALARM_PRIO_LOW);
 
     QTimer::singleShot(1000, this, SLOT(volumeInit()));
+}
+
+void SoundManager::stopHandlingSound(bool enable)
+{
+    d_ptr->stopHandlingSound = enable;
+    if (enable == true && d_ptr->player->isPlaying())
+    {
+        QMetaObject::invokeMethod(d_ptr->player, "stop");
+    }
 }
 
 void SoundManager::alarmTimeout()

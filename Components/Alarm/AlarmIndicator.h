@@ -125,6 +125,8 @@ private:
     AlarmStatus _audioStatus;
     int _audioPauseTime;
     static const int _checkPatientAlarmPauseTime = 12;
+
+    bool _isForbidLight;
 };
 #define alarmIndicator (AlarmIndicator::construction())
 #define deleteAlarmIndicator() (delete AlarmIndicator::_selfObj)
