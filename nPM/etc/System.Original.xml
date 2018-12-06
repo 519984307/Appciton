@@ -30,7 +30,7 @@
     </General>
     <Alarms>
         <MinimumAlarmVolume>2</MinimumAlarmVolume>
-        <AlarmPauseTime>1</AlarmPauseTime>
+        <AlarmPauseTime>2</AlarmPauseTime>
         <STAlarmDraly>1</STAlarmDraly>
         <PauseMaxAlarm15Min>1</PauseMaxAlarm15Min>
         <AlarmVol>1</AlarmVol>
@@ -47,6 +47,10 @@
         <LowAlarmIntervals>16</LowAlarmIntervals>
         <ReminderTone>1</ReminderTone>
         <PhyParAlarmLatchlockOn>1</PhyParAlarmLatchlockOn>
+	<AlarmOffPrompting>1</AlarmOffPrompting>
+	<EnableAlarmAudioOff>1</EnableAlarmAudioOff>
+	<EnableAlarmOff>1</EnableAlarmOff>
+	<AlarmOffAtPowerOn>1</AlarmOffAtPowerOn>
     </Alarms>
     <NightMode>
         <ScreenBrightness>1</ScreenBrightness>
