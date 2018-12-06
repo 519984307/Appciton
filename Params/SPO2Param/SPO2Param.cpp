@@ -220,7 +220,7 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider)
     if (str == "BLM_TS3")
     {
         //设置灵敏度
-        _provider->setSensitivityFastSat(getSensitivity(), getFastSat());
+        _provider->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), getFastSat());
     }
     else if (str == "MASIMO_SPO2")
     {
@@ -256,7 +256,7 @@ void SPO2Param::reset()
     }
 
     //设置灵敏度
-    _provider->setSensitivityFastSat(getSensitivity(), getFastSat());
+    _provider->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), getFastSat());
 
     //查询状态
     _provider->sendStatus();
@@ -650,26 +650,27 @@ void SPO2Param::onPaletteChanged(ParamID id)
     _trendWidget->updatePalette(pal);
 }
 
-/**************************************************************************************************
- * 设置灵敏度。
- *************************************************************************************************/
-void SPO2Param::setSensitivity(SensitivityMode sens)
+void SPO2Param::setSensitivity(int sens)
 {
     currentConfig.setNumValue("SPO2|Sensitivity", static_cast<int>(sens));
     if (NULL != _provider)
     {
-        _provider->setSensitivityFastSat(sens, getFastSat());
+        if (_moduleType == MODULE_MASIMO_SPO2)
+        {
+            _provider->setSensitivityFastSat(static_cast<SensitivityMode>(sens), getFastSat());
+        }
+        else if (_moduleType != MODULE_SPO2_NR)
+        {
+            _provider->setSensitive(static_cast<SPO2Sensitive>(sens));
+        }
     }
 }
 
-/**************************************************************************************************
- * 获取灵敏度。
- *************************************************************************************************/
-SensitivityMode SPO2Param::getSensitivity(void)
+int SPO2Param::getSensitivity(void)
 {
-    int sens = SPO2_MASIMO_SENS_NORMAL;
+    int sens = 0;
     currentConfig.getNumValue("SPO2|Sensitivity", sens);
-    return (SensitivityMode)sens;
+    return sens;
 }
 
 void SPO2Param::setFastSat(bool isFast)
@@ -677,7 +678,7 @@ void SPO2Param::setFastSat(bool isFast)
     currentConfig.setNumValue("SPO2|FastSat", static_cast<int>(isFast));
     if (NULL != _provider)
     {
-        _provider->setSensitivityFastSat(getSensitivity(), isFast);
+        _provider->setSensitivityFastSat(static_cast<SensitivityMode>(getSensitivity()), isFast);
     }
 }
 
@@ -733,12 +734,23 @@ void SPO2Param::updateSubParamLimit(SubParamID id)
     }
 }
 
+void SPO2Param::setModuleType(SPO2ModuleType type)
+{
+    _moduleType = type;
+}
+
+SPO2ModuleType SPO2Param::getModuleType() const
+{
+    return _moduleType;
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
 SPO2Param::SPO2Param() : Param(PARAM_SPO2),
                          _gain(SPO2_GAIN_X10),
-                         _oxyCRGSPO2Trend(NULL)
+                         _oxyCRGSPO2Trend(NULL),
+                         _moduleType(MODULE_SPO2_NR)
 {
     _provider = NULL;
     _trendWidget = NULL;
