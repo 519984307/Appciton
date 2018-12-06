@@ -89,6 +89,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *e);
+    void showEvent(QShowEvent *e);
 
 private:
     /**

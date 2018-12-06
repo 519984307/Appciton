@@ -17,64 +17,16 @@
 #include "ParamManager.h"
 #include "AlarmConfig.h"
 #include "FontManager.h"
+#include "CO2Param.h"
 
 #define GRAPH_POINT_NUMBER          120
 #define DATA_INTERVAL_PIXEL         5
-#define TREND_DISPLAY_OFFSET        60
 #define isEqual(a, b) (qAbs((a)-(b)) < 0.000001)
 
 TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id(id), _type(type),
     _trendInfo(TrendGraphInfo()), _timeX(TrendParamDesc()), _valueY(TrendParamDesc()), _xSize(0), _ySize(0), _trendDataHead(0), _cursorPosIndex(0),
     _isAuto(true), _maxValue(0), _minValue(0), _fristValue(true)
 {
-    SubParamID subID = id;
-    ParamID paramId = paramInfo.getParamID(subID);
-    UnitType unitType = paramManager.getSubParamUnit(paramId, subID);
-
-    if (_type == TREND_GRAPH_TYPE_NORMAL || _type == TREND_GRAPH_TYPE_AG_TEMP)
-    {
-        ParamRulerConfig config = alarmConfig.getParamRulerConfig(subID, unitType);
-        if (config.scale == 1)
-        {
-            _valueY.min = config.downRuler;
-            _valueY.max = config.upRuler;
-        }
-        else
-        {
-            _valueY.min = static_cast<double>(config.downRuler) / config.scale;
-            _valueY.max = static_cast<double>(config.upRuler) / config.scale;
-            _valueY.scale = config.scale;
-        }
-        _paramName = trs(paramInfo.getSubParamName(id));
-        if (_type == TREND_GRAPH_TYPE_AG_TEMP)
-        {
-            _paramName = _paramName.right(_paramName.length() - 2) + "(Et/Fi)";
-        }
-        if (_id == SUB_PARAM_T1)
-        {
-            _paramName = "T1/T2";
-        }
-    }
-    else if (_type == TREND_GRAPH_TYPE_ART_IBP || _type == TREND_GRAPH_TYPE_NIBP)
-    {
-        ParamRulerConfig configUp = alarmConfig.getParamRulerConfig(SubParamID(subID), unitType);
-        ParamRulerConfig configDown = alarmConfig.getParamRulerConfig(SubParamID(subID + 1), unitType);
-        if (configUp.scale == 1)
-        {
-            _valueY.min = configDown.downRuler;
-            _valueY.max = configUp.upRuler;
-        }
-        else
-        {
-            _valueY.min = static_cast<double>(configDown.downRuler) / configDown.scale;
-            _valueY.max = static_cast<double>(configUp.upRuler) / configUp.scale;
-            _valueY.scale = configUp.scale;
-        }
-        QString str = paramInfo.getSubParamName(id);
-        _paramName = str.left(str.length() - 4);
-    }
-    _paramUnit = Unit::localeSymbol(paramInfo.getUnitOfSubParam(id));
-
     setAttribute(Qt::WA_TransparentForMouseEvents, true);
 }
 
@@ -212,8 +164,27 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
             }
 
             qreal x = _mapValue(_timeX, iter->timestamp);
-            qreal value1 = _mapValue(_valueY, iter->data[0] / 10);
-            qreal value2 = _mapValue(_valueY, iter->data[1] / 10);
+            ParamID paramId = paramInfo.getParamID(_id);
+            UnitType type = paramManager.getSubParamUnit(paramId, _id);
+            int v1 = 0;
+            int v2 = 0;
+            if (paramId == PARAM_CO2)
+            {
+                v1 = Unit::convert(type, UNIT_PERCENT, iter->data[0] / 10.0, co2Param.getBaro()).toInt();
+                v2 = Unit::convert(type, UNIT_PERCENT, iter->data[1] / 10.0, co2Param.getBaro()).toInt();
+            }
+            else if (paramId == PARAM_TEMP)
+            {
+                v1 = Unit::convert(type, UNIT_TC, iter->data[0] / 10.0).toInt();
+                v2 = Unit::convert(type, UNIT_TC, iter->data[1] / 10.0).toInt();
+            }
+            else
+            {
+                v1 = iter->data[0] / 10;
+                v2 = iter->data[1] / 10;
+            }
+            qreal value1 = _mapValue(_valueY, v1);
+            qreal value2 = _mapValue(_valueY, v2);
 
             if (lastPointInvalid)
             {
@@ -449,6 +420,8 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
 
     // 趋势参数数据
     QRect dataRect(_trendDataHead, height() / 5, width() - _trendDataHead, height() / 5 * 4);
+    QTextOption option;
+    option.setAlignment(Qt::AlignCenter);
     if (_type == TREND_GRAPH_TYPE_NORMAL)
     {
         if (_trendInfo.trendData.isEmpty())
@@ -466,11 +439,11 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         TrendDataType value = _trendInfo.trendData.at(_cursorPosIndex).data;
         if (value != InvData())
         {
-            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height() / 3 * 2, QString::number(value));
+            barPainter.drawText(dataRect, QString::number(value), option);
         }
         else
         {
-            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height() / 3 * 2, "---");
+            barPainter.drawText(dataRect, "---", option);
         }
     }
     else if (_type == TREND_GRAPH_TYPE_NIBP || _type == TREND_GRAPH_TYPE_ART_IBP)
@@ -494,16 +467,23 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         TrendDataType dia = _trendInfo.trendDataV3.at(_cursorPosIndex).data[1];
         TrendDataType map = _trendInfo.trendDataV3.at(_cursorPosIndex).data[2];
 
+        QRect upDataRect = dataRect.adjusted(0, 0, 0, - dataRect.height() / 2);
+        QRect downDataRect = dataRect.adjusted(0, dataRect.height() / 2, 0, 0);
+        QTextOption nibpOption;
         if (map != InvData() && dia != InvData() && sys != InvData())
         {
             QString trendStr = QString::number(sys) + "/" + QString::number(dia);
-            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height() / 2, trendStr);
-            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET + 10, height() / 3 * 2, QString::number(map));
+            nibpOption.setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
+            barPainter.drawText(upDataRect, trendStr, nibpOption);
+            nibpOption.setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+            barPainter.drawText(downDataRect, QString::number(map), nibpOption);
         }
         else
         {
-            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height() / 2, "---/---");
-            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET + 10, height() / 3 * 2, "(---)");
+            nibpOption.setAlignment(Qt::AlignBottom | Qt::AlignHCenter);
+            barPainter.drawText(upDataRect, "---/---", nibpOption);
+            nibpOption.setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+            barPainter.drawText(downDataRect, "(---)", nibpOption);
         }
     }
     else if (_type == TREND_GRAPH_TYPE_AG_TEMP)
@@ -529,16 +509,85 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
 
         if (value1 != InvData() && value2 != InvData())
         {
-            value1 /= 10;
-            value2 /= 10;
-            QString trendStr = QString::number(value1, 'f', 1) + "/" + QString::number(value2, 'f', 1);
-            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height() / 2, trendStr);
+            QString trendStr;
+            ParamID paramId = paramInfo.getParamID(_id);
+            UnitType type = paramManager.getSubParamUnit(paramId, _id);
+            if (paramId == PARAM_TEMP)
+            {
+                QString t1Str = Unit::convert(type, UNIT_TC, value1 / 10.0);
+                QString t2Str = Unit::convert(type, UNIT_TC, value2 / 10.0);
+                trendStr = t1Str + "/" + t2Str;
+            }
+            else if (paramId == PARAM_CO2)
+            {
+                QString t1Str = Unit::convert(type, UNIT_PERCENT, value1 / 10.0, co2Param.getBaro());
+                QString t2Str = Unit::convert(type, UNIT_PERCENT, value2 / 10.0, co2Param.getBaro());
+                trendStr = t1Str + "/" + t2Str;
+            }
+            else
+            {
+                value1 /= 10;
+                value2 /= 10;
+                trendStr = QString::number(value1, 'f', 1) + "/" + QString::number(value2, 'f', 1);
+            }
+            barPainter.drawText(dataRect, trendStr, option);
         }
         else
         {
-            barPainter.drawText(_trendDataHead + TREND_DISPLAY_OFFSET, height() / 2, "---/---");
+            barPainter.drawText(dataRect, "---/---", option);
         }
     }
+}
+
+void TrendSubWaveWidget::showEvent(QShowEvent *e)
+{
+    IWidget::showEvent(e);
+    ParamID paramId = paramInfo.getParamID(_id);
+    UnitType unitType = paramManager.getSubParamUnit(paramId, _id);
+
+    if (_type == TREND_GRAPH_TYPE_NORMAL || _type == TREND_GRAPH_TYPE_AG_TEMP)
+    {
+        ParamRulerConfig config = alarmConfig.getParamRulerConfig(_id, unitType);
+        if (config.scale == 1)
+        {
+            _valueY.min = config.downRuler;
+            _valueY.max = config.upRuler;
+        }
+        else
+        {
+            _valueY.min = static_cast<double>(config.downRuler) / config.scale;
+            _valueY.max = static_cast<double>(config.upRuler) / config.scale;
+            _valueY.scale = config.scale;
+        }
+        _paramName = trs(paramInfo.getSubParamName(_id));
+        if (_type == TREND_GRAPH_TYPE_AG_TEMP)
+        {
+            _paramName = _paramName.right(_paramName.length() - 2) + "(Et/Fi)";
+        }
+        if (_id == SUB_PARAM_T1)
+        {
+            _paramName = "T1/T2";
+        }
+    }
+    else if (_type == TREND_GRAPH_TYPE_ART_IBP || _type == TREND_GRAPH_TYPE_NIBP)
+    {
+        ParamRulerConfig configUp = alarmConfig.getParamRulerConfig(SubParamID(_id), unitType);
+        ParamRulerConfig configDown = alarmConfig.getParamRulerConfig(SubParamID(_id + 1), unitType);
+        if (configUp.scale == 1)
+        {
+            _valueY.min = configDown.downRuler;
+            _valueY.max = configUp.upRuler;
+        }
+        else
+        {
+            _valueY.min = static_cast<double>(configDown.downRuler) / configDown.scale;
+            _valueY.max = static_cast<double>(configUp.upRuler) / configUp.scale;
+            _valueY.scale = configUp.scale;
+        }
+        QString str = paramInfo.getSubParamName(_id);
+        _paramName = str.left(str.length() - 4);
+    }
+    _paramUnit = Unit::localeSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(_id), _id));
 }
 
 double TrendSubWaveWidget::_mapValue(TrendParamDesc desc, int data)

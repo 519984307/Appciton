@@ -23,6 +23,7 @@
 #include "TrendTablePageGenerator.h"
 #include <QDebug>
 #include "AlarmConfig.h"
+#include "CO2Param.h"
 
 #define COLUMN_COUNT        7
 #define MAX_ROW_COUNT       9
@@ -996,8 +997,21 @@ void TrendTableModelPrivate::loadTrendData()
                     {
                         double dubData1 = data1 * 1.0 / 10;
                         double dubData2 = data2 * 1.0 / 10;
-                        dataStr1 = data1 == InvData() ? "---" : QString::number(dubData1, 'f', 1);
-                        dataStr2 = data2 == InvData() ? "---" : QString::number(dubData2, 'f', 1);
+                        QString v1Str;
+                        QString v2Str;
+                        UnitType type = paramManager.getSubParamUnit(paramInfo.getParamID(displayList.at(j)), displayList.at(j));
+                        if (displayList.at(j) == SUB_PARAM_T1)
+                        {
+                            v1Str = Unit::convert(type, UNIT_TC, dubData1);
+                            v2Str = Unit::convert(type, UNIT_TC, dubData2);
+                        }
+                        else
+                        {
+                            v1Str = Unit::convert(type, UNIT_PERCENT, dubData1, co2Param.getBaro());
+                            v2Str = Unit::convert(type, UNIT_PERCENT, dubData2, co2Param.getBaro());
+                        }
+                        dataStr1 = data1 == InvData() ? "---" : v1Str;
+                        dataStr2 = data2 == InvData() ? "---" : v2Str;
                     }
                     else
                     {
