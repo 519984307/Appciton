@@ -480,18 +480,22 @@ void SoundManager::alarmTimeout()
 
 void SoundManager::volumeInit()
 {
-    int v = VOLUME_LEV_3;
+    int alarmVolume = VOLUME_LEV_3;
+    int keyVolume = VOLUME_LEV_3;
 
     if (nightModeManager.nightMode())
     {
-        systemConfig.getNumValue("NightMode|AlarmVolume", v);
+        systemConfig.getNumValue("NightMode|AlarmVolume", alarmVolume);
+        systemConfig.getNumValue("NightMode|KeyPressVolume", keyVolume);
     }
     else
     {
-        currentConfig.getNumValue("Alarm|DefaultAlarmVolume", v);
+        currentConfig.getNumValue("Alarm|DefaultAlarmVolume", alarmVolume);
+        systemConfig.getNumValue("General|KeyPressVolume", keyVolume);
     }
 
-    d_ptr->soundVolumes[SOUND_TYPE_ALARM] = (VolumeLevel) v;
+    d_ptr->soundVolumes[SOUND_TYPE_ALARM] = static_cast<VolumeLevel>(alarmVolume);
+    d_ptr->soundVolumes[SOUND_TYPE_KEY_PRESS] = static_cast<VolumeLevel>(keyVolume);
 }
 
 void SoundManager::playFinished()

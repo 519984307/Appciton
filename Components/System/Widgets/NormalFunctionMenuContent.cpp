@@ -81,14 +81,13 @@ void NormalFunctionMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
 
         int index = 0;
-
-        index = soundManager.getVolume(SoundManager::SOUND_TYPE_ALARM) - 1;
-        combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(index);
+        currentConfig.getNumValue("Alarm|DefaultAlarmVolume", index);
+        combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(index - 1);
 
         index = systemManager.getBrightness();
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setCurrentIndex(index);
 
-        index = soundManager.getVolume(SoundManager::SOUND_TYPE_KEY_PRESS);
+        systemConfig.getNumValue("General|KeyPressVolume", index);
         combos[ITEM_CBO_KEYPRESS_VOLUME]->setCurrentIndex(index);
     }
 
@@ -300,6 +299,7 @@ void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
         {
             int volume = box->itemText(index).toInt();
             soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, static_cast<SoundManager::VolumeLevel>(volume));
+            currentConfig.setNumValue("Alarm|DefaultAlarmVolume", volume);
             break;
         }
         case NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS:
@@ -311,6 +311,7 @@ void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
         {
             int volume = box->itemText(index).toInt();
             soundManager.setVolume(SoundManager::SOUND_TYPE_KEY_PRESS , static_cast<SoundManager::VolumeLevel>(volume));
+            systemConfig.setNumValue("General|KeyPressVolume", volume);
             break;
         }
 #ifdef Q_WS_QWS
