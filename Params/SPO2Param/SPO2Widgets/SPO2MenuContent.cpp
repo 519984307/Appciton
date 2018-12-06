@@ -40,14 +40,50 @@ public:
 
     SPO2MenuContentPrivate() {}
 
+    /**
+     * @brief setCboBlockSignalsStatus  设置cobomo信号锁住状态
+     * @param isBlocked  true--锁住  false--解开
+     */
+    void setCboBlockSignalsStatus(bool isBlocked);
+
     // load settings
     void loadOptions();
 
     QMap<MenuItem, ComboBox *> combos;
 };
 
+void SPO2MenuContentPrivate::setCboBlockSignalsStatus(bool isBlocked)
+{
+    for (int i = ITEM_CBO_WAVE_SPEED; i <= ITEM_CBO_BEAT_VOL; i++)
+    {
+        MenuItem item = static_cast<MenuItem>(i);
+        combos[item]->blockSignals(isBlocked);
+    }
+}
+
 void SPO2MenuContentPrivate::loadOptions()
 {
+    setCboBlockSignalsStatus(true);
+
+    combos[ITEM_CBO_SENSITIVITY]->clear();
+    SPO2ModuleType moduleType = spo2Param.getModuleType();
+    if (moduleType == MODULE_MASIMO_SPO2)
+    {
+        for (int i = SPO2_MASIMO_SENS_MAX; i < SPO2_MASIMO_SENS_NR; i++)
+        {
+            combos[ITEM_CBO_SENSITIVITY]->addItem(trs(SPO2Symbol
+                                                      ::convert(static_cast<SensitivityMode>(i))));
+        }
+    }
+    else if (moduleType != MODULE_SPO2_NR)
+    {
+        for (int i = SPO2_SENS_LOW; i < SPO2_SENS_NR; i++)
+        {
+            combos[ITEM_CBO_SENSITIVITY]->addItem(trs(SPO2Symbol
+                                                      ::convert(static_cast<SPO2Sensitive>(i))));
+        }
+    }
+
     combos[ITEM_CBO_WAVE_SPEED]->setCurrentIndex(spo2Param.getSweepSpeed());
     combos[ITEM_CBO_AVERAGE_TIME]->setCurrentIndex(spo2Param.getAverageTime());
     combos[ITEM_CBO_SENSITIVITY]->setCurrentIndex(spo2Param.getSensitivity());
@@ -62,6 +98,8 @@ void SPO2MenuContentPrivate::loadOptions()
         ecgParam.setQRSToneVolume(static_cast<SoundManager::VolumeLevel>(volSPO2));
     }
     combos[ITEM_CBO_BEAT_VOL]->setCurrentIndex(volSPO2);
+
+    setCboBlockSignalsStatus(false);
 }
 
 SPO2MenuContent::SPO2MenuContent()
@@ -122,10 +160,22 @@ void SPO2MenuContent::layoutExec()
     label = new QLabel(trs("Sensitivity"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    for (int i = 0; i < SPO2_MASIMO_SENS_NR; i++)
+    SPO2ModuleType moduleType = spo2Param.getModuleType();
+    if (moduleType == MODULE_MASIMO_SPO2)
     {
-        comboBox->addItem(trs(SPO2Symbol::convert((SensitivityMode)i)));
+        for (int i = SPO2_MASIMO_SENS_MAX; i < SPO2_MASIMO_SENS_NR; i++)
+        {
+            comboBox->addItem(trs(SPO2Symbol::convert(static_cast<SensitivityMode>(i))));
+        }
     }
+    else if (moduleType != MODULE_SPO2_NR)
+    {
+        for (int i = SPO2_SENS_LOW; i < SPO2_SENS_NR; i++)
+        {
+            comboBox->addItem(trs(SPO2Symbol::convert(static_cast<SPO2Sensitive>(i))));
+        }
+    }
+
     itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_SENSITIVITY);
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -226,7 +276,7 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
             spo2Param.setAverageTime((AverageTime)index);
             break;
         case SPO2MenuContentPrivate::ITEM_CBO_SENSITIVITY:
-            spo2Param.setSensitivity((SensitivityMode)index);
+            spo2Param.setSensitivity(index);
             break;
         case SPO2MenuContentPrivate::ITEM_CBO_FAST_SAT:
             spo2Param.setFastSat(static_cast<bool>(index));

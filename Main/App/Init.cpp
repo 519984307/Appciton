@@ -338,14 +338,17 @@ static void _initProviderParam(void)
         if (str == "MASIMO_SPO2")
         {
             paramManager.addProvider(*new MasimoSetProvider());
+            spo2Param.setModuleType(MODULE_MASIMO_SPO2);
         }
         else if (str == "BLM_S5")
         {
             paramManager.addProvider(*new S5Provider());
+            spo2Param.setModuleType(MODULE_BLM_S5);
         }
         else if (str == "NELLCOR_SPO2")
         {
             paramManager.addProvider(*new NellcorSetProvider());
+            spo2Param.setModuleType(MODULE_NELLCOR_SPO2);
         }
         paramManager.addParam(spo2Param.construction());
         alertor.addLimtSource(spo2LimitAlarm.construction());
