@@ -23,6 +23,9 @@
 #include "FontManager.h"
 #include "EventStorageManager.h"
 #include "TimeManager.h"
+#include "ECGParam.h"
+#include "IBPParam.h"
+#include "PrintSettingMenuContent.h"
 
 class RecorderManagerPrivate
 {
@@ -387,6 +390,123 @@ void RecorderManager::onGeneratorStopped()
         QMetaObject::invokeMethod(d_ptr->generator.data(), "start");
     }
     d_ptr->isAborted = false;
+}
+
+void RecorderManager::printWavesUpdateInit()
+{
+    QList<int> waveIDs;
+    // ecg
+    int index = 0;
+    currentConfig.getNumValue("ECG|Ecg1Wave", index);
+    ECGLead ecgLead = static_cast<ECGLead>(index);
+    WaveformID waveID = ecgParam.leadToWaveID(ecgLead);
+    waveIDs.append(waveID);
+
+    ECGLeadMode leadMode = ecgParam.getLeadMode();
+    if (leadMode == ECG_LEAD_MODE_5
+            || leadMode == ECG_LEAD_MODE_12)
+    {
+        int index = 0;
+        currentConfig.getNumValue("ECG|Ecg2Wave", index);
+        ECGLead ecgLead = static_cast<ECGLead>(index);
+        WaveformID waveID = ecgParam.leadToWaveID(ecgLead);
+        waveIDs.append(waveID);
+    }
+
+    if (systemManager.isSupport(CONFIG_RESP))
+    {
+        // resp
+        waveIDs.append(WAVE_RESP);
+    }
+
+    if (systemManager.isSupport(CONFIG_SPO2))
+    {
+        // spo2
+        waveIDs.append(WAVE_SPO2);
+    }
+
+    if (systemManager.isSupport(CONFIG_IBP))
+    {
+        // ibp
+        IBPPressureName ibpTitle = ibpParam.getEntitle(IBP_INPUT_1);
+        waveID = ibpParam.getWaveformID(ibpTitle);
+        waveIDs.append(waveID);
+
+        ibpTitle = ibpParam.getEntitle(IBP_INPUT_2);
+        waveID = ibpParam.getWaveformID(ibpTitle);
+        waveIDs.append(waveID);
+    }
+
+    if (systemManager.isSupport(CONFIG_CO2))
+    {
+        // co2
+        waveIDs.append(WAVE_CO2);
+    }
+
+    int offCount = 0;
+    QSet<int> waveCboIds;
+    int savedWaveIds[PRINT_WAVE_NUM] = {0};
+
+    // 搜集所有选择的波形id
+    for (int i = 0; i < PRINT_WAVE_NUM; i++)
+    {
+        QString path;
+        path = QString("Print|SelectWave%1").arg(i + 1);
+        systemConfig.getNumValue(path, savedWaveIds[i]);
+
+        if (savedWaveIds[i] < WAVE_NR)
+        {
+            waveCboIds.insert(savedWaveIds[i]);
+        }
+
+        if (savedWaveIds[i] == WAVE_NONE)
+        {
+            offCount++;
+        }
+    }
+
+    // 如果出现重复选择项，重新按照当前显示波形序列更新打印波形id
+    if (offCount < PRINT_WAVE_NUM - 1)
+    {
+        if ((waveCboIds.size()) < PRINT_WAVE_NUM)
+        {
+            int idCount = waveIDs.count();
+            for (int i = 0; i < PRINT_WAVE_NUM; i++)
+            {
+                QString path;
+                path = QString("Print|SelectWave%1").arg(i + 1);
+                int waveId = WAVE_NONE;
+                if (i < idCount)
+                {
+                    waveId = waveIDs.at(i);
+                }
+                systemConfig.setNumValue(path, waveId);
+                // 更新打印的波形ids
+                savedWaveIds[i] = waveId;
+            }
+        }
+    }
+
+    // 重新更新配置文件的中的波形id
+    for (int i = 0; i < PRINT_WAVE_NUM; i++)
+    {
+        // 选择空波形的索引
+        if (savedWaveIds[i] == WAVE_NONE)
+        {
+            continue;
+        }
+
+        int cboIndex = waveIDs.indexOf(savedWaveIds[i]);
+
+        // 范围之外的波形选择更新为WAVE_NONE
+        if (cboIndex == -1)
+        {
+            QString path;
+            path = QString("Print|SelectWave%1").arg(i + 1);
+            systemConfig.setNumValue(path, static_cast<int>(WAVE_NONE));
+            continue;
+        }
+    }
 }
 
 RecorderManager::RecorderManager()
