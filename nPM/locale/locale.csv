@@ -1387,9 +1387,9 @@ Physiology,生理,Physiology
 UserMaintainPassword,用户维护密码,User Maintain Password
 UserMaintainSystem,用户维护系统,User Maintain
 Department,部门,Department
-BedNumber,床号,Bed
+BedNumber,床号,Bed Number
 ModifyPassword,密码,Password
-ChangeBedNumberRight,床号权限,Bed Number Right
+ChangeBedNumberRight,更改床号权限,Changing Bed Number
 Language,语言,Language
 EditMonitorName,监护仪名称,Monitor Name
 UserMaintainModifyConfig,用户维护修改配置,User Maintain Modify Config
