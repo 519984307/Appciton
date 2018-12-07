@@ -134,7 +134,7 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
     item->startCollectTrendAndWaveformData(t);
 
     int index = 0;
-    currentConfig.setNumValue("Print|PhysiologicalAlarm", index);
+    currentConfig.getNumValue("Print|PhysiologicalAlarm", index);
     if (index)
     {
         RecordPageGenerator *generator = new TriggerPageGenerator(item);
@@ -148,7 +148,7 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
             {
                 recorderManager.stopPrint();
                 recorderManager.addPageGenerator(generator);
-                item->setWaitForTriggerPrintFlag(true);
+                item->setWaitForTriggerPrintFlag(false);
             }
         }
         else
@@ -174,6 +174,32 @@ void EventStorageManager::triggerCodeMarkerEvent(const char *codeName, unsigned 
             d->getStoreWaveList(WAVE_NONE),
             codeName);
     item->startCollectTrendAndWaveformData(t);
+
+    int index = 0;
+    currentConfig.getNumValue("Print|CoderMarker", index);
+    if (index)
+    {
+        RecordPageGenerator *generator = new TriggerPageGenerator(item);
+        if (recorderManager.isPrinting())
+        {
+            if (generator->getPriority() <= recorderManager.getCurPrintPriority())
+            {
+                generator->deleteLater();
+            }
+            else
+            {
+                recorderManager.stopPrint();
+                recorderManager.addPageGenerator(generator);
+                item->setWaitForTriggerPrintFlag(false);
+            }
+        }
+        else
+        {
+            recorderManager.addPageGenerator(generator);
+            item->setWaitForTriggerPrintFlag(true);
+        }
+    }
+
     if (item)
     {
         d->mutex.lock();
@@ -204,6 +230,32 @@ void EventStorageManager::triggerNIBPMeasurementEvent(unsigned t)
     EventStorageItem *item = new EventStorageItem(EventNIBPMeasurement,
             d->getStoreWaveList(WAVE_NONE));
     item->startCollectTrendAndWaveformData(t);
+
+    int index = 0;
+    currentConfig.getNumValue("Print|NIBPReading", index);
+    if (index)
+    {
+        RecordPageGenerator *generator = new TriggerPageGenerator(item);
+        if (recorderManager.isPrinting())
+        {
+            if (generator->getPriority() <= recorderManager.getCurPrintPriority())
+            {
+                generator->deleteLater();
+            }
+            else
+            {
+                recorderManager.stopPrint();
+                recorderManager.addPageGenerator(generator);
+                item->setWaitForTriggerPrintFlag(false);
+            }
+        }
+        else
+        {
+            recorderManager.addPageGenerator(generator);
+            item->setWaitForTriggerPrintFlag(true);
+        }
+    }
+
     if (item)
     {
         d->mutex.lock();
@@ -219,6 +271,32 @@ void EventStorageManager::triggerWaveFreezeEvent(unsigned t)
     EventStorageItem *item = new EventStorageItem(EventWaveFreeze,
             d->getStoreWaveList(WAVE_NONE));
     item->startCollectTrendAndWaveformData(t);
+
+    int index = 0;
+    currentConfig.getNumValue("Print|WaveFreeze", index);
+    if (index)
+    {
+        RecordPageGenerator *generator = new TriggerPageGenerator(item);
+        if (recorderManager.isPrinting())
+        {
+            if (generator->getPriority() <= recorderManager.getCurPrintPriority())
+            {
+                generator->deleteLater();
+            }
+            else
+            {
+                recorderManager.stopPrint();
+                recorderManager.addPageGenerator(generator);
+                item->setWaitForTriggerPrintFlag(false);
+            }
+        }
+        else
+        {
+            recorderManager.addPageGenerator(generator);
+            item->setWaitForTriggerPrintFlag(true);
+        }
+    }
+
     if (item)
     {
         d->mutex.lock();
