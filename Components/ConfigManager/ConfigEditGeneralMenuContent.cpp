@@ -17,6 +17,7 @@
 #include <QRegExp>
 #include "ConfigManager.h"
 #include "KeyInputPanel.h"
+#include "MessageBox.h"
 
 #define MAX_CONFIG_NAME_LEN 64
 
@@ -98,17 +99,23 @@ void ConfigEditGeneralMenuContent::onBtnReleasedChanged()
     QString regKeyStr("[a-zA-Z]|[0-9]|_");
     panel.setBtnEnable(regKeyStr);
 
-    if (1 == panel.exec())
+    if (QDialog::Accepted == panel.exec())
     {
-        QString oldStr(d_ptr->btns[ConfigEditGeneralMenuContentPrivate
-                                   ::ITEM_BTN_CONFIG_NAME]->text());
         QString newStr(panel.getStrValue());
-        if (oldStr != newStr)
+        // 防止命名相同
+        QList<ConfigManager::UserDefineConfigInfo> configList = configManager.getUserDefineConfigInfos();
+        foreach(ConfigManager::UserDefineConfigInfo info, configList)
         {
-            d_ptr->cmw->setCurrentEditConfigName(newStr);
-            d_ptr->btns[ConfigEditGeneralMenuContentPrivate
-                        ::ITEM_BTN_CONFIG_NAME]->setText(newStr);
+            if (info.name == newStr)
+            {
+                MessageBox message(trs("Prompt"), trs("HasExistConfig"), false, true);
+                message.exec();
+                return;
+            }
         }
+
+        d_ptr->cmw->setCurrentEditConfigName(newStr);
+        d_ptr->btns[ConfigEditGeneralMenuContentPrivate::ITEM_BTN_CONFIG_NAME]->setText(newStr);
     }
 }
 
