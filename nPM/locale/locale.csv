@@ -734,7 +734,7 @@ ServiceChargePressure,预充气压力,Charge Pressure
 TEMPModuleDisConnect,温度模块未连接,TEMP Module DisConnected
 TEMPChannelOne,体温通道1,TEMP Channel One
 TEMPChannelTwo,体温通道2,TEMP Channel Two 
-TEMPChannelDisable,体温通道失能,TEMP Channel Disable 
+TEMPChannelDisable,体温通道禁用,TEMP Channel Disable 
 ServiceInflate,充气,Inflate
 ServiceDeflate,放气,Deflate
 Inflating,充气中,Inflating
