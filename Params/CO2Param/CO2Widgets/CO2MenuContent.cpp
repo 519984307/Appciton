@@ -24,6 +24,7 @@
 #include "RESPParam.h"
 #include "IConfig.h"
 #include "AlarmLimitWindow.h"
+#include "SpinBox.h"
 
 class CO2MenuContentPrivate
 {
@@ -40,7 +41,7 @@ public:
         ITEM_BTN_ZERO_CALIB,
     };
 
-    CO2MenuContentPrivate() {}
+    CO2MenuContentPrivate() : o2Spb(NULL), n2oSpb(NULL) {}
 
     /**
      * @brief loadOptions  // load settings
@@ -49,6 +50,8 @@ public:
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> btns;
+    SpinBox *o2Spb;
+    SpinBox *n2oSpb;
 };
 
 CO2MenuContent::CO2MenuContent():
@@ -101,8 +104,8 @@ void CO2MenuContentPrivate::loadOptions()
     combos[ITEM_CBO_WAVE_RULER]->setCurrentIndex(co2Param.getDisplayZoom());
 
     // 气体补偿。
-    btns[ITEM_BTN_O2_COMPEN]->setText(QString::number(co2Param.getCompensation(CO2_COMPEN_O2)));
-    btns[ITEM_BTN_N2O_COMPEN]->setText(QString::number(co2Param.getCompensation(CO2_COMPEN_N2O)));
+    o2Spb->setValue(co2Param.getCompensation(CO2_COMPEN_O2));
+    n2oSpb->setValue(co2Param.getCompensation(CO2_COMPEN_N2O));
 
     // 显示控制。
     combos[ITEM_CBO_FICO2_DISPLAY]->setCurrentIndex(co2Param.getFICO2Display());
@@ -141,55 +144,8 @@ void CO2MenuContent::onBtnReleasedChanged()
     Button *button = qobject_cast<Button *>(sender());
     int index = button->property("Btn").toInt();
 
-     // 调用数字键盘
-    KeyInputPanel numberInput(KeyInputPanel::KEY_TYPE_NUMBER);
-    // 最大输入长度
-    numberInput.setMaxInputLength(3);
-    // 固定为数字键盘
-    numberInput.setKeytypeSwitchEnable(false);
-    numberInput.setSymbolEnable(false);
-    numberInput.setSpaceEnable(false);
-
-    unsigned num = 1000;
     switch (index)
     {
-    case CO2MenuContentPrivate::ITEM_BTN_O2_COMPEN:
-        numberInput.setWindowTitle(trs("O2Compensation"));
-        if (numberInput.exec())
-        {
-            QString strValue = numberInput.getStrValue();
-            num = strValue.toShort();
-            if (num <= 100)
-            {
-                co2Param.setCompensation(CO2_COMPEN_O2, num);
-                button->setText(QString::number(num));
-            }
-            else
-            {
-                MessageBox messageBox(trs("O2Compensation"), trs("InvalidInput") + " 0-100 ", QStringList(trs("EnglishYESChineseSURE")));
-                messageBox.exec();
-            }
-        }
-        break;
-    case CO2MenuContentPrivate::ITEM_BTN_N2O_COMPEN:
-        numberInput.setWindowTitle(trs("N2OCompensation"));
-        if (numberInput.exec())
-        {
-            QString strValue = numberInput.getStrValue();
-            num = strValue.toShort();
-            if (num <= 100)
-            {
-                co2Param.setCompensation(CO2_COMPEN_N2O, num);
-                button->setText(QString::number(num));
-            }
-            else
-            {
-                MessageBox messageBox(trs("N2OCompensation"), trs("InvalidInput") + " 0-100 ",
-                                       QStringList(trs("EnglishYESChineseSURE")));
-                messageBox.exec();
-            }
-        }
-        break;
     case CO2MenuContentPrivate::ITEM_BTN_ZERO_CALIB:
         co2Param.zeroCalibration();
         break;
@@ -205,12 +161,23 @@ void CO2MenuContent::onAlarmBtnReleased()
     windowManager.showWindow(&w, WindowManager::ShowBehaviorModal);
 }
 
+void CO2MenuContent::o2CompenSpinboxReleased(int value, int scale)
+{
+    co2Param.setCompensation(CO2_COMPEN_O2, value * scale);
+}
+
+void CO2MenuContent::n2oCompenSpinboxReleased(int value, int scale)
+{
+    co2Param.setCompensation(CO2_COMPEN_N2O, value * scale);
+}
+
 void CO2MenuContent::layoutExec()
 {
     QGridLayout *layout = new QGridLayout(this);
     ComboBox *comboBox;
     Button *button;
     QLabel *label;
+    SpinBox *spinBox;
     int itemID;
 
     // wave speed
@@ -277,33 +244,9 @@ void CO2MenuContent::layoutExec()
 
     int row = d_ptr->combos.count();
 
-    // o2 compensation
-    label = new QLabel(trs("O2Compensation"));
-    layout->addWidget(label, row + d_ptr->btns.count(), 0);
-    button = new Button();
-    button->setButtonStyle(Button::ButtonTextOnly);
-    button->setText(QString(80));
-    connect(button, SIGNAL(released()), this, SLOT(onBtnReleasedChanged()));
-    layout->addWidget(button, row + d_ptr->btns.count(), 1);
-    itemID = CO2MenuContentPrivate::ITEM_BTN_O2_COMPEN;
-    button->setProperty("Btn", itemID);
-    d_ptr->btns.insert(CO2MenuContentPrivate::ITEM_BTN_O2_COMPEN, button);
-
-    // n2o compensation
-    label = new QLabel(trs("N2OCompensation"));
-    layout->addWidget(label, row + d_ptr->btns.count(), 0);
-    button = new Button("20");
-    button->setButtonStyle(Button::ButtonTextOnly);
-//    button->setText("20");
-    connect(button, SIGNAL(released()), this, SLOT(onBtnReleasedChanged()));
-    layout->addWidget(button, row + d_ptr->btns.count(), 1);
-    itemID = CO2MenuContentPrivate::ITEM_BTN_N2O_COMPEN;
-    button->setProperty("Btn", itemID);
-    d_ptr->btns.insert(CO2MenuContentPrivate::ITEM_BTN_N2O_COMPEN, button);
-
     // zero calibration
     label = new QLabel(trs("CO2ZeroCalib"));
-    layout->addWidget(label, row + d_ptr->btns.count(), 0);
+    layout->addWidget(label, row, 0);
     button = new Button();
     button->setButtonStyle(Button::ButtonTextOnly);
     button->setText(trs("CO2ZeroStart"));
@@ -313,14 +256,37 @@ void CO2MenuContent::layoutExec()
     button->setProperty("Btn", itemID);
     d_ptr->btns.insert(CO2MenuContentPrivate::ITEM_BTN_ZERO_CALIB, button);
 
+    row = row + d_ptr->btns.count();
+
+    // o2 compensation
+    label = new QLabel(trs("O2Compensation"));
+    layout->addWidget(label, row, 0);
+    spinBox = new SpinBox();
+    spinBox->setRange(0, 100);
+    spinBox->setStep(1);
+    layout->addWidget(spinBox, row, 1);
+    connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(o2CompenSpinboxReleased(int, int)));
+    d_ptr->o2Spb = spinBox;
+
+
+    // n2o compensation
+    label = new QLabel(trs("N2OCompensation"));
+    layout->addWidget(label, row + 1, 0);
+    spinBox = new SpinBox();
+    spinBox->setRange(0, 100);
+    spinBox->setStep(1);
+    layout->addWidget(spinBox, row + 1, 1);
+    connect(spinBox, SIGNAL(valueChange(int, int)), this, SLOT(n2oCompenSpinboxReleased(int, int)));
+    d_ptr->n2oSpb = spinBox;
+
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
                              arg(" >>"));
     btn->setButtonStyle(Button::ButtonTextOnly);
-    layout->addWidget(btn, (row + d_ptr->btns.count()), 1);
+    layout->addWidget(btn, (row + 2), 1);
     connect(btn, SIGNAL(released()), this, SLOT(onAlarmBtnReleased()));
 
-    layout->setRowStretch((row + d_ptr->btns.count() + 1), 1);
+    layout->setRowStretch(row + 3, 1);
 }
 
