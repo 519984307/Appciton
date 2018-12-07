@@ -189,7 +189,7 @@ TrendGraphSetWindow::TrendGraphSetWindow()
     mScrollArea->setWidgetResizable(true);
     mScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     mScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    mScrollArea->setFloatbarPolicy(ScrollArea::FloatBarNotShow);
+    mScrollArea->setFloatbarPolicy(ScrollArea::FloatBarShowForeverWhenNeeded);
     mScrollArea->setFocusPolicy(Qt::NoFocus);
     mScrollArea->setFrameShape(QFrame::NoFrame);
     mScrollArea->setFixedHeight(300);
