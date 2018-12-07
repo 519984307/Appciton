@@ -495,6 +495,7 @@ bool ConfigExportImportMenuContent::insertFileFromUSB()
                 if (newUserDfine.name == info.name)
                 {
                     sameConfigName = true;
+                    break;
                 }
             }
             if (sameConfigName == false)
