@@ -440,7 +440,7 @@ NIBPMEASURE,测量,Measure
 NIBPREADING,测量,Reading
 NIBPFAILED,失败,Failed
 NIBPSTOPPED,停止,Stopped
-NIBPWAITING,请等待,NIBP Waiting
+NIBPWAITING,NIBP等待,NIBP Waiting
 NIBPNoResponse,无响应,No Response
 NIBPTemporarily,临时,Temporarily
 NIBPDisable,禁用,Disable
