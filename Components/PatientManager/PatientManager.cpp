@@ -57,15 +57,13 @@ void PatientManager::setPatientInfoWidget(PatientInfoWidget &widget)
  *************************************************************************************************/
 void PatientManager::setType(PatientType type)
 {
-    PatientType oldType = d_ptr->patientInfo.type;
+    if (type == d_ptr->patientInfo.type)
+    {
+        return;
+    }
 
     d_ptr->patientInfo.type = type;
     systemConfig.setNumValue("General|PatientType", static_cast<int>(type));
-
-    if (d_ptr->patientInfo.type == oldType)
-    {
-//        return;
-    }
 
     // 病人类型被修改了，重新加载配置后，通知需要关注次事件的对象。
     d_ptr->patientInfoWidget->loadPatientInfo();
