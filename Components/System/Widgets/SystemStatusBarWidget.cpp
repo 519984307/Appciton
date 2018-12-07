@@ -202,7 +202,10 @@ SystemStatusBarWidget::SystemStatusBarWidget() : IWidget("SystemStatusBarWidget"
     {
         IWidget *w = new IWidget(QString("icon%1").arg(i + 1));
         w->setAttribute(Qt::WA_NoSystemBackground);
-        w->setFocusPolicy(Qt::NoFocus);
+        if (i == SYSTEM_ICON_LABEL_USB)
+        {
+            w->setFocusPolicy(Qt::NoFocus);
+        }
         w->setFixedWidth(ICON_WIDTH);
         connect(w, SIGNAL(released()), _signalMapper, SLOT(map()));
         _signalMapper->setMapping(w, i);
