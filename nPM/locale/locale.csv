@@ -1394,8 +1394,8 @@ Language,语言,Language
 EditMonitorName,监护仪名称,Monitor Name
 UserMaintainModifyConfig,用户维护修改配置,User Maintain Modify Config
 ProfileConflict,配置冲突,Profile Conflict
-WiredWorkMaintainMenu,有线网络,Wired Work
-WiredWorkMaintainMenuDesc,有线网络,Wired Work
+WiredWorkMaintainMenu,有线网络,Wired Network
+WiredWorkMaintainMenuDesc,有线网络,Wired Network
 AddressType,地址类型,Address Type
 manual,手动,manual
 DHCP,DHCP,DHCP
