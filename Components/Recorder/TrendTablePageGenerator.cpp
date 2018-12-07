@@ -408,10 +408,23 @@ void TrendTablePageGeneratorPrivate::addSubParamValueToStringList(const TrendDat
         case SUB_PARAM_ETO2:
         {
             // ET and FI display together
-            if (needAddCaption)
+            if (needAddCaption && subParamID != SUB_PARAM_ETCO2)
             {
                 caption = QString("%1/%2").arg(trs(paramInfo.getSubParamName(subParamID)))
                           .arg(trs(paramInfo.getSubParamName((SubParamID)(subParamID + 1))));
+            }
+            // 更新etco2的打印表头显示，与趋势表中显示表头保持一致
+            if (needAddCaption && subParamID == SUB_PARAM_ETCO2)
+            {
+                QString name;
+                name = paramInfo.getSubParamName(SUB_PARAM_ETCO2);
+                caption = name.right(3);
+                caption += '(';
+                caption += trs(name.left(name.length() - 3));
+                caption += '/';
+                name = paramInfo.getSubParamName(SUB_PARAM_FICO2);
+                caption += trs(name.left(name.length() - 3));
+                caption += ')';
             }
 
             QString valueEt = constructNormalValueString(subParamID,
