@@ -78,6 +78,7 @@ void PatientManager::setType(PatientType type)
 
     ecgParam.setPatientType((unsigned char)(d_ptr->patientInfo.type));
     nibpParam.provider().setPatientType(type);
+    configManager.loadConfig(type);
 }
 
 /**************************************************************************************************

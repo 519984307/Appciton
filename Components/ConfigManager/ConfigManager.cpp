@@ -16,6 +16,7 @@
 #include "TimeDate.h"
 #include <QFile>
 #include <QDateTime>
+#include "LayoutManager.h"
 
 #define CONFIG_DIR "/usr/local/nPM/etc/"
 #define USER_DEFINE_CONFIG_PREFIX "UserDefine"
@@ -249,6 +250,14 @@ bool ConfigManager::hasExistConfig(const QString &name)
         }
     }
     return flag;
+}
+
+void ConfigManager::loadConfig(PatientType type)
+{
+    // 更新配置
+    QString filePath = d_ptr->getDefaultConfigFilepath(type);
+    currentConfig.setCurrentFilePath(filePath);
+    layoutManager.updateLayoutWidgetsConfig();
 }
 
 bool ConfigManager::isReadOnly()const

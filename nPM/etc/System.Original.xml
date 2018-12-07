@@ -150,8 +150,8 @@
     <ConfigManager>
         <Default>
             <Adult type="Current" name="" >AdultConfig.xml</Adult>
-            <PED type="Current" name="" >PedConfig.xml</PED>
-            <NEO type="Current" name="" >NeoConfig.xml</NEO>
+            <Pediatric type="Current" name="" >PedConfig.xml</Pediatric>
+            <Neonate type="Current" name="" >NeoConfig.xml</Neonate>
         </Default>
         <UserDefine count="0">
         </UserDefine>
