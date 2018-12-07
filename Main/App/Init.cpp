@@ -564,7 +564,7 @@ static void _initPrint(void)
     PRT48Provider *prtProvider = new PRT48Provider();
     recorderManager.setPrintPrividerIFace(prtProvider);
     recorderManager.selfTest();
-    recorderManager.printWavesUpdateInit();
+    recorderManager.printWavesInit();
 }
 
 /**************************************************************************************************

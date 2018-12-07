@@ -138,9 +138,9 @@ public:
     RecordPageGenerator::PrintPriority getCurPrintPriority(void);
 
     /**
-     * @brief printWavesUpdateInit  打印波形初始化--配置文件初始化时需要重新更新打印波形id
+     * @brief printWavesInit  打印波形初始化--配置文件初始化时需要重新更新打印波形id
      */
-    void printWavesUpdateInit(void);
+    void printWavesInit(void);
 
 private slots:
 

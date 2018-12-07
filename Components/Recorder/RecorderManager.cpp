@@ -392,7 +392,7 @@ void RecorderManager::onGeneratorStopped()
     d_ptr->isAborted = false;
 }
 
-void RecorderManager::printWavesUpdateInit()
+void RecorderManager::printWavesInit()
 {
     QList<int> waveIDs;
     // ecg
