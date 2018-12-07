@@ -123,8 +123,7 @@ void PatientManagementMenuContent::onBtnReleased()
             {
                 patientManager.newPatient();
             }
-            windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers
-                                     | WindowManager::ShowBehaviorCloseIfVisiable);
+            windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseIfVisiable);
         }
         break;
         case PatientManagementMenuContentPrivate::ITEM_BTN_NEW_PATIENT:
@@ -168,7 +167,7 @@ void PatientManagementMenuContent::onBtnReleased()
             {
                 return;
             }
-            windowManager.showWindow(&rescueDataDeleteWindow , WindowManager::ShowBehaviorModal | WindowManager::ShowBehaviorCloseOthers);
+            windowManager.showWindow(&rescueDataDeleteWindow , WindowManager::ShowBehaviorCloseIfVisiable);
         }
         break;
         default:
