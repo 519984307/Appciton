@@ -84,8 +84,27 @@ void ECGMenuContentPrivate::loadOptions()
 {
     int index = 0;
 
+    combos[ITEM_CBO_HRPR_SOURCE]->blockSignals(true);
+    combos[ITEM_CBO_HRPR_SOURCE]->clear();
+    for (int i = HR_SOURCE_ECG; i < HR_SOURCE_NR; ++i)
+    {
+        if (i == HR_SOURCE_SPO2 && !systemManager.isSupport(PARAM_SPO2))
+        {
+            continue;
+        }
+        if (i == HR_SOURCE_IBP && !systemManager.isSupport(PARAM_IBP))
+        {
+            continue;
+        }
+        combos[ITEM_CBO_HRPR_SOURCE]->addItem(trs(ECGSymbol::convert(static_cast<HRSourceType>(i))));
+    }
     currentConfig.getNumValue("ECG|HRSource", index);
+    if (index > combos[ITEM_CBO_HRPR_SOURCE]->count())
+    {
+        index = 0;
+    }
     combos[ITEM_CBO_HRPR_SOURCE]->setCurrentIndex(index);
+    combos[ITEM_CBO_HRPR_SOURCE]->blockSignals(false);
 
     ECGLeadMode leadMode = ecgParam.getLeadMode();
     combos[ITEM_CBO_LEAD_MODE]->blockSignals(true);
@@ -371,12 +390,6 @@ void ECGMenuContent::layoutExec()
     label = new QLabel(trs("HR_PRSource"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs(ECGSymbol::convert(HR_SOURCE_ECG))
-                       << trs(ECGSymbol::convert(HR_SOURCE_SPO2))
-                       << trs(ECGSymbol::convert(HR_SOURCE_IBP))
-                       << trs(ECGSymbol::convert(HR_SOURCE_AUTO))
-                      );
     itemID = ECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
