@@ -1242,7 +1242,7 @@ FactoryMaintainModifyConfig,工厂维护修改配置,Factory Maintain Modify Con
 MachineConfigModuleMenu,机器配置,Machine Config
 IBPModule,IBP,IBP
 CO2Module,CO2,CO2
-ECG12LeadsModule,ECG 12Leads,ECG 12Leads
+ECG12LeadsModule,ECG 12导,ECG 12 Leads
 PrinterModule,打印机模块,Printer Module
 HDMIModule,高清晰度多媒体接口模块,HDMI Module
 WIFIModule,WIFI,WIFI
