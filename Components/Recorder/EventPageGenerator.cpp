@@ -102,6 +102,8 @@ public:
                 LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subparamID, unit);
 
                 titleStr += Util::convertToString(ctx.almSegment->alarmLimit, config.scale);
+                titleStr += " ";
+                titleStr += Unit::localeSymbol(unit);
             }
 
             eventTitle = titleStr;
