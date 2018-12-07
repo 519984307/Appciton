@@ -203,7 +203,18 @@ TrendGraphSetWindow::TrendGraphSetWindow()
         RulerItem *item = NULL;
         item = d_ptr->itemList.at(i);
         name = paramInfo.getSubParamName(item->sid);
-        item->label->setText(trs(name));
+        if (item->sid == SUB_PARAM_ETCO2)
+        {
+            item->label->setText("CO2(Et/Fi)");
+        }
+        else if (item->sid == SUB_PARAM_T1)
+        {
+            item->label->setText("T1/T2");
+        }
+        else
+        {
+            item->label->setText(trs(name));
+        }
         item->label->setFixedSize(ITEM_WIDTH, ITEM_HEIGHT);
         item->combo->addItem(trs("Off"));
         item->combo->addItem(trs("On"));
