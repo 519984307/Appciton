@@ -489,6 +489,14 @@ void KeyInputPanel::setSpaceEnable(bool enable)
     }
 
     d_ptr->keys[KEY_ORDER_SPACE]->setEnabled(enable);
+
+    if (enable == true)
+    {
+        d_ptr->keys[KEY_ORDER_SPACE]->setIcon(QIcon("/usr/local/nPM/icons/blank.png"));
+        return;
+    }
+
+    d_ptr->keys[KEY_ORDER_SPACE]->setIcon(QIcon("/usr/local/nPM/icons/blankDisable.png"));
 }
 
 /**************************************************************************************************
