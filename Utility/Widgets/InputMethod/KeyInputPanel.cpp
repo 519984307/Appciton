@@ -45,6 +45,7 @@ public:
 
     QString regExpStr;
     QString invalidStr;
+    bool showDecimalPoint;
 };
 
 KeyInputPanelPrivate::KeyInputPanelPrivate()
@@ -56,6 +57,7 @@ KeyInputPanelPrivate::KeyInputPanelPrivate()
       textDisplay(NULL),
       regExpStr(""),
       invalidStr(trs("InvalidInput"))
+    , showDecimalPoint(false)
 {
     helpKeys.clear();
     keys.clear();
@@ -489,6 +491,19 @@ void KeyInputPanel::setSpaceEnable(bool enable)
     }
 
     d_ptr->keys[KEY_ORDER_SPACE]->setEnabled(enable);
+
+    if (d_ptr->showDecimalPoint == true)
+    {
+        return;
+    }
+
+    if (enable == true)
+    {
+        d_ptr->keys[KEY_ORDER_SPACE]->setIcon(QIcon("/usr/local/nPM/icons/blank.png"));
+        return;
+    }
+
+    d_ptr->keys[KEY_ORDER_SPACE]->setIcon(QIcon("/usr/local/nPM/icons/blankDisable.png"));
 }
 
 /**************************************************************************************************
@@ -537,6 +552,7 @@ KeyInputPanel::KeyInputPanel(KeyType type, bool isShowDecimalPoint)
     : Window(),
       d_ptr(new KeyInputPanelPrivate)
 {
+    d_ptr->showDecimalPoint = isShowDecimalPoint;
     d_ptr->maxLength = 90;
     _checkValue = NULL;
     d_ptr->isInvalid = false;
