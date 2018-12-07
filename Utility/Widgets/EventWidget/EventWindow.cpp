@@ -986,7 +986,7 @@ void EventWindowPrivate::eventTrendUpdate()
         case SUB_PARAM_AUXP2_MAP:
             map = dataStr;
             valueStr = sys + "/" + dia + "(" + map + ")";
-            titleStr = paramInfo.getSubParamName(subId);
+            titleStr = trs(paramInfo.getSubParamName(subId));
             titleStr = titleStr.left(titleStr.length() - 4);
             valueFont = fontManager.numFont(25);
             break;
@@ -1013,14 +1013,14 @@ void EventWindowPrivate::eventTrendUpdate()
         case SUB_PARAM_FIO2:
             fi = dataStr;
             valueStr = et + "/" + fi;
-            titleStr = paramInfo.getSubParamName(subId);
+            titleStr = trs(paramInfo.getSubParamName(subId));
             titleStr = titleStr.right(titleStr.length() - 2);
             titleStr += "(Et/Fi)";
             valueFont = fontManager.numFont(31);
             break;
         default:
             valueStr = dataStr;
-            titleStr = paramInfo.getSubParamName(subId);
+            titleStr = trs(paramInfo.getSubParamName(subId));
             valueFont = fontManager.numFont(37);
             break;
         }
