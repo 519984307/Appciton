@@ -1041,7 +1041,7 @@ ECGForeAnalysis,ECG前台分析,Foreground ECG Analysis
 ShockDelivery,释放电击,Shock Delivery
 CheckPatient,检查病人,Check Patient
 PacerStartup,起搏开始,Pacer Startup
-NIBPReading,NIBP快照,NIBP Reading
+NIBPReading,NIBP快照,NIBP Snapshot
 PhyAlarm,生理报警,Phy. Alarm
 AlarmMute,报警静音,Mute
 RecorderAction,记录仪,Recorder Action
