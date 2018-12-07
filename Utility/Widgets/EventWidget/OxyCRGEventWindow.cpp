@@ -659,6 +659,8 @@ void OxyCRGEventWindowPrivate::eventInfoUpdate(int curRow)
         LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subId, type);
         double limitValue = static_cast<double>(ctx.alamSegment->alarmLimit / config.scale);
         infoStr += QString::number(limitValue);
+        infoStr += " ";
+        infoStr += Unit::localeSymbol(type);
         break;
     }
     default:
