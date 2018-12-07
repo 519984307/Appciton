@@ -160,6 +160,13 @@ void PrintSettingMenuContentPrivate::loadOptions()
             cboIndex++;
         }
 
+        // 范围之外的波形选择更新为WAVE_NONE
+        if (cboIndex == -1)
+        {
+            selectWaves[i]->setCurrentIndex(0);
+            continue;
+        }
+
         if (cboIndex < selectWaves[i]->count() && cboIndex >= 0)
         {
             selectWaves[i]->setCurrentIndex(cboIndex);
