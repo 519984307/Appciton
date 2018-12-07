@@ -32,6 +32,7 @@
 #include "NightModeManager.h"
 #include "StandbyWindow.h"
 #include "CalculateWindow.h"
+#include "DischargePatientWindow.h"
 
 enum Co2Mode
 {
@@ -48,6 +49,7 @@ static KeyActionDesc _baseKeys[] =
                     , SOFT_BASE_KEY_NR, true, QColor(27, 79, 147)),
     KeyActionDesc("", trs("Patient"), "PatientInfo.png", SoftkeyActionBase::patientInfo),
     KeyActionDesc("", trs("NewPatient"), "PatientNew.png", SoftkeyActionBase::patientNew),
+    KeyActionDesc("", trs("RelievePatient"), "PatientDischarge.png", SoftkeyActionBase::patientRelieve),
     KeyActionDesc("", trs("ECGCalcLead"), "LeadSelection.png", SoftkeyActionBase::ecgLeadChange),
     KeyActionDesc("", trs("AlarmLimitMenu"), "limitSet.png", SoftkeyActionBase::limitMenu),
     KeyActionDesc("", trs("CodeMarker"), "CodeMarker.png", SoftkeyActionBase::codeMarker),
@@ -205,6 +207,19 @@ void SoftkeyActionBase::patientNew(bool isPressed)
     {
         patientManager.newPatient();
         windowManager.showWindow(&patientInfoWindow , WindowManager::ShowBehaviorCloseOthers);
+    }
+}
+
+void SoftkeyActionBase::patientRelieve(bool isPressed)
+{
+    if (isPressed)
+    {
+        return;
+    }
+    DischargePatientWindow dischargeWin;
+    if (dischargeWin.exec() == QDialog::Accepted)
+    {
+        patientManager.dischargePatient();
     }
 }
 

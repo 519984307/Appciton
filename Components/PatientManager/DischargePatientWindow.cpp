@@ -106,16 +106,6 @@ void DischargePatientWindow::layoutExec()
     setWindowLayout(layout);
 }
 
-/***************************************************************************************************
- * 显示事件
- **************************************************************************************************/
-void DischargePatientWindow::showEvent(QShowEvent *e)
-{
-    Window::showEvent(e);
-    QRect r = layoutManager.getMenuArea();
-    move(r.x() + (r.width() - width()) / 2, r.y() + (r.height() - height()) / 2);
-}
-
 void DischargePatientWindow::onBtnRelease()
 {
     Button *btn = qobject_cast<Button*>(sender());
