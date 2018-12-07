@@ -109,8 +109,11 @@ public:
     {
         static const char *symbol[NIBP_ADULT_INITIAL_CUFF_NR] =
         {
+            "80",
+            "100",
             "120",
             "140",
+            "150",
             "160",
             "180",
             "200",
@@ -126,13 +129,12 @@ public:
         static const char *symbol[NIBP_PREDIATRIC_INITIAL_CUFF_NR] =
         {
             "80",
-            "90",
             "100",
-            "110",
             "120",
-            "130",
             "140",
             "150",
+            "180",
+            "200",
         };
         return symbol[index];
     }
@@ -146,9 +148,7 @@ public:
             "80",
             "90",
             "100",
-            "110",
             "120",
-            "130",
         };
         return symbol[index];
     }
