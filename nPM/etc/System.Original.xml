@@ -32,6 +32,7 @@
         <TouchScreen>1</TouchScreen>
         <DefaultPatientType>0</DefaultPatientType>
         <DefaultDisplayBrightness>7</DefaultDisplayBrightness>
+	<KeyPressVolume>3</KeyPressVolume>
     </General>
     <Alarms>
         <MinimumAlarmVolume>2</MinimumAlarmVolume>
