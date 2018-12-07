@@ -39,7 +39,7 @@ void SaveCurrentConfigMenuContent::layoutExec()
     QGridLayout *layout = new QGridLayout(this);
     Button *btn = new Button;
     btn->setButtonStyle(Button::ButtonTextOnly);
-    btn->setText(QString("%1 >>").arg(trs("SaveCurrentSettingAs")));
+    btn->setText(QString("%1 >>").arg(trs("SaveCurrentSetting")));
     layout->addWidget(btn, 0 , 1);
     layout->setRowStretch(1, 1);
     layout->setColumnStretch(0, 1);

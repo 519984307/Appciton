@@ -10,7 +10,7 @@ TT3,TT3,TT3
 PRT72,PRT72,PRT72
 STAnalysize,ST段分析,ST Analysize
 SystemMaintenance,维护,Maintenance
-SystemMaintenanceDesc,维护设置,Maintenance Desc
+SystemMaintenanceDesc,维护,Maintenance
 iDMBoard,iDMBoard,iDMBoard
 BuildTime,编译时间,Build Time
 ChannelPressureEntitle1,压力标名1,Pressure Entitle1
@@ -272,7 +272,7 @@ HRSourceIBP,IBP,IBP
 HR_PRSource,HR/PR来源,HR/PR Source
 CO2Setting,CO2设置,CO2 Setting
 PatientManager,病人管理,Patient Setup
-PatientManagerDesc,病人管理,Patient Setup Desc
+PatientManagerDesc,病人管理,Patient Setup
 PatientInfo,病人信息,Patient Info
 NewPatient,新建病人,New Patient
 NormalFunctionMenu,常规功能,Normal Function
@@ -493,7 +493,7 @@ _240sec,240 秒,240 sec
 sec,秒,second
 PatientData,病人数据,Patient Data
 DataReviewMenu,数据回顾,Data Review
-DataReviewMenuDesc,数据回顾设置,Data Review Desc
+DataReviewMenuDesc,数据回顾,Data Review
 NIBPData,血压数据,NIBP Data
 Interval,间隔,Interval
 Print,打印,Print
@@ -1434,7 +1434,7 @@ ConfigEditDisplayMenuDesc,模块颜色设置,Display Desc
 English,英文,English
 Chinese,中文,Chinese
 UnitSetup,单位,Unit Setup
-UnitSetupDesc,单位设置,Unit Setup Desc
+UnitSetupDesc,单位,Unit Setup
 HeightUnit,高度单位,Height Unit
 WeightUnit,重量单位,Weight Unit
 STUnit,ST段单位,ST Unit
@@ -1597,8 +1597,9 @@ Ped,小儿,Pediatric
 Neo,新生儿,Neonate
 Pediatric,小儿,Pediatric
 Neonate,新生儿,Neonate
-SaveCurrentSettingAs,保存当前设置,Save Current Setting
-SaveCurrentSettingAsDesc,保存当前设置菜单,Save Current Setting
+SaveCurrentSetting,保存设置,Save Current Setting
+SaveCurrentSettingAs,保存设置,Save Setting
+SaveCurrentSettingAsDesc,保存设置,Save Setting
 reachedTheMaximunOfConfigurations,用户配置已满，继续保存之前请删除已有的用户配置,The maximum of user configurations is reached.Please delete existing user configurations first.
 SaveAsUserConfig,用户配置保存,Save As User Config
 SaveCurrentSettingAndConfigurationName,保存当前监护仪的设置为用户配置，您的配置命名为,Save the current settings as user configuration.Please name the configuration.

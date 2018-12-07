@@ -117,7 +117,7 @@ QString FactoryTempMenuContentPrivate::labelStr[11] =
  *************************************************************************************************/
 FactoryTempMenuContent::FactoryTempMenuContent()
     : MenuContent(trs("TEMPCalibrateMenu"),
-                  trs("TEMPCalibrateMenuesc")),
+                  trs("TEMPCalibrateMenuDesc")),
       d_ptr(new FactoryTempMenuContentPrivate)
 {
     // 增加温度值更新
