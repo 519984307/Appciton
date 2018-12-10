@@ -49,8 +49,8 @@ AlarmStateMachine::AlarmStateMachine()
 
     _pressTime = 0;
 
-    currentConfig.getNumValue("Alarm|EnableAlarmAudioOff", _isEnableAlarmAudioOff);
-    currentConfig.getNumValue("Alarm|EnableAlarmOff", _isEnableAlarmOff);
+    systemConfig.getNumValue("Alarms|EnableAlarmAudioOff", _isEnableAlarmAudioOff);
+    systemConfig.getNumValue("Alarms|EnableAlarmOff", _isEnableAlarmOff);
 }
 
 /**************************************************************************************************
@@ -81,14 +81,14 @@ void AlarmStateMachine::start()
     systemConfig.getNumValue("PrimaryCfg|Alarm|AlarmStatus", value);
 
     int alarmOffAtPowerOn = 0;
-    currentConfig.getNumValue("Alarm|AlarmOffAtPowerOn", alarmOffAtPowerOn);
+    systemConfig.getNumValue("Alarms|AlarmOffAtPowerOn", alarmOffAtPowerOn);
 
     int enableAlarmOff = 0;
-    currentConfig.getNumValue("Alarm|EnableAlarmOff", enableAlarmOff);
+    systemConfig.getNumValue("Alarms|EnableAlarmOff", enableAlarmOff);
     if (alarmOffAtPowerOn && enableAlarmOff)
     {
         value = ALARM_OFF_STATE;
-        currentConfig.setNumValue("Alarm|AlarmOffAtPowerOn", 0);
+        systemConfig.setNumValue("Alarms|AlarmOffAtPowerOn", 0);
     }
 
     AlarmStateMap::iterator it = _alarmStateMap.find((ALarmStateType)value);
