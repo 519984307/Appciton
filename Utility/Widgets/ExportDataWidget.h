@@ -36,7 +36,7 @@ const QString startTitleString[EXPORT_DATA_NR] =
     trs("TransferSupervisorByWIFI"),
     trs("TransferECG12LeadByUSB"),
     trs("TransferECG12LeadByWIFI"),
-    trs("TransfeErrorLogToUSB"),
+    trs("TransferErrorLogToUSB"),
 };
 
 //传输结束标题

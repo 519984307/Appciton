@@ -940,6 +940,7 @@ TransferSupervisorByWIFI,传输超级配置数据到WIFI,Transferring Supervisor
 TransferRescueDataComplete,营救数据传输完成,Rescue Data Transfer Complete
 TransferSupervisorComplete,超级配置传输完成,Supervisor Config Transfer Complete
 TransferErrorLogToUSBComplete,U盘传输错误日志完成,Transfer error log to USB complete
+TransferErrorLogToUSB,U盘传输错误日志,Transfer error log to USB
 TransferFailed,传输失败,Transfer Failed
 TransferCancel,传输取消,Transfer Cancel
 ECG12LTransfersuccess,12导传送成功,ECG 12 Lead Transfer Success
