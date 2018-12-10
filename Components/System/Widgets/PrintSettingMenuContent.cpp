@@ -35,8 +35,7 @@ public:
     };
 
     PrintSettingMenuContentPrivate()
-        : clearPrintTaskBtn(NULL),
-          printTimeCbo(NULL),
+        : printTimeCbo(NULL),
           printSpeedCbo(NULL)
     {
     }
@@ -52,7 +51,6 @@ public:
      */
     void wavesUpdate(QList<int> &waveIDs, QStringList &waveNames);
 
-    Button *clearPrintTaskBtn;
     QList<ComboBox *> selectWaves;
     QList<int> waveIDs;
     QStringList waveNames;
@@ -203,7 +201,6 @@ void PrintSettingMenuContent::layoutExec()
     glayout->setHorizontalSpacing(0);
 
     ComboBox *combo;
-    Button *btn;
     QLabel *label;
     int item = 0;
     int index = 0;
@@ -267,13 +264,6 @@ void PrintSettingMenuContent::layoutExec()
     combo->setProperty("comboItem", qVariantFromValue(item));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboxIndexChanged(int)));
     glayout->addWidget(combo, index, lastColumn);
-    index++;
-
-    // clear print task
-    btn = new Button(trs("ClearPrintTask"));
-    btn->setButtonStyle(Button::ButtonTextOnly);
-    connect(btn, SIGNAL(released()), this, SLOT(onClearBtnReleased()));
-    glayout->addWidget(btn, index, lastColumn);
     index++;
 
     glayout->setRowStretch(index, 1);
@@ -379,10 +369,6 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
             break;
         }
     }
-}
-
-void PrintSettingMenuContent::onClearBtnReleased()
-{
 }
 
 void PrintSettingMenuContentPrivate::wavesUpdate(QList<int> &waveIDs, QStringList &waveNames)
