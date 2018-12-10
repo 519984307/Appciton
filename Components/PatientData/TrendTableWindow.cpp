@@ -51,8 +51,8 @@
 #define TABLE_ITEM_WIDTH        65
 #define TABLE_ITEM_HEIGHT       35
 
-#define IN_12_HOUR_HEADER_FONT_SIZE  (16)
-#define IN_24_HOUR_HEADER_FONT_SIZE  (20)
+#define IN_12_HOUR_HEADER_FONT_SIZE  (14)
+#define IN_24_HOUR_HEADER_FONT_SIZE  (18)
 
 class TrendTableWindowPrivate
 {
@@ -246,6 +246,7 @@ TrendTableWindow::TrendTableWindow()
     connect(&systemManager, SIGNAL(systemTimeFormatUpdated(TimeFormat)), this, SLOT(onSystemTimeFormatUpdated(TimeFormat)));
 
     TableHeaderView *verticalHeader = new TableHeaderView(Qt::Vertical);
+    verticalHeader->setFont(fontManager.textFont(IN_24_HOUR_HEADER_FONT_SIZE));
     d_ptr->table->setHorizontalHeader(horizontalHeader);
     d_ptr->table->setVerticalHeader(verticalHeader);
     horizontalHeader->setResizeMode(QHeaderView::ResizeToContents);
@@ -255,6 +256,7 @@ TrendTableWindow::TrendTableWindow()
     d_ptr->table->setAttribute(Qt::WA_TransparentForMouseEvents, true);
     d_ptr->table->setFocusPolicy(Qt::ClickFocus);
     d_ptr->table->setShowGrid(false);
+    d_ptr->table->setFont(fontManager.textFont(IN_24_HOUR_HEADER_FONT_SIZE));
     d_ptr->table->setCornerButtonEnabled(false);
     d_ptr->model = new TrendTableModel();
     d_ptr->table->installEventFilter(d_ptr->model);
