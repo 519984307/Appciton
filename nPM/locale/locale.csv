@@ -405,6 +405,7 @@ PatientCreate,新建病人,Create Patient
 FastReceivingPatients,快速接收病人,Fast Receiving Patients
 ReceivingPatients,接收病人,Receiving Patients
 RelievePatient,解除病人,Discharge Patient
+Discharge,解除病人,Discharge
 isRelievePatient,是否解除病人,Whether to discharge patient
 CleanPatientData,清除病人数据,Clean Patient Data
 WhetherStandby,是否进入待机？,Whether to enter the standby machine？
@@ -1575,7 +1576,7 @@ ChooseScreen,界面选择,Screen
 ManualTirgger,手动触发,Manual Tirgger
 ParameterSwitch,参数开关,Para Switch
 eventReview,事件回顾,Event
-NightMode,夜间模式,Night
+NightMode,夜间模式,Night Mode
 Patient,病人信息,Patient
 IBPCOModule,IBP+CO模块,IBP+CO Module
 ShuttingDown,正在关机,Shutting Down
