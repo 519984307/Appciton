@@ -55,10 +55,11 @@ void TrendSubWaveWidget::loadTrendSubWidgetInfo(TrendSubWidgetInfo &info)
     _trendDataHead = info.xHead + info.xTail;
 }
 
-void TrendSubWaveWidget::getValueLimit(int &max, int &min)
+void TrendSubWaveWidget::getValueLimit(int &max, int &min, int &scale)
 {
     max = _valueY.max;
     min = _valueY.min;
+    scale = _valueY.scale;
 }
 
 void TrendSubWaveWidget::setThemeColor(QColor color)

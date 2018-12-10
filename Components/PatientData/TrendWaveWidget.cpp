@@ -880,7 +880,7 @@ void TrendWaveWidget::_trendLayout()
         it.value()->setTimeRange(_leftTime, _rightTime);
         it.value()->setVisible(true);
         _trendGraphInfo.unit = paramInfo.getUnitOfSubParam(subId);
-        it.value()->getValueLimit(_trendGraphInfo.scale.max, _trendGraphInfo.scale.min);
+        it.value()->getValueLimit(_trendGraphInfo.scale.max, _trendGraphInfo.scale.min, _trendGraphInfo.scale.scale);
         _infosList.append(_trendGraphInfo);
         _totalGraphNum++;
     }
