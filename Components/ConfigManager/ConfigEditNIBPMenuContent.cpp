@@ -78,55 +78,6 @@ void ConfigEditNIBPMenuContentPrivate::loadOptions()
 
     int unit = UNIT_MMHG;
     config->getNumValue("Local|NIBPUnit", unit);
-    combos[ITEM_CBO_INIT_CUFF]->blockSignals(true);
-    combos[ITEM_CBO_INIT_CUFF]->clear();
-    PatientType type = patientManager.getType();
-    if (type == PATIENT_TYPE_ADULT)
-    {
-        for (unsigned i = 0; i < NIBP_ADULT_INITIAL_CUFF_NR; ++i)
-        {
-            QString str = NIBPSymbol::convert((NIBPAdultInitialCuff)i);
-            if (unit == UNIT_KPA)
-            {
-                str = Unit::convert((UnitType)unit, UNIT_MMHG, str.toInt());
-            }
-            str = str + " " + Unit::getSymbol((UnitType)unit);
-            combos[ITEM_CBO_INIT_CUFF]->addItem(str);
-        }
-        config->getNumValue("NIBP|AdultInitialCuffInflation", index);
-        combos[ITEM_CBO_INIT_CUFF]->setCurrentIndex(index);
-    }
-    else if (type == PATIENT_TYPE_PED)
-    {
-        for (unsigned i = 0; i < NIBP_PREDIATRIC_INITIAL_CUFF_NR; ++i)
-        {
-            QString str = NIBPSymbol::convert((NIBPPrediatrictInitialCuff)i);
-            if (unit == UNIT_KPA)
-            {
-                str = Unit::convert((UnitType)unit, UNIT_MMHG, str.toInt());
-            }
-            str = str + " " + Unit::getSymbol((UnitType)unit);
-            combos[ITEM_CBO_INIT_CUFF]->addItem(str);
-        }
-        config->getNumValue("NIBP|PedInitialCuffInflation", index);
-        combos[ITEM_CBO_INIT_CUFF]->setCurrentIndex(index);
-    }
-    else if (type == PATIENT_TYPE_NEO)
-    {
-        for (unsigned i = 0; i < NIBP_NEONATAL_INITIAL_CUFF_NR; ++i)
-        {
-            QString str = NIBPSymbol::convert((NIBPNeonatalInitialCuff)i);
-            if (unit == UNIT_KPA)
-            {
-                str = Unit::convert((UnitType)unit, UNIT_MMHG, str.toInt());
-            }
-            str = str + " " + Unit::getSymbol((UnitType)unit);
-            combos[ITEM_CBO_INIT_CUFF]->addItem(str);
-        }
-        config->getNumValue("NIBP|NeoInitialCuffInflation", index);
-        combos[ITEM_CBO_INIT_CUFF]->setCurrentIndex(index);
-    }
-    combos[ITEM_CBO_INIT_CUFF]->blockSignals(false);
 }
 
 void ConfigEditNIBPMenuContentPrivate::setInitPressure(int index)
