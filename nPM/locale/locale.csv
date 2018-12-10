@@ -1275,8 +1275,8 @@ Percent100Calibration,100% 校准,100% Calibrate
 SelectStarterLogo,开机图片,Start Logo
 SelectStarterLogoMenu,开机图片,Starter Logo
 SelectStarterLogoMenuDesc,开机图片设置,Start Logo Desc
-ServiceErrorLogEntrance,错误日志,Service ErrorLog
-ServiceErrorLogEntranceDesc,错误日志,Service ErrorLog
+ServiceErrorLogEntrance,错误日志,ErrorLog
+ServiceErrorLogEntranceDesc,错误日志,ErrorLog
 ErrorLogErase,擦除,Erase
 ErrorLogExport,导出,Export
 ErrorLogInfo,信息,Info
