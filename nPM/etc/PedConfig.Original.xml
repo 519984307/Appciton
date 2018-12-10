@@ -111,7 +111,7 @@
         <AutoInterval>5</AutoInterval>
         <StatFunction>1</StatFunction>
         <AutomaticRetry>0</AutomaticRetry>
-        <PedInitialCuffInflation>2</PedInitialCuffInflation>
+        <PedInitialCuffInflation>140</PedInitialCuffInflation>
     </NIBP>
     <SPO2>
         <AverageTime>2</AverageTime>

@@ -918,26 +918,9 @@ int NIBPParam::getInitPressure(PatientType type)
  *************************************************************************************************/
 void NIBPParam::setInitPressure(int index)
 {
-    PatientType type = patientManager.getType();
-    QString path;
-    if (type == PATIENT_TYPE_ADULT)
-    {
-        path = "NIBP|AdultInitialCuffInflation";
-    }
-    else if (type == PATIENT_TYPE_PED)
-    {
-        path = "NIBP|PedInitialCuffInflation";
-    }
-    else if (type == PATIENT_TYPE_NEO)
-    {
-        path = "NIBP|NeoInitialCuffInflation";
-    }
-
-    currentConfig.setNumValue(path, index);
-
     if (_provider != NULL)
     {
-        _provider->setInitPressure(nibpParam.getInitPressure(type));
+        _provider->setInitPressure(index);
     }
 }
 
