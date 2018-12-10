@@ -159,13 +159,6 @@ void CodeMarkerWindow::showEvent(QShowEvent *e)
 
 void CodeMarkerWindow::hideEvent(QHideEvent *e)
 {
-    // 未点击任一code marker，存储默认code marker。
-    if (!getPress())
-    {
-        QString defCodeMarker("CodeMarkerDefault");
-        // summaryStorageManager.addCodeMarker(timeManager.getCurTime(),
-        //        defCodeMarker.toLocal8Bit().constData());
-    }
     d_ptr->timer->stop();
 
     setPress(false);
@@ -199,9 +192,6 @@ void CodeMarkerWindow::_closeWidgetTimerFun()
 void CodeMarkerWindow::_timerOut()
 {
     d_ptr->closeTimer->stop();
-    // 存储code marker数据到summary。
-    // summaryStorageManager.addCodeMarker(timeManager.getCurTime(),
-    //        _localeCodeMarker[_codeMarkerNum].toLocal8Bit().constData());
     hide();
 }
 
@@ -241,6 +231,7 @@ void CodeMarkerWindowButton::keyPressEvent(QKeyEvent *e)
         }
         unsigned currentTime = timeManager.getCurTime();
         eventStorageManager.triggerCodeMarkerEvent(text().toLatin1().data(), currentTime);
+        emit released();
         break;
     }
     case Qt::Key_Left:
