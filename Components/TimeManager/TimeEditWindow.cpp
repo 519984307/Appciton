@@ -340,6 +340,9 @@ void TimeEditWindow::onComboBoxIndexChanged(int index)
             break;
         case TimeEditWindowPrivate::ITEM_CBO_TIME_FORMAT:
             systemConfig.setNumValue("DateTime|TimeFormat", index);
+            QMetaObject::invokeMethod(&systemManager,
+                                      "systemTimeFormatUpdated",
+                                      Q_ARG(TimeFormat, static_cast<TimeFormat>(index)));
             break;
         case TimeEditWindowPrivate::ITEM_CBO_DISPLAY_SEC:
             systemConfig.setNumValue("DateTime|DisplaySecond", index);

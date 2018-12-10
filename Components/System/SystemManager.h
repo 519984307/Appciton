@@ -13,6 +13,7 @@
 #include <QBitArray>
 #include "Param.h"
 #include "SystemDefine.h"
+#include "TimeDefine.h"
 
 #ifdef Q_WS_X11
 #include <QTcpSocket>
@@ -205,6 +206,12 @@ signals:
 
 signals:
     void workModeChanged(WorkMode mode);
+
+    /**
+     * @brief systemTimeFormatUpdated  系统时间格式更新
+     * @param format  时间格式--12小时制、24小时制
+     */
+    void systemTimeFormatUpdated(TimeFormat format);
 
 private slots:
     void publishTestResult();

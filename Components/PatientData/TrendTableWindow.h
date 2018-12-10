@@ -12,6 +12,7 @@
 #include "Window.h"
 #include "IBPDefine.h"
 #include "TrendDataDefine.h"
+#include "TimeDefine.h"
 
 class TrendTableWindowPrivate;
 class TrendTableWindow : public Window
@@ -71,6 +72,12 @@ private slots:
     void rightMoveEvent(void);
     void printWidgetRelease(void);
     void trendDataSetReleased(void);
+
+    /**
+     * @brief onSystemTimeFormatUpdated  系统时间格式更新
+     * @param format 格式--12小时制、24小时制
+     */
+    void onSystemTimeFormatUpdated(TimeFormat format);
 
 private:
     TrendTableWindow();
