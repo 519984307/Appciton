@@ -490,7 +490,7 @@ void SoundManager::volumeInit()
     }
     else
     {
-        currentConfig.getNumValue("Alarm|DefaultAlarmVolume", alarmVolume);
+        systemConfig.getNumValue("Alarms|DefaultAlarmVolume", alarmVolume);
         systemConfig.getNumValue("General|KeyPressVolume", keyVolume);
     }
 
