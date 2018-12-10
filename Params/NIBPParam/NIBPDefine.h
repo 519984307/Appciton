@@ -131,54 +131,6 @@ enum NIBPLimitAlarmType
 };
 
 /**************************************************************************************************
- * 成人初始袖袋压
- *************************************************************************************************/
-enum NIBPAdultInitialCuff
-{
-    NIBP_ADULT_INITIAL_CUFF_80,
-    NIBP_ADULT_INITIAL_CUFF_100,
-    NIBP_ADULT_INITIAL_CUFF_120,
-    NIBP_ADULT_INITIAL_CUFF_140,
-    NIBP_ADULT_INITIAL_CUFF_150,
-    NIBP_ADULT_INITIAL_CUFF_160,
-    NIBP_ADULT_INITIAL_CUFF_180,
-    NIBP_ADULT_INITIAL_CUFF_200,
-    NIBP_ADULT_INITIAL_CUFF_220,
-    NIBP_ADULT_INITIAL_CUFF_240,
-    NIBP_ADULT_INITIAL_CUFF_260,
-    NIBP_ADULT_INITIAL_CUFF_NR
-};
-
-/**************************************************************************************************
- * 小儿初始袖袋压
- *************************************************************************************************/
-enum NIBPPrediatrictInitialCuff
-{
-    NIBP_PREDIATRIC_INITIAL_CUFF_80,
-    NIBP_PREDIATRIC_INITIAL_CUFF_100,
-    NIBP_PREDIATRIC_INITIAL_CUFF_120,
-    NIBP_PREDIATRIC_INITIAL_CUFF_140,
-    NIBP_PREDIATRIC_INITIAL_CUFF_150,
-    NIBP_PREDIATRIC_INITIAL_CUFF_180,
-    NIBP_PREDIATRIC_INITIAL_CUFF_200,
-    NIBP_PREDIATRIC_INITIAL_CUFF_NR
-};
-
-/**************************************************************************************************
- * 新生儿初始袖袋压
- *************************************************************************************************/
-enum NIBPNeonatalInitialCuff
-{
-    NIBP_NEONATAL_INITIAL_CUFF_60,
-    NIBP_NEONATAL_INITIAL_CUFF_70,
-    NIBP_NEONATAL_INITIAL_CUFF_80,
-    NIBP_NEONATAL_INITIAL_CUFF_90,
-    NIBP_NEONATAL_INITIAL_CUFF_100,
-    NIBP_NEONATAL_INITIAL_CUFF_120,
-    NIBP_NEONATAL_INITIAL_CUFF_NR
-};
-
-/**************************************************************************************************
  * 校准模式压力
  *************************************************************************************************/
 enum NIBPCalibratePressure

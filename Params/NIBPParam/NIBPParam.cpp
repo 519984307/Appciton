@@ -45,7 +45,21 @@ void NIBPParam::_patientTypeChangeSlot(PatientType /*type*/)
     if (NULL != _provider)
     {
         _provider->setPatientType((unsigned char)patientManager.getType());
-        _provider->setInitPressure(nibpParam.getInitPressure(patientManager.getType()));
+        int initVal;
+        PatientType type = patientManager.getType();
+        if (type == PATIENT_TYPE_ADULT)
+        {
+            currentConfig.getNumValue("NIBP|AdultInitialCuffInflation", initVal);
+        }
+        else if (type == PATIENT_TYPE_PED)
+        {
+            currentConfig.getNumValue("NIBP|PedInitialCuffInflation", initVal);
+        }
+        else if (type == PATIENT_TYPE_NEO)
+        {
+            currentConfig.getNumValue("NIBP|NeoInitialCuffInflation", initVal);
+        }
+        _provider->setInitPressure(initVal);
     }
 }
 
@@ -66,7 +80,21 @@ void NIBPParam::initParam(void)
 
     //设置病人类型与预充气值
     _provider->setPatientType((unsigned char)patientManager.getType());
-    _provider->setInitPressure(nibpParam.getInitPressure(patientManager.getType()));
+    int initVal;
+    PatientType type = patientManager.getType();
+    if (type == PATIENT_TYPE_ADULT)
+    {
+        currentConfig.getNumValue("NIBP|AdultInitialCuffInflation", initVal);
+    }
+    else if (type == PATIENT_TYPE_PED)
+    {
+        currentConfig.getNumValue("NIBP|PedInitialCuffInflation", initVal);
+    }
+    else if (type == PATIENT_TYPE_NEO)
+    {
+        currentConfig.getNumValue("NIBP|NeoInitialCuffInflation", initVal);
+    }
+    _provider->setInitPressure(initVal);
 
     //智能充气
 //    int mode = NIBP_INTELLIGENT_INFLATE_OFF;
@@ -873,44 +901,6 @@ void NIBPParam::createSnapshot(NIBPOneShotType err)
         setSnapshotFlag(false);
         // summaryStorageManager.addNIBP(_lastTime, err);
     }
-}
-
-/**************************************************************************************************
- * 获取预充气值。
- *************************************************************************************************/
-int NIBPParam::getInitPressure(PatientType type)
-{
-    QString path;
-    if (type == PATIENT_TYPE_ADULT)
-    {
-        path = "NIBP|AdultInitialCuffInflation";
-    }
-    else if (type == PATIENT_TYPE_PED)
-    {
-        path = "NIBP|PedInitialCuffInflation";
-    }
-    else if (type == PATIENT_TYPE_NEO)
-    {
-        path = "NIBP|NeoInitialCuffInflation";
-    }
-    int index = 0;
-    currentConfig.getNumValue(path, index);
-
-    QString str;
-    if (type == PATIENT_TYPE_ADULT)
-    {
-        str = NIBPSymbol::convert((NIBPAdultInitialCuff)index);
-    }
-    else if (type == PATIENT_TYPE_PED)
-    {
-        str = NIBPSymbol::convert((NIBPPrediatrictInitialCuff)index);
-    }
-    else if (type == PATIENT_TYPE_NEO)
-    {
-        str = NIBPSymbol::convert((NIBPNeonatalInitialCuff)index);
-    }
-
-    return str.toInt();
 }
 
 /**************************************************************************************************

@@ -218,7 +218,6 @@ public:
 
 public:
     // 根据病人类型获取对应的初始压力值。
-    int getInitPressure(PatientType type);
     void setInitPressure(int index);
 
     // 设置/获取测量模式。
