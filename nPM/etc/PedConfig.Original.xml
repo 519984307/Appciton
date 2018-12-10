@@ -156,7 +156,6 @@
         <WaveLengthAfter>16</WaveLengthAfter>
     </Event>
     <Alarm>
-        <DefaultAlarmVolume>3</DefaultAlarmVolume>
         <ApneaTime>2</ApneaTime>
     </Alarm>
     <AlarmSource>

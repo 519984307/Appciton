@@ -35,6 +35,7 @@
 	<KeyPressVolume>3</KeyPressVolume>
     </General>
     <Alarms>
+        <DefaultAlarmVolume>3</DefaultAlarmVolume>
         <MinimumAlarmVolume>2</MinimumAlarmVolume>
         <AlarmPauseTime>2</AlarmPauseTime>
         <STAlarmDraly>1</STAlarmDraly>
