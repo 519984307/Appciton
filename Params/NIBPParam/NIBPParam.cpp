@@ -158,7 +158,6 @@ void NIBPParam::exitDemo()
     _diaValue = InvData();
     _mapVaule = InvData();
     _prVaule = InvData();
-    setResult(InvData(), InvData(), InvData(), InvData(), NIBP_ONESHOT_NONE);
 }
 
 /**************************************************************************************************
@@ -412,9 +411,9 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
     // 存在错误需要报错。
     if (err != NIBP_ONESHOT_NONE)
     {
-        nibpParam.setText(trs("NIBPREADING") + "\n" + trs("NIBPFAILED"));
+        setText(trs("NIBPREADING") + "\n" + trs("NIBPFAILED"));
         nibpOneShotAlarm.setOneShotAlarm(err, true);
-        if (nibpParam.getMeasurMode() == NIBP_MODE_MANUAL || nibpParam.getMeasurMode() == NIBP_MODE_AUTO)
+        if (getMeasurMode() == NIBP_MODE_MANUAL || getMeasurMode() == NIBP_MODE_AUTO)
         {
             if (!isAdditionalMeasure())
             {
