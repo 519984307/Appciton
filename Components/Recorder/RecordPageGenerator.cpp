@@ -1613,7 +1613,8 @@ static inline qreal timestampToX(unsigned t, const GraphAxisInfo &axisInfo, cons
 static inline qreal mapTrendYValue(TrendDataType val, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo)
 {
     qreal validHeight = axisInfo.validHeight;
-    qreal mapH = (val - graphInfo.scale.min) * 1.0 * validHeight / (graphInfo.scale.max -  graphInfo.scale.min);
+    qreal mapH = (val - graphInfo.scale.min * graphInfo.scale.scale) * 1.0 * validHeight /
+            (graphInfo.scale.max * graphInfo.scale.scale -  graphInfo.scale.min * graphInfo.scale.scale);
     if (mapH > validHeight)
     {
         mapH = validHeight;
@@ -1749,6 +1750,74 @@ QList<QPainterPath> generatorPainterPath(const GraphAxisInfo &axisInfo, const Tr
         paths.append(mapPath);
     }
     break;
+    case SUB_PARAM_ETCO2:
+    case SUB_PARAM_ETN2O:
+    case SUB_PARAM_ETAA1:
+    case SUB_PARAM_ETAA2:
+    case SUB_PARAM_ETO2:
+    {
+        QPainterPath etPath;
+        QPainterPath fiPath;
+
+        bool lastPointInvalid = true;
+        QPointF etLastPoint;
+        QPointF fiLastPoint;
+
+        QVector<TrendGraphDataV2>::ConstIterator iter = graphInfo.trendDataV2.constBegin();
+        for (; iter != graphInfo.trendDataV2.constEnd(); iter++)
+        {
+            if (iter->data[0] == InvData())
+            {
+                if (!lastPointInvalid)
+                {
+                    etPath.lineTo(etLastPoint);
+                    fiPath.lineTo(fiLastPoint);
+                    lastPointInvalid = true;
+                }
+                continue;
+            }
+
+            qreal x = timestampToX(iter->timestamp, axisInfo, graphInfo);
+            qreal et = mapTrendYValue(iter->data[0], axisInfo, graphInfo);
+            qreal fi = mapTrendYValue(iter->data[1], axisInfo, graphInfo);
+
+            if (lastPointInvalid)
+            {
+                etPath.moveTo(x, et);
+                fiPath.moveTo(x, fi);
+                lastPointInvalid = false;
+            }
+            else
+            {
+                if (!isEqual(etLastPoint.y(), et))
+                {
+                    etPath.lineTo(etLastPoint);
+                    etPath.lineTo(x, et);
+                }
+
+                if (!isEqual(fiLastPoint.y(), fi))
+                {
+                    fiPath.lineTo(fiLastPoint);
+                    fiPath.lineTo(x, fi);
+                }
+            }
+
+            etLastPoint.rx() = x;
+            etLastPoint.ry() = et;
+            fiLastPoint.ry() = fi;
+            fiLastPoint.rx() = x;
+        }
+
+        if (!lastPointInvalid)
+        {
+            etPath.lineTo(etLastPoint);
+            fiPath.lineTo(fiLastPoint);
+        }
+
+        paths.append(etPath);
+        paths.append(fiPath);
+    }
+        break;
     default:
     {
         QPainterPath path;

@@ -550,14 +550,17 @@ void OxyCRGEventWindowPrivate::loadTrendData()
     trendInfoRR.unit = paramManager.getSubParamUnit(paramInfo.getParamID(SUB_PARAM_RR_BR), SUB_PARAM_RR_BR);
 
     ParamRulerConfig config = alarmConfig.getParamRulerConfig(SUB_PARAM_HR_PR, trendInfoHR.unit);
-    trendInfoHR.scale.min = static_cast<double>(config.downRuler / config.scale);
-    trendInfoHR.scale.max = static_cast<double>(config.upRuler / config.scale);
+    trendInfoHR.scale.min = config.downRuler;
+    trendInfoHR.scale.max = config.upRuler;
+    trendInfoHR.scale.scale = config.scale;
     config = alarmConfig.getParamRulerConfig(SUB_PARAM_SPO2, trendInfoSPO2.unit);
-    trendInfoSPO2.scale.min = static_cast<double>(config.downRuler / config.scale);
-    trendInfoSPO2.scale.max = static_cast<double>(config.upRuler / config.scale);
+    trendInfoSPO2.scale.min = config.downRuler;
+    trendInfoSPO2.scale.max = config.upRuler;
+    trendInfoSPO2.scale.scale = config.scale;
     config = alarmConfig.getParamRulerConfig(SUB_PARAM_RR_BR, trendInfoRR.unit);
-    trendInfoRR.scale.min = static_cast<double>(config.downRuler / config.scale);
-    trendInfoRR.scale.max = static_cast<double>(config.upRuler / config.scale);
+    trendInfoRR.scale.min = config.downRuler;
+    trendInfoRR.scale.max = config.upRuler;
+    trendInfoRR.scale.scale = config.scale;
 
     TrendGraphData dataHR;
     TrendGraphData dataSPO2;
