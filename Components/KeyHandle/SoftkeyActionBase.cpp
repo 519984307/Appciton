@@ -287,7 +287,9 @@ void SoftkeyActionBase::summaryReview(bool isPressed)
 
     TrendGraphWindow::getInstance()->setHistoryData(false);
     windowManager.showWindow(TrendGraphWindow::getInstance(),
-                             WindowManager::ShowBehaviorCloseIfVisiable | WindowManager::ShowBehaviorCloseOthers);
+                             WindowManager::ShowBehaviorCloseIfVisiable
+                             | WindowManager::ShowBehaviorCloseOthers
+                             | WindowManager::ShowBehaviorNoAutoClose);
 }
 
 void SoftkeyActionBase::eventReview(bool isPressed)

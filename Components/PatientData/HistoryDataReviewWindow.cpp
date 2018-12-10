@@ -88,12 +88,14 @@ void HistoryDataReviewWindow::onButtonReleased()
         case HistoryDataReviewWindowPrivate::ITEM_TREND_TABLE:
             TrendTableWindow::getInstance()->setHistoryDataPath(d_ptr->selHistoryDataPath);
             TrendTableWindow::getInstance()->setHistoryData(true);
-            windowManager.showWindow(TrendTableWindow::getInstance(), WindowManager::ShowBehaviorNone);
+            windowManager.showWindow(TrendTableWindow::getInstance(), WindowManager::ShowBehaviorNone |
+                                     WindowManager::ShowBehaviorNoAutoClose);
             break;
         case HistoryDataReviewWindowPrivate::ITEM_TREND_GRAPH:
             TrendGraphWindow::getInstance()->setHistoryDataPath(d_ptr->selHistoryDataPath);
             TrendGraphWindow::getInstance()->setHistoryData(true);
-            windowManager.showWindow(TrendGraphWindow::getInstance(), WindowManager::ShowBehaviorNone);
+            windowManager.showWindow(TrendGraphWindow::getInstance(), WindowManager::ShowBehaviorNone |
+                                     WindowManager::ShowBehaviorNoAutoClose);
             break;
         case HistoryDataReviewWindowPrivate::ITEM_EVENT_REVIEW:
             EventWindow::getInstance()->setHistoryDataPath(d_ptr->selHistoryDataPath);

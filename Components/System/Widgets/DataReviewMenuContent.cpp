@@ -146,8 +146,8 @@ void DataReviewMenuContent::onBtnReleased()
     {
         TrendTableWindow::getInstance()->setHistoryData(false);
         windowManager.showWindow(TrendTableWindow::getInstance(),
-                                 WindowManager::
-                                 ShowBehaviorHideOthers);
+                                 WindowManager::ShowBehaviorHideOthers |
+                                 WindowManager::ShowBehaviorNoAutoClose);
     }
     break;
 
@@ -155,8 +155,8 @@ void DataReviewMenuContent::onBtnReleased()
     {
         TrendGraphWindow::getInstance()->setHistoryData(false);
         windowManager.showWindow(TrendGraphWindow::getInstance(),
-                                 WindowManager::
-                                 ShowBehaviorHideOthers);
+                                 WindowManager::ShowBehaviorHideOthers |
+                                 WindowManager::ShowBehaviorNoAutoClose);
     }
     break;
 
