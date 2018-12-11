@@ -123,11 +123,11 @@ void BatteryIconWidget::setStatus(BatteryIconStatus status)
  *************************************************************************************************/
 void BatteryIconWidget::setVolume(BatteryPowerLevel volume)
 {
-    d_ptr->batteryVolume = volume;
     if (d_ptr->batteryVolume != volume)
     {
         d_ptr->chargingVolume = volume;
     }
+    d_ptr->batteryVolume = volume;
 }
 
 /**************************************************************************************************
