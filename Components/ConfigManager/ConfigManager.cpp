@@ -273,7 +273,9 @@ void ConfigManager::setWidgetIfOnlyShown(bool status)
 bool ConfigManager::saveUserDefineConfig(const QString &configName, Config *configObj, const PatientType &type)
 {
     QList<ConfigManager::UserDefineConfigInfo> infos = getUserDefineConfigInfos();
-    QString filename = QString("%1-%2.xml").arg(USER_DEFINE_CONFIG_PREFIX).arg(QDateTime::currentDateTimeUtc().toString());
+    QString filename = QString("%1-%2.xml")
+            .arg(USER_DEFINE_CONFIG_PREFIX)
+            .arg(QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss"));
     filename.replace(' ', '-');
     filename.replace(':', '-');
     QString filePath = QString("%1%2").arg(CONFIG_DIR).arg(filename);
