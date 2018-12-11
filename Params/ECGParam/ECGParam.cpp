@@ -1996,9 +1996,8 @@ void ECGParam::setQRSToneVolume(SoundManager::VolumeLevel vol)
  *************************************************************************************************/
 int ECGParam::getQRSToneVolume(void)
 {
-    int vol = SoundManager::VOLUME_LEV_2;
-    currentConfig.getNumValue("ECG|QRSVolume", vol);
-    return vol;
+    SoundManager::VolumeLevel vol = soundManager.getVolume(SoundManager::SOUND_TYPE_HEARTBEAT);
+    return static_cast<int>(vol);
 }
 
 /**************************************************************************************************

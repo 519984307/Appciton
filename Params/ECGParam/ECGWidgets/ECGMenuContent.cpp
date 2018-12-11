@@ -63,6 +63,12 @@ public:
     void loadOptions();
 
     /**
+     * @brief setCboBlockSignal 设置下拉框信号阻塞
+     * @param flag
+     */
+    void setCboBlockSignal(bool flag);
+
+    /**
      * @brief updatePrintWaveIds
      */
     void updatePrintWaveIds();
@@ -83,7 +89,7 @@ public:
 void ECGMenuContentPrivate::loadOptions()
 {
     int index = 0;
-
+    setCboBlockSignal(true);
     combos[ITEM_CBO_HRPR_SOURCE]->blockSignals(true);
     combos[ITEM_CBO_HRPR_SOURCE]->clear();
     for (int i = HR_SOURCE_ECG; i < HR_SOURCE_NR; ++i)
@@ -295,6 +301,17 @@ void ECGMenuContentPrivate::loadOptions()
     }
     ecg2Label->setVisible(!isHide);
     combos[ITEM_CBO_ECG2]->setVisible(!isHide);
+
+    setCboBlockSignal(false);
+}
+
+void ECGMenuContentPrivate::setCboBlockSignal(bool flag)
+{
+    for (int i = ITEM_CBO_HRPR_SOURCE; i <=  ITEM_CBO_QRS_TONE; ++i)
+    {
+        MenuItem itemId = static_cast<MenuItem>(i);
+        combos[itemId]->blockSignals(flag);
+    }
 }
 
 void ECGMenuContentPrivate::updatePrintWaveIds()
