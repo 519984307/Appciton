@@ -198,8 +198,8 @@ void ConfigEditNIBPMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
-                       << NIBPSymbol::convert(NIBP_MODE_MANUAL)
-                       << NIBPSymbol::convert(NIBP_MODE_AUTO));
+                       << trs(NIBPSymbol::convert(NIBP_MODE_MANUAL))
+                       << trs(NIBPSymbol::convert(NIBP_MODE_AUTO)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditNIBPMenuContentPrivate
                          ::ITEM_CBO_INIT_CUFF, comboBox);
