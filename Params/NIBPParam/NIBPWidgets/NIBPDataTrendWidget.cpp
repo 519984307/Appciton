@@ -41,6 +41,20 @@ void NIBPDataTrendWidget::_releaseHandle()
 {
 }
 
+QString NIBPDataTrendWidget::getPriotityColor(AlarmPriority prio)
+{
+    switch (prio)
+    {
+    case ALARM_PRIO_HIGH:
+        return QString("red");
+    case ALARM_PRIO_MED:
+    case ALARM_PRIO_LOW:
+        return QString("yellow");
+    default:
+        return QString("black");
+    }
+}
+
 /**************************************************************************************************
  * 设置HR的值。
  *************************************************************************************************/
@@ -93,50 +107,56 @@ void NIBPDataTrendWidget::collectNIBPTrendData(unsigned t)
     paramManager.getParams(paramIDList);
 
     data.lastNibpMeasureTime = t;
-    data.sysvalue = paramManager.getSubParamValue(PARAM_NIBP, SUB_PARAM_NIBP_SYS);
-    data.diavalue = paramManager.getSubParamValue(PARAM_NIBP, SUB_PARAM_NIBP_DIA);
-    data.mapvalue = paramManager.getSubParamValue(PARAM_NIBP, SUB_PARAM_NIBP_MAP);
+    data.sys.value = paramManager.getSubParamValue(PARAM_NIBP, SUB_PARAM_NIBP_SYS);
+    data.dia.value = paramManager.getSubParamValue(PARAM_NIBP, SUB_PARAM_NIBP_DIA);
+    data.map.value = paramManager.getSubParamValue(PARAM_NIBP, SUB_PARAM_NIBP_MAP);
     data.valueIsDisplay = paramManager.isParamEnable(PARAM_NIBP);
     data.prvalue = nibpParam.getPR();
 
-    if ((data.sysvalue != InvData())
-            && (data.sysvalue != InvData())
-            && (data.sysvalue != InvData())
+    if ((data.sys.value != InvData())
+            && (data.dia.value != InvData())
+            && (data.map.value != InvData())
             && (data.prvalue != InvData())
             )
     {
-        int completeResult = nibpLimitAlarm.getCompare(data.sysvalue, NIBP_LIMIT_ALARM_SYS_LOW);
+        // 报警
+        int completeResult = nibpLimitAlarm.getCompare(data.sys.value, NIBP_LIMIT_ALARM_SYS_LOW);
         if (completeResult != 0)
         {
-            data.sysAlarm = true;
+            data.sys.isAlarm = true;
         }
-        completeResult = nibpLimitAlarm.getCompare(data.sysvalue, NIBP_LIMIT_ALARM_SYS_HIGH);
+        completeResult = nibpLimitAlarm.getCompare(data.sys.value, NIBP_LIMIT_ALARM_SYS_HIGH);
         if (completeResult != 0)
         {
-            data.sysAlarm = true;
-        }
-
-        completeResult = nibpLimitAlarm.getCompare(data.diavalue, NIBP_LIMIT_ALARM_DIA_LOW);
-        if (completeResult != 0)
-        {
-            data.diaAlarm = true;
-        }
-        completeResult = nibpLimitAlarm.getCompare(data.diavalue, NIBP_LIMIT_ALARM_DIA_HIGH);
-        if (completeResult != 0)
-        {
-            data.diaAlarm = true;
+            data.sys.isAlarm = true;
         }
 
-        completeResult = nibpLimitAlarm.getCompare(data.mapvalue, NIBP_LIMIT_ALARM_MAP_LOW);
+        completeResult = nibpLimitAlarm.getCompare(data.dia.value, NIBP_LIMIT_ALARM_DIA_LOW);
         if (completeResult != 0)
         {
-            data.mapAlarm = true;
+            data.dia.isAlarm = true;
         }
-        completeResult = nibpLimitAlarm.getCompare(data.mapvalue, NIBP_LIMIT_ALARM_MAP_HIGH);
+        completeResult = nibpLimitAlarm.getCompare(data.dia.value, NIBP_LIMIT_ALARM_DIA_HIGH);
         if (completeResult != 0)
         {
-            data.mapAlarm = true;
+            data.dia.isAlarm = true;
         }
+
+        completeResult = nibpLimitAlarm.getCompare(data.map.value, NIBP_LIMIT_ALARM_MAP_LOW);
+        if (completeResult != 0)
+        {
+            data.map.isAlarm = true;
+        }
+        completeResult = nibpLimitAlarm.getCompare(data.map.value, NIBP_LIMIT_ALARM_MAP_HIGH);
+        if (completeResult != 0)
+        {
+            data.map.isAlarm = true;
+        }
+
+        // 优先级
+        data.sys.priority = nibpLimitAlarm.getAlarmPriority(NIBP_LIMIT_ALARM_SYS_HIGH);
+        data.dia.priority = nibpLimitAlarm.getAlarmPriority(NIBP_LIMIT_ALARM_DIA_HIGH);
+        data.map.priority = nibpLimitAlarm.getAlarmPriority(NIBP_LIMIT_ALARM_MAP_HIGH);
     }
 
     if (10 <= _nibpNrendCacheMap.count())
@@ -181,8 +201,8 @@ void NIBPDataTrendWidget::showValue(void)
         _table->item(i, 0)->setText(timeStr);
 
         NIBPTrendCacheData providerBuff = t.value();
-        if (providerBuff.sysvalue == InvData() || providerBuff.diavalue == InvData() ||
-                providerBuff.mapvalue == InvData())
+        if (providerBuff.sys.value == InvData() || providerBuff.dia.value == InvData() ||
+                providerBuff.map.value == InvData())
         {
             QString color = "<font style='color:rgb(%1,%2,%3);'>%4</font>";
             textStr = QString("<center>%1/%2/%3</center>").arg(InvStr()).arg(InvStr()).arg(InvStr());
@@ -194,7 +214,7 @@ void NIBPDataTrendWidget::showValue(void)
         {
             QString valStr;
             QString boldwrap = "<b>%1</b>";
-            QString colorwrap = "<font color=red>%1</font>";
+            QString colorwrap = "<font color=%1>%2</font>";
             QString color = "<font style='color:rgb(%1,%2,%3);'>%4</font>";
             textStr = QString("<center>%1/%2/%3</center>");
             prStr = QString("<center>%1</center>");
@@ -203,35 +223,43 @@ void NIBPDataTrendWidget::showValue(void)
             unit = paramManager.getSubParamUnit(PARAM_NIBP, SUB_PARAM_NIBP_SYS);
             if (unit == defUnitType)
             {
-                if (providerBuff.sysAlarm)
+                if (providerBuff.sys.isAlarm)
                 {
-                    valStr = boldwrap.arg(colorwrap.arg(QString::number(providerBuff.sysvalue)));
+                    valStr = boldwrap.arg(colorwrap
+                                          .arg(getPriotityColor(providerBuff.sys.priority))
+                                          .arg(QString::number(providerBuff.sys.value)));
                     textStr = textStr.arg(valStr);
                 }
                 else
                 {
-                    textStr = textStr.arg(QString::number(providerBuff.sysvalue));
+                    textStr = textStr.arg(QString::number(providerBuff.sys.value));
                 }
 
-                if (providerBuff.diaAlarm)
+                if (providerBuff.dia.isAlarm)
                 {
-                    valStr = boldwrap.arg(colorwrap.arg(QString::number(providerBuff.diavalue)));
+                    valStr = boldwrap.arg(colorwrap
+                                          .arg(getPriotityColor(providerBuff.dia.priority))
+                                          .arg(QString::number(providerBuff.dia.value)));
                     textStr = textStr.arg(valStr);
                 }
                 else
                 {
-                    textStr = textStr.arg(QString::number(providerBuff.diavalue));
+                    textStr = textStr.arg(QString::number(providerBuff.dia.value));
                 }
 
-                if (providerBuff.mapAlarm)
+                if (providerBuff.map.isAlarm)
                 {
-                    valStr = boldwrap.arg(colorwrap.arg(QString::number(providerBuff.mapvalue)));
+                    valStr = boldwrap.arg(colorwrap
+                                          .arg(getPriotityColor(providerBuff.map.priority))
+                                          .arg(QString::number(providerBuff.map.value)));
                     textStr = textStr.arg(valStr);
                 }
                 else
                 {
-                    textStr = textStr.arg(QString::number(providerBuff.mapvalue));
+                    textStr = textStr.arg(QString::number(providerBuff.map.value));
                 }
+
+                // PR
                 if (!providerBuff.prAlarm)
                 {
                     valStr = color.arg(textColor.red())
@@ -244,9 +272,9 @@ void NIBPDataTrendWidget::showValue(void)
             }
             else
             {
-                textStr = textStr.arg(Unit::convert(unit, defUnitType, providerBuff.sysvalue))
-                          .arg(Unit::convert(unit, defUnitType, providerBuff.diavalue))
-                          .arg(Unit::convert(unit, defUnitType, providerBuff.mapvalue));
+                textStr = textStr.arg(Unit::convert(unit, defUnitType, providerBuff.sys.value))
+                          .arg(Unit::convert(unit, defUnitType, providerBuff.dia.value))
+                          .arg(Unit::convert(unit, defUnitType, providerBuff.map.value));
             }
         }
         QLabel *l = qobject_cast<QLabel *>(_table->cellWidget(i, 1));
