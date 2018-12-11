@@ -123,11 +123,15 @@ void PowerMangerPrivate::monitorRun()
     else if (powerType == POWER_SUPLY_AC_BAT)
     {
         BatteryPowerLevel curVolume = getCurrentVolume();
-        batteryBarWidget.setStatus(BATTERY_CHARGING);
         batteryBarWidget.setVolume(curVolume);
         if (curVolume != BAT_VOLUME_5)
         {
+            batteryBarWidget.setStatus(BATTERY_CHARGING);
             batteryBarWidget.charging();
+        }
+        else
+        {
+            batteryBarWidget.setStatus(BATTERY_NORMAL);
         }
     }
     else if (powerType == POWER_SUPLY_BAT)
