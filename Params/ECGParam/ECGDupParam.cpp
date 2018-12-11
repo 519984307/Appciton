@@ -510,10 +510,27 @@ ECGDupParam::ECGDupParam()
       _prValueFromSPO2(InvData()),
       _prValueFromIBP(InvData()),
       _hrBeatFlag(true),
-      _isAlarm(false),
-      _hrSource(HR_SOURCE_ECG),
-      _prSource(PR_SOURCE_AUTO)
+      _isAlarm(false)
 {
+    // 初始化hr/pr来源
+    int type = HR_SOURCE_ECG;
+    currentConfig.getNumValue("ECG|HRSource", type);
+    _hrSource = static_cast<HRSourceType>(type);
+
+    switch (_hrSource)
+    {
+        case HR_SOURCE_ECG:
+        case HR_SOURCE_AUTO:
+        case HR_SOURCE_NR:
+            _prSource = PR_SOURCE_AUTO;
+        break;
+        case HR_SOURCE_SPO2:
+            _prSource = PR_SOURCE_SPO2;
+        break;
+        case HR_SOURCE_IBP:
+            _prSource = PR_SOURCE_IBP;
+        break;
+    }
 }
 
 /**************************************************************************************************
