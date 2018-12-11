@@ -43,8 +43,21 @@ public:
 
     void loadOptions();
 
+    /**
+     * @brief HandlingComboIndexChanged  下拉框item改变时处理接口
+     * @param item 下拉框item
+     * @param index 下拉框的索引
+     */
+    void HandlingComboIndexChanged(MenuItem item, int index);
+
+    /**
+     * @brief defaultIndexInit  初始化下拉框的默认索引
+     */
+    void defaultIndexInit();
+
     QMap<MenuItem, ComboBox *> combos;
     Button *defaultBtn;
+    QMap<MenuItem, int> defaultIndexMap;
 };
 
 void AlarmMaintainMenuContentPrivate::loadOptions()
@@ -93,10 +106,118 @@ void AlarmMaintainMenuContentPrivate::loadOptions()
     combos[ITEM_CBO_ALARM_LATCH_LOCK]->setCurrentIndex(index);
 }
 
+void AlarmMaintainMenuContentPrivate::HandlingComboIndexChanged(AlarmMaintainMenuContentPrivate::MenuItem item, int index)
+{
+    switch (item)
+    {
+    case ITEM_CBO_MIN_ALARM_VOLUME:
+        systemConfig.setNumValue("Alarms|MinimumAlarmVolume", index);
+        break;
+    case ITEM_CBO_ALARAM_PAUSE_TIME:
+        systemConfig.setNumValue("Alarms|AlarmPauseTime", index);
+        break;
+    case ITEM_CBO_ALARM_CLOSE_PROMPT_TIME:
+        systemConfig.setNumValue("Alarms|AlarmOffPrompting", index);
+        break;
+    case ITEM_CBO_ENABLE_ALARM_AUDIO_OFF:
+        systemConfig.setNumValue("Alarms|EnableAlarmAudioOff", index);
+        break;
+    case ITEM_CBO_ENABLE_ALARM_OFF:
+        systemConfig.setNumValue("Alarms|EnableAlarmOff", index);
+        if (0 == index)
+        {
+            combos[ITEM_CBO_POWERON_ALARM_OFF]->setDisabled(true);
+        }
+        else
+        {
+            combos[ITEM_CBO_POWERON_ALARM_OFF]->setDisabled(false);
+        }
+        break;
+    case ITEM_CBO_POWERON_ALARM_OFF:
+        systemConfig.setNumValue("Alarms|AlarmOffAtPowerOn", index);
+        break;
+    case ITEM_CBO_PAUSE_MAX_ALARM_15MIN:
+        systemConfig.setNumValue("Alarms|PauseMaxAlarm15Min", index);
+        break;
+    case ITEM_CBO_REMINDER_TONE:
+        systemConfig.setNumValue("Alarms|ReminderTone", index);
+        break;
+    case ITEM_CBO_REMINDER_TONE_INTERVAL:
+        systemConfig.setNumValue("Alarms|ReminderToneIntervals", index);
+        break;
+    case ITEM_CBO_ALARM_LIGHT_RESET:
+        systemConfig.setNumValue("Alarms|AlarmLightOnAlarmReset", index);
+        break;
+    case ITEM_CBO_ALARM_LATCH_LOCK:
+        systemConfig.setNumValue("Alarms|PhyParAlarmLatchlockOn", index);
+        if (index == 0)
+        {
+            alertor.setLatchLockSta(false);
+        }
+        else
+        {
+            alertor.setLatchLockSta(true);
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+void AlarmMaintainMenuContentPrivate::defaultIndexInit()
+{
+    int index;
+
+    index = 0;
+    systemConfig.getNumAttr("Alarms|MinimumAlarmVolume", "Default", index);
+    defaultIndexMap[ITEM_CBO_MIN_ALARM_VOLUME] = index;
+
+    index = 0;
+    systemConfig.getNumAttr("Alarms|AlarmPauseTime", "Default", index);
+    defaultIndexMap[ITEM_CBO_ALARAM_PAUSE_TIME] = index;
+
+    index = 0;
+    systemConfig.getNumAttr("Alarms|AlarmOffPrompting", "Default", index);
+    defaultIndexMap[ITEM_CBO_ALARM_CLOSE_PROMPT_TIME] = index;
+
+    index = 0;
+    systemConfig.getNumAttr("Alarms|EnableAlarmAudioOff", "Default", index);
+    defaultIndexMap[ITEM_CBO_ENABLE_ALARM_AUDIO_OFF] = index;
+
+    index = 0;
+    systemConfig.getNumAttr("Alarms|EnableAlarmOff", "Default", index);
+    defaultIndexMap[ITEM_CBO_ENABLE_ALARM_OFF] = index;
+
+    index = 0;
+    systemConfig.getNumAttr("Alarms|AlarmOffAtPowerOn", "Default", index);
+    defaultIndexMap[ITEM_CBO_POWERON_ALARM_OFF] = index;
+
+    index = 0;
+    systemConfig.getNumAttr("Alarms|PauseMaxAlarm15Min", "Default", index);
+    defaultIndexMap[ITEM_CBO_PAUSE_MAX_ALARM_15MIN] = index;
+
+    index = 0;
+    systemConfig.getNumAttr("Alarms|ReminderTone", "Default", index);
+    defaultIndexMap[ITEM_CBO_REMINDER_TONE] = index;
+
+    index = 0;
+    systemConfig.getNumAttr("Alarms|ReminderToneIntervals", "Default", index);
+    defaultIndexMap[ITEM_CBO_REMINDER_TONE_INTERVAL] = index;
+
+    index = 0;
+    systemConfig.getNumAttr("Alarms|AlarmLightOnAlarmReset", "Default", index);
+    defaultIndexMap[ITEM_CBO_ALARM_LIGHT_RESET] = index;
+
+    index = 0;
+    systemConfig.getNumAttr("Alarms|PhyParAlarmLatchlockOn", "Default", index);
+    defaultIndexMap[ITEM_CBO_ALARM_LATCH_LOCK] = index;
+}
+
 AlarmMaintainMenuContent::AlarmMaintainMenuContent()
     : MenuContent(trs("AlarmMaintainMenu"), trs("AlarmMaintainMenuDesc")),
       d_ptr(new AlarmMaintainMenuContentPrivate)
 {
+    d_ptr->defaultIndexInit();
 }
 
 AlarmMaintainMenuContent::~AlarmMaintainMenuContent()
@@ -299,66 +420,13 @@ void AlarmMaintainMenuContent::layoutExec()
 void AlarmMaintainMenuContent::onComboBoxIndexChanged(int index)
 {
     ComboBox *box = qobject_cast<ComboBox *>(sender());
-    if (box)
+    if (box == NULL)
     {
-        AlarmMaintainMenuContentPrivate::MenuItem item
-                = (AlarmMaintainMenuContentPrivate::MenuItem)box->property("Item").toInt();
-        switch (item) {
-        case AlarmMaintainMenuContentPrivate::ITEM_CBO_MIN_ALARM_VOLUME:
-            systemConfig.setNumValue("Alarms|MinimumAlarmVolume", index);
-            break;
-        case AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARAM_PAUSE_TIME:
-            systemConfig.setNumValue("Alarms|AlarmPauseTime", index);
-            break;
-        case AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_CLOSE_PROMPT_TIME:
-            systemConfig.setNumValue("Alarms|AlarmOffPrompting", index);
-            break;
-        case AlarmMaintainMenuContentPrivate::ITEM_CBO_ENABLE_ALARM_AUDIO_OFF:
-            systemConfig.setNumValue("Alarms|EnableAlarmAudioOff", index);
-            break;
-        case AlarmMaintainMenuContentPrivate::ITEM_CBO_ENABLE_ALARM_OFF:
-            systemConfig.setNumValue("Alarms|EnableAlarmOff", index);
-            if (0 == index)
-            {
-                d_ptr->combos[AlarmMaintainMenuContentPrivate::ITEM_CBO_POWERON_ALARM_OFF]->setDisabled(true);
-            }
-            else
-            {
-                d_ptr->combos[AlarmMaintainMenuContentPrivate::ITEM_CBO_POWERON_ALARM_OFF]->setDisabled(false);
-            }
-            break;
-        case AlarmMaintainMenuContentPrivate::ITEM_CBO_POWERON_ALARM_OFF:
-            systemConfig.setNumValue("Alarms|AlarmOffAtPowerOn", index);
-            break;
-        case AlarmMaintainMenuContentPrivate::ITEM_CBO_PAUSE_MAX_ALARM_15MIN:
-            systemConfig.setNumValue("Alarms|PauseMaxAlarm15Min", index);
-            break;
-        case AlarmMaintainMenuContentPrivate::ITEM_CBO_REMINDER_TONE:
-            systemConfig.setNumValue("Alarms|ReminderTone", index);
-            break;
-        case AlarmMaintainMenuContentPrivate::ITEM_CBO_REMINDER_TONE_INTERVAL:
-            systemConfig.setNumValue("Alarms|ReminderToneIntervals", index);
-            break;
-        case AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LIGHT_RESET:
-            systemConfig.setNumValue("Alarms|AlarmLightOnAlarmReset", index);
-            break;
-        case AlarmMaintainMenuContentPrivate::ITEM_CBO_ALARM_LATCH_LOCK:
-        {
-            systemConfig.setNumValue("Alarms|PhyParAlarmLatchlockOn", index);
-            if (index == 0)
-            {
-                alertor.setLatchLockSta(false);
-            }
-            else
-            {
-                alertor.setLatchLockSta(true);
-            }
-            break;
-        }
-        default:
-            break;
-        }
+        return;
     }
+    AlarmMaintainMenuContentPrivate::MenuItem item
+        = (AlarmMaintainMenuContentPrivate::MenuItem)box->property("Item").toInt();
+    d_ptr->HandlingComboIndexChanged(item, index);
 }
 
 void AlarmMaintainMenuContent::onButtonReleased()
@@ -370,7 +438,14 @@ void AlarmMaintainMenuContent::onButtonReleased()
                 = (AlarmMaintainMenuContentPrivate::MenuItem)button->property("Item").toInt();
         switch (item) {
         case AlarmMaintainMenuContentPrivate::ITEM_CBO_DEFAULT:
-
+        {
+            for (int i = 0; i < item; i++)
+            {
+                AlarmMaintainMenuContentPrivate::MenuItem defaultItem  = AlarmMaintainMenuContentPrivate::MenuItem(i);
+                d_ptr->HandlingComboIndexChanged(defaultItem, d_ptr->defaultIndexMap[defaultItem]);
+            }
+            d_ptr->loadOptions();
+        }
             break;
         default:
             break;
