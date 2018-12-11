@@ -197,6 +197,13 @@ private:
      */
     void _updateEventIndex();
 
+    /**
+     * @brief getTrendGraphType 获取id对应的趋势图类型
+     * @param id 子参数ID
+     * @return
+     */
+    TrendGraphType getTrendGraphType(SubParamID id);
+
 private:
     QVBoxLayout *_mainLayout;
     QVBoxLayout *_hLayoutTrend;
@@ -210,7 +217,6 @@ private:
     unsigned _currentCursorTime;
 
     IWidget *_subWidget;
-    QScrollArea *_subWidgetScrollArea;
 
     int _displayGraphNum;                           // 一屏显示的波形数
     int _totalGraphNum;                             // 趋势组显示的总波形数
@@ -219,12 +225,13 @@ private:
     QList<TrendDataPackage *> _trendDataPack;       // 趋势数据包
     int _totalPage;                                 // 总数据页数 *
     int _currentPage;                               // 当前页数 *
-    int _pagingNum;                                 // 窗口上下翻页数;
 
     unsigned _leftTime;                             // 趋势图左边时间 *
     unsigned _rightTime;                            // 趋势图右边时间 *
 
-    QMap<SubParamID, TrendSubWaveWidget *> _subWidgetMap;       // 子波形窗口容器；
+    QList<TrendSubWaveWidget *> _subWidgetList;     // 子波形窗口容器
+    QList<SubParamID> _subParams;                   // 子参数组
+    int _curIndex;
     TrendGraphInfo _trendGraphInfo;                 // 趋势图数据集合
     QList<unsigned> _alarmTimeList;                 // 报警发生时间
     QList<TrendGraphInfo> _infosList;                    // 打印趋势图数据链表

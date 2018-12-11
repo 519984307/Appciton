@@ -87,6 +87,8 @@ void TrendGraphWindow::waveNumberChange(int num)
     if (num > 0 && num <= 3)
     {
         d_ptr->waveWidget->setWaveNumber(num);
+        d_ptr->buttons[TrendGraphWindowPrivate::ACTION_BTN_DOWN_PAGE]->setEnabled(true);
+        d_ptr->buttons[TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE]->setEnabled(false);
     }
 }
 
@@ -227,6 +229,7 @@ TrendGraphWindow::TrendGraphWindow()
 
     // 上翻页坐标
     button = new Button();
+    button->setEnabled(false);
     button->setIcon(QIcon("/usr/local/nPM/icons/up.png"));
     button->setButtonStyle(Button::ButtonIconOnly);
     button->setFixedHeight(itemHeight);
@@ -238,6 +241,7 @@ TrendGraphWindow::TrendGraphWindow()
 
     // 下翻页坐标
     button = new Button();
+    button->setEnabled(true);
     button->setIcon(QIcon("/usr/local/nPM/icons/down.png"));
     button->setButtonStyle(Button::ButtonIconOnly);
     button->setFixedHeight(itemHeight);

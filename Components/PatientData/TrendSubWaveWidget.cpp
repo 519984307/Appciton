@@ -35,6 +35,42 @@ TrendSubWaveWidget::~TrendSubWaveWidget()
     _trendInfo.reset();
 }
 
+void TrendSubWaveWidget::setWidgetParam(SubParamID id, TrendGraphType type)
+{
+    _id = id;
+    _type = type;
+    ParamID paramId = paramInfo.getParamID(_id);
+    UnitType unitType = paramManager.getSubParamUnit(paramId, _id);
+
+    if (_type == TREND_GRAPH_TYPE_NORMAL || _type == TREND_GRAPH_TYPE_AG_TEMP)
+    {
+        ParamRulerConfig config = alarmConfig.getParamRulerConfig(_id, unitType);
+        _valueY.min = config.downRuler;
+        _valueY.max = config.upRuler;
+        _valueY.scale = config.scale;
+        _paramName = trs(paramInfo.getSubParamName(_id));
+        if (_type == TREND_GRAPH_TYPE_AG_TEMP)
+        {
+            _paramName = _paramName.right(_paramName.length() - 2) + "(Et/Fi)";
+        }
+        if (_id == SUB_PARAM_T1)
+        {
+            _paramName = "T1/T2";
+        }
+    }
+    else if (_type == TREND_GRAPH_TYPE_ART_IBP || _type == TREND_GRAPH_TYPE_NIBP)
+    {
+        ParamRulerConfig configUp = alarmConfig.getParamRulerConfig(SubParamID(_id), unitType);
+        ParamRulerConfig configDown = alarmConfig.getParamRulerConfig(SubParamID(_id + 1), unitType);
+        _valueY.min = configDown.downRuler;
+        _valueY.max = configUp.upRuler;
+        _valueY.scale = configDown.scale;
+        QString str = paramInfo.getSubParamName(_id);
+        _paramName = str.left(str.length() - 4);
+    }
+    _paramUnit = Unit::localeSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(_id), _id));
+}
+
 void TrendSubWaveWidget::trendDataInfo(TrendGraphInfo &info)
 {
     _trendInfo = info;
@@ -139,7 +175,7 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
         }
         paths.append(path);
     }
-    break;
+        break;
     case TREND_GRAPH_TYPE_AG_TEMP:
     {
         QPainterPath fristPath;
@@ -170,13 +206,15 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
             int v2 = 0;
             if (paramId == PARAM_CO2)
             {
-                v1 = Unit::convert(type, UNIT_PERCENT, iter->data[0] / 10.0, co2Param.getBaro()).toInt();
-                v2 = Unit::convert(type, UNIT_PERCENT, iter->data[1] / 10.0, co2Param.getBaro()).toInt();
+                v1 = Unit::convert(type, UNIT_PERCENT, iter->data[0] / 10.0, co2Param.getBaro()).toDouble();
+                v2 = Unit::convert(type, UNIT_PERCENT, iter->data[1] / 10.0, co2Param.getBaro()).toDouble();
             }
             else if (paramId == PARAM_TEMP)
             {
-                v1 = Unit::convert(type, UNIT_TC, iter->data[0] / 10.0).toInt();
-                v2 = Unit::convert(type, UNIT_TC, iter->data[1] / 10.0).toInt();
+                QString v1Str = Unit::convert(type, UNIT_TC, iter->data[0] / 10.0);
+                QString v2Str = Unit::convert(type, UNIT_TC, iter->data[1] / 10.0);
+                v1 = v1Str.toDouble();
+                v2 = v2Str.toDouble();
             }
             else
             {
@@ -222,7 +260,7 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
         paths.append(fristPath);
         paths.append(secondPath);
     }
-    break;
+        break;
     case TREND_GRAPH_TYPE_ART_IBP:
     {
         QPainterPath sysPath;
@@ -301,7 +339,7 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
         paths.append(diaPath);
         paths.append(mapPath);
     }
-    break;
+        break;
     case TREND_GRAPH_TYPE_NORMAL:
     {
         QPainterPath path;
@@ -349,7 +387,9 @@ QList<QPainterPath> TrendSubWaveWidget::generatorPainterPath(const TrendGraphInf
 
         paths.append(path);
     }
-    break;
+        break;
+    default:
+        break;
     }
     return paths;
 }
@@ -364,23 +404,6 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     barPainter.drawLine(_info.xHead / 3, _info.yTop, _info.xHead / 3 + 5, _info.yTop);
     barPainter.drawLine(_info.xHead / 3, _info.yTop, _info.xHead / 3, _info.yBottom);
     barPainter.drawLine(_info.xHead / 3, _info.yBottom, _info.xHead / 3 + 5, _info.yBottom);
-
-    // 趋势标尺上下限
-    QRect upRulerRect(_info.xHead / 3 + 7, _info.yTop - 10, _info.xHead, 30);
-    QRect downRulerRect(_info.xHead / 3 + 7, _info.yBottom - 10, _info.xHead, 30);
-    QFont textfont = fontManager.textFont(fontManager.getFontSize(3));
-    barPainter.setFont(textfont);
-    if (_type == TREND_GRAPH_TYPE_AG_TEMP)
-    {
-        barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.max, 'f', 1));
-        barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.min, 'f', 1));
-    }
-    else
-    {
-        barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.max));
-        barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.min));
-    }
-
 
     // 边框线
     barPainter.setPen(QPen(Qt::gray, 1, Qt::DashLine));
@@ -405,6 +428,22 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     barPainter.restore();
     barPainter.setPen(QPen(_color, 1, Qt::SolidLine));
 
+    // 趋势标尺上下限
+    QRect upRulerRect(_info.xHead / 3 + 7, _info.yTop - 10, _info.xHead, 30);
+    QRect downRulerRect(_info.xHead / 3 + 7, _info.yBottom - 10, _info.xHead, 30);
+    QFont textfont = fontManager.textFont(fontManager.getFontSize(3));
+    barPainter.setFont(textfont);
+    if (_type == TREND_GRAPH_TYPE_AG_TEMP)
+    {
+        barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number((_valueY.max * 1.0) / _valueY.scale, 'f', 1));
+        barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number((_valueY.min * 1.0) / _valueY.scale, 'f', 1));
+    }
+    else
+    {
+        barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.max));
+        barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.min));
+    }
+
     QFont font;
     font.setPixelSize(15);
     barPainter.setFont(font);
@@ -419,7 +458,7 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     barPainter.setFont(font);
 
     // 趋势参数数据
-    QRect dataRect(_trendDataHead, height() / 5, width() - _trendDataHead, height() / 5 * 4);
+    QRect dataRect(_trendDataHead + 5, height() / 5, width() - _trendDataHead, height() / 5 * 4);
     QTextOption option;
     option.setAlignment(Qt::AlignCenter);
     if (_type == TREND_GRAPH_TYPE_NORMAL)
@@ -542,52 +581,6 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
 void TrendSubWaveWidget::showEvent(QShowEvent *e)
 {
     IWidget::showEvent(e);
-    ParamID paramId = paramInfo.getParamID(_id);
-    UnitType unitType = paramManager.getSubParamUnit(paramId, _id);
-
-    if (_type == TREND_GRAPH_TYPE_NORMAL || _type == TREND_GRAPH_TYPE_AG_TEMP)
-    {
-        ParamRulerConfig config = alarmConfig.getParamRulerConfig(_id, unitType);
-        if (config.scale == 1)
-        {
-            _valueY.min = config.downRuler;
-            _valueY.max = config.upRuler;
-        }
-        else
-        {
-            _valueY.min = static_cast<double>(config.downRuler) / config.scale;
-            _valueY.max = static_cast<double>(config.upRuler) / config.scale;
-            _valueY.scale = config.scale;
-        }
-        _paramName = trs(paramInfo.getSubParamName(_id));
-        if (_type == TREND_GRAPH_TYPE_AG_TEMP)
-        {
-            _paramName = _paramName.right(_paramName.length() - 2) + "(Et/Fi)";
-        }
-        if (_id == SUB_PARAM_T1)
-        {
-            _paramName = "T1/T2";
-        }
-    }
-    else if (_type == TREND_GRAPH_TYPE_ART_IBP || _type == TREND_GRAPH_TYPE_NIBP)
-    {
-        ParamRulerConfig configUp = alarmConfig.getParamRulerConfig(SubParamID(_id), unitType);
-        ParamRulerConfig configDown = alarmConfig.getParamRulerConfig(SubParamID(_id + 1), unitType);
-        if (configUp.scale == 1)
-        {
-            _valueY.min = configDown.downRuler;
-            _valueY.max = configUp.upRuler;
-        }
-        else
-        {
-            _valueY.min = static_cast<double>(configDown.downRuler) / configDown.scale;
-            _valueY.max = static_cast<double>(configUp.upRuler) / configUp.scale;
-            _valueY.scale = configUp.scale;
-        }
-        QString str = paramInfo.getSubParamName(_id);
-        _paramName = str.left(str.length() - 4);
-    }
-    _paramUnit = Unit::localeSymbol(paramManager.getSubParamUnit(paramInfo.getParamID(_id), _id));
 }
 
 double TrendSubWaveWidget::_mapValue(TrendParamDesc desc, int data)
@@ -604,63 +597,63 @@ double TrendSubWaveWidget::_mapValue(TrendParamDesc desc, int data)
             _maxValue = data;
             _minValue = data;
             _fristValue = false;
-            int maxDiff = desc.max - _maxValue;
-            if (maxDiff <= 0 || maxDiff > 10 || (static_cast<int>(desc.max) % 10))
+            int maxDiff = desc.max - _maxValue * desc.scale;
+            if (maxDiff <= 0 || maxDiff > 10 || (static_cast<int>(desc.max / desc.scale) % 10))
             {
-                desc.max = _maxValue + (10 - _maxValue % 10);
+                desc.max = (_maxValue + (10 - _maxValue % 10)) * desc.scale;
                 _valueY.max = desc.max;
                 UnitType unit = paramInfo.getUnitOfSubParam(_id);
                 alarmConfig.setParamRulerConfig(_id, unit,
-                                                _valueY.min * _valueY.scale,
-                                                _valueY.max * _valueY.scale);
+                                                _valueY.min,
+                                                _valueY.max);
             }
-            int minDiff = _minValue - desc.min;
-            if (minDiff <= 0 || minDiff > 10 || (static_cast<int>(desc.min) % 10))
+            int minDiff = _minValue - desc.min * desc.scale;
+            if (minDiff <= 0 || minDiff > 10 || (static_cast<int>(desc.min / desc.scale) % 10))
             {
                 int value = (_minValue % 10) ? (_minValue % 10) : 10;
-                desc.min = _minValue - value;
+                desc.min = (_minValue - value) * desc.scale;
                 _valueY.min = desc.min;
                 UnitType unit = paramInfo.getUnitOfSubParam(_id);
                 alarmConfig.setParamRulerConfig(_id, unit,
-                                                _valueY.min * _valueY.scale,
-                                                _valueY.max * _valueY.scale);
+                                                _valueY.min,
+                                                _valueY.max);
             }
         }
 
         if (data > _maxValue)
         {
             _maxValue = data;
-            int maxDiff = desc.max - _maxValue;
-            if (maxDiff <= 0 || maxDiff > 10 || (static_cast<int>(desc.max) % 10))
+            int maxDiff = desc.max - _maxValue * desc.scale;
+            if (maxDiff <= 0 || maxDiff > 10 || (static_cast<int>(desc.max / desc.scale) % 10))
             {
-                desc.max = _maxValue + (10 - _maxValue % 10);
+                desc.max = (_maxValue + (10 - _maxValue % 10)) * desc.scale;
                 _valueY.max = desc.max;
                 UnitType unit = paramInfo.getUnitOfSubParam(_id);
                 alarmConfig.setParamRulerConfig(_id, unit,
-                                                _valueY.min * _valueY.scale,
-                                                _valueY.max * _valueY.scale);
+                                                _valueY.min,
+                                                _valueY.max);
             }
         }
 
         if (data < _minValue)
         {
             _minValue = data;
-            int minDiff = _minValue - desc.min;
-            if (minDiff <= 0 || minDiff > 10 || (static_cast<int>(desc.min) % 10))
+            int minDiff = _minValue - desc.min * desc.scale;
+            if (minDiff <= 0 || minDiff > 10 || (static_cast<int>(desc.min / desc.scale) % 10))
             {
                 int value = (_minValue % 10) ? (_minValue % 10) : 10;
-                desc.min = _minValue - value;
+                desc.min = (_minValue - value) * desc.scale;
                 _valueY.min = desc.min;
                 UnitType unit = paramInfo.getUnitOfSubParam(_id);
                 alarmConfig.setParamRulerConfig(_id, unit,
-                                                _valueY.min * _valueY.scale,
-                                                _valueY.max * _valueY.scale);
+                                                _valueY.min,
+                                                _valueY.max);
             }
         }
     }
 
     double dpos = 0;
-    dpos = (desc.max - data) * (desc.end - desc.start) / (desc.max - desc.min) + desc.start;
+    dpos = (desc.max - data * desc.scale) * (desc.end - desc.start) / (desc.max - desc.min) + desc.start;
 
     if (dpos < desc.start)
     {

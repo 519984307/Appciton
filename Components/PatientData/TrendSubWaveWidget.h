@@ -29,8 +29,10 @@ class TrendSubWaveWidget : public IWidget
 {
     Q_OBJECT
 public:
-    TrendSubWaveWidget(SubParamID id, TrendGraphType type);
+    explicit TrendSubWaveWidget(SubParamID id = SUB_PARAM_HR_PR, TrendGraphType type = TREND_GRAPH_TYPE_NORMAL);
     ~TrendSubWaveWidget();
+
+    void setWidgetParam(SubParamID id, TrendGraphType type);
 
     /**
      * @brief trendDataInfo 载入趋势图数据

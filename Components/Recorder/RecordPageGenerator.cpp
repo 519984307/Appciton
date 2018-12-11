@@ -1749,6 +1749,96 @@ QList<QPainterPath> generatorPainterPath(const GraphAxisInfo &axisInfo, const Tr
         paths.append(mapPath);
     }
     break;
+    case SUB_PARAM_ETCO2:
+    case SUB_PARAM_ETN2O:
+    case SUB_PARAM_ETAA1:
+    case SUB_PARAM_ETAA2:
+    case SUB_PARAM_ETO2:
+    case SUB_PARAM_T1:
+    {
+        QPainterPath etPath;
+        QPainterPath fiPath;
+
+        bool lastPointInvalid = true;
+        QPointF etLastPoint;
+        QPointF fiLastPoint;
+
+        QVector<TrendGraphDataV2>::ConstIterator iter = graphInfo.trendDataV2.constBegin();
+        for (; iter != graphInfo.trendDataV2.constEnd(); iter++)
+        {
+            if (iter->data[0] == InvData())
+            {
+                if (!lastPointInvalid)
+                {
+                    etPath.lineTo(etLastPoint);
+                    fiPath.lineTo(fiLastPoint);
+                    lastPointInvalid = true;
+                }
+                continue;
+            }
+
+            qreal x = timestampToX(iter->timestamp, axisInfo, graphInfo);
+            ParamID paramId = paramInfo.getParamID(graphInfo.subParamID);
+            UnitType type = paramManager.getSubParamUnit(paramId, graphInfo.subParamID);
+            int v1 = 0;
+            int v2 = 0;
+            if (paramId == PARAM_CO2)
+            {
+                v1 = Unit::convert(type, UNIT_PERCENT, iter->data[0] / 10.0, co2Param.getBaro()).toDouble();
+                v2 = Unit::convert(type, UNIT_PERCENT, iter->data[1] / 10.0, co2Param.getBaro()).toDouble();
+            }
+            else if (paramId == PARAM_TEMP)
+            {
+                QString v1Str = Unit::convert(type, UNIT_TC, iter->data[0] / 10.0);
+                QString v2Str = Unit::convert(type, UNIT_TC, iter->data[1] / 10.0);
+                v1 = v1Str.toDouble();
+                v2 = v2Str.toDouble();
+            }
+            else
+            {
+                v1 = iter->data[0] / 10;
+                v2 = iter->data[1] / 10;
+            }
+            qreal et = mapTrendYValue(v1, axisInfo, graphInfo);
+            qreal fi = mapTrendYValue(v2, axisInfo, graphInfo);
+
+            if (lastPointInvalid)
+            {
+                etPath.moveTo(x, et);
+                fiPath.moveTo(x, fi);
+                lastPointInvalid = false;
+            }
+            else
+            {
+                if (!isEqual(etLastPoint.y(), et))
+                {
+                    etPath.lineTo(etLastPoint);
+                    etPath.lineTo(x, et);
+                }
+
+                if (!isEqual(fiLastPoint.y(), fi))
+                {
+                    fiPath.lineTo(fiLastPoint);
+                    fiPath.lineTo(x, fi);
+                }
+            }
+
+            etLastPoint.rx() = x;
+            etLastPoint.ry() = et;
+            fiLastPoint.rx() = x;
+            fiLastPoint.ry() = fi;
+        }
+
+        if (!lastPointInvalid)
+        {
+            etPath.lineTo(etLastPoint);
+            fiPath.lineTo(fiLastPoint);
+        }
+
+        paths.append(etPath);
+        paths.append(fiPath);
+    }
+    break;
     default:
     {
         QPainterPath path;
