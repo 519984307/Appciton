@@ -178,6 +178,7 @@ void TimeManager::setSystemTime(const QDateTime &datetime)
     QProcess::execute(cmd);
     QProcess::execute("hwclock --systohc");
     QProcess::execute("sync");
+    _curTime = datetime.toTime_t();
 }
 
 void TimeManager::checkAndFixSystemTime()

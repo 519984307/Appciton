@@ -701,7 +701,7 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
 
     // 当前趋势记录的时间
     QRect timeRect = rect().adjusted(_waveRegionWidth + 5, 12, -5, 0);
-    if (_cursorPosIndex < _trendGraphInfo.alarmInfo.count())
+    if (_cursorPosIndex < _trendGraphInfo.alarmInfo.count() && _cursorPosIndex >= 0)
     {
         timeDate.getDate(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp, tStr);
         barPainter.drawText(timeRect, Qt::AlignLeft, tStr);
