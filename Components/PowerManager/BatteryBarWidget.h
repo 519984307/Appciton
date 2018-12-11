@@ -13,7 +13,6 @@
 #include "IWidget.h"
 #include <QMap>
 #include "BatteryIconWidget.h"
-#include "BatteryIndicatorWindow.h"
 
 /***************************************************************************************************
  * 系统状态栏，主要显示一些系统提示图标。
@@ -67,8 +66,6 @@ private slots:
 
 private:
     BatteryBarWidget();
-
-    BatteryIndicatorWindow _batteryIndicatorWindow;
 
     BatteryIconWidget *_batteryIconWidget;
 
