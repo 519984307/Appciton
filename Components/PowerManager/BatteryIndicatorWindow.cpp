@@ -21,22 +21,20 @@ class BatteryIndicatorWindowPrivate
 {
 public:
     BatteryIndicatorWindowPrivate()
-        : timer(NULL),
-          recordBatteryInfo(false)
+        : timer(NULL)
     {}
     ~BatteryIndicatorWindowPrivate(){}
 
     QTimer *timer;
-    bool recordBatteryInfo;
 };
 
 BatteryIndicatorWindow::BatteryIndicatorWindow()
     : Window(),
       d_ptr(new BatteryIndicatorWindowPrivate())
 {
-    int fontSize = fontManager.getFontSize(3);
+    int fontSize = fontManager.getFontSize(4);
     setWindowTitle(trs("BatteryInfo"));
-    resize(800, 580);
+    setFixedSize(400, 350);
 
     QVBoxLayout *layoutV = new QVBoxLayout();
     layoutV->setMargin(10);
@@ -44,160 +42,72 @@ BatteryIndicatorWindow::BatteryIndicatorWindow()
 
     // first row.
     QHBoxLayout *layoutH = new QHBoxLayout();
-    QVBoxLayout *batteryV = new QVBoxLayout();
-    batteryV->setSpacing(10);
-    batteryV->setMargin(0);
     QLabel *iconLabel = new QLabel();
-    iconLabel->setAlignment(Qt::AlignHCenter);
+    iconLabel->setAlignment(Qt::AlignCenter);
     iconLabel->setFont(fontManager.textFont(fontSize));
-    iconLabel->setWordWrap(true);
     iconLabel->setText(trs("BatteryCapacityIcons"));
-    batteryV->addWidget(iconLabel);
+    layoutV->addWidget(iconLabel);
 
-    layoutH->setMargin(0);
+    layoutH->setMargin(10);
     layoutH->setSpacing(10);
-
     BatteryIconWidget *batteryImag = new BatteryIconWidget();
     batteryImag->setVolume(BAT_VOLUME_5);
     batteryImag->setTimeValue(-2);
     batteryImag->setStatus(BATTERY_NORMAL);
-    layoutH->addWidget(batteryImag, 1);
+    layoutH->addWidget(batteryImag);
 
     batteryImag = new BatteryIconWidget();
     batteryImag->setVolume(BAT_VOLUME_4);
     batteryImag->setTimeValue(6);
     batteryImag->setStatus(BATTERY_NORMAL);
-    layoutH->addWidget(batteryImag, 1);
+    layoutH->addWidget(batteryImag);
 
     batteryImag = new BatteryIconWidget();
     batteryImag->setVolume(BAT_VOLUME_3);
     batteryImag->setTimeValue(4);
     batteryImag->setStatus(BATTERY_NORMAL);
-    layoutH->addWidget(batteryImag, 1);
+    layoutH->addWidget(batteryImag);
 
+    layoutV->addLayout(layoutH);
+
+    layoutH = new QHBoxLayout();
+    layoutH->setMargin(10);
+    layoutH->setSpacing(10);
     batteryImag = new BatteryIconWidget();
     batteryImag->setVolume(BAT_VOLUME_2);
     batteryImag->setTimeValue(2);
     batteryImag->setStatus(BATTERY_NORMAL);
-    layoutH->addWidget(batteryImag, 1);
+    layoutH->addWidget(batteryImag);
 
     batteryImag = new BatteryIconWidget();
     batteryImag->setVolume(BAT_VOLUME_1);
     batteryImag->setTimeValue(1);
     batteryImag->setStatus(BATTERY_NORMAL);
-    layoutH->addWidget(batteryImag, 1);
+    layoutH->addWidget(batteryImag);
 
     batteryImag = new BatteryIconWidget();
     batteryImag->setVolume(BAT_VOLUME_1);
     batteryImag->setTimeValue(-1);
     batteryImag->setFillColor(Qt::yellow);
     batteryImag->setStatus(BATTERY_NORMAL);
-    layoutH->addWidget(batteryImag, 1);
-    batteryV->addLayout(layoutH);
-
-    layoutV->addLayout(batteryV);
+    layoutH->addWidget(batteryImag);
+    layoutV->addLayout(layoutH);
     layoutV->addStretch();
 
     // second row.
     layoutH = new QHBoxLayout();
-    layoutH->setMargin(0);
-    layoutH->setSpacing(0);
+    layoutH->setMargin(10);
+    layoutH->setSpacing(10);
 
     iconLabel = new QLabel();
     iconLabel->setFont(fontManager.textFont(fontSize));
     iconLabel->setText(trs("BatteryDisconnected"));
-    iconLabel->setFixedWidth(300);
-    iconLabel->setAlignment(Qt::AlignHCenter);
+    iconLabel->setAlignment(Qt::AlignCenter);
+    layoutV->addWidget(iconLabel);
 
     batteryImag = new BatteryIconWidget();
     batteryImag->setStatus(BATTERY_NOT_EXISTED);
-
-    QVBoxLayout *disconnectV = new QVBoxLayout();
-    disconnectV->setSpacing(10);
-    disconnectV->setMargin(0);
-    disconnectV->addWidget(iconLabel, 0, Qt::AlignHCenter);
-    disconnectV->addWidget(batteryImag, 0, Qt::AlignHCenter);
-
-    iconLabel = new QLabel();
-    iconLabel->setFont(fontManager.textFont(fontSize));
-    iconLabel->setText(trs("BatteryCommFault"));
-    iconLabel->setFixedWidth(300);
-    iconLabel->setAlignment(Qt::AlignHCenter);
-
-    batteryImag = new BatteryIconWidget();
-    batteryImag->setStatus(BATTERY_COM_FAULT);
-
-    QVBoxLayout *comfaultV = new QVBoxLayout();
-    comfaultV->setSpacing(10);
-    comfaultV->setMargin(0);
-    comfaultV->addWidget(iconLabel, 0, Qt::AlignHCenter);
-    comfaultV->addWidget(batteryImag, 0, Qt::AlignHCenter);
-
-    layoutH->addStretch();
-    layoutH->addLayout(disconnectV);
-    layoutH->addStretch();
-    layoutH->addLayout(comfaultV);
-    layoutH->addStretch();
-
-    layoutV->addLayout(layoutH);
-    layoutV->addStretch();
-
-    // third row.
-    layoutH = new QHBoxLayout();
-    layoutH->setMargin(0);
-    layoutH->setSpacing(0);
-
-    iconLabel = new QLabel();
-    iconLabel->setFont(fontManager.textFont(fontSize));
-    iconLabel->setText(trs("BatteryError"));
-    iconLabel->setFixedWidth(300);
-    iconLabel->setAlignment(Qt::AlignHCenter);
-
-    batteryImag = new BatteryIconWidget();
-    batteryImag->setStatus(BATTERY_ERROR);
-
-    QVBoxLayout *errorV = new QVBoxLayout();
-    errorV->setSpacing(10);
-    errorV->setMargin(0);
-    errorV->addWidget(iconLabel, 0, Qt::AlignHCenter);
-    errorV->addWidget(batteryImag, 0, Qt::AlignHCenter);
-
-    iconLabel = new QLabel();
-    iconLabel->setFont(fontManager.textFont(fontSize));
-    iconLabel->setText(trs("BatteryCalibrationRequired"));
-    iconLabel->setFixedWidth(300);
-    iconLabel->setAlignment(Qt::AlignHCenter);
-
-    batteryImag = new BatteryIconWidget();
-    batteryImag->setStatus(BATTERY_CALIBRATION_REQUIRED);
-
-    QVBoxLayout *calibrateV = new QVBoxLayout();
-    calibrateV->setSpacing(10);
-    calibrateV->setMargin(0);
-    calibrateV->addWidget(iconLabel, 0, Qt::AlignHCenter);
-    calibrateV->addWidget(batteryImag, 0, Qt::AlignHCenter);
-
-    layoutH->addStretch();
-    layoutH->addLayout(errorV);
-    layoutH->addStretch();
-    layoutH->addLayout(calibrateV);
-    layoutH->addStretch();
-
-    layoutV->addLayout(layoutH);
-    layoutV->addStretch();
-
-
-    QVBoxLayout *layoutValue = new QVBoxLayout();
-    layoutValue->setMargin(2);
-    layoutValue->setSpacing(2);
-
-    d_ptr->recordBatteryInfo = false;
-    machineConfig.getNumValue("Record|Battery", d_ptr->recordBatteryInfo);
-    if (d_ptr->recordBatteryInfo)
-    {
-        layoutV->addLayout(layoutValue);
-    }
-
+    layoutV->addWidget(batteryImag, 0 , Qt::AlignCenter);
     layoutV->addStretch();
 
     d_ptr->timer = new QTimer();

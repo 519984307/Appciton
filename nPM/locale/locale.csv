@@ -405,8 +405,10 @@ PatientCreate,新建病人,Create Patient
 FastReceivingPatients,快速接收病人,Fast Receiving Patients
 ReceivingPatients,接收病人,Receiving Patients
 RelievePatient,解除病人,Discharge Patient
-isRelievePatient,是否解除病人,Whether to discharge patient
-CleanPatientData,清除病人数据,Clean Patient Data
+Discharge,解除病人,Discharge
+isRelievePatient,是否解除病人,Whether to discharge patient?
+isCleanPatient,是否清除当前病人数据,Whether to clean current patient data?
+CleanPatientData,清除当前病人数据,Clean current Patient Data
 WhetherStandby,是否进入待机？,Whether to enter the standby machine？
 RemoveAndRecePatient,"解除当前病人,接收新病人?",Relieving the current patient and receiving new patients?
 ApplicationDataToReceivingPatients,将监护仪中已有数据应用于将被接收的病人？,Application data to receiving patients?
@@ -939,6 +941,7 @@ TransferSupervisorByWIFI,传输超级配置数据到WIFI,Transferring Supervisor
 TransferRescueDataComplete,营救数据传输完成,Rescue Data Transfer Complete
 TransferSupervisorComplete,超级配置传输完成,Supervisor Config Transfer Complete
 TransferErrorLogToUSBComplete,U盘传输错误日志完成,Transfer error log to USB complete
+TransferErrorLogToUSB,U盘传输错误日志,Transfer error log to USB
 TransferFailed,传输失败,Transfer Failed
 TransferCancel,传输取消,Transfer Cancel
 ECG12LTransfersuccess,12导传送成功,ECG 12 Lead Transfer Success
@@ -1274,8 +1277,8 @@ Percent100Calibration,100% 校准,100% Calibrate
 SelectStarterLogo,开机图片,Start Logo
 SelectStarterLogoMenu,开机图片,Starter Logo
 SelectStarterLogoMenuDesc,开机图片设置,Start Logo Desc
-ServiceErrorLogEntrance,错误日志,Service ErrorLog
-ServiceErrorLogEntranceDesc,错误日志,Service ErrorLog
+ServiceErrorLogEntrance,错误日志,ErrorLog
+ServiceErrorLogEntranceDesc,错误日志,ErrorLog
 ErrorLogErase,擦除,Erase
 ErrorLogExport,导出,Export
 ErrorLogInfo,信息,Info
@@ -1575,7 +1578,7 @@ ChooseScreen,界面选择,Screen
 ManualTirgger,手动触发,Manual Tirgger
 ParameterSwitch,参数开关,Para Switch
 eventReview,事件回顾,Event
-NightMode,夜间模式,Night
+NightMode,夜间模式,Night Mode
 Patient,病人信息,Patient
 IBPCOModule,IBP+CO模块,IBP+CO Module
 ShuttingDown,正在关机,Shutting Down

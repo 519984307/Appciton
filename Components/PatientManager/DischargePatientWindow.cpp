@@ -27,13 +27,15 @@ public:
     Button *yesBtn;                     // 确定按键
     Button *noBtn;                      // 确定按键
     bool isStandby;                     // 是否待机
+    QLabel *hintLbl;                    // 提示信息标签
 };
 
 DischaregePatientWindowPrivate::DischaregePatientWindowPrivate()
     : standbyChk(NULL),
       yesBtn(NULL),
       noBtn(NULL),
-      isStandby(false)
+      isStandby(false),
+      hintLbl(NULL)
 {
 }
 
@@ -74,6 +76,7 @@ void DischargePatientWindow::layoutExec()
 #endif
 
     lbl->setAlignment(Qt::AlignCenter);
+    d_ptr->hintLbl = lbl;
     hlayout->addStretch();
 #ifndef HIDE_STANDBY_FUNCTION
     hlayout->addWidget(d_ptr->standbyChk);
@@ -104,6 +107,25 @@ void DischargePatientWindow::layoutExec()
     layout->addLayout(hlayout);
 
     setWindowLayout(layout);
+}
+
+void DischargePatientWindow::showEvent(QShowEvent *e)
+{
+    if (patientManager.isMonitoring())
+    {
+        setWindowTitle(trs("RelievePatient"));
+#ifdef HIDE_STANDBY_FUNCTION
+        d_ptr->hintLbl->setText(trs("isRelievePatient"));
+#endif
+    }
+    else
+    {
+        setWindowTitle(trs("CleanPatientData"));
+#ifdef HIDE_STANDBY_FUNCTION
+        d_ptr->hintLbl->setText(trs("isCleanPatient"));
+#endif
+    }
+    Window::showEvent(e);
 }
 
 void DischargePatientWindow::onBtnRelease()

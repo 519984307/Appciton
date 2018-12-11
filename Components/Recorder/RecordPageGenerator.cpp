@@ -33,6 +33,7 @@
 #include <QDebug>
 #include "RecorderManager.h"
 #include "TimeDate.h"
+#include "AlarmConfig.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
@@ -1613,7 +1614,8 @@ static inline qreal timestampToX(unsigned t, const GraphAxisInfo &axisInfo, cons
 static inline qreal mapTrendYValue(TrendDataType val, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo)
 {
     qreal validHeight = axisInfo.validHeight;
-    qreal mapH = (val - graphInfo.scale.min) * 1.0 * validHeight / (graphInfo.scale.max -  graphInfo.scale.min);
+    qreal mapH = (val * graphInfo.scale.scale - graphInfo.scale.min) * 1.0 * validHeight /
+            (graphInfo.scale.max -  graphInfo.scale.min);
     if (mapH > validHeight)
     {
         mapH = validHeight;

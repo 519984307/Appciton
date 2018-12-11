@@ -39,7 +39,7 @@ void AlarmOffState::enter()
 {
     // 定时发出报警关闭提示音
     int time = ALARM_CLOSE_PROMPT_OFF;
-    currentConfig.getNumValue("Alarm|AlarmOffPrompting", time);
+    systemConfig.getNumValue("Alarms|AlarmOffPrompting", time);
     if (time > ALARM_CLOSE_PROMPT_OFF && time < ALARM_CLOSE_PROMPT_NR)
     {
         beginTimer(time * 5 * 60 * 1000);

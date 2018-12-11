@@ -22,6 +22,9 @@ public:
 
     void layoutExec(void);
 
+protected:
+    void showEvent(QShowEvent *);
+
 private slots:
     void onBtnRelease();
 

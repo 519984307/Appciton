@@ -208,35 +208,6 @@ void RescueDataDeleteWindow::_downReleased()
     }
 }
 
-void RescueDataDeleteWindow::_updatePageBtnStatus()
-{
-    int dataListCurPage = d_ptr->dataListWidget->getCurPage();
-    int dataListTotalPage = d_ptr->dataListWidget->getTotalPage();
-
-    // previous page button
-    if (dataListCurPage <= 0)
-    {
-        d_ptr->up->setEnabled(false);
-        d_ptr->up->setIcon(QIcon(""));
-    }
-    else
-    {
-        d_ptr->up->setEnabled(true);
-        d_ptr->up->setIcon(QIcon(PATH_ICON_UP));
-    }
-    // next page button
-    if (dataListCurPage >= dataListTotalPage - 1)
-    {
-        d_ptr->down->setEnabled(false);
-        d_ptr->down->setIcon(QIcon(""));
-    }
-    else
-    {
-        d_ptr->down->setEnabled(true);
-        d_ptr->down->setIcon(QIcon(PATH_ICON_DOWN));
-    }
-}
-
 void RescueDataDeleteWindow::_updateEraseBtnStatus()
 {
     QStringList checkList , strList;
@@ -279,8 +250,6 @@ RescueDataDeleteWindow::RescueDataDeleteWindow()
     d_ptr->dataListWidget->setShowCurRescue(false);
     connect(d_ptr->dataListWidget , SIGNAL(pageInfoChange()),
             this, SLOT(_updateWindowTitle()));
-    connect(d_ptr->dataListWidget , SIGNAL(pageInfoChange()),
-            this, SLOT(_updatePageBtnStatus()));
     connect(d_ptr->dataListWidget, SIGNAL(btnRelease()),
             this, SLOT(_updateEraseBtnStatus()));
 

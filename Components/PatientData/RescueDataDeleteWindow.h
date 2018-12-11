@@ -33,7 +33,6 @@ private slots:
     void _deleteAllReleased();
     void _upReleased();
     void _downReleased();
-    void _updatePageBtnStatus();
     void _updateEraseBtnStatus();
 
 private:

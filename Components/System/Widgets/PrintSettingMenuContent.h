@@ -42,11 +42,6 @@ private slots:
      */
     void onSelectWaveChanged(const QString &waveName);
 
-    /**
-     * @brief onClearBtnReleased
-     */
-    void onClearBtnReleased();
-
 private:
     PrintSettingMenuContentPrivate *const d_ptr;
 };

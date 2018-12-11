@@ -658,7 +658,7 @@ void TrendWaveWidget::paintEvent(QPaintEvent *event)
 
     // 当前趋势记录的时间
     QRect timeRect = rect().adjusted(_waveRegionWidth + 5, 12, -5, 0);
-    if (_cursorPosIndex < _trendGraphInfo.alarmInfo.count())
+    if (_cursorPosIndex < _trendGraphInfo.alarmInfo.count() && _cursorPosIndex >= 0)
     {
         timeDate.getDate(_trendGraphInfo.alarmInfo.at(_cursorPosIndex).timestamp, tStr);
         barPainter.drawText(timeRect, Qt::AlignLeft, tStr);
@@ -761,8 +761,8 @@ void TrendWaveWidget::_trendLayout()
         _subWidgetList.at(i)->loadTrendSubWidgetInfo(info);
         _subWidgetList.at(i)->setTimeRange(_leftTime, _rightTime);
         _trendGraphInfo.unit = paramInfo.getUnitOfSubParam(subId);
-        _subWidgetList.at(i)->getValueLimit(_trendGraphInfo.scale.max, _trendGraphInfo.scale.min);
         _subWidgetList.at(i)->update();
+        _subWidgetList.at(i)->getValueLimit(_trendGraphInfo.scale.max, _trendGraphInfo.scale.min, _trendGraphInfo.scale.scale);
         _infosList.append(_trendGraphInfo);
         _totalGraphNum++;
     }

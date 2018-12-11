@@ -15,6 +15,20 @@
 #include "BaseDefine.h"
 #include "NIBPParam.h"
 #include <QMap>
+#include "AlarmDefine.h"
+
+// nibp数据包
+struct NibpDataPacket
+{
+    NibpDataPacket()
+        : isAlarm(false),
+          priority(ALARM_PRIO_PROMPT),
+          value(InvData())
+    {}
+    bool isAlarm;
+    AlarmPriority priority;
+    TrendDataType value;
+};
 
 // 趋势缓存数据
 struct NIBPTrendCacheData
@@ -22,28 +36,19 @@ struct NIBPTrendCacheData
     NIBPTrendCacheData()
     {
         lastNibpMeasureTime = 0;
-        sysvalue = InvData();
-        diavalue = InvData();
-        mapvalue = InvData();
         prvalue = InvData();
         valueIsDisplay = false;
-        sysAlarm = false;
-        diaAlarm = false;
-        mapAlarm = false;
         prAlarm = false;
         errorCode = NIBP_ONESHOT_NONE;
     }
 
     unsigned lastNibpMeasureTime;
-    TrendDataType sysvalue;
-    TrendDataType diavalue;
-    TrendDataType mapvalue;
     TrendDataType prvalue;
     bool valueIsDisplay;
-    bool sysAlarm;
-    bool diaAlarm;
-    bool mapAlarm;
     bool prAlarm;
+    NibpDataPacket sys;
+    NibpDataPacket dia;
+    NibpDataPacket map;
     NIBPOneShotType errorCode;
 };
 
@@ -85,6 +90,13 @@ private:
     bool _isAlarm;
     int _rowNR;
     int _tableItemHeight;  // 表格高度。
+
+    /**
+     * @brief getPriotityColor 根据优先级获取显示颜色
+     * @param prio
+     * @return
+     */
+    QString getPriotityColor(AlarmPriority prio);
 
     // 子参数ID、数值映射。
     typedef QMap<unsigned, NIBPTrendCacheData> NIBPTrendCacheMap;

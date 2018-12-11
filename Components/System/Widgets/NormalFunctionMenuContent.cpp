@@ -81,7 +81,7 @@ void NormalFunctionMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_ALARM_VOLUME]->setEnabled(true);
 
         int index = 0;
-        currentConfig.getNumValue("Alarm|DefaultAlarmVolume", index);
+        systemConfig.getNumValue("Alarms|DefaultAlarmVolume", index);
         combos[ITEM_CBO_ALARM_VOLUME]->setCurrentIndex(index - 1);
 
         index = systemManager.getBrightness();
@@ -299,7 +299,7 @@ void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
         {
             int volume = box->itemText(index).toInt();
             soundManager.setVolume(SoundManager::SOUND_TYPE_ALARM, static_cast<SoundManager::VolumeLevel>(volume));
-            currentConfig.setNumValue("Alarm|DefaultAlarmVolume", volume);
+            systemConfig.setNumValue("Alarms|DefaultAlarmVolume", volume);
             break;
         }
         case NormalFunctionMenuContentPrivate::ITEM_CBO_SCREEN_BRIGHTNESS:

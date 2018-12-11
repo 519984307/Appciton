@@ -46,7 +46,7 @@ public:
      */
     void loadTrendSubWidgetInfo(TrendSubWidgetInfo &info);
 
-    void getValueLimit(int &max, int &min);
+    void getValueLimit(int &max, int &min, int &scale);
 
 public:
     /**

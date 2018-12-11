@@ -111,9 +111,7 @@
         <AutoInterval>5</AutoInterval>
         <StatFunction>1</StatFunction>
         <AutomaticRetry>0</AutomaticRetry>
-        <AdultInitialCuffInflation>2</AdultInitialCuffInflation>
-        <PedInitialCuffInflation>4</PedInitialCuffInflation>
-        <NeoInitialCuffInflation>3</NeoInitialCuffInflation>
+        <PedInitialCuffInflation>140</PedInitialCuffInflation>
     </NIBP>
     <SPO2>
         <AverageTime>2</AverageTime>
@@ -156,15 +154,6 @@
         <WaveLengthAfter>16</WaveLengthAfter>
     </Event>
     <Alarm>
-        <MinimumAlarmVolume>0</MinimumAlarmVolume>
-        <!--index(0~4)-->
-        <DefaultAlarmVolume>3</DefaultAlarmVolume>
-        <!--actual volume level(1~5)-->
-        <AlarmPauseTime>1</AlarmPauseTime>
-        <AlarmOffPrompting>0</AlarmOffPrompting>
-        <EnableAlarmAudioOff>1</EnableAlarmAudioOff>
-        <EnableAlarmOff>1</EnableAlarmOff>
-        <AlarmOffAtPowerOn>0</AlarmOffAtPowerOn>
         <ApneaTime>2</ApneaTime>
     </Alarm>
     <AlarmSource>
