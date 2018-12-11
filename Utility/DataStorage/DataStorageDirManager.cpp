@@ -56,6 +56,34 @@ quint64 DataStorageDirManager::dirSize(const QString &dir)
     return sizex;
 }
 
+void DataStorageDirManager::cleanCurData()
+{
+    // 删除当前文件夹中的数据，重新生成新的数据文件
+    if (_folderNameList.size() <= 1)
+    {
+        return;
+    }
+
+    QString path = _curFolder;
+    quint32 totalSize = 0;
+
+    quint32 size = _cleanupDir(path);
+    if (_previousDataSize > size)
+    {
+        _previousDataSize -= size;
+    }
+    else
+    {
+        _previousDataSize = 0;
+    }
+
+
+    totalSize = _previousDataSize + _curDataSize;
+
+    systemConfig.setNumValue("DataStorage|DataSize", totalSize);
+    emit newPatient();
+}
+
 
 /**************************************************************************************************
  * 构造。
@@ -666,5 +694,25 @@ int DataStorageDirManager::_deleteDir(const QString &path)
 
     dir.rmdir(path);
 
+    return size;
+}
+
+int DataStorageDirManager::_cleanupDir(const QString &path)
+{
+    int size = 0;
+    QDir cleanDir(path);
+    foreach(QFileInfo file, cleanDir.entryInfoList(QDir::NoDotAndDotDot | QDir::Dirs | QDir::Hidden | QDir::NoSymLinks
+                                                    | QDir::Files))
+    {
+        if (file.isDir())
+        {
+            size += _deleteDir(file.filePath());
+        }
+        else
+        {
+            size += file.size();
+            QFile::remove(file.filePath());
+        }
+    }
     return size;
 }

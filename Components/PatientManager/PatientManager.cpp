@@ -356,7 +356,7 @@ void PatientManagerPrivate::handleDischarge()
     }
     else
     {
-        // TODO 清除当前病人历史数据
+        dataStorageDirManager.cleanCurData();
     }
 }
 

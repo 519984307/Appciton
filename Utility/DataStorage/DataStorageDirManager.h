@@ -111,6 +111,11 @@ public:
     // get the size of specific directory
     static quint64 dirSize(const QString &dir);
 
+    /**
+     * @brief cleanCurData 删除当前文件夹（病人）的数据
+     */
+    void cleanCurData();
+
 signals:
     /**
      * @brief newPatient 新建病人信号
@@ -120,6 +125,13 @@ signals:
 private:
     DataStorageDirManager();
     int _deleteDir(const QString &path);
+
+    /**
+     * @brief _cleanupDir 清理目录下的所有文件，但不删除该目录
+     * @param path 要清理的文件夹路径
+     * @return 清理的文件的总大小
+     */
+    int _cleanupDir(const QString &path);
 
     // 删除较早的数据
     void _deleteOldData(void);

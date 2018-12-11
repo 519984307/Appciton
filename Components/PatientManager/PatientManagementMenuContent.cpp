@@ -137,7 +137,7 @@ void PatientManagementMenuContent::onBtnReleased()
             // 创建新病人
             QStringList slist;
             slist << trs("No") << trs("EnglishYESChineseSURE");
-            MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist);
+            MessageBox messageBox(trs("Warn"), trs("RemoveAndRecePatient"), slist, true);
             if (messageBox.exec() == 1)
             {
                 patientManager.newPatient();
@@ -179,10 +179,10 @@ void PatientManagementMenuContentPrivate::loadOption()
 {
     if (patientManager.isMonitoring())
     {
-        dischargePatient->setEnabled(true);
+        dischargePatient->setText(trs("RelievePatient"));
     }
     else
     {
-        dischargePatient->setEnabled(false);
+        dischargePatient->setText(trs("CleanPatientData"));
     }
 }
