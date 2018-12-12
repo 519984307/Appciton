@@ -23,6 +23,7 @@
 #include "Button.h"
 #include "AlarmLimitWindow.h"
 #include "ECGParam.h"
+#include "NightModeManager.h"
 
 class SPO2MenuContentPrivate
 {
@@ -90,14 +91,18 @@ void SPO2MenuContentPrivate::loadOptions()
     combos[ITEM_CBO_FAST_SAT]->setCurrentIndex(spo2Param.getFastSat());
     combos[ITEM_CBO_SMART_TONE]->setCurrentIndex(spo2Param.getSmartPulseTone());
     combos[ITEM_CBO_GAIN]->setCurrentIndex(spo2Param.getGain());
-    int volSPO2 = spo2Param.getBeatVol();
-    int volECG = ecgParam.getQRSToneVolume();
-    if (volSPO2 != volECG)
+
+    int volIndex;
+    currentConfig.getNumValue("SPO2|BeatVol", volIndex);
+    combos[ITEM_CBO_BEAT_VOL]->setCurrentIndex(volIndex);
+    if (nightModeManager.nightMode())
     {
-        // 保持脉搏音与心跳音同步
-        ecgParam.setQRSToneVolume(static_cast<SoundManager::VolumeLevel>(volSPO2));
+        combos[ITEM_CBO_BEAT_VOL]->setEnabled(false);
     }
-    combos[ITEM_CBO_BEAT_VOL]->setCurrentIndex(volSPO2);
+    else
+    {
+        combos[ITEM_CBO_BEAT_VOL]->setEnabled(true);
+    }
 
     setCboBlockSignalsStatus(false);
 }

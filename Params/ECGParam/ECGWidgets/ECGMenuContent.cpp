@@ -63,6 +63,12 @@ public:
     void loadOptions();
 
     /**
+     * @brief setCboBlockSignal 设置下拉框信号阻塞
+     * @param flag
+     */
+    void setCboBlockSignal(bool flag);
+
+    /**
      * @brief updatePrintWaveIds
      */
     void updatePrintWaveIds();
@@ -83,8 +89,7 @@ public:
 void ECGMenuContentPrivate::loadOptions()
 {
     int index = 0;
-
-    combos[ITEM_CBO_HRPR_SOURCE]->blockSignals(true);
+    setCboBlockSignal(true);
     combos[ITEM_CBO_HRPR_SOURCE]->clear();
     for (int i = HR_SOURCE_ECG; i < HR_SOURCE_NR; ++i)
     {
@@ -104,15 +109,10 @@ void ECGMenuContentPrivate::loadOptions()
         index = 0;
     }
     combos[ITEM_CBO_HRPR_SOURCE]->setCurrentIndex(index);
-    combos[ITEM_CBO_HRPR_SOURCE]->blockSignals(false);
 
     ECGLeadMode leadMode = ecgParam.getLeadMode();
-    combos[ITEM_CBO_LEAD_MODE]->blockSignals(true);
     combos[ITEM_CBO_LEAD_MODE]->setCurrentIndex(leadMode);
-    combos[ITEM_CBO_LEAD_MODE]->blockSignals(false);
 
-    combos[ITEM_CBO_ECG1]->blockSignals(true);
-    combos[ITEM_CBO_ECG2]->blockSignals(true);
     ecgParam.getAvailableWaveforms(ecgWaveforms, ecgWaveformTitles, true);
     combos[ITEM_CBO_ECG1]->clear();
     combos[ITEM_CBO_ECG2]->clear();
@@ -177,16 +177,12 @@ void ECGMenuContentPrivate::loadOptions()
     index = ecgWaveforms.indexOf(ecgTopWaveform);
     if (index >= 0)
     {
-        combos[ITEM_CBO_ECG_GAIN]->blockSignals(true);
         ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
         combos[ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
-        combos[ITEM_CBO_ECG_GAIN]->blockSignals(false);
         combos[ITEM_CBO_ECG1]->setCurrentIndex(index);
     }
-    combos[ITEM_CBO_ECG1]->blockSignals(false);
 
     combos[ITEM_CBO_ECG2]->setCurrentIndex(index2);
-    combos[ITEM_CBO_ECG2]->blockSignals(false);
 
     ECGFilterMode filterMode = ecgParam.getFilterMode();
 
@@ -219,9 +215,7 @@ void ECGMenuContentPrivate::loadOptions()
     }
 
     ECGNotchFilter notchFilter = ecgParam.getNotchFilter();
-    combos[ITEM_CBO_FILTER_MODE]->blockSignals(true);
     combos[ITEM_CBO_FILTER_MODE]->setCurrentIndex(filterMode);
-    combos[ITEM_CBO_FILTER_MODE]->blockSignals(false);
 
     combos[ITEM_CBO_NOTCH_FITER]->clear();
     switch (filterMode)
@@ -260,16 +254,8 @@ void ECGMenuContentPrivate::loadOptions()
 
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(ecgParam.getSweepSpeed());
 
-    int volSPO2 = spo2Param.getBeatVol();
-    int volECG = ecgParam.getQRSToneVolume();
-    if (volSPO2 != volECG)
-    {
-        // 保持脉搏音与心跳音同步
-        spo2Param.setBeatVol(static_cast<SoundManager::VolumeLevel>(volECG));
-    }
-
-    combos[ITEM_CBO_QRS_TONE]->setCurrentIndex(volECG);
-
+    currentConfig.getNumValue("ECG|QRSVolume", index);
+    combos[ITEM_CBO_QRS_TONE]->setCurrentIndex(index);
     if (nightModeManager.nightMode())
     {
         combos[ITEM_CBO_QRS_TONE]->setEnabled(false);
@@ -295,6 +281,17 @@ void ECGMenuContentPrivate::loadOptions()
     }
     ecg2Label->setVisible(!isHide);
     combos[ITEM_CBO_ECG2]->setVisible(!isHide);
+
+    setCboBlockSignal(false);
+}
+
+void ECGMenuContentPrivate::setCboBlockSignal(bool flag)
+{
+    for (int i = ITEM_CBO_HRPR_SOURCE; i <=  ITEM_CBO_QRS_TONE; ++i)
+    {
+        MenuItem itemId = static_cast<MenuItem>(i);
+        combos[itemId]->blockSignals(flag);
+    }
 }
 
 void ECGMenuContentPrivate::updatePrintWaveIds()

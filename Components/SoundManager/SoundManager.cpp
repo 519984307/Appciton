@@ -482,20 +482,24 @@ void SoundManager::volumeInit()
 {
     int alarmVolume = VOLUME_LEV_3;
     int keyVolume = VOLUME_LEV_3;
+    int qrsVolume = VOLUME_LEV_3;
 
     if (nightModeManager.nightMode())
     {
         systemConfig.getNumValue("NightMode|AlarmVolume", alarmVolume);
         systemConfig.getNumValue("NightMode|KeyPressVolume", keyVolume);
+        systemConfig.getNumValue("NightMode|HeartBeatVolume", qrsVolume);
     }
     else
     {
         systemConfig.getNumValue("Alarms|DefaultAlarmVolume", alarmVolume);
         systemConfig.getNumValue("General|KeyPressVolume", keyVolume);
+        currentConfig.getNumValue("ECG|QRSVolume", qrsVolume);
     }
 
     d_ptr->soundVolumes[SOUND_TYPE_ALARM] = static_cast<VolumeLevel>(alarmVolume);
     d_ptr->soundVolumes[SOUND_TYPE_KEY_PRESS] = static_cast<VolumeLevel>(keyVolume);
+    d_ptr->soundVolumes[SOUND_TYPE_HEARTBEAT] = static_cast<VolumeLevel>(qrsVolume);
 }
 
 void SoundManager::playFinished()
