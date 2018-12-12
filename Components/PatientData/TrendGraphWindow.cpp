@@ -59,14 +59,17 @@ TrendGraphWindow::~TrendGraphWindow()
 {
 }
 
-void TrendGraphWindow::setSubWidgetRulerLimit(SubParamID id, int down, int up, int scale)
+void TrendGraphWindow::setSubWidgetRulerLimit(int index, int down, int up, int scale)
 {
-    d_ptr->waveWidget->setRulerLimit(id, down, up, scale);
+    d_ptr->waveWidget->setRulerLimit(index, down, up, scale);
 }
 
-void TrendGraphWindow::setSubWidgetAutoRuler(SubParamID id, bool isAuto)
+void TrendGraphWindow::setAllParamAutoRuler()
 {
-    d_ptr->waveWidget->setAutoRuler(id, isAuto);
+    if (d_ptr->waveWidget)
+    {
+        d_ptr->waveWidget->setAllParamAutoRuler();
+    }
 }
 
 void TrendGraphWindow::updateTrendGraph()
@@ -87,6 +90,9 @@ void TrendGraphWindow::waveNumberChange(int num)
     if (num > 0 && num <= 3)
     {
         d_ptr->waveWidget->setWaveNumber(num);
+        d_ptr->buttons[TrendGraphWindowPrivate::ACTION_BTN_DOWN_PAGE]->setEnabled(true);
+        d_ptr->buttons[TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE]->setEnabled(false);
+        trendGraphSetWindow.setCurParam(d_ptr->waveWidget->getCurParamList());
     }
 }
 
@@ -142,6 +148,7 @@ void TrendGraphWindow::onButtonReleased()
         case TrendGraphWindowPrivate::ACTION_BTN_SET_WIDGET:
         {
             windowManager.showWindow(&trendGraphSetWindow, WindowManager::ShowBehaviorHideOthers);
+            trendGraphSetWindow.setCurParam(d_ptr->waveWidget->getCurParamList());
             break;
         }
         case TrendGraphWindowPrivate::ACTION_BTN_UP_PAGE:
@@ -227,6 +234,7 @@ TrendGraphWindow::TrendGraphWindow()
 
     // 上翻页坐标
     button = new Button();
+    button->setEnabled(false);
     button->setIcon(QIcon("/usr/local/nPM/icons/up.png"));
     button->setButtonStyle(Button::ButtonIconOnly);
     button->setFixedHeight(itemHeight);
@@ -238,6 +246,7 @@ TrendGraphWindow::TrendGraphWindow()
 
     // 下翻页坐标
     button = new Button();
+    button->setEnabled(true);
     button->setIcon(QIcon("/usr/local/nPM/icons/down.png"));
     button->setButtonStyle(Button::ButtonIconOnly);
     button->setFixedHeight(itemHeight);

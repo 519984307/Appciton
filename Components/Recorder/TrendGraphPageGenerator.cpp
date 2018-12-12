@@ -160,10 +160,9 @@ GraphAxisInfo TrendGraphPageGeneratorPrivate::getAxisInfo(const RecordPage *page
         }
     }
 
-    ParamRulerConfig config = alarmConfig.getParamRulerConfig(subParamID, unit);
-    axisInfo.yLabels = QStringList() << Util::convertToString(config.downRuler, config.scale)
+    axisInfo.yLabels = QStringList() << Util::convertToString(graphInfo.scale.min, graphInfo.scale.scale)
                        << QString()
-                       << Util::convertToString(config.upRuler, config.scale);
+                       << Util::convertToString(graphInfo.scale.max, graphInfo.scale.scale);
     return axisInfo;
 }
 

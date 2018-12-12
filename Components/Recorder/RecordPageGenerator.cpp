@@ -33,6 +33,7 @@
 #include <QDebug>
 #include "RecorderManager.h"
 #include "TimeDate.h"
+#include "AlarmConfig.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
@@ -1613,8 +1614,8 @@ static inline qreal timestampToX(unsigned t, const GraphAxisInfo &axisInfo, cons
 static inline qreal mapTrendYValue(TrendDataType val, const GraphAxisInfo &axisInfo, const TrendGraphInfo &graphInfo)
 {
     qreal validHeight = axisInfo.validHeight;
-    qreal mapH = (val - graphInfo.scale.min * graphInfo.scale.scale) * 1.0 * validHeight /
-            (graphInfo.scale.max * graphInfo.scale.scale -  graphInfo.scale.min * graphInfo.scale.scale);
+    qreal mapH = (val * graphInfo.scale.scale - graphInfo.scale.min) * 1.0 * validHeight /
+            (graphInfo.scale.max -  graphInfo.scale.min);
     if (mapH > validHeight)
     {
         mapH = validHeight;
@@ -1755,6 +1756,7 @@ QList<QPainterPath> generatorPainterPath(const GraphAxisInfo &axisInfo, const Tr
     case SUB_PARAM_ETAA1:
     case SUB_PARAM_ETAA2:
     case SUB_PARAM_ETO2:
+    case SUB_PARAM_T1:
     {
         QPainterPath etPath;
         QPainterPath fiPath;
@@ -1778,8 +1780,29 @@ QList<QPainterPath> generatorPainterPath(const GraphAxisInfo &axisInfo, const Tr
             }
 
             qreal x = timestampToX(iter->timestamp, axisInfo, graphInfo);
-            qreal et = mapTrendYValue(iter->data[0], axisInfo, graphInfo);
-            qreal fi = mapTrendYValue(iter->data[1], axisInfo, graphInfo);
+            ParamID paramId = paramInfo.getParamID(graphInfo.subParamID);
+            UnitType type = paramManager.getSubParamUnit(paramId, graphInfo.subParamID);
+            int v1 = 0;
+            int v2 = 0;
+            if (paramId == PARAM_CO2)
+            {
+                v1 = Unit::convert(type, UNIT_PERCENT, iter->data[0] / 10.0, co2Param.getBaro()).toDouble();
+                v2 = Unit::convert(type, UNIT_PERCENT, iter->data[1] / 10.0, co2Param.getBaro()).toDouble();
+            }
+            else if (paramId == PARAM_TEMP)
+            {
+                QString v1Str = Unit::convert(type, UNIT_TC, iter->data[0] / 10.0);
+                QString v2Str = Unit::convert(type, UNIT_TC, iter->data[1] / 10.0);
+                v1 = v1Str.toDouble();
+                v2 = v2Str.toDouble();
+            }
+            else
+            {
+                v1 = iter->data[0] / 10;
+                v2 = iter->data[1] / 10;
+            }
+            qreal et = mapTrendYValue(v1, axisInfo, graphInfo);
+            qreal fi = mapTrendYValue(v2, axisInfo, graphInfo);
 
             if (lastPointInvalid)
             {
@@ -1804,8 +1827,8 @@ QList<QPainterPath> generatorPainterPath(const GraphAxisInfo &axisInfo, const Tr
 
             etLastPoint.rx() = x;
             etLastPoint.ry() = et;
-            fiLastPoint.ry() = fi;
             fiLastPoint.rx() = x;
+            fiLastPoint.ry() = fi;
         }
 
         if (!lastPointInvalid)
@@ -1817,7 +1840,7 @@ QList<QPainterPath> generatorPainterPath(const GraphAxisInfo &axisInfo, const Tr
         paths.append(etPath);
         paths.append(fiPath);
     }
-        break;
+    break;
     default:
     {
         QPainterPath path;
