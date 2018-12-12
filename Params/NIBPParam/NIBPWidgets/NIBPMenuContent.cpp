@@ -34,6 +34,7 @@ public:
         ITEM_CBO_INITIAL_CUFF = 2,
 
         ITEM_BTN_START_STAT = 0,
+        ITEM_BTN_ADDITION_MEASURE = 1
     };
 
     NIBPMenuContentPrivate() : initCuffSpb(NULL) {}
@@ -142,6 +143,17 @@ void NIBPMenuContent::layoutExec()
     layout->addWidget(button, row + d_ptr->btns.count(), 1);
     d_ptr->btns.insert(NIBPMenuContentPrivate::ITEM_BTN_START_STAT, button);
 
+    // nibp auto addition measure
+    label = new QLabel(trs("NIBPAdditionMeasure"));
+    layout->addWidget(label, row + d_ptr->btns.count(), 0);
+    button = new Button();
+    button->setButtonStyle(Button::ButtonTextOnly);
+    itemID = static_cast<int>(NIBPMenuContentPrivate::ITEM_BTN_ADDITION_MEASURE);
+    button->setProperty("Btn", qVariantFromValue(itemID));
+    connect(button, SIGNAL(released()), this, SLOT(onBtnReleasedChanged()));
+    layout->addWidget(button, row + d_ptr->btns.count(), 1);
+    d_ptr->btns.insert(NIBPMenuContentPrivate::ITEM_BTN_ADDITION_MEASURE, button);
+
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
@@ -181,6 +193,15 @@ void NIBPMenuContentPrivate::loadOptions()
         initCuffSpb->setValue(initVal);
     }
 
+    currentConfig.getNumValue("NIBP|AutomaticRetry", index);
+    if (index)
+    {
+        btns[ITEM_BTN_ADDITION_MEASURE]->setText(trs("On"));
+    }
+    else
+    {
+        btns[ITEM_BTN_ADDITION_MEASURE]->setText(trs("Off"));
+    }
     statBtnShow();
 }
 
@@ -212,24 +233,43 @@ void NIBPMenuContent::onBtnReleasedChanged()
     int index = btns->property("Btn").toInt();
     switch (index)
     {
-    case NIBPMenuContentPrivate::ITEM_BTN_START_STAT:
-        if (nibpParam.curStatusType() == NIBP_MONITOR_ERROR_STATE)
+        case NIBPMenuContentPrivate::ITEM_BTN_START_STAT:
         {
-            return;
+            if (nibpParam.curStatusType() == NIBP_MONITOR_ERROR_STATE)
+            {
+                return;
+            }
+            // 退出STAT模式
+            if (nibpParam.isSTATMeasure())
+            {
+                btns->setText(trs("STATSTART"));
+                nibpCountdownTime.STATMeasureStop();
+            }
+            // 进入STAT模式
+            else
+            {
+                btns->setText(trs("STATSTOP"));
+            }
+            nibpParam.setMeasurMode(NIBP_MODE_STAT);
+            break;
         }
-        // 退出STAT模式
-        if (nibpParam.isSTATMeasure())
+        case NIBPMenuContentPrivate::ITEM_BTN_ADDITION_MEASURE:
         {
-            btns->setText(trs("STATSTART"));
-            nibpCountdownTime.STATMeasureStop();
+            bool flag = nibpParam.isAdditionalMeasure();
+            if (flag)
+            {
+                btns->setText(trs("Off"));
+            }
+            else
+            {
+                btns->setText(trs("On"));
+            }
+            nibpParam.setAdditionalMeasure(!flag);
+            currentConfig.setNumValue("NIBP|AutomaticRetry", static_cast<int>(!flag));
+            break;
         }
-        // 进入STAT模式
-        else
-        {
-            btns->setText(trs("STATSTOP"));
-        }
-        nibpParam.setMeasurMode(NIBP_MODE_STAT);
-        break;
+        default:
+            break;
     }
 }
 
