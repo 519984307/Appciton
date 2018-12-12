@@ -36,28 +36,28 @@
     </General>
     <Alarms>
         <DefaultAlarmVolume>3</DefaultAlarmVolume>
-        <MinimumAlarmVolume Default = "1">2</MinimumAlarmVolume>
-        <AlarmPauseTime Default = "2">2</AlarmPauseTime>
+        <MinimumAlarmVolume>2</MinimumAlarmVolume>
+        <AlarmPauseTime>2</AlarmPauseTime>
         <STAlarmDraly>1</STAlarmDraly>
-        <PauseMaxAlarm15Min Default = "0">1</PauseMaxAlarm15Min>
+        <PauseMaxAlarm15Min>1</PauseMaxAlarm15Min>
         <AlarmVol>1</AlarmVol>
-        <ReminderToneIntervals Default = "2">1</ReminderToneIntervals>
+        <ReminderToneIntervals>1</ReminderToneIntervals>
         <EcgLeadOffLev>1</EcgLeadOffLev>
         <SPO2LeadOffLev>1</SPO2LeadOffLev>
         <IBPLeadOffLev>1</IBPLeadOffLev>
         <LethalArrhOff>1</LethalArrhOff>
         <ExtendedArrh>1</ExtendedArrh>
-         <AlarmLightOnAlarmReset Default = "1">1</AlarmLightOnAlarmReset>
+         <AlarmLightOnAlarmReset>1</AlarmLightOnAlarmReset>
         <AlarmDelay>1</AlarmDelay>
         <HighAlarmIntervals>3</HighAlarmIntervals>
         <MedAlarmIntervals>3</MedAlarmIntervals>
         <LowAlarmIntervals>16</LowAlarmIntervals>
-        <ReminderTone Default = "1">1</ReminderTone>
-        <PhyParAlarmLatchlockOn Default = "0">1</PhyParAlarmLatchlockOn>
-	<AlarmOffPrompting Default = "1">1</AlarmOffPrompting>
-	<EnableAlarmAudioOff Default = "0">1</EnableAlarmAudioOff>
- 	<EnableAlarmOff Default = "0">1</EnableAlarmOff>
-	<AlarmOffAtPowerOn Default = "0">1</AlarmOffAtPowerOn>
+        <ReminderTone>1</ReminderTone>
+        <PhyParAlarmLatchlockOn>1</PhyParAlarmLatchlockOn>
+	<AlarmOffPrompting>1</AlarmOffPrompting>
+	<EnableAlarmAudioOff>1</EnableAlarmAudioOff>
+ 	<EnableAlarmOff>1</EnableAlarmOff>
+	<AlarmOffAtPowerOn>1</AlarmOffAtPowerOn>
     </Alarms>
     <NightMode>
         <ScreenBrightness>1</ScreenBrightness>
