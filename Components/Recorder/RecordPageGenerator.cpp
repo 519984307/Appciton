@@ -1948,9 +1948,20 @@ QList<RecordWaveSegmentInfo> RecordPageGenerator::getWaveInfos(const QList<Wavef
         case WAVE_ECG_V5:
         case WAVE_ECG_V6:
             info.waveInfo.ecg.gain = ecgParam.getGain(ecgParam.waveIDToLeadID(id));
-            caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
-                                             ecgParam.getLeadConvention()))
-                      .arg(ECGSymbol::convert(ecgParam.getFilterMode()));
+            if (ecgParam.getFilterMode() == ECG_FILTERMODE_DIAGNOSTIC)
+            {
+                caption = QString("%1   %2   %3 %4").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
+                                                                           ecgParam.getLeadConvention()))
+                        .arg(ECGSymbol::convert(ecgParam.getFilterMode())).arg("Notch")
+                        .arg(ECGSymbol::convert(ecgParam.getNotchFilter()));
+            }
+            else
+            {
+                caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
+                                                                           ecgParam.getLeadConvention()))
+                        .arg(ECGSymbol::convert(ecgParam.getFilterMode()));
+            }
+
             info.waveInfo.ecg.in12LeadMode = layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN;
             info.waveInfo.ecg._12LeadDisplayFormat = ecgParam.get12LDisplayFormat();
             captionLength = fontManager.textWidthInPixels(caption, font());
