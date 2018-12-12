@@ -25,7 +25,7 @@
 #include "LanguageManager.h"
 
 #define PROFILE_MAX_NUM 5
-#define LISTVIEW_MAX_VISIABLE_TIME 5
+#define LISTVIEW_MAX_VISIABLE_TIME 4
 
 class WifiMaintainMenuContentPrivate
 {
@@ -327,6 +327,9 @@ void WifiMaintainMenuContent::focusFirstItem()
 void WifiMaintainMenuContent::layoutExec()
 {
     Q_D(WifiMaintainMenuContent);
+
+    // 强制窗口不聚焦
+    this->setFocusPolicy(Qt::NoFocus);
 
     QHBoxLayout *hLayout;
     QVBoxLayout *layout = new QVBoxLayout(this);
