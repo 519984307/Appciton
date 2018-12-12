@@ -629,4 +629,5 @@ void NIBPTrendWidget::doRestoreNormalStatus()
     showNormalStatus(d_ptr->sysValue, psrc);
     showNormalStatus(d_ptr->diaValue, psrc);
     showNormalStatus(d_ptr->mapValue, psrc);
+    showNormalParamLimit(psrc);
 }
