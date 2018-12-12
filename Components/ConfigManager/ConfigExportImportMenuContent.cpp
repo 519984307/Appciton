@@ -32,71 +32,385 @@
 #include <QTimer>
 
 #define CONFIG_MAX_NUM 3
-
 #define FILE_PATH          ("/media/usbdisk/etc")
-
 #define CONFIG_DIR         ("/usr/local/nPM/etc/")
-
-#define USER_DEFINE_CONFIG_PREFIX ("UserDefine")
-
 #define LISTVIEW_MAX_VISIABLE_TIME (5)
-
 #define HEIGHT_HINT (themeManger.getAcceptableControlHeight())
+
+enum TransferResult
+{
+    TRANSFER_FAIL,
+    TRANSFER_SUCCESS,
+    TRANSFER_IGNORE
+};
 
 class ConfigExportImportMenuContentPrivate
 {
 public:
-    /**
-     * @brief ConfigExportImportMenuContentPrivate  构造方法
-     */
-    ConfigExportImportMenuContentPrivate():
-        attrCheckFlag(true),
-        configListView(NULL),
-        configDataModel(NULL),
-        exportBtn(NULL),
-        importBtn(NULL),
-        importFlag(255),
-        infoLab(NULL),
-        timer(NULL)
+    ConfigExportImportMenuContentPrivate()
+                    : valid(false)
+                    , configListView(NULL)
+                    , configDataModel(NULL)
+                    , exportBtn(NULL)
+                    , importBtn(NULL)
+                    , infoLab(NULL)
+                    , timer(NULL)
+                    , message(NULL)
     {
-        configs.clear();
-        exportFileName.clear();
-        importFileName.clear();
-        localXml.clear();
-        importXml.clear();
     }
 
     /**
-     * @brief loadConfigs  装载数据方法
+     * @brief exportFileToUSB 导出配置文件到usb
+     * @return  返回传输结果
+     */
+    TransferResult exportFileToUSB();
+
+    /**
+     * @brief insertFileFromUSB    从usb设备导入配置文件
+     * @return 返回传输结果
+     */
+    TransferResult insertFileFromUSB();
+
+    /**
+     * @brief checkXMLContent  check validity of the import XML
+     * @param importTagList    import tag list
+     * @param importTag        import tag
+     * @return 返回：ture-valid;false-invalid；
+     */
+    bool checkXMLContent(QList<QDomElement> &importTagList, QDomElement &importTag);
+
+    /**
+     * @brief tagFindElement  find tag elements
+     * @param list     the element path
+     * @return         true-the element path  false--0
+     */
+    QDomElement tagFindElement(const QStringList &list);
+
+    /**
+     * @brief compareTagAttribute  compare  attribute and value of the both of all XML nodes
+     * @param importtag   import tag
+     * @param localtag    local check tag
+     * @return ture-valid;false-invalid；
+     */
+    bool compareTagAttribute(QDomElement importtag, QDomElement localtag);//
+
+    /**
+     * @brief loadConfigs  装载配置
      */
     void loadConfigs();
+
     /**
      * @brief updateConfigList  更新配置列表
      */
     void updateConfigList();
 
-    QList<ConfigManager::UserDefineConfigInfo> configs;
 
-    QStringList      exportFileName;  //  导出的XML文件名称的链表
-    QStringList      importFileName;  //  导入的XML文件名称的链表
-
-    QTextStream       textStream;  //  日志接口
-
-    QDomDocument      localXml;  //  本地检查文件
-
-    QDomDocument      importXml;  //  导入检查文件
-
-    bool attrCheckFlag;
-
-    ListView   *configListView;
+    QList<ConfigManager::UserDefineConfigInfo> configs; // 用户自定义的配置文件信息
+    QStringList  exportFileName;  // 导出的XML文件名称
+    QStringList  importFileName;  // 导入的XML文件名称
+    QDomDocument checkXml;  // 本地检查文件内容
+    QDomDocument importXml;  // 导入文件内容
+    bool valid;  // 导入文件的有效性
+    ListView  *configListView;
     ListDataModel *configDataModel;
     Button *exportBtn;
     Button *importBtn;
-    int importFlag;
     QLabel *infoLab;  // 记录usb是否存在信息
     QTimer *timer;
+    MessageBox *message;
 };
 
+
+TransferResult ConfigExportImportMenuContentPrivate::exportFileToUSB()
+{
+    // 判断u盘是否存在
+    if (!usbManager.isUSBExist())
+    {
+        MessageBox message(trs("Import"), trs("WarningNoUSB"), false);
+        message.exec();
+        return TRANSFER_IGNORE;
+    }
+
+    // 如果没有对应文件夹，则主动创建此文件夹
+    QDir dir;
+    dir.mkdir(FILE_PATH);
+
+    // 获取所有的导出文件名称
+    exportFileName.clear();
+    int rowCount = configDataModel->getRowCount();
+    QMap<int, bool> selectedMap = configListView->getRowsSelectMap();
+    for (int i = 0; i < rowCount; i++)
+    {
+        if (selectedMap[i])
+        {
+            exportFileName.append(configs.at(i).fileName);
+        }
+    }
+
+    // 开始导出数据
+    int count = exportFileName.count();
+    bool transferSuccess = false;
+    for (int i = 0; i < count; i++)
+    {
+        QString name = exportFileName.at(i);
+        // 判断是否存在同名文件
+        bool isExist = false;
+        if (QFile::exists(QString("%1/%2").arg(FILE_PATH).arg(name)))
+        {
+            isExist = true;
+        }
+
+        // 弹出是否覆盖的提示框
+        QDialog::DialogCode status = QDialog::Accepted;
+        if (isExist)
+        {
+            MessageBox message(trs("Export"),
+                               trs(QString("%1\r\n%2?").arg(name).arg(trs("IfSelectTheSameNameFile"))),
+                               QStringList() << trs("Cancel") << trs("Repeated"));
+            this->message = &message;
+            status = static_cast<QDialog::DialogCode>(message.exec());
+            this->message = NULL;
+        }
+
+        // 复制文件到usb设备
+        bool copyOk = true;
+        if (status == QDialog::Accepted)
+        {
+            QString fileName = QString("%1%2").arg(CONFIG_DIR).arg(name);
+            QString newFileName = QString("%1/%2").arg(FILE_PATH).arg(name);
+            QFile::remove(newFileName);
+            copyOk = QFile::copy(fileName, newFileName);
+            if (copyOk == true)
+            {
+                transferSuccess = true;
+            }
+        }
+
+        // 复制文件失败时弹出提示框
+        if (copyOk == false)
+        {
+            MessageBox message(trs("Export"),
+                               trs(QString("%1\r\n%2").arg(name).arg(trs("ExportFailed"))),
+                               QStringList() << trs("Yes"));
+            message.exec();
+            return TRANSFER_FAIL;
+        }
+    }
+
+    if (transferSuccess == true)
+    {
+        return TRANSFER_SUCCESS;
+    }
+    return TRANSFER_IGNORE;
+}
+
+TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
+{
+    // 判断u盘是否存在
+    if (!usbManager.isUSBExist())
+    {
+        MessageBox message(trs("Import"), trs("WarningNoUSB"), false);
+        message.exec();
+        return TRANSFER_IGNORE;
+    }
+
+    // 判断导入文件是否为空
+    QDir dir(QString("%1%2").arg(FILE_PATH).arg("/"));
+    QStringList files = dir.entryList(QStringList() << "*.xml", QDir::Files | QDir::Readable, QDir::Name);
+    if (files.isEmpty())
+    {
+        MessageBox messageBox(trs("Import"), trs("PleaseAddImportFiles"), false);
+        this->message = &messageBox;
+        messageBox.exec();
+        this->message = NULL;
+        return TRANSFER_IGNORE;
+    }
+
+    // 获取导入文件名称
+    importFileName.clear();
+    ImportSubWidget subW(files, FILE_PATH);
+    QDialog::DialogCode status = static_cast<QDialog::DialogCode>(subW.exec());
+    if (status == QDialog::Accepted)
+    {
+        QMap<int, bool> rowsMap = subW.readRowsMap();
+        for (int i = 0; i < files.count(); i++)
+        {
+            if (rowsMap[i])
+            {
+                importFileName.append(files.at(i));
+            }
+        }
+    }
+
+    // 未选取任何文件，直接退出
+    if (importFileName.isEmpty())
+    {
+        return TRANSFER_IGNORE;
+    }
+
+    // 加载检查文件
+    QFile checkFile(QString("%1usercheck.xml").arg(CONFIG_DIR));
+    if (false == checkFile.open(QFile::ReadOnly | QFile::Text))
+    {
+        return TRANSFER_FAIL;
+    }
+    if (false == checkXml.setContent(&checkFile))
+    {
+        return TRANSFER_FAIL;
+    }
+    checkFile.close();
+
+    // 获取当前用户定义的配置信息
+    loadConfigs();
+
+    // 开始导入文件
+    int count = importFileName.count();
+    bool importSuccess = false;
+    for (int i = 0; i < count; i++)
+    {
+        // 加载导入文件
+        QString name = importFileName.at(i);
+        QFile file(QString("%1/%2").arg(FILE_PATH).arg(name));
+        if (false == file.open(QFile::ReadOnly | QFile::Text))
+        {
+            return TRANSFER_FAIL;
+        }
+        if (false == importXml.setContent(&file))
+        {
+            return TRANSFER_FAIL;
+        }
+        file.close();
+
+        // 检查导入文件是否合乎要求
+        QList<QDomElement> tagList;
+        QDomElement  tag = importXml.documentElement();
+        bool flag = checkXMLContent(tagList, tag);
+        if (false == flag)
+        {
+            return TRANSFER_FAIL;
+        }
+
+        // 判断是否存在同名文件,如果存在则弹出选择提示框
+        bool isExist = false;
+        if (true == QFile::exists(QString("%1%2").arg(CONFIG_DIR).arg(name)))
+        {
+            isExist = true;
+        }
+        if (true == isExist)
+        {
+            MessageBox message(trs("Import"),
+                               trs(QString("%1\r\n%2?").arg(name).arg(trs("IfSelectTheSameNameFile"))),
+                               QStringList() << trs("Cancel") << trs("Repeated"));
+            this->message = &message;
+            flag = message.exec();
+            this->message = NULL;
+        }
+
+        // 从usb设备复制文件到文件系统中
+        bool copyOk = true;
+        if (true == flag)
+        {
+            QString fileName = QString("%1/%2").arg(FILE_PATH).arg(name);
+            QString newFileName = QString("%1%2").arg(CONFIG_DIR).arg(name);
+            QFile::remove(newFileName);
+            copyOk = QFile::copy(fileName, newFileName);
+            if (copyOk == true)
+            {
+                importSuccess = true;
+            }
+        }
+
+        // 如果文件复制不成功,弹出提示框
+        if (false == copyOk)
+        {
+            MessageBox message(trs("Import"),
+                               trs(QString("%1\r\n%2").arg(name).arg(trs("ImportFailed"))),
+                               QStringList() << trs("Yes"));
+            message.exec();
+            return TRANSFER_IGNORE;
+        }
+
+        // 更新导入配置名称，防止命名相同
+        int addIndex = 0;
+        int num = configs.count();
+        ConfigManager::UserDefineConfigInfo newUserDfine;
+        while (true)
+        {
+            bool sameConfigName = false;
+            newUserDfine.name = QString("UserConfig%1").arg(num + (++addIndex));
+            foreach(ConfigManager::UserDefineConfigInfo info, configs)
+            {
+                if (newUserDfine.name == info.name)
+                {
+                    sameConfigName = true;
+                    break;
+                }
+            }
+            if (sameConfigName == false)
+            {
+                break;
+            }
+            // 超出命名范围
+            if (addIndex > CONFIG_MAX_NUM)
+            {
+                MessageBox message(trs("Import"),
+                                   trs(QString("%1\r\n%2").arg(name).arg(trs("ImportFailed"))),
+                                   QStringList() << trs("Yes"));
+                message.exec();
+                return TRANSFER_IGNORE;
+            }
+        }
+
+        // 查找系统配置文件中是否存在同名文件，不再更新同名文件名称
+        flag = true;
+        newUserDfine.fileName = name;
+        foreach(ConfigManager::UserDefineConfigInfo fileInfo, configs)
+        {
+            if (fileInfo.fileName == newUserDfine.fileName)
+            {
+                flag = false;
+                break;
+            }
+        }
+        if (true == flag)
+        {
+            // 更新用户自定义文件的病人类型
+            const QChar name = newUserDfine.fileName.at(0);
+            PatientType type = PATIENT_TYPE_ADULT;
+            if (name == 'N')
+            {
+                type = PATIENT_TYPE_NEO;
+            }
+            else if (name == 'P')
+            {
+                type = PATIENT_TYPE_PED;
+            }
+            else
+            {
+                newUserDfine.fileName.replace(0, 1, "A");
+            }
+            newUserDfine.patType = PatientSymbol::convert(type);
+
+            configs.append(newUserDfine);
+        }
+
+        // 导入文件不超过规定最大值
+        if (configs.count() > CONFIG_MAX_NUM)
+        {
+            break;
+        }
+    }
+
+    // 更新配置列表
+    updateConfigList();
+    configManager.saveUserConfigInfo(configs);
+
+    if (importSuccess == true)
+    {
+        return TRANSFER_SUCCESS;
+    }
+    return TRANSFER_IGNORE;
+}
 
 void ConfigExportImportMenuContentPrivate::loadConfigs()
 {
@@ -108,7 +422,8 @@ void ConfigExportImportMenuContentPrivate::updateConfigList()
     QStringList configNameList;
     for (int i = 0; i < configs.count(); i++)
     {
-        configNameList.append(configs.at(i).name);
+        QString name = QString("%1(%2)").arg(configs.at(i).name).arg(trs(configs.at(i).patType));
+        configNameList.append(name);
     }
     configDataModel->setStringList(configNameList);
 
@@ -154,6 +469,11 @@ void ConfigExportImportMenuContent::onTimeOut()
     }
     else
     {
+        if (d_ptr->message != NULL)
+        {
+            QMetaObject::invokeMethod(d_ptr->message, "done", Q_ARG(int, 0));
+            d_ptr->message = NULL;
+        }
         isEnable = false;
         d_ptr->infoLab->show();
     }
@@ -249,303 +569,11 @@ void ConfigExportImportMenuContent::hideEvent(QHideEvent *ev)
 }
 
 
-/**************************************************************************************************
- * 导出xml文件。
- *************************************************************************************************/
-bool ConfigExportImportMenuContent::exportFileToUSB()
-{
-    // 判断u盘是否存在
-    if (!usbManager.isUSBExist())
-    {
-        MessageBox message(trs("Import"), trs("WarningNoUSB"), false);
-        message.exec();
-        return false;
-    }
-
-    // 如果没有对应文件夹，则主动创建此文件夹
-    QDir dir;
-    dir.mkdir(FILE_PATH);
-
-    // get selected row file path names
-    d_ptr->exportFileName.clear();
-    int rowCount = d_ptr->configDataModel->getRowCount();
-    QMap<int, bool> selectedMap = d_ptr->configListView->getRowsSelectMap();
-    for (int i = 0; i < rowCount; i++)
-    {
-        if (selectedMap[i])
-        {
-            d_ptr->exportFileName.append(d_ptr->configs.at(i).fileName);
-        }
-    }
-
-    // export data
-    for (int i = 0; i < d_ptr->exportFileName.count(); i++)
-    {
-        bool isExist;
-        if (QFile::exists(QString("%1/%2").
-                          arg(FILE_PATH).
-                          arg(d_ptr->exportFileName.at(i))))
-        {
-            isExist = true;
-        }
-        else
-        {
-            isExist = false;
-        }
-
-        // find the same name
-        int exportFlag = 1;
-        if (isExist)
-        {
-            MessageBox message(trs("Export"),
-                               trs(QString("%1\r\n%2?").
-                                   arg(d_ptr->exportFileName.at(i)).
-                                   arg(trs("IfSelectTheSameNameFile"))),
-                               QStringList() << trs("Cancel")
-                               << trs("Repeated"));
-            exportFlag = message.exec();
-        }
-
-        // cover
-        bool isCopyOk = true;
-        if (exportFlag)
-        {
-            QString fileName = QString("%1%2").
-                               arg(CONFIG_DIR).
-                               arg(d_ptr->exportFileName.at(i));
-            QString newFileName = QString("%1/%2").
-                                  arg(FILE_PATH).
-                                  arg(d_ptr->exportFileName.at(i));
-            QFile::remove(newFileName);
-            isCopyOk = QFile::copy(fileName, newFileName);
-        }
-        if (!isCopyOk)
-        {
-            MessageBox message(trs("Export"),
-                               trs(QString("%1\r\n%2").
-                                   arg(d_ptr->exportFileName.at(i)).
-                                   arg(trs("ExportFailed"))),
-                               QStringList() << trs("Yes"));
-            message.exec();
-            return false;
-        }
-    }
-
-    return true;
-}
-
-/**************************************************************************************************
- * 导入xml文件。
- *************************************************************************************************/
-bool ConfigExportImportMenuContent::insertFileFromUSB()
-{
-    // 判断u盘是否存在
-    if (!usbManager.isUSBExist())
-    {
-        MessageBox message(trs("Import"), trs("WarningNoUSB"), false);
-        message.exec();
-        return false;
-    }
-
-    // find the xml files
-    QDir dir(QString("%1%2").arg(FILE_PATH).arg("/"));
-    QStringList nameFilters;
-    nameFilters.append("*.xml");
-    QStringList files = dir.entryList(nameFilters, QDir::Files | QDir::Readable, QDir::Name);
-    if (files.isEmpty())
-    {
-        MessageBox messageBox(trs("Import"), trs("PleaseAddImportFiles"), false);
-        messageBox.exec();
-        return false;
-    }
-
-
-    ImportSubWidget myImportSubWidget(files, FILE_PATH);
-    bool status = myImportSubWidget.exec();
-    d_ptr->importFileName.clear();
-    if (status == true) //  OK
-    {
-        QMap<int, bool> rowsMap = myImportSubWidget.readRowsMap();
-        for (int i = 0; i < files.count(); i++)
-        {
-            if (rowsMap[i])
-            {
-                d_ptr->importFileName.append(files.at(i));
-            }
-        }
-        d_ptr->importFlag = 255;
-    }
-    else
-    {
-        d_ptr->importFlag = 0;
-    }
-
-    // load local data
-    QFile fileLocal(QString("%1usercheck.xml").arg(CONFIG_DIR));
-    if (!fileLocal.open(QFile::ReadOnly | QFile::Text))
-    {
-        MessageBox message(trs("Import"), trs("ImportFileFailed"), false);
-        message.exec();
-        return false;
-    }
-    if (!d_ptr->localXml.setContent(&fileLocal))
-    {
-        MessageBox message(trs("Import"), trs("ImportFileFailed"), false);
-        message.exec();
-        return false;
-    }
-    fileLocal.close();
-
-    // load configs again
-    d_ptr->loadConfigs();
-
-    for (int i = 0; i < d_ptr->importFileName.count(); i++)
-    {
-        QFile fileImport(QString("%1/%2").
-                         arg(FILE_PATH).
-                         arg(d_ptr->importFileName.at(i)));
-        if (!fileImport.open(QFile::ReadOnly | QFile::Text))
-        {
-            MessageBox message(trs("Import"), trs("ImportFileFailed"), false);
-            message.exec();
-            return false;
-        }
-        if (!d_ptr->importXml.setContent(&fileImport))
-        {
-            MessageBox message(trs("Import"), trs("ImportFileFailed"), false);
-            message.exec();
-            return false;
-        }
-        fileImport.close();
-
-        QList<QDomElement> importTagList;
-        QDomElement  importTag = d_ptr->importXml.documentElement();
-
-        // check the import file
-        bool checkXmlFlag = checkXMLContent(importTagList, importTag);
-
-        if (!checkXmlFlag)
-        {
-            MessageBox message(trs("Import"), trs("ImportFileFailed"), false);
-            message.exec();
-            return false;
-        }
-
-        // find the same file
-        bool isExist;
-        if (QFile::exists(QString("%1%2").
-                          arg(CONFIG_DIR).
-                          arg(d_ptr->importFileName.at(i))))
-        {
-            isExist = true;
-        }
-        else
-        {
-            isExist = false;
-        }
-        int importFlag = 1;
-        if (isExist)
-        {
-            MessageBox message(trs("Import"),
-                               trs(QString("%1\r\n%2?").
-                                   arg(d_ptr->importFileName.at(i)).
-                                   arg(trs("IfSelectTheSameNameFile"))),
-                               QStringList() << trs("Cancel")
-                               << trs("Repeated"));
-            importFlag = message.exec();
-        }
-
-        // cover
-        bool isCopyOk = true;
-        if (importFlag)
-        {
-            QString fileName = QString("%1/%2").
-                               arg(FILE_PATH).
-                               arg(d_ptr->importFileName.at(i));
-            QString newFileName = QString("%1%2").
-                                  arg(CONFIG_DIR).
-                                  arg(d_ptr->importFileName.at(i));
-            QFile::remove(newFileName);
-            isCopyOk = QFile::copy(fileName, newFileName);
-        }
-        if (!isCopyOk)
-        {
-            MessageBox message(trs("Import"),
-                               trs(QString("%1\r\n%2").
-                                   arg(d_ptr->exportFileName.at(i)).
-                                   arg(trs("ImportFailed"))),
-                               QStringList() << trs("Yes"));
-            message.exec();
-            return false;
-        }
-
-        // update import configs
-        ConfigManager::UserDefineConfigInfo newUserDfine;
-        newUserDfine.fileName = d_ptr->importFileName.at(i);
-
-        // 更新导入命名，防止命名相同
-        int addIndex = 0;
-        int count = d_ptr->configs.count();
-        while (true)
-        {
-            bool sameConfigName = false;
-            newUserDfine.name = QString("UserConfig%1").arg(count + (++addIndex));
-            foreach(ConfigManager::UserDefineConfigInfo info, d_ptr->configs)
-            {
-                if (newUserDfine.name == info.name)
-                {
-                    sameConfigName = true;
-                    break;
-                }
-            }
-            if (sameConfigName == false)
-            {
-                break;
-            }
-            // 超出命名范围
-            if (addIndex > CONFIG_MAX_NUM)
-            {
-                MessageBox message(trs("Import"),
-                                   trs(QString("%1\r\n%2").
-                                       arg(newUserDfine.fileName).
-                                       arg(trs("ImportFailed"))),
-                                   QStringList() << trs("Yes"));
-                return false;
-            }
-        }
-
-        // 查找是否有同名文件，不再更新同名文件名称
-        bool isAppend = true;
-        foreach(ConfigManager::UserDefineConfigInfo fileInfo, d_ptr->configs)
-        {
-            if (fileInfo.fileName == newUserDfine.fileName)
-            {
-                isAppend = false;
-                break;
-            }
-        }
-        if (isAppend)
-        {
-            d_ptr->configs.append(newUserDfine);
-        }
-
-        // 导入文件不超过规定最大值
-        if (d_ptr->configs.count() >= CONFIG_MAX_NUM)
-        {
-            break;
-        }
-    }
-    d_ptr->updateConfigList();
-    configManager.saveUserConfigInfo(d_ptr->configs);
-
-    return true;
-}
-
-QDomElement ConfigExportImportMenuContent::tagFindElement(const QStringList &list)
+QDomElement ConfigExportImportMenuContentPrivate::tagFindElement(const QStringList &list)
 {
     QDomElement tag;
 
-    if (d_ptr->localXml.isNull())
+    if (checkXml.isNull())
     {
         return tag;
     }
@@ -555,7 +583,7 @@ QDomElement ConfigExportImportMenuContent::tagFindElement(const QStringList &lis
         return tag;
     }
 
-    tag = d_ptr->localXml.firstChildElement();
+    tag = checkXml.firstChildElement();
 
     for (int i = 0; i < list.size(); i++)
     {
@@ -570,70 +598,53 @@ QDomElement ConfigExportImportMenuContent::tagFindElement(const QStringList &lis
 }
 
 
-bool ConfigExportImportMenuContent::compareTagAttribute(QDomElement importTag, QDomElement localTag)
+bool ConfigExportImportMenuContentPrivate::compareTagAttribute(QDomElement importTag, QDomElement localTag)
 {
-#define PARAMETER_PREFIX_NUM0   (4)  /*参数前缀的长度*/
-#define PARAMETER_PREFIX_NUM1   (2)  /*参数前缀的长度*/
-#define PARAMETER_PREFIX0       ("Enable")  /*参数前缀*/
-#define PARAMETER_PREFIX1       ("Min")  /*参数前缀*/
+    #define PARAMETER_PREFIX_NUM0   (4)  // 参数前缀的长度
+    #define PARAMETER_PREFIX_NUM1   (2)  // 参数前缀的长度
+    #define PARAMETER_PREFIX0       ("Enable")  // 参数前缀
+    #define PARAMETER_PREFIX1       ("Min")  // 参数前缀
+
     float numArrary[] = {1.0, 2.0};
     QString attrString[] = {"Enable", "Prio"};
     QDomNamedNodeMap localDomNameNodeMap = localTag.attributes();
 
-    if (localDomNameNodeMap.count() == PARAMETER_PREFIX_NUM0) /*导入标签无属性值*/
+    if (localDomNameNodeMap.count() == PARAMETER_PREFIX_NUM0) // 导入标签无属性值
     {
-        if (localDomNameNodeMap.namedItem("cAttr0").nodeValue().toFloat() == 0) /*数字属性 需要比较上下限*/
+        if (localDomNameNodeMap.namedItem("cAttr0").nodeValue().toFloat() == 0)  //数字属性 需要比较上下限
         {
             if (importTag.text().toFloat() < localDomNameNodeMap.namedItem("cMin").nodeValue().toFloat() || \
                     importTag.text().toFloat() > localDomNameNodeMap.namedItem("cMax").nodeValue().toFloat())
             {
-                //  信息加入日志
-                d_ptr->textStream << QString("Inserted xml files NodeName(%1)`s number value parser failed !!!\r\n").arg(
-                                      localTag.nodeName());
-                float floatMin = localDomNameNodeMap.namedItem("cMin").nodeValue().toFloat();
-                float floatMax = localDomNameNodeMap.namedItem("cMax").nodeValue().toFloat();
-                d_ptr->textStream << QString("(%1 %2 %3)\r\n").arg(importTag.text().toFloat()).arg(floatMin).arg(floatMax);
                 return false;
             }
         }
-        else/*字符串属性 直接比较是否相等*/
+        else  // 字符串属性 直接比较是否相等
         {
             if (importTag.nodeValue() != localTag.nodeValue())
             {
-                //  信息加入日志
-                d_ptr->textStream << QString("Inserted xml files NodeName(%1)`s string value parser failed !!!\r\n").arg(
-                                      localTag.nodeName());
                 return false;
             }
         }
     }
-    else if (localDomNameNodeMap.count() == PARAMETER_PREFIX_NUM1) /*导入标签有属性值的*/
+    else if (localDomNameNodeMap.count() == PARAMETER_PREFIX_NUM1)  // 导入标签有属性值的
     {
         int localAttrbuiteSize = localDomNameNodeMap.count();
         for (int i = 0; i < localAttrbuiteSize; i++)
         {
-            if (localDomNameNodeMap.item(i).nodeName() == PARAMETER_PREFIX0) /*Enable、Prio属性*/
+            if (localDomNameNodeMap.item(i).nodeName() == PARAMETER_PREFIX0)  // Enable、Prio属性
             {
                 if (importTag.attributes().namedItem(attrString[i]).nodeValue().toFloat() < 0 || \
                         importTag.attributes().namedItem(attrString[i]).nodeValue().toFloat() > numArrary[i])
                 {
-                    //  信息加入日志
-                    d_ptr->textStream << QString("Inserted xml files NodeName(%1)`s attribute1 parser failed !!!\r\n").arg(
-                                          localTag.nodeName());
                     return false;
                 }
             }
-            else if (localDomNameNodeMap.item(i).nodeName() == PARAMETER_PREFIX1) /*Min、Max属性*/
+            else if (localDomNameNodeMap.item(i).nodeName() == PARAMETER_PREFIX1)  // Min、Max属性
             {
                 if (importTag.text().toFloat() < localDomNameNodeMap.namedItem("Min").nodeValue().toFloat() || \
                         importTag.text().toFloat() > localDomNameNodeMap.namedItem("Max").nodeValue().toFloat())
                 {
-                    //  信息加入日志
-                    d_ptr->textStream << QString("Inserted xml files NodeName(%1)`s attribute2 parser failed !!!\r\n").arg(
-                                          localTag.nodeName());
-                    float fl = localDomNameNodeMap.namedItem("Min").nodeValue().toFloat();
-                    float floa = localDomNameNodeMap.namedItem("Max").nodeValue().toFloat();
-                    d_ptr->textStream << QString("(%1 %2 %3)\r\n").arg(importTag.text().toFloat()).arg(fl).arg(floa);
                     return false;
                 }
             }
@@ -641,9 +652,8 @@ bool ConfigExportImportMenuContent::compareTagAttribute(QDomElement importTag, Q
     }
     return true;
 }
-//  检查内容是否有效。 有效返回true；无效返回false；
-//  递归方式查询，注意递归结束条件的有效性
-bool ConfigExportImportMenuContent::checkXMLContent(QList<QDomElement> &importTagList, QDomElement &importTag)
+
+bool ConfigExportImportMenuContentPrivate::checkXMLContent(QList<QDomElement> &importTagList, QDomElement &importTag)
 {
     if (importTag.isNull())
     {
@@ -661,29 +671,29 @@ bool ConfigExportImportMenuContent::checkXMLContent(QList<QDomElement> &importTa
 
             if (attrFlag == false)
             {
-                d_ptr->attrCheckFlag = false;
-                return d_ptr->attrCheckFlag;
+                valid = false;
+                return valid;
             }
         }
 
         if (importTagList.empty())
         {
-            d_ptr->attrCheckFlag = true;
-            return d_ptr->attrCheckFlag;
+           valid = true;
+            return valid;
         }
-        importTag = importTagList.last().nextSiblingElement();//下一个同类子节点
-        importTagList.removeLast();//移除最后一个子节点
+        importTag = importTagList.last().nextSiblingElement();  // 下一个同类子节点
+        importTagList.removeLast();  // 移除最后一个子节点
         if (importTagList.empty())
         {
-            d_ptr->attrCheckFlag = true;
-            return d_ptr->attrCheckFlag;
+            valid = true;
+            return valid;
         }
 
         if (importTag.isNull())
         {
             importTag = importTagList.last();
-            importTag = importTag.nextSiblingElement();//下一个同类子节点
-            importTagList.removeLast();//移除最后一个子节点
+            importTag = importTag.nextSiblingElement();  // 下一个同类子节点
+            importTagList.removeLast();  // 移除最后一个子节点
         }
         checkXMLContent(importTagList, importTag);
     }
@@ -694,7 +704,7 @@ bool ConfigExportImportMenuContent::checkXMLContent(QList<QDomElement> &importTa
         checkXMLContent(importTagList, importTag);
     }
 
-    return d_ptr->attrCheckFlag;
+    return valid;
 }
 
 void ConfigExportImportMenuContent::onBtnClick()
@@ -703,28 +713,37 @@ void ConfigExportImportMenuContent::onBtnClick()
 
     if (btn == d_ptr->exportBtn)
     {
-        bool isOk =  exportFileToUSB();
-        QString paramTitle(trs("Export"));
-        QString paraText;
-        if (isOk)
+        TransferResult  result =  d_ptr->exportFileToUSB();
+        if (result == TRANSFER_SUCCESS)
         {
-            paraText = trs("ExportFileCompleted");
-            MessageBox messageBox(paramTitle, paraText, false);
+            MessageBox messageBox(trs("Export"), trs("ExportFileCompleted"), false);
+            d_ptr->message = &messageBox;
             messageBox.exec();
+            d_ptr->message = NULL;
         }
     }
     else if (btn == d_ptr->importBtn)
     {
-        bool isOk = insertFileFromUSB();
-        QString paramTitle(trs("Import"));
-        QString paraText;
-        if (isOk && d_ptr->importFlag != 0)
+        TransferResult result = d_ptr->insertFileFromUSB();
+        switch (result)
         {
-            paraText = trs("ImportFileCompleted");
-            MessageBox messageBox(paramTitle, paraText, false);
-            messageBox.exec();
+            case TRANSFER_FAIL:
+            {
+                MessageBox messageBox(trs("Import"), trs("ImportFileFailed"), false);
+                messageBox.exec();
+            }
+            break;
+            case TRANSFER_IGNORE:
+            break;
+            case TRANSFER_SUCCESS:
+            {
+                MessageBox messageBox(trs("Import"), trs("ImportFileCompleted"), false);
+                d_ptr->message = &messageBox;
+                messageBox.exec();
+                d_ptr->message = NULL;
+            }
+            break;
         }
-        d_ptr->importFlag = 0;
     }
 }
 
