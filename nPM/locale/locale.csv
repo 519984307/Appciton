@@ -1346,7 +1346,7 @@ IBP2PressureCalibration,IBP通道2校准,IBP2 Pressure Calibration
 CO2ModuleMaintenance,二氧化碳模块维护,CO2 Module Maintenance
 NIBPPressureTest,NIBP压力测试,NIBP Pressure Test
 NIBPLeakageDetection,NIBP泄露检测,NIBP Leakage Detection
-NIBPServiceModuleErrorQuitTryAgain,NIBP服务模块错误，请退出重试,NIBP Service Module Error
+NIBPServiceModuleErrorQuitTryAgain,NIBP服务模块错误，请退出重试,NIBP Service Module Error，Please quit and retry!
 ECGModuleCalibration,心电模块校准,ECG Module Calibration
 TouchScreenCalibration,触摸屏校准,Touch Screen Calibration
 TouchScreen,触摸屏,Touch Screen
