@@ -188,7 +188,7 @@ NIBPMenuDesc,NIBP,NIBP
 NIBPDirectiveTimeout,指令超时,Directive Timeout
 NIBPModuleEnterFail,进入校准模式失败,Calibrate Mode Enter Fail
 NIBPCalibrateModelEnterFail,进入校准模式失败,Calibrate Mode Enter Fail
-EnterCalibrateMode,进入校准模式,Calibrate Mode
+EnterCalibrateMode,进入校准模式,Enter Calibrate
 QuitCalibrateMode,退出校准模式,Quit Calibrate
 QuitManometerMode,退出压力计模式,Quit Manometer
 EnterManometerMode,进入压力计模式,Enter Manometer
