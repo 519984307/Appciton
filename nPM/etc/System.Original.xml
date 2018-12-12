@@ -36,38 +36,27 @@
     </General>
     <Alarms>
         <DefaultAlarmVolume>3</DefaultAlarmVolume>
-        <!-- MinimumAlarmVolume index range:0-4;value range:1-5 -->
         <MinimumAlarmVolume Default = "1">2</MinimumAlarmVolume>
-        <!-- AlarmPauseTime index range:0-6;value range:60,90,120,150,180,210,240 -->
         <AlarmPauseTime Default = "2">2</AlarmPauseTime>
         <STAlarmDraly>1</STAlarmDraly>
-        <!-- PauseMaxAlarm15Min index range:0-1;value range:off,yes -->
         <PauseMaxAlarm15Min Default = "0">1</PauseMaxAlarm15Min>
         <AlarmVol>1</AlarmVol>
-        <!-- ReminderToneIntervals index range:0-2;value range:1,2,3 -->
         <ReminderToneIntervals Default = "2">1</ReminderToneIntervals>
         <EcgLeadOffLev>1</EcgLeadOffLev>
         <SPO2LeadOffLev>1</SPO2LeadOffLev>
         <IBPLeadOffLev>1</IBPLeadOffLev>
         <LethalArrhOff>1</LethalArrhOff>
         <ExtendedArrh>1</ExtendedArrh>
-        <!-- AlarmLightOnAlarmReset index range:0-1;value range:off,open -->
-        <AlarmLightOnAlarmReset Default = "1">1</AlarmLightOnAlarmReset>
+         <AlarmLightOnAlarmReset Default = "1">1</AlarmLightOnAlarmReset>
         <AlarmDelay>1</AlarmDelay>
         <HighAlarmIntervals>3</HighAlarmIntervals>
         <MedAlarmIntervals>3</MedAlarmIntervals>
         <LowAlarmIntervals>16</LowAlarmIntervals>
-        <!-- ReminderTone index range:0-2;value range:off,open,again alarm -->
         <ReminderTone Default = "1">1</ReminderTone>
-        <!-- PhyParAlarmLatchlockOn index range:0-1;value range:off,open -->
         <PhyParAlarmLatchlockOn Default = "0">1</PhyParAlarmLatchlockOn>
-        <!-- AlarmOffPrompting index range:0-3;value range:off,5,10,15 -->
 	<AlarmOffPrompting Default = "1">1</AlarmOffPrompting>
-        <!-- EnableAlarmAudioOff index range:0-1;value range:off,yes -->
 	<EnableAlarmAudioOff Default = "0">1</EnableAlarmAudioOff>
-        <!-- EnableAlarmOff index range:0-1;value range:off,yes -->
-	<EnableAlarmOff Default = "0">1</EnableAlarmOff>
-        <!-- AlarmOffAtPowerOn index range:0-1;value range:off,yes -->
+ 	<EnableAlarmOff Default = "0">1</EnableAlarmOff>
 	<AlarmOffAtPowerOn Default = "0">1</AlarmOffAtPowerOn>
     </Alarms>
     <NightMode>

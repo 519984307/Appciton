@@ -167,49 +167,50 @@ void AlarmMaintainMenuContentPrivate::HandlingComboIndexChanged(AlarmMaintainMen
 void AlarmMaintainMenuContentPrivate::defaultIndexInit()
 {
     int index;
+    Config defalutConfig(ORGINAL_SYSTEM_CFG_FILE);
 
     index = 0;
-    systemConfig.getNumAttr("Alarms|MinimumAlarmVolume", "Default", index);
+    defalutConfig.getNumValue("Alarms|MinimumAlarmVolume", index);
     defaultIndexMap[ITEM_CBO_MIN_ALARM_VOLUME] = index;
 
     index = 0;
-    systemConfig.getNumAttr("Alarms|AlarmPauseTime", "Default", index);
+    defalutConfig.getNumValue("Alarms|AlarmPauseTime", index);
     defaultIndexMap[ITEM_CBO_ALARAM_PAUSE_TIME] = index;
 
     index = 0;
-    systemConfig.getNumAttr("Alarms|AlarmOffPrompting", "Default", index);
+    defalutConfig.getNumValue("Alarms|AlarmOffPrompting", index);
     defaultIndexMap[ITEM_CBO_ALARM_CLOSE_PROMPT_TIME] = index;
 
     index = 0;
-    systemConfig.getNumAttr("Alarms|EnableAlarmAudioOff", "Default", index);
+    defalutConfig.getNumValue("Alarms|EnableAlarmAudioOff", index);
     defaultIndexMap[ITEM_CBO_ENABLE_ALARM_AUDIO_OFF] = index;
 
     index = 0;
-    systemConfig.getNumAttr("Alarms|EnableAlarmOff", "Default", index);
+    defalutConfig.getNumValue("Alarms|EnableAlarmOff", index);
     defaultIndexMap[ITEM_CBO_ENABLE_ALARM_OFF] = index;
 
     index = 0;
-    systemConfig.getNumAttr("Alarms|AlarmOffAtPowerOn", "Default", index);
+    defalutConfig.getNumValue("Alarms|AlarmOffAtPowerOn", index);
     defaultIndexMap[ITEM_CBO_POWERON_ALARM_OFF] = index;
 
     index = 0;
-    systemConfig.getNumAttr("Alarms|PauseMaxAlarm15Min", "Default", index);
+    defalutConfig.getNumValue("Alarms|PauseMaxAlarm15Min", index);
     defaultIndexMap[ITEM_CBO_PAUSE_MAX_ALARM_15MIN] = index;
 
     index = 0;
-    systemConfig.getNumAttr("Alarms|ReminderTone", "Default", index);
+    defalutConfig.getNumValue("Alarms|ReminderTone", index);
     defaultIndexMap[ITEM_CBO_REMINDER_TONE] = index;
 
     index = 0;
-    systemConfig.getNumAttr("Alarms|ReminderToneIntervals", "Default", index);
+    defalutConfig.getNumValue("Alarms|ReminderToneIntervals", index);
     defaultIndexMap[ITEM_CBO_REMINDER_TONE_INTERVAL] = index;
 
     index = 0;
-    systemConfig.getNumAttr("Alarms|AlarmLightOnAlarmReset", "Default", index);
+    defalutConfig.getNumValue("Alarms|AlarmLightOnAlarmReset", index);
     defaultIndexMap[ITEM_CBO_ALARM_LIGHT_RESET] = index;
 
     index = 0;
-    systemConfig.getNumAttr("Alarms|PhyParAlarmLatchlockOn", "Default", index);
+    defalutConfig.getNumValue("Alarms|PhyParAlarmLatchlockOn", index);
     defaultIndexMap[ITEM_CBO_ALARM_LATCH_LOCK] = index;
 }
 
