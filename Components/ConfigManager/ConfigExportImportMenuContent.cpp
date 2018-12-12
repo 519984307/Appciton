@@ -107,7 +107,6 @@ public:
     QList<ConfigManager::UserDefineConfigInfo> configs; // 用户自定义的配置文件信息
     QStringList  exportFileName;  // 导出的XML文件名称
     QStringList  importFileName;  // 导入的XML文件名称
-    QTextStream  textStream;  // 日志接口
     QDomDocument checkXml;  // 本地检查文件内容
     QDomDocument importXml;  // 导入文件内容
     bool valid;  // 导入文件的有效性
@@ -181,6 +180,10 @@ TransferResult ConfigExportImportMenuContentPrivate::exportFileToUSB()
             {
                 transferSuccess = true;
             }
+        }
+        else
+        {
+            return TRANSFER_IGNORE;
         }
 
         // 复制文件失败时弹出提示框
@@ -308,6 +311,10 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
             QFile::remove(newFileName);
             copyOk = QFile::copy(fileName, newFileName);
         }
+        else
+        {
+            return TRANSFER_IGNORE;
+        }
 
         // 如果文件复制不成功,弹出提示框
         if (false == copyOk)
@@ -412,7 +419,8 @@ void ConfigExportImportMenuContentPrivate::updateConfigList()
     QStringList configNameList;
     for (int i = 0; i < configs.count(); i++)
     {
-        configNameList.append(configs.at(i).name);
+        QString name = QString("%1(%2)").arg(configs.at(i).name).arg(trs(configs.at(i).patType));
+        configNameList.append(name);
     }
     configDataModel->setStringList(configNameList);
 
@@ -600,12 +608,6 @@ bool ConfigExportImportMenuContentPrivate::compareTagAttribute(QDomElement impor
             if (importTag.text().toFloat() < localDomNameNodeMap.namedItem("cMin").nodeValue().toFloat() || \
                     importTag.text().toFloat() > localDomNameNodeMap.namedItem("cMax").nodeValue().toFloat())
             {
-                //  信息加入日志
-                textStream << QString("Inserted xml files NodeName(%1)`s number value parser failed !!!\r\n").arg(
-                                      localTag.nodeName());
-                float floatMin = localDomNameNodeMap.namedItem("cMin").nodeValue().toFloat();
-                float floatMax = localDomNameNodeMap.namedItem("cMax").nodeValue().toFloat();
-                textStream << QString("(%1 %2 %3)\r\n").arg(importTag.text().toFloat()).arg(floatMin).arg(floatMax);
                 return false;
             }
         }
@@ -613,9 +615,6 @@ bool ConfigExportImportMenuContentPrivate::compareTagAttribute(QDomElement impor
         {
             if (importTag.nodeValue() != localTag.nodeValue())
             {
-                //  信息加入日志
-                textStream << QString("Inserted xml files NodeName(%1)`s string value parser failed !!!\r\n").arg(
-                                      localTag.nodeName());
                 return false;
             }
         }
@@ -630,9 +629,6 @@ bool ConfigExportImportMenuContentPrivate::compareTagAttribute(QDomElement impor
                 if (importTag.attributes().namedItem(attrString[i]).nodeValue().toFloat() < 0 || \
                         importTag.attributes().namedItem(attrString[i]).nodeValue().toFloat() > numArrary[i])
                 {
-                    //  信息加入日志
-                    textStream << QString("Inserted xml files NodeName(%1)`s attribute1 parser failed !!!\r\n").arg(
-                                          localTag.nodeName());
                     return false;
                 }
             }
@@ -641,12 +637,6 @@ bool ConfigExportImportMenuContentPrivate::compareTagAttribute(QDomElement impor
                 if (importTag.text().toFloat() < localDomNameNodeMap.namedItem("Min").nodeValue().toFloat() || \
                         importTag.text().toFloat() > localDomNameNodeMap.namedItem("Max").nodeValue().toFloat())
                 {
-                    //  信息加入日志
-                    textStream << QString("Inserted xml files NodeName(%1)`s attribute2 parser failed !!!\r\n").arg(
-                                          localTag.nodeName());
-                    float fl = localDomNameNodeMap.namedItem("Min").nodeValue().toFloat();
-                    float floa = localDomNameNodeMap.namedItem("Max").nodeValue().toFloat();
-                    textStream << QString("(%1 %2 %3)\r\n").arg(importTag.text().toFloat()).arg(fl).arg(floa);
                     return false;
                 }
             }

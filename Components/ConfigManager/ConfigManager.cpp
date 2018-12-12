@@ -284,7 +284,7 @@ bool ConfigManager::saveUserDefineConfig(const QString &configName, Config *conf
         name = 'P';
     }
     QString filename = QString("%1-%2-%3.xml").arg(name).arg(USER_DEFINE_CONFIG_PREFIX)
-                            .arg(QDateTime::currentDateTime().toString("yyyyMMdd-hhmmss"));
+                            .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss"));
 
     QString filePath = QString("%1%2").arg(CONFIG_DIR).arg(filename);
     if (!configObj->saveToFile(filePath))
