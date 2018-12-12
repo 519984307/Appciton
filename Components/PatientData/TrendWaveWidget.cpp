@@ -589,6 +589,16 @@ void TrendWaveWidget::trendWaveReset()
 
 const QList<TrendGraphInfo> TrendWaveWidget::getTrendGraphPrint()
 {
+    for (int i = 0; i < _displayGraphNum; i++)
+    {
+        int down;
+        int up;
+        int scale;
+        _subWidgetList.at(i)->rulerRange(down, up, scale);
+        _infosList[i].scale.min = down;
+        _infosList[i].scale.max = up;
+        _infosList[i].scale.scale = scale;
+    }
     return _infosList;
 }
 

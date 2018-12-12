@@ -63,6 +63,14 @@ public:
     void setRulerRange(int down, int up, int scale);
 
     /**
+     * @brief rulerRange 获取标尺上下限
+     * @param down 下限
+     * @param up 上限
+     * @param scale 比例
+     */
+    void rulerRange(int &down, int &up, int &scale);
+
+    /**
      * @brief setAutoRuler  设置自动标尺
      * @param isAuto        是否自动
      */

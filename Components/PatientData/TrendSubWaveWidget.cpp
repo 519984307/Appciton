@@ -116,6 +116,13 @@ void TrendSubWaveWidget::setRulerRange(int down, int up, int scale)
     update();
 }
 
+void TrendSubWaveWidget::rulerRange(int &down, int &up, int &scale)
+{
+    down = _valueY.min;
+    up = _valueY.max;
+    scale = _valueY.scale;
+}
+
 void TrendSubWaveWidget::setAutoRuler(bool isAuto)
 {
     _isAuto = isAuto;
