@@ -140,8 +140,6 @@ void SystemBoardProvider::_parsePowerStat(unsigned char *data, int len)
     }
 
     modeStatus.powerSuply = static_cast<PowerSuplyType>(suplyType);
-
-    // TODO: update the screen battery info
 }
 
 /***************************************************************************************************
@@ -229,22 +227,20 @@ void SystemBoardProvider::_parseBatteryInfo(unsigned char *data, int len)
 
     modeStatus.isCharging = data[1];        // 是否正在充电
     modeStatus.adcValue = (data[3] << 8) | data[2];     // ADC值
-    powerManger.setBatteryCapacity(modeStatus.adcValue);
 
-    if (modeStatus.adcValue > 500)
+    if (modeStatus.adcValue < 500)
     {
-        if (modeStatus.isCharging)
-        {
-            modeStatus.powerSuply = POWER_SUPLY_AC_BAT;
-        }
-        else
-        {
-            modeStatus.powerSuply = POWER_SUPLY_BAT;
-        }
+        // 不合理的ADC值，过滤
+        return;
     }
-    else
+
+    if (modeStatus.powerSuply == POWER_SUPLY_AC_BAT && modeStatus.isCharging)
     {
-        modeStatus.powerSuply = POWER_SUPLY_AC;
+        powerManger.setBatteryCapacity(modeStatus.adcValue);
+    }
+    else if (modeStatus.powerSuply == POWER_SUPLY_BAT)
+    {
+        powerManger.setBatteryCapacity(modeStatus.adcValue);
     }
 }
 
