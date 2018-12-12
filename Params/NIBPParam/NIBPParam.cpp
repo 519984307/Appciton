@@ -417,9 +417,9 @@ void NIBPParam::setResult(int16_t sys, int16_t dia, int16_t map, int16_t pr, NIB
         {
             if (!isAdditionalMeasure())
             {
-                int index = NIBP_PR_DISPLAY_NR;
+                int index = 0;
                 currentConfig.getNumValue("NIBP|AutomaticRetry", index);
-                if (index == NIBP_PR_DISPLAY_ON)
+                if (index)
                 {
                     setAdditionalMeasure(true);
                 }

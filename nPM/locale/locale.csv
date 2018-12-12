@@ -438,6 +438,7 @@ STATSTOP,关闭STAT,Stop STAT
 STATSTART,打开STAT,Start STAT
 STATDONE,STAT完成,STAT Done
 NIBPADDITIONAL,额外,Additional
+NIBPAdditionMeasure,NIBP额外测量,NIBP Additional Measure
 NIBPMEASURE,测量,Measure
 NIBPREADING,测量,Reading
 NIBPFAILED,失败,Failed
