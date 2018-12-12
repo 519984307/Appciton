@@ -963,9 +963,9 @@ void TrendTableModelPrivate::loadTrendData()
 
                 if (displayList.at(j) == SUB_PARAM_NIBP_SYS)
                 {
-                    qint16 nibpSys = pack->subparamValue.value((SubParamID)(displayList.at(j) - 2), InvData());
-                    qint16 nibpDia = pack->subparamValue.value((SubParamID)(displayList.at(j) - 1), InvData());
-                    qint16 nibpMap = pack->subparamValue.value(displayList.at(j), InvData());
+                    qint16 nibpSys = pack->subparamValue.value(static_cast<SubParamID>(displayList.at(j)), InvData());
+                    qint16 nibpDia = pack->subparamValue.value(static_cast<SubParamID>(displayList.at(j) + 1), InvData());
+                    qint16 nibpMap = pack->subparamValue.value(static_cast<SubParamID>(displayList.at(j) + 2), InvData());
                     QString sysStr = nibpSys == InvData() ? "---" : QString::number(nibpSys);
                     QString diaStr = nibpDia == InvData() ? "---" : QString::number(nibpDia);
                     QString mapStr = nibpMap == InvData() ? "---" : QString::number(nibpMap);
