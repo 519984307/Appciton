@@ -55,6 +55,7 @@ public:
                     , importBtn(NULL)
                     , infoLab(NULL)
                     , timer(NULL)
+                    , message(NULL)
     {
     }
 
@@ -116,6 +117,7 @@ public:
     Button *importBtn;
     QLabel *infoLab;  // 记录usb是否存在信息
     QTimer *timer;
+    MessageBox *message;
 };
 
 
@@ -165,7 +167,9 @@ TransferResult ConfigExportImportMenuContentPrivate::exportFileToUSB()
             MessageBox message(trs("Export"),
                                trs(QString("%1\r\n%2?").arg(name).arg(trs("IfSelectTheSameNameFile"))),
                                QStringList() << trs("Cancel") << trs("Repeated"));
+            this->message = &message;
             status = static_cast<QDialog::DialogCode>(message.exec());
+            this->message = NULL;
         }
 
         // 复制文件到usb设备
@@ -216,7 +220,9 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
     if (files.isEmpty())
     {
         MessageBox messageBox(trs("Import"), trs("PleaseAddImportFiles"), false);
+        this->message = &messageBox;
         messageBox.exec();
+        this->message = NULL;
         return TRANSFER_IGNORE;
     }
 
@@ -295,7 +301,9 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
             MessageBox message(trs("Import"),
                                trs(QString("%1\r\n%2?").arg(name).arg(trs("IfSelectTheSameNameFile"))),
                                QStringList() << trs("Cancel") << trs("Repeated"));
+            this->message = &message;
             flag = message.exec();
+            this->message = NULL;
         }
 
         // 从usb设备复制文件到文件系统中
@@ -461,6 +469,11 @@ void ConfigExportImportMenuContent::onTimeOut()
     }
     else
     {
+        if (d_ptr->message != NULL)
+        {
+            QMetaObject::invokeMethod(d_ptr->message, "done", Q_ARG(int, 0));
+            d_ptr->message = NULL;
+        }
         isEnable = false;
         d_ptr->infoLab->show();
     }
@@ -704,7 +717,9 @@ void ConfigExportImportMenuContent::onBtnClick()
         if (result == TRANSFER_SUCCESS)
         {
             MessageBox messageBox(trs("Export"), trs("ExportFileCompleted"), false);
+            d_ptr->message = &messageBox;
             messageBox.exec();
+            d_ptr->message = NULL;
         }
     }
     else if (btn == d_ptr->importBtn)
@@ -723,7 +738,9 @@ void ConfigExportImportMenuContent::onBtnClick()
             case TRANSFER_SUCCESS:
             {
                 MessageBox messageBox(trs("Import"), trs("ImportFileCompleted"), false);
+                d_ptr->message = &messageBox;
                 messageBox.exec();
+                d_ptr->message = NULL;
             }
             break;
         }
