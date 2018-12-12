@@ -282,7 +282,7 @@ void ConfigEditECGMenuContent::layoutExec()
     d_ptr->combos.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_FILTER_MODE, comboBox);
 
     // heart beat volume
-    label = new QLabel(trs("QRSVolume"));
+    label = new QLabel(trs("ECGQRSToneVolume"));
     d_ptr->comboLabels.insert(ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL,
                               label);
     layout->addWidget(label, d_ptr->combos.count(), 0);
