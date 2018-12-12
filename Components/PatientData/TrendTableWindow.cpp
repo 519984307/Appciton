@@ -51,8 +51,8 @@
 #define TABLE_ITEM_WIDTH        65
 #define TABLE_ITEM_HEIGHT       35
 
-#define IN_12_HOUR_HEADER_FONT_SIZE  (14)
-#define IN_24_HOUR_HEADER_FONT_SIZE  (18)
+#define IN_12_HOUR_HEADER_FONT_SIZE  (12)
+#define IN_24_HOUR_HEADER_FONT_SIZE  (16)
 
 class TrendTableWindowPrivate
 {
