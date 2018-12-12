@@ -19,7 +19,7 @@
 
 TimeManager *TimeManager::_selfObj = NULL;
 #define MAXDATETIMEVALUE  2145916800  // 2037-12-31 23:59:59秒对应的时间戳
-
+#define SHUT_DOWN_HINT_TIME  (120)
 /**************************************************************************************************
  * 功能： 刷新界面。
  *************************************************************************************************/
@@ -153,7 +153,7 @@ TimeManager::TimeManager()
     unsigned diffTime = (_curTime < timestamp) ? 901 : (_curTime - timestamp);
 
     // 判断开机时间间隔(关机到开机再次看到界面)。
-    if (diffTime <= 30 + 7) // 两次开机时间小于30 + 7(开机时间大约7s)。
+    if (diffTime <= SHUT_DOWN_HINT_TIME + 7) // 两次开机时间小于SHUT_DOWN_HINT_TIME + 7(开机时间大约7s)。
     {
         _powerOnSession = POWER_ON_SESSION_CONTINUE;
     }
