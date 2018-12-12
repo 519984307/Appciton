@@ -181,10 +181,6 @@ TransferResult ConfigExportImportMenuContentPrivate::exportFileToUSB()
                 transferSuccess = true;
             }
         }
-        else
-        {
-            return TRANSFER_IGNORE;
-        }
 
         // 复制文件失败时弹出提示框
         if (copyOk == false)
@@ -310,10 +306,10 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
             QString newFileName = QString("%1%2").arg(CONFIG_DIR).arg(name);
             QFile::remove(newFileName);
             copyOk = QFile::copy(fileName, newFileName);
-        }
-        else
-        {
-            return TRANSFER_IGNORE;
+            if (copyOk == true)
+            {
+                importSuccess = true;
+            }
         }
 
         // 如果文件复制不成功,弹出提示框
@@ -344,7 +340,6 @@ TransferResult ConfigExportImportMenuContentPrivate::insertFileFromUSB()
             }
             if (sameConfigName == false)
             {
-                importSuccess = true;
                 break;
             }
             // 超出命名范围
