@@ -230,10 +230,15 @@ void AlarmLimitWindow::layoutExec()
 void AlarmLimitWindow::onbtnClick()
 {
     bool focusPrevBtn = false;
+    bool focusNextBtn = false;
     Button *btn = qobject_cast<Button *>(sender());
     if (btn == d_ptr->prevBtn)
     {
         d_ptr->table->scrollToPreviousPage();
+        if (!d_ptr->table->hasPreivousPage())
+        {
+            focusNextBtn = true;
+        }
     }
     else if (btn == d_ptr->nextBtn)
     {
@@ -249,6 +254,10 @@ void AlarmLimitWindow::onbtnClick()
     if (focusPrevBtn)
     {
         d_ptr->prevBtn->setFocus();
+    }
+    if (focusNextBtn)
+    {
+        d_ptr->nextBtn->setFocus();
     }
 }
 

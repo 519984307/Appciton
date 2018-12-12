@@ -95,7 +95,7 @@ void NightModeManager::setNightMode(bool nightMode)
 
         alarmVolume = d_ptr->normalAlarmVolume;
 
-        heartBeatVolume = d_ptr->normalAlarmVolume;
+        heartBeatVolume = d_ptr->normalHeartBeatVolume;
 
         keyVolume = d_ptr->normalKeyVolume;
 
