@@ -301,7 +301,7 @@ bool ConfigExportImportMenuContent::exportFileToUSB()
                                trs(QString("%1\r\n%2?").
                                    arg(d_ptr->exportFileName.at(i)).
                                    arg(trs("IfSelectTheSameNameFile"))),
-                               QStringList() << trs("NotRepeated")
+                               QStringList() << trs("Cancel")
                                << trs("Repeated"));
             exportFlag = message.exec();
         }
@@ -450,7 +450,7 @@ bool ConfigExportImportMenuContent::insertFileFromUSB()
                                trs(QString("%1\r\n%2?").
                                    arg(d_ptr->importFileName.at(i)).
                                    arg(trs("IfSelectTheSameNameFile"))),
-                               QStringList() << trs("NotRepeated")
+                               QStringList() << trs("Cancel")
                                << trs("Repeated"));
             importFlag = message.exec();
         }
