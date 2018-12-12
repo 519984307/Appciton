@@ -101,7 +101,7 @@ void NIBPZeroPointContent::layoutExec()
     d_ptr->pumpSpx->setStep(1);
     layout->addWidget(d_ptr->pumpSpx, 1, 1);
 
-    button = new Button(trs("ON"));
+    button = new Button(trs("On"));
     button->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(button, 1, 2);
     connect(button, SIGNAL(released()), this, SLOT(pumpControlReleased()));
@@ -110,7 +110,7 @@ void NIBPZeroPointContent::layoutExec()
     label = new QLabel(trs("ValveControl"));
     layout->addWidget(label, 2, 0, Qt::AlignCenter);
 
-    button = new Button(trs("ON"));
+    button = new Button(trs("On"));
     button->setButtonStyle(Button::ButtonTextOnly);
     layout->addWidget(button, 2, 2);
     connect(button, SIGNAL(released()), this, SLOT(valveControlReleased()));
@@ -180,12 +180,12 @@ void NIBPZeroPointContent::timerEvent(QTimerEvent *ev)
                 if (d_ptr->isOnPump)
                 {
                     d_ptr->isOnPump = false;
-                    d_ptr->pumpBtn->setText(trs("OFF"));
+                    d_ptr->pumpBtn->setText(trs("Off"));
                 }
                 else
                 {
                     d_ptr->isOnPump = true;
-                    d_ptr->pumpBtn->setText(trs("ON"));
+                    d_ptr->pumpBtn->setText(trs("On"));
                 }
             }
             else
@@ -213,12 +213,12 @@ void NIBPZeroPointContent::timerEvent(QTimerEvent *ev)
                 if (d_ptr->isOnValve)
                 {
                     d_ptr->isOnValve = false;
-                    d_ptr->valveBtn->setText(trs("OFF"));
+                    d_ptr->valveBtn->setText(trs("Off"));
                 }
                 else
                 {
                     d_ptr->isOnValve = true;
-                    d_ptr->valveBtn->setText(trs("ON"));
+                    d_ptr->valveBtn->setText(trs("On"));
                 }
             }
             else
