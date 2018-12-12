@@ -70,14 +70,7 @@ public:
      * @param down 下标尺限
      * @param up 上标尺限
      */
-    void setRulerLimit(SubParamID, int down, int up, int scale);
-
-    /**
-     * @brief setAutoRuler  设置子窗口是否为自动标尺
-     * @param id            自参数ID
-     * @param autoRuler     是否自动
-     */
-    void setAutoRuler(SubParamID id, bool isAuto);
+    void setRulerLimit(int index, int down, int up, int scale);
 
     /**
      * @brief loadTrendData 根据子参数ID将一页趋势数据载入容器
@@ -121,6 +114,10 @@ public:
      * @param flag 标志
      */
     void setHistoryData(bool flag);
+
+    QList<SubParamID> getCurParamList(void);
+
+    void setAllParamAutoRuler(void);
 
 public slots:
     /**
@@ -231,6 +228,7 @@ private:
 
     QList<TrendSubWaveWidget *> _subWidgetList;     // 子波形窗口容器
     QList<SubParamID> _subParams;                   // 子参数组
+    QList<SubParamID> _curDisplaySubList;           // 当前显示子参数集合
     int _curIndex;
     TrendGraphInfo _trendGraphInfo;                 // 趋势图数据集合
     QList<unsigned> _alarmTimeList;                 // 报警发生时间

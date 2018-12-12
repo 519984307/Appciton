@@ -21,14 +21,35 @@ public:
     ~TrendGraphWindow();
 
 public:
-    void setSubWidgetRulerLimit(SubParamID id, int down, int up, int scale);
+    /**
+     * @brief setSubWidgetRulerLimit 设置子窗口上线限标尺
+     * @param index 设置窗口的索引
+     * @param down
+     * @param up
+     * @param scale
+     */
+    void setSubWidgetRulerLimit(int index, int down, int up, int scale);
 
-    void setSubWidgetAutoRuler(SubParamID id, bool isAuto);
+    /**
+     * @brief setAllParamAutoRuler 当前参数全部设为自动标尺
+     */
+    void setAllParamAutoRuler(void);
 
+    /**
+     * @brief updateTrendGraph 更新趋势组
+     */
     void updateTrendGraph();
 
+    /**
+     * @brief timeIntervalChange 设置趋势图时间间隔
+     * @param timeInterval 时间间隔
+     */
     void timeIntervalChange(int timeInterval);
 
+    /**
+     * @brief waveNumberChange 设置趋势图显示波形数
+     * @param num 波形数目
+     */
     void waveNumberChange(int num);
 
     /**

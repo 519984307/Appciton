@@ -309,33 +309,11 @@ void TrendWaveWidget::setWaveNumber(int num)
     updateTimeRange();
 }
 
-void TrendWaveWidget::setRulerLimit(SubParamID id, int down, int up, int scale)
+void TrendWaveWidget::setRulerLimit(int index, int down, int up, int scale)
 {
-    int count = _hLayoutTrend->count();
-    for (int i = 0; i < count; i ++)
+    if (index < _subWidgetList.count())
     {
-        QLayoutItem *item = _hLayoutTrend->itemAt(i);
-        TrendSubWaveWidget *widget = qobject_cast<TrendSubWaveWidget *>(item->widget());
-        if (widget->getSubParamID() == id)
-        {
-            widget->setRulerRange(down, up, scale);
-            return;
-        }
-    }
-}
-
-void TrendWaveWidget::setAutoRuler(SubParamID id, bool isAuto)
-{
-    int count = _hLayoutTrend->count();
-    for (int i = 0; i < count; i++)
-    {
-        QLayoutItem *item = _hLayoutTrend->itemAt(i);
-        TrendSubWaveWidget *widget = qobject_cast<TrendSubWaveWidget *>(item->widget());
-        if (widget->getSubParamID() == id)
-        {
-            widget->setAutoRuler(isAuto);
-            return;
-        }
+        _subWidgetList.at(index)->setRulerRange(down, up, scale);
     }
 }
 
@@ -617,6 +595,22 @@ void TrendWaveWidget::setHistoryData(bool flag)
     _isHistory = flag;
 }
 
+QList<SubParamID> TrendWaveWidget::getCurParamList()
+{
+    return _curDisplaySubList;
+}
+
+void TrendWaveWidget::setAllParamAutoRuler()
+{
+    for (int i = 0; i < _subParams.count(); i++)
+    {
+        SubParamID sid = _subParams.at(i);
+        QString prefix = "TrendGraph|Ruler|";
+        prefix += paramInfo.getSubParamName(sid, true);
+        systemConfig.setNumAttr(prefix, "Auto", 1);
+    }
+}
+
 void TrendWaveWidget::paintEvent(QPaintEvent *event)
 {
     IWidget::paintEvent(event);
@@ -749,6 +743,7 @@ void TrendWaveWidget::mousePressEvent(QMouseEvent *e)
 void TrendWaveWidget::_trendLayout()
 {
     _infosList.clear();
+    _curDisplaySubList.clear();
     int subWidgetHeight = (height() - SCALE_REGION_HEIGHT) / _displayGraphNum;
     TrendSubWidgetInfo info;
     info.xHead = (_waveRegionWidth - GRAPH_DATA_WIDTH) / 2;
@@ -762,6 +757,7 @@ void TrendWaveWidget::_trendLayout()
     for (int i = 0; i < _displayGraphNum; i++)
     {
         SubParamID  subId = _subParams.at(_curIndex + i);
+        _curDisplaySubList.append(subId);
         _subWidgetList.at(i)->setWidgetParam(subId, getTrendGraphType(subId));
         _subWidgetList.at(i)->setThemeColor(colorManager.getColor(paramInfo.getParamName(paramInfo.getParamID(subId))));
 

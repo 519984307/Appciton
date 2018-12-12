@@ -18,6 +18,7 @@
 #include "AlarmConfig.h"
 #include "FontManager.h"
 #include "CO2Param.h"
+#include "IConfig.h"
 
 #define GRAPH_POINT_NUMBER          120
 #define DATA_INTERVAL_PIXEL         5
@@ -25,7 +26,7 @@
 
 TrendSubWaveWidget::TrendSubWaveWidget(SubParamID id, TrendGraphType type) : _id(id), _type(type),
     _trendInfo(TrendGraphInfo()), _timeX(TrendParamDesc()), _valueY(TrendParamDesc()), _xSize(0), _ySize(0), _trendDataHead(0), _cursorPosIndex(0),
-    _isAuto(true), _maxValue(0), _minValue(0), _fristValue(true)
+    _maxValue(0), _minValue(0), _fristValue(true)
 {
     setAttribute(Qt::WA_TransparentForMouseEvents, true);
 }
@@ -123,9 +124,13 @@ void TrendSubWaveWidget::rulerRange(int &down, int &up, int &scale)
     scale = _valueY.scale;
 }
 
-void TrendSubWaveWidget::setAutoRuler(bool isAuto)
+int TrendSubWaveWidget::getAutoRuler(void)
 {
-    _isAuto = isAuto;
+    int autoRuler = 0;
+    QString prefix = "TrendGraph|Ruler|";
+    prefix += paramInfo.getSubParamName(_id, true);
+    systemConfig.getNumAttr(prefix, "Auto", autoRuler);
+    return autoRuler;
 }
 
 void TrendSubWaveWidget::setTimeRange(unsigned leftTime, unsigned rightTime)
@@ -421,6 +426,40 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
     barPainter.setPen(QPen(_color, 2, Qt::SolidLine));
     if (!_trendInfo.alarmInfo.count())
     {
+        // 趋势标尺上下限
+        QRect upRulerRect(_info.xHead / 3 + 7, _info.yTop - 10, _info.xHead, 30);
+        QRect downRulerRect(_info.xHead / 3 + 7, _info.yBottom - 10, _info.xHead, 30);
+        QFont textfont = fontManager.textFont(fontManager.getFontSize(3));
+        barPainter.setFont(textfont);
+        if (_type == TREND_GRAPH_TYPE_AG_TEMP)
+        {
+            barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number((_valueY.max * 1.0) / _valueY.scale, 'f', 1));
+            barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number((_valueY.min * 1.0) / _valueY.scale, 'f', 1));
+        }
+        else
+        {
+            barPainter.drawText(upRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.max));
+            barPainter.drawText(downRulerRect, Qt::AlignLeft | Qt::AlignTop, QString::number(_valueY.min));
+        }
+
+        QFont font;
+        font.setPixelSize(15);
+        barPainter.setFont(font);
+        // 趋势参数名称
+        QRect nameRect(_trendDataHead + 5, 5, width() - _trendDataHead - 10, 30);
+        barPainter.drawText(nameRect, Qt::AlignLeft | Qt::AlignTop, _paramName);
+
+        // 趋势参数单位
+        QRect unitRect(_trendDataHead + 5, 5, width() - _trendDataHead - 10, 30);
+        barPainter.drawText(unitRect, Qt::AlignRight | Qt::AlignTop, _paramUnit);
+        font.setPixelSize(60);
+        barPainter.setFont(font);
+
+        // 趋势参数数据
+        QRect dataRect(_trendDataHead + 5, height() / 5, width() - _trendDataHead, height() / 5 * 4);
+        QTextOption option;
+        option.setAlignment(Qt::AlignCenter);
+        barPainter.drawText(dataRect, "---", option);
         return;
     }
     barPainter.save();
@@ -598,7 +637,7 @@ double TrendSubWaveWidget::_mapValue(TrendParamDesc desc, int data)
         return InvData();
     }
 
-    if (_isAuto && desc.max != _timeX.max)
+    if (getAutoRuler() && desc.max != _timeX.max)
     {
         if (_fristValue)
         {
