@@ -478,6 +478,10 @@ void RESPParam::setCalcLead(RESPLead lead)
     systemConfig.setNumValue("PrimaryCfg|RESP|RespLead", static_cast<int>(lead));
     if (NULL != d_ptr->provider)
     {
+        if (lead == RESP_LEAD_AUTO)
+        {
+            lead = RESP_LEAD_I;
+        }
         d_ptr->provider->setRESPCalcLead(lead);
     }
 }
