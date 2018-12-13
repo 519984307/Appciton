@@ -31,7 +31,7 @@ FactoryMaintainMenuWindow *FactoryMaintainMenuWindow::getInstance()
         instance->addMenuContent(new FactoryVersionInfo);
         instance->addMenuContent(new FactoryDataRecordContent);
         instance->addMenuContent(new FactorySystemInfoMenuContent);
-//        instance->addMenuContent(new FactoryImportExportMenuContent);
+        instance->addMenuContent(new FactoryImportExportMenuContent);
         instance->addMenuContent(new ServiceUpdateEntranceContent);
         instance->addMenuContent(new NIBPCalibrationMenuContent);
         instance->addMenuContent(new FactoryTestMenuContent);
