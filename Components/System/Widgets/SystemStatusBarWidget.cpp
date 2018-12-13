@@ -145,16 +145,16 @@ void SystemStatusBarWidget::timerEvent(QTimerEvent *e)
             if (networkManager.isWifiTurnOn())
             {
                 // 用户维护中打开wifi
-                changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_CONNECTED);
+                changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_CONNECTED, true);
             }
             else
             {
-                changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_CLOSED);
+                changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_CLOSED, true);
             }
         }
         else
         {
-            changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_DISCONNECTED);
+            changeIcon(SYSTEM_ICON_LABEL_WIFI, SYSTEM_ICON_WIFI_DISCONNECTED, true);
         }
     }
 }
