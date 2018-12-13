@@ -77,6 +77,12 @@ void NIBPRepairMenuWindow::init()
 
     // 进入服务模式。
     nibpParam.changeMode(NIBP_STATE_MACHINE_SERVICE);
+
+    // 初始化各个子菜单
+    NIBPCalibrateContent::getInstance()->init();
+    NIBPManometerContent::getInstance()->init();
+    NIBPZeroPointContent::getInstance()->init();
+    NIBPPressureControlContent::getInstance()->init();
 }
 
 /**************************************************************************************************

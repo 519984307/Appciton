@@ -159,3 +159,10 @@ NIBPManometerContent::~NIBPManometerContent()
     delete d_ptr;
 }
 
+void NIBPManometerContent::init()
+{
+    d_ptr->isManometerMode = false;
+    d_ptr->modeBtn->setEnabled(true);
+    d_ptr->modeBtn->setText(trs("EnterManometerMode"));
+}
+

@@ -329,3 +329,11 @@ NIBPZeroPointContent::~NIBPZeroPointContent()
 {
     delete d_ptr;
 }
+
+void NIBPZeroPointContent::init()
+{
+    d_ptr->isZeroMode = false;
+    d_ptr->modeBtn->setEnabled(true);
+    d_ptr->modeBtn->setText(trs("EnterZeroMode"));
+    d_ptr->zeroBtn->setEnabled(true);
+}
