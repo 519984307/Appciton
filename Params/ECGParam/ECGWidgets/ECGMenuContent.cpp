@@ -91,24 +91,34 @@ void ECGMenuContentPrivate::loadOptions()
     int index = 0;
     setCboBlockSignal(true);
     combos[ITEM_CBO_HRPR_SOURCE]->clear();
+    currentConfig.getNumValue("ECG|HRSource", index);
     for (int i = HR_SOURCE_ECG; i < HR_SOURCE_NR; ++i)
     {
+        bool continued = false;
         if (i == HR_SOURCE_SPO2 && !systemManager.isSupport(PARAM_SPO2))
         {
-            continue;
+            continued = true;
         }
         if (i == HR_SOURCE_IBP && !systemManager.isSupport(PARAM_IBP))
         {
+            continued = true;
+        }
+        if (continued == true)
+        {
+            if (index >= i)
+            {
+                index--;
+            }
             continue;
         }
         combos[ITEM_CBO_HRPR_SOURCE]->addItem(trs(ECGSymbol::convert(static_cast<HRSourceType>(i))));
     }
-    currentConfig.getNumValue("ECG|HRSource", index);
     if (index > combos[ITEM_CBO_HRPR_SOURCE]->count())
     {
         index = 0;
     }
     combos[ITEM_CBO_HRPR_SOURCE]->setCurrentIndex(index);
+    currentConfig.setNumValue("ECG|HRSource", index);
 
     ECGLeadMode leadMode = ecgParam.getLeadMode();
     combos[ITEM_CBO_LEAD_MODE]->setCurrentIndex(leadMode);
@@ -577,7 +587,18 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
         {
         case ECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE:
         {
-            HRSourceType sourceType = static_cast<HRSourceType>(index);
+            HRSourceType sourceType = HR_SOURCE_NR;
+            QString itemText = box->currentText();
+            for (int i = HR_SOURCE_ECG; i < HR_SOURCE_NR; i++)
+            {
+                HRSourceType type = static_cast<HRSourceType>(i);
+                if (itemText == trs(ECGSymbol::convert(type)))
+                {
+                    sourceType = type;
+                    break;
+                }
+            }
+
             ecgDupParam.setHrSource(sourceType);
 
             // 切换类型时手动更新hr/pr值，避免上次pr/hr值为无效值
