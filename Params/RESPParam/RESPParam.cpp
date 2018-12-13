@@ -23,6 +23,9 @@
 #include "RESPWaveWidget.h"
 #include "RESPProviderIFace.h"
 #include "ColorManager.h"
+#include <QTimer>
+
+#define TIMER_PERIOD_TIME  (100)
 
 RESPParam *RESPParam::_selfObj = NULL;
 
@@ -36,6 +39,12 @@ public:
           oxyCRGRrHrTrend(NULL),
           respMonitoring(false),
           connectedProvider(false)
+        , timer(NULL)
+        , lastSetLead(RESP_LEAD_II)
+        , lastGetLeadOff(false)
+        , leadOff(false)
+        , actualLead(RESP_LEAD_II)
+        , setLead(RESP_LEAD_II)
     {
     }
     /**
@@ -50,6 +59,12 @@ public:
     OxyCRGRRHRWaveWidget *oxyCRGRrHrTrend;
     bool respMonitoring;
     bool connectedProvider;
+    QTimer *timer;
+    RESPLead lastSetLead;  // 导联切换中记录上次设置的导联
+    bool lastGetLeadOff;   // 导联切换中记录上次导联的状态
+    bool leadOff;  // 实际导联状态
+    RESPLead actualLead;  // 实际导联--模块中设置的导联
+    RESPLead setLead;  // 设置导联--菜单中显示的导联
 };
 /**************************************************************************************************
  * 设置波形速度。
@@ -290,6 +305,8 @@ void RESPParam::setLeadoff(bool flag)
     {
         d_ptr->waveWidget->leadoff(flag);
     }
+
+    d_ptr->leadOff = flag;
 }
 
 /**************************************************************************************************
@@ -475,22 +492,33 @@ int RESPParam::getRespMonitoring()
  *************************************************************************************************/
 void RESPParam::setCalcLead(RESPLead lead)
 {
+    d_ptr->setLead = lead;
     systemConfig.setNumValue("PrimaryCfg|RESP|RespLead", static_cast<int>(lead));
+
     if (NULL != d_ptr->provider)
     {
-        d_ptr->provider->setRESPCalcLead(lead);
+        RESPLead providerLead = lead;
+        if (lead >= RESP_LEAD_AUTO)
+        {
+            providerLead = RESP_LEAD_II;
+        }
+        d_ptr->provider->setRESPCalcLead(providerLead);
+        d_ptr->actualLead = providerLead;
+    }
+
+    // 设置为自动导联时，开启定时器
+    if (lead == RESP_LEAD_AUTO && d_ptr->timer != NULL && d_ptr->timer->isActive() == false)
+    {
+        d_ptr->timer->start();
     }
 }
 
 /**************************************************************************************************
  * 获取呼吸导联。
  *************************************************************************************************/
-RESPLead RESPParam::getCalcLead(void)
+RESPLead RESPParam::getCalcLead(void) const
 {
-    int lead = RESP_LEAD_I;
-    systemConfig.getNumValue("PrimaryCfg|RESP|RespLead", lead);
-
-    return (RESPLead)lead;
+    return d_ptr->setLead;
 }
 
 /**************************************************************************************************
@@ -519,6 +547,64 @@ void RESPParam::onPaletteChanged(ParamID id)
     d_ptr->waveWidget->setPalette(pal);
 }
 
+void RESPParam::onTimeOut()
+{
+    // 再次读取设置的导联，如果不是自动导联，那么立即退出
+    RESPLead lead = getCalcLead();
+    if (lead != RESP_LEAD_AUTO)
+    {
+        d_ptr->timer->stop();
+        return;
+    }
+
+    lead = d_ptr->actualLead;
+    RESPLead settingLead = RESP_LEAD_NR;
+    while (true)
+    {
+        // 优先判断RESP_LEAD_I导联
+        if (lead == RESP_LEAD_I)
+        {
+            // 如果RESP_LEAD_I脱落，强制设置为RESP_LEAD_II,然后退出
+            if (d_ptr->leadOff == true)
+            {
+                settingLead = RESP_LEAD_II;
+                break;
+            }
+
+            // 如果上次设置导联为RESP_LEAD_II,且上次导联没有检测到脱落,强制设置为RESP_LEAD_II,然后退出
+            if (d_ptr->lastSetLead == RESP_LEAD_II && d_ptr->lastGetLeadOff == false)
+            {
+                settingLead = RESP_LEAD_II;
+                break;
+            }
+        }
+        else if (lead == RESP_LEAD_II)
+        {
+            // 如果导联没有检测到脱落，强制退出
+            if (d_ptr->leadOff == false)
+            {
+                break;
+            }
+
+            // 如果上次设置导联为RESP_LEAD_I,且上次没有检测到导联脱落，强制设置为RESP_LEAD_I
+            if (d_ptr->lastSetLead == RESP_LEAD_I && d_ptr->lastGetLeadOff == false)
+            {
+                settingLead = RESP_LEAD_I;
+                break;
+            }
+        }
+        break;
+    }
+
+    // 更新临时设置导联、导联状态
+    if (settingLead != RESP_LEAD_NR && d_ptr->provider != NULL)
+    {
+        d_ptr->provider->setRESPCalcLead(settingLead);
+    }
+    d_ptr->lastSetLead = lead;
+    d_ptr->lastGetLeadOff = d_ptr->leadOff;
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
@@ -528,6 +614,18 @@ RESPParam::RESPParam() : Param(PARAM_RESP),
     int enable = 1;
     currentConfig.getNumValue("RESP|AutoActivation", enable);
     d_ptr->respMonitoring = enable;
+
+    // 初始化定时器，如果导联设置为自动导联，那么开启定时器
+    d_ptr->timer = new QTimer(this);
+    d_ptr->timer->setInterval(TIMER_PERIOD_TIME);
+    connect(d_ptr->timer, SIGNAL(timeout()), this, SLOT(onTimeOut()));
+    int lead = RESP_LEAD_II;
+    systemConfig.getNumValue("PrimaryCfg|RESP|RespLead", lead);
+    if (lead == RESP_LEAD_AUTO)
+    {
+        d_ptr->timer->start();
+    }
+    d_ptr->setLead = static_cast<RESPLead>(lead);
 }
 
 /**************************************************************************************************
