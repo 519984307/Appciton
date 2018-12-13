@@ -38,6 +38,19 @@ public:
         trendData.co2Baro = data.co2baro;
         trendData.time = t;
         trendData.alarmFlag = alarm;
+
+        QMap<SubParamID, TrendDataType>::iterator it = trendData.subparamValue.begin();
+        while (it != trendData.subparamValue.end())
+        {
+            if (it.key() != SUB_PARAM_HR_PR && it.key() != SUB_PARAM_RR_BR
+                    && it.key() != SUB_PARAM_SPO2 && it.key() != SUB_PARAM_ETCO2
+                    && it.key() != SUB_PARAM_FICO2)
+            {
+                it = trendData.subparamValue.erase(it);
+                continue;
+            }
+            ++it;
+        }
     }
 
     TrendDataPackage trendData;
