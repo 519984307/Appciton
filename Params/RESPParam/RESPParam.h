@@ -127,23 +127,13 @@ public:
 
     // 设置/获取呼吸导联。
     void setCalcLead(RESPLead lead);
-
-    /**
-     * @brief getCalcLead  获取导联
-     * @return  导联
-     */
-    RESPLead getCalcLead(void) const;
+    RESPLead getCalcLead(void);
 
     // 使能呼吸计算
     void enableRespCalc(bool enable);
 
 private slots:
     void onPaletteChanged(ParamID id);
-
-    /**
-     * @brief onTimeOut  定时器触发槽函数
-     */
-    void onTimeOut();
 
 private:
     RESPParam();

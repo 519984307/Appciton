@@ -561,10 +561,6 @@ void E5Provider::setWaveformZoom(RESPZoom /*zoom*/)
 
 void E5Provider::setRESPCalcLead(RESPLead lead)
 {
-    if (lead >= RESP_LEAD_AUTO)
-    {
-        lead == RESP_LEAD_II;
-    }
     d_ptr->resplead = lead;
     unsigned char l = lead;
     sendCmd(E5_CMD_SET_RESP_CALC_LEAD, &l, 1);
