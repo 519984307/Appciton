@@ -88,6 +88,7 @@ void NIBPPressureControlContent::layoutExec()
     label = new QLabel(trs("OverpressureProtect"));
     layout->addWidget(label, 1, 0, Qt::AlignCenter);
     d_ptr->overpressureCbo = new ComboBox();
+    d_ptr->overpressureCbo->setEnabled(false);
     d_ptr->overpressureCbo->addItem(trs("ON"));
     d_ptr->overpressureCbo->addItem(trs("Off"));
     layout->addWidget(d_ptr->overpressureCbo, 1, 2);
@@ -138,6 +139,7 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
                     d_ptr->isPressureControlMode = false;
                     d_ptr->modeBtn->setText(trs("EnterPressureContrlMode"));
                     d_ptr->inflateBtn->setEnabled(false);
+                    d_ptr->overpressureCbo->setEnabled(false);
                     killTimer(d_ptr->pressureTimerID);
                     d_ptr->pressureTimerID = -1;
                 }
@@ -146,6 +148,7 @@ void NIBPPressureControlContent::timerEvent(QTimerEvent *ev)
                     d_ptr->isPressureControlMode = true;
                     d_ptr->modeBtn->setText(trs("QuitPressureContrlMode"));
                     d_ptr->inflateBtn->setEnabled(true);
+                    d_ptr->overpressureCbo->setEnabled(true);
                     d_ptr->pressureTimerID = startTimer(CALIBRATION_INTERVAL_TIME);
                 }
             }
@@ -251,7 +254,7 @@ void NIBPPressureControlContent::enterPressureContrlReleased()
 
 void NIBPPressureControlContent::onOverpressureReleased(int index)
 {
-    nibpParam.provider().servicePressureProtect(index);
+    nibpParam.provider().servicePressureProtect(!index);
 }
 
 NIBPPressureControlContent *NIBPPressureControlContent::getInstance()
@@ -280,5 +283,14 @@ NIBPPressureControlContent::NIBPPressureControlContent()
 NIBPPressureControlContent::~NIBPPressureControlContent()
 {
     delete d_ptr;
+}
+
+void NIBPPressureControlContent::init()
+{
+    d_ptr->isPressureControlMode = false;
+    d_ptr->modeBtn->setEnabled(true);
+    d_ptr->modeBtn->setText(trs("EnterPressureContrlMode"));
+    d_ptr->overpressureCbo->setEnabled(false);
+    d_ptr->inflateBtn->setEnabled(false);
 }
 

@@ -23,6 +23,8 @@ public:
     static NIBPManometerContent *getInstance();
     ~NIBPManometerContent();
 
+    void init(void);
+
 protected:
     virtual void layoutExec(void);
     void timerEvent(QTimerEvent *ev);

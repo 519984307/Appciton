@@ -24,6 +24,8 @@ public:
     static NIBPPressureControlContent *getInstance();
     ~NIBPPressureControlContent();
 
+    void init(void);
+
 protected:
     virtual void layoutExec(void);
     void timerEvent(QTimerEvent *ev);

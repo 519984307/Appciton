@@ -277,3 +277,13 @@ NIBPCalibrateContent::~NIBPCalibrateContent()
     delete d_ptr;
 }
 
+void NIBPCalibrateContent::init()
+{
+    d_ptr->isCalibrateMode = false;
+    d_ptr->modeBtn->setEnabled(true);
+    d_ptr->modeBtn->setText(trs("EnterCalibrateMode"));
+    d_ptr->point2Spb->setEnabled(false);
+    d_ptr->btnList.at(0)->setEnabled(false);
+    d_ptr->btnList.at(1)->setEnabled(false);
+}
+

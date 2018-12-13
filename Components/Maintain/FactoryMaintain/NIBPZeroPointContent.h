@@ -20,6 +20,8 @@ public:
     static NIBPZeroPointContent *getInstance();
     ~NIBPZeroPointContent();
 
+    void init(void);
+
 protected:
     virtual void layoutExec(void);
     void timerEvent(QTimerEvent *ev);
