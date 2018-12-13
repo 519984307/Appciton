@@ -406,7 +406,7 @@ void WiFiProfileEditorWindowPrivate::onCommit()
         if (keylen < 8 || keylen >= 64)
         {
             MessageBox(QString(trs("SecurityKeyError")), QString(trs("WpaPskRequires")),
-                        QStringList(trs("EnglishYESChineseSURE"))).exec();
+                        QStringList(trs("EnglishYESChineseSURE")), true).exec();
             return;
         }
     }

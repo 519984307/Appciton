@@ -366,6 +366,12 @@ AccessPointProfile,接入点配置,Access Point Profile
 ConfiguredAccessPointProfiles,接入点配置,Configured Access Point Profiles
 SelectAccessPoint,接入点,Access Point
 ProfileName,配置名,Profile Name
+NoProfileName,配置名空,No Profile Name
+PleaseInputProfileName,请输入配置名,Please Input Profile Name
+NoSSID,SSID空,No SSID
+PleaseInputSSIDName,请输入SSID,Please Input SSID
+SecurityKeyError,密码错误,Security Key Error
+WpaPskRequires,WPA PSK要求密码长度范围在8 ~ 64,WPA PSK requires the range of the password lenght: 8 ~ 64
 WiFiProfileEdit,WiFi配置编辑,Edit WiFi Profile
 WiFiProfileMenuContent,WiFi配置,Wifi
 WiFiProfileMenuContentDesc,WiFi配置编辑,Wifi Setting
