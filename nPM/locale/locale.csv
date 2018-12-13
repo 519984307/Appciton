@@ -200,6 +200,7 @@ OperationFailedPleaseAgain,"操作失败,请重试!","Operation Failed , Please 
 PumpControl,气泵控制,Pump Control
 ValveControl,气阀控制,Valve Control
 InflationPressure,充气压力,Inflation Pressure
+OverpressureProtect,过压保护,Overpressure Protect
 CO2ApneaTime,窒息时间,Apnea Time
 CO2SweepSpeed,波形速度,Sweep Speed
 CO2WaveMode,CO2波形模式,CO2 Wave Mode

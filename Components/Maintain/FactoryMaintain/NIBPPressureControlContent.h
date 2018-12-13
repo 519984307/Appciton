@@ -27,14 +27,17 @@ public:
 protected:
     virtual void layoutExec(void);
     void timerEvent(QTimerEvent *ev);
+    void showEvent(QShowEvent *e);
 
 private slots:
     void inflateBtnReleased(void);            //  充气、放气控制按钮信号
 
     /**
-     * @brief enterPressureContrlReleased 进入退出压力操纵模式
+     * @brief onOverpressureReleased 过压保护开关
      */
-    void enterPressureContrlReleased(void);
+    void onOverpressureReleased(int);
+
+    void enterPressureContrlReleased();
 
 private:
     NIBPPressureControlContent();
