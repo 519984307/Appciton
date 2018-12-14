@@ -317,6 +317,7 @@ PrintNumOfTraces,打印波形数量,Number Of Print Traces
 PrintAlarmTriger,报警触发,Alarm Trigger
 Print12LeadFormat,12导格式,12-Lead Format
 PrintSetup,打印设置,Print Setup
+WaveLength,波形长度,Wave Length
 SystemAlarmVolume,报警音量,Alarm Audio Volume
 MinimumALarmVolume,最低报警音量,Minimum Alarm Volume
 DefaultAlarmVolume,默认报警音量,Default Alarm Volume
@@ -1165,16 +1166,16 @@ DrugB,药物B,Drug B
 DrugC,药物C,Drug C
 DrugD,药物D,Drug D
 DrugE,药物E,Drug E
-Aminophyline,氨茶碱,
-Dobutamine,多巴酚丁胺,
-Dopamine,多巴胺,
-Epinephrine,肾上腺素,
-Heparin,肝素,
-Isuprel,异丙肾上腺素,
-Lidocaine,利多卡因,
-Nipride,硝普钠,
-Nitroglycerin,硝化甘油,
-Pitocin,催产素,
+Aminophyline,氨茶碱,Aminophyline
+Dobutamine,多巴酚丁胺,Dobutamine
+Dopamine,多巴胺,Dopamine
+Epinephrine,肾上腺素,Epinephrine
+Heparin,肝素,Heparin
+Isuprel,异丙肾上腺素,Isuprel
+Lidocaine,利多卡因,Lidocaine
+Nipride,硝普钠,Nipride
+Nitroglycerin,硝化甘油,Nitroglycerin
+Pitocin,催产素,Pitocin
 InvalidInput,输入无效，有效范围,"Invalid input, valid range"
 Record,记录,record
 TitrateTableSet,滴定表设置,titrate table set

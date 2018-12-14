@@ -41,11 +41,11 @@ public:
         codeMarkerInfo(NULL),
         oxyCRGInfo(NULL)
     {
-        int duration_after_event = 8;
-        int duration_before_event = 8;
+        int duration_after_event;
+        int duration_before_event;
         Config &conf =  configManager.getCurConfig();
-        conf.getNumValue("Event|WaveLengthBefore", duration_before_event);
-        conf.getNumValue("Event|WaveLengthAfter", duration_after_event);
+        conf.getNumValue("Event|WaveLength", duration_before_event);
+        duration_after_event = duration_before_event;
         eventInfo.type = type;
         eventInfo.duration_after = duration_after_event;
         eventInfo.duration_before = duration_before_event;

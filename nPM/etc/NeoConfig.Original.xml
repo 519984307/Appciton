@@ -150,8 +150,7 @@
         <SweepSpeed>1</SweepSpeed>
     </RESP>
     <Event>
-        <WaveLengthBefore>16</WaveLengthBefore>
-        <WaveLengthAfter>16</WaveLengthAfter>
+        <WaveLength>16</WaveLength>
     </Event>
     <Alarm>
         <ApneaTime>2</ApneaTime>
