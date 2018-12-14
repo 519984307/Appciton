@@ -223,7 +223,7 @@ public:
 
             captionLength = fontManager.textWidthInPixels(caption, q_ptr->font());
             info.drawCtx.captionPixLength = captionLength;
-            Util::strlcpy(info.drawCtx.caption, qPrintable(caption), sizeof(info.drawCtx.caption));
+            info.drawCtx.caption = caption;
             info.drawCtx.curPageFirstXpos = 0.0;
             info.drawCtx.prevSegmentLastYpos = 0.0;
             info.drawCtx.dashOffset = 0.0;
