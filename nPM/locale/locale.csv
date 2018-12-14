@@ -1607,6 +1607,11 @@ System,系统,System
 Machine,机器,Machine
 Ped,小儿,Pediatric
 Neo,新生儿,Neonate
+AdultConfig.Original.xml,成人缺省,Default Adult Config.
+NeoConfig.Original.xml,新生儿缺省,Default Neo Config.
+PedConfig.Original.xml,小儿缺省,Default Ped Config.
+System.Original.xml,系统配置,System Config.
+Machine.xml,机器配置,Machine Config.
 Pediatric,小儿,Pediatric
 Neonate,新生儿,Neonate
 SaveCurrentSetting,保存设置,Save Current Setting
