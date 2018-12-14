@@ -303,9 +303,7 @@ void EventWindow::eventListReleased()
 
 void EventWindow::leftMoveCoordinate()
 {
-    int waveLength;
-    Config &conf =  configManager.getCurConfig();
-    conf.getNumValue("Event|WaveLength", waveLength);
+    int waveLength = d_ptr->ctx.infoSegment->duration_after;
     EventWaveWidget::SweepSpeed speed;
     speed = d_ptr->waveWidget->getSweepSpeed();
     int medSecond = d_ptr->waveWidget->getCurrentWaveMedSecond();
@@ -347,39 +345,35 @@ void EventWindow::leftMoveCoordinate()
 
 void EventWindow::rightMoveCoordinate()
 {
-    int durationBefore;
-    int durationAfter;
-    Config &conf =  configManager.getCurConfig();
-    conf.getNumValue("Event|WaveLength", durationBefore);
-    durationAfter = durationBefore;
+    int waveLength = d_ptr->ctx.infoSegment->duration_after;
     EventWaveWidget::SweepSpeed speed;
     speed = d_ptr->waveWidget->getSweepSpeed();
     int medSecond = d_ptr->waveWidget->getCurrentWaveMedSecond();
     switch (speed)
     {
     case EventWaveWidget::SWEEP_SPEED_62_5:
-        if (medSecond == durationAfter - 8)
+        if (medSecond == waveLength - 8)
         {
             return;
         }
         medSecond++;
         break;
     case EventWaveWidget::SWEEP_SPEED_125:
-        if (medSecond == durationAfter - 4)
+        if (medSecond == waveLength - 4)
         {
             return;
         }
         medSecond++;
         break;
     case EventWaveWidget::SWEEP_SPEED_250:
-        if (medSecond == durationAfter - 2)
+        if (medSecond == waveLength - 2)
         {
             return;
         }
         medSecond++;
         break;
     case EventWaveWidget::SWEEP_SPEED_500:
-        if (medSecond == durationAfter - 1)
+        if (medSecond == waveLength - 1)
         {
             return;
         }
@@ -1049,5 +1043,7 @@ void EventWindowPrivate::eventTrendUpdate()
 
 void EventWindowPrivate::eventWaveUpdate()
 {
+    waveWidget->setInfoSegments(ctx.infoSegment);
+    waveWidget->setWaveMedSecond(0);
     waveWidget->setWaveSegments(ctx.waveSegments);
 }
