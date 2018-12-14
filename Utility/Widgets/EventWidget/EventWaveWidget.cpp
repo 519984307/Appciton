@@ -108,8 +108,8 @@ public:
         pixelWPicth = 0.25;
         pixelHPitch = systemManager.getScreenPixelHPitch();
         Config &conf =  configManager.getCurConfig();
-        conf.getNumValue("Event|WaveLengthBefore", durationBefore);
-        conf.getNumValue("Event|WaveLengthAfter", durationAfter);
+        conf.getNumValue("Event|WaveLength", durationBefore);
+        durationAfter = durationBefore;
     }
 
     ~EventWaveWidgetPrivate()

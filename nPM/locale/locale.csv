@@ -317,6 +317,7 @@ PrintNumOfTraces,打印波形数量,Number Of Print Traces
 PrintAlarmTriger,报警触发,Alarm Trigger
 Print12LeadFormat,12导格式,12-Lead Format
 PrintSetup,打印设置,Print Setup
+WaveLength,波形长度,Wave Length
 SystemAlarmVolume,报警音量,Alarm Audio Volume
 MinimumALarmVolume,最低报警音量,Minimum Alarm Volume
 DefaultAlarmVolume,默认报警音量,Default Alarm Volume

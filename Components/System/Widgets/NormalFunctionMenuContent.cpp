@@ -40,6 +40,7 @@ public:
     {
         ITEM_BTN_CALCULATE = 0,
 
+        ITEM_CBO_WAVE_LEN,
         ITEM_CBO_ALARM_VOLUME,
         ITEM_CBO_SCREEN_BRIGHTNESS,
         ITEM_CBO_KEYPRESS_VOLUME,
@@ -68,6 +69,21 @@ public:
 
 void NormalFunctionMenuContentPrivate::loadOptions()
 {
+    int waveLength;
+    currentConfig.getNumValue("Event|WaveLength", waveLength);
+    if (waveLength == 8)
+    {
+        combos[ITEM_CBO_WAVE_LEN]->setCurrentIndex(0);
+    }
+    else if (waveLength == 16)
+    {
+        combos[ITEM_CBO_WAVE_LEN]->setCurrentIndex(1);
+    }
+    else if (waveLength == 32)
+    {
+        combos[ITEM_CBO_WAVE_LEN]->setCurrentIndex(2);
+    }
+
     if (nightModeManager.nightMode())
     {
         combos[ITEM_CBO_SCREEN_BRIGHTNESS]->setEnabled(false);
@@ -133,6 +149,20 @@ void NormalFunctionMenuContent::layoutExec()
     btn->setProperty("Item", qVariantFromValue(itemID));
     layout->addWidget(btn, row, 1);
     row++;
+
+    // 波形长度
+    label = new QLabel(trs("WaveLength"));
+    layout->addWidget(label, row, 0);
+    comboBox = new ComboBox();
+    comboBox->addItem("8s");
+    comboBox->addItem("16s");
+    comboBox->addItem("32s");
+    itemID = static_cast<int>(NormalFunctionMenuContentPrivate::ITEM_CBO_WAVE_LEN);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, row, 1);
+    row++;
+    d_ptr->combos.insert(NormalFunctionMenuContentPrivate::ITEM_CBO_WAVE_LEN, comboBox);
 
     // alarm volume
     label = new QLabel(trs("SystemAlarmVolume"));
@@ -295,6 +325,24 @@ void NormalFunctionMenuContent::onComboBoxIndexChanged(int index)
                 = (NormalFunctionMenuContentPrivate::MenuItem)box->property("Item").toInt();
         switch (item)
         {
+        case NormalFunctionMenuContentPrivate::ITEM_CBO_WAVE_LEN:
+        {
+            int waveLength;
+            if (index == 0)
+            {
+                waveLength = 8;
+            }
+            else if (index == 1)
+            {
+                waveLength = 16;
+            }
+            else
+            {
+                waveLength = 32;
+            }
+            currentConfig.setNumValue("Event|WaveLength", waveLength);
+            break;
+        }
         case NormalFunctionMenuContentPrivate::ITEM_CBO_ALARM_VOLUME:
         {
             int volume = box->itemText(index).toInt();

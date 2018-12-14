@@ -303,39 +303,37 @@ void EventWindow::eventListReleased()
 
 void EventWindow::leftMoveCoordinate()
 {
-    int durationBefore;
-    int durationAfter;
+    int waveLength;
     Config &conf =  configManager.getCurConfig();
-    conf.getNumValue("Event|WaveLengthBefore", durationBefore);
-    conf.getNumValue("Event|WaveLengthAfter", durationAfter);
+    conf.getNumValue("Event|WaveLength", waveLength);
     EventWaveWidget::SweepSpeed speed;
     speed = d_ptr->waveWidget->getSweepSpeed();
     int medSecond = d_ptr->waveWidget->getCurrentWaveMedSecond();
     switch (speed)
     {
     case EventWaveWidget::SWEEP_SPEED_62_5:
-        if (medSecond == -durationBefore + 8)
+        if (medSecond == -waveLength + 8)
         {
             return;
         }
         medSecond--;
         break;
     case EventWaveWidget::SWEEP_SPEED_125:
-        if (medSecond == -durationBefore + 4)
+        if (medSecond == -waveLength + 4)
         {
             return;
         }
         medSecond--;
         break;
     case EventWaveWidget::SWEEP_SPEED_250:
-        if (medSecond == -durationBefore + 2)
+        if (medSecond == -waveLength + 2)
         {
             return;
         }
         medSecond--;
         break;
     case EventWaveWidget::SWEEP_SPEED_500:
-        if (medSecond == -durationBefore + 1)
+        if (medSecond == -waveLength + 1)
         {
             return;
         }
@@ -352,8 +350,8 @@ void EventWindow::rightMoveCoordinate()
     int durationBefore;
     int durationAfter;
     Config &conf =  configManager.getCurConfig();
-    conf.getNumValue("Event|WaveLengthBefore", durationBefore);
-    conf.getNumValue("Event|WaveLengthAfter", durationAfter);
+    conf.getNumValue("Event|WaveLength", durationBefore);
+    durationAfter = durationBefore;
     EventWaveWidget::SweepSpeed speed;
     speed = d_ptr->waveWidget->getSweepSpeed();
     int medSecond = d_ptr->waveWidget->getCurrentWaveMedSecond();
