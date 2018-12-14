@@ -379,12 +379,16 @@ void WitleafProvider::disconnected()
 {
     coParam.setConnected(false);
     ibpParam.setConnected(false);
+    detachParam(coParam);
+    detachParam(ibpParam);
 }
 
 void WitleafProvider::reconnected()
 {
     coParam.setConnected(true);
     ibpParam.setConnected(true);
+    attachParam(coParam);
+    attachParam(ibpParam);
 }
 
 /**************************************************************************************************

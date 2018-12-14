@@ -619,6 +619,7 @@ void SystemManager::setWorkMode(WorkMode workmode)
 void SystemManager::setStandbyStatus(bool standby)
 {
     d_ptr->isStandby = standby;
+    emit standbySignal(standby);
 }
 
 bool SystemManager::isStandby() const

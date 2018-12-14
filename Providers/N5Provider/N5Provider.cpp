@@ -355,6 +355,7 @@ void N5Provider::disconnected(void)
 {
     nibpParam.connectedFlag(false);
     nibpParam.setConnected(false);
+    detachParam(nibpParam);
 }
 
 /**************************************************************************************************
@@ -364,6 +365,7 @@ void N5Provider::reconnected(void)
 {
     nibpParam.connectedFlag(true);
     nibpParam.setConnected(true);
+    attachParam(nibpParam);
 }
 
 /**************************************************************************************************

@@ -309,6 +309,7 @@ void NellcorSetProvider::disconnected()
 {
     spo2OneShotAlarm.clear();
     spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
+    detachParam(spo2Param);
 }
 
 /**************************************************************************************************
@@ -317,6 +318,7 @@ void NellcorSetProvider::disconnected()
 void NellcorSetProvider::reconnected()
 {
     spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
+    attachParam(spo2Param);
 }
 
 bool NellcorSetProvider::isResultSPO2PR(unsigned char *packet)

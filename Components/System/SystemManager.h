@@ -213,6 +213,12 @@ signals:
      */
     void systemTimeFormatUpdated(TimeFormat format);
 
+    /**
+     * @brief standbySignal 待机信号
+     * @param flag 待机标志
+     */
+    void standbySignal(bool flag);
+
 private slots:
     void publishTestResult();
 

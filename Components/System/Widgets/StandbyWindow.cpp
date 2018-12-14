@@ -18,6 +18,7 @@
 #include "LanguageManager.h"
 #include "IConfig.h"
 #include "SystemManager.h"
+#include "LayoutManager.h"
 
 StandbyWindow::StandbyWindow()
             : QDialog(NULL, Qt::FramelessWindowHint)
@@ -33,6 +34,7 @@ StandbyWindow::StandbyWindow()
 
 StandbyWindow::~StandbyWindow()
 {
+    layoutManager.resetWave();
 }
 
 

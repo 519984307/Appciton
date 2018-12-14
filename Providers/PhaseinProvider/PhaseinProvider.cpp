@@ -90,11 +90,13 @@ void PhaseinProvider::sendCmd(unsigned char dataId, const unsigned char data)
 void PhaseinProvider::disconnected()
 {
     agParam.setConnected(false);
+    detachParam(agParam);
 }
 
 void PhaseinProvider::reconnected()
 {
     agParam.setConnected(true);
+    attachParam(agParam);
 }
 
 /**************************************************************************************************

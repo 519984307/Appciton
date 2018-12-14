@@ -78,6 +78,8 @@ protected slots:
     {
     }
 
+    void handleStandby(bool flag);
+
 protected:
     void setDisconnectThreshold(int second);
     void feed(void);                              // 有数据时调用清除连接计数器。
@@ -94,4 +96,5 @@ private:
     int _timerID;
     int _disconnectCount;
     int _disconnectThreshold;
+    bool _standbyCheck;     // 待机标志
 };

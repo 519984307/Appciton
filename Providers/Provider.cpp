@@ -16,6 +16,7 @@
 #include "Debug.h"
 #include "Provider.h"
 #include "IConfig.h"
+#include "SystemManager.h"
 
 #ifdef Q_WS_X11
 #include "UartSocket.h"
@@ -92,6 +93,26 @@ void Provider::readData(void)
 //    ringBuff.push(bu, 9);
 }
 
+void Provider::handleStandby(bool flag)
+{
+    if (flag)
+    {
+        _standbyCheck = true;
+        if (isConnectedToParam)
+        {
+            disconnected();
+        }
+    }
+    else
+    {
+        _standbyCheck = false;
+        if (isConnected)
+        {
+            reconnected();
+        }
+    }
+}
+
 /**************************************************************************************************
  * 功能： 获取名称。
  * 返回： Provider的名称。
@@ -126,6 +147,11 @@ void Provider::detachParam(Param &param)
  *************************************************************************************************/
 void Provider::checkConnection(void)
 {
+    if (_standbyCheck)
+    {
+        // 如果在待机中，不检查超时是否连接
+        return;
+    }
     _disconnectCount++;
     if (_disconnectCount > _disconnectThreshold)
     {
@@ -189,12 +215,14 @@ Provider::Provider(const QString &name) : QObject(), ringBuff(ringBuffLen), _nam
     isConnected = false;
     _firstCheck = true;
     isConnectedToParam = true;
+    _standbyCheck = false;
 // #ifdef Q_WS_X11
 //    uart = new UartSocket();
 // #else
     uart = new Uart();
 // #endif
     connect(uart, SIGNAL(activated(int)), this, SLOT(dataArrived()));
+    connect(&systemManager, SIGNAL(standbySignal(bool)), this, SLOT(handleStandby(bool)));
     uart->setParent(this);
 }
 

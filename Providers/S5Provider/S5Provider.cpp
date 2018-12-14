@@ -158,6 +158,7 @@ void S5Provider::disconnected(void)
     spo2OneShotAlarm.clear();
     spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, true);
     spo2Param.setConnected(false);
+    detachParam(spo2Param);
 }
 
 /**************************************************************************************************
@@ -167,6 +168,7 @@ void S5Provider::reconnected(void)
 {
     spo2OneShotAlarm.setOneShotAlarm(SPO2_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     spo2Param.setConnected(true);
+    attachParam(spo2Param);
 }
 
 /**************************************************************************************************
