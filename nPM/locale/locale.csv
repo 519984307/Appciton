@@ -1489,7 +1489,7 @@ TEMP1,温度1,TEMP1
 TEMP2,温度2,TEMP2
 TEMPModuleNotCalibration1,温度模块通道1未定标,TEMP Channel 1 Not Calibration
 TEMPModuleNotCalibration2,温度模块通道2未定标,TEMP Channel 2 Not Calibration
-TEMPModuleDisable,温度模块失能,TEMP Module Disable
+TEMPModuleDisable,温度模块禁用,TEMP Module Disable
 TEMPCommunicationStop,温度通信停止,TEMP Communication Stop
 TEMPChannel,温度通道,TEMP Channel
 TEMPCalibrate,温度校准 ,TEMP Calibrate 

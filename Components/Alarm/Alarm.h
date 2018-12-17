@@ -85,12 +85,6 @@ public:
      */
     void setLatchLockSta(bool status);
 
-    /**
-     * @brief updateStandbyMode  更新待机模式
-     * @param isEnable  true--更新为待机模式；false--更新为非待机模式
-     */
-    void updateStandbyMode(bool isEnable);
-
 private:
     unsigned _timestamp;
     QMultiMap<ParamID, AlarmLimitIFace *> _limitSources;
