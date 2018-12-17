@@ -344,7 +344,6 @@ void OxyCRGEventWindow::printReleased()
         else
         {
             recorderManager.stopPrint();
-            recorderManager.addPageGenerator(generator);
         }
     }
     else

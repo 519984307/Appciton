@@ -33,6 +33,7 @@ public:
     RecorderManagerPrivate()
         : connected(false),
           isAborted(false),
+          isPrinting(false),
           status(PRINTER_STAT_NORMAL),
           curSpeed(PRINT_SPEED_250),
           processor(NULL),
@@ -45,6 +46,7 @@ public:
 
     bool connected;
     bool isAborted;
+    bool isPrinting;
     PrinterStatus status;
     PrintSpeed curSpeed;
     RecordPageProcessor *processor;
@@ -163,6 +165,11 @@ bool RecorderManager::isConnected() const
 bool RecorderManager::isPrinting() const
 {
     return (d_ptr->generator || d_ptr->status);
+}
+
+void RecorderManager::setPrintStatus(bool sta)
+{
+    d_ptr->isPrinting = sta;
 }
 
 void RecorderManager::abort()
@@ -357,18 +364,27 @@ void RecorderManager::providerStatusChanged(PrinterStatus status)
     bool isOutOfPaper = status & 0x01;
     bool isOverHeating = (status >> 1) & 0x01;
     bool isPrinterFault = (status >> 2) & 0x01;
+    bool isPrinting = (status >> 3) & 0x01;
 
     printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_OUT_OF_PAPER, isOutOfPaper);
     printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_OVER_HEATING, isOverHeating);
     printOneShotAlarm.setOneShotAlarm(PRINT_ONESHOT_ALARM_FAULT, isPrinterFault);
+    setPrintStatus(isPrinting);
 
-    if (status)
+    if (isOutOfPaper || isOverHeating || isPrinterFault)
     {
         // stop current generator
         QMetaObject::invokeMethod(d_ptr->generator.data(), "stop");
         // stop page processor
         QMetaObject::invokeMethod(d_ptr->processor, "stopProcess");
     }
+
+    if (d_ptr->generator && !isPrinting)
+    {
+        d_ptr->generator.data()->deleteLater();
+        d_ptr->isAborted = false;
+    }
+
     d_ptr->status = status;
 }
 

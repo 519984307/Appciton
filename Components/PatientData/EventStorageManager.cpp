@@ -147,7 +147,6 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
             else
             {
                 recorderManager.stopPrint();
-                recorderManager.addPageGenerator(generator);
                 item->setWaitForTriggerPrintFlag(false);
             }
         }
@@ -189,7 +188,6 @@ void EventStorageManager::triggerCodeMarkerEvent(const char *codeName, unsigned 
             else
             {
                 recorderManager.stopPrint();
-                recorderManager.addPageGenerator(generator);
                 item->setWaitForTriggerPrintFlag(false);
             }
         }
@@ -245,7 +243,6 @@ void EventStorageManager::triggerNIBPMeasurementEvent(unsigned t)
             else
             {
                 recorderManager.stopPrint();
-                recorderManager.addPageGenerator(generator);
                 item->setWaitForTriggerPrintFlag(false);
             }
         }
@@ -286,7 +283,6 @@ void EventStorageManager::triggerWaveFreezeEvent(unsigned t)
             else
             {
                 recorderManager.stopPrint();
-                recorderManager.addPageGenerator(generator);
                 item->setWaitForTriggerPrintFlag(false);
             }
         }

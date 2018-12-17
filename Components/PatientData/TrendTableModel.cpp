@@ -688,7 +688,6 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
         else
         {
             recorderManager.stopPrint();
-            recorderManager.addPageGenerator(gen);
         }
     }
     else

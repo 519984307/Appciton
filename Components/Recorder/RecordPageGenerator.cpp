@@ -2307,7 +2307,6 @@ void RecordPageGenerator::timerEvent(QTimerEvent *ev)
         RecordPage *page = createPage();
         if (page == NULL)
         {
-            emit stopped();
             onStopGenerate();
             return;
         }
@@ -2316,7 +2315,6 @@ void RecordPageGenerator::timerEvent(QTimerEvent *ev)
             emit generatePage(createEndPage());
             _requestStop = false;
             delete page;
-            emit stopped();
             onStopGenerate();
             return;
         }

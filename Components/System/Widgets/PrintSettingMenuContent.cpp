@@ -143,6 +143,7 @@ void PrintSettingMenuContentPrivate::loadOptions()
     // 选择波形id对应的菜单索引
     for (int i = 0; i < PRINT_WAVE_NUM; i++)
     {
+        selectWaves[i]->blockSignals(true);
         // 选择空波形的索引
         if (savedWaveIds[i] == WAVE_NONE)
         {
@@ -169,6 +170,7 @@ void PrintSettingMenuContentPrivate::loadOptions()
         {
             selectWaves[i]->setCurrentIndex(cboIndex);
         }
+        selectWaves[i]->blockSignals(false);
     }
 }
 
@@ -226,7 +228,9 @@ void PrintSettingMenuContent::layoutExec()
         }
         else
         {
+            combo->blockSignals(true);
             combo->setCurrentIndex(i + 1);
+            combo->blockSignals(false);
         }
         combo->setProperty("comboItem", qVariantFromValue(i));
         connect(combo, SIGNAL(currentIndexChanged(QString)), this, SLOT(onSelectWaveChanged(QString)));
@@ -305,7 +309,6 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
         if (recorderManager.isPrinting())
         {
             recorderManager.stopPrint();
-            recorderManager.addPageGenerator(new ContinuousPageGenerator());
         }
         return;
     }
@@ -321,7 +324,6 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
     if (recorderManager.isPrinting())
     {
         recorderManager.stopPrint();
-        recorderManager.addPageGenerator(new ContinuousPageGenerator());
     }
 
     // 收集当前所有选择菜单选择的波形id

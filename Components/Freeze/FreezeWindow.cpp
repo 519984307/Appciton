@@ -235,7 +235,6 @@ void FreezeWindow::onBtnClick()
             else
             {
                 recorderManager.stopPrint();
-                recorderManager.addPageGenerator(generator);
             }
         }
         else
