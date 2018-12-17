@@ -619,7 +619,14 @@ void SystemManager::setWorkMode(WorkMode workmode)
 void SystemManager::setStandbyStatus(bool standby)
 {
     d_ptr->isStandby = standby;
-    emit standbySignal(standby);
+    if (standby)
+    {
+        paramManager.disconnectParamProvider(WORK_MODE_STANDBY);
+    }
+    else
+    {
+        paramManager.connectParamProvider(WORK_MODE_STANDBY);
+    }
 }
 
 bool SystemManager::isStandby() const

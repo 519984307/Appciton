@@ -132,7 +132,6 @@ void T5Provider::disconnected(void)
     _disconnected = true;
     _shotAlarm();
     tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_COMMUNICATION_STOP, true);
-    detachParam(tempParam);
 }
 
 /**************************************************************************************************
@@ -142,7 +141,6 @@ void T5Provider::reconnected(void)
 {
     _disconnected = false;
     tempParam.setOneShotAlarm(TEMP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
-    attachParam(tempParam);
 }
 
 /**************************************************************************************************

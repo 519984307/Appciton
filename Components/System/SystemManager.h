@@ -96,6 +96,7 @@ enum WorkMode
 {
     WORK_MODE_NORMAL = 0,
     WORK_MODE_DEMO,
+    WORK_MODE_STANDBY,
     WORK_MODE_NR,
 };
 

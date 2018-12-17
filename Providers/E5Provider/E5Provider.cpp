@@ -416,8 +416,6 @@ void E5Provider::disconnected()
     systemManager.setPoweronTestResult(E5_MODULE_SELFTEST_RESULT, SELFTEST_FAILED);
     ecgParam.setConnected(false);
     respParam.setConnected(false);
-    detachParam(ecgParam);
-    detachParam(respParam);
 }
 
 
@@ -427,8 +425,6 @@ void E5Provider::reconnected()
     respOneShotAlarm.setOneShotAlarm(RESP_ONESHOT_ALARM_COMMUNICATION_STOP, false);
     ecgParam.setConnected(true);
     respParam.setConnected(true);
-    attachParam(ecgParam);
-    attachParam(respParam);
 }
 
 int E5Provider::getWaveformSample()

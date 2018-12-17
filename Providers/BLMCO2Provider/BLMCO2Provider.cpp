@@ -407,13 +407,11 @@ static void _calcCheckSum(unsigned char buff[])
 void BLMCO2Provider::disconnected(void)
 {
     co2Param.setConnected(false);
-    detachParam(co2Param);
 }
 
 void BLMCO2Provider::reconnected()
 {
     co2Param.setConnected(true);
-    attachParam(co2Param);
 }
 
 /**************************************************************************************************
