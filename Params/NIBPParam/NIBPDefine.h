@@ -97,7 +97,7 @@ enum NIBPOneShotType
     NIBP_ONESHOT_NONE,
     NIBP_ONESHOT_ABORT,                           // measurement abort
     NIBP_ONESHOT_ALARM_CUFF_TYPE_ERROR,           // 袖带错。
-    NIBP_ONESHOT_ALARM_CUFF_LOOSE,                // 袖带松，未接或未扎。
+    NIBP_ONESHOT_ALARM_CUFF_ERROR,                // 袖带松，未接或未扎。
     NIBP_ONESHOT_ALARM_CUFF_AIR_LEAKAGE,          // 漏气。
     NIBP_ONESHOT_ALARM_PNEUMATIC_BLOCKAGE,        // 气管堵塞。
     NIBP_ONESHOT_ALARM_CUFF_OVER_PRESSURE,        // 袖带压过压。
