@@ -708,7 +708,7 @@ NIBPCommunicationStop,NIBP通信中断,NIBP Communication Stop
 NIBPCommunicationTimeout,血压通信超时,NIBP Communication Timeout
 NIBPMeasurementAbort,测量中止,Measurement Aborted
 NIBPCuffTypeError,血压袖带类型错,NIBP Cuff Type Error 
-NIBPCuffError,血压袖带松,NIBP Cuff Error
+NIBPCuffError,血压袖带错误,NIBP Cuff Error
 NIBPCuffAirLeakage,血压袖带漏气,NIBP Cuff Air Leakage
 NIBPPneumaticBlockage,血压气管堵塞,NIBP Pneumatic Blockage
 NIBPCuffOverPressure,血压袖带压力过压,NIBP Cuff Over Pressure
