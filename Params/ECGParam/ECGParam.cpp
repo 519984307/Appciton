@@ -1149,39 +1149,52 @@ void ECGParam::handleSelfTestResult()
 
 HRSourceType ECGParam::getHrSourceTypeFromId(ParamID id)
 {
-    QMap <HRSourceType, ParamID> map;
-    map[HR_SOURCE_ECG] = PARAM_ECG;
-    map[HR_SOURCE_SPO2] = PARAM_SPO2;
-    map[HR_SOURCE_IBP] = PARAM_IBP;
-    map[HR_SOURCE_AUTO] = PARAM_NR;
-
-    for (int i = HR_SOURCE_ECG; i < HR_SOURCE_NR; i++)
+    switch (id)
     {
-        HRSourceType type = static_cast<HRSourceType>(i);
-        if (map[type] == id)
-        {
-            return type;
-        }
+        case PARAM_NONE:
+        case PARAM_RESP:
+        case PARAM_NIBP:
+        case PARAM_TEMP:
+        case PARAM_CO2:
+        case PARAM_DUP_ECG:
+        case PARAM_DUP_RESP:
+        case PARAM_AG:
+        case PARAM_CO:
+        case PARAM_O2:
+        case PARAM_UPGRADE:
+        break;
+        case PARAM_ECG:
+        return HR_SOURCE_ECG;
+        break;
+        case PARAM_SPO2:
+        return HR_SOURCE_SPO2;
+        break;
+        case PARAM_IBP:
+        return HR_SOURCE_IBP;
+        break;
+        case PARAM_NR:
+        return HR_SOURCE_AUTO;
+        break;
     }
     return HR_SOURCE_NR;
 }
 
 ParamID ECGParam::getIdFromHrSourceType(HRSourceType type)
 {
-    QMap <ParamID, HRSourceType> map;
-    map[PARAM_ECG] = HR_SOURCE_ECG;
-    map[PARAM_SPO2] = HR_SOURCE_SPO2;
-    map[PARAM_IBP] = HR_SOURCE_IBP;
-    map[PARAM_NR] = HR_SOURCE_AUTO;
-
-    ParamID id = PARAM_NR;
-    for (int i = PARAM_ECG; i <= PARAM_NR; i++)
+    switch (type)
     {
-        id = static_cast<ParamID>(i);
-        if (map[id] == type)
-        {
-            return id;
-        }
+        case HR_SOURCE_ECG:
+        return PARAM_ECG;
+        break;
+        case HR_SOURCE_SPO2:
+        return PARAM_SPO2;
+        break;
+        case HR_SOURCE_IBP:
+        return PARAM_IBP;
+        break;
+        case HR_SOURCE_AUTO:
+        case HR_SOURCE_NR:
+        break;
     }
     return PARAM_NR;
 }
