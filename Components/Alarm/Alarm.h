@@ -54,7 +54,7 @@ public:
     void getAlarmSourceValue(qint32 *data, int len);
 
     // 获取报警源参数的报警状态。
-    char getAlarmSourceStatus(const QString &sourceName, SubParamID id);
+    char getAlarmSourceStatus(const QString &sourceName, SubParamID id, bool ignoreLatched = true);
 
     // 主运行，需1秒调用一次。
     void mainRun(unsigned t);
