@@ -475,7 +475,8 @@ int RESPParam::getRespMonitoring()
  *************************************************************************************************/
 void RESPParam::setCalcLead(RESPLead lead)
 {
-    systemConfig.setNumValue("PrimaryCfg|RESP|RespLead", static_cast<int>(lead));
+    RESPLead respLead = lead;
+    currentConfig.setNumValue("RESP|BreathLead", static_cast<int>(lead));
     if (NULL != d_ptr->provider)
     {
         if (lead == RESP_LEAD_AUTO)
@@ -484,6 +485,7 @@ void RESPParam::setCalcLead(RESPLead lead)
         }
         d_ptr->provider->setRESPCalcLead(lead);
     }
+    emit calcLeadChanged(respLead);
 }
 
 /**************************************************************************************************
@@ -492,9 +494,9 @@ void RESPParam::setCalcLead(RESPLead lead)
 RESPLead RESPParam::getCalcLead(void)
 {
     int lead = RESP_LEAD_I;
-    systemConfig.getNumValue("PrimaryCfg|RESP|RespLead", lead);
+    currentConfig.getNumValue("RESP|BreathLead", lead);
 
-    return (RESPLead)lead;
+    return static_cast<RESPLead>(lead);
 }
 
 /**************************************************************************************************
