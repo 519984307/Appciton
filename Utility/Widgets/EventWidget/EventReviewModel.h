@@ -46,6 +46,12 @@ public:
      */
     void setPageRowCount(int count);
 
+    /**
+     * @brief totalPage 总页数
+     * @return
+     */
+    int totalPage();
+
 private:
     QScopedPointer<EventReviewModelPrivate> d_ptr;
 };

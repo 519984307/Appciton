@@ -209,6 +209,20 @@ void TableView::setModel(QAbstractItemModel *model)
     }
 }
 
+void TableView::getPageInfo(int &curPage, int &totalPage)
+{
+    int eachPageRowCount = rowAt(viewport()->height()) - rowAt(0) + 1;
+    if (model()->rowCount() % eachPageRowCount)
+    {
+        totalPage = model()->rowCount() / eachPageRowCount + 1;
+    }
+    else
+    {
+        totalPage = model()->rowCount() / eachPageRowCount;
+    }
+    curPage = rowAt(0) / eachPageRowCount + 1;
+}
+
 // void TableView::mouseMoveEvent(QMouseEvent *ev)
 // {
 //     Q_UNUSED(ev)

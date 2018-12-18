@@ -27,7 +27,12 @@ public:
     QList<QString> timeList;
     QList<QString> eventList;
     int eachPageRowCount;
-    int totalPage();
+
+    /**
+     * @brief calTotalPage 计算总页数
+     * @return
+     */
+    int calTotalPage();
 };
 
 EventReviewModel::EventReviewModel(QObject *parent)
@@ -48,7 +53,7 @@ int EventReviewModel::columnCount(const QModelIndex &parent) const
 int EventReviewModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return d_ptr->totalPage() * d_ptr->eachPageRowCount;
+    return d_ptr->calTotalPage() * d_ptr->eachPageRowCount;
 }
 
 QVariant EventReviewModel::data(const QModelIndex &index, int role) const
@@ -159,12 +164,12 @@ void EventReviewModel::setPageRowCount(int count)
     d_ptr->eachPageRowCount = count;
 }
 
-int EventReviewModelPrivate::totalPage()
+int EventReviewModel::totalPage()
 {
-    if (timeList.isEmpty())
-    {
-        return 0;
-    }
+    return d_ptr->calTotalPage();
+}
+int EventReviewModelPrivate::calTotalPage()
+{
     int page = timeList.count() / eachPageRowCount;
     if (timeList.count() % eachPageRowCount)
     {
