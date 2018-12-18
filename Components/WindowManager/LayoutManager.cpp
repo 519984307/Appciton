@@ -465,11 +465,18 @@ void LayoutManagerPrivate::perform12LeadLayout()
     systemConfig.getStrValue(path, waveOrder);
 
     QStringList ecgWaveList = waveOrder.split(',');
+    int calLead = ecgParam.getCalcLead();
+    ecgWaveList.move(calLead, 0);
 
     for (int i = 0;  i < ecgWaveList.count(); ++i)
     {
-        int row = i / 2;
-        int column = i % 2;
+        int row = i;
+        int column = 0;
+        if (i > 5)
+        {
+            row = i - 6;
+            column = 1;
+        }
         IWidget *w = layoutWidgets[ecgWaveList.at(i)];
         if (w)
         {
@@ -588,7 +595,11 @@ void LayoutManagerPrivate::perform7LeadLayout()
     QString waveOrder;
     systemConfig.getStrValue(path, waveOrder);
 
+    // 获取当前计算导联
+    int calLead = ecgParam.getCalcLead();
+
     QStringList ecgWaveList = waveOrder.split(',');
+    ecgWaveList.move(calLead, 0);
 
     for (int i = 0;  i < ecgWaveList.count(); ++i)
     {
