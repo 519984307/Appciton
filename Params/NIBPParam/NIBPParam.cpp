@@ -28,6 +28,7 @@
 #include "NIBPMonitorStopState.h"
 #include "NIBPMonitorStartingState.h"
 #include "EventStorageManager.h"
+#include "TrendDataStorageManager.h"
 
 NIBPParam *NIBPParam::_selfObj = NULL;
 
@@ -387,6 +388,11 @@ bool NIBPParam::analysisResult(const unsigned char *packet, int /*len*/, short &
         sys = InvData();
         dia = InvData();
         map = InvData();
+    }
+    else
+    {
+        // 测量出结果后，收集一次趋势数据
+        trendDataStorageManager.storeData(timeDate.time(), TrendDataStorageManager::CollectStatusNIBP);
     }
     return true;
 }
