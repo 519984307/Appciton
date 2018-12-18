@@ -1151,18 +1151,6 @@ HRSourceType ECGParam::getHrSourceTypeFromId(ParamID id)
 {
     switch (id)
     {
-        case PARAM_NONE:
-        case PARAM_RESP:
-        case PARAM_NIBP:
-        case PARAM_TEMP:
-        case PARAM_CO2:
-        case PARAM_DUP_ECG:
-        case PARAM_DUP_RESP:
-        case PARAM_AG:
-        case PARAM_CO:
-        case PARAM_O2:
-        case PARAM_UPGRADE:
-        break;
         case PARAM_ECG:
         return HR_SOURCE_ECG;
         break;
@@ -1174,6 +1162,8 @@ HRSourceType ECGParam::getHrSourceTypeFromId(ParamID id)
         break;
         case PARAM_NR:
         return HR_SOURCE_AUTO;
+        break;
+        default:
         break;
     }
     return HR_SOURCE_NR;
