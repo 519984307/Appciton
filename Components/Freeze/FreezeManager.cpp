@@ -1,3 +1,14 @@
+/**
+ ** This file is part of the nPM project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by WeiJuan Zhu <zhuweijuan@blmed.cn>, 2018/12/18
+ **/
+
+
 #include "FreezeManager.h"
 #include "ParamDefine.h"
 #include "TimeDate.h"
@@ -5,6 +16,7 @@
 #include "TimeDate.h"
 #include "TrendCache.h"
 #include "TrendDataDefine.h"
+#include "TrendDataStorageManager.h"
 
 class FreezeManagerPrivate
 {
@@ -13,7 +25,6 @@ public:
         :currentReviewSecond(0),
           inReviewMode(false)
     {
-
     }
     int currentReviewSecond;
     QList<FreezeDataModel*> dataModels;
@@ -35,7 +46,7 @@ FreezeManager::~FreezeManager()
 FreezeManager &FreezeManager::getInstance()
 {
     static FreezeManager  *instance = NULL;
-    if(instance == NULL)
+    if (instance == NULL)
     {
         instance = new FreezeManager();
     }
@@ -51,8 +62,8 @@ void FreezeManager::startFreeze()
     trendCache.getTendData(t, data);
     trendCache.getTrendAlarmStatus(t, almStatus);
     bool alarm = false;
-    foreach (bool st, almStatus.alarms) {
-        if(st)
+    foreach(bool st, almStatus.alarms) {
+        if (st)
         {
             alarm = true;
             break;
@@ -63,6 +74,8 @@ void FreezeManager::startFreeze()
     d_ptr->trendData.co2Baro = data.co2baro;
     d_ptr->trendData.time = t;
     d_ptr->trendData.alarmFlag = alarm;
+
+    trendDataStorageManager.storeData(t, TrendDataStorageManager::CollectStatusFreeze);
 }
 
 void FreezeManager::stopFreeze()
@@ -81,7 +94,7 @@ bool FreezeManager::isInReviewMode() const
 
 void FreezeManager::enterReviewMode()
 {
-    if(!d_ptr->inReviewMode)
+    if (!d_ptr->inReviewMode)
     {
         d_ptr->inReviewMode = true;
         emit freezeReview();
@@ -95,14 +108,14 @@ int FreezeManager::getCurReviewSecond() const
 
 void FreezeManager::setCurReviewSecond(int reviewSecond)
 {
-    if(reviewSecond == d_ptr->currentReviewSecond || reviewSecond > MAX_REVIEW_SECOND)
+    if (reviewSecond == d_ptr->currentReviewSecond || reviewSecond > MAX_REVIEW_SECOND)
     {
         return;
     }
 
     d_ptr->currentReviewSecond = reviewSecond;
 
-    foreach (FreezeDataModel *m, d_ptr->dataModels) {
+    foreach(FreezeDataModel *m, d_ptr->dataModels) {
         m->setReviewStartSecond(reviewSecond);
     }
 }
@@ -111,9 +124,9 @@ FreezeDataModel *FreezeManager::getWaveDataModel(int waveid)
 {
     WaveformID id = static_cast<WaveformID> (waveid);
 
-    //check whether already exist
-    foreach (FreezeDataModel *m, d_ptr->dataModels) {
-        if(m->getWaveformID() == id)
+    // check whether already exist
+    foreach(FreezeDataModel *m, d_ptr->dataModels) {
+        if (m->getWaveformID() == id)
         {
             return m;
         }
