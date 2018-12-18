@@ -88,9 +88,13 @@ public:
 
 void ECGMenuContentPrivate::loadOptions()
 {
-    int index = 0;
+    int id = 0;;
     setCboBlockSignal(true);
     combos[ITEM_CBO_HRPR_SOURCE]->clear();
+    currentConfig.getNumValue("ECG|HRSource", id);
+    int sourceType = ecgParam.getHrSourceTypeFromId(static_cast<ParamID>(id));
+    int cboIndex = 0;
+    int itemCount = 0;
     for (int i = HR_SOURCE_ECG; i < HR_SOURCE_NR; ++i)
     {
         if (i == HR_SOURCE_SPO2 && !systemManager.isSupport(PARAM_SPO2))
@@ -101,14 +105,23 @@ void ECGMenuContentPrivate::loadOptions()
         {
             continue;
         }
+
+        if (i == sourceType)
+        {
+            cboIndex = itemCount;
+        }
+        itemCount++;
         combos[ITEM_CBO_HRPR_SOURCE]->addItem(trs(ECGSymbol::convert(static_cast<HRSourceType>(i))));
     }
-    currentConfig.getNumValue("ECG|HRSource", index);
-    if (index > combos[ITEM_CBO_HRPR_SOURCE]->count())
+
+    if (cboIndex > combos[ITEM_CBO_HRPR_SOURCE]->count())
     {
-        index = 0;
+        cboIndex = 0;
+        id = ecgParam.getIdFromHrSourceType(static_cast<HRSourceType>(cboIndex));
+        currentConfig.setNumValue("ECG|HRSource", id);
     }
-    combos[ITEM_CBO_HRPR_SOURCE]->setCurrentIndex(index);
+    combos[ITEM_CBO_HRPR_SOURCE]->setCurrentIndex(cboIndex);
+
 
     ECGLeadMode leadMode = ecgParam.getLeadMode();
     combos[ITEM_CBO_LEAD_MODE]->setCurrentIndex(leadMode);
@@ -174,7 +187,7 @@ void ECGMenuContentPrivate::loadOptions()
         ecgParam.setCalcLead(static_cast<ECGLead>(index1));
     }
     QString ecgTopWaveform = ecgParam.getCalcLeadWaveformName();
-    index = ecgWaveforms.indexOf(ecgTopWaveform);
+    int index = ecgWaveforms.indexOf(ecgTopWaveform);
     if (index >= 0)
     {
         ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
@@ -577,7 +590,18 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
         {
         case ECGMenuContentPrivate::ITEM_CBO_HRPR_SOURCE:
         {
-            HRSourceType sourceType = static_cast<HRSourceType>(index);
+            HRSourceType sourceType = HR_SOURCE_NR;
+            QString itemText = box->currentText();
+            for (int i = HR_SOURCE_ECG; i < HR_SOURCE_NR; i++)
+            {
+                HRSourceType type = static_cast<HRSourceType>(i);
+                if (itemText == trs(ECGSymbol::convert(type)))
+                {
+                    sourceType = type;
+                    break;
+                }
+            }
+
             ecgDupParam.setHrSource(sourceType);
 
             // 切换类型时手动更新hr/pr值，避免上次pr/hr值为无效值
