@@ -101,13 +101,6 @@ public:
         return index;
     }
 
-    /**
-     * @brief eachPageRowCount
-     * @return
-     */
-    int eachPageRowCount();
-
-
     TableView *const q_ptr;
     int mouseClickRow;
     QModelIndex lastIndex;  // the last index that has been mouse press or key press
@@ -127,12 +120,6 @@ void TableViewPrivate::focusTheEditableItem(int row)
             break;
         }
     }
-}
-
-int TableViewPrivate::eachPageRowCount()
-{
-    int rows = q_ptr->rowAt(q_ptr->viewport()->height()) - q_ptr->rowAt(0);
-    return rows;
 }
 
 TableView::TableView(QWidget *parent)
