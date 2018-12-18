@@ -138,8 +138,16 @@ void ParamManager::connectParamProvider(WorkMode mode)
             if (provider)
             {
                 // 将Provider对象与Param对象连接起来。
+                if (mode == WORK_MODE_STANDBY && provider->connected())
+                {
+                    provider->reconnected();
+                    provider->stopCheckConnect(false);
+                }
+                else
+                {
+                    providerHasSet = true;
+                }
                 provider->attachParam(*param);
-                providerHasSet = true;
             }
         }
 
@@ -329,6 +337,49 @@ void ParamManager::getVersion(void)
     foreach(Provider *provider, _providers)
     {
         provider->sendVersion();
+    }
+}
+
+void ParamManager::disconnectParamProvider(WorkMode mode)
+{
+    if (mode != WORK_MODE_STANDBY)
+    {
+        return;
+    }
+    QString str;
+    machineConfig.getStrValue("AllParams", str);
+    QStringList param_list = str.split(',');
+    // trim text
+    for (QStringList::iterator iter = param_list.begin(); iter != param_list.end(); ++iter)
+    {
+        *iter = (*iter).trimmed();
+    }
+
+    Provider *provider = NULL;
+    for (int i = 0; i < param_list.size(); ++i)
+    {
+        Param *param = _params.value(param_list.at(i), NULL);
+        if (param == NULL)
+        {
+            continue;
+        }
+        machineConfig.getStrValue(param_list[i], str);
+        QStringList provider_list = str.split(',');
+        for (int j = 0; j < provider_list.size(); ++j)
+        {
+            provider_list[j] = provider_list[j].trimmed();
+            provider = _providers.value(provider_list[j], NULL);
+            if (provider)
+            {
+                // detach Param
+                if (provider->connectedToParam())
+                {
+                    provider->disconnected();
+                    provider->detachParam(*param);
+                    provider->stopCheckConnect(true);
+                }
+            }
+        }
     }
 }
 

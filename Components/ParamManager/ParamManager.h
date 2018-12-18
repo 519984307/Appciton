@@ -86,6 +86,12 @@ public:
     // 获取版本号。Notify the providers to get version info
     void getVersion(void);
 
+    /**
+     * @brief disconnectParamProvider 断开参数连接
+     * @param mode
+     */
+    void disconnectParamProvider(WorkMode mode);
+
     // 析构。
     ~ParamManager();
 

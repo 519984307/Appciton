@@ -45,6 +45,12 @@ public:
     // 是否连接
     bool connected();
 
+    /**
+     * @brief connectedToParam 是否连接到参数
+     * @return
+     */
+    bool connectedToParam();
+
     // 构造与析构。
     explicit Provider(const QString &name);
     virtual ~Provider();
@@ -55,6 +61,15 @@ public:
         Q_UNUSED(data)
         Q_UNUSED(length)
     }
+
+    virtual void disconnected(void) = 0;          // 模块连接恢复时回调，之类实现。
+    virtual void reconnected(void) = 0;          // 模块连接恢复时回调，之类实现。
+
+    /**
+     * @brief stopCheckConnect 是否停止检查连接模块连接状态
+     * @param flag
+     */
+    void stopCheckConnect(bool flag);
 
 protected:
     // 初始化端口。
@@ -81,8 +96,6 @@ protected slots:
 protected:
     void setDisconnectThreshold(int second);
     void feed(void);                              // 有数据时调用清除连接计数器。
-    virtual void disconnected(void) = 0;          // 模块连接恢复时回调，之类实现。
-    virtual void reconnected(void) = 0;          // 模块连接恢复时回调，之类实现。
     bool isConnected;
     QString versionInfo;
     bool isConnectedToParam;
@@ -94,4 +107,5 @@ private:
     int _timerID;
     int _disconnectCount;
     int _disconnectThreshold;
+    bool _stopCheckConnect;     // 待机标志
 };
