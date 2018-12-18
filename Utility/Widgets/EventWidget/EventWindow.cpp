@@ -455,7 +455,7 @@ void EventWindow::printRelease()
                 recorderManager.addPageGenerator(gen);
             }
         }
-        else
+        else if (!recorderManager.getPrintStatus())
         {
             recorderManager.addPageGenerator(gen);
         }

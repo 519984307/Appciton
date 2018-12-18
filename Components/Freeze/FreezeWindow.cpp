@@ -238,7 +238,7 @@ void FreezeWindow::onBtnClick()
                 recorderManager.addPageGenerator(generator);
             }
         }
-        else
+        else if (!recorderManager.getPrintStatus())
         {
             recorderManager.addPageGenerator(generator);
         }

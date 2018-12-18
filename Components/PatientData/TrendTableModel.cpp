@@ -691,7 +691,7 @@ void TrendTableModel::printTrendData(unsigned startTime, unsigned endTime)
             recorderManager.addPageGenerator(gen);
         }
     }
-    else
+    else if (!recorderManager.getPrintStatus())
     {
         recorderManager.addPageGenerator(gen);
     }

@@ -347,7 +347,7 @@ void OxyCRGEventWindow::printReleased()
             recorderManager.addPageGenerator(generator);
         }
     }
-    else
+    else if (!recorderManager.getPrintStatus())
     {
         recorderManager.addPageGenerator(generator);
     }
