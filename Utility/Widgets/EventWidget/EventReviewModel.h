@@ -40,6 +40,18 @@ public:
 
     void updateEvent(QList<QString> &timeList, QList<QString> &eventList);
 
+    /**
+     * @brief setPageRowCount 设置每一页显示的行数
+     * @param count
+     */
+    void setPageRowCount(int count);
+
+    /**
+     * @brief totalPage 总页数
+     * @return
+     */
+    int totalPage();
+
 private:
     QScopedPointer<EventReviewModelPrivate> d_ptr;
 };

@@ -47,12 +47,13 @@
 #include "MessageBox.h"
 #include "CO2Param.h"
 
-#define TABLE_SPACING               (12)
+#define TABLE_SPACING               (4)
+#define PAGE_ROW_COUNT               7      // 每页多少行
 
 class EventWindowPrivate
 {
 public:
-    EventWindowPrivate()
+    explicit EventWindowPrivate(EventWindow * const q_ptr)
         : eventTable(NULL), model(NULL), upPageBtn(NULL),
           downPageBtn(NULL), typeCbo(NULL), levelCbo(NULL),
           infoWidget(NULL), trendListWidget(NULL), waveWidget(NULL),
@@ -61,7 +62,7 @@ public:
           setBtn(NULL), upParamBtn(NULL), downParamBtn(NULL),
           tableWidget(NULL), chartWidget(NULL), stackLayout(NULL),
           backend(NULL), eventNum(0), curDisplayEventNum(0),
-          isHistory(false)
+          isHistory(false), q_ptr(q_ptr)
     {
         backend = eventStorageManager.backend();
         curEventType = EventAll;
@@ -103,6 +104,8 @@ public:
      * @brief eventWaveUpdate 事件波形数据窗口刷新
      */
     void eventWaveUpdate(void);
+
+    void refreshPageInfo();
 public:
     TableView *eventTable;
     EventReviewModel *model;
@@ -136,6 +139,8 @@ public:
 
     bool isHistory;                     // 历史回顾标志
     QString historyDataPath;            // 历史数据路径
+
+    EventWindow *q_ptr;
 };
 
 EventWindow *EventWindow::getInstance()
@@ -227,6 +232,7 @@ void EventWindow::showEvent(QShowEvent *ev)
 
     d_ptr->stackLayout->setCurrentIndex(0);
     d_ptr->loadEventData();
+    d_ptr->refreshPageInfo();
     if (d_ptr->eventTable->model()->rowCount() == 0)
     {
         d_ptr->eventTable->setFocusPolicy(Qt::NoFocus);
@@ -289,11 +295,13 @@ void EventWindow::eventLevelSelect(int index)
 void EventWindow::upPageReleased()
 {
     d_ptr->eventTable->scrollToPreviousPage();
+    d_ptr->refreshPageInfo();
 }
 
 void EventWindow::downPageReleased()
 {
     d_ptr->eventTable->scrollToNextPage();
+    d_ptr->refreshPageInfo();
 }
 
 void EventWindow::eventListReleased()
@@ -503,7 +511,7 @@ void EventWindow::downReleased()
 
 EventWindow::EventWindow()
     : Window(),
-      d_ptr(new EventWindowPrivate())
+      d_ptr(new EventWindowPrivate(this))
 {
     setWindowTitle(trs("EventReview"));
 
@@ -787,6 +795,7 @@ void EventWindowPrivate::loadEventData()
         }
     }
     curDisplayEventNum = timeList.count();
+    model->setPageRowCount(PAGE_ROW_COUNT);
     model->updateEvent(timeList, eventList);
 }
 
@@ -1046,4 +1055,15 @@ void EventWindowPrivate::eventWaveUpdate()
     waveWidget->setInfoSegments(ctx.infoSegment);
     waveWidget->setWaveMedSecond(0);
     waveWidget->setWaveSegments(ctx.waveSegments);
+}
+
+void EventWindowPrivate::refreshPageInfo()
+{
+    int curPage = 1;
+    int totalPage = 1;
+    eventTable->getPageInfo(curPage, totalPage);
+    QString title = QString("%1( %2/%3 )").arg(trs("EventReview"))
+                                          .arg(QString::number(curPage))
+                                          .arg(totalPage);
+    q_ptr->setWindowTitle(title);
 }

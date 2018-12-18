@@ -46,6 +46,13 @@ public:
     /* reimplement */
     void setModel(QAbstractItemModel *model);
 
+    /**
+     * @brief getPageInfo 获取页码信息
+     * @param curPage     当前页码
+     * @param totalPage   总页数
+     */
+    void getPageInfo(int &curPage, int &totalPage);
+
 signals:
     /* emit when the row is clicked */
     void rowClicked(int row);
