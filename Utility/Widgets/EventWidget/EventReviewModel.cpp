@@ -20,10 +20,14 @@
 class EventReviewModelPrivate
 {
 public:
-    EventReviewModelPrivate(){}
+    EventReviewModelPrivate()
+        : eachPageRowCount(1)
+    {}
 public:
     QList<QString> timeList;
     QList<QString> eventList;
+    int eachPageRowCount;
+    int totalPage();
 };
 
 EventReviewModel::EventReviewModel(QObject *parent)
@@ -44,7 +48,7 @@ int EventReviewModel::columnCount(const QModelIndex &parent) const
 int EventReviewModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return d_ptr->timeList.count();
+    return d_ptr->totalPage() * d_ptr->eachPageRowCount;
 }
 
 QVariant EventReviewModel::data(const QModelIndex &index, int role) const
@@ -61,11 +65,11 @@ QVariant EventReviewModel::data(const QModelIndex &index, int role) const
     {
     case Qt::DisplayRole:
     {
-        if (column == 0)
+        if (column == 0 && row < d_ptr->timeList.count())
         {
             return d_ptr->timeList.at(row);
         }
-        else if (column == 1)
+        else if (column == 1 && row < d_ptr->timeList.count())
         {
             return d_ptr->eventList.at(row);
         }
@@ -129,9 +133,11 @@ QVariant EventReviewModel::headerData(int section, Qt::Orientation orientation, 
 
 Qt::ItemFlags EventReviewModel::flags(const QModelIndex &index) const
 {
-    Q_UNUSED(index)
     Qt::ItemFlags flags;
-    flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    if (index.row() < d_ptr->timeList.count())
+    {
+        flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    }
     return flags;
 }
 
@@ -146,4 +152,23 @@ void EventReviewModel::updateEvent(QList<QString> &timeList, QList<QString> &eve
     d_ptr->timeList = timeList;
     d_ptr->eventList = eventList;
     endResetModel();
+}
+
+void EventReviewModel::setPageRowCount(int count)
+{
+    d_ptr->eachPageRowCount = count;
+}
+
+int EventReviewModelPrivate::totalPage()
+{
+    if (timeList.isEmpty())
+    {
+        return 0;
+    }
+    int page = timeList.count() / eachPageRowCount;
+    if (timeList.count() % eachPageRowCount)
+    {
+        page += 1;
+    }
+    return page;
 }

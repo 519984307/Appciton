@@ -47,7 +47,8 @@
 #include "MessageBox.h"
 #include "CO2Param.h"
 
-#define TABLE_SPACING               (12)
+#define TABLE_SPACING               (4)
+#define PAGE_ROW_COUNT               7      // 每页多少行
 
 class EventWindowPrivate
 {
@@ -787,6 +788,7 @@ void EventWindowPrivate::loadEventData()
         }
     }
     curDisplayEventNum = timeList.count();
+    model->setPageRowCount(PAGE_ROW_COUNT);
     model->updateEvent(timeList, eventList);
 }
 
