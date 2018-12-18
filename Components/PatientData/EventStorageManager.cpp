@@ -147,10 +147,11 @@ void EventStorageManager::triggerAlarmEvent(const AlarmInfoSegment &almInfo, Wav
             else
             {
                 recorderManager.stopPrint();
+                recorderManager.addPageGenerator(generator);
                 item->setWaitForTriggerPrintFlag(false);
             }
         }
-        else
+        else if (!recorderManager.getPrintStatus())
         {
             recorderManager.addPageGenerator(generator);
             item->setWaitForTriggerPrintFlag(true);
@@ -188,10 +189,11 @@ void EventStorageManager::triggerCodeMarkerEvent(const char *codeName, unsigned 
             else
             {
                 recorderManager.stopPrint();
+                recorderManager.addPageGenerator(generator);
                 item->setWaitForTriggerPrintFlag(false);
             }
         }
-        else
+        else if (!recorderManager.getPrintStatus())
         {
             recorderManager.addPageGenerator(generator);
             item->setWaitForTriggerPrintFlag(true);
@@ -243,10 +245,11 @@ void EventStorageManager::triggerNIBPMeasurementEvent(unsigned t)
             else
             {
                 recorderManager.stopPrint();
+                recorderManager.addPageGenerator(generator);
                 item->setWaitForTriggerPrintFlag(false);
             }
         }
-        else
+        else if (!recorderManager.getPrintStatus())
         {
             recorderManager.addPageGenerator(generator);
             item->setWaitForTriggerPrintFlag(true);
@@ -283,10 +286,11 @@ void EventStorageManager::triggerWaveFreezeEvent(unsigned t)
             else
             {
                 recorderManager.stopPrint();
+                recorderManager.addPageGenerator(generator);
                 item->setWaitForTriggerPrintFlag(false);
             }
         }
-        else
+        else if (!recorderManager.getPrintStatus())
         {
             recorderManager.addPageGenerator(generator);
             item->setWaitForTriggerPrintFlag(true);

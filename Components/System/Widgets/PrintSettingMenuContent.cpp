@@ -309,6 +309,7 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
         if (recorderManager.isPrinting())
         {
             recorderManager.stopPrint();
+            recorderManager.addPageGenerator(new ContinuousPageGenerator());
         }
         return;
     }
@@ -324,6 +325,7 @@ void PrintSettingMenuContent::onSelectWaveChanged(const QString &waveName)
     if (recorderManager.isPrinting())
     {
         recorderManager.stopPrint();
+        recorderManager.addPageGenerator(new ContinuousPageGenerator());
     }
 
     // 收集当前所有选择菜单选择的波形id

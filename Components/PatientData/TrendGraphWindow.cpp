@@ -139,7 +139,7 @@ void TrendGraphWindow::onButtonReleased()
                     recorderManager.addPageGenerator(pageGenerator);
                 }
             }
-            else
+            else if (!recorderManager.getPrintStatus())
             {
                 recorderManager.addPageGenerator(pageGenerator);
             }
