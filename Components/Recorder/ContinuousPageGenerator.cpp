@@ -221,6 +221,7 @@ ContinuousPageGenerator::ContinuousPageGenerator(unsigned curTime, QObject *pare
 
 ContinuousPageGenerator::~ContinuousPageGenerator()
 {
+    delete d_ptr->item;
 }
 
 int ContinuousPageGenerator::type() const
