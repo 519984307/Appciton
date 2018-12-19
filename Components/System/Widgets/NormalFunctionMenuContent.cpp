@@ -108,8 +108,11 @@ void NormalFunctionMenuContentPrivate::loadOptions()
     }
 
 #ifdef Q_WS_QWS
+    // 加载数据时，强制锁住该信号。该信号会触发openMouse()函数，在调试期间，openMouse函数会有堵塞现象.
+    combos[ITEM_CBO_TOUCH_SCREEN]->blockSignals(true);
     combos[ITEM_CBO_TOUCH_SCREEN]->setCurrentIndex(systemManager.isTouchScreenOn());
     combos[ITEM_CBO_TOUCH_SCREEN]->setEnabled(systemManager.isSupport(CONFIG_TOUCH));
+    combos[ITEM_CBO_TOUCH_SCREEN]->blockSignals(false);
 #endif
 }
 
